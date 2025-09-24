@@ -34,7 +34,7 @@ const useStyles = makeStyles({
 });
 
 interface Props {
-  defaultValue?: PortableTextBlock[] | string;
+  defaultValue?: PortableTextBlock[];
   onChange: (value: string | PortableTextBlock[]) => void;
   error?: string | boolean;
   autoFocus?: boolean;
@@ -46,7 +46,7 @@ const WysiwygEditor = forwardRef<HTMLDivElement, Props>(
   ({ className, defaultValue, onChange, error, autoFocus }, ref) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const styles = useStyles();
-    const [value, setValue] = useState<Array<PortableTextBlock> | undefined | string>(defaultValue);
+    const [value, setValue] = useState<PortableTextBlock[] | undefined>(defaultValue);
 
     const schemaDefinition = defineSchema({
       decorators: [{ name: 'strong', title: 'B' }],
@@ -66,6 +66,7 @@ const WysiwygEditor = forwardRef<HTMLDivElement, Props>(
           fields: [
             { name: 'title', type: 'string' },
             { name: 'url', type: 'string' },
+            { name: 'openInNewTab', type: 'boolean' },
           ],
         },
       ],
@@ -102,7 +103,7 @@ const WysiwygEditor = forwardRef<HTMLDivElement, Props>(
     function isLink(
       props: PortableTextChild,
     ): props is PortableTextChild & { url: string; title: string; openInNewTab: boolean } {
-      return 'url' in props;
+      return 'openInNewTab' in props;
     }
 
     const renderChild: RenderChildFunction = (props) => {
@@ -117,6 +118,19 @@ const WysiwygEditor = forwardRef<HTMLDivElement, Props>(
       return <>{props.children}</>;
     };
 
+    const components = {
+      types: {
+        link: ({ value }) => {
+          console.log('vallie', value);
+          const href = value?.url || '#';
+          const text = value?.title || href;
+          return `<a href="${href}" target="_blank" rel="noopener noreferrer">${text}</a>`;
+        },
+      },
+    };
+
+    const html = toHTML(value, { components });
+
     return (
       <EditorProvider
         initialConfig={{
@@ -128,7 +142,7 @@ const WysiwygEditor = forwardRef<HTMLDivElement, Props>(
           on={(event) => {
             if (event.type === 'mutation') {
               setValue(event.value);
-              onChange(toHTML(event.value ?? []));
+              onChange(toHTML(event.value, { components }));
             }
           }}
         />
@@ -145,6 +159,7 @@ const WysiwygEditor = forwardRef<HTMLDivElement, Props>(
             className={className}
           />
           <p>{JSON.stringify(value)}</p>
+          <div>{html}</div>
         </div>
         {error && typeof error === 'string' && <FieldsetErrorMessage errorMessage={error} ref={ref} />}
       </EditorProvider>
