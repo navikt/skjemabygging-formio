@@ -1,4 +1,5 @@
 import { RequestHandler } from 'express';
+import { appMetrics } from '../../../services';
 import documentsService from '../../../services/documents/documentsService';
 import { logErrorWithStacktrace } from '../../../utils/errors';
 
@@ -67,6 +68,7 @@ const coverPageAndApplication: RequestHandler = async (req, res, next) => {
       submissionMethod,
       translations: translationsParsed,
     });
+    appMetrics.paperSubmissionsCounter.inc({ source: 'fyllUt' });
     res.contentType('application/pdf');
     res.setHeader('Content-Disposition', `inline; filename=${encodeURIComponent(`${formParsed.path}.pdf`)}`);
     res.send(fileBuffer);
