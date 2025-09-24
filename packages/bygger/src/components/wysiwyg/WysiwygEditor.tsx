@@ -1,17 +1,20 @@
 import { Heading } from '@navikt/ds-react';
 import { FieldsetErrorMessage, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { htmlToBlocks } from '@portabletext/block-tools';
 import {
   defineSchema,
   EditorProvider,
   PortableTextBlock,
   PortableTextChild,
   PortableTextEditable,
+  RenderAnnotationFunction,
   RenderChildFunction,
   RenderDecoratorFunction,
   RenderStyleFunction,
 } from '@portabletext/editor';
 import { EventListenerPlugin } from '@portabletext/editor/plugins';
 import { toHTML } from '@portabletext/to-html';
+import { Schema } from '@sanity/schema';
 import clsx from 'clsx';
 import { forwardRef, useRef, useState } from 'react';
 import './editor.css';
@@ -44,7 +47,35 @@ interface Props {
 }
 
 const WysiwygEditor = forwardRef<HTMLDivElement, Props>(({ className, defaultValue, onChange, error }, ref) => {
-  const [value, setValue] = useState<string | undefined>(defaultValue);
+  const defaultSchema = Schema.compile({
+    name: 'wysiwyg',
+    types: [
+      {
+        type: 'object',
+        name: 'editor',
+        fields: [
+          {
+            title: 'Body',
+            name: 'body',
+            type: 'array',
+            of: [{ type: 'block' }],
+          },
+          {
+            title: 'link',
+            name: 'a',
+            type: 'annotation',
+            of: [{ type: 'link' }],
+          },
+        ],
+      },
+    ],
+  });
+
+  const blockContentType = defaultSchema.get('editor').fields.find((field) => field.name === 'body').type;
+
+  const [value, setValue] = useState<PortableTextBlock[] | undefined>(
+    htmlToBlocks(defaultValue ?? '', blockContentType),
+  );
   const styles = useStyles();
   console.log(value);
 
@@ -100,6 +131,34 @@ const WysiwygEditor = forwardRef<HTMLDivElement, Props>(({ className, defaultVal
     return <>{props.children}</>;
   };
 
+  const renderAnnotation: RenderAnnotationFunction = (props) => {
+    if (props.schemaType.name === 'link') {
+      const onSubmit = (data: LinkData) => {
+        setLinkData(data);
+      };
+      const text = props.children.props.text.text;
+
+      return (
+        <div>
+          <a
+            href={props.value.href as string}
+            target={text && text.includes('åpnes i ny fane') ? '_blank' : '_self'}
+            rel="noreferrer"
+            onClick={(e) => {
+              e.preventDefault();
+              dialogRef.current?.showModal();
+            }}
+          >
+            {text}
+          </a>
+          <LinkModal dialogRef={dialogRef} onSubmit={onSubmit} setLinkData={setLinkData} linkData={linkData!} />
+        </div>
+      );
+    }
+
+    return <>{props.children}</>;
+  };
+
   function isLink(
     props: PortableTextChild,
   ): props is PortableTextChild & { url: string; title: string; openInNewTab: boolean } {
@@ -122,11 +181,11 @@ const WysiwygEditor = forwardRef<HTMLDivElement, Props>(({ className, defaultVal
             rel="noreferrer"
             onClick={(e) => {
               e.preventDefault();
-              setLinkData({
-                url: (props.value as any).url,
-                title: (props.value as any).title,
-                openInNewTab: (props.value as any).openInNewTab,
-              });
+              // setLinkData({
+              //   url: (props.value as any).url,
+              //   title: (props.value as any).title,
+              //   openInNewTab: (props.value as any).openInNewTab,
+              // });
               dialogRef.current?.showModal();
             }}
           >
@@ -142,10 +201,9 @@ const WysiwygEditor = forwardRef<HTMLDivElement, Props>(({ className, defaultVal
   const components = {
     types: {
       link: ({ value }) => {
-        console.log('vallie', value);
         const href = value?.url || '#';
-        const text = value?.title || href;
-        return `<a href="${href}" target="_blank" rel="noopener noreferrer">${text}</a>`;
+        const text = `${value.title}${value.openInNewTab ? ' (åpnes i ny fane)' : ''}`;
+        return `<a href="${href}" target="${value.openInNewTab ? '_blank' : '_self'}" rel="noopener noreferrer">${text}</a>`;
       },
     },
   };
@@ -175,11 +233,11 @@ const WysiwygEditor = forwardRef<HTMLDivElement, Props>(({ className, defaultVal
           renderDecorator={renderDecorator}
           renderStyle={renderStyle}
           renderChild={renderChild}
+          renderAnnotation={renderAnnotation}
           renderListItem={(props) => <>{props.children}</>}
           style={{ border: '1px solid black', minHeight: '150px', padding: '0.5rem' }}
           className={clsx(className, { [styles.error]: !!error })}
         />
-        {/*<p>{JSON.stringify(value)}</p>*/}
         <div>{html}</div>
       </div>
       {error && typeof error === 'string' && <FieldsetErrorMessage errorMessage={error} />}

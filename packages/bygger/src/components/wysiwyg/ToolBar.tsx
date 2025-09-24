@@ -2,6 +2,7 @@ import { SchemaDefinition, useEditor, useEditorSelector } from '@portabletext/ed
 
 import { BulletListIcon, LinkIcon, NumberListIcon } from '@navikt/aksel-icons';
 import { Box, Button, HStack, Select } from '@navikt/ds-react';
+import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import * as selectors from '@portabletext/editor/selectors';
 import { useRef, useState } from 'react';
 import { LinkModal } from './LinkModal';
@@ -16,11 +17,21 @@ export type LinkData = {
   openInNewTab: boolean;
 };
 
+const useStyle = makeStyles({
+  select: {
+    '& .navds-select__input': {
+      minHeight: '2rem',
+      padding: '0 2rem 0 .5rem',
+    },
+  },
+});
+
 export function ToolBar({ schemaDefinition }: Props) {
   const toolbarSchema = schemaDefinition;
+  const editor = useEditor();
+  const styles = useStyle();
 
   function DecoratorButton(props: { decorator: string; title: string }) {
-    const editor = useEditor();
     const active = useEditorSelector(editor, selectors.isActiveDecorator(props.decorator));
 
     return (
@@ -32,11 +43,11 @@ export function ToolBar({ schemaDefinition }: Props) {
         }}
         variant="secondary-neutral"
         onClick={() => {
+          editor.send({ type: 'focus' });
           editor.send({
             type: 'decorator.toggle',
             decorator: props.decorator,
           });
-          editor.send({ type: 'focus' });
         }}
       >
         {props.title}
@@ -45,24 +56,19 @@ export function ToolBar({ schemaDefinition }: Props) {
   }
 
   function StyleDropdown(props: { styles: { name: string; title?: string }[] }) {
-    const editor = useEditor();
     const activeStyle = useEditorSelector(editor, (state: any) => state?.style);
 
     return (
       <Select
         label="Skrifttype"
         hideLabel
-        style={{
-          marginRight: '8px',
-          width: 'fit-content',
-        }}
+        className={styles.select}
         value={activeStyle}
         onChange={(e) => {
           editor.send({ type: 'style.toggle', style: e.target.value });
           editor.send({ type: 'focus' });
         }}
       >
-        <option value="">Skrifttype</option>
         {props.styles.map((style) => (
           <option key={style.name} value={style.name}>
             {style.title ?? style.name}
@@ -72,14 +78,11 @@ export function ToolBar({ schemaDefinition }: Props) {
     );
   }
 
-  function AnnotationButton(props: { annotation: { name: string } }) {
-    const editor = useEditor();
-    const active = useEditorSelector(editor, selectors.isActiveAnnotation(props.annotation.name));
+  function LinkButton(props: { annotations: string }) {
     const ref = useRef<HTMLDialogElement>(null);
     const [linkData, setLinkData] = useState<LinkData>({ title: '', url: '', openInNewTab: true });
 
     function onSubmit() {
-      console.log('submitting', linkData);
       if (!linkData) {
         return;
       }
@@ -87,7 +90,7 @@ export function ToolBar({ schemaDefinition }: Props) {
       editor.send({
         type: 'insert.inline object',
         inlineObject: {
-          name: 'link',
+          name: props.annotations,
           value: linkData,
         },
       });
@@ -97,11 +100,9 @@ export function ToolBar({ schemaDefinition }: Props) {
       <Box>
         <Button
           style={{
-            backgroundColor: active ? 'var(--a-blue-600)' : 'unset',
-            color: active ? 'white' : 'black',
             height: '2rem',
           }}
-          icon={props.annotation.name === 'link' && <LinkIcon title="Link" fontSize="1.2rem" />}
+          icon={<LinkIcon title="Link" fontSize="1.2rem" />}
           variant="secondary-neutral"
           onClick={() => ref.current?.showModal()}
         ></Button>
@@ -111,7 +112,6 @@ export function ToolBar({ schemaDefinition }: Props) {
   }
 
   function ListButton(props: { list: string }) {
-    const editor = useEditor();
     const active = useEditorSelector(editor, selectors.isActiveListItem(props.list));
 
     const icons: Record<string, React.ReactNode> = {
@@ -145,12 +145,6 @@ export function ToolBar({ schemaDefinition }: Props) {
     ));
   }
 
-  function LinkButton() {
-    return toolbarSchema.annotations?.map((annotation) => (
-      <AnnotationButton key={annotation.name} annotation={annotation} />
-    ));
-  }
-
   function StylesDropdown() {
     return <StyleDropdown styles={[...(toolbarSchema.styles ?? [])]} />;
   }
@@ -159,11 +153,15 @@ export function ToolBar({ schemaDefinition }: Props) {
     return toolbarSchema.lists?.map((list) => <ListButton key={list.name} list={list.name} />);
   }
 
+  function AnnotationButtons() {
+    return toolbarSchema.annotations?.map((obj) => <LinkButton key={obj.name} annotations={obj.name} />);
+  }
+
   return (
     <HStack gap="space-4" style={{ marginBottom: '.5rem' }} align="center">
       <StylesDropdown />
       <DecoratorButtons />
-      <LinkButton />
+      <AnnotationButtons />
       <ListButtons />
     </HStack>
   );
