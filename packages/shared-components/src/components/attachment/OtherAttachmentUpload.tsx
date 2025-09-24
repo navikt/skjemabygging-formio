@@ -61,7 +61,7 @@ const OtherAttachmentUpload = ({ label, attachmentValues, componentId, descripti
   };
 
   return (
-    <VStack gap="8" className={clsx('mb', className)}>
+    <VStack gap="6" className={clsx('mb', className)}>
       {uploadedAttachmentFiles.length > 0 ? (
         <div>
           <Label className={'mb-0'}>{label}</Label>
@@ -86,38 +86,41 @@ const OtherAttachmentUpload = ({ label, attachmentValues, componentId, descripti
       )}
       {uploadSelected && (
         <VStack gap="4">
-          <div className={styles.uploadedFilesHeader}>
-            {uploadedAttachmentFiles.length > 0 && (
+          {uploadedAttachmentFiles.length > 0 && (
+            <div className={styles.uploadedFilesHeader}>
               <Label>{translate(TEXTS.statiske.attachment.filesUploadedNotSent)}</Label>
-            )}
-            {uploadedAttachmentFiles.length > 1 && (
-              <Button
-                variant="tertiary"
-                onClick={() => handleDeleteAllAttachments(componentId)}
-                className={styles.deleteAllButton}
-              >
-                {translate(TEXTS.statiske.attachment.deleteAllFiles)}
-              </Button>
-            )}
-          </div>
 
-          {attachments.map((attachment) => (
-            <FileUploader
-              key={attachment.attachmentId}
-              initialAttachment={attachment}
-              requireAttachmentTitle
-              attachmentValue={otherAttachment?.value}
-              refs={refs}
-            />
-          ))}
-          <Button
-            variant="tertiary"
-            onClick={handleUploadAnotherAttachment}
-            className={styles.addAnotherAttachmentButton}
-            icon={<PlusIcon aria-hidden fontSize="1.5rem" />}
-          >
-            {translate(TEXTS.statiske.attachment.addNewAttachment)}
-          </Button>
+              {uploadedAttachmentFiles.length > 1 && (
+                <Button
+                  variant="tertiary"
+                  onClick={() => handleDeleteAllAttachments(componentId)}
+                  className={styles.deleteAllButton}
+                >
+                  {translate(TEXTS.statiske.attachment.deleteAllFiles)}
+                </Button>
+              )}
+            </div>
+          )}
+
+          <VStack gap="8">
+            {attachments.map((attachment) => (
+              <FileUploader
+                key={attachment.attachmentId}
+                initialAttachment={attachment}
+                requireAttachmentTitle
+                attachmentValue={otherAttachment?.value}
+                refs={refs}
+              />
+            ))}
+            <Button
+              variant="tertiary"
+              onClick={handleUploadAnotherAttachment}
+              className={styles.addAnotherAttachmentButton}
+              icon={<PlusIcon aria-hidden fontSize="1.5rem" />}
+            >
+              {translate(TEXTS.statiske.attachment.addNewAttachment)}
+            </Button>
+          </VStack>
         </VStack>
       )}
     </VStack>

@@ -105,31 +105,33 @@ const FileUploader = ({
   return (
     <>
       {!showButton && <Label>{attachmentTitle}</Label>}
-      <FileUpload translations={{ item: { uploading: translate(TEXTS.statiske.uploadFile.uploading) } }}>
-        <VStack gap="4" as="ul">
-          {uploadedFiles.map(({ fileId, fileName, size }) => (
-            <FileUpload.Item
-              as="li"
-              key={fileId}
-              file={{ name: fileName, size }}
-              button={{
-                action: 'delete',
-                onClick: () => handleDeleteFile(attachmentId, fileId, { name: fileName, size }),
-              }}
-              error={errors[fileId]?.[0].message ? translate(errors[fileId][0].message) : undefined}
-            ></FileUpload.Item>
-          ))}
-          {inProgress.map((file) => (
-            <FileUpload.Item
-              as="li"
-              key={`${file.file.name}-${file.file.lastModified}`}
-              file={file.file}
-              status={file.error ? 'idle' : 'uploading'}
-              error={translate(getFileValidationError(file), translationErrorParams)}
-            ></FileUpload.Item>
-          ))}
-        </VStack>
-      </FileUpload>
+      {uploadedFiles.length > 0 && (
+        <FileUpload translations={{ item: { uploading: translate(TEXTS.statiske.uploadFile.uploading) } }}>
+          <VStack gap="4" as="ul">
+            {uploadedFiles.map(({ fileId, fileName, size }) => (
+              <FileUpload.Item
+                as="li"
+                key={fileId}
+                file={{ name: fileName, size }}
+                button={{
+                  action: 'delete',
+                  onClick: () => handleDeleteFile(attachmentId, fileId, { name: fileName, size }),
+                }}
+                error={errors[fileId]?.[0].message ? translate(errors[fileId][0].message) : undefined}
+              ></FileUpload.Item>
+            ))}
+            {inProgress.map((file) => (
+              <FileUpload.Item
+                as="li"
+                key={`${file.file.name}-${file.file.lastModified}`}
+                file={file.file}
+                status={file.error ? 'idle' : 'uploading'}
+                error={translate(getFileValidationError(file), translationErrorParams)}
+              ></FileUpload.Item>
+            ))}
+          </VStack>
+        </FileUpload>
+      )}
       {showButton && (
         <>
           {requireAttachmentTitle && (

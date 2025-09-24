@@ -70,7 +70,7 @@ const AttachmentUpload = ({
   };
 
   return (
-    <VStack gap="8" className={clsx('mb', className)}>
+    <VStack gap="6" className={clsx('mb', className)}>
       {!idUploaded &&
         (uploadedAttachmentFiles.length > 0 ? (
           <div>
@@ -100,20 +100,20 @@ const AttachmentUpload = ({
         ))}
       {uploadSelected && (
         <VStack gap="4">
-          <div className={styles.uploadedFilesHeader}>
-            {uploadedAttachmentFiles.length > 0 && (
+          {uploadedAttachmentFiles.length > 0 && (
+            <div className={styles.uploadedFilesHeader}>
               <Label>{translate(TEXTS.statiske.attachment.filesUploadedNotSent)}</Label>
-            )}
-            {uploadedAttachmentFiles.length > 1 && (
-              <Button
-                variant="tertiary"
-                onClick={() => handleDeleteAllAttachments(componentId)}
-                className={styles.deleteAllButton}
-              >
-                {translate(TEXTS.statiske.attachment.deleteAllFiles)}
-              </Button>
-            )}
-          </div>
+              {uploadedAttachmentFiles.length > 1 && (
+                <Button
+                  variant="tertiary"
+                  onClick={() => handleDeleteAllAttachments(componentId)}
+                  className={styles.deleteAllButton}
+                >
+                  {translate(TEXTS.statiske.attachment.deleteAllFiles)}
+                </Button>
+              )}
+            </div>
+          )}
           {type === 'personal-id' && <Label>{translate(TEXTS.statiske.uploadId.selectFileLabel)}</Label>}
           <FileUploader
             initialAttachment={{ attachmentId: componentId, navId: componentId, type }}
