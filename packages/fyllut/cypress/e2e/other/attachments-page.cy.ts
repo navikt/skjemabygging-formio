@@ -50,17 +50,6 @@ describe('Attachments page', () => {
     cy.findAllByText('Du må fylle ut: Annen dokumentasjon').should('be.visible').should('have.length', 2);
   });
 
-  it('should remove all attachments when delete all button is clicked', () => {
-    cy.intercept('/fyllut/api/nologin-file?attachmentId=eiajfi8').as('deleteAllFilesByAttachmentId');
-    cy.findAllByLabelText(TEXTS.statiske.attachment.leggerVedNaa).first().click();
-    uploadFile('test.txt');
-    cy.findByText('test.txt').should('exist');
-    uploadFile('test.txt');
-    cy.findByText('test.txt').should('exist');
-    cy.findByRole('button', { name: TEXTS.statiske.attachment.deleteAllFiles }).click();
-    cy.wait('@deleteAllFilesByAttachmentId');
-  });
-
   it('should render additional description and deadline when existing', () => {
     cy.findByLabelText(TEXTS.statiske.attachment.ettersender).click();
     cy.findByText(
@@ -69,15 +58,6 @@ describe('Attachments page', () => {
     cy.findByLabelText(TEXTS.statiske.attachment.levertTidligere).click();
     cy.findByLabelText('Tittel tilleggsinformasjon').should('exist');
     cy.findByText('Beskrivelse tilleggsinformasjon').should('exist');
-  });
-
-  it('should remove all attachments on cancel', () => {
-    cy.intercept('/fyllut/api/nologin-file').as('deleteAllFiles');
-    cy.findAllByLabelText(TEXTS.statiske.attachment.leggerVedNaa).first().click();
-    uploadFile('attachment1.txt');
-    cy.findByText('test.txt').should('exist');
-    cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.cancelAndDelete }).click();
-    cy.wait('@deleteAllFiles');
   });
 
   describe('Other attachments', () => {
@@ -108,6 +88,53 @@ describe('Attachments page', () => {
       cy.findByText('Vedleggstittel 1').should('exist');
       cy.findByText('Vedleggstittel 2').should('exist');
       cy.findAllByText('test.txt').should('have.length', 2);
+    });
+  });
+
+  describe('Deleting files', () => {
+    beforeEach(() => {
+      // Cypress doesn't like that session request after redirect to nav.no returns a 401
+      cy.intercept('https://login.nav.no/oauth2/session', {
+        statusCode: 200,
+        body: {
+          session: {
+            created_at: '2025-09-24T05:12:16.362312374Z',
+            ends_at: '2025-09-24T11:12:16.362312374Z',
+            timeout_at: '2025-09-24T06:12:16.362312744Z',
+            ends_in_seconds: 21599,
+            active: true,
+            timeout_in_seconds: 3599,
+          },
+          tokens: {
+            expire_at: '2025-09-24T06:12:16.361856234Z',
+            refreshed_at: '2025-09-24T05:12:16.362312374Z',
+            expire_in_seconds: 3599,
+            next_auto_refresh_in_seconds: -1,
+            refresh_cooldown: true,
+            refresh_cooldown_seconds: 59,
+          },
+        },
+      });
+    });
+
+    it('should remove all attachments when delete all button is clicked', () => {
+      cy.intercept('/fyllut/api/nologin-file?attachmentId=eiajfi8').as('deleteAllFilesByAttachmentId');
+      cy.findAllByLabelText(TEXTS.statiske.attachment.leggerVedNaa).first().click();
+      uploadFile('test.txt');
+      cy.findByText('test.txt').should('exist');
+      uploadFile('test.txt');
+      cy.findByText('test.txt').should('exist');
+      cy.findByRole('button', { name: TEXTS.statiske.attachment.deleteAllFiles }).click();
+      cy.wait('@deleteAllFilesByAttachmentId');
+    });
+
+    it('should remove all attachments on cancel', () => {
+      cy.intercept('/fyllut/api/nologin-file').as('deleteAllFiles');
+      cy.findAllByLabelText(TEXTS.statiske.attachment.leggerVedNaa).first().click();
+      uploadFile('attachment1.txt');
+      cy.findByText('test.txt').should('exist');
+      cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.cancelAndDelete }).click();
+      cy.wait('@deleteAllFiles');
     });
   });
 });
