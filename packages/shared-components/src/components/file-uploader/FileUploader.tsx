@@ -74,7 +74,9 @@ const FileUploader = ({
   } = useAttachmentUpload();
   const { attachmentId } = initialAttachment;
   const attachment = submissionAttachments.find((attachment) => attachment.attachmentId === attachmentId);
-  const attachmentTitle = attachment?.title;
+  const label = requireAttachmentTitle
+    ? translate(attachment?.title)
+    : translate(TEXTS.statiske.uploadFile.singleFileUploadedLabel);
   const [loading, setLoading] = useState(false);
 
   const uploadedFiles = attachment?.files ?? [];
@@ -104,7 +106,7 @@ const FileUploader = ({
 
   return (
     <>
-      {!showButton && <Label>{attachmentTitle}</Label>}
+      {!showButton && <Label>{label}</Label>}
       {[...uploadedFiles, ...inProgress].length > 0 && (
         <FileUpload translations={{ item: { uploading: translate(TEXTS.statiske.uploadFile.uploading) } }}>
           <VStack gap="4" as="ul">
@@ -138,7 +140,7 @@ const FileUploader = ({
             <TextField
               label={translate(TEXTS.statiske.attachment.attachmentTitle)}
               maxLength={50}
-              defaultValue={attachmentTitle}
+              defaultValue={attachment?.title}
               error={attachmentTitleErrorMessage}
               ref={(ref) => {
                 if (refs?.current) {
@@ -153,7 +155,7 @@ const FileUploader = ({
               }}
             />
           )}
-          {!requireAttachmentTitle || !!attachmentTitle?.trim() ? (
+          {!requireAttachmentTitle || !!attachment?.title?.trim() ? (
             <FileUpload.Trigger onSelect={onSelect} accept={accept} maxSizeInBytes={maxFileSizeInBytes}>
               <Button
                 variant={initialUpload ? 'primary' : 'secondary'}

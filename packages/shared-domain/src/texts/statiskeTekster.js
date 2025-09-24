@@ -41,6 +41,7 @@ export const statiske = {
     },
   },
   uploadId: {
+    description: 'For å sende skjemaet digitalt uten å logge inn må du legitimere deg.',
     title: 'Legitimasjon',
     label: 'Hvilken legitimasjon ønsker du å bruke?',
     norwegianPassport: 'Norsk pass',
@@ -55,6 +56,7 @@ export const statiske = {
       'Sesjonen din har utløpt. For å sende inn må du laste opp legitimasjon og fylle ut skjemaet på nytt. <a href="{{href}}">Klikk her</a> for å starte på nytt.',
   },
   uploadFile: {
+    singleFileUploadedLabel: 'Opplastet fil',
     selectFile: 'Velg fil',
     uploadMoreFiles: 'Last opp flere filer',
     uploading: 'Laster opp fil...',
