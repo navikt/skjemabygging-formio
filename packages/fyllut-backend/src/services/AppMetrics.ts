@@ -37,6 +37,11 @@ class AppMetrics {
       labelNames: ['source'],
       registers: [this._register],
     });
+    // initialize all label values to 0
+    this._paperSubmissionsCounter.inc({ source: 'fyllUt' }, 0);
+    this._paperSubmissionsCounter.inc({ source: 'ettersending' }, 0);
+    this._paperSubmissionsCounter.inc({ source: 'lospost' }, 0);
+    this._paperSubmissionsCounter.inc({ source: '-' }, 0);
 
     this._nologinCaptchaRequestsCounter = new Counter({
       name: 'fyllut_nologin_captcha_requests_total',
