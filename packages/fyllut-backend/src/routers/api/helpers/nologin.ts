@@ -65,10 +65,10 @@ const assembleNologinSoknadBody = (
     vedleggsListe: submission.attachments?.map((attachment) => {
       const component = allAttachments.find((c) => c.navId === attachment.navId);
       return {
-        vedleggsnr: attachment.type === 'id' ? 'K2' : (component?.properties?.vedleggskode ?? 'Ukjent'),
+        vedleggsnr: attachment.type === 'personal-id' ? 'K2' : (component?.properties?.vedleggskode ?? 'Ukjent'),
         label: translate(component?.label ?? attachment.title ?? 'Ukjent label'),
         tittel: translate(attachment.title ?? component?.properties?.vedleggstittel ?? 'Ukjent tittel'),
-        opplastingsStatus: attachment.type === 'id' ? 'LastetOpp' : mapToStatus(attachment.value),
+        opplastingsStatus: attachment.type === 'personal-id' ? 'LastetOpp' : mapToStatus(attachment.value),
         mimetype: 'application/pdf',
         pakrevd: attachment.type !== 'other',
         filIdListe: attachment.files?.map((f) => f.fileId),

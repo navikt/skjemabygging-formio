@@ -46,7 +46,7 @@ interface SubmissionAttachmentValue {
 interface SubmissionAttachment {
   attachmentId: string;
   navId: string;
-  type: AttachmentType | 'id';
+  type: AttachmentType | 'personal-id';
   value?: keyof AttachmentSettingValues;
   title?: string;
   additionalDocumentation?: string;

@@ -22,7 +22,7 @@ interface Props {
   label: string;
   attachmentValues?: AttachmentSettingValues | ComponentValue[];
   componentId: string;
-  type?: Exclude<AttachmentType, 'other'> | 'id';
+  type?: Exclude<AttachmentType, 'other'> | 'personal-id';
   description?: string;
   className?: string;
   refs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | null>>;
@@ -44,13 +44,13 @@ const AttachmentUpload = ({
   const attachment = submissionAttachments.find((attachment) => attachment.attachmentId.startsWith(componentId));
 
   const uploadedAttachmentFiles = attachment?.files ?? [];
-  const idUploaded = type === 'id' && uploadedAttachmentFiles.length > 0;
+  const idUploaded = type === 'personal-id' && uploadedAttachmentFiles.length > 0;
   const options = attachmentUtils.mapKeysToOptions(attachmentValues, translate);
   const uploadSelected = !!options.find((option) => option.value === attachment?.value)?.upload;
   const attachmentError = errors[componentId]?.find((error) => error.type === 'VALUE');
 
   const handleValueChange = (value: Partial<SubmissionAttachmentValue>, attachmentId: string = componentId) => {
-    if (type === 'id') {
+    if (type === 'personal-id') {
       const title = options.find((option) => option.value === value.key)?.label;
       changeAttachmentValue(
         { attachmentId, navId: componentId, type },
@@ -114,10 +114,10 @@ const AttachmentUpload = ({
               </Button>
             )}
           </div>
-          {type === 'id' && <Label>{translate(TEXTS.statiske.uploadId.selectFileLabel)}</Label>}
+          {type === 'personal-id' && <Label>{translate(TEXTS.statiske.uploadId.selectFileLabel)}</Label>}
           <FileUploader
             initialAttachment={{ attachmentId: componentId, navId: componentId, type }}
-            multiple={type !== 'id'}
+            multiple={type !== 'personal-id'}
           />
         </VStack>
       )}

@@ -23,7 +23,7 @@ const UploadPersonalIdPage = () => {
         label={translate(TEXTS.statiske.uploadId.label)}
         attachmentValues={attachmentOptions}
         componentId={'personal-id'}
-        type="id"
+        type="personal-id"
       />
       <UploadPersonalIdButtonRow />
     </AttachmentUploadProvider>
