@@ -98,13 +98,9 @@ Wizard.prototype.prevPage = () => {
   return Promise.reject(new Error('prevPage should not be called directly'));
 };
 
-Wizard.prototype.validateOnNextPage = function (currentPageOnly, validationResultCallback) {
+Wizard.prototype.validateOnNextPage = function (validationResultCallback) {
   this.currentPage.nextPageClicked = true;
-  if (!currentPageOnly) {
-    this.root.submitted = true;
-    this.root.submitting = true;
-  }
-  const valid = this.checkValidity(this.localData, true, this.localData, currentPageOnly);
+  const valid = this.checkValidity(this.localData, true, this.localData, true);
   if (validationResultCallback) {
     validationResultCallback(valid);
   }

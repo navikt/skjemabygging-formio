@@ -188,7 +188,7 @@ export interface Webform {
   onAny?: any;
   destroy: (deleteFromGlobal: boolean) => void;
   focusOnComponent: (args: any) => void;
-  validateOnNextPage: (currentPageOnly: boolean, resultCallback: (valid: boolean) => void) => void;
+  validateOnNextPage: (resultCallback: (valid: boolean) => void) => void;
   redrawNavigation: () => void;
   checkData: (data: SubmissionData, flags: any[], row: any) => void;
   currentPanel: Component;
