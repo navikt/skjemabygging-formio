@@ -9,7 +9,7 @@ import {
   parseLanguage,
 } from './forstesideUtils';
 
-type ForstesideType = 'SKJEMA' | 'ETTERSENDELSE';
+export type ForstesideType = 'SKJEMA' | 'ETTERSENDELSE' | 'LOESPOST';
 
 interface Bruker {
   brukerId: string;

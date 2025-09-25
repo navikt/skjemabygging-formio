@@ -51,11 +51,8 @@ export const FillInFormPage = () => {
     [fyllutEvents],
   );
 
-  const validateOnNextPage = useCallback<
-    (currentPageOnly: boolean, validationResultCallback: (valid: boolean) => void) => void
-  >(
-    (currentPageOnly, validationResultCallback) =>
-      fyllutEvents.emit('validateOnNextPage', { currentPageOnly, validationResultCallback }),
+  const validateOnNextPage = useCallback<(validationResultCallback: (valid: boolean) => void) => void>(
+    (validationResultCallback) => fyllutEvents.emit('validateOnNextPage', { validationResultCallback }),
     [fyllutEvents],
   );
 
@@ -135,8 +132,7 @@ export const FillInFormPage = () => {
   );
 
   const isValid = useCallback(
-    (currentPageOnly: boolean): Promise<boolean> =>
-      new Promise((resolve) => validateOnNextPage(currentPageOnly, resolve)),
+    (): Promise<boolean> => new Promise((resolve) => validateOnNextPage(resolve)),
     [validateOnNextPage],
   );
 

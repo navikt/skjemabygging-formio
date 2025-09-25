@@ -5,10 +5,10 @@ class AppMetrics {
   private readonly _register: Registry;
   private readonly _familiePdfRequestsCounter: Counter;
   private readonly _familiePdfFailuresCounter: Counter;
+  private readonly _paperSubmissionsCounter: Counter;
   private readonly _outgoingRequestDuration: Histogram;
   private readonly _expressJsonBodyParserDuration: Histogram;
   private readonly _idportenVerifyTokenDuration: Histogram;
-  private readonly _nologinCaptchaCreationsCounter: Counter;
   private readonly _nologinCaptchaRequestsCounter: Counter;
   private readonly _nologinCaptchaFailuresCounter: Counter;
 
@@ -31,12 +31,17 @@ class AppMetrics {
       registers: [this._register],
     });
 
-    this._nologinCaptchaCreationsCounter = new Counter({
-      name: 'fyllut_nologin_captcha_creations_total',
-      help: 'Number of nologin captcha creations',
-      labelNames: [],
+    this._paperSubmissionsCounter = new Counter({
+      name: 'fyllut_paper_submissions_total',
+      help: 'Number of generated pdfs for paper submission',
+      labelNames: ['source'],
       registers: [this._register],
     });
+    // initialize all label values to 0
+    this._paperSubmissionsCounter.inc({ source: 'fyllUt' }, 0);
+    this._paperSubmissionsCounter.inc({ source: 'ettersending' }, 0);
+    this._paperSubmissionsCounter.inc({ source: 'lospost' }, 0);
+    this._paperSubmissionsCounter.inc({ source: '-' }, 0);
 
     this._nologinCaptchaRequestsCounter = new Counter({
       name: 'fyllut_nologin_captcha_requests_total',
@@ -95,8 +100,8 @@ class AppMetrics {
     return this._familiePdfFailuresCounter;
   }
 
-  public get nologinCaptchaCreationsCounter() {
-    return this._nologinCaptchaCreationsCounter;
+  public get paperSubmissionsCounter() {
+    return this._paperSubmissionsCounter;
   }
 
   public get nologinCaptchaRequestsCounter() {

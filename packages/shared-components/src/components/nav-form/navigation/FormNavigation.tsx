@@ -10,7 +10,7 @@ import LinkButton from '../../link-button/LinkButton';
 
 export interface Props {
   formUrl: string;
-  isValid: (currentPageOnly: boolean) => Promise<boolean>;
+  isValid: () => Promise<boolean>;
   submission?: Submission;
   onCancel: () => void;
   navigateTo: (to: To) => void;
@@ -48,8 +48,7 @@ const FormNavigation = ({ formUrl, paths, isValid, submission, onCancel, navigat
       if (!nextLocation) {
         return false;
       }
-      const isLastPanel = !paths.next;
-      const valid = await isValid(!isLastPanel);
+      const valid = await isValid();
       if (!valid) {
         return false;
       }
@@ -59,7 +58,7 @@ const FormNavigation = ({ formUrl, paths, isValid, submission, onCancel, navigat
       navigateTo(nextLocation);
       return true;
     },
-    [isMellomlagringActive, isValid, navigateTo, nextLocation, paths.next, submission, updateMellomlagring],
+    [isMellomlagringActive, isValid, navigateTo, nextLocation, submission, updateMellomlagring],
   );
 
   const prevClickHandler = useCallback(

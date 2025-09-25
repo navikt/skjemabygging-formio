@@ -169,9 +169,9 @@ const NavForm = ({
     if (webform) {
       appConfig.logger?.trace('Setup fyllut events');
       fyllutEvents?.on('focusOnComponent', (args) => webform.focusOnComponent(args));
-      fyllutEvents?.on('validateOnNextPage', ({ currentPageOnly, validationResultCallback }) => {
-        appConfig.logger?.trace(`Fyllut event 'validateOnNextPage'`, { currentPageOnly });
-        webform.validateOnNextPage(currentPageOnly, validationResultCallback);
+      fyllutEvents?.on('validateOnNextPage', ({ validationResultCallback }) => {
+        appConfig.logger?.trace(`Fyllut event 'validateOnNextPage'`);
+        webform.validateOnNextPage(validationResultCallback);
       });
       return () => {
         appConfig.logger?.debug('Remove fyllut events');
