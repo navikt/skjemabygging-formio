@@ -13,7 +13,7 @@ export type CheckboxGroupSubmissionData = {
   [key: string]: boolean;
 };
 
-export type DineOpplysninger = {
+export type DineOpplysningerData = {
   fornavn?: string;
   etternavn?: string;
   identitet?: {
@@ -24,7 +24,7 @@ export type DineOpplysninger = {
 };
 
 export type SubmissionData = Record<string, string | number | boolean | any[] | object> & {
-  dineOpplysninger?: DineOpplysninger;
+  dineOpplysninger?: DineOpplysningerData;
 };
 
 export type SubmissionMetadata = {
