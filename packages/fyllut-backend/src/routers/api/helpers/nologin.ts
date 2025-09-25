@@ -12,7 +12,6 @@ import { objectToByteArray } from './sendInn';
 
 const assembleNologinSoknadBody = (
   innsendingsId: string,
-  fnr: string,
   form: NavFormType,
   submission: Submission,
   language: string,
@@ -22,7 +21,12 @@ const assembleNologinSoknadBody = (
   const allAttachments: Component[] = navFormUtils
     .flattenComponents(form.components)
     .filter((comp: Component) => comp.type === 'attachment');
-
+  const fnr = extractFnr(submission);
+  if (!fnr) {
+    throw new Error(
+      `Unable to extract FNR from nologin submission with innsendingId ${innsendingsId} (formPath=${form.path})`,
+    );
+  }
   return {
     innsendingsId,
     brukerDto: {
@@ -78,6 +82,14 @@ const assembleNologinSoknadBody = (
       } as DokumentV2;
     }),
   };
+};
+
+const extractFnr = (submission: Submission): string | undefined => {
+  const { data } = submission;
+  if (data.dineOpplysninger?.identitet?.identitetsnummer) {
+    return data.dineOpplysninger.identitet.identitetsnummer as string;
+  }
+  return data.fodselsnummerDNummerSoker as string;
 };
 
 function mapToStatus(value?: keyof AttachmentSettingValues): OpplastingsStatus {
