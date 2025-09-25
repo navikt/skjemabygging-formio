@@ -110,17 +110,8 @@ class NoLoginFileService {
       lang,
     );
 
-    const fnr = submission.data.fodselsnummerDNummerSoker as string;
     const pdfByteArray = Array.from(applicationPdf);
-    const nologinApplication = assembleNologinSoknadBody(
-      innsendingId,
-      fnr,
-      form,
-      submission,
-      lang,
-      pdfByteArray,
-      translate,
-    );
+    const nologinApplication = assembleNologinSoknadBody(innsendingId, form, submission, lang, pdfByteArray, translate);
 
     const { host, paths } = this._config.sendInnConfig;
     const logMeta = {
