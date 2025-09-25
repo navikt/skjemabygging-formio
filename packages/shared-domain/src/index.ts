@@ -55,6 +55,7 @@ import { Form } from './forms-api-form';
 import forstesideUtils, {
   ForstesideRecipientAddress,
   ForstesideRequestBody,
+  ForstesideType,
   KjentBruker,
   UkjentBruker,
 } from './forsteside';
@@ -235,6 +236,7 @@ export type {
   FormsResponseForm,
   ForstesideRecipientAddress,
   ForstesideRequestBody,
+  ForstesideType,
   FrontendLoggerConfigType,
   FyllutState,
   GlobalTranslationsResourceContent,

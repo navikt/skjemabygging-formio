@@ -20,6 +20,7 @@ const UploadPersonalIdButtonRow = () => {
 
   const startUrl = `${baseUrl}${formUrl}`;
   const exitUrl = urlUtils.getExitUrl(window.location.href);
+  const error = errors['allFiles']?.find((err) => err.type === 'FILE');
 
   const navigateToFormPage = (event: MouseEvent<HTMLElement>) => {
     event.preventDefault();
@@ -27,7 +28,7 @@ const UploadPersonalIdButtonRow = () => {
     if (personalIdAttachment?.files?.length) {
       navigate(`..?${searchParams.toString()}`);
     } else {
-      addError('personal-id', translate(TEXTS.statiske.uploadId.missingUploadError), 'INPUT');
+      addError('personal-id', translate(TEXTS.statiske.uploadId.missingUploadError), 'VALUE');
     }
   };
 
@@ -42,9 +43,9 @@ const UploadPersonalIdButtonRow = () => {
 
   return (
     <nav>
-      {errors['allFiles']?.type === 'FILE' && (
+      {error && (
         <Alert className="mb" variant="error">
-          {errors['allFiles']?.message}
+          {error.message}
         </Alert>
       )}
       <div className="button-row button-row--center">

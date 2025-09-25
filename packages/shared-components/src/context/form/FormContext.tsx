@@ -34,7 +34,7 @@ const FormContext = createContext<FormContextType>({} as FormContextType);
 
 export const FormProvider = ({ children, form }: FormProviderProps) => {
   const [submission, setSubmission] = useState<Submission>();
-  const [activeComponents, setActiveComponents] = useState<Component[]>(form.components);
+  const [activeComponents, setActiveComponents] = useState<Component[]>([]);
   const [formProgressOpen, setFormProgressOpen] = useState<boolean>(false);
   const [formProgressVisible, setFormProgressVisible] = useState<boolean>(false);
   const [prefillData, setPrefillData] = useState<PrefillData>({});

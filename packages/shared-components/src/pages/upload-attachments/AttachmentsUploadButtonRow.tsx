@@ -4,31 +4,35 @@ import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { MouseEvent } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAttachmentUpload } from '../../components/attachment/AttachmentUploadContext';
+import { attachmentValidator } from '../../components/attachment/attachmentValidator';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { Attachment } from '../../util/attachment/attachmentsUtil';
-import { validateAttachmentValues } from '../../util/form/attachment-validation/attachmentValidation';
+import { validateAttachment } from '../../util/form/attachment-validation/attachmentValidation';
 import urlUtils from '../../util/url/url';
 
-const AttachmentsUploadButtonRow = ({ attachments }: { attachments: Attachment[] }) => {
+const AttachmentsUploadButtonRow = ({ attachments, onError }: { attachments: Attachment[]; onError: () => void }) => {
   const navigate = useNavigate();
   const { translate } = useLanguages();
   const [searchParams] = useSearchParams();
   const { formUrl } = useForm();
-  const { addError, submissionAttachments, handleDeleteAllFiles } = useAttachmentUpload();
-  const attachmentIds = attachments.map((attachment) => attachment.navId!);
+  const { addError, removeAllErrors, submissionAttachments, handleDeleteAllFiles } = useAttachmentUpload();
 
   const summaryPageUrl = `${formUrl}/oppsummering?${searchParams.toString()}`;
   const exitUrl = urlUtils.getExitUrl(window.location.href);
+  const validator = attachmentValidator(translate);
 
   const nextPage = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    const errors = validateAttachmentValues(attachmentIds, submissionAttachments);
+    removeAllErrors();
+    const errors = validateAttachment(attachments, submissionAttachments, validator);
     Object.entries(errors).forEach(([attachmentId, errorMessage]) => {
-      addError(attachmentId, errorMessage, 'INPUT');
+      addError(attachmentId, errorMessage, 'VALUE');
     });
     if (Object.values(errors).length === 0) {
       navigate(summaryPageUrl);
+    } else {
+      onError();
     }
   };
 

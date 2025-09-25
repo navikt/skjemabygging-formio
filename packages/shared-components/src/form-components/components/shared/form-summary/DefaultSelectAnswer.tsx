@@ -10,7 +10,7 @@ interface Props {
   submissionPath: string;
 }
 
-const DefaultObjectAnswer = ({ component, submissionPath }: Props) => {
+const DefaultSelectAnswer = ({ component, submissionPath }: Props) => {
   const { translate } = useLanguages();
   const { submission } = useForm();
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
@@ -27,4 +27,4 @@ const DefaultObjectAnswer = ({ component, submissionPath }: Props) => {
   );
 };
 
-export default DefaultObjectAnswer;
+export default DefaultSelectAnswer;
