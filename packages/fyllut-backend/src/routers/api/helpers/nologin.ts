@@ -65,15 +65,15 @@ const assembleNologinSoknadBody = (
     vedleggsListe: submission.attachments?.map((attachment) => {
       const component = allAttachments.find((c) => c.navId === attachment.navId);
       return {
-        vedleggsnr: attachment.type === 'id' ? 'K2' : (component?.properties?.vedleggskode ?? 'Ukjent'),
-        label: translate(component?.label ?? attachment.description ?? 'Ukjent label'),
-        tittel: translate(attachment.description ?? component?.properties?.vedleggstittel ?? 'Ukjent tittel'),
-        opplastingsStatus: attachment.type === 'id' ? 'LastetOpp' : mapToStatus(attachment.value),
+        vedleggsnr: attachment.type === 'personal-id' ? 'K2' : (component?.properties?.vedleggskode ?? 'Ukjent'),
+        label: translate(component?.label ?? attachment.title ?? 'Ukjent label'),
+        tittel: translate(attachment.title ?? component?.properties?.vedleggstittel ?? 'Ukjent tittel'),
+        opplastingsStatus: attachment.type === 'personal-id' ? 'LastetOpp' : mapToStatus(attachment.value),
         mimetype: 'application/pdf',
         pakrevd: attachment.type !== 'other',
         filIdListe: attachment.files?.map((f) => f.fileId),
         fyllutId: attachment.navId,
-        beskrivelse: attachment.description ? translate(attachment.description) : null,
+        beskrivelse: attachment.additionalDocumentation ? translate(attachment.additionalDocumentation) : null,
         propertyNavn: null,
       } as DokumentV2;
     }),
