@@ -160,7 +160,7 @@ describe('Error summary', () => {
         .within(() => {
           cy.findByLabelText('Jeg legger det ved dette skjemaet').check();
         });
-      cy.findByRole('group', { name: 'Annen dokumentasjon' })
+      cy.findByLabelText('Annen dokumentasjon')
         .should('exist')
         .within(() => {
           cy.findByLabelText('Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved').check();
