@@ -32,7 +32,7 @@
     "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
     "@types/dompurify": "^3.2.0",
     "classnames": "2.5.1",
-    "dompurify": "^3.2.6",
+    "dompurify": "^3.2.7",
     "eventemitter2": "^6.4.9",
     "file-saver": "2.0.5",
     "formiojs": "4.20.0",
@@ -43,7 +43,7 @@
     "react-dom": "^18.3.1",
     "react-jss": "^10.10.0",
     "react-router-dom": "^6.26.2",
-    "react-select": "^5.10.1"
+    "react-select": "^5.10.2"
   },
   "devDependencies": {
     "@testing-library/react": "^16.3.0",
@@ -51,7 +51,7 @@
     "i18next": "^24.2.3",
     "lodash.merge": "^4.6.2",
     "lodash.template": "^4.5.0",
-    "nock": "^14.0.5",
+    "nock": "^14.0.10",
     "power-assert": "^1.6.1"
   }
 }
