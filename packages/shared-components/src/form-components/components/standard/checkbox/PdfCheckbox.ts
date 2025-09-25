@@ -1,12 +1,11 @@
-import { FormSummary } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useForm } from '../../../../context/form/FormContext';
 import { useLanguages } from '../../../../context/languages';
-import { FormComponentProps } from '../../../types';
+import { PdfComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
-import DefaultLabel from '../../shared/form-summary/DefaultLabel';
 
-const SummaryCheckbox = ({ component, submissionPath }: FormComponentProps) => {
+const PdfCheckbox = ({ component, submissionPath }: PdfComponentProps) => {
+  const { label } = component;
   const { translate } = useLanguages();
   const { submission } = useForm();
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
@@ -16,12 +15,10 @@ const SummaryCheckbox = ({ component, submissionPath }: FormComponentProps) => {
     return null;
   }
 
-  return (
-    <FormSummary.Answer>
-      <DefaultLabel component={component} />
-      <FormSummary.Value>{value ? translate(TEXTS.common.yes) : translate(TEXTS.common.no)}</FormSummary.Value>
-    </FormSummary.Answer>
-  );
+  return {
+    label: translate(label),
+    verdi: value ? translate(TEXTS.common.yes) : translate(TEXTS.common.no),
+  };
 };
 
-export default SummaryCheckbox;
+export default PdfCheckbox;

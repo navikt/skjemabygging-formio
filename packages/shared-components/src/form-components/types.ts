@@ -1,14 +1,20 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import { PanelValidation } from '../util/form/panel-validation/panelValidation';
 
-interface PdfData {
-  label: string;
-  verdi?: string | null;
-  verdiliste?: PdfData[] | null;
+interface PdfFormData {
+  label?: string;
+  verdiliste?: (PdfData | null)[];
   pdfConfig?: PdfConfig | null;
   skjemanummer?: string | null;
   bunntekst?: PdfFooter | null;
   vannmerke?: string | null;
+}
+
+interface PdfData {
+  label?: string;
+  verdi?: string | null;
+  verdiliste?: (PdfData | null)[];
+  visningsVariant?: string | null;
 }
 
 interface PdfConfig {
@@ -42,7 +48,16 @@ interface PdfComponentProps {
 }
 
 interface PdfComponentRegistry {
-  [key: string]: (props: PdfComponentProps) => PdfData;
+  [key: string]: (props: PdfComponentProps) => PdfData | null;
 }
 
-export type { FormComponentProps, FormComponentRegistry, PdfComponentProps, PdfComponentRegistry };
+export type {
+  FormComponentProps,
+  FormComponentRegistry,
+  PdfComponentProps,
+  PdfComponentRegistry,
+  PdfConfig,
+  PdfData,
+  PdfFooter,
+  PdfFormData,
+};

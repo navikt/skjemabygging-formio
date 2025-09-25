@@ -5,7 +5,7 @@ import { FormComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 import DefaultLabel from '../../shared/form-summary/DefaultLabel';
 
-const SummaryPhoneNumer = ({ component, submissionPath }: FormComponentProps) => {
+const SummaryPhoneNumber = ({ component, submissionPath }: FormComponentProps) => {
   const { showAreaCode } = component;
   const { submission } = useForm();
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
@@ -24,4 +24,4 @@ const SummaryPhoneNumer = ({ component, submissionPath }: FormComponentProps) =>
   );
 };
 
-export default SummaryPhoneNumer;
+export default SummaryPhoneNumber;
