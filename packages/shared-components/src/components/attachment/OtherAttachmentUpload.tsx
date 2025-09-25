@@ -9,7 +9,7 @@ import {
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import clsx from 'clsx';
-import { useState } from 'react';
+import { MutableRefObject, useState } from 'react';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import FileUploader from '../file-uploader/FileUploader';
@@ -23,9 +23,10 @@ interface Props {
   componentId: string;
   description?: string;
   className?: string;
+  refs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | null>>;
 }
 
-const OtherAttachmentUpload = ({ label, attachmentValues, componentId, description, className }: Props) => {
+const OtherAttachmentUpload = ({ label, attachmentValues, componentId, description, className, refs }: Props) => {
   const styles = useAttachmentStyles();
   const { translate } = useLanguages();
   const { changeAttachmentValue, handleDeleteAttachment, submissionAttachments, errors } = useAttachmentUpload();
@@ -42,10 +43,10 @@ const OtherAttachmentUpload = ({ label, attachmentValues, componentId, descripti
   const uploadedAttachmentFiles = otherAttachment?.files ?? [];
   const options = attachmentUtils.mapKeysToOptions(attachmentValues, translate);
   const uploadSelected = !!options.find((option) => option.value === otherAttachment?.value)?.upload;
-  const error = errors[componentId];
+  const attachmentError = errors[componentId]?.find((error) => error.type === 'VALUE');
 
   const handleValueChange = (value: Partial<SubmissionAttachmentValue>, attachmentId: string = componentId) => {
-    changeAttachmentValue({ attachmentId, ...defaultAttachmentValues }, value.key);
+    changeAttachmentValue({ attachmentId, ...defaultAttachmentValues }, { value: value.key });
   };
 
   const handleDeleteAllAttachments = async (attachmentId: string) => {
@@ -60,7 +61,7 @@ const OtherAttachmentUpload = ({ label, attachmentValues, componentId, descripti
   };
 
   return (
-    <VStack gap="8" className={clsx('mb', className)}>
+    <VStack gap="6" className={clsx('mb', className)}>
       {uploadedAttachmentFiles.length > 0 ? (
         <div>
           <Label className={'mb-0'}>{label}</Label>
@@ -70,47 +71,56 @@ const OtherAttachmentUpload = ({ label, attachmentValues, componentId, descripti
         <Attachment
           title={label}
           description={description}
-          error={error?.type === 'INPUT' && error.message}
+          error={attachmentError?.message}
           value={otherAttachment?.value ? { key: otherAttachment.value } : undefined}
           attachmentValues={attachmentValues}
           onChange={handleValueChange}
           translate={translate}
           deadline={form.properties?.ettersendelsesfrist}
+          ref={(ref) => {
+            if (refs?.current) {
+              refs.current[`${componentId}-INPUT`] = ref;
+            }
+          }}
         />
       )}
       {uploadSelected && (
         <VStack gap="4">
-          <div className={styles.uploadedFilesHeader}>
-            {uploadedAttachmentFiles.length > 0 && (
+          {uploadedAttachmentFiles.length > 0 && (
+            <div className={styles.uploadedFilesHeader}>
               <Label>{translate(TEXTS.statiske.attachment.filesUploadedNotSent)}</Label>
-            )}
-            {uploadedAttachmentFiles.length > 1 && (
-              <Button
-                variant="tertiary"
-                onClick={() => handleDeleteAllAttachments(componentId)}
-                className={styles.deleteAllButton}
-              >
-                {translate(TEXTS.statiske.attachment.deleteAllFiles)}
-              </Button>
-            )}
-          </div>
 
-          {attachments.map((attachment) => (
-            <FileUploader
-              key={attachment.attachmentId}
-              initialAttachment={attachment}
-              requireDescription
-              attachmentValue={otherAttachment?.value}
-            />
-          ))}
-          <Button
-            variant="tertiary"
-            onClick={handleUploadAnotherAttachment}
-            className={styles.addAnotherAttachmentButton}
-            icon={<PlusIcon aria-hidden fontSize="1.5rem" />}
-          >
-            {translate(TEXTS.statiske.attachment.addNewAttachment)}
-          </Button>
+              {uploadedAttachmentFiles.length > 1 && (
+                <Button
+                  variant="tertiary"
+                  onClick={() => handleDeleteAllAttachments(componentId)}
+                  className={styles.deleteAllButton}
+                >
+                  {translate(TEXTS.statiske.attachment.deleteAllFiles)}
+                </Button>
+              )}
+            </div>
+          )}
+
+          <VStack gap="8">
+            {attachments.map((attachment) => (
+              <FileUploader
+                key={attachment.attachmentId}
+                initialAttachment={attachment}
+                requireAttachmentTitle
+                attachmentValue={otherAttachment?.value}
+                refs={refs}
+              />
+            ))}
+            <Button
+              variant="tertiary"
+              onClick={handleUploadAnotherAttachment}
+              className={styles.addAnotherAttachmentButton}
+              icon={<PlusIcon aria-hidden fontSize="1.5rem" />}
+            >
+              {translate(TEXTS.statiske.attachment.addNewAttachment)}
+            </Button>
+          </VStack>
         </VStack>
       )}
     </VStack>
