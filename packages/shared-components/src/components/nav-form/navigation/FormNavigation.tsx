@@ -39,7 +39,7 @@ const FormNavigation = ({ formUrl, paths, isValid, submission, onCancel, navigat
   }, [search, paths.next, formUrl, finalStep]);
 
   useEffect(() => {
-    setPrevLocation(paths.prev ? { pathname: `${formUrl}/${paths.prev}`, search } : undefined);
+    setPrevLocation({ pathname: `${formUrl}${paths.prev ? `/${paths.prev}` : ''}`, search });
   }, [search, paths.prev, formUrl]);
 
   const nextClickHandler = useCallback(

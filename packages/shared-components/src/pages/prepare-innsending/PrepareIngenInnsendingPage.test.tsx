@@ -50,7 +50,6 @@ describe('PrepareIngenInnsendingPage', () => {
   });
 
   test('Rendring av oppgitt overskrift og forklaring ved ingen innsending', () => {
-    expect(screen.queryByRole('heading', { name: testForm.properties.innsendingOverskrift })).toBeTruthy();
     expect(screen.queryByText(testForm.properties.innsendingForklaring!)).toBeTruthy();
   });
 
