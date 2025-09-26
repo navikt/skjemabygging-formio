@@ -162,7 +162,7 @@ describe('PublishSettingsModal', () => {
     expect(englishCheckbox).toBeTruthy();
     expect(screen.queryByRole('checkbox', { name: 'Norsk nynorsk (NN)' })).not.toBeInTheDocument();
     await userEvent.click(screen.getByRole('button', { name: 'Publiser' }));
-    expect(mockedOnPublish).toBeCalled();
+    expect(mockedOnPublish).toHaveBeenCalled();
     expect(mockedOnPublish.mock.calls[0][0]).toEqual(['en', 'nb']);
   });
 
@@ -183,7 +183,7 @@ describe('PublishSettingsModal', () => {
     expect(screen.queryByRole('checkbox', { name: 'Engelsk (EN)' })).toBeInTheDocument();
     expect(screen.queryByRole('checkbox', { name: 'Engelsk (EN)' })).toBeChecked();
     await userEvent.click(screen.getByRole('button', { name: 'Publiser' }));
-    expect(mockedOnPublish).toBeCalled();
+    expect(mockedOnPublish).toHaveBeenCalled();
     expect(mockedOnPublish.mock.calls[0][0]).toEqual(['nn', 'en', 'nb']);
   });
 
@@ -207,7 +207,7 @@ describe('PublishSettingsModal', () => {
     expect(screen.queryByRole('checkbox', { name: 'Norsk nynorsk (NN)' })).not.toBeInTheDocument();
     await userEvent.click(await screen.findByRole('checkbox', { name: 'Engelsk (EN)' }));
     await userEvent.click(screen.getByRole('button', { name: 'Publiser' }));
-    expect(mockedOnPublish).toBeCalled();
+    expect(mockedOnPublish).toHaveBeenCalled();
     expect(mockedOnPublish.mock.calls[0][0]).toEqual(['nb']);
   });
 
