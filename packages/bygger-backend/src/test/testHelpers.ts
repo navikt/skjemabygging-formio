@@ -28,7 +28,9 @@ export function mockRequest({ headers = {}, params = {}, body }: MockRequestData
   } as unknown as Request;
 }
 
-export const createMockJwt = (payload: object, key: jose.JWK.Key, expiresIn = '5m') => {
+type ExpiresIn = `${number}${'ms' | 's' | 'm' | 'h'}` | number;
+
+export const createMockJwt = (payload: object, key: jose.JWK.Key, expiresIn: ExpiresIn = '5m') => {
   const obj = {
     token_type: 'Bearer',
     ...payload,
@@ -36,6 +38,6 @@ export const createMockJwt = (payload: object, key: jose.JWK.Key, expiresIn = '5
   return createAccessToken(obj, expiresIn, key);
 };
 
-const createAccessToken = async (payload: object, expiresIn: string, key: jose.JWK.Key) => {
+const createAccessToken = async (payload: object, expiresIn: ExpiresIn, key: jose.JWK.Key) => {
   return jwt.sign(payload, key.toPEM(true), { expiresIn, algorithm: 'RS256' });
 };
