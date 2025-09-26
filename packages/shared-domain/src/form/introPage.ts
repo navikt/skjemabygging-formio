@@ -1,8 +1,6 @@
-import { PortableTextBlock } from '@portabletext/editor';
-
 interface IntroPage {
   enabled: boolean;
-  introduction: string | PortableTextBlock[];
+  introduction: string;
   importantInformation?: {
     title?: string;
     description?: string;

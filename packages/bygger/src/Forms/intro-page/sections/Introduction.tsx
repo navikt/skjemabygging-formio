@@ -1,7 +1,6 @@
 import { Box, Heading } from '@navikt/ds-react';
 import { Intro } from '@navikt/skjemadigitalisering-shared-components';
 import { Form, IntroPage } from '@navikt/skjemadigitalisering-shared-domain';
-import { PortableTextBlock } from '@portabletext/editor';
 import { forwardRef } from 'react';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
 import WysiwygEditor from '../../../components/wysiwyg/WysiwygEditor';
@@ -18,7 +17,7 @@ type Props = {
 export const Introduction = forwardRef<HTMLDivElement, Props>(({ handleChange, form, errors }, ref) => {
   const { setKeyBasedText, getKeyBasedText } = useKeyBasedText();
 
-  const onChange = (value: string | PortableTextBlock[]) => {
+  const onChange = (value: string) => {
     const key = setKeyBasedText(value.toString());
     if (form.introPage?.introduction === key) {
       return; // No change needed
