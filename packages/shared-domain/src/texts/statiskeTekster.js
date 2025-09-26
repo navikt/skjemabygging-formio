@@ -298,6 +298,7 @@ export const statiske = {
       title: 'Søknaden du leter etter finnes ikke',
       message: 'Dette kan skyldes at søknaden allerede er sendt inn eller avsluttet.',
     },
+    alreadySubmitted: 'Søknaden er allerede sendt inn',
   },
   phoneNumber: {
     areaCodeLabel: 'Landskode',
