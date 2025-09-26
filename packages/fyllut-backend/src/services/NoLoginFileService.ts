@@ -28,7 +28,7 @@ class NoLoginFileService {
   ): Promise<UploadedFile> {
     const { sendInnConfig } = this._config;
 
-    const fileBlob = new Blob([file.buffer], { type: file.mimetype });
+    const fileBlob = new Blob([Uint8Array.from(file.buffer)], { type: file.mimetype });
 
     const form = new FormData();
     form.append('filinnhold', fileBlob, file.originalname);
