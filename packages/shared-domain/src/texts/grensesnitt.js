@@ -57,6 +57,7 @@ export const grensesnitt = {
   },
   introPage: {
     sendDigital: 'Logg inn og send digitalt',
+    sendDigitalLoggedIn: 'Send digitalt',
     sendDigitalDescription: 'Det er enklest og raskest å søke digitalt.',
     sendDigitalNoLogin: 'Send digitalt uten å logge inn',
     sendDigitalNoLoginDescription:
