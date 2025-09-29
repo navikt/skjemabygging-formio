@@ -50,7 +50,7 @@ interface PdfComponentProps {
 }
 
 interface PdfComponentRegistry {
-  [key: string]: (props: PdfComponentProps) => PdfData | PdfData[] | null;
+  [key: string]: (props: PdfComponentProps) => PdfListElement;
 }
 
 export type {

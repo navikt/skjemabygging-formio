@@ -35,6 +35,7 @@ import {
 } from './components/standard';
 import { PdfActivities, PdfDataFetcher, PdfDrivingList, PdfMaalgruppe } from './components/system';
 import renderPdfComponent from './render/RenderPdfComponent';
+import { PdfComponentProps, PdfFormData } from './types';
 
 interface Props {
   form: NavFormType;
@@ -110,17 +111,18 @@ const renderPdfForm = ({
 
   const languageCode: string = lang === 'nn-NO' || lang == 'nn' ? 'nn' : lang === 'en' ? 'en' : 'nb';
 
-  const pdfData = {
+  const pdfData: PdfFormData = {
     label: translate(form.title),
     verdiliste: [
       PdfIntroPage(),
       ...activeComponents
-        .map((component) =>
-          renderPdfComponent({
-            component,
-            submissionPath: '',
-            componentRegistry,
-          }),
+        .map(
+          (component) =>
+            renderPdfComponent({
+              component,
+              submissionPath: '',
+              componentRegistry,
+            } as PdfComponentProps), // TODO: Fix type
         )
         .filter(Boolean),
       PdfSignature({ properties: form.properties }),

@@ -11,15 +11,17 @@ const PdfContainer = ({ component, submissionPath, componentRegistry }: PdfCompo
     return null;
   }
 
-  return components?.map((component) => {
-    const componentSubmissionPath = formComponentUtils.getComponentSubmissionPath(component, submissionPath);
+  return components
+    ?.flatMap((component) => {
+      const componentSubmissionPath = formComponentUtils.getComponentSubmissionPath(component, submissionPath);
 
-    return renderPdfComponent({
-      component: component,
-      submissionPath: componentSubmissionPath,
-      componentRegistry,
-    });
-  });
+      return renderPdfComponent({
+        component: component,
+        submissionPath: componentSubmissionPath,
+        componentRegistry,
+      });
+    })
+    .filter(Boolean);
 };
 
 export default PdfContainer;
