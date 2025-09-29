@@ -1,5 +1,7 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
+const digitalLinkNames = [TEXTS.grensesnitt.introPage.sendDigital, TEXTS.grensesnitt.introPage.sendDigitalLoggedIn];
+
 describe('Submission Type', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
@@ -141,7 +143,10 @@ describe('Submission Type', () => {
 
         cy.findByRole('button', { name: TEXTS.grensesnitt.goBack }).click();
 
-        cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigital }).click();
+        cy.findAllByRole('link')
+          .filter((_, el) => digitalLinkNames.includes(el.textContent?.trim()))
+          .first()
+          .click();
         cy.url().should('include', 'sub=digital');
       });
 
@@ -163,7 +168,10 @@ describe('Submission Type', () => {
       });
 
       it('Select digital', () => {
-        cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigital }).click();
+        cy.findAllByRole('link')
+          .filter((_, el) => digitalLinkNames.includes(el.textContent?.trim()))
+          .first()
+          .click();
         cy.clickStart();
 
         cy.url().should('include', 'sub=digital');
@@ -209,7 +217,10 @@ describe('Submission Type', () => {
       });
 
       it('Select digital', () => {
-        cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigital }).click();
+        cy.findAllByRole('link')
+          .filter((_, el) => digitalLinkNames.includes(el.textContent?.trim()))
+          .first()
+          .click();
         cy.clickStart();
 
         cy.url().should('include', 'sub=digital');
