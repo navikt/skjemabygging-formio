@@ -5,7 +5,7 @@ import { PdfComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 
 const PdfDataGrid = ({ component, submissionPath, componentRegistry }: PdfComponentProps) => {
-  const { title, components } = component;
+  const { label, components } = component;
   const { submission } = useForm();
   const { translate } = useLanguages();
   const dataGridValues = formComponentUtils.getSubmissionValue(submissionPath, submission);
@@ -19,7 +19,7 @@ const PdfDataGrid = ({ component, submissionPath, componentRegistry }: PdfCompon
   }
 
   return {
-    label: translate(title) ?? '',
+    label: translate(label) ?? '',
     verdiliste: dataGridValues?.map((_, index: number) => {
       return components?.map((component) => {
         const componentSubmissionPath = formComponentUtils.getComponentSubmissionPath(

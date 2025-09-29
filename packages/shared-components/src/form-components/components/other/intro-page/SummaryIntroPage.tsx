@@ -9,7 +9,7 @@ import { useLanguages } from '../../../../context/languages';
  * This component renders a summary for the intro page. This is not inside the form definition so it works differently then the other summary components
  * @constructor
  */
-const SummaryIntroPanel = () => {
+const SummaryIntroPage = () => {
   const { translate } = useLanguages();
   const { search } = useLocation();
   const { formUrl, submission, form } = useForm();
@@ -46,4 +46,4 @@ const SummaryIntroPanel = () => {
   );
 };
 
-export default SummaryIntroPanel;
+export default SummaryIntroPage;

@@ -20,7 +20,7 @@ import {
 } from './components/customized';
 import { SummaryDatePicker, SummaryMonthPicker, SummaryYear } from './components/date';
 import { SummaryContainer, SummaryDataGrid, SummaryFormGroup, SummaryPanel, SummaryRow } from './components/group';
-import { SummaryIntroPanel } from './components/other';
+import { SummaryIntroPage } from './components/other';
 import {
   SummaryAccordion,
   SummaryAlert,
@@ -99,7 +99,7 @@ const RenderSummaryForm = ({ panelValidationList }: Props) => {
 
   return (
     <>
-      <SummaryIntroPanel />
+      <SummaryIntroPage />
       {activeComponents.map((component) => (
         <RenderComponent
           key={component.key}

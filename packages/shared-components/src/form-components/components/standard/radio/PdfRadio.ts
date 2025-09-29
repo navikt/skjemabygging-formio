@@ -1,5 +1,5 @@
 import { PdfComponentProps } from '../../../types';
-import { DefaultListAnswer } from '../../shared/form-summary';
+import DefaultListAnswer from '../../shared/pdf/DefaultListAnswer';
 
 const PdfRadio = (props: PdfComponentProps) => {
   return DefaultListAnswer(props);

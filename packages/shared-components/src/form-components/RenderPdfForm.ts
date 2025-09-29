@@ -18,7 +18,8 @@ import {
   PdfSurname,
 } from './components/customized';
 import { PdfDatePicker, PdfMonthPicker, PdfYear } from './components/date';
-import { PdfContainer, PdfFormGroup, PdfPanel, PdfRow } from './components/group';
+import { PdfContainer, PdfDataGrid, PdfFormGroup, PdfPanel, PdfRow } from './components/group';
+import { PdfIntroPage, PdfSignature } from './components/other';
 import {
   PdfAccordion,
   PdfAlert,
@@ -34,7 +35,6 @@ import {
 } from './components/standard';
 import { PdfActivities, PdfDataFetcher, PdfDrivingList, PdfMaalgruppe } from './components/system';
 import renderPdfComponent from './render/RenderPdfComponent';
-import { PdfFormData } from './types';
 
 interface Props {
   form: NavFormType;
@@ -54,7 +54,7 @@ const renderPdfForm = ({
   watermarkText,
   gitVersion,
   identityNumber,
-}: Props): PdfFormData => {
+}: Props): string => {
   const componentRegistry = {
     /* Standard */
     accordion: PdfAccordion,
@@ -96,7 +96,7 @@ const renderPdfForm = ({
 
     /* Group */
     container: PdfContainer,
-    datagrid: PdfDatePicker,
+    datagrid: PdfDataGrid,
     navSkjemagruppe: PdfFormGroup,
     panel: PdfPanel,
     row: PdfRow,
@@ -110,19 +110,22 @@ const renderPdfForm = ({
 
   const languageCode: string = lang === 'nn-NO' || lang == 'nn' ? 'nn' : lang === 'en' ? 'en' : 'nb';
 
-  return {
+  const pdfData = {
     label: translate(form.title),
-    verdiliste: activeComponents
-      .map((component) =>
-        renderPdfComponent({
-          component,
-          submissionPath: '',
-          componentRegistry,
-        }),
-      )
-      .filter(Boolean),
-    vannmerke: watermarkText,
-    skjemanummer: form.properties.skjemanummer,
+    verdiliste: [
+      PdfIntroPage(),
+      ...activeComponents
+        .map((component) =>
+          renderPdfComponent({
+            component,
+            submissionPath: '',
+            componentRegistry,
+          }),
+        )
+        .filter(Boolean),
+      PdfSignature({ properties: form.properties }),
+    ].filter(Boolean),
+    skjemanummer: form.properties?.skjemanummer,
     pdfConfig: {
       harInnholdsfortegnelse: false,
       språk: languageCode,
@@ -136,7 +139,10 @@ const renderPdfForm = ({
         `: ${dateUtils.toCurrentDayMonthYearHourMinute(languageCode)}`,
       lowerMiddle: translate(TEXTS.statiske.footer.versionLabel) + `: ${gitVersion ?? ''}`,
     },
+    vannmerke: watermarkText,
   };
+
+  return JSON.stringify(pdfData).replaceAll('\\t', '  ');
 };
 
 export default renderPdfForm;

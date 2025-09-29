@@ -15,6 +15,7 @@ const DefaultHtmlAnswer = ({ component }: Props) => {
 
   return {
     verdi: translate(content),
+    visningsVariant: 'HTML',
   };
 };
 

@@ -7,7 +7,7 @@ import NavFormHelper from '../../components/nav-form/NavFormHelper';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
-import RenderFormSummary from '../../form-components/RenderFormSummary';
+import RenderSummaryForm from '../../form-components/RenderSummaryForm';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
 import { PanelValidation, validateWizardPanels } from '../../util/form/panel-validation/panelValidation';
 import SummaryPageNavigation from './navigation/SummaryPageNavigation';
@@ -99,7 +99,7 @@ export function SummaryPage() {
       ) : (
         <BodyShort className="mb-4">{translate(TEXTS.statiske.summaryPage.description)}</BodyShort>
       )}
-      <RenderFormSummary panelValidationList={panelValidationList} />
+      <RenderSummaryForm panelValidationList={panelValidationList} />
       {hasDeclaration && (
         <ConfirmationPanel
           className="mb"

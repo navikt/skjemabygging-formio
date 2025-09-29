@@ -1,3 +1,5 @@
-import SummaryIntroPanel from '../other/intro-panel/SummaryIntroPanel';
+import PdfIntroPage from './intro-page/PdfIntroPage';
+import SummaryIntroPage from './intro-page/SummaryIntroPage';
+import PdfSignature from './signature/PdfSignature';
 
-export { SummaryIntroPanel };
+export { PdfIntroPage, PdfSignature, SummaryIntroPage };

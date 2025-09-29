@@ -22,6 +22,7 @@ const DefaultAnswer = ({ component, submissionPath }: PdfComponentProps) => {
   return {
     label: translate(label),
     verdi: translate(valueObject.label),
+    visningsVariant: 'PUNKTLISTE',
   };
 };
 

@@ -20,7 +20,7 @@ const SummarySelectBoxes = ({ component, submissionPath }: FormComponentProps) =
     .map((checkbox) => translate(checkbox.label));
 
   if (!valueObjects || valueObjects.length === 0) {
-    return valueObjects;
+    return null;
   }
 
   return (

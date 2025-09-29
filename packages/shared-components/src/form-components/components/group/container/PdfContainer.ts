@@ -1,9 +1,25 @@
+import { useForm } from '../../../../context/form/FormContext';
+import renderPdfComponent from '../../../render/RenderPdfComponent';
 import { PdfComponentProps } from '../../../types';
-import DefaultSection from '../../shared/pdf/DefaultSection';
+import formComponentUtils from '../../../utils/formComponent';
 
-const PdfContainer = (props: PdfComponentProps) => {
-  // TODO: Fix
-  return DefaultSection(props);
+const PdfContainer = ({ component, submissionPath, componentRegistry }: PdfComponentProps) => {
+  const { components } = component;
+  const { submission } = useForm();
+
+  if (!components || formComponentUtils.noChildValues(submissionPath, components, submission)) {
+    return null;
+  }
+
+  return components?.map((component) => {
+    const componentSubmissionPath = formComponentUtils.getComponentSubmissionPath(component, submissionPath);
+
+    return renderPdfComponent({
+      component: component,
+      submissionPath: componentSubmissionPath,
+      componentRegistry,
+    });
+  });
 };
 
 export default PdfContainer;
