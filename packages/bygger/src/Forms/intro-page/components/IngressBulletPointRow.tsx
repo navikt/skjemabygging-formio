@@ -5,6 +5,7 @@ import { addBulletPoint, handleBulletPointChange, removeBulletPoint, updateSecti
 import { IntroPageRefs } from '../validation/useIntroPageRefs';
 import { IntroPageError } from '../validation/validation';
 import { AddButton } from './AddButton';
+import { FormIntroPageWysiwygEditor } from './FormIntroPageWysiwygEditor';
 import { TextareaField } from './TextareaField';
 
 interface IngressBulletPointRowProps {
@@ -56,7 +57,7 @@ export function IngressBulletPointRow({
       )}
 
       {showField && (
-        <TextareaField
+        <FormIntroPageWysiwygEditor
           label="Ingress"
           defaultValue={getKeyBasedText(sectionField?.description)}
           onChange={onDescriptionChange}

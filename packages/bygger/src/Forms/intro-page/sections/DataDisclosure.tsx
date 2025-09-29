@@ -4,7 +4,7 @@ import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
 import useKeyBasedText from '../../../hooks/useKeyBasedText';
 import { AddButton } from '../components/AddButton';
-import { TextareaField } from '../components/TextareaField';
+import { FormIntroPageWysiwygEditor } from '../components/FormIntroPageWysiwygEditor';
 import { addBulletPoint, handleBulletPointChange, removeBulletPoint, updateSection } from '../utils/utils';
 import { IntroPageRefs } from '../validation/useIntroPageRefs';
 import { IntroPageError } from '../validation/validation';
@@ -48,7 +48,7 @@ export function DataDisclosure({ form, handleChange, refMap, errors }: Props) {
             <Radio value="introPage.dataDisclosure.title.alt2">Informasjon vi henter</Radio>
           </RadioGroup>
           {bulletPoints?.map((bullet, index) => (
-            <TextareaField
+            <FormIntroPageWysiwygEditor
               key={index}
               label="Kulepunkt"
               defaultValue={getKeyBasedText(bullet)}
