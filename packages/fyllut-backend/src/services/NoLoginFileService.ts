@@ -1,7 +1,17 @@
-import { UploadedFile, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  I18nTranslationMap,
+  localizationUtils,
+  NavFormType,
+  Submission,
+  translationUtils,
+  UploadedFile,
+  validatorUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { ConfigType } from '../config/types';
 import { logger } from '../logger';
+import { assembleNologinSoknadBody } from '../routers/api/helpers/nologin';
 import { responseToError } from '../utils/errorHandling';
+import applicationService from './documents/applicationService';
 
 class NoLoginFileService {
   private readonly _config: ConfigType;
@@ -18,7 +28,7 @@ class NoLoginFileService {
   ): Promise<UploadedFile> {
     const { sendInnConfig } = this._config;
 
-    const fileBlob = new Blob([file.buffer], { type: file.mimetype });
+    const fileBlob = new Blob([Uint8Array.from(file.buffer)], { type: file.mimetype });
 
     const form = new FormData();
     form.append('filinnhold', fileBlob, file.originalname);
@@ -77,6 +87,61 @@ class NoLoginFileService {
       logger.debug('Failed to delete file(s) for user with no login');
       throw await responseToError(response, 'Feil ved sletting av fil(er) for uinnlogget søknad', true);
     }
+  }
+
+  public async submit(
+    pdfAccessToken: string,
+    nologinM2MAccessToken: string,
+    innsendingId: string,
+    form: NavFormType,
+    submission: Submission,
+    submissionMethod: string,
+    translation: I18nTranslationMap = {},
+    language: string,
+  ) {
+    const lang = localizationUtils.getLanguageCodeAsIso639_1(language);
+    const translate = translationUtils.createTranslate(translation, language);
+    const applicationPdf = await applicationService.createPdfFromFieldMap(
+      pdfAccessToken,
+      form,
+      submission,
+      submissionMethod,
+      translate,
+      lang,
+    );
+
+    const pdfByteArray = Array.from(applicationPdf);
+    const nologinApplication = assembleNologinSoknadBody(innsendingId, form, submission, lang, pdfByteArray, translate);
+
+    const { host, paths } = this._config.sendInnConfig;
+    const logMeta = {
+      innsendingId,
+      skjemanummer: form.properties.skjemanummer,
+      formPath: form.path,
+    };
+    const nologinSubmitUrl = `${host}${paths.nologinSubmit}`;
+    logger.info(`${innsendingId}: Submitting nologin application to ${nologinSubmitUrl}`, logMeta);
+    const response = await fetch(nologinSubmitUrl, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${nologinM2MAccessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(nologinApplication),
+    });
+
+    if (response.ok) {
+      const kvittering = await response.json();
+      logger.info(`${innsendingId}: Successfully submitted nologin application`, logMeta);
+      return { innsendingId, pdf: applicationPdf, kvittering };
+    }
+
+    logger.error(`${innsendingId}: Failed to submit nologin application`, {
+      ...logMeta,
+      status: response.status,
+      statusText: response.statusText,
+    });
+    throw await responseToError(response, 'Feil ved innsending av søknad', true);
   }
 }
 

@@ -59,6 +59,7 @@ const submissionTypeNoLogin = require('../data/formio-api/submission-type-no-log
 const submissionTypeDigitalNoLogin = require('../data/formio-api/submission-type-digital-no-login.json');
 const submissionTypePaperDigitalNoLogin = require('../data/formio-api/submission-type-paper-digital-no-login.json');
 const submissionTypePaperNoLogin = require('../data/formio-api/submission-type-paper-no-login.json');
+const nologinForm = require('../data/formio-api/nologin.json');
 
 const allForms = [
   { form: formCypress101, translations: translationsCypress101 },
@@ -112,6 +113,7 @@ const allForms = [
   { form: submissionTypeDigitalNoLogin, translations: undefined },
   { form: submissionTypePaperDigitalNoLogin, translations: undefined },
   { form: submissionTypePaperNoLogin, translations: undefined },
+  { form: nologinForm, translations: undefined },
 ];
 
 const findTestdata = (formPath) => allForms.find((testdata) => testdata.form.path === formPath);

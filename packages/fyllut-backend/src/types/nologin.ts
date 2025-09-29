@@ -1,3 +1,3 @@
 export interface NologinContext {
-  innsendingsId?: string;
+  innsendingsId: string;
 }

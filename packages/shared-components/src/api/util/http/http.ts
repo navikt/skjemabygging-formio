@@ -15,6 +15,7 @@ interface FetchHeader {
   'Fyllut-Submission-Method'?: SubmissionMethodType;
   'x-jwt-token'?: string; // formio token when invoking formio api directly
   'x-innsendingsid'?: string;
+  NologinToken?: string;
 }
 
 interface FetchOptions {

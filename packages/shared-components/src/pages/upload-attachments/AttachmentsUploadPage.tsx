@@ -1,12 +1,15 @@
-import { Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import { ComponentError, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import clsx from 'clsx';
+import { useRef } from 'react';
 import AttachmentUpload from '../../components/attachment/AttachmentUpload';
-import AttachmentUploadProvider from '../../components/attachment/AttachmentUploadContext';
+import { useAttachmentUpload } from '../../components/attachment/AttachmentUploadContext';
 import OtherAttachmentUpload from '../../components/attachment/OtherAttachmentUpload';
 import { useForm } from '../../context/form/FormContext';
+import { useLanguages } from '../../context/languages';
 import { Attachment, getAllAttachments } from '../../util/attachment/attachmentsUtil';
 import htmlUtils from '../../util/html/htmlUtils';
 import makeStyles from '../../util/styles/jss/jss';
+import FormErrorSummary from '../fill-in-form/FormErrorSummary';
 import AttachmentsUploadButtonRow from './AttachmentsUploadButtonRow';
 
 const useStyles = makeStyles({
@@ -18,11 +21,48 @@ const useStyles = makeStyles({
 
 export function AttachmentsUploadPage() {
   const { form, submission } = useForm();
+  const { errors: uploadErrors } = useAttachmentUpload();
+  const { translate } = useLanguages();
   const styles = useStyles();
   const attachments: Attachment[] = getAllAttachments(form, submission ?? ({} as Submission));
+  const attachmentRefs = useRef<Record<string, HTMLFieldSetElement | HTMLInputElement | null>>({});
+  const errorSummaryRef = useRef<HTMLElement | null>(null);
+
+  const errors: ComponentError[] = (Object.entries(uploadErrors) ?? []).flatMap(([attachmentId, attachmentErrors]) =>
+    attachmentErrors
+      .filter((error) => error.type === 'VALUE' || error.type === 'TITLE')
+      .map((error) => ({
+        elementId: error.type,
+        message: error.message,
+        path: attachmentId,
+        level: 'error',
+      })),
+  );
+
+  const focusOnErrorSummary = (maxAttempts = 5) => {
+    if (errorSummaryRef.current) {
+      errorSummaryRef.current.focus();
+    } else if (maxAttempts > 1) {
+      requestAnimationFrame(() => focusOnErrorSummary(--maxAttempts));
+    }
+  };
+
+  const focusOnComponent = (comp: string | { elementId?: string; path?: string }) => {
+    const ref =
+      typeof comp === 'string'
+        ? attachmentRefs.current[comp]
+        : attachmentRefs.current[`${comp.path}-${comp.elementId}`];
+    ref?.focus();
+  };
 
   return (
-    <AttachmentUploadProvider>
+    <>
+      <FormErrorSummary
+        heading={translate(TEXTS.validering.error)}
+        errors={errors}
+        focusOnComponent={focusOnComponent}
+        ref={(ref) => (errorSummaryRef.current = ref)}
+      />
       {attachments.map(({ label, description, attachmentValues, navId, attachmentType }, index) => {
         return attachmentType === 'other' ? (
           <OtherAttachmentUpload
@@ -32,6 +72,7 @@ export function AttachmentsUploadPage() {
             description={htmlUtils.extractTextContent(description as string)}
             attachmentValues={attachmentValues}
             componentId={navId as string}
+            refs={attachmentRefs}
           />
         ) : (
           <AttachmentUpload
@@ -41,11 +82,12 @@ export function AttachmentsUploadPage() {
             description={htmlUtils.extractTextContent(description as string)}
             attachmentValues={attachmentValues}
             componentId={navId as string}
+            refs={attachmentRefs}
           />
         );
       })}
-      <AttachmentsUploadButtonRow attachments={attachments} />
-    </AttachmentUploadProvider>
+      <AttachmentsUploadButtonRow attachments={attachments} onError={focusOnErrorSummary} />
+    </>
   );
 }
 

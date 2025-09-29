@@ -25,7 +25,7 @@ describe('Select boxes', () => {
         cy.findByRole('checkbox', { name: 'Choice 1' }).check();
       });
 
-      cy.findByRole('group', { name: 'Select boxes with description' }).within(() => {
+      cy.findByLabelText('Select boxes with description').within(() => {
         cy.findByRole('checkbox', { name: 'Choice 2 Description 2' }).check();
       });
 
@@ -83,7 +83,7 @@ describe('Select boxes', () => {
         cy.findByRole('checkbox', { name: 'Choice 3' }).check();
       });
 
-      cy.findByRole('group', { name: 'Select boxes with description' }).within(() => {
+      cy.findByLabelText('Select boxes with description').within(() => {
         cy.findByRole('checkbox', { name: 'Choice 4 Description 4' }).check();
       });
 
@@ -135,7 +135,7 @@ describe('Select boxes', () => {
         cy.findByRole('checkbox', { name: 'Choice 3' }).should('not.be.checked');
       });
 
-      cy.findByRole('group', { name: 'Select boxes with description' }).within(() => {
+      cy.findByLabelText('Select boxes with description').within(() => {
         cy.findByRole('checkbox', { name: 'Choice 1 Description 1' }).should('be.checked');
         cy.findByRole('checkbox', { name: 'Choice 2 Description 2' }).should('not.be.checked');
         cy.findByRole('checkbox', { name: 'Choice 3 Description 3' }).should('not.be.checked');

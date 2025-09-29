@@ -15,6 +15,6 @@ describe('Modal', () => {
   it('renders modal and check that it work', async () => {
     expect(await screen.findByRole('dialog')).toBeInTheDocument();
     fireEvent.click(await screen.findByRole('button', { name: 'Lukk' }));
-    expect(onClose).toBeCalled();
+    expect(onClose).toHaveBeenCalled();
   });
 });

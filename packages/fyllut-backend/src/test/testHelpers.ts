@@ -46,6 +46,8 @@ type MockRequestParams = {
   getMap?: Record<string, string | undefined>;
 };
 
+type ExpiresIn = `${number}${'ms' | 's' | 'm' | 'h'}` | number;
+
 function mockRequest({ headers = {}, body, params = {}, query = {}, getMap = {} }: MockRequestParams): Request {
   return {
     header: (name: string) => headers?.[name],
@@ -59,7 +61,7 @@ function mockRequest({ headers = {}, body, params = {}, query = {}, getMap = {} 
 
 const generateJwk = async () => keystore.generate('RSA', 2048);
 
-const createMockIdportenJwt = (payload: object, expiresIn = '5m', key: jose.JWK.Key) => {
+const createMockIdportenJwt = (payload: object, expiresIn: ExpiresIn = '5m', key: jose.JWK.Key) => {
   const { IDPORTEN_CLIENT_ID, IDPORTEN_ISSUER } = process.env;
   const obj = {
     token_type: 'Bearer',
@@ -72,7 +74,7 @@ const createMockIdportenJwt = (payload: object, expiresIn = '5m', key: jose.JWK.
   return createAccessToken(obj, expiresIn, key);
 };
 
-const createAccessToken = (payload: string | Buffer | object, expiresIn: string | undefined, key: jose.JWK.Key) => {
+const createAccessToken = (payload: string | Buffer | object, expiresIn: ExpiresIn, key: jose.JWK.Key) => {
   return jwt.sign(payload, key.toPEM(true), { expiresIn, algorithm: 'RS256' });
 };
 
