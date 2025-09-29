@@ -20,7 +20,7 @@ export default tseslint.config(
   eslint.configs.recommended,
   pluginCypress.configs.recommended,
   pluginCypress.configs.globals,
-  pluginMocha.configs.flat.recommended,
+  pluginMocha.configs.recommended,
   ...tseslint.configs.recommended,
   {
     files: ['**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx', '**/*.mjs'],
