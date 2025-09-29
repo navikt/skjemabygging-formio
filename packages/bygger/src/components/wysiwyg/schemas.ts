@@ -2,24 +2,42 @@ import { defineSchema } from '@portabletext/editor';
 import { Schema } from '@sanity/schema';
 
 export const editorSchema = Schema.compile({
-  name: 'wysiwyg',
+  name: 'myText',
   types: [
     {
-      type: 'object',
-      name: 'editor',
-      fields: [
+      type: 'array',
+      name: 'editorText',
+      of: [
         {
-          title: 'Body',
-          name: 'body',
-          type: 'array',
-          of: [{ type: 'block' }],
+          type: 'block',
+          styles: [
+            { title: 'Normal', value: 'normal' },
+            { title: 'Heading 1', value: 'h1' },
+            { title: 'Heading 2', value: 'h2' },
+          ],
+          lists: [
+            { title: 'Bullet', value: 'bullet' },
+            { title: 'Numbered', value: 'number' },
+          ],
+          marks: {
+            annotations: [
+              {
+                name: 'link',
+                type: 'object',
+                title: 'Link',
+                fields: [
+                  { name: 'href', type: 'url', title: 'Lenke' },
+                  // { name: 'title', type: 'string', title: 'Title' },
+                  // { name: 'openInNewTab', type: 'boolean', title: 'Åpne i ny fane' },
+                ],
+              },
+            ],
+            decorators: [
+              { title: 'Strong', value: 'strong' },
+              { title: 'Emphasis', value: 'em' },
+            ],
+          },
         },
-        // {
-        //   title: 'link',
-        //   name: 'a',
-        //   type: 'annotation',
-        //   of: [{ type: 'link' }],
-        // },
       ],
     },
   ],

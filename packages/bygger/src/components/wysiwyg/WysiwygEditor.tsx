@@ -1,6 +1,6 @@
 import { Heading } from '@navikt/ds-react';
 import { FieldsetErrorMessage, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
-import { htmlToBlocks } from '@portabletext/block-tools';
+import { htmlToBlocks, normalizeBlock } from '@portabletext/block-tools';
 import {
   EditorProvider,
   PortableTextBlock,
@@ -46,14 +46,12 @@ interface Props {
 
 const WysiwygEditor = forwardRef<HTMLDivElement, Props>(({ className, defaultValue, onChange, error }, ref) => {
   const styles = useStyles();
-  const blockContentType = editorSchema.get('editor').fields.find((field) => field.name === 'body').type;
+  const blockContentType = editorSchema.get('editorText');
 
-  const [value, setValue] = useState<PortableTextBlock[] | undefined>(
-    htmlToBlocks(defaultValue ?? '', blockContentType),
-  );
+  const partialBlock = htmlToBlocks(defaultValue ?? '', blockContentType) as PortableTextBlock[];
+  const normalized = partialBlock.map((block) => normalizeBlock(block, { allowedDecorators: ['strong'] }));
 
-  // console.log('html', defaultValue);
-  // console.log('block', value);
+  const [value, setValue] = useState<PortableTextBlock[] | undefined>(normalized);
 
   const renderDecorator: RenderDecoratorFunction = (props) => {
     if (props.value === 'strong') {
