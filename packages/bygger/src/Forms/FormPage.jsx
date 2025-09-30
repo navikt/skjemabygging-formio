@@ -30,18 +30,20 @@ export const FormPage = () => {
     <FormTranslationsProvider formPath={formState.form.path}>
       <GlobalTranslationsProvider>
         <Routes>
-          <Route path={'/edit'} element={<EditFormPage form={formState.form} />} />
-          <Route path={'/view/*'} element={<TestFormPage form={formState.formioForm} />} />
-          <Route path={'/settings'} element={<FormSettingsPage form={formState.form} />} />
+          <Route path="edit" element={<EditFormPage form={formState.form} />} />
+          <Route path="/view">
+            <Route path="*" element={<TestFormPage form={formState.formioForm} />} />
+          </Route>
+          <Route path="/settings" element={<FormSettingsPage form={formState.form} />} />
           <Route
-            path={'/intropage'}
+            path="/intropage"
             element={
               <EditFormTranslationsProvider>
                 <FormIntroPage form={formState.form} />
               </EditFormTranslationsProvider>
             }
           />
-          <Route path={'/oversettelser'} element={<FormTranslationsPage form={formState.form} />} />
+          <Route path="/oversettelser" element={<FormTranslationsPage form={formState.form} />} />
           <Route path="/" element={<Navigate to={'edit'} replace />} />
         </Routes>
       </GlobalTranslationsProvider>

@@ -7,8 +7,10 @@ const MigrationRouter = () => {
   return (
     <AppLayout>
       <Routes>
-        <Route path={'/forhandsvis/:formPath'} element={<MigrationFormPreview />} />
-        <Route path={'/'} element={<MigrationPage />} />
+        <Route path="/forhandsvis">
+          <Route path=":formPath" element={<MigrationFormPreview />} />
+        </Route>
+        <Route path="/" element={<MigrationPage />} />
       </Routes>
     </AppLayout>
   );

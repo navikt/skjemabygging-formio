@@ -13,6 +13,7 @@ function AuthenticatedApp({ serverURL }) {
     <>
       <Routes>
         <Route path="/forms/*" element={<FormsRouter serverURL={serverURL} />} />
+        <Route path="/oversettelser" element={<Navigate to="/oversettelser/skjematekster" replace />} />
         <Route
           path="/oversettelser/:tag"
           element={
@@ -26,7 +27,6 @@ function AuthenticatedApp({ serverURL }) {
         <Route path="/migrering/*" element={<MigrationRouter />} />
         <Route path="/bulk-publisering" element={<BulkPublishPage />} />
         <Route path="/rapporter" element={<ReportsPage />} />
-        <Route path="/oversettelser" element={<Navigate to="/oversettelser/skjematekster" replace />} />
         <Route path="/" element={<Navigate to="/forms" replace />} />
       </Routes>
     </>

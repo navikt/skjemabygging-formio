@@ -33,6 +33,7 @@ const renderReact = (dokumentInnsendingBaseURL, config) => {
       <BrowserRouter
         future={{
           v7_relativeSplatPath: true,
+          v7_startTransition: true,
         }}
         basename="/fyllut"
       >
