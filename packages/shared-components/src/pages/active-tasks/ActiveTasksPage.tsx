@@ -68,7 +68,7 @@ const ActiveTasksPage = () => {
     });
     const searchParamsAsString =
       existingAndAdditionalSearchParams.toString() && `?${existingAndAdditionalSearchParams.toString()}`;
-    return `${baseUrl}${formUrl}${path}${searchParamsAsString}`;
+    return `${baseUrl}/${formUrl}${path}${searchParamsAsString}`;
   };
 
   if (!(hasMellomlagring || hasEttersendelse)) {

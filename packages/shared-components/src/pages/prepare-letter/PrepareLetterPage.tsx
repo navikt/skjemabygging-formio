@@ -41,7 +41,7 @@ export function PrepareLetterPage() {
   const [enhetsListe, setEnhetsListe] = useState<Enhet[]>([]);
   const [enhetsListeError, setEnhetsListeError] = useState(false);
   const [enhetslisteFilteringError, setEnhetslisteFilteringError] = useState(false);
-  const { form, submission, formUrl } = useForm();
+  const { form, submission } = useForm();
 
   const styles = useStyles();
 
@@ -93,7 +93,7 @@ export function PrepareLetterPage() {
           <LetterPrint index={2} />
           {hasAttachments && <LetterAddAttachment index={3} attachments={attachments} />}
           <LetterInTheMail index={hasAttachments ? 4 : 3} attachments={attachments} />
-          <NavigateButtonComponent goBackUrl={`${formUrl}/oppsummering`} />
+          <NavigateButtonComponent goBackUrl={`../oppsummering`} />
           {includeUxSignals && <LetterUXSignals id={uxSignalsId} demo={config?.NAIS_CLUSTER_NAME !== 'prod-gcp'} />}
         </section>
       </section>

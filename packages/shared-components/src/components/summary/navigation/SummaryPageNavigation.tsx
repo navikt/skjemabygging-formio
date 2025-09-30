@@ -21,12 +21,11 @@ import DigitalSubmissionWithPrompt from '../../submission/DigitalSubmissionWithP
 export interface Props {
   form: NavFormType;
   submission?: Submission;
-  formUrl: string;
   panelValidationList?: PanelValidation[];
   isValid: (e: React.MouseEvent<HTMLElement>) => boolean;
 }
 
-const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList, isValid }: Props) => {
+const SummaryPageNavigation = ({ form, submission, panelValidationList, isValid }: Props) => {
   const { submissionMethod, app } = useAppConfig();
   const { search } = useLocation();
   const { translate } = useLanguages();
@@ -62,7 +61,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
             <LinkButton
               buttonVariant="primary"
               onClick={(e) => !isValid(e)}
-              to={{ pathname: `${formUrl}/send-i-posten`, search }}
+              to={{ pathname: `../send-i-posten`, search }}
             >
               <span aria-live="polite" className="navds-body-short font-bold">
                 {translate(TEXTS.grensesnitt.moveForward)}
@@ -114,7 +113,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
             <LinkButton
               buttonVariant="primary"
               onClick={(e) => !isValid(e)}
-              to={{ pathname: `${formUrl}/ingen-innsending`, search }}
+              to={{ pathname: `../ingen-innsending`, search }}
             >
               <span aria-live="polite" className="navds-body-short font-bold">
                 {translate(TEXTS.grensesnitt.moveForward)}
@@ -124,7 +123,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
               </span>
             </LinkButton>
           )}
-          <EditAnswersButton form={form} formUrl={formUrl} panelValidationList={panelValidationList} />
+          <EditAnswersButton form={form} panelValidationList={panelValidationList} />
         </div>
         {isMellomlagringActive && <SaveAndDeleteButtons submission={submission} />}
         {!isMellomlagringActive && (

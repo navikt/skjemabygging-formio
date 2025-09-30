@@ -30,7 +30,12 @@ const renderReact = (dokumentInnsendingBaseURL, config) => {
   const root = createRoot(document.getElementById('root')!);
   root.render(
     <StrictMode>
-      <BrowserRouter basename="/fyllut">
+      <BrowserRouter
+        future={{
+          v7_relativeSplatPath: true,
+        }}
+        basename="/fyllut"
+      >
         <AppConfigProvider
           dokumentinnsendingBaseURL={dokumentInnsendingBaseURL}
           featureToggles={featureToggles}

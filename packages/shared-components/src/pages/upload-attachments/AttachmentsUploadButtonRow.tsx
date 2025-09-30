@@ -5,7 +5,6 @@ import { MouseEvent } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAttachmentUpload } from '../../components/attachment/AttachmentUploadContext';
 import { attachmentValidator } from '../../components/attachment/attachmentValidator';
-import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { Attachment } from '../../util/attachment/attachmentsUtil';
 import { validateAttachment } from '../../util/form/attachment-validation/attachmentValidation';
@@ -15,10 +14,9 @@ const AttachmentsUploadButtonRow = ({ attachments, onError }: { attachments: Att
   const navigate = useNavigate();
   const { translate } = useLanguages();
   const [searchParams] = useSearchParams();
-  const { formUrl } = useForm();
   const { addError, removeAllErrors, submissionAttachments, handleDeleteAllFiles } = useAttachmentUpload();
 
-  const summaryPageUrl = `${formUrl}/oppsummering?${searchParams.toString()}`;
+  const summaryPageUrl = `../oppsummering?${searchParams.toString()}`;
   const exitUrl = urlUtils.getExitUrl(window.location.href);
   const validator = attachmentValidator(translate);
 

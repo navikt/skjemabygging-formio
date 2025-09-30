@@ -79,13 +79,13 @@ const FormStepper = () => {
               onClick={(event) => {
                 event.preventDefault();
                 if (getActiveStepper() !== index) {
-                  navigate(stepUrl);
+                  navigate(`../${stepUrl}`);
                   if (screenSmall) {
                     setFormProgress(false);
                   }
                 }
               }}
-              href={`${baseUrl}${stepUrl}`}
+              href={`${baseUrl}/${stepUrl}`}
               key={step.key}
             >
               {translate(step.label)}

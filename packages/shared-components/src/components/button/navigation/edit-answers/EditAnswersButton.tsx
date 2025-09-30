@@ -7,16 +7,15 @@ import LinkButton from '../../../link-button/LinkButton';
 
 interface Props {
   form: NavFormType;
-  formUrl: string;
   panelValidationList: PanelValidation[] | undefined;
 }
 
-const EditAnswersButton = ({ form, formUrl, panelValidationList }: Props) => {
+const EditAnswersButton = ({ form, panelValidationList }: Props) => {
   const { search } = useLocation();
   const { translate } = useLanguages();
 
   const formStartingPoint = findFormStartingPoint(form, panelValidationList);
-  const pathname = `${formUrl}/${formStartingPoint.panel}`;
+  const pathname = `../${formStartingPoint.panel}`;
   const hasValidationErrors = panelValidationList?.some((panelValidation) => panelValidation.hasValidationErrors);
 
   return (

@@ -8,7 +8,6 @@ import ComponentSummary from '../component/ComponentSummary';
 
 interface Props {
   component: SummaryPanel;
-  formUrl: string;
   hasValidationErrors: boolean;
 }
 
@@ -27,7 +26,7 @@ const panelStyles = makeStyles({
   },
 });
 
-const PanelSummary = ({ component, formUrl, hasValidationErrors }: Props) => {
+const PanelSummary = ({ component, hasValidationErrors }: Props) => {
   const { translate } = useLanguages();
   const { search } = useLocation();
   const { link, headerIcon, accordionHeader } = panelStyles();
@@ -51,11 +50,11 @@ const PanelSummary = ({ component, formUrl, hasValidationErrors }: Props) => {
             </div>
           </Accordion.Header>
           <Accordion.Content>
-            <Link as={ReactRouterLink} to={{ pathname: `${formUrl}/${key}`, search }} className={link}>
+            <Link as={ReactRouterLink} to={{ pathname: `../${key}`, search }} className={link}>
               <span>{panelLinkText}</span>
             </Link>
             <dl>
-              <ComponentSummary components={components} formUrl={formUrl} />
+              <ComponentSummary components={components} />
             </dl>
           </Accordion.Content>
         </Accordion.Item>

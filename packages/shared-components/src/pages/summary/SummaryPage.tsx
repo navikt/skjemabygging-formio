@@ -52,7 +52,7 @@ export function SummaryPage() {
   const appConfig = useAppConfig();
   const { translate } = useLanguages();
   const styles = useStyles();
-  const { prefillData, submission, formUrl, form } = useForm();
+  const { prefillData, submission, form } = useForm();
   const { declarationType, declarationText } = form.properties;
   const [declaration, setDeclaration] = useState<boolean | undefined>(undefined);
 
@@ -131,17 +131,12 @@ export function SummaryPage() {
                 </span>
               </Alert>
               <div className="button-row">
-                <EditAnswersButton form={form} formUrl={formUrl} panelValidationList={panelValidationList} />
+                <EditAnswersButton form={form} panelValidationList={panelValidationList} />
               </div>
             </>
           )}
           <div className="form-summary">
-            <FormSummary
-              submission={submission}
-              form={form}
-              formUrl={formUrl}
-              panelValidationList={panelValidationList}
-            />
+            <FormSummary submission={submission} form={form} panelValidationList={panelValidationList} />
           </div>
           {hasDeclaration && (
             <ConfirmationPanel
@@ -162,7 +157,6 @@ export function SummaryPage() {
           <SummaryPageNavigation
             form={form}
             submission={submission}
-            formUrl={formUrl}
             panelValidationList={panelValidationList}
             isValid={isValid}
           />

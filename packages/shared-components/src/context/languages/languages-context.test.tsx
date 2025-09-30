@@ -23,7 +23,11 @@ type ParamsMap = { [key: string]: string | undefined };
 type TestComponentInput = { text: string; params?: ParamsMap };
 const renderTestComponent = ({ text, params }: TestComponentInput, translations: I18nTranslations) => {
   render(
-    <BrowserRouter>
+    <BrowserRouter
+      future={{
+        v7_relativeSplatPath: true,
+      }}
+    >
       <LanguagesProvider translations={translations || defaultTranslations}>
         <TestComponent text={text} params={params} />
       </LanguagesProvider>

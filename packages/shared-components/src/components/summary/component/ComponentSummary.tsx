@@ -19,11 +19,10 @@ import SelectBoxesSummary from '../select-boxes/SelectBoxesSummary';
 
 interface Props {
   components: SummaryComponent[];
-  formUrl?: string;
   panelValidationList?: PanelValidation[];
 }
 
-const ComponentSummary = ({ components, formUrl = '', panelValidationList = [] }: Props) => {
+const ComponentSummary = ({ components, panelValidationList = [] }: Props) => {
   return (
     <>
       {components
@@ -34,15 +33,13 @@ const ComponentSummary = ({ components, formUrl = '', panelValidationList = [] }
             case 'panel': {
               const panelValidation = panelValidationList!.find((panelValidation) => panelValidation.key === key);
               const hasValidationErrors = !!panelValidation?.hasValidationErrors;
-              return (
-                <PanelSummary key={key} component={comp} formUrl={formUrl} hasValidationErrors={hasValidationErrors} />
-              );
+              return <PanelSummary key={key} component={comp} hasValidationErrors={hasValidationErrors} />;
             }
             case 'fieldset':
             case 'navSkjemagruppe':
-              return <FieldsetSummary key={key} component={comp} formUrl={formUrl} />;
+              return <FieldsetSummary key={key} component={comp} />;
             case 'datagrid':
-              return <DataGridSummary key={key} component={comp} formUrl={formUrl} />;
+              return <DataGridSummary key={key} component={comp} />;
             case 'dataFetcher':
             case 'selectboxes':
               return <SelectBoxesSummary key={key} component={comp} />;

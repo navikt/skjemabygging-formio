@@ -21,26 +21,26 @@ export interface Props {
   };
 }
 
-const FormNavigation = ({ formUrl, paths, isValid, submission, onCancel, navigateTo, finalStep }: Props) => {
+const FormNavigation = ({ paths, isValid, submission, onCancel, navigateTo, finalStep }: Props) => {
   const { isMellomlagringActive, updateMellomlagring } = useSendInn();
   const { search } = useLocation();
   const { translate } = useLanguages();
 
   const [nextLocation, setNextLocation] = useState<To | undefined>({
-    pathname: `${formUrl}/${paths.next ?? finalStep}`,
+    pathname: `../${paths.next ?? finalStep}`,
     search,
   });
   const [prevLocation, setPrevLocation] = useState<To | undefined>(
-    paths.prev ? { pathname: `${formUrl}/${paths.prev}`, search } : undefined,
+    paths.prev ? { pathname: `../${paths.prev}`, search } : undefined,
   );
 
   useEffect(() => {
-    setNextLocation({ pathname: `${formUrl}/${paths.next ?? finalStep}`, search });
-  }, [search, paths.next, formUrl, finalStep]);
+    setNextLocation({ pathname: `../${paths.next ?? finalStep}`, search });
+  }, [search, paths.next, finalStep]);
 
   useEffect(() => {
-    setPrevLocation(paths.prev ? { pathname: `${formUrl}/${paths.prev}`, search } : undefined);
-  }, [search, paths.prev, formUrl]);
+    setPrevLocation(paths.prev ? { pathname: `../${paths.prev}`, search } : undefined);
+  }, [search, paths.prev]);
 
   const nextClickHandler = useCallback(
     async (e: React.MouseEvent<HTMLElement>) => {
