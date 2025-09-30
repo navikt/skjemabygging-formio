@@ -1,4 +1,4 @@
-const KEYS_TO_CLEAR = /^(Authorization|AzureAccessToken|cookie|x-client.+)$/i;
+const KEYS_TO_CLEAR = /^(Authorization|.*token.*|cookie|x-client.+)$/i;
 
 const recursivelyClean = (maybeObject) => {
   if (maybeObject instanceof Object) {
