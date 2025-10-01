@@ -76,7 +76,7 @@ export function PrepareLetterPage() {
   return (
     <>
       <FormMainContent>
-        <LetterDownload index={1} form={form} submission={submission} enhetsListe={enhetsListe} />
+        <LetterDownload index={1} enhetsListe={enhetsListe} />
         <LetterPrint index={2} />
         {hasAttachments && <LetterAddAttachment index={3} attachments={attachments} />}
         <LetterInTheMail index={hasAttachments ? 4 : 3} attachments={attachments} />
