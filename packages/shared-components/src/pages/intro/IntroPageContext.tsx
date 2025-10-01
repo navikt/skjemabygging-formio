@@ -39,7 +39,7 @@ export const IntroPageProvider = ({ children, form }: IntroPageProviderProps) =>
 
   const setSelfDeclaration = useCallback(
     (selfDeclaration: boolean) => {
-      setSubmission((current) => ({ ...current, selfDeclaration }) as Submission);
+      setSubmission((current) => ({ ...(current ? current : { data: {} }), selfDeclaration }) as Submission);
     },
     [setSubmission],
   );

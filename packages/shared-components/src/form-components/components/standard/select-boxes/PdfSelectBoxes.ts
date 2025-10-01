@@ -1,12 +1,10 @@
-import { useForm } from '../../../../context/form/FormContext';
-import { useLanguages } from '../../../../context/languages';
 import { PdfComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 
-const PdfSelectBoxes = ({ component, submissionPath }: PdfComponentProps) => {
+const PdfSelectBoxes = ({ component, submissionPath, formContext, languagesContext }: PdfComponentProps) => {
   const { values, label } = component;
-  const { translate } = useLanguages();
-  const { submission } = useForm();
+  const { translate } = languagesContext;
+  const { submission } = formContext;
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
 
   if (value === undefined || !values || values.length === 0) {

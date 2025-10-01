@@ -1,11 +1,11 @@
-import { useLanguages } from '../../../../context/languages';
 import renderPdfComponent from '../../../render/RenderPdfComponent';
 import { PdfComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 
-const DefaultSection = ({ component, submissionPath, componentRegistry }: PdfComponentProps) => {
+const DefaultSection = (props: PdfComponentProps) => {
+  const { component, submissionPath, languagesContext } = props;
   const { title, label, components } = component;
-  const { translate } = useLanguages();
+  const { translate } = languagesContext;
 
   if (!components || components.length === 0) {
     return null;
@@ -15,9 +15,9 @@ const DefaultSection = ({ component, submissionPath, componentRegistry }: PdfCom
     .flatMap((component) => {
       const componentSubmissionPath = formComponentUtils.getComponentSubmissionPath(component, submissionPath);
       return renderPdfComponent({
+        ...props,
         component: component,
         submissionPath: componentSubmissionPath,
-        componentRegistry,
       });
     })
     .filter(Boolean);

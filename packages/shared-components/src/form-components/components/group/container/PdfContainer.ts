@@ -1,11 +1,11 @@
-import { useForm } from '../../../../context/form/FormContext';
 import renderPdfComponent from '../../../render/RenderPdfComponent';
 import { PdfComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 
-const PdfContainer = ({ component, submissionPath, componentRegistry }: PdfComponentProps) => {
+const PdfContainer = (props: PdfComponentProps) => {
+  const { component, submissionPath, formContext } = props;
   const { components } = component;
-  const { submission } = useForm();
+  const { submission } = formContext;
 
   if (!components || formComponentUtils.noChildValues(submissionPath, components, submission)) {
     return null;
@@ -16,9 +16,9 @@ const PdfContainer = ({ component, submissionPath, componentRegistry }: PdfCompo
       const componentSubmissionPath = formComponentUtils.getComponentSubmissionPath(component, submissionPath);
 
       return renderPdfComponent({
+        ...props,
         component: component,
         submissionPath: componentSubmissionPath,
-        componentRegistry,
       });
     })
     .filter(Boolean);

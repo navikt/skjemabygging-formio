@@ -1,12 +1,10 @@
-import { useForm } from '../../../../context/form/FormContext';
-import { useLanguages } from '../../../../context/languages';
 import { PdfComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 
-const DefaultSelectAnswer = ({ component, submissionPath }: PdfComponentProps) => {
+const DefaultSelectAnswer = ({ component, submissionPath, formContext, languagesContext }: PdfComponentProps) => {
   const { label } = component;
-  const { submission } = useForm();
-  const { translate } = useLanguages();
+  const { submission } = formContext;
+  const { translate } = languagesContext;
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
 
   if (value?.label === undefined) {

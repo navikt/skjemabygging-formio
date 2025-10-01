@@ -1,4 +1,6 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormContextType } from '../context/form/FormContext';
+import { LanguageContextType } from '../context/languages/languages-context';
 import { PanelValidation } from '../util/form/panel-validation/panelValidation';
 
 type PdfListElement = PdfData | PdfData[] | null;
@@ -47,6 +49,8 @@ interface PdfComponentProps {
   component: Component;
   submissionPath: string;
   componentRegistry: PdfComponentRegistry;
+  formContext: FormContextType;
+  languagesContext: LanguageContextType;
 }
 
 interface PdfComponentRegistry {

@@ -1,6 +1,7 @@
 import { PdfComponentProps, PdfListElement } from '../types';
 
-const renderPdfComponent = ({ component, submissionPath, componentRegistry }: PdfComponentProps): PdfListElement => {
+const renderPdfComponent = (props: PdfComponentProps): PdfListElement => {
+  const { componentRegistry, component } = props;
   const { type } = component;
 
   const registryComponent = componentRegistry[type];
@@ -10,7 +11,7 @@ const renderPdfComponent = ({ component, submissionPath, componentRegistry }: Pd
     return null;
   }
 
-  return registryComponent({ component, submissionPath, componentRegistry });
+  return registryComponent(props);
 };
 
 export default renderPdfComponent;

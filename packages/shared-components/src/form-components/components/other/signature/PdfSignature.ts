@@ -1,18 +1,23 @@
-import { FormPropertiesType, signatureUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useAppConfig } from '../../../../context/config/configContext';
-import { useLanguages } from '../../../../context/languages';
+import {
+  FormPropertiesType,
+  signatureUtils,
+  SubmissionMethod,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
+import { LanguageContextType } from '../../../../context/languages/languages-context';
 import { PdfData } from '../../../types';
 
 interface Props {
   properties: FormPropertiesType;
+  languagesContext: LanguageContextType;
+  submissionMethod?: SubmissionMethod;
 }
 
-const PdfSignature = ({ properties }: Props): PdfData | null => {
+const PdfSignature = ({ properties, languagesContext, submissionMethod }: Props): PdfData | null => {
   const { signatures, descriptionOfSignatures } = properties;
-  const { translate } = useLanguages();
-  const { submissionMethod } = useAppConfig();
+  const { translate } = languagesContext;
 
-  if (submissionMethod !== 'paper' || !signatures) {
+  if (!submissionMethod || submissionMethod !== 'paper' || !signatures) {
     return null;
   }
 

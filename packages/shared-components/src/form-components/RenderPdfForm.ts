@@ -1,4 +1,6 @@
-import { Component, dateUtils, NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { dateUtils, SubmissionMethod, TEXTS, yourInformationUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormContextType } from '../context/form/FormContext';
+import { LanguageContextType } from '../context/languages/languages-context';
 import {
   PdfAccountNumber,
   PdfAddress,
@@ -38,24 +40,23 @@ import renderPdfComponent from './render/RenderPdfComponent';
 import { PdfComponentProps, PdfFormData } from './types';
 
 interface Props {
-  form: NavFormType;
-  activeComponents: Component[];
-  translate: (text: string) => string;
-  lang?: string;
+  formContext: FormContextType;
+  languagesContext: LanguageContextType;
   watermarkText?: string;
-  identityNumber?: string;
   gitVersion?: string;
+  submissionMethod?: SubmissionMethod;
 }
 
 const renderPdfForm = ({
-  form,
-  activeComponents,
-  translate,
-  lang,
+  formContext,
+  languagesContext,
   watermarkText,
   gitVersion,
-  identityNumber,
+  submissionMethod,
 }: Props): string => {
+  const { currentLanguage, translate } = languagesContext;
+  const { form, activeComponents, submission } = formContext;
+
   const componentRegistry = {
     /* Standard */
     accordion: PdfAccordion,
@@ -109,23 +110,26 @@ const renderPdfForm = ({
     maalgruppe: PdfMaalgruppe,
   };
 
-  const languageCode: string = lang === 'nn-NO' || lang == 'nn' ? 'nn' : lang === 'en' ? 'en' : 'nb';
+  const languageCode: string =
+    currentLanguage === 'nn-NO' || currentLanguage == 'nn' ? 'nn' : currentLanguage === 'en' ? 'en' : 'nb';
 
   const pdfData: PdfFormData = {
     label: translate(form.title),
     verdiliste: [
-      PdfIntroPage(),
-      ...activeComponents
-        .map(
+      PdfIntroPage({ languagesContext, formContext }),
+      ...(activeComponents
+        ?.map(
           (component) =>
             renderPdfComponent({
               component,
               submissionPath: '',
               componentRegistry,
+              formContext,
+              languagesContext,
             } as PdfComponentProps), // TODO: Fix type
         )
-        .filter(Boolean),
-      PdfSignature({ properties: form.properties }),
+        .filter(Boolean) ?? []),
+      PdfSignature({ properties: form.properties, languagesContext, submissionMethod }),
     ].filter(Boolean),
     skjemanummer: form.properties?.skjemanummer,
     pdfConfig: {
@@ -133,7 +137,8 @@ const renderPdfForm = ({
       språk: languageCode,
     },
     bunntekst: {
-      upperleft: translate(TEXTS.statiske.footer.userIdLabel) + `: ${identityNumber ?? '-'}`,
+      upperleft:
+        translate(TEXTS.statiske.footer.userIdLabel) + `: ${yourInformationUtils.getIdentityNumber(form, submission)}`,
       lowerleft: translate(TEXTS.statiske.footer.schemaNumberLabel) + `: ${form.properties?.skjemanummer}`,
       upperRight: null,
       upperMiddle:

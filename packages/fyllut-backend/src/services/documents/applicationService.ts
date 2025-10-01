@@ -1,41 +1,15 @@
-import {
-  I18nTranslationReplacements,
-  NavFormType,
-  Submission,
-  yourInformationUtils,
-} from '@navikt/skjemadigitalisering-shared-domain';
 import correlator from 'express-correlation-id';
 import { Response } from 'node-fetch';
 import { config } from '../../config/config';
 import { logger } from '../../logger';
-import { createFeltMapFromSubmission } from '../../routers/api/helpers/feltMapBuilder';
 import { synchronousResponseToError } from '../../utils/errorHandling';
 import fetchWithRetry, { HeadersInit } from '../../utils/fetchWithRetry';
 import { appMetrics } from '../index';
 
 const { familiePdfGeneratorUrl } = config;
 
-const createPdfFromFieldMap = async (
-  accessToken: string,
-  form: NavFormType,
-  submission: Submission,
-  submissionMethod: string,
-  translate: (text: string, textReplacements?: I18nTranslationReplacements) => string,
-  language: string,
-) => {
-  const yourInformation = yourInformationUtils.getYourInformation(form, submission.data);
-
-  let identityNumber: string;
-  if (yourInformation?.identitet?.identitetsnummer) {
-    identityNumber = yourInformation.identitet.identitetsnummer;
-  } else if (submission.data.fodselsnummerDNummerSoker) {
-    // This is the old format of the object, which is still used in some forms.
-    identityNumber = submission.data.fodselsnummerDNummerSoker as string;
-  } else {
-    identityNumber = '—';
-  }
-
-  logger.info(`Creating PDF from field map, calling ${familiePdfGeneratorUrl}/api/pdf/v3/opprett-pdf`);
+const createPdfFromFieldMap = async (accessToken: string, formData?: any) => {
+  logger.info(`Creating PDF, calling ${familiePdfGeneratorUrl}/api/pdf/v3/opprett-pdf`);
 
   appMetrics.familiePdfRequestsCounter.inc();
   let errorOccurred = false;
@@ -54,7 +28,7 @@ const createPdfFromFieldMap = async (
         accept: '*/*',
       } as HeadersInit,
       method: 'POST',
-      body: createFeltMapFromSubmission(form, submission, submissionMethod, translate, language, identityNumber),
+      body: formData,
     });
   } catch (e) {
     errorOccurred = true;
@@ -68,15 +42,19 @@ const createPdfFromFieldMap = async (
       durationSeconds,
     });
   }
-
   if (response?.ok) {
     return Buffer.from(await response.arrayBuffer());
   }
 
   appMetrics.familiePdfFailuresCounter.inc();
-  logger.error('Request to familie pdf service failed', {});
 
-  throw synchronousResponseToError('Feil ved generering av PDF via feltMap', {}, response?.status, response?.url, true);
+  throw synchronousResponseToError(
+    `Could not create pdf${response?.status === 401 ? ', not authorized (401)' : ''}`,
+    {},
+    response?.status,
+    response?.url,
+    true,
+  );
 };
 
 const applicationService = {

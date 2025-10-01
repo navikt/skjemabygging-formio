@@ -7,6 +7,7 @@ import {
   translationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { logger } from '../../logger';
+import { createFeltMapFromSubmission } from '../../routers/api/helpers/feltMapBuilder';
 import { base64Decode } from '../../utils/base64';
 import { htmlResponseError } from '../../utils/errorHandling';
 import applicationService from './applicationService';
@@ -16,6 +17,7 @@ import { mergeFrontPageAndApplication } from './mergeFilesService';
 interface ApplicationProps {
   accessToken: string;
   form: NavFormType;
+  formData?: any;
   submissionMethod: string;
   submission: Submission;
   language: string;
@@ -23,15 +25,19 @@ interface ApplicationProps {
 }
 
 const application = async (props: CoverPageAndApplicationProps) => {
-  const { accessToken, form, submission, language, translations, submissionMethod } = props;
+  const { accessToken, form, formData, submission, language, translations, submissionMethod } = props;
 
   const applicationPdf = await applicationService.createPdfFromFieldMap(
     accessToken,
-    form,
-    submission,
-    submissionMethod,
-    createTranslate(translations, language),
-    language,
+    formData
+      ? JSON.stringify(formData)
+      : createFeltMapFromSubmission(
+          form,
+          submission,
+          submissionMethod,
+          createTranslate(translations, language),
+          language,
+        ),
   );
 
   if (applicationPdf === undefined) {
@@ -52,6 +58,7 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps) => {
     accessToken,
     pdfGeneratorAccessToken,
     form,
+    formData,
     submission,
     language,
     unitNumber,
@@ -71,11 +78,15 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps) => {
     }),
     applicationService.createPdfFromFieldMap(
       pdfGeneratorAccessToken,
-      form,
-      submission,
-      submissionMethod,
-      createTranslate(translations, language),
-      language,
+      formData
+        ? JSON.stringify(formData)
+        : createFeltMapFromSubmission(
+            form,
+            submission,
+            submissionMethod,
+            createTranslate(translations, language),
+            language,
+          ),
     ),
   ]);
 

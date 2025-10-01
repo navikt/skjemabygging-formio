@@ -1,13 +1,8 @@
-import { Component } from '@navikt/skjemadigitalisering-shared-domain';
-import { useLanguages } from '../../../../index';
+import { PdfComponentProps } from '../../../types';
 
-interface Props {
-  component: Component;
-}
-
-const DefaultHtmlAnswer = ({ component }: Props) => {
+const DefaultHtmlAnswer = ({ component, languagesContext }: PdfComponentProps) => {
   const { textDisplay, content } = component;
-  const { translate } = useLanguages();
+  const { translate } = languagesContext;
 
   if (!content || textDisplay === 'form') {
     return null;

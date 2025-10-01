@@ -1,12 +1,10 @@
-import { useForm } from '../../../../context/form/FormContext';
-import { useLanguages } from '../../../../context/languages';
 import { PdfComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 import { getIdentityLabel, getIdentityValue } from './identityUtils';
 
-const PdfIdentity = ({ submissionPath }: PdfComponentProps) => {
-  const { translate } = useLanguages();
-  const { submission } = useForm();
+const PdfIdentity = ({ submissionPath, formContext, languagesContext }: PdfComponentProps) => {
+  const { translate } = languagesContext;
+  const { submission } = formContext;
 
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
 
