@@ -5,8 +5,6 @@ import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
 const thisYear = new Date().getFullYear();
 
-const digitalLinkNames = [TEXTS.grensesnitt.introPage.sendDigital, TEXTS.grensesnitt.introPage.sendDigitalLoggedIn];
-
 describe('Basic form', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
@@ -181,10 +179,7 @@ describe('Basic form', () => {
       });
 
       it('select submission method digital - fill in - go to summary - edit form - navigate back to summary', () => {
-        cy.findAllByRole('link')
-          .filter((_, el) => digitalLinkNames.includes(el.textContent?.trim()))
-          .first()
-          .click();
+        cy.clickSendDigital();
         cy.findByRole('heading', { name: TEXTS.statiske.introPage.title });
         cy.clickStart();
         cy.wait('@createMellomlagring');

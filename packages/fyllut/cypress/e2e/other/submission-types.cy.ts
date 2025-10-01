@@ -1,9 +1,10 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
-const digitalLinkNames = [TEXTS.grensesnitt.introPage.sendDigital, TEXTS.grensesnitt.introPage.sendDigitalLoggedIn];
+const digitalLinkLoggedInName = TEXTS.grensesnitt.introPage.sendDigitalLoggedIn;
 
-function findDigitalLink() {
-  return cy.findAllByRole('link').filter((_, el) => digitalLinkNames.includes(el.textContent?.trim()));
+function assertDigitalLinksNotExist() {
+  cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigital }).should('not.exist');
+  cy.findByRole('link', { name: digitalLinkLoggedInName }).should('not.exist');
 }
 
 describe('Submission Type', () => {
@@ -139,7 +140,7 @@ describe('Submission Type', () => {
       });
 
       it('Change between paper and digital', () => {
-        findDigitalLink().should('exist');
+        cy.findByRole('link', { name: digitalLinkLoggedInName }).should('exist');
         cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendOnPaper }).should('exist');
 
         cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendOnPaper }).click();
@@ -147,7 +148,7 @@ describe('Submission Type', () => {
 
         cy.findByRole('button', { name: TEXTS.grensesnitt.goBack }).click();
 
-        findDigitalLink().first().click();
+        cy.clickSendDigital();
         cy.url().should('include', 'sub=digital');
       });
 
@@ -169,7 +170,7 @@ describe('Submission Type', () => {
       });
 
       it('Select digital', () => {
-        findDigitalLink().first().click();
+        cy.clickSendDigital();
         cy.clickStart();
 
         cy.url().should('include', 'sub=digital');
@@ -188,7 +189,7 @@ describe('Submission Type', () => {
       cy.defaultWaits();
 
       cy.findByRole('heading', { name: 'Dine opplysninger' }).should('not.exist');
-      findDigitalLink().should('exist');
+      cy.findByRole('link', { name: digitalLinkLoggedInName }).should('exist');
       cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendOnPaper }).should('exist');
     });
   });
@@ -201,7 +202,7 @@ describe('Submission Type', () => {
       });
 
       it('Check that the correct link panels are shown', () => {
-        findDigitalLink().should('exist');
+        cy.findByRole('link', { name: digitalLinkLoggedInName }).should('exist');
         cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.noLogin }).should('not.exist');
         cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigitalNoLogin }).should('exist');
         cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendOnPaper }).should('not.exist');
@@ -215,7 +216,7 @@ describe('Submission Type', () => {
       });
 
       it('Select digital', () => {
-        findDigitalLink().first().click();
+        cy.clickSendDigital();
         cy.clickStart();
 
         cy.url().should('include', 'sub=digital');
@@ -231,7 +232,7 @@ describe('Submission Type', () => {
       });
 
       it('Check that the correct link panels are shown', () => {
-        findDigitalLink().should('not.exist');
+        assertDigitalLinksNotExist();
         cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.noLogin }).should('not.exist');
         cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigitalNoLogin }).should('exist');
         cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendOnPaper }).should('exist');
@@ -261,14 +262,14 @@ describe('Submission Type', () => {
       });
 
       it('Check that the correct link panels are shown', () => {
-        findDigitalLink().should('exist');
+        cy.findByRole('link', { name: digitalLinkLoggedInName }).should('exist');
         cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.noLogin }).should('exist');
         cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigitalNoLogin }).should('not.exist');
         cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendOnPaper }).should('not.exist');
 
         cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.noLogin }).click();
 
-        findDigitalLink().should('not.exist');
+        assertDigitalLinksNotExist();
         cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.noLogin }).should('not.exist');
         cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigitalNoLogin }).should('exist');
         cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendOnPaper }).should('exist');
