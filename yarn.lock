@@ -1452,10 +1452,10 @@
   resolved "https://registry.yarnpkg.com/@types/estree/-/estree-1.0.8.tgz#958b91c991b1867ced318bedea0e215ee050726e"
   integrity sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==
 
-"@types/express-correlation-id@^1.2.6":
-  version "1.2.6"
-  resolved "https://registry.yarnpkg.com/@types/express-correlation-id/-/express-correlation-id-1.2.6.tgz#6812781ebd850743a13f6eecfe501cfa890d0e07"
-  integrity sha512-BSUFJkUi7M2OfWqLI326klR939dS4ELNxkbsIAC2XDdzTgsMaxcOT0f1Bpeat4MeXaRTBfOA2oeCex4U1FMZ6w==
+"@types/express-correlation-id@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@types/express-correlation-id/-/express-correlation-id-3.0.0.tgz#5c07613636b5966d8a2ae35c043e219d5a0accbd"
+  integrity sha512-LbeoEpzk1s2ob9iJll4k14LpBe1S+xfRHClpYZrtDjRR8fn7u66CUJgH2vGwkDiSXGbjsoXCrN7/TQyBQKk9MQ==
   dependencies:
     "@types/express-serve-static-core" "*"
 
