@@ -12,6 +12,7 @@ import { getIdportenPid, getTokenxAccessToken } from '../../security/tokenHelper
 import applicationService from '../../services/documents/applicationService';
 import { responseToError } from '../../utils/errorHandling';
 import { getFyllutUrl } from '../../utils/url';
+import { createFeltMapFromSubmission } from './helpers/feltMapBuilder';
 import { assembleSendInnSoknadBody, isNotFound, sanitizeInnsendingsId, validateInnsendingsId } from './helpers/sendInn';
 
 const { sendInnConfig } = config;
@@ -57,11 +58,13 @@ const sendInnUtfyltSoknad = {
 
       const applicationPdf = await applicationService.createPdfFromFieldMap(
         req.headers.PdfAccessToken as string,
-        form,
-        submission,
-        submissionMethod,
-        createTranslate(translation, language),
-        localizationUtils.getLanguageCodeAsIso639_1(language),
+        createFeltMapFromSubmission(
+          form,
+          submission,
+          submissionMethod,
+          createTranslate(translation, language),
+          localizationUtils.getLanguageCodeAsIso639_1(language),
+        ),
       );
 
       const pdfByteArray = Array.from(applicationPdf) ?? [];
