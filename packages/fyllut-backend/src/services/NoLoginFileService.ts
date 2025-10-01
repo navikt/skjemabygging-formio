@@ -29,9 +29,10 @@ class NoLoginFileService {
     const { sendInnConfig } = this._config;
 
     const fileBlob = new Blob([Uint8Array.from(file.buffer)], { type: file.mimetype });
+    const originalFileName = Buffer.from(file.originalname, 'latin1').toString('utf8');
 
     const form = new FormData();
-    form.append('filinnhold', fileBlob, file.originalname);
+    form.append('filinnhold', fileBlob, originalFileName);
 
     const targetUrl = `${sendInnConfig.host}${sendInnConfig.paths.nologinFile}?vedleggId=${attachmentId}${innsendingId ? `&innsendingId=${innsendingId}` : ''}`;
     const response = await fetch(targetUrl, {
