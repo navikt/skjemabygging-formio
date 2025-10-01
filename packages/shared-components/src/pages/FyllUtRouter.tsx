@@ -27,10 +27,10 @@ const FyllUtRouter = ({ form }: Props) => {
       <SendInnProvider>
         <Routes>
           <Route element={<FormLayout stepper={true} />}>
-            <Route path={'/oppsummering'} element={<SummaryPage />} />
+            <Route path="oppsummering" element={<SummaryPage />} />
             {submissionMethod === 'digitalnologin' && (
               <Route
-                path={'/vedlegg'}
+                path="vedlegg"
                 element={
                   <AttachmentUploadProvider>
                     <AttachmentsUploadPage />
@@ -38,15 +38,15 @@ const FyllUtRouter = ({ form }: Props) => {
                 }
               />
             )}
-            <Route path={'/:panelSlug'} element={<FillInFormPage />} />
+            <Route path=":panelSlug" element={<FillInFormPage />} />
           </Route>
           <Route element={<FormLayout />}>
-            <Route path={''} element={<IntroPage />} />
-            <Route path={'/legitimasjon'} element={<UploadPersonalIdPage />} />
-            <Route path={'/send-i-posten'} element={<PrepareLetterPage />} />
-            <Route path={'/ingen-innsending'} element={<PrepareIngenInnsendingPage />} />
-            <Route path={'/paabegynt'} element={<ActiveTasksPage />} />
-            <Route path={'/kvittering'} element={<ReceiptPage />} />
+            <Route path="" element={<IntroPage />} />
+            <Route path="legitimasjon" element={<UploadPersonalIdPage />} />
+            <Route path="send-i-posten" element={<PrepareLetterPage />} />
+            <Route path="ingen-innsending" element={<PrepareIngenInnsendingPage />} />
+            <Route path="paabegynt" element={<ActiveTasksPage />} />
+            <Route path="kvittering" element={<ReceiptPage />} />
           </Route>
         </Routes>
       </SendInnProvider>

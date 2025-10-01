@@ -10,10 +10,10 @@ export const FormsRouter = () => {
 
   return (
     <Routes>
-      <Route path="/" element={<FormsListPage />} />
-      <Route path={'/new'} element={<NewFormPage />} />
+      <Route path="" element={<FormsListPage />} />
+      <Route path="new" element={<NewFormPage />} />
       <Route
-        path={'/:formPath/*'}
+        path=":formPath/*"
         element={
           <FormProvider featureToggles={featureToggles}>
             <FormPage />
