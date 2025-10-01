@@ -1,36 +1,36 @@
 import { SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
-interface Validator<Target> {
-  validate: (label: string, target?: Target) => string | undefined;
+interface AttachmentValidator {
+  validate: (label: string, attachment?: SubmissionAttachment) => string | undefined;
 }
 
-const validateValue = (attachment?: SubmissionAttachment) => {
-  if (!attachment?.value) {
-    return 'required';
-  }
-  if (attachment?.value && attachment.value === 'leggerVedNaa' && (attachment.files ?? [])?.length === 0) {
-    return 'fileMissing';
-  }
-};
+type Rule = 'value' | 'fileUploaded' | 'otherDocumentationTitle';
 
-const validateOtherDocumentationTitle = (attachment?: SubmissionAttachment) =>
+const isValidValue = (attachment?: SubmissionAttachment) => !!attachment?.value;
+
+const isFileUploaded = (attachment?: SubmissionAttachment) =>
+  attachment?.value === 'leggerVedNaa' && (attachment.files ?? [])?.length === 0;
+
+const isValidOtherAttachmentTitle = (attachment?: SubmissionAttachment) =>
   attachment?.type === 'other' && attachment.value === 'leggerVedNaa' && !attachment?.title;
 
 const attachmentValidator = (
   translate: (text: string, params?: Record<string, string>) => string,
-): Validator<SubmissionAttachment> => ({
+  rules: Rule[] = ['value', 'fileUploaded', 'otherDocumentationTitle'],
+): AttachmentValidator => ({
   validate: (label: string, attachment?: SubmissionAttachment) => {
-    const valueError = validateValue(attachment);
-    if (valueError) {
-      return translate(valueError, { field: translate(label) });
+    if (rules.includes('value') && !isValidValue(attachment)) {
+      return translate('required', { field: translate(label) });
     }
-    if (validateOtherDocumentationTitle(attachment)) {
+    if (rules.includes('fileUploaded') && !isFileUploaded(attachment)) {
+      return translate('fileMissing', { field: translate(label) });
+    }
+    if (rules.includes('otherDocumentationTitle') && !isValidOtherAttachmentTitle(attachment)) {
       return translate('required', { field: translate(TEXTS.statiske.attachment.attachmentTitle) });
     }
-
     return undefined;
   },
 });
 
-export type AttachmentValidator = Validator<SubmissionAttachment>;
 export { attachmentValidator };
+export type { AttachmentValidator };

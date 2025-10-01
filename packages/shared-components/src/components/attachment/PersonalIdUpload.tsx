@@ -28,7 +28,7 @@ const PersonalIdUpload = ({ refs }: { refs?: any }) => {
     changeAttachmentValue(
       { attachmentId, navId: attachmentId, type: 'personal-id' },
       { value: value.key, title },
-      attachmentValidator(translate),
+      attachmentValidator(translate, ['value']),
     );
   };
 

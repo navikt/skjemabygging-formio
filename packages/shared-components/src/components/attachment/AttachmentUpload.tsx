@@ -14,6 +14,7 @@ import { useLanguages } from '../../context/languages';
 import FileUploader from '../file-uploader/FileUploader';
 import Attachment from './Attachment';
 import { useAttachmentUpload } from './AttachmentUploadContext';
+import { attachmentValidator } from './attachmentValidator';
 import { useAttachmentStyles } from './styles';
 
 interface Props {
@@ -41,6 +42,7 @@ const AttachmentUpload = ({
   const { form } = useForm();
   const attachment = submissionAttachments.find((attachment) => attachment.attachmentId.startsWith(componentId));
 
+  const validator = attachmentValidator(translate, ['value']);
   const uploadedAttachmentFiles = attachment?.files ?? [];
   const options = attachmentUtils.mapKeysToOptions(attachmentValues, translate);
   const uploadSelected = !!options.find((option) => option.value === attachment?.value)?.upload;
@@ -50,6 +52,7 @@ const AttachmentUpload = ({
     changeAttachmentValue(
       { attachmentId, navId: componentId, type },
       { value: value.key, additionalDocumentation: value.additionalDocumentation },
+      validator,
     );
   };
 
