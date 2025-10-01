@@ -1,5 +1,5 @@
 import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router';
 import AttachmentUploadProvider from '../components/attachment/AttachmentUploadContext';
 import { useAppConfig } from '../context/config/configContext';
 import { FormProvider } from '../context/form/FormContext';

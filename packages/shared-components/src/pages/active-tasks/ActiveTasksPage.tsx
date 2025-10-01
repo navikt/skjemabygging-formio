@@ -2,7 +2,7 @@ import { DocPencilIcon, FileExportIcon, PencilIcon } from '@navikt/aksel-icons';
 import { BodyShort, Heading } from '@navikt/ds-react';
 import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router';
 
 import { getActiveTasks, Soknad } from '../../api/active-tasks/activeTasks';
 import CancelButton from '../../components/button/navigation/cancel/CancelButton';

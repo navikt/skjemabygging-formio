@@ -1,6 +1,6 @@
 import { ArrowLeftIcon } from '@navikt/aksel-icons';
 import { NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 import { useLanguages } from '../../../../context/languages';
 import { findFormStartingPoint, PanelValidation } from '../../../../util/form/panel-validation/panelValidation';
 import LinkButton from '../../../link-button/LinkButton';

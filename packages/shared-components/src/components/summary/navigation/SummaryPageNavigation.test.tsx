@@ -2,7 +2,7 @@ import { NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import nock from 'nock';
-import { RouterProvider, createMemoryRouter } from 'react-router-dom';
+import { RouterProvider, createMemoryRouter } from 'react-router';
 import { defaultFormWithAttachment } from '../../../../test/test-data/form/data';
 import { Buttons, formWithProperties, getButtons } from '../../../../test/util/helpers';
 import { AppConfigContextType, AppConfigProvider } from '../../../context/config/configContext';
@@ -11,8 +11,8 @@ import { SendInnProvider } from '../../../context/sendInn/sendInnContext';
 import { PanelValidation } from '../../../util/form/panel-validation/panelValidation';
 import SummaryPageNavigation, { Props } from './SummaryPageNavigation';
 
-vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual<object>('react-router-dom');
+vi.mock('react-router', async () => {
+  const actual = await vi.importActual<object>('react-router');
   const params = new URLSearchParams();
   params.set('innsendingsId', '6895e72c-bd59-4964-a098-822c4a83799c');
   params.set('lang', 'nb');

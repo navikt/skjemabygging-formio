@@ -1,4 +1,4 @@
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router';
 
 const useLanguageCodeFromURL = () => {
   // Language code in skjemabygger URL

@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router';
 import { AppLayout } from '../components/AppLayout';
 import MigrationFormPreview from './MigrationFormPreview';
 import MigrationPage from './MigrationPage';

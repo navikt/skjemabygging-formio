@@ -2,7 +2,7 @@ import { ArrowLeftIcon, ArrowRightIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useState } from 'react';
-import { To, useLocation } from 'react-router-dom';
+import { To, useLocation } from 'react-router';
 import { useLanguages } from '../../../context/languages';
 import { useSendInn } from '../../../context/sendInn/sendInnContext';
 import SaveAndDeleteButtons from '../../button/navigation/save-and-delete/SaveAndDeleteButtons';

@@ -1,7 +1,7 @@
 import { AppConfigProvider } from '@navikt/skjemadigitalisering-shared-components';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import ImportFormsPage from './ImportFormsPage';
 import { mockImplementation } from './testdata/fetch-mock-implementation';
 

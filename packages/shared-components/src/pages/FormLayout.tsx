@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router';
 import { FormContainer } from '../components/form/container/FormContainer';
 import FormStepper from '../components/form/form-stepper/FormStepper';
 import { FormTitle } from '../components/form/form-title/FormTitle';

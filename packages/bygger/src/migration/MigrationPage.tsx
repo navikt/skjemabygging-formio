@@ -2,7 +2,7 @@ import { Button, Heading, Pagination, ToggleGroup } from '@navikt/ds-react';
 import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import { Form, MigrationLevel, paginationUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo, useReducer, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router';
 import { FormMigrationLogData } from '../../types/migration';
 import UserFeedback from '../components/UserFeedback';
 import Column from '../components/layout/Column';

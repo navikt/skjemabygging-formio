@@ -1,7 +1,7 @@
 import { NavFormType, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import { http } from '../../index';
 import { AppConfigProvider } from '../config/configContext';
 import { FormProvider } from '../form/FormContext';

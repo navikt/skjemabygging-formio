@@ -1,7 +1,7 @@
 import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import classNames from 'classnames';
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router';
 
 interface Props {
   children: React.ReactNode;

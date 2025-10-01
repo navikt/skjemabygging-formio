@@ -1,7 +1,7 @@
 import { BodyShort, Button, Heading, Link } from '@navikt/ds-react';
 import { useLanguageCodeFromURL, useLanguages } from '@navikt/skjemadigitalisering-shared-components';
 import { stringUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 import { PATHS } from '../../../util/paths';
 
 export function FormNotFoundContent() {

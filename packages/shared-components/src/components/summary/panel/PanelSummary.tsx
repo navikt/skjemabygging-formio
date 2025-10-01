@@ -1,7 +1,7 @@
 import { ExclamationmarkTriangleFillIcon } from '@navikt/aksel-icons';
 import { Accordion, Link } from '@navikt/ds-react';
 import { SummaryPanel, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { Link as ReactRouterLink, useLocation } from 'react-router-dom';
+import { Link as ReactRouterLink, useLocation } from 'react-router';
 import { useLanguages } from '../../../context/languages';
 import makeStyles from '../../../util/styles/jss/jss';
 import ComponentSummary from '../component/ComponentSummary';

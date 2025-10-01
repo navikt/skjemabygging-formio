@@ -49,7 +49,7 @@ export default defineConfig(({ mode }) => {
         external: [
           'react',
           'react-dom',
-          'react-router-dom',
+          'react-router',
           'react-jss',
           '@navikt/ds-css',
           '@navikt/ds-icons',

@@ -1,6 +1,6 @@
 import { Language, MellomlagringError, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import React, { createContext, useCallback, useContext, useEffect, useReducer, useState } from 'react';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router';
 import { postNologinSoknad } from '../../api/sendinn/nologin';
 import {
   createSoknad,

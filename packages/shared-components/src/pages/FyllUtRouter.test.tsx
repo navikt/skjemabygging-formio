@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { createMemoryRouter, RouterProvider } from 'react-router-dom';
+import { createMemoryRouter, RouterProvider } from 'react-router';
 import { setupNavFormio } from '../../test/navform-render';
 import { form, translationsForNavForm } from '../../test/test-data/form/skjema-med-oversettelser';
 import { languagesInOriginalLanguage } from '../components/language-selector/fyllut/FyllUtLanguageSelector';
@@ -11,8 +11,8 @@ import FyllUtRouter from './FyllUtRouter';
 
 const mockFormPath = `/${form.path}`;
 const firstPanelSlug = getPanelSlug(form, 0);
-vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual<object>('react-router-dom');
+vi.mock('react-router', async () => {
+  const actual = await vi.importActual<object>('react-router');
   return {
     ...actual,
     useResolvedPath: () => ({

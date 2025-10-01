@@ -2,7 +2,7 @@ import { ArrowLeftIcon, ArrowRightIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { MouseEvent } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router';
 import { useAttachmentUpload } from '../../components/attachment/AttachmentUploadContext';
 import { attachmentValidator } from '../../components/attachment/attachmentValidator';
 import { useLanguages } from '../../context/languages';

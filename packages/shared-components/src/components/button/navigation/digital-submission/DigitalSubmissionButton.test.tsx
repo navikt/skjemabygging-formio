@@ -2,7 +2,7 @@ import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import nock from 'nock';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import { AppConfigContextType, AppConfigProvider } from '../../../../context/config/configContext';
 import { FormProvider } from '../../../../context/form/FormContext';
 import { LanguagesProvider } from '../../../../context/languages';
@@ -15,8 +15,8 @@ vi.mock('../../context/languages/hooks/useLanguageCodeFromURL', () => {
   };
 });
 
-vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual<object>('react-router-dom');
+vi.mock('react-router', async () => {
+  const actual = await vi.importActual<object>('react-router');
   const params = new URLSearchParams();
   params.set('innsendingsId', '6895e72c-bd59-4964-a098-822c4a83799c');
   params.set('lang', 'nb');

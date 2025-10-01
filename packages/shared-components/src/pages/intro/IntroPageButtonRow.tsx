@@ -1,7 +1,7 @@
 import { ArrowLeftIcon, ArrowRightIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { TEXTS, Tkey } from '@navikt/skjemadigitalisering-shared-domain';
-import { useNavigate, useResolvedPath, useSearchParams } from 'react-router-dom';
+import { useNavigate, useResolvedPath, useSearchParams } from 'react-router';
 import { useLanguages } from '../../context/languages';
 import { useIntroPage } from './IntroPageContext';
 

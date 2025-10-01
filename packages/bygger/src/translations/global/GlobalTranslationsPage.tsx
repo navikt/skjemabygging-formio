@@ -1,6 +1,6 @@
 import { FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import { AppLayout } from '../../components/AppLayout';
 import RowLayout from '../../components/layout/RowLayout';
 import SidebarLayout from '../../components/layout/SidebarLayout';

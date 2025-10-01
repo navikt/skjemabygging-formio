@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router';
 import GlobalTranslationsProvider from './context/translations/GlobalTranslationsContext';
 import { FormsRouter } from './Forms';
 import ImportFormsPage from './import/ImportFormsPage';
