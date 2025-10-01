@@ -179,7 +179,7 @@ describe('Basic form', () => {
       });
 
       it('select submission method digital - fill in - go to summary - edit form - navigate back to summary', () => {
-        cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigital }).click();
+        cy.clickSendDigital();
         cy.findByRole('heading', { name: TEXTS.statiske.introPage.title });
         cy.clickStart();
         cy.wait('@createMellomlagring');
