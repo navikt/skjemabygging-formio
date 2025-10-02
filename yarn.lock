@@ -3329,6 +3329,11 @@ dayjs@^1.10.4:
   resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.11.13.tgz#92430b0139055c3ebb60150aa13e860a4b5a366c"
   integrity sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==
 
+debounce@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/debounce/-/debounce-2.2.0.tgz#f895fa2fbdb579a0f0d3dcf5dde19657e50eaad5"
+  integrity sha512-Xks6RUDLZFdz8LIdR6q0MTH44k7FikOmnh5xkSjMig6ch45afc8sjTjRQf3P6ax8dMgcQrYO/AR2RGWURrruqw==
+
 debug@2.6.9:
   version "2.6.9"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.9.tgz#5d128515df134ff327e90a4c93f4e077a536341f"
@@ -8671,13 +8676,14 @@ vite-plugin-html@^3.2.2:
     node-html-parser "^5.3.3"
     pathe "^0.2.0"
 
-vite-plugin-node@^5.0.1:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/vite-plugin-node/-/vite-plugin-node-5.0.1.tgz#9d96383d2193d005ae0c0c5223372d0ebd094f00"
-  integrity sha512-xdR4UW1h2ZM1wBf4pjwzuty/mX6F/GViB8h1iqOpxr81pa5OuWb3IJghl66v4e7Srsi2p5o22n9G7G46FeZK9Q==
+vite-plugin-node@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/vite-plugin-node/-/vite-plugin-node-7.0.0.tgz#355c56e17d07f363ee9809604843b5b63ac52d3c"
+  integrity sha512-FZqTHvCXUu+U8i6qMtlZCrEvlelUioEf6J4S77XHpZk73frveqKVot60W0hpbffv5OMECXYwP/LAiTGAOLN4/g==
   dependencies:
     "@rollup/pluginutils" "^4.1.1"
     chalk "^4.1.2"
+    debounce "^2.2.0"
     debug "^4.3.2"
 
 vite-plugin-static-copy@^3.1.2:
