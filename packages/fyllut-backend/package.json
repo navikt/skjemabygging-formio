@@ -46,7 +46,7 @@
     "@types/cookie-parser": "^1.4.9",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
-    "@types/express-correlation-id": "^1.2.6",
+    "@types/express-correlation-id": "^3.0.0",
     "@types/jsonwebtoken": "9.0.10",
     "@types/multer": "^1.4.13",
     "@types/mustache-express": "^1.2.5",
