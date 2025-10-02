@@ -16,12 +16,12 @@
   },
   "dependencies": {
     "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
-    "@octokit/auth-app": "^8.1.0",
+    "@octokit/auth-app": "^8.1.1",
     "@octokit/rest": "^22.0.0",
     "@octokit/webhooks-types": "^7.6.1",
     "bcryptjs": "^3.0.2",
     "csv-stringify": "^6.6.0",
-    "dotenv": "^17.2.2",
+    "dotenv": "^17.2.3",
     "express": "^4.21.2",
     "express-correlation-id": "^3.0.1",
     "express-rate-limit": "^8.1.0",
@@ -32,7 +32,7 @@
     "node-jose": "^2.2.0",
     "pusher": "^5.2.0",
     "uuid": "^11.1.0",
-    "winston": "^3.17.0"
+    "winston": "^3.18.3"
   },
   "devDependencies": {
     "@types/bcryptjs": "^3.0.0",
@@ -42,7 +42,7 @@
     "@types/jsonwebtoken": "9.0.10",
     "@types/luxon": "^3.7.1",
     "@types/memorystream": "^0.3.4",
-    "@types/node": "^24.5.2",
+    "@types/node": "^24.6.2",
     "@types/node-fetch": "^2.6.13",
     "@types/node-jose": "^1.1.13",
     "@types/uuid": "^10.0.0",
