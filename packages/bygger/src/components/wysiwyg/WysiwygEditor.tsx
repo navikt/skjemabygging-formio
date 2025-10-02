@@ -52,7 +52,6 @@ const WysiwygEditor = forwardRef<HTMLDivElement, Props>(({ defaultValue, onBlur,
     } else {
       setHtmlValue(`<p>${value}</p>`);
     }
-    onBlur(event.target.value);
   };
 
   const handleBlur = () => {

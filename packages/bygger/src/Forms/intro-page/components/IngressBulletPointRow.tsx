@@ -6,7 +6,6 @@ import { IntroPageRefs } from '../validation/useIntroPageRefs';
 import { IntroPageError } from '../validation/validation';
 import { AddButton } from './AddButton';
 import { FormIntroPageWysiwygEditor } from './FormIntroPageWysiwygEditor';
-import { TextareaField } from './TextareaField';
 
 interface IngressBulletPointRowProps {
   field: keyof IntroPage['sections'];
@@ -71,7 +70,7 @@ export function IngressBulletPointRow({
       {!!sectionField?.bulletPoints?.length && (
         <>
           {bulletPoints.map((value, index) => (
-            <TextareaField
+            <FormIntroPageWysiwygEditor
               key={index}
               label="Kulepunkt"
               defaultValue={getKeyBasedText(value)}

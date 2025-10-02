@@ -98,35 +98,37 @@ describe('FormSettingsPage', () => {
       cy.get('[data-testid="scope"]').within(() => {
         cy.findByRole('radio', { name: 'Her kan du søke om' }).check();
         cy.contains('button', 'Legg til ingress').click();
-        cy.get('.rsw-editor [contenteditable="true"]').type(submitData.introPage.sections.scope.description);
+        cy.get('.rsw-editor [contenteditable="true"]').eq(0).type(submitData.introPage.sections.scope.description);
         cy.contains('Legg til punktliste').click();
-        cy.findByRole('textbox', { name: 'Kulepunkt' }).type(submitData.introPage.sections.scope.bulletPoints[0]);
+        cy.get('.rsw-editor [contenteditable="true"]').eq(1).type(submitData.introPage.sections.scope.bulletPoints[0]);
         cy.contains('Legg til kulepunkt').click();
-        cy.findAllByRole('textbox', { name: 'Kulepunkt' })
-          .eq(1)
-          .type(submitData.introPage.sections.scope.bulletPoints[1]);
+        cy.get('.rsw-editor [contenteditable="true"]').eq(2).type(submitData.introPage.sections.scope.bulletPoints[1]);
       });
 
       cy.get('[data-testid="out-of-scope"]').within(() => {
         cy.findByRole('radio', { name: 'Her kan du ikke' }).check();
         cy.contains('button', 'Legg til ingress').click();
-        cy.get('.rsw-editor [contenteditable="true"]').type(submitData.introPage.sections.outOfScope.description);
+        cy.get('.rsw-editor [contenteditable="true"]').eq(0).type(submitData.introPage.sections.outOfScope.description);
         cy.contains('Legg til punktliste').click();
-        cy.findByRole('textbox', { name: 'Kulepunkt' }).type(submitData.introPage.sections.outOfScope.bulletPoints[0]);
-        cy.contains('Legg til kulepunkt').click();
-        cy.findAllByRole('textbox', { name: 'Kulepunkt' })
+        cy.get('.rsw-editor [contenteditable="true"]')
           .eq(1)
+          .type(submitData.introPage.sections.outOfScope.bulletPoints[0]);
+        cy.contains('Legg til kulepunkt').click();
+        cy.get('.rsw-editor [contenteditable="true"]')
+          .eq(2)
           .type(submitData.introPage.sections.outOfScope.bulletPoints[1]);
       });
 
       cy.get('[data-testid="prerequisites"]').within(() => {
         cy.findByRole('radio', { name: 'Før du søker' }).check();
         cy.contains('button', 'Legg til ingress').click();
-        cy.get('.rsw-editor [contenteditable="true"]').type(submitData.introPage.sections.prerequisites.description);
+        cy.get('.rsw-editor [contenteditable="true"]')
+          .eq(0)
+          .type(submitData.introPage.sections.prerequisites.description);
         cy.contains('Legg til punktliste').click();
-        cy.findByRole('textbox', { name: 'Kulepunkt' }).type(
-          submitData.introPage.sections.prerequisites.bulletPoints[0],
-        );
+        cy.get('.rsw-editor [contenteditable="true"]')
+          .eq(1)
+          .type(submitData.introPage.sections.prerequisites.bulletPoints[0]);
       });
 
       cy.get('[data-testid="dataDisclosure"]').within(() => {
@@ -140,40 +142,44 @@ describe('FormSettingsPage', () => {
       cy.get('[data-testid="dataTreatment"]').within(() => {
         cy.contains('Legg til ingress').click();
         cy.contains('Legg til punktliste').click();
-        cy.get('.rsw-editor [contenteditable="true"]').type(submitData.introPage.sections.dataTreatment.description);
-        cy.findByRole('textbox', { name: 'Kulepunkt' }).type(
-          submitData.introPage.sections.dataTreatment.bulletPoints[0],
-        );
-        cy.contains('Legg til kulepunkt').click();
-        cy.findAllByRole('textbox', { name: 'Kulepunkt' })
+        cy.get('.rsw-editor [contenteditable="true"]')
+          .eq(0)
+          .type(submitData.introPage.sections.dataTreatment.description);
+        cy.get('.rsw-editor [contenteditable="true"]')
           .eq(1)
+          .type(submitData.introPage.sections.dataTreatment.bulletPoints[0]);
+        cy.contains('Legg til kulepunkt').click();
+        cy.get('.rsw-editor [contenteditable="true"]')
+          .eq(2)
           .type(submitData.introPage.sections.dataTreatment.bulletPoints[1]);
       });
 
       cy.get('[data-testid="automaticProcessing"]').within(() => {
         cy.contains('Legg til ingress').click();
-        cy.get('.rsw-editor [contenteditable="true"]').type(
-          submitData.introPage.sections.automaticProcessing.description,
-        );
+        cy.get('.rsw-editor [contenteditable="true"]')
+          .eq(0)
+          .type(submitData.introPage.sections.automaticProcessing.description);
         cy.contains('Legg til punktliste').click();
-        cy.findByRole('textbox', { name: 'Kulepunkt' }).type(
-          submitData.introPage.sections.automaticProcessing.bulletPoints[0],
-        );
-        cy.contains('Legg til kulepunkt').click();
-        cy.findAllByRole('textbox', { name: 'Kulepunkt' })
+        cy.get('.rsw-editor [contenteditable="true"]')
           .eq(1)
+          .type(submitData.introPage.sections.automaticProcessing.bulletPoints[0]);
+        cy.contains('Legg til kulepunkt').click();
+        cy.get('.rsw-editor [contenteditable="true"]')
+          .eq(2)
           .type(submitData.introPage.sections.automaticProcessing.bulletPoints[1]);
       });
 
       cy.get('[data-testid="optional"]').within(() => {
         cy.findByRole('textbox', { name: 'Overskrift' }).type(submitData.introPage.sections.optional.title);
         cy.contains('Legg til ingress').click();
-        cy.get('.rsw-editor [contenteditable="true"]').type(submitData.introPage.sections.optional.description);
+        cy.get('.rsw-editor [contenteditable="true"]').eq(0).type(submitData.introPage.sections.optional.description);
         cy.contains('Legg til punktliste').click();
-        cy.findByRole('textbox', { name: 'Kulepunkt' }).type(submitData.introPage.sections.optional.bulletPoints[0]);
-        cy.contains('Legg til kulepunkt').click();
-        cy.findAllByRole('textbox', { name: 'Kulepunkt' })
+        cy.get('.rsw-editor [contenteditable="true"]')
           .eq(1)
+          .type(submitData.introPage.sections.optional.bulletPoints[0]);
+        cy.contains('Legg til kulepunkt').click();
+        cy.get('.rsw-editor [contenteditable="true"]')
+          .eq(2)
           .type(submitData.introPage.sections.optional.bulletPoints[1]);
       });
 
@@ -213,7 +219,7 @@ describe('FormSettingsPage', () => {
           submitData.introPage.sections.optional.bulletPoints[0],
           submitData.introPage.sections.optional.bulletPoints[1],
         ].forEach((value, index) => {
-          expect(posts[index].request.body.nb.replace(/<[^>]*>/g, '')).to.equal(value);
+          expect(posts[index].request.body.nb).to.contain(value);
         });
       });
       cy.get('[aria-live="polite"]').should('contain.text', `Lagret skjema ${submitData.title}`);
@@ -252,21 +258,23 @@ describe('FormSettingsPage', () => {
         cy.contains('button', 'Legg til ingress').click();
         cy.get('.rsw-editor [contenteditable="true"]').type(submitData.introPage.sections.prerequisites.description);
         cy.contains('Legg til punktliste').click();
-        cy.findByRole('textbox', { name: 'Kulepunkt' }).type(
-          submitData.introPage.sections.prerequisites.bulletPoints[0],
-        );
+        cy.get('.rsw-editor [contenteditable="true"]')
+          .eq(1)
+          .type(submitData.introPage.sections.prerequisites.bulletPoints[0]);
       });
 
       cy.get('[data-testid="dataTreatment"]').within(() => {
         cy.contains('Legg til ingress').click();
         cy.contains('Legg til punktliste').click();
-        cy.get('.rsw-editor [contenteditable="true"]').type(submitData.introPage.sections.dataTreatment.description);
-        cy.findByRole('textbox', { name: 'Kulepunkt' }).type(
-          submitData.introPage.sections.dataTreatment.bulletPoints[0],
-        );
-        cy.contains('Legg til kulepunkt').click();
-        cy.findAllByRole('textbox', { name: 'Kulepunkt' })
+        cy.get('.rsw-editor [contenteditable="true"]')
+          .eq(0)
+          .type(submitData.introPage.sections.dataTreatment.description);
+        cy.get('.rsw-editor [contenteditable="true"]')
           .eq(1)
+          .type(submitData.introPage.sections.dataTreatment.bulletPoints[0]);
+        cy.contains('Legg til kulepunkt').click();
+        cy.get('.rsw-editor [contenteditable="true"]')
+          .eq(2)
           .type(submitData.introPage.sections.dataTreatment.bulletPoints[1]);
       });
 
@@ -282,17 +290,23 @@ describe('FormSettingsPage', () => {
 
       cy.contains('Lagre').click();
       cy.wait(Array(6).fill('@postTranslations')).spread((post1, post2, post3, post4, post5, post6) => {
-        expect(post1.request.body).to.contain({ nb: `<p>${submitData.introPage.introduction}</p>` });
+        expect(post1.request.body).to.contain({
+          nb: `<p>${submitData.introPage.introduction}</p>`,
+        });
         expect(post2.request.body).to.contain({
           nb: `<p>${submitData.introPage.sections.prerequisites.description}</p>`,
         });
-        expect(post3.request.body).to.contain({ nb: submitData.introPage.sections.prerequisites.bulletPoints[0] });
+        expect(post3.request.body).to.contain({
+          nb: `<p>${submitData.introPage.sections.prerequisites.bulletPoints[0]}</p>`,
+        });
         expect(post4.request.body).to.contain({
           nb: `<p>${submitData.introPage.sections.dataTreatment.description}</p>`,
         });
-        expect(post5.request.body).to.contain({ nb: submitData.introPage.sections.dataTreatment.bulletPoints[0] });
+        expect(post5.request.body).to.contain({
+          nb: `<p>${submitData.introPage.sections.dataTreatment.bulletPoints[0]}</p>`,
+        });
         expect(post6.request.body).to.contain({
-          nb: submitData.introPage.sections.dataTreatment.bulletPoints[1],
+          nb: `<p>${submitData.introPage.sections.dataTreatment.bulletPoints[1]}</p>`,
         });
       });
       cy.get('[aria-live="polite"]').should('contain.text', `Lagret skjema ${submitData.title}`);
@@ -434,7 +448,7 @@ describe('FormSettingsPage', () => {
 
       cy.get('[data-testid="prerequisites"]').within(() => {
         cy.contains('Legg til punktliste').click();
-        cy.findByRole('textbox', { name: 'Kulepunkt' }).type(
+        cy.get('.rsw-editor [contenteditable="true"]').type(
           submitData.introPage.sections.prerequisites.bulletPoints[0],
         );
       });
@@ -442,12 +456,12 @@ describe('FormSettingsPage', () => {
       cy.get('[data-testid="scope"]').within(() => {
         cy.findByRole('radio', { name: 'Her kan du søke om' }).check();
         cy.contains('Legg til punktliste').click();
-        cy.findByRole('textbox', { name: 'Kulepunkt' }).type(submitData.introPage.sections.scope.bulletPoints[0]);
+        cy.get('.rsw-editor [contenteditable="true"]').type(submitData.introPage.sections.scope.bulletPoints[0]);
       });
 
       cy.get('[data-testid="out-of-scope"]').within(() => {
         cy.contains('Legg til punktliste').click();
-        cy.findByRole('textbox', { name: 'Kulepunkt' }).type(submitData.introPage.sections.outOfScope.bulletPoints[0]);
+        cy.get('.rsw-editor [contenteditable="true"]').type(submitData.introPage.sections.outOfScope.bulletPoints[0]);
       });
 
       cy.get('[data-testid="dataDisclosure"]').within(() => {
@@ -459,21 +473,21 @@ describe('FormSettingsPage', () => {
 
       cy.get('[data-testid="dataTreatment"]').within(() => {
         cy.contains('Legg til punktliste').click();
-        cy.findByRole('textbox', { name: 'Kulepunkt' }).type(
+        cy.get('.rsw-editor [contenteditable="true"]').type(
           submitData.introPage.sections.dataTreatment.bulletPoints[0],
         );
       });
 
       cy.get('[data-testid="automaticProcessing"]').within(() => {
         cy.contains('Legg til punktliste').click();
-        cy.findByRole('textbox', { name: 'Kulepunkt' }).type(
+        cy.get('.rsw-editor [contenteditable="true"]').type(
           submitData.introPage.sections.automaticProcessing.bulletPoints[0],
         );
       });
 
       cy.get('[data-testid="optional"]').within(() => {
         cy.contains('Legg til punktliste').click();
-        cy.findByRole('textbox', { name: 'Kulepunkt' }).type(submitData.introPage.sections.optional.bulletPoints[0]);
+        cy.get('.rsw-editor [contenteditable="true"]').type(submitData.introPage.sections.optional.bulletPoints[0]);
       });
 
       cy.contains('Lagre').click();
