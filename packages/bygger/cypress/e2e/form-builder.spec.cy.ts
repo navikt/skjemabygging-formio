@@ -80,7 +80,7 @@ describe('Form Builder', () => {
       cy.findByDisplayValue('N6').type('{selectall} T2   ');
       cy.findByDisplayValue('Annet').type('{selectall}  Last opp annen dokumentasjon  ');
       cy.get('[data-testid="editorSaveButton"]').click();
-      cy.findByRole('button', { name: 'Ok' }).click();
+      cy.findByRole('button', { name: 'Lagre' }).click();
       cy.wait('@putForm');
     });
 
@@ -97,7 +97,7 @@ describe('Form Builder', () => {
         cy.openEditComponentModal(cy.findByRole('textbox', { name: 'Fornavn2' }));
         cy.findByDisplayValue('Fornavn2').type('{selectall}Fornavn');
         cy.get('[data-testid="editorSaveButton"]').click();
-        cy.findByRole('button', { name: 'Ok' }).click();
+        cy.findByRole('button', { name: 'Lagre' }).click();
         cy.wait('@putForm');
         cy.findByText('Lagret skjema Skjema for testing av diff').should('be.visible');
       });
@@ -116,7 +116,7 @@ describe('Form Builder', () => {
         cy.openEditComponentModal(cy.findByRole('textbox', { name: 'Din fødselsdato (dd.mm.åååå)' }));
         cy.findByDisplayValue('Din fødselsdato (dd.mm.åååå)').type('{selectall}Din fødselsdato');
         cy.get('[data-testid="editorSaveButton"]').click();
-        cy.findByRole('button', { name: 'Ok' }).click();
+        cy.findByRole('button', { name: 'Lagre' }).click();
         cy.wait('@putForm');
         cy.findByText('Lagret skjema Skjema for testing av diff').should('be.visible');
       });
