@@ -32,6 +32,8 @@ declare global {
 
       clickShowAllSteps(): Chainable<JQuery<HTMLElement>>;
 
+      clickSendDigital(): Chainable<JQuery<HTMLElement>>;
+
       verifySendInnRedirect(): Chainable<JQuery<HTMLElement>>;
 
       defaultIntercepts(): Cypress.Chainable<JQuery<HTMLElement>>;

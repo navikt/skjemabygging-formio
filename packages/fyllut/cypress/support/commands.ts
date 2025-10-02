@@ -77,6 +77,16 @@ Cypress.Commands.add('clickShowAllSteps', () => {
   return cy.findByRoleWhenAttached('button', { name: TEXTS.grensesnitt.stepper.showAllSteps }, 500).click();
 });
 
+Cypress.Commands.add('clickSendDigital', () => {
+  const { sendDigital, sendDigitalLoggedIn } = TEXTS.grensesnitt.introPage;
+  return cy
+    .findAllByRole('link')
+    .filter((_, el) => [sendDigitalLoggedIn, sendDigital].includes(el.textContent?.trim() ?? ''))
+    .first()
+    .should('exist')
+    .click();
+});
+
 Cypress.Commands.add('verifySendInnRedirect', () => {
   return cy.origin(Cypress.env('SEND_INN_FRONTEND'), () => {
     cy.contains('Send Inn Frontend');
