@@ -4,7 +4,7 @@ import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
 import useKeyBasedText from '../../../hooks/useKeyBasedText';
 import { AddButton } from '../components/AddButton';
-import { TextareaField } from '../components/TextareaField';
+import { FormIntroPageWysiwygEditor } from '../components/FormIntroPageWysiwygEditor';
 import { TextFieldComponent } from '../components/TextFieldComponent';
 import {
   deleteImportantInformationKey,
@@ -33,6 +33,7 @@ export function ImportantInformation({ form, handleChange, errors, refMap }: Pro
 
   return (
     <SectionWrapper
+      data-testid="importantInformation"
       left={
         <Box>
           <Heading level="3" size="small" spacing>
@@ -55,7 +56,7 @@ export function ImportantInformation({ form, handleChange, errors, refMap }: Pro
               ref={refMap['importantInformation.title']}
             />
           )}
-          <TextareaField
+          <FormIntroPageWysiwygEditor
             label="Brødtekst"
             defaultValue={getKeyBasedText(form.introPage?.importantInformation?.description)}
             onChange={(value) => onChange(value, 'description')}

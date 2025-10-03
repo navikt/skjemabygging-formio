@@ -1,6 +1,6 @@
-import { htmlUtils, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { FieldsetErrorMessage, htmlUtils, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import classNames from 'classnames';
-import { useState } from 'react';
+import { forwardRef, useState } from 'react';
 import {
   BtnBold,
   BtnBulletList,
@@ -37,7 +37,7 @@ interface Props {
   autoFocus?: boolean;
 }
 
-const WysiwygEditor = ({ defaultValue, onBlur, error, autoFocus }: Props) => {
+const WysiwygEditor = forwardRef<HTMLDivElement, Props>(({ defaultValue, onBlur, error, autoFocus }, ref) => {
   const [htmlValue, setHtmlValue] = useState(defaultValue ?? '');
 
   const styles = useStyles();
@@ -72,6 +72,7 @@ const WysiwygEditor = ({ defaultValue, onBlur, error, autoFocus }: Props) => {
         onChange={handleChange}
         onBlur={handleBlur}
         containerProps={{ className: error ? classNames(styles.editor, styles.error) : styles.editor }}
+        data-testid="wysiwyg-editor"
       >
         <Toolbar>
           <TextTypeDropdown />
@@ -82,8 +83,9 @@ const WysiwygEditor = ({ defaultValue, onBlur, error, autoFocus }: Props) => {
           <BtnClearFormatting />
         </Toolbar>
       </Editor>
+      {error && typeof error === 'string' && <FieldsetErrorMessage errorMessage={error} ref={ref} />}
     </EditorProvider>
   );
-};
+});
 
 export default WysiwygEditor;
