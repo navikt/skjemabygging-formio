@@ -27,7 +27,7 @@ const DefaultSection = (props: PdfComponentProps) => {
   }
 
   return {
-    label: translate(title) ?? translate(label) ?? '',
+    label: title ? translate(title) : translate(label),
     verdiliste: componentValues,
   };
 };

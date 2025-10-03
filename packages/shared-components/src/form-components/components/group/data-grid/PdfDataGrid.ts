@@ -17,26 +17,23 @@ const PdfDataGrid = (props: PdfComponentProps) => {
     return null;
   }
 
-  return {
-    label: translate(label) ?? '',
-    verdiliste: dataGridValues?.map((_, index: number) => {
-      return {
-        label: `${index + 1}`,
-        verdiliste: components?.map((component) => {
-          const componentSubmissionPath = formComponentUtils.getComponentSubmissionPath(
-            component,
-            `${submissionPath}[${index}]`,
-          );
+  return dataGridValues?.map((_, index: number) => {
+    return {
+      label: `${translate(label)} ${index + 1}`,
+      verdiliste: components?.map((component) => {
+        const componentSubmissionPath = formComponentUtils.getComponentSubmissionPath(
+          component,
+          `${submissionPath}[${index}]`,
+        );
 
-          return renderPdfComponent({
-            ...props,
-            submissionPath: componentSubmissionPath,
-            component,
-          });
-        }),
-      };
-    }),
-  };
+        return renderPdfComponent({
+          ...props,
+          submissionPath: componentSubmissionPath,
+          component,
+        });
+      }),
+    };
+  });
 };
 
 export default PdfDataGrid;
