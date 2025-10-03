@@ -73,7 +73,7 @@ const FormStepper = () => {
         }}
       >
         {formSteps.map((step, index) => {
-          const stepUrl = `${formUrl}/${step.key}${search}`;
+          const stepUrl = `${step.key}${search}`;
           return (
             <FormProgress.Step
               onClick={(event) => {
@@ -85,7 +85,7 @@ const FormStepper = () => {
                   }
                 }
               }}
-              href={`${baseUrl}/${stepUrl}`}
+              href={`${baseUrl}/${formUrl}/${stepUrl}`}
               key={step.key}
             >
               {translate(step.label)}
