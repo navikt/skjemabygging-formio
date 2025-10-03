@@ -225,17 +225,15 @@ describe('MigrationPage', () => {
 
     describe('onClick', () => {
       beforeEach(async () => {
-        await waitFor(async () => {
-          setMigrateOptionInput('search-filters', 0, 'prop1', true);
-          setMigrateOptionInput('edit-options', 0, 'prop1', false);
-          fireEvent.click(screen.getByRole('button', { name: 'Simuler og kontroller migrering' }));
-          await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
-          fireEvent.click(screen.getAllByLabelText('Inkluder i migrering')[1]);
-          fireEvent.click(screen.getByRole('button', { name: 'Migrer' }));
-          const selectForMigration = await screen.findAllByRole('checkbox', { name: 'Inkluder i migrering' });
-          selectForMigration[0].click();
-          selectForMigration[1].click();
-        });
+        setMigrateOptionInput('search-filters', 0, 'prop1', true);
+        setMigrateOptionInput('edit-options', 0, 'prop1', false);
+        fireEvent.click(screen.getByRole('button', { name: 'Simuler og kontroller migrering' }));
+        await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
+        fireEvent.click(screen.getAllByLabelText('Inkluder i migrering')[1]);
+        fireEvent.click(screen.getByRole('button', { name: 'Migrer' }));
+        const selectForMigration = await screen.findAllByRole('checkbox', { name: 'Inkluder i migrering' });
+        selectForMigration[0].click();
+        selectForMigration[1].click();
       });
 
       it('opens a modal with info on which forms have been selected for migration', () => {
