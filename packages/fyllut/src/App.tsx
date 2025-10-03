@@ -22,9 +22,7 @@ const App = () => {
         <Route path="/" element={<FormsPage />} />
         <Route path="/500" element={<InternalServerErrorPage />} />
         <Route path="/soknad-ikke-funnet" element={<FormNotFoundPage />} />
-        <Route path="/:formPath">
-          <Route path="*" element={<FormPageWrapper />} />
-        </Route>
+        <Route path="/:formPath/*" element={<FormPageWrapper />} />
       </Routes>
     </main>
   );
