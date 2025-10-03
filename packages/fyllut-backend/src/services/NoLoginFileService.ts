@@ -95,11 +95,11 @@ class NoLoginFileService {
     nologinM2MAccessToken: string,
     innsendingId: string,
     form: NavFormType,
-    pdfFormData: any,
     submission: Submission,
     submissionMethod: string,
     translation: I18nTranslationMap = {},
     language: string,
+    pdfFormData?: any,
   ) {
     const lang = localizationUtils.getLanguageCodeAsIso639_1(language);
     const translate = translationUtils.createTranslate(translation, language);
