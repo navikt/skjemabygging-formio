@@ -8,7 +8,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import EventEmitter from 'eventemitter3';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { To, useLocation, useNavigate } from 'react-router-dom';
+import { To, useLocation, useNavigate } from 'react-router';
 import FormError from '../../components/form/FormError';
 import FormSavedStatus from '../../components/form/FormSavedStatus';
 import ConfirmationModal from '../../components/modal/confirmation/ConfirmationModal';

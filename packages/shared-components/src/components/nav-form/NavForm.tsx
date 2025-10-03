@@ -7,7 +7,7 @@ import {
   Webform,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { i18nUtils } from '../../index';

@@ -10,6 +10,7 @@ export const defaultFormProperties = {
 
 export const defaultForm = {
   title: 'Mitt testskjema',
+  path: 'testskjema',
   properties: {
     ...defaultFormProperties,
   },

@@ -1,6 +1,5 @@
 import { NavFormType, navFormUtils, PrefillData, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
-import { useResolvedPath } from 'react-router-dom';
 import { useAppConfig } from '../config/configContext';
 
 interface FormContextType {
@@ -25,7 +24,7 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
   const [formProgress, setFormProgress] = useState<boolean>(false);
   const [prefillData, setPrefillData] = useState<PrefillData>({});
   const { http, baseUrl, submissionMethod } = useAppConfig();
-  const formUrl = useResolvedPath('').pathname;
+  const formUrl = form.path;
 
   useEffect(() => {
     const loadPrefillData = async (navForm: NavFormType) => {

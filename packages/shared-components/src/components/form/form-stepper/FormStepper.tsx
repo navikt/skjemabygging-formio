@@ -1,7 +1,7 @@
 import { FormProgress } from '@navikt/ds-react';
 import { navFormUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import { useAppConfig } from '../../../context/config/configContext';
 import { useForm } from '../../../context/form/FormContext';
 import { useLanguages } from '../../../context/languages';
@@ -79,13 +79,13 @@ const FormStepper = () => {
               onClick={(event) => {
                 event.preventDefault();
                 if (getActiveStepper() !== index) {
-                  navigate(stepUrl);
+                  navigate(`../${stepUrl}`);
                   if (screenSmall) {
                     setFormProgress(false);
                   }
                 }
               }}
-              href={`${baseUrl}${stepUrl}`}
+              href={`${baseUrl}/${stepUrl}`}
               key={step.key}
             >
               {translate(step.label)}

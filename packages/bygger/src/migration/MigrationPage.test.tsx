@@ -1,6 +1,6 @@
 import { Operator } from '@navikt/skjemadigitalisering-shared-domain';
 import { fireEvent, getAllByLabelText, render, screen, waitFor, within } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import { DryRunResults, FormMigrationLogData } from '../../types/migration';
 import FeedbackProvider from '../context/notifications/FeedbackContext';
 import MigrationPage from './MigrationPage';
