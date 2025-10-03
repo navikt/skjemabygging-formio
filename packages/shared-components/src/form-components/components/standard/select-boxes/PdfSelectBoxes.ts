@@ -24,6 +24,7 @@ const PdfSelectBoxes = ({ component, submissionPath, formContext, languagesConte
     verdiliste: valueObjects.map((boxValue) => {
       return { verdi: boxValue };
     }),
+    visningsVariant: 'PUNKTLISTE',
   };
 };
 

@@ -1,7 +1,7 @@
 import { PdfComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 
-const DefaultAnswer = ({ component, submissionPath, formContext, languagesContext }: PdfComponentProps) => {
+const DefaultListAnswer = ({ component, submissionPath, formContext, languagesContext }: PdfComponentProps) => {
   const { values, label } = component;
   const { submission } = formContext;
   const { translate } = languagesContext;
@@ -20,8 +20,7 @@ const DefaultAnswer = ({ component, submissionPath, formContext, languagesContex
   return {
     label: translate(label),
     verdi: translate(valueObject.label),
-    visningsVariant: 'PUNKTLISTE',
   };
 };
 
-export default DefaultAnswer;
+export default DefaultListAnswer;

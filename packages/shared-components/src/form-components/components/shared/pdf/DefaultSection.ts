@@ -4,7 +4,7 @@ import formComponentUtils from '../../../utils/formComponent';
 
 const DefaultSection = (props: PdfComponentProps) => {
   const { component, submissionPath, languagesContext } = props;
-  const { title, label, components } = component;
+  const { title, label, legend, components } = component;
   const { translate } = languagesContext;
 
   if (!components || components.length === 0) {
@@ -27,7 +27,7 @@ const DefaultSection = (props: PdfComponentProps) => {
   }
 
   return {
-    label: title ? translate(title) : translate(label),
+    label: title ? translate(title) : legend ? translate(legend) : translate(label),
     verdiliste: componentValues,
   };
 };

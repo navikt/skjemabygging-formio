@@ -18,8 +18,13 @@ const PdfIntroPage = ({ formContext, languagesContext }: Props) => {
   const inputLabel: Tkey = 'introPage.selfDeclaration.inputLabel';
 
   return {
-    label: translate(inputLabel),
-    value: submission?.selfDeclaration ? translate(TEXTS.common.yes) : '-',
+    label: translate(TEXTS.grensesnitt.introPage.title),
+    verdiliste: [
+      {
+        label: translate(inputLabel),
+        value: submission?.selfDeclaration ? translate(TEXTS.common.yes) : '-',
+      },
+    ],
   };
 };
 
