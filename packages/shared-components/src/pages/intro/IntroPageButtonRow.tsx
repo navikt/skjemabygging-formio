@@ -1,7 +1,7 @@
 import { ArrowLeftIcon, ArrowRightIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { TEXTS, Tkey } from '@navikt/skjemadigitalisering-shared-domain';
-import { useNavigate, useResolvedPath, useSearchParams } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 import { useLanguages } from '../../context/languages';
 import { useIntroPage } from './IntroPageContext';
 
@@ -9,7 +9,6 @@ const IntroPageButtonRow = () => {
   const navigate = useNavigate();
   const { translate } = useLanguages();
   const [searchParams] = useSearchParams();
-  const formUrl = useResolvedPath('').pathname;
   const { form, selfDeclaration, setError } = useIntroPage();
 
   const validationError: Tkey = 'introPage.selfDeclaration.validationError';
@@ -32,7 +31,7 @@ const IntroPageButtonRow = () => {
         as="a"
         onClick={navigateToFormPage}
         role="link"
-        {...{ href: `${formUrl}?${searchParams.toString()}` }}
+        {...{ href: `${form.path}?${searchParams.toString()}` }}
       >
         {translate(TEXTS.grensesnitt.introPage.start)}
       </Button>
