@@ -5,7 +5,7 @@ import { logErrorWithStacktrace } from '../../../utils/errors';
 
 const application: RequestHandler = async (req, res, next) => {
   try {
-    const { form, formData, submission, language, enhetNummer, submissionMethod, translations } = req.body;
+    const { form, pdfFormData, submission, language, enhetNummer, submissionMethod, translations } = req.body;
     if (!submission) {
       throw new Error('Missing submission data to generate PDF');
     }
@@ -20,7 +20,7 @@ const application: RequestHandler = async (req, res, next) => {
 
     const fileBuffer = await documentsService.application({
       form: formParsed,
-      formData: formData ? JSON.parse(formData) : undefined,
+      pdfFormData: pdfFormData ? JSON.parse(pdfFormData) : undefined,
       submission: submissionParsed,
       language,
       unitNumber: enhetNummer,
@@ -41,7 +41,7 @@ const application: RequestHandler = async (req, res, next) => {
 
 const coverPageAndApplication: RequestHandler = async (req, res, next) => {
   try {
-    const { form, submission, language, enhetNummer, submissionMethod, translations, formData } = req.body;
+    const { form, submission, language, enhetNummer, submissionMethod, translations, pdfFormData } = req.body;
     if (!submission) {
       throw new Error('Missing submission data to generate PDF');
     }
@@ -66,7 +66,7 @@ const coverPageAndApplication: RequestHandler = async (req, res, next) => {
 
     const fileBuffer = await documentsService.coverPageAndApplication({
       form: formParsed,
-      formData: formData ? JSON.parse(formData) : undefined,
+      pdfFormData: pdfFormData ? JSON.parse(pdfFormData) : undefined,
       submission: submissionParsed,
       language,
       unitNumber: enhetNummer,

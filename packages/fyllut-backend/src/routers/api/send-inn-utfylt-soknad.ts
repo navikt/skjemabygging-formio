@@ -25,7 +25,7 @@ const sendInnUtfyltSoknad = {
       const fyllutUrl = getFyllutUrl(req);
       const envQualifier = req.getEnvQualifier();
 
-      const { form, submission, submissionMethod, translation, language, innsendingsId } = req.body;
+      const { form, pdfFormData, submission, submissionMethod, translation, language, innsendingsId } = req.body;
       if (!req.headers.PdfAccessToken) {
         logger.warn('Azure access token is missing. Will be unable to generate pdf');
       }
@@ -56,15 +56,17 @@ const sendInnUtfyltSoknad = {
         logger.warn(`Language code "${language}" is not supported. Language code will be defaulted to "nb".`);
       }
 
-      const applicationPdf = await applicationService.createPdfFromFieldMap(
+      const applicationPdf = await applicationService.createFormPdf(
         req.headers.PdfAccessToken as string,
-        createFeltMapFromSubmission(
-          form,
-          submission,
-          submissionMethod,
-          createTranslate(translation, language),
-          localizationUtils.getLanguageCodeAsIso639_1(language),
-        ),
+        pdfFormData
+          ? JSON.stringify(pdfFormData)
+          : createFeltMapFromSubmission(
+              form,
+              submission,
+              submissionMethod,
+              createTranslate(translation, language),
+              localizationUtils.getLanguageCodeAsIso639_1(language),
+            ),
       );
 
       const pdfByteArray = Array.from(applicationPdf) ?? [];

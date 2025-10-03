@@ -8,7 +8,7 @@ import { appMetrics } from '../index';
 
 const { familiePdfGeneratorUrl } = config;
 
-const createPdfFromFieldMap = async (accessToken: string, formData?: any) => {
+const createFormPdf = async (accessToken: string, pdfFormData?: any) => {
   logger.info(`Creating PDF, calling ${familiePdfGeneratorUrl}/api/pdf/v3/opprett-pdf`);
 
   appMetrics.familiePdfRequestsCounter.inc();
@@ -28,7 +28,7 @@ const createPdfFromFieldMap = async (accessToken: string, formData?: any) => {
         accept: '*/*',
       } as HeadersInit,
       method: 'POST',
-      body: formData,
+      body: pdfFormData,
     });
   } catch (e) {
     errorOccurred = true;
@@ -58,7 +58,7 @@ const createPdfFromFieldMap = async (accessToken: string, formData?: any) => {
 };
 
 const applicationService = {
-  createPdfFromFieldMap,
+  createFormPdf,
 };
 
 export default applicationService;

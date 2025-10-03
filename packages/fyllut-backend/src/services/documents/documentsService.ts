@@ -17,7 +17,7 @@ import { mergeFrontPageAndApplication } from './mergeFilesService';
 interface ApplicationProps {
   accessToken: string;
   form: NavFormType;
-  formData?: any;
+  pdfFormData?: any;
   submissionMethod: string;
   submission: Submission;
   language: string;
@@ -25,12 +25,12 @@ interface ApplicationProps {
 }
 
 const application = async (props: CoverPageAndApplicationProps) => {
-  const { accessToken, form, formData, submission, language, translations, submissionMethod } = props;
+  const { accessToken, form, pdfFormData, submission, language, translations, submissionMethod } = props;
 
-  const applicationPdf = await applicationService.createPdfFromFieldMap(
+  const applicationPdf = await applicationService.createFormPdf(
     accessToken,
-    formData
-      ? JSON.stringify(formData)
+    pdfFormData
+      ? JSON.stringify(pdfFormData)
       : createFeltMapFromSubmission(
           form,
           submission,
@@ -58,7 +58,7 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps) => {
     accessToken,
     pdfGeneratorAccessToken,
     form,
-    formData,
+    pdfFormData,
     submission,
     language,
     unitNumber,
@@ -76,10 +76,10 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps) => {
       language,
       unitNumber,
     }),
-    applicationService.createPdfFromFieldMap(
+    applicationService.createFormPdf(
       pdfGeneratorAccessToken,
-      formData
-        ? JSON.stringify(formData)
+      pdfFormData
+        ? JSON.stringify(pdfFormData)
         : createFeltMapFromSubmission(
             form,
             submission,

@@ -95,6 +95,7 @@ class NoLoginFileService {
     nologinM2MAccessToken: string,
     innsendingId: string,
     form: NavFormType,
+    pdfFormData: any,
     submission: Submission,
     submissionMethod: string,
     translation: I18nTranslationMap = {},
@@ -102,9 +103,11 @@ class NoLoginFileService {
   ) {
     const lang = localizationUtils.getLanguageCodeAsIso639_1(language);
     const translate = translationUtils.createTranslate(translation, language);
-    const applicationPdf = await applicationService.createPdfFromFieldMap(
+    const applicationPdf = await applicationService.createFormPdf(
       pdfAccessToken,
-      createFeltMapFromSubmission(form, submission, submissionMethod, translate, lang),
+      pdfFormData
+        ? JSON.stringify(pdfFormData)
+        : createFeltMapFromSubmission(form, submission, submissionMethod, translate, lang),
     );
 
     const pdfByteArray = Array.from(applicationPdf);

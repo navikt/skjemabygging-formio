@@ -4,7 +4,7 @@ const DefaultHtmlAnswer = ({ component, languagesContext }: PdfComponentProps) =
   const { textDisplay, content } = component;
   const { translate } = languagesContext;
 
-  if (!content || textDisplay === 'form') {
+  if (!content || textDisplay === undefined || textDisplay === 'form') {
     return null;
   }
 

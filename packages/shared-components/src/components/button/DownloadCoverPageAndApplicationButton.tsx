@@ -61,7 +61,7 @@ const DownloadCoverPageAndApplicationButton = ({
           ),
           enhetNummer,
           submissionMethod,
-          formData: renderPdfForm({
+          pdfFormData: renderPdfForm({
             formContext,
             languagesContext,
             watermarkText: config?.isDelingslenke ? 'Testskjema - Ikke send til Nav' : undefined,
