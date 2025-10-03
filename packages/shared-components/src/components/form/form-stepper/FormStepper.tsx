@@ -7,7 +7,7 @@ import { useForm } from '../../../context/form/FormContext';
 import { useLanguages } from '../../../context/languages';
 
 const FormStepper = () => {
-  const { form, submission, formUrl, formProgress, setFormProgress } = useForm();
+  const { form, submission, formProgress, setFormProgress } = useForm();
   const { submissionMethod, baseUrl } = useAppConfig();
   const [screenSmall, setScreenSmall] = useState<boolean>(false);
   const params = useParams();
@@ -73,7 +73,7 @@ const FormStepper = () => {
         }}
       >
         {formSteps.map((step, index) => {
-          const stepUrl = `${formUrl}/${step.key}${search}`;
+          const stepUrl = `${form.path}/${step.key}${search}`;
           return (
             <FormProgress.Step
               onClick={(event) => {

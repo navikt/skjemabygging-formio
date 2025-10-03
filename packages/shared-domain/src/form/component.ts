@@ -179,7 +179,6 @@ export interface ComponentConditional {
 export interface Webform {
   id: string;
   form?: NavFormType;
-  formUrl?: string;
   language?: string;
   submission?: Submission;
   setSubmission: (submission: Submission) => Promise<void>;

@@ -28,7 +28,7 @@ type ModalType = 'save' | 'delete' | 'discard';
 type FyllutEvent = 'focusOnComponent' | 'validateOnNextPage';
 
 export const FillInFormPage = () => {
-  const { form, submission, setSubmission, formUrl } = useForm();
+  const { form, submission, setSubmission } = useForm();
   const navigate = useNavigate();
   const { search } = useLocation();
   const { submissionMethod, logger } = useAppConfig();
@@ -122,8 +122,8 @@ export const FillInFormPage = () => {
   );
 
   const onFocusOnComponentPageChanged = useCallback<(page: { key: string }) => void>(
-    (page: { key: string }) => navigate({ pathname: `${formUrl}/${page.key}`, search }),
-    [formUrl, navigate, search],
+    (page: { key: string }) => navigate({ pathname: `${form.path}/${page.key}`, search }),
+    [form.path, navigate, search],
   );
 
   const isValid = useCallback(
@@ -182,7 +182,6 @@ export const FillInFormPage = () => {
         <FormError error={submission?.fyllutState?.mellomlagring?.error} />
         <FormNavigation
           submission={submission}
-          formUrl={formUrl}
           isValid={isValid}
           paths={formNavigationPaths}
           onCancel={onCancel}

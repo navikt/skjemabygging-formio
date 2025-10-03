@@ -9,7 +9,6 @@ import SaveAndDeleteButtons from '../../button/navigation/save-and-delete/SaveAn
 import LinkButton from '../../link-button/LinkButton';
 
 export interface Props {
-  formUrl: string;
   isValid: () => Promise<boolean>;
   submission?: Submission;
   onCancel: () => void;

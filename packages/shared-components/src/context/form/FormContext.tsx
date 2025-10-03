@@ -7,7 +7,6 @@ interface FormContextType {
   setSubmission: Dispatch<SetStateAction<Submission | undefined>>;
   prefillData?: PrefillData;
   form: NavFormType;
-  formUrl: string;
   formProgress: boolean;
   setFormProgress: Dispatch<SetStateAction<boolean>>;
 }
@@ -24,7 +23,6 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
   const [formProgress, setFormProgress] = useState<boolean>(false);
   const [prefillData, setPrefillData] = useState<PrefillData>({});
   const { http, baseUrl, submissionMethod } = useAppConfig();
-  const formUrl = form.path;
 
   useEffect(() => {
     const loadPrefillData = async (navForm: NavFormType) => {
@@ -57,7 +55,6 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
         submission,
         setSubmission,
         form,
-        formUrl,
         formProgress,
         setFormProgress,
       }}

@@ -14,11 +14,11 @@ const UploadPersonalIdButtonRow = () => {
   const navigate = useNavigate();
   const { baseUrl } = useAppConfig();
   const { translate } = useLanguages();
-  const { formUrl } = useForm();
+  const { form } = useForm();
   const [searchParams] = useSearchParams();
   const { submissionAttachments, errors, addError, handleDeleteAllFiles } = useAttachmentUpload();
 
-  const startUrl = `${baseUrl}${formUrl}`;
+  const startUrl = `${baseUrl}${form.path}`;
   const exitUrl = urlUtils.getExitUrl(window.location.href);
   const error = errors['allFiles']?.find((err) => err.type === 'FILE');
 
