@@ -93,7 +93,6 @@ const NavForm = ({
   const createForm = useCallback(
     async (srcOrForm?: NavFormType | string) => {
       if (ref?.current && srcOrForm) {
-        appConfig.logger?.info(`Creating new formio instance`, { srcOrForm, language, submission });
         const newWebform = await NavFormHelper.create(ref.current, srcOrForm, {
           language,
           i18n,
