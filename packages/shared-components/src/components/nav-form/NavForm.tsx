@@ -47,6 +47,7 @@ interface EventProps {
   onWizardPageSelected?: (panel: { path: string }) => void;
   onShowErrors?: (errorsFromForm: ComponentError[]) => void;
   onErrorSummaryFocus?: () => void;
+  onReady?: () => void;
   onNavigationPathsChanged?: (paths: FormNavigationPaths) => void;
   onFocusOnComponentPageChanged?: (page: { key: string }) => void;
 }
@@ -92,11 +93,13 @@ const NavForm = ({
   const createForm = useCallback(
     async (srcOrForm?: NavFormType | string) => {
       if (ref?.current && srcOrForm) {
+        appConfig.logger?.info(`Creating new formio instance`, { srcOrForm, language, submission });
         const newWebform = await NavFormHelper.create(ref.current, srcOrForm, {
           language,
           i18n,
           appConfig,
           submission: submission ? JSON.parse(JSON.stringify(submission)) : undefined,
+          panelSlug,
         });
 
         appConfig.logger?.debug('Form ready', {
@@ -106,6 +109,7 @@ const NavForm = ({
           submission,
         });
 
+        events?.onReady?.();
         setWebform(newWebform);
       }
     },
