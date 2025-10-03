@@ -10,6 +10,7 @@ interface CreateOptions {
   sanitizeConfig?: any;
   events?: any;
   submission?: Submission;
+  panelSlug?: string;
 }
 
 const create = async (

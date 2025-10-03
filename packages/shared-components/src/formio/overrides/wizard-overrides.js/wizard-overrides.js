@@ -189,7 +189,7 @@ Wizard.prototype.onSubmissionError = function (error) {
 };
 
 const originalInit = Wizard.prototype.init;
-Wizard.prototype.init = function () {
+Wizard.prototype.init = async function () {
   // Workaround to load submission on init in order to avoid flickering
   // Is fixed in 5.x, https://github.com/formio/formio.js/pull/4580
   if (this.options?.submission) {
@@ -198,5 +198,15 @@ Wizard.prototype.init = function () {
   } else {
     this._submission = this._submission || { data: {} };
   }
-  return originalInit.call(this);
+  const originalPromise = originalInit.call(this);
+  // Set current page as early as possible to avoid flickering
+  if (originalPromise && this.options?.panelSlug) {
+    const originalResponseValue = await originalPromise;
+    const panelIndex = this.currentPanels?.indexOf(this.options?.panelSlug);
+    if (panelIndex >= 0) {
+      await this.setPage(panelIndex);
+    }
+    return Promise.resolve(originalResponseValue);
+  }
+  return originalPromise;
 };

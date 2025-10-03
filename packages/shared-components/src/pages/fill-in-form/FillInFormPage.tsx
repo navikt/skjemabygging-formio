@@ -33,6 +33,7 @@ export const FillInFormPage = () => {
   const { search } = useLocation();
   const { submissionMethod, logger } = useAppConfig();
   const [formForRendering, setFormForRendering] = useState<NavFormType>();
+  const [formIsReady, setFormIsReady] = useState<boolean>(false);
   const { mellomlagringError, isMellomlagringAvailable, isMellomlagringReady } = useSendInn();
   const { currentLanguage, translationsForNavForm, translate } = useLanguages();
   const [showModal, setShowModal] = useState<ModalType>();
@@ -131,6 +132,8 @@ export const FillInFormPage = () => {
     [validateOnNextPage],
   );
 
+  const updateFormIsReady = useCallback(() => setFormIsReady(true), []);
+
   useEffect(() => {
     setFormForRendering(
       submissionMethod === 'digital' || submissionMethod === 'digitalnologin'
@@ -175,20 +178,23 @@ export const FillInFormPage = () => {
             onSubmissionMetadataChanged,
             onNavigationPathsChanged,
             onFocusOnComponentPageChanged,
+            onReady: updateFormIsReady,
           }}
           hash={hash}
         />
         <FormSavedStatus submission={submission} />
         <FormError error={submission?.fyllutState?.mellomlagring?.error} />
-        <FormNavigation
-          submission={submission}
-          formUrl={formUrl}
-          isValid={isValid}
-          paths={formNavigationPaths}
-          onCancel={onCancel}
-          navigateTo={navigateTo}
-          finalStep={submissionMethod === 'digitalnologin' ? 'vedlegg' : 'oppsummering'}
-        />
+        {formIsReady && (
+          <FormNavigation
+            submission={submission}
+            formUrl={formUrl}
+            isValid={isValid}
+            paths={formNavigationPaths}
+            onCancel={onCancel}
+            navigateTo={navigateTo}
+            finalStep={submissionMethod === 'digitalnologin' ? 'vedlegg' : 'oppsummering'}
+          />
+        )}
       </div>
       <ConfirmationModal
         open={!!showModal}
