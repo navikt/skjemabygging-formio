@@ -1,8 +1,8 @@
 import { PdfComponentProps } from '../../../types';
-import DefaultAnswer from '../../shared/pdf/DefaultAnswer';
+import DefaultSelectAnswer from '../../shared/pdf/DefaultSelectAnswer';
 
 const PdfSelect = (props: PdfComponentProps) => {
-  return DefaultAnswer(props);
+  return DefaultSelectAnswer(props);
 };
 
 export default PdfSelect;
