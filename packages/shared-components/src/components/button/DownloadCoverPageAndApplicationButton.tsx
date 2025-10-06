@@ -23,10 +23,10 @@ const DownloadCoverPageAndApplicationButton = ({
   children,
 }: Props) => {
   const { fyllutBaseURL, config, submissionMethod } = useAppConfig();
-  const formContext = useForm();
-  const { form, submission } = formContext;
-  const languagesContext = useLanguages();
-  const { currentLanguage, translationsForNavForm, translate } = languagesContext;
+  const formContextValue = useForm();
+  const { form, submission } = formContextValue;
+  const languagesContextValue = useLanguages();
+  const { currentLanguage, translationsForNavForm, translate } = languagesContextValue;
   const [downloadState, setDownloadState] = useState<DownloadState>();
 
   const onClick = () => {
@@ -62,8 +62,8 @@ const DownloadCoverPageAndApplicationButton = ({
           enhetNummer,
           submissionMethod,
           pdfFormData: renderPdfForm({
-            formContext,
-            languagesContext,
+            formContextValue,
+            languagesContextValue,
             watermarkText: config?.isDelingslenke ? 'Testskjema - Ikke send til Nav' : undefined,
             gitVersion: String(config?.gitVersion),
             submissionMethod,
