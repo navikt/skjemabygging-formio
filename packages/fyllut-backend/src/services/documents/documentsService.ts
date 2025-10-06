@@ -42,6 +42,19 @@ const application = async (props: CoverPageAndApplicationProps) => {
   );
 
   if (applicationPdf === undefined) {
+    // TODO: Remove this when pdf is stable
+    if (config.naisClusterName === 'dev-gcp') {
+      logger.info(`New: ${JSON.stringify(pdfFormData)}`);
+      logger.info(
+        `Old ${createFeltMapFromSubmission(
+          form,
+          submission,
+          submissionMethod,
+          createTranslate(translations, language),
+          language,
+        )}`,
+      );
+    }
     throw htmlResponseError('Generering av søknads PDF feilet');
   }
 
