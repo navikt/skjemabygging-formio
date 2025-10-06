@@ -2,9 +2,9 @@ import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { PdfComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 
-const PdfAddressValidity = ({ submissionPath, languagesContext, formContext }: PdfComponentProps) => {
-  const { translate } = languagesContext;
-  const { submission } = formContext;
+const PdfAddressValidity = ({ submissionPath, languagesContextValue, formContextValue }: PdfComponentProps) => {
+  const { translate } = languagesContextValue;
+  const { submission } = formContextValue;
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
 
   if (value === undefined || (!value.gyldigFraOgMed && !value.gyldigTilOgMed)) {

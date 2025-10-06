@@ -1,10 +1,10 @@
 import { PdfComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 
-const PdfSelectBoxes = ({ component, submissionPath, formContext, languagesContext }: PdfComponentProps) => {
+const PdfSelectBoxes = ({ component, submissionPath, formContextValue, languagesContextValue }: PdfComponentProps) => {
   const { values, label } = component;
-  const { translate } = languagesContext;
-  const { submission } = formContext;
+  const { translate } = languagesContextValue;
+  const { submission } = formContextValue;
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
 
   if (value === undefined || !values || values.length === 0) {

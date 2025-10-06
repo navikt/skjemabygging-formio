@@ -3,13 +3,13 @@ import { FormContextType } from '../../../../context/form/FormContext';
 import { LanguageContextType } from '../../../../context/languages/languages-context';
 
 interface Props {
-  formContext: FormContextType;
-  languagesContext: LanguageContextType;
+  formContextValue: FormContextType;
+  languagesContextValue: LanguageContextType;
 }
 
-const PdfIntroPage = ({ formContext, languagesContext }: Props) => {
-  const { translate } = languagesContext;
-  const { submission, form } = formContext;
+const PdfIntroPage = ({ formContextValue, languagesContextValue }: Props) => {
+  const { translate } = languagesContextValue;
+  const { submission, form } = formContextValue;
 
   if (!form.introPage?.enabled) {
     return null;

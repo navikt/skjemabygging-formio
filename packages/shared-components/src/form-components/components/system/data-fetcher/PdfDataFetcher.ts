@@ -1,10 +1,10 @@
 import { PdfComponentProps } from '../../../types';
 import { getSelectedValues } from './dataFetcherUtils';
 
-const PdfDataFetcher = ({ component, submissionPath, formContext, languagesContext }: PdfComponentProps) => {
+const PdfDataFetcher = ({ component, submissionPath, formContextValue, languagesContextValue }: PdfComponentProps) => {
   const { label } = component;
-  const { submission } = formContext;
-  const { translate } = languagesContext;
+  const { submission } = formContextValue;
+  const { translate } = languagesContextValue;
 
   const selected = getSelectedValues(submissionPath, submission);
   if (selected.length === 0) {

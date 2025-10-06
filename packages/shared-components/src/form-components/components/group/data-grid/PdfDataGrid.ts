@@ -3,10 +3,10 @@ import { PdfComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 
 const PdfDataGrid = (props: PdfComponentProps) => {
-  const { component, submissionPath, formContext, languagesContext } = props;
+  const { component, submissionPath, formContextValue, languagesContextValue } = props;
   const { label, components } = component;
-  const { submission } = formContext;
-  const { translate } = languagesContext;
+  const { submission } = formContextValue;
+  const { translate } = languagesContextValue;
   const dataGridValues = formComponentUtils.getSubmissionValue(submissionPath, submission);
 
   if (

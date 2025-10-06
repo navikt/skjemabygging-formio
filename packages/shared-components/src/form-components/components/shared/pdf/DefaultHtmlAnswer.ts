@@ -1,15 +1,15 @@
 import { PdfComponentProps } from '../../../types';
 
-const DefaultHtmlAnswer = ({ component, languagesContext }: PdfComponentProps) => {
+const DefaultHtmlAnswer = ({ component, languagesContextValue }: PdfComponentProps) => {
   const { textDisplay, content } = component;
-  const { translate } = languagesContext;
+  const { translate } = languagesContextValue;
 
   if (!content || textDisplay === undefined || textDisplay === 'form') {
     return null;
   }
 
   return {
-    verdi: translate(content),
+    label: translate(content),
     visningsVariant: 'HTML',
   };
 };

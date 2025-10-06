@@ -87,6 +87,7 @@ const RenderSummaryForm = ({ panelValidationList }: Props) => {
     container: SummaryContainer,
     datagrid: SummaryDataGrid,
     navSkjemagruppe: SummaryFormGroup,
+    fieldset: SummaryFormGroup,
     panel: SummaryPanel,
     row: SummaryRow,
 

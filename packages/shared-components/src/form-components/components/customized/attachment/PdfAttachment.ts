@@ -2,10 +2,10 @@ import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { PdfComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 
-const PdfAttachment = ({ component, submissionPath, formContext, languagesContext }: PdfComponentProps) => {
+const PdfAttachment = ({ component, submissionPath, formContextValue, languagesContextValue }: PdfComponentProps) => {
   const { label } = component;
-  const { translate } = languagesContext;
-  const { submission } = formContext;
+  const { translate } = languagesContextValue;
+  const { submission } = formContextValue;
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
 
   if (value === undefined || !value.key) {

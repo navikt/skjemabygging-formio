@@ -49,8 +49,8 @@ interface PdfComponentProps {
   component: Component;
   submissionPath: string;
   componentRegistry: PdfComponentRegistry;
-  formContext: FormContextType;
-  languagesContext: LanguageContextType;
+  formContextValue: FormContextType;
+  languagesContextValue: LanguageContextType;
 }
 
 interface PdfComponentRegistry {

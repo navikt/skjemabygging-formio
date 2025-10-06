@@ -1,10 +1,10 @@
 import { PdfComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 
-const PdfPhoneNumber = ({ component, submissionPath, formContext, languagesContext }: PdfComponentProps) => {
+const PdfPhoneNumber = ({ component, submissionPath, formContextValue, languagesContextValue }: PdfComponentProps) => {
   const { label, showAreaCode } = component;
-  const { translate } = languagesContext;
-  const { submission } = formContext;
+  const { translate } = languagesContextValue;
+  const { submission } = formContextValue;
 
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
 

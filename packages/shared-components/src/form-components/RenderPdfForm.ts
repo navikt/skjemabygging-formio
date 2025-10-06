@@ -40,22 +40,22 @@ import renderPdfComponent from './render/RenderPdfComponent';
 import { PdfComponentProps, PdfFormData } from './types';
 
 interface Props {
-  formContext: FormContextType;
-  languagesContext: LanguageContextType;
+  formContextValue: FormContextType;
+  languagesContextValue: LanguageContextType;
   watermarkText?: string;
   gitVersion?: string;
   submissionMethod?: SubmissionMethod;
 }
 
 const renderPdfForm = ({
-  formContext,
-  languagesContext,
+  formContextValue,
+  languagesContextValue,
   watermarkText,
   gitVersion,
   submissionMethod,
 }: Props): string => {
-  const { currentLanguage, translate } = languagesContext;
-  const { form, activeComponents, submission } = formContext;
+  const { currentLanguage, translate } = languagesContextValue;
+  const { form, activeComponents, submission } = formContextValue;
 
   const componentRegistry = {
     /* Standard */
@@ -100,6 +100,7 @@ const renderPdfForm = ({
     container: PdfContainer,
     datagrid: PdfDataGrid,
     navSkjemagruppe: PdfFormGroup,
+    fieldset: PdfFormGroup,
     panel: PdfPanel,
     row: PdfRow,
 
@@ -116,7 +117,7 @@ const renderPdfForm = ({
   const pdfData: PdfFormData = {
     label: translate(form.title),
     verdiliste: [
-      PdfIntroPage({ languagesContext, formContext }),
+      PdfIntroPage({ languagesContextValue, formContextValue }),
       ...(activeComponents
         ?.map(
           (component) =>
@@ -124,12 +125,12 @@ const renderPdfForm = ({
               component,
               submissionPath: '',
               componentRegistry,
-              formContext,
-              languagesContext,
+              formContextValue,
+              languagesContextValue,
             } as PdfComponentProps), // TODO: Fix type
         )
         .filter(Boolean) ?? []),
-      PdfSignature({ properties: form.properties, languagesContext, submissionMethod }),
+      PdfSignature({ properties: form.properties, languagesContextValue, submissionMethod }),
     ].filter(Boolean),
     skjemanummer: form.properties?.skjemanummer,
     pdfConfig: {

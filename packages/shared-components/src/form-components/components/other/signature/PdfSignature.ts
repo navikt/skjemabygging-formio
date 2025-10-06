@@ -9,13 +9,13 @@ import { PdfData } from '../../../types';
 
 interface Props {
   properties: FormPropertiesType;
-  languagesContext: LanguageContextType;
+  languagesContextValue: LanguageContextType;
   submissionMethod?: SubmissionMethod;
 }
 
-const PdfSignature = ({ properties, languagesContext, submissionMethod }: Props): PdfData | null => {
+const PdfSignature = ({ properties, languagesContextValue, submissionMethod }: Props): PdfData | null => {
   const { signatures, descriptionOfSignatures } = properties;
-  const { translate } = languagesContext;
+  const { translate } = languagesContextValue;
 
   if (!submissionMethod || submissionMethod !== 'paper' || !signatures) {
     return null;
