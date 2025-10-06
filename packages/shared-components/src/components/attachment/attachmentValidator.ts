@@ -6,26 +6,26 @@ interface AttachmentValidator {
 
 type Rule = 'value' | 'fileUploaded' | 'otherDocumentationTitle';
 
-const isValidValue = (attachment?: SubmissionAttachment) => !!attachment?.value;
+const isValueValid = (attachment?: SubmissionAttachment) => !!attachment?.value;
 
-const isFileUploaded = (attachment?: SubmissionAttachment) =>
-  attachment?.value === 'leggerVedNaa' && (attachment.files ?? [])?.length === 0;
+const isFileUploadValid = (attachment?: SubmissionAttachment) =>
+  attachment?.value !== 'leggerVedNaa' || (attachment.files ?? [])?.length > 0;
 
-const isValidOtherAttachmentTitle = (attachment?: SubmissionAttachment) =>
-  attachment?.type === 'other' && attachment.value === 'leggerVedNaa' && !attachment?.title;
+const isOtherAttachmentTitleValid = (attachment?: SubmissionAttachment) =>
+  attachment?.type !== 'other' || attachment.value !== 'leggerVedNaa' || !!attachment?.title;
 
 const attachmentValidator = (
   translate: (text: string, params?: Record<string, string>) => string,
   rules: Rule[] = ['value', 'fileUploaded', 'otherDocumentationTitle'],
 ): AttachmentValidator => ({
   validate: (label: string, attachment?: SubmissionAttachment) => {
-    if (rules.includes('value') && !isValidValue(attachment)) {
+    if (rules.includes('value') && !isValueValid(attachment)) {
       return translate('required', { field: translate(label) });
     }
-    if (rules.includes('fileUploaded') && !isFileUploaded(attachment)) {
+    if (rules.includes('fileUploaded') && !isFileUploadValid(attachment)) {
       return translate('fileMissing', { field: translate(label) });
     }
-    if (rules.includes('otherDocumentationTitle') && !isValidOtherAttachmentTitle(attachment)) {
+    if (rules.includes('otherDocumentationTitle') && !isOtherAttachmentTitleValid(attachment)) {
       return translate('required', { field: translate(TEXTS.statiske.attachment.attachmentTitle) });
     }
     return undefined;
