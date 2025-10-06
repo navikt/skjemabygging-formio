@@ -17,6 +17,10 @@ import { useLanguages } from '../languages';
 import { mellomlagringReducer } from './reducer/mellomlagringReducer';
 import { getSubmissionWithFyllutState, transformSubmissionBeforeSubmitting } from './utils/utils';
 
+interface ReceiptState {
+  submittedAt: string;
+}
+
 interface SendInnContextType {
   updateMellomlagring: (submission: Submission) => Promise<SendInnSoknadResponse | undefined>;
   submitSoknad: (submission: Submission) => Promise<void>;
@@ -27,6 +31,8 @@ interface SendInnContextType {
   innsendingsId?: string;
   nologinToken?: string;
   soknadPdfBlob?: Blob;
+  receipt?: ReceiptState;
+  clearReceipt: () => void;
   setNologinToken: (token: string | undefined) => void;
   setInnsendingsId: (innsendingsId: string | undefined) => void;
   mellomlagringError: MellomlagringError | undefined;
@@ -58,6 +64,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const [nologinToken, setNologinToken] = useState<string | undefined>();
   const [fyllutMellomlagringState, dispatchFyllutMellomlagring] = useReducer(mellomlagringReducer, undefined);
   const [soknadPdfBlob, setSoknadPdfBlob] = useState<Blob | undefined>(undefined);
+  const [receipt, setReceipt] = useState<ReceiptState | undefined>();
 
   const addSearchParamToUrl = useCallback(
     (key, value) => {
@@ -245,15 +252,19 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const submitDigitalNologin = useCallback(
     async (language: Language, translation: any, submission: Submission) => {
       try {
+        if (!nologinToken) {
+          throw new Error('Nologin token mangler ved innsending');
+        }
         const response: Blob = await postNologinSoknad(
           appConfig,
-          nologinToken!,
+          nologinToken,
           form!,
           submission,
           language,
           translation,
         );
         setSoknadPdfBlob(response);
+        setReceipt({ submittedAt: new Date().toISOString() });
         navigate(`${formUrl}/kvittering?${searchParams.toString()}`);
       } catch (error: any) {
         logger?.error(`${innsendingsId}: Failed to submit nologin application`, {
@@ -312,6 +323,8 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   );
 
   const submitSoknad = async (appSubmission: Submission): Promise<void> => {
+    setReceipt(undefined);
+    setSoknadPdfBlob(undefined);
     const currentLanguage = getLanguageFromSearchParams();
     const translation = translationForLanguage(currentLanguage);
     const submission = transformSubmissionBeforeSubmitting(appSubmission);
@@ -371,6 +384,11 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
     submission,
   ]);
 
+  const clearReceipt = () => {
+    setReceipt(undefined);
+    setSoknadPdfBlob(undefined);
+  };
+
   const value: SendInnContextType = {
     updateMellomlagring,
     deleteMellomlagring,
@@ -380,6 +398,8 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
     nologinToken,
     setNologinToken,
     soknadPdfBlob,
+    receipt,
+    clearReceipt,
     isMellomlagringAvailable,
     isMellomlagringActive: !!fyllutMellomlagringState?.isActive,
     isMellomlagringReady,

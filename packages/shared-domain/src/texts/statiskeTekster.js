@@ -120,6 +120,19 @@ export const statiske = {
       messageEnd: ' for å se dine påbegynte og innsendte søknader.',
     },
   },
+  receipt: {
+    pageTitle: 'Kvittering',
+    heading: 'Takk!',
+    description:
+      'Vi har mottatt det vi trenger for å starte saksbehandlingen. Vi tar kontakt hvis vi trenger flere opplysninger.',
+    submittedAtLabel: 'Sendt inn {{date}}',
+    innsendingsIdLabel: 'Referanse: {{innsendingsId}}',
+    documentsHeading: 'Vi har mottatt følgende dokumenter ({{date}}):',
+    singleFileLabel: 'fil',
+    multipleFileLabel: 'filer',
+    downloadButton: 'Last ned kvittering (PDF)',
+    missingPdfDescription: 'Kvitteringen er sendt inn, men vi kunne ikke generere en PDF. Prøv igjen senere.',
+  },
   summaryPage: {
     title: 'Oppsummering',
     description:
