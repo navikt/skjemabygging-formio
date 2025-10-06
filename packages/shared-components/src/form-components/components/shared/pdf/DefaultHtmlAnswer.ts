@@ -9,7 +9,7 @@ const DefaultHtmlAnswer = ({ component, languagesContext }: PdfComponentProps) =
   }
 
   return {
-    verdi: translate(content).toString(),
+    verdi: translate(content),
     visningsVariant: 'HTML',
   };
 };
