@@ -28,6 +28,20 @@ interface ApplicationProps {
 const application = async (props: CoverPageAndApplicationProps) => {
   const { accessToken, form, pdfFormData, submission, language, translations, submissionMethod } = props;
 
+  // TODO: Remove this when pdf is stable
+  if (config.naisClusterName === 'dev-gcp') {
+    logger.info(`New: ${JSON.stringify(pdfFormData)}`);
+    logger.info(
+      `Old ${createFeltMapFromSubmission(
+        form,
+        submission,
+        submissionMethod,
+        createTranslate(translations, language),
+        language,
+      )}`,
+    );
+  }
+
   const applicationPdf = await applicationService.createFormPdf(
     accessToken,
     pdfFormData
@@ -42,19 +56,6 @@ const application = async (props: CoverPageAndApplicationProps) => {
   );
 
   if (applicationPdf === undefined) {
-    // TODO: Remove this when pdf is stable
-    if (config.naisClusterName === 'dev-gcp') {
-      logger.info(`New: ${JSON.stringify(pdfFormData)}`);
-      logger.info(
-        `Old ${createFeltMapFromSubmission(
-          form,
-          submission,
-          submissionMethod,
-          createTranslate(translations, language),
-          language,
-        )}`,
-      );
-    }
     throw htmlResponseError('Generering av søknads PDF feilet');
   }
 
@@ -80,6 +81,20 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps) => {
     submissionMethod,
     mergePdfAccessToken,
   } = props;
+
+  // TODO: Remove this when pdf is stable
+  if (config.naisClusterName === 'dev-gcp') {
+    logger.info(`New: ${JSON.stringify(pdfFormData)}`);
+    logger.info(
+      `Old ${createFeltMapFromSubmission(
+        form,
+        submission,
+        submissionMethod,
+        createTranslate(translations, language),
+        language,
+      )}`,
+    );
+  }
 
   const [coverPageResponse, applicationResponse] = await Promise.all([
     coverPageService.createPdf({
@@ -113,19 +128,6 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps) => {
   const applicationPdf = applicationResponse;
 
   if (applicationPdf === undefined) {
-    // TODO: Remove this when pdf is stable
-    if (config.naisClusterName === 'dev-gcp') {
-      logger.info(`New: ${JSON.stringify(pdfFormData)}`);
-      logger.info(
-        `Old ${createFeltMapFromSubmission(
-          form,
-          submission,
-          submissionMethod,
-          createTranslate(translations, language),
-          language,
-        )}`,
-      );
-    }
     throw htmlResponseError('Generering av søknads PDF feilet');
   }
 

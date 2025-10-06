@@ -49,7 +49,7 @@ const createFormPdf = async (accessToken: string, pdfFormData?: any) => {
   appMetrics.familiePdfFailuresCounter.inc();
 
   throw synchronousResponseToError(
-    `Could not create pdf${response?.status === 401 ? ', not authorized (401)' : ''}`,
+    `Could not create pdf${response?.status === 401 ? ', not authorized (401)' : `, response: ${JSON.stringify(response)}`}`,
     {},
     response?.status,
     response?.url,
