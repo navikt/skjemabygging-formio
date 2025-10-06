@@ -6,6 +6,7 @@ import {
   Submission,
   translationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import { config } from '../../config/config';
 import { logger } from '../../logger';
 import { createFeltMapFromSubmission } from '../../routers/api/helpers/feltMapBuilder';
 import { base64Decode } from '../../utils/base64';
@@ -99,6 +100,19 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps) => {
   const applicationPdf = applicationResponse;
 
   if (applicationPdf === undefined) {
+    // TODO: Remove this when pdf is stable
+    if (config.naisClusterName === 'dev-gcp') {
+      logger.info(`New: ${JSON.stringify(pdfFormData)}`);
+      logger.info(
+        `Old ${createFeltMapFromSubmission(
+          form,
+          submission,
+          submissionMethod,
+          createTranslate(translations, language),
+          language,
+        )}`,
+      );
+    }
     throw htmlResponseError('Generering av søknads PDF feilet');
   }
 
