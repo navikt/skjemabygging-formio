@@ -2,7 +2,7 @@ import { Request } from 'express';
 import { config } from '../config/config';
 
 const isValidPath = (path: string) => {
-  return /^[a-z0-9-]+$/.test(path);
+  return /^[a-z0-9]+$/.test(path);
 };
 
 const getFyllutUrl = (req: Request) => {

@@ -7,8 +7,8 @@ describe('isValidPath', () => {
     expect(isValidPath('nav083501')).toBe(true);
   });
 
-  it('accepts hyphenated paths', () => {
-    expect(isValidPath('submission-type-digital-no-login')).toBe(true);
+  it('rejects hyphenated paths', () => {
+    expect(isValidPath('submission-type-digital-no-login')).toBe(false);
   });
 
   it('rejects paths with illegal characters', () => {

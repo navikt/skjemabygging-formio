@@ -1,6 +1,7 @@
-import { DownloadIcon } from '@navikt/aksel-icons';
-import { Alert, BodyShort, Button, Heading, List, Panel, VStack } from '@navikt/ds-react';
-import { TEXTS, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { CheckmarkCircleFillIcon } from '@navikt/aksel-icons';
+import { Alert, BodyShort, Heading, List, VStack } from '@navikt/ds-react';
+import '@navikt/ds-tokens';
+import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppConfig } from '../../context/config/configContext';
@@ -20,7 +21,7 @@ export function ReceiptPage() {
   const { submissionMethod } = useAppConfig();
   const { translate, currentLanguage } = useLanguages();
   const { form, submission, formUrl } = useForm();
-  const { soknadPdfBlob, receipt, nologinToken, innsendingsId: contextInnsendingsId } = useSendInn();
+  const { soknadPdfBlob, receipt, nologinToken } = useSendInn();
 
   useEffect(() => {
     if (submissionMethod === 'digitalnologin' && !nologinToken) {
@@ -54,32 +55,10 @@ export function ReceiptPage() {
   }, [soknadPdfUrl]);
 
   const submittedAtIso = receipt?.submittedAt;
-  const submittedAt = useMemo(() => {
-    if (!submittedAtIso) {
-      return undefined;
-    }
-    return dateUtils.toLocaleDateAndTime(submittedAtIso, currentLanguage);
-  }, [submittedAtIso, currentLanguage]);
 
   const documentsDate = useMemo(() => {
     return dateUtils.toLocaleDate(submittedAtIso, currentLanguage);
   }, [submittedAtIso, currentLanguage]);
-
-  const innsendingsId = useMemo(() => {
-    if (contextInnsendingsId) {
-      return contextInnsendingsId;
-    }
-    if (!submission?.attachments) {
-      return undefined;
-    }
-    for (const attachment of submission.attachments) {
-      const firstFile = attachment.files?.find((file) => !!file?.innsendingId);
-      if (firstFile?.innsendingId) {
-        return firstFile.innsendingId;
-      }
-    }
-    return undefined;
-  }, [contextInnsendingsId, submission]);
 
   const attachmentsWithFiles = useMemo(() => {
     return (submission?.attachments ?? []).filter((attachment) => (attachment.files?.length ?? 0) > 0);
@@ -112,87 +91,45 @@ export function ReceiptPage() {
     return `${count} ${countLabel}`;
   };
 
-  const downloadFileName = useMemo(() => {
-    const isoForFile = submittedAtIso ?? new Date().toISOString();
-    const formattedDate = dateUtils.toLocaleDate(isoForFile, 'no').replace(/\./g, '');
-    const slug = form?.path ?? 'kvittering';
-    return `${slug}-${formattedDate}.pdf`;
-  }, [form, submittedAtIso]);
-
-  const documentsHeading = translate(TEXTS.statiske.receipt.documentsHeading, { date: documentsDate });
-
   console.log(form);
 
   return (
-    <div>
-      <div>
-        <VStack gap="space-8">
-          <div>
-            <Heading size="small">{form?.title}</Heading>
-            <Heading size="xlarge">{translate(TEXTS.statiske.receipt.pageTitle)}</Heading>
-          </div>
-          <Tag variant="neutral-moderate">Neutral</Tag>
-        </VStack>
-      </div>
+    <VStack gap="space-32">
+      <Alert size="small" variant="success">
+        <Heading level="2" spacing size="xsmall">
+          {translate(TEXTS.statiske.receipt.alertSuccessHeading)}
+        </Heading>
+        {translate(TEXTS.statiske.receipt.alertSuccessBody)}
+      </Alert>
 
-      <br />
-      <hr />
-      <VStack gap="10">
-        <header>
-          <Heading level="1" size="large">
-            {form?.title}
-          </Heading>
-          <Heading level="2" size="medium">
-            {translate(TEXTS.statiske.receipt.pageTitle)}
-          </Heading>
-        </header>
-
-        <Panel variant="success">
-          <VStack gap="2">
-            <BodyShort weight="semibold">{translate(TEXTS.statiske.receipt.heading)}</BodyShort>
-            <BodyShort>{translate(TEXTS.statiske.receipt.description)}</BodyShort>
-            {submittedAt && (
-              <BodyShort>{translate(TEXTS.statiske.receipt.submittedAtLabel, { date: submittedAt })}</BodyShort>
-            )}
-            {innsendingsId && (
-              <BodyShort>{translate(TEXTS.statiske.receipt.innsendingsIdLabel, { innsendingsId })}</BodyShort>
-            )}
-          </VStack>
-        </Panel>
-
-        <section>
-          <Heading level="3" size="small">
-            {documentsHeading}
-          </Heading>
-          <List>
-            {documentItems.map((item) => {
-              const fileCountLabel = formatFileCount(item.fileCount);
-              return (
-                <List.Item key={item.id}>
-                  <BodyShort>
-                    {item.title}
-                    {item.type === 'attachment' && fileCountLabel ? ` (${fileCountLabel})` : null}
-                  </BodyShort>
-                </List.Item>
-              );
-            })}
-          </List>
-        </section>
-
-        {soknadPdfUrl ? (
-          <Button
-            as="a"
-            href={soknadPdfUrl}
-            download={downloadFileName}
-            icon={<DownloadIcon aria-hidden />}
-            iconPosition="right"
-          >
-            {translate(TEXTS.statiske.receipt.downloadButton)}
-          </Button>
-        ) : (
-          <Alert variant="warning">{translate(TEXTS.statiske.receipt.missingPdfDescription)}</Alert>
-        )}
-      </VStack>
-    </div>
+      <section>
+        <BodyShort size="large">
+          <b>{translate(TEXTS.statiske.receipt.documentsHeading, { date: documentsDate })}</b>
+        </BodyShort>
+        <List>
+          {documentItems.map((item) => {
+            const fileCountLabel = formatFileCount(item.fileCount);
+            return (
+              <List.Item
+                key={item.id}
+                icon={
+                  <CheckmarkCircleFillIcon
+                    color="currentColor"
+                    style={{ color: 'var(--a-icon-success)' }}
+                    fontSize="1.5rem"
+                    aria-hidden
+                  />
+                }
+              >
+                <BodyShort>
+                  {item.title}
+                  {item.type === 'attachment' && fileCountLabel ? ` (${fileCountLabel})` : null}
+                </BodyShort>
+              </List.Item>
+            );
+          })}
+        </List>
+      </section>
+    </VStack>
   );
 }

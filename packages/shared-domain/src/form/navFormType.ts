@@ -22,6 +22,7 @@ export interface NavFormType {
   project?: string;
   id?: number;
   revision?: number;
+  skjemanummer: string;
   createdAt?: string;
   createdBy?: string;
   changedAt?: string;
