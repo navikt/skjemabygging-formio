@@ -25,10 +25,12 @@ const UploadPersonalIdButtonRow = () => {
   const navigateToFormPage = (event: MouseEvent<HTMLElement>) => {
     event.preventDefault();
     const personalIdAttachment = submissionAttachments.find((attachment) => attachment.attachmentId === 'personal-id');
-    if (personalIdAttachment?.files?.length) {
-      navigate(`..?${searchParams.toString()}`);
-    } else {
+    if (!personalIdAttachment?.value) {
+      addError('personal-id', translate('required', { field: translate(TEXTS.statiske.uploadId.label) }), 'VALUE');
+    } else if (!personalIdAttachment?.files?.length) {
       addError('personal-id', translate(TEXTS.statiske.uploadId.missingUploadError), 'FILE');
+    } else {
+      navigate(`..?${searchParams.toString()}`);
     }
   };
 
