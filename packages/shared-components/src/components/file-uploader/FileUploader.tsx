@@ -13,7 +13,7 @@ import {
   VStack,
 } from '@navikt/ds-react';
 import { AttachmentSettingValues, SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { MutableRefObject, useState } from 'react';
+import { ChangeEvent, MutableRefObject, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import {
   FILE_ACCEPT,
@@ -28,6 +28,7 @@ import { getFileValidationError } from '../../util/form/attachment-validation/at
 import htmlUtils from '../../util/html/htmlUtils';
 import makeStyles from '../../util/styles/jss/jss';
 import { useAttachmentUpload } from '../attachment/AttachmentUploadContext';
+import { attachmentValidator } from '../attachment/attachmentValidator';
 import InnerHtml from '../inner-html/InnerHtml';
 
 const useStyles = makeStyles({
@@ -86,11 +87,23 @@ const FileUploader = ({
 
   const uploadErrorMessage = errors[attachmentId]?.find((error) => error.type === 'FILE')?.message;
   const attachmentTitleErrorMessage = errors[attachmentId]?.find((error) => error.type === 'TITLE')?.message;
+  const attachmentTitleValidator = attachmentValidator(translate, ['otherDocumentationTitle']);
 
   const translationErrorParams = {
     href: `${config.baseUrl}/${form.form.path}/legitimasjon${search}`,
     maxFileSize: MAX_SIZE_ATTACHMENT_FILE_TEXT,
     maxAttachmentSize: MAX_TOTAL_SIZE_ATTACHMENT_FILES_TEXT,
+  };
+
+  const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    changeAttachmentValue(
+      initialAttachment,
+      {
+        value: attachmentValue,
+        title: e.target.value,
+      },
+      attachmentTitleValidator,
+    );
   };
 
   const onSelect = async (files: FileObject[]) => {
@@ -147,12 +160,7 @@ const FileUploader = ({
                   refs.current[`${attachmentId}-TITLE`] = ref;
                 }
               }}
-              onChange={(e) => {
-                changeAttachmentValue(initialAttachment, {
-                  value: attachmentValue,
-                  title: e.target.value,
-                });
-              }}
+              onChange={handleTitleChange}
             />
           )}
           {!requireAttachmentTitle || !!attachment?.title?.trim() ? (

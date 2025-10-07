@@ -33,7 +33,7 @@ const OtherAttachmentUpload = ({ label, attachmentValues, componentId, descripti
   const { changeAttachmentValue, handleDeleteAttachment, submissionAttachments, errors } = useAttachmentUpload();
   const { form } = useForm();
 
-  const validator = attachmentValidator(translate, ['value', 'otherDocumentationTitle']);
+  const validator = attachmentValidator(translate, ['value']);
   const defaultAttachmentValues: Pick<SubmissionAttachment, 'navId' | 'type'> = { navId: componentId, type: 'other' };
   const otherAttachment = submissionAttachments.find((attachment) => attachment.attachmentId.startsWith(componentId));
   const [attachments, setAttachments] = useState(
