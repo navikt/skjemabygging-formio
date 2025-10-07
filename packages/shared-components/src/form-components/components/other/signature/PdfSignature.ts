@@ -17,13 +17,15 @@ const PdfSignature = ({ properties, languagesContextValue, submissionMethod }: P
   const { signatures, descriptionOfSignatures } = properties;
   const { translate } = languagesContextValue;
 
-  if (!submissionMethod || submissionMethod !== 'paper' || !signatures) {
+  if (!submissionMethod || submissionMethod === 'digital' || !signatures) {
     return null;
   }
 
+  const signatureList = signatureUtils.mapBackwardCompatibleSignatures(signatures);
+
   const getSignature = (label, description) => {
     return {
-      label: translate(label),
+      label: label,
       verdiliste: [
         { label: translate(description), verdi: ' ' },
         { label: translate(TEXTS.pdfStatiske.placeAndDate), verdi: ' ' },
@@ -33,22 +35,22 @@ const PdfSignature = ({ properties, languagesContextValue, submissionMethod }: P
     };
   };
 
-  const getSignatureList = () => {
-    const signatureList = signatureUtils.mapBackwardCompatibleSignatures(signatures);
-
-    if (signatureList.length === 1 && (signatureList[0].label === undefined || signatureList[0].label === '')) {
-      return [getSignature(signatureList[0].description, descriptionOfSignatures || '')];
-    }
-
-    return [
-      getSignature(translate(descriptionOfSignatures || ''), ''),
-      ...signatureList.map((signatureObject) => getSignature(signatureObject.label, signatureObject.description)),
-    ];
-  };
+  if (signatureList.length === 1 && (signatureList[0].label === undefined || signatureList[0].label === '')) {
+    return {
+      label: translate(TEXTS.pdfStatiske.signature),
+      verdiliste: [getSignature(signatureList[0].label, signatureList[0].description)],
+    };
+  }
 
   return {
     label: translate(TEXTS.pdfStatiske.signature),
-    verdiliste: getSignatureList(),
+    verdiliste: [
+      {
+        label: translate(descriptionOfSignatures || ''),
+        verdi: '',
+      },
+      ...signatureList.map((signatureObject) => getSignature(signatureObject.label, signatureObject.description)),
+    ],
   };
 };
 
