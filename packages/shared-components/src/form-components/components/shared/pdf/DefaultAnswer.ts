@@ -17,7 +17,7 @@ const DefaultAnswer = (
 
   return {
     label: translate(label),
-    verdi: valueFormat === undefined ? value : valueFormat(value),
+    verdi: valueFormat === undefined ? String(value) : String(valueFormat(value)),
   };
 };
 

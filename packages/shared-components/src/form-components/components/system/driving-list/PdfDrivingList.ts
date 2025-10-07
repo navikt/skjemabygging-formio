@@ -1,3 +1,4 @@
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { PdfComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 import { getDrivingListItems } from './drivingListUtils';
@@ -17,7 +18,7 @@ const PdfDrivingList = ({ component, submissionPath, languagesContextValue, form
 
   return {
     label: translate(label),
-    verdi: value.description,
+    verdi: translate(TEXTS.statiske.drivingList.summaryDescription),
     verdiliste: drivingListDates.map((drivingListDate) => {
       return {
         label: drivingListDate,
