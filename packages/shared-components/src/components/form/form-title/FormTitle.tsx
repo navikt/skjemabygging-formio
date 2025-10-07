@@ -1,7 +1,7 @@
 import { Heading, Tag } from '@navikt/ds-react';
 import { NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import classNames from 'classnames';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import { useLanguages } from '../../../context/languages';
 import makeStyles from '../../../util/styles/jss/jss';
 import FormIcon from './FormIcon';

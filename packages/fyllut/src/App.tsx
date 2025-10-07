@@ -1,6 +1,6 @@
 import '@navikt/ds-css';
 import { makeStyles, Styles } from '@navikt/skjemadigitalisering-shared-components';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router';
 import { FormNotFoundPage } from './components/errors/FormNotFoundPage';
 import { InternalServerErrorPage } from './components/errors/InternalServerErrorPage';
 import FormPageWrapper from './components/form/FormPageWrapper';

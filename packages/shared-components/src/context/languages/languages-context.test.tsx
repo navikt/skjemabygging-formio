@@ -1,6 +1,6 @@
 import { I18nTranslations } from '@navikt/skjemadigitalisering-shared-domain';
 import { render, screen } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 import { LanguagesProvider, useLanguages } from './languages-context';
 
 vi.mock('./hooks/useCurrentLanguage', () => {

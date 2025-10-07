@@ -1,6 +1,6 @@
 import { Dropdown, InternalHeader, Link } from '@navikt/ds-react';
 import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
-import { Link as ReactRouterLink } from 'react-router-dom';
+import { Link as ReactRouterLink } from 'react-router';
 import { useAuth } from '../../../context/auth-context';
 
 const useStyles = makeStyles({

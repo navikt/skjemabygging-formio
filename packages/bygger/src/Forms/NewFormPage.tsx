@@ -3,7 +3,7 @@ import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { Component, Form, navFormUtils, stringUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import cloneDeep from 'lodash.clonedeep';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import useForms from '../api/useForms';
 import { AppLayout } from '../components/AppLayout';
 import { CreationFormMetadataEditor } from '../components/FormMetaDataEditor/FormMetadataEditor';

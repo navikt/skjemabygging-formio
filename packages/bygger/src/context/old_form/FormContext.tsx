@@ -1,6 +1,6 @@
 import { FeatureTogglesMap, Form, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useCallback, useContext, useEffect, useReducer } from 'react';
-import { useBeforeUnload, useNavigate, useParams } from 'react-router-dom';
+import { useBeforeUnload, useNavigate, useParams } from 'react-router';
 import formPageReducer, { FormReducerState } from '../../Forms/formPageReducer';
 import useForms from '../../api/useForms';
 

@@ -2,7 +2,7 @@ import { AppConfigProvider } from '@navikt/skjemadigitalisering-shared-component
 import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import { Mock } from 'vitest';
 import mockMottaksadresser from '../../example_data/mottaksadresser.json';
 import featureToggles from '../../test/featureToggles';

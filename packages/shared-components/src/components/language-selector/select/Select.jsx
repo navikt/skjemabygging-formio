@@ -1,7 +1,7 @@
 import { Collapse, Expand } from '@navikt/ds-icons';
 import { Link } from '@navikt/ds-react';
 import { useRef, useState } from 'react';
-import { Link as ReactRouterLink } from 'react-router-dom';
+import { Link as ReactRouterLink } from 'react-router';
 import makeStyles from '../../../util/styles/jss/jss';
 
 const useSelectStyle = makeStyles({

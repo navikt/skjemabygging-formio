@@ -2,7 +2,7 @@ import { BodyShort, Heading, Link, List } from '@navikt/ds-react';
 import { InnerHtml, useLanguageCodeFromURL, useLanguages } from '@navikt/skjemadigitalisering-shared-components';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router';
 import { PATHS } from '../../../util/paths';
 
 export function InternalServerErrorContent() {

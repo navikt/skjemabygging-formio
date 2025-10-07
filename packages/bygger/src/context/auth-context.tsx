@@ -1,6 +1,6 @@
 import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import React, { MouseEventHandler, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 interface UserData {
   name?: string;

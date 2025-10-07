@@ -1,5 +1,5 @@
 import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router';
 import FormProvider from '../context/old_form/FormContext';
 import { FormPage } from './FormPage';
 import NewFormPage from './NewFormPage';
@@ -10,10 +10,10 @@ export const FormsRouter = () => {
 
   return (
     <Routes>
-      <Route path="/" element={<FormsListPage />} />
-      <Route path={'/new'} element={<NewFormPage />} />
+      <Route path="" element={<FormsListPage />} />
+      <Route path="new" element={<NewFormPage />} />
       <Route
-        path={'/:formPath/*'}
+        path=":formPath/*"
         element={
           <FormProvider featureToggles={featureToggles}>
             <FormPage />

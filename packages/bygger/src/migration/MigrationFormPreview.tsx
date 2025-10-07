@@ -9,7 +9,7 @@ import {
   Styles,
 } from '@navikt/skjemadigitalisering-shared-components';
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router';
 
 const useStyles = makeStyles({
   '@global': Styles.global,

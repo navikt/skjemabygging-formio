@@ -29,8 +29,8 @@ vi.mock('../../api/useTemaKoder', () => {
   };
 });
 
-vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual<object>('react-router-dom');
+vi.mock('react-router', async () => {
+  const actual = await vi.importActual<object>('react-router');
   return {
     ...actual,
     Link: () => <a href="/">testlink</a>,

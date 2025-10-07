@@ -1,18 +1,18 @@
 import { AppConfigProvider, LanguagesProvider } from '@navikt/skjemadigitalisering-shared-components';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import createMockImplementation, { DEFAULT_PROJECT_URL } from '../../test/backendMockImplementation';
 import featureToggles from '../../test/featureToggles';
 import AuthenticatedApp from '../AuthenticatedApp';
 import { AuthContext } from '../context/auth-context';
 import FeedbackProvider from '../context/notifications/FeedbackContext';
 
-describe('FormsRouter', () => {
-  beforeAll(() => {
-    fetchMock.mockImplementation(createMockImplementation());
-  });
+beforeAll(() => {
+  fetchMock.mockImplementation(createMockImplementation());
+});
 
+describe('FormsRouter', () => {
   afterEach(() => {
     fetchMock.mockClear();
   });

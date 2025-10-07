@@ -2,7 +2,7 @@ import { NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import nock from 'nock';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import { AppConfigProvider } from '../../context/config/configContext';
 import { FormProvider } from '../../context/form/FormContext';
 import { PrepareIngenInnsendingPage } from './PrepareIngenInnsendingPage';

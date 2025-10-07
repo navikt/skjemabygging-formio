@@ -3,15 +3,14 @@ import ComponentSummary from '../component/ComponentSummary';
 
 interface Props {
   component: SummaryFieldset;
-  formUrl: string;
 }
 
-const FieldsetSummary = ({ component, formUrl }: Props) => (
+const FieldsetSummary = ({ component }: Props) => (
   <>
     <dt>{component.label}</dt>
     <dd>
       <dl className="component-collection">
-        <ComponentSummary components={component.components} formUrl={formUrl} />
+        <ComponentSummary components={component.components} />
       </dl>
     </dd>
   </>

@@ -3,10 +3,9 @@ import ComponentSummary from '../component/ComponentSummary';
 
 interface Props {
   component: SummaryDataGrid;
-  formUrl: string;
 }
 
-const DataGridSummary = ({ component, formUrl }: Props) => (
+const DataGridSummary = ({ component }: Props) => (
   <>
     <dt>{component.label}</dt>
     <dd>
@@ -15,7 +14,7 @@ const DataGridSummary = ({ component, formUrl }: Props) => (
           <div className="data-grid__row" key={row.key}>
             {row.label && <p className="navds-body-short font-bold">{row.label}</p>}
             <dl>
-              <ComponentSummary components={row.components} formUrl={formUrl} />
+              <ComponentSummary components={row.components} />
             </dl>
           </div>
         ))}
