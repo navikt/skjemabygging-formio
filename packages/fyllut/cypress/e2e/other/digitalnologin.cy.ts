@@ -8,8 +8,12 @@ describe('Digital no login', () => {
     cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigitalNoLogin }).click();
   });
 
-  it('shows an error message if no personal ID has been uploaded', () => {
+  it('shows validation errors if no personal ID has been uploaded', () => {
     cy.findByRole('heading', { name: TEXTS.statiske.uploadId.title }).should('exist');
+    cy.clickNextStep();
+    cy.findByText(`Du må fylle ut: ${TEXTS.statiske.uploadId.label}`).should('exist');
+    cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
+    cy.findByText(`Du må fylle ut: ${TEXTS.statiske.uploadId.title}`).should('not.exist');
     cy.clickNextStep();
     cy.findByText(TEXTS.statiske.uploadId.missingUploadError).should('exist');
   });

@@ -81,7 +81,7 @@ describe('Digital submission without user login', () => {
 
     cy.clickNextStep();
     cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() => {
-      cy.findByText(TEXTS.statiske.uploadId.missingUploadError).should('exist');
+      cy.findByText(`Du må fylle ut: ${TEXTS.statiske.uploadId.label}`).should('exist');
     });
   });
 
