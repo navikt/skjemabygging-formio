@@ -24,7 +24,7 @@ interface Props {
   componentId: string;
   description?: string;
   className?: string;
-  refs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | null>>;
+  refs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | HTMLButtonElement | null>>;
 }
 
 const OtherAttachmentUpload = ({ label, attachmentValues, componentId, description, className, refs }: Props) => {
@@ -81,7 +81,7 @@ const OtherAttachmentUpload = ({ label, attachmentValues, componentId, descripti
           deadline={form.properties?.ettersendelsesfrist}
           ref={(ref) => {
             if (refs?.current) {
-              refs.current[`${componentId}-INPUT`] = ref;
+              refs.current[`${componentId}-VALUE`] = ref;
             }
           }}
         />

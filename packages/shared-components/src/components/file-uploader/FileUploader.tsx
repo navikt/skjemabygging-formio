@@ -42,7 +42,7 @@ interface Props {
   attachmentValue?: keyof AttachmentSettingValues;
   requireAttachmentTitle?: boolean;
   multiple?: boolean;
-  refs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | null>>;
+  refs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | HTMLButtonElement | null>>;
   accept?: string;
   maxFileSizeInBytes?: number;
   maxFileSizeText?: string;
@@ -162,6 +162,11 @@ const FileUploader = ({
                 className={styles.button}
                 loading={loading}
                 icon={<UploadIcon aria-hidden fontSize="1.5rem" />}
+                ref={(ref) => {
+                  if (refs?.current) {
+                    refs.current[`${attachmentId}-FILE`] = ref;
+                  }
+                }}
               >
                 {translate(
                   initialUpload ? TEXTS.statiske.uploadFile.selectFile : TEXTS.statiske.uploadFile.uploadMoreFiles,
@@ -173,6 +178,11 @@ const FileUploader = ({
               variant={initialUpload ? 'primary' : 'secondary'}
               className={styles.button}
               icon={<UploadIcon aria-hidden fontSize="1.5rem" />}
+              ref={(ref) => {
+                if (refs?.current) {
+                  refs.current[`${attachmentId}-FILE`] = ref;
+                }
+              }}
               onClick={() =>
                 addError(
                   attachmentId,

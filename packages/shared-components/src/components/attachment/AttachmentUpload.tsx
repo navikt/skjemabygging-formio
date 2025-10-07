@@ -24,7 +24,7 @@ interface Props {
   type?: Exclude<AttachmentType, 'other'>;
   description?: string;
   className?: string;
-  refs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | null>>;
+  refs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | HTMLButtonElement | null>>;
 }
 
 const AttachmentUpload = ({
@@ -83,7 +83,7 @@ const AttachmentUpload = ({
           deadline={form.properties?.ettersendelsesfrist}
           ref={(ref) => {
             if (refs?.current) {
-              refs.current[`${componentId}-INPUT`] = ref;
+              refs.current[`${componentId}-VALUE`] = ref;
             }
           }}
         />
@@ -104,7 +104,11 @@ const AttachmentUpload = ({
               )}
             </div>
           )}
-          <FileUploader initialAttachment={{ attachmentId: componentId, navId: componentId, type }} multiple />
+          <FileUploader
+            initialAttachment={{ attachmentId: componentId, navId: componentId, type }}
+            refs={refs}
+            multiple
+          />
         </VStack>
       )}
     </VStack>

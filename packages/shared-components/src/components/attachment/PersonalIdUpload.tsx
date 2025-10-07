@@ -45,7 +45,7 @@ const PersonalIdUpload = ({ refs }: { refs?: any }) => {
           translate={translate}
           ref={(ref) => {
             if (refs?.current) {
-              refs.current[`${attachmentId}-INPUT`] = ref;
+              refs.current[`${attachmentId}-VALUE`] = ref;
             }
           }}
         />
