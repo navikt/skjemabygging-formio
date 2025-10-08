@@ -260,8 +260,6 @@ describe('PrepareLetterPage', () => {
       });
     });
 
-    // Dynamically generated tests are exceptions to this rule: https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/no-setup-in-describe.md
-
     it.each([[], undefined])(
       "renders EnhetSelector with all supported Enhet items, when 'enhetstyper' is empty/undefined",
       async (enhetstyper) => {

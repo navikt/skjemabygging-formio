@@ -393,10 +393,7 @@ describe('navFormUtils', () => {
     describe('A form with group of components with external conditional dependencies', () => {
       const testForms = [formWithSkjemagruppe, formWithPanel, formWithContainer];
 
-      // Dynamically generated tests are exceptions to this rule: https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/no-setup-in-describe.md
-      // eslint-disable-next-line mocha/no-setup-in-describe
       testForms.forEach((testForm) => {
-        // eslint-disable-next-line mocha/no-setup-in-describe
         describe(`Grouped with ${testForm.title}`, () => {
           it("returns two dependenct component keys for 'oppgiYndlingsfarge'", () => {
             const dependentKeys = findDependentComponents('e83xe9j', testForm);

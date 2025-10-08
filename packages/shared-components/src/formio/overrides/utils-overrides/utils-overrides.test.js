@@ -386,8 +386,6 @@ describe('utils-overrides', () => {
     describe('birth date 18.09.1922', () => {
       const FNR = '18092200163';
 
-      // Dynamically generated tests are exceptions to this rule: https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/no-setup-in-describe.md
-      // eslint-disable-next-line mocha/no-setup-in-describe
       it.each([`${FNR}`, ` ${FNR}`, `${FNR} `])('submission value "%s" is correctly evaluated', (FNR) => {
         expect(UtilsOverrides.isBornBeforeYear(1921, 'fnr', { data: { fnr: FNR } })).toBe(false);
         expect(UtilsOverrides.isBornBeforeYear(1922, 'fnr', { data: { fnr: FNR } })).toBe(false);
