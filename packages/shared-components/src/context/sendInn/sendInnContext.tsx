@@ -1,7 +1,7 @@
 import { Language, MellomlagringError, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import React, { createContext, useCallback, useContext, useEffect, useReducer, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router';
-import { postNologinSoknad } from '../../api/sendinn/nologin';
+import { NologinSubmissionResult, postNologinSoknad, SendInnReceiptMetadata } from '../../api/sendinn/nologin';
 import {
   createSoknad,
   deleteSoknad,
@@ -19,6 +19,8 @@ import { getSubmissionWithFyllutState, transformSubmissionBeforeSubmitting } fro
 
 interface ReceiptState {
   submittedAt: string;
+  kvittering?: SendInnReceiptMetadata;
+  fileName?: string;
 }
 
 interface SendInnContextType {
@@ -259,7 +261,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         if (!nologinToken) {
           throw new Error('Nologin token mangler ved innsending');
         }
-        const response: Blob = await postNologinSoknad(
+        const response: NologinSubmissionResult = await postNologinSoknad(
           appConfig,
           nologinToken,
           form!,
@@ -267,8 +269,12 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
           language,
           translation,
         );
-        setSoknadPdfBlob(response);
-        setReceiptState({ submittedAt: new Date().toISOString() });
+        setSoknadPdfBlob(response.pdfBlob);
+        setReceiptState({
+          submittedAt: new Date().toISOString(),
+          kvittering: response.kvittering,
+          fileName: response.fileName,
+        });
         navigate(`/${formUrl}/kvittering?${searchParams.toString()}`, { replace: true });
       } catch (error: any) {
         logger?.error(`${innsendingsId}: Failed to submit nologin application`, {

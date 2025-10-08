@@ -1,3 +1,6 @@
+const fs = require('fs');
+const path = require('path');
+
 const responseWithInnsendingsId = require('../data/innsending-api/mellomlagring/responseWithInnsendingsId.json');
 const mellomlagringValid1 = require('../data/innsending-api/mellomlagring/getTestMellomlagring-valid-1.json');
 const mellomlagringValid2 = require('../data/innsending-api/mellomlagring/getTestMellomlagring-valid-2.json');
@@ -28,6 +31,9 @@ const prefillDataUsa = require('../data/innsending-api/prefill-data/prefill-data
 const mellomlagringSelectBoxes = require('../data/innsending-api/select-boxes/mellomlagring-select-boxes.json');
 const mellomlagringRadio = require('../data/innsending-api/radio/mellomlagring-radio.json');
 const mellomlagringMonthPicker = require('../data/innsending-api/month-picker/mellomlagring-month-picker.json');
+const mockNologinReceiptPdf = fs.readFileSync(
+  path.resolve(__dirname, '../data/innsending-api/nologin-soknad/mock-receipt.pdf'),
+);
 
 const objectToByteArray = (obj) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
 
@@ -535,27 +541,11 @@ module.exports = [
         type: 'middleware',
         options: {
           middleware(req, res) {
-            const { body } = req;
+            const fileName = 'mock-kvittering.pdf';
             res.status(200);
-            res.contentType('application/json; charset=UTF-8');
-            res.send({
-              innsendingsId: body.innsendingsId,
-              label: body.tittel,
-              status: 'Innsendt',
-              mottattdato: '2023-10-10T10:02:00.328667+02:00',
-              hoveddokumentRef: null,
-              innsendteVedlegg: body.vedleggsListe
-                .filter((v) => v.opplastingsStatus === 'LastetOpp')
-                .map((v) => ({ vedleggsnr: v.vedleggsnr, tittel: v.tittel })),
-              skalEttersendes: body.vedleggsListe
-                .filter((v) => v.opplastingsStatus === 'SendSenere')
-                .map((v) => ({ vedleggsnr: v.vedleggsnr, tittel: v.tittel })),
-              skalSendesAvAndre: [],
-              levertTidligere: [],
-              sendesIkkeInn: [],
-              navKanInnhente: [],
-              ettersendingsfrist: null,
-            });
+            res.contentType('application/pdf');
+            res.setHeader('Content-Disposition', `inline; filename=${encodeURIComponent(fileName)}`);
+            res.send(mockNologinReceiptPdf);
           },
         },
       },

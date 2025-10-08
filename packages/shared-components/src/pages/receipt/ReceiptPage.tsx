@@ -13,7 +13,7 @@ import { buildReceiptDocumentItems, getAttachmentsWithFiles, ReceiptDocumentItem
 export function ReceiptPage() {
   const navigate = useNavigate();
   const { search } = useLocation();
-  const { submissionMethod } = useAppConfig();
+  const { submissionMethod, logger } = useAppConfig();
   const { translate, currentLanguage } = useLanguages();
   const { form, submission, formUrl } = useForm();
   const { soknadPdfBlob, receipt, nologinToken } = useSendInn();
@@ -69,7 +69,8 @@ export function ReceiptPage() {
   const handleDownloadReceipt = useCallback(
     (event: MouseEvent<HTMLAnchorElement>) => {
       event.preventDefault();
-      if (!soknadPdfBlob) {
+      if (!(soknadPdfBlob instanceof Blob)) {
+        logger?.error('ReceiptPage: Received invalid soknadPdfBlob, aborting download');
         return;
       }
 
@@ -89,7 +90,7 @@ export function ReceiptPage() {
       // Allow the browser to start the download before revoking the object URL
       setTimeout(() => URL.revokeObjectURL(blobUrl), 0);
     },
-    [downloadFileName, soknadPdfBlob],
+    [downloadFileName, logger, soknadPdfBlob],
   );
 
   return (

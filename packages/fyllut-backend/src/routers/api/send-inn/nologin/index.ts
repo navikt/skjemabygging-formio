@@ -28,9 +28,14 @@ const post = async (req: Request, res: Response, next: NextFunction) => {
       translation,
       language,
     );
-    res.contentType('application/pdf');
-    res.setHeader('Content-Disposition', `inline; filename=${encodeURIComponent(`${form.path}.pdf`)}`);
-    res.send(Buffer.from(result.pdf));
+    const fileName = `${form.path}.pdf`;
+    res.contentType('application/json; charset=UTF-8');
+    res.send({
+      innsendingId: result.innsendingId,
+      fileName,
+      pdf: Buffer.from(result.pdf).toString('base64'),
+      kvittering: result.kvittering,
+    });
   } catch (error) {
     next(error);
   }
