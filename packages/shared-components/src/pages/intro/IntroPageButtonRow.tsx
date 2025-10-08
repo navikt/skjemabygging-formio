@@ -1,7 +1,8 @@
-import { ArrowLeftIcon, ArrowRightIcon } from '@navikt/aksel-icons';
-import { Button } from '@navikt/ds-react';
 import { TEXTS, Tkey } from '@navikt/skjemadigitalisering-shared-domain';
-import { useNavigate, useSearchParams } from 'react-router';
+import { useNavigate, useResolvedPath, useSearchParams } from 'react-router';
+import { NavigationButtonRow } from '../../components/navigation/NavigationButtonRow';
+import { NextButton } from '../../components/navigation/NextButton';
+import { PreviousButton } from '../../components/navigation/PreviousButton';
 import { useLanguages } from '../../context/languages';
 import { useIntroPage } from './IntroPageContext';
 
@@ -11,6 +12,7 @@ const IntroPageButtonRow = () => {
   const [searchParams] = useSearchParams();
   const { form, selfDeclaration, setError } = useIntroPage();
 
+  const href = `${form.path}?${searchParams.toString()}`;
   const validationError: Tkey = 'introPage.selfDeclaration.validationError';
 
   const navigateToFormPage = (event) => {
@@ -23,23 +25,41 @@ const IntroPageButtonRow = () => {
   };
 
   return (
-    <nav className="button-row button-row--center">
-      <Button
-        variant="primary"
-        icon={<ArrowRightIcon aria-hidden />}
-        iconPosition="right"
-        as="a"
-        onClick={navigateToFormPage}
-        role="link"
-        {...{ href: `${form.path}?${searchParams.toString()}` }}
-      >
-        {translate(TEXTS.grensesnitt.introPage.start)}
-      </Button>
-
-      <Button variant="secondary" icon={<ArrowLeftIcon aria-hidden />} iconPosition="left" onClick={() => navigate(-1)}>
-        {translate(TEXTS.grensesnitt.goBack)}
-      </Button>
-    </nav>
+    <NavigationButtonRow
+      nextButton={
+        <NextButton
+          onClick={{
+            digital: () => navigateToFormPage,
+            paper: () => navigateToFormPage,
+            digitalnologin: () => navigateToFormPage,
+          }}
+          label={{
+            digital: translate(TEXTS.grensesnitt.navigation.saveAndContinue),
+            digitalnologin: translate(TEXTS.grensesnitt.navigation.next),
+            paper: translate(TEXTS.grensesnitt.navigation.next),
+          }}
+          href={{
+            digital: href,
+            paper: href,
+            digitalnologin: href,
+          }}
+        />
+      }
+      previousButton={
+        <PreviousButton
+          onClick={{
+            digital: () => navigate(-1),
+            digitalnologin: () => navigate(-1),
+            paper: () => navigate(-1),
+          }}
+          label={{
+            digital: translate(TEXTS.grensesnitt.navigation.cancelAndDiscard),
+            digitalnologin: translate(TEXTS.grensesnitt.navigation.uploadID),
+            paper: translate(TEXTS.grensesnitt.navigation.cancelAndDiscard),
+          }}
+        />
+      }
+    />
   );
 };
 

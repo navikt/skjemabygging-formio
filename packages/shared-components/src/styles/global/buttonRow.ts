@@ -5,6 +5,13 @@ const buttonRow = {
     justifyContent: 'flex-end',
     gap: 'var(--a-spacing-5)',
     flexWrap: 'wrap',
+    '@media (max-width: 600px)': {
+      flexDirection: 'column',
+      '> button, & a': {
+        minWidth: '100%',
+        maxWidth: '100%',
+      },
+    },
     marginBottom: 'var(--a-spacing-5)',
     '> button, & a': {
       flexGrow: 1,
