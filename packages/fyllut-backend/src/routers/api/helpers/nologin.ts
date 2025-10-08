@@ -92,7 +92,10 @@ const extractBruker = (submission: Submission): BrukerDto | undefined => {
   if (data.dineOpplysninger?.identitet?.identitetsnummer) {
     return { id: data.dineOpplysninger.identitet.identitetsnummer as string, idType: 'FNR' };
   }
-  return { id: data.fodselsnummerDNummerSoker as string as string, idType: 'FNR' };
+  if (data.fodselsnummerDNummerSoker) {
+    return { id: data.fodselsnummerDNummerSoker as string as string, idType: 'FNR' };
+  }
+  return undefined;
 };
 
 const extractAvsender = (submission: Submission): AvsenderId | undefined => {
