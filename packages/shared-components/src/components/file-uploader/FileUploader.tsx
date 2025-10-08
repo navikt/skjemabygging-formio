@@ -14,7 +14,7 @@ import {
 } from '@navikt/ds-react';
 import { AttachmentSettingValues, SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { ChangeEvent, MutableRefObject, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 import {
   FILE_ACCEPT,
   MAX_SIZE_ATTACHMENT_FILE_BYTES,
