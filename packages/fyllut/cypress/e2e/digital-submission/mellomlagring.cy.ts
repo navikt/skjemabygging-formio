@@ -83,7 +83,8 @@ describe('Mellomlagring', () => {
       cy.clickNextStep();
       cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveDraft }).should('not.exist');
       cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.cancelAndDelete }).should('not.exist');
-      cy.findByRole('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers })
+      cy.findAllByRole('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers })
+        .first()
         .should('exist')
         .should('have.attr', 'href')
         .and('contains', '/fyllut/testmellomlagring/valgfrieOpplysninger?sub=paper');
@@ -126,7 +127,8 @@ describe('Mellomlagring', () => {
       cy.wait('@updateMellomlagring');
       cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveDraft }).should('exist');
       cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.cancelAndDelete }).should('exist');
-      cy.findByRole('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers })
+      cy.findAllByRole('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers })
+        .first()
         .should('exist')
         .and(
           'have.attr',
@@ -234,7 +236,7 @@ describe('Mellomlagring', () => {
           cy.defaultWaits();
           cy.wait('@getMellomlagringValid');
           cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
-          cy.findByRole('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers }).should('exist').click();
+          cy.clickEditAnswers();
           cy.url().should('include', '/valgfrieOpplysninger');
           cy.findByRole('textbox', { name: 'Hva drakk du til frokost (valgfritt)' }).should('have.focus');
         });
@@ -250,7 +252,7 @@ describe('Mellomlagring', () => {
           cy.findByText('Farge').should('not.exist');
           cy.findByText('Tekst på kortet').should('not.exist');
 
-          cy.findByRole('link', { name: 'Rediger gave' }).should('exist').click();
+          cy.clickEditAnswer('Gave');
           cy.findByRole('heading', { name: 'Gave' }).should('exist');
           cy.findByRole('group', { name: 'Ønsker du å få gaven innpakket' })
             .should('exist')
@@ -370,7 +372,7 @@ describe('Mellomlagring', () => {
           );
           cy.defaultWaits();
           cy.wait('@getMellomlagringValid');
-          cy.findByText(/Alle steg som mangler informasjon, er markert med/).should('exist');
+          cy.contains(TEXTS.statiske.summaryPage.validationMessage).should('exist');
           cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('not.exist');
           cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
         });
@@ -399,7 +401,8 @@ describe('Mellomlagring', () => {
                 cy.get('dt').eq(0).should('contain.text', 'Velg instrument');
                 cy.get('dd').eq(0).should('contain.text', 'Piano');
               });
-            cy.findByText(/Alle steg som mangler informasjon, er markert med/).should('exist');
+
+            cy.contains(TEXTS.statiske.summaryPage.validationMessage).should('exist');
             cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('not.exist');
             cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
           });
@@ -424,7 +427,7 @@ describe('Mellomlagring', () => {
                 cy.get('dt').eq(2).should('contain.text', 'Velg valuta du vil betale med');
                 cy.get('dd').eq(2).should('contain.text', 'Euro (EUR)');
               });
-            cy.findByText(/Alle steg som mangler informasjon, er markert med/).should('exist');
+            cy.contains(TEXTS.statiske.summaryPage.validationMessage).should('exist');
             cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('not.exist');
             cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
           });
@@ -448,7 +451,6 @@ describe('Mellomlagring', () => {
             );
             cy.defaultWaits();
             cy.wait('@getMellomlagring');
-            cy.findByRole('button', { name: /Veiledning/ }).should('exist');
             cy.get('dl')
               .eq(0)
               .within(() => {
@@ -461,7 +463,7 @@ describe('Mellomlagring', () => {
                 cy.get('dd').eq(2).should('contain.text', 'Euro (EUR)');
               });
             cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('exist');
-            cy.findByText(/Alle steg som mangler informasjon, er markert med/).should('not.exist');
+            cy.contains(TEXTS.statiske.summaryPage.validationMessage).should('not.exist');
             cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
 
             cy.clickSaveAndContinue();
@@ -497,7 +499,7 @@ describe('Mellomlagring', () => {
                 cy.get('dd').eq(2).should('contain.text', 'Euro (EUR)');
               });
             cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('exist');
-            cy.findByText(/Alle steg som mangler informasjon, er markert med/).should('not.exist');
+            cy.contains(TEXTS.statiske.summaryPage.validationMessage).should('not.exist');
             cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
 
             cy.clickSaveAndContinue();
@@ -523,7 +525,7 @@ describe('Mellomlagring', () => {
         cy.defaultWaits();
         cy.wait('@getMellomlagring');
         cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('exist');
-        cy.findByText(/Alle steg som mangler informasjon, er markert med/).should('not.exist');
+        cy.contains(TEXTS.statiske.summaryPage.validationMessage).should('not.exist');
         cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
         cy.clickSaveAndContinue();
         cy.wait('@submitMellomlagring');

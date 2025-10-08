@@ -9,6 +9,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { ConfigType } from '../config/types';
 import { logger } from '../logger';
+import { createFeltMapFromSubmission } from '../routers/api/helpers/feltMapBuilder';
 import { assembleNologinSoknadBody } from '../routers/api/helpers/nologin';
 import { responseToError } from '../utils/errorHandling';
 import applicationService from './documents/applicationService';
@@ -99,16 +100,15 @@ class NoLoginFileService {
     submissionMethod: string,
     translation: I18nTranslationMap = {},
     language: string,
+    pdfFormData?: any,
   ) {
     const lang = localizationUtils.getLanguageCodeAsIso639_1(language);
     const translate = translationUtils.createTranslate(translation, language);
-    const applicationPdf = await applicationService.createPdfFromFieldMap(
+    const applicationPdf = await applicationService.createFormPdf(
       pdfAccessToken,
-      form,
-      submission,
-      submissionMethod,
-      translate,
-      lang,
+      pdfFormData
+        ? JSON.stringify(pdfFormData)
+        : createFeltMapFromSubmission(form, submission, submissionMethod, translate, lang),
     );
 
     const pdfByteArray = Array.from(applicationPdf);

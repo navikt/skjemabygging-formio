@@ -1,8 +1,6 @@
 /*
  * Tests datagrid component
  */
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-
 describe('Datagrid', () => {
   before(() => {
     cy.configMocksServer();
@@ -34,7 +32,7 @@ describe('Datagrid', () => {
       cy.clickSaveAndContinue();
       cy.wait('@updateMellomlagring');
       cy.findByRoleWhenAttached('heading', { level: 2, name: 'Oppsummering' }).should('exist');
-      cy.findByRoleWhenAttached('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers }).should('exist').click();
+      cy.clickEditAnswers();
 
       // check original values
       cy.findByRole('checkbox', { name: 'Avkryssingsboks inni datagrid (valgfritt)' }).should('be.checked');
