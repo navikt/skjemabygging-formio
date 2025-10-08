@@ -1,14 +1,15 @@
 import { FormSummary } from '@navikt/ds-react';
 import { useForm } from '../../../../context/form/FormContext';
+import { useLanguages } from '../../../../context/languages';
 import RenderComponent from '../../../render/RenderComponent';
 import { FormComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
-import DefaultLabel from '../../shared/form-summary/DefaultLabel';
 import FormSummaryAnswersNested from '../../shared/form-summary/FormSummaryAnswersNested';
 
 const SummaryFormGroup = ({ component, submissionPath, componentRegistry }: FormComponentProps) => {
-  const { components, navId } = component;
+  const { components, navId, legend } = component;
   const { submission } = useForm();
+  const { translate } = useLanguages();
 
   if (!components || formComponentUtils.noChildValues(submissionPath, components, submission)) {
     return null;
@@ -16,7 +17,7 @@ const SummaryFormGroup = ({ component, submissionPath, componentRegistry }: Form
 
   return (
     <FormSummary.Answer>
-      <DefaultLabel component={component} />
+      <FormSummary.Label>{translate(legend)}</FormSummary.Label>
       <FormSummary.Value>
         <FormSummaryAnswersNested>
           {components?.map((component) => {
