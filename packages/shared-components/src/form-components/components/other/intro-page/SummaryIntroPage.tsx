@@ -38,7 +38,7 @@ const SummaryIntroPage = () => {
       </FormSummary.Answers>
 
       <FormSummary.Footer>
-        <FormSummary.EditLink as={Link} to={{ pathname: '', search }}>
+        <FormSummary.EditLink as={Link} to={{ pathname: '../', search }}>
           {translate(TEXTS.grensesnitt.summaryPage.edit)}
         </FormSummary.EditLink>
       </FormSummary.Footer>
