@@ -42,7 +42,7 @@ import { PdfComponentProps, PdfFormData } from './types';
 interface Props {
   formContextValue: FormContextType;
   languagesContextValue: LanguageContextType;
-  watermarkText?: string;
+  isDelingslenke?: boolean;
   gitVersion?: string;
   submissionMethod?: SubmissionMethod;
 }
@@ -50,7 +50,7 @@ interface Props {
 const renderPdfForm = ({
   formContextValue,
   languagesContextValue,
-  watermarkText,
+  isDelingslenke,
   gitVersion,
   submissionMethod,
 }: Props): string => {
@@ -147,7 +147,7 @@ const renderPdfForm = ({
         `: ${dateUtils.toCurrentDayMonthYearHourMinute(languageCode)}`,
       lowerMiddle: translate(TEXTS.statiske.footer.versionLabel) + `: ${gitVersion ?? ''}`,
     },
-    vannmerke: watermarkText,
+    vannmerke: isDelingslenke ? 'Testskjema - Ikke send til Nav' : undefined,
   };
 
   return JSON.stringify(pdfData).replaceAll('\\t', '  ');

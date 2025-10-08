@@ -58,6 +58,8 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const [nologinToken, setNologinToken] = useState<string | undefined>();
   const [fyllutMellomlagringState, dispatchFyllutMellomlagring] = useReducer(mellomlagringReducer, undefined);
   const [soknadPdfBlob, setSoknadPdfBlob] = useState<Blob | undefined>(undefined);
+  const formContextValue = useForm();
+  const languagesContextValue = useLanguages();
 
   const addSearchParamToUrl = useCallback(
     (key, value) => {
@@ -251,6 +253,8 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
           submission,
           language,
           translation,
+          formContextValue,
+          languagesContextValue,
         );
         setSoknadPdfBlob(response);
         navigate(`/${form.path}/kvittering?${searchParams.toString()}`);
@@ -284,6 +288,8 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
           translation,
           innsendingsId,
           setRedirectLocation,
+          formContextValue,
+          languagesContextValue,
         );
         logger?.info(`${innsendingsId}: Mellomlagring was submitted`);
         if (redirectLocation) {
