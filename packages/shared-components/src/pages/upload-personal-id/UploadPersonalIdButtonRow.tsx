@@ -1,7 +1,7 @@
 import { ArrowLeftIcon, ArrowRightIcon } from '@navikt/aksel-icons';
 import { Alert, Button } from '@navikt/ds-react';
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { MouseEvent } from 'react';
+import { navFormUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { MouseEvent, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
 import { useAttachmentUpload } from '../../components/attachment/AttachmentUploadContext';
 import LinkButton from '../../components/link-button/LinkButton';
@@ -12,13 +12,22 @@ import urlUtils from '../../util/url/url';
 
 const UploadPersonalIdButtonRow = () => {
   const navigate = useNavigate();
-  const { baseUrl } = useAppConfig();
+  const { baseUrl, submissionMethod } = useAppConfig();
   const { translate } = useLanguages();
-  const { formUrl } = useForm();
+  const { form, formUrl, submission } = useForm();
   const [searchParams] = useSearchParams();
   const { submissionAttachments, errors, addError, handleDeleteAllFiles } = useAttachmentUpload();
 
-  const startUrl = `${baseUrl}${formUrl}`;
+  const firstPanelKey = useMemo(() => {
+    if (!form) {
+      return undefined;
+    }
+    const panels = navFormUtils.getActivePanelsFromForm(form, submission, submissionMethod);
+    return panels?.[0]?.key;
+  }, [form, submission, submissionMethod]);
+
+  const targetPath = firstPanelKey ?? 'oppsummering';
+  const startUrl = `${baseUrl}/${formUrl}/${targetPath}`;
   const exitUrl = urlUtils.getExitUrl(window.location.href);
   const error = errors['allFiles']?.find((err) => err.type === 'FILE');
 
@@ -26,7 +35,11 @@ const UploadPersonalIdButtonRow = () => {
     event.preventDefault();
     const personalIdAttachment = submissionAttachments.find((attachment) => attachment.attachmentId === 'personal-id');
     if (personalIdAttachment?.files?.length) {
-      navigate(`..?${searchParams.toString()}`);
+      const searchString = searchParams.toString();
+      navigate({
+        pathname: `../${targetPath}`,
+        search: searchString ? `?${searchString}` : '',
+      });
     } else {
       addError('personal-id', translate(TEXTS.statiske.uploadId.missingUploadError), 'VALUE');
     }
@@ -49,7 +62,11 @@ const UploadPersonalIdButtonRow = () => {
         </Alert>
       )}
       <div className="button-row button-row--center">
-        <LinkButton buttonVariant="primary" onClick={navigateToFormPage} to={`${startUrl}?${searchParams.toString()}`}>
+        <LinkButton
+          buttonVariant="primary"
+          onClick={navigateToFormPage}
+          to={`${startUrl}${searchParams.toString() ? `?${searchParams.toString()}` : ''}`}
+        >
           <span aria-live="polite" className="navds-body-short font-bold">
             {translate(TEXTS.grensesnitt.navigation.next)}
           </span>
