@@ -6,7 +6,6 @@ import {
   Submission,
   translationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { config } from '../../config/config';
 import { logger } from '../../logger';
 import { createFeltMapFromSubmission } from '../../routers/api/helpers/feltMapBuilder';
 import { base64Decode } from '../../utils/base64';
@@ -27,20 +26,6 @@ interface ApplicationProps {
 
 const application = async (props: CoverPageAndApplicationProps) => {
   const { accessToken, form, pdfFormData, submission, language, translations, submissionMethod } = props;
-
-  // TODO: Remove this when pdf is stable
-  if (config.naisClusterName === 'dev-gcp') {
-    logger.info(`New: ${JSON.stringify(pdfFormData)}`);
-    logger.info(
-      `Old ${createFeltMapFromSubmission(
-        form,
-        submission,
-        submissionMethod,
-        createTranslate(translations, language),
-        language,
-      )}`,
-    );
-  }
 
   const applicationPdf = await applicationService.createFormPdf(
     accessToken,
@@ -81,20 +66,6 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps) => {
     submissionMethod,
     mergePdfAccessToken,
   } = props;
-
-  // TODO: Remove this when pdf is stable
-  if (config.naisClusterName === 'dev-gcp') {
-    logger.info(`New: ${JSON.stringify(pdfFormData)}`);
-    logger.info(
-      `Old ${createFeltMapFromSubmission(
-        form,
-        submission,
-        submissionMethod,
-        createTranslate(translations, language),
-        language,
-      )}`,
-    );
-  }
 
   const [coverPageResponse, applicationResponse] = await Promise.all([
     coverPageService.createPdf({
