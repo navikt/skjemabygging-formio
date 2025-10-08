@@ -27,7 +27,7 @@
     "formiojs": "4.20.0",
     "luxon": "^3.7.2",
     "moment": "^2.30.1",
-    "uuid": "^11.1.0"
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@types/luxon": "^3.7.1",

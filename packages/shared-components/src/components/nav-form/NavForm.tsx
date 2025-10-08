@@ -47,6 +47,7 @@ interface EventProps {
   onWizardPageSelected?: (panel: { path: string }) => void;
   onShowErrors?: (errorsFromForm: ComponentError[]) => void;
   onErrorSummaryFocus?: () => void;
+  onReady?: () => void;
   onNavigationPathsChanged?: (paths: FormNavigationPaths) => void;
   onFocusOnComponentPageChanged?: (page: { key: string }) => void;
 }
@@ -97,6 +98,7 @@ const NavForm = ({
           i18n,
           appConfig,
           submission: submission ? JSON.parse(JSON.stringify(submission)) : undefined,
+          panelSlug,
         });
 
         appConfig.logger?.debug('Form ready', {
@@ -106,6 +108,7 @@ const NavForm = ({
           submission,
         });
 
+        events?.onReady?.();
         setWebform(newWebform);
       }
     },

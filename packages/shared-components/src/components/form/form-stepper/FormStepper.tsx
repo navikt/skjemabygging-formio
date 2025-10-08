@@ -1,7 +1,7 @@
 import { FormProgress } from '@navikt/ds-react';
 import { navFormUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router';
+import { useLocation, useNavigate, useParams, useResolvedPath } from 'react-router';
 import { useAppConfig } from '../../../context/config/configContext';
 import { useForm } from '../../../context/form/FormContext';
 import { useLanguages } from '../../../context/languages';
@@ -14,6 +14,7 @@ const FormStepper = () => {
   const panelSlug = params.panelSlug ?? params['*'];
   const { search } = useLocation();
   const navigate = useNavigate();
+  const formUrl = useResolvedPath('').pathname;
   const { translate } = useLanguages();
 
   const formSteps = useMemo(() => {
@@ -73,19 +74,19 @@ const FormStepper = () => {
         }}
       >
         {formSteps.map((step, index) => {
-          const stepUrl = `${form.path}/${step.key}${search}`;
+          const stepUrl = `${formUrl}/../${step.key}${search}`;
           return (
             <FormProgress.Step
               onClick={(event) => {
                 event.preventDefault();
                 if (getActiveStepper() !== index) {
-                  navigate(`../${stepUrl}`);
+                  navigate(stepUrl);
                   if (screenSmall) {
                     setFormProgress(false);
                   }
                 }
               }}
-              href={`${baseUrl}/${stepUrl}`}
+              href={`${baseUrl}${stepUrl}`}
               key={step.key}
             >
               {translate(step.label)}
