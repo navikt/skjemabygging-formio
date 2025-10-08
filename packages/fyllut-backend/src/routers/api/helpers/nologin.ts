@@ -6,7 +6,13 @@ import {
   navFormUtils,
   Submission,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { DokumentV2, OpplastingsStatus, SendInnSoknadBodyV2 } from '../../../types/sendinn/sendinn';
+import {
+  AvsenderId,
+  BrukerDto,
+  DokumentV2,
+  OpplastingsStatus,
+  SendInnSoknadBodyV2,
+} from '../../../types/sendinn/sendinn';
 import { base64EncodeByteArray } from '../../../utils/base64';
 import { objectToByteArray } from './sendInn';
 
@@ -21,18 +27,15 @@ const assembleNologinSoknadBody = (
   const allAttachments: Component[] = navFormUtils
     .flattenComponents(form.components)
     .filter((comp: Component) => comp.type === 'attachment');
-  const fnr = extractFnr(submission);
-  if (!fnr) {
-    throw new Error(
-      `Unable to extract FNR from nologin submission with innsendingId ${innsendingsId} (formPath=${form.path})`,
-    );
+  const bruker = extractBruker(submission);
+  const avsender = extractAvsender(submission);
+  if (!bruker && !avsender) {
+    throw new Error(`${innsendingsId}: Could not find user nor sender from nologin submission (formPath=${form.path})`);
   }
   return {
     innsendingsId,
-    brukerDto: {
-      idType: 'FNR',
-      id: fnr,
-    },
+    ...(bruker && { brukerDto: bruker }),
+    ...(avsender && { avsenderId: avsender }),
     skjemanr: form.properties.skjemanummer,
     tittel: translate(form.title),
     tema: form.properties.tema,
@@ -84,12 +87,21 @@ const assembleNologinSoknadBody = (
   };
 };
 
-const extractFnr = (submission: Submission): string | undefined => {
+const extractBruker = (submission: Submission): BrukerDto | undefined => {
   const { data } = submission;
   if (data.dineOpplysninger?.identitet?.identitetsnummer) {
-    return data.dineOpplysninger.identitet.identitetsnummer as string;
+    return { id: data.dineOpplysninger.identitet.identitetsnummer as string, idType: 'FNR' };
   }
-  return data.fodselsnummerDNummerSoker as string;
+  return { id: data.fodselsnummerDNummerSoker as string as string, idType: 'FNR' };
+};
+
+const extractAvsender = (submission: Submission): AvsenderId | undefined => {
+  const avsenderFornavn = submission.data.fornavnAvsender;
+  const avsenderEtternavn = submission.data.etternavnAvsender;
+  if (avsenderFornavn && avsenderEtternavn) {
+    return { navn: `${avsenderFornavn} ${avsenderEtternavn}` };
+  }
+  return undefined;
 };
 
 function mapToStatus(value?: keyof AttachmentSettingValues): OpplastingsStatus {
