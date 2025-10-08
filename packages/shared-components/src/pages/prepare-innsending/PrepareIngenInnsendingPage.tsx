@@ -20,7 +20,7 @@ export function PrepareIngenInnsendingPage() {
   useEffect(() => scrollToAndSetFocus('main', 'start'), []);
   const { translate } = useLanguages();
   const styles = useStyles();
-  const { form, submission, formUrl } = useForm();
+  const { form, submission } = useForm();
 
   return (
     <div className={styles.content}>
@@ -39,7 +39,7 @@ export function PrepareIngenInnsendingPage() {
             {translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
           </DownloadCoverPageAndApplicationButton>
         </div>
-        <NavigateButtonComponent goBackUrl={`${formUrl}/oppsummering`} />
+        <NavigateButtonComponent goBackUrl={`../oppsummering`} />
       </section>
     </div>
   );

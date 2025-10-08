@@ -1,6 +1,6 @@
 import { Language, MellomlagringError, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import React, { createContext, useCallback, useContext, useEffect, useReducer, useState } from 'react';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router';
 import { postNologinSoknad } from '../../api/sendinn/nologin';
 import {
   createSoknad,
@@ -44,7 +44,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { setSubmission, form, formUrl, submission } = useForm();
+  const { setSubmission, form, submission, formUrl } = useForm();
   const soknadNotFoundUrl = `${baseUrl}/soknad-ikke-funnet`;
   const { translationsForNavForm: translations } = useLanguages();
   const innsendingsIdFromParams = searchParams.get('innsendingsId');
@@ -152,7 +152,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         );
 
         if (soknadAlreadyExists(response)) {
-          const url = `${formUrl}/paabegynt?sub=digital`;
+          const url = `/${formUrl}/paabegynt?sub=digital`;
           logger?.info(`User already has active tasks for the application. Redirects to ${url}`);
           navigate(url, { replace: true });
           return;
@@ -254,7 +254,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
           translation,
         );
         setSoknadPdfBlob(response);
-        navigate(`${formUrl}/kvittering?${searchParams.toString()}`);
+        navigate(`/${formUrl}/kvittering?${searchParams.toString()}`);
       } catch (error: any) {
         logger?.error(`${innsendingsId}: Failed to submit nologin application`, {
           errorMessage: error.message,

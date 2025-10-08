@@ -1,7 +1,7 @@
 import { Link } from '@navikt/ds-react';
 import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import React from 'react';
-import { Link as ReactRouterLink } from 'react-router-dom';
+import { Link as ReactRouterLink } from 'react-router';
 
 interface Props {
   children: React.ReactNode;

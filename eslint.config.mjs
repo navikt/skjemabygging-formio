@@ -93,6 +93,7 @@ export default tseslint.config(
       '@typescript-eslint/ban-ts-comment': 'warn', // No @ts-ignore or @ts-nocheck comments
 
       // Disabled
+      'mocha/no-setup-in-describe': 'off', // We have some instances of setup in describe blocks in vitest
       'mocha/no-mocha-arrows': 'off', // We don't use "this" context in tests so we can use arrow functions
       'vitest/expect-expect': 'off', // Cypress tests don't necessarily use expect
       '@typescript-eslint/no-explicit-any': 'off', // Explicit any's

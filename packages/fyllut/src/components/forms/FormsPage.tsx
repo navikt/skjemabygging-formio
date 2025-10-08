@@ -1,7 +1,7 @@
 import { LoadingComponent, makeStyles, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { FormsResponseForm } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router';
 import httpFyllut from '../../util/httpFyllut';
 import FormsPageRow from './FormsPageRow';
 

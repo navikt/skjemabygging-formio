@@ -12,12 +12,11 @@ import ComponentSummary from '../component/ComponentSummary';
 
 interface Props {
   form: NavFormType;
-  formUrl: string;
   submission?: Submission;
   panelValidationList?: PanelValidation[];
 }
 
-const FormSummary = ({ form, formUrl, submission, panelValidationList }: Props) => {
+const FormSummary = ({ form, submission, panelValidationList }: Props) => {
   const { translate, currentLanguage } = useLanguages();
   const { submissionMethod } = useAppConfig();
   const summaryComponents: SummaryComponent[] = formSummaryUtil.createFormSummaryPanels(
@@ -35,6 +34,6 @@ const FormSummary = ({ form, formUrl, submission, panelValidationList }: Props) 
   if (summaryPanels.length === 0) {
     return null;
   }
-  return <ComponentSummary components={summaryPanels} formUrl={formUrl} panelValidationList={panelValidationList} />;
+  return <ComponentSummary components={summaryPanels} panelValidationList={panelValidationList} />;
 };
 export default FormSummary;

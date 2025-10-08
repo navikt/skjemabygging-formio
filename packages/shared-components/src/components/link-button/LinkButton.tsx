@@ -1,5 +1,5 @@
 import { ButtonProps, Link, LinkProps } from '@navikt/ds-react';
-import { Link as ReactRouterLink, LinkProps as ReactRouterLinkProps } from 'react-router-dom';
+import { Link as ReactRouterLink, LinkProps as ReactRouterLinkProps } from 'react-router';
 import makeStyles from '../../util/styles/jss/jss';
 
 const useStyles = makeStyles({

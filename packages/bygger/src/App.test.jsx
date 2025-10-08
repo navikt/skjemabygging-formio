@@ -1,6 +1,6 @@
 import { AppConfigProvider, NavFormioJs } from '@navikt/skjemadigitalisering-shared-components';
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import createMockImplementation, { DEFAULT_PROJECT_URL } from '../test/backendMockImplementation';
 import featureToggles from '../test/featureToggles';
 import App from './App';

@@ -2,7 +2,7 @@ import { NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import nock from 'nock';
-import { RouterProvider, createMemoryRouter } from 'react-router-dom';
+import { RouterProvider, createMemoryRouter } from 'react-router';
 import { defaultFormWithAttachment } from '../../../../test/test-data/form/data';
 import { Buttons, formWithProperties, getButtons } from '../../../../test/util/helpers';
 import { AppConfigContextType, AppConfigProvider } from '../../../context/config/configContext';
@@ -11,8 +11,8 @@ import { SendInnProvider } from '../../../context/sendInn/sendInnContext';
 import { PanelValidation } from '../../../util/form/panel-validation/panelValidation';
 import SummaryPageNavigation, { Props } from './SummaryPageNavigation';
 
-vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual<object>('react-router-dom');
+vi.mock('react-router', async () => {
+  const actual = await vi.importActual<object>('react-router');
   const params = new URLSearchParams();
   params.set('innsendingsId', '6895e72c-bd59-4964-a098-822c4a83799c');
   params.set('lang', 'nb');
@@ -37,7 +37,6 @@ const renderSummaryPageNavigation = async (
   appConfigProps: AppConfigContextType = {} as AppConfigContextType,
 ): Promise<{ router: any; buttons: Buttons }> => {
   const summaryPageProps: Props = {
-    formUrl: '/testform',
     submission: { data: {} },
     panelValidationList: [],
     form: {} as NavFormType,
@@ -49,7 +48,7 @@ const renderSummaryPageNavigation = async (
   const router = createMemoryRouter(
     [
       {
-        path: '/testform/*',
+        path: '/testskjema/*',
         element: (
           <FormProvider form={(props.form ?? {}) as NavFormType}>
             <SendInnProvider>
@@ -61,7 +60,7 @@ const renderSummaryPageNavigation = async (
       },
     ],
     {
-      initialEntries: ['/testform'],
+      initialEntries: ['/testskjema'],
     },
   );
 
@@ -98,7 +97,7 @@ describe('SummaryPageNavigation', () => {
 
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
       await userEvent.click(buttons.gaVidereKnapp);
-      expect(router.state.location.pathname).toBe('/testform/send-i-posten');
+      expect(router.state.location.pathname).toBe('/testskjema/send-i-posten');
     });
   });
 
@@ -109,7 +108,7 @@ describe('SummaryPageNavigation', () => {
       const { router, buttons } = await renderSummaryPageNavigation({ form }, appConfigProps);
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
       await userEvent.click(buttons.gaVidereKnapp);
-      expect(router.state.location.pathname).toBe('/testform/send-i-posten');
+      expect(router.state.location.pathname).toBe('/testskjema/send-i-posten');
     });
 
     it('submissionTypes=PAPIR_OG_DIGITAL, submissionMethod=digital', async () => {
@@ -118,7 +117,7 @@ describe('SummaryPageNavigation', () => {
       const { router, buttons } = await renderSummaryPageNavigation({ form }, appConfigProps);
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
       await userEvent.click(buttons.gaVidereKnapp);
-      expect(router.state.location.pathname).toBe('/testform/send-i-posten');
+      expect(router.state.location.pathname).toBe('/testskjema/send-i-posten');
     });
 
     it('submissionTypes=DIGITAL - rendrer knapp for direkte submissionTypes til Nav', async () => {
@@ -136,7 +135,7 @@ describe('SummaryPageNavigation', () => {
       await act(async () => {
         expectKnapperForRedigerSvarEllerGaVidere(buttons);
         await userEvent.click(buttons.gaVidereKnapp);
-        expect(router.state.location.pathname).toBe('/testform/send-i-posten');
+        expect(router.state.location.pathname).toBe('/testskjema/send-i-posten');
       });
     });
   });
@@ -149,7 +148,7 @@ describe('SummaryPageNavigation', () => {
       await act(async () => {
         expectKnapperForRedigerSvarEllerGaVidere(buttons);
         await userEvent.click(buttons.gaVidereKnapp);
-        expect(router.state.location.pathname).toBe('/testform/send-i-posten');
+        expect(router.state.location.pathname).toBe('/testskjema/send-i-posten');
       });
     });
   });
@@ -218,7 +217,7 @@ describe('SummaryPageNavigation', () => {
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
 
       await userEvent.click(buttons.gaVidereKnapp);
-      expect(router.state.location.pathname).toBe('/testform/ingen-innsending');
+      expect(router.state.location.pathname).toBe('/testskjema/ingen-innsending');
     });
   });
 
@@ -302,7 +301,7 @@ describe('SummaryPageNavigation', () => {
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
 
       await userEvent.click(buttons.gaVidereKnapp);
-      expect(router.state.location.pathname).toBe('/testform/send-i-posten');
+      expect(router.state.location.pathname).toBe('/testskjema/send-i-posten');
     });
   });
 });
