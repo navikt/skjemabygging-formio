@@ -44,7 +44,7 @@ const ActiveTasksPage = () => {
   const [mellomlagringer, setMellomlagringer] = useState<Soknad[]>([]);
   const [hasEttersendelse, setHasEttersendelse] = useState(false);
   const hasMellomlagring = mellomlagringer.length > 0;
-  const { form, formUrl } = useForm();
+  const { form } = useForm();
 
   const styles = useStyles();
 
@@ -68,7 +68,7 @@ const ActiveTasksPage = () => {
     });
     const searchParamsAsString =
       existingAndAdditionalSearchParams.toString() && `?${existingAndAdditionalSearchParams.toString()}`;
-    return `${baseUrl}/${formUrl}${path}${searchParamsAsString}`;
+    return `${baseUrl}/${form.path}${path}${searchParamsAsString}`;
   };
 
   if (!(hasMellomlagring || hasEttersendelse)) {
