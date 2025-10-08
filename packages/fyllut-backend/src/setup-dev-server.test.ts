@@ -26,8 +26,6 @@ describe('Setup dev server', () => {
         { path: '/fyllut/internal/isready', ip: IP_NAV, cookies: [], expectedHttpStatus: 200 },
       ];
 
-      // Dynamically generated tests are exceptions to this rule: https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/no-setup-in-describe.md
-      // eslint-disable-next-line mocha/no-setup-in-describe
       it.each(requests)('%j', async ({ path, ip, cookies, expectedHttpStatus }) => {
         await request(createApp(SETUP_DEV))
           .get(path)

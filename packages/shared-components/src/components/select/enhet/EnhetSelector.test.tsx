@@ -34,8 +34,6 @@ describe('EnhetSelector', () => {
       await waitFor(() => expect(screen.getByText('Nav abc')).toBeTruthy());
     });
 
-    // Dynamically generated tests are exceptions to this rule: https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/no-setup-in-describe.md
-    // eslint-disable-next-line mocha/no-setup-in-describe
     it.each(mockEnhetsListe)('renders each option', (enhet) => {
       expect(screen.getByText(enhet.navn)).toBeDefined();
     });

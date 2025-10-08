@@ -5,7 +5,6 @@ import prettierConfig from 'eslint-config-prettier';
 import pluginChaiFriendly from 'eslint-plugin-chai-friendly';
 import pluginCypress from 'eslint-plugin-cypress/flat';
 import _import from 'eslint-plugin-import';
-import pluginMocha from 'eslint-plugin-mocha';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import vitest from 'eslint-plugin-vitest';
@@ -20,7 +19,6 @@ export default tseslint.config(
   eslint.configs.recommended,
   pluginCypress.configs.recommended,
   pluginCypress.configs.globals,
-  pluginMocha.configs.recommended,
   ...tseslint.configs.recommended,
   {
     files: ['**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx', '**/*.mjs'],
@@ -58,7 +56,6 @@ export default tseslint.config(
       ...reactHooks.configs.recommended.rules,
 
       // Errors
-      'mocha/no-exclusive-tests': 'error', // Should not ignore tests
       'no-unused-labels': 'error', // Should not have any unused labels
       'import/no-duplicates': 'error', // Should not import the same module twice (should be handled automatically by prettier-plugin-organize-imports)
 
@@ -93,7 +90,6 @@ export default tseslint.config(
       '@typescript-eslint/ban-ts-comment': 'warn', // No @ts-ignore or @ts-nocheck comments
 
       // Disabled
-      'mocha/no-mocha-arrows': 'off', // We don't use "this" context in tests so we can use arrow functions
       'vitest/expect-expect': 'off', // Cypress tests don't necessarily use expect
       '@typescript-eslint/no-explicit-any': 'off', // Explicit any's
     },
