@@ -127,6 +127,7 @@ export const statiske = {
     documentsHeading: 'Vi har mottatt følgende dokumenter ({{date}}):',
     singleFileLabel: 'fil',
     multipleFileLabel: 'filer',
+    downloadLinkLabel: 'Last ned kopi',
   },
   summaryPage: {
     title: 'Oppsummering',

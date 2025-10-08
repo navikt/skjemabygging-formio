@@ -1,23 +1,18 @@
 import { CheckmarkCircleFillIcon } from '@navikt/aksel-icons';
-import { Alert, BodyShort, Heading, List, VStack } from '@navikt/ds-react';
+import { Alert, BodyShort, Heading, Link, List, VStack } from '@navikt/ds-react';
 import '@navikt/ds-tokens';
 import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router';
+import { MouseEvent, useCallback, useEffect, useMemo } from 'react';
+import { useLocation, useNavigate } from 'react-router';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
-
-type DocumentItem = {
-  id: string;
-  title: string;
-  fileCount?: number;
-  type: 'main' | 'attachment';
-};
+import { buildReceiptDocumentItems, getAttachmentsWithFiles, ReceiptDocumentItem } from './receiptUtils';
 
 export function ReceiptPage() {
   const navigate = useNavigate();
+  const { search } = useLocation();
   const { submissionMethod } = useAppConfig();
   const { translate, currentLanguage } = useLanguages();
   const { form, submission, formUrl } = useForm();
@@ -25,34 +20,24 @@ export function ReceiptPage() {
 
   useEffect(() => {
     if (submissionMethod === 'digitalnologin' && !nologinToken) {
-      navigate(`${formUrl}/legitimasjon`, { replace: true });
+      navigate(`/${formUrl}/legitimasjon${search}`, { replace: true });
     }
-  }, [submissionMethod, nologinToken, navigate, formUrl]);
+  }, [submissionMethod, nologinToken, navigate, formUrl, search]);
 
-  useEffect(() => {
-    if (submissionMethod !== 'digitalnologin') {
-      return;
+  const downloadFileName = useMemo(() => {
+    if (!form) {
+      return 'soknad-kopi.pdf';
     }
 
-    const handlePopState = () => {
-      navigate(`${formUrl}/kvittering${window.location.search}`, { replace: true });
-    };
+    const skjemanummer = form.properties?.skjemanummer;
+    const baseName = skjemanummer || form.path || form.title;
 
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, [submissionMethod, navigate, formUrl]);
+    if (!baseName) {
+      return 'soknad-kopi.pdf';
+    }
 
-  const soknadPdfUrl = useMemo(() => {
-    return soknadPdfBlob ? URL.createObjectURL(soknadPdfBlob) : undefined;
-  }, [soknadPdfBlob]);
-
-  useEffect(() => {
-    return () => {
-      if (soknadPdfUrl) {
-        URL.revokeObjectURL(soknadPdfUrl);
-      }
-    };
-  }, [soknadPdfUrl]);
+    return `${baseName.toString().replace(/\s+/g, '-').toLowerCase()}-kopi.pdf`;
+  }, [form]);
 
   const submittedAtIso = receipt?.submittedAt;
 
@@ -60,38 +45,52 @@ export function ReceiptPage() {
     return dateUtils.toLocaleDate(submittedAtIso, currentLanguage);
   }, [submittedAtIso, currentLanguage]);
 
-  const attachmentsWithFiles = useMemo(() => {
-    return (submission?.attachments ?? []).filter((attachment) => (attachment.files?.length ?? 0) > 0);
-  }, [submission]);
+  const attachmentsWithFiles = useMemo(() => getAttachmentsWithFiles(submission), [submission]);
 
-  const documentItems: DocumentItem[] = useMemo(() => {
-    const items: DocumentItem[] = [];
-    if (form) {
-      items.push({ id: 'main-form', title: form.title, type: 'main' });
-    }
-    attachmentsWithFiles.forEach((attachment) => {
-      items.push({
-        id: attachment.attachmentId,
-        title: attachment.title ?? attachment.attachmentId,
-        fileCount: attachment.files?.length,
-        type: 'attachment',
-      });
-    });
-    return items;
-  }, [form, attachmentsWithFiles]);
+  const documentItems: ReceiptDocumentItem[] = useMemo(
+    () => buildReceiptDocumentItems(form, attachmentsWithFiles),
+    [form, attachmentsWithFiles],
+  );
 
-  const formatFileCount = (count?: number) => {
-    if (!count) {
-      return undefined;
-    }
-    const countLabel =
-      count === 1
-        ? translate(TEXTS.statiske.receipt.singleFileLabel)
-        : translate(TEXTS.statiske.receipt.multipleFileLabel);
-    return `${count} ${countLabel}`;
-  };
+  const formatFileCount = useCallback(
+    (count?: number) => {
+      if (!count) {
+        return undefined;
+      }
+      const countLabel =
+        count === 1
+          ? translate(TEXTS.statiske.receipt.singleFileLabel)
+          : translate(TEXTS.statiske.receipt.multipleFileLabel);
+      return `${count} ${countLabel}`;
+    },
+    [translate],
+  );
 
-  console.log(form);
+  const handleDownloadReceipt = useCallback(
+    (event: MouseEvent<HTMLAnchorElement>) => {
+      event.preventDefault();
+      if (!soknadPdfBlob) {
+        return;
+      }
+
+      const blobUrl = URL.createObjectURL(
+        soknadPdfBlob.type ? soknadPdfBlob : new Blob([soknadPdfBlob], { type: 'application/pdf' }),
+      );
+
+      const anchor = document.createElement('a');
+      anchor.href = blobUrl;
+      anchor.download = downloadFileName;
+      anchor.rel = 'nofollow noopener';
+
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+
+      // Allow the browser to start the download before revoking the object URL
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 0);
+    },
+    [downloadFileName, soknadPdfBlob],
+  );
 
   return (
     <VStack gap="space-32">
@@ -124,6 +123,14 @@ export function ReceiptPage() {
                 <BodyShort>
                   {item.title}
                   {item.type === 'attachment' && fileCountLabel ? ` (${fileCountLabel})` : null}
+                  {item.type === 'main' && soknadPdfBlob ? (
+                    <>
+                      {' '}
+                      <Link href="#" onClick={handleDownloadReceipt}>
+                        {translate(TEXTS.statiske.receipt.downloadLinkLabel)}
+                      </Link>
+                    </>
+                  ) : null}
                 </BodyShort>
               </List.Item>
             );
