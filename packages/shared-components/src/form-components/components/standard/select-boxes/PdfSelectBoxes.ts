@@ -22,7 +22,7 @@ const PdfSelectBoxes = ({ component, submissionPath, formContextValue, languages
   return {
     label: translate(label),
     verdiliste: valueObjects.map((boxValue) => {
-      return { verdi: boxValue };
+      return { label: boxValue };
     }),
     visningsVariant: 'PUNKTLISTE',
   };
