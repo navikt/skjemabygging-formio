@@ -71,3 +71,5 @@ export const LanguagesProvider = ({ children, translations }: Props) => {
 };
 
 export const useLanguages = () => useContext(LanguagesContext);
+
+export type { LanguageContextType };

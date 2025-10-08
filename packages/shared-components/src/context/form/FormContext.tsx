@@ -114,3 +114,5 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
 };
 
 export const useForm = () => useContext(FormContext);
+
+export type { FormContextType };

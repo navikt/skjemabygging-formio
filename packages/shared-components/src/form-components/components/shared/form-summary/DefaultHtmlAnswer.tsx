@@ -9,7 +9,7 @@ interface Props {
 const DefaultHtmlAnswer = ({ component }: Props) => {
   const { textDisplay, content } = component;
 
-  if (!content || textDisplay === 'form') {
+  if (!content || textDisplay === undefined || textDisplay === 'form') {
     return null;
   }
 

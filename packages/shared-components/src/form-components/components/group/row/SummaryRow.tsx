@@ -1,32 +1,21 @@
 import { FormSummary } from '@navikt/ds-react';
-import { currencyUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useForm } from '../../../../context/form/FormContext';
 import RenderComponent from '../../../render/RenderComponent';
 import { FormComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 import DefaultLabel from '../../shared/form-summary/DefaultLabel';
+import { getCurrencyValue } from './rowUtils';
 
 const SummaryRow = ({ component, submissionPath, componentRegistry }: FormComponentProps) => {
   const { components, navId, isAmountWithCurrencySelector } = component;
   const { submission } = useForm();
 
-  if (!components || formComponentUtils.noChildValues(submissionPath, components, submission)) {
+  if (!components || !submission || formComponentUtils.noChildValues(submissionPath, components, submission)) {
     return null;
   }
 
-  const getChildSubmissionValue = (type: string) => {
-    return formComponentUtils.getSubmissionValue(
-      `${submissionPath}.${components.find((c) => c.type === type)?.key}`,
-      submission,
-    );
-  };
-
   if (isAmountWithCurrencySelector) {
-    const currencyValue = currencyUtils.toLocaleString(getChildSubmissionValue('number'), {
-      iso: true,
-      currency: getChildSubmissionValue('valutavelger')?.value,
-      integer: false,
-    });
+    const currencyValue = getCurrencyValue(submissionPath, components, submission);
 
     return (
       <FormSummary.Answer>

@@ -746,8 +746,20 @@
     "mellomlagringDurationDays": "28",
     "subsequentSubmissionTypes": [
       "PAPER"
+    ],
+    "signatures": [
+      {
+        "label": "Eier",
+        "description": "Viktig1",
+        "key": "db70f1e8-493b-4053-b328-84e39605cc98"
+      },
+      {
+        "label": "Deleier",
+        "description": "Viktig2",
+        "key": "c314453d-ee87-4c73-8407-d6822453b0d8"
+      }
     ]
-  },
+},
   "createdAt": "2022-06-01T15:40:17.101+02",
   "createdBy": "Ola Nordmann",
   "changedAt": "2025-08-29T13:45:27.833+02",
