@@ -1,6 +1,6 @@
 import { FormSummary } from '@navikt/ds-react';
 import { TEXTS, Tkey } from '@navikt/skjemadigitalisering-shared-domain';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router';
 import ValidationExclamationIcon from '../../../../components/icons/ValidationExclamationIcon';
 import { useForm } from '../../../../context/form/FormContext';
 import { useLanguages } from '../../../../context/languages';
@@ -12,7 +12,7 @@ import { useLanguages } from '../../../../context/languages';
 const SummaryIntroPage = () => {
   const { translate } = useLanguages();
   const { search } = useLocation();
-  const { formUrl, submission, form } = useForm();
+  const { submission, form } = useForm();
 
   if (!form.introPage?.enabled) {
     return null;
@@ -38,7 +38,7 @@ const SummaryIntroPage = () => {
       </FormSummary.Answers>
 
       <FormSummary.Footer>
-        <FormSummary.EditLink as={Link} to={{ pathname: `${formUrl}`, search }}>
+        <FormSummary.EditLink as={Link} to={{ pathname: '', search }}>
           {translate(TEXTS.grensesnitt.summaryPage.edit)}
         </FormSummary.EditLink>
       </FormSummary.Footer>
