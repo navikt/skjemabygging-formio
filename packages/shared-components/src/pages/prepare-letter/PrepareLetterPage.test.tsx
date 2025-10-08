@@ -1,7 +1,7 @@
 import { Enhetstype, FormPropertiesType, NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import forstesideMock from '../../../test/test-data/forsteside/forsteside-mock';
 import { AppConfigProvider } from '../../context/config/configContext';
 import { FormProvider } from '../../context/form/FormContext';
@@ -260,8 +260,6 @@ describe('PrepareLetterPage', () => {
       });
     });
 
-    // Dynamically generated tests are exceptions to this rule: https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/no-setup-in-describe.md
-    // eslint-disable-next-line mocha/no-setup-in-describe
     it.each([[], undefined])(
       "renders EnhetSelector with all supported Enhet items, when 'enhetstyper' is empty/undefined",
       async (enhetstyper) => {

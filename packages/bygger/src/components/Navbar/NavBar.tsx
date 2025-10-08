@@ -1,7 +1,7 @@
 import { HomeFilled } from '@navikt/ds-icons';
 import { InternalHeader, Link } from '@navikt/ds-react';
 import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
-import { Link as ReactRouterLink } from 'react-router-dom';
+import { Link as ReactRouterLink } from 'react-router';
 import { useAuth } from '../../context/auth-context';
 import useUnsavedChangesModal from '../../hooks/useUnsavedChangesModal';
 import AdminMenu from './components/AdminMenu';

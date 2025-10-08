@@ -11,7 +11,7 @@ import FormMainContent from '../FormMainContent';
 export function PrepareIngenInnsendingPage() {
   useEffect(() => scrollToAndSetFocus('main', 'start'), []);
   const { translate } = useLanguages();
-  const { form, formUrl, setFormProgressVisible, setTitle } = useForm();
+  const { form, setFormProgressVisible, setTitle } = useForm();
 
   useEffect(() => {
     setFormProgressVisible(false);
@@ -28,7 +28,7 @@ export function PrepareIngenInnsendingPage() {
           </DownloadCoverPageAndApplicationButton>
         </div>
       </FormMainContent>
-      <NavigateButtonComponent goBackUrl={`${formUrl}/oppsummering`} />
+      <NavigateButtonComponent goBackUrl="../oppsummering" />
     </>
   );
 }

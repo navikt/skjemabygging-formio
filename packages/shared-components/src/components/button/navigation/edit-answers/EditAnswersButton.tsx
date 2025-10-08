@@ -1,22 +1,21 @@
 import { ArrowLeftIcon } from '@navikt/aksel-icons';
 import { NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 import { useLanguages } from '../../../../context/languages';
 import { findFormStartingPoint, PanelValidation } from '../../../../util/form/panel-validation/panelValidation';
 import LinkButton from '../../../link-button/LinkButton';
 
 interface Props {
   form: NavFormType;
-  formUrl: string;
   panelValidationList: PanelValidation[] | undefined;
 }
 
-const EditAnswersButton = ({ form, formUrl, panelValidationList }: Props) => {
+const EditAnswersButton = ({ form, panelValidationList }: Props) => {
   const { search } = useLocation();
   const { translate } = useLanguages();
 
   const formStartingPoint = findFormStartingPoint(form, panelValidationList);
-  const pathname = `${formUrl}/${formStartingPoint.panel}`;
+  const pathname = `../${formStartingPoint.panel}`;
   const hasValidationErrors = panelValidationList?.some((panelValidation) => panelValidation.hasValidationErrors);
 
   return (

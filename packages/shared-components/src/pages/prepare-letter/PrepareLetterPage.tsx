@@ -29,7 +29,7 @@ export function PrepareLetterPage() {
   const [enhetsListe, setEnhetsListe] = useState<Enhet[]>([]);
   const [enhetsListeError, setEnhetsListeError] = useState(false);
   const [enhetslisteFilteringError, setEnhetslisteFilteringError] = useState(false);
-  const { form, submission, formUrl, setFormProgressVisible, setTitle } = useForm();
+  const { form, submission, setFormProgressVisible, setTitle } = useForm();
 
   const { enhetMaVelgesVedPapirInnsending, enhetstyper, skjemanummer, uxSignalsId, uxSignalsSubmissionTypes } =
     form.properties;
@@ -81,7 +81,7 @@ export function PrepareLetterPage() {
         {hasAttachments && <LetterAddAttachment index={3} attachments={attachments} />}
         <LetterInTheMail index={hasAttachments ? 4 : 3} attachments={attachments} />
       </FormMainContent>
-      <NavigateButtonComponent goBackUrl={`${formUrl}/oppsummering`} />
+      <NavigateButtonComponent goBackUrl="../oppsummering" />
       {includeUxSignals && <LetterUXSignals id={uxSignalsId} demo={config?.NAIS_CLUSTER_NAME !== 'prod-gcp'} />}
     </>
   );

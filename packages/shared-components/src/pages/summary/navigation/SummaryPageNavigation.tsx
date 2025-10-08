@@ -2,7 +2,7 @@ import { ArrowRightIcon } from '@navikt/aksel-icons';
 import { Alert, Button } from '@navikt/ds-react';
 import { NavFormType, Submission, submissionTypesUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 import DigitalSubmissionButton from '../../../components/button/navigation/digital-submission/DigitalSubmissionButton';
 import EditAnswersButton from '../../../components/button/navigation/edit-answers/EditAnswersButton';
 import SaveAndDeleteButtons from '../../../components/button/navigation/save-and-delete/SaveAndDeleteButtons';
@@ -21,12 +21,11 @@ import urlUtils from '../../../util/url/url';
 export interface Props {
   form: NavFormType;
   submission?: Submission;
-  formUrl: string;
   panelValidationList?: PanelValidation[];
   isValid: (e: React.MouseEvent<HTMLElement>) => boolean;
 }
 
-const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList, isValid }: Props) => {
+const SummaryPageNavigation = ({ form, submission, panelValidationList, isValid }: Props) => {
   const { submissionMethod, app } = useAppConfig();
   const { search } = useLocation();
   const { translate } = useLanguages();
@@ -64,7 +63,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
             <LinkButton
               buttonVariant="primary"
               onClick={(e) => !isValid(e)}
-              to={{ pathname: `${formUrl}/send-i-posten`, search }}
+              to={{ pathname: `/${form.path}/send-i-posten`, search }}
             >
               <span aria-live="polite" className="navds-body-short font-bold">
                 {translate(TEXTS.grensesnitt.moveForward)}
@@ -116,7 +115,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
             <LinkButton
               buttonVariant="primary"
               onClick={(e) => !isValid(e)}
-              to={{ pathname: `${formUrl}/ingen-innsending`, search }}
+              to={{ pathname: `/${form.path}/ingen-innsending`, search }}
             >
               <span aria-live="polite" className="navds-body-short font-bold">
                 {translate(TEXTS.grensesnitt.moveForward)}
@@ -126,7 +125,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
               </span>
             </LinkButton>
           )}
-          <EditAnswersButton form={form} formUrl={formUrl} panelValidationList={panelValidationList} />
+          <EditAnswersButton form={form} panelValidationList={panelValidationList} />
         </div>
         {isMellomlagringActive && <SaveAndDeleteButtons submission={submission} />}
         {!isMellomlagringActive && (

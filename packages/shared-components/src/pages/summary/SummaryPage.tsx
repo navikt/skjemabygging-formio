@@ -15,7 +15,7 @@ import SummaryPageNavigation from './navigation/SummaryPageNavigation';
 export function SummaryPage() {
   const appConfig = useAppConfig();
   const { translate } = useLanguages();
-  const { prefillData, submission, formUrl, form, setTitle, setFormProgressVisible } = useForm();
+  const { prefillData, submission, form, setTitle, setFormProgressVisible } = useForm();
   const { declarationType, declarationText } = form.properties;
   const [declaration, setDeclaration] = useState<boolean | undefined>(undefined);
 
@@ -93,7 +93,7 @@ export function SummaryPage() {
             <ValidationExclamationIcon title={translate(TEXTS.statiske.summaryPage.validationIcon)} />.
           </Alert>
           <div className="button-row">
-            <EditAnswersButton form={form} formUrl={formUrl} panelValidationList={panelValidationList} />
+            <EditAnswersButton form={form} panelValidationList={panelValidationList} />
           </div>
         </>
       ) : (
@@ -119,7 +119,6 @@ export function SummaryPage() {
       <SummaryPageNavigation
         form={form}
         submission={submission}
-        formUrl={formUrl}
         panelValidationList={panelValidationList}
         isValid={isValid}
       />

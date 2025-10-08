@@ -2,7 +2,7 @@ import { DocPencilIcon, FileExportIcon, PencilIcon } from '@navikt/aksel-icons';
 import { BodyShort, Heading } from '@navikt/ds-react';
 import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router';
 
 import { getActiveTasks, Soknad } from '../../api/active-tasks/activeTasks';
 import CancelButton from '../../components/button/navigation/cancel/CancelButton';
@@ -44,7 +44,7 @@ const ActiveTasksPage = () => {
   const [mellomlagringer, setMellomlagringer] = useState<Soknad[]>([]);
   const [hasEttersendelse, setHasEttersendelse] = useState(false);
   const hasMellomlagring = mellomlagringer.length > 0;
-  const { form, formUrl, setFormProgressVisible } = useForm();
+  const { form, setFormProgressVisible } = useForm();
 
   const styles = useStyles();
 
@@ -72,7 +72,7 @@ const ActiveTasksPage = () => {
     });
     const searchParamsAsString =
       existingAndAdditionalSearchParams.toString() && `?${existingAndAdditionalSearchParams.toString()}`;
-    return `${baseUrl}${formUrl}${path}${searchParamsAsString}`;
+    return `${baseUrl}/${form.path}${path}${searchParamsAsString}`;
   };
 
   if (!(hasMellomlagring || hasEttersendelse)) {

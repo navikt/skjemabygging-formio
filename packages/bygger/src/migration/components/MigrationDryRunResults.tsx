@@ -1,6 +1,6 @@
 import { Checkbox, Heading, Link } from '@navikt/ds-react';
 import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
-import { Link as ReactRouterLink } from 'react-router-dom';
+import { Link as ReactRouterLink } from 'react-router';
 import { FormMigrationLogData } from '../../../types/migration';
 import FormStatusPanel from '../../Forms/status/FormStatusPanel';
 import { toFormStatusProperties } from '../utils';

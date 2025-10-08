@@ -77,6 +77,16 @@ Cypress.Commands.add('clickShowAllSteps', () => {
   return cy.findByRoleWhenAttached('button', { name: TEXTS.grensesnitt.stepper.showAllSteps }, 500).click();
 });
 
+Cypress.Commands.add('clickSendDigital', () => {
+  const { sendDigital, sendDigitalLoggedIn } = TEXTS.grensesnitt.introPage;
+  return cy
+    .findAllByRole('link')
+    .filter((_, el) => [sendDigitalLoggedIn, sendDigital].includes(el.textContent?.trim() ?? ''))
+    .first()
+    .should('exist')
+    .click();
+});
+
 Cypress.Commands.add('clickEditAnswer', (title, linkText) => {
   cy.findByRole('heading', { level: 2, name: title })
     .parent()

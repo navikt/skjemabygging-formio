@@ -1,6 +1,6 @@
 import { ConfirmationModal } from '@navikt/skjemadigitalisering-shared-components';
 import { useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router';
 import { useForm } from '../context/old_form/FormContext';
 
 interface FormChanged {

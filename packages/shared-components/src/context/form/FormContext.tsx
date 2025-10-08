@@ -6,7 +6,6 @@ import {
   Submission,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, Dispatch, SetStateAction, useCallback, useContext, useEffect, useState } from 'react';
-import { useResolvedPath } from 'react-router-dom';
 import UtilsOverrides from '../../formio/overrides/utils-overrides/utils-overrides';
 import { useAppConfig } from '../config/configContext';
 
@@ -16,7 +15,6 @@ interface FormContextType {
   prefillData?: PrefillData;
   activeComponents: Component[];
   form: NavFormType;
-  formUrl: string;
   formProgressOpen: boolean;
   setFormProgressOpen: Dispatch<SetStateAction<boolean>>;
   formProgressVisible: boolean;
@@ -40,7 +38,6 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
   const [prefillData, setPrefillData] = useState<PrefillData>({});
   const [title, setTitle] = useState<string | undefined>();
   const { http, baseUrl, submissionMethod } = useAppConfig();
-  const formUrl = useResolvedPath('').pathname;
 
   const checkConditions = useCallback(
     (components: Component[]): Component[] => {
@@ -99,7 +96,6 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
         setSubmission,
         activeComponents,
         form,
-        formUrl,
         formProgressOpen,
         setFormProgressOpen,
         formProgressVisible,
