@@ -142,7 +142,7 @@ export const statiske = {
     alertSuccessHeading: 'Søknaden er sendt inn',
     alertSuccessBody: 'Vi har mottatt søknaden din.',
     documentsHeading: 'Dokumenter sendt inn {{date}}',
-    downloadLinkLabel: 'Last ned kvittering (PDF)',
+    downloadLinkLabel: 'Last ned kopi',
     singleFileLabel: 'fil',
     multipleFileLabel: 'filer',
   },

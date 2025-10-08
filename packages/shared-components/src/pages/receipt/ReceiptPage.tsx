@@ -2,7 +2,9 @@ import { CheckmarkCircleFillIcon } from '@navikt/aksel-icons';
 import { Alert, BodyShort, Heading, Link, List, VStack } from '@navikt/ds-react';
 import '@navikt/ds-tokens';
 import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router';
+import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
@@ -17,7 +19,20 @@ type DocumentItem = {
 export function ReceiptPage() {
   const { translate, currentLanguage } = useLanguages();
   const { form, submission } = useForm();
-  const { soknadPdfBlob } = useSendInn();
+  const { soknadPdfBlob, nologinToken } = useSendInn();
+  const { submissionMethod } = useAppConfig();
+  const navigate = useNavigate();
+
+  const requiresLegitimation = submissionMethod === 'digitalnologin' && !nologinToken;
+
+  useEffect(() => {
+    if (!form || !requiresLegitimation) {
+      return;
+    }
+
+    const search = window.location.search ?? '';
+    navigate(`/${form.path}/legitimasjon${search}`, { replace: true });
+  }, [requiresLegitimation, form, navigate]);
 
   const soknadPdfUrl = useMemo(() => {
     return soknadPdfBlob ? URL.createObjectURL(soknadPdfBlob) : undefined;
@@ -60,7 +75,11 @@ export function ReceiptPage() {
     return `${count} ${label}`;
   };
 
-  return form ? (
+  if (!form || requiresLegitimation) {
+    return null;
+  }
+
+  return (
     <VStack gap="space-32">
       <Alert size="small" variant="success">
         <Heading level="2" spacing size="xsmall">
@@ -103,7 +122,5 @@ export function ReceiptPage() {
         </List>
       </section>
     </VStack>
-  ) : (
-    <></>
   );
 }
