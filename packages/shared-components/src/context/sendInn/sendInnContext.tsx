@@ -61,10 +61,14 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   // Make sure that we only create once
   const [isCreateStarted, setIsCreateStarted] = useState(false);
   const [innsendingsId, setInnsendingsId] = useState<string>();
-  const [nologinToken, setNologinToken] = useState<string | undefined>();
+  const [nologinToken, setNologinTokenState] = useState<string | undefined>();
   const [fyllutMellomlagringState, dispatchFyllutMellomlagring] = useReducer(mellomlagringReducer, undefined);
   const [soknadPdfBlob, setSoknadPdfBlob] = useState<Blob | undefined>(undefined);
-  const [receipt, setReceipt] = useState<ReceiptState | undefined>();
+  const [receipt, setReceiptState] = useState<ReceiptState | undefined>();
+
+  const setNologinToken = useCallback((token: string | undefined) => {
+    setNologinTokenState(token);
+  }, []);
 
   const addSearchParamToUrl = useCallback(
     (key, value) => {
@@ -264,8 +268,8 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
           translation,
         );
         setSoknadPdfBlob(response);
-        setReceipt({ submittedAt: new Date().toISOString() });
-        navigate(`/${formUrl}/kvittering?${searchParams.toString()}`);
+        setReceiptState({ submittedAt: new Date().toISOString() });
+        navigate(`/${formUrl}/kvittering?${searchParams.toString()}`, { replace: true });
       } catch (error: any) {
         logger?.error(`${innsendingsId}: Failed to submit nologin application`, {
           errorMessage: error.message,
@@ -323,7 +327,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   );
 
   const submitSoknad = async (appSubmission: Submission): Promise<void> => {
-    setReceipt(undefined);
+    setReceiptState(undefined);
     setSoknadPdfBlob(undefined);
     const currentLanguage = getLanguageFromSearchParams();
     const translation = translationForLanguage(currentLanguage);
@@ -385,7 +389,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   ]);
 
   const clearReceipt = () => {
-    setReceipt(undefined);
+    setReceiptState(undefined);
     setSoknadPdfBlob(undefined);
   };
 
