@@ -138,6 +138,14 @@ export const statiske = {
     alert:
       'Hvis du velger digital innsending må du laste ned skjemaet i neste steg og laste det opp igjen etter innlogging.',
   },
+  receipt: {
+    alertSuccessHeading: 'Søknaden er sendt inn',
+    alertSuccessBody: 'Vi har mottatt søknaden din.',
+    documentsHeading: 'Dokumenter sendt inn {{date}}',
+    downloadLinkLabel: 'Last ned kvittering (PDF)',
+    singleFileLabel: 'fil',
+    multipleFileLabel: 'filer',
+  },
   prepareLetterPage: {
     subTitle: 'Skjemaet er ikke sendt ennå',
     chooseEntity: 'Velg hvilken Nav-enhet som skal motta innsendingen',
