@@ -15,8 +15,7 @@ const IntroPageButtonRow = () => {
   const href = `${form.path}?${searchParams.toString()}`;
   const validationError: Tkey = 'introPage.selfDeclaration.validationError';
 
-  const navigateToFormPage = (event) => {
-    event.preventDefault();
+  const navigateToFormPage = () => {
     if (form.introPage?.enabled && !selfDeclaration) {
       setError(translate(validationError));
       return;
@@ -29,9 +28,9 @@ const IntroPageButtonRow = () => {
       nextButton={
         <NextButton
           onClick={{
-            digital: () => navigateToFormPage,
-            paper: () => navigateToFormPage,
-            digitalnologin: () => navigateToFormPage,
+            digital: () => navigateToFormPage(),
+            paper: () => navigateToFormPage(),
+            digitalnologin: () => navigateToFormPage(),
           }}
           label={{
             digital: translate(TEXTS.grensesnitt.navigation.saveAndContinue),

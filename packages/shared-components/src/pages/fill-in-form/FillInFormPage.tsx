@@ -73,10 +73,6 @@ export const FillInFormPage = () => {
     }
   }, [formNavigationPaths.curr, logger]);
 
-  const onCancel = useCallback(() => {
-    setShowModal('discard');
-  }, [setShowModal]);
-
   const onShowErrors = useCallback(
     (errorsFromForm: ComponentError[]) => {
       setErrors(errorsFromForm);
@@ -189,7 +185,6 @@ export const FillInFormPage = () => {
             submission={submission}
             isValid={isValid}
             paths={formNavigationPaths}
-            onCancel={onCancel}
             navigateTo={navigateTo}
             finalStep={submissionMethod === 'digitalnologin' ? 'vedlegg' : 'oppsummering'}
           />
