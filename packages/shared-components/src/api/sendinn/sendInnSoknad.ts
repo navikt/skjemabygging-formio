@@ -89,6 +89,24 @@ export const updateUtfyltSoknad = async (
   const attachments = getRelevantAttachments(form, submission);
   const otherDocumentation = hasOtherDocumentation(form, submission);
 
+  console.log('Send inn');
+  console.log(
+    formContextValue,
+    languagesContextValue,
+    !!config?.isDelingslenke,
+    String(config?.gitVersion),
+    submissionMethod,
+  );
+  console.log(
+    renderPdfForm({
+      formContextValue,
+      languagesContextValue,
+      isDelingslenke: !!config?.isDelingslenke,
+      gitVersion: String(config?.gitVersion),
+      submissionMethod,
+    }),
+  );
+
   if (innsendingsId) {
     return http?.put<SendInnSoknadResponse>(
       `${baseUrl}/api/send-inn/utfyltsoknad`,
