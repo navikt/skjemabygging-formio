@@ -4,6 +4,7 @@ import { useAppConfig } from '../../context/config/configContext';
 import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
 import urlUtils from '../../util/url/url';
+import { useAttachmentUpload } from '../attachment/AttachmentUploadContext';
 import ConfirmationModal from '../modal/confirmation/ConfirmationModal';
 import { BaseButton } from './BaseButton';
 
@@ -12,11 +13,16 @@ export function CancelButton() {
   const { submissionMethod } = useAppConfig();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { deleteMellomlagring } = useSendInn();
+  const { handleDeleteAllFiles } = useAttachmentUpload();
   const exitUrl = urlUtils.getExitUrl(window.location.href);
 
   const deleteSubmission = async () => {
     if (submissionMethod === 'digital') {
       await deleteMellomlagring();
+    }
+
+    if (submissionMethod === 'digitalnologin') {
+      await handleDeleteAllFiles();
     }
     setIsDeleteModalOpen(false);
   };
