@@ -38,6 +38,14 @@ export function ReceiptPage() {
     return soknadPdfBlob ? URL.createObjectURL(soknadPdfBlob) : undefined;
   }, [soknadPdfBlob]);
 
+  useEffect(() => {
+    return () => {
+      if (soknadPdfUrl) {
+        URL.revokeObjectURL(soknadPdfUrl);
+      }
+    };
+  }, [soknadPdfUrl]);
+
   const documentsDate = useMemo(() => {
     return dateUtils.toLocaleDate(undefined, currentLanguage);
   }, [currentLanguage]);
