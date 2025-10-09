@@ -11,6 +11,7 @@ import { ConfigType } from '../config/types';
 import { logger } from '../logger';
 import { createFeltMapFromSubmission } from '../routers/api/helpers/feltMapBuilder';
 import { assembleNologinSoknadBody } from '../routers/api/helpers/nologin';
+import { stringifyPdf } from '../routers/api/helpers/pdfUtils';
 import { responseToError } from '../utils/errorHandling';
 import applicationService from './documents/applicationService';
 
@@ -107,7 +108,7 @@ class NoLoginFileService {
     const applicationPdf = await applicationService.createFormPdf(
       pdfAccessToken,
       pdfFormData
-        ? JSON.stringify(pdfFormData)
+        ? stringifyPdf(pdfFormData)
         : createFeltMapFromSubmission(form, submission, submissionMethod, translate, lang),
     );
 

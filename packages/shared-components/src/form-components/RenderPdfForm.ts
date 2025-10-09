@@ -53,7 +53,7 @@ const renderPdfForm = ({
   isDelingslenke,
   gitVersion,
   submissionMethod,
-}: Props): string => {
+}: Props): PdfFormData => {
   const { currentLanguage, translate } = languagesContextValue;
   const { form, activeComponents, submission } = formContextValue;
 
@@ -114,7 +114,7 @@ const renderPdfForm = ({
   const languageCode: string =
     currentLanguage === 'nn-NO' || currentLanguage == 'nn' ? 'nn' : currentLanguage === 'en' ? 'en' : 'nb';
 
-  const pdfData: PdfFormData = {
+  return {
     label: translate(form.title),
     verdiliste: [
       PdfIntroPage({ languagesContextValue, formContextValue }),
@@ -149,8 +149,6 @@ const renderPdfForm = ({
     },
     vannmerke: isDelingslenke ? 'Testskjema - Ikke send til Nav' : undefined,
   };
-
-  return JSON.stringify(pdfData).replaceAll('\\t', '  ');
 };
 
 export default renderPdfForm;

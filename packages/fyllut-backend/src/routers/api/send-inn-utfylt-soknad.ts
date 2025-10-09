@@ -13,6 +13,7 @@ import applicationService from '../../services/documents/applicationService';
 import { responseToError } from '../../utils/errorHandling';
 import { getFyllutUrl } from '../../utils/url';
 import { createFeltMapFromSubmission } from './helpers/feltMapBuilder';
+import { stringifyPdf } from './helpers/pdfUtils';
 import { assembleSendInnSoknadBody, isNotFound, sanitizeInnsendingsId, validateInnsendingsId } from './helpers/sendInn';
 
 const { sendInnConfig } = config;
@@ -56,9 +57,10 @@ const sendInnUtfyltSoknad = {
         logger.warn(`Language code "${language}" is not supported. Language code will be defaulted to "nb".`);
       }
 
-      logger.warn(JSON.stringify(pdfFormData));
       logger.warn(submission);
       logger.warn(submissionMethod);
+      logger.warn(pdfFormData);
+      logger.warn(stringifyPdf(pdfFormData));
       logger.warn(language);
       logger.warn(
         createFeltMapFromSubmission(

@@ -8,6 +8,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { logger } from '../../logger';
 import { createFeltMapFromSubmission } from '../../routers/api/helpers/feltMapBuilder';
+import { stringifyPdf } from '../../routers/api/helpers/pdfUtils';
 import { base64Decode } from '../../utils/base64';
 import { htmlResponseError } from '../../utils/errorHandling';
 import applicationService from './applicationService';
@@ -30,7 +31,7 @@ const application = async (props: CoverPageAndApplicationProps) => {
   const applicationPdf = await applicationService.createFormPdf(
     accessToken,
     pdfFormData
-      ? JSON.stringify(pdfFormData)
+      ? stringifyPdf(pdfFormData)
       : createFeltMapFromSubmission(
           form,
           submission,
@@ -79,7 +80,7 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps) => {
     applicationService.createFormPdf(
       pdfGeneratorAccessToken,
       pdfFormData
-        ? JSON.stringify(pdfFormData)
+        ? stringifyPdf(pdfFormData)
         : createFeltMapFromSubmission(
             form,
             submission,
