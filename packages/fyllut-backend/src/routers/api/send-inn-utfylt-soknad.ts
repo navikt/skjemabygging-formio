@@ -56,6 +56,20 @@ const sendInnUtfyltSoknad = {
         logger.warn(`Language code "${language}" is not supported. Language code will be defaulted to "nb".`);
       }
 
+      logger.warn(JSON.stringify(pdfFormData));
+      logger.warn(submission);
+      logger.warn(submissionMethod);
+      logger.warn(language);
+      logger.warn(
+        createFeltMapFromSubmission(
+          form,
+          submission,
+          submissionMethod,
+          createTranslate(translation, language),
+          localizationUtils.getLanguageCodeAsIso639_1(language),
+        ),
+      );
+
       const applicationPdf = await applicationService.createFormPdf(
         req.headers.PdfAccessToken as string,
         pdfFormData
