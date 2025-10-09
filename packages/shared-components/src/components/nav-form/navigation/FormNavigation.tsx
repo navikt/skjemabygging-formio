@@ -3,16 +3,15 @@ import { useCallback, useEffect, useState } from 'react';
 import { To, useLocation } from 'react-router';
 import { useLanguages } from '../../../context/languages';
 import { useSendInn } from '../../../context/sendInn/sendInnContext';
-import SaveAndDeleteButtons from '../../button/navigation/save-and-delete/SaveAndDeleteButtons';
 import { CancelButton } from '../../navigation/CancelButton';
 import { NavigationButtonRow } from '../../navigation/NavigationButtonRow';
 import { NextButton } from '../../navigation/NextButton';
 import { PreviousButton } from '../../navigation/PreviousButton';
+import { SaveButton } from '../../navigation/SaveButton';
 
 export interface Props {
   isValid: () => Promise<boolean>;
   submission?: Submission;
-  onCancel: () => void;
   navigateTo: (to: To) => void;
   finalStep?: string;
   paths: {
@@ -21,8 +20,7 @@ export interface Props {
   };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const FormNavigation = ({ paths, isValid, submission, onCancel, navigateTo, finalStep }: Props) => {
+const FormNavigation = ({ paths, isValid, submission, navigateTo, finalStep }: Props) => {
   const { isMellomlagringActive, updateMellomlagring } = useSendInn();
   const { search } = useLocation();
   const { translate } = useLanguages();
@@ -43,36 +41,28 @@ const FormNavigation = ({ paths, isValid, submission, onCancel, navigateTo, fina
     setPrevLocation(paths.prev ? { pathname: `../${paths.prev}`, search } : undefined);
   }, [search, paths.prev]);
 
-  const nextClickHandler = useCallback(
-    async (e: React.MouseEvent<HTMLElement>) => {
-      e.preventDefault();
-      if (!nextLocation) {
-        return false;
-      }
-      const valid = await isValid();
-      if (!valid) {
-        return false;
-      }
-      if (isMellomlagringActive && submission) {
-        updateMellomlagring(submission).catch((_e) => {});
-      }
-      navigateTo(nextLocation);
-      return true;
-    },
-    [isMellomlagringActive, isValid, navigateTo, nextLocation, submission, updateMellomlagring],
-  );
+  const nextClickHandler = useCallback(async () => {
+    if (!nextLocation) {
+      return false;
+    }
+    const valid = await isValid();
+    if (!valid) {
+      return false;
+    }
+    if (isMellomlagringActive && submission) {
+      updateMellomlagring(submission).catch((_e) => {});
+    }
+    navigateTo(nextLocation);
+    return true;
+  }, [isMellomlagringActive, isValid, navigateTo, nextLocation, submission, updateMellomlagring]);
 
-  const prevClickHandler = useCallback(
-    async (e: React.MouseEvent<HTMLElement>) => {
-      e.preventDefault();
-      if (!prevLocation) {
-        return false;
-      }
-      navigateTo(prevLocation);
-      return true;
-    },
-    [navigateTo, prevLocation],
-  );
+  const prevClickHandler = useCallback(async () => {
+    if (!prevLocation) {
+      return false;
+    }
+    navigateTo(prevLocation);
+    return true;
+  }, [navigateTo, prevLocation]);
 
   return (
     <>
@@ -80,9 +70,9 @@ const FormNavigation = ({ paths, isValid, submission, onCancel, navigateTo, fina
         nextButton={
           <NextButton
             onClick={{
-              digital: () => nextClickHandler,
-              paper: () => nextClickHandler,
-              digitalnologin: () => nextClickHandler,
+              digital: () => nextClickHandler(),
+              paper: () => nextClickHandler(),
+              digitalnologin: () => nextClickHandler(),
             }}
             label={{
               digital: translate(TEXTS.grensesnitt.navigation.saveAndContinue),
@@ -94,9 +84,9 @@ const FormNavigation = ({ paths, isValid, submission, onCancel, navigateTo, fina
         previousButton={
           <PreviousButton
             onClick={{
-              digital: () => prevClickHandler,
-              digitalnologin: () => prevClickHandler,
-              paper: () => prevClickHandler,
+              digital: () => prevClickHandler(),
+              digitalnologin: () => prevClickHandler(),
+              paper: () => prevClickHandler(),
             }}
             label={{
               digital: translate(TEXTS.grensesnitt.navigation.previous),
@@ -106,16 +96,8 @@ const FormNavigation = ({ paths, isValid, submission, onCancel, navigateTo, fina
           />
         }
         cancelButton={<CancelButton />}
-        // saveButton={<SaveButton />}
+        saveButton={<SaveButton submission={submission} />}
       />
-      {isMellomlagringActive && <SaveAndDeleteButtons submission={submission} />}
-      {/*{!isMellomlagringActive && (*/}
-      {/*  <div className="button-row button-row__center">*/}
-      {/*    <Button variant="tertiary" onClick={onCancel}>*/}
-      {/*      {translate(TEXTS.grensesnitt.navigation.cancelAndDiscard)}*/}
-      {/*    </Button>*/}
-      {/*  </div>*/}
-      {/*)}*/}
     </>
   );
 };

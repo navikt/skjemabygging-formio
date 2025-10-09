@@ -1,47 +1,53 @@
-/* eslint-disable */
-import { Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
+import { useAppConfig } from '../../context/config/configContext';
 import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
 import urlUtils from '../../util/url/url';
+import ConfirmationModal from '../modal/confirmation/ConfirmationModal';
 import { BaseButton } from './BaseButton';
 
-export function CancelButton({ submission }: { submission?: Submission }) {
+export function CancelButton() {
   const { translate } = useLanguages();
-  const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
+  const { submissionMethod } = useAppConfig();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const { updateMellomlagring, deleteMellomlagring } = useSendInn();
+  const { deleteMellomlagring } = useSendInn();
   const exitUrl = urlUtils.getExitUrl(window.location.href);
 
-  // TODO flytt ut i save knappen
-  const saveSubmission = async () => {
-    if (!submission) {
-      setIsSaveModalOpen(false);
-      throw new Error('Kunne ikke lagre. Innsendingen er tom.');
-    }
-    await updateMellomlagring(submission);
-    setIsSaveModalOpen(false);
-  };
-
   const deleteSubmission = async () => {
-    await deleteMellomlagring();
+    if (submissionMethod === 'digital') {
+      await deleteMellomlagring();
+    }
     setIsDeleteModalOpen(false);
   };
 
-  // Digital får opp Ja, avbryt og forkast, Nei, fortsett utfylling og Lagre
-  // Papir og digitalnologin får bare opp Ja, avbryt og forkast eller Nei, fortsett utfylling
-
   return (
-    <BaseButton
-      onClick={{
-        digital: () => setIsDeleteModalOpen(true),
-      }}
-      variant="tertiary"
-      label={{
-        digital: translate(TEXTS.grensesnitt.navigation.cancelAndDiscard),
-        digitalnologin: translate(TEXTS.grensesnitt.navigation.cancelAndDiscard),
-        paper: translate(TEXTS.grensesnitt.navigation.cancelAndDiscard),
-      }}
-    />
+    <>
+      <BaseButton
+        onClick={{
+          digital: () => setIsDeleteModalOpen(true),
+          paper: () => setIsDeleteModalOpen(true),
+          digitalnologin: () => setIsDeleteModalOpen(true),
+        }}
+        variant="tertiary"
+        label={{
+          digital: translate(TEXTS.grensesnitt.navigation.cancelAndDelete),
+          digitalnologin: translate(TEXTS.grensesnitt.navigation.cancelAndDelete),
+          paper: translate(TEXTS.grensesnitt.navigation.cancelAndDelete),
+        }}
+      />
+      <ConfirmationModal
+        open={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={deleteSubmission}
+        confirmType={'danger'}
+        texts={
+          submissionMethod === 'digital'
+            ? TEXTS.grensesnitt.confirmDeletePrompt
+            : TEXTS.grensesnitt.confirmDiscardPrompt
+        }
+        exitUrl={exitUrl}
+      />
+    </>
   );
 }

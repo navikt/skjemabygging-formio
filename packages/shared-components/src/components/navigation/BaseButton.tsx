@@ -23,10 +23,13 @@ export function BaseButton({ label, onClick, href, icon, iconPosition, variant }
 
   return (
     <Button
-      as={href ? 'a' : 'button'}
-      role={href && 'link'}
+      as="a"
+      role="link"
       {...{ href: buttonHref }}
-      onClick={handleClick}
+      onClick={(event) => {
+        event.preventDefault();
+        handleClick?.();
+      }}
       icon={icon}
       iconPosition={iconPosition}
       variant={variant}

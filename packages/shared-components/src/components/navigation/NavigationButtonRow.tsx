@@ -19,8 +19,8 @@ export function NavigationButtonRow({
       </div>
 
       <div className="button-row button-row__center" style={{ marginTop: '1rem' }}>
-        {saveButton}
         {cancelButton}
+        {saveButton}
       </div>
     </nav>
   );
