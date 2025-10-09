@@ -57,11 +57,11 @@ const sendInnUtfyltSoknad = {
         logger.warn(`Language code "${language}" is not supported. Language code will be defaulted to "nb".`);
       }
 
-      logger.warn(submission);
-      logger.warn(submissionMethod);
-      logger.warn(pdfFormData);
-      logger.warn(stringifyPdf(pdfFormData));
-      logger.warn(language);
+      logger.warn(`Submission: ${submission}`);
+      logger.warn(`Language is: ${submissionMethod}`);
+      logger.warn(`pdfFormData: ${pdfFormData}`);
+      logger.warn(`pdfFormData2: ${stringifyPdf(pdfFormData)}`);
+      logger.warn(`Language is: ${language}`);
       logger.warn(
         createFeltMapFromSubmission(
           form,

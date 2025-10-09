@@ -68,6 +68,18 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps) => {
     mergePdfAccessToken,
   } = props;
 
+  logger.warn(
+    `Old ${createFeltMapFromSubmission(
+      form,
+      submission,
+      submissionMethod,
+      createTranslate(translations, language),
+      language,
+    )}`,
+  );
+
+  logger.warn(`New ${stringifyPdf(pdfFormData)}`);
+
   const [coverPageResponse, applicationResponse] = await Promise.all([
     coverPageService.createPdf({
       accessToken,
