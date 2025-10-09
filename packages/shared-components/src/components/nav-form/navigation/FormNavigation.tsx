@@ -1,12 +1,13 @@
-import { ArrowLeftIcon, ArrowRightIcon } from '@navikt/aksel-icons';
-import { Button } from '@navikt/ds-react';
 import { Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useState } from 'react';
 import { To, useLocation } from 'react-router';
 import { useLanguages } from '../../../context/languages';
 import { useSendInn } from '../../../context/sendInn/sendInnContext';
 import SaveAndDeleteButtons from '../../button/navigation/save-and-delete/SaveAndDeleteButtons';
-import LinkButton from '../../link-button/LinkButton';
+import { CancelButton } from '../../navigation/CancelButton';
+import { NavigationButtonRow } from '../../navigation/NavigationButtonRow';
+import { NextButton } from '../../navigation/NextButton';
+import { PreviousButton } from '../../navigation/PreviousButton';
 
 export interface Props {
   isValid: () => Promise<boolean>;
@@ -20,6 +21,7 @@ export interface Props {
   };
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const FormNavigation = ({ paths, isValid, submission, onCancel, navigateTo, finalStep }: Props) => {
   const { isMellomlagringActive, updateMellomlagring } = useSendInn();
   const { search } = useLocation();
@@ -74,42 +76,46 @@ const FormNavigation = ({ paths, isValid, submission, onCancel, navigateTo, fina
 
   return (
     <>
-      <nav>
-        <div className="button-row">
-          {nextLocation && (
-            <LinkButton buttonVariant="primary" onClick={nextClickHandler} to={nextLocation}>
-              <span aria-live="polite" className="navds-body-short font-bold">
-                {translate(
-                  isMellomlagringActive
-                    ? TEXTS.grensesnitt.navigation.saveAndContinue
-                    : TEXTS.grensesnitt.navigation.next,
-                )}
-              </span>
-              <span className="navds-button__icon">
-                <ArrowRightIcon aria-hidden />
-              </span>
-            </LinkButton>
-          )}
-          {prevLocation && (
-            <LinkButton buttonVariant="secondary" onClick={prevClickHandler} to={prevLocation}>
-              <span className="navds-button__icon">
-                <ArrowLeftIcon aria-hidden />
-              </span>
-              <span aria-live="polite" className="navds-body-short font-bold">
-                {translate(TEXTS.grensesnitt.navigation.previous)}
-              </span>
-            </LinkButton>
-          )}
-        </div>
-        {isMellomlagringActive && <SaveAndDeleteButtons submission={submission} />}
-        {!isMellomlagringActive && (
-          <div className="button-row button-row__center">
-            <Button variant="tertiary" onClick={onCancel}>
-              {translate(TEXTS.grensesnitt.navigation.cancelAndDiscard)}
-            </Button>
-          </div>
-        )}
-      </nav>
+      <NavigationButtonRow
+        nextButton={
+          <NextButton
+            onClick={{
+              digital: () => nextClickHandler,
+              paper: () => nextClickHandler,
+              digitalnologin: () => nextClickHandler,
+            }}
+            label={{
+              digital: translate(TEXTS.grensesnitt.navigation.saveAndContinue),
+              digitalnologin: translate(TEXTS.grensesnitt.navigation.next),
+              paper: translate(TEXTS.grensesnitt.navigation.next),
+            }}
+          />
+        }
+        previousButton={
+          <PreviousButton
+            onClick={{
+              digital: () => prevClickHandler,
+              digitalnologin: () => prevClickHandler,
+              paper: () => prevClickHandler,
+            }}
+            label={{
+              digital: translate(TEXTS.grensesnitt.navigation.previous),
+              digitalnologin: translate(TEXTS.grensesnitt.navigation.previous),
+              paper: translate(TEXTS.grensesnitt.navigation.previous),
+            }}
+          />
+        }
+        cancelButton={<CancelButton />}
+        // saveButton={<SaveButton />}
+      />
+      {isMellomlagringActive && <SaveAndDeleteButtons submission={submission} />}
+      {/*{!isMellomlagringActive && (*/}
+      {/*  <div className="button-row button-row__center">*/}
+      {/*    <Button variant="tertiary" onClick={onCancel}>*/}
+      {/*      {translate(TEXTS.grensesnitt.navigation.cancelAndDiscard)}*/}
+      {/*    </Button>*/}
+      {/*  </div>*/}
+      {/*)}*/}
     </>
   );
 };

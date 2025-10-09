@@ -1,5 +1,5 @@
 import { TEXTS, Tkey } from '@navikt/skjemadigitalisering-shared-domain';
-import { useNavigate, useResolvedPath, useSearchParams } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 import { NavigationButtonRow } from '../../components/navigation/NavigationButtonRow';
 import { NextButton } from '../../components/navigation/NextButton';
 import { PreviousButton } from '../../components/navigation/PreviousButton';
