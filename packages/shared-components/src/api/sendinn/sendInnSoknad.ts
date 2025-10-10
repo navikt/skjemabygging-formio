@@ -88,19 +88,6 @@ export const updateUtfyltSoknad = async (
   const { http, baseUrl, submissionMethod, logger, config } = appConfig;
   const attachments = getRelevantAttachments(form, submission);
   const otherDocumentation = hasOtherDocumentation(form, submission);
-  logger?.info('Send inn');
-  logger?.info(JSON.stringify(formContextValue?.submission));
-  logger?.info(
-    JSON.stringify(
-      renderPdfForm({
-        formContextValue,
-        languagesContextValue,
-        isDelingslenke: !!config?.isDelingslenke,
-        gitVersion: String(config?.gitVersion),
-        submissionMethod,
-      }),
-    ),
-  );
 
   if (innsendingsId) {
     return http?.put<SendInnSoknadResponse>(
@@ -115,7 +102,15 @@ export const updateUtfyltSoknad = async (
         attachments,
         otherDocumentation,
         pdfFormData: renderPdfForm({
-          formContextValue,
+          formContextValue: {
+            ...formContextValue,
+            submission: {
+              ...formContextValue.submission,
+              data: {
+                ...(submission?.data ?? {}),
+              },
+            },
+          },
           languagesContextValue,
           isDelingslenke: !!config?.isDelingslenke,
           gitVersion: String(config?.gitVersion),
