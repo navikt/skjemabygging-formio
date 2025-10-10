@@ -1,5 +1,5 @@
-import { CheckmarkCircleFillIcon } from '@navikt/aksel-icons';
-import { Alert, BodyShort, Heading, Link, List, VStack } from '@navikt/ds-react';
+import { CheckmarkCircleFillIcon, DownloadIcon } from '@navikt/aksel-icons';
+import { Alert, BodyShort, Heading, HStack, Link, List, VStack } from '@navikt/ds-react';
 import '@navikt/ds-tokens';
 import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo } from 'react';
@@ -8,6 +8,7 @@ import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
+import makeStyles from '../../util/styles/jss/jss';
 
 type DocumentItem = {
   id: string;
@@ -16,12 +17,25 @@ type DocumentItem = {
   type: 'main' | 'attachment';
 };
 
+const useStyles = makeStyles({
+  downloadLink: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    fontSize: 'var(--a-font-size-medium)',
+    lineHeight: 'var(--a-font-line-height-medium)',
+  },
+  downloadLinkIcon: {
+    fontSize: 'var(--a-font-size-xlarge)',
+  },
+});
+
 export function ReceiptPage() {
   const { translate, currentLanguage } = useLanguages();
   const { form, submission } = useForm();
   const { soknadPdfBlob, nologinToken } = useSendInn();
   const { submissionMethod } = useAppConfig();
   const navigate = useNavigate();
+  const styles = useStyles();
 
   const requiresLegitimation = submissionMethod === 'digitalnologin' && !nologinToken;
 
@@ -114,16 +128,16 @@ export function ReceiptPage() {
                   />
                 }
               >
-                <BodyShort>
+                <HStack gap="2">
                   {item.title}
                   {item.type === 'attachment' && fileCountLabel ? ` (${fileCountLabel})` : null}
                   {item.type === 'main' && soknadPdfBlob ? (
-                    <>
-                      {' '}
-                      <Link href={soknadPdfUrl}>{translate(TEXTS.statiske.receipt.downloadLinkLabel)}</Link>
-                    </>
+                    <Link className={styles.downloadLink} href={soknadPdfUrl} underline={false}>
+                      <DownloadIcon aria-hidden className={styles.downloadLinkIcon} />
+                      <span>{translate(TEXTS.statiske.receipt.downloadLinkLabel)}</span>
+                    </Link>
                   ) : null}
-                </BodyShort>
+                </HStack>
               </List.Item>
             );
           })}
