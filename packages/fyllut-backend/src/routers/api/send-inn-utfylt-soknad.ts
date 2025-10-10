@@ -57,16 +57,6 @@ const sendInnUtfyltSoknad = {
         logger.warn(`Language code "${language}" is not supported. Language code will be defaulted to "nb".`);
       }
 
-      logger.warn('createFeltMapFromSubmission');
-      logger.warn(
-        createFeltMapFromSubmission(
-          form,
-          submission,
-          submissionMethod,
-          createTranslate(translation, language),
-          localizationUtils.getLanguageCodeAsIso639_1(language),
-        ),
-      );
       logger.warn('pdfFormData');
       logger.warn(stringifyPdf(pdfFormData));
 
