@@ -21,6 +21,7 @@ import {
 import { SummaryDatePicker, SummaryMonthPicker, SummaryYear } from './components/date';
 import { SummaryContainer, SummaryDataGrid, SummaryFormGroup, SummaryPanel, SummaryRow } from './components/group';
 import { SummaryIntroPage } from './components/other';
+import SummaryAttachmentUpload from './components/other/attachment-uploads/SummaryAttachmentUpload';
 import {
   SummaryAccordion,
   SummaryAlert,
@@ -42,7 +43,9 @@ interface Props {
 }
 
 const RenderSummaryForm = ({ panelValidationList }: Props) => {
-  const { activeComponents } = useForm();
+  const { activeComponents, activeAttachmentUploadsPanel } = useForm();
+  console.log('panelValidationList', panelValidationList);
+  console.log('activeComponents', activeComponents);
 
   const componentRegistry = {
     /* Standard */
@@ -98,6 +101,11 @@ const RenderSummaryForm = ({ panelValidationList }: Props) => {
     maalgruppe: SummaryMaalgruppe,
   };
 
+  const attachmentUploadsComponentRegistry = {
+    ...componentRegistry,
+    attachment: SummaryAttachmentUpload,
+  };
+
   return (
     <>
       <SummaryIntroPage />
@@ -110,6 +118,13 @@ const RenderSummaryForm = ({ panelValidationList }: Props) => {
           panelValidationList={panelValidationList}
         />
       ))}
+      {activeAttachmentUploadsPanel && (
+        <RenderComponent
+          component={activeAttachmentUploadsPanel}
+          submissionPath=""
+          componentRegistry={attachmentUploadsComponentRegistry}
+        />
+      )}
     </>
   );
 };

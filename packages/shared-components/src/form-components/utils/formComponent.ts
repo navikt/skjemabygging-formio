@@ -88,11 +88,14 @@ const getComponentSubmissionPath = (component: Component, parentSubmissionPath: 
   return tree || input ? (parentSubmissionPath ? `${parentSubmissionPath}.${key}` : key) : (parentSubmissionPath ?? '');
 };
 
+const getNavId = (component: Component) => component.navId || component.id;
+
 const formComponentUtils = {
   getSubmissionValue,
   noChildValues,
   noChildValuesForDataGrid,
   getComponentSubmissionPath,
+  getNavId,
 };
 
 export default formComponentUtils;
