@@ -37,7 +37,7 @@ import {
 } from './components/standard';
 import { PdfActivities, PdfDataFetcher, PdfDrivingList, PdfMaalgruppe } from './components/system';
 import renderPdfComponent from './render/RenderPdfComponent';
-import { PdfComponentProps, PdfFormData } from './types';
+import { PdfFormData } from './types';
 
 interface Props {
   formContextValue: FormContextType;
@@ -119,15 +119,14 @@ const renderPdfForm = ({
     verdiliste: [
       PdfIntroPage({ languagesContextValue, formContextValue }),
       ...(activeComponents
-        ?.map(
-          (component) =>
-            renderPdfComponent({
-              component,
-              submissionPath: '',
-              componentRegistry,
-              formContextValue,
-              languagesContextValue,
-            } as PdfComponentProps), // TODO: Fix type
+        ?.map((component) =>
+          renderPdfComponent({
+            component,
+            submissionPath: '',
+            componentRegistry,
+            formContextValue,
+            languagesContextValue,
+          }),
         )
         .filter(Boolean) ?? []),
       PdfSignature({ properties: form.properties, languagesContextValue, submissionMethod }),
