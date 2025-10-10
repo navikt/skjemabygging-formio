@@ -14,8 +14,9 @@ const FormProgress = () => {
   const panelSlug = params.panelSlug ?? params['*'];
   const { search } = useLocation();
   const navigate = useNavigate();
-  const formUrl = useResolvedPath('').pathname;
   const { translate } = useLanguages();
+  const resolvedPath = useResolvedPath('').pathname;
+  const formUrl = resolvedPath.endsWith('/') ? resolvedPath.slice(0, -1) : resolvedPath; // Remove trailing slash
 
   const formSteps = useMemo(() => {
     const formioSteps = navFormUtils
@@ -80,7 +81,8 @@ const FormProgress = () => {
         }}
       >
         {formSteps.map((step, index) => {
-          const stepUrl = `${formUrl}/../${step.key}${search}`;
+          const stepKey = step.key ? `/${step.key}` : '';
+          const stepUrl = panelSlug ? `${formUrl}/..${stepKey}${search}` : `${formUrl}${stepKey}${search}`;
           return (
             <AkselFormProgress.Step
               onClick={(event) => {
