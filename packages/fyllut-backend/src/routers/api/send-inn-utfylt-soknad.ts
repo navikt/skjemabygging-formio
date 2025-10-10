@@ -68,8 +68,6 @@ const sendInnUtfyltSoknad = {
         ),
       );
       logger.warn('pdfFormData');
-      logger.warn(pdfFormData);
-      logger.warn('pdfFormData string');
       logger.warn(stringifyPdf(pdfFormData));
 
       const applicationPdf = await applicationService.createFormPdf(
