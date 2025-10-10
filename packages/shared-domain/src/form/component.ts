@@ -132,6 +132,7 @@ export interface Component {
   protectedApiKey?: boolean;
   yourInformation?: boolean;
   widthPercent?: number;
+  logic?: any;
 }
 
 export interface DataFetcherComponent extends Component {
