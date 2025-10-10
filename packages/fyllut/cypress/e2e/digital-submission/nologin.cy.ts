@@ -58,7 +58,9 @@ describe('Digital submission without user login', () => {
     cy.findByRole('button', { name: 'Send til Nav' }).click();
     cy.findByRole('heading', { name: 'Søknaden er sendt inn' }).should('exist');
     cy.findByText('Vi har mottatt søknaden din.').should('exist');
-    cy.findByRole('link', { name: 'Last ned kopi' }).should('exist');
+    cy.findByRole('link', { name: 'Last ned kopi' })
+      .should('have.attr', 'target', '_blank')
+      .and('have.attr', 'rel', 'noopener noreferrer');
     cy.findAllByRole('listitem').then(($items) => {
       const texts = Array.from($items).map((item) => item.textContent ?? '');
       const vitnemalEntry = texts.find((text) => text.includes('Vitnemål'));

@@ -116,7 +116,10 @@ describe('ReceiptPage', () => {
     expect(createObjectURLMock).toHaveBeenCalledWith(pdfBlob);
     expect(screen.getByRole('heading', { name: 'Søknaden er sendt inn' })).toBeInTheDocument();
     expect(screen.getByText('Vi har mottatt søknaden din.')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Last ned kopi' })).toHaveAttribute('href', 'blob:http://local/test');
+    const downloadLink = screen.getByRole('link', { name: 'Last ned kopi' });
+    expect(downloadLink).toHaveAttribute('href', 'blob:http://local/test');
+    expect(downloadLink).toHaveAttribute('target', '_blank');
+    expect(downloadLink).toHaveAttribute('rel', 'noopener noreferrer');
     expect(screen.getByText(/Vitnemål \(2 filer\)/)).toBeInTheDocument();
 
     unmount();

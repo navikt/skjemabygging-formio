@@ -2,7 +2,7 @@ import { CheckmarkCircleFillIcon, DownloadIcon } from '@navikt/aksel-icons';
 import { Alert, BodyShort, Heading, HStack, Link, List, VStack } from '@navikt/ds-react';
 import '@navikt/ds-tokens';
 import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
@@ -36,6 +36,7 @@ export function ReceiptPage() {
   const { submissionMethod } = useAppConfig();
   const navigate = useNavigate();
   const styles = useStyles();
+  const pdfUrlRef = useRef<string>();
 
   const requiresLegitimation = submissionMethod === 'digitalnologin' && !nologinToken;
 
@@ -53,9 +54,15 @@ export function ReceiptPage() {
   }, [soknadPdfBlob]);
 
   useEffect(() => {
+    if (pdfUrlRef.current && pdfUrlRef.current !== soknadPdfUrl) {
+      URL.revokeObjectURL(pdfUrlRef.current);
+    }
+    pdfUrlRef.current = soknadPdfUrl;
+
     return () => {
-      if (soknadPdfUrl) {
-        URL.revokeObjectURL(soknadPdfUrl);
+      if (pdfUrlRef.current) {
+        URL.revokeObjectURL(pdfUrlRef.current);
+        pdfUrlRef.current = undefined;
       }
     };
   }, [soknadPdfUrl]);
@@ -132,7 +139,13 @@ export function ReceiptPage() {
                   {item.title}
                   {item.type === 'attachment' && fileCountLabel ? ` (${fileCountLabel})` : null}
                   {item.type === 'main' && soknadPdfBlob ? (
-                    <Link className={styles.downloadLink} href={soknadPdfUrl} underline={false}>
+                    <Link
+                      className={styles.downloadLink}
+                      href={soknadPdfUrl}
+                      underline={false}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <DownloadIcon aria-hidden className={styles.downloadLinkIcon} />
                       <span>{translate(TEXTS.statiske.receipt.downloadLinkLabel)}</span>
                     </Link>
