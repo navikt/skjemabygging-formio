@@ -44,9 +44,11 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { setSubmission, form, submission } = useForm();
+  const formContextValue = useForm();
+  const { setSubmission, form, submission } = formContextValue;
   const soknadNotFoundUrl = `${baseUrl}/soknad-ikke-funnet`;
-  const { translationsForNavForm: translations } = useLanguages();
+  const languagesContextValue = useLanguages();
+  const { translationsForNavForm: translations } = languagesContextValue;
   const innsendingsIdFromParams = searchParams.get('innsendingsId');
 
   const isMellomlagringAvailable = app === 'fyllut' && submissionMethod === 'digital';
@@ -58,8 +60,6 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const [nologinToken, setNologinToken] = useState<string | undefined>();
   const [fyllutMellomlagringState, dispatchFyllutMellomlagring] = useReducer(mellomlagringReducer, undefined);
   const [soknadPdfBlob, setSoknadPdfBlob] = useState<Blob | undefined>(undefined);
-  const formContextValue = useForm();
-  const languagesContextValue = useLanguages();
 
   const addSearchParamToUrl = useCallback(
     (key, value) => {

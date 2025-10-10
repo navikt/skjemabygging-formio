@@ -88,9 +88,8 @@ export const updateUtfyltSoknad = async (
   const { http, baseUrl, submissionMethod, logger, config } = appConfig;
   const attachments = getRelevantAttachments(form, submission);
   const otherDocumentation = hasOtherDocumentation(form, submission);
-
   logger?.info('Send inn');
-  logger?.info(`${!!config?.isDelingslenke},${String(config?.gitVersion)},${submissionMethod}`);
+  logger?.info(JSON.stringify(formContextValue?.submission));
   logger?.info(
     JSON.stringify(
       renderPdfForm({
