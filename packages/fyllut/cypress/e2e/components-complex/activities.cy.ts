@@ -142,9 +142,7 @@ describe('Activities', () => {
 
       // Should show activity in summary
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
-      cy.get('dl').within(() => {
-        cy.get('dd').eq(0).should('contain.text', activityText);
-      });
+      cy.findByText(activityText).should('exist');
 
       // Submit
       cy.clickSaveAndContinue();
@@ -180,9 +178,7 @@ describe('Activities', () => {
 
           // Should show activity in summary
           cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
-          cy.get('dl').within(() => {
-            cy.get('dd').eq(0).should('include.text', defaultActivity.text);
-          });
+          cy.findByText(defaultActivity.text).should('exist');
 
           // Expected submission values
           verifySubmissionValues(
@@ -224,9 +220,7 @@ describe('Activities', () => {
 
           // Should show activity and maalgruppe in summary
           cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
-          cy.get('dl').within(() => {
-            cy.get('dd').eq(0).should('include.text', 'Avklaring');
-          });
+          cy.findByText('Avklaring: 01. februar 2024 - 30. april 2024').should('exist');
 
           // Expected submission values
           verifySubmissionValues(
@@ -316,9 +310,7 @@ describe('Activities', () => {
 
       // Should show activity and maalgruppe in summary
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
-      cy.get('dl').within(() => {
-        cy.get('dd').eq(0).should('contain.text', defaultActivity.text);
-      });
+      cy.findByText(defaultActivity.text).should('exist');
 
       // Submit
       cy.clickSaveAndContinue();

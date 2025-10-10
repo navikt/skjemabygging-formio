@@ -1,6 +1,9 @@
 import { Accordion } from '@navikt/ds-react';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { useEffect } from 'react';
 import Intro from '../../components/intro';
 import { useAppConfig } from '../../context/config/configContext';
+import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
 import IntroPageButtonRow from './IntroPageButtonRow';
@@ -9,8 +12,14 @@ import { useIntroPage } from './IntroPageContext';
 const IntroPageDynamic = () => {
   const { submissionMethod } = useAppConfig();
   const { translate } = useLanguages();
-  const { setSelfDeclaration, error, form, state } = useIntroPage();
+  const { setSelfDeclaration, selfDeclaration, error, form, state } = useIntroPage();
   const { isMellomlagringReady } = useSendInn();
+  const { setTitle, setFormProgressVisible } = useForm();
+
+  useEffect(() => {
+    setTitle(TEXTS.grensesnitt.introPage.title);
+    setFormProgressVisible(true);
+  }, [setTitle, setFormProgressVisible]);
 
   if (!state || (submissionMethod === 'digital' && !isMellomlagringReady)) return;
 
@@ -40,6 +49,7 @@ const IntroPageDynamic = () => {
         className="mb"
         error={error}
         setSelfDeclaration={setSelfDeclaration}
+        value={selfDeclaration}
       />
 
       <IntroPageButtonRow />

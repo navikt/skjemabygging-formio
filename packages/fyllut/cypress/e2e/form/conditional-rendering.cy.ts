@@ -69,19 +69,18 @@ describe('Conditional rendering', () => {
 
       it('lists the submission for the added panel', () => {
         cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
-        cy.findByRole('button', { name: 'Pinnekjøtt' });
         cy.findByText('Rotmos').should('exist');
       });
 
       it("navigates back to the added panel when 'rediger' link is clicked", () => {
-        cy.findByRole('link', { name: 'Rediger pinnekjøtt' }).click();
+        cy.clickEditAnswer('Pinnekjøtt');
         cy.url().should('include', '/pinnekjott');
         cy.findByRole('checkbox', { name: 'Rotmos (valgfritt)' }).should('exist');
         cy.findByRole('checkbox', { name: 'Rotmos (valgfritt)' }).should('be.checked');
       });
 
       it('displays the submission for a different added panel when form is edited', () => {
-        cy.findByRole('link', { name: 'Rediger julemeny' }).click();
+        cy.clickEditAnswer('Julemeny');
         cy.url().should('include', '/veiledning');
         cy.findByRole('link', { name: 'Pinnekjøtt' }).should('exist');
         cy.findByRole('group', { name: 'Julemiddag' }).within(() => {
@@ -96,7 +95,6 @@ describe('Conditional rendering', () => {
         cy.clickNextStep();
         cy.url().should('include', '/oppsummering');
         cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
-        cy.findByRole('button', { name: 'Lutefisk' });
         cy.findByRole('link', { name: 'Lutefisk' }).should('exist');
         cy.findByRole('link', { name: 'Pinnekjøtt' }).should('not.exist');
         cy.findByText('Erterstuing').should('exist');
@@ -105,7 +103,7 @@ describe('Conditional rendering', () => {
       it("navigates back to the added panel on clicking 'rediger' after changing language", () => {
         cy.findByRole('button', { name: 'Norsk bokmål' }).click();
         cy.findByRole('link', { name: 'English' }).click();
-        cy.findByRole('link', { name: 'Edit lamb ribs' }).click();
+        cy.clickEditAnswer('Lamb ribs', 'Edit answer');
         cy.url().should('include', '/pinnekjott');
         cy.url().should('include', 'lang=en');
         cy.findByRole('checkbox', { name: 'Root stew (optional)' }).should('exist');
@@ -125,8 +123,7 @@ describe('Conditional rendering', () => {
       cy.visit('/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=01234567-abcd-4ebd-90d4-34448ebaaaa2');
       cy.defaultWaits();
       cy.wait('@getMellomlagring');
-      cy.findByRole('link', { name: 'Rediger valgfrie opplysninger' }).should('be.visible');
-      cy.findByRole('link', { name: 'Rediger valgfrie opplysninger' }).click();
+      cy.clickEditAnswer('Valgfrie opplysninger');
       cy.findByRole('textbox', { name: 'Hva drakk du til frokost (valgfritt)' }).should('be.visible');
       cy.findByRole('textbox', { name: 'Hva drakk du til frokost (valgfritt)' }).should('have.value', 'Jus');
       cy.findByRole('textbox', { name: 'Hva syntes du om frokosten?' }).should('be.visible');
