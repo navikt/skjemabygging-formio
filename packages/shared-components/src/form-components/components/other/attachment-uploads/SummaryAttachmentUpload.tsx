@@ -1,4 +1,4 @@
-import { FormSummary } from '@navikt/ds-react';
+import { Alert, FormSummary } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useForm } from '../../../../context/form/FormContext';
 import { useLanguages } from '../../../../context/languages';
@@ -11,6 +11,8 @@ const SummaryAttachmentUpload = ({ component }) => {
   const submissionAttachment = submission?.attachments?.find(
     (attachment) => attachment.attachmentId === formComponentUtils.getNavId(component),
   );
+  const shouldShowDeadline =
+    submissionAttachment?.value && !!component.attachmentValues?.[submissionAttachment.value]?.showDeadline;
 
   if (submissionAttachment === undefined) {
     return null;
@@ -27,12 +29,12 @@ const SummaryAttachmentUpload = ({ component }) => {
         {submissionAttachment.additionalDocumentation && (
           <div>{translate(submissionAttachment.additionalDocumentation)}</div>
         )}
-        {component.showDeadline && form.properties?.ettersendelsesfrist && (
-          <div>
+        {shouldShowDeadline && form.properties?.ettersendelsesfrist && (
+          <Alert variant="warning">
             {translate(TEXTS.statiske.attachment.deadline, {
               deadline: form.properties?.ettersendelsesfrist,
             })}
-          </div>
+          </Alert>
         )}
       </FormSummary.Value>
     </FormSummary.Answer>
