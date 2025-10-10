@@ -18,16 +18,21 @@ const AttachmentsUploadButtonRow = ({ attachments, onError }: { attachments: Att
 
   const summaryPageUrl = `../oppsummering?${searchParams.toString()}`;
   const exitUrl = urlUtils.getExitUrl(window.location.href);
-  const validator = attachmentValidator(translate);
+  const valueValidator = attachmentValidator(translate, ['value']);
+  const fileValidator = attachmentValidator(translate, ['fileUploaded']);
 
   const nextPage = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     removeAllErrors();
-    const errors = validateAttachment(attachments, submissionAttachments, validator);
-    Object.entries(errors).forEach(([attachmentId, errorMessage]) => {
+    const valueErrors = validateAttachment(attachments, submissionAttachments, valueValidator);
+    const fileErrors = validateAttachment(attachments, submissionAttachments, fileValidator);
+    Object.entries(valueErrors).forEach(([attachmentId, errorMessage]) => {
       addError(attachmentId, errorMessage, 'VALUE');
     });
-    if (Object.values(errors).length === 0) {
+    Object.entries(fileErrors).forEach(([attachmentId, errorMessage]) => {
+      addError(attachmentId, errorMessage, 'FILE');
+    });
+    if (Object.values({ ...valueErrors, ...fileErrors }).length === 0) {
       navigate(summaryPageUrl);
     } else {
       onError();

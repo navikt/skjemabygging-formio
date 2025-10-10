@@ -13,7 +13,7 @@ import {
   VStack,
 } from '@navikt/ds-react';
 import { AttachmentSettingValues, SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { MutableRefObject, useState } from 'react';
+import { ChangeEvent, MutableRefObject, useState } from 'react';
 import { useLocation } from 'react-router';
 import {
   FILE_ACCEPT,
@@ -28,6 +28,7 @@ import { getFileValidationError } from '../../util/form/attachment-validation/at
 import htmlUtils from '../../util/html/htmlUtils';
 import makeStyles from '../../util/styles/jss/jss';
 import { useAttachmentUpload } from '../attachment/AttachmentUploadContext';
+import { attachmentValidator } from '../attachment/attachmentValidator';
 import InnerHtml from '../inner-html/InnerHtml';
 
 const useStyles = makeStyles({
@@ -42,7 +43,7 @@ interface Props {
   attachmentValue?: keyof AttachmentSettingValues;
   requireAttachmentTitle?: boolean;
   multiple?: boolean;
-  refs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | null>>;
+  refs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | HTMLButtonElement | null>>;
   accept?: string;
   maxFileSizeInBytes?: number;
   maxFileSizeText?: string;
@@ -86,11 +87,23 @@ const FileUploader = ({
 
   const uploadErrorMessage = errors[attachmentId]?.find((error) => error.type === 'FILE')?.message;
   const attachmentTitleErrorMessage = errors[attachmentId]?.find((error) => error.type === 'TITLE')?.message;
+  const attachmentTitleValidator = attachmentValidator(translate, ['otherDocumentationTitle']);
 
   const translationErrorParams = {
     href: `${config.baseUrl}/${form.form.path}/legitimasjon${search}`,
     maxFileSize: MAX_SIZE_ATTACHMENT_FILE_TEXT,
     maxAttachmentSize: MAX_TOTAL_SIZE_ATTACHMENT_FILES_TEXT,
+  };
+
+  const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    changeAttachmentValue(
+      initialAttachment,
+      {
+        value: attachmentValue,
+        title: e.target.value,
+      },
+      attachmentTitleValidator,
+    );
   };
 
   const onSelect = async (files: FileObject[]) => {
@@ -147,12 +160,7 @@ const FileUploader = ({
                   refs.current[`${attachmentId}-TITLE`] = ref;
                 }
               }}
-              onChange={(e) => {
-                changeAttachmentValue(initialAttachment, {
-                  value: attachmentValue,
-                  title: e.target.value,
-                });
-              }}
+              onChange={handleTitleChange}
             />
           )}
           {!requireAttachmentTitle || !!attachment?.title?.trim() ? (
@@ -162,6 +170,11 @@ const FileUploader = ({
                 className={styles.button}
                 loading={loading}
                 icon={<UploadIcon aria-hidden fontSize="1.5rem" />}
+                ref={(ref) => {
+                  if (refs?.current) {
+                    refs.current[`${attachmentId}-FILE`] = ref;
+                  }
+                }}
               >
                 {translate(
                   initialUpload ? TEXTS.statiske.uploadFile.selectFile : TEXTS.statiske.uploadFile.uploadMoreFiles,
@@ -173,6 +186,11 @@ const FileUploader = ({
               variant={initialUpload ? 'primary' : 'secondary'}
               className={styles.button}
               icon={<UploadIcon aria-hidden fontSize="1.5rem" />}
+              ref={(ref) => {
+                if (refs?.current) {
+                  refs.current[`${attachmentId}-FILE`] = ref;
+                }
+              }}
               onClick={() =>
                 addError(
                   attachmentId,
