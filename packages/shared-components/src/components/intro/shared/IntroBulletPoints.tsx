@@ -1,5 +1,5 @@
 import { List } from '@navikt/ds-react';
-import InnerHtmlShort from '../../inner-html/InnerHtmlShort';
+import InnerHtml from '../../inner-html/InnerHtml';
 
 interface Props {
   values?: string[];
@@ -14,7 +14,7 @@ const IntroBulletPoints = ({ values }: Props) => {
     <List>
       {values.map((item, index) => (
         <List.Item key={index}>
-          <InnerHtmlShort content={item} />
+          <InnerHtml content={item} />
         </List.Item>
       ))}
     </List>
