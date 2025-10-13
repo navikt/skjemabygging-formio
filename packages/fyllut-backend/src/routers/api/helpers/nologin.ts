@@ -90,10 +90,10 @@ const assembleNologinSoknadBody = (
 const extractBruker = (submission: Submission): BrukerDto | undefined => {
   const { data } = submission;
   if (data.dineOpplysninger?.identitet?.identitetsnummer) {
-    return { id: data.dineOpplysninger.identitet.identitetsnummer as string, idType: 'FNR' };
+    return { id: data.dineOpplysninger.identitet.identitetsnummer, idType: 'FNR' };
   }
   if (data.fodselsnummerDNummerSoker) {
-    return { id: data.fodselsnummerDNummerSoker as string as string, idType: 'FNR' };
+    return { id: data.fodselsnummerDNummerSoker, idType: 'FNR' };
   }
   return undefined;
 };
