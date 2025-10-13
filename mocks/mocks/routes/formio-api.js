@@ -60,6 +60,7 @@ const submissionTypeDigitalNoLogin = require('../data/formio-api/submission-type
 const submissionTypePaperDigitalNoLogin = require('../data/formio-api/submission-type-paper-digital-no-login.json');
 const submissionTypePaperNoLogin = require('../data/formio-api/submission-type-paper-no-login.json');
 const nologinForm = require('../data/formio-api/nologin.json');
+const dataGridLogicBug = require('../data/formio-api/datagrid-logic-bug.json');
 const nologinToForwardForm = require('../data/formio-api/nologin-to-forward.json');
 
 const allForms = [
@@ -115,6 +116,7 @@ const allForms = [
   { form: submissionTypePaperDigitalNoLogin, translations: undefined },
   { form: submissionTypePaperNoLogin, translations: undefined },
   { form: nologinForm, translations: undefined },
+  { form: dataGridLogicBug, translations: undefined },
   { form: nologinToForwardForm, translations: undefined },
 ];
 

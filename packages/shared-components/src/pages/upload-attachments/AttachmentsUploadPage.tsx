@@ -25,19 +25,19 @@ export function AttachmentsUploadPage() {
   const { translate } = useLanguages();
   const styles = useStyles();
   const attachments: Attachment[] = getAllAttachments(form, submission ?? ({} as Submission));
-  const attachmentRefs = useRef<Record<string, HTMLFieldSetElement | HTMLInputElement | null>>({});
+  const attachmentRefs = useRef<Record<string, HTMLFieldSetElement | HTMLInputElement | HTMLButtonElement | null>>({});
   const errorSummaryRef = useRef<HTMLElement | null>(null);
+  const attachmentOrder = attachments.reduce((acc, att, index) => ({ ...acc, [att.navId as string]: index }), {});
 
   const errors: ComponentError[] = (Object.entries(uploadErrors) ?? []).flatMap(([attachmentId, attachmentErrors]) =>
-    attachmentErrors
-      .filter((error) => error.type === 'VALUE' || error.type === 'TITLE')
-      .map((error) => ({
-        elementId: error.type,
-        message: error.message,
-        path: attachmentId,
-        level: 'error',
-      })),
+    attachmentErrors.map((error) => ({
+      elementId: error.type,
+      message: error.message,
+      path: attachmentId,
+      level: 'error',
+    })),
   );
+  errors.sort((a, b) => attachmentOrder[a.path] - attachmentOrder[b.path]);
 
   const focusOnErrorSummary = (maxAttempts = 5) => {
     if (errorSummaryRef.current) {

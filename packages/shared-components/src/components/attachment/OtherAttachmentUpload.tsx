@@ -15,6 +15,7 @@ import { useLanguages } from '../../context/languages';
 import FileUploader from '../file-uploader/FileUploader';
 import Attachment from './Attachment';
 import { useAttachmentUpload } from './AttachmentUploadContext';
+import { attachmentValidator } from './attachmentValidator';
 import { useAttachmentStyles } from './styles';
 
 interface Props {
@@ -23,7 +24,7 @@ interface Props {
   componentId: string;
   description?: string;
   className?: string;
-  refs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | null>>;
+  refs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | HTMLButtonElement | null>>;
 }
 
 const OtherAttachmentUpload = ({ label, attachmentValues, componentId, description, className, refs }: Props) => {
@@ -32,6 +33,7 @@ const OtherAttachmentUpload = ({ label, attachmentValues, componentId, descripti
   const { changeAttachmentValue, handleDeleteAttachment, submissionAttachments, errors } = useAttachmentUpload();
   const { form } = useForm();
 
+  const validator = attachmentValidator(translate, ['value']);
   const defaultAttachmentValues: Pick<SubmissionAttachment, 'navId' | 'type'> = { navId: componentId, type: 'other' };
   const otherAttachment = submissionAttachments.find((attachment) => attachment.attachmentId.startsWith(componentId));
   const [attachments, setAttachments] = useState(
@@ -46,7 +48,7 @@ const OtherAttachmentUpload = ({ label, attachmentValues, componentId, descripti
   const attachmentError = errors[componentId]?.find((error) => error.type === 'VALUE');
 
   const handleValueChange = (value: Partial<SubmissionAttachmentValue>, attachmentId: string = componentId) => {
-    changeAttachmentValue({ attachmentId, ...defaultAttachmentValues }, { value: value.key });
+    changeAttachmentValue({ attachmentId, ...defaultAttachmentValues }, { value: value.key }, validator);
   };
 
   const handleDeleteAllAttachments = async (attachmentId: string) => {
@@ -79,7 +81,7 @@ const OtherAttachmentUpload = ({ label, attachmentValues, componentId, descripti
           deadline={form.properties?.ettersendelsesfrist}
           ref={(ref) => {
             if (refs?.current) {
-              refs.current[`${componentId}-INPUT`] = ref;
+              refs.current[`${componentId}-VALUE`] = ref;
             }
           }}
         />
