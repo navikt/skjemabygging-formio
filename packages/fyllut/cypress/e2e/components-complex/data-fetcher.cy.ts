@@ -2,7 +2,7 @@ import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { expect } from 'chai';
 
 describe('Data fetcher', () => {
-  const LABEL_AKTIVITETSVELGER = 'Aktivitetsvelger (OBS! Skal ikke publiseres)';
+  const LABEL_AKTIVITETSVELGER = 'Aktivitetsvelger';
 
   before(() => {
     cy.configMocksServer();
