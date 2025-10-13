@@ -243,10 +243,18 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
 
   const submitDigitalNologin = useCallback(
     async (language: Language, translation: any, submission: Submission) => {
+      if (!nologinToken) {
+        const search = window.location.search ?? '';
+        if (form) {
+          logger?.info(`${innsendingsId}: Missing nologin token when submitting. Redirecting to legitimasjon.`);
+          navigate(`/${form.path}/legitimasjon${search}`, { replace: true });
+        }
+        return;
+      }
       try {
         const response: Blob = await postNologinSoknad(
           appConfig,
-          nologinToken!,
+          nologinToken,
           form!,
           submission,
           language,
