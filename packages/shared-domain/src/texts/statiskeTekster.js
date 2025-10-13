@@ -145,6 +145,13 @@ export const statiske = {
     downloadLinkLabel: 'Last ned kopi',
     singleFileLabel: 'fil',
     multipleFileLabel: 'filer',
+    mustSendLaterHeading: 'Dette må du ettersende:',
+    sentByOthersHeading: 'Dette har du svart at noen andre skal sende inn:',
+    deadlineWarningTitle: 'Dokumentene må ettersendes innen {{deadline}}',
+    deadlineWarningDescriptionPrefix: 'Du kan ettersende dokumentene på',
+    deadlineWarningDescriptionSuffix: '(åpnes i en ny fane)',
+    deadlineWarningLinkLabel: 'nav.no/ettersende',
+    deadlineWarningLinkUrl: 'https://www.nav.no/ettersende',
   },
   prepareLetterPage: {
     subTitle: 'Skjemaet er ikke sendt ennå',

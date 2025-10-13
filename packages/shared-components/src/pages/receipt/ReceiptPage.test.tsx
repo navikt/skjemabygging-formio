@@ -41,7 +41,7 @@ vi.mock('../../context/languages', async () => {
 });
 
 describe('ReceiptPage', () => {
-  const baseForm = { title: 'Testskjema', path: 'testskjema' };
+  const baseForm = { title: 'Testskjema', path: 'testskjema' } as any;
 
   const createTranslate =
     () =>
@@ -65,6 +65,7 @@ describe('ReceiptPage', () => {
 
   afterEach(() => {
     cleanup();
+    vi.useRealTimers();
   });
 
   it('redirects to legitimation when nologin token is missing', async () => {
@@ -136,5 +137,103 @@ describe('ReceiptPage', () => {
     } else {
       Reflect.deleteProperty(URL, 'revokeObjectURL');
     }
+  });
+
+  it('shows follow-up sections when attachments require additional submission', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2025-11-09T12:00:00Z'));
+
+    mockFormContext = {
+      form: { ...baseForm, properties: { ettersendelsesfrist: '14' } },
+      submission: {
+        attachments: [
+          {
+            attachmentId: 'att-1',
+            title: 'Kopi av honnørkort',
+            value: 'ettersender',
+            additionalDocumentation: 'Sendes innen to uker.',
+          },
+          {
+            attachmentId: 'att-2',
+            title: 'Dokumentasjon av arbeid eller utdanning',
+            value: 'andre',
+            additionalDocumentation: 'Fastlege og arbeidsgiver.',
+          },
+        ],
+      },
+    };
+
+    render(<ReceiptPage />);
+
+    expect(screen.queryByText('Søknaden er sendt inn')).not.toBeInTheDocument();
+    expect(screen.getByText('Dette må du ettersende:')).toBeInTheDocument();
+    expect(screen.getByText(/Kopi av honnørkort/)).toBeInTheDocument();
+    expect(screen.getByText('Sendes innen to uker.')).toBeInTheDocument();
+    expect(screen.getByText('Dette har du svart at noen andre skal sende inn:')).toBeInTheDocument();
+    expect(screen.getByText('Dokumentasjon av arbeid eller utdanning')).toBeInTheDocument();
+    expect(screen.getByText('Fastlege og arbeidsgiver.')).toBeInTheDocument();
+    expect(screen.getByText('Dokumentene må ettersendes innen 23.11.2025')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'nav.no/ettersende' })).toHaveAttribute(
+      'href',
+      'https://www.nav.no/ettersende',
+    );
+  });
+
+  it('uses form attachment metadata when submission attachments are missing title', () => {
+    mockFormContext = {
+      form: {
+        ...baseForm,
+        components: [
+          {
+            type: 'panel',
+            components: [
+              {
+                type: 'attachment',
+                id: 'att-1',
+                key: 'kopiAvHonnorkort',
+                navId: 'att-1',
+                label: 'Kopi av honnørkort',
+                properties: {
+                  vedleggstittel: 'Kopi av honnørkort',
+                },
+              },
+              {
+                type: 'attachment',
+                id: 'att-2',
+                key: 'dokumentasjonAvArbeid',
+                navId: 'att-2',
+                label: 'Dokumentasjon av arbeid',
+                properties: {
+                  vedleggstittel: 'Dokumentasjon av arbeid',
+                },
+              },
+            ],
+          },
+        ],
+      } as any,
+      submission: {
+        attachments: [
+          {
+            attachmentId: 'att-1',
+            navId: 'att-1',
+            value: 'leggerVedNaa',
+            files: [{ name: 'vitnemal.pdf' }],
+          },
+          {
+            attachmentId: 'att-2',
+            navId: 'att-2',
+            value: 'ettersender',
+          },
+        ],
+      },
+    };
+
+    render(<ReceiptPage />);
+
+    expect(screen.getByText(/Kopi av honnørkort/)).toBeInTheDocument();
+    expect(screen.queryByText('att-1')).not.toBeInTheDocument();
+    expect(screen.getByText('Dette må du ettersende:')).toBeInTheDocument();
+    expect(screen.getByText(/Dokumentasjon av arbeid/)).toBeInTheDocument();
+    expect(screen.queryByText('att-2')).not.toBeInTheDocument();
   });
 });
