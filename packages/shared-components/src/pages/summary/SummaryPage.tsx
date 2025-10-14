@@ -1,58 +1,21 @@
-import { ExclamationmarkTriangleFillIcon } from '@navikt/aksel-icons';
-import { Alert, BodyShort, ConfirmationPanel, Heading } from '@navikt/ds-react';
+import { Alert, BodyShort, ConfirmationPanel, Heading, VStack } from '@navikt/ds-react';
 import { DeclarationType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useRef, useState } from 'react';
 import EditAnswersButton from '../../components/button/navigation/edit-answers/EditAnswersButton';
+import ValidationExclamationIcon from '../../components/icons/ValidationExclamationIcon';
 import NavFormHelper from '../../components/nav-form/NavFormHelper';
-import FormSummary from '../../components/summary/form/FormSummary';
-import SummaryPageNavigation from '../../components/summary/navigation/SummaryPageNavigation';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
-import Styles from '../../styles';
+import RenderSummaryForm from '../../form-components/RenderSummaryForm';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
 import { PanelValidation, validateWizardPanels } from '../../util/form/panel-validation/panelValidation';
-import makeStyles from '../../util/styles/jss/jss';
-
-const useStyles = makeStyles({
-  '@global': {
-    ...Styles.form,
-    ...Styles.global,
-  },
-  content: {
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    '& .data-grid__row': {},
-    '& dt:not(.component-collection  dt):not(.data-grid__row  dt)': {
-      fontSize: '1.2rem',
-      marginTop: '2rem',
-    },
-    '& .component-collection, & .data-grid__row': {
-      borderLeft: '4px solid #368da8',
-      backgroundColor: '#e6f1f8',
-      padding: '0.75rem 1rem',
-      margin: '0.375rem 0',
-    },
-    '& .form-summary': {
-      paddingTop: '2rem',
-      paddingBottom: '2.5rem',
-    },
-  },
-  validationAlert: {
-    marginBottom: '1rem',
-  },
-  exclamationmarkIcon: {
-    verticalAlign: 'sub',
-    color: 'var(--a-orange-600)',
-  },
-});
+import SummaryPageNavigation from './navigation/SummaryPageNavigation';
 
 export function SummaryPage() {
   const appConfig = useAppConfig();
   const { translate } = useLanguages();
-  const styles = useStyles();
-  const { prefillData, submission, form } = useForm();
+  const { prefillData, submission, form, setTitle, setFormProgressVisible } = useForm();
   const { declarationType, declarationText } = form.properties;
   const [declaration, setDeclaration] = useState<boolean | undefined>(undefined);
 
@@ -73,6 +36,14 @@ export function SummaryPage() {
       webform.checkData(submissionCopy?.data, [], undefined);
 
       const panelValidations = validateWizardPanels(webform, form, submission!);
+
+      if (form.introPage?.enabled && !submission?.selfDeclaration) {
+        panelValidations.push({
+          key: 'introPage',
+          hasValidationErrors: true,
+        });
+      }
+
       setPanelValidationList(panelValidations);
       webform.destroy(true);
 
@@ -81,10 +52,13 @@ export function SummaryPage() {
       }
     };
 
-    if (submission) {
-      initializePanelValidation();
-    }
+    initializePanelValidation();
   }, [form, submission, appConfig, prefillData]);
+
+  useEffect(() => {
+    setTitle(TEXTS.statiske.summaryPage.title);
+    setFormProgressVisible(true);
+  }, [setTitle, setFormProgressVisible]);
 
   useEffect(() => scrollToAndSetFocus('main', 'start'), []);
   const declarationRef = useRef<HTMLInputElement>(null);
@@ -108,61 +82,48 @@ export function SummaryPage() {
   const hasValidationErrors = panelValidationList?.some((panelValidation) => panelValidation.hasValidationErrors);
 
   return (
-    <div className={styles.content}>
-      <section id="maincontent" className="formio-form" tabIndex={-1}>
-        <div className="main-col">
-          <Heading level="2" size="large" spacing>
-            {translate(TEXTS.statiske.summaryPage.title)}
-          </Heading>
-          {!hasValidationErrors && (
-            <BodyShort className="mb-4">{translate(TEXTS.statiske.summaryPage.description)}</BodyShort>
-          )}
-          {hasValidationErrors && (
-            <>
-              <Alert variant="info" className={styles.validationAlert}>
-                <span>
-                  {`${translate(TEXTS.statiske.summaryPage.validationMessage)} `}
-                  <ExclamationmarkTriangleFillIcon
-                    className={styles.exclamationmarkIcon}
-                    title={translate(TEXTS.statiske.summaryPage.validationIcon)}
-                    fontSize="1.5rem"
-                  />
-                  {'.'}
-                </span>
-              </Alert>
-              <div className="button-row">
-                <EditAnswersButton form={form} panelValidationList={panelValidationList} />
-              </div>
-            </>
-          )}
-          <div className="form-summary">
-            <FormSummary submission={submission} form={form} panelValidationList={panelValidationList} />
+    <VStack gap="8">
+      {hasValidationErrors ? (
+        <>
+          <Alert variant="warning">
+            <Heading spacing size="small" level="3">
+              {translate(TEXTS.statiske.summaryPage.validationTitle)}
+            </Heading>
+            {translate(TEXTS.statiske.summaryPage.validationMessage)}
+            <ValidationExclamationIcon title={translate(TEXTS.statiske.summaryPage.validationIcon)} />.
+          </Alert>
+          <div className="button-row">
+            <EditAnswersButton form={form} panelValidationList={panelValidationList} />
           </div>
-          {hasDeclaration && (
-            <ConfirmationPanel
-              className="mb"
-              checked={declaration || false}
-              error={declaration === false && translate(TEXTS.statiske.summaryPage.confirmationError)}
-              label={
-                declarationType === DeclarationType.custom
-                  ? translate(declarationText)
-                  : translate(TEXTS.statiske.declaration.defaultText)
-              }
-              ref={declarationRef}
-              onChange={() => {
-                setDeclaration((v) => !v);
-              }}
-            />
-          )}
-          <SummaryPageNavigation
-            form={form}
-            submission={submission}
-            panelValidationList={panelValidationList}
-            isValid={isValid}
-          />
-        </div>
-      </section>
+        </>
+      ) : (
+        <BodyShort className="mb-4">{translate(TEXTS.statiske.summaryPage.description)}</BodyShort>
+      )}
+      <RenderSummaryForm panelValidationList={panelValidationList} />
+      {hasDeclaration && (
+        <ConfirmationPanel
+          className="mb"
+          checked={declaration || false}
+          error={declaration === false && translate(TEXTS.statiske.summaryPage.confirmationError)}
+          label={
+            declarationType === DeclarationType.custom
+              ? translate(declarationText)
+              : translate(TEXTS.statiske.declaration.defaultText)
+          }
+          ref={declarationRef}
+          onChange={() => {
+            setDeclaration((v) => !v);
+          }}
+        />
+      )}
+      <SummaryPageNavigation
+        form={form}
+        submission={submission}
+        panelValidationList={panelValidationList}
+        isValid={isValid}
+      />
+
       <div id="formio-summary-hidden" hidden />
-    </div>
+    </VStack>
   );
 }
