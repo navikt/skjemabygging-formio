@@ -1,8 +1,8 @@
 import renderPdfComponent from '../../../render/RenderPdfComponent';
-import { PdfComponentProps } from '../../../types';
+import { PdfComponentProps, PdfListElement } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 
-const PdfContainer = (props: PdfComponentProps) => {
+const PdfContainer = (props: PdfComponentProps): PdfListElement => {
   const { component, submissionPath, formContextValue } = props;
   const { components } = component;
   const { submission } = formContextValue;
@@ -21,7 +21,7 @@ const PdfContainer = (props: PdfComponentProps) => {
         submissionPath: componentSubmissionPath,
       });
     })
-    .filter(Boolean);
+    .filter(Boolean) as PdfListElement;
 };
 
 export default PdfContainer;

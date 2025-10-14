@@ -20,7 +20,7 @@ const application: RequestHandler = async (req, res, next) => {
 
     const fileBuffer = await documentsService.application({
       form: formParsed,
-      pdfFormData: pdfFormData ? JSON.parse(pdfFormData) : undefined,
+      pdfFormData,
       submission: submissionParsed,
       language,
       unitNumber: enhetNummer,
@@ -66,7 +66,7 @@ const coverPageAndApplication: RequestHandler = async (req, res, next) => {
 
     const fileBuffer = await documentsService.coverPageAndApplication({
       form: formParsed,
-      pdfFormData: pdfFormData ? JSON.parse(pdfFormData) : undefined,
+      pdfFormData,
       submission: submissionParsed,
       language,
       unitNumber: enhetNummer,

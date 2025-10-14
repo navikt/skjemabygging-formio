@@ -37,12 +37,12 @@ import {
 } from './components/standard';
 import { PdfActivities, PdfDataFetcher, PdfDrivingList, PdfMaalgruppe } from './components/system';
 import renderPdfComponent from './render/RenderPdfComponent';
-import { PdfComponentProps, PdfFormData } from './types';
+import { PdfFormData } from './types';
 
 interface Props {
   formContextValue: FormContextType;
   languagesContextValue: LanguageContextType;
-  watermarkText?: string;
+  isDelingslenke?: boolean;
   gitVersion?: string;
   submissionMethod?: SubmissionMethod;
 }
@@ -50,10 +50,10 @@ interface Props {
 const renderPdfForm = ({
   formContextValue,
   languagesContextValue,
-  watermarkText,
+  isDelingslenke,
   gitVersion,
   submissionMethod,
-}: Props): string => {
+}: Props): PdfFormData => {
   const { currentLanguage, translate } = languagesContextValue;
   const { form, activeComponents, submission } = formContextValue;
 
@@ -114,20 +114,19 @@ const renderPdfForm = ({
   const languageCode: string =
     currentLanguage === 'nn-NO' || currentLanguage == 'nn' ? 'nn' : currentLanguage === 'en' ? 'en' : 'nb';
 
-  const pdfData: PdfFormData = {
+  return {
     label: translate(form.title),
     verdiliste: [
       PdfIntroPage({ languagesContextValue, formContextValue }),
       ...(activeComponents
-        ?.map(
-          (component) =>
-            renderPdfComponent({
-              component,
-              submissionPath: '',
-              componentRegistry,
-              formContextValue,
-              languagesContextValue,
-            } as PdfComponentProps), // TODO: Fix type
+        ?.map((component) =>
+          renderPdfComponent({
+            component,
+            submissionPath: '',
+            componentRegistry,
+            formContextValue,
+            languagesContextValue,
+          }),
         )
         .filter(Boolean) ?? []),
       PdfSignature({ properties: form.properties, languagesContextValue, submissionMethod }),
@@ -147,10 +146,8 @@ const renderPdfForm = ({
         `: ${dateUtils.toCurrentDayMonthYearHourMinute(languageCode)}`,
       lowerMiddle: translate(TEXTS.statiske.footer.versionLabel) + `: ${gitVersion ?? ''}`,
     },
-    vannmerke: watermarkText,
+    vannmerke: isDelingslenke ? 'Testskjema - Ikke send til Nav' : undefined,
   };
-
-  return JSON.stringify(pdfData).replaceAll('\\t', '  ');
 };
 
 export default renderPdfForm;

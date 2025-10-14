@@ -1,5 +1,4 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-
 const digitalLinkLoggedInName = TEXTS.grensesnitt.introPage.sendDigitalLoggedIn;
 
 function assertDigitalLinksNotExist() {
@@ -296,6 +295,13 @@ describe('Submission Type', () => {
 
       cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
       cy.clickNextStep();
+
+      cy.get('dl')
+        .first()
+        .within(() => {
+          cy.get('dd').eq(0).should('contain.text', 'asdf');
+        });
+
       cy.findByRole('link', { name: TEXTS.grensesnitt.moveForward }).click();
 
       cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).should('exist');
