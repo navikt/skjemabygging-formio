@@ -4,10 +4,19 @@ import userEvent from '@testing-library/user-event';
 import { useEffect } from 'react';
 import * as ReactRouter from 'react-router';
 import { MemoryRouter } from 'react-router';
+import { vi } from 'vitest';
 import { http } from '../../index';
 import { AppConfigProvider } from '../config/configContext';
 import { FormProvider } from '../form/FormContext';
 import { SendInnProvider, useSendInn } from './sendInnContext';
+
+vi.mock('../../context/languages', async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...(actual as any),
+    useLanguages: () => ({ translate: (text) => text }),
+  };
+});
 
 const mockHttp = {
   post: vi.fn(),
@@ -30,7 +39,12 @@ describe('sendInnContext', () => {
   };
 
   const innsendingsId = 'abc-123-456';
-  const form = { title: 'TestSkjema', components: [], path: 'testskjema' } as unknown as NavFormType;
+  const form = {
+    title: 'TestSkjema',
+    components: [],
+    path: 'testskjema',
+    properties: { signatures: [] },
+  } as unknown as NavFormType;
   const submission = { data: { question: 'answer' } } as unknown as Submission;
   const submissionMethod = 'digital';
   const headers = {};

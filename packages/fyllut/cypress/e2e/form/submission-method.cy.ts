@@ -71,7 +71,7 @@ describe('Submission method', () => {
         });
 
         // edit data so that conditional attachment is triggered
-        cy.findByRole('link', { name: 'Rediger dine opplysninger' }).should('exist').click();
+        cy.clickEditAnswer('Dine opplysninger');
         cy.findByRole('combobox', { name: 'Hva søker du støtte til?' }).should('exist');
         cy.findByRole('combobox', { name: 'Hva søker du støtte til?' }).type('Brill{downArrow}{enter}');
         cy.findByRole('link', { name: 'Oppsummering' }).click();

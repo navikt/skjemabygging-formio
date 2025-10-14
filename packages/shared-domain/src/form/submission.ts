@@ -6,6 +6,7 @@ export interface Submission {
   attachments?: SubmissionAttachment[];
   metadata?: SubmissionMetadata;
   state?: string;
+  selfDeclaration?: boolean;
   fyllutState?: FyllutState;
 }
 
@@ -25,6 +26,9 @@ export type DineOpplysningerData = {
 
 export type SubmissionData = Record<string, string | number | boolean | any[] | object> & {
   dineOpplysninger?: DineOpplysningerData;
+  fodselsnummerDNummerSoker?: string;
+  fornavnAvsender?: string;
+  etternavnAvsender?: string;
 };
 
 export type SubmissionMetadata = {
