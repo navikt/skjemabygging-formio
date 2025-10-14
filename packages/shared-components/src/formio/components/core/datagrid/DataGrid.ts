@@ -31,9 +31,15 @@ class DataGrid extends FormioDataGrid {
     return FormioDataGrid.schema();
   }
 
+  checkComponentValidity(_data, _dirty, _row, _options = {}) {
+    // Override checkComponentValidity (kalles fra formiojs DataGrid.js#checkValidity) for å droppe
+    // 'required'-validering av selve datagrid-komponenten. Komponentene inne i datagrid valideres separat.
+    return true;
+  }
+
   removeRow(index) {
     originalRemoveRow.call(this, index);
-    // @ts-ignore
+    // @ts-expect-error datagridKey finnes
     scrollToAndSetFocus(`[ref='${this.datagridKey}-addRow']:last-of-type`);
   }
 }
