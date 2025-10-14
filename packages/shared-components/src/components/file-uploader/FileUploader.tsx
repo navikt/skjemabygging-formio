@@ -118,7 +118,7 @@ const FileUploader = ({
   };
 
   return (
-    <>
+    <div data-cy={`upload-button-${attachmentId}`}>
       {!showButton && <Label>{label}</Label>}
       {[...uploadedFiles, ...inProgress].length > 0 && (
         <FileUpload translations={{ item: { uploading: translate(TEXTS.statiske.uploadFile.uploading) } }}>
@@ -225,7 +225,7 @@ const FileUploader = ({
           </ReadMore>
         </>
       )}
-    </>
+    </div>
   );
 };
 

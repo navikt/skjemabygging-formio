@@ -123,6 +123,7 @@ const RenderSummaryForm = ({ panelValidationList }: Props) => {
           component={activeAttachmentUploadsPanel}
           submissionPath=""
           componentRegistry={attachmentUploadsComponentRegistry}
+          panelValidationList={panelValidationList}
         />
       )}
     </>

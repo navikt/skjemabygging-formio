@@ -43,16 +43,27 @@ describe('Digital submission without user login', () => {
     cy.findByRole('group', { name: 'Høyeste fullførte utdanning' }).within(() => cy.findByLabelText('Annet').check());
     cy.clickNextStep();
 
-    cy.findByLabelText('Annen dokumentasjon').within(() => {
-      cy.findByLabelText('Jeg legger det ved dette skjemaet').check();
-    });
-    cy.findByLabelText('Gi vedlegget et beskrivende navn').type('Vitnemål');
-    cy.get('input[type=file]').selectFile('cypress/fixtures/files/small-file.txt', { force: true });
+    cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
+      cy.findByLabelText('Jeg ettersender dokumentasjonen senere').check(),
+    );
 
     cy.findByRole('group', { name: 'Bekreftelse på utdanning' }).within(() =>
       cy.findByLabelText('Jeg legger det ved dette skjemaet').check(),
     );
-    cy.get('input[type=file]').selectFile('cypress/fixtures/files/another-small-file.txt', { force: true });
+
+    cy.get('[data-cy="upload-button-e3xh1d"] > input[type=file]').selectFile(
+      'cypress/fixtures/files/another-small-file.txt',
+      { force: true },
+    );
+
+    cy.findByLabelText('Annen dokumentasjon').within(() => {
+      cy.findByLabelText('Jeg legger det ved dette skjemaet').check();
+    });
+    cy.findByLabelText('Gi vedlegget et beskrivende navn').type('Vitnemål');
+    cy.get('[data-cy="upload-button-en5h1c"] > input[type=file]').selectFile('cypress/fixtures/files/small-file.txt', {
+      force: true,
+    });
+
     cy.clickNextStep();
 
     cy.findByRole('button', { name: 'Send til Nav' }).click();
@@ -92,5 +103,39 @@ describe('Digital submission without user login', () => {
     cy.defaultWaits();
     cy.url().should('include', '/fyllut/nologinform/legitimasjon?sub=digitalnologin');
     cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).should('exist');
+  });
+
+  describe('Validation', () => {
+    beforeEach(() => {
+      cy.visit('/fyllut/nologinform/legitimasjon?sub=digitalnologin');
+      cy.defaultWaits();
+      cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
+        cy.findByLabelText('Norsk pass').check(),
+      );
+      cy.get('input[type=file]').selectFile('cypress/fixtures/files/id-billy-bruker.jpg', { force: true });
+      cy.clickNextStep();
+      cy.clickShowAllSteps();
+      cy.findByRole('link', { name: 'Vedlegg' }).click();
+    });
+
+    it.only('validates that all required fields are filled', () => {
+      cy.clickNextStep();
+      cy.get('[data-cy=error-summary]').should('exist');
+      cy.get('[data-cy=error-summary]').within(() => {
+        cy.findByRole('link', { name: 'Du må fylle ut: Vedlegg med masse greier' }).should('exist');
+        cy.findByRole('link', { name: 'Du må fylle ut: Annen dokumentasjon' }).should('exist');
+      });
+      cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
+        cy.findByLabelText(TEXTS.statiske.attachment.ettersender).check(),
+      );
+      cy.findByRole('group', {
+        name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
+      }).within(() => {
+        cy.findByLabelText(TEXTS.statiske.attachment.nei).check();
+      });
+      cy.clickNextStep();
+      cy.findByRole('heading', { name: 'VedleggOpplysninger mangler' }).should('not.exist');
+      cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
+    });
   });
 });
