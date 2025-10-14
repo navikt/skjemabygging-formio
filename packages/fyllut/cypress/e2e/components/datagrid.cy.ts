@@ -130,4 +130,62 @@ describe('Datagrid', () => {
       cy.findByRole('textbox', { name: 'Beløp for buss / trikk / t-bane' }).should('have.value', '123');
     });
   });
+
+  describe('Datagrid and fieldsets', () => {
+    it('fills two textboxes inside lone fieldset in datagrid', () => {
+      cy.visit('/fyllut/datagrid001/dinSituasjon?sub=paper');
+      cy.defaultWaits();
+
+      cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola');
+      cy.findByRole('textbox', { name: 'Etternavn' }).type('Li');
+      cy.clickNextStep();
+      cy.url().should('include', '/kjaeledyr');
+    });
+
+    it('validates components inside lone fieldset inside datagrid on click next step', () => {
+      cy.visit('/fyllut/datagrid001/dinSituasjon?sub=paper');
+      cy.defaultWaits();
+      cy.clickNextStep();
+      cy.get('[data-cy=error-summary]')
+        .should('exist')
+        .within(() => {
+          cy.get('a').should('have.length', 2);
+          cy.findByRole('link', { name: 'Du må fylle ut: Etternavn' }).should('exist');
+          cy.findByRole('link', { name: 'Du må fylle ut: Fornavn' }).should('exist').click({ force: true });
+        });
+
+      cy.findByRole('textbox', { name: 'Fornavn' }).should('have.focus').type('Ola');
+      cy.findByRole('textbox', { name: 'Etternavn' }).type('Li');
+      cy.clickNextStep();
+      cy.url().should('include', '/kjaeledyr');
+    });
+
+    it('fills two textboxes inside datagrid (no fieldset)', () => {
+      cy.visit('/fyllut/datagrid001/kjaeledyr?sub=paper');
+      cy.defaultWaits();
+
+      cy.findByRole('textbox', { name: 'Navn' }).type('Fido');
+      cy.findByRole('textbox', { name: 'Alder' }).type('11');
+      cy.clickNextStep();
+      cy.url().should('include', '/oppsummering');
+    });
+
+    it('validates components inside datagrid (no fieldset) on click next step', () => {
+      cy.visit('/fyllut/datagrid001/kjaeledyr?sub=paper');
+      cy.defaultWaits();
+      cy.clickNextStep();
+      cy.get('[data-cy=error-summary]')
+        .should('exist')
+        .within(() => {
+          cy.get('a').should('have.length', 2);
+          cy.findByRole('link', { name: 'Du må fylle ut: Alder' }).should('exist');
+          cy.findByRole('link', { name: 'Du må fylle ut: Navn' }).should('exist').click({ force: true });
+        });
+
+      cy.findByRole('textbox', { name: 'Navn' }).should('have.focus').type('Fido');
+      cy.findByRole('textbox', { name: 'Alder' }).type('11');
+      cy.clickNextStep();
+      cy.url().should('include', '/oppsummering');
+    });
+  });
 });
