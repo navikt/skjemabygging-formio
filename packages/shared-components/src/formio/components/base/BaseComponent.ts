@@ -28,6 +28,13 @@ class BaseComponent extends FormioReactComponent {
     });
   }
 
+  init() {
+    if (this.component?.logic) {
+      this.component.logic = undefined;
+    }
+    super.init();
+  }
+
   /**
    * Get label for custom component renderReact()
    */

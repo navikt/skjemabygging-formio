@@ -120,4 +120,14 @@ describe('Datagrid', () => {
       cy.findByText('31.12.2026').shouldBeVisible();
     });
   });
+
+  describe('Datagrid logic bug', () => {
+    it('make sure we can enter values without logic refresh', () => {
+      cy.visit('/fyllut/datagridlogicbug/reisemateOgUtgifter?sub=paper');
+      cy.defaultWaits();
+      cy.findByRole('checkbox', { name: 'Buss / trikk / t-bane' }).check();
+      cy.findByRole('textbox', { name: 'Beløp for buss / trikk / t-bane' }).type('123', { delay: 500 });
+      cy.findByRole('textbox', { name: 'Beløp for buss / trikk / t-bane' }).should('have.value', '123');
+    });
+  });
 });
