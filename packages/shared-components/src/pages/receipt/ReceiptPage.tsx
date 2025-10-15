@@ -31,7 +31,7 @@ const useStyles = makeStyles({
 
 export function ReceiptPage() {
   const { translate, currentLanguage } = useLanguages();
-  const { form, submission, setFormProgressVisible } = useForm();
+  const { form, submission, setFormProgress } = useForm();
   const { soknadPdfBlob, nologinToken } = useSendInn();
   const { submissionMethod } = useAppConfig();
   const navigate = useNavigate();
@@ -42,11 +42,11 @@ export function ReceiptPage() {
 
   // Hide the form progress stepper on receipt page
   useEffect(() => {
-    setFormProgressVisible(false);
+    setFormProgress(false);
     return () => {
-      setFormProgressVisible(true);
+      setFormProgress(true);
     };
-  }, [setFormProgressVisible]);
+  }, [setFormProgress]);
 
   useEffect(() => {
     if (!form || !requiresLegitimation) {
