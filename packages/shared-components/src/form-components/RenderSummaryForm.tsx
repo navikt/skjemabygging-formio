@@ -44,8 +44,6 @@ interface Props {
 
 const RenderSummaryForm = ({ panelValidationList }: Props) => {
   const { activeComponents, activeAttachmentUploadsPanel } = useForm();
-  console.log('panelValidationList', panelValidationList);
-  console.log('activeComponents', activeComponents);
 
   const componentRegistry = {
     /* Standard */

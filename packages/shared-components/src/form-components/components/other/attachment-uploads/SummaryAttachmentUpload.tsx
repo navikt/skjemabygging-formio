@@ -17,7 +17,7 @@ const SummaryAttachmentUpload = ({ component }) => {
   const hasUploadedFiles = (submissionAttachment: SubmissionAttachment) =>
     (submissionAttachment?.files ?? []).length > 0;
 
-  if (submissionAttachments === undefined) {
+  if (submissionAttachments === undefined || !submissionAttachments.some((att) => att.value)) {
     return null;
   }
 
