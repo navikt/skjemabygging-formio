@@ -1,16 +1,17 @@
 import { Alert } from '@navikt/ds-react';
-import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { dateUtils, NavFormType, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import React, { useState } from 'react';
 import { useAppConfig } from '../../context/config/configContext';
-import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
-import renderPdfForm from '../../form-components/RenderPdfForm';
 import DownloadPdfButton from './DownloadPdfButton';
 
 interface Props {
   type?: 'application' | 'coverPageAndApplication';
+  form: NavFormType;
+  submission?: Submission;
   enhetNummer?: string;
   isValid?: () => boolean;
+  submissionMethod?: string;
   children: React.ReactNode;
 }
 
@@ -18,15 +19,16 @@ type DownloadState = 'success' | 'error';
 
 const DownloadCoverPageAndApplicationButton = ({
   type = 'coverPageAndApplication',
+  form,
+  submission,
   enhetNummer,
   isValid,
+  submissionMethod,
   children,
 }: Props) => {
-  const { fyllutBaseURL, config, submissionMethod } = useAppConfig();
-  const formContextValue = useForm();
-  const { form, submission } = formContextValue;
-  const languagesContextValue = useLanguages();
-  const { currentLanguage, translationsForNavForm, translate } = languagesContextValue;
+  const { translate } = useLanguages();
+  const { fyllutBaseURL } = useAppConfig();
+  const { currentLanguage, translationsForNavForm } = useLanguages();
   const [downloadState, setDownloadState] = useState<DownloadState>();
 
   const onClick = () => {
@@ -60,14 +62,7 @@ const DownloadCoverPageAndApplicationButton = ({
               : {},
           ),
           enhetNummer,
-          submissionMethod,
-          pdfFormData: renderPdfForm({
-            formContextValue,
-            languagesContextValue,
-            isDelingslenke: !!config?.isDelingslenke,
-            gitVersion: String(config?.gitVersion),
-            submissionMethod,
-          }),
+          submissionMethod: submissionMethod ?? 'paper',
         }}
         actionUrl={actionUrl}
         isValid={isValid}
@@ -79,15 +74,11 @@ const DownloadCoverPageAndApplicationButton = ({
       </DownloadPdfButton>
 
       {downloadState === 'success' && (
-        <Alert variant="info" className="mb-4">
-          {translate(TEXTS.statiske.prepareLetterPage.downloadSuccess, { fileName })}
-        </Alert>
+        <Alert variant="info">{translate(TEXTS.statiske.prepareLetterPage.downloadSuccess, { fileName })}</Alert>
       )}
 
       {downloadState === 'error' && (
-        <Alert variant="error" className="mb-4">
-          {translate(TEXTS.statiske.prepareLetterPage.downloadError)}
-        </Alert>
+        <Alert variant="error">{translate(TEXTS.statiske.prepareLetterPage.downloadError)}</Alert>
       )}
     </>
   );

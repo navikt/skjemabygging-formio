@@ -1,7 +1,12 @@
 <div class="{{ ctx.className }}">
-  <form>
-    <div ref="{{ ctx.wizardKey }}" class="mb-14">
-      {{ ctx.components }}
-    </div>
-  </form>
+  <section id="maincontent" tabIndex="-1">
+    <h2 id="form-id" class="mb navds-heading navds-heading--large">
+      {{ ctx.t(ctx.panels[ctx.currentPage].title) }}
+    </h2>
+    <form aria-labelledby="form-id">
+      <div ref="{{ ctx.wizardKey }}" class="mb-14">
+        {{ ctx.components }}
+      </div>
+    </form>
+  </section>
 </div>

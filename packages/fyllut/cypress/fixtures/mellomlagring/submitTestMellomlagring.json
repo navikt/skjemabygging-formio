@@ -2412,41 +2412,6 @@
       }
     }
   },
-  "pdfFormData": {
-    "label": "Test mellomlagring",
-    "verdiliste": [
-      {
-        "label": "Gave",
-        "verdiliste": [
-          {
-            "label": "Ønsker du å få gaven innpakket",
-            "verdi": "Nei"
-          }
-        ]
-      },
-      {
-        "label": "Levering",
-        "verdiliste": [
-          {
-            "label": "Hvordan ønsker du å motta pakken?",
-            "verdi": "På døra"
-          }
-        ]
-      }
-    ],
-    "skjemanummer": "test-mellomlagring",
-    "pdfConfig": {
-      "harInnholdsfortegnelse": false,
-      "språk": "nb"
-    },
-    "bunntekst": {
-      "upperleft": "F.nr: —",
-      "lowerleft": "Skjemanummer: test-mellomlagring",
-      "upperRight": null,
-      "upperMiddle": "Opprettet: 14 oktober 2025, 09:42",
-      "lowerMiddle": "Versjon: local"
-    }
-  },
   "language": "nb-NO",
   "translation": {},
   "submissionMethod": "digital",

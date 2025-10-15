@@ -56,7 +56,6 @@ export const grensesnitt = {
     payAttentionTo: 'Vær oppmerksom på',
   },
   introPage: {
-    title: 'Introduksjon',
     sendDigital: 'Logg inn og send digitalt',
     sendDigitalLoggedIn: 'Send digitalt',
     sendDigitalDescription: 'Det er enklest og raskest å søke digitalt.',
@@ -71,7 +70,7 @@ export const grensesnitt = {
     changeSubmissionMethod: 'Send inn på en annen måte',
   },
   summaryPage: {
-    edit: 'Endre svar',
+    edit: 'Rediger',
     editAnswers: 'Fortsett utfylling',
   },
   stepper: {

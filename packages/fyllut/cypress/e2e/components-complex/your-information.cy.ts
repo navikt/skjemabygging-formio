@@ -67,7 +67,7 @@ describe('Your information', () => {
             .within(() => {
               cy.get('dd').eq(0).should('contain.text', 'Ola');
               cy.get('dd').eq(1).should('contain.text', 'Nordmann');
-              cy.get('dd').eq(2).should('contain.text', '088427 48500');
+              cy.get('dd').eq(2).should('contain.text', '08842748500');
               cy.get('dd').eq(3).should('contain.text', 'Testveien 1C, 1234 Plassen');
             });
 

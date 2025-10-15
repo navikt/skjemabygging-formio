@@ -1,6 +1,5 @@
 import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import { SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
-
 interface Props {
   submissionMethod: SubmissionMethod;
 }
@@ -32,10 +31,12 @@ const SubmissionMethodNotAllowed = ({ submissionMethod }: Props) => {
   const styles = useStyles();
   return (
     <>
-      <div className={styles.content}>
-        <h1>Ugyldig innsendingsvalg</h1>
-        <p>Det er dessverre ikke mulig å sende inn dette skjemaet {submissionMethodDescription}.</p>
-      </div>
+      <section id="maincontent" tabIndex={-1}>
+        <div className={styles.content}>
+          <h1>Ugyldig innsendingsvalg</h1>
+          <p>Det er dessverre ikke mulig å sende inn dette skjemaet {submissionMethodDescription}.</p>
+        </div>
+      </section>
     </>
   );
 };

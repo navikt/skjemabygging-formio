@@ -18,7 +18,6 @@ import {
   SummarySelectboxes,
   TEXTS,
   Tkey,
-  yourInformationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { config } from '../../../config/config';
 import { logger } from '../../../logger';
@@ -28,18 +27,14 @@ type TranslateFunction = (text: string) => string;
 
 const { gitVersion, isDelingslenke } = config;
 
-/**
- * @deprecated This should be deleted and replaced with sending json from frontend instead
- */
 export const createFeltMapFromSubmission = (
   form: NavFormType,
   submission: Submission,
   submissionMethod: string,
   translate: (text: string, textReplacements?: I18nTranslationReplacements) => string,
   lang: string = 'nb',
+  identityNumber: string = '-',
 ) => {
-  const identityNumber = yourInformationUtils.getIdentityNumber(form, submission);
-
   const symmaryPanels: SummaryPanel[] = formSummaryUtil.createFormSummaryPanels(
     form,
     submission,

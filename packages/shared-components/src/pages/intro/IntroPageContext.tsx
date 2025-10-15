@@ -1,7 +1,6 @@
-import { Form, Submission, SubmissionMethod, submissionTypesUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, SubmissionMethod, submissionTypesUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router';
-import { useForm } from '../../context/form/FormContext';
 
 export enum IntroPageState {
   DEFAULT = 'default',
@@ -34,15 +33,8 @@ const IntroPageContext = createContext<IntroPageContextType>({} as IntroPageCont
 export const IntroPageProvider = ({ children, form }: IntroPageProviderProps) => {
   const [searchParams] = useSearchParams();
   const submissionMethod = (searchParams.get('sub') as SubmissionMethod) ?? undefined;
-  const { submission, setSubmission } = useForm();
+  const [selfDeclaration, setSelfDeclaration] = useState<boolean>();
   const [error, setError] = useState<string | undefined>();
-
-  const setSelfDeclaration = useCallback(
-    (selfDeclaration: boolean) => {
-      setSubmission((current) => ({ ...(current ? current : { data: {} }), selfDeclaration }) as Submission);
-    },
-    [setSubmission],
-  );
 
   const toState = useCallback(
     (sub?: SubmissionMethod) => {
@@ -104,7 +96,7 @@ export const IntroPageProvider = ({ children, form }: IntroPageProviderProps) =>
         form,
         state,
         setState,
-        selfDeclaration: submission?.selfDeclaration,
+        selfDeclaration,
         setSelfDeclaration,
         setError,
         error,
