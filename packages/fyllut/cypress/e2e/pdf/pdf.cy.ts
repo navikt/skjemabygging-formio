@@ -1,6 +1,7 @@
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { expect } from 'chai';
 
-describe('Pdf when digital submission', () => {
+describe('Pdf', () => {
   before(() => {
     cy.configMocksServer();
   });
@@ -15,7 +16,7 @@ describe('Pdf when digital submission', () => {
     cy.mocksRestoreRouteVariants();
   });
 
-  describe('Html content is as expected', () => {
+  describe('Html content is as expected with digital submission', () => {
     it('bokmaal', () => {
       cy.mocksUseRouteVariant('post-familie-pdf:verify-nav111221b-nb');
       cy.mocksUseRouteVariant('get-activities:success');
@@ -204,6 +205,88 @@ describe('Pdf when digital submission', () => {
       // When failure, see mocks/routes/skjemabygging-proxy.js where the html content is verified (id='verify-nav111221b-nn')
       cy.wait('@submitMellomlagring');
       cy.verifySendInnRedirect();
+    });
+  });
+
+  describe.only('Conditional rendering of pages', () => {
+    it('pdfFormData get populated with the all conditional pages', () => {
+      cy.visit('/fyllut/conditionalpage?sub=digital');
+      cy.defaultWaits();
+      cy.clickIntroPageConfirmation();
+      cy.clickStart();
+      cy.findByRole('heading', { name: 'Page 1' }).shouldBeVisible();
+      cy.findByRole('checkbox', { name: /Avkryssingsboks/ }).click();
+      cy.clickSaveAndContinue();
+      cy.findByRole('heading', { name: 'Page 2' }).shouldBeVisible();
+      cy.findByRole('checkbox', { name: /Avkryssingsboks 1/ }).click();
+      cy.clickSaveAndContinue();
+      cy.findByRole('heading', { name: 'Page 3' }).shouldBeVisible();
+      cy.findByRole('checkbox', { name: /Avkryssingsboks 2/ }).click();
+      cy.findByRole('checkbox', { name: /Avkryssingsboks 3/ }).click();
+      cy.clickSaveAndContinue();
+      cy.findByRole('heading', { name: 'Oppsummering' }).shouldBeVisible();
+
+      cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
+        const { submission, pdfFormData } = req.body;
+        expect(Object.keys(submission.data)).to.have.length(4);
+        expect(Object.keys(pdfFormData.verdiliste)).to.have.length(4);
+        expect(Object.keys(pdfFormData.verdiliste[3].verdiliste)).to.have.length(2);
+      }).as('submitMellomlagring');
+
+      cy.clickSendNav();
+
+      cy.wait('@submitMellomlagring');
+    });
+
+    it('pdfFormData get populated with the correct number of pages', () => {
+      cy.visit('/fyllut/conditionalpage?sub=digital');
+      cy.defaultWaits();
+
+      cy.clickIntroPageConfirmation();
+      cy.clickStart();
+
+      cy.findByRole('heading', { name: 'Page 1' }).shouldBeVisible();
+      cy.clickSaveAndContinue();
+
+      cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
+        const { submission, pdfFormData } = req.body;
+        expect(Object.keys(submission.data)).to.have.length(1);
+        // This is 1 and not 2, because the conditional page (page 2) is not shown in pdf since it have no values.
+        // It is shown in summary page since it there have an edit link.
+        expect(Object.keys(pdfFormData.verdiliste)).to.have.length(1);
+      }).as('submitMellomlagring');
+      cy.findByRole('heading', { name: 'Oppsummering' }).shouldBeVisible();
+      cy.clickSendNav();
+
+      cy.wait('@submitMellomlagring');
+    });
+
+    it('pdfFormData get populated with the correct number of pages, paper', () => {
+      cy.visit('/fyllut/conditionalpage?sub=paper');
+      cy.defaultWaits();
+
+      cy.clickIntroPageConfirmation();
+      cy.clickStart();
+
+      cy.findByRole('heading', { name: 'Page 1' }).shouldBeVisible();
+      cy.findByRole('checkbox', { name: /Avkryssingsboks/ }).click();
+      cy.clickNextStep();
+      cy.findByRole('heading', { name: 'Page 2' }).shouldBeVisible();
+      cy.findByRole('textbox', { name: /Tekstfelt/ }).type('Nav 1');
+      cy.clickNextStep();
+
+      cy.findByRole('heading', { name: 'Oppsummering' }).shouldBeVisible();
+      cy.findByRole('link', { name: TEXTS.grensesnitt.moveForward }).click();
+
+      cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
+        const { submission, pdfFormData } = req.body;
+        expect(Object.keys(JSON.parse(submission).data)).to.have.length(3);
+        expect(Object.keys(pdfFormData.verdiliste)).to.have.length(3);
+      }).as('downloadPdf');
+
+      cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).click();
+
+      cy.wait('@downloadPdf');
     });
   });
 });

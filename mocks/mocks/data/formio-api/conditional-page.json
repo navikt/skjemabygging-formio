@@ -18,10 +18,13 @@
           "type": "navCheckbox",
           "input": true,
           "label": "Avkryssingsboks",
-          "navId": "e1b8xai",
-          "validate": {
-            "required": true
-          }
+          "navId": "e1b8xai"
+        }, {
+          "label": "Tekstfelt",
+          "key": "tekstfelt",
+          "input": true,
+          "type": "textfield",
+          "navId": "efvbw1h"
         }
       ]
     },
@@ -34,14 +37,17 @@
       "title": "Page 2",
       "components": [
         {
-          "validate": {
-            "required": true
-          },
           "label": " Avkryssingsboks 1",
           "key": "Avkryssingsboks1",
           "type": "navCheckbox",
           "input": true,
           "navId": "ereuii"
+        }, {
+          "label": "Tekstfelt",
+          "key": "tekstfelt",
+          "input": true,
+          "type": "textfield",
+          "navId": "efvbw51"
         }
       ],
       "conditional": {
@@ -60,9 +66,6 @@
       "tableView": false,
       "components": [
         {
-          "validate": {
-            "required": true
-          },
           "label": "Avkryssingsboks 2",
           "key": "Avkryssingsboks2",
           "input": true,
@@ -70,9 +73,6 @@
           "navId": "e9183j"
         },
         {
-          "validate": {
-            "required": true
-          },
           "conditional": {
             "show": true,
             "when": "Avkryssingsboks2",
@@ -84,6 +84,12 @@
           "tableView": false,
           "type": "navCheckbox",
           "navId": "exyzfjg"
+        }, {
+          "label": "Tekstfelt",
+          "key": "tekstfelt",
+          "input": true,
+          "type": "textfield",
+          "navId": "efvbw51"
         }
       ],
       "conditional": {

@@ -73,6 +73,10 @@ Cypress.Commands.add('clickStart', () => {
   return cy.findByRoleWhenAttached('link', { name: TEXTS.grensesnitt.introPage.start }, 500).click();
 });
 
+Cypress.Commands.add('clickIntroPageConfirmation', () => {
+  cy.findByRoleWhenAttached('checkbox', { name: 'Jeg bekrefter at jeg vil svare så riktig som jeg kan.' }).click();
+});
+
 Cypress.Commands.add('clickShowAllSteps', () => {
   return cy.findByRoleWhenAttached('button', { name: TEXTS.grensesnitt.stepper.showAllSteps }, 500).click();
 });
@@ -99,6 +103,11 @@ Cypress.Commands.add('clickEditAnswers', (linkText) => {
   cy.findAllByRole('link', { name: linkText ?? TEXTS.grensesnitt.summaryPage.editAnswers })
     .first()
     .click();
+});
+
+Cypress.Commands.add('clickSendNav', () => {
+  cy.findByRole('button', { name: TEXTS.grensesnitt.submitToNavPrompt.open }).click();
+  cy.findByRole('button', { name: TEXTS.grensesnitt.submitToNavPrompt.confirm }).click();
 });
 
 Cypress.Commands.add('verifySendInnRedirect', () => {
