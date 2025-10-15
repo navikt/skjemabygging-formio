@@ -3,6 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import nock from 'nock';
 import { MemoryRouter } from 'react-router';
+import { vi } from 'vitest';
 import { AppConfigContextType, AppConfigProvider } from '../../../../context/config/configContext';
 import { FormProvider } from '../../../../context/form/FormContext';
 import { LanguagesProvider } from '../../../../context/languages';
@@ -12,6 +13,14 @@ import DigitalSubmissionButton, { Props } from './DigitalSubmissionButton';
 vi.mock('../../context/languages/hooks/useLanguageCodeFromURL', () => {
   return {
     default: () => 'nb-NO',
+  };
+});
+
+vi.mock('../../../../context/languages', async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...(actual as any),
+    useLanguages: () => ({ translate: (text) => text }),
   };
 });
 
@@ -51,7 +60,7 @@ describe('DigitalSubmissionButton', () => {
     render(
       <AppConfigProvider {...defaultAppConfigProps} {...appConfigProps}>
         <MemoryRouter>
-          <FormProvider form={{ components: [] } as unknown as NavFormType}>
+          <FormProvider form={{ components: [], properties: { signatures: [] } } as unknown as NavFormType}>
             <SendInnProvider>
               <LanguagesProvider translations={defaultTranslations}>
                 <DigitalSubmissionButton {...defaultProps}>{BUTTON_TEXT}</DigitalSubmissionButton>

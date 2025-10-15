@@ -8,9 +8,10 @@ interface Props {
   className?: string;
   setSelfDeclaration?: (selfDeclaration: boolean) => void;
   error?: string;
+  value?: boolean;
 }
 
-const SelfDeclaration = ({ description, className, translate, error, setSelfDeclaration }: Props) => {
+const SelfDeclaration = ({ description, className, translate, error, setSelfDeclaration, value }: Props) => {
   if (!description) {
     return null;
   }
@@ -20,9 +21,9 @@ const SelfDeclaration = ({ description, className, translate, error, setSelfDecl
   return (
     <div className={className}>
       <InnerHtmlLong content={translate(description)} />
-      <CheckboxGroup legend={inputLabel} hideLegend error={error}>
+      <CheckboxGroup legend={inputLabel} hideLegend error={error} value={value ? ['selfDeclaration'] : []}>
         <Checkbox
-          value={inputLabel}
+          value="selfDeclaration"
           onChange={(event) => (setSelfDeclaration ? setSelfDeclaration(event.target.checked) : undefined)}
           error={!!error}
         >
