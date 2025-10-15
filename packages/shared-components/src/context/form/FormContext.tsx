@@ -1,26 +1,14 @@
-import {
-  Component,
-  NavFormType,
-  navFormUtils,
-  PrefillData,
-  Submission,
-} from '@navikt/skjemadigitalisering-shared-domain';
-import { createContext, Dispatch, SetStateAction, useCallback, useContext, useEffect, useState } from 'react';
-import UtilsOverrides from '../../formio/overrides/utils-overrides/utils-overrides';
+import { NavFormType, navFormUtils, PrefillData, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import { useAppConfig } from '../config/configContext';
 
 interface FormContextType {
   submission?: Submission;
   setSubmission: Dispatch<SetStateAction<Submission | undefined>>;
   prefillData?: PrefillData;
-  activeComponents: Component[];
   form: NavFormType;
-  formProgressOpen: boolean;
-  setFormProgressOpen: Dispatch<SetStateAction<boolean>>;
-  formProgressVisible: boolean;
-  setFormProgressVisible: Dispatch<SetStateAction<boolean>>;
-  title?: string;
-  setTitle: Dispatch<SetStateAction<string | undefined>>;
+  formProgress: boolean;
+  setFormProgress: Dispatch<SetStateAction<boolean>>;
 }
 
 interface FormProviderProps {
@@ -32,31 +20,9 @@ const FormContext = createContext<FormContextType>({} as FormContextType);
 
 export const FormProvider = ({ children, form }: FormProviderProps) => {
   const [submission, setSubmission] = useState<Submission>();
-  const [activeComponents, setActiveComponents] = useState<Component[]>([]);
-  const [formProgressOpen, setFormProgressOpen] = useState<boolean>(false);
-  const [formProgressVisible, setFormProgressVisible] = useState<boolean>(false);
+  const [formProgress, setFormProgress] = useState<boolean>(false);
   const [prefillData, setPrefillData] = useState<PrefillData>({});
-  const [title, setTitle] = useState<string | undefined>();
   const { http, baseUrl, submissionMethod } = useAppConfig();
-
-  const checkConditions = useCallback(
-    (components: Component[]): Component[] => {
-      return components
-        .map((component) => {
-          if (!UtilsOverrides.checkCondition(component, undefined, submission?.data, form, undefined, submission)) {
-            return;
-          }
-
-          if (component.components?.length) {
-            component.components = checkConditions(component.components);
-          }
-
-          return component;
-        })
-        .filter((component) => component !== undefined);
-    },
-    [form, submission],
-  );
 
   useEffect(() => {
     const loadPrefillData = async (navForm: NavFormType) => {
@@ -82,26 +48,15 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
     }
   }, [baseUrl, form, http, submissionMethod]);
 
-  useEffect(() => {
-    setActiveComponents(
-      JSON.parse(JSON.stringify(navFormUtils.getActivePanelsFromForm(form, submission, submissionMethod))),
-    );
-  }, [form, submission, submissionMethod]);
-
   return (
     <FormContext.Provider
       value={{
         prefillData,
         submission,
         setSubmission,
-        activeComponents,
         form,
-        formProgressOpen,
-        setFormProgressOpen,
-        formProgressVisible,
-        setFormProgressVisible,
-        title,
-        setTitle,
+        formProgress,
+        setFormProgress,
       }}
     >
       {children}
@@ -110,5 +65,3 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
 };
 
 export const useForm = () => useContext(FormContext);
-
-export type { FormContextType };

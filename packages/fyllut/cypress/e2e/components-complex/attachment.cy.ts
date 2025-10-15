@@ -56,17 +56,23 @@ describe('Attachment', () => {
       .within(() => {
         cy.get('dt').eq(0).should('contain.text', TITLE.attachment);
         cy.get('dd').eq(0).should('contain.text', TEXTS.statiske.attachment.leggerVedNaa);
-        cy.get('dd').eq(0).should('contain.text', 'Dette er en test');
       });
 
     cy.get('dl')
       .first()
       .within(() => {
-        cy.get('dt').eq(1).should('contain.text', TITLE.oldAttachment);
-        cy.get('dd').eq(1).should('contain.text', TEXTS.statiske.attachment.levertTidligere);
+        cy.get('dt').eq(1).should('contain.text', TITLE.textarea);
+        cy.get('dd').eq(1).should('contain.text', 'Dette er en test');
       });
 
-    cy.clickEditAnswers();
+    cy.get('dl')
+      .first()
+      .within(() => {
+        cy.get('dt').eq(2).should('contain.text', TITLE.oldAttachment);
+        cy.get('dd').eq(2).should('contain.text', TEXTS.statiske.attachment.levertTidligere);
+      });
+
+    cy.findByRoleWhenAttached('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers }).should('exist').click();
 
     cy.findByRole('textbox', { name: TITLE.textarea }).should('exist');
 

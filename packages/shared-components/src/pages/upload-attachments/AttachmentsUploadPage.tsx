@@ -1,6 +1,6 @@
 import { ComponentError, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import clsx from 'clsx';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import AttachmentUpload from '../../components/attachment/AttachmentUpload';
 import { useAttachmentUpload } from '../../components/attachment/AttachmentUploadContext';
 import OtherAttachmentUpload from '../../components/attachment/OtherAttachmentUpload';
@@ -20,7 +20,7 @@ const useStyles = makeStyles({
 });
 
 export function AttachmentsUploadPage() {
-  const { form, submission, setTitle, setFormProgressVisible } = useForm();
+  const { form, submission } = useForm();
   const { errors: uploadErrors } = useAttachmentUpload();
   const { translate } = useLanguages();
   const styles = useStyles();
@@ -54,11 +54,6 @@ export function AttachmentsUploadPage() {
         : attachmentRefs.current[`${comp.path}-${comp.elementId}`];
     ref?.focus();
   };
-
-  useEffect(() => {
-    setTitle(TEXTS.statiske.attachment.title);
-    setFormProgressVisible(true);
-  }, [setTitle, setFormProgressVisible]);
 
   return (
     <>

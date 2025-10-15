@@ -22,14 +22,13 @@ import { KeyOrFocusComponentId } from '../../formio/overrides/wizard-overrides.j
 import { LoadingComponent } from '../../index';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
 import urlUtils from '../../util/url/url';
-import FormMainContent from '../FormMainContent';
 import FormErrorSummary from './FormErrorSummary';
 
 type ModalType = 'save' | 'delete' | 'discard';
 type FyllutEvent = 'focusOnComponent' | 'validateOnNextPage';
 
 export const FillInFormPage = () => {
-  const { form, submission, setSubmission, setTitle, setFormProgressVisible } = useForm();
+  const { form, submission, setSubmission } = useForm();
   const navigate = useNavigate();
   const { search } = useLocation();
   const { submissionMethod, logger } = useAppConfig();
@@ -73,10 +72,6 @@ export const FillInFormPage = () => {
       focusMainContentRef.current = false;
     }
   }, [formNavigationPaths.curr, logger]);
-
-  useEffect(() => {
-    setFormProgressVisible(true);
-  }, [setFormProgressVisible]);
 
   const onCancel = useCallback(() => {
     setShowModal('discard');
@@ -169,27 +164,24 @@ export const FillInFormPage = () => {
           focusOnComponent={focusOnComponent}
           ref={(ref) => (errorSummaryRef.current = ref)}
         />
-        <FormMainContent>
-          <NavForm
-            form={formForRendering}
-            language={currentLanguage}
-            i18n={translationsForNavForm}
-            submission={submission}
-            fyllutEvents={fyllutEvents}
-            className="nav-form"
-            events={{
-              onShowErrors,
-              onErrorSummaryFocus,
-              onSubmissionChanged,
-              onSubmissionMetadataChanged,
-              onNavigationPathsChanged,
-              onFocusOnComponentPageChanged,
-              onReady: updateFormIsReady,
-            }}
-            hash={hash}
-            setTitle={setTitle}
-          />
-        </FormMainContent>
+        <NavForm
+          form={formForRendering}
+          language={currentLanguage}
+          i18n={translationsForNavForm}
+          submission={submission}
+          fyllutEvents={fyllutEvents}
+          className="nav-form"
+          events={{
+            onShowErrors,
+            onErrorSummaryFocus,
+            onSubmissionChanged,
+            onSubmissionMetadataChanged,
+            onNavigationPathsChanged,
+            onFocusOnComponentPageChanged,
+            onReady: updateFormIsReady,
+          }}
+          hash={hash}
+        />
         <FormSavedStatus submission={submission} />
         <FormError error={submission?.fyllutState?.mellomlagring?.error} />
         {formIsReady && (

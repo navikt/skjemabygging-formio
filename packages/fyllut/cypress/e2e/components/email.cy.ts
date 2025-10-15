@@ -81,7 +81,7 @@ describe('Email', () => {
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
-      cy.clickEditAnswer('Veiledning');
+      cy.findByRole('link', { name: 'Rediger veiledning' }).click();
 
       cy.findByRole('textbox', { name: 'E-post' }).should('exist').should('have.value', 'test@mail.no');
     });

@@ -126,9 +126,8 @@ export const statiske = {
       'Vennligst sjekk at alle opplysningene dine er riktige. Hvis alle opplysningene er riktige går du videre til neste steg.',
     confirmationError: 'Du må samtykke før du kan fortsette',
     validationIcon: 'Opplysninger mangler',
-    validationTitle: 'Du har ikke fylt ut all nødvendig informasjon',
     validationMessage:
-      'Nedenfor ser du all informasjon du allerede har fylt inn i skjemaet. Steg som mangler informasjon er markert med',
+      'Nedenfor finner du all informasjon du allerede har fylt inn i skjemaet, fordelt på de forskjellige stegene i skjemaet. Alle steg som mangler informasjon, er markert med',
   },
   warningAboutDifficultSubmission: {
     modal: {

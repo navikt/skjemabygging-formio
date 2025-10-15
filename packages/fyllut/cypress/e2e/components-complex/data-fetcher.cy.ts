@@ -211,17 +211,16 @@ describe('Data fetcher', () => {
       });
 
       it('shows selected activity label', () => {
-        cy.findByRole('heading', { name: 'Velg aktivitet' })
+        cy.findByRole('button', { name: 'Velg aktivitet' })
           .should('exist')
-          .parent()
-          .parent()
+          .closest('div')
           .within(() => {
             cy.findAllByRole('listitem').should('have.length', 1).first().should('contain.text', 'Aktivitet 1');
           });
       });
 
       it('allows user to edit selected activities', () => {
-        cy.clickEditAnswer('Velg aktivitet');
+        cy.findByRole('link', { name: 'Rediger velg aktivitet' }).should('exist').click();
         cy.findByRole('group', { name: LABEL_AKTIVITETSVELGER })
           .should('exist')
           .within(() => {
@@ -232,10 +231,9 @@ describe('Data fetcher', () => {
         cy.clickSaveAndContinue();
         cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
 
-        cy.findByRole('heading', { name: 'Velg aktivitet' })
+        cy.findByRole('button', { name: 'Velg aktivitet' })
           .should('exist')
-          .parent()
-          .parent()
+          .closest('div')
           .within(() => {
             cy.findAllByRole('listitem')
               .should('have.length', 2)

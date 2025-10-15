@@ -10,9 +10,7 @@ import {
 import correlator from 'express-correlation-id';
 import { ConfigType } from '../config/types';
 import { logger } from '../logger';
-import { createFeltMapFromSubmission } from '../routers/api/helpers/feltMapBuilder';
 import { assembleNologinSoknadBody } from '../routers/api/helpers/nologin';
-import { stringifyPdf } from '../routers/api/helpers/pdfUtils';
 import { responseToError } from '../utils/errorHandling';
 import applicationService from './documents/applicationService';
 
@@ -108,16 +106,17 @@ class NoLoginFileService {
     submissionMethod: string,
     translation: I18nTranslationMap = {},
     language: string,
-    pdfFormData?: any,
   ) {
     const correlationId = correlator.getId();
     const lang = localizationUtils.getLanguageCodeAsIso639_1(language);
     const translate = translationUtils.createTranslate(translation, language);
-    const applicationPdf = await applicationService.createFormPdf(
+    const applicationPdf = await applicationService.createPdfFromFieldMap(
       pdfAccessToken,
-      pdfFormData
-        ? stringifyPdf(pdfFormData)
-        : createFeltMapFromSubmission(form, submission, submissionMethod, translate, lang),
+      form,
+      submission,
+      submissionMethod,
+      translate,
+      lang,
     );
 
     const pdfByteArray = Array.from(applicationPdf);
