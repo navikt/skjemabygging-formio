@@ -31,7 +31,7 @@ const useStyles = makeStyles({
 
 export function ReceiptPage() {
   const { translate, currentLanguage } = useLanguages();
-  const { form, submission } = useForm();
+  const { form, submission, setFormProgressVisible } = useForm();
   const { soknadPdfBlob, nologinToken } = useSendInn();
   const { submissionMethod } = useAppConfig();
   const navigate = useNavigate();
@@ -39,6 +39,14 @@ export function ReceiptPage() {
   const pdfUrlRef = useRef<string>();
 
   const requiresLegitimation = submissionMethod === 'digitalnologin' && !nologinToken;
+
+  // Hide the form progress stepper on receipt page
+  useEffect(() => {
+    setFormProgressVisible(false);
+    return () => {
+      setFormProgressVisible(true);
+    };
+  }, [setFormProgressVisible]);
 
   useEffect(() => {
     if (!form || !requiresLegitimation) {
