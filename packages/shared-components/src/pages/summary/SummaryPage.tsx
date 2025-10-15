@@ -11,7 +11,11 @@ import { useLanguages } from '../../context/languages';
 import RenderSummaryForm from '../../form-components/RenderSummaryForm';
 import formComponentUtils from '../../form-components/utils/formComponent';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
-import { PanelValidation, validateWizardPanels } from '../../util/form/panel-validation/panelValidation';
+import {
+  findFirstValidationErrorInAttachmentPanel,
+  PanelValidation,
+  validateWizardPanels,
+} from '../../util/form/panel-validation/panelValidation';
 import SummaryPageNavigation from './navigation/SummaryPageNavigation';
 
 export function SummaryPage() {
@@ -46,29 +50,21 @@ export function SummaryPage() {
         });
       }
 
-      const attachmentPanel = form.components.find((panel) => panel.isAttachmentPanel);
+      const attachmentPanel = webform.form?.components.find((panel) => panel.isAttachmentPanel);
       if (appConfig.submissionMethod === 'digitalnologin' && attachmentPanel) {
         const validator = attachmentValidator(translate, ['value', 'fileUploaded']);
-        const attachmentWithError = (attachmentPanel.components ?? []).find((component) => {
-          // const submissionAttachment = submissionCopy.attachments?.find(
-          //   (attachment) => attachment.attachmentId === component.navId,
-          // );
-
-          //TODO: remember that there are several attachments for other documentation (attachment.attachmentId.startsWith(component.navId))
-          return validator.validate(
-            component.label,
-            submissionCopy.attachments?.find(
-              (attachment) => attachment.attachmentId === formComponentUtils.getNavId(component),
-            ),
-          );
-        });
-        // console.log('has error', attachmentWithError);
-        // console.log(submission?.attachments);
-        if (attachmentWithError) {
+        const invalidAttachment = findFirstValidationErrorInAttachmentPanel(
+          form,
+          submission ?? { data: {} },
+          validator,
+        );
+        if (invalidAttachment) {
           panelValidations.push({
             key: attachmentPanel.key,
-            hasValidationErrors: true,
-            firstInputWithValidationError: attachmentWithError.navId,
+            hasValidationErrors: !!invalidAttachment,
+            firstInputWithValidationError: invalidAttachment
+              ? formComponentUtils.getNavId(invalidAttachment)
+              : undefined,
           });
         }
       }

@@ -118,7 +118,7 @@ describe('Digital submission without user login', () => {
       cy.findByRole('link', { name: 'Vedlegg' }).click();
     });
 
-    it.only('validates that all required fields are filled', () => {
+    it('validates that all required fields are filled', () => {
       cy.clickNextStep();
       cy.get('[data-cy=error-summary]').should('exist');
       cy.get('[data-cy=error-summary]').within(() => {

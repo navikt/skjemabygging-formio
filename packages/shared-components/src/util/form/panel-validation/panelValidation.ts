@@ -1,4 +1,12 @@
-import { Component, formSummaryUtil, NavFormType, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  Component,
+  formSummaryUtil,
+  NavFormType,
+  navFormUtils,
+  Submission,
+} from '@navikt/skjemadigitalisering-shared-domain';
+import { AttachmentValidator } from '../../../components/attachment/attachmentValidator';
+import formComponentUtils from '../../../form-components/utils/formComponent';
 
 export type PanelValidation = {
   key: string;
@@ -48,6 +56,23 @@ export const validateWizardPanels = (formioInstance, form: NavFormType, submissi
         summaryComponents: formSummaryPanels.find((formSummaryPanel) => formSummaryPanel.key === panel.key).components,
       };
     });
+};
+
+export const findFirstValidationErrorInAttachmentPanel = (
+  form: NavFormType,
+  submission: Submission,
+  validator: AttachmentValidator,
+): Component | undefined => {
+  const attachmentPanel = form.components.find((panel) => panel.isAttachmentPanel);
+  return attachmentPanel?.components?.find((component) => {
+    const submissionAttachment = submission.attachments?.find(
+      (attachment) => attachment.attachmentId === formComponentUtils.getNavId(component),
+    );
+    return (
+      navFormUtils.isComponentConditionallyVisible(component, submission, form) &&
+      !!validator.validate(component.label, submissionAttachment)
+    );
+  });
 };
 
 // Returns key of panel (and possibly component) that either has validation errors or no submission
