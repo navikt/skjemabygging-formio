@@ -261,7 +261,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
           translation,
         );
         setSoknadPdfBlob(response);
-        navigate(`/${form.path}/kvittering`, { replace: true });
+        navigate(`/${form.path}/kvittering?${searchParams.toString()}`, { replace: true });
       } catch (error: any) {
         logger?.error(`${innsendingsId}: Failed to submit nologin application`, {
           errorMessage: error.message,
@@ -272,7 +272,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         throw error;
       }
     },
-    [appConfig, nologinToken, form, navigate, logger, innsendingsId],
+    [appConfig, nologinToken, form, navigate, searchParams, logger, innsendingsId],
   );
 
   const submitDigital = useCallback(
