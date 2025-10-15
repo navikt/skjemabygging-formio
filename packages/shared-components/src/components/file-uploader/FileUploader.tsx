@@ -84,6 +84,7 @@ const FileUploader = ({
   const initialUpload = uploadedFiles.length === 0;
   const showButton = multiple || initialUpload;
   const inProgress = Object.values(uploadsInProgress[attachmentId] ?? {});
+  const fileItems = [...uploadedFiles, ...inProgress];
 
   const uploadErrorMessage = errors[attachmentId]?.find((error) => error.type === 'FILE')?.message;
   const attachmentTitleErrorMessage = errors[attachmentId]?.find((error) => error.type === 'TITLE')?.message;
@@ -118,37 +119,42 @@ const FileUploader = ({
   };
 
   return (
-    <div data-cy={`upload-button-${attachmentId}`}>
-      {!showButton && <Label>{label}</Label>}
-      {[...uploadedFiles, ...inProgress].length > 0 && (
-        <FileUpload translations={{ item: { uploading: translate(TEXTS.statiske.uploadFile.uploading) } }}>
-          <VStack gap="4" as="ul">
-            {uploadedFiles.map(({ fileId, fileName, size }) => (
-              <FileUpload.Item
-                as="li"
-                key={fileId}
-                file={{ name: fileName, size }}
-                button={{
-                  action: 'delete',
-                  onClick: () => handleDeleteFile(attachmentId, fileId, { name: fileName, size }),
-                }}
-                error={errors[fileId]?.[0].message ? translate(errors[fileId][0].message) : undefined}
-              ></FileUpload.Item>
-            ))}
-            {inProgress.map((file) => (
-              <FileUpload.Item
-                as="li"
-                key={`${file.file.name}-${file.file.lastModified}`}
-                file={file.file}
-                status={file.error ? 'idle' : 'uploading'}
-                error={translate(getFileValidationError(file), translationErrorParams)}
-              ></FileUpload.Item>
-            ))}
+    <VStack gap="6" data-cy={`upload-button-${attachmentId}`}>
+      {!showButton ||
+        (fileItems.length > 0 && (
+          <VStack gap="2">
+            {!showButton && <Label>{label}</Label>}
+            {fileItems.length > 0 && (
+              <FileUpload translations={{ item: { uploading: translate(TEXTS.statiske.uploadFile.uploading) } }}>
+                <VStack gap="2" as="ul">
+                  {uploadedFiles.map(({ fileId, fileName, size }) => (
+                    <FileUpload.Item
+                      as="li"
+                      key={fileId}
+                      file={{ name: fileName, size }}
+                      button={{
+                        action: 'delete',
+                        onClick: () => handleDeleteFile(attachmentId, fileId, { name: fileName, size }),
+                      }}
+                      error={errors[fileId]?.[0].message ? translate(errors[fileId][0].message) : undefined}
+                    ></FileUpload.Item>
+                  ))}
+                  {inProgress.map((file) => (
+                    <FileUpload.Item
+                      as="li"
+                      key={`${file.file.name}-${file.file.lastModified}`}
+                      file={file.file}
+                      status={file.error ? 'idle' : 'uploading'}
+                      error={translate(getFileValidationError(file), translationErrorParams)}
+                    ></FileUpload.Item>
+                  ))}
+                </VStack>
+              </FileUpload>
+            )}
           </VStack>
-        </FileUpload>
-      )}
+        ))}
       {showButton && (
-        <>
+        <VStack gap="8">
           {requireAttachmentTitle && (
             <TextField
               label={translate(TEXTS.statiske.attachment.attachmentTitle)}
@@ -163,69 +169,71 @@ const FileUploader = ({
               onChange={handleTitleChange}
             />
           )}
-          {!requireAttachmentTitle || !!attachment?.title?.trim() ? (
-            <FileUpload.Trigger onSelect={onSelect} accept={accept} maxSizeInBytes={maxFileSizeInBytes}>
+          <VStack gap="2">
+            {!requireAttachmentTitle || !!attachment?.title?.trim() ? (
+              <FileUpload.Trigger onSelect={onSelect} accept={accept} maxSizeInBytes={maxFileSizeInBytes}>
+                <Button
+                  variant={initialUpload ? 'primary' : 'secondary'}
+                  className={styles.button}
+                  loading={loading}
+                  icon={<UploadIcon aria-hidden fontSize="1.5rem" />}
+                  ref={(ref) => {
+                    if (refs?.current) {
+                      refs.current[`${attachmentId}-FILE`] = ref;
+                    }
+                  }}
+                >
+                  {translate(
+                    initialUpload ? TEXTS.statiske.uploadFile.selectFile : TEXTS.statiske.uploadFile.uploadMoreFiles,
+                  )}
+                </Button>
+              </FileUpload.Trigger>
+            ) : (
               <Button
                 variant={initialUpload ? 'primary' : 'secondary'}
                 className={styles.button}
-                loading={loading}
                 icon={<UploadIcon aria-hidden fontSize="1.5rem" />}
                 ref={(ref) => {
                   if (refs?.current) {
                     refs.current[`${attachmentId}-FILE`] = ref;
                   }
                 }}
+                onClick={() =>
+                  addError(
+                    attachmentId,
+                    translate('required', { field: translate(TEXTS.statiske.attachment.attachmentTitle) }),
+                    'TITLE',
+                  )
+                }
               >
                 {translate(
                   initialUpload ? TEXTS.statiske.uploadFile.selectFile : TEXTS.statiske.uploadFile.uploadMoreFiles,
                 )}
               </Button>
-            </FileUpload.Trigger>
-          ) : (
-            <Button
-              variant={initialUpload ? 'primary' : 'secondary'}
-              className={styles.button}
-              icon={<UploadIcon aria-hidden fontSize="1.5rem" />}
-              ref={(ref) => {
-                if (refs?.current) {
-                  refs.current[`${attachmentId}-FILE`] = ref;
-                }
-              }}
-              onClick={() =>
-                addError(
-                  attachmentId,
-                  translate('required', { field: translate(TEXTS.statiske.attachment.attachmentTitle) }),
-                  'TITLE',
-                )
-              }
-            >
-              {translate(
-                initialUpload ? TEXTS.statiske.uploadFile.selectFile : TEXTS.statiske.uploadFile.uploadMoreFiles,
-              )}
-            </Button>
-          )}
-          {uploadErrorMessage && (
-            <Alert inline variant="error">
-              {htmlUtils.isHtmlString(uploadErrorMessage) ? (
-                <InnerHtml content={translate(uploadErrorMessage, translationErrorParams)}></InnerHtml>
-              ) : (
-                <BodyLong>{translate(uploadErrorMessage, translationErrorParams)}</BodyLong>
-              )}
-            </Alert>
-          )}
-          <ReadMore header={translate(TEXTS.statiske.attachment.sizeAndFormatHeader)}>
-            <HStack gap="2" align="start">
-              <BodyShort weight="semibold">{translate(TEXTS.statiske.attachment.validFormatsLabel)}</BodyShort>
-              <BodyLong>{translate(TEXTS.statiske.attachment.validFormatsDescrption)}</BodyLong>
-              <BodyShort weight="semibold">{translate(TEXTS.statiske.attachment.maxFileSizeLabel)}</BodyShort>
-              <BodyLong>
-                {translate(TEXTS.statiske.attachment.maxFileSizeDescription, { size: maxFileSizeText })}
-              </BodyLong>
-            </HStack>
-          </ReadMore>
-        </>
+            )}
+            {uploadErrorMessage && (
+              <Alert inline variant="error">
+                {htmlUtils.isHtmlString(uploadErrorMessage) ? (
+                  <InnerHtml content={translate(uploadErrorMessage, translationErrorParams)}></InnerHtml>
+                ) : (
+                  <BodyLong>{translate(uploadErrorMessage, translationErrorParams)}</BodyLong>
+                )}
+              </Alert>
+            )}
+            <ReadMore header={translate(TEXTS.statiske.attachment.sizeAndFormatHeader)}>
+              <HStack gap="2" align="start">
+                <BodyShort weight="semibold">{translate(TEXTS.statiske.attachment.validFormatsLabel)}</BodyShort>
+                <BodyLong>{translate(TEXTS.statiske.attachment.validFormatsDescrption)}</BodyLong>
+                <BodyShort weight="semibold">{translate(TEXTS.statiske.attachment.maxFileSizeLabel)}</BodyShort>
+                <BodyLong>
+                  {translate(TEXTS.statiske.attachment.maxFileSizeDescription, { size: maxFileSizeText })}
+                </BodyLong>
+              </HStack>
+            </ReadMore>
+          </VStack>
+        </VStack>
       )}
-    </div>
+    </VStack>
   );
 };
 
