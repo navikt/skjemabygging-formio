@@ -1,5 +1,5 @@
 import { BodyShort, Heading } from '@navikt/ds-react';
-import { Enhet, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { Enhet, NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import { useLanguages } from '../../context/languages';
 import DownloadCoverPageAndApplicationButton from '../button/DownloadCoverPageAndApplicationButton';
@@ -7,10 +7,12 @@ import EnhetSelector from '../select/enhet/EnhetSelector';
 
 interface Props {
   index: number;
+  form: NavFormType;
+  submission: any;
   enhetsListe: Enhet[];
 }
 
-const LetterDownload = ({ index, enhetsListe }: Props) => {
+const LetterDownload = ({ form, index, submission, enhetsListe }: Props) => {
   const { translate } = useLanguages();
   const [selectedEnhetNummer, setSelectedEnhetNummer] = useState<string | null>(null);
   const [isRequiredEnhetMissing, setIsRequiredEnhetMissing] = useState(false);
@@ -31,6 +33,8 @@ const LetterDownload = ({ index, enhetsListe }: Props) => {
       />
 
       <DownloadCoverPageAndApplicationButton
+        form={form}
+        submission={submission}
         enhetNummer={selectedEnhetNummer ?? undefined}
         isValid={() => {
           if (enhetsListe.length > 0 && !selectedEnhetNummer) {

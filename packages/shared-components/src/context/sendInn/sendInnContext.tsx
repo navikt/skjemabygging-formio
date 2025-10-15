@@ -44,11 +44,9 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const formContextValue = useForm();
-  const { setSubmission, form, submission } = formContextValue;
+  const { setSubmission, form, submission } = useForm();
   const soknadNotFoundUrl = `${baseUrl}/soknad-ikke-funnet`;
-  const languagesContextValue = useLanguages();
-  const { translationsForNavForm: translations } = languagesContextValue;
+  const { translationsForNavForm: translations } = useLanguages();
   const innsendingsIdFromParams = searchParams.get('innsendingsId');
 
   const isMellomlagringAvailable = app === 'fyllut' && submissionMethod === 'digital';
@@ -261,8 +259,6 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
           submission,
           language,
           translation,
-          formContextValue,
-          languagesContextValue,
         );
         setSoknadPdfBlob(response);
         navigate(`/${form.path}/kvittering`, { replace: true });
@@ -296,8 +292,6 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
           translation,
           innsendingsId,
           setRedirectLocation,
-          formContextValue,
-          languagesContextValue,
         );
         logger?.info(`${innsendingsId}: Mellomlagring was submitted`);
         if (redirectLocation) {

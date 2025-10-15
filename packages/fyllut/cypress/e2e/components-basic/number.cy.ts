@@ -164,7 +164,8 @@ describe('number component', () => {
       cy.findByRole('textbox', { name: /^Desimal 2/ }).type('1010.10');
       cy.clickSaveAndContinue();
 
-      cy.clickEditAnswer('Desimaltall');
+      cy.findByRoleWhenAttached('link', { name: 'Rediger desimaltall' }).should('exist');
+      cy.findByRoleWhenAttached('link', { name: 'Rediger desimaltall' }).click();
       cy.findByRole('textbox', { name: /^Desimal 1/ }).should('exist');
       cy.findByRole('textbox', { name: /^Desimal 1/ }).should('have.value', '10,10');
       cy.findByRole('textbox', { name: /^Desimal 2/ }).should('have.value', '1\u00a0010,10');
@@ -179,7 +180,8 @@ describe('number component', () => {
       cy.findByRole('textbox', { name: /^Desimalgrid/ }).type('1123000,34');
       cy.clickSaveAndContinue();
 
-      cy.clickEditAnswer('Desimaltall');
+      cy.findByRoleWhenAttached('link', { name: 'Rediger desimaltall' }).should('exist');
+      cy.findByRoleWhenAttached('link', { name: 'Rediger desimaltall' }).click();
 
       cy.findByRole('textbox', { name: /^Desimal 1/ }).should('exist');
       cy.findByRole('textbox', { name: /^Desimal 1/ }).should('have.value', '12,00');

@@ -1,6 +1,7 @@
 /*
  * Tests that fields inside containers are displayed on the summary page and populated with stored values
  */
+
 describe('Container/Beholder og skjemagruppe', () => {
   before(() => {
     cy.configMocksServer();
@@ -43,7 +44,7 @@ describe('Container/Beholder og skjemagruppe', () => {
       cy.findByRole('heading', { name: 'Oppsummering' }).shouldBeVisible();
       cy.findByText('Jeg er ytterst').shouldBeVisible();
       cy.findByText('Jeg er innerst').shouldBeVisible();
-      cy.clickEditAnswer('Vis beholdere');
+      cy.findByRole('link', { name: 'Rediger vis beholdere' }).click();
       cy.findByRole('heading', { name: 'Vis beholdere' });
       cy.findByRole('textbox', { name: 'Ytre tekstfelt (valgfritt)' }).should('have.value', 'Jeg er ytterst');
       cy.findByRole('textbox', { name: 'Indre tekstfelt (valgfritt)' }).should('have.value', 'Jeg er innerst');
@@ -91,7 +92,7 @@ describe('Container/Beholder og skjemagruppe', () => {
           cy.get('dd').eq(5).should('contain.text', 'Cherry');
           cy.get('dd').eq(7).should('contain.text', 'Strawberry');
         });
-      cy.clickEditAnswers();
+      cy.findByRole('link', { name: 'Fortsett utfylling' }).click();
       cy.findByRole('heading', { name: 'Skjemagrupper' }).should('exist');
       cy.findByRole('textbox', { name: 'Tekstfelt inni skjemagruppe' }).should('have.value', 'Apple');
       cy.findByRole('textbox', { name: 'Tekstfelt inni skjemagruppe inni skjemagruppe' }).should(
