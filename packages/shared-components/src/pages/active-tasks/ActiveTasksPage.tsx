@@ -44,9 +44,13 @@ const ActiveTasksPage = () => {
   const [mellomlagringer, setMellomlagringer] = useState<Soknad[]>([]);
   const [hasEttersendelse, setHasEttersendelse] = useState(false);
   const hasMellomlagring = mellomlagringer.length > 0;
-  const { form } = useForm();
+  const { form, setFormProgressVisible } = useForm();
 
   const styles = useStyles();
+
+  useEffect(() => {
+    setFormProgressVisible(false);
+  }, [setFormProgressVisible]);
 
   useEffect(() => {
     const initialize = async () => {

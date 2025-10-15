@@ -1,10 +1,11 @@
 import { Button } from '@navikt/ds-react';
 import React, { useState } from 'react';
+import { PdfFormData } from '../../form-components/types';
 import { http } from '../../index';
 
 interface Props {
   fileName: string;
-  values: Record<string, string | undefined>;
+  values: Record<string, string | undefined | PdfFormData>;
   actionUrl: string;
   isValid?: () => boolean;
   onClick?: () => void;

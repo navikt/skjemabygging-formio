@@ -1,5 +1,4 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-
 const digitalLinkLoggedInName = TEXTS.grensesnitt.introPage.sendDigitalLoggedIn;
 
 function assertDigitalLinksNotExist() {
@@ -28,7 +27,7 @@ describe('Submission Type', () => {
 
         cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
         cy.findByRole('link', { name: TEXTS.grensesnitt.moveForward }).should('not.exist');
-        cy.findAllByRole('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers }).first().click();
+        cy.clickEditAnswers();
 
         cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
         cy.clickNextStep();
@@ -80,7 +79,7 @@ describe('Submission Type', () => {
 
         cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
         cy.findByRole('link', { name: TEXTS.grensesnitt.submitToNavPrompt.open }).should('not.exist');
-        cy.findAllByRole('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers }).first().click();
+        cy.clickEditAnswers();
 
         cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
         cy.clickSaveAndContinue();
@@ -292,10 +291,17 @@ describe('Submission Type', () => {
 
       cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
       cy.findByRole('link', { name: TEXTS.grensesnitt.submitToNavPrompt.open }).should('not.exist');
-      cy.findAllByRole('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers }).first().click();
+      cy.clickEditAnswers();
 
       cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
       cy.clickNextStep();
+
+      cy.get('dl')
+        .first()
+        .within(() => {
+          cy.get('dd').eq(0).should('contain.text', 'asdf');
+        });
+
       cy.findByRole('link', { name: TEXTS.grensesnitt.moveForward }).click();
 
       cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).should('exist');

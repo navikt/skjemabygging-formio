@@ -12,6 +12,8 @@ import { getIdportenPid, getTokenxAccessToken } from '../../security/tokenHelper
 import applicationService from '../../services/documents/applicationService';
 import { responseToError } from '../../utils/errorHandling';
 import { getFyllutUrl } from '../../utils/url';
+import { createFeltMapFromSubmission } from './helpers/feltMapBuilder';
+import { stringifyPdf } from './helpers/pdfUtils';
 import { assembleSendInnSoknadBody, isNotFound, sanitizeInnsendingsId, validateInnsendingsId } from './helpers/sendInn';
 
 const { sendInnConfig } = config;
@@ -24,7 +26,7 @@ const sendInnUtfyltSoknad = {
       const fyllutUrl = getFyllutUrl(req);
       const envQualifier = req.getEnvQualifier();
 
-      const { form, submission, submissionMethod, translation, language, innsendingsId } = req.body;
+      const { form, pdfFormData, submission, submissionMethod, translation, language, innsendingsId } = req.body;
       if (!req.headers.PdfAccessToken) {
         logger.warn('Azure access token is missing. Will be unable to generate pdf');
       }
@@ -55,13 +57,17 @@ const sendInnUtfyltSoknad = {
         logger.warn(`Language code "${language}" is not supported. Language code will be defaulted to "nb".`);
       }
 
-      const applicationPdf = await applicationService.createPdfFromFieldMap(
+      const applicationPdf = await applicationService.createFormPdf(
         req.headers.PdfAccessToken as string,
-        form,
-        submission,
-        submissionMethod,
-        createTranslate(translation, language),
-        localizationUtils.getLanguageCodeAsIso639_1(language),
+        pdfFormData
+          ? stringifyPdf(pdfFormData)
+          : createFeltMapFromSubmission(
+              form,
+              submission,
+              submissionMethod,
+              createTranslate(translation, language),
+              localizationUtils.getLanguageCodeAsIso639_1(language),
+            ),
       );
 
       const pdfByteArray = Array.from(applicationPdf) ?? [];

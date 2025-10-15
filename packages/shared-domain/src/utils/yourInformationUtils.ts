@@ -1,24 +1,42 @@
-import { NavFormType, SubmissionData } from '../form';
+import { NavFormType, Submission, SubmissionData } from '../form';
 import { navFormUtils } from '../index';
 import SubmissionYourInformation from '../submission/yourInformation';
 
 /**
  * Returns the first your information object from the submission data.
  * @param form
- * @param submission
+ * @param submissionData
  */
-const getYourInformation = (form: NavFormType, submission: SubmissionData): SubmissionYourInformation | undefined => {
+const getYourInformation = (
+  form: NavFormType,
+  submissionData: SubmissionData,
+): SubmissionYourInformation | undefined => {
   const yourInformationForm = navFormUtils
     .flattenComponents(form.components)
-    .find((component) => component.yourInformation && submission[component.key]);
+    .find((component) => component.yourInformation && submissionData[component.key]);
 
   if (yourInformationForm) {
-    return submission[yourInformationForm.key] as SubmissionYourInformation;
+    return submissionData[yourInformationForm.key] as SubmissionYourInformation;
   }
+};
+
+const getIdentityNumber = (form: NavFormType, submission?: Submission) => {
+  if (submission?.data) {
+    const yourInformation = yourInformationUtils.getYourInformation(form, submission.data);
+    if (yourInformation?.identitet?.identitetsnummer) {
+      return yourInformation.identitet.identitetsnummer;
+    } else if (submission?.data?.fodselsnummerDNummerSoker) {
+      // This is the old format of the object, which is still used in some forms.
+      return submission.data.fodselsnummerDNummerSoker as string;
+    }
+  }
+
+  return '—';
 };
 
 const yourInformationUtils = {
   getYourInformation,
+  getIdentityNumber,
 };
 
 export default yourInformationUtils;

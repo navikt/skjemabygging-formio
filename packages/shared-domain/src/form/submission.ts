@@ -6,6 +6,7 @@ export interface Submission {
   attachments?: SubmissionAttachment[];
   metadata?: SubmissionMetadata;
   state?: string;
+  selfDeclaration?: boolean;
   fyllutState?: FyllutState;
 }
 

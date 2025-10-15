@@ -34,7 +34,8 @@
         "Vedlegg": "Attachment",
         "valgfritt": "optional",
         "Rediger": "Edit",
-        "Fødselsdato (dd.mm.åååå)": "Date of birth (dd.mm.yyyy)"
+        "Fødselsdato (dd.mm.åååå)": "Date of birth (dd.mm.yyyy)",
+        "Endre svar": "Edit answer"
       }
     }
   },

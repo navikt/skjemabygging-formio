@@ -7,6 +7,8 @@ import {
   translationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { logger } from '../../logger';
+import { createFeltMapFromSubmission } from '../../routers/api/helpers/feltMapBuilder';
+import { stringifyPdf } from '../../routers/api/helpers/pdfUtils';
 import { base64Decode } from '../../utils/base64';
 import { htmlResponseError } from '../../utils/errorHandling';
 import applicationService from './applicationService';
@@ -16,6 +18,7 @@ import { mergeFrontPageAndApplication } from './mergeFilesService';
 interface ApplicationProps {
   accessToken: string;
   form: NavFormType;
+  pdfFormData?: any;
   submissionMethod: string;
   submission: Submission;
   language: string;
@@ -23,15 +26,19 @@ interface ApplicationProps {
 }
 
 const application = async (props: CoverPageAndApplicationProps) => {
-  const { accessToken, form, submission, language, translations, submissionMethod } = props;
+  const { accessToken, form, pdfFormData, submission, language, translations, submissionMethod } = props;
 
-  const applicationPdf = await applicationService.createPdfFromFieldMap(
+  const applicationPdf = await applicationService.createFormPdf(
     accessToken,
-    form,
-    submission,
-    submissionMethod,
-    createTranslate(translations, language),
-    language,
+    pdfFormData
+      ? stringifyPdf(pdfFormData)
+      : createFeltMapFromSubmission(
+          form,
+          submission,
+          submissionMethod,
+          createTranslate(translations, language),
+          language,
+        ),
   );
 
   if (applicationPdf === undefined) {
@@ -52,6 +59,7 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps) => {
     accessToken,
     pdfGeneratorAccessToken,
     form,
+    pdfFormData,
     submission,
     language,
     unitNumber,
@@ -69,13 +77,17 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps) => {
       language,
       unitNumber,
     }),
-    applicationService.createPdfFromFieldMap(
+    applicationService.createFormPdf(
       pdfGeneratorAccessToken,
-      form,
-      submission,
-      submissionMethod,
-      createTranslate(translations, language),
-      language,
+      pdfFormData
+        ? stringifyPdf(pdfFormData)
+        : createFeltMapFromSubmission(
+            form,
+            submission,
+            submissionMethod,
+            createTranslate(translations, language),
+            language,
+          ),
     ),
   ]);
 
