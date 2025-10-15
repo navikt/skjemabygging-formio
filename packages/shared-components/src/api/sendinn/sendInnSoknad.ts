@@ -102,15 +102,7 @@ export const updateUtfyltSoknad = async (
         attachments,
         otherDocumentation,
         pdfFormData: renderPdfForm({
-          formContextValue: {
-            ...formContextValue,
-            submission: {
-              ...formContextValue.submission,
-              data: {
-                ...(submission?.data ?? {}),
-              },
-            },
-          },
+          formContextValue,
           languagesContextValue,
           isDelingslenke: !!config?.isDelingslenke,
           gitVersion: String(config?.gitVersion),
