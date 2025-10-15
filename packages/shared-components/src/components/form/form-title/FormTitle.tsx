@@ -1,22 +1,24 @@
 import { Heading, Tag } from '@navikt/ds-react';
-import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import classNames from 'classnames';
+import { useParams } from 'react-router';
 import { useLanguages } from '../../../context/languages';
 import makeStyles from '../../../util/styles/jss/jss';
 import FormIcon from './FormIcon';
 
 export interface Props {
   form: NavFormType;
-  title?: string;
   hideIconOnMobile?: boolean;
 }
 
 const useStyles = makeStyles({
+  subtleFormTitle: {
+    color: 'var(--a-text-subtle)',
+    minHeight: '3rem',
+    alignContent: 'end',
+  },
   titleHeader: {
     marginBottom: 'var(--a-spacing-10)',
-  },
-  normalFontWeight: {
-    fontWeight: 'normal',
   },
   titleIcon: {
     position: 'relative',
@@ -39,22 +41,21 @@ const useStyles = makeStyles({
   },
 });
 
-export function FormTitle({ form, title, hideIconOnMobile }: Props) {
+export function FormTitle({ form, hideIconOnMobile }: Props) {
   const { translate } = useLanguages();
+  const params = useParams();
   const styles = useStyles();
-  const header = title ?? form.title;
+
+  const pathIsUploadId = params['*'] === 'legitimasjon';
+  const header = pathIsUploadId ? TEXTS.statiske.uploadId.title : form.title;
 
   return (
     <header className={styles.titleHeader}>
+      <div className={styles.subtleFormTitle}>{pathIsUploadId && translate(form.title)}</div>
       <div className={classNames(styles.titleIcon, { [styles.titleIconHidden]: hideIconOnMobile })}>
         <FormIcon className={styles.titleIconSvg} />
       </div>
-      {title && (
-        <Heading level="1" size="xsmall" textColor="subtle" className={styles.normalFontWeight}>
-          {translate(form.title)}
-        </Heading>
-      )}
-      <Heading level={title ? '2' : '1'} size="xlarge" id="page-title">
+      <Heading level="1" size="xlarge">
         {translate(header)}
       </Heading>
       {form.properties && form.properties.skjemanummer && (

@@ -59,7 +59,7 @@ describe('NavDatepicker', () => {
     });
 
     it('is editable after returning from summary page', () => {
-      cy.clickEditAnswer('Veiledning');
+      cy.findByRole('link', { name: 'Rediger veiledning' }).click();
       cy.findByRole('heading', { name: 'Veiledning' }).should('be.visible');
       cy.findByRoleWhenAttached('textbox', { name: 'Tilfeldig dato' }).should('be.visible').and('be.enabled');
       cy.findByRoleWhenAttached('textbox', { name: 'Tilfeldig dato' }).type('{selectall}18.06.2020');

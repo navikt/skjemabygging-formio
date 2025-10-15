@@ -133,8 +133,6 @@ export interface Component {
   yourInformation?: boolean;
   widthPercent?: number;
   logic?: any;
-  currency?: string;
-  isAmountWithCurrencySelector?: boolean;
 }
 
 export interface DataFetcherComponent extends Component {

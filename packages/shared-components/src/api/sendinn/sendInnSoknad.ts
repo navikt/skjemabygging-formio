@@ -1,8 +1,5 @@
 import { I18nTranslationMap, Language, NavFormType, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { AppConfigContextType } from '../../context/config/configContext';
-import { FormContextType } from '../../context/form/FormContext';
-import { LanguageContextType } from '../../context/languages/languages-context';
-import renderPdfForm from '../../form-components/RenderPdfForm';
 import { getRelevantAttachments, hasOtherDocumentation } from '../../util/attachment/attachmentsUtil';
 
 export interface SendInnSoknadResponse {
@@ -82,10 +79,8 @@ export const updateUtfyltSoknad = async (
   translation: I18nTranslationMap = {},
   innsendingsId: string | undefined,
   setRedirectLocation: (location: string) => void,
-  formContextValue: FormContextType,
-  languagesContextValue: LanguageContextType,
 ): Promise<SendInnSoknadResponse | undefined> => {
-  const { http, baseUrl, submissionMethod, logger, config } = appConfig;
+  const { http, baseUrl, submissionMethod, logger } = appConfig;
   const attachments = getRelevantAttachments(form, submission);
   const otherDocumentation = hasOtherDocumentation(form, submission);
 
@@ -101,21 +96,6 @@ export const updateUtfyltSoknad = async (
         submissionMethod,
         attachments,
         otherDocumentation,
-        pdfFormData: renderPdfForm({
-          formContextValue: {
-            ...formContextValue,
-            submission: {
-              ...formContextValue.submission,
-              data: {
-                ...(submission?.data ?? {}),
-              },
-            },
-          },
-          languagesContextValue,
-          isDelingslenke: !!config?.isDelingslenke,
-          gitVersion: String(config?.gitVersion),
-          submissionMethod,
-        }),
       },
       {},
       { setRedirectLocation },
