@@ -57,6 +57,9 @@ const sendInnUtfyltSoknad = {
         logger.warn(`Language code "${language}" is not supported. Language code will be defaulted to "nb".`);
       }
 
+      logger.warn('pdfFormData');
+      logger.warn(stringifyPdf(pdfFormData));
+
       const applicationPdf = await applicationService.createFormPdf(
         req.headers.PdfAccessToken as string,
         pdfFormData
