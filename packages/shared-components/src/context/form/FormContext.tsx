@@ -37,7 +37,7 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
   const [formProgressVisible, setFormProgressVisible] = useState<boolean>(false);
   const [prefillData, setPrefillData] = useState<PrefillData>({});
   const [title, setTitle] = useState<string | undefined>();
-  const { http, baseUrl, submissionMethod } = useAppConfig();
+  const { http, baseUrl, submissionMethod, logger } = useAppConfig();
 
   const checkConditions = useCallback(
     (components: Component[]): Component[] => {
@@ -83,10 +83,10 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
   }, [baseUrl, form, http, submissionMethod]);
 
   useEffect(() => {
-    setActiveComponents(
-      JSON.parse(JSON.stringify(navFormUtils.getActivePanelsFromForm(form, submission, submissionMethod))),
-    );
-  }, [form, submission, submissionMethod]);
+    const currentActiveComponents = navFormUtils.getActiveComponentsFromForm(form, submission, submissionMethod);
+    logger?.debug('Current active components', { form, submission, currentActiveComponents });
+    setActiveComponents(currentActiveComponents);
+  }, [form, logger, submission, submissionMethod]);
 
   return (
     <FormContext.Provider

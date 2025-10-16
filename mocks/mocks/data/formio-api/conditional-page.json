@@ -90,6 +90,19 @@
           "input": true,
           "type": "textfield",
           "navId": "efvbw51"
+        }, {
+          "key": "alertstripe",
+          "type": "alertstripe",
+          "input": false,
+          "navId": "epr9663",
+          "content": "<p>Dette er en tekst.</p>",
+          "isInline": false,
+          "conditional": {
+            "eq": "true",
+            "show": true,
+            "when": "Avkryssingsboks3"
+          },
+          "textDisplay": "formPdf"
         }
       ],
       "conditional": {
