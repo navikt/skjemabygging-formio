@@ -74,7 +74,7 @@ Cypress.Commands.add('clickStart', () => {
 });
 
 Cypress.Commands.add('clickIntroPageConfirmation', () => {
-  cy.findByRoleWhenAttached('checkbox', { name: 'Jeg bekrefter at jeg vil svare så riktig som jeg kan.' }).click();
+  cy.findByRoleWhenAttached('checkbox', { name: /Jeg bekrefter at jeg vil svare så riktig som jeg kan/ }).click();
 });
 
 Cypress.Commands.add('clickShowAllSteps', () => {
