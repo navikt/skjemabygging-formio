@@ -1,3 +1,6 @@
+const fs = require('fs');
+const path = require('path');
+
 const responseWithInnsendingsId = require('../data/innsending-api/mellomlagring/responseWithInnsendingsId.json');
 const mellomlagringValid1 = require('../data/innsending-api/mellomlagring/getTestMellomlagring-valid-1.json');
 const mellomlagringValid2 = require('../data/innsending-api/mellomlagring/getTestMellomlagring-valid-2.json');
@@ -28,6 +31,9 @@ const prefillDataUsa = require('../data/innsending-api/prefill-data/prefill-data
 const mellomlagringSelectBoxes = require('../data/innsending-api/select-boxes/mellomlagring-select-boxes.json');
 const mellomlagringRadio = require('../data/innsending-api/radio/mellomlagring-radio.json');
 const mellomlagringMonthPicker = require('../data/innsending-api/month-picker/mellomlagring-month-picker.json');
+
+const mockReceiptPdfPath = path.resolve(__dirname, '../data/innsending-api/mock-receipt.pdf');
+const mockReceiptPdf = fs.readFileSync(mockReceiptPdfPath);
 
 const objectToByteArray = (obj) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
 
@@ -536,6 +542,15 @@ module.exports = [
         options: {
           middleware(req, res) {
             const { body } = req;
+            const acceptHeader = String(req.headers.accept || '').toLowerCase();
+            if (acceptHeader.includes('application/pdf')) {
+              res.status(200);
+              res.contentType('application/pdf');
+              res.setHeader('Content-Disposition', 'inline; filename=mock-kvittering.pdf');
+              res.send(mockReceiptPdf);
+              return;
+            }
+
             res.status(200);
             res.contentType('application/json; charset=UTF-8');
             res.send({

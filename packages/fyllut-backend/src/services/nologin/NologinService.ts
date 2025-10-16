@@ -1,5 +1,6 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { ConfigType } from '../../config/types';
+import { logger } from '../../logger';
 
 const TOKEN_PURPOSE = 'nologin';
 
@@ -18,10 +19,12 @@ const NologinService = (config: ConfigType) => ({
       return payload;
     } catch (err) {
       if (err instanceof jwt.TokenExpiredError) {
+        logger.info('Nologin token has expired', { errorMessage: err.message });
         return null;
       }
       if (err instanceof jwt.JsonWebTokenError) {
-        throw new Error(`Nologin token verification failed: ${err.message}`);
+        logger.warn('Failed to verify nologin token', { errorMessage: err.message });
+        return null;
       }
       throw err;
     }
