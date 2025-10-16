@@ -82,7 +82,7 @@
           "label": "Nedtrekksmeny (navSelect)",
           "navId": "e1jp4pr",
           "validate": {
-            "required": true
+            "required": false
           }
         },
         {

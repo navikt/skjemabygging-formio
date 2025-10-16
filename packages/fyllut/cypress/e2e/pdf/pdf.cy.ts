@@ -1,6 +1,27 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { expect } from 'chai';
 
+const removeTimestampFromRequest = (request) => {
+  return {
+    ...request,
+    pdfFormData: {
+      ...request.pdfFormData,
+      bunntekst: {
+        ...request.pdfFormData.bunntekst,
+        upperMiddle: null,
+      },
+    },
+  };
+};
+
+const downloadPdf = () => {
+  cy.findByRole('link', { name: 'Oppsummering' }).click();
+  cy.findByRole('heading', { name: 'Oppsummering' }).shouldBeVisible();
+  cy.findByRole('link', { name: TEXTS.grensesnitt.moveForward }).click();
+  cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).click();
+  cy.wait('@downloadPdf');
+};
+
 describe('Pdf', () => {
   before(() => {
     cy.configMocksServer();
@@ -208,7 +229,7 @@ describe('Pdf', () => {
     });
   });
 
-  describe.only('Conditional rendering of pages', () => {
+  describe('Conditional rendering of pages', () => {
     it('pdfFormData get populated with the all conditional pages', () => {
       cy.visit('/fyllut/conditionalpage?sub=digital');
       cy.defaultWaits();
@@ -230,7 +251,7 @@ describe('Pdf', () => {
         const { submission, pdfFormData } = req.body;
         expect(Object.keys(submission.data)).to.have.length(4);
         expect(Object.keys(pdfFormData.verdiliste)).to.have.length(4);
-        expect(Object.keys(pdfFormData.verdiliste[3].verdiliste)).to.have.length(2);
+        expect(Object.keys(pdfFormData.verdiliste[3].verdiliste)).to.have.length(3);
       }).as('submitMellomlagring');
 
       cy.clickSendNav();
@@ -287,6 +308,28 @@ describe('Pdf', () => {
       cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).click();
 
       cy.wait('@downloadPdf');
+    });
+  });
+
+  describe('Check components', () => {
+    describe('Paper', () => {
+      beforeEach(() => {
+        cy.visit('/fyllut/components?sub=paper');
+        cy.defaultWaits();
+        cy.clickShowAllSteps();
+      });
+
+      it('No values', () => {
+        cy.fixture('pdf/request-components-empty.json').then((fixture) => {
+          cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
+            // Check that timestamp is present in footer before removing it for comparison.
+            expect(req.body.pdfFormData.bunntekst.upperMiddle).not.to.be.null;
+            expect(removeTimestampFromRequest(req.body)).deep.eq(fixture);
+          }).as('downloadPdf');
+        });
+
+        downloadPdf();
+      });
     });
   });
 });
