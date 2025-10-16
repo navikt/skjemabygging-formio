@@ -31,7 +31,7 @@ interface IntroPageProviderProps {
 const IntroPageContext = createContext<IntroPageContextType>({} as IntroPageContextType);
 
 export const IntroPageProvider = ({ children, form }: IntroPageProviderProps) => {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const submissionMethod = (searchParams.get('sub') as SubmissionMethod) ?? undefined;
   const [selfDeclaration, setSelfDeclaration] = useState<boolean>();
   const [error, setError] = useState<string | undefined>();
@@ -79,15 +79,20 @@ export const IntroPageProvider = ({ children, form }: IntroPageProviderProps) =>
   useEffect(() => {
     if (!submissionMethod && form.properties?.submissionTypes?.length === 1) {
       const singleType = form.properties.submissionTypes[0];
-      const singleSubMethod = singleType?.toLowerCase().replace(/_/g, '') as SubmissionMethod;
+      const singleSubMethod = singleType ? (singleType.toLowerCase().replace(/_/g, '') as SubmissionMethod) : undefined;
 
       if (singleSubMethod) {
-        const { origin, pathname, search } = window.location;
-        const newSearch = search ? `${search}&sub=${singleSubMethod}` : `?sub=${singleSubMethod}`;
-        window.location.href = `${origin}${pathname}${newSearch}`;
+        setSearchParams(
+          (current) => {
+            const next = new URLSearchParams(current);
+            next.set('sub', singleSubMethod);
+            return next;
+          },
+          { replace: true },
+        );
       }
     }
-  }, [submissionMethod, form.properties?.submissionTypes]);
+  }, [submissionMethod, form.properties?.submissionTypes, setSearchParams]);
 
   const forceRedirectToSub = (sub: SubmissionMethod, path?: string) => {
     const { origin, pathname, search } = window.location;
