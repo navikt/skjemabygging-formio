@@ -1,4 +1,4 @@
-import { Form } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { RequestHandler } from 'express';
 import { HttpError as OldHttpError } from '../../../fetchUtils';
 import { formsService } from '../../../services';
@@ -27,7 +27,8 @@ const get: RequestHandler = async (req, res, next) => {
 const post: RequestHandler = async (req, res, next) => {
   const accessToken = req.headers.AzureAccessToken as string;
   const { skjemanummer, title, properties, components } = req.body as Form;
-  const body = { skjemanummer, title, properties, components };
+  const componentsWithNavIds = navFormUtils.populateWithNavIds(components);
+  const body = { skjemanummer, title, properties, components: componentsWithNavIds };
   try {
     const form = await formsService.post(body, accessToken);
     res.status(201).json(form);
@@ -44,7 +45,8 @@ const put: RequestHandler = async (req, res, next) => {
   const accessToken = req.headers.AzureAccessToken as string;
   const { formPath } = req.params;
   const { revision, title, properties, components, introPage } = req.body as Form;
-  const body = { title, properties, components, introPage };
+  const componentsWithNavIds = navFormUtils.populateWithNavIds(components);
+  const body = { title, properties, components: componentsWithNavIds, introPage };
   try {
     const form = await formsService.put(formPath, body, revision!, accessToken);
     res.json(form);

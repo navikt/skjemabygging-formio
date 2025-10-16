@@ -315,22 +315,17 @@ const createDefaultForm = (config): Form => ({
   components: [],
 });
 
-const replaceDuplicateNavIds = (form: NavFormType) => {
+const populateWithNavIds = (components: Component[]) => {
   const navIds: string[] = [];
-
-  FormioUtils.eachComponent(form.components, (comp) => {
-    if (!comp.navId) {
-      return;
-    }
-
-    if (navIds.includes(comp.navId)) {
+  FormioUtils.eachComponent(components, (comp: Component) => {
+    if (!comp.navId || navIds.includes(comp.navId)) {
       comp.navId = FormioUtils.getRandomComponentId();
     } else {
       navIds.push(comp.navId);
     }
   });
 
-  return form;
+  return components;
 };
 
 const navFormUtils = {
@@ -353,6 +348,6 @@ const navFormUtils = {
   isAttachment,
   isEqual,
   createDefaultForm,
-  replaceDuplicateNavIds,
+  populateWithNavIds,
 };
 export default navFormUtils;
