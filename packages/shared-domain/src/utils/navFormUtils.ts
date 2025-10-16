@@ -193,6 +193,9 @@ export const findDependentComponents = (id: string, form: NavFormType, evaluateC
   return [];
 };
 
+const isComponentConditionallyVisible = (component: Component, submission: Submission, form: NavFormType) =>
+  FormioUtils.checkCondition(component, [], submission.data ?? {}, form, undefined, submission);
+
 type ComponentFilterFunction = (c: Component) => boolean;
 const removeRecursively = (component: Component, isTarget: ComponentFilterFunction) => {
   if (component.components?.length) {
@@ -209,7 +212,7 @@ export const removeComponents = (form: NavFormType, isTarget: ComponentFilterFun
   return formCopy;
 };
 
-export const isVedleggspanel = (component: Component) => {
+export const isVedleggspanel = (component: Component): component is Panel => {
   return !!(component.type === 'panel' && component.isAttachmentPanel);
 };
 
@@ -273,8 +276,22 @@ const getActivePanelsFromForm = (form: NavFormType, submission?: Submission, sub
     );
 };
 
+// For attachment panel when submission values are in submission.attachments rather than submission.data
+const getActiveAttachmentPanelFromForm = (
+  form: NavFormType,
+  submission?: Submission,
+  submissionMethod?: string,
+): Panel | undefined => {
+  if (!submissionMethod || !['digitalnologin'].includes(submissionMethod)) {
+    return undefined;
+  }
+  const conditionals = formSummaryUtil.mapAndEvaluateConditionals(form, submission ?? { data: {} });
+  const attachmentPanel = getAttachmentPanel(form);
+  return attachmentPanel && conditionals[attachmentPanel.key] !== false ? attachmentPanel : undefined;
+};
+
 const getAttachmentPanel = (form: NavFormType) => {
-  return form.components.find((component) => isVedleggspanel(component));
+  return form.components.find(isVedleggspanel);
 };
 
 const hasAttachment = (form: NavFormType) => {
@@ -340,6 +357,7 @@ const navFormUtils = {
   findDependeeComponents,
   flattenComponents,
   isSubmissionMethodAllowed,
+  isComponentConditionallyVisible,
   isVedleggspanel,
   removeVedleggspanel,
   findByKey,
@@ -347,6 +365,7 @@ const navFormUtils = {
   findComponentsByProperty,
   enrichComponentsWithNavIds,
   getActivePanelsFromForm,
+  getActiveAttachmentPanelFromForm,
   getAttachmentPanel,
   hasAttachment,
   getAttachmentProperties,

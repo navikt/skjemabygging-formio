@@ -87,7 +87,7 @@ const OtherAttachmentUpload = ({ label, attachmentValues, componentId, descripti
         />
       )}
       {uploadSelected && (
-        <VStack gap="4">
+        <VStack gap="2">
           {uploadedAttachmentFiles.length > 0 && (
             <div className={styles.uploadedFilesHeader}>
               <Label>{translate(TEXTS.statiske.attachment.filesUploadedNotSent)}</Label>

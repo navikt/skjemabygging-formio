@@ -1,6 +1,7 @@
 import { Alert, BodyShort, ConfirmationPanel, Heading, VStack } from '@navikt/ds-react';
-import { DeclarationType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { DeclarationType, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useRef, useState } from 'react';
+import { attachmentValidator } from '../../components/attachment/attachmentValidator';
 import EditAnswersButton from '../../components/button/navigation/edit-answers/EditAnswersButton';
 import ValidationExclamationIcon from '../../components/icons/ValidationExclamationIcon';
 import NavFormHelper from '../../components/nav-form/NavFormHelper';
@@ -8,8 +9,13 @@ import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import RenderSummaryForm from '../../form-components/RenderSummaryForm';
+import formComponentUtils from '../../form-components/utils/formComponent';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
-import { PanelValidation, validateWizardPanels } from '../../util/form/panel-validation/panelValidation';
+import {
+  findFirstValidationErrorInAttachmentPanel,
+  PanelValidation,
+  validateWizardPanels,
+} from '../../util/form/panel-validation/panelValidation';
 import SummaryPageNavigation from './navigation/SummaryPageNavigation';
 
 export function SummaryPage() {
@@ -23,7 +29,7 @@ export function SummaryPage() {
 
   useEffect(() => {
     const initializePanelValidation = async () => {
-      const submissionCopy = JSON.parse(JSON.stringify(submission || {}));
+      const submissionCopy: Submission = JSON.parse(JSON.stringify(submission || {}));
 
       const formioSummary = document.getElementById('formio-summary-hidden')!;
       const webform = await NavFormHelper.create(formioSummary, form, {
@@ -44,6 +50,25 @@ export function SummaryPage() {
         });
       }
 
+      const attachmentPanel = webform.form?.components.find((panel) => panel.isAttachmentPanel);
+      if (appConfig.submissionMethod === 'digitalnologin' && attachmentPanel) {
+        const validator = attachmentValidator(translate, ['value', 'fileUploaded']);
+        const invalidAttachment = findFirstValidationErrorInAttachmentPanel(
+          form,
+          submission ?? { data: {} },
+          validator,
+        );
+        if (invalidAttachment) {
+          panelValidations.push({
+            key: attachmentPanel.key,
+            hasValidationErrors: !!invalidAttachment,
+            firstInputWithValidationError: invalidAttachment
+              ? formComponentUtils.getNavId(invalidAttachment)
+              : undefined,
+          });
+        }
+      }
+
       setPanelValidationList(panelValidations);
       webform.destroy(true);
 
@@ -53,7 +78,7 @@ export function SummaryPage() {
     };
 
     initializePanelValidation();
-  }, [form, submission, appConfig, prefillData]);
+  }, [form, submission, appConfig, prefillData, translate]);
 
   useEffect(() => {
     setTitle(TEXTS.statiske.summaryPage.title);
@@ -100,6 +125,7 @@ export function SummaryPage() {
         <BodyShort className="mb-4">{translate(TEXTS.statiske.summaryPage.description)}</BodyShort>
       )}
       <RenderSummaryForm panelValidationList={panelValidationList} />
+
       {hasDeclaration && (
         <ConfirmationPanel
           className="mb"
