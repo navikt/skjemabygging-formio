@@ -25,7 +25,7 @@ vi.mock('../../context/config/configContext', () => ({
 }));
 
 vi.mock('../../context/form/FormContext', () => ({
-  useForm: () => mockFormContext,
+  useForm: () => ({ ...mockFormContext, setFormProgress: vi.fn() }),
 }));
 
 vi.mock('../../context/sendInn/sendInnContext', () => ({
