@@ -238,10 +238,10 @@ export const isSubmissionMethodAllowed = (
 };
 
 export const enrichComponentsWithNavIds = (
-  components: Component[] | undefined,
+  components: Component[],
   navIdGenerator: () => string = FormioUtils.getRandomComponentId,
   currentNavIds: string[] = [],
-): Component[] | undefined => {
+): Component[] => {
   if (components) {
     return components.map((component) => {
       const subComponents = component.components;
