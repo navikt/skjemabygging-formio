@@ -27,7 +27,7 @@ const get: RequestHandler = async (req, res, next) => {
 const post: RequestHandler = async (req, res, next) => {
   const accessToken = req.headers.AzureAccessToken as string;
   const { skjemanummer, title, properties, components } = req.body as Form;
-  const componentsWithNavIds = navFormUtils.populateWithNavIds(components);
+  const componentsWithNavIds = navFormUtils.enrichComponentsWithNavIds(components);
   const body = { skjemanummer, title, properties, components: componentsWithNavIds };
   try {
     const form = await formsService.post(body, accessToken);
@@ -45,7 +45,7 @@ const put: RequestHandler = async (req, res, next) => {
   const accessToken = req.headers.AzureAccessToken as string;
   const { formPath } = req.params;
   const { revision, title, properties, components, introPage } = req.body as Form;
-  const componentsWithNavIds = navFormUtils.populateWithNavIds(components);
+  const componentsWithNavIds = navFormUtils.enrichComponentsWithNavIds(components);
   const body = { title, properties, components: componentsWithNavIds, introPage };
   try {
     const form = await formsService.put(formPath, body, revision!, accessToken);

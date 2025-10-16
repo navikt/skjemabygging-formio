@@ -240,21 +240,29 @@ export const isSubmissionMethodAllowed = (
 export const enrichComponentsWithNavIds = (
   components: Component[] | undefined,
   navIdGenerator: () => string = FormioUtils.getRandomComponentId,
+  currentNavIds: string[] = [],
 ): Component[] | undefined => {
   if (components) {
     return components.map((component) => {
       const subComponents = component.components;
-      if (!component.navId) {
+      // if component has no navId, or navId is already used by a different component, generate a new one
+      if (!component.navId || currentNavIds.includes(component.navId)) {
         return {
           ...component,
           navId: navIdGenerator(),
-          ...(subComponents && { components: enrichComponentsWithNavIds(subComponents, navIdGenerator) }),
+          ...(subComponents && {
+            components: enrichComponentsWithNavIds(subComponents, navIdGenerator, currentNavIds),
+          }),
+        };
+      } else {
+        currentNavIds.push(component.navId);
+        return {
+          ...component,
+          ...(subComponents && {
+            components: enrichComponentsWithNavIds(subComponents, navIdGenerator, currentNavIds),
+          }),
         };
       }
-      return {
-        ...component,
-        ...(subComponents && { components: enrichComponentsWithNavIds(subComponents, navIdGenerator) }),
-      };
     });
   }
   return components;
@@ -315,19 +323,6 @@ const createDefaultForm = (config): Form => ({
   components: [],
 });
 
-const populateWithNavIds = (components: Component[]) => {
-  const navIds: string[] = [];
-  FormioUtils.eachComponent(components, (comp: Component) => {
-    if (!comp.navId || navIds.includes(comp.navId)) {
-      comp.navId = FormioUtils.getRandomComponentId();
-    } else {
-      navIds.push(comp.navId);
-    }
-  });
-
-  return components;
-};
-
 const navFormUtils = {
   formMatcherPredicate,
   toFormPath,
@@ -348,6 +343,5 @@ const navFormUtils = {
   isAttachment,
   isEqual,
   createDefaultForm,
-  populateWithNavIds,
 };
 export default navFormUtils;
