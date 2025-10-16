@@ -964,13 +964,13 @@
         "signatures": [],
         "skjemanummer": "TST 19-81.08",
         "submissionTypes": [
+            "DIGITAL",
             "DIGITAL_NO_LOGIN"
         ],
         "ettersendelsesfrist": "14",
         "mellomlagringDurationDays": "28",
         "subsequentSubmissionTypes": [
-            "DIGITAL",
-            "PAPER"
+            "DIGITAL"
         ],
         "descriptionOfSignaturesPositionUnder": true
     },
