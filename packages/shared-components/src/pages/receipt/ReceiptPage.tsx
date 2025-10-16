@@ -299,24 +299,22 @@ export function ReceiptPage() {
 
       {shouldShowDeadlineAlert && (
         <Alert size="small" variant="warning">
-          <BodyShort size="large">
+          <Heading level="2" spacing size="xsmall">
             <b>
               {translate(receiptTexts.deadlineWarningTitle ?? 'Dokumentene må ettersendes innen {{deadline}}', {
                 deadline: ettersendingDeadline,
               })}
             </b>
-          </BodyShort>
-          <BodyShort>
-            {translate(receiptTexts.deadlineWarningDescriptionPrefix ?? 'Du kan ettersende dokumentene på')}{' '}
-            <Link
-              href={receiptTexts.deadlineWarningLinkUrl ?? 'https://www.nav.no/ettersende'}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {translate(receiptTexts.deadlineWarningLinkLabel ?? 'nav.no/ettersende')}
-            </Link>{' '}
-            {translate(receiptTexts.deadlineWarningDescriptionSuffix ?? '(åpnes i en ny fane)')}
-          </BodyShort>
+          </Heading>
+          {translate(receiptTexts.deadlineWarningDescriptionPrefix ?? 'Du kan ettersende dokumentene på')}{' '}
+          <Link
+            href={receiptTexts.deadlineWarningLinkUrl ?? 'https://www.nav.no/ettersende'}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {translate(receiptTexts.deadlineWarningLinkLabel ?? 'nav.no/ettersende')}
+          </Link>{' '}
+          {translate(receiptTexts.deadlineWarningDescriptionSuffix ?? '(åpnes i en ny fane)')}
         </Alert>
       )}
     </VStack>
