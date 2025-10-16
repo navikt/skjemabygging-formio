@@ -75,6 +75,20 @@ export const IntroPageProvider = ({ children, form }: IntroPageProviderProps) =>
     setState(toState(submissionMethod));
   }, [submissionMethod, toState]);
 
+  // Automatically add parameter for forms with single submission type
+  useEffect(() => {
+    if (!submissionMethod && form.properties?.submissionTypes?.length === 1) {
+      const singleType = form.properties.submissionTypes[0];
+      const singleSubMethod = singleType?.toLowerCase().replace(/_/g, '') as SubmissionMethod;
+
+      if (singleSubMethod) {
+        const { origin, pathname, search } = window.location;
+        const newSearch = search ? `${search}&sub=${singleSubMethod}` : `?sub=${singleSubMethod}`;
+        window.location.href = `${origin}${pathname}${newSearch}`;
+      }
+    }
+  }, [submissionMethod, form.properties?.submissionTypes]);
+
   const forceRedirectToSub = (sub: SubmissionMethod, path?: string) => {
     const { origin, pathname, search } = window.location;
     let href = `${origin}${pathname}`;
