@@ -1,14 +1,16 @@
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { expect } from 'chai';
+import { DateTime } from 'luxon';
 
 const removeTimestampFromRequest = (request) => {
   return {
     ...request,
+    form: null, // Remove form structure for comparison so we do not need to update every time the test form is changed.
     pdfFormData: {
       ...request.pdfFormData,
       bunntekst: {
         ...request.pdfFormData.bunntekst,
-        upperMiddle: null,
+        upperMiddle: null, // Remove timestamp for comparison.
       },
     },
   };
@@ -31,202 +33,6 @@ describe('Pdf', () => {
     cy.defaultIntercepts();
     cy.defaultInterceptsMellomlagring();
     cy.mocksRestoreRouteVariants();
-  });
-
-  after(() => {
-    cy.mocksRestoreRouteVariants();
-  });
-
-  describe('Html content is as expected with digital submission', () => {
-    it('bokmaal', () => {
-      cy.mocksUseRouteVariant('post-familie-pdf:verify-nav111221b-nb');
-      cy.mocksUseRouteVariant('get-activities:success');
-      cy.submitMellomlagring((req) => {
-        expect(req.body.attachments).to.have.length(0);
-        expect(req.body.otherDocumentation).to.eq(true);
-      });
-
-      cy.visit('/fyllut/nav111221b?sub=digital');
-      cy.defaultWaits();
-      cy.clickStart();
-      cy.findByRole('heading', { name: 'Veiledning' }).shouldBeVisible();
-      cy.clickSaveAndContinue();
-      cy.findByRole('heading', { name: 'Dine opplysninger' }).shouldBeVisible();
-      cy.clickSaveAndContinue();
-
-      cy.findByRole('group', { name: 'Hvilken aktivitet søker du om støtte i forbindelse med?' })
-        .should('exist')
-        .within(() => {
-          cy.findAllByRole('radio').should('have.length', 2);
-          cy.findByRole('radio', { name: /Arbeidstrening:.*/ })
-            .should('exist')
-            .click();
-        });
-      cy.clickSaveAndContinue();
-
-      cy.findByRole('heading', { name: 'Reiseperiode' }).shouldBeVisible();
-      cy.findByRole('textbox', { name: /Startdato.*/ })
-        .should('exist')
-        .type('02.01.2024');
-      cy.findByRole('textbox', { name: /Sluttdato.*/ })
-        .should('exist')
-        .type('31.01.2024');
-      cy.findByRole('textbox', { name: 'Hvor mange reisedager har du per uke?' }).should('exist').type('3');
-      cy.clickSaveAndContinue();
-
-      cy.findByRole('heading', { name: 'Reiseavstand' }).shouldBeVisible();
-      cy.findByRole('group', { name: 'Har du en reisevei på seks kilometer eller mer?' })
-        .should('exist')
-        .within(() => {
-          cy.findByRole('radio', { name: 'Ja' }).should('exist').click();
-        });
-      cy.findByRole('textbox', { name: 'Hvor lang reisevei har du?' }).should('exist').type('12');
-      cy.findByRole('textbox', { name: 'Gateadresse' }).should('exist').type('Veien 1');
-      cy.findByRole('textbox', { name: 'Postnummer' }).should('exist').type('1234');
-      cy.findByRole('textbox', { name: 'Poststed' }).should('exist').type('Plassen');
-
-      cy.clickSaveAndContinue();
-
-      cy.findByRole('heading', { name: 'Transportbehov' }).shouldBeVisible();
-      cy.findByRole('group', { name: 'Kan du reise kollektivt?' })
-        .should('exist')
-        .within(() => {
-          cy.findByRole('radio', { name: 'Nei' }).should('exist').click();
-        });
-      cy.findByRole('group', { name: 'Hva er hovedårsaken til at du ikke kan reise kollektivt?' })
-        .should('exist')
-        .within(() => {
-          cy.findByRole('radio', { name: 'Dårlig transporttilbud' }).should('exist').click();
-        });
-      cy.findByRole('textbox', {
-        name: 'Beskriv de spesielle forholdene ved reiseveien som gjør at du ikke kan reise kollektivt',
-      })
-        .should('exist')
-        .type('Ingen buss kjører her i nærheten');
-      cy.findByRole('group', { name: 'Kan du benytte egen bil?' })
-        .should('exist')
-        .within(() => {
-          cy.findByRole('radio', { name: 'Ja' }).should('exist').click();
-        });
-      cy.findByRole('group', { name: 'Kommer du til å ha utgifter til parkering på aktivitetsstedet?' })
-        .should('exist')
-        .within(() => {
-          cy.findByRole('radio', { name: 'Nei' }).should('exist').click();
-        });
-      cy.findByLabelText('Hvor ofte ønsker du å sende inn kjøreliste?')
-        .should('exist')
-        .within(() => {
-          cy.findByRole('radio', { name: /.*gang i uken.*/ })
-            .should('exist')
-            .click();
-        });
-
-      cy.clickSaveAndContinue();
-
-      cy.findByRole('heading', { name: 'Tilleggsopplysninger' }).shouldBeVisible();
-      cy.clickSaveAndContinue();
-
-      // Submit
-      cy.clickSaveAndContinue();
-      // When failure, see mocks/routes/skjemabygging-proxy.js where the html content is verified (id='verify-nav111221b-nb')
-      cy.wait('@submitMellomlagring');
-      cy.verifySendInnRedirect();
-    });
-
-    it('nynorsk', () => {
-      cy.mocksUseRouteVariant('post-familie-pdf:verify-nav111221b-nn');
-      cy.mocksUseRouteVariant('get-activities:success');
-      cy.submitMellomlagring((req) => {
-        expect(req.body.attachments).to.have.length(0);
-        expect(req.body.otherDocumentation).to.eq(true);
-      });
-
-      cy.visit('/fyllut/nav111221b?sub=digital&lang=nn-NO');
-      cy.defaultWaits();
-      cy.clickStart();
-      cy.findByRole('heading', { name: 'Veiledning' }).shouldBeVisible();
-      cy.clickSaveAndContinue();
-      cy.findByRole('heading', { name: 'Dine opplysningar' }).shouldBeVisible();
-      cy.clickSaveAndContinue();
-
-      cy.findByRole('group', { name: 'Hvilken aktivitet søker du om støtte i forbindelse med?' })
-        .should('exist')
-        .within(() => {
-          cy.findAllByRole('radio').should('have.length', 2);
-          cy.findByRole('radio', { name: /Arbeidstrening:.*/ })
-            .should('exist')
-            .click();
-        });
-      cy.clickSaveAndContinue();
-
-      cy.findByRole('heading', { name: 'Reiseperiode' }).shouldBeVisible();
-      cy.findByRole('textbox', { name: /Startdato.*/ })
-        .should('exist')
-        .type('02.01.2024');
-      cy.findByRole('textbox', { name: /Sluttdato.*/ })
-        .should('exist')
-        .type('31.01.2024');
-      cy.findByRole('textbox', { name: 'Kor mange reisedagar har du per veke?' }).should('exist').type('3');
-      cy.clickSaveAndContinue();
-
-      cy.findByRole('heading', { name: 'Reiseavstand' }).shouldBeVisible();
-      cy.findByRole('group', { name: 'Har du ein reiseveg på seks kilometer eller meir?' })
-        .should('exist')
-        .within(() => {
-          cy.findByRole('radio', { name: 'Ja' }).should('exist').click();
-        });
-      cy.findByRole('textbox', { name: 'Kor lang reiseveg har du?' }).should('exist').type('12');
-      cy.findByRole('textbox', { name: 'Gateadresse' }).should('exist').type('Veien 1');
-      cy.findByRole('textbox', { name: 'Postnummer' }).should('exist').type('1234');
-      cy.findByRole('textbox', { name: 'Poststed' }).should('exist').type('Plassen');
-
-      cy.clickSaveAndContinue();
-
-      cy.findByRole('heading', { name: 'Transportbehov' }).shouldBeVisible();
-      cy.findByRole('group', { name: 'Kan du reisa kollektivt?' })
-        .should('exist')
-        .within(() => {
-          cy.findByRole('radio', { name: 'Nei' }).should('exist').click();
-        });
-      cy.findByRole('group', { name: 'Kva er hovudårsaka til at du ikkje kan reisa kollektivt?' })
-        .should('exist')
-        .within(() => {
-          cy.findByRole('radio', { name: 'Dårleg transporttilbod' }).should('exist').click();
-        });
-      cy.findByRole('textbox', {
-        name: 'Beskriv dei spesielle forholda ved reisevegen som gjer at du ikkje kan reisa kollektivt',
-      })
-        .should('exist')
-        .type('Ingen buss køyrer her i nærleiken');
-      cy.findByRole('group', { name: 'Kan du nytta eigen bil?' })
-        .should('exist')
-        .within(() => {
-          cy.findByRole('radio', { name: 'Ja' }).should('exist').click();
-        });
-      cy.findByRole('group', { name: 'Kjem du til å ha utgifter til parkering på aktivitetsstaden?' })
-        .should('exist')
-        .within(() => {
-          cy.findByRole('radio', { name: 'Nei' }).should('exist').click();
-        });
-      cy.findByLabelText('Kor ofte ønskjer du å senda inn køyreliste?')
-        .should('exist')
-        .within(() => {
-          cy.findByRole('radio', { name: /.*gong i veka.*/ })
-            .should('exist')
-            .click();
-        });
-
-      cy.clickSaveAndContinue();
-
-      cy.findByRole('heading', { name: 'Tilleggsopplysninger' }).shouldBeVisible();
-      cy.clickSaveAndContinue();
-
-      // Submit
-      cy.clickSaveAndContinue();
-      // When failure, see mocks/routes/skjemabygging-proxy.js where the html content is verified (id='verify-nav111221b-nn')
-      cy.wait('@submitMellomlagring');
-      cy.verifySendInnRedirect();
-    });
   });
 
   describe('Conditional rendering of pages', () => {
@@ -319,11 +125,142 @@ describe('Pdf', () => {
         cy.clickShowAllSteps();
       });
 
-      it('No values', () => {
-        cy.fixture('pdf/request-components-empty.json').then((fixture) => {
+      it('Only identity', () => {
+        // Add Identity values, to not fail generate front page pdf.
+        cy.findByRole('link', { name: 'Person' }).click();
+        cy.findByRole('heading', { name: 'Person' }).shouldBeVisible();
+        cy.findByRole('group', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
+          cy.findByRole('radio', { name: 'Ja' }).check();
+        });
+        cy.findAllByRole('textbox', { name: /Fødselsnummer eller d-nummer/ })
+          .eq(1)
+          .type('20905995783');
+        cy.findByRole('textbox', { name: /Fornavn/ }).type('Ola');
+        cy.findByRole('textbox', { name: /Etternavn/ }).type('Nordmann');
+
+        cy.fixture('pdf/request-components-identity.json').then((fixture) => {
           cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
             // Check that timestamp is present in footer before removing it for comparison.
             expect(req.body.pdfFormData.bunntekst.upperMiddle).not.to.be.null;
+            expect(removeTimestampFromRequest(req.body)).deep.eq(fixture);
+          }).as('downloadPdf');
+        });
+
+        downloadPdf();
+      });
+
+      it('All values', () => {
+        cy.findByRole('link', { name: 'Standard felter' }).click();
+        cy.findByRole('heading', { name: 'Standard felter' }).shouldBeVisible();
+        cy.findByRole('textbox', { name: /Tekstfelt/ }).type('Nav 1');
+        cy.findByRole('textbox', { name: /Tekstområde/ }).type('Nav 2');
+        cy.findByRole('textbox', { name: /Tall/ }).type('1');
+        cy.findByRole('checkbox', { name: /Avkryssingsboks/ }).check();
+        cy.findByRole('group', { name: /Flervalg/ }).within(() => {
+          cy.findByRole('checkbox', { name: 'Ja' }).check();
+        });
+        cy.findByRole('combobox', { name: /Nedtrekksmeny \(navSelect\)/ }).type('{downArrow}{enter}');
+        cy.findByRole('group', { name: /Radiopanel/ }).within(() => {
+          cy.findByRole('radio', { name: 'Ja' }).check();
+        });
+
+        cy.findByRole('link', { name: 'Person' }).click();
+        cy.findByRole('heading', { name: 'Person' }).shouldBeVisible();
+        cy.findAllByRole('textbox', { name: /Fødselsnummer eller d-nummer/ })
+          .eq(0)
+          .type('20905995783');
+        cy.findByRole('group', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
+          cy.findByRole('radio', { name: 'Ja' }).check();
+        });
+        cy.findAllByRole('textbox', { name: /Fødselsnummer eller d-nummer/ })
+          .eq(1)
+          .type('20905995783');
+        cy.findByRole('textbox', { name: /Fornavn/ }).type('Ola');
+        cy.findByRole('textbox', { name: /Etternavn/ }).type('Nordmann');
+        cy.findByRole('textbox', { name: /C\/O/ }).type('Annen person');
+        cy.findAllByRole('textbox', { name: /Vegadresse/ })
+          .eq(0)
+          .type('Fyrstikkalléen 1');
+        cy.findAllByRole('textbox', { name: /Postnummer/ })
+          .eq(0)
+          .type('0661');
+        cy.findAllByRole('textbox', { name: /Poststed/ })
+          .eq(0)
+          .type('Oslo');
+        cy.findByRole('textbox', { name: /Gyldig fra/ }).type(DateTime.now().toFormat(dateUtils.inputFormat));
+        cy.findByRole('textbox', { name: /Gyldig til/ }).type(DateTime.now().toFormat(dateUtils.inputFormat));
+        cy.findAllByRole('textbox', { name: /Vegadresse/ })
+          .eq(1)
+          .type('Fyrstikkalléen 2');
+        cy.findAllByRole('textbox', { name: /Postnummer/ })
+          .eq(1)
+          .type('0662');
+        cy.findAllByRole('textbox', { name: /Poststed/ })
+          .eq(1)
+          .type('Oslo2');
+        cy.findByRole('combobox', { name: /Velg land/ }).type('Norg{downArrow}{enter}');
+        cy.findByRole('textbox', { name: /E-post/ }).type('test@nav.no');
+        cy.findByRole('textbox', { name: /Telefonnummer/ }).type('21070000');
+        cy.findByRole('textbox', { name: /Statsborgerskap/ }).type('Norsk');
+
+        cy.findByRole('link', { name: 'Penger og konto' }).click();
+        cy.findByRole('heading', { name: 'Penger og konto' }).shouldBeVisible();
+        cy.findAllByRole('textbox', { name: /Beløp/ }).eq(0).type('1000');
+        cy.findAllByRole('combobox', { name: /Velg valuta/ })
+          .eq(0)
+          .type('{downArrow}{enter}');
+        cy.findAllByRole('textbox', { name: /Beløp/ }).eq(1).type('2000');
+        cy.findByRole('textbox', { name: /Kontonummer/ }).type('76586005479');
+        cy.findByRole('textbox', { name: /IBAN/ }).type('NO8330001234567');
+        cy.findAllByRole('combobox', { name: /Velg valuta/ })
+          .eq(1)
+          .type('{downArrow}{downArrow}{enter}');
+
+        cy.findByRole('link', { name: 'Bedrift / organisasjon' }).click();
+        cy.findByRole('heading', { name: 'Bedrift / organisasjon' }).shouldBeVisible();
+        cy.findByRole('textbox', { name: /Organisasjonsnummer/ }).type('889640782');
+        cy.findByRole('textbox', { name: /Arbeidsgiver/ }).type('Nav');
+
+        cy.findByRole('link', { name: 'Dato og tid' }).click();
+        cy.findByRole('heading', { name: 'Dato og tid' }).shouldBeVisible();
+        cy.findByRole('textbox', { name: /Dato/ }).type('01.01.2025');
+        cy.findByRole('textbox', { name: /Klokkeslett/ }).type('01:01');
+        cy.findByRole('textbox', { name: /Månedsvelger/ }).type('01.2025');
+        cy.findByRole('textbox', { name: /År/ }).type('2025');
+
+        cy.findByRole('link', { name: 'Gruppering' }).click();
+        cy.findByRole('heading', { name: 'Gruppering' }).shouldBeVisible();
+        cy.findByRole('textbox', { name: /Tekstfelt skjemagruppe 1 / }).type('Skjema 1');
+        cy.findByRole('textbox', { name: /Tekstfelt skjemagruppe 2 / }).type('Skjema 2a');
+        cy.findAllByRole('button', { name: 'Legg til' }).eq(0).click();
+        cy.findAllByRole('textbox', { name: /Tekstfelt skjemagruppe 2 / })
+          .eq(1)
+          .type('Skjema 2b');
+        cy.findByRole('textbox', { name: /Tekstfelt repeterende data/ }).type('Repeat 1');
+        cy.findAllByRole('button', { name: 'Legg til' }).eq(1).click();
+        cy.findAllByRole('button', { name: 'Legg til' }).eq(1).click();
+        cy.findAllByRole('textbox', { name: /Tekstfelt repeterende data/ })
+          .eq(1)
+          .type('Repeat 2');
+        cy.findAllByRole('textbox', { name: /Tekstfelt repeterende data/ })
+          .eq(2)
+          .type('Repeat 3');
+
+        cy.findByRole('link', { name: 'Andre' }).click();
+        cy.findByRole('heading', { name: 'Andre' }).shouldBeVisible();
+        cy.findByRole('checkbox', { name: /Jeg bekrefter/ }).check();
+
+        cy.findByRole('link', { name: 'Vedlegg' }).click();
+        cy.findByRole('heading', { name: 'Vedlegg' }).shouldBeVisible();
+        cy.findByRole('group', { name: /Vedlegg/ }).within(() => {
+          cy.findByRole('radio', { name: 'Jeg ettersender dokumentasjonen senere' }).check();
+        });
+        cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+          cy.findByRole('radio', { name: 'Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved' }).check();
+        });
+
+        cy.fixture('pdf/request-components-all.json').then((fixture) => {
+          cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
             expect(removeTimestampFromRequest(req.body)).deep.eq(fixture);
           }).as('downloadPdf');
         });

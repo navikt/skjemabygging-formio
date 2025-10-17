@@ -84,7 +84,7 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
 
   useEffect(() => {
     const currentActiveComponents = navFormUtils.getActiveComponentsFromForm(form, submission, submissionMethod);
-    logger?.debug('Current active components', { form, submission, currentActiveComponents });
+    logger?.debug('Current active components', { form, currentActiveComponents });
     setActiveComponents(currentActiveComponents);
   }, [form, logger, submission, submissionMethod]);
 
