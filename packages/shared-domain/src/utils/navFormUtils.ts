@@ -237,35 +237,67 @@ export const isSubmissionMethodAllowed = (
   return false;
 };
 
+export const enrichComponentsWithNavIdsRecursive = (
+  components?: Component[],
+  navIdGenerator: () => string = FormioUtils.getRandomComponentId,
+  foundNavids: string[] = [],
+): [Component[] | undefined, string[]] => {
+  if (!components) {
+    return [undefined, foundNavids];
+  }
+
+  let enrichedComponents: Component[] = [];
+  let updatedFoundNavIds = [...foundNavids];
+
+  for (const component of components) {
+    const subComponents = component.components;
+    // if component has no navId, or navId is already used by a different component, generate a new one
+    if (!component.navId || updatedFoundNavIds.includes(component.navId)) {
+      const [enrichedSubComponents, updatedNavIds] = enrichComponentsWithNavIdsRecursive(
+        subComponents,
+        navIdGenerator,
+        updatedFoundNavIds,
+      );
+
+      updatedFoundNavIds = updatedNavIds;
+      enrichedComponents = [
+        ...enrichedComponents,
+        {
+          ...component,
+          navId: navIdGenerator(),
+          ...(enrichedSubComponents && {
+            components: enrichedSubComponents,
+          }),
+        },
+      ];
+    } else {
+      const [enrichedSubComponents, updatedNavIds] = enrichComponentsWithNavIdsRecursive(
+        subComponents,
+        navIdGenerator,
+        [...updatedFoundNavIds, component.navId],
+      );
+
+      updatedFoundNavIds = updatedNavIds;
+      enrichedComponents = [
+        ...enrichedComponents,
+        {
+          ...component,
+          ...(enrichedSubComponents && {
+            components: enrichedSubComponents,
+          }),
+        },
+      ];
+    }
+  }
+  return [enrichedComponents, updatedFoundNavIds];
+};
+
 export const enrichComponentsWithNavIds = (
   components: Component[],
   navIdGenerator: () => string = FormioUtils.getRandomComponentId,
-  currentNavIds: string[] = [],
-): Component[] => {
-  if (components) {
-    return components.map((component) => {
-      const subComponents = component.components;
-      // if component has no navId, or navId is already used by a different component, generate a new one
-      if (!component.navId || currentNavIds.includes(component.navId)) {
-        return {
-          ...component,
-          navId: navIdGenerator(),
-          ...(subComponents && {
-            components: enrichComponentsWithNavIds(subComponents, navIdGenerator, currentNavIds),
-          }),
-        };
-      } else {
-        currentNavIds.push(component.navId);
-        return {
-          ...component,
-          ...(subComponents && {
-            components: enrichComponentsWithNavIds(subComponents, navIdGenerator, currentNavIds),
-          }),
-        };
-      }
-    });
-  }
-  return components;
+): Component[] | undefined => {
+  const [enrichedComponents] = enrichComponentsWithNavIdsRecursive(components, navIdGenerator, []);
+  return enrichedComponents;
 };
 
 const getActivePanelsFromForm = (form: NavFormType, submission?: Submission, submissionMethod?: string): Panel[] => {
