@@ -82,7 +82,7 @@
           "label": "Nedtrekksmeny (navSelect)",
           "navId": "e1jp4pr",
           "validate": {
-            "required": true
+            "required": false
           }
         },
         {
@@ -546,16 +546,16 @@
               "tree": false,
               "type": "navSkjemagruppe",
               "input": false,
-              "label": "Skjemagruppe",
+              "label": "Skjemagruppe 1",
               "navId": "ef0zuad",
-              "legend": "Skjemagruppe",
+              "legend": "Skjemagruppe 1",
               "components": [
                 {
                   "id": "e9pyfsc",
                   "key": "tekstfelt-gruppe",
                   "type": "textfield",
                   "input": true,
-                  "label": "Tekstfelt skjemagruppe",
+                  "label": "Tekstfelt skjemagruppe 1",
                   "navId": "eh0gd2q"
                 },
                 {
@@ -564,9 +564,9 @@
                   "tree": true,
                   "type": "datagrid",
                   "input": false,
-                  "label": "Skjemagruppe",
+                  "label": "Skjemagruppe 2",
                   "navId": "ef0zuad5",
-                  "legend": "Skjemagruppe",
+                  "legend": "Skjemagruppe 2",
                   "isNavDataGrid": true,
                   "components": [
                     {
@@ -574,7 +574,7 @@
                       "key": "tekstfelt-gruppe",
                       "type": "textfield",
                       "input": true,
-                      "label": "Tekstfelt skjemagruppe",
+                      "label": "Tekstfelt skjemagruppe 2",
                       "navId": "eh0gd2q"
                     }
                   ]

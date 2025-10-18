@@ -268,7 +268,17 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         throw error;
       }
     },
-    [appConfig, nologinToken, form, navigate, searchParams, logger, innsendingsId],
+    [
+      appConfig,
+      nologinToken,
+      form,
+      formContextValue,
+      languagesContextValue,
+      navigate,
+      searchParams,
+      logger,
+      innsendingsId,
+    ],
   );
 
   const submitDigital = useCallback(
@@ -313,7 +323,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         }
       }
     },
-    [appConfig, form, innsendingsId, isMellomlagringReady, logger],
+    [appConfig, form, formContextValue, innsendingsId, isMellomlagringReady, languagesContextValue, logger],
   );
 
   const submitSoknad = async (appSubmission: Submission): Promise<void> => {

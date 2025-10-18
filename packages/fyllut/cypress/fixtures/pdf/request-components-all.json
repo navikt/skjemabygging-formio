@@ -1,0 +1,335 @@
+{
+  "language": "nb-NO",
+  "form": null,
+  "submission": "{\"data\":{\"Avkryssingsboks\":true,\"select\":\"\",\"angiValutaOgBelop\":{\"valutavelger\":{\"label\":\"Norsk krone (NOK)\",\"value\":\"NOK\"},\"belop1\":2000},\"container\":{\"skjemagruppeDatagrid\":[{\"tekstfelt-gruppe\":\"Skjema 2a\"},{\"tekstfelt-gruppe\":\"Skjema 2b\"}],\"datagrid\":[{\"tekstfelt-grid\":\"Repeat 1\"},{\"tekstfelt-grid\":\"Repeat 2\"},{\"tekstfelt-grid\":\"Repeat 3\"}],\"tekstfelt-gruppe\":\"Skjema 1\"},\"jegVilSvareSaGodtJegKanPaSporsmaleneISoknaden\":true,\"aktiviteterOgMaalgruppe\":{\"maalgruppe\":{\"calculated\":{\"maalgruppetype\":\"ANNET\"}}},\"aktivitetsvelger\":{},\"tekstfelt\":\"Nav 1\",\"textarea\":\"Nav 2\",\"tall\":1,\"selectboxes\":{\"true\":true,\"false\":false},\"navSelect\":{\"label\":\"Nei\",\"value\":\"false\"},\"radiopanel\":\"ja\",\"fodselsnummerDNummer\":\"20905995783\",\"identitet\":{\"harDuFodselsnummer\":\"ja\",\"identitetsnummer\":\"20905995783\"},\"fornavn\":\"Ola\",\"etternavn\":\"Nordmann\",\"adresse\":{\"co\":\"Annen person\",\"adresse\":\"Fyrstikkalléen 1\",\"postnummer\":\"0661\",\"bySted\":\"Oslo\"},\"adresseVarighet\":{\"gyldigFraOgMed\":\"2025-10-17\",\"gyldigTilOgMed\":\"2025-10-17\"},\"vegadresse\":\"Fyrstikkalléen 2\",\"postnr\":\"0662\",\"poststed\":\"Oslo2\",\"landvelger\":{\"value\":\"NO\",\"label\":\"Norge\"},\"epost\":\"test@nav.no\",\"telefonnummer\":{\"areaCode\":\"+47\",\"number\":\"21070000\"},\"statsborgerskap\":\"Norsk\",\"belop\":1000,\"kontoNummer\":\"76586005479\",\"iban\":\"NO8330001234567\",\"valutavelger\":{\"label\":\"Svensk krone (SEK)\",\"value\":\"SEK\"},\"orgNr\":\"889640782\",\"arbeidsgiver\":\"Nav\",\"datoDdMmAaaa\":\"2025-01-01\",\"tid\":\"01:01\",\"monthPicker\":\"2025-01\",\"aarstall\":2025,\"vedlegg\":{\"key\":\"ettersender\"},\"annenDokumentasjon\":{\"key\":\"nei\"}},\"metadata\":{\"dataFetcher\":{\"aktivitetsvelger\":{\"fetchDisabled\":true}}}}",
+  "translations": "{}",
+  "submissionMethod": "paper",
+  "pdfFormData": {
+    "label": "Components",
+    "verdiliste": [
+      {
+        "label": "Standard felter",
+        "verdiliste": [
+          {
+            "label": "Tekstfelt",
+            "verdi": "Nav 1"
+          },
+          {
+            "label": "Tekstområde",
+            "verdi": "Nav 2"
+          },
+          {
+            "label": "Tall",
+            "verdi": "1"
+          },
+          {
+            "label": "Avkryssingsboks",
+            "verdi": "Ja"
+          },
+          {
+            "label": "Flervalg",
+            "verdiliste": [
+              {
+                "label": "Ja"
+              }
+            ],
+            "visningsVariant": "PUNKTLISTE"
+          },
+          {
+            "label": "Nedtrekksmeny (navSelect)",
+            "verdi": "Nei"
+          },
+          {
+            "label": "Radiopanel",
+            "verdi": "Ja"
+          },
+          {
+            "label": "<p>Alert suksess</p>",
+            "visningsVariant": "HTML"
+          },
+          {
+            "label": "<p>Alert error</p>",
+            "visningsVariant": "HTML"
+          },
+          {
+            "label": "<p>HTML Blokk</p>",
+            "visningsVariant": "HTML"
+          }
+        ]
+      },
+      {
+        "label": "Person",
+        "verdiliste": [
+          {
+            "label": "Fødselsnummer eller d-nummer",
+            "verdi": "20905995783"
+          },
+          {
+            "label": "Fødselsnummer eller d-nummer",
+            "verdi": "20905995783"
+          },
+          {
+            "label": "Fornavn",
+            "verdi": "Ola"
+          },
+          {
+            "label": "Etternavn",
+            "verdi": "Nordmann"
+          },
+          {
+            "label": "Adresse",
+            "verdi": "c/o Annen person, Fyrstikkalléen 1, 0661 Oslo"
+          },
+          {
+            "label": "Gyldig fra (dd.mm.åååå)",
+            "verdi": "17.10.2025"
+          },
+          {
+            "label": "Gyldig til (dd.mm.åååå)",
+            "verdi": "17.10.2025"
+          },
+          {
+            "label": "Vegadresse",
+            "verdi": "Fyrstikkalléen 2"
+          },
+          {
+            "label": "Postnummer",
+            "verdi": "0662"
+          },
+          {
+            "label": "Poststed",
+            "verdi": "Oslo2"
+          },
+          {
+            "label": "Velg land",
+            "verdi": "Norge"
+          },
+          {
+            "label": "E-post",
+            "verdi": "test@nav.no"
+          },
+          {
+            "label": "Telefonnummer",
+            "verdi": "+47 21070000"
+          },
+          {
+            "label": "Statsborgerskap",
+            "verdi": "Norsk"
+          }
+        ]
+      },
+      {
+        "label": "Penger og konto",
+        "verdiliste": [
+          {
+            "label": "Beløp",
+            "verdi": "1 000,00 NOK"
+          },
+          {
+            "label": "Angi valuta og beløp",
+            "verdiliste": [
+              {
+                "label": "Velg valuta",
+                "verdi": "Norsk krone (NOK)"
+              },
+              {
+                "label": "Beløp",
+                "verdi": "2 000"
+              }
+            ]
+          },
+          {
+            "label": "Kontonummer",
+            "verdi": "7658 60 05479"
+          },
+          {
+            "label": "IBAN",
+            "verdi": "NO83 3000 1234 567"
+          },
+          {
+            "label": "Velg valuta",
+            "verdi": "Svensk krone (SEK)"
+          }
+        ]
+      },
+      {
+        "label": "Bedrift / organisasjon",
+        "verdiliste": [
+          {
+            "label": "Organisasjonsnummer",
+            "verdi": "889 640 782"
+          },
+          {
+            "label": "Arbeidsgiver",
+            "verdi": "Nav"
+          }
+        ]
+      },
+      {
+        "label": "Dato og tid",
+        "verdiliste": [
+          {
+            "label": "Dato (dd.mm.åååå)",
+            "verdi": "01.01.2025"
+          },
+          {
+            "label": "Klokkeslett (tt:mm)",
+            "verdi": "01:01"
+          },
+          {
+            "label": "Månedsvelger (mm.åååå)",
+            "verdi": "Januar 2025"
+          },
+          {
+            "label": "Årstall",
+            "verdi": "2025"
+          }
+        ]
+      },
+      {
+        "label": "Gruppering",
+        "verdiliste": [
+          {
+            "label": "Skjemagruppe 1",
+            "verdiliste": [
+              {
+                "label": "Tekstfelt skjemagruppe 1",
+                "verdi": "Skjema 1"
+              },
+              {
+                "label": "Skjemagruppe 2 1",
+                "verdiliste": [
+                  {
+                    "label": "Tekstfelt skjemagruppe 2",
+                    "verdi": "Skjema 2a"
+                  }
+                ]
+              },
+              {
+                "label": "Skjemagruppe 2 2",
+                "verdiliste": [
+                  {
+                    "label": "Tekstfelt skjemagruppe 2",
+                    "verdi": "Skjema 2b"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "label": "Repeterende data 1",
+            "verdiliste": [
+              {
+                "label": "Tekstfelt repeterende data",
+                "verdi": "Repeat 1"
+              }
+            ]
+          },
+          {
+            "label": "Repeterende data 2",
+            "verdiliste": [
+              {
+                "label": "Tekstfelt repeterende data",
+                "verdi": "Repeat 2"
+              }
+            ]
+          },
+          {
+            "label": "Repeterende data 3",
+            "verdiliste": [
+              {
+                "label": "Tekstfelt repeterende data",
+                "verdi": "Repeat 3"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "label": "Andre",
+        "verdiliste": [
+          {
+            "label": "Jeg bekrefter at jeg vil svare så riktig som jeg kan.",
+            "verdi": "Ja"
+          }
+        ]
+      },
+      {
+        "label": "Vedlegg",
+        "verdiliste": [
+          {
+            "label": "Vedlegg",
+            "verdi": "Jeg ettersender dokumentasjonen senere"
+          },
+          {
+            "label": "Annen dokumentasjon",
+            "verdi": "Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved"
+          }
+        ]
+      },
+      {
+        "label": "Underskrift",
+        "verdiliste": [
+          {
+            "label": "",
+            "verdi": ""
+          },
+          {
+            "label": "Eier",
+            "verdiliste": [
+              {
+                "label": "Viktig1",
+                "verdi": " "
+              },
+              {
+                "label": "Sted og dato",
+                "verdi": " "
+              },
+              {
+                "label": "Underskrift",
+                "verdi": " "
+              },
+              {
+                "label": "Navn med blokkbokstaver",
+                "verdi": " "
+              }
+            ]
+          },
+          {
+            "label": "Deleier",
+            "verdiliste": [
+              {
+                "label": "Viktig2",
+                "verdi": " "
+              },
+              {
+                "label": "Sted og dato",
+                "verdi": " "
+              },
+              {
+                "label": "Underskrift",
+                "verdi": " "
+              },
+              {
+                "label": "Navn med blokkbokstaver",
+                "verdi": " "
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "skjemanummer": "components",
+    "pdfConfig": {
+      "harInnholdsfortegnelse": false,
+      "språk": "nb"
+    },
+    "bunntekst": {
+      "upperleft": "F.nr: —",
+      "lowerleft": "Skjemanummer: components",
+      "upperRight": null,
+      "upperMiddle": null,
+      "lowerMiddle": "Versjon: local"
+    }
+  }
+}

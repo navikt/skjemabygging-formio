@@ -1,0 +1,172 @@
+{
+  "id": 1231,
+  "revision": 1,
+  "skjemanummer": "conditional-page",
+  "path": "conditionalpage",
+  "title": "Conditional page",
+  "components": [
+    {
+      "title": "Page 1",
+      "key": "veiledning",
+      "type": "panel",
+      "input": false,
+      "label": "Panel",
+      "navId": "e07he0e",
+      "components": [
+        {
+          "key": "Avkryssingsboks",
+          "type": "navCheckbox",
+          "input": true,
+          "label": "Avkryssingsboks",
+          "navId": "e1b8xai"
+        }, {
+          "label": "Tekstfelt",
+          "key": "tekstfelt",
+          "input": true,
+          "type": "textfield",
+          "navId": "efvbw1h"
+        }
+      ]
+    },
+    {
+      "key": "page2",
+      "type": "panel",
+      "input": false,
+      "label": "Page 2",
+      "navId": "em7xx5",
+      "title": "Page 2",
+      "components": [
+        {
+          "label": " Avkryssingsboks 1",
+          "key": "Avkryssingsboks1",
+          "type": "navCheckbox",
+          "input": true,
+          "navId": "ereuii"
+        }, {
+          "label": "Tekstfelt",
+          "key": "tekstfelt",
+          "input": true,
+          "type": "textfield",
+          "navId": "efvbw51"
+        }
+      ],
+      "conditional": {
+        "eq": "true",
+        "show": true,
+        "when": "Avkryssingsboks"
+      }
+    },
+    {
+      "key": "page3",
+      "type": "panel",
+      "input": false,
+      "label": "Page 3",
+      "navId": "e7p42r",
+      "title": "Page 3",
+      "tableView": false,
+      "components": [
+        {
+          "label": "Avkryssingsboks 2",
+          "key": "Avkryssingsboks2",
+          "input": true,
+          "type": "navCheckbox",
+          "navId": "e9183j"
+        },
+        {
+          "conditional": {
+            "show": true,
+            "when": "Avkryssingsboks2",
+            "eq": "true"
+          },
+          "label": "Avkryssingsboks 3",
+          "key": "Avkryssingsboks3",
+          "input": true,
+          "tableView": false,
+          "type": "navCheckbox",
+          "navId": "exyzfjg"
+        }, {
+          "label": "Tekstfelt",
+          "key": "tekstfelt",
+          "input": true,
+          "type": "textfield",
+          "navId": "efvbw51"
+        }, {
+          "key": "alertstripe",
+          "type": "alertstripe",
+          "input": false,
+          "navId": "epr9663",
+          "content": "<p>Dette er en tekst.</p>",
+          "isInline": false,
+          "conditional": {
+            "eq": "true",
+            "show": true,
+            "when": "Avkryssingsboks3"
+          },
+          "textDisplay": "formPdf"
+        }
+      ],
+      "conditional": {
+        "eq": "true",
+        "show": true,
+        "when": "Avkryssingsboks1"
+      }
+    }
+  ],
+  "properties": {
+    "tema": "HJE",
+    "prefill": [],
+    "modified": "2025-02-05T14:55:23.601Z",
+    "published": "2022-07-01T12:47:07.873Z",
+    "skjemanummer": "conditional-page",
+    "submissionTypes": [
+      "DIGITAL_NO_LOGIN",
+      "DIGITAL",
+      "PAPER"
+    ],
+    "publishedLanguages": [
+      "nb"
+    ],
+    "ettersendelsesfrist": "10",
+    "hasLabeledSignatures": false,
+    "mellomlagringDurationDays": "28",
+    "subsequentSubmissionTypes": [
+      "PAPER",
+      "DIGITAL"
+    ]
+  },
+  "introPage": {
+    "enabled": true,
+    "sections": {
+      "scope": {
+        "title": "introPage.scope.title.alt1",
+        "description": "test"
+      },
+      "outOfScope": {
+        "title": "introPage.outOfScope.title.alt1",
+        "description": "test"
+      },
+      "dataTreatment": {
+        "description": "test"
+      },
+      "prerequisites": {
+        "title": "introPage.prerequisites.title.alt1",
+        "description": "test"
+      }
+    },
+    "introduction": "Velkomstmelding",
+    "selfDeclaration": "introPage.selfDeclaration.description.alt1",
+    "importantInformation": {
+      "description": "test"
+    }
+  },
+  "createdAt": "2022-02-07T16:31:33.410+01",
+  "createdBy": "IMPORT",
+  "changedAt": "2025-10-14T08:28:37.998+02",
+  "changedBy": "Lars Olav Torvik",
+  "publishedAt": "2025-05-09T12:31:25.347+02",
+  "publishedBy": "Lars Olav Torvik",
+  "publishedLanguages": [
+    "nb"
+  ],
+  "status": "pending"
+}
