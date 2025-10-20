@@ -188,4 +188,33 @@ describe('Datagrid', () => {
       cy.url().should('include', '/oppsummering');
     });
   });
+
+  describe('Datagrid with selectboxes and conditionals', () => {
+    it('keeps focus on checkbox', () => {
+      cy.visit('/fyllut/datagrid001/diverse?sub=paper');
+      cy.defaultWaits();
+
+      // check 'melk' og verifiser at fokus beholdes
+      cy.findByRole('group', { name: 'Ingredienser' }).within(() => {
+        cy.findByLabelText('Melk').should('exist').click();
+      });
+      cy.findByRole('group', { name: 'Kjøpte du varene rett fra bonden?' }).should('exist');
+      cy.findByText('Husk å legge med kvittering på utgiftene til melk').should('exist');
+      cy.findByLabelText('Melk').should('have.focus');
+
+      // check 'melk' og verifiser at fokus beholdes
+      cy.findByRole('group', { name: 'Ingredienser' }).within(() => {
+        cy.findByLabelText('Avokado').should('exist').click();
+      });
+      cy.findByRole('textbox', { name: 'Hva var prisen per avokado?' }).should('exist');
+      cy.findByLabelText('Avokado').should('have.focus');
+
+      // uncheck 'melk' og verifiser at fokus beholdes
+      cy.findByRole('group', { name: 'Ingredienser' }).within(() => {
+        cy.findByLabelText('Melk').should('exist').should('be.checked').click();
+      });
+      cy.findByText('Husk å legge med kvittering på utgiftene til melk').should('not.exist');
+      cy.findByLabelText('Melk').should('have.focus');
+    });
+  });
 });

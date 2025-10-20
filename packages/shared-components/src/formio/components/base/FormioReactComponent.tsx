@@ -10,6 +10,7 @@ import { IReactComponent } from './index';
 class FormioReactComponent extends (ReactComponent as unknown as IReactComponent) {
   rootElement: any;
   componentErrors: ComponentError[];
+  _reactMainRendered = Ready();
   _reactRendered = Ready();
   _reactRefs: Record<string, HTMLElement> = {};
   _logger?: ComponentLogger;
@@ -32,17 +33,25 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
   }
 
   attachReact(element: any) {
+    this.logger.debug('attachReact', { path: this.path });
     this.rootElement = createRoot(element);
     this.renderReact(this.rootElement);
   }
 
   setReactInstance(element, autoResolve: boolean = true) {
+    this.logger.debug('setReactInstance', { action: element ? 'add' : 'remove', path: this.path });
     this.addRef(this.getId(), element);
 
     this.reactInstance = element;
-    this.addFocusBlurEvents(element);
-    if (autoResolve) {
-      this.reactResolve();
+    if (element) {
+      this.addFocusBlurEvents(element);
+      if (autoResolve) {
+        this.logger.debug('setReactInstance autoresolve', { path: this.path });
+        this.reactResolve();
+      }
+      this._reactMainRendered.resolve();
+    } else {
+      this._reactMainRendered.reset();
     }
   }
 
@@ -65,6 +74,10 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
   }
 
   detachReact(element) {
+    this.logger.debug('detachReact', { path: this.path });
+    this._reactRefs = {};
+    this._reactRendered.reset();
+    this._reactMainRendered.reset();
     // For now we prefer memory leak in development and test over spamming the console log...
     // Wrapping in setTimeout causes problems when we do a redraw, so need to find a different solution.
     // https://github.com/facebook/react/issues/25675#issuecomment-1518272581
@@ -96,6 +109,7 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
     this.dataValue = Array.isArray(newValue) ? [...newValue] : newValue;
 
     if (changed || flags?.fromSubmission) {
+      this.logger.debug('setValue triggers rerender', { value, changed, flags, path: this.path });
       this.rerender();
     }
   }
@@ -107,6 +121,7 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
     // Consider removing if we are able to render datagrid in react
     this.shouldSetValue = false;
 
+    this.logger.debug('handleChange', { value, flags, path: this.path });
     this.emit('submissionChanged', { ...this.root._data });
   }
 
@@ -133,7 +148,9 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
   renderReact(_element) {}
 
   rerender() {
+    this.logger.debug('rerender', { path: this.path, rootElementExists: !!this.rootElement });
     if (this.rootElement) {
+      this.logger.debug('rerender clearing refs', { path: this.path });
       this._reactRefs = {};
       this._reactRendered.reset();
       this.renderReact(this.rootElement);
@@ -144,7 +161,7 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
    * Resolves when the React component has been rendered.
    */
   get reactReady() {
-    return this._reactRendered.promise;
+    return this._reactRendered.promise.then(() => this._reactMainRendered.promise);
   }
 
   /**
@@ -152,6 +169,7 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
    * Should only be necessary to call if you set autoResolve false in setReactInstance
    */
   reactResolve() {
+    this.logger.debug('reactResolve', { path: this.path });
     this._reactRendered.resolve();
   }
 
@@ -240,8 +258,11 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
       this.logger.debug('focus reactReady', { focusData, path: this.path, reactInstanceExists: !!this.reactInstance });
       const { elementId } = focusData;
       if (elementId) {
-        this.getRef(elementId)?.focus();
+        const ref = this.getRef(elementId);
+        this.logger.debug('focus elementId', { elementId, refExists: !!ref, path: this.path });
+        ref?.focus();
       } else if (this.reactInstance) {
+        this.logger.debug('focus reactInstance', { path: this.path });
         this.reactInstance.focus(focusData);
       }
     });
