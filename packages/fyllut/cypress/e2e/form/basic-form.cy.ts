@@ -70,7 +70,7 @@ describe('Basic form', () => {
 
     // Gå tilbake til skjema fra oppsummering, og naviger til oppsummering på nytt
     // for å verifisere at ingen valideringsfeil oppstår grunnet manglende verdier.
-    cy.findByRoleWhenAttached('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers }).should('exist').click();
+    cy.clickEditAnswers();
 
     clickNext(submissionMethod);
 
@@ -116,8 +116,8 @@ describe('Basic form', () => {
     });
 
     it('visits the correct form', () => {
-      cy.findByRole('heading', { name: 'Skjema for Cucumber-testing' }).should('not.exist');
-      cy.findByRole('heading', { name: 'Skjema for Cypress-testing' }).should('exist');
+      cy.contains('Skjema for Cucumber-testing').should('not.exist');
+      cy.contains('Skjema for Cypress-testing').should('exist');
     });
 
     describe('Step navigation', () => {

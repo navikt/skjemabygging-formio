@@ -1,4 +1,3 @@
-import { Heading } from '@navikt/ds-react';
 import { Enhet, SubmissionType, submissionTypesUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { getAttachments } from '../../../../shared-domain/src/forsteside/forstesideUtils';
@@ -15,20 +14,9 @@ import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
-import makeStyles from '../../util/styles/jss/jss';
+import FormMainContent from '../FormMainContent';
 
 const compareEnheter = (enhetA, enhetB) => enhetA.navn.localeCompare(enhetB.navn, 'nb');
-
-const useStyles = makeStyles({
-  content: {
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    '& section.wizard-page': {
-      paddingBottom: '2rem',
-    },
-  },
-});
 
 const submissionTypeIncludesPaperOrIsNoSubmission = (submissionTypes?: SubmissionType[]) =>
   submissionTypes &&
@@ -41,9 +29,7 @@ export function PrepareLetterPage() {
   const [enhetsListe, setEnhetsListe] = useState<Enhet[]>([]);
   const [enhetsListeError, setEnhetsListeError] = useState(false);
   const [enhetslisteFilteringError, setEnhetslisteFilteringError] = useState(false);
-  const { form, submission } = useForm();
-
-  const styles = useStyles();
+  const { form, submission, setFormProgressVisible, setTitle } = useForm();
 
   const { enhetMaVelgesVedPapirInnsending, enhetstyper, skjemanummer, uxSignalsId, uxSignalsSubmissionTypes } =
     form.properties;
@@ -71,6 +57,11 @@ export function PrepareLetterPage() {
     }
   }, [enhetslisteFilteringError, enhetstyper, logger, skjemanummer]);
 
+  useEffect(() => {
+    setFormProgressVisible(false);
+    setTitle(TEXTS.statiske.prepareLetterPage.subTitle);
+  }, [setFormProgressVisible, setTitle]);
+
   if (enhetMaVelgesVedPapirInnsending && enhetsListeError) {
     return <ErrorPage errorMessage={translate(TEXTS.statiske.prepareLetterPage.entityFetchError)} />;
   }
@@ -83,20 +74,15 @@ export function PrepareLetterPage() {
   const hasAttachments = attachments.length > 0;
 
   return (
-    <div className={styles.content}>
-      <Heading level="2" size="large" spacing>
-        {translate(TEXTS.statiske.prepareLetterPage.subTitle)}
-      </Heading>
-      <section id="maincontent" tabIndex={-1}>
-        <section className="main-col">
-          <LetterDownload index={1} form={form} submission={submission} enhetsListe={enhetsListe} />
-          <LetterPrint index={2} />
-          {hasAttachments && <LetterAddAttachment index={3} attachments={attachments} />}
-          <LetterInTheMail index={hasAttachments ? 4 : 3} attachments={attachments} />
-          <NavigateButtonComponent goBackUrl={`../oppsummering`} />
-          {includeUxSignals && <LetterUXSignals id={uxSignalsId} demo={config?.NAIS_CLUSTER_NAME !== 'prod-gcp'} />}
-        </section>
-      </section>
-    </div>
+    <>
+      <FormMainContent>
+        <LetterDownload index={1} enhetsListe={enhetsListe} />
+        <LetterPrint index={2} />
+        {hasAttachments && <LetterAddAttachment index={3} attachments={attachments} />}
+        <LetterInTheMail index={hasAttachments ? 4 : 3} attachments={attachments} />
+      </FormMainContent>
+      <NavigateButtonComponent goBackUrl="../oppsummering" />
+      {includeUxSignals && <LetterUXSignals id={uxSignalsId} demo={config?.NAIS_CLUSTER_NAME !== 'prod-gcp'} />}
+    </>
   );
 }

@@ -2,6 +2,7 @@ const formCypress101 = require('../data/formio-api/cypress101.json');
 const introPage = require('../data/formio-api/intro-page.json');
 const introPageTranslations = require('../data/formio-api/intro-page-translations.json');
 const formCypressaxe = require('../data/formio-api/cypressaxe.json');
+const formComponents = require('../data/formio-api/components.json');
 const formPengerOgKonto = require('../data/formio-api/pengerOgKonto.json');
 const formPhoneNumberAreaCode = require('../data/formio-api/phone-number-area-code.json');
 const formConditionalXmas = require('../data/formio-api/conditionalxmas.json');
@@ -62,11 +63,13 @@ const submissionTypePaperNoLogin = require('../data/formio-api/submission-type-p
 const nologinForm = require('../data/formio-api/nologin.json');
 const dataGridLogicBug = require('../data/formio-api/datagrid-logic-bug.json');
 const dataGridSkjemagruppeBug = require('../data/formio-api/datagrid001.json');
+const conditionalPage = require('../data/formio-api/conditional-page.json');
 
 const allForms = [
   { form: formCypress101, translations: translationsCypress101 },
   { form: introPage, translations: introPageTranslations },
   { form: formCypressaxe, translations: undefined },
+  { form: formComponents, translations: undefined },
   { form: formPengerOgKonto, translations: undefined },
   { form: formPhoneNumberAreaCode, translations: undefined },
   { form: formConditionalXmas, translations: translationsConditionalXmas },
@@ -118,6 +121,7 @@ const allForms = [
   { form: nologinForm, translations: undefined },
   { form: dataGridLogicBug, translations: undefined },
   { form: dataGridSkjemagruppeBug, translations: undefined },
+  { form: conditionalPage, translations: undefined },
 ];
 
 const findTestdata = (formPath) => allForms.find((testdata) => testdata.form.path === formPath);

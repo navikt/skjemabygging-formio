@@ -1,0 +1,52 @@
+{
+  "label": "Components",
+  "verdiliste": [
+    {
+      "label": "Dine opplysninger",
+      "verdiliste": [
+        {
+          "label": "Fødselsnummer eller d-nummer",
+          "verdi": "08842748500"
+        }
+      ]
+    },
+    {
+      "label": "Standard felter",
+      "verdiliste": [
+        {
+          "label": "<p>Alert suksess</p>",
+          "visningsVariant": "HTML"
+        },
+        {
+          "label": "<p>Alert error</p>",
+          "visningsVariant": "HTML"
+        },
+        {
+          "label": "<p>HTML Blokk</p>",
+          "visningsVariant": "HTML"
+        }
+      ]
+    },
+    {
+      "label": "Andre",
+      "verdiliste": [
+        {
+          "label": "Hvilken aktivitet søker du om støtte i forbindelse med?",
+          "verdi": "Ingen relevant aktivitet registrert på meg"
+        }
+      ]
+    }
+  ],
+  "skjemanummer": "components",
+  "pdfConfig": {
+    "harInnholdsfortegnelse": false,
+    "språk": "nb"
+  },
+  "bunntekst": {
+    "upperleft": "F.nr: 08842748500",
+    "lowerleft": "Skjemanummer: components",
+    "upperRight": null,
+    "upperMiddle": null,
+    "lowerMiddle": "Versjon: local"
+  }
+}
