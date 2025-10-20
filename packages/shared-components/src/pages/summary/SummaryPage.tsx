@@ -9,7 +9,6 @@ import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import RenderSummaryForm from '../../form-components/RenderSummaryForm';
-import formComponentUtils from '../../form-components/utils/formComponent';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
 import {
   findFirstValidationErrorInAttachmentPanel,
@@ -62,9 +61,7 @@ export function SummaryPage() {
           panelValidations.push({
             key: attachmentPanel.key,
             hasValidationErrors: !!invalidAttachment,
-            firstInputWithValidationError: invalidAttachment
-              ? formComponentUtils.getNavId(invalidAttachment)
-              : undefined,
+            firstInputWithValidationError: invalidAttachment ? invalidAttachment.navId : undefined,
           });
         }
       }

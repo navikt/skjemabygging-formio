@@ -6,7 +6,6 @@ import {
   Submission,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { AttachmentValidator } from '../../../components/attachment/attachmentValidator';
-import formComponentUtils from '../../../form-components/utils/formComponent';
 
 export type PanelValidation = {
   key: string;
@@ -66,7 +65,7 @@ export const findFirstValidationErrorInAttachmentPanel = (
   const attachmentPanel = form.components.find((panel) => panel.isAttachmentPanel);
   return attachmentPanel?.components?.find((component) => {
     const submissionAttachment = submission.attachments?.find(
-      (attachment) => attachment.attachmentId === formComponentUtils.getNavId(component),
+      (attachment) => attachment.attachmentId === component.navId,
     );
     return (
       navFormUtils.isComponentConditionallyVisible(component, submission, form) &&

@@ -2,16 +2,14 @@ import { Alert, FileUpload, FormSummary, Label, VStack } from '@navikt/ds-react'
 import { SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useForm } from '../../../../context/form/FormContext';
 import { useLanguages } from '../../../../context/languages';
-import formComponentUtils from '../../../utils/formComponent';
 
 const SummaryAttachmentUpload = ({ component }) => {
   const { form, submission } = useForm();
   const { translate } = useLanguages();
   const { label } = component;
-  const submissionAttachments = submission?.attachments?.filter((attachment) => {
-    const navId = formComponentUtils.getNavId(component);
-    return navId && attachment.attachmentId.startsWith(navId);
-  });
+  const submissionAttachments = submission?.attachments?.filter(
+    (attachment) => component.navId && attachment.attachmentId.startsWith(component.navId),
+  );
   const showDeadline = (submissionAttachment: SubmissionAttachment) =>
     submissionAttachment?.value && !!component.attachmentValues?.[submissionAttachment.value]?.showDeadline;
   const hasUploadedFiles = (submissionAttachment: SubmissionAttachment) =>
