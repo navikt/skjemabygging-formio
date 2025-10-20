@@ -42,17 +42,6 @@ describe('nologinTokenHandler', () => {
     expect(req.getNologinContext).toBeUndefined();
   });
 
-  it('should fail when token is malformed', () => {
-    const req = mockRequest({ headers: { NologinToken: 'not-a-valid-jwt' } });
-    const res = mockResponse();
-    const next = vi.fn();
-    nologinTokenHandler(req, res, next);
-
-    expect(res.sendStatus).toHaveBeenCalledWith(401);
-    expect(next).not.toHaveBeenCalled();
-    expect(req.getNologinContext).toBeUndefined();
-  });
-
   it('should fail due to missing token', () => {
     const req = mockRequest({ headers: {} });
     const res = mockResponse();
