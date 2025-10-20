@@ -6,7 +6,7 @@
       "verdiliste": [
         {
           "label": "Fødselsnummer eller d-nummer",
-          "verdi": "20905995783"
+          "verdi": "08842748500"
         }
       ]
     },
@@ -250,6 +250,10 @@
         {
           "label": "Jeg bekrefter at jeg vil svare så riktig som jeg kan.",
           "verdi": "Ja"
+        },
+        {
+          "label": "Hvilken aktivitet søker du om støtte i forbindelse med?",
+          "verdi": "Ingen relevant aktivitet registrert på meg"
         }
       ]
     },
@@ -265,57 +269,6 @@
           "verdi": "Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved"
         }
       ]
-    },
-    {
-      "label": "Underskrift",
-      "verdiliste": [
-        {
-          "label": "",
-          "verdi": ""
-        },
-        {
-          "label": "Eier",
-          "verdiliste": [
-            {
-              "label": "Viktig1",
-              "verdi": " "
-            },
-            {
-              "label": "Sted og dato",
-              "verdi": " "
-            },
-            {
-              "label": "Underskrift",
-              "verdi": " "
-            },
-            {
-              "label": "Navn med blokkbokstaver",
-              "verdi": " "
-            }
-          ]
-        },
-        {
-          "label": "Deleier",
-          "verdiliste": [
-            {
-              "label": "Viktig2",
-              "verdi": " "
-            },
-            {
-              "label": "Sted og dato",
-              "verdi": " "
-            },
-            {
-              "label": "Underskrift",
-              "verdi": " "
-            },
-            {
-              "label": "Navn med blokkbokstaver",
-              "verdi": " "
-            }
-          ]
-        }
-      ]
     }
   ],
   "skjemanummer": "components",
@@ -324,7 +277,7 @@
     "språk": "nb"
   },
   "bunntekst": {
-    "upperleft": "F.nr: 20905995783",
+    "upperleft": "F.nr: 08842748500",
     "lowerleft": "Skjemanummer: components",
     "upperRight": null,
     "upperMiddle": null,

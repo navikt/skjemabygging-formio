@@ -1,109 +1,94 @@
 {
-  "language": "nb-NO",
-  "form": null,
-  "submission": null,
-  "translations": "{}",
-  "submissionMethod": "paper",
-  "pdfFormData": {
-    "label": "Components",
-    "verdiliste": [
-      {
-        "label": "Standard felter",
-        "verdiliste": [
-          {
-            "label": "<p>Alert suksess</p>",
-            "visningsVariant": "HTML"
-          },
-          {
-            "label": "<p>Alert error</p>",
-            "visningsVariant": "HTML"
-          },
-          {
-            "label": "<p>HTML Blokk</p>",
-            "visningsVariant": "HTML"
-          }
-        ]
-      },
-      {
-        "label": "Person",
-        "verdiliste": [
-          {
-            "label": "Fødselsnummer eller d-nummer",
-            "verdi": "20905995783"
-          },
-          {
-            "label": "Fornavn",
-            "verdi": "Ola"
-          },
-          {
-            "label": "Etternavn",
-            "verdi": "Nordmann"
-          }
-        ]
-      },
-      {
-        "label": "Underskrift",
-        "verdiliste": [
-          {
-            "label": "",
-            "verdi": ""
-          },
-          {
-            "label": "Eier",
-            "verdiliste": [
-              {
-                "label": "Viktig1",
-                "verdi": " "
-              },
-              {
-                "label": "Sted og dato",
-                "verdi": " "
-              },
-              {
-                "label": "Underskrift",
-                "verdi": " "
-              },
-              {
-                "label": "Navn med blokkbokstaver",
-                "verdi": " "
-              }
-            ]
-          },
-          {
-            "label": "Deleier",
-            "verdiliste": [
-              {
-                "label": "Viktig2",
-                "verdi": " "
-              },
-              {
-                "label": "Sted og dato",
-                "verdi": " "
-              },
-              {
-                "label": "Underskrift",
-                "verdi": " "
-              },
-              {
-                "label": "Navn med blokkbokstaver",
-                "verdi": " "
-              }
-            ]
-          }
-        ]
-      }
-    ],
-    "skjemanummer": "components",
-    "pdfConfig": {
-      "harInnholdsfortegnelse": false,
-      "språk": "nb"
+  "label": "Components",
+  "verdiliste": [
+    {
+      "label": "Dine opplysninger",
+      "verdiliste": [
+        {
+          "label": "Fødselsnummer eller d-nummer",
+          "verdi": "20905995783"
+        }
+      ]
     },
-    "bunntekst": {
-      "upperleft": "F.nr: —",
-      "lowerleft": "Skjemanummer: components",
-      "upperRight": null,
-      "upperMiddle": null,
-      "lowerMiddle": "Versjon: local"
+    {
+      "label": "Standard felter",
+      "verdiliste": [
+        {
+          "label": "<p>Alert suksess</p>",
+          "visningsVariant": "HTML"
+        },
+        {
+          "label": "<p>Alert error</p>",
+          "visningsVariant": "HTML"
+        },
+        {
+          "label": "<p>HTML Blokk</p>",
+          "visningsVariant": "HTML"
+        }
+      ]
+    },
+    {
+      "label": "Underskrift",
+      "verdiliste": [
+        {
+          "label": "",
+          "verdi": ""
+        },
+        {
+          "label": "Eier",
+          "verdiliste": [
+            {
+              "label": "Viktig1",
+              "verdi": " "
+            },
+            {
+              "label": "Sted og dato",
+              "verdi": " "
+            },
+            {
+              "label": "Underskrift",
+              "verdi": " "
+            },
+            {
+              "label": "Navn med blokkbokstaver",
+              "verdi": " "
+            }
+          ]
+        },
+        {
+          "label": "Deleier",
+          "verdiliste": [
+            {
+              "label": "Viktig2",
+              "verdi": " "
+            },
+            {
+              "label": "Sted og dato",
+              "verdi": " "
+            },
+            {
+              "label": "Underskrift",
+              "verdi": " "
+            },
+            {
+              "label": "Navn med blokkbokstaver",
+              "verdi": " "
+            }
+          ]
+        }
+      ]
     }
+  ],
+  "skjemanummer": "components",
+  "pdfConfig": {
+    "harInnholdsfortegnelse": false,
+    "språk": "nb"
+  },
+  "bunntekst": {
+    "upperleft": "F.nr: 20905995783",
+    "lowerleft": "Skjemanummer: components",
+    "upperRight": null,
+    "upperMiddle": null,
+    "lowerMiddle": "Versjon: local"
   }
 }

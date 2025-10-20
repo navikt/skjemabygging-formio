@@ -5,6 +5,40 @@
   "title": "Components",
   "components": [
     {
+      "isAttachmentPanel": false,
+      "title": "Dine opplysninger",
+      "key": "dineOpplysninger",
+      "type": "panel",
+      "input": false,
+      "components": [
+        {
+          "type": "container",
+          "key": "dineOpplysninger",
+          "label": "Dine opplysninger",
+          "yourInformation": true,
+          "components": [
+            {
+              "input": true,
+              "key": "identitet",
+              "tableView": false,
+              "label": "Identitet",
+              "type": "identity",
+              "prefill": true,
+              "prefillKey": "sokerIdentifikasjonsnummer",
+              "protectedApiKey": true,
+              "customLabels": {
+                "doYouHaveIdentityNumber": "Har du norsk fødselsnummer eller d-nummer?"
+              },
+              "navId": "el3yfbm"
+            }
+          ],
+          "navId": "exztcom",
+          "input": true
+        }
+      ],
+      "navId": "e9rgsg"
+    },
+    {
       "id": "eob2ip9",
       "key": "standardfelter",
       "type": "panel",
@@ -225,23 +259,6 @@
           "input": true,
           "type": "fnrfield",
           "navId": "ezr5xpr"
-        },
-        {
-          "input": true,
-          "key": "identitet",
-          "label": "Identitet",
-          "type": "identity",
-          "prefill": true,
-          "prefillKey": "sokerIdentifikasjonsnummer",
-          "prefillValue": "12345678910",
-          "protectedApiKey": true,
-          "customLabels": {
-            "doYouHaveIdentityNumber": "Har du norsk fødselsnummer eller d-nummer?"
-          },
-          "validate": {
-            "required": false
-          },
-          "navId": "e0nafli"
         },
         {
           "label": "Fornavn",
