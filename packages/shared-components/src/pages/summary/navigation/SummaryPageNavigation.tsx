@@ -63,7 +63,7 @@ const SummaryPageNavigation = ({ form, submission, panelValidationList, isValid 
             <LinkButton
               buttonVariant="primary"
               onClick={(e) => !isValid(e)}
-              to={{ pathname: `/${form.path}/send-i-posten`, search }}
+              to={{ pathname: `../send-i-posten`, search }}
             >
               <span aria-live="polite" className="navds-body-short font-bold">
                 {translate(TEXTS.grensesnitt.moveForward)}
@@ -115,7 +115,7 @@ const SummaryPageNavigation = ({ form, submission, panelValidationList, isValid 
             <LinkButton
               buttonVariant="primary"
               onClick={(e) => !isValid(e)}
-              to={{ pathname: `/${form.path}/ingen-innsending`, search }}
+              to={{ pathname: `../ingen-innsending`, search }}
             >
               <span aria-live="polite" className="navds-body-short font-bold">
                 {translate(TEXTS.grensesnitt.moveForward)}

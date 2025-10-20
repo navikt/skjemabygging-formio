@@ -97,7 +97,7 @@ describe('SummaryPageNavigation', () => {
 
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
       await userEvent.click(buttons.gaVidereKnapp);
-      expect(router.state.location.pathname).toBe('/testskjema/send-i-posten');
+      expect(router.state.location.pathname).toBe('/send-i-posten');
     });
   });
 
@@ -108,7 +108,7 @@ describe('SummaryPageNavigation', () => {
       const { router, buttons } = await renderSummaryPageNavigation({ form }, appConfigProps);
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
       await userEvent.click(buttons.gaVidereKnapp);
-      expect(router.state.location.pathname).toBe('/testskjema/send-i-posten');
+      expect(router.state.location.pathname).toBe('/send-i-posten');
     });
 
     it('submissionTypes=PAPIR_OG_DIGITAL, submissionMethod=digital', async () => {
@@ -117,7 +117,7 @@ describe('SummaryPageNavigation', () => {
       const { router, buttons } = await renderSummaryPageNavigation({ form }, appConfigProps);
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
       await userEvent.click(buttons.gaVidereKnapp);
-      expect(router.state.location.pathname).toBe('/testskjema/send-i-posten');
+      expect(router.state.location.pathname).toBe('/send-i-posten');
     });
 
     it('submissionTypes=DIGITAL - rendrer knapp for direkte submissionTypes til Nav', async () => {
@@ -135,7 +135,7 @@ describe('SummaryPageNavigation', () => {
       await act(async () => {
         expectKnapperForRedigerSvarEllerGaVidere(buttons);
         await userEvent.click(buttons.gaVidereKnapp);
-        expect(router.state.location.pathname).toBe('/testskjema/send-i-posten');
+        expect(router.state.location.pathname).toBe('/send-i-posten');
       });
     });
   });
@@ -148,7 +148,7 @@ describe('SummaryPageNavigation', () => {
       await act(async () => {
         expectKnapperForRedigerSvarEllerGaVidere(buttons);
         await userEvent.click(buttons.gaVidereKnapp);
-        expect(router.state.location.pathname).toBe('/testskjema/send-i-posten');
+        expect(router.state.location.pathname).toBe('/send-i-posten');
       });
     });
   });
@@ -217,7 +217,7 @@ describe('SummaryPageNavigation', () => {
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
 
       await userEvent.click(buttons.gaVidereKnapp);
-      expect(router.state.location.pathname).toBe('/testskjema/ingen-innsending');
+      expect(router.state.location.pathname).toBe('/ingen-innsending');
     });
   });
 
@@ -301,7 +301,7 @@ describe('SummaryPageNavigation', () => {
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
 
       await userEvent.click(buttons.gaVidereKnapp);
-      expect(router.state.location.pathname).toBe('/testskjema/send-i-posten');
+      expect(router.state.location.pathname).toBe('/send-i-posten');
     });
   });
 });

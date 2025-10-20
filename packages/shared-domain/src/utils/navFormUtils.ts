@@ -263,6 +263,12 @@ export const enrichComponentsWithNavIds = (
   return components;
 };
 
+/**
+ * @deprecated Use activeComponents from FormContext instead
+ * @param form
+ * @param submission
+ * @param submissionMethod
+ */
 const getActivePanelsFromForm = (form: NavFormType, submission?: Submission, submissionMethod?: string): Panel[] => {
   const conditionals = formSummaryUtil.mapAndEvaluateConditionals(form, submission ?? { data: {} });
   return form.components
@@ -276,6 +282,42 @@ const getActivePanelsFromForm = (form: NavFormType, submission?: Submission, sub
     );
 };
 
+const getActiveComponentsFromForm = (
+  form: NavFormType,
+  submission?: Submission,
+  submissionMethod?: string,
+): Component[] => {
+  const conditionals = formSummaryUtil.mapAndEvaluateConditionals(form, submission ?? { data: {} });
+
+  if (!conditionals || Object.keys(conditionals).length === 0) {
+    return form.components;
+  }
+
+  return getActiveComponents(
+    form.components.filter(
+      (component) =>
+        component.type === 'panel' &&
+        !(isVedleggspanel(component) && (submissionMethod === 'digital' || submissionMethod === 'digitalnologin')),
+    ),
+    conditionals,
+  );
+};
+
+const getActiveComponents = (components: Component[], conditionals?: any): Component[] => {
+  return components
+    .filter((component) => conditionals[formSummaryUtil.createComponentKeyWithNavId(component)] !== false)
+    .map((component) => {
+      if (component.components) {
+        return {
+          ...component,
+          components: getActiveComponents(component.components, conditionals),
+        };
+      }
+
+      return component;
+    });
+};
+
 // For attachment panel when submission values are in submission.attachments rather than submission.data
 const getActiveAttachmentPanelFromForm = (
   form: NavFormType,
@@ -287,7 +329,8 @@ const getActiveAttachmentPanelFromForm = (
   }
   const conditionals = formSummaryUtil.mapAndEvaluateConditionals(form, submission ?? { data: {} });
   const attachmentPanel = getAttachmentPanel(form);
-  return attachmentPanel && conditionals[attachmentPanel.key] !== false ? attachmentPanel : undefined;
+  const [activeAttachmentPanel] = attachmentPanel ? getActiveComponents([attachmentPanel], conditionals) : [];
+  return isVedleggspanel(activeAttachmentPanel) ? activeAttachmentPanel : undefined;
 };
 
 const getAttachmentPanel = (form: NavFormType) => {
@@ -365,6 +408,7 @@ const navFormUtils = {
   findComponentsByProperty,
   enrichComponentsWithNavIds,
   getActivePanelsFromForm,
+  getActiveComponentsFromForm,
   getActiveAttachmentPanelFromForm,
   getAttachmentPanel,
   hasAttachment,

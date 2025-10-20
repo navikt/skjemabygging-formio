@@ -5,6 +5,40 @@
   "title": "Components",
   "components": [
     {
+      "isAttachmentPanel": false,
+      "title": "Dine opplysninger",
+      "key": "dineOpplysninger",
+      "type": "panel",
+      "input": false,
+      "components": [
+        {
+          "type": "container",
+          "key": "dineOpplysninger",
+          "label": "Dine opplysninger",
+          "yourInformation": true,
+          "components": [
+            {
+              "input": true,
+              "key": "identitet",
+              "tableView": false,
+              "label": "Identitet",
+              "type": "identity",
+              "prefill": true,
+              "prefillKey": "sokerIdentifikasjonsnummer",
+              "protectedApiKey": true,
+              "customLabels": {
+                "doYouHaveIdentityNumber": "Har du norsk fødselsnummer eller d-nummer?"
+              },
+              "navId": "el3yfbm"
+            }
+          ],
+          "navId": "exztcom",
+          "input": true
+        }
+      ],
+      "navId": "e9rgsg"
+    },
+    {
       "id": "eob2ip9",
       "key": "standardfelter",
       "type": "panel",
@@ -82,7 +116,7 @@
           "label": "Nedtrekksmeny (navSelect)",
           "navId": "e1jp4pr",
           "validate": {
-            "required": true
+            "required": false
           }
         },
         {
@@ -225,23 +259,6 @@
           "input": true,
           "type": "fnrfield",
           "navId": "ezr5xpr"
-        },
-        {
-          "input": true,
-          "key": "identitet",
-          "label": "Identitet",
-          "type": "identity",
-          "prefill": true,
-          "prefillKey": "sokerIdentifikasjonsnummer",
-          "prefillValue": "12345678910",
-          "protectedApiKey": true,
-          "customLabels": {
-            "doYouHaveIdentityNumber": "Har du norsk fødselsnummer eller d-nummer?"
-          },
-          "validate": {
-            "required": false
-          },
-          "navId": "e0nafli"
         },
         {
           "label": "Fornavn",
@@ -546,16 +563,16 @@
               "tree": false,
               "type": "navSkjemagruppe",
               "input": false,
-              "label": "Skjemagruppe",
+              "label": "Skjemagruppe 1",
               "navId": "ef0zuad",
-              "legend": "Skjemagruppe",
+              "legend": "Skjemagruppe 1",
               "components": [
                 {
                   "id": "e9pyfsc",
                   "key": "tekstfelt-gruppe",
                   "type": "textfield",
                   "input": true,
-                  "label": "Tekstfelt skjemagruppe",
+                  "label": "Tekstfelt skjemagruppe 1",
                   "navId": "eh0gd2q"
                 },
                 {
@@ -564,9 +581,9 @@
                   "tree": true,
                   "type": "datagrid",
                   "input": false,
-                  "label": "Skjemagruppe",
+                  "label": "Skjemagruppe 2",
                   "navId": "ef0zuad5",
-                  "legend": "Skjemagruppe",
+                  "legend": "Skjemagruppe 2",
                   "isNavDataGrid": true,
                   "components": [
                     {
@@ -574,7 +591,7 @@
                       "key": "tekstfelt-gruppe",
                       "type": "textfield",
                       "input": true,
-                      "label": "Tekstfelt skjemagruppe",
+                      "label": "Tekstfelt skjemagruppe 2",
                       "navId": "eh0gd2q"
                     }
                   ]
