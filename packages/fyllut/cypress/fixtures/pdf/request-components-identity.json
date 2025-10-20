@@ -1,7 +1,7 @@
 {
   "language": "nb-NO",
   "form": null,
-  "submission": "{\"data\":{\"Avkryssingsboks\":false,\"select\":\"\",\"angiValutaOgBelop\":{},\"container\":{\"skjemagruppeDatagrid\":[{}],\"datagrid\":[{}]},\"jegVilSvareSaGodtJegKanPaSporsmaleneISoknaden\":false,\"aktiviteterOgMaalgruppe\":{\"maalgruppe\":{\"calculated\":{\"maalgruppetype\":\"ANNET\"}}},\"aktivitetsvelger\":{},\"identitet\":{\"harDuFodselsnummer\":\"ja\",\"identitetsnummer\":\"20905995783\"},\"fornavn\":\"Ola\",\"etternavn\":\"Nordmann\"}}",
+  "submission": null,
   "translations": "{}",
   "submissionMethod": "paper",
   "pdfFormData": {

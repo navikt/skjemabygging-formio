@@ -1,7 +1,7 @@
 {
   "language": "nb-NO",
   "form": null,
-  "submission": "{\"data\":{\"Avkryssingsboks\":true,\"select\":\"\",\"angiValutaOgBelop\":{\"valutavelger\":{\"label\":\"Norsk krone (NOK)\",\"value\":\"NOK\"},\"belop1\":2000},\"container\":{\"skjemagruppeDatagrid\":[{\"tekstfelt-gruppe\":\"Skjema 2a\"},{\"tekstfelt-gruppe\":\"Skjema 2b\"}],\"datagrid\":[{\"tekstfelt-grid\":\"Repeat 1\"},{\"tekstfelt-grid\":\"Repeat 2\"},{\"tekstfelt-grid\":\"Repeat 3\"}],\"tekstfelt-gruppe\":\"Skjema 1\"},\"jegVilSvareSaGodtJegKanPaSporsmaleneISoknaden\":true,\"aktiviteterOgMaalgruppe\":{\"maalgruppe\":{\"calculated\":{\"maalgruppetype\":\"ANNET\"}}},\"aktivitetsvelger\":{},\"tekstfelt\":\"Nav 1\",\"textarea\":\"Nav 2\",\"tall\":1,\"selectboxes\":{\"true\":true,\"false\":false},\"navSelect\":{\"label\":\"Nei\",\"value\":\"false\"},\"radiopanel\":\"ja\",\"fodselsnummerDNummer\":\"20905995783\",\"identitet\":{\"harDuFodselsnummer\":\"ja\",\"identitetsnummer\":\"20905995783\"},\"fornavn\":\"Ola\",\"etternavn\":\"Nordmann\",\"adresse\":{\"co\":\"Annen person\",\"adresse\":\"Fyrstikkalléen 1\",\"postnummer\":\"0661\",\"bySted\":\"Oslo\"},\"adresseVarighet\":{\"gyldigFraOgMed\":\"2025-10-17\",\"gyldigTilOgMed\":\"2025-10-17\"},\"vegadresse\":\"Fyrstikkalléen 2\",\"postnr\":\"0662\",\"poststed\":\"Oslo2\",\"landvelger\":{\"value\":\"NO\",\"label\":\"Norge\"},\"epost\":\"test@nav.no\",\"telefonnummer\":{\"areaCode\":\"+47\",\"number\":\"21070000\"},\"statsborgerskap\":\"Norsk\",\"belop\":1000,\"kontoNummer\":\"76586005479\",\"iban\":\"NO8330001234567\",\"valutavelger\":{\"label\":\"Svensk krone (SEK)\",\"value\":\"SEK\"},\"orgNr\":\"889640782\",\"arbeidsgiver\":\"Nav\",\"datoDdMmAaaa\":\"2025-01-01\",\"tid\":\"01:01\",\"monthPicker\":\"2025-01\",\"aarstall\":2025,\"vedlegg\":{\"key\":\"ettersender\"},\"annenDokumentasjon\":{\"key\":\"nei\"}},\"metadata\":{\"dataFetcher\":{\"aktivitetsvelger\":{\"fetchDisabled\":true}}}}",
+  "submission": null,
   "translations": "{}",
   "submissionMethod": "paper",
   "pdfFormData": {
@@ -82,11 +82,11 @@
           },
           {
             "label": "Gyldig fra (dd.mm.åååå)",
-            "verdi": "17.10.2025"
+            "verdi": "20.10.2025"
           },
           {
             "label": "Gyldig til (dd.mm.åååå)",
-            "verdi": "17.10.2025"
+            "verdi": "20.10.2025"
           },
           {
             "label": "Vegadresse",
