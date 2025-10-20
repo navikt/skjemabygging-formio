@@ -161,7 +161,7 @@ describe('Pdf', () => {
         downloadPdf();
       });
 
-      it.only('All values', () => {
+      it('All values', () => {
         const today = DateTime.now().toFormat(dateUtils.inputFormat);
         cy.findByRole('link', { name: 'Standard felter' }).click();
         cy.findByRole('heading', { name: 'Standard felter' }).shouldBeVisible();
