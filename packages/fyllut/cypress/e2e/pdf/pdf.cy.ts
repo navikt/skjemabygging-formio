@@ -274,8 +274,6 @@ describe('Pdf', () => {
 
         cy.fixture('pdf/request-components-all.json').then((fixture) => {
           cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
-            console.log(cleanUpRequest(req.body, today));
-            console.log(fixture);
             expect(cleanUpRequest(req.body, today)).deep.eq(fixture);
           }).as('downloadPdf');
         });
