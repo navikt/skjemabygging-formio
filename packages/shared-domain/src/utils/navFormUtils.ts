@@ -260,6 +260,12 @@ export const enrichComponentsWithNavIds = (
   return components;
 };
 
+/**
+ * @deprecated Use activeComponents from FormContext instead
+ * @param form
+ * @param submission
+ * @param submissionMethod
+ */
 const getActivePanelsFromForm = (form: NavFormType, submission?: Submission, submissionMethod?: string): Panel[] => {
   const conditionals = formSummaryUtil.mapAndEvaluateConditionals(form, submission ?? { data: {} });
   return form.components
@@ -271,6 +277,42 @@ const getActivePanelsFromForm = (form: NavFormType, submission?: Submission, sub
     .filter(
       (panel) => !((submissionMethod === 'digital' || submissionMethod === 'digitalnologin') && isVedleggspanel(panel)),
     );
+};
+
+const getActiveComponentsFromForm = (
+  form: NavFormType,
+  submission?: Submission,
+  submissionMethod?: string,
+): Component[] => {
+  const conditionals = formSummaryUtil.mapAndEvaluateConditionals(form, submission ?? { data: {} });
+
+  if (!conditionals || Object.keys(conditionals).length === 0) {
+    return form.components;
+  }
+
+  return getActiveComponents(
+    form.components.filter(
+      (component) =>
+        component.type === 'panel' &&
+        !(isVedleggspanel(component) && (submissionMethod === 'digital' || submissionMethod === 'digitalnologin')),
+    ),
+    conditionals,
+  );
+};
+
+const getActiveComponents = (components: Component[], conditionals?: any): Component[] => {
+  return components
+    .filter((component) => conditionals[formSummaryUtil.createComponentKeyWithNavId(component)] !== false)
+    .map((component) => {
+      if (component.components) {
+        return {
+          ...component,
+          components: getActiveComponents(component.components, conditionals),
+        };
+      }
+
+      return component;
+    });
 };
 
 const getAttachmentPanel = (form: NavFormType) => {
@@ -347,6 +389,7 @@ const navFormUtils = {
   findComponentsByProperty,
   enrichComponentsWithNavIds,
   getActivePanelsFromForm,
+  getActiveComponentsFromForm,
   getAttachmentPanel,
   hasAttachment,
   getAttachmentProperties,
