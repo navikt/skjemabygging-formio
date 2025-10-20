@@ -19,28 +19,6 @@ const setupDefaultGetMock = () => {
 const originalWindowLocation = window.location;
 
 describe('http requests', () => {
-  describe('post', () => {
-    it('returns blob when response is pdf and accept header requests pdf', async () => {
-      const pdfContent = '%PDF-1.4\n% Test PDF\n';
-
-      const scope = nock('https://www.nav.no')
-        .matchHeader('accept', http.MimeType.PDF)
-        .defaultReplyHeaders({
-          'Content-Type': http.MimeType.PDF,
-        })
-        .post('/pdf')
-        .reply(200, pdfContent);
-
-      // Nock intercepts this call, so nothing hits the real nav.no.
-      const response = await http.post('https://www.nav.no/pdf', {}, { Accept: http.MimeType.PDF });
-
-      const blob = response as Blob;
-      expect(typeof blob.arrayBuffer).toBe('function');
-      expect(await blob.text()).toContain('%PDF-1.4');
-      expect(scope.isDone()).toBe(true);
-    });
-  });
-
   describe('get', () => {
     it('with custom headers', async () => {
       setupDefaultGetMock();

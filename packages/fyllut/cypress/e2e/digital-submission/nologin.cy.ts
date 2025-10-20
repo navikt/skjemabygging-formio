@@ -56,17 +56,7 @@ describe('Digital submission without user login', () => {
     cy.clickNextStep();
 
     cy.findByRole('button', { name: 'Send til Nav' }).click();
-    cy.findByRole('heading', { name: 'Søknaden er sendt inn' }).should('exist');
-    cy.findByText('Vi har mottatt søknaden din.').should('exist');
-    cy.findByRole('link', { name: 'Last ned kopi' })
-      .should('have.attr', 'target', '_blank')
-      .and('have.attr', 'rel', 'noopener noreferrer');
-    cy.findAllByRole('listitem').then(($items) => {
-      const texts = Array.from($items).map((item) => item.textContent ?? '');
-      const vitnemalEntry = texts.find((text) => text.includes('Vitnemål'));
-      expect(vitnemalEntry, 'Vitnemål attachment should be listed').to.not.equal(undefined);
-      expect(vitnemalEntry as string).to.match(/\(\d+ [^)]+\)/);
-    });
+    cy.findByText('Takk for at du sendte inn skjemaet.').should('exist');
   });
 
   it('should clear id when navigating back from id upload page', () => {
@@ -102,13 +92,5 @@ describe('Digital submission without user login', () => {
     cy.defaultWaits();
     cy.url().should('include', '/fyllut/nologinform/legitimasjon?sub=digitalnologin');
     cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).should('exist');
-  });
-
-  it('redirects to legitimation when visiting receipt without legitimation token', () => {
-    cy.skipIfNoIncludeDistTests();
-
-    cy.visit('/fyllut/nologinform/kvittering?sub=digitalnologin');
-    cy.defaultWaits();
-    cy.url().should('include', '/fyllut/nologinform/legitimasjon?sub=digitalnologin');
   });
 });

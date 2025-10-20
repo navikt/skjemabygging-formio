@@ -139,21 +139,6 @@ export const statiske = {
     alert:
       'Hvis du velger digital innsending må du laste ned skjemaet i neste steg og laste det opp igjen etter innlogging.',
   },
-  receipt: {
-    alertSuccessHeading: 'Søknaden er sendt inn',
-    alertSuccessBody: 'Vi har mottatt søknaden din.',
-    documentsHeading: 'Dokumenter sendt inn {{date}}',
-    downloadLinkLabel: 'Last ned kopi',
-    singleFileLabel: 'fil',
-    multipleFileLabel: 'filer',
-    mustSendLaterHeading: 'Dette må du ettersende:',
-    sentByOthersHeading: 'Dette har du svart at noen andre skal sende inn:',
-    deadlineWarningTitle: 'Dokumentene må ettersendes innen {{deadline}}',
-    deadlineWarningDescriptionPrefix: 'Du kan ettersende dokumentene på',
-    deadlineWarningDescriptionSuffix: '(åpnes i en ny fane)',
-    deadlineWarningLinkLabel: 'nav.no/ettersende',
-    deadlineWarningLinkUrl: 'https://www.nav.no/ettersende',
-  },
   prepareLetterPage: {
     subTitle: 'Skjemaet er ikke sendt ennå',
     chooseEntity: 'Velg hvilken Nav-enhet som skal motta innsendingen',
