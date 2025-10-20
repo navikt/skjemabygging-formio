@@ -193,9 +193,6 @@ export const findDependentComponents = (id: string, form: NavFormType, evaluateC
   return [];
 };
 
-const isComponentConditionallyVisible = (component: Component, submission: Submission, form: NavFormType) =>
-  FormioUtils.checkCondition(component, [], submission.data ?? {}, form, undefined, submission);
-
 type ComponentFilterFunction = (c: Component) => boolean;
 const removeRecursively = (component: Component, isTarget: ComponentFilterFunction) => {
   if (component.components?.length) {
@@ -400,7 +397,6 @@ const navFormUtils = {
   findDependeeComponents,
   flattenComponents,
   isSubmissionMethodAllowed,
-  isComponentConditionallyVisible,
   isVedleggspanel,
   removeVedleggspanel,
   findByKey,

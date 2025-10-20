@@ -939,6 +939,7 @@
       "components": [
         {
           "id": "eyobqqf",
+          "navId": "eyobqqf",
           "key": "vedleggMedMasseGreier",
           "type": "attachment",
           "input": true,

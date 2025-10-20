@@ -1,10 +1,4 @@
-import {
-  Component,
-  formSummaryUtil,
-  NavFormType,
-  navFormUtils,
-  Submission,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, formSummaryUtil, NavFormType, Panel, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { AttachmentValidator } from '../../../components/attachment/attachmentValidator';
 
 export type PanelValidation = {
@@ -58,19 +52,15 @@ export const validateWizardPanels = (formioInstance, form: NavFormType, submissi
 };
 
 export const findFirstValidationErrorInAttachmentPanel = (
-  form: NavFormType,
+  attachmentPanel: Panel,
   submission: Submission,
   validator: AttachmentValidator,
 ): Component | undefined => {
-  const attachmentPanel = form.components.find((panel) => panel.isAttachmentPanel);
   return attachmentPanel?.components?.find((component) => {
     const submissionAttachment = submission.attachments?.find(
       (attachment) => attachment.attachmentId === component.navId,
     );
-    return (
-      navFormUtils.isComponentConditionallyVisible(component, submission, form) &&
-      !!validator.validate(component.label, submissionAttachment)
-    );
+    return !!validator.validate(component.label, submissionAttachment);
   });
 };
 

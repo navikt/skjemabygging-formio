@@ -1,5 +1,5 @@
 import { Alert, BodyShort, ConfirmationPanel, Heading, VStack } from '@navikt/ds-react';
-import { DeclarationType, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { DeclarationType, navFormUtils, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useRef, useState } from 'react';
 import { attachmentValidator } from '../../components/attachment/attachmentValidator';
 import EditAnswersButton from '../../components/button/navigation/edit-answers/EditAnswersButton';
@@ -49,11 +49,15 @@ export function SummaryPage() {
         });
       }
 
-      const attachmentPanel = webform.form?.components.find((panel) => panel.isAttachmentPanel);
-      if (appConfig.submissionMethod === 'digitalnologin' && attachmentPanel) {
+      const attachmentPanel = navFormUtils.getActiveAttachmentPanelFromForm(
+        form,
+        submission,
+        appConfig.submissionMethod,
+      );
+      if (attachmentPanel) {
         const validator = attachmentValidator(translate, ['value', 'fileUploaded']);
         const invalidAttachment = findFirstValidationErrorInAttachmentPanel(
-          form,
+          attachmentPanel,
           submission ?? { data: {} },
           validator,
         );
