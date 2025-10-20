@@ -327,7 +327,7 @@ const getActiveAttachmentPanelFromForm = (
   const conditionals = formSummaryUtil.mapAndEvaluateConditionals(form, submission ?? { data: {} });
   const attachmentPanel = getAttachmentPanel(form);
   const [activeAttachmentPanel] = attachmentPanel ? getActiveComponents([attachmentPanel], conditionals) : [];
-  return isVedleggspanel(activeAttachmentPanel) ? activeAttachmentPanel : undefined;
+  return activeAttachmentPanel && isVedleggspanel(activeAttachmentPanel) ? activeAttachmentPanel : undefined;
 };
 
 const getAttachmentPanel = (form: NavFormType) => {
