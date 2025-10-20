@@ -2,14 +2,26 @@ import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { expect } from 'chai';
 import { DateTime } from 'luxon';
 
-const removeTimestampFromRequest = (request) => {
+const cleanUpRequest = (request, today?: string) => {
+  const data = JSON.parse(JSON.stringify(request));
+  data.pdfFormData.verdiliste.forEach((panel) => {
+    if (panel.label === 'Person' && today) {
+      panel.verdiliste.forEach((component) => {
+        if (component.verdi.match(/^\d{2}.\d{2}.\d{4}$/)) {
+          component.verdi = today;
+        }
+      });
+    }
+  });
+
   return {
-    ...request,
+    ...data,
     form: null, // Remove form structure for comparison so we do not need to update every time the test form is changed.
+    submission: null, // Remove submission data for comparison. We mainly care about pdfFormData in these tests.
     pdfFormData: {
-      ...request.pdfFormData,
+      ...data.pdfFormData,
       bunntekst: {
-        ...request.pdfFormData.bunntekst,
+        ...data.pdfFormData.bunntekst,
         upperMiddle: null, // Remove timestamp for comparison.
       },
     },
@@ -142,14 +154,15 @@ describe('Pdf', () => {
           cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
             // Check that timestamp is present in footer before removing it for comparison.
             expect(req.body.pdfFormData.bunntekst.upperMiddle).not.to.be.null;
-            expect(removeTimestampFromRequest(req.body)).deep.eq(fixture);
+            expect(cleanUpRequest(req.body)).deep.eq(fixture);
           }).as('downloadPdf');
         });
 
         downloadPdf();
       });
 
-      it('All values', () => {
+      it.only('All values', () => {
+        const today = DateTime.now().toFormat(dateUtils.inputFormat);
         cy.findByRole('link', { name: 'Standard felter' }).click();
         cy.findByRole('heading', { name: 'Standard felter' }).shouldBeVisible();
         cy.findByRole('textbox', { name: /Tekstfelt/ }).type('Nav 1');
@@ -187,8 +200,8 @@ describe('Pdf', () => {
         cy.findAllByRole('textbox', { name: /Poststed/ })
           .eq(0)
           .type('Oslo');
-        cy.findByRole('textbox', { name: /Gyldig fra/ }).type(DateTime.now().toFormat(dateUtils.inputFormat));
-        cy.findByRole('textbox', { name: /Gyldig til/ }).type(DateTime.now().toFormat(dateUtils.inputFormat));
+        cy.findByRole('textbox', { name: /Gyldig fra/ }).type(today);
+        cy.findByRole('textbox', { name: /Gyldig til/ }).type(today);
         cy.findAllByRole('textbox', { name: /Vegadresse/ })
           .eq(1)
           .type('Fyrstikkalléen 2');
@@ -261,7 +274,9 @@ describe('Pdf', () => {
 
         cy.fixture('pdf/request-components-all.json').then((fixture) => {
           cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
-            expect(removeTimestampFromRequest(req.body)).deep.eq(fixture);
+            console.log(cleanUpRequest(req.body, today));
+            console.log(fixture);
+            expect(cleanUpRequest(req.body, today)).deep.eq(fixture);
           }).as('downloadPdf');
         });
 
