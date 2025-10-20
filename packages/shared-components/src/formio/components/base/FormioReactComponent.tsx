@@ -10,6 +10,7 @@ import { IReactComponent } from './index';
 class FormioReactComponent extends (ReactComponent as unknown as IReactComponent) {
   rootElement: any;
   componentErrors: ComponentError[];
+  _reactMainRefExpected: boolean = true;
   _reactMainRendered = Ready();
   _reactRendered = Ready();
   _reactRefs: Record<string, HTMLElement> = {};
@@ -18,6 +19,16 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
   constructor(component, options, data) {
     super(component, options, data);
     this.componentErrors = [];
+  }
+
+  /**
+   * Indicate that this component does not have a main React instance to wait for,
+   * i.e. <code>setReactInstance()</code> will never be invoked.
+   *
+   * Typically invoked in constructor of subclasses.
+   */
+  noMainRef() {
+    this._reactMainRefExpected = false;
   }
 
   get logger(): ComponentLogger {
@@ -38,6 +49,12 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
     this.renderReact(this.rootElement);
   }
 
+  /**
+   * Set the main React instance for this component. <code>autoResolve</code> should be set to false if the component
+   * will contain multiple React refs and will call <code>reactResolve()</code> manually when all refs are set.
+   * @param element The React instance to store as a ref
+   * @param autoResolve If true (default), will automatically call reactResolve() when setting the instance.
+   */
   setReactInstance(element, autoResolve: boolean = true) {
     this.logger.debug('setReactInstance', { action: element ? 'add' : 'remove', path: this.path });
     this.addRef(this.getId(), element);
@@ -161,7 +178,9 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
    * Resolves when the React component has been rendered.
    */
   get reactReady() {
-    return this._reactRendered.promise.then(() => this._reactMainRendered.promise);
+    return this._reactRendered.promise.then(() =>
+      this._reactMainRefExpected ? this._reactMainRendered.promise : Promise.resolve(),
+    );
   }
 
   /**
