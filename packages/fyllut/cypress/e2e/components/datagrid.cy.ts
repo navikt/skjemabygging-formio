@@ -202,7 +202,7 @@ describe('Datagrid', () => {
       cy.findByText('Husk å legge med kvittering på utgiftene til melk').should('exist');
       cy.findByLabelText('Melk').should('have.focus');
 
-      // check 'melk' og verifiser at fokus beholdes
+      // check 'avokado' og verifiser at fokus beholdes
       cy.findByRole('group', { name: 'Ingredienser' }).within(() => {
         cy.findByLabelText('Avokado').should('exist').click();
       });
