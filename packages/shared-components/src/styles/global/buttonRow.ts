@@ -24,6 +24,9 @@ const buttonRow = {
         justifyContent: 'flex-end',
       },
     },
+    '&__auto-align': {
+      justifyContent: 'flex-end',
+    },
   },
 };
 

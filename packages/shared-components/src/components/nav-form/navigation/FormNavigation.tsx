@@ -65,40 +65,38 @@ const FormNavigation = ({ paths, isValid, submission, navigateTo, finalStep }: P
   }, [navigateTo, prevLocation]);
 
   return (
-    <>
-      <NavigationButtonRow
-        nextButton={
-          <NextButton
-            onClick={{
-              digital: () => nextClickHandler(),
-              paper: () => nextClickHandler(),
-              digitalnologin: () => nextClickHandler(),
-            }}
-            label={{
-              digital: translate(TEXTS.grensesnitt.navigation.saveAndContinue),
-              digitalnologin: translate(TEXTS.grensesnitt.navigation.next),
-              paper: translate(TEXTS.grensesnitt.navigation.next),
-            }}
-          />
-        }
-        previousButton={
-          <PreviousButton
-            onClick={{
-              digital: () => prevClickHandler(),
-              digitalnologin: () => prevClickHandler(),
-              paper: () => prevClickHandler(),
-            }}
-            label={{
-              digital: translate(TEXTS.grensesnitt.navigation.previous),
-              digitalnologin: translate(TEXTS.grensesnitt.navigation.previous),
-              paper: translate(TEXTS.grensesnitt.navigation.previous),
-            }}
-          />
-        }
-        cancelButton={<CancelButton />}
-        saveButton={<SaveButton submission={submission} />}
-      />
-    </>
+    <NavigationButtonRow
+      nextButton={
+        <NextButton
+          onClick={{
+            digital: () => nextClickHandler(),
+            paper: () => nextClickHandler(),
+            digitalnologin: () => nextClickHandler(),
+          }}
+          label={{
+            digital: translate(TEXTS.grensesnitt.navigation.saveAndContinue),
+            digitalnologin: translate(TEXTS.grensesnitt.navigation.next),
+            paper: translate(TEXTS.grensesnitt.navigation.next),
+          }}
+        />
+      }
+      previousButton={
+        <PreviousButton
+          onClick={{
+            digital: () => prevClickHandler(),
+            digitalnologin: () => prevClickHandler(),
+            paper: () => prevClickHandler(),
+          }}
+          label={{
+            digital: translate(TEXTS.grensesnitt.navigation.previous),
+            digitalnologin: translate(TEXTS.grensesnitt.navigation.previous),
+            paper: translate(TEXTS.grensesnitt.navigation.previous),
+          }}
+        />
+      }
+      cancelButton={<CancelButton />}
+      saveButton={<SaveButton submission={submission} />}
+    />
   );
 };
 

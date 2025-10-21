@@ -70,7 +70,7 @@ Cypress.Commands.add('clickSaveAndContinue', () => {
 });
 
 Cypress.Commands.add('clickStart', () => {
-  return cy.findByRoleWhenAttached('link', { name: TEXTS.grensesnitt.introPage.start }, 500).click();
+  return cy.findByRoleWhenAttached('link', { name: TEXTS.grensesnitt.navigation.next }, 500).click();
 });
 
 Cypress.Commands.add('clickIntroPageConfirmation', () => {
