@@ -1,14 +1,13 @@
-import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { expect } from 'chai';
-import { DateTime } from 'luxon';
 
-const getCleanedUpPdfFormData = (request, today?: string) => {
+const getCleanedUpPdfFormData = (request, date?: string) => {
   const pdfFormData = JSON.parse(JSON.stringify(request.body.pdfFormData));
   pdfFormData.verdiliste.forEach((panel, index, object) => {
-    if (panel.label === 'Person' && today) {
+    if (panel.label === 'Person' && date) {
       panel.verdiliste.forEach((component) => {
         if (component.verdi.match(/^\d{2}.\d{2}.\d{4}$/)) {
-          component.verdi = today;
+          component.verdi = date;
         }
       });
     } else if (panel.label === 'Underskrift' && request.submissionMethod === 'digital') {
@@ -158,7 +157,7 @@ describe('Pdf', () => {
       });
 
       it('All values', () => {
-        const today = DateTime.now().toFormat(dateUtils.inputFormat);
+        const date = '20.10.2025';
 
         cy.clickStart();
         cy.findByRole('group', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
@@ -195,8 +194,8 @@ describe('Pdf', () => {
         cy.findAllByRole('textbox', { name: /Poststed/ })
           .eq(0)
           .type('Oslo');
-        cy.findByRole('textbox', { name: /Gyldig fra/ }).type(today);
-        cy.findByRole('textbox', { name: /Gyldig til/ }).type(today);
+        cy.findByRole('textbox', { name: /Gyldig fra/ }).type(date);
+        cy.findByRole('textbox', { name: /Gyldig til/ }).type(date);
         cy.findAllByRole('textbox', { name: /Vegadresse/ })
           .eq(1)
           .type('Fyrstikkalléen 2');
@@ -269,7 +268,7 @@ describe('Pdf', () => {
 
         cy.fixture('pdf/request-components-all.json').then((fixture) => {
           cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
-            expect(getCleanedUpPdfFormData(req, today)).deep.eq(fixture);
+            expect(getCleanedUpPdfFormData(req, date)).deep.eq(fixture);
           }).as('downloadPdf');
         });
 
@@ -307,7 +306,7 @@ describe('Pdf', () => {
       });
 
       it('All values', () => {
-        const today = DateTime.now().toFormat(dateUtils.inputFormat);
+        const date = '20.10.2025';
 
         cy.clickStart();
         cy.clickSaveAndContinue();
@@ -340,8 +339,8 @@ describe('Pdf', () => {
         cy.findAllByRole('textbox', { name: /Poststed/ })
           .eq(0)
           .type('Oslo');
-        cy.findByRole('textbox', { name: /Gyldig fra/ }).type(today);
-        cy.findByRole('textbox', { name: /Gyldig til/ }).type(today);
+        cy.findByRole('textbox', { name: /Gyldig fra/ }).type(date);
+        cy.findByRole('textbox', { name: /Gyldig til/ }).type(date);
         cy.findAllByRole('textbox', { name: /Vegadresse/ })
           .eq(1)
           .type('Fyrstikkalléen 2');
@@ -417,7 +416,7 @@ describe('Pdf', () => {
 
         cy.fixture('pdf/request-components-all-digital.json').then((fixture) => {
           cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
-            expect(getCleanedUpPdfFormData(req, today)).deep.eq(fixture);
+            expect(getCleanedUpPdfFormData(req, date)).deep.eq(fixture);
           }).as('downloadPdf');
         });
 
