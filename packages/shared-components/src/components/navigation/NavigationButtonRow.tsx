@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import { ReactNode } from 'react';
 
 export function NavigationButtonRow({
@@ -12,13 +13,18 @@ export function NavigationButtonRow({
   cancelButton?: ReactNode;
 }) {
   return (
-    <nav style={{ marginBottom: '2rem' }}>
+    <nav>
       <div className="button-row button-row--center">
         {nextButton}
         {previousButton}
       </div>
 
-      <div className="button-row button-row__center" style={{ marginTop: '1rem' }}>
+      <div
+        className={clsx('button-row', {
+          'button-row__center': nextButton && previousButton,
+          'button-row__auto-align': !nextButton || !previousButton,
+        })}
+      >
         {cancelButton}
         {saveButton}
       </div>
