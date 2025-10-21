@@ -56,12 +56,14 @@ export const findFirstValidationErrorInAttachmentPanel = (
   submission: Submission,
   validator: AttachmentValidator,
 ): Component | undefined => {
-  return attachmentPanel?.components?.find((component) => {
-    const submissionAttachment = submission.attachments?.find(
-      (attachment) => attachment.attachmentId === component.navId,
-    );
-    return !!validator.validate(component.label, submissionAttachment);
-  });
+  return attachmentPanel?.components
+    ?.filter((component) => component.type === 'attachment')
+    .find((component) => {
+      const submissionAttachment = submission.attachments?.find(
+        (attachment) => attachment.attachmentId === component.navId,
+      );
+      return !!validator.validate(component.label, submissionAttachment);
+    });
 };
 
 // Returns key of panel (and possibly component) that either has validation errors or no submission
