@@ -211,6 +211,10 @@ class BaseComponent extends FormioReactComponent {
     return this.componentErrors;
   }
 
+  override labelIsHidden(): boolean {
+    return !this.component?.label || !!(this.component.hideLabel && !this.builderMode);
+  }
+
   override setCustomValidity(messages: string | ComponentError[], _dirty?: boolean, _external?: boolean) {
     this.removeAllErrors();
 

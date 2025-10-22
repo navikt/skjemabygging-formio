@@ -82,7 +82,7 @@ export default class PhoneNumber extends BaseComponent {
         <ComponentLabel
           component={this.component}
           editFields={this.getEditFields()}
-          labelIsHidden={this.getHideLabel()}
+          labelIsHidden={this.labelIsHidden()}
         />
         <NavPhoneNumber
           label={this.getLabel()}
