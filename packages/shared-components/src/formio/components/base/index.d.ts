@@ -36,6 +36,8 @@ interface ReactComponentType {
   root: any;
   options: {
     appConfig: AppConfigContextType;
+    floatingLabels: boolean;
+    inputsOnly: boolean;
     readOnly: boolean;
     namespace: string;
     formConfig: { publishedForm: NavFormType };

@@ -52,6 +52,7 @@ describe('Phone number with area code', () => {
       fillForm('12345678', '+47');
       fillForm('12345678');
       cy.clickSaveAndContinue();
+      cy.clickSaveAndContinue();
 
       cy.findByText('+47 12 34 56 78').should('exist');
       cy.findByText('12345678').should('exist');
@@ -61,9 +62,18 @@ describe('Phone number with area code', () => {
       fillForm('12345678', '+48');
       fillForm('12345678');
       cy.clickSaveAndContinue();
+      cy.clickSaveAndContinue();
 
       cy.findByText('+48 12345678').should('exist');
       cy.findByText('12345678').should('exist');
+    });
+
+    it('displays phone number label inside datagrid', () => {
+      cy.clickShowAllSteps();
+      cy.findByRole('link', { name: 'Telefonnummer og datagrid' }).click();
+      cy.findByText('Telefonnummer utenfor datagrid (valgfritt)').should('exist');
+      cy.findByRole('button', { name: 'Legg til' }).click();
+      cy.findAllByText('Telefonnummer inni datagrid (valgfritt)').should('have.length', 2);
     });
   });
 });
