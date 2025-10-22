@@ -214,7 +214,7 @@ class BaseComponent extends FormioReactComponent {
   override labelIsHidden(): boolean {
     return (
       !this.component?.label ||
-      !!((this.component.hideLabel || this.options.floatingLabels || this.options.inputsOnly) && !this.builderMode)
+      ((this.component.hideLabel || this.options.floatingLabels || this.options.inputsOnly) && !this.builderMode)
     );
   }
 
