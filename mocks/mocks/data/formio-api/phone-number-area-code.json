@@ -289,6 +289,59 @@
       "allowMultipleMasks": false,
       "customDefaultValue": "",
       "allowCalculateOverride": false
+    },
+    {
+      "isAttachmentPanel": false,
+      "title": "Telefonnummer og datagrid",
+      "key": "telefonnummerOgDatagrid",
+      "type": "panel",
+      "input": false,
+      "label": "Panel",
+      "navId": "ex2xbxn",
+      "tableView": false,
+      "components": [
+        {
+          "showAreaCode": true,
+          "label": "Telefonnummer utenfor datagrid",
+          "key": "telefonnummerUtenforDatagrid",
+          "type": "phoneNumber",
+          "input": true,
+          "navId": "et7p76o",
+          "fieldSize": "input--s",
+          "inputMask": false,
+          "tableView": false,
+          "spellcheck": false,
+          "autocomplete": "tel"
+        },
+        {
+          "key": "datagrid",
+          "type": "datagrid",
+          "input": true,
+          "label": "Repeterende data",
+          "navId": "e7gsmco",
+          "validate": {
+            "required": true
+          },
+          "tableView": false,
+          "components": [
+            {
+              "showAreaCode": true,
+              "label": "Telefonnummer inni datagrid",
+              "key": "telefonnummerInniDatagrid",
+              "type": "phoneNumber",
+              "input": true,
+              "navId": "e5yppnj",
+              "fieldSize": "input--s",
+              "inputMask": false,
+              "tableView": false,
+              "spellcheck": false,
+              "autocomplete": "tel"
+            }
+          ],
+          "validateOn": "blur",
+          "isNavDataGrid": true
+        }
+      ]
     }
   ],
   "properties": {

@@ -1,4 +1,5 @@
-import { Component, formSummaryUtil, NavFormType, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, formSummaryUtil, NavFormType, Panel, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import { AttachmentValidator } from '../../../components/attachment/attachmentValidator';
 
 export type PanelValidation = {
   key: string;
@@ -47,6 +48,21 @@ export const validateWizardPanels = (formioInstance, form: NavFormType, submissi
         firstInputWithValidationError: firstInputWithValidationError,
         summaryComponents: formSummaryPanels.find((formSummaryPanel) => formSummaryPanel.key === panel.key).components,
       };
+    });
+};
+
+export const findFirstValidationErrorInAttachmentPanel = (
+  attachmentPanel: Panel,
+  submission: Submission,
+  validator: AttachmentValidator,
+): Component | undefined => {
+  return attachmentPanel?.components
+    ?.filter((component) => component.type === 'attachment')
+    .find((component) => {
+      const submissionAttachment = submission.attachments?.find(
+        (attachment) => attachment.attachmentId === component.navId,
+      );
+      return !!validator.validate(component.label, submissionAttachment);
     });
 };
 
