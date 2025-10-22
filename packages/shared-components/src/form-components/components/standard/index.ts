@@ -6,7 +6,7 @@ import PdfImage from './image/PdfImage';
 import PdfNumber from './number/PdfNumber';
 import PdfRadio from './radio/PdfRadio';
 import PdfSelectBoxes from './select-boxes/PdfSelectBoxes';
-import PdfSelect from './select/PdfSelect';
+import PdfNavSelect from './select/PdfNavSelect';
 import PdfTextArea from './text-area/PdfTextArea';
 import PdfTextField from './text-field/PdfTextField';
 
@@ -28,9 +28,9 @@ export {
   PdfCheckbox,
   PdfHtmlElement,
   PdfImage,
+  PdfNavSelect,
   PdfNumber,
   PdfRadio,
-  PdfSelect,
   PdfSelectBoxes,
   PdfTextArea,
   PdfTextField,
