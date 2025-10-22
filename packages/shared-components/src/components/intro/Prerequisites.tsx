@@ -14,13 +14,15 @@ const Prerequisites = ({ properties, translate, className }: Props) => {
     return null;
   }
 
+  const bulletPoints = (properties?.bulletPoints ?? []).map(translate);
+
   return (
     <div className={className}>
       <Heading level="2" size="large" spacing>
         {translate(properties.title)}
       </Heading>
       <IntroDescription description={translate(properties?.description)} />
-      <IntroBulletPoints values={properties.bulletPoints} />
+      <IntroBulletPoints values={bulletPoints} />
     </div>
   );
 };
