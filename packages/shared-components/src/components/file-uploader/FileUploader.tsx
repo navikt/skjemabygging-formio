@@ -1,42 +1,15 @@
-import { UploadIcon } from '@navikt/aksel-icons';
-import {
-  Alert,
-  BodyLong,
-  BodyShort,
-  Button,
-  FileObject,
-  FileUpload,
-  HStack,
-  Label,
-  ReadMore,
-  TextField,
-  VStack,
-} from '@navikt/ds-react';
+import { TextField, VStack } from '@navikt/ds-react';
 import { AttachmentSettingValues, SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { ChangeEvent, MutableRefObject, useState } from 'react';
+import { ChangeEvent, MutableRefObject } from 'react';
 import { useLocation } from 'react-router';
-import {
-  FILE_ACCEPT,
-  MAX_SIZE_ATTACHMENT_FILE_BYTES,
-  MAX_SIZE_ATTACHMENT_FILE_TEXT,
-  MAX_TOTAL_SIZE_ATTACHMENT_FILES_TEXT,
-} from '../../constants/fileUpload';
+import { MAX_SIZE_ATTACHMENT_FILE_TEXT, MAX_TOTAL_SIZE_ATTACHMENT_FILES_TEXT } from '../../constants/fileUpload';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
-import { getFileValidationError } from '../../util/form/attachment-validation/attachmentValidation';
-import htmlUtils from '../../util/html/htmlUtils';
-import makeStyles from '../../util/styles/jss/jss';
 import { useAttachmentUpload } from '../attachment/AttachmentUploadContext';
 import { attachmentValidator } from '../attachment/attachmentValidator';
-import InnerHtml from '../inner-html/InnerHtml';
-
-const useStyles = makeStyles({
-  button: {
-    maxWidth: '18.75rem',
-    borderRadius: 'var(--a-border-radius-large)',
-  },
-});
+import FilesPreview from './FilesPreview';
+import UploadButton from './UploadButton';
 
 interface Props {
   initialAttachment: SubmissionAttachment;
@@ -55,37 +28,27 @@ const FileUploader = ({
   requireAttachmentTitle,
   multiple,
   refs,
-  accept = FILE_ACCEPT,
-  maxFileSizeInBytes = MAX_SIZE_ATTACHMENT_FILE_BYTES,
-  maxFileSizeText = MAX_SIZE_ATTACHMENT_FILE_TEXT,
+  accept,
+  maxFileSizeInBytes,
+  maxFileSizeText,
 }: Props) => {
   const { translate } = useLanguages();
-  const styles = useStyles();
   const config = useAppConfig();
   const form = useForm();
   const { search } = useLocation();
-  const {
-    handleUploadFile,
-    changeAttachmentValue,
-    handleDeleteFile,
-    submissionAttachments,
-    errors,
-    addError,
-    uploadsInProgress,
-  } = useAttachmentUpload();
+  const { changeAttachmentValue, submissionAttachments, errors, uploadsInProgress } = useAttachmentUpload();
   const { attachmentId } = initialAttachment;
   const attachment = submissionAttachments.find((attachment) => attachment.attachmentId === attachmentId);
   const label = requireAttachmentTitle
     ? translate(attachment?.title)
     : translate(TEXTS.statiske.uploadFile.singleFileUploadedLabel);
-  const [loading, setLoading] = useState(false);
 
   const uploadedFiles = attachment?.files ?? [];
   const initialUpload = uploadedFiles.length === 0;
   const showButton = multiple || initialUpload;
   const inProgress = Object.values(uploadsInProgress[attachmentId] ?? {});
+  const fileItems = [...uploadedFiles, ...inProgress];
 
-  const uploadErrorMessage = errors[attachmentId]?.find((error) => error.type === 'FILE')?.message;
   const attachmentTitleErrorMessage = errors[attachmentId]?.find((error) => error.type === 'TITLE')?.message;
   const attachmentTitleValidator = attachmentValidator(translate, ['otherDocumentationTitle']);
 
@@ -106,49 +69,19 @@ const FileUploader = ({
     );
   };
 
-  const onSelect = async (files: FileObject[]) => {
-    setLoading(true);
-    const file = files?.[0];
-    if (!file) {
-      setLoading(false);
-      return;
-    }
-    await handleUploadFile(attachmentId, file);
-    setLoading(false);
-  };
-
   return (
-    <>
-      {!showButton && <Label>{label}</Label>}
-      {[...uploadedFiles, ...inProgress].length > 0 && (
-        <FileUpload translations={{ item: { uploading: translate(TEXTS.statiske.uploadFile.uploading) } }}>
-          <VStack gap="4" as="ul">
-            {uploadedFiles.map(({ fileId, fileName, size }) => (
-              <FileUpload.Item
-                as="li"
-                key={fileId}
-                file={{ name: fileName, size }}
-                button={{
-                  action: 'delete',
-                  onClick: () => handleDeleteFile(attachmentId, fileId, { name: fileName, size }),
-                }}
-                error={errors[fileId]?.[0].message ? translate(errors[fileId][0].message) : undefined}
-              ></FileUpload.Item>
-            ))}
-            {inProgress.map((file) => (
-              <FileUpload.Item
-                as="li"
-                key={`${file.file.name}-${file.file.lastModified}`}
-                file={file.file}
-                status={file.error ? 'idle' : 'uploading'}
-                error={translate(getFileValidationError(file), translationErrorParams)}
-              ></FileUpload.Item>
-            ))}
-          </VStack>
-        </FileUpload>
+    <VStack gap="6" data-cy={`upload-button-${attachmentId}`}>
+      {(!showButton || fileItems.length > 0) && (
+        <FilesPreview
+          attachmentId={attachmentId}
+          label={!showButton ? label : undefined}
+          uploaded={uploadedFiles}
+          inProgress={inProgress}
+          translationParams={translationErrorParams}
+        />
       )}
       {showButton && (
-        <>
+        <VStack gap="8">
           {requireAttachmentTitle && (
             <TextField
               label={translate(TEXTS.statiske.attachment.attachmentTitle)}
@@ -163,69 +96,19 @@ const FileUploader = ({
               onChange={handleTitleChange}
             />
           )}
-          {!requireAttachmentTitle || !!attachment?.title?.trim() ? (
-            <FileUpload.Trigger onSelect={onSelect} accept={accept} maxSizeInBytes={maxFileSizeInBytes}>
-              <Button
-                variant={initialUpload ? 'primary' : 'secondary'}
-                className={styles.button}
-                loading={loading}
-                icon={<UploadIcon aria-hidden fontSize="1.5rem" />}
-                ref={(ref) => {
-                  if (refs?.current) {
-                    refs.current[`${attachmentId}-FILE`] = ref;
-                  }
-                }}
-              >
-                {translate(
-                  initialUpload ? TEXTS.statiske.uploadFile.selectFile : TEXTS.statiske.uploadFile.uploadMoreFiles,
-                )}
-              </Button>
-            </FileUpload.Trigger>
-          ) : (
-            <Button
-              variant={initialUpload ? 'primary' : 'secondary'}
-              className={styles.button}
-              icon={<UploadIcon aria-hidden fontSize="1.5rem" />}
-              ref={(ref) => {
-                if (refs?.current) {
-                  refs.current[`${attachmentId}-FILE`] = ref;
-                }
-              }}
-              onClick={() =>
-                addError(
-                  attachmentId,
-                  translate('required', { field: translate(TEXTS.statiske.attachment.attachmentTitle) }),
-                  'TITLE',
-                )
-              }
-            >
-              {translate(
-                initialUpload ? TEXTS.statiske.uploadFile.selectFile : TEXTS.statiske.uploadFile.uploadMoreFiles,
-              )}
-            </Button>
-          )}
-          {uploadErrorMessage && (
-            <Alert inline variant="error">
-              {htmlUtils.isHtmlString(uploadErrorMessage) ? (
-                <InnerHtml content={translate(uploadErrorMessage, translationErrorParams)}></InnerHtml>
-              ) : (
-                <BodyLong>{translate(uploadErrorMessage, translationErrorParams)}</BodyLong>
-              )}
-            </Alert>
-          )}
-          <ReadMore header={translate(TEXTS.statiske.attachment.sizeAndFormatHeader)}>
-            <HStack gap="2" align="start">
-              <BodyShort weight="semibold">{translate(TEXTS.statiske.attachment.validFormatsLabel)}</BodyShort>
-              <BodyLong>{translate(TEXTS.statiske.attachment.validFormatsDescrption)}</BodyLong>
-              <BodyShort weight="semibold">{translate(TEXTS.statiske.attachment.maxFileSizeLabel)}</BodyShort>
-              <BodyLong>
-                {translate(TEXTS.statiske.attachment.maxFileSizeDescription, { size: maxFileSizeText })}
-              </BodyLong>
-            </HStack>
-          </ReadMore>
-        </>
+          <UploadButton
+            attachmentId={attachmentId}
+            variant={initialUpload ? 'primary' : 'secondary'}
+            allowUpload={!requireAttachmentTitle || !!attachment?.title?.trim()}
+            refs={refs}
+            translationParams={translationErrorParams}
+            accept={accept}
+            maxFileSizeInBytes={maxFileSizeInBytes}
+            maxFileSizeText={maxFileSizeText}
+          />
+        </VStack>
       )}
-    </>
+    </VStack>
   );
 };
 
