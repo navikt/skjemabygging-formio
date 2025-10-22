@@ -237,27 +237,67 @@ export const isSubmissionMethodAllowed = (
   return false;
 };
 
-export const enrichComponentsWithNavIds = (
-  components: Component[] | undefined,
+export const enrichComponentsWithNavIdsRecursive = (
+  components?: Component[],
   navIdGenerator: () => string = FormioUtils.getRandomComponentId,
-): Component[] | undefined => {
-  if (components) {
-    return components.map((component) => {
-      const subComponents = component.components;
-      if (!component.navId) {
-        return {
+  foundNavids: string[] = [],
+): [Component[] | undefined, string[]] => {
+  if (!components) {
+    return [undefined, foundNavids];
+  }
+
+  let enrichedComponents: Component[] = [];
+  let updatedFoundNavIds = [...foundNavids];
+
+  for (const component of components) {
+    const subComponents = component.components;
+    // if component has no navId, or navId is already used by a different component, generate a new one
+    if (!component.navId || updatedFoundNavIds.includes(component.navId)) {
+      const [enrichedSubComponents, updatedNavIds] = enrichComponentsWithNavIdsRecursive(
+        subComponents,
+        navIdGenerator,
+        updatedFoundNavIds,
+      );
+
+      updatedFoundNavIds = updatedNavIds;
+      enrichedComponents = [
+        ...enrichedComponents,
+        {
           ...component,
           navId: navIdGenerator(),
-          ...(subComponents && { components: enrichComponentsWithNavIds(subComponents, navIdGenerator) }),
-        };
-      }
-      return {
-        ...component,
-        ...(subComponents && { components: enrichComponentsWithNavIds(subComponents, navIdGenerator) }),
-      };
-    });
+          ...(enrichedSubComponents && {
+            components: enrichedSubComponents,
+          }),
+        },
+      ];
+    } else {
+      const [enrichedSubComponents, updatedNavIds] = enrichComponentsWithNavIdsRecursive(
+        subComponents,
+        navIdGenerator,
+        [...updatedFoundNavIds, component.navId],
+      );
+
+      updatedFoundNavIds = updatedNavIds;
+      enrichedComponents = [
+        ...enrichedComponents,
+        {
+          ...component,
+          ...(enrichedSubComponents && {
+            components: enrichedSubComponents,
+          }),
+        },
+      ];
+    }
   }
-  return components;
+  return [enrichedComponents, updatedFoundNavIds];
+};
+
+export const enrichComponentsWithNavIds = (
+  components: Component[],
+  navIdGenerator: () => string = FormioUtils.getRandomComponentId,
+): Component[] | undefined => {
+  const [enrichedComponents] = enrichComponentsWithNavIdsRecursive(components, navIdGenerator, []);
+  return enrichedComponents;
 };
 
 /**
@@ -357,24 +397,6 @@ const createDefaultForm = (config): Form => ({
   components: [],
 });
 
-const replaceDuplicateNavIds = (form: NavFormType) => {
-  const navIds: string[] = [];
-
-  FormioUtils.eachComponent(form.components, (comp) => {
-    if (!comp.navId) {
-      return;
-    }
-
-    if (navIds.includes(comp.navId)) {
-      comp.navId = FormioUtils.getRandomComponentId();
-    } else {
-      navIds.push(comp.navId);
-    }
-  });
-
-  return form;
-};
-
 const navFormUtils = {
   formMatcherPredicate,
   toFormPath,
@@ -396,6 +418,5 @@ const navFormUtils = {
   isAttachment,
   isEqual,
   createDefaultForm,
-  replaceDuplicateNavIds,
 };
 export default navFormUtils;
