@@ -28,13 +28,14 @@ import {
   PdfCheckbox,
   PdfHtmlElement,
   PdfImage,
+  PdfNavSelect,
   PdfNumber,
   PdfRadio,
-  PdfSelect,
   PdfSelectBoxes,
   PdfTextArea,
   PdfTextField,
 } from './components/standard';
+import PdfSelect from './components/standard/select/PdfSelect';
 import { PdfActivities, PdfDataFetcher, PdfDrivingList, PdfMaalgruppe } from './components/system';
 import renderPdfComponent from './render/RenderPdfComponent';
 import { PdfFormData } from './types';
@@ -67,7 +68,7 @@ const renderPdfForm = ({
     number: PdfNumber,
     radiopanel: PdfRadio,
     select: PdfSelect,
-    navSelect: PdfSelect,
+    navSelect: PdfNavSelect,
     selectboxes: PdfSelectBoxes,
     textarea: PdfTextArea,
     formioTextArea: PdfTextArea,
