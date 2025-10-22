@@ -130,6 +130,21 @@ export const statiske = {
     validationMessage:
       'Nedenfor ser du all informasjon du allerede har fylt inn i skjemaet. Steg som mangler informasjon er markert med',
   },
+  receipt: {
+    alertSuccessHeading: 'Søknaden er sendt inn',
+    alertSuccessBody: 'Vi har mottatt søknaden din.',
+    documentsHeading: 'Dokumenter sendt inn {{date}}',
+    downloadLinkLabel: 'Last ned kopi',
+    singleFileLabel: 'fil',
+    multipleFileLabel: 'filer',
+    mustSendLaterHeading: 'Dette må du ettersende:',
+    sentByOthersHeading: 'Dette har du svart at noen andre skal sende inn:',
+    deadlineWarningTitle: 'Dokumentene må ettersendes innen {{deadline}}',
+    deadlineWarningDescriptionPrefix: 'Du kan ettersende dokumentene på',
+    deadlineWarningDescriptionSuffix: '(åpnes i en ny fane)',
+    deadlineWarningLinkLabel: 'nav.no/ettersende',
+    deadlineWarningLinkUrl: 'https://www.nav.no/ettersende',
+  },
   warningAboutDifficultSubmission: {
     modal: {
       title: 'Dette er en tjeneste under utvikling',
