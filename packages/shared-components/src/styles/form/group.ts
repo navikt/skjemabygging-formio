@@ -3,7 +3,7 @@ const group = {
     clear: 'both',
     marginBottom: 'var(--a-spacing-10)',
 
-    '&:last-child': {
+    '&:last-child.formio-component-navSkjemagruppe, &:last-child.formio-component-datagrid': {
       marginBottom: 0,
     },
   },
