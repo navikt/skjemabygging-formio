@@ -132,6 +132,17 @@ describe('Data fetcher', () => {
       cy.findByRole('link', { name: `Du må fylle ut: Aktivitetsvelger` }).should('not.exist');
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
     });
+
+    it('should disregard required validation when fetch fails', () => {
+      cy.mocksUseRouteVariant('get-register-data-activities:error');
+
+      cy.visit('/fyllut/datafetchertest/arbeidsrettetaktivitet?sub=digital');
+      cy.get('.navds-alert--error').contains('Kall for å hente aktiviteter feilet');
+
+      cy.clickSaveAndContinue();
+      cy.findByRole('link', { name: `Du må fylle ut: Aktivitetsvelger` }).should('not.exist');
+      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+    });
   });
 
   describe('Conditionals', () => {
