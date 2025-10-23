@@ -9,6 +9,12 @@ import identityBuilder from './Identity.builder';
 import identityForm from './Identity.form';
 
 export default class Identity extends BaseComponent {
+  constructor(...args: any[]) {
+    // @ts-expect-error args
+    super(...args);
+    this.noMainRef();
+  }
+
   static schema() {
     return BaseComponent.schema({
       label: 'Identitet',
