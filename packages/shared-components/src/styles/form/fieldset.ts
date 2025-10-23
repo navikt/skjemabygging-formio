@@ -6,10 +6,10 @@ const fieldset = {
       marginBottom: 'var(--a-spacing-2)',
     },
     '&__content': {
-      padding: 'var(--a-spacing-4) 0 var(--a-spacing-10) 0',
+      padding: 'var(--a-spacing-4) var(--a-spacing-4) 0 var(--a-spacing-4)',
       marginBottom: 0,
+      overflow: 'auto',
       '&--background-color': {
-        padding: 'var(--a-spacing-4) var(--a-spacing-4) var(--a-spacing-6) var(--a-spacing-4)',
         borderRadius: '0.25rem',
         backgroundColor: 'var(--a-deepblue-50)',
       },
