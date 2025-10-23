@@ -72,7 +72,6 @@ const createPdfRequest = async (accessToken: string, body?: BodyInit) => {
     body,
   });
 
-  console.log('førsteside', response.ok);
   if (response.ok) {
     return response.json();
   }

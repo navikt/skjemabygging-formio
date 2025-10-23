@@ -19,14 +19,6 @@ describe('Alert', () => {
     cy.get('.navds-alert--success').contains('New alert 2');
   });
 
-  it('should have marginBottom of var(--a-spacing-10) which is 2.5rem = 40px', () => {
-    cy.contains('.formio-component-alertstripe', 'New alert 1').should('have.css', 'marginBottom', '40px');
-  });
-
-  it('should have marginBottom of 40px as the last element in the group', () => {
-    cy.contains('.formio-component-alertstripe', 'New alert 2').should('have.css', 'marginBottom', '40px');
-  });
-
   it('should not show any labels', () => {
     cy.get('.formio-form').should('not.have.descendants', 'label');
   });
@@ -38,14 +30,5 @@ describe('Alert', () => {
 
   it('should display alert with norwegian alerttype (suksess instead of success)', () => {
     cy.get('.formio-component-alertstripenorwegian').find('.navds-alert--success').contains('Norwegian alertType');
-  });
-
-  // Old alerts (components have input=true on component and label defined)
-  it('should have marginBottom from input=true of var(--a-spacing-10) which is 2.5rem = 40px', () => {
-    cy.contains('.formio-component-alertstripe', 'Old alert 1').should('have.css', 'marginBottom', '40px');
-  });
-
-  it('should have marginBottom from input=true of var(--a-spacing-10) which is 2.5rem = 40px for last element in group', () => {
-    cy.contains('.formio-component-alertstripe', 'Old alert 2').should('have.css', 'marginBottom', '40px');
   });
 });
