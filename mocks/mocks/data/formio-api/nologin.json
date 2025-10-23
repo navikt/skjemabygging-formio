@@ -938,12 +938,12 @@
       "breadcrumb": "default",
       "components": [
         {
-          "id": "evfo5qs",
-          "navId": "en5h1c",
-          "key": "annenDokumentasjon",
+          "id": "eyobqqf",
+          "navId": "eyobqqf",
+          "key": "vedleggMedMasseGreier",
           "type": "attachment",
           "input": true,
-          "label": "Annen dokumentasjon",
+          "label": "Vedlegg med masse greier",
           "addons": [],
           "hidden": false,
           "prefix": "",
@@ -983,8 +983,8 @@
           "errorLabel": "",
           "persistent": true,
           "properties": {
-            "vedleggskode": "N6",
-            "vedleggstittel": "Annet"
+            "vedleggskode": "V2",
+            "vedleggstittel": "Vanlig vedlegg"
           },
           "validateOn": "blur",
           "clearOnHide": true,
@@ -992,26 +992,73 @@
             "eq": ""
           },
           "customClass": "",
-          "description": "Har du noen annen dokumentasjon du ønsker å legge ved?",
+          "description": "<p>Beskrivelse til vedlegget</p>",
           "placeholder": "",
           "dataGridLabel": false,
           "labelPosition": "top",
           "showCharCount": false,
           "showWordCount": false,
-          "attachmentType": "other",
+          "attachmentType": "default",
           "calculateValue": "",
           "calculateServer": false,
           "attachmentValues": {
-            "nei": {
-              "enabled": true
+            "nav": {
+              "enabled": true,
+              "additionalDocumentation": {
+                "label": "Tilleggsinfo 6",
+                "enabled": true,
+                "description": "Beskrivelse 6"
+              }
+            },
+            "andre": {
+              "enabled": true,
+              "showDeadline": true,
+              "additionalDocumentation": {
+                "label": "Tilleggsinfo 5",
+                "enabled": true,
+                "description": "Beskrivelse 5"
+              }
+            },
+            "harIkke": {
+              "enabled": true,
+              "additionalDocumentation": {
+                "label": "Tilleggsinfo 4",
+                "enabled": true,
+                "description": "Beskrivelse 4"
+              }
+            },
+            "ettersender": {
+              "enabled": true,
+              "showDeadline": true,
+              "additionalDocumentation": {
+                "label": "Tilleggsinfo 2",
+                "enabled": true,
+                "description": "Beskrivelse 2"
+              }
             },
             "leggerVedNaa": {
-              "enabled": true
+              "enabled": true,
+              "additionalDocumentation": {
+                "label": "Tilleggsinfo",
+                "enabled": true,
+                "description": "Beskrivelse"
+              }
+            },
+            "levertTidligere": {
+              "enabled": true,
+              "additionalDocumentation": {
+                "label": "Tilleggsinfo 3",
+                "enabled": true,
+                "description": "Beskrivelse 3"
+              }
             }
           },
+          "customConditional": "",
           "allowMultipleMasks": false,
           "customDefaultValue": "",
-          "allowCalculateOverride": false
+          "allowCalculateOverride": false,
+          "additionalDescriptionText": "<p>En utvidet beskrivelse til vedlegget</p>",
+          "additionalDescriptionLabel": "Her finner du en utvidet beskrivelse"
         },
         {
           "id": "ebb1qzd",
@@ -1118,6 +1165,82 @@
           "allowCalculateOverride": false,
           "additionalDescriptionText": "",
           "additionalDescriptionLabel": ""
+        },
+        {
+          "id": "evfo5qs",
+          "navId": "en5h1c",
+          "key": "annenDokumentasjon",
+          "type": "attachment",
+          "input": true,
+          "label": "Annen dokumentasjon",
+          "addons": [],
+          "hidden": false,
+          "prefix": "",
+          "suffix": "",
+          "unique": false,
+          "dataSrc": "values",
+          "dbIndex": false,
+          "overlay": {
+            "top": "",
+            "left": "",
+            "style": "",
+            "width": "",
+            "height": ""
+          },
+          "tooltip": "",
+          "disabled": false,
+          "multiple": false,
+          "redrawOn": "",
+          "tabindex": "",
+          "validate": {
+            "custom": "",
+            "unique": false,
+            "multiple": false,
+            "required": true,
+            "customPrivate": false,
+            "strictDateValidation": false
+          },
+          "autofocus": false,
+          "encrypted": false,
+          "fieldSize": "input--xxl",
+          "hideLabel": false,
+          "modalEdit": false,
+          "protected": false,
+          "refreshOn": "",
+          "tableView": false,
+          "attributes": {},
+          "errorLabel": "",
+          "persistent": true,
+          "properties": {
+            "vedleggskode": "N6",
+            "vedleggstittel": "Annet"
+          },
+          "validateOn": "blur",
+          "clearOnHide": true,
+          "conditional": {
+            "eq": ""
+          },
+          "customClass": "",
+          "description": "Har du noen annen dokumentasjon du ønsker å legge ved?",
+          "placeholder": "",
+          "dataGridLabel": false,
+          "labelPosition": "top",
+          "showCharCount": false,
+          "showWordCount": false,
+          "attachmentType": "other",
+          "calculateValue": "",
+          "calculateServer": false,
+          "attachmentValues": {
+            "nei": {
+              "enabled": true
+            },
+            "leggerVedNaa": {
+              "enabled": true
+            }
+          },
+          "allowMultipleMasks": false,
+          "customDefaultValue": "",
+          "allowCalculateOverride": false
         }
       ],
       "errorLabel": "",
