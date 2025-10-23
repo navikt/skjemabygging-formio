@@ -15,7 +15,7 @@ const fieldset = {
       },
     },
   },
-  '& .formio-component-navSkjemagruppe .navds-fieldset__content--background-color': {
+  '& .formio-component-navSkjemagruppe > fieldset >.navds-fieldset__content--background-color': {
     backgroundColor: 'var(--a-deepblue-100)',
   },
 };
