@@ -1,6 +1,7 @@
 import { Alert } from '@navikt/ds-react';
-import { NavFormType, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import { NavFormType, Submission, submissionTypesUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
+import { useAppConfig } from '../../../context/config/configContext';
 import { useSendInn } from '../../../context/sendInn/sendInnContext';
 import { PanelValidation } from '../../../util/form/panel-validation/panelValidation';
 import EditAnswersButton from '../../button/navigation/edit-answers/EditAnswersButton';
@@ -21,17 +22,20 @@ export interface Props {
 const SummaryPageNavigation = ({ form, submission, panelValidationList, isValid }: Props) => {
   const { mellomlagringError } = useSendInn();
   const [error, setError] = useState<Error>();
-  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+  const { submissionMethod, app } = useAppConfig();
 
   const submissionTypes = form.properties.submissionTypes;
-  const hasAttachments = hasRelevantAttachments(form, submission ?? { data: {} });
   const canSubmit = !error &&
     !!panelValidationList && panelValidationList.every((panelValidation) => !panelValidation.hasValidationErrors);
   const sendIPosten =
     (submissionTypesUtils.isPaperSubmission(submissionTypes) && (submissionMethod === 'paper' || app === 'bygger')) ||
     submissionTypesUtils.isPaperSubmissionOnly(submissionTypes);
 
-  const exitUrl = urlUtils.getExitUrl(window.location.href);
+  const shouldRenderNextButton =
+    (canSubmit && sendIPosten) ||
+    (canSubmit && (submissionMethod === 'digital' || submissionTypesUtils.isDigitalSubmissionOnly(submissionTypes))) ||
+    (canSubmit && submissionMethod === 'digitalnologin') ||
+    submissionTypesUtils.isNoneSubmission(submissionTypes);
 
   return (
     <>
@@ -50,13 +54,15 @@ const SummaryPageNavigation = ({ form, submission, panelValidationList, isValid 
         saveButton={<SaveButton submission={submission} />}
         previousButton={<EditAnswersButton form={form} panelValidationList={panelValidationList} />}
         nextButton={
-          <SummaryPageNextButton
-            form={form}
-            submission={submission}
-            panelValidationList={panelValidationList}
-            setError={setError}
-            isValid={isValid}
-          />
+          shouldRenderNextButton && (
+            <SummaryPageNextButton
+              form={form}
+              submission={submission}
+              panelValidationList={panelValidationList}
+              setError={setError}
+              isValid={isValid}
+            />
+          )
         }
       />
     </>
