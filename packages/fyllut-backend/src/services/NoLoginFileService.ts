@@ -2,6 +2,7 @@ import {
   I18nTranslationMap,
   localizationUtils,
   NavFormType,
+  Receipt,
   Submission,
   translationUtils,
   UploadedFile,
@@ -109,7 +110,7 @@ class NoLoginFileService {
     translation: I18nTranslationMap = {},
     language: string,
     pdfFormData?: any,
-  ) {
+  ): Promise<{ pdf: Uint8Array; receipt: Receipt }> {
     const correlationId = correlator.getId();
     const lang = localizationUtils.getLanguageCodeAsIso639_1(language);
     const translate = translationUtils.createTranslate(translation, language);
@@ -151,9 +152,9 @@ class NoLoginFileService {
     });
 
     if (response.ok) {
-      const kvittering = await response.json();
+      const receipt: Receipt = await response.json();
       logger.info(`${innsendingsId}: Successfully submitted nologin application`, logMeta);
-      return { innsendingId: innsendingsId, pdf: applicationPdf, kvittering };
+      return { pdf: applicationPdf, receipt };
     }
 
     logger.error(`${innsendingsId}: Failed to submit nologin application`, {
