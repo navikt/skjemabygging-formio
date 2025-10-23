@@ -18,7 +18,7 @@ const post = async (req: Request, res: Response, next: NextFunction) => {
     const accessToken = req.headers.AzureAccessToken as string;
     const pdfAccessToken = req.headers.PdfAccessToken as string;
 
-    const result = await noLoginFileService.submit(
+    const { pdf, receipt } = await noLoginFileService.submit(
       pdfAccessToken,
       accessToken,
       nologinContext.innsendingsId,
@@ -28,9 +28,8 @@ const post = async (req: Request, res: Response, next: NextFunction) => {
       translation,
       language,
     );
-    res.contentType('application/pdf');
-    res.setHeader('Content-Disposition', `inline; filename=${encodeURIComponent(`${form.path}.pdf`)}`);
-    res.send(Buffer.from(result.pdf));
+    const pdfBase64 = Buffer.from(pdf).toString('base64');
+    res.json({ pdfBase64, receipt });
   } catch (error) {
     next(error);
   }
