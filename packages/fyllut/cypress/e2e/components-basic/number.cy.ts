@@ -35,7 +35,7 @@ describe('number component', () => {
         });
     });
 
-    it.only('set 0 value and verify it exist on summary', () => {
+    it('set 0 value and verify it exist on summary', () => {
       cy.findByRole('textbox', { name: 'Påkrevd' }).type('0');
 
       cy.clickShowAllSteps();
