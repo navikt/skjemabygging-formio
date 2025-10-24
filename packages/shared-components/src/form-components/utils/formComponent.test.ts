@@ -9,6 +9,8 @@ describe('formComponentUtils', () => {
         field2: {
           subfield: 'value2',
         },
+        field3: 3,
+        field4: 0,
         arrayField: [{ item: 'item0' }, { item: 'item1' }],
         emptyField: '',
         emptyObject: {},
@@ -17,6 +19,14 @@ describe('formComponentUtils', () => {
 
     it('returns value for simple path', () => {
       expect(formComponentUtils.getSubmissionValue('field1', submission)).toBe('value1');
+    });
+
+    it('returns value for simple path with number', () => {
+      expect(formComponentUtils.getSubmissionValue('field3', submission)).toBe(3);
+    });
+
+    it('returns value for simple path with number 0', () => {
+      expect(formComponentUtils.getSubmissionValue('field4', submission)).toBe(0);
     });
 
     it('returns value for nested path', () => {
