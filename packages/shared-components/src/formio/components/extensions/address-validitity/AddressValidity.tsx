@@ -8,6 +8,12 @@ import addressValidityBuilder from './AddressValidity.builder';
 import addressValidityForm from './AddressValidity.form';
 
 export default class AddressValidity extends BaseComponent {
+  constructor(...args: any[]) {
+    // @ts-expect-error args
+    super(...args);
+    this.noMainRef();
+  }
+
   static schema() {
     return BaseComponent.schema({
       label: 'Adresse varighet',

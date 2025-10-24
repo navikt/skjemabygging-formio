@@ -7,28 +7,31 @@ import { Component, Submission, SubmissionData } from '@navikt/skjemadigitaliser
  * @param submissionPath
  */
 const getSubmissionValue = (submissionPath: string, submission?: Submission): any => {
-  const findValue = (keys: string[], data: SubmissionData) => {
+  const findValue = (keys: string[], submissionData: SubmissionData) => {
     const key = keys.shift();
 
     if (key) {
-      if (data[key]) {
+      if (submissionData[key] !== undefined) {
         if (keys.length > 0) {
-          return findValue(keys, data[key] as SubmissionData);
+          return findValue(keys, submissionData[key] as SubmissionData);
         }
 
-        if (data[key] === '' || (typeof data[key] === 'object' && Object.keys(data[key]).length === 0)) {
+        if (
+          submissionData[key] === '' ||
+          (typeof submissionData[key] === 'object' && Object.keys(submissionData[key]).length === 0)
+        ) {
           return undefined;
         }
 
-        return data[key] as SubmissionData;
+        return submissionData[key] as SubmissionData;
       } else {
         const arrayKey = keyToArray(key);
-        if (arrayKey && data[arrayKey.key][arrayKey.index]) {
-          return findValue(keys, data[arrayKey.key][arrayKey.index] as SubmissionData);
+        if (arrayKey && submissionData[arrayKey.key][arrayKey.index]) {
+          return findValue(keys, submissionData[arrayKey.key][arrayKey.index] as SubmissionData);
         }
       }
     } else {
-      return data;
+      return submissionData;
     }
   };
 

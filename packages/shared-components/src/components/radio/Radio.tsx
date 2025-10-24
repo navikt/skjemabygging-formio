@@ -41,7 +41,7 @@ const Radio = forwardRef<HTMLFieldSetElement, Props>(
             onBlur={blurHandler(obj.value)}
             ref={(r) => {
               addRef(obj.value, r);
-              if (reactResolve && index === arr.length - 1) {
+              if (r && reactResolve && index === arr.length - 1) {
                 reactResolve();
               }
             }}

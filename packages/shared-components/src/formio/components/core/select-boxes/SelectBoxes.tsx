@@ -5,6 +5,7 @@ import BaseComponent from '../../base/BaseComponent';
 import AdditionalDescription from '../../base/components/AdditionalDescription';
 import Description from '../../base/components/Description';
 import Label from '../../base/components/Label';
+import { blurHandler, focusHandler } from '../../base/focus-helpers';
 import { getSelectedValuesAsList, getSelectedValuesMap } from '../../utils';
 import selectBoxesBuilder from './SelectBoxes.builder';
 import selectBoxesForm from './SelectBoxes.form';
@@ -60,14 +61,26 @@ class SelectBoxes extends BaseComponent {
           description={<Description component={this.component} />}
           value={componentValue}
           onChange={(value) => this.changeHandler(value)}
-          ref={(ref) => this.setReactInstance(ref)}
+          ref={(ref) => this.setReactInstance(ref, false)}
           className={this.getClassName()}
           readOnly={this.getReadOnly()}
           error={this.getError()}
           tabIndex={-1}
         >
           {values.map((obj, index) => (
-            <Checkbox key={obj.value} value={obj.value} description={this.getValueDescription(index)}>
+            <Checkbox
+              key={obj.value}
+              value={obj.value}
+              description={this.getValueDescription(index)}
+              onFocus={focusHandler(this, { elementId: obj.value, skipEmit: true })}
+              onBlur={blurHandler(this, { elementId: obj.value, skipEmit: true })}
+              ref={(r) => {
+                this.addRef(obj.value, r);
+                if (r && this.reactResolve && index === values.length - 1) {
+                  this.reactResolve();
+                }
+              }}
+            >
               {this.translate(obj.label)}
             </Checkbox>
           ))}
