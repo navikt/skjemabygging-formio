@@ -43,6 +43,10 @@
           "verdi": "Nei"
         },
         {
+          "label": "Nedtrekksmeny (select)",
+          "verdi": "yes"
+        },
+        {
           "label": "Radiopanel",
           "verdi": "Ja"
         },

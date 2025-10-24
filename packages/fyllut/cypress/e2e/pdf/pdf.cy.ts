@@ -175,6 +175,12 @@ describe('Pdf', () => {
           cy.findByRole('checkbox', { name: 'Ja' }).check();
         });
         cy.findByRole('combobox', { name: /Nedtrekksmeny \(navSelect\)/ }).type('{downArrow}{enter}');
+        cy.findAllByRole('combobox').eq(1).click();
+        cy.findAllByRole('combobox')
+          .eq(1)
+          .within(() => {
+            cy.findByRole('option', { name: 'Ja' }).click();
+          });
         cy.findByRole('group', { name: /Radiopanel/ }).within(() => {
           cy.findByRole('radio', { name: 'Ja' }).check();
         });
@@ -320,6 +326,12 @@ describe('Pdf', () => {
           cy.findByRole('checkbox', { name: 'Ja' }).check();
         });
         cy.findByRole('combobox', { name: /Nedtrekksmeny \(navSelect\)/ }).type('{downArrow}{enter}');
+        cy.findAllByRole('combobox').eq(1).click();
+        cy.findAllByRole('combobox')
+          .eq(1)
+          .within(() => {
+            cy.findByRole('option', { name: 'Ja' }).click();
+          });
         cy.findByRole('group', { name: /Radiopanel/ }).within(() => {
           cy.findByRole('radio', { name: 'Ja' }).check();
         });
