@@ -35,6 +35,21 @@ describe('number component', () => {
         });
     });
 
+    it.only('set 0 value and verify it exist on summary', () => {
+      cy.findByRole('textbox', { name: 'Påkrevd' }).type('0');
+
+      cy.clickShowAllSteps();
+      cy.findByRole('link', { name: 'Oppsummering' }).click();
+
+      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+      cy.get('dl')
+        .eq(0)
+        .within(() => {
+          cy.get('dt').eq(0).should('contain.text', 'Påkrevd');
+          cy.get('dd').eq(0).should('contain.text', '0');
+        });
+    });
+
     it('set negative value', () => {
       cy.findByRole('textbox', { name: 'Påkrevd' }).should('exist');
       cy.findByRole('textbox', { name: 'Påkrevd' }).type('-20');
