@@ -52,8 +52,6 @@ describe('Select', () => {
       cy.findAllByRole('combobox').eq(2).select('-1.00');
       cy.findAllByRole('combobox').eq(2).should('have.value', '-1.00');
 
-      // FIXME: Fjernes når bug med oppdatering av submission fra HTML5 og ChoiceJS select er fikset
-      cy.findByRole('textbox', { name: 'Tekstfelt (valgfritt)' }).type('abc');
       cy.clickNextStep();
 
       // Summary

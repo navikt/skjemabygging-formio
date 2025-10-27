@@ -41,8 +41,7 @@ interface EventProps {
   onPrevPage?: ({ page, currentPanels }: { page: number; currentPanels: string[] }) => void;
   onCancel?: ({ submission }: { submission: Submission }) => void;
   onSave?: ({ submission }: { submission: Submission }) => void;
-  onChange?: (changedSubmission: Submission) => void;
-  onSubmissionChanged?: (submissionData: SubmissionData) => void;
+  onChange?: (changedArgs: { data: SubmissionData }) => void;
   onSubmissionMetadataChanged?: (submissionMetadata: SubmissionMetadata) => void;
   onWizardPageSelected?: (panel: { path: string }) => void;
   onShowErrors?: (errorsFromForm: ComponentError[]) => void;
@@ -162,7 +161,7 @@ const NavForm = ({
 
   useEffect(() => {
     webform?.emitNavigationPathsChanged?.();
-    webform?.emit('submissionChanged', webform._data);
+    webform?.emit('change', { data: { ...webform._data } });
   }, [webform]);
 
   /**
@@ -207,8 +206,8 @@ const NavForm = ({
 
       // Need to trigger a handle change event after prefilling form or else
       // submission will not have correct initial state.
-      if (events?.onSubmissionChanged) {
-        events.onSubmissionChanged(webform._data);
+      if (events?.onChange) {
+        events.onChange({ data: webform._data });
       }
       webform.emitNavigationPathsChanged();
     }

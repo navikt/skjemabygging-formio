@@ -95,14 +95,19 @@ export const FillInFormPage = () => {
     }
   }, []);
 
-  const onSubmissionChanged = useCallback(
-    (submissionData: SubmissionData) => {
-      setSubmission((prevSubmission) => ({
-        ...prevSubmission,
-        data: {
-          ...submissionData,
-        },
-      }));
+  const onChange = useCallback(
+    ({ data }: { data: SubmissionData }) => {
+      setSubmission((prevSubmission) => {
+        if (JSON.stringify(data) === JSON.stringify(prevSubmission?.data)) {
+          return prevSubmission;
+        }
+        return {
+          ...prevSubmission,
+          data: {
+            ...data,
+          },
+        };
+      });
     },
     [setSubmission],
   );
@@ -180,7 +185,7 @@ export const FillInFormPage = () => {
             events={{
               onShowErrors,
               onErrorSummaryFocus,
-              onSubmissionChanged,
+              onChange,
               onSubmissionMetadataChanged,
               onNavigationPathsChanged,
               onFocusOnComponentPageChanged,
