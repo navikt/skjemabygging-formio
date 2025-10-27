@@ -18,6 +18,8 @@ import SummaryImage from './image/SummaryImage';
 import SummaryNumber from './number/SummaryNumber';
 import SummaryRadio from './radio/SummaryRadio';
 import SummarySelectBoxes from './select-boxes/SummarySelectBoxes';
+import PdfSelect from './select/PdfSelect';
+import SummaryNavSelect from './select/SummaryNavSelect';
 import SummarySelect from './select/SummarySelect';
 import SummaryTextArea from './text-area/SummaryTextArea';
 import SummaryTextField from './text-field/SummaryTextField';
@@ -31,6 +33,7 @@ export {
   PdfNavSelect,
   PdfNumber,
   PdfRadio,
+  PdfSelect,
   PdfSelectBoxes,
   PdfTextArea,
   PdfTextField,
@@ -39,6 +42,7 @@ export {
   SummaryCheckbox,
   SummaryHtmlElement,
   SummaryImage,
+  SummaryNavSelect,
   SummaryNumber,
   SummaryRadio,
   SummarySelect,
