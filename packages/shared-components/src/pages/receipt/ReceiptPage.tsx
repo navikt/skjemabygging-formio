@@ -2,11 +2,12 @@ import { CheckmarkCircleFillIcon, DownloadIcon } from '@navikt/aksel-icons';
 import { Alert, BodyShort, Heading, HStack, Link, List, VStack } from '@navikt/ds-react';
 import '@navikt/ds-tokens';
 import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import InnerHtml from '../../components/inner-html/InnerHtml';
 import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
 import makeStyles from '../../util/styles/jss/jss';
+import { useForm } from '../../context/form/FormContext';
 
 const useStyles = makeStyles({
   downloadLink: {
@@ -21,6 +22,7 @@ const useStyles = makeStyles({
 });
 
 export function ReceiptPage() {
+  const { setFormProgressVisible } = useForm();
   const styles = useStyles();
   const { translate } = useLanguages();
   const { soknadPdfBlob, receipt } = useSendInn();
