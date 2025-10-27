@@ -43,7 +43,9 @@ describe('Digital submission without user login', () => {
 
       cy.findByRole('group', { name: 'Høyeste fullførte utdanning' }).within(() => cy.findByLabelText('Annet').check());
       cy.clickNextStep();
+    });
 
+    it('should submit application successfully', () => {
       cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
         cy.findByLabelText('Jeg ettersender dokumentasjonen senere').check(),
       );
@@ -65,6 +67,27 @@ describe('Digital submission without user login', () => {
         force: true,
       });
 
+      cy.clickNextStep();
+
+      cy.findByRole('button', { name: 'Send til Nav' }).click();
+      cy.findByText('Takk for at du sendte inn skjemaet.').should('exist');
+      cy.findByRole('button', { name: 'Vis alle steg' }).should('not.exist');
+      cy.findByRole('button', { name: 'Skjul alle steg' }).should('not.exist');
+    });
+
+    it('prevents further editing when navigating back after submission', () => {
+      cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
+        cy.findByLabelText('Jeg ettersender dokumentasjonen senere').check(),
+      );
+
+      cy.findByLabelText('Annen dokumentasjon').within(() =>
+        cy.findByLabelText('Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved').check(),
+      );
+
+      cy.findByLabelText('Bekreftelse på utdanning').within(() =>
+        cy.findByLabelText('Jeg legger det ved dette skjemaet').check(),
+      );
+      cy.get('input[type=file]').selectFile('cypress/fixtures/files/another-small-file.txt', { force: true });
       cy.clickNextStep();
 
       cy.findByRole('button', { name: 'Send til Nav' }).click();
