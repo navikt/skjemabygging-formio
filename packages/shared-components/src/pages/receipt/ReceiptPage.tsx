@@ -1,27 +1,29 @@
-import { CheckmarkCircleFillIcon, DownloadIcon } from '@navikt/aksel-icons';
+import { Alert, BodyShort, Heading, Link, List, VStack } from '@navikt/ds-react';
 import '@navikt/ds-tokens';
-import { useLanguages } from '../../context/languages';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useForm } from '../../context/form/FormContext';
-import { useSendInn } from '../../context/sendInn/sendInnContext';
 import { useMemo } from 'react';
-import { Alert, BodyShort, Heading, HStack, Link, List, VStack } from '@navikt/ds-react';
-import styles from '../../styles';
+import { useForm } from '../../context/form/FormContext';
+import { useLanguages } from '../../context/languages';
+import { useSendInn } from '../../context/sendInn/sendInnContext';
 
 export function ReceiptPage() {
-const { form } = useForm();
-const { translate } = useLanguages();
-const { soknadPdfBlob, innsendingsId } = useSendInn();
+  const { form } = useForm();
+  const { translate } = useLanguages();
+  const { soknadPdfBlob, receipt } = useSendInn();
 
-const soknadPdfUrl = useMemo(() => {
-  return soknadPdfBlob ? URL.createObjectURL(soknadPdfBlob) : null;
-}, [soknadPdfBlob]);
+  const soknadPdfUrl = useMemo(() => {
+    return soknadPdfBlob ? URL.createObjectURL(soknadPdfBlob) : undefined;
+  }, [soknadPdfBlob]);
 
-const shouldShowSuccessAlert = true;
+  console.log(soknadPdfUrl);
+
+  console.log(receipt);
+
+  const shouldShowSuccessAlert = true;
 
   return (
     <VStack gap="space-32">
-      {form ? (
+      {form && (
         <>
           {shouldShowSuccessAlert && (
             <Alert size="small" variant="success">
@@ -32,16 +34,32 @@ const shouldShowSuccessAlert = true;
             </Alert>
           )}
 
-          <section>
+          {receipt && (
+            <section>
+              <BodyShort size="large">
+                <b>{translate(TEXTS.statiske.receipt.documentsHeading)}</b>
+              </BodyShort>
+              <List>
+                <List.Item>
+                  {receipt.label}
+                  <Link href={soknadPdfUrl}>Last ned kopi</Link>
+                </List.Item>
+                {receipt.innsendteVedlegg.map((vedlegg) => (
+                  <List.Item key={vedlegg.vedleggsnr}>{vedlegg.tittel}</List.Item>
+                ))}
+              </List>
+            </section>
+          )}
+
+          {/*           <section>
             <BodyShort size="large">
               <b>{translate(TEXTS.statiske.receipt.documentsHeading)}</b>
             </BodyShort>
             <List>
-              {documentItems.map((item) => {
-                const fileCountLabel = formatFileCount(item.fileCount);
+              {receipt?.innsendteVedlegg.map((item) => {
                 return (
                   <List.Item
-                    key={item.id}
+                    key={item.vedleggsnr}
                     icon={
                       <CheckmarkCircleFillIcon
                         color="currentColor"
@@ -52,8 +70,6 @@ const shouldShowSuccessAlert = true;
                     }
                   >
                     <HStack gap="2">
-                      {item.title}
-                      {item.type === 'attachment' && fileCountLabel ? ` (${fileCountLabel})` : null}
                       {item.type === 'main' && soknadPdfBlob ? (
                         <Link
                           className={styles.downloadLink}
@@ -71,9 +87,9 @@ const shouldShowSuccessAlert = true;
                 );
               })}
             </List>
-          </section>
+          </section> */}
 
-          {attachmentsToSendLater.length > 0 && (
+          {/* {attachmentsToSendLater.length > 0 && (
             <section>
               <BodyShort size="large">
                 <b>{translate(TEXTS.statiske.receipt.mustSendLaterHeading ?? 'Dette må du ettersende:')}</b>
@@ -91,9 +107,9 @@ const shouldShowSuccessAlert = true;
                 ))}
               </List>
             </section>
-          )}
+          )} */}
 
-          {attachmentsSentByOthers.length > 0 && (
+          {/*           {attachmentsSentByOthers.length > 0 && (
             <section>
               <BodyShort size="large">
                 <b>{translate(TEXTS.statiske.receipt.sentByOthersHeading ?? 'Dette har du svart at noen andre skal sende inn:')}</b>
@@ -111,9 +127,9 @@ const shouldShowSuccessAlert = true;
                 ))}
               </List>
             </section>
-          )}
+          )} */}
 
-          {shouldShowDeadlineAlert && (
+          {/*           {shouldShowDeadlineAlert && (
             <Alert size="small" variant="warning">
               <Heading level="2" spacing size="xsmall">
                 <b>
@@ -132,7 +148,7 @@ const shouldShowSuccessAlert = true;
               </Link>{' '}
               {translate(TEXTS.statiske.receipt.deadlineWarningDescriptionSuffix ?? '(åpnes i en ny fane)')}
             </Alert>
-          )}
+          )} */}
         </>
       )}
     </VStack>
