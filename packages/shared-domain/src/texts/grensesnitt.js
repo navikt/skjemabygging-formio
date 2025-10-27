@@ -40,9 +40,9 @@ export const grensesnitt = {
     cancel: 'Nei, fortsett utfylling',
   },
   confirmDiscardPrompt: {
-    title: 'Avbryt og forkast?',
+    title: 'Avbryt og slett?',
     body: 'Alle opplysningene du har fylt ut vil bli slettet. Hvis du ønsker å fortsette utfyllingen senere kan du la nettleservinduet stå åpent til neste gang.',
-    confirm: 'Ja, avbryt og forkast',
+    confirm: 'Ja, avbryt og slett',
     cancel: 'Nei, fortsett utfylling',
   },
   submitToNavPrompt: {
