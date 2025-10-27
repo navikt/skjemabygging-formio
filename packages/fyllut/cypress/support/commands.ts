@@ -71,9 +71,10 @@ Cypress.Commands.add('clickSaveAndContinue', () => {
 
 Cypress.Commands.add('clickStart', () => {
   return cy.url().then((url) => {
-    const name = url.includes('digital')
-      ? TEXTS.grensesnitt.navigation.saveAndContinue
-      : TEXTS.grensesnitt.navigation.next;
+    const name =
+      url.includes('digital') && !url.includes('digitalnologin')
+        ? TEXTS.grensesnitt.navigation.saveAndContinue
+        : TEXTS.grensesnitt.navigation.next;
     return cy.findByRoleWhenAttached('link', { name }, 500).click();
   });
 });

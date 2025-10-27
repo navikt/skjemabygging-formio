@@ -34,13 +34,16 @@ export function CancelButton() {
           digital: () => setIsDeleteModalOpen(true),
           paper: () => setIsDeleteModalOpen(true),
           digitalnologin: () => setIsDeleteModalOpen(true),
+          none: () => setIsDeleteModalOpen(true),
         }}
         variant="tertiary"
         label={{
           digital: translate(TEXTS.grensesnitt.navigation.cancelAndDelete),
           digitalnologin: translate(TEXTS.grensesnitt.navigation.cancelAndDelete),
           paper: translate(TEXTS.grensesnitt.navigation.cancelAndDelete),
+          none: translate(TEXTS.grensesnitt.navigation.cancelAndDelete),
         }}
+        role="button"
       />
       <ConfirmationModal
         open={isDeleteModalOpen}

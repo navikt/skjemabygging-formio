@@ -26,11 +26,13 @@ const EditAnswersButton = ({ form, panelValidationList }: Props) => {
         digital: href,
         paper: href,
         digitalnologin: href,
+        none: href,
       }}
       label={{
         digital: translate(TEXTS.grensesnitt.summaryPage.editAnswers),
         paper: translate(TEXTS.grensesnitt.summaryPage.editAnswers),
         digitalnologin: translate(TEXTS.grensesnitt.summaryPage.editAnswers),
+        none: translate(TEXTS.grensesnitt.summaryPage.editAnswers),
       }}
     />
   );

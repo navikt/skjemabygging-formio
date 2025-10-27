@@ -2,7 +2,7 @@ import { NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import nock from 'nock';
-import { RouterProvider, createMemoryRouter } from 'react-router';
+import { createMemoryRouter, RouterProvider } from 'react-router';
 import { defaultFormWithAttachment } from '../../../../test/test-data/form/data';
 import { Buttons, formWithProperties, getButtons } from '../../../../test/util/helpers';
 import { AppConfigContextType, AppConfigProvider } from '../../../context/config/configContext';
@@ -111,6 +111,7 @@ describe('SummaryPageNavigation', () => {
       expect(router.state.location.pathname).toBe('/send-i-posten');
     });
 
+    // only her
     it('submissionTypes=PAPIR_OG_DIGITAL, submissionMethod=digital', async () => {
       const form = formWithProperties({ submissionTypes: ['PAPER', 'DIGITAL'] });
       const appConfigProps = { submissionMethod: 'digital', app: 'bygger' } as AppConfigContextType;

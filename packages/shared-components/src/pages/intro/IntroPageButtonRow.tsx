@@ -31,16 +31,19 @@ const IntroPageButtonRow = () => {
             digital: () => navigateToFormPage(),
             paper: () => navigateToFormPage(),
             digitalnologin: () => navigateToFormPage(),
+            none: () => navigateToFormPage(),
           }}
           label={{
             digital: translate(TEXTS.grensesnitt.navigation.saveAndContinue),
             digitalnologin: translate(TEXTS.grensesnitt.navigation.next),
             paper: translate(TEXTS.grensesnitt.navigation.next),
+            none: translate(TEXTS.grensesnitt.navigation.next),
           }}
           href={{
             digital: href,
             paper: href,
             digitalnologin: href,
+            none: href,
           }}
         />
       }
@@ -50,11 +53,13 @@ const IntroPageButtonRow = () => {
             digital: () => navigate(-1),
             digitalnologin: () => navigate(-1),
             paper: () => navigate(-1),
+            none: () => navigate(-1),
           }}
           label={{
             digital: translate(TEXTS.grensesnitt.navigation.cancelAndDiscard),
             digitalnologin: translate(TEXTS.grensesnitt.navigation.uploadID),
             paper: translate(TEXTS.grensesnitt.navigation.cancelAndDiscard),
+            none: translate(TEXTS.grensesnitt.navigation.cancelAndDiscard),
           }}
         />
       }

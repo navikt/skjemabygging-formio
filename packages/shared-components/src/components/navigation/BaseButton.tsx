@@ -10,30 +10,41 @@ type HrefProps = {
   hash?: string;
 };
 export type BaseButtonProps = {
-  onClick?: Partial<Record<SubmissionMethod, () => void>>;
-  label: Partial<Record<SubmissionMethod, string>>;
-  href?: Partial<Record<SubmissionMethod, HrefProps | string>>;
+  onClick?: Partial<Record<SubmissionMethod | 'none', () => void>>;
+  label: Partial<Record<SubmissionMethod | 'none', string>>;
+  href?: Partial<Record<SubmissionMethod | 'none', HrefProps | string>>;
   icon?: ReactNode;
   variant?: 'primary' | 'secondary' | 'tertiary';
   iconPosition?: 'left' | 'right';
+  role?: 'link' | 'button';
 };
 
-export function BaseButton({ label, onClick, href, icon, iconPosition, variant }: BaseButtonProps) {
-  const { submissionMethod } = useAppConfig();
+export function BaseButton({ label, onClick, href, icon, iconPosition, variant, role = 'link' }: BaseButtonProps) {
+  const { submissionMethod = 'none' } = useAppConfig();
 
-  const handleClick = onClick ? onClick[submissionMethod!] : undefined;
-  const buttonLabel = label[submissionMethod!] ?? undefined;
+  console.log('labels', label);
+  console.log('submissionMethod', submissionMethod);
+
+  const handleClick = onClick ? onClick[submissionMethod] : undefined;
+  const buttonLabel = label[submissionMethod] ?? undefined;
   const buttonHref = href && submissionMethod ? href[submissionMethod] : undefined;
 
   if (!buttonLabel) return null;
 
-  return buttonHref ? (
-    <Button as={ReactRouterLink} to={buttonHref} role="link" icon={icon} iconPosition={iconPosition} variant={variant}>
+  return !onClick && buttonHref ? (
+    <Button
+      role="link"
+      as={ReactRouterLink}
+      to={typeof buttonHref === 'string' ? buttonHref : buttonHref?.pathname}
+      icon={icon}
+      iconPosition={iconPosition}
+      variant={variant}
+    >
       {buttonLabel}
     </Button>
   ) : (
     <Button
-      role="link"
+      role={role}
       onClick={(event) => {
         event.preventDefault();
         handleClick?.();

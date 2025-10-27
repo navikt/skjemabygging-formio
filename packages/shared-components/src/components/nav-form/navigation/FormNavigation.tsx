@@ -72,11 +72,13 @@ const FormNavigation = ({ paths, isValid, submission, navigateTo, finalStep }: P
             digital: () => nextClickHandler(),
             paper: () => nextClickHandler(),
             digitalnologin: () => nextClickHandler(),
+            none: () => nextClickHandler(),
           }}
           label={{
             digital: translate(TEXTS.grensesnitt.navigation.saveAndContinue),
             digitalnologin: translate(TEXTS.grensesnitt.navigation.next),
             paper: translate(TEXTS.grensesnitt.navigation.next),
+            none: translate(TEXTS.grensesnitt.navigation.next),
           }}
         />
       }
@@ -91,6 +93,7 @@ const FormNavigation = ({ paths, isValid, submission, navigateTo, finalStep }: P
             digital: translate(TEXTS.grensesnitt.navigation.previous),
             digitalnologin: translate(TEXTS.grensesnitt.navigation.previous),
             paper: translate(TEXTS.grensesnitt.navigation.previous),
+            none: translate(TEXTS.grensesnitt.navigation.previous),
           }}
         />
       }

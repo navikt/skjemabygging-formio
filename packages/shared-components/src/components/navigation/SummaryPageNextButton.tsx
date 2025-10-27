@@ -23,10 +23,13 @@ export function SummaryPageNextButton({ form, submission, panelValidationList, s
   const { search } = useLocation();
   const { translate } = useLanguages();
   const { isMellomlagringActive } = useSendInn();
+  console.log('isMellomlagringActive', isMellomlagringActive);
   const submissionTypes = form.properties.submissionTypes;
   const hasAttachments = hasRelevantAttachments(form, submission ?? { data: {} });
+  console.log('hasAttachments', hasAttachments);
   const canSubmit =
     !!panelValidationList && panelValidationList.every((panelValidation) => !panelValidation.hasValidationErrors);
+  console.log('canSubmit', canSubmit);
   const sendIPosten =
     (submissionTypesUtils.isPaperSubmission(submissionTypes) && (submissionMethod === 'paper' || app === 'bygger')) ||
     submissionTypesUtils.isPaperSubmissionOnly(submissionTypes);
@@ -37,9 +40,11 @@ export function SummaryPageNextButton({ form, submission, panelValidationList, s
         <NextButton
           label={{
             paper: translate(TEXTS.grensesnitt.moveForward),
+            none: translate(TEXTS.grensesnitt.moveForward),
           }}
           href={{
-            paper: `/${form.path}/send-i-posten${search}`,
+            paper: { pathname: `../send-i-posten`, search },
+            none: { pathname: `../send-i-posten`, search },
           }}
         />
       )}
@@ -67,11 +72,13 @@ export function SummaryPageNextButton({ form, submission, panelValidationList, s
             digital: translate(TEXTS.grensesnitt.moveForward),
             paper: translate(TEXTS.grensesnitt.moveForward),
             digitalnologin: translate(TEXTS.grensesnitt.moveForward),
+            none: translate(TEXTS.grensesnitt.moveForward),
           }}
           href={{
             digital: `/${form.path}/ingen-innsending${search}`,
             paper: `/${form.path}/ingen-innsending${search}`,
             digitalnologin: `/${form.path}/ingen-innsending${search}`,
+            none: `/${form.path}/ingen-innsending${search}`,
           }}
         />
       )}

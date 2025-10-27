@@ -36,6 +36,7 @@ export function SaveButton({ submission }: { submission?: Submission }) {
         label={{
           digital: translate(TEXTS.grensesnitt.navigation.saveDraft),
         }}
+        role="button"
       />
       <ConfirmationModal
         open={isSaveModalOpen}

@@ -16,11 +16,13 @@ const NavigateButtonComponent = ({ goBackUrl }) => {
             digital: translate(TEXTS.grensesnitt.goBack),
             paper: translate(TEXTS.grensesnitt.goBack),
             digitalnologin: translate(TEXTS.grensesnitt.goBack),
+            none: translate(TEXTS.grensesnitt.goBack),
           }}
           href={{
             digital: { pathname: goBackUrl, search },
             paper: { pathname: goBackUrl, search },
             digitalnologin: { pathname: goBackUrl, search },
+            none: { pathname: goBackUrl, search },
           }}
         />
       }

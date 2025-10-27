@@ -1,16 +1,16 @@
 import { Alert } from '@navikt/ds-react';
 import { NavFormType, Submission, submissionTypesUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
+import EditAnswersButton from '../../../components/button/navigation/edit-answers/EditAnswersButton';
+import FormError from '../../../components/form/FormError';
+import FormSavedStatus from '../../../components/form/FormSavedStatus';
+import { CancelButton } from '../../../components/navigation/CancelButton';
+import { NavigationButtonRow } from '../../../components/navigation/NavigationButtonRow';
+import { SaveButton } from '../../../components/navigation/SaveButton';
+import { SummaryPageNextButton } from '../../../components/navigation/SummaryPageNextButton';
 import { useAppConfig } from '../../../context/config/configContext';
 import { useSendInn } from '../../../context/sendInn/sendInnContext';
 import { PanelValidation } from '../../../util/form/panel-validation/panelValidation';
-import EditAnswersButton from '../../button/navigation/edit-answers/EditAnswersButton';
-import FormError from '../../form/FormError';
-import FormSavedStatus from '../../form/FormSavedStatus';
-import { CancelButton } from '../../navigation/CancelButton';
-import { NavigationButtonRow } from '../../navigation/NavigationButtonRow';
-import { SaveButton } from '../../navigation/SaveButton';
-import { SummaryPageNextButton } from '../../navigation/SummaryPageNextButton';
 
 export interface Props {
   form: NavFormType;
@@ -25,8 +25,10 @@ const SummaryPageNavigation = ({ form, submission, panelValidationList, isValid 
   const { submissionMethod, app } = useAppConfig();
 
   const submissionTypes = form.properties.submissionTypes;
-  const canSubmit = !error &&
-    !!panelValidationList && panelValidationList.every((panelValidation) => !panelValidation.hasValidationErrors);
+  const canSubmit =
+    !error &&
+    !!panelValidationList &&
+    panelValidationList.every((panelValidation) => !panelValidation.hasValidationErrors);
   const sendIPosten =
     (submissionTypesUtils.isPaperSubmission(submissionTypes) && (submissionMethod === 'paper' || app === 'bygger')) ||
     submissionTypesUtils.isPaperSubmissionOnly(submissionTypes);
