@@ -260,7 +260,6 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
           formContextValue,
           languagesContextValue,
         );
-        setSoknadPdfBlob(response);
         setNologinToken(undefined);
         setSubmission(undefined);
         if (response?.pdfBase64) {
