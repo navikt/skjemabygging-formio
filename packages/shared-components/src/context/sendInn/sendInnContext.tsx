@@ -30,6 +30,7 @@ interface SendInnContextType {
   setNologinToken: (token: string | undefined) => void;
   setInnsendingsId: (innsendingsId: string | undefined) => void;
   mellomlagringError: MellomlagringError | undefined;
+  submitted?: boolean;
 }
 
 interface SendInnProviderProps {
@@ -257,6 +258,8 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
           languagesContextValue,
         );
         setSoknadPdfBlob(response);
+        setNologinToken(undefined);
+        setSubmission(undefined);
         navigate(`/${form.path}/kvittering?${searchParams.toString()}`);
       } catch (error: any) {
         logger?.error(`${innsendingsId}: Failed to submit nologin application`, {
@@ -274,6 +277,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
       form,
       formContextValue,
       languagesContextValue,
+      setSubmission,
       navigate,
       searchParams,
       logger,
@@ -399,6 +403,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
     isMellomlagringActive: !!fyllutMellomlagringState?.isActive,
     isMellomlagringReady,
     mellomlagringError: fyllutMellomlagringState?.error,
+    submitted: !!soknadPdfBlob,
   };
 
   return <SendInnContext.Provider value={value}>{children}</SendInnContext.Provider>;
