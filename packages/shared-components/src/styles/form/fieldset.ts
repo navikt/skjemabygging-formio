@@ -6,15 +6,17 @@ const fieldset = {
       marginBottom: 'var(--a-spacing-2)',
     },
     '&__content': {
-      padding: 'var(--a-spacing-3) 0',
+      padding: 'var(--a-spacing-4) var(--a-spacing-4) 0 var(--a-spacing-4)',
+      marginBottom: 0,
+      overflow: 'auto',
       '&--background-color': {
-        paddingLeft: 'var(--a-spacing-3)',
-        paddingRight: 'var(--a-spacing-3)',
-        borderRadius: '0 0.25rem 0.25rem 0',
-        borderLeft: '4px solid var(--a-lightblue-700)',
+        borderRadius: '0.25rem',
         backgroundColor: 'var(--a-deepblue-50)',
       },
     },
+  },
+  '& .formio-component-navSkjemagruppe > fieldset >.navds-fieldset__content--background-color': {
+    backgroundColor: 'var(--a-deepblue-100)',
   },
 };
 

@@ -44,7 +44,9 @@ const FyllUtRouter = ({ form }: Props) => {
             <Route path="send-i-posten" element={<PrepareLetterPage />} />
             <Route path="ingen-innsending" element={<PrepareIngenInnsendingPage />} />
             <Route path="paabegynt" element={<ActiveTasksPage />} />
-            <Route path="kvittering" element={<ReceiptPage />} />
+          </Route>
+          <Route element={<FormLayout allowSubmittedApplication />}>
+            <Route path={'/kvittering'} element={<ReceiptPage />} />
           </Route>
         </Routes>
       </SendInnProvider>

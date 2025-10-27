@@ -30,6 +30,7 @@ interface SendInnContextType {
   setNologinToken: (token: string | undefined) => void;
   setInnsendingsId: (innsendingsId: string | undefined) => void;
   mellomlagringError: MellomlagringError | undefined;
+  submitted?: boolean;
   receipt?: Receipt;
   setReceipt: (receipt: Receipt | undefined) => void;
 }
@@ -259,6 +260,9 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
           formContextValue,
           languagesContextValue,
         );
+        setSoknadPdfBlob(response);
+        setNologinToken(undefined);
+        setSubmission(undefined);
         if (response?.pdfBase64) {
           const byteCharacters = atob(response.pdfBase64);
           const byteNumbers = new Array(byteCharacters.length);
@@ -289,6 +293,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
       form,
       formContextValue,
       languagesContextValue,
+      setSubmission,
       navigate,
       searchParams,
       logger,
@@ -416,6 +421,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
     isMellomlagringActive: !!fyllutMellomlagringState?.isActive,
     isMellomlagringReady,
     mellomlagringError: fyllutMellomlagringState?.error,
+    submitted: !!soknadPdfBlob,
   };
 
   return <SendInnContext.Provider value={value}>{children}</SendInnContext.Provider>;

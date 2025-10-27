@@ -25,6 +25,10 @@ export function ReceiptPage() {
   const { translate } = useLanguages();
   const { soknadPdfBlob, receipt } = useSendInn();
 
+  useEffect(() => {
+    setFormProgressVisible(false);
+  }, [setFormProgressVisible]);
+
   const soknadPdfUrl = useMemo(() => {
     return soknadPdfBlob ? URL.createObjectURL(soknadPdfBlob) : undefined;
   }, [soknadPdfBlob]);
