@@ -1,5 +1,5 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router';
 import { FormContainer } from '../components/form/container/FormContainer';
 import FormProgress from '../components/form/form-progress/FormProgress';
 import { FormTitle } from '../components/form/form-title/FormTitle';

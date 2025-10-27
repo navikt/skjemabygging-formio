@@ -132,6 +132,7 @@ export interface Component {
   protectedApiKey?: boolean;
   yourInformation?: boolean;
   widthPercent?: number;
+  logic?: any;
   currency?: string;
   isAmountWithCurrencySelector?: boolean;
 }
@@ -181,7 +182,6 @@ export interface ComponentConditional {
 export interface Webform {
   id: string;
   form?: NavFormType;
-  formUrl?: string;
   language?: string;
   submission?: Submission;
   setSubmission: (submission: Submission) => Promise<void>;

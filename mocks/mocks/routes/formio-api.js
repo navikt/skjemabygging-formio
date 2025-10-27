@@ -61,6 +61,9 @@ const submissionTypeDigitalNoLogin = require('../data/formio-api/submission-type
 const submissionTypePaperDigitalNoLogin = require('../data/formio-api/submission-type-paper-digital-no-login.json');
 const submissionTypePaperNoLogin = require('../data/formio-api/submission-type-paper-no-login.json');
 const nologinForm = require('../data/formio-api/nologin.json');
+const dataGridLogicBug = require('../data/formio-api/datagrid-logic-bug.json');
+const dataGridSkjemagruppeBug = require('../data/formio-api/datagrid001.json');
+const conditionalPage = require('../data/formio-api/conditional-page.json');
 
 const allForms = [
   { form: formCypress101, translations: translationsCypress101 },
@@ -116,6 +119,9 @@ const allForms = [
   { form: submissionTypePaperDigitalNoLogin, translations: undefined },
   { form: submissionTypePaperNoLogin, translations: undefined },
   { form: nologinForm, translations: undefined },
+  { form: dataGridLogicBug, translations: undefined },
+  { form: dataGridSkjemagruppeBug, translations: undefined },
+  { form: conditionalPage, translations: undefined },
 ];
 
 const findTestdata = (formPath) => allForms.find((testdata) => testdata.form.path === formPath);

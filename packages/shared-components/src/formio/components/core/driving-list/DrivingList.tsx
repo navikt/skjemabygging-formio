@@ -15,6 +15,12 @@ import {
 import { DrivingListProvider } from './DrivingListContext';
 
 class DrivingList extends BaseComponent {
+  constructor(...args: any[]) {
+    // @ts-expect-error args
+    super(...args);
+    this.noMainRef();
+  }
+
   static schema() {
     return BaseComponent.schema({
       label: 'Kjøreliste',

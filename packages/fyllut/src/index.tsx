@@ -3,7 +3,7 @@ import { ConfigType, SubmissionMethod } from '@navikt/skjemadigitalisering-share
 import { Settings } from 'luxon';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 import App from './App';
 import ConfirmDelingslenkeModal from './components/ConfirmDelingslenkeModal';
 import getDokumentinnsendingBaseURL from './util/getDokumentinnsendingBaseURL';

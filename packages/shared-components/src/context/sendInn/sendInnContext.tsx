@@ -1,6 +1,6 @@
 import { Language, MellomlagringError, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import React, { createContext, useCallback, useContext, useEffect, useReducer, useState } from 'react';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router';
 import { postNologinSoknad } from '../../api/sendinn/nologin';
 import {
   createSoknad,
@@ -45,9 +45,11 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { setSubmission, form, formUrl, submission } = useForm();
+  const formContextValue = useForm();
+  const { setSubmission, form, submission } = formContextValue;
   const soknadNotFoundUrl = `${baseUrl}/soknad-ikke-funnet`;
-  const { translationsForNavForm: translations } = useLanguages();
+  const languagesContextValue = useLanguages();
+  const { translationsForNavForm: translations } = languagesContextValue;
   const innsendingsIdFromParams = searchParams.get('innsendingsId');
 
   const isMellomlagringAvailable = app === 'fyllut' && submissionMethod === 'digital';
@@ -153,7 +155,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         );
 
         if (soknadAlreadyExists(response)) {
-          const url = `${formUrl}/paabegynt?sub=digital`;
+          const url = `/${form.path}/paabegynt?sub=digital`;
           logger?.info(`User already has active tasks for the application. Redirects to ${url}`);
           navigate(url, { replace: true });
           return;
@@ -186,7 +188,6 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
       setSubmission,
       removeSearchParamFromUrl,
       addSearchParamToUrl,
-      formUrl,
       navigate,
     ],
   );
@@ -253,11 +254,13 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
           submission,
           language,
           translation,
+          formContextValue,
+          languagesContextValue,
         );
         setSoknadPdfBlob(response);
         setNologinToken(undefined);
         setSubmission(undefined);
-        navigate(`${formUrl}/kvittering?${searchParams.toString()}`);
+        navigate(`/${form.path}/kvittering?${searchParams.toString()}`);
       } catch (error: any) {
         logger?.error(`${innsendingsId}: Failed to submit nologin application`, {
           errorMessage: error.message,
@@ -268,7 +271,18 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         throw error;
       }
     },
-    [appConfig, nologinToken, form, setSubmission, navigate, formUrl, searchParams, logger, innsendingsId],
+    [
+      appConfig,
+      nologinToken,
+      form,
+      formContextValue,
+      languagesContextValue,
+      setSubmission,
+      navigate,
+      searchParams,
+      logger,
+      innsendingsId,
+    ],
   );
 
   const submitDigital = useCallback(
@@ -288,6 +302,8 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
           translation,
           innsendingsId,
           setRedirectLocation,
+          formContextValue,
+          languagesContextValue,
         );
         logger?.info(`${innsendingsId}: Mellomlagring was submitted`);
         if (redirectLocation) {
@@ -311,7 +327,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         }
       }
     },
-    [appConfig, form, innsendingsId, isMellomlagringReady, logger],
+    [appConfig, form, formContextValue, innsendingsId, isMellomlagringReady, languagesContextValue, logger],
   );
 
   const submitSoknad = async (appSubmission: Submission): Promise<void> => {

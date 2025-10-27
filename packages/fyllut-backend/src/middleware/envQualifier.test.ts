@@ -72,7 +72,6 @@ describe('envQualifier', () => {
     });
   });
 
-  // eslint-disable-next-line mocha/no-setup-in-describe
   it.each(allEnvironments)('Returnerer korrekt envQualifier for %s', async (envName) => {
     const testdata = envMap[envName];
     const ingress = testdata.naisIngress;

@@ -4,7 +4,7 @@ import { Form, IntroPage } from '@navikt/skjemadigitalisering-shared-domain';
 import { forwardRef } from 'react';
 import { UpdateFormFunction } from '../../../components/FormMetaDataEditor/utils/utils';
 import useKeyBasedText from '../../../hooks/useKeyBasedText';
-import { TextareaField } from '../components/TextareaField';
+import { FormIntroPageWysiwygEditor } from '../components/FormIntroPageWysiwygEditor';
 import { IntroPageError } from '../validation/validation';
 import { SectionWrapper } from './SectionWrapper';
 
@@ -14,7 +14,7 @@ type Props = {
   errors?: IntroPageError;
 };
 
-export const Introduction = forwardRef<HTMLTextAreaElement, Props>(({ handleChange, form, errors }, ref) => {
+export const Introduction = forwardRef<HTMLDivElement, Props>(({ handleChange, form, errors }, ref) => {
   const { setKeyBasedText, getKeyBasedText } = useKeyBasedText();
 
   const onChange = (value: string) => {
@@ -39,7 +39,7 @@ export const Introduction = forwardRef<HTMLTextAreaElement, Props>(({ handleChan
           <Heading level="3" size="small" spacing>
             Velkomstmelding
           </Heading>
-          <TextareaField
+          <FormIntroPageWysiwygEditor
             defaultValue={getKeyBasedText(form?.introPage?.introduction)}
             ref={ref}
             label="Velkomstmelding som hjelper bruker forstå at de bruker riktig skjema"

@@ -8,7 +8,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import EventEmitter from 'eventemitter3';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { To, useLocation, useNavigate } from 'react-router-dom';
+import { To, useLocation, useNavigate } from 'react-router';
 import FormError from '../../components/form/FormError';
 import FormSavedStatus from '../../components/form/FormSavedStatus';
 import ConfirmationModal from '../../components/modal/confirmation/ConfirmationModal';
@@ -29,11 +29,12 @@ type ModalType = 'save' | 'delete' | 'discard';
 type FyllutEvent = 'focusOnComponent' | 'validateOnNextPage';
 
 export const FillInFormPage = () => {
-  const { form, submission, setSubmission, formUrl, setTitle, setFormProgressVisible } = useForm();
+  const { form, submission, setSubmission, setTitle, setFormProgressVisible } = useForm();
   const navigate = useNavigate();
   const { search } = useLocation();
   const { submissionMethod, logger } = useAppConfig();
   const [formForRendering, setFormForRendering] = useState<NavFormType>();
+  const [formIsReady, setFormIsReady] = useState<boolean>(false);
   const { mellomlagringError, isMellomlagringAvailable, isMellomlagringReady } = useSendInn();
   const { currentLanguage, translationsForNavForm, translate } = useLanguages();
   const [showModal, setShowModal] = useState<ModalType>();
@@ -127,14 +128,16 @@ export const FillInFormPage = () => {
   );
 
   const onFocusOnComponentPageChanged = useCallback<(page: { key: string }) => void>(
-    (page: { key: string }) => navigate({ pathname: `${formUrl}/${page.key}`, search }),
-    [formUrl, navigate, search],
+    (page: { key: string }) => navigate({ pathname: `${form.path}/${page.key}`, search }),
+    [form.path, navigate, search],
   );
 
   const isValid = useCallback(
     (): Promise<boolean> => new Promise((resolve) => validateOnNextPage(resolve)),
     [validateOnNextPage],
   );
+
+  const updateFormIsReady = useCallback(() => setFormIsReady(true), []);
 
   useEffect(() => {
     setFormForRendering(
@@ -181,6 +184,7 @@ export const FillInFormPage = () => {
               onSubmissionMetadataChanged,
               onNavigationPathsChanged,
               onFocusOnComponentPageChanged,
+              onReady: updateFormIsReady,
             }}
             hash={hash}
             setTitle={setTitle}
@@ -188,15 +192,16 @@ export const FillInFormPage = () => {
         </FormMainContent>
         <FormSavedStatus submission={submission} />
         <FormError error={submission?.fyllutState?.mellomlagring?.error} />
-        <FormNavigation
-          submission={submission}
-          formUrl={formUrl}
-          isValid={isValid}
-          paths={formNavigationPaths}
-          onCancel={onCancel}
-          navigateTo={navigateTo}
-          finalStep={submissionMethod === 'digitalnologin' ? 'vedlegg' : 'oppsummering'}
-        />
+        {formIsReady && (
+          <FormNavigation
+            submission={submission}
+            isValid={isValid}
+            paths={formNavigationPaths}
+            onCancel={onCancel}
+            navigateTo={navigateTo}
+            finalStep={submissionMethod === 'digitalnologin' ? 'vedlegg' : 'oppsummering'}
+          />
+        )}
       </div>
       <ConfirmationModal
         open={!!showModal}

@@ -30,11 +30,17 @@ declare global {
 
       clickStart(): Chainable<JQuery<HTMLElement>>;
 
+      clickIntroPageConfirmation(): Chainable<JQuery<HTMLElement>>;
+
       clickShowAllSteps(): Chainable<JQuery<HTMLElement>>;
 
       clickEditAnswer(title: string, linkText?: string): Chainable<JQuery<HTMLElement>>;
 
       clickEditAnswers(linkText?: string): Chainable<JQuery<HTMLElement>>;
+
+      clickSendDigital(): Chainable<JQuery<HTMLElement>>;
+
+      clickSendNav(): Chainable<JQuery<HTMLElement>>;
 
       verifySendInnRedirect(): Chainable<JQuery<HTMLElement>>;
 

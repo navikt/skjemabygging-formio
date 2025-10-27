@@ -16,6 +16,12 @@ import addressBuilder from './Address.builder';
 import addressForm from './Address.form';
 
 class Address extends BaseComponent {
+  constructor(...args: any[]) {
+    // @ts-expect-error args
+    super(...args);
+    this.noMainRef();
+  }
+
   static schema() {
     return BaseComponent.schema({
       label: 'Adresse',

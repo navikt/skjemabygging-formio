@@ -17,6 +17,8 @@ describe('logCleaning', () => {
       expect(JSON.stringify(cleaned)).not.toContain('Complete-azure-access-token'); // AzureAccessToken
       expect(JSON.stringify(cleaned)).not.toContain('127.0.0.101'); // x-client-ip
       expect(JSON.stringify(cleaned)).not.toContain('_ga='); // Cookie
+      expect(JSON.stringify(cleaned)).not.toContain('Token-for-pdf-service'); // Token
+      expect(JSON.stringify(cleaned)).not.toContain('Token-for-pdf-merge-service'); // Token
     });
 
     it('is case-insensitive', () => {

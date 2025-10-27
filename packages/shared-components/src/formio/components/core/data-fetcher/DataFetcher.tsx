@@ -80,7 +80,7 @@ class DataFetcher extends BaseComponent {
 
   shouldSkipValidation(data?: SubmissionData, dirty?: boolean, row?: SubmissionData): boolean {
     const metadata = utils.dataFetcher(this.path, this.root.submission);
-    return metadata.fetchDisabled || metadata.empty || super.shouldSkipValidation(data, dirty, row);
+    return metadata.fetchDisabled || metadata.empty || metadata.failure || super.shouldSkipValidation(data, dirty, row);
   }
 
   getShowOther() {
@@ -95,7 +95,7 @@ class DataFetcher extends BaseComponent {
         <NavDataFetcher
           label={
             <>
-              <Label component={this.component} editFields={this.getEditFields()} /> (OBS! Skal ikke publiseres)
+              <Label component={this.component} editFields={this.getEditFields()} />
             </>
           }
           description={<Description component={this.component} />}

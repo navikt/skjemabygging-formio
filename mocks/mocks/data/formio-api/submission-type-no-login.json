@@ -16,6 +16,8 @@
           "id": "ey0bewk",
           "key": "tekstfelt",
           "type": "textfield",
+          "label": "Tekstfelt",
+          "input": true,
           "validate": {
             "required": true
           }

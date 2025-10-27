@@ -2,10 +2,9 @@ import { ArrowLeftIcon, ArrowRightIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { MouseEvent } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router';
 import { useAttachmentUpload } from '../../components/attachment/AttachmentUploadContext';
 import { attachmentValidator } from '../../components/attachment/attachmentValidator';
-import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { Attachment } from '../../util/attachment/attachmentsUtil';
 import { validateAttachment } from '../../util/form/attachment-validation/attachmentValidation';
@@ -15,21 +14,25 @@ const AttachmentsUploadButtonRow = ({ attachments, onError }: { attachments: Att
   const navigate = useNavigate();
   const { translate } = useLanguages();
   const [searchParams] = useSearchParams();
-  const { formUrl } = useForm();
   const { addError, removeAllErrors, submissionAttachments, handleDeleteAllFiles } = useAttachmentUpload();
 
-  const summaryPageUrl = `${formUrl}/oppsummering?${searchParams.toString()}`;
+  const summaryPageUrl = `../oppsummering?${searchParams.toString()}`;
   const exitUrl = urlUtils.getExitUrl(window.location.href);
-  const validator = attachmentValidator(translate);
+  const valueValidator = attachmentValidator(translate, ['value']);
+  const fileValidator = attachmentValidator(translate, ['fileUploaded']);
 
   const nextPage = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     removeAllErrors();
-    const errors = validateAttachment(attachments, submissionAttachments, validator);
-    Object.entries(errors).forEach(([attachmentId, errorMessage]) => {
+    const valueErrors = validateAttachment(attachments, submissionAttachments, valueValidator);
+    const fileErrors = validateAttachment(attachments, submissionAttachments, fileValidator);
+    Object.entries(valueErrors).forEach(([attachmentId, errorMessage]) => {
       addError(attachmentId, errorMessage, 'VALUE');
     });
-    if (Object.values(errors).length === 0) {
+    Object.entries(fileErrors).forEach(([attachmentId, errorMessage]) => {
+      addError(attachmentId, errorMessage, 'FILE');
+    });
+    if (Object.values({ ...valueErrors, ...fileErrors }).length === 0) {
       navigate(summaryPageUrl);
     } else {
       onError();

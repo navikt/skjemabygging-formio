@@ -1,6 +1,6 @@
 import { Form, Submission, SubmissionMethod, submissionTypesUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router';
 import { useForm } from '../../context/form/FormContext';
 
 export enum IntroPageState {
@@ -39,7 +39,7 @@ export const IntroPageProvider = ({ children, form }: IntroPageProviderProps) =>
 
   const setSelfDeclaration = useCallback(
     (selfDeclaration: boolean) => {
-      setSubmission((current) => ({ ...current, selfDeclaration }) as Submission);
+      setSubmission((current) => ({ ...(current ? current : { data: {} }), selfDeclaration }) as Submission);
     },
     [setSubmission],
   );

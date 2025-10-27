@@ -393,10 +393,7 @@ describe('navFormUtils', () => {
     describe('A form with group of components with external conditional dependencies', () => {
       const testForms = [formWithSkjemagruppe, formWithPanel, formWithContainer];
 
-      // Dynamically generated tests are exceptions to this rule: https://github.com/lo1tuma/eslint-plugin-mocha/blob/main/docs/rules/no-setup-in-describe.md
-      // eslint-disable-next-line mocha/no-setup-in-describe
       testForms.forEach((testForm) => {
-        // eslint-disable-next-line mocha/no-setup-in-describe
         describe(`Grouped with ${testForm.title}`, () => {
           it("returns two dependenct component keys for 'oppgiYndlingsfarge'", () => {
             const dependentKeys = findDependentComponents('e83xe9j', testForm);
@@ -738,11 +735,19 @@ describe('navFormUtils', () => {
       expect(navIdGenerator).toHaveBeenCalledTimes(0);
     });
 
-    it('updates only component without navId', () => {
+    it('updates component with no navId without updating component with valid navId', () => {
       navIdGenerator.mockReturnValueOnce('4444');
       const input = [{ navId: '123' }, {}];
       const components = enrichComponentsWithNavIds(input, navIdGenerator);
       expect(components).toEqual([{ navId: '123' }, { navId: '4444' }]);
+      expect(navIdGenerator).toHaveBeenCalledTimes(1);
+    });
+
+    it('replaces duplicate navIds', () => {
+      navIdGenerator.mockReturnValueOnce('5555');
+      const input = [{ navId: '123' }, { navId: '123' }];
+      const components = enrichComponentsWithNavIds(input, navIdGenerator);
+      expect(components).toEqual([{ navId: '123' }, { navId: '5555' }]);
       expect(navIdGenerator).toHaveBeenCalledTimes(1);
     });
 
@@ -774,8 +779,8 @@ describe('navFormUtils', () => {
           navId: '100',
           components: [
             {
-              navId: '200',
-              components: [{ navId: '201' }],
+              components: [{ navId: '200' }],
+              navId: '201',
             },
             {
               navId: '101',
@@ -783,8 +788,54 @@ describe('navFormUtils', () => {
           ],
         },
         {
-          navId: '202',
-          components: [{ navId: '203' }],
+          components: [{ navId: '202' }],
+          navId: '203',
+        },
+      ]);
+      expect(navIdGenerator).toHaveBeenCalledTimes(4);
+    });
+
+    it('iterates component tree and replaces duplicate navIds', () => {
+      navIdGenerator
+        .mockReturnValueOnce('200')
+        .mockReturnValueOnce('201')
+        .mockReturnValueOnce('202')
+        .mockReturnValueOnce('203');
+      const input = [
+        {
+          navId: '100',
+          components: [
+            {
+              navId: '888',
+              components: [{ navId: '102' }, { navId: '999' }, { navId: '999' }],
+            },
+            {
+              navId: '101',
+              components: [{ navId: '777' }, { navId: '888' }, { navId: '999' }],
+            },
+          ],
+        },
+        {
+          navId: '777',
+        },
+      ];
+      const components = enrichComponentsWithNavIds(input, navIdGenerator);
+      expect(components).toEqual([
+        {
+          navId: '100',
+          components: [
+            {
+              navId: '888',
+              components: [{ navId: '102' }, { navId: '999' }, { navId: '200' }],
+            },
+            {
+              navId: '101',
+              components: [{ navId: '777' }, { navId: '201' }, { navId: '202' }],
+            },
+          ],
+        },
+        {
+          navId: '203',
         },
       ]);
       expect(navIdGenerator).toHaveBeenCalledTimes(4);

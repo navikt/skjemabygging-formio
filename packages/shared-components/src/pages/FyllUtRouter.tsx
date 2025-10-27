@@ -1,5 +1,5 @@
 import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router';
 import AttachmentUploadProvider from '../components/attachment/AttachmentUploadContext';
 import { useAppConfig } from '../context/config/configContext';
 import { FormProvider } from '../context/form/FormContext';
@@ -27,10 +27,10 @@ const FyllUtRouter = ({ form }: Props) => {
       <SendInnProvider>
         <Routes>
           <Route element={<FormLayout />}>
-            <Route path={'/oppsummering'} element={<SummaryPage />} />
+            <Route path="oppsummering" element={<SummaryPage />} />
             {submissionMethod === 'digitalnologin' && (
               <Route
-                path={'/vedlegg'}
+                path="vedlegg"
                 element={
                   <AttachmentUploadProvider>
                     <AttachmentsUploadPage />
@@ -38,13 +38,12 @@ const FyllUtRouter = ({ form }: Props) => {
                 }
               />
             )}
-            <Route path={'/:panelSlug'} element={<FillInFormPage />} />
-            <Route path={''} element={<IntroPage />} />
-            <Route path={'/legitimasjon'} element={<UploadPersonalIdPage />} />
-            <Route path={'/paabegynt'} element={<ActiveTasksPage />} />
-            <Route path={'/send-i-posten'} element={<PrepareLetterPage />} />
-            <Route path={'/ingen-innsending'} element={<PrepareIngenInnsendingPage />} />
-            <Route path={'/paabegynt'} element={<ActiveTasksPage />} />
+            <Route path=":panelSlug" element={<FillInFormPage />} />
+            <Route path="" element={<IntroPage />} />
+            <Route path="legitimasjon" element={<UploadPersonalIdPage />} />
+            <Route path="send-i-posten" element={<PrepareLetterPage />} />
+            <Route path="ingen-innsending" element={<PrepareIngenInnsendingPage />} />
+            <Route path="paabegynt" element={<ActiveTasksPage />} />
           </Route>
           <Route element={<FormLayout allowSubmittedApplication />}>
             <Route path={'/kvittering'} element={<ReceiptPage />} />

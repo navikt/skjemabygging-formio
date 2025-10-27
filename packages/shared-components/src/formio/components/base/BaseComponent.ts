@@ -28,6 +28,13 @@ class BaseComponent extends FormioReactComponent {
     });
   }
 
+  init() {
+    if (this.component?.logic) {
+      this.component.logic = undefined;
+    }
+    super.init();
+  }
+
   /**
    * Get label for custom component renderReact()
    */
@@ -202,6 +209,13 @@ class BaseComponent extends FormioReactComponent {
 
   get errors() {
     return this.componentErrors;
+  }
+
+  override labelIsHidden(): boolean {
+    return (
+      !this.component?.label ||
+      ((this.component.hideLabel || this.options.floatingLabels || this.options.inputsOnly) && !this.builderMode)
+    );
   }
 
   override setCustomValidity(messages: string | ComponentError[], _dirty?: boolean, _external?: boolean) {

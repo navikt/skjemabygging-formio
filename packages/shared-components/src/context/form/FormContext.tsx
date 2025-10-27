@@ -2,11 +2,11 @@ import {
   Component,
   NavFormType,
   navFormUtils,
+  Panel,
   PrefillData,
   Submission,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { createContext, Dispatch, SetStateAction, useCallback, useContext, useEffect, useState } from 'react';
-import { useResolvedPath } from 'react-router-dom';
+import { createContext, Dispatch, SetStateAction, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import UtilsOverrides from '../../formio/overrides/utils-overrides/utils-overrides';
 import { useAppConfig } from '../config/configContext';
 
@@ -15,8 +15,8 @@ interface FormContextType {
   setSubmission: Dispatch<SetStateAction<Submission | undefined>>;
   prefillData?: PrefillData;
   activeComponents: Component[];
+  activeAttachmentUploadsPanel?: Panel;
   form: NavFormType;
-  formUrl: string;
   formProgressOpen: boolean;
   setFormProgressOpen: Dispatch<SetStateAction<boolean>>;
   formProgressVisible: boolean;
@@ -39,8 +39,12 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
   const [formProgressVisible, setFormProgressVisible] = useState<boolean>(false);
   const [prefillData, setPrefillData] = useState<PrefillData>({});
   const [title, setTitle] = useState<string | undefined>();
-  const { http, baseUrl, submissionMethod } = useAppConfig();
-  const formUrl = useResolvedPath('').pathname;
+  const { http, baseUrl, submissionMethod, logger } = useAppConfig();
+
+  const activeAttachmentUploadsPanel = useMemo(() => {
+    const activeAttachmentPanel = navFormUtils.getActiveAttachmentPanelFromForm(form, submission, submissionMethod);
+    return activeAttachmentPanel ? (JSON.parse(JSON.stringify(activeAttachmentPanel)) as Panel) : undefined;
+  }, [form, submission, submissionMethod]);
 
   const checkConditions = useCallback(
     (components: Component[]): Component[] => {
@@ -86,10 +90,10 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
   }, [baseUrl, form, http, submissionMethod]);
 
   useEffect(() => {
-    setActiveComponents(
-      JSON.parse(JSON.stringify(navFormUtils.getActivePanelsFromForm(form, submission, submissionMethod))),
-    );
-  }, [form, submission, submissionMethod]);
+    const currentActiveComponents = navFormUtils.getActiveComponentsFromForm(form, submission, submissionMethod);
+    logger?.debug('Current active components', { form, currentActiveComponents });
+    setActiveComponents(currentActiveComponents);
+  }, [form, logger, submission, submissionMethod]);
 
   return (
     <FormContext.Provider
@@ -98,8 +102,8 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
         submission,
         setSubmission,
         activeComponents,
+        activeAttachmentUploadsPanel,
         form,
-        formUrl,
         formProgressOpen,
         setFormProgressOpen,
         formProgressVisible,
@@ -114,3 +118,5 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
 };
 
 export const useForm = () => useContext(FormContext);
+
+export type { FormContextType };

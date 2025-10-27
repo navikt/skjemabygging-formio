@@ -1,5 +1,9 @@
+export type BrukerDto = { id: string; idType: 'FNR' };
+export type AvsenderId = { navn?: string; id?: string; idType?: 'FNR' };
+
 export interface SendInnSoknadBodyV2 {
-  brukerDto: { id: string; idType: 'FNR' };
+  brukerDto?: BrukerDto;
+  avsenderId?: AvsenderId;
   innsendingsId?: string | null;
   skjemanr: string;
   tittel: string;

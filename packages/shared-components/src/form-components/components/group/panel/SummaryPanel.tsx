@@ -1,8 +1,7 @@
 import { FormSummary } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router';
 import ValidationExclamationIcon from '../../../../components/icons/ValidationExclamationIcon';
-import { useForm } from '../../../../context/form/FormContext';
 import { useLanguages } from '../../../../context/languages';
 import RenderComponent from '../../../render/RenderComponent';
 import { FormComponentProps } from '../../../types';
@@ -12,7 +11,6 @@ const SummaryPanel = ({ component, submissionPath, componentRegistry, panelValid
   const { title, components, navId, key } = component;
   const { translate } = useLanguages();
   const { search } = useLocation();
-  const { formUrl } = useForm();
 
   const panelValidation = panelValidationList?.find((panel) => panel.key === key);
 
@@ -41,7 +39,7 @@ const SummaryPanel = ({ component, submissionPath, componentRegistry, panelValid
       </FormSummary.Answers>
 
       <FormSummary.Footer>
-        <FormSummary.EditLink as={Link} to={{ pathname: `${formUrl}/${key}`, search }}>
+        <FormSummary.EditLink as={Link} to={{ pathname: `../${key}`, search }}>
           {translate(TEXTS.grensesnitt.summaryPage.edit)}
         </FormSummary.EditLink>
       </FormSummary.Footer>

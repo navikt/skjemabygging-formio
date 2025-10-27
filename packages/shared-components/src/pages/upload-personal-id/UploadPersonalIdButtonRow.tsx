@@ -2,7 +2,7 @@ import { ArrowLeftIcon, ArrowRightIcon } from '@navikt/aksel-icons';
 import { Alert, Button } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { MouseEvent } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router';
 import { useAttachmentUpload } from '../../components/attachment/AttachmentUploadContext';
 import LinkButton from '../../components/link-button/LinkButton';
 import { useAppConfig } from '../../context/config/configContext';
@@ -14,21 +14,23 @@ const UploadPersonalIdButtonRow = () => {
   const navigate = useNavigate();
   const { baseUrl } = useAppConfig();
   const { translate } = useLanguages();
-  const { formUrl } = useForm();
+  const { form } = useForm();
   const [searchParams] = useSearchParams();
   const { submissionAttachments, errors, addError, handleDeleteAllFiles } = useAttachmentUpload();
 
-  const startUrl = `${baseUrl}${formUrl}`;
+  const startUrl = `${baseUrl}${form.path}`;
   const exitUrl = urlUtils.getExitUrl(window.location.href);
   const error = errors['allFiles']?.find((err) => err.type === 'FILE');
 
   const navigateToFormPage = (event: MouseEvent<HTMLElement>) => {
     event.preventDefault();
     const personalIdAttachment = submissionAttachments.find((attachment) => attachment.attachmentId === 'personal-id');
-    if (personalIdAttachment?.files?.length) {
-      navigate(`..?${searchParams.toString()}`);
+    if (!personalIdAttachment?.value) {
+      addError('personal-id', translate('required', { field: translate(TEXTS.statiske.uploadId.label) }), 'VALUE');
+    } else if (!personalIdAttachment?.files?.length) {
+      addError('personal-id', translate(TEXTS.statiske.uploadId.missingUploadError), 'FILE');
     } else {
-      addError('personal-id', translate(TEXTS.statiske.uploadId.missingUploadError), 'VALUE');
+      navigate(`..?${searchParams.toString()}`);
     }
   };
 

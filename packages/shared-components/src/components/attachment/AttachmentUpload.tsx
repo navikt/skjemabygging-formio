@@ -14,6 +14,7 @@ import { useLanguages } from '../../context/languages';
 import FileUploader from '../file-uploader/FileUploader';
 import Attachment from './Attachment';
 import { useAttachmentUpload } from './AttachmentUploadContext';
+import { attachmentValidator } from './attachmentValidator';
 import { useAttachmentStyles } from './styles';
 
 interface Props {
@@ -23,7 +24,7 @@ interface Props {
   type?: Exclude<AttachmentType, 'other'>;
   description?: string;
   className?: string;
-  refs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | null>>;
+  refs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | HTMLButtonElement | null>>;
 }
 
 const AttachmentUpload = ({
@@ -41,6 +42,7 @@ const AttachmentUpload = ({
   const { form } = useForm();
   const attachment = submissionAttachments.find((attachment) => attachment.attachmentId.startsWith(componentId));
 
+  const validator = attachmentValidator(translate, ['value']);
   const uploadedAttachmentFiles = attachment?.files ?? [];
   const options = attachmentUtils.mapKeysToOptions(attachmentValues, translate);
   const uploadSelected = !!options.find((option) => option.value === attachment?.value)?.upload;
@@ -50,6 +52,7 @@ const AttachmentUpload = ({
     changeAttachmentValue(
       { attachmentId, navId: componentId, type },
       { value: value.key, additionalDocumentation: value.additionalDocumentation },
+      validator,
     );
   };
 
@@ -80,13 +83,13 @@ const AttachmentUpload = ({
           deadline={form.properties?.ettersendelsesfrist}
           ref={(ref) => {
             if (refs?.current) {
-              refs.current[`${componentId}-INPUT`] = ref;
+              refs.current[`${componentId}-VALUE`] = ref;
             }
           }}
         />
       )}
       {uploadSelected && (
-        <VStack gap="4">
+        <VStack gap="2">
           {uploadedAttachmentFiles.length > 0 && (
             <div className={styles.uploadedFilesHeader}>
               <Label>{translate(TEXTS.statiske.attachment.filesUploadedNotSent)}</Label>
@@ -101,7 +104,11 @@ const AttachmentUpload = ({
               )}
             </div>
           )}
-          <FileUploader initialAttachment={{ attachmentId: componentId, navId: componentId, type }} multiple />
+          <FileUploader
+            initialAttachment={{ attachmentId: componentId, navId: componentId, type }}
+            refs={refs}
+            multiple
+          />
         </VStack>
       )}
     </VStack>

@@ -11,7 +11,7 @@ import FormMainContent from '../FormMainContent';
 export function PrepareIngenInnsendingPage() {
   useEffect(() => scrollToAndSetFocus('main', 'start'), []);
   const { translate } = useLanguages();
-  const { form, submission, formUrl, setFormProgressVisible, setTitle } = useForm();
+  const { form, setFormProgressVisible, setTitle } = useForm();
 
   useEffect(() => {
     setFormProgressVisible(false);
@@ -23,17 +23,12 @@ export function PrepareIngenInnsendingPage() {
       <FormMainContent>
         <BodyShort className="mb">{translate(form.properties.innsendingForklaring)}</BodyShort>
         <div className="mb-4">
-          <DownloadCoverPageAndApplicationButton
-            type="application"
-            form={form}
-            submission={submission}
-            submissionMethod={'ingen'}
-          >
+          <DownloadCoverPageAndApplicationButton type="application">
             {translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
           </DownloadCoverPageAndApplicationButton>
         </div>
       </FormMainContent>
-      <NavigateButtonComponent goBackUrl={`${formUrl}/oppsummering`} />
+      <NavigateButtonComponent goBackUrl="../oppsummering" />
     </>
   );
 }

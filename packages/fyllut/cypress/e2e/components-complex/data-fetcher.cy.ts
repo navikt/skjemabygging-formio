@@ -2,7 +2,7 @@ import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { expect } from 'chai';
 
 describe('Data fetcher', () => {
-  const LABEL_AKTIVITETSVELGER = 'Aktivitetsvelger (OBS! Skal ikke publiseres)';
+  const LABEL_AKTIVITETSVELGER = 'Aktivitetsvelger';
 
   before(() => {
     cy.configMocksServer();
@@ -128,6 +128,17 @@ describe('Data fetcher', () => {
     it('should not display validation error when data is empty', () => {
       cy.mocksUseRouteVariant('get-register-data-activities:success-empty');
       cy.visit('/fyllut/datafetchertest/arbeidsrettetaktivitet?sub=digital');
+      cy.clickSaveAndContinue();
+      cy.findByRole('link', { name: `Du må fylle ut: Aktivitetsvelger` }).should('not.exist');
+      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+    });
+
+    it('should disregard required validation when fetch fails', () => {
+      cy.mocksUseRouteVariant('get-register-data-activities:error');
+
+      cy.visit('/fyllut/datafetchertest/arbeidsrettetaktivitet?sub=digital');
+      cy.get('.navds-alert--error').contains('Kall for å hente aktiviteter feilet');
+
       cy.clickSaveAndContinue();
       cy.findByRole('link', { name: `Du må fylle ut: Aktivitetsvelger` }).should('not.exist');
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');

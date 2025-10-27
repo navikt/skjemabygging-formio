@@ -12,15 +12,16 @@ import {
   SummaryFirstName,
   SummaryIban,
   SummaryIdentity,
-  SummaryIntroPanel,
   SummaryNationalIdentityNumber,
   SummaryOrganizationNumber,
   SummaryPassword,
-  SummaryPhoneNumer,
-  SummarySurename,
+  SummaryPhoneNumber,
+  SummarySurname,
 } from './components/customized';
 import { SummaryDatePicker, SummaryMonthPicker, SummaryYear } from './components/date';
 import { SummaryContainer, SummaryDataGrid, SummaryFormGroup, SummaryPanel, SummaryRow } from './components/group';
+import { SummaryIntroPage } from './components/other';
+import SummaryAttachmentUpload from './components/other/attachment-uploads/SummaryAttachmentUpload';
 import {
   SummaryAccordion,
   SummaryAlert,
@@ -41,8 +42,8 @@ interface Props {
   panelValidationList?: PanelValidation[];
 }
 
-const RenderFormSummary = ({ panelValidationList }: Props) => {
-  const { activeComponents } = useForm();
+const RenderSummaryForm = ({ panelValidationList }: Props) => {
+  const { activeComponents, activeAttachmentUploadsPanel } = useForm();
 
   const componentRegistry = {
     /* Standard */
@@ -75,8 +76,8 @@ const RenderFormSummary = ({ panelValidationList }: Props) => {
     fnrfield: SummaryNationalIdentityNumber,
     orgNr: SummaryOrganizationNumber,
     password: SummaryPassword,
-    phoneNumber: SummaryPhoneNumer,
-    surname: SummarySurename,
+    phoneNumber: SummaryPhoneNumber,
+    surname: SummarySurname,
 
     /* Date */
     navDatepicker: SummaryDatePicker,
@@ -87,6 +88,7 @@ const RenderFormSummary = ({ panelValidationList }: Props) => {
     container: SummaryContainer,
     datagrid: SummaryDataGrid,
     navSkjemagruppe: SummaryFormGroup,
+    fieldset: SummaryFormGroup,
     panel: SummaryPanel,
     row: SummaryRow,
 
@@ -97,9 +99,14 @@ const RenderFormSummary = ({ panelValidationList }: Props) => {
     maalgruppe: SummaryMaalgruppe,
   };
 
+  const attachmentUploadsComponentRegistry = {
+    ...componentRegistry,
+    attachment: SummaryAttachmentUpload,
+  };
+
   return (
     <>
-      <SummaryIntroPanel />
+      <SummaryIntroPage />
       {activeComponents.map((component) => (
         <RenderComponent
           key={component.key}
@@ -109,8 +116,16 @@ const RenderFormSummary = ({ panelValidationList }: Props) => {
           panelValidationList={panelValidationList}
         />
       ))}
+      {activeAttachmentUploadsPanel && (
+        <RenderComponent
+          component={activeAttachmentUploadsPanel}
+          submissionPath=""
+          componentRegistry={attachmentUploadsComponentRegistry}
+          panelValidationList={panelValidationList}
+        />
+      )}
     </>
   );
 };
 
-export default RenderFormSummary;
+export default RenderSummaryForm;

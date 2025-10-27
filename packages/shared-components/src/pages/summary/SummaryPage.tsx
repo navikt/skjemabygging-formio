@@ -1,21 +1,26 @@
 import { Alert, BodyShort, ConfirmationPanel, Heading, VStack } from '@navikt/ds-react';
-import { DeclarationType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { DeclarationType, navFormUtils, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useRef, useState } from 'react';
+import { attachmentValidator } from '../../components/attachment/attachmentValidator';
 import EditAnswersButton from '../../components/button/navigation/edit-answers/EditAnswersButton';
 import ValidationExclamationIcon from '../../components/icons/ValidationExclamationIcon';
 import NavFormHelper from '../../components/nav-form/NavFormHelper';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
-import RenderFormSummary from '../../form-components/RenderFormSummary';
+import RenderSummaryForm from '../../form-components/RenderSummaryForm';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
-import { PanelValidation, validateWizardPanels } from '../../util/form/panel-validation/panelValidation';
+import {
+  findFirstValidationErrorInAttachmentPanel,
+  PanelValidation,
+  validateWizardPanels,
+} from '../../util/form/panel-validation/panelValidation';
 import SummaryPageNavigation from './navigation/SummaryPageNavigation';
 
 export function SummaryPage() {
   const appConfig = useAppConfig();
   const { translate } = useLanguages();
-  const { prefillData, submission, formUrl, form, setTitle, setFormProgressVisible } = useForm();
+  const { prefillData, submission, form, setTitle, setFormProgressVisible } = useForm();
   const { declarationType, declarationText } = form.properties;
   const [declaration, setDeclaration] = useState<boolean | undefined>(undefined);
 
@@ -23,7 +28,7 @@ export function SummaryPage() {
 
   useEffect(() => {
     const initializePanelValidation = async () => {
-      const submissionCopy = JSON.parse(JSON.stringify(submission || {}));
+      const submissionCopy: Submission = JSON.parse(JSON.stringify(submission || {}));
 
       const formioSummary = document.getElementById('formio-summary-hidden')!;
       const webform = await NavFormHelper.create(formioSummary, form, {
@@ -44,6 +49,27 @@ export function SummaryPage() {
         });
       }
 
+      const attachmentPanel = navFormUtils.getActiveAttachmentPanelFromForm(
+        form,
+        submission,
+        appConfig.submissionMethod,
+      );
+      if (attachmentPanel) {
+        const validator = attachmentValidator(translate, ['value', 'fileUploaded']);
+        const invalidAttachment = findFirstValidationErrorInAttachmentPanel(
+          attachmentPanel,
+          submission ?? { data: {} },
+          validator,
+        );
+        if (invalidAttachment) {
+          panelValidations.push({
+            key: attachmentPanel.key,
+            hasValidationErrors: !!invalidAttachment,
+            firstInputWithValidationError: invalidAttachment ? invalidAttachment.navId : undefined,
+          });
+        }
+      }
+
       setPanelValidationList(panelValidations);
       webform.destroy(true);
 
@@ -53,7 +79,7 @@ export function SummaryPage() {
     };
 
     initializePanelValidation();
-  }, [form, submission, appConfig, prefillData]);
+  }, [form, submission, appConfig, prefillData, translate]);
 
   useEffect(() => {
     setTitle(TEXTS.statiske.summaryPage.title);
@@ -93,13 +119,14 @@ export function SummaryPage() {
             <ValidationExclamationIcon title={translate(TEXTS.statiske.summaryPage.validationIcon)} />.
           </Alert>
           <div className="button-row">
-            <EditAnswersButton form={form} formUrl={formUrl} panelValidationList={panelValidationList} />
+            <EditAnswersButton form={form} panelValidationList={panelValidationList} />
           </div>
         </>
       ) : (
         <BodyShort className="mb-4">{translate(TEXTS.statiske.summaryPage.description)}</BodyShort>
       )}
-      <RenderFormSummary panelValidationList={panelValidationList} />
+      <RenderSummaryForm panelValidationList={panelValidationList} />
+
       {hasDeclaration && (
         <ConfirmationPanel
           className="mb"
@@ -119,7 +146,6 @@ export function SummaryPage() {
       <SummaryPageNavigation
         form={form}
         submission={submission}
-        formUrl={formUrl}
         panelValidationList={panelValidationList}
         isValid={isValid}
       />
