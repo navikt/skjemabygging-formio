@@ -1,13 +1,27 @@
-import { Alert, BodyShort, Heading, Link, List, VStack } from '@navikt/ds-react';
+import { CheckmarkCircleFillIcon, DownloadIcon } from '@navikt/aksel-icons';
+import { Alert, BodyShort, Heading, HStack, Link, List, VStack } from '@navikt/ds-react';
 import '@navikt/ds-tokens';
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo } from 'react';
-import { useForm } from '../../context/form/FormContext';
+import InnerHtml from '../../components/inner-html/InnerHtml';
 import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
+import makeStyles from '../../util/styles/jss/jss';
+
+const useStyles = makeStyles({
+  downloadLink: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    fontSize: 'var(--a-font-size-medium)',
+    lineHeight: 'var(--a-font-line-height-medium)',
+  },
+  downloadLinkIcon: {
+    fontSize: 'var(--a-font-size-xlarge)',
+  },
+});
 
 export function ReceiptPage() {
-  const { form } = useForm();
+  const styles = useStyles();
   const { translate } = useLanguages();
   const { soknadPdfBlob, receipt } = useSendInn();
 
@@ -16,16 +30,18 @@ export function ReceiptPage() {
   }, [soknadPdfBlob]);
 
   console.log(soknadPdfUrl);
-
   console.log(receipt);
 
-  const shouldShowSuccessAlert = true;
+  let submitWasCompleteSuccess = true;
+  if (receipt?.skalEttersendes.length) {
+    submitWasCompleteSuccess = false;
+  }
 
   return (
     <VStack gap="space-32">
-      {form && (
+      {receipt && (
         <>
-          {shouldShowSuccessAlert && (
+          {submitWasCompleteSuccess && (
             <Alert size="small" variant="success">
               <Heading level="2" spacing size="xsmall">
                 {translate(TEXTS.statiske.receipt.alertSuccessHeading)}
@@ -34,121 +50,104 @@ export function ReceiptPage() {
             </Alert>
           )}
 
-          {receipt && (
+          <section>
+            <BodyShort size="large">
+              <b>
+                {translate(TEXTS.statiske.receipt.documentsReceivedHeading, {
+                  date: dateUtils.toLocaleDate(receipt.mottattdato),
+                })}
+              </b>
+            </BodyShort>
+            <List>
+              <List.Item
+                icon={
+                  <CheckmarkCircleFillIcon
+                    color="currentColor"
+                    style={{ color: 'var(--a-icon-success)' }}
+                    fontSize="1.5rem"
+                    aria-hidden
+                  />
+                }
+              >
+                <HStack gap="2">
+                  {receipt.label}
+                  <Link
+                    className={styles.downloadLink}
+                    href={soknadPdfUrl}
+                    underline={false}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <DownloadIcon aria-hidden className={styles.downloadLinkIcon} />
+                    <span>{translate(TEXTS.statiske.receipt.downloadLinkLabel)}</span>
+                  </Link>
+                </HStack>
+              </List.Item>
+
+              {receipt.innsendteVedlegg.map((attachment) => (
+                <List.Item
+                  key={attachment.vedleggsnr}
+                  icon={
+                    <CheckmarkCircleFillIcon
+                      color="currentColor"
+                      style={{ color: 'var(--a-icon-success)' }}
+                      fontSize="1.5rem"
+                      aria-hidden
+                    />
+                  }
+                >
+                  {attachment.tittel}
+                </List.Item>
+              ))}
+            </List>
+          </section>
+
+          {receipt.skalEttersendes.length > 0 && (
             <section>
               <BodyShort size="large">
-                <b>{translate(TEXTS.statiske.receipt.documentsHeading)}</b>
+                <b>{translate(TEXTS.statiske.receipt.mustSendLaterHeading)}</b>
               </BodyShort>
               <List>
-                <List.Item>
-                  {receipt.label}
-                  <Link href={soknadPdfUrl}>Last ned kopi</Link>
-                </List.Item>
-                {receipt.innsendteVedlegg.map((vedlegg) => (
-                  <List.Item key={vedlegg.vedleggsnr}>{vedlegg.tittel}</List.Item>
+                {receipt.skalEttersendes.map((attachment) => (
+                  <List.Item key={attachment.vedleggsnr}>
+                    <VStack gap="1" align="start">
+                      <BodyShort>{attachment.tittel}</BodyShort>
+                    </VStack>
+                  </List.Item>
                 ))}
               </List>
             </section>
           )}
 
-          {/*           <section>
-            <BodyShort size="large">
-              <b>{translate(TEXTS.statiske.receipt.documentsHeading)}</b>
-            </BodyShort>
-            <List>
-              {receipt?.innsendteVedlegg.map((item) => {
-                return (
-                  <List.Item
-                    key={item.vedleggsnr}
-                    icon={
-                      <CheckmarkCircleFillIcon
-                        color="currentColor"
-                        style={{ color: 'var(--a-icon-success)' }}
-                        fontSize="1.5rem"
-                        aria-hidden
-                      />
-                    }
-                  >
-                    <HStack gap="2">
-                      {item.type === 'main' && soknadPdfBlob ? (
-                        <Link
-                          className={styles.downloadLink}
-                          href={soknadPdfUrl}
-                          underline={false}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <DownloadIcon aria-hidden className={styles.downloadLinkIcon} />
-                          <span>{translate(TEXTS.statiske.receipt.downloadLinkLabel)}</span>
-                        </Link>
-                      ) : null}
-                    </HStack>
-                  </List.Item>
-                );
-              })}
-            </List>
-          </section> */}
-
-          {/* {attachmentsToSendLater.length > 0 && (
+          {receipt.skalSendesAvAndre.length > 0 && (
             <section>
               <BodyShort size="large">
-                <b>{translate(TEXTS.statiske.receipt.mustSendLaterHeading ?? 'Dette må du ettersende:')}</b>
+                <b>{translate(TEXTS.statiske.receipt.sentByOthersHeading)}</b>
               </BodyShort>
               <List>
-                {attachmentsToSendLater.map((attachment) => (
-                  <List.Item key={attachment.attachmentId}>
+                {receipt.skalSendesAvAndre.map((attachment) => (
+                  <List.Item key={attachment.vedleggsnr}>
                     <VStack gap="1" align="start">
-                      <BodyShort>{resolveAttachmentTitle(attachment)}</BodyShort>
-                      {attachment.additionalDocumentation ? (
-                        <BodyShort size="small">{attachment.additionalDocumentation}</BodyShort>
-                      ) : null}
+                      <BodyShort>{attachment.tittel}</BodyShort>
                     </VStack>
                   </List.Item>
                 ))}
               </List>
             </section>
-          )} */}
+          )}
 
-          {/*           {attachmentsSentByOthers.length > 0 && (
-            <section>
-              <BodyShort size="large">
-                <b>{translate(TEXTS.statiske.receipt.sentByOthersHeading ?? 'Dette har du svart at noen andre skal sende inn:')}</b>
-              </BodyShort>
-              <List>
-                {attachmentsSentByOthers.map((attachment) => (
-                  <List.Item key={attachment.attachmentId}>
-                    <VStack gap="1" align="start">
-                      <BodyShort>{resolveAttachmentTitle(attachment)}</BodyShort>
-                      {attachment.additionalDocumentation ? (
-                        <BodyShort size="small">{attachment.additionalDocumentation}</BodyShort>
-                      ) : null}
-                    </VStack>
-                  </List.Item>
-                ))}
-              </List>
-            </section>
-          )} */}
-
-          {/*           {shouldShowDeadlineAlert && (
+          {!submitWasCompleteSuccess && (
             <Alert size="small" variant="warning">
               <Heading level="2" spacing size="xsmall">
                 <b>
-                  {translate(TEXTS.statiske.receipt.deadlineWarningTitle ?? 'Dokumentene må ettersendes innen {{deadline}}', {
-                    deadline: ettersendingDeadline,
+                  {translate(TEXTS.statiske.receipt.deadlineWarningHeading, {
+                    deadline: dateUtils.toLocaleDate(receipt.ettersendingsfrist),
                   })}
                 </b>
               </Heading>
-              {translate(TEXTS.statiske.receipt.deadlineWarningDescriptionPrefix ?? 'Du kan ettersende dokumentene på')}{' '}
-              <Link
-                href={receiptTexts.deadlineWarningLinkUrl ?? 'https://www.nav.no/ettersende'}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {translate(TEXTS.statiske.receipt.deadlineWarningLinkLabel ?? 'nav.no/ettersende')}
-              </Link>{' '}
-              {translate(TEXTS.statiske.receipt.deadlineWarningDescriptionSuffix ?? '(åpnes i en ny fane)')}
+              <InnerHtml content={translate(TEXTS.statiske.receipt.deadlineWarningBody)} />
             </Alert>
-          )} */}
+          )}
         </>
       )}
     </VStack>
