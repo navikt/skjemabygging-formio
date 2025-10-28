@@ -9,7 +9,7 @@ import attachmentUtils, {
   SubmissionAttachment,
   SubmissionAttachmentValue,
 } from './attachment';
-import { ComponentError } from './component';
+import { ComponentError, FormioChangeEvent } from './component';
 import configUtils from './config';
 import type { ConfigType } from './config/types';
 import type { DataFetcherSourceId } from './data-fetcher';
@@ -223,6 +223,7 @@ export type {
   FeatureTogglesMap,
   FieldSize,
   Form,
+  FormioChangeEvent,
   FormioResource,
   FormioTranslation,
   FormioTranslationData,

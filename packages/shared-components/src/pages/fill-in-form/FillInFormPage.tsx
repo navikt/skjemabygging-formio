@@ -1,5 +1,6 @@
 import {
   ComponentError,
+  FormioChangeEvent,
   NavFormType,
   navFormUtils,
   SubmissionData,
@@ -95,21 +96,25 @@ export const FillInFormPage = () => {
     }
   }, []);
 
-  const onChange = useCallback(
-    ({ data }: { data: SubmissionData }) => {
-      setSubmission((prevSubmission) => {
-        if (JSON.stringify(data) === JSON.stringify(prevSubmission?.data)) {
-          return prevSubmission;
-        }
-        return {
-          ...prevSubmission,
-          data: {
-            ...data,
-          },
-        };
-      });
+  const onSubmissionChanged = useCallback(
+    (submissionData: SubmissionData) => {
+      setSubmission((prevSubmission) => ({
+        ...prevSubmission,
+        data: {
+          ...submissionData,
+        },
+      }));
     },
     [setSubmission],
+  );
+
+  const onChange = useCallback(
+    (event: FormioChangeEvent) => {
+      if (event?.changed?.component?.type === 'select' && event?.data) {
+        onSubmissionChanged(event.data);
+      }
+    },
+    [onSubmissionChanged],
   );
 
   const onSubmissionMetadataChanged = useCallback(
@@ -186,6 +191,7 @@ export const FillInFormPage = () => {
               onShowErrors,
               onErrorSummaryFocus,
               onChange,
+              onSubmissionChanged,
               onSubmissionMetadataChanged,
               onNavigationPathsChanged,
               onFocusOnComponentPageChanged,

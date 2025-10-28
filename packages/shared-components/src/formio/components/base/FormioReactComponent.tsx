@@ -139,13 +139,13 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
     this.shouldSetValue = false;
 
     this.logger.debug('handleChange', { value, flags, path: this.path });
-    this.emit('change', { data: { ...this.root._data } });
+    this.emit('submissionChanged', { ...this.root._data });
   }
 
   calculateComponentValue(data, flags, row) {
     const value = super.calculateComponentValue(data, flags, row);
     if (value !== false && this.root?._data) {
-      this.emit('change', { data: { ...this.root._data } });
+      this.emit('submissionChanged', { ...this.root._data });
     }
 
     return value;

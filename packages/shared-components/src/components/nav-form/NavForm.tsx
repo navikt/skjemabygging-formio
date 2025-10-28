@@ -1,5 +1,6 @@
 import {
   ComponentError,
+  FormioChangeEvent,
   NavFormType,
   Submission,
   SubmissionData,
@@ -41,7 +42,8 @@ interface EventProps {
   onPrevPage?: ({ page, currentPanels }: { page: number; currentPanels: string[] }) => void;
   onCancel?: ({ submission }: { submission: Submission }) => void;
   onSave?: ({ submission }: { submission: Submission }) => void;
-  onChange?: (changedArgs: { data: SubmissionData }) => void;
+  onChange?: (changeEvent: FormioChangeEvent) => void;
+  onSubmissionChanged?: (submissionData: SubmissionData) => void;
   onSubmissionMetadataChanged?: (submissionMetadata: SubmissionMetadata) => void;
   onWizardPageSelected?: (panel: { path: string }) => void;
   onShowErrors?: (errorsFromForm: ComponentError[]) => void;
@@ -126,6 +128,8 @@ const NavForm = ({
           appConfig.logger?.trace(`Formio event '${event}'`, { webformId: webform?.id, eventArgs: args });
           if (event.startsWith('formio.')) {
             const funcName = `on${event.charAt(7).toUpperCase()}${event.slice(8)}`;
+            console.log('Formio event', event, args);
+            console.log(funcName, funcName in events!, events?.[funcName]);
             if (events && funcName in events) {
               events[funcName](...args);
             }
@@ -161,7 +165,7 @@ const NavForm = ({
 
   useEffect(() => {
     webform?.emitNavigationPathsChanged?.();
-    webform?.emit('change', { data: { ...webform._data } });
+    webform?.emit('submissionChanged', webform._data);
   }, [webform]);
 
   /**
@@ -206,8 +210,8 @@ const NavForm = ({
 
       // Need to trigger a handle change event after prefilling form or else
       // submission will not have correct initial state.
-      if (events?.onChange) {
-        events.onChange({ data: webform._data });
+      if (events?.onSubmissionChanged) {
+        events.onSubmissionChanged(webform._data);
       }
       webform.emitNavigationPathsChanged();
     }
