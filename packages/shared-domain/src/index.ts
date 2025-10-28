@@ -9,7 +9,7 @@ import attachmentUtils, {
   SubmissionAttachment,
   SubmissionAttachmentValue,
 } from './attachment';
-import { ComponentError, FormioChangeEvent } from './component';
+import { ComponentError } from './component';
 import configUtils from './config';
 import type { ConfigType } from './config/types';
 import type { DataFetcherSourceId } from './data-fetcher';
@@ -27,6 +27,7 @@ import {
   DataFetcherComponent,
   DeclarationType,
   DisplayType,
+  FormioChangeEvent,
   FormPropertiesPublishing,
   FormPropertiesType,
   FormSignaturesType,
