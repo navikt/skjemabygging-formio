@@ -67,11 +67,11 @@ describe('Select', () => {
         .eq(1)
         .within(() => {
           cy.get('dt').eq(0).should('contain.text', 'Nedtrekksmeny gammel type');
-          cy.get('dd').eq(0).should('contain.text', 'løve');
+          cy.get('dd').eq(0).should('contain.text', 'Løve');
           cy.get('dt').eq(1).should('contain.text', 'Hvilket land jobber du i? (ChoiceJS)');
-          cy.get('dd').eq(1).should('contain.text', 'tyskland');
+          cy.get('dd').eq(1).should('contain.text', 'Tyskland');
           cy.get('dt').eq(2).should('contain.text', 'Sfære (HTML5)');
-          cy.get('dd').eq(2).should('contain.text', '-1.00');
+          cy.get('dd').eq(2).should('contain.text', '-1,00');
         });
 
       cy.clickEditAnswers();

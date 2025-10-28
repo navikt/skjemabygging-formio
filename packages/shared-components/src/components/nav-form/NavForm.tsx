@@ -128,8 +128,6 @@ const NavForm = ({
           appConfig.logger?.trace(`Formio event '${event}'`, { webformId: webform?.id, eventArgs: args });
           if (event.startsWith('formio.')) {
             const funcName = `on${event.charAt(7).toUpperCase()}${event.slice(8)}`;
-            console.log('Formio event', event, args);
-            console.log(funcName, funcName in events!, events?.[funcName]);
             if (events && funcName in events) {
               events[funcName](...args);
             }

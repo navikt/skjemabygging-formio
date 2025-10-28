@@ -1,12 +1,13 @@
 import { FormSummary } from '@navikt/ds-react';
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
-import { InnerHtml } from '../../../../index';
+import { InnerHtml, useLanguages } from '../../../../index';
 
 interface Props {
   component: Component;
 }
 
 const DefaultHtmlAnswer = ({ component }: Props) => {
+  const { translate } = useLanguages();
   const { textDisplay, content } = component;
 
   if (!content || textDisplay === undefined || textDisplay === 'form') {
@@ -16,7 +17,7 @@ const DefaultHtmlAnswer = ({ component }: Props) => {
   return (
     <FormSummary.Answer>
       <FormSummary.Answer>
-        <InnerHtml content={content} />
+        <InnerHtml content={translate(content)} />
       </FormSummary.Answer>
     </FormSummary.Answer>
   );
