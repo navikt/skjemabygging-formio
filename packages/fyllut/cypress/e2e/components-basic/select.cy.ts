@@ -10,6 +10,9 @@ describe('Select', () => {
     });
 
     it('selects values correctly and displays them on the summary page', () => {
+      // React select components
+
+      // Preferred select component
       cy.findByRole('combobox', {
         name: 'Nedtrekksmeny',
         description: 'Dette er foretrukket nedtrekkskomponent',
@@ -28,7 +31,9 @@ describe('Select', () => {
 
       cy.clickNextStep();
 
-      //Nedtrekksmeny gammel type
+      // Formio select components - ChoiceJS and HTML5
+
+      //Nedtrekksmeny gammel type (ChoiceJS)
       cy.findAllByRole('combobox').eq(0).click();
       cy.findAllByRole('combobox')
         .eq(0)
@@ -39,7 +44,7 @@ describe('Select', () => {
       cy.findAllByText('Løve').eq(0).shouldBeVisible();
       cy.findByText('Ape').should('not.be.visible');
 
-      // Hvilket land jobber du i?
+      // Hvilket land jobber du i? (ChoiceJS)
       cy.findAllByRole('combobox').eq(1).click();
       cy.findAllByRole('combobox')
         .eq(1)

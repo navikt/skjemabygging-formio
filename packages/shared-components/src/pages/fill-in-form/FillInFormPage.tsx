@@ -108,6 +108,8 @@ export const FillInFormPage = () => {
     [setSubmission],
   );
 
+  // Used to update submission data when the old select (with type: "select") changes
+  // Can be removed when no form definitions use the old select anymore
   const onChange = useCallback(
     (event: FormioChangeEvent) => {
       if (event?.changed?.component?.type === 'select' && event?.data) {

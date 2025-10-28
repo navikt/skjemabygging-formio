@@ -140,6 +140,43 @@
           "navId": "e1jp4pr2"
         },
         {
+          "id": "emtgyql5",
+          "key": "selectHtml",
+          "data": {
+            "values": [
+              {
+                "label": "0,50",
+                "value": "0.50"
+              },
+              {
+                "label": "0,25",
+                "value": "0.25"
+              },
+              {
+                "label": "0,00",
+                "value": "0.00"
+              },
+              {
+                "label": "-0,25",
+                "value": "-0.25"
+              },
+              {
+                "label": "-0,50",
+                "value": "-0.50"
+              }
+            ]
+          },
+          "type": "select",
+          "widget": "html5",
+          "dataSrc": "values",
+          "input": true,
+          "label": "Nedtrekksmeny (select HTML5)",
+          "navId": "einu28r",
+          "validate": {
+            "required": false
+          }
+        },
+        {
           "id": "e3itl28",
           "key": "radiopanel",
           "type": "radiopanel",
