@@ -22,9 +22,6 @@ export type BaseButtonProps = {
 export function BaseButton({ label, onClick, href, icon, iconPosition, variant, role = 'link' }: BaseButtonProps) {
   const { submissionMethod = 'none' } = useAppConfig();
 
-  console.log('labels', label);
-  console.log('submissionMethod', submissionMethod);
-
   const handleClick = onClick ? onClick[submissionMethod] : undefined;
   const buttonLabel = label[submissionMethod] ?? undefined;
   const buttonHref = href && submissionMethod ? href[submissionMethod] : undefined;
@@ -32,14 +29,7 @@ export function BaseButton({ label, onClick, href, icon, iconPosition, variant, 
   if (!buttonLabel) return null;
 
   return !onClick && buttonHref ? (
-    <Button
-      role="link"
-      as={ReactRouterLink}
-      to={typeof buttonHref === 'string' ? buttonHref : buttonHref?.pathname}
-      icon={icon}
-      iconPosition={iconPosition}
-      variant={variant}
-    >
+    <Button role={role} as={ReactRouterLink} to={buttonHref} icon={icon} iconPosition={iconPosition} variant={variant}>
       {buttonLabel}
     </Button>
   ) : (

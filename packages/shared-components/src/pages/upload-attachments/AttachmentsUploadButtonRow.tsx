@@ -67,7 +67,7 @@ const AttachmentsUploadButtonRow = ({ attachments, onError }: { attachments: Att
           iconPosition="left"
           onClick={() => navigate(-1)}
         >
-          {translate(TEXTS.grensesnitt.goBack)}
+          {translate(TEXTS.grensesnitt.navigation.previous)}
         </Button>
       </div>
       <div className="button-row button-row--center">

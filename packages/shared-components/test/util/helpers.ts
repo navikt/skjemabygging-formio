@@ -26,7 +26,7 @@ export const getButton = (screen: Screen, label: string): HTMLButtonElement =>
 
 export const getButtons = (screen: Screen): Buttons => {
   const redigerSvarKnapp = getButton(screen, TEXTS.grensesnitt.summaryPage.editAnswers) as HTMLButtonElement;
-  const gaVidereKnapp = getButton(screen, TEXTS.grensesnitt.moveForward) as HTMLButtonElement;
+  const gaVidereKnapp = getButton(screen, TEXTS.grensesnitt.navigation.next) as HTMLButtonElement;
   const sendTilNavKnapp = getButton(screen, TEXTS.grensesnitt.submitToNavPrompt.open) as HTMLButtonElement;
   return { redigerSvarKnapp, gaVidereKnapp, sendTilNavKnapp };
 };

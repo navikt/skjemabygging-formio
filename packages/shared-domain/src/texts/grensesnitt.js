@@ -6,7 +6,7 @@ export const grensesnitt = {
     saveAndContinue: 'Lagre og fortsett',
     cancel: 'Avbryt',
     cancelAndDelete: 'Avbryt og slett',
-    cancelAndDiscard: 'Slett  og start på ny',
+    cancelAndDiscard: 'Slett og start på ny',
     saveDraft: 'Lagre utkast og fortsett senere',
     uploadID: 'Opplasting av ID',
     sendToNav: 'Send til Nav',
@@ -17,16 +17,12 @@ export const grensesnitt = {
     'Legg til': 'Legg til',
     Fjern: 'Fjern',
   },
-
   mostRecentSave: 'Sist lagret',
   emptySubmissionError: 'Kan ikke fortsette. Innsendingen er tom.',
-
   languageSelector: {
     ariaLabel: 'Velg språk',
   },
   downloadApplication: 'Last ned skjema',
-  goBack: 'Gå tilbake',
-  moveForward: 'Gå videre',
   confirmSavePrompt: {
     title: 'Lagre utkast og fortsett senere?',
     body: 'Skjemaet lagres som et utkast på Min Side slik at du kan fullføre senere. Skjemaet vil være tilgjengelig til {{date}}.',

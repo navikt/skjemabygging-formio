@@ -111,7 +111,6 @@ describe('SummaryPageNavigation', () => {
       expect(router.state.location.pathname).toBe('/send-i-posten');
     });
 
-    // only her
     it('submissionTypes=PAPIR_OG_DIGITAL, submissionMethod=digital', async () => {
       const form = formWithProperties({ submissionTypes: ['PAPER', 'DIGITAL'] });
       const appConfigProps = { submissionMethod: 'digital', app: 'bygger' } as AppConfigContextType;
@@ -218,7 +217,7 @@ describe('SummaryPageNavigation', () => {
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
 
       await userEvent.click(buttons.gaVidereKnapp);
-      expect(router.state.location.pathname).toBe('/ingen-innsending');
+      expect(router.state.location.pathname).toBe('/testskjema/ingen-innsending');
     });
   });
 

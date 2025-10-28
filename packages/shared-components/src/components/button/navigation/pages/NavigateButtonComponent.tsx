@@ -13,10 +13,10 @@ const NavigateButtonComponent = ({ goBackUrl }) => {
       previousButton={
         <PreviousButton
           label={{
-            digital: translate(TEXTS.grensesnitt.goBack),
-            paper: translate(TEXTS.grensesnitt.goBack),
-            digitalnologin: translate(TEXTS.grensesnitt.goBack),
-            none: translate(TEXTS.grensesnitt.goBack),
+            digital: translate(TEXTS.grensesnitt.navigation.previous),
+            paper: translate(TEXTS.grensesnitt.navigation.previous),
+            digitalnologin: translate(TEXTS.grensesnitt.navigation.previous),
+            none: translate(TEXTS.grensesnitt.navigation.previous),
           }}
           href={{
             digital: { pathname: goBackUrl, search },

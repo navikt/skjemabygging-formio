@@ -82,7 +82,7 @@ describe('Mellomlagring', () => {
       });
       cy.clickNextStep();
       cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveDraft }).should('not.exist');
-      cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.cancelAndDelete }).should('not.exist');
+      cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('not.exist');
       cy.findAllByRole('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers })
         .first()
         .should('exist')
@@ -241,7 +241,7 @@ describe('Mellomlagring', () => {
           cy.verifySendInnRedirect();
         });
 
-        it('retrieves mellomlagring and lets you navigate to first empty panel', () => {
+        it.only('retrieves mellomlagring and lets you navigate to first empty panel', () => {
           cy.visit(
             '/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO',
           );

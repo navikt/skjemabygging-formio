@@ -39,8 +39,8 @@ export function SummaryPageNextButton({ form, submission, panelValidationList, s
       {canSubmit && sendIPosten && (
         <NextButton
           label={{
-            paper: translate(TEXTS.grensesnitt.moveForward),
-            none: translate(TEXTS.grensesnitt.moveForward),
+            paper: translate(TEXTS.grensesnitt.navigation.next),
+            none: translate(TEXTS.grensesnitt.navigation.next),
           }}
           href={{
             paper: { pathname: `../send-i-posten`, search },
@@ -54,7 +54,7 @@ export function SummaryPageNextButton({ form, submission, panelValidationList, s
         (hasAttachments ? (
           <DigitalSubmissionButton withIcon submission={submission} isValid={isValid} onError={setError}>
             {translate(
-              isMellomlagringActive ? TEXTS.grensesnitt.navigation.saveAndContinue : TEXTS.grensesnitt.moveForward,
+              isMellomlagringActive ? TEXTS.grensesnitt.navigation.saveAndContinue : TEXTS.grensesnitt.navigation.next,
             )}
           </DigitalSubmissionButton>
         ) : (
@@ -69,10 +69,10 @@ export function SummaryPageNextButton({ form, submission, panelValidationList, s
       {submissionTypesUtils.isNoneSubmission(submissionTypes) && (
         <NextButton
           label={{
-            digital: translate(TEXTS.grensesnitt.moveForward),
-            paper: translate(TEXTS.grensesnitt.moveForward),
-            digitalnologin: translate(TEXTS.grensesnitt.moveForward),
-            none: translate(TEXTS.grensesnitt.moveForward),
+            digital: translate(TEXTS.grensesnitt.navigation.next),
+            paper: translate(TEXTS.grensesnitt.navigation.next),
+            digitalnologin: translate(TEXTS.grensesnitt.navigation.next),
+            none: translate(TEXTS.grensesnitt.navigation.next),
           }}
           href={{
             digital: `/${form.path}/ingen-innsending${search}`,

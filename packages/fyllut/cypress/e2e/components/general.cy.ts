@@ -67,11 +67,11 @@ describe('React components', () => {
             cy.get('dd').eq(4).should('contain.text', '01.01.2023');
           });
 
-        cy.findByRole('link', { name: TEXTS.grensesnitt.moveForward }).click();
+        cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.next }).click();
 
         cy.findByRole('heading', { name: TEXTS.statiske.prepareLetterPage.subTitle }).should('exist');
 
-        cy.findByRole('link', { name: TEXTS.grensesnitt.goBack }).click();
+        cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.previous }).click();
 
         cy.clickEditAnswer('Dine opplysninger');
 
