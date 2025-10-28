@@ -1,0 +1,1595 @@
+{
+  "id": 17,
+  "revision": 12,
+  "skjemanummer": "select-test",
+  "path": "selecttest",
+  "title": "Select test",
+  "components": [
+    {
+      "id": "eq0ceyf",
+      "key": "selectPage",
+      "tree": false,
+      "type": "panel",
+      "input": false,
+      "label": "Page 2",
+      "navId": "ehr0vt",
+      "theme": "default",
+      "title": "Select page",
+      "addons": [],
+      "hidden": false,
+      "prefix": "",
+      "suffix": "",
+      "unique": false,
+      "dbIndex": false,
+      "overlay": {
+        "top": "",
+        "left": "",
+        "style": "",
+        "width": "",
+        "height": ""
+      },
+      "tooltip": "",
+      "disabled": false,
+      "lazyLoad": false,
+      "multiple": false,
+      "redrawOn": "",
+      "tabindex": "",
+      "validate": {
+        "custom": "",
+        "unique": false,
+        "multiple": false,
+        "required": false,
+        "customPrivate": false,
+        "strictDateValidation": false
+      },
+      "autofocus": false,
+      "encrypted": false,
+      "hideLabel": false,
+      "modalEdit": false,
+      "protected": false,
+      "refreshOn": "",
+      "tableView": false,
+      "attributes": {},
+      "breadcrumb": "default",
+      "components": [
+        {
+          "id": "e227nok",
+          "key": "navSelect",
+          "data": {
+            "values": [
+              {
+                "label": "Banan",
+                "value": "banan"
+              },
+              {
+                "label": "Appelsin",
+                "value": "appelsin"
+              },
+              {
+                "label": "Eple",
+                "value": "eple"
+              }
+            ]
+          },
+          "type": "navSelect",
+          "input": true,
+          "label": "Nedtrekksmeny",
+          "navId": "ew5se3",
+          "addons": [],
+          "errors": "",
+          "hidden": false,
+          "prefix": "",
+          "suffix": "",
+          "unique": false,
+          "dataSrc": "values",
+          "dbIndex": false,
+          "overlay": {
+            "top": "",
+            "left": "",
+            "style": "",
+            "width": "",
+            "height": ""
+          },
+          "tooltip": "",
+          "disabled": false,
+          "multiple": false,
+          "redrawOn": "",
+          "tabindex": "",
+          "validate": {
+            "custom": "",
+            "unique": false,
+            "multiple": false,
+            "required": true,
+            "customPrivate": false,
+            "onlyAvailableItems": true,
+            "strictDateValidation": false
+          },
+          "autofocus": false,
+          "encrypted": false,
+          "fieldSize": "input--xxl",
+          "hideLabel": false,
+          "modalEdit": false,
+          "protected": false,
+          "refreshOn": "",
+          "tableView": false,
+          "attributes": {},
+          "errorLabel": "",
+          "persistent": true,
+          "properties": {},
+          "validateOn": "blur",
+          "clearOnHide": true,
+          "conditional": {
+            "eq": ""
+          },
+          "customClass": "",
+          "description": "<p>Dette er foretrukket nedtrekkskomponent</p>",
+          "placeholder": "",
+          "dataGridLabel": false,
+          "labelPosition": "top",
+          "showCharCount": false,
+          "showWordCount": false,
+          "calculateValue": "",
+          "calculateServer": false,
+          "customConditional": "",
+          "allowMultipleMasks": false,
+          "customDefaultValue": "",
+          "allowCalculateOverride": false
+        },
+        {
+          "id": "eyrzc6w",
+          "key": "nedtrekksmenyMedStandardverdi",
+          "data": {
+            "values": [
+              {
+                "label": "Blå",
+                "value": "blaa"
+              },
+              {
+                "label": "Rød",
+                "value": "rod"
+              },
+              {
+                "label": "Grønn",
+                "value": "gronn"
+              }
+            ]
+          },
+          "type": "navSelect",
+          "input": true,
+          "label": "Nedtrekksmeny med standardverdi",
+          "navId": "edc42ya",
+          "addons": [],
+          "errors": "",
+          "hidden": false,
+          "prefix": "",
+          "suffix": "",
+          "unique": false,
+          "dataSrc": "values",
+          "dbIndex": false,
+          "overlay": {
+            "top": "",
+            "left": "",
+            "style": "",
+            "width": "",
+            "height": ""
+          },
+          "tooltip": "",
+          "disabled": false,
+          "multiple": false,
+          "redrawOn": "",
+          "tabindex": "",
+          "validate": {
+            "custom": "",
+            "unique": false,
+            "multiple": false,
+            "required": true,
+            "customPrivate": false,
+            "onlyAvailableItems": true,
+            "strictDateValidation": false
+          },
+          "autofocus": false,
+          "encrypted": false,
+          "fieldSize": "input--xxl",
+          "hideLabel": false,
+          "modalEdit": false,
+          "protected": false,
+          "refreshOn": "",
+          "tableView": false,
+          "attributes": {},
+          "errorLabel": "",
+          "persistent": true,
+          "properties": {},
+          "validateOn": "blur",
+          "clearOnHide": true,
+          "conditional": {
+            "eq": ""
+          },
+          "customClass": "",
+          "description": "",
+          "placeholder": "",
+          "defaultValue": {
+            "label": "Rød",
+            "value": "rod"
+          },
+          "dataGridLabel": false,
+          "labelPosition": "top",
+          "showCharCount": false,
+          "showWordCount": false,
+          "calculateValue": "",
+          "calculateServer": false,
+          "customConditional": "",
+          "allowMultipleMasks": false,
+          "customDefaultValue": "",
+          "allowCalculateOverride": false
+        },
+        {
+          "id": "eut6k7j",
+          "key": "valgfriNedtrekksmeny",
+          "data": {
+            "values": [
+              {
+                "label": "Spøkelse",
+                "value": "spokelse"
+              },
+              {
+                "label": "Vampyr",
+                "value": "vampyr"
+              },
+              {
+                "label": "Varulv",
+                "value": "varulv"
+              }
+            ]
+          },
+          "type": "navSelect",
+          "input": true,
+          "label": "Valgfri nedtrekksmeny",
+          "navId": "etg94n",
+          "addons": [],
+          "errors": "",
+          "hidden": false,
+          "prefix": "",
+          "suffix": "",
+          "unique": false,
+          "dataSrc": "values",
+          "dbIndex": false,
+          "overlay": {
+            "top": "",
+            "left": "",
+            "style": "",
+            "width": "",
+            "height": ""
+          },
+          "tooltip": "",
+          "disabled": false,
+          "multiple": false,
+          "redrawOn": "",
+          "tabindex": "",
+          "validate": {
+            "custom": "",
+            "unique": false,
+            "multiple": false,
+            "required": false,
+            "customPrivate": false,
+            "onlyAvailableItems": true,
+            "strictDateValidation": false
+          },
+          "autofocus": false,
+          "encrypted": false,
+          "fieldSize": "input--xxl",
+          "hideLabel": false,
+          "modalEdit": false,
+          "protected": false,
+          "refreshOn": "",
+          "tableView": false,
+          "attributes": {},
+          "errorLabel": "",
+          "persistent": true,
+          "properties": {},
+          "validateOn": "blur",
+          "clearOnHide": true,
+          "conditional": {
+            "eq": ""
+          },
+          "customClass": "",
+          "description": "",
+          "placeholder": "",
+          "dataGridLabel": false,
+          "labelPosition": "top",
+          "showCharCount": false,
+          "showWordCount": false,
+          "calculateValue": "",
+          "calculateServer": false,
+          "customConditional": "",
+          "allowMultipleMasks": false,
+          "customDefaultValue": "",
+          "allowCalculateOverride": false
+        }
+      ],
+      "errorLabel": "",
+      "persistent": false,
+      "properties": {},
+      "validateOn": "change",
+      "clearOnHide": false,
+      "conditional": {
+        "eq": ""
+      },
+      "customClass": "",
+      "description": "",
+      "placeholder": "",
+      "dataGridLabel": false,
+      "labelPosition": "top",
+      "showCharCount": false,
+      "showWordCount": false,
+      "calculateValue": "",
+      "calculateServer": false,
+      "customConditional": "",
+      "isAttachmentPanel": false,
+      "allowMultipleMasks": false,
+      "customDefaultValue": "",
+      "allowCalculateOverride": false
+    },
+    {
+      "id": "enlpw45",
+      "key": "selectGammelType",
+      "tree": false,
+      "type": "panel",
+      "input": false,
+      "label": "Page 2",
+      "navId": "eg836co",
+      "theme": "default",
+      "title": "Select gammel type",
+      "addons": [],
+      "hidden": false,
+      "prefix": "",
+      "suffix": "",
+      "unique": false,
+      "dbIndex": false,
+      "overlay": {
+        "top": "",
+        "left": "",
+        "style": "",
+        "width": "",
+        "height": ""
+      },
+      "tooltip": "",
+      "disabled": false,
+      "lazyLoad": false,
+      "multiple": false,
+      "redrawOn": "",
+      "tabindex": "",
+      "validate": {
+        "custom": "",
+        "unique": false,
+        "multiple": false,
+        "required": false,
+        "customPrivate": false,
+        "strictDateValidation": false
+      },
+      "autofocus": false,
+      "encrypted": false,
+      "hideLabel": false,
+      "modalEdit": false,
+      "protected": false,
+      "refreshOn": "",
+      "tableView": false,
+      "attributes": {},
+      "breadcrumb": "default",
+      "components": [
+        {
+          "id": "e331qeg",
+          "key": "nedtrekksmenyGammelType",
+          "data": {
+            "url": "",
+            "json": "",
+            "custom": "",
+            "values": [
+              {
+                "label": "Ape",
+                "value": "ape"
+              },
+              {
+                "label": "Løve",
+                "value": "løve"
+              }
+            ],
+            "resource": ""
+          },
+          "type": "select",
+          "input": true,
+          "label": "Nedtrekksmeny gammel type",
+          "limit": 100,
+          "navId": "ea4vb4i",
+          "addons": [],
+          "filter": "",
+          "hidden": false,
+          "idPath": "id",
+          "prefix": "",
+          "suffix": "",
+          "unique": false,
+          "dataSrc": "values",
+          "dbIndex": false,
+          "overlay": {
+            "top": "",
+            "left": "",
+            "style": "",
+            "width": "",
+            "height": ""
+          },
+          "tooltip": "",
+          "disabled": false,
+          "lazyLoad": true,
+          "multiple": false,
+          "redrawOn": "",
+          "tabindex": "",
+          "template": "<span>{{ item.label }}</span>",
+          "validate": {
+            "custom": "",
+            "unique": false,
+            "multiple": false,
+            "required": true,
+            "customPrivate": false,
+            "onlyAvailableItems": false,
+            "strictDateValidation": false
+          },
+          "autofocus": false,
+          "encrypted": false,
+          "hideLabel": false,
+          "indexeddb": {
+            "filter": {}
+          },
+          "minSearch": 0,
+          "modalEdit": false,
+          "protected": false,
+          "refreshOn": "",
+          "tableView": false,
+          "attributes": {},
+          "errorLabel": "",
+          "persistent": true,
+          "properties": {},
+          "validateOn": "change",
+          "clearOnHide": true,
+          "conditional": {
+            "eq": ""
+          },
+          "customClass": "",
+          "description": "Gammel nedtrekksmeny som helst ikke skal brukes",
+          "fuseOptions": {
+            "include": "score",
+            "threshold": 0.3
+          },
+          "ignoreCache": false,
+          "keyModified": true,
+          "placeholder": "",
+          "searchField": "",
+          "authenticate": false,
+          "selectFields": "",
+          "customOptions": {},
+          "dataGridLabel": false,
+          "labelPosition": "top",
+          "readOnlyValue": false,
+          "searchEnabled": true,
+          "showCharCount": false,
+          "showWordCount": false,
+          "uniqueOptions": false,
+          "valueProperty": "",
+          "calculateValue": "",
+          "clearOnRefresh": false,
+          "searchDebounce": 0.3,
+          "useExactSearch": false,
+          "calculateServer": false,
+          "selectThreshold": 0.3,
+          "allowMultipleMasks": false,
+          "customDefaultValue": "",
+          "validateWhenHidden": false,
+          "allowCalculateOverride": false
+        },
+        {
+          "id": "eo5kjt",
+          "key": "hvilketLandJobberDuI",
+          "data": {
+            "url": "",
+            "json": "",
+            "custom": "",
+            "values": [
+              {
+                "label": "Belgia",
+                "value": "belgia"
+              },
+              {
+                "label": "Bulgaria",
+                "value": "bulgaria"
+              },
+              {
+                "label": "Danmark",
+                "value": "danmark"
+              },
+              {
+                "label": "Estland",
+                "value": "estland"
+              },
+              {
+                "label": "Finland",
+                "value": "finland"
+              },
+              {
+                "label": "Frankrike",
+                "value": "frankrike"
+              },
+              {
+                "label": "Hellas",
+                "value": "hellas"
+              },
+              {
+                "label": "Irland",
+                "value": "irland"
+              },
+              {
+                "label": "Island",
+                "value": "island"
+              },
+              {
+                "label": "Italia",
+                "value": "italia"
+              },
+              {
+                "label": "Kroatia",
+                "value": "kroatia"
+              },
+              {
+                "label": "Kypros",
+                "value": "kypros"
+              },
+              {
+                "label": "Latvia",
+                "value": "latvia"
+              },
+              {
+                "label": "Liechtenstein",
+                "value": "liechtenstein"
+              },
+              {
+                "label": "Litauen",
+                "value": "litauen"
+              },
+              {
+                "label": "Luxembourg",
+                "value": "luxembourg"
+              },
+              {
+                "label": "Malta",
+                "value": "malta"
+              },
+              {
+                "label": "Nederland",
+                "value": "nederland"
+              },
+              {
+                "label": "Polen",
+                "value": "polen"
+              },
+              {
+                "label": "Portugal",
+                "value": "portugal"
+              },
+              {
+                "label": "Romania",
+                "value": "romania"
+              },
+              {
+                "label": "Sveits",
+                "value": "sveits"
+              },
+              {
+                "label": "Sverige",
+                "value": "sverige"
+              },
+              {
+                "label": "Slovakia",
+                "value": "slovakia"
+              },
+              {
+                "label": "Slovenia",
+                "value": "slovenia"
+              },
+              {
+                "label": "Spania",
+                "value": "spania"
+              },
+              {
+                "label": "Storbritannia",
+                "value": "storbritannia"
+              },
+              {
+                "label": "Tsjekkia",
+                "value": "tsjekkia"
+              },
+              {
+                "label": "Tyskland",
+                "value": "tyskland"
+              },
+              {
+                "label": "Ungarn",
+                "value": "ungarn"
+              },
+              {
+                "label": "Østerrike",
+                "value": "osterrike"
+              }
+            ],
+            "resource": ""
+          },
+          "tags": [],
+          "type": "select",
+          "input": true,
+          "label": "Hvilket land jobber du i? (ChoiceJS)",
+          "limit": 100,
+          "logic": [],
+          "navId": "ekmtktm",
+          "addons": [],
+          "filter": "",
+          "hidden": false,
+          "idPath": "id",
+          "prefix": "",
+          "suffix": "",
+          "unique": false,
+          "widget": "choicesjs",
+          "dataSrc": "values",
+          "dbIndex": false,
+          "overlay": {
+            "top": "",
+            "left": "",
+            "page": "",
+            "style": "",
+            "width": "",
+            "height": ""
+          },
+          "tooltip": "",
+          "dataType": "",
+          "disabled": false,
+          "lazyLoad": true,
+          "multiple": false,
+          "redrawOn": "",
+          "tabindex": "",
+          "template": "<span>{{ item.label }}</span>",
+          "validate": {
+            "custom": "",
+            "unique": false,
+            "multiple": false,
+            "required": true,
+            "customMessage": "",
+            "customPrivate": false,
+            "onlyAvailableItems": false,
+            "strictDateValidation": false
+          },
+          "autofocus": false,
+          "encrypted": false,
+          "hideLabel": false,
+          "indexeddb": {
+            "filter": {}
+          },
+          "minSearch": 0,
+          "modalEdit": false,
+          "protected": false,
+          "refreshOn": "",
+          "tableView": true,
+          "attributes": {},
+          "errorLabel": "",
+          "persistent": true,
+          "properties": {},
+          "validateOn": "blur",
+          "clearOnHide": true,
+          "conditional": {
+            "eq": ""
+          },
+          "customClass": "",
+          "description": "",
+          "fuseOptions": {
+            "include": "score",
+            "threshold": 0.3
+          },
+          "ignoreCache": false,
+          "placeholder": "",
+          "searchField": "",
+          "authenticate": false,
+          "defaultValue": "",
+          "selectFields": "",
+          "customOptions": {},
+          "dataGridLabel": true,
+          "labelPosition": "top",
+          "readOnlyValue": false,
+          "refreshOnBlur": "",
+          "searchEnabled": true,
+          "showCharCount": false,
+          "showWordCount": false,
+          "uniqueOptions": false,
+          "valueProperty": "",
+          "calculateValue": "",
+          "clearOnRefresh": false,
+          "searchDebounce": 0.3,
+          "useExactSearch": false,
+          "calculateServer": false,
+          "selectThreshold": 0.3,
+          "allowMultipleMasks": false,
+          "customDefaultValue": "",
+          "validateWhenHidden": false,
+          "allowCalculateOverride": false
+        },
+        {
+          "id": "emtgyql5",
+          "key": "sphH",
+          "data": {
+            "url": "",
+            "json": "",
+            "custom": "",
+            "values": [
+              {
+                "label": "20,00",
+                "value": "20.00"
+              },
+              {
+                "label": "19,75",
+                "value": "19.75"
+              },
+              {
+                "label": "19,50",
+                "value": "19.50"
+              },
+              {
+                "label": "19,25",
+                "value": "19.25"
+              },
+              {
+                "label": "19,00",
+                "value": "19.00"
+              },
+              {
+                "label": "18,75",
+                "value": "18.75"
+              },
+              {
+                "label": "18,50",
+                "value": "18.50"
+              },
+              {
+                "label": "18,25",
+                "value": "18.25"
+              },
+              {
+                "label": "18,00",
+                "value": "18.00"
+              },
+              {
+                "label": "17,75",
+                "value": "17.75"
+              },
+              {
+                "label": "17,50",
+                "value": "17.50"
+              },
+              {
+                "label": "17,25",
+                "value": "17.25"
+              },
+              {
+                "label": "17,00",
+                "value": "17.00"
+              },
+              {
+                "label": "16,75",
+                "value": "16.75"
+              },
+              {
+                "label": "16,50",
+                "value": "16.50"
+              },
+              {
+                "label": "16,25",
+                "value": "16.25"
+              },
+              {
+                "label": "16,00",
+                "value": "16.00"
+              },
+              {
+                "label": "15,75",
+                "value": "15.75"
+              },
+              {
+                "label": "15,50",
+                "value": "15.50"
+              },
+              {
+                "label": "15,25",
+                "value": "15.25"
+              },
+              {
+                "label": "15,00",
+                "value": "15.00"
+              },
+              {
+                "label": "14,75",
+                "value": "14.75"
+              },
+              {
+                "label": "14,50",
+                "value": "14.50"
+              },
+              {
+                "label": "14,25",
+                "value": "14.25"
+              },
+              {
+                "label": "14,00",
+                "value": "14.00"
+              },
+              {
+                "label": "13,75",
+                "value": "13.75"
+              },
+              {
+                "label": "13,50",
+                "value": "13.50"
+              },
+              {
+                "label": "13,25",
+                "value": "13.25"
+              },
+              {
+                "label": "13,00",
+                "value": "13.00"
+              },
+              {
+                "label": "12,75",
+                "value": "12.75"
+              },
+              {
+                "label": "12,50",
+                "value": "12.50"
+              },
+              {
+                "label": "12,25",
+                "value": "12.25"
+              },
+              {
+                "label": "12,00",
+                "value": "12.00"
+              },
+              {
+                "label": "11,75",
+                "value": "11.75"
+              },
+              {
+                "label": "11,50",
+                "value": "11.50"
+              },
+              {
+                "label": "11,25",
+                "value": "11.25"
+              },
+              {
+                "label": "11,00",
+                "value": "11.00"
+              },
+              {
+                "label": "10,75",
+                "value": "10.75"
+              },
+              {
+                "label": "10,50",
+                "value": "10.50"
+              },
+              {
+                "label": "10,25",
+                "value": "10.25"
+              },
+              {
+                "label": "10,00",
+                "value": "10.00"
+              },
+              {
+                "label": "9,75",
+                "value": "9.75"
+              },
+              {
+                "label": "9,50",
+                "value": "9.50"
+              },
+              {
+                "label": "9,25",
+                "value": "9.25"
+              },
+              {
+                "label": "9,00",
+                "value": "9.00"
+              },
+              {
+                "label": "8,75",
+                "value": "8.75"
+              },
+              {
+                "label": "8,50",
+                "value": "8.50"
+              },
+              {
+                "label": "8,25",
+                "value": "8.25"
+              },
+              {
+                "label": "8,00",
+                "value": "8.00"
+              },
+              {
+                "label": "7,75",
+                "value": "7.75"
+              },
+              {
+                "label": "7,50",
+                "value": "7.50"
+              },
+              {
+                "label": "7,25",
+                "value": "7.25"
+              },
+              {
+                "label": "7,00",
+                "value": "7.00"
+              },
+              {
+                "label": "6,75",
+                "value": "6.75"
+              },
+              {
+                "label": "6,50",
+                "value": "6.50"
+              },
+              {
+                "label": "6,25",
+                "value": "6.25"
+              },
+              {
+                "label": "6,00",
+                "value": "6.00"
+              },
+              {
+                "label": "5,75",
+                "value": "5.75"
+              },
+              {
+                "label": "5,50",
+                "value": "5.50"
+              },
+              {
+                "label": "5,25",
+                "value": "5.25"
+              },
+              {
+                "label": "5,00",
+                "value": "5.00"
+              },
+              {
+                "label": "4,75",
+                "value": "4.75"
+              },
+              {
+                "label": "4,50",
+                "value": "4.50"
+              },
+              {
+                "label": "4,25",
+                "value": "4.25"
+              },
+              {
+                "label": "4,00",
+                "value": "4.00"
+              },
+              {
+                "label": "3,75",
+                "value": "3.75"
+              },
+              {
+                "label": "3,50",
+                "value": "3.50"
+              },
+              {
+                "label": "3,25",
+                "value": "3.25"
+              },
+              {
+                "label": "3,00",
+                "value": "3.00"
+              },
+              {
+                "label": "2,75",
+                "value": "2.75"
+              },
+              {
+                "label": "2,50",
+                "value": "2.50"
+              },
+              {
+                "label": "2,25",
+                "value": "2.25"
+              },
+              {
+                "label": "2,00",
+                "value": "2.00"
+              },
+              {
+                "label": "1,75",
+                "value": "1.75"
+              },
+              {
+                "label": "1,50",
+                "value": "1.50"
+              },
+              {
+                "label": "1,25",
+                "value": "1.25"
+              },
+              {
+                "label": "1,00",
+                "value": "1.00"
+              },
+              {
+                "label": "0,75",
+                "value": "0.75"
+              },
+              {
+                "label": "0,50",
+                "value": "0.50"
+              },
+              {
+                "label": "0,25",
+                "value": "0.25"
+              },
+              {
+                "label": "0,00",
+                "value": "0.00"
+              },
+              {
+                "label": "-0,25",
+                "value": "-0.25"
+              },
+              {
+                "label": "-0,50",
+                "value": "-0.50"
+              },
+              {
+                "label": "-0,75",
+                "value": "-0.75"
+              },
+              {
+                "label": "-1,00",
+                "value": "-1.00"
+              },
+              {
+                "label": "-1,25",
+                "value": "-1.25"
+              },
+              {
+                "label": "-1,50",
+                "value": "-1.50"
+              },
+              {
+                "label": "-1,75",
+                "value": "-1.75"
+              },
+              {
+                "label": "-2,00",
+                "value": "-2.00"
+              },
+              {
+                "label": "-2,25",
+                "value": "-2.25"
+              },
+              {
+                "label": "-2,50",
+                "value": "-2.50"
+              },
+              {
+                "label": "-2,75",
+                "value": "-2.75"
+              },
+              {
+                "label": "-3,00",
+                "value": "-3.00"
+              },
+              {
+                "label": "-3,25",
+                "value": "-3.25"
+              },
+              {
+                "label": "-3,50",
+                "value": "-3.50"
+              },
+              {
+                "label": "-3,75",
+                "value": "-3.75"
+              },
+              {
+                "label": "-4,00",
+                "value": "-4.00"
+              },
+              {
+                "label": "-4,25",
+                "value": "-4.25"
+              },
+              {
+                "label": "-4,50",
+                "value": "-4.50"
+              },
+              {
+                "label": "-4,75",
+                "value": "-4.75"
+              },
+              {
+                "label": "-5,00",
+                "value": "-5.00"
+              },
+              {
+                "label": "-5,25",
+                "value": "-5.25"
+              },
+              {
+                "label": "-5,50",
+                "value": "-5.50"
+              },
+              {
+                "label": "-5,75",
+                "value": "-5.75"
+              },
+              {
+                "label": "-6,00",
+                "value": "-6.00"
+              },
+              {
+                "label": "-6,25",
+                "value": "-6.25"
+              },
+              {
+                "label": "-6,50",
+                "value": "-6.50"
+              },
+              {
+                "label": "-6,75",
+                "value": "-6.75"
+              },
+              {
+                "label": "-7,00",
+                "value": "-7.00"
+              },
+              {
+                "label": "-7,25",
+                "value": "-7.25"
+              },
+              {
+                "label": "-7,50",
+                "value": "-7.50"
+              },
+              {
+                "label": "-7,75",
+                "value": "-7.75"
+              },
+              {
+                "label": "-8,00",
+                "value": "-8.00"
+              },
+              {
+                "label": "-8,25",
+                "value": "-8.25"
+              },
+              {
+                "label": "-8,50",
+                "value": "-8.50"
+              },
+              {
+                "label": "-8,75",
+                "value": "-8.75"
+              },
+              {
+                "label": "-9,00",
+                "value": "-9.00"
+              },
+              {
+                "label": "-9,25",
+                "value": "-9.25"
+              },
+              {
+                "label": "-9,50",
+                "value": "-9.50"
+              },
+              {
+                "label": "-9,75",
+                "value": "-9.75"
+              },
+              {
+                "label": "-10,00",
+                "value": "-10.00"
+              },
+              {
+                "label": "-10,25",
+                "value": "-10.25"
+              },
+              {
+                "label": "-10,50",
+                "value": "-10.50"
+              },
+              {
+                "label": "-10,75",
+                "value": "-10.75"
+              },
+              {
+                "label": "-11,00",
+                "value": "-11.00"
+              },
+              {
+                "label": "-11,25",
+                "value": "-11.25"
+              },
+              {
+                "label": "-11,50",
+                "value": "-11.50"
+              },
+              {
+                "label": "-11,75",
+                "value": "-11.75"
+              },
+              {
+                "label": "-12,00",
+                "value": "-12.00"
+              },
+              {
+                "label": "-12,25",
+                "value": "-12.25"
+              },
+              {
+                "label": "-12,50",
+                "value": "-12.50"
+              },
+              {
+                "label": "-12,75",
+                "value": "-12.75"
+              },
+              {
+                "label": "-13,00",
+                "value": "-13.00"
+              },
+              {
+                "label": "-13,25",
+                "value": "-13.25"
+              },
+              {
+                "label": "-13,50",
+                "value": "-13.50"
+              },
+              {
+                "label": "-13,75",
+                "value": "-13.75"
+              },
+              {
+                "label": "-14,00",
+                "value": "-14.00"
+              },
+              {
+                "label": "-14,25",
+                "value": "-14.25"
+              },
+              {
+                "label": "-14,50",
+                "value": "-14.50"
+              },
+              {
+                "label": "-14,75",
+                "value": "-14.75"
+              },
+              {
+                "label": "-15,00",
+                "value": "-15.00"
+              },
+              {
+                "label": "-15,25",
+                "value": "-15.25"
+              },
+              {
+                "label": "-15,50",
+                "value": "-15.50"
+              },
+              {
+                "label": "-15,75",
+                "value": "-15.75"
+              },
+              {
+                "label": "-16,00",
+                "value": "-16.00"
+              },
+              {
+                "label": "-16,25",
+                "value": "-16.25"
+              },
+              {
+                "label": "-16,50",
+                "value": "-16.50"
+              },
+              {
+                "label": "-16,75",
+                "value": "-16.75"
+              },
+              {
+                "label": "-17,00",
+                "value": "-17.00"
+              },
+              {
+                "label": "-17,25",
+                "value": "-17.25"
+              },
+              {
+                "label": "-17,50",
+                "value": "-17.50"
+              },
+              {
+                "label": "-17,75",
+                "value": "-17.75"
+              },
+              {
+                "label": "-18,00",
+                "value": "-18.00"
+              },
+              {
+                "label": "-18,25",
+                "value": "-18.25"
+              },
+              {
+                "label": "-18,50",
+                "value": "-18.50"
+              },
+              {
+                "label": "-18,75",
+                "value": "-18.75"
+              },
+              {
+                "label": "-19,00",
+                "value": "-19.00"
+              },
+              {
+                "label": "-19,25",
+                "value": "-19.25"
+              },
+              {
+                "label": "-19,50",
+                "value": "-19.50"
+              },
+              {
+                "label": "-19,75",
+                "value": "-19.75"
+              },
+              {
+                "label": "-20,00",
+                "value": "-20.00"
+              }
+            ],
+            "resource": ""
+          },
+          "tags": [],
+          "type": "select",
+          "input": true,
+          "label": "Sfære (HTML5)",
+          "limit": 100,
+          "logic": [],
+          "navId": "einu28r",
+          "addons": [],
+          "filter": "",
+          "hidden": false,
+          "idPath": "id",
+          "prefix": "",
+          "suffix": "",
+          "unique": false,
+          "widget": "html5",
+          "dataSrc": "values",
+          "dbIndex": false,
+          "overlay": {
+            "top": "",
+            "left": "",
+            "page": "",
+            "style": "",
+            "width": "",
+            "height": ""
+          },
+          "tooltip": "",
+          "dataType": "string",
+          "disabled": false,
+          "lazyLoad": true,
+          "multiple": false,
+          "redrawOn": "",
+          "tabindex": "",
+          "template": "<span>{{ item.label }}</span>",
+          "validate": {
+            "custom": "",
+            "unique": false,
+            "multiple": false,
+            "required": true,
+            "customMessage": "",
+            "customPrivate": false,
+            "onlyAvailableItems": true,
+            "strictDateValidation": false
+          },
+          "autofocus": false,
+          "encrypted": false,
+          "hideLabel": false,
+          "indexeddb": {
+            "filter": {}
+          },
+          "minSearch": 0,
+          "modalEdit": false,
+          "protected": false,
+          "refreshOn": "",
+          "tableView": true,
+          "attributes": {},
+          "errorLabel": "",
+          "persistent": true,
+          "properties": {},
+          "validateOn": "blur",
+          "clearOnHide": true,
+          "conditional": {
+            "eq": ""
+          },
+          "customClass": "",
+          "description": "",
+          "fuseOptions": {
+            "include": "score",
+            "threshold": 0.3
+          },
+          "ignoreCache": false,
+          "placeholder": "",
+          "searchField": "",
+          "authenticate": false,
+          "defaultValue": "0.00",
+          "selectFields": "",
+          "customOptions": {},
+          "dataGridLabel": true,
+          "labelPosition": "top",
+          "readOnlyValue": false,
+          "refreshOnBlur": "",
+          "searchEnabled": true,
+          "showCharCount": false,
+          "showWordCount": false,
+          "uniqueOptions": false,
+          "valueProperty": "",
+          "calculateValue": "",
+          "clearOnRefresh": false,
+          "searchDebounce": 0.3,
+          "useExactSearch": false,
+          "calculateServer": false,
+          "selectThreshold": 0.3,
+          "allowMultipleMasks": false,
+          "customDefaultValue": "",
+          "validateWhenHidden": false,
+          "allowCalculateOverride": false
+        },
+        {
+          "fieldSize": "input--xxl",
+          "description": "",
+          "additionalDescriptionText": "",
+          "spellcheck": true,
+          "calculateValue": "",
+          "readOnly": false,
+          "validate": {
+            "required": false,
+            "digitsOnly": false,
+            "custom": "",
+            "minLength": "",
+            "maxLength": "",
+            "customMessage": "",
+            "customPrivate": false,
+            "strictDateValidation": false,
+            "multiple": false,
+            "unique": false
+          },
+          "errors": "",
+          "conditional": {
+            "eq": ""
+          },
+          "customConditional": "",
+          "label": "Tekstfelt",
+          "additionalDescriptionLabel": "",
+          "autocomplete": "",
+          "key": "tekstfelt",
+          "type": "textfield",
+          "input": true,
+          "navId": "es3y3zn",
+          "tableView": false,
+          "placeholder": "",
+          "prefix": "",
+          "customClass": "",
+          "suffix": "",
+          "multiple": false,
+          "protected": false,
+          "unique": false,
+          "persistent": true,
+          "hidden": false,
+          "clearOnHide": true,
+          "refreshOn": "",
+          "redrawOn": "",
+          "modalEdit": false,
+          "dataGridLabel": false,
+          "labelPosition": "top",
+          "errorLabel": "",
+          "tooltip": "",
+          "hideLabel": false,
+          "tabindex": "",
+          "disabled": false,
+          "autofocus": false,
+          "dbIndex": false,
+          "customDefaultValue": "",
+          "calculateServer": false,
+          "attributes": {},
+          "validateOn": "blur",
+          "overlay": {
+            "style": "",
+            "left": "",
+            "top": "",
+            "width": "",
+            "height": ""
+          },
+          "allowCalculateOverride": false,
+          "encrypted": false,
+          "showCharCount": false,
+          "showWordCount": false,
+          "properties": {},
+          "allowMultipleMasks": false,
+          "addons": [],
+          "inputType": "text",
+          "id": "ehr9etd"
+        }
+      ],
+      "errorLabel": "",
+      "persistent": false,
+      "properties": {},
+      "validateOn": "change",
+      "clearOnHide": false,
+      "conditional": {
+        "eq": ""
+      },
+      "customClass": "",
+      "description": "",
+      "placeholder": "",
+      "dataGridLabel": false,
+      "labelPosition": "top",
+      "showCharCount": false,
+      "showWordCount": false,
+      "calculateValue": "",
+      "calculateServer": false,
+      "customConditional": "",
+      "isAttachmentPanel": false,
+      "allowMultipleMasks": false,
+      "customDefaultValue": "",
+      "allowCalculateOverride": false
+    }
+  ],
+  "properties": {
+    "tema": "SUP",
+    "signatures": [
+      {
+        "key": "2720f56c-95b1-4a63-9b0a-fb4512148f46",
+        "label": "",
+        "description": ""
+      }
+    ],
+    "skjemanummer": "select-test",
+    "submissionTypes": [
+      "PAPER",
+      "DIGITAL"
+    ],
+    "ettersendelsesfrist": "14",
+    "mellomlagringDurationDays": "28",
+    "subsequentSubmissionTypes": [
+      "PAPER",
+      "DIGITAL"
+    ]
+  },
+  "createdAt": "2025-10-24T11:14:45.004+02",
+  "createdBy": "Testesen, Test",
+  "changedAt": "2025-10-24T13:52:15.621+02",
+  "changedBy": "Testesen, Test",
+  "status": "draft"
+}

@@ -174,7 +174,17 @@ describe('Pdf', () => {
         cy.findByRole('group', { name: /Flervalg/ }).within(() => {
           cy.findByRole('checkbox', { name: 'Ja' }).check();
         });
+        // Select react
         cy.findByRole('combobox', { name: /Nedtrekksmeny \(navSelect\)/ }).type('{downArrow}{enter}');
+        // Select formio (ChoiceJS)
+        cy.findAllByRole('combobox').eq(1).click();
+        cy.findAllByRole('combobox')
+          .eq(1)
+          .within(() => {
+            cy.findByRole('option', { name: 'Ja' }).click();
+          });
+        // Select formio (HTML5)
+        cy.findAllByRole('combobox').eq(2).select('0,50');
         cy.findByRole('group', { name: /Radiopanel/ }).within(() => {
           cy.findByRole('radio', { name: 'Ja' }).check();
         });
@@ -319,7 +329,17 @@ describe('Pdf', () => {
         cy.findByRole('group', { name: /Flervalg/ }).within(() => {
           cy.findByRole('checkbox', { name: 'Ja' }).check();
         });
+        // Select React
         cy.findByRole('combobox', { name: /Nedtrekksmeny \(navSelect\)/ }).type('{downArrow}{enter}');
+        // Select formio (ChoiceJS)
+        cy.findAllByRole('combobox').eq(1).click();
+        cy.findAllByRole('combobox')
+          .eq(1)
+          .within(() => {
+            cy.findByRole('option', { name: 'Ja' }).click();
+          });
+        // Select formio (HTML5)
+        cy.findAllByRole('combobox').eq(2).select('-0,50');
         cy.findByRole('group', { name: /Radiopanel/ }).within(() => {
           cy.findByRole('radio', { name: 'Ja' }).check();
         });

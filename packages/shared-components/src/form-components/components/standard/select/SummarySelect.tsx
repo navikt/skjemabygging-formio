@@ -1,12 +1,16 @@
+import { useLanguages } from '../../../../context/languages';
 import { FormComponentProps } from '../../../types';
 import { DefaultAnswer } from '../../shared/form-summary';
-import DefaultSelectAnswer from '../../shared/form-summary/DefaultSelectAnswer';
 
-const SummarySelect = ({ component, submissionPath }: FormComponentProps) => {
-  if (component.type === 'select') {
-    return <DefaultAnswer component={component} submissionPath={submissionPath} />;
-  }
-  return <DefaultSelectAnswer component={component} submissionPath={submissionPath} />;
+const SummaryNavSelect = ({ component, submissionPath }: FormComponentProps) => {
+  const { translate } = useLanguages();
+
+  const getLabelFromValue = (value?: string) => {
+    const option = component.data?.values?.find((dataValue) => dataValue.value === value);
+    return option?.label ? translate(option?.label || '') : translate(value);
+  };
+
+  return <DefaultAnswer component={component} submissionPath={submissionPath} valueFormat={getLabelFromValue} />;
 };
 
-export default SummarySelect;
+export default SummaryNavSelect;

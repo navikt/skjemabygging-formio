@@ -1,5 +1,6 @@
 import {
   ComponentError,
+  FormioChangeEvent,
   NavFormType,
   Submission,
   SubmissionData,
@@ -41,7 +42,7 @@ interface EventProps {
   onPrevPage?: ({ page, currentPanels }: { page: number; currentPanels: string[] }) => void;
   onCancel?: ({ submission }: { submission: Submission }) => void;
   onSave?: ({ submission }: { submission: Submission }) => void;
-  onChange?: (changedSubmission: Submission) => void;
+  onChange?: (changeEvent: FormioChangeEvent) => void;
   onSubmissionChanged?: (submissionData: SubmissionData) => void;
   onSubmissionMetadataChanged?: (submissionMetadata: SubmissionMetadata) => void;
   onWizardPageSelected?: (panel: { path: string }) => void;
