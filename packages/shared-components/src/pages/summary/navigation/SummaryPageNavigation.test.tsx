@@ -91,7 +91,7 @@ describe('SummaryPageNavigation', () => {
   };
 
   describe('Når valgt innsendingstype er papir', () => {
-    it('når skjemaets submissionTypes type er PAPIR_OG_DIGITAL, rendres knapp for å gå videre til send-i-posten', async () => {
+    it('når skjemaets submissionTypes type er [PAPER, DIGITAL], rendres knapp for å gå videre til send-i-posten', async () => {
       const form = formWithProperties({ submissionTypes: ['PAPER', 'DIGITAL'] });
       const { router, buttons } = await renderSummaryPageNavigation({ form }, { submissionMethod: 'paper' });
 
@@ -102,7 +102,7 @@ describe('SummaryPageNavigation', () => {
   });
 
   describe("Forhåndvisning i 'bygger' bruker papir-løpet uansett submissionTypes", () => {
-    it('submissionTypes=PAPIR_OG_DIGITAL, submissionMethod=paper', async () => {
+    it('submissionTypes=[PAPER, DIGITAL], submissionMethod=paper', async () => {
       const form = formWithProperties({ submissionTypes: ['PAPER', 'DIGITAL'] });
       const appConfigProps = { submissionMethod: 'paper', app: 'bygger' } as AppConfigContextType;
       const { router, buttons } = await renderSummaryPageNavigation({ form }, appConfigProps);

@@ -98,7 +98,7 @@ const FormNavigation = ({ paths, isValid, submission, navigateTo, finalStep }: P
         />
       }
       cancelButton={<CancelButton />}
-      saveButton={<SaveButton submission={submission} />}
+      saveButton={isMellomlagringActive && submission && <SaveButton submission={submission} />}
     />
   );
 };

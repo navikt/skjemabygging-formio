@@ -14,15 +14,14 @@ export function NavigationButtonRow({
 }) {
   return (
     <nav>
-      <div className="button-row button-row--center">
+      <div className="button-row">
         {nextButton}
         {previousButton}
       </div>
 
       <div
         className={clsx('button-row', {
-          'button-row__center': nextButton && previousButton,
-          'button-row__auto-align': !nextButton || !previousButton,
+          'button-row__center': nextButton && previousButton && (!saveButton || !cancelButton),
         })}
       >
         {cancelButton}

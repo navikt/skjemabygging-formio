@@ -8,8 +8,8 @@ import ConfirmationModal from '../modal/confirmation/ConfirmationModal';
 import { BaseButton } from './BaseButton';
 
 export function SaveButton({ submission }: { submission?: Submission }) {
-  const { translate } = useLanguages();
   const { submissionMethod } = useAppConfig();
+  const { translate } = useLanguages();
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const { updateMellomlagring } = useSendInn();
   const exitUrl = urlUtils.getExitUrl(window.location.href);
