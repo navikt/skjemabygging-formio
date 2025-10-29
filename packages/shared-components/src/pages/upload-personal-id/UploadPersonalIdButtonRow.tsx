@@ -64,7 +64,6 @@ const UploadPersonalIdButtonRow = () => {
           />
         }
         cancelButton={<CancelButton />}
-        saveButton={undefined}
       />
     </>
   );

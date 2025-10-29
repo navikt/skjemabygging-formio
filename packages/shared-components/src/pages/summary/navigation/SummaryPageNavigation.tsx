@@ -21,10 +21,6 @@ export interface Props {
 const SummaryPageNavigation = ({ form, submission, panelValidationList, isValid }: Props) => {
   const { mellomlagringError } = useSendInn();
   const [error, setError] = useState<Error>();
-
-  console.log('sendIPosten', sendIPosten);
-  console.log('canSubmit', canSubmit);
-
   return (
     <>
       <FormError error={mellomlagringError} />
