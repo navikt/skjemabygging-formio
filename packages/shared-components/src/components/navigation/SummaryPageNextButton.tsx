@@ -23,16 +23,15 @@ export function SummaryPageNextButton({ form, submission, panelValidationList, s
   const { search } = useLocation();
   const { translate } = useLanguages();
   const { isMellomlagringActive } = useSendInn();
-  console.log('isMellomlagringActive', isMellomlagringActive);
   const submissionTypes = form.properties.submissionTypes;
   const hasAttachments = hasRelevantAttachments(form, submission ?? { data: {} });
-  console.log('hasAttachments', hasAttachments);
   const canSubmit =
     !!panelValidationList && panelValidationList.every((panelValidation) => !panelValidation.hasValidationErrors);
-  console.log('canSubmit', canSubmit);
   const sendIPosten =
     (submissionTypesUtils.isPaperSubmission(submissionTypes) && (submissionMethod === 'paper' || app === 'bygger')) ||
     submissionTypesUtils.isPaperSubmissionOnly(submissionTypes);
+
+  console.log(submissionMethod);
 
   return (
     <>
@@ -40,9 +39,11 @@ export function SummaryPageNextButton({ form, submission, panelValidationList, s
         <NextButton
           label={{
             paper: translate(TEXTS.grensesnitt.navigation.next),
+            digital: app === 'bygger' ? translate(TEXTS.grensesnitt.navigation.next) : undefined,
             none: translate(TEXTS.grensesnitt.navigation.next),
           }}
           href={{
+            digital: app === 'bygger' ? { pathname: `../send-i-posten`, search } : undefined,
             paper: { pathname: `../send-i-posten`, search },
             none: { pathname: `../send-i-posten`, search },
           }}

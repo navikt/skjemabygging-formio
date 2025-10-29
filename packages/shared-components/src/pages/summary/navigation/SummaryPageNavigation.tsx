@@ -39,6 +39,9 @@ const SummaryPageNavigation = ({ form, submission, panelValidationList, isValid 
     (canSubmit && submissionMethod === 'digitalnologin') ||
     submissionTypesUtils.isNoneSubmission(submissionTypes);
 
+  console.log('sendIPosten', sendIPosten);
+  console.log('canSubmit', canSubmit);
+
   return (
     <>
       <FormError error={mellomlagringError} />

@@ -241,7 +241,7 @@ describe('Mellomlagring', () => {
           cy.verifySendInnRedirect();
         });
 
-        it.only('retrieves mellomlagring and lets you navigate to first empty panel', () => {
+        it('retrieves mellomlagring and lets you navigate to first empty panel', () => {
           cy.visit(
             '/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO',
           );

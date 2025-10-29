@@ -111,7 +111,7 @@ describe('SummaryPageNavigation', () => {
       expect(router.state.location.pathname).toBe('/send-i-posten');
     });
 
-    it('submissionTypes=PAPIR_OG_DIGITAL, submissionMethod=digital', async () => {
+    it('submissionTypes=[PAPIR,DIGITAL], submissionMethod=digital', async () => {
       const form = formWithProperties({ submissionTypes: ['PAPER', 'DIGITAL'] });
       const appConfigProps = { submissionMethod: 'digital', app: 'bygger' } as AppConfigContextType;
       const { router, buttons } = await renderSummaryPageNavigation({ form }, appConfigProps);
