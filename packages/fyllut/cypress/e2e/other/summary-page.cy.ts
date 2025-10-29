@@ -298,4 +298,295 @@ describe('SummaryPage', () => {
         cy.get('dd').eq(1).should('contain.text', 'Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved');
       });
   });
+
+  it.only('All values (en)', () => {
+    cy.visit('/fyllut/components?sub=paper&lang=en');
+    cy.defaultWaits();
+    cy.clickShowAllSteps();
+
+    const date = '20.10.2025';
+
+    cy.clickStart();
+    cy.findByRole('group', { name: /Do you have norwegian national identification number or D number?/ }).within(() => {
+      cy.findByRole('radio', { name: 'Yes' }).check();
+    });
+    cy.findByRole('textbox', { name: /National identification number or D number/ }).type('20905995783');
+    cy.clickNextStep();
+
+    cy.findByRole('heading', { name: 'Standard fields' }).shouldBeVisible();
+    cy.findByRole('textbox', { name: /Text field/ }).type('Nav 1');
+    cy.findByRole('textbox', { name: /Text area/ }).type('Nav 2');
+    cy.findByRole('textbox', { name: /Number/ }).type('1');
+    cy.findByRole('checkbox', { name: /Checkbox/ }).check();
+    cy.findByRole('group', { name: /Multiple choice/ }).within(() => {
+      cy.findByRole('checkbox', { name: 'Yes' }).check();
+    });
+    // Select react
+    cy.findByRole('combobox', { name: /Dropdown \(navSelect\)/ }).type('{downArrow}{enter}');
+    // Select formio (ChoiceJS)
+    cy.findAllByRole('combobox').eq(1).click();
+    cy.findAllByRole('combobox')
+      .eq(1)
+      .within(() => {
+        cy.findByRole('option', { name: 'Yes' }).click();
+      });
+    // Select formio (HTML5)
+    cy.findAllByRole('combobox').eq(2).select('0.50');
+    cy.findByRole('group', { name: /Radio panel/ }).within(() => {
+      cy.findByRole('radio', { name: 'Yes' }).check();
+    });
+
+    cy.findByRole('link', { name: 'Person' }).click();
+    cy.findByRole('heading', { name: 'Person' }).shouldBeVisible();
+    cy.findByRole('textbox', { name: /National identification number or D number/ }).type('20905995783');
+    cy.findByRole('textbox', { name: /First name/ }).type('Ola');
+    cy.findByRole('textbox', { name: /Last name/ }).type('Nordmann');
+    cy.findByRole('textbox', { name: /C\/O/ }).type('Other person');
+    cy.findAllByRole('textbox', { name: /Street address/ })
+      .eq(0)
+      .type('Fyrstikkalléen 1');
+    cy.findAllByRole('textbox', { name: /Postal code/ })
+      .eq(0)
+      .type('0661');
+    cy.findAllByRole('textbox', { name: /City/ }).eq(0).type('Oslo');
+    cy.findByRole('textbox', { name: /Valid from/ }).type(date);
+    cy.findByRole('textbox', { name: /Valid to/ }).type(date);
+    cy.findAllByRole('textbox', { name: /Street address/ })
+      .eq(1)
+      .type('Fyrstikkalléen 2');
+    cy.findAllByRole('textbox', { name: /Postal code/ })
+      .eq(1)
+      .type('0662');
+    cy.findAllByRole('textbox', { name: /City/ }).eq(1).type('Oslo2');
+    cy.findByRole('combobox', { name: /Select country/ }).type('Norw{downArrow}{enter}');
+    cy.findByRole('textbox', { name: /Email/ }).type('test@nav.no');
+    cy.findByRole('textbox', { name: /Phone number/ }).type('21070000');
+    cy.findByRole('textbox', { name: /Citizenship/ }).type('Norwegian');
+
+    cy.findByRole('link', { name: 'Money and account' }).click();
+    cy.findByRole('heading', { name: 'Money and account' }).shouldBeVisible();
+    cy.findAllByRole('textbox', { name: /Amount/ })
+      .eq(0)
+      .type('1000');
+    cy.findAllByRole('combobox', { name: /Select currency/ })
+      .eq(0)
+      .type('{downArrow}{enter}');
+    cy.findAllByRole('textbox', { name: /Amount/ })
+      .eq(1)
+      .type('2000');
+    cy.findByRole('textbox', { name: /Account number/ }).type('76586005479');
+    cy.findByRole('textbox', { name: /IBAN/ }).type('NO8330001234567');
+    cy.findAllByRole('combobox', { name: /Select currency/ })
+      .eq(1)
+      .type('{downArrow}{downArrow}{enter}');
+
+    cy.findByRole('link', { name: 'Company / organization' }).click();
+    cy.findByRole('heading', { name: 'Company / organization' }).shouldBeVisible();
+    cy.findByRole('textbox', { name: /Organization number/ }).type('889640782');
+    cy.findByRole('textbox', { name: /Employer/ }).type('Nav');
+
+    cy.findByRole('link', { name: 'Date and time' }).click();
+    cy.findByRole('heading', { name: 'Date and time' }).shouldBeVisible();
+    cy.findByRole('textbox', { name: /Date/ }).type('01.01.2025');
+    cy.findByRole('textbox', { name: /Time/ }).type('01:01');
+    cy.findByRole('textbox', { name: /Month picker/ }).type('01.2025');
+    cy.findByRole('textbox', { name: /Year/ }).type('2025');
+
+    cy.findByRole('link', { name: 'Grouping' }).click();
+    cy.findByRole('heading', { name: 'Grouping' }).shouldBeVisible();
+    cy.findByRole('textbox', { name: /Text field form group 1 / }).type('Form 1');
+    cy.findByRole('textbox', { name: /Text field form group 2 / }).type('Form 2a');
+    cy.findAllByRole('button', { name: 'Add' }).eq(0).click();
+    cy.findAllByRole('textbox', { name: /Text field form group 2 / })
+      .eq(1)
+      .type('Form 2b');
+    cy.findByRole('textbox', { name: /Text field repeating data/ }).type('Repeat 1');
+    cy.findAllByRole('button', { name: 'Add' }).eq(1).click();
+    cy.findAllByRole('button', { name: 'Add' }).eq(1).click();
+    cy.findAllByRole('textbox', { name: /Text field repeating data/ })
+      .eq(1)
+      .type('Repeat 2');
+    cy.findAllByRole('textbox', { name: /Text field repeating data/ })
+      .eq(2)
+      .type('Repeat 3');
+
+    cy.findByRole('link', { name: 'Other' }).click();
+    cy.findByRole('heading', { name: 'Other' }).shouldBeVisible();
+    cy.findByRole('checkbox', { name: /I confirm/ }).check();
+
+    cy.findByRole('link', { name: 'Attachments' }).click();
+    cy.findByRole('heading', { name: 'Attachments' }).shouldBeVisible();
+    cy.findByRole('group', { name: /Attachments/ }).within(() => {
+      cy.findByRole('radio', { name: 'I will send the documentation later' }).check();
+    });
+    cy.findByRole('group', { name: /Other documentation/ }).within(() => {
+      cy.findByRole('radio', { name: 'No, I have no additional documentation to attach' }).check();
+    });
+
+    cy.findByRole('link', { name: 'Summary' }).click();
+    cy.findByRole('heading', { name: 'Summary' }).shouldBeVisible();
+
+    cy.findByRole('heading', { level: 2, name: 'Your information' })
+      .parent()
+      .parent()
+      .within(() => {
+        cy.contains('National identification number or D number').should('exist');
+        cy.contains('209059 95783').should('exist');
+      });
+
+    cy.findByRole('heading', { level: 2, name: 'Standard fields' })
+      .parent()
+      .parent()
+      .within(() => {
+        cy.get('dt').eq(0).should('contain.text', 'Text field');
+        cy.get('dd').eq(0).should('contain.text', 'Nav 1');
+        cy.get('dt').eq(1).should('contain.text', 'Text area');
+        cy.get('dd').eq(1).should('contain.text', 'Nav 2');
+        cy.get('dt').eq(2).should('contain.text', 'Number');
+        cy.get('dd').eq(2).should('contain.text', '1');
+        cy.get('dt').eq(3).should('contain.text', 'Checkbox');
+        cy.get('dd').eq(3).should('contain.text', 'Yes');
+        cy.get('dt').eq(4).should('contain.text', 'Multiple choice');
+        cy.get('dd').eq(4).should('contain.text', 'Yes');
+        cy.get('dt').eq(5).should('contain.text', 'Dropdown (navSelect)');
+        cy.get('dd').eq(5).should('contain.text', 'No');
+        cy.get('dt').eq(6).should('contain.text', 'Dropdown (select)');
+        cy.get('dd').eq(6).should('contain.text', 'Yes');
+        cy.get('dt').eq(7).should('contain.text', 'Dropdown (select HTML5)');
+        cy.get('dd').eq(7).should('contain.text', '0,5');
+        cy.get('dt').eq(8).should('contain.text', 'Radio panel');
+        cy.get('dd').eq(8).should('contain.text', 'Yes');
+
+        cy.contains('Alert info').should('not.exist');
+        cy.contains('Alert success').should('exist');
+        cy.contains('Alert error').should('exist');
+        cy.contains('HTML Block').should('exist');
+        cy.contains('Read more').should('not.exist');
+      });
+
+    cy.findByRole('heading', { level: 2, name: 'Person' })
+      .parent()
+      .parent()
+      .within(() => {
+        cy.get('dt').eq(0).should('contain.text', 'National identification number or D number');
+        cy.get('dd').eq(0).should('contain.text', '209059 95783');
+        cy.get('dt').eq(1).should('contain.text', 'First name');
+        cy.get('dd').eq(1).should('contain.text', 'Ola');
+        cy.get('dt').eq(2).should('contain.text', 'Last name');
+        cy.get('dd').eq(2).should('contain.text', 'Nordmann');
+        cy.get('dt').eq(3).should('contain.text', 'Address');
+        cy.get('dd').eq(3).should('contain.text', 'c/o Other person, Fyrstikkalléen 1, 0661 Oslo');
+        cy.get('dt').eq(4).should('contain.text', 'Valid from');
+        cy.get('dd').eq(4).should('contain.text', date);
+        cy.get('dt').eq(5).should('contain.text', 'Valid to');
+        cy.get('dd').eq(5).should('contain.text', date);
+        cy.get('dt').eq(6).should('contain.text', 'Street address');
+        cy.get('dd').eq(6).should('contain.text', 'Fyrstikkalléen 2');
+        cy.get('dt').eq(7).should('contain.text', 'Postal code');
+        cy.get('dd').eq(7).should('contain.text', '0662');
+        cy.get('dt').eq(8).should('contain.text', 'City');
+        cy.get('dd').eq(8).should('contain.text', 'Oslo2');
+        cy.get('dt').eq(9).should('contain.text', 'Select country');
+        cy.get('dd').eq(9).should('contain.text', 'Norway');
+        cy.get('dt').eq(10).should('contain.text', 'Email');
+        cy.get('dd').eq(10).should('contain.text', 'test@nav.no');
+        cy.get('dt').eq(11).should('contain.text', 'Phone number');
+        cy.get('dd').eq(11).should('contain.text', '+47 21 07 00 00');
+        cy.get('dt').eq(12).should('contain.text', 'Citizenship');
+        cy.get('dd').eq(12).should('contain.text', 'Norwegian');
+      });
+
+    cy.findByRole('heading', { level: 2, name: 'Money and account' })
+      .parent()
+      .parent()
+      .within(() => {
+        cy.get('dt').eq(0).should('contain.text', 'Amount');
+        cy.get('dd').eq(0).should('contain.text', '1\u00a0000,00\u00a0NOK');
+        cy.get('dt').eq(1).should('contain.text', 'Select currency');
+        cy.get('dd').eq(1).should('contain.text', 'Norwegian krone (NOK)');
+        cy.get('dt').eq(2).should('contain.text', 'Amount');
+        cy.get('dd').eq(2).should('contain.text', '2\u00a0000');
+        cy.get('dt').eq(3).should('contain.text', 'Account number');
+        cy.get('dd').eq(3).should('contain.text', '7658 60 05479');
+        cy.get('dt').eq(4).should('contain.text', 'IBAN');
+        cy.get('dd').eq(4).should('contain.text', 'NO83 3000 1234 567');
+        cy.get('dt').eq(5).should('contain.text', 'Select currency');
+        cy.get('dd').eq(5).should('contain.text', 'Swedish krona (SEK)');
+      });
+
+    cy.findByRole('heading', { level: 2, name: 'Company / organization' })
+      .parent()
+      .parent()
+      .within(() => {
+        cy.get('dt').eq(0).should('contain.text', 'Organization number');
+        cy.get('dd').eq(0).should('contain.text', '889 640 782');
+        cy.get('dt').eq(1).should('contain.text', 'Employer');
+        cy.get('dd').eq(1).should('contain.text', 'Nav');
+      });
+
+    cy.findByRole('heading', { level: 2, name: 'Date and time' })
+      .parent()
+      .parent()
+      .within(() => {
+        cy.get('dt').eq(0).should('contain.text', 'Date');
+        cy.get('dd').eq(0).should('contain.text', '01.01.2025');
+        cy.get('dt').eq(1).should('contain.text', 'Time');
+        cy.get('dd').eq(1).should('contain.text', '01:01');
+        cy.get('dt').eq(2).should('contain.text', 'Month picker');
+        cy.get('dd').eq(2).should('contain.text', 'January 2025');
+        cy.get('dt').eq(3).should('contain.text', 'Year');
+        cy.get('dd').eq(3).should('contain.text', '2025');
+      });
+
+    cy.findByRole('heading', { level: 2, name: 'Grouping' })
+      .parent()
+      .parent()
+      .within(() => {
+        cy.get('dt').eq(0).should('contain.text', 'Form group 1');
+        cy.get('dd')
+          .eq(0)
+          .within(() => {
+            cy.get('dt').eq(0).should('contain.text', 'Text field form group 1');
+            cy.get('dd').eq(0).should('contain.text', 'Form 1');
+            cy.get('dt').eq(1).should('contain.text', 'Form group 2');
+            cy.get('dd')
+              .eq(1)
+              .within(() => {
+                cy.get('dt').eq(0).should('contain.text', 'Text field form group 2');
+                cy.get('dd').eq(0).should('contain.text', 'Form 2a');
+                cy.get('dt').eq(1).should('contain.text', 'Text field form group 2');
+                cy.get('dd').eq(1).should('contain.text', 'Form 2b');
+              });
+          });
+        cy.get('dt').eq(5).should('contain.text', 'Repeating data');
+        cy.get('dd')
+          .eq(5)
+          .within(() => {
+            cy.get('dt').eq(0).should('contain.text', 'Text field repeating data');
+            cy.get('dd').eq(0).should('contain.text', 'Repeat 1');
+            cy.get('dt').eq(1).should('contain.text', 'Text field repeating data');
+            cy.get('dd').eq(1).should('contain.text', 'Repeat 2');
+            cy.get('dt').eq(2).should('contain.text', 'Text field repeating data');
+            cy.get('dd').eq(2).should('contain.text', 'Repeat 3');
+          });
+      });
+
+    cy.findByRole('heading', { level: 2, name: 'Other' })
+      .parent()
+      .parent()
+      .within(() => {
+        cy.get('dt').eq(0).should('contain.text', 'I confirm that I will answer as correctly as I can.');
+        cy.get('dd').eq(0).should('contain.text', 'Yes');
+      });
+
+    cy.findByRole('heading', { level: 2, name: 'Attachments' })
+      .parent()
+      .parent()
+      .within(() => {
+        cy.get('dt').eq(0).should('contain.text', 'Attachments');
+        cy.get('dd').eq(0).should('contain.text', 'I will send the documentation later');
+        cy.get('dt').eq(1).should('contain.text', 'Other documentation');
+        cy.get('dd').eq(1).should('contain.text', 'No, I have no additional documentation to attach');
+      });
+  });
 });
