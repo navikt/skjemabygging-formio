@@ -31,6 +31,8 @@ export function SummaryPageNextButton({ form, submission, panelValidationList, s
     (submissionTypesUtils.isPaperSubmission(submissionTypes) && (submissionMethod === 'paper' || app === 'bygger')) ||
     submissionTypesUtils.isPaperSubmissionOnly(submissionTypes);
 
+  console.log(submissionMethod);
+
   return (
     <>
       {canSubmit && sendIPosten && (

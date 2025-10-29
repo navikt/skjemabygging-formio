@@ -22,6 +22,9 @@ const SummaryPageNavigation = ({ form, submission, panelValidationList, isValid 
   const { mellomlagringError } = useSendInn();
   const [error, setError] = useState<Error>();
 
+  console.log('sendIPosten', sendIPosten);
+  console.log('canSubmit', canSubmit);
+
   return (
     <>
       <FormError error={mellomlagringError} />
