@@ -19,7 +19,7 @@ import SummaryPageNavigation from './navigation/SummaryPageNavigation';
 
 export function SummaryPage() {
   const appConfig = useAppConfig();
-  const { translate } = useLanguages();
+  const { translate, availableLanguages } = useLanguages();
   const { prefillData, submission, form, setTitle, setFormProgressVisible } = useForm();
   const { declarationType, declarationText } = form.properties;
   const [declaration, setDeclaration] = useState<boolean | undefined>(undefined);
@@ -78,8 +78,10 @@ export function SummaryPage() {
       }
     };
 
-    initializePanelValidation();
-  }, [form, submission, appConfig, prefillData, translate]);
+    if (availableLanguages.length > 0) {
+      initializePanelValidation();
+    }
+  }, [form, submission, appConfig, prefillData, translate, availableLanguages]);
 
   useEffect(() => {
     setTitle(TEXTS.statiske.summaryPage.title);
