@@ -1,19 +1,29 @@
 import clsx from 'clsx';
 import { ReactNode } from 'react';
+import makeStyles from '../../util/styles/jss/jss';
+import { FieldsetErrorMessage } from '../error/FieldsetErrorMessage';
 
+const useStyles = makeStyles({
+  error: {
+    marginBottom: '1rem',
+  },
+});
 export function NavigationButtonRow({
   nextButton,
   previousButton,
   saveButton,
   cancelButton,
+  errorMessage,
   floatLeft = false,
 }: {
   nextButton?: ReactNode;
   previousButton?: ReactNode;
   saveButton?: ReactNode;
   cancelButton?: ReactNode;
+  errorMessage?: string;
   floatLeft?: boolean;
 }) {
+  const styles = useStyles();
   return (
     <nav>
       <div
@@ -24,6 +34,7 @@ export function NavigationButtonRow({
         {nextButton}
         {previousButton}
       </div>
+      {errorMessage && <FieldsetErrorMessage errorMessage={errorMessage} className={styles.error} />}
 
       <div
         className={clsx('button-row', {

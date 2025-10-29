@@ -1,13 +1,17 @@
 import { ArrowRightIcon } from '@navikt/aksel-icons';
 import { BaseButton, BaseButtonProps } from './BaseButton';
 
-export function NextButton({ onClick, label, href, variant }: BaseButtonProps) {
+type Props = BaseButtonProps & {
+  hideIcon?: boolean;
+};
+
+export function NextButton({ onClick, label, href, variant, hideIcon }: Props) {
   return (
     <BaseButton
       label={label}
       href={href}
       onClick={onClick}
-      icon={<ArrowRightIcon aria-hidden />}
+      icon={!hideIcon && <ArrowRightIcon aria-hidden />}
       variant={variant}
       iconPosition="right"
     />

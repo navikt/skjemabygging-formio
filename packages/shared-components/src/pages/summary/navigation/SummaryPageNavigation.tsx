@@ -21,6 +21,7 @@ export interface Props {
 const SummaryPageNavigation = ({ form, submission, panelValidationList, isValid }: Props) => {
   const { mellomlagringError } = useSendInn();
   const [error, setError] = useState<Error>();
+  const [validationError, setValidationError] = useState<string | undefined>();
   return (
     <>
       <FormError error={mellomlagringError} />
@@ -41,11 +42,13 @@ const SummaryPageNavigation = ({ form, submission, panelValidationList, isValid 
             panelValidationList={panelValidationList}
             setError={setError}
             isValid={isValid}
+            setSubmitError={setValidationError}
           />
         }
         previousButton={<EditAnswersButton form={form} panelValidationList={panelValidationList} />}
         saveButton={<SaveButton submission={submission} />}
         cancelButton={<CancelButton />}
+        errorMessage={validationError}
       />
     </>
   );

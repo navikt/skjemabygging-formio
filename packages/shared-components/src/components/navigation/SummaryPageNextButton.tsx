@@ -15,10 +15,18 @@ type Props = {
   submission?: Submission;
   panelValidationList?: PanelValidation[];
   setError: Dispatch<SetStateAction<Error | undefined>>;
+  setSubmitError: Dispatch<SetStateAction<string | undefined>>;
   isValid?: (e: React.MouseEvent<HTMLElement>) => boolean;
 };
 
-export function SummaryPageNextButton({ form, submission, panelValidationList, setError, isValid }: Props) {
+export function SummaryPageNextButton({
+  form,
+  submission,
+  panelValidationList,
+  setError,
+  isValid,
+  setSubmitError,
+}: Props) {
   const { submissionMethod, app } = useAppConfig();
   const { search } = useLocation();
   const { translate } = useLanguages();
@@ -30,6 +38,13 @@ export function SummaryPageNextButton({ form, submission, panelValidationList, s
   const sendIPosten =
     (submissionTypesUtils.isPaperSubmission(submissionTypes) && (submissionMethod === 'paper' || app === 'bygger')) ||
     submissionTypesUtils.isPaperSubmissionOnly(submissionTypes);
+
+  function handleValidate() {
+    if (!canSubmit) {
+      setSubmitError(translate(TEXTS.grensesnitt.navigation.summaryPageError));
+      return;
+    }
+  }
 
   return (
     <>
@@ -69,6 +84,26 @@ export function SummaryPageNextButton({ form, submission, panelValidationList, s
           href={{
             default: `/${form.path}/ingen-innsending${search}`,
           }}
+        />
+      )}
+
+      {!canSubmit && (
+        <NextButton
+          label={{
+            digital: translate(TEXTS.grensesnitt.navigation.saveAndContinue),
+            digitalnologin: translate(TEXTS.grensesnitt.navigation.sendToNav),
+            paper: translate(TEXTS.grensesnitt.navigation.instructions),
+            none: translate(TEXTS.grensesnitt.navigation.instructions),
+          }}
+          onClick={{
+            digital: () => handleValidate(),
+            digitalnologin: () => handleValidate(),
+            paper: () => handleValidate(),
+            none: () => handleValidate(),
+          }}
+          variant="secondary"
+          hideIcon={submissionMethod === 'digitalnologin'}
+          iconPosition={'right'}
         />
       )}
     </>

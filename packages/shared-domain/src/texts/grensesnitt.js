@@ -16,6 +16,7 @@ export const grensesnitt = {
     submit: 'Neste steg',
     'Legg til': 'Legg til',
     Fjern: 'Fjern',
+    summaryPageError: 'Du må fullføre utfyllingen før du kan fortsette',
   },
   mostRecentSave: 'Sist lagret',
   emptySubmissionError: 'Kan ikke fortsette. Innsendingen er tom.',
