@@ -23,16 +23,10 @@ const EditAnswersButton = ({ form, panelValidationList }: Props) => {
     <PreviousButton
       variant={hasValidationErrors ? 'primary' : 'secondary'}
       href={{
-        digital: href,
-        paper: href,
-        digitalnologin: href,
-        none: href,
+        default: href,
       }}
       label={{
-        digital: translate(TEXTS.grensesnitt.summaryPage.editAnswers),
-        paper: translate(TEXTS.grensesnitt.summaryPage.editAnswers),
-        digitalnologin: translate(TEXTS.grensesnitt.summaryPage.editAnswers),
-        none: translate(TEXTS.grensesnitt.summaryPage.editAnswers),
+        default: translate(TEXTS.grensesnitt.summaryPage.editAnswers),
       }}
     />
   );

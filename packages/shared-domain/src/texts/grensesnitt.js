@@ -6,7 +6,7 @@ export const grensesnitt = {
     saveAndContinue: 'Lagre og fortsett',
     cancel: 'Avbryt',
     cancelAndDelete: 'Avbryt og slett',
-    cancelAndDiscard: 'Slett og start på ny',
+    cancelAndRestart: 'Slett og start på ny',
     saveDraft: 'Lagre utkast og fortsett senere',
     uploadID: 'Opplasting av ID',
     sendToNav: 'Send til Nav',

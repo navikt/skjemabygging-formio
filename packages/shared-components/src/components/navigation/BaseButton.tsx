@@ -10,9 +10,9 @@ type HrefProps = {
   hash?: string;
 };
 export type BaseButtonProps = {
-  onClick?: Partial<Record<SubmissionMethod | 'none', () => void>>;
-  label: Partial<Record<SubmissionMethod | 'none', string>>;
-  href?: Partial<Record<SubmissionMethod | 'none', HrefProps | string>>;
+  onClick?: Partial<Record<SubmissionMethod | 'none' | 'default', () => void>>;
+  label: Partial<Record<SubmissionMethod | 'none' | 'default', string>>;
+  href?: Partial<Record<SubmissionMethod | 'none' | 'default', HrefProps | string>>;
   icon?: ReactNode;
   variant?: 'primary' | 'secondary' | 'tertiary';
   iconPosition?: 'left' | 'right';
@@ -20,11 +20,12 @@ export type BaseButtonProps = {
 };
 
 export function BaseButton({ label, onClick, href, icon, iconPosition, variant, role = 'link' }: BaseButtonProps) {
-  const { submissionMethod = 'none' } = useAppConfig();
+  const { submissionMethod } = useAppConfig();
 
-  const handleClick = onClick ? onClick[submissionMethod] : undefined;
-  const buttonLabel = label[submissionMethod] ?? undefined;
-  const buttonHref = href && submissionMethod ? href[submissionMethod] : undefined;
+  const activeSubmissionMethod: SubmissionMethod | 'default' | 'none' = submissionMethod ?? 'default';
+  const handleClick = onClick?.[activeSubmissionMethod] ?? onClick?.default;
+  const buttonLabel = label[activeSubmissionMethod] ?? label.default;
+  const buttonHref = href?.[activeSubmissionMethod] ?? href?.default;
 
   if (!buttonLabel) return null;
 

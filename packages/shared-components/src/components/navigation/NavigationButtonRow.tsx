@@ -6,22 +6,28 @@ export function NavigationButtonRow({
   previousButton,
   saveButton,
   cancelButton,
+  floatLeft = false,
 }: {
   nextButton?: ReactNode;
   previousButton?: ReactNode;
   saveButton?: ReactNode;
   cancelButton?: ReactNode;
+  floatLeft?: boolean;
 }) {
   return (
     <nav>
-      <div className="button-row">
+      <div
+        className={clsx('button-row', {
+          'button-row__center': !floatLeft,
+        })}
+      >
         {nextButton}
         {previousButton}
       </div>
 
       <div
         className={clsx('button-row', {
-          'button-row__center': nextButton && previousButton && (!saveButton || !cancelButton),
+          'button-row__center': !floatLeft,
         })}
       >
         {cancelButton}

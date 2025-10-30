@@ -8,21 +8,17 @@ import { PreviousButton } from '../../../navigation/PreviousButton';
 const NavigateButtonComponent = ({ goBackUrl }) => {
   const { search } = useLocation();
   const { translate } = useLanguages();
+
   return (
     <NavigationButtonRow
+      floatLeft
       previousButton={
         <PreviousButton
           label={{
-            digital: translate(TEXTS.grensesnitt.navigation.previous),
-            paper: translate(TEXTS.grensesnitt.navigation.previous),
-            digitalnologin: translate(TEXTS.grensesnitt.navigation.previous),
-            none: translate(TEXTS.grensesnitt.navigation.previous),
+            default: translate(TEXTS.grensesnitt.navigation.previous),
           }}
           href={{
-            digital: { pathname: goBackUrl, search },
-            paper: { pathname: goBackUrl, search },
-            digitalnologin: { pathname: goBackUrl, search },
-            none: { pathname: goBackUrl, search },
+            default: { pathname: goBackUrl, search },
           }}
         />
       }

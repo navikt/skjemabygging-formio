@@ -146,7 +146,7 @@ describe('Submission Type', () => {
         cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendOnPaper }).click();
         cy.url().should('include', 'sub=paper');
 
-        cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.cancelAndDiscard }).click();
+        cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.cancelAndRestart }).click();
 
         cy.clickSendDigital();
         cy.url().should('include', 'sub=digital');

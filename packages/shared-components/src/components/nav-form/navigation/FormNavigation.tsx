@@ -69,36 +69,26 @@ const FormNavigation = ({ paths, isValid, submission, navigateTo, finalStep }: P
       nextButton={
         <NextButton
           onClick={{
-            digital: () => nextClickHandler(),
-            paper: () => nextClickHandler(),
-            digitalnologin: () => nextClickHandler(),
-            none: () => nextClickHandler(),
+            default: () => nextClickHandler(),
           }}
           label={{
             digital: translate(TEXTS.grensesnitt.navigation.saveAndContinue),
-            digitalnologin: translate(TEXTS.grensesnitt.navigation.next),
-            paper: translate(TEXTS.grensesnitt.navigation.next),
-            none: translate(TEXTS.grensesnitt.navigation.next),
+            default: translate(TEXTS.grensesnitt.navigation.next),
           }}
         />
       }
       previousButton={
         <PreviousButton
           onClick={{
-            digital: () => prevClickHandler(),
-            digitalnologin: () => prevClickHandler(),
-            paper: () => prevClickHandler(),
+            default: () => prevClickHandler(),
           }}
           label={{
-            digital: translate(TEXTS.grensesnitt.navigation.previous),
-            digitalnologin: translate(TEXTS.grensesnitt.navigation.previous),
-            paper: translate(TEXTS.grensesnitt.navigation.previous),
-            none: translate(TEXTS.grensesnitt.navigation.previous),
+            default: translate(TEXTS.grensesnitt.navigation.previous),
           }}
         />
       }
       cancelButton={<CancelButton />}
-      saveButton={isMellomlagringActive && submission && <SaveButton submission={submission} />}
+      saveButton={<SaveButton submission={submission} />}
     />
   );
 };

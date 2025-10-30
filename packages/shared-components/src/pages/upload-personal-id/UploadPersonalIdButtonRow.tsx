@@ -59,7 +59,7 @@ const UploadPersonalIdButtonRow = () => {
               digitalnologin: () => navigate(-1),
             }}
             label={{
-              digitalnologin: translate(TEXTS.grensesnitt.navigation.cancelAndDiscard),
+              digitalnologin: translate(TEXTS.grensesnitt.navigation.cancelAndRestart),
             }}
           />
         }

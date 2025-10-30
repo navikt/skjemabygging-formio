@@ -28,38 +28,25 @@ const IntroPageButtonRow = () => {
       nextButton={
         <NextButton
           onClick={{
-            digital: () => navigateToFormPage(),
-            paper: () => navigateToFormPage(),
-            digitalnologin: () => navigateToFormPage(),
-            none: () => navigateToFormPage(),
+            default: () => navigateToFormPage(),
           }}
           label={{
             digital: translate(TEXTS.grensesnitt.navigation.saveAndContinue),
-            digitalnologin: translate(TEXTS.grensesnitt.navigation.next),
-            paper: translate(TEXTS.grensesnitt.navigation.next),
-            none: translate(TEXTS.grensesnitt.navigation.next),
+            default: translate(TEXTS.grensesnitt.navigation.next),
           }}
           href={{
-            digital: href,
-            paper: href,
-            digitalnologin: href,
-            none: href,
+            default: href,
           }}
         />
       }
       previousButton={
         <PreviousButton
           onClick={{
-            digital: () => navigate(-1),
-            digitalnologin: () => navigate(-1),
-            paper: () => navigate(-1),
-            none: () => navigate(-1),
+            default: () => navigate(-1),
           }}
           label={{
-            digital: translate(TEXTS.grensesnitt.navigation.cancelAndDiscard),
             digitalnologin: translate(TEXTS.grensesnitt.navigation.uploadID),
-            paper: translate(TEXTS.grensesnitt.navigation.cancelAndDiscard),
-            none: translate(TEXTS.grensesnitt.navigation.cancelAndDiscard),
+            default: translate(TEXTS.grensesnitt.navigation.cancelAndRestart),
           }}
         />
       }

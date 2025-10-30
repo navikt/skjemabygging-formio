@@ -36,14 +36,10 @@ export function SummaryPageNextButton({ form, submission, panelValidationList, s
       {canSubmit && sendIPosten && (
         <NextButton
           label={{
-            paper: translate(TEXTS.grensesnitt.navigation.next),
-            digital: app === 'bygger' ? translate(TEXTS.grensesnitt.navigation.next) : undefined,
-            none: translate(TEXTS.grensesnitt.navigation.next),
+            default: translate(TEXTS.grensesnitt.navigation.next),
           }}
           href={{
-            digital: app === 'bygger' ? { pathname: `../send-i-posten`, search } : undefined,
-            paper: { pathname: `../send-i-posten`, search },
-            none: { pathname: `../send-i-posten`, search },
+            default: { pathname: `../send-i-posten`, search },
           }}
         />
       )}
@@ -68,16 +64,10 @@ export function SummaryPageNextButton({ form, submission, panelValidationList, s
       {submissionTypesUtils.isNoneSubmission(submissionTypes) && (
         <NextButton
           label={{
-            digital: translate(TEXTS.grensesnitt.navigation.next),
-            paper: translate(TEXTS.grensesnitt.navigation.next),
-            digitalnologin: translate(TEXTS.grensesnitt.navigation.next),
-            none: translate(TEXTS.grensesnitt.navigation.next),
+            default: translate(TEXTS.grensesnitt.navigation.next),
           }}
           href={{
-            digital: `/${form.path}/ingen-innsending${search}`,
-            paper: `/${form.path}/ingen-innsending${search}`,
-            digitalnologin: `/${form.path}/ingen-innsending${search}`,
-            none: `/${form.path}/ingen-innsending${search}`,
+            default: `/${form.path}/ingen-innsending${search}`,
           }}
         />
       )}
