@@ -120,7 +120,8 @@ describe('Pdf', () => {
       cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
         const { submission, pdfFormData } = req.body;
         expect(Object.keys(JSON.parse(submission).data)).to.have.length(3);
-        expect(Object.keys(pdfFormData.verdiliste)).to.have.length(3);
+        // pdfFormData.verdiliste is longer since signature is added for paper forms.
+        expect(Object.keys(pdfFormData.verdiliste)).to.have.length(4);
       }).as('downloadPdf');
 
       cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).click();
