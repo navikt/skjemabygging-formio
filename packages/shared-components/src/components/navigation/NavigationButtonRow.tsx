@@ -5,7 +5,7 @@ import { FieldsetErrorMessage } from '../error/FieldsetErrorMessage';
 
 const useStyles = makeStyles({
   error: {
-    marginBottom: '1rem',
+    marginBottom: '1.5rem',
   },
 });
 export function NavigationButtonRow({
