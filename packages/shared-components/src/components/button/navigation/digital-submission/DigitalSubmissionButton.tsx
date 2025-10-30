@@ -1,18 +1,19 @@
-import { ArrowRightIcon } from '@navikt/aksel-icons';
-import { Button, ButtonProps } from '@navikt/ds-react';
-import { Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useState } from 'react';
+import { NavFormType, Submission, submissionTypesUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { Dispatch, SetStateAction, useState } from 'react';
+import { useNavigate } from 'react-router';
 import { useAppConfig } from '../../../../context/config/configContext';
 import { useLanguages } from '../../../../context/languages';
 import { useSendInn } from '../../../../context/sendInn/sendInnContext';
+import { NextButton } from '../../../navigation/NextButton';
 
 export interface Props {
+  form?: NavFormType;
   submission?: Submission;
   isValid?: (e: React.MouseEvent<HTMLElement>) => boolean;
   onError: (err: Error) => void;
   onDone?: () => void;
-  children: string;
-  withIcon?: boolean;
+  canSubmit?: boolean;
+  setSubmitError: Dispatch<SetStateAction<string | undefined>>;
 }
 
 const DigitalSubmissionButton = ({
@@ -20,16 +21,30 @@ const DigitalSubmissionButton = ({
   isValid,
   onError,
   onDone = () => {},
-  children,
-  withIcon = false,
+  canSubmit,
+  setSubmitError,
+  form,
 }: Props) => {
-  const { app } = useAppConfig();
+  const { app, submissionMethod } = useAppConfig();
+  const navigate = useNavigate();
   const { translate } = useLanguages();
   const { submitSoknad } = useSendInn();
   const [loading, setLoading] = useState(false);
+  const submissionTypes = form?.properties.submissionTypes;
+  const sendIPosten =
+    (submissionTypesUtils.isPaperSubmission(submissionTypes) && (submissionMethod === 'paper' || app === 'bygger')) ||
+    submissionTypesUtils.isPaperSubmissionOnly(submissionTypes);
   const sendInn = async (e) => {
+    if (!canSubmit) {
+      setSubmitError(translate(TEXTS.grensesnitt.navigation.summaryPageError));
+      return;
+    }
     if (isValid && !isValid(e)) {
       return;
+    }
+
+    if (canSubmit && sendIPosten) {
+      navigate({ pathname: `../send-i-posten` });
     }
 
     if (app === 'bygger') {
@@ -53,17 +68,24 @@ const DigitalSubmissionButton = ({
     }
   };
 
-  const iconProps: Partial<ButtonProps> = withIcon
-    ? {
-        icon: <ArrowRightIcon aria-hidden />,
-        iconPosition: 'right',
-      }
-    : {};
-
   return (
-    <Button onClick={sendInn} loading={loading} {...iconProps}>
-      {children}
-    </Button>
+    <NextButton
+      label={{
+        digital: translate(TEXTS.grensesnitt.navigation.saveAndContinue),
+        digitalnologin: translate(TEXTS.grensesnitt.navigation.sendToNav),
+        paper: translate(TEXTS.grensesnitt.navigation.instructions),
+        none: translate(TEXTS.grensesnitt.navigation.instructions),
+      }}
+      onClick={{
+        digital: async (e) => sendInn(e),
+        paper: async (e) => sendInn(e),
+        digitalnologin: async (e) => sendInn(e),
+        none: async (e) => sendInn(e),
+      }}
+      variant={canSubmit ? 'primary' : 'secondary'}
+      hideIcon={submissionMethod === 'digitalnologin'}
+      loading={loading}
+    />
   );
 };
 

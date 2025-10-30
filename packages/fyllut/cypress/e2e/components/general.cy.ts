@@ -67,7 +67,7 @@ describe('React components', () => {
             cy.get('dd').eq(4).should('contain.text', '01.01.2023');
           });
 
-        cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.next }).click();
+        cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions }).click();
 
         cy.findByRole('heading', { name: TEXTS.statiske.prepareLetterPage.subTitle }).should('exist');
 

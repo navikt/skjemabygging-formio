@@ -164,7 +164,7 @@ describe('Submission Type', () => {
         cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
         cy.clickNextStep();
 
-        cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.next }).click();
+        cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions }).click();
 
         cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).should('exist');
       });
@@ -303,7 +303,7 @@ describe('Submission Type', () => {
           cy.get('dd').eq(0).should('contain.text', 'asdf');
         });
 
-      cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.next }).click();
+      cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions }).click();
 
       cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).should('exist');
     });

@@ -10,16 +10,26 @@ type HrefProps = {
   hash?: string;
 };
 export type BaseButtonProps = {
-  onClick?: Partial<Record<SubmissionMethod | 'none' | 'default', () => void>>;
+  onClick?: Partial<Record<SubmissionMethod | 'none' | 'default', (e?: unknown) => void | Promise<void>>>;
   label: Partial<Record<SubmissionMethod | 'none' | 'default', string>>;
   href?: Partial<Record<SubmissionMethod | 'none' | 'default', HrefProps | string>>;
   icon?: ReactNode;
   variant?: 'primary' | 'secondary' | 'tertiary';
   iconPosition?: 'left' | 'right';
   role?: 'link' | 'button';
+  loading?: boolean;
 };
 
-export function BaseButton({ label, onClick, href, icon, iconPosition, variant, role = 'link' }: BaseButtonProps) {
+export function BaseButton({
+  label,
+  onClick,
+  href,
+  icon,
+  iconPosition,
+  variant,
+  role = 'link',
+  loading,
+}: BaseButtonProps) {
   const { submissionMethod } = useAppConfig();
 
   const activeSubmissionMethod: SubmissionMethod | 'default' | 'none' = submissionMethod ?? 'default';
@@ -43,6 +53,7 @@ export function BaseButton({ label, onClick, href, icon, iconPosition, variant, 
       icon={icon}
       iconPosition={iconPosition}
       variant={variant}
+      loading={loading}
     >
       {buttonLabel}
     </Button>
