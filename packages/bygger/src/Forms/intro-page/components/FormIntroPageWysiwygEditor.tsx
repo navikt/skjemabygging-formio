@@ -9,6 +9,7 @@ type TexareaFieldProps = {
   description?: string;
   placeholder?: string;
   defaultValue?: string;
+  defaultTag?: 'p' | 'div';
   onChange: (value: string) => void;
   showDeleteButton?: boolean;
   onDelete?: () => void;
@@ -17,7 +18,7 @@ type TexareaFieldProps = {
 };
 
 export const FormIntroPageWysiwygEditor = forwardRef<HTMLDivElement, TexareaFieldProps>(
-  ({ label, description, defaultValue, hidden, onChange, onDelete, showDeleteButton, error }, ref) => {
+  ({ label, description, defaultValue, defaultTag, hidden, onChange, onDelete, showDeleteButton, error }, ref) => {
     const styles = useTextFieldStyles();
     return (
       <Box className={styles.container}>
@@ -32,7 +33,13 @@ export const FormIntroPageWysiwygEditor = forwardRef<HTMLDivElement, TexareaFiel
           <BodyLong size="medium" textColor="subtle">
             {description}
           </BodyLong>
-          <WysiwygEditor defaultValue={defaultValue} onBlur={onChange} ref={ref} error={error} />
+          <WysiwygEditor
+            defaultTag={defaultTag}
+            defaultValue={defaultValue}
+            onBlur={onChange}
+            ref={ref}
+            error={error}
+          />
         </div>
         {showDeleteButton && (
           <Button variant="tertiary" className={styles.deleteButton} onClick={onDelete}>

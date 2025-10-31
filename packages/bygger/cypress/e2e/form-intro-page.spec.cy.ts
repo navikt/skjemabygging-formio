@@ -270,16 +270,16 @@ describe('FormSettingsPage', () => {
           nb: `<p>${submitData.introPage.sections.prerequisites.description}</p>`,
         });
         expect(post3.request.body).to.contain({
-          nb: `<p>${submitData.introPage.sections.prerequisites.bulletPoints[0]}</p>`,
+          nb: `${submitData.introPage.sections.prerequisites.bulletPoints[0]}`,
         });
         expect(post4.request.body).to.contain({
           nb: `<p>${submitData.introPage.sections.dataTreatment.description}</p>`,
         });
         expect(post5.request.body).to.contain({
-          nb: `<p>${submitData.introPage.sections.dataTreatment.bulletPoints[0]}</p>`,
+          nb: `${submitData.introPage.sections.dataTreatment.bulletPoints[0]}`,
         });
         expect(post6.request.body).to.contain({
-          nb: `<p>${submitData.introPage.sections.dataTreatment.bulletPoints[1]}</p>`,
+          nb: `${submitData.introPage.sections.dataTreatment.bulletPoints[1]}`,
         });
       });
       cy.get('[aria-live="polite"]').should('contain.text', `Lagret skjema ${submitData.title}`);

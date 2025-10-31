@@ -58,6 +58,7 @@ export function ImportantInformation({ form, handleChange, errors, refMap }: Pro
           )}
           <FormIntroPageWysiwygEditor
             label="Brødtekst"
+            defaultTag="div"
             defaultValue={getKeyBasedText(form.introPage?.importantInformation?.description)}
             onChange={(value) => onChange(value, 'description')}
             error={errors?.importantInformation?.description}
