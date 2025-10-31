@@ -103,7 +103,7 @@ describe('Conditional rendering', () => {
       it("navigates back to the added panel on clicking 'rediger' after changing language", () => {
         cy.findByRole('button', { name: 'Norsk bokmål' }).click();
         cy.findByRole('link', { name: 'English' }).click();
-        cy.clickEditAnswer('Lamb ribs', 'Edit answer');
+        cy.clickEditAnswer('Lamb ribs');
         cy.url().should('include', '/pinnekjott');
         cy.url().should('include', 'lang=en');
         cy.findByRole('checkbox', { name: 'Root stew (optional)' }).should('exist');

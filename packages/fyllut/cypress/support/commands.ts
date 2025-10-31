@@ -48,11 +48,11 @@ Cypress.Commands.add('shouldBeVisible', { prevSubject: true }, (subject) => {
 });
 
 Cypress.Commands.add('clickNextStep', () => {
-  return cy.findByRoleWhenAttached('link', { name: TEXTS.grensesnitt.navigation.next }, 500).click();
+  return cy.findByRoleWhenAttached('link', { name: /Neste steg|Next step/ }, 500).click();
 });
 
 Cypress.Commands.add('clickPreviousStep', () => {
-  return cy.findByRoleWhenAttached('link', { name: TEXTS.grensesnitt.navigation.previous }, 500).click();
+  return cy.findByRoleWhenAttached('link', { name: /Forrige steg|Previous step/ }, 500).click();
 });
 
 Cypress.Commands.add('clickSaveAndContinue', () => {
@@ -62,7 +62,7 @@ Cypress.Commands.add('clickSaveAndContinue', () => {
       cy
         .findByRoleWhenAttached(
           url.includes('/oppsummering') ? 'button' : 'link',
-          { name: TEXTS.grensesnitt.navigation.saveAndContinue },
+          { name: /Lagre og fortsett|Save and continue/ },
           500,
         )
         .click(),
@@ -78,7 +78,7 @@ Cypress.Commands.add('clickIntroPageConfirmation', () => {
 });
 
 Cypress.Commands.add('clickShowAllSteps', () => {
-  return cy.findByRoleWhenAttached('button', { name: TEXTS.grensesnitt.stepper.showAllSteps }, 500).click();
+  return cy.findByRoleWhenAttached('button', { name: /Vis alle steg|Show all steps/ }, 500).click();
 });
 
 Cypress.Commands.add('clickSendDigital', () => {
@@ -95,12 +95,12 @@ Cypress.Commands.add('clickEditAnswer', (title, linkText) => {
   cy.findByRole('heading', { level: 2, name: title })
     .parent()
     .parent()
-    .findByRole('link', { name: linkText ?? TEXTS.grensesnitt.summaryPage.edit })
+    .findByRole('link', { name: linkText ?? /Endre svar|Edit answer/ })
     .click();
 });
 
 Cypress.Commands.add('clickEditAnswers', (linkText) => {
-  cy.findAllByRole('link', { name: linkText ?? TEXTS.grensesnitt.summaryPage.editAnswers })
+  cy.findAllByRole('link', { name: linkText ?? /Fortsett utfylling|Continue filling in/ })
     .first()
     .click();
 });

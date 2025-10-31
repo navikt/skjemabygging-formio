@@ -153,12 +153,10 @@ class TranslationsService {
 
   async loadGlobalTranslations(lang: string): Promise<I18nTranslations> {
     const { useFormsApiStaging, useFormioMockApi, resourcesDir } = this._config;
-    if (useFormsApiStaging) {
+    if (useFormsApiStaging || useFormioMockApi) {
       return this.fetchGlobalTranslationsFromFormsApi(lang);
     }
-    const globalTranslations = useFormioMockApi
-      ? await this.fetchGlobalTranslationsFromFormioApi(lang)
-      : await loadFileFromDirectory(resourcesDir, `global-translations-${lang}`);
+    const globalTranslations = await loadFileFromDirectory(resourcesDir, `global-translations-${lang}`);
     return languagesUtil.flattenGlobalI18nGroupedByTag(globalTranslations);
   }
 
