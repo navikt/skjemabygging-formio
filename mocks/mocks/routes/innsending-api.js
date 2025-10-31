@@ -28,6 +28,7 @@ const prefillDataUsa = require('../data/innsending-api/prefill-data/prefill-data
 const mellomlagringSelectBoxes = require('../data/innsending-api/select-boxes/mellomlagring-select-boxes.json');
 const mellomlagringRadio = require('../data/innsending-api/radio/mellomlagring-radio.json');
 const mellomlagringMonthPicker = require('../data/innsending-api/month-picker/mellomlagring-month-picker.json');
+const mockPdfBase64 = require('../data/familie-pdf/mockPdfBase64');
 
 const objectToByteArray = (obj) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
 
@@ -555,6 +556,7 @@ module.exports = [
               sendesIkkeInn: [],
               navKanInnhente: [],
               ettersendingsfrist: null,
+              pdfBase64: mockPdfBase64,
             });
           },
         },
