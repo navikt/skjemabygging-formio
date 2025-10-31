@@ -17,7 +17,7 @@ const PdfSignature = ({ properties, languagesContextValue, submissionMethod }: P
   const { signatures, descriptionOfSignatures } = properties;
   const { translate } = languagesContextValue;
 
-  if (submissionMethod === 'digital' || !signatures) {
+  if (submissionMethod === 'digital') {
     return null;
   }
 
@@ -28,10 +28,6 @@ const PdfSignature = ({ properties, languagesContextValue, submissionMethod }: P
   }
 
   const signatureList = signatureUtils.mapBackwardCompatibleSignatures(signatures);
-
-  if (signatureList.length === 0) {
-    return null;
-  }
 
   const getSignatureField = (description) => {
     return [

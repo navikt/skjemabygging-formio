@@ -120,7 +120,8 @@ describe('Pdf', () => {
       cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
         const { submission, pdfFormData } = req.body;
         expect(Object.keys(JSON.parse(submission).data)).to.have.length(3);
-        expect(Object.keys(pdfFormData.verdiliste)).to.have.length(3);
+        // pdfFormData.verdiliste is longer since signature is added for paper forms.
+        expect(Object.keys(pdfFormData.verdiliste)).to.have.length(4);
       }).as('downloadPdf');
 
       cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).click();
@@ -174,7 +175,17 @@ describe('Pdf', () => {
         cy.findByRole('group', { name: /Flervalg/ }).within(() => {
           cy.findByRole('checkbox', { name: 'Ja' }).check();
         });
+        // Select react
         cy.findByRole('combobox', { name: /Nedtrekksmeny \(navSelect\)/ }).type('{downArrow}{enter}');
+        // Select formio (ChoiceJS)
+        cy.findAllByRole('combobox').eq(1).click();
+        cy.findAllByRole('combobox')
+          .eq(1)
+          .within(() => {
+            cy.findByRole('option', { name: 'Ja' }).click();
+          });
+        // Select formio (HTML5)
+        cy.findAllByRole('combobox').eq(2).select('0,50');
         cy.findByRole('group', { name: /Radiopanel/ }).within(() => {
           cy.findByRole('radio', { name: 'Ja' }).check();
         });
@@ -319,7 +330,17 @@ describe('Pdf', () => {
         cy.findByRole('group', { name: /Flervalg/ }).within(() => {
           cy.findByRole('checkbox', { name: 'Ja' }).check();
         });
+        // Select React
         cy.findByRole('combobox', { name: /Nedtrekksmeny \(navSelect\)/ }).type('{downArrow}{enter}');
+        // Select formio (ChoiceJS)
+        cy.findAllByRole('combobox').eq(1).click();
+        cy.findAllByRole('combobox')
+          .eq(1)
+          .within(() => {
+            cy.findByRole('option', { name: 'Ja' }).click();
+          });
+        // Select formio (HTML5)
+        cy.findAllByRole('combobox').eq(2).select('-0,50');
         cy.findByRole('group', { name: /Radiopanel/ }).within(() => {
           cy.findByRole('radio', { name: 'Ja' }).check();
         });

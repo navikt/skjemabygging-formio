@@ -3,6 +3,7 @@ const introPage = require('../data/formio-api/intro-page.json');
 const introPageTranslations = require('../data/formio-api/intro-page-translations.json');
 const formCypressaxe = require('../data/formio-api/cypressaxe.json');
 const formComponents = require('../data/formio-api/components.json');
+const formComponentsTranslations = require('../data/formio-api/components-translations.json');
 const formPengerOgKonto = require('../data/formio-api/pengerOgKonto.json');
 const formPhoneNumberAreaCode = require('../data/formio-api/phone-number-area-code.json');
 const formConditionalXmas = require('../data/formio-api/conditionalxmas.json');
@@ -42,6 +43,7 @@ const checkboxForm = require('../data/formio-api/custom-components-checkbox.json
 const hiddenConditionalForm = require('../data/formio-api/hidden-conditional.json');
 const radioForm = require('../data/formio-api/radio.json');
 const selectBoxesForm = require('../data/formio-api/select-boxes.json');
+const selectForm = require('../data/formio-api/select.json');
 const monthPickerForm = require('../data/formio-api/month-picker.json');
 const emailForm = require('../data/formio-api/form-email.json');
 const formUtilsCheckCondition = require('../data/formio-api/form-utils-check-condition.json');
@@ -69,7 +71,7 @@ const allForms = [
   { form: formCypress101, translations: translationsCypress101 },
   { form: introPage, translations: introPageTranslations },
   { form: formCypressaxe, translations: undefined },
-  { form: formComponents, translations: undefined },
+  { form: formComponents, translations: formComponentsTranslations },
   { form: formPengerOgKonto, translations: undefined },
   { form: formPhoneNumberAreaCode, translations: undefined },
   { form: formConditionalXmas, translations: translationsConditionalXmas },
@@ -101,6 +103,7 @@ const allForms = [
   { form: hiddenConditionalForm, translations: undefined },
   { form: radioForm, translations: undefined },
   { form: selectBoxesForm, translations: undefined },
+  { form: selectForm, translations: undefined },
   { form: monthPickerForm, translations: undefined },
   { form: emailForm, translations: undefined },
   { form: nav111221b, translations: nav111221bTranslations },

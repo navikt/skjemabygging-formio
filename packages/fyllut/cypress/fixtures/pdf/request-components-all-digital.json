@@ -43,6 +43,14 @@
           "verdi": "Nei"
         },
         {
+          "label": "Nedtrekksmeny (select)",
+          "verdi": "Ja"
+        },
+        {
+          "label": "Nedtrekksmeny (select HTML5)",
+          "verdi": "-0,50"
+        },
+        {
           "label": "Radiopanel",
           "verdi": "Ja"
         },

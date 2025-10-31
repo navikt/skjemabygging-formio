@@ -1,4 +1,5 @@
 import { SubmissionAttachment } from '../attachment';
+import { Component } from './component';
 import { FyllutState } from './state';
 
 export interface Submission {
@@ -42,4 +43,11 @@ export type SubmissionMetadata = {
   pathName: string;
   onLine: boolean;
   dataFetcher: any;
+};
+
+export type FormioChangeEvent = {
+  changed?: { component?: Component; instance?: any; value?: any; flags?: any };
+  data?: SubmissionData;
+  isValid?: boolean;
+  metadata?: object;
 };
