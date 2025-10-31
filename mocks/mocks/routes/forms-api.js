@@ -13,6 +13,7 @@ module.exports = [
           middleware: (req, res) => {
             res.status(200);
             res.contentType('application/json; charset=UTF-8');
+            // To update the mock data, just copy from prod https://forms-api.intern.nav.no/v1/global-translations
             res.send(globalTranslations);
           },
         },

@@ -299,7 +299,7 @@ describe('SummaryPage', () => {
       });
   });
 
-  it.only('All values (en)', () => {
+  it('All values (en)', () => {
     cy.visit('/fyllut/components?sub=paper&lang=en');
     cy.defaultWaits();
     cy.clickShowAllSteps();
