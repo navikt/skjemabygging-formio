@@ -2,7 +2,7 @@ import { NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import nock from 'nock';
-import { RouterProvider, createMemoryRouter } from 'react-router';
+import { createMemoryRouter, RouterProvider } from 'react-router';
 import { defaultFormWithAttachment } from '../../../../test/test-data/form/data';
 import { Buttons, formWithProperties, getButtons } from '../../../../test/util/helpers';
 import { AppConfigContextType, AppConfigProvider } from '../../../context/config/configContext';
@@ -91,7 +91,7 @@ describe('SummaryPageNavigation', () => {
   };
 
   describe('Når valgt innsendingstype er papir', () => {
-    it('når skjemaets submissionTypes type er PAPIR_OG_DIGITAL, rendres knapp for å gå videre til send-i-posten', async () => {
+    it('når skjemaets submissionTypes type er [PAPER, DIGITAL], rendres knapp for å gå videre til send-i-posten', async () => {
       const form = formWithProperties({ submissionTypes: ['PAPER', 'DIGITAL'] });
       const { router, buttons } = await renderSummaryPageNavigation({ form }, { submissionMethod: 'paper' });
 
@@ -102,7 +102,7 @@ describe('SummaryPageNavigation', () => {
   });
 
   describe("Forhåndvisning i 'bygger' bruker papir-løpet uansett submissionTypes", () => {
-    it('submissionTypes=PAPIR_OG_DIGITAL, submissionMethod=paper', async () => {
+    it('submissionTypes=[PAPER, DIGITAL], submissionMethod=paper', async () => {
       const form = formWithProperties({ submissionTypes: ['PAPER', 'DIGITAL'] });
       const appConfigProps = { submissionMethod: 'paper', app: 'bygger' } as AppConfigContextType;
       const { router, buttons } = await renderSummaryPageNavigation({ form }, appConfigProps);
@@ -111,7 +111,7 @@ describe('SummaryPageNavigation', () => {
       expect(router.state.location.pathname).toBe('/send-i-posten');
     });
 
-    it('submissionTypes=PAPIR_OG_DIGITAL, submissionMethod=digital', async () => {
+    it('submissionTypes=[PAPIR,DIGITAL], submissionMethod=digital', async () => {
       const form = formWithProperties({ submissionTypes: ['PAPER', 'DIGITAL'] });
       const appConfigProps = { submissionMethod: 'digital', app: 'bygger' } as AppConfigContextType;
       const { router, buttons } = await renderSummaryPageNavigation({ form }, appConfigProps);
@@ -217,7 +217,7 @@ describe('SummaryPageNavigation', () => {
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
 
       await userEvent.click(buttons.gaVidereKnapp);
-      expect(router.state.location.pathname).toBe('/ingen-innsending');
+      expect(router.state.location.pathname).toBe('/testskjema/ingen-innsending');
     });
   });
 

@@ -82,7 +82,7 @@ describe('Mellomlagring', () => {
       });
       cy.clickNextStep();
       cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveDraft }).should('not.exist');
-      cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.cancelAndDelete }).should('not.exist');
+      cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('not.exist');
       cy.findAllByRole('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers })
         .first()
         .should('exist')

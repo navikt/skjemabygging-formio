@@ -31,7 +31,7 @@ const downloadPdf = (submissionType: 'digital' | 'paper' = 'paper') => {
     cy.findByRole('button', { name: TEXTS.grensesnitt.submitToNavPrompt.open }).click();
     cy.findByRole('button', { name: TEXTS.grensesnitt.submitToNavPrompt.confirm }).click();
   } else {
-    cy.findByRole('link', { name: TEXTS.grensesnitt.moveForward }).click();
+    cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.next }).click();
     cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).click();
   }
   cy.wait('@downloadPdf');
@@ -115,7 +115,7 @@ describe('Pdf', () => {
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: 'Oppsummering' }).shouldBeVisible();
-      cy.findByRole('link', { name: TEXTS.grensesnitt.moveForward }).click();
+      cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.next }).click();
 
       cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
         const { submission, pdfFormData } = req.body;
