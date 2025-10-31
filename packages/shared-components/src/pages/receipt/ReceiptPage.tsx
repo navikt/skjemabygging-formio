@@ -4,10 +4,10 @@ import '@navikt/ds-tokens';
 import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo } from 'react';
 import InnerHtml from '../../components/inner-html/InnerHtml';
+import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
 import makeStyles from '../../util/styles/jss/jss';
-import { useForm } from '../../context/form/FormContext';
 
 const useStyles = makeStyles({
   downloadLink: {
@@ -22,7 +22,7 @@ const useStyles = makeStyles({
 });
 
 export function ReceiptPage() {
-  const { setFormProgressVisible } = useForm();
+  const { setFormProgressVisible, setTitle } = useForm();
   const styles = useStyles();
   const { translate } = useLanguages();
   const { soknadPdfBlob, receipt } = useSendInn();
@@ -30,6 +30,16 @@ export function ReceiptPage() {
   useEffect(() => {
     setFormProgressVisible(false);
   }, [setFormProgressVisible]);
+
+  useEffect(() => {
+    if (!receipt?.label) {
+      return;
+    }
+
+    setTitle(receipt.label);
+
+    return () => setTitle(undefined);
+  }, [receipt?.label, setTitle]);
 
   const soknadPdfUrl = useMemo(() => {
     return soknadPdfBlob ? URL.createObjectURL(soknadPdfBlob) : undefined;
