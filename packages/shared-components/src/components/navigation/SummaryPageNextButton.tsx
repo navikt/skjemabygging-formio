@@ -15,6 +15,11 @@ type Props = {
   isValid?: (e: React.MouseEvent<HTMLElement>) => boolean;
 };
 
+/**
+ * TODO få DigitalSubmissionButton til å håndtere modal slik som SaveButton og CancelButton
+ * Den burde sikkert også renames siden den ikke bare er for DigitalSubmission lenger
+ */
+
 export function SummaryPageNextButton({
   form,
   submission,

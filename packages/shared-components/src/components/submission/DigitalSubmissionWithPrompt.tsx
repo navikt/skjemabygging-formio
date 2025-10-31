@@ -12,6 +12,7 @@ export interface Props {
   onError: (err: Error) => void;
 }
 
+// TODO flytt ut modal til DigitalSubmissionButton slik som SaveButton og CancelButton gjør det
 const DigitalSubmissionWithPrompt = ({ submission, isValid, onError }: Props) => {
   const { translate } = useLanguages();
   const [isOpen, setIsOpen] = useState(false);

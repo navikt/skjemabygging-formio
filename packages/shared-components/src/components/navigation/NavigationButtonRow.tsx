@@ -24,6 +24,8 @@ export function NavigationButtonRow({
   floatLeft?: boolean;
 }) {
   const styles = useStyles();
+  // TODO finn en god løsning på sentrering vs align left gjennom skjemaet
+  // TODO håndtere rekkefølge på tab navigasjon når høyre knapp er secondary på oppsummeringssiden
   return (
     <nav>
       <div

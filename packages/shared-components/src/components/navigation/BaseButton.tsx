@@ -10,7 +10,9 @@ type HrefProps = {
   hash?: string;
 };
 export type BaseButtonProps = {
-  onClick?: Partial<Record<SubmissionMethod | 'none' | 'default', (e?: unknown) => void | Promise<void>>>;
+  onClick?: Partial<
+    Record<SubmissionMethod | 'none' | 'default', (() => void) | ((e?: unknown) => void) | (() => Promise<void>)>
+  >;
   label: Partial<Record<SubmissionMethod | 'none' | 'default', string>>;
   href?: Partial<Record<SubmissionMethod | 'none' | 'default', HrefProps | string>>;
   icon?: ReactNode;

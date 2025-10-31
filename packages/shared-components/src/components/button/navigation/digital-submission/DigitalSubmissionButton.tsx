@@ -34,26 +34,23 @@ const DigitalSubmissionButton = ({
   const sendIPosten =
     (submissionTypesUtils.isPaperSubmission(submissionTypes) && (submissionMethod === 'paper' || app === 'bygger')) ||
     submissionTypesUtils.isPaperSubmissionOnly(submissionTypes);
+
   const sendInn = async (e) => {
-    if (!canSubmit) {
+    if (!canSubmit || !submission || !submission.data) {
       setSubmitError(translate(TEXTS.grensesnitt.navigation.summaryPageError));
       return;
     }
+
     if (isValid && !isValid(e)) {
       return;
     }
 
     if (canSubmit && sendIPosten) {
-      navigate({ pathname: `../send-i-posten` });
+      navigate({ pathname: `../send-i-posten` }); // TODO innsen-innsending trenger håndtering. Typ det samme her
     }
 
     if (app === 'bygger') {
       onError(new Error('Digital innsending er ikke støttet ved forhåndsvisning i byggeren.'));
-      return;
-    }
-
-    if (!submission || !submission.data) {
-      onError(new Error(translate(TEXTS.grensesnitt.emptySubmissionError)));
       return;
     }
 
@@ -73,14 +70,10 @@ const DigitalSubmissionButton = ({
       label={{
         digital: translate(TEXTS.grensesnitt.navigation.saveAndContinue),
         digitalnologin: translate(TEXTS.grensesnitt.navigation.sendToNav),
-        paper: translate(TEXTS.grensesnitt.navigation.instructions),
-        none: translate(TEXTS.grensesnitt.navigation.instructions),
+        default: translate(TEXTS.grensesnitt.navigation.instructions),
       }}
       onClick={{
-        digital: async (e) => sendInn(e),
-        paper: async (e) => sendInn(e),
-        digitalnologin: async (e) => sendInn(e),
-        none: async (e) => sendInn(e),
+        default: async (e) => sendInn(e),
       }}
       variant={canSubmit ? 'primary' : 'secondary'}
       hideIcon={submissionMethod === 'digitalnologin'}
