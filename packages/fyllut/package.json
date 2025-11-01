@@ -22,11 +22,11 @@
     "@navikt/ds-react": "^7.31.0",
     "@navikt/skjemadigitalisering-shared-components": "1.0.0",
     "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
-    "axe-core": "^4.10.3",
+    "axe-core": "^4.11.0",
     "classnames": "^2.5.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router": "^7.9.3"
+    "react-router": "^7.9.5"
   },
   "devDependencies": {
     "@mocks-server/cypress-commands": "^6.1.1",
