@@ -498,7 +498,7 @@ describe('Pdf', () => {
         cy.intercept('GET', 'fyllut/api/forms/stpaper*', (req) => {
           req.continue((res) => {
             if (res.body) {
-              expect(res.body.properties?.signatures[0]).to.be.undefined;
+              expect(res.body.properties?.signatures).to.be.undefined;
             }
           });
         }).as('getFormOldSignature');
