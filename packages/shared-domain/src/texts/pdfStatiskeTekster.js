@@ -4,5 +4,4 @@ export const pdfStatiske = {
   signatureName: 'Navn med blokkbokstaver',
   formCreated: 'Skjemaet ble opprettet',
   formVersion: 'Skjemaversjon',
-  selectedAnswer: 'Valgt svar',
 };
