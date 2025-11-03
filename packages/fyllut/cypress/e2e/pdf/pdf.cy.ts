@@ -449,8 +449,24 @@ describe('Pdf', () => {
   describe('Verify signatures', () => {
     describe('Default signature', () => {
       it('Check the default empty signature', () => {
+        cy.intercept('GET', 'fyllut/api/forms/stpaper*', (req) => {
+          req.continue((res) => {
+            if (res.body) {
+              expect(res.body.properties?.signatures[0]).to.be.not.undefined;
+              expect(res.body.properties?.signatures[0].key).equal('e037eeae-cf54-4ece-94df-b9bc963396f1');
+              expect(res.body.properties?.signatures[0].label).equal('');
+              expect(res.body.properties?.signatures[0].description).equal('');
+              expect(res.body.properties?.signatures[1]).to.be.undefined;
+            }
+          });
+        }).as('getFormDefaultSignature');
+
         cy.visit('/fyllut/stpaperdigital?sub=paper');
-        cy.defaultWaits();
+
+        cy.wait('@getConfig');
+        cy.wait('@getFormDefaultSignature');
+        cy.wait('@getTranslations');
+
         cy.clickShowAllSteps();
         cy.clickStart();
 
@@ -479,8 +495,20 @@ describe('Pdf', () => {
       });
 
       it('Check the old default signature (undefined)', () => {
+        cy.intercept('GET', 'fyllut/api/forms/stpaper*', (req) => {
+          req.continue((res) => {
+            if (res.body) {
+              expect(res.body.properties?.signatures[0]).to.be.undefined;
+            }
+          });
+        }).as('getFormOldSignature');
+
         cy.visit('/fyllut/stpaper?sub=paper');
-        cy.defaultWaits();
+
+        cy.wait('@getConfig');
+        cy.wait('@getFormOldSignature');
+        cy.wait('@getTranslations');
+
         cy.clickShowAllSteps();
         cy.clickStart();
 
