@@ -306,7 +306,7 @@ describe('SummaryPage', () => {
 
     const date = '20.10.2025';
 
-    cy.clickStart();
+    cy.clickNextStep();
     cy.findByRole('group', { name: /Do you have a Norwegian national identification number or d number?/ }).within(
       () => {
         cy.findByRole('radio', { name: 'Yes' }).check();
