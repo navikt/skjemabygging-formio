@@ -1,0 +1,759 @@
+{
+  "id": 287,
+  "revision": 13,
+  "skjemanummer": "TST 19-81.08",
+  "path": "nologinattachments",
+  "title": "Form with attachments",
+  "components": [
+    {
+      "id": "eev9t4",
+      "key": "veiledning",
+      "tree": false,
+      "type": "panel",
+      "input": false,
+      "label": "Panel",
+      "navId": "e4hwhos",
+      "theme": "default",
+      "title": "Veiledning",
+      "addons": [],
+      "hidden": false,
+      "prefix": "",
+      "suffix": "",
+      "unique": false,
+      "dbIndex": false,
+      "overlay": {
+        "top": "",
+        "left": "",
+        "style": "",
+        "width": "",
+        "height": ""
+      },
+      "tooltip": "",
+      "disabled": false,
+      "lazyLoad": false,
+      "multiple": false,
+      "redrawOn": "",
+      "tabindex": "",
+      "validate": {
+        "custom": "",
+        "unique": false,
+        "multiple": false,
+        "required": false,
+        "customPrivate": false,
+        "strictDateValidation": false
+      },
+      "autofocus": false,
+      "encrypted": false,
+      "hideLabel": false,
+      "modalEdit": false,
+      "protected": false,
+      "refreshOn": "",
+      "tableView": false,
+      "attributes": {},
+      "breadcrumb": "default",
+      "components": [
+        {
+          "id": "eidxi4mr",
+          "key": "veiledningstekst",
+          "tag": "div",
+          "type": "htmlelement",
+          "attrs": [],
+          "input": false,
+          "label": "Veiledningstekst",
+          "navId": "ejpiu3",
+          "addons": [],
+          "hidden": false,
+          "prefix": "",
+          "suffix": "",
+          "unique": false,
+          "content": "Her skal det stå en veiledningstekst for søknaden",
+          "dbIndex": false,
+          "overlay": {
+            "top": "",
+            "left": "",
+            "style": "",
+            "width": "",
+            "height": ""
+          },
+          "tooltip": "",
+          "disabled": false,
+          "multiple": false,
+          "redrawOn": "",
+          "tabindex": "",
+          "validate": {
+            "custom": "",
+            "unique": false,
+            "multiple": false,
+            "required": false,
+            "customPrivate": false,
+            "strictDateValidation": false
+          },
+          "autofocus": false,
+          "encrypted": false,
+          "fieldSize": "input--xxl",
+          "hideLabel": true,
+          "modalEdit": false,
+          "protected": false,
+          "refreshOn": "",
+          "tableView": false,
+          "attributes": {},
+          "errorLabel": "",
+          "persistent": false,
+          "properties": {},
+          "validateOn": "blur",
+          "clearOnHide": true,
+          "conditional": {
+            "eq": ""
+          },
+          "customClass": "",
+          "description": "",
+          "placeholder": "",
+          "dataGridLabel": false,
+          "labelPosition": "top",
+          "showCharCount": false,
+          "showWordCount": false,
+          "calculateValue": "",
+          "calculateServer": false,
+          "allowMultipleMasks": false,
+          "customDefaultValue": "",
+          "allowCalculateOverride": false
+        }
+      ],
+      "errorLabel": "",
+      "persistent": false,
+      "properties": {},
+      "validateOn": "change",
+      "clearOnHide": false,
+      "conditional": {
+        "eq": ""
+      },
+      "customClass": "",
+      "description": "",
+      "placeholder": "",
+      "dataGridLabel": false,
+      "labelPosition": "top",
+      "showCharCount": false,
+      "showWordCount": false,
+      "calculateValue": "",
+      "calculateServer": false,
+      "allowMultipleMasks": false,
+      "customDefaultValue": "",
+      "allowCalculateOverride": false
+    },
+    {
+      "id": "erhkjyn",
+      "key": "dinreise",
+      "tree": false,
+      "type": "panel",
+      "input": false,
+      "label": "Page 4",
+      "navId": "eohx66e",
+      "theme": "default",
+      "title": "Din reise",
+      "addons": [],
+      "hidden": false,
+      "prefix": "",
+      "suffix": "",
+      "unique": false,
+      "dbIndex": false,
+      "overlay": {
+        "top": "",
+        "left": "",
+        "style": "",
+        "width": "",
+        "height": ""
+      },
+      "tooltip": "",
+      "disabled": false,
+      "lazyLoad": false,
+      "multiple": false,
+      "redrawOn": "",
+      "tabindex": "",
+      "validate": {
+        "custom": "",
+        "unique": false,
+        "multiple": false,
+        "required": false,
+        "customPrivate": false,
+        "strictDateValidation": false
+      },
+      "autofocus": false,
+      "encrypted": false,
+      "hideLabel": false,
+      "modalEdit": false,
+      "protected": false,
+      "refreshOn": "",
+      "tableView": false,
+      "attributes": {},
+      "breadcrumb": "default",
+      "components": [
+        {
+          "id": "ee4iwl2",
+          "key": "erReiseavstandLengreEnn6KilometerEnVei",
+          "type": "radiopanel",
+          "input": true,
+          "label": "Er reiseavstand lengre enn 6 kilometer én vei?",
+          "navId": "e2812um",
+          "addons": [],
+          "errors": "",
+          "hidden": false,
+          "prefix": "",
+          "suffix": "",
+          "unique": false,
+          "values": [
+            {
+              "label": "Ja",
+              "value": "ja"
+            },
+            {
+              "label": "Nei",
+              "value": "nei"
+            }
+          ],
+          "dataSrc": "values",
+          "dbIndex": false,
+          "overlay": {
+            "top": "",
+            "left": "",
+            "style": "",
+            "width": "",
+            "height": ""
+          },
+          "tooltip": "",
+          "disabled": false,
+          "multiple": false,
+          "redrawOn": "",
+          "tabindex": "",
+          "validate": {
+            "custom": "",
+            "unique": false,
+            "multiple": false,
+            "required": true,
+            "customPrivate": false,
+            "strictDateValidation": false
+          },
+          "autofocus": false,
+          "encrypted": false,
+          "fieldSize": "input--xxl",
+          "hideLabel": false,
+          "modalEdit": false,
+          "protected": false,
+          "refreshOn": "",
+          "tableView": false,
+          "attributes": {},
+          "errorLabel": "",
+          "persistent": true,
+          "properties": {},
+          "validateOn": "blur",
+          "clearOnHide": true,
+          "conditional": {
+            "eq": ""
+          },
+          "customClass": "",
+          "description": "",
+          "placeholder": "",
+          "dataGridLabel": false,
+          "labelPosition": "top",
+          "showCharCount": false,
+          "showWordCount": false,
+          "calculateValue": "",
+          "calculateServer": false,
+          "customConditional": "",
+          "allowMultipleMasks": false,
+          "customDefaultValue": "",
+          "allowCalculateOverride": false,
+          "additionalDescriptionText": "",
+          "additionalDescriptionLabel": ""
+        },
+        {
+          "id": "e1ogc7p",
+          "key": "maDuHaTransportTilStedet",
+          "type": "radiopanel",
+          "input": true,
+          "label": "Må du ha transport til stedet?",
+          "navId": "e507shr",
+          "addons": [],
+          "errors": "",
+          "hidden": false,
+          "prefix": "",
+          "suffix": "",
+          "unique": false,
+          "values": [
+            {
+              "label": "Ja",
+              "value": "ja"
+            },
+            {
+              "label": "Nei",
+              "value": "nei"
+            }
+          ],
+          "dataSrc": "values",
+          "dbIndex": false,
+          "overlay": {
+            "top": "",
+            "left": "",
+            "style": "",
+            "width": "",
+            "height": ""
+          },
+          "tooltip": "",
+          "disabled": false,
+          "multiple": false,
+          "redrawOn": "",
+          "tabindex": "",
+          "validate": {
+            "custom": "",
+            "unique": false,
+            "multiple": false,
+            "required": true,
+            "customPrivate": false,
+            "strictDateValidation": false
+          },
+          "autofocus": false,
+          "encrypted": false,
+          "fieldSize": "input--xxl",
+          "hideLabel": false,
+          "modalEdit": false,
+          "protected": false,
+          "refreshOn": "",
+          "tableView": false,
+          "attributes": {},
+          "errorLabel": "",
+          "persistent": true,
+          "properties": {},
+          "validateOn": "blur",
+          "clearOnHide": true,
+          "conditional": {
+            "eq": ""
+          },
+          "customClass": "",
+          "description": "",
+          "placeholder": "",
+          "dataGridLabel": false,
+          "labelPosition": "top",
+          "showCharCount": false,
+          "showWordCount": false,
+          "calculateValue": "",
+          "calculateServer": false,
+          "customConditional": "",
+          "allowMultipleMasks": false,
+          "customDefaultValue": "",
+          "allowCalculateOverride": false,
+          "additionalDescriptionText": "",
+          "additionalDescriptionLabel": ""
+        }
+      ],
+      "errorLabel": "",
+      "persistent": false,
+      "properties": {},
+      "validateOn": "change",
+      "clearOnHide": false,
+      "conditional": {
+        "eq": ""
+      },
+      "customClass": "",
+      "description": "",
+      "placeholder": "",
+      "dataGridLabel": false,
+      "labelPosition": "top",
+      "showCharCount": false,
+      "showWordCount": false,
+      "calculateValue": "",
+      "calculateServer": false,
+      "customConditional": "",
+      "isAttachmentPanel": false,
+      "allowMultipleMasks": false,
+      "customDefaultValue": "",
+      "allowCalculateOverride": false
+    },
+    {
+      "id": "e4c8hp",
+      "key": "vedlegg",
+      "tree": false,
+      "type": "panel",
+      "input": false,
+      "label": "Panel",
+      "navId": "ejyx97",
+      "theme": "default",
+      "title": "Vedlegg",
+      "addons": [],
+      "hidden": false,
+      "prefix": "",
+      "suffix": "",
+      "unique": false,
+      "dbIndex": false,
+      "overlay": {
+        "top": "",
+        "left": "",
+        "style": "",
+        "width": "",
+        "height": ""
+      },
+      "tooltip": "",
+      "disabled": false,
+      "lazyLoad": false,
+      "multiple": false,
+      "redrawOn": "",
+      "tabindex": "",
+      "validate": {
+        "custom": "",
+        "unique": false,
+        "multiple": false,
+        "required": false,
+        "customPrivate": false,
+        "strictDateValidation": false
+      },
+      "autofocus": false,
+      "encrypted": false,
+      "hideLabel": false,
+      "modalEdit": false,
+      "protected": false,
+      "refreshOn": "",
+      "tableView": false,
+      "attributes": {},
+      "breadcrumb": "default",
+      "components": [
+        {
+          "id": "emz4dtf",
+          "key": "medisinskDokumentasjon",
+          "type": "attachment",
+          "input": true,
+          "label": "Medisinsk dokumentasjon",
+          "navId": "eokp8w",
+          "addons": [],
+          "hidden": false,
+          "prefix": "",
+          "suffix": "",
+          "unique": false,
+          "dataSrc": "values",
+          "dbIndex": false,
+          "overlay": {
+            "top": "",
+            "left": "",
+            "style": "",
+            "width": "",
+            "height": ""
+          },
+          "tooltip": "",
+          "disabled": false,
+          "multiple": false,
+          "redrawOn": "",
+          "tabindex": "",
+          "validate": {
+            "custom": "",
+            "unique": false,
+            "multiple": false,
+            "required": true,
+            "customPrivate": false,
+            "strictDateValidation": false
+          },
+          "autofocus": false,
+          "encrypted": false,
+          "fieldSize": "input--xxl",
+          "hideLabel": false,
+          "modalEdit": false,
+          "protected": false,
+          "refreshOn": "",
+          "tableView": false,
+          "attributes": {},
+          "errorLabel": "",
+          "persistent": true,
+          "properties": {
+            "vedleggskode": "M1",
+            "vedleggstittel": "Dokumenter diagnose"
+          },
+          "validateOn": "blur",
+          "clearOnHide": true,
+          "conditional": {
+            "eq": ""
+          },
+          "customClass": "",
+          "description": "",
+          "placeholder": "",
+          "dataGridLabel": false,
+          "labelPosition": "top",
+          "showCharCount": false,
+          "showWordCount": false,
+          "attachmentType": "default",
+          "calculateValue": "",
+          "calculateServer": false,
+          "attachmentValues": {
+            "nav": {
+              "enabled": false,
+              "additionalDocumentation": {}
+            },
+            "andre": {
+              "enabled": true,
+              "showDeadline": false,
+              "additionalDocumentation": {
+                "label": "Hvem sender inn dette?",
+                "enabled": true,
+                "description": ""
+              }
+            },
+            "harIkke": {
+              "enabled": false,
+              "additionalDocumentation": {}
+            },
+            "ettersender": {
+              "enabled": true,
+              "showDeadline": false,
+              "additionalDocumentation": {
+                "enabled": false
+              }
+            },
+            "leggerVedNaa": {
+              "enabled": true,
+              "additionalDocumentation": {
+                "enabled": false
+              }
+            },
+            "levertTidligere": {
+              "enabled": true,
+              "additionalDocumentation": {
+                "enabled": false
+              }
+            }
+          },
+          "customConditional": "",
+          "allowMultipleMasks": false,
+          "customDefaultValue": "",
+          "allowCalculateOverride": false,
+          "additionalDescriptionText": "",
+          "additionalDescriptionLabel": ""
+        },
+        {
+          "description": "",
+          "additionalDescriptionText": "",
+          "attachmentValues": {
+            "leggerVedNaa": {
+              "enabled": true,
+              "additionalDocumentation": {
+                "enabled": false
+              }
+            },
+            "ettersender": {
+              "enabled": true,
+              "showDeadline": false,
+              "additionalDocumentation": {
+                "enabled": false
+              }
+            },
+            "levertTidligere": {
+              "enabled": true,
+              "additionalDocumentation": {
+                "enabled": false
+              }
+            },
+            "harIkke": {
+              "enabled": false,
+              "additionalDocumentation": {}
+            },
+            "andre": {
+              "enabled": false,
+              "additionalDocumentation": {}
+            },
+            "nav": {
+              "enabled": false,
+              "additionalDocumentation": {}
+            }
+          },
+          "conditional": {
+            "show": true,
+            "when": "maDuHaTransportTilStedet",
+            "eq": "ja"
+          },
+          "customConditional": "",
+          "label": "Uttalelse fra helsepersonell",
+          "additionalDescriptionLabel": "",
+          "key": "uttalelseFraHelsepersonell",
+          "properties": {
+            "vedleggskode": "H1",
+            "vedleggstittel": "Sammendrag fra helsepersonell"
+          },
+          "type": "attachment",
+          "input": true,
+          "validate": {
+            "required": true,
+            "custom": "",
+            "customPrivate": false,
+            "strictDateValidation": false,
+            "multiple": false,
+            "unique": false
+          },
+          "tableView": false,
+          "attachmentType": "default",
+          "navId": "eus784",
+          "placeholder": "",
+          "prefix": "",
+          "customClass": "",
+          "suffix": "",
+          "multiple": false,
+          "protected": false,
+          "unique": false,
+          "persistent": true,
+          "hidden": false,
+          "clearOnHide": true,
+          "refreshOn": "",
+          "redrawOn": "",
+          "modalEdit": false,
+          "dataGridLabel": false,
+          "labelPosition": "top",
+          "errorLabel": "",
+          "tooltip": "",
+          "hideLabel": false,
+          "tabindex": "",
+          "disabled": false,
+          "autofocus": false,
+          "dbIndex": false,
+          "customDefaultValue": "",
+          "calculateValue": "",
+          "calculateServer": false,
+          "attributes": {},
+          "validateOn": "blur",
+          "overlay": {
+            "style": "",
+            "left": "",
+            "top": "",
+            "width": "",
+            "height": ""
+          },
+          "allowCalculateOverride": false,
+          "encrypted": false,
+          "showCharCount": false,
+          "showWordCount": false,
+          "allowMultipleMasks": false,
+          "addons": [],
+          "fieldSize": "input--xxl",
+          "dataSrc": "values",
+          "id": "ee1l31"
+        },
+        {
+          "id": "edbmmbf",
+          "key": "annenDokumentasjon",
+          "type": "attachment",
+          "input": true,
+          "label": "Annen dokumentasjon",
+          "navId": "ehgj4rm",
+          "addons": [],
+          "hidden": false,
+          "prefix": "",
+          "suffix": "",
+          "unique": false,
+          "dataSrc": "values",
+          "dbIndex": false,
+          "overlay": {
+            "top": "",
+            "left": "",
+            "style": "",
+            "width": "",
+            "height": ""
+          },
+          "tooltip": "",
+          "disabled": false,
+          "multiple": false,
+          "redrawOn": "",
+          "tabindex": "",
+          "validate": {
+            "custom": "",
+            "unique": false,
+            "multiple": false,
+            "required": true,
+            "customPrivate": false,
+            "strictDateValidation": false
+          },
+          "autofocus": false,
+          "encrypted": false,
+          "fieldSize": "input--xxl",
+          "hideLabel": false,
+          "modalEdit": false,
+          "protected": false,
+          "refreshOn": "",
+          "tableView": false,
+          "attributes": {},
+          "errorLabel": "",
+          "persistent": true,
+          "properties": {
+            "vedleggskode": "N6",
+            "vedleggstittel": "Annet"
+          },
+          "validateOn": "blur",
+          "clearOnHide": true,
+          "conditional": {
+            "eq": ""
+          },
+          "customClass": "",
+          "description": "Har du noen annen dokumentasjon du ønsker å legge ved?",
+          "placeholder": "",
+          "dataGridLabel": false,
+          "labelPosition": "top",
+          "showCharCount": false,
+          "showWordCount": false,
+          "attachmentType": "other",
+          "calculateValue": "",
+          "calculateServer": false,
+          "attachmentValues": {
+            "nei": {
+              "enabled": true
+            },
+            "leggerVedNaa": {
+              "enabled": true
+            }
+          },
+          "allowMultipleMasks": false,
+          "customDefaultValue": "",
+          "allowCalculateOverride": false
+        }
+      ],
+      "errorLabel": "",
+      "persistent": false,
+      "properties": {},
+      "validateOn": "change",
+      "clearOnHide": false,
+      "conditional": {
+        "eq": ""
+      },
+      "customClass": "",
+      "description": "",
+      "placeholder": "",
+      "dataGridLabel": false,
+      "labelPosition": "top",
+      "showCharCount": false,
+      "showWordCount": false,
+      "calculateValue": "",
+      "calculateServer": false,
+      "isAttachmentPanel": true,
+      "allowMultipleMasks": false,
+      "customDefaultValue": "",
+      "allowCalculateOverride": false
+    }
+  ],
+  "properties": {
+    "tema": "TSO",
+    "signatures": [
+      {
+        "key": "7eb1208a-4742-4024-a744-59edc9f16be4",
+        "label": "",
+        "description": ""
+      }
+    ],
+    "skjemanummer": "AKG 12-34.57",
+    "submissionTypes": [
+      "PAPER",
+      "DIGITAL",
+      "DIGITAL_NO_LOGIN"
+    ],
+    "ettersendelsesfrist": "14",
+    "mellomlagringDurationDays": "28",
+    "subsequentSubmissionTypes": [
+      "PAPER",
+      "DIGITAL"
+    ]
+  },
+  "createdAt": "2025-10-29T15:37:44.993+01",
+  "createdBy": "Test Tester",
+  "changedAt": "2025-10-30T12:33:21.572+01",
+  "changedBy": "Test Tester",
+  "status": "draft"
+}

@@ -1,0 +1,52 @@
+{
+  "label": "Components",
+  "verdiliste": [
+    {
+      "label": "Dine opplysninger",
+      "verdiliste": [
+        {
+          "label": "Fødselsnummer eller d-nummer",
+          "verdi": "20905995783"
+        }
+      ]
+    },
+    {
+      "label": "Standard felter",
+      "verdiliste": [
+        {
+          "label": "<p>Alert suksess</p>",
+          "visningsVariant": "HTML"
+        },
+        {
+          "label": "<p>Alert error</p>",
+          "visningsVariant": "HTML"
+        },
+        {
+          "label": "<p>HTML Blokk</p>",
+          "visningsVariant": "HTML"
+        }
+      ]
+    },
+    {
+      "label": "Underskrift",
+      "verdiliste": [
+        {
+          "label": "Legitimasjon",
+          "verdi": "Norsk pass"
+        }
+      ]
+    }
+  ],
+  "skjemanummer": "components",
+  "pdfConfig": {
+    "harInnholdsfortegnelse": false,
+    "språk": "nb"
+  },
+  "bunntekst": {
+    "upperleft": "F.nr: 20905995783",
+    "lowerleft": "Skjemanummer: components",
+    "upperRight": null,
+    "upperMiddle": null,
+    "lowerMiddle": "Versjon: local"
+  }
+}
