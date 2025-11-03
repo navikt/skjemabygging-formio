@@ -69,7 +69,7 @@ describe('Translations', () => {
       cy.clickNextStep();
 
       cy.findByRole('button', { name: 'English' }).should('exist');
-      cy.findByRole('heading', { name: 'Attachment' }).should('exist');
+      cy.findByRole('heading', { name: 'Attachments' }).should('exist');
       cy.get('.navds-radio-group')
         .first()
         .should('exist')
@@ -90,7 +90,7 @@ describe('Translations', () => {
       cy.findByRole('link', { name: 'English' }).click();
       cy.findByRole('heading', { name: 'Your information' }).should('exist');
 
-      cy.findByRole('link', { name: 'Attachment' }).click();
+      cy.findByRole('link', { name: 'Attachments' }).click();
       cy.findByRole('button', { name: 'English' }).click();
       cy.findByRole('link', { name: 'Norsk bokmål' }).click();
       cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');

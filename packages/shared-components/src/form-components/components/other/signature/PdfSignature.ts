@@ -17,7 +17,7 @@ const PdfSignature = ({ properties, languagesContextValue, submissionMethod }: P
   const { signatures, descriptionOfSignatures } = properties;
   const { translate } = languagesContextValue;
 
-  if (submissionMethod === 'digital' || !signatures) {
+  if (submissionMethod === 'digital') {
     return null;
   }
 
@@ -29,11 +29,7 @@ const PdfSignature = ({ properties, languagesContextValue, submissionMethod }: P
 
   const signatureList = signatureUtils.mapBackwardCompatibleSignatures(signatures);
 
-  if (signatureList.length === 0) {
-    return null;
-  }
-
-  const getSignatureField = (description) => {
+  const getSignatureField = (description: string) => {
     return [
       { label: translate(description), verdi: ' ' },
       { label: translate(TEXTS.pdfStatiske.placeAndDate), verdi: ' ' },
@@ -58,7 +54,7 @@ const PdfSignature = ({ properties, languagesContextValue, submissionMethod }: P
       },
       ...signatureList.map((signatureObject) => {
         return {
-          label: signatureObject.label,
+          label: translate(signatureObject.label),
           verdiliste: getSignatureField(signatureObject.description),
         };
       }),

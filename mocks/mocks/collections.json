@@ -4,6 +4,7 @@
     "routes": [
       "get-form:success",
       "get-translations:success",
+      "get-global-translations:success",
       "post-azure-openid-token:success",
       "get-kodeverk-currencies:success",
       "get-kodeverk-temakoder:success",
