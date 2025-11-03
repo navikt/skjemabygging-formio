@@ -32,21 +32,12 @@ export function ReceiptPage() {
   }, [setFormProgressVisible]);
 
   useEffect(() => {
-    if (!receipt?.label) {
-      return;
-    }
-
-    setTitle(receipt.label);
-
-    return () => setTitle(undefined);
-  }, [receipt?.label, setTitle]);
+    setTitle(translate(TEXTS.statiske.receipt.title));
+  }, [translate, setTitle]);
 
   const soknadPdfUrl = useMemo(() => {
     return soknadPdfBlob ? URL.createObjectURL(soknadPdfBlob) : undefined;
   }, [soknadPdfBlob]);
-
-  console.log(soknadPdfUrl);
-  console.log(receipt);
 
   let submitWasCompleteSuccess = true;
   if (receipt?.skalEttersendes.length) {

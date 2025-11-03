@@ -131,6 +131,7 @@ export const statiske = {
       'Nedenfor ser du all informasjon du allerede har fylt inn i skjemaet. Steg som mangler informasjon er markert med',
   },
   receipt: {
+    title: 'Kvittering',
     alertSuccessHeading: 'Takk',
     alertSuccessBody:
       'Vi har mottatt det vi trenger for å starte saksbehandlingen. Vi tar kontakt hvis vi trenger flere opplysninger.',
