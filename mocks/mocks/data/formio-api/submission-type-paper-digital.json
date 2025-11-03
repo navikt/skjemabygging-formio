@@ -67,6 +67,13 @@
     "publishedLanguages": [
       "nb",
       "en"
+    ],
+    "signatures": [
+      {
+        "key": "e037eeae-cf54-4ece-94df-b9bc963396f1",
+        "label": "",
+        "description": ""
+      }
     ]
   },
   "publishedLanguages": [

@@ -26,7 +26,6 @@ const translationsCypress101 = require('../data/formio-api/cypress101-translatio
 const translationsConditionalXmas = require('../data/formio-api/conditionalxmas-translation.json');
 const translationsCustomComps = require('../data/formio-api/custom-components-translations.json');
 const translationsSubmissionMethod = require('../data/formio-api/submission-method-translations.json');
-const globalTranslations = require('../data/formio-api/global-translation.json');
 const formCustomCompsAlert = require('../data/formio-api/custom-components-alert.json');
 const formActivities = require('../data/formio-api/activities.json');
 const formDatagridConditional = require('../data/formio-api/datagrid-conditional.json');
@@ -199,9 +198,9 @@ module.exports = [
             const formPath = req.query['data.form'];
             const dataName = req.query['data.name'];
             if (dataName === 'global') {
-              res.status(200);
-              res.contentType('application/json; charset=UTF-8');
-              res.send(globalTranslations);
+              // Moved to forms-api mock
+              res.status(404);
+              res.send();
             } else if (formPath) {
               const testdata = findTestdata(formPath);
               if (testdata?.translations) {

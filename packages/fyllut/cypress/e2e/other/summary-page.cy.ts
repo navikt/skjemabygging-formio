@@ -299,7 +299,7 @@ describe('SummaryPage', () => {
       });
   });
 
-  it.only('All values (en)', () => {
+  it('All values (en)', () => {
     cy.visit('/fyllut/components?sub=paper&lang=en');
     cy.defaultWaits();
     cy.clickShowAllSteps();
@@ -307,10 +307,12 @@ describe('SummaryPage', () => {
     const date = '20.10.2025';
 
     cy.clickStart();
-    cy.findByRole('group', { name: /Do you have norwegian national identification number or D number?/ }).within(() => {
-      cy.findByRole('radio', { name: 'Yes' }).check();
-    });
-    cy.findByRole('textbox', { name: /National identification number or D number/ }).type('20905995783');
+    cy.findByRole('group', { name: /Do you have a Norwegian national identification number or d number?/ }).within(
+      () => {
+        cy.findByRole('radio', { name: 'Yes' }).check();
+      },
+    );
+    cy.findByRole('textbox', { name: /Norwegian national identification number or D number/ }).type('20905995783');
     cy.clickNextStep();
 
     cy.findByRole('heading', { name: 'Standard fields' }).shouldBeVisible();
@@ -338,7 +340,7 @@ describe('SummaryPage', () => {
 
     cy.findByRole('link', { name: 'Person' }).click();
     cy.findByRole('heading', { name: 'Person' }).shouldBeVisible();
-    cy.findByRole('textbox', { name: /National identification number or D number/ }).type('20905995783');
+    cy.findByRole('textbox', { name: /Norwegian national identification number or D number/ }).type('20905995783');
     cy.findByRole('textbox', { name: /First name/ }).type('Ola');
     cy.findByRole('textbox', { name: /Last name/ }).type('Nordmann');
     cy.findByRole('textbox', { name: /C\/O/ }).type('Other person');
@@ -359,8 +361,8 @@ describe('SummaryPage', () => {
       .type('0662');
     cy.findAllByRole('textbox', { name: /City/ }).eq(1).type('Oslo2');
     cy.findByRole('combobox', { name: /Select country/ }).type('Norw{downArrow}{enter}');
-    cy.findByRole('textbox', { name: /Email/ }).type('test@nav.no');
-    cy.findByRole('textbox', { name: /Phone number/ }).type('21070000');
+    cy.findByRole('textbox', { name: /E-mail/ }).type('test@nav.no');
+    cy.findByRole('textbox', { name: /Telephone number/ }).type('21070000');
     cy.findByRole('textbox', { name: /Citizenship/ }).type('Norwegian');
 
     cy.findByRole('link', { name: 'Money and account' }).click();
@@ -382,7 +384,7 @@ describe('SummaryPage', () => {
 
     cy.findByRole('link', { name: 'Company / organization' }).click();
     cy.findByRole('heading', { name: 'Company / organization' }).shouldBeVisible();
-    cy.findByRole('textbox', { name: /Organization number/ }).type('889640782');
+    cy.findByRole('textbox', { name: /Organisation number / }).type('889640782');
     cy.findByRole('textbox', { name: /Employer/ }).type('Nav');
 
     cy.findByRole('link', { name: 'Date and time' }).click();
@@ -417,7 +419,7 @@ describe('SummaryPage', () => {
     cy.findByRole('link', { name: 'Attachments' }).click();
     cy.findByRole('heading', { name: 'Attachments' }).shouldBeVisible();
     cy.findByRole('group', { name: /Attachments/ }).within(() => {
-      cy.findByRole('radio', { name: 'I will send the documentation later' }).check();
+      cy.findByRole('radio', { name: 'I will forward the documentation later' }).check();
     });
     cy.findByRole('group', { name: /Other documentation/ }).within(() => {
       cy.findByRole('radio', { name: 'No, I have no additional documentation to attach' }).check();
@@ -426,11 +428,11 @@ describe('SummaryPage', () => {
     cy.findByRole('link', { name: 'Summary' }).click();
     cy.findByRole('heading', { name: 'Summary' }).shouldBeVisible();
 
-    cy.findByRole('heading', { level: 2, name: 'Your information' })
+    cy.findByRole('heading', { level: 2, name: 'Your personal information' })
       .parent()
       .parent()
       .within(() => {
-        cy.contains('National identification number or D number').should('exist');
+        cy.contains('Norwegian national identification number or D number').should('exist');
         cy.contains('209059 95783').should('exist');
       });
 
@@ -468,7 +470,7 @@ describe('SummaryPage', () => {
       .parent()
       .parent()
       .within(() => {
-        cy.get('dt').eq(0).should('contain.text', 'National identification number or D number');
+        cy.get('dt').eq(0).should('contain.text', 'Norwegian national identification number or D number');
         cy.get('dd').eq(0).should('contain.text', '209059 95783');
         cy.get('dt').eq(1).should('contain.text', 'First name');
         cy.get('dd').eq(1).should('contain.text', 'Ola');
@@ -488,9 +490,9 @@ describe('SummaryPage', () => {
         cy.get('dd').eq(8).should('contain.text', 'Oslo2');
         cy.get('dt').eq(9).should('contain.text', 'Select country');
         cy.get('dd').eq(9).should('contain.text', 'Norway');
-        cy.get('dt').eq(10).should('contain.text', 'Email');
+        cy.get('dt').eq(10).should('contain.text', 'E-mail');
         cy.get('dd').eq(10).should('contain.text', 'test@nav.no');
-        cy.get('dt').eq(11).should('contain.text', 'Phone number');
+        cy.get('dt').eq(11).should('contain.text', 'Telephone number');
         cy.get('dd').eq(11).should('contain.text', '+47 21 07 00 00');
         cy.get('dt').eq(12).should('contain.text', 'Citizenship');
         cy.get('dd').eq(12).should('contain.text', 'Norwegian');
@@ -518,7 +520,7 @@ describe('SummaryPage', () => {
       .parent()
       .parent()
       .within(() => {
-        cy.get('dt').eq(0).should('contain.text', 'Organization number');
+        cy.get('dt').eq(0).should('contain.text', 'Organisation number');
         cy.get('dd').eq(0).should('contain.text', '889 640 782');
         cy.get('dt').eq(1).should('contain.text', 'Employer');
         cy.get('dd').eq(1).should('contain.text', 'Nav');
@@ -584,7 +586,7 @@ describe('SummaryPage', () => {
       .parent()
       .within(() => {
         cy.get('dt').eq(0).should('contain.text', 'Attachments');
-        cy.get('dd').eq(0).should('contain.text', 'I will send the documentation later');
+        cy.get('dd').eq(0).should('contain.text', 'I will forward the documentation later');
         cy.get('dt').eq(1).should('contain.text', 'Other documentation');
         cy.get('dd').eq(1).should('contain.text', 'No, I have no additional documentation to attach');
       });
