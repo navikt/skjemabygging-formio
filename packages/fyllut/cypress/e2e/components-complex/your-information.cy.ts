@@ -524,7 +524,7 @@ describe('Your information', () => {
           .should('exist')
           .within(() => {
             cy.findByRole('link', {
-              name: 'You must fill in: Norwegian national identification number or d number',
+              name: 'You must fill in: Norwegian national identification number or D number',
             }).should('exist');
           });
       });
