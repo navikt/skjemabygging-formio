@@ -39,16 +39,16 @@ export function ReceiptPage() {
     return soknadPdfBlob ? URL.createObjectURL(soknadPdfBlob) : undefined;
   }, [soknadPdfBlob]);
 
-  let submitWasCompleteSuccess = true;
-  if (receipt?.skalEttersendes.length) {
-    submitWasCompleteSuccess = false;
-  }
+  const skalEttersendes = receipt?.skalEttersendes ?? [];
+  const skalSendesAvAndre = receipt?.skalSendesAvAndre ?? [];
+
+  const allRequiredDocumentsSubmitted = skalEttersendes.length === 0 && skalSendesAvAndre.length === 0;
 
   return (
     <VStack gap="space-32">
       {receipt && (
         <>
-          {submitWasCompleteSuccess && (
+          {allRequiredDocumentsSubmitted && (
             <Alert size="small" variant="success">
               <Heading level="2" spacing size="xsmall">
                 {translate(TEXTS.statiske.receipt.alertSuccessHeading)}
@@ -143,7 +143,7 @@ export function ReceiptPage() {
             </section>
           )}
 
-          {!submitWasCompleteSuccess && (
+          {!allRequiredDocumentsSubmitted && (
             <Alert size="small" variant="warning">
               <Heading level="2" spacing size="xsmall">
                 <b>
