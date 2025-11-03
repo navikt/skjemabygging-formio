@@ -85,7 +85,7 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
 
     expect(next).toHaveBeenCalledTimes(1);
     const error: any = next.mock.calls[0][0];
-    expect(error.functional).toBe(true);
+    expect(error.functional).toBe(false);
     expect(error.message).toBe('Could not create pdf');
     expect(res.sendStatus).not.toHaveBeenCalled();
     expect(res.header).not.toHaveBeenCalled();
