@@ -31,7 +31,7 @@ const downloadPdf = (submissionType: 'digital' | 'paper' = 'paper') => {
     cy.findByRole('button', { name: TEXTS.grensesnitt.submitToNavPrompt.open }).click();
     cy.findByRole('button', { name: TEXTS.grensesnitt.submitToNavPrompt.confirm }).click();
   } else {
-    cy.findByRole('link', { name: /Gå videre|Proceed/ }).click();
+    cy.findByRole('link', { name: /Neste steg|Next step/ }).click();
     cy.findByRole('button', { name: /Last ned skjema|Download form/ }).click();
   }
   cy.wait('@downloadPdf');
@@ -115,7 +115,7 @@ describe('Pdf', () => {
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: 'Oppsummering' }).shouldBeVisible();
-      cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.next }).click();
+      cy.clickNextStep();
 
       cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
         const { submission, pdfFormData } = req.body;
@@ -586,9 +586,10 @@ describe('Pdf', () => {
         cy.defaultWaits();
         cy.clickShowAllSteps();
 
-        cy.clickStart();
+        cy.clickNextStep();
         cy.findByRole('group', { name: /Do you have a Norwegian national identification number or d number?/ }).within(
           () => {
+            cy.findByRole('radio', { name: 'Yes' }).check();
             cy.findByRole('radio', { name: 'Yes' }).check();
           },
         );
