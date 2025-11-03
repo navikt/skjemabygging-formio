@@ -1,3 +1,6 @@
+const tc01 = require('../data/test-cases/tc01-nologin-pdf-body.json');
+const { compareBodyMiddleware } = require('../utils/testCaseUtils');
+
 module.exports = [
   {
     id: 'post-familie-pdf',
@@ -12,6 +15,17 @@ module.exports = [
           body: {
             content: 'pdf',
           },
+        },
+      },
+      {
+        id: 'success-tc01',
+        type: 'middleware',
+        options: {
+          middleware: compareBodyMiddleware(tc01, ['bunntekst.upperMiddle'], (res) => {
+            res.status(200);
+            res.contentType('application/json; charset=UTF-8');
+            res.send({ content: 'pdf' });
+          }),
         },
       },
       {

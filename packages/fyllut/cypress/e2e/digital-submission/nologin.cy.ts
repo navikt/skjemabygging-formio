@@ -333,6 +333,8 @@ describe('Digital submission without user login', () => {
 
     describe('includes personal id', () => {
       it('when norwegian passport', () => {
+        cy.mocksUseRouteVariant('post-familie-pdf:success-tc01');
+
         cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
           cy.findByLabelText('Norsk pass').check(),
         );

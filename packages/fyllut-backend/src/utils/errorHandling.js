@@ -18,16 +18,6 @@ async function responseToError(response, errorMessage, functional = false) {
   return error;
 }
 
-function synchronousResponseToError(errorMessage, body, status, url, functional = false) {
-  const error = new Error(errorMessage);
-  error.functional = functional;
-  error.http_response_body = body;
-  error.http_url = url;
-  error.http_status = status;
-  error.correlation_id = correlator.getId();
-  return error;
-}
-
 function htmlResponseError(message) {
   const error = new Error(message);
   error.functional = false;
@@ -50,4 +40,4 @@ const toJsonOrThrowError =
     throw await responseToError(response, errorMessage, functional);
   };
 
-export { htmlResponseError, responseToError, synchronousResponseToError, toJsonOrThrowError };
+export { htmlResponseError, responseToError, toJsonOrThrowError };
