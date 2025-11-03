@@ -57,7 +57,11 @@
       "Målgruppe": "Target group",
       "Aktivitetsvelger": "Activity selector",
       "Norsk krone (NOK)": "Norwegian krone (NOK)",
-      "Svensk krone (SEK)": "Swedish krona (SEK)"
+      "Svensk krone (SEK)": "Swedish krona (SEK)",
+      "Viktig1": "Important1",
+      "Viktig2": "Important2",
+      "Eier": "Owner",
+      "Deleier": "Co-owner"
     }
   }
 }
