@@ -70,7 +70,8 @@ describe('Digital submission without user login', () => {
       cy.clickNextStep();
 
       cy.findByRole('button', { name: 'Send til Nav' }).click();
-      cy.findByText('Takk for at du sendte inn skjemaet.').should('exist');
+      cy.contains(TEXTS.statiske.receipt.mustSendLaterHeading).should('exist');
+      cy.findByRole('link', { name: TEXTS.statiske.receipt.downloadLinkLabel }).should('exist');
       cy.findByRole('button', { name: 'Vis alle steg' }).should('not.exist');
       cy.findByRole('button', { name: 'Skjul alle steg' }).should('not.exist');
     });
@@ -91,7 +92,7 @@ describe('Digital submission without user login', () => {
       cy.clickNextStep();
 
       cy.findByRole('button', { name: 'Send til Nav' }).click();
-      cy.findByText('Takk for at du sendte inn skjemaet.').should('exist');
+      cy.contains(TEXTS.statiske.receipt.mustSendLaterHeading).should('exist');
 
       cy.go('back');
       cy.findByText(TEXTS.statiske.error.alreadySubmitted).should('exist');
