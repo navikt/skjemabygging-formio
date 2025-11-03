@@ -325,7 +325,7 @@ describe('Digital submission without user login', () => {
     });
   });
 
-  describe.only('Attachment in PDF', () => {
+  describe('Attachment in PDF', () => {
     beforeEach(() => {
       cy.visit('/fyllut/nologinform/legitimasjon?sub=digitalnologin');
       cy.defaultWaits();
