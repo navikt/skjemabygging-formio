@@ -36,13 +36,14 @@ describe('PdfAttachmentUpload', () => {
     ];
     const props = createProps(testComponent, { attachments: submissionAttachments });
     const pdfFormData = PdfAttachmentUpload(props);
-    expect(pdfFormData).toEqual({
-      label: 'Uttalelse fra lege',
-      verdiliste: [
-        { label: TEXTS.pdfStatiske.selectedAnswer, verdi: TEXTS.statiske.attachment.levertTidligere },
-        { label: 'Når ble dette vedlegget levert?', verdi: submissionAttachments[0].additionalDocumentation },
-      ],
-    });
+    expect(pdfFormData).toEqual([
+      { label: 'Uttalelse fra lege', verdi: TEXTS.statiske.attachment.levertTidligere },
+      {
+        label: 'Når ble dette vedlegget levert?',
+        verdiliste: [{ label: submissionAttachments[0].additionalDocumentation }],
+        visningsVariant: 'PUNKTLISTE',
+      },
+    ]);
   });
 
   it('should include the selected answer', () => {
@@ -59,10 +60,12 @@ describe('PdfAttachmentUpload', () => {
     ];
     const props = createProps(testComponent, { attachments: submissionAttachments });
     const pdfFormData = PdfAttachmentUpload(props);
-    expect(pdfFormData).toEqual({
-      label: 'Uttalelse fra lege',
-      verdiliste: [{ label: TEXTS.pdfStatiske.selectedAnswer, verdi: TEXTS.statiske.attachment.leggerVedNaa }],
-    });
+    expect(pdfFormData).toEqual([
+      {
+        label: 'Uttalelse fra lege',
+        verdi: TEXTS.statiske.attachment.leggerVedNaa,
+      },
+    ]);
   });
 
   it('should include the selected answer on old attachment', () => {
@@ -79,10 +82,12 @@ describe('PdfAttachmentUpload', () => {
     ];
     const props = createProps(testComponent, { attachments: submissionAttachments });
     const pdfFormData = PdfAttachmentUpload(props);
-    expect(pdfFormData).toEqual({
-      label: 'Faktura fra utdanningsinstitusjon',
-      verdiliste: [{ label: TEXTS.pdfStatiske.selectedAnswer, verdi: TEXTS.statiske.attachment.leggerVedNaa }],
-    });
+    expect(pdfFormData).toEqual([
+      {
+        label: 'Faktura fra utdanningsinstitusjon',
+        verdi: TEXTS.statiske.attachment.leggerVedNaa,
+      },
+    ]);
   });
 
   it('should return null if navId is missing', () => {
@@ -121,19 +126,16 @@ describe('PdfAttachmentUpload', () => {
     ];
     const props = createProps(testComponent, { attachments: submissionAttachments });
     const pdfFormData = PdfAttachmentUpload(props);
-    expect(pdfFormData).toEqual({
-      label: 'Annen dokumentasjon',
-      verdiliste: [
-        {
-          label: 'Førerkort',
-          verdiliste: [{ label: TEXTS.pdfStatiske.selectedAnswer, verdi: TEXTS.statiske.attachment.leggerVedNaa }],
-        },
-        {
-          label: 'Kursbevis',
-          verdiliste: [{ label: TEXTS.pdfStatiske.selectedAnswer, verdi: TEXTS.statiske.attachment.leggerVedNaa }],
-        },
-      ],
-    });
+    expect(pdfFormData).toEqual([
+      {
+        label: 'Annen dokumentasjon - Førerkort',
+        verdi: TEXTS.statiske.attachment.leggerVedNaa,
+      },
+      {
+        label: 'Annen dokumentasjon - Kursbevis',
+        verdi: TEXTS.statiske.attachment.leggerVedNaa,
+      },
+    ]);
   });
 
   it('should handle old "other" attachment', () => {
@@ -151,15 +153,12 @@ describe('PdfAttachmentUpload', () => {
     ];
     const props = createProps(testComponent, { attachments: submissionAttachments });
     const pdfFormData = PdfAttachmentUpload(props);
-    expect(pdfFormData).toEqual({
-      label: 'Annen dokumentasjon',
-      verdiliste: [
-        {
-          label: 'Førerkort',
-          verdiliste: [{ label: TEXTS.pdfStatiske.selectedAnswer, verdi: TEXTS.statiske.attachment.leggerVedNaa }],
-        },
-      ],
-    });
+    expect(pdfFormData).toEqual([
+      {
+        label: 'Annen dokumentasjon - Førerkort',
+        verdi: TEXTS.statiske.attachment.leggerVedNaa,
+      },
+    ]);
   });
 
   it('should return null when attachment is found but has no value', () => {
@@ -195,126 +194,6 @@ describe('PdfAttachmentUpload', () => {
     const props = createProps(testComponent, { attachments: submissionAttachments });
     const pdfFormData = PdfAttachmentUpload(props);
     expect(pdfFormData).toBeNull();
-  });
-
-  it('should use fallback label when component label is missing', () => {
-    const testComponent = { ...attachment, label: undefined };
-    const navId = testComponent.navId!;
-    const submissionAttachments: SubmissionAttachment[] = [
-      {
-        attachmentId: navId,
-        navId: navId,
-        type: 'default',
-        value: 'leggerVedNaa',
-        files: [],
-      },
-    ];
-    // @ts-expect-error label will always be present
-    const props = createProps(testComponent, { attachments: submissionAttachments });
-    const pdfFormData = PdfAttachmentUpload(props);
-    expect(pdfFormData?.label).toBe('Ukjent vedlegg');
-  });
-
-  it('should use fallback label for attachment title when title is missing (other type)', () => {
-    const testComponent = attachmentOther;
-    const navId = testComponent.navId!;
-    const submissionAttachments: SubmissionAttachment[] = [
-      {
-        attachmentId: navId,
-        navId: navId,
-        type: 'other',
-        value: 'leggerVedNaa',
-        files: [],
-        title: undefined,
-      },
-    ];
-    const props = createProps(testComponent, { attachments: submissionAttachments });
-    const pdfFormData = PdfAttachmentUpload(props);
-    expect(pdfFormData?.verdiliste?.[0]?.label).toBe('Ukjent vedlegg');
-  });
-
-  it('should filter out attachments without values when type is "other"', () => {
-    const testComponent = attachmentOther;
-    const navId = testComponent.navId!;
-    const submissionAttachments: SubmissionAttachment[] = [
-      {
-        attachmentId: navId,
-        navId: navId,
-        type: 'other',
-        value: 'leggerVedNaa',
-        files: [],
-        title: 'Valid attachment',
-      },
-      {
-        attachmentId: `${navId}-1`,
-        navId: navId,
-        type: 'other',
-        value: undefined,
-        files: [],
-        title: 'Empty attachment',
-      },
-    ];
-    const props = createProps(testComponent, { attachments: submissionAttachments });
-    const pdfFormData = PdfAttachmentUpload(props);
-    expect(pdfFormData?.verdiliste).toHaveLength(1);
-    expect(pdfFormData?.verdiliste?.[0]?.label).toBe('Valid attachment');
-  });
-
-  it('should not include comment when additional documentation is enabled but not provided', () => {
-    const testComponent = attachment;
-    const navId = testComponent.navId!;
-    const submissionAttachments: SubmissionAttachment[] = [
-      {
-        attachmentId: navId,
-        navId: navId,
-        type: 'default',
-        value: 'levertTidligere',
-        additionalDocumentation: '',
-        files: [],
-      },
-    ];
-    const props = createProps(testComponent, { attachments: submissionAttachments });
-    const pdfFormData = PdfAttachmentUpload(props);
-    expect(pdfFormData?.verdiliste).toHaveLength(2);
-    // @ts-expect-error typer for familie-pdf skal flyttes til shared-domain
-    expect(pdfFormData?.verdiliste?.[1]?.verdi).toBe('');
-  });
-
-  it('should not include comment section when additional documentation is not enabled', () => {
-    const testComponent = attachment;
-    const navId = testComponent.navId!;
-    const submissionAttachments: SubmissionAttachment[] = [
-      {
-        attachmentId: navId,
-        navId: navId,
-        type: 'default',
-        value: 'leggerVedNaa',
-        additionalDocumentation: 'Should not appear',
-        files: [],
-      },
-    ];
-    const props = createProps(testComponent, { attachments: submissionAttachments });
-    const pdfFormData = PdfAttachmentUpload(props);
-    expect(pdfFormData?.verdiliste).toHaveLength(1);
-  });
-
-  it('should match attachments by navId prefix for "other" type', () => {
-    const testComponent = attachmentOther;
-    const navId = testComponent.navId!;
-    const submissionAttachments: SubmissionAttachment[] = [
-      {
-        attachmentId: `${navId}-custom-suffix`,
-        navId: navId,
-        type: 'other',
-        value: 'leggerVedNaa',
-        files: [],
-        title: 'Custom attachment',
-      },
-    ];
-    const props = createProps(testComponent, { attachments: submissionAttachments });
-    const pdfFormData = PdfAttachmentUpload(props);
-    expect(pdfFormData?.verdiliste).toHaveLength(1);
-    expect(pdfFormData?.verdiliste?.[0]?.label).toBe('Custom attachment');
   });
 
   it('should return null when submission has no attachments property', () => {

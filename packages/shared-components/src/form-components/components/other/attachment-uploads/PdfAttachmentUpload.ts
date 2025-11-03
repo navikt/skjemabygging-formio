@@ -16,34 +16,29 @@ const PdfAttachmentUpload = ({ formContextValue, languagesContextValue, componen
   if (attachmentType === 'other' || otherDocumentation) {
     const filtered = attachments.filter((a) => a.attachmentId.startsWith(navId) && a.value);
     if (!filtered.length) return null;
-    return {
-      label: translate(label || 'Ukjent vedlegg'),
-      verdiliste: filtered.map((a) => ({
-        label: translate(a.title || 'Ukjent vedlegg'),
-        verdiliste: [
-          {
-            label: translate(TEXTS.pdfStatiske.selectedAnswer),
-            verdi: `${translate(TEXTS.statiske.attachment[a.value])}`,
-          },
-        ],
-      })),
-    };
+    return filtered.map((a) => ({
+      label: `${translate(label || 'Ukjent vedlegg')} - ${translate(a.title || 'Ukjent vedlegg')}`,
+      verdi: translate(TEXTS.statiske.attachment[a.value]),
+    }));
   } else if (attachmentType === 'default' || !attachmentType) {
     const found = attachments.find((a) => a.attachmentId.startsWith(navId));
     if (!found || !found.value) return null;
     const commentRequired = attachmentValues?.[found.value]?.additionalDocumentation;
-    return {
-      label: translate(label || 'Ukjent vedlegg'),
-      verdiliste: [
-        {
-          label: translate(TEXTS.pdfStatiske.selectedAnswer),
-          verdi: `${translate(TEXTS.statiske.attachment[found.value])}`,
-        },
-        ...(commentRequired?.enabled
-          ? [{ label: commentRequired.label, verdi: found.additionalDocumentation || '' }]
-          : []),
-      ],
-    };
+    return [
+      {
+        label: translate(label || 'Ukjent vedlegg'),
+        verdi: `${translate(TEXTS.statiske.attachment[found.value])}`,
+      },
+      ...(commentRequired?.enabled
+        ? [
+            {
+              label: translate(commentRequired.label),
+              verdiliste: [{ label: `${found.additionalDocumentation || ''}` }],
+              visningsVariant: 'PUNKTLISTE',
+            },
+          ]
+        : []),
+    ];
   }
 
   return null;
