@@ -3,6 +3,7 @@ const introPage = require('../data/formio-api/intro-page.json');
 const introPageTranslations = require('../data/formio-api/intro-page-translations.json');
 const formCypressaxe = require('../data/formio-api/cypressaxe.json');
 const formComponents = require('../data/formio-api/components.json');
+const formComponentsTranslations = require('../data/formio-api/components-translations.json');
 const formPengerOgKonto = require('../data/formio-api/pengerOgKonto.json');
 const formPhoneNumberAreaCode = require('../data/formio-api/phone-number-area-code.json');
 const formConditionalXmas = require('../data/formio-api/conditionalxmas.json');
@@ -25,7 +26,6 @@ const translationsCypress101 = require('../data/formio-api/cypress101-translatio
 const translationsConditionalXmas = require('../data/formio-api/conditionalxmas-translation.json');
 const translationsCustomComps = require('../data/formio-api/custom-components-translations.json');
 const translationsSubmissionMethod = require('../data/formio-api/submission-method-translations.json');
-const globalTranslations = require('../data/formio-api/global-translation.json');
 const formCustomCompsAlert = require('../data/formio-api/custom-components-alert.json');
 const formActivities = require('../data/formio-api/activities.json');
 const formDatagridConditional = require('../data/formio-api/datagrid-conditional.json');
@@ -70,7 +70,7 @@ const allForms = [
   { form: formCypress101, translations: translationsCypress101 },
   { form: introPage, translations: introPageTranslations },
   { form: formCypressaxe, translations: undefined },
-  { form: formComponents, translations: undefined },
+  { form: formComponents, translations: formComponentsTranslations },
   { form: formPengerOgKonto, translations: undefined },
   { form: formPhoneNumberAreaCode, translations: undefined },
   { form: formConditionalXmas, translations: translationsConditionalXmas },
@@ -198,9 +198,9 @@ module.exports = [
             const formPath = req.query['data.form'];
             const dataName = req.query['data.name'];
             if (dataName === 'global') {
-              res.status(200);
-              res.contentType('application/json; charset=UTF-8');
-              res.send(globalTranslations);
+              // Moved to forms-api mock
+              res.status(404);
+              res.send();
             } else if (formPath) {
               const testdata = findTestdata(formPath);
               if (testdata?.translations) {

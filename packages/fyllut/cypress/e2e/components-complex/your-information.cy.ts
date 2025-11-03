@@ -490,7 +490,7 @@ describe('Your information', () => {
       beforeEach(() => {
         cy.visit('/fyllut/yourinformation?sub=paper&lang=en');
         cy.defaultWaits();
-        cy.clickStart();
+        cy.clickNextStep();
         cy.findByRole('heading', { name: 'Your personal information' }).should('exist');
         cy.findByRole('textbox', { name: 'First name' }).type('Ola');
         cy.findByRole('textbox', { name: 'Last name' }).type('Nordmann');
@@ -524,7 +524,7 @@ describe('Your information', () => {
           .should('exist')
           .within(() => {
             cy.findByRole('link', {
-              name: 'You must fill in: Norwegian national identification number or d number',
+              name: 'You must fill in: Norwegian national identification number or D number',
             }).should('exist');
           });
       });
