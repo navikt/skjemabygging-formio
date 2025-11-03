@@ -1,6 +1,7 @@
 import {
   dateUtils,
   DeclarationType,
+  FamiliePdf,
   FormPropertiesType,
   formSummaryUtil,
   I18nTranslationReplacements,
@@ -22,7 +23,6 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { config } from '../../../config/config';
 import { logger } from '../../../logger';
-import { EkstraBunntekst, FeltMap, PdfConfig, VerdilisteElement } from '../../../types/familiepdf/feltMapTypes';
 
 type TranslateFunction = (text: string) => string;
 
@@ -52,7 +52,7 @@ export const createFeltMapFromSubmission = (
   const signatures = signatureSection(form.properties, submissionMethod, translate);
   const title = translate(form.title);
 
-  const verdiliste: VerdilisteElement[] = createVerdilister(symmaryPanels);
+  const verdiliste: FamiliePdf.VerdilisteElement[] = createVerdilister(symmaryPanels);
   if (confirmation) {
     verdiliste.push(confirmation);
   }
@@ -60,7 +60,7 @@ export const createFeltMapFromSubmission = (
     verdiliste.push(signatures);
   }
 
-  const ekstraBunntekst: EkstraBunntekst = {
+  const ekstraBunntekst: FamiliePdf.EkstraBunntekst = {
     upperleft: translate(TEXTS.statiske.footer.userIdLabel) + `: ${identityNumber}`,
     lowerleft: translate(TEXTS.statiske.footer.schemaNumberLabel) + `: ${form.properties.skjemanummer}`,
     upperRight: null,
@@ -71,8 +71,8 @@ export const createFeltMapFromSubmission = (
 
   const sprak: string = lang === 'nn-NO' || lang == 'nn' ? 'nn' : lang === 'en' ? 'en' : 'nb';
 
-  const pdfConfig: PdfConfig = { harInnholdsfortegnelse: false, språk: sprak };
-  const feltMap: FeltMap = {
+  const pdfConfig: FamiliePdf.PdfConfig = { harInnholdsfortegnelse: false, språk: sprak };
+  const feltMap: FamiliePdf.FeltMap = {
     label: title,
     pdfConfig: pdfConfig,
     skjemanummer: form.properties.skjemanummer,
@@ -81,7 +81,7 @@ export const createFeltMapFromSubmission = (
     vannmerke: isDelingslenke ? 'Testskjema - Ikke send til Nav' : null,
   };
 
-  logger.info('FeltMap created for form: ' + feltMap.label + ', vannmerke =' + feltMap.vannmerke);
+  logger.info('FamiliePdf.FeltMap created for form: ' + feltMap.label + ', vannmerke =' + feltMap.vannmerke);
 
   return JSON.stringify(feltMap).replaceAll('\\t', '  ');
 };
@@ -89,8 +89,8 @@ export const createFeltMapFromSubmission = (
 const createConfirmationElement = (
   form: NavFormType,
   translate: (text: string) => string,
-): VerdilisteElement | undefined => {
-  const generateConfirmationField = (text: string): VerdilisteElement => {
+): FamiliePdf.VerdilisteElement | undefined => {
+  const generateConfirmationField = (text: string): FamiliePdf.VerdilisteElement => {
     return {
       label: translate(TEXTS.statiske.declaration.header),
       verdiliste: [
@@ -115,13 +115,13 @@ const createConfirmationElement = (
   }
 };
 
-export const createVerdilister = (summaryPanels: SummaryPanel[]): VerdilisteElement[] => {
+export const createVerdilister = (summaryPanels: SummaryPanel[]): FamiliePdf.VerdilisteElement[] => {
   return summaryPanels.map((summaryPanel) => {
     return createVerdilisteElement(summaryPanel);
   });
 };
 
-const createVerdilisteElement = (component: SummaryComponent): VerdilisteElement => {
+const createVerdilisteElement = (component: SummaryComponent): FamiliePdf.VerdilisteElement => {
   if (!component.hiddenInSummary) {
     switch (component.type) {
       case 'fieldset':
@@ -153,43 +153,45 @@ const createVerdilisteElement = (component: SummaryComponent): VerdilisteElement
   } else return { label: '' };
 };
 
-const sectionMap = (component): VerdilisteElement => {
+const sectionMap = (component): FamiliePdf.VerdilisteElement => {
   return {
     label: component.label ? component.label : '',
     verdi: null,
-    verdiliste: component.components.map((comp): VerdilisteElement | null => {
+    verdiliste: component.components.map((comp): FamiliePdf.VerdilisteElement | null => {
       return createVerdilisteElement(comp);
     }),
     visningsVariant: null,
   };
 };
 
-const subSectionMap = (component): VerdilisteElement => {
+const subSectionMap = (component): FamiliePdf.VerdilisteElement => {
   return {
     label: component.label ? component.label : '',
-    verdiliste: component.components.map((comp): VerdilisteElement | null => {
+    verdiliste: component.components.map((comp): FamiliePdf.VerdilisteElement | null => {
       return createVerdilisteElement(comp);
     }),
     visningsVariant: null,
   };
 };
 
-const tableMap = (component): VerdilisteElement => {
+const tableMap = (component): FamiliePdf.VerdilisteElement => {
   return {
     label: component.label ? component.label : '',
-    verdiliste: component.components.map((comp: SummaryDataGridRow, index: number): VerdilisteElement | null => {
-      return datagridRowMap(comp, index + 1);
-    }),
+    verdiliste: component.components.map(
+      (comp: SummaryDataGridRow, index: number): FamiliePdf.VerdilisteElement | null => {
+        return datagridRowMap(comp, index + 1);
+      },
+    ),
     //visningsVariant: 'TABELL', Fjernet da vi ikke ønsker pysjamas striper i PDF
     visningsVariant: null,
   };
 };
 
-const datagridRowMap = (component, index): VerdilisteElement => {
+const datagridRowMap = (component, index): FamiliePdf.VerdilisteElement => {
   if (component.components) {
     return {
       label: component.label ? component.label : '' + index,
-      verdiliste: component.components.map((comp): VerdilisteElement => {
+      verdiliste: component.components.map((comp): FamiliePdf.VerdilisteElement => {
         return createVerdilisteElement(comp);
       }),
       visningsVariant: null,
@@ -199,7 +201,7 @@ const datagridRowMap = (component, index): VerdilisteElement => {
   }
 };
 
-const multipleAnswersMap = (component: SummarySelectboxes | SummaryDataFetcher): VerdilisteElement => {
+const multipleAnswersMap = (component: SummarySelectboxes | SummaryDataFetcher): FamiliePdf.VerdilisteElement => {
   return {
     label: component.label,
     verdi: null,
@@ -210,7 +212,7 @@ const multipleAnswersMap = (component: SummarySelectboxes | SummaryDataFetcher):
   };
 };
 
-const htmlMap = (component: SummaryField): VerdilisteElement => {
+const htmlMap = (component: SummaryField): FamiliePdf.VerdilisteElement => {
   return {
     label: component.value.toString(),
     verdi: null,
@@ -219,7 +221,7 @@ const htmlMap = (component: SummaryField): VerdilisteElement => {
   };
 };
 
-const activityMap = (component: SummaryActivity): VerdilisteElement => {
+const activityMap = (component: SummaryActivity): FamiliePdf.VerdilisteElement => {
   return {
     label: component.label,
     verdi: component.value.text,
@@ -228,7 +230,7 @@ const activityMap = (component: SummaryActivity): VerdilisteElement => {
   };
 };
 
-const drivingListMap = (component): VerdilisteElement => {
+const drivingListMap = (component): FamiliePdf.VerdilisteElement => {
   return {
     label: component.label,
     verdi: component.value.description,
@@ -239,7 +241,7 @@ const drivingListMap = (component): VerdilisteElement => {
   };
 };
 
-const drivingListDay = (label: string, value: string): VerdilisteElement => {
+const drivingListDay = (label: string, value: string): FamiliePdf.VerdilisteElement => {
   return {
     label: value,
     verdi: null,
@@ -247,7 +249,7 @@ const drivingListDay = (label: string, value: string): VerdilisteElement => {
     visningsVariant: null,
   };
 };
-const addressMap = (component: SummaryAddress): VerdilisteElement => {
+const addressMap = (component: SummaryAddress): FamiliePdf.VerdilisteElement => {
   return {
     label: component.label,
     verdi: `${component.value}`,
@@ -256,7 +258,7 @@ const addressMap = (component: SummaryAddress): VerdilisteElement => {
   };
 };
 
-const fieldMap = (component: SummaryField): VerdilisteElement => {
+const fieldMap = (component: SummaryField): FamiliePdf.VerdilisteElement => {
   //logger.info('fieldMap =' + component.label);
   return {
     label: component.label,
@@ -266,7 +268,7 @@ const fieldMap = (component: SummaryField): VerdilisteElement => {
   };
 };
 
-const attachmentMap = (component: SummaryAttachment): VerdilisteElement => {
+const attachmentMap = (component: SummaryAttachment): FamiliePdf.VerdilisteElement => {
   return {
     label: component.label,
     verdi: component.value.description,
@@ -279,7 +281,7 @@ const signatureSection = (
   formProperties: FormPropertiesType,
   submissionMethod: string,
   translate: TranslateFunction,
-): VerdilisteElement | null => {
+): FamiliePdf.VerdilisteElement | null => {
   if (submissionMethod === 'digital') {
     return null;
   }
@@ -323,8 +325,8 @@ const lagSubVerdilisteElement = (
   translatedPlaceDate: string,
   translatedSignature: string,
   translatedBlockSignature: string,
-): VerdilisteElement => {
-  const verdiListe: VerdilisteElement[] = [
+): FamiliePdf.VerdilisteElement => {
+  const verdiListe: FamiliePdf.VerdilisteElement[] = [
     { label: translatedDescription, verdi: ' ' },
     { label: translatedPlaceDate, verdi: ' ' },
     { label: translatedSignature, verdi: ' ' },

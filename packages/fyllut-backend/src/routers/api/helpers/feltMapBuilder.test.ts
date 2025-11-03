@@ -1,5 +1,6 @@
 import {
   DeclarationType,
+  FamiliePdf,
   NavFormType,
   Submission,
   SummaryComponent,
@@ -12,7 +13,6 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { readFileSync } from 'fs';
 import path from 'path';
-import { EkstraBunntekst, FeltMap } from '../../../types/familiepdf/feltMapTypes';
 import { conditionalsForm, conditionalsSubmission } from '../testdata/conditionals';
 import { createFeltMapFromSubmission, createVerdilister } from './feltMapBuilder';
 
@@ -47,7 +47,7 @@ const createComponent = (
 
 const mockTranslate = (text: string) => text;
 const panels = [createPanel('Panel 1'), createPanel('Panel 2'), createPanel('Panel 3')];
-const bunntekst: EkstraBunntekst = {
+const bunntekst: FamiliePdf.EkstraBunntekst = {
   upperleft: 'Id: 12345678901',
   upperMiddle: '12. Mai 2025, kl. 12:00:00',
   upperRight: null,
@@ -98,7 +98,7 @@ describe('feltMapBuilder', () => {
   describe('Fields from form and submission', () => {
     it('adds headers for each top level element in the array', () => {
       const verdiliste = createVerdilister(panels);
-      const feltMap: FeltMap = {
+      const feltMap: FamiliePdf.FeltMap = {
         label: 'title',
         pdfConfig: { harInnholdsfortegnelse: false, språk: 'nb' },
         skjemanummer: 'NAV 11-12.15B',
@@ -116,7 +116,7 @@ describe('feltMapBuilder', () => {
       const verdiliste = createVerdilister([
         createPanel('Panel', [createComponent('Field 1', 'value 1'), createComponent('Field 2', 'value 2')]),
       ]);
-      const feltMap: FeltMap = {
+      const feltMap: FamiliePdf.FeltMap = {
         label: 'title',
         pdfConfig: { harInnholdsfortegnelse: false, språk: 'nb' },
         skjemanummer: 'NAV 11-12.15B',
@@ -138,7 +138,7 @@ describe('feltMapBuilder', () => {
         const verdiliste = createVerdilister([
           createPanel('Panel', [createContainer('Fieldset', 'fieldset', [createComponent('Field', 'value')])]),
         ]);
-        const feltMap: FeltMap = {
+        const feltMap: FamiliePdf.FeltMap = {
           label: 'title',
           pdfConfig: { harInnholdsfortegnelse: false, språk: 'nb' },
           skjemanummer: 'NAV 11-12.15B',
@@ -165,7 +165,7 @@ describe('feltMapBuilder', () => {
             ]),
           ]),
         ]);
-        const feltMap: FeltMap = {
+        const feltMap: FamiliePdf.FeltMap = {
           label: 'title',
           pdfConfig: { harInnholdsfortegnelse: false, språk: 'nb' },
           skjemanummer: 'NAV 11-12.15B',
@@ -189,7 +189,7 @@ describe('feltMapBuilder', () => {
         const verdiliste = createVerdilister([
           createPanel('Panel', [createContainer('My datagrid', 'datagrid', [createComponent('Field', 'value')])]),
         ]);
-        const feltMap: FeltMap = {
+        const feltMap: FamiliePdf.FeltMap = {
           label: 'title',
           pdfConfig: { harInnholdsfortegnelse: false, språk: 'nb' },
           skjemanummer: 'NAV 11-12.15B',
@@ -213,7 +213,7 @@ describe('feltMapBuilder', () => {
               ]),
             ]),
           ]);
-          const feltMap: FeltMap = {
+          const feltMap: FamiliePdf.FeltMap = {
             label: 'title',
             pdfConfig: { harInnholdsfortegnelse: false, språk: 'nb' },
             skjemanummer: 'NAV 11-12.15B',
@@ -249,7 +249,7 @@ describe('feltMapBuilder', () => {
               ]),
             ]),
           ]);
-          const feltMap: FeltMap = {
+          const feltMap: FamiliePdf.FeltMap = {
             label: 'title',
             pdfConfig: { harInnholdsfortegnelse: false, språk: 'nb' },
             skjemanummer: 'NAV 11-12.15B',
@@ -279,7 +279,7 @@ describe('feltMapBuilder', () => {
     beforeEach(() => {
       const symmaryList = readFileSync(filePathDrivingList, 'utf-8');
       const verdiliste = createVerdilister(JSON.parse(symmaryList) as SummaryPanel[]);
-      const feltMap: FeltMap = {
+      const feltMap: FamiliePdf.FeltMap = {
         label: 'title',
         pdfConfig: { harInnholdsfortegnelse: false, språk: 'nb' },
         skjemanummer: 'NAV 11-12.15B',
@@ -296,7 +296,7 @@ describe('feltMapBuilder', () => {
 
     it('skips formatting for identity number', () => {
       const verdiliste = createVerdilister([createPanel('Panel', [createComponent('fnrfield', '12345678901')])]);
-      const feltMap: FeltMap = {
+      const feltMap: FamiliePdf.FeltMap = {
         label: 'title',
         pdfConfig: { harInnholdsfortegnelse: false, språk: 'nb' },
         skjemanummer: 'NAV 11-12.15B',

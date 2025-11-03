@@ -15,6 +15,7 @@ import type { ConfigType } from './config/types';
 import type { DataFetcherSourceId } from './data-fetcher';
 import { dataFetcherSources } from './data-fetcher';
 import { Enhet, Enhetstype, EnhetstypeNorg, supportedEnhetstyper } from './enhet';
+import * as FamiliePdf from './familie-pdf/feltMapTypes';
 import type { FieldSize } from './field-size';
 import { UploadedFile } from './file';
 import {
@@ -162,6 +163,7 @@ export {
   dateUtils,
   DeclarationType,
   externalStorageTexts,
+  FamiliePdf,
   featureUtils,
   formDiffingTool,
   formioFormsApiUtils,
