@@ -21,7 +21,7 @@ const PdfAttachment = ({
   const comment = valueConfig?.additionalDocumentation?.enabled
     ? {
         label: translate(valueConfig.additionalDocumentation.label),
-        verdi: value.additionalDocumentation || ' ',
+        verdiliste: [{ label: value.additionalDocumentation || '' }],
         visningsVariant: 'PUNKTLISTE',
       }
     : null;

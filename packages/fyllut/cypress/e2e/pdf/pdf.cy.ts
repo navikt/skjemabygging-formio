@@ -709,9 +709,16 @@ describe('Pdf', () => {
           expect(vedleggspanel.verdiliste[0], 'Forventer at vedlegg er valgt').to.be.not.undefined;
           expect(vedleggspanel.verdiliste[0].label).eq('Vedlegg');
           expect(vedleggspanel.verdiliste[0].verdi).eq('Jeg legger det ved dette skjemaet');
-          expect(vedleggspanel.verdiliste[1], 'Forventer kommentar til vedlegget').to.be.not.undefined;
+          expect(vedleggspanel.verdiliste[1], 'Forventer kommentar til vedlegget (additional documentation)').to.be.not
+            .undefined;
           expect(vedleggspanel.verdiliste[1].label).eq('Mer info');
-          expect(vedleggspanel.verdiliste[1].verdi).eq('Dette er en kommentar til vedlegget.');
+          expect(vedleggspanel.verdiliste[1].verdiliste, 'Verdiliste må være satt (additional documentation)').to.be.not
+            .undefined;
+          expect(
+            vedleggspanel.verdiliste[1].verdiliste[0],
+            'Verdiliste må inneholde et element (additional documentation)',
+          ).to.be.not.undefined;
+          expect(vedleggspanel.verdiliste[1].verdiliste[0].label).eq('Dette er en kommentar til vedlegget.');
           expect(vedleggspanel.verdiliste[1].visningsVariant).eq('PUNKTLISTE');
           expect(vedleggspanel.verdiliste[2], 'Forventer annen dokumentasjon').to.be.not.undefined;
           expect(vedleggspanel.verdiliste[2].label).eq('Annen dokumentasjon');
