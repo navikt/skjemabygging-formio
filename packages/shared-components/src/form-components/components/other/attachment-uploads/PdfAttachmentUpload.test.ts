@@ -93,8 +93,7 @@ describe('PdfAttachmentUpload', () => {
   it('should return null if navId is missing', () => {
     const incompleteComponent = { ...attachment, navId: undefined };
     const props = createProps(incompleteComponent, { attachments: [] });
-    const pdfFormData = PdfAttachmentUpload(props);
-    expect(pdfFormData).toBeNull();
+    expect(() => PdfAttachmentUpload(props)).toThrow('PdfAttachmentUpload: navId is required on component');
   });
 
   it('should return null if no attachments match navId', () => {
