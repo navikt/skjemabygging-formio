@@ -11,7 +11,7 @@
     "pakrevd": true,
     "opplastingsStatus": "LastetOpp",
     "mimetype": "application/pdf",
-    "document": "eyJjb250ZW50IjoicGRmIn0=",
+    "document": "<IGNORED>",
     "label": "Uinnlogget søknad",
     "fyllutId": null,
     "beskrivelse": null,
@@ -24,6 +24,7 @@
     "pakrevd": true,
     "opplastingsStatus": "LastetOpp",
     "mimetype": "application/json",
+    "document": "<IGNORED>",
     "fyllutId": null,
     "beskrivelse": null,
     "propertyNavn": null
@@ -36,6 +37,9 @@
       "opplastingsStatus": "LastetOpp",
       "mimetype": "application/pdf",
       "pakrevd": true,
+      "filIdListe": [
+        "<IGNORED>"
+      ],
       "fyllutId": "personal-id",
       "beskrivelse": null,
       "propertyNavn": null
@@ -47,6 +51,7 @@
       "opplastingsStatus": "SendSenere",
       "mimetype": "application/pdf",
       "pakrevd": true,
+      "filIdListe": [],
       "fyllutId": "eyobqqf",
       "beskrivelse": null,
       "propertyNavn": null
@@ -58,6 +63,9 @@
       "opplastingsStatus": "LastetOpp",
       "mimetype": "application/pdf",
       "pakrevd": true,
+      "filIdListe": [
+        "<IGNORED>"
+      ],
       "fyllutId": "e3xh1d",
       "beskrivelse": null,
       "propertyNavn": null
@@ -69,6 +77,23 @@
       "opplastingsStatus": "LastetOpp",
       "mimetype": "application/pdf",
       "pakrevd": false,
+      "filIdListe": [
+        "<IGNORED>"
+      ],
+      "fyllutId": "en5h1c",
+      "beskrivelse": null,
+      "propertyNavn": null
+    },
+    {
+      "vedleggsnr": "N6",
+      "label": "Annen dokumentasjon",
+      "tittel": "Egenerklæring",
+      "opplastingsStatus": "LastetOpp",
+      "mimetype": "application/pdf",
+      "pakrevd": false,
+      "filIdListe": [
+        "<IGNORED>"
+      ],
       "fyllutId": "en5h1c",
       "beskrivelse": null,
       "propertyNavn": null

@@ -69,6 +69,15 @@ describe('Digital submission without user login', () => {
         force: true,
       });
 
+      cy.findByRole('button', { name: 'Legg til nytt vedlegg' }).click();
+      cy.findByRole('textbox', { name: 'Gi vedlegget et beskrivende navn' }).type('Egenerklæring');
+      cy.get('[data-cy="upload-button-en5h1c-1"] input[type=file]').selectFile(
+        'cypress/fixtures/files/small-file.txt',
+        {
+          force: true,
+        },
+      );
+
       cy.clickNextStep();
 
       cy.findByRole('button', { name: 'Send til Nav' }).click();

@@ -66,8 +66,10 @@ const findMismatches = (obj1, obj2, path = '') => {
   return mismatches;
 };
 
+const deepCopy = (obj) => JSON.parse(JSON.stringify(obj));
+
 const verifyJsonBody = (actualBody, expectedBody, excludeKeys = []) => {
-  const filteredActual = filterKeys(actualBody, excludeKeys);
+  const filteredActual = filterKeys(deepCopy(actualBody), excludeKeys);
   const filteredExpected = filterKeys(expectedBody, excludeKeys);
 
   if (JSON.stringify(filteredActual) === JSON.stringify(filteredExpected)) {

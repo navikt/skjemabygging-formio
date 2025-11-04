@@ -551,7 +551,7 @@ module.exports = [
         options: {
           middleware: compareBodyMiddleware(
             tc01,
-            ['innsendingsId', 'hoveddokumentVariant.document', 'vedleggsListe.filIdListe'],
+            ['innsendingsId', 'hoveddokument.document', 'hoveddokumentVariant.document', 'vedleggsListe.filIdListe'],
             (req, res) => {
               const { body } = req;
               res.status(200);
@@ -567,7 +567,7 @@ module.exports = [
         options: {
           middleware: compareBodyMiddleware(
             tc02,
-            ['innsendingsId', 'hoveddokumentVariant.document', 'vedleggsListe.filIdListe'],
+            ['innsendingsId', 'hoveddokument.document', 'hoveddokumentVariant.document', 'vedleggsListe.filIdListe'],
             (req, res) => {
               const { body } = req;
               res.status(200);
