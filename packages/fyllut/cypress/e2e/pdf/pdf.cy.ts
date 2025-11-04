@@ -670,4 +670,56 @@ describe('Pdf', () => {
       });
     });
   });
+
+  describe('Verify attachments', () => {
+    describe('paper submission', () => {
+      it('Check for attachment with comment', () => {
+        cy.visit('/fyllut/components?sub=paper');
+        cy.defaultWaits();
+        cy.clickShowAllSteps();
+
+        cy.clickStart();
+        cy.findByRole('group', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
+          cy.findByRole('radio', { name: 'Ja' }).check();
+        });
+        cy.findByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).type('20905995783');
+        cy.clickNextStep();
+
+        cy.findByRole('link', { name: /Vedlegg/ }).click();
+        cy.findByRole('heading', { name: /Vedlegg/ }).shouldBeVisible();
+
+        cy.findByRole('group', { name: /Vedlegg/ }).within(() => {
+          cy.findByRole('radio', { name: 'Jeg legger det ved dette skjemaet' }).check();
+        });
+        cy.findByRole('textbox', { name: /Mer info/ }).type('Dette er en kommentar til vedlegget.');
+
+        cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+          cy.findByRole('radio', { name: 'Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved' }).check();
+        });
+
+        cy.clickNextStep();
+
+        cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
+          const vedleggspanel = req.body.pdfFormData.verdiliste.find((item) => {
+            return item.label === 'Vedlegg';
+          });
+
+          expect(vedleggspanel, 'Forventer å finne vedleggspanelet').to.be.not.undefined;
+          expect(vedleggspanel.label).eq('Vedlegg');
+          expect(vedleggspanel.verdiliste[0], 'Forventer at vedlegg er valgt').to.be.not.undefined;
+          expect(vedleggspanel.verdiliste[0].label).eq('Vedlegg');
+          expect(vedleggspanel.verdiliste[0].verdi).eq('Jeg legger det ved dette skjemaet');
+          expect(vedleggspanel.verdiliste[1], 'Forventer kommentar til vedlegget').to.be.not.undefined;
+          expect(vedleggspanel.verdiliste[1].label).eq('Mer info');
+          expect(vedleggspanel.verdiliste[1].verdi).eq('Dette er en kommentar til vedlegget.');
+          expect(vedleggspanel.verdiliste[1].visningsVariant).eq('PUNKTLISTE');
+          expect(vedleggspanel.verdiliste[2], 'Forventer annen dokumentasjon').to.be.not.undefined;
+          expect(vedleggspanel.verdiliste[2].label).eq('Annen dokumentasjon');
+          expect(vedleggspanel.verdiliste[2].verdi).eq('Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved');
+        }).as('downloadPdf');
+
+        downloadPdf();
+      });
+    });
+  });
 });
