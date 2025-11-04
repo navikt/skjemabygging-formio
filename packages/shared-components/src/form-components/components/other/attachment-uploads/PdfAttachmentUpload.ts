@@ -17,7 +17,7 @@ const PdfAttachmentUpload = ({ formContextValue, languagesContextValue, componen
     const filtered = attachments.filter((a) => a.attachmentId.startsWith(navId) && a.value);
     if (!filtered.length) return null;
     return filtered.map((a) => ({
-      label: `${translate(label || 'Ukjent vedlegg')}${a.value === 'leggerVedNaa' ? `  - ${translate(a.title || 'Ukjent vedlegg')}` : ''}`,
+      label: `${translate(label || 'Ukjent vedlegg')}${a.value === 'leggerVedNaa' ? ` - ${translate(a.title || 'Ukjent vedlegg')}` : ''}`,
       verdi: translate(TEXTS.statiske.attachment[a.value]),
     }));
   } else if (attachmentType === 'default' || !attachmentType) {
