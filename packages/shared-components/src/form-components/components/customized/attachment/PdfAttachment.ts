@@ -1,6 +1,5 @@
-import { VerdilisteElement } from '@navikt/fyllut-backend/src/types/familiepdf/feltMapTypes';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { PdfComponentProps } from '../../../types';
+import { PdfComponentProps, PdfListElement } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 
 const PdfAttachment = ({
@@ -8,7 +7,7 @@ const PdfAttachment = ({
   submissionPath,
   formContextValue,
   languagesContextValue,
-}: PdfComponentProps): VerdilisteElement[] | null => {
+}: PdfComponentProps): PdfListElement => {
   const { label, attachmentValues } = component;
   const { translate } = languagesContextValue;
   const { submission } = formContextValue;
@@ -19,13 +18,13 @@ const PdfAttachment = ({
   }
 
   const valueConfig = attachmentValues?.[value.key];
-  const comment: VerdilisteElement | undefined = valueConfig?.additionalDocumentation?.enabled
+  const comment = valueConfig?.additionalDocumentation?.enabled
     ? {
         label: translate(valueConfig.additionalDocumentation.label),
         verdi: value.additionalDocumentation || ' ',
         visningsVariant: 'PUNKTLISTE',
       }
-    : undefined;
+    : null;
 
   return [
     {
