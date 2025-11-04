@@ -4,14 +4,40 @@ const filterKeys = (obj, excludeKeys) => {
 
   excludeKeys.forEach((keyPath) => {
     const keys = keyPath.split('.');
-    let current = filtered;
 
-    for (let i = 0; i < keys.length - 1; i++) {
-      if (!current[keys[i]] || typeof current[keys[i]] !== 'object') return;
-      current = current[keys[i]];
-    }
+    const traverseAndDelete = (current, keyIndex) => {
+      if (keyIndex >= keys.length) return;
 
-    delete current[keys[keys.length - 1]];
+      const key = keys[keyIndex];
+
+      // If we're at the last key, delete it
+      if (keyIndex === keys.length - 1) {
+        if (Array.isArray(current)) {
+          current.forEach((item) => {
+            if (item && typeof item === 'object') {
+              delete item[key];
+            }
+          });
+        } else if (current && typeof current === 'object') {
+          delete current[key];
+        }
+        return;
+      }
+
+      // Navigate deeper
+      if (!current[key]) return;
+
+      if (Array.isArray(current[key])) {
+        // For arrays, recursively process each element
+        current[key].forEach((item) => {
+          traverseAndDelete(item, keyIndex + 1);
+        });
+      } else if (typeof current[key] === 'object') {
+        traverseAndDelete(current[key], keyIndex + 1);
+      }
+    };
+
+    traverseAndDelete(filtered, 0);
   });
 
   return filtered;
@@ -55,6 +81,9 @@ export const compareBodyMiddleware = (expectedBody, excludeKeys = [], onSuccess)
   return async (req, res) => {
     const mismatches = verifyJsonBody(req.body, expectedBody, excludeKeys);
     if (mismatches.length) {
+      console.error(
+        `Unexpected request body (${JSON.stringify(req.body)}) - mismatches: ${JSON.stringify(mismatches)}`,
+      );
       res.status(400);
       res.contentType('application/json; charset=UTF-8');
       res.send({
@@ -63,6 +92,6 @@ export const compareBodyMiddleware = (expectedBody, excludeKeys = [], onSuccess)
       });
       return;
     }
-    onSuccess(res);
+    onSuccess(req, res);
   };
 };

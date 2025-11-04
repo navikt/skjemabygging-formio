@@ -21,7 +21,7 @@ module.exports = [
         id: 'success-tc01',
         type: 'middleware',
         options: {
-          middleware: compareBodyMiddleware(tc01, ['bunntekst.upperMiddle'], (res) => {
+          middleware: compareBodyMiddleware(tc01, ['bunntekst.upperMiddle'], (_, res) => {
             res.status(200);
             res.contentType('application/json; charset=UTF-8');
             res.send({ content: 'pdf' });
