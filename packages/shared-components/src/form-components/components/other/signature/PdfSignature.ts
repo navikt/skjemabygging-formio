@@ -32,8 +32,7 @@ const PdfSignature = ({
   if (submissionMethod === 'digitalnologin') {
     const personalId = submission?.attachments?.find((attachment) => attachment.attachmentId === 'personal-id');
     if (!personalId) {
-      console.warn('PdfSignature: No personal ID attachment found for digitalnologin submission method');
-      return null;
+      throw Error('Finner ikke opplastet legitimasjon');
     }
 
     return {

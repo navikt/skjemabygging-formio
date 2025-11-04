@@ -7,8 +7,7 @@ const PdfAttachmentUpload = ({ formContextValue, languagesContextValue, componen
   const { navId, label, attachmentValues, attachmentType, otherDocumentation } = component;
 
   if (!navId) {
-    console.warn('PdfAttachmentUpload: navId is missing on component');
-    return null;
+    throw Error('PdfAttachmentUpload: navId is required on component');
   }
 
   const attachments = submission?.attachments ?? [];
