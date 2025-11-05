@@ -73,6 +73,7 @@ export function IngressBulletPointRow({
             <FormIntroPageWysiwygEditor
               key={index}
               label="Kulepunkt"
+              defaultTag="div"
               defaultValue={getKeyBasedText(value)}
               onChange={(value) => onBulletPointChange(value, index)}
               showDeleteButton

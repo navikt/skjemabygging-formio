@@ -24,15 +24,17 @@ const getCleanedUpPdfFormData = (request, date?: string) => {
   };
 };
 
-const downloadPdf = (submissionType: 'digital' | 'paper' = 'paper') => {
-  cy.findByRole('link', { name: 'Oppsummering' }).click();
-  cy.findByRole('heading', { name: 'Oppsummering' }).shouldBeVisible();
+const downloadPdf = (submissionType: 'digital' | 'paper' | 'digitalnologin' = 'paper') => {
+  cy.findByRole('link', { name: /Oppsummering|Summary/ }).click();
+  cy.findByRole('heading', { name: /Oppsummering|Summary/ }).shouldBeVisible();
   if (submissionType === 'digital') {
     cy.findByRole('button', { name: TEXTS.grensesnitt.submitToNavPrompt.open }).click();
     cy.findByRole('button', { name: TEXTS.grensesnitt.submitToNavPrompt.confirm }).click();
+  } else if (submissionType === 'digitalnologin') {
+    cy.findByRole('button', { name: TEXTS.grensesnitt.submitToNavPrompt.open }).click();
   } else {
-    cy.findByRole('link', { name: TEXTS.grensesnitt.moveForward }).click();
-    cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).click();
+    cy.findByRole('link', { name: /Gå videre|Proceed/ }).click();
+    cy.findByRole('button', { name: /Last ned skjema|Download form/ }).click();
   }
   cy.wait('@downloadPdf');
 };
@@ -442,6 +444,288 @@ describe('Pdf', () => {
         });
 
         downloadPdf('digital');
+      });
+    });
+
+    describe('Nologin', () => {
+      beforeEach(() => {
+        cy.visit('/fyllut/components');
+        cy.defaultWaits();
+
+        cy.findByRole('link', { name: 'Kan ikke logge inn' }).click();
+        cy.findByRole('link', { name: 'Send digitalt uten å logge inn' }).click();
+        cy.findByRole('heading', { name: 'Legitimasjon' }).should('exist');
+
+        cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
+          cy.findByLabelText('Norsk pass').check(),
+        );
+        cy.get('input[type=file]').selectFile('cypress/fixtures/files/id-billy-bruker.jpg', { force: true });
+        cy.clickNextStep();
+
+        cy.clickShowAllSteps();
+      });
+
+      it('Pdf does not contain signature field when submission method is digitalnologin', () => {
+        cy.clickStart();
+        cy.findByRole('group', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
+          cy.findByRole('radio', { name: 'Ja' }).check();
+        });
+
+        cy.findByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).type('20905995783');
+
+        cy.clickNextStep();
+
+        cy.fixture('pdf/request-components-identity-nologin.json').then((fixture) => {
+          cy.intercept('POST', '/fyllut/api/send-inn/nologin-soknad', (req) => {
+            // Check that timestamp is present in footer before removing it for comparison.
+            expect(req.body.pdfFormData.bunntekst.upperMiddle).not.to.be.null;
+            const actual = getCleanedUpPdfFormData(req);
+            expect(actual, 'PDF form data should match fixture for nologin submission').deep.eq(fixture);
+          }).as('downloadPdf');
+        });
+
+        downloadPdf('digitalnologin');
+      });
+    });
+  });
+
+  describe('Verify signatures', () => {
+    describe('Default signature', () => {
+      it('Check the default empty signature', () => {
+        cy.intercept('GET', 'fyllut/api/forms/stpaper*', (req) => {
+          req.continue((res) => {
+            if (res.body) {
+              expect(res.body.properties?.signatures[0]).to.be.not.undefined;
+              expect(res.body.properties?.signatures[0].key).equal('e037eeae-cf54-4ece-94df-b9bc963396f1');
+              expect(res.body.properties?.signatures[0].label).equal('');
+              expect(res.body.properties?.signatures[0].description).equal('');
+              expect(res.body.properties?.signatures[1]).to.be.undefined;
+            }
+          });
+        }).as('getFormDefaultSignature');
+
+        cy.visit('/fyllut/stpaperdigital?sub=paper');
+
+        cy.wait('@getConfig');
+        cy.wait('@getFormDefaultSignature');
+        cy.wait('@getTranslations');
+
+        cy.clickShowAllSteps();
+        cy.clickStart();
+
+        cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
+        cy.clickNextStep();
+
+        cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
+        cy.clickNextStep();
+
+        cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
+          const signatures = req.body.pdfFormData.verdiliste.pop();
+
+          expect(signatures.label).eq('Underskrift');
+          expect(signatures.verdiliste.length).eq(4);
+          expect(signatures.verdiliste[0].label).eq('');
+          expect(signatures.verdiliste[0].verdi).eq(' ');
+          expect(signatures.verdiliste[1].label).eq('Sted og dato');
+          expect(signatures.verdiliste[1].verdi).eq(' ');
+          expect(signatures.verdiliste[2].label).eq('Underskrift');
+          expect(signatures.verdiliste[2].verdi).eq(' ');
+          expect(signatures.verdiliste[3].label).eq('Navn med blokkbokstaver');
+          expect(signatures.verdiliste[3].verdi).eq(' ');
+        }).as('downloadPdf');
+
+        downloadPdf();
+      });
+
+      it('Check the old default signature (undefined)', () => {
+        cy.intercept('GET', 'fyllut/api/forms/stpaper*', (req) => {
+          req.continue((res) => {
+            if (res.body) {
+              expect(res.body.properties?.signatures).to.be.undefined;
+            }
+          });
+        }).as('getFormOldSignature');
+
+        cy.visit('/fyllut/stpaper?sub=paper');
+
+        cy.wait('@getConfig');
+        cy.wait('@getFormOldSignature');
+        cy.wait('@getTranslations');
+
+        cy.clickShowAllSteps();
+        cy.clickStart();
+
+        cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
+        cy.clickNextStep();
+
+        cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
+        cy.clickNextStep();
+
+        cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
+          const signatures = req.body.pdfFormData.verdiliste.pop();
+
+          expect(signatures.label).eq('Underskrift');
+          expect(signatures.verdiliste.length).eq(4);
+          expect(signatures.verdiliste[0].label).eq('');
+          expect(signatures.verdiliste[0].verdi).eq(' ');
+          expect(signatures.verdiliste[1].label).eq('Sted og dato');
+          expect(signatures.verdiliste[1].verdi).eq(' ');
+          expect(signatures.verdiliste[2].label).eq('Underskrift');
+          expect(signatures.verdiliste[2].verdi).eq(' ');
+          expect(signatures.verdiliste[3].label).eq('Navn med blokkbokstaver');
+          expect(signatures.verdiliste[3].verdi).eq(' ');
+        }).as('downloadPdf');
+
+        downloadPdf();
+      });
+    });
+
+    describe('Multiple signatures', () => {
+      it('Check for two signatures', () => {
+        cy.visit('/fyllut/components?sub=paper');
+        cy.defaultWaits();
+        cy.clickShowAllSteps();
+
+        cy.clickStart();
+        cy.findByRole('group', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
+          cy.findByRole('radio', { name: 'Ja' }).check();
+        });
+        cy.findByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).type('20905995783');
+        cy.clickNextStep();
+
+        cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
+          const signatures = req.body.pdfFormData.verdiliste.pop();
+
+          expect(signatures.label).eq('Underskrift');
+          expect(signatures.verdiliste.length).eq(3);
+          expect(signatures.verdiliste[0].label).eq('');
+
+          expect(signatures.verdiliste[1].label).eq('Eier');
+          expect(signatures.verdiliste[1].verdiliste[0].label).eq('Viktig1');
+          expect(signatures.verdiliste[1].verdiliste[0].verdi).eq(' ');
+          expect(signatures.verdiliste[1].verdiliste[1].label).eq('Sted og dato');
+          expect(signatures.verdiliste[1].verdiliste[1].verdi).eq(' ');
+          expect(signatures.verdiliste[1].verdiliste[2].label).eq('Underskrift');
+          expect(signatures.verdiliste[1].verdiliste[2].verdi).eq(' ');
+          expect(signatures.verdiliste[1].verdiliste[3].label).eq('Navn med blokkbokstaver');
+          expect(signatures.verdiliste[1].verdiliste[3].verdi).eq(' ');
+
+          expect(signatures.verdiliste[2].label).eq('Deleier');
+          expect(signatures.verdiliste[2].verdiliste[0].label).eq('Viktig2');
+          expect(signatures.verdiliste[2].verdiliste[0].verdi).eq(' ');
+          expect(signatures.verdiliste[2].verdiliste[1].label).eq('Sted og dato');
+          expect(signatures.verdiliste[2].verdiliste[1].verdi).eq(' ');
+          expect(signatures.verdiliste[2].verdiliste[2].label).eq('Underskrift');
+          expect(signatures.verdiliste[2].verdiliste[2].verdi).eq(' ');
+          expect(signatures.verdiliste[2].verdiliste[3].label).eq('Navn med blokkbokstaver');
+          expect(signatures.verdiliste[2].verdiliste[3].verdi).eq(' ');
+        }).as('downloadPdf');
+
+        downloadPdf();
+      });
+
+      it('Check for two signatures, english', () => {
+        cy.visit('/fyllut/components?sub=paper&lang=en');
+        cy.defaultWaits();
+        cy.clickShowAllSteps();
+
+        cy.clickStart();
+        cy.findByRole('group', { name: /Do you have a Norwegian national identification number or d number?/ }).within(
+          () => {
+            cy.findByRole('radio', { name: 'Yes' }).check();
+          },
+        );
+        cy.findByRole('textbox', { name: /Norwegian national identification number or D number/ }).type('20905995783');
+        cy.clickNextStep();
+
+        cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
+          const signatures = req.body.pdfFormData.verdiliste.pop();
+
+          expect(signatures.label).eq('Signature');
+          expect(signatures.verdiliste.length).eq(3);
+          expect(signatures.verdiliste[0].label).eq('');
+
+          expect(signatures.verdiliste[1].label).eq('Owner');
+          expect(signatures.verdiliste[1].verdiliste[0].label).eq('Important1');
+          expect(signatures.verdiliste[1].verdiliste[0].verdi).eq(' ');
+          expect(signatures.verdiliste[1].verdiliste[1].label).eq('Place and date');
+          expect(signatures.verdiliste[1].verdiliste[1].verdi).eq(' ');
+          expect(signatures.verdiliste[1].verdiliste[2].label).eq('Signature');
+          expect(signatures.verdiliste[1].verdiliste[2].verdi).eq(' ');
+          expect(signatures.verdiliste[1].verdiliste[3].label).eq('Name with capital letters');
+          expect(signatures.verdiliste[1].verdiliste[3].verdi).eq(' ');
+
+          expect(signatures.verdiliste[2].label).eq('Co-owner');
+          expect(signatures.verdiliste[2].verdiliste[0].label).eq('Important2');
+          expect(signatures.verdiliste[2].verdiliste[0].verdi).eq(' ');
+          expect(signatures.verdiliste[2].verdiliste[1].label).eq('Place and date');
+          expect(signatures.verdiliste[2].verdiliste[1].verdi).eq(' ');
+          expect(signatures.verdiliste[2].verdiliste[2].label).eq('Signature');
+          expect(signatures.verdiliste[2].verdiliste[2].verdi).eq(' ');
+          expect(signatures.verdiliste[2].verdiliste[3].label).eq('Name with capital letters');
+          expect(signatures.verdiliste[2].verdiliste[3].verdi).eq(' ');
+        }).as('downloadPdf');
+
+        downloadPdf();
+      });
+    });
+  });
+
+  describe('Verify attachments', () => {
+    describe('paper submission', () => {
+      it('Check for attachment with comment', () => {
+        cy.visit('/fyllut/components?sub=paper');
+        cy.defaultWaits();
+        cy.clickShowAllSteps();
+
+        cy.clickStart();
+        cy.findByRole('group', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
+          cy.findByRole('radio', { name: 'Ja' }).check();
+        });
+        cy.findByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).type('20905995783');
+        cy.clickNextStep();
+
+        cy.findByRole('link', { name: /Vedlegg/ }).click();
+        cy.findByRole('heading', { name: /Vedlegg/ }).shouldBeVisible();
+
+        cy.findByRole('group', { name: /Vedlegg/ }).within(() => {
+          cy.findByRole('radio', { name: 'Jeg legger det ved dette skjemaet' }).check();
+        });
+        cy.findByRole('textbox', { name: /Mer info/ }).type('Dette er en kommentar til vedlegget.');
+
+        cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+          cy.findByRole('radio', { name: 'Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved' }).check();
+        });
+
+        cy.clickNextStep();
+
+        cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
+          const vedleggspanel = req.body.pdfFormData.verdiliste.find((item) => {
+            return item.label === 'Vedlegg';
+          });
+
+          expect(vedleggspanel, 'Forventer å finne vedleggspanelet').to.be.not.undefined;
+          expect(vedleggspanel.label).eq('Vedlegg');
+          expect(vedleggspanel.verdiliste[0], 'Forventer at vedlegg er valgt').to.be.not.undefined;
+          expect(vedleggspanel.verdiliste[0].label).eq('Vedlegg');
+          expect(vedleggspanel.verdiliste[0].verdi).eq('Jeg legger det ved dette skjemaet');
+          expect(vedleggspanel.verdiliste[1], 'Forventer kommentar til vedlegget (additional documentation)').to.be.not
+            .undefined;
+          expect(vedleggspanel.verdiliste[1].label).eq('Mer info');
+          expect(vedleggspanel.verdiliste[1].verdiliste, 'Verdiliste må være satt (additional documentation)').to.be.not
+            .undefined;
+          expect(
+            vedleggspanel.verdiliste[1].verdiliste[0],
+            'Verdiliste må inneholde et element (additional documentation)',
+          ).to.be.not.undefined;
+          expect(vedleggspanel.verdiliste[1].verdiliste[0].label).eq('Dette er en kommentar til vedlegget.');
+          expect(vedleggspanel.verdiliste[1].visningsVariant).eq('PUNKTLISTE');
+          expect(vedleggspanel.verdiliste[2], 'Forventer annen dokumentasjon').to.be.not.undefined;
+          expect(vedleggspanel.verdiliste[2].label).eq('Annen dokumentasjon');
+          expect(vedleggspanel.verdiliste[2].verdi).eq('Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved');
+        }).as('downloadPdf');
+
+        downloadPdf();
       });
     });
   });
