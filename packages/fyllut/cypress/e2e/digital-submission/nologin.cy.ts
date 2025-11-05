@@ -390,7 +390,8 @@ describe('Digital submission without user login', () => {
       );
       cy.clickNextStep();
       cy.findByRole('button', { name: 'Send til Nav' }).click();
-      cy.findByText('Takk for at du sendte inn skjemaet.').should('exist');
+      cy.findByText(TEXTS.statiske.receipt.title).should('exist');
+      cy.findByRole('link', { name: TEXTS.statiske.receipt.downloadLinkLabel }).should('exist');
     });
   });
 });
