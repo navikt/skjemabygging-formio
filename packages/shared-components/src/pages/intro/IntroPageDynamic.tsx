@@ -39,7 +39,7 @@ const IntroPageDynamic = () => {
       <Accordion className="mb">
         <Intro.DataDisclosure properties={form.introPage?.sections?.dataDisclosure} translate={translate} />
         <Intro.DataTreatment properties={form.introPage?.sections?.dataTreatment} translate={translate} />
-        <Intro.DataStorage translate={translate} submissionMethod={submissionMethod} />
+        {submissionMethod === 'digital' && <Intro.DataStorage translate={translate} />}
         <Intro.AutomaticProcessing properties={form.introPage?.sections?.automaticProcessing} translate={translate} />
         <Intro.Optional properties={form.introPage?.sections?.optional} translate={translate} />
       </Accordion>
