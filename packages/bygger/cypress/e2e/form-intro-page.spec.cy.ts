@@ -331,7 +331,7 @@ describe('FormSettingsPage', () => {
         });
     });
 
-    it('all textfields display error if content is emptied', () => {
+    it.only('all textfields display error if content is emptied', () => {
       cy.findByRole('checkbox', { name: 'Bruk standard introside' }).should('exist');
       cy.findByRole('checkbox', { name: 'Bruk standard introside' }).click();
       checkAllOptionalFields();
@@ -459,6 +459,11 @@ describe('FormSettingsPage', () => {
           cy.contains('Velkomstmelding må fylles ut').should('exist');
         });
 
+      cy.get('[data-testid="importantInformation"]').within(() => {
+        cy.contains('Overskrift må fylles ut').should('exist');
+        cy.contains('Brødtekst må fylles ut').should('exist');
+      });
+
       cy.get('[data-testid="scope"]').within(() => {
         cy.contains('Ingress må fylles ut').should('exist');
         cy.findAllByText('Kulepunktet må fylles ut').should('have.length', 2);
@@ -494,7 +499,8 @@ describe('FormSettingsPage', () => {
         cy.findAllByText('Kulepunktet må fylles ut').should('have.length', 2);
       });
 
-      cy.findAllByText('Overskrift må fylles ut').should('have.length', 1);
+      cy.findAllByText('Brødtekst må fylles ut').should('have.length', 1);
+      cy.findAllByText('Overskrift må fylles ut').should('have.length', 2);
       cy.findAllByText('Ingress må fylles ut').should('have.length', 6);
       cy.findAllByText('Kulepunktet må fylles ut').should('have.length', 14);
     });

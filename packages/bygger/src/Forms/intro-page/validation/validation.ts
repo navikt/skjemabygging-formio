@@ -120,10 +120,13 @@ export function validateIntroPage(
 
   if (introPage.importantInformation) {
     const importantErrors: NonNullable<IntroPageError['importantInformation']> = {};
-    if (!introPage.importantInformation.description?.trim() && !introPage.importantInformation.title?.trim()) {
+    if (
+      hasEmptyValue(introPage.importantInformation.description) &&
+      hasEmptyValue(introPage.importantInformation.title)
+    ) {
       importantErrors.title = 'Overskrift må fylles ut';
     }
-    if (!introPage.importantInformation.description?.trim()) {
+    if (hasEmptyValue(introPage.importantInformation.description)) {
       importantErrors.description = 'Brødtekst må fylles ut';
     }
     if (Object.keys(importantErrors).length > 0) {
