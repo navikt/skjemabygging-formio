@@ -46,7 +46,7 @@ export function ReceiptPage() {
 
   return (
     <VStack gap="space-32">
-      {receipt && (
+      {receipt ? (
         <>
           {allRequiredDocumentsSubmitted && (
             <Alert size="small" variant="success">
@@ -156,6 +156,8 @@ export function ReceiptPage() {
             </Alert>
           )}
         </>
+      ) : (
+        <div>{translate(TEXTS.statiske.error.alreadySubmitted)}</div>
       )}
     </VStack>
   );
