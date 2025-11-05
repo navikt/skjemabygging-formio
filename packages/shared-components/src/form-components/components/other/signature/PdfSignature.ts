@@ -4,17 +4,25 @@ import {
   SubmissionMethod,
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormContextType } from '../../../../context/form/FormContext';
 import { LanguageContextType } from '../../../../context/languages/languages-context';
 import { PdfData } from '../../../types';
 
 interface Props {
   properties: FormPropertiesType;
+  formContextValue: FormContextType;
   languagesContextValue: LanguageContextType;
   submissionMethod?: SubmissionMethod;
 }
 
-const PdfSignature = ({ properties, languagesContextValue, submissionMethod }: Props): PdfData | null => {
+const PdfSignature = ({
+  properties,
+  formContextValue,
+  languagesContextValue,
+  submissionMethod,
+}: Props): PdfData | null => {
   const { signatures, descriptionOfSignatures } = properties;
+  const { submission } = formContextValue;
   const { translate } = languagesContextValue;
 
   if (submissionMethod === 'digital') {
@@ -22,9 +30,20 @@ const PdfSignature = ({ properties, languagesContextValue, submissionMethod }: P
   }
 
   if (submissionMethod === 'digitalnologin') {
-    // Replace this with confirmation that the user has signed with id.
-    // See: https://trello.com/c/vvlmMqvY/2717-justeringer-i-pdf-i-forbindelse-med-uinnlogget-digital
-    return null;
+    const personalId = submission?.attachments?.find((attachment) => attachment.attachmentId === 'personal-id');
+    if (!personalId) {
+      throw Error('Finner ikke opplastet legitimasjon');
+    }
+
+    return {
+      label: translate(TEXTS.pdfStatiske.signature),
+      verdiliste: [
+        {
+          label: translate(TEXTS.statiske.uploadId.title),
+          verdi: translate(TEXTS.statiske.uploadId[personalId.value]),
+        },
+      ],
+    };
   }
 
   const signatureList = signatureUtils.mapBackwardCompatibleSignatures(signatures);

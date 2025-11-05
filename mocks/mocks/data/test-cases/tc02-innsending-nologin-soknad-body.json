@@ -1,0 +1,102 @@
+{
+  "innsendingsId": "3ea0967e-45a6-4192-ace3-9a3862d7a440",
+  "brukerDto": { "id": "08842748500", "idType": "FNR" },
+  "skjemanr": "TST 19-81.07",
+  "tittel": "Uinnlogget søknad",
+  "tema": "BIL",
+  "spraak": "nb",
+  "hoveddokument": {
+    "vedleggsnr": "TST 19-81.07",
+    "tittel": "Uinnlogget søknad",
+    "pakrevd": true,
+    "opplastingsStatus": "LastetOpp",
+    "mimetype": "application/pdf",
+    "document": "<IGNORED>",
+    "label": "Uinnlogget søknad",
+    "fyllutId": null,
+    "beskrivelse": null,
+    "propertyNavn": null
+  },
+  "hoveddokumentVariant": {
+    "vedleggsnr": "TST 19-81.07",
+    "tittel": "Uinnlogget søknad",
+    "label": "Uinnlogget søknad",
+    "pakrevd": true,
+    "opplastingsStatus": "LastetOpp",
+    "mimetype": "application/json",
+    "document": "<IGNORED>",
+    "fyllutId": null,
+    "beskrivelse": null,
+    "propertyNavn": null
+  },
+  "vedleggsListe": [
+    {
+      "vedleggsnr": "K2",
+      "label": "Norsk pass",
+      "tittel": "Norsk pass",
+      "opplastingsStatus": "LastetOpp",
+      "mimetype": "application/pdf",
+      "pakrevd": true,
+      "filIdListe": [
+        "<IGNORED>"
+      ],
+      "fyllutId": "personal-id",
+      "beskrivelse": null,
+      "propertyNavn": null
+    },
+    {
+      "vedleggsnr": "V2",
+      "label": "Vedlegg med masse greier",
+      "tittel": "Vanlig vedlegg",
+      "opplastingsStatus": "SendSenere",
+      "mimetype": "application/pdf",
+      "pakrevd": true,
+      "filIdListe": [],
+      "fyllutId": "eyobqqf",
+      "beskrivelse": null,
+      "propertyNavn": null
+    },
+    {
+      "vedleggsnr": "U1",
+      "label": "Bekreftelse på utdanning",
+      "tittel": "Bekreftelse på utdanning",
+      "opplastingsStatus": "LastetOpp",
+      "mimetype": "application/pdf",
+      "pakrevd": true,
+      "filIdListe": [
+        "<IGNORED>"
+      ],
+      "fyllutId": "e3xh1d",
+      "beskrivelse": null,
+      "propertyNavn": null
+    },
+    {
+      "vedleggsnr": "N6",
+      "label": "Annen dokumentasjon",
+      "tittel": "Vitnemål",
+      "opplastingsStatus": "LastetOpp",
+      "mimetype": "application/pdf",
+      "pakrevd": false,
+      "filIdListe": [
+        "<IGNORED>"
+      ],
+      "fyllutId": "en5h1c",
+      "beskrivelse": null,
+      "propertyNavn": null
+    },
+    {
+      "vedleggsnr": "N6",
+      "label": "Annen dokumentasjon",
+      "tittel": "Egenerklæring",
+      "opplastingsStatus": "LastetOpp",
+      "mimetype": "application/pdf",
+      "pakrevd": false,
+      "filIdListe": [
+        "<IGNORED>"
+      ],
+      "fyllutId": "en5h1c",
+      "beskrivelse": null,
+      "propertyNavn": null
+    }
+  ]
+}

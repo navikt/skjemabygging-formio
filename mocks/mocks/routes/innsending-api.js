@@ -28,6 +28,9 @@ const prefillDataUsa = require('../data/innsending-api/prefill-data/prefill-data
 const mellomlagringSelectBoxes = require('../data/innsending-api/select-boxes/mellomlagring-select-boxes.json');
 const mellomlagringRadio = require('../data/innsending-api/radio/mellomlagring-radio.json');
 const mellomlagringMonthPicker = require('../data/innsending-api/month-picker/mellomlagring-month-picker.json');
+const tc01 = require('../data/test-cases/tc01-innsending-nologin-soknad-body.json');
+const tc02 = require('../data/test-cases/tc02-innsending-nologin-soknad-body.json');
+const { compareBodyMiddleware } = require('../utils/testCaseUtils');
 
 const objectToByteArray = (obj) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
 
@@ -538,27 +541,63 @@ module.exports = [
             const { body } = req;
             res.status(200);
             res.contentType('application/json; charset=UTF-8');
-            res.send({
-              innsendingsId: body.innsendingsId,
-              label: body.tittel,
-              status: 'Innsendt',
-              mottattdato: '2023-10-10T10:02:00.328667+02:00',
-              hoveddokumentRef: null,
-              innsendteVedlegg: body.vedleggsListe
-                .filter((v) => v.opplastingsStatus === 'LastetOpp')
-                .map((v) => ({ vedleggsnr: v.vedleggsnr, tittel: v.tittel })),
-              skalEttersendes: body.vedleggsListe
-                .filter((v) => v.opplastingsStatus === 'SendSenere')
-                .map((v) => ({ vedleggsnr: v.vedleggsnr, tittel: v.tittel })),
-              skalSendesAvAndre: [],
-              levertTidligere: [],
-              sendesIkkeInn: [],
-              navKanInnhente: [],
-              ettersendingsfrist: null,
-            });
+            res.send(replySubmittedNologinApplication(body));
           },
+        },
+      },
+      {
+        id: 'success-tc01',
+        type: 'middleware',
+        options: {
+          middleware: compareBodyMiddleware(
+            tc01,
+            ['innsendingsId', 'hoveddokument.document', 'hoveddokumentVariant.document', 'vedleggsListe.filIdListe'],
+            (req, res) => {
+              const { body } = req;
+              res.status(200);
+              res.contentType('application/json; charset=UTF-8');
+              res.send(replySubmittedNologinApplication(body));
+            },
+          ),
+        },
+      },
+      {
+        id: 'success-tc02',
+        type: 'middleware',
+        options: {
+          middleware: compareBodyMiddleware(
+            tc02,
+            ['innsendingsId', 'hoveddokument.document', 'hoveddokumentVariant.document', 'vedleggsListe.filIdListe'],
+            (req, res) => {
+              const { body } = req;
+              res.status(200);
+              res.contentType('application/json; charset=UTF-8');
+              res.send(replySubmittedNologinApplication(body));
+            },
+          ),
         },
       },
     ],
   },
 ];
+
+function replySubmittedNologinApplication(body) {
+  return {
+    innsendingsId: body.innsendingsId,
+    label: body.tittel,
+    status: 'Innsendt',
+    mottattdato: '2023-10-10T10:02:00.328667+02:00',
+    hoveddokumentRef: null,
+    innsendteVedlegg: body.vedleggsListe
+      .filter((v) => v.opplastingsStatus === 'LastetOpp')
+      .map((v) => ({ vedleggsnr: v.vedleggsnr, tittel: v.tittel })),
+    skalEttersendes: body.vedleggsListe
+      .filter((v) => v.opplastingsStatus === 'SendSenere')
+      .map((v) => ({ vedleggsnr: v.vedleggsnr, tittel: v.tittel })),
+    skalSendesAvAndre: [],
+    levertTidligere: [],
+    sendesIkkeInn: [],
+    navKanInnhente: [],
+    ettersendingsfrist: null,
+  };
+}

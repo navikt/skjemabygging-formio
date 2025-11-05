@@ -22,6 +22,7 @@ import {
 import { PdfDatePicker, PdfMonthPicker, PdfYear } from './components/date';
 import { PdfContainer, PdfDataGrid, PdfFormGroup, PdfPanel, PdfRow } from './components/group';
 import { PdfIntroPage, PdfSignature } from './components/other';
+import PdfAttachmentUpload from './components/other/attachment-uploads/PdfAttachmentUpload';
 import {
   PdfAccordion,
   PdfAlert,
@@ -45,7 +46,7 @@ interface Props {
   languagesContextValue: LanguageContextType;
   isDelingslenke?: boolean;
   gitVersion?: string;
-  submissionMethod?: SubmissionMethod;
+  submissionMethod?: SubmissionMethod | undefined;
 }
 
 const renderPdfForm = ({
@@ -56,7 +57,7 @@ const renderPdfForm = ({
   submissionMethod,
 }: Props): PdfFormData => {
   const { currentLanguage, translate } = languagesContextValue;
-  const { form, activeComponents, submission } = formContextValue;
+  const { form, activeComponents, submission, activeAttachmentUploadsPanel } = formContextValue;
 
   const componentRegistry = {
     /* Standard */
@@ -112,6 +113,11 @@ const renderPdfForm = ({
     maalgruppe: PdfMaalgruppe,
   };
 
+  const attachmentUploadsComponentRegistry = {
+    ...componentRegistry,
+    attachment: PdfAttachmentUpload,
+  };
+
   const languageCode: string =
     currentLanguage === 'nn-NO' || currentLanguage == 'nn' ? 'nn' : currentLanguage === 'en' ? 'en' : 'nb';
 
@@ -130,7 +136,18 @@ const renderPdfForm = ({
           }),
         )
         .filter(Boolean) ?? []),
-      PdfSignature({ properties: form.properties, languagesContextValue, submissionMethod }),
+      ...(activeAttachmentUploadsPanel
+        ? [
+            renderPdfComponent({
+              component: activeAttachmentUploadsPanel,
+              submissionPath: '',
+              componentRegistry: attachmentUploadsComponentRegistry,
+              formContextValue,
+              languagesContextValue,
+            }),
+          ]
+        : []),
+      PdfSignature({ properties: form.properties, languagesContextValue, formContextValue, submissionMethod }),
     ].filter(Boolean),
     skjemanummer: form.properties?.skjemanummer,
     pdfConfig: {

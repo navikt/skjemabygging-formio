@@ -24,12 +24,14 @@ const getCleanedUpPdfFormData = (request, date?: string) => {
   };
 };
 
-const downloadPdf = (submissionType: 'digital' | 'paper' = 'paper') => {
+const downloadPdf = (submissionType: 'digital' | 'paper' | 'digitalnologin' = 'paper') => {
   cy.findByRole('link', { name: /Oppsummering|Summary/ }).click();
   cy.findByRole('heading', { name: /Oppsummering|Summary/ }).shouldBeVisible();
   if (submissionType === 'digital') {
     cy.findByRole('button', { name: TEXTS.grensesnitt.submitToNavPrompt.open }).click();
     cy.findByRole('button', { name: TEXTS.grensesnitt.submitToNavPrompt.confirm }).click();
+  } else if (submissionType === 'digitalnologin') {
+    cy.findByRole('button', { name: TEXTS.grensesnitt.submitToNavPrompt.open }).click();
   } else {
     cy.findByRole('link', { name: /Gå videre|Proceed/ }).click();
     cy.findByRole('button', { name: /Last ned skjema|Download form/ }).click();
@@ -442,6 +444,47 @@ describe('Pdf', () => {
         });
 
         downloadPdf('digital');
+      });
+    });
+
+    describe('Nologin', () => {
+      beforeEach(() => {
+        cy.visit('/fyllut/components');
+        cy.defaultWaits();
+
+        cy.findByRole('link', { name: 'Kan ikke logge inn' }).click();
+        cy.findByRole('link', { name: 'Send digitalt uten å logge inn' }).click();
+        cy.findByRole('heading', { name: 'Legitimasjon' }).should('exist');
+
+        cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
+          cy.findByLabelText('Norsk pass').check(),
+        );
+        cy.get('input[type=file]').selectFile('cypress/fixtures/files/id-billy-bruker.jpg', { force: true });
+        cy.clickNextStep();
+
+        cy.clickShowAllSteps();
+      });
+
+      it('Pdf does not contain signature field when submission method is digitalnologin', () => {
+        cy.clickStart();
+        cy.findByRole('group', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
+          cy.findByRole('radio', { name: 'Ja' }).check();
+        });
+
+        cy.findByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).type('20905995783');
+
+        cy.clickNextStep();
+
+        cy.fixture('pdf/request-components-identity-nologin.json').then((fixture) => {
+          cy.intercept('POST', '/fyllut/api/send-inn/nologin-soknad', (req) => {
+            // Check that timestamp is present in footer before removing it for comparison.
+            expect(req.body.pdfFormData.bunntekst.upperMiddle).not.to.be.null;
+            const actual = getCleanedUpPdfFormData(req);
+            expect(actual, 'PDF form data should match fixture for nologin submission').deep.eq(fixture);
+          }).as('downloadPdf');
+        });
+
+        downloadPdf('digitalnologin');
       });
     });
   });

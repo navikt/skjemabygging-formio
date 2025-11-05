@@ -1,0 +1,78 @@
+{
+  "label": "Uinnlogget søknad",
+  "verdiliste": [
+    {
+      "label": "Dine opplysninger",
+      "verdiliste": [
+        {
+          "label": "Fornavn",
+          "verdi": "Ola"
+        },
+        {
+          "label": "Etternavn",
+          "verdi": "Nordmann"
+        },
+        {
+          "label": "Fødselsnummer eller d-nummer",
+          "verdi": "08842748500"
+        }
+      ]
+    },
+    {
+      "label": "Utdanning",
+      "verdiliste": [
+        {
+          "label": "Høyeste fullførte utdanning",
+          "verdi": "Annet"
+        }
+      ]
+    },
+    {
+      "label": "Vedlegg",
+      "verdiliste": [
+        {
+          "label": "Vedlegg med masse greier",
+          "verdi": "Jeg har levert denne dokumentasjonen tidligere"
+        },
+        {
+          "label": "Tilleggsinfo 3",
+          "verdiliste": [
+            {
+              "label": "Ble levert i fjor"
+            }
+          ],
+          "visningsVariant": "PUNKTLISTE"
+        },
+        {
+          "label": "Bekreftelse på utdanning",
+          "verdi": "Jeg legger det ved dette skjemaet"
+        },
+        {
+          "label": "Annen dokumentasjon",
+          "verdi": "Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved"
+        }
+      ]
+    },
+    {
+      "label": "Underskrift",
+      "verdiliste": [
+        {
+          "label": "Legitimasjon",
+          "verdi": "Norsk pass"
+        }
+      ]
+    }
+  ],
+  "skjemanummer": "TST 19-81.07",
+  "pdfConfig": {
+    "harInnholdsfortegnelse": false,
+    "språk": "nb"
+  },
+  "bunntekst": {
+    "upperleft": "F.nr: 08842748500",
+    "lowerleft": "Skjemanummer: TST 19-81.07",
+    "upperRight": null,
+    "upperMiddle": "<WILL BE IGNORED>",
+    "lowerMiddle": "Versjon: local"
+  }
+}
