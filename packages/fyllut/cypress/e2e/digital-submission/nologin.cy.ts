@@ -32,6 +32,7 @@ describe('Digital submission without user login', () => {
       cy.findByRole('heading', { name: 'Veiledning' }).should('exist');
 
       cy.clickNextStep();
+      cy.findByRole('link', { name: /Neste steg/ }).should('exist');
       cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola');
       cy.findByRole('textbox', { name: 'Etternavn' }).type('Nordmann');
 
