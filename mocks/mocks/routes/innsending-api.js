@@ -595,11 +595,13 @@ function replySubmittedNologinApplication(body) {
     skalEttersendes: body.vedleggsListe
       .filter((v) => v.opplastingsStatus === 'SendSenere')
       .map((v) => ({ vedleggsnr: v.vedleggsnr, tittel: v.tittel })),
-    skalSendesAvAndre: [],
+    skalSendesAvAndre: body.vedleggsListe
+      .filter((v) => v.opplastingsStatus === 'SendesAvAndre')
+      .map((v) => ({ vedleggsnr: v.vedleggsnr, tittel: v.tittel })),
     levertTidligere: [],
     sendesIkkeInn: [],
     navKanInnhente: [],
-    ettersendingsfrist: null,
+    ettersendingsfrist: '2024-05-05T10:02:00.328667+02:00',
     pdfBase64: mockPdfBase64,
   };
 }
