@@ -290,6 +290,12 @@ describe('FormSettingsPage', () => {
     beforeEach(() => {
       cy.intercept('GET', '/api/forms/cypresssettings', { fixture: 'getForm.json' }).as('getForm');
       cy.intercept('GET', '/api/forms/cypresssettings/translations', { body: [] }).as('getFormTranslations');
+      cy.intercept('PUT', '/api/forms/cypresssettings', (req) => {
+        req.reply(req.body);
+      });
+      cy.intercept('POST', '/api/forms/cypresssettings/translations', (req) => req.reply(201, req.body)).as(
+        'postTranslations',
+      );
       cy.visit('forms/cypresssettings/intropage');
     });
 
@@ -325,11 +331,175 @@ describe('FormSettingsPage', () => {
         });
     });
 
-    it('optional fields display does not display error message on save when enabled is false', () => {
-      cy.intercept('PUT', '/api/forms/cypresssettings', (req) => {
-        req.reply(req.body);
+    it('all textfields display error if content is emptied', () => {
+      cy.findByRole('checkbox', { name: 'Bruk standard introside' }).should('exist');
+      cy.findByRole('checkbox', { name: 'Bruk standard introside' }).click();
+      checkAllOptionalFields();
+
+      cy.contains('Velkomstmelding')
+        .parent()
+        .within(() => {
+          typeAndBlur(0, 'abc');
+          typeAndBlur(0, '{selectall}{backspace}');
+        });
+
+      cy.get('[data-testid="importantInformation"]').within(() => {
+        cy.contains('button', 'Legg til overskrift').click();
+        cy.findAllByRole('textbox', { name: 'Overskrift' }).eq(0).type('abc');
+        cy.findAllByRole('textbox', { name: 'Overskrift' }).eq(0).type('{selectall}{backspace}');
+
+        typeAndBlur(0, 'abc');
+        typeAndBlur(0, '{selectall}{backspace}');
       });
 
+      cy.get('[data-testid="scope"]').within(() => {
+        cy.findByRole('radio', { name: 'Her kan du søke om' }).check();
+        cy.contains('button', 'Legg til ingress').click();
+        typeAndBlur(0, 'abc');
+        typeAndBlur(0, '{selectall}{backspace}');
+        cy.contains('Legg til punktliste').click();
+        typeAndBlur(1, 'abc');
+        typeAndBlur(1, '{selectall}{backspace}');
+        cy.contains('Legg til kulepunkt').click();
+        typeAndBlur(2, 'abc');
+        typeAndBlur(2, '{selectall}{backspace}');
+      });
+
+      cy.get('[data-testid="out-of-scope"]').within(() => {
+        cy.findByRole('radio', { name: 'Her kan du ikke' }).check();
+        cy.contains('button', 'Legg til ingress').click();
+        typeAndBlur(0, 'abc');
+        typeAndBlur(0, '{selectall}{backspace}');
+        cy.contains('Legg til punktliste').click();
+        typeAndBlur(1, 'abc');
+        typeAndBlur(1, '{selectall}{backspace}');
+        cy.contains('Legg til kulepunkt').click();
+        typeAndBlur(2, 'abc');
+        typeAndBlur(2, '{selectall}{backspace}');
+      });
+
+      cy.get('[data-testid="prerequisites"]').within(() => {
+        cy.findByRole('radio', { name: 'Før du søker' }).check();
+        cy.contains('button', 'Legg til ingress').click();
+        typeAndBlur(0, 'abc');
+        typeAndBlur(0, '{selectall}{backspace}');
+        cy.contains('Legg til punktliste').click();
+        typeAndBlur(1, 'abc');
+        typeAndBlur(1, '{selectall}{backspace}');
+        cy.contains('Legg til kulepunkt').click();
+        typeAndBlur(2, 'abc');
+        typeAndBlur(2, '{selectall}{backspace}');
+      });
+
+      cy.get('[data-testid="dataDisclosure"]').within(() => {
+        cy.findByRole('radio', { name: 'Informasjon vi henter' }).check();
+        cy.contains('Legg til kulepunkt').click();
+        typeAndBlur(0, 'abc');
+        typeAndBlur(0, '{selectall}{backspace}');
+        cy.contains('Legg til kulepunkt').click();
+        typeAndBlur(1, 'abc');
+        typeAndBlur(1, '{selectall}{backspace}');
+      });
+
+      cy.get('[data-testid="dataTreatment"]').within(() => {
+        cy.contains('Legg til ingress').click();
+        typeAndBlur(0, 'abc');
+        typeAndBlur(0, '{selectall}{backspace}');
+        cy.contains('Legg til punktliste').click();
+        typeAndBlur(1, 'abc');
+        typeAndBlur(1, '{selectall}{backspace}');
+        cy.contains('Legg til kulepunkt').click();
+        typeAndBlur(2, 'abc');
+        typeAndBlur(2, '{selectall}{backspace}');
+      });
+
+      cy.get('[data-testid="automaticProcessing"]').within(() => {
+        cy.contains('Legg til ingress').click();
+        typeAndBlur(0, 'abc');
+        typeAndBlur(0, '{selectall}{backspace}');
+        cy.contains('Legg til punktliste').click();
+        typeAndBlur(1, 'abc');
+        typeAndBlur(1, '{selectall}{backspace}');
+        cy.contains('Legg til kulepunkt').click();
+        typeAndBlur(2, 'abc');
+        typeAndBlur(2, '{selectall}{backspace}');
+      });
+
+      cy.get('[data-testid="optional"]').within(() => {
+        cy.findByRole('textbox', { name: 'Overskrift' }).type('abc');
+        cy.findByRole('textbox', { name: 'Overskrift' }).type('{selectall}{backspace}');
+        cy.contains('Legg til ingress').click();
+        typeAndBlur(0, 'abc');
+        typeAndBlur(0, '{selectall}{backspace}');
+        cy.contains('Legg til punktliste').click();
+        typeAndBlur(1, 'abc');
+        typeAndBlur(1, '{selectall}{backspace}');
+        cy.contains('Legg til kulepunkt').click();
+        typeAndBlur(2, 'abc');
+        typeAndBlur(2, '{selectall}{backspace}');
+      });
+
+      cy.contains('Erklæring')
+        .closest('section')
+        .then(($section) => {
+          cy.wrap($section).within(() => {
+            cy.wrap($section).within(() => {
+              cy.findByRole('radio', { name: 'behandle saken din' }).check();
+            });
+          });
+        });
+
+      cy.contains('Lagre').click();
+
+      cy.get('[aria-live="polite"]').should('not.contain.text', `Lagret skjema ${submitData.title}`);
+
+      cy.contains('Velkomstmelding')
+        .parent()
+        .within(() => {
+          cy.contains('Velkomstmelding må fylles ut').should('exist');
+        });
+
+      cy.get('[data-testid="scope"]').within(() => {
+        cy.contains('Ingress må fylles ut').should('exist');
+        cy.findAllByText('Kulepunktet må fylles ut').should('have.length', 2);
+      });
+
+      cy.get('[data-testid="out-of-scope"]').within(() => {
+        cy.contains('Ingress må fylles ut').should('exist');
+        cy.findAllByText('Kulepunktet må fylles ut').should('have.length', 2);
+      });
+
+      cy.get('[data-testid="prerequisites"]').within(() => {
+        cy.contains('Ingress må fylles ut').should('exist');
+        cy.findAllByText('Kulepunktet må fylles ut').should('have.length', 2);
+      });
+
+      cy.get('[data-testid="dataDisclosure"]').within(() => {
+        cy.findAllByText('Kulepunktet må fylles ut').should('have.length', 2);
+      });
+
+      cy.get('[data-testid="dataTreatment"]').within(() => {
+        cy.contains('Ingress må fylles ut').should('exist');
+        cy.findAllByText('Kulepunktet må fylles ut').should('have.length', 2);
+      });
+
+      cy.get('[data-testid="automaticProcessing"]').within(() => {
+        cy.contains('Ingress må fylles ut').should('exist');
+        cy.findAllByText('Kulepunktet må fylles ut').should('have.length', 2);
+      });
+
+      cy.get('[data-testid="optional"]').within(() => {
+        cy.contains('Overskrift må fylles ut').should('exist');
+        cy.contains('Ingress må fylles ut').should('exist');
+        cy.findAllByText('Kulepunktet må fylles ut').should('have.length', 2);
+      });
+
+      cy.findAllByText('Overskrift må fylles ut').should('have.length', 1);
+      cy.findAllByText('Ingress må fylles ut').should('have.length', 6);
+      cy.findAllByText('Kulepunktet må fylles ut').should('have.length', 14);
+    });
+
+    it('optional fields display does not display error message on save when enabled is false', () => {
       checkAllOptionalFields();
 
       cy.contains('Lagre').click();

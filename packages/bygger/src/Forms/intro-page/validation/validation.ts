@@ -20,16 +20,22 @@ export type IntroPageError = Partial<{
   sections: Partial<Record<keyof IntroPage['sections'], IntroPageSectionError>>;
 }>;
 
-export function validateIntroPage(introPage?: Partial<IntroPage>): IntroPageError {
+export function validateIntroPage(
+  introPage?: Partial<IntroPage>,
+  getKeybasedText?: (value: string) => string,
+): IntroPageError {
+  const hasEmptyValue = (text?: string): boolean => !text?.trim() || (!!getKeybasedText && !getKeybasedText(text));
+
   if (!introPage) return {};
 
   const errors: IntroPageError = {};
   const fieldsWithPrefilledBulletPoints = ['dataDisclosure'];
   const fieldsWithPrefilledIngressAndBulletPoints = ['dataDisclosure'];
   const fieldsWithoutTitle = ['automaticProcessing', 'dataTreatment'];
+  const fieldsWithTextFieldTitle = ['optional'];
   const fieldWithoutDescription = ['dataDisclosure'];
 
-  if (!introPage.introduction?.trim()) {
+  if (hasEmptyValue(introPage.introduction)) {
     errors.introduction = 'Velkomstmelding må fylles ut';
   }
 
@@ -44,17 +50,20 @@ export function validateIntroPage(introPage?: Partial<IntroPage>): IntroPageErro
     const sectionErrors: IntroPageSectionError = {};
     const bulletPointErrors: BulletPointErrors = {};
 
-    if (!fieldsWithoutTitle.includes(sectionKey) && !section?.title?.trim()) {
+    if (
+      (!fieldsWithoutTitle.includes(sectionKey) && !section?.title?.trim()) ||
+      (fieldsWithTextFieldTitle.includes(sectionKey) && hasEmptyValue(section.title))
+    ) {
       sectionErrors.title = 'Overskrift må fylles ut';
     }
 
-    if (!fieldWithoutDescription.includes(sectionKey) && section?.description?.trim().length === 0) {
+    if (!fieldWithoutDescription.includes(sectionKey) && hasEmptyValue(section?.description)) {
       sectionErrors.description = 'Ingress må fylles ut';
     }
 
     if (Array.isArray(section?.bulletPoints)) {
       section.bulletPoints.forEach((bp: string, index: number) => {
-        if (!bp?.trim()) {
+        if (hasEmptyValue(bp)) {
           bulletPointErrors[index] = 'Kulepunktet må fylles ut';
         }
       });
