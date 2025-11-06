@@ -128,22 +128,10 @@ const introPage: KeyBasedFormsApiTranslation[] = [
     en: 'How we process personal data',
   },
   {
-    key: 'introPage.dataStorage.title.paper',
-    nb: 'Ta den tiden du trenger',
-    nn: 'Ta den tida du treng',
-    en: 'Take your time',
-  },
-  {
     key: 'introPage.dataStorage.title.digital',
     nb: 'Vi lagrer svar underveis',
     nn: 'Me lagrar svar undervegs',
     en: 'We save your answers',
-  },
-  {
-    key: 'introPage.dataStorage.ingress.paper',
-    nb: 'Du kan ikke lagre skjemaet underveis. Informasjonen du fyller ut i skjemaet sendes ikke til Nav før du har fullført hele skjemaet og sendt det inn. Hvis du lukker vinduet eller nettleseren vil all informasjon du har fylt ut forsvinne.',
-    nn: 'Du kan ikkje lagra skjemaet undervegs. Informasjonen du fyller ut i skjemaet blir ikkje send til Nav før du har fullført heile skjemaet og sendt det inn. Om du lukkar vindauget eller nettlesaren vil all informasjon du har fylt ut forsvinna.',
-    en: 'You cannot save the form while filling out. The information you enter in the form is not sent to Nav until you have completed the entire form and submitted it. If you close the window or browser, all the information you have entered will be lost.',
   },
   {
     key: 'introPage.dataStorage.ingress.digital',

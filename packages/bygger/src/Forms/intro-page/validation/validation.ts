@@ -24,7 +24,8 @@ export function validateIntroPage(
   introPage?: Partial<IntroPage>,
   getKeybasedText?: (value: string) => string,
 ): IntroPageError {
-  const hasEmptyValue = (text?: string): boolean => !text?.trim() || (!!getKeybasedText && !getKeybasedText(text));
+  const hasEmptyValue = (text?: string): boolean =>
+    text !== undefined && (text.trim() === '' || (!!getKeybasedText && !getKeybasedText(text)));
 
   if (!introPage) return {};
 
@@ -35,7 +36,7 @@ export function validateIntroPage(
   const fieldsWithTextFieldTitle = ['optional'];
   const fieldWithoutDescription = ['dataDisclosure'];
 
-  if (hasEmptyValue(introPage.introduction)) {
+  if (introPage.introduction === undefined || hasEmptyValue(introPage.introduction)) {
     errors.introduction = 'Velkomstmelding må fylles ut';
   }
 
@@ -126,7 +127,10 @@ export function validateIntroPage(
     ) {
       importantErrors.title = 'Overskrift må fylles ut';
     }
-    if (hasEmptyValue(introPage.importantInformation.description)) {
+    if (
+      introPage.importantInformation.description === undefined ||
+      hasEmptyValue(introPage.importantInformation.description)
+    ) {
       importantErrors.description = 'Brødtekst må fylles ut';
     }
     if (Object.keys(importantErrors).length > 0) {
