@@ -69,7 +69,7 @@ describe('Digital submission without user login', () => {
 
       cy.clickNextStep();
 
-      cy.findByRole('button', { name: 'Send til Nav' }).click();
+      cy.findByRole('link', { name: 'Send til Nav' }).click();
       cy.findByText('Takk for at du sendte inn skjemaet.').should('exist');
       cy.findByRole('button', { name: 'Vis alle steg' }).should('not.exist');
       cy.findByRole('button', { name: 'Skjul alle steg' }).should('not.exist');
@@ -90,7 +90,7 @@ describe('Digital submission without user login', () => {
       cy.get('input[type=file]').selectFile('cypress/fixtures/files/another-small-file.txt', { force: true });
       cy.clickNextStep();
 
-      cy.findByRole('button', { name: 'Send til Nav' }).click();
+      cy.findByRole('link', { name: 'Send til Nav' }).click();
       cy.findByText('Takk for at du sendte inn skjemaet.').should('exist');
 
       cy.go('back');

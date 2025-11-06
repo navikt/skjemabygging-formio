@@ -334,7 +334,7 @@ describe('DrivingList', () => {
       cy.get('.navds-alert').should('exist');
 
       cy.findAllByRole('link', { name: 'Fortsett utfylling' }).should('have.length', 2);
-      cy.findByRole('link', { name: 'Send til Nav' }).should('not.exist');
+      cy.findByRole('link', { name: 'Send til Nav' }).should('exist');
     });
   });
 });

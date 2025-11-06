@@ -66,7 +66,7 @@ describe('Attachment', () => {
         cy.get('dd').eq(1).should('contain.text', TEXTS.statiske.attachment.levertTidligere);
       });
 
-    cy.clickEditAnswers();
+    cy.clickPreviousStep();
 
     cy.findByRole('textbox', { name: TITLE.textarea }).should('exist');
 

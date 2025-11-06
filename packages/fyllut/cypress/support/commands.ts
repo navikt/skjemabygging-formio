@@ -102,7 +102,7 @@ Cypress.Commands.add('clickEditAnswers', (linkText) => {
 });
 
 Cypress.Commands.add('clickSendNav', () => {
-  cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.sendToNav }).click();
+  cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.sendToNav }).click();
 });
 
 Cypress.Commands.add('verifySendInnRedirect', () => {

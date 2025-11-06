@@ -27,7 +27,7 @@ export function SummaryPageNextButton({
 }: Props) {
   const { app, submissionMethod } = useAppConfig();
   const canSubmit =
-    !!panelValidationList && panelValidationList.every((panelValidation) => !panelValidation.hasValidationErrors);
+    !panelValidationList || panelValidationList.every((panelValidation) => !panelValidation.hasValidationErrors);
   const navigate = useNavigate();
   const { search } = useLocation();
   const { translate } = useLanguages();

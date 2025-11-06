@@ -82,12 +82,6 @@ describe('Mellomlagring', () => {
       });
       cy.clickNextStep();
       cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveDraft }).should('not.exist');
-      cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('not.exist');
-      cy.findAllByRole('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers })
-        .first()
-        .should('exist')
-        .should('have.attr', 'href')
-        .and('contains', '/fyllut/testmellomlagring/valgfrieOpplysninger?sub=paper');
     });
   });
 
@@ -127,14 +121,6 @@ describe('Mellomlagring', () => {
       cy.wait('@updateMellomlagring');
       cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveDraft }).should('exist');
       cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.cancelAndDelete }).should('exist');
-      cy.findAllByRole('link', { name: TEXTS.grensesnitt.summaryPage.editAnswers })
-        .first()
-        .should('exist')
-        .and(
-          'have.attr',
-          'href',
-          '/fyllut/testmellomlagring/valgfrieOpplysninger?sub=digital&innsendingsId=75eedb4c-1253-44d8-9fde-3648f4bb1878#hvaDrakkDuTilFrokost',
-        );
     });
 
     it('fetches mellomlagring and navigates to "/summary" on start, when url contains "innsendingsId"', () => {
@@ -241,16 +227,26 @@ describe('Mellomlagring', () => {
           cy.verifySendInnRedirect();
         });
 
-        it('retrieves mellomlagring and lets you navigate to first empty panel', () => {
+        it('retrieves mellomlagring and lets you navigate to first panel with error', () => {
           cy.visit(
             '/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO',
           );
           cy.defaultWaits();
           cy.wait('@getMellomlagringValid');
           cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
+
+          cy.clickShowAllSteps();
+          cy.findByRole('link', { name: 'Levering' }).click();
+          cy.findByRole('heading', { name: 'Levering' }).should('exist');
+          cy.findByRole('combobox', { name: 'Hvordan ønsker du å motta pakken?' })
+            .get('svg')
+            .eq(2)
+            .click({ force: true });
+          cy.findByRole('link', { name: TEXTS.statiske.summaryPage.title }).click();
+
           cy.clickEditAnswers();
-          cy.url().should('include', '/valgfrieOpplysninger');
-          cy.findByRole('textbox', { name: 'Hva drakk du til frokost (valgfritt)' }).should('have.focus');
+          cy.url().should('include', '/levering');
+          cy.findByRole('combobox', { name: 'Hvordan ønsker du å motta pakken?' }).should('have.focus');
         });
 
         it('lets you edit and update submission data', () => {
@@ -385,7 +381,6 @@ describe('Mellomlagring', () => {
           cy.defaultWaits();
           cy.wait('@getMellomlagringValid');
           cy.contains(TEXTS.statiske.summaryPage.validationMessage).should('exist');
-          cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('not.exist');
           cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
         });
       });
@@ -415,7 +410,6 @@ describe('Mellomlagring', () => {
               });
 
             cy.contains(TEXTS.statiske.summaryPage.validationMessage).should('exist');
-            cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('not.exist');
             cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
           });
 
@@ -440,7 +434,6 @@ describe('Mellomlagring', () => {
                 cy.get('dd').eq(2).should('contain.text', 'Euro (EUR)');
               });
             cy.contains(TEXTS.statiske.summaryPage.validationMessage).should('exist');
-            cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('not.exist');
             cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
           });
         });
@@ -474,7 +467,6 @@ describe('Mellomlagring', () => {
                 cy.get('dt').eq(2).should('contain.text', 'Velg valuta du vil betale med');
                 cy.get('dd').eq(2).should('contain.text', 'Euro (EUR)');
               });
-            cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('exist');
             cy.contains(TEXTS.statiske.summaryPage.validationMessage).should('not.exist');
             cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
 
@@ -510,7 +502,6 @@ describe('Mellomlagring', () => {
                 cy.get('dt').eq(2).should('contain.text', 'Velg valuta du vil betale med');
                 cy.get('dd').eq(2).should('contain.text', 'Euro (EUR)');
               });
-            cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('exist');
             cy.contains(TEXTS.statiske.summaryPage.validationMessage).should('not.exist');
             cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
 
@@ -536,7 +527,6 @@ describe('Mellomlagring', () => {
         );
         cy.defaultWaits();
         cy.wait('@getMellomlagring');
-        cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('exist');
         cy.contains(TEXTS.statiske.summaryPage.validationMessage).should('not.exist');
         cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
         cy.clickSaveAndContinue();

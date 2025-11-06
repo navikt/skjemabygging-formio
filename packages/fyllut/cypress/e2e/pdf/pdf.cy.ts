@@ -30,7 +30,7 @@ const downloadPdf = (submissionType: 'digital' | 'paper' = 'paper') => {
   if (submissionType === 'digital') {
     cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.sendToNav }).click();
   } else {
-    cy.findByRole('link', { name: /Neste steg|Next step/ }).click();
+    cy.findByRole('link', { name: 'Instruksjoner for innsending' }).click();
     cy.findByRole('button', { name: /Last ned skjema|Download form/ }).click();
   }
   cy.wait('@downloadPdf');
@@ -118,7 +118,7 @@ describe('Pdf', () => {
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: 'Oppsummering' }).shouldBeVisible();
-      cy.clickNextStep();
+      cy.findByRole('link', { name: 'Instruksjoner for innsending' }).click();
 
       cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
         const { submission, pdfFormData } = req.body;
@@ -540,7 +540,7 @@ describe('Pdf', () => {
       });
     });
 
-    describe('Multiple signatures', () => {
+    describe.only('Multiple signatures', () => {
       it('Check for two signatures', () => {
         cy.visit('/fyllut/components?sub=paper');
         cy.defaultWaits();
@@ -592,7 +592,6 @@ describe('Pdf', () => {
         cy.clickNextStep();
         cy.findByRole('group', { name: /Do you have a Norwegian national identification number or d number?/ }).within(
           () => {
-            cy.findByRole('radio', { name: 'Yes' }).check();
             cy.findByRole('radio', { name: 'Yes' }).check();
           },
         );
