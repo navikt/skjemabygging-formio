@@ -128,7 +128,7 @@ describe('Attachments page', () => {
       cy.wait('@deleteAllFilesByAttachmentId');
     });
 
-    it.only('should remove all attachments on cancel', () => {
+    it('should remove all attachments on cancel', () => {
       cy.intercept('/fyllut/api/nologin-file').as('deleteAllFiles');
       cy.findAllByLabelText(TEXTS.statiske.attachment.leggerVedNaa).first().click();
       uploadFile('attachment1.txt');
