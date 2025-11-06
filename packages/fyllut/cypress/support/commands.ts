@@ -56,17 +56,7 @@ Cypress.Commands.add('clickPreviousStep', () => {
 });
 
 Cypress.Commands.add('clickSaveAndContinue', () => {
-  return cy
-    .url()
-    .then((url) =>
-      cy
-        .findByRoleWhenAttached(
-          url.includes('/oppsummering') ? 'button' : 'link',
-          { name: /Lagre og fortsett|Save and continue/ },
-          500,
-        )
-        .click(),
-    );
+  return cy.findByRoleWhenAttached('link', { name: /Lagre og fortsett|Save and continue/ }, 500).click();
 });
 
 Cypress.Commands.add('clickStart', () => {
