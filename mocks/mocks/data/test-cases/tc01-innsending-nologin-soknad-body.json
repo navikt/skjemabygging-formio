@@ -51,7 +51,7 @@
       "pakrevd": true,
       "filIdListe": [],
       "fyllutId": "eyobqqf",
-      "beskrivelse": "Ble levert i fjor",
+      "beskrivelse": "<p>Beskrivelse til vedlegget</p>",
       "propertyNavn": null
     },
     {
@@ -75,7 +75,7 @@
       "pakrevd": false,
       "filIdListe": [],
       "fyllutId": "en5h1c",
-      "beskrivelse": null,
+      "beskrivelse": "Har du noen annen dokumentasjon du ønsker å legge ved?",
       "propertyNavn": null
     }
   ]
