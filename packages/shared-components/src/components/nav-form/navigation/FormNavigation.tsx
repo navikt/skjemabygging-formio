@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { To, useLocation } from 'react-router';
 import { useLanguages } from '../../../context/languages';
 import { useSendInn } from '../../../context/sendInn/sendInnContext';
-import { CancelButton } from '../../navigation/CancelButton';
+import { CancelAndDeleteButton } from '../../navigation/CancelAndDeleteButton';
 import { NavigationButtonRow } from '../../navigation/NavigationButtonRow';
 import { NextButton } from '../../navigation/NextButton';
 import { PreviousButton } from '../../navigation/PreviousButton';
@@ -58,11 +58,12 @@ const FormNavigation = ({ paths, isValid, submission, navigateTo, finalStep }: P
 
   const prevClickHandler = useCallback(async () => {
     if (!prevLocation) {
-      return false;
+      navigateTo({ pathname: '..', search });
+      return true;
     }
     navigateTo(prevLocation);
     return true;
-  }, [navigateTo, prevLocation]);
+  }, [navigateTo, prevLocation, search]);
 
   return (
     <NavigationButtonRow
@@ -87,7 +88,7 @@ const FormNavigation = ({ paths, isValid, submission, navigateTo, finalStep }: P
           }}
         />
       }
-      cancelButton={<CancelButton />}
+      cancelButton={<CancelAndDeleteButton />}
       saveButton={isMellomlagringActive && submission && <SaveButton submission={submission} />}
     />
   );

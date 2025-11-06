@@ -55,6 +55,7 @@ const datafetcherAnnetForm = require('../data/formio-api/data-fetcher-annet.json
 const datafetcherContainer = require('../data/formio-api/data-fetcher-container.json');
 const submissionTypePaper = require('../data/formio-api/submission-type-paper.json');
 const submissionTypeDigital = require('../data/formio-api/submission-type-digital.json');
+const submissionTypeDigitalNoAttachments = require('../data/formio-api/submission-type-digital-no-attachments.json');
 const submissionTypePaperDigital = require('../data/formio-api/submission-type-paper-digital.json');
 const submissionTypeNone = require('../data/formio-api/submission-type-none.json');
 const submissionTypeNoLogin = require('../data/formio-api/submission-type-no-login.json');
@@ -114,6 +115,7 @@ const allForms = [
   { form: datafetcherContainer, translations: undefined },
   { form: submissionTypePaper, translations: undefined },
   { form: submissionTypeDigital, translations: undefined },
+  { form: submissionTypeDigitalNoAttachments, translations: undefined },
   { form: submissionTypePaperDigital, translations: undefined },
   { form: submissionTypeNone, translations: undefined },
   { form: submissionTypeNoLogin, translations: undefined },

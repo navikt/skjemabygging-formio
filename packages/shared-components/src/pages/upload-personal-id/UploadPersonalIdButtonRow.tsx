@@ -2,7 +2,7 @@ import { Alert } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useNavigate, useSearchParams } from 'react-router';
 import { useAttachmentUpload } from '../../components/attachment/AttachmentUploadContext';
-import { CancelButton } from '../../components/navigation/CancelButton';
+import { CancelAndDeleteButton } from '../../components/navigation/CancelAndDeleteButton';
 import { NavigationButtonRow } from '../../components/navigation/NavigationButtonRow';
 import { NextButton } from '../../components/navigation/NextButton';
 import { PreviousButton } from '../../components/navigation/PreviousButton';
@@ -63,7 +63,7 @@ const UploadPersonalIdButtonRow = () => {
             }}
           />
         }
-        cancelButton={<CancelButton />}
+        cancelButton={<CancelAndDeleteButton />}
       />
     </>
   );

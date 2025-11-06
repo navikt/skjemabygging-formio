@@ -15,13 +15,12 @@ const EditAnswersButton = ({ form, panelValidationList }: Props) => {
 
   const formStartingPoint = findFormStartingPoint(form, panelValidationList);
   const pathname = `../${formStartingPoint.panel}`;
-  const hasValidationErrors = panelValidationList?.some((panelValidation) => panelValidation.hasValidationErrors);
   const href = formStartingPoint.component
     ? { pathname, hash: encodeURIComponent(formStartingPoint.component), search }
     : { pathname, search };
   return (
     <PreviousButton
-      variant={hasValidationErrors ? 'primary' : 'secondary'}
+      variant="primary"
       href={{
         default: href,
       }}

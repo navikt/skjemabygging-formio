@@ -112,13 +112,18 @@ Cypress.Commands.add('clickEditAnswers', (linkText) => {
 });
 
 Cypress.Commands.add('clickSendNav', () => {
-  cy.findByRole('button', { name: TEXTS.grensesnitt.submitToNavPrompt.open }).click();
-  cy.findByRole('button', { name: TEXTS.grensesnitt.submitToNavPrompt.confirm }).click();
+  cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.sendToNav }).click();
 });
 
 Cypress.Commands.add('verifySendInnRedirect', () => {
   return cy.origin(Cypress.env('SEND_INN_FRONTEND'), () => {
     cy.contains('Send Inn Frontend');
+  });
+});
+
+Cypress.Commands.add('verifyNavRedirect', () => {
+  return cy.origin('https://www.nav.no', () => {
+    cy.url().should('include', 'nav.no');
   });
 });
 

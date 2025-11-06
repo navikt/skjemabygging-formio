@@ -28,8 +28,7 @@ const downloadPdf = (submissionType: 'digital' | 'paper' = 'paper') => {
   cy.findByRole('link', { name: /Oppsummering|Summary/ }).click();
   cy.findByRole('heading', { name: /Oppsummering|Summary/ }).shouldBeVisible();
   if (submissionType === 'digital') {
-    cy.findByRole('button', { name: TEXTS.grensesnitt.submitToNavPrompt.open }).click();
-    cy.findByRole('button', { name: TEXTS.grensesnitt.submitToNavPrompt.confirm }).click();
+    cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.sendToNav }).click();
   } else {
     cy.findByRole('link', { name: /Neste steg|Next step/ }).click();
     cy.findByRole('button', { name: /Last ned skjema|Download form/ }).click();
@@ -44,6 +43,10 @@ describe('Pdf', () => {
 
   beforeEach(() => {
     cy.defaultIntercepts();
+    cy.mocksRestoreRouteVariants();
+  });
+
+  after(() => {
     cy.mocksRestoreRouteVariants();
   });
 
@@ -138,7 +141,6 @@ describe('Pdf', () => {
         cy.clickShowAllSteps();
       });
 
-      // only
       it('Only identity', () => {
         cy.clickStart();
         cy.findByRole('group', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
@@ -158,7 +160,6 @@ describe('Pdf', () => {
         downloadPdf();
       });
 
-      //only
       it('All values', () => {
         const date = '20.10.2025';
 

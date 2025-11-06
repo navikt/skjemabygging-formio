@@ -4,7 +4,6 @@ export const grensesnitt = {
     previous: 'Forrige steg',
     next: 'Neste steg',
     saveAndContinue: 'Lagre og fortsett',
-    cancel: 'Avbryt',
     cancelAndDelete: 'Avbryt og slett',
     cancelAndRestart: 'Slett og start på ny',
     saveDraft: 'Lagre utkast og fortsett senere',
@@ -12,10 +11,6 @@ export const grensesnitt = {
     sendToNav: 'Send til Nav',
     instructions: 'Instruksjoner for innsending',
     exit: 'Avslutt',
-    confirmCancel: 'Er du sikker på at du vil avbryte?',
-    submit: 'Neste steg',
-    'Legg til': 'Legg til',
-    Fjern: 'Fjern',
     summaryPageError: 'Du må fullføre utfyllingen før du kan fortsette',
   },
   mostRecentSave: 'Sist lagret',
@@ -42,16 +37,12 @@ export const grensesnitt = {
     confirm: 'Ja, avbryt og slett',
     cancel: 'Nei, fortsett utfylling',
   },
-  submitToNavPrompt: {
-    open: 'Send til Nav',
-    body: 'Er du sikker på at du vil sende søknaden nå?',
-    confirm: 'Ja, send søknaden',
-    cancel: 'Avbryt',
-    title: 'Bekreft innsending',
+  confirmCancelPrompt: {
+    title: 'Avslutt?',
+    body: 'Har du lastet ned og skrevet ut skjemaet?',
+    confirm: 'Ja, avslutt',
+    cancel: 'Nei',
   },
-
-  ok: 'OK',
-
   formSummaryUtils: {
     payAttentionTo: 'Vær oppmerksom på',
   },

@@ -44,7 +44,9 @@ declare global {
 
       verifySendInnRedirect(): Chainable<JQuery<HTMLElement>>;
 
-      defaultIntercepts(): Cypress.Chainable<JQuery<HTMLElement>>;
+      verifyNavRedirect(): Chainable<JQuery<HTMLElement>>;
+
+      defaultIntercepts(): Chainable<JQuery<HTMLElement>>;
 
       defaultInterceptsMellomlagring(): Chainable<JQuery<HTMLElement>>;
 

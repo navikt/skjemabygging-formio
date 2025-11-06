@@ -1,6 +1,7 @@
 const responseWithInnsendingsId = require('../data/innsending-api/mellomlagring/responseWithInnsendingsId.json');
 const mellomlagringValid1 = require('../data/innsending-api/mellomlagring/getTestMellomlagring-valid-1.json');
 const mellomlagringValid2 = require('../data/innsending-api/mellomlagring/getTestMellomlagring-valid-2.json');
+const stdigital = require('../data/innsending-api/mellomlagring/stdigital.json');
 const container123Complete = require('../data/innsending-api/mellomlagring/container123/complete.json');
 const containerDatagrid123Complete = require('../data/innsending-api/mellomlagring/containerDatagrid123/complete.json');
 const mellomlagringValidExtraValues = require('../data/innsending-api/mellomlagring/getTestMellomlagring-valid-extra-values.json');
@@ -308,6 +309,14 @@ module.exports = [
         options: {
           status: 200,
           body: convertToInnsendingApiResponse(nav083591soknadComplete),
+        },
+      },
+      {
+        id: 'success-stdigital',
+        type: 'json',
+        options: {
+          status: 200,
+          body: convertToInnsendingApiResponse(stdigital),
         },
       },
       {
