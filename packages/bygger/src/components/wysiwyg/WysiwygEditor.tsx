@@ -33,59 +33,62 @@ const useStyles = makeStyles({
 interface Props {
   defaultValue?: string;
   onBlur: (value: string) => void;
+  defaultTag?: 'p' | 'div';
   error?: string | boolean;
   autoFocus?: boolean;
 }
 
-const WysiwygEditor = forwardRef<HTMLDivElement, Props>(({ defaultValue, onBlur, error, autoFocus }, ref) => {
-  const [htmlValue, setHtmlValue] = useState(defaultValue ?? '');
+const WysiwygEditor = forwardRef<HTMLDivElement, Props>(
+  ({ defaultValue, onBlur, defaultTag = 'p', error, autoFocus }, ref) => {
+    const [htmlValue, setHtmlValue] = useState(defaultValue ?? '');
 
-  const styles = useStyles();
+    const styles = useStyles();
 
-  const { sanitizeHtmlString, removeEmptyTags, removeTags, extractTextContent } = htmlUtils;
+    const { sanitizeHtmlString, removeEmptyTags, removeTags, extractTextContent } = htmlUtils;
 
-  const handleChange = (event) => {
-    const value = event.target.value;
-    // make sure that non-html strings are wrapped in a <p>-tag.
-    if (htmlUtils.isHtmlString(value)) {
-      setHtmlValue(value);
-    } else {
-      setHtmlValue(`<p>${value}</p>`);
-    }
-  };
+    const handleChange = (event) => {
+      const value = event.target.value;
+      // make sure that non-html strings are wrapped in a <p>-tag.
+      if (htmlUtils.isHtmlString(value)) {
+        setHtmlValue(value);
+      } else {
+        setHtmlValue(`<${defaultTag}>${value}</${defaultTag}>`);
+      }
+    };
 
-  const handleBlur = () => {
-    const removeUnwantedTags = (html: string) => removeTags(html, ['font', 'div']);
-    const sanitizedHtmlString = removeUnwantedTags(
-      removeEmptyTags(sanitizeHtmlString(htmlValue, { FORBID_ATTR: ['style'] })),
+    const handleBlur = () => {
+      const removeUnwantedTags = (html: string) => removeTags(html, ['font', 'div']);
+      const sanitizedHtmlString = removeUnwantedTags(
+        removeEmptyTags(sanitizeHtmlString(htmlValue, { FORBID_ATTR: ['style'] })),
+      );
+
+      const trimmed = extractTextContent(sanitizedHtmlString).trim() === '' ? '' : sanitizedHtmlString;
+      onBlur(trimmed);
+    };
+
+    return (
+      <EditorProvider>
+        <Editor
+          autoFocus={autoFocus}
+          value={htmlValue}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          containerProps={{ className: error ? classNames(styles.editor, styles.error) : styles.editor }}
+          data-testid="wysiwyg-editor"
+        >
+          <Toolbar>
+            <TextTypeDropdown />
+            <BtnBold />
+            <LinkButton />
+            <BtnBulletList />
+            <BtnNumberedList />
+            <BtnClearFormatting />
+          </Toolbar>
+        </Editor>
+        {error && typeof error === 'string' && <FieldsetErrorMessage errorMessage={error} ref={ref} />}
+      </EditorProvider>
     );
-
-    const trimmed = extractTextContent(sanitizedHtmlString).trim() === '' ? '' : sanitizedHtmlString;
-    onBlur(trimmed);
-  };
-
-  return (
-    <EditorProvider>
-      <Editor
-        autoFocus={autoFocus}
-        value={htmlValue}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        containerProps={{ className: error ? classNames(styles.editor, styles.error) : styles.editor }}
-        data-testid="wysiwyg-editor"
-      >
-        <Toolbar>
-          <TextTypeDropdown />
-          <BtnBold />
-          <LinkButton />
-          <BtnBulletList />
-          <BtnNumberedList />
-          <BtnClearFormatting />
-        </Toolbar>
-      </Editor>
-      {error && typeof error === 'string' && <FieldsetErrorMessage errorMessage={error} ref={ref} />}
-    </EditorProvider>
-  );
-});
+  },
+);
 
 export default WysiwygEditor;

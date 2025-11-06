@@ -16,7 +16,7 @@ const useKeyBasedText = () => {
     const current = getTextFromCurrentChanges(key);
     const stored = key ? (storedTranslations[key]?.nb ?? '') : '';
     const globalStored = key ? (globalTranslations[key]?.nb ?? '') : '';
-    return current || stored || globalStored || key;
+    return current || stored || globalStored || '';
   };
 
   const setKeyBasedText = (value: string, identifier = 'none') => {
