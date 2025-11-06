@@ -281,6 +281,63 @@ describe('FormSettingsPage', () => {
       cy.visit('forms/cypresssettings/intropage');
     });
 
+    it('validates true when minimal required fields of select group of sections are filled out and enabled is true', () => {
+      cy.findByRole('checkbox', { name: 'Bruk standard introside' }).should('exist');
+      cy.findByRole('checkbox', { name: 'Bruk standard introside' }).click();
+      cy.findByRole('checkbox', { name: 'Viktig informasjon' }).click();
+      cy.findByRole('checkbox', { name: 'Avklar hva skjemaet IKKE skal brukes til' }).click();
+      cy.findByRole('checkbox', { name: 'Før du søker / sender / fyller ut' }).click();
+      cy.findByRole('checkbox', { name: 'Informasjon vi henter (om deg)' }).click();
+
+      cy.contains('Velkomstmelding')
+        .parent()
+        .within(() => {
+          typeAndBlur(0, 'Velkommen');
+        });
+
+      cy.get('[data-testid="importantInformation"]').within(() => {
+        typeAndBlur(0, 'Viktig informasjon');
+      });
+
+      cy.get('[data-testid="out-of-scope"]').within(() => {
+        cy.findByRole('radio', { name: 'Her kan du ikke' }).check();
+        cy.contains('button', 'Legg til ingress').click();
+        typeAndBlur(0, 'Dette kan du ikke gjøre');
+      });
+
+      cy.get('[data-testid="prerequisites"]').within(() => {
+        cy.findByRole('radio', { name: 'Før du søker' }).check();
+        cy.contains('Legg til punktliste').click();
+        cy.get('.rsw-editor [contenteditable="true"]');
+        typeAndBlur(0, 'Kulepunkt 1');
+        cy.contains('Legg til kulepunkt').click();
+        typeAndBlur(1, 'Kulepunkt 2');
+      });
+
+      cy.get('[data-testid="dataDisclosure"]').within(() => {
+        cy.findByRole('radio', { name: 'Informasjon vi henter' }).check();
+      });
+
+      cy.get('[data-testid="dataTreatment"]').within(() => {
+        cy.contains('Legg til ingress').click();
+        typeAndBlur(0, 'Slik behandler vi dataene dine');
+      });
+
+      cy.contains('Erklæring')
+        .closest('section')
+        .then(($section) => {
+          cy.wrap($section).within(() => {
+            cy.wrap($section).within(() => {
+              cy.findByRole('radio', { name: 'behandle henvendelsen din' }).check();
+            });
+          });
+        });
+
+      cy.contains('Lagre').click();
+      cy.get('[aria-live="polite"]').should('contain.text', `Lagret skjema ${submitData.title}`);
+      cy.get('[aria-live="polite"]').should('contain.text', '6 oversettelser ble lagret');
+    });
+
     it('all required fields display error message when not filled out and enabled is true', () => {
       cy.findByRole('checkbox', { name: 'Bruk standard introside' }).should('exist');
       cy.findByRole('checkbox', { name: 'Bruk standard introside' }).click();
