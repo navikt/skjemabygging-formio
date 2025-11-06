@@ -1,5 +1,5 @@
 import { TEXTS, Tkey } from '@navikt/skjemadigitalisering-shared-domain';
-import { useNavigate, useSearchParams } from 'react-router';
+import { useLocation, useNavigate, useSearchParams } from 'react-router';
 import { CancelAndDeleteButton } from '../../components/navigation/CancelAndDeleteButton';
 import { NavigationButtonRow } from '../../components/navigation/NavigationButtonRow';
 import { NextButton } from '../../components/navigation/NextButton';
@@ -17,6 +17,7 @@ const IntroPageButtonRow = () => {
   const { form, selfDeclaration, setError } = useIntroPage();
   const { isMellomlagringActive } = useSendInn();
   const { submission } = useForm();
+  const { search } = useLocation();
 
   const href = `${form.path}?${searchParams.toString()}`;
   const validationError: Tkey = 'introPage.selfDeclaration.validationError';
@@ -48,7 +49,7 @@ const IntroPageButtonRow = () => {
       previousButton={
         <PreviousButton
           onClick={{
-            digitalnologin: () => navigate('../legitimasjon'),
+            digitalnologin: () => navigate({ pathname: 'legitimasjon', search }),
           }}
           label={{
             digitalnologin: translate(TEXTS.grensesnitt.navigation.uploadID),

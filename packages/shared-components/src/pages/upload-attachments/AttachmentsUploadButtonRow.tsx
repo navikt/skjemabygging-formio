@@ -1,28 +1,29 @@
-import { ArrowLeftIcon, ArrowRightIcon } from '@navikt/aksel-icons';
-import { Button } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { MouseEvent } from 'react';
-import { useNavigate, useSearchParams } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { useAttachmentUpload } from '../../components/attachment/AttachmentUploadContext';
 import { attachmentValidator } from '../../components/attachment/attachmentValidator';
+import { CancelAndDeleteButton } from '../../components/navigation/CancelAndDeleteButton';
+import { NavigationButtonRow } from '../../components/navigation/NavigationButtonRow';
+import { NextButton } from '../../components/navigation/NextButton';
+import { PreviousButton } from '../../components/navigation/PreviousButton';
+import { useAppConfig } from '../../context/config/configContext';
+import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { Attachment } from '../../util/attachment/attachmentsUtil';
 import { validateAttachment } from '../../util/form/attachment-validation/attachmentValidation';
-import urlUtils from '../../util/url/url';
 
 const AttachmentsUploadButtonRow = ({ attachments, onError }: { attachments: Attachment[]; onError: () => void }) => {
   const navigate = useNavigate();
+  const { baseUrl } = useAppConfig();
+  const { search } = useLocation();
   const { translate } = useLanguages();
-  const [searchParams] = useSearchParams();
-  const { addError, removeAllErrors, submissionAttachments, handleDeleteAllFiles } = useAttachmentUpload();
+  const { addError, removeAllErrors, submissionAttachments } = useAttachmentUpload();
+  const { activeComponents, form } = useForm();
 
-  const summaryPageUrl = `../oppsummering?${searchParams.toString()}`;
-  const exitUrl = urlUtils.getExitUrl(window.location.href);
   const valueValidator = attachmentValidator(translate, ['value']);
   const fileValidator = attachmentValidator(translate, ['fileUploaded']);
 
-  const nextPage = (event: MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
+  const nextPage = () => {
     removeAllErrors();
     const valueErrors = validateAttachment(attachments, submissionAttachments, valueValidator);
     const fileErrors = validateAttachment(attachments, submissionAttachments, fileValidator);
@@ -33,49 +34,47 @@ const AttachmentsUploadButtonRow = ({ attachments, onError }: { attachments: Att
       addError(attachmentId, errorMessage, 'FILE');
     });
     if (Object.values({ ...valueErrors, ...fileErrors }).length === 0) {
-      navigate(summaryPageUrl);
+      navigate({ pathname: '../oppsummering', search });
     } else {
       onError();
     }
   };
 
-  const onCancelAndDelete = async () => {
-    try {
-      await handleDeleteAllFiles();
-      window.location.href = exitUrl;
-    } catch (_e) {
-      /* error handling is done by handleDeleteAllFiles, but we need to stop the navigation */
-    }
+  const previousPage = () => {
+    const lastComponent = activeComponents.length > 0 ? activeComponents[activeComponents.length - 1] : undefined;
+    return lastComponent ? `../${lastComponent.key}` : '';
   };
 
   return (
-    <nav>
-      <div className="button-row button-row--center">
-        <Button
-          variant="primary"
-          icon={<ArrowRightIcon aria-hidden />}
-          iconPosition="right"
-          as="a"
-          role="link"
-          onClick={nextPage}
-        >
-          {translate(TEXTS.grensesnitt.navigation.next)}
-        </Button>
-        <Button
-          variant="secondary"
-          icon={<ArrowLeftIcon aria-hidden />}
-          iconPosition="left"
-          onClick={() => navigate(-1)}
-        >
-          {translate(TEXTS.grensesnitt.navigation.previous)}
-        </Button>
-      </div>
-      <div className="button-row button-row--center">
-        <Button variant="tertiary" onClick={onCancelAndDelete}>
-          {translate(TEXTS.grensesnitt.navigation.cancelAndDelete)}
-        </Button>
-      </div>
-    </nav>
+    <NavigationButtonRow
+      nextButton={
+        <NextButton
+          onClick={{
+            digitalnologin: () => nextPage(),
+          }}
+          label={{
+            digitalnologin: translate(TEXTS.grensesnitt.navigation.next),
+          }}
+          href={{
+            digitalnologin: `${baseUrl}/${form.path}/oppsummering${search}`,
+          }}
+        />
+      }
+      previousButton={
+        <PreviousButton
+          onClick={{
+            digitalnologin: () => navigate({ pathname: previousPage(), search }),
+          }}
+          label={{
+            digitalnologin: translate(TEXTS.grensesnitt.navigation.previous),
+          }}
+          href={{
+            digitalnologin: previousPage(),
+          }}
+        />
+      }
+      cancelButton={<CancelAndDeleteButton />}
+    />
   );
 };
 

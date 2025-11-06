@@ -1,9 +1,5 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
-/**
- * Use text directly in this test,
- * instead of constants like we usually do make sure we have the correct labels for navigation.
- */
 describe('Form navigation', () => {
   before(() => {
     cy.configMocksServer();
@@ -346,7 +342,7 @@ describe('Form navigation', () => {
     });
   });
 
-  describe.skip('Type: Digital, no login', () => {
+  describe('Type: Digital, no login', () => {
     beforeEach(() => {
       cy.intercept('POST', '/fyllut/api/send-inn/nologin-soknad').as('nologinSubmit');
       cy.visit('/fyllut/stnologin/legitimasjon?sub=digitalnologin');
@@ -446,7 +442,7 @@ describe('Form navigation', () => {
       cy.findByRole('heading', { level: 2, name: 'Introduksjon' }).should('exist');
       cy.url().should('include', '/fyllut/stnologin?sub=digitalnologin');
       cy.findByRole('link', { name: 'Forrige steg' }).should('not.exist');
-      cy.findByRole('link', { name: 'Opplastning av ID' }).click();
+      cy.findByRole('link', { name: 'Opplasting av ID' }).click();
 
       cy.findByRole('heading', { level: 2, name: 'Legitimasjon' }).should('exist');
       cy.url().should('include', '/fyllut/stnologin/legitimasjon?sub=digitalnologin');

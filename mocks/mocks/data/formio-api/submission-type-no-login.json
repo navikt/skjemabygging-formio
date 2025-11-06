@@ -32,6 +32,7 @@
       "components": [
         {
           "id": "ewftv5w",
+          "navId": "ewftv5w",
           "label": "Annen dokumentasjon",
           "description": "Har du noen annen dokumentasjon du ønsker å legge ved?",
           "type": "attachment",
