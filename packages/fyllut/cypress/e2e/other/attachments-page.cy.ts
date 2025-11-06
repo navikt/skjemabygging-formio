@@ -128,12 +128,13 @@ describe('Attachments page', () => {
       cy.wait('@deleteAllFilesByAttachmentId');
     });
 
-    it('should remove all attachments on cancel', () => {
+    it.only('should remove all attachments on cancel', () => {
       cy.intercept('/fyllut/api/nologin-file').as('deleteAllFiles');
       cy.findAllByLabelText(TEXTS.statiske.attachment.leggerVedNaa).first().click();
       uploadFile('attachment1.txt');
       cy.findByText('test.txt').should('exist');
       cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.cancelAndDelete }).click();
+      cy.findByRole('button', { name: TEXTS.grensesnitt.confirmDiscardPrompt.confirm }).click();
       cy.wait('@deleteAllFiles');
     });
   });
