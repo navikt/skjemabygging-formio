@@ -174,6 +174,13 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
     });
   };
 
+  const removeAllFilesInProgress = (attachmentId: string) => {
+    setUploadsInProgress((current) => {
+      const { [attachmentId]: _, ...rest } = current;
+      return rest;
+    });
+  };
+
   const removeFileInProgress = (attachmentId: string, identifier: string) => {
     setUploadsInProgress((current) => {
       const currentFiles = current?.[attachmentId] ?? {};
@@ -204,7 +211,7 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
       const token = await resolveCaptcha();
       const result = await uploadFile(file.file, attachmentId, token);
       if (result) {
-        removeFileInProgress(attachmentId, fileIdentifier(file));
+        removeAllFilesInProgress(attachmentId);
         addFileToSubmission(result);
       }
     } catch (error: any) {
