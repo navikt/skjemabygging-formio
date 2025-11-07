@@ -9,7 +9,7 @@
     "filePath": "packages/fyllut-backend/.env",
     "name": "INNSENDING_API_M2M_ACCESS_TOKEN",
     "url": "https://azure-token-generator.intern.dev.nav.no/api/m2m?aud=dev-gcp:team-soknad:innsending-api",
-    "tags": ["innsending-api", "fyllut"]
+    "tags": ["innsending-api", "fyllut", "nologin"]
   },
   {
     "filePath": "packages/fyllut-backend/.env",
@@ -21,6 +21,6 @@
     "filePath": "packages/fyllut-backend/.env",
     "name": "FAMILIE_PDF_M2M_ACCESS_TOKEN",
     "url": "https://azure-token-generator.intern.dev.nav.no/api/m2m?aud=dev-gcp:teamfamilie:familie-pdf",
-    "tags": ["pdf", "fyllut"]
+    "tags": ["pdf", "fyllut", "nologin"]
   }
 ]

@@ -32,6 +32,7 @@ describe('Digital submission without user login', () => {
       cy.findByRole('heading', { name: 'Veiledning' }).should('exist');
 
       cy.clickNextStep();
+      cy.findByRole('link', { name: /Neste steg/ }).should('exist');
       cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola');
       cy.findByRole('textbox', { name: 'Etternavn' }).type('Nordmann');
 
@@ -46,6 +47,8 @@ describe('Digital submission without user login', () => {
     });
 
     it('should submit application successfully', () => {
+      cy.mocksUseRouteVariant('post-nologin-soknad:success-tc02');
+
       cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
         cy.findByLabelText('Jeg ettersender dokumentasjonen senere').check(),
       );
@@ -66,6 +69,15 @@ describe('Digital submission without user login', () => {
       cy.get('[data-cy="upload-button-en5h1c"] input[type=file]').selectFile('cypress/fixtures/files/small-file.txt', {
         force: true,
       });
+
+      cy.findByRole('button', { name: 'Legg til nytt vedlegg' }).click();
+      cy.findByRole('textbox', { name: 'Gi vedlegget et beskrivende navn' }).type('Egenerklæring');
+      cy.get('[data-cy="upload-button-en5h1c-1"] input[type=file]').selectFile(
+        'cypress/fixtures/files/small-file.txt',
+        {
+          force: true,
+        },
+      );
 
       cy.clickNextStep();
 
@@ -322,6 +334,63 @@ describe('Digital submission without user login', () => {
         cy.findByRole('heading', { name: 'VedleggOpplysninger mangler' }).should('not.exist');
         cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
       });
+    });
+  });
+
+  describe('Attachment in PDF', () => {
+    beforeEach(() => {
+      cy.visit('/fyllut/nologinform/legitimasjon?sub=digitalnologin');
+      cy.defaultWaits();
+    });
+
+    it('includes signature and lists attachments in pdf, and submits application', () => {
+      cy.mocksUseRouteVariant('post-familie-pdf:success-tc01');
+      cy.mocksUseRouteVariant('post-nologin-soknad:success-tc01');
+
+      cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
+        cy.findByLabelText('Norsk pass').check(),
+      );
+      cy.get('input[type=file]').selectFile('cypress/fixtures/files/id-billy-bruker.jpg', { force: true });
+      cy.clickNextStep();
+
+      // standard fill start
+      cy.findByRole('heading', { name: TEXTS.statiske.introPage.title }).should('exist');
+      cy.clickStart();
+      cy.findByRole('heading', { name: 'Veiledning' }).should('exist');
+
+      cy.clickNextStep();
+      cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola');
+      cy.findByRole('textbox', { name: 'Etternavn' }).type('Nordmann');
+
+      cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
+        cy.findByLabelText('Ja').check(),
+      );
+      cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).type('08842748500');
+      cy.clickNextStep();
+
+      cy.findByRole('group', { name: 'Høyeste fullførte utdanning' }).within(() => cy.findByLabelText('Annet').check());
+      cy.clickNextStep();
+      // standard fill end
+
+      cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
+        cy.findByLabelText('Jeg har levert denne dokumentasjonen tidligere').check(),
+      );
+      cy.findByRole('textbox', { name: 'Tilleggsinfo 3' }).type('Ble levert i fjor');
+
+      cy.findByRole('group', { name: 'Bekreftelse på utdanning' }).within(() =>
+        cy.findByLabelText('Jeg legger det ved dette skjemaet').check(),
+      );
+      cy.get('[data-cy="upload-button-e3xh1d"] input[type=file]').selectFile(
+        'cypress/fixtures/files/another-small-file.txt',
+        { force: true },
+      );
+
+      cy.findByLabelText('Annen dokumentasjon').within(() =>
+        cy.findByLabelText('Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved').check(),
+      );
+      cy.clickNextStep();
+      cy.findByRole('button', { name: 'Send til Nav' }).click();
+      cy.findByText('Takk for at du sendte inn skjemaet.').should('exist');
     });
   });
 });

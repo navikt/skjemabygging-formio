@@ -1,9 +1,14 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { PdfComponentProps } from '../../../types';
+import { PdfComponentProps, PdfListElement } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 
-const PdfAttachment = ({ component, submissionPath, formContextValue, languagesContextValue }: PdfComponentProps) => {
-  const { label } = component;
+const PdfAttachment = ({
+  component,
+  submissionPath,
+  formContextValue,
+  languagesContextValue,
+}: PdfComponentProps): PdfListElement => {
+  const { label, attachmentValues } = component;
   const { translate } = languagesContextValue;
   const { submission } = formContextValue;
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
@@ -12,10 +17,22 @@ const PdfAttachment = ({ component, submissionPath, formContextValue, languagesC
     return null;
   }
 
-  return {
-    label: translate(label),
-    verdi: translate(TEXTS.statiske.attachment[value.key]),
-  };
+  const valueConfig = attachmentValues?.[value.key];
+  const comment = valueConfig?.additionalDocumentation?.enabled
+    ? {
+        label: translate(valueConfig.additionalDocumentation.label),
+        verdiliste: [{ label: value.additionalDocumentation || '' }],
+        visningsVariant: 'PUNKTLISTE',
+      }
+    : null;
+
+  return [
+    {
+      label: translate(label),
+      verdi: translate(TEXTS.statiske.attachment[value.key]),
+    },
+    ...(comment ? [comment] : []),
+  ];
 };
 
 export default PdfAttachment;

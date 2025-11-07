@@ -51,6 +51,7 @@ export function DataDisclosure({ form, handleChange, refMap, errors }: Props) {
             <FormIntroPageWysiwygEditor
               key={index}
               label="Kulepunkt"
+              defaultTag="div"
               defaultValue={getKeyBasedText(bullet)}
               onChange={(value) => onBulletPointChange(value, index)}
               showDeleteButton

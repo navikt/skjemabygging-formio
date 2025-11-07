@@ -174,6 +174,19 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
     });
   };
 
+  const removeAllFilesInProgress = (attachmentId: string, predicate?: (file: FileObject) => boolean) => {
+    setUploadsInProgress((current) => {
+      const { [attachmentId]: currentFiles, ...rest } = current;
+      if (predicate) {
+        const filteredFiles = Object.fromEntries(
+          Object.entries(currentFiles ?? {}).filter(([_, file]) => !predicate(file)),
+        );
+        return { ...rest, [attachmentId]: filteredFiles };
+      }
+      return rest;
+    });
+  };
+
   const removeFileInProgress = (attachmentId: string, identifier: string) => {
     setUploadsInProgress((current) => {
       const currentFiles = current?.[attachmentId] ?? {};
@@ -204,6 +217,7 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
       const token = await resolveCaptcha();
       const result = await uploadFile(file.file, attachmentId, token);
       if (result) {
+        removeAllFilesInProgress(attachmentId, (inProgress) => inProgress.error);
         removeFileInProgress(attachmentId, fileIdentifier(file));
         addFileToSubmission(result);
       }

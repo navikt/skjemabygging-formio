@@ -2,7 +2,7 @@ import correlator from 'express-correlation-id';
 import { Response } from 'node-fetch';
 import { config } from '../../config/config';
 import { logger } from '../../logger';
-import { synchronousResponseToError } from '../../utils/errorHandling';
+import { responseToError } from '../../utils/errorHandling';
 import fetchWithRetry, { HeadersInit } from '../../utils/fetchWithRetry';
 import { appMetrics } from '../index';
 
@@ -48,12 +48,10 @@ const createFormPdf = async (accessToken: string, pdfFormData?: any) => {
 
   appMetrics.familiePdfFailuresCounter.inc();
 
-  throw synchronousResponseToError(
+  throw await responseToError(
+    response,
     `Could not create pdf${response?.status === 401 ? ', not authorized (401)' : ''}`,
-    {},
-    response?.status,
-    response?.url,
-    true,
+    false,
   );
 };
 

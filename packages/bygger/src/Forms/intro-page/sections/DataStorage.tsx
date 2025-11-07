@@ -13,11 +13,15 @@ export function DataStorage({ submissionMethod }: Props) {
   const { getKeyBasedText } = useKeyBasedText();
   const previewStyles = usePreviewStyles();
 
+  if (submissionMethod === 'paper') {
+    return null;
+  }
+
   return (
     <SectionWrapper
       right={
         <Accordion className={previewStyles.accordion}>
-          <Intro.DataStorage translate={getKeyBasedText} submissionMethod={submissionMethod} defaultOpen />
+          <Intro.DataStorage translate={getKeyBasedText} defaultOpen />
         </Accordion>
       }
     />

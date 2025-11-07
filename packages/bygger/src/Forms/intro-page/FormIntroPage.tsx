@@ -10,6 +10,7 @@ import { useForm } from '../../context/old_form/FormContext';
 import { useEditFormTranslations } from '../../context/translations/EditFormTranslationsContext';
 import { useFormTranslations } from '../../context/translations/FormTranslationsContext';
 import { useGlobalTranslations } from '../../context/translations/GlobalTranslationsContext';
+import useKeyBasedText from '../../hooks/useKeyBasedText';
 import PublishModalComponents from '../publish/PublishModalComponents';
 import FormSkeleton from '../skeleton/FormSkeleton';
 import { EnableIntroPageSwitch } from './components/EnableIntroPageSwitch';
@@ -37,6 +38,7 @@ export default function FormIntroPage({ form }: { form: Form }) {
   const { isReady: formTranslationsReady } = useFormTranslations();
   const { isReady: globalTranslationsReady } = useGlobalTranslations();
   const { saveChanges } = useEditFormTranslations();
+  const { getKeyBasedText } = useKeyBasedText();
 
   const { sections, importantInformation } = form.introPage ?? {
     enabled: false,
@@ -44,7 +46,7 @@ export default function FormIntroPage({ form }: { form: Form }) {
     sections: {},
     selfDeclaration: '',
   };
-  const { scope, outOfScope, dataDisclosure, optional, automaticProcessing } = sections ?? {};
+  const { scope, outOfScope, prerequisites, dataDisclosure, optional, automaticProcessing } = sections ?? {};
 
   const {
     path,
@@ -61,7 +63,7 @@ export default function FormIntroPage({ form }: { form: Form }) {
   const [openPublishSettingModal, setOpenPublishSettingModal] = useModal();
 
   function handleValidation(onSuccess: () => void) {
-    const errors = validateIntroPage(form.introPage);
+    const errors = validateIntroPage(form.introPage, getKeyBasedText);
     const isError = errors && Object.keys(errors).length > 0;
 
     if (isError) {
@@ -139,13 +141,15 @@ export default function FormIntroPage({ form }: { form: Form }) {
         )}
         {scope && <Scope form={form} handleChange={changeForm} errors={errors} refMap={refMap} />}
         {outOfScope && <OutOfScope form={form} handleChange={changeForm} errors={errors} refMap={refMap} />}
-        <Prerequisites
-          form={form}
-          submissionMethod={submissionMethod}
-          handleChange={changeForm}
-          errors={errors}
-          refMap={refMap}
-        />
+        {prerequisites && (
+          <Prerequisites
+            form={form}
+            submissionMethod={submissionMethod}
+            handleChange={changeForm}
+            errors={errors}
+            refMap={refMap}
+          />
+        )}
         <BeAwareOf submissionMethod={submissionMethod} />
         {dataDisclosure && <DataDisclosure form={form} handleChange={changeForm} refMap={refMap} errors={errors} />}
         <DataTreatment form={form} handleChange={changeForm} errors={errors} refMap={refMap} />

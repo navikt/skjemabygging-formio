@@ -11,11 +11,11 @@ const PersonalIdUpload = ({ refs }: { refs?: any }) => {
   const { changeAttachmentValue, submissionAttachments, errors } = useAttachmentUpload();
 
   const options = [
-    { value: 'norwegian-passport', label: translate(TEXTS.statiske.uploadId.norwegianPassport), upload: true },
-    { value: 'foreign-passport', label: translate(TEXTS.statiske.uploadId.foreignPassport), upload: true },
-    { value: 'national-id-eu', label: translate(TEXTS.statiske.uploadId.nationalIdEU), upload: true },
-    { value: 'drivers-license', label: translate(TEXTS.statiske.uploadId.driversLicense), upload: true },
-    { value: 'drivers-license-eu', label: translate(TEXTS.statiske.uploadId.driversLicenseEU), upload: true },
+    { value: 'norwegianPassport', label: translate(TEXTS.statiske.uploadId.norwegianPassport), upload: true },
+    { value: 'foreignPassport', label: translate(TEXTS.statiske.uploadId.foreignPassport), upload: true },
+    { value: 'nationalIdEU', label: translate(TEXTS.statiske.uploadId.nationalIdEU), upload: true },
+    { value: 'driversLicense', label: translate(TEXTS.statiske.uploadId.driversLicense), upload: true },
+    { value: 'driversLicenseEU', label: translate(TEXTS.statiske.uploadId.driversLicenseEU), upload: true },
   ];
   const attachmentId = 'personal-id';
   const attachment = submissionAttachments.find((attachment) => attachment.attachmentId === attachmentId);
