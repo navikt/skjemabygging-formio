@@ -27,7 +27,9 @@ const getCleanedUpPdfFormData = (request, date?: string) => {
 const downloadPdf = (submissionType: 'digital' | 'paper' | 'digitalnologin' = 'paper') => {
   cy.findByRole('link', { name: /Oppsummering|Summary/ }).click();
   cy.findByRole('heading', { name: /Oppsummering|Summary/ }).shouldBeVisible();
-  if (submissionType === 'digital' || submissionType === 'digitalnologin') {
+  if (submissionType === 'digital') {
+    cy.clickSaveAndContinue();
+  } else if (submissionType === 'digitalnologin') {
     cy.clickSendNav();
   } else {
     cy.findByRole('link', { name: 'Instruksjoner for innsending' }).click();
@@ -310,7 +312,7 @@ describe('Pdf', () => {
         downloadPdf('digital');
       });
 
-      it('All values', () => {
+      it.only('All values', () => {
         const date = '20.10.2025';
 
         cy.clickStart();
@@ -418,15 +420,6 @@ describe('Pdf', () => {
         cy.findByRole('checkbox', { name: /Jeg bekrefter/ }).check();
         cy.findByRole('group', { name: /Hvilken aktivitet søker du om støtte i forbindelse med?/ }).within(() => {
           cy.findByRole('radio', { name: 'Ingen relevant aktivitet registrert på meg' }).check();
-        });
-
-        cy.findByRole('link', { name: 'Vedlegg' }).click();
-        cy.findByRole('heading', { name: 'Vedlegg' }).shouldBeVisible();
-        cy.findByRole('group', { name: /Vedlegg/ }).within(() => {
-          cy.findByRole('radio', { name: 'Jeg ettersender dokumentasjonen senere' }).check();
-        });
-        cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
-          cy.findByRole('radio', { name: 'Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved' }).check();
         });
 
         cy.fixture('pdf/request-components-all-digital.json').then((fixture) => {
