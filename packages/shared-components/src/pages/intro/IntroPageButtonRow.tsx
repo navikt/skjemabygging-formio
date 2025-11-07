@@ -1,16 +1,18 @@
 import { TEXTS, Tkey } from '@navikt/skjemadigitalisering-shared-domain';
 import { useLocation, useNavigate, useSearchParams } from 'react-router';
 import { CancelAndDeleteButton } from '../../components/navigation/CancelAndDeleteButton';
-import { NavigationButtonRow } from '../../components/navigation/NavigationButtonRow';
+import NavigationButtonRow from '../../components/navigation/NavigationButtonRow';
 import { NextButton } from '../../components/navigation/NextButton';
 import { PreviousButton } from '../../components/navigation/PreviousButton';
 import { SaveButton } from '../../components/navigation/SaveButton';
+import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
 import { useIntroPage } from './IntroPageContext';
 
 const IntroPageButtonRow = () => {
+  const { submissionMethod } = useAppConfig();
   const navigate = useNavigate();
   const { translate } = useLanguages();
   const [searchParams] = useSearchParams();
@@ -47,14 +49,16 @@ const IntroPageButtonRow = () => {
         />
       }
       previousButton={
-        <PreviousButton
-          onClick={{
-            digitalnologin: () => navigate({ pathname: 'legitimasjon', search }),
-          }}
-          label={{
-            digitalnologin: translate(TEXTS.grensesnitt.navigation.uploadID),
-          }}
-        />
+        submissionMethod === 'digitalnologin' && (
+          <PreviousButton
+            onClick={{
+              digitalnologin: () => navigate({ pathname: 'legitimasjon', search }),
+            }}
+            label={{
+              digitalnologin: translate(TEXTS.grensesnitt.navigation.uploadID),
+            }}
+          />
+        )
       }
       cancelButton={<CancelAndDeleteButton />}
       saveButton={isMellomlagringActive && <SaveButton submission={submission} />}

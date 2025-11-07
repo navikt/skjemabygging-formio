@@ -4,7 +4,7 @@ import { To, useLocation } from 'react-router';
 import { useLanguages } from '../../../context/languages';
 import { useSendInn } from '../../../context/sendInn/sendInnContext';
 import { CancelAndDeleteButton } from '../../navigation/CancelAndDeleteButton';
-import { NavigationButtonRow } from '../../navigation/NavigationButtonRow';
+import NavigationButtonRow from '../../navigation/NavigationButtonRow';
 import { NextButton } from '../../navigation/NextButton';
 import { PreviousButton } from '../../navigation/PreviousButton';
 import { SaveButton } from '../../navigation/SaveButton';

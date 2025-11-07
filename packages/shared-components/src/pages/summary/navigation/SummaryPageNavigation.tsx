@@ -6,7 +6,7 @@ import EditAnswersButton from '../../../components/button/navigation/edit-answer
 import FormError from '../../../components/form/FormError';
 import FormSavedStatus from '../../../components/form/FormSavedStatus';
 import { CancelAndDeleteButton } from '../../../components/navigation/CancelAndDeleteButton';
-import { NavigationButtonRow } from '../../../components/navigation/NavigationButtonRow';
+import NavigationButtonRow from '../../../components/navigation/NavigationButtonRow';
 import { PreviousButton } from '../../../components/navigation/PreviousButton';
 import { SaveButton } from '../../../components/navigation/SaveButton';
 import { SummaryPageNextButton } from '../../../components/navigation/SummaryPageNextButton';

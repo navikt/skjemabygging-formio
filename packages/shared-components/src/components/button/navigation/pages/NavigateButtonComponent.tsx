@@ -2,7 +2,7 @@ import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useLocation } from 'react-router';
 import { useLanguages } from '../../../../context/languages';
 import { CancelButton } from '../../../navigation/CancelButton';
-import { NavigationButtonRow } from '../../../navigation/NavigationButtonRow';
+import NavigationButtonRow from '../../../navigation/NavigationButtonRow';
 import { PreviousButton } from '../../../navigation/PreviousButton';
 
 const NavigateButtonComponent = ({ goBackUrl }) => {
@@ -11,7 +11,6 @@ const NavigateButtonComponent = ({ goBackUrl }) => {
 
   return (
     <NavigationButtonRow
-      floatLeft
       previousButton={
         <PreviousButton
           label={{

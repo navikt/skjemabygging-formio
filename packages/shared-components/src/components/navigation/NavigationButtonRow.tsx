@@ -1,51 +1,33 @@
-import clsx from 'clsx';
 import { ReactNode } from 'react';
-import makeStyles from '../../util/styles/jss/jss';
+import ButtonRow from '../button/ButtonRow';
 import { FieldsetErrorMessage } from '../error/FieldsetErrorMessage';
 
-const useStyles = makeStyles({
-  error: {
-    marginBottom: '1.5rem',
-  },
-});
-export function NavigationButtonRow({
-  nextButton,
-  previousButton,
-  saveButton,
-  cancelButton,
-  errorMessage,
-  floatLeft = false,
-}: {
+interface Props {
   nextButton?: ReactNode;
   previousButton?: ReactNode;
   saveButton?: ReactNode;
   cancelButton?: ReactNode;
   errorMessage?: string;
   floatLeft?: boolean;
-}) {
-  const styles = useStyles();
-  // TODO finn en god løsning på sentrering vs align left gjennom skjemaet
-  // TODO håndtere rekkefølge på tab navigasjon når høyre knapp er secondary på oppsummeringssiden
+}
+
+const NavigationButtonRow = ({ nextButton, previousButton, saveButton, cancelButton, errorMessage }: Props) => {
+  const twoElementsFirstRow = !!nextButton && !!previousButton;
+  const twoElementsSecondRow = !!cancelButton && !!saveButton;
+
   return (
     <nav>
-      <div
-        className={clsx('button-row', {
-          'button-row__center': !floatLeft,
-        })}
-      >
+      <ButtonRow>
         {nextButton}
         {previousButton}
-      </div>
-      {errorMessage && <FieldsetErrorMessage errorMessage={errorMessage} className={styles.error} />}
-
-      <div
-        className={clsx('button-row', {
-          'button-row__center': !floatLeft,
-        })}
-      >
+      </ButtonRow>
+      {errorMessage && <FieldsetErrorMessage errorMessage={errorMessage} className="mb-4" />}
+      <ButtonRow center={twoElementsFirstRow && !twoElementsSecondRow}>
         {cancelButton}
         {saveButton}
-      </div>
+      </ButtonRow>
     </nav>
   );
-}
+};
+
+export default NavigationButtonRow;

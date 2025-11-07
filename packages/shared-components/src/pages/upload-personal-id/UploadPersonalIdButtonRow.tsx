@@ -3,7 +3,7 @@ import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useNavigate, useSearchParams } from 'react-router';
 import { useAttachmentUpload } from '../../components/attachment/AttachmentUploadContext';
 import { CancelAndDeleteButton } from '../../components/navigation/CancelAndDeleteButton';
-import { NavigationButtonRow } from '../../components/navigation/NavigationButtonRow';
+import NavigationButtonRow from '../../components/navigation/NavigationButtonRow';
 import { NextButton } from '../../components/navigation/NextButton';
 import { PreviousButton } from '../../components/navigation/PreviousButton';
 import { useAppConfig } from '../../context/config/configContext';
