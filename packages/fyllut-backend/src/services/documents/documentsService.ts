@@ -78,6 +78,7 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps, logM
       translate: createTranslate(translations, language),
       language,
       unitNumber,
+      logMeta,
     }),
     applicationService.createFormPdf(
       pdfGeneratorAccessToken,
@@ -112,6 +113,7 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps, logM
     language,
     coverPagePdf,
     applicationPdf,
+    logMeta,
   );
   logger.info('Request to merge front page and application completed', logMeta);
 
