@@ -1,10 +1,10 @@
 import { Label, VStack } from '@navikt/ds-react';
 import { SubmissionAttachmentValue, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useLanguages } from '../../context/languages';
+import Attachment from '../attachment/Attachment';
+import { useAttachmentUpload } from '../attachment/AttachmentUploadContext';
+import { attachmentValidator } from '../attachment/attachmentValidator';
 import FileUploader from '../file-uploader/FileUploader';
-import Attachment from './Attachment';
-import { useAttachmentUpload } from './AttachmentUploadContext';
-import { attachmentValidator } from './attachmentValidator';
 import PersonalIdUploadReadMore from './PersonalIdUploadReadMore';
 
 const PersonalIdUpload = ({ refs }: { refs?: any }) => {
