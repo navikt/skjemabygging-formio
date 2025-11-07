@@ -28,7 +28,7 @@ const downloadPdf = (submissionType: 'digital' | 'paper' = 'paper') => {
   cy.findByRole('link', { name: /Oppsummering|Summary/ }).click();
   cy.findByRole('heading', { name: /Oppsummering|Summary/ }).shouldBeVisible();
   if (submissionType === 'digital') {
-    cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.sendToNav }).click();
+    cy.clickSendNav();
   } else {
     cy.findByRole('link', { name: 'Instruksjoner for innsending' }).click();
     cy.findByRole('button', { name: /Last ned skjema|Download form/ }).click();
@@ -37,17 +37,8 @@ const downloadPdf = (submissionType: 'digital' | 'paper' = 'paper') => {
 };
 
 describe('Pdf', () => {
-  before(() => {
-    cy.configMocksServer();
-  });
-
   beforeEach(() => {
     cy.defaultIntercepts();
-    cy.mocksRestoreRouteVariants();
-  });
-
-  after(() => {
-    cy.mocksRestoreRouteVariants();
   });
 
   describe('Conditional rendering of pages', () => {
@@ -540,7 +531,7 @@ describe('Pdf', () => {
       });
     });
 
-    describe.only('Multiple signatures', () => {
+    describe('Multiple signatures', () => {
       it('Check for two signatures', () => {
         cy.visit('/fyllut/components?sub=paper');
         cy.defaultWaits();

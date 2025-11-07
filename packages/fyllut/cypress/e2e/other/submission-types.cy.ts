@@ -152,7 +152,7 @@ describe('Submission Type', () => {
         cy.url().should('include', 'sub=digital');
       });
 
-      it.only('Select paper', () => {
+      it('Select paper', () => {
         cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendOnPaper }).click();
         cy.clickStart();
 
