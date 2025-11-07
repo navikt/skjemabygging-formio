@@ -461,6 +461,7 @@ describe('Form navigation', () => {
 
       cy.findByRole('heading', { level: 2, name: 'Legitimasjon' }).should('exist');
       cy.url().should('include', '/fyllut/stnologin/legitimasjon?sub=digitalnologin');
+      cy.findByRole('link', { name: 'Forrige steg' }).should('not.exist');
     });
   });
 
