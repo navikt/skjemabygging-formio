@@ -29,10 +29,8 @@ const downloadPdf = (submissionType: 'digital' | 'paper' | 'digitalnologin' = 'p
   cy.findByRole('heading', { name: /Oppsummering|Summary/ }).shouldBeVisible();
   if (submissionType === 'digital') {
     cy.clickSendNav();
-    cy.findByRole('button', { name: TEXTS.grensesnitt.submitToNavPrompt.open }).click();
-    cy.findByRole('button', { name: TEXTS.grensesnitt.submitToNavPrompt.confirm }).click();
   } else if (submissionType === 'digitalnologin') {
-    cy.findByRole('button', { name: TEXTS.grensesnitt.submitToNavPrompt.open }).click();
+    cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.sendToNav }).click();
   } else {
     cy.findByRole('link', { name: 'Instruksjoner for innsending' }).click();
     cy.findByRole('button', { name: /Last ned skjema|Download form/ }).click();
