@@ -19,7 +19,7 @@ interface Props {
   refs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | HTMLButtonElement | null>>;
   accept?: string;
   maxFileSizeInBytes?: number;
-  maxFileSizeText?: string;
+  maxTotalAttachmentSizeText?: string;
 }
 
 const FileUploader = ({
@@ -30,7 +30,7 @@ const FileUploader = ({
   refs,
   accept,
   maxFileSizeInBytes,
-  maxFileSizeText,
+  maxTotalAttachmentSizeText,
 }: Props) => {
   const { translate } = useLanguages();
   const config = useAppConfig();
@@ -104,7 +104,7 @@ const FileUploader = ({
             translationParams={translationErrorParams}
             accept={accept}
             maxFileSizeInBytes={maxFileSizeInBytes}
-            maxFileSizeText={maxFileSizeText}
+            maxTotalAttachmentSizeText={maxTotalAttachmentSizeText}
           />
         </VStack>
       )}

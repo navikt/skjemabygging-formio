@@ -187,7 +187,7 @@ export const statiske = {
     validFormatsLabel: 'Gyldige filformater:',
     validFormatsDescrption: 'pdf, jpeg/jpg, docx, doc, odt, rtf, txt, png, tiff/tif, bmp og gif.',
     maxFileSizeLabel: 'Maks filstørrelse:',
-    maxFileSizeDescription: 'Du kan laste opp flere filer, men totalt kan ikke opplastingen være mer enn 50 MB.',
+    maxFileSizeDescription: 'Du kan laste opp flere filer, men totalt kan ikke opplastingen være mer enn {{size}}.',
     filesUploadedNotSent: 'Fil(er) du har lastet opp, men ikke sendt inn:',
     sizeAndFormatHeader: 'Gyldige filformater og størrelser',
     deleteAllFiles: 'Slett alle',

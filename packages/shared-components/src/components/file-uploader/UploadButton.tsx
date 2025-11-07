@@ -2,7 +2,11 @@ import { UploadIcon } from '@navikt/aksel-icons';
 import { Alert, BodyLong, BodyShort, Button, FileObject, FileUpload, HStack, ReadMore, VStack } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { MutableRefObject, useState } from 'react';
-import { FILE_ACCEPT, MAX_SIZE_ATTACHMENT_FILE_BYTES, MAX_SIZE_ATTACHMENT_FILE_TEXT } from '../../constants/fileUpload';
+import {
+  FILE_ACCEPT,
+  MAX_SIZE_ATTACHMENT_FILE_BYTES,
+  MAX_TOTAL_SIZE_ATTACHMENT_FILES_TEXT,
+} from '../../constants/fileUpload';
 import { useLanguages } from '../../context/languages';
 import htmlUtils from '../../util/html/htmlUtils';
 import makeStyles from '../../util/styles/jss/jss';
@@ -24,7 +28,7 @@ interface Props {
   translationParams?: Record<string, string>;
   accept?: string;
   maxFileSizeInBytes?: number;
-  maxFileSizeText?: string;
+  maxTotalAttachmentSizeText?: string;
 }
 
 const UploadButton = ({
@@ -35,7 +39,7 @@ const UploadButton = ({
   translationParams,
   accept = FILE_ACCEPT,
   maxFileSizeInBytes = MAX_SIZE_ATTACHMENT_FILE_BYTES,
-  maxFileSizeText = MAX_SIZE_ATTACHMENT_FILE_TEXT,
+  maxTotalAttachmentSizeText = MAX_TOTAL_SIZE_ATTACHMENT_FILES_TEXT,
 }: Props) => {
   const { translate } = useLanguages();
   const styles = useStyles();
@@ -113,7 +117,9 @@ const UploadButton = ({
           <BodyShort weight="semibold">{translate(TEXTS.statiske.attachment.validFormatsLabel)}</BodyShort>
           <BodyLong>{translate(TEXTS.statiske.attachment.validFormatsDescrption)}</BodyLong>
           <BodyShort weight="semibold">{translate(TEXTS.statiske.attachment.maxFileSizeLabel)}</BodyShort>
-          <BodyLong>{translate(TEXTS.statiske.attachment.maxFileSizeDescription, { size: maxFileSizeText })}</BodyLong>
+          <BodyLong>
+            {translate(TEXTS.statiske.attachment.maxFileSizeDescription, { size: maxTotalAttachmentSizeText })}
+          </BodyLong>
         </HStack>
       </ReadMore>
     </VStack>
