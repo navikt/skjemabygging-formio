@@ -5,6 +5,7 @@ import FileUploader from '../file-uploader/FileUploader';
 import Attachment from './Attachment';
 import { useAttachmentUpload } from './AttachmentUploadContext';
 import { attachmentValidator } from './attachmentValidator';
+import PersonalIdUploadReadMore from './PersonalIdUploadReadMore';
 
 const PersonalIdUpload = ({ refs }: { refs?: any }) => {
   const { translate } = useLanguages();
@@ -56,6 +57,7 @@ const PersonalIdUpload = ({ refs }: { refs?: any }) => {
           <FileUploader
             initialAttachment={{ attachmentId, navId: attachmentId, type: 'personal-id' }}
             multiple={false}
+            readMore={<PersonalIdUploadReadMore />}
           />
         </VStack>
       )}

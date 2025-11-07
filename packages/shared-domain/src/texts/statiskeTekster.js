@@ -54,6 +54,13 @@ export const statiske = {
     missingUploadError: 'Du må laste opp et gyldig identifikasjonsdokument før du kan fortsette.',
     tokenExpiredError:
       'Sesjonen din har utløpt. For å sende inn må du laste opp legitimasjon og fylle ut skjemaet på nytt. <a href="{{href}}">Klikk her</a> for å starte på nytt.',
+    readMoreHeader: 'Bildet du laster opp må inneholde/vise',
+    readMoreTypeOfId: 'Hva slags ID det er (pass, førerkort eller ID-kort)',
+    readMoreName: 'Fullt navn',
+    readMoreDateOfBirth: 'Fødselsdato',
+    readMoreValidity: 'Gyldig til',
+    readMoreImage: 'Bilde',
+    readMoreSignature: 'Signatur',
   },
   uploadFile: {
     singleFileUploadedLabel: 'Opplastet fil',
