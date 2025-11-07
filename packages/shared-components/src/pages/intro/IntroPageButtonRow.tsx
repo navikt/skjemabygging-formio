@@ -17,18 +17,23 @@ const IntroPageButtonRow = () => {
   const { translate } = useLanguages();
   const [searchParams] = useSearchParams();
   const { form, selfDeclaration, setError } = useIntroPage();
-  const { isMellomlagringActive } = useSendInn();
+  const { isMellomlagringActive, updateMellomlagring } = useSendInn();
   const { submission } = useForm();
   const { search } = useLocation();
 
   const href = `${form.path}?${searchParams.toString()}`;
   const validationError: Tkey = 'introPage.selfDeclaration.validationError';
 
-  const navigateToFormPage = () => {
+  const navigateToFormPage = async () => {
     if (form.introPage?.enabled && !selfDeclaration) {
       setError(translate(validationError));
       return;
     }
+
+    if (submissionMethod === 'digital' && submission) {
+      await updateMellomlagring(submission);
+    }
+
     navigate(`${form.firstPanelSlug}?${searchParams.toString()}`);
   };
 

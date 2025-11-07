@@ -1,6 +1,7 @@
 import { Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useState } from 'react';
 import { To, useLocation } from 'react-router';
+import { useAppConfig } from '../../../context/config/configContext';
 import { useLanguages } from '../../../context/languages';
 import { useSendInn } from '../../../context/sendInn/sendInnContext';
 import { CancelAndDeleteButton } from '../../navigation/CancelAndDeleteButton';
@@ -21,6 +22,7 @@ export interface Props {
 }
 
 const FormNavigation = ({ paths, isValid, submission, navigateTo, finalStep }: Props) => {
+  const { submissionMethod } = useAppConfig();
   const { isMellomlagringActive, updateMellomlagring } = useSendInn();
   const { search } = useLocation();
   const { translate } = useLanguages();
@@ -49,9 +51,11 @@ const FormNavigation = ({ paths, isValid, submission, navigateTo, finalStep }: P
     if (!valid) {
       return false;
     }
-    if (isMellomlagringActive && submission) {
-      updateMellomlagring(submission).catch((_e) => {});
+
+    if (submissionMethod === 'digital' && submission) {
+      await updateMellomlagring(submission);
     }
+
     navigateTo(nextLocation);
     return true;
   }, [isMellomlagringActive, isValid, navigateTo, nextLocation, submission, updateMellomlagring]);
