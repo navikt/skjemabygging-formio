@@ -9,6 +9,7 @@ import {
 import { logger } from '../../logger';
 import { createFeltMapFromSubmission } from '../../routers/api/helpers/feltMapBuilder';
 import { stringifyPdf } from '../../routers/api/helpers/pdfUtils';
+import { LogMetadata } from '../../types/log';
 import { base64Decode } from '../../utils/base64';
 import { htmlResponseError } from '../../utils/errorHandling';
 import applicationService from './applicationService';
@@ -25,7 +26,7 @@ interface ApplicationProps {
   translations: I18nTranslationMap;
 }
 
-const application = async (props: CoverPageAndApplicationProps) => {
+const application = async (props: CoverPageAndApplicationProps, logMeta: LogMetadata = {}) => {
   const { accessToken, form, pdfFormData, submission, language, translations, submissionMethod } = props;
 
   const applicationPdf = await applicationService.createFormPdf(
@@ -39,6 +40,7 @@ const application = async (props: CoverPageAndApplicationProps) => {
           createTranslate(translations, language),
           language,
         ),
+    logMeta,
   );
 
   if (applicationPdf === undefined) {
@@ -54,7 +56,7 @@ interface CoverPageAndApplicationProps extends ApplicationProps {
   unitNumber: string;
 }
 
-const coverPageAndApplication = async (props: CoverPageAndApplicationProps) => {
+const coverPageAndApplication = async (props: CoverPageAndApplicationProps, logMeta: LogMetadata = {}) => {
   const {
     accessToken,
     pdfGeneratorAccessToken,
@@ -88,6 +90,7 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps) => {
             createTranslate(translations, language),
             language,
           ),
+      logMeta,
     ),
   ]);
 
@@ -110,7 +113,7 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps) => {
     coverPagePdf,
     applicationPdf,
   );
-  logger.info(`Request to merge front page and application completed`, {});
+  logger.info('Request to merge front page and application completed', logMeta);
 
   if (mergedFile === undefined) {
     throw htmlResponseError('Sammenslåing av forside og søknad feilet');

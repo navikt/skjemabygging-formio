@@ -5,6 +5,7 @@ import fetch, { BodyInit, HeadersInit } from 'node-fetch';
 import { config } from '../../config/config';
 import { logger } from '../../logger';
 import { appMetrics } from '../../services';
+import { LogMetadata } from '../../types/log';
 import { responseToError } from '../../utils/errorHandling.js';
 import forstesideV2 from './forstesideV2';
 
@@ -30,7 +31,9 @@ const forsteside = {
         }
         const forsteside = await validateForstesideRequest(requestBody);
         const response = await forstesideRequest(req, JSON.stringify(forsteside));
-        logForsteside(req.body, response);
+        logForsteside(req.body, response, {
+          fyllutRequestPath: req.path,
+        });
         appMetrics.paperSubmissionsCounter.inc({ source: resolveSource(requestBody.foerstesidetype) });
         res.contentType('application/json');
         res.send(response);
@@ -95,10 +98,12 @@ const forstesideRequest = async (req: Request, body?: BodyInit) => {
   throw await responseToError(response, 'Feil ved generering av førsteside', true);
 };
 
-const logForsteside = (forsteside: ForstesideRequestBody, response: any) => {
+const logForsteside = (forsteside: ForstesideRequestBody, response: any, logMeta: LogMetadata) => {
   logger.info('Download cover page', {
+    ...logMeta,
     loepenummer: JSON.parse(response).loepenummer,
-    navSkjemaId: forsteside.navSkjemaId,
+    foerstesidetype: forsteside.foerstesidetype,
+    skjemanummer: forsteside.navSkjemaId,
     tema: forsteside.tema,
     enhetsnummer: forsteside.enhetsnummer,
     spraakkode: forsteside.spraakkode,
