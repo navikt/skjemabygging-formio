@@ -20,7 +20,6 @@ interface Props {
   readMore?: ReactNode;
   accept?: string;
   maxFileSizeInBytes?: number;
-  maxTotalAttachmentSizeText?: string;
 }
 
 const FileUploader = ({
@@ -32,7 +31,6 @@ const FileUploader = ({
   readMore,
   accept,
   maxFileSizeInBytes,
-  maxTotalAttachmentSizeText,
 }: Props) => {
   const { translate } = useLanguages();
   const config = useAppConfig();
@@ -107,7 +105,6 @@ const FileUploader = ({
             accept={accept}
             readMore={readMore}
             maxFileSizeInBytes={maxFileSizeInBytes}
-            maxTotalAttachmentSizeText={maxTotalAttachmentSizeText}
           />
         </VStack>
       )}
