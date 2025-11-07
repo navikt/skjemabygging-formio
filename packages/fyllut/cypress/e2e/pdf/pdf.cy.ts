@@ -27,10 +27,8 @@ const getCleanedUpPdfFormData = (request, date?: string) => {
 const downloadPdf = (submissionType: 'digital' | 'paper' | 'digitalnologin' = 'paper') => {
   cy.findByRole('link', { name: /Oppsummering|Summary/ }).click();
   cy.findByRole('heading', { name: /Oppsummering|Summary/ }).shouldBeVisible();
-  if (submissionType === 'digital') {
+  if (submissionType === 'digital' || submissionType === 'digitalnologin') {
     cy.clickSendNav();
-  } else if (submissionType === 'digitalnologin') {
-    cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.sendToNav }).click();
   } else {
     cy.findByRole('link', { name: 'Instruksjoner for innsending' }).click();
     cy.findByRole('button', { name: /Last ned skjema|Download form/ }).click();

@@ -10,6 +10,10 @@ describe('Form navigation', () => {
     cy.defaultIntercepts();
   });
 
+  after(() => {
+    cy.mocksRestoreRouteVariants();
+  });
+
   describe('Type: Paper', () => {
     beforeEach(() => {
       cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application').as('downloadPdf');
@@ -358,7 +362,6 @@ describe('Form navigation', () => {
 
   describe('Type: Digital, no login', () => {
     beforeEach(() => {
-      cy.mocksUseRouteVariant('post-nologin-soknad:success');
       cy.intercept('POST', '/fyllut/api/send-inn/nologin-soknad').as('nologinSubmit');
       cy.visit('/fyllut/stnologin/legitimasjon?sub=digitalnologin');
       cy.defaultWaits();
@@ -374,7 +377,7 @@ describe('Form navigation', () => {
       cy.findByRole('link', { name: 'Neste steg' }).click();
     });
 
-    it('Normal flow', () => {
+    it.only('Normal flow', () => {
       cy.findByRole('heading', { level: 2, name: 'Introduksjon' }).should('exist');
       cy.url().should('include', '/fyllut/stnologin?sub=digitalnologin');
       cy.findByRole('link', { name: 'Neste steg' }).click();

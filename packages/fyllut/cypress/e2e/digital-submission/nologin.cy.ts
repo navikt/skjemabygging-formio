@@ -389,7 +389,7 @@ describe('Digital submission without user login', () => {
         cy.findByLabelText('Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved').check(),
       );
       cy.clickNextStep();
-      cy.findByRole('button', { name: 'Send til Nav' }).click();
+      cy.clickSendNav();
       cy.findByText('Takk for at du sendte inn skjemaet.').should('exist');
     });
   });
