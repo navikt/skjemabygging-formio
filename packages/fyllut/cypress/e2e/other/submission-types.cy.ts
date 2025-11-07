@@ -36,7 +36,7 @@ describe('Submission Type', () => {
         cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
         cy.clickNextStep();
 
-        cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.next }).click();
+        cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions }).click();
 
         cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).should('exist');
       });
@@ -85,7 +85,7 @@ describe('Submission Type', () => {
         cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
         cy.clickSaveAndContinue();
 
-        cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('exist');
+        cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('exist');
       });
 
       it('Do not show attachments', () => {
@@ -146,7 +146,7 @@ describe('Submission Type', () => {
         cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendOnPaper }).click();
         cy.url().should('include', 'sub=paper');
 
-        cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.cancelAndRestart }).click();
+        cy.go(-1);
 
         cy.clickSendDigital();
         cy.url().should('include', 'sub=digital');
@@ -178,7 +178,7 @@ describe('Submission Type', () => {
         cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
         cy.clickSaveAndContinue();
 
-        cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('exist');
+        cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('exist');
       });
     });
 
@@ -217,7 +217,7 @@ describe('Submission Type', () => {
 
       it('Select digital', () => {
         cy.clickSendDigital();
-        cy.clickStart();
+        cy.clickSaveAndContinue();
 
         cy.url().should('include', 'sub=digital');
       });
