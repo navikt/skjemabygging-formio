@@ -326,18 +326,17 @@ const getActiveComponentsFromForm = (
 ): Component[] => {
   const conditionals = formSummaryUtil.mapAndEvaluateConditionals(form, submission ?? { data: {} });
 
+  const panels = form.components.filter(
+    (component) =>
+      component.type === 'panel' &&
+      !(isVedleggspanel(component) && (submissionMethod === 'digital' || submissionMethod === 'digitalnologin')),
+  );
+
   if (!conditionals || Object.keys(conditionals).length === 0) {
-    return form.components;
+    return panels;
   }
 
-  return getActiveComponents(
-    form.components.filter(
-      (component) =>
-        component.type === 'panel' &&
-        !(isVedleggspanel(component) && (submissionMethod === 'digital' || submissionMethod === 'digitalnologin')),
-    ),
-    conditionals,
-  );
+  return getActiveComponents(panels, conditionals);
 };
 
 const getActiveComponents = (components: Component[], conditionals?: any): Component[] => {
