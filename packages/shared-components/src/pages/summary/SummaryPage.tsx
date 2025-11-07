@@ -2,6 +2,7 @@ import { Alert, BodyShort, ConfirmationPanel, Heading, VStack } from '@navikt/ds
 import { DeclarationType, navFormUtils, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useRef, useState } from 'react';
 import { attachmentValidator } from '../../components/attachment/attachmentValidator';
+import ButtonRow from '../../components/button/ButtonRow';
 import EditAnswersButton from '../../components/button/navigation/edit-answers/EditAnswersButton';
 import ValidationExclamationIcon from '../../components/icons/ValidationExclamationIcon';
 import NavFormHelper from '../../components/nav-form/NavFormHelper';
@@ -120,9 +121,9 @@ export function SummaryPage() {
             {translate(TEXTS.statiske.summaryPage.validationMessage)}
             <ValidationExclamationIcon title={translate(TEXTS.statiske.summaryPage.validationIcon)} />.
           </Alert>
-          <div className="button-row">
+          <ButtonRow>
             <EditAnswersButton form={form} panelValidationList={panelValidationList} />
-          </div>
+          </ButtonRow>
         </>
       ) : (
         <BodyShort className="mb-4">{translate(TEXTS.statiske.summaryPage.description)}</BodyShort>
