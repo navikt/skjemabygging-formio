@@ -113,13 +113,15 @@ const UploadButton = ({
         </Alert>
       )}
       <ReadMore header={translate(TEXTS.statiske.attachment.sizeAndFormatHeader)}>
-        <HStack gap="2" align="start">
-          <BodyShort weight="semibold">{translate(TEXTS.statiske.attachment.validFormatsLabel)}</BodyShort>
-          <BodyLong>{translate(TEXTS.statiske.attachment.validFormatsDescrption)}</BodyLong>
-          <BodyShort weight="semibold">{translate(TEXTS.statiske.attachment.maxFileSizeLabel)}</BodyShort>
-          <BodyLong>
+        <HStack gap="4" align="start">
+          <BodyShort>
+            <strong>{translate(TEXTS.statiske.attachment.validFormatsLabel)} </strong>
+            {translate(TEXTS.statiske.attachment.validFormatsDescrption)}
+          </BodyShort>
+          <BodyShort>
+            <strong>{translate(TEXTS.statiske.attachment.maxFileSizeLabel)} </strong>
             {translate(TEXTS.statiske.attachment.maxFileSizeDescription, { size: maxTotalAttachmentSizeText })}
-          </BodyLong>
+          </BodyShort>
         </HStack>
       </ReadMore>
     </VStack>
