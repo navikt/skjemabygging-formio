@@ -7,7 +7,7 @@ export default defineConfig(({ mode }) => {
   const plugins: PluginOption = [
     ...VitePluginNode({
       adapter: 'express',
-      appPath: './src/server.js',
+      appPath: './src/server.ts',
       outputFormat: 'module',
     }),
   ];
@@ -28,7 +28,7 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       rollupOptions: {
-        input: './src/server.js',
+        input: './src/server.ts',
         output: {
           entryFileNames: '[name].mjs',
         },

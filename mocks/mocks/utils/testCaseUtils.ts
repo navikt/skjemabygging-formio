@@ -44,7 +44,7 @@ const filterKeys = (obj, excludeKeys) => {
 };
 
 const findMismatches = (obj1, obj2, path = '') => {
-  const mismatches = [];
+  const mismatches: any = [];
   const allKeys = new Set([...Object.keys(obj1 || {}), ...Object.keys(obj2 || {})]);
 
   allKeys.forEach((key) => {
@@ -79,7 +79,7 @@ const verifyJsonBody = (actualBody, expectedBody, excludeKeys = []) => {
   return findMismatches(filteredActual, filteredExpected) || [];
 };
 
-export const compareBodyMiddleware = (expectedBody, excludeKeys = [], onSuccess) => {
+export const compareBodyMiddleware = (expectedBody: any, excludeKeys: any = [], onSuccess) => {
   return async (req, res) => {
     const mismatches = verifyJsonBody(req.body, expectedBody, excludeKeys);
     if (mismatches.length) {

@@ -1,9 +1,9 @@
-const currencies = require('../data/kodeverk/currencies.json');
-const temakoder = require('../data/kodeverk/temakoder.json');
-const enhetstyper = require('../data/kodeverk/enhetstyper.json');
-const areaCodes = require('../data/kodeverk/area-codes.json');
+import areaCodes from '../data/kodeverk/area-codes.json';
+import currencies from '../data/kodeverk/currencies.json';
+import enhetstyper from '../data/kodeverk/enhetstyper.json';
+import temakoder from '../data/kodeverk/temakoder.json';
 
-module.exports = [
+export default [
   {
     id: 'get-kodeverk-currencies',
     url: '/kodeverk/api/v1/kodeverk/ValutaBetaling/*',
