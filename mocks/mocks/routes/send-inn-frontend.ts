@@ -1,4 +1,4 @@
-module.exports = [
+export default [
   {
     id: 'send-inn-frontend',
     url: '/send-inn-frontend',

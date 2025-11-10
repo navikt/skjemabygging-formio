@@ -1,7 +1,7 @@
-const tc01 = require('../data/test-cases/tc01-nologin-pdf-body.json');
-const { compareBodyMiddleware } = require('../utils/testCaseUtils');
+import tc01 from '../data/test-cases/tc01-nologin-pdf-body.json';
+import { compareBodyMiddleware } from '../utils/testCaseUtils';
 
-module.exports = [
+export default [
   {
     id: 'post-familie-pdf',
     url: '/api/pdf/v3/opprett-pdf',

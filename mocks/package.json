@@ -2,14 +2,15 @@
   "name": "mocks",
   "version": "1.0.0",
   "description": "Mocks Server for bygger and fyllut",
-  "main": "index.js",
   "license": "MIT",
   "private": true,
   "devDependencies": {
-    "@mocks-server/main": "^4.1.0"
+    "@mocks-server/main": "^4.1.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
   },
   "scripts": {
-    "mocks:fyllut": "yarn && mocks-server",
-    "mocks:fyllut:no-cli": "yarn && mocks-server --no-plugins.inquirerCli.enabled"
+    "mocks:fyllut": "yarn && ts-node mocks/server.ts",
+    "mocks:fyllut:no-cli": "yarn && ts-node mocks/server.ts --no-plugins.inquirerCli.enabled"
   }
 }
