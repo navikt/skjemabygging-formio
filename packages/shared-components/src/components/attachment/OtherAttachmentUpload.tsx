@@ -16,6 +16,7 @@ import FileUploader from '../file-uploader/FileUploader';
 import Attachment from './Attachment';
 import { useAttachmentUpload } from './AttachmentUploadContext';
 import { attachmentValidator } from './attachmentValidator';
+import FileUploadReadMore from './FileUploadReadMore';
 import { useAttachmentStyles } from './styles';
 
 interface Props {
@@ -112,6 +113,7 @@ const OtherAttachmentUpload = ({ label, attachmentValues, componentId, descripti
                 requireAttachmentTitle
                 attachmentValue={otherAttachment?.value}
                 refs={refs}
+                readMore={<FileUploadReadMore />}
               />
             ))}
             <Button
