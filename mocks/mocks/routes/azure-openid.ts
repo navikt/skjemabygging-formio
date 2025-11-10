@@ -1,4 +1,4 @@
-module.exports = [
+export default [
   {
     id: 'post-azure-openid-token',
     url: '/azure-openid/oauth2/v2.0/token',

@@ -1,0 +1,38 @@
+{
+  "config": {},
+  "plugins": {
+    "proxyRoutesHandler": {},
+    "adminApi": {
+      "port": 3310,
+      "https": {}
+    },
+    "inquirerCli": {
+      "enabled": true
+    },
+    "openapi": {
+      "collection": {}
+    }
+  },
+  "mock": {
+    "routes": {},
+    "collections": {
+      "selected": "fyllut-base"
+    }
+  },
+  "server": {
+    "port": 3300,
+    "cors": {},
+    "jsonBodyParser": {},
+    "urlEncodedBodyParser": {},
+    "https": {}
+  },
+  "files": {
+    "babelRegister": {
+      "enabled": true,
+      "options": {
+        "only": ["/mocks"]
+      }
+    }
+  },
+  "variantHandlers": {}
+}
