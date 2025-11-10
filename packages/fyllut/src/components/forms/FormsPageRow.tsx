@@ -1,5 +1,10 @@
 import { makeStyles, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
-import { FormsResponseForm, navFormUtils, submissionTypesUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  FormsResponseForm,
+  navFormUtils,
+  SubmissionType,
+  submissionTypesUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
 
 interface FormRowProps {
   form: FormsResponseForm;
@@ -13,6 +18,8 @@ const useStyles = makeStyles({
   },
 });
 
+const toSubParam = (submissionType: SubmissionType): string => `sub=${submissionTypesUtils.asMethod(submissionType)}`;
+
 const FormsPageRow = ({ form }: FormRowProps) => {
   const { config, baseUrl } = useAppConfig();
   const styles = useStyles();
@@ -20,8 +27,14 @@ const FormsPageRow = ({ form }: FormRowProps) => {
   const digital = navFormUtils.isSubmissionMethodAllowed('digital', form);
   const ingen = submissionTypesUtils.isNoneSubmission(form.properties.submissionTypes);
   const noDigitalLogin = submissionTypesUtils.isDigitalNoLoginSubmission(form.properties.submissionTypes);
+  const noDigitalLoginOnly = submissionTypesUtils.isDigitalNoLoginSubmissionOnly(form.properties.submissionTypes);
   const isDevelopment = config?.isDevelopment;
-  const skjemaPath = `${baseUrl}/${form.path}`;
+  let skjemaPath = `${baseUrl}/${form.path}`;
+  if (noDigitalLoginOnly) {
+    skjemaPath += `/legitimasjon?${toSubParam('DIGITAL_NO_LOGIN')}`;
+  } else if (form.properties.submissionTypes?.length === 1) {
+    skjemaPath += `?${toSubParam(form.properties.submissionTypes[0])}`;
+  }
 
   return (
     <tr>
@@ -36,7 +49,7 @@ const FormsPageRow = ({ form }: FormRowProps) => {
           <td>
             {paper && (
               <span>
-                [<a href={`/fyllut/${form.path}${digital ? '?sub=paper' : ''}`}>papir</a>]
+                [<a href={`/fyllut/${form.path}?sub=paper`}>papir</a>]
               </span>
             )}
           </td>
@@ -50,7 +63,7 @@ const FormsPageRow = ({ form }: FormRowProps) => {
           <td>
             {noDigitalLogin && (
               <span>
-                [<a href={`/fyllut/${form.path}?sub=digitalnologin`}>uinnlogget</a>]
+                [<a href={`/fyllut/${form.path}/legitimasjon?sub=digitalnologin`}>uinnlogget</a>]
               </span>
             )}
           </td>
