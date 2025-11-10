@@ -1,6 +1,7 @@
 import { I18nTranslationMap, NavFormType, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import { noLoginFileService } from '../../../../services';
+import { LogMetadata } from '../../../../types/log';
 
 const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -18,16 +19,24 @@ const post = async (req: Request, res: Response, next: NextFunction) => {
     };
     const accessToken = req.headers.AzureAccessToken as string;
     const pdfAccessToken = req.headers.PdfAccessToken as string;
+    const innsendingsId = nologinContext.innsendingsId;
+    const logMeta: LogMetadata = {
+      innsendingsId,
+      skjemanummer: form?.properties?.skjemanummer,
+      language,
+      fyllutRequestPath: req.path,
+    };
 
     const result = await noLoginFileService.submit(
       pdfAccessToken,
       accessToken,
-      nologinContext.innsendingsId,
+      innsendingsId,
       form,
       submission,
       translation,
       language,
       pdfFormData,
+      logMeta,
     );
     res.contentType('application/pdf');
     res.setHeader('Content-Disposition', `inline; filename=${encodeURIComponent(`${form.path}.pdf`)}`);

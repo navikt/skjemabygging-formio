@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express';
 import { appMetrics } from '../../../services';
 import documentsService from '../../../services/documents/documentsService';
-import { logErrorWithStacktrace } from '../../../utils/errors';
+import { LogMetadata } from '../../../types/log';
 
 const application: RequestHandler = async (req, res, next) => {
   try {
@@ -18,23 +18,31 @@ const application: RequestHandler = async (req, res, next) => {
       throw new Error('Azure PDF generator token is missing. Unable to generate PDF');
     }
 
-    const fileBuffer = await documentsService.application({
-      form: formParsed,
-      pdfFormData,
-      submission: submissionParsed,
+    const logMeta: LogMetadata = {
+      skjemanummer: formParsed?.properties?.skjemanummer,
       language,
-      unitNumber: enhetNummer,
-      accessToken: pdfGeneratorToken,
-      pdfGeneratorAccessToken: pdfGeneratorToken,
-      mergePdfAccessToken: req.headers.MergePdfToken as string,
-      submissionMethod,
-      translations: translationsParsed,
-    });
+      fyllutRequestPath: req.path,
+    };
+    const fileBuffer = await documentsService.application(
+      {
+        form: formParsed,
+        pdfFormData,
+        submission: submissionParsed,
+        language,
+        unitNumber: enhetNummer,
+        accessToken: pdfGeneratorToken,
+        pdfGeneratorAccessToken: pdfGeneratorToken,
+        mergePdfAccessToken: req.headers.MergePdfToken as string,
+        submissionMethod,
+        translations: translationsParsed,
+      },
+      logMeta,
+    );
+    appMetrics.paperSubmissionsCounter.inc({ source: 'ingen' });
     res.contentType('application/pdf');
     res.setHeader('Content-Disposition', `inline; filename=${encodeURIComponent(`${formParsed.path}.pdf`)}`);
     res.send(fileBuffer);
   } catch (e) {
-    logErrorWithStacktrace(e as Error);
     next(e);
   }
 };
@@ -63,25 +71,31 @@ const coverPageAndApplication: RequestHandler = async (req, res, next) => {
     if (!mergePdfToken) {
       throw new Error('MergePDF generator token is missing. Unable to merge front page and application PDFs');
     }
-
-    const fileBuffer = await documentsService.coverPageAndApplication({
-      form: formParsed,
-      pdfFormData,
-      submission: submissionParsed,
+    const logMeta: LogMetadata = {
+      skjemanummer: formParsed?.properties?.skjemanummer,
       language,
-      unitNumber: enhetNummer,
-      accessToken: frontPageGeneratorToken,
-      pdfGeneratorAccessToken: pdfGeneratorToken,
-      mergePdfAccessToken: mergePdfToken,
-      submissionMethod,
-      translations: translationsParsed,
-    });
+      fyllutRequestPath: req.path,
+    };
+    const fileBuffer = await documentsService.coverPageAndApplication(
+      {
+        form: formParsed,
+        pdfFormData,
+        submission: submissionParsed,
+        language,
+        unitNumber: enhetNummer,
+        accessToken: frontPageGeneratorToken,
+        pdfGeneratorAccessToken: pdfGeneratorToken,
+        mergePdfAccessToken: mergePdfToken,
+        submissionMethod,
+        translations: translationsParsed,
+      },
+      logMeta,
+    );
     appMetrics.paperSubmissionsCounter.inc({ source: 'fyllUt' });
     res.contentType('application/pdf');
     res.setHeader('Content-Disposition', `inline; filename=${encodeURIComponent(`${formParsed.path}.pdf`)}`);
     res.send(fileBuffer);
   } catch (e) {
-    logErrorWithStacktrace(e as Error);
     next(e);
   }
 };

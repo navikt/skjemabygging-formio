@@ -11,6 +11,7 @@ import correlator from 'express-correlation-id';
 import fetch, { BodyInit, HeadersInit } from 'node-fetch';
 import { config } from '../../config/config';
 import { logger } from '../../logger';
+import { LogMetadata } from '../../types/log';
 import { responseToError } from '../../utils/errorHandling';
 
 interface CreatePdfProps {
@@ -20,10 +21,11 @@ interface CreatePdfProps {
   translate: (text: string, textReplacements?: I18nTranslationReplacements) => string;
   language: string;
   unitNumber?: string;
+  logMeta?: LogMetadata;
 }
 
 const createPdf = async (props: CreatePdfProps): Promise<any> => {
-  const { accessToken, form, submission, language = 'nb-NO', unitNumber, translate } = props;
+  const { accessToken, form, submission, language = 'nb-NO', unitNumber, translate, logMeta = {} } = props;
 
   const recipients = (await getRecipients(form?.properties)) ?? [];
 
@@ -31,7 +33,7 @@ const createPdf = async (props: CreatePdfProps): Promise<any> => {
 
   const response = await createPdfRequest(accessToken, JSON.stringify(body));
 
-  log(body, response);
+  log(body, response, logMeta);
 
   return {
     ...(response as object),
@@ -79,10 +81,12 @@ const createPdfRequest = async (accessToken: string, body?: BodyInit) => {
   throw await responseToError(response, 'Feil ved generering av førsteside', true);
 };
 
-const log = (forsteside: ForstesideRequestBody, response: any) => {
+const log = (forsteside: ForstesideRequestBody, response: any, logMeta: LogMetadata) => {
   logger.info('Download cover page', {
+    ...logMeta,
     loepenummer: response.loepenummer,
-    navSkjemaId: forsteside.navSkjemaId,
+    foerstesidetype: forsteside.foerstesidetype,
+    skjemanummer: forsteside.navSkjemaId,
     tema: forsteside.tema,
     enhetsnummer: forsteside.enhetsnummer,
     spraakkode: forsteside.spraakkode,
