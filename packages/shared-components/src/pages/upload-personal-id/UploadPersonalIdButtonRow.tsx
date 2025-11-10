@@ -5,7 +5,6 @@ import { useAttachmentUpload } from '../../components/attachment/AttachmentUploa
 import { CancelAndDeleteButton } from '../../components/navigation/CancelAndDeleteButton';
 import NavigationButtonRow from '../../components/navigation/NavigationButtonRow';
 import { NextButton } from '../../components/navigation/NextButton';
-import { PreviousButton } from '../../components/navigation/PreviousButton';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
@@ -50,16 +49,6 @@ const UploadPersonalIdButtonRow = () => {
             }}
             href={{
               digitalnologin: `${startUrl}?${searchParams.toString()}`,
-            }}
-          />
-        }
-        previousButton={
-          <PreviousButton
-            onClick={{
-              digitalnologin: () => navigate(-1),
-            }}
-            label={{
-              digitalnologin: translate(TEXTS.grensesnitt.navigation.cancelAndRestart),
             }}
           />
         }
