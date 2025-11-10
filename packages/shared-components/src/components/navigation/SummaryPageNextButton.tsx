@@ -69,7 +69,6 @@ export function SummaryPageNextButton({
       await submitSoknad(submission);
     } catch (err: any) {
       setError(err);
-    } finally {
       setLoading(false);
     }
   };
