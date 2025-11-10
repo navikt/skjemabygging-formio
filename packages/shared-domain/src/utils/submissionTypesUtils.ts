@@ -1,4 +1,4 @@
-import { SubmissionType } from '../form';
+import { SubmissionMethod, SubmissionType } from '../form';
 
 function isDigitalSubmission(submissionTypes?: SubmissionType[]): boolean {
   return !!submissionTypes?.includes('DIGITAL');
@@ -28,6 +28,17 @@ function isNoneSubmission(submissionTypes?: SubmissionType[]): boolean {
   return !!submissionTypes && !submissionTypes.length;
 }
 
+function asMethod(submissionType: SubmissionType): SubmissionMethod {
+  switch (submissionType) {
+    case 'DIGITAL':
+      return 'digital';
+    case 'DIGITAL_NO_LOGIN':
+      return 'digitalnologin';
+    case 'PAPER':
+      return 'paper';
+  }
+}
+
 const submissionTypesUtils = {
   isDigitalSubmissionOnly,
   isDigitalSubmission,
@@ -36,6 +47,7 @@ const submissionTypesUtils = {
   isNoneSubmission,
   isPaperSubmission,
   isPaperSubmissionOnly,
+  asMethod,
 };
 
 export default submissionTypesUtils;

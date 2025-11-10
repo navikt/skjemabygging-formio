@@ -54,6 +54,13 @@ export const statiske = {
     missingUploadError: 'Du må laste opp et gyldig identifikasjonsdokument før du kan fortsette.',
     tokenExpiredError:
       'Sesjonen din har utløpt. For å sende inn må du laste opp legitimasjon og fylle ut skjemaet på nytt. <a href="{{href}}">Klikk her</a> for å starte på nytt.',
+    readMoreHeader: 'Bildet du laster opp må inneholde/vise',
+    readMoreTypeOfId: 'Hva slags ID det er (pass, førerkort eller ID-kort)',
+    readMoreName: 'Fullt navn',
+    readMoreDateOfBirth: 'Fødselsdato',
+    readMoreValidity: 'Gyldig til',
+    readMoreImage: 'Bilde',
+    readMoreSignature: 'Signatur',
   },
   uploadFile: {
     singleFileUploadedLabel: 'Opplastet fil',
@@ -187,7 +194,7 @@ export const statiske = {
     validFormatsLabel: 'Gyldige filformater:',
     validFormatsDescrption: 'pdf, jpeg/jpg, docx, doc, odt, rtf, txt, png, tiff/tif, bmp og gif.',
     maxFileSizeLabel: 'Maks filstørrelse:',
-    maxFileSizeDescription: 'Du kan laste opp flere filer, men totalt kan ikke opplastingen være mer enn 50 MB.',
+    maxFileSizeDescription: 'Du kan laste opp flere filer, men totalt kan ikke opplastingen være mer enn {{size}}.',
     filesUploadedNotSent: 'Fil(er) du har lastet opp, men ikke sendt inn:',
     sizeAndFormatHeader: 'Gyldige filformater og størrelser',
     deleteAllFiles: 'Slett alle',

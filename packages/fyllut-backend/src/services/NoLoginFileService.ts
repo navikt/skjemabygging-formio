@@ -12,6 +12,7 @@ import { ConfigType } from '../config/types';
 import { logger } from '../logger';
 import { assembleNologinSoknadBody } from '../routers/api/helpers/nologin';
 import { stringifyPdf } from '../routers/api/helpers/pdfUtils';
+import { LogMetadata } from '../types/log';
 import { responseToError } from '../utils/errorHandling';
 import applicationService from './documents/applicationService';
 
@@ -107,11 +108,12 @@ class NoLoginFileService {
     translation: I18nTranslationMap = {},
     language: string,
     pdfFormData?: any,
+    logMeta: LogMetadata = {},
   ) {
     const correlationId = correlator.getId();
     const lang = localizationUtils.getLanguageCodeAsIso639_1(language);
     const translate = translationUtils.createTranslate(translation, language);
-    const applicationPdf = await applicationService.createFormPdf(pdfAccessToken, stringifyPdf(pdfFormData));
+    const applicationPdf = await applicationService.createFormPdf(pdfAccessToken, stringifyPdf(pdfFormData), logMeta);
 
     const pdfByteArray = Array.from(applicationPdf);
     const nologinApplication = assembleNologinSoknadBody(
@@ -124,12 +126,6 @@ class NoLoginFileService {
     );
 
     const { host, paths } = this._config.sendInnConfig;
-    const logMeta = {
-      innsendingsId,
-      correlationId,
-      skjemanummer: form.properties.skjemanummer,
-      formPath: form.path,
-    };
     const nologinSubmitUrl = `${host}${paths.nologinSubmit}`;
     logger.info(`${innsendingsId}: Submitting nologin application to ${nologinSubmitUrl}`, logMeta);
     const response = await fetch(nologinSubmitUrl, {
@@ -151,7 +147,6 @@ class NoLoginFileService {
 
     logger.error(`${innsendingsId}: Failed to submit nologin application`, {
       ...logMeta,
-      innsendingsId,
       status: response.status,
       statusText: response.statusText,
     });

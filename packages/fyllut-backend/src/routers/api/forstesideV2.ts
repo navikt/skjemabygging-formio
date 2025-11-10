@@ -9,6 +9,7 @@ import correlator from 'express-correlation-id';
 import fetch, { BodyInit, HeadersInit } from 'node-fetch';
 import { config } from '../../config/config';
 import { logger } from '../../logger';
+import { LogMetadata } from '../../types/log';
 import { base64Decode } from '../../utils/base64';
 import { htmlResponseError, responseToError } from '../../utils/errorHandling.js';
 import { logErrorWithStacktrace } from '../../utils/errors';
@@ -33,7 +34,9 @@ const forstesideV2 = {
       );
 
       const response: any = await forstesideRequest(req, JSON.stringify(forstesideBody));
-      logForsteside(req.body, response);
+      logForsteside(req.body, response, {
+        fyllutRequestPath: req.path,
+      });
 
       const fileName = encodeURIComponent(`Førstesideark_${formParsed.path}.pdf`);
       res.contentType('application/pdf');
@@ -81,10 +84,12 @@ const forstesideRequest = async (req: Request, body?: BodyInit) => {
   throw await responseToError(response, 'Feil ved generering av førsteside', true);
 };
 
-const logForsteside = (forsteside: ForstesideRequestBody, response: any) => {
+const logForsteside = (forsteside: ForstesideRequestBody, response: any, logMeta: LogMetadata) => {
   logger.info('Download cover page', {
+    ...logMeta,
     loepenummer: response.loepenummer,
-    navSkjemaId: forsteside.navSkjemaId,
+    foerstesidetype: forsteside.foerstesidetype,
+    skjemanummer: forsteside.navSkjemaId,
     tema: forsteside.tema,
     enhetsnummer: forsteside.enhetsnummer,
     spraakkode: forsteside.spraakkode,
