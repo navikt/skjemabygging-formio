@@ -28,7 +28,7 @@ function isNoneSubmission(submissionTypes?: SubmissionType[]): boolean {
   return !!submissionTypes && !submissionTypes.length;
 }
 
-function asMethod(submissionType: SubmissionType): SubmissionMethod | undefined {
+function asMethod(submissionType: SubmissionType): SubmissionMethod {
   switch (submissionType) {
     case 'DIGITAL':
       return 'digital';
