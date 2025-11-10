@@ -44,7 +44,7 @@
     "cypress:fyllut:open": "yarn workspace @navikt/fyllut-frontend cypress:open",
     "check-types": "yarn workspaces run check-types",
     "mocks:fyllut": "cd mocks && yarn mocks:fyllut",
-    "mocks:fyllut:no-cli": "cd mocks && yarn && yarn mocks:fyllut:no-cli",
+    "mocks:fyllut:no-cli": "cd mocks && yarn mocks:fyllut:no-cli",
     "lint": "eslint .",
     "lint:staged": "lint-staged",
     "prepare": "husky",

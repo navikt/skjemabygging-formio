@@ -10,7 +10,7 @@
     "typescript": "^5.9.3"
   },
   "scripts": {
-    "mocks:fyllut": "ts-node mocks/server.ts",
-    "mocks:fyllut:no-cli": "ts-node mocks/server.ts --no-plugins.inquirerCli.enabled"
+    "mocks:fyllut": "yarn && ts-node mocks/server.ts",
+    "mocks:fyllut:no-cli": "yarn && ts-node mocks/server.ts --no-plugins.inquirerCli.enabled"
   }
 }
