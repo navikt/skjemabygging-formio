@@ -2,6 +2,15 @@
   "label": "Components",
   "verdiliste": [
     {
+      "label": "Introduksjon",
+      "verdiliste": [
+        {
+          "label": "Jeg bekrefter at jeg vil svare så riktig som jeg kan.",
+          "verdi": "Ja"
+        }
+      ]
+    },
+    {
       "label": "Dine opplysninger",
       "verdiliste": [
         {
