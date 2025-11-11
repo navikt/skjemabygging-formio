@@ -10,6 +10,7 @@ import { config } from '../../config/config';
 import { logger } from '../../logger';
 import { getIdportenPid, getTokenxAccessToken } from '../../security/tokenHelper';
 import applicationService from '../../services/documents/applicationService';
+import { LogMetadata } from '../../types/log';
 import { responseToError } from '../../utils/errorHandling';
 import { getFyllutUrl } from '../../utils/url';
 import { createFeltMapFromSubmission } from './helpers/feltMapBuilder';
@@ -53,8 +54,14 @@ const sendInnUtfyltSoknad = {
         return;
       }
 
+      const logMeta: LogMetadata = {
+        innsendingsId: sanitizedInnsendingsId,
+        skjemanummer: form?.properties?.skjemanummer,
+        language,
+        fyllutRequestPath: req.path,
+      };
       if (!['nb-NO', 'nn-NO', 'en'].includes(language)) {
-        logger.warn(`Language code "${language}" is not supported. Language code will be defaulted to "nb".`);
+        logger.warn(`Language code "${language}" is not supported. Language code will be defaulted to "nb".`, logMeta);
       }
 
       const applicationPdf = await applicationService.createFormPdf(
@@ -68,8 +75,8 @@ const sendInnUtfyltSoknad = {
               createTranslate(translation, language),
               localizationUtils.getLanguageCodeAsIso639_1(language),
             ),
+        logMeta,
       );
-
       const pdfByteArray = Array.from(applicationPdf) ?? [];
 
       const body = assembleSendInnSoknadBody(req.body, idportenPid, fyllutUrl, pdfByteArray);

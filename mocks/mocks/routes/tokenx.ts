@@ -1,4 +1,4 @@
-module.exports = [
+export default [
   {
     id: 'get-tokenx-endpoint',
     url: '/tokenx/.well-known',

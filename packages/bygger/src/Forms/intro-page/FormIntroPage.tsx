@@ -46,7 +46,7 @@ export default function FormIntroPage({ form }: { form: Form }) {
     sections: {},
     selfDeclaration: '',
   };
-  const { scope, outOfScope, dataDisclosure, optional, automaticProcessing } = sections ?? {};
+  const { scope, outOfScope, prerequisites, dataDisclosure, optional, automaticProcessing } = sections ?? {};
 
   const {
     path,
@@ -141,13 +141,15 @@ export default function FormIntroPage({ form }: { form: Form }) {
         )}
         {scope && <Scope form={form} handleChange={changeForm} errors={errors} refMap={refMap} />}
         {outOfScope && <OutOfScope form={form} handleChange={changeForm} errors={errors} refMap={refMap} />}
-        <Prerequisites
-          form={form}
-          submissionMethod={submissionMethod}
-          handleChange={changeForm}
-          errors={errors}
-          refMap={refMap}
-        />
+        {prerequisites && (
+          <Prerequisites
+            form={form}
+            submissionMethod={submissionMethod}
+            handleChange={changeForm}
+            errors={errors}
+            refMap={refMap}
+          />
+        )}
         <BeAwareOf submissionMethod={submissionMethod} />
         {dataDisclosure && <DataDisclosure form={form} handleChange={changeForm} refMap={refMap} errors={errors} />}
         <DataTreatment form={form} handleChange={changeForm} errors={errors} refMap={refMap} />

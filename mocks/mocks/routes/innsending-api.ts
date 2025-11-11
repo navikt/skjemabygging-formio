@@ -1,45 +1,44 @@
-const responseWithInnsendingsId = require('../data/innsending-api/mellomlagring/responseWithInnsendingsId.json');
-const mellomlagringValid1 = require('../data/innsending-api/mellomlagring/getTestMellomlagring-valid-1.json');
-const mellomlagringValid2 = require('../data/innsending-api/mellomlagring/getTestMellomlagring-valid-2.json');
-const container123Complete = require('../data/innsending-api/mellomlagring/container123/complete.json');
-const containerDatagrid123Complete = require('../data/innsending-api/mellomlagring/containerDatagrid123/complete.json');
-const mellomlagringValidExtraValues = require('../data/innsending-api/mellomlagring/getTestMellomlagring-valid-extra-values.json');
-const prefillDataNames = require('../data/innsending-api/prefill-data/prefill-data-names.json');
-const mellomlagringNestedValuesNorwegianBusiness = require('../data/innsending-api/mellomlagring/mellomlagring-nested-values-norwegian-business.json');
-const mellomlagringNestedValuesForeignBusiness = require('../data/innsending-api/mellomlagring/mellomlagring-nested-values-foreign-business.json');
-const activities = require('../data/innsending-api/activities/activities.json');
-const activitiesMultiple = require('../data/innsending-api/activities/activities-multiple.json');
-const paabegyntMellomlagringOgInnsendt = require('../data/innsending-api/active-tasks/mellomlagringOgEttersending.json');
-const paabegyntMellomlagring = require('../data/innsending-api/active-tasks/mellomlagring.json');
-const paabegyntInnsendt = require('../data/innsending-api/active-tasks/ettersending.json');
-const formSelectSoknadPartialV1 = require('../data/innsending-api/mellomlagring/form-select/saved-partial-v1.json');
-const formSelectSoknadCompleteV1 = require('../data/innsending-api/mellomlagring/form-select/saved-complete-v1.json');
-const formSelectSoknadInvalidCountryV1 = require('../data/innsending-api/mellomlagring/form-select/saved-invalid-country-v1.json');
-const formSelectSoknadInvalidInstrumentV1 = require('../data/innsending-api/mellomlagring/form-select/saved-invalid-instrument-v2.json');
-const mellomlagringActivities = require('../data/innsending-api/activities/mellomlagring-activities.json');
-const mellomlagringActivitiesPrefilledMaalgruppe = require('../data/innsending-api/activities/mellomlagring-activities-prefilled-maalgruppe.json');
-const nav083591soknadComplete = require('../data/innsending-api/mellomlagring/nav083591/complete.json');
-const mellomlagringDrivingList = require('../data/innsending-api/driving-list/mellomlagring-driving-list.json');
-const mellomlagringDrivingListNoDates = require('../data/innsending-api/driving-list/mellomlagring-driving-list-no-dates.json');
-const mellomlagringCheckbox = require('../data/innsending-api/checkbox/mellomlagring-checkbox.json');
-const activitesFuture = require('../data/innsending-api/activities/activities-future.json');
-const prefillData = require('../data/innsending-api/prefill-data/prefill-data.json');
-const prefillDataUsa = require('../data/innsending-api/prefill-data/prefill-data-usa.json');
-const mellomlagringSelectBoxes = require('../data/innsending-api/select-boxes/mellomlagring-select-boxes.json');
-const mellomlagringRadio = require('../data/innsending-api/radio/mellomlagring-radio.json');
-const mellomlagringMonthPicker = require('../data/innsending-api/month-picker/mellomlagring-month-picker.json');
-const tc01 = require('../data/test-cases/tc01-innsending-nologin-soknad-body.json');
-const tc02 = require('../data/test-cases/tc02-innsending-nologin-soknad-body.json');
-const { compareBodyMiddleware } = require('../utils/testCaseUtils');
-const mockPdfBase64 = require('../data/familie-pdf/mockPdfBase64');
+import paabegyntInnsendt from '../data/innsending-api/active-tasks/ettersending.json';
+import paabegyntMellomlagring from '../data/innsending-api/active-tasks/mellomlagring.json';
+import paabegyntMellomlagringOgInnsendt from '../data/innsending-api/active-tasks/mellomlagringOgEttersending.json';
+import activitesFuture from '../data/innsending-api/activities/activities-future.json';
+import activitiesMultiple from '../data/innsending-api/activities/activities-multiple.json';
+import activities from '../data/innsending-api/activities/activities.json';
+import mellomlagringActivitiesPrefilledMaalgruppe from '../data/innsending-api/activities/mellomlagring-activities-prefilled-maalgruppe.json';
+import mellomlagringActivities from '../data/innsending-api/activities/mellomlagring-activities.json';
+import mellomlagringCheckbox from '../data/innsending-api/checkbox/mellomlagring-checkbox.json';
+import mellomlagringDrivingListNoDates from '../data/innsending-api/driving-list/mellomlagring-driving-list-no-dates.json';
+import mellomlagringDrivingList from '../data/innsending-api/driving-list/mellomlagring-driving-list.json';
+import container123Complete from '../data/innsending-api/mellomlagring/container123/complete.json';
+import containerDatagrid123Complete from '../data/innsending-api/mellomlagring/containerDatagrid123/complete.json';
+import formSelectSoknadCompleteV1 from '../data/innsending-api/mellomlagring/form-select/saved-complete-v1.json';
+import formSelectSoknadInvalidCountryV1 from '../data/innsending-api/mellomlagring/form-select/saved-invalid-country-v1.json';
+import formSelectSoknadInvalidInstrumentV1 from '../data/innsending-api/mellomlagring/form-select/saved-invalid-instrument-v2.json';
+import formSelectSoknadPartialV1 from '../data/innsending-api/mellomlagring/form-select/saved-partial-v1.json';
+import mellomlagringValid1 from '../data/innsending-api/mellomlagring/getTestMellomlagring-valid-1.json';
+import mellomlagringValid2 from '../data/innsending-api/mellomlagring/getTestMellomlagring-valid-2.json';
+import mellomlagringValidExtraValues from '../data/innsending-api/mellomlagring/getTestMellomlagring-valid-extra-values.json';
+import mellomlagringNestedValuesForeignBusiness from '../data/innsending-api/mellomlagring/mellomlagring-nested-values-foreign-business.json';
+import mellomlagringNestedValuesNorwegianBusiness from '../data/innsending-api/mellomlagring/mellomlagring-nested-values-norwegian-business.json';
+import nav083591soknadComplete from '../data/innsending-api/mellomlagring/nav083591/complete.json';
+import responseWithInnsendingsId from '../data/innsending-api/mellomlagring/responseWithInnsendingsId.json';
+import mellomlagringMonthPicker from '../data/innsending-api/month-picker/mellomlagring-month-picker.json';
+import prefillDataNames from '../data/innsending-api/prefill-data/prefill-data-names.json';
+import prefillDataUsa from '../data/innsending-api/prefill-data/prefill-data-usa.json';
+import prefillData from '../data/innsending-api/prefill-data/prefill-data.json';
+import mellomlagringRadio from '../data/innsending-api/radio/mellomlagring-radio.json';
+import mellomlagringSelectBoxes from '../data/innsending-api/select-boxes/mellomlagring-select-boxes.json';
+import tc01 from '../data/test-cases/tc01-innsending-nologin-soknad-body.json';
+import tc02 from '../data/test-cases/tc02-innsending-nologin-soknad-body.json';
+import { compareBodyMiddleware } from '../utils/testCaseUtils';
 
-const objectToByteArray = (obj) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
+const objectToByteArray = (obj: any): number[] => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
 
-const base64Encode = (data) => {
+const base64Encode = (data: any): string => {
   return Buffer.from(data).toString('base64');
 };
 
-const convertToInnsendingApiResponse = (json) => {
+const convertToInnsendingApiResponse = (json: any): any => {
   return {
     ...json,
     hoveddokumentVariant: {
@@ -49,7 +48,30 @@ const convertToInnsendingApiResponse = (json) => {
   };
 };
 
-module.exports = [
+function replySubmittedNologinApplication(body: any): any {
+  return {
+    innsendingsId: body.innsendingsId,
+    label: body.tittel,
+    status: 'Innsendt',
+    mottattdato: '2023-10-10T10:02:00.328667+02:00',
+    hoveddokumentRef: null,
+    innsendteVedlegg: body.vedleggsListe
+      .filter((v: any) => v.opplastingsStatus === 'LastetOpp')
+      .map((v: any) => ({ vedleggsnr: v.vedleggsnr, tittel: v.tittel })),
+    skalEttersendes: body.vedleggsListe
+      .filter((v: any) => v.opplastingsStatus === 'SendSenere')
+      .map((v: any) => ({ vedleggsnr: v.vedleggsnr, tittel: v.tittel })),
+    skalSendesAvAndre: body.vedleggsListe
+      .filter((v) => v.opplastingsStatus === 'SendesAvAndre')
+      .map((v) => ({ vedleggsnr: v.vedleggsnr, tittel: v.tittel })),
+    levertTidligere: [],
+    sendesIkkeInn: [],
+    navKanInnhente: [],
+    ettersendingsfrist: null,
+  };
+}
+
+export default [
   {
     id: 'get-active-tasks',
     url: '/send-inn/frontend/v1/skjema/*',
@@ -581,27 +603,3 @@ module.exports = [
     ],
   },
 ];
-
-function replySubmittedNologinApplication(body) {
-  return {
-    innsendingsId: body.innsendingsId,
-    label: body.tittel,
-    status: 'Innsendt',
-    mottattdato: '2023-10-10T10:02:00.328667+02:00',
-    hoveddokumentRef: null,
-    innsendteVedlegg: body.vedleggsListe
-      .filter((v) => v.opplastingsStatus === 'LastetOpp')
-      .map((v) => ({ vedleggsnr: v.vedleggsnr, tittel: v.tittel })),
-    skalEttersendes: body.vedleggsListe
-      .filter((v) => v.opplastingsStatus === 'SendSenere')
-      .map((v) => ({ vedleggsnr: v.vedleggsnr, tittel: v.tittel })),
-    skalSendesAvAndre: body.vedleggsListe
-      .filter((v) => v.opplastingsStatus === 'SendesAvAndre')
-      .map((v) => ({ vedleggsnr: v.vedleggsnr, tittel: v.tittel })),
-    levertTidligere: [],
-    sendesIkkeInn: [],
-    navKanInnhente: [],
-    ettersendingsfrist: '2024-05-05T10:02:00.328667+02:00',
-    pdfBase64: mockPdfBase64,
-  };
-}

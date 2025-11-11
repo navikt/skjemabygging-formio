@@ -41,6 +41,7 @@ export const createCopyService = (
         title: sourceForm.title,
         components: sourceForm.components,
         properties: sourceForm.properties,
+        introPage: sourceForm.introPage,
       };
       savedForm = await formsServiceTarget.post(createFormRequest, token);
     } else {
@@ -48,6 +49,7 @@ export const createCopyService = (
         title: sourceForm.title,
         components: sourceForm.components,
         properties: sourceForm.properties,
+        introPage: sourceForm.introPage,
       };
       savedForm = await formsServiceTarget.put(formPath, updateFormRequest, targetForm.revision!, token);
     }

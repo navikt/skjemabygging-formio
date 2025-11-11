@@ -2,14 +2,16 @@ import correlator from 'express-correlation-id';
 import { Response } from 'node-fetch';
 import { config } from '../../config/config';
 import { logger } from '../../logger';
+import { LogMetadata } from '../../types/log';
 import { responseToError } from '../../utils/errorHandling';
 import fetchWithRetry, { HeadersInit } from '../../utils/fetchWithRetry';
 import { appMetrics } from '../index';
 
 const { familiePdfGeneratorUrl } = config;
 
-const createFormPdf = async (accessToken: string, pdfFormData?: any) => {
-  logger.info(`Creating PDF, calling ${familiePdfGeneratorUrl}/api/pdf/v3/opprett-pdf`);
+const createFormPdf = async (accessToken: string, pdfFormData: any, logMeta: LogMetadata = {}) => {
+  const familiePdfUrl = `${familiePdfGeneratorUrl}/api/pdf/v3/opprett-pdf`;
+  logger.info(`Creating PDF, calling ${familiePdfUrl}`, logMeta);
 
   appMetrics.familiePdfRequestsCounter.inc();
   let errorOccurred = false;
@@ -19,7 +21,7 @@ const createFormPdf = async (accessToken: string, pdfFormData?: any) => {
   });
   let response: Response | undefined;
   try {
-    response = await fetchWithRetry(`${familiePdfGeneratorUrl}/api/pdf/v3/opprett-pdf`, {
+    response = await fetchWithRetry(familiePdfUrl, {
       retry: 3,
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -38,6 +40,7 @@ const createFormPdf = async (accessToken: string, pdfFormData?: any) => {
     const error = errorOccurred || !response?.ok;
     const durationSeconds = stopMetricRequestDuration({ error: String(error) });
     logger.info(`Request to familie pdf service completed after ${durationSeconds} seconds`, {
+      ...logMeta,
       error,
       durationSeconds,
     });

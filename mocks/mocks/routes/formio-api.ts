@@ -1,70 +1,70 @@
-const formCypress101 = require('../data/formio-api/cypress101.json');
-const introPage = require('../data/formio-api/intro-page.json');
-const introPageTranslations = require('../data/formio-api/intro-page-translations.json');
-const formCypressaxe = require('../data/formio-api/cypressaxe.json');
-const formComponents = require('../data/formio-api/components.json');
-const formComponentsTranslations = require('../data/formio-api/components-translations.json');
-const formPengerOgKonto = require('../data/formio-api/pengerOgKonto.json');
-const formPhoneNumberAreaCode = require('../data/formio-api/phone-number-area-code.json');
-const formConditionalXmas = require('../data/formio-api/conditionalxmas.json');
-const formConditionalDatagrid = require('../data/formio-api/conditional-datagrid.json');
-const formCustomComps = require('../data/formio-api/custom-components.json');
-const formCustomCompsDatagrid = require('../data/formio-api/custom-components-datagrid.json');
-const formDatagrid = require('../data/formio-api/datagrid.json');
-const formContainer = require('../data/formio-api/container123.json');
-const formContainerDatagrid = require('../data/formio-api/container-datagrid.json');
-const formNavdatepicker = require('../data/formio-api/navdatepicker.json');
-const formSubmissionMethod = require('../data/formio-api/submission-method.json');
-const formTestMellomlagring = require('../data/formio-api/test-mellomlagring.json');
-const formTestMellomlagringNested = require('../data/formio-api/mellomlagring-nested-values.json');
-const formTestMellomlagringV2 = require('../data/formio-api/test-mellomlagring-v2.json');
-const formSelectV1 = require('../data/formio-api/form-select-v1.json');
-const formSelectV2 = require('../data/formio-api/form-select-v2.json');
-const formYourInformation = require('../data/formio-api/your-information.json');
-const formYourInformationTranslations = require('../data/formio-api/your-information-translations.json');
-const translationsCypress101 = require('../data/formio-api/cypress101-translation.json');
-const translationsConditionalXmas = require('../data/formio-api/conditionalxmas-translation.json');
-const translationsCustomComps = require('../data/formio-api/custom-components-translations.json');
-const translationsSubmissionMethod = require('../data/formio-api/submission-method-translations.json');
-const formCustomCompsAlert = require('../data/formio-api/custom-components-alert.json');
-const formActivities = require('../data/formio-api/activities.json');
-const formDatagridConditional = require('../data/formio-api/datagrid-conditional.json');
-const formDatagridReactComponents = require('../data/formio-api/datagrid-react-components.json');
-const nav083501 = require('../data/formio-api/nav083501.json');
-const formDrivingList = require('../data/formio-api/driving-list.json');
-const formAttachment = require('../data/formio-api/attachments.json');
-const formYear = require('../data/formio-api/year.json');
-const formTextfield = require('../data/formio-api/textfield.json');
-const formatTextfield = require('../data/formio-api/textfield-formating.json');
-const numberForm = require('../data/formio-api/number.json');
-const formAccordion = require('../data/formio-api/accordion.json');
-const checkboxForm = require('../data/formio-api/custom-components-checkbox.json');
-const hiddenConditionalForm = require('../data/formio-api/hidden-conditional.json');
-const radioForm = require('../data/formio-api/radio.json');
-const selectBoxesForm = require('../data/formio-api/select-boxes.json');
-const selectForm = require('../data/formio-api/select.json');
-const monthPickerForm = require('../data/formio-api/month-picker.json');
-const emailForm = require('../data/formio-api/form-email.json');
-const formUtilsCheckCondition = require('../data/formio-api/form-utils-check-condition.json');
-const nav111221b = require('../data/formio-api/nav111221b.json');
-const nav111221bTranslations = require('../data/formio-api/nav111221b-translations.json');
-const formSkjemagruppeTest = require('../data/formio-api/skjemagruppetest.json');
-const errorSummaryFocusForm = require('../data/formio-api/errorSummaryFocus.json');
-const datafetcherForm = require('../data/formio-api/data-fetcher.json');
-const datafetcherAnnetForm = require('../data/formio-api/data-fetcher-annet.json');
-const datafetcherContainer = require('../data/formio-api/data-fetcher-container.json');
-const submissionTypePaper = require('../data/formio-api/submission-type-paper.json');
-const submissionTypeDigital = require('../data/formio-api/submission-type-digital.json');
-const submissionTypePaperDigital = require('../data/formio-api/submission-type-paper-digital.json');
-const submissionTypeNone = require('../data/formio-api/submission-type-none.json');
-const submissionTypeNoLogin = require('../data/formio-api/submission-type-no-login.json');
-const submissionTypeDigitalNoLogin = require('../data/formio-api/submission-type-digital-no-login.json');
-const submissionTypePaperDigitalNoLogin = require('../data/formio-api/submission-type-paper-digital-no-login.json');
-const submissionTypePaperNoLogin = require('../data/formio-api/submission-type-paper-no-login.json');
-const nologinForm = require('../data/formio-api/nologin.json');
-const dataGridLogicBug = require('../data/formio-api/datagrid-logic-bug.json');
-const dataGridSkjemagruppeBug = require('../data/formio-api/datagrid001.json');
-const conditionalPage = require('../data/formio-api/conditional-page.json');
+import formAccordion from '../data/formio-api/accordion.json';
+import formActivities from '../data/formio-api/activities.json';
+import formAttachment from '../data/formio-api/attachments.json';
+import formComponentsTranslations from '../data/formio-api/components-translations.json';
+import formComponents from '../data/formio-api/components.json';
+import formConditionalDatagrid from '../data/formio-api/conditional-datagrid.json';
+import conditionalPage from '../data/formio-api/conditional-page.json';
+import translationsConditionalXmas from '../data/formio-api/conditionalxmas-translation.json';
+import formConditionalXmas from '../data/formio-api/conditionalxmas.json';
+import formContainerDatagrid from '../data/formio-api/container-datagrid.json';
+import formContainer from '../data/formio-api/container123.json';
+import formCustomCompsAlert from '../data/formio-api/custom-components-alert.json';
+import checkboxForm from '../data/formio-api/custom-components-checkbox.json';
+import formCustomCompsDatagrid from '../data/formio-api/custom-components-datagrid.json';
+import translationsCustomComps from '../data/formio-api/custom-components-translations.json';
+import formCustomComps from '../data/formio-api/custom-components.json';
+import translationsCypress101 from '../data/formio-api/cypress101-translation.json';
+import formCypress101 from '../data/formio-api/cypress101.json';
+import formCypressaxe from '../data/formio-api/cypressaxe.json';
+import datafetcherAnnetForm from '../data/formio-api/data-fetcher-annet.json';
+import datafetcherContainer from '../data/formio-api/data-fetcher-container.json';
+import datafetcherForm from '../data/formio-api/data-fetcher.json';
+import formDatagridConditional from '../data/formio-api/datagrid-conditional.json';
+import dataGridLogicBug from '../data/formio-api/datagrid-logic-bug.json';
+import formDatagridReactComponents from '../data/formio-api/datagrid-react-components.json';
+import formDatagrid from '../data/formio-api/datagrid.json';
+import dataGridSkjemagruppeBug from '../data/formio-api/datagrid001.json';
+import formDrivingList from '../data/formio-api/driving-list.json';
+import errorSummaryFocusForm from '../data/formio-api/errorSummaryFocus.json';
+import emailForm from '../data/formio-api/form-email.json';
+import formSelectV1 from '../data/formio-api/form-select-v1.json';
+import formSelectV2 from '../data/formio-api/form-select-v2.json';
+import formUtilsCheckCondition from '../data/formio-api/form-utils-check-condition.json';
+import hiddenConditionalForm from '../data/formio-api/hidden-conditional.json';
+import introPageTranslations from '../data/formio-api/intro-page-translations.json';
+import introPage from '../data/formio-api/intro-page.json';
+import formTestMellomlagringNested from '../data/formio-api/mellomlagring-nested-values.json';
+import monthPickerForm from '../data/formio-api/month-picker.json';
+import nav083501 from '../data/formio-api/nav083501.json';
+import nav111221bTranslations from '../data/formio-api/nav111221b-translations.json';
+import nav111221b from '../data/formio-api/nav111221b.json';
+import formNavdatepicker from '../data/formio-api/navdatepicker.json';
+import nologinForm from '../data/formio-api/nologin.json';
+import numberForm from '../data/formio-api/number.json';
+import formPengerOgKonto from '../data/formio-api/pengerOgKonto.json';
+import formPhoneNumberAreaCode from '../data/formio-api/phone-number-area-code.json';
+import radioForm from '../data/formio-api/radio.json';
+import selectBoxesForm from '../data/formio-api/select-boxes.json';
+import selectForm from '../data/formio-api/select.json';
+import formSkjemagruppeTest from '../data/formio-api/skjemagruppetest.json';
+import translationsSubmissionMethod from '../data/formio-api/submission-method-translations.json';
+import formSubmissionMethod from '../data/formio-api/submission-method.json';
+import submissionTypeDigitalNoLogin from '../data/formio-api/submission-type-digital-no-login.json';
+import submissionTypeDigital from '../data/formio-api/submission-type-digital.json';
+import submissionTypeNoLogin from '../data/formio-api/submission-type-no-login.json';
+import submissionTypeNone from '../data/formio-api/submission-type-none.json';
+import submissionTypePaperDigitalNoLogin from '../data/formio-api/submission-type-paper-digital-no-login.json';
+import submissionTypePaperDigital from '../data/formio-api/submission-type-paper-digital.json';
+import submissionTypePaperNoLogin from '../data/formio-api/submission-type-paper-no-login.json';
+import submissionTypePaper from '../data/formio-api/submission-type-paper.json';
+import formTestMellomlagringV2 from '../data/formio-api/test-mellomlagring-v2.json';
+import formTestMellomlagring from '../data/formio-api/test-mellomlagring.json';
+import formatTextfield from '../data/formio-api/textfield-formating.json';
+import formTextfield from '../data/formio-api/textfield.json';
+import formYear from '../data/formio-api/year.json';
+import formYourInformationTranslations from '../data/formio-api/your-information-translations.json';
+import formYourInformation from '../data/formio-api/your-information.json';
 
 const allForms = [
   { form: formCypress101, translations: translationsCypress101 },
@@ -126,9 +126,9 @@ const allForms = [
   { form: conditionalPage, translations: undefined },
 ];
 
-const findTestdata = (formPath) => allForms.find((testdata) => testdata.form.path === formPath);
+const findTestdata = (formPath: string) => allForms.find((testdata) => testdata.form.path === formPath);
 
-module.exports = [
+export default [
   {
     id: 'get-form',
     url: '/formio-api/form',
@@ -138,7 +138,7 @@ module.exports = [
         id: 'success',
         type: 'middleware',
         options: {
-          middleware: (req, res) => {
+          middleware: (req: any, res: any) => {
             const formPath = req.query.path;
             if (formPath) {
               const testdata = findTestdata(formPath);
@@ -162,7 +162,7 @@ module.exports = [
         id: 'success-v2',
         type: 'middleware',
         options: {
-          middleware: (req, res) => {
+          middleware: (req: any, res: any) => {
             const formPath = req.query.path;
             if (formPath) {
               const testdata = findTestdata(formPath);
@@ -194,7 +194,7 @@ module.exports = [
         id: 'success',
         type: 'middleware',
         options: {
-          middleware: (req, res) => {
+          middleware: (req: any, res: any) => {
             const formPath = req.query['data.form'];
             const dataName = req.query['data.name'];
             if (dataName === 'global') {

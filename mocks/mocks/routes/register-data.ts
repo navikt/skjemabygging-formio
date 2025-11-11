@@ -1,4 +1,4 @@
-module.exports = [
+export default [
   {
     id: 'get-register-data-activities',
     url: '/register-data/api/ekstern/aktivitet',

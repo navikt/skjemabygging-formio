@@ -6,6 +6,7 @@ function checkAllOptionalFields() {
     'Viktig informasjon',
     'Beskrivelse av hva skjemaet kan brukes til',
     'Avklar hva skjemaet IKKE skal brukes til',
+    'Før du søker / sender / fyller ut',
     'Informasjon vi henter (om deg)',
     'Automatisk saksbehandling',
     'Valgfri seksjon',
@@ -210,11 +211,6 @@ describe('FormSettingsPage', () => {
       cy.intercept('PUT', '/api/forms/cypresssettings', (req) => {
         expect(req.body.introPage.enabled).to.equal(submitData.introPage.enabled);
         expect(req.body.introPage.introduction).to.match(uuidRegex);
-        expect(req.body.introPage.sections.prerequisites.title).to.equal(
-          submitData.introPage.sections.prerequisites.title,
-        );
-        expect(req.body.introPage.sections.prerequisites.description).to.match(uuidRegex);
-        expect(req.body.introPage.sections.prerequisites.bulletPoints).to.have.length(1);
         expect(req.body.introPage.sections.dataTreatment.description).to.match(uuidRegex);
         expect(req.body.introPage.sections.dataTreatment.bulletPoints).to.have.length(2);
         expect(req.body.introPage.selfDeclaration).to.equal(submitData.introPage.selfDeclaration);
@@ -233,14 +229,6 @@ describe('FormSettingsPage', () => {
         .within(() => {
           typeAndBlur(0, submitData.introPage.introduction);
         });
-
-      cy.get('[data-testid="prerequisites"]').within(() => {
-        cy.findByRole('radio', { name: 'Før du søker' }).check();
-        cy.contains('button', 'Legg til ingress').click();
-        typeAndBlur(0, submitData.introPage.sections.prerequisites.description);
-        cy.contains('Legg til punktliste').click();
-        typeAndBlur(1, submitData.introPage.sections.prerequisites.bulletPoints[0]);
-      });
 
       cy.get('[data-testid="dataTreatment"]').within(() => {
         cy.contains('Legg til ingress').click();
@@ -262,23 +250,17 @@ describe('FormSettingsPage', () => {
         });
 
       cy.contains('Lagre').click();
-      cy.wait(Array(6).fill('@postTranslations')).spread((post1, post2, post3, post4, post5, post6) => {
+      cy.wait(Array(4).fill('@postTranslations')).spread((post1, post2, post3, post4) => {
         expect(post1.request.body).to.contain({
           nb: `<p>${submitData.introPage.introduction}</p>`,
         });
         expect(post2.request.body).to.contain({
-          nb: `<p>${submitData.introPage.sections.prerequisites.description}</p>`,
-        });
-        expect(post3.request.body).to.contain({
-          nb: `${submitData.introPage.sections.prerequisites.bulletPoints[0]}`,
-        });
-        expect(post4.request.body).to.contain({
           nb: `<p>${submitData.introPage.sections.dataTreatment.description}</p>`,
         });
-        expect(post5.request.body).to.contain({
+        expect(post3.request.body).to.contain({
           nb: `${submitData.introPage.sections.dataTreatment.bulletPoints[0]}`,
         });
-        expect(post6.request.body).to.contain({
+        expect(post4.request.body).to.contain({
           nb: `${submitData.introPage.sections.dataTreatment.bulletPoints[1]}`,
         });
       });
@@ -299,6 +281,63 @@ describe('FormSettingsPage', () => {
       cy.visit('forms/cypresssettings/intropage');
     });
 
+    it('validates true when minimal required fields of select group of sections are filled out and enabled is true', () => {
+      cy.findByRole('checkbox', { name: 'Bruk standard introside' }).should('exist');
+      cy.findByRole('checkbox', { name: 'Bruk standard introside' }).click();
+      cy.findByRole('checkbox', { name: 'Viktig informasjon' }).click();
+      cy.findByRole('checkbox', { name: 'Avklar hva skjemaet IKKE skal brukes til' }).click();
+      cy.findByRole('checkbox', { name: 'Før du søker / sender / fyller ut' }).click();
+      cy.findByRole('checkbox', { name: 'Informasjon vi henter (om deg)' }).click();
+
+      cy.contains('Velkomstmelding')
+        .parent()
+        .within(() => {
+          typeAndBlur(0, 'Velkommen');
+        });
+
+      cy.get('[data-testid="importantInformation"]').within(() => {
+        typeAndBlur(0, 'Viktig informasjon');
+      });
+
+      cy.get('[data-testid="out-of-scope"]').within(() => {
+        cy.findByRole('radio', { name: 'Her kan du ikke' }).check();
+        cy.contains('button', 'Legg til ingress').click();
+        typeAndBlur(0, 'Dette kan du ikke gjøre');
+      });
+
+      cy.get('[data-testid="prerequisites"]').within(() => {
+        cy.findByRole('radio', { name: 'Før du søker' }).check();
+        cy.contains('Legg til punktliste').click();
+        cy.get('.rsw-editor [contenteditable="true"]');
+        typeAndBlur(0, 'Kulepunkt 1');
+        cy.contains('Legg til kulepunkt').click();
+        typeAndBlur(1, 'Kulepunkt 2');
+      });
+
+      cy.get('[data-testid="dataDisclosure"]').within(() => {
+        cy.findByRole('radio', { name: 'Informasjon vi henter' }).check();
+      });
+
+      cy.get('[data-testid="dataTreatment"]').within(() => {
+        cy.contains('Legg til ingress').click();
+        typeAndBlur(0, 'Slik behandler vi dataene dine');
+      });
+
+      cy.contains('Erklæring')
+        .closest('section')
+        .then(($section) => {
+          cy.wrap($section).within(() => {
+            cy.wrap($section).within(() => {
+              cy.findByRole('radio', { name: 'behandle henvendelsen din' }).check();
+            });
+          });
+        });
+
+      cy.contains('Lagre').click();
+      cy.get('[aria-live="polite"]').should('contain.text', `Lagret skjema ${submitData.title}`);
+      cy.get('[aria-live="polite"]').should('contain.text', '6 oversettelser ble lagret');
+    });
+
     it('all required fields display error message when not filled out and enabled is true', () => {
       cy.findByRole('checkbox', { name: 'Bruk standard introside' }).should('exist');
       cy.findByRole('checkbox', { name: 'Bruk standard introside' }).click();
@@ -310,12 +349,6 @@ describe('FormSettingsPage', () => {
         .closest('section')
         .within(() => {
           cy.contains('Velkomstmelding må fylles ut').should('exist');
-        });
-
-      cy.contains('Informasjon om utfylling av skjemaet')
-        .closest('section')
-        .within(() => {
-          cy.contains('Seksjonen må ha en ingress eller kulepunkter').should('exist');
         });
 
       cy.contains('Hvordan vi behandler personopplysninger')
@@ -331,7 +364,7 @@ describe('FormSettingsPage', () => {
         });
     });
 
-    it.only('all textfields display error if content is emptied', () => {
+    it('all textfields display error if content is emptied', () => {
       cy.findByRole('checkbox', { name: 'Bruk standard introside' }).should('exist');
       cy.findByRole('checkbox', { name: 'Bruk standard introside' }).click();
       checkAllOptionalFields();

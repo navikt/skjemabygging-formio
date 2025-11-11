@@ -1,8 +1,8 @@
 import { UploadIcon } from '@navikt/aksel-icons';
-import { Alert, BodyLong, BodyShort, Button, FileObject, FileUpload, HStack, ReadMore, VStack } from '@navikt/ds-react';
+import { Alert, BodyLong, Button, FileObject, FileUpload, VStack } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { MutableRefObject, useState } from 'react';
-import { FILE_ACCEPT, MAX_SIZE_ATTACHMENT_FILE_BYTES, MAX_SIZE_ATTACHMENT_FILE_TEXT } from '../../constants/fileUpload';
+import { MutableRefObject, ReactNode, useState } from 'react';
+import { FILE_ACCEPT, MAX_SIZE_ATTACHMENT_FILE_BYTES } from '../../constants/fileUpload';
 import { useLanguages } from '../../context/languages';
 import htmlUtils from '../../util/html/htmlUtils';
 import makeStyles from '../../util/styles/jss/jss';
@@ -21,10 +21,10 @@ interface Props {
   variant: 'primary' | 'secondary';
   allowUpload?: boolean;
   refs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | HTMLButtonElement | null>>;
+  readMore?: ReactNode;
   translationParams?: Record<string, string>;
   accept?: string;
   maxFileSizeInBytes?: number;
-  maxFileSizeText?: string;
 }
 
 const UploadButton = ({
@@ -32,10 +32,10 @@ const UploadButton = ({
   variant = 'primary',
   allowUpload,
   refs,
+  readMore,
   translationParams,
   accept = FILE_ACCEPT,
   maxFileSizeInBytes = MAX_SIZE_ATTACHMENT_FILE_BYTES,
-  maxFileSizeText = MAX_SIZE_ATTACHMENT_FILE_TEXT,
 }: Props) => {
   const { translate } = useLanguages();
   const styles = useStyles();
@@ -108,14 +108,7 @@ const UploadButton = ({
           )}
         </Alert>
       )}
-      <ReadMore header={translate(TEXTS.statiske.attachment.sizeAndFormatHeader)}>
-        <HStack gap="2" align="start">
-          <BodyShort weight="semibold">{translate(TEXTS.statiske.attachment.validFormatsLabel)}</BodyShort>
-          <BodyLong>{translate(TEXTS.statiske.attachment.validFormatsDescrption)}</BodyLong>
-          <BodyShort weight="semibold">{translate(TEXTS.statiske.attachment.maxFileSizeLabel)}</BodyShort>
-          <BodyLong>{translate(TEXTS.statiske.attachment.maxFileSizeDescription, { size: maxFileSizeText })}</BodyLong>
-        </HStack>
-      </ReadMore>
+      {readMore}
     </VStack>
   );
 };

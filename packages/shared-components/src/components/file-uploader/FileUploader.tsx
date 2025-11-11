@@ -1,6 +1,6 @@
 import { TextField, VStack } from '@navikt/ds-react';
 import { AttachmentSettingValues, SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { ChangeEvent, MutableRefObject } from 'react';
+import { ChangeEvent, MutableRefObject, ReactNode } from 'react';
 import { useLocation } from 'react-router';
 import { MAX_SIZE_ATTACHMENT_FILE_TEXT, MAX_TOTAL_SIZE_ATTACHMENT_FILES_TEXT } from '../../constants/fileUpload';
 import { useAppConfig } from '../../context/config/configContext';
@@ -17,9 +17,9 @@ interface Props {
   requireAttachmentTitle?: boolean;
   multiple?: boolean;
   refs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | HTMLButtonElement | null>>;
+  readMore?: ReactNode;
   accept?: string;
   maxFileSizeInBytes?: number;
-  maxFileSizeText?: string;
 }
 
 const FileUploader = ({
@@ -28,9 +28,9 @@ const FileUploader = ({
   requireAttachmentTitle,
   multiple,
   refs,
+  readMore,
   accept,
   maxFileSizeInBytes,
-  maxFileSizeText,
 }: Props) => {
   const { translate } = useLanguages();
   const config = useAppConfig();
@@ -103,8 +103,8 @@ const FileUploader = ({
             refs={refs}
             translationParams={translationErrorParams}
             accept={accept}
+            readMore={readMore}
             maxFileSizeInBytes={maxFileSizeInBytes}
-            maxFileSizeText={maxFileSizeText}
           />
         </VStack>
       )}

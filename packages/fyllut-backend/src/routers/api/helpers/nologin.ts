@@ -79,8 +79,8 @@ const assembleNologinSoknadBody = (
         mimetype: 'application/pdf',
         pakrevd: attachment.type !== 'other',
         filIdListe: attachment.files?.map((f) => f.fileId),
-        fyllutId: attachment.navId,
-        beskrivelse: attachment.additionalDocumentation ? translate(attachment.additionalDocumentation) : null,
+        fyllutId: attachment.attachmentId,
+        beskrivelse: component?.description ? translate(component?.description) : null,
         propertyNavn: null,
       } as DokumentV2;
     }),
