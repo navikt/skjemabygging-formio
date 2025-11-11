@@ -156,7 +156,8 @@ const renderPdfForm = ({
     },
     bunntekst: {
       upperleft:
-        translate(TEXTS.statiske.footer.userIdLabel) + `: ${yourInformationUtils.getIdentityNumber(form, submission)}`,
+        translate(TEXTS.statiske.footer.userIdLabel) +
+        `: ${yourInformationUtils.getIdentityNumber(form, submission) ?? '—'}`,
       lowerleft: translate(TEXTS.statiske.footer.schemaNumberLabel) + `: ${form.properties?.skjemanummer}`,
       upperRight: null,
       upperMiddle:
