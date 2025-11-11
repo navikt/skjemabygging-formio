@@ -31,7 +31,7 @@ const getIdentityNumber = (form: NavFormType, submission?: Submission) => {
     }
   }
 
-  return '—';
+  return undefined;
 };
 
 const yourInformationUtils = {
