@@ -1,6 +1,6 @@
-const globalTranslations = require('../data/forms-api/global-translations.json');
+import globalTranslations from '../data/forms-api/global-translations.json';
 
-module.exports = [
+export default [
   {
     id: 'get-global-translations',
     url: '/forms-api/v1/global-translations',
