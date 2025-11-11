@@ -3,6 +3,7 @@ import {
   localizationUtils,
   NavFormType,
   Receipt,
+  ReceiptSummary,
   Submission,
   translationUtils,
   UploadedFile,
@@ -16,6 +17,7 @@ import { stringifyPdf } from '../routers/api/helpers/pdfUtils';
 import { LogMetadata } from '../types/log';
 import { responseToError } from '../utils/errorHandling';
 import applicationService from './documents/applicationService';
+import { mapReceiptToSummary } from './nologin/receiptMapper';
 
 class NoLoginFileService {
   private readonly _config: ConfigType;
@@ -110,7 +112,7 @@ class NoLoginFileService {
     language: string,
     pdfFormData?: any,
     logMeta: LogMetadata = {},
-  ): Promise<{ pdf: Uint8Array; receipt: Receipt }> {
+  ): Promise<{ pdf: Uint8Array; receipt: ReceiptSummary }> {
     const correlationId = correlator.getId();
     const lang = localizationUtils.getLanguageCodeAsIso639_1(language);
     const translate = translationUtils.createTranslate(translation, language);
@@ -141,7 +143,8 @@ class NoLoginFileService {
     });
 
     if (response.ok) {
-      const receipt: Receipt = await response.json();
+      const receiptResponse: Receipt = await response.json();
+      const receipt = mapReceiptToSummary(receiptResponse);
       logger.info(`${innsendingsId}: Successfully submitted nologin application`, logMeta);
       return { pdf: applicationPdf, receipt };
     }

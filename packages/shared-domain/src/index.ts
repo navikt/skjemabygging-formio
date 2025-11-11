@@ -96,7 +96,7 @@ import {
   SendInnMaalgruppe,
   VedtakBetalingsplan,
 } from './sendinn/activity';
-import { Receipt, SubmittedAttachment } from './sendinn/receipt';
+import { Receipt, ReceiptSummary, ReceiptSummaryAttachment, SubmittedAttachment } from './sendinn/receipt';
 import { SubmissionActivity } from './submission/activity';
 import SubmissionAddress from './submission/address';
 import { DrivingListPeriod, DrivingListSubmission, DrivingListValues } from './submission/drivingList';
@@ -267,6 +267,8 @@ export type {
   PrefillKey,
   PublishedTranslations,
   Receipt,
+  ReceiptSummary,
+  ReceiptSummaryAttachment,
   Recipient,
   ReportDefinition,
   ResourceAccess,

@@ -1,4 +1,4 @@
-import { Language, NavFormType, Receipt, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import { Language, NavFormType, ReceiptSummary, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { AppConfigContextType } from '../../context/config/configContext';
 import { FormContextType } from '../../context/form/FormContext';
 import { LanguageContextType } from '../../context/languages/languages-context';
@@ -13,9 +13,9 @@ export const postNologinSoknad = async (
   translation: any,
   formContextValue: FormContextType,
   languagesContextValue: LanguageContextType,
-): Promise<{ pdfBase64: string; receipt: Receipt }> => {
+): Promise<{ pdfBase64: string; receipt: ReceiptSummary }> => {
   const { http, baseUrl, config, submissionMethod } = appConfig;
-  return await http!.post<{ pdfBase64: string; receipt: Receipt }>(
+  return await http!.post<{ pdfBase64: string; receipt: ReceiptSummary }>(
     `${baseUrl}/api/send-inn/nologin-soknad`,
     {
       form,

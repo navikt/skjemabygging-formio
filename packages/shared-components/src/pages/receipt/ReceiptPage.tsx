@@ -39,8 +39,8 @@ export function ReceiptPage() {
     return soknadPdfBlob ? URL.createObjectURL(soknadPdfBlob) : undefined;
   }, [soknadPdfBlob]);
 
-  const skalEttersendes = receipt?.skalEttersendes ?? [];
-  const skalSendesAvAndre = receipt?.skalSendesAvAndre ?? [];
+  const skalEttersendes = receipt?.attachmentsToSendLater ?? [];
+  const skalSendesAvAndre = receipt?.attachmentsToBeSentByOthers ?? [];
 
   const allRequiredDocumentsSubmitted = skalEttersendes.length === 0 && skalSendesAvAndre.length === 0;
 
@@ -61,7 +61,7 @@ export function ReceiptPage() {
             <BodyShort size="large">
               <b>
                 {translate(TEXTS.statiske.receipt.documentsReceivedHeading, {
-                  date: dateUtils.toLocaleDate(receipt.mottattdato),
+                  date: dateUtils.toLocaleDate(receipt.receivedDate),
                 })}
               </b>
             </BodyShort>
@@ -77,7 +77,7 @@ export function ReceiptPage() {
                 }
               >
                 <HStack gap="2">
-                  {receipt.label}
+                  {receipt.title}
                   <Link
                     className={styles.downloadLink}
                     href={soknadPdfUrl}
@@ -91,9 +91,9 @@ export function ReceiptPage() {
                 </HStack>
               </List.Item>
 
-              {receipt.innsendteVedlegg.map((attachment) => (
+              {receipt.receivedAttachments.map((attachment) => (
                 <List.Item
-                  key={attachment.vedleggsnr}
+                  key={attachment.id}
                   icon={
                     <CheckmarkCircleFillIcon
                       color="currentColor"
@@ -103,22 +103,22 @@ export function ReceiptPage() {
                     />
                   }
                 >
-                  {attachment.tittel}
+                  {attachment.title}
                 </List.Item>
               ))}
             </List>
           </section>
 
-          {receipt.skalEttersendes.length > 0 && (
+          {receipt.attachmentsToSendLater.length > 0 && (
             <section>
               <BodyShort size="large">
                 <b>{translate(TEXTS.statiske.receipt.mustSendLaterHeading)}</b>
               </BodyShort>
               <List>
-                {receipt.skalEttersendes.map((attachment) => (
-                  <List.Item key={attachment.vedleggsnr}>
+                {receipt.attachmentsToSendLater.map((attachment) => (
+                  <List.Item key={attachment.id}>
                     <VStack gap="1" align="start">
-                      <BodyShort>{attachment.tittel}</BodyShort>
+                      <BodyShort>{attachment.title}</BodyShort>
                     </VStack>
                   </List.Item>
                 ))}
@@ -126,16 +126,16 @@ export function ReceiptPage() {
             </section>
           )}
 
-          {receipt.skalSendesAvAndre.length > 0 && (
+          {receipt.attachmentsToBeSentByOthers.length > 0 && (
             <section>
               <BodyShort size="large">
                 <b>{translate(TEXTS.statiske.receipt.sentByOthersHeading)}</b>
               </BodyShort>
               <List>
-                {receipt.skalSendesAvAndre.map((attachment) => (
-                  <List.Item key={attachment.vedleggsnr}>
+                {receipt.attachmentsToBeSentByOthers.map((attachment) => (
+                  <List.Item key={attachment.id}>
                     <VStack gap="1" align="start">
-                      <BodyShort>{attachment.tittel}</BodyShort>
+                      <BodyShort>{attachment.title}</BodyShort>
                     </VStack>
                   </List.Item>
                 ))}
@@ -148,7 +148,7 @@ export function ReceiptPage() {
               <Heading level="2" spacing size="xsmall">
                 <b>
                   {translate(TEXTS.statiske.receipt.deadlineWarningHeading, {
-                    deadline: dateUtils.toLocaleDate(receipt.ettersendingsfrist),
+                    deadline: dateUtils.toLocaleDate(receipt.sendLaterDeadline),
                   })}
                 </b>
               </Heading>

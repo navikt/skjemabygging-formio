@@ -1,4 +1,4 @@
-import { Language, MellomlagringError, Receipt, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import { Language, MellomlagringError, ReceiptSummary, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import React, { createContext, useCallback, useContext, useEffect, useReducer, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router';
 import { postNologinSoknad } from '../../api/sendinn/nologin';
@@ -31,8 +31,8 @@ interface SendInnContextType {
   setInnsendingsId: (innsendingsId: string | undefined) => void;
   mellomlagringError: MellomlagringError | undefined;
   submitted?: boolean;
-  receipt?: Receipt;
-  setReceipt: (receipt: Receipt | undefined) => void;
+  receipt?: ReceiptSummary;
+  setReceipt: (receipt: ReceiptSummary | undefined) => void;
 }
 
 interface SendInnProviderProps {
@@ -63,7 +63,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const [nologinToken, setNologinToken] = useState<string | undefined>();
   const [fyllutMellomlagringState, dispatchFyllutMellomlagring] = useReducer(mellomlagringReducer, undefined);
   const [soknadPdfBlob, setSoknadPdfBlob] = useState<Blob | undefined>(undefined);
-  const [receipt, setReceipt] = useState<Receipt | undefined>(undefined);
+  const [receipt, setReceipt] = useState<ReceiptSummary | undefined>(undefined);
 
   const addSearchParamToUrl = useCallback(
     (key, value) => {
