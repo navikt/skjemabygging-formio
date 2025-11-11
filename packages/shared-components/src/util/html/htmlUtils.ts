@@ -9,6 +9,12 @@ type SanitizeOptions = Omit<DOMPurify.Config, 'RETURN_DOM_FRAGMENT' | 'RETURN_DO
  */
 const isHtmlString = (text: string) => /<(?!br\s*\/?)[^>]+>/gm.test(text);
 
+const getHtmlTag = (htmlString: string): string | null => {
+  const div = document.createElement('div');
+  div.innerHTML = htmlString.trim();
+  return div.firstElementChild?.tagName || null;
+};
+
 const extractTextContent = (htmlString: string) => {
   const div = document.createElement('div');
   div.innerHTML = htmlString;
@@ -54,5 +60,13 @@ const getTexts = (htmlString: string): string[] => {
   });
 };
 
-const htmlUtils = { isHtmlString, extractTextContent, removeEmptyTags, sanitizeHtmlString, removeTags, getTexts };
+const htmlUtils = {
+  isHtmlString,
+  getHtmlTag,
+  extractTextContent,
+  removeEmptyTags,
+  sanitizeHtmlString,
+  removeTags,
+  getTexts,
+};
 export default htmlUtils;
