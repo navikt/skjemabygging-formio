@@ -19,6 +19,8 @@ const globalErrorHandler = (err, req, res, _next) => {
 
   if (!isTest) {
     logErrorWithStacktrace(err);
+    res.locals = res.locals || {};
+    res.locals.errorAlreadyLogged = true;
   }
 
   if (err instanceof CorsError) {

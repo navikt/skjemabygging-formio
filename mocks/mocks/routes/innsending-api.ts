@@ -428,6 +428,14 @@ export default [
           },
         },
       },
+      {
+        id: 'failure',
+        type: 'json',
+        options: {
+          status: 500,
+          body: { message: 'Feil ved opplasting av fil', errorCode: 'fileUploadError' },
+        },
+      },
     ],
   },
   {
