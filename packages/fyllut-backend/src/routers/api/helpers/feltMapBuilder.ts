@@ -38,7 +38,7 @@ export const createFeltMapFromSubmission = (
   translate: (text: string, textReplacements?: I18nTranslationReplacements) => string,
   lang: string = 'nb',
 ) => {
-  const identityNumber = yourInformationUtils.getIdentityNumber(form, submission);
+  const identityNumber = yourInformationUtils.getIdentityNumber(form, submission) ?? '—';
 
   const symmaryPanels: SummaryPanel[] = formSummaryUtil.createFormSummaryPanels(
     form,
