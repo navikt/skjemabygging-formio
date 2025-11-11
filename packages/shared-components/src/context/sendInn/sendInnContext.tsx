@@ -11,6 +11,7 @@ import {
   updateSoknad,
   updateUtfyltSoknad,
 } from '../../api/sendinn/sendInnSoknad';
+import { b64toBlob } from '../../util/blob/blob';
 import { useAppConfig } from '../config/configContext';
 import { useForm } from '../form/FormContext';
 import { useLanguages } from '../languages';
@@ -263,13 +264,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         setNologinToken(undefined);
         setSubmission(undefined);
         if (response?.pdfBase64) {
-          const byteCharacters = atob(response.pdfBase64);
-          const byteNumbers = new Array(byteCharacters.length);
-          for (let i = 0; i < byteCharacters.length; i++) {
-            byteNumbers[i] = byteCharacters.charCodeAt(i);
-          }
-          const byteArray = new Uint8Array(byteNumbers);
-          const pdfBlob = new Blob([byteArray], { type: 'application/pdf' });
+          const pdfBlob = b64toBlob(response.pdfBase64, 'application/pdf');
           setSoknadPdfBlob(pdfBlob);
         }
         if (response?.receipt) {
