@@ -28,10 +28,7 @@
   },
   "files": {
     "babelRegister": {
-      "enabled": true,
-      "options": {
-        "only": ["/mocks"]
-      }
+      "enabled": true
     }
   },
   "variantHandlers": {}
