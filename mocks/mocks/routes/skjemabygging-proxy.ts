@@ -9,7 +9,10 @@ export default [
         type: 'json',
         options: {
           status: 200,
-          body: {},
+          body: {
+            foersteside: 'Zm9yc3Rlc2lkZWJvZHk=',
+            loepenummer: '0001',
+          },
         },
       },
       {
