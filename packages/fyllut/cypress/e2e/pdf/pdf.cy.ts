@@ -155,6 +155,7 @@ describe('Pdf', () => {
       });
 
       it('All values', () => {
+        cy.mocksUseRouteVariant('post-familie-pdf:success-tc03');
         const date = '20.10.2025';
 
         cy.clickIntroPageConfirmation();
@@ -275,13 +276,10 @@ describe('Pdf', () => {
           cy.findByRole('radio', { name: 'Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved' }).check();
         });
 
-        cy.fixture('pdf/request-components-all.json').then((fixture) => {
-          cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
-            expect(getCleanedUpPdfFormData(req, date)).deep.eq(fixture);
-          }).as('downloadPdf');
-        });
+        cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application').as('downloadPdf');
 
         downloadPdf();
+        cy.findByText(/Nedlastingen er ferdig/).shouldBeVisible();
       });
     });
 
@@ -720,6 +718,38 @@ describe('Pdf', () => {
 
         downloadPdf();
       });
+    });
+  });
+
+  describe('Verify escaped characters', () => {
+    beforeEach(() => {
+      cy.visit('/fyllut/components?sub=paper');
+      cy.defaultWaits();
+      cy.clickShowAllSteps();
+    });
+
+    it('replaces tab', () => {
+      cy.mocksUseRouteVariant('post-familie-pdf:success-tc04');
+      cy.clickStart();
+      cy.findByRole('group', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
+        cy.findByRole('radio', { name: 'Ja' }).check();
+      });
+      cy.findByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).type('20905995783');
+      cy.clickNextStep();
+
+      cy.findByRole('link', { name: 'Standard felter' }).click();
+      cy.findByRole('heading', { name: 'Standard felter' }).shouldBeVisible();
+      cy.findByRole('textbox', { name: /Tekstfelt/ }).type('Navn med\ttab');
+      cy.findByRole('textbox', { name: /Tekstområde/ }).type(
+        'En del tekst\n\nsom viser utgifter\\\\text{ kr}\nnextline\tog en tab til slutt\nsom skal bli erstattet med to mellomrom',
+        {
+          parseSpecialCharSequences: false,
+        },
+      );
+
+      cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application').as('downloadPdf');
+      downloadPdf();
+      cy.findByText(/Nedlastingen er ferdig/).shouldBeVisible();
     });
   });
 });

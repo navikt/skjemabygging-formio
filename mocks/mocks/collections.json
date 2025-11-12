@@ -27,7 +27,8 @@
       "get-register-data-activities:success",
       "post-familie-pdf:success",
       "post-nologin-soknad:success",
-      "foersteside:success"
+      "foersteside:success",
+      "merge-files:success"
     ]
   }
 ]

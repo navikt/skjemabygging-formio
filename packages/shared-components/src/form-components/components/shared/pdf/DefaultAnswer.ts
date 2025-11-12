@@ -9,7 +9,7 @@ const DefaultAnswer = (
   const { translate } = languagesContextValue;
   const { submission } = formContextValue;
 
-  const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
+  const value = formComponentUtils.getPdfSubmissionValue(submissionPath, submission);
 
   if (value === undefined) {
     return null;

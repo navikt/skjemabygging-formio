@@ -43,6 +43,19 @@ const getSubmissionValue = (submissionPath: string, submission?: Submission): an
 };
 
 /**
+ * Get submission value for PDF generation, replacing tabs with two spaces
+ * @param submissionPath
+ * @param submission
+ */
+const getPdfSubmissionValue = (submissionPath: string, submission?: Submission): any => {
+  const value = getSubmissionValue(submissionPath, submission);
+  if (typeof value === 'string') {
+    return value.replaceAll('\t', '  ');
+  }
+  return value;
+};
+
+/**
  * Check for key with array syntax, e.g., "fieldName[0]"
  *
  * @param key
@@ -93,6 +106,7 @@ const getComponentSubmissionPath = (component: Component, parentSubmissionPath: 
 
 const formComponentUtils = {
   getSubmissionValue,
+  getPdfSubmissionValue,
   noChildValues,
   noChildValuesForDataGrid,
   getComponentSubmissionPath,

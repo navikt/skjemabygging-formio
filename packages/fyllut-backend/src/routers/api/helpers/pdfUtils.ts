@@ -3,7 +3,7 @@ import { logger } from '../../../logger';
 const stringifyPdf = (pdfData) => {
   if (pdfData) {
     try {
-      return JSON.stringify(pdfData).replaceAll('\\t', '  ');
+      return JSON.stringify(pdfData);
     } catch (error) {
       logger.warn('Could not stringify pdfData', pdfData, error);
       throw error;

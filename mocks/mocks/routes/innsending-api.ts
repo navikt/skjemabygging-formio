@@ -416,6 +416,21 @@ export default [
     ],
   },
   {
+    id: 'merge-files',
+    url: '/send-inn/fyllUt/v1/merge-filer',
+    method: 'POST',
+    variants: [
+      {
+        id: 'success',
+        type: 'json',
+        options: {
+          status: 200,
+          body: { mergedFile: 'bWVyZ2VkRmlsZWJvZHk=' },
+        },
+      },
+    ],
+  },
+  {
     id: 'upload-file',
     url: '/send-inn/v1/nologin-fillager',
     method: 'POST',

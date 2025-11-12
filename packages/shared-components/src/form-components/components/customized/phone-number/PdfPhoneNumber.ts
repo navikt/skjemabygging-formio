@@ -6,7 +6,7 @@ const PdfPhoneNumber = ({ component, submissionPath, formContextValue, languages
   const { translate } = languagesContextValue;
   const { submission } = formContextValue;
 
-  const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
+  const value = formComponentUtils.getPdfSubmissionValue(submissionPath, submission);
 
   if (value === undefined || (showAreaCode && (value.areaCode === undefined || value.number === undefined))) {
     return null;
