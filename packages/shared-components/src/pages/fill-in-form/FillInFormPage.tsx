@@ -47,6 +47,8 @@ export const FillInFormPage = () => {
   const { hash } = useLocation();
 
   const exitUrl = urlUtils.getExitUrl(window.location.href);
+  const formNavigationFinalStep =
+    navFormUtils.hasAttachment(form) && submissionMethod === 'digitalnologin' ? 'vedlegg' : 'oppsummering';
 
   const focusOnComponent = useCallback<(id: KeyOrFocusComponentId) => void>(
     (id: KeyOrFocusComponentId) => fyllutEvents.emit('focusOnComponent', id),
@@ -212,7 +214,7 @@ export const FillInFormPage = () => {
             paths={formNavigationPaths}
             onCancel={onCancel}
             navigateTo={navigateTo}
-            finalStep={submissionMethod === 'digitalnologin' ? 'vedlegg' : 'oppsummering'}
+            finalStep={formNavigationFinalStep}
           />
         )}
       </div>
