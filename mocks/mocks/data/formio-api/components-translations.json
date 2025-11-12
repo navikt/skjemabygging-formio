@@ -21,7 +21,7 @@
       "<p>Alert error</p>": "<p>Alert error</p>",
       "<p>HTML Blokk</p>": "<p>HTML Block</p>",
       "<p>Utvidet beskrivelse på html blokk</p>": "<p>Extended description for html block</p>",
-      "Trekkspill":  "Accordion",
+      "Trekkspill": "Accordion",
       "En": "One",
       "<p>Tekst en</p>": "<p>Text one</p>",
       "To": "Two",
@@ -36,7 +36,7 @@
       "Beløp": "Amount",
       "Kontonummer": "Account number",
       "IBAN": "IBAN",
-      "Bedrift / organisasjon":  "Company / organization",
+      "Bedrift / organisasjon": "Company / organization",
       "Arbeidsgiver": "Employer",
       "Dato og tid": "Date and time",
       "Dato (dd.mm.åååå)": "Date (dd.mm.yyyy)",
@@ -61,7 +61,8 @@
       "Viktig1": "Important1",
       "Viktig2": "Important2",
       "Eier": "Owner",
-      "Deleier": "Co-owner"
+      "Deleier": "Co-owner",
+      "Introduksjon": "Introduction"
     }
   }
 }

@@ -1,13 +1,14 @@
 import { TEXTS, Tkey } from '@navikt/skjemadigitalisering-shared-domain';
 import { FormContextType } from '../../../../context/form/FormContext';
 import { LanguageContextType } from '../../../../context/languages/languages-context';
+import { PdfListElement } from '../../../types';
 
 interface Props {
   formContextValue: FormContextType;
   languagesContextValue: LanguageContextType;
 }
 
-const PdfIntroPage = ({ formContextValue, languagesContextValue }: Props) => {
+const PdfIntroPage = ({ formContextValue, languagesContextValue }: Props): PdfListElement => {
   const { translate } = languagesContextValue;
   const { submission, form } = formContextValue;
 
@@ -22,7 +23,7 @@ const PdfIntroPage = ({ formContextValue, languagesContextValue }: Props) => {
     verdiliste: [
       {
         label: translate(inputLabel),
-        value: submission?.selfDeclaration ? translate(TEXTS.common.yes) : '-',
+        verdi: submission?.selfDeclaration ? translate(TEXTS.common.yes) : '-',
       },
     ],
   };

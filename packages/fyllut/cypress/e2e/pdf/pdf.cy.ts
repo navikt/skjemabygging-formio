@@ -135,6 +135,7 @@ describe('Pdf', () => {
       });
 
       it('Only identity', () => {
+        cy.clickIntroPageConfirmation();
         cy.clickStart();
         cy.findByRole('group', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
           cy.findByRole('radio', { name: 'Ja' }).check();
@@ -156,6 +157,7 @@ describe('Pdf', () => {
       it('All values', () => {
         const date = '20.10.2025';
 
+        cy.clickIntroPageConfirmation();
         cy.clickStart();
         cy.findByRole('group', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
           cy.findByRole('radio', { name: 'Ja' }).check();
@@ -292,6 +294,7 @@ describe('Pdf', () => {
       });
 
       it('Only identity', () => {
+        cy.clickIntroPageConfirmation();
         cy.clickStart();
 
         cy.findByRole('link', { name: 'Andre' }).click();
@@ -312,9 +315,10 @@ describe('Pdf', () => {
         downloadPdf('digital');
       });
 
-      it.only('All values', () => {
+      it('All values', () => {
         const date = '20.10.2025';
 
+        cy.clickIntroPageConfirmation();
         cy.clickStart();
         cy.clickSaveAndContinue();
 
@@ -451,6 +455,7 @@ describe('Pdf', () => {
       });
 
       it('Pdf does not contain signature field when submission method is digitalnologin', () => {
+        cy.clickIntroPageConfirmation();
         cy.clickStart();
         cy.findByRole('group', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
           cy.findByRole('radio', { name: 'Ja' }).check();
@@ -571,6 +576,7 @@ describe('Pdf', () => {
         cy.defaultWaits();
         cy.clickShowAllSteps();
 
+        cy.clickIntroPageConfirmation();
         cy.clickStart();
         cy.findByRole('group', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
           cy.findByRole('radio', { name: 'Ja' }).check();
@@ -614,6 +620,7 @@ describe('Pdf', () => {
         cy.defaultWaits();
         cy.clickShowAllSteps();
 
+        cy.findByRoleWhenAttached('checkbox', { name: /I confirm that I will answer as accurately as I can/ }).click();
         cy.clickNextStep();
         cy.findByRole('group', { name: /Do you have a Norwegian national identification number or d number?/ }).within(
           () => {
@@ -663,6 +670,7 @@ describe('Pdf', () => {
         cy.defaultWaits();
         cy.clickShowAllSteps();
 
+        cy.clickIntroPageConfirmation();
         cy.clickStart();
         cy.findByRole('group', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
           cy.findByRole('radio', { name: 'Ja' }).check();

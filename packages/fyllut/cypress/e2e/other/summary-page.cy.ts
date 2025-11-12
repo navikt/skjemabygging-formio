@@ -15,6 +15,7 @@ describe('SummaryPage', () => {
 
     const date = '20.10.2025';
 
+    cy.clickIntroPageConfirmation();
     cy.clickStart();
     cy.findByRole('group', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
       cy.findByRole('radio', { name: 'Ja' }).check();
@@ -134,6 +135,14 @@ describe('SummaryPage', () => {
 
     cy.findByRole('link', { name: 'Oppsummering' }).click();
     cy.findByRole('heading', { name: 'Oppsummering' }).shouldBeVisible();
+
+    cy.findByRole('heading', { level: 2, name: 'Introduksjon' })
+      .parent()
+      .parent()
+      .within(() => {
+        cy.contains('Jeg bekrefter at jeg vil svare så riktig som jeg kan').should('exist');
+        cy.contains('Ja').should('exist');
+      });
 
     cy.findByRole('heading', { level: 2, name: 'Dine opplysninger' })
       .parent()
@@ -306,6 +315,7 @@ describe('SummaryPage', () => {
 
     const date = '20.10.2025';
 
+    cy.findByRoleWhenAttached('checkbox', { name: /I confirm that I will answer as accurately as I can/ }).click();
     cy.clickNextStep();
     cy.findByRole('group', { name: /Do you have a Norwegian national identification number or d number?/ }).within(
       () => {
@@ -427,6 +437,14 @@ describe('SummaryPage', () => {
 
     cy.findByRole('link', { name: 'Summary' }).click();
     cy.findByRole('heading', { name: 'Summary' }).shouldBeVisible();
+
+    cy.findByRole('heading', { level: 2, name: 'Introduction' })
+      .parent()
+      .parent()
+      .within(() => {
+        cy.contains('I confirm that I will answer as accurately as I can').should('exist');
+        cy.contains('Yes').should('exist');
+      });
 
     cy.findByRole('heading', { level: 2, name: 'Your personal information' })
       .parent()
