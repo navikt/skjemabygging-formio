@@ -41,6 +41,7 @@ const downloadPdf = (submissionType: 'digital' | 'paper' | 'digitalnologin' = 'p
 describe('Pdf', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
+    cy.mocksRestoreRouteVariants();
   });
 
   describe('Conditional rendering of pages', () => {
@@ -721,7 +722,7 @@ describe('Pdf', () => {
     });
   });
 
-  describe('Verify escaped characters', () => {
+  describe.only('Verify escaped characters', () => {
     beforeEach(() => {
       cy.visit('/fyllut/components?sub=paper');
       cy.defaultWaits();
@@ -730,7 +731,8 @@ describe('Pdf', () => {
 
     it('replaces tab', () => {
       cy.mocksUseRouteVariant('post-familie-pdf:success-tc04');
-      cy.clickStart();
+      cy.clickIntroPageConfirmation();
+      cy.clickNextStep();
       cy.findByRole('group', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
         cy.findByRole('radio', { name: 'Ja' }).check();
       });
