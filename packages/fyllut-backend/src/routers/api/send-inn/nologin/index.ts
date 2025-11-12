@@ -1,4 +1,9 @@
-import { I18nTranslationMap, NavFormType, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  I18nTranslationMap,
+  NavFormType,
+  ReceiptSummary,
+  Submission,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import { noLoginFileService } from '../../../../services';
 import { LogMetadata } from '../../../../types/log';
@@ -27,7 +32,7 @@ const post = async (req: Request, res: Response, next: NextFunction) => {
       fyllutRequestPath: req.path,
     };
 
-    const result = await noLoginFileService.submit(
+    const { pdf, receipt }: { pdf: Uint8Array; receipt: ReceiptSummary } = await noLoginFileService.submit(
       pdfAccessToken,
       accessToken,
       innsendingsId,
@@ -38,9 +43,8 @@ const post = async (req: Request, res: Response, next: NextFunction) => {
       pdfFormData,
       logMeta,
     );
-    res.contentType('application/pdf');
-    res.setHeader('Content-Disposition', `inline; filename=${encodeURIComponent(`${form.path}.pdf`)}`);
-    res.send(Buffer.from(result.pdf));
+    const pdfBase64 = Buffer.from(pdf).toString('base64');
+    res.json({ pdfBase64, receipt });
   } catch (error) {
     next(error);
   }

@@ -62,7 +62,9 @@ function replySubmittedNologinApplication(body: any): any {
     skalEttersendes: body.vedleggsListe
       .filter((v: any) => v.opplastingsStatus === 'SendSenere')
       .map((v: any) => ({ vedleggsnr: v.vedleggsnr, tittel: v.tittel })),
-    skalSendesAvAndre: [],
+    skalSendesAvAndre: body.vedleggsListe
+      .filter((v) => v.opplastingsStatus === 'SendesAvAndre')
+      .map((v) => ({ vedleggsnr: v.vedleggsnr, tittel: v.tittel })),
     levertTidligere: [],
     sendesIkkeInn: [],
     navKanInnhente: [],
@@ -435,6 +437,14 @@ export default [
               storrelse: 40000,
             });
           },
+        },
+      },
+      {
+        id: 'failure',
+        type: 'json',
+        options: {
+          status: 500,
+          body: { message: 'Feil ved opplasting av fil', errorCode: 'fileUploadError' },
         },
       },
     ],
