@@ -32,7 +32,7 @@ describe('Datagrid', () => {
       cy.clickSaveAndContinue();
       cy.wait('@updateMellomlagring');
       cy.findByRoleWhenAttached('heading', { level: 2, name: 'Oppsummering' }).should('exist');
-      cy.clickEditAnswers();
+      cy.clickPreviousStep();
 
       // check original values
       cy.findByRole('checkbox', { name: 'Avkryssingsboks inni datagrid (valgfritt)' }).should('be.checked');

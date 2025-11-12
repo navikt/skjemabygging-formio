@@ -50,6 +50,7 @@ import selectForm from '../data/formio-api/select.json';
 import formSkjemagruppeTest from '../data/formio-api/skjemagruppetest.json';
 import translationsSubmissionMethod from '../data/formio-api/submission-method-translations.json';
 import formSubmissionMethod from '../data/formio-api/submission-method.json';
+import submissionTypeDigitalNoAttachments from '../data/formio-api/submission-type-digital-no-attachments.json';
 import submissionTypeDigitalNoLogin from '../data/formio-api/submission-type-digital-no-login.json';
 import submissionTypeDigital from '../data/formio-api/submission-type-digital.json';
 import submissionTypeNoLogin from '../data/formio-api/submission-type-no-login.json';
@@ -115,6 +116,7 @@ const allForms = [
   { form: datafetcherContainer, translations: undefined },
   { form: submissionTypePaper, translations: undefined },
   { form: submissionTypeDigital, translations: undefined },
+  { form: submissionTypeDigitalNoAttachments, translations: undefined },
   { form: submissionTypePaperDigital, translations: undefined },
   { form: submissionTypeNone, translations: undefined },
   { form: submissionTypeNoLogin, translations: undefined },

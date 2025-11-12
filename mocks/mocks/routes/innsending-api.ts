@@ -22,6 +22,7 @@ import mellomlagringNestedValuesForeignBusiness from '../data/innsending-api/mel
 import mellomlagringNestedValuesNorwegianBusiness from '../data/innsending-api/mellomlagring/mellomlagring-nested-values-norwegian-business.json';
 import nav083591soknadComplete from '../data/innsending-api/mellomlagring/nav083591/complete.json';
 import responseWithInnsendingsId from '../data/innsending-api/mellomlagring/responseWithInnsendingsId.json';
+import stdigital from '../data/innsending-api/mellomlagring/stdigital.json';
 import mellomlagringMonthPicker from '../data/innsending-api/month-picker/mellomlagring-month-picker.json';
 import prefillDataNames from '../data/innsending-api/prefill-data/prefill-data-names.json';
 import prefillDataUsa from '../data/innsending-api/prefill-data/prefill-data-usa.json';
@@ -334,6 +335,14 @@ export default [
         options: {
           status: 200,
           body: convertToInnsendingApiResponse(nav083591soknadComplete),
+        },
+      },
+      {
+        id: 'success-stdigital',
+        type: 'json',
+        options: {
+          status: 200,
+          body: convertToInnsendingApiResponse(stdigital),
         },
       },
       {

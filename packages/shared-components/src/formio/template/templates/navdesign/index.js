@@ -29,7 +29,6 @@ import selectboxes from './selectboxes';
 import tab from './tab';
 import wizard from './wizard';
 import wizardHeader from './wizardHeader';
-import wizardNav from './wizardNav';
 
 export default {
   transform(type, text) {
@@ -75,5 +74,4 @@ export default {
   tab,
   wizard,
   wizardHeader,
-  wizardNav,
 };

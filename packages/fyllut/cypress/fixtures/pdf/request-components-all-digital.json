@@ -264,19 +264,6 @@
           "verdi": "Ingen relevant aktivitet registrert på meg"
         }
       ]
-    },
-    {
-      "label": "Vedlegg",
-      "verdiliste": [
-        {
-          "label": "Vedlegg",
-          "verdi": "Jeg ettersender dokumentasjonen senere"
-        },
-        {
-          "label": "Annen dokumentasjon",
-          "verdi": "Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved"
-        }
-      ]
     }
   ],
   "skjemanummer": "components",

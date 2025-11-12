@@ -5,7 +5,6 @@
   "title": "Components",
   "components": [
     {
-      "isAttachmentPanel": false,
       "title": "Dine opplysninger",
       "key": "dineOpplysninger",
       "type": "panel",
@@ -723,6 +722,7 @@
       "input": false,
       "navId": "eliymny",
       "title": "Vedlegg",
+      "isAttachmentPanel": true,
       "components": [
         {
           "id": "etm0s5b",
@@ -731,6 +731,10 @@
           "input": true,
           "label": "Vedlegg",
           "navId": "en9vu3f",
+          "properties": {
+            "vedleggstittel": "Test",
+            "vedleggskode": "T"
+          },
           "attachmentValues": {
             "nav": {
               "enabled": false,
@@ -774,6 +778,10 @@
           "input": true,
           "label": "Annen dokumentasjon",
           "navId": "ehqz4gi",
+          "properties": {
+            "vedleggstittel": "Annet",
+            "vedleggskode": "N6"
+          },
           "description": "<p>Har du noen annen dokumentasjon du ønsker å legge ved?</p>",
           "attachmentValues": {
             "nei": {

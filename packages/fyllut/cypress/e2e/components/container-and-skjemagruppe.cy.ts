@@ -91,7 +91,8 @@ describe('Container/Beholder og skjemagruppe', () => {
           cy.get('dd').eq(5).should('contain.text', 'Cherry');
           cy.get('dd').eq(7).should('contain.text', 'Strawberry');
         });
-      cy.clickEditAnswers();
+      cy.clickShowAllSteps();
+      cy.findByRole('link', { name: 'Skjemagrupper' }).click();
       cy.findByRole('heading', { name: 'Skjemagrupper' }).should('exist');
       cy.findByRole('textbox', { name: 'Tekstfelt inni skjemagruppe' }).should('have.value', 'Apple');
       cy.findByRole('textbox', { name: 'Tekstfelt inni skjemagruppe inni skjemagruppe' }).should(
