@@ -65,6 +65,7 @@ import formTextfield from '../data/formio-api/textfield.json';
 import formYear from '../data/formio-api/year.json';
 import formYourInformationTranslations from '../data/formio-api/your-information-translations.json';
 import formYourInformation from '../data/formio-api/your-information.json';
+import textFieldData from '../data/forms-api/textFieldData';
 
 const allForms = [
   { form: formCypress101, translations: translationsCypress101 },
@@ -124,6 +125,7 @@ const allForms = [
   { form: dataGridLogicBug, translations: undefined },
   { form: dataGridSkjemagruppeBug, translations: undefined },
   { form: conditionalPage, translations: undefined },
+  { form: textFieldData(), translations: undefined },
 ];
 
 const findTestdata = (formPath: string) => allForms.find((testdata) => testdata.form.path === formPath);
