@@ -79,7 +79,8 @@ describe('Select', () => {
           cy.get('dd').eq(2).should('contain.text', '-1,00');
         });
 
-      cy.clickEditAnswers();
+      cy.clickPreviousStep();
+      cy.clickPreviousStep();
 
       // Verify that values are populated when navigating back to the select page
       cy.findByText('Appelsin').should('exist');

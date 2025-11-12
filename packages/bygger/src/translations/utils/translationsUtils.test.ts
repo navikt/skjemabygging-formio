@@ -31,7 +31,7 @@ describe('translationsUtils', () => {
     });
 
     it('should use the default row size if not provided', () => {
-      const result = getInputHeightInRows('a'.repeat(35));
+      const result = getInputHeightInRows('a'.repeat(30));
       expect(result).toBe(2);
     });
   });

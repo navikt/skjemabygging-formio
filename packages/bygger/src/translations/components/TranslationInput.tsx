@@ -1,4 +1,4 @@
-import { Textarea, TextField } from '@navikt/ds-react';
+import { Textarea } from '@navikt/ds-react';
 import { ChangeEvent } from 'react';
 import WysiwygEditor from '../../components/wysiwyg/WysiwygEditor';
 
@@ -6,42 +6,47 @@ interface Props {
   label: string;
   defaultValue?: string;
   isHtml: boolean;
+  defaultHtmlTag?: 'p' | 'div';
   minRows: number;
   onChange: (value: string) => void;
   error?: string;
   autoFocus?: boolean;
 }
 
-const TranslationInput = ({ label, defaultValue, isHtml, minRows, onChange, error, autoFocus }: Props) => {
+const TranslationInput = ({
+  label,
+  defaultValue,
+  isHtml,
+  defaultHtmlTag,
+  minRows,
+  onChange,
+  error,
+  autoFocus,
+}: Props) => {
   const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     onChange(event.currentTarget.value);
   };
 
   if (isHtml) {
     return (
-      <WysiwygEditor autoFocus={autoFocus} onBlur={onChange} defaultTag="p" defaultValue={defaultValue} error={error} />
-    );
-  }
-  if (minRows > 2) {
-    return (
-      <Textarea
+      <WysiwygEditor
         autoFocus={autoFocus}
-        className={error ? 'navds-textarea--error' : ''}
-        label={label}
-        hideLabel
-        minRows={minRows}
-        resize="vertical"
+        onBlur={onChange}
+        defaultTag={defaultHtmlTag}
         defaultValue={defaultValue}
-        onChange={handleChange}
+        error={error}
       />
     );
   }
+
   return (
-    <TextField
+    <Textarea
       autoFocus={autoFocus}
-      className={error ? 'navds-text-field--error' : ''}
+      className={error ? 'navds-textarea--error' : ''}
       label={label}
       hideLabel
+      minRows={minRows}
+      resize="vertical"
       defaultValue={defaultValue}
       onChange={handleChange}
     />

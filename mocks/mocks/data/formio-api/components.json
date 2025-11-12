@@ -5,7 +5,6 @@
   "title": "Components",
   "components": [
     {
-      "isAttachmentPanel": false,
       "title": "Dine opplysninger",
       "key": "dineOpplysninger",
       "type": "panel",
@@ -723,6 +722,7 @@
       "input": false,
       "navId": "eliymny",
       "title": "Vedlegg",
+      "isAttachmentPanel": true,
       "components": [
         {
           "id": "etm0s5b",
@@ -731,6 +731,10 @@
           "input": true,
           "label": "Vedlegg",
           "navId": "en9vu3f",
+          "properties": {
+            "vedleggstittel": "Test",
+            "vedleggskode": "T"
+          },
           "attachmentValues": {
             "nav": {
               "enabled": false,
@@ -774,6 +778,10 @@
           "input": true,
           "label": "Annen dokumentasjon",
           "navId": "ehqz4gi",
+          "properties": {
+            "vedleggstittel": "Annet",
+            "vedleggskode": "N6"
+          },
           "description": "<p>Har du noen annen dokumentasjon du ønsker å legge ved?</p>",
           "attachmentValues": {
             "nei": {
@@ -788,19 +796,24 @@
       ]
     }
   ],
+  "introPage": {
+    "enabled": true,
+    "sections": {
+      "dataTreatment": {
+        "description": "5b3c663d-e405-40a1-8abb-05c3d30bf8a0",
+        "bulletPoints": []
+      }
+    },
+    "introduction": "8dac34e1-3ccf-4aab-8c7b-4c922e22c239",
+    "selfDeclaration": "introPage.selfDeclaration.description.alt1"
+  },
   "properties": {
     "modified": "2025-02-05T14:54:36.292Z",
     "modifiedBy": "Ola Nordmann",
     "skjemanummer": "components",
-    "submissionTypes": [
-      "DIGITAL_NO_LOGIN",
-      "DIGITAL",
-      "PAPER"
-    ],
+    "submissionTypes": ["DIGITAL_NO_LOGIN", "DIGITAL", "PAPER"],
     "mellomlagringDurationDays": "28",
-    "subsequentSubmissionTypes": [
-      "PAPER"
-    ],
+    "subsequentSubmissionTypes": ["PAPER"],
     "signatures": [
       {
         "label": "Eier",
@@ -813,7 +826,7 @@
         "key": "c314453d-ee87-4c73-8407-d6822453b0d8"
       }
     ]
-},
+  },
   "createdAt": "2022-06-01T15:40:17.101+02",
   "createdBy": "Ola Nordmann",
   "changedAt": "2025-08-29T13:45:27.833+02",

@@ -5615,5 +5615,18 @@
     "en": "You may not",
     "publishedAt": "2025-08-19T12:51:40.639+02",
     "publishedBy": "Rosseland, Rune"
-  }
+  },
+  {
+  "id": 10000000,
+  "key": "Neste steg",
+  "tag": "grensesnitt",
+  "changedAt": "2025-02-24T09:41:26.321+01",
+  "changedBy": "",
+  "revision": 1,
+  "nb": "Neste steg",
+  "nn": "Neste steg",
+  "en": "Next step",
+  "publishedAt": "",
+  "publishedBy": ""
+}
 ]

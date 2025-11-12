@@ -81,10 +81,6 @@ export const FillInFormPage = () => {
     setFormProgressVisible(true);
   }, [setFormProgressVisible]);
 
-  const onCancel = useCallback(() => {
-    setShowModal('discard');
-  }, [setShowModal]);
-
   const onShowErrors = useCallback(
     (errorsFromForm: ComponentError[]) => {
       setErrors(errorsFromForm);
@@ -212,7 +208,6 @@ export const FillInFormPage = () => {
             submission={submission}
             isValid={isValid}
             paths={formNavigationPaths}
-            onCancel={onCancel}
             navigateTo={navigateTo}
             finalStep={formNavigationFinalStep}
           />

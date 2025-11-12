@@ -2,6 +2,15 @@
   "label": "Components",
   "verdiliste": [
     {
+      "label": "Introduksjon",
+      "verdiliste": [
+        {
+          "label": "Jeg bekrefter at jeg vil svare så riktig som jeg kan.",
+          "verdi": "Ja"
+        }
+      ]
+    },
+    {
       "label": "Dine opplysninger",
       "verdiliste": [
         {
@@ -262,19 +271,6 @@
         {
           "label": "Hvilken aktivitet søker du om støtte i forbindelse med?",
           "verdi": "Ingen relevant aktivitet registrert på meg"
-        }
-      ]
-    },
-    {
-      "label": "Vedlegg",
-      "verdiliste": [
-        {
-          "label": "Vedlegg",
-          "verdi": "Jeg ettersender dokumentasjonen senere"
-        },
-        {
-          "label": "Annen dokumentasjon",
-          "verdi": "Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved"
         }
       ]
     }

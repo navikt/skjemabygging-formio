@@ -15,6 +15,7 @@ describe('SummaryPage', () => {
 
     const date = '20.10.2025';
 
+    cy.clickIntroPageConfirmation();
     cy.clickStart();
     cy.findByRole('group', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
       cy.findByRole('radio', { name: 'Ja' }).check();
@@ -134,6 +135,14 @@ describe('SummaryPage', () => {
 
     cy.findByRole('link', { name: 'Oppsummering' }).click();
     cy.findByRole('heading', { name: 'Oppsummering' }).shouldBeVisible();
+
+    cy.findByRole('heading', { level: 2, name: 'Introduksjon' })
+      .parent()
+      .parent()
+      .within(() => {
+        cy.contains('Jeg bekrefter at jeg vil svare så riktig som jeg kan').should('exist');
+        cy.contains('Ja').should('exist');
+      });
 
     cy.findByRole('heading', { level: 2, name: 'Dine opplysninger' })
       .parent()
@@ -306,7 +315,8 @@ describe('SummaryPage', () => {
 
     const date = '20.10.2025';
 
-    cy.clickStart();
+    cy.findByRoleWhenAttached('checkbox', { name: /I confirm that I will answer as accurately as I can/ }).click();
+    cy.clickNextStep();
     cy.findByRole('group', { name: /Do you have a Norwegian national identification number or d number?/ }).within(
       () => {
         cy.findByRole('radio', { name: 'Yes' }).check();
@@ -427,6 +437,14 @@ describe('SummaryPage', () => {
 
     cy.findByRole('link', { name: 'Summary' }).click();
     cy.findByRole('heading', { name: 'Summary' }).shouldBeVisible();
+
+    cy.findByRole('heading', { level: 2, name: 'Introduction' })
+      .parent()
+      .parent()
+      .within(() => {
+        cy.contains('I confirm that I will answer as accurately as I can').should('exist');
+        cy.contains('Yes').should('exist');
+      });
 
     cy.findByRole('heading', { level: 2, name: 'Your personal information' })
       .parent()
@@ -589,6 +607,40 @@ describe('SummaryPage', () => {
         cy.get('dd').eq(0).should('contain.text', 'I will forward the documentation later');
         cy.get('dt').eq(1).should('contain.text', 'Other documentation');
         cy.get('dd').eq(1).should('contain.text', 'No, I have no additional documentation to attach');
+      });
+  });
+
+  it('Digital no login, some components', () => {
+    cy.visit('/fyllut/components/legitimasjon?sub=digitalnologin');
+    cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
+      cy.findByLabelText('Norsk pass').check(),
+    );
+    cy.get('input[type=file]').selectFile('cypress/fixtures/files/id-billy-bruker.jpg', { force: true });
+    cy.clickNextStep();
+
+    cy.defaultWaits();
+    cy.clickShowAllSteps();
+
+    cy.findByRole('link', { name: 'Vedlegg' }).click();
+    cy.findByRole('heading', { name: 'Vedlegg' }).shouldBeVisible();
+    cy.findByRole('group', { name: /Vedlegg/ }).within(() => {
+      cy.findByRole('radio', { name: 'Jeg ettersender dokumentasjonen senere' }).check();
+    });
+    cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+      cy.findByRole('radio', { name: 'Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved' }).check();
+    });
+
+    cy.findByRole('link', { name: 'Oppsummering' }).click();
+    cy.findByRole('heading', { name: 'Oppsummering' }).shouldBeVisible();
+
+    cy.findByRole('heading', { level: 2, name: 'Vedlegg' })
+      .parent()
+      .parent()
+      .within(() => {
+        cy.get('dt').eq(0).should('contain.text', 'Vedlegg');
+        cy.get('dd').eq(0).should('contain.text', 'Jeg ettersender dokumentasjonen senere');
+        cy.get('dt').eq(1).should('contain.text', 'Annen dokumentasjon');
+        cy.get('dd').eq(1).should('contain.text', 'Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved');
       });
   });
 });

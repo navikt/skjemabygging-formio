@@ -70,7 +70,8 @@ describe('Basic form', () => {
 
     // Gå tilbake til skjema fra oppsummering, og naviger til oppsummering på nytt
     // for å verifisere at ingen valideringsfeil oppstår grunnet manglende verdier.
-    cy.clickEditAnswers();
+    cy.clickShowAllSteps();
+    cy.findByRole('link', { name: 'Veiledning' }).click();
 
     clickNext(submissionMethod);
 

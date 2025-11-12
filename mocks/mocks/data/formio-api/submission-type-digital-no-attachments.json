@@ -1,0 +1,42 @@
+{
+  "id": "st-digital-no-attachments",
+  "skjemanummer": "st-digital-no-attachments",
+  "path": "stdigitalnoattachments",
+  "title": "Submission Type: Digital, no attachments",
+  "components": [
+    {
+      "id": "e1nek8d",
+      "key": "dineOpplysninger",
+      "type": "panel",
+      "label": "Panel",
+      "title": "Dine opplysninger",
+      "breadcrumb": "default",
+      "components": [
+        {
+          "id": "ey0bewk",
+          "key": "tekstfelt",
+          "type": "textfield",
+          "label": "Tekstfelt",
+          "input": true,
+          "validate": {
+            "required": true
+          }
+        }
+      ]
+    }
+  ],
+  "properties": {
+    "submissionTypes": [
+      "DIGITAL"
+    ],
+    "publishedLanguages": [
+      "nb",
+      "en"
+    ]
+  },
+  "publishedLanguages": [
+    "nb",
+    "en"
+  ],
+  "status": "published"
+}
