@@ -1,4 +1,4 @@
-interface PropertiesType {
+export interface PropertiesType {
   formNumber: string;
   subjectOfSubmission?: string;
   submissionTypes?: string[];
@@ -6,19 +6,13 @@ interface PropertiesType {
   mellomlagringDurationDays?: string;
 }
 
-const properties = ({
-  formNumber,
-  subjectOfSubmission,
-  submissionTypes,
-  subsequentSubmissionTypes,
-  mellomlagringDurationDays,
-}: PropertiesType) => {
+const properties = (params: PropertiesType) => {
+  const { formNumber, subjectOfSubmission, submissionTypes, subsequentSubmissionTypes, mellomlagringDurationDays } =
+    params ?? {};
+
   return {
+    ...staticValues,
     tema: subjectOfSubmission ?? 'HJE',
-    modified: '2025-01-01T00:00:00.000Z',
-    published: '2025-01-01T00:00:00.000Z',
-    modifiedBy: 'Ola Nordmann',
-    publishedBy: 'Ola Nordmann',
     skjemanummer: formNumber,
     submissionTypes: submissionTypes ?? ['PAPER', 'DIGITAL', 'DIGITAL_NO_LOGIN'],
     subsequentSubmissionTypes: subsequentSubmissionTypes ?? ['PAPER', 'DIGITAL'],
@@ -26,5 +20,11 @@ const properties = ({
   };
 };
 
+const staticValues = {
+  modified: '2025-01-01T00:00:00.000Z',
+  published: '2025-01-01T00:00:00.000Z',
+  modifiedBy: 'Ola Nordmann',
+  publishedBy: 'Ola Nordmann',
+};
+
 export default properties;
-export type { PropertiesType };

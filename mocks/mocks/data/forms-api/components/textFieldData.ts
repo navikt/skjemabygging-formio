@@ -1,4 +1,4 @@
-import { form, panel, textField } from './components';
+import { form, panel, textField } from '../../../utils/components';
 
 const textFieldData = () => {
   return form({
