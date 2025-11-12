@@ -1,0 +1,293 @@
+{
+  "id": "digitalnologin-with-attachment-panel",
+  "skjemanummer": "digitalnologin-with-attachment-panel",
+  "path": "digitalnologinwithattachmentpanel",
+  "title": "Digital no login with attachment panel",
+  "components": [
+    {
+      "id": "e1nek8d",
+      "key": "dineOpplysninger",
+      "type": "panel",
+      "label": "Panel",
+      "title": "Dine opplysninger",
+      "breadcrumb": "default",
+      "components": [
+        {
+          "id": "ey0bewk",
+          "navId": "ey0bewk",
+          "key": "tekstfelt",
+          "input": true,
+          "type": "textfield",
+          "validate": {
+            "required": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "ef68wck",
+      "key": "vedlegg",
+      "tree": false,
+      "type": "panel",
+      "input": false,
+      "label": "Panel",
+      "theme": "default",
+      "title": "Vedlegg",
+      "addons": [],
+      "hidden": false,
+      "prefix": "",
+      "suffix": "",
+      "unique": false,
+      "dbIndex": false,
+      "overlay": {
+        "top": "",
+        "left": "",
+        "style": "",
+        "width": "",
+        "height": ""
+      },
+      "tooltip": "",
+      "disabled": false,
+      "lazyLoad": false,
+      "multiple": false,
+      "redrawOn": "",
+      "tabindex": "",
+      "validate": {
+        "custom": "",
+        "unique": false,
+        "multiple": false,
+        "required": false,
+        "customPrivate": false,
+        "strictDateValidation": false
+      },
+      "autofocus": false,
+      "encrypted": false,
+      "hideLabel": false,
+      "modalEdit": false,
+      "protected": false,
+      "refreshOn": "",
+      "tableView": false,
+      "attributes": {},
+      "breadcrumb": "default",
+      "components": [
+        {
+          "id": "eiajfi8",
+          "navId": "eiajfi8",
+          "key": "vedlegg1",
+          "type": "attachment",
+          "input": true,
+          "label": "Informasjon om din næringsinntekt fra Norge eller utlandet",
+          "addons": [],
+          "hidden": false,
+          "prefix": "",
+          "suffix": "",
+          "unique": false,
+          "dataSrc": "values",
+          "dbIndex": false,
+          "overlay": {
+            "top": "",
+            "left": "",
+            "style": "",
+            "width": "",
+            "height": ""
+          },
+          "tooltip": "",
+          "disabled": false,
+          "multiple": false,
+          "redrawOn": "",
+          "tabindex": "",
+          "validate": {
+            "custom": "",
+            "unique": false,
+            "multiple": false,
+            "required": true,
+            "customPrivate": false,
+            "strictDateValidation": false
+          },
+          "autofocus": false,
+          "encrypted": false,
+          "fieldSize": "input--xxl",
+          "hideLabel": false,
+          "modalEdit": false,
+          "protected": false,
+          "refreshOn": "",
+          "tableView": false,
+          "attributes": {},
+          "errorLabel": "",
+          "persistent": true,
+          "properties": {
+            "vedleggskode": "r7",
+            "vedleggstittel": "En vedleggstittel"
+          },
+          "validateOn": "blur",
+          "clearOnHide": true,
+          "conditional": {
+            "eq": ""
+          },
+          "customClass": "",
+          "description": "",
+          "placeholder": "",
+          "dataGridLabel": false,
+          "labelPosition": "top",
+          "showCharCount": false,
+          "showWordCount": false,
+          "attachmentType": "default",
+          "calculateValue": "",
+          "calculateServer": false,
+          "attachmentValues": {
+            "nav": {
+              "enabled": true,
+              "additionalDocumentation": {
+                "enabled": false
+              }
+            },
+            "andre": {
+              "enabled": true,
+              "showDeadline": false,
+              "additionalDocumentation": {
+                "enabled": false
+              }
+            },
+            "harIkke": {
+              "enabled": true,
+              "additionalDocumentation": {
+                "enabled": false
+              }
+            },
+            "ettersender": {
+              "enabled": true,
+              "showDeadline": true,
+              "additionalDocumentation": {
+                "enabled": false
+              }
+            },
+            "leggerVedNaa": {
+              "enabled": true,
+              "additionalDocumentation": {
+                "enabled": false
+              }
+            },
+            "levertTidligere": {
+              "enabled": true,
+              "additionalDocumentation": {
+                "label": "Tittel tilleggsinformasjon",
+                "enabled": true,
+                "description": "Beskrivelse tilleggsinformasjon"
+              }
+            }
+          },
+          "customConditional": "",
+          "allowMultipleMasks": false,
+          "customDefaultValue": "",
+          "allowCalculateOverride": false,
+          "additionalDescriptionText": "",
+          "additionalDescriptionLabel": ""
+        },
+        {
+          "id": "ez0ub3y",
+          "navId": "ez0ub3y",
+          "key": "annenDokumentasjon",
+          "type": "attachment",
+          "input": true,
+          "label": "Annen dokumentasjon",
+          "addons": [],
+          "hidden": false,
+          "prefix": "",
+          "suffix": "",
+          "unique": false,
+          "dataSrc": "values",
+          "dbIndex": false,
+          "overlay": {
+            "top": "",
+            "left": "",
+            "style": "",
+            "width": "",
+            "height": ""
+          },
+          "tooltip": "",
+          "disabled": false,
+          "multiple": false,
+          "redrawOn": "",
+          "tabindex": "",
+          "validate": {
+            "custom": "",
+            "unique": false,
+            "multiple": false,
+            "required": true,
+            "customPrivate": false,
+            "strictDateValidation": false
+          },
+          "autofocus": false,
+          "encrypted": false,
+          "fieldSize": "input--xxl",
+          "hideLabel": false,
+          "modalEdit": false,
+          "protected": false,
+          "refreshOn": "",
+          "tableView": false,
+          "attributes": {},
+          "errorLabel": "",
+          "persistent": true,
+          "properties": {
+            "vedleggskode": "N6",
+            "vedleggstittel": "Annet"
+          },
+          "validateOn": "blur",
+          "clearOnHide": true,
+          "conditional": {
+            "eq": ""
+          },
+          "customClass": "",
+          "description": "Har du noen annen dokumentasjon du ønsker å legge ved?",
+          "placeholder": "",
+          "dataGridLabel": false,
+          "labelPosition": "top",
+          "showCharCount": false,
+          "showWordCount": false,
+          "attachmentType": "other",
+          "calculateValue": "",
+          "calculateServer": false,
+          "attachmentValues": {
+            "nei": {
+              "enabled": true
+            },
+            "leggerVedNaa": {
+              "enabled": true
+            }
+          },
+          "allowMultipleMasks": false,
+          "customDefaultValue": "",
+          "allowCalculateOverride": false
+        }
+      ],
+      "errorLabel": "",
+      "persistent": false,
+      "properties": {},
+      "validateOn": "change",
+      "clearOnHide": false,
+      "conditional": {
+        "eq": ""
+      },
+      "customClass": "",
+      "description": "",
+      "placeholder": "",
+      "dataGridLabel": false,
+      "labelPosition": "top",
+      "showCharCount": false,
+      "showWordCount": false,
+      "calculateValue": "",
+      "calculateServer": false,
+      "isAttachmentPanel": true,
+      "allowMultipleMasks": false,
+      "customDefaultValue": "",
+      "allowCalculateOverride": false
+    }
+  ],
+  "properties": {
+    "submissionTypes": ["DIGITAL", "DIGITAL_NO_LOGIN"],
+    "publishedLanguages": ["nb", "en"],
+    "ettersendelsesfrist": 14
+  },
+  "publishedLanguages": ["nb", "en"],
+  "status": "published"
+}

@@ -33,7 +33,7 @@ function goToAttachmentPage(fileName: string) {
 describe('Attachments page', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
-    cy.visit('/fyllut/stdigitalnologin');
+    cy.visit('/fyllut/digitalnologinwithattachmentpanel');
     cy.defaultWaits();
     cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigitalNoLogin }).click();
     goToAttachmentPage('attachment.txt');
