@@ -6,20 +6,36 @@ interface Props {
   label: string;
   defaultValue?: string;
   isHtml: boolean;
+  defaultHtmlTag?: 'p' | 'div';
   minRows: number;
   onChange: (value: string) => void;
   error?: string;
   autoFocus?: boolean;
 }
 
-const TranslationInput = ({ label, defaultValue, isHtml, minRows, onChange, error, autoFocus }: Props) => {
+const TranslationInput = ({
+  label,
+  defaultValue,
+  isHtml,
+  defaultHtmlTag,
+  minRows,
+  onChange,
+  error,
+  autoFocus,
+}: Props) => {
   const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     onChange(event.currentTarget.value);
   };
 
   if (isHtml) {
     return (
-      <WysiwygEditor autoFocus={autoFocus} onBlur={onChange} defaultTag="p" defaultValue={defaultValue} error={error} />
+      <WysiwygEditor
+        autoFocus={autoFocus}
+        onBlur={onChange}
+        defaultTag={defaultHtmlTag}
+        defaultValue={defaultValue}
+        error={error}
+      />
     );
   }
   if (minRows > 2) {

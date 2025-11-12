@@ -44,6 +44,7 @@ const TranslationRow = ({ translation, updateTranslation, errors, editState, isK
 
   const autoFocus = isKeyBased ? 'nb' : 'nn';
   const isHtml = htmlUtils.isHtmlString(translation.nb ?? '');
+  const defaultHtmlTag = isHtml && htmlUtils.getHtmlTag(translation.nb ?? '') === 'P' ? 'p' : 'div';
   const hasGlobalOverride = !!translation.globalTranslationId;
 
   return (
@@ -57,6 +58,7 @@ const TranslationRow = ({ translation, updateTranslation, errors, editState, isK
                 label={'Bokmål'}
                 defaultValue={translation.nb}
                 isHtml={isHtml}
+                defaultHtmlTag={defaultHtmlTag}
                 minRows={heightInRows}
                 error={error?.message}
                 onChange={(value) => {
@@ -74,6 +76,7 @@ const TranslationRow = ({ translation, updateTranslation, errors, editState, isK
               label={'Nynorsk'}
               defaultValue={translation.nn}
               isHtml={isHtml}
+              defaultHtmlTag={defaultHtmlTag}
               minRows={heightInRows}
               error={error?.message}
               onChange={(value) => {
@@ -86,6 +89,7 @@ const TranslationRow = ({ translation, updateTranslation, errors, editState, isK
               label={'Engelsk'}
               defaultValue={translation.en}
               isHtml={isHtml}
+              defaultHtmlTag={defaultHtmlTag}
               minRows={heightInRows}
               error={error?.message}
               onChange={(value) => handleChange('en', value)}
