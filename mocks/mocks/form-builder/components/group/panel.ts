@@ -1,4 +1,4 @@
-import { generateId, trimAndLowerCase } from './shared/utils';
+import { generateId, trimAndLowerCase } from '../../shared/utils';
 
 export interface PanelType {
   title: string;
@@ -6,8 +6,8 @@ export interface PanelType {
   key?: string;
 }
 
-const panel = (params: PanelType) => {
-  const { title, components, key } = params ?? {};
+const panel = (props: PanelType) => {
+  const { title, components, key } = props ?? {};
 
   return {
     ...staticDefaultValues,
@@ -44,14 +44,6 @@ const staticDefaultValues = {
   multiple: false,
   redrawOn: '',
   tabindex: '',
-  validate: {
-    custom: '',
-    unique: false,
-    multiple: false,
-    required: false,
-    customPrivate: false,
-    strictDateValidation: false,
-  },
   autofocus: false,
   encrypted: false,
   hideLabel: false,
@@ -66,11 +58,7 @@ const staticDefaultValues = {
   properties: {},
   validateOn: 'change',
   clearOnHide: false,
-  conditional: {
-    eq: '',
-  },
   customClass: '',
-  description: '',
   placeholder: '',
   dataGridLabel: false,
   labelPosition: 'top',

@@ -1,4 +1,5 @@
-import { form, panel, textField } from '../../../form-builder';
+import { panel, textField } from '../../../form-builder/components';
+import form from '../../../form-builder/form/form';
 
 const textFieldForm = () => {
   return form({

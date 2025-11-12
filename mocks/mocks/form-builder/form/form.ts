@@ -1,16 +1,18 @@
-import { properties as createProperties, PropertiesType } from './index';
-import { generateId, trimAndLowerCase } from './shared/utils';
+import { generateId, trimAndLowerCase } from '../shared/utils';
+import formIntroPage, { FormIntroPageType } from './formIntroPage';
+import formProperties, { FormPropertiesType } from './formProperties';
 
 export interface FormType {
   title: string;
   formNumber: string;
   components: any[];
   path?: string;
-  properties?: PropertiesType;
+  properties?: FormPropertiesType;
+  introPage?: FormIntroPageType;
 }
 
-const form = (params: FormType) => {
-  const { title, formNumber, components, path, properties } = params ?? {};
+const form = (props: FormType) => {
+  const { title, formNumber, components, path, properties, introPage } = props ?? {};
 
   return {
     ...staticDefaultValues,
@@ -20,7 +22,8 @@ const form = (params: FormType) => {
     path: path ?? trimAndLowerCase(formNumber),
     name: trimAndLowerCase(formNumber),
     components,
-    properties: properties ?? createProperties({ formNumber }),
+    properties: properties ?? formProperties({ formNumber }),
+    introPage: introPage ?? formIntroPage(),
   };
 };
 

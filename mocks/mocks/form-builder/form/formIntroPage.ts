@@ -1,9 +1,9 @@
-export interface IntroPageType {
+export interface FormIntroPageType {
   enabled?: boolean;
 }
 
-const introPage = (params?: IntroPageType) => {
-  const { enabled } = params ?? {};
+const formIntroPage = (props?: FormIntroPageType) => {
+  const { enabled } = props ?? {};
 
   return {
     ...staticDefaultValues,
@@ -21,4 +21,4 @@ const staticDefaultValues = {
   },
 };
 
-export default introPage;
+export default formIntroPage;

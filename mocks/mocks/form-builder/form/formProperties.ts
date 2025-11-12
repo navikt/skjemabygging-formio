@@ -1,4 +1,4 @@
-export interface PropertiesType {
+export interface FormPropertiesType {
   formNumber: string;
   subjectOfSubmission?: string;
   submissionTypes?: string[];
@@ -6,9 +6,9 @@ export interface PropertiesType {
   mellomlagringDurationDays?: string;
 }
 
-const properties = (params: PropertiesType) => {
+const formProperties = (props: FormPropertiesType) => {
   const { formNumber, subjectOfSubmission, submissionTypes, subsequentSubmissionTypes, mellomlagringDurationDays } =
-    params ?? {};
+    props ?? {};
 
   return {
     ...staticDefaultValues,
@@ -27,4 +27,4 @@ const staticDefaultValues = {
   publishedBy: 'Ola Nordmann',
 };
 
-export default properties;
+export default formProperties;
