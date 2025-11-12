@@ -11,7 +11,7 @@ const properties = (params: PropertiesType) => {
     params ?? {};
 
   return {
-    ...staticValues,
+    ...staticDefaultValues,
     tema: subjectOfSubmission ?? 'HJE',
     skjemanummer: formNumber,
     submissionTypes: submissionTypes ?? ['PAPER', 'DIGITAL', 'DIGITAL_NO_LOGIN'],
@@ -20,7 +20,7 @@ const properties = (params: PropertiesType) => {
   };
 };
 
-const staticValues = {
+const staticDefaultValues = {
   modified: '2025-01-01T00:00:00.000Z',
   published: '2025-01-01T00:00:00.000Z',
   modifiedBy: 'Ola Nordmann',

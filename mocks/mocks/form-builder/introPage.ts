@@ -6,12 +6,12 @@ const introPage = (params?: IntroPageType) => {
   const { enabled } = params ?? {};
 
   return {
-    ...staticValues,
+    ...staticDefaultValues,
     enabled: enabled ?? 'true',
   };
 };
 
-const staticValues = {
+const staticDefaultValues = {
   introduction: '82757584-4f7c-48e2-8c84-8ad6b6ebacbd',
   selfDeclaration: 'introPage.selfDeclaration.description.alt1',
   sections: {

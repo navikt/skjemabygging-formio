@@ -1,8 +1,8 @@
 import { validate as createValidate, ValidateType } from './index';
-import { generateId, trimAndLowerCase } from './shared/dataUtils';
+import { generateId, trimAndLowerCase } from './shared/utils';
 
 export interface TextFieldType {
-  label?: string;
+  label: string;
   key?: string;
   description?: string;
   additionalDescriptionText?: string;
@@ -13,7 +13,7 @@ export interface TextFieldType {
   validate?: ValidateType;
 }
 
-const textField = (params?: TextFieldType) => {
+const textField = (params: TextFieldType) => {
   const {
     label,
     key,
@@ -27,11 +27,11 @@ const textField = (params?: TextFieldType) => {
   } = params ?? {};
 
   return {
-    ...staticValues,
+    ...staticDefaultValues,
     id: generateId(),
     navId: generateId(),
     key: key ?? trimAndLowerCase(label),
-    label: label ?? 'Text Field',
+    label,
     description: description ?? '',
     additionalDescriptionLabel: additionalDescriptionLabel ?? '',
     additionalDescriptionText: additionalDescriptionText ?? '',
@@ -42,7 +42,7 @@ const textField = (params?: TextFieldType) => {
   };
 };
 
-const staticValues = {
+const staticDefaultValues = {
   type: 'textfield',
   input: true,
   mask: false,

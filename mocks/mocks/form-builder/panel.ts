@@ -1,4 +1,4 @@
-import { generateId, trimAndLowerCase } from './shared/dataUtils';
+import { generateId, trimAndLowerCase } from './shared/utils';
 
 export interface PanelType {
   title: string;
@@ -10,7 +10,7 @@ const panel = (params: PanelType) => {
   const { title, components, key } = params ?? {};
 
   return {
-    ...staticValues,
+    ...staticDefaultValues,
     id: generateId(),
     navId: generateId(),
     key: key ?? trimAndLowerCase(title),
@@ -19,7 +19,7 @@ const panel = (params: PanelType) => {
   };
 };
 
-const staticValues = {
+const staticDefaultValues = {
   tree: false,
   type: 'panel',
   input: false,

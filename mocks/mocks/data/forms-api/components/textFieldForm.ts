@@ -1,15 +1,15 @@
-import { form, panel, textField } from '../../../utils/components';
+import { form, panel, textField } from '../../../form-builder';
 
-const textFieldData = () => {
+const textFieldForm = () => {
   return form({
-    title: 'textField',
-    formNumber: 'textField',
+    title: 'TextField component test form',
+    formNumber: 'textfield',
     components: [
       panel({
-        title: 'textField panel',
+        title: 'Visning',
         components: [
           textField({
-            label: 'Visning',
+            label: 'Tekstfelt',
           }),
           textField({
             label: 'Tekstfelt med beskrivelse',
@@ -63,4 +63,4 @@ const textFieldData = () => {
   });
 };
 
-export default textFieldData;
+export default textFieldForm;

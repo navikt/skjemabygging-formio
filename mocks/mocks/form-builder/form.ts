@@ -1,5 +1,5 @@
 import { properties as createProperties, PropertiesType } from './index';
-import { generateId, trimAndLowerCase } from './shared/dataUtils';
+import { generateId, trimAndLowerCase } from './shared/utils';
 
 export interface FormType {
   title: string;
@@ -13,7 +13,7 @@ const form = (params: FormType) => {
   const { title, formNumber, components, path, properties } = params ?? {};
 
   return {
-    ...staticValues,
+    ...staticDefaultValues,
     id: generateId(),
     skjemanummer: formNumber,
     title,
@@ -24,7 +24,7 @@ const form = (params: FormType) => {
   };
 };
 
-const staticValues = {
+const staticDefaultValues = {
   tags: [],
   display: 'wizard',
   type: 'form',

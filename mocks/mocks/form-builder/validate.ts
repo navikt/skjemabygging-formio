@@ -9,7 +9,7 @@ const validate = (params?: ValidateType) => {
   const { required, maxLength, minLength, digitsOnly } = params ?? {};
 
   return {
-    ...staticValues,
+    ...staticDefaultValues,
     required: required ?? true,
     maxLength: maxLength ?? '',
     minLength: minLength ?? '',
@@ -17,7 +17,7 @@ const validate = (params?: ValidateType) => {
   };
 };
 
-const staticValues = {
+const staticDefaultValues = {
   unique: false,
   multiple: false,
   customMessage: '',
