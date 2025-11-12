@@ -26,7 +26,7 @@ describe('year', () => {
         cy.get('dd').eq(1).should('have.text', '1995');
       });
 
-    cy.clickEditAnswers();
+    cy.clickPreviousStep();
     cy.findByRole('textbox', { name: 'Påkrevd årstall' }).should('have.value', '2024');
     cy.findByRole('textbox', { name: 'MinMax årstall' }).should('have.value', '1995');
   });

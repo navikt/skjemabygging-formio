@@ -56,21 +56,17 @@ Cypress.Commands.add('clickPreviousStep', () => {
 });
 
 Cypress.Commands.add('clickSaveAndContinue', () => {
-  return cy
-    .url()
-    .then((url) =>
-      cy
-        .findByRoleWhenAttached(
-          url.includes('/oppsummering') ? 'button' : 'link',
-          { name: /Lagre og fortsett|Save and continue/ },
-          500,
-        )
-        .click(),
-    );
+  return cy.findByRoleWhenAttached('link', { name: /Lagre og fortsett|Save and continue/ }, 500).click();
 });
 
 Cypress.Commands.add('clickStart', () => {
-  return cy.findByRoleWhenAttached('link', { name: TEXTS.grensesnitt.introPage.start }, 500).click();
+  return cy.url().then((url) => {
+    const name =
+      url.includes('sub=digital') && !url.includes('digitalnologin')
+        ? TEXTS.grensesnitt.navigation.saveAndContinue
+        : TEXTS.grensesnitt.navigation.next;
+    return cy.findByRoleWhenAttached('link', { name }, 500).click();
+  });
 });
 
 Cypress.Commands.add('clickIntroPageConfirmation', () => {
@@ -106,13 +102,18 @@ Cypress.Commands.add('clickEditAnswers', (linkText) => {
 });
 
 Cypress.Commands.add('clickSendNav', () => {
-  cy.findByRole('button', { name: TEXTS.grensesnitt.submitToNavPrompt.open }).click();
-  cy.findByRole('button', { name: TEXTS.grensesnitt.submitToNavPrompt.confirm }).click();
+  cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.sendToNav }).click();
 });
 
 Cypress.Commands.add('verifySendInnRedirect', () => {
   return cy.origin(Cypress.env('SEND_INN_FRONTEND'), () => {
     cy.contains('Send Inn Frontend');
+  });
+});
+
+Cypress.Commands.add('verifyNavRedirect', () => {
+  return cy.origin('https://www.nav.no', () => {
+    cy.url().should('include', 'nav.no');
   });
 });
 

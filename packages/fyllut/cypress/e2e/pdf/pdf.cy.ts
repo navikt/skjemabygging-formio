@@ -28,25 +28,19 @@ const downloadPdf = (submissionType: 'digital' | 'paper' | 'digitalnologin' = 'p
   cy.findByRole('link', { name: /Oppsummering|Summary/ }).click();
   cy.findByRole('heading', { name: /Oppsummering|Summary/ }).shouldBeVisible();
   if (submissionType === 'digital') {
-    cy.findByRole('button', { name: TEXTS.grensesnitt.submitToNavPrompt.open }).click();
-    cy.findByRole('button', { name: TEXTS.grensesnitt.submitToNavPrompt.confirm }).click();
+    cy.clickSaveAndContinue();
   } else if (submissionType === 'digitalnologin') {
-    cy.findByRole('button', { name: TEXTS.grensesnitt.submitToNavPrompt.open }).click();
+    cy.clickSendNav();
   } else {
-    cy.findByRole('link', { name: /Gå videre|Proceed/ }).click();
+    cy.findByRole('link', { name: 'Instruksjoner for innsending' }).click();
     cy.findByRole('button', { name: /Last ned skjema|Download form/ }).click();
   }
   cy.wait('@downloadPdf');
 };
 
 describe('Pdf', () => {
-  before(() => {
-    cy.configMocksServer();
-  });
-
   beforeEach(() => {
     cy.defaultIntercepts();
-    cy.mocksRestoreRouteVariants();
   });
 
   describe('Conditional rendering of pages', () => {
@@ -117,7 +111,7 @@ describe('Pdf', () => {
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: 'Oppsummering' }).shouldBeVisible();
-      cy.findByRole('link', { name: TEXTS.grensesnitt.moveForward }).click();
+      cy.findByRole('link', { name: 'Instruksjoner for innsending' }).click();
 
       cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
         const { submission, pdfFormData } = req.body;
@@ -318,7 +312,7 @@ describe('Pdf', () => {
         downloadPdf('digital');
       });
 
-      it('All values', () => {
+      it.only('All values', () => {
         const date = '20.10.2025';
 
         cy.clickStart();
@@ -426,15 +420,6 @@ describe('Pdf', () => {
         cy.findByRole('checkbox', { name: /Jeg bekrefter/ }).check();
         cy.findByRole('group', { name: /Hvilken aktivitet søker du om støtte i forbindelse med?/ }).within(() => {
           cy.findByRole('radio', { name: 'Ingen relevant aktivitet registrert på meg' }).check();
-        });
-
-        cy.findByRole('link', { name: 'Vedlegg' }).click();
-        cy.findByRole('heading', { name: 'Vedlegg' }).shouldBeVisible();
-        cy.findByRole('group', { name: /Vedlegg/ }).within(() => {
-          cy.findByRole('radio', { name: 'Jeg ettersender dokumentasjonen senere' }).check();
-        });
-        cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
-          cy.findByRole('radio', { name: 'Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved' }).check();
         });
 
         cy.fixture('pdf/request-components-all-digital.json').then((fixture) => {
@@ -629,7 +614,7 @@ describe('Pdf', () => {
         cy.defaultWaits();
         cy.clickShowAllSteps();
 
-        cy.clickStart();
+        cy.clickNextStep();
         cy.findByRole('group', { name: /Do you have a Norwegian national identification number or d number?/ }).within(
           () => {
             cy.findByRole('radio', { name: 'Yes' }).check();

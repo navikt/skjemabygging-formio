@@ -306,7 +306,7 @@ describe('SummaryPage', () => {
 
     const date = '20.10.2025';
 
-    cy.clickStart();
+    cy.clickNextStep();
     cy.findByRole('group', { name: /Do you have a Norwegian national identification number or d number?/ }).within(
       () => {
         cy.findByRole('radio', { name: 'Yes' }).check();
@@ -589,6 +589,40 @@ describe('SummaryPage', () => {
         cy.get('dd').eq(0).should('contain.text', 'I will forward the documentation later');
         cy.get('dt').eq(1).should('contain.text', 'Other documentation');
         cy.get('dd').eq(1).should('contain.text', 'No, I have no additional documentation to attach');
+      });
+  });
+
+  it('Digital no login, some components', () => {
+    cy.visit('/fyllut/components/legitimasjon?sub=digitalnologin');
+    cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
+      cy.findByLabelText('Norsk pass').check(),
+    );
+    cy.get('input[type=file]').selectFile('cypress/fixtures/files/id-billy-bruker.jpg', { force: true });
+    cy.clickNextStep();
+
+    cy.defaultWaits();
+    cy.clickShowAllSteps();
+
+    cy.findByRole('link', { name: 'Vedlegg' }).click();
+    cy.findByRole('heading', { name: 'Vedlegg' }).shouldBeVisible();
+    cy.findByRole('group', { name: /Vedlegg/ }).within(() => {
+      cy.findByRole('radio', { name: 'Jeg ettersender dokumentasjonen senere' }).check();
+    });
+    cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+      cy.findByRole('radio', { name: 'Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved' }).check();
+    });
+
+    cy.findByRole('link', { name: 'Oppsummering' }).click();
+    cy.findByRole('heading', { name: 'Oppsummering' }).shouldBeVisible();
+
+    cy.findByRole('heading', { level: 2, name: 'Vedlegg' })
+      .parent()
+      .parent()
+      .within(() => {
+        cy.get('dt').eq(0).should('contain.text', 'Vedlegg');
+        cy.get('dd').eq(0).should('contain.text', 'Jeg ettersender dokumentasjonen senere');
+        cy.get('dt').eq(1).should('contain.text', 'Annen dokumentasjon');
+        cy.get('dd').eq(1).should('contain.text', 'Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved');
       });
   });
 });

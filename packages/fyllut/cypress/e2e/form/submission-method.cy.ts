@@ -77,7 +77,7 @@ describe('Submission method', () => {
         cy.findByRole('link', { name: 'Oppsummering' }).click();
 
         // submit application
-        cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
+        cy.findByRole('link', { name: 'Lagre og fortsett' }).click();
         cy.wait('@submitMellomlagring');
       });
     });

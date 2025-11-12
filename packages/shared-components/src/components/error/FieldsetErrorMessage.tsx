@@ -15,6 +15,12 @@ export const useFieldsetErrorMessageStyles = makeStyles({
     color: 'var(--a-red-500)',
     marginTop: '.25rem',
     height: '1rem',
+    '@media (max-width: 600px)': {
+      alignItems: 'flex-start',
+      height: 'auto',
+      wordBreak: 'break-word',
+      maxWidth: '75%',
+    },
   },
   icon: {
     marginTop: '0.15em',

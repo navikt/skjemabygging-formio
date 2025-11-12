@@ -1,22 +1,20 @@
-import { ArrowRightIcon } from '@navikt/aksel-icons';
-import { Alert, Button } from '@navikt/ds-react';
-import { NavFormType, Submission, submissionTypesUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { Alert } from '@navikt/ds-react';
+import { NavFormType, navFormUtils, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import { useLocation } from 'react-router';
-import DigitalSubmissionButton from '../../../components/button/navigation/digital-submission/DigitalSubmissionButton';
 import EditAnswersButton from '../../../components/button/navigation/edit-answers/EditAnswersButton';
-import SaveAndDeleteButtons from '../../../components/button/navigation/save-and-delete/SaveAndDeleteButtons';
 import FormError from '../../../components/form/FormError';
 import FormSavedStatus from '../../../components/form/FormSavedStatus';
-import LinkButton from '../../../components/link-button/LinkButton';
-import ConfirmationModal from '../../../components/modal/confirmation/ConfirmationModal';
-import DigitalSubmissionWithPrompt from '../../../components/submission/DigitalSubmissionWithPrompt';
+import { CancelAndDeleteButton } from '../../../components/navigation/CancelAndDeleteButton';
+import NavigationButtonRow from '../../../components/navigation/NavigationButtonRow';
+import { PreviousButton } from '../../../components/navigation/PreviousButton';
+import { SaveButton } from '../../../components/navigation/SaveButton';
+import { SummaryPageNextButton } from '../../../components/navigation/SummaryPageNextButton';
 import { useAppConfig } from '../../../context/config/configContext';
+import { useForm } from '../../../context/form/FormContext';
 import { useLanguages } from '../../../context/languages';
 import { useSendInn } from '../../../context/sendInn/sendInnContext';
-import { hasRelevantAttachments } from '../../../util/attachment/attachmentsUtil';
 import { PanelValidation } from '../../../util/form/panel-validation/panelValidation';
-import urlUtils from '../../../util/url/url';
 
 export interface Props {
   form: NavFormType;
@@ -26,24 +24,28 @@ export interface Props {
 }
 
 const SummaryPageNavigation = ({ form, submission, panelValidationList, isValid }: Props) => {
-  const { submissionMethod, app } = useAppConfig();
+  const { mellomlagringError } = useSendInn();
+  const { submissionMethod } = useAppConfig();
+  const [error, setError] = useState<Error>();
+  const [validationError, setValidationError] = useState<string | undefined>();
   const { search } = useLocation();
   const { translate } = useLanguages();
-  const { mellomlagringError, isMellomlagringActive } = useSendInn();
-  const [error, setError] = useState<Error>();
-  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+  const { activeComponents } = useForm();
 
-  const submissionTypes = form.properties.submissionTypes;
-  const hasAttachments = hasRelevantAttachments(form, submission ?? { data: {} });
-  const canSubmit =
-    !error &&
-    !!panelValidationList &&
-    panelValidationList.every((panelValidation) => !panelValidation.hasValidationErrors);
-  const sendIPosten =
-    (submissionTypesUtils.isPaperSubmission(submissionTypes) && (submissionMethod === 'paper' || app === 'bygger')) ||
-    submissionTypesUtils.isPaperSubmissionOnly(submissionTypes);
+  const hasValidationErrors = panelValidationList?.some((panelValidation) => panelValidation.hasValidationErrors);
 
-  const exitUrl = urlUtils.getExitUrl(window.location.href);
+  const getPreviousPathname = () => {
+    if (submissionMethod === 'digitalnologin' && navFormUtils.hasAttachment(form)) {
+      return '../vedlegg';
+    }
+
+    const lastComponent = activeComponents.length > 0 ? activeComponents[activeComponents.length - 1] : undefined;
+    if (lastComponent) {
+      return `../${lastComponent.key}`;
+    }
+
+    return '..';
+  };
 
   return (
     <>
@@ -57,92 +59,34 @@ const SummaryPageNavigation = ({ form, submission, panelValidationList, isValid 
 
       <FormSavedStatus submission={submission} />
 
-      <nav>
-        <div className="button-row">
-          {canSubmit && sendIPosten && (
-            <LinkButton
-              buttonVariant="primary"
-              onClick={(e) => !isValid(e)}
-              to={{ pathname: `../send-i-posten`, search }}
-            >
-              <span aria-live="polite" className="navds-body-short font-bold">
-                {translate(TEXTS.grensesnitt.moveForward)}
-              </span>
-              <span className="navds-button__icon">
-                <ArrowRightIcon aria-hidden />
-              </span>
-            </LinkButton>
-          )}
-          {canSubmit &&
-            (submissionMethod === 'digital' || submissionTypesUtils.isDigitalSubmissionOnly(submissionTypes)) &&
-            (hasAttachments ? (
-              <DigitalSubmissionButton
-                withIcon
-                submission={submission}
-                isValid={isValid}
-                onError={(err) => {
-                  setError(err);
-                }}
-              >
-                {translate(
-                  isMellomlagringActive ? TEXTS.grensesnitt.navigation.saveAndContinue : TEXTS.grensesnitt.moveForward,
-                )}
-              </DigitalSubmissionButton>
-            ) : (
-              <DigitalSubmissionWithPrompt
-                submission={submission}
-                isValid={isValid}
-                onError={(err) => {
-                  setError(err);
-                }}
-              />
-            ))}
-
-          {canSubmit && submissionMethod === 'digitalnologin' && (
-            <DigitalSubmissionButton
-              withIcon
-              submission={submission}
-              isValid={isValid}
-              onError={(err) => {
-                setError(err);
+      <NavigationButtonRow
+        nextButton={
+          <SummaryPageNextButton
+            form={form}
+            submission={submission}
+            panelValidationList={panelValidationList}
+            setError={setError}
+            isValid={isValid}
+            setSubmitError={setValidationError}
+          />
+        }
+        previousButton={
+          hasValidationErrors ? (
+            <EditAnswersButton form={form} panelValidationList={panelValidationList} />
+          ) : (
+            <PreviousButton
+              label={{
+                default: translate(TEXTS.grensesnitt.navigation.previous),
               }}
-            >
-              {translate(TEXTS.grensesnitt.submitToNavPrompt.open)}
-            </DigitalSubmissionButton>
-          )}
-
-          {submissionTypesUtils.isNoneSubmission(submissionTypes) && (
-            <LinkButton
-              buttonVariant="primary"
-              onClick={(e) => !isValid(e)}
-              to={{ pathname: `../ingen-innsending`, search }}
-            >
-              <span aria-live="polite" className="navds-body-short font-bold">
-                {translate(TEXTS.grensesnitt.moveForward)}
-              </span>
-              <span className="navds-button__icon">
-                <ArrowRightIcon aria-hidden />
-              </span>
-            </LinkButton>
-          )}
-          <EditAnswersButton form={form} panelValidationList={panelValidationList} />
-        </div>
-        {isMellomlagringActive && <SaveAndDeleteButtons submission={submission} />}
-        {!isMellomlagringActive && (
-          <div className="button-row button-row__center">
-            <Button variant="tertiary" onClick={() => setIsCancelModalOpen(true)}>
-              {translate(TEXTS.grensesnitt.navigation.cancelAndDiscard)}
-            </Button>
-          </div>
-        )}
-      </nav>
-      <ConfirmationModal
-        open={isCancelModalOpen}
-        onClose={() => setIsCancelModalOpen(false)}
-        onConfirm={() => {}}
-        confirmType={'danger'}
-        texts={TEXTS.grensesnitt.confirmDiscardPrompt}
-        exitUrl={exitUrl}
+              href={{
+                default: { pathname: getPreviousPathname(), search },
+              }}
+            />
+          )
+        }
+        saveButton={<SaveButton submission={submission} />}
+        cancelButton={<CancelAndDeleteButton />}
+        errorMessage={validationError}
       />
     </>
   );

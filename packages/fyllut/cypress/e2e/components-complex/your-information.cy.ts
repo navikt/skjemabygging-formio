@@ -490,7 +490,7 @@ describe('Your information', () => {
       beforeEach(() => {
         cy.visit('/fyllut/yourinformation?sub=paper&lang=en');
         cy.defaultWaits();
-        cy.clickStart();
+        cy.clickNextStep();
         cy.findByRole('heading', { name: 'Your personal information' }).should('exist');
         cy.findByRole('textbox', { name: 'First name' }).type('Ola');
         cy.findByRole('textbox', { name: 'Last name' }).type('Nordmann');

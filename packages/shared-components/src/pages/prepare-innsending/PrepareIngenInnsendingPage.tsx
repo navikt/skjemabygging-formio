@@ -27,7 +27,8 @@ export function PrepareIngenInnsendingPage() {
             {translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
           </DownloadCoverPageAndApplicationButton>
         </div>
-      </FormMainContent>
+
+        </FormMainContent>
       <NavigateButtonComponent goBackUrl="../oppsummering" />
     </>
   );
