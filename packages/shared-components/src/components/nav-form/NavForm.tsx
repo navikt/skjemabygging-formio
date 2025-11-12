@@ -240,7 +240,7 @@ const NavForm = ({
     if (webform?.currentPanel?.title && setTitle) {
       setTitle(webform.currentPanel.title);
     }
-  }, [webform?.currentPanel?.title, setTitle]);
+  }, [webform?.currentPanel, setTitle]);
 
   return <div className={className} data-testid="formMountElement" ref={ref} />;
 };
