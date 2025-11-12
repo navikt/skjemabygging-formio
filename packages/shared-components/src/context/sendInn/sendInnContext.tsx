@@ -1,4 +1,4 @@
-import { Language, MellomlagringError, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import { Language, MellomlagringError, ReceiptSummary, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import React, { createContext, useCallback, useContext, useEffect, useReducer, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router';
 import { postNologinSoknad } from '../../api/sendinn/nologin';
@@ -11,6 +11,7 @@ import {
   updateSoknad,
   updateUtfyltSoknad,
 } from '../../api/sendinn/sendInnSoknad';
+import { b64toBlob } from '../../util/blob/blob';
 import { useAppConfig } from '../config/configContext';
 import { useForm } from '../form/FormContext';
 import { useLanguages } from '../languages';
@@ -31,6 +32,8 @@ interface SendInnContextType {
   setInnsendingsId: (innsendingsId: string | undefined) => void;
   mellomlagringError: MellomlagringError | undefined;
   submitted?: boolean;
+  receipt?: ReceiptSummary;
+  setReceipt: (receipt: ReceiptSummary | undefined) => void;
 }
 
 interface SendInnProviderProps {
@@ -61,6 +64,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const [nologinToken, setNologinToken] = useState<string | undefined>();
   const [fyllutMellomlagringState, dispatchFyllutMellomlagring] = useReducer(mellomlagringReducer, undefined);
   const [soknadPdfBlob, setSoknadPdfBlob] = useState<Blob | undefined>(undefined);
+  const [receipt, setReceipt] = useState<ReceiptSummary | undefined>(undefined);
 
   const addSearchParamToUrl = useCallback(
     (key, value) => {
@@ -247,7 +251,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const submitDigitalNologin = useCallback(
     async (language: Language, translation: any, submission: Submission) => {
       try {
-        const response: Blob = await postNologinSoknad(
+        const response = await postNologinSoknad(
           appConfig,
           nologinToken!,
           form!,
@@ -257,9 +261,15 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
           formContextValue,
           languagesContextValue,
         );
-        setSoknadPdfBlob(response);
         setNologinToken(undefined);
         setSubmission(undefined);
+        if (response?.pdfBase64) {
+          const pdfBlob = b64toBlob(response.pdfBase64, 'application/pdf');
+          setSoknadPdfBlob(pdfBlob);
+        }
+        if (response?.receipt) {
+          setReceipt(response.receipt);
+        }
         navigate(`/${form.path}/kvittering?${searchParams.toString()}`);
       } catch (error: any) {
         logger?.error(`${innsendingsId}: Failed to submit nologin application`, {
@@ -399,6 +409,8 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
     nologinToken,
     setNologinToken,
     soknadPdfBlob,
+    receipt,
+    setReceipt,
     isMellomlagringAvailable,
     isMellomlagringActive: !!fyllutMellomlagringState?.isActive,
     isMellomlagringReady,

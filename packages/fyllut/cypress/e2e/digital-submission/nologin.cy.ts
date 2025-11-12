@@ -82,7 +82,6 @@ describe('Digital submission without user login', () => {
       cy.clickNextStep();
 
       cy.findByRole('button', { name: 'Send til Nav' }).click();
-      cy.findByText('Takk for at du sendte inn skjemaet.').should('exist');
       cy.findByRole('button', { name: 'Vis alle steg' }).should('not.exist');
       cy.findByRole('button', { name: 'Skjul alle steg' }).should('not.exist');
     });
@@ -103,9 +102,27 @@ describe('Digital submission without user login', () => {
       cy.clickNextStep();
 
       cy.findByRole('button', { name: 'Send til Nav' }).click();
-      cy.findByText('Takk for at du sendte inn skjemaet.').should('exist');
+
+      cy.findByText(TEXTS.statiske.receipt.title).should('exist');
+      cy.findByRole('link', { name: TEXTS.statiske.receipt.downloadLinkLabel }).should('exist');
+      cy.contains('b', 'Vi har mottatt følgende dokumenter')
+        .parents('section')
+        .within(() => {
+          cy.get('ul[role="list"]').find('li').should('have.length.at.least', 1);
+          cy.contains('li', 'Uinnlogget søknad').should('exist');
+          cy.contains('li', 'Norsk pass').should('exist');
+        });
+      cy.contains('b', TEXTS.statiske.receipt.mustSendLaterHeading)
+        .parents('section')
+        .within(() => {
+          cy.get('ul[role="list"]').find('li').should('have.length.at.least', 1);
+        });
+      cy.get('.navds-alert--success').should('not.exist');
+      cy.get('.navds-alert--warning').should('exist').and('be.visible');
 
       cy.go('back');
+      cy.findByText(TEXTS.statiske.error.alreadySubmitted).should('exist');
+      cy.go('forward');
       cy.findByText(TEXTS.statiske.error.alreadySubmitted).should('exist');
     });
   });
@@ -390,7 +407,18 @@ describe('Digital submission without user login', () => {
       );
       cy.clickNextStep();
       cy.findByRole('button', { name: 'Send til Nav' }).click();
-      cy.findByText('Takk for at du sendte inn skjemaet.').should('exist');
+
+      cy.findByText(TEXTS.statiske.receipt.title).should('exist');
+      cy.findByRole('link', { name: TEXTS.statiske.receipt.downloadLinkLabel }).should('exist');
+      cy.contains('b', 'Vi har mottatt følgende dokumenter')
+        .parents('section')
+        .within(() => {
+          cy.get('ul[role="list"]').find('li').should('have.length.at.least', 1);
+          cy.contains('li', 'Uinnlogget søknad').should('exist');
+          cy.contains('li', 'Norsk pass').should('exist');
+        });
+      cy.get('.navds-alert--success').should('exist').and('be.visible');
+      cy.get('.navds-alert--warning').should('not.exist');
     });
   });
 });

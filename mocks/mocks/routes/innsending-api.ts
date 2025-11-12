@@ -61,7 +61,9 @@ function replySubmittedNologinApplication(body: any): any {
     skalEttersendes: body.vedleggsListe
       .filter((v: any) => v.opplastingsStatus === 'SendSenere')
       .map((v: any) => ({ vedleggsnr: v.vedleggsnr, tittel: v.tittel })),
-    skalSendesAvAndre: [],
+    skalSendesAvAndre: body.vedleggsListe
+      .filter((v) => v.opplastingsStatus === 'SendesAvAndre')
+      .map((v) => ({ vedleggsnr: v.vedleggsnr, tittel: v.tittel })),
     levertTidligere: [],
     sendesIkkeInn: [],
     navKanInnhente: [],
