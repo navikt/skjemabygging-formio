@@ -1,4 +1,3 @@
-import buttonRow from './buttonRow';
 import ckEditor from './ckEditor';
 import errorSummary from './errorSummary';
 import labelTrackChanges from './labelTrackChanges';
@@ -59,7 +58,6 @@ const global = {
   },
   ...labelTrackChanges,
   ...errorSummary,
-  ...buttonRow,
   ...margin,
   ...preview,
   ...stepper,

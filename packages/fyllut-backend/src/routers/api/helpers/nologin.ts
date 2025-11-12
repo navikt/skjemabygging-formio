@@ -5,6 +5,7 @@ import {
   NavFormType,
   navFormUtils,
   Submission,
+  yourInformationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import {
   AvsenderId,
@@ -27,7 +28,7 @@ const assembleNologinSoknadBody = (
   const allAttachments: Component[] = navFormUtils
     .flattenComponents(form.components)
     .filter((comp: Component) => comp.type === 'attachment');
-  const bruker = extractBruker(submission);
+  const bruker = extractBruker(form, submission);
   const avsender = extractAvsender(submission);
   if (!bruker && !avsender) {
     throw new Error(`${innsendingsId}: Could not find user nor sender from nologin submission (formPath=${form.path})`);
@@ -87,13 +88,10 @@ const assembleNologinSoknadBody = (
   };
 };
 
-const extractBruker = (submission: Submission): BrukerDto | undefined => {
-  const { data } = submission;
-  if (data.dineOpplysninger?.identitet?.identitetsnummer) {
-    return { id: data.dineOpplysninger.identitet.identitetsnummer, idType: 'FNR' };
-  }
-  if (data.fodselsnummerDNummerSoker) {
-    return { id: data.fodselsnummerDNummerSoker, idType: 'FNR' };
+const extractBruker = (form: NavFormType, submission: Submission): BrukerDto | undefined => {
+  const identityNumber = yourInformationUtils.getIdentityNumber(form, submission);
+  if (identityNumber) {
+    return { id: identityNumber, idType: 'FNR' };
   }
   return undefined;
 };

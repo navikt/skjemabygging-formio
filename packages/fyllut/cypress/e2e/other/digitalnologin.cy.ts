@@ -83,6 +83,7 @@ describe('Digital no login', () => {
       cy.findByRole('button', { name: TEXTS.statiske.uploadId.selectFileButton }).should('not.exist');
       cy.findByText('test.txt').should('exist');
       cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.cancelAndDelete }).click();
+      cy.findByRole('button', { name: TEXTS.grensesnitt.confirmDiscardPrompt.confirm }).click();
       cy.wait('@deleteAllFiles');
     });
   });

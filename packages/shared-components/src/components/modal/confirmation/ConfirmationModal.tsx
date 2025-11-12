@@ -5,7 +5,7 @@ import { Modal, useLanguages } from '../../../index';
 interface Props {
   open: boolean;
   onClose: () => void;
-  onConfirm: () => Promise<void> | void;
+  onConfirm?: () => Promise<void> | void;
   width?: 'small' | 'medium';
   exitUrl?: string;
   confirmType?: 'primary' | 'danger';
@@ -34,9 +34,11 @@ const ConfirmationModal = (props: Props) => {
 
   const onClickConfirm = async () => {
     try {
-      setIsLoading(true);
-      await onConfirm();
-      setIsLoading(false);
+      if (onConfirm) {
+        setIsLoading(true);
+        await onConfirm();
+        setIsLoading(false);
+      }
       modalProps.onClose();
       if (exitUrl) {
         window.location.assign(exitUrl);

@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router';
 
 import { getActiveTasks, Soknad } from '../../api/active-tasks/activeTasks';
+import ButtonRow from '../../components/button/ButtonRow';
 import CancelButton from '../../components/button/navigation/cancel/CancelButton';
 import LinkPanel from '../../components/linkPanel/LinkPanel';
 import LoadingComponent from '../../components/loading/LoadingComponent';
@@ -134,9 +135,9 @@ const ActiveTasksPage = () => {
         </section>
       )}
       <div className={styles.separator} />
-      <div className="button-row">
+      <ButtonRow>
         <CancelButton variant="secondary" />
-      </div>
+      </ButtonRow>
     </div>
   );
 };

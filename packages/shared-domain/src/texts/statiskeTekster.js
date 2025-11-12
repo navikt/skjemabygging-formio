@@ -137,6 +137,19 @@ export const statiske = {
     validationMessage:
       'Nedenfor ser du all informasjon du allerede har fylt inn i skjemaet. Steg som mangler informasjon er markert med',
   },
+  receipt: {
+    title: 'Kvittering',
+    alertSuccessHeading: 'Takk',
+    alertSuccessBody:
+      'Vi har mottatt det vi trenger for å starte saksbehandlingen. Vi tar kontakt hvis vi trenger flere opplysninger.',
+    documentsReceivedHeading: 'Vi har mottatt følgende dokumenter {{date}}:',
+    downloadLinkLabel: 'Last ned kopi',
+    mustSendLaterHeading: 'Dette må du ettersende:',
+    sentByOthersHeading: 'Dette har du svart at noen andre skal sende inn:',
+    deadlineWarningHeading: 'Dokumentene må ettersendes innen {{deadline}}',
+    deadlineWarningBody:
+      'Du kan ettersende dokumentene på <a target="_blank" rel="noopener noreferrer" href="https://www.nav.no/ettersende">https://www.nav.no/ettersende</a> (åpnes i ny fane)',
+  },
   warningAboutDifficultSubmission: {
     modal: {
       title: 'Dette er en tjeneste under utvikling',
