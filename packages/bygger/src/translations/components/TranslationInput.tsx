@@ -1,4 +1,4 @@
-import { Textarea, TextField } from '@navikt/ds-react';
+import { Textarea } from '@navikt/ds-react';
 import { ChangeEvent } from 'react';
 import WysiwygEditor from '../../components/wysiwyg/WysiwygEditor';
 
@@ -22,26 +22,15 @@ const TranslationInput = ({ label, defaultValue, isHtml, minRows, onChange, erro
       <WysiwygEditor autoFocus={autoFocus} onBlur={onChange} defaultTag="p" defaultValue={defaultValue} error={error} />
     );
   }
-  if (minRows > 2) {
-    return (
-      <Textarea
-        autoFocus={autoFocus}
-        className={error ? 'navds-textarea--error' : ''}
-        label={label}
-        hideLabel
-        minRows={minRows}
-        resize="vertical"
-        defaultValue={defaultValue}
-        onChange={handleChange}
-      />
-    );
-  }
+
   return (
-    <TextField
+    <Textarea
       autoFocus={autoFocus}
-      className={error ? 'navds-text-field--error' : ''}
+      className={error ? 'navds-textarea--error' : ''}
       label={label}
       hideLabel
+      minRows={minRows}
+      resize="vertical"
       defaultValue={defaultValue}
       onChange={handleChange}
     />
