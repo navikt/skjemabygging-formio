@@ -92,7 +92,7 @@ const introPage: KeyBasedFormsApiTranslation[] = [
     en: 'You must complete the form digitally and then send it by mail. After filling it out, you must download the completed form as a PDF file, print it, sign it, and send it by mail.',
   },
   {
-    key: 'introPage.beAwareOf.saveData',
+    key: 'introPage.beAwareOf.notSave',
     nb: 'Du kan ikke lagre skjemaet underveis. Informasjonen du fyller ut i skjemaet sendes ikke til Nav før du har fullført hele skjemaet og sendt det inn. Hvis du lukker vinduet eller nettleseren vil all informasjon du har fylt ut forsvinne.',
     nn: 'Du kan ikkje lagra skjemaet undervegs. Informasjonen du fyller ut i skjemaet blir ikkje sendt til Nav før du har fullført heile skjemaet og sendt det inn. Om du lukkar vindauget eller nettlesaren vil all informasjon du har fylt ut forsvinna.',
     en: 'You cannot save the form along the way. The information you fill out in the form is not sent to Nav until you have completed the entire form and submitted it. If you close the window or browser, all the information you have filled out will disappear.',
