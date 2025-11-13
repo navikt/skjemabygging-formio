@@ -1,21 +1,23 @@
-import { generateId, trimAndLowerCase } from '../../shared/utils';
+import { generateId, sanitizeAndLowerCase } from '../../shared/utils';
 
-export interface PanelType {
+interface PanelType {
   title: string;
   components: any[];
   key?: string;
+  isAttachmentPanel?: boolean;
 }
 
 const panel = (props: PanelType) => {
-  const { title, components, key } = props ?? {};
+  const { title, components, key, isAttachmentPanel } = props ?? {};
 
   return {
     ...staticDefaultValues,
     id: generateId(),
     navId: generateId(),
-    key: key ?? trimAndLowerCase(title),
+    key: key ?? sanitizeAndLowerCase(title),
     title,
     components,
+    isAttachmentPanel: isAttachmentPanel ?? false,
   };
 };
 

@@ -1,6 +1,6 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
-export interface SelectBoxesType extends BaseComponentType {
+interface SelectBoxesType extends BaseComponentType {
   values: {
     label: string;
     value: string;

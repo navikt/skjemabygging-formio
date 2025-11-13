@@ -1,9 +1,9 @@
 import conditionalComponent, { ConditionalComponentType } from './conditionalComponent';
-import { generateId, trimAndLowerCase } from './utils';
+import { generateId } from './utils';
 import validateComponent, { ValidateComponentType } from './validateComponent';
 
 export interface BaseComponentType {
-  label: string;
+  label?: string;
   key?: string;
   description?: string;
   additionalDescriptionText?: string;
@@ -28,7 +28,7 @@ const baseComponent = (props: BaseComponentType) => {
   return {
     id: generateId(),
     navId: generateId(),
-    key: key ?? trimAndLowerCase(label),
+    key: key ?? generateId(),
     label,
     description: description ?? '',
     additionalDescriptionLabel: additionalDescriptionLabel ?? '',

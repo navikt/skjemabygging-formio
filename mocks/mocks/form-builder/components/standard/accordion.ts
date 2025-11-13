@@ -1,6 +1,6 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
-export interface AccordionType extends BaseComponentType {
+interface AccordionType extends BaseComponentType {
   titleSize?: 'xsmall' | 'small';
   accordionValues: Array<{
     title: string;

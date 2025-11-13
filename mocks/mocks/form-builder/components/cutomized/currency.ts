@@ -1,25 +1,23 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
-interface RadioType extends BaseComponentType {
-  values: Array<{
-    value: string;
-    label: string;
-  }>;
+interface CurrencyType extends BaseComponentType {
+  inputType?: 'numeric' | 'decimal';
 }
 
-const radio = (props: RadioType) => {
-  const { values } = props ?? {};
+const currency = (props: CurrencyType) => {
+  const { inputType } = props ?? {};
 
   return {
     ...staticDefaultValues,
     ...baseComponent(props),
-    values,
+    inputType: inputType ?? 'decimal',
   };
 };
 
 const staticDefaultValues = {
-  type: 'radiopanel',
+  type: 'currency',
   input: true,
+  readOnly: false,
   tableView: false,
   placeholder: '',
   prefix: '',
@@ -64,9 +62,9 @@ const staticDefaultValues = {
   properties: {},
   allowMultipleMasks: false,
   addons: [],
-  fieldSize: 'input--xxl',
-  dataSrc: 'values',
+  fieldSize: 'input--s',
+  currency: 'nok',
   keyModified: true,
 };
 
-export default radio;
+export default currency;

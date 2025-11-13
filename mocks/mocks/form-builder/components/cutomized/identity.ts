@@ -1,6 +1,6 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
-export interface IdentityType extends BaseComponentType {
+interface IdentityType extends BaseComponentType {
   prefill?: boolean;
 }
 

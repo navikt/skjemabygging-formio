@@ -1,6 +1,6 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
-export interface HtmlElementType extends BaseComponentType {
+interface HtmlElementType extends Omit<BaseComponentType, 'label'> {
   content: string; // HTML content of the element
   textDisplay?: 'formPdf' | 'form' | 'pdf';
 }

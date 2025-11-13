@@ -1,6 +1,6 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
-export interface TextAreaType extends BaseComponentType {
+interface TextAreaType extends BaseComponentType {
   autoExpand?: boolean;
 }
 

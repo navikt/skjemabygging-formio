@@ -1,25 +1,32 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
-export interface AttachmentType extends BaseComponentType {
-  attachmentType?: 'attachment' | 'other';
+interface AttachmentType extends BaseComponentType {
+  attachmentType: 'default' | 'other';
+  attachmentValues?: typeof defaultAttachmentValues;
+  properties?: Record<string, any>;
 }
 
 const attachment = (props: AttachmentType) => {
-  const { label, description, attachmentType } = props ?? {};
+  const { label, description, attachmentType, properties, attachmentValues } = props ?? {};
 
-  // Add possibility to override attachmentValues
   return {
     ...staticDefaultValues,
-    ...baseComponent(props),
     ...baseComponent(props),
     label: (label ?? attachmentType === 'other') ? 'Annen dokumentasjon' : 'Vedlegg',
     description:
       (description ?? attachmentType === 'other')
         ? '<p>Har du noen annen dokumentasjon du ønsker å legge ved?</p>'
         : '',
-    attachmentType: attachmentType ?? 'attachment',
-    attachmentValues: attachmentType === 'other' ? defaultOtherAttachmentValues : defaultAttachmentValues,
+    attachmentType,
+    attachmentValues:
+      attachmentType === 'other' ? defaultOtherAttachmentValues : (attachmentValues ?? defaultAttachmentValues),
+    properties: attachmentType === 'other' ? defaultProperties : (properties ?? defaultProperties),
   };
+};
+
+const defaultProperties = {
+  vedleggskode: 'N6',
+  vedleggstittel: 'Annet',
 };
 
 const defaultOtherAttachmentValues = {
@@ -77,7 +84,6 @@ const staticDefaultValues = {
   customClass: '',
   suffix: '',
   multiple: false,
-  defaultValue: null,
   protected: false,
   unique: false,
   persistent: true,
@@ -112,7 +118,6 @@ const staticDefaultValues = {
   encrypted: false,
   showCharCount: false,
   showWordCount: false,
-  properties: {},
   allowMultipleMasks: false,
   addons: [],
   fieldSize: 'input--xxl',

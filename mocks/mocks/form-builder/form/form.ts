@@ -1,4 +1,4 @@
-import { generateId, trimAndLowerCase } from '../shared/utils';
+import { generateId, sanitizeAndLowerCase } from '../shared/utils';
 import formIntroPage, { FormIntroPageType } from './formIntroPage';
 import formProperties, { FormPropertiesType } from './formProperties';
 
@@ -19,8 +19,8 @@ const form = (props: FormType) => {
     id: generateId(),
     skjemanummer: formNumber,
     title,
-    path: path ?? trimAndLowerCase(formNumber),
-    name: trimAndLowerCase(formNumber),
+    path: path ?? sanitizeAndLowerCase(formNumber),
+    name: sanitizeAndLowerCase(formNumber),
     components,
     properties: properties ?? formProperties({ formNumber }),
     introPage: introPage ?? formIntroPage(),

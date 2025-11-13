@@ -1,6 +1,6 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
-export interface SurnameType extends BaseComponentType {
+interface SurnameType extends BaseComponentType {
   autocomplete?: string;
   prefill?: boolean;
 }

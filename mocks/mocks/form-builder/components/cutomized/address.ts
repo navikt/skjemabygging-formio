@@ -1,6 +1,6 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
-export interface AddressType extends BaseComponentType {
+interface AddressType extends BaseComponentType {
   addressType?: 'NORWEGIAN_ADDRESS' | 'POST_OFFICE_BOX' | 'FOREIGN_ADDRESS';
   prefill?: boolean;
 }

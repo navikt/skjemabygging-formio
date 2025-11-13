@@ -1,24 +1,26 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
-interface RadioType extends BaseComponentType {
-  values: Array<{
-    value: string;
+interface NavSelectType extends BaseComponentType {
+  values: {
     label: string;
-  }>;
+    value: string;
+  }[];
 }
 
-const radio = (props: RadioType) => {
+const navSelect = (props: NavSelectType) => {
   const { values } = props ?? {};
 
   return {
     ...staticDefaultValues,
     ...baseComponent(props),
-    values,
+    data: {
+      values,
+    },
   };
 };
 
 const staticDefaultValues = {
-  type: 'radiopanel',
+  type: 'navSelect',
   input: true,
   tableView: false,
   placeholder: '',
@@ -69,4 +71,4 @@ const staticDefaultValues = {
   keyModified: true,
 };
 
-export default radio;
+export default navSelect;

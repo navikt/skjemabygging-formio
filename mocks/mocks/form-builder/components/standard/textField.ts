@@ -1,6 +1,6 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
-export interface TextFieldType extends BaseComponentType {
+interface TextFieldType extends BaseComponentType {
   autocomplete?: string;
   spellcheck?: boolean;
   calculateValue?: string;

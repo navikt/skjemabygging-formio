@@ -104,10 +104,10 @@ describe('SummaryPage', () => {
 
     cy.findByRole('link', { name: 'Gruppering' }).click();
     cy.findByRole('heading', { name: 'Gruppering' }).shouldBeVisible();
-    cy.findByRole('textbox', { name: /Tekstfelt skjemagruppe 1 / }).type('Skjema 1');
-    cy.findByRole('textbox', { name: /Tekstfelt skjemagruppe 2 / }).type('Skjema 2a');
+    cy.findByRole('textbox', { name: /Tekstfelt skjemagruppe 1/ }).type('Skjema 1');
+    cy.findByRole('textbox', { name: /Tekstfelt skjemagruppe 2/ }).type('Skjema 2a');
     cy.findAllByRole('button', { name: 'Legg til' }).eq(0).click();
-    cy.findAllByRole('textbox', { name: /Tekstfelt skjemagruppe 2 / })
+    cy.findAllByRole('textbox', { name: /Tekstfelt skjemagruppe 2/ })
       .eq(1)
       .type('Skjema 2b');
     cy.findByRole('textbox', { name: /Tekstfelt repeterende data/ }).type('Repeat 1');
@@ -406,10 +406,10 @@ describe('SummaryPage', () => {
 
     cy.findByRole('link', { name: 'Grouping' }).click();
     cy.findByRole('heading', { name: 'Grouping' }).shouldBeVisible();
-    cy.findByRole('textbox', { name: /Text field form group 1 / }).type('Form 1');
-    cy.findByRole('textbox', { name: /Text field form group 2 / }).type('Form 2a');
+    cy.findByRole('textbox', { name: /Text field form group 1/ }).type('Form 1');
+    cy.findByRole('textbox', { name: /Text field form group 2/ }).type('Form 2a');
     cy.findAllByRole('button', { name: 'Add' }).eq(0).click();
-    cy.findAllByRole('textbox', { name: /Text field form group 2 / })
+    cy.findAllByRole('textbox', { name: /Text field form group 2/ })
       .eq(1)
       .type('Form 2b');
     cy.findByRole('textbox', { name: /Text field repeating data/ }).type('Repeat 1');

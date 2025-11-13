@@ -1,6 +1,6 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
-export interface PhoneNumberType extends BaseComponentType {
+interface PhoneNumberType extends BaseComponentType {
   showAreaCode?: boolean;
 }
 

@@ -2,7 +2,6 @@ import formAccordion from '../data/formio-api/accordion.json';
 import formActivities from '../data/formio-api/activities.json';
 import formAttachment from '../data/formio-api/attachments.json';
 import formComponentsTranslations from '../data/formio-api/components-translations.json';
-import formComponents from '../data/formio-api/components.json';
 import formConditionalDatagrid from '../data/formio-api/conditional-datagrid.json';
 import conditionalPage from '../data/formio-api/conditional-page.json';
 import translationsConditionalXmas from '../data/formio-api/conditionalxmas-translation.json';
@@ -66,13 +65,14 @@ import formTextfield from '../data/formio-api/textfield.json';
 import formYear from '../data/formio-api/year.json';
 import formYourInformationTranslations from '../data/formio-api/your-information-translations.json';
 import formYourInformation from '../data/formio-api/your-information.json';
+import componentsForm from '../data/forms-api/components/componentsForm';
 import textFieldForm from '../data/forms-api/components/textFieldForm';
 
 const allForms = [
   { form: formCypress101, translations: translationsCypress101 },
   { form: introPage, translations: introPageTranslations },
   { form: formCypressaxe, translations: undefined },
-  { form: formComponents, translations: formComponentsTranslations },
+  //{ form: formComponents, translations: formComponentsTranslations },
   { form: formPengerOgKonto, translations: undefined },
   { form: formPhoneNumberAreaCode, translations: undefined },
   { form: formConditionalXmas, translations: translationsConditionalXmas },
@@ -128,6 +128,7 @@ const allForms = [
   { form: dataGridSkjemagruppeBug, translations: undefined },
   { form: conditionalPage, translations: undefined },
   { form: textFieldForm(), translations: undefined },
+  { form: componentsForm(), translations: formComponentsTranslations },
 ];
 
 const findTestdata = (formPath: string) => allForms.find((testdata) => testdata.form.path === formPath);

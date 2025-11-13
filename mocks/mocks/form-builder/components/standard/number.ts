@@ -1,6 +1,6 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
-export interface NumberType extends BaseComponentType {
+interface NumberType extends BaseComponentType {
   inputType?: 'numeric' | 'decimal';
 }
 

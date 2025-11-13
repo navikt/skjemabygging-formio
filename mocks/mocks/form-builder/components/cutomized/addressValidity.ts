@@ -5,9 +5,7 @@ const addressValidity = (props: BaseComponentType) => {
   return {
     ...staticDefaultValues,
     ...baseComponent(props),
-    customConditional:
-      customConditional ??
-      'show = row.adresse.borDuINorge === "nei" || (row.adresse.borDuINorge === "ja" && row.adresse.vegadresseEllerPostboksadresse)',
+    customConditional: customConditional ?? '',
   };
 };
 

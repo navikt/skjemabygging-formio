@@ -1,24 +1,21 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
-interface RadioType extends BaseComponentType {
-  values: Array<{
-    value: string;
-    label: string;
-  }>;
+interface CurrencySelectType extends BaseComponentType {
+  defaultValue?: string;
 }
 
-const radio = (props: RadioType) => {
-  const { values } = props ?? {};
+const currencySelect = (props: CurrencySelectType) => {
+  const { defaultValue } = props ?? {};
 
   return {
     ...staticDefaultValues,
     ...baseComponent(props),
-    values,
+    defaultValue: defaultValue ?? '',
   };
 };
 
 const staticDefaultValues = {
-  type: 'radiopanel',
+  type: 'valutavelger',
   input: true,
   tableView: false,
   placeholder: '',
@@ -37,6 +34,7 @@ const staticDefaultValues = {
   modalEdit: false,
   dataGridLabel: false,
   labelPosition: 'top',
+  description: '',
   errorLabel: '',
   tooltip: '',
   hideLabel: false,
@@ -64,9 +62,13 @@ const staticDefaultValues = {
   properties: {},
   allowMultipleMasks: false,
   addons: [],
-  fieldSize: 'input--xxl',
-  dataSrc: 'values',
+  fieldSize: 'input--m',
+  dataSrc: 'url',
+  data: {
+    url: 'https://www.nav.no/fyllut/api/common-codes/currencies?lang=nb',
+  },
+  disableLimit: true,
   keyModified: true,
 };
 
-export default radio;
+export default currencySelect;

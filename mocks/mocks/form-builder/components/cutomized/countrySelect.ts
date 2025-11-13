@@ -1,6 +1,6 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
-export interface CountrySelectType extends BaseComponentType {
+interface CountrySelectType extends BaseComponentType {
   ignoreNorway?: boolean;
 }
 

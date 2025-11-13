@@ -1,6 +1,6 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
-export interface AlertType extends BaseComponentType {
+interface AlertType extends Omit<BaseComponentType, 'label'> {
   content: string; // HTML content of the alert
   isInline?: boolean;
   alerttype?: 'info' | 'warning' | 'success' | 'error';
