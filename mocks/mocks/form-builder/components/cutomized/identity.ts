@@ -5,12 +5,13 @@ interface IdentityType extends BaseComponentType {
 }
 
 const identity = (props: IdentityType) => {
-  const { prefill } = props ?? {};
+  const { prefill, label } = props ?? {};
 
   return {
     ...staticDefaultValues,
     ...baseComponent(props),
     prefill: prefill ?? false,
+    label: label ?? 'Identitet',
   };
 };
 

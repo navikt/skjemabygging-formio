@@ -5,12 +5,13 @@ interface PhoneNumberType extends BaseComponentType {
 }
 
 const phoneNumber = (props: PhoneNumberType) => {
-  const { showAreaCode } = props ?? {};
+  const { showAreaCode, label } = props ?? {};
 
   return {
     ...staticDefaultValues,
     ...baseComponent(props),
     showAreaCode: showAreaCode ?? true,
+    label: label ?? 'Telefonnummer',
   };
 };
 

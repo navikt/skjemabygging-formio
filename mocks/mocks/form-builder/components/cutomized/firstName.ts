@@ -5,14 +5,15 @@ interface FirstNameType extends BaseComponentType {
   prefill?: boolean;
 }
 
-const firstName = (props: FirstNameType) => {
-  const { autocomplete, prefill } = props ?? {};
+const firstName = (props?: FirstNameType) => {
+  const { autocomplete, prefill, label } = props ?? {};
 
   return {
     ...staticDefaultValues,
     ...baseComponent(props),
     autocomplete: autocomplete ?? 'given-name',
     prefill: prefill ?? false,
+    label: label ?? 'Fornavn',
   };
 };
 

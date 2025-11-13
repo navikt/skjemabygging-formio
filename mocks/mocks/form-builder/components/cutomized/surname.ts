@@ -6,13 +6,14 @@ interface SurnameType extends BaseComponentType {
 }
 
 const surname = (props: SurnameType) => {
-  const { autocomplete, prefill } = props ?? {};
+  const { autocomplete, prefill, label } = props ?? {};
 
   return {
     ...staticDefaultValues,
     ...baseComponent(props),
     autocomplete: autocomplete ?? 'family-name',
     prefill: prefill ?? false,
+    label: label ?? 'Etternavn',
   };
 };
 

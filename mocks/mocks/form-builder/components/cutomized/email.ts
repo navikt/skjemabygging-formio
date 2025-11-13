@@ -1,9 +1,12 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
 const email = (props: BaseComponentType) => {
+  const { label } = props ?? {};
+
   return {
     ...staticDefaultValues,
     ...baseComponent(props),
+    label: label ?? 'E-post',
   };
 };
 

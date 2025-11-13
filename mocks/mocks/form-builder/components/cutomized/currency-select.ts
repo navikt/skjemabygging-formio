@@ -5,12 +5,13 @@ interface CurrencySelectType extends BaseComponentType {
 }
 
 const currencySelect = (props: CurrencySelectType) => {
-  const { defaultValue } = props ?? {};
+  const { defaultValue, label } = props ?? {};
 
   return {
     ...staticDefaultValues,
     ...baseComponent(props),
     defaultValue: defaultValue ?? '',
+    label: label ?? 'Velg valuta',
   };
 };
 

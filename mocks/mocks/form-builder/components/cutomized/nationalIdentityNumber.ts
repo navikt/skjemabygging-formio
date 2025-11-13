@@ -1,6 +1,6 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
-const nationalIdentityNumber = (props: BaseComponentType) => {
+const nationalIdentityNumber = (props?: BaseComponentType) => {
   const { key, label } = props ?? {};
 
   return {

@@ -1,11 +1,12 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
 const addressValidity = (props: BaseComponentType) => {
-  const { customConditional } = props ?? {};
+  const { customConditional, label } = props ?? {};
   return {
     ...staticDefaultValues,
     ...baseComponent(props),
     customConditional: customConditional ?? '',
+    label: label ?? 'Adresse varighet',
   };
 };
 

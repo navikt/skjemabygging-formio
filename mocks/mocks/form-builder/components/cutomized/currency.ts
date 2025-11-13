@@ -5,12 +5,13 @@ interface CurrencyType extends BaseComponentType {
 }
 
 const currency = (props: CurrencyType) => {
-  const { inputType } = props ?? {};
+  const { inputType, label } = props ?? {};
 
   return {
     ...staticDefaultValues,
     ...baseComponent(props),
     inputType: inputType ?? 'decimal',
+    label: label ?? 'Beløp',
   };
 };
 

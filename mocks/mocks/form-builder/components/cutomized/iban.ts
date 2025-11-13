@@ -1,9 +1,11 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
 const iban = (props: BaseComponentType) => {
+  const { label } = props ?? {};
   return {
     ...staticDefaultValues,
     ...baseComponent(props),
+    label: label ?? 'IBAN',
   };
 };
 

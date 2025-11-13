@@ -13,7 +13,7 @@ export interface BaseComponentType {
   conditional?: ConditionalComponentType;
 }
 
-const baseComponent = (props: BaseComponentType) => {
+const baseComponent = (props?: BaseComponentType) => {
   const {
     label,
     key,

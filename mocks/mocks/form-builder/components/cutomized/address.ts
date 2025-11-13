@@ -6,13 +6,14 @@ interface AddressType extends BaseComponentType {
 }
 
 const address = (props: AddressType) => {
-  const { addressType, prefill } = props ?? {};
+  const { addressType, prefill, label } = props ?? {};
 
   return {
     ...staticDefaultValues,
     ...baseComponent(props),
     addressType: addressType ?? 'NORWEGIAN_ADDRESS',
     prefill: prefill ?? false,
+    label: label ?? 'Adresse',
   };
 };
 

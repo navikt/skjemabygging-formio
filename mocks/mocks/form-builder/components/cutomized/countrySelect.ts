@@ -5,12 +5,13 @@ interface CountrySelectType extends BaseComponentType {
 }
 
 const countrySelect = (props: CountrySelectType) => {
-  const { ignoreNorway } = props ?? {};
+  const { ignoreNorway, label } = props ?? {};
 
   return {
     ...staticDefaultValues,
     ...baseComponent(props),
     ignoreNorway: ignoreNorway ?? false,
+    label: label ?? 'Velg land',
   };
 };
 

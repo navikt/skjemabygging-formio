@@ -2,12 +2,14 @@ import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 import validateComponent from '../../shared/validateComponent';
 
 const accountNumber = (props: BaseComponentType) => {
+  const { label } = props ?? {};
   return {
     ...staticDefaultValues,
     ...baseComponent(props),
     ...validateComponent({
       custom: 'valid = instance.validateAccountNumber(input)',
     }),
+    label: label ?? 'Kontonummer',
   };
 };
 
