@@ -722,7 +722,7 @@ describe('Pdf', () => {
     });
   });
 
-  describe.only('Verify escaped characters', () => {
+  describe('Verify escaped characters', () => {
     beforeEach(() => {
       cy.visit('/fyllut/components?sub=paper');
       cy.defaultWaits();
