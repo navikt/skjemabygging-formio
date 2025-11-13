@@ -14,6 +14,7 @@ const introPage = [
   'introPage.beAwareOf.mandatoryFields',
   'introPage.beAwareOf.useOfPublicComputers',
   'introPage.beAwareOf.sendByMail',
+  'introPage.beAwareOf.saveData',
   'introPage.beAwareOf.timeLimit',
   'introPage.dataDisclosure.title.alt1',
   'introPage.dataDisclosure.title.alt2',

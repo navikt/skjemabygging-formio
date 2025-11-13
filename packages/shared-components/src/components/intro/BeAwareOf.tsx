@@ -13,14 +13,17 @@ const BeAwareOf = ({ translate, submissionMethod, className }: Props) => {
   const isPaperSubmission = submissionMethod === 'paper';
   const isDigitalNoLoginSubmission = submissionMethod === 'digitalnologin';
 
-  const paperSubmissionBulletPoints: Tkey[] = isPaperSubmission ? ['introPage.beAwareOf.sendByMail'] : [];
-  const timeLimitBulletPoints: Tkey[] =
-    isPaperSubmission || isDigitalNoLoginSubmission ? ['introPage.beAwareOf.timeLimit'] : [];
+  const paperSubmissionBulletPoints: Tkey[] = isPaperSubmission
+    ? ['introPage.beAwareOf.sendByMail', 'introPage.beAwareOf.timeLimit']
+    : [];
+  const nologinSubmissionBulletPoints: Tkey[] = isDigitalNoLoginSubmission ? ['introPage.beAwareOf.saveData'] : [];
   const staticBulletPoints: Tkey[] = [
     'introPage.beAwareOf.mandatoryFields',
     'introPage.beAwareOf.useOfPublicComputers',
   ];
-  const bulletPoints = [...paperSubmissionBulletPoints, ...timeLimitBulletPoints, ...staticBulletPoints].map(translate);
+
+  const submissionMethodBulletPoints: Tkey[] = [...paperSubmissionBulletPoints, ...nologinSubmissionBulletPoints];
+  const bulletPoints = [...submissionMethodBulletPoints, ...staticBulletPoints].map(translate);
   return (
     <div className={className}>
       <Heading level="2" size="large" spacing>

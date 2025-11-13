@@ -13,7 +13,7 @@ export function DataStorage({ submissionMethod }: Props) {
   const { getKeyBasedText } = useKeyBasedText();
   const previewStyles = usePreviewStyles();
 
-  if (submissionMethod === 'paper') {
+  if (submissionMethod === 'paper' || submissionMethod === 'digitalnologin') {
     return null;
   }
 
