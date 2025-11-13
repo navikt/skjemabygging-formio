@@ -4,7 +4,7 @@ interface PhoneNumberType extends BaseComponentType {
   showAreaCode?: boolean;
 }
 
-const phoneNumber = (props: PhoneNumberType) => {
+const phoneNumber = (props?: PhoneNumberType) => {
   const { showAreaCode, label } = props ?? {};
 
   return {

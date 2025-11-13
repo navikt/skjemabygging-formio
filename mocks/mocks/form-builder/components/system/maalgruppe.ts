@@ -1,6 +1,6 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
-const maalgruppe = (props: BaseComponentType) => {
+const maalgruppe = (props?: BaseComponentType) => {
   return {
     ...staticDefaultValues,
     ...baseComponent(props),

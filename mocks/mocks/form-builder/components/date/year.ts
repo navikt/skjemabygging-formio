@@ -1,6 +1,6 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
-const year = (props: BaseComponentType) => {
+const year = (props?: BaseComponentType) => {
   const { label } = props ?? {};
 
   // Add override for year validation values.

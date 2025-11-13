@@ -5,7 +5,7 @@ interface AddressType extends BaseComponentType {
   prefill?: boolean;
 }
 
-const address = (props: AddressType) => {
+const address = (props?: AddressType) => {
   const { addressType, prefill, label } = props ?? {};
 
   return {

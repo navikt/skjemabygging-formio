@@ -4,7 +4,7 @@ interface CurrencyType extends BaseComponentType {
   inputType?: 'numeric' | 'decimal';
 }
 
-const currency = (props: CurrencyType) => {
+const currency = (props?: CurrencyType) => {
   const { inputType, label } = props ?? {};
 
   return {

@@ -1,6 +1,6 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
-const email = (props: BaseComponentType) => {
+const email = (props?: BaseComponentType) => {
   const { label } = props ?? {};
 
   return {

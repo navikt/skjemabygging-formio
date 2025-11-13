@@ -4,7 +4,7 @@ interface IdentityType extends BaseComponentType {
   prefill?: boolean;
 }
 
-const identity = (props: IdentityType) => {
+const identity = (props?: IdentityType) => {
   const { prefill, label } = props ?? {};
 
   return {

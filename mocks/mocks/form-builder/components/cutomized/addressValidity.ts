@@ -1,6 +1,6 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
-const addressValidity = (props: BaseComponentType) => {
+const addressValidity = (props?: BaseComponentType) => {
   const { customConditional, label } = props ?? {};
   return {
     ...staticDefaultValues,

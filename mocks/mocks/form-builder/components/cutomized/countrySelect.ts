@@ -4,7 +4,7 @@ interface CountrySelectType extends BaseComponentType {
   ignoreNorway?: boolean;
 }
 
-const countrySelect = (props: CountrySelectType) => {
+const countrySelect = (props?: CountrySelectType) => {
   const { ignoreNorway, label } = props ?? {};
 
   return {

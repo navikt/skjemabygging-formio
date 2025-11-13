@@ -1,6 +1,6 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
-const monthPicker = (props: BaseComponentType) => {
+const monthPicker = (props?: BaseComponentType) => {
   const { label } = props ?? {};
 
   // Add override for month picker validation values.

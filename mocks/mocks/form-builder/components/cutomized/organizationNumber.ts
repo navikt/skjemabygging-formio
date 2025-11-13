@@ -1,7 +1,7 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 import validateComponent from '../../shared/validateComponent';
 
-const organizationNumber = (props: BaseComponentType) => {
+const organizationNumber = (props?: BaseComponentType) => {
   const { label } = props ?? {};
   return {
     ...staticDefaultValues,

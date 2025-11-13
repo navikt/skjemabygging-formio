@@ -1,6 +1,6 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
-const activities = (props: BaseComponentType) => {
+const activities = (props?: BaseComponentType) => {
   const { label } = props ?? {};
 
   return {

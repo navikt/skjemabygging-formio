@@ -5,7 +5,7 @@ interface SurnameType extends BaseComponentType {
   prefill?: boolean;
 }
 
-const surname = (props: SurnameType) => {
+const surname = (props?: SurnameType) => {
   const { autocomplete, prefill, label } = props ?? {};
 
   return {

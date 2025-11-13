@@ -4,7 +4,7 @@ interface CurrencySelectType extends BaseComponentType {
   defaultValue?: string;
 }
 
-const currencySelect = (props: CurrencySelectType) => {
+const currencySelect = (props?: CurrencySelectType) => {
   const { defaultValue, label } = props ?? {};
 
   return {
