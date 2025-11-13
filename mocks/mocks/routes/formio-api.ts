@@ -72,7 +72,6 @@ const allForms = [
   { form: formCypress101, translations: translationsCypress101 },
   { form: introPage, translations: introPageTranslations },
   { form: formCypressaxe, translations: undefined },
-  //{ form: formComponents, translations: formComponentsTranslations },
   { form: formPengerOgKonto, translations: undefined },
   { form: formPhoneNumberAreaCode, translations: undefined },
   { form: formConditionalXmas, translations: translationsConditionalXmas },
