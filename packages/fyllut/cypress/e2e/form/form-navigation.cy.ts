@@ -377,7 +377,7 @@ describe('Form navigation', () => {
       cy.findByRole('link', { name: 'Neste steg' }).click();
     });
 
-    it.only('Normal flow', () => {
+    it('Normal flow', () => {
       cy.findByRole('heading', { level: 2, name: 'Introduksjon' }).should('exist');
       cy.url().should('include', '/fyllut/stnologin?sub=digitalnologin');
       cy.findByRole('link', { name: 'Neste steg' }).click();
