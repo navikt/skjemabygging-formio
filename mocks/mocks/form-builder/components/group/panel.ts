@@ -1,20 +1,21 @@
-import { generateId, sanitizeAndLowerCase } from '../../shared/utils';
+import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
-interface PanelType {
+interface PanelType
+  extends Omit<
+    BaseComponentType,
+    'description' | 'additionalDescriptionText' | 'additionalDescriptionLabel' | 'validate'
+  > {
   title: string;
   components: any[];
-  key?: string;
   isAttachmentPanel?: boolean;
 }
 
 const panel = (props: PanelType) => {
-  const { title, components, key, isAttachmentPanel } = props ?? {};
+  const { title, components, isAttachmentPanel } = props ?? {};
 
   return {
     ...staticDefaultValues,
-    id: generateId(),
-    navId: generateId(),
-    key: key ?? sanitizeAndLowerCase(title),
+    ...baseComponent(props),
     title,
     components,
     isAttachmentPanel: isAttachmentPanel ?? false,

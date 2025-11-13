@@ -46,6 +46,7 @@ const componentsForm = () => {
   return form({
     title: 'Components',
     formNumber: 'components',
+    path: 'components',
     components: [
       panel({
         ...defaultProps,

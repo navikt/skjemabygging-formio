@@ -5,8 +5,8 @@ import formProperties, { FormPropertiesType } from './formProperties';
 export interface FormType {
   title: string;
   formNumber: string;
+  path: string;
   components: any[];
-  path?: string;
   properties?: FormPropertiesType;
   introPage?: FormIntroPageType;
 }
@@ -17,9 +17,9 @@ const form = (props: FormType) => {
   return {
     ...staticDefaultValues,
     id: generateId(),
-    skjemanummer: formNumber,
     title,
-    path: path ?? sanitizeAndLowerCase(formNumber),
+    skjemanummer: formNumber,
+    path,
     name: sanitizeAndLowerCase(formNumber),
     components,
     properties: properties ?? formProperties({ formNumber }),
