@@ -136,8 +136,8 @@ export const FillInFormPage = () => {
   );
 
   const onFocusOnComponentPageChanged = useCallback<(page: { key: string }) => void>(
-    (page: { key: string }) => navigate({ pathname: `${form.path}/${page.key}`, search }),
-    [form.path, navigate, search],
+    (page: { key: string }) => navigate({ pathname: `../${page.key}`, search }),
+    [navigate, search],
   );
 
   const isValid = useCallback(
