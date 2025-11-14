@@ -10,7 +10,7 @@ import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
-
+import noCypressOnly from './eslint/eslint-plugin-no-cypress-only.mjs';
 export default tseslint.config(
   {
     ignores: ['**/src/template/**', '**/dist/**', '**/build/**', '**/node_modules/**'],
@@ -32,6 +32,7 @@ export default tseslint.config(
       // TODO: Replace (and remove compatability packages in package.json) when flat config is supported in these plugins
       'react-hooks': fixupPluginRules(reactHooks),
       import: fixupPluginRules(_import),
+      fyllut: noCypressOnly,
     },
 
     languageOptions: {
@@ -93,6 +94,7 @@ export default tseslint.config(
       'vitest/prefer-called-exactly-once-with': 'off', // toHaveBeenCalledExactlyOnceWith does not exist in jest
       'vitest/expect-expect': 'off', // Cypress tests don't necessarily use expect
       '@typescript-eslint/no-explicit-any': 'off', // Explicit any's
+      'fyllut/no-cypress-only': 'error',
     },
   },
   {
