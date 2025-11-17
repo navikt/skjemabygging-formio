@@ -94,8 +94,8 @@ const introPage: KeyBasedFormsApiTranslation[] = [
   {
     key: 'introPage.beAwareOf.notSave',
     nb: 'Du kan ikke lagre skjemaet underveis. Informasjonen du fyller ut i skjemaet sendes ikke til Nav før du har fullført hele skjemaet og sendt det inn. Hvis du lukker vinduet eller nettleseren vil all informasjon du har fylt ut forsvinne.',
-    nn: 'Du kan ikkje lagra skjemaet undervegs. Informasjonen du fyller ut i skjemaet blir ikkje sendt til Nav før du har fullført heile skjemaet og sendt det inn. Om du lukkar vindauget eller nettlesaren vil all informasjon du har fylt ut forsvinna.',
-    en: 'You cannot save the form along the way. The information you fill out in the form is not sent to Nav until you have completed the entire form and submitted it. If you close the window or browser, all the information you have filled out will disappear.',
+    nn: 'Du kan ikkje lagre skjemaet undervegs. Informasjonen du fyller ut i skjemaet blir ikkje sendt til Nav før du har fullført heile skjemaet og sendt det inn. Viss du lukkar vindauget eller nettlesaren vil all informasjon du har fylt ut forsvinne.',
+    en: 'The form cannot be saved before you are finished. The information you fill in the form is not sent to Nav until you have completed the entire form and submitted it. If you close the window or browser, all the information you have entered will disappear.',
   },
   {
     key: 'introPage.beAwareOf.timeLimit',
