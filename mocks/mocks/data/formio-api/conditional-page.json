@@ -19,7 +19,8 @@
           "input": true,
           "label": "Avkryssingsboks",
           "navId": "e1b8xai"
-        }, {
+        },
+        {
           "label": "Tekstfelt",
           "key": "tekstfelt",
           "input": true,
@@ -42,7 +43,8 @@
           "type": "navCheckbox",
           "input": true,
           "navId": "ereuii"
-        }, {
+        },
+        {
           "label": "Tekstfelt",
           "key": "tekstfelt",
           "input": true,
@@ -84,13 +86,15 @@
           "tableView": false,
           "type": "navCheckbox",
           "navId": "exyzfjg"
-        }, {
+        },
+        {
           "label": "Tekstfelt",
           "key": "tekstfelt",
           "input": true,
           "type": "textfield",
           "navId": "efvbw51"
-        }, {
+        },
+        {
           "key": "alertstripe",
           "type": "alertstripe",
           "input": false,
@@ -118,21 +122,12 @@
     "modified": "2025-02-05T14:55:23.601Z",
     "published": "2022-07-01T12:47:07.873Z",
     "skjemanummer": "conditional-page",
-    "submissionTypes": [
-      "DIGITAL_NO_LOGIN",
-      "DIGITAL",
-      "PAPER"
-    ],
-    "publishedLanguages": [
-      "nb"
-    ],
+    "submissionTypes": ["DIGITAL_NO_LOGIN", "DIGITAL", "PAPER"],
+    "publishedLanguages": ["nb"],
     "ettersendelsesfrist": "10",
     "hasLabeledSignatures": false,
     "mellomlagringDurationDays": "28",
-    "subsequentSubmissionTypes": [
-      "PAPER",
-      "DIGITAL"
-    ]
+    "subsequentSubmissionTypes": ["PAPER", "DIGITAL"]
   },
   "introPage": {
     "enabled": true,
@@ -144,6 +139,9 @@
       "outOfScope": {
         "title": "introPage.outOfScope.title.alt1",
         "description": "test"
+      },
+      "dataDisclosure": {
+        "title": "introPage.dataDisclosure.title.alt1"
       },
       "dataTreatment": {
         "description": "test"
@@ -165,8 +163,6 @@
   "changedBy": "Lars Olav Torvik",
   "publishedAt": "2025-05-09T12:31:25.347+02",
   "publishedBy": "Lars Olav Torvik",
-  "publishedLanguages": [
-    "nb"
-  ],
+  "publishedLanguages": ["nb"],
   "status": "pending"
 }

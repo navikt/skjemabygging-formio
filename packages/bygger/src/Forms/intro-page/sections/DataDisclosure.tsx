@@ -38,7 +38,7 @@ export function DataDisclosure({ form, handleChange, refMap, errors }: Props) {
           </Heading>
           <RadioGroup
             legend="Velg overskrift"
-            defaultValue={form?.introPage?.sections.dataDisclosure?.title}
+            defaultValue={form?.introPage?.sections?.dataDisclosure?.title}
             onChange={(value) => updateSection(form, 'dataDisclosure', 'title', value, handleChange)}
             error={errors?.sections?.dataDisclosure?.title}
           >
