@@ -28,7 +28,8 @@
       "post-familie-pdf:success",
       "post-nologin-soknad:success",
       "foersteside:success",
-      "merge-files:success"
+      "merge-files:success",
+      "team-logs:success"
     ]
   }
 ]

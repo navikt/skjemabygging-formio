@@ -71,6 +71,8 @@ spec:
       rules:
         - application: norg2
           namespace: org
+        - application: logging
+          namespace: nais-system
       {{#each accessPolicy.outbound.rules}}
         - application: {{this.application}}
           namespace: {{this.namespace}}
@@ -119,6 +121,8 @@ spec:
       value: {{pdl-token-scope-cluster}}
     - name: FORMS_API_URL
       value: {{forms-api-url}}{{^forms-api-url}}http://forms-api.fyllut-sendinn{{/forms-api-url}}
+    - name: TEAM_LOGS_URL
+      value: "http://team-logs.nais-system/"
     {{#each environmentVars}}
     - name: {{this.name}}
       value: {{this.value}}
