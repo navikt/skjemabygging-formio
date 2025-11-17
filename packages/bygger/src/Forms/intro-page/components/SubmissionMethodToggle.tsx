@@ -14,6 +14,7 @@ const SubmissionMethodToggle = ({ onToggle }: Props) => {
     >
       <ToggleGroup.Item value="digital" label="Digital" />
       <ToggleGroup.Item value="paper" label="Papir" />
+      <ToggleGroup.Item value="digitalnologin" label="Nologin" />
     </ToggleGroup>
   );
 };

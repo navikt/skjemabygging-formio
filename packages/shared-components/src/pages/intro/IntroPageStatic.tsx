@@ -31,6 +31,12 @@ const IntroPageStatic = () => {
       setDescription(undefined);
       setSaveDataBulletBold(TEXTS.statiske.introPage.autoSaveBold);
       setSaveDataBullet(TEXTS.statiske.introPage.autoSave);
+    } else if (state === IntroPageState.DIGITAL_NO_LOGIN) {
+      // No description when digital nologin submission
+      setDescriptionBold(undefined);
+      setDescription(undefined);
+      setSaveDataBulletBold(TEXTS.statiske.introPage.notSaveBold);
+      setSaveDataBullet(TEXTS.statiske.introPage.notSave);
     } else if (state === IntroPageState.NONE) {
       setDescriptionBold(TEXTS.statiske.introPage.noSubmissionDescriptionBold);
       setDescription(TEXTS.statiske.introPage.noSubmissionDescription);

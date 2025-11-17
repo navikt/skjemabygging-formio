@@ -1266,6 +1266,16 @@
       "allowCalculateOverride": false
     }
   ],
+  "introPage": {
+    "enabled": true,
+    "selfDeclaration": "introPage.selfDeclaration.description.alt2",
+    "sections": {
+      "dataTreatment": {
+        "description": "a2567666-41a1-43a0-b0ca-9f8526c664eb"
+      }
+    },
+    "introduction": "5854810a-1e3c-4d3a-b39d-67fa225be5d6"
+  },
   "properties": {
     "tema": "BIL",
     "signatures": [
