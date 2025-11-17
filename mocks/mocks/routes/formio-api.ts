@@ -24,6 +24,7 @@ import dataGridLogicBug from '../data/formio-api/datagrid-logic-bug.json';
 import formDatagridReactComponents from '../data/formio-api/datagrid-react-components.json';
 import formDatagrid from '../data/formio-api/datagrid.json';
 import dataGridSkjemagruppeBug from '../data/formio-api/datagrid001.json';
+import digitalNoLoginWithAttachmentPanel from '../data/formio-api/digitalnologin-with-attachment-panel.json';
 import formDrivingList from '../data/formio-api/driving-list.json';
 import errorSummaryFocusForm from '../data/formio-api/errorSummaryFocus.json';
 import emailForm from '../data/formio-api/form-email.json';
@@ -123,6 +124,7 @@ const allForms = [
   { form: submissionTypePaperDigitalNoLogin, translations: undefined },
   { form: submissionTypePaperNoLogin, translations: undefined },
   { form: nologinForm, translations: undefined },
+  { form: digitalNoLoginWithAttachmentPanel, translations: undefined },
   { form: dataGridLogicBug, translations: undefined },
   { form: dataGridSkjemagruppeBug, translations: undefined },
   { form: conditionalPage, translations: undefined },

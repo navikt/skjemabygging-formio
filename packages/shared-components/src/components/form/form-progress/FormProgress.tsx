@@ -31,7 +31,7 @@ const FormProgress = () => {
       ...formioSteps,
     ];
 
-    if (submissionMethod === 'digitalnologin') {
+    if (navFormUtils.hasAttachment(form) && submissionMethod === 'digitalnologin') {
       steps.push({
         key: 'vedlegg',
         label: TEXTS.statiske.attachment.title,
