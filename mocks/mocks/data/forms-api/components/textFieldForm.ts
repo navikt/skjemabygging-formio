@@ -5,6 +5,7 @@ const textFieldForm = () => {
   return form({
     title: 'TextField component test form',
     formNumber: 'textfield',
+    path: 'textfield',
     components: [
       panel({
         title: 'Visning',
