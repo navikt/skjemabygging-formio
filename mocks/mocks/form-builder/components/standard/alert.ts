@@ -12,8 +12,7 @@ const alert = (props: AlertType) => {
 
   return {
     ...staticDefaultValues,
-    ...baseComponent(props),
-    label: '',
+    ...baseComponent({ ...props, label: '' }),
     content,
     isInline: isInline ?? false,
     alerttype: alerttype ?? 'info',

@@ -9,9 +9,8 @@ const currencySelect = (props?: CurrencySelectType) => {
 
   return {
     ...staticDefaultValues,
-    ...baseComponent(props),
+    ...baseComponent({ ...props, label: label ?? 'Velg valuta' }),
     defaultValue: defaultValue ?? '',
-    label: label ?? 'Velg valuta',
   };
 };
 

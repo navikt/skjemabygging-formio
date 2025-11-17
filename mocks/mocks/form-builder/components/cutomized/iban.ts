@@ -4,8 +4,7 @@ const iban = (props?: BaseComponentType) => {
   const { label } = props ?? {};
   return {
     ...staticDefaultValues,
-    ...baseComponent(props),
-    label: label ?? 'IBAN',
+    ...baseComponent({ ...props, label: label ?? 'IBAN' }),
   };
 };
 

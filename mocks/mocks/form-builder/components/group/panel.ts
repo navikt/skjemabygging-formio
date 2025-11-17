@@ -16,8 +16,7 @@ const panel = (props: PanelType) => {
 
   return {
     ...staticDefaultValues,
-    ...baseComponent(props),
-    key: key ?? sanitizeAndLowerCase(title),
+    ...baseComponent({ ...props, key: key ?? sanitizeAndLowerCase(title) }),
     title,
     components,
     isAttachmentPanel: isAttachmentPanel ?? false,

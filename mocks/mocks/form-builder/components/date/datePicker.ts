@@ -6,8 +6,7 @@ const datePicker = (props?: BaseComponentType) => {
   // Add override for date picker validation values.
   return {
     ...staticDefaultValues,
-    ...baseComponent(props),
-    label: label ?? 'Dato (dd.mm.åååå)',
+    ...baseComponent({ ...props, label: label ?? 'Dato (dd.mm.åååå)' }),
   };
 };
 

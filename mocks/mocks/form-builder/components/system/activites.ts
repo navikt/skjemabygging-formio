@@ -1,12 +1,12 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
 const activities = (props?: BaseComponentType) => {
-  const { label } = props ?? {};
+  const { label, key } = props ?? {};
 
   return {
     ...staticDefaultValues,
-    ...baseComponent(props),
-    label: label ?? 'Hvilken aktivitet søker du om støtte i forbindelse med?',
+    ...baseComponent({ ...props, label: label ?? 'Hvilken aktivitet søker du om støtte i forbindelse med?' }),
+    key: key ?? 'activities',
   };
 };
 

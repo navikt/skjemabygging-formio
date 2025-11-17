@@ -5,8 +5,7 @@ const email = (props?: BaseComponentType) => {
 
   return {
     ...staticDefaultValues,
-    ...baseComponent(props),
-    label: label ?? 'E-post',
+    ...baseComponent({ ...props, label: label ?? 'E-post' }),
   };
 };
 

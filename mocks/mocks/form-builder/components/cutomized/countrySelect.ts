@@ -9,9 +9,8 @@ const countrySelect = (props?: CountrySelectType) => {
 
   return {
     ...staticDefaultValues,
-    ...baseComponent(props),
+    ...baseComponent({ ...props, label: label ?? 'Velg land' }),
     ignoreNorway: ignoreNorway ?? false,
-    label: label ?? 'Velg land',
   };
 };
 

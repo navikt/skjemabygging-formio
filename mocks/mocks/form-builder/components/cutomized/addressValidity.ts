@@ -4,9 +4,8 @@ const addressValidity = (props?: BaseComponentType) => {
   const { customConditional, label } = props ?? {};
   return {
     ...staticDefaultValues,
-    ...baseComponent(props),
+    ...baseComponent({ ...props, label: label ?? 'Adresse varighet' }),
     customConditional: customConditional ?? '',
-    label: label ?? 'Adresse varighet',
   };
 };
 

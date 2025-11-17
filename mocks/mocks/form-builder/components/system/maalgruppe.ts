@@ -1,9 +1,12 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
 const maalgruppe = (props?: BaseComponentType) => {
+  const { key } = props ?? {};
+
   return {
     ...staticDefaultValues,
     ...baseComponent(props),
+    key: key ?? 'maalgruppe',
   };
 };
 

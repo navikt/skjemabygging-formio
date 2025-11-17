@@ -6,8 +6,7 @@ const monthPicker = (props?: BaseComponentType) => {
   // Add override for month picker validation values.
   return {
     ...staticDefaultValues,
-    ...baseComponent(props),
-    label: label ?? 'Månedsvelger (mm.åååå)',
+    ...baseComponent({ ...props, label: label ?? 'Månedsvelger (mm.åååå)' }),
   };
 };
 

@@ -10,10 +10,9 @@ const address = (props?: AddressType) => {
 
   return {
     ...staticDefaultValues,
-    ...baseComponent(props),
+    ...baseComponent({ ...props, label: label ?? 'Adresse' }),
     addressType: addressType ?? 'NORWEGIAN_ADDRESS',
     prefill: prefill ?? false,
-    label: label ?? 'Adresse',
   };
 };
 

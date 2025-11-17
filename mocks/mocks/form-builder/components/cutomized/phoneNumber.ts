@@ -9,9 +9,8 @@ const phoneNumber = (props?: PhoneNumberType) => {
 
   return {
     ...staticDefaultValues,
-    ...baseComponent(props),
+    ...baseComponent({ ...props, label: label ?? 'Telefonnummer' }),
     showAreaCode: showAreaCode ?? true,
-    label: label ?? 'Telefonnummer',
   };
 };
 

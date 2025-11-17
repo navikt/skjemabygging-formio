@@ -9,9 +9,8 @@ const currency = (props?: CurrencyType) => {
 
   return {
     ...staticDefaultValues,
-    ...baseComponent(props),
+    ...baseComponent({ ...props, label: label ?? 'Beløp' }),
     inputType: inputType ?? 'decimal',
-    label: label ?? 'Beløp',
   };
 };
 

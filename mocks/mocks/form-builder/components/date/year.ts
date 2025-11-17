@@ -6,8 +6,7 @@ const year = (props?: BaseComponentType) => {
   // Add override for year validation values.
   return {
     ...staticDefaultValues,
-    ...baseComponent(props),
-    label: label ?? 'Årstall',
+    ...baseComponent({ ...props, label: label ?? 'Årstall' }),
   };
 };
 

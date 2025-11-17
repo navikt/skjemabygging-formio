@@ -10,10 +10,9 @@ const surname = (props?: SurnameType) => {
 
   return {
     ...staticDefaultValues,
-    ...baseComponent(props),
+    ...baseComponent({ ...props, label: label ?? 'Etternavn' }),
     autocomplete: autocomplete ?? 'family-name',
     prefill: prefill ?? false,
-    label: label ?? 'Etternavn',
   };
 };
 

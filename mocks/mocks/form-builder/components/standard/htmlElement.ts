@@ -10,8 +10,7 @@ const htmlElement = (props: HtmlElementType) => {
 
   return {
     ...staticDefaultValues,
-    ...baseComponent(props),
-    label: '',
+    ...baseComponent({ ...props, label: '' }),
     content,
     textDisplay: textDisplay ?? 'formPdf',
   };

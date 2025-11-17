@@ -10,10 +10,9 @@ const firstName = (props?: FirstNameType) => {
 
   return {
     ...staticDefaultValues,
-    ...baseComponent(props),
+    ...baseComponent({ ...props, label: label ?? 'Fornavn' }),
     autocomplete: autocomplete ?? 'given-name',
     prefill: prefill ?? false,
-    label: label ?? 'Fornavn',
   };
 };
 

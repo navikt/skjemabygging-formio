@@ -58,6 +58,7 @@ const componentsForm = () => {
           container({
             ...defaultProps,
             label: 'Dine opplysninger',
+            key: 'dineopplysningercontainer',
             yourInformation: true,
             components: [identity({ ...defaultProps })],
           }),
@@ -217,7 +218,11 @@ const componentsForm = () => {
         ...defaultProps,
         title: 'Andre',
         components: [
-          checkbox({ ...defaultProps, label: 'Jeg bekrefter at jeg vil svare så riktig som jeg kan.' }),
+          checkbox({
+            ...defaultProps,
+            label: 'Jeg bekrefter at jeg vil svare så riktig som jeg kan.',
+            key: 'confirmationcheckbox',
+          }),
           container({
             ...defaultProps,
             label: 'Aktiviteter og målgruppe',

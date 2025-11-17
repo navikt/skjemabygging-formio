@@ -5,11 +5,10 @@ const organizationNumber = (props?: BaseComponentType) => {
   const { label } = props ?? {};
   return {
     ...staticDefaultValues,
-    ...baseComponent(props),
+    ...baseComponent({ ...props, label: label ?? 'Organisasjonsnummer' }),
     ...validateComponent({
       custom: 'valid = instance.validateOrganizationNumber(input)',
     }),
-    label: label ?? 'Organisasjonsnummer',
   };
 };
 
