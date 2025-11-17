@@ -6,6 +6,7 @@ import prettierConfig from 'eslint-config-prettier';
 import pluginChaiFriendly from 'eslint-plugin-chai-friendly';
 import pluginCypress from 'eslint-plugin-cypress/flat';
 import _import from 'eslint-plugin-import';
+import pluginMocha from 'eslint-plugin-mocha';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import globals from 'globals';
@@ -97,8 +98,10 @@ export default tseslint.config(
   },
   {
     files: ['**/cypress/e2e/**'],
+    ...pluginMocha.configs.recommended,
     rules: {
       '@typescript-eslint/no-unused-expressions': 'off',
+      'mocha/no-exclusive-tests': 'error',
     },
   },
 );
