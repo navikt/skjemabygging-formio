@@ -182,6 +182,25 @@ describe('Mellomlagring', () => {
       cy.findByText(TEXTS.statiske.mellomlagringError.update.message).should('be.visible');
     });
 
+    describe('When partially filling out a form', () => {
+      it('should navigate to first component with validation error from summary', () => {
+        cy.visit('/fyllut/components?sub=digital');
+        cy.defaultWaits();
+        cy.clickIntroPageConfirmation();
+        cy.clickStart();
+        cy.wait('@createMellomlagring');
+        cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
+        cy.clickShowAllSteps();
+        cy.findByRole('link', { name: TEXTS.statiske.summaryPage.title }).click();
+        cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
+        cy.findAllByRole('link', { name: 'Fortsett utfylling' }).first().click();
+        cy.findByRole('heading', { name: 'Andre' }).should('exist');
+        cy.findByRole('group', { name: 'Hvilken aktivitet søker du om støtte i forbindelse med?' }).should(
+          'have.focus',
+        );
+      });
+    });
+
     describe('When starting on the summary page', () => {
       it('redirects to start page if url does not contain "innsendingsId"', () => {
         cy.skipIfNoIncludeDistTests();
