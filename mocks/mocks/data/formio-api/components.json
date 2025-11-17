@@ -799,6 +799,9 @@
   "introPage": {
     "enabled": true,
     "sections": {
+      "dataDisclosure": {
+        "title": "introPage.dataDisclosure.title.alt1"
+      },
       "dataTreatment": {
         "description": "5b3c663d-e405-40a1-8abb-05c3d30bf8a0",
         "bulletPoints": []
