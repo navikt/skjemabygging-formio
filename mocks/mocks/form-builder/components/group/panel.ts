@@ -1,4 +1,5 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
+import { sanitizeAndLowerCase } from '../../shared/utils';
 
 interface PanelType
   extends Omit<
@@ -11,11 +12,12 @@ interface PanelType
 }
 
 const panel = (props: PanelType) => {
-  const { title, components, isAttachmentPanel } = props ?? {};
+  const { title, components, isAttachmentPanel, key } = props ?? {};
 
   return {
     ...staticDefaultValues,
     ...baseComponent(props),
+    key: key ?? sanitizeAndLowerCase(title),
     title,
     components,
     isAttachmentPanel: isAttachmentPanel ?? false,

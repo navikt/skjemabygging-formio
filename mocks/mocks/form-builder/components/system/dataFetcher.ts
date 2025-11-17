@@ -19,7 +19,6 @@ const dataFetcher = (props: DataFetcherType) => {
 
 const staticDefaultValues = {
   queryParams: {},
-  key: 'aktivitetsvelger',
   input: true,
   tableView: false,
   type: 'dataFetcher',

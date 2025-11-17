@@ -23,7 +23,6 @@ const select = (props: SelectType) => {
 
 const staticDefaultValues = {
   id: 'eo5kjt',
-  key: 'hvilketLandJobberDuI',
   tags: [],
   type: 'select',
   input: true,

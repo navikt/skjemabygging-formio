@@ -68,6 +68,7 @@ import formYourInformationTranslations from '../data/formio-api/your-information
 import formYourInformation from '../data/formio-api/your-information.json';
 import componentsForm from '../data/forms-api/components/componentsForm';
 import textFieldForm from '../data/forms-api/components/textFieldForm';
+import largeForm from '../data/forms-api/largeForm';
 
 const allForms = [
   { form: formCypress101, translations: translationsCypress101 },
@@ -130,6 +131,7 @@ const allForms = [
   { form: conditionalPage, translations: undefined },
   { form: textFieldForm(), translations: undefined },
   { form: componentsForm(), translations: formComponentsTranslations },
+  { form: largeForm(), translations: undefined },
 ];
 
 const findTestdata = (formPath: string) => allForms.find((testdata) => testdata.form.path === formPath);

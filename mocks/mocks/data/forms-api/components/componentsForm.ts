@@ -45,10 +45,11 @@ const defaultProps = { validate: { required: false } };
 
 const componentsForm = () => {
   const formNumber = 'components';
+
   return form({
     title: 'Components',
     formNumber: formNumber,
-    path: 'components',
+    path: formNumber,
     components: [
       panel({
         ...defaultProps,
