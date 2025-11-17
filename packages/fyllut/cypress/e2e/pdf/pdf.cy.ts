@@ -148,7 +148,6 @@ describe('Pdf', () => {
           cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
             // Check that timestamp is present in footer before removing it for comparison.
             expect(req.body.pdfFormData.bunntekst.upperMiddle).not.to.be.null;
-            expect(req.body.pdfFormData.bunntekst.upperMiddle).not.to.be.null;
             expect(getCleanedUpPdfFormData(req)).deep.eq(fixture);
           }).as('downloadPdf');
         });

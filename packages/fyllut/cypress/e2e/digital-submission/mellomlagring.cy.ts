@@ -194,7 +194,6 @@ describe('Mellomlagring', () => {
         cy.findByRole('link', { name: TEXTS.statiske.summaryPage.title }).click();
         cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
         cy.findAllByRole('link', { name: 'Fortsett utfylling' }).first().click();
-        //cy.findByRole('heading', { name: 'Andre' }).should('exist');
         cy.findByRole('group', { name: 'Hvilken aktivitet søker du om støtte i forbindelse med?' }).should(
           'have.focus',
         );
