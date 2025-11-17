@@ -10,6 +10,7 @@ const identity = (props?: IdentityType) => {
   return {
     ...staticDefaultValues,
     ...baseComponent(props),
+    key: 'identitet',
     prefill: prefill ?? false,
     label: label ?? 'Identitet',
   };

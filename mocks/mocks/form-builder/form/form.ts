@@ -1,13 +1,13 @@
 import { generateId, sanitizeAndLowerCase } from '../shared/utils';
 import formIntroPage, { FormIntroPageType } from './formIntroPage';
-import formProperties, { FormPropertiesType } from './formProperties';
+import formProperties from './formProperties';
 
 export interface FormType {
   title: string;
   formNumber: string;
   path: string;
   components: any[];
-  properties?: FormPropertiesType;
+  properties?: any;
   introPage?: FormIntroPageType;
 }
 

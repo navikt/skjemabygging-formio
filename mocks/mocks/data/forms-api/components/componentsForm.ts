@@ -39,13 +39,15 @@ import {
   year,
 } from '../../../form-builder/components';
 import form from '../../../form-builder/form/form';
+import formProperties from '../../../form-builder/form/formProperties';
 
 const defaultProps = { validate: { required: false } };
 
 const componentsForm = () => {
+  const formNumber = 'components';
   return form({
     title: 'Components',
-    formNumber: 'components',
+    formNumber: formNumber,
     path: 'components',
     components: [
       panel({
@@ -55,6 +57,7 @@ const componentsForm = () => {
           container({
             ...defaultProps,
             label: 'Dine opplysninger',
+            yourInformation: true,
             components: [identity({ ...defaultProps })],
           }),
         ],
@@ -232,6 +235,15 @@ const componentsForm = () => {
         ],
       }),
     ],
+    properties: formProperties({
+      formNumber,
+      signatures: {
+        values: [
+          { label: 'Eier', description: 'Viktig1' },
+          { label: 'Deleier', description: 'Viktig2' },
+        ],
+      },
+    }),
   });
 };
 
