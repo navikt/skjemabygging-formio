@@ -85,6 +85,7 @@ function loadFormioApiServiceUrl() {
 }
 
 const localDevelopmentConfig: DefaultConfig = {
+  applicationName: 'skjemautfylling-local',
   gitVersion: 'local',
   useFormioMockApi: process.env.FORMS_SOURCE === 'mock',
   useFormsApiStaging: !process.env.FORMS_SOURCE || process.env.FORMS_SOURCE === 'formsapi-staging',
@@ -145,6 +146,7 @@ const localDevelopmentConfig: DefaultConfig = {
 };
 
 const defaultConfig: DefaultConfig = {
+  applicationName: process.env.NAIS_APP_NAME!,
   sentryDsn: process.env.VITE_SENTRY_DSN!,
   gitVersion: process.env.GIT_SHA!,
   useFormioMockApi: process.env.FORMS_SOURCE === 'mock',

@@ -53,6 +53,7 @@ export type IdportenConfig = {
 };
 
 export type DefaultConfig = {
+  applicationName: string;
   gitVersion: string;
   sentryDsn?: string;
   useFormioMockApi: boolean;

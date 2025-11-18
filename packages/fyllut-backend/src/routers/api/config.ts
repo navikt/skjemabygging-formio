@@ -2,8 +2,15 @@ import { ConfigType } from '@navikt/skjemadigitalisering-shared-domain';
 import { config as configObject } from '../../config/config';
 import { getIsLoggedIn } from '../../security/tokenHelper';
 
-const { naisClusterName, featureToggles, isDelingslenke, isDevelopment, frontendLoggerConfig, gitVersion } =
-  configObject;
+const {
+  applicationName,
+  naisClusterName,
+  featureToggles,
+  isDelingslenke,
+  isDevelopment,
+  frontendLoggerConfig,
+  gitVersion,
+} = configObject;
 
 const config = {
   get: async (req, res): Promise<ConfigType> => {
@@ -17,6 +24,7 @@ const config = {
       isLoggedIn,
       gitVersion,
       loggerConfig: frontendLoggerConfig,
+      applicationName,
     });
   },
 };

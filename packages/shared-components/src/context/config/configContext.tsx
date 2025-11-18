@@ -1,7 +1,8 @@
 import { SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import FrontendLogger, { LoggerConfig } from '../../api/frontend-logger/FrontendLogger';
 import baseHttp from '../../api/util/http/http';
+import { LogEventFunction, umamiEventHandler } from '../../util/tracking/umami';
 
 type FeatureTogglesMap = {
   [key: string]: boolean;
@@ -20,6 +21,7 @@ interface AppConfigContextType {
   logger?: FrontendLogger;
   diffOn?: boolean;
   setDiffOn?: (diffOn: boolean) => void;
+  logEvent?: LogEventFunction;
 }
 
 type AppConfigProviderProps = {
@@ -40,7 +42,15 @@ function AppConfigProvider({
   http = baseHttp,
   diffOn = true,
 }: AppConfigProviderProps) {
-  const logger = new FrontendLogger(http!, baseUrl, config?.loggerConfig as LoggerConfig);
+  const logger = useMemo(
+    () => new FrontendLogger(http!, baseUrl, config?.loggerConfig as LoggerConfig),
+    [baseUrl, config, http],
+  );
+
+  const logEvent = useMemo(() => {
+    return config ? umamiEventHandler(config, logger) : undefined;
+  }, [config, logger]);
+
   const [internalDiffOn, setDiffOn] = useState<boolean>(diffOn!);
   return (
     <AppConfigContext.Provider
@@ -54,6 +64,7 @@ function AppConfigProvider({
         config,
         http,
         logger,
+        logEvent,
         diffOn: internalDiffOn,
         setDiffOn,
       }}

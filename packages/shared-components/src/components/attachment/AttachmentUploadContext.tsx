@@ -50,7 +50,7 @@ const AttachmentUploadContext = createContext<AttachmentUploadContextType>(initi
 
 const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boolean; children: React.ReactNode }) => {
   const config = useAppConfig();
-  const { submission, setSubmission } = useForm();
+  const { submission, setSubmission, form } = useForm();
   const { nologinToken, setNologinToken } = useSendInn();
   const { deleteAllFiles, deleteAttachment, deleteFile, uploadFile } = useNologinFileUpload();
   const { translate } = useLanguages();
@@ -220,6 +220,17 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
         removeAllFilesInProgress(attachmentId, (inProgress) => inProgress.error);
         removeFileInProgress(attachmentId, fileIdentifier(file));
         addFileToSubmission(result);
+        config.logEvent?.({
+          name: 'last opp',
+          data: {
+            type: 'vedlegg',
+            skjemaId: form.properties.skjemanummer,
+            tema: form.properties.tema,
+            tittel: '',
+            attachmentId,
+            submissionMethod: config.submissionMethod,
+          },
+        });
       }
     } catch (error: any) {
       setNologinToken(undefined);
