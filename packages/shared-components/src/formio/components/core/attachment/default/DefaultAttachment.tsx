@@ -65,6 +65,34 @@ class DefaultAttachment extends BaseComponent {
     }
   }
 
+  checkComponentValidity(data, dirty, row, _options = {}) {
+    this.removeAllErrors();
+
+    if (this.shouldSkipValidation(data, dirty, row) || this.getReadOnly()) {
+      return true;
+    }
+
+    const value = this.getValue();
+
+    if (this.isRequired() && !value?.key) {
+      super.addError(this.translateWithLabel('required'), 'attachment:value');
+    }
+
+    const attachmentValues = this.getAttachmentValues();
+    if (!!value?.key && attachmentValues?.[value.key]?.additionalDocumentation?.enabled) {
+      super.addError(
+        this.translate('required', {
+          field: this.translate(attachmentValues[value.key].additionalDocumentation.label),
+        }),
+        'attachment:additionalDocumentation',
+      );
+    }
+
+    this.rerender();
+
+    return this.componentErrors.length === 0;
+  }
+
   getAttachmentValues() {
     return this.component?.attachmentValues ? this.component?.attachmentValues : this.component?.values;
   }
@@ -83,10 +111,7 @@ class DefaultAttachment extends BaseComponent {
           title={<Label component={this.component} editFields={this.getEditFields()} />}
           description={<Description component={this.component} />}
           deadline={this.options.properties?.ettersendelsesfrist}
-          error={this.getError()}
           onChange={(value) => this.handleChange(value)}
-          translate={this.translate.bind(this)}
-          ref={(ref) => this.setReactInstance(ref)}
         />
         <AdditionalDescription component={this.component} />
       </ComponentUtilsProvider>,
