@@ -3,6 +3,8 @@ import { generateId, sanitizeAndLowerCase } from './utils';
 import validateComponent, { ValidateComponentType } from './validateComponent';
 
 export interface BaseComponentType {
+  id?: string;
+  navId?: string;
   label?: string;
   key?: string;
   description?: string;
@@ -15,6 +17,8 @@ export interface BaseComponentType {
 
 const baseComponent = (props?: BaseComponentType) => {
   const {
+    id,
+    navId,
     label,
     key,
     description,
@@ -28,8 +32,8 @@ const baseComponent = (props?: BaseComponentType) => {
   const createdKey = key ?? (label ? sanitizeAndLowerCase(label) : generateId());
 
   return {
-    id: generateId(),
-    navId: createdKey,
+    id: id ?? generateId(),
+    navId: navId ?? createdKey,
     key: createdKey,
     label,
     description: description ?? '',
