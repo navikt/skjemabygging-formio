@@ -43,6 +43,8 @@ export default class PhoneNumber extends BaseComponent {
   }
 
   checkComponentValidity(data, dirty, row) {
+    this.removeAllErrors();
+
     const errors: any = [];
     if (this.shouldSkipValidation(data, dirty, row) || this.getReadOnly()) {
       return true;
