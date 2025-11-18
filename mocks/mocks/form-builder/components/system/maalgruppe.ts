@@ -5,8 +5,10 @@ const maalgruppe = (props?: BaseComponentType) => {
 
   return {
     ...staticDefaultValues,
-    ...baseComponent(props),
-    key: key ?? 'maalgruppe',
+    ...baseComponent({
+      ...props,
+      key: key ?? 'maalgruppe',
+    }),
   };
 };
 

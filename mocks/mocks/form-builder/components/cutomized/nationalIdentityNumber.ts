@@ -5,8 +5,11 @@ const nationalIdentityNumber = (props?: BaseComponentType) => {
 
   return {
     ...staticDefaultValues,
-    ...baseComponent({ ...props, label: label ?? 'Fødselsnummer eller d-nummer' }),
-    key: key ?? 'fodselsnummerDNummer',
+    ...baseComponent({
+      ...props,
+      label: label ?? 'Fødselsnummer eller d-nummer',
+      key: key ?? 'fodselsnummerDNummer',
+    }),
   };
 };
 

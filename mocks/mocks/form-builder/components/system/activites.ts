@@ -5,8 +5,11 @@ const activities = (props?: BaseComponentType) => {
 
   return {
     ...staticDefaultValues,
-    ...baseComponent({ ...props, label: label ?? 'Hvilken aktivitet søker du om støtte i forbindelse med?' }),
-    key: key ?? 'activities',
+    ...baseComponent({
+      ...props,
+      label: label ?? 'Hvilken aktivitet søker du om støtte i forbindelse med?',
+      key: key ?? 'activities',
+    }),
   };
 };
 

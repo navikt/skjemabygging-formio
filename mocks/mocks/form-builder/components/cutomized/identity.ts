@@ -9,8 +9,11 @@ const identity = (props?: IdentityType) => {
 
   return {
     ...staticDefaultValues,
-    ...baseComponent({ ...props, label: label ?? 'Identitet' }),
-    key: 'identitet',
+    ...baseComponent({
+      ...props,
+      label: label ?? 'Identitet',
+      key: 'identitet',
+    }),
     prefill: prefill ?? false,
   };
 };
