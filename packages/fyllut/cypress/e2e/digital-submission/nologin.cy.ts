@@ -28,7 +28,8 @@ describe('Digital submission without user login', () => {
       cy.get('input[type=file]').selectFile('cypress/fixtures/files/id-billy-bruker.jpg', { force: true });
       cy.clickNextStep();
 
-      cy.clickStart();
+      cy.clickIntroPageConfirmation();
+      cy.clickNextStep();
       cy.findByRole('heading', { name: 'Veiledning' }).should('exist');
 
       cy.clickNextStep();
@@ -171,6 +172,8 @@ describe('Digital submission without user login', () => {
       );
       cy.get('input[type=file]').selectFile('cypress/fixtures/files/id-billy-bruker.jpg', { force: true });
       cy.clickNextStep();
+      cy.clickIntroPageConfirmation();
+      cy.clickNextStep();
       cy.clickShowAllSteps();
       cy.findByRole('link', { name: 'Vedlegg' }).click();
     });
@@ -187,7 +190,7 @@ describe('Digital submission without user login', () => {
         });
         cy.clickNextStep();
         cy.get('.navds-form-summary')
-          .eq(3)
+          .eq(4)
           .within(() => {
             cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
             cy.findByText('Vedlegg med masse greier').should('exist');
@@ -231,7 +234,7 @@ describe('Digital submission without user login', () => {
         cy.clickNextStep();
 
         cy.get('.navds-form-summary')
-          .eq(3)
+          .eq(4)
           .within(() => {
             cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
             cy.findByText('Vedlegg med masse greier').should('exist');
@@ -371,8 +374,8 @@ describe('Digital submission without user login', () => {
       cy.clickNextStep();
 
       // standard fill start
-      cy.findByRole('heading', { name: TEXTS.statiske.introPage.title }).should('exist');
-      cy.clickStart();
+      cy.clickIntroPageConfirmation();
+      cy.clickNextStep();
       cy.findByRole('heading', { name: 'Veiledning' }).should('exist');
 
       cy.clickNextStep();

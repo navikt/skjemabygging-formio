@@ -1,9 +1,9 @@
-describe('Submission Type', () => {
+describe('Intro page', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
   });
 
-  describe('Intro page', () => {
+  describe('Submission type "paper"', () => {
     beforeEach(() => {
       cy.visit('/fyllut/intropage?sub=paper');
       cy.defaultWaits();

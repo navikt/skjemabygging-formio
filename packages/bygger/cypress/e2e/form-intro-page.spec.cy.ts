@@ -7,7 +7,6 @@ function checkAllOptionalFields() {
     'Beskrivelse av hva skjemaet kan brukes til',
     'Avklar hva skjemaet IKKE skal brukes til',
     'Før du søker / sender / fyller ut',
-    'Informasjon vi henter (om deg)',
     'Automatisk saksbehandling',
     'Valgfri seksjon',
   ];
@@ -78,9 +77,11 @@ describe('FormSettingsPage', () => {
       cy.findByRole('checkbox', { name: 'Bruk standard introside' }).should('exist');
       cy.findByRole('checkbox', { name: 'Bruk standard introside' }).click();
 
-      ['introduction', 'beAwareOf', 'dataTreatment', 'dataStorage', 'selfDeclaration'].forEach((value) => {
-        cy.get(`input[type="checkbox"][value="${value}"]`).should('be.checked');
-      });
+      ['introduction', 'beAwareOf', 'dataDisclosure', 'dataTreatment', 'dataStorage', 'selfDeclaration'].forEach(
+        (value) => {
+          cy.get(`input[type="checkbox"][value="${value}"]`).should('be.checked');
+        },
+      );
 
       checkAllOptionalFields();
 

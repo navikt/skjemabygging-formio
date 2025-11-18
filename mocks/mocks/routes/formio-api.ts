@@ -40,6 +40,7 @@ import nav083501 from '../data/formio-api/nav083501.json';
 import nav111221bTranslations from '../data/formio-api/nav111221b-translations.json';
 import nav111221b from '../data/formio-api/nav111221b.json';
 import formNavdatepicker from '../data/formio-api/navdatepicker.json';
+import nologinTranslationsNb from '../data/formio-api/nologin-translations-nb.json';
 import nologinForm from '../data/formio-api/nologin.json';
 import numberForm from '../data/formio-api/number.json';
 import formPengerOgKonto from '../data/formio-api/pengerOgKonto.json';
@@ -124,7 +125,7 @@ const allForms = [
   { form: submissionTypeDigitalNoLogin, translations: undefined },
   { form: submissionTypePaperDigitalNoLogin, translations: undefined },
   { form: submissionTypePaperNoLogin, translations: undefined },
-  { form: nologinForm, translations: undefined },
+  { form: nologinForm, translations: nologinTranslationsNb },
   { form: digitalNoLoginWithAttachmentPanel, translations: undefined },
   { form: dataGridLogicBug, translations: undefined },
   { form: dataGridSkjemagruppeBug, translations: undefined },

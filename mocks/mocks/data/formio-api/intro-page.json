@@ -339,11 +339,7 @@
     "skjemanummer": "intropage",
     "declarationText": "",
     "declarationType": "none",
-    "submissionTypes": [
-      "PAPER",
-      "DIGITAL",
-      "UADIGITAL"
-    ],
+    "submissionTypes": ["PAPER", "DIGITAL", "UADIGITAL"],
     "lockedFormReason": "test",
     "ettersendelsesfrist": "10",
     "uxSignalsInnsending": "PAPIR_OG_DIGITAL",
@@ -351,14 +347,9 @@
     "innsendingForklaring": "sadfasdfasdsadf dsafsd ad",
     "innsendingOverskrift": "innsendingOverskrift",
     "descriptionOfSignatures": "sdfghjklkjhgfd",
-    "uxSignalsSubmissionTypes": [
-      "PAPER"
-    ],
+    "uxSignalsSubmissionTypes": ["PAPER"],
     "mellomlagringDurationDays": "28",
-    "subsequentSubmissionTypes": [
-      "PAPER",
-      "DIGITAL"
-    ],
+    "subsequentSubmissionTypes": ["PAPER", "DIGITAL"],
     "enhetMaVelgesVedPapirInnsending": true,
     "descriptionOfSignaturesPositionUnder": true
   },
@@ -372,6 +363,9 @@
       "outOfScope": {
         "title": "introPage.outOfScope.title.alt1",
         "description": "test"
+      },
+      "dataDisclosure": {
+        "title": "introPage.dataDisclosure.title.alt1"
       },
       "dataTreatment": {
         "description": "test"
