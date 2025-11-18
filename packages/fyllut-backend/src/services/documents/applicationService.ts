@@ -2,6 +2,7 @@ import correlator from 'express-correlation-id';
 import { Response } from 'node-fetch';
 import { config } from '../../config/config';
 import { logger } from '../../logger';
+import teamLogger from '../../logging/TeamLogger';
 import { LogMetadata } from '../../types/log';
 import { responseToError } from '../../utils/errorHandling';
 import fetchWithRetry, { HeadersInit } from '../../utils/fetchWithRetry';
@@ -9,7 +10,7 @@ import { appMetrics } from '../index';
 
 const { familiePdfGeneratorUrl } = config;
 
-const createFormPdf = async (accessToken: string, pdfFormData: any, logMeta: LogMetadata = {}) => {
+const createFormPdf = async (accessToken: string, pdfFormData: string, logMeta: LogMetadata = {}) => {
   const familiePdfUrl = `${familiePdfGeneratorUrl}/api/pdf/v3/opprett-pdf`;
   logger.info(`Creating PDF, calling ${familiePdfUrl}`, logMeta);
 
@@ -51,11 +52,16 @@ const createFormPdf = async (accessToken: string, pdfFormData: any, logMeta: Log
 
   appMetrics.familiePdfFailuresCounter.inc();
 
-  throw await responseToError(
-    response,
-    `Could not create pdf${response?.status === 401 ? ', not authorized (401)' : ''}`,
-    false,
-  );
+  const errorMessage = 'Could not create pdf';
+  const isAuthError = response?.status === 401;
+  if (!isAuthError) {
+    await teamLogger.error(errorMessage, {
+      ...logMeta,
+      httpResponseStatus: response?.status,
+      pdfRequestBody: pdfFormData,
+    });
+  }
+  throw await responseToError(response, `${errorMessage}${isAuthError ? ', not authorized (401)' : ''}`, false);
 };
 
 const applicationService = {
