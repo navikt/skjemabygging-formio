@@ -4976,11 +4976,12 @@
     "id": 436,
     "key": "For å sende skjemaet digitalt uten å logge inn må du legitimere deg.",
     "tag": "statiske-tekster",
-    "changedAt": "2025-10-31T08:47:24.682+01",
+    "changedAt": "2025-10-31T15:44:47.465+01",
     "changedBy": "Rosseland, Rune",
-    "revision": 1,
+    "revision": 2,
     "nb": "For å sende skjemaet digitalt uten å logge inn må du legitimere deg.",
-    "en": "To submit the form digitally without logging in, you must authenticate yourself."
+    "nn": "For å sende skjemaet digitalt utan å logge inn må du legitimere deg.",
+    "en": "To submit the form digitally without logging in, you must upload a valid ID.."
   },
   {
     "id": 405,
@@ -5020,6 +5021,28 @@
     "en": "An error occurred while retrieving area codes. Please try again later."
   },
   {
+    "id": 437,
+    "key": "Laster opp fil...",
+    "tag": "statiske-tekster",
+    "changedAt": "2025-10-31T15:48:38.981+01",
+    "changedBy": "Rosseland, Rune",
+    "revision": 1,
+    "nb": "Laster opp fil...",
+    "nn": "Lastar opp fil...",
+    "en": "Uploading file..."
+  },
+  {
+    "id": 439,
+    "key": "Filen er for stor. Maks filstørrelse er {{maxFileSize}}.",
+    "tag": "statiske-tekster",
+    "changedAt": "2025-10-31T15:48:39.199+01",
+    "changedBy": "Rosseland, Rune",
+    "revision": 1,
+    "nb": "Filen er for stor. Maks filstørrelse er {{maxFileSize}}.",
+    "nn": "Fila er for stor. Maks filstørrelse er {{maxFileSize}}.",
+    "en": "The file is too large. Max file size is {{maxFileSize}}."
+  },
+  {
     "id": 408,
     "key": "Skjul alle steg",
     "tag": "grensesnitt",
@@ -5055,6 +5078,17 @@
     "nb": "Landskode",
     "nn": "Landskode",
     "en": "Area code"
+  },
+  {
+    "id": 438,
+    "key": "Det oppstod en feil. Prøv igjen senere.",
+    "tag": "statiske-tekster",
+    "changedAt": "2025-10-31T15:48:38.987+01",
+    "changedBy": "Rosseland, Rune",
+    "revision": 1,
+    "nb": "Det oppstod en feil. Prøv igjen senere.",
+    "nn": "Det oppstod ein feil. Prøv igjen seinare.",
+    "en": "An error occurred. Please try again later."
   },
   {
     "id": 409,
@@ -5103,6 +5137,28 @@
     "en": "Most fields in the form are mandatory to fill out. Fields that are not mandatory are marked with: (optional)."
   },
   {
+    "id": 441,
+    "key": "Opplastet fil",
+    "tag": "statiske-tekster",
+    "changedAt": "2025-10-31T15:48:39.396+01",
+    "changedBy": "Rosseland, Rune",
+    "revision": 1,
+    "nb": "Opplastet fil",
+    "nn": "Opplasta fil",
+    "en": "Uploaded file"
+  },
+  {
+    "id": 440,
+    "key": "Last opp flere filer",
+    "tag": "statiske-tekster",
+    "changedAt": "2025-10-31T15:48:39.397+01",
+    "changedBy": "Rosseland, Rune",
+    "revision": 1,
+    "nb": "Last opp flere filer",
+    "nn": "Last opp fleire filer",
+    "en": "Upload more files"
+  },
+  {
     "id": 410,
     "key": "Steg {activeStep} av {totalSteps}",
     "tag": "grensesnitt",
@@ -5138,6 +5194,28 @@
     "en": "Submit digitally"
   },
   {
+    "id": 442,
+    "key": "Filen kan ikke lastes opp. Prøv igjen med en annen fil i et gyldig format.",
+    "tag": "statiske-tekster",
+    "changedAt": "2025-10-31T15:52:53.706+01",
+    "changedBy": "Rosseland, Rune",
+    "revision": 1,
+    "nb": "Filen kan ikke lastes opp. Prøv igjen med en annen fil i et gyldig format.",
+    "nn": "Fila kan ikkje lastast opp. Prøv igjen med ei anna fil i eit gyldig format.",
+    "en": "The file cannot be uploaded. Please try again with a different file in a valid format."
+  },
+  {
+    "id": 443,
+    "key": "Summen av alle filene kan ikke være mer enn {{maxAttachmentSize}}.",
+    "tag": "statiske-tekster",
+    "changedAt": "2025-10-31T15:52:53.821+01",
+    "changedBy": "Rosseland, Rune",
+    "revision": 1,
+    "nb": "Summen av alle filene kan ikke være mer enn {{maxAttachmentSize}}.",
+    "nn": "Summen av alle filene kan ikkje vere meir enn {{maxAttachmentSize}}.",
+    "en": "The sum of all files cannot be more than {{maxAttachmentSize}}."
+  },
+  {
     "id": 411,
     "key": "Vis alle steg",
     "tag": "grensesnitt",
@@ -5162,6 +5240,50 @@
     "en": "Use of public computers: If you fill out the form on a public computer, for example at a library, it is important that you close the browser when you are finished. This will prevent unauthorized persons from accessing the information you have entered in the form."
   },
   {
+    "id": 444,
+    "key": "Du har ikke fylt ut all nødvendig informasjon",
+    "tag": "statiske-tekster",
+    "changedAt": "2025-10-31T15:59:59.889+01",
+    "changedBy": "Rosseland, Rune",
+    "revision": 1,
+    "nb": "Du har ikke fylt ut all nødvendig informasjon",
+    "nn": "Du har ikkje fylt ut all nødvendig informasjon",
+    "en": "You have not filled in all the required information"
+  },
+  {
+    "id": 445,
+    "key": "Gyldige filformater:",
+    "tag": "statiske-tekster",
+    "changedAt": "2025-10-31T15:59:59.993+01",
+    "changedBy": "Rosseland, Rune",
+    "revision": 1,
+    "nb": "Gyldige filformater:",
+    "nn": "Gyldige filformat:",
+    "en": "Valid file formats:"
+  },
+  {
+    "id": 449,
+    "key": "pdf, jpeg/jpg, docx, doc, odt, rtf, txt, png, tiff/tif, bmp og gif.",
+    "tag": "statiske-tekster",
+    "changedAt": "2025-10-31T16:00:00.201+01",
+    "changedBy": "Rosseland, Rune",
+    "revision": 1,
+    "nb": "pdf, jpeg/jpg, docx, doc, odt, rtf, txt, png, tiff/tif, bmp og gif.",
+    "nn": "pdf, jpeg/jpg, docx, doc, odt, rtf, txt, png, tiff/tif, bmp og gif.",
+    "en": "pdf, jpeg/jpg, docx, doc, odt, rtf, txt, png, tiff/tif, bmp og gif."
+  },
+  {
+    "id": 450,
+    "key": "Nedenfor ser du all informasjon du allerede har fylt inn i skjemaet. Steg som mangler informasjon er markert med",
+    "tag": "statiske-tekster",
+    "changedAt": "2025-10-31T16:00:00.272+01",
+    "changedBy": "Rosseland, Rune",
+    "revision": 1,
+    "nb": "Nedenfor ser du all informasjon du allerede har fylt inn i skjemaet. Steg som mangler informasjon er markert med",
+    "nn": "Nedanfor ser du all informasjon du allereie har fylt inn i skjemaet. Steg som manglar informasjon er markert med",
+    "en": "Below you will see all the information you have already filled in the form. Steps that are missing information are marked with"
+  },
+  {
     "id": 412,
     "key": "Førerkort utstedt i EU/EØS og som følger EU/EØS reglene",
     "tag": "statiske-tekster",
@@ -5173,6 +5295,28 @@
     "en": "Driving license issued in the EU/EEA and that complies with EU/EEA regulations",
     "publishedAt": "2025-08-19T12:51:40.639+02",
     "publishedBy": "Rosseland, Rune"
+  },
+  {
+    "id": 446,
+    "key": "Maks filstørrelse:",
+    "tag": "statiske-tekster",
+    "changedAt": "2025-10-31T16:00:00.026+01",
+    "changedBy": "Rosseland, Rune",
+    "revision": 1,
+    "nb": "Maks filstørrelse:",
+    "nn": "Maks filstørrelse:",
+    "en": "Max file size:"
+  },
+  {
+    "id": 448,
+    "key": "Jeg laster opp dette nå",
+    "tag": "statiske-tekster",
+    "changedAt": "2025-10-31T16:00:00.176+01",
+    "changedBy": "Rosseland, Rune",
+    "revision": 1,
+    "nb": "Jeg laster opp dette nå",
+    "nn": "Eg lastar opp dette nå",
+    "en": "I will upload this now"
   },
   {
     "id": 413,
@@ -5188,6 +5332,17 @@
     "publishedBy": "Rosseland, Rune"
   },
   {
+    "id": 447,
+    "key": "Jeg ettersender dette senere",
+    "tag": "statiske-tekster",
+    "changedAt": "2025-10-31T16:00:00.029+01",
+    "changedBy": "Rosseland, Rune",
+    "revision": 1,
+    "nb": "Jeg ettersender dette senere",
+    "nn": "Eg ettersender dette seinare",
+    "en": "I will submit this later"
+  },
+  {
     "id": 414,
     "key": "Norsk pass",
     "tag": "statiske-tekster",
@@ -5199,6 +5354,39 @@
     "en": "Norwegian passport",
     "publishedAt": "2025-08-19T12:51:40.639+02",
     "publishedBy": "Rosseland, Rune"
+  },
+  {
+    "id": 451,
+    "key": "Legg til nytt vedlegg",
+    "tag": "statiske-tekster",
+    "changedAt": "2025-10-31T16:08:40.486+01",
+    "changedBy": "Rosseland, Rune",
+    "revision": 1,
+    "nb": "Legg til nytt vedlegg",
+    "nn": "Legg ved nytt vedlegg",
+    "en": "Add another attachment"
+  },
+  {
+    "id": 453,
+    "key": "Du kan laste opp flere filer, men totalt kan ikke opplastingen være mer enn 50 MB.",
+    "tag": "statiske-tekster",
+    "changedAt": "2025-10-31T16:08:40.512+01",
+    "changedBy": "Rosseland, Rune",
+    "revision": 1,
+    "nb": "Du kan laste opp flere filer, men totalt kan ikke opplastingen være mer enn 50 MB.",
+    "nn": "",
+    "en": ""
+  },
+  {
+    "id": 454,
+    "key": "Slett alle",
+    "tag": "statiske-tekster",
+    "changedAt": "2025-10-31T16:08:40.625+01",
+    "changedBy": "Rosseland, Rune",
+    "revision": 1,
+    "nb": "Slett alle",
+    "nn": "Slett alle",
+    "en": "Delete all"
   },
   {
     "id": 415,
@@ -5240,6 +5428,60 @@
     "publishedBy": "Rosseland, Rune"
   },
   {
+    "id": 452,
+    "key": "Gyldige filformater og størrelser",
+    "tag": "statiske-tekster",
+    "changedAt": "2025-10-31T16:08:40.492+01",
+    "changedBy": "Rosseland, Rune",
+    "revision": 1,
+    "nb": "Gyldige filformater og størrelser",
+    "nn": "Gyldige filformat og størrelsar",
+    "en": "Valid file formats and sizes"
+  },
+  {
+    "id": 455,
+    "key": "Gi vedlegget et beskrivende navn",
+    "tag": "statiske-tekster",
+    "changedAt": "2025-10-31T16:08:40.643+01",
+    "changedBy": "Rosseland, Rune",
+    "revision": 1,
+    "nb": "Gi vedlegget et beskrivende navn",
+    "nn": "Gje vedlegget eit beskrivande namn",
+    "en": "Give the attachment a descriptive name"
+  },
+  {
+    "id": 456,
+    "key": "Du må svare på {{label}} før du kan fortsette",
+    "tag": "statiske-tekster",
+    "changedAt": "2025-10-31T16:08:40.750+01",
+    "changedBy": "Rosseland, Rune",
+    "revision": 1,
+    "nb": "Du må svare på {{label}} før du kan fortsette",
+    "nn": "Du må svare på {{label}} før du kan fortsette",
+    "en": "You must respond to {{label}} before you can continue"
+  },
+  {
+    "id": 458,
+    "key": "Søknaden er allerede sendt inn",
+    "tag": "statiske-tekster",
+    "changedAt": "2025-10-31T16:08:40.843+01",
+    "changedBy": "Rosseland, Rune",
+    "revision": 1,
+    "nb": "Søknaden er allerede sendt inn",
+    "nn": "Søknaden er allereie sendt inn",
+    "en": "The application has already been submitted"
+  },
+  {
+    "id": 459,
+    "key": "Du må fylle ut vedlegg",
+    "tag": "statiske-tekster",
+    "changedAt": "2025-10-31T16:14:08.856+01",
+    "changedBy": "Rosseland, Rune",
+    "revision": 2,
+    "nb": "Du må fylle ut vedlegg",
+    "nn": ""
+  },
+  {
     "id": 416,
     "key": "Velg fil",
     "tag": "statiske-tekster",
@@ -5251,6 +5493,17 @@
     "en": "Select file",
     "publishedAt": "2025-08-19T12:51:40.639+02",
     "publishedBy": "Rosseland, Rune"
+  },
+  {
+    "id": 457,
+    "key": "Fil(er) du har lastet opp, men ikke sendt inn:",
+    "tag": "statiske-tekster",
+    "changedAt": "2025-10-31T16:08:40.764+01",
+    "changedBy": "Rosseland, Rune",
+    "revision": 1,
+    "nb": "Fil(er) du har lastet opp, men ikke sendt inn:",
+    "nn": "Fil(er) du har lasta opp, men ikkje sendt inn:",
+    "en": "File(s) you have uploadet, but not sent in:"
   },
   {
     "id": 417,
@@ -5266,6 +5519,28 @@
     "publishedBy": "Rosseland, Rune"
   },
   {
+    "id": 460,
+    "key": "Introduksjon",
+    "tag": "grensesnitt",
+    "changedAt": "2025-10-31T16:14:09.004+01",
+    "changedBy": "Rosseland, Rune",
+    "revision": 1,
+    "nb": "Introduksjon",
+    "nn": "Introduksjon",
+    "en": "Introduction"
+  },
+  {
+    "id": 461,
+    "key": "Endre svar",
+    "tag": "grensesnitt",
+    "changedAt": "2025-10-31T16:14:09.046+01",
+    "changedBy": "Rosseland, Rune",
+    "revision": 1,
+    "nb": "Endre svar",
+    "nn": "Endre svar",
+    "en": "Edit answer"
+  },
+  {
     "id": 419,
     "key": "Utenlandsk pass (ikke nødpass)",
     "tag": "statiske-tekster",
@@ -5277,6 +5552,17 @@
     "en": "Foreign passport (not emergency passport)",
     "publishedAt": "2025-08-19T12:51:40.639+02",
     "publishedBy": "Rosseland, Rune"
+  },
+  {
+    "id": 462,
+    "key": "fileMissing",
+    "tag": "validering",
+    "changedAt": "2025-10-31T16:15:29.381+01",
+    "changedBy": "Rosseland, Rune",
+    "revision": 1,
+    "nb": "Du må laste opp fil: {{field}}",
+    "nn": "Du må laste opp fil: {{field}}",
+    "en": "You must upload file: {{field}}"
   },
   {
     "id": 420,
@@ -5292,6 +5578,17 @@
     "publishedBy": "Rosseland, Rune"
   },
   {
+    "id": 463,
+    "key": "Vi har mottatt følgende dokumenter {{date}}:",
+    "tag": "statiske-tekster",
+    "changedAt": "2025-11-12T10:23:30.342+01",
+    "changedBy": "Nafstad, Sony",
+    "revision": 1,
+    "nb": "Vi har mottatt følgende dokumenter {{date}}:",
+    "nn": "Me har fått følgjande dokument {{date}}:",
+    "en": "We have received the following documents {{date}}:"
+  },
+  {
     "id": 421,
     "key": "Det oppstod en feil under sletting av filene. Prøv igjen senere.",
     "tag": "statiske-tekster",
@@ -5303,6 +5600,17 @@
     "en": "An error occurred while deleting the files. Please try again later.",
     "publishedAt": "2025-08-19T12:51:40.639+02",
     "publishedBy": "Rosseland, Rune"
+  },
+  {
+    "id": 464,
+    "key": "Last ned kopi",
+    "tag": "statiske-tekster",
+    "changedAt": "2025-11-12T10:23:30.342+01",
+    "changedBy": "Nafstad, Sony",
+    "revision": 1,
+    "nb": "Last ned kopi",
+    "nn": "Last ned kopi",
+    "en": "Download copy"
   },
   {
     "id": 422,
@@ -5318,6 +5626,17 @@
     "publishedBy": "Rosseland, Rune"
   },
   {
+    "id": 465,
+    "key": "Dette har du svart at noen andre skal sende inn:",
+    "tag": "statiske-tekster",
+    "changedAt": "2025-11-12T10:23:30.342+01",
+    "changedBy": "Nafstad, Sony",
+    "revision": 1,
+    "nb": "Dette har du svart at noen andre skal sende inn:",
+    "nn": "Dette har du svart at nokre andre skal senda inn:",
+    "en": "You have stated that someone else will be submitting this:"
+  },
+  {
     "id": 423,
     "key": "Norsk førerkort utstedt fra og med 01.01.1998",
     "tag": "statiske-tekster",
@@ -5329,6 +5648,17 @@
     "en": "Norwegian driving license issued as of 01.01.1998",
     "publishedAt": "2025-08-19T12:51:40.639+02",
     "publishedBy": "Rosseland, Rune"
+  },
+  {
+    "id": 466,
+    "key": "Takk",
+    "tag": "statiske-tekster",
+    "changedAt": "2025-11-12T10:23:30.342+01",
+    "changedBy": "Nafstad, Sony",
+    "revision": 1,
+    "nb": "Takk",
+    "nn": "Takk",
+    "en": "Thank you"
   },
   {
     "id": 425,
@@ -5344,6 +5674,17 @@
     "publishedBy": "Rosseland, Rune"
   },
   {
+    "id": 467,
+    "key": "Kvittering",
+    "tag": "statiske-tekster",
+    "changedAt": "2025-11-12T10:23:30.356+01",
+    "changedBy": "Nafstad, Sony",
+    "revision": 1,
+    "nb": "Kvittering",
+    "nn": "Kvittering",
+    "en": "Receipt"
+  },
+  {
     "id": 426,
     "key": "Last opp gyldig legitimasjon",
     "tag": "statiske-tekster",
@@ -5355,6 +5696,50 @@
     "en": "Upload valid identification",
     "publishedAt": "2025-08-19T12:51:40.639+02",
     "publishedBy": "Rosseland, Rune"
+  },
+  {
+    "id": 468,
+    "key": "Dokumentene må ettersendes innen {{deadline}}",
+    "tag": "statiske-tekster",
+    "changedAt": "2025-11-12T10:23:30.412+01",
+    "changedBy": "Nafstad, Sony",
+    "revision": 1,
+    "nb": "Dokumentene må ettersendes innen {{deadline}}",
+    "nn": "Dokumenta må ettersendast innan {{deadline}}",
+    "en": "The documents must be submitted by {{deadline}}"
+  },
+  {
+    "id": 469,
+    "key": "Du kan ettersende dokumentene på <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.nav.no/ettersende\">https://www.nav.no/ettersende</a> (åpnes i ny fane)",
+    "tag": "statiske-tekster",
+    "changedAt": "2025-11-12T10:25:06.903+01",
+    "changedBy": "Nafstad, Sony",
+    "revision": 2,
+    "nb": "Du kan ettersende dokumentene på <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.nav.no/ettersende\">https://www.nav.no/ettersende</a> (åpnes i ny fane)",
+    "nn": "<p>Du kan ettersenda dokumenta på&nbsp;<a href=\"https://www.nav.no/ettersende\" target=\"_blank\" rel=\"noopener noreferrer\">https://www.nav.no/ettersende</a><span>&nbsp;(blir opna i ny fane)</span></p>",
+    "en": "<p>You can submit the missing documents at&nbsp;<a href=\"https://www.nav.no/ettersende\" target=\"_blank\" rel=\"noopener noreferrer\">https://www.nav.no/ettersende</a><span>&nbsp;(opens in a new tab)</span></p>"
+  },
+  {
+    "id": 470,
+    "key": "Vi har mottatt det vi trenger for å starte saksbehandlingen. Vi tar kontakt hvis vi trenger flere opplysninger.",
+    "tag": "statiske-tekster",
+    "changedAt": "2025-11-12T10:23:30.413+01",
+    "changedBy": "Nafstad, Sony",
+    "revision": 1,
+    "nb": "Vi har mottatt det vi trenger for å starte saksbehandlingen. Vi tar kontakt hvis vi trenger flere opplysninger.",
+    "nn": "Me har teke imot det me treng for å starta saksbehandlinga. Me tek kontakt om me treng fleire opplysningar.",
+    "en": "We have received what we need to start the proceedings. We will contact you if we need more information."
+  },
+  {
+    "id": 471,
+    "key": "Dette må du ettersende:",
+    "tag": "statiske-tekster",
+    "changedAt": "2025-11-12T10:23:30.414+01",
+    "changedBy": "Nafstad, Sony",
+    "revision": 1,
+    "nb": "Dette må du ettersende:",
+    "nn": "Dette må du ettersenda:",
+    "en": "You must forward this:"
   },
   {
     "id": 382,
@@ -5615,31 +6000,5 @@
     "en": "You may not",
     "publishedAt": "2025-08-19T12:51:40.639+02",
     "publishedBy": "Rosseland, Rune"
-  },
-  {
-    "id": 437,
-    "key": "introPage.beAwareOf.notSave",
-    "tag": "introPage",
-    "changedAt": "2025-10-01T12:33:13.707+02",
-    "changedBy": "Testesen, Test",
-    "revision": 1,
-    "nb": "Du kan ikke lagre skjemaet underveis. Informasjonen du fyller ut i skjemaet sendes ikke til Nav før du har fullført hele skjemaet og sendt det inn. Hvis du lukker vinduet eller nettleseren vil all informasjon du har fylt ut forsvinne.",
-    "nn": "Du kan ikkje lagra skjemaet undervegs. Informasjonen du fyller ut i skjemaet blir ikkje sendt til Nav før du har fullført heile skjemaet og sendt det inn. Om du lukkar vindauget eller nettlesaren vil all informasjon du har fylt ut forsvinna.",
-    "en": "You cannot save the form along the way. The information you fill out in the form is not sent to Nav until you have completed the entire form and submitted it. If you close the window or browser, all the information you have filled out will disappear.",
-    "publishedAt": "2025-08-19T12:51:40.639+02",
-    "publishedBy": "Testesen, Test"
-  },
-  {
-  "id": 10000000,
-  "key": "Neste steg",
-  "tag": "grensesnitt",
-  "changedAt": "2025-02-24T09:41:26.321+01",
-  "changedBy": "",
-  "revision": 1,
-  "nb": "Neste steg",
-  "nn": "Neste steg",
-  "en": "Next step",
-  "publishedAt": "",
-  "publishedBy": ""
-}
+  }
 ]

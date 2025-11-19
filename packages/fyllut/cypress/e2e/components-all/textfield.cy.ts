@@ -9,26 +9,26 @@ describe('TextField', () => {
       cy.defaultWaits();
     });
 
-    it('Textfield', () => {
+    it('should be visible and interactable', () => {
       const label = 'Tekstfelt';
       cy.findByRole('textbox', { name: label }).should('exist');
-      cy.findByLabelText(label).should('be.visible');
+      cy.findByLabelText(label).shouldBeVisible();
       cy.findByLabelText(label).should('be.enabled');
       cy.findByLabelText(label).should('not.have.attr', 'readonly');
     });
 
-    it('Textfield with description', () => {
+    it('should have description', () => {
       const label = 'Tekstfelt med beskrivelse';
       const additionalDescription = 'Dette er utvidet beskrivelse';
       cy.withinComponent(label, () => {
         cy.contains('Dette er en beskrivelse').should('exist');
         cy.contains(additionalDescription).should('not.be.visible');
         cy.findByRole('button', { name: 'mer' }).click();
-        cy.contains(additionalDescription).should('be.visible');
+        cy.contains(additionalDescription).shouldBeVisible();
       });
     });
 
-    it('Textfield with properties', () => {
+    it('should have properties', () => {
       const label = 'Tekstfelt med egenskaper';
       cy.findByLabelText(label).should('have.attr', 'autocomplete', 'name');
       cy.findByLabelText(label).should('have.attr', 'spellcheck', 'true');
@@ -41,7 +41,7 @@ describe('TextField', () => {
       cy.defaultWaits();
     });
 
-    it('Textfield with calculate value', () => {
+    it('should calculate value', () => {
       const label = 'Tekstfelt A+B';
       const a = 'a';
       const b = 'b';
@@ -60,64 +60,68 @@ describe('TextField', () => {
       cy.defaultWaits();
     });
 
-    it('Textfield with required', () => {
+    it('should validate with required', () => {
       const label = 'Tekstfelt påkrevd';
       cy.clickNextStep();
-      cy.findByErrorMessageRequired(label).should('have.length', 2);
+      cy.findAllByErrorMessageRequired(label).should('have.length', 2);
       cy.clickErrorMessageRequired(label);
       cy.findByLabelText(label).should('have.focus');
       cy.focused().type('asdf');
-      cy.findByErrorMessageRequired(label).should('have.length', 0);
+      cy.findAllByErrorMessageRequired(label).should('have.length', 0);
     });
 
-    it('Textfield without required', () => {
+    it('should not be required', () => {
       const label = 'Tekstfelt ikke påkrevd';
       cy.clickNextStep();
       cy.findByLabelOptional(label).should('exist');
-      cy.findByErrorMessageRequired(label).should('have.length', 0);
+      cy.findAllByErrorMessageRequired(label).should('have.length', 0);
     });
 
-    it('Textfield only numbers', () => {
+    it('should validate to make sure only numbers are allowed', () => {
       const label = 'Tekstfelt kun siffer';
       const errorMessage = `${label} kan bare inneholde tall`;
       cy.findByLabelText(label).type('abc');
       cy.clickNextStep();
       cy.findAllByText(errorMessage).should('have.length', 2);
       cy.findByRole('link', { name: errorMessage }).click();
+      cy.findByLabelText(label).should('have.focus');
       cy.focused().clear();
       cy.focused().type('123');
       cy.findAllByText(errorMessage).should('have.length', 0);
     });
 
-    it('Textfield min length', () => {
+    it('should validate the min length', () => {
       const label = 'Tekstfelt min og max lengde';
       cy.findByLabelText(label).type('a');
       cy.clickNextStep();
-      cy.findByErrorMessageMinLength(label).should('have.length', 2);
+      cy.findAllByErrorMessageMinLength(label).should('have.length', 2);
       cy.clickErrorMessageMinLength(label);
+      cy.findByLabelText(label).should('have.focus');
       cy.focused().clear();
       cy.focused().type('abcde');
       cy.clickErrorMessageMinLength(label).should('have.length', 0);
     });
 
-    it('Textfield max length', () => {
+    it('should validate the max length', () => {
       const label = 'Tekstfelt min og max lengde';
       cy.findByLabelText(label).type('abcdefghij');
       cy.clickNextStep();
-      cy.findByErrorMessageMaxLength(label).should('have.length', 2);
+      cy.findAllByErrorMessageMaxLength(label).should('have.length', 2);
       cy.clickErrorMessageMaxLength(label);
+      cy.findByLabelText(label).should('have.focus');
       cy.focused().clear();
       cy.focused().type('abcd');
       cy.clickErrorMessageMaxLength(label).should('have.length', 0);
     });
 
-    it('Textfield custom validation', () => {
+    it('should support custom validation', () => {
       const label = 'Tekstfelt må være abc';
       const errorMessage = 'abc er eneste lovlige verdien';
       cy.findByLabelText(label).type('ab');
       cy.clickNextStep();
       cy.findAllByText(errorMessage).should('have.length', 2);
       cy.findByRole('link', { name: errorMessage }).click();
+      cy.findByLabelText(label).should('have.focus');
       cy.focused().clear();
       cy.focused().type('abc');
       cy.findAllByText(errorMessage).should('have.length', 0);
@@ -130,7 +134,7 @@ describe('TextField', () => {
       cy.defaultWaits();
     });
 
-    it('Test full form', () => {
+    it('should test filling out a full form', () => {
       cy.clickIntroPageConfirmation();
       cy.clickNextStep();
 
@@ -195,14 +199,11 @@ describe('TextField', () => {
       cy.defaultWaits();
     });
 
-    it('Textfield with description, english', () => {
-      const label = 'Tekstfelt med beskrivelse (en)';
-      const additionalDescription = 'Dette er utvidet beskrivelse (en)';
-      cy.withinComponent(label, () => {
+    it('should make sure label and descriptions are translated to english', () => {
+      cy.withinComponent('Dette er utvidet beskrivelse (en)', () => {
         cy.contains('Dette er en beskrivelse (en)').should('exist');
-        cy.contains(additionalDescription).should('not.be.visible');
         cy.findByRole('button', { name: 'mer (en)' }).click();
-        cy.contains(additionalDescription).should('be.visible');
+        cy.contains('Dette er utvidet beskrivelse (en)').shouldBeVisible();
       });
     });
   });

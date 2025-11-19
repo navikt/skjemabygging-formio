@@ -10,10 +10,10 @@ Cypress.Commands.add('withinSummaryGroup', (heading, fn) => {
 });
 
 Cypress.Commands.add('findByLabelOptional', (label) => {
-  return cy.findAllByText(`${label} (valgfritt)`);
+  return cy.findByLabelText(`${label} (valgfritt)`);
 });
 
-Cypress.Commands.add('findByErrorMessageRequired', (label) => {
+Cypress.Commands.add('findAllByErrorMessageRequired', (label) => {
   return cy.findAllByText(`Du må fylle ut: ${label}`);
 });
 
@@ -21,7 +21,7 @@ Cypress.Commands.add('clickErrorMessageRequired', (label) => {
   return cy.findByRole('link', { name: `Du må fylle ut: ${label}` }).click();
 });
 
-Cypress.Commands.add('findByErrorMessageMinLength', (label) => {
+Cypress.Commands.add('findAllByErrorMessageMinLength', (label) => {
   return cy.findAllByText(new RegExp(`${label} må ha minst . tegn`));
 });
 
@@ -29,7 +29,7 @@ Cypress.Commands.add('clickErrorMessageMinLength', (label) => {
   return cy.findByRole('link', { name: new RegExp(`${label} må ha minst . tegn`) }).click();
 });
 
-Cypress.Commands.add('findByErrorMessageMaxLength', (label) => {
+Cypress.Commands.add('findAllByErrorMessageMaxLength', (label) => {
   return cy.findAllByText(new RegExp(`${label} kan ikke ha mer enn . tegn`));
 });
 

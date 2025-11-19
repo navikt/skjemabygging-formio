@@ -81,15 +81,15 @@ declare global {
 
       findByLabelOptional(label: string): Chainable<JQuery<HTMLElement>>;
 
-      findByErrorMessageRequired(label: string): Chainable<JQuery<HTMLElement>>;
+      findAllByErrorMessageRequired(label: string): Chainable<JQuery<HTMLElement>>;
 
       clickErrorMessageRequired(label: string): Chainable<JQuery<HTMLElement>>;
 
-      findByErrorMessageMinLength(label: string): Chainable<JQuery<HTMLElement>>;
+      findAllByErrorMessageMinLength(label: string): Chainable<JQuery<HTMLElement>>;
 
       clickErrorMessageMinLength(label: string): Chainable<JQuery<HTMLElement>>;
 
-      findByErrorMessageMaxLength(label: string): Chainable<JQuery<HTMLElement>>;
+      findAllByErrorMessageMaxLength(label: string): Chainable<JQuery<HTMLElement>>;
 
       clickErrorMessageMaxLength(label: string): Chainable<JQuery<HTMLElement>>;
 
