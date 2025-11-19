@@ -2,12 +2,12 @@ import { getAnalyticsInstance } from '@navikt/nav-dekoratoren-moduler';
 import FrontendLogger from '../../api/frontend-logger/FrontendLogger';
 import { FyllutUmamiEvent } from './types';
 
-export type LogEventFunction = (event: FyllutUmamiEvent) => void;
+export type LogEventFunction = (event: FyllutUmamiEvent) => Promise<void>;
 
 export const umamiEventHandler =
   (config: Record<string, string | boolean | object>, frontendLogger: FrontendLogger): LogEventFunction =>
   (event: FyllutUmamiEvent) => {
-    (async () => {
+    return (async () => {
       const isGcp = config?.NAIS_CLUSTER_NAME === 'prod-gcp' || config?.NAIS_CLUSTER_NAME === 'dev-gcp';
       const applicationName = config?.applicationName as string;
       try {

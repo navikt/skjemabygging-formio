@@ -1,9 +1,11 @@
 // See the analytics taxonomy for standardized event names: https://github.com/navikt/analytics-taxonomy
 export interface EventData {
+  language?: string;
+  submissionMethod?: string;
   [key: string]: string | number | boolean | undefined;
 }
 
-type EventName = 'skjema fullført' | 'skjemainnsending feilet' | 'last opp';
+type EventName = 'skjema fullført' | 'skjemainnsending feilet' | 'skjema slettet' | 'last opp' | 'last ned';
 
 type Event = {
   name: EventName;
@@ -28,6 +30,15 @@ type SkjemainnsendingFeiletEvent = Event & {
   };
 };
 
+type SkjemaSlettetEvent = Event & {
+  name: 'skjema slettet';
+  data: EventData & {
+    skjemaId: string;
+    skjemanavn: string;
+    tema: string;
+  };
+};
+
 type LastOppEvent = Event & {
   name: 'last opp';
   data: EventData & {
@@ -35,4 +46,19 @@ type LastOppEvent = Event & {
   };
 };
 
-export type FyllutUmamiEvent = SkjemaFullfortEvent | SkjemainnsendingFeiletEvent | LastOppEvent;
+type LastNedEvent = Event & {
+  name: 'last ned';
+  data: EventData & {
+    type: string;
+    tema: string;
+    tittel: string;
+    skjemaId: string;
+  };
+};
+
+export type FyllutUmamiEvent =
+  | SkjemaFullfortEvent
+  | SkjemainnsendingFeiletEvent
+  | SkjemaSlettetEvent
+  | LastOppEvent
+  | LastNedEvent;

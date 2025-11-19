@@ -71,7 +71,7 @@ export function SummaryPageNextButton({
         name: 'skjema fullført',
         data: {
           skjemaId: form.properties.skjemanummer,
-          skjemanavn: form.title,
+          skjemanavn: translate(form.title),
           tema: form.properties.tema,
           language: currentLanguage,
           submissionMethod,
@@ -82,7 +82,7 @@ export function SummaryPageNextButton({
         name: 'skjemainnsending feilet',
         data: {
           skjemaId: form.properties.skjemanummer,
-          skjemanavn: form.title,
+          skjemanavn: translate(form.title),
           tema: form.properties.tema,
           language: currentLanguage,
           submissionMethod,

@@ -48,8 +48,8 @@ function AppConfigProvider({
   );
 
   const logEvent = useMemo(() => {
-    return config ? umamiEventHandler(config, logger) : undefined;
-  }, [config, logger]);
+    return config && app === 'fyllut' ? umamiEventHandler(config, logger) : undefined;
+  }, [app, config, logger]);
 
   const [internalDiffOn, setDiffOn] = useState<boolean>(diffOn!);
   return (
