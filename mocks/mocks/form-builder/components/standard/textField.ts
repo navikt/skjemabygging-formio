@@ -2,18 +2,20 @@ import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
 interface TextFieldType extends BaseComponentType {
   autocomplete?: string;
-  spellcheck?: boolean;
+  spellCheck?: boolean;
   calculateValue?: string;
 }
 
 const textField = (props: TextFieldType) => {
-  const { spellcheck, calculateValue } = props ?? {};
+  const { spellCheck, calculateValue, autocomplete } = props ?? {};
 
   return {
     ...staticDefaultValues,
     ...baseComponent(props),
-    spellcheck: spellcheck ?? false,
+    spellCheck: spellCheck ?? false,
     calculateValue: calculateValue ?? '',
+    autocomplete: autocomplete ?? 'off',
+    readOnly: !!calculateValue,
   };
 };
 

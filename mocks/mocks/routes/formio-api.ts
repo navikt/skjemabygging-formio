@@ -68,7 +68,7 @@ import formYear from '../data/formio-api/year.json';
 import formYourInformationTranslations from '../data/formio-api/your-information-translations.json';
 import formYourInformation from '../data/formio-api/your-information.json';
 import componentsForm from '../data/forms-api/components/componentsForm';
-import textFieldForm from '../data/forms-api/components/textFieldForm';
+import { textFieldForm, textFieldTranslations } from '../data/forms-api/components/textFieldForm';
 import largeForm from '../data/forms-api/largeForm';
 
 const allForms = [
@@ -130,7 +130,7 @@ const allForms = [
   { form: dataGridLogicBug, translations: undefined },
   { form: dataGridSkjemagruppeBug, translations: undefined },
   { form: conditionalPage, translations: undefined },
-  { form: textFieldForm(), translations: undefined },
+  { form: textFieldForm(), translations: textFieldTranslations() },
   { form: componentsForm(), translations: formComponentsTranslations },
   { form: largeForm(), translations: undefined },
 ];
