@@ -51,8 +51,8 @@ describe('Phone number with area code', () => {
     it('should format phone number when area code is +47 and phone numer length is 8', () => {
       fillForm('12345678', '+47');
       fillForm('12345678');
-      cy.clickSaveAndContinue();
-      cy.clickSaveAndContinue();
+      cy.clickShowAllSteps();
+      cy.findByRole('link', { name: 'Oppsummering' }).click();
 
       cy.findByText('+47 12 34 56 78').should('exist');
       cy.findByText('12345678').should('exist');
@@ -61,8 +61,8 @@ describe('Phone number with area code', () => {
     it('should not format phone number when area code is +48 and phone number length is 8', () => {
       fillForm('12345678', '+48');
       fillForm('12345678');
-      cy.clickSaveAndContinue();
-      cy.clickSaveAndContinue();
+      cy.clickShowAllSteps();
+      cy.findByRole('link', { name: 'Oppsummering' }).click();
 
       cy.findByText('+48 12345678').should('exist');
       cy.findByText('12345678').should('exist');
@@ -74,6 +74,26 @@ describe('Phone number with area code', () => {
       cy.findByText('Telefonnummer utenfor datagrid (valgfritt)').should('exist');
       cy.findByRole('button', { name: 'Legg til' }).click();
       cy.findAllByText('Telefonnummer inni datagrid (valgfritt)').should('have.length', 2);
+    });
+  });
+
+  describe('Telefonnummer uten landskode', () => {
+    beforeEach(() => {
+      cy.defaultIntercepts();
+      cy.visit('/fyllut/phonenumberareacode/valideringAvSkjultTelefonnummer?sub=paper');
+      cy.defaultWaits();
+    });
+
+    it('removes error when input is hidden', () => {
+      cy.clickNextStep();
+
+      cy.get('[data-cy=error-summary]')
+        .should('exist')
+        .within(() => {
+          cy.findAllByRole('link', { name: /^Du må fylle ut: .*/ }).should('have.length', 1);
+        });
+      cy.findByRole('checkbox', { name: /Har ikke telefonnummer/ }).check();
+      cy.get('[data-cy=error-summary]').should('not.exist');
     });
   });
 });

@@ -1,21 +1,25 @@
-import { generateId, trimAndLowerCase } from './shared/utils';
+import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
+import { sanitizeAndLowerCase } from '../../shared/utils';
 
-export interface PanelType {
+interface PanelType
+  extends Omit<
+    BaseComponentType,
+    'description' | 'additionalDescriptionText' | 'additionalDescriptionLabel' | 'validate'
+  > {
   title: string;
   components: any[];
-  key?: string;
+  isAttachmentPanel?: boolean;
 }
 
-const panel = (params: PanelType) => {
-  const { title, components, key } = params ?? {};
+const panel = (props: PanelType) => {
+  const { title, components, isAttachmentPanel, key } = props ?? {};
 
   return {
     ...staticDefaultValues,
-    id: generateId(),
-    navId: generateId(),
-    key: key ?? trimAndLowerCase(title),
+    ...baseComponent({ ...props, key: key ?? sanitizeAndLowerCase(title) }),
     title,
     components,
+    isAttachmentPanel: isAttachmentPanel ?? false,
   };
 };
 
@@ -44,14 +48,6 @@ const staticDefaultValues = {
   multiple: false,
   redrawOn: '',
   tabindex: '',
-  validate: {
-    custom: '',
-    unique: false,
-    multiple: false,
-    required: false,
-    customPrivate: false,
-    strictDateValidation: false,
-  },
   autofocus: false,
   encrypted: false,
   hideLabel: false,
@@ -66,11 +62,7 @@ const staticDefaultValues = {
   properties: {},
   validateOn: 'change',
   clearOnHide: false,
-  conditional: {
-    eq: '',
-  },
   customClass: '',
-  description: '',
   placeholder: '',
   dataGridLabel: false,
   labelPosition: 'top',
