@@ -1,4 +1,5 @@
 import { getAnalyticsInstance } from '@navikt/nav-dekoratoren-moduler';
+import { localizationUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import FrontendLogger from '../../api/frontend-logger/FrontendLogger';
 import { FyllutUmamiEvent } from './types';
 
@@ -13,7 +14,10 @@ export const umamiEventHandler =
       try {
         if (isGcp) {
           const logEvent = getAnalyticsInstance('fyllut-sendinn');
-          await logEvent(event.name, { ...event.data, applicationName });
+          const sanitizedLanguage = event.data.language
+            ? { language: localizationUtils.getLanguageCodeAsIso639_1(event.data.language) }
+            : undefined;
+          await logEvent(event.name, { ...event.data, ...sanitizedLanguage, applicationName });
         } else {
           frontendLogger.debug(`Log umami event: '${event.name}'`, event.data);
         }
