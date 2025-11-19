@@ -129,6 +129,7 @@ describe('TextField', () => {
 
     /**
      * Skipped test case: We show both required and custom validation errors in the error summary.
+     * This should be changed in the future so that only the required error message is shown.
      */
     it.skip('should not show custom validation in error summary, if it has required error message', () => {
       const label = 'Tekstfelt må være abc';
@@ -210,7 +211,7 @@ describe('TextField', () => {
       cy.defaultWaits();
     });
 
-    it('should make sure label and descriptions are translated to english', () => {
+    it('should have english label and descriptions', () => {
       cy.withinComponent('Tekstfelt med beskrivelse (en)', () => {
         cy.contains('Dette er en beskrivelse (en)').should('exist');
         cy.findByRole('button', { name: 'mer (en)' }).click();
