@@ -39,9 +39,9 @@ const baseComponent = (props?: BaseComponentType) => {
     description: description ?? '',
     additionalDescriptionLabel: additionalDescriptionLabel ?? '',
     additionalDescriptionText: additionalDescriptionText ?? '',
-    validate: validate ?? validateComponent(),
+    validate: validateComponent(validate),
     customConditional: customConditional ?? '',
-    conditional: conditional ?? conditionalComponent(),
+    conditional: conditionalComponent(conditional),
   };
 };
 

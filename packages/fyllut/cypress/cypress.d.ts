@@ -42,6 +42,10 @@ declare global {
 
       clickSendNav(): Chainable<JQuery<HTMLElement>>;
 
+      clickDownloadInstructions(): Chainable<JQuery<HTMLElement>>;
+
+      clickDownloadApplication(): Chainable<JQuery<HTMLElement>>;
+
       verifySendInnRedirect(): Chainable<JQuery<HTMLElement>>;
 
       verifyNavRedirect(): Chainable<JQuery<HTMLElement>>;
@@ -67,6 +71,43 @@ declare global {
        * Run test only on build code. This is allways true on GitHub, but if you want to run locally you can chanage INCLUDE_DIST_TESTS to true.
        */
       skipIfNoIncludeDistTests(): Chainable<void>;
+
+      /**
+       * Form components
+       */
+      testActive(params: { label: string; role?: string }): void;
+
+      testDescription(params: {
+        label: string;
+        description?: string;
+        additionalDescriptionText?: string;
+        additionalDescriptionLabel?: string;
+      }): void;
+
+      testAutocomplete(params: { label: string; value: string }): void;
+
+      testSpellcheck(params: { label: string }): void;
+
+      testReadOnly(params: { label: string; value: boolean }): void;
+
+      testCalculateValue(params: { label: string; value: string }): void;
+
+      testValid(params: {
+        label: string;
+        invalidValue?: string;
+        validValue: string;
+        errorMessage: string | RegExp;
+      }): void;
+
+      testRequired(params: { label: string; value: boolean; validValue?: string }): void;
+
+      testMinLength(params: { label: string; invalidValue: string; validValue: string }): void;
+
+      testMaxLength(params: { label: string; invalidValue: string; validValue: string }): void;
+
+      testSummaryGroup(params: { name: string; items: Array<{ label: string; value: string }> }): void;
+
+      testDownloadPdf(): void;
     }
   }
 }

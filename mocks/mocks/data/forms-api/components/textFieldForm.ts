@@ -1,5 +1,6 @@
 import { panel, textField } from '../../../form-builder/components';
 import form from '../../../form-builder/form/form';
+import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
 
 const textFieldForm = () => {
   const formNumber = 'textfield';
@@ -24,7 +25,7 @@ const textFieldForm = () => {
           textField({
             label: 'Tekstfelt med egenskaper',
             autocomplete: 'name',
-            spellcheck: true,
+            spellCheck: true,
           }),
         ],
       }),
@@ -40,9 +41,9 @@ const textFieldForm = () => {
             key: 'textFieldb',
           }),
           textField({
-            label: 'Tekstfelt A-B',
-            key: 'textFielda',
-            calculateValue: "value = (data.tekstfelta ?? '') + (data.tekstfeltb ?? '')",
+            label: 'Tekstfelt A+B',
+            key: 'textFieldab',
+            calculateValue: "value = (row.textFielda ?? '') + (row.textFieldb ?? '')",
           }),
         ],
       }),
@@ -56,9 +57,22 @@ const textFieldForm = () => {
             },
           }),
           textField({
+            label: 'Tekstfelt ikke påkrevd',
+            validate: {
+              required: false,
+            },
+          }),
+          textField({
             label: 'Tekstfelt kun siffer',
             validate: {
               digitsOnly: true,
+            },
+          }),
+          textField({
+            label: 'Tekstfelt min og max lengde',
+            validate: {
+              minLength: 3,
+              maxLength: 6,
             },
           }),
         ],
@@ -67,4 +81,8 @@ const textFieldForm = () => {
   });
 };
 
-export default textFieldForm;
+const textFieldTranslations = () => {
+  return getMockTranslationsFromForm(textFieldForm());
+};
+
+export { textFieldForm, textFieldTranslations };
