@@ -1,9 +1,13 @@
-import { form, panel, textField } from '../../../form-builder';
+import { panel, textField } from '../../../form-builder/components';
+import form from '../../../form-builder/form/form';
 
 const textFieldForm = () => {
+  const formNumber = 'textfield';
+
   return form({
     title: 'TextField component test form',
-    formNumber: 'textfield',
+    formNumber: formNumber,
+    path: formNumber,
     components: [
       panel({
         title: 'Visning',

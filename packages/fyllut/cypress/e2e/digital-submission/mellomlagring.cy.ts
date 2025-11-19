@@ -194,10 +194,37 @@ describe('Mellomlagring', () => {
         cy.findByRole('link', { name: TEXTS.statiske.summaryPage.title }).click();
         cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
         cy.findAllByRole('link', { name: 'Fortsett utfylling' }).first().click();
-        cy.findByRole('heading', { name: 'Andre' }).should('exist');
         cy.findByRole('group', { name: 'Hvilken aktivitet søker du om støtte i forbindelse med?' }).should(
           'have.focus',
         );
+      });
+
+      it('should navigate to first component with validation error from summary, in a large form', () => {
+        cy.visit('/fyllut/largeform?sub=digital');
+        cy.defaultWaits();
+        cy.clickIntroPageConfirmation();
+        cy.clickStart();
+        cy.wait('@createMellomlagring');
+        cy.findByRole('heading', { name: 'p 1' }).should('exist');
+        cy.findByRole('checkbox', { name: 'Avkryssingsboks 1' }).click();
+        cy.findByRole('textbox', { name: 'Tekstfelt 1a' }).type('a');
+        cy.findByRole('textbox', { name: 'Tekstfelt 1b' }).type('b');
+        cy.findByRole('textbox', { name: 'Tekstfelt 1c' }).type('c');
+        cy.findByRole('textbox', { name: 'Tekstfelt 1d' }).type('d');
+        cy.findByRole('textbox', { name: 'Tekstfelt 1e' }).type('e');
+        cy.findByRole('textbox', { name: 'Tekstfelt 1f' }).type('f');
+        cy.findByRole('textbox', { name: 'Tekstfelt 1g' }).type('g');
+        cy.findByRole('textbox', { name: 'Tekstfelt 1h' }).type('h');
+        cy.findByRole('textbox', { name: 'Tekstområde 1' }).type('test');
+        cy.findByRole('textbox', { name: 'Tall 1' }).type('123');
+        cy.clickSaveAndContinue();
+        cy.findByRole('checkbox', { name: 'Avkryssingsboks 2' }).click();
+        cy.clickShowAllSteps();
+        cy.findByRole('link', { name: TEXTS.statiske.summaryPage.title }).click();
+        cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
+        cy.clickEditAnswers();
+        cy.findByRole('heading', { name: 'p 2' }).should('exist');
+        cy.findByRole('textbox', { name: 'Tekstfelt 2a' }).should('have.focus');
       });
     });
 

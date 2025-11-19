@@ -1,12 +1,13 @@
-export interface ValidateType {
+export interface ValidateComponentType {
   required?: boolean;
   maxLength?: string;
   minLength?: string;
   digitsOnly?: boolean;
+  custom?: string;
 }
 
-const validate = (params?: ValidateType) => {
-  const { required, maxLength, minLength, digitsOnly } = params ?? {};
+const validateComponent = (props?: ValidateComponentType) => {
+  const { required, maxLength, minLength, digitsOnly, custom } = props ?? {};
 
   return {
     ...staticDefaultValues,
@@ -14,6 +15,7 @@ const validate = (params?: ValidateType) => {
     maxLength: maxLength ?? '',
     minLength: minLength ?? '',
     digitsOnly: digitsOnly ?? false,
+    custom: custom ?? '',
   };
 };
 
@@ -25,4 +27,4 @@ const staticDefaultValues = {
   strictDateValidation: false,
 };
 
-export default validate;
+export default validateComponent;
