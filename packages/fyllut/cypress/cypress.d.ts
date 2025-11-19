@@ -73,39 +73,25 @@ declare global {
       skipIfNoIncludeDistTests(): Chainable<void>;
 
       /**
-       * Form components
+       * Components
        */
-      testActive(params: { label: string; role?: string }): void;
+      withinComponent(label: string, fn: () => void): Chainable<JQuery<HTMLElement>>;
 
-      testDescription(params: {
-        label: string;
-        description?: string;
-        additionalDescriptionText?: string;
-        additionalDescriptionLabel?: string;
-      }): void;
+      withinSummaryGroup(heading: string, fn: () => void): Chainable<JQuery<HTMLElement>>;
 
-      testAutocomplete(params: { label: string; value: string }): void;
+      findByLabelOptional(label: string): Chainable<JQuery<HTMLElement>>;
 
-      testSpellcheck(params: { label: string }): void;
+      findByErrorMessageRequired(label: string): Chainable<JQuery<HTMLElement>>;
 
-      testReadOnly(params: { label: string; value: boolean }): void;
+      clickErrorMessageRequired(label: string): Chainable<JQuery<HTMLElement>>;
 
-      testCalculateValue(params: { label: string; value: string }): void;
+      findByErrorMessageMinLength(label: string): Chainable<JQuery<HTMLElement>>;
 
-      testValid(params: {
-        label: string;
-        invalidValue?: string;
-        validValue: string;
-        errorMessage: string | RegExp;
-      }): void;
+      clickErrorMessageMinLength(label: string): Chainable<JQuery<HTMLElement>>;
 
-      testRequired(params: { label: string; value: boolean; validValue?: string }): void;
+      findByErrorMessageMaxLength(label: string): Chainable<JQuery<HTMLElement>>;
 
-      testMinLength(params: { label: string; invalidValue: string; validValue: string }): void;
-
-      testMaxLength(params: { label: string; invalidValue: string; validValue: string }): void;
-
-      testSummaryGroup(params: { name: string; items: Array<{ label: string; value: string }> }): void;
+      clickErrorMessageMaxLength(label: string): Chainable<JQuery<HTMLElement>>;
 
       testDownloadPdf(): void;
     }

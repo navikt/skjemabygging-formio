@@ -18,9 +18,9 @@ const textFieldForm = () => {
           }),
           textField({
             label: 'Tekstfelt med beskrivelse',
-            description: '<p>This is the description</p>',
-            additionalDescriptionText: '<p>This is more description</p>',
-            additionalDescriptionLabel: 'more',
+            description: '<p>Dette er en beskrivelse</p>',
+            additionalDescriptionText: '<p>Dette er utvidet beskrivelse</p>',
+            additionalDescriptionLabel: 'mer',
           }),
           textField({
             label: 'Tekstfelt med egenskaper',
@@ -73,6 +73,12 @@ const textFieldForm = () => {
             validate: {
               minLength: 3,
               maxLength: 6,
+            },
+          }),
+          textField({
+            label: 'Tekstfelt må være abc',
+            validate: {
+              custom: 'valid = input === "abc" ? true : "abc er eneste lovlige verdien"',
             },
           }),
         ],
