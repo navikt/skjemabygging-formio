@@ -126,6 +126,17 @@ describe('TextField', () => {
       cy.focused().type('abc');
       cy.findAllByText(errorMessage).should('have.length', 0);
     });
+
+    /**
+     * Skipped test case: We show both required and custom validation errors in the error summary.
+     */
+    it.skip('should not show custom validation in error summary, if it has required error message', () => {
+      const label = 'Tekstfelt må være abc';
+      const errorMessage = 'abc er eneste lovlige verdien';
+      cy.clickNextStep();
+      cy.findAllByErrorMessageRequired(label).should('have.length', 2);
+      cy.findAllByText(errorMessage).should('have.length', 0);
+    });
   });
 
   describe('Form', () => {
@@ -200,7 +211,7 @@ describe('TextField', () => {
     });
 
     it('should make sure label and descriptions are translated to english', () => {
-      cy.withinComponent('Dette er utvidet beskrivelse (en)', () => {
+      cy.withinComponent('Tekstfelt med beskrivelse (en)', () => {
         cy.contains('Dette er en beskrivelse (en)').should('exist');
         cy.findByRole('button', { name: 'mer (en)' }).click();
         cy.contains('Dette er utvidet beskrivelse (en)').shouldBeVisible();
