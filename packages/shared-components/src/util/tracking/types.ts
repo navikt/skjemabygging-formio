@@ -42,6 +42,9 @@ type SkjemaSlettetEvent = Event & {
 type LastOppEvent = Event & {
   name: 'last opp';
   data: EventData & {
+    type: string;
+    tema: string;
+    tittel: string;
     skjemaId: string;
   };
 };
