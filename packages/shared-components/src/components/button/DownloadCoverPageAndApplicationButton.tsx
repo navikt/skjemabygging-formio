@@ -1,6 +1,6 @@
 import { Alert } from '@navikt/ds-react';
 import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
@@ -22,7 +22,7 @@ const DownloadCoverPageAndApplicationButton = ({
   isValid,
   children,
 }: Props) => {
-  const { fyllutBaseURL, config, submissionMethod } = useAppConfig();
+  const { fyllutBaseURL, config, submissionMethod, logEvent } = useAppConfig();
   const formContextValue = useForm();
   const { form, submission } = formContextValue;
   const languagesContextValue = useLanguages();
@@ -33,9 +33,21 @@ const DownloadCoverPageAndApplicationButton = ({
     setDownloadState(undefined);
   };
 
-  const onSuccess = () => {
+  const onSuccess = useCallback(() => {
     setDownloadState('success');
-  };
+    logEvent?.({
+      name: 'last ned',
+      data: {
+        type: 'soknad',
+        tema: form.properties.tema,
+        tittel: translate(form.title),
+        skjemaId: form.properties.skjemanummer,
+        withCoverPage: type === 'coverPageAndApplication',
+        submissionMethod,
+        language: currentLanguage,
+      },
+    });
+  }, [form, translate, type, submissionMethod, currentLanguage, logEvent]);
 
   const onError = () => {
     setDownloadState('error');

@@ -2,8 +2,9 @@ import { CheckmarkCircleFillIcon, DownloadIcon } from '@navikt/aksel-icons';
 import { Alert, BodyShort, Heading, HStack, Link, List, VStack } from '@navikt/ds-react';
 import '@navikt/ds-tokens';
 import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import InnerHtml from '../../components/inner-html/InnerHtml';
+import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
@@ -22,9 +23,10 @@ const useStyles = makeStyles({
 });
 
 export function ReceiptPage() {
-  const { setFormProgressVisible, setTitle } = useForm();
+  const { setFormProgressVisible, setTitle, form } = useForm();
+  const { logEvent, submissionMethod } = useAppConfig();
   const styles = useStyles();
-  const { translate } = useLanguages();
+  const { currentLanguage, translate } = useLanguages();
   const { soknadPdfBlob, receipt } = useSendInn();
 
   useEffect(() => {
@@ -34,6 +36,20 @@ export function ReceiptPage() {
   useEffect(() => {
     setTitle(translate(TEXTS.statiske.receipt.title));
   }, [translate, setTitle]);
+
+  const logDownloadPdf = useCallback(() => {
+    logEvent?.({
+      name: 'last ned',
+      data: {
+        type: 'soknad',
+        tema: form.properties.tema,
+        tittel: translate(form.title),
+        skjemaId: form.properties.skjemanummer,
+        submissionMethod,
+        language: currentLanguage,
+      },
+    });
+  }, [currentLanguage, form, logEvent, submissionMethod, translate]);
 
   const soknadPdfUrl = useMemo(() => {
     return soknadPdfBlob ? URL.createObjectURL(soknadPdfBlob) : undefined;
@@ -83,6 +99,7 @@ export function ReceiptPage() {
                     href={soknadPdfUrl}
                     underline={false}
                     target="_blank"
+                    onClick={logDownloadPdf}
                     rel="noopener noreferrer"
                   >
                     <DownloadIcon aria-hidden className={styles.downloadLinkIcon} />
