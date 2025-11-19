@@ -42,6 +42,10 @@ declare global {
 
       clickSendNav(): Chainable<JQuery<HTMLElement>>;
 
+      clickDownloadInstructions(): Chainable<JQuery<HTMLElement>>;
+
+      clickDownloadApplication(): Chainable<JQuery<HTMLElement>>;
+
       verifySendInnRedirect(): Chainable<JQuery<HTMLElement>>;
 
       verifyNavRedirect(): Chainable<JQuery<HTMLElement>>;
@@ -67,6 +71,29 @@ declare global {
        * Run test only on build code. This is allways true on GitHub, but if you want to run locally you can chanage INCLUDE_DIST_TESTS to true.
        */
       skipIfNoIncludeDistTests(): Chainable<void>;
+
+      /**
+       * Components
+       */
+      withinComponent(label: string, fn: () => void): Chainable<JQuery<HTMLElement>>;
+
+      withinSummaryGroup(heading: string, fn: () => void): Chainable<JQuery<HTMLElement>>;
+
+      findByLabelOptional(label: string): Chainable<JQuery<HTMLElement>>;
+
+      findAllByErrorMessageRequired(label: string): Chainable<JQuery<HTMLElement>>;
+
+      clickErrorMessageRequired(label: string): Chainable<JQuery<HTMLElement>>;
+
+      findAllByErrorMessageMinLength(label: string): Chainable<JQuery<HTMLElement>>;
+
+      clickErrorMessageMinLength(label: string): Chainable<JQuery<HTMLElement>>;
+
+      findAllByErrorMessageMaxLength(label: string): Chainable<JQuery<HTMLElement>>;
+
+      clickErrorMessageMaxLength(label: string): Chainable<JQuery<HTMLElement>>;
+
+      testDownloadPdf(): void;
     }
   }
 }
