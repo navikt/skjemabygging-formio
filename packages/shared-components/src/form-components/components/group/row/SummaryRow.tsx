@@ -30,7 +30,12 @@ const SummaryRow = (props: FormComponentProps) => {
         const componentSubmissionPath = formComponentUtils.getComponentSubmissionPath(component, submissionPath);
 
         return (
-          <RenderComponent {...props} key={`${component.key}-${navId}`} submissionPath={componentSubmissionPath} />
+          <RenderComponent
+            {...props}
+            key={`${component.key}-${navId}`}
+            component={component}
+            submissionPath={componentSubmissionPath}
+          />
         );
       })}
     </>

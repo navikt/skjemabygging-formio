@@ -26,7 +26,7 @@ import SummaryPageNavigation from './navigation/SummaryPageNavigation';
 
 export function SummaryPage() {
   const appConfig = useAppConfig();
-  const { translate, availableLanguages } = useLanguages();
+  const { translate, availableLanguages, currentLanguage } = useLanguages();
   const {
     prefillData,
     submission,
@@ -147,7 +147,7 @@ export function SummaryPage() {
         activeAttachmentUploadsPanel={activeAttachmentUploadsPanel}
         submission={submission}
         form={formioFormsApiUtils.mapNavFormToForm(form)}
-        currentLanguage={availableLanguages[0]}
+        currentLanguage={currentLanguage}
         translate={translate}
         panelValidationList={panelValidationList}
         appConfig={appConfig}
