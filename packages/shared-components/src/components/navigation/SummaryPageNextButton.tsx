@@ -1,11 +1,16 @@
-import { NavFormType, Submission, submissionTypesUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  NavFormType,
+  PanelValidation,
+  Submission,
+  submissionTypesUtils,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useAppConfig } from '../../context/config/configContext';
 import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
 import { hasRelevantAttachments } from '../../util/attachment/attachmentsUtil';
-import { PanelValidation } from '../../util/form/panel-validation/panelValidation';
 import { NextButton } from './NextButton';
 
 type Props = {

@@ -1,16 +1,10 @@
 import { FormSummary, List } from '@navikt/ds-react';
-import { Component } from '@navikt/skjemadigitalisering-shared-domain';
-import { useForm } from '../../../../context/form/FormContext';
+import { FormComponentProps } from '../../../types';
 import { DefaultLabel } from '../../shared/form-summary';
 import { getSelectedValues } from './dataFetcherUtils';
 
-interface Props {
-  component: Component;
-  submissionPath: string;
-}
-
-const DefaultAnswer = ({ component, submissionPath }: Props) => {
-  const { submission } = useForm();
+const DefaultAnswer = (props: FormComponentProps) => {
+  const { component, submissionPath, submission } = props;
   const { key, navId } = component;
 
   const selected = getSelectedValues(submissionPath, submission);
@@ -20,7 +14,7 @@ const DefaultAnswer = ({ component, submissionPath }: Props) => {
 
   return (
     <FormSummary.Answer>
-      <DefaultLabel component={component} />
+      <DefaultLabel {...props} />
       <FormSummary.Value>
         <List>
           {selected.map((value) => (

@@ -1,9 +1,8 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { PdfComponentProps } from '../../../types';
 
-const PdfAttachmentUpload = ({ formContextValue, languagesContextValue, component }: PdfComponentProps) => {
-  const { submission } = formContextValue;
-  const { translate } = languagesContextValue;
+const PdfAttachmentUpload = (props: PdfComponentProps) => {
+  const { component, submission, translate } = props;
   const { navId, label, attachmentValues, attachmentType, otherDocumentation } = component;
 
   if (!navId) {

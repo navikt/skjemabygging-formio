@@ -1,18 +1,22 @@
 import { FormSummary } from '@navikt/ds-react';
-import { TEXTS, Tkey } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, Submission, TEXTS, Tkey, TranslateFunction } from '@navikt/skjemadigitalisering-shared-domain';
 import { Link, useLocation } from 'react-router';
 import ValidationExclamationIcon from '../../../../components/icons/ValidationExclamationIcon';
-import { useForm } from '../../../../context/form/FormContext';
-import { useLanguages } from '../../../../context/languages';
+
+interface Props {
+  submission: Submission;
+  form: Form;
+  translate: TranslateFunction;
+}
 
 /**
- * This component renders a summary for the intro page. This is not inside the form definition so it works differently then the other summary components
+ * This component renders a summary for the intro page.
+ * This is not inside the form definition so it works differently then the other summary components
  * @constructor
  */
-const SummaryIntroPage = () => {
-  const { translate } = useLanguages();
+const SummaryIntroPage = (props: Props) => {
+  const { submission, form, translate } = props;
   const { search } = useLocation();
-  const { submission, form } = useForm();
 
   if (!form.introPage?.enabled) {
     return null;

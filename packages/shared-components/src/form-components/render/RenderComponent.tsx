@@ -1,9 +1,9 @@
 import { Alert } from '@navikt/ds-react';
-import { useAppConfig } from '../../context/config/configContext';
 import { FormComponentProps } from '../types';
 
-const RenderComponent = ({ component, submissionPath, componentRegistry, panelValidationList }: FormComponentProps) => {
-  const { logger, config } = useAppConfig();
+const RenderComponent = (props: FormComponentProps) => {
+  const { componentRegistry, component, appConfig } = props;
+  const { logger, config } = appConfig;
   const { type } = component;
   const RegistryComponent = componentRegistry[type];
 
@@ -16,14 +16,7 @@ const RenderComponent = ({ component, submissionPath, componentRegistry, panelVa
     return null;
   }
 
-  return (
-    <RegistryComponent
-      component={component}
-      submissionPath={submissionPath}
-      componentRegistry={componentRegistry}
-      panelValidationList={panelValidationList}
-    />
-  );
+  return <RegistryComponent {...props} />;
 };
 
 export default RenderComponent;

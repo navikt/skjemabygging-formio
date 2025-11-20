@@ -1,9 +1,6 @@
-import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { LanguageContextType } from '../../../../context/languages/languages-context';
+import { dateUtils, TEXTS, TranslateFunction } from '@navikt/skjemadigitalisering-shared-domain';
 
-const getDrivingListItems = (dates: any, languagesContextValue: LanguageContextType) => {
-  const { translate, currentLanguage } = languagesContextValue;
-
+const getDrivingListItems = (dates: any, currentLanguage: string, translate: TranslateFunction) => {
   return dates
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
     .map((date) => {

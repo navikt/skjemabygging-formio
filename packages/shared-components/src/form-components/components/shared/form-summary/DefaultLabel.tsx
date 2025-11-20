@@ -1,14 +1,9 @@
 import { FormSummary } from '@navikt/ds-react';
-import { Component } from '@navikt/skjemadigitalisering-shared-domain';
-import { useLanguages } from '../../../../context/languages';
+import { FormComponentProps } from '../../../types';
 
-interface Props {
-  component: Component;
-}
-
-const DefaultLabel = ({ component }: Props) => {
+const DefaultLabel = (props: FormComponentProps) => {
+  const { component, translate } = props;
   const { hideLabel, label } = component;
-  const { translate } = useLanguages();
 
   if (!label || hideLabel) {
     return null;

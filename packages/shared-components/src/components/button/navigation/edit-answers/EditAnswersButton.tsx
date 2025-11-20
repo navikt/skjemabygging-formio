@@ -1,7 +1,7 @@
-import { NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { NavFormType, PanelValidation, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useLocation } from 'react-router';
 import { useLanguages } from '../../../../context/languages';
-import { findFormStartingPoint, PanelValidation } from '../../../../util/form/panel-validation/panelValidation';
+import { findFormStartingPoint } from '../../../../util/form/panel-validation/panelValidation';
 import { PreviousButton } from '../../../navigation/PreviousButton';
 
 interface Props {

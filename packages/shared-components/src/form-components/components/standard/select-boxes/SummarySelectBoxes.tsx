@@ -1,14 +1,11 @@
 import { FormSummary, List } from '@navikt/ds-react';
-import { useForm } from '../../../../context/form/FormContext';
-import { useLanguages } from '../../../../context/languages';
 import { FormComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 import DefaultLabel from '../../shared/form-summary/DefaultLabel';
 
-const SummarySelectBoxes = ({ component, submissionPath }: FormComponentProps) => {
+const SummarySelectBoxes = (props: FormComponentProps) => {
+  const { component, submissionPath, submission, translate } = props;
   const { values, key, navId } = component;
-  const { translate } = useLanguages();
-  const { submission } = useForm();
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
 
   if (value === undefined || !values || values.length === 0) {
@@ -25,7 +22,7 @@ const SummarySelectBoxes = ({ component, submissionPath }: FormComponentProps) =
 
   return (
     <FormSummary.Answer>
-      <DefaultLabel component={component} />
+      <DefaultLabel {...props} />
       <FormSummary.Value>
         <List>
           {valueObjects.map((boxValue) => (

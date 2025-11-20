@@ -1,8 +1,8 @@
 import { FormComponentProps } from '../../../types';
 import { DefaultAnswer } from '../../shared/form-summary';
 
-const SummaryPassword = ({ component, submissionPath }: FormComponentProps) => {
-  return <DefaultAnswer component={component} submissionPath={submissionPath} />;
+const SummaryPassword = (props: FormComponentProps) => {
+  return <DefaultAnswer {...props} />;
 };
 
 export default SummaryPassword;

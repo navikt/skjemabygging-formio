@@ -1,14 +1,11 @@
 import { FormSummary } from '@navikt/ds-react';
 import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useForm } from '../../../../context/form/FormContext';
-import { useLanguages } from '../../../../context/languages';
 import { FormComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 
-const SummaryAddressValidity = ({ submissionPath }: FormComponentProps) => {
-  const { submission } = useForm();
+const SummaryAddressValidity = (props: FormComponentProps) => {
+  const { submission, submissionPath, translate } = props;
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
-  const { translate } = useLanguages();
 
   if (value === undefined || (!value.gyldigFraOgMed && !value.gyldigTilOgMed)) {
     return null;

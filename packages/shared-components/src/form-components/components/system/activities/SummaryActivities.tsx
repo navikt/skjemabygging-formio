@@ -1,11 +1,10 @@
 import { FormSummary } from '@navikt/ds-react';
-import { useForm } from '../../../../context/form/FormContext';
 import { FormComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
-import DefaultLabel from '../../shared/form-summary/DefaultLabel';
 
-const SummaryActivities = ({ component, submissionPath }: FormComponentProps) => {
-  const { submission } = useForm();
+const SummaryActivities = (props: FormComponentProps) => {
+  const { submission, submissionPath, component, translate } = props;
+  const { label } = component;
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
 
   if (value === undefined) {
@@ -14,12 +13,7 @@ const SummaryActivities = ({ component, submissionPath }: FormComponentProps) =>
 
   return (
     <FormSummary.Answer>
-      <DefaultLabel
-        component={{
-          ...component,
-          hideLabel: false,
-        }}
-      />
+      <FormSummary.Label>{translate(label)}</FormSummary.Label>
       <FormSummary.Value>{value.text}</FormSummary.Value>
     </FormSummary.Answer>
   );

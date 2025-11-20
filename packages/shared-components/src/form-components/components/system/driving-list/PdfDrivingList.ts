@@ -3,10 +3,9 @@ import { PdfComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 import { getDrivingListItems } from './drivingListUtils';
 
-const PdfDrivingList = ({ component, submissionPath, languagesContextValue, formContextValue }: PdfComponentProps) => {
+const PdfDrivingList = (props: PdfComponentProps) => {
+  const { component, submissionPath, submission, translate, currentLanguage } = props;
   const { label } = component;
-  const { translate } = languagesContextValue;
-  const { submission } = formContextValue;
 
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
 
@@ -14,7 +13,7 @@ const PdfDrivingList = ({ component, submissionPath, languagesContextValue, form
     return null;
   }
 
-  const drivingListDates = getDrivingListItems(value.dates, languagesContextValue);
+  const drivingListDates = getDrivingListItems(value.dates, currentLanguage, translate);
 
   return {
     label: translate(label),

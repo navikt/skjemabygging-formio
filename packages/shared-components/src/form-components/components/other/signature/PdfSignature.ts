@@ -1,29 +1,22 @@
 import {
   FormPropertiesType,
   signatureUtils,
+  Submission,
   SubmissionMethod,
   TEXTS,
+  TranslateFunction,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { FormContextType } from '../../../../context/form/FormContext';
-import { LanguageContextType } from '../../../../context/languages/languages-context';
 import { PdfData } from '../../../types';
 
 interface Props {
   properties: FormPropertiesType;
-  formContextValue: FormContextType;
-  languagesContextValue: LanguageContextType;
+  submission: Submission;
+  translate: TranslateFunction;
   submissionMethod?: SubmissionMethod;
 }
 
-const PdfSignature = ({
-  properties,
-  formContextValue,
-  languagesContextValue,
-  submissionMethod,
-}: Props): PdfData | null => {
+const PdfSignature = ({ properties, submission, submissionMethod, translate }: Props): PdfData | null => {
   const { signatures, descriptionOfSignatures } = properties;
-  const { submission } = formContextValue;
-  const { translate } = languagesContextValue;
 
   if (submissionMethod === 'digital') {
     return null;

@@ -1,8 +1,8 @@
 import { FormComponentProps } from '../../../types';
 import DefaultSelectAnswer from '../../shared/form-summary/DefaultSelectAnswer';
 
-const SummaryCurrencySelect = ({ component, submissionPath }: FormComponentProps) => {
-  return <DefaultSelectAnswer component={component} submissionPath={submissionPath} />;
+const SummaryCurrencySelect = (props: FormComponentProps) => {
+  return <DefaultSelectAnswer {...props} />;
 };
 
 export default SummaryCurrencySelect;

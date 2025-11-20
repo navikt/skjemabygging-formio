@@ -1,6 +1,15 @@
-import { dateUtils, SubmissionMethod, TEXTS, yourInformationUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import { FormContextType } from '../context/form/FormContext';
-import { LanguageContextType } from '../context/languages/languages-context';
+import {
+  Component,
+  dateUtils,
+  Form,
+  Panel,
+  Submission,
+  SubmissionMethod,
+  TEXTS,
+  TranslateFunction,
+  yourInformationUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
+import { AppConfigContextType } from '../context/config/configContext';
 import {
   PdfAccountNumber,
   PdfAddress,
@@ -42,22 +51,29 @@ import renderPdfComponent from './render/RenderPdfComponent';
 import { PdfFormData } from './types';
 
 interface Props {
-  formContextValue: FormContextType;
-  languagesContextValue: LanguageContextType;
-  isDelingslenke?: boolean;
-  gitVersion?: string;
+  activeComponents: Component[];
+  activeAttachmentUploadsPanel?: Panel;
+  submission?: Submission;
+  form: Form;
+  currentLanguage: string;
+  translate: TranslateFunction;
   submissionMethod?: SubmissionMethod | undefined;
+  appConfig: AppConfigContextType;
 }
 
 const renderPdfForm = ({
-  formContextValue,
-  languagesContextValue,
-  isDelingslenke,
-  gitVersion,
+  activeComponents,
+  activeAttachmentUploadsPanel,
+  submission,
+  form,
+  currentLanguage,
+  translate,
   submissionMethod,
-}: Props): PdfFormData => {
-  const { currentLanguage, translate } = languagesContextValue;
-  const { form, activeComponents, submission, activeAttachmentUploadsPanel } = formContextValue;
+  appConfig,
+}: Props): PdfFormData | undefined => {
+  if (!submission || !form) {
+    return;
+  }
 
   const componentRegistry = {
     /* Standard */
@@ -124,15 +140,16 @@ const renderPdfForm = ({
   return {
     label: translate(form.title),
     verdiliste: [
-      PdfIntroPage({ languagesContextValue, formContextValue }),
+      PdfIntroPage({ submission, form, translate }),
       ...(activeComponents
         ?.map((component) =>
           renderPdfComponent({
             component,
             submissionPath: '',
             componentRegistry,
-            formContextValue,
-            languagesContextValue,
+            submission,
+            translate,
+            currentLanguage,
           }),
         )
         .filter(Boolean) ?? []),
@@ -142,12 +159,13 @@ const renderPdfForm = ({
               component: activeAttachmentUploadsPanel,
               submissionPath: '',
               componentRegistry: attachmentUploadsComponentRegistry,
-              formContextValue,
-              languagesContextValue,
+              submission,
+              translate,
+              currentLanguage,
             }),
           ]
         : []),
-      PdfSignature({ properties: form.properties, languagesContextValue, formContextValue, submissionMethod }),
+      PdfSignature({ properties: form.properties, submission, translate, submissionMethod }),
     ].filter(Boolean),
     skjemanummer: form.properties?.skjemanummer,
     pdfConfig: {
@@ -163,9 +181,9 @@ const renderPdfForm = ({
       upperMiddle:
         translate(TEXTS.statiske.footer.createdDatelabel) +
         `: ${dateUtils.toCurrentDayMonthYearHourMinute(languageCode)}`,
-      lowerMiddle: translate(TEXTS.statiske.footer.versionLabel) + `: ${gitVersion ?? ''}`,
+      lowerMiddle: translate(TEXTS.statiske.footer.versionLabel) + `: ${appConfig.config?.gitVersion ?? ''}`,
     },
-    vannmerke: isDelingslenke ? 'Testskjema - Ikke send til Nav' : undefined,
+    vannmerke: appConfig.config?.isDelingslenke ? 'Testskjema - Ikke send til Nav' : undefined,
   };
 };
 

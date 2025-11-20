@@ -1,5 +1,12 @@
-import { useForm } from '../context/form/FormContext';
-import { PanelValidation } from '../util/form/panel-validation/panelValidation';
+import {
+  Component,
+  Form,
+  Panel,
+  PanelValidation,
+  Submission,
+  TranslateFunction,
+} from '@navikt/skjemadigitalisering-shared-domain';
+import { AppConfigContextType } from '../context/config/configContext';
 import {
   SummaryAccountNumber,
   SummaryAddress,
@@ -40,11 +47,29 @@ import { SummaryActivities, SummaryDataFetcher, SummaryDrivingList, SummaryMaalg
 import RenderComponent from './render/RenderComponent';
 
 interface Props {
+  activeComponents: Component[];
+  activeAttachmentUploadsPanel?: Panel;
+  submission?: Submission;
+  form: Form;
+  currentLanguage: string;
+  translate: TranslateFunction;
   panelValidationList?: PanelValidation[];
+  appConfig: AppConfigContextType;
 }
 
-const RenderSummaryForm = ({ panelValidationList }: Props) => {
-  const { activeComponents, activeAttachmentUploadsPanel } = useForm();
+const RenderSummaryForm = ({
+  activeComponents,
+  activeAttachmentUploadsPanel,
+  submission,
+  form,
+  currentLanguage,
+  translate,
+  panelValidationList,
+  appConfig,
+}: Props) => {
+  if (!submission) {
+    return null;
+  }
 
   const componentRegistry = {
     /* Standard */
@@ -107,14 +132,19 @@ const RenderSummaryForm = ({ panelValidationList }: Props) => {
 
   return (
     <>
-      <SummaryIntroPage />
+      <SummaryIntroPage form={form} submission={submission} translate={translate} />
       {activeComponents.map((component) => (
         <RenderComponent
           key={component.key}
           component={component}
           submissionPath=""
           componentRegistry={componentRegistry}
+          submission={submission}
+          translate={translate}
+          currentLanguage={currentLanguage}
+          formProperties={form.properties}
           panelValidationList={panelValidationList}
+          appConfig={appConfig}
         />
       ))}
       {activeAttachmentUploadsPanel && (
@@ -122,7 +152,12 @@ const RenderSummaryForm = ({ panelValidationList }: Props) => {
           component={activeAttachmentUploadsPanel}
           submissionPath=""
           componentRegistry={attachmentUploadsComponentRegistry}
+          submission={submission}
+          translate={translate}
+          currentLanguage={currentLanguage}
+          formProperties={form.properties}
           panelValidationList={panelValidationList}
+          appConfig={appConfig}
         />
       )}
     </>

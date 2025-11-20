@@ -2,15 +2,9 @@ import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { PdfComponentProps, PdfListElement } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 
-const PdfAttachment = ({
-  component,
-  submissionPath,
-  formContextValue,
-  languagesContextValue,
-}: PdfComponentProps): PdfListElement => {
+const PdfAttachment = (props: PdfComponentProps): PdfListElement => {
+  const { component, submissionPath, submission, translate } = props;
   const { label, attachmentValues } = component;
-  const { translate } = languagesContextValue;
-  const { submission } = formContextValue;
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
 
   if (value === undefined || !value.key) {

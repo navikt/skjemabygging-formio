@@ -1,17 +1,13 @@
-import { TEXTS, Tkey } from '@navikt/skjemadigitalisering-shared-domain';
-import { FormContextType } from '../../../../context/form/FormContext';
-import { LanguageContextType } from '../../../../context/languages/languages-context';
+import { Form, Submission, TEXTS, Tkey, TranslateFunction } from '@navikt/skjemadigitalisering-shared-domain';
 import { PdfListElement } from '../../../types';
 
 interface Props {
-  formContextValue: FormContextType;
-  languagesContextValue: LanguageContextType;
+  submission: Submission;
+  form: Form;
+  translate: TranslateFunction;
 }
 
-const PdfIntroPage = ({ formContextValue, languagesContextValue }: Props): PdfListElement => {
-  const { translate } = languagesContextValue;
-  const { submission, form } = formContextValue;
-
+const PdfIntroPage = ({ submission, form, translate }: Props): PdfListElement => {
   if (!form.introPage?.enabled) {
     return null;
   }

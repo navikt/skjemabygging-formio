@@ -1,13 +1,9 @@
 import { FormSummary } from '@navikt/ds-react';
-import { Component } from '@navikt/skjemadigitalisering-shared-domain';
-import { InnerHtml, useLanguages } from '../../../../index';
+import { InnerHtml } from '../../../../index';
+import { FormComponentProps } from '../../../types';
 
-interface Props {
-  component: Component;
-}
-
-const DefaultHtmlAnswer = ({ component }: Props) => {
-  const { translate } = useLanguages();
+const DefaultHtmlAnswer = (props: FormComponentProps) => {
+  const { component, translate } = props;
   const { textDisplay, content } = component;
 
   if (!content || textDisplay === undefined || textDisplay === 'form') {

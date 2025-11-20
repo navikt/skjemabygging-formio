@@ -1,11 +1,9 @@
 import { Alert, FileUpload, FormSummary, Label, VStack } from '@navikt/ds-react';
 import { SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useForm } from '../../../../context/form/FormContext';
-import { useLanguages } from '../../../../context/languages';
+import { FormComponentProps } from '../../../types';
 
-const SummaryAttachmentUpload = ({ component }) => {
-  const { form, submission } = useForm();
-  const { translate } = useLanguages();
+const SummaryAttachmentUpload = (props: FormComponentProps) => {
+  const { component, submission, translate, formProperties } = props;
   const { label } = component;
   const submissionAttachments = submission?.attachments?.filter(
     (attachment) => component.navId && attachment.attachmentId.startsWith(component.navId),
@@ -43,10 +41,10 @@ const SummaryAttachmentUpload = ({ component }) => {
               {submissionAttachment.additionalDocumentation && (
                 <div>{translate(submissionAttachment.additionalDocumentation)}</div>
               )}
-              {showDeadline(submissionAttachment) && form.properties?.ettersendelsesfrist && (
+              {showDeadline(submissionAttachment) && formProperties?.ettersendelsesfrist && (
                 <Alert variant="warning">
                   {translate(TEXTS.statiske.attachment.deadline, {
-                    deadline: form.properties?.ettersendelsesfrist,
+                    deadline: formProperties?.ettersendelsesfrist,
                   })}
                 </Alert>
               )}

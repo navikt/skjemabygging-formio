@@ -1,13 +1,10 @@
 import { FormSummary } from '@navikt/ds-react';
-import { useForm } from '../../../../context/form/FormContext';
-import { useLanguages } from '../../../../context/languages';
 import { FormComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 import { getIdentityLabel, getIdentityValue } from './identityUtils';
 
-const SummaryIdentity = ({ submissionPath }: FormComponentProps) => {
-  const { translate } = useLanguages();
-  const { submission } = useForm();
+const SummaryIdentity = (props: FormComponentProps) => {
+  const { submission, submissionPath, translate } = props;
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
 
   if (value === undefined || (!value?.identitetsnummer && !value?.fodselsdato)) {
