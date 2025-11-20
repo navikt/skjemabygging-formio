@@ -8,6 +8,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, Dispatch, SetStateAction, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import UtilsOverrides from '../../formio/overrides/utils-overrides/utils-overrides';
+import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
 import { useAppConfig } from '../config/configContext';
 
 interface FormContextType {
@@ -22,7 +23,7 @@ interface FormContextType {
   formProgressVisible: boolean;
   setFormProgressVisible: Dispatch<SetStateAction<boolean>>;
   title?: string;
-  setTitle: Dispatch<SetStateAction<string | undefined>>;
+  setTitle: (newTitle: string | undefined) => void;
 }
 
 interface FormProviderProps {
@@ -38,8 +39,18 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
   const [formProgressOpen, setFormProgressOpen] = useState<boolean>(false);
   const [formProgressVisible, setFormProgressVisible] = useState<boolean>(false);
   const [prefillData, setPrefillData] = useState<PrefillData>({});
-  const [title, setTitle] = useState<string | undefined>();
+  const [title, setTitleState] = useState<string | undefined>();
   const { http, baseUrl, submissionMethod, logger } = useAppConfig();
+
+  const setTitle = useCallback(
+    (newTitle: string | undefined) => {
+      if (title !== newTitle) {
+        setTitleState(newTitle);
+        scrollToAndSetFocus('h2', 'start');
+      }
+    },
+    [title],
+  );
 
   const activeAttachmentUploadsPanel = useMemo(() => {
     const activeAttachmentPanel = navFormUtils.getActiveAttachmentPanelFromForm(form, submission, submissionMethod);
