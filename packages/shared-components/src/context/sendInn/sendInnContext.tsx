@@ -51,7 +51,7 @@ const SendInnContext = createContext<SendInnContextType>({} as SendInnContextTyp
 
 const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const appConfig = useAppConfig();
-  const { app, submissionMethod, logger, baseUrl, config } = appConfig;
+  const { app, submissionMethod, logger, baseUrl } = appConfig;
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -270,8 +270,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
             form: formioFormsApiUtils.mapNavFormToForm(form),
             currentLanguage,
             translate,
-            isDelingslenke: !!config?.isDelingslenke,
-            gitVersion: String(config?.gitVersion),
+            appConfig,
             submissionMethod,
           }),
         );
@@ -303,8 +302,6 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
       activeAttachmentUploadsPanel,
       currentLanguage,
       translate,
-      config?.isDelingslenke,
-      config?.gitVersion,
       submissionMethod,
       setSubmission,
       navigate,
@@ -338,8 +335,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
             form: formioFormsApiUtils.mapNavFormToForm(form),
             currentLanguage,
             translate,
-            isDelingslenke: !!config?.isDelingslenke,
-            gitVersion: String(config?.gitVersion),
+            appConfig,
             submissionMethod,
           }),
         );
@@ -369,8 +365,6 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
       activeAttachmentUploadsPanel,
       activeComponents,
       appConfig,
-      config?.gitVersion,
-      config?.isDelingslenke,
       currentLanguage,
       form,
       innsendingsId,

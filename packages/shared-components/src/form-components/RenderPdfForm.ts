@@ -9,6 +9,7 @@ import {
   TranslateFunction,
   yourInformationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import { AppConfigContextType } from '../context/config/configContext';
 import {
   PdfAccountNumber,
   PdfAddress,
@@ -56,9 +57,8 @@ interface Props {
   form: Form;
   currentLanguage: string;
   translate: TranslateFunction;
-  isDelingslenke?: boolean;
-  gitVersion?: string;
   submissionMethod?: SubmissionMethod | undefined;
+  appConfig: AppConfigContextType;
 }
 
 const renderPdfForm = ({
@@ -68,9 +68,8 @@ const renderPdfForm = ({
   form,
   currentLanguage,
   translate,
-  isDelingslenke,
-  gitVersion,
   submissionMethod,
+  appConfig,
 }: Props): PdfFormData | undefined => {
   if (!submission || !form) {
     return;
@@ -182,9 +181,9 @@ const renderPdfForm = ({
       upperMiddle:
         translate(TEXTS.statiske.footer.createdDatelabel) +
         `: ${dateUtils.toCurrentDayMonthYearHourMinute(languageCode)}`,
-      lowerMiddle: translate(TEXTS.statiske.footer.versionLabel) + `: ${gitVersion ?? ''}`,
+      lowerMiddle: translate(TEXTS.statiske.footer.versionLabel) + `: ${appConfig.config?.gitVersion ?? ''}`,
     },
-    vannmerke: isDelingslenke ? 'Testskjema - Ikke send til Nav' : undefined,
+    vannmerke: appConfig.config?.isDelingslenke ? 'Testskjema - Ikke send til Nav' : undefined,
   };
 };
 

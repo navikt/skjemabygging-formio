@@ -22,7 +22,8 @@ const DownloadCoverPageAndApplicationButton = ({
   isValid,
   children,
 }: Props) => {
-  const { fyllutBaseURL, config, submissionMethod } = useAppConfig();
+  const appConfig = useAppConfig();
+  const { fyllutBaseURL, submissionMethod } = appConfig;
   const { form, submission, activeComponents, activeAttachmentUploadsPanel } = useForm();
   const { currentLanguage, translationsForNavForm, translate } = useLanguages();
   const [downloadState, setDownloadState] = useState<DownloadState>();
@@ -66,8 +67,7 @@ const DownloadCoverPageAndApplicationButton = ({
             form: formioFormsApiUtils.mapNavFormToForm(form),
             currentLanguage,
             translate,
-            isDelingslenke: !!config?.isDelingslenke,
-            gitVersion: String(config?.gitVersion),
+            appConfig,
             submissionMethod,
           }),
         }}
