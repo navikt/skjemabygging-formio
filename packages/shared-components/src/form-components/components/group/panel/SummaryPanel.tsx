@@ -2,14 +2,13 @@ import { FormSummary } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { Link, useLocation } from 'react-router';
 import ValidationExclamationIcon from '../../../../components/icons/ValidationExclamationIcon';
-import { useLanguages } from '../../../../context/languages';
 import RenderComponent from '../../../render/RenderComponent';
 import { FormComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 
-const SummaryPanel = ({ component, submissionPath, componentRegistry, panelValidationList }: FormComponentProps) => {
+const SummaryPanel = (props: FormComponentProps) => {
+  const { submissionPath, translate, component, panelValidationList } = props;
   const { title, components, navId, key } = component;
-  const { translate } = useLanguages();
   const { search } = useLocation();
 
   const panelValidation = panelValidationList?.find((panel) => panel.key === key);
@@ -28,12 +27,7 @@ const SummaryPanel = ({ component, submissionPath, componentRegistry, panelValid
         {components?.map((component) => {
           const componentSubmissionPath = formComponentUtils.getComponentSubmissionPath(component, submissionPath);
           return (
-            <RenderComponent
-              key={`${component.key}-${navId}`}
-              component={component}
-              submissionPath={componentSubmissionPath}
-              componentRegistry={componentRegistry}
-            />
+            <RenderComponent {...props} key={`${component.key}-${navId}`} submissionPath={componentSubmissionPath} />
           );
         })}
       </FormSummary.Answers>

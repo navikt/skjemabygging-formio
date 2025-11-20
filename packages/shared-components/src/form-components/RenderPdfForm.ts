@@ -1,6 +1,14 @@
-import { dateUtils, SubmissionMethod, TEXTS, yourInformationUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import { FormContextType } from '../context/form/FormContext';
-import { LanguageContextType } from '../context/languages/languages-context';
+import {
+  Component,
+  dateUtils,
+  Form,
+  Panel,
+  Submission,
+  SubmissionMethod,
+  TEXTS,
+  TranslateFunction,
+  yourInformationUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import {
   PdfAccountNumber,
   PdfAddress,
@@ -42,22 +50,31 @@ import renderPdfComponent from './render/RenderPdfComponent';
 import { PdfFormData } from './types';
 
 interface Props {
-  formContextValue: FormContextType;
-  languagesContextValue: LanguageContextType;
+  activeComponents: Component[];
+  activeAttachmentUploadsPanel: Panel;
+  submission: Submission;
+  form: Form;
+  currentLanguage: string;
+  translate: TranslateFunction;
   isDelingslenke?: boolean;
   gitVersion?: string;
   submissionMethod?: SubmissionMethod | undefined;
 }
 
 const renderPdfForm = ({
-  formContextValue,
-  languagesContextValue,
+  activeComponents,
+  activeAttachmentUploadsPanel,
+  submission,
+  form,
+  currentLanguage,
+  translate,
   isDelingslenke,
   gitVersion,
   submissionMethod,
-}: Props): PdfFormData => {
-  const { currentLanguage, translate } = languagesContextValue;
-  const { form, activeComponents, submission, activeAttachmentUploadsPanel } = formContextValue;
+}: Props): PdfFormData | undefined => {
+  if (!submission || !form) {
+    return;
+  }
 
   const componentRegistry = {
     /* Standard */
@@ -124,15 +141,16 @@ const renderPdfForm = ({
   return {
     label: translate(form.title),
     verdiliste: [
-      PdfIntroPage({ languagesContextValue, formContextValue }),
+      PdfIntroPage({ submission, form, translate }),
       ...(activeComponents
         ?.map((component) =>
           renderPdfComponent({
             component,
             submissionPath: '',
             componentRegistry,
-            formContextValue,
-            languagesContextValue,
+            submission,
+            translate,
+            currentLanguage,
           }),
         )
         .filter(Boolean) ?? []),
@@ -142,12 +160,13 @@ const renderPdfForm = ({
               component: activeAttachmentUploadsPanel,
               submissionPath: '',
               componentRegistry: attachmentUploadsComponentRegistry,
-              formContextValue,
-              languagesContextValue,
+              submission,
+              translate,
+              currentLanguage,
             }),
           ]
         : []),
-      PdfSignature({ properties: form.properties, languagesContextValue, formContextValue, submissionMethod }),
+      PdfSignature({ properties: form.properties, submission, translate, submissionMethod }),
     ].filter(Boolean),
     skjemanummer: form.properties?.skjemanummer,
     pdfConfig: {

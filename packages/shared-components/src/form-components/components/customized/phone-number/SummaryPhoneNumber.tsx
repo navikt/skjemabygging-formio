@@ -1,13 +1,12 @@
 import { FormSummary } from '@navikt/ds-react';
 import { formatPhoneNumber } from '@navikt/skjemadigitalisering-shared-domain';
-import { useForm } from '../../../../context/form/FormContext';
 import { FormComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 import DefaultLabel from '../../shared/form-summary/DefaultLabel';
 
-const SummaryPhoneNumber = ({ component, submissionPath }: FormComponentProps) => {
+const SummaryPhoneNumber = (props: FormComponentProps) => {
+  const { component, submission, submissionPath } = props;
   const { showAreaCode } = component;
-  const { submission } = useForm();
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
 
   if (value === undefined || (showAreaCode && (value.areaCode === undefined || value.number === undefined))) {
@@ -18,7 +17,7 @@ const SummaryPhoneNumber = ({ component, submissionPath }: FormComponentProps) =
 
   return (
     <FormSummary.Answer>
-      <DefaultLabel component={component} />
+      <DefaultLabel {...props} />
       <FormSummary.Value>{phoneNumber}</FormSummary.Value>
     </FormSummary.Answer>
   );

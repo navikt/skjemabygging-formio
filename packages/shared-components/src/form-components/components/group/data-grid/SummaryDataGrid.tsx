@@ -1,14 +1,13 @@
 import { FormSummary } from '@navikt/ds-react';
-import { useForm } from '../../../../context/form/FormContext';
 import RenderComponent from '../../../render/RenderComponent';
 import { FormComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 import DefaultLabel from '../../shared/form-summary/DefaultLabel';
 import FormSummaryAnswersNested from '../../shared/form-summary/FormSummaryAnswersNested';
 
-const SummaryDataGrid = ({ component, submissionPath, componentRegistry }: FormComponentProps) => {
+const SummaryDataGrid = (props: FormComponentProps) => {
+  const { submission, submissionPath, component } = props;
   const { components, navId } = component;
-  const { submission } = useForm();
   const dataGridValues = formComponentUtils.getSubmissionValue(submissionPath, submission);
 
   if (
@@ -21,7 +20,7 @@ const SummaryDataGrid = ({ component, submissionPath, componentRegistry }: FormC
 
   return (
     <FormSummary.Answer>
-      <DefaultLabel component={component} />
+      <DefaultLabel {...props} />
       <FormSummary.Value>
         {dataGridValues?.map((_, index: number) => {
           return (
@@ -34,10 +33,9 @@ const SummaryDataGrid = ({ component, submissionPath, componentRegistry }: FormC
 
                 return (
                   <RenderComponent
+                    {...props}
                     key={`${component.key}-${navId}-${index}`}
-                    component={component}
                     submissionPath={componentSubmissionPath}
-                    componentRegistry={componentRegistry}
                   />
                 );
               })}

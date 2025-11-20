@@ -1,5 +1,12 @@
 import { Alert, BodyShort, ConfirmationPanel, Heading, VStack } from '@navikt/ds-react';
-import { DeclarationType, navFormUtils, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  DeclarationType,
+  formioFormsApiUtils,
+  navFormUtils,
+  PanelValidation,
+  Submission,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useRef, useState } from 'react';
 import { attachmentValidator } from '../../components/attachment/attachmentValidator';
 import ButtonRow from '../../components/button/ButtonRow';
@@ -13,7 +20,6 @@ import RenderSummaryForm from '../../form-components/RenderSummaryForm';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
 import {
   findFirstValidationErrorInAttachmentPanel,
-  PanelValidation,
   validateWizardPanels,
 } from '../../util/form/panel-validation/panelValidation';
 import SummaryPageNavigation from './navigation/SummaryPageNavigation';
@@ -21,7 +27,15 @@ import SummaryPageNavigation from './navigation/SummaryPageNavigation';
 export function SummaryPage() {
   const appConfig = useAppConfig();
   const { translate, availableLanguages } = useLanguages();
-  const { prefillData, submission, form, setTitle, setFormProgressVisible } = useForm();
+  const {
+    prefillData,
+    submission,
+    form,
+    setTitle,
+    setFormProgressVisible,
+    activeComponents,
+    activeAttachmentUploadsPanel,
+  } = useForm();
   const { declarationType, declarationText } = form.properties;
   const [declaration, setDeclaration] = useState<boolean | undefined>(undefined);
 
@@ -128,7 +142,15 @@ export function SummaryPage() {
       ) : (
         <BodyShort className="mb-4">{translate(TEXTS.statiske.summaryPage.description)}</BodyShort>
       )}
-      <RenderSummaryForm panelValidationList={panelValidationList} />
+      <RenderSummaryForm
+        activeComponents={activeComponents}
+        activeAttachmentUploadsPanel={activeAttachmentUploadsPanel}
+        submission={submission}
+        form={formioFormsApiUtils.mapNavFormToForm(form)}
+        currentLanguage={availableLanguages[0]}
+        translate={translate}
+        panelValidationList={panelValidationList}
+      />
 
       {hasDeclaration && (
         <ConfirmationPanel

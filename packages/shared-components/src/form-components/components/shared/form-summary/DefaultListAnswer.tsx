@@ -1,19 +1,11 @@
 import { FormSummary } from '@navikt/ds-react';
-import { Component } from '@navikt/skjemadigitalisering-shared-domain';
-import { useForm } from '../../../../context/form/FormContext';
-import { useLanguages } from '../../../../context/languages';
+import { FormComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 import DefaultLabel from './DefaultLabel';
 
-interface Props {
-  component: Component;
-  submissionPath: string;
-}
-
-const DefaultListAnswer = ({ component, submissionPath }: Props) => {
+const DefaultListAnswer = (props: FormComponentProps) => {
+  const { component, submissionPath, submission, translate } = props;
   const { values } = component;
-  const { translate } = useLanguages();
-  const { submission } = useForm();
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
 
   if (!values || value === undefined) {
@@ -28,7 +20,7 @@ const DefaultListAnswer = ({ component, submissionPath }: Props) => {
 
   return (
     <FormSummary.Answer>
-      <DefaultLabel component={component} />
+      <DefaultLabel {...props} />
       <FormSummary.Value>{translate(valueObject.label)}</FormSummary.Value>
     </FormSummary.Answer>
   );
