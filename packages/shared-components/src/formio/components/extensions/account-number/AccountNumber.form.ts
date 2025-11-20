@@ -16,9 +16,7 @@ const accountNumberForm = () => {
     ]),
     validation([
       editFormValidation.required(),
-      editFormValidation.customMessage(),
       editFormValidation.customValidation(),
-      editFormValidation.customError(),
     ]),
     api([
       editFormApi.key(),

@@ -19,7 +19,6 @@ const yearForm = () => {
       editFormValidation.minYear(),
       editFormValidation.maxYear(),
       editFormValidation.customValidation(),
-      editFormValidation.customError(),
     ]),
     api([
       editFormApi.key(),

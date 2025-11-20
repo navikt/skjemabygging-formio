@@ -25,7 +25,6 @@ const numberForm = () => {
       editFormValidation.minNumber(),
       editFormValidation.maxNumber(),
       editFormValidation.customValidation(),
-      editFormValidation.customError(),
     ]),
     api([
       editFormApi.key(),
