@@ -22,7 +22,6 @@ const datePickerForm = () => {
       editFormDateValidation.limitRelativelyToToday('day'),
       editFormDateValidation.limitToEarliestLatest(),
       editFormValidation.customValidation(),
-      editFormValidation.customError(),
     ]),
     api([
       editFormApi.key(),

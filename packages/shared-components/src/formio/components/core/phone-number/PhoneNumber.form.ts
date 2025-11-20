@@ -19,9 +19,7 @@ const phoneNumberForm = () => {
       editFormValidation.required(),
       editFormValidation.minLength(),
       editFormValidation.maxLength(),
-      editFormValidation.customMessage(),
       editFormValidation.customValidation(),
-      editFormValidation.customError(),
     ]),
     api([
       editFormApi.key(),
