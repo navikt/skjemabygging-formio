@@ -63,6 +63,15 @@ const OtherAttachmentUpload = ({ label, attachmentValues, componentId, descripti
     ]);
   };
 
+  const showAddAnotherButton = () => {
+    return attachments.every((otherAttachment) => {
+      const fromSubmission = submissionAttachments.find(
+        (submissionAttachment) => otherAttachment.attachmentId === submissionAttachment.attachmentId,
+      );
+      return (fromSubmission?.files ?? []).length > 0;
+    });
+  };
+
   return (
     <VStack gap="6" className={clsx('mb', className)}>
       {uploadedAttachmentFiles.length > 0 ? (
@@ -116,14 +125,16 @@ const OtherAttachmentUpload = ({ label, attachmentValues, componentId, descripti
                 readMore={<FileUploadReadMore />}
               />
             ))}
-            <Button
-              variant="tertiary"
-              onClick={handleUploadAnotherAttachment}
-              className={styles.addAnotherAttachmentButton}
-              icon={<PlusIcon aria-hidden fontSize="1.5rem" />}
-            >
-              {translate(TEXTS.statiske.attachment.addNewAttachment)}
-            </Button>
+            {showAddAnotherButton() && (
+              <Button
+                variant="tertiary"
+                onClick={handleUploadAnotherAttachment}
+                className={styles.addAnotherAttachmentButton}
+                icon={<PlusIcon aria-hidden fontSize="1.5rem" />}
+              >
+                {translate(TEXTS.statiske.attachment.addNewAttachment)}
+              </Button>
+            )}
           </VStack>
         </VStack>
       )}
