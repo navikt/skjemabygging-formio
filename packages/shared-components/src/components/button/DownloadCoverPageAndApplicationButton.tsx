@@ -1,5 +1,5 @@
 import { Alert } from '@navikt/ds-react';
-import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { dateUtils, formioFormsApiUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import React, { useState } from 'react';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
@@ -23,10 +23,8 @@ const DownloadCoverPageAndApplicationButton = ({
   children,
 }: Props) => {
   const { fyllutBaseURL, config, submissionMethod } = useAppConfig();
-  const formContextValue = useForm();
-  const { form, submission } = formContextValue;
-  const languagesContextValue = useLanguages();
-  const { currentLanguage, translationsForNavForm, translate } = languagesContextValue;
+  const { form, submission, activeComponents, activeAttachmentUploadsPanel } = useForm();
+  const { currentLanguage, translationsForNavForm, translate } = useLanguages();
   const [downloadState, setDownloadState] = useState<DownloadState>();
 
   const onClick = () => {
@@ -62,8 +60,12 @@ const DownloadCoverPageAndApplicationButton = ({
           enhetNummer,
           submissionMethod,
           pdfFormData: renderPdfForm({
-            formContextValue,
-            languagesContextValue,
+            activeComponents,
+            activeAttachmentUploadsPanel,
+            submission,
+            form: formioFormsApiUtils.mapNavFormToForm(form),
+            currentLanguage,
+            translate,
             isDelingslenke: !!config?.isDelingslenke,
             gitVersion: String(config?.gitVersion),
             submissionMethod,

@@ -51,8 +51,8 @@ import { PdfFormData } from './types';
 
 interface Props {
   activeComponents: Component[];
-  activeAttachmentUploadsPanel: Panel;
-  submission: Submission;
+  activeAttachmentUploadsPanel?: Panel;
+  submission?: Submission;
   form: Form;
   currentLanguage: string;
   translate: TranslateFunction;

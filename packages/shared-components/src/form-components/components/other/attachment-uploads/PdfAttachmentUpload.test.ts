@@ -8,7 +8,7 @@ import { component as attachment } from './testdata/attachment-with-the-lot';
 
 const createProps = (component: Component, submission: Partial<Submission> = { data: {} }): PdfComponentProps => ({
   submission: submission as Submission,
-  translate: (textOrKey) => textOrKey,
+  translate: (textOrKey?: string) => textOrKey!,
   component,
   submissionPath: '',
   componentRegistry: {},
