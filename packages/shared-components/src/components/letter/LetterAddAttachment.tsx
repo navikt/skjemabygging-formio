@@ -25,7 +25,15 @@ const LetterAddAttachment = ({ index, attachments }: Props) => {
       </Heading>
       <ul>
         {attachments.map((vedlegg) => (
-          <li key={vedlegg.key}>{translate(vedlegg.label)}</li>
+          <li key={vedlegg.key}>
+            {vedlegg.attachmentType === 'default' && vedlegg.properties?.vedleggskjema ? (
+              <a href={`/fyllut/${vedlegg.properties.vedleggskjema}`} target="_blank" rel="noopener noreferrer">
+                {translate(vedlegg.label)}
+              </a>
+            ) : (
+              translate(vedlegg.label)
+            )}
+          </li>
         ))}
       </ul>
     </section>
