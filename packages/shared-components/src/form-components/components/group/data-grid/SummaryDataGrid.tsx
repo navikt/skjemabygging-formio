@@ -35,6 +35,7 @@ const SummaryDataGrid = (props: FormComponentProps) => {
                   <RenderComponent
                     {...props}
                     key={`${component.key}-${navId}-${index}`}
+                    component={component}
                     submissionPath={componentSubmissionPath}
                   />
                 );

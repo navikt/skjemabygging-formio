@@ -15,7 +15,12 @@ const SummaryContainer = (props: FormComponentProps) => {
       {components?.map((component) => {
         const componentSubmissionPath = formComponentUtils.getComponentSubmissionPath(component, submissionPath);
         return (
-          <RenderComponent {...props} key={`${component.key}-${navId}`} submissionPath={componentSubmissionPath} />
+          <RenderComponent
+            {...props}
+            component={component}
+            key={`${component.key}-${navId}`}
+            submissionPath={componentSubmissionPath}
+          />
         );
       })}
     </>

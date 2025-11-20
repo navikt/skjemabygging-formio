@@ -1,10 +1,9 @@
 import { Alert } from '@navikt/ds-react';
-import { useAppConfig } from '../../context/config/configContext';
 import { FormComponentProps } from '../types';
 
 const RenderComponent = (props: FormComponentProps) => {
-  const { componentRegistry, component } = props;
-  const { logger, config } = useAppConfig();
+  const { componentRegistry, component, appConfig } = props;
+  const { logger, config } = appConfig;
   const { type } = component;
   const RegistryComponent = componentRegistry[type];
 

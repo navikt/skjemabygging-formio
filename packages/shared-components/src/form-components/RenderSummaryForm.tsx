@@ -6,6 +6,7 @@ import {
   Submission,
   TranslateFunction,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import { AppConfigContextType } from '../context/config/configContext';
 import {
   SummaryAccountNumber,
   SummaryAddress,
@@ -53,6 +54,7 @@ interface Props {
   currentLanguage: string;
   translate: TranslateFunction;
   panelValidationList?: PanelValidation[];
+  appConfig: AppConfigContextType;
 }
 
 const RenderSummaryForm = ({
@@ -63,6 +65,7 @@ const RenderSummaryForm = ({
   currentLanguage,
   translate,
   panelValidationList,
+  appConfig,
 }: Props) => {
   if (!submission) {
     return null;
@@ -141,6 +144,7 @@ const RenderSummaryForm = ({
           currentLanguage={currentLanguage}
           formProperties={form.properties}
           panelValidationList={panelValidationList}
+          appConfig={appConfig}
         />
       ))}
       {activeAttachmentUploadsPanel && (
@@ -153,6 +157,7 @@ const RenderSummaryForm = ({
           currentLanguage={currentLanguage}
           formProperties={form.properties}
           panelValidationList={panelValidationList}
+          appConfig={appConfig}
         />
       )}
     </>

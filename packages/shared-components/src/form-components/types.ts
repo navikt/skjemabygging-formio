@@ -5,6 +5,7 @@ import {
   Submission,
   TranslateFunction,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import { AppConfigContextType } from '../context/config/configContext';
 
 type PdfListElement = PdfData | PdfData[] | null;
 
@@ -46,6 +47,7 @@ interface FormComponentProps {
   translate: TranslateFunction;
   currentLanguage: string;
   formProperties: FormPropertiesType;
+  appConfig: AppConfigContextType;
 }
 
 interface FormComponentRegistry {

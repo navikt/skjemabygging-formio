@@ -150,6 +150,7 @@ export function SummaryPage() {
         currentLanguage={availableLanguages[0]}
         translate={translate}
         panelValidationList={panelValidationList}
+        appConfig={appConfig}
       />
 
       {hasDeclaration && (
