@@ -3,11 +3,7 @@ interface Props {
 }
 
 const FormMainContent = ({ children }: Props) => {
-  return (
-    <section id="maincontent" tabIndex={-1} aria-describedby="page-title">
-      {children}
-    </section>
-  );
+  return <section>{children}</section>;
 };
 
 export default FormMainContent;

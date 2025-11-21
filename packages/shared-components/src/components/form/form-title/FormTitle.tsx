@@ -54,7 +54,7 @@ export function FormTitle({ form, title, hideIconOnMobile }: Props) {
           {translate(form.title)}
         </Heading>
       )}
-      <Heading level={title ? '2' : '1'} size="xlarge" id="page-title">
+      <Heading level={title ? '2' : '1'} size="xlarge" id="page-title" tabIndex={-1}>
         {translate(header)}
       </Heading>
       {form.properties && form.properties.skjemanummer && (
