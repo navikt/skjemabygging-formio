@@ -274,4 +274,53 @@ describe('Conditional rendering', () => {
       });
     });
   });
+
+  describe('Test on row. in custom conditional', () => {
+    beforeEach(() => {
+      cy.defaultIntercepts();
+      cy.visit('/fyllut/conditionalrow?sub=paper');
+      cy.defaultWaits();
+      cy.clickShowAllSteps();
+    });
+
+    it('display fields with row in conditional in panel', () => {
+      cy.findByRole('link', { name: 'Panel' }).click();
+      cy.findByRole('checkbox', { name: 'Trykk her' }).click();
+      cy.findByRole('textbox', { name: 'Tekstfelt 1' }).type('abc');
+
+      cy.findByRole('link', { name: 'Oppsummering' }).click();
+      cy.contains('Tekstfelt 1');
+      cy.contains('abc');
+    });
+
+    it('display fields with row in conditional in container', () => {
+      cy.findByRole('link', { name: 'Panel med beholder' }).click();
+      cy.findByRole('checkbox', { name: 'Trykk her' }).click();
+      cy.findByRole('textbox', { name: 'Tekstfelt 2' }).type('abc');
+
+      cy.findByRole('link', { name: 'Oppsummering' }).click();
+      cy.contains('Tekstfelt 2');
+      cy.contains('abc');
+    });
+
+    it('display fields with row in conditional in data grid', () => {
+      cy.findByRole('link', { name: 'Panel med repeterende data' }).click();
+      cy.findByRole('checkbox', { name: 'Trykk her' }).click();
+      cy.findByRole('textbox', { name: 'Tekstfelt 3' }).type('abc');
+
+      cy.findByRole('link', { name: 'Oppsummering' }).click();
+      cy.contains('Tekstfelt 3');
+      cy.contains('abc');
+    });
+
+    it('display fields with row in conditional in form group', () => {
+      cy.findByRole('link', { name: 'Panel med skjemagruppe' }).click();
+      cy.findByRole('checkbox', { name: 'Trykk her' }).click();
+      cy.findByRole('textbox', { name: 'Tekstfelt 4' }).type('abc');
+
+      cy.findByRole('link', { name: 'Oppsummering' }).click();
+      cy.contains('Tekstfelt 4');
+      cy.contains('abc');
+    });
+  });
 });
