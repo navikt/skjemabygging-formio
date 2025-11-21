@@ -21,13 +21,11 @@ const FormLayout = ({ allowSubmittedApplication = false }: Props) => {
 
   const initialPageLoad = useRef(true);
 
-  console.log('Layout', initialPageLoad.current);
   useEffect(() => {
-    console.log('Set focus', initialPageLoad.current);
     if (initialPageLoad.current) {
       initialPageLoad.current = false;
     } else {
-      scrollToAndSetFocus('h2', 'start');
+      scrollToAndSetFocus('#page-title', 'start');
     }
   }, [location]);
 
