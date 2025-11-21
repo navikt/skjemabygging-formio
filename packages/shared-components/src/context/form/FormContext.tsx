@@ -8,7 +8,6 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, Dispatch, SetStateAction, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import UtilsOverrides from '../../formio/overrides/utils-overrides/utils-overrides';
-import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
 import { useAppConfig } from '../config/configContext';
 
 interface FormContextType {
@@ -95,10 +94,6 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
     logger?.debug('Current active components', { form, currentActiveComponents });
     setActiveComponents(currentActiveComponents);
   }, [form, logger, submission, submissionMethod]);
-
-  useEffect(() => {
-    scrollToAndSetFocus('h2', 'start');
-  }, [title]);
 
   return (
     <FormContext.Provider

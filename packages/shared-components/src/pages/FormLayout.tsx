@@ -1,11 +1,13 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { Outlet } from 'react-router';
+import { useEffect, useRef } from 'react';
+import { Outlet, useLocation } from 'react-router';
 import { FormContainer } from '../components/form/container/FormContainer';
 import FormProgress from '../components/form/form-progress/FormProgress';
 import { FormTitle } from '../components/form/form-title/FormTitle';
 import { useForm } from '../context/form/FormContext';
 import { LanguageSelector, useLanguages } from '../context/languages';
 import { useSendInn } from '../context/sendInn/sendInnContext';
+import { scrollToAndSetFocus } from '../util/focus-management/focus-management';
 
 interface Props {
   allowSubmittedApplication?: boolean;
@@ -15,6 +17,17 @@ const FormLayout = ({ allowSubmittedApplication = false }: Props) => {
   const { form, formProgressVisible, title } = useForm();
   const { submitted } = useSendInn();
   const { translate } = useLanguages();
+  const location = useLocation();
+
+  const initialPageLoad = useRef(true);
+
+  useEffect(() => {
+    if (initialPageLoad.current) {
+      initialPageLoad.current = false;
+    } else {
+      scrollToAndSetFocus('h2', 'start');
+    }
+  }, [location.pathname]);
 
   return (
     <FormContainer>
