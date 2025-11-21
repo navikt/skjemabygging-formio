@@ -23,7 +23,7 @@ interface FormContextType {
   formProgressVisible: boolean;
   setFormProgressVisible: Dispatch<SetStateAction<boolean>>;
   title?: string;
-  setTitle: (newTitle: string | undefined) => void;
+  setTitle: Dispatch<SetStateAction<string | undefined>>;
 }
 
 interface FormProviderProps {
@@ -39,18 +39,8 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
   const [formProgressOpen, setFormProgressOpen] = useState<boolean>(false);
   const [formProgressVisible, setFormProgressVisible] = useState<boolean>(false);
   const [prefillData, setPrefillData] = useState<PrefillData>({});
-  const [title, setTitleState] = useState<string | undefined>();
+  const [title, setTitle] = useState<string | undefined>();
   const { http, baseUrl, submissionMethod, logger } = useAppConfig();
-
-  const setTitle = useCallback(
-    (newTitle: string | undefined) => {
-      if (title !== newTitle) {
-        setTitleState(newTitle);
-        scrollToAndSetFocus('h2', 'start');
-      }
-    },
-    [title],
-  );
 
   const activeAttachmentUploadsPanel = useMemo(() => {
     const activeAttachmentPanel = navFormUtils.getActiveAttachmentPanelFromForm(form, submission, submissionMethod);
@@ -105,6 +95,10 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
     logger?.debug('Current active components', { form, currentActiveComponents });
     setActiveComponents(currentActiveComponents);
   }, [form, logger, submission, submissionMethod]);
+
+  useEffect(() => {
+    scrollToAndSetFocus('h2', 'start');
+  }, [title]);
 
   return (
     <FormContext.Provider
