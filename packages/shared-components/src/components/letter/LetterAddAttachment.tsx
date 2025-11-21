@@ -1,5 +1,6 @@
 import { Heading } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { useAppConfig } from '../../context/config/configContext';
 import { useLanguages } from '../../context/languages';
 
 interface Props {
@@ -9,6 +10,7 @@ interface Props {
 
 const LetterAddAttachment = ({ index, attachments }: Props) => {
   const { translate } = useLanguages();
+  const { fyllutBaseURL } = useAppConfig();
 
   const skalSendeFlereVedlegg = attachments.length > 1;
   const attachmentSectionTitle = translate(TEXTS.statiske.prepareLetterPage.attachmentSectionTitleAttachTo)
@@ -25,7 +27,19 @@ const LetterAddAttachment = ({ index, attachments }: Props) => {
       </Heading>
       <ul>
         {attachments.map((vedlegg) => (
-          <li key={vedlegg.key}>{translate(vedlegg.label)}</li>
+          <li key={vedlegg.key}>
+            {vedlegg.attachmentType === 'default' && vedlegg.properties?.vedleggskjema ? (
+              <a
+                href={`${fyllutBaseURL}/${vedlegg.properties.vedleggskjema}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {translate(vedlegg.label)}
+              </a>
+            ) : (
+              translate(vedlegg.label)
+            )}
+          </li>
         ))}
       </ul>
     </section>
