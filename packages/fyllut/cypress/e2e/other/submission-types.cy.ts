@@ -47,6 +47,19 @@ describe('Submission Type', () => {
         cy.clickShowAllSteps();
         cy.findByRole('link', { name: 'Vedlegg' }).should('exist');
       });
+
+      it('should render attachment links when vedleggskjema field exists', () => {
+        cy.visit('/fyllut/nav020805/dineOpplysninger?sub=paper');
+        cy.defaultWaits();
+        cy.clickShowAllSteps();
+        cy.findByRole('link', { name: 'Oppsummering' }).click();
+        cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions }).click();
+
+        cy.get('a[href="/fyllut/nav020806"]')
+          .should('exist')
+          .should('have.attr', 'target', '_blank')
+          .contains('Dokumentasjon på at du er sendt ut av arbeidsgiveren din (NAV 02-08.06)');
+      });
     });
 
     it('Use digital submission type on paper only', () => {
