@@ -318,6 +318,13 @@ export const statiske = {
       title: 'Søknaden du leter etter finnes ikke',
       message: 'Dette kan skyldes at søknaden allerede er sendt inn eller avsluttet.',
     },
+    sessionExpired: {
+      title: 'Du må starte utfyllingen på nytt',
+      message:
+        'Du har hatt nettleseren åpen lenge uten å fullføre skjemaet. For å sikre at andre ikke får tilgang til opplysningene dine har vi tømt skjemaet.',
+      additionalMessage: 'Hvis du fortsatt ønsker å sende inn skjemaet, må du fylle ut opplysningene på nytt.',
+      buttonText: 'Start på nytt',
+    },
     alreadySubmitted: 'Søknaden er allerede sendt inn',
   },
   phoneNumber: {
