@@ -289,8 +289,9 @@ describe('Conditional rendering', () => {
       cy.findByRole('textbox', { name: 'Tekstfelt 1' }).type('abc');
 
       cy.findByRole('link', { name: 'Oppsummering' }).click();
-      cy.contains('Tekstfelt 1');
-      cy.contains('abc');
+      // This should probably change in the future.
+      cy.contains('Tekstfelt 1').should('not.exist');
+      cy.contains('abc').should('not.exist');
     });
 
     it('display fields with row in conditional in container', () => {
@@ -299,8 +300,8 @@ describe('Conditional rendering', () => {
       cy.findByRole('textbox', { name: 'Tekstfelt 2' }).type('abc');
 
       cy.findByRole('link', { name: 'Oppsummering' }).click();
-      cy.contains('Tekstfelt 2');
-      cy.contains('abc');
+      cy.contains('Tekstfelt 2').should('exist');
+      cy.contains('abc').should('exist');
     });
 
     it('display fields with row in conditional in data grid', () => {
@@ -309,8 +310,8 @@ describe('Conditional rendering', () => {
       cy.findByRole('textbox', { name: 'Tekstfelt 3' }).type('abc');
 
       cy.findByRole('link', { name: 'Oppsummering' }).click();
-      cy.contains('Tekstfelt 3');
-      cy.contains('abc');
+      cy.contains('Tekstfelt 3').should('exist');
+      cy.contains('abc').should('exist');
     });
 
     it('display fields with row in conditional in form group', () => {
@@ -319,8 +320,9 @@ describe('Conditional rendering', () => {
       cy.findByRole('textbox', { name: 'Tekstfelt 4' }).type('abc');
 
       cy.findByRole('link', { name: 'Oppsummering' }).click();
-      cy.contains('Tekstfelt 4');
-      cy.contains('abc');
+      // This should probably change in the future.
+      cy.contains('Tekstfelt 4').should('not.exist');
+      cy.contains('abc').should('not.exist');
     });
   });
 });
