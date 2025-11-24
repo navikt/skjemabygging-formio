@@ -4794,14 +4794,14 @@
   },
   {
     "id": 368,
-    "key": "Fyll ut digitalt og send i posten",
+    "key": "Send i posten",
     "tag": "grensesnitt",
     "changedAt": "2025-06-02T14:28:34.813+02",
     "changedBy": "Rosseland, Rune",
     "revision": 1,
-    "nb": "Fyll ut digitalt og send i posten",
-    "nn": "Fyll ut digitalt og send i posten",
-    "en": "Fill out digitally and send by post",
+    "nb": "Send i posten",
+    "nn": "Send i posten",
+    "en": "Send by post",
     "publishedAt": "2025-08-19T12:51:40.639+02",
     "publishedBy": "Rosseland, Rune"
   },
