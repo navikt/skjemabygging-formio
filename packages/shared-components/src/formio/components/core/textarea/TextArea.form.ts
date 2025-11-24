@@ -14,17 +14,13 @@ const textAreaForm = () => {
       editFormDisplay.fieldSize(),
       editFormDisplay.description(),
       editFormDisplay.additionalDescription(),
-      editFormDisplay.rows(),
       editFormDisplay.autoExpand(),
-      editFormDisplay.autoComplete(),
-      editFormDisplay.spellCheck(),
     ]),
     validation([
       editFormValidation.required(),
       editFormValidation.minLength(),
       editFormValidation.maxLength(),
       editFormValidation.customValidation(),
-      editFormValidation.customError(),
     ]),
     api([
       editFormApi.key(),
