@@ -31,6 +31,29 @@
       "isAttachmentPanel": true,
       "components": [
         {
+          "id": "testvedlegg1",
+          "label": "Nav skjema test",
+          "type": "attachment",
+          "key": "navSkjemaTest",
+          "attachmentType": "default",
+          "properties": {
+            "vedleggstittel": "Kursbevis",
+            "vedleggskode": "K1",
+            "vedleggskjema": "nav100754"
+          },
+          "validate": {
+            "required": true
+          },
+          "attachmentValues": {
+            "leggerVedNaa": {
+              "enabled": true
+            },
+            "ettersender": {
+              "enabled": true
+            }
+          }
+        },
+        {
           "id": "ewftv5w",
           "label": "Annen dokumentasjon",
           "description": "Har du noen annen dokumentasjon du ønsker å legge ved?",

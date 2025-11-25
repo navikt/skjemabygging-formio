@@ -33,7 +33,12 @@ describe('Submission Type', () => {
         cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
         cy.clickNextStep();
 
-        cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
+        cy.findByRole('group', { name: 'Nav skjema test' }).within(() => {
+          cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).click();
+        });
+        cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+          cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
+        });
         cy.clickNextStep();
 
         cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions }).click();
@@ -41,24 +46,34 @@ describe('Submission Type', () => {
         cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).should('exist');
       });
 
+      it('should render attachment links when vedleggskjema field exists', () => {
+        cy.clickStart();
+        cy.findByRole('textbox', { name: 'Tekstfelt' }).type('test');
+        cy.clickNextStep();
+
+        cy.findByRole('group', { name: 'Nav skjema test' }).within(() => {
+          cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).click();
+        });
+
+        cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+          cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
+        });
+
+        cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.next }).click();
+
+        cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions }).click();
+
+        cy.get('a[href="/fyllut/nav100754"]')
+          .should('exist')
+          .should('have.attr', 'target', '_blank')
+          .should('contain', 'Nav skjema test');
+      });
+
       it('Show attachments', () => {
         cy.clickStart();
 
         cy.clickShowAllSteps();
         cy.findByRole('link', { name: 'Vedlegg' }).should('exist');
-      });
-
-      it('should render attachment links when vedleggskjema field exists', () => {
-        cy.visit('/fyllut/nav020805/dineOpplysninger?sub=paper');
-        cy.defaultWaits();
-        cy.clickShowAllSteps();
-        cy.findByRole('link', { name: 'Oppsummering' }).click();
-        cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions }).click();
-
-        cy.get('a[href="/fyllut/nav020806"]')
-          .should('exist')
-          .should('have.attr', 'target', '_blank')
-          .contains('Dokumentasjon på at du er sendt ut av arbeidsgiveren din (NAV 02-08.06)');
       });
     });
 
