@@ -6,7 +6,7 @@ const yourInformationPanelBuilder = () => {
     schema: {
       title: 'Dine opplysninger',
       type: 'panel',
-      key: 'dineOpplysninger',
+      key: 'personopplysninger',
       input: false,
       theme: 'default',
       components: [yourInformationBuilder().schema],
