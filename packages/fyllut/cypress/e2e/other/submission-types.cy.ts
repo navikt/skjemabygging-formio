@@ -59,9 +59,9 @@ describe('Submission Type', () => {
           cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
         });
 
-        cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.next }).click();
+        cy.clickNextStep();
 
-        cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions }).click();
+        cy.clickDownloadInstructions();
 
         cy.get('a[href="/fyllut/nav100754"]')
           .should('exist')
