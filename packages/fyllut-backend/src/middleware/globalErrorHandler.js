@@ -28,7 +28,13 @@ const globalErrorHandler = (err, req, res, _next) => {
     return;
   }
 
-  res.status(500);
+  if (err.http_status === 401 || err.status === 401) {
+    res.status(401);
+  } else if (err.http_status === 403 || err.status === 403) {
+    res.status(403);
+  } else {
+    res.status(500);
+  }
 
   if (err.render_html) {
     res.redirect(`${config.fyllutPath}/500?correlationId=${err.correlation_id}`);

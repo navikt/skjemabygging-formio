@@ -61,8 +61,18 @@ class NoLoginFileService {
         size: storrelse,
       };
     } else {
-      logger.debug('Failed to upload file for user with no login');
-      throw await responseToError(response, 'Feil ved opplasting av fil for uinnlogget søknad', true);
+      if (response.status === 403) {
+        logger.debug('Failed to upload file for user with no login, authorization failed');
+        throw await responseToError(
+          response,
+          'Feil ved opplasting av fil for uinnlogget søknad, autorisering feilet',
+          true,
+        );
+      } else {
+        logger.debug('Failed to upload file for user with no login');
+        logger.debug(JSON.stringify(response)); // TODO:  Remove after debugging
+        throw await responseToError(response, 'Feil ved opplasting av fil for uinnlogget søknad', true);
+      }
     }
   }
 

@@ -462,6 +462,16 @@ export default [
           body: { message: 'Feil ved opplasting av fil', errorCode: 'fileUploadError' },
         },
       },
+      {
+        id: 'forbidden',
+        type: 'json',
+        options: {
+          status: 403,
+          body: {
+            ok: false,
+          },
+        },
+      },
     ],
   },
   {
