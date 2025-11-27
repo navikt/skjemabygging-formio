@@ -1,7 +1,11 @@
-import { Component } from '@navikt/skjemadigitalisering-shared-domain';
-import { FormContextType } from '../context/form/FormContext';
-import { LanguageContextType } from '../context/languages/languages-context';
-import { PanelValidation } from '../util/form/panel-validation/panelValidation';
+import {
+  Component,
+  FormPropertiesType,
+  PanelValidation,
+  Submission,
+  TranslateFunction,
+} from '@navikt/skjemadigitalisering-shared-domain';
+import { AppConfigContextType } from '../context/config/configContext';
 
 type PdfListElement = PdfData | PdfData[] | null;
 
@@ -39,6 +43,11 @@ interface FormComponentProps {
   submissionPath: string;
   componentRegistry: FormComponentRegistry;
   panelValidationList?: PanelValidation[];
+  submission: Submission;
+  translate: TranslateFunction;
+  currentLanguage: string;
+  formProperties: FormPropertiesType;
+  appConfig: AppConfigContextType;
 }
 
 interface FormComponentRegistry {
@@ -49,8 +58,9 @@ interface PdfComponentProps {
   component: Component;
   submissionPath: string;
   componentRegistry: PdfComponentRegistry;
-  formContextValue: FormContextType;
-  languagesContextValue: LanguageContextType;
+  submission: Submission;
+  translate: TranslateFunction;
+  currentLanguage: string;
 }
 
 interface PdfComponentRegistry {

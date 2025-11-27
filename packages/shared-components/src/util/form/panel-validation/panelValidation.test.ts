@@ -1,5 +1,5 @@
-import { Component, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
-import { PanelValidation, findFormStartingPoint } from './panelValidation';
+import { Component, NavFormType, PanelValidation } from '@navikt/skjemadigitalisering-shared-domain';
+import { findFormStartingPoint } from './panelValidation';
 
 const input = (key) => ({ key, input: true }) as Component;
 
