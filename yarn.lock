@@ -1074,10 +1074,10 @@
   resolved "https://npm.pkg.github.com/download/@navikt/fnrvalidator/2.1.5/e33cbc5693b14419bbcf4d5daee2ac9eeec532e5#e33cbc5693b14419bbcf4d5daee2ac9eeec532e5"
   integrity sha512-uHzoL3ZTYwrF7OTKaihNf9xHH6S9WnGqz420HX4lEX+yu5367l+dYxI5OIRVT5MKWEDQ4DCVSAuJhoWValv6Fw==
 
-"@navikt/nav-dekoratoren-moduler@^3.5.0":
-  version "3.5.0"
-  resolved "https://npm.pkg.github.com/download/@navikt/nav-dekoratoren-moduler/3.5.0/6df0830237b010f08b3a2a302013fd0edafe77f7#6df0830237b010f08b3a2a302013fd0edafe77f7"
-  integrity sha512-fi0XWVT97MedJJ5BrOjl0Ymj2QthTdbNNzlXbtM/H5o2/kC1yEbpf5odJOoM557x3Z292xcxeG+ISznLn1dckQ==
+"@navikt/nav-dekoratoren-moduler@^3.6.0":
+  version "3.6.0"
+  resolved "https://npm.pkg.github.com/download/@navikt/nav-dekoratoren-moduler/3.6.0/69947afcefe2052f16f4a3cbdb96aac44b475d50#69947afcefe2052f16f4a3cbdb96aac44b475d50"
+  integrity sha512-GjVnQTbNTVz5v6x7lDIVf/Xna03yPtFGSoqScroWII/IV59JXga5i7vR4XYnsDBNvMAyDuMEgMfiOfRTZt1Nug==
   dependencies:
     js-cookie "^3.0.5"
 
