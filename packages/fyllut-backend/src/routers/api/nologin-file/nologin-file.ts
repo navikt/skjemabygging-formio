@@ -13,7 +13,7 @@ const nologinFile = {
       if (!file?.buffer) {
         return next(new FunctionalError('Error: Ingen fil sendt med forespørselen', true));
       }
-      console.log(file, accessToken, attachmentId, noLoginContext?.innsendingsId);
+
       const result = await noLoginFileService.postFile(file, accessToken, attachmentId, noLoginContext?.innsendingsId);
       res.status(201).json(result);
     } catch (error) {
