@@ -10,6 +10,7 @@ const {
   isDevelopment,
   frontendLoggerConfig,
   gitVersion,
+  isMocksEnabled,
 } = configObject;
 
 const config = {
@@ -21,6 +22,7 @@ const config = {
       FEATURE_TOGGLES: featureToggles,
       isDelingslenke,
       isDevelopment,
+      isMocksEnabled,
       isLoggedIn,
       gitVersion,
       loggerConfig: frontendLoggerConfig,

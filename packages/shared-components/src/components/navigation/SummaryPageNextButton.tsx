@@ -67,27 +67,31 @@ export function SummaryPageNextButton({
     try {
       setLoading(true);
       await submitSoknad(submission);
-      logEvent?.({
-        name: 'skjema fullført',
-        data: {
-          skjemaId: form.properties.skjemanummer,
-          skjemanavn: translate(form.title),
-          tema: form.properties.tema,
-          language: currentLanguage,
-          submissionMethod,
-        },
-      });
+      if (submissionMethod === 'digitalnologin') {
+        logEvent?.({
+          name: 'skjema fullført',
+          data: {
+            skjemaId: form.properties.skjemanummer,
+            skjemanavn: translate(form.title),
+            tema: form.properties.tema,
+            language: currentLanguage,
+            submissionMethod,
+          },
+        });
+      }
     } catch (err: any) {
-      logEvent?.({
-        name: 'skjemainnsending feilet',
-        data: {
-          skjemaId: form.properties.skjemanummer,
-          skjemanavn: translate(form.title),
-          tema: form.properties.tema,
-          language: currentLanguage,
-          submissionMethod,
-        },
-      });
+      if (submissionMethod === 'digitalnologin') {
+        logEvent?.({
+          name: 'skjemainnsending feilet',
+          data: {
+            skjemaId: form.properties.skjemanummer,
+            skjemanavn: translate(form.title),
+            tema: form.properties.tema,
+            language: currentLanguage,
+            submissionMethod,
+          },
+        });
+      }
       setError(err);
       setLoading(false);
     }

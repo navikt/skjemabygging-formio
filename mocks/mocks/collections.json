@@ -29,7 +29,8 @@
       "post-nologin-soknad:success",
       "foersteside:success",
       "merge-files:success",
-      "team-logs:success"
+      "team-logs:success",
+      "post-umami-event:success"
     ]
   }
 ]

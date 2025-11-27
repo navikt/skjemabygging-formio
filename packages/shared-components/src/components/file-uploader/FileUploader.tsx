@@ -49,12 +49,12 @@ const FileUploader = ({
         type: 'vedlegg',
         skjemaId: form.properties.skjemanummer,
         tema: form.properties.tema,
-        tittel: formAttachment?.tittel ?? '',
+        tittel: translate(formAttachment?.label) ?? '',
         attachmentId,
         submissionMethod,
       },
     });
-  }, [attachmentId, initialAttachment, form, submissionMethod, logEvent]);
+  }, [attachmentId, initialAttachment, form, submissionMethod, translate, logEvent]);
 
   const label = requireAttachmentTitle
     ? translate(attachment?.title)

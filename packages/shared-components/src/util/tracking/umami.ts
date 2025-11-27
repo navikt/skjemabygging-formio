@@ -8,6 +8,15 @@ export type LogEventFunction = (event: FyllutUmamiEvent) => Promise<void>;
 export const umamiEventHandler =
   (config: Record<string, string | boolean | object>, frontendLogger: FrontendLogger): LogEventFunction =>
   (event: FyllutUmamiEvent) => {
+    if (config.isMocksEnabled) {
+      return (async () => {
+        await fetch('http://localhost:3300/umami', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(event),
+        });
+      })();
+    }
     return (async () => {
       const isGcp = config?.NAIS_CLUSTER_NAME === 'prod-gcp' || config?.NAIS_CLUSTER_NAME === 'dev-gcp';
       const applicationName = config?.applicationName as string;
