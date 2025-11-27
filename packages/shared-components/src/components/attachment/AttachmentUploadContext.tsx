@@ -230,7 +230,6 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
         addFileToSubmission(result);
       }
     } catch (error: any) {
-      setNologinToken(undefined);
       addFileInProgress(attachmentId, { ...file, error: true, reasons: ['uploadHttpError'] });
       if (isAuthenticationError(error)) {
         handleAuthError();

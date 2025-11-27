@@ -61,22 +61,8 @@ class NoLoginFileService {
         size: storrelse,
       };
     } else {
-      if (response.status === 403) {
-        logger.debug('Failed to upload file for user with no login, authorization failed');
-        throw await responseToError(
-          response,
-          'Feil ved opplasting av fil for uinnlogget søknad, autorisering feilet',
-          true,
-        );
-      }
-
-      const error = await responseToError(response, 'Feil ved opplasting av fil for uinnlogget søknad', true);
-      if (response.status === 400 && error.http_response_body?.errorCode === 'illegalAction.fileWithTooManyPages') {
-        error.error_code = 'FILE_TOO_MANY_PAGES';
-      }
-
       logger.debug('Failed to upload file for user with no login');
-      throw error;
+      throw await responseToError(response, 'Feil ved opplasting av fil for uinnlogget søknad', true);
     }
   }
 
