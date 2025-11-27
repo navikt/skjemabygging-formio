@@ -14,6 +14,15 @@ describe('Form navigation', () => {
     cy.mocksRestoreRouteVariants();
   });
 
+  const selectPaperAttachments = () => {
+    cy.findByRole('group', { name: 'Nav skjema test' }).within(() => {
+      cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).click();
+    });
+    cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+      cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
+    });
+  };
+
   describe('Type: Paper', () => {
     beforeEach(() => {
       cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application').as('downloadPdf');
@@ -33,7 +42,7 @@ describe('Form navigation', () => {
 
       cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
       cy.url().should('include', '/fyllut/stpaper/vedlegg?sub=paper');
-      cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
+      selectPaperAttachments();
       cy.findByRole('link', { name: 'Neste steg' }).click();
 
       cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
@@ -67,7 +76,7 @@ describe('Form navigation', () => {
 
       cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
       cy.url().should('include', '/fyllut/stpaper/vedlegg?sub=paper');
-      cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
+      selectPaperAttachments();
       cy.findByRole('link', { name: 'Neste steg' }).click();
 
       cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
@@ -94,7 +103,7 @@ describe('Form navigation', () => {
 
       cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
       cy.url().should('include', '/fyllut/stpaper/vedlegg?sub=paper');
-      cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
+      selectPaperAttachments();
       cy.findByRole('link', { name: 'Neste steg' }).click();
 
       cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
@@ -143,7 +152,7 @@ describe('Form navigation', () => {
 
       cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
       cy.url().should('include', '/fyllut/stpaper/vedlegg?sub=paper');
-      cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
+      selectPaperAttachments();
       cy.findByRole('button', { name: 'Avbryt og slett' }).click();
       cy.findByRole('button', { name: 'Nei, fortsett utfylling' }).click();
       cy.findByRole('link', { name: 'Neste steg' }).click();
