@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { noLoginFileService } from '../../../services';
+import { HttpError } from '../../../utils/errors/HttpError';
 
 const nologinFile = {
   post: async (req: Request, res: Response, next: NextFunction) => {
@@ -16,16 +17,18 @@ const nologinFile = {
       const result = await noLoginFileService.postFile(file, accessToken, attachmentId, noLoginContext?.innsendingsId);
       res.status(201).json(result);
     } catch (error: any) {
-      console.log('!!!!!!!!!!!!!!!!');
-      console.log(error);
-      if (error['http_status'] === 403) {
+      if (error instanceof HttpError && error.http_status === 403) {
         return res.status(403).json({
           message: 'Feil ved opplasting av fil for uinnlogget søknad, autorisering feilet',
         });
-      } else if (error['http_status'] === 400) {
+      } else if (
+        error instanceof HttpError &&
+        error.http_status === 400 &&
+        error.http_response_body.errorCode === 'illegalAction.fileWithTooManyPages'
+      ) {
         return res.status(400).json({
           message: 'Feil ved opplasting av fil for uinnlogget søknad.',
-          error_code: 'FILE_TOO_MANY_PAGES',
+          errorCode: 'FILE_TOO_MANY_PAGES',
         });
       }
 
