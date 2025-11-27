@@ -1,4 +1,10 @@
-import { Language, MellomlagringError, ReceiptSummary, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  formioFormsApiUtils,
+  Language,
+  MellomlagringError,
+  ReceiptSummary,
+  Submission,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import React, { createContext, useCallback, useContext, useEffect, useReducer, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router';
 import { postNologinSoknad } from '../../api/sendinn/nologin';
@@ -11,6 +17,7 @@ import {
   updateSoknad,
   updateUtfyltSoknad,
 } from '../../api/sendinn/sendInnSoknad';
+import renderPdfForm from '../../form-components/RenderPdfForm';
 import { b64toBlob } from '../../util/blob/blob';
 import { useAppConfig } from '../config/configContext';
 import { useForm } from '../form/FormContext';
@@ -48,11 +55,9 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const formContextValue = useForm();
-  const { setSubmission, form, submission } = formContextValue;
+  const { setSubmission, form, submission, activeComponents, activeAttachmentUploadsPanel } = useForm();
   const soknadNotFoundUrl = `${baseUrl}/soknad-ikke-funnet`;
-  const languagesContextValue = useLanguages();
-  const { translationsForNavForm: translations, translate } = languagesContextValue;
+  const { translationsForNavForm: translations, translate, currentLanguage } = useLanguages();
   const innsendingsIdFromParams = searchParams.get('innsendingsId');
 
   const isMellomlagringAvailable = app === 'fyllut' && submissionMethod === 'digital';
@@ -258,8 +263,16 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
           submission,
           language,
           translation,
-          formContextValue,
-          languagesContextValue,
+          renderPdfForm({
+            activeComponents,
+            activeAttachmentUploadsPanel,
+            submission,
+            form: formioFormsApiUtils.mapNavFormToForm(form),
+            currentLanguage,
+            translate,
+            appConfig,
+            submissionMethod,
+          }),
         );
         logEvent?.({
           name: 'skjema fullført',
@@ -299,11 +312,12 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
       appConfig,
       nologinToken,
       form,
-      formContextValue,
-      languagesContextValue,
-      logEvent,
+      activeComponents,
+      activeAttachmentUploadsPanel,
+      currentLanguage,
       translate,
       submissionMethod,
+      logEvent,
       setSubmission,
       navigate,
       searchParams,
@@ -327,8 +341,16 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
           translation,
           innsendingsId,
           setRedirectLocation,
-          formContextValue,
-          languagesContextValue,
+          renderPdfForm({
+            activeComponents,
+            activeAttachmentUploadsPanel,
+            submission,
+            form: formioFormsApiUtils.mapNavFormToForm(form),
+            currentLanguage,
+            translate,
+            appConfig,
+            submissionMethod,
+          }),
         );
         logger?.info(`${innsendingsId}: Mellomlagring was submitted`);
         if (redirectLocation) {
@@ -352,7 +374,18 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         }
       }
     },
-    [appConfig, form, formContextValue, innsendingsId, isMellomlagringReady, languagesContextValue, logger],
+    [
+      activeAttachmentUploadsPanel,
+      activeComponents,
+      appConfig,
+      currentLanguage,
+      form,
+      innsendingsId,
+      isMellomlagringReady,
+      logger,
+      submissionMethod,
+      translate,
+    ],
   );
 
   const submitSoknad = async (appSubmission: Submission): Promise<void> => {

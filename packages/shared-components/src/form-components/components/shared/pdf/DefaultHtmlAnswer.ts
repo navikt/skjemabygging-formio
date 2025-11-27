@@ -1,8 +1,8 @@
 import { PdfComponentProps } from '../../../types';
 
-const DefaultHtmlAnswer = ({ component, languagesContextValue }: PdfComponentProps) => {
+const DefaultHtmlAnswer = (props: PdfComponentProps) => {
+  const { component, translate } = props;
   const { textDisplay, content } = component;
-  const { translate } = languagesContextValue;
 
   if (!content || textDisplay === undefined || textDisplay === 'form') {
     return null;

@@ -105,6 +105,14 @@ Cypress.Commands.add('clickSendNav', () => {
   cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.sendToNav }).click();
 });
 
+Cypress.Commands.add('clickDownloadInstructions', () => {
+  cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions }).click();
+});
+
+Cypress.Commands.add('clickDownloadApplication', () => {
+  cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).click();
+});
+
 Cypress.Commands.add('verifySendInnRedirect', () => {
   return cy.origin(Cypress.env('SEND_INN_FRONTEND'), () => {
     cy.contains('Send Inn Frontend');

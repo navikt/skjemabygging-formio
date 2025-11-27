@@ -21,7 +21,6 @@ import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
 import { KeyOrFocusComponentId } from '../../formio/overrides/wizard-overrides.js/focusOnComponent';
 import { LoadingComponent } from '../../index';
-import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
 import urlUtils from '../../util/url/url';
 import FormMainContent from '../FormMainContent';
 import FormErrorSummary from './FormErrorSummary';
@@ -40,7 +39,6 @@ export const FillInFormPage = () => {
   const { currentLanguage, translationsForNavForm, translate } = useLanguages();
   const [showModal, setShowModal] = useState<ModalType>();
   const [formNavigationPaths, setFormNavigationPaths] = useState<FormNavigationPaths>({});
-  const focusMainContentRef = useRef<boolean>(false);
   const [errors, setErrors] = useState<ComponentError[]>([]);
   const fyllutEvents = useMemo(() => new EventEmitter<FyllutEvent>(), []);
   const errorSummaryRef = useRef<HTMLElement | null>(null);
@@ -63,19 +61,10 @@ export const FillInFormPage = () => {
   const navigateTo = useCallback<(to: To) => void>(
     (to: To) => {
       logger?.debug(`FillInFormPage: navigateTo`, { to });
-      focusMainContentRef.current = true;
       navigate(to);
     },
     [logger, navigate],
   );
-
-  useEffect(() => {
-    if (focusMainContentRef.current) {
-      logger?.debug(`FillInFormPage: current panel has changed, scrolling to and focus main content`);
-      scrollToAndSetFocus('#maincontent', 'start');
-      focusMainContentRef.current = false;
-    }
-  }, [formNavigationPaths.curr, logger]);
 
   useEffect(() => {
     setFormProgressVisible(true);

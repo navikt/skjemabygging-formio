@@ -26,9 +26,7 @@ const textFieldForm = () => {
       editFormValidation.digitsOnly(),
       editFormValidation.minLength(),
       editFormValidation.maxLength(),
-      editFormValidation.customMessage(),
       editFormValidation.customValidation(),
-      editFormValidation.customError(),
     ]),
     api([
       editFormApi.key(),

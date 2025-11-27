@@ -71,6 +71,7 @@ import type {
   I18nTranslations,
   Language,
   ScopedTranslationMap,
+  TranslateFunction,
   TranslationResource,
   TranslationScope,
   TranslationTag,
@@ -121,6 +122,7 @@ import {
 } from './summary/FormSummaryType';
 import MockedComponentObjectForTest from './summary/MockedComponentObjectForTest';
 import formSummaryUtil from './summary/formSummaryUtil';
+import type PanelValidation from './summary/panelValidation';
 import { TextSize, TextSizeShort } from './text';
 import TEXTS from './texts';
 import externalStorageTexts, { Tkey } from './texts/externalStorage';
@@ -262,6 +264,7 @@ export type {
   NewFormSignatureType,
   Operator,
   Panel,
+  PanelValidation,
   PrefillAddress,
   PrefillData,
   PrefillKey,
@@ -307,6 +310,7 @@ export type {
   TextSize,
   TextSizeShort,
   Tkey,
+  TranslateFunction,
   TranslationLang,
   TranslationResource,
   TranslationScope,

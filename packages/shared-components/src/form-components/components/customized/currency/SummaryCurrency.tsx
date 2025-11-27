@@ -1,13 +1,12 @@
 import { FormSummary } from '@navikt/ds-react';
 import { currencyUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import { useForm } from '../../../../context/form/FormContext';
 import { FormComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 import DefaultLabel from '../../shared/form-summary/DefaultLabel';
 
-const SummaryCurrency = ({ component, submissionPath }: FormComponentProps) => {
+const SummaryCurrency = (props: FormComponentProps) => {
+  const { submission, submissionPath, component } = props;
   const { currency, inputType } = component;
-  const { submission } = useForm();
 
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
 
@@ -23,7 +22,7 @@ const SummaryCurrency = ({ component, submissionPath }: FormComponentProps) => {
 
   return (
     <FormSummary.Answer>
-      <DefaultLabel component={component} />
+      <DefaultLabel {...props} />
       <FormSummary.Value>{currencyValue}</FormSummary.Value>
     </FormSummary.Answer>
   );

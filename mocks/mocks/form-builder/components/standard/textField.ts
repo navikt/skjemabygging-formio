@@ -1,44 +1,21 @@
-import { validate as createValidate, ValidateType } from './index';
-import { generateId, trimAndLowerCase } from './shared/utils';
+import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
-export interface TextFieldType {
-  label: string;
-  key?: string;
-  description?: string;
-  additionalDescriptionText?: string;
-  additionalDescriptionLabel?: string;
+interface TextFieldType extends BaseComponentType {
   autocomplete?: string;
-  spellcheck?: boolean;
+  spellCheck?: boolean;
   calculateValue?: string;
-  validate?: ValidateType;
 }
 
-const textField = (params: TextFieldType) => {
-  const {
-    label,
-    key,
-    description,
-    additionalDescriptionText,
-    additionalDescriptionLabel,
-    autocomplete,
-    spellcheck,
-    calculateValue,
-    validate,
-  } = params ?? {};
+const textField = (props: TextFieldType) => {
+  const { spellCheck, calculateValue, autocomplete } = props ?? {};
 
   return {
     ...staticDefaultValues,
-    id: generateId(),
-    navId: generateId(),
-    key: key ?? trimAndLowerCase(label),
-    label,
-    description: description ?? '',
-    additionalDescriptionLabel: additionalDescriptionLabel ?? '',
-    additionalDescriptionText: additionalDescriptionText ?? '',
-    autocomplete: autocomplete ?? '',
-    spellcheck: spellcheck ?? false,
+    ...baseComponent(props),
+    spellCheck: spellCheck ?? false,
     calculateValue: calculateValue ?? '',
-    validate: validate ?? createValidate(),
+    autocomplete: autocomplete ?? 'off',
+    readOnly: !!calculateValue,
   };
 };
 
@@ -84,7 +61,6 @@ const staticDefaultValues = {
   properties: {},
   validateOn: 'blur',
   clearOnHide: true,
-  conditional: {},
   customClass: '',
   inputFormat: 'plain',
   placeholder: '',
@@ -93,7 +69,6 @@ const staticDefaultValues = {
   showCharCount: false,
   showWordCount: false,
   calculateServer: false,
-  customConditional: '',
   allowMultipleMasks: false,
   customDefaultValue: '',
   allowCalculateOverride: false,
