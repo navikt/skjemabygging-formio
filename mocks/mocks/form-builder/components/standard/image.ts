@@ -12,7 +12,7 @@ const staticDefaultValues = {
   hash: '',
   name: 'logo-f2808e10-5924-48d4-a16c-b2b531a59ee9.jpg',
   size: 51653,
-  type: 'image/jpeg',
+  type: 'image',
   storage: 'base64',
   originalName: 'logo.jpg',
   input: false,

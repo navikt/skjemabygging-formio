@@ -55,7 +55,7 @@ const dataFetcher = (componentPath: string | undefined, submission: Submission):
       }
       return undefined;
     },
-    getAllSelected: () => getSelectedItems(apiResult.data || [], userData),
+    getAllSelected: () => getSelectedItems(apiResult.data || [], userData ?? {}),
     apiResult,
   };
 };

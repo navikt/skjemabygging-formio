@@ -1,6 +1,4 @@
 import { Component, Submission, SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { FormContextType } from '../../../../context/form/FormContext';
-import { LanguageContextType } from '../../../../context/languages/languages-context';
 import { PdfComponentProps } from '../../../types';
 import PdfAttachmentUpload from './PdfAttachmentUpload';
 import { component as attachmentOtherOld } from './testdata/attachment-old-other';
@@ -9,15 +7,12 @@ import { component as attachmentOther } from './testdata/attachment-type-other';
 import { component as attachment } from './testdata/attachment-with-the-lot';
 
 const createProps = (component: Component, submission: Partial<Submission> = { data: {} }): PdfComponentProps => ({
-  formContextValue: {
-    submission,
-  } as unknown as FormContextType,
-  languagesContextValue: {
-    translate: (textOrKey) => textOrKey,
-  } as LanguageContextType,
+  submission: submission as Submission,
+  translate: (textOrKey?: string) => textOrKey!,
   component,
   submissionPath: '',
   componentRegistry: {},
+  currentLanguage: 'nb',
 });
 
 describe('PdfAttachmentUpload', () => {
