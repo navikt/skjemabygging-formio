@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { noLoginFileService } from '../../../services';
-import { responseToError } from '../../../utils/errorHandling';
+import { FunctionalError } from '../../../utils/errors/FunctionalError';
 
 const nologinFile = {
   post: async (req: Request, res: Response, next: NextFunction) => {
@@ -11,8 +11,9 @@ const nologinFile = {
       const file = req.file;
 
       if (!file?.buffer) {
-        return next(responseToError('Error: Ingen fil sendt med forespørselen', 'Ingen fil funnet', true));
+        return next(new FunctionalError('Error: Ingen fil sendt med forespørselen', true));
       }
+      console.log(file, accessToken, attachmentId, noLoginContext?.innsendingsId);
       const result = await noLoginFileService.postFile(file, accessToken, attachmentId, noLoginContext?.innsendingsId);
       res.status(201).json(result);
     } catch (error) {

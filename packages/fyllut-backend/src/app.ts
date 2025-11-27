@@ -7,7 +7,7 @@ import { NaisCluster } from './config/nais-cluster';
 import { buildDirectory } from './context.js';
 import { setupDeprecatedEndpoints } from './deprecatedEndpoints.js';
 import expressJsonMetricHandler from './middleware/expressJsonMetricHandler';
-import globalErrorHandler from './middleware/globalErrorHandler.js';
+import globalErrorHandler from './middleware/globalErrorHandler';
 import httpRequestLogger from './middleware/httpRequestLogger.js';
 import { stripTrailingSlash } from './middleware/stripTrailingSlash';
 import renderIndex from './renderIndex';

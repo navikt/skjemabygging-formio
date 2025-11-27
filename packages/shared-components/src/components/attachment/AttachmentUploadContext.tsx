@@ -155,6 +155,10 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
     return error instanceof http.HttpError && (error.status === 401 || error.status === 403);
   };
 
+  const isTooManyPagesError = (error: any) => {
+    return error instanceof http.HttpError && error.errorCode === 'FILE_TOO_MANY_PAGES';
+  };
+
   const handleAuthError = () => {
     setNologinToken(undefined);
     setSubmission(undefined);
@@ -230,6 +234,10 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
       addFileInProgress(attachmentId, { ...file, error: true, reasons: ['uploadHttpError'] });
       if (isAuthenticationError(error)) {
         handleAuthError();
+      } else if (isTooManyPagesError(error)) {
+        addError(attachmentId, translate(TEXTS.statiske.uploadFile.uploadFileToManyPagesError), 'FILE');
+      } else {
+        addError(attachmentId, translate(TEXTS.statiske.uploadFile.uploadFileError), 'FILE');
       }
     }
   };

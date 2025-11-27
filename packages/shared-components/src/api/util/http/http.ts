@@ -1,7 +1,10 @@
+import { ErrorCode } from '@navikt/skjemadigitalisering-shared-domain';
+
 enum MimeType {
   JSON = 'application/json',
   TEXT = 'text/plain',
   PDF = 'application/pdf',
+  MULTIPART_FORM_DATA = 'multipart/form-data',
 }
 
 enum SubmissionMethodType {
@@ -25,10 +28,12 @@ interface FetchOptions {
 
 class HttpError extends Error {
   public readonly status: number;
+  public readonly errorCode: ErrorCode | undefined;
 
-  constructor(message, status) {
+  constructor(message: string, status: number, errorCode?: ErrorCode | undefined) {
     super(message);
     this.status = status;
+    this.errorCode = errorCode;
   }
 }
 
@@ -62,6 +67,19 @@ const post = async <T>(url: string, body: object, headers?: FetchHeader, opts?: 
   return await handleResponse(response, opts);
 };
 
+const postFile = async <T>(url: string, body: FormData, headers?: FetchHeader, opts?: FetchOptions): Promise<T> => {
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      Accept: MimeType.JSON,
+      ...headers,
+    },
+    body,
+  });
+
+  return await handleResponse(response, opts);
+};
+
 const httpDelete = async <T>(url: string, body?: object, headers?: FetchHeader, opts?: FetchOptions): Promise<T> => {
   const response = await fetch(url, {
     method: 'DELETE',
@@ -85,23 +103,27 @@ const put = async <T>(url: string, body: object, headers?: FetchHeader, opts?: F
 const handleResponse = async (response: Response, opts?: FetchOptions) => {
   if (!response.ok) {
     // Formio API server returns status 440 when token is expired
-    if (response.status === 401 || response.status === 440) {
+    if (response.status === 401 || response.status === 403 || response.status === 440) {
       throw new UnauthenticatedError(response.statusText);
     } else if (response.status === 429) {
       throw new TooManyRequestsError(response.statusText);
     }
 
     let errorMessage: string = '';
+    let errorCode;
     if (isResponseType(response, MimeType.JSON)) {
       const responseJson = await response.json();
       if (responseJson.message) {
         errorMessage = responseJson.message;
       }
+      if (responseJson.errorCode) {
+        errorCode = responseJson.errorCode;
+      }
     } else if (isResponseType(response, MimeType.TEXT)) {
       errorMessage = await response.text();
     }
 
-    throw new HttpError(errorMessage || response.statusText, response.status);
+    throw new HttpError(errorMessage || response.statusText, response.status, errorCode);
   }
 
   if (opts?.redirectToLocation || opts?.setRedirectLocation) {
@@ -136,6 +158,7 @@ const http = {
   get,
   post,
   put,
+  postFile,
   delete: httpDelete,
   MimeType,
   HttpError,

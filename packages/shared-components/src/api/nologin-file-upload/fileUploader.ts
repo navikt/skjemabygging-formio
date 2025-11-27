@@ -1,48 +1,29 @@
+import { UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
 import { AppConfigContextType } from '../../context/config/configContext';
+import { FetchHeader, http } from '../../index';
 
-const getHeaders = (token?: string): HeadersInit => {
-  const headers: HeadersInit = {};
+const getHeaders = (token?: string): FetchHeader => {
+  const headers: FetchHeader = {};
   if (token) {
-    headers['NologinToken'] = token;
+    headers.NologinToken = token;
   }
   return headers;
 };
 
-const postFile = async (url: string, file: File, config: AppConfigContextType, token?: string) => {
-  const { HttpError } = config.http || {};
-
+const postFile = async (
+  url: string,
+  file: File,
+  config: AppConfigContextType,
+  token?: string,
+): Promise<UploadedFile> => {
   const formData = new FormData();
   formData.append('filinnhold', file);
 
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: getHeaders(token),
-    body: formData,
-  });
-  if (!response.ok) {
-    if (HttpError) {
-      throw new HttpError(`Failed to upload file: ${response.statusText}`, response.status);
-    }
-    throw new Error(`Failed to upload file: ${response.statusText}`);
-  }
-
-  return response.json();
+  return await http.postFile<UploadedFile>(url, formData, getHeaders(token));
 };
 
-const deleteFiles = async (url: string, config: AppConfigContextType, token?: string) => {
-  const { HttpError } = config.http || {};
-
-  const response = await fetch(url, {
-    method: 'DELETE',
-    headers: getHeaders(token),
-  });
-
-  if (!response.ok) {
-    if (HttpError) {
-      throw new HttpError(`Failed to delete files: ${response.statusText}`, response.status);
-    }
-    throw new Error(`Failed to delete files: ${response.statusText}`);
-  }
+const deleteFiles = async (url: string, config: AppConfigContextType, token?: string): Promise<void> => {
+  return await http.delete(url, undefined, getHeaders(token));
 };
 
 export { deleteFiles, postFile };

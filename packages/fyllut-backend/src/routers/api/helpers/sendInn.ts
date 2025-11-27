@@ -6,6 +6,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { logger } from '../../../logger';
 import { base64EncodeByteArray } from '../../../utils/base64';
+import { HttpError } from '../../../utils/errors/HttpError';
 
 interface HovedDokument {
   vedleggsnr: string;
@@ -151,9 +152,9 @@ const assembleSendInnSoknadBody = (
   return body;
 };
 
-const isNotFound = (response: { status: number }, responseError: Error | undefined) =>
+const isNotFound = (response: { status: number }, responseError: HttpError | undefined) =>
   response.status === 404 ||
-  responseError?.['http_response_body']?.errorCode === 'illegalAction.applicationSentInOrDeleted';
+  responseError?.http_response_body?.errorCode === 'illegalAction.applicationSentInOrDeleted';
 
 export {
   assembleSendInnSoknadBody,
