@@ -25,12 +25,12 @@ export function SummaryPageNextButton({
   isValid,
   setSubmitError,
 }: Props) {
-  const { app, submissionMethod, logEvent } = useAppConfig();
+  const { app, submissionMethod } = useAppConfig();
   const canSubmit =
     !panelValidationList || panelValidationList.every((panelValidation) => !panelValidation.hasValidationErrors);
   const navigate = useNavigate();
   const { search } = useLocation();
-  const { translate, currentLanguage } = useLanguages();
+  const { translate } = useLanguages();
   const { submitSoknad } = useSendInn();
   const [loading, setLoading] = useState(false);
   const submissionTypes = form?.properties.submissionTypes;
@@ -67,31 +67,7 @@ export function SummaryPageNextButton({
     try {
       setLoading(true);
       await submitSoknad(submission);
-      if (submissionMethod === 'digitalnologin') {
-        logEvent?.({
-          name: 'skjema fullført',
-          data: {
-            skjemaId: form.properties.skjemanummer,
-            skjemanavn: translate(form.title),
-            tema: form.properties.tema,
-            language: currentLanguage,
-            submissionMethod,
-          },
-        });
-      }
     } catch (err: any) {
-      if (submissionMethod === 'digitalnologin') {
-        logEvent?.({
-          name: 'skjemainnsending feilet',
-          data: {
-            skjemaId: form.properties.skjemanummer,
-            skjemanavn: translate(form.title),
-            tema: form.properties.tema,
-            language: currentLanguage,
-            submissionMethod,
-          },
-        });
-      }
       setError(err);
       setLoading(false);
     }
