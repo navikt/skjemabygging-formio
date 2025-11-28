@@ -1,5 +1,11 @@
 import { Alert } from '@navikt/ds-react';
-import { NavFormType, navFormUtils, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  NavFormType,
+  navFormUtils,
+  PanelValidation,
+  Submission,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import { useLocation } from 'react-router';
 import EditAnswersButton from '../../../components/button/navigation/edit-answers/EditAnswersButton';
@@ -14,7 +20,6 @@ import { useAppConfig } from '../../../context/config/configContext';
 import { useForm } from '../../../context/form/FormContext';
 import { useLanguages } from '../../../context/languages';
 import { useSendInn } from '../../../context/sendInn/sendInnContext';
-import { PanelValidation } from '../../../util/form/panel-validation/panelValidation';
 
 export interface Props {
   form: NavFormType;

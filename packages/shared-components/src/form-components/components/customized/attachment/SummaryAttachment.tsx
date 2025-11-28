@@ -1,13 +1,10 @@
 import { FormSummary } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useForm } from '../../../../context/form/FormContext';
-import { useLanguages } from '../../../../context/languages';
 import { FormComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 
-const SummaryAttachment = ({ component, submissionPath }: FormComponentProps) => {
-  const { form, submission } = useForm();
-  const { translate } = useLanguages();
+const SummaryAttachment = (props: FormComponentProps) => {
+  const { submission, submissionPath, translate, component, formProperties } = props;
   const { label } = component;
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
 
@@ -21,10 +18,10 @@ const SummaryAttachment = ({ component, submissionPath }: FormComponentProps) =>
       <FormSummary.Value>
         {translate(TEXTS.statiske.attachment[value.key])}
         {value.additionalDocumentation && <div>{translate(value.additionalDocumentation)}</div>}
-        {value.showDeadline && form.properties?.ettersendelsesfrist && (
+        {value.showDeadline && formProperties?.ettersendelsesfrist && (
           <div>
             {translate(TEXTS.statiske.attachment.deadline, {
-              deadline: form.properties?.ettersendelsesfrist,
+              deadline: formProperties?.ettersendelsesfrist,
             })}
           </div>
         )}

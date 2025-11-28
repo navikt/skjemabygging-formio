@@ -2,8 +2,8 @@ import { FormComponentProps } from '../../../types';
 import { DefaultAnswer } from '../../shared/form-summary';
 import { formatOrganizationNumber } from './organizationNumberUtils';
 
-const SummaryOrganizationNumber = ({ component, submissionPath }: FormComponentProps) => {
-  return <DefaultAnswer component={component} submissionPath={submissionPath} valueFormat={formatOrganizationNumber} />;
+const SummaryOrganizationNumber = (props: FormComponentProps) => {
+  return <DefaultAnswer {...props} valueFormat={formatOrganizationNumber} />;
 };
 
 export default SummaryOrganizationNumber;

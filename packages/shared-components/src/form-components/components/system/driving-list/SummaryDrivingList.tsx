@@ -1,16 +1,12 @@
 import { FormSummary, List } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useForm } from '../../../../context/form/FormContext';
-import { useLanguages } from '../../../../context/languages';
 import { FormComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
-import DefaultLabel from '../../shared/form-summary/DefaultLabel';
 import { getDrivingListItems } from './drivingListUtils';
 
-const SummaryDrivingList = ({ component, submissionPath }: FormComponentProps) => {
-  const { submission } = useForm();
-  const languagesContextValue = useLanguages();
-  const { translate } = languagesContextValue;
+const SummaryDrivingList = (props: FormComponentProps) => {
+  const { component, submissionPath, submission, translate, currentLanguage } = props;
+  const { label } = component;
 
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
 
@@ -18,16 +14,11 @@ const SummaryDrivingList = ({ component, submissionPath }: FormComponentProps) =
     return null;
   }
 
-  const drivingListDates = getDrivingListItems(value.dates, languagesContextValue);
+  const drivingListDates = getDrivingListItems(value.dates, currentLanguage, translate);
 
   return (
     <FormSummary.Answer>
-      <DefaultLabel
-        component={{
-          ...component,
-          hideLabel: false,
-        }}
-      />
+      <FormSummary.Label>{translate(label)}</FormSummary.Label>
       <FormSummary.Value>
         {translate(TEXTS.statiske.drivingList.summaryDescription)}
 

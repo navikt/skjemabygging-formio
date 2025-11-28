@@ -3,9 +3,8 @@ import { PdfComponentProps, PdfListElement } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 
 const PdfContainer = (props: PdfComponentProps): PdfListElement => {
-  const { component, submissionPath, formContextValue } = props;
+  const { component, submissionPath, submission } = props;
   const { components } = component;
-  const { submission } = formContextValue;
 
   if (!components || formComponentUtils.noChildValues(submissionPath, components, submission)) {
     return null;

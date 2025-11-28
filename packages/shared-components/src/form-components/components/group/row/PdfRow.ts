@@ -4,10 +4,8 @@ import DefaultSection from '../../shared/pdf/DefaultSection';
 import { getCurrencyValue } from './rowUtils';
 
 const PdfRow = (props: PdfComponentProps) => {
-  const { component, submissionPath, formContextValue, languagesContextValue } = props;
+  const { component, submissionPath, submission, translate } = props;
   const { components, isAmountWithCurrencySelector, label } = component;
-  const { submission } = formContextValue;
-  const { translate } = languagesContextValue;
 
   if (!components || !submission || formComponentUtils.noChildValues(submissionPath, components, submission)) {
     return null;
