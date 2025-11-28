@@ -1,7 +1,7 @@
 import { getAnalyticsInstance } from '@navikt/nav-dekoratoren-moduler';
 import { localizationUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import FrontendLogger from '../../api/frontend-logger/FrontendLogger';
-import { EventData, EventName, FyllutUmamiEvent } from './types';
+import { FyllutUmamiEvent } from './types';
 
 export type LogEventFunction = (event: FyllutUmamiEvent) => Promise<void>;
 
@@ -31,8 +31,7 @@ const getLocalAnalyticsInstance = (
   config: Record<string, string | boolean | object>,
   frontendLogger: FrontendLogger,
 ): ReturnType<typeof getAnalyticsInstance> => {
-  // @ts-expect-error simple mock implementation used when dekoratoren is not available
-  return async (name: EventName, data: EventData) => {
+  return async (name, data) => {
     if (config.isMocksEnabled) {
       await fetch('http://localhost:3300/umami', {
         method: 'POST',
