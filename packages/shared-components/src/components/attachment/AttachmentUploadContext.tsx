@@ -156,7 +156,7 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
   };
 
   const isTooManyPagesError = (error: any) => {
-    return error instanceof http.HttpError && error.errorCode === 'FILE_TOO_MANY_PAGES';
+    return error instanceof http.TooManyPagesError;
   };
 
   const handleAuthError = () => {

@@ -39,6 +39,7 @@ class HttpError extends Error {
 
 class UnauthenticatedError extends Error {}
 class TooManyRequestsError extends Error {}
+class TooManyPagesError extends Error {}
 
 const defaultHeaders = (headers?: FetchHeader) => {
   return {
@@ -123,6 +124,10 @@ const handleResponse = async (response: Response, opts?: FetchOptions) => {
       errorMessage = await response.text();
     }
 
+    if (errorCode === 'FILE_TOO_MANY_PAGES') {
+      throw new TooManyPagesError(errorMessage);
+    }
+
     throw new HttpError(errorMessage || response.statusText, response.status, errorCode);
   }
 
@@ -164,6 +169,7 @@ const http = {
   HttpError,
   UnauthenticatedError,
   TooManyRequestsError,
+  TooManyPagesError,
   SubmissionMethodType,
 };
 
