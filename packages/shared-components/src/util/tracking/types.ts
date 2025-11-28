@@ -5,7 +5,7 @@ export interface EventData {
   [key: string]: string | number | boolean | undefined;
 }
 
-type EventName = 'skjema fullført' | 'skjemainnsending feilet' | 'skjema slettet' | 'last opp' | 'last ned';
+export type EventName = 'skjema fullført' | 'skjemainnsending feilet' | 'skjema slettet' | 'last opp' | 'last ned';
 
 type Event = {
   name: EventName;
