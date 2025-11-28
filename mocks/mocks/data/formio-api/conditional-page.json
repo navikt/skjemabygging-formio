@@ -158,11 +158,11 @@
     }
   },
   "createdAt": "2022-02-07T16:31:33.410+01",
-  "createdBy": "IMPORT",
+  "createdBy": "Mock",
   "changedAt": "2025-10-14T08:28:37.998+02",
-  "changedBy": "Lars Olav Torvik",
+  "changedBy": "Mock",
   "publishedAt": "2025-05-09T12:31:25.347+02",
-  "publishedBy": "Lars Olav Torvik",
+  "publishedBy": "Mock",
   "publishedLanguages": ["nb"],
   "status": "pending"
 }

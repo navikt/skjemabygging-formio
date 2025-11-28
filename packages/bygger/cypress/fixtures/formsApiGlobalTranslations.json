@@ -4,7 +4,7 @@
     "key": "Ny",
     "tag": "skjematekster",
     "changedAt": "2024-12-05T14:39:27.512821+01:00",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 4,
     "nb": "Ny",
     "nn": "Ny (nn)",
@@ -17,7 +17,7 @@
     "key": "Nyere",
     "tag": "skjematekster",
     "changedAt": "2024-12-05T14:39:27.498692+01:00",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 3,
     "nb": "Nyere",
     "nn": "Nyare",
@@ -30,7 +30,7 @@
     "key": "Abc",
     "tag": "skjematekster",
     "changedAt": "2024-12-05T14:39:27.489663+01:00",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 4,
     "nb": "Abc",
     "nn": "Def",
@@ -43,7 +43,7 @@
     "key": "Hei",
     "tag": "skjematekster",
     "changedAt": "2024-12-05T14:39:27.493745+01:00",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 6,
     "nb": "Hei",
     "nn": "",
@@ -56,7 +56,7 @@
     "key": "Ja",
     "tag": "grensesnitt",
     "changedAt": "2024-12-05T14:39:27.493745+01:00",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 2,
     "nb": "Ja",
     "nn": "Ja",
@@ -69,7 +69,7 @@
     "key": "Nei",
     "tag": "grensesnitt",
     "changedAt": "2024-12-05T14:39:27.493745+01:00",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 1,
     "nb": "Nei",
     "nn": "Nei",
@@ -82,7 +82,7 @@
     "key": "error",
     "tag": "validering",
     "changedAt": "2024-12-12T13:03:19.063368+01:00",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 1,
     "nb": "For å gå videre må du rette opp følgende:",
     "nn": "For å gå vidare må du rette opp følgende:",
@@ -95,7 +95,7 @@
     "key": "Ubrukt oversettelse",
     "tag": "grensesnitt",
     "changedAt": "2024-12-12T13:03:19.063368+01:00",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 1,
     "nb": "Ubrukt oversettelse",
     "nn": "Ubrukt oversettelse",
@@ -108,7 +108,7 @@
     "key": "Denne er gått ut på dato",
     "tag": "grensesnitt",
     "changedAt": "2024-12-12T13:03:19.063368+01:00",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 1,
     "nb": "Denne er gått ut på dato",
     "nn": "Denne er gått ut på dato",
@@ -121,7 +121,7 @@
     "key": "Gammel tekst",
     "tag": "grensesnitt",
     "changedAt": "2024-12-12T13:03:19.063368+01:00",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 1,
     "nb": "Gammel tekst",
     "nn": "Gammel tekst",
@@ -137,10 +137,10 @@
     "id": 398,
     "tag": "introPage",
     "changedAt": "2025-06-24T12:29:38.649+02",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 3,
     "publishedAt": "2025-06-23T12:14:00.274+02",
-    "publishedBy": "Testesen, Test"
+    "publishedBy": "Mock"
   },
   {
     "key": "introPage.guidePanel.hiPersonalized",
@@ -150,10 +150,10 @@
     "id": 399,
     "tag": "introPage",
     "changedAt": "2025-06-24T12:29:38.649+02",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 3,
     "publishedAt": "2025-06-23T12:14:00.274+02",
-    "publishedBy": "Testesen, Test"
+    "publishedBy": "Mock"
   },
   {
     "key": "introPage.scope.title.alt1",
@@ -163,10 +163,10 @@
     "id": 366,
     "tag": "introPage",
     "changedAt": "2025-06-24T12:29:38.648+02",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 3,
     "publishedAt": "2025-06-23T12:14:00.274+02",
-    "publishedBy": "Testesen, Test"
+    "publishedBy": "Mock"
   },
   {
     "key": "introPage.scope.title.alt2",
@@ -176,10 +176,10 @@
     "id": 370,
     "tag": "introPage",
     "changedAt": "2025-05-28T13:07:24.465+02",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 1,
     "publishedAt": "2025-06-23T12:14:00.274+02",
-    "publishedBy": "Testesen, Test"
+    "publishedBy": "Mock"
   },
   {
     "key": "introPage.scope.title.alt3",
@@ -189,10 +189,10 @@
     "id": 365,
     "tag": "introPage",
     "changedAt": "2025-06-24T12:29:38.648+02",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 3,
     "publishedAt": "2025-06-23T12:14:00.274+02",
-    "publishedBy": "Testesen, Test"
+    "publishedBy": "Mock"
   },
   {
     "key": "introPage.outOfScope.title.alt1",
@@ -202,10 +202,10 @@
     "id": 367,
     "tag": "introPage",
     "changedAt": "2025-05-28T13:07:24.460+02",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 1,
     "publishedAt": "2025-06-23T12:14:00.274+02",
-    "publishedBy": "Testesen, Test"
+    "publishedBy": "Mock"
   },
   {
     "key": "introPage.outOfScope.title.alt2",
@@ -215,10 +215,10 @@
     "id": 369,
     "tag": "introPage",
     "changedAt": "2025-06-23T16:28:18.409+02",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 2,
     "publishedAt": "2025-06-23T12:14:00.274+02",
-    "publishedBy": "Testesen, Test"
+    "publishedBy": "Mock"
   },
   {
     "key": "introPage.outOfScope.title.alt3",
@@ -228,10 +228,10 @@
     "id": 368,
     "tag": "introPage",
     "changedAt": "2025-06-24T12:29:38.649+02",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 3,
     "publishedAt": "2025-06-23T12:14:00.274+02",
-    "publishedBy": "Testesen, Test"
+    "publishedBy": "Mock"
   },
   {
     "key": "introPage.prerequisites.title.alt1",
@@ -241,10 +241,10 @@
     "id": 371,
     "tag": "introPage",
     "changedAt": "2025-05-28T13:07:24.474+02",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 1,
     "publishedAt": "2025-06-23T12:14:00.274+02",
-    "publishedBy": "Testesen, Test"
+    "publishedBy": "Mock"
   },
   {
     "key": "introPage.prerequisites.title.alt2",
@@ -254,10 +254,10 @@
     "id": 372,
     "tag": "introPage",
     "changedAt": "2025-06-24T12:29:38.638+02",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 3,
     "publishedAt": "2025-06-23T12:14:00.274+02",
-    "publishedBy": "Testesen, Test"
+    "publishedBy": "Mock"
   },
   {
     "key": "introPage.prerequisites.title.alt3",
@@ -267,10 +267,10 @@
     "id": 376,
     "tag": "introPage",
     "changedAt": "2025-06-24T12:29:38.675+02",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 3,
     "publishedAt": "2025-06-23T12:14:00.274+02",
-    "publishedBy": "Testesen, Test"
+    "publishedBy": "Mock"
   },
   {
     "key": "introPage.beAwareOf.title",
@@ -280,10 +280,10 @@
     "id": 404,
     "tag": "introPage",
     "changedAt": "2025-06-24T12:29:38.675+02",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 3,
     "publishedAt": "2025-06-23T12:14:00.274+02",
-    "publishedBy": "Testesen, Test"
+    "publishedBy": "Mock"
   },
   {
     "key": "introPage.beAwareOf.sendByMail",
@@ -293,10 +293,10 @@
     "id": 377,
     "tag": "introPage",
     "changedAt": "2025-06-24T12:29:38.675+02",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 4,
     "publishedAt": "2025-06-23T12:14:00.274+02",
-    "publishedBy": "Testesen, Test"
+    "publishedBy": "Mock"
   },
   {
     "key": "introPage.beAwareOf.mandatoryFields",
@@ -306,10 +306,10 @@
     "id": 378,
     "tag": "introPage",
     "changedAt": "2025-06-24T12:29:38.675+02",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 3,
     "publishedAt": "2025-06-23T12:14:00.274+02",
-    "publishedBy": "Testesen, Test"
+    "publishedBy": "Mock"
   },
   {
     "key": "introPage.beAwareOf.useOfPublicComputers",
@@ -319,10 +319,10 @@
     "id": 379,
     "tag": "introPage",
     "changedAt": "2025-06-24T12:29:38.675+02",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 3,
     "publishedAt": "2025-06-23T12:14:00.274+02",
-    "publishedBy": "Testesen, Test"
+    "publishedBy": "Mock"
   },
   {
     "key": "introPage.beAwareOf.timeLimit",
@@ -332,23 +332,23 @@
     "id": 405,
     "tag": "introPage",
     "changedAt": "2025-06-24T12:29:38.675+02",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 3,
     "publishedAt": "2025-06-23T12:14:00.274+02",
-    "publishedBy": "Testesen, Test"
+    "publishedBy": "Mock"
   },
   {
     "id": 437,
     "key": "introPage.beAwareOf.notSave",
     "tag": "introPage",
     "changedAt": "2025-10-01T12:33:13.707+02",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 1,
     "nb": "Du kan ikke lagre skjemaet underveis. Informasjonen du fyller ut i skjemaet sendes ikke til Nav før du har fullført hele skjemaet og sendt det inn. Hvis du lukker vinduet eller nettleseren vil all informasjon du har fylt ut forsvinne.",
     "nn": "Du kan ikkje lagra skjemaet undervegs. Informasjonen du fyller ut i skjemaet blir ikkje sendt til Nav før du har fullført heile skjemaet og sendt det inn. Om du lukkar vindauget eller nettlesaren vil all informasjon du har fylt ut forsvinna.",
     "en": "You cannot save the form along the way. The information you fill out in the form is not sent to Nav until you have completed the entire form and submitted it. If you close the window or browser, all the information you have filled out will disappear.",
     "publishedAt": "2025-08-19T12:51:40.639+02",
-    "publishedBy": "Testesen, Test"
+    "publishedBy": "Mock"
   },
   {
     "key": "introPage.dataDisclosure.title.alt1",
@@ -358,10 +358,10 @@
     "id": 377,
     "tag": "introPage",
     "changedAt": "2025-05-28T13:07:24.487+02",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 1,
     "publishedAt": "2025-06-23T12:14:00.274+02",
-    "publishedBy": "Testesen, Test"
+    "publishedBy": "Mock"
   },
   {
     "key": "introPage.dataDisclosure.title.alt2",
@@ -371,10 +371,10 @@
     "id": 378,
     "tag": "introPage",
     "changedAt": "2025-06-24T12:29:38.675+02",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 3,
     "publishedAt": "2025-06-23T12:14:00.274+02",
-    "publishedBy": "Testesen, Test"
+    "publishedBy": "Mock"
   },
   {
     "key": "introPage.dataDisclosure.ingress",
@@ -384,10 +384,10 @@
     "id": 381,
     "tag": "introPage",
     "changedAt": "2025-06-24T12:29:38.676+02",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 3,
     "publishedAt": "2025-06-23T12:14:00.274+02",
-    "publishedBy": "Testesen, Test"
+    "publishedBy": "Mock"
   },
   {
     "key": "introPage.dataDisclosure.nationalPopulationRegister",
@@ -397,10 +397,10 @@
     "id": 379,
     "tag": "introPage",
     "changedAt": "2025-06-24T12:29:38.691+02",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 3,
     "publishedAt": "2025-06-23T12:14:00.274+02",
-    "publishedBy": "Testesen, Test"
+    "publishedBy": "Mock"
   },
   {
     "key": "introPage.dataTreatment.title",
@@ -410,10 +410,10 @@
     "id": 382,
     "tag": "introPage",
     "changedAt": "2025-06-24T12:29:38.690+02",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 3,
     "publishedAt": "2025-06-23T12:14:00.274+02",
-    "publishedBy": "Testesen, Test"
+    "publishedBy": "Mock"
   },
   {
     "key": "introPage.dataTreatment.readMore",
@@ -423,10 +423,10 @@
     "id": 380,
     "tag": "introPage",
     "changedAt": "2025-06-24T12:29:38.690+02",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 3,
     "publishedAt": "2025-06-23T12:14:00.274+02",
-    "publishedBy": "Testesen, Test"
+    "publishedBy": "Mock"
   },
   {
     "key": "introPage.dataStorage.title.paper",
@@ -436,10 +436,10 @@
     "id": 383,
     "tag": "introPage",
     "changedAt": "2025-06-24T12:29:38.691+02",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 3,
     "publishedAt": "2025-06-23T12:14:00.274+02",
-    "publishedBy": "Testesen, Test"
+    "publishedBy": "Mock"
   },
   {
     "key": "introPage.dataStorage.title.digital",
@@ -449,10 +449,10 @@
     "id": 384,
     "tag": "introPage",
     "changedAt": "2025-06-24T12:29:38.690+02",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 3,
     "publishedAt": "2025-06-23T12:14:00.274+02",
-    "publishedBy": "Testesen, Test"
+    "publishedBy": "Mock"
   },
   {
     "key": "introPage.dataStorage.ingress.paper",
@@ -462,10 +462,10 @@
     "id": 385,
     "tag": "introPage",
     "changedAt": "2025-06-24T12:29:38.691+02",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 3,
     "publishedAt": "2025-06-23T12:14:00.274+02",
-    "publishedBy": "Testesen, Test"
+    "publishedBy": "Mock"
   },
   {
     "key": "introPage.dataStorage.ingress.digital",
@@ -475,10 +475,10 @@
     "id": 388,
     "tag": "introPage",
     "changedAt": "2025-06-24T12:29:38.705+02",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 3,
     "publishedAt": "2025-06-23T12:14:00.274+02",
-    "publishedBy": "Testesen, Test"
+    "publishedBy": "Mock"
   },
   {
     "key": "introPage.automaticProcessing.title",
@@ -488,10 +488,10 @@
     "id": 389,
     "tag": "introPage",
     "changedAt": "2025-06-24T12:29:38.705+02",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 3,
     "publishedAt": "2025-06-23T12:14:00.274+02",
-    "publishedBy": "Testesen, Test"
+    "publishedBy": "Mock"
   },
   {
     "key": "introPage.selfDeclaration.description.alt1",
@@ -501,10 +501,10 @@
     "id": 386,
     "tag": "introPage",
     "changedAt": "2025-06-24T12:29:38.705+02",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 3,
     "publishedAt": "2025-06-23T12:14:00.274+02",
-    "publishedBy": "Testesen, Test"
+    "publishedBy": "Mock"
   },
   {
     "key": "introPage.selfDeclaration.description.alt2",
@@ -514,10 +514,10 @@
     "id": 387,
     "tag": "introPage",
     "changedAt": "2025-06-24T12:29:38.705+02",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 3,
     "publishedAt": "2025-06-23T12:14:00.274+02",
-    "publishedBy": "Testesen, Test"
+    "publishedBy": "Mock"
   },
   {
     "key": "introPage.selfDeclaration.description.alt3",
@@ -527,10 +527,10 @@
     "id": 390,
     "tag": "introPage",
     "changedAt": "2025-06-24T12:29:38.705+02",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 3,
     "publishedAt": "2025-06-23T12:14:00.274+02",
-    "publishedBy": "Testesen, Test"
+    "publishedBy": "Mock"
   },
   {
     "key": "introPage.selfDeclaration.description.alt4",
@@ -540,10 +540,10 @@
     "id": 391,
     "tag": "introPage",
     "changedAt": "2025-06-24T12:29:38.705+02",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 3,
     "publishedAt": "2025-06-23T12:14:00.274+02",
-    "publishedBy": "Testesen, Test"
+    "publishedBy": "Mock"
   },
   {
     "key": "introPage.selfDeclaration.inputLabel",
@@ -553,10 +553,10 @@
     "id": 392,
     "tag": "introPage",
     "changedAt": "2025-06-24T12:29:38.722+02",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 3,
     "publishedAt": "2025-06-23T12:14:00.274+02",
-    "publishedBy": "Testesen, Test"
+    "publishedBy": "Mock"
   },
   {
     "key": "introPage.selfDeclaration.validationError",
@@ -566,9 +566,9 @@
     "id": 401,
     "tag": "introPage",
     "changedAt": "2025-06-24T12:29:38.722+02",
-    "changedBy": "Testesen, Test",
+    "changedBy": "Mock",
     "revision": 3,
     "publishedAt": "2025-06-23T12:14:00.274+02",
-    "publishedBy": "Testesen, Test"
+    "publishedBy": "Mock"
   }
 ]

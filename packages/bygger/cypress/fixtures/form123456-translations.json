@@ -8,7 +8,7 @@
     "nn": "Yeah",
     "en": "",
     "changedAt": "2025-02-14T08:23:45.123+01",
-    "changedBy": "Test Testesen"
+    "changedBy": "Mock"
   },
   {
     "id": 2,
@@ -19,7 +19,7 @@
     "nn": "",
     "en": "Your info",
     "changedAt": "2025-02-18T14:56:32.456+01",
-    "changedBy": "Test Testesen"
+    "changedBy": "Mock"
   },
   {
     "id": 3,
@@ -30,7 +30,7 @@
     "nn": "Gammel tekst",
     "en": "Old text",
     "changedAt": "2023-02-22T19:12:47.789+01",
-    "changedBy": "Test Testesen"
+    "changedBy": "Mock"
   },
   {
     "id": 4,
@@ -41,7 +41,7 @@
     "nn": "Def",
     "en": "Xyz",
     "changedAt": "2025-02-24T12:42:28.620+01",
-    "changedBy": "Test Testesen"
+    "changedBy": "Mock"
   },
   {
     "id": 5,
@@ -63,7 +63,7 @@
     "nn": "Bor du i Noreg?",
     "en": "Do you live in Norway?",
     "changedAt": "2025-02-24T12:55:02.001+01",
-    "changedBy": "Sjekk Sjekkesen"
+    "changedBy": "Mock"
   },
   {
     "id": 7,
@@ -74,7 +74,7 @@
     "nn": "Nav sender svar på søknad og annen kommunikasjon til din folkeregistrerte adresse. \n<br>\nDu kan <a href=\"https://www.skatteetaten.no/person/folkeregister/flytte/endre-postadresse/\" target=\"_blank\">sjekke og endre din folkeregistrerte adresse på skatteetatens nettsider (åpnes i et nytt vindu).</a>\nHvis du ønsker å motta kommunikasjon fra Nav på en annen adresse enn din folkeregistrerte adresse, kan du bruke lenken ovenfor til å oppgi en postadresse i Folkeregisteret.\nDu finner også papirskjema for å endre postadresse på samme siden hos Skatteetaten.",
     "en": "",
     "changedAt": "2025-02-24T12:55:02.001+01",
-    "changedBy": "Sjekk Sjekkesen"
+    "changedBy": "Mock"
   },
   {
     "id": 8,
@@ -85,7 +85,7 @@
     "nn": "Gitar (nn)",
     "en": "Guitar",
     "changedAt": "2025-02-24T12:42:28.620+01",
-    "changedBy": "Sjekk Sjekkesen"
+    "changedBy": "Mock"
   },
   {
     "id": 9,
@@ -107,7 +107,7 @@
     "nn": "Trekkspel",
     "en": "Accordion",
     "changedAt": "2025-02-24T12:42:28.620+01",
-    "changedBy": "Sjekk Sjekkesen"
+    "changedBy": "Mock"
   },
   {
     "id": 11,
@@ -118,6 +118,6 @@
     "nn": "Piano (nn)",
     "en": "Piano (en)",
     "changedAt": "2025-02-28T12:55:02.001+01",
-    "changedBy": "Sjekk Sjekkesen"
+    "changedBy": "Mock"
   }
 ]
