@@ -152,7 +152,7 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
   };
 
   const isAuthenticationError = (error: any) => {
-    return error instanceof http.HttpError && (error.status === 401 || error.status === 403);
+    return error instanceof http.UnauthenticatedError;
   };
 
   const isTooManyPagesError = (error: any) => {

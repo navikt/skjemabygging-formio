@@ -1,5 +1,4 @@
 import { UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
-import { AppConfigContextType } from '../../context/config/configContext';
 import { FetchHeader, http } from '../../index';
 
 const getHeaders = (token?: string): FetchHeader => {
@@ -10,19 +9,14 @@ const getHeaders = (token?: string): FetchHeader => {
   return headers;
 };
 
-const postFile = async (
-  url: string,
-  file: File,
-  config: AppConfigContextType,
-  token?: string,
-): Promise<UploadedFile> => {
+const postFile = async (url: string, file: File, token?: string): Promise<UploadedFile> => {
   const formData = new FormData();
   formData.append('filinnhold', file);
 
   return await http.postFile<UploadedFile>(url, formData, getHeaders(token));
 };
 
-const deleteFiles = async (url: string, config: AppConfigContextType, token?: string): Promise<void> => {
+const deleteFiles = async (url: string, token?: string): Promise<void> => {
   return await http.delete(url, undefined, getHeaders(token));
 };
 
