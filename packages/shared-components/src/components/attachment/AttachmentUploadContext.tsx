@@ -12,8 +12,9 @@ import { useSendInn } from '../../context/sendInn/sendInnContext';
 import { validateFileUpload, validateTotalFilesSize } from '../../util/form/attachment-validation/attachmentValidation';
 
 type ErrorType = 'FILE' | 'VALUE' | 'TITLE';
+type ActionStatus = 'ok' | 'error' | 'auth-error' | 'invalid' | 'unknown';
 interface AttachmentUploadContextType {
-  handleUploadFile: (attachmentId: string, file: FileObject) => Promise<void>;
+  handleUploadFile: (attachmentId: string, file: FileObject) => Promise<{ status: ActionStatus }>;
   handleDeleteFile: (attachmentId: string, fileId: string, file: FileItem) => Promise<void>;
   handleDeleteAttachment: (attachmentId: string) => Promise<void>;
   handleDeleteAllFiles: () => Promise<void>;
@@ -32,7 +33,7 @@ interface AttachmentUploadContextType {
 }
 
 const initialContext: AttachmentUploadContextType = {
-  handleUploadFile: async () => {},
+  handleUploadFile: async () => Promise.resolve({ status: 'unknown' }),
   handleDeleteFile: async () => {},
   handleDeleteAttachment: async () => {},
   handleDeleteAllFiles: async () => {},
@@ -198,20 +199,20 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
     });
   };
 
-  const handleUploadFile = async (attachmentId: string, file: FileObject) => {
+  const handleUploadFile = async (attachmentId: string, file: FileObject): Promise<{ status: ActionStatus }> => {
     try {
       addFileInProgress(attachmentId, file);
       removeError(attachmentId);
       if (validateFileUpload(file, config.logger)) {
         addFileInProgress(attachmentId, file);
-        return;
+        return Promise.resolve({ status: 'invalid' });
       }
 
       const invalidAttachmentSize = validateTotalAttachmentSize(attachmentId, file);
       if (invalidAttachmentSize) {
         removeFileInProgress(attachmentId, fileIdentifier(file));
         addError(attachmentId, invalidAttachmentSize, 'FILE');
-        return;
+        return Promise.resolve({ status: 'invalid' });
       }
 
       const token = await resolveCaptcha();
@@ -220,13 +221,17 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
         removeAllFilesInProgress(attachmentId, (inProgress) => inProgress.error);
         removeFileInProgress(attachmentId, fileIdentifier(file));
         addFileToSubmission(result);
+        return Promise.resolve({ status: 'ok' });
       }
+      return Promise.resolve({ status: 'unknown' });
     } catch (error: any) {
       setNologinToken(undefined);
       addFileInProgress(attachmentId, { ...file, error: true, reasons: ['uploadHttpError'] });
       if (isAuthenticationError(error)) {
         addAuthError(attachmentId);
+        return Promise.resolve({ status: 'auth-error' });
       }
+      return Promise.resolve({ status: 'error' });
     }
   };
 
