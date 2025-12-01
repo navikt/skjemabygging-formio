@@ -463,6 +463,14 @@ export default [
         },
       },
       {
+        id: 'bad-request-too-many-pages',
+        type: 'json',
+        options: {
+          status: 400,
+          body: { message: 'Feil ved opplasting av fil', errorCode: 'illegalAction.fileWithTooManyPages' },
+        },
+      },
+      {
         id: 'forbidden',
         type: 'json',
         options: {
