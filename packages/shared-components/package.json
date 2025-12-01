@@ -27,7 +27,7 @@
     "@formio/react": "5.3.0",
     "@navikt/ds-css": "^7.31.0",
     "@navikt/ds-icons": "^3.4.3",
-    "@navikt/ds-react": "^7.31.0",
+    "@navikt/ds-react": "^7.35.0",
     "@navikt/fnrvalidator": "^2.1.5",
     "@navikt/nav-dekoratoren-moduler": "^3.5.0",
     "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
