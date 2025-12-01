@@ -142,7 +142,7 @@ const localDevelopmentConfig: DefaultConfig = {
   formsApiUrl: process.env.FORMS_API_URL || 'https://forms-api.intern.dev.nav.no',
   nologin: {
     jwtSecret: 'verysecret',
-    tokenLifetimeHours: 6,
+    tokenLifetimeHours: 1,
   },
   teamLogsConfig,
 };
@@ -178,7 +178,7 @@ const defaultConfig: DefaultConfig = {
   formsApiUrl: process.env.FORMS_API_URL!,
   nologin: {
     jwtSecret: process.env.NOLOGIN_JWT_SECRET!,
-    tokenLifetimeHours: 6,
+    tokenLifetimeHours: parseInt(process.env.NOLOGIN_TOKEN_LIFETIME_HOURS!),
   },
   teamLogsConfig: {
     ...teamLogsConfig,

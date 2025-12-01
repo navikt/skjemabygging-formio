@@ -415,6 +415,21 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   }, [nologinToken]);
 
   useEffect(() => {
+    if (!nologinToken) return;
+
+    const checkTokenExp = setInterval(() => {
+      const details = getTokenDetails();
+      if (details && details.exp * 1000 < Date.now()) {
+        setNologinToken(undefined);
+        setSubmission(undefined);
+        navigate(`/sesjon-utlopt?form_path=${form?.path}`);
+      }
+    }, 60000);
+
+    return () => clearInterval(checkTokenExp);
+  }, [nologinToken, getTokenDetails, setSubmission, navigate, form?.path]);
+
+  useEffect(() => {
     const initializeMellomlagring = async () => {
       if (!innsendingsId || innsendingsIdFromParams !== innsendingsId) {
         try {

@@ -93,6 +93,8 @@ spec:
       value: {{foersteside-url}}
     - name: FORMS_SOURCE
       value: {{forms-source}}
+    - name: NOLOGIN_TOKEN_LIFETIME_HOURS
+      value: {{nologin.token-lifetime-hours}}
     - name: SKJEMABYGGING_PROXY_URL
       value: {{skjemabygging-proxy-url}}
     - name: SKJEMABYGGING_PROXY_CLIENT_ID
