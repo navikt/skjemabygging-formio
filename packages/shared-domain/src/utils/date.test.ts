@@ -75,6 +75,13 @@ describe('date.ts', () => {
     });
   });
 
+  describe('formatUnixEpochToLocalTime', () => {
+    it('should format time correctly', () => {
+      expect(dateUtils.formatUnixEpochSecondsToLocalTime(1764651688)).toBe('06.01');
+      expect(dateUtils.formatUnixEpochSecondsToLocalTime(1764616370)).toBe('20.12');
+    });
+  });
+
   describe('generateWeeklyPeriods function', () => {
     it('should return an empty array if no date is provided', () => {
       const result = generateWeeklyPeriods();

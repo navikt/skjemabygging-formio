@@ -39,6 +39,8 @@ export const statiske = {
       paper: 'Send i posten',
       digital: 'Send digitalt (krever innlogging)',
     },
+    nologinTimeLimitBold: 'Du må fullføre innen kl. {{tokenExpirationTime}}.',
+    nologinTimeLimit: 'Dette er av personvernhensyn fordi vi ikke har mulighet til å lagre dataene du fyller ut.',
   },
   uploadId: {
     description: 'For å sende skjemaet digitalt uten å logge inn må du legitimere deg.',

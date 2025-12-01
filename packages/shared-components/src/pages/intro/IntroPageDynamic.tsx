@@ -13,13 +13,15 @@ const IntroPageDynamic = () => {
   const { submissionMethod } = useAppConfig();
   const { translate } = useLanguages();
   const { setSelfDeclaration, selfDeclaration, error, form, state } = useIntroPage();
-  const { isMellomlagringReady } = useSendInn();
+  const { isMellomlagringReady, getTokenDetails } = useSendInn();
   const { setTitle, setFormProgressVisible } = useForm();
 
   useEffect(() => {
     setTitle(TEXTS.grensesnitt.introPage.title);
     setFormProgressVisible(true);
   }, [setTitle, setFormProgressVisible]);
+
+  const tokenExp = getTokenDetails?.()?.exp;
 
   if (!state || (submissionMethod === 'digital' && !isMellomlagringReady)) return;
 
@@ -35,7 +37,7 @@ const IntroPageDynamic = () => {
       <Intro.Scope properties={form.introPage?.sections?.scope} translate={translate} className="mb" />
       <Intro.OutOfScope properties={form.introPage?.sections?.outOfScope} translate={translate} className="mb" />
       <Intro.Prerequisites properties={form.introPage?.sections?.prerequisites} translate={translate} className="mb" />
-      <Intro.BeAwareOf translate={translate} submissionMethod={submissionMethod} className="mb" />
+      <Intro.BeAwareOf translate={translate} tokenExp={tokenExp} submissionMethod={submissionMethod} className="mb" />
       <Accordion className="mb">
         <Intro.DataDisclosure properties={form.introPage?.sections?.dataDisclosure} translate={translate} />
         <Intro.DataTreatment properties={form.introPage?.sections?.dataTreatment} translate={translate} />

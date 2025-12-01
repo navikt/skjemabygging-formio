@@ -25,6 +25,10 @@ import { useLanguages } from '../languages';
 import { mellomlagringReducer } from './reducer/mellomlagringReducer';
 import { getSubmissionWithFyllutState, transformSubmissionBeforeSubmitting } from './utils/utils';
 
+interface Token {
+  exp: number;
+}
+
 interface SendInnContextType {
   updateMellomlagring: (submission: Submission) => Promise<SendInnSoknadResponse | undefined>;
   submitSoknad: (submission: Submission) => Promise<void>;
@@ -41,6 +45,7 @@ interface SendInnContextType {
   submitted?: boolean;
   receipt?: ReceiptSummary;
   setReceipt: (receipt: ReceiptSummary | undefined) => void;
+  getTokenDetails?: () => Token | undefined;
 }
 
 interface SendInnProviderProps {
@@ -400,6 +405,15 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
     }
   };
 
+  const getTokenDetails = useCallback((): Token | undefined => {
+    if (!nologinToken) {
+      return undefined;
+    }
+    const payload = nologinToken.split('.')[1];
+    const decodedPayload = atob(payload);
+    return JSON.parse(decodedPayload) as Token;
+  }, [nologinToken]);
+
   useEffect(() => {
     const initializeMellomlagring = async () => {
       if (!innsendingsId || innsendingsIdFromParams !== innsendingsId) {
@@ -464,6 +478,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
     isMellomlagringReady,
     mellomlagringError: fyllutMellomlagringState?.error,
     submitted: !!soknadPdfBlob,
+    getTokenDetails,
   };
 
   return <SendInnContext.Provider value={value}>{children}</SendInnContext.Provider>;

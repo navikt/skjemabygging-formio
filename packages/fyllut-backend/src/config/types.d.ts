@@ -33,6 +33,7 @@ export type TilleggsstonaderConfig = {
 
 export type NologinConfig = {
   jwtSecret: string;
+  tokenLifetimeHours: number;
 };
 
 export type TeamLogsConfig = {

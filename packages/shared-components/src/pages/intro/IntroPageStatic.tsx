@@ -1,5 +1,5 @@
 import { GuidePanel, Heading } from '@navikt/ds-react';
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
@@ -16,8 +16,10 @@ const IntroPageStatic = () => {
   const [saveDataBullet, setSaveDataBullet] = useState<string>();
   const [saveDataBulletBold, setSaveDataBulletBold] = useState<string>();
   const { state } = useIntroPage();
-  const { isMellomlagringReady } = useSendInn();
+  const { isMellomlagringReady, getTokenDetails } = useSendInn();
   const { setTitle, setFormProgressVisible } = useForm();
+
+  const tokenExp = getTokenDetails?.()?.exp;
 
   useEffect(() => {
     if (state === IntroPageState.PAPER) {
@@ -33,8 +35,12 @@ const IntroPageStatic = () => {
       setSaveDataBullet(TEXTS.statiske.introPage.autoSave);
     } else if (state === IntroPageState.DIGITAL_NO_LOGIN) {
       // No description when digital nologin submission
-      setDescriptionBold(undefined);
-      setDescription(undefined);
+      setDescriptionBold(
+        translate(TEXTS.statiske.introPage.nologinTimeLimitBold, {
+          tokenExpirationTime: tokenExp ? dateUtils.formatUnixEpochSecondsToLocalTime(tokenExp) : 'XX.XX',
+        }),
+      );
+      setDescription(TEXTS.statiske.introPage.nologinTimeLimit);
       setSaveDataBulletBold(TEXTS.statiske.introPage.notSaveBold);
       setSaveDataBullet(TEXTS.statiske.introPage.notSave);
     } else if (state === IntroPageState.NONE) {

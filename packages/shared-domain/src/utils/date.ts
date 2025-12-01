@@ -273,6 +273,10 @@ const isBefore = (date1: string, date2: string) => {
   return d1.isValid;
 };
 
+const formatUnixEpochSecondsToLocalTime = (unixEpoxSeconds: number, locale = 'no') => {
+  return DateTime.fromSeconds(unixEpoxSeconds, { zone: 'local' }).setLocale(locale).toFormat('HH.mm');
+};
+
 const dateUtils = {
   getIso8601String,
   toLocaleDateAndTime,
@@ -284,6 +288,7 @@ const dateUtils = {
   getDefaultDateFromRange,
   toLocaleDateLongMonth,
   toCurrentDayMonthYearHourMinute,
+  formatUnixEpochSecondsToLocalTime,
   generateWeeklyPeriods,
   add,
   addDays,
