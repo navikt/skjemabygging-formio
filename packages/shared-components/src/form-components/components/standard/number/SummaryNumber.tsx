@@ -1,12 +1,11 @@
 import { FormSummary } from '@navikt/ds-react';
 import { numberUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import { useForm } from '../../../../context/form/FormContext';
 import { FormComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 import DefaultLabel from '../../shared/form-summary/DefaultLabel';
 
-const SummaryNumber = ({ component, submissionPath }: FormComponentProps) => {
-  const { submission } = useForm();
+const SummaryNumber = (props: FormComponentProps) => {
+  const { submissionPath, submission } = props;
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
 
   if (value === undefined) {
@@ -15,7 +14,7 @@ const SummaryNumber = ({ component, submissionPath }: FormComponentProps) => {
 
   return (
     <FormSummary.Answer>
-      <DefaultLabel component={component} />
+      <DefaultLabel {...props} />
       <FormSummary.Value>{numberUtils.toLocaleString(value)}</FormSummary.Value>
     </FormSummary.Answer>
   );

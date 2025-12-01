@@ -1,13 +1,12 @@
-import { Component, formSummaryUtil, NavFormType, Panel, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  Component,
+  formSummaryUtil,
+  NavFormType,
+  Panel,
+  PanelValidation,
+  Submission,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { AttachmentValidator } from '../../../components/attachment/attachmentValidator';
-
-export type PanelValidation = {
-  key: string;
-  summaryComponents?: string[];
-  firstInputComponent?: Component;
-  hasValidationErrors: boolean;
-  firstInputWithValidationError?: string;
-};
 
 const findFirstInputWithValidationError = (wizardComponent, data): string | undefined => {
   // Need to tell the Formio root component that the form has been submitted, to trigger validation.

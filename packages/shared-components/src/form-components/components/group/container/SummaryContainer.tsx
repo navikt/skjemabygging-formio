@@ -1,11 +1,10 @@
-import { useForm } from '../../../../context/form/FormContext';
 import RenderComponent from '../../../render/RenderComponent';
 import { FormComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 
-const SummaryContainer = ({ component, submissionPath, componentRegistry }: FormComponentProps) => {
+const SummaryContainer = (props: FormComponentProps) => {
+  const { submission, submissionPath, component } = props;
   const { components, navId } = component;
-  const { submission } = useForm();
 
   if (!components || formComponentUtils.noChildValues(submissionPath, components, submission)) {
     return null;
@@ -17,10 +16,10 @@ const SummaryContainer = ({ component, submissionPath, componentRegistry }: Form
         const componentSubmissionPath = formComponentUtils.getComponentSubmissionPath(component, submissionPath);
         return (
           <RenderComponent
-            key={`${component.key}-${navId}`}
+            {...props}
             component={component}
+            key={`${component.key}-${navId}`}
             submissionPath={componentSubmissionPath}
-            componentRegistry={componentRegistry}
           />
         );
       })}

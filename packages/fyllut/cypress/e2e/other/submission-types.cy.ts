@@ -33,12 +33,40 @@ describe('Submission Type', () => {
         cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
         cy.clickNextStep();
 
-        cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
+        cy.findByRole('group', { name: 'Nav skjema test' }).within(() => {
+          cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).click();
+        });
+        cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+          cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
+        });
         cy.clickNextStep();
 
         cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions }).click();
 
         cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).should('exist');
+      });
+
+      it('should render attachment links when vedleggskjema field exists', () => {
+        cy.clickStart();
+        cy.findByRole('textbox', { name: 'Tekstfelt' }).type('test');
+        cy.clickNextStep();
+
+        cy.findByRole('group', { name: 'Nav skjema test' }).within(() => {
+          cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).click();
+        });
+
+        cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+          cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
+        });
+
+        cy.clickNextStep();
+
+        cy.clickDownloadInstructions();
+
+        cy.get('a[href="/fyllut/nav100754"]')
+          .should('exist')
+          .should('have.attr', 'target', '_blank')
+          .should('contain', 'Nav skjema test');
       });
 
       it('Show attachments', () => {

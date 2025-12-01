@@ -1,5 +1,5 @@
 import { NavFormType, Submission, SubmissionData } from '../form';
-import { navFormUtils } from '../index';
+import { Form, navFormUtils } from '../index';
 import SubmissionYourInformation from '../submission/yourInformation';
 
 /**
@@ -8,7 +8,7 @@ import SubmissionYourInformation from '../submission/yourInformation';
  * @param submissionData
  */
 const getYourInformation = (
-  form: NavFormType,
+  form: NavFormType | Form,
   submissionData: SubmissionData,
 ): SubmissionYourInformation | undefined => {
   const yourInformationForm = navFormUtils
@@ -20,7 +20,7 @@ const getYourInformation = (
   }
 };
 
-const getIdentityNumber = (form: NavFormType, submission?: Submission) => {
+const getIdentityNumber = (form: NavFormType | Form, submission?: Submission) => {
   if (submission?.data) {
     const yourInformation = yourInformationUtils.getYourInformation(form, submission.data);
     if (yourInformation?.identitet?.identitetsnummer) {

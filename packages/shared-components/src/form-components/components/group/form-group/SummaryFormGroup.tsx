@@ -1,15 +1,12 @@
 import { FormSummary } from '@navikt/ds-react';
-import { useForm } from '../../../../context/form/FormContext';
-import { useLanguages } from '../../../../context/languages';
 import RenderComponent from '../../../render/RenderComponent';
 import { FormComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 import FormSummaryAnswersNested from '../../shared/form-summary/FormSummaryAnswersNested';
 
-const SummaryFormGroup = ({ component, submissionPath, componentRegistry }: FormComponentProps) => {
+const SummaryFormGroup = (props: FormComponentProps) => {
+  const { submission, submissionPath, translate, component } = props;
   const { components, navId, legend } = component;
-  const { submission } = useForm();
-  const { translate } = useLanguages();
 
   if (!components || formComponentUtils.noChildValues(submissionPath, components, submission)) {
     return null;
@@ -25,10 +22,10 @@ const SummaryFormGroup = ({ component, submissionPath, componentRegistry }: Form
 
             return (
               <RenderComponent
+                {...props}
                 key={`${component.key}-${navId}`}
                 component={component}
                 submissionPath={componentSubmissionPath}
-                componentRegistry={componentRegistry}
               />
             );
           })}

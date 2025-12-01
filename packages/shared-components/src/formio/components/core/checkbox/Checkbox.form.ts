@@ -17,11 +17,9 @@ const checkboxForm = () => {
     validation([
       editFormValidation.required(),
       editFormValidation.customValidation(),
-      editFormValidation.customError(),
     ]),
     api([
       editFormApi.key(),
-      editFormApi.properties(),
     ]),
     conditional([
       editFormConditional.simpleConditional(),

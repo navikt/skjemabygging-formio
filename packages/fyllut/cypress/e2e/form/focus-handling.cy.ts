@@ -15,7 +15,7 @@ describe('Focus handling', () => {
     cy.mocksRestoreRouteVariants();
   });
 
-  describe('Panel main content', () => {
+  describe('Set focus on heading', () => {
     beforeEach(() => {
       cy.visit('/fyllut/datagridconditional/barnSomSoknadenGjelderFor?sub=paper');
       cy.defaultWaits();
@@ -29,12 +29,20 @@ describe('Focus handling', () => {
           cy.findByLabelText('Ja').click();
         });
       cy.clickNextStep();
-      cy.focused().should('have.attr', 'id', 'maincontent');
+      cy.focused().should('match', 'h2');
     });
 
     it('has focus after navigating to previous panel', () => {
       cy.clickPreviousStep();
-      cy.focused().should('have.attr', 'id', 'maincontent');
+      cy.focused().should('match', 'h2');
+    });
+
+    it('has focus on intro and summary page', () => {
+      cy.clickShowAllSteps();
+      cy.findByRole('link', { name: 'Introduksjon' }).click();
+      cy.focused().should('match', 'h2');
+      cy.findByRole('link', { name: 'Oppsummering' }).click();
+      cy.focused().should('match', 'h2');
     });
   });
 

@@ -22,6 +22,7 @@
         <% } %>
         <link rel="manifest" href="/manifest.json" />
         <link rel="shortcut icon" href="/favicon.ico" />
+        <% if (process.env.NODE_ENV !== 'development') { %> {{{DECORATOR_HEAD_ASSETS}}} <% } %>
         <% if (process.env.NODE_ENV !== 'development') { %> {{{DECORATOR_STYLES}}} <% } %>
         <base href="/fyllut" />
         <% if (process.env.NODE_ENV !== 'development') { %>

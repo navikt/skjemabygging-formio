@@ -14,12 +14,19 @@ updates:
     versioning-strategy: increase
     open-pull-requests-limit: 20
     groups:
-      navikt-aksel:
+      navikt-aksel-major:
         patterns:
           - '@navikt/ds-*'
           - '@navikt/aksel-icons'
         update-types:
           - 'major'
+      navikt-aksel-minor-patch:
+        patterns:
+          - '@navikt/ds-*'
+          - '@navikt/aksel-icons'
+        update-types:
+          - 'minor'
+          - 'patch'
       all-minor-patch:
         patterns:
           - '*'
@@ -36,6 +43,21 @@ updates:
           - '@testing-library/*'
         update-types:
           - 'major'
+      nav-dekoratoren-major:
+        patterns:
+          - '@navikt/nav-dekoratoren-moduler'
+          - 'csp-header'
+          - 'html-react-parser'
+        update-types:
+          - 'major'
+      nav-dekoratoren-minor-patch:
+        patterns:
+          - '@navikt/nav-dekoratoren-moduler'
+          - 'csp-header'
+          - 'html-react-parser'
+        update-types:
+          - 'minor'
+          - 'patch'
     ignore:
       - dependency-name: 'formiojs'
 
