@@ -33,7 +33,7 @@ describe('Digital submission without user login', () => {
       cy.findByRole('heading', { name: 'Veiledning' }).should('exist');
 
       cy.clickNextStep();
-      cy.findByRole('link', { name: /Neste steg/ }).should('exist');
+      cy.findByRole('heading', { name: /Dine opplysninger/ }).should('exist');
       cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola');
       cy.findByRole('textbox', { name: 'Etternavn' }).type('Nordmann');
 
@@ -379,6 +379,7 @@ describe('Digital submission without user login', () => {
       cy.findByRole('heading', { name: 'Veiledning' }).should('exist');
 
       cy.clickNextStep();
+      cy.findByRole('heading', { name: /Dine opplysninger/ }).should('exist');
       cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola');
       cy.findByRole('textbox', { name: 'Etternavn' }).type('Nordmann');
 

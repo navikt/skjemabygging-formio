@@ -11,8 +11,8 @@ import { BaseButton } from './BaseButton';
 
 export function CancelAndDeleteButton() {
   const { translate } = useLanguages();
-  const { setSubmission } = useForm();
-  const { submissionMethod } = useAppConfig();
+  const { setSubmission, form } = useForm();
+  const { submissionMethod, logEvent } = useAppConfig();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { deleteMellomlagring } = useSendInn();
   const { handleDeleteAllFiles } = useAttachmentUpload();
@@ -25,6 +25,15 @@ export function CancelAndDeleteButton() {
       await handleDeleteAllFiles();
     }
     setSubmission(undefined);
+    await logEvent?.({
+      name: 'skjema slettet',
+      data: {
+        skjemaId: form.properties.skjemanummer,
+        skjemanavn: translate(form.title),
+        tema: form.properties.tema,
+        submissionMethod,
+      },
+    });
     setIsDeleteModalOpen(false);
   };
 

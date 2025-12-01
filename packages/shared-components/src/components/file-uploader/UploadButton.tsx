@@ -25,6 +25,7 @@ interface Props {
   translationParams?: Record<string, string>;
   accept?: string;
   maxFileSizeInBytes?: number;
+  onSuccess?: () => void;
 }
 
 const UploadButton = ({
@@ -36,6 +37,7 @@ const UploadButton = ({
   translationParams,
   accept = FILE_ACCEPT,
   maxFileSizeInBytes = MAX_SIZE_ATTACHMENT_FILE_BYTES,
+  onSuccess,
 }: Props) => {
   const { translate } = useLanguages();
   const styles = useStyles();
@@ -52,7 +54,10 @@ const UploadButton = ({
       setLoading(false);
       return;
     }
-    await handleUploadFile(attachmentId, file);
+    const response = await handleUploadFile(attachmentId, file);
+    if (response.status === 'ok') {
+      onSuccess?.();
+    }
     setLoading(false);
   };
 
