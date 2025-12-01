@@ -177,7 +177,7 @@ describe('Digital no login', () => {
           },
           { force: true },
         );
-        cy.findByText(TEXTS.statiske.uploadFile.uploadFileError).should('exist');
+        cy.findAllByText(TEXTS.statiske.uploadFile.uploadFileError).eq(0).should('exist');
       });
     });
 
