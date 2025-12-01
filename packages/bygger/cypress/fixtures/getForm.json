@@ -355,14 +355,14 @@
     ],
     "isTestForm": true,
     "modified": "2022-09-22T10:39:43.497Z",
-    "modifiedBy": "test@nav.no",
+    "modifiedBy": "Mock",
     "downloadPdfButtonText": "Test",
     "descriptionOfSignatures": "Test Instructions"
   },
   "createdAt": "2022-09-19T08:26:26.936Z",
-  "createdBy": "test@nav.no",
+  "createdBy": "Mock",
   "changedAt": "2022-09-22T10:39:44.218Z",
-  "changedBy": "test@nav.no",
+  "changedBy": "Mock",
   "revision": 1,
   "publishedLanguages": [],
   "status": "draft"

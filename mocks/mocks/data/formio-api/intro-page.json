@@ -306,7 +306,7 @@
     "modified": "2025-02-05T14:55:23.601Z",
     "published": "2022-07-01T12:47:07.873Z",
     "isTestForm": true,
-    "modifiedBy": "Rosseland, Rune",
+    "modifiedBy": "Mock",
     "signatures": {
       "signature1": "",
       "signature2": "",
@@ -333,7 +333,7 @@
       "UTLAND",
       "YTA"
     ],
-    "publishedBy": "laila",
+    "publishedBy": "Mock",
     "uxSignalsId": "sdaf",
     "isLockedForm": false,
     "skjemanummer": "intropage",

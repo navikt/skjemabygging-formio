@@ -350,7 +350,7 @@
     "prefill": [],
     "modified": "2025-02-06T11:12:18.597Z",
     "published": "2025-02-06T11:12:18.597Z",
-    "modifiedBy": "Rosseland, Rune",
+    "modifiedBy": "Mock",
     "signatures": {
       "signature1": "",
       "signature2": "",
@@ -358,7 +358,7 @@
       "signature4": "",
       "signature5": ""
     },
-    "publishedBy": "Rosseland, Rune",
+    "publishedBy": "Mock",
     "skjemanummer": "NAV 10-07.17",
     "submissionTypes": [
       "PAPER",
@@ -375,11 +375,11 @@
     ]
   },
   "createdAt": "2021-09-29T14:05:21.790+02",
-  "createdBy": "IMPORT",
+  "createdBy": "Mock",
   "changedAt": "2025-10-09T15:02:58.232+02",
-  "changedBy": "Lars Olav Torvik",
+  "changedBy": "Mock",
   "publishedAt": "2025-02-06T12:12:18.597+01",
-  "publishedBy": "IMPORT",
+  "publishedBy": "Mock",
   "publishedLanguages": [
     "nn",
     "nb"

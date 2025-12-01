@@ -6,7 +6,7 @@
     "nb": "AK tester publisering",
     "nn": "AK testar publisering",
     "changedAt": "2025-02-13T22:22:34.437+01",
-    "changedBy": "Ann Katrin Gagnat"
+    "changedBy": "Mock"
   },
   {
     "id": 14136,
@@ -17,7 +17,7 @@
     "nn": "Annan dokumentasjon",
     "en": "Other documentation",
     "changedAt": "2025-02-13T21:40:22.707+01",
-    "changedBy": "Ann Katrin Gagnat"
+    "changedBy": "Mock"
   },
   {
     "id": 14140,
@@ -28,7 +28,7 @@
     "nn": "Bur du i Noreg?",
     "en": "Do you live in Norway?",
     "changedAt": "2025-02-13T21:40:22.756+01",
-    "changedBy": "Ann Katrin Gagnat"
+    "changedBy": "Mock"
   },
   {
     "id": 14134,
@@ -39,7 +39,7 @@
     "nn": "Opplysningane dine",
     "en": "Your personal information",
     "changedAt": "2025-02-13T21:40:22.668+01",
-    "changedBy": "Ann Katrin Gagnat"
+    "changedBy": "Mock"
   },
   {
     "id": 14138,
@@ -50,7 +50,7 @@
     "nn": "Har du nokon annan dokumentasjon som du ønsker å legge ved?",
     "en": "Do you have any other documentation you would like to submit?",
     "changedAt": "2025-02-13T21:40:22.737+01",
-    "changedBy": "Ann Katrin Gagnat"
+    "changedBy": "Mock"
   },
   {
     "id": 14145,
@@ -61,7 +61,7 @@
     "nn": "Har du norsk fødselsnummer eller d-nummer?",
     "en": "Do you have a Norwegian national identification number or d number?",
     "changedAt": "2025-02-13T21:40:22.856+01",
-    "changedBy": "Ann Katrin Gagnat"
+    "changedBy": "Mock"
   },
   {
     "id": 14147,
@@ -70,7 +70,7 @@
     "nb": "Her skal det stå en veiledningstekst for søknaden",
     "nn": "Her skal det stå ein veiledningstekst for søknaden",
     "changedAt": "2025-02-13T22:22:34.329+01",
-    "changedBy": "Ann Katrin Gagnat"
+    "changedBy": "Mock"
   },
   {
     "id": 14225,
@@ -79,7 +79,7 @@
     "nb": "Inputmelding",
     "nn": "Inputmelding",
     "changedAt": "2025-02-14T14:47:32.756+01",
-    "changedBy": "Ann Katrin Gagnat"
+    "changedBy": "Mock"
   },
   {
     "id": 14146,
@@ -90,7 +90,7 @@
     "nn": "Eg legg det ved dette skjemaet",
     "en": "I am attaching it to this form",
     "changedAt": "2025-02-13T21:40:22.870+01",
-    "changedBy": "Ann Katrin Gagnat"
+    "changedBy": "Mock"
   },
   {
     "id": 14144,
@@ -101,7 +101,7 @@
     "nn": "Nei, eg har ingen ekstra dokumentasjon eg vil legge ved",
     "en": "No, I have no additional documentation to attach",
     "changedAt": "2025-02-13T21:40:22.836+01",
-    "changedBy": "Ann Katrin Gagnat"
+    "changedBy": "Mock"
   },
   {
     "id": 14143,
@@ -112,7 +112,7 @@
     "nn": "<p>Adressa er henta frå Folkeregisteret. Du kan <a href=\"https://www.skatteetaten.no/person/folkeregister/flytte/endre-postadresse/\" target=\"_blank\" rel=\"noopener noreferrer\"> endre adressa på nettstaden til Skatteetaten (blir opna i ny fane)</a>.</p>",
     "en": "<p>The address is taken from the National Population Register. You can <a href=\"https://www.skatteetaten.no/en/person/national-registry/moving/changed-postal-address/\" target=\"_blank\" rel=\"noopener noreferrer\"> change the address on the Norwegian Tax Administration's website (opens in a new tab )</a>.</p>",
     "changedAt": "2025-02-13T21:40:22.823+01",
-    "changedBy": "Ann Katrin Gagnat"
+    "changedBy": "Mock"
   },
   {
     "id": 14271,
@@ -122,7 +122,7 @@
     "nn": "<p>Dette er ein søknad for testing</p>",
     "en": "<p>This is an application for testing</p>",
     "changedAt": "2025-02-18T10:38:53.290+01",
-    "changedBy": "Ann Katrin Gagnat"
+    "changedBy": "Mock"
   },
   {
     "id": 14137,
@@ -133,7 +133,7 @@
     "nn": "<p>Nav sender svar på søknaden og annan kommunikasjon til den folkeregistrerte adressa di. Du kan <a href= \"https://www.skatteetaten.no/nn/person/folkeregister/flytte/endre-postadresse/\" target=\"_blank\" rel=\"noopener noreferrer\">sjekke og endre adressa i Folkeregisteret på nettstaden til Skatteetaten (blir opna i ny fane)</a>.</p>",
     "en": "<p>Nav sends answers to applications and other communication to your registered address. You can <a href=\"https://www.skatteetaten.no/en/person/national-registry/moving/changed-postal-address/\" target=\"_blank\" rel=\"noopener noreferrer\">check and change your registered address on the Norwegian Tax Administration's website (opens in a new tab) </a>.</p>",
     "changedAt": "2025-02-13T21:40:22.737+01",
-    "changedBy": "Ann Katrin Gagnat"
+    "changedBy": "Mock"
   },
   {
     "id": 14139,
@@ -144,7 +144,7 @@
     "nn": "Vedlegg",
     "en": "Attachments",
     "changedAt": "2025-02-13T21:40:22.755+01",
-    "changedBy": "Ann Katrin Gagnat"
+    "changedBy": "Mock"
   },
   {
     "id": 14135,
@@ -155,7 +155,7 @@
     "nn": "Rettleiing",
     "en": "Guidance",
     "changedAt": "2025-02-13T21:40:22.699+01",
-    "changedBy": "Ann Katrin Gagnat"
+    "changedBy": "Mock"
   },
   {
     "id": 14224,
@@ -164,7 +164,7 @@
     "nb": "Veiledning C",
     "nn": "Veiledning C",
     "changedAt": "2025-02-14T14:47:32.655+01",
-    "changedBy": "Ann Katrin Gagnat"
+    "changedBy": "Mock"
   },
   {
     "id": 14225,
@@ -173,6 +173,6 @@
     "nb": "Søknad om publisering",
     "nn": "Veiledning C",
     "changedAt": "2025-02-14T14:47:32.655+01",
-    "changedBy": "Ann Katrin Gagnat"
+    "changedBy": "Mock"
   }
 ]
