@@ -51,7 +51,7 @@ const SendInnContext = createContext<SendInnContextType>({} as SendInnContextTyp
 
 const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const appConfig = useAppConfig();
-  const { app, submissionMethod, logger, baseUrl } = appConfig;
+  const { app, submissionMethod, logger, baseUrl, logEvent } = appConfig;
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -274,6 +274,16 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
             submissionMethod,
           }),
         );
+        logEvent?.({
+          name: 'skjema fullført',
+          data: {
+            skjemaId: form.properties.skjemanummer,
+            skjemanavn: translate(form.title),
+            tema: form.properties.tema,
+            language,
+            submissionMethod,
+          },
+        });
         setNologinToken(undefined);
         setSubmission(undefined);
         if (response?.pdfBase64) {
@@ -285,11 +295,15 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         }
         navigate(`/${form.path}/kvittering?${searchParams.toString()}`);
       } catch (error: any) {
-        logger?.error(`${innsendingsId}: Failed to submit nologin application`, {
-          errorMessage: error.message,
-          innsendingsId,
-          language,
-          skjemanummer: form.properties.skjemanummer,
+        logEvent?.({
+          name: 'skjemainnsending feilet',
+          data: {
+            skjemaId: form.properties.skjemanummer,
+            skjemanavn: translate(form.title),
+            tema: form.properties.tema,
+            language,
+            submissionMethod,
+          },
         });
         throw error;
       }
@@ -303,11 +317,10 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
       currentLanguage,
       translate,
       submissionMethod,
+      logEvent,
       setSubmission,
       navigate,
       searchParams,
-      logger,
-      innsendingsId,
     ],
   );
 

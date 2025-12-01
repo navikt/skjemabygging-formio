@@ -1,11 +1,12 @@
 import { Button, FileItem, HStack, TextField, VStack } from '@navikt/ds-react';
 import { AttachmentSettingValues, SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { ChangeEvent, MutableRefObject, ReactNode } from 'react';
+import { ChangeEvent, MutableRefObject, ReactNode, useCallback } from 'react';
 import { useLocation } from 'react-router';
 import { MAX_SIZE_ATTACHMENT_FILE_TEXT, MAX_TOTAL_SIZE_ATTACHMENT_FILES_TEXT } from '../../constants/fileUpload';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
+import { getAttachment } from '../../util/attachment/attachmentsUtil';
 import makeStyles from '../../util/styles/jss/jss';
 import { useAttachmentUpload } from '../attachment/AttachmentUploadContext';
 import { attachmentValidator } from '../attachment/attachmentValidator';
@@ -42,14 +43,30 @@ const FileUploader = ({
   maxFileSizeInBytes,
 }: Props) => {
   const { translate } = useLanguages();
-  const config = useAppConfig();
   const styles = useStyles();
-  const form = useForm();
+  const { baseUrl, logEvent, submissionMethod } = useAppConfig();
+  const { form } = useForm();
   const { search } = useLocation();
   const { changeAttachmentValue, handleDeleteFile, submissionAttachments, errors, uploadsInProgress } =
     useAttachmentUpload();
   const { attachmentId } = initialAttachment;
   const attachment = submissionAttachments.find((attachment) => attachment.attachmentId === attachmentId);
+
+  const logUploadEvent = useCallback(() => {
+    const formAttachment = getAttachment(initialAttachment.navId, form);
+    logEvent?.({
+      name: 'last opp',
+      data: {
+        type: 'vedlegg',
+        skjemaId: form.properties.skjemanummer,
+        tema: form.properties.tema,
+        tittel: translate(formAttachment?.label) ?? '',
+        attachmentId,
+        submissionMethod,
+      },
+    });
+  }, [attachmentId, initialAttachment, form, submissionMethod, translate, logEvent]);
+
   const label = requireAttachmentTitle
     ? translate(attachment?.title)
     : translate(TEXTS.statiske.uploadFile.singleFileUploadedLabel);
@@ -64,7 +81,7 @@ const FileUploader = ({
   const attachmentTitleValidator = attachmentValidator(translate, ['otherDocumentationTitle']);
 
   const translationErrorParams = {
-    href: `${config.baseUrl}/${form.form.path}/legitimasjon${search}`,
+    href: `${baseUrl}/${form.path}/legitimasjon${search}`,
     maxFileSize: MAX_SIZE_ATTACHMENT_FILE_TEXT,
     maxAttachmentSize: MAX_TOTAL_SIZE_ATTACHMENT_FILES_TEXT,
   };
@@ -92,7 +109,6 @@ const FileUploader = ({
     <VStack gap="6" data-cy={`upload-button-${attachmentId}`}>
       {(!showButton || fileItems.length > 0) && (
         <FilesPreview
-          attachmentId={attachmentId}
           label={!showButton ? label : undefined}
           uploaded={uploadedFiles}
           inProgress={inProgress}
@@ -126,6 +142,7 @@ const FileUploader = ({
               accept={accept}
               readMore={readMore}
               maxFileSizeInBytes={maxFileSizeInBytes}
+              onSuccess={logUploadEvent}
             />
             {onDeleteAttachment && (
               <Button

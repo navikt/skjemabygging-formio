@@ -73,4 +73,24 @@ describe('config', () => {
     expect(logError).not.toBeCalled();
     expect(exit).not.toBeCalled();
   });
+
+  test('Mocks er ikke tillatt i prod-gcp', () => {
+    const config = {
+      isMocksEnabled: true,
+      naisClusterName: NaisCluster.PROD,
+    } as ConfigType;
+    checkConfigConsistency(config, logError, exit as any);
+    expect(logError).toBeCalledWith('Invalid configuration: Mocks is not allowed in prod-gcp');
+    expect(exit).toBeCalledWith(1);
+  });
+
+  test('Mocks er ikke tillatt i dev-gcp', () => {
+    const config = {
+      isMocksEnabled: true,
+      naisClusterName: NaisCluster.DEV,
+    } as ConfigType;
+    checkConfigConsistency(config, logError, exit as any);
+    expect(logError).toBeCalledWith('Invalid configuration: Mocks is not allowed in dev-gcp');
+    expect(exit).toBeCalledWith(1);
+  });
 });

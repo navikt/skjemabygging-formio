@@ -608,11 +608,11 @@
     "mellomlagringDurationDays": "28"
   },
   "createdAt": "2025-02-13T20:43:09.072+01",
-  "createdBy": "Test Testesen",
+  "createdBy": "Mock",
   "changedAt": "2025-02-14T14:47:12.023+01",
-  "changedBy": "Test Testesen",
+  "changedBy": "Mock",
   "publishedAt": "2025-02-14T14:47:42.419+01",
-  "publishedBy": "Test Testesen",
+  "publishedBy": "Mock",
   "publishedLanguages": [
     "nn",
     "nb"

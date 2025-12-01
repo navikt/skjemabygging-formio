@@ -7,7 +7,6 @@ import { createRedirectUrl, getDecorator } from './dekorator';
 import { logger } from './logger';
 import { formService } from './services';
 import { QueryParamSub } from './types/custom';
-import { ErrorWithCause } from './utils/errors';
 import { excludeQueryParam } from './utils/express';
 import { logFormNotFound } from './utils/formError';
 import { getDefaultPageMeta, getFormMeta } from './utils/page';
@@ -123,8 +122,8 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
       ...pageMeta,
       ...(config.umamiWebsiteId && { umamiWebsiteId: config.umamiWebsiteId }),
     });
-  } catch (cause: any) {
-    next(new ErrorWithCause('Failed to return index file', cause));
+  } catch (_) {
+    next(new Error('Failed to return index file'));
   }
 };
 

@@ -5,7 +5,7 @@ import jose from 'node-jose';
 import qs from 'qs';
 import { config } from '../config/config';
 import { logger } from '../logger.js';
-import { toJsonOrThrowError } from '../utils/errorHandling.js';
+import { toJsonOrThrowError } from '../utils/errorHandling';
 
 const grant_type = 'urn:ietf:params:oauth:grant-type:token-exchange';
 const client_assertion_type = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer';

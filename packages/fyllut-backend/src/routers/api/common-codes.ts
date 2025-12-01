@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 import correlator from 'express-correlation-id';
 import fetch, { HeadersInit } from 'node-fetch';
 import { config } from '../../config/config';
-import { responseToError } from '../../utils/errorHandling.js';
+import { responseToError } from '../../utils/errorHandling';
 
 const { clientId, kodeverk } = config;
 
