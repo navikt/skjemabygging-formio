@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { noLoginFileService } from '../../../services';
-import { responseToError } from '../../../utils/errorHandling';
+import { HttpError } from '../../../utils/errors/HttpError';
 
 const nologinFile = {
   post: async (req: Request, res: Response, next: NextFunction) => {
@@ -11,11 +11,27 @@ const nologinFile = {
       const file = req.file;
 
       if (!file?.buffer) {
-        return next(responseToError('Error: Ingen fil sendt med forespørselen', 'Ingen fil funnet', true));
+        return res.status(400).json({ message: 'Error: Ingen fil sendt med forespørselen' });
       }
+
       const result = await noLoginFileService.postFile(file, accessToken, attachmentId, noLoginContext?.innsendingsId);
       res.status(201).json(result);
-    } catch (error) {
+    } catch (error: any) {
+      if (error instanceof HttpError && error.http_status === 403) {
+        return res.status(403).json({
+          message: 'Feil ved opplasting av fil for uinnlogget søknad, autorisering feilet',
+        });
+      } else if (
+        error instanceof HttpError &&
+        error.http_status === 400 &&
+        error.http_response_body.errorCode === 'illegalAction.fileWithTooManyPages'
+      ) {
+        return res.status(400).json({
+          message: 'Feil ved opplasting av fil for uinnlogget søknad.',
+          errorCode: 'FILE_TOO_MANY_PAGES',
+        });
+      }
+
       next(error);
     }
   },

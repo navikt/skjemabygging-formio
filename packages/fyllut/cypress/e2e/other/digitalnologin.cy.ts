@@ -1,6 +1,14 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
 describe('Digital no login', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
+  beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
+  });
+
   describe('Form with attachments', () => {
     beforeEach(() => {
       cy.defaultIntercepts();
@@ -115,6 +123,24 @@ describe('Digital no login', () => {
       cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
     });
 
+    it('redirect user if we get 403 from ID upload', () => {
+      cy.mocksUseRouteVariant('upload-file:forbidden');
+
+      cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
+      cy.findByText(TEXTS.statiske.uploadId.selectFileButton).should('exist').should('be.visible');
+
+      cy.get('input[type="file"]').selectFile(
+        {
+          contents: Cypress.Buffer.from('file content'),
+          fileName: 'test.txt',
+        },
+        { force: true },
+      );
+
+      cy.findByRole('heading', { name: TEXTS.statiske.error.sessionExpired.title }).should('exist');
+      cy.findByRole('link', { name: TEXTS.statiske.error.sessionExpired.buttonText }).should('exist');
+    });
+
     it('does not navigate to attachment panel', () => {
       cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
       cy.get('input[type="file"]').selectFile(
@@ -151,7 +177,7 @@ describe('Digital no login', () => {
           },
           { force: true },
         );
-        cy.findByText(TEXTS.statiske.uploadFile.uploadFileError).should('exist');
+        cy.findAllByText(TEXTS.statiske.uploadFile.uploadFileError).eq(0).should('exist');
       });
     });
 
