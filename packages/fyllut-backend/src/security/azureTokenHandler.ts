@@ -3,7 +3,7 @@ import fetch from 'node-fetch';
 import qs from 'qs';
 import { config } from '../config/config';
 import { logger } from '../logger';
-import { toJsonOrThrowError } from '../utils/errorHandling.js';
+import { toJsonOrThrowError } from '../utils/errorHandling';
 
 const { clientId, clientSecret, azureOpenidTokenEndpoint, isDevelopment } = config;
 

@@ -812,7 +812,7 @@
   },
   "properties": {
     "modified": "2025-02-05T14:54:36.292Z",
-    "modifiedBy": "Ola Nordmann",
+    "modifiedBy": "Mock",
     "skjemanummer": "components",
     "submissionTypes": ["DIGITAL_NO_LOGIN", "DIGITAL", "PAPER"],
     "mellomlagringDurationDays": "28",
@@ -831,8 +831,8 @@
     ]
   },
   "createdAt": "2022-06-01T15:40:17.101+02",
-  "createdBy": "Ola Nordmann",
+  "createdBy": "Mock",
   "changedAt": "2025-08-29T13:45:27.833+02",
-  "changedBy": "Ola Nordmann",
+  "changedBy": "Mock",
   "status": "draft"
 }

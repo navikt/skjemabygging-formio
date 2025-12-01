@@ -3391,16 +3391,16 @@
     ],
     "downloadPdfButtonText": "Last ned dokumentet",
     "modified": "2023-01-19T13:39:47.380Z",
-    "modifiedBy": "testbruker@nav.no",
+    "modifiedBy": "Mock",
     "published": "2023-01-19T13:39:47.380Z",
-    "publishedBy": "testbruker@nav.no",
+    "publishedBy": "Mock",
     "publishedLanguages": []
   },
   "createdAt": "2023-01-18T08:20:37.867Z",
   "changedAt": "2023-01-19T13:39:47.380Z",
-  "modifiedBy": "testbruker@nav.no",
+  "modifiedBy": "Mock",
   "publishedAt": "2023-01-19T13:39:47.380Z",
-  "publishedBy": "testbruker@nav.no",
+  "publishedBy": "Mock",
   "revision": 1,
   "publishedLanguages": [
     "nb"

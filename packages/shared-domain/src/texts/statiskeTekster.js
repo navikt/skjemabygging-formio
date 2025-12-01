@@ -71,6 +71,7 @@ export const statiske = {
     uploading: 'Laster opp fil...',
     defaultFileError: 'Det oppstod en feil. Prøv igjen senere.',
     uploadFileError: 'Det oppstod en feil under opplasting av filen. Prøv igjen senere.',
+    uploadFileToManyPagesError: 'Filen du prøvde laste opp har for mange sider. Maks antall sider er 1000.',
     deleteFileError: 'Det oppstod en feil under sletting av filen. Prøv igjen senere.',
     deleteAttachmentError: 'Det oppstod en feil under sletting av vedlegget. Prøv igjen senere.',
     deleteAllFilesError: 'Det oppstod en feil under sletting av filene. Prøv igjen senere.',

@@ -11,7 +11,7 @@ import { config } from '../../config/config';
 import { logger } from '../../logger';
 import { LogMetadata } from '../../types/log';
 import { base64Decode } from '../../utils/base64';
-import { htmlResponseError, responseToError } from '../../utils/errorHandling.js';
+import { htmlResponseError, responseToError } from '../../utils/errorHandling';
 import { logErrorWithStacktrace } from '../../utils/errors';
 
 const { skjemabyggingProxyUrl, formsApiUrl } = config;

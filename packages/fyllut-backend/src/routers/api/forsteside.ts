@@ -6,7 +6,7 @@ import { config } from '../../config/config';
 import { logger } from '../../logger';
 import { appMetrics } from '../../services';
 import { LogMetadata } from '../../types/log';
-import { responseToError } from '../../utils/errorHandling.js';
+import { responseToError } from '../../utils/errorHandling';
 import forstesideV2 from './forstesideV2';
 
 const { skjemabyggingProxyUrl } = config;
