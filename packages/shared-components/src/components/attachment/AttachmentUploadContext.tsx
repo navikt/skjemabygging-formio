@@ -15,6 +15,7 @@ type ErrorType = 'FILE' | 'VALUE' | 'TITLE';
 interface AttachmentUploadContextType {
   handleUploadFile: (attachmentId: string, file: FileObject) => Promise<void>;
   handleDeleteFile: (attachmentId: string, fileId: string, file: FileItem) => Promise<void>;
+  handleDeleteAllFilesForAttachment: (attachmentId: string) => Promise<void>;
   handleDeleteAttachment: (attachmentId: string) => Promise<void>;
   handleDeleteAllFiles: () => Promise<void>;
   addError: (attachmentId: string, error: string, type: ErrorType) => void;
@@ -34,6 +35,7 @@ interface AttachmentUploadContextType {
 const initialContext: AttachmentUploadContextType = {
   handleUploadFile: async () => {},
   handleDeleteFile: async () => {},
+  handleDeleteAllFilesForAttachment: async () => {},
   handleDeleteAttachment: async () => {},
   handleDeleteAllFiles: async () => {},
   addError: () => {},
@@ -52,7 +54,7 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
   const config = useAppConfig();
   const { submission, setSubmission } = useForm();
   const { nologinToken, setNologinToken } = useSendInn();
-  const { deleteAllFiles, deleteAttachment, deleteFile, uploadFile } = useNologinFileUpload();
+  const { deleteAllFiles, deleteAllFilesForAttachment, deleteFile, uploadFile } = useNologinFileUpload();
   const { translate } = useLanguages();
   const [captchaValue, setCaptchaValue] = useState<Record<string, string>>({});
   const [uploadsInProgress, setUploadsInProgress] = useState<Record<string, Record<string, FileObject>>>({});
@@ -105,6 +107,16 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
             }
             return att;
           }),
+        }) as Submission,
+    );
+  };
+
+  const removeAttachmentFromSubmission = (attachmentId: string) => {
+    setSubmission(
+      (current) =>
+        ({
+          ...current,
+          attachments: (current?.attachments ?? []).filter((att) => att.attachmentId !== attachmentId),
         }) as Submission,
     );
   };
@@ -244,11 +256,25 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
     }
   };
 
+  const handleDeleteAllFilesForAttachment = async (attachmentId: string) => {
+    try {
+      removeError(attachmentId);
+      await deleteAllFilesForAttachment(attachmentId, nologinToken);
+      removeFilesFromSubmission(attachmentId);
+    } catch (error: any) {
+      if (isAuthenticationError(error)) {
+        addAuthError(attachmentId);
+      } else {
+        addError(attachmentId, translate(TEXTS.statiske.uploadFile.deleteAttachmentError), 'FILE');
+      }
+    }
+  };
+
   const handleDeleteAttachment = async (attachmentId: string) => {
     try {
       removeError(attachmentId);
-      await deleteAttachment(attachmentId, nologinToken);
-      removeFilesFromSubmission(attachmentId);
+      await deleteAllFilesForAttachment(attachmentId, nologinToken);
+      removeAttachmentFromSubmission(attachmentId);
     } catch (error: any) {
       if (isAuthenticationError(error)) {
         addAuthError(attachmentId);
@@ -311,6 +337,7 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
   const value = {
     handleUploadFile,
     handleDeleteFile,
+    handleDeleteAllFilesForAttachment,
     handleDeleteAttachment,
     handleDeleteAllFiles,
     addError,

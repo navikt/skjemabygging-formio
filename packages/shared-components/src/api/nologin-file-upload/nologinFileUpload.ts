@@ -16,7 +16,7 @@ const useNologinFileUpload = () => {
     return deleteFiles(`${url}/${fileId}`, config, token);
   };
 
-  const deleteAttachment = async (attachmentId: string, token?: string): Promise<void> => {
+  const deleteAllFilesForAttachment = async (attachmentId: string, token?: string): Promise<void> => {
     return deleteFiles(`${url}?attachmentId=${attachmentId}`, config, token);
   };
 
@@ -24,7 +24,7 @@ const useNologinFileUpload = () => {
     return deleteFiles(url, config, token);
   };
 
-  return { uploadFile, deleteFile, deleteAttachment, deleteAllFiles };
+  return { uploadFile, deleteFile, deleteAllFilesForAttachment, deleteAllFiles };
 };
 
 export default useNologinFileUpload;

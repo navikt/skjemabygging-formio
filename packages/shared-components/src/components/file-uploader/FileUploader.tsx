@@ -1,4 +1,4 @@
-import { TextField, VStack } from '@navikt/ds-react';
+import { Button, FileItem, HStack, TextField, VStack } from '@navikt/ds-react';
 import { AttachmentSettingValues, SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { ChangeEvent, MutableRefObject, ReactNode } from 'react';
 import { useLocation } from 'react-router';
@@ -6,15 +6,23 @@ import { MAX_SIZE_ATTACHMENT_FILE_TEXT, MAX_TOTAL_SIZE_ATTACHMENT_FILES_TEXT } f
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
+import makeStyles from '../../util/styles/jss/jss';
 import { useAttachmentUpload } from '../attachment/AttachmentUploadContext';
 import { attachmentValidator } from '../attachment/attachmentValidator';
 import FilesPreview from './FilesPreview';
 import UploadButton from './UploadButton';
 
+const useStyles = makeStyles({
+  deleteButton: {
+    alignSelf: 'flex-start',
+  },
+});
+
 interface Props {
   initialAttachment: SubmissionAttachment;
   attachmentValue?: keyof AttachmentSettingValues;
   requireAttachmentTitle?: boolean;
+  onDeleteAttachment?: (attachmentId: string) => Promise<void>;
   multiple?: boolean;
   refs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | HTMLButtonElement | null>>;
   readMore?: ReactNode;
@@ -26,6 +34,7 @@ const FileUploader = ({
   initialAttachment,
   attachmentValue,
   requireAttachmentTitle,
+  onDeleteAttachment,
   multiple,
   refs,
   readMore,
@@ -34,9 +43,11 @@ const FileUploader = ({
 }: Props) => {
   const { translate } = useLanguages();
   const config = useAppConfig();
+  const styles = useStyles();
   const form = useForm();
   const { search } = useLocation();
-  const { changeAttachmentValue, submissionAttachments, errors, uploadsInProgress } = useAttachmentUpload();
+  const { changeAttachmentValue, handleDeleteFile, submissionAttachments, errors, uploadsInProgress } =
+    useAttachmentUpload();
   const { attachmentId } = initialAttachment;
   const attachment = submissionAttachments.find((attachment) => attachment.attachmentId === attachmentId);
   const label = requireAttachmentTitle
@@ -69,6 +80,14 @@ const FileUploader = ({
     );
   };
 
+  const handleDeleteFileItem = (fileId: string, file: FileItem) => {
+    console.log(attachment);
+    if (attachment?.type === 'other' && onDeleteAttachment) {
+      return onDeleteAttachment(attachmentId);
+    }
+    return handleDeleteFile(attachmentId, fileId, file);
+  };
+
   return (
     <VStack gap="6" data-cy={`upload-button-${attachmentId}`}>
       {(!showButton || fileItems.length > 0) && (
@@ -77,6 +96,7 @@ const FileUploader = ({
           label={!showButton ? label : undefined}
           uploaded={uploadedFiles}
           inProgress={inProgress}
+          onDeleteFileItem={handleDeleteFileItem}
           translationParams={translationErrorParams}
         />
       )}
@@ -96,16 +116,27 @@ const FileUploader = ({
               onChange={handleTitleChange}
             />
           )}
-          <UploadButton
-            attachmentId={attachmentId}
-            variant={initialUpload ? 'primary' : 'secondary'}
-            allowUpload={!requireAttachmentTitle || !!attachment?.title?.trim()}
-            refs={refs}
-            translationParams={translationErrorParams}
-            accept={accept}
-            readMore={readMore}
-            maxFileSizeInBytes={maxFileSizeInBytes}
-          />
+          <HStack gap="4">
+            <UploadButton
+              attachmentId={attachmentId}
+              variant={initialUpload ? 'primary' : 'secondary'}
+              allowUpload={!requireAttachmentTitle || !!attachment?.title?.trim()}
+              refs={refs}
+              translationParams={translationErrorParams}
+              accept={accept}
+              readMore={readMore}
+              maxFileSizeInBytes={maxFileSizeInBytes}
+            />
+            {onDeleteAttachment && (
+              <Button
+                className={styles.deleteButton}
+                variant="tertiary"
+                onClick={() => onDeleteAttachment(attachmentId)}
+              >
+                {translate(TEXTS.statiske.attachment.deleteAttachment)}
+              </Button>
+            )}
+          </HStack>
         </VStack>
       )}
     </VStack>
