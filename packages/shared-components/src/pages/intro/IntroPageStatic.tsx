@@ -16,10 +16,8 @@ const IntroPageStatic = () => {
   const [saveDataBullet, setSaveDataBullet] = useState<string>();
   const [saveDataBulletBold, setSaveDataBulletBold] = useState<string>();
   const { state } = useIntroPage();
-  const { isMellomlagringReady, getTokenDetails } = useSendInn();
+  const { isMellomlagringReady, tokenDetails } = useSendInn();
   const { setTitle, setFormProgressVisible } = useForm();
-
-  const tokenExp = getTokenDetails?.()?.exp;
 
   useEffect(() => {
     if (state === IntroPageState.PAPER) {
@@ -37,7 +35,9 @@ const IntroPageStatic = () => {
       // No description when digital nologin submission
       setDescriptionBold(
         translate(TEXTS.statiske.introPage.nologinTimeLimitBold, {
-          tokenExpirationTime: tokenExp ? dateUtils.formatUnixEpochSecondsToLocalTime(tokenExp) : 'XX.XX',
+          tokenExpirationTime: tokenDetails?.exp
+            ? dateUtils.formatUnixEpochSecondsToLocalTime(tokenDetails?.exp)
+            : 'XX.XX',
         }),
       );
       setDescription(TEXTS.statiske.introPage.nologinTimeLimit);
@@ -49,7 +49,7 @@ const IntroPageStatic = () => {
       setSaveDataBulletBold(TEXTS.statiske.introPage.notSaveBold);
       setSaveDataBullet(TEXTS.statiske.introPage.notSave);
     }
-  }, [state]);
+  }, [state, tokenDetails, translate]);
 
   useEffect(() => {
     setTitle(TEXTS.grensesnitt.introPage.title);

@@ -1,6 +1,5 @@
 import {
   formioFormsApiUtils,
-  JwtToken,
   Language,
   MellomlagringError,
   NologinToken,
@@ -44,7 +43,8 @@ interface SendInnContextType {
   submitted?: boolean;
   receipt?: ReceiptSummary;
   setReceipt: (receipt: ReceiptSummary | undefined) => void;
-  getTokenDetails?: () => JwtToken | undefined;
+  tokenDetails: NologinToken | undefined;
+  handleSessionExpired: () => void;
 }
 
 interface SendInnProviderProps {
@@ -71,6 +71,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const [isCreateStarted, setIsCreateStarted] = useState(false);
   const [innsendingsId, setInnsendingsId] = useState<string>();
   const [nologinToken, setNologinToken] = useState<string | undefined>();
+  const [tokenDetails, setTokenDetails] = useState<NologinToken | undefined>();
   const [fyllutMellomlagringState, dispatchFyllutMellomlagring] = useReducer(mellomlagringReducer, undefined);
   const [soknadPdfBlob, setSoknadPdfBlob] = useState<Blob | undefined>(undefined);
   const [receipt, setReceipt] = useState<ReceiptSummary | undefined>(undefined);
@@ -404,25 +405,39 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
     }
   };
 
-  const getTokenDetails = useCallback(
-    (): NologinToken | undefined => tokenUtils.parseToken(nologinToken),
-    [nologinToken],
-  );
+  const handleSessionExpired = useCallback(() => {
+    logger?.debug('Session has expired, redirecting to session expired page');
+    logEvent?.({
+      name: 'sesjon utløpt',
+      data: {
+        skjemaId: form?.properties.skjemanummer,
+        skjemanavn: translate(form?.title || ''),
+        tema: form?.properties.tema,
+        submissionMethod,
+      },
+    });
+    setNologinToken(undefined);
+    setSubmission(undefined);
+    navigate(`/sesjon-utlopt?form_path=${form?.path}&form_number=${form?.properties.skjemanummer}`);
+  }, [form, logEvent, logger, navigate, setSubmission, submissionMethod, translate]);
 
   useEffect(() => {
-    if (!nologinToken) return;
+    setTokenDetails(tokenUtils.parseToken(nologinToken));
+  }, [nologinToken]);
 
-    const checkTokenExp = setInterval(() => {
-      const details = getTokenDetails();
-      if (details && details.exp * 1000 < Date.now()) {
-        setNologinToken(undefined);
-        setSubmission(undefined);
-        navigate(`/sesjon-utlopt?form_path=${form?.path}`);
-      }
-    }, 60000);
+  useEffect(() => {
+    if (!tokenDetails) return;
 
-    return () => clearInterval(checkTokenExp);
-  }, [nologinToken, getTokenDetails, setSubmission, navigate, form?.path]);
+    const msUntilExp = tokenDetails.exp * 1000 - Date.now();
+    if (msUntilExp > 0) {
+      const timeoutId = setTimeout(() => {
+        handleSessionExpired();
+      }, msUntilExp);
+      return () => clearTimeout(timeoutId);
+    } else {
+      handleSessionExpired();
+    }
+  }, [tokenDetails, handleSessionExpired]);
 
   useEffect(() => {
     const initializeMellomlagring = async () => {
@@ -488,7 +503,8 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
     isMellomlagringReady,
     mellomlagringError: fyllutMellomlagringState?.error,
     submitted: !!soknadPdfBlob,
-    getTokenDetails,
+    tokenDetails,
+    handleSessionExpired,
   };
 
   return <SendInnContext.Provider value={value}>{children}</SendInnContext.Provider>;
