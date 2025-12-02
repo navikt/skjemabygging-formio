@@ -23,6 +23,7 @@ interface Props {
   initialAttachment: SubmissionAttachment;
   attachmentValue?: keyof AttachmentSettingValues;
   requireAttachmentTitle?: boolean;
+  showDeleteAttachmentButton?: boolean;
   onDeleteAttachment?: (attachmentId: string) => Promise<void>;
   multiple?: boolean;
   refs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | HTMLButtonElement | null>>;
@@ -35,6 +36,7 @@ const FileUploader = ({
   initialAttachment,
   attachmentValue,
   requireAttachmentTitle,
+  showDeleteAttachmentButton,
   onDeleteAttachment,
   multiple,
   refs,
@@ -144,7 +146,7 @@ const FileUploader = ({
               maxFileSizeInBytes={maxFileSizeInBytes}
               onSuccess={logUploadEvent}
             />
-            {onDeleteAttachment && (
+            {showDeleteAttachmentButton && onDeleteAttachment && (
               <Button
                 className={styles.deleteButton}
                 variant="tertiary"

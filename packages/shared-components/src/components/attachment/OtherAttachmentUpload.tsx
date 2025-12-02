@@ -127,6 +127,7 @@ const OtherAttachmentUpload = ({ label, attachmentValues, componentId, descripti
                 initialAttachment={attachment}
                 requireAttachmentTitle
                 attachmentValue={otherAttachment?.value}
+                showDeleteAttachmentButton={attachments.length > 1}
                 onDeleteAttachment={handleDelete}
                 refs={refs}
                 readMore={<FileUploadReadMore />}
