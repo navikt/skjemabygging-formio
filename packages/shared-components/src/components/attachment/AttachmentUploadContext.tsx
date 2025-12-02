@@ -297,6 +297,7 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
       } else {
         addError(attachmentId, translate(TEXTS.statiske.uploadFile.deleteAttachmentError), 'FILE');
       }
+      throw error;
     }
   };
 
