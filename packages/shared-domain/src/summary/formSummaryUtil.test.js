@@ -1,4 +1,4 @@
-import { flattenComponents } from '../utils/navFormUtils';
+import { flattenComponents } from '../utils/form/navFormUtils';
 import formSummaryUtil from './formSummaryUtil';
 import MockedComponentObjectForTest from './MockedComponentObjectForTest';
 import datoISkjemagruppeIDatagrid from './testdata/datovelger-skjemagruppe-datagrid';

@@ -139,12 +139,12 @@ import type { DataFetcherData, DataFetcherElement, DataFetcherUtil } from './uti
 import { dataFetcherUtils } from './utils/data-fetcher';
 import dateUtils from './utils/date';
 import featureUtils, { FeatureTogglesMap } from './utils/featureUtils';
+import navFormUtils, { DependencyType } from './utils/form/navFormUtils';
 import formDiffingTool, { FormSettingsDiff } from './utils/formDiffingTool';
 import navFormioUtils from './utils/formio';
 import formioFormsApiUtils from './utils/forms-api-backwards-compatibility';
 import { guid } from './utils/guid';
 import localizationUtils from './utils/localization';
-import navFormUtils, { DependencyType } from './utils/navFormUtils';
 import numberUtils from './utils/numberUtils';
 import objectUtils from './utils/objectUtils';
 import paginationUtils from './utils/pagination';

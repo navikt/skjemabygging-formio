@@ -1,8 +1,8 @@
 import { v4 as uuidv4 } from 'uuid';
-import { Attachment, Component, FormsResponseForm, NavFormType, Panel, Submission, SubmissionMethod } from '../form';
-import { Form, formSummaryUtil, submissionTypesUtils } from '../index';
-import FormioUtils from '../utils/formio/FormioUtils';
-import { camelCase } from './stringUtils';
+import { Attachment, Component, FormsResponseForm, NavFormType, Panel, Submission, SubmissionMethod } from '../../form';
+import { Form, formSummaryUtil, submissionTypesUtils } from '../../index';
+import FormioUtils from '../formio/FormioUtils';
+import { camelCase } from '../stringUtils';
 
 export const toFormPath = (text: string) => camelCase(text).toLowerCase();
 
@@ -325,6 +325,7 @@ const getActiveComponentsFromForm = (
   submissionMethod?: string,
 ): Component[] => {
   const conditionals = formSummaryUtil.mapAndEvaluateConditionals(form, submission ?? { data: {} });
+  console.log(conditionals);
 
   const panels = form.components.filter(
     (component) =>

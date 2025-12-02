@@ -1,3 +1,13 @@
+import formWithContainer from '../testdata/conditional-container';
+import formWithCustomConditional from '../testdata/conditional-custom';
+import formWithCompositeCustomConditional from '../testdata/conditional-custom-composite';
+import formWithDatagridConditional from '../testdata/conditional-datagrid.js';
+import formWithJsonConditional from '../testdata/conditional-json';
+import formWithMultipleConditionalDependencies from '../testdata/conditional-multiple-dependencies';
+import formWithPanel from '../testdata/conditional-panel';
+import formWithSimpleConditional from '../testdata/conditional-simple';
+import formWithSkjemagruppe from '../testdata/conditional-skjemagruppe';
+import nav100750 from '../testdata/nav100750';
 import {
   enrichComponentsWithNavIds,
   findDependentComponents,
@@ -9,16 +19,6 @@ import {
   removeVedleggspanel,
   toFormPath,
 } from './navFormUtils';
-import formWithContainer from './testdata/conditional-container';
-import formWithCustomConditional from './testdata/conditional-custom';
-import formWithCompositeCustomConditional from './testdata/conditional-custom-composite';
-import formWithDatagridConditional from './testdata/conditional-datagrid.js';
-import formWithJsonConditional from './testdata/conditional-json';
-import formWithMultipleConditionalDependencies from './testdata/conditional-multiple-dependencies';
-import formWithPanel from './testdata/conditional-panel';
-import formWithSimpleConditional from './testdata/conditional-simple';
-import formWithSkjemagruppe from './testdata/conditional-skjemagruppe';
-import nav100750 from './testdata/nav100750';
 
 const withDifferentModified = {
   ...nav100750,

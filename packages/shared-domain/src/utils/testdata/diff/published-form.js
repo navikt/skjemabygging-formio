@@ -1,4 +1,4 @@
-import { enrichComponentsWithNavIds } from '../../navFormUtils';
+import { enrichComponentsWithNavIds } from '../../form/navFormUtils';
 
 const form = {
   title: 'AK tester nedtrekksliste',
