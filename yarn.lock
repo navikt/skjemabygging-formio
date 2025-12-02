@@ -1074,10 +1074,10 @@
   resolved "https://npm.pkg.github.com/download/@navikt/fnrvalidator/2.1.5/e33cbc5693b14419bbcf4d5daee2ac9eeec532e5#e33cbc5693b14419bbcf4d5daee2ac9eeec532e5"
   integrity sha512-uHzoL3ZTYwrF7OTKaihNf9xHH6S9WnGqz420HX4lEX+yu5367l+dYxI5OIRVT5MKWEDQ4DCVSAuJhoWValv6Fw==
 
-"@navikt/nav-dekoratoren-moduler@^3.5.0":
-  version "3.5.0"
-  resolved "https://npm.pkg.github.com/download/@navikt/nav-dekoratoren-moduler/3.5.0/6df0830237b010f08b3a2a302013fd0edafe77f7#6df0830237b010f08b3a2a302013fd0edafe77f7"
-  integrity sha512-fi0XWVT97MedJJ5BrOjl0Ymj2QthTdbNNzlXbtM/H5o2/kC1yEbpf5odJOoM557x3Z292xcxeG+ISznLn1dckQ==
+"@navikt/nav-dekoratoren-moduler@^3.6.1":
+  version "3.6.1"
+  resolved "https://npm.pkg.github.com/download/@navikt/nav-dekoratoren-moduler/3.6.1/b0dfb47266ce90ffacd1905cd4feb53d8194dbcb#b0dfb47266ce90ffacd1905cd4feb53d8194dbcb"
+  integrity sha512-vfq24tA2eKEsZ9/qRzobRlrKV5NUbSuI9FA60AUhH+BX+61WE/ZsvHhNbFiO9NlXg/yYLmVZCg1uJB5V4QnU7A==
   dependencies:
     js-cookie "^3.0.5"
 
@@ -3153,10 +3153,10 @@ crossvent@1.5.5:
   dependencies:
     custom-event "^1.0.0"
 
-csp-header@^6.2.0:
-  version "6.2.0"
-  resolved "https://registry.yarnpkg.com/csp-header/-/csp-header-6.2.0.tgz#0a29c87ee65b4cbc54339f1f20d41d15bece6cb9"
-  integrity sha512-5r/zQO0nz6MGFOQWYXYGlAn2oH71D0sRpxN/F8wDHhHnHBx0N73VGLvkeXST7t/MrjC97QrsL45qZ3hsDwhTgw==
+csp-header@^6.2.1:
+  version "6.2.1"
+  resolved "https://registry.yarnpkg.com/csp-header/-/csp-header-6.2.1.tgz#29201c53a91061116171e5b3bb139dfd73d0acde"
+  integrity sha512-vGKlTB7SiuA9i12us4oHwUBRFsr2Aa/YgF/37BqyGhGp1nxzoysQIYfvYZub/qzoc4IVh2lDS7UrQZ2TwOn2lg==
 
 css-jss@10.10.0:
   version "10.10.0"
