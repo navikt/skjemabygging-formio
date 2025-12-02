@@ -9,7 +9,7 @@ const SessionExpiredContent = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const formPath = searchParams.get('form_path');
-  const { fyllutBaseURL, logEvent } = useAppConfig();
+  const { fyllutBaseURL, logEvent, submissionMethod } = useAppConfig();
 
   const logRestartAfterSessionExpiredEvent = useCallback(
     async (event: React.MouseEvent) => {
@@ -20,11 +20,12 @@ const SessionExpiredContent = () => {
           skjemaId: searchParams.get('form_number') as string,
           skjemaPath: formPath as string,
           sessionExpired: true,
+          submissionMethod,
         },
       });
       navigate(`/${formPath}`);
     },
-    [logEvent, searchParams, formPath, navigate],
+    [logEvent, searchParams, formPath, navigate, submissionMethod],
   );
 
   return (

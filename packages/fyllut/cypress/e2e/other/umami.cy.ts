@@ -1,3 +1,4 @@
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { expect } from 'chai';
 
 describe('Umami', () => {
@@ -105,6 +106,40 @@ describe('Umami', () => {
     it('ignores umami event logging failures', () => {
       cy.mocksUseRouteVariant('post-umami-event:failure');
       fillNologinForm();
+    });
+
+    it('logs umami events when session expires and user restarts', () => {
+      cy.visit('/fyllut/nologinform/legitimasjon?sub=digitalnologin');
+      cy.defaultWaits();
+      cy.findByRole('heading', { name: 'Legitimasjon' }).should('exist');
+
+      cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
+        cy.findByLabelText('Norsk pass').check(),
+      );
+      cy.clock(Date.now());
+      cy.get('input[type=file]').selectFile('cypress/fixtures/files/id-billy-bruker.jpg', { force: true });
+      cy.wait('@umamiEvent');
+      cy.clickNextStep();
+
+      cy.tick(3660000); // Move time forward by 1 hour and 1 minute (in ms)
+      cy.wait('@umamiEvent');
+      cy.findByRole('heading', { name: TEXTS.statiske.error.sessionExpired.title }).should('exist');
+
+      cy.findByRole('link', { name: TEXTS.statiske.error.sessionExpired.buttonText }).click();
+      cy.wait('@umamiEvent');
+
+      cy.get('@umamiEvent.all')
+        .should('have.length', 3)
+        .then((interceptions) => {
+          const umamiEvents = interceptions.map((interception: any) => interception.request.body);
+          expect(umamiEvents[0].name).to.equal('last opp');
+          expect(umamiEvents[1].name).to.equal('sesjon utløpt');
+          expect(umamiEvents[1].data.skjemaId).to.equal('TST 19-81.07');
+          expect(umamiEvents[1].data.submissionMethod).to.equal('digitalnologin');
+          expect(umamiEvents[2].name).to.equal('skjema restartet');
+          expect(umamiEvents[2].data.skjemaId).to.equal('TST 19-81.07');
+          expect(umamiEvents[2].data.submissionMethod).to.equal('digitalnologin');
+        });
     });
   });
 

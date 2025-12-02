@@ -424,4 +424,27 @@ describe('Digital submission without user login', () => {
       cy.get('.navds-alert--warning').should('not.exist');
     });
   });
+
+  describe('Session expired flow', () => {
+    it('should redirect user to session expired page', () => {
+      cy.visit('/fyllut/nologinform/legitimasjon?sub=digitalnologin');
+      cy.defaultWaits();
+      cy.findByRole('heading', { name: 'Legitimasjon' }).should('exist');
+
+      cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
+        cy.findByLabelText('Norsk pass').check(),
+      );
+      cy.clock(Date.now());
+      cy.get('input[type=file]').selectFile('cypress/fixtures/files/id-billy-bruker.jpg', { force: true });
+      cy.clickNextStep();
+
+      cy.tick(3660000); // Move time forward by 1 hour and 1 minute (in ms)
+      cy.findByRole('heading', { name: TEXTS.statiske.error.sessionExpired.title }).should('exist');
+      cy.findByRole('link', { name: TEXTS.statiske.error.sessionExpired.buttonText }).click(); // start over
+
+      cy.url().should('match', /.*\/fyllut\/nologinform$/);
+      cy.findByRole('link', { name: 'Send digitalt' }).should('exist');
+      cy.findByRole('link', { name: 'Kan ikke logge inn' }).should('exist');
+    });
+  });
 });
