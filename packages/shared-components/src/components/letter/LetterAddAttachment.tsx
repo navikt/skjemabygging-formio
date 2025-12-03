@@ -37,7 +37,9 @@ const LetterAddAttachment = ({ index, attachments }: Props) => {
                 {translate(vedlegg.label)}
               </a>
             ) : (
-              translate(vedlegg.label)
+              <>
+                {translate(vedlegg.label)} {translate(TEXTS.common.opensInNewTab)}
+              </>
             )}
           </li>
         ))}
