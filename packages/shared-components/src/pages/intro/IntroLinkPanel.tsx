@@ -1,6 +1,5 @@
 import '@navikt/ds-css/darkside';
 import { LinkCard, Theme } from '@navikt/ds-react';
-import classNames from 'classnames';
 import { MouseEvent, useCallback } from 'react';
 import { useLanguages } from '../../context/languages';
 
@@ -15,24 +14,28 @@ interface Props {
 const IntroLinkPanel = ({ title, description, href, onClick, className }: Props) => {
   const { translate } = useLanguages();
 
-  const handleClick = useCallback(
-    (event: MouseEvent) => {
-      if (!onClick) {
+  const handleAnchorClick = useCallback(
+    (event: MouseEvent<HTMLAnchorElement>) => {
+      if (onClick) {
+        event.preventDefault();
+        onClick();
         return;
       }
-      event.preventDefault();
-      onClick();
+
+      if (!href) {
+        event.preventDefault();
+      }
     },
-    [onClick],
+    [href, onClick],
   );
 
-  const cardClassName = classNames('mb-4', className);
+  const anchorOnClick = onClick || !href ? handleAnchorClick : undefined;
 
   return (
     <Theme>
-      <LinkCard data-color="accent" className={cardClassName} onClick={onClick ? handleClick : undefined}>
+      <LinkCard data-color="accent" className={className}>
         <LinkCard.Title>
-          <LinkCard.Anchor href={href ?? '#'} onClick={onClick ? handleClick : undefined}>
+          <LinkCard.Anchor href={href ?? '#'} onClick={anchorOnClick}>
             {translate(title)}
           </LinkCard.Anchor>
         </LinkCard.Title>
