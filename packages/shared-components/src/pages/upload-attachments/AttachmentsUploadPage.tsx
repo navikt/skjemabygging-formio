@@ -30,14 +30,12 @@ export function AttachmentsUploadPage() {
   const attachmentOrder = attachments.reduce((acc, att, index) => ({ ...acc, [att.navId as string]: index }), {});
 
   const errors: ComponentError[] = (Object.entries(uploadErrors) ?? []).flatMap(([attachmentId, attachmentErrors]) =>
-    attachmentErrors
-      .filter((error) => error.type === 'TITLE' || error.type === 'VALUE')
-      .map((error) => ({
-        elementId: error.type,
-        message: error.message,
-        path: attachmentId,
-        level: 'error',
-      })),
+    attachmentErrors.map((error) => ({
+      elementId: error.type,
+      message: error.message,
+      path: attachmentId,
+      level: 'error',
+    })),
   );
   errors.sort((a, b) => attachmentOrder[a.path] - attachmentOrder[b.path]);
 
