@@ -37,6 +37,7 @@ const OtherAttachmentUpload = ({ label, attachmentValues, componentId, descripti
   const validator = attachmentValidator(translate, ['value']);
   const defaultAttachmentValues: Pick<SubmissionAttachment, 'navId' | 'type'> = { navId: componentId, type: 'other' };
   const otherAttachment = submissionAttachments.find((attachment) => attachment.attachmentId.startsWith(componentId));
+  const [attachmentCounter, setAttachmentCounter] = useState(0);
   const [attachments, setAttachments] = useState(
     otherAttachment
       ? submissionAttachments.filter((att) => att.attachmentId.startsWith(componentId))
@@ -52,15 +53,39 @@ const OtherAttachmentUpload = ({ label, attachmentValues, componentId, descripti
     changeAttachmentValue({ attachmentId, ...defaultAttachmentValues }, { value: value.key }, validator);
   };
 
-  const handleDeleteAllAttachments = async (attachmentId: string) => {
-    await handleDeleteAttachment(attachmentId);
+  const handleDelete = async (attachmentId: string) => {
+    try {
+      const submissionAttachment = submissionAttachments.find((att) => att.attachmentId === attachmentId);
+      if ((submissionAttachment?.files ?? []).length > 0) {
+        await handleDeleteAttachment(attachmentId);
+      }
+      setAttachments((current) => {
+        if (current.length === 1) {
+          const [{ value }] = current;
+          return [{ attachmentId: componentId, value, ...defaultAttachmentValues }];
+        }
+        return current.filter((att) => att.attachmentId !== attachmentId);
+      });
+    } catch (_error) {
+      /* error is handled at a higher level */
+    }
   };
 
   const handleUploadAnotherAttachment = () => {
     setAttachments((current) => [
       ...current,
-      { attachmentId: `${componentId}-${current.length}`, ...defaultAttachmentValues },
+      { attachmentId: `${componentId}-${attachmentCounter + 1}`, ...defaultAttachmentValues },
     ]);
+    setAttachmentCounter((value) => value + 1);
+  };
+
+  const showAddAnotherButton = () => {
+    return attachments.every((otherAttachment) => {
+      const fromSubmission = submissionAttachments.find(
+        (submissionAttachment) => otherAttachment.attachmentId === submissionAttachment.attachmentId,
+      );
+      return (fromSubmission?.files ?? []).length > 0;
+    });
   };
 
   return (
@@ -92,16 +117,6 @@ const OtherAttachmentUpload = ({ label, attachmentValues, componentId, descripti
           {uploadedAttachmentFiles.length > 0 && (
             <div className={styles.uploadedFilesHeader}>
               <Label>{translate(TEXTS.statiske.attachment.filesUploadedNotSent)}</Label>
-
-              {uploadedAttachmentFiles.length > 1 && (
-                <Button
-                  variant="tertiary"
-                  onClick={() => handleDeleteAllAttachments(componentId)}
-                  className={styles.deleteAllButton}
-                >
-                  {translate(TEXTS.statiske.attachment.deleteAllFiles)}
-                </Button>
-              )}
             </div>
           )}
 
@@ -112,18 +127,22 @@ const OtherAttachmentUpload = ({ label, attachmentValues, componentId, descripti
                 initialAttachment={attachment}
                 requireAttachmentTitle
                 attachmentValue={otherAttachment?.value}
+                showDeleteAttachmentButton={attachments.length > 1}
+                onDeleteAttachment={handleDelete}
                 refs={refs}
                 readMore={<FileUploadReadMore />}
               />
             ))}
-            <Button
-              variant="tertiary"
-              onClick={handleUploadAnotherAttachment}
-              className={styles.addAnotherAttachmentButton}
-              icon={<PlusIcon aria-hidden fontSize="1.5rem" />}
-            >
-              {translate(TEXTS.statiske.attachment.addNewAttachment)}
-            </Button>
+            {showAddAnotherButton() && (
+              <Button
+                variant="tertiary"
+                onClick={handleUploadAnotherAttachment}
+                className={styles.addAnotherAttachmentButton}
+                icon={<PlusIcon aria-hidden fontSize="1.5rem" />}
+              >
+                {translate(TEXTS.statiske.attachment.addNewAttachment)}
+              </Button>
+            )}
           </VStack>
         </VStack>
       )}

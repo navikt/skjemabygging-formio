@@ -65,7 +65,7 @@ export function ReceiptPage() {
       {receipt ? (
         <>
           {allRequiredDocumentsSubmitted && (
-            <Alert size="small" variant="success">
+            <Alert size="medium" variant="success">
               <Heading level="2" spacing size="xsmall">
                 {translate(TEXTS.statiske.receipt.alertSuccessHeading)}
               </Heading>
@@ -161,7 +161,7 @@ export function ReceiptPage() {
           )}
 
           {!allRequiredDocumentsSubmitted && (
-            <Alert size="small" variant="warning">
+            <Alert size="medium" variant="warning">
               <Heading level="2" spacing size="xsmall">
                 <b>
                   {translate(TEXTS.statiske.receipt.deadlineWarningHeading, {

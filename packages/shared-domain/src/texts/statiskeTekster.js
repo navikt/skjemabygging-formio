@@ -151,7 +151,7 @@ export const statiske = {
     sentByOthersHeading: 'Dette har du svart at noen andre skal sende inn:',
     deadlineWarningHeading: 'Dokumentene må ettersendes innen {{deadline}}',
     deadlineWarningBody:
-      'Du kan ettersende dokumentene på <a target="_blank" rel="noopener noreferrer" href="https://www.nav.no/ettersende">https://www.nav.no/ettersende</a> (åpnes i ny fane)',
+      'For at søknaden skal bli komplett må du sende inn dokumentasjonen som mangler. Du kan ettersende dokumentene på <a target="_blank" rel="noopener noreferrer" href="https://www.nav.no/ettersende">nav.no/ettersende</a> (åpnes i ny fane)',
   },
   warningAboutDifficultSubmission: {
     modal: {
@@ -213,6 +213,7 @@ export const statiske = {
     maxFileSizeDescription: 'Du kan laste opp flere filer, men totalt kan ikke opplastingen være mer enn {{size}}.',
     filesUploadedNotSent: 'Fil(er) du har lastet opp, men ikke sendt inn:',
     sizeAndFormatHeader: 'Gyldige filformater og størrelser',
+    deleteAttachment: 'Slett vedlegg',
     deleteAllFiles: 'Slett alle',
     attachmentTitle: 'Gi vedlegget et beskrivende navn',
     addNewAttachment: 'Legg til nytt vedlegg',

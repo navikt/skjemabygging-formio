@@ -59,7 +59,7 @@ export const findFirstValidationErrorInAttachmentPanel = (
     ?.filter((component) => component.type === 'attachment')
     .find((component) => {
       const submissionAttachment = submission.attachments?.find(
-        (attachment) => attachment.attachmentId === component.navId,
+        (attachment) => component.navId && attachment.attachmentId.startsWith(component.navId),
       );
       return !!validator.validate(component.label, submissionAttachment);
     });

@@ -39,7 +39,8 @@ const AttachmentUpload = ({
 }: Props) => {
   const styles = useAttachmentStyles();
   const { translate } = useLanguages();
-  const { changeAttachmentValue, handleDeleteAttachment, submissionAttachments, errors } = useAttachmentUpload();
+  const { changeAttachmentValue, handleDeleteAllFilesForAttachment, submissionAttachments, errors } =
+    useAttachmentUpload();
   const { form } = useForm();
   const attachment = submissionAttachments.find((attachment) => attachment.attachmentId.startsWith(componentId));
 
@@ -57,8 +58,8 @@ const AttachmentUpload = ({
     );
   };
 
-  const handleDeleteAllAttachments = async (attachmentId: string) => {
-    await handleDeleteAttachment(attachmentId);
+  const handleDeleteAllFiles = async (attachmentId: string) => {
+    await handleDeleteAllFilesForAttachment(attachmentId);
   };
 
   return (
@@ -97,7 +98,7 @@ const AttachmentUpload = ({
               {uploadedAttachmentFiles.length > 1 && (
                 <Button
                   variant="tertiary"
-                  onClick={() => handleDeleteAllAttachments(componentId)}
+                  onClick={() => handleDeleteAllFiles(componentId)}
                   className={styles.deleteAllButton}
                 >
                   {translate(TEXTS.statiske.attachment.deleteAllFiles)}
