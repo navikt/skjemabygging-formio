@@ -15,16 +15,27 @@ const IntroLinkPanel = ({ title, description, href, onClick, className }: Props)
 
   return (
     <Theme>
-      <LinkCard data-color="accent" className={className}>
+      <LinkCard
+        data-color="accent"
+        className={className}
+        onClick={
+          onClick
+            ? (event) => {
+                event.preventDefault();
+                onClick();
+              }
+            : undefined
+        }
+      >
         <LinkCard.Title>
           <LinkCard.Anchor
             href={href ?? '#'}
             onClick={(event) => {
-              if (!onClick && href) {
+              if (href) {
                 return;
               }
+
               event.preventDefault();
-              onClick?.();
             }}
           >
             {translate(title)}
