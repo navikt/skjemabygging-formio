@@ -16,6 +16,7 @@ const introPage = [
   'introPage.beAwareOf.sendByMail',
   'introPage.beAwareOf.notSave',
   'introPage.beAwareOf.timeLimit',
+  'introPage.beAwareOf.timeLimitNologin',
   'introPage.dataDisclosure.title.alt1',
   'introPage.dataDisclosure.title.alt2',
   'introPage.dataDisclosure.ingress',
@@ -36,6 +37,7 @@ const introPage = [
 const keys = { introPage } as const;
 type IntroPageKey = (typeof introPage)[number];
 type Tkey = IntroPageKey;
+type TElement = Tkey | { key: Tkey; params: Record<string, any> };
 
 export { keys };
-export type { Tkey };
+export type { TElement, Tkey };

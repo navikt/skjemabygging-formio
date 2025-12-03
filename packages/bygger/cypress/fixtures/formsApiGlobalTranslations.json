@@ -351,6 +351,18 @@
     "publishedBy": "Mock"
   },
   {
+    "id": 438,
+    "key": "introPage.beAwareOf.timeLimitNologin",
+    "tag": "introPage",
+    "changedAt": "2025-10-01T12:33:13.707+02",
+    "changedBy": "Mock",
+    "revision": 1,
+    "nb": "Du må fullføre innen kl. {{tokenExpirationTime}}. Dette er av personvernhensyn fordi vi ikke har mulighet til å lagre opplysningene du fyller ut.",
+    "nn": "Du må fullføre innan kl. {{tokenExpirationTime}}. Dette er av omsyn til personvern fordi me ikkje har moglegheit til å lagre opplysingane du fyller ut.",
+    "en": "You must complete the form by {{tokenExpirationTime}}. This is for privacy reasons because we cannot store the information you enter.",
+    "publishedBy": "Mock"
+  },
+  {
     "key": "introPage.dataDisclosure.title.alt1",
     "nb": "Informasjon vi henter om deg",
     "nn": "Informasjon me hentar om deg",

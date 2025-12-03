@@ -126,7 +126,7 @@ import formSummaryUtil from './summary/formSummaryUtil';
 import type PanelValidation from './summary/panelValidation';
 import { TextSize, TextSizeShort } from './text';
 import TEXTS from './texts';
-import externalStorageTexts, { Tkey } from './texts/externalStorage';
+import externalStorageTexts, { TElement, Tkey } from './texts/externalStorage';
 import { Activity } from './tilleggsstonader/activity';
 import {
   FormsApiTranslation,
@@ -151,6 +151,7 @@ import paginationUtils from './utils/pagination';
 import signatureUtils from './utils/signatureUtils';
 import stringUtils from './utils/stringUtils';
 import submissionTypesUtils from './utils/submissionTypesUtils';
+import { JwtToken, NologinToken, tokenUtils } from './utils/token';
 import translationUtils from './utils/translation';
 import validatorUtils from './utils/validatorUtils';
 import yourInformationUtils from './utils/yourInformationUtils';
@@ -189,6 +190,7 @@ export {
   submissionTypesUtils,
   supportedEnhetstyper,
   TEXTS,
+  tokenUtils,
   translationUtils,
   validatorUtils,
   yourInformationUtils,
@@ -254,6 +256,7 @@ export type {
   InputMode,
   IntroPage,
   IntroPageSection,
+  JwtToken,
   KjentBruker,
   Language,
   LimitedFormAttachment,
@@ -265,6 +268,7 @@ export type {
   MottaksadresserResourceContent,
   NavFormType,
   NewFormSignatureType,
+  NologinToken,
   Operator,
   Panel,
   PanelValidation,
@@ -310,6 +314,7 @@ export type {
   SummaryPanel,
   SummarySelectboxes,
   SummarySubmissionValue,
+  TElement,
   TextSize,
   TextSizeShort,
   Tkey,

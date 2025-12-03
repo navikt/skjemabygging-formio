@@ -98,6 +98,12 @@ const introPage: KeyBasedFormsApiTranslation[] = [
     en: 'The form cannot be saved before you are finished. The information you fill in the form is not sent to Nav until you have completed the entire form and submitted it. If you close the window or browser, all the information you have entered will disappear.',
   },
   {
+    key: 'introPage.beAwareOf.timeLimitNologin',
+    nb: 'Du må fullføre innen kl. {{tokenExpirationTime}}. Dette er av personvernhensyn fordi vi ikke har mulighet til å lagre opplysningene du fyller ut.',
+    nn: 'Du må fullføre innan kl. {{tokenExpirationTime}}. Dette er av omsyn til personvern fordi me ikkje har moglegheit til å lagre opplysingane du fyller ut.',
+    en: 'You must complete the form by {{tokenExpirationTime}}. This is for privacy reasons because we cannot store the information you enter.',
+  },
+  {
     key: 'introPage.beAwareOf.timeLimit',
     nb: 'Det er ingen tidsfrist på å fullføre utfyllingen, men hvis du lukker vinduet/fanen vil du miste alle opplysningene du har lagt inn. Opplysningene sendes ikke til Nav før du har fullført hele skjemaet og sendt det inn.',
     nn: 'Det er ingen tidsfrist på å fullføre utfyllinga, men om du lukkar vindauget eller fana vil du missa alle opplysningane du har lagt inn. Opplysningane blir ikkje sendt til Nav før du har fullført heile skjemaet og sendt det inn.',

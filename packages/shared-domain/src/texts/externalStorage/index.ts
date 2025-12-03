@@ -6,5 +6,5 @@ const externalStorageTexts = {
   keys,
 };
 
-export type { Tkey } from './keys';
+export type { TElement, Tkey } from './keys';
 export default externalStorageTexts;

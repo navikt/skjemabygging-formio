@@ -6,9 +6,9 @@ const TOKEN_PURPOSE = 'nologin';
 
 const NologinService = (config: ConfigType) => ({
   generateToken: (): string => {
-    // TODO Vurder om innsendingsId hentes fra innsending-api
     const innsendingsId = crypto.randomUUID();
-    return jwt.sign({ purpose: TOKEN_PURPOSE, innsendingsId }, config.nologin.jwtSecret, { expiresIn: '12h' });
+    const { jwtSecret, tokenLifetimeHours } = config.nologin;
+    return jwt.sign({ purpose: TOKEN_PURPOSE, innsendingsId }, jwtSecret, { expiresIn: `${tokenLifetimeHours}h` });
   },
   verifyToken: (token: string): JwtPayload | null => {
     try {

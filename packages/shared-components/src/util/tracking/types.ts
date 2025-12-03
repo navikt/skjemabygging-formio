@@ -5,7 +5,14 @@ interface EventData {
   [key: string]: string | number | boolean | undefined;
 }
 
-type EventName = 'skjema fullført' | 'skjemainnsending feilet' | 'skjema slettet' | 'last opp' | 'last ned';
+type EventName =
+  | 'skjema fullført'
+  | 'skjemainnsending feilet'
+  | 'skjema slettet'
+  | 'last opp'
+  | 'last ned'
+  | 'sesjon utløpt'
+  | 'skjema restartet';
 
 type Event = {
   name: EventName;
@@ -59,9 +66,28 @@ type LastNedEvent = Event & {
   };
 };
 
+type SesjonUtlopt = Event & {
+  name: 'sesjon utløpt';
+  data: EventData & {
+    skjemaId: string;
+    skjemanavn: string;
+    tema: string;
+  };
+};
+
+type SkjemaRestartet = Event & {
+  name: 'skjema restartet';
+  data: EventData & {
+    skjemaId: string;
+    skjemaPath: string;
+  };
+};
+
 export type FyllutUmamiEvent =
   | SkjemaFullfortEvent
   | SkjemainnsendingFeiletEvent
   | SkjemaSlettetEvent
   | LastOppEvent
-  | LastNedEvent;
+  | LastNedEvent
+  | SesjonUtlopt
+  | SkjemaRestartet;

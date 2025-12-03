@@ -20,6 +20,8 @@ kodeverk:
   url: https://kodeverk-api.nav.no
   scope: dev-gcp.team-rocket.kodeverk-api
 forms-source: "formsapi-staging"
+nologin:
+  token-lifetime-hours: 6
 environmentVars:
   - name: FORMIO_API_SERVICE
     value: http://formio-api

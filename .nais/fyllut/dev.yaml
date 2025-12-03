@@ -20,6 +20,8 @@ kodeverk:
   url: https://kodeverk-api.nav.no
   scope: dev-gcp.team-rocket.kodeverk-api
 forms-source: "static"
+nologin:
+  token-lifetime-hours: 6
 pdl-token-scope-cluster: "dev-fss"
 azure:
   application:
