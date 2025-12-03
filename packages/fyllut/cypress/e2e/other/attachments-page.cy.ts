@@ -125,6 +125,31 @@ describe('Attachments page', () => {
       cy.findByText('Vedleggstittel 2').should('not.exist');
       cy.findByText(TEXTS.statiske.attachment.attachmentTitle).should('not.exist');
     });
+
+    it('is still valid after deleting the first attachment', () => {
+      cy.findByRole('group', { name: 'Informasjon om din næringsinntekt fra Norge eller utlandet' }).within(() => {
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.ettersender }).click();
+      });
+      cy.findByRole('group', {
+        name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
+      }).within(() => {
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.leggerVedNaa }).click();
+      });
+      cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel 1');
+      uploadFile('test.txt');
+      cy.findByRole('button', { name: TEXTS.statiske.attachment.addNewAttachment }).click();
+      cy.findAllByLabelText(TEXTS.statiske.attachment.attachmentTitle).last().type('Vedleggstittel 2');
+      uploadFile('test.txt');
+      cy.findAllByRole('button', { name: 'Slett filen' }).should('have.length', 2);
+      cy.findAllByRole('button', { name: 'Slett filen' }).first().click();
+      cy.findAllByText('test.txt').should('have.length', 1);
+      cy.findByText('Vedleggstittel 1').should('not.exist');
+      cy.findByText('Vedleggstittel 2').should('exist');
+      cy.clickNextStep();
+      cy.findByText('Du må fylle ut: Annen dokumentasjon').should('not.exist');
+      // heading 'Vedlegg' is present without 'Opplysninger mangler'
+      cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
+    });
   });
 
   describe('Deleting files', () => {
