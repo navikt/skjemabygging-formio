@@ -100,7 +100,6 @@ const FileUploader = ({
   };
 
   const handleDeleteFileItem = (fileId: string, file: FileItem) => {
-    console.log(attachment);
     if (attachment?.type === 'other' && onDeleteAttachment) {
       return onDeleteAttachment(attachmentId);
     }

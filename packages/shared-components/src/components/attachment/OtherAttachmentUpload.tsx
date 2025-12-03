@@ -67,7 +67,7 @@ const OtherAttachmentUpload = ({ label, attachmentValues, componentId, descripti
         return current.filter((att) => att.attachmentId !== attachmentId);
       });
     } catch (_error) {
-      // TODO?
+      /* error is handled at a higher level */
     }
   };
 
