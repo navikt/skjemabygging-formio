@@ -1,4 +1,4 @@
-import { TextField, VStack } from '@navikt/ds-react';
+import { Button, FileItem, HStack, TextField, VStack } from '@navikt/ds-react';
 import { AttachmentSettingValues, SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { ChangeEvent, MutableRefObject, ReactNode, useCallback } from 'react';
 import { useLocation } from 'react-router';
@@ -7,15 +7,24 @@ import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { getAttachment } from '../../util/attachment/attachmentsUtil';
+import makeStyles from '../../util/styles/jss/jss';
 import { useAttachmentUpload } from '../attachment/AttachmentUploadContext';
 import { attachmentValidator } from '../attachment/attachmentValidator';
 import FilesPreview from './FilesPreview';
 import UploadButton from './UploadButton';
 
+const useStyles = makeStyles({
+  deleteButton: {
+    alignSelf: 'flex-start',
+  },
+});
+
 interface Props {
   initialAttachment: SubmissionAttachment;
   attachmentValue?: keyof AttachmentSettingValues;
   requireAttachmentTitle?: boolean;
+  showDeleteAttachmentButton?: boolean;
+  onDeleteAttachment?: (attachmentId: string) => Promise<void>;
   multiple?: boolean;
   refs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | HTMLButtonElement | null>>;
   readMore?: ReactNode;
@@ -27,6 +36,8 @@ const FileUploader = ({
   initialAttachment,
   attachmentValue,
   requireAttachmentTitle,
+  showDeleteAttachmentButton,
+  onDeleteAttachment,
   multiple,
   refs,
   readMore,
@@ -34,10 +45,12 @@ const FileUploader = ({
   maxFileSizeInBytes,
 }: Props) => {
   const { translate } = useLanguages();
+  const styles = useStyles();
   const { baseUrl, logEvent, submissionMethod } = useAppConfig();
   const { form } = useForm();
   const { search } = useLocation();
-  const { changeAttachmentValue, submissionAttachments, errors, uploadsInProgress } = useAttachmentUpload();
+  const { changeAttachmentValue, handleDeleteFile, submissionAttachments, errors, uploadsInProgress } =
+    useAttachmentUpload();
   const { attachmentId } = initialAttachment;
   const attachment = submissionAttachments.find((attachment) => attachment.attachmentId === attachmentId);
 
@@ -86,14 +99,21 @@ const FileUploader = ({
     );
   };
 
+  const handleDeleteFileItem = (fileId: string, file: FileItem) => {
+    if (attachment?.type === 'other' && onDeleteAttachment) {
+      return onDeleteAttachment(attachmentId);
+    }
+    return handleDeleteFile(attachmentId, fileId, file);
+  };
+
   return (
     <VStack gap="6" data-cy={`upload-button-${attachmentId}`}>
       {(!showButton || fileItems.length > 0) && (
         <FilesPreview
-          attachmentId={attachmentId}
           label={!showButton ? label : undefined}
           uploaded={uploadedFiles}
           inProgress={inProgress}
+          onDeleteFileItem={handleDeleteFileItem}
           translationParams={translationErrorParams}
         />
       )}
@@ -113,17 +133,28 @@ const FileUploader = ({
               onChange={handleTitleChange}
             />
           )}
-          <UploadButton
-            attachmentId={attachmentId}
-            variant={initialUpload ? 'primary' : 'secondary'}
-            allowUpload={!requireAttachmentTitle || !!attachment?.title?.trim()}
-            refs={refs}
-            translationParams={translationErrorParams}
-            accept={accept}
-            readMore={readMore}
-            maxFileSizeInBytes={maxFileSizeInBytes}
-            onSuccess={logUploadEvent}
-          />
+          <HStack gap="4">
+            <UploadButton
+              attachmentId={attachmentId}
+              variant={initialUpload ? 'primary' : 'secondary'}
+              allowUpload={!requireAttachmentTitle || !!attachment?.title?.trim()}
+              refs={refs}
+              translationParams={translationErrorParams}
+              accept={accept}
+              readMore={readMore}
+              maxFileSizeInBytes={maxFileSizeInBytes}
+              onSuccess={logUploadEvent}
+            />
+            {showDeleteAttachmentButton && onDeleteAttachment && (
+              <Button
+                className={styles.deleteButton}
+                variant="tertiary"
+                onClick={() => onDeleteAttachment(attachmentId)}
+              >
+                {translate(TEXTS.statiske.attachment.deleteAttachment)}
+              </Button>
+            )}
+          </HStack>
         </VStack>
       )}
     </VStack>

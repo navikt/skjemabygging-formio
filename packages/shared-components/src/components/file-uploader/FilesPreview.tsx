@@ -1,20 +1,20 @@
-import { FileObject, FileUpload, Label, VStack } from '@navikt/ds-react';
+import { FileItem, FileObject, FileUpload, Label, VStack } from '@navikt/ds-react';
 import { TEXTS, UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
 import { useLanguages } from '../../context/languages';
 import { getFileValidationError } from '../../util/form/attachment-validation/attachmentValidation';
 import { useAttachmentUpload } from '../attachment/AttachmentUploadContext';
 
 interface Props {
-  attachmentId: string;
   label?: string;
   uploaded?: UploadedFile[];
   inProgress?: FileObject[];
+  onDeleteFileItem: (fileId: string, file: FileItem) => void;
   translationParams?: Record<string, string>;
 }
 
-const FilesPreview = ({ attachmentId, label, uploaded = [], inProgress = [], translationParams }: Props) => {
+const FilesPreview = ({ label, uploaded = [], inProgress = [], onDeleteFileItem, translationParams }: Props) => {
   const { translate } = useLanguages();
-  const { handleDeleteFile, errors } = useAttachmentUpload();
+  const { errors } = useAttachmentUpload();
 
   const fileItems = [...uploaded, ...inProgress];
 
@@ -31,7 +31,7 @@ const FilesPreview = ({ attachmentId, label, uploaded = [], inProgress = [], tra
                 file={{ name: fileName, size }}
                 button={{
                   action: 'delete',
-                  onClick: () => handleDeleteFile(attachmentId, fileId, { name: fileName, size }),
+                  onClick: () => onDeleteFileItem(fileId, { name: fileName, size }),
                 }}
                 error={errors[fileId]?.[0].message ? translate(errors[fileId][0].message) : undefined}
               ></FileUpload.Item>
