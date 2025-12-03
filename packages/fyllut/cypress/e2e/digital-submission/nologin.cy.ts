@@ -83,6 +83,7 @@ describe('Digital submission without user login', () => {
       cy.clickNextStep();
 
       cy.clickSendNav();
+      cy.findByRole('heading', { name: TEXTS.statiske.receipt.title }).should('exist');
       cy.findByRole('button', { name: 'Vis alle steg' }).should('not.exist');
       cy.findByRole('button', { name: 'Skjul alle steg' }).should('not.exist');
     });
