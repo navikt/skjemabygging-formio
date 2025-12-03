@@ -1,6 +1,6 @@
 import { ExclamationmarkTriangleFillIcon } from '@navikt/aksel-icons';
 import classNames from 'classnames';
-import { makeStyles } from '../../../index';
+import makeStyles from '../../../util/styles/jss/jss';
 import InnerHtmlLong from '../../inner-html/InnerHtmlLong';
 
 const useStyles = makeStyles({
