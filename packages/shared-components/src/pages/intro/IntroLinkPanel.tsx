@@ -1,5 +1,6 @@
 import '@navikt/ds-css/darkside';
 import { LinkCard, Theme } from '@navikt/ds-react';
+import React from 'react';
 import { useLanguages } from '../../context/languages';
 
 interface Props {
@@ -15,27 +16,12 @@ const IntroLinkPanel = ({ title, description, href, onClick, className }: Props)
 
   return (
     <Theme>
-      <LinkCard
-        data-color="accent"
-        className={className}
-        onClick={
-          onClick
-            ? (event) => {
-                event.preventDefault();
-                onClick();
-              }
-            : undefined
-        }
-      >
+      <LinkCard data-color="accent" className={className} onClick={onClick}>
         <LinkCard.Title>
           <LinkCard.Anchor
             href={href ?? '#'}
-            onClick={(event) => {
-              if (href) {
-                return;
-              }
-
-              event.preventDefault();
+            onClick={(e: React.MouseEvent) => {
+              e.preventDefault();
             }}
           >
             {translate(title)}
