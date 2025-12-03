@@ -149,7 +149,7 @@ export const statiske = {
     sentByOthersHeading: 'Dette har du svart at noen andre skal sende inn:',
     deadlineWarningHeading: 'Dokumentene må ettersendes innen {{deadline}}',
     deadlineWarningBody:
-      'Du kan ettersende dokumentene på <a target="_blank" rel="noopener noreferrer" href="https://www.nav.no/ettersende">https://www.nav.no/ettersende</a> (åpnes i ny fane)',
+      'For at søknaden skal bli komplett må du sende inn dokumentasjonen som mangler. Du kan ettersende dokumentene på <a target="_blank" rel="noopener noreferrer" href="https://www.nav.no/ettersende">nav.no/ettersende</a> (åpnes i ny fane)',
   },
   warningAboutDifficultSubmission: {
     modal: {
