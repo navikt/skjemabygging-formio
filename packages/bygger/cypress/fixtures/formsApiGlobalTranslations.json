@@ -357,9 +357,9 @@
     "changedAt": "2025-10-01T12:33:13.707+02",
     "changedBy": "Mock",
     "revision": 1,
-    "nb": "Du må fullføre innen kl. {{tokenExpirationTime}}. Dette er av personvernhensyn fordi vi ikke har mulighet til å lagre dataene du fyller ut.",
-    "nn": "Du må fullføra innan kl. {{tokenExpirationTime}} timar etter at du starta utfyllinga. Dette er av omsyn til personvern fordi me ikkje har moglegheit til å lagra dataa du fyller ut.",
-    "en": "You must complete by {{tokenExpirationTime}}. This is for privacy reasons because we do not have the ability to store the data you enter.","publishedAt": "2025-08-19T12:51:40.639+02",
+    "nb": "Du må fullføre innen kl. {{tokenExpirationTime}}. Dette er av personvernhensyn fordi vi ikke har mulighet til å lagre opplysningene du fyller ut.",
+    "nn": "Du må fullføre innan kl. {{tokenExpirationTime}}. Dette er av omsyn til personvern fordi me ikkje har moglegheit til å lagre opplysingane du fyller ut.",
+    "en": "You must complete the form by {{tokenExpirationTime}}. This is for privacy reasons because we cannot store the information you enter.",
     "publishedBy": "Mock"
   },
   {
