@@ -39,6 +39,10 @@ const downloadPdf = (submissionType: 'digital' | 'paper' | 'digitalnologin' = 'p
 };
 
 describe('Pdf', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
     cy.defaultIntercepts();
     cy.mocksRestoreRouteVariants();
@@ -743,7 +747,7 @@ describe('Pdf', () => {
       cy.findByRole('heading', { name: 'Standard felter' }).shouldBeVisible();
       cy.findByRole('textbox', { name: /Tekstfelt/ }).type('Navn med\ttab');
       cy.findByRole('textbox', { name: /Tekstområde/ }).type(
-        'En del tekst\n\nsom viser utgifter\\\\text{ kr}\nnextline\tog en tab til slutt\nsom skal bli erstattet med to mellomrom',
+        'En del tekst\n\nsom viser utgifter\\\\text{ kr}\nnextline\tog en tab til slutt\nsom skal bli erstattet med to mellomrom.\u000bDette er vertical tab unicode som skal erstattes med newline,og denne skal også bli newline.',
         {
           parseSpecialCharSequences: false,
         },

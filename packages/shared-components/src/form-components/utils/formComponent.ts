@@ -42,7 +42,7 @@ const getSubmissionValue = (submissionPath: string, submission?: Submission): an
   return findValue(submissionPath.split('.'), submission.data);
 };
 
-const LINE_TABULATION = '\u000b';
+const VERTICAL_TAB = '\v';
 /**
  * Get submission value for PDF generation, replacing tabs with two spaces
  * @param submissionPath
@@ -51,7 +51,7 @@ const LINE_TABULATION = '\u000b';
 const getPdfSubmissionValue = (submissionPath: string, submission?: Submission): any => {
   const value = getSubmissionValue(submissionPath, submission);
   if (typeof value === 'string') {
-    return value.replaceAll('\t', '  ').replaceAll(LINE_TABULATION, '\n');
+    return value.replaceAll('\t', '  ').replaceAll(VERTICAL_TAB, '\n');
   }
   return value;
 };
