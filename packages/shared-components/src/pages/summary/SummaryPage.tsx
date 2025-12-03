@@ -27,15 +27,7 @@ import SummaryPageNavigation from './navigation/SummaryPageNavigation';
 export function SummaryPage() {
   const appConfig = useAppConfig();
   const { translate, availableLanguages, currentLanguage } = useLanguages();
-  const {
-    prefillData,
-    submission,
-    form,
-    setTitle,
-    setFormProgressVisible,
-    activeComponents,
-    activeAttachmentUploadsPanel,
-  } = useForm();
+  const { prefillData, submission, form, setTitle, setFormProgressVisible, activeComponents } = useForm();
   const { declarationType, declarationText } = form.properties;
   const [declaration, setDeclaration] = useState<boolean | undefined>(undefined);
 
@@ -64,11 +56,7 @@ export function SummaryPage() {
         });
       }
 
-      const attachmentPanel = navFormUtils.getActiveAttachmentPanelFromForm(
-        form,
-        submission,
-        appConfig.submissionMethod,
-      );
+      const attachmentPanel = activeComponents.find(navFormUtils.isVedleggspanel);
       if (attachmentPanel) {
         const validator = attachmentValidator(translate, ['value', 'fileUploaded']);
         const invalidAttachment = findFirstValidationErrorInAttachmentPanel(
@@ -144,7 +132,6 @@ export function SummaryPage() {
       )}
       <RenderSummaryForm
         activeComponents={activeComponents}
-        activeAttachmentUploadsPanel={activeAttachmentUploadsPanel}
         submission={submission}
         form={formioFormsApiUtils.mapNavFormToForm(form)}
         currentLanguage={currentLanguage}

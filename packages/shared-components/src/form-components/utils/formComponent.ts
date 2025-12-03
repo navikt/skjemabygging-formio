@@ -1,4 +1,4 @@
-import { Component, Submission, SubmissionData } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, navFormUtils, Submission, SubmissionData } from '@navikt/skjemadigitalisering-shared-domain';
 
 /**
  * Recursively searches for a value in a submission object based on the provided submissionPath.
@@ -100,8 +100,12 @@ const noChildValuesForDataGrid = (parentSubmissionPath: string, components: Comp
 };
 
 const getComponentSubmissionPath = (component: Component, parentSubmissionPath: string) => {
-  const { key, input, tree } = component;
-  return tree || input ? (parentSubmissionPath ? `${parentSubmissionPath}.${key}` : key) : (parentSubmissionPath ?? '');
+  const { key } = component;
+  return navFormUtils.isSubmissionNode(component)
+    ? parentSubmissionPath
+      ? `${parentSubmissionPath}.${key}`
+      : key
+    : (parentSubmissionPath ?? '');
 };
 
 const formComponentUtils = {

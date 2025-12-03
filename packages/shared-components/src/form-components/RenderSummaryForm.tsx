@@ -1,7 +1,7 @@
 import {
   Component,
   Form,
-  Panel,
+  navFormUtils,
   PanelValidation,
   Submission,
   TranslateFunction,
@@ -28,7 +28,6 @@ import {
 import { SummaryDatePicker, SummaryMonthPicker, SummaryYear } from './components/date';
 import { SummaryContainer, SummaryDataGrid, SummaryFormGroup, SummaryPanel, SummaryRow } from './components/group';
 import { SummaryIntroPage } from './components/other';
-import SummaryAttachmentUpload from './components/other/attachment-uploads/SummaryAttachmentUpload';
 import {
   SummaryAccordion,
   SummaryAlert,
@@ -48,7 +47,6 @@ import RenderComponent from './render/RenderComponent';
 
 interface Props {
   activeComponents: Component[];
-  activeAttachmentUploadsPanel?: Panel;
   submission?: Submission;
   form: Form;
   currentLanguage: string;
@@ -59,7 +57,6 @@ interface Props {
 
 const RenderSummaryForm = ({
   activeComponents,
-  activeAttachmentUploadsPanel,
   submission,
   form,
   currentLanguage,
@@ -67,6 +64,8 @@ const RenderSummaryForm = ({
   panelValidationList,
   appConfig,
 }: Props) => {
+  const { submissionMethod } = appConfig;
+
   if (!submission) {
     return null;
   }
@@ -125,41 +124,25 @@ const RenderSummaryForm = ({
     maalgruppe: SummaryMaalgruppe,
   };
 
-  const attachmentUploadsComponentRegistry = {
-    ...componentRegistry,
-    attachment: SummaryAttachmentUpload,
-  };
-
   return (
     <>
       <SummaryIntroPage form={form} submission={submission} translate={translate} />
-      {activeComponents.map((component) => (
-        <RenderComponent
-          key={component.key}
-          component={component}
-          submissionPath=""
-          componentRegistry={componentRegistry}
-          submission={submission}
-          translate={translate}
-          currentLanguage={currentLanguage}
-          formProperties={form.properties}
-          panelValidationList={panelValidationList}
-          appConfig={appConfig}
-        />
-      ))}
-      {activeAttachmentUploadsPanel && (
-        <RenderComponent
-          component={activeAttachmentUploadsPanel}
-          submissionPath=""
-          componentRegistry={attachmentUploadsComponentRegistry}
-          submission={submission}
-          translate={translate}
-          currentLanguage={currentLanguage}
-          formProperties={form.properties}
-          panelValidationList={panelValidationList}
-          appConfig={appConfig}
-        />
-      )}
+      {activeComponents
+        .filter((component) => !(navFormUtils.isVedleggspanel(component) && submissionMethod === 'digital'))
+        .map((component) => (
+          <RenderComponent
+            key={component.key}
+            component={component}
+            submissionPath=""
+            componentRegistry={componentRegistry}
+            submission={submission}
+            translate={translate}
+            currentLanguage={currentLanguage}
+            formProperties={form.properties}
+            panelValidationList={panelValidationList}
+            appConfig={appConfig}
+          />
+        ))}
     </>
   );
 };

@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
-import { Attachment, Component, FormsResponseForm, NavFormType, Panel, Submission, SubmissionMethod } from '../../form';
-import { Form, formSummaryUtil, submissionTypesUtils } from '../../index';
+import { Attachment, Component, FormsResponseForm, NavFormType, Panel, SubmissionMethod } from '../../form';
+import { Form, submissionTypesUtils } from '../../index';
 import FormioUtils from '../formio/FormioUtils';
 import { camelCase } from '../stringUtils';
 
@@ -300,76 +300,6 @@ export const enrichComponentsWithNavIds = (
   return enrichedComponents;
 };
 
-/**
- * @deprecated Use activeComponents from FormContext instead
- * @param form
- * @param submission
- * @param submissionMethod
- */
-const getActivePanelsFromForm = (form: NavFormType, submission?: Submission, submissionMethod?: string): Panel[] => {
-  const conditionals = formSummaryUtil.mapAndEvaluateConditionals(form, submission ?? { data: {} });
-  return form.components
-    .filter((component: Component) => component.type === 'panel')
-    .filter((panel): panel is Panel => {
-      const key = formSummaryUtil.createComponentKeyWithNavId(panel);
-      return conditionals[key] !== false;
-    })
-    .filter(
-      (panel) => !((submissionMethod === 'digital' || submissionMethod === 'digitalnologin') && isVedleggspanel(panel)),
-    );
-};
-
-const getActiveComponentsFromForm = (
-  form: NavFormType,
-  submission?: Submission,
-  submissionMethod?: string,
-): Component[] => {
-  const conditionals = formSummaryUtil.mapAndEvaluateConditionals(form, submission ?? { data: {} });
-  console.log(conditionals);
-
-  const panels = form.components.filter(
-    (component) =>
-      component.type === 'panel' &&
-      !(isVedleggspanel(component) && (submissionMethod === 'digital' || submissionMethod === 'digitalnologin')),
-  );
-
-  if (!conditionals || Object.keys(conditionals).length === 0) {
-    return panels;
-  }
-
-  return getActiveComponents(panels, conditionals);
-};
-
-const getActiveComponents = (components: Component[], conditionals?: any): Component[] => {
-  return components
-    .filter((component) => conditionals[formSummaryUtil.createComponentKeyWithNavId(component)] !== false)
-    .map((component) => {
-      if (component.components) {
-        return {
-          ...component,
-          components: getActiveComponents(component.components, conditionals),
-        };
-      }
-
-      return component;
-    });
-};
-
-// For attachment panel when submission values are in submission.attachments rather than submission.data
-const getActiveAttachmentPanelFromForm = (
-  form: NavFormType,
-  submission?: Submission,
-  submissionMethod?: string,
-): Panel | undefined => {
-  if (!submissionMethod || !['digitalnologin'].includes(submissionMethod)) {
-    return undefined;
-  }
-  const conditionals = formSummaryUtil.mapAndEvaluateConditionals(form, submission ?? { data: {} });
-  const attachmentPanel = getAttachmentPanel(form);
-  const [activeAttachmentPanel] = attachmentPanel ? getActiveComponents([attachmentPanel], conditionals) : [];
-  return activeAttachmentPanel && isVedleggspanel(activeAttachmentPanel) ? activeAttachmentPanel : undefined;
-};
-
 const getAttachmentPanel = (form: NavFormType) => {
   return form.components.find(isVedleggspanel);
 };
@@ -412,6 +342,11 @@ const createDefaultForm = (config): Form => ({
   components: [],
 });
 
+const isSubmissionNode = (component: Component): boolean => {
+  const { input, tree } = component;
+  return !!tree || !!input;
+};
+
 const navFormUtils = {
   formMatcherPredicate,
   toFormPath,
@@ -425,14 +360,12 @@ const navFormUtils = {
   findByNavId,
   findComponentsByProperty,
   enrichComponentsWithNavIds,
-  getActivePanelsFromForm,
-  getActiveComponentsFromForm,
-  getActiveAttachmentPanelFromForm,
   getAttachmentPanel,
   hasAttachment,
   getAttachmentProperties,
   isAttachment,
   isEqual,
   createDefaultForm,
+  isSubmissionNode,
 };
 export default navFormUtils;

@@ -1,5 +1,5 @@
 import { FormProgress as AkselFormProgress } from '@navikt/ds-react';
-import { navFormUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate, useParams, useResolvedPath } from 'react-router';
 import { useAppConfig } from '../../../context/config/configContext';
@@ -7,7 +7,7 @@ import { useForm } from '../../../context/form/FormContext';
 import { useLanguages } from '../../../context/languages';
 
 const FormProgress = () => {
-  const { form, submission, formProgressOpen, setFormProgressOpen } = useForm();
+  const { form, submission, formProgressOpen, setFormProgressOpen, activeComponents } = useForm();
   const { submissionMethod, baseUrl } = useAppConfig();
   const [screenSmall, setScreenSmall] = useState<boolean>(false);
   const params = useParams();
@@ -19,9 +19,7 @@ const FormProgress = () => {
   const formUrl = resolvedPath.endsWith('/') ? resolvedPath.slice(0, -1) : resolvedPath; // Remove trailing slash
 
   const formSteps = useMemo(() => {
-    const formioSteps = navFormUtils
-      .getActivePanelsFromForm(form, submission, submissionMethod)
-      .map((panel) => ({ label: panel.title, key: panel.key }));
+    const formioSteps = activeComponents.map((panel) => ({ label: panel.title, key: panel.key }));
 
     const steps = [
       {
@@ -30,13 +28,6 @@ const FormProgress = () => {
       },
       ...formioSteps,
     ];
-
-    if (navFormUtils.hasAttachment(form) && submissionMethod === 'digitalnologin') {
-      steps.push({
-        key: 'vedlegg',
-        label: TEXTS.statiske.attachment.title,
-      });
-    }
 
     steps.push({
       key: 'oppsummering',

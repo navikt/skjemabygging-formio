@@ -139,6 +139,7 @@ import type { DataFetcherData, DataFetcherElement, DataFetcherUtil } from './uti
 import { dataFetcherUtils } from './utils/data-fetcher';
 import dateUtils from './utils/date';
 import featureUtils, { FeatureTogglesMap } from './utils/featureUtils';
+import formConditionalUtils from './utils/form/formConditionalUtils';
 import navFormUtils, { DependencyType } from './utils/form/navFormUtils';
 import formDiffingTool, { FormSettingsDiff } from './utils/formDiffingTool';
 import navFormioUtils from './utils/formio';
@@ -167,6 +168,7 @@ export {
   DeclarationType,
   externalStorageTexts,
   featureUtils,
+  formConditionalUtils,
   formDiffingTool,
   formioFormsApiUtils,
   formsApiTranslations,

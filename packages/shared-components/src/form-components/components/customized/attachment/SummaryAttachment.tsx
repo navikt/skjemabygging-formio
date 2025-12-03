@@ -2,9 +2,16 @@ import { FormSummary } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { FormComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
+import SummaryAttachmentUpload from '../../other/attachment-uploads/SummaryAttachmentUpload';
 
 const SummaryAttachment = (props: FormComponentProps) => {
-  const { submission, submissionPath, translate, component, formProperties } = props;
+  const { submission, submissionPath, translate, component, formProperties, appConfig } = props;
+  const { submissionMethod } = appConfig;
+
+  if (submissionMethod === 'digitalnologin') {
+    return <SummaryAttachmentUpload {...props} />;
+  }
+
   const { label } = component;
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
 
