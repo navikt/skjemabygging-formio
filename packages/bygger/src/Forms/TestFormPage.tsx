@@ -1,6 +1,7 @@
 import { Skeleton } from '@navikt/ds-react';
 import {
   FyllUtRouter,
+  FyllUtThemeProvider,
   i18nUtils,
   LanguagesProvider,
   SkeletonList,
@@ -43,9 +44,11 @@ export function TestFormPage({ form }) {
         formPath: form.path,
       }}
     >
-      <LanguagesProvider translations={i18n}>
-        <FyllUtRouter form={form} />
-      </LanguagesProvider>
+      <FyllUtThemeProvider>
+        <LanguagesProvider translations={i18n}>
+          <FyllUtRouter form={form} />
+        </LanguagesProvider>
+      </FyllUtThemeProvider>
     </AppLayout>
   );
 }

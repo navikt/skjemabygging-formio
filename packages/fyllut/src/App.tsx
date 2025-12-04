@@ -1,6 +1,4 @@
-import '@navikt/ds-css/darkside';
-import { Theme } from '@navikt/ds-react';
-import { makeStyles, Styles } from '@navikt/skjemadigitalisering-shared-components';
+import { FyllUtThemeProvider, makeStyles, Styles } from '@navikt/skjemadigitalisering-shared-components';
 import { Route, Routes } from 'react-router';
 import { FormNotFoundPage } from './components/errors/FormNotFoundPage';
 import { InternalServerErrorPage } from './components/errors/InternalServerErrorPage';
@@ -20,7 +18,7 @@ const App = () => {
 
   return (
     <main className={styles.app}>
-      <Theme>
+      <FyllUtThemeProvider>
         <Routes>
           <Route path="/" element={<FormsPage />} />
           <Route path="/500" element={<InternalServerErrorPage />} />
@@ -28,7 +26,7 @@ const App = () => {
           <Route path="/sesjon-utlopt" element={<SessionExpiredPage />} />
           <Route path="/:formPath/*" element={<FormPageWrapper />} />
         </Routes>
-      </Theme>
+      </FyllUtThemeProvider>
     </main>
   );
 };
