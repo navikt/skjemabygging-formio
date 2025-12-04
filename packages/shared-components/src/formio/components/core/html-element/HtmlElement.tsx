@@ -2,7 +2,7 @@ import InnerHtml from '../../../../components/inner-html/InnerHtml';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
 import AdditionalDescription from '../../base/components/AdditionalDescription';
-import DiffTag from '../../base/components/DiffTag';
+import BuilderTags from '../../base/components/BuilderTags';
 import TextDisplayTag from '../../base/components/TextDisplayTag';
 import htmlElementBuilder from './HtmlElement.builder';
 import htmlElementForm from './HtmlElement.form';
@@ -37,7 +37,7 @@ class HtmlElement extends BaseComponent {
     element.render(
       <ComponentUtilsProvider component={this}>
         <TextDisplayTag component={this.component} />
-        <DiffTag component={this.component} editFields={this.getEditFields()} />
+        <BuilderTags component={this.component} editFields={this.getEditFields()} />
         <InnerHtml tag={this.getTag()} content={this.getContent()} />
         <AdditionalDescription component={this.component} />
       </ComponentUtilsProvider>,
