@@ -10,6 +10,7 @@ interface Props {
 const DiffTag = ({ component, editFields }: Props) => {
   const { formConfig, builderMode } = useComponentUtils();
   const publishedForm = formConfig?.publishedForm;
+
   if (!builderMode || !publishedForm) {
     return <></>;
   }
@@ -37,6 +38,13 @@ const DiffTag = ({ component, editFields }: Props) => {
           Slettede elementer
         </Tag>
       )}
+      {component.builderErrors &&
+        component.builderErrors.length > 0 &&
+        component.builderErrors.map((error, i) => (
+          <Tag size="xsmall" variant="error" data-testid="diff-tag" key={i}>
+            {error}
+          </Tag>
+        ))}
     </>
   );
 };

@@ -135,6 +135,7 @@ export interface Component {
   logic?: any;
   currency?: string;
   isAmountWithCurrencySelector?: boolean;
+  builderErrors?: string[];
 }
 
 export interface DataFetcherComponent extends Component {
