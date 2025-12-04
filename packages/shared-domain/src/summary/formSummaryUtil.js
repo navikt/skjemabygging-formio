@@ -33,7 +33,7 @@ function formatValue(component, value, translate, form, language, opts = {}) {
   switch (component.type) {
     case 'radiopanel':
     case 'radio': {
-      const valueObject = component.values.find(
+      const valueObject = component.values?.find(
         (valueObject) => String(valueObject.value).toString() === String(value).toString(),
       );
       if (!valueObject) {

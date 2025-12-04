@@ -9,13 +9,14 @@ interface EvaluateComponentProps {
   submission: Submission;
   components: Component[];
   row: any;
-  rowIndex?: number;
+  parentKey?: string;
 }
 
 const evaluateComponents = (props: EvaluateComponentProps) => {
-  const { form, submission, components, row = {} } = props;
+  const { form, submission, components, row = {}, parentKey } = props;
+
   if (Array.isArray(row) && row.length > 0) {
-    return row.map((rowItem) => {
+    return row.flatMap((rowItem) => {
       return evaluateComponents({
         ...props,
         row: rowItem,
@@ -25,18 +26,21 @@ const evaluateComponents = (props: EvaluateComponentProps) => {
 
   return components
     .map((component) => {
-      const data = Object.keys(row).length > 0 ? row : submission?.data || {};
+      const data = submission?.data || {};
+      const conditionalRow = component.conditional?.when && parentKey ? { [parentKey]: row } : row;
       const visible = FormioUtils.checkCondition(
         {
           ...component,
           customConditional: sanitizeJavaScriptCode(component.customConditional),
         },
-        row,
+        conditionalRow,
         data,
         form,
         undefined,
         submission,
       );
+
+      const rowData = row && Object.keys(row).length > 0 ? row : data;
 
       if (visible) {
         if (component.components && component.components.length > 0) {
@@ -45,7 +49,8 @@ const evaluateComponents = (props: EvaluateComponentProps) => {
             components: evaluateComponents({
               ...props,
               components: component.components,
-              row: navFormUtils.isSubmissionNode(component) ? data[component.key] : data,
+              row: navFormUtils.isSubmissionNode(component) ? rowData[component.key] : rowData,
+              parentKey: component.key,
             }),
           };
         }

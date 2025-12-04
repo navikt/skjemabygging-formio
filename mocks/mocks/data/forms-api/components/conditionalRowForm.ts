@@ -25,10 +25,10 @@ const conditionalRowForm = () => {
         ],
       }),
       panel({
-        title: 'Panel med beholder',
+        title: 'Panel 2 med beholder',
         components: [
           container({
-            label: 'Datagrid',
+            label: 'Beholder',
             components: [
               checkbox({
                 label: 'Trykk her',
@@ -43,7 +43,7 @@ const conditionalRowForm = () => {
         ],
       }),
       panel({
-        title: 'Panel med repeterende data',
+        title: 'Panel 3 med repeterende data',
         components: [
           dataGrid({
             label: 'Repeterende data',
@@ -61,7 +61,7 @@ const conditionalRowForm = () => {
         ],
       }),
       panel({
-        title: 'Panel med skjemagruppe',
+        title: 'Panel 3 med skjemagruppe',
         components: [
           formGroup({
             label: 'Skjemagruppe',
