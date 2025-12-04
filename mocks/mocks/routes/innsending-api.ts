@@ -428,6 +428,14 @@ export default [
           body: { mergedFile: 'bWVyZ2VkRmlsZWJvZHk=' },
         },
       },
+      {
+        id: 'failure',
+        type: 'text',
+        options: {
+          status: 500,
+          body: 'Internal server error',
+        },
+      },
     ],
   },
   {

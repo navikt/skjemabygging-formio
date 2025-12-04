@@ -758,4 +758,48 @@ describe('Pdf', () => {
       cy.findByText(/Nedlastingen er ferdig/).shouldBeVisible();
     });
   });
+
+  describe('Failure to generate PDF', () => {
+    describe('paper submission', () => {
+      beforeEach(() => {
+        cy.visit('/fyllut/components?sub=paper');
+        cy.defaultWaits();
+        cy.clickShowAllSteps();
+      });
+
+      const fillFormAndDownloadPdf = (expectedHttpStatusCode: number = 200) => {
+        cy.clickIntroPageConfirmation();
+        cy.clickStart();
+        cy.findByRole('group', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
+          cy.findByRole('radio', { name: 'Ja' }).check();
+        });
+        cy.findByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).type('20905995783');
+        cy.clickNextStep();
+        cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
+          req.on('response', (res) => {
+            expect(res.statusCode).to.eq(expectedHttpStatusCode);
+          });
+        }).as('downloadPdf');
+        downloadPdf('paper');
+      };
+
+      it('shows error message when application PDF generation fails', () => {
+        cy.mocksUseRouteVariant('post-familie-pdf:failure');
+        fillFormAndDownloadPdf(500);
+        cy.findByText(TEXTS.statiske.prepareLetterPage.downloadError).should('exist');
+      });
+
+      it('shows error message when cover page generation fails', () => {
+        cy.mocksUseRouteVariant('foersteside:failure');
+        fillFormAndDownloadPdf(500);
+        cy.findByText(TEXTS.statiske.prepareLetterPage.downloadError).should('exist');
+      });
+
+      it('shows error message when pdf merge of application and cover page fails', () => {
+        cy.mocksUseRouteVariant('merge-files:failure');
+        fillFormAndDownloadPdf(500);
+        cy.findByText(TEXTS.statiske.prepareLetterPage.downloadError).should('exist');
+      });
+    });
+  });
 });

@@ -4,7 +4,6 @@ export class HttpError extends Error {
   http_response_body?: any;
   http_url?: string;
   http_status?: number;
-  render_html?: boolean;
 
   constructor(errorMessage: string) {
     super(errorMessage);

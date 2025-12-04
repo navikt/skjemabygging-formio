@@ -11,7 +11,6 @@ import { createFeltMapFromSubmission } from '../../routers/api/helpers/feltMapBu
 import { stringifyPdf } from '../../routers/api/helpers/pdfUtils';
 import { LogMetadata } from '../../types/log';
 import { base64Decode } from '../../utils/base64';
-import { htmlResponseError } from '../../utils/errorHandling';
 import applicationService from './applicationService';
 import coverPageService from './coverPageService';
 import { mergeFrontPageAndApplication } from './mergeFilesService';
@@ -44,14 +43,14 @@ const application = async (props: CoverPageAndApplicationProps, logMeta: LogMeta
   );
 
   if (applicationPdf === undefined) {
-    throw htmlResponseError('Generering av søknads PDF feilet');
+    throw new Error('Generering av søknads PDF feilet');
   }
 
   return Buffer.from(applicationPdf);
 };
 
 interface CoverPageAndApplicationProps extends ApplicationProps {
-  pdfGeneratorAccessToken;
+  pdfGeneratorAccessToken: string;
   mergePdfAccessToken: string;
   unitNumber: string;
 }
@@ -98,13 +97,13 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps, logM
   const coverPagePdf = base64Decode(coverPageResponse.foersteside);
 
   if (coverPagePdf === undefined) {
-    throw htmlResponseError('Generering av førstesideark PDF feilet');
+    throw Error('Generering av førstesideark PDF feilet');
   }
 
   const applicationPdf = applicationResponse;
 
   if (applicationPdf === undefined) {
-    throw htmlResponseError('Generering av søknads PDF feilet');
+    throw Error('Generering av søknads PDF feilet');
   }
 
   const mergedFile = await mergeFrontPageAndApplication(
@@ -118,7 +117,7 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps, logM
   logger.info('Request to merge front page and application completed', logMeta);
 
   if (mergedFile === undefined) {
-    throw htmlResponseError('Sammenslåing av forside og søknad feilet');
+    throw Error('Sammenslåing av forside og søknad feilet');
   }
 
   return Buffer.from(new Uint8Array(mergedFile));
