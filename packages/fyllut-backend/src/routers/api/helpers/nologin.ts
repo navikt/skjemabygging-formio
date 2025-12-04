@@ -74,8 +74,8 @@ const assembleNologinSoknadBody = (
       const component = allAttachments.find((c) => c.navId === attachment.navId);
       return {
         vedleggsnr: attachment.type === 'personal-id' ? 'K2' : (component?.properties?.vedleggskode ?? 'Ukjent'),
-        label: translate(component?.label ?? attachment.title ?? 'Ukjent label'),
-        tittel: translate(attachment.title ?? component?.properties?.vedleggstittel ?? 'Ukjent tittel'),
+        label: translate(attachment.title ?? component?.label ?? 'Ukjent label'),
+        tittel: translate(component?.properties?.vedleggstittel ?? attachment.title ?? 'Ukjent tittel'),
         opplastingsStatus: attachment.type === 'personal-id' ? 'LastetOpp' : mapToStatus(attachment.value),
         mimetype: 'application/pdf',
         pakrevd: attachment.type !== 'other',

@@ -58,13 +58,13 @@ function replySubmittedNologinApplication(body: any): any {
     hoveddokumentRef: null,
     innsendteVedlegg: body.vedleggsListe
       .filter((v: any) => v.opplastingsStatus === 'LastetOpp')
-      .map((v: any) => ({ vedleggsnr: v.vedleggsnr, tittel: v.tittel })),
+      .map((v: any) => ({ vedleggsnr: v.vedleggsnr, tittel: v.label })),
     skalEttersendes: body.vedleggsListe
       .filter((v: any) => v.opplastingsStatus === 'SendSenere')
-      .map((v: any) => ({ vedleggsnr: v.vedleggsnr, tittel: v.tittel })),
+      .map((v: any) => ({ vedleggsnr: v.vedleggsnr, tittel: v.label })),
     skalSendesAvAndre: body.vedleggsListe
       .filter((v) => v.opplastingsStatus === 'SendesAvAndre')
-      .map((v) => ({ vedleggsnr: v.vedleggsnr, tittel: v.tittel })),
+      .map((v) => ({ vedleggsnr: v.vedleggsnr, tittel: v.label })),
     levertTidligere: [],
     sendesIkkeInn: [],
     navKanInnhente: [],
