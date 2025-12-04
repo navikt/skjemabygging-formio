@@ -80,7 +80,7 @@ class DefaultAttachment extends BaseComponent {
         <NavAttachment
           value={this.getValue()}
           attachmentValues={this.getAttachmentValues()}
-          title={<Label component={this.component} editFields={this.getEditFields()} />}
+          title={<Label component={this.component} parent={this.parent} editFields={this.getEditFields()} />}
           description={<Description component={this.component} />}
           deadline={this.options.properties?.ettersendelsesfrist}
           error={this.getError()}

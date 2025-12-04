@@ -1,4 +1,3 @@
-import baseComponentUtils from '../../base/baseComponentUtils';
 import Container from '../container/Container';
 import rowBuilder from './Row.builder';
 import rowForm from './Row.form';
@@ -19,11 +18,6 @@ class Row extends Container {
 
   static get builderInfo() {
     return rowBuilder();
-  }
-
-  init() {
-    super.init();
-    baseComponentUtils.setupBuilderErrors(this);
   }
 
   get defaultSchema() {

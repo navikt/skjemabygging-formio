@@ -1,5 +1,6 @@
 import { formDiffingTool, navFormioUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { Formio, Utils } from 'formiojs';
+import baseComponentUtils from '../../components/base/baseComponentUtils';
 
 const navFormDiffToHtml = (diffSummary) => {
   try {
@@ -48,8 +49,9 @@ const TAG = (text, level = 'warning') =>
   `<span class="navds-tag navds-tag--${level} navds-tag--xsmall navds-detail navds-detail--small" data-testid="diff-tag">${text}</span>`;
 
 const getBuilderTags = (ctx) => {
-  const { component, config, self } = ctx;
+  const { component, config, self, instance } = ctx;
   const { publishedForm } = config;
+
   if (ctx.builder) {
     // Formio.js invokes mergeSchema on component which is put on ctx object. Therefore we must do the same
     // prior to comparing with published version to avoid misleading diff tags due to changes in a component's schema.
@@ -65,11 +67,9 @@ const getBuilderTags = (ctx) => {
     if (publishedForm && diff.deletedComponents?.length) {
       tags.push(`${TAG('Slettede elementer')}`);
     }
-    if (component?.builderErrors) {
-      component?.builderErrors.forEach((error) => {
-        tags.push(TAG(error, 'error'));
-      });
-    }
+    baseComponentUtils.getBuilderErrors(component, instance?.parent).forEach((error) => {
+      tags.push(TAG(error, 'error'));
+    });
     return tags.join(' ');
   }
   return '';

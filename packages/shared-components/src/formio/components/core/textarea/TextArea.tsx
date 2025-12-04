@@ -53,7 +53,7 @@ class TextArea extends BaseComponent {
           maxRows={this.getMaxRows()}
           ref={(ref) => this.setReactInstance(ref)}
           onChange={(event) => this.handleChange(event.currentTarget.value)}
-          label={<Label component={this.component} editFields={this.getEditFields()} />}
+          label={<Label component={this.component} parent={this.parent} editFields={this.getEditFields()} />}
           hideLabel={this.getHideLabel()}
           description={<Description component={this.component} />}
           className={this.getClassName()}

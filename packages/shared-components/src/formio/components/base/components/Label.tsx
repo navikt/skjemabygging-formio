@@ -2,12 +2,14 @@ import { Tag } from '@navikt/ds-react';
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import { useComponentUtils } from '../../../../context/component/componentUtilsContext';
 import baseComponentUtils from '../baseComponentUtils';
+import { ReactComponentType } from '../index';
 import BuilderTags from './BuilderTags';
 
 type LabelOptions = { showOptional?: boolean; showDiffTag?: boolean };
 
 interface Props {
   component?: Component;
+  parent?: ReactComponentType;
   editFields: string[];
   labelOptions?: LabelOptions;
 }
@@ -15,7 +17,7 @@ interface Props {
 /**
  * For use with Aksel component. Use <ComponentLabel> if you want a general label for your custom component with styling.
  */
-const Label = ({ component, editFields, labelOptions }: Props) => {
+const Label = ({ component, parent, editFields, labelOptions }: Props) => {
   const { translate } = useComponentUtils();
 
   const { getLabel, isRequired, isReadOnly } = baseComponentUtils;
@@ -32,7 +34,7 @@ const Label = ({ component, editFields, labelOptions }: Props) => {
           Preutfylling
         </Tag>
       )}
-      {showDiffTag && <BuilderTags component={component} editFields={editFields} />}
+      {showDiffTag && <BuilderTags component={component} parent={parent} editFields={editFields} />}
     </>
   );
 };

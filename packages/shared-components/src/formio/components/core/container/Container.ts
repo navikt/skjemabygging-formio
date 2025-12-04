@@ -1,5 +1,4 @@
 import FormioContainer from 'formiojs/components/container/Container';
-import baseComponentUtils from '../../base/baseComponentUtils';
 import containerForm from './Container.form';
 
 class Container extends FormioContainer {
@@ -12,11 +11,6 @@ class Container extends FormioContainer {
 
   static editForm() {
     return containerForm();
-  }
-
-  init() {
-    super.init();
-    baseComponentUtils.setupBuilderErrors(this);
   }
 }
 
