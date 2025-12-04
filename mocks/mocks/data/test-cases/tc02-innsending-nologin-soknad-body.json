@@ -72,8 +72,8 @@
     },
     {
       "vedleggsnr": "N6",
-      "label": "Annen dokumentasjon",
-      "tittel": "Vitnemål",
+      "label": "Vitnemål",
+      "tittel": "Annet",
       "opplastingsStatus": "LastetOpp",
       "mimetype": "application/pdf",
       "pakrevd": false,
@@ -86,8 +86,8 @@
     },
     {
       "vedleggsnr": "N6",
-      "label": "Annen dokumentasjon",
-      "tittel": "Egenerklæring",
+      "label": "Egenerklæring",
+      "tittel": "Annet",
       "opplastingsStatus": "LastetOpp",
       "mimetype": "application/pdf",
       "pakrevd": false,

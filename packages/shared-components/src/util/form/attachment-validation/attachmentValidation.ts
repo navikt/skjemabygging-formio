@@ -60,6 +60,8 @@ const getFileValidationError = (file: FileObject): string | undefined => {
       return TEXTS.statiske.uploadFile.fileNotSupportedError;
     case 'uploadHttpError':
       return TEXTS.statiske.uploadFile.uploadFileError;
+    case 'uploadTooManyPages':
+      return TEXTS.statiske.uploadFile.uploadFileToManyPagesError;
     default:
       return TEXTS.statiske.uploadFile.defaultFileError;
   }

@@ -3,7 +3,7 @@ import Field from 'formiojs/components/_classes/field/Field';
 import InnerHtml from '../../../../components/inner-html/InnerHtml';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
-import DiffTag from '../../base/components/DiffTag';
+import BuilderTags from '../../base/components/BuilderTags';
 import TextDisplayTag from '../../base/components/TextDisplayTag';
 import alertBuilder from './Alert.builder';
 import alertForm from './Alert.form';
@@ -48,7 +48,7 @@ class Alert extends BaseComponent {
     element.render(
       <ComponentUtilsProvider component={this}>
         <TextDisplayTag component={this.component} />
-        <DiffTag component={this.component} editFields={this.getEditFields()} />
+        <BuilderTags component={this.component} editFields={this.getEditFields()} />
         <NavAlert
           id={this.getId()}
           variant={this.getAlertType()}
