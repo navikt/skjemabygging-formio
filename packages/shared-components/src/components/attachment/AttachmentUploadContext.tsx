@@ -237,14 +237,13 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
       }
       return Promise.resolve({ status: 'unknown' });
     } catch (error: any) {
-      addFileInProgress(attachmentId, { ...file, error: true, reasons: ['uploadHttpError'] });
       if (isAuthenticationError(error)) {
         handleSessionExpired();
         return Promise.resolve({ status: 'auth-error' });
       } else if (isTooManyPagesError(error)) {
-        addError(attachmentId, translate(TEXTS.statiske.uploadFile.uploadFileToManyPagesError), 'FILE');
+        addFileInProgress(attachmentId, { ...file, error: true, reasons: ['uploadTooManyPages'] });
       } else {
-        addError(attachmentId, translate(TEXTS.statiske.uploadFile.uploadFileError), 'FILE');
+        addFileInProgress(attachmentId, { ...file, error: true, reasons: ['uploadHttpError'] });
       }
       return Promise.resolve({ status: 'error' });
     }

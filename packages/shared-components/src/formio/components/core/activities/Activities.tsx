@@ -3,8 +3,8 @@ import NavActivities from '../../../../components/activities/NavActivities';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
 import AdditionalDescription from '../../base/components/AdditionalDescription';
+import BuilderTags from '../../base/components/BuilderTags';
 import Description from '../../base/components/Description';
-import DiffTag from '../../base/components/DiffTag';
 import Label from '../../base/components/Label';
 import activitiesBuilder from './Activities.builder';
 import activitiesForm from './Activities.form';
@@ -76,7 +76,7 @@ class Activities extends BaseComponent {
   renderReact(element) {
     element.render(
       <ComponentUtilsProvider component={this}>
-        <DiffTag component={this.component} editFields={this.getEditFields()} />
+        <BuilderTags component={this.component} editFields={this.getEditFields()} />
         <NavActivities
           id={this.getId()}
           label={

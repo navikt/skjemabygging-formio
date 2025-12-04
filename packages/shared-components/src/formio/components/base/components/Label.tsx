@@ -2,7 +2,7 @@ import { Tag } from '@navikt/ds-react';
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import { useComponentUtils } from '../../../../context/component/componentUtilsContext';
 import baseComponentUtils from '../baseComponentUtils';
-import DiffTag from './DiffTag';
+import BuilderTags from './BuilderTags';
 
 type LabelOptions = { showOptional?: boolean; showDiffTag?: boolean };
 
@@ -32,7 +32,7 @@ const Label = ({ component, editFields, labelOptions }: Props) => {
           Preutfylling
         </Tag>
       )}
-      {showDiffTag && <DiffTag component={component} editFields={editFields} />}
+      {showDiffTag && <BuilderTags component={component} editFields={editFields} />}
     </>
   );
 };
