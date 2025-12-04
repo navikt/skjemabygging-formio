@@ -25,7 +25,7 @@ import { mapTranslationsToFormioI18nObject } from './context/languages/mapper/tr
 import FormBuilderOptions from './formio/form-builder-options';
 import './formio/overrides';
 import FyllUtRouter from './pages/FyllUtRouter';
-import FyllUtThemeProvider from './providers/FyllUtThemeProvider';
+import AppThemeProvider from './providers/AppThemeProvider';
 import Styles from './styles';
 import { getCountries } from './util/countries/countries';
 import * as formUtils from './util/form/form.js';
@@ -41,6 +41,7 @@ jss.setup(preset());
 
 export {
   AppConfigProvider,
+  AppThemeProvider,
   ButtonWithSpinner,
   ConfirmationModal,
   ErrorPage,
@@ -50,7 +51,6 @@ export {
   FormTitle,
   formUtils,
   FyllUtRouter,
-  FyllUtThemeProvider,
   getCountries,
   guid,
   htmlUtils,

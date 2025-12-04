@@ -1,4 +1,4 @@
-import { FyllUtThemeProvider, makeStyles, Styles } from '@navikt/skjemadigitalisering-shared-components';
+import { AppThemeProvider, makeStyles, Styles } from '@navikt/skjemadigitalisering-shared-components';
 import { Route, Routes } from 'react-router';
 import { FormNotFoundPage } from './components/errors/FormNotFoundPage';
 import { InternalServerErrorPage } from './components/errors/InternalServerErrorPage';
@@ -18,7 +18,7 @@ const App = () => {
 
   return (
     <main className={styles.app}>
-      <FyllUtThemeProvider>
+      <AppThemeProvider>
         <Routes>
           <Route path="/" element={<FormsPage />} />
           <Route path="/500" element={<InternalServerErrorPage />} />
@@ -26,7 +26,7 @@ const App = () => {
           <Route path="/sesjon-utlopt" element={<SessionExpiredPage />} />
           <Route path="/:formPath/*" element={<FormPageWrapper />} />
         </Routes>
-      </FyllUtThemeProvider>
+      </AppThemeProvider>
     </main>
   );
 };

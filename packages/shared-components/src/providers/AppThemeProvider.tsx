@@ -2,8 +2,8 @@ import '@navikt/ds-css/darkside';
 import { Theme } from '@navikt/ds-react';
 import { PropsWithChildren } from 'react';
 
-const FyllUtThemeProvider = ({ children }: PropsWithChildren) => {
+const AppThemeProvider = ({ children }: PropsWithChildren) => {
   return <Theme>{children}</Theme>;
 };
 
-export default FyllUtThemeProvider;
+export default AppThemeProvider;
