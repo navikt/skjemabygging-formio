@@ -1,6 +1,6 @@
 import { formDiffingTool, navFormioUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { Formio, Utils } from 'formiojs';
-import baseComponentUtils from '../../components/base/baseComponentUtils.js';
+import baseComponentUtils from '../../components/base/baseComponentUtils';
 
 const navFormDiffToHtml = (diffSummary) => {
   try {
