@@ -1,7 +1,7 @@
 import InnerHtml from '../../../../components/inner-html/InnerHtml';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
-import DiffTag from '../../base/components/DiffTag';
+import BuilderTags from '../../base/components/BuilderTags';
 import imageBuilder from './Image.builder';
 import imageForm from './Image.form';
 
@@ -34,7 +34,7 @@ export class Image extends BaseComponent {
     if (this.component?.image?.length > 0) {
       element.render(
         <ComponentUtilsProvider component={this}>
-          <DiffTag component={this.component} editFields={this.getEditFields()} />
+          <BuilderTags component={this.component} editFields={this.getEditFields()} />
           <div id={this.getId()}>
             <img
               className="img-component"

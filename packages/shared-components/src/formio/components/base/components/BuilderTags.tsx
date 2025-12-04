@@ -7,11 +7,11 @@ interface Props {
   editFields: string[];
 }
 
-const DiffTag = ({ component, editFields }: Props) => {
+const BuilderTags = ({ component, editFields }: Props) => {
   const { formConfig, builderMode } = useComponentUtils();
   const publishedForm = formConfig?.publishedForm;
 
-  if (!builderMode || !publishedForm) {
+  if (!builderMode) {
     return <></>;
   }
 
@@ -23,17 +23,17 @@ const DiffTag = ({ component, editFields }: Props) => {
 
   return (
     <>
-      {diff.isNew && (
+      {publishedForm && diff.isNew && (
         <Tag size="xsmall" variant="warning" data-testid="diff-tag">
           Ny
         </Tag>
       )}
-      {diff.changesToCurrentComponent?.length > 0 && (
+      {publishedForm && diff.changesToCurrentComponent?.length > 0 && (
         <Tag size="xsmall" variant="warning" data-testid="diff-tag">
           Endring
         </Tag>
       )}
-      {diff.deletedComponents?.length > 0 && (
+      {publishedForm && diff.deletedComponents?.length > 0 && (
         <Tag size="xsmall" variant="warning" data-testid="diff-tag">
           Slettede elementer
         </Tag>
@@ -48,4 +48,4 @@ const DiffTag = ({ component, editFields }: Props) => {
     </>
   );
 };
-export default DiffTag;
+export default BuilderTags;
