@@ -76,12 +76,13 @@ class Activities extends BaseComponent {
   renderReact(element) {
     element.render(
       <ComponentUtilsProvider component={this}>
-        <BuilderTags component={this.component} editFields={this.getEditFields()} />
+        <BuilderTags component={this.component} parent={this.parent} editFields={this.getEditFields()} />
         <NavActivities
           id={this.getId()}
           label={
             <Label
               component={this.component}
+              parent={this.parent}
               editFields={this.getEditFields()}
               labelOptions={{ showOptional: false }}
             />

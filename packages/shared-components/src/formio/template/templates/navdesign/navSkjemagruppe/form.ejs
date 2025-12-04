@@ -11,7 +11,7 @@
       <legend ref="header" class="navds-fieldset__legend-formio-template" id="l-{{ctx.instance.id}}-{{ctx.component.key}}">
         {{ctx.t(ctx.component.legend)}}
       </legend>
-      {{ctx.util.getDiffTag(ctx)}}
+      {{ctx.util.getBuilderTags(ctx)}}
     </span>
     {% } %}
     {% if (ctx.component.description && ctx.component.descriptionPosition !== "above") { %}

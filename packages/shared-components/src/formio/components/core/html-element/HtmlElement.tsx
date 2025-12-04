@@ -37,7 +37,7 @@ class HtmlElement extends BaseComponent {
     element.render(
       <ComponentUtilsProvider component={this}>
         <TextDisplayTag component={this.component} />
-        <BuilderTags component={this.component} editFields={this.getEditFields()} />
+        <BuilderTags component={this.component} parent={this.parent} editFields={this.getEditFields()} />
         <InnerHtml tag={this.getTag()} content={this.getContent()} />
         <AdditionalDescription component={this.component} />
       </ComponentUtilsProvider>,

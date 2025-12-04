@@ -1,13 +1,16 @@
 import { Tag } from '@navikt/ds-react';
 import { Component, formDiffingTool } from '@navikt/skjemadigitalisering-shared-domain';
 import { useComponentUtils } from '../../../../context/component/componentUtilsContext';
+import baseComponentUtils from '../baseComponentUtils';
+import { ReactComponentType } from '../index';
 
 interface Props {
   component?: Component;
-  editFields: string[];
+  parent?: ReactComponentType;
+  editFields?: string[];
 }
 
-const BuilderTags = ({ component, editFields }: Props) => {
+const BuilderTags = ({ component, parent, editFields }: Props) => {
   const { formConfig, builderMode } = useComponentUtils();
   const publishedForm = formConfig?.publishedForm;
 
@@ -38,9 +41,8 @@ const BuilderTags = ({ component, editFields }: Props) => {
           Slettede elementer
         </Tag>
       )}
-      {component.builderErrors &&
-        component.builderErrors.length > 0 &&
-        component.builderErrors.map((error, i) => (
+      {parent &&
+        baseComponentUtils.getBuilderErrors(component, parent).map((error, i) => (
           <Tag size="xsmall" variant="error" data-testid="diff-tag" key={i}>
             {error}
           </Tag>

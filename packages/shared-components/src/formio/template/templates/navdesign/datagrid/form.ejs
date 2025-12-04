@@ -113,7 +113,7 @@
     {% if (!ctx.component.hideLabel) { %}
     <legend class="navds-fieldset__legend-formio-template">{{ctx.t(ctx.component.label)}}</legend>
     <span class="label-track-changes">
-      {{ctx.util.getDiffTag(ctx)}}
+      {{ctx.util.getBuilderTags(ctx)}}
     </span>
     {% } %}
     {% if (ctx.component.description && ctx.component.descriptionPosition !== "above") { %}

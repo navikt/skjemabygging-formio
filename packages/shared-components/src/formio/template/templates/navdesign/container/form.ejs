@@ -8,7 +8,7 @@
     <legend class="navds-label" id="l-{{ctx.instance.id}}-{{ctx.component.key}}">
       {{ctx.t(ctx.component.label)}}
     </legend>
-    {{ctx.util.getDiffTag(ctx)}}
+    {{ctx.util.getBuilderTags(ctx)}}
   </div>
   <div ref="{{ctx.nestedKey}}">{{ctx.children}}</div>
 </fieldset>

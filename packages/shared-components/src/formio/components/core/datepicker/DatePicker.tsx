@@ -108,7 +108,7 @@ export default class DatePicker extends BaseComponent {
       <ComponentUtilsProvider component={this}>
         <ReactDatePicker
           id={this.getId()}
-          label={<Label component={this.component} editFields={this.getEditFields()} />}
+          label={<Label component={this.component} parent={this.parent} editFields={this.getEditFields()} />}
           required={this.isRequired()}
           value={this.getValue()}
           onChange={this.onUpdate.bind(this)}

@@ -44,7 +44,7 @@ class CountrySelect extends BaseComponent {
           value={this.getValue()}
           ref={(ref) => this.setReactInstance(ref)}
           onChange={this.handleChange.bind(this)}
-          label={<Label component={this.component} editFields={this.getEditFields()} />}
+          label={<Label component={this.component} parent={this.parent} editFields={this.getEditFields()} />}
           description={<Description component={this.component} />}
           fieldSize={this.getFieldSize()}
           readOnly={this.getReadOnly()}
