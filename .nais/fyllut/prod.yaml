@@ -19,6 +19,8 @@ kodeverk:
   url: http://kodeverk-api.team-rocket
   scope: prod-gcp.team-rocket.kodeverk-api
 forms-source: "static"
+nologin:
+  token-lifetime-hours: 6
 pdl-token-scope-cluster: "prod-fss"
 environmentVars: []
 azure:

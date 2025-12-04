@@ -1,7 +1,6 @@
 import { FileItem, FileObject } from '@navikt/ds-react';
 import { Submission, SubmissionAttachment, TEXTS, UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, useContext, useState } from 'react';
-import { useNavigate } from 'react-router';
 import { submitCaptchaValue } from '../../api/captcha/captcha';
 import useNologinFileUpload from '../../api/nologin-file-upload/nologinFileUpload';
 import http from '../../api/util/http/http';
@@ -54,14 +53,13 @@ const AttachmentUploadContext = createContext<AttachmentUploadContextType>(initi
 
 const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boolean; children: React.ReactNode }) => {
   const config = useAppConfig();
-  const { submission, setSubmission, form } = useForm();
-  const { nologinToken, setNologinToken } = useSendInn();
+  const { submission, setSubmission } = useForm();
+  const { nologinToken, setNologinToken, handleSessionExpired } = useSendInn();
   const { deleteAllFiles, deleteAllFilesForAttachment, deleteFile, uploadFile } = useNologinFileUpload();
   const { translate } = useLanguages();
   const [captchaValue, setCaptchaValue] = useState<Record<string, string>>({});
   const [uploadsInProgress, setUploadsInProgress] = useState<Record<string, Record<string, FileObject>>>({});
   const [errors, setErrors] = useState<Record<string, Array<{ message: string; type: ErrorType }>>>({});
-  const navigate = useNavigate();
 
   const fileIdentifier = (file: FileObject) => `${file.file.name}-${file.file.size}`;
 
@@ -172,12 +170,6 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
     return error instanceof http.TooManyPagesError;
   };
 
-  const handleAuthError = () => {
-    setNologinToken(undefined);
-    setSubmission(undefined);
-    navigate(`/sesjon-utlopt?form_path=${form?.path}`);
-  };
-
   const validateTotalAttachmentSize = (attachmentId: string, file: FileObject): string | undefined => {
     const attachment = submission?.attachments?.find((attachment) => attachment.attachmentId === attachmentId);
     return validateTotalFilesSize(
@@ -247,7 +239,7 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
     } catch (error: any) {
       addFileInProgress(attachmentId, { ...file, error: true, reasons: ['uploadHttpError'] });
       if (isAuthenticationError(error)) {
-        handleAuthError();
+        handleSessionExpired();
         return Promise.resolve({ status: 'auth-error' });
       } else if (isTooManyPagesError(error)) {
         addError(attachmentId, translate(TEXTS.statiske.uploadFile.uploadFileToManyPagesError), 'FILE');
@@ -265,7 +257,7 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
       removeFileFromSubmission(attachmentId, fileId);
     } catch (error: any) {
       if (isAuthenticationError(error)) {
-        handleAuthError();
+        handleSessionExpired();
       } else {
         addError(fileId, translate(TEXTS.statiske.uploadFile.deleteFileError), 'FILE');
       }
@@ -279,7 +271,7 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
       removeFilesFromSubmission(attachmentId);
     } catch (error: any) {
       if (isAuthenticationError(error)) {
-        handleAuthError();
+        handleSessionExpired();
       } else {
         addError(attachmentId, translate(TEXTS.statiske.uploadFile.deleteAttachmentError), 'FILE');
       }
@@ -293,7 +285,7 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
       removeAttachmentFromSubmission(attachmentId);
     } catch (error: any) {
       if (isAuthenticationError(error)) {
-        handleAuthError();
+        handleSessionExpired();
       } else {
         addError(attachmentId, translate(TEXTS.statiske.uploadFile.deleteAttachmentError), 'FILE');
       }
@@ -308,7 +300,7 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
       setSubmission((current) => ({ ...current, attachments: [] }) as Submission);
     } catch (error: any) {
       if (isAuthenticationError(error)) {
-        handleAuthError();
+        handleSessionExpired();
       } else {
         addError('allFiles', translate(TEXTS.statiske.uploadFile.deleteAllFilesError), 'FILE');
       }

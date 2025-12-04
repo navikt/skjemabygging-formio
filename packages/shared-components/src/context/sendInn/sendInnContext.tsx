@@ -2,8 +2,10 @@ import {
   formioFormsApiUtils,
   Language,
   MellomlagringError,
+  NologinToken,
   ReceiptSummary,
   Submission,
+  tokenUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import React, { createContext, useCallback, useContext, useEffect, useReducer, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router';
@@ -41,6 +43,8 @@ interface SendInnContextType {
   submitted?: boolean;
   receipt?: ReceiptSummary;
   setReceipt: (receipt: ReceiptSummary | undefined) => void;
+  tokenDetails: NologinToken | undefined;
+  handleSessionExpired: () => void;
 }
 
 interface SendInnProviderProps {
@@ -67,6 +71,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const [isCreateStarted, setIsCreateStarted] = useState(false);
   const [innsendingsId, setInnsendingsId] = useState<string>();
   const [nologinToken, setNologinToken] = useState<string | undefined>();
+  const [tokenDetails, setTokenDetails] = useState<NologinToken | undefined>();
   const [fyllutMellomlagringState, dispatchFyllutMellomlagring] = useReducer(mellomlagringReducer, undefined);
   const [soknadPdfBlob, setSoknadPdfBlob] = useState<Blob | undefined>(undefined);
   const [receipt, setReceipt] = useState<ReceiptSummary | undefined>(undefined);
@@ -400,6 +405,40 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
     }
   };
 
+  const handleSessionExpired = useCallback(() => {
+    logger?.debug('Session has expired, redirecting to session expired page');
+    logEvent?.({
+      name: 'sesjon utløpt',
+      data: {
+        skjemaId: form?.properties.skjemanummer,
+        skjemanavn: translate(form?.title || ''),
+        tema: form?.properties.tema,
+        submissionMethod,
+      },
+    });
+    setNologinToken(undefined);
+    setSubmission(undefined);
+    navigate(`/sesjon-utlopt?form_path=${form?.path}&form_number=${form?.properties.skjemanummer}`);
+  }, [form, logEvent, logger, navigate, setSubmission, submissionMethod, translate]);
+
+  useEffect(() => {
+    setTokenDetails(tokenUtils.parseToken(nologinToken));
+  }, [nologinToken]);
+
+  useEffect(() => {
+    if (!tokenDetails) return;
+
+    const msUntilExp = tokenDetails.exp * 1000 - Date.now();
+    if (msUntilExp > 0) {
+      const timeoutId = setTimeout(() => {
+        handleSessionExpired();
+      }, msUntilExp);
+      return () => clearTimeout(timeoutId);
+    } else {
+      handleSessionExpired();
+    }
+  }, [tokenDetails, handleSessionExpired]);
+
   useEffect(() => {
     const initializeMellomlagring = async () => {
       if (!innsendingsId || innsendingsIdFromParams !== innsendingsId) {
@@ -464,6 +503,8 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
     isMellomlagringReady,
     mellomlagringError: fyllutMellomlagringState?.error,
     submitted: !!soknadPdfBlob,
+    tokenDetails,
+    handleSessionExpired,
   };
 
   return <SendInnContext.Provider value={value}>{children}</SendInnContext.Provider>;
