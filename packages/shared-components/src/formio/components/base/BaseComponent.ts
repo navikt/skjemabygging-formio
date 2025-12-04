@@ -33,6 +33,18 @@ class BaseComponent extends FormioReactComponent {
       this.component.logic = undefined;
     }
     super.init();
+    if (this.builderMode && this.component) {
+      if (
+        this.component.customConditional?.includes('row.') &&
+        this.parent?.type &&
+        this.parent?.type !== 'datagrid' &&
+        this.parent?.type !== 'container'
+      ) {
+        this.component.builderErrors = ['Mulig feil på avansert betinget visning'];
+      } else {
+        this.component.builderErrors = [];
+      }
+    }
   }
 
   /**
