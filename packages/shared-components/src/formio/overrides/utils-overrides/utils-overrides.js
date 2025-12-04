@@ -44,26 +44,31 @@ const createList = (components, labelId) => {
   return '';
 };
 
-const TAG = (text) =>
-  `<span class="navds-tag navds-tag--warning navds-tag--xsmall navds-detail navds-detail--small" data-testid="diff-tag">${text}</span>`;
+const TAG = (text, level = 'warning') =>
+  `<span class="navds-tag navds-tag--${level} navds-tag--xsmall navds-detail navds-detail--small" data-testid="diff-tag">${text}</span>`;
 
-const getDiffTag = (ctx) => {
+const getBuilderTags = (ctx) => {
   const { component, config, self } = ctx;
   const { publishedForm } = config;
-  if (ctx.builder && publishedForm) {
+  if (ctx.builder) {
     // Formio.js invokes mergeSchema on component which is put on ctx object. Therefore we must do the same
     // prior to comparing with published version to avoid misleading diff tags due to changes in a component's schema.
     const mergeSchema = self.mergeSchema.bind(self);
     const diff = formDiffingTool.getComponentDiff(component, publishedForm, mergeSchema);
     const tags = [];
-    if (diff.isNew) {
+    if (publishedForm && diff.isNew) {
       tags.push(`${TAG('Ny')}`);
     }
-    if (diff.changesToCurrentComponent?.length) {
+    if (publishedForm && diff.changesToCurrentComponent?.length) {
       tags.push(`${TAG('Endring')}`);
     }
-    if (diff.deletedComponents?.length) {
+    if (publishedForm && diff.deletedComponents?.length) {
       tags.push(`${TAG('Slettede elementer')}`);
+    }
+    if (component?.builderErrors) {
+      component?.builderErrors.forEach((error) => {
+        tags.push(TAG(error, 'error'));
+      });
     }
     return tags.join(' ');
   }
@@ -89,7 +94,7 @@ const UtilsOverrides = {
     .map((fnName) => [fnName, navFormioUtils[fnName]])
     .reduce((acc, [fnName, fnValue]) => ({ ...acc, [fnName]: fnValue }), {}),
   navFormDiffToHtml,
-  getDiffTag,
+  getBuilderTags,
   data,
 };
 

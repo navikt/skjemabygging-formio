@@ -1,6 +1,7 @@
 import Field from 'formiojs/components/_classes/field/Field';
 import FormioDataGrid from 'formiojs/components/datagrid/DataGrid';
 import { scrollToAndSetFocus } from '../../../../util/focus-management/focus-management';
+import baseComponentUtils from '../../base/baseComponentUtils';
 import dataGridBuilder from './DataGrid.builder';
 import dataGridForm from './DataGrid.form';
 
@@ -24,6 +25,11 @@ class DataGrid extends FormioDataGrid {
 
   static get builderInfo() {
     return dataGridBuilder();
+  }
+
+  init() {
+    super.init();
+    baseComponentUtils.setupBuilderErrors(this);
   }
 
   get defaultSchema() {

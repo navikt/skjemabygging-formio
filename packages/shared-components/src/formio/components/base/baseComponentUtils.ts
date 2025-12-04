@@ -47,6 +47,21 @@ const isOnCurrentPage = (component: ReactComponentType) => {
   return component.root.currentPage?.id === getParentPanel(component)?.id;
 };
 
+const setupBuilderErrors = (thisComponent: any) => {
+  if (thisComponent.builderMode && thisComponent.component) {
+    if (
+      thisComponent.component.customConditional?.includes('row.') &&
+      thisComponent.parent?.type &&
+      thisComponent.parent?.type !== 'datagrid' &&
+      thisComponent.parent?.type !== 'container'
+    ) {
+      thisComponent.component.builderErrors = ['Mulig feil på avansert betinget visning'];
+    } else {
+      thisComponent.component.builderErrors = [];
+    }
+  }
+};
+
 const baseComponentUtils = {
   getId,
   getLabel,
@@ -55,5 +70,6 @@ const baseComponentUtils = {
   isRequired,
   isReadOnly,
   isOnCurrentPage,
+  setupBuilderErrors,
 };
 export default baseComponentUtils;

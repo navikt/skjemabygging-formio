@@ -257,7 +257,7 @@ describe('utils-overrides', () => {
     });
   });
 
-  describe('getDiffTag', () => {
+  describe('getBuilderTags', () => {
     it('returns no tag when component is unchanged', () => {
       const navSelect = navFormUtils.findByNavId('e0a8kbj', publishedForm.components);
       const ctx = {
@@ -270,7 +270,7 @@ describe('utils-overrides', () => {
           mergeSchema: (comp) => comp,
         },
       };
-      const html = UtilsOverrides.getDiffTag(ctx);
+      const html = UtilsOverrides.getBuilderTags(ctx);
       expect(html).toMatchSnapshot();
     });
 
@@ -286,7 +286,7 @@ describe('utils-overrides', () => {
           mergeSchema: (comp) => comp,
         },
       };
-      const html = UtilsOverrides.getDiffTag(ctx);
+      const html = UtilsOverrides.getBuilderTags(ctx);
       expect(html).toMatchSnapshot();
     });
 
@@ -302,7 +302,7 @@ describe('utils-overrides', () => {
           mergeSchema: (comp) => comp,
         },
       };
-      const html = UtilsOverrides.getDiffTag(ctx);
+      const html = UtilsOverrides.getBuilderTags(ctx);
       expect(html).toMatchSnapshot();
     });
 
@@ -318,7 +318,7 @@ describe('utils-overrides', () => {
           mergeSchema: (comp) => comp,
         },
       };
-      const html = UtilsOverrides.getDiffTag(ctx);
+      const html = UtilsOverrides.getBuilderTags(ctx);
       expect(html).toMatchSnapshot();
     });
 
@@ -337,7 +337,7 @@ describe('utils-overrides', () => {
             mergeSchema: MERGE_SCHEMA_NEW_PROP,
           },
         };
-        const html = UtilsOverrides.getDiffTag(ctx);
+        const html = UtilsOverrides.getBuilderTags(ctx);
         expect(html).toMatchSnapshot();
       });
 
@@ -358,7 +358,7 @@ describe('utils-overrides', () => {
             mergeSchema: MERGE_SCHEMA_NEW_PROP,
           },
         };
-        const html = UtilsOverrides.getDiffTag(ctx);
+        const html = UtilsOverrides.getBuilderTags(ctx);
         expect(html).toMatchSnapshot();
       });
     });

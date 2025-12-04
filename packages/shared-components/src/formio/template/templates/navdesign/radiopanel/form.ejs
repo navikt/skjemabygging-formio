@@ -6,7 +6,7 @@
         ({{ctx.t("valgfritt")}})
       {% } %}
     </label>
-    {{ctx.util.getDiffTag(ctx)}}
+    {{ctx.util.getBuilderTags(ctx)}}
   </div>
   {% if (ctx.component.description && ctx.component.descriptionPosition !== "above") { %}
     <div class="description" id="d-{{ctx.instance.id}}-{{ctx.component.key}}">{{ctx.t(ctx.component.description)}}</div>
