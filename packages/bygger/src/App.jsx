@@ -1,4 +1,4 @@
-import '@navikt/ds-css';
+import '@navikt/ds-css/darkside';
 import { makeStyles, Styles } from '@navikt/skjemadigitalisering-shared-components';
 import AuthenticatedApp from './AuthenticatedApp';
 import UnauthenticatedApp from './UnauthenticatedApp';
