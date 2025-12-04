@@ -49,7 +49,7 @@ class Radio extends BaseComponent {
       <ComponentUtilsProvider component={this}>
         <NavRadio
           id={this.getId()}
-          legend={<Label component={this.component} editFields={this.getEditFields()} />}
+          legend={<Label component={this.component} parent={this.parent} editFields={this.getEditFields()} />}
           value={this.getValue()}
           values={this.component!.values ?? []}
           onChange={(value) => this.changeHandler(value)}

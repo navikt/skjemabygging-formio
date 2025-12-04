@@ -95,7 +95,7 @@ class DataFetcher extends BaseComponent {
         <NavDataFetcher
           label={
             <>
-              <Label component={this.component} editFields={this.getEditFields()} />
+              <Label component={this.component} parent={this.parent} editFields={this.getEditFields()} />
             </>
           }
           description={<Description component={this.component} />}

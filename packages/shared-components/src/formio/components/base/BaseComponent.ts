@@ -33,7 +33,6 @@ class BaseComponent extends FormioReactComponent {
       this.component.logic = undefined;
     }
     super.init();
-    baseComponentUtils.setupBuilderErrors(this);
   }
 
   /**

@@ -1,5 +1,4 @@
 import FormioPanel from 'formiojs/components/panel/Panel';
-import baseComponentUtils from '../../base/baseComponentUtils';
 import panelForm from './Panel.form';
 
 class Panel extends FormioPanel {
@@ -9,11 +8,6 @@ class Panel extends FormioPanel {
 
   static editForm() {
     return panelForm();
-  }
-
-  init() {
-    super.init();
-    baseComponentUtils.setupBuilderErrors(this);
   }
 }
 

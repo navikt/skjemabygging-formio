@@ -1,5 +1,4 @@
 import Fieldset from 'formiojs/components/fieldset/Fieldset';
-import baseComponentUtils from '../../base/baseComponentUtils';
 import formGroupForm from './FormGroup.form';
 
 class FormGroup extends Fieldset {
@@ -14,11 +13,6 @@ class FormGroup extends Fieldset {
       persistent: false,
       backgroundColor: true,
     });
-  }
-
-  init() {
-    super.init();
-    baseComponentUtils.setupBuilderErrors(this);
   }
 
   static editForm() {

@@ -34,7 +34,7 @@ export class Image extends BaseComponent {
     if (this.component?.image?.length > 0) {
       element.render(
         <ComponentUtilsProvider component={this}>
-          <BuilderTags component={this.component} editFields={this.getEditFields()} />
+          <BuilderTags component={this.component} parent={this.parent} editFields={this.getEditFields()} />
           <div id={this.getId()}>
             <img
               className="img-component"

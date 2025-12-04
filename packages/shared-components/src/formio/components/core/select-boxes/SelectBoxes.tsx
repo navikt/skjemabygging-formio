@@ -57,7 +57,7 @@ class SelectBoxes extends BaseComponent {
     return element.render(
       <ComponentUtilsProvider component={this}>
         <CheckboxGroup
-          legend={<Label component={this.component} editFields={this.getEditFields()} />}
+          legend={<Label component={this.component} parent={this.parent} editFields={this.getEditFields()} />}
           description={<Description component={this.component} />}
           value={componentValue}
           onChange={(value) => this.changeHandler(value)}
