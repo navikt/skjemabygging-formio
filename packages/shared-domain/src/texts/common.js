@@ -2,6 +2,7 @@ const common = {
   yes: 'Ja',
   no: 'Nei',
   optional: 'valgfritt',
+  opensInNewTab: '(åpnes i ny fane)',
   january: 'Januar',
   february: 'Februar',
   march: 'Mars',
