@@ -1,72 +1,32 @@
-import { ArrowRightIcon } from '@navikt/aksel-icons';
-import { Link } from '@navikt/ds-react';
-import classNames from 'classnames';
+import { LinkCard } from '@navikt/ds-react';
 import React from 'react';
 import { useLanguages } from '../../context/languages';
-import makeStyles from '../../util/styles/jss/jss';
 
 interface Props {
-  onClick: () => void;
   title: string;
   description: string;
-  className?: string;
   href?: string;
+  onClick?: () => void;
+  className?: string;
 }
 
-const useStyles = makeStyles({
-  container: {
-    borderRadius: '8px',
-    border: '1px solid var(--a-border-subtle)',
-    display: 'flex',
-    padding: 'var(--a-spacing-4)',
-    gap: 'var(--a-spacing-4)',
-    alignItems: 'center',
-    cursor: 'pointer',
-
-    '&:hover': {
-      backgroundColor: 'var(--a-surface-action-subtle)',
-      '& a': {
-        textDecoration: 'underline',
-        textDecorationThickness: '2px',
-        textUnderlineOffset: '.15625rem',
-      },
-    },
-  },
-  content: {
-    flex: '1 1 auto',
-  },
-  description: {
-    margin: '0',
-  },
-  arrowIcon: {
-    color: 'var(--a-surface-action)',
-    flex: '0 0 auto',
-  },
-  link: {
-    textDecoration: 'none',
-  },
-});
-
-const IntroLinkPanel = ({ onClick, title, description, className, href }: Props) => {
-  const styles = useStyles();
+const IntroLinkPanel = ({ title, description, href, onClick, className }: Props) => {
   const { translate } = useLanguages();
 
   return (
-    <div className={classNames(styles.container, className)} onClick={onClick}>
-      <div className={styles.content}>
-        <Link
+    <LinkCard data-color="accent" className={className} onClick={onClick}>
+      <LinkCard.Title>
+        <LinkCard.Anchor
           href={href ?? '#'}
-          className={styles.link}
           onClick={(e: React.MouseEvent) => {
             e.preventDefault();
           }}
         >
           {translate(title)}
-        </Link>
-        <p className={styles.description}>{translate(description)}</p>
-      </div>
-      <ArrowRightIcon aria-hidden="true" fontSize="1.5rem" className={styles.arrowIcon} />
-    </div>
+        </LinkCard.Anchor>
+      </LinkCard.Title>
+      <LinkCard.Description>{translate(description)}</LinkCard.Description>
+    </LinkCard>
   );
 };
 
