@@ -54,7 +54,7 @@ class Checkbox extends BaseComponent {
         >
           <InnerHtml content={this.translate(this.component?.description)} />
           <AkselCheckbox value={this.component?.key}>
-            <Label component={this.component} editFields={this.getEditFields()} />
+            <Label component={this.component} parent={this.parent} editFields={this.getEditFields()} />
           </AkselCheckbox>
         </CheckboxGroup>
         <AdditionalDescription component={this.component} />

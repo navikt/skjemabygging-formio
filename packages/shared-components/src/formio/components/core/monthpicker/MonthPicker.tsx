@@ -104,7 +104,7 @@ class MonthPicker extends BaseComponent {
           onChange={this.onValueChange.bind(this)}
           value={this.getValue()}
           error={this.errors[0]?.message}
-          label={<Label component={this.component} editFields={this.getEditFields()} />}
+          label={<Label component={this.component} parent={this.parent} editFields={this.getEditFields()} />}
           description={<Description component={this.component} />}
           inputRef={(ref) => this.setReactInstance(ref)}
         />

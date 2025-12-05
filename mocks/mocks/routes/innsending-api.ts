@@ -428,6 +428,14 @@ export default [
           body: { mergedFile: 'bWVyZ2VkRmlsZWJvZHk=' },
         },
       },
+      {
+        id: 'failure',
+        type: 'text',
+        options: {
+          status: 500,
+          body: 'Internal server error',
+        },
+      },
     ],
   },
   {
@@ -460,6 +468,14 @@ export default [
         options: {
           status: 500,
           body: { message: 'Feil ved opplasting av fil', errorCode: 'fileUploadError' },
+        },
+      },
+      {
+        id: 'bad-request-too-many-pages',
+        type: 'json',
+        options: {
+          status: 400,
+          body: { message: 'Feil ved opplasting av fil', errorCode: 'illegalAction.fileWithTooManyPages' },
         },
       },
       {

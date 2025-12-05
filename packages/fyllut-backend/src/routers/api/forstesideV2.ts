@@ -11,8 +11,7 @@ import { config } from '../../config/config';
 import { logger } from '../../logger';
 import { LogMetadata } from '../../types/log';
 import { base64Decode } from '../../utils/base64';
-import { htmlResponseError, responseToError } from '../../utils/errorHandling';
-import { logErrorWithStacktrace } from '../../utils/errors';
+import { responseToError } from '../../utils/errorHandling';
 
 const { skjemabyggingProxyUrl, formsApiUrl } = config;
 
@@ -43,9 +42,7 @@ const forstesideV2 = {
       res.setHeader('Content-Disposition', `inline; filename=${fileName}`);
       res.send(base64Decode(response.foersteside));
     } catch (e) {
-      logErrorWithStacktrace(e as Error);
-      const forstesideError = htmlResponseError('Generering av førstesideark feilet');
-      next(forstesideError);
+      next(e);
     }
   },
 };

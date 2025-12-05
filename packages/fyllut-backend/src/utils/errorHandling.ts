@@ -12,16 +12,8 @@ async function responseToError(response: any, errorMessage: string, functional =
   return error;
 }
 
-function htmlResponseError(message: string) {
-  const error = new HttpError(message);
-  error.functional = false;
-  error.render_html = true;
-  error.correlation_id = correlator.getId();
-  return error;
-}
-
 const toJsonOrThrowError =
-  (errorMessage, functional = false) =>
+  (errorMessage: string, functional = false) =>
   async (response) => {
     if (response.ok) {
       return response.json();
@@ -29,4 +21,4 @@ const toJsonOrThrowError =
     throw await responseToError(response, errorMessage, functional);
   };
 
-export { htmlResponseError, responseToError, toJsonOrThrowError };
+export { responseToError, toJsonOrThrowError };

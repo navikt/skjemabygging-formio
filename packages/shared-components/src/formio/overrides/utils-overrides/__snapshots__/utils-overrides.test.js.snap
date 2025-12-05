@@ -1,16 +1,16 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`utils-overrides > getDiffTag > component has new default prop in schema > returns no tag if component has not changed, only default schema 1`] = `""`;
+exports[`utils-overrides > getBuilderTags > component has new default prop in schema > returns no tag if component has not changed, only default schema 1`] = `""`;
 
-exports[`utils-overrides > getDiffTag > component has new default prop in schema > returns tag "NY" if component does not exist in published form 1`] = `"<span class="navds-tag navds-tag--warning navds-tag--xsmall navds-detail navds-detail--small" data-testid="diff-tag">Ny</span>"`;
+exports[`utils-overrides > getBuilderTags > component has new default prop in schema > returns tag "NY" if component does not exist in published form 1`] = `"<span class="navds-tag navds-tag--warning navds-tag--xsmall navds-detail navds-detail--small" data-testid="diff-tag">Ny</span>"`;
 
-exports[`utils-overrides > getDiffTag > returns no tag even if component is changed when it renders outside builder 1`] = `""`;
+exports[`utils-overrides > getBuilderTags > returns no tag even if component is changed when it renders outside builder 1`] = `""`;
 
-exports[`utils-overrides > getDiffTag > returns no tag when component is unchanged 1`] = `""`;
+exports[`utils-overrides > getBuilderTags > returns no tag when component is unchanged 1`] = `""`;
 
-exports[`utils-overrides > getDiffTag > returns tag 'Endring' when component is changed 1`] = `"<span class="navds-tag navds-tag--warning navds-tag--xsmall navds-detail navds-detail--small" data-testid="diff-tag">Endring</span>"`;
+exports[`utils-overrides > getBuilderTags > returns tag 'Endring' when component is changed 1`] = `"<span class="navds-tag navds-tag--warning navds-tag--xsmall navds-detail navds-detail--small" data-testid="diff-tag">Endring</span>"`;
 
-exports[`utils-overrides > getDiffTag > returns tag 'Ny' when component does not exist in published form 1`] = `"<span class="navds-tag navds-tag--warning navds-tag--xsmall navds-detail navds-detail--small" data-testid="diff-tag">Ny</span>"`;
+exports[`utils-overrides > getBuilderTags > returns tag 'Ny' when component does not exist in published form 1`] = `"<span class="navds-tag navds-tag--warning navds-tag--xsmall navds-detail navds-detail--small" data-testid="diff-tag">Ny</span>"`;
 
 exports[`utils-overrides > navFormDiffToHtml > Form -> diff -> html > empty html when navSelect is not changed 1`] = `""`;
 
