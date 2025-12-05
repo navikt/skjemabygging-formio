@@ -1,13 +1,12 @@
 import { UploadIcon } from '@navikt/aksel-icons';
-import { Alert, BodyLong, Button, FileObject, FileUpload, VStack } from '@navikt/ds-react';
+import { Button, FileObject, FileUpload, VStack } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { MutableRefObject, ReactNode, useState } from 'react';
 import { FILE_ACCEPT, MAX_SIZE_ATTACHMENT_FILE_BYTES } from '../../constants/fileUpload';
 import { useLanguages } from '../../context/languages';
-import htmlUtils from '../../util/html/htmlUtils';
 import makeStyles from '../../util/styles/jss/jss';
 import { useAttachmentUpload } from '../attachment/AttachmentUploadContext';
-import InnerHtml from '../inner-html/InnerHtml';
+import StandaloneValidationError from '../error/standalone-validation-error/StandaloneValidationError';
 
 const useStyles = makeStyles({
   button: {
@@ -105,13 +104,7 @@ const UploadButton = ({
         </Button>
       )}
       {uploadErrorMessage && (
-        <Alert inline variant="error">
-          {htmlUtils.isHtmlString(uploadErrorMessage) ? (
-            <InnerHtml content={translate(uploadErrorMessage, translationParams)}></InnerHtml>
-          ) : (
-            <BodyLong>{translate(uploadErrorMessage, translationParams)}</BodyLong>
-          )}
-        </Alert>
+        <StandaloneValidationError>{translate(uploadErrorMessage, translationParams)}</StandaloneValidationError>
       )}
       {readMore}
     </VStack>
