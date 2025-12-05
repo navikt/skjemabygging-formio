@@ -13,11 +13,11 @@ import {
   TokenxConfig,
 } from './types';
 
-const { DOTENV_FILE } = process.env;
-if (DOTENV_FILE) {
-  dotenv.config({ path: [`.env.${DOTENV_FILE}.local`, `.env.${DOTENV_FILE}`] });
-} else if (process.env.NODE_ENV !== 'test') {
+if (process.env.NODE_ENV !== 'test') {
   dotenv.config();
+}
+if (process.env.MOCKS_ENABLED === 'true') {
+  dotenv.config({ path: '.env.test' });
 }
 
 const defaultEnabledFeatures = '';
