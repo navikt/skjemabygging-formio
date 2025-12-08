@@ -7,8 +7,8 @@ const CancelButton = ({ variant = 'tertiary' }: { variant: 'primary' | 'secondar
   const exitUrl = url.getExitUrl(window.location.href);
 
   return (
-    <a className={`navds-button navds-button--${variant}`} href={exitUrl}>
-      <span aria-live="polite" className="navds-body-short font-bold">
+    <a className={`aksel-button aksel-button--${variant}`} href={exitUrl}>
+      <span aria-live="polite" className="aksel-body-short font-bold">
         {translate(TEXTS.grensesnitt.navigation.exit)}
       </span>
     </a>

@@ -53,7 +53,7 @@ const global = {
     outline: 'none',
   },
   // Override Aksel css for page, since it causes problems with our sticky elements.
-  '#root .navds-page__content--padding': {
+  '#root .aksel-page__content--padding': {
     paddingBlockEnd: 0,
   },
   ...labelTrackChanges,

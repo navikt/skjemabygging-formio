@@ -1,5 +1,5 @@
 const fieldset = {
-  '& .navds-fieldset': {
+  '& .aksel-fieldset': {
     '&__legend-formio-template': {
       fontSize: '1.25rem',
       lineHeight: '1.625rem',
@@ -15,7 +15,7 @@ const fieldset = {
       },
     },
   },
-  '& .formio-component-navSkjemagruppe > fieldset >.navds-fieldset__content--background-color': {
+  '& .formio-component-navSkjemagruppe > fieldset >.aksel-fieldset__content--background-color': {
     backgroundColor: 'var(--a-deepblue-100)',
   },
 };

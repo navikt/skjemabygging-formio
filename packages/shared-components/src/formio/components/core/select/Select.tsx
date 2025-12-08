@@ -239,8 +239,8 @@ class NavSelect extends BaseComponent {
           isLoading={this.isLoading}
         />
         {this.getError() && (
-          <div className="navds-form-field__error" aria-live="polite">
-            <p className="navds-error-message navds-label">{this.getError()}</p>
+          <div className="aksel-form-field__error" aria-live="polite">
+            <p className="aksel-error-message aksel-label">{this.getError()}</p>
           </div>
         )}
       </>,

@@ -119,8 +119,8 @@ describe('Digital submission without user login', () => {
         .within(() => {
           cy.get('ul[role="list"]').find('li').should('have.length.at.least', 1);
         });
-      cy.get('.navds-alert--success').should('not.exist');
-      cy.get('.navds-alert--warning').should('exist').and('be.visible');
+      cy.get('.aksel-alert--success').should('not.exist');
+      cy.get('.aksel-alert--warning').should('exist').and('be.visible');
 
       cy.go('back');
       cy.findByText(TEXTS.statiske.error.alreadySubmitted).should('exist');
@@ -190,7 +190,7 @@ describe('Digital submission without user login', () => {
           cy.findByLabelText(TEXTS.statiske.attachment.nei).check();
         });
         cy.clickNextStep();
-        cy.get('.navds-form-summary')
+        cy.get('.aksel-form-summary')
           .eq(4)
           .within(() => {
             cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
@@ -234,7 +234,7 @@ describe('Digital submission without user login', () => {
         );
         cy.clickNextStep();
 
-        cy.get('.navds-form-summary')
+        cy.get('.aksel-form-summary')
           .eq(4)
           .within(() => {
             cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
@@ -421,8 +421,8 @@ describe('Digital submission without user login', () => {
           cy.contains('li', 'Uinnlogget søknad').should('exist');
           cy.contains('li', 'Norsk pass').should('exist');
         });
-      cy.get('.navds-alert--success').should('exist').and('be.visible');
-      cy.get('.navds-alert--warning').should('not.exist');
+      cy.get('.aksel-alert--success').should('exist').and('be.visible');
+      cy.get('.aksel-alert--warning').should('not.exist');
     });
   });
 

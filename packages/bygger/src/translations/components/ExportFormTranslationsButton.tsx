@@ -15,7 +15,7 @@ const ExportFormTranslationsButton = ({ form }: Props) => {
     <CSVLink
       data={getRowsForExportFromForm(form, translations)}
       filename={`${title}(${path})_Oversettelser.csv`}
-      className="navds-button navds-button--tertiary navds-button--small navds-label navds-label--small"
+      className="aksel-button aksel-button--tertiary aksel-button--small aksel-label aksel-label--small"
       separator={';'}
       headers={getHeadersForExport(translations)}
       enclosingCharacter={'"'}

@@ -8,7 +8,7 @@
 >
     {% if (ctx.component.legend) { %}
     <span class="label-track-changes">
-      <legend ref="header" class="navds-fieldset__legend-formio-template" id="l-{{ctx.instance.id}}-{{ctx.component.key}}">
+      <legend ref="header" class="aksel-fieldset__legend-formio-template" id="l-{{ctx.instance.id}}-{{ctx.component.key}}">
         {{ctx.t(ctx.component.legend)}}
       </legend>
       {{ctx.util.getBuilderTags(ctx)}}
@@ -17,7 +17,8 @@
     {% if (ctx.component.description && ctx.component.descriptionPosition !== "above") { %}
     <div class="description" id="d-{{ctx.instance.id}}-{{ctx.component.key}}">{{ctx.t(ctx.component.description)}}</div>
     {% } %}
-    <div class="navds-fieldset__content{{ ctx.component.backgroundColor !== false ? ' navds-fieldset__content--background-color' : ''  }}" ref="{{ctx.nestedKey}}">
+    <div class="aksel-fieldset__content{{ ctx.component.backgroundColor !== false ? ' aksel-fieldset__content--background-color' : ''  }}" ref="{{ctx.nestedKey}}">
         {{ctx.children}}
     </div>
 </fieldset>
+

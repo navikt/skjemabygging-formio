@@ -9,7 +9,7 @@ const stepper = {
       top: 0,
     },
 
-    '& .navds-stepper__content': {
+    '& .aksel-stepper__content': {
       maxWidth: '26ch',
       wordBreak: 'break-word',
       hyphens: 'auto',

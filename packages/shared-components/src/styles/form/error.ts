@@ -1,12 +1,12 @@
 const error = {
-  '& .navds-error-message': {
+  '& .aksel-error-message': {
     marginTop: 'var(--a-spacing-2)',
     '&:before': {
-      content: '•',
+      content: '⬢',
     },
   },
-  '& .navds-error-message:before': {
-    content: '•',
+  '& .aksel-error-message:before': {
+    content: '⬢',
   },
 };
 

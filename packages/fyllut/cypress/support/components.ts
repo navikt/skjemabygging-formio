@@ -6,7 +6,7 @@ Cypress.Commands.add('withinComponent', (label, fn) => {
 });
 
 Cypress.Commands.add('withinSummaryGroup', (heading, fn) => {
-  cy.findByRole('heading', { level: 2, name: heading }).closest('.navds-form-summary').within(fn);
+  cy.findByRole('heading', { level: 2, name: heading }).closest('.aksel-form-summary').within(fn);
 });
 
 Cypress.Commands.add('findByLabelOptional', (label) => {
