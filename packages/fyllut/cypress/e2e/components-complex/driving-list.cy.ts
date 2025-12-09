@@ -126,11 +126,11 @@ describe('DrivingList', () => {
       cy.findByRole('button', { name: 'Legg til periode' }).click();
       cy.findByRole('button', { name: 'Legg til periode' }).click();
 
-      cy.get('.navds-accordion__item').should('have.length', 3);
+      cy.get('.aksel-accordion__item').should('have.length', 3);
       cy.findByRole('button', { name: 'Legg til periode' }).should('not.exist');
 
       cy.findByRole('button', { name: 'Fjern periode' }).should('exist').click();
-      cy.get('.navds-accordion__item').should('have.length', 2);
+      cy.get('.aksel-accordion__item').should('have.length', 2);
     });
   });
 
@@ -155,7 +155,7 @@ describe('DrivingList', () => {
           cy.findByRole('radio', { name: 'Arbeidstrening: 01. januar 2024 - 31. august 2024' }).should('exist').check();
         });
 
-      cy.get('.navds-alert')
+      cy.get('.aksel-alert')
         .eq(0)
         .within(() => {
           cy.findByRole('heading', { name: 'Dine aktiviteter' }).should('exist');
@@ -236,7 +236,7 @@ describe('DrivingList', () => {
       cy.findByRole('radio', { name: 'Arbeidstrening: 01. januar 2024 - 31. august 2024' }).should('be.checked');
 
       // Should not show error message when loading mellomlagret driving list without dates. Only show the activity alert and alert for parking
-      cy.get('.navds-alert')
+      cy.get('.aksel-alert')
         .should('have.length', 2)
         .eq(0)
         .within(() => {
@@ -253,7 +253,7 @@ describe('DrivingList', () => {
 
       cy.findByRole('radio', { name: 'Arbeidstrening: 01. januar 2099 - 31. august 2099' }).check();
 
-      cy.get('.navds-alert')
+      cy.get('.aksel-alert')
         .should('have.length', 3)
         .eq(2)
         .within(() => {
@@ -297,7 +297,7 @@ describe('DrivingList', () => {
       cy.findAllByRole('textbox', { name: PARKING_EXPENSES_LABEL }).eq(1).should('exist').type('100');
       cy.findAllByRole('textbox', { name: PARKING_EXPENSES_LABEL }).eq(2).should('exist').type('100');
 
-      cy.get('.navds-alert')
+      cy.get('.aksel-alert')
         .eq(2)
         .within(() => {
           cy.findByRole('heading', { name: TEXTS.statiske.drivingList.expensesTooHighHeader }).should('exist');
@@ -312,7 +312,7 @@ describe('DrivingList', () => {
       cy.wait('@getActivities');
       cy.wait('@createMellomlagring');
 
-      cy.get('.navds-alert').within(() => {
+      cy.get('.aksel-alert').within(() => {
         cy.findByText(TEXTS.statiske.drivingList.noVedtakHeading).should('exist');
         cy.findByText(TEXTS.statiske.drivingList.noVedtak).should('exist');
       });
@@ -331,7 +331,7 @@ describe('DrivingList', () => {
       cy.defaultWaits();
       cy.wait('@getMellomlagring');
 
-      cy.get('.navds-alert').should('exist');
+      cy.get('.aksel-alert').should('exist');
 
       cy.findAllByRole('link', { name: 'Fortsett utfylling' }).should('have.length', 2);
       cy.findByRole('link', { name: 'Send til Nav' }).click();

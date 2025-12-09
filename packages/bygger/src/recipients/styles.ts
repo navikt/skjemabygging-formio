@@ -4,7 +4,7 @@ const useRecipientStyles = makeStyles({
   editRow: {
     border: 0,
     verticalAlign: 'baseline',
-    '& .navds-form-field': {
+    '& .aksel-form-field': {
       paddingTop: '0.5rem',
     },
   },

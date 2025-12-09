@@ -11,7 +11,7 @@ const sidebarLayout = {
     '&--left': {
       textAlign: 'left',
     },
-    '& .navds-button': {
+    '& .aksel-button': {
       maxWidth: '12rem',
     },
   },

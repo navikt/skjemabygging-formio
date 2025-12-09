@@ -1,9 +1,9 @@
-<div class="navds-tabs">
-  <div class="navds-tabs__tablist-wrapper">
-    <div role="tablist" class="navds-tabs__tablist" tabindex="-1">
+<div class="aksel-tabs">
+  <div class="aksel-tabs__tablist-wrapper">
+    <div role="tablist" class="aksel-tabs__tablist" tabindex="-1">
       {% ctx.component.components.forEach(function(tab, index) { %}
       <button
-        class="navds-tabs__tab navds-tabs__tab--medium {{ ctx.currentTab === index ? ' active' : ''}}"
+        class="aksel-tabs__tab aksel-tabs__tab--medium {{ ctx.currentTab === index ? ' active' : ''}}"
         type="button"
         role="tab"
         ref="{{ctx.tabLinkKey}}"
@@ -15,10 +15,11 @@
 {% ctx.component.components.forEach(function(tab, index) { %}
 <div
   role="tabpanel"
-  class="navds-tabs__tabpanel card-body panel panel--border{{ ctx.currentTab === index ? ' active' : ''}}"
+  class="aksel-tabs__tabpanel card-body panel panel--border{{ ctx.currentTab === index ? ' active' : ''}}"
   style="display: {{ctx.currentTab === index ? 'block' : 'none'}}"
   ref="{{ctx.tabKey}}"
 >
   {{ctx.tabComponents[index]}}
 </div>
 {% }) %}
+

@@ -369,7 +369,7 @@ describe('Activities', () => {
       cy.findByRole('checkbox', { name: activityText }).should('not.exist');
       cy.findByRole('checkbox', { name: defaultActivity.text }).should('exist');
 
-      cy.get('.navds-alert--info').contains(TEXTS.statiske.activities.errorContinue);
+      cy.get('.aksel-alert--info').contains(TEXTS.statiske.activities.errorContinue);
     });
   });
 

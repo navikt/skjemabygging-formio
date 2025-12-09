@@ -9,7 +9,7 @@ const list = {
       marginLeft: 0,
     },
   },
-  '& ol, & ul:not(.navds-combobox__list-options):not(.navds-combobox__selected-options)': {
+  '& ol, & ul:not(.aksel-combobox__list-options):not(.aksel-combobox__selected-options)': {
     marginTop: 0,
     paddingLeft: 'var(--a-spacing-5)',
     '& li': {

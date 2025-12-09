@@ -27,8 +27,8 @@ const EnhetSelector = ({ enhetsliste = [], onSelectEnhet, error }: EnhetSelector
 
   const options = enhetsliste.map((enhet) => ({ label: enhet.navn, value: enhet.enhetNr }));
   return (
-    <div className="mb-4 navds-form-field">
-      <label htmlFor="enhetSelect" className="navds-label">
+    <div className="mb-4 aksel-form-field">
+      <label htmlFor="enhetSelect" className="aksel-label">
         {translate(TEXTS.statiske.prepareLetterPage.chooseEntity)}
       </label>
       <ReactSelect
@@ -43,7 +43,7 @@ const EnhetSelector = ({ enhetsliste = [], onSelectEnhet, error }: EnhetSelector
         }}
       />
       {error && (
-        <p id="enhetSelectError" className="navds-error-message navds-label">
+        <p id="enhetSelectError" className="aksel-error-message aksel-label">
           {error}
         </p>
       )}

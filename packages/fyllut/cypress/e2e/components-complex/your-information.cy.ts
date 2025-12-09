@@ -40,7 +40,7 @@ describe('Your information', () => {
           cy.findByRole('textbox', { name: 'Vegadresse' }).should('have.value', 'Testveien 1C');
           cy.findByRole('textbox', { name: 'Postnummer' }).should('have.value', '1234');
           cy.findByRole('textbox', { name: 'Poststed' }).should('have.value', 'Plassen');
-          cy.get('.navds-alert').should('have.length', 1);
+          cy.get('.aksel-alert').should('have.length', 1);
         });
 
         it('Should prefill data for new application on the second page (name)', () => {
@@ -78,7 +78,7 @@ describe('Your information', () => {
               cy.get('dd').eq(1).should('contain.text', 'Nordmann');
             });
 
-          cy.get('.navds-alert').should('have.length', 0);
+          cy.get('.aksel-alert').should('have.length', 0);
         });
       });
 
@@ -136,7 +136,7 @@ describe('Your information', () => {
         cy.findByRole('textbox', { name: 'Vegadresse' }).should('have.value', 'Testveien 1C');
         cy.findByRole('textbox', { name: 'Postnummer' }).should('have.value', '1234');
         cy.findByRole('textbox', { name: 'Poststed' }).should('have.value', 'Plassen');
-        cy.get('.navds-alert').should('have.length', 1);
+        cy.get('.aksel-alert').should('have.length', 1);
 
         // Should not use existing data from innsending-api (database)
         cy.findByRole('textbox', { name: 'Fornavn' }).should('not.have.value', 'John');
@@ -178,7 +178,7 @@ describe('Your information', () => {
       cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(($radio) =>
         cy.findByLabelText('Ja').check(),
       );
-      cy.get('.navds-alert').should('have.length', 1);
+      cy.get('.aksel-alert').should('have.length', 1);
       cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).type('08842748500');
       cy.findByRole('group', { name: 'Bor du i Norge?' }).should('not.exist');
 
@@ -194,7 +194,7 @@ describe('Your information', () => {
       });
 
       it('Does not show alert nor input for ssn', () => {
-        cy.get('.navds-alert').should('have.length', 0);
+        cy.get('.aksel-alert').should('have.length', 0);
         cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).should('not.exist');
       });
 

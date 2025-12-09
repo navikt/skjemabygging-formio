@@ -39,7 +39,7 @@ const StandaloneValidationError = ({ children }: Props) => {
   return (
     <div className={styles.container}>
       <ExclamationmarkTriangleFillIcon aria-hidden fontSize="1rem" className={styles.icon} />
-      <InnerHtmlLong content={children} className={classNames(styles.text, 'navds-label')} />
+      <InnerHtmlLong content={children} className={classNames(styles.text, 'aksel-label')} />
     </div>
   );
 };

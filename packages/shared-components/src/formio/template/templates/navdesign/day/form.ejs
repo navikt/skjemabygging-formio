@@ -11,7 +11,7 @@
   {% if (ctx.dayFirst && ctx.showDay) { %}
   <div>
     {% if (!ctx.component.hideInputLabels) { %}
-    <label for="{{ctx.component.key}}-day" class="navds-label">
+    <label for="{{ctx.component.key}}-day" class="aksel-label">
       {{ctx.t('Dag')}}
       {% if(ctx.component.fields.day.required === false) { %}
         ({{ctx.t("valgfritt")}})
@@ -24,7 +24,7 @@
   {% if (ctx.showMonth) { %}
   <div>
     {% if (!ctx.component.hideInputLabels) { %}
-    <label for="{{ctx.component.key}}-month" class="navds-label">
+    <label for="{{ctx.component.key}}-month" class="aksel-label">
       {{ctx.t('Måned')}}
       {% if(ctx.component.fields.month.required === false) { %}
         ({{ctx.t("valgfritt")}})
@@ -37,7 +37,7 @@
   {% if (!ctx.dayFirst && ctx.showDay) { %}
   <div>
     {% if (!ctx.component.hideInputLabels) { %}
-    <label for="{{ctx.component.key}}-day" class="navds-label">
+    <label for="{{ctx.component.key}}-day" class="aksel-label">
       {{ctx.t('Dag')}}
       {% if(ctx.component.fields.day.required === false) { %}
         ({{ctx.t("valgfritt")}})
@@ -50,7 +50,7 @@
   {% if (ctx.showYear) { %}
   <div>
     {% if (!ctx.component.hideInputLabels) { %}
-    <label for="{{ctx.component.key}}-year" class="navds-label">
+    <label for="{{ctx.component.key}}-year" class="aksel-label">
       {{ctx.t('År')}}
       {% if(ctx.component.fields.year.required === false) { %}
         ({{ctx.t("valgfritt")}})
@@ -62,3 +62,4 @@
   {% } %}
 </div>
 <input name="ctx.data[day]" type="hidden" class="form-control{% if (ctx.component.fieldSize) { %} {{ctx.component.fieldSize}}{% } %}" value="" ref="input">
+

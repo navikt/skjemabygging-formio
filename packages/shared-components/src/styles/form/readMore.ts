@@ -1,6 +1,6 @@
 // TODO: Remove this when we upgrade to @navikt packages 3.x. Just keep margin and maybe color.
 const readMore = {
-  '& .navds-read-more': {
+  '& .aksel-read-more': {
     margin: 'var(--a-spacing-2) 0',
     color: 'var(--a-gray-700)',
     '&__content': {
@@ -9,17 +9,17 @@ const readMore = {
       },
     },
     '&__button:hover': {
-      '& > .navds-read-more__expand-icon': {
+      '& > .aksel-read-more__expand-icon': {
         transform: 'translateY(1px)',
         display: 'inherit',
       },
     },
     '&--open': {
-      '& > .navds-read-more__button': {
-        '& > .navds-read-more__expand-icon': {
+      '& > .aksel-read-more__button': {
+        '& > .aksel-read-more__expand-icon': {
           transform: 'rotate(-180deg)',
         },
-        '&:hover > .navds-read-more__expand-icon': {
+        '&:hover > .aksel-read-more__expand-icon': {
           transform: 'translateY(-1px) rotate(-180deg)',
         },
       },

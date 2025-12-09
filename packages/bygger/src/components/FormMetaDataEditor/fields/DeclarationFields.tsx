@@ -59,7 +59,7 @@ const DeclarationFields = ({ onChange, diff, form, errors }: DeclarationFieldsPr
 
         {form.properties.declarationType === DeclarationType.default && (
           <div>
-            <label className="navds-label">Standard erklæringstekst</label>
+            <label className="aksel-label">Standard erklæringstekst</label>
             <div>{TEXTS.statiske.declaration.defaultText}</div>
           </div>
         )}

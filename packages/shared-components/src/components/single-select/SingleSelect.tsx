@@ -53,7 +53,7 @@ const SingleSelect = forwardRef<HTMLFieldSetElement, Props>(
         </RadioGroup>
       );
     } else {
-      return <div className="navds-label">{title}</div>;
+      return <div className="aksel-label">{title}</div>;
     }
   },
 );

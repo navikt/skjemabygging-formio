@@ -34,7 +34,7 @@ describe('Submission method', () => {
         cy.findByRole('textbox', { name: 'Fornavn' }).type('Test');
         cy.findByRole('textbox', { name: 'Etternavn' }).should('exist');
         cy.findByRole('textbox', { name: 'Etternavn' }).type('Testesen');
-        cy.get('.navds-radio-group')
+        cy.get('.aksel-radio-group')
           .first()
           .should('exist')
           .within(() => cy.findByLabelText('Ja').should('exist').check({ force: true }));

@@ -57,7 +57,7 @@ describe('Translations', () => {
       cy.findByText('Mr').should('exist').click();
       cy.findByRole('textbox', { name: 'First name' }).should('exist').type('Cyp');
       cy.findByRole('textbox', { name: 'Last name' }).should('exist').type('Ress');
-      cy.get('.navds-radio-group')
+      cy.get('.aksel-radio-group')
         .first()
         .should('exist')
         .within(($radio) => cy.findByLabelText('Yes').should('exist').check({ force: true }));
@@ -70,7 +70,7 @@ describe('Translations', () => {
 
       cy.findByRole('button', { name: 'English' }).should('exist');
       cy.findByRole('heading', { name: 'Attachments' }).should('exist');
-      cy.get('.navds-radio-group')
+      cy.get('.aksel-radio-group')
         .first()
         .should('exist')
         .within(($radio) =>

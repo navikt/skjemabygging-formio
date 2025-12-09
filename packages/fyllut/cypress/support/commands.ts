@@ -44,7 +44,7 @@ Cypress.Commands.add('findByRoleWhenAttached', (role, options, wait: number = 10
 });
 
 Cypress.Commands.add('shouldBeVisible', { prevSubject: true }, (subject) => {
-  return cy.wrap(subject).should('be.visible').should('not.have.class', 'navds-sr-only');
+  return cy.wrap(subject).should('be.visible').should('not.have.class', 'aksel-sr-only');
 });
 
 Cypress.Commands.add('clickNextStep', () => {
