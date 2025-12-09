@@ -207,7 +207,7 @@ describe('Your information', () => {
         cy.findByRole('textbox', { name: /^Bygning/ }).type('a');
         cy.findByRole('textbox', { name: /^Postnummer/ }).type('1234');
         cy.findByRole('textbox', { name: /^By \/ stedsnavn/ }).type('Plassen');
-        cy.findByRole('textbox', { name: /^Region/ }).type('��st');
+        cy.findByRole('textbox', { name: /^Region/ }).type('Øst');
         cy.findByRole('combobox', { name: /^Land/ }).type('Sverige{downArrow}{enter}');
         cy.findByRole('textbox', { name: /^Gyldig fra/ }).type(
           DateTime.now().minus({ days: 300 }).toFormat(dateUtils.inputFormat),
