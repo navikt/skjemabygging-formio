@@ -134,10 +134,10 @@ describe('Month picker', () => {
       cy.wait('@createMellomlagring');
 
       cy.findByRole('textbox', { name: 'Required monthPicker' }).should('exist');
-      cy.findByRole('textbox', { name: 'Required monthPicker' }).type('01.2022{esc}');
+      cy.findByRole('textbox', { name: 'Required monthPicker' }).type('01.2022');
 
       cy.findByRole('textbox', { name: 'Relative monthPicker (valgfritt)' }).should('exist');
-      cy.findByRole('textbox', { name: 'Relative monthPicker (valgfritt)' }).type('01.2020{esc}');
+      cy.findByRole('textbox', { name: 'Relative monthPicker (valgfritt)' }).type('01.2020');
 
       cy.clickSaveAndContinue();
 
