@@ -275,7 +275,7 @@ describe('Conditional rendering', () => {
     });
   });
 
-  describe('Test on row. in custom conditional', () => {
+  describe('Test on row in custom conditional', () => {
     beforeEach(() => {
       cy.defaultIntercepts();
       cy.visit('/fyllut/conditionalrow?sub=paper');
@@ -289,8 +289,8 @@ describe('Conditional rendering', () => {
       cy.findByRole('textbox', { name: 'Tekstfelt skjult når avkrysset' }).should('exist');
       cy.findByRole('textbox', { name: 'Tekstfelt skjult når avkrysset' }).type('abc');
       cy.findByRole('checkbox', { name: 'Vis tekstfelt 1' }).click();
+
       cy.findByRole('textbox', { name: 'Tekstfelt skjult når avkrysset' }).should('not.exist');
-      cy.findByRole('textbox', { name: 'Tekstfelt 1' }).should('exist');
       cy.findByRole('textbox', { name: 'Tekstfelt 1' }).type('abc');
 
       cy.findByRole('link', { name: 'Oppsummering' }).click();
@@ -301,8 +301,9 @@ describe('Conditional rendering', () => {
         // This should be visible.
         //cy.get('dt').eq(1).should('contain.text', 'Tekstfelt 1');
         //cy.get('dd').eq(1).should('contain.text', 'abc');
+
+        cy.contains('Tekstfelt skjult når avkrysset').should('not.exist');
       });
-      cy.contains('Tekstfelt skjult når avkrysset').should('not.exist');
     });
 
     it('display fields with row in conditional in container', () => {
@@ -386,6 +387,129 @@ describe('Conditional rendering', () => {
             //cy.get('dd').eq(0).should('contain.text', 'abc');
             //cy.get('dt').eq(2).should('contain.text', 'Vis tekstfelt 4-1 i skjemagruppe');
             //cy.get('dd').eq(2).should('contain.text', 'cba');
+          });
+      });
+    });
+  });
+
+  describe('Test on simple conditional', () => {
+    beforeEach(() => {
+      cy.defaultIntercepts();
+      cy.visit('/fyllut/simpleconditional?sub=paper');
+      cy.defaultWaits();
+      cy.clickShowAllSteps();
+    });
+
+    it('display fields with row in conditional in panel', () => {
+      cy.findByRole('link', { name: 'Panel 1' }).click();
+      cy.findByRole('textbox', { name: 'Tekstfelt 1' }).should('not.exist');
+      cy.findByRole('textbox', { name: 'Tekstfelt skjult når avkrysset' }).should('exist');
+      cy.findByRole('textbox', { name: 'Tekstfelt skjult når avkrysset' }).type('abc');
+      cy.findByRole('checkbox', { name: 'Vis tekstfelt 1' }).click();
+      cy.findByRole('textbox', { name: 'Tekstfelt skjult når avkrysset' }).should('not.exist');
+      cy.findByRole('textbox', { name: 'Tekstfelt 1' }).type('abc');
+
+      cy.findByRole('link', { name: 'Oppsummering' }).click();
+      cy.withinSummaryGroup('Panel 1', () => {
+        cy.get('dt').should('have.length', 2);
+        cy.get('dt').eq(0).should('contain.text', 'Vis tekstfelt 1');
+        cy.get('dd').eq(0).should('contain.text', 'Ja');
+        cy.get('dt').eq(1).should('contain.text', 'Tekstfelt 1');
+        cy.get('dd').eq(1).should('contain.text', 'abc');
+
+        cy.contains('Tekstfelt skjult når avkrysset').should('not.exist');
+      });
+    });
+
+    it('display fields with row in conditional in container', () => {
+      cy.findByRole('link', { name: 'Panel 2 med beholder' }).click();
+      cy.findByRole('textbox', { name: 'Tekstfelt 2' }).should('not.exist');
+      cy.findByRole('textbox', { name: 'Tekstfelt 2-1 i beholder' }).should('not.exist');
+
+      cy.findByRole('checkbox', { name: 'Vis tekstfelt 2' }).click();
+      cy.findByRole('checkbox', { name: 'Vis tekstfelt 2-1 i beholder' }).click();
+
+      cy.findByRole('textbox', { name: 'Tekstfelt 2 i beholder' }).type('abc1');
+      cy.findByRole('textbox', { name: 'Tekstfelt 2-1 i beholder' }).type('abc2');
+      cy.findByRole('textbox', { name: 'Tekstfelt 2-1 i beholder, med nivå' }).type('abc3');
+
+      cy.findByRole('link', { name: 'Oppsummering' }).click();
+      cy.withinSummaryGroup('Panel 2 med beholder', () => {
+        cy.get('dt').should('have.length', 5);
+        cy.get('dt').eq(0).should('contain.text', 'Vis tekstfelt 2');
+        cy.get('dd').eq(0).should('contain.text', 'Ja');
+        cy.get('dt').eq(1).should('contain.text', 'Tekstfelt 2 i beholder');
+        cy.get('dd').eq(1).should('contain.text', 'abc1');
+        cy.get('dt').eq(2).should('contain.text', 'Vis tekstfelt 2-1 i beholder');
+        cy.get('dd').eq(2).should('contain.text', 'Ja');
+        cy.get('dt').eq(3).should('contain.text', 'Tekstfelt 2-1 i beholder');
+        cy.get('dd').eq(3).should('contain.text', 'abc2');
+        cy.get('dt').eq(4).should('contain.text', 'Tekstfelt 2-1 i beholder, med nivå');
+        cy.get('dd').eq(4).should('contain.text', 'abc3');
+      });
+    });
+
+    it('display fields with row in conditional in data grid', () => {
+      cy.findByRole('link', { name: 'Panel 3 med repeterende data' }).click();
+      cy.findByRole('textbox', { name: 'Tekstfelt 3' }).should('not.exist');
+      cy.findByRole('textbox', { name: 'Tekstfelt 3-1 i repeterende' }).should('not.exist');
+
+      cy.findByRole('checkbox', { name: 'Vis tekstfelt 3' }).click();
+      cy.findByRole('checkbox', { name: 'Vis tekstfelt 3-1 i repeterende' }).click();
+
+      cy.findByRole('textbox', { name: 'Tekstfelt 3 i repeterende' }).type('abc1');
+      cy.findByRole('textbox', { name: 'Tekstfelt 3-1 i repeterende' }).type('abc2');
+      cy.findByRole('textbox', { name: 'Tekstfelt 3-1 i repeterende, med nivå' }).type('abc3');
+
+      cy.findByRole('heading', { name: 'Panel 3 med repeterende data' }).should('exist');
+      cy.findByRole('link', { name: 'Oppsummering' }).click();
+      cy.withinSummaryGroup('Panel 3 med repeterende data', () => {
+        cy.get('dt').eq(0).should('contain.text', 'Vis tekstfelt 3');
+        cy.get('dd').eq(0).should('contain.text', 'Ja');
+        cy.get('dt').eq(1).should('contain.text', 'Repeterende');
+        cy.get('dd')
+          .eq(1)
+          .within(() => {
+            cy.get('dt').should('have.length', 4);
+            cy.get('dt').eq(0).should('contain.text', 'Tekstfelt 3 i repeterende');
+            cy.get('dd').eq(0).should('contain.text', 'abc1');
+            cy.get('dt').eq(1).should('contain.text', 'Vis tekstfelt 3-1 i repeterende');
+            cy.get('dd').eq(1).should('contain.text', 'Ja');
+            cy.get('dt').eq(2).should('contain.text', 'Tekstfelt 3-1 i repeterende');
+            cy.get('dd').eq(2).should('contain.text', 'abc2');
+            cy.get('dt').eq(3).should('contain.text', 'Tekstfelt 3-1 i repeterende, med nivå');
+            cy.get('dd').eq(3).should('contain.text', 'abc3');
+          });
+      });
+    });
+
+    it('display fields with row in conditional in form group', () => {
+      cy.findByRole('link', { name: 'Panel 4 med skjemagruppe' }).click();
+      cy.findByRole('textbox', { name: 'Tekstfelt 4' }).should('not.exist');
+      cy.findByRole('textbox', { name: 'Tekstfelt 4-1 i skjemagruppe' }).should('not.exist');
+
+      cy.findByRole('checkbox', { name: 'Vis tekstfelt 4' }).click();
+      cy.findByRole('checkbox', { name: 'Vis tekstfelt 4-1 i skjemagruppe' }).click();
+
+      cy.findByRole('textbox', { name: 'Tekstfelt 4 i skjemagruppe' }).type('abc1');
+      cy.findByRole('textbox', { name: 'Tekstfelt 4-1 i skjemagruppe' }).type('abc2');
+
+      cy.findByRole('heading', { name: 'Panel 4 med skjemagruppe' }).should('exist');
+      cy.findByRole('link', { name: 'Oppsummering' }).click();
+      cy.withinSummaryGroup('Panel 4 med skjemagruppe', () => {
+        cy.get('dt').eq(0).should('contain.text', 'Vis tekstfelt 4');
+        cy.get('dd').eq(0).should('contain.text', 'Ja');
+        cy.get('dt').eq(1).should('contain.text', 'Skjemagruppe');
+        cy.get('dd')
+          .eq(1)
+          .within(() => {
+            cy.get('dt').should('have.length', 3);
+            cy.get('dt').eq(0).should('contain.text', 'Tekstfelt 4 i skjemagruppe');
+            cy.get('dd').eq(0).should('contain.text', 'abc1');
+            cy.get('dt').eq(1).should('contain.text', 'Vis tekstfelt 4-1 i skjemagruppe');
+            cy.get('dd').eq(1).should('contain.text', 'Ja');
+            cy.get('dt').eq(2).should('contain.text', 'Tekstfelt 4-1 i skjemagruppe');
+            cy.get('dd').eq(2).should('contain.text', 'abc2');
           });
       });
     });
