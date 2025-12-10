@@ -141,7 +141,7 @@ describe('Month picker', () => {
 
       cy.clickSaveAndContinue();
 
-      cy.submitMellomlagring(async (req) => {
+      cy.submitMellomlagring((req) => {
         const {
           submission: { data },
         } = req.body;
