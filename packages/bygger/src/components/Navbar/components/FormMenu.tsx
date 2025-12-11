@@ -1,4 +1,4 @@
-import { ChatExclamationmarkIcon, CogIcon, EyeIcon, GlobeIcon, PencilIcon } from '@navikt/aksel-icons';
+import { ChatExclamationmarkIcon, CogIcon, EyeIcon, FilePdfIcon, GlobeIcon, PencilIcon } from '@navikt/aksel-icons';
 import useUnsavedChangesModal from '../../../hooks/useUnsavedChangesModal';
 import { MenuLink } from './MenuLink';
 
@@ -15,6 +15,11 @@ export const FormMenu = ({ formPath }) => {
       <MenuLink to={`/forms/${formPath}/intropage`} noIconStyling={false}>
         <ChatExclamationmarkIcon fontSize="1.5rem" role="presentation" />
         <span>Introside</span>
+      </MenuLink>
+
+      <MenuLink to={`/forms/${formPath}/pdf`} noIconStyling={false}>
+        <FilePdfIcon fontSize="1.5rem" role="presentation" />
+        <span>PDF</span>
       </MenuLink>
 
       <MenuLink to={`/forms/${formPath}/edit`} noIconStyling={false}>
