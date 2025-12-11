@@ -49,8 +49,11 @@ const OtherAttachmentUpload = ({ label, attachmentValues, componentId, descripti
   const uploadSelected = !!options.find((option) => option.value === otherAttachment?.value)?.upload;
   const attachmentError = errors[componentId]?.find((error) => error.type === 'VALUE');
 
-  const handleValueChange = (value: Partial<SubmissionAttachmentValue>, attachmentId: string = componentId) => {
-    changeAttachmentValue({ attachmentId, ...defaultAttachmentValues }, { value: value.key }, validator);
+  const handleValueChange = (
+    value: Partial<SubmissionAttachmentValue> | undefined,
+    attachmentId: string = componentId,
+  ) => {
+    changeAttachmentValue({ attachmentId, ...defaultAttachmentValues }, value ? { value: value.key } : {}, validator);
   };
 
   const handleDelete = async (attachmentId: string) => {
