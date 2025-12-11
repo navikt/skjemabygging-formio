@@ -69,6 +69,10 @@ import formYourInformationTranslations from '../data/formio-api/your-information
 import formYourInformation from '../data/formio-api/your-information.json';
 import componentsForm from '../data/forms-api/components/componentsForm';
 import { conditionalRowForm, conditionalRowTranslations } from '../data/forms-api/components/conditionalRowForm';
+import {
+  simpleConditionalForm,
+  simpleConditionalTranslations,
+} from '../data/forms-api/components/simpleConditionalForm';
 import { textFieldForm, textFieldTranslations } from '../data/forms-api/components/textFieldForm';
 import largeForm from '../data/forms-api/largeForm';
 
@@ -135,6 +139,7 @@ const allForms = [
   { form: componentsForm(), translations: formComponentsTranslations },
   { form: largeForm(), translations: undefined },
   { form: conditionalRowForm(), translations: conditionalRowTranslations() },
+  { form: simpleConditionalForm(), translations: simpleConditionalTranslations() },
 ];
 
 const findTestdata = (formPath: string) => allForms.find((testdata) => testdata.form.path === formPath);
