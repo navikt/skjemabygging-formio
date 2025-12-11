@@ -138,7 +138,6 @@ describe('Month picker', () => {
 
       cy.findByRole('textbox', { name: 'Relative monthPicker (valgfritt)' }).should('exist');
       cy.findByRole('textbox', { name: 'Relative monthPicker (valgfritt)' }).type('01.2020');
-
       cy.clickSaveAndContinue();
 
       cy.submitMellomlagring((req) => {
