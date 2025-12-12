@@ -50,10 +50,13 @@ const AttachmentUpload = ({
   const uploadSelected = !!options.find((option) => option.value === attachment?.value)?.upload;
   const attachmentError = errors[componentId]?.find((error) => error.type === 'VALUE');
 
-  const handleValueChange = (value: Partial<SubmissionAttachmentValue>, attachmentId: string = componentId) => {
+  const handleValueChange = (
+    value: Partial<SubmissionAttachmentValue> | undefined,
+    attachmentId: string = componentId,
+  ) => {
     changeAttachmentValue(
       { attachmentId, navId: componentId, type },
-      { value: value.key, additionalDocumentation: value.additionalDocumentation },
+      value ? { value: value.key, additionalDocumentation: value.additionalDocumentation } : {},
       validator,
     );
   };
