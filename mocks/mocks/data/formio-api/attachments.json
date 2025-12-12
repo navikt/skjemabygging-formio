@@ -74,6 +74,10 @@
           "validate": {
             "required": true
           },
+          "properties": {
+            "vedleggstittel": "Vedlegg med ett valg",
+            "vedleggskode": "V3"
+          },
           "tableView": false,
           "attachmentType": "default",
           "attachmentValues": {

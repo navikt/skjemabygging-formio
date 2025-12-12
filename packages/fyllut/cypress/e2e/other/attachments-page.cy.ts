@@ -1,13 +1,15 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
-function uploadFile(fileName: string) {
-  cy.get('input[type="file"]').selectFile(
-    {
-      contents: Cypress.Buffer.from('file content'),
-      fileName,
-    },
-    { force: true },
-  );
+function uploadFile(fileName: string, index: number = 0) {
+  cy.get('input[type="file"]')
+    .eq(index)
+    .selectFile(
+      {
+        contents: Cypress.Buffer.from('file content'),
+        fileName,
+      },
+      { force: true },
+    );
 }
 
 function goToAttachmentPage(fileName: string) {
@@ -39,15 +41,35 @@ describe('Attachments page', () => {
     goToAttachmentPage('attachment.txt');
   });
 
-  it('should display validation errors when next step button is clicked', () => {
-    cy.findByText('Informasjon om din næringsinntekt fra Norge eller utlandet').should('exist');
-    cy.findByText('Annen dokumentasjon').should('exist');
-    cy.clickNextStep();
-    cy.findAllByText('Du må fylle ut: Informasjon om din næringsinntekt fra Norge eller utlandet').should(
-      'have.length',
-      2,
-    );
-    cy.findAllByText('Du må fylle ut: Annen dokumentasjon').should('be.visible').should('have.length', 2);
+  describe('Validation', () => {
+    it('should display validation errors when next step button is clicked', () => {
+      cy.findByText('Informasjon om din næringsinntekt fra Norge eller utlandet').should('exist');
+      cy.findByText('Annen dokumentasjon').should('exist');
+      cy.clickNextStep();
+      cy.findAllByText('Du må fylle ut: Informasjon om din næringsinntekt fra Norge eller utlandet').should(
+        'have.length',
+        2,
+      );
+      cy.findAllByText('Du må fylle ut: Vedlegg med ett valg').should('have.length', 2);
+      cy.findAllByText('Du må fylle ut: Annen dokumentasjon').should('be.visible').should('have.length', 2);
+    });
+
+    it('validates required attachment with one option', () => {
+      cy.findByRole('group', { name: 'Informasjon om din næringsinntekt fra Norge eller utlandet' }).within(() => {
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.ettersender }).click();
+      });
+      cy.findByRole('group', {
+        name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
+      }).within(() => {
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.nei }).click();
+      });
+      cy.findByRole('group', { name: 'Vedlegg med ett valg' }).within(() => {
+        cy.findByRole('checkbox', { name: TEXTS.statiske.attachment.leggerVedNaa }).check();
+        cy.findByRole('checkbox', { name: TEXTS.statiske.attachment.leggerVedNaa }).uncheck();
+      });
+      cy.clickNextStep();
+      cy.findAllByText('Du må fylle ut: Vedlegg med ett valg').should('have.length', 2);
+    });
   });
 
   it('should render additional description and deadline when existing', () => {
@@ -130,25 +152,31 @@ describe('Attachments page', () => {
       cy.findByRole('group', { name: 'Informasjon om din næringsinntekt fra Norge eller utlandet' }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.ettersender }).click();
       });
+      cy.findByRole('group', { name: 'Vedlegg med ett valg' }).within(() => {
+        cy.findByRole('checkbox', { name: TEXTS.statiske.attachment.leggerVedNaa }).click();
+      });
+      uploadFile('test.txt');
       cy.findByRole('group', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
       }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.leggerVedNaa }).click();
       });
       cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel 1');
-      uploadFile('test.txt');
+      uploadFile('test.txt', 1);
       cy.findByRole('button', { name: TEXTS.statiske.attachment.addNewAttachment }).click();
       cy.findAllByLabelText(TEXTS.statiske.attachment.attachmentTitle).last().type('Vedleggstittel 2');
-      uploadFile('test.txt');
+      uploadFile('test.txt', 1);
       cy.findAllByRole('button', { name: 'Slett filen' }).should('have.length', 2);
-      cy.findAllByRole('button', { name: 'Slett filen' }).first().click();
-      cy.findAllByText('test.txt').should('have.length', 1);
+      cy.findAllByRole('button', { name: 'Slett filen' }).eq(1).click();
+      cy.findAllByText('test.txt').should('have.length', 2);
       cy.findByText('Vedleggstittel 1').should('not.exist');
       cy.findByText('Vedleggstittel 2').should('exist');
       cy.clickNextStep();
+      cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
       cy.findByText('Du må fylle ut: Annen dokumentasjon').should('not.exist');
       // heading 'Vedlegg' is present without 'Opplysninger mangler'
-      cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
+      // TODO: the heading should be level 3, but currently is level 2
+      cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
     });
   });
 
