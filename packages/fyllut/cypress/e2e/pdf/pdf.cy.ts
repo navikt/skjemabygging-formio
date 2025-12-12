@@ -451,7 +451,7 @@ describe('Pdf', () => {
         cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
           cy.findByLabelText('Norsk pass').check(),
         );
-        cy.get('input[type=file]').selectFile('cypress/fixtures/files/id-billy-bruker.jpg', { force: true });
+        cy.uploadFile('id-billy-bruker.jpg');
         cy.clickNextStep();
 
         cy.clickShowAllSteps();
