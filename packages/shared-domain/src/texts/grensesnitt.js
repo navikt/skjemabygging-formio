@@ -13,7 +13,6 @@ export const grensesnitt = {
     summaryPageError: 'Du må fullføre utfyllingen før du kan fortsette',
   },
   mostRecentSave: 'Sist lagret',
-  lockedForm: 'Skjemaet er låst',
   emptySubmissionError: 'Kan ikke fortsette. Innsendingen er tom.',
   languageSelector: {
     ariaLabel: 'Velg språk',

@@ -2,7 +2,7 @@ import { PadlockLockedIcon } from '@navikt/aksel-icons';
 import { Button, VStack } from '@navikt/ds-react';
 
 import { ButtonWithSpinner, useAppConfig, useModal } from '@navikt/skjemadigitalisering-shared-components';
-import { Form, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import SidebarLayout from '../../components/layout/SidebarLayout';
 import UserFeedback from '../../components/UserFeedback';
 import { useForm } from '../../context/old_form/FormContext';
@@ -44,7 +44,7 @@ const FormSettingsSidebar = ({
         <ButtonWithSpinner
           onClick={() => doIfUnlocked(() => validateAndSave(form))}
           size="small"
-          icon={isLockedForm && <PadlockLockedIcon title={TEXTS.grensesnitt.lockedForm} />}
+          icon={isLockedForm && <PadlockLockedIcon title="Skjemaet er låst" />}
         >
           Lagre
         </ButtonWithSpinner>
@@ -53,7 +53,7 @@ const FormSettingsSidebar = ({
           onClick={() => doIfUnlocked(() => setOpenPublishSettingModal(true))}
           type="button"
           size="small"
-          icon={isLockedForm && <PadlockLockedIcon title={TEXTS.grensesnitt.lockedForm} />}
+          icon={isLockedForm && <PadlockLockedIcon title="Skjemaet er låst" />}
         >
           Publiser
         </Button>
@@ -69,7 +69,7 @@ const FormSettingsSidebar = ({
           onClick={() => doIfUnlocked(() => setOpenDeleteFormModal(true))}
           type="button"
           size="small"
-          icon={isLockedForm && <PadlockLockedIcon title={TEXTS.grensesnitt.lockedForm} />}
+          icon={isLockedForm && <PadlockLockedIcon title="Skjemaet er låst" />}
         >
           Slett skjema
         </Button>

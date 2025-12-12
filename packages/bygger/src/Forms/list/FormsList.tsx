@@ -1,7 +1,7 @@
 import { PadlockLockedIcon } from '@navikt/aksel-icons';
 import { Link, SortState, Table } from '@navikt/ds-react';
 import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
-import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import { Link as ReactRouterLink, useNavigate } from 'react-router';
 import FormStatus from '../status/FormStatus';
@@ -100,9 +100,7 @@ const FormsList = ({ forms }: FormsListPageProps) => {
                 </Table.DataCell>
                 <Table.DataCell className={styles.titleColumn}>
                   {form.title}
-                  {form.locked && (
-                    <PadlockLockedIcon title={TEXTS.grensesnitt.lockedForm} className={styles.padlockIcon} />
-                  )}
+                  {form.locked && <PadlockLockedIcon title="Skjemaet er låst" className={styles.padlockIcon} />}
                 </Table.DataCell>
                 <Table.DataCell className={styles.modifiedColumn}>
                   <span title={`${dateUtils.toLocaleDateAndTime(form.modified)}`}>

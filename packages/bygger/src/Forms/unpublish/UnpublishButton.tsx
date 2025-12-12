@@ -1,7 +1,7 @@
 import { PadlockLockedIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { ConfirmationModal, makeStyles, useModal } from '@navikt/skjemadigitalisering-shared-components';
-import { Form, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { useForm } from '../../context/old_form/FormContext';
 import LockedFormModal from '../lockedFormModal/LockedFormModal';
 interface UnpublishButtonProps {
@@ -36,7 +36,7 @@ const UnpublishButton = ({ form }: UnpublishButtonProps) => {
             }}
             type="button"
             size="small"
-            icon={isLockedForm && <PadlockLockedIcon title={TEXTS.grensesnitt.lockedForm} />}
+            icon={isLockedForm && <PadlockLockedIcon title="Skjemaet er låst" />}
           >
             Avpubliser
           </Button>

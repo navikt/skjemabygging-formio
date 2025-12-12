@@ -1,7 +1,7 @@
 import { PadlockLockedIcon } from '@navikt/aksel-icons';
 import { Button, VStack } from '@navikt/ds-react';
 import { ButtonWithSpinner, useModal } from '@navikt/skjemadigitalisering-shared-components';
-import { Form, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import SidebarLayout from '../../components/layout/SidebarLayout';
 import UserFeedback from '../../components/UserFeedback';
 import { useForm } from '../../context/old_form/FormContext';
@@ -33,7 +33,7 @@ const EditFormSidebar = ({ form }: EditFormSidebarProps) => {
             }
           }}
           size="small"
-          icon={isLockedForm && <PadlockLockedIcon title={TEXTS.grensesnitt.lockedForm} />}
+          icon={isLockedForm && <PadlockLockedIcon title="Skjemaet er låst" />}
         >
           Lagre
         </ButtonWithSpinner>
@@ -48,7 +48,7 @@ const EditFormSidebar = ({ form }: EditFormSidebarProps) => {
           }}
           type="button"
           size="small"
-          icon={isLockedForm && <PadlockLockedIcon title={TEXTS.grensesnitt.lockedForm} />}
+          icon={isLockedForm && <PadlockLockedIcon title="Skjemaet er låst" />}
         >
           Publiser
         </Button>
