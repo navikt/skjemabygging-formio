@@ -1,7 +1,7 @@
 import { PadlockLockedIcon } from '@navikt/aksel-icons';
 import { Button, VStack } from '@navikt/ds-react';
 import { ButtonWithSpinner, useModal } from '@navikt/skjemadigitalisering-shared-components';
-import { Form } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import SidebarLayout from '../../../components/layout/SidebarLayout';
 import UserFeedback from '../../../components/UserFeedback';
 import LockedFormModal from '../../lockedFormModal/LockedFormModal';
@@ -37,7 +37,7 @@ export function FormIntroPageSidebar({
         <ButtonWithSpinner
           onClick={() => doIfUnlocked(() => validateAndSave(form))}
           size="small"
-          icon={isLockedForm && <PadlockLockedIcon title="Skjemaet er låst" />}
+          icon={isLockedForm && <PadlockLockedIcon title={TEXTS.grensesnitt.lockedForm} />}
         >
           Lagre
         </ButtonWithSpinner>
@@ -46,7 +46,7 @@ export function FormIntroPageSidebar({
           onClick={() => doIfUnlocked(() => validateAndOpenPublishSettingModal())}
           type="button"
           size="small"
-          icon={isLockedForm && <PadlockLockedIcon title="Skjemaet er låst" />}
+          icon={isLockedForm && <PadlockLockedIcon title={TEXTS.grensesnitt.lockedForm} />}
         >
           Publiser
         </Button>

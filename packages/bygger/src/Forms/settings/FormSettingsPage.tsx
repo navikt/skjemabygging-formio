@@ -1,6 +1,6 @@
 import { Alert, Heading } from '@navikt/ds-react';
 import { useAppConfig, useModal } from '@navikt/skjemadigitalisering-shared-components';
-import { Form } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import { AppLayout } from '../../components/AppLayout';
 import { FormMetadataEditor } from '../../components/FormMetaDataEditor/FormMetadataEditor';
@@ -79,7 +79,7 @@ export function FormSettingsPage({ form }: FormSettingsPageProps) {
         {isLockedForm && (
           <Alert variant="warning" size="medium">
             <Heading spacing size="small" level="2">
-              Skjemaet er låst
+              {TEXTS.grensesnitt.lockedForm}
             </Heading>
             {form?.lock?.reason}
           </Alert>

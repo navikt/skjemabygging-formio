@@ -1,6 +1,7 @@
 import { PadlockLockedIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box, Heading } from '@navikt/ds-react';
 import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import React from 'react';
 
 export interface Props {
@@ -28,7 +29,7 @@ const Title = ({ children, subTitle, lockedForm }: Props) => {
     <Box>
       <Heading level="1" size={subTitle ? 'medium' : 'large'} className={styles.heading}>
         {children}
-        {lockedForm && <PadlockLockedIcon title="Skjemaet er låst" className={styles.padlockIcon} />}
+        {lockedForm && <PadlockLockedIcon title={TEXTS.grensesnitt.lockedForm} className={styles.padlockIcon} />}
       </Heading>
       {subTitle && <BodyShort>{subTitle}</BodyShort>}
     </Box>

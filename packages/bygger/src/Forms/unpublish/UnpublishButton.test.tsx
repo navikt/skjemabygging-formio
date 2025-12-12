@@ -1,4 +1,4 @@
-import { Form } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { fireEvent, render, screen } from '@testing-library/react';
 import UnpublishButton from './UnpublishButton';
 
@@ -20,7 +20,7 @@ describe('UnpublishButton', () => {
   it('is rendered when form is published', async () => {
     renderButton({ status: 'published' } as Form);
     expect(await screen.findByRole('button')).toBeInTheDocument();
-    expect(screen.queryByTitle('Skjemaet er låst')).not.toBeInTheDocument();
+    expect(screen.queryByTitle(TEXTS.grensesnitt.lockedForm)).not.toBeInTheDocument();
   });
 
   it('is rendered when form status is pending', async () => {
@@ -31,7 +31,7 @@ describe('UnpublishButton', () => {
   it('is rendered with lock when form is locked', async () => {
     renderButton({ status: 'published', lock: { reason: 'Derfor' } } as Form);
     expect(await screen.findByRole('button')).toBeInTheDocument();
-    expect(screen.getByTitle('Skjemaet er låst')).toBeInTheDocument();
+    expect(screen.getByTitle(TEXTS.grensesnitt.lockedForm)).toBeInTheDocument();
   });
 
   it('opens modal on click', async () => {
