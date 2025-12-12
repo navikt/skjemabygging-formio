@@ -36,7 +36,7 @@ describe('Attachment', () => {
     cy.findByRole('group', { name: TITLE.attachment })
       .should('exist')
       .within(() => {
-        cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).should('exist').check({ force: true });
+        cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).should('exist').check();
         cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).should('be.checked');
       });
 
@@ -44,13 +44,13 @@ describe('Attachment', () => {
     cy.findByRole('textbox', { name: TITLE.textarea }).type('Dette er en test');
 
     cy.findByRole('group', { name: TITLE.attachmentWithOneOption }).within(() => {
-      cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).check({ force: true });
+      cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).check();
     });
 
     cy.findByRole('group', { name: TITLE.oldAttachment })
       .should('exist')
       .within(() => {
-        cy.findByLabelText(TEXTS.statiske.attachment.levertTidligere).should('exist').check({ force: true });
+        cy.findByLabelText(TEXTS.statiske.attachment.levertTidligere).should('exist').check();
         cy.findByLabelText(TEXTS.statiske.attachment.levertTidligere).should('be.checked');
       });
 
@@ -83,7 +83,7 @@ describe('Attachment', () => {
     cy.findByRole('textbox', { name: TITLE.textarea }).should('exist');
 
     cy.findByRole('group', { name: TITLE.attachment }).within(() => {
-      cy.findByLabelText(TEXTS.statiske.attachment.ettersender).should('exist').check({ force: true });
+      cy.findByLabelText(TEXTS.statiske.attachment.ettersender).should('exist').check();
       cy.findByLabelText(TEXTS.statiske.attachment.ettersender).should('be.checked');
     });
 
@@ -93,7 +93,7 @@ describe('Attachment', () => {
       .should('exist');
 
     cy.findByRole('group', { name: TITLE.attachment }).within(() => {
-      cy.findByLabelText(TEXTS.statiske.attachment.nei).should('exist').check({ force: true });
+      cy.findByLabelText(TEXTS.statiske.attachment.nei).should('exist').check();
       cy.findByLabelText(TEXTS.statiske.attachment.nei).should('be.checked');
     });
 
@@ -137,7 +137,7 @@ describe('Attachment', () => {
 
     // TODO: fix focus for attachment with one option
     cy.findByRole('group', { name: TITLE.attachmentWithOneOption }).within(() => {
-      cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).check({ force: true });
+      cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).check();
     });
 
     cy.get('[data-cy=error-summary]').should('not.exist');
@@ -148,11 +148,11 @@ describe('Attachment', () => {
 
   it('validates attachment with one option after being checked and unchecked', () => {
     cy.findByRole('group', { name: TITLE.attachment }).within(() => {
-      cy.findByLabelText(TEXTS.statiske.attachment.ettersender).check({ force: true });
+      cy.findByLabelText(TEXTS.statiske.attachment.ettersender).check();
     });
 
     cy.findByRole('group', { name: TITLE.oldAttachment }).within(() => {
-      cy.findByLabelText(TEXTS.statiske.attachment.levertTidligere).check({ force: true });
+      cy.findByLabelText(TEXTS.statiske.attachment.levertTidligere).check();
     });
 
     cy.clickNextStep();
@@ -166,7 +166,7 @@ describe('Attachment', () => {
       });
 
     cy.findByRole('group', { name: TITLE.attachmentWithOneOption }).within(() => {
-      cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).check({ force: true });
+      cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).check();
       cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).uncheck();
     });
 
