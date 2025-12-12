@@ -1,3 +1,4 @@
+import { Alert, Heading } from '@navikt/ds-react';
 import { useAppConfig, useModal } from '@navikt/skjemadigitalisering-shared-components';
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
@@ -75,6 +76,14 @@ export function FormSettingsPage({ form }: FormSettingsPageProps) {
           />
         }
       >
+        {isLockedForm && (
+          <Alert variant="warning" size="medium">
+            <Heading spacing size="small" level="2">
+              Skjemaet er låst
+            </Heading>
+            {form?.lock?.reason}
+          </Alert>
+        )}
         <RecipientsProvider>
           <FormMetadataEditor form={form} onChange={changeForm} errors={errors} />
         </RecipientsProvider>
