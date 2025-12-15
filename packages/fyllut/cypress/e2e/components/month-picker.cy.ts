@@ -133,10 +133,10 @@ describe('Month picker', () => {
       cy.defaultWaits();
       cy.wait('@createMellomlagring');
 
-      cy.findByRole('textbox', { name: 'Required monthPicker' });
-
       // Check for length to ensure all month pickers are rendered, before interacting with them.
       cy.findAllByRole('textbox').should('have.length', 5);
+
+      cy.findByRole('textbox', { name: 'Required monthPicker' }).should('exist');
       cy.findByRole('textbox', { name: 'Required monthPicker' }).type('01.2022');
       cy.findByRole('textbox', { name: 'Required monthPicker' }).should('have.value', 'januar 2022');
 
