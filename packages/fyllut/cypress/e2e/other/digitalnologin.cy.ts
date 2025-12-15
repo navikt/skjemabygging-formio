@@ -45,7 +45,7 @@ describe('Digital no login', () => {
       });
       cy.clickNextStep();
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
-      cy.findByRole('heading', { level: 2, name: 'Vedlegg' })
+      cy.findByRole('heading', { level: 3, name: 'Vedlegg' })
         .parent()
         .parent()
         .within(() => {
@@ -63,7 +63,7 @@ describe('Digital no login', () => {
       cy.clickShowAllSteps();
       cy.findByRole('link', { name: 'Vedlegg' }).should('exist');
       cy.findByRole('link', { name: 'Vedlegg' }).click();
-      cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
+      cy.findByRole('heading', { level: 3, name: 'Vedlegg' }).should('exist');
       cy.findByRole('group', {
         name: 'Informasjon om din næringsinntekt fra Norge eller utlandet',
       }).within(() => {
@@ -81,7 +81,7 @@ describe('Digital no login', () => {
       cy.clickNextStep();
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
       cy.findByRole('link', { name: 'Vedlegg' }).click();
-      cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
+      cy.findByRole('heading', { level: 3, name: 'Vedlegg' }).should('exist');
     });
   });
 
