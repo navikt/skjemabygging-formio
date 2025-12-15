@@ -27,7 +27,7 @@ const SummaryIntroPage = (props: Props) => {
   return (
     <FormSummary>
       <FormSummary.Header>
-        <FormSummary.Heading level="2">
+        <FormSummary.Heading level="3">
           {translate(TEXTS.grensesnitt.introPage.title)}
           {!submission?.selfDeclaration && (
             <ValidationExclamationIcon title={translate(TEXTS.statiske.summaryPage.validationIcon)} />

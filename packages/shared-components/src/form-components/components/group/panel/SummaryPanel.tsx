@@ -16,7 +16,7 @@ const SummaryPanel = (props: FormComponentProps) => {
   return (
     <FormSummary>
       <FormSummary.Header>
-        <FormSummary.Heading level="2">
+        <FormSummary.Heading level="3">
           {translate(title)}
           {panelValidation?.hasValidationErrors && (
             <ValidationExclamationIcon title={translate(TEXTS.statiske.summaryPage.validationIcon)} />

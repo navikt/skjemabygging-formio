@@ -136,7 +136,7 @@ describe('SummaryPage', () => {
     cy.findByRole('link', { name: 'Oppsummering' }).click();
     cy.findByRole('heading', { name: 'Oppsummering' }).shouldBeVisible();
 
-    cy.findByRole('heading', { level: 2, name: 'Introduksjon' })
+    cy.findByRole('heading', { level: 3, name: 'Introduksjon' })
       .parent()
       .parent()
       .within(() => {
@@ -144,7 +144,7 @@ describe('SummaryPage', () => {
         cy.contains('Ja').should('exist');
       });
 
-    cy.findByRole('heading', { level: 2, name: 'Dine opplysninger' })
+    cy.findByRole('heading', { level: 3, name: 'Dine opplysninger' })
       .parent()
       .parent()
       .within(() => {
@@ -152,7 +152,7 @@ describe('SummaryPage', () => {
         cy.contains('209059 95783').should('exist');
       });
 
-    cy.findByRole('heading', { level: 2, name: 'Standard felter' })
+    cy.findByRole('heading', { level: 3, name: 'Standard felter' })
       .parent()
       .parent()
       .within(() => {
@@ -182,7 +182,7 @@ describe('SummaryPage', () => {
         cy.contains('Les mer').should('not.exist');
       });
 
-    cy.findByRole('heading', { level: 2, name: 'Person' })
+    cy.findByRole('heading', { level: 3, name: 'Person' })
       .parent()
       .parent()
       .within(() => {
@@ -214,7 +214,7 @@ describe('SummaryPage', () => {
         cy.get('dd').eq(12).should('contain.text', 'Norsk');
       });
 
-    cy.findByRole('heading', { level: 2, name: 'Penger og konto' })
+    cy.findByRole('heading', { level: 3, name: 'Penger og konto' })
       .parent()
       .parent()
       .within(() => {
@@ -232,7 +232,7 @@ describe('SummaryPage', () => {
         cy.get('dd').eq(5).should('contain.text', 'Svensk krone (SEK)');
       });
 
-    cy.findByRole('heading', { level: 2, name: 'Bedrift / organisasjon' })
+    cy.findByRole('heading', { level: 3, name: 'Bedrift / organisasjon' })
       .parent()
       .parent()
       .within(() => {
@@ -242,7 +242,7 @@ describe('SummaryPage', () => {
         cy.get('dd').eq(1).should('contain.text', 'Nav');
       });
 
-    cy.findByRole('heading', { level: 2, name: 'Dato og tid' })
+    cy.findByRole('heading', { level: 3, name: 'Dato og tid' })
       .parent()
       .parent()
       .within(() => {
@@ -256,7 +256,7 @@ describe('SummaryPage', () => {
         cy.get('dd').eq(3).should('contain.text', '2025');
       });
 
-    cy.findByRole('heading', { level: 2, name: 'Gruppering' })
+    cy.findByRole('heading', { level: 3, name: 'Gruppering' })
       .parent()
       .parent()
       .within(() => {
@@ -289,7 +289,7 @@ describe('SummaryPage', () => {
           });
       });
 
-    cy.findByRole('heading', { level: 2, name: 'Andre' })
+    cy.findByRole('heading', { level: 3, name: 'Andre' })
       .parent()
       .parent()
       .within(() => {
@@ -297,7 +297,7 @@ describe('SummaryPage', () => {
         cy.get('dd').eq(0).should('contain.text', 'Ja');
       });
 
-    cy.findByRole('heading', { level: 2, name: 'Vedlegg' })
+    cy.findByRole('heading', { level: 3, name: 'Vedlegg' })
       .parent()
       .parent()
       .within(() => {
@@ -438,7 +438,7 @@ describe('SummaryPage', () => {
     cy.findByRole('link', { name: 'Summary' }).click();
     cy.findByRole('heading', { name: 'Summary' }).shouldBeVisible();
 
-    cy.findByRole('heading', { level: 2, name: 'Introduction' })
+    cy.findByRole('heading', { level: 3, name: 'Introduction' })
       .parent()
       .parent()
       .within(() => {
@@ -446,7 +446,7 @@ describe('SummaryPage', () => {
         cy.contains('Yes').should('exist');
       });
 
-    cy.findByRole('heading', { level: 2, name: 'Your personal information' })
+    cy.findByRole('heading', { level: 3, name: 'Your personal information' })
       .parent()
       .parent()
       .within(() => {
@@ -454,7 +454,7 @@ describe('SummaryPage', () => {
         cy.contains('209059 95783').should('exist');
       });
 
-    cy.findByRole('heading', { level: 2, name: 'Standard fields' })
+    cy.findByRole('heading', { level: 3, name: 'Standard fields' })
       .parent()
       .parent()
       .within(() => {
@@ -484,7 +484,7 @@ describe('SummaryPage', () => {
         cy.contains('Read more').should('not.exist');
       });
 
-    cy.findByRole('heading', { level: 2, name: 'Person' })
+    cy.findByRole('heading', { level: 3, name: 'Person' })
       .parent()
       .parent()
       .within(() => {
@@ -516,7 +516,7 @@ describe('SummaryPage', () => {
         cy.get('dd').eq(12).should('contain.text', 'Norwegian');
       });
 
-    cy.findByRole('heading', { level: 2, name: 'Money and account' })
+    cy.findByRole('heading', { level: 3, name: 'Money and account' })
       .parent()
       .parent()
       .within(() => {
@@ -534,7 +534,7 @@ describe('SummaryPage', () => {
         cy.get('dd').eq(5).should('contain.text', 'Swedish krona (SEK)');
       });
 
-    cy.findByRole('heading', { level: 2, name: 'Company / organization' })
+    cy.findByRole('heading', { level: 3, name: 'Company / organization' })
       .parent()
       .parent()
       .within(() => {
@@ -544,7 +544,7 @@ describe('SummaryPage', () => {
         cy.get('dd').eq(1).should('contain.text', 'Nav');
       });
 
-    cy.findByRole('heading', { level: 2, name: 'Date and time' })
+    cy.findByRole('heading', { level: 3, name: 'Date and time' })
       .parent()
       .parent()
       .within(() => {
@@ -558,7 +558,7 @@ describe('SummaryPage', () => {
         cy.get('dd').eq(3).should('contain.text', '2025');
       });
 
-    cy.findByRole('heading', { level: 2, name: 'Grouping' })
+    cy.findByRole('heading', { level: 3, name: 'Grouping' })
       .parent()
       .parent()
       .within(() => {
@@ -591,7 +591,7 @@ describe('SummaryPage', () => {
           });
       });
 
-    cy.findByRole('heading', { level: 2, name: 'Other' })
+    cy.findByRole('heading', { level: 3, name: 'Other' })
       .parent()
       .parent()
       .within(() => {
@@ -599,7 +599,7 @@ describe('SummaryPage', () => {
         cy.get('dd').eq(0).should('contain.text', 'Yes');
       });
 
-    cy.findByRole('heading', { level: 2, name: 'Attachments' })
+    cy.findByRole('heading', { level: 3, name: 'Attachments' })
       .parent()
       .parent()
       .within(() => {
@@ -633,7 +633,7 @@ describe('SummaryPage', () => {
     cy.findByRole('link', { name: 'Oppsummering' }).click();
     cy.findByRole('heading', { name: 'Oppsummering' }).shouldBeVisible();
 
-    cy.findByRole('heading', { level: 2, name: 'Vedlegg' })
+    cy.findByRole('heading', { level: 3, name: 'Vedlegg' })
       .parent()
       .parent()
       .within(() => {
