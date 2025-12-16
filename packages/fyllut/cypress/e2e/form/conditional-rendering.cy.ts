@@ -299,6 +299,7 @@ describe('Conditional rendering', () => {
         cy.get('dt').eq(0).should('contain.text', 'Vis tekstfelt 1');
         cy.get('dd').eq(0).should('contain.text', 'Ja');
         // This should be visible.
+        // Link to case that fixes the row issue: https://trello.com/c/yLbeY03z
         //cy.get('dt').eq(1).should('contain.text', 'Tekstfelt 1');
         //cy.get('dd').eq(1).should('contain.text', 'abc');
 
