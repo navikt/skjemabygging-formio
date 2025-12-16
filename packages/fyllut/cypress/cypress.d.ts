@@ -46,6 +46,8 @@ declare global {
 
       clickDownloadApplication(): Chainable<JQuery<HTMLElement>>;
 
+      uploadFile(fileTitle?: string, options?: { index?: number; id?: string }): Chainable<JQuery<HTMLElement>>;
+
       verifySendInnRedirect(): Chainable<JQuery<HTMLElement>>;
 
       verifyNavRedirect(): Chainable<JQuery<HTMLElement>>;

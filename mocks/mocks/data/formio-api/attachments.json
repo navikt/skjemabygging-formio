@@ -64,6 +64,50 @@
           "attachmentType": "other",
           "navId": "el6gm88"
         },
+
+        {
+          "key": "vedlegg-med-ett-valg",
+          "type": "attachment",
+          "input": true,
+          "label": "Vedlegg med ett valg",
+          "navId": "emwijff",
+          "validate": {
+            "required": true
+          },
+          "properties": {
+            "vedleggstittel": "Vedlegg med ett valg",
+            "vedleggskode": "V3"
+          },
+          "tableView": false,
+          "attachmentType": "default",
+          "attachmentValues": {
+            "nav": {
+              "enabled": false,
+              "additionalDocumentation": {}
+            },
+            "andre": {
+              "enabled": false,
+              "additionalDocumentation": {}
+            },
+            "harIkke": {
+              "enabled": false,
+              "additionalDocumentation": {}
+            },
+            "ettersender": {
+              "enabled": false
+            },
+            "leggerVedNaa": {
+              "enabled": true,
+              "additionalDocumentation": {
+                "enabled": false
+              }
+            },
+            "levertTidligere": {
+              "enabled": false
+            }
+          }
+        },
+
         {
           "label": "Gammel radio komponent",
           "values": [

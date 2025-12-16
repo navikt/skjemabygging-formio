@@ -21,7 +21,7 @@ describe('Umami', () => {
       cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
         cy.findByLabelText('Norsk pass').check(),
       );
-      cy.get('input[type=file]').selectFile('cypress/fixtures/files/id-billy-bruker.jpg', { force: true });
+      cy.uploadFile('id-billy-bruker.jpg');
       cy.wait('@umamiEvent');
       cy.clickNextStep();
 
@@ -51,29 +51,19 @@ describe('Umami', () => {
         cy.findByLabelText('Jeg legger det ved dette skjemaet').check(),
       );
 
-      cy.get('[data-cy="upload-button-e3xh1d"] input[type=file]').selectFile(
-        'cypress/fixtures/files/another-small-file.txt',
-        { force: true },
-      );
+      cy.uploadFile('another-small-file.txt', { id: 'e3xh1d' });
       cy.wait('@umamiEvent');
 
       cy.findByLabelText('Annen dokumentasjon').within(() => {
         cy.findByLabelText('Jeg legger det ved dette skjemaet').check();
       });
       cy.findByLabelText('Gi vedlegget et beskrivende navn').type('Vitnemål');
-      cy.get('[data-cy="upload-button-en5h1c"] input[type=file]').selectFile('cypress/fixtures/files/small-file.txt', {
-        force: true,
-      });
+      cy.uploadFile('small-file.txt', { id: 'en5h1c' });
       cy.wait('@umamiEvent');
 
       cy.findByRole('button', { name: 'Legg til nytt vedlegg' }).click();
       cy.findByRole('textbox', { name: 'Gi vedlegget et beskrivende navn' }).type('Egenerklæring');
-      cy.get('[data-cy="upload-button-en5h1c-1"] input[type=file]').selectFile(
-        'cypress/fixtures/files/small-file.txt',
-        {
-          force: true,
-        },
-      );
+      cy.uploadFile('small-file.txt', { id: 'en5h1c-1' });
       cy.wait('@umamiEvent');
 
       cy.clickNextStep();
@@ -117,7 +107,7 @@ describe('Umami', () => {
         cy.findByLabelText('Norsk pass').check(),
       );
       cy.clock(Date.now());
-      cy.get('input[type=file]').selectFile('cypress/fixtures/files/id-billy-bruker.jpg', { force: true });
+      cy.uploadFile('id-billy-bruker.jpg');
       cy.wait('@umamiEvent');
       cy.clickNextStep();
 

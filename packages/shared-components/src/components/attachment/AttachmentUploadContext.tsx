@@ -333,9 +333,9 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
         }
         return {
           ...att,
-          value: values?.value ?? att.value,
-          title: values?.title ?? att.title,
-          additionalDocumentation: values?.additionalDocumentation ?? att.additionalDocumentation,
+          value: values?.value,
+          title: values?.title,
+          additionalDocumentation: values?.additionalDocumentation,
         };
       });
       return { ...current, attachments: updatedAttachments } as Submission;
