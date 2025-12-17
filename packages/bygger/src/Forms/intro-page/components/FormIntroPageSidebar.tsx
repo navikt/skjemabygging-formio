@@ -1,5 +1,5 @@
 import { PadlockLockedIcon } from '@navikt/aksel-icons';
-import { Alert, Button, VStack } from '@navikt/ds-react';
+import { Button, ErrorMessage, VStack } from '@navikt/ds-react';
 import { ButtonWithSpinner, useModal } from '@navikt/skjemadigitalisering-shared-components';
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import SidebarLayout from '../../../components/layout/SidebarLayout';
@@ -54,9 +54,9 @@ export function FormIntroPageSidebar({
         </Button>
         <UnpublishButton form={form} />
         {validationErrorMessage && (
-          <Alert variant="error" size="small" role="alert">
+          <ErrorMessage showIcon size="medium">
             {validationErrorMessage}
-          </Alert>
+          </ErrorMessage>
         )}
         <UserFeedback />
         <FormStatusPanel formStatusProperties={form} />

@@ -68,13 +68,12 @@ export default function FormIntroPage({ form }: { form: Form }) {
     const validationErrors = validateIntroPage(form.introPage, getKeyBasedText);
     const hasErrors = validationErrors && Object.keys(validationErrors).length > 0;
 
-    console.log(validationErrors);
-    console.log(hasErrors);
-
     if (hasErrors) {
       setErrors(validationErrors);
       if (form.introPage?.enabled) {
-        setSaveErrorMessage('Vi klarte ikke å lagre fordi noe mangler. Sjekk feltene markert med rødt.');
+        setSaveErrorMessage(
+          'Endringene ble ikke lagret fordi introsiden har valideringsfeil. Rett opp feltene markert med rødt.',
+        );
       }
       if (scrollAnimationFrameRef.current) {
         window.cancelAnimationFrame(scrollAnimationFrameRef.current);
