@@ -123,20 +123,29 @@ describe('Month picker', () => {
   });
 
   describe('Digital', () => {
-    it('should have correct submission values', () => {
+    beforeEach(() => {
       cy.defaultIntercepts();
+      cy.defaultInterceptsMellomlagring();
+    });
+
+    it('should have correct submission values', () => {
       cy.visit('/fyllut/monthpickertest/veiledning?sub=digital');
       cy.defaultWaits();
+      cy.wait('@createMellomlagring');
+
+      // Check for length to ensure all month pickers are rendered, before interacting with them.
+      cy.findAllByRole('textbox').should('have.length', 5);
 
       cy.findByRole('textbox', { name: 'Required monthPicker' }).should('exist');
-      cy.findByRole('textbox', { name: 'Required monthPicker' }).type('01.2022{esc}');
+      cy.findByRole('textbox', { name: 'Required monthPicker' }).type('01.2022');
+      cy.findByRole('textbox', { name: 'Required monthPicker' }).should('have.value', 'januar 2022');
 
       cy.findByRole('textbox', { name: 'Relative monthPicker (valgfritt)' }).should('exist');
-      cy.findByRole('textbox', { name: 'Relative monthPicker (valgfritt)' }).type('01.2020{esc}');
-
+      cy.findByRole('textbox', { name: 'Relative monthPicker (valgfritt)' }).type('01.2020');
+      cy.findByRole('textbox', { name: 'Relative monthPicker (valgfritt)' }).should('have.value', 'januar 2020');
       cy.clickSaveAndContinue();
 
-      cy.submitMellomlagring(async (req) => {
+      cy.submitMellomlagring((req) => {
         const {
           submission: { data },
         } = req.body;
@@ -151,10 +160,9 @@ describe('Month picker', () => {
 
     it('should load mellomlagring', () => {
       cy.mocksUseRouteVariant('get-soknad:success-month-picker');
-
-      cy.defaultIntercepts();
       cy.visit('/fyllut/monthpickertest/veiledning?sub=digital&innsendingsId=62a75280-2a85-4e56-9de2-84faa63a2193');
       cy.defaultWaits();
+      cy.wait('@getMellomlagring');
 
       cy.findByRole('textbox', { name: 'Required monthPicker' }).should('exist');
       cy.findByRole('textbox', { name: 'Required monthPicker' }).should('have.value', 'februar 2022');
