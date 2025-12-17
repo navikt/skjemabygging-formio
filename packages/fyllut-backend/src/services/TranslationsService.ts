@@ -141,19 +141,19 @@ class TranslationsService {
   }
 
   async loadTranslation(formPath: string): Promise<I18nTranslations> {
-    const { useFormsApiStaging, useFormioMockApi, translationDir } = this._config;
+    const { useFormsApiStaging, isMocksEnabled, translationDir } = this._config;
     this.validateFormPath(formPath);
     if (useFormsApiStaging) {
       return this.fetchTranslationsFromFormsApi(formPath);
     }
-    return useFormioMockApi
+    return isMocksEnabled
       ? await this.fetchTranslationsFromFormioApi(formPath)
       : await loadFileFromDirectory(translationDir, formPath);
   }
 
   async loadGlobalTranslations(lang: string): Promise<I18nTranslations> {
-    const { useFormsApiStaging, useFormioMockApi, resourcesDir } = this._config;
-    if (useFormsApiStaging || useFormioMockApi) {
+    const { useFormsApiStaging, isMocksEnabled, resourcesDir } = this._config;
+    if (useFormsApiStaging || isMocksEnabled) {
       return this.fetchGlobalTranslationsFromFormsApi(lang);
     }
     const globalTranslations = await loadFileFromDirectory(resourcesDir, `global-translations-${lang}`);
