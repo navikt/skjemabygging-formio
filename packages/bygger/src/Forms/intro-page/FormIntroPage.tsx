@@ -1,7 +1,7 @@
 import { Heading } from '@navikt/ds-react';
 import { useAppConfig, useModal } from '@navikt/skjemadigitalisering-shared-components';
 import { Form, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { AppLayout } from '../../components/AppLayout';
 import RowLayout from '../../components/layout/RowLayout';
 import Title from '../../components/layout/Title';
@@ -59,19 +59,34 @@ export default function FormIntroPage({ form }: { form: Form }) {
   const refMap = useIntroPageRefs();
   const scrollToFirstError = useScrollToFirstError(refMap);
   const [errors, setErrors] = useState<IntroPageError>();
+  const [saveErrorMessage, setSaveErrorMessage] = useState<string>();
   const [submissionMethod, setSubmissionMethod] = useState<SubmissionMethod>('digital');
   const [openPublishSettingModal, setOpenPublishSettingModal] = useModal();
+  const scrollAnimationFrameRef = useRef<number>();
 
   function handleValidation(onSuccess: () => void) {
-    const errors = validateIntroPage(form.introPage, getKeyBasedText);
-    const isError = errors && Object.keys(errors).length > 0;
+    const validationErrors = validateIntroPage(form.introPage, getKeyBasedText);
+    const hasErrors = validationErrors && Object.keys(validationErrors).length > 0;
 
-    if (isError) {
-      setErrors(errors);
-      scrollToFirstError(errors);
+    console.log(validationErrors);
+    console.log(hasErrors);
+
+    if (hasErrors) {
+      setErrors(validationErrors);
+      if (form.introPage?.enabled) {
+        setSaveErrorMessage('Vi klarte ikke å lagre fordi noe mangler. Sjekk feltene markert med rødt.');
+      }
+      if (scrollAnimationFrameRef.current) {
+        window.cancelAnimationFrame(scrollAnimationFrameRef.current);
+      }
+      scrollAnimationFrameRef.current = window.requestAnimationFrame(() => {
+        scrollToFirstError(validationErrors);
+        scrollAnimationFrameRef.current = undefined;
+      });
     } else {
       onSuccess();
       setErrors(undefined);
+      setSaveErrorMessage(undefined);
     }
   }
 
@@ -86,6 +101,7 @@ export default function FormIntroPage({ form }: { form: Form }) {
 
   async function handleSubmit() {
     if (!form.introPage?.enabled) {
+      setSaveErrorMessage(undefined);
       await handleSave();
       return;
     }
@@ -121,6 +137,7 @@ export default function FormIntroPage({ form }: { form: Form }) {
             validateAndSave={handleSubmit}
             validateAndOpenPublishSettingModal={validateAndOpenPublishSettingModal}
             setOpenPublishSettingModal={setOpenPublishSettingModal}
+            validationErrorMessage={saveErrorMessage}
           />
         }
       >

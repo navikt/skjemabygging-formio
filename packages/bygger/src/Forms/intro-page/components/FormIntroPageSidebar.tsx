@@ -1,5 +1,5 @@
 import { PadlockLockedIcon } from '@navikt/aksel-icons';
-import { Button, VStack } from '@navikt/ds-react';
+import { Alert, Button, VStack } from '@navikt/ds-react';
 import { ButtonWithSpinner, useModal } from '@navikt/skjemadigitalisering-shared-components';
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import SidebarLayout from '../../../components/layout/SidebarLayout';
@@ -13,12 +13,14 @@ interface FormSettingsPageProps {
   validateAndSave: (form: Form) => Promise<void>;
   setOpenPublishSettingModal: (open: boolean) => void;
   validateAndOpenPublishSettingModal: () => void;
+  validationErrorMessage?: string;
 }
 
 export function FormIntroPageSidebar({
   form,
   validateAndSave,
   validateAndOpenPublishSettingModal,
+  validationErrorMessage,
 }: FormSettingsPageProps) {
   const [lockedFormModal, setLockedFormModal] = useModal();
   const isLockedForm = !!form.lock;
@@ -51,6 +53,11 @@ export function FormIntroPageSidebar({
           Publiser
         </Button>
         <UnpublishButton form={form} />
+        {validationErrorMessage && (
+          <Alert variant="error" size="small" role="alert">
+            {validationErrorMessage}
+          </Alert>
+        )}
         <UserFeedback />
         <FormStatusPanel formStatusProperties={form} />
       </VStack>
