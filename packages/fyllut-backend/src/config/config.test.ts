@@ -28,7 +28,7 @@ describe('config', () => {
       naisClusterName: NaisCluster.DEV,
     } as ConfigType;
     checkConfigConsistency(config, logError, exit as any);
-    expect(logError).toBeCalledWith('Invalid configuration: Formio api service url is required when using FormioApi');
+    expect(logError).toBeCalledWith('Invalid configuration: Formio api service url is required when mocks enabled');
     expect(exit).toBeCalledWith(1);
   });
 
