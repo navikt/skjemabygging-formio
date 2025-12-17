@@ -5,6 +5,13 @@ import { IntroPageError } from './validation';
 export function useScrollToFirstError(refMap: IntroPageRefs) {
   return useCallback(
     (errors: IntroPageError) => {
+      const scrollElementIntoView = (element?: HTMLElement | null) => {
+        if (!element) return false;
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        element.focus?.();
+        return true;
+      };
+
       const flatPaths: string[] = [];
 
       if (errors.introduction) flatPaths.push('introduction');
@@ -32,10 +39,20 @@ export function useScrollToFirstError(refMap: IntroPageRefs) {
       if (errors.selfDeclaration) flatPaths.push('selfDeclaration');
 
       for (const path of flatPaths) {
-        const ref = refMap[path];
-        if (ref?.current) {
-          ref.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          ref.current.focus?.();
+        const bulletPointMatch = path.match(/^(sections\.[^.]+\.bulletPoints)\.(\d+)$/);
+        if (bulletPointMatch) {
+          const [, bulletPointsKey, index] = bulletPointMatch;
+          const bulletPointsRef = refMap[bulletPointsKey as keyof IntroPageRefs];
+          const bulletPointElement = bulletPointsRef?.current?.[Number(index)];
+          if (scrollElementIntoView(bulletPointElement ?? null)) {
+            break;
+          }
+          continue;
+        }
+
+        const ref = refMap[path as keyof IntroPageRefs];
+        const target = ref?.current;
+        if (target && !Array.isArray(target) && scrollElementIntoView(target as HTMLElement)) {
           break;
         }
       }
