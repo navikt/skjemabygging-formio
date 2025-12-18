@@ -3,7 +3,6 @@ import { ConfigType } from '../config/types';
 import TranslationsService from './TranslationsService';
 
 const testConfig: ConfigType = {
-  useFormioMockApi: false,
   translationDir: path.join(__dirname + '/testdata/translations'),
   resourcesDir: path.join(__dirname + '/testdata/resources'),
 } as ConfigType;

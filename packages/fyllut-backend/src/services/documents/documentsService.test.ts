@@ -6,33 +6,8 @@ import { config } from '../../config/config';
 import { mockNext, mockRequest, mockResponse } from '../../test/requestTestHelpers';
 
 import documents from '../../routers/api/documents/documents';
-import * as mottaksadresser from '../../routers/api/mottaksadresser';
 
 const { skjemabyggingProxyUrl, formsApiUrl, familiePdfGeneratorUrl, sendInnConfig } = config;
-
-const addresses = [
-  {
-    _id: '6246de1afd03d2caeeda2825',
-    data: {
-      adresselinje1: 'Nav Arbeid og ytelser lønnsgaranti',
-      adresselinje2: 'Postboks 6683 St. Olavs Plass',
-      adresselinje3: '',
-      postnummer: '0129',
-      poststed: 'Oslo',
-      temakoder: 'FOS,HJE',
-    },
-  },
-  {
-    _id: '61c09f91ec962a0003c65014',
-    data: {
-      adresselinje1: 'Nav Skanning bidrag',
-      adresselinje2: 'PB 6215 Etterstad',
-      adresselinje3: '',
-      postnummer: '0603',
-      poststed: 'Oslo',
-    },
-  },
-];
 
 const formTitle = 'testskjema';
 const filePathForsteside = path.join(process.cwd(), '/src/services/documents/testdata/test-forsteside.pdf');
@@ -41,7 +16,6 @@ const filePathMerged = path.join(process.cwd(), '/src/services/documents/testdat
 
 describe('[endpoint] documents', () => {
   beforeAll(() => {
-    vi.spyOn(mottaksadresser, 'loadMottaksadresser').mockImplementation(async () => addresses);
     vi.spyOn(forstesideUtils, 'genererFoerstesideData').mockImplementation(
       () =>
         ({

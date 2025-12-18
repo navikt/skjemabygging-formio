@@ -8,7 +8,6 @@
   "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {
     "start": "cross-env-shell NODE_ENV=development vite",
-    "start:env:test": "cross-env-shell NODE_ENV=development DOTENV_FILE=test vite",
     "build": "tsc && vite build",
     "preview": "cross-env-shell NODE_ENV=development NO_DECORATOR=true FYLLUT_BUILD_DIR=\"../../fyllut/dist\" PORT=3001 \"node bin/copyDotEnvTestToDist.js && cd dist && node server.mjs\"",
     "check-types": "tsc",
