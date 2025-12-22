@@ -99,6 +99,7 @@ import {
   VedtakBetalingsplan,
 } from './sendinn/activity';
 import { Receipt, ReceiptSummary, ReceiptSummaryAttachment, SubmittedAttachment } from './sendinn/receipt';
+import type { StaticPdf } from './static-pdf';
 import { SubmissionActivity } from './submission/activity';
 import SubmissionAddress from './submission/address';
 import { DrivingListPeriod, DrivingListSubmission, DrivingListValues } from './submission/drivingList';
@@ -287,6 +288,7 @@ export type {
   ScopedTranslationMap,
   SendInnAktivitet,
   SendInnMaalgruppe,
+  StaticPdf,
   Submission,
   SubmissionActivity,
   SubmissionAddress,

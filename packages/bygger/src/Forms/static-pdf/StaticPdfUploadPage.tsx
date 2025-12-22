@@ -3,10 +3,13 @@ import { AppLayout } from '../../components/AppLayout';
 import RowLayout from '../../components/layout/RowLayout';
 import Title from '../../components/layout/Title';
 import TitleRowLayout from '../../components/layout/TitleRowLayout';
+import PublishedStaticPdfs from './PublishedStaticPdfs';
+import { StaticPdfProvider } from './StaticPdfContext';
 
 interface Props {
   form: Form;
 }
+
 const StaticPdfUploadPage = ({ form }: Props) => {
   const {
     path,
@@ -24,7 +27,11 @@ const StaticPdfUploadPage = ({ form }: Props) => {
       <TitleRowLayout>
         <Title subTitle={skjemanummer}>{title}</Title>
       </TitleRowLayout>
-      <RowLayout>New PDF page</RowLayout>
+      <RowLayout>
+        <StaticPdfProvider formPath={path}>
+          <PublishedStaticPdfs />
+        </StaticPdfProvider>
+      </RowLayout>
     </AppLayout>
   );
 };
