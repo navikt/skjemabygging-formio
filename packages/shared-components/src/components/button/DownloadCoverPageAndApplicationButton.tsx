@@ -5,6 +5,7 @@ import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import renderPdfForm from '../../form-components/RenderPdfForm';
+import { http } from '../../index';
 import DownloadPdfButton from './DownloadPdfButton';
 
 interface Props {
@@ -56,38 +57,47 @@ const DownloadCoverPageAndApplicationButton = ({
 
   const actionUrl = `${fyllutBaseURL}/api/documents${type === 'application' ? '/application' : '/cover-page-and-application'}`;
 
+  const getPdfContent = async () => {
+    return await http.post<Blob>(
+      actionUrl,
+      {
+        language: currentLanguage,
+        form: JSON.stringify(form),
+        submission: JSON.stringify(submission),
+        translations: JSON.stringify(
+          currentLanguage !== 'nb-NO' && translationsForNavForm?.[currentLanguage]
+            ? translationsForNavForm[currentLanguage]
+            : {},
+        ),
+        enhetNummer,
+        submissionMethod,
+        pdfFormData: renderPdfForm({
+          activeComponents,
+          activeAttachmentUploadsPanel,
+          submission,
+          form: formioFormsApiUtils.mapNavFormToForm(form),
+          currentLanguage,
+          translate,
+          appConfig,
+          submissionMethod,
+        }),
+      },
+      {
+        Accept: http.MimeType.PDF,
+      },
+    );
+  };
+
   return (
     <>
       <DownloadPdfButton
         fileName={fileName}
         className="mb-4"
-        values={{
-          language: currentLanguage,
-          form: JSON.stringify(form),
-          submission: JSON.stringify(submission),
-          translations: JSON.stringify(
-            currentLanguage !== 'nb-NO' && translationsForNavForm?.[currentLanguage]
-              ? translationsForNavForm[currentLanguage]
-              : {},
-          ),
-          enhetNummer,
-          submissionMethod,
-          pdfFormData: renderPdfForm({
-            activeComponents,
-            activeAttachmentUploadsPanel,
-            submission,
-            form: formioFormsApiUtils.mapNavFormToForm(form),
-            currentLanguage,
-            translate,
-            appConfig,
-            submissionMethod,
-          }),
-        }}
-        actionUrl={actionUrl}
         isValid={isValid}
         onSuccess={onSuccess}
         onError={onError}
         onClick={onClick}
+        pdfContent={getPdfContent}
       >
         {children}
       </DownloadPdfButton>

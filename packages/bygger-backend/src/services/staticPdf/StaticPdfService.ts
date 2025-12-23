@@ -15,6 +15,17 @@ const createStaticPdfService = (formsApiUrl: string) => {
     return response.data;
   };
 
+  const downloadPdf = async (formPath: string, languageCode: string, accessToken: string) => {
+    logger.info(`Download new static pdf ${formPath} for ${languageCode}`);
+
+    const response = await fetchWithErrorHandling(getUrl(formPath, languageCode), {
+      method: 'GET',
+      headers: createHeaders(accessToken, undefined, true),
+    });
+
+    return response.data;
+  };
+
   const uploadPdf = async (file: Express.Multer.File, formPath: string, languageCode: string, accessToken: string) => {
     logger.info(`Upload new static pdf ${formPath} for ${languageCode}`);
     const fileBlob = new Blob([Uint8Array.from(file.buffer)], { type: file.mimetype });
@@ -41,6 +52,7 @@ const createStaticPdfService = (formsApiUrl: string) => {
   return {
     getAll,
     uploadPdf,
+    downloadPdf,
     deletePdf,
   };
 };

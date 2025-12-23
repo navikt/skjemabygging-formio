@@ -3,8 +3,8 @@ import { AppLayout } from '../../components/AppLayout';
 import RowLayout from '../../components/layout/RowLayout';
 import Title from '../../components/layout/Title';
 import TitleRowLayout from '../../components/layout/TitleRowLayout';
-import PublishedStaticPdfs from './PublishedStaticPdfs';
 import { StaticPdfProvider } from './StaticPdfContext';
+import StaticPdfTable from './StaticPdfTable';
 
 interface Props {
   form: Form;
@@ -29,7 +29,7 @@ const StaticPdfUploadPage = ({ form }: Props) => {
       </TitleRowLayout>
       <RowLayout>
         <StaticPdfProvider formPath={path}>
-          <PublishedStaticPdfs />
+          <StaticPdfTable />
         </StaticPdfProvider>
       </RowLayout>
     </AppLayout>

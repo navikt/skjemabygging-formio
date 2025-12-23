@@ -1,30 +1,32 @@
 import { Button } from '@navikt/ds-react';
 import React, { useState } from 'react';
-import { PdfFormData } from '../../form-components/types';
-import { http } from '../../index';
 
 interface Props {
   fileName: string;
-  values: Record<string, string | undefined | PdfFormData>;
-  actionUrl: string;
   isValid?: () => boolean;
   onClick?: () => void;
   onSuccess?: () => void;
   onError?: () => void;
   className?: string;
-  children: React.ReactNode;
+  variant?: 'primary' | 'tertiary-neutral';
+  size?: 'small' | 'medium';
+  children?: React.ReactNode;
+  icon?: React.ReactNode;
+  pdfContent: () => Promise<Blob>;
 }
 
 const DownloadPdfButton = ({
   fileName,
-  values,
-  actionUrl,
   className,
   isValid,
   onClick,
   onSuccess,
   onError,
+  icon,
+  variant,
+  size,
   children,
+  pdfContent,
 }: Props) => {
   const [downloading, setDownloading] = useState<boolean>(false);
 
@@ -39,10 +41,9 @@ const DownloadPdfButton = ({
     setDownloading(true);
 
     try {
-      const response: Blob = await http.post(actionUrl, values, {
-        Accept: http.MimeType.PDF,
-      });
-      const url = window.URL.createObjectURL(response);
+      const content = await pdfContent();
+      const url = URL.createObjectURL(content);
+
       if (!url) {
         throw new Error('Could not create PDF url');
       }
@@ -65,11 +66,12 @@ const DownloadPdfButton = ({
 
   return (
     <Button
+      icon={icon}
       className={className}
-      variant="primary"
+      variant={variant ?? 'primary'}
       onClick={clickDownload}
       loading={downloading}
-      size="medium"
+      size={size ?? 'medium'}
       download
       as="a"
     >

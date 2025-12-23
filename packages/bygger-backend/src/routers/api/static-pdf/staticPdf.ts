@@ -6,8 +6,8 @@ const getAll: RequestHandler = async (req, res, next) => {
   const { formPath } = req.params;
 
   try {
-    const allRecipients = await staticPdfService.getAll(formPath, accessToken);
-    res.json(allRecipients);
+    const allPdfs = await staticPdfService.getAll(formPath, accessToken);
+    res.json(allPdfs);
   } catch (error) {
     next(error);
   }
@@ -23,10 +23,24 @@ const uploadPdf: RequestHandler = async (req, res, next) => {
   }
 
   try {
-    const recipient = await staticPdfService.uploadPdf(file, formPath, languageCode, accessToken);
+    const pdf = await staticPdfService.uploadPdf(file, formPath, languageCode, accessToken);
+    res.status(201).json(pdf);
+  } catch (error) {
+    next(error);
+  }
+};
 
-    console.log(recipient);
-    res.status(201).json(recipient);
+const downloadPdf: RequestHandler = async (req, res, next) => {
+  const accessToken = req.headers.AzureAccessToken as string;
+  const { formPath, languageCode } = req.params;
+
+  try {
+    const pdf = await staticPdfService.downloadPdf(formPath, languageCode, accessToken);
+    if (pdf) {
+      res.status(200).json({ pdfBase64: pdf });
+    } else {
+      res.status(404).json({ message: 'PDF not found' });
+    }
   } catch (error) {
     next(error);
   }
@@ -44,10 +58,11 @@ const deletePdf: RequestHandler = async (req, res, next) => {
   }
 };
 
-const recipients = {
+const staticPdf = {
   getAll,
   uploadPdf,
+  downloadPdf,
   deletePdf,
 };
 
-export default recipients;
+export default staticPdf;

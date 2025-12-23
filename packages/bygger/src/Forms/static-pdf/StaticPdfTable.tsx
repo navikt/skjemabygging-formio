@@ -1,9 +1,26 @@
 import { Table } from '@navikt/ds-react';
+import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { useStaticPdf } from './StaticPdfContext';
 import StaticPdfTableRow from './StaticPdfTableRow';
 
-const PublishedStaticPdfs = () => {
+const useStyles = makeStyles({
+  table: {
+    tableLayout: 'fixed',
+    marginBottom: 'var(--a-spacing-4)',
+  },
+});
+
+const StaticPdfTable = () => {
+  const { loading } = useStaticPdf();
+
+  const styles = useStyles();
+
+  if (loading) {
+    return null;
+  }
+
   return (
-    <Table className="mb-4">
+    <Table className={styles.table}>
       <Table.Header>
         <Table.Row>
           <Table.HeaderCell scope="col" colSpan={4}>
@@ -22,4 +39,4 @@ const PublishedStaticPdfs = () => {
   );
 };
 
-export default PublishedStaticPdfs;
+export default StaticPdfTable;

@@ -7,6 +7,7 @@ interface StaticPdfContextType {
   loading: boolean;
   getFile: (languageCode: string) => StaticPdf | undefined;
   uploadFile: (languageCode: string, file: File) => Promise<StaticPdf>;
+  downloadFile: (languageCode: string) => Promise<Blob>;
   deleteFile: (languageCode: string) => Promise<void>;
 }
 
@@ -20,14 +21,16 @@ const StaticPdfContext = createContext<StaticPdfContextType>({} as StaticPdfCont
 export const StaticPdfProvider = ({ children, formPath }: Props) => {
   const [files, setFiles] = useState<StaticPdf[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const { getAll, uploadPdf, deletePdf } = useFormsApiStaticPdf();
+  const { getAll, uploadPdf, deletePdf, downloadPdf } = useFormsApiStaticPdf();
 
-  const removeFromFiles = useCallback((languageCode: string) => {
-    setFiles((prevFiles) => prevFiles.filter((file) => file.languageCode !== languageCode));
+  const removeFile = useCallback((languageCode: string) => {
+    setFiles((prevFiles) => prevFiles.filter((f) => f.languageCode !== languageCode));
   }, []);
 
-  const addToFiles = useCallback((file: StaticPdf) => {
-    setFiles((prevFiles) => [...prevFiles, file]);
+  const addOrReplaceFile = useCallback((file: StaticPdf) => {
+    setFiles((prevFiles) => {
+      return [...prevFiles.filter((f) => f.languageCode !== file.languageCode), file];
+    });
   }, []);
 
   const getFiles = useCallback(async () => {
@@ -38,8 +41,7 @@ export const StaticPdfProvider = ({ children, formPath }: Props) => {
     } finally {
       setLoading(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [formPath]);
+  }, [formPath, getAll]);
 
   const getFile = (languageCode: string) => {
     if (files) {
@@ -52,14 +54,20 @@ export const StaticPdfProvider = ({ children, formPath }: Props) => {
       setLoading(true);
       try {
         const uploadedFile = await uploadPdf(formPath, languageCode, file);
-        addToFiles(uploadedFile);
+        addOrReplaceFile(uploadedFile);
         return uploadedFile;
       } finally {
         setLoading(false);
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [formPath, addToFiles],
+    [formPath, addOrReplaceFile, uploadPdf],
+  );
+
+  const downloadFile = useCallback(
+    async (languageCode: string) => {
+      return await downloadPdf(formPath, languageCode);
+    },
+    [formPath, downloadPdf],
   );
 
   const deleteFile = useCallback(
@@ -67,13 +75,12 @@ export const StaticPdfProvider = ({ children, formPath }: Props) => {
       setLoading(true);
       try {
         await deletePdf(formPath, languageCode);
-        removeFromFiles(languageCode);
+        removeFile(languageCode);
       } finally {
         setLoading(false);
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [formPath, removeFromFiles],
+    [formPath, removeFile, deletePdf],
   );
 
   useEffect(() => {
@@ -89,6 +96,7 @@ export const StaticPdfProvider = ({ children, formPath }: Props) => {
         loading,
         getFile,
         uploadFile,
+        downloadFile,
         deleteFile,
       }}
     >

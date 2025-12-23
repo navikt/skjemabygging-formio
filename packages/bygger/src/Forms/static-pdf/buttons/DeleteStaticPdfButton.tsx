@@ -1,0 +1,51 @@
+import { TrashIcon } from '@navikt/aksel-icons';
+import { Button } from '@navikt/ds-react';
+import { ConfirmationModal } from '@navikt/skjemadigitalisering-shared-components';
+import { useState } from 'react';
+import { useStaticPdf } from '../StaticPdfContext';
+
+interface Props {
+  language: string;
+  languageCode: string;
+}
+
+const DeleteStaticPdfButton = ({ language, languageCode }: Props) => {
+  const { deleteFile } = useStaticPdf();
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const handleDelete = async () => {
+    setLoading(true);
+    try {
+      await deleteFile(languageCode);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <>
+      <Button
+        icon={<TrashIcon aria-hidden />}
+        size="small"
+        variant="tertiary-neutral"
+        loading={loading}
+        onClick={() => setOpen(true)}
+      />
+      <ConfirmationModal
+        open={open}
+        onConfirm={handleDelete}
+        onClose={() => setOpen(false)}
+        confirmType="danger"
+        texts={{
+          title: `Avpubliser ${language.toLowerCase()} versjon?`,
+          body: 'Hvis du sletter denne filen vil den umiddelbart fjernes fra nav.no',
+          confirm: 'Ja, avpubliser',
+          cancel: 'Nei',
+        }}
+      />
+    </>
+  );
+};
+
+export default DeleteStaticPdfButton;

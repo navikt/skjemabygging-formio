@@ -1,6 +1,6 @@
 import { BodyShort, Button } from '@navikt/ds-react';
 import React, { useState } from 'react';
-import { Modal, useLanguages } from '../../../index';
+import { makeStyles, Modal, useLanguages } from '../../../index';
 
 interface Props {
   open: boolean;
@@ -18,9 +18,16 @@ interface Props {
   children?: React.ReactNode;
 }
 
+const useStyles = makeStyles({
+  modal: {
+    textAlign: 'left',
+  },
+});
+
 const ConfirmationModal = (props: Props) => {
   const { translate } = useLanguages();
   const [isLoading, setIsLoading] = useState(false);
+  const styles = useStyles();
 
   const { onConfirm, exitUrl, confirmType, texts, children, ...modalProps } = props;
 
@@ -50,7 +57,7 @@ const ConfirmationModal = (props: Props) => {
   };
 
   return (
-    <Modal {...modalProps} title={translateIfAvailable(texts.title)}>
+    <Modal {...modalProps} title={translateIfAvailable(texts.title)} className={styles.modal}>
       <Modal.Body>
         {children ? children : texts.body && <BodyShort>{translateIfAvailable(texts.body)}</BodyShort>}
       </Modal.Body>
