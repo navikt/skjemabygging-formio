@@ -1,6 +1,7 @@
 import { BodyShort, Button } from '@navikt/ds-react';
 import React, { useState } from 'react';
-import { makeStyles, Modal, useLanguages } from '../../../index';
+import { Modal, useLanguages } from '../../../index';
+import makeStyles from '../../../util/styles/jss/jss';
 
 interface Props {
   open: boolean;
