@@ -17,11 +17,6 @@ export const FormMenu = ({ formPath }) => {
         <span>Introside</span>
       </MenuLink>
 
-      <MenuLink to={`/forms/${formPath}/pdf`} noIconStyling={false}>
-        <FilePdfIcon fontSize="1.5rem" role="presentation" />
-        <span>PDF</span>
-      </MenuLink>
-
       <MenuLink to={`/forms/${formPath}/edit`} noIconStyling={false}>
         <PencilIcon fontSize="1.5rem" role="presentation" />
         <span>Rediger skjema</span>
@@ -43,6 +38,11 @@ export const FormMenu = ({ formPath }) => {
       >
         <GlobeIcon fontSize="1.5rem" role="presentation" />
         <span>Oversettelser</span>
+      </MenuLink>
+
+      <MenuLink to={`/forms/${formPath}/pdf`} noIconStyling={false}>
+        <FilePdfIcon fontSize="1.5rem" role="presentation" />
+        <span>PDF</span>
       </MenuLink>
 
       {unsavedChangesModalContent}
