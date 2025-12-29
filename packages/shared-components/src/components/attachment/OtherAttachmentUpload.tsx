@@ -18,6 +18,13 @@ import { useAttachmentUpload } from './AttachmentUploadContext';
 import { attachmentValidator } from './attachmentValidator';
 import FileUploadReadMore from './FileUploadReadMore';
 import { useAttachmentStyles } from './styles';
+import {
+  filterAttachmentsByComponentId,
+  findAttachmentByAttachmentId,
+  findAttachmentByComponentId,
+  getDefaultOtherAttachment,
+  getLargestAttachmentIdCounter,
+} from './utils/attachmentUploadUtils';
 
 interface Props {
   label: string;
@@ -36,13 +43,13 @@ const OtherAttachmentUpload = ({ label, attachmentValues, componentId, descripti
 
   const validator = attachmentValidator(translate, ['value']);
   const defaultAttachmentValues: Pick<SubmissionAttachment, 'navId' | 'type'> = { navId: componentId, type: 'other' };
-  const otherAttachment = submissionAttachments.find((attachment) => attachment.attachmentId.startsWith(componentId));
-  const [attachmentCounter, setAttachmentCounter] = useState(0);
+  const otherAttachment = findAttachmentByComponentId(submissionAttachments, componentId);
   const [attachments, setAttachments] = useState(
     otherAttachment
-      ? submissionAttachments.filter((att) => att.attachmentId.startsWith(componentId))
-      : [{ attachmentId: componentId, ...defaultAttachmentValues }],
+      ? filterAttachmentsByComponentId(submissionAttachments, componentId)
+      : [getDefaultOtherAttachment(componentId)],
   );
+  const [attachmentCounter, setAttachmentCounter] = useState(getLargestAttachmentIdCounter(attachments));
 
   const uploadedAttachmentFiles = otherAttachment?.files ?? [];
   const options = attachmentUtils.mapKeysToOptions(attachmentValues, translate);
@@ -50,7 +57,10 @@ const OtherAttachmentUpload = ({ label, attachmentValues, componentId, descripti
   const attachmentError = errors[componentId]?.find((error) => error.type === 'VALUE');
 
   const handleValueChange = (value: Partial<SubmissionAttachmentValue>, attachmentId: string = componentId) => {
-    changeAttachmentValue({ attachmentId, ...defaultAttachmentValues }, { value: value.key }, validator);
+    const currentAttachment = findAttachmentByAttachmentId(attachments, attachmentId);
+    if (currentAttachment) {
+      changeAttachmentValue(currentAttachment, { value: value.key }, validator);
+    }
   };
 
   const handleDelete = async (attachmentId: string) => {
@@ -62,7 +72,7 @@ const OtherAttachmentUpload = ({ label, attachmentValues, componentId, descripti
       setAttachments((current) => {
         if (current.length === 1) {
           const [{ value }] = current;
-          return [{ attachmentId: componentId, value, ...defaultAttachmentValues }];
+          return [getDefaultOtherAttachment(componentId, value)];
         }
         return current.filter((att) => att.attachmentId !== attachmentId);
       });
