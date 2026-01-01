@@ -1074,10 +1074,10 @@
   resolved "https://npm.pkg.github.com/download/@navikt/fnrvalidator/2.1.5/e33cbc5693b14419bbcf4d5daee2ac9eeec532e5#e33cbc5693b14419bbcf4d5daee2ac9eeec532e5"
   integrity sha512-uHzoL3ZTYwrF7OTKaihNf9xHH6S9WnGqz420HX4lEX+yu5367l+dYxI5OIRVT5MKWEDQ4DCVSAuJhoWValv6Fw==
 
-"@navikt/nav-dekoratoren-moduler@^3.5.0":
-  version "3.5.0"
-  resolved "https://npm.pkg.github.com/download/@navikt/nav-dekoratoren-moduler/3.5.0/6df0830237b010f08b3a2a302013fd0edafe77f7#6df0830237b010f08b3a2a302013fd0edafe77f7"
-  integrity sha512-fi0XWVT97MedJJ5BrOjl0Ymj2QthTdbNNzlXbtM/H5o2/kC1yEbpf5odJOoM557x3Z292xcxeG+ISznLn1dckQ==
+"@navikt/nav-dekoratoren-moduler@^3.6.1":
+  version "3.6.1"
+  resolved "https://npm.pkg.github.com/download/@navikt/nav-dekoratoren-moduler/3.6.1/b0dfb47266ce90ffacd1905cd4feb53d8194dbcb#b0dfb47266ce90ffacd1905cd4feb53d8194dbcb"
+  integrity sha512-vfq24tA2eKEsZ9/qRzobRlrKV5NUbSuI9FA60AUhH+BX+61WE/ZsvHhNbFiO9NlXg/yYLmVZCg1uJB5V4QnU7A==
   dependencies:
     js-cookie "^3.0.5"
 
@@ -3153,10 +3153,10 @@ crossvent@1.5.5:
   dependencies:
     custom-event "^1.0.0"
 
-csp-header@^6.2.0:
-  version "6.2.0"
-  resolved "https://registry.yarnpkg.com/csp-header/-/csp-header-6.2.0.tgz#0a29c87ee65b4cbc54339f1f20d41d15bece6cb9"
-  integrity sha512-5r/zQO0nz6MGFOQWYXYGlAn2oH71D0sRpxN/F8wDHhHnHBx0N73VGLvkeXST7t/MrjC97QrsL45qZ3hsDwhTgw==
+csp-header@^6.3.0:
+  version "6.3.0"
+  resolved "https://registry.yarnpkg.com/csp-header/-/csp-header-6.3.0.tgz#af7481114b2f7ea13228b2d12324213d41ceb4ec"
+  integrity sha512-sM0AKmeKcPelKjj4jgOVgBQO4J3tejn8c51lXg+OW9gdGQIV5MIZd/G5wfW0e73JOs/VLlj6UI+DRf4xvsiraw==
 
 css-jss@10.10.0:
   version "10.10.0"
@@ -4966,10 +4966,10 @@ html-minifier-terser@^6.1.0:
     relateurl "^0.2.7"
     terser "^5.10.0"
 
-html-react-parser@^5.2.10:
-  version "5.2.10"
-  resolved "https://registry.yarnpkg.com/html-react-parser/-/html-react-parser-5.2.10.tgz#e149447000b044e2828547fa13b9926761420896"
-  integrity sha512-DjOLloguuDA+Ed7Q7PKhvMQmCl2+Yk/pfvvca68fvn15QFBbL4uHGxXwoXQ4sqS0UyuRH2lJb0S8yZCL3lvehQ==
+html-react-parser@^5.2.11:
+  version "5.2.11"
+  resolved "https://registry.yarnpkg.com/html-react-parser/-/html-react-parser-5.2.11.tgz#7d36b16468e7b5400f183380a1e77a916ca3f465"
+  integrity sha512-WnSQVn/D1UTj64nSz5y8MriL+MrbsZH80Ytr1oqKqs8DGZnphWY1R1pl3t7TY3rpqTSu+FHA21P80lrsmrdNBA==
   dependencies:
     domhandler "5.0.3"
     html-dom-parser "5.1.2"
