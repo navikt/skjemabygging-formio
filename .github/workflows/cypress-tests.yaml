@@ -14,8 +14,8 @@ jobs:
       cypress-folders: ${{ steps.generate-cypress-folders.outputs.cypress-folders }}
     steps:
       - name: 'Checkout'
-        uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+        uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: '22.12.0'
       - name: Generate list of folders containing cypress tests
@@ -36,8 +36,8 @@ jobs:
         folder: ${{ fromJSON(needs.setup-fyllut.outputs.cypress-folders) }}
     steps:
       - name: 'Checkout'
-        uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+        uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: '22.12.0'
           cache: 'yarn'
@@ -65,7 +65,7 @@ jobs:
         env:
           FYLLUT_BACKEND_LOGLEVEL: ${{ runner.debug == '1' && 'debug' || 'error' }}
       - name: Upload screenshots
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: failure()
         with:
           name: cypress-screenshots-${{ strategy.job-index }}
@@ -79,8 +79,8 @@ jobs:
       packages: read
     steps:
       - name: 'Checkout'
-        uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+        uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: '22.12.0'
           cache: 'yarn'
@@ -104,7 +104,7 @@ jobs:
           wait-on-timeout: 120
           command: yarn cypress:bygger
       - name: Upload screenshots
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: failure()
         with:
           name: cypress-bygger-screenshots-${{ strategy.job-index }}
