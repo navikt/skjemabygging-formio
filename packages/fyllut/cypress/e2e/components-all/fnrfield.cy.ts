@@ -75,4 +75,68 @@ describe('FnrField', () => {
       });
     });
   });
+
+  describe('Form', () => {
+    beforeEach(() => {
+      cy.visit('/fyllut/fnrfield?sub=paper');
+      cy.defaultWaits();
+    });
+
+    it('lets you fill out the full form', () => {
+      cy.clickIntroPageConfirmation();
+      cy.clickNextStep();
+
+      cy.findByRole('heading', { name: 'Visning' }).should('exist');
+      cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).type('22859597622');
+      cy.findByRole('textbox', { name: 'Fødselsnummer med beskrivelse' }).type('11918174526');
+      cy.clickNextStep();
+
+      cy.findByRole('heading', { name: 'Validering' }).should('exist');
+      cy.findByRole('textbox', { name: 'Fødselsnummer påkrevd' }).type('01854498645');
+      cy.clickNextStep();
+
+      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+      cy.withinSummaryGroup('Visning', () => {
+        cy.get('dt').eq(0).should('contain.text', 'Fødselsnummer eller d-nummer');
+        cy.get('dd').eq(0).should('contain.text', '228595 97622');
+        cy.get('dt').eq(1).should('contain.text', 'Fødselsnummer med beskrivelse');
+        cy.get('dd').eq(1).should('contain.text', '119181 74526');
+      });
+      cy.withinSummaryGroup('Validering', () => {
+        cy.get('dt').eq(0).should('contain.text', 'Fødselsnummer påkrevd');
+        cy.get('dd').eq(0).should('contain.text', '018544 98645');
+      });
+      cy.clickDownloadInstructions();
+
+      cy.findByRole('heading', { name: 'Skjemaet er ikke sendt ennå' }).should('exist');
+      cy.testDownloadPdf();
+    });
+  });
+
+  describe('Translations', () => {
+    beforeEach(() => {
+      cy.visit('/fyllut/fnrfield/visning?sub=paper&lang=en');
+      cy.defaultWaits();
+    });
+
+    it('should translate label and description', () => {
+      cy.withinComponent('Fødselsnummer med beskrivelse (en)', () => {
+        cy.contains('Beskrivelse (en)').should('exist');
+        cy.findByRole('button', { name: 'mer (en)' }).click();
+        cy.contains('Utvidet beskrivelse (en)').shouldBeVisible();
+      });
+    });
+
+    it('should translate validation messages', () => {
+      cy.clickShowAllSteps();
+      cy.findByRole('link', { name: 'Validering (en)' }).click();
+      const label = 'Fødselsnummer påkrevd (en)';
+      cy.findByRole('textbox', { name: label }).type('18907299827');
+      cy.clickNextStep();
+      cy.findAllByText('This is not a valid Norwegian national identification number or d-number (11 digits)').should(
+        'have.length',
+        2,
+      );
+    });
+  });
 });
