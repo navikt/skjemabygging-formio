@@ -33,7 +33,7 @@ const baseComponent = (props?: BaseComponentType) => {
 
   return {
     id: id ?? generateId(),
-    navId: navId ?? createdKey,
+    navId: navId ?? generateId(),
     key: createdKey,
     label,
     description: description ?? '',
