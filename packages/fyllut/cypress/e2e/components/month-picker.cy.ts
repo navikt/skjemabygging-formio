@@ -3,6 +3,9 @@
  */
 
 import { expect } from 'chai';
+import { Settings } from 'luxon';
+
+const today = new Date('2024-08-01');
 
 describe('Month picker', () => {
   before(() => {
@@ -15,9 +18,12 @@ describe('Month picker', () => {
 
   describe('Paper', () => {
     beforeEach(() => {
+      // Overwrite native global definition of current date
+      cy.clock(today, ['Date']);
+      // We also have to overwrite luxon's definition of current date
+      Settings.now = () => today.valueOf();
       cy.defaultIntercepts();
       cy.visit('/fyllut/monthpickertest/veiledning?sub=paper');
-      cy.clock(new Date('2024-08-01'), ['Date']);
       cy.defaultWaits();
     });
 
