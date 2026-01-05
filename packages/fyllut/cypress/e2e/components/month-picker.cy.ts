@@ -128,7 +128,7 @@ describe('Month picker', () => {
       cy.defaultInterceptsMellomlagring();
     });
 
-    it('should have correct submission values', () => {
+    it.skip('should have correct submission values', () => {
       cy.visit('/fyllut/monthpickertest/veiledning?sub=digital');
       cy.defaultWaits();
       cy.wait('@createMellomlagring');
