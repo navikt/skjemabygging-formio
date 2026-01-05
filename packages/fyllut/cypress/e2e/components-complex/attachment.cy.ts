@@ -135,7 +135,6 @@ describe('Attachment', () => {
         cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).click();
       });
 
-    // TODO: fix focus for attachment with one option
     cy.findByRole('group', { name: TITLE.attachmentWithOneOption }).within(() => {
       cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).check();
     });
