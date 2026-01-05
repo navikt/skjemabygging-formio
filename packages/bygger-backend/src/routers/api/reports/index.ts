@@ -5,7 +5,7 @@ import reports from './reports';
 
 const reportsRouter = express.Router();
 
-reportsRouter.all('*', adHandlers.isAdmin);
+reportsRouter.all('*path', adHandlers.isAdmin);
 reportsRouter.get('/', reports);
 reportsRouter.get('/:reportId', report);
 
