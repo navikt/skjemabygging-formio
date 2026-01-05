@@ -88,7 +88,7 @@ Cypress.Commands.add('clickSendDigital', () => {
 });
 
 Cypress.Commands.add('clickEditAnswer', (title, linkText) => {
-  cy.findByRole('heading', { level: 2, name: title })
+  cy.findByRole('heading', { level: 3, name: title })
     .parent()
     .parent()
     .findByRole('link', { name: linkText ?? /Endre svar|Edit answer/ })

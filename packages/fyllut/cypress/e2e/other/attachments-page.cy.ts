@@ -153,8 +153,7 @@ describe('Attachments page', () => {
       cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
       cy.findByText('Du må fylle ut: Annen dokumentasjon').should('not.exist');
       // heading 'Vedlegg' is present without 'Opplysninger mangler'
-      // TODO: the heading should be level 3, but currently is level 2
-      cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
+      cy.findByRole('heading', { level: 3, name: 'Vedlegg' }).should('exist');
     });
   });
 

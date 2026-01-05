@@ -45,7 +45,7 @@ describe('Digital no login', () => {
       });
       cy.clickNextStep();
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
-      cy.findByRole('heading', { level: 2, name: 'Vedlegg' })
+      cy.findByRole('heading', { level: 3, name: 'Vedlegg' })
         .parent()
         .parent()
         .within(() => {
