@@ -87,7 +87,7 @@ function loadFormioApiServiceUrl() {
 const localDevelopmentConfig: DefaultConfig = {
   applicationName: 'skjemautfylling-local',
   gitVersion: 'local',
-  isMocksEnabled: process.env.MOCKS_ENABLED === 'true',
+  mocksEnabled: process.env.MOCKS_ENABLED === 'true',
   useFormsApiStaging: !process.env.FORMS_SOURCE || process.env.FORMS_SOURCE === 'formsapi-staging',
   formioApiServiceUrl: loadFormioApiServiceUrl() || 'https://formio-api.intern.dev.nav.no/jvcemxwcpghcqjn',
   forstesideUrl: 'https://www.nav.no/soknader/api/forsteside',
@@ -150,7 +150,7 @@ const defaultConfig: DefaultConfig = {
   applicationName: process.env.NAIS_APP_NAME!,
   sentryDsn: process.env.VITE_SENTRY_DSN!,
   gitVersion: process.env.GIT_SHA!,
-  isMocksEnabled: process.env.MOCKS_ENABLED === 'true',
+  mocksEnabled: process.env.MOCKS_ENABLED === 'true',
   useFormsApiStaging: process.env.FORMS_SOURCE === 'formsapi-staging',
   formioApiServiceUrl: loadFormioApiServiceUrl(),
   forstesideUrl: process.env.FOERSTESIDE_URL!,
@@ -209,8 +209,8 @@ const config: ConfigType = {
 };
 
 const checkConfigConsistency = (config: ConfigType, logError = logger.error, exit = process.exit) => {
-  const { isMocksEnabled, useFormsApiStaging, naisClusterName, formioApiServiceUrl, formsApiUrl } = config;
-  if (isMocksEnabled) {
+  const { mocksEnabled, useFormsApiStaging, naisClusterName, formioApiServiceUrl, formsApiUrl } = config;
+  if (mocksEnabled) {
     if (naisClusterName === NaisCluster.PROD || naisClusterName === NaisCluster.DEV) {
       logError(`Invalid configuration: Mocks is not allowed in ${naisClusterName}`);
       exit(1);

@@ -4,7 +4,7 @@ import { logger } from '../logger';
 import { fetchFromApi, loadAllJsonFilesFromDirectory, loadFileFromDirectory } from '../utils/forms';
 import { isValidPath } from '../utils/url';
 
-const { isMocksEnabled, useFormsApiStaging, skjemaDir, formioApiServiceUrl, formsApiUrl } = config;
+const { mocksEnabled, useFormsApiStaging, skjemaDir, formioApiServiceUrl, formsApiUrl } = config;
 
 class FormService {
   async loadForm(formPath: string, select?: string): Promise<NavFormType | undefined> {
@@ -13,7 +13,7 @@ class FormService {
     }
     let form: NavFormType | Form | undefined;
     try {
-      if (isMocksEnabled) {
+      if (mocksEnabled) {
         const forms: any = await fetchFromApi(`${formioApiServiceUrl}/form?type=form&tags=nav-skjema&path=${formPath}`);
         return forms.length > 0 ? forms[0] : undefined;
       } else if (useFormsApiStaging) {
@@ -36,7 +36,7 @@ class FormService {
   }
 
   async loadForms() {
-    if (isMocksEnabled) {
+    if (mocksEnabled) {
       const select = '_id,title,path,modified,properties.skjemanummer,properties.innsending,properties.ettersending';
       return await fetchFromApi(`${formioApiServiceUrl}/form?type=form&tags=nav-skjema&limit=1000&select=${select}`);
     } else if (useFormsApiStaging) {

@@ -24,7 +24,7 @@ describe('config', () => {
 
   test('SkjemaUrl er påkrevd når FormioApi skal brukes i dev', () => {
     const config = {
-      isMocksEnabled: true,
+      mocksEnabled: true,
       naisClusterName: NaisCluster.DEV,
     } as ConfigType;
     checkConfigConsistency(config, logError, exit as any);
@@ -55,7 +55,7 @@ describe('config', () => {
 
   test('Mocks er ikke tillatt i prod-gcp', () => {
     const config = {
-      isMocksEnabled: true,
+      mocksEnabled: true,
       naisClusterName: NaisCluster.PROD,
     } as ConfigType;
     checkConfigConsistency(config, logError, exit as any);
@@ -65,7 +65,7 @@ describe('config', () => {
 
   test('Mocks er ikke tillatt i dev-gcp', () => {
     const config = {
-      isMocksEnabled: true,
+      mocksEnabled: true,
       naisClusterName: NaisCluster.DEV,
     } as ConfigType;
     checkConfigConsistency(config, logError, exit as any);
