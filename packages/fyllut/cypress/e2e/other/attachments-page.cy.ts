@@ -91,6 +91,38 @@ describe('Attachments page', () => {
       cy.findAllByText('test.txt').should('have.length', 2);
     });
 
+    it('lets you add more attachments after visiting summary page', () => {
+      cy.findByRole('group', { name: 'Informasjon om din næringsinntekt fra Norge eller utlandet' }).within(() => {
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.ettersender }).click();
+      });
+      cy.findByRole('group', {
+        name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
+      }).within(() => {
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.leggerVedNaa }).click();
+      });
+      cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel 1');
+      uploadFile('test.txt');
+      cy.findByRole('button', { name: TEXTS.statiske.attachment.addNewAttachment }).click();
+      cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel 2');
+      uploadFile('test.txt');
+      cy.clickNextStep();
+      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+      cy.findByRole('link', { name: 'Vedlegg' }).click();
+      cy.findByRole('button', { name: TEXTS.statiske.attachment.addNewAttachment }).click();
+      cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel 3');
+      uploadFile('test.txt');
+      cy.findByText('Vedleggstittel 1').should('exist');
+      cy.findByText('Vedleggstittel 2').should('exist');
+      cy.findByText('Vedleggstittel 3').should('exist');
+      cy.findAllByText('test.txt').should('have.length', 3);
+      cy.clickNextStep();
+      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+      cy.findByText('Vedleggstittel 1').should('exist');
+      cy.findByText('Vedleggstittel 2').should('exist');
+      cy.findByText('Vedleggstittel 3').should('exist');
+      cy.findAllByText('test.txt').should('have.length', 3);
+    });
+
     it('lets you delete a started attachment', () => {
       cy.findByRole('group', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',

@@ -12,74 +12,77 @@ const conditionalRowForm = () => {
     path: 'conditionalrow',
     components: [
       panel({
-        title: 'Panel',
+        title: 'Panel 1',
         components: [
-          checkbox({
-            label: 'Trykk her',
-            key: 'checkbox1',
-          }),
+          ...parentComponents('1'),
           textField({
             label: 'Tekstfelt 1',
             customConditional: 'show = row.checkbox1',
           }),
+          textField({
+            label: 'Tekstfelt skjult når avkrysset',
+            customConditional: 'show = !row.checkbox1',
+          }),
         ],
       }),
       panel({
-        title: 'Panel med beholder',
+        title: 'Panel 2 med beholder',
         components: [
+          ...parentComponents('2'),
           container({
-            label: 'Datagrid',
-            components: [
-              checkbox({
-                label: 'Trykk her',
-                key: 'checkbox2',
-              }),
-              textField({
-                label: 'Tekstfelt 2',
-                customConditional: 'show = row.checkbox2',
-              }),
-            ],
+            label: 'Beholder',
+            components: [...childComponents('2', 'beholder')],
           }),
         ],
       }),
       panel({
-        title: 'Panel med repeterende data',
+        title: 'Panel 3 med repeterende data',
         components: [
+          ...parentComponents('3'),
           dataGrid({
-            label: 'Repeterende data',
-            components: [
-              checkbox({
-                label: 'Trykk her',
-                key: 'checkbox3',
-              }),
-              textField({
-                label: 'Tekstfelt 3',
-                customConditional: 'show = row.checkbox3',
-              }),
-            ],
+            label: 'Repeterende',
+            components: [...childComponents('3', 'repeterende')],
           }),
         ],
       }),
       panel({
-        title: 'Panel med skjemagruppe',
+        title: 'Panel 4 med skjemagruppe',
         components: [
+          ...parentComponents('4'),
           formGroup({
             label: 'Skjemagruppe',
-            components: [
-              checkbox({
-                label: 'Trykk her',
-                key: 'checkbox4',
-              }),
-              textField({
-                label: 'Tekstfelt 4',
-                customConditional: 'show = row.checkbox4',
-              }),
-            ],
+            components: [...childComponents('4', 'skjemagruppe')],
           }),
         ],
       }),
     ],
   });
+};
+
+const parentComponents = (id: string) => {
+  return [
+    checkbox({
+      label: `Vis tekstfelt ${id}`,
+      key: `checkbox${id}`,
+    }),
+  ];
+};
+
+const childComponents = (id: string, name: string) => {
+  return [
+    textField({
+      label: `Tekstfelt ${id} i ${name}`,
+      customConditional: `show = row.checkbox${id}`,
+    }),
+    checkbox({
+      label: `Vis tekstfelt ${id}-1 i ${name}`,
+      key: `checkbox${id}${name}`,
+    }),
+    textField({
+      label: `Tekstfelt ${id}-1 i ${name}`,
+      customConditional: `show = row.checkbox${id}${name}`,
+    }),
+  ];
 };
 
 const conditionalRowTranslations = () => {
