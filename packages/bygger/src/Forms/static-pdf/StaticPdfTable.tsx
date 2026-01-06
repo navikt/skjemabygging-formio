@@ -23,8 +23,10 @@ const StaticPdfTable = () => {
     <Table className={styles.table}>
       <Table.Header>
         <Table.Row>
-          <Table.HeaderCell scope="col" colSpan={4}>
-            Publiserte filer
+          <Table.HeaderCell scope="col">Språk</Table.HeaderCell>
+          <Table.HeaderCell scope="col">Filnavn</Table.HeaderCell>
+          <Table.HeaderCell scope="col" colSpan={2}>
+            Publisert
           </Table.HeaderCell>
         </Table.Row>
       </Table.Header>
