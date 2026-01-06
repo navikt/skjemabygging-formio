@@ -20,6 +20,7 @@ const UploadStaticPdfButton = ({ languageCode }: Props) => {
     <DownloadPdfButton
       icon={<FilePdfIcon aria-hidden />}
       fileName={fileName}
+      size="small"
       pdfContent={getPdfContent}
       variant="tertiary-neutral"
     />
