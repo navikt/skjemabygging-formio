@@ -22,7 +22,7 @@
     "bcryptjs": "^3.0.2",
     "csv-stringify": "^6.6.0",
     "dotenv": "^17.2.3",
-    "express": "^4.21.2",
+    "express": "^5.2.1",
     "express-correlation-id": "^3.0.1",
     "express-rate-limit": "^8.1.0",
     "http-proxy": "^1.18.1",
