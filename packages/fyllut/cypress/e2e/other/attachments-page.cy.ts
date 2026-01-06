@@ -95,32 +95,36 @@ describe('Attachments page', () => {
       cy.findByRole('group', { name: 'Informasjon om din næringsinntekt fra Norge eller utlandet' }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.ettersender }).click();
       });
+      cy.findByRole('group', { name: 'Vedlegg med ett valg' }).within(() => {
+        cy.findByRole('checkbox', { name: TEXTS.statiske.attachment.leggerVedNaa }).click();
+      });
+      cy.uploadFile('test.txt');
       cy.findByRole('group', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
       }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.leggerVedNaa }).click();
       });
       cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel 1');
-      uploadFile('test.txt');
+      cy.uploadFile('test.txt', { index: 1 });
       cy.findByRole('button', { name: TEXTS.statiske.attachment.addNewAttachment }).click();
       cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel 2');
-      uploadFile('test.txt');
+      cy.uploadFile('test.txt', { index: 1 });
       cy.clickNextStep();
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
       cy.findByRole('link', { name: 'Vedlegg' }).click();
       cy.findByRole('button', { name: TEXTS.statiske.attachment.addNewAttachment }).click();
       cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel 3');
-      uploadFile('test.txt');
+      cy.uploadFile('test.txt', { index: 1 });
       cy.findByText('Vedleggstittel 1').should('exist');
       cy.findByText('Vedleggstittel 2').should('exist');
       cy.findByText('Vedleggstittel 3').should('exist');
-      cy.findAllByText('test.txt').should('have.length', 3);
+      cy.findAllByText('test.txt').should('have.length', 4);
       cy.clickNextStep();
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
       cy.findByText('Vedleggstittel 1').should('exist');
       cy.findByText('Vedleggstittel 2').should('exist');
       cy.findByText('Vedleggstittel 3').should('exist');
-      cy.findAllByText('test.txt').should('have.length', 3);
+      cy.findAllByText('test.txt').should('have.length', 4);
     });
 
     it('lets you delete a started attachment', () => {
