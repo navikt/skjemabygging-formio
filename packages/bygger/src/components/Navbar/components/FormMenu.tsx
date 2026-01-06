@@ -1,9 +1,11 @@
 import { ChatExclamationmarkIcon, CogIcon, EyeIcon, FilePdfIcon, GlobeIcon, PencilIcon } from '@navikt/aksel-icons';
+import { useAuth } from '../../../context/auth-context';
 import useUnsavedChangesModal from '../../../hooks/useUnsavedChangesModal';
 import { MenuLink } from './MenuLink';
 
 export const FormMenu = ({ formPath }) => {
   const { unsavedChangesModalContent, showUnsavedChangesModal } = useUnsavedChangesModal();
+  const { userData } = useAuth();
 
   return (
     <>
@@ -40,10 +42,12 @@ export const FormMenu = ({ formPath }) => {
         <span>Oversettelser</span>
       </MenuLink>
 
-      <MenuLink to={`/forms/${formPath}/pdf`} noIconStyling={false}>
-        <FilePdfIcon fontSize="1.5rem" role="presentation" />
-        <span>PDF</span>
-      </MenuLink>
+      {userData?.isAdmin && (
+        <MenuLink to={`/forms/${formPath}/pdf`} noIconStyling={false}>
+          <FilePdfIcon fontSize="1.5rem" role="presentation" />
+          <span>PDF</span>
+        </MenuLink>
+      )}
 
       {unsavedChangesModalContent}
     </>
