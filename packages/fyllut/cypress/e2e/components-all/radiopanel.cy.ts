@@ -1,15 +1,3 @@
-const optionDisplayValues = {
-  nrkp1: 'NRK P1',
-  nrkp2: 'NRK P2',
-  nrkp3: 'NRK P3',
-  nrkp13: 'NRK P13',
-  ja: 'Ja',
-  nei: 'Nei',
-  kanskje: 'Kanskje',
-  valg1: 'Valg 1',
-  valg2: 'Valg 2',
-};
-
 describe('Radiopanel', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
@@ -87,15 +75,6 @@ describe('Radiopanel', () => {
 
   describe('Form', () => {
     beforeEach(() => {
-      cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
-        const { pdfFormData, submission } = req.body;
-        const submissionData = JSON.parse(submission).data;
-        const pdfFormDataString = JSON.stringify(pdfFormData);
-        Object.values(submissionData).forEach((value) => {
-          expect(pdfFormDataString).to.include(typeof value === 'string' ? optionDisplayValues[value] : value);
-        });
-      }).as('downloadPdf');
-
       cy.visit('/fyllut/radiopanel?sub=paper');
       cy.defaultWaits();
     });
@@ -143,9 +122,7 @@ describe('Radiopanel', () => {
       cy.clickDownloadInstructions();
 
       cy.findByRole('heading', { name: 'Skjemaet er ikke sendt ennå' }).should('exist');
-
-      cy.clickDownloadApplication();
-      cy.wait('@downloadPdf');
+      cy.testDownloadPdf();
     });
   });
 
