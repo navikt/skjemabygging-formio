@@ -24,6 +24,8 @@ export const useSectionsWrapperStyles = (noBorderBottom: boolean) =>
 
 export const usePreviewStyles = makeStyles({
   accordion: {
-    '--__ac-accordion-header-shadow-color': 'var(--a-transparent)',
+    '& .aksel-accordion__header::before, & .aksel-accordion__header::after': {
+      backgroundColor: 'transparent',
+    },
   },
 });

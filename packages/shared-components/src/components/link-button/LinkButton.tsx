@@ -4,7 +4,7 @@ import makeStyles from '../../util/styles/jss/jss';
 
 const useStyles = makeStyles({
   primaryButtonVariant: {
-    color: 'var(--a-white)',
+    color: 'var(--ax-text-contrast)',
     textDecoration: 'none',
   },
   otherButtonVariant: {
