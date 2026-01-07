@@ -16,13 +16,7 @@ describe('Digital no login', () => {
       cy.defaultWaits();
       cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigitalNoLogin }).click();
       cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
-      cy.get('input[type="file"]').selectFile(
-        {
-          contents: Cypress.Buffer.from('file content'),
-          fileName: 'test.txt',
-        },
-        { force: true },
-      );
+      cy.uploadFile();
       cy.clickNextStep();
     });
 
@@ -40,6 +34,10 @@ describe('Digital no login', () => {
       }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.ettersender }).click();
       });
+      cy.findByRole('group', { name: 'Vedlegg med ett valg' }).within(() => {
+        cy.findByRole('checkbox', { name: TEXTS.statiske.attachment.leggerVedNaa }).check();
+      });
+      cy.uploadFile();
       cy.findByRole('group', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
       }).within(() => {
@@ -47,7 +45,7 @@ describe('Digital no login', () => {
       });
       cy.clickNextStep();
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
-      cy.findByRole('heading', { level: 2, name: 'Vedlegg' })
+      cy.findByRole('heading', { level: 3, name: 'Vedlegg' })
         .parent()
         .parent()
         .within(() => {
@@ -71,6 +69,10 @@ describe('Digital no login', () => {
       }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.ettersender }).click();
       });
+      cy.findByRole('group', { name: 'Vedlegg med ett valg' }).within(() => {
+        cy.findByRole('checkbox', { name: TEXTS.statiske.attachment.leggerVedNaa }).check();
+      });
+      cy.uploadFile();
       cy.findByRole('group', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
       }).within(() => {
@@ -107,13 +109,7 @@ describe('Digital no login', () => {
       cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
       cy.findByText(TEXTS.statiske.uploadId.selectFileButton).should('exist').should('be.visible');
 
-      cy.get('input[type="file"]').selectFile(
-        {
-          contents: Cypress.Buffer.from('file content'),
-          fileName: 'test.txt',
-        },
-        { force: true },
-      );
+      cy.uploadFile();
 
       cy.findByText('test.txt').should('exist');
       cy.findByText('0,04 MB').should('exist');
@@ -129,13 +125,7 @@ describe('Digital no login', () => {
       cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
       cy.findByText(TEXTS.statiske.uploadId.selectFileButton).should('exist').should('be.visible');
 
-      cy.get('input[type="file"]').selectFile(
-        {
-          contents: Cypress.Buffer.from('file content'),
-          fileName: 'test.txt',
-        },
-        { force: true },
-      );
+      cy.uploadFile();
 
       cy.findByRole('heading', { name: TEXTS.statiske.error.sessionExpired.title }).should('exist');
       cy.findByRole('link', { name: TEXTS.statiske.error.sessionExpired.buttonText }).should('exist');
@@ -143,13 +133,7 @@ describe('Digital no login', () => {
 
     it('does not navigate to attachment panel', () => {
       cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
-      cy.get('input[type="file"]').selectFile(
-        {
-          contents: Cypress.Buffer.from('file content'),
-          fileName: 'test.txt',
-        },
-        { force: true },
-      );
+      cy.uploadFile();
       cy.clickNextStep();
       cy.clickShowAllSteps();
       cy.findByRole('link', { name: 'Dine opplysninger' }).should('exist');
@@ -170,13 +154,7 @@ describe('Digital no login', () => {
       it('prevents uploading files when the captcha is incorrect', () => {
         cy.get('[data-cy=firstName]').type('Wrong answer', { force: true });
         cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
-        cy.get('input[type="file"]').selectFile(
-          {
-            contents: Cypress.Buffer.from('file content'),
-            fileName: 'test.txt',
-          },
-          { force: true },
-        );
+        cy.uploadFile();
         cy.findAllByText(TEXTS.statiske.uploadFile.uploadFileError).eq(0).should('exist');
       });
     });
@@ -184,13 +162,7 @@ describe('Digital no login', () => {
     describe('Deleting files', () => {
       beforeEach(() => {
         cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
-        cy.get('input[type="file"]').selectFile(
-          {
-            contents: Cypress.Buffer.from('file content'),
-            fileName: 'test.txt',
-          },
-          { force: true },
-        );
+        cy.uploadFile();
       });
 
       it('deletes a file when clicking the delete button', () => {

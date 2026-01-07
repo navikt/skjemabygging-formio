@@ -132,7 +132,11 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
   }
 
   handleChange(value, flags = {}): any {
-    this.updateValue(value, { ...flags, modified: true });
+    if (value === null || value === undefined) {
+      this.deleteValue();
+    } else {
+      this.updateValue(value, { ...flags, modified: true });
+    }
     // The user has updated the value so we should no longer set it to default value
     // This fixes a bug where a redraw from adding a new datagrid row resets input value to "dataForSetting"
     // Consider removing if we are able to render datagrid in react
