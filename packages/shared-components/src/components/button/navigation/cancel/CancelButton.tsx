@@ -8,7 +8,7 @@ const CancelButton = ({ variant = 'tertiary' }: { variant: 'primary' | 'secondar
 
   return (
     <a className={`aksel-button aksel-button--${variant}`} href={exitUrl}>
-      <span aria-live="polite" className="aksel-body-short font-bold">
+      <span aria-live="polite" className="aksel-body-short font-ax-bold">
         {translate(TEXTS.grensesnitt.navigation.exit)}
       </span>
     </a>
