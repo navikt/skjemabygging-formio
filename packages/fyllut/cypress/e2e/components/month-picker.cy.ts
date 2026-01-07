@@ -4,6 +4,8 @@
 
 import { expect } from 'chai';
 
+const today = new Date('2024-08-01');
+
 describe('Month picker', () => {
   before(() => {
     cy.configMocksServer();
@@ -15,9 +17,10 @@ describe('Month picker', () => {
 
   describe('Paper', () => {
     beforeEach(() => {
+      // Overwrite native global definition of current date
+      cy.clock(today, ['Date']);
       cy.defaultIntercepts();
       cy.visit('/fyllut/monthpickertest/veiledning?sub=paper');
-      cy.clock(new Date('2024-08-01'), ['Date']);
       cy.defaultWaits();
     });
 
@@ -124,8 +127,15 @@ describe('Month picker', () => {
 
   describe('Digital', () => {
     beforeEach(() => {
+      // Overwrite native global definition of current date
+      cy.clock(today, ['Date']);
       cy.defaultIntercepts();
       cy.defaultInterceptsMellomlagring();
+    });
+
+    afterEach(() => {
+      // make sure that we go back to localhost:3001 after each test to avoid cross origin issues in beforeEach
+      cy.visit('/fyllut');
     });
 
     it('should have correct submission values', () => {
@@ -133,23 +143,19 @@ describe('Month picker', () => {
       cy.defaultWaits();
       cy.wait('@createMellomlagring');
 
-      cy.findByRole('textbox', { name: 'Required monthPicker' }).as('requiredMonthPicker');
-      cy.get('@requiredMonthPicker').should('exist');
-      cy.get('@requiredMonthPicker').clear();
-      cy.get('@requiredMonthPicker').type('01.2022');
-      cy.get('@requiredMonthPicker').blur();
-      cy.get('@requiredMonthPicker').should('have.value', 'januar 2022');
+      // Check for length to ensure all month pickers are rendered, before interacting with them.
+      cy.findAllByRole('textbox').should('have.length', 5);
 
-      cy.findByRole('textbox', { name: 'Relative monthPicker (valgfritt)' }).as('relativeMonthPicker');
-      cy.get('@relativeMonthPicker').should('exist');
-      cy.get('@relativeMonthPicker').clear();
-      cy.get('@relativeMonthPicker').type('01.2020');
-      cy.get('@relativeMonthPicker').blur();
-      cy.get('@relativeMonthPicker').should('have.value', 'januar 2020');
+      cy.findByRole('textbox', { name: 'Required monthPicker' }).should('exist');
+      cy.findByRole('textbox', { name: 'Required monthPicker' }).type('01.2022');
+      cy.findByRole('textbox', { name: 'Required monthPicker' }).should('have.value', 'januar 2022');
 
+      cy.findByRole('textbox', { name: 'Relative monthPicker (valgfritt)' }).should('exist');
+      cy.findByRole('textbox', { name: 'Relative monthPicker (valgfritt)' }).type('01.2020');
+      cy.findByRole('textbox', { name: 'Relative monthPicker (valgfritt)' }).should('have.value', 'januar 2020');
       cy.clickSaveAndContinue();
 
-      cy.submitMellomlagring(async (req) => {
+      cy.submitMellomlagring((req) => {
         const {
           submission: { data },
         } = req.body;

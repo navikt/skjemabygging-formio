@@ -25,7 +25,7 @@ describe('Digital submission without user login', () => {
       cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
         cy.findByLabelText('Norsk pass').check(),
       );
-      cy.get('input[type=file]').selectFile('cypress/fixtures/files/id-billy-bruker.jpg', { force: true });
+      cy.uploadFile('id-billy-bruker.jpg');
       cy.clickNextStep();
 
       cy.clickIntroPageConfirmation();
@@ -58,27 +58,17 @@ describe('Digital submission without user login', () => {
         cy.findByLabelText('Jeg legger det ved dette skjemaet').check(),
       );
 
-      cy.get('[data-cy="upload-button-e3xh1d"] input[type=file]').selectFile(
-        'cypress/fixtures/files/another-small-file.txt',
-        { force: true },
-      );
+      cy.uploadFile('another-small-file.txt', { id: 'e3xh1d' });
 
       cy.findByLabelText('Annen dokumentasjon').within(() => {
         cy.findByLabelText('Jeg legger det ved dette skjemaet').check();
       });
       cy.findByLabelText('Gi vedlegget et beskrivende navn').type('Vitnemål');
-      cy.get('[data-cy="upload-button-en5h1c"] input[type=file]').selectFile('cypress/fixtures/files/small-file.txt', {
-        force: true,
-      });
+      cy.uploadFile('small-file.txt', { id: 'en5h1c' });
 
       cy.findByRole('button', { name: 'Legg til nytt vedlegg' }).click();
       cy.findByRole('textbox', { name: 'Gi vedlegget et beskrivende navn' }).type('Egenerklæring');
-      cy.get('[data-cy="upload-button-en5h1c-1"] input[type=file]').selectFile(
-        'cypress/fixtures/files/small-file.txt',
-        {
-          force: true,
-        },
-      );
+      cy.uploadFile('small-file.txt', { id: 'en5h1c-1' });
 
       cy.clickNextStep();
 
@@ -100,7 +90,7 @@ describe('Digital submission without user login', () => {
       cy.findByLabelText('Bekreftelse på utdanning').within(() =>
         cy.findByLabelText('Jeg legger det ved dette skjemaet').check(),
       );
-      cy.get('input[type=file]').selectFile('cypress/fixtures/files/another-small-file.txt', { force: true });
+      cy.uploadFile('another-small-file.txt');
       cy.clickNextStep();
 
       cy.clickSendNav();
@@ -139,7 +129,7 @@ describe('Digital submission without user login', () => {
     cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
       cy.findByLabelText('Norsk pass').check(),
     );
-    cy.get('input[type=file]').selectFile('cypress/fixtures/files/id-billy-bruker.jpg', { force: true });
+    cy.uploadFile('id-billy-bruker.jpg');
     cy.findByRole('button', { name: 'Slett filen' }).should('exist');
     cy.go('back');
 
@@ -171,7 +161,8 @@ describe('Digital submission without user login', () => {
       cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
         cy.findByLabelText('Norsk pass').check(),
       );
-      cy.get('input[type=file]').selectFile('cypress/fixtures/files/id-billy-bruker.jpg', { force: true });
+
+      cy.uploadFile('id-billy-bruker.jpg');
       cy.clickNextStep();
       cy.clickIntroPageConfirmation();
       cy.clickNextStep();
@@ -209,7 +200,7 @@ describe('Digital submission without user login', () => {
         cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
           cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).check(),
         );
-        cy.get('input[type=file]').selectFile('cypress/fixtures/files/id-billy-bruker.jpg', { force: true });
+        cy.uploadFile('id-billy-bruker.jpg');
         cy.findByRole('group', {
           name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
         }).within(() => {
@@ -218,20 +209,10 @@ describe('Digital submission without user login', () => {
 
         cy.findByRole('textbox', { name: 'Gi vedlegget et beskrivende navn' }).type('Vitnemål');
         cy.findByRole('button', { name: 'Velg fil' }).click();
-        cy.get('[data-cy="upload-button-en5h1c"] input[type=file]').selectFile(
-          'cypress/fixtures/files/id-billy-bruker.jpg',
-          {
-            force: true,
-          },
-        );
+        cy.uploadFile('id-billy-bruker.jpg', { id: 'en5h1c' });
         cy.findByRole('button', { name: 'Legg til nytt vedlegg' }).click();
         cy.findByRole('textbox', { name: 'Gi vedlegget et beskrivende navn' }).type('Egenerklæring');
-        cy.get('[data-cy="upload-button-en5h1c-1"] input[type=file]').selectFile(
-          'cypress/fixtures/files/small-file.txt',
-          {
-            force: true,
-          },
-        );
+        cy.uploadFile('small-file.txt', { id: 'en5h1c-1' });
         cy.clickNextStep();
 
         cy.get('.aksel-form-summary')
@@ -299,10 +280,7 @@ describe('Digital submission without user login', () => {
         cy.findByRole('heading', { name: 'VedleggOpplysninger mangler' }).should('exist');
         cy.findByRole('link', { name: 'Vedlegg' }).click();
 
-        cy.get('[data-cy="upload-button-eyobqqf"] input[type=file]').selectFile(
-          'cypress/fixtures/files/small-file.txt',
-          { force: true },
-        );
+        cy.uploadFile('small-file.txt', { id: 'eyobqqf' });
         cy.clickNextStep();
         cy.findByRole('heading', { name: 'VedleggOpplysninger mangler' }).should('not.exist');
         cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
@@ -337,20 +315,10 @@ describe('Digital submission without user login', () => {
         cy.findByRole('textbox', { name: 'Gi vedlegget et beskrivende navn' }).type('Vitnemål');
         cy.get('[data-cy=error-summary]').should('not.exist');
         cy.findByRole('button', { name: 'Velg fil' }).click();
-        cy.get('[data-cy="upload-button-en5h1c"] input[type=file]').selectFile(
-          'cypress/fixtures/files/small-file.txt',
-          {
-            force: true,
-          },
-        );
+        cy.uploadFile('small-file.txt', { id: 'en5h1c' });
         cy.findByRole('button', { name: 'Legg til nytt vedlegg' }).click();
         cy.findByRole('textbox', { name: 'Gi vedlegget et beskrivende navn' }).type('Egenerklæring');
-        cy.get('[data-cy="upload-button-en5h1c-1"] input[type=file]').selectFile(
-          'cypress/fixtures/files/small-file.txt',
-          {
-            force: true,
-          },
-        );
+        cy.uploadFile('small-file.txt', { id: 'en5h1c-1' });
         cy.clickNextStep();
         cy.findByRole('heading', { name: 'VedleggOpplysninger mangler' }).should('not.exist');
         cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
@@ -371,7 +339,7 @@ describe('Digital submission without user login', () => {
       cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
         cy.findByLabelText('Norsk pass').check(),
       );
-      cy.get('input[type=file]').selectFile('cypress/fixtures/files/id-billy-bruker.jpg', { force: true });
+      cy.uploadFile('id-billy-bruker.jpg');
       cy.clickNextStep();
 
       // standard fill start
@@ -402,10 +370,7 @@ describe('Digital submission without user login', () => {
       cy.findByRole('group', { name: 'Bekreftelse på utdanning' }).within(() =>
         cy.findByLabelText('Jeg legger det ved dette skjemaet').check(),
       );
-      cy.get('[data-cy="upload-button-e3xh1d"] input[type=file]').selectFile(
-        'cypress/fixtures/files/another-small-file.txt',
-        { force: true },
-      );
+      cy.uploadFile('another-small-file.txt', { id: 'e3xh1d' });
 
       cy.findByLabelText('Annen dokumentasjon').within(() =>
         cy.findByLabelText('Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved').check(),
@@ -436,7 +401,7 @@ describe('Digital submission without user login', () => {
         cy.findByLabelText('Norsk pass').check(),
       );
       cy.clock(Date.now());
-      cy.get('input[type=file]').selectFile('cypress/fixtures/files/id-billy-bruker.jpg', { force: true });
+      cy.uploadFile('id-billy-bruker.jpg');
       cy.clickNextStep();
 
       cy.tick(3660000); // Move time forward by 1 hour and 1 minute (in ms)

@@ -88,7 +88,7 @@ Cypress.Commands.add('clickSendDigital', () => {
 });
 
 Cypress.Commands.add('clickEditAnswer', (title, linkText) => {
-  cy.findByRole('heading', { level: 2, name: title })
+  cy.findByRole('heading', { level: 3, name: title })
     .parent()
     .parent()
     .findByRole('link', { name: linkText ?? /Endre svar|Edit answer/ })
@@ -112,6 +112,22 @@ Cypress.Commands.add('clickDownloadInstructions', () => {
 Cypress.Commands.add('clickDownloadApplication', () => {
   cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).click();
 });
+
+Cypress.Commands.add(
+  'uploadFile',
+  (fileName: string = 'small-file.txt', options: { index?: number; id?: string } = {}) => {
+    if (options.id) {
+      return cy
+        .get(`[data-cy="upload-button-${options.id}"] input[type=file]`)
+        .selectFile(`cypress/fixtures/files/${fileName}`, { force: true });
+    } else {
+      return cy
+        .get('input[type=file]')
+        .eq(options.index ?? 0)
+        .selectFile(`cypress/fixtures/files/${fileName}`, { force: true });
+    }
+  },
+);
 
 Cypress.Commands.add('verifySendInnRedirect', () => {
   return cy.origin(Cypress.env('SEND_INN_FRONTEND'), () => {

@@ -1,53 +1,53 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
-function uploadFile(fileName: string) {
-  cy.get('input[type="file"]').selectFile(
-    {
-      contents: Cypress.Buffer.from('file content'),
-      fileName,
-    },
-    { force: true },
-  );
-}
-
-function goToAttachmentPage(fileName: string) {
-  cy.findByRole('heading', { name: TEXTS.statiske.uploadId.title }).should('exist');
-  cy.findByRole('button', { name: TEXTS.statiske.uploadId.selectFileButton }).should('not.exist');
-  cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
-  cy.findByText(TEXTS.statiske.uploadId.selectFileButton).should('exist').should('be.visible');
-
-  cy.get('input[type="file"]').selectFile(
-    {
-      contents: Cypress.Buffer.from('file content'),
-      fileName,
-    },
-    { force: true },
-  );
-
-  cy.clickNextStep();
-  cy.clickStart();
-  cy.clickShowAllSteps();
-  cy.findByText('Vedlegg').click();
-}
-
 describe('Attachments page', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
     cy.visit('/fyllut/digitalnologinwithattachmentpanel');
     cy.defaultWaits();
     cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigitalNoLogin }).click();
-    goToAttachmentPage('attachment.txt');
+    cy.findByRole('heading', { name: TEXTS.statiske.uploadId.title }).should('exist');
+    cy.findByRole('button', { name: TEXTS.statiske.uploadId.selectFileButton }).should('not.exist');
+    cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
+    cy.findByText(TEXTS.statiske.uploadId.selectFileButton).should('exist').should('be.visible');
+
+    cy.uploadFile();
+
+    cy.clickNextStep();
+    cy.clickStart();
+    cy.clickShowAllSteps();
+    cy.findByText('Vedlegg').click();
   });
 
-  it('should display validation errors when next step button is clicked', () => {
-    cy.findByText('Informasjon om din næringsinntekt fra Norge eller utlandet').should('exist');
-    cy.findByText('Annen dokumentasjon').should('exist');
-    cy.clickNextStep();
-    cy.findAllByText('Du må fylle ut: Informasjon om din næringsinntekt fra Norge eller utlandet').should(
-      'have.length',
-      2,
-    );
-    cy.findAllByText('Du må fylle ut: Annen dokumentasjon').should('be.visible').should('have.length', 2);
+  describe('Validation', () => {
+    it('should display validation errors when next step button is clicked', () => {
+      cy.findByText('Informasjon om din næringsinntekt fra Norge eller utlandet').should('exist');
+      cy.findByText('Annen dokumentasjon').should('exist');
+      cy.clickNextStep();
+      cy.findAllByText('Du må fylle ut: Informasjon om din næringsinntekt fra Norge eller utlandet').should(
+        'have.length',
+        2,
+      );
+      cy.findAllByText('Du må fylle ut: Vedlegg med ett valg').should('have.length', 2);
+      cy.findAllByText('Du må fylle ut: Annen dokumentasjon').should('be.visible').should('have.length', 2);
+    });
+
+    it('validates required attachment with one option', () => {
+      cy.findByRole('group', { name: 'Informasjon om din næringsinntekt fra Norge eller utlandet' }).within(() => {
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.ettersender }).click();
+      });
+      cy.findByRole('group', {
+        name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
+      }).within(() => {
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.nei }).click();
+      });
+      cy.findByRole('group', { name: 'Vedlegg med ett valg' }).within(() => {
+        cy.findByRole('checkbox', { name: TEXTS.statiske.attachment.leggerVedNaa }).check();
+        cy.findByRole('checkbox', { name: TEXTS.statiske.attachment.leggerVedNaa }).uncheck();
+      });
+      cy.clickNextStep();
+      cy.findAllByText('Du må fylle ut: Vedlegg med ett valg').should('have.length', 2);
+    });
   });
 
   it('should render additional description and deadline when existing', () => {
@@ -70,7 +70,7 @@ describe('Attachments page', () => {
       cy.findByRole('button', { name: TEXTS.statiske.uploadFile.selectFile }).click();
       cy.findAllByText(`Du må fylle ut: ${TEXTS.statiske.attachment.attachmentTitle}`).should('have.length', 2);
       cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel');
-      uploadFile('other-attachment.txt');
+      cy.uploadFile();
       cy.findAllByText(`Du må fylle ut: ${TEXTS.statiske.attachment.attachmentTitle}`).should('not.exist');
     });
 
@@ -81,14 +81,50 @@ describe('Attachments page', () => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.leggerVedNaa }).click();
       });
       cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel 1');
-      uploadFile('test.txt');
+      cy.uploadFile();
       cy.findByRole('button', { name: TEXTS.statiske.attachment.addNewAttachment }).click();
       cy.findByRole('button', { name: TEXTS.statiske.attachment.addNewAttachment }).should('not.exist');
       cy.findAllByLabelText(TEXTS.statiske.attachment.attachmentTitle).last().type('Vedleggstittel 2');
-      uploadFile('test.txt');
+      cy.uploadFile();
       cy.findByText('Vedleggstittel 1').should('exist');
       cy.findByText('Vedleggstittel 2').should('exist');
       cy.findAllByText('test.txt').should('have.length', 2);
+    });
+
+    it('lets you add more attachments after visiting summary page', () => {
+      cy.findByRole('group', { name: 'Informasjon om din næringsinntekt fra Norge eller utlandet' }).within(() => {
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.ettersender }).click();
+      });
+      cy.findByRole('group', { name: 'Vedlegg med ett valg' }).within(() => {
+        cy.findByRole('checkbox', { name: TEXTS.statiske.attachment.leggerVedNaa }).click();
+      });
+      cy.uploadFile('test.txt');
+      cy.findByRole('group', {
+        name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
+      }).within(() => {
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.leggerVedNaa }).click();
+      });
+      cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel 1');
+      cy.uploadFile('test.txt', { index: 1 });
+      cy.findByRole('button', { name: TEXTS.statiske.attachment.addNewAttachment }).click();
+      cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel 2');
+      cy.uploadFile('test.txt', { index: 1 });
+      cy.clickNextStep();
+      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+      cy.findByRole('link', { name: 'Vedlegg' }).click();
+      cy.findByRole('button', { name: TEXTS.statiske.attachment.addNewAttachment }).click();
+      cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel 3');
+      cy.uploadFile('test.txt', { index: 1 });
+      cy.findByText('Vedleggstittel 1').should('exist');
+      cy.findByText('Vedleggstittel 2').should('exist');
+      cy.findByText('Vedleggstittel 3').should('exist');
+      cy.findAllByText('test.txt').should('have.length', 4);
+      cy.clickNextStep();
+      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+      cy.findByText('Vedleggstittel 1').should('exist');
+      cy.findByText('Vedleggstittel 2').should('exist');
+      cy.findByText('Vedleggstittel 3').should('exist');
+      cy.findAllByText('test.txt').should('have.length', 4);
     });
 
     it('lets you delete a started attachment', () => {
@@ -98,7 +134,7 @@ describe('Attachments page', () => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.leggerVedNaa }).click();
       });
       cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel 1');
-      uploadFile('test.txt');
+      cy.uploadFile();
       cy.findByRole('button', { name: TEXTS.statiske.attachment.addNewAttachment }).click();
       cy.findAllByLabelText(TEXTS.statiske.attachment.attachmentTitle).last().type('Vedleggstittel 2');
       cy.findByRole('button', { name: TEXTS.statiske.attachment.deleteAttachment }).click();
@@ -114,10 +150,10 @@ describe('Attachments page', () => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.leggerVedNaa }).click();
       });
       cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel 1');
-      uploadFile('test.txt');
+      cy.uploadFile();
       cy.findByRole('button', { name: TEXTS.statiske.attachment.addNewAttachment }).click();
       cy.findAllByLabelText(TEXTS.statiske.attachment.attachmentTitle).last().type('Vedleggstittel 2');
-      uploadFile('test.txt');
+      cy.uploadFile();
       cy.findAllByRole('button', { name: 'Slett filen' }).should('have.length', 2);
       cy.findAllByRole('button', { name: 'Slett filen' }).last().click();
       cy.findAllByText('test.txt').should('have.length', 1);
@@ -130,25 +166,30 @@ describe('Attachments page', () => {
       cy.findByRole('group', { name: 'Informasjon om din næringsinntekt fra Norge eller utlandet' }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.ettersender }).click();
       });
+      cy.findByRole('group', { name: 'Vedlegg med ett valg' }).within(() => {
+        cy.findByRole('checkbox', { name: TEXTS.statiske.attachment.leggerVedNaa }).click();
+      });
+      cy.uploadFile();
       cy.findByRole('group', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
       }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.leggerVedNaa }).click();
       });
       cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel 1');
-      uploadFile('test.txt');
+      cy.uploadFile('test.txt', { index: 1 });
       cy.findByRole('button', { name: TEXTS.statiske.attachment.addNewAttachment }).click();
       cy.findAllByLabelText(TEXTS.statiske.attachment.attachmentTitle).last().type('Vedleggstittel 2');
-      uploadFile('test.txt');
+      cy.uploadFile('test.txt', { index: 1 });
       cy.findAllByRole('button', { name: 'Slett filen' }).should('have.length', 2);
-      cy.findAllByRole('button', { name: 'Slett filen' }).first().click();
-      cy.findAllByText('test.txt').should('have.length', 1);
+      cy.findAllByRole('button', { name: 'Slett filen' }).eq(1).click();
+      cy.findAllByText('test.txt').should('have.length', 2);
       cy.findByText('Vedleggstittel 1').should('not.exist');
       cy.findByText('Vedleggstittel 2').should('exist');
       cy.clickNextStep();
+      cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
       cy.findByText('Du må fylle ut: Annen dokumentasjon').should('not.exist');
       // heading 'Vedlegg' is present without 'Opplysninger mangler'
-      cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
+      cy.findByRole('heading', { level: 3, name: 'Vedlegg' }).should('exist');
     });
   });
 
@@ -181,9 +222,9 @@ describe('Attachments page', () => {
     it('should remove all attachments when delete all button is clicked', () => {
       cy.intercept('/fyllut/api/nologin-file?attachmentId=eiajfi8').as('deleteAllFilesByAttachmentId');
       cy.findAllByLabelText(TEXTS.statiske.attachment.leggerVedNaa).first().click();
-      uploadFile('test.txt');
+      cy.uploadFile();
       cy.findByText('test.txt').should('exist');
-      uploadFile('test.txt');
+      cy.uploadFile();
       cy.findByText('test.txt').should('exist');
       cy.findByRole('button', { name: TEXTS.statiske.attachment.deleteAllFiles }).click();
       cy.wait('@deleteAllFilesByAttachmentId');
@@ -192,7 +233,7 @@ describe('Attachments page', () => {
     it('should remove all attachments on cancel', () => {
       cy.intercept('/fyllut/api/nologin-file').as('deleteAllFiles');
       cy.findAllByLabelText(TEXTS.statiske.attachment.leggerVedNaa).first().click();
-      uploadFile('attachment1.txt');
+      cy.uploadFile();
       cy.findByText('test.txt').should('exist');
       cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.cancelAndDelete }).click();
       cy.findByRole('button', { name: TEXTS.grensesnitt.confirmDiscardPrompt.confirm }).click();

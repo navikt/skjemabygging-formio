@@ -15,7 +15,7 @@ interface Props {
   error?: ReactNode;
   value?: any;
   attachmentValues?: AttachmentSettingValues | ComponentValue[];
-  onChange: (value: SubmissionAttachmentValue) => void;
+  onChange: (value: SubmissionAttachmentValue | undefined) => void;
   translate: (text: string, params?: any) => string;
   deadline?: string;
 }
@@ -28,14 +28,18 @@ const Attachment = forwardRef<HTMLFieldSetElement, Props>(
     const additionalDocumentationMaxLength = 200;
     const values = attachmentUtils.mapKeysToOptions(attachmentValues, translate);
 
-    const handleAttachmentChange = (key: string) => {
-      onChange({
-        ...value,
-        key,
-        additionalDocumentation: attachmentValues?.[key]?.additionalDocumentation?.enabled
-          ? value?.additionalDocumentation
-          : undefined,
-      });
+    const handleAttachmentChange = (key: string | undefined) => {
+      if (key) {
+        onChange({
+          ...value,
+          key,
+          additionalDocumentation: attachmentValues?.[key]?.additionalDocumentation?.enabled
+            ? value?.additionalDocumentation
+            : undefined,
+        });
+      } else {
+        onChange(undefined);
+      }
     };
 
     const handleAdditionalDocumentationChange = (event: ChangeEvent<HTMLTextAreaElement>) => {

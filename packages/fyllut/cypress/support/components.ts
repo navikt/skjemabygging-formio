@@ -1,12 +1,14 @@
 /**
  * Test functions for form components
  */
+import { navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+
 Cypress.Commands.add('withinComponent', (label, fn) => {
   return cy.findByLabelText(label).closest('.form-group').within(fn);
 });
 
 Cypress.Commands.add('withinSummaryGroup', (heading, fn) => {
-  cy.findByRole('heading', { level: 2, name: heading }).closest('.aksel-form-summary').within(fn);
+  cy.findByRole('heading', { level: 3, name: heading }).closest('.aksel-form-summary').within(fn);
 });
 
 Cypress.Commands.add('findByLabelOptional', (label) => {
@@ -39,11 +41,19 @@ Cypress.Commands.add('clickErrorMessageMaxLength', (label) => {
 
 Cypress.Commands.add('testDownloadPdf', () => {
   cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
-    const { pdfFormData, submission } = req.body;
+    const { pdfFormData, submission, form } = req.body;
     const submissionData = JSON.parse(submission).data;
     const pdfFormDataString = JSON.stringify(pdfFormData);
-    Object.values(submissionData).forEach((value) => {
-      expect(pdfFormDataString).to.include(value);
+    const components = JSON.parse(form).components;
+
+    Object.entries(submissionData).forEach(([key, submissionValue]) => {
+      let value = submissionValue;
+      const component = navFormUtils.findByKey(key, components);
+      if (component.type === 'radiopanel') {
+        const option = component.values.find((option) => option.value === submissionValue);
+        value = option.label;
+      }
+      expect(pdfFormDataString).to.include(`"label":"${component.label}","verdi":"${value}"`);
     });
   }).as('downloadPdf');
 
