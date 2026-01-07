@@ -771,9 +771,7 @@ describe('FormSettingsPage', () => {
         .closest('section')
         .then(($section) => {
           cy.wrap($section).within(() => {
-            cy.wrap($section).within(() => {
-              cy.findByRole('radio', { name: 'behandle saken din' }).check();
-            });
+            cy.findByRole('radio', { name: 'behandle saken din' }).check();
           });
         });
 
