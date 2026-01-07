@@ -22,7 +22,7 @@ function logProxyError(proxyMessage: string, err: any, method: string, url: stri
   });
 }
 
-fyllutProxyRouter.all('*', async (req, res, next) => {
+fyllutProxyRouter.all('*path', async (req, res, next) => {
   const { method, url } = req;
   try {
     logger.info(`Fyllut proxy ${method} ${url}`, { fyllutBaseUrl });
