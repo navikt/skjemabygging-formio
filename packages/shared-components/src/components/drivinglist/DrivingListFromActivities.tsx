@@ -28,7 +28,7 @@ type ActivityChangeOptions = {
 
 const useDrivinglistStyles = makeStyles({
   accoridonHeader: {
-    marginBottom: 'var(--a-spacing-3)',
+    marginBottom: 'var(--ax-space-12)',
   },
 });
 

@@ -15,7 +15,7 @@ const useStyles = makeStyles({
     left: 0,
     right: 0,
     height: '4.5rem',
-    backgroundColor: 'var(--a-bg-default)',
+    backgroundColor: 'var(--ax-bg-default)',
     zIndex: '10000',
   },
 });

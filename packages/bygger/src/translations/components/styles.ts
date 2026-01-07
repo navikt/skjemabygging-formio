@@ -3,7 +3,7 @@ import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 const sticky = {
   position: 'sticky',
   top: '0',
-  backgroundColor: 'var(--a-bg-default)',
+  backgroundColor: 'var(--ax-bg-default)',
   zIndex: '10000',
 };
 const useStickyStyles = makeStyles({
@@ -45,7 +45,7 @@ const useTranslationTableStyles = makeStyles({
     marginTop: '0.5rem',
     lineHeight: '0.8rem',
     fontSize: '0.8rem',
-    color: 'var(--a-text-subtle)',
+    color: 'var(--ax-text-neutral-subtle)',
   },
 });
 

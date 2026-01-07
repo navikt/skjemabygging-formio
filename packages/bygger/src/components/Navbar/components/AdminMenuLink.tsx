@@ -16,7 +16,7 @@ const useStyles = makeStyles({
   },
   disabledAdminLink: {
     width: '100%',
-    color: 'var(--a-text-default)',
+    color: 'var(--ax-text-neutral)',
     cursor: 'not-allowed',
   },
 });

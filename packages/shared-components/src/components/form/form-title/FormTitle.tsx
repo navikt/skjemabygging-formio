@@ -13,7 +13,7 @@ export interface Props {
 
 const useStyles = makeStyles({
   titleHeader: {
-    marginBottom: 'var(--a-spacing-10)',
+    marginBottom: 'var(--ax-space-40)',
   },
   normalFontWeight: {
     fontWeight: 'normal',
@@ -34,7 +34,7 @@ const useStyles = makeStyles({
     top: '7px',
     '@media screen and (max-width: 1280px)': {
       position: 'static',
-      marginBottom: 'var(--a-spacing-2)',
+      marginBottom: 'var(--ax-space-8)',
     },
   },
 });

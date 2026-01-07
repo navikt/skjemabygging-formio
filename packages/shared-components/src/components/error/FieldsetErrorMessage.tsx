@@ -11,8 +11,8 @@ type Props = {
 export const useFieldsetErrorMessageStyles = makeStyles({
   message: {
     display: 'flex',
-    gap: 'var(--a-space-4)',
-    color: 'var(--a-red-500)',
+    gap: 'var(--ax-space-4)',
+    color: 'var(--ax-danger-600)',
     marginTop: '.25rem',
     height: '1rem',
     '@media (max-width: 600px)': {

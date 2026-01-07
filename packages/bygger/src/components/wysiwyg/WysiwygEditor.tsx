@@ -16,16 +16,16 @@ import TextTypeDropdown from './TextTypeDropdown';
 const useStyles = makeStyles({
   editor: {
     resize: 'vertical',
-    backgroundColor: 'var(--a-bg-default)',
+    backgroundColor: 'var(--ax-bg-default)',
     minHeight: 'min-content',
-    borderRadius: 'var(--a-border-radius-medium)',
+    borderRadius: 'var(--ax-radius-4)',
   },
   error: {
     '&:not(:hover, :disabled)': {
       border: '2px solid',
-      borderColor: 'var(--ac-textfield-error-border, var(--ac-textfield-error-border, var(--a-border-danger)))',
+      borderColor: 'var(--ac-textfield-error-border, var(--ac-textfield-error-border, var(--ax-border-danger)))',
       boxShadow:
-        '0 0 0 1px var(--ac-textfield-error-border, var(--__ac-textfield-error-border, var(--a-border-danger)))',
+        '0 0 0 1px var(--ac-textfield-error-border, var(--__ac-textfield-error-border, var(--ax-border-danger)))',
     },
   },
 });

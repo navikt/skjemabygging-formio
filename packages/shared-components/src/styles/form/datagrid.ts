@@ -1,6 +1,6 @@
 const datagrid = {
   '& .aksel-fieldset__content': {
-    marginBottom: 'var(--a-spacing-6)',
+    marginBottom: 'var(--ax-space-24)',
   },
 };
 

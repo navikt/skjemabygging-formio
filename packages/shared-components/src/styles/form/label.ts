@@ -3,7 +3,7 @@ const label = {
   '& :not(.nav-new) > label.aksel-label': {
     '&:after': {
       content: "''",
-      height: 'var(--a-spacing-2)',
+      height: 'var(--ax-space-8)',
       display: 'block',
     },
   },

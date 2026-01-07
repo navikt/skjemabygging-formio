@@ -3,9 +3,9 @@ import makeStyles from '../../../../util/styles/jss/jss';
 
 const useStyles = makeStyles({
   grey: {
-    backgroundColor: 'var(--a-gray-50)',
+    backgroundColor: 'var(--ax-neutral-100)',
     '& &': {
-      backgroundColor: 'var(--a-surface-neutral-subtle)',
+      backgroundColor: 'var(--ax-bg-neutral-soft)',
     },
   },
 });

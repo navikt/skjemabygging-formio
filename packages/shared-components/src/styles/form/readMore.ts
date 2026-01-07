@@ -1,8 +1,8 @@
 // TODO: Remove this when we upgrade to @navikt packages 3.x. Just keep margin and maybe color.
 const readMore = {
   '& .aksel-read-more': {
-    margin: 'var(--a-spacing-2) 0',
-    color: 'var(--a-gray-700)',
+    margin: 'var(--ax-space-8) 0',
+    color: 'var(--ax-neutral-800)',
     '&__content': {
       '&--closed': {
         display: 'none',

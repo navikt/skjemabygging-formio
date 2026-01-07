@@ -29,11 +29,11 @@ const useStyles = makeStyles({
     marginBottom: '0.75rem',
   },
   separator: {
-    border: `1px solid var(--a-grayalpha-300)`,
+    border: `1px solid var(--ax-neutral-400A)`,
     marginBottom: `1.75rem`,
   },
   icon: {
-    color: 'var(--a-deepblue-500)',
+    color: 'var(--ax-brand-blue-600)',
   },
 });
 

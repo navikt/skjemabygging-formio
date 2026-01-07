@@ -14,7 +14,7 @@ const { navSelect: SELECT_TEXTS } = TEXTS.grensesnitt;
 const reactSelectStyles = {
   control: (baseStyles, state) => ({
     ...baseStyles,
-    fontSize: 'var(--a-font-size-large)',
+    fontSize: 'var(--ax-font-size-large)',
     minHeight: 'var(--input-min-height)',
     border: '1px solid #78706a',
     boxShadow: state.isFocused ? '0 0 0 3px #254b6d' : undefined,

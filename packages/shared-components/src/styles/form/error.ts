@@ -1,6 +1,6 @@
 const error = {
   '& .aksel-error-message': {
-    marginTop: 'var(--a-spacing-2)',
+    marginTop: 'var(--ax-space-8)',
     '&:before': {
       content: '⬢',
     },
