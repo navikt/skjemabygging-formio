@@ -1,7 +1,7 @@
 import { Heading } from '@navikt/ds-react';
 import { useAppConfig, useModal } from '@navikt/skjemadigitalisering-shared-components';
 import { Form, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AppLayout } from '../../components/AppLayout';
 import RowLayout from '../../components/layout/RowLayout';
 import Title from '../../components/layout/Title';
@@ -63,6 +63,14 @@ export default function FormIntroPage({ form }: { form: Form }) {
   const [submissionMethod, setSubmissionMethod] = useState<SubmissionMethod>('digital');
   const [openPublishSettingModal, setOpenPublishSettingModal] = useModal();
   const scrollAnimationFrameRef = useRef<number>();
+
+  useEffect(() => {
+    return () => {
+      if (scrollAnimationFrameRef.current) {
+        window.cancelAnimationFrame(scrollAnimationFrameRef.current);
+      }
+    };
+  }, []);
 
   function handleValidation(onSuccess: () => void) {
     const validationErrors = validateIntroPage(form.introPage, getKeyBasedText);
