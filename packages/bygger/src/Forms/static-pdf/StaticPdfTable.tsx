@@ -8,6 +8,9 @@ const useStyles = makeStyles({
     tableLayout: 'fixed',
     marginBottom: 'var(--a-spacing-4)',
   },
+  smallColumn: {
+    width: '120px',
+  },
 });
 
 const StaticPdfTable = () => {
@@ -23,11 +26,12 @@ const StaticPdfTable = () => {
     <Table className={styles.table}>
       <Table.Header>
         <Table.Row>
-          <Table.HeaderCell scope="col">Språk</Table.HeaderCell>
-          <Table.HeaderCell scope="col">Filnavn</Table.HeaderCell>
-          <Table.HeaderCell scope="col" colSpan={2}>
-            Publisert
+          <Table.HeaderCell scope="col" className={styles.smallColumn}>
+            Språk
           </Table.HeaderCell>
+          <Table.HeaderCell scope="col">Filnavn</Table.HeaderCell>
+          <Table.HeaderCell scope="col">Publisert</Table.HeaderCell>
+          <Table.HeaderCell scope="col" className={styles.smallColumn}></Table.HeaderCell>
         </Table.Row>
       </Table.Header>
       <Table.Body>
