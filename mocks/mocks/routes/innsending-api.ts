@@ -31,6 +31,7 @@ import mellomlagringRadio from '../data/innsending-api/radio/mellomlagring-radio
 import mellomlagringSelectBoxes from '../data/innsending-api/select-boxes/mellomlagring-select-boxes.json';
 import tc01 from '../data/test-cases/tc01-innsending-nologin-soknad-body.json';
 import tc02 from '../data/test-cases/tc02-innsending-nologin-soknad-body.json';
+import tc05 from '../data/test-cases/tc05-innsending-nologin-soknad-body.json';
 import { compareBodyMiddleware } from '../utils/testCaseUtils';
 
 const objectToByteArray = (obj: any): number[] => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
@@ -648,6 +649,22 @@ export default [
         options: {
           middleware: compareBodyMiddleware(
             tc02,
+            ['innsendingsId', 'hoveddokument.document', 'hoveddokumentVariant.document', 'vedleggsListe.filIdListe'],
+            (req, res) => {
+              const { body } = req;
+              res.status(200);
+              res.contentType('application/json; charset=UTF-8');
+              res.send(replySubmittedNologinApplication(body));
+            },
+          ),
+        },
+      },
+      {
+        id: 'success-tc05',
+        type: 'middleware',
+        options: {
+          middleware: compareBodyMiddleware(
+            tc05,
             ['innsendingsId', 'hoveddokument.document', 'hoveddokumentVariant.document', 'vedleggsListe.filIdListe'],
             (req, res) => {
               const { body } = req;
