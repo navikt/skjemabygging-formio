@@ -31,6 +31,7 @@ const DeleteStaticPdfButton = ({ language, languageCode }: Props) => {
         variant="tertiary-neutral"
         loading={loading}
         onClick={() => setOpen(true)}
+        data-testid={`delete-static-pdf-${languageCode}-button`}
       />
       <ConfirmationModal
         open={open}

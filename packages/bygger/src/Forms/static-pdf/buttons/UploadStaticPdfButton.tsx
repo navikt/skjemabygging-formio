@@ -42,7 +42,13 @@ const UploadStaticPdfButton = ({ language, languageCode, replace }: Props) => {
   return (
     <>
       <FileUpload.Trigger multiple={false} onSelect={handleSelect}>
-        <Button icon={<UploadIcon aria-hidden />} size="small" variant="tertiary-neutral" loading={loading} />
+        <Button
+          icon={<UploadIcon aria-hidden />}
+          size="small"
+          variant="tertiary-neutral"
+          loading={loading}
+          data-testid={`upload-static-pdf-${languageCode}-button`}
+        />
       </FileUpload.Trigger>
 
       <ConfirmationModal

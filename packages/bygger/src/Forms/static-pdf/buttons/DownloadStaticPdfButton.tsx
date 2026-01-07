@@ -23,6 +23,7 @@ const UploadStaticPdfButton = ({ languageCode }: Props) => {
       size="small"
       pdfContent={getPdfContent}
       variant="tertiary-neutral"
+      dataTestId={`download-static-pdf-${languageCode}-button`}
     />
   );
 };

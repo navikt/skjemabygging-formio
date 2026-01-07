@@ -13,6 +13,7 @@ interface Props {
   children?: React.ReactNode;
   icon?: React.ReactNode;
   pdfContent: () => Promise<Blob>;
+  dataTestId?: string;
 }
 
 const DownloadPdfButton = ({
@@ -27,6 +28,7 @@ const DownloadPdfButton = ({
   size,
   children,
   pdfContent,
+  dataTestId,
 }: Props) => {
   const [downloading, setDownloading] = useState<boolean>(false);
 
@@ -72,6 +74,7 @@ const DownloadPdfButton = ({
       onClick={clickDownload}
       loading={downloading}
       size={size ?? 'medium'}
+      data-testid={dataTestId}
       download
       as="a"
     >
