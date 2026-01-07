@@ -183,6 +183,52 @@
           "additionalDescriptionText": "",
           "additionalDescriptionLabel": ""
         },
+
+        {
+          "key": "vedlegg-med-ett-valg",
+          "type": "attachment",
+          "input": true,
+          "label": "Vedlegg med ett valg",
+          "id": "emwijff",
+          "navId": "emwijff",
+          "validate": {
+            "required": true
+          },
+          "properties": {
+            "vedleggstittel": "Vedlegg med ett valg",
+            "vedleggskode": "V3"
+          },
+          "tableView": false,
+          "attachmentType": "default",
+          "description": "",
+          "attachmentValues": {
+            "nav": {
+              "enabled": false,
+              "additionalDocumentation": {}
+            },
+            "andre": {
+              "enabled": false,
+              "additionalDocumentation": {}
+            },
+            "harIkke": {
+              "enabled": false,
+              "additionalDocumentation": {}
+            },
+            "ettersender": {
+              "enabled": false
+            },
+            "leggerVedNaa": {
+              "enabled": true,
+              "additionalDocumentation": {
+                "enabled": false
+              }
+            },
+            "levertTidligere": {
+              "enabled": false
+            }
+          }
+        },
+
         {
           "id": "ez0ub3y",
           "navId": "ez0ub3y",

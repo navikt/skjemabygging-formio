@@ -24,11 +24,11 @@ const PersonalIdUpload = ({ refs }: { refs?: any }) => {
   const uploadSelected = !!attachment?.value;
   const attachmentError = errors[attachmentId]?.find((error) => error.type === 'VALUE');
 
-  const handleValueChange = (value: Partial<SubmissionAttachmentValue>) => {
-    const title = options.find((option) => option.value === value.key)?.label;
+  const handleValueChange = (value: Partial<SubmissionAttachmentValue> | undefined) => {
+    const title = options.find((option) => option.value === value?.key)?.label;
     changeAttachmentValue(
       { attachmentId, navId: attachmentId, type: 'personal-id' },
-      { value: value.key, title },
+      value ? { value: value.key, title } : {},
       attachmentValidator(translate, ['value']),
     );
   };

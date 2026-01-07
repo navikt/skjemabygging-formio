@@ -4,6 +4,8 @@
 
 import { expect } from 'chai';
 
+const today = new Date('2024-08-01');
+
 describe('Month picker', () => {
   before(() => {
     cy.configMocksServer();
@@ -15,9 +17,10 @@ describe('Month picker', () => {
 
   describe('Paper', () => {
     beforeEach(() => {
+      // Overwrite native global definition of current date
+      cy.clock(today, ['Date']);
       cy.defaultIntercepts();
       cy.visit('/fyllut/monthpickertest/veiledning?sub=paper');
-      cy.clock(new Date('2024-08-01'), ['Date']);
       cy.defaultWaits();
     });
 
@@ -124,11 +127,18 @@ describe('Month picker', () => {
 
   describe('Digital', () => {
     beforeEach(() => {
+      // Overwrite native global definition of current date
+      cy.clock(today, ['Date']);
       cy.defaultIntercepts();
       cy.defaultInterceptsMellomlagring();
     });
 
-    it.skip('should have correct submission values', () => {
+    afterEach(() => {
+      // make sure that we go back to localhost:3001 after each test to avoid cross origin issues in beforeEach
+      cy.visit('/fyllut');
+    });
+
+    it('should have correct submission values', () => {
       cy.visit('/fyllut/monthpickertest/veiledning?sub=digital');
       cy.defaultWaits();
       cy.wait('@createMellomlagring');

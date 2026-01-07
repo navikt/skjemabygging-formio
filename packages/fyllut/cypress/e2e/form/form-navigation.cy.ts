@@ -381,7 +381,7 @@ describe('Form navigation', () => {
         cy.findByLabelText('Norsk pass').check(),
       );
       cy.intercept('POST', '/fyllut/api/nologin-file?attachmentId=personal-id').as('uploadIdFile');
-      cy.get('input[type=file]').selectFile('cypress/fixtures/files/id-billy-bruker.jpg', { force: true });
+      cy.uploadFile('id-billy-bruker.jpg');
       cy.wait('@uploadIdFile');
       cy.findByRole('link', { name: 'Neste steg' }).click();
     });
