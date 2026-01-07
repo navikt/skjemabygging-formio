@@ -20,7 +20,7 @@ const App = () => {
 
   return (
     <main className={styles.app}>
-      <Theme>
+      <Theme theme="light">
         <Routes>
           <Route path="/" element={<FormsPage />} />
           <Route path="/500" element={<InternalServerErrorPage />} />

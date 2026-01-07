@@ -50,7 +50,7 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
     const originalRender = this.rootElement.render.bind(this.rootElement);
     this.rootElement.render = (node) =>
       originalRender(
-        <Theme hasBackground={false} asChild>
+        <Theme theme="light" hasBackground={false} asChild>
           {node}
         </Theme>,
       );

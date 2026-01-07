@@ -24,7 +24,7 @@ function App({ serverURL }) {
   const contentFunc = userData ? () => <AuthenticatedApp serverURL={serverURL} /> : () => <UnauthenticatedApp />;
 
   return (
-    <Theme>
+    <Theme theme="light">
       <FeedbackProvider>
         <PusherNotificationsProvider>
           <section className={styles.app}>{contentFunc()}</section>
