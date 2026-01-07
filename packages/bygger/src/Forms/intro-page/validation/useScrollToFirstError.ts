@@ -47,7 +47,6 @@ export function useScrollToFirstError(refMap: IntroPageRefs) {
           if (scrollElementIntoView(bulletPointElement ?? null)) {
             break;
           }
-          continue;
         }
 
         const ref = refMap[path as keyof IntroPageRefs];
