@@ -741,10 +741,9 @@ describe('FormSettingsPage', () => {
       cy.findByRole('checkbox', { name: 'Bruk standard introside' }).check();
 
       cy.contains('Lagre').click();
-      cy.get('@scrollIntoView')
-        .should('have.been.called')
-        .its('firstCall.args.0')
-        .should('deep.include', { block: 'center' });
+      cy.get('@scrollIntoView').should('have.been.calledWithMatch', {
+        block: 'center',
+      });
       cy.get('[aria-live="polite"]').should('not.contain.text', `Lagret skjema ${submitData.title}`);
       cy.contains(
         'Endringene ble ikke lagret fordi introsiden har valideringsfeil. Rett opp feltene markert med rødt.',
