@@ -46,23 +46,40 @@ const WysiwygEditor = forwardRef<HTMLDivElement, Props>(
 
     const { sanitizeHtmlString, removeEmptyTags, removeTags, extractTextContent } = htmlUtils;
 
+    const unwantedTags = [
+      'font',
+      'div',
+      'span',
+      'table',
+      'tbody',
+      'tr',
+      'td',
+      'th',
+      'thead',
+      'tfoot',
+      'button',
+      'svg',
+      'path',
+    ].filter((tag) => tag !== defaultTag);
+    const removeUnwantedTags = (html: string) => removeTags(html, unwantedTags);
+
     const handleChange = (event) => {
       const value = event.target.value;
-      // make sure that non-html strings are wrapped in a <p>-tag.
+      // make sure that non-html strings are wrapped in a tag.
       if (htmlUtils.isHtmlString(value)) {
-        setHtmlValue(value);
+        setHtmlValue(removeUnwantedTags(value));
       } else {
         setHtmlValue(`<${defaultTag}>${value}</${defaultTag}>`);
       }
     };
 
     const handleBlur = () => {
-      const removeUnwantedTags = (html: string) => removeTags(html, ['font', 'div']);
-      const sanitizedHtmlString = removeUnwantedTags(
-        removeEmptyTags(sanitizeHtmlString(htmlValue, { FORBID_ATTR: ['style'] })),
+      // Apply removeUnwantedTags, then wrap top level text nodes (+ a, b and strong tags) in <p>
+      const cleanedHtml = htmlUtils.groupLonelyChildren(
+        removeUnwantedTags(removeEmptyTags(sanitizeHtmlString(htmlValue, { FORBID_ATTR: ['style'] }))),
       );
-
-      const trimmed = extractTextContent(sanitizedHtmlString).trim() === '' ? '' : sanitizedHtmlString;
+      const trimmed = extractTextContent(cleanedHtml).trim() === '' ? '' : cleanedHtml;
+      setHtmlValue(trimmed);
       onBlur(trimmed);
     };
 

@@ -60,6 +60,46 @@ const getTexts = (htmlString: string): string[] => {
   });
 };
 
+/**
+ * Groups consecutive child text nodes, <a>, <b>, and <strong> elements into a single <p> tag.
+ */
+const groupLonelyChildren = (htmlString: string): string => {
+  const div = document.createElement('div');
+  div.innerHTML = htmlString;
+  const fragment = document.createDocumentFragment();
+  const tagsToWrap = ['A', 'B', 'STRONG', 'BR'];
+
+  let buffer: ChildNode[] = [];
+  const flushBuffer = () => {
+    if (buffer.length > 0) {
+      if (buffer.every((node) => node.nodeType === Node.ELEMENT_NODE && (node as HTMLElement).tagName === 'BR')) {
+        buffer.forEach((node) => fragment.appendChild(node));
+      } else {
+        const p = document.createElement('p');
+        buffer.forEach((node) => p.appendChild(node));
+        fragment.appendChild(p);
+      }
+      buffer = [];
+    }
+  };
+
+  Array.from(div.childNodes).forEach((node) => {
+    if (
+      (node.nodeType === Node.TEXT_NODE && node.textContent && node.textContent.trim() !== '') ||
+      (node.nodeType === Node.ELEMENT_NODE && tagsToWrap.includes((node as HTMLElement).tagName))
+    ) {
+      buffer.push(node);
+    } else {
+      flushBuffer();
+      fragment.appendChild(node);
+    }
+  });
+  flushBuffer();
+  div.innerHTML = '';
+  div.appendChild(fragment);
+  return div.innerHTML;
+};
+
 const htmlUtils = {
   isHtmlString,
   getHtmlTag,
@@ -68,5 +108,6 @@ const htmlUtils = {
   sanitizeHtmlString,
   removeTags,
   getTexts,
+  groupLonelyChildren,
 };
 export default htmlUtils;
