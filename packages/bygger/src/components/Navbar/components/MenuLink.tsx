@@ -17,7 +17,7 @@ const useStyles = makeStyles({
     alignItems: 'center',
     padding: '5px 15px',
     flexDirection: 'column',
-    color: 'var(--ax-neutral-100)',
+    color: 'var(--ax-text-neutral)',
     textDecoration: 'none',
     lineHeight: '20px',
     '&.active': {
