@@ -27,7 +27,7 @@ const global = {
     color: '#262626',
   },
   a: {
-    color: 'var(--ac-link-action-text,var(--ax-text-accent-subtle))',
+    color: 'var(--ax-text-accent-subtle)',
     gap: 'var(--ax-space-4)',
   },
   h3: {

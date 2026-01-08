@@ -23,9 +23,8 @@ const useStyles = makeStyles({
   error: {
     '&:not(:hover, :disabled)': {
       border: '2px solid',
-      borderColor: 'var(--ac-textfield-error-border, var(--ac-textfield-error-border, var(--ax-border-danger)))',
-      boxShadow:
-        '0 0 0 1px var(--ac-textfield-error-border, var(--__ac-textfield-error-border, var(--ax-border-danger)))',
+      borderColor: 'var(--ax-border-danger)',
+      boxShadow: '0 0 0 1px var(--ax-border-danger)',
     },
   },
 });
