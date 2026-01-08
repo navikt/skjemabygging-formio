@@ -28,7 +28,6 @@
     "start": "concurrently --kill-others-on-fail \"yarn:start:fyllut\" \"yarn:start:bygger\"",
     "start:bygger": "concurrently --kill-others-on-fail \"yarn workspace @navikt/bygger-backend start\" \"yarn workspace @navikt/bygger-frontend start\"",
     "start:fyllut": "concurrently --kill-others-on-fail \"yarn workspace @navikt/fyllut-backend start\" \"yarn workspace @navikt/fyllut-frontend start\"",
-    "start:fyllut:env:test": "concurrently --kill-others-on-fail \"yarn workspace @navikt/fyllut-backend start:env:test\" \"yarn workspace @navikt/fyllut-frontend start\"",
     "preview:bygger": "yarn workspace @navikt/bygger-backend preview",
     "preview:fyllut": "yarn workspace @navikt/fyllut-backend preview",
     "test": "concurrently \"yarn workspace @navikt/bygger-frontend test\" \"yarn workspace @navikt/bygger-backend test\" \"yarn workspace @navikt/fyllut-frontend test\" \"yarn workspace @navikt/fyllut-backend test\" \"yarn workspace @navikt/skjemadigitalisering-shared-domain test\" \"yarn workspace @navikt/skjemadigitalisering-shared-components test\"",

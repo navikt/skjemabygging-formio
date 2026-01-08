@@ -12,16 +12,6 @@ describe('config', () => {
     exit = vi.fn();
   });
 
-  test('FormioApi er ikke tillatt i prod', () => {
-    const config = {
-      useFormioMockApi: true,
-      naisClusterName: NaisCluster.PROD,
-    } as ConfigType;
-    checkConfigConsistency(config, logError, exit as any);
-    expect(logError).toBeCalledWith('Invalid configuration: FormioApi is not allowed in prod-gcp');
-    expect(exit).toBeCalledWith(1);
-  });
-
   test('FormsApi staging er ikke tillatt i prod', () => {
     const config = {
       useFormsApiStaging: true,
@@ -34,11 +24,11 @@ describe('config', () => {
 
   test('SkjemaUrl er påkrevd når FormioApi skal brukes i dev', () => {
     const config = {
-      useFormioMockApi: true,
+      mocksEnabled: true,
       naisClusterName: NaisCluster.DEV,
     } as ConfigType;
     checkConfigConsistency(config, logError, exit as any);
-    expect(logError).toBeCalledWith('Invalid configuration: Formio api service url is required when using FormioApi');
+    expect(logError).toBeCalledWith('Invalid configuration: Formio api service url is required when mocks enabled');
     expect(exit).toBeCalledWith(1);
   });
 
@@ -50,17 +40,6 @@ describe('config', () => {
     checkConfigConsistency(config, logError, exit as any);
     expect(logError).toBeCalledWith('Invalid configuration: Forms api url is required when using FormsApi staging');
     expect(exit).toBeCalledWith(1);
-  });
-
-  test('FormioApi er tillatt i dev', () => {
-    const config = {
-      useFormioMockApi: true,
-      naisClusterName: NaisCluster.DEV,
-      formioApiServiceUrl: 'https://form.io',
-    } as ConfigType;
-    checkConfigConsistency(config, logError, exit as any);
-    expect(logError).not.toBeCalled();
-    expect(exit).not.toBeCalled();
   });
 
   test('FormsApi staging er tillatt i dev', () => {
@@ -76,7 +55,7 @@ describe('config', () => {
 
   test('Mocks er ikke tillatt i prod-gcp', () => {
     const config = {
-      isMocksEnabled: true,
+      mocksEnabled: true,
       naisClusterName: NaisCluster.PROD,
     } as ConfigType;
     checkConfigConsistency(config, logError, exit as any);
@@ -86,7 +65,7 @@ describe('config', () => {
 
   test('Mocks er ikke tillatt i dev-gcp', () => {
     const config = {
-      isMocksEnabled: true,
+      mocksEnabled: true,
       naisClusterName: NaisCluster.DEV,
     } as ConfigType;
     checkConfigConsistency(config, logError, exit as any);
