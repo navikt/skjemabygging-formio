@@ -106,19 +106,6 @@ class TranslationsService {
     return {};
   }
 
-  async fetchGlobalTranslationsFromFormioApi(lang: string) {
-    const { formioApiServiceUrl } = this._config;
-    const response = await fetch(
-      `${formioApiServiceUrl}/language/submission?data.name=global&data.language=${lang}&limit=1000`,
-      { method: 'GET' },
-    );
-    if (response.ok) {
-      const responseJson = await response.json();
-      return languagesUtil.globalEntitiesToI18nGroupedByTag(responseJson);
-    }
-    return {};
-  }
-
   async fetchGlobalTranslationsFromFormsApi(lang: string): Promise<I18nTranslations> {
     const { formsApiUrl } = this._config;
     const formsApiLang = toFormsApiLang(lang);
@@ -141,19 +128,19 @@ class TranslationsService {
   }
 
   async loadTranslation(formPath: string): Promise<I18nTranslations> {
-    const { useFormsApiStaging, useFormioMockApi, translationDir } = this._config;
+    const { useFormsApiStaging, mocksEnabled, translationDir } = this._config;
     this.validateFormPath(formPath);
-    if (useFormsApiStaging) {
-      return this.fetchTranslationsFromFormsApi(formPath);
+    if (mocksEnabled) {
+      return this.fetchTranslationsFromFormioApi(formPath);
     }
-    return useFormioMockApi
-      ? await this.fetchTranslationsFromFormioApi(formPath)
+    return useFormsApiStaging
+      ? await this.fetchTranslationsFromFormsApi(formPath)
       : await loadFileFromDirectory(translationDir, formPath);
   }
 
   async loadGlobalTranslations(lang: string): Promise<I18nTranslations> {
-    const { useFormsApiStaging, useFormioMockApi, resourcesDir } = this._config;
-    if (useFormsApiStaging || useFormioMockApi) {
+    const { useFormsApiStaging, mocksEnabled, resourcesDir } = this._config;
+    if (useFormsApiStaging || mocksEnabled) {
       return this.fetchGlobalTranslationsFromFormsApi(lang);
     }
     const globalTranslations = await loadFileFromDirectory(resourcesDir, `global-translations-${lang}`);

@@ -152,9 +152,9 @@ eller `yarn cypress:fyllut`.
 
 ### Kjøre mot utviklingsmiljø
 
-Man kan også kjøre cypress-testene mot vanlig utviklingsmiljø, dvs. `yarn start:bygger` eller `yarn start:fyllut`, men
-for fyllut må man da bruke verdiene fra `fyllut-backend/.env.test` i `fyllut-backend/.env` og kjøre opp
-`yarn mocks:fyllut` pga. at cypress-testene basererer seg på responsdata fra Mocks Server.
+Man kan også kjøre cypress-testene mot vanlig utviklingsmiljø, dvs. `yarn start:bygger` eller `yarn start:fyllut`.
+Legg da inn `MOCKS_ENABLED=true` i `fyllut-backend/.env` og kjør opp `yarn mocks:fyllut` pga. at cypress-testene
+basererer seg på responsdata fra Mocks Server.
 
 Ved kjøring mot lokalt utviklingsmiljø får man ikke testet eventuell logikk som skjer ved lasting av index.html siden
 det ikke er den faktiske backenden som håndterer det under lokal utvikling, så hvis noen av testene har sjekker på
