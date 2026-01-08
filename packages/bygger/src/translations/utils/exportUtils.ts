@@ -27,28 +27,29 @@ const escapeQuote = (text?: string) => {
 
 const sanitizeForCsv = (text?: string) => escapeQuote(removeLineBreaks(text));
 
-const getRowsForExport = (texts: string[], translations: FormsApiTranslation[]): CsvRow[] => {
+const getRowsForExport = (textKeys: string[], translations: FormsApiTranslation[]): CsvRow[] => {
   let textIndex = 0;
-  return texts.flatMap((text) => {
-    const translation = translations.find((translation) => translation.key === text);
-    if (htmlUtils.isHtmlString(text)) {
+  return textKeys.flatMap((key) => {
+    const translation = translations.find((translation) => translation.key === key);
+    const nb = translation?.nb ?? key;
+    if (htmlUtils.isHtmlString(nb)) {
       const nn = translation?.nn ? htmlUtils.getTexts(translation.nn) : [];
       const en = translation?.en ? htmlUtils.getTexts(translation.en) : [];
       const htmlTranslations = {
         nn: nn.filter((text) => text.trim().length > 0),
         en: en.filter((text) => text.trim().length > 0),
       };
-      const htmlStrings = htmlUtils.getTexts(text);
+      const htmlStrings = htmlUtils.getTexts(nb);
       return createTranslationsHtmlRows(`${++textIndex}`.padStart(3, '0'), htmlStrings, htmlTranslations);
     } else {
-      return createTranslationsTextRow(`${++textIndex}`.padStart(3, '0'), text, translation);
+      return createTranslationsTextRow(`${++textIndex}`.padStart(3, '0'), nb, translation);
     }
   });
 };
 
 const getRowsForExportFromForm = (form: Form, translations: FormsApiTranslation[]) => {
-  const formTexts = getTextKeysFromForm(form);
-  return getRowsForExport(formTexts, translations);
+  const textKeysFromForm = getTextKeysFromForm(form);
+  return getRowsForExport(textKeysFromForm, translations);
 };
 
 const getRowsForExportFromGlobalTexts = (translations: FormsApiTranslation[]) => {
@@ -98,16 +99,16 @@ const createRow = (
 
 const createTranslationsTextRow = (
   order: string,
-  text: string,
+  nb: string,
   translation?: FormsApiTranslation,
   type: 'tekst' | 'html' = 'tekst',
 ): CsvRow => {
   if (!translation) {
-    return createRow(order, text, undefined, undefined, type);
+    return createRow(order, nb, undefined, undefined, type);
   }
 
   const markAsGlobal = !!translation.globalTranslationId;
-  return createRow(order, text, translation.nn, translation.en, type, markAsGlobal);
+  return createRow(order, nb, translation.nn, translation.en, type, markAsGlobal);
 };
 
 const createTranslationsHtmlRows = (
