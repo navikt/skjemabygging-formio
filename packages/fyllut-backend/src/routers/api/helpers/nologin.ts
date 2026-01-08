@@ -25,14 +25,14 @@ const assembleNologinSoknadBody = (
   submissionPdfAsByteArray: number[],
   translate: (text: string, textReplacements?: I18nTranslationMap) => string,
 ): SendInnSoknadBodyV2 => {
-  const allAttachments: Component[] = navFormUtils
-    .flattenComponents(form.components)
-    .filter((comp: Component) => comp.type === 'attachment');
+  const activeAttachments: Component[] =
+    navFormUtils.getActiveAttachmentPanelFromForm(form, submission, 'digitalnologin')?.components ?? [];
   const bruker = extractBruker(form, submission);
   const avsender = extractAvsender(submission);
   if (!bruker && !avsender) {
     throw new Error(`${innsendingsId}: Could not find user nor sender from nologin submission (formPath=${form.path})`);
   }
+
   return {
     innsendingsId,
     ...(bruker && { brukerDto: bruker }),
@@ -70,21 +70,25 @@ const assembleNologinSoknadBody = (
       beskrivelse: null,
       propertyNavn: null,
     } as DokumentV2,
-    vedleggsListe: submission.attachments?.map((attachment) => {
-      const component = allAttachments.find((c) => c.navId === attachment.navId);
-      return {
-        vedleggsnr: attachment.type === 'personal-id' ? 'K2' : (component?.properties?.vedleggskode ?? 'Ukjent'),
-        label: translate(attachment.title ?? component?.label ?? 'Ukjent label'),
-        tittel: translate(component?.properties?.vedleggstittel ?? attachment.title ?? 'Ukjent tittel'),
-        opplastingsStatus: attachment.type === 'personal-id' ? 'LastetOpp' : mapToStatus(attachment.value),
-        mimetype: 'application/pdf',
-        pakrevd: attachment.type !== 'other',
-        filIdListe: attachment.files?.map((f) => f.fileId),
-        fyllutId: attachment.attachmentId,
-        beskrivelse: component?.description ? translate(component?.description) : null,
-        propertyNavn: null,
-      } as DokumentV2;
-    }),
+    vedleggsListe: submission.attachments
+      ?.filter(
+        (attachment) => attachment.type === 'personal-id' || activeAttachments.some((c) => c.navId == attachment.navId),
+      )
+      .map((attachment) => {
+        const component = activeAttachments.find((c) => c.navId === attachment.navId);
+        return {
+          vedleggsnr: attachment.type === 'personal-id' ? 'K2' : (component?.properties?.vedleggskode ?? 'Ukjent'),
+          label: translate(attachment.title ?? component?.label ?? 'Ukjent label'),
+          tittel: translate(component?.properties?.vedleggstittel ?? attachment.title ?? 'Ukjent tittel'),
+          opplastingsStatus: attachment.type === 'personal-id' ? 'LastetOpp' : mapToStatus(attachment.value),
+          mimetype: 'application/pdf',
+          pakrevd: attachment.type !== 'other',
+          filIdListe: attachment.files?.map((f) => f.fileId),
+          fyllutId: attachment.attachmentId,
+          beskrivelse: component?.description ? translate(component?.description) : null,
+          propertyNavn: null,
+        } as DokumentV2;
+      }),
   };
 };
 
