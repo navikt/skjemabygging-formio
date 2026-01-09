@@ -62,6 +62,7 @@ const WysiwygEditor = forwardRef<HTMLDivElement, Props>(
       'path',
     ].filter((tag) => tag !== defaultTag);
     const removeUnwantedTags = (html: string) => removeTags(html, unwantedTags);
+    const removeDivs = (html: string) => removeTags(html, ['div']);
 
     const handleChange = (event) => {
       const value = event.target.value;
@@ -75,8 +76,10 @@ const WysiwygEditor = forwardRef<HTMLDivElement, Props>(
 
     const handleBlur = () => {
       // Apply removeUnwantedTags, then wrap top level text nodes (+ a, b and strong tags) in <p>
-      const cleanedHtml = htmlUtils.groupLonelyChildren(
-        removeUnwantedTags(removeEmptyTags(sanitizeHtmlString(htmlValue, { FORBID_ATTR: ['style'] }))),
+      const cleanedHtml = removeDivs(
+        htmlUtils.groupLonelyChildren(
+          removeUnwantedTags(removeEmptyTags(sanitizeHtmlString(htmlValue, { FORBID_ATTR: ['style'] }))),
+        ),
       );
       const trimmed = extractTextContent(cleanedHtml).trim() === '' ? '' : cleanedHtml;
       setHtmlValue(trimmed);
