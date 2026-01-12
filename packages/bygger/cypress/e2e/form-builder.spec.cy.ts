@@ -319,4 +319,42 @@ describe('Form Builder', () => {
       });
     });
   });
+
+  describe('Reset form', () => {
+    const BUTTON_LABEL_RESET_FORM = 'Forkast endringer';
+
+    it('should not show "Forkast endringer" button when form is in published state', () => {
+      cy.fixture('form123456.json').then((form) => {
+        cy.intercept('GET', '/api/forms/tst123456', { body: form }).as('getForm');
+        cy.intercept('GET', '/api/form-publications/tst123456', { body: form }).as('getPublishedForm');
+      });
+      cy.visit('forms/tst123456');
+      cy.wait('@getConfig');
+      cy.wait('@getForm');
+      cy.wait('@getTranslations');
+      cy.wait('@getPublishedForm');
+      cy.findAllByRole('button', { name: BUTTON_LABEL_RESET_FORM }).should('have.length', 0);
+    });
+
+    it('should reset form to last published state', () => {
+      cy.fixture('form123456.json').then((form) => {
+        cy.intercept('GET', '/api/forms/tst123456', { body: { ...form, status: 'pending' } }).as('getForm');
+        cy.intercept('POST', /\/api\/forms\/tst123456\/reset\?.*/, { body: form }).as('resetForm');
+        cy.intercept('GET', '/api/form-publications/tst123456', { body: form }).as('getPublishedForm');
+      });
+      cy.visit('forms/tst123456');
+      cy.wait('@getConfig');
+      cy.wait('@getForm');
+      cy.wait('@getTranslations');
+      cy.wait('@getPublishedForm');
+      cy.findByRole('button', { name: BUTTON_LABEL_RESET_FORM }).should('be.visible').click();
+      cy.findByRole('dialog', { name: 'Advarsel om forkasting av endringer' })
+        .should('be.visible')
+        .within(() => {
+          cy.findByRole('button', { name: 'Ja, forkast' }).click();
+        });
+      cy.wait('@resetForm');
+      cy.findByText('Endringer i skjemaet er forkastet').should('be.visible');
+    });
+  });
 });

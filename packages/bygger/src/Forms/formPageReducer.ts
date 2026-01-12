@@ -7,7 +7,7 @@ type FormReducerAction =
   | 'form-changed'
   | 'form-saved'
   | 'form-error'
-  | 'form-reset'
+  | 'form-discard-unsaved-changes'
   | 'form-deleted';
 type Status = 'INITIAL LOADING' | 'FINISHED LOADING' | 'FORM NOT FOUND' | 'FORM DELETED' | 'ERROR';
 export type FormReducerActionType = { type: FormReducerAction; form?: Form; publishedForm?: Form };
@@ -39,7 +39,7 @@ const formPageReducer = (state: FormReducerState, action: FormReducerActionType)
         form: formClone,
         formioForm: formioFormsApiUtils.mapFormToNavForm(formClone), // TODO: temp
       };
-    case 'form-reset':
+    case 'form-discard-unsaved-changes':
       return {
         ...state,
         form: state.dbForm,

@@ -8,7 +8,7 @@ type FormPropertiesIsTestForm = Pick<FormPropertiesType, 'isTestForm'>;
 
 export type FormStatusProperties = Pick<
   Form,
-  'changedAt' | 'changedBy' | 'publishedAt' | 'publishedBy' | 'publishedLanguages' | 'status'
+  'changedAt' | 'changedBy' | 'publishedAt' | 'publishedBy' | 'publishedLanguages' | 'revision' | 'status'
 > & { properties?: FormPropertiesIsTestForm };
 
 export type TimestampEvent = { timestamp: string; userName: string | undefined };

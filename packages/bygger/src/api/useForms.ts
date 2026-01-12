@@ -9,6 +9,7 @@ const useForms = () => {
     getAll,
     get,
     put,
+    resetForm,
     post,
     postLockForm,
     deleteLockForm,
@@ -29,6 +30,10 @@ const useForms = () => {
 
   const onSave = async (form: Form) => {
     return await put(form);
+  };
+
+  const onReset = async (formPath: string, revision: number) => {
+    return await resetForm(formPath, revision);
   };
 
   const onPublish = async (form: Form, languages: TranslationLang[]) => {
@@ -53,6 +58,7 @@ const useForms = () => {
     loadFormsList,
     createForm,
     onSave,
+    onReset,
     onLockForm: postLockForm,
     onUnlockForm: deleteLockForm,
     onPublish,
