@@ -67,6 +67,7 @@ const useFormsApiStaticPdf = () => {
       downloadPdf,
       deletePdf,
     }),
+    // Adding dependencies will cause unnecessary re-renders
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
