@@ -57,8 +57,7 @@ export type DefaultConfig = {
   applicationName: string;
   gitVersion: string;
   sentryDsn?: string;
-  isMocksEnabled: boolean;
-  useFormioMockApi: boolean;
+  mocksEnabled: boolean;
   useFormsApiStaging: boolean;
   formioApiServiceUrl?: string;
   forstesideUrl: string;

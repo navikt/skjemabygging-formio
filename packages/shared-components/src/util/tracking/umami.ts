@@ -32,7 +32,7 @@ const getLocalAnalyticsInstance = (
   frontendLogger: FrontendLogger,
 ): ReturnType<typeof getAnalyticsInstance> => {
   return async (name, data) => {
-    if (config.isMocksEnabled) {
+    if (config.mocksEnabled) {
       await fetch('http://localhost:3300/umami', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

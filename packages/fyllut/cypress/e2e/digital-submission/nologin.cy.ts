@@ -385,6 +385,76 @@ describe('Digital submission without user login', () => {
           cy.get('ul[role="list"]').find('li').should('have.length.at.least', 1);
           cy.contains('li', 'Uinnlogget søknad').should('exist');
           cy.contains('li', 'Norsk pass').should('exist');
+          cy.contains('li', 'Bekreftelse på utdanning').should('exist');
+        });
+      cy.get('.navds-alert--success').should('exist').and('be.visible');
+      cy.get('.navds-alert--warning').should('not.exist');
+    });
+
+    it('does not include file for attachment that was hidden by condition after upload', () => {
+      cy.mocksUseRouteVariant('post-familie-pdf:success');
+      cy.mocksUseRouteVariant('post-nologin-soknad:success-tc05');
+
+      cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
+        cy.findByLabelText('Norsk pass').check(),
+      );
+      cy.uploadFile('id-billy-bruker.jpg');
+      cy.clickNextStep();
+
+      // standard fill start
+      cy.clickIntroPageConfirmation();
+      cy.clickNextStep();
+      cy.findByRole('heading', { name: 'Veiledning' }).should('exist');
+
+      cy.clickNextStep();
+      cy.findByRole('heading', { name: /Dine opplysninger/ }).should('exist');
+      cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola');
+      cy.findByRole('textbox', { name: 'Etternavn' }).type('Nordmann');
+
+      cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
+        cy.findByLabelText('Ja').check(),
+      );
+      cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).type('08842748500');
+      cy.clickNextStep();
+
+      cy.findByRole('group', { name: 'Høyeste fullførte utdanning' }).within(() => cy.findByLabelText('Annet').check());
+      cy.clickNextStep();
+
+      cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
+        cy.findByLabelText('Jeg har levert denne dokumentasjonen tidligere').check(),
+      );
+      cy.findByRole('textbox', { name: 'Tilleggsinfo 3' }).type('Ble levert i fjor');
+
+      cy.findByRole('group', { name: 'Bekreftelse på utdanning' }).within(() =>
+        cy.findByLabelText('Jeg legger det ved dette skjemaet').check(),
+      );
+      cy.uploadFile('another-small-file.txt', { id: 'e3xh1d' });
+
+      cy.findByLabelText('Annen dokumentasjon').within(() =>
+        cy.findByLabelText('Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved').check(),
+      );
+
+      cy.clickShowAllSteps();
+      cy.findByRole('link', { name: 'Utdanning' }).click();
+
+      cy.findByRole('group', { name: 'Høyeste fullførte utdanning' }).within(() =>
+        cy.findByLabelText('Grunnskole').check(),
+      );
+      cy.clickNextStep();
+
+      cy.findByText('Bekreftelse på utdanning').should('not.exist');
+
+      cy.clickNextStep();
+      cy.clickSendNav();
+      cy.findByText(TEXTS.statiske.receipt.title).should('exist');
+      cy.findByRole('link', { name: TEXTS.statiske.receipt.downloadLinkLabel }).should('exist');
+      cy.contains('b', 'Vi har mottatt følgende dokumenter')
+        .parents('section')
+        .within(() => {
+          cy.get('ul[role="list"]').find('li').should('have.length.at.least', 1);
+          cy.contains('li', 'Uinnlogget søknad').should('exist');
+          cy.contains('li', 'Norsk pass').should('exist');
+          cy.contains('li', 'Bekreftelse på utdanning').should('not.exist');
         });
       cy.get('.aksel-alert--success').should('exist').and('be.visible');
       cy.get('.aksel-alert--warning').should('not.exist');
