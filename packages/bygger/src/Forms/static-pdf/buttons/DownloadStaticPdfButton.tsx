@@ -7,7 +7,7 @@ interface Props {
   languageCode: string;
 }
 
-const UploadStaticPdfButton = ({ languageCode }: Props) => {
+const DownloadStaticPdfButton = ({ languageCode }: Props) => {
   const { formPath, downloadFile } = useStaticPdf();
 
   const getPdfContent = async () => {
@@ -28,4 +28,4 @@ const UploadStaticPdfButton = ({ languageCode }: Props) => {
   );
 };
 
-export default UploadStaticPdfButton;
+export default DownloadStaticPdfButton;
