@@ -11,6 +11,7 @@ import IntroPage from './intro/IntroPage';
 import { PrepareIngenInnsendingPage } from './prepare-innsending/PrepareIngenInnsendingPage';
 import { PrepareLetterPage } from './prepare-letter/PrepareLetterPage';
 import { ReceiptPage } from './receipt/ReceiptPage';
+import StaticPdfPage from './static-pdf/StaticPdfPage';
 import { SummaryPage } from './summary/SummaryPage';
 import AttachmentsUploadPage from './upload-attachments/AttachmentsUploadPage';
 import UploadPersonalIdPage from './upload-personal-id/UploadPersonalIdPage';
@@ -44,6 +45,7 @@ const FyllUtRouter = ({ form }: Props) => {
             <Route path="send-i-posten" element={<PrepareLetterPage />} />
             <Route path="ingen-innsending" element={<PrepareIngenInnsendingPage />} />
             <Route path="paabegynt" element={<ActiveTasksPage />} />
+            <Route path="pdf" element={<StaticPdfPage />} />
           </Route>
           <Route element={<FormLayout allowSubmittedApplication />}>
             <Route path={'/kvittering'} element={<ReceiptPage />} />
