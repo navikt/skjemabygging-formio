@@ -4,7 +4,7 @@ import useFormsApiStaticPdf from '../../api/useFormsApiStaticPdf';
 
 interface StaticPdfContextType {
   formPath: string;
-  loading: boolean;
+  loadingFiles: boolean;
   getFile: (languageCode: string) => StaticPdf | undefined;
   uploadFile: (languageCode: string, file: File) => Promise<StaticPdf>;
   downloadFile: (languageCode: string) => Promise<Blob>;
@@ -20,7 +20,7 @@ const StaticPdfContext = createContext<StaticPdfContextType>({} as StaticPdfCont
 
 export const StaticPdfProvider = ({ children, formPath }: Props) => {
   const [files, setFiles] = useState<StaticPdf[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loadingFiles, setLoadingFiles] = useState<boolean>(false);
   const { getAll, uploadPdf, deletePdf, downloadPdf } = useFormsApiStaticPdf();
 
   const removeFile = useCallback((languageCode: string) => {
@@ -34,12 +34,12 @@ export const StaticPdfProvider = ({ children, formPath }: Props) => {
   }, []);
 
   const getFiles = useCallback(async () => {
-    setLoading(true);
+    setLoadingFiles(true);
     try {
       const allFiles = await getAll(formPath);
       setFiles(allFiles);
     } finally {
-      setLoading(false);
+      setLoadingFiles(false);
     }
   }, [formPath, getAll]);
 
@@ -51,14 +51,9 @@ export const StaticPdfProvider = ({ children, formPath }: Props) => {
 
   const uploadFile = useCallback(
     async (languageCode: string, file: File) => {
-      setLoading(true);
-      try {
-        const uploadedFile = await uploadPdf(formPath, languageCode, file);
-        addOrReplaceFile(uploadedFile);
-        return uploadedFile;
-      } finally {
-        setLoading(false);
-      }
+      const uploadedFile = await uploadPdf(formPath, languageCode, file);
+      addOrReplaceFile(uploadedFile);
+      return uploadedFile;
     },
     [formPath, addOrReplaceFile, uploadPdf],
   );
@@ -72,13 +67,8 @@ export const StaticPdfProvider = ({ children, formPath }: Props) => {
 
   const deleteFile = useCallback(
     async (languageCode: string) => {
-      setLoading(true);
-      try {
-        await deletePdf(formPath, languageCode);
-        removeFile(languageCode);
-      } finally {
-        setLoading(false);
-      }
+      await deletePdf(formPath, languageCode);
+      removeFile(languageCode);
     },
     [formPath, removeFile, deletePdf],
   );
@@ -93,7 +83,7 @@ export const StaticPdfProvider = ({ children, formPath }: Props) => {
     <StaticPdfContext.Provider
       value={{
         formPath,
-        loading,
+        loadingFiles,
         getFile,
         uploadFile,
         downloadFile,
