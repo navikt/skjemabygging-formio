@@ -9,6 +9,7 @@ import FormError from './error/FormError';
 import FormIntroPage from './intro-page/FormIntroPage';
 import { FormSettingsPage } from './settings/FormSettingsPage';
 import FormSkeleton from './skeleton/FormSkeleton';
+import StaticPdfUploadPage from './static-pdf/StaticPdfUploadPage.tsx';
 import { TestFormPage } from './TestFormPage';
 
 export const FormPage = () => {
@@ -43,6 +44,7 @@ export const FormPage = () => {
               </EditFormTranslationsProvider>
             }
           />
+          <Route path="pdf" element={<StaticPdfUploadPage form={formState.form} />} />
           <Route path="oversettelser" element={<FormTranslationsPage form={formState.form} />} />
           <Route path="" element={<Navigate to={'edit'} replace />} />
         </Routes>

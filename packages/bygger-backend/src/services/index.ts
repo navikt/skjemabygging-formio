@@ -7,6 +7,7 @@ import PublisherService from './PublisherService';
 import PusherService from './PusherService';
 import RecipientService from './RecipientService';
 import ReportService from './ReportService';
+import createStaticPdfService from './staticPdf/StaticPdfService';
 import createFormTranslationsService from './translation/FormTranslationService';
 import createGlobalTranslationService from './translation/GlobalTranslationsService';
 
@@ -27,6 +28,8 @@ const formsService = createFormsService(config.formsApi.url);
 const formPublicationsService = createFormPublicationsService(config.formsApi.url);
 
 const reportService = new ReportService(formsService, formPublicationsService);
+
+const staticPdfService = createStaticPdfService(config.formsApi.url);
 
 const prodFormsApiUrl = config.prodFormsApi?.url;
 const copyService = prodFormsApiUrl
@@ -51,4 +54,5 @@ export {
   pusherService,
   recipientService,
   reportService,
+  staticPdfService,
 };
