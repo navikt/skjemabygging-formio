@@ -387,8 +387,8 @@ describe('Digital submission without user login', () => {
           cy.contains('li', 'Norsk pass').should('exist');
           cy.contains('li', 'Bekreftelse på utdanning').should('exist');
         });
-      cy.get('.navds-alert--success').should('exist').and('be.visible');
-      cy.get('.navds-alert--warning').should('not.exist');
+      cy.get('.aksel-alert--success').should('exist').and('be.visible');
+      cy.get('.aksel-alert--warning').should('not.exist');
     });
 
     it('does not include file for attachment that was hidden by condition after upload', () => {
