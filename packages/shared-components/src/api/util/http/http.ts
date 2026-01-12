@@ -5,6 +5,7 @@ enum MimeType {
   TEXT = 'text/plain',
   PDF = 'application/pdf',
   MULTIPART_FORM_DATA = 'multipart/form-data',
+  OCTET_STREAM = 'application/octet-stream',
 }
 
 enum SubmissionMethodType {
@@ -147,7 +148,7 @@ const handleResponse = async (response: Response, opts?: FetchOptions) => {
     return response.json();
   } else if (isResponseType(response, MimeType.TEXT)) {
     return await response.text();
-  } else if (isResponseType(response, MimeType.PDF)) {
+  } else if (isResponseType(response, MimeType.PDF) || isResponseType(response, MimeType.OCTET_STREAM)) {
     return await response.blob();
   } else {
     return response;
