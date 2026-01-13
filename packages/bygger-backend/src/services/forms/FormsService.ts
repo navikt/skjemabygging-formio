@@ -44,7 +44,7 @@ const createFormsService = (formsApiUrl: string): FormsService => {
   const resetForm = async (formPath: string, revision: number, accessToken: string): Promise<Form> => {
     logger.info(`Reset form ${formPath} from revision ${revision}`);
     const response = await fetchWithErrorHandling(`${formsUrl}/${formPath}/reset`, {
-      method: 'POST',
+      method: 'DELETE',
       headers: createHeaders(accessToken, revision),
     });
     return response.data as Form;

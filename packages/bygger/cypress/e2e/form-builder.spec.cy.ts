@@ -339,7 +339,7 @@ describe('Form Builder', () => {
     it('should reset form to last published state', () => {
       cy.fixture('form123456.json').then((form) => {
         cy.intercept('GET', '/api/forms/tst123456', { body: { ...form, status: 'pending' } }).as('getForm');
-        cy.intercept('POST', /\/api\/forms\/tst123456\/reset\?.*/, { body: form }).as('resetForm');
+        cy.intercept('DELETE', /\/api\/forms\/tst123456\/reset\?.*/, { body: form }).as('resetForm');
         cy.intercept('GET', '/api/form-publications/tst123456', { body: form }).as('getPublishedForm');
       });
       cy.visit('forms/tst123456');

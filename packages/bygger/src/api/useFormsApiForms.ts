@@ -82,7 +82,7 @@ const useFormsApiForms = () => {
     const url = `${baseUrl}/${formPath}/reset?${searchParams}`;
     try {
       logger?.debug(`Resetting form with id ${formPath}: ${url}`);
-      const result = await http.post<Form>(url, {});
+      const result = await http.delete<Form>(url, {});
       logger?.debug(`Successfully reset form with id ${formPath}: ${url}`);
       feedbackEmit.success(`Endringer i skjemaet er forkastet`);
       return result;

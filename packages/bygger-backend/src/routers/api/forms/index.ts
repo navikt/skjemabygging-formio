@@ -12,7 +12,7 @@ formsRouter.get('/:formPath', forms.get);
 formsRouter.delete('/:formPath', formsApiAuthHandler, forms.deleteForm);
 formsRouter.post('/', formsApiAuthHandler, forms.post);
 formsRouter.put('/:formPath', formsApiAuthHandler, forms.put);
-formsRouter.post('/:formPath/reset', formsApiAuthHandler, forms.resetForm);
+formsRouter.delete('/:formPath/reset', formsApiAuthHandler, forms.resetForm);
 formsRouter.post('/:formPath/lock', formsApiAuthHandler, forms.postLockForm);
 formsRouter.delete('/:formPath/lock', formsApiAuthHandler, forms.deleteLockForm);
 formsRouter.use('/:formPath/translations', formsApiAuthHandler, formsApiFormTranslationsRouter);
