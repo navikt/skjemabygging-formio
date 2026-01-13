@@ -63,11 +63,12 @@ const getTexts = (htmlString: string): string[] => {
 /**
  * Groups consecutive child text nodes, <a>, <b>, and <strong> elements into a single <p> tag.
  */
-const groupLonelyChildren = (htmlString: string): string => {
+const groupLonelySiblings = (htmlString: string): string => {
   const div = document.createElement('div');
   div.innerHTML = htmlString;
   const fragment = document.createDocumentFragment();
   const tagsToWrap = ['A', 'B', 'STRONG', 'BR'];
+  const headingsParagraphsLists = ['H2', 'H3', 'P', 'OL', 'UL'];
 
   let buffer: ChildNode[] = [];
   const flushBuffer = () => {
@@ -83,7 +84,17 @@ const groupLonelyChildren = (htmlString: string): string => {
     }
   };
 
-  Array.from(div.childNodes).forEach((node) => {
+  const childNodes = Array.from(div.childNodes);
+  // if no headings, paragraphs or lists, return original htmlString
+  if (
+    !childNodes.some(
+      (node) => node.nodeType === Node.ELEMENT_NODE && headingsParagraphsLists.includes((node as HTMLElement).tagName),
+    )
+  ) {
+    return div.innerHTML;
+  }
+
+  childNodes.forEach((node) => {
     if (
       (node.nodeType === Node.TEXT_NODE && node.textContent && node.textContent.trim() !== '') ||
       (node.nodeType === Node.ELEMENT_NODE && tagsToWrap.includes((node as HTMLElement).tagName))
@@ -108,6 +119,6 @@ const htmlUtils = {
   sanitizeHtmlString,
   removeTags,
   getTexts,
-  groupLonelyChildren,
+  groupLonelySiblings,
 };
 export default htmlUtils;

@@ -77,7 +77,7 @@ const WysiwygEditor = forwardRef<HTMLDivElement, Props>(
     const handleBlur = () => {
       // Apply removeUnwantedTags, then wrap top level text nodes (+ a, b and strong tags) in <p>
       const cleanedHtml = removeDivs(
-        htmlUtils.groupLonelyChildren(
+        htmlUtils.groupLonelySiblings(
           removeUnwantedTags(removeEmptyTags(sanitizeHtmlString(htmlValue, { FORBID_ATTR: ['style'] }))),
         ),
       );
