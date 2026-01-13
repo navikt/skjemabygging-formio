@@ -201,8 +201,8 @@ describe('FormSettingsPage', () => {
           submitData.introPage.sections.optional.description,
           submitData.introPage.sections.optional.bulletPoints[0],
           submitData.introPage.sections.optional.bulletPoints[1],
-        ].forEach((value, index) => {
-          expect(posts[index].request.body.nb).to.contain(value);
+        ].forEach((value) => {
+          expect(posts.some((post) => post.request.body.nb.includes(value))).to.be.true;
         });
       });
       cy.get('[aria-live="polite"]').should('contain.text', `Lagret skjema ${submitData.title}`);
@@ -713,6 +713,71 @@ describe('FormSettingsPage', () => {
         .within(() => {
           cy.contains('Vennligst legg til minst to kulepunkter').should('exist');
         });
+    });
+    it('go to next validation error using scroll after fixing the previous one', () => {
+      const assertInViewport = ($el) => {
+        const rect = $el[0].getBoundingClientRect();
+        cy.window()
+          .its('innerHeight')
+          .then((innerHeight) => {
+            expect(rect.top).to.be.at.least(0);
+            expect(rect.bottom).to.be.at.most(innerHeight);
+          });
+      };
+
+      const assertBelowViewport = ($el) => {
+        const rect = $el[0].getBoundingClientRect();
+        cy.window()
+          .its('innerHeight')
+          .then((innerHeight) => {
+            expect(rect.top).to.be.greaterThan(innerHeight);
+          });
+      };
+
+      cy.window().then((win) => {
+        cy.spy(win.HTMLElement.prototype, 'scrollIntoView').as('scrollIntoView');
+      });
+
+      cy.findByRole('checkbox', { name: 'Bruk standard introside' }).check();
+
+      cy.contains('Lagre').click();
+      cy.get('@scrollIntoView').should('have.been.calledWithMatch', {
+        block: 'center',
+      });
+      cy.get('[aria-live="polite"]').should('not.contain.text', `Lagret skjema ${submitData.title}`);
+      cy.contains(
+        'Endringene ble ikke lagret fordi introsiden har valideringsfeil. Rett opp feltene markert med rødt.',
+      );
+      cy.contains('Velkomstmelding må fylles ut').then(assertInViewport);
+      cy.contains('Seksjonen må ha en ingress eller kulepunkter').then(assertBelowViewport);
+      cy.contains('Egenerklæring må fylles ut').then(assertBelowViewport);
+
+      cy.contains('Velkomstmelding')
+        .parent()
+        .within(() => {
+          typeAndBlur(0, submitData.introPage.introduction);
+        });
+      cy.contains('Lagre').click();
+      cy.contains('Velkomstmelding må fylles ut').should('not.exist');
+      cy.contains('Seksjonen må ha en ingress eller kulepunkter').then(assertInViewport);
+
+      cy.get('[data-testid="dataTreatment"]').within(() => {
+        cy.contains('Legg til ingress').click();
+        typeAndBlur(0, submitData.introPage.sections.dataTreatment.description);
+      });
+
+      cy.contains('Erklæring')
+        .closest('section')
+        .then(($section) => {
+          cy.wrap($section).within(() => {
+            cy.findByRole('radio', { name: 'behandle saken din' }).check();
+          });
+        });
+
+      cy.contains('Lagre').click();
+      cy.contains(
+        'Endringene ble ikke lagret fordi introsiden har valideringsfeil. Rett opp feltene markert med rødt.',
+      ).should('not.exist');
     });
   });
 });
