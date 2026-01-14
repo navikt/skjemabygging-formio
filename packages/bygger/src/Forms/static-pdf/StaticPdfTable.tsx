@@ -14,11 +14,11 @@ const useStyles = makeStyles({
 });
 
 const StaticPdfTable = () => {
-  const { loading } = useStaticPdf();
+  const { loadingFiles } = useStaticPdf();
 
   const styles = useStyles();
 
-  if (loading) {
+  if (loadingFiles) {
     return null;
   }
 
