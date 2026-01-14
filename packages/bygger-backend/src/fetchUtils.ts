@@ -50,7 +50,10 @@ export async function fetchWithErrorHandling(url: RequestInfo, options: RequestI
       status: 'OK',
       data: await res.json(),
     };
-  } else if (res.headers.get('content-type')?.includes('application/pdf')) {
+  } else if (
+    res.headers.get('content-type')?.includes('application/pdf') ||
+    res.headers.get('content-type')?.includes('application/octet-stream')
+  ) {
     return {
       status: 'OK',
       data: stringTobase64(await res.arrayBuffer()),
