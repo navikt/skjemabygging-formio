@@ -26,7 +26,7 @@ const global = {
     textAlign: 'left',
     color: '#262626',
   },
-  'a:not(.aksel-button)': {
+  'a:not([class])': {
     color: 'var(--ax-text-accent-subtle)',
     gap: 'var(--ax-space-4)',
   },
