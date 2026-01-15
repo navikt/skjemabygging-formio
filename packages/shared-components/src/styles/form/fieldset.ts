@@ -10,7 +10,7 @@ const fieldset = {
       marginBottom: 0,
       overflow: 'auto',
       '&--background-color': {
-        borderRadius: '0.25rem',
+        borderRadius: 'var(--ax-radius-12)',
         backgroundColor: 'var(--ax-brand-blue-100)',
       },
     },
