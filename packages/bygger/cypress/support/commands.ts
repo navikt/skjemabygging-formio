@@ -43,3 +43,20 @@ Cypress.on('uncaught:exception', (err, _runnable, _promise) => {
   }
   return true;
 });
+
+Cypress.Commands.add('defaultIntercepts', () => {
+  cy.intercept('POST', '/api/log/error', { body: 'ok' }).as('logger');
+  cy.intercept('GET', '/api/config', { fixture: 'config.json' }).as('getConfig');
+  cy.intercept('GET', '/api/forms/*', { fixture: 'getForm.json' }).as('getForm');
+  cy.intercept('GET', '/api/translations', { fixture: 'globalTranslations.json' }).as('getTranslations');
+  cy.intercept('GET', '/api/forms/*/translations', { body: [] }).as('getFormTranslations');
+  return cy;
+});
+
+Cypress.Commands.add('defaultWaits', () => {
+  cy.wait('@getConfig');
+  cy.wait('@getForm');
+  cy.wait('@getTranslations');
+  cy.wait('@getFormTranslations');
+  return cy;
+});

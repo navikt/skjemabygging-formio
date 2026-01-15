@@ -50,6 +50,14 @@ export async function fetchWithErrorHandling(url: RequestInfo, options: RequestI
       status: 'OK',
       data: await res.json(),
     };
+  } else if (
+    res.headers.get('content-type')?.includes('application/pdf') ||
+    res.headers.get('content-type')?.includes('application/octet-stream')
+  ) {
+    return {
+      status: 'OK',
+      data: stringTobase64(await res.arrayBuffer()),
+    };
   }
 
   const logMeta = { status: res.status, method };
@@ -60,7 +68,7 @@ export async function fetchWithErrorHandling(url: RequestInfo, options: RequestI
   };
 }
 
-export function stringTobase64(str: string) {
+export function stringTobase64(str: any) {
   return Buffer.from(str).toString('base64');
 }
 

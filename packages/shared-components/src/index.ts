@@ -4,6 +4,7 @@ import preset from 'jss-preset-default';
 import type { FetchHeader, FetchOptions } from './api/util/http/http';
 import http from './api/util/http/http';
 import ButtonWithSpinner from './components/button/ButtonWithSpinner';
+import DownloadPdfButton from './components/button/DownloadPdfButton';
 import { FieldsetErrorMessage } from './components/error/FieldsetErrorMessage';
 import ErrorPage from './components/error/page/ErrorPage';
 import { FormContainer } from './components/form/container/FormContainer';
@@ -26,6 +27,7 @@ import FormBuilderOptions from './formio/form-builder-options';
 import './formio/overrides';
 import FyllUtRouter from './pages/FyllUtRouter';
 import Styles from './styles';
+import { b64toBlob } from './util/blob/blob';
 import { getCountries } from './util/countries/countries';
 import * as formUtils from './util/form/form.js';
 import NavFormioJs from './util/formio/formiojs';
@@ -40,8 +42,10 @@ jss.setup(preset());
 
 export {
   AppConfigProvider,
+  b64toBlob,
   ButtonWithSpinner,
   ConfirmationModal,
+  DownloadPdfButton,
   ErrorPage,
   FieldsetErrorMessage,
   FormBuilderOptions,

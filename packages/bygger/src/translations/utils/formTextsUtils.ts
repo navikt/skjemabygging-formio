@@ -209,7 +209,7 @@ const extractAllFormTexts = (form?: Form): string[] => {
   ].filter((text, index, currentTexts) => withoutDuplicatedComponents(text, index, currentTexts));
 };
 
-const getFormTextsForTranslations = (form: Form) => {
+const getTextKeysFromForm = (form: Form) => {
   // The following form texts should not be maintained as form translations:
   // - Country names (handled by a third party package and added to the i18n object in FyllUt)
   // - Global intro page texts (should not be overwritten in form translations)
@@ -219,4 +219,4 @@ const getFormTextsForTranslations = (form: Form) => {
     .filter((text) => !!text && !externalStorageTexts.keys.introPage.includes(text as Tkey));
 };
 
-export { getFormTextsForTranslations };
+export { getTextKeysFromForm };

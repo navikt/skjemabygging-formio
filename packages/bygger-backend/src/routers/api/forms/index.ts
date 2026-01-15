@@ -1,6 +1,7 @@
 import express from 'express';
 import formsApiFormTranslationsRouter from '../forms-api-form-translations';
 import authHandlers from '../helpers/authHandlers';
+import formsApiStaticPdfRouter from '../static-pdf';
 import forms from './forms';
 
 const formsRouter = express.Router();
@@ -14,5 +15,6 @@ formsRouter.put('/:formPath', formsApiAuthHandler, forms.put);
 formsRouter.post('/:formPath/lock', formsApiAuthHandler, forms.postLockForm);
 formsRouter.delete('/:formPath/lock', formsApiAuthHandler, forms.deleteLockForm);
 formsRouter.use('/:formPath/translations', formsApiAuthHandler, formsApiFormTranslationsRouter);
+formsRouter.use('/:formPath/static-pdfs', formsApiAuthHandler, formsApiStaticPdfRouter);
 
 export default formsRouter;
