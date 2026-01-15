@@ -56,6 +56,9 @@ const global = {
   '#root .aksel-page__content--padding': {
     paddingBlockEnd: 0,
   },
+  '.intro-guide-panel .navds-guide-panel__content': {
+    padding: 'var(--ax-space-20)',
+  },
   ...labelTrackChanges,
   ...errorSummary,
   ...margin,
