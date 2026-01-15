@@ -9,13 +9,13 @@ const list = {
       marginLeft: 0,
     },
   },
-  '& ol, & ul:not(.navds-combobox__list-options):not(.navds-combobox__selected-options)': {
+  '& ol, & ul:not(.aksel-combobox__list-options):not(.aksel-combobox__selected-options)': {
     marginTop: 0,
-    paddingLeft: 'var(--a-spacing-5)',
+    paddingLeft: 'var(--ax-space-20)',
     '& li': {
-      marginBottom: 'var(--a-spacing-3)',
+      marginBottom: 'var(--ax-space-12)',
       '&:first-child': {
-        marginTop: 'var(--a-spacing-3)',
+        marginTop: 'var(--ax-space-12)',
       },
     },
   },

@@ -16,10 +16,10 @@ import DrivingPeriod from './DrivingPeriod';
 const useDrivinglistStyles = makeStyles({
   buttonContainer: {
     display: 'flex',
-    gap: 'var(--a-spacing-4)',
+    gap: 'var(--ax-space-16)',
   },
   accoridonHeader: {
-    marginBottom: 'var(--a-spacing-2)',
+    marginBottom: 'var(--ax-space-8)',
   },
 });
 

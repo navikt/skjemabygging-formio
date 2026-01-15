@@ -1,11 +1,11 @@
 const alert = {
-  '& .navds-alert': {
+  '& .aksel-alert': {
     '& h1, & h2, & h3, & h4, & h5, & p': {
       marginTop: 0,
     },
   },
   '& .formio-component-alertstripe': {
-    marginBottom: 'var(--a-spacing-10)',
+    marginBottom: 'var(--ax-space-40)',
     '& .alertContent :last-child': {
       marginBottom: 0,
     },

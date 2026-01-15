@@ -14,7 +14,7 @@ export interface Props {
 
 const useStyles = makeStyles({
   sidePadding: {
-    padding: '0 var(--a-spacing-4)',
+    padding: '0 var(--ax-space-16)',
   },
   overflowHidden: {
     overflow: 'hidden',

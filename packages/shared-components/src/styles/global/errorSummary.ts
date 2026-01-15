@@ -1,10 +1,10 @@
 const errorSummary = {
-  '.navds-error-summary': {
+  '.aksel-error-summary': {
     '@media screen and (min-width: 40rem)': {
       maxWidth: '608px',
     },
-    marginBottom: 'var(--a-spacing-10)',
-    '& .navds-link': {
+    marginBottom: 'var(--ax-space-40)',
+    '& .aksel-link': {
       cursor: 'pointer',
     },
   },

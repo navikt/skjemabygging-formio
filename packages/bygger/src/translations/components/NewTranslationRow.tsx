@@ -22,7 +22,7 @@ const NewTranslationRow = () => {
       <Table.DataCell className={styles.column}>
         <TextField
           autoFocus
-          className={missingKeyError || error ? 'navds-text-field--error' : ''}
+          className={missingKeyError || error ? 'aksel-text-field--error' : ''}
           hideLabel
           label={'Bokmål'}
           value={newTranslation.nb}
@@ -31,7 +31,7 @@ const NewTranslationRow = () => {
       </Table.DataCell>
       <Table.DataCell className={styles.column}>
         <TextField
-          className={missingKeyError || error ? 'navds-text-field--error' : ''}
+          className={missingKeyError || error ? 'aksel-text-field--error' : ''}
           hideLabel
           label={'Nynorsk'}
           value={newTranslation.nn}
@@ -40,7 +40,7 @@ const NewTranslationRow = () => {
       </Table.DataCell>
       <Table.DataCell className={styles.column}>
         <TextField
-          className={missingKeyError || error ? 'navds-text-field--error' : ''}
+          className={missingKeyError || error ? 'aksel-text-field--error' : ''}
           hideLabel
           label={'Engelsk'}
           value={newTranslation.en}

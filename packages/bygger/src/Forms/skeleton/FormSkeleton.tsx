@@ -5,7 +5,7 @@ import RowLayout from '../../components/layout/RowLayout';
 
 const useStyles = makeStyles({
   header: {
-    marginBottom: 'var(--a-spacing-4)',
+    marginBottom: 'var(--ax-space-16)',
   },
 });
 

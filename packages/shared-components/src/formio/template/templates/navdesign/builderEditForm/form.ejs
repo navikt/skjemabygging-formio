@@ -6,7 +6,7 @@
 <div class="row">
   {% if (ctx.instance.navFormDiff) { %}
   <div class="col col-sm-12">
-      <div class="navds-alert navds-alert--warning mb-4">
+      <div class="aksel-alert aksel-alert--warning mb-4">
           <div>
               {{ctx.util.navFormDiffToHtml(ctx.instance.navFormDiff)}}
           </div>
@@ -15,7 +15,7 @@
   {% } %}
   {% if (ctx.instance.conditionalAlert) { %}
   <div class="col col-sm-12">
-    <div class="navds-alert navds-alert--warning mb-4">
+    <div class="aksel-alert aksel-alert--warning mb-4">
       <div>
         <span id="conditional-alert-heading">{{ctx.instance.conditionalAlert.message}}</span>
         <ul aria-labelledby="conditional-alert-heading">
@@ -35,14 +35,14 @@
     </div>
     {% } %}
     <div style="margin-top: 10px; margin-bottom: 20px;">
-      <button class="navds-button navds-button--primary" style="margin-right: 10px;" type="button" ref="saveButton">
-        <span aria-live="polite" class="navds-label" data-testid="editorSaveButton">{{ctx.t('Ok')}}</span>
+      <button class="aksel-button aksel-button--primary" style="margin-right: 10px;" type="button" data-variant="primary" ref="saveButton">
+        <span aria-live="polite" class="aksel-label" data-testid="editorSaveButton">{{ctx.t('Ok')}}</span>
       </button>
-      <button class="navds-button navds-button--secondary" style="margin-right: 10px;" type="button" ref="cancelButton">
-        <span aria-live="polite" class="navds-label" data-testid="editorCancelButton">{{ctx.t('Avbryt')}}</span>
+      <button class="aksel-button aksel-button--secondary" style="margin-right: 10px;" type="button" data-variant="secondary" ref="cancelButton">
+        <span aria-live="polite" class="aksel-label" data-testid="editorCancelButton">{{ctx.t('Avbryt')}}</span>
       </button>
-      <button class="navds-button navds-button--danger" type="button" ref="removeButton">
-        <span aria-live="polite" class="navds-label" data-testid="editorRemoveButton">{{ctx.t('Slett')}}</span>
+      <button class="aksel-button aksel-button--danger" type="button" data-variant="primary" data-color="danger" ref="removeButton">
+        <span aria-live="polite" class="aksel-label" data-testid="editorRemoveButton">{{ctx.t('Slett')}}</span>
       </button>
     </div>
   </div>
@@ -61,3 +61,4 @@
   </div>
   {% } %}
 </div>
+

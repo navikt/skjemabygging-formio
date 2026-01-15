@@ -42,7 +42,7 @@ const TranslationInput = ({
   return (
     <Textarea
       autoFocus={autoFocus}
-      className={error ? 'navds-textarea--error' : ''}
+      className={error ? 'aksel-textarea--error' : ''}
       label={label}
       hideLabel
       minRows={minRows}

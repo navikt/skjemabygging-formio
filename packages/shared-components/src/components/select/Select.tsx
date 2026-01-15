@@ -21,7 +21,7 @@ const Select = forwardRef<HTMLSelectElement, Props>(
   ({ id, label, value, options = [], description, className, readOnly, onChange, error, fieldSize }: Props, ref) => {
     const styles = useComponentStyle({
       fieldSize,
-      cssSelector: '& .navds-select__container',
+      cssSelector: '& .aksel-select__container',
     });
     const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
       const selectedValue = event.currentTarget.value;

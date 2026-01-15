@@ -60,7 +60,7 @@ const IntroPageStatic = () => {
 
   return (
     <>
-      <GuidePanel poster className="mb">
+      <GuidePanel poster className="mb intro-guide-panel">
         <Heading level="2" size="small" spacing>
           {translate(TEXTS.statiske.introPage.title)}
         </Heading>
@@ -81,7 +81,7 @@ const IntroPageStatic = () => {
               {translate(saveDataBullet)}
             </li>
           )}
-          <li className="mb-4">
+          <li>
             <b>{translate(TEXTS.statiske.introPage.publicComputerBold)} </b>
             {translate(TEXTS.statiske.introPage.publicComputer)}
           </li>

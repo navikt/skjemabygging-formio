@@ -14,11 +14,11 @@ const useStyles = makeStyles({
   downloadLink: {
     display: 'inline-flex',
     alignItems: 'center',
-    fontSize: 'var(--a-font-size-medium)',
-    lineHeight: 'var(--a-font-line-height-medium)',
+    fontSize: 'var(--ax-font-size-medium)',
+    lineHeight: 'var(--ax-font-line-height-medium)',
   },
   downloadLinkIcon: {
-    fontSize: 'var(--a-font-size-xlarge)',
+    fontSize: 'var(--ax-font-size-xlarge)',
   },
 });
 
@@ -86,7 +86,7 @@ export function ReceiptPage() {
                 icon={
                   <CheckmarkCircleFillIcon
                     color="currentColor"
-                    style={{ color: 'var(--a-icon-success)' }}
+                    style={{ color: 'var(--ax-text-success-decoration)' }}
                     fontSize="1.5rem"
                     aria-hidden
                   />
@@ -114,7 +114,7 @@ export function ReceiptPage() {
                   icon={
                     <CheckmarkCircleFillIcon
                       color="currentColor"
-                      style={{ color: 'var(--a-icon-success)' }}
+                      style={{ color: 'var(--ax-text-success-decoration)' }}
                       fontSize="1.5rem"
                       aria-hidden
                     />

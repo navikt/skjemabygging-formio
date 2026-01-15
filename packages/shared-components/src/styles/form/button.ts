@@ -1,7 +1,7 @@
 const button = {
-  '& .navds-button': {
+  '& .aksel-button': {
     '&--secondary': {
-      backgroundColor: 'var(--a-white)',
+      backgroundColor: 'var(--ax-bg-raised)',
     },
   },
 };

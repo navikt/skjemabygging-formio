@@ -1,5 +1,5 @@
 <div id="{{ ctx.wizardKey }}-header" ref="{{ctx.wizardKey}}-header">
-    <button style="background-color: white" class="stepper-toggle navds-button navds-button--secondary navds-button--small" ref="{{ctx.wizardKey}}-stepper-open">
+    <button style="background-color: white" class="stepper-toggle aksel-button aksel-button--secondary aksel-button--small" data-variant="secondary" ref="{{ctx.wizardKey}}-stepper-open">
         <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false" role="img">
             <path fill-rule="evenodd" clip-rule="evenodd" d="m6.586 12 7.707-7.707 1.414 1.414L9.414 12l6.293 6.293-1.414 1.414L6.586 12Z" fill="currentColor" />
         </svg>
@@ -8,8 +8,8 @@
     <div class="stepper-backdrop" ref="{{ctx.wizardKey}}-stepper-backdrop"></div>
     <nav aria-label="Søknadssteg" class="stegindikator stepper" ref="{{ctx.wizardKey}}-stepper">
         <div class="stepper-container">
-            <button class="stepper-close navds-button navds-button--tertiary navds-button--medium" ref="{{ctx.wizardKey}}-stepper-close">
-                <span class="navds-button__icon">
+            <button class="stepper-close aksel-button aksel-button--tertiary aksel-button--medium" data-variant="tertiary" ref="{{ctx.wizardKey}}-stepper-close">
+                <span class="aksel-button__icon">
                     <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false" role="img" aria-hidden="true">
                         <title>{{ctx.t("Lukk")}}</title>
                         <path fill-rule="evenodd" clip-rule="evenodd" d="M21 4.385 13.385 12 21 19.615 19.615 21 12 13.385 4.385 21 3 19.615 10.615 12 3 4.385 4.385 3 12 10.615 19.615 3 21 4.385Z" fill="currentColor"></path>
@@ -17,35 +17,35 @@
                 </span>
                 {{ctx.t("Lukk")}}
             </button>
-            <ol class="navds-stepper">
+            <ol class="aksel-stepper">
                 {% ctx.panels.forEach(function(panel, index) { %}
-                <li class="navds-stepper__item">
-                    <span class="navds-stepper__line navds-stepper__line--1"></span>
+                <li class="aksel-stepper__item">
+                    <span class="aksel-stepper__line aksel-stepper__line--1"></span>
                     <a
                         href="#"
-                        class="navds-stepper__step {{ctx.currentPage > index ? 'navds-stepper__step--behind navds-stepper__step--completed' : ctx.currentPage === index ? 'navds-stepper__step--active' : ''}}"
+                        class="aksel-stepper__step {{ctx.currentPage > index ? 'aksel-stepper__step--behind aksel-stepper__step--completed' : ctx.currentPage === index ? 'aksel-stepper__step--active' : ''}}"
                         ref="{{ctx.wizardKey}}-link"
                         {% if (ctx.currentPage === index) { %}
                         aria-current="step"
                         {% } %}
                     >
-                        <span class="navds-stepper__circle navds-label" aria-hidden="true">{{ctx.t(index+1)}}</span>
-                        <span class="navds-stepper__content navds-label">{{ctx.t(ctx.panels[index].title, { _userInput: true })}}</span>
+                        <span class="aksel-stepper__circle aksel-label" aria-hidden="true">{{ctx.t(index+1)}}</span>
+                        <span class="aksel-stepper__content aksel-label">{{ctx.t(ctx.panels[index].title, { _userInput: true })}}</span>
                     </a>
-                    <span class="navds-stepper__line navds-stepper__line--2"></span>
+                    <span class="aksel-stepper__line aksel-stepper__line--2"></span>
                 </li>
                 {% }) %}
-                <li class="navds-stepper__item">
-                    <span class="navds-stepper__line navds-stepper__line--1"></span>
+                <li class="aksel-stepper__item">
+                    <span class="aksel-stepper__line aksel-stepper__line--1"></span>
                     <a
                             href="#"
-                            class="navds-stepper__step"
+                            class="aksel-stepper__step"
                             ref="{{ctx.wizardKey}}-stepper-summary"
                     >
-                        <span class="navds-stepper__circle navds-label" aria-hidden="true">{{ctx.t(ctx.panels.length+1)}}</span>
-                        <span class="navds-stepper__content navds-label">{{ctx.t("Oppsummering", { _userInput: true })}}</span>
+                        <span class="aksel-stepper__circle aksel-label" aria-hidden="true">{{ctx.t(ctx.panels.length+1)}}</span>
+                        <span class="aksel-stepper__content aksel-label">{{ctx.t("Oppsummering", { _userInput: true })}}</span>
                     </a>
-                    <span class="navds-stepper__line navds-stepper__line--2"></span>
+                    <span class="aksel-stepper__line aksel-stepper__line--2"></span>
                 </li>
             </ol>
         </div>

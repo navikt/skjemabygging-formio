@@ -1,16 +1,16 @@
 const typography = {
   '& .description': {
-    marginBottom: 'var(--a-spacing-2)',
-    color: 'var(--a-gray-700)',
+    marginBottom: 'var(--ax-space-8)',
+    color: 'var(--ax-neutral-800)',
   },
   '& p': {
     marginTop: '0',
   },
   '& h3, & h4': {
-    margin: '0 0 var(--a-spacing-3) 0',
+    margin: '0 0 var(--ax-space-12) 0',
   },
   '& h3 + h4': {
-    marginTop: 'var(--a-spacing-6)',
+    marginTop: 'var(--ax-space-24)',
   },
 };
 

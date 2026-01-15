@@ -12,11 +12,11 @@ describe('Alert', () => {
 
   // New alerts (using react)
   it('should show default info with content', () => {
-    cy.get('.navds-alert').contains('New alert 1');
+    cy.get('.aksel-alert').contains('New alert 1');
   });
 
   it('should show success variant with content', () => {
-    cy.get('.navds-alert--success').contains('New alert 2');
+    cy.get('.aksel-alert--success').contains('New alert 2');
   });
 
   it('should not show any labels', () => {
@@ -29,6 +29,6 @@ describe('Alert', () => {
   });
 
   it('should display alert with norwegian alerttype (suksess instead of success)', () => {
-    cy.get('.formio-component-alertstripenorwegian').find('.navds-alert--success').contains('Norwegian alertType');
+    cy.get('.formio-component-alertstripenorwegian').find('.aksel-alert--success').contains('Norwegian alertType');
   });
 });

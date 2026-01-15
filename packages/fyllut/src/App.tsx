@@ -1,4 +1,5 @@
-import '@navikt/ds-css';
+import '@navikt/ds-css/darkside';
+import { Theme } from '@navikt/ds-react';
 import { makeStyles, Styles } from '@navikt/skjemadigitalisering-shared-components';
 import { Route, Routes } from 'react-router';
 import { FormNotFoundPage } from './components/errors/FormNotFoundPage';
@@ -19,13 +20,15 @@ const App = () => {
 
   return (
     <main className={styles.app}>
-      <Routes>
-        <Route path="/" element={<FormsPage />} />
-        <Route path="/500" element={<InternalServerErrorPage />} />
-        <Route path="/soknad-ikke-funnet" element={<FormNotFoundPage />} />
-        <Route path="/sesjon-utlopt" element={<SessionExpiredPage />} />
-        <Route path="/:formPath/*" element={<FormPageWrapper />} />
-      </Routes>
+      <Theme theme="light">
+        <Routes>
+          <Route path="/" element={<FormsPage />} />
+          <Route path="/500" element={<InternalServerErrorPage />} />
+          <Route path="/soknad-ikke-funnet" element={<FormNotFoundPage />} />
+          <Route path="/sesjon-utlopt" element={<SessionExpiredPage />} />
+          <Route path="/:formPath/*" element={<FormPageWrapper />} />
+        </Routes>
+      </Theme>
     </main>
   );
 };

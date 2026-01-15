@@ -1,6 +1,6 @@
 const panel = {
   '& .formio-component-panel': {
-    marginBottom: 'var(--a-spacing-10)',
+    marginBottom: 'var(--ax-space-40)',
   },
 };
 

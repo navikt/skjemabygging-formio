@@ -4,7 +4,7 @@ import makeStyles from '../../util/styles/jss/jss';
 
 const useStyles = makeStyles({
   primaryButtonVariant: {
-    color: 'var(--a-white)',
+    color: 'var(--ax-text-contrast)',
     textDecoration: 'none',
   },
   otherButtonVariant: {
@@ -18,7 +18,7 @@ type LinkButtonProps = { buttonVariant: ButtonProps['variant']; children?: React
 const LinkButton = ({ buttonVariant = 'primary', children, ...rest }: LinkButtonProps) => {
   const styles = useStyles();
 
-  const className = `navds-button navds-button--${buttonVariant} ${buttonVariant === 'primary' ? styles.primaryButtonVariant : styles.otherButtonVariant}`;
+  const className = `aksel-button aksel-button--${buttonVariant} ${buttonVariant === 'primary' ? styles.primaryButtonVariant : styles.otherButtonVariant}`;
 
   return (
     <Link as={ReactRouterLink} {...rest} className={className}>

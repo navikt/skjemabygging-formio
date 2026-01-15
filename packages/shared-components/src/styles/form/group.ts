@@ -1,15 +1,15 @@
 const group = {
   '& .form-group:not(.formio-hidden)': {
     clear: 'both',
-    marginBottom: 'var(--a-spacing-10)',
+    marginBottom: 'var(--ax-space-40)',
 
     '&:last-child.formio-component-navSkjemagruppe, &:last-child.formio-component-datagrid': {
-      marginBottom: 'var(--a-spacing-6)',
+      marginBottom: 'var(--ax-space-24)',
     },
   },
   '& .group-margin-small .form-group:not(.formio-hidden)': {
     clear: 'both',
-    marginBottom: 'var(--a-spacing-3)',
+    marginBottom: 'var(--ax-space-12)',
   },
 };
 

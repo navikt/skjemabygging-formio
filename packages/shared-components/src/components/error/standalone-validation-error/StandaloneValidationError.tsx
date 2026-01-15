@@ -5,7 +5,7 @@ import InnerHtmlLong from '../../inner-html/InnerHtmlLong';
 
 const useStyles = makeStyles({
   container: {
-    margin: 'var(--a-spacing-2) 0',
+    margin: 'var(--ax-space-8) 0',
     display: 'flex',
     alignItems: 'center',
   },
@@ -13,11 +13,11 @@ const useStyles = makeStyles({
     flex: 'none',
     marginRight: '4px',
     '&:is(svg) path': {
-      fill: 'var(--a-icon-danger)',
+      fill: 'var(--ax-text-danger-decoration)',
     },
   },
   text: {
-    color: 'var(--a-text-danger)',
+    color: 'var(--ax-text-danger-subtle)',
   },
 });
 
@@ -39,7 +39,7 @@ const StandaloneValidationError = ({ children }: Props) => {
   return (
     <div className={styles.container}>
       <ExclamationmarkTriangleFillIcon aria-hidden fontSize="1rem" className={styles.icon} />
-      <InnerHtmlLong content={children} className={classNames(styles.text, 'navds-label')} />
+      <InnerHtmlLong content={children} className={classNames(styles.text, 'aksel-label')} />
     </div>
   );
 };

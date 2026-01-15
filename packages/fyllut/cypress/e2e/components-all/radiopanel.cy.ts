@@ -1,3 +1,8 @@
+const assertRadioWithDescription = (label: string, description: string) => {
+  cy.findByRole('radio', { name: label }).should('exist');
+  cy.contains(description).should('exist');
+};
+
 describe('Radiopanel', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
@@ -41,9 +46,9 @@ describe('Radiopanel', () => {
     it('should display descriptions for each radio option', () => {
       const label = 'Radioknapper med beskrivelse';
       cy.withinComponent(label, () => {
-        cy.findByRole('radio', { name: 'Ja Positivt svar' }).should('exist');
-        cy.findByRole('radio', { name: 'Nei Negativt svar' }).should('exist');
-        cy.findByRole('radio', { name: 'Kanskje Nølende svar' }).should('exist');
+        assertRadioWithDescription('Ja', 'Positivt svar');
+        assertRadioWithDescription('Nei', 'Negativt svar');
+        assertRadioWithDescription('Kanskje', 'Nølende svar');
       });
     });
   });
@@ -94,7 +99,7 @@ describe('Radiopanel', () => {
 
       cy.findByRole('heading', { name: 'Data' }).should('exist');
       cy.withinComponent('Radioknapper med beskrivelse', () => {
-        cy.findByRole('radio', { name: 'Kanskje Nølende svar' }).click();
+        cy.findByRole('radio', { name: 'Kanskje' }).click();
       });
       cy.clickNextStep();
 
@@ -148,9 +153,9 @@ describe('Radiopanel', () => {
       cy.clickShowAllSteps();
       cy.findByRole('link', { name: 'Data (en)' }).click();
       cy.withinComponent('Radioknapper med beskrivelse (en)', () => {
-        cy.findByRole('radio', { name: 'Ja (en) Positivt svar (en)' }).should('exist');
-        cy.findByRole('radio', { name: 'Nei (en) Negativt svar (en)' }).should('exist');
-        cy.findByRole('radio', { name: 'Kanskje (en) Nølende svar (en)' }).should('exist');
+        assertRadioWithDescription('Ja (en)', 'Positivt svar (en)');
+        assertRadioWithDescription('Nei (en)', 'Negativt svar (en)');
+        assertRadioWithDescription('Kanskje (en)', 'Nølende svar (en)');
       });
     });
   });

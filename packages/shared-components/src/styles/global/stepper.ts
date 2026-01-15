@@ -9,7 +9,7 @@ const stepper = {
       top: 0,
     },
 
-    '& .navds-stepper__content': {
+    '& .aksel-stepper__content': {
       maxWidth: '26ch',
       wordBreak: 'break-word',
       hyphens: 'auto',
@@ -53,7 +53,7 @@ const stepper = {
     top: '9rem',
     width: 'initial',
     minWidth: 'initial',
-    backgroundColor: 'var(--a-bg-default)',
+    backgroundColor: 'var(--ax-bg-default)',
 
     '@media screen and (min-width: 40rem)': {
       display: 'none',

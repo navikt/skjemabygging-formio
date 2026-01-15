@@ -1,4 +1,5 @@
 import { ReactComponent } from '@formio/react';
+import { Theme } from '@navikt/ds-react';
 import { ComponentError, SubmissionData } from '@navikt/skjemadigitalisering-shared-domain';
 import { createRoot } from 'react-dom/client';
 import Ready from '../../../util/form/ready';
@@ -46,6 +47,13 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
   attachReact(element: any) {
     this.logger.debug('attachReact', { path: this.path });
     this.rootElement = createRoot(element);
+    const originalRender = this.rootElement.render.bind(this.rootElement);
+    this.rootElement.render = (node) =>
+      originalRender(
+        <Theme theme="light" hasBackground={false} asChild>
+          {node}
+        </Theme>,
+      );
     this.renderReact(this.rootElement);
   }
 

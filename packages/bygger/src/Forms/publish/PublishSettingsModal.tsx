@@ -16,12 +16,12 @@ const useStatusPanelStyles = makeStyles({
     width: '100%',
     marginBottom: '2rem',
     '& td': {
-      paddingRight: 'var(--a-spacing-3)',
+      paddingRight: 'var(--ax-space-12)',
     },
   },
   languageList: {
     margin: 0,
-    paddingLeft: 'var(--a-spacing-5)',
+    paddingLeft: 'var(--ax-space-20)',
   },
 });
 

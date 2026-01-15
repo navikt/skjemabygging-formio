@@ -26,7 +26,7 @@ describe('Month picker', () => {
 
     it('should select month and show it in summary', () => {
       cy.findByRole('textbox', { name: 'Required monthPicker' }).should('exist');
-      cy.findByRole('textbox', { name: 'Required monthPicker' }).type('01.2022{esc}');
+      cy.findByRole('textbox', { name: 'Required monthPicker' }).type('01.2022');
 
       cy.clickNextStep();
 
@@ -60,34 +60,34 @@ describe('Month picker', () => {
 
     it('should show error for exact min/max dates', () => {
       cy.findByRole('textbox', { name: 'Required monthPicker' }).should('exist');
-      cy.findByRole('textbox', { name: 'Required monthPicker' }).type('01.2022{esc}');
+      cy.findByRole('textbox', { name: 'Required monthPicker' }).type('01.2022');
 
       // Min
       cy.findByRole('textbox', { name: 'Min/max monthPicker (valgfritt)' }).should('exist');
-      cy.findByRole('textbox', { name: 'Min/max monthPicker (valgfritt)' }).type('01.2019{esc}');
+      cy.findByRole('textbox', { name: 'Min/max monthPicker (valgfritt)' }).type('01.2019');
       cy.clickNextStep();
       cy.findAllByText('Min/max monthPicker kan ikke være før 2020').should('have.length', 2);
 
       // Max
       cy.findByRole('textbox', { name: 'Min/max monthPicker (valgfritt)' }).clear();
-      cy.findByRole('textbox', { name: 'Min/max monthPicker (valgfritt)' }).type('01.2028{esc}');
+      cy.findByRole('textbox', { name: 'Min/max monthPicker (valgfritt)' }).type('01.2028');
       cy.clickNextStep();
       cy.findAllByText('Min/max monthPicker kan ikke være senere enn 2024').should('have.length', 2);
     });
 
     it('should show error for relative min/max dates', () => {
       cy.findByRole('textbox', { name: 'Required monthPicker' }).should('exist');
-      cy.findByRole('textbox', { name: 'Required monthPicker' }).type('01.2022{esc}');
+      cy.findByRole('textbox', { name: 'Required monthPicker' }).type('01.2022');
 
       // Min
       cy.findByRole('textbox', { name: 'Relative monthPicker (valgfritt)' }).should('exist');
-      cy.findByRole('textbox', { name: 'Relative monthPicker (valgfritt)' }).type('01.2015{esc}');
+      cy.findByRole('textbox', { name: 'Relative monthPicker (valgfritt)' }).type('01.2015');
       cy.clickNextStep();
       cy.findAllByText('Relative monthPicker kan ikke være før 2019').should('have.length', 2);
 
       // Max
       cy.findByRole('textbox', { name: 'Relative monthPicker (valgfritt)' }).clear();
-      cy.findByRole('textbox', { name: 'Relative monthPicker (valgfritt)' }).type('01.2028{esc}');
+      cy.findByRole('textbox', { name: 'Relative monthPicker (valgfritt)' }).type('01.2028');
       cy.clickNextStep();
       cy.findAllByText('Relative monthPicker kan ikke være senere enn 2027').should('have.length', 2);
     });
