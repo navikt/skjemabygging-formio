@@ -35,13 +35,13 @@
     </div>
     {% } %}
     <div style="margin-top: 10px; margin-bottom: 20px;">
-      <button class="aksel-button aksel-button--primary" style="margin-right: 10px;" type="button" ref="saveButton">
+      <button class="aksel-button aksel-button--primary" style="margin-right: 10px;" type="button" data-variant="primary" ref="saveButton">
         <span aria-live="polite" class="aksel-label" data-testid="editorSaveButton">{{ctx.t('Ok')}}</span>
       </button>
-      <button class="aksel-button aksel-button--secondary" style="margin-right: 10px;" type="button" ref="cancelButton">
+      <button class="aksel-button aksel-button--secondary" style="margin-right: 10px;" type="button" data-variant="secondary" ref="cancelButton">
         <span aria-live="polite" class="aksel-label" data-testid="editorCancelButton">{{ctx.t('Avbryt')}}</span>
       </button>
-      <button class="aksel-button aksel-button--danger" type="button" ref="removeButton">
+      <button class="aksel-button aksel-button--danger" type="button" data-variant="primary" data-color="danger" ref="removeButton">
         <span aria-live="polite" class="aksel-label" data-testid="editorRemoveButton">{{ctx.t('Slett')}}</span>
       </button>
     </div>

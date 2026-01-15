@@ -1,6 +1,7 @@
 <{{ctx.input.type}}
   ref="button"
   class="aksel-button aksel-button--primary"
+  data-variant="primary"
   {% for (var attr in ctx.input.attr) { %}
   {{attr}}="{{ctx.input.attr[attr]}}"
   {% } %}
