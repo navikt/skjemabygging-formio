@@ -75,6 +75,28 @@ const useFormsApiForms = () => {
     }
   };
 
+  const resetForm = async (formPath: string, revision: number): Promise<Form | undefined> => {
+    const searchParams = new URLSearchParams({
+      revision: revision.toString(),
+    });
+    const url = `${baseUrl}/${formPath}/reset?${searchParams}`;
+    try {
+      logger?.debug(`Resetting form with id ${formPath}: ${url}`);
+      const result = await http.delete<Form>(url, {});
+      logger?.debug(`Successfully reset form with id ${formPath}: ${url}`);
+      feedbackEmit.success(`Endringer i skjemaet er forkastet`);
+      return result;
+    } catch (error: any) {
+      const message = error?.message;
+      const status = error?.status;
+      if (status === 409) {
+        feedbackEmit.error('Endringer kan ikke forkastes. Du kan prøve å laste siden på nytt.');
+        return;
+      }
+      feedbackEmit.error(`Feil ved tilbakestilling av skjema. ${message}`);
+    }
+  };
+
   const postLockForm = async (formPath: string, reason: string) => {
     const url = `/api/forms/${formPath}/lock`;
     try {
@@ -182,6 +204,7 @@ const useFormsApiForms = () => {
     get,
     post,
     put,
+    resetForm,
     postLockForm,
     deleteLockForm,
     publish,

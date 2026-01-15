@@ -16,6 +16,10 @@ const useStatusStyles = makeStyles({
     marginTop: '0.5rem',
     minWidth: '1rem',
   },
+  resetFormButton: {
+    marginTop: '0.5rem',
+    minWidth: '1rem',
+  },
   rowText: {
     flex: '1',
     margin: '0',
