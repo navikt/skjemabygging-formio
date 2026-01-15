@@ -11,9 +11,10 @@ interface Props {
 
 interface ContextValue {
   formState: FormReducerState;
-  resetForm: () => void;
+  discardUnsavedChanges: () => void;
   changeForm: (form: Form) => void;
   saveForm: (form: Form) => Promise<Form | void>;
+  resetForm: (revision: number | undefined) => Promise<void>;
   lockForm: (reason: string) => Promise<void>;
   unlockForm: () => Promise<void>;
   publishForm: (form: Form, selectedLanguages: TranslationLang[]) => Promise<void>;
@@ -26,9 +27,10 @@ const initialState: FormReducerState = { status: 'INITIAL LOADING' };
 
 const FormContext = createContext<ContextValue>({
   formState: initialState,
-  resetForm: () => {},
+  discardUnsavedChanges: () => {},
   changeForm: (_form) => {},
   saveForm: async (_form) => {},
+  resetForm: async (_revision: number | undefined) => {},
   lockForm: async (_reason: string) => Promise.reject(),
   unlockForm: async () => Promise.reject(),
   publishForm: async (_form, _translations) => {},
@@ -43,8 +45,18 @@ const FormContext = createContext<ContextValue>({
 const FormProvider = ({ featureToggles, children }: Props) => {
   const { formPath } = useParams();
   const navigate = useNavigate();
-  const { loadForm, onSave, onLockForm, onUnlockForm, onPublish, onUnpublish, onDelete, onCopyFromProd, getPublished } =
-    useForms();
+  const {
+    loadForm,
+    onSave,
+    onReset,
+    onLockForm,
+    onUnlockForm,
+    onPublish,
+    onUnpublish,
+    onDelete,
+    onCopyFromProd,
+    getPublished,
+  } = useForms();
   const [state, dispatch] = useReducer(formPageReducer, initialState, (state) => state);
 
   useEffect(() => {
@@ -92,11 +104,11 @@ const FormProvider = ({ featureToggles, children }: Props) => {
     dispatch({ type: 'form-changed', form: changedForm });
   }, []);
 
-  const resetForm = () => {
+  const discardUnsavedChanges = () => {
     if (formPath) {
       sessionStorage.removeItem(formPath);
     }
-    dispatch({ type: 'form-reset' });
+    dispatch({ type: 'form-discard-unsaved-changes' });
   };
 
   const saveForm = async (form: Form) => {
@@ -109,6 +121,15 @@ const FormProvider = ({ featureToggles, children }: Props) => {
       return savedForm;
     }
     return form;
+  };
+
+  const resetForm = async (revision: number | undefined) => {
+    if (formPath && revision) {
+      const result = await onReset(formPath, revision);
+      if (result) {
+        dispatch({ type: 'form-saved', form: result });
+      }
+    }
   };
 
   const lockForm = async (reason: string) => {
@@ -163,10 +184,11 @@ const FormProvider = ({ featureToggles, children }: Props) => {
 
   const value = {
     formState: state,
-    resetForm,
+    discardUnsavedChanges,
     changeForm,
     saveForm,
     lockForm,
+    resetForm,
     unlockForm,
     publishForm,
     unpublishForm,

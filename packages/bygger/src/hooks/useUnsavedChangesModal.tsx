@@ -10,7 +10,7 @@ interface FormChanged {
 const useUnsavedChangesModal = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [redirectTo, setRedirectTo] = useState<string | undefined>(undefined);
-  const { resetForm } = useForm();
+  const { discardUnsavedChanges } = useForm();
 
   const navigate = useNavigate();
   const { formPath } = useParams();
@@ -36,7 +36,7 @@ const useUnsavedChangesModal = () => {
         open={openModal}
         onClose={() => setOpenModal(false)}
         onConfirm={() => {
-          resetForm();
+          discardUnsavedChanges();
           setOpenModal(false);
           if (redirectTo) navigate(redirectTo);
         }}
@@ -49,7 +49,7 @@ const useUnsavedChangesModal = () => {
         }}
       />
     );
-  }, [openModal, resetForm, redirectTo, navigate]);
+  }, [openModal, discardUnsavedChanges, redirectTo, navigate]);
 
   return {
     unsavedChangesModalContent: modalContent,
