@@ -1,5 +1,5 @@
 import { externalStorageTexts, Form, FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
-import { getFormTextsForTranslations } from './formTextsUtils';
+import { getTextKeysFromForm } from './formTextsUtils';
 
 const populateFromStoredTranslations = (text: string, storedTranslations: Record<string, FormsApiTranslation>) => {
   const stored = storedTranslations?.[text];
@@ -30,7 +30,7 @@ const generateAndPopulateTranslationsForForm = (
 ): FormsApiTranslation[] => {
   // We filter out any country names to avoid having to maintain their translations
   // All country names on 'nn' and 'en' are added from a third party package when we build the i18n object in FyllUt)
-  const textObjects = getFormTextsForTranslations(form);
+  const textObjects = getTextKeysFromForm(form);
   const externalStorageKeys = Object.values(externalStorageTexts.keys).flatMap((keys) => keys);
 
   return textObjects

@@ -1,6 +1,6 @@
 import { FormsApiTranslation, MockedComponentObjectForTest, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { getHeadersForExport, getRowsForExportFromForm } from './exportUtils';
-import { getFormTextsForTranslations } from './formTextsUtils';
+import { getTextKeysFromForm } from './formTextsUtils';
 
 const {
   createDummyAttachment,
@@ -41,12 +41,12 @@ const form = createFormsApiFormObject(
 describe('utils', () => {
   describe('testGetAllTextsAndTypeForForm', () => {
     it('Test empty form', () => {
-      const actual = getFormTextsForTranslations(createFormsApiFormObject([], 'title'));
+      const actual = getTextKeysFromForm(createFormsApiFormObject([], 'title'));
       expect(actual).toEqual(['title']);
     });
 
     it('Test form with panel and text fields', () => {
-      const actual = getFormTextsForTranslations(
+      const actual = getTextKeysFromForm(
         createFormsApiFormObject(
           [
             createPanelObject(
@@ -74,7 +74,7 @@ describe('utils', () => {
     });
 
     it('Test form with panel, html elements and contents', () => {
-      const actual = getFormTextsForTranslations(
+      const actual = getTextKeysFromForm(
         createFormsApiFormObject(
           [
             createPanelObject(
@@ -108,7 +108,7 @@ describe('utils', () => {
     });
 
     it('Test form with panel, skjemagruppe and radio panel', () => {
-      const actual = getFormTextsForTranslations(
+      const actual = getTextKeysFromForm(
         createFormsApiFormObject(
           [
             createPanelObject(
@@ -139,7 +139,7 @@ describe('utils', () => {
     });
 
     it('Test form with panel, skjemagruppe, datagrid and radio panel', () => {
-      const actual = getFormTextsForTranslations(
+      const actual = getTextKeysFromForm(
         createFormsApiFormObject(
           [
             createPanelObject(
@@ -179,7 +179,7 @@ describe('utils', () => {
     });
 
     it('Test form with panel, container and checkbox', () => {
-      const actual = getFormTextsForTranslations(
+      const actual = getTextKeysFromForm(
         createFormsApiFormObject(
           [
             createPanelObject(
@@ -220,7 +220,7 @@ describe('utils', () => {
     });
 
     it('Test form with duplicated text field', () => {
-      const actual = getFormTextsForTranslations(
+      const actual = getTextKeysFromForm(
         createFormsApiFormObject(
           [
             createPanelObject(
@@ -236,7 +236,7 @@ describe('utils', () => {
     });
 
     it('Test form with alertstripes and HTML element', () => {
-      const actual = getFormTextsForTranslations(
+      const actual = getTextKeysFromForm(
         createFormsApiFormObject(
           [
             createPanelObject(
@@ -279,7 +279,7 @@ describe('utils', () => {
     });
 
     it('Test form with select component', () => {
-      const actual = getFormTextsForTranslations(
+      const actual = getTextKeysFromForm(
         createFormsApiFormObject(
           [createPanelObject('Introduksjon', [createDummySelectComponent()], 'Introduksjon')],
           'title',
@@ -289,7 +289,7 @@ describe('utils', () => {
     });
 
     it('Test form with Attachment', () => {
-      const actual = getFormTextsForTranslations(
+      const actual = getTextKeysFromForm(
         createFormsApiFormObject(
           [
             createPanelObject(
@@ -325,7 +325,7 @@ describe('utils', () => {
     });
 
     it('Test components with value descriptions (Flervalg and Radio)', () => {
-      const actual = getFormTextsForTranslations(
+      const actual = getTextKeysFromForm(
         createFormsApiFormObject([
           createPanelObject('Panel med komponenter som har flere beskrivelser', [
             createDummyRadioPanel('Radio med beskrivelser av verdiene', [
@@ -358,7 +358,7 @@ describe('utils', () => {
     });
 
     it('Test form with button component', () => {
-      const actual = getFormTextsForTranslations(
+      const actual = getTextKeysFromForm(
         createFormsApiFormObject(
           [createPanelObject('Introduksjon', [createDummyButtonComponent('buttonText')], 'Introduksjon')],
           'title',
@@ -369,7 +369,7 @@ describe('utils', () => {
     });
 
     it('Henter innsendingsrelaterte tekster fra form properties', () => {
-      const actual = getFormTextsForTranslations(
+      const actual = getTextKeysFromForm(
         createFormsApiFormObject(
           [],
           'Testskjema',
@@ -385,7 +385,7 @@ describe('utils', () => {
     });
 
     it('Henter downloadPdfButtonText form properties', () => {
-      const actual = getFormTextsForTranslations(
+      const actual = getTextKeysFromForm(
         createFormsApiFormObject(
           [],
           'Testskjema',
@@ -400,7 +400,7 @@ describe('utils', () => {
     });
 
     it('Henter signatur-relaterte tekster fra form properties', () => {
-      const actual = getFormTextsForTranslations(
+      const actual = getTextKeysFromForm(
         createFormsApiFormObject(
           [],
           'Testskjema',
@@ -428,7 +428,7 @@ describe('utils', () => {
 
   describe('test get all texts', () => {
     it('Test form with panel, skjemagruppe, datagrid, radio panel and select component', () => {
-      const actual = getFormTextsForTranslations(
+      const actual = getTextKeysFromForm(
         createFormsApiFormObject(
           [
             createPanelObject(
@@ -475,7 +475,7 @@ describe('utils', () => {
     });
 
     it('ignores country names when getting texts from form', () => {
-      const actual = getFormTextsForTranslations(
+      const actual = getTextKeysFromForm(
         createFormsApiFormObject(
           [
             createPanelObject('Skjema med hjemmelaget landvelger', [

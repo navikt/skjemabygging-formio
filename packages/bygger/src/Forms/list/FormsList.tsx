@@ -94,7 +94,7 @@ const FormsList = ({ forms }: FormsListPageProps) => {
             return (
               <Table.Row key={form.id} onClick={() => navigate(form.path)} className={styles.clickableRow}>
                 <Table.DataCell className={styles.idColumn}>
-                  <Link as={ReactRouterLink} to={`../${form.path}`}>
+                  <Link as={ReactRouterLink} to={form.path} onClick={(e) => e.stopPropagation()}>
                     {form.number}
                   </Link>
                 </Table.DataCell>

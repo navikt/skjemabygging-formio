@@ -1,10 +1,10 @@
 import { Alert, Checkbox, CheckboxGroup, Heading } from '@navikt/ds-react';
 import { ConfirmationModal, i18nUtils, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import { Form, FormsApiTranslation, I18nTranslations } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useFormTranslations } from '../../context/translations/FormTranslationsContext';
 import { useGlobalTranslations } from '../../context/translations/GlobalTranslationsContext';
-import { getFormTextsForTranslations } from '../../translations/utils/formTextsUtils';
+import { getTextKeysFromForm } from '../../translations/utils/formTextsUtils';
 import FormStatus from '../status/FormStatus';
 import { allLanguagesInNorwegian } from '../status/PublishedLanguages';
 import Timestamp from '../status/Timestamp';
@@ -57,17 +57,10 @@ export const getCompleteTranslationLanguageCodeList = (
 const PublishSettingsModal = ({ open, onClose, onConfirm, form, unsavedGlobalTranslations }: Props) => {
   const { translations: formTranslations } = useFormTranslations();
   const { translations: globalTranslations } = useGlobalTranslations();
-  const [allFormOriginalTexts, setAllFormOriginalTexts] = useState<string[]>([]);
   const [completeTranslationLanguageCodeList, setCompleteTranslationLanguageCodeList] = useState<string[]>([]);
   const [checkedLanguages, setCheckedLanguages] = useState<string[]>([]);
 
-  useEffect(() => {
-    setAllFormOriginalTexts(
-      getFormTextsForTranslations(form).reduce<string[]>((allTexts, text) => {
-        return [...allTexts, text];
-      }, []),
-    );
-  }, [form]);
+  const textKeysFromForm = useMemo(() => getTextKeysFromForm(form), [form]);
 
   useEffect(() => {
     const i18n = i18nUtils.mapFormsApiTranslationsToI18n(
@@ -76,23 +69,23 @@ const PublishSettingsModal = ({ open, onClose, onConfirm, form, unsavedGlobalTra
     );
 
     const unsavedGlobalTranslationKeys = unsavedGlobalTranslations.map((translation) => translation.key);
-    const introPageTextsToExclude = form.introPage?.enabled
+    const introPageTextKeysToExclude = form.introPage?.enabled
       ? []
       : formTranslations.filter((translation) => translation.tag === 'introPage').map((translation) => translation.key);
-    const originalTextsFiltered = allFormOriginalTexts.filter(
+    const filteredTextKeysFromForm = textKeysFromForm.filter(
       // Exclude texts with unsaved translation if there is a global translation for it
       // Exclude texts from intro page if intro page is not enabled
-      (text) => !(unsavedGlobalTranslationKeys.includes(text) || introPageTextsToExclude.includes(text)),
+      (key) => !(unsavedGlobalTranslationKeys.includes(key) || introPageTextKeysToExclude.includes(key)),
     );
 
-    const completeTranslations = getCompleteTranslationLanguageCodeList(originalTextsFiltered, i18n);
+    const completeTranslations = getCompleteTranslationLanguageCodeList(filteredTextKeysFromForm, i18n);
 
     const sanitizedCompleteTranslations = completeTranslations
       .map((langCode) => (langCode.length > 2 ? langCode.substring(0, 2) : langCode))
       .filter(skipBokmal);
     setCompleteTranslationLanguageCodeList([...sanitizedCompleteTranslations, 'nb']);
     setCheckedLanguages([...sanitizedCompleteTranslations, 'nb']);
-  }, [allFormOriginalTexts, form.introPage?.enabled, formTranslations, globalTranslations, unsavedGlobalTranslations]);
+  }, [textKeysFromForm, form.introPage?.enabled, formTranslations, globalTranslations, unsavedGlobalTranslations]);
 
   const PublishStatusPanel = ({ form }: { form: Form }) => {
     const statusPanelStyles = useStatusPanelStyles();
