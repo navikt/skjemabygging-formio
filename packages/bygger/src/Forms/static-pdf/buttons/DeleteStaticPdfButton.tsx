@@ -26,9 +26,10 @@ const DeleteStaticPdfButton = ({ language, languageCode }: Props) => {
   return (
     <>
       <Button
+        data-color="neutral"
         icon={<TrashIcon aria-hidden />}
         size="small"
-        variant="tertiary-neutral"
+        variant="tertiary"
         loading={loading}
         onClick={() => setOpen(true)}
         data-testid={`delete-static-pdf-${languageCode}-button`}

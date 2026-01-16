@@ -32,8 +32,9 @@ const RecipientButtonRow = ({ isNew, onSave, onCancel, onDelete }: Props) => {
           </Button>
           {!isNew && (
             <Button
+              data-color="danger"
               size="small"
-              variant="danger"
+              variant="primary"
               loading={state.isDeleting}
               disabled={state.isSaving}
               onClick={async () => {
