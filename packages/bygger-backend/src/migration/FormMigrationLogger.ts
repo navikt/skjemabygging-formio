@@ -46,10 +46,11 @@ class FormMigrationLogger {
 
   private hasChangesToPropertiesWhichCanBreakDependencies(diff: FormMigrationDiff) {
     return (
+      // Values for Nedtrekksliste are stored in data.values, so changes to data or data.values can be breaking
       diff.key_NEW || // Keys are used to look up submissions for components, and is the most common dependency
       diff.values_NEW || // Changes to values for Radiopanel or Flervalg components can break references that are depending on a specific value
       diff.data_NEW ||
-      (diff.data && diff.data.values_NEW) // Values for Nedtrekksliste are stored in data.values, so changes to data or data.values can be breaking
+      (diff.data && diff.data.values_NEW)
     );
   }
 

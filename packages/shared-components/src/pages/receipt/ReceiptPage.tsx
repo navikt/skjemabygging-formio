@@ -1,5 +1,5 @@
 import { CheckmarkCircleFillIcon, DownloadIcon } from '@navikt/aksel-icons';
-import { Alert, BodyShort, Heading, HStack, Link, List, VStack } from '@navikt/ds-react';
+import { Alert, BodyShort, Box, Heading, HStack, Link, List, VStack } from '@navikt/ds-react';
 import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useMemo } from 'react';
 import InnerHtml from '../../components/inner-html/InnerHtml';
@@ -80,36 +80,9 @@ export function ReceiptPage() {
                 })}
               </b>
             </BodyShort>
-            <List>
-              <List.Item
-                icon={
-                  <CheckmarkCircleFillIcon
-                    color="currentColor"
-                    style={{ color: 'var(--ax-text-success-decoration)' }}
-                    fontSize="1.5rem"
-                    aria-hidden
-                  />
-                }
-              >
-                <HStack gap="2">
-                  {receipt.title}
-                  <Link
-                    className={styles.downloadLink}
-                    href={soknadPdfUrl}
-                    underline={false}
-                    target="_blank"
-                    onClick={logDownloadPdf}
-                    rel="noopener noreferrer"
-                  >
-                    <DownloadIcon aria-hidden className={styles.downloadLinkIcon} />
-                    <span>{translate(TEXTS.statiske.receipt.downloadLinkLabel)}</span>
-                  </Link>
-                </HStack>
-              </List.Item>
-
-              {receipt.receivedAttachments.map((attachment) => (
+            <Box marginBlock="space-16" asChild>
+              <List data-aksel-migrated-v8>
                 <List.Item
-                  key={attachment.id}
                   icon={
                     <CheckmarkCircleFillIcon
                       color="currentColor"
@@ -119,10 +92,38 @@ export function ReceiptPage() {
                     />
                   }
                 >
-                  {attachment.title}
+                  <HStack gap="2">
+                    {receipt.title}
+                    <Link
+                      className={styles.downloadLink}
+                      href={soknadPdfUrl}
+                      underline={false}
+                      target="_blank"
+                      onClick={logDownloadPdf}
+                      rel="noopener noreferrer"
+                    >
+                      <DownloadIcon aria-hidden className={styles.downloadLinkIcon} />
+                      <span>{translate(TEXTS.statiske.receipt.downloadLinkLabel)}</span>
+                    </Link>
+                  </HStack>
                 </List.Item>
-              ))}
-            </List>
+                {receipt.receivedAttachments.map((attachment) => (
+                  <List.Item
+                    key={attachment.id}
+                    icon={
+                      <CheckmarkCircleFillIcon
+                        color="currentColor"
+                        style={{ color: 'var(--ax-text-success-decoration)' }}
+                        fontSize="1.5rem"
+                        aria-hidden
+                      />
+                    }
+                  >
+                    {attachment.title}
+                  </List.Item>
+                ))}
+              </List>
+            </Box>
           </section>
 
           {receipt.attachmentsToSendLater.length > 0 && (
@@ -130,15 +131,17 @@ export function ReceiptPage() {
               <BodyShort size="large">
                 <b>{translate(TEXTS.statiske.receipt.mustSendLaterHeading)}</b>
               </BodyShort>
-              <List>
-                {receipt.attachmentsToSendLater.map((attachment) => (
-                  <List.Item key={attachment.id}>
-                    <VStack gap="1" align="start">
-                      <BodyShort>{attachment.title}</BodyShort>
-                    </VStack>
-                  </List.Item>
-                ))}
-              </List>
+              <Box marginBlock="space-16" asChild>
+                <List data-aksel-migrated-v8>
+                  {receipt.attachmentsToSendLater.map((attachment) => (
+                    <List.Item key={attachment.id}>
+                      <VStack gap="1" align="start">
+                        <BodyShort>{attachment.title}</BodyShort>
+                      </VStack>
+                    </List.Item>
+                  ))}
+                </List>
+              </Box>
             </section>
           )}
 
@@ -147,15 +150,17 @@ export function ReceiptPage() {
               <BodyShort size="large">
                 <b>{translate(TEXTS.statiske.receipt.sentByOthersHeading)}</b>
               </BodyShort>
-              <List>
-                {receipt.attachmentsToBeSentByOthers.map((attachment) => (
-                  <List.Item key={attachment.id}>
-                    <VStack gap="1" align="start">
-                      <BodyShort>{attachment.title}</BodyShort>
-                    </VStack>
-                  </List.Item>
-                ))}
-              </List>
+              <Box marginBlock="space-16" asChild>
+                <List data-aksel-migrated-v8>
+                  {receipt.attachmentsToBeSentByOthers.map((attachment) => (
+                    <List.Item key={attachment.id}>
+                      <VStack gap="1" align="start">
+                        <BodyShort>{attachment.title}</BodyShort>
+                      </VStack>
+                    </List.Item>
+                  ))}
+                </List>
+              </Box>
             </section>
           )}
 

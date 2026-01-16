@@ -28,6 +28,7 @@ const createDummyImage = (label = 'Bilde', navId: string = createNavId()): Compo
         url: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/4QBGRXhpZ...',
       },
     ],
+
     label,
     key: keyFromLabel(label),
     altText: 'Bilde beskrivelse',
@@ -362,6 +363,7 @@ const createDummyAmountWithCurrency = (label = 'AmountWithCurrency', navId: stri
     label,
     key: keyFromLabel(label),
     type: 'row',
+
     components: [
       {
         label: 'Velg valuta',
@@ -374,6 +376,7 @@ const createDummyAmountWithCurrency = (label = 'AmountWithCurrency', navId: stri
         type: 'number',
       },
     ],
+
     isAmountWithCurrencySelector: true,
     navId,
   }) as Component;
