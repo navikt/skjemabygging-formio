@@ -1,10 +1,7 @@
 app-name: skjemabygging-preprod
-env-name: dev-gcp
 ingresses:
 - "https://skjemabygging-preprod.intern.dev.nav.no"
 - "https://skjemabygging-preprod.ansatt.dev.nav.no"
-logs-url: https://logs.adeo.no/app/r/s/lvnlu
-special-type-to-use-in-alertmanager-config: "fyllut-sendinn-alerts-dev"
 fyllut-base-url: http://skjemautfylling-preprod/fyllut
 enabled-features: translations,diff
 publish-repo: skjemautfylling-formio
