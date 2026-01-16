@@ -23,7 +23,7 @@ const EditFormSidebar = ({ form }: EditFormSidebarProps) => {
 
   return (
     <SidebarLayout noScroll={true}>
-      <VStack gap="1">
+      <VStack gap="space-1">
         <ButtonWithSpinner
           onClick={async () => {
             if (isLockedForm) {
