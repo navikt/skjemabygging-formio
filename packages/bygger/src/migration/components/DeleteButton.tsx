@@ -1,4 +1,4 @@
-import { Delete } from '@navikt/ds-icons';
+import { TrashIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 
@@ -17,7 +17,7 @@ const DeleteButton = ({ className, onClick }: { className?: string; onClick: () 
       className={`${styles.button} ${className}`}
       type="button"
       variant="tertiary"
-      icon={<Delete aria-hidden />}
+      icon={<TrashIcon aria-hidden />}
       onClick={onClick}
     ></Button>
   );

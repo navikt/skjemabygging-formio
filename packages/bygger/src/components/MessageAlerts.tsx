@@ -1,4 +1,4 @@
-import { Close } from '@navikt/ds-icons';
+import { XMarkIcon } from '@navikt/aksel-icons';
 import { Alert, BodyShort, Button } from '@navikt/ds-react';
 import { makeStyles, navCssVariables } from '@navikt/skjemadigitalisering-shared-components';
 import { Message } from '../context/notifications/messageQueueReducer';
@@ -45,7 +45,7 @@ export const ErrorAlert = ({ message, clearMessage }: AlertProps) => {
         <BodyShort className={styles.body}>{message.message}</BodyShort>
         <Button
           variant="tertiary"
-          icon={<Close aria-hidden />}
+          icon={<XMarkIcon aria-hidden />}
           onClick={clearMessage}
           type="button"
           aria-label="Lukk feilmelding"
@@ -63,7 +63,7 @@ export const WarningAlert = ({ message, clearMessage }: AlertProps) => {
         <BodyShort className={styles.body}>{message.message}</BodyShort>
         <Button
           variant="tertiary"
-          icon={<Close aria-hidden />}
+          icon={<XMarkIcon aria-hidden />}
           onClick={clearMessage}
           type="button"
           aria-label="Lukk advarsel"
