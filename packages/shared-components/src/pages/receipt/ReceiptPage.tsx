@@ -92,7 +92,7 @@ export function ReceiptPage() {
                     />
                   }
                 >
-                  <HStack gap="2">
+                  <HStack gap="space-2">
                     {receipt.title}
                     <Link
                       className={styles.downloadLink}
@@ -135,7 +135,7 @@ export function ReceiptPage() {
                 <List data-aksel-migrated-v8>
                   {receipt.attachmentsToSendLater.map((attachment) => (
                     <List.Item key={attachment.id}>
-                      <VStack gap="1" align="start">
+                      <VStack gap="space-1" align="start">
                         <BodyShort>{attachment.title}</BodyShort>
                       </VStack>
                     </List.Item>
@@ -154,7 +154,7 @@ export function ReceiptPage() {
                 <List data-aksel-migrated-v8>
                   {receipt.attachmentsToBeSentByOthers.map((attachment) => (
                     <List.Item key={attachment.id}>
-                      <VStack gap="1" align="start">
+                      <VStack gap="space-1" align="start">
                         <BodyShort>{attachment.title}</BodyShort>
                       </VStack>
                     </List.Item>
