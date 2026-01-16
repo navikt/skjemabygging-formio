@@ -1,6 +1,5 @@
 import { CheckmarkCircleFillIcon, DownloadIcon } from '@navikt/aksel-icons';
 import { Alert, BodyShort, Heading, HStack, Link, List, VStack } from '@navikt/ds-react';
-import '@navikt/ds-tokens';
 import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useMemo } from 'react';
 import InnerHtml from '../../components/inner-html/InnerHtml';
