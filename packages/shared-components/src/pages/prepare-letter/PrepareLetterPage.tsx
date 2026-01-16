@@ -1,7 +1,7 @@
 import { Enhet, SubmissionType, submissionTypesUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { getAttachments } from '../../../../shared-domain/src/forsteside/forstesideUtils';
-import { fetchEnhetsliste, isEnhetSupported } from '../../api/enhetsliste/fetchEnhetsliste';
+import { fetchFilteredEnhetsliste } from '../../api/enhetsliste/fetchEnhetsliste';
 import NavigateButtonComponent from '../../components/button/navigation/pages/NavigateButtonComponent';
 import ErrorPage from '../../components/error/page/ErrorPage';
 import LetterAddAttachment from '../../components/letter/LetterAddAttachment';
@@ -15,8 +15,6 @@ import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
 import FormMainContent from '../FormMainContent';
-
-const compareEnheter = (enhetA, enhetB) => enhetA.navn.localeCompare(enhetB.navn, 'nb');
 
 const submissionTypeIncludesPaperOrIsNoSubmission = (submissionTypes?: SubmissionType[]) =>
   submissionTypes &&
@@ -36,17 +34,14 @@ export function PrepareLetterPage() {
   const includeUxSignals = !!uxSignalsId && submissionTypeIncludesPaperOrIsNoSubmission(uxSignalsSubmissionTypes);
 
   useEffect(() => {
-    if (enhetMaVelgesVedPapirInnsending) {
-      fetchEnhetsliste(baseUrl)
+    if (enhetMaVelgesVedPapirInnsending && enhetstyper) {
+      fetchFilteredEnhetsliste(baseUrl, enhetstyper)
         .then((enhetsliste) => {
-          const filteredList = enhetsliste.filter(isEnhetSupported(enhetstyper!)).sort(compareEnheter);
-          if (filteredList.length === 0) {
+          if (enhetsliste.length === 0) {
             setEnhetslisteFilteringError(true);
-            return enhetsliste.sort(compareEnheter);
           }
-          return filteredList;
+          setEnhetsListe(enhetsliste);
         })
-        .then(setEnhetsListe)
         .catch(() => setEnhetsListeError(true));
     }
   }, [baseUrl, enhetMaVelgesVedPapirInnsending, enhetstyper]);

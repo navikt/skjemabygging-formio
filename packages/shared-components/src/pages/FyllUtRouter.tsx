@@ -11,7 +11,7 @@ import IntroPage from './intro/IntroPage';
 import { PrepareIngenInnsendingPage } from './prepare-innsending/PrepareIngenInnsendingPage';
 import { PrepareLetterPage } from './prepare-letter/PrepareLetterPage';
 import { ReceiptPage } from './receipt/ReceiptPage';
-import StaticPdfPage from './static-pdf/StaticPdfPage';
+import StaticPdfPage from './static-pdf/StaticPdfWrapper';
 import { SummaryPage } from './summary/SummaryPage';
 import AttachmentsUploadPage from './upload-attachments/AttachmentsUploadPage';
 import UploadPersonalIdPage from './upload-personal-id/UploadPersonalIdPage';
@@ -48,7 +48,7 @@ const FyllUtRouter = ({ form }: Props) => {
             <Route path="pdf" element={<StaticPdfPage />} />
           </Route>
           <Route element={<FormLayout allowSubmittedApplication />}>
-            <Route path={'/kvittering'} element={<ReceiptPage />} />
+            <Route path={'kvittering'} element={<ReceiptPage />} />
           </Route>
         </Routes>
       </SendInnProvider>
