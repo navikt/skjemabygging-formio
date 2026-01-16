@@ -2,6 +2,7 @@ import { Box, Label } from '@navikt/ds-react';
 import FormStatus from './FormStatus';
 import LabeledTimeAndUser from './LabeledTimeAndUser';
 import PublishedLanguages from './PublishedLanguages';
+import ResetFormButton from './ResetFormButton';
 import ToggleDiffButton from './ToggleDiffButton';
 import { useStatusStyles } from './styles';
 import { FormStatusProperties } from './types';
@@ -24,6 +25,7 @@ const FormStatusPanel = ({ formStatusProperties, spacing, hideToggleDiffButton =
         <div className={styles.sidePanelFormStatusContainer}>
           <FormStatus status={determineStatus(formStatusProperties)} size="large" />
         </div>
+        <ResetFormButton className={styles.resetFormButton} formStatusProperties={formStatusProperties} />
         {!hideToggleDiffButton && publishedAt && <ToggleDiffButton className={styles.toggleDiffButton} />}
       </div>
       <LabeledTimeAndUser label="Sist lagret:" timestamp={changedAt} userName={changedBy} />

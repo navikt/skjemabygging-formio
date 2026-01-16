@@ -8,7 +8,7 @@ const navFormDiffToHtml = (diffSummary) => {
     const html = [];
     if (changesToCurrentComponent.length) {
       const labelId = 'nav-form-diff-changed-elements';
-      html.push(`<span id="${labelId}" class="navds-body-short font-bold">Endringer</span>`);
+      html.push(`<span id="${labelId}" class="aksel-body-short font-ax-bold">Endringer</span>`);
       html.push(`<ul aria-labelledby="${labelId}">`);
       html.push(
         ...changesToCurrentComponent.map(
@@ -19,7 +19,7 @@ const navFormDiffToHtml = (diffSummary) => {
     }
     if (deletedComponents.length) {
       const labelId = 'nav-form-diff-deleted-elements';
-      html.push(`<span id="${labelId}" class="navds-body-short font-bold">Slettede elementer</span>`);
+      html.push(`<span id="${labelId}" class="aksel-body-short font-ax-bold">Slettede elementer</span>`);
       html.push(createList(deletedComponents, labelId));
     }
     return html.join('');
@@ -46,7 +46,7 @@ const createList = (components, labelId) => {
 };
 
 const TAG = (text, level = 'warning') =>
-  `<span class="navds-tag navds-tag--${level} navds-tag--xsmall navds-detail navds-detail--small" data-testid="diff-tag">${text}</span>`;
+  `<span class="aksel-tag aksel-tag--${level} aksel-tag--xsmall aksel-detail aksel-detail--small" data-testid="diff-tag">${text}</span>`;
 
 const getBuilderTags = (ctx) => {
   const { component, config, self, instance } = ctx;

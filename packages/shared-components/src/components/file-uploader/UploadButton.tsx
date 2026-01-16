@@ -11,7 +11,7 @@ import StandaloneValidationError from '../error/standalone-validation-error/Stan
 const useStyles = makeStyles({
   button: {
     maxWidth: '18.75rem',
-    borderRadius: 'var(--a-border-radius-large)',
+    borderRadius: 'var(--ax-radius-8)',
   },
 });
 

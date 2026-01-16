@@ -15,7 +15,7 @@ const useSelectStyle = makeStyles({
   nav: {
     position: 'relative',
 
-    '& .navds-select__input': {
+    '& .aksel-select__input': {
       textAlign: 'start',
     },
   },
@@ -57,7 +57,7 @@ const Select = ({ label, className, options, ariaLabel }) => {
       {showItems && <div className={classes.overlay} onClick={closeListAndResetFocus} />}
       <nav className={`${className} ${classes.nav}`} onKeyUp={closeOnEscape} aria-label={ariaLabel}>
         <button
-          className="navds-select__input navds-body-short navds-body--medium"
+          className="aksel-select__input aksel-body-short aksel-body--medium"
           aria-expanded={showItems}
           onClick={() => setShowItems(!showItems)}
           type="button"
@@ -65,9 +65,9 @@ const Select = ({ label, className, options, ariaLabel }) => {
         >
           {label}
           {showItems ? (
-            <Collapse className="navds-select__chevron" aria-hidden />
+            <Collapse className="aksel-select__chevron" aria-hidden />
           ) : (
-            <Expand className="navds-select__chevron" aria-hidden />
+            <Expand className="aksel-select__chevron" aria-hidden />
           )}
         </button>
         {showItems && (

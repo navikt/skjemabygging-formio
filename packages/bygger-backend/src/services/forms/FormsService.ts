@@ -41,6 +41,15 @@ const createFormsService = (formsApiUrl: string): FormsService => {
     return response.data as Form;
   };
 
+  const resetForm = async (formPath: string, revision: number, accessToken: string): Promise<Form> => {
+    logger.info(`Reset form ${formPath} from revision ${revision}`);
+    const response = await fetchWithErrorHandling(`${formsUrl}/${formPath}/reset`, {
+      method: 'DELETE',
+      headers: createHeaders(accessToken, revision),
+    });
+    return response.data as Form;
+  };
+
   const deleteForm = async (formPath: string, revision: number, accessToken: string): Promise<void> => {
     logger.info(`Delete form ${formPath} (revision ${revision})`);
     await fetchWithErrorHandling(`${formsUrl}/${formPath}`, {
@@ -73,6 +82,7 @@ const createFormsService = (formsApiUrl: string): FormsService => {
     get,
     post,
     put,
+    resetForm,
     deleteForm,
     postLockForm,
     deleteLockForm,

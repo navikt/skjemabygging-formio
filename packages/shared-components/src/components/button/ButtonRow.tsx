@@ -10,17 +10,17 @@ const useStyles = makeStyles({
     display: 'flex',
     flexDirection: 'row-reverse',
     justifyContent: 'flex-end',
-    gap: 'var(--a-spacing-4)',
+    gap: 'var(--ax-space-16)',
     flexWrap: 'wrap',
-    marginBottom: 'var(--a-spacing-5)',
-    '@media (max-width: var(--a-breakpoint-md-down))': {
+    marginBottom: 'var(--ax-space-20)',
+    '@media (max-width: var(--ax-breakpoint-md-down))': {
       flexDirection: 'column',
     },
     '> button, & a': {
       flexGrow: 1,
       minWidth: '12rem',
       maxWidth: '19.5rem',
-      '@media (max-width: var(--a-breakpoint-md-down))': {
+      '@media (max-width: var(--ax-breakpoint-md-down))': {
         '> button, & a': {
           minWidth: '100%',
           maxWidth: '100%',
@@ -30,7 +30,7 @@ const useStyles = makeStyles({
   },
   center: {
     justifyContent: 'center',
-    '@media (max-width: var(--a-breakpoint-md-down))': {
+    '@media (max-width: var(--ax-breakpoint-md-down))': {
       justifyContent: 'flex-end',
     },
   },

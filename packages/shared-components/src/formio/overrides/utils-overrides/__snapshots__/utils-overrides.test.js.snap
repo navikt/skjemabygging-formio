@@ -2,30 +2,30 @@
 
 exports[`utils-overrides > getBuilderTags > component has new default prop in schema > returns no tag if component has not changed, only default schema 1`] = `""`;
 
-exports[`utils-overrides > getBuilderTags > component has new default prop in schema > returns tag "NY" if component does not exist in published form 1`] = `"<span class="navds-tag navds-tag--warning navds-tag--xsmall navds-detail navds-detail--small" data-testid="diff-tag">Ny</span>"`;
+exports[`utils-overrides > getBuilderTags > component has new default prop in schema > returns tag "NY" if component does not exist in published form 1`] = `"<span class="aksel-tag aksel-tag--warning aksel-tag--xsmall aksel-detail aksel-detail--small" data-testid="diff-tag">Ny</span>"`;
 
 exports[`utils-overrides > getBuilderTags > returns no tag even if component is changed when it renders outside builder 1`] = `""`;
 
 exports[`utils-overrides > getBuilderTags > returns no tag when component is unchanged 1`] = `""`;
 
-exports[`utils-overrides > getBuilderTags > returns tag 'Endring' when component is changed 1`] = `"<span class="navds-tag navds-tag--warning navds-tag--xsmall navds-detail navds-detail--small" data-testid="diff-tag">Endring</span>"`;
+exports[`utils-overrides > getBuilderTags > returns tag 'Endring' when component is changed 1`] = `"<span class="aksel-tag aksel-tag--warning aksel-tag--xsmall aksel-detail aksel-detail--small" data-testid="diff-tag">Endring</span>"`;
 
-exports[`utils-overrides > getBuilderTags > returns tag 'Ny' when component does not exist in published form 1`] = `"<span class="navds-tag navds-tag--warning navds-tag--xsmall navds-detail navds-detail--small" data-testid="diff-tag">Ny</span>"`;
+exports[`utils-overrides > getBuilderTags > returns tag 'Ny' when component does not exist in published form 1`] = `"<span class="aksel-tag aksel-tag--warning aksel-tag--xsmall aksel-detail aksel-detail--small" data-testid="diff-tag">Ny</span>"`;
 
 exports[`utils-overrides > navFormDiffToHtml > Form -> diff -> html > empty html when navSelect is not changed 1`] = `""`;
 
-exports[`utils-overrides > navFormDiffToHtml > Form -> diff -> html > should list change in conditional 1`] = `"<span id="nav-form-diff-changed-elements" class="navds-body-short font-bold">Endringer</span><ul aria-labelledby="nav-form-diff-changed-elements"><li>conditional.eq: Fra 'sommer' til 'vinter'</li></ul>"`;
+exports[`utils-overrides > navFormDiffToHtml > Form -> diff -> html > should list change in conditional 1`] = `"<span id="nav-form-diff-changed-elements" class="aksel-body-short font-ax-bold">Endringer</span><ul aria-labelledby="nav-form-diff-changed-elements"><li>conditional.eq: Fra 'sommer' til 'vinter'</li></ul>"`;
 
-exports[`utils-overrides > navFormDiffToHtml > Form -> diff -> html > should list changed key 1`] = `"<span id="nav-form-diff-changed-elements" class="navds-body-short font-bold">Endringer</span><ul aria-labelledby="nav-form-diff-changed-elements"><li>key: Fra 'borDuINorge1' til 'doYouLiveInNorway'</li></ul>"`;
+exports[`utils-overrides > navFormDiffToHtml > Form -> diff -> html > should list changed key 1`] = `"<span id="nav-form-diff-changed-elements" class="aksel-body-short font-ax-bold">Endringer</span><ul aria-labelledby="nav-form-diff-changed-elements"><li>key: Fra 'borDuINorge1' til 'doYouLiveInNorway'</li></ul>"`;
 
-exports[`utils-overrides > navFormDiffToHtml > Form -> diff -> html > should list changes for navSelect 1`] = `"<span id="nav-form-diff-changed-elements" class="navds-body-short font-bold">Endringer</span><ul aria-labelledby="nav-form-diff-changed-elements"><li>label: Fra 'Instrument' til 'Velg instrument'</li><li>data.values: Fra '[{"label":"Gitar","value":"gitar"},{"label":"Trommer","value":"trommer"},{"label":"Piano","value":"piano"},{"label":"Trekkspill","value":"trekkspill"},{"label":"Munnspill","value":"munnspill"}]' til '[{"label":"Gitar","value":"gitar"},{"label":"Trommer","value":"trommer"},{"label":"Piano","value":"piano"},{"label":"Trekkspill","value":"trekkspill"}]'</li><li>defaultValue: Fra 'undefined' til '{"label":"Trommer","value":"trommer"}'</li></ul>"`;
+exports[`utils-overrides > navFormDiffToHtml > Form -> diff -> html > should list changes for navSelect 1`] = `"<span id="nav-form-diff-changed-elements" class="aksel-body-short font-ax-bold">Endringer</span><ul aria-labelledby="nav-form-diff-changed-elements"><li>label: Fra 'Instrument' til 'Velg instrument'</li><li>data.values: Fra '[{"label":"Gitar","value":"gitar"},{"label":"Trommer","value":"trommer"},{"label":"Piano","value":"piano"},{"label":"Trekkspill","value":"trekkspill"},{"label":"Munnspill","value":"munnspill"}]' til '[{"label":"Gitar","value":"gitar"},{"label":"Trommer","value":"trommer"},{"label":"Piano","value":"piano"},{"label":"Trekkspill","value":"trekkspill"}]'</li><li>defaultValue: Fra 'undefined' til '{"label":"Trommer","value":"trommer"}'</li></ul>"`;
 
-exports[`utils-overrides > navFormDiffToHtml > generates html list with changed properties 1`] = `"<span id="nav-form-diff-changed-elements" class="navds-body-short font-bold">Endringer</span><ul aria-labelledby="nav-form-diff-changed-elements"><li>label: Fra 'Fornavn' til 'Oppgi fornavn'</li><li>id: Fra 'ehnemzu' til 'e6s77h'</li></ul>"`;
+exports[`utils-overrides > navFormDiffToHtml > generates html list with changed properties 1`] = `"<span id="nav-form-diff-changed-elements" class="aksel-body-short font-ax-bold">Endringer</span><ul aria-labelledby="nav-form-diff-changed-elements"><li>label: Fra 'Fornavn' til 'Oppgi fornavn'</li><li>id: Fra 'ehnemzu' til 'e6s77h'</li></ul>"`;
 
-exports[`utils-overrides > navFormDiffToHtml > generates html list with deleted radiopanel from panel 1`] = `"<span id="nav-form-diff-deleted-elements" class="navds-body-short font-bold">Slettede elementer</span><ul aria-labelledby="nav-form-diff-deleted-elements"><li>radiopanel: Bekreftelse på skoleplass</li></ul>"`;
+exports[`utils-overrides > navFormDiffToHtml > generates html list with deleted radiopanel from panel 1`] = `"<span id="nav-form-diff-deleted-elements" class="aksel-body-short font-ax-bold">Slettede elementer</span><ul aria-labelledby="nav-form-diff-deleted-elements"><li>radiopanel: Bekreftelse på skoleplass</li></ul>"`;
 
-exports[`utils-overrides > navFormDiffToHtml > generates nested html list with deleted datagrid and its components 1`] = `"<span id="nav-form-diff-deleted-elements" class="navds-body-short font-bold">Slettede elementer</span><ul aria-labelledby="nav-form-diff-deleted-elements"><li>datagrid: Dine hunder<ul><li>textfield: Navn</li><li>textfield: Rase</li></ul></li></ul>"`;
+exports[`utils-overrides > navFormDiffToHtml > generates nested html list with deleted datagrid and its components 1`] = `"<span id="nav-form-diff-deleted-elements" class="aksel-body-short font-ax-bold">Slettede elementer</span><ul aria-labelledby="nav-form-diff-deleted-elements"><li>datagrid: Dine hunder<ul><li>textfield: Navn</li><li>textfield: Rase</li></ul></li></ul>"`;
 
 exports[`utils-overrides > navFormDiffToHtml > handles failure when diffSummary is of unexpected type 1`] = `"<span>Det oppstod dessverre en feil under behandling av endringene i dette skjemaet.</span>"`;
 
-exports[`utils-overrides > navFormDiffToHtml > ignores props whos value changes from undefined to falsy 1`] = `"<span id="nav-form-diff-changed-elements" class="navds-body-short font-bold">Endringer</span><ul aria-labelledby="nav-form-diff-changed-elements"><li>label: Fra 'WIP' til 'Svar ja eller nei?'</li></ul>"`;
+exports[`utils-overrides > navFormDiffToHtml > ignores props whos value changes from undefined to falsy 1`] = `"<span id="nav-form-diff-changed-elements" class="aksel-body-short font-ax-bold">Endringer</span><ul aria-labelledby="nav-form-diff-changed-elements"><li>label: Fra 'WIP' til 'Svar ja eller nei?'</li></ul>"`;

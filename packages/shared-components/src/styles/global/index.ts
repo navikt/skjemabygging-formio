@@ -26,18 +26,18 @@ const global = {
     textAlign: 'left',
     color: '#262626',
   },
-  a: {
-    color: 'var(--ac-link-action-text,var(--a-text-action))',
-    gap: 'var(--a-spacing-1)',
+  'a:not([class])': {
+    color: 'var(--ax-text-accent-subtle)',
+    gap: 'var(--ax-space-4)',
   },
   h3: {
-    fontSize: 'var(--a-font-size-heading-small)',
-    lineHeight: 'var(--a-font-line-height-heading-small)',
-    marginBottom: 'var(--a-spacing-3)',
+    fontSize: 'var(--ax-font-size-heading-small)',
+    lineHeight: 'var(--ax-font-line-height-heading-small)',
+    marginBottom: 'var(--ax-space-12)',
   },
   h4: {
-    fontSize: 'var(--a-font-size-heading-xsmall)',
-    lineHeight: 'var(--a-font-line-height-heading-xsmall)',
+    fontSize: 'var(--ax-font-size-heading-xsmall)',
+    lineHeight: 'var(--ax-font-line-height-heading-xsmall)',
   },
   fieldset: {
     border: 0,
@@ -53,8 +53,11 @@ const global = {
     outline: 'none',
   },
   // Override Aksel css for page, since it causes problems with our sticky elements.
-  '#root .navds-page__content--padding': {
+  '#root .aksel-page__content--padding': {
     paddingBlockEnd: 0,
+  },
+  '.intro-guide-panel .navds-guide-panel__content': {
+    padding: 'var(--ax-space-20)',
   },
   ...labelTrackChanges,
   ...errorSummary,

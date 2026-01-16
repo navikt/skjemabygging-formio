@@ -17,7 +17,7 @@ export const useNavBarStyles = makeStyles({
     alignItems: 'center',
     marginRight: 'auto',
     padding: '0 30px',
-    color: '#ffffff',
+    color: 'var(--ax-text-neutral)',
   },
   navBarLinks: {
     height: '3.625rem',

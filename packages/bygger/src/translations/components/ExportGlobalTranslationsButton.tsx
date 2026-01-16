@@ -13,7 +13,7 @@ const ExportGlobalTranslationsButton = () => {
       data={data}
       headers={headers}
       filename={'globale-oversettelser.csv'}
-      className="navds-button navds-button--tertiary navds-button--small navds-label navds-label--small"
+      className="aksel-button aksel-button--tertiary aksel-button--small aksel-label aksel-label--small"
       separator={';'}
       enclosingCharacter={'"'}
     >

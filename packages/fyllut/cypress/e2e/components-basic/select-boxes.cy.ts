@@ -26,7 +26,7 @@ describe('Select boxes', () => {
       });
 
       cy.findByLabelText('Select boxes with description').within(() => {
-        cy.findByRole('checkbox', { name: 'Choice 2 Description 2' }).check();
+        cy.findByRole('checkbox', { name: 'Choice 2' }).check();
       });
 
       cy.clickNextStep();
@@ -84,7 +84,7 @@ describe('Select boxes', () => {
       });
 
       cy.findByLabelText('Select boxes with description').within(() => {
-        cy.findByRole('checkbox', { name: 'Choice 4 Description 4' }).check();
+        cy.findByRole('checkbox', { name: 'Choice 4' }).check();
       });
 
       cy.clickSaveAndContinue();
@@ -136,10 +136,10 @@ describe('Select boxes', () => {
       });
 
       cy.findByLabelText('Select boxes with description').within(() => {
-        cy.findByRole('checkbox', { name: 'Choice 1 Description 1' }).should('be.checked');
-        cy.findByRole('checkbox', { name: 'Choice 2 Description 2' }).should('not.be.checked');
-        cy.findByRole('checkbox', { name: 'Choice 3 Description 3' }).should('not.be.checked');
-        cy.findByRole('checkbox', { name: 'Choice 4 Description 4' }).should('not.be.checked');
+        cy.findByRole('checkbox', { name: 'Choice 1' }).should('be.checked');
+        cy.findByRole('checkbox', { name: 'Choice 2' }).should('not.be.checked');
+        cy.findByRole('checkbox', { name: 'Choice 3' }).should('not.be.checked');
+        cy.findByRole('checkbox', { name: 'Choice 4' }).should('not.be.checked');
         cy.findByRole('checkbox', { name: 'Choice 5' }).should('not.be.checked');
       });
     });

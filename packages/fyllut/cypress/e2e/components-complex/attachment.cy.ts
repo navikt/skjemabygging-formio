@@ -88,7 +88,7 @@ describe('Attachment', () => {
     });
 
     cy.findByRole('textbox', { name: TITLE.textarea }).should('not.exist');
-    cy.get('.navds-alert')
+    cy.get('.aksel-alert')
       .contains(TEXTS.statiske.attachment.deadline.replace(/{{deadline}}/, 14))
       .should('exist');
 
@@ -98,7 +98,7 @@ describe('Attachment', () => {
     });
 
     cy.findByRole('textbox', { name: TITLE.textarea }).should('not.exist');
-    cy.get('.navds-alert').should('not.exist');
+    cy.get('.aksel-alert').should('not.exist');
   });
 
   it('is focusable', () => {

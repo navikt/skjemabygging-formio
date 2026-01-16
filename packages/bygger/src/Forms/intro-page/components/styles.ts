@@ -2,8 +2,8 @@ import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 
 export const addButtonStyles = makeStyles({
   addButton: {
-    borderRadius: 'var(--a-border-radius-large)',
-    margin: 'var(--a-space-12) var(--a-space-16) var(--a-space-12) 0',
+    borderRadius: 'var(--ax-radius-8)',
+    margin: 'var(--ax-space-12) var(--ax-space-16) var(--ax-space-12) 0',
   },
 });
 
@@ -14,15 +14,15 @@ export const useTextFieldStyles = makeStyles({
     alignItems: 'flex-start',
   },
   deleteButton: {
-    borderRadius: 'var(--a-border-radius-large)',
-    margin: '0 var(--a-space-12) 0 0',
+    borderRadius: 'var(--ax-radius-8)',
+    margin: '0 var(--ax-space-12) 0 0',
   },
   textField: {
-    padding: 'var(--a-space-12) var(--a-space-32) 0 0',
+    padding: 'var(--ax-space-12) var(--ax-space-32) 0 0',
     width: '100%',
   },
   textFieldWithDeleteButton: {
-    padding: 'var(--a-space-12) var(--a-space-12) 0 0',
+    padding: 'var(--ax-space-12) var(--ax-space-12) 0 0',
     width: '100%',
   },
   hidden: {

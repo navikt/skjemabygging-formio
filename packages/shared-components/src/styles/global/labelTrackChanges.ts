@@ -2,11 +2,11 @@ const labelTrackChanges = {
   '& .label-track-changes': {
     display: 'flex',
     alignItems: 'baseline',
-    '& .navds-tag': {
+    '& .aksel-tag': {
       marginLeft: '0.5rem',
     },
   },
-  '& .navds-label .navds-tag, & .navds-tag + .navds-tag': {
+  '& .aksel-label .aksel-tag, & .aksel-tag + .aksel-tag': {
     marginLeft: '0.5rem',
   },
 };

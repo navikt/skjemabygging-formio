@@ -43,7 +43,7 @@ const Combobox = forwardRef<HTMLInputElement, Props>(
 
     const styles = useComponentStyle({
       fieldSize,
-      cssSelector: '& .navds-combobox__wrapper',
+      cssSelector: '& .aksel-combobox__wrapper',
     });
 
     const handleChange = (selectedValue: string, selected: boolean) => {

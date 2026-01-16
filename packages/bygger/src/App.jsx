@@ -1,4 +1,5 @@
-import '@navikt/ds-css';
+import '@navikt/ds-css/darkside';
+import { Theme } from '@navikt/ds-react';
 import { makeStyles, Styles } from '@navikt/skjemadigitalisering-shared-components';
 import AuthenticatedApp from './AuthenticatedApp';
 import UnauthenticatedApp from './UnauthenticatedApp';
@@ -23,11 +24,13 @@ function App({ serverURL }) {
   const contentFunc = userData ? () => <AuthenticatedApp serverURL={serverURL} /> : () => <UnauthenticatedApp />;
 
   return (
-    <FeedbackProvider>
-      <PusherNotificationsProvider>
-        <section className={styles.app}>{contentFunc()}</section>
-      </PusherNotificationsProvider>
-    </FeedbackProvider>
+    <Theme theme="light">
+      <FeedbackProvider>
+        <PusherNotificationsProvider>
+          <section className={styles.app}>{contentFunc()}</section>
+        </PusherNotificationsProvider>
+      </FeedbackProvider>
+    </Theme>
   );
 }
 

@@ -17,11 +17,11 @@ const useStyles = makeStyles({
     alignItems: 'center',
     padding: '5px 15px',
     flexDirection: 'column',
-    color: 'var(--a-gray-50)',
+    color: 'var(--ax-text-neutral)',
     textDecoration: 'none',
     lineHeight: '20px',
     '&.active': {
-      borderBottom: '5px solid var(--a-border-action)',
+      borderBottom: '5px solid var(--ax-border-accent)',
       paddingBottom: '0',
     },
   },

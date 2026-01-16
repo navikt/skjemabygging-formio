@@ -1,6 +1,6 @@
 const datagrid = {
-  '& .navds-fieldset__content': {
-    marginBottom: 'var(--a-spacing-6)',
+  '& .aksel-fieldset__content': {
+    marginBottom: 'var(--ax-space-24)',
   },
 };
 

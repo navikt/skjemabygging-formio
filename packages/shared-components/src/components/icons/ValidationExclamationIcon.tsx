@@ -9,8 +9,8 @@ const useStyles = makeStyles({
   icon: {
     verticalAlign: 'sub',
     fontSize: '1.5rem',
-    color: 'var(--a-orange-600)',
-    margin: '0 var(--a-spacing-1)',
+    color: 'var(--ax-warning-700)',
+    margin: '0 var(--ax-space-4)',
   },
 });
 

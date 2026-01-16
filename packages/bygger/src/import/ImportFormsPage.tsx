@@ -12,7 +12,7 @@ import api from './api';
 
 export const useStyles = makeStyles({
   submitButton: {
-    marginTop: 'var(--a-spacing-4)',
+    marginTop: 'var(--ax-space-16)',
   },
 });
 

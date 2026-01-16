@@ -1,5 +1,5 @@
 const field = {
-  '& .navds-form-field__description p, & .description p': {
+  '& .aksel-form-field__description p, & .description p': {
     margin: '0',
   },
 };

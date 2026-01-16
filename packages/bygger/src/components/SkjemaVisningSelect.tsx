@@ -8,7 +8,7 @@ interface Props {
 
 const useStyles = makeStyles({
   toggleGroup: {
-    marginTop: 'var(--a-spacing-2)',
+    marginTop: 'var(--ax-space-8)',
   },
 });
 

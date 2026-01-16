@@ -1,6 +1,6 @@
 const day = {
   '& .nav-datovelger__input': {
-    fontSize: 'var(--a-font-size-large)',
+    fontSize: 'var(--ax-font-size-large)',
     minHeight: 'var(--input-min-height)',
   },
 };

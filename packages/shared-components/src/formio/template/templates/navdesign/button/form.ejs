@@ -1,6 +1,7 @@
 <{{ctx.input.type}}
   ref="button"
-  class="navds-button navds-button--primary"
+  class="aksel-button aksel-button--primary"
+  data-variant="primary"
   {% for (var attr in ctx.input.attr) { %}
   {{attr}}="{{ctx.input.attr[attr]}}"
   {% } %}
@@ -9,7 +10,7 @@
   {% } %}
 >
 {% if (ctx.component.leftIcon) { %}<span class="{{ctx.component.leftIcon}}"></span>&nbsp;{% } %}
-<span aria-live="polite" class="navds-label">{{ctx.t(ctx.component.buttonText  || ctx.input.content)}}</span>
+<span aria-live="polite" class="aksel-label">{{ctx.t(ctx.component.buttonText  || ctx.input.content)}}</span>
 {% if (ctx.component.tooltip) { %}
   <i ref="tooltip" class="{{ctx.iconClass('question-sign')}} text-muted" data-tooltip="{{ctx.component.tooltip}}"></i>
 {% } %}
@@ -18,3 +19,4 @@
 <div ref="buttonMessageContainer">
   <span class="help-block" ref="buttonMessage"></span>
 </div>
+
