@@ -25,6 +25,8 @@ function App({ serverURL }) {
 
   return (
     <Theme theme="light">
+      {' '}
+      {/* TODO: Remove <Theme> when solution is ready to support "dark" */}
       <FeedbackProvider>
         <PusherNotificationsProvider>
           <section className={styles.app}>{contentFunc()}</section>

@@ -20,6 +20,7 @@ const App = () => {
 
   return (
     <main className={styles.app}>
+      {/* TODO: Remove <Theme> when solution is ready to support "dark" */}
       <Theme theme="light">
         <Routes>
           <Route path="/" element={<FormsPage />} />
