@@ -61,7 +61,7 @@ const UploadButton = ({
   };
 
   return (
-    <VStack gap="2">
+    <VStack gap="space-2">
       {allowUpload ? (
         <FileUpload.Trigger onSelect={onSelect} accept={accept} maxSizeInBytes={maxFileSizeInBytes} multiple={false}>
           <Button

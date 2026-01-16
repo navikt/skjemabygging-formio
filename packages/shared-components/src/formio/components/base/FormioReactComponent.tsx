@@ -51,6 +51,7 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
     this.rootElement.render = (node) =>
       originalRender(
         <Theme theme="light" hasBackground={false} asChild>
+          {/* TODO: Remove <Theme> when solution is ready to support "dark" */}
           {node}
         </Theme>,
       );

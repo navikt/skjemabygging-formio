@@ -1,11 +1,11 @@
-import { Add } from '@navikt/ds-icons';
+import { PlusIcon } from '@navikt/aksel-icons';
 import { MenuLink } from './MenuLink';
 
 export const ListMenu = () => {
   return (
     <>
       <MenuLink to={`/forms/new`} noIconStyling={false}>
-        <Add fontSize={'1.5rem'} role="presentation" />
+        <PlusIcon fontSize={'1.5rem'} role="presentation" />
         <span>Nytt skjema</span>
       </MenuLink>
     </>

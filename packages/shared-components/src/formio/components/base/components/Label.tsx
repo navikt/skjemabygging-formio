@@ -30,7 +30,7 @@ const Label = ({ component, parent, editFields, labelOptions }: Props) => {
       {translate(getLabel(component))}
       {isRequired(component) || isReadOnly(component) ? '' : showOptional && ` (${translate('valgfritt')})`}
       {component?.prefillKey && builderMode && (
-        <Tag variant="alt3" className="mb-4" size="xsmall">
+        <Tag data-color="info" variant="outline" className="mb-4" size="xsmall">
           Preutfylling
         </Tag>
       )}

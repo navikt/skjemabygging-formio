@@ -34,7 +34,7 @@ const GlobalTranslationButtonsColumn = () => {
   };
 
   return (
-    <VStack gap="4">
+    <VStack gap="space-4">
       <Button
         loading={isProcessing === 'SAVING'}
         disabled={!!isProcessing}

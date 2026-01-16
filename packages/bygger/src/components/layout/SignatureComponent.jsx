@@ -1,4 +1,4 @@
-import { Close } from '@navikt/ds-icons';
+import { XMarkIcon } from '@navikt/aksel-icons';
 import { Button, Fieldset, Heading, Panel, TextField } from '@navikt/ds-react';
 import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import LabelWithDiff from '../FormMetaDataEditor/LabelWithDiff';
@@ -15,7 +15,7 @@ const SignatureComponent = ({ signature, index, onChange, onDelete, diff = undef
     <Panel className="mb-4" border>
       <Button
         variant="tertiary"
-        icon={<Close aria-hidden />}
+        icon={<XMarkIcon aria-hidden />}
         onClick={onDelete}
         className={styles.closeBtn}
         aria-label={'Slett signatur ' + (index + 1)}

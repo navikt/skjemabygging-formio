@@ -2,7 +2,7 @@ import { Button, Checkbox } from '@navikt/ds-react';
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { UpdateFormFunction } from '../utils/utils';
 
-import { Copy } from '@navikt/ds-icons';
+import { FilesIcon } from '@navikt/aksel-icons';
 import { makeStyles, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import copy from '../../../util/copy';
 
@@ -46,7 +46,7 @@ const TestSkjemaFields = ({ onChange, form }: TestSkjemaFieldsProps) => {
           Skjemadelingslenke
           <Button
             onClick={() => copy(`${config!.skjemadelingslenkeUrl}/test/login?formPath=${path}`)}
-            icon={<Copy />}
+            icon={<FilesIcon aria-hidden />}
             title="Kopier skjemadelingslenke"
             variant="tertiary"
             size="xsmall"

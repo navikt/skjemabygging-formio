@@ -27,23 +27,23 @@ const BuilderTags = ({ component, parent, editFields }: Props) => {
   return (
     <>
       {publishedForm && diff.isNew && (
-        <Tag size="xsmall" variant="warning" data-testid="diff-tag">
+        <Tag data-color="warning" size="xsmall" variant="outline" data-testid="diff-tag">
           Ny
         </Tag>
       )}
       {publishedForm && diff.changesToCurrentComponent?.length > 0 && (
-        <Tag size="xsmall" variant="warning" data-testid="diff-tag">
+        <Tag data-color="warning" size="xsmall" variant="outline" data-testid="diff-tag">
           Endring
         </Tag>
       )}
       {publishedForm && diff.deletedComponents?.length > 0 && (
-        <Tag size="xsmall" variant="warning" data-testid="diff-tag">
+        <Tag data-color="warning" size="xsmall" variant="outline" data-testid="diff-tag">
           Slettede elementer
         </Tag>
       )}
       {parent &&
         baseComponentUtils.getBuilderErrors(component, parent).map((error, i) => (
-          <Tag size="xsmall" variant="error" data-testid="diff-tag" key={i}>
+          <Tag data-color="danger" size="xsmall" variant="outline" data-testid="diff-tag" key={i}>
             {error}
           </Tag>
         ))}

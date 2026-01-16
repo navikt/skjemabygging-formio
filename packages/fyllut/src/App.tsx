@@ -1,4 +1,4 @@
-import '@navikt/ds-css/darkside';
+import '@navikt/ds-css';
 import { Theme } from '@navikt/ds-react';
 import { makeStyles, Styles } from '@navikt/skjemadigitalisering-shared-components';
 import { Route, Routes } from 'react-router';
@@ -20,6 +20,7 @@ const App = () => {
 
   return (
     <main className={styles.app}>
+      {/* TODO: Remove <Theme> when solution is ready to support "dark" */}
       <Theme theme="light">
         <Routes>
           <Route path="/" element={<FormsPage />} />

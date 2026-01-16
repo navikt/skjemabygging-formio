@@ -1,4 +1,4 @@
-import { FormSummary, List } from '@navikt/ds-react';
+import { Box, FormSummary, List } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { FormComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
@@ -22,11 +22,13 @@ const SummaryDrivingList = (props: FormComponentProps) => {
       <FormSummary.Value>
         {translate(TEXTS.statiske.drivingList.summaryDescription)}
 
-        <List as="ul">
-          {drivingListDates.map((drivingListDate) => (
-            <List.Item key={drivingListDate}>{drivingListDate}</List.Item>
-          ))}
-        </List>
+        <Box marginBlock="space-16" asChild>
+          <List data-aksel-migrated-v8 as="ul">
+            {drivingListDates.map((drivingListDate) => (
+              <List.Item key={drivingListDate}>{drivingListDate}</List.Item>
+            ))}
+          </List>
+        </Box>
       </FormSummary.Value>
     </FormSummary.Answer>
   );

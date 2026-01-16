@@ -1,4 +1,4 @@
-import '@navikt/ds-css/darkside';
+import '@navikt/ds-css';
 import { Theme } from '@navikt/ds-react';
 import { makeStyles, Styles } from '@navikt/skjemadigitalisering-shared-components';
 import AuthenticatedApp from './AuthenticatedApp';
@@ -25,6 +25,8 @@ function App({ serverURL }) {
 
   return (
     <Theme theme="light">
+      {' '}
+      {/* TODO: Remove <Theme> when solution is ready to support "dark" */}
       <FeedbackProvider>
         <PusherNotificationsProvider>
           <section className={styles.app}>{contentFunc()}</section>

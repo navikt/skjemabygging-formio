@@ -1,4 +1,4 @@
-import { HomeFilled } from '@navikt/ds-icons';
+import { HouseFillIcon } from '@navikt/aksel-icons';
 import { InternalHeader, Link } from '@navikt/ds-react';
 import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { Link as ReactRouterLink } from 'react-router';
@@ -36,7 +36,7 @@ export const NavBar = ({ formPath, formMenu, formListMenu, translationMenu }: Na
           aria-label="Gå til skjemaliste"
           onClick={(e) => showUnsavedChangesModal(e, { redirectTo: '/forms' })}
         >
-          <HomeFilled fontSize="1.5rem" role="presentation" />
+          <HouseFillIcon fontSize="1.5rem" role="presentation" />
         </Link>
         <div className={styles.navBarLinks}>
           {formMenu && <FormMenu formPath={formPath} />}

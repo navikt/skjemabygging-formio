@@ -28,7 +28,14 @@ const UnusedTranslationRow = ({ translation, onRemove, showKey = false }: Props)
       <TranslationDisplayCell text={translation.nn} hasGlobalOverride={hasGlobalOverride} />
       <TranslationDisplayCell text={translation.en} hasGlobalOverride={hasGlobalOverride} />
       <Table.DataCell className={styles.actionColumn}>
-        <Button type="button" variant="danger" size="small" loading={loading} onClick={handleRemove}>
+        <Button
+          data-color="danger"
+          type="button"
+          variant="primary"
+          size="small"
+          loading={loading}
+          onClick={handleRemove}
+        >
           Slett
         </Button>
       </Table.DataCell>

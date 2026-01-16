@@ -27,7 +27,7 @@ const Recipients = () => {
     <RowLayout
       right={
         <SidebarLayout noScroll={true}>
-          <VStack gap="1">
+          <VStack gap="space-1">
             <Button variant="secondary" onClick={addNewRecipient} type="button" size="small" disabled={!!newRecipient}>
               Legg til ny
             </Button>

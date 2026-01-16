@@ -11,7 +11,7 @@ const LabelWithDiff = ({ label, diff = false }: LabelWithDiffProps) => {
     <div className="label-track-changes">
       <span>{label}</span>
       {diff && (
-        <Tag variant="warning-filled" size="xsmall">
+        <Tag data-color="warning" variant="strong" size="xsmall">
           {typeof diff === 'string' ? `${diff}` : 'Endring'}
         </Tag>
       )}

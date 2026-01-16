@@ -6,7 +6,7 @@ import StaticPdfTableRow from './StaticPdfTableRow';
 const useStyles = makeStyles({
   table: {
     tableLayout: 'fixed',
-    marginBottom: 'var(--a-spacing-4)',
+    marginBottom: 'var(--ax-space-16)',
   },
   smallColumn: {
     width: '120px',

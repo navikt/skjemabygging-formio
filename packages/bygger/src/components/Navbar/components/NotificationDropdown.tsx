@@ -1,4 +1,4 @@
-import { InformationFilled } from '@navikt/ds-icons';
+import { InformationSquareFillIcon } from '@navikt/aksel-icons';
 import { Alert, BodyShort, Detail, Dropdown, Heading, InternalHeader } from '@navikt/ds-react';
 import { makeStyles, navCssVariables } from '@navikt/skjemadigitalisering-shared-components';
 import { usePusherNotifications } from '../../../context/notifications/NotificationsContext';
@@ -22,7 +22,7 @@ const NotificationDropdown = () => {
   return (
     <Dropdown>
       <InternalHeader.Button as={Dropdown.Toggle} aria-label="Notifikasjoner">
-        <InformationFilled color={navCssVariables.navWarning} fontSize="1.5rem" role="presentation" />
+        <InformationSquareFillIcon color={navCssVariables.navWarning} fontSize="1.5rem" role="presentation" />
       </InternalHeader.Button>
       <Dropdown.Menu className={`${styles.notificationsMenu}`} onClose={clearAll}>
         <Dropdown.Menu.List>

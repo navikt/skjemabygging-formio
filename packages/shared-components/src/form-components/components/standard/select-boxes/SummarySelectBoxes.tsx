@@ -1,4 +1,4 @@
-import { FormSummary, List } from '@navikt/ds-react';
+import { Box, FormSummary, List } from '@navikt/ds-react';
 import { FormComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 import DefaultLabel from '../../shared/form-summary/DefaultLabel';
@@ -24,11 +24,13 @@ const SummarySelectBoxes = (props: FormComponentProps) => {
     <FormSummary.Answer>
       <DefaultLabel {...props} />
       <FormSummary.Value>
-        <List>
-          {valueObjects.map((boxValue) => (
-            <List.Item key={`${key}-${navId}-${boxValue}`}>{boxValue}</List.Item>
-          ))}
-        </List>
+        <Box marginBlock="space-16" asChild>
+          <List data-aksel-migrated-v8>
+            {valueObjects.map((boxValue) => (
+              <List.Item key={`${key}-${navId}-${boxValue}`}>{boxValue}</List.Item>
+            ))}
+          </List>
+        </Box>
       </FormSummary.Value>
     </FormSummary.Answer>
   );
