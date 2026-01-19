@@ -1,6 +1,5 @@
 import express from 'express';
 import { config as appConfig } from '../../config/config';
-import { NaisCluster } from '../../config/nais-cluster.js';
 import envQualifier from '../../middleware/envQualifier';
 import { rateLimiter } from '../../middleware/ratelimit';
 import tryCatch from '../../middleware/tryCatch';
@@ -31,7 +30,7 @@ import translations from './translations.js';
 
 const apiRouter = express.Router();
 
-const { featureToggles, naisClusterName } = appConfig;
+const { featureToggles } = appConfig;
 const {
   azureM2MSkjemabyggingProxy,
   azureM2MPdl,
@@ -70,19 +69,16 @@ apiRouter.get('/send-inn/prefill-data', tokenxSendInn, prefillData.get);
 apiRouter.get('/send-inn/activities', tokenxSendInn, activities.get);
 apiRouter.use('/register-data', registerDataRouter);
 
-// Not available in production yet
-if (naisClusterName !== NaisCluster.PROD) {
-  const rateLimitHandler = rateLimiter(60000, appConfig.isTest ? 1000 : 40);
-  apiRouter.use('/nologin-file', rateLimitHandler, nologinTokenHandler, nologinFileRouter);
-  apiRouter.post(
-    '/send-inn/nologin-soknad',
-    rateLimitHandler,
-    nologinTokenHandler,
-    azureM2MSendInn,
-    azurePdfGeneratorToken,
-    nologin.post,
-  );
-}
+const rateLimitHandler = rateLimiter(60000, appConfig.isTest ? 1000 : 40);
+apiRouter.use('/nologin-file', rateLimitHandler, nologinTokenHandler, nologinFileRouter);
+apiRouter.post(
+  '/send-inn/nologin-soknad',
+  rateLimitHandler,
+  nologinTokenHandler,
+  azureM2MSendInn,
+  azurePdfGeneratorToken,
+  nologin.post,
+);
 
 if (featureToggles.enablePdl) {
   apiRouter.get('/pdl/person/:id', tokenxPdl, pdl.person);
