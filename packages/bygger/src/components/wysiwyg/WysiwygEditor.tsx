@@ -44,7 +44,8 @@ const WysiwygEditor = forwardRef<HTMLDivElement, Props>(
 
     const styles = useStyles();
 
-    const { sanitizeHtmlString, removeEmptyTags, removeTags, extractTextContent } = htmlUtils;
+    const { isHtmlString, groupLonelySiblings, sanitizeHtmlString, removeEmptyTags, removeTags, extractTextContent } =
+      htmlUtils;
 
     const unwantedTags = [
       'font',
@@ -67,7 +68,7 @@ const WysiwygEditor = forwardRef<HTMLDivElement, Props>(
     const handleChange = (event) => {
       const value = event.target.value;
       // make sure that non-html strings are wrapped in a tag.
-      if (htmlUtils.isHtmlString(value)) {
+      if (isHtmlString(value)) {
         setHtmlValue(removeUnwantedTags(value));
       } else {
         setHtmlValue(`<${defaultTag}>${value}</${defaultTag}>`);
@@ -75,13 +76,11 @@ const WysiwygEditor = forwardRef<HTMLDivElement, Props>(
     };
 
     const handleBlur = () => {
+      const sanitizedHtml = removeEmptyTags(sanitizeHtmlString(htmlValue, { FORBID_ATTR: ['style'] }));
       // Apply removeUnwantedTags, then wrap top level text nodes (+ a, b and strong tags) in <p>
-      const cleanedHtml = removeDivs(
-        htmlUtils.groupLonelySiblings(
-          removeUnwantedTags(removeEmptyTags(sanitizeHtmlString(htmlValue, { FORBID_ATTR: ['style'] }))),
-        ),
-      );
-      const trimmed = extractTextContent(cleanedHtml).trim() === '' ? '' : cleanedHtml;
+      // Then, remove divs in case they were not removed by removeUnwantedTags
+      const reorganizedHtml = removeDivs(groupLonelySiblings(removeUnwantedTags(sanitizedHtml)));
+      const trimmed = extractTextContent(reorganizedHtml).trim() === '' ? '' : reorganizedHtml;
       setHtmlValue(trimmed);
       onBlur(trimmed);
     };
