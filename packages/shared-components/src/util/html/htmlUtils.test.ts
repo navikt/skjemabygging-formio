@@ -24,6 +24,15 @@ describe('htmlUtils', () => {
     });
   });
 
+  describe('getHtmlTag', () => {
+    it('returns the tag name of the first html element in the string', () => {
+      expect(htmlUtils.getHtmlTag('<p>hello</p>')).toBe('P');
+      expect(htmlUtils.getHtmlTag('   <div>hello</div>')).toBe('DIV');
+      expect(htmlUtils.getHtmlTag('<span>hello</span><p>world</p>')).toBe('SPAN');
+      expect(htmlUtils.getHtmlTag('hello<h3>world</h3>')).toBe('H3');
+    });
+  });
+
   describe('extractTextContent', () => {
     it('extracts text content from html string', () => {
       expect(htmlUtils.extractTextContent('<p>hello</p>')).toBe('hello');
@@ -141,6 +150,10 @@ describe('htmlUtils', () => {
     });
 
     it('transforms b- and a-tags to markdown', () => {
+      expect(htmlUtils.getTexts('hello <b>world</b>')).toEqual(['hello **world**']);
+      expect(htmlUtils.getTexts(`This is a <a href="www.url.no">link</a> and this is <b>bold</b> text.`)).toEqual([
+        'This is a [link](www.url.no) and this is **bold** text.',
+      ]);
       expect(htmlUtils.getTexts('<p>hello <b>world</b> <a href="www.url.no">link</a></p>')).toEqual([
         'hello **world** [link](www.url.no)',
       ]);
@@ -149,9 +162,26 @@ describe('htmlUtils', () => {
       ]);
       expect(
         htmlUtils.getTexts(
-          '<div><p>List:</p><ol><li>Item <b>with bold</b> and normal text</li><li>Item <a href="www.url.no">with link</a></li></ol></div>',
+          '<p>List:</p><ol><li>Item <b>with bold</b> and normal text</li><li>Item <a href="www.url.no">with link</a></li></ol>',
         ),
       ).toEqual(['List:', 'Item **with bold** and normal text', 'Item [with link](www.url.no)']);
+    });
+
+    it('returns empty array for empty string', () => {
+      expect(htmlUtils.getTexts('')).toEqual([]);
+    });
+
+    it('does not remove parts of html string that can´t be processed', () => {
+      expect(htmlUtils.getTexts('<div>Hello <custom-tag>world</custom-tag></div>')).toEqual([
+        '<div>Hello <custom-tag>world</custom-tag></div>',
+      ]);
+    });
+
+    it('does not support a mix of top level tags and text formatting tags on the same level', () => {
+      expect(htmlUtils.getTexts('Hello <p>world</p>')).toEqual(['Hello <p>world</p>']);
+      expect(htmlUtils.getTexts('<p>Hello </p><b>world</b><h3>Heading</h3>')).toEqual([
+        '<p>Hello </p>**world**<h3>Heading</h3>',
+      ]);
     });
   });
 
