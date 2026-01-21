@@ -85,12 +85,18 @@ export default class PhoneNumber extends BaseComponent {
   }
 
   renderReact(element) {
+    const labelId = `${this.component.key}-label`;
+    const phoneInputId = `${this.component.key}-phone`;
+    const areaCodeSelectId = `${this.component.key}-area-code`;
+
     element.render(
       <ComponentUtilsProvider component={this}>
         <ComponentLabel
           component={this.component}
           editFields={this.getEditFields()}
           labelIsHidden={this.labelIsHidden()}
+          labelId={labelId}
+          htmlFor={phoneInputId}
         />
         <NavPhoneNumber
           label={this.getLabel()}
@@ -103,6 +109,9 @@ export default class PhoneNumber extends BaseComponent {
           showAreaCode={this.getShowAreaCode()}
           value={this.getValue() as PhoneNumberObject | string}
           error={this.getError()}
+          labelId={labelId}
+          phoneInputId={phoneInputId}
+          areaCodeSelectId={areaCodeSelectId}
         />
       </ComponentUtilsProvider>,
     );
