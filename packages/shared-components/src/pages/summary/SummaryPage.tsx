@@ -125,7 +125,7 @@ export function SummaryPage() {
   const hasValidationErrors = panelValidationList?.some((panelValidation) => panelValidation.hasValidationErrors);
 
   return (
-    <VStack gap="space-8">
+    <VStack gap="space-32">
       {hasValidationErrors ? (
         <>
           <Alert variant="warning">
