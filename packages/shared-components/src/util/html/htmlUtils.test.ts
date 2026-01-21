@@ -77,6 +77,17 @@ describe('htmlUtils', () => {
       expect(htmlUtils.removeEmptyTags('<p><br></p>')).toBe('');
       expect(htmlUtils.removeEmptyTags('<div><hr></div>')).toBe('');
     });
+
+    it('removes tags if text content is only whitespace', () => {
+      expect(htmlUtils.removeEmptyTags('<p>   </p>')).toBe('');
+      expect(htmlUtils.removeEmptyTags('<div>\n\t</div>')).toBe('');
+      expect(htmlUtils.removeEmptyTags('<p>hello <b>   </b></p>')).toBe('<p>hello </p>');
+    });
+
+    it('removes top level text nodes that are only whitespace', () => {
+      expect(htmlUtils.removeEmptyTags('<p>hello</p>   <p>world</p>')).toBe('<p>hello</p><p>world</p>');
+      expect(htmlUtils.removeEmptyTags('\n\t<div>hello</div>\n')).toBe('<div>hello</div>');
+    });
   });
 
   describe('sanitizeHtmlString', () => {
@@ -147,6 +158,7 @@ describe('htmlUtils', () => {
       expect(htmlUtils.getTexts('<ol><li>"Første punkt "<b>har fet skrift</b>" og normal skrift"</li></ol>')).toEqual([
         '"Første punkt "**har fet skrift**" og normal skrift"',
       ]);
+      expect(htmlUtils.getTexts('<div><b>Fet tekst</b></div><p>Avsnitt</p>')).toEqual(['**Fet tekst**', 'Avsnitt']);
     });
 
     it('transforms b- and a-tags to markdown', () => {
@@ -173,7 +185,7 @@ describe('htmlUtils', () => {
 
     it('does not remove parts of html string that can´t be processed', () => {
       expect(htmlUtils.getTexts('<div>Hello <custom-tag>world</custom-tag></div>')).toEqual([
-        '<div>Hello <custom-tag>world</custom-tag></div>',
+        'Hello <custom-tag>world</custom-tag>',
       ]);
     });
 

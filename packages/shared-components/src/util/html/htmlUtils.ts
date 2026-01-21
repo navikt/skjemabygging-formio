@@ -3,7 +3,7 @@ import { defaultLeafTags, generateMarkdown } from './markdown';
 
 type SanitizeOptions = Omit<DOMPurify.Config, 'RETURN_DOM_FRAGMENT' | 'RETURN_DOM'>;
 
-const topLevelTags = ['H2', 'H3', 'P', 'OL', 'UL'];
+const topLevelTags = ['H2', 'H3', 'P', 'OL', 'UL', 'DIV'];
 const textFormattingTags = ['A', 'B', 'STRONG', 'BR'];
 
 /**
@@ -37,11 +37,21 @@ const removeEmptyTags = (htmlString: string): string => {
   const div = document.createElement('div');
   div.innerHTML = htmlString;
   const selfClosingTags = ['BR', 'HR'];
+
+  // Remove text nodes that only contain whitespace
+  Array.from(div.childNodes).forEach((node) => {
+    if (node.nodeType === Node.TEXT_NODE && !node.textContent?.trim()) {
+      div.removeChild(node);
+    }
+  });
+
+  // Remove empty non-self-closing tags
   div.querySelectorAll('*').forEach((element) => {
     if (!selfClosingTags.includes(element.tagName) && element.textContent?.trim() === '') {
       element.remove();
     }
   });
+
   return div.innerHTML;
 };
 
@@ -68,7 +78,8 @@ const getTexts = (htmlString: string): string[] => {
   const div = document.createElement('div');
   div.innerHTML = htmlString;
   if (areAllChildrenTopLevelTags(div)) {
-    return Array.from(div.querySelectorAll(defaultLeafTags.join(',').toLowerCase())).map((element) => {
+    const selector = [...defaultLeafTags, 'DIV'].join(',').toLowerCase();
+    return Array.from(div.querySelectorAll(selector)).map((element) => {
       return Array.from(element.childNodes, generateMarkdown).join('');
     });
   }
