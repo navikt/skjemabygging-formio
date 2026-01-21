@@ -71,6 +71,7 @@ export const createCopyService = (
             nb: sourceTranslation.nb,
             nn: sourceTranslation.nn,
             en: sourceTranslation.en,
+            tag: sourceTranslation.tag,
             // TODO try to link to global if sourceTranslation.globalTranslationId exists?
           };
           await formTranslationServiceTarget.put(formPath, String(target.id), body, target.revision!, token);
@@ -80,6 +81,7 @@ export const createCopyService = (
             nb: sourceTranslation.nb,
             nn: sourceTranslation.nn,
             en: sourceTranslation.en,
+            tag: sourceTranslation.tag,
             // TODO try to link to global if sourceTranslation.globalTranslationId exists?
           };
           await formTranslationServiceTarget.post(formPath, body, token);
@@ -106,6 +108,7 @@ export const createCopyService = (
           nb: sourceTranslation.nb,
           nn: sourceTranslation.nn,
           en: sourceTranslation.en,
+          tag: sourceTranslation.tag,
         };
         await globalTranslationServiceTarget.put(
           String(targetTranslation.id!),
