@@ -29,7 +29,7 @@ const sanitizeForCsv = (text?: string) => escapeQuote(removeLineBreaks(text));
 
 const sanitizeHtmlForCsv = (htmlString: string) => {
   const { removeTags, removeEmptyTags, groupLonelySiblings, sanitizeHtmlString } = htmlUtils;
-  const sanitizedHtml = removeEmptyTags(sanitizeHtmlString(sanitizeForCsv(htmlString) ?? ''));
+  const sanitizedHtml = removeEmptyTags(sanitizeHtmlString(removeLineBreaks(htmlString) ?? ''));
   return groupLonelySiblings(removeTags(sanitizedHtml, 'span'));
 };
 
