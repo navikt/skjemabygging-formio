@@ -489,6 +489,14 @@ export default [
           },
         },
       },
+      {
+        id: 'service-unavailable',
+        type: 'json',
+        options: {
+          status: 503,
+          body: { message: 'NOLOGIN is not available', errorCode: 'temporarilyUnavailable' },
+        },
+      },
     ],
   },
   {
@@ -625,6 +633,14 @@ export default [
             res.contentType('application/json; charset=UTF-8');
             res.send(replySubmittedNologinApplication(body));
           },
+        },
+      },
+      {
+        id: 'service-unavailable',
+        type: 'json',
+        options: {
+          status: 503,
+          body: { message: 'NOLOGIN is not available', errorCode: 'temporarilyUnavailable' },
         },
       },
       {

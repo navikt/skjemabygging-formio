@@ -1,3 +1,4 @@
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import { noLoginFileService } from '../../../services';
 import { HttpError } from '../../../utils/errors/HttpError';
@@ -29,6 +30,11 @@ const nologinFile = {
         return res.status(400).json({
           message: 'Feil ved opplasting av fil for uinnlogget søknad.',
           errorCode: 'FILE_TOO_MANY_PAGES',
+        });
+      } else if (error instanceof HttpError && error.http_response_body.errorCode === 'temporarilyUnavailable') {
+        return res.status(503).json({
+          message: TEXTS.statiske.nologin.temporarilyUnavailable,
+          errorCode: 'SERVICE_UNAVAILABLE',
         });
       }
 

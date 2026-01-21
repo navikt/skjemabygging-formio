@@ -170,6 +170,10 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
     return error instanceof http.TooManyPagesError;
   };
 
+  const isServiceUnavailable = (error: any) => {
+    return error instanceof http.ServiceUnavailable;
+  };
+
   const validateTotalAttachmentSize = (attachmentId: string, file: FileObject): string | undefined => {
     const attachment = submission?.attachments?.find((attachment) => attachment.attachmentId === attachmentId);
     return validateTotalFilesSize(
@@ -242,6 +246,8 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
         return Promise.resolve({ status: 'auth-error' });
       } else if (isTooManyPagesError(error)) {
         addFileInProgress(attachmentId, { ...file, error: true, reasons: ['uploadTooManyPages'] });
+      } else if (isServiceUnavailable(error)) {
+        addFileInProgress(attachmentId, { ...file, error: true, reasons: ['serviceUnavailable'] });
       } else {
         addFileInProgress(attachmentId, { ...file, error: true, reasons: ['uploadHttpError'] });
       }
