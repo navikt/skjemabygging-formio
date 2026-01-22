@@ -13,7 +13,7 @@ import { MutableRefObject, useState } from 'react';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import FileUploader from '../file-uploader/FileUploader';
-import Attachment from './Attachment';
+import AttachmentOptionSelect from './AttachmentOptionSelect';
 import { useAttachmentUpload } from './AttachmentUploadContext';
 import { attachmentValidator } from './attachmentValidator';
 import FileUploadReadMore from './FileUploadReadMore';
@@ -109,7 +109,7 @@ const OtherAttachmentUpload = ({ label, attachmentValues, componentId, descripti
           <BodyShort>{description}</BodyShort>
         </div>
       ) : (
-        <Attachment
+        <AttachmentOptionSelect
           title={label}
           description={description}
           error={attachmentError?.message}

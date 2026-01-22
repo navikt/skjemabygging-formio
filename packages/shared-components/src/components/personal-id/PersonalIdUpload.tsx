@@ -1,7 +1,7 @@
 import { Label, VStack } from '@navikt/ds-react';
 import { SubmissionAttachmentValue, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useLanguages } from '../../context/languages';
-import Attachment from '../attachment/Attachment';
+import AttachmentOptionSelect from '../attachment/AttachmentOptionSelect';
 import { useAttachmentUpload } from '../attachment/AttachmentUploadContext';
 import { attachmentValidator } from '../attachment/attachmentValidator';
 import FileUploader from '../file-uploader/FileUploader';
@@ -36,7 +36,7 @@ const PersonalIdUpload = ({ refs }: { refs?: any }) => {
   return (
     <VStack gap="6" className={'mb'}>
       {!uploadedFile && (
-        <Attachment
+        <AttachmentOptionSelect
           title={translate(TEXTS.statiske.uploadId.label)}
           description={null}
           error={attachmentError?.message}

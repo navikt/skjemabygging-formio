@@ -20,7 +20,7 @@ interface Props {
   deadline?: string;
 }
 
-const Attachment = forwardRef<HTMLFieldSetElement, Props>(
+const AttachmentOptionSelect = forwardRef<HTMLFieldSetElement, Props>(
   ({ attachmentValues, value, title, description, error, onChange, translate, deadline }: Props, ref) => {
     const additionalDocumentation = attachmentValues?.[value?.key]?.additionalDocumentation;
     const showDeadline = !!attachmentValues?.[value?.key]?.showDeadline;
@@ -84,4 +84,4 @@ const Attachment = forwardRef<HTMLFieldSetElement, Props>(
   },
 );
 
-export default Attachment;
+export default AttachmentOptionSelect;
