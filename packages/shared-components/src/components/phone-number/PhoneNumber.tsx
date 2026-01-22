@@ -106,8 +106,8 @@ const PhoneNumber = ({ value, onChange, showAreaCode, error }: Props) => {
             hideLabel
             className={clsx(
               typeof phoneNumber === 'object' && phoneNumber.areaCode.length === 3
-                ? styles.areaCodesSelect65
-                : styles.areaCodesSelect75,
+                ? styles.areaCodeSelectShort
+                : styles.areaCodeSelectLong,
             )}
             onChange={(event) => handleChange(event.target.value, 'areaCode')}
             defaultValue={typeof value === 'object' && value ? value.areaCode : defaultAreaCode}
