@@ -31,7 +31,7 @@ const UnusedTranslationRow = ({ translation, onRemove, showKey = false }: Props)
         <Button
           data-color="danger"
           type="button"
-          variant="primary"
+          variant="tertiary"
           size="small"
           loading={loading}
           onClick={handleRemove}
