@@ -85,9 +85,9 @@ export default class PhoneNumber extends BaseComponent {
   }
 
   renderReact(element) {
-    const labelId = `${this.component.key}-label`;
-    const phoneInputId = `${this.component.key}-phone`;
-    const areaCodeSelectId = `${this.component.key}-area-code`;
+    const labelId = `${this.component?.key ?? this.id ?? 'phone-number'}-label`;
+    const phoneInputId = `${this.component?.key ?? this.id ?? 'phone-number'}-phone`;
+    const areaCodeSelectId = `${this.component?.key ?? this.id ?? 'phone-number'}-area-code`;
 
     element.render(
       <ComponentUtilsProvider component={this}>
