@@ -11,6 +11,7 @@ const validateComponent = (props?: ValidateComponentType) => {
 
   return {
     ...staticDefaultValues,
+    ...props,
     required: required ?? true,
     maxLength: maxLength ?? '',
     minLength: minLength ?? '',

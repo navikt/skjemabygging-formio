@@ -5,7 +5,7 @@ const generateId = () => {
 const sanitizeAndLowerCase = (value?: string) => {
   if (!value) return '';
 
-  return value.toLowerCase().replace(/[\s()/]/g, '');
+  return value.toLowerCase().replace(/[\s.()/]/g, '');
 };
 
 const insertLanguage = (value: string, language: string) => {

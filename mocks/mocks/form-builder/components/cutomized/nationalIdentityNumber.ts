@@ -1,14 +1,13 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
 const nationalIdentityNumber = (props?: BaseComponentType) => {
-  const { key, label } = props ?? {};
+  const { label } = props ?? {};
 
   return {
     ...staticDefaultValues,
     ...baseComponent({
       ...props,
       label: label ?? 'Fødselsnummer eller d-nummer',
-      key,
     }),
   };
 };
