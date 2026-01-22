@@ -43,25 +43,44 @@ const WysiwygEditor = forwardRef<HTMLDivElement, Props>(
 
     const styles = useStyles();
 
-    const { sanitizeHtmlString, removeEmptyTags, removeTags, extractTextContent } = htmlUtils;
+    const { isHtmlString, groupLonelySiblings, sanitizeHtmlString, removeEmptyTags, removeTags, extractTextContent } =
+      htmlUtils;
+
+    const unwantedTags = [
+      'font',
+      'div',
+      'span',
+      'table',
+      'tbody',
+      'tr',
+      'td',
+      'th',
+      'thead',
+      'tfoot',
+      'button',
+      'svg',
+      'path',
+    ].filter((tag) => tag !== defaultTag);
+    const removeUnwantedTags = (html: string) => removeTags(html, unwantedTags);
+    const removeDivs = (html: string) => removeTags(html, ['div']);
 
     const handleChange = (event) => {
       const value = event.target.value;
-      // make sure that non-html strings are wrapped in a <p>-tag.
-      if (htmlUtils.isHtmlString(value)) {
-        setHtmlValue(value);
+      // make sure that non-html strings are wrapped in a tag.
+      if (isHtmlString(value)) {
+        setHtmlValue(removeUnwantedTags(value));
       } else {
         setHtmlValue(`<${defaultTag}>${value}</${defaultTag}>`);
       }
     };
 
     const handleBlur = () => {
-      const removeUnwantedTags = (html: string) => removeTags(html, ['font', 'div']);
-      const sanitizedHtmlString = removeUnwantedTags(
-        removeEmptyTags(sanitizeHtmlString(htmlValue, { FORBID_ATTR: ['style'] })),
-      );
-
-      const trimmed = extractTextContent(sanitizedHtmlString).trim() === '' ? '' : sanitizedHtmlString;
+      const sanitizedHtml = removeEmptyTags(sanitizeHtmlString(htmlValue, { FORBID_ATTR: ['style'] }));
+      // Apply removeUnwantedTags, then wrap top level text nodes (+ a, b and strong tags) in <p>
+      // Then, remove divs in case they were not removed by removeUnwantedTags
+      const reorganizedHtml = removeDivs(groupLonelySiblings(removeUnwantedTags(sanitizedHtml)));
+      const trimmed = extractTextContent(reorganizedHtml).trim() === '' ? '' : reorganizedHtml;
+      setHtmlValue(trimmed);
       onBlur(trimmed);
     };
 
