@@ -7,7 +7,7 @@ import {
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import clsx from 'clsx';
-import { useCallback, useEffect, useId, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { getAreaCodes } from '../../api/common-codes/area-codes';
 import { useComponentUtils } from '../../context/component/componentUtilsContext';
 import { PhoneNumberObject } from '../../formio/components/core/phone-number/PhoneNumber';
@@ -27,9 +27,6 @@ interface Props {
   required?: boolean;
   customLabels?: CustomLabels;
   showAreaCode: boolean;
-  labelId?: string;
-  phoneInputId?: string;
-  areaCodeSelectId?: string;
 }
 
 type AreaCode = { value: string; label: string };
@@ -39,19 +36,13 @@ type PhoneNumber = {
   number: string;
 };
 
-const PhoneNumber = ({ value, onChange, showAreaCode, error, labelId, phoneInputId, areaCodeSelectId }: Props) => {
+const PhoneNumber = ({ value, onChange, showAreaCode, error }: Props) => {
   const { translate, appConfig, addRef, getComponentError } = useComponentUtils();
   const [areaCodes, setAreaCodes] = useState<AreaCode[]>([]);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [phoneNumber, setPhoneNumber] = useState<PhoneNumber | string>(getInitialPhoneNumber(value, showAreaCode));
   const styles = usePhoneNumberStyles();
-  const generatedId = useId();
-  const resolvedLabelId = labelId ?? `${generatedId}-label`;
-  const resolvedAreaCodeId = areaCodeSelectId ?? `${generatedId}-area-code`;
-  const resolvedPhoneInputId = phoneInputId ?? `${generatedId}-phone`;
-  const areaCodeLabel = translate(TEXTS.statiske.phoneNumber.areaCodeLabel);
-  const phoneNumberLabel = translate(TEXTS.statiske.phoneNumber.phoneNumberLabel);
   const defaultAreaCode = '+47';
 
   const fetchAreaCodes = useCallback(async () => {
@@ -111,14 +102,12 @@ const PhoneNumber = ({ value, onChange, showAreaCode, error, labelId, phoneInput
       <div className={clsx('input--xxl', styles.wrapper)} tabIndex={-1}>
         {showAreaCode && !loading && areaCodes.length > 0 && (
           <Select
-            id={resolvedAreaCodeId}
-            label={areaCodeLabel}
+            label={translate(TEXTS.statiske.phoneNumber.areaCodeLabel)}
             hideLabel
-            aria-labelledby={resolvedLabelId}
             className={clsx(
               typeof phoneNumber === 'object' && phoneNumber.areaCode.length === 3
-                ? styles.areaCodeSelectShort
-                : styles.areaCodeSelectLong,
+                ? styles.areaCodesSelect65
+                : styles.areaCodesSelect75,
             )}
             onChange={(event) => handleChange(event.target.value, 'areaCode')}
             defaultValue={typeof value === 'object' && value ? value.areaCode : defaultAreaCode}
@@ -131,10 +120,8 @@ const PhoneNumber = ({ value, onChange, showAreaCode, error, labelId, phoneInput
           </Select>
         )}
         <TextField
-          id={resolvedPhoneInputId}
           hideLabel
-          label={phoneNumberLabel}
-          aria-labelledby={resolvedLabelId}
+          label={translate(TEXTS.statiske.phoneNumber.phoneNumberLabel)}
           type="tel"
           className={styles.phoneNumber}
           onChange={(event) => handleChange(event.target.value, 'number')}
