@@ -154,4 +154,57 @@ describe('htmlUtils', () => {
       ).toEqual(['List:', 'Item **with bold** and normal text', 'Item [with link](www.url.no)']);
     });
   });
+
+  describe('groupLonelySiblings', () => {
+    it('wraps lonely text nodes in <p> tags', () => {
+      expect(htmlUtils.groupLonelySiblings('<h3>Overskrift</h3>Lonely child')).toBe(
+        '<h3>Overskrift</h3><p>Lonely child</p>',
+      );
+      expect(htmlUtils.groupLonelySiblings('Lonely child<p>Hello world</p>')).toBe(
+        '<p>Lonely child</p><p>Hello world</p>',
+      );
+      expect(htmlUtils.groupLonelySiblings('<h3>Overskrift</h3>Lonely child<p>Hello world</p>')).toBe(
+        '<h3>Overskrift</h3><p>Lonely child</p><p>Hello world</p>',
+      );
+      expect(htmlUtils.groupLonelySiblings('<ol><li>item 1</li></ol>Lonely child')).toBe(
+        '<ol><li>item 1</li></ol><p>Lonely child</p>',
+      );
+      expect(htmlUtils.groupLonelySiblings('Lonely child<ul><li>item 1</li></ul>')).toBe(
+        '<p>Lonely child</p><ul><li>item 1</li></ul>',
+      );
+    });
+
+    it('also wraps <a>, <b>, and <strong> elements in <p> tags', () => {
+      expect(htmlUtils.groupLonelySiblings('<h3>Overskrift</h3><a href="www.url.no">link</a>')).toBe(
+        '<h3>Overskrift</h3><p><a href="www.url.no">link</a></p>',
+      );
+      expect(
+        htmlUtils.groupLonelySiblings('<h3>Overskrift</h3>Some text <a href="www.url.no">link</a><b>bold</b>'),
+      ).toBe('<h3>Overskrift</h3><p>Some text <a href="www.url.no">link</a><b>bold</b></p>');
+    });
+
+    it('does not wrap other elements', () => {
+      expect(htmlUtils.groupLonelySiblings('<h3>Overskrift</h3>Hello <p>content</p> World')).toBe(
+        '<h3>Overskrift</h3><p>Hello </p><p>content</p><p> World</p>',
+      );
+      expect(htmlUtils.groupLonelySiblings('Some content<ol><li>Pt. 1</li><li>Pt. 2</li></ol>More content')).toBe(
+        '<p>Some content</p><ol><li>Pt. 1</li><li>Pt. 2</li></ol><p>More content</p>',
+      );
+    });
+
+    it('does not wrap only <br> tags', () => {
+      expect(htmlUtils.groupLonelySiblings('<h3>Overskrift</h3><br><br>')).toBe('<h3>Overskrift</h3><br><br>');
+      expect(htmlUtils.groupLonelySiblings('<h3>Overskrift</h3><br><br>Some text<br>')).toBe(
+        '<h3>Overskrift</h3><p><br><br>Some text<br></p>',
+      );
+    });
+
+    it('does not wrap text nodes if there are no siblings that is either heading, paragraph or list', () => {
+      expect(htmlUtils.groupLonelySiblings('Lonely child')).toBe('Lonely child');
+      expect(htmlUtils.groupLonelySiblings('Some text <b>bold text</b><strong>strong text</strong>')).toBe(
+        'Some text <b>bold text</b><strong>strong text</strong>',
+      );
+      expect(htmlUtils.groupLonelySiblings('<br><br>Some text<br>')).toBe('<br><br>Some text<br>');
+    });
+  });
 });
