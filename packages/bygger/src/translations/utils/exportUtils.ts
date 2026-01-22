@@ -29,8 +29,8 @@ const sanitizeForCsv = (text?: string) => escapeQuote(removeLineBreaks(text));
 
 const sanitizeHtmlForCsv = (htmlString: string) => {
   const { removeTags, removeEmptyTags, groupLonelySiblings, sanitizeHtmlString } = htmlUtils;
-  const sanitizedHtml = removeEmptyTags(sanitizeHtmlString(htmlString));
-  return groupLonelySiblings(removeTags(sanitizedHtml, ['div', 'span']));
+  const sanitizedHtml = removeEmptyTags(sanitizeHtmlString(removeLineBreaks(htmlString) ?? ''));
+  return groupLonelySiblings(removeTags(sanitizedHtml, 'span'));
 };
 
 const getRowsForExport = (textKeys: string[], translations: FormsApiTranslation[]): CsvRow[] => {
