@@ -22,7 +22,7 @@
     "cypress:open": "cypress open"
   },
   "dependencies": {
-    "@navikt/ds-css": "^8.0.0",
+    "@navikt/ds-css": "^8.1.0",
     "@navikt/ds-react": "^8.0.0",
     "@navikt/aksel-icons": "^8.0.0",
     "@navikt/skjemadigitalisering-shared-components": "1.0.0",
