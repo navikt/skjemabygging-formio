@@ -56,10 +56,6 @@ const FormSelect = (props: FormSelectProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const defaultValue = formComponentUtils.getSubmissionValue(submissionPath, submission);
-
-  console.log(defaultValue);
-
   return (
     <FormBox inputWidth={inputWidth} bottom={bottom}>
       <Select
@@ -72,7 +68,7 @@ const FormSelect = (props: FormSelectProps) => {
         onChange={handleChange}
         ref={ref}
         error={getRefError(ref)}
-        defaultValue={defaultValue}
+        defaultValue={formComponentUtils.getSubmissionValue(submissionPath, submission)}
         {...rest}
       >
         {selectText && <option value=" ">{translate(selectText)}</option>}
