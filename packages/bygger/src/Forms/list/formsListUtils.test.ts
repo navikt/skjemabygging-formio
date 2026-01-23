@@ -12,6 +12,7 @@ const createFormMetadata = (_properties: Partial<FormListType>): FormListType =>
     title: 'AAA',
     number: '000',
     status: 'UNKNOWN',
+    ..._properties,
   }) as FormListType;
 
 const abc = createFormMetadata({ title: 'abc' });

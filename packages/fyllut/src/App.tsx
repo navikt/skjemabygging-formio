@@ -1,4 +1,4 @@
-import '@navikt/ds-css/darkside';
+import '@navikt/ds-css';
 import { Theme } from '@navikt/ds-react';
 import { makeStyles, Styles } from '@navikt/skjemadigitalisering-shared-components';
 import { Route, Routes } from 'react-router';

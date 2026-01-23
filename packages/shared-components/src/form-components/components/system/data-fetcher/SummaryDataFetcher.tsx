@@ -1,4 +1,4 @@
-import { FormSummary, List } from '@navikt/ds-react';
+import { Box, FormSummary, List } from '@navikt/ds-react';
 import { FormComponentProps } from '../../../types';
 import { DefaultLabel } from '../../shared/form-summary';
 import { getSelectedValues } from './dataFetcherUtils';
@@ -16,11 +16,13 @@ const DefaultAnswer = (props: FormComponentProps) => {
     <FormSummary.Answer>
       <DefaultLabel {...props} />
       <FormSummary.Value>
-        <List>
-          {selected.map((value) => (
-            <List.Item key={`${key}-${navId}-${value}`}>{value}</List.Item>
-          ))}
-        </List>
+        <Box marginBlock="space-16" asChild>
+          <List data-aksel-migrated-v8>
+            {selected.map((value) => (
+              <List.Item key={`${key}-${navId}-${value}`}>{value}</List.Item>
+            ))}
+          </List>
+        </Box>
       </FormSummary.Value>
     </FormSummary.Answer>
   );

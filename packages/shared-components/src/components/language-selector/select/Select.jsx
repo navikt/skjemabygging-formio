@@ -1,4 +1,4 @@
-import { Collapse, Expand } from '@navikt/ds-icons';
+import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons';
 import { Link } from '@navikt/ds-react';
 import { useRef, useState } from 'react';
 import { Link as ReactRouterLink } from 'react-router';
@@ -65,9 +65,9 @@ const Select = ({ label, className, options, ariaLabel }) => {
         >
           {label}
           {showItems ? (
-            <Collapse className="aksel-select__chevron" aria-hidden />
+            <ChevronUpIcon className="aksel-select__chevron" aria-hidden />
           ) : (
-            <Expand className="aksel-select__chevron" aria-hidden />
+            <ChevronDownIcon className="aksel-select__chevron" aria-hidden />
           )}
         </button>
         {showItems && (
