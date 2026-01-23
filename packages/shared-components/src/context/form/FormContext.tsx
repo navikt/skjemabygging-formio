@@ -13,6 +13,7 @@ import { useAppConfig } from '../config/configContext';
 interface FormContextType {
   submission?: Submission;
   setSubmission: Dispatch<SetStateAction<Submission | undefined>>;
+  updateSubmission: (submissionPath: string, value: any) => void;
   prefillData?: PrefillData;
   activeComponents: Component[];
   activeAttachmentUploadsPanel?: Panel;
@@ -65,6 +66,20 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
     [form, submission],
   );
 
+  const updateSubmission = useCallback(
+    (submissionPath: string, value: any) => {
+      setSubmission((prevSubmission) => ({
+        data: {
+          ...prevSubmission?.data,
+          ...submissionPath
+            .split('.')
+            .reduceRight((acc, key, i, arr) => (i === arr.length - 1 ? { [key]: value } : { [key]: acc }), {} as any),
+        },
+      }));
+    },
+    [setSubmission],
+  );
+
   useEffect(() => {
     const loadPrefillData = async (navForm: NavFormType) => {
       const prefillComponents = navFormUtils.findComponentsByProperty('prefillKey', navForm);
@@ -101,6 +116,7 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
         prefillData,
         submission,
         setSubmission,
+        updateSubmission,
         activeComponents,
         activeAttachmentUploadsPanel,
         form,

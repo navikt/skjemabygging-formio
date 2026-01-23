@@ -1,43 +1,68 @@
-import Address from '../../components/address/Address';
-import EnhetSelector from '../../components/select/enhet/EnhetSelector';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { useEffect } from 'react';
 import { useForm } from '../../context/form/FormContext';
-import StaticPdfAttachments from './components/StaticPdfAttachments';
-import StaticPdfIdentity from './components/StaticPdfIdentity';
+import FormPostalCode from './components/shared/address/FormPostalCode';
+import FormPostalName from './components/shared/address/FormPostalName';
+import FormStreetAddress from './components/shared/address/FormStreetAddress';
+import FormBox from './components/shared/FormBox';
+import FormNavUnitSelector from './components/shared/FormNavUnitSelector';
+import FormRadio from './components/shared/FormRadio';
+import FormTextField from './components/shared/FormTextField';
+import FormFirstName from './components/shared/identity/FormFirstName';
+import FormSurname from './components/shared/identity/FormSurname';
+import SelectAttachmentList from './components/shared/SelectAttachmentList';
 
 const StaticPdfInputPage = () => {
-  const { form, submission, setSubmission } = useForm();
-  const { enhetMaVelgesVedPapirInnsending, enhetstyper } = form.properties;
+  const { form, setSubmission, submission } = useForm();
+  const { enhetMaVelgesVedPapirInnsending } = form.properties;
 
-  const handleChange = (changes: { [key: string]: any }) => {
-    setSubmission({
-      data: {
-        ...submission?.data,
-        ...changes,
-      },
-    });
-  };
+  useEffect(() => {
+    if (!submission) {
+      setSubmission({
+        data: {
+          identityType: 'identityNumber',
+        },
+      });
+    }
+  }, [setSubmission, submission]);
 
   return (
     <>
-      <div className="mb">
+      <FormBox bottom="space-40">
         {enhetMaVelgesVedPapirInnsending ? (
-          <EnhetSelector
-            enhetstyper={enhetstyper}
-            onSelectEnhet={(enhetNummer) => {
-              if (enhetNummer) {
-                handleChange({ enhetNummer });
-              }
-            }}
-          />
+          <FormNavUnitSelector submissionPath="navUnit" />
         ) : (
-          <>
-            <StaticPdfIdentity />
-            <Address onChange={handleChange}></Address>
-          </>
+          <div>
+            <FormRadio
+              submissionPath="identityType"
+              legend={TEXTS.statiske.identity.submissionFor}
+              values={[
+                {
+                  label: TEXTS.statiske.identity.personIdentityNumber,
+                  value: 'identityNumber',
+                },
+                {
+                  label: TEXTS.statiske.identity.personNoIdentityNumber,
+                  value: 'noIdentityNumber',
+                },
+              ]}
+            />
+            {submission?.data.identityType === 'identityNumber' ? (
+              <FormTextField submissionPath="nationalIdentityNumber" label={TEXTS.statiske.identity.identityNumber} />
+            ) : (
+              <>
+                <FormFirstName submissionPath="firstName" />
+                <FormSurname submissionPath="surname" />
+                <FormStreetAddress submissionPath="streetAddress" />
+                <FormPostalCode submissionPath="postalCode" />
+                <FormPostalName submissionPath="postalName" />
+              </>
+            )}
+          </div>
         )}
-      </div>
+      </FormBox>
 
-      <StaticPdfAttachments onChange={handleChange} />
+      <SelectAttachmentList submissionPath="attachments" />
     </>
   );
 };

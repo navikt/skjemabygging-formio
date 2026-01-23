@@ -219,6 +219,7 @@ export const statiske = {
     addNewAttachment: 'Legg til nytt vedlegg',
     attachmentMissing: 'Du må svare på {{label}} før du kan fortsette',
     attachmentError: 'Du må fylle ut vedlegg',
+    selectAttachments: 'Velg hvilken dokumentasjon du skal legge ved',
   },
   activities: {
     label: 'Hvilken aktivitet søker du om støtte i forbindelse med?',
@@ -293,8 +294,13 @@ export const statiske = {
       'Du velger selv hvor lenge adressen skal være gyldig, maksimalt 1 år. Etter 1 år må du endre eller forlenge adressen.',
   },
   identity: {
+    firstName: 'Fornavn',
+    surname: 'Etternavn',
     doYouHaveIdentityNumber: 'Har du norsk fødselsnummer eller d-nummer?',
+    submissionFor: 'Hvem gjelder innsendingen for?',
     identityNumber: 'Fødselsnummer eller d-nummer',
+    personIdentityNumber: 'Person som har fødselsnummer eller d-nummer',
+    personNoIdentityNumber: 'Person som ikke har fødselsnummer eller d-nummer',
     yourBirthdate: 'Fødselsdato (dd.mm.åååå)',
   },
   dataFetcher: {

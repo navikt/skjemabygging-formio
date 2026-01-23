@@ -1,6 +1,7 @@
 import NavigationButtonRow from '../../../components/navigation/NavigationButtonRow';
 import { NextButton } from '../../../components/navigation/NextButton';
 import { PreviousButton } from '../../../components/navigation/PreviousButton';
+import { useValidator } from '../../../context/validator/ValidatorContext';
 import type StaticPdfPage from '../StaticPdfWrapper';
 import StaticPdfCancelButton from './StaticPdfCancelButton';
 
@@ -10,13 +11,19 @@ interface Props {
 }
 
 const StaticPdfNavigation = ({ page, setPage }: Props) => {
+  const { isValid } = useValidator();
+
   return (
     <NavigationButtonRow
       nextButton={
         page === 'input' && (
           <NextButton
             onClick={{
-              default: () => setPage('download'),
+              default: () => {
+                if (isValid()) {
+                  setPage('download');
+                }
+              },
             }}
             label={{
               default: 'Fortsett',
