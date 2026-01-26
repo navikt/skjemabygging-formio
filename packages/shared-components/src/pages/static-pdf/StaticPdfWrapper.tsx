@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import ValidatorProvider from '../../context/validator/ValidatorContext';
+import InputValidationProvider from '../../context/validator/InputValidationContext';
 import StaticPdfDownloadPage from './StaticPdfDownloadPage';
 import StaticPdfInputPage from './StaticPdfInputPage';
 import StaticPdfNavigation from './components/StaticPdfNavigation';
@@ -11,11 +11,11 @@ const StaticPdfPage = () => {
   const [page, setPage] = useState<StaticPdfPage>('input');
 
   return (
-    <ValidatorProvider>
+    <InputValidationProvider>
       <FormErrorSummary />
       {page === 'input' ? <StaticPdfInputPage /> : page === 'download' ? <StaticPdfDownloadPage /> : null}
       <StaticPdfNavigation page={page} setPage={setPage} />
-    </ValidatorProvider>
+    </InputValidationProvider>
   );
 };
 

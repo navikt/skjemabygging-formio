@@ -1,7 +1,8 @@
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import NavigationButtonRow from '../../../components/navigation/NavigationButtonRow';
 import { NextButton } from '../../../components/navigation/NextButton';
 import { PreviousButton } from '../../../components/navigation/PreviousButton';
-import { useValidator } from '../../../context/validator/ValidatorContext';
+import { useInputValidation } from '../../../context/validator/InputValidationContext';
 import type StaticPdfPage from '../StaticPdfWrapper';
 import StaticPdfCancelButton from './StaticPdfCancelButton';
 
@@ -11,7 +12,7 @@ interface Props {
 }
 
 const StaticPdfNavigation = ({ page, setPage }: Props) => {
-  const { isValid } = useValidator();
+  const { isValid } = useInputValidation();
 
   return (
     <NavigationButtonRow
@@ -26,7 +27,7 @@ const StaticPdfNavigation = ({ page, setPage }: Props) => {
               },
             }}
             label={{
-              default: 'Fortsett',
+              default: TEXTS.grensesnitt.navigation.continue,
             }}
           />
         )
@@ -38,7 +39,7 @@ const StaticPdfNavigation = ({ page, setPage }: Props) => {
               default: () => setPage('input'),
             }}
             label={{
-              default: 'Forrige side',
+              default: TEXTS.grensesnitt.navigation.prevPage,
             }}
           />
         )

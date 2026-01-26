@@ -1,10 +1,10 @@
 import { ErrorSummary } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useLanguages } from '../../../../context/languages';
-import { useValidator } from '../../../../context/validator/ValidatorContext';
+import { useInputValidation } from '../../../../context/validator/InputValidationContext';
 
 const FormErrorSummary = () => {
-  const { errors } = useValidator();
+  const { errors } = useInputValidation();
   const { translate } = useLanguages();
 
   if (!errors.length) {
@@ -13,7 +13,7 @@ const FormErrorSummary = () => {
 
   return (
     <ErrorSummary heading={translate(TEXTS.validering.error)} data-cy="error-summary">
-      {errors.map(({ ref, message }, i) => (
+      {errors.map(({ ref, submissionPath, message }, i) => (
         <ErrorSummary.Item
           href="#"
           onClick={(event) => {
@@ -30,7 +30,7 @@ const FormErrorSummary = () => {
               }
             }
           }}
-          key={i}
+          key={`${submissionPath}-${i}`}
         >
           {message}
         </ErrorSummary.Item>

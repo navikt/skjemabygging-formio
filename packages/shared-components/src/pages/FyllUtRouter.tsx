@@ -48,7 +48,7 @@ const FyllUtRouter = ({ form }: Props) => {
             <Route path="pdf" element={<StaticPdfPage />} />
           </Route>
           <Route element={<FormLayout allowSubmittedApplication />}>
-            <Route path={'kvittering'} element={<ReceiptPage />} />
+            <Route path="kvittering" element={<ReceiptPage />} />
           </Route>
         </Routes>
       </SendInnProvider>

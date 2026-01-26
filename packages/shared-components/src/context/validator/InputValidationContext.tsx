@@ -1,11 +1,5 @@
 import { createContext, RefObject, useCallback, useContext, useEffect, useState } from 'react';
-import useValidators, { FormComponentError, FormComponentValidation } from './Validators';
-
-interface Validators {
-  required?: boolean;
-  minLength?: number;
-  maxLength?: number;
-}
+import useValidators, { FormComponentError, FormComponentValidation, Validators } from './Validators';
 
 interface ValidatorContextType {
   addValidation: (
@@ -25,14 +19,14 @@ interface ValidatorProviderProps {
   children: React.ReactNode;
 }
 
-const ValidatorContext = createContext<ValidatorContextType>({} as ValidatorContextType);
+const InputValidationContext = createContext<ValidatorContextType>({} as ValidatorContextType);
 
-const ValidatorProvider = ({ children }: ValidatorProviderProps) => {
+const InputValidationProvider = ({ children }: ValidatorProviderProps) => {
   const { validateAll } = useValidators();
   const [errors, setErrors] = useState<FormComponentError[]>([]);
   const [componentValidations, setComponentValidations] = useState<FormComponentValidation[]>([]);
 
-  const addValidationRef = useCallback(
+  const addValidation = useCallback(
     (submissionPath: string, ref: RefObject<HTMLInputElement>, validators: Validators, field: string) => {
       if (ref.current && Object.keys(validators).length > 0) {
         setComponentValidations((prevRefs) => [...prevRefs, { ref, submissionPath, validators, field }]);
@@ -41,7 +35,7 @@ const ValidatorProvider = ({ children }: ValidatorProviderProps) => {
     [setComponentValidations],
   );
 
-  const removeValidationRef = useCallback(
+  const removeValidation = useCallback(
     (submissionPath: string) => {
       setComponentValidations((prevRefs) => [
         ...prevRefs.filter((validationRef) => validationRef.submissionPath !== submissionPath),
@@ -88,10 +82,10 @@ const ValidatorProvider = ({ children }: ValidatorProviderProps) => {
   }, [validate]);
 
   return (
-    <ValidatorContext.Provider
+    <InputValidationContext.Provider
       value={{
-        addValidation: addValidationRef,
-        removeValidation: removeValidationRef,
+        addValidation,
+        removeValidation,
         isValid,
         errors,
         getRefError,
@@ -99,12 +93,12 @@ const ValidatorProvider = ({ children }: ValidatorProviderProps) => {
       }}
     >
       {children}
-    </ValidatorContext.Provider>
+    </InputValidationContext.Provider>
   );
 };
 
-export const useValidator = () => useContext(ValidatorContext);
+export const useInputValidation = () => useContext(InputValidationContext);
 
-export default ValidatorProvider;
+export default InputValidationProvider;
 
 export type { Validators };

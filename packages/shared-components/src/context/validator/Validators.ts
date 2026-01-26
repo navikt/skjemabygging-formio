@@ -3,7 +3,12 @@ import { useCallback } from 'react';
 import formComponentUtils from '../../form-components/utils/formComponent';
 import { useForm } from '../form/FormContext';
 import { useLanguages } from '../languages';
-import { Validators } from './ValidatorContext';
+
+interface Validators {
+  required?: boolean;
+  minLength?: number;
+  maxLength?: number;
+}
 
 interface FormComponentValidation {
   submissionPath: string;
@@ -107,4 +112,4 @@ const useValidators = () => {
 
 export default useValidators;
 
-export type { FormComponentError, FormComponentValidation };
+export type { FormComponentError, FormComponentValidation, Validators };

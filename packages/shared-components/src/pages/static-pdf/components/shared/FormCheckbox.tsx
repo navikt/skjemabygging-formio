@@ -3,7 +3,7 @@ import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useRef } from 'react';
 import { useForm } from '../../../../context/form/FormContext';
 import { useLanguages } from '../../../../context/languages';
-import { useValidator, Validators } from '../../../../context/validator/ValidatorContext';
+import { useInputValidation, Validators } from '../../../../context/validator/InputValidationContext';
 import formComponentUtils from '../../../../form-components/utils/formComponent';
 import FormBox, { FormBoxProps } from './FormBox';
 import TranslatedDescription from './TranslatedDescription';
@@ -31,7 +31,7 @@ const FormCheckbox = (props: FormCheckboxGroupProps) => {
     ...rest
   } = props;
   const { updateSubmission, submission } = useForm();
-  const { addValidation, removeValidation, getRefError } = useValidator();
+  const { addValidation, removeValidation, getRefError } = useInputValidation();
   const { translate } = useLanguages();
 
   const ref = useRef(null);
