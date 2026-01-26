@@ -166,7 +166,7 @@ describe('Data fetcher', () => {
 
   describe('Paper submission', () => {
     beforeEach(() => {
-      cy.intercept('GET', '/fyllut/api/register-data/*');
+      cy.intercept('GET', '/fyllut/api/register-data/*').as('registerData');
       cy.mocksRestoreRouteVariants();
       cy.defaultIntercepts();
       cy.visit('/fyllut/datafetchertest/arbeidsrettetaktivitet?sub=paper');
