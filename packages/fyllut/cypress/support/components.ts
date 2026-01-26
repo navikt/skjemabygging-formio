@@ -41,7 +41,7 @@ Cypress.Commands.add('clickErrorMessageMaxLength', (label) => {
 
 Cypress.Commands.add('testDownloadPdf', () => {
   const formatRadiopanelValue = (value: string, options: Array<{ label: string; value: string }>) =>
-    options.find((option) => option.value === value).label;
+    options.find((option) => option.value === value)?.label;
   const formatMonthPickerValue = (value: string) => stringUtils.toPascalCase(dateUtils.toLongMonthFormat(value));
 
   const formatValue = (value: any, component: Component) => {
