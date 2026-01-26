@@ -7,7 +7,7 @@ interface FormBoxProps {
 }
 
 const FormBox = (props: FormBoxProps) => {
-  const { inputWidth, bottom, children, ...rest } = props;
+  const { inputWidth, bottom, children } = props;
 
   const getWidth = () => {
     switch (inputWidth) {
@@ -46,8 +46,10 @@ const FormBox = (props: FormBoxProps) => {
     }
   };
 
+  const marginBlock = bottom ? (`space-0 ${bottom}` as const) : 'space-0';
+
   return (
-    <Box marginBlock={`0 ${bottom ?? '0'}`} {...getWidth()} {...rest}>
+    <Box marginBlock={marginBlock} {...getWidth()}>
       {children}
     </Box>
   );
