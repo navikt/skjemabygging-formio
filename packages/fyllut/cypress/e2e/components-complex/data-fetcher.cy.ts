@@ -166,7 +166,7 @@ describe('Data fetcher', () => {
 
   describe('Paper submission', () => {
     beforeEach(() => {
-      cy.intercept('GET', '/fyllut/api/register-data/*').as('registerData');
+      cy.intercept('GET', '/fyllut/api/register-data/*');
       cy.mocksRestoreRouteVariants();
       cy.defaultIntercepts();
       cy.visit('/fyllut/datafetchertest/arbeidsrettetaktivitet?sub=paper');
@@ -210,7 +210,6 @@ describe('Data fetcher', () => {
   describe('Summary page', () => {
     describe('When API returns list containing data', () => {
       beforeEach(() => {
-        cy.mocksUseRouteVariant('get-register-data-activities:success');
         cy.visit('/fyllut/datafetchercontainer/aktivitetsoversikt?sub=digital');
         cy.findByRole('group', { name: LABEL_AKTIVITETSVELGER })
           .should('exist')
@@ -254,6 +253,17 @@ describe('Data fetcher', () => {
                 expect(item.text()).to.equal(index === 0 ? 'Aktivitet 1' : 'Aktivitet 3');
               });
           });
+      });
+
+      it('includes aktivitetsvelger in pdfFormData on submit', () => {
+        cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
+          const { pdfFormData } = req.body;
+          expect(pdfFormData.verdiliste[0].verdiliste[0].label).eq('Aktivitetsvelger');
+          expect(pdfFormData.verdiliste[0].verdiliste[0].verdiliste).to.have.length(1);
+          expect(pdfFormData.verdiliste[0].verdiliste[0].visningsVariant).eq('PUNKTLISTE');
+        }).as('submitMellomlagring');
+        cy.clickSaveAndContinue();
+        cy.wait('@submitMellomlagring');
       });
     });
   });
