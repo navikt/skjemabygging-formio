@@ -1,15 +1,18 @@
 import { ErrorSummary } from '@navikt/ds-react';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { useLanguages } from '../../../../context/languages';
 import { useValidator } from '../../../../context/validator/ValidatorContext';
 
 const FormErrorSummary = () => {
   const { errors } = useValidator();
+  const { translate } = useLanguages();
 
   if (!errors.length) {
     return null;
   }
 
   return (
-    <ErrorSummary heading="feilmeldinger" data-cy="error-summary">
+    <ErrorSummary heading={translate(TEXTS.validering.error)} data-cy="error-summary">
       {errors.map(({ ref, message }, i) => (
         <ErrorSummary.Item
           href="#"
