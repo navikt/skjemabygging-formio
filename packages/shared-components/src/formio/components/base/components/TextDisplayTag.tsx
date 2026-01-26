@@ -15,13 +15,13 @@ const TextDisplayTag = ({ component }: Props) => {
 
   if (component?.textDisplay === 'pdf') {
     return (
-      <Tag variant="alt3" className="mb-4" size="xsmall">
+      <Tag data-color="info" variant="outline" className="mb-4" size="xsmall">
         PDF
       </Tag>
     );
   } else if (component?.textDisplay === 'formPdf') {
     return (
-      <Tag variant="alt3" className="mb-4" size="xsmall">
+      <Tag data-color="info" variant="outline" className="mb-4" size="xsmall">
         Skjema og PDF
       </Tag>
     );
