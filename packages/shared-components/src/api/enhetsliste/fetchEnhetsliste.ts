@@ -10,7 +10,7 @@ const isEnhetSupported = (selectedEnhetstyper: Enhetstype[]) => {
 
 const fetchFilteredEnhetsliste = async (baseUrl: string = '', enhetstyper: Enhetstype[]) => {
   const list: Enhet[] = await fetchEnhetsliste(baseUrl);
-  return list.filter(isEnhetSupported(enhetstyper!)).sort(compareEnheter);
+  return list.filter(isEnhetSupported(enhetstyper)).sort(compareEnheter);
 };
 
 const fetchEnhetsliste = async (baseUrl = ''): Promise<Enhet[]> => {
@@ -22,4 +22,4 @@ const fetchEnhetsliste = async (baseUrl = ''): Promise<Enhet[]> => {
   });
 };
 
-export { fetchEnhetsliste, fetchFilteredEnhetsliste };
+export { compareEnheter, fetchEnhetsliste, fetchFilteredEnhetsliste, isEnhetSupported };

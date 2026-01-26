@@ -1,7 +1,7 @@
 import { Enhet, SubmissionType, submissionTypesUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { getAttachments } from '../../../../shared-domain/src/forsteside/forstesideUtils';
-import { fetchFilteredEnhetsliste } from '../../api/enhetsliste/fetchEnhetsliste';
+import { compareEnheter, fetchEnhetsliste, isEnhetSupported } from '../../api/enhetsliste/fetchEnhetsliste';
 import NavigateButtonComponent from '../../components/button/navigation/pages/NavigateButtonComponent';
 import ErrorPage from '../../components/error/page/ErrorPage';
 import LetterAddAttachment from '../../components/letter/LetterAddAttachment';
@@ -34,14 +34,17 @@ export function PrepareLetterPage() {
   const includeUxSignals = !!uxSignalsId && submissionTypeIncludesPaperOrIsNoSubmission(uxSignalsSubmissionTypes);
 
   useEffect(() => {
-    if (enhetMaVelgesVedPapirInnsending && enhetstyper) {
-      fetchFilteredEnhetsliste(baseUrl, enhetstyper)
+    if (enhetMaVelgesVedPapirInnsending) {
+      fetchEnhetsliste(baseUrl)
         .then((enhetsliste) => {
-          if (enhetsliste.length === 0) {
+          const filteredList = enhetsliste.filter(isEnhetSupported(enhetstyper!)).sort(compareEnheter);
+          if (filteredList.length === 0) {
             setEnhetslisteFilteringError(true);
+            return enhetsliste.sort(compareEnheter);
           }
-          setEnhetsListe(enhetsliste);
+          return filteredList;
         })
+        .then(setEnhetsListe)
         .catch(() => setEnhetsListeError(true));
     }
   }, [baseUrl, enhetMaVelgesVedPapirInnsending, enhetstyper]);
