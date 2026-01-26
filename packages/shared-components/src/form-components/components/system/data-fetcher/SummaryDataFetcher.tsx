@@ -3,7 +3,7 @@ import { FormComponentProps } from '../../../types';
 import { DefaultLabel } from '../../shared/form-summary';
 import { getSelectedValues } from './dataFetcherUtils';
 
-const DefaultAnswer = (props: FormComponentProps) => {
+const SummaryDataFetcher = (props: FormComponentProps) => {
   const { component, submissionPath, submission } = props;
   const { key, navId } = component;
 
@@ -28,4 +28,4 @@ const DefaultAnswer = (props: FormComponentProps) => {
   );
 };
 
-export default DefaultAnswer;
+export default SummaryDataFetcher;
