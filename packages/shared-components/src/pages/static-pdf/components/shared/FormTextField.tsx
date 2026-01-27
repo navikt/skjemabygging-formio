@@ -16,6 +16,7 @@ interface FormTextFieldProps extends FormBoxProps {
   onChange?: (value: string) => void;
   readOnly?: boolean;
   error?: string;
+  autoComplete?: string;
 }
 
 const FormTextField = (props: FormTextFieldProps) => {
@@ -29,6 +30,7 @@ const FormTextField = (props: FormTextFieldProps) => {
     onChange,
     readOnly,
     error,
+    autoComplete,
   } = props;
   const { logger } = useAppConfig();
   const { updateSubmission, submission } = useForm();
@@ -65,6 +67,7 @@ const FormTextField = (props: FormTextFieldProps) => {
         ref={ref}
         error={error ?? getRefError(ref)}
         defaultValue={formComponentUtils.getSubmissionValue(submissionPath, submission)}
+        autoComplete={autoComplete}
       />
     </FormBox>
   );
