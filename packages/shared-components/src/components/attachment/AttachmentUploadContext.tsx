@@ -87,6 +87,7 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
       (current) =>
         ({
           ...current,
+
           attachments: (current?.attachments ?? []).map((att) => {
             if (att.attachmentId === attachmentId) {
               return { ...att, files: (att.files ?? []).filter((file) => file.fileId !== fileId) };
@@ -102,6 +103,7 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
       (current) =>
         ({
           ...current,
+
           attachments: (current?.attachments ?? []).map((att) => {
             if (att.attachmentId === attachmentId) {
               return { ...att, files: [] };
@@ -302,7 +304,13 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
     try {
       setErrors({});
       await deleteAllFiles(nologinToken);
-      setSubmission((current) => ({ ...current, attachments: [] }) as Submission);
+      setSubmission(
+        (current) =>
+          ({
+            ...current,
+            attachments: [],
+          }) as Submission,
+      );
     } catch (error: any) {
       if (isAuthenticationError(error)) {
         handleSessionExpired();

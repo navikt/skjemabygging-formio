@@ -52,7 +52,7 @@ export default defineConfig(({ mode }) => {
           'react-router',
           'react-jss',
           '@navikt/ds-css',
-          '@navikt/ds-icons',
+          '@navikt/aksel-icons',
           '@navikt/ds-react',
         ],
       },

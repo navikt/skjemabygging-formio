@@ -1,7 +1,11 @@
 import { Component, NavFormType, PanelValidation } from '@navikt/skjemadigitalisering-shared-domain';
 import { findFormStartingPoint } from './panelValidation';
 
-const input = (key) => ({ key, input: true }) as Component;
+const input = (key) =>
+  ({
+    key,
+    input: true,
+  }) as Component;
 
 const firstPanelWithOneInput = { key: 'firstPanelWithOneInput', components: [input('firstInput')] };
 const firstPanelWithOneInputValid: PanelValidation = {

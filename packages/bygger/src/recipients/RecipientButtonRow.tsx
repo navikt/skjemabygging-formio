@@ -14,7 +14,7 @@ const RecipientButtonRow = ({ isNew, onSave, onCancel, onDelete }: Props) => {
   return (
     <Table.Row shadeOnHover={false}>
       <Table.DataCell colSpan={5}>
-        <HStack gap="4" justify="end">
+        <HStack gap="space-4" justify="end">
           <Button
             size="small"
             loading={state.isSaving}
@@ -32,8 +32,9 @@ const RecipientButtonRow = ({ isNew, onSave, onCancel, onDelete }: Props) => {
           </Button>
           {!isNew && (
             <Button
+              data-color="danger"
               size="small"
-              variant="danger"
+              variant="primary"
               loading={state.isDeleting}
               disabled={state.isSaving}
               onClick={async () => {

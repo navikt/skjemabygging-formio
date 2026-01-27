@@ -58,7 +58,7 @@ export function FormTitle({ form, title, hideIconOnMobile }: Props) {
         {translate(header)}
       </Heading>
       {form.properties && form.properties.skjemanummer && (
-        <Tag variant="neutral-moderate" size="small">
+        <Tag data-color="neutral" variant="moderate" size="small">
           {form.properties.skjemanummer}
         </Tag>
       )}

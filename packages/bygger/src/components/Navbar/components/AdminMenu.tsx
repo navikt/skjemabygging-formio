@@ -1,4 +1,4 @@
-import { System } from '@navikt/ds-icons';
+import { MenuGridIcon } from '@navikt/aksel-icons';
 import { Dropdown, InternalHeader } from '@navikt/ds-react';
 import useUnsavedChangesModal from '../../../hooks/useUnsavedChangesModal';
 import { AdminMenuLink } from './AdminMenuLink';
@@ -10,7 +10,7 @@ const AdminMenu = ({ showImport = false }) => {
     <>
       <Dropdown>
         <InternalHeader.Button as={Dropdown.Toggle} className="ml-auto" aria-label="Åpne meny">
-          <System fontSize={'1.5rem'} role="presentation" />
+          <MenuGridIcon fontSize={'1.5rem'} role="presentation" />
         </InternalHeader.Button>
         <Dropdown.Menu>
           <Dropdown.Menu.GroupedList>

@@ -30,7 +30,7 @@ const FormTranslationButtonsColumn = ({ form, lastSave }: Props) => {
   };
 
   return (
-    <VStack gap="4">
+    <VStack gap="space-4">
       <Button loading={isSaving} onClick={handleSave} type="submit" size="small">
         Lagre
       </Button>

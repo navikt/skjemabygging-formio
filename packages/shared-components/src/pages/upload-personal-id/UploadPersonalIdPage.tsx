@@ -20,7 +20,7 @@ const UploadPersonalIdPage = () => {
   return (
     <AttachmentUploadProvider useCaptcha>
       <Captcha />
-      <VStack gap="8">
+      <VStack gap="space-8">
         <BodyShort>{translate(TEXTS.statiske.uploadId.description)}</BodyShort>
         <PersonalIdUpload />
       </VStack>
