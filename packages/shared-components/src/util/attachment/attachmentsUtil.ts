@@ -1,5 +1,6 @@
 import {
   AttachmentSettingValues,
+  AttachmentType,
   Component,
   NavFormType,
   navFormUtils,
@@ -19,7 +20,7 @@ interface Attachment {
   vedleggskjema?: string;
   description?: string;
   attachmentValues?: AttachmentSettingValues;
-  attachmentType?: string;
+  attachmentType?: AttachmentType;
 }
 
 const getAttachment = (navId: string, form: NavFormType): Attachment | undefined => {

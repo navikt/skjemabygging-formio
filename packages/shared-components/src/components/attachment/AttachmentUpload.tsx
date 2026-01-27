@@ -4,6 +4,7 @@ import {
   AttachmentType,
   attachmentUtils,
   ComponentValue,
+  SubmissionAttachment,
   SubmissionAttachmentValue,
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
@@ -13,8 +14,7 @@ import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import FileUploader from '../file-uploader/FileUploader';
 import AttachmentOptionSelect from './AttachmentOptionSelect';
-import { useAttachmentUpload } from './AttachmentUploadContext';
-import { attachmentValidator } from './attachmentValidator';
+import { AttachmentError, useAttachmentUpload } from './AttachmentUploadContext';
 import FileUploadReadMore from './FileUploadReadMore';
 import { useAttachmentStyles } from './styles';
 
@@ -24,6 +24,9 @@ interface Props {
   componentId: string;
   type?: Exclude<AttachmentType, 'other'>;
   description?: string;
+  submissionAttachment?: SubmissionAttachment;
+  onValueChange: (value?: Partial<SubmissionAttachmentValue>) => void;
+  error?: AttachmentError;
   className?: string;
   refs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | HTMLButtonElement | null>>;
 }
@@ -34,32 +37,20 @@ const AttachmentUpload = ({
   componentId,
   type = 'default',
   description,
+  submissionAttachment,
+  onValueChange,
+  error,
   className,
   refs,
 }: Props) => {
   const styles = useAttachmentStyles();
   const { translate } = useLanguages();
-  const { changeAttachmentValue, handleDeleteAllFilesForAttachment, submissionAttachments, errors } =
-    useAttachmentUpload();
+  const { handleDeleteAllFilesForAttachment } = useAttachmentUpload();
   const { form } = useForm();
-  const attachment = submissionAttachments.find((attachment) => attachment.attachmentId.startsWith(componentId));
 
-  const validator = attachmentValidator(translate, ['value']);
-  const uploadedAttachmentFiles = attachment?.files ?? [];
+  const uploadedAttachmentFiles = submissionAttachment?.files ?? [];
   const options = attachmentUtils.mapKeysToOptions(attachmentValues, translate);
-  const uploadSelected = !!options.find((option) => option.value === attachment?.value)?.upload;
-  const attachmentError = errors[componentId]?.find((error) => error.type === 'VALUE');
-
-  const handleValueChange = (
-    value: Partial<SubmissionAttachmentValue> | undefined,
-    attachmentId: string = componentId,
-  ) => {
-    changeAttachmentValue(
-      { attachmentId, navId: componentId, type },
-      value ? { value: value.key, additionalDocumentation: value.additionalDocumentation } : {},
-      validator,
-    );
-  };
+  const uploadSelected = !!options.find((option) => option.value === submissionAttachment?.value)?.upload;
 
   const handleDeleteAllFiles = async (attachmentId: string) => {
     await handleDeleteAllFilesForAttachment(attachmentId);
@@ -76,14 +67,17 @@ const AttachmentUpload = ({
         <AttachmentOptionSelect
           title={label}
           description={description}
-          error={attachmentError?.message}
+          error={error?.message}
           value={
-            attachment?.value
-              ? { key: attachment.value, additionalDocumentation: attachment?.additionalDocumentation }
+            submissionAttachment?.value
+              ? {
+                  key: submissionAttachment.value,
+                  additionalDocumentation: submissionAttachment?.additionalDocumentation,
+                }
               : undefined
           }
           attachmentValues={attachmentValues}
-          onChange={handleValueChange}
+          onChange={onValueChange}
           translate={translate}
           deadline={form.properties?.ettersendelsesfrist}
           ref={(ref) => {
