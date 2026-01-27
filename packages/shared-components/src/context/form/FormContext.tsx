@@ -66,19 +66,28 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
     [form, submission],
   );
 
+  const setDeepValue = useCallback((obj: object, path: string[], value: any) => {
+    if (path.length === 1) {
+      return { ...obj, [path[0]]: value };
+    }
+    const [key, ...rest] = path;
+    return {
+      ...obj,
+      [key]: setDeepValue(obj?.[key] ?? {}, rest, value),
+    };
+  }, []);
+
   const updateSubmission = useCallback(
     (submissionPath: string, value: any) => {
       setSubmission((prevSubmission) => ({
-        data: {
-          ...prevSubmission?.data,
-          ...submissionPath
-            .split('.')
-            .reduceRight((acc, key, i, arr) => (i === arr.length - 1 ? { [key]: value } : { [key]: acc }), {} as any),
-        },
+        ...prevSubmission,
+        data: setDeepValue(prevSubmission?.data ?? {}, submissionPath.split('.'), value),
       }));
     },
-    [setSubmission],
+    [setSubmission, setDeepValue],
   );
+
+  // ...existing code...
 
   useEffect(() => {
     const loadPrefillData = async (navForm: NavFormType) => {

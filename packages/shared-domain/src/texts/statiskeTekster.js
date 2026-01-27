@@ -342,4 +342,9 @@ export const statiske = {
     phoneNumberLabel: 'Telefonnummer',
     fetchError: 'En feil oppsto under uthenting av landskoder. Vennligst forsøk igjen senere.',
   },
+  navUnit: {
+    choose: 'Velg hvilken Nav-enhet som skal motta innsendingen',
+    selectDefault: 'Velg enhet',
+    fetchError: 'En feil har oppstått. Vi kunne ikke laste enheter. Beklager ulempen, prøv igjen senere.',
+  },
 };

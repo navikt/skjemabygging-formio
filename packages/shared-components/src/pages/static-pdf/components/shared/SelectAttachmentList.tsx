@@ -2,7 +2,7 @@ import { Component, navFormUtils, TEXTS } from '@navikt/skjemadigitalisering-sha
 import { useMemo } from 'react';
 import { useForm } from '../../../../context/form/FormContext';
 import { useLanguages } from '../../../../context/languages';
-import FormCheckbox from './FormCheckbox';
+import FormCheckboxes from './FormCheckboxes';
 
 interface Props {
   submissionPath: string;
@@ -21,7 +21,7 @@ const SelectAttachmentList = ({ submissionPath }: Props) => {
   }
 
   return (
-    <FormCheckbox
+    <FormCheckboxes
       legend={translate(TEXTS.statiske.attachment.title)}
       description={translate(TEXTS.statiske.attachment.selectAttachments)}
       submissionPath={submissionPath}
