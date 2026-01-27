@@ -1,4 +1,4 @@
-type ErrorCode = 'ERROR' | 'FILE_TOO_MANY_PAGES';
+type ErrorCode = 'ERROR' | 'FILE_TOO_MANY_PAGES' | 'SERVICE_UNAVAILABLE';
 
 interface ErrorResponseBody {
   message: string;

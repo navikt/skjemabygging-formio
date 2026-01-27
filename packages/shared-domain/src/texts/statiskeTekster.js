@@ -79,6 +79,9 @@ export const statiske = {
     totalFileSizeTooLarge: 'Summen av alle filene kan ikke være mer enn {{maxAttachmentSize}}.',
     fileNotSupportedError: 'Filen kan ikke lastes opp. Prøv igjen med en annen fil i et gyldig format.',
   },
+  nologin: {
+    temporarilyUnavailable: 'Det er ikke mulig å sende inn digitalt uten å logge inn nå. Velg innsending på papir.',
+  },
   paabegynt: {
     activeTasksHeading: 'Du har {{amount}} påbegynte utkast til denne søknaden',
     oneActiveTaskHeading: 'Du har ett påbegynt utkast til denne søknaden',
