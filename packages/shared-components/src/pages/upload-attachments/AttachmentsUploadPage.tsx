@@ -66,13 +66,13 @@ const AttachmentsUploadPage = () => {
         focusOnComponent={focusOnComponent}
         ref={(ref) => (errorSummaryRef.current = ref)}
       />
-      {attachments.map(({ label, description, attachmentValues, navId, attachmentType }, index) => (
+      {attachments.map(({ label, description, attachmentValues, values, navId, attachmentType }, index) => (
         <AttachmentComponent
           key={navId}
           className={clsx(index !== attachments.length - 1 && styles.attachmentUpload)}
           label={label}
           description={description}
-          attachmentValues={attachmentValues}
+          attachmentValues={attachmentValues ?? values}
           type={attachmentType}
           componentId={navId as string}
           refs={attachmentRefs}

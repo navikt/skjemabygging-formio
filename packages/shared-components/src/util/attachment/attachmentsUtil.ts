@@ -2,6 +2,7 @@ import {
   AttachmentSettingValues,
   AttachmentType,
   Component,
+  ComponentValue,
   NavFormType,
   navFormUtils,
   Submission,
@@ -19,6 +20,7 @@ interface Attachment {
   formioId: string;
   vedleggskjema?: string;
   description?: string;
+  values?: ComponentValue[];
   attachmentValues?: AttachmentSettingValues;
   attachmentType?: AttachmentType;
 }
