@@ -1,4 +1,6 @@
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { BaseButton } from '../../../components/navigation/BaseButton';
+import { useLanguages } from '../../../context/languages';
 import url from '../../../util/url/url';
 import type StaticPdfPage from '../StaticPdfWrapper';
 
@@ -7,6 +9,7 @@ interface Props {
 }
 
 const StaticPdfCancelButton = ({ page }: Props) => {
+  const { translate } = useLanguages();
   const exitUrl = url.getExitUrl(window.location.href);
 
   return (
@@ -17,7 +20,10 @@ const StaticPdfCancelButton = ({ page }: Props) => {
         }}
         variant="tertiary"
         label={{
-          default: page === 'input' ? 'Avbryt' : 'Avslutt',
+          default:
+            page === 'input'
+              ? translate(TEXTS.grensesnitt.navigation.cancel)
+              : translate(TEXTS.grensesnitt.navigation.exit),
         }}
         role="button"
       />
