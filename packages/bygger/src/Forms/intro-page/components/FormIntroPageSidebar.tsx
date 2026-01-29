@@ -35,7 +35,7 @@ export function FormIntroPageSidebar({
 
   return (
     <SidebarLayout noScroll={true}>
-      <VStack gap="1">
+      <VStack gap="space-1">
         <ButtonWithSpinner
           onClick={() => doIfUnlocked(() => validateAndSave(form))}
           size="small"

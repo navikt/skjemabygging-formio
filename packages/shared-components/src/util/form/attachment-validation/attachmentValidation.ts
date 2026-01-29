@@ -62,6 +62,8 @@ const getFileValidationError = (file: FileObject): string | undefined => {
       return TEXTS.statiske.uploadFile.uploadFileError;
     case 'uploadTooManyPages':
       return TEXTS.statiske.uploadFile.uploadFileToManyPagesError;
+    case 'serviceUnavailable':
+      return TEXTS.statiske.nologin.temporarilyUnavailable;
     default:
       return TEXTS.statiske.uploadFile.defaultFileError;
   }

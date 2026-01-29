@@ -20,7 +20,7 @@ export const SelfDeclaration = forwardRef<HTMLInputElement, Props>(({ handleChan
     <SectionWrapper
       noBorderBottom={true}
       left={
-        <Box paddingInline="0 12">
+        <Box paddingInline="space-0 space-12">
           <Heading level="3" size="small" spacing>
             Erklæring
           </Heading>

@@ -1,4 +1,4 @@
-import { Close } from '@navikt/ds-icons';
+import { XMarkIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import {
   ErrorPage,
@@ -51,7 +51,7 @@ const MigrationFormPreview = () => {
   return (
     <div>
       <div className={styles.backContainer}>
-        <Button variant="tertiary" icon={<Close aria-hidden />} onClick={() => navigate(-1)} type="button">
+        <Button variant="tertiary" icon={<XMarkIcon aria-hidden />} onClick={() => navigate(-1)} type="button">
           Tilbake
         </Button>
       </div>

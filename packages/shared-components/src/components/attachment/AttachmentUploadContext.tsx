@@ -88,6 +88,7 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
       (current) =>
         ({
           ...current,
+
           attachments: (current?.attachments ?? []).map((att) => {
             if (att.attachmentId === attachmentId) {
               return { ...att, files: (att.files ?? []).filter((file) => file.fileId !== fileId) };
@@ -103,6 +104,7 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
       (current) =>
         ({
           ...current,
+
           attachments: (current?.attachments ?? []).map((att) => {
             if (att.attachmentId === attachmentId) {
               return { ...att, files: [] };
@@ -169,6 +171,10 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
 
   const isTooManyPagesError = (error: any) => {
     return error instanceof http.TooManyPagesError;
+  };
+
+  const isServiceUnavailable = (error: any) => {
+    return error instanceof http.ServiceUnavailable;
   };
 
   const validateTotalAttachmentSize = (attachmentId: string, file: FileObject): string | undefined => {
@@ -243,6 +249,8 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
         return Promise.resolve({ status: 'auth-error' });
       } else if (isTooManyPagesError(error)) {
         addFileInProgress(attachmentId, { ...file, error: true, reasons: ['uploadTooManyPages'] });
+      } else if (isServiceUnavailable(error)) {
+        addFileInProgress(attachmentId, { ...file, error: true, reasons: ['serviceUnavailable'] });
       } else {
         addFileInProgress(attachmentId, { ...file, error: true, reasons: ['uploadHttpError'] });
       }
@@ -297,7 +305,13 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
     try {
       setErrors({});
       await deleteAllFiles(nologinToken);
-      setSubmission((current) => ({ ...current, attachments: [] }) as Submission);
+      setSubmission(
+        (current) =>
+          ({
+            ...current,
+            attachments: [],
+          }) as Submission,
+      );
     } catch (error: any) {
       if (isAuthenticationError(error)) {
         handleSessionExpired();

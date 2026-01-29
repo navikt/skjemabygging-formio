@@ -3,10 +3,12 @@ import {
   NavFormType,
   ReceiptSummary,
   Submission,
+  TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import { noLoginFileService } from '../../../../services';
 import { LogMetadata } from '../../../../types/log';
+import { HttpError } from '../../../../utils/errors/HttpError';
 
 const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -46,6 +48,12 @@ const post = async (req: Request, res: Response, next: NextFunction) => {
     const pdfBase64 = Buffer.from(pdf).toString('base64');
     res.json({ pdfBase64, receipt });
   } catch (error) {
+    if (error instanceof HttpError && error.http_response_body.errorCode === 'temporarilyUnavailable') {
+      return res.status(503).json({
+        message: TEXTS.statiske.nologin.temporarilyUnavailable,
+        errorCode: 'SERVICE_UNAVAILABLE',
+      });
+    }
     next(error);
   }
 };

@@ -66,7 +66,7 @@ interface ReactComponentType {
   getRef(name: any): any;
   setRef(name: any, ref: any): void;
   checkValidity(data: any, dirty: any | boolean, row: any, silentCheck: boolean): boolean;
-  checkComponentValidity(data, dirty, row, options = {});
+  checkComponentValidity(data, dirty, row, options?: Record<string, unknown>): boolean;
   getValue(): any;
   hasChanged(before: any, after: any): boolean;
   clearOnHide(): void;

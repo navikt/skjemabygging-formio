@@ -1,7 +1,7 @@
 import { Enhet, SubmissionType, submissionTypesUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { getAttachments } from '../../../../shared-domain/src/forsteside/forstesideUtils';
-import { fetchEnhetsliste, isEnhetSupported } from '../../api/enhetsliste/fetchEnhetsliste';
+import { compareEnheter, fetchEnhetsliste, isEnhetSupported } from '../../api/enhetsliste/fetchEnhetsliste';
 import NavigateButtonComponent from '../../components/button/navigation/pages/NavigateButtonComponent';
 import ErrorPage from '../../components/error/page/ErrorPage';
 import LetterAddAttachment from '../../components/letter/LetterAddAttachment';
@@ -15,8 +15,6 @@ import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
 import FormMainContent from '../FormMainContent';
-
-const compareEnheter = (enhetA, enhetB) => enhetA.navn.localeCompare(enhetB.navn, 'nb');
 
 const submissionTypeIncludesPaperOrIsNoSubmission = (submissionTypes?: SubmissionType[]) =>
   submissionTypes &&
