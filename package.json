@@ -12,11 +12,13 @@
     "packages": [
       "packages/shared-domain",
       "packages/shared-components",
+      "packages/shared-backend",
       "packages/*"
     ],
     "nohoist": [
       "**/bygger-backend/**",
-      "**/fyllut-backend/**"
+      "**/fyllut-backend/**",
+      "**/shared-backend/**"
     ]
   },
   "scripts": {

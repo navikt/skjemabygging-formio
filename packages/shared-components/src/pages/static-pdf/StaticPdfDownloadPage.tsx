@@ -3,8 +3,9 @@ import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import DownloadPdfButton from '../../components/button/DownloadPdfButton';
 import { useForm } from '../../context/form/FormContext';
-import { http, useAppConfig, useLanguages } from '../../index';
+import { useLanguages } from '../../index';
 import FormBox from './components/shared/FormBox';
+import { useStaticPdf } from './StaticPdfContext';
 
 interface StaticPdfSubmissionData {
   identityType: string;
@@ -20,52 +21,43 @@ interface StaticPdfSubmissionData {
   attachments?: string[];
 }
 
+interface DownloadState {
+  message: string;
+  variant: 'info' | 'error';
+}
+
 const StaticPdfDownloadPage = () => {
-  const appConfig = useAppConfig();
-  const { fyllutBaseURL } = appConfig;
   const { translate } = useLanguages();
   const { submission, form } = useForm();
-  const [status, setStatus] = useState<
-    | {
-        message: string;
-        variant: 'info' | 'error';
-      }
-    | undefined
-  >();
+  const { downloadFile } = useStaticPdf();
+  const [status, setStatus] = useState<DownloadState | undefined>();
 
   const data: StaticPdfSubmissionData = submission?.data as unknown as StaticPdfSubmissionData;
   const fileName = `${form.path}s-${dateUtils.toLocaleDate().replace(/\./g, '')}.pdf`;
 
-  const getPdfContent = async () => {
-    try {
-      const content = await http.post<Blob>(
-        `${fyllutBaseURL}/api/documents/application`,
-        {
-          form: JSON.stringify(form),
-          submission: JSON.stringify(submission),
-        },
-        {
-          Accept: http.MimeType.PDF,
-        },
-      );
-      setStatus({
-        message: translate(TEXTS.statiske.prepareLetterPage.downloadSuccess, { fileName }),
-        variant: 'info',
-      });
+  const handleError = () => {
+    setStatus({
+      message: translate(TEXTS.statiske.prepareLetterPage.downloadError),
+      variant: 'error',
+    });
+  };
 
-      return content;
-    } catch (_) {
-      setStatus({
-        message: translate(TEXTS.statiske.prepareLetterPage.downloadError),
-        variant: 'error',
-      });
-    }
+  const handleSuccess = () => {
+    setStatus({
+      message: translate(TEXTS.statiske.prepareLetterPage.downloadSuccess, { fileName }),
+      variant: 'info',
+    });
   };
 
   return (
     <>
       <FormBox bottom="space-32">
-        <DownloadPdfButton fileName={fileName} pdfContent={getPdfContent}>
+        <DownloadPdfButton
+          fileName={fileName}
+          pdfContent={() => downloadFile('nb')}
+          onError={handleError}
+          onSuccess={handleSuccess}
+        >
           {translate(TEXTS.grensesnitt.downloadApplication)}
         </DownloadPdfButton>
       </FormBox>

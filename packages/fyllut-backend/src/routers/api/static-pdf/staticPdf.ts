@@ -1,12 +1,15 @@
+import { staticPdfService } from '@navikt/skjemadigitalisering-shared-backend';
 import { NextFunction, Request, Response } from 'express';
-import staticPdfService from '../../../services/staticPdf/staticPdfService';
+import { config } from '../../../config/config';
+
+const { formsApiUrl } = config;
 
 const staticPdf = {
   getAll: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { formPath } = req.params;
 
-      const result = await staticPdfService.getAll(formPath);
+      const result = await staticPdfService.getAll(formsApiUrl, formPath);
       res.json(result);
     } catch (error: any) {
       next(error);
@@ -16,7 +19,7 @@ const staticPdf = {
     try {
       const { formPath, languageCode } = req.params;
 
-      const result = await staticPdfService.downloadPdf(formPath, languageCode);
+      const result = await staticPdfService.downloadPdf(formsApiUrl, formPath, languageCode);
       res.json(result);
     } catch (error: any) {
       next(error);

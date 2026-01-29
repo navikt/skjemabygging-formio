@@ -8,7 +8,7 @@ import {
 import FormService from '../../services/FormService';
 import TranslationsService from '../../services/TranslationsService';
 import { mockRequest, mockResponse } from '../../test/testHelpers';
-import form, { mapAttachmentValues } from './form';
+import form, { mapAttachmentValues } from './forms/form';
 
 const testForm: NavFormType = {
   tags: [],

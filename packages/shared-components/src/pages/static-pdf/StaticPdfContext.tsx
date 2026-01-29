@@ -1,6 +1,6 @@
 import { StaticPdf } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
-import useFormsApiStaticPdf from '../../../../bygger/src/api/useFormsApiStaticPdf';
+import useFormsApiStaticPdf from '../../api/static-pdf/useFormsApiStaticPdf';
 
 interface StaticPdfContextType {
   formPath: string;

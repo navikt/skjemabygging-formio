@@ -1,6 +1,6 @@
 import apiConfig from './routers/api/config';
-import form from './routers/api/form';
 import forms from './routers/api/forms';
+import form from './routers/api/forms/form';
 import globalTranslations from './routers/api/global-translations.js';
 import translations from './routers/api/translations.js';
 
