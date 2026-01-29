@@ -70,6 +70,11 @@ interface LimitedFormAttachment {
   deadlineWarning?: string | null;
 }
 
+const renderAttachmentPanel = (submissionMethod?: string) => submissionMethod !== 'digital';
+
+const enableAttachmentUpload = (submissionMethod?: string) =>
+  submissionMethod === 'digital' || submissionMethod === 'digitalnologin';
+
 const shouldEnableUpload = (value: string) => value === 'leggerVedNaa';
 
 const mapKeysToOptions = (
@@ -128,6 +133,8 @@ const mapToAttachmentSummary = ({
 };
 
 const attachmentUtils = {
+  renderAttachmentPanel,
+  enableAttachmentUpload,
   attachmentSettingKeys,
   mapToAttachmentSummary,
   mapKeysToOptions,

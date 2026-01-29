@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import attachmentUtils from '../attachment';
 import { Attachment, Component, FormsResponseForm, NavFormType, Panel, Submission, SubmissionMethod } from '../form';
 import { Form, formSummaryUtil, submissionTypesUtils } from '../index';
 import FormioUtils from '../utils/formio/FormioUtils';
@@ -315,7 +316,11 @@ const getActivePanelsFromForm = (form: NavFormType, submission?: Submission, sub
       return conditionals[key] !== false;
     })
     .filter(
-      (panel) => !((submissionMethod === 'digital' || submissionMethod === 'digitalnologin') && isVedleggspanel(panel)),
+      (panel) =>
+        !(
+          (submissionMethod === 'digital' || attachmentUtils.renderAttachmentPanel(submissionMethod)) &&
+          isVedleggspanel(panel)
+        ),
     );
 };
 
@@ -329,7 +334,10 @@ const getActiveComponentsFromForm = (
   const panels = form.components.filter(
     (component) =>
       component.type === 'panel' &&
-      !(isVedleggspanel(component) && (submissionMethod === 'digital' || submissionMethod === 'digitalnologin')),
+      !(
+        isVedleggspanel(component) &&
+        (submissionMethod === 'digital' || attachmentUtils.renderAttachmentPanel(submissionMethod))
+      ),
   );
 
   if (!conditionals || Object.keys(conditionals).length === 0) {
@@ -360,7 +368,7 @@ const getActiveAttachmentPanelFromForm = (
   submission?: Submission,
   submissionMethod?: string,
 ): Panel | undefined => {
-  if (!submissionMethod || !['digitalnologin'].includes(submissionMethod)) {
+  if (!attachmentUtils.renderAttachmentPanel(submissionMethod)) {
     return undefined;
   }
   const conditionals = formSummaryUtil.mapAndEvaluateConditionals(form, submission ?? { data: {} });

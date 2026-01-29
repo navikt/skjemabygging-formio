@@ -1,6 +1,7 @@
 import {
   AttachmentSettingValues,
   AttachmentType,
+  attachmentUtils,
   ComponentValue,
   SubmissionAttachmentValue,
 } from '@navikt/skjemadigitalisering-shared-domain';
@@ -41,7 +42,7 @@ const Attachment = ({
   const { translate } = useLanguages();
 
   const attachment = findAttachmentByComponentId(submissionAttachments, componentId);
-  const enableUpload = ['digital', 'digitalnologin'].includes(config.submissionMethod || '');
+  const enableUpload = attachmentUtils.enableAttachmentUpload(config?.submissionMethod);
   const validator = attachmentValidator(translate, ['value']);
   const attachmentError = errors[componentId]?.find((error) => error.type === 'VALUE');
 
