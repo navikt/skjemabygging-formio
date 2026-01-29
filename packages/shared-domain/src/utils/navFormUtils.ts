@@ -358,7 +358,7 @@ const getActiveComponents = (components: Component[], conditionals?: any): Compo
         };
       }
 
-      return component;
+      return { navId: component.navId ?? component.id, ...component };
     });
 };
 
