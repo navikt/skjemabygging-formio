@@ -2,6 +2,7 @@ import { ErrorResponse, StaticPdf } from '@navikt/skjemadigitalisering-shared-do
 import 'multer';
 import http from '../../util/http';
 import { logger } from '../../util/logger';
+import service from '../../util/service';
 
 const createUrl = (baseUrl: string, formPath: string, languageCode?: string) =>
   `${baseUrl}/v1/forms/${formPath}/static-pdfs${languageCode ? `/${languageCode}` : ''}`;
@@ -9,11 +10,15 @@ const createUrl = (baseUrl: string, formPath: string, languageCode?: string) =>
 const getAll = async (baseUrl: string, formPath: string) => {
   logger.debug(`Get all static pdfs ${formPath}`);
 
+  service.isFormPathValid(formPath);
+
   return await http.get<StaticPdf[]>(createUrl(baseUrl, formPath));
 };
 
 const downloadPdf = async (baseUrl: string, formPath: string, languageCode: string) => {
   logger.info(`Download new static pdf ${formPath} for ${languageCode}`);
+
+  service.isFormPathValid(formPath);
 
   const pdf = await http.get(createUrl(baseUrl, formPath, languageCode));
   if (pdf) {
@@ -34,6 +39,8 @@ const uploadPdf = async (
   accessToken: string,
   file?: Express.Multer.File,
 ) => {
+  service.isFormPathValid(formPath);
+
   logger.info(`Upload new static pdf ${formPath} for ${languageCode}`);
 
   if (!file?.buffer) {
@@ -56,6 +63,8 @@ const uploadPdf = async (
 };
 
 const deletePdf = async (baseUrl: string, formPath: string, languageCode: string, accessToken: string) => {
+  service.isFormPathValid(formPath);
+
   logger.info(`Delete static pdf ${formPath} for ${languageCode}`);
 
   await http.delete(createUrl(baseUrl, formPath, languageCode), { accessToken });

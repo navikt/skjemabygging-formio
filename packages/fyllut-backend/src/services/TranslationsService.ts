@@ -1,3 +1,4 @@
+import { url } from '@navikt/skjemadigitalisering-shared-backend';
 import {
   FormioTranslationPayload,
   FormsApiTranslation,
@@ -8,7 +9,6 @@ import {
 import fetch from 'node-fetch';
 import { ConfigType } from '../config/types';
 import { loadFileFromDirectory } from '../utils/forms';
-import { isValidPath } from '../utils/url';
 
 const toFyllutLang = (lang: string): Language => {
   switch (lang) {
@@ -50,7 +50,7 @@ class TranslationsService {
   }
 
   private validateFormPath(formPath: string) {
-    if (!isValidPath(formPath)) {
+    if (!url.isValidPath(formPath)) {
       throw new Error(`Invalid formPath: ${formPath}`);
     }
   }
