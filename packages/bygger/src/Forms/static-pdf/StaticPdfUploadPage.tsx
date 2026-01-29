@@ -1,9 +1,9 @@
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
+import { StaticPdfProvider } from '../../../../shared-components/src/pages/static-pdf/StaticPdfContext';
 import { AppLayout } from '../../components/AppLayout';
 import RowLayout from '../../components/layout/RowLayout';
 import Title from '../../components/layout/Title';
 import TitleRowLayout from '../../components/layout/TitleRowLayout';
-import { StaticPdfProvider } from './StaticPdfContext';
 import StaticPdfTable from './StaticPdfTable';
 
 interface Props {

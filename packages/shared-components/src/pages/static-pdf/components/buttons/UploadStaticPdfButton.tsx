@@ -1,8 +1,8 @@
 import { UploadIcon } from '@navikt/aksel-icons';
 import { Button, FileObject, FileUpload } from '@navikt/ds-react';
-import { ConfirmationModal } from '@navikt/skjemadigitalisering-shared-components';
 import { useState } from 'react';
-import { useStaticPdf } from '../StaticPdfContext';
+import { ConfirmationModal } from '../../../../index';
+import { useStaticPdf } from '../../StaticPdfContext';
 
 interface Props {
   language: string;

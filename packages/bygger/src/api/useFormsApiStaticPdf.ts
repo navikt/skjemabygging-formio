@@ -6,11 +6,10 @@ import { useFeedbackEmit } from '../context/notifications/FeedbackContext';
 const useFormsApiStaticPdf = () => {
   const feedbackEmit = useFeedbackEmit();
   const appConfig = useAppConfig();
-  const { logger } = appConfig;
+  const { logger, baseUrl } = appConfig;
   const http = appConfig.http ?? baseHttp;
-  const baseUrl = '/api/forms';
   const getUrl = (formPath: string, languageCode?: string) =>
-    `${baseUrl}/${formPath}/static-pdfs${languageCode ? `/${languageCode}` : ''}`;
+    `${baseUrl}/api/forms/${formPath}/static-pdfs${languageCode ? `/${languageCode}` : ''}`;
 
   const getAll = async (formPath: string) => {
     try {
