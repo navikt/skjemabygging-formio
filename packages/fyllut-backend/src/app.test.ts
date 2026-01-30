@@ -36,7 +36,10 @@ describe('app', () => {
     });
 
     afterEach(() => {
-      expect(nock.isDone()).toBe(true);
+      if (!nock.isDone()) {
+        nock.cleanAll();
+        throw new Error('Pending nock interceptors not used');
+      }
     });
 
     describe("Query param 'form'", () => {
