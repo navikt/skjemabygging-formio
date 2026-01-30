@@ -16,9 +16,9 @@
       "packages/*"
     ],
     "nohoist": [
+      "**/shared-backend/**",
       "**/bygger-backend/**",
-      "**/fyllut-backend/**",
-      "**/shared-backend/**"
+      "**/fyllut-backend/**"
     ]
   },
   "scripts": {

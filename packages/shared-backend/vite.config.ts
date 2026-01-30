@@ -1,6 +1,5 @@
-/// <reference types="vitest" />
 import * as path from 'path';
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   build: {
@@ -11,5 +10,10 @@ export default defineConfig({
       formats: ['es'],
       fileName: 'index',
     },
+  },
+  test: {
+    globals: true,
+    setupFiles: './src/setupTests.ts',
+    include: ['src/(**/)?*.test.ts(x)?'],
   },
 });
