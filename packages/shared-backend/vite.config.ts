@@ -10,6 +10,9 @@ export default defineConfig({
       formats: ['es'],
       fileName: 'index',
     },
+    rollupOptions: {
+      external: ['fs', 'util', 'os', 'crypto', 'stream', 'path', 'http', 'https', 'zlib', 'async_hooks', 'events'],
+    },
   },
   test: {
     globals: true,
