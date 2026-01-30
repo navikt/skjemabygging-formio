@@ -32,6 +32,7 @@ const baseComponent = (props?: BaseComponentType) => {
   const createdKey = key ?? (label ? sanitizeAndLowerCase(label) : generateId());
 
   return {
+    ...props,
     id: id ?? generateId(),
     navId: navId ?? generateId(),
     key: createdKey,

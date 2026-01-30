@@ -1,6 +1,17 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
+import { ValidateComponentType } from '../../shared/validateComponent';
 
-const monthPicker = (props?: BaseComponentType) => {
+interface ValidateMonthPickerType extends ValidateComponentType {
+  minYear?: number;
+  maxYear?: number;
+}
+interface MonthPickerType extends BaseComponentType {
+  validate?: ValidateMonthPickerType;
+  earliestAllowedDate?: number;
+  latestAllowedDate?: number;
+}
+
+const monthPicker = (props?: MonthPickerType) => {
   const { label } = props ?? {};
 
   // Add override for month picker validation values.

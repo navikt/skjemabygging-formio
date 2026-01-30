@@ -154,6 +154,62 @@ describe('Digital submission without user login', () => {
     cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).should('exist');
   });
 
+  describe('Nologin service unavailable', () => {
+    beforeEach(() => {
+      cy.visit('/fyllut/nologinform/legitimasjon?sub=digitalnologin');
+      cy.defaultWaits();
+      cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
+        cy.findByLabelText('Norsk pass').check(),
+      );
+    });
+
+    it('shows service unavailable error when upload fails due to service unavailability', () => {
+      cy.mocksUseRouteVariant('upload-file:service-unavailable');
+      cy.uploadFile('id-billy-bruker.jpg');
+      cy.findByText(TEXTS.statiske.nologin.temporarilyUnavailable).shouldBeVisible();
+      cy.clickNextStep();
+      cy.findByText(TEXTS.statiske.uploadId.missingUploadError).shouldBeVisible();
+    });
+
+    it('shows service unavailable error when submission fails due to service unavailability', () => {
+      cy.mocksUseRouteVariant('post-nologin-soknad:service-unavailable');
+      cy.uploadFile('id-billy-bruker.jpg');
+      cy.clickNextStep();
+      cy.clickIntroPageConfirmation();
+      cy.clickNextStep();
+      cy.clickShowAllSteps();
+      cy.findByRole('link', { name: 'Dine opplysninger' }).click();
+      cy.findByRole('heading', { name: /Dine opplysninger/ }).should('exist');
+      cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola');
+      cy.findByRole('textbox', { name: 'Etternavn' }).type('Nordmann');
+
+      cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
+        cy.findByLabelText('Ja').check(),
+      );
+      cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).type('08842748500');
+      cy.clickNextStep();
+
+      cy.findByRole('group', { name: 'Høyeste fullførte utdanning' }).within(() =>
+        cy.findByLabelText('Videregående').check(),
+      );
+      cy.clickNextStep();
+      cy.findByRole('link', { name: 'Vedlegg' }).click();
+      cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
+        cy.findByLabelText(TEXTS.statiske.attachment.ettersender).check(),
+      );
+      cy.findByRole('group', {
+        name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
+      }).within(() => {
+        cy.findByLabelText(TEXTS.statiske.attachment.nei).check();
+      });
+      cy.clickNextStep();
+
+      cy.findByRole('heading', { name: /Oppsummering/ }).should('exist');
+      cy.clickSendNav();
+      cy.findByText(TEXTS.statiske.nologin.temporarilyUnavailable).shouldBeVisible();
+    });
+  });
+
   describe('Attachments', () => {
     beforeEach(() => {
       cy.visit('/fyllut/nologinform/legitimasjon?sub=digitalnologin');
