@@ -16,7 +16,9 @@ describe('[endpoint] enhetsliste', () => {
   let fetchEnhetslisteMock: nock.Scope;
 
   afterEach(() => {
-    expect(fetchEnhetslisteMock.isDone()).toBe(true);
+    if (fetchEnhetslisteMock) {
+      fetchEnhetslisteMock.done();
+    }
   });
 
   describe('When proxy returns complete list containg all enheter', () => {
