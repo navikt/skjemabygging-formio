@@ -63,15 +63,7 @@ describe('http requests', () => {
         .get('/error')
         .reply(404, { message: errorMessage });
 
-      expect.assertions(1);
-
-      try {
-        await http.get('https://www.nav.no/error');
-      } catch (e) {
-        if (e instanceof http.HttpError) {
-          expect(e.message).toBe(errorMessage);
-        }
-      }
+      await expect(http.get('https://www.nav.no/error')).rejects.toThrowError(errorMessage);
 
       nock.isDone();
     });
@@ -85,15 +77,7 @@ describe('http requests', () => {
         .get('/error')
         .reply(404, errorMessage);
 
-      expect.assertions(1);
-
-      try {
-        await http.get('https://www.nav.no/error');
-      } catch (e) {
-        if (e instanceof http.HttpError) {
-          expect(e.message).toBe(errorMessage);
-        }
-      }
+      await expect(http.get('https://www.nav.no/error')).rejects.toThrowError(errorMessage);
 
       nock.isDone();
     });
@@ -107,15 +91,7 @@ describe('http requests', () => {
         .get('/error')
         .reply(404);
 
-      expect.assertions(1);
-
-      try {
-        await http.get('https://www.nav.no/error');
-      } catch (e) {
-        if (e instanceof http.HttpError) {
-          expect(e.message).toBe('Not Found');
-        }
-      }
+      await expect(http.get('https://www.nav.no/error')).rejects.toThrowError('Not Found');
 
       nock.isDone();
     });
