@@ -5,7 +5,8 @@ import { logger } from '../../util/logger';
 import service from '../../util/service';
 
 const createUrl = (baseUrl: string, formPath: string, languageCode?: string) => {
-  service.validateParams([formPath, languageCode]);
+  service.validateFormPath(formPath);
+  service.validateLanguageCode(languageCode);
 
   return `${baseUrl}/v1/forms/${formPath}/static-pdfs${languageCode ? `/${languageCode}` : ''}`;
 };

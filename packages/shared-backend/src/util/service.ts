@@ -1,22 +1,33 @@
 import { ErrorResponse } from '@navikt/skjemadigitalisering-shared-domain';
 import { url } from '../index';
 
-const validateParams = (params: (string | undefined)[]): boolean => {
-  for (const param of params) {
-    if (param && !url.isValidPath(param)) {
-      throw {
-        message: `${param} contain invalid characters.`,
-        status: 400,
-        errorCode: 'BAD_REQUEST',
-      } as ErrorResponse;
-    }
+const validateFormPath = (formPath?: string): boolean => {
+  if (formPath && !url.isValidPath(formPath)) {
+    throw {
+      message: 'Form path contain invalid characters.',
+      status: 400,
+      errorCode: 'BAD_REQUEST',
+    } as ErrorResponse;
+  }
+
+  return true;
+};
+
+const validateLanguageCode = (languageCode?: string): boolean => {
+  if (languageCode && /^[a-z]{2}$/.test(languageCode)) {
+    throw {
+      message: 'Language code contain invalid characters.',
+      status: 400,
+      errorCode: 'BAD_REQUEST',
+    } as ErrorResponse;
   }
 
   return true;
 };
 
 const service = {
-  validateParams,
+  validateFormPath,
+  validateLanguageCode,
 };
 
 export default service;
