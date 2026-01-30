@@ -83,7 +83,11 @@ const mapKeysToOptions = (
 ): ComponentValue[] => {
   if (attachmentValues) {
     if (Array.isArray(attachmentValues)) {
-      return attachmentValues;
+      return attachmentValues.map((option) => ({
+        ...option,
+        label: translate(option.label),
+        ...(option.description ? { description: translate(option.description) } : {}),
+      }));
     } else if (typeof attachmentValues === 'object') {
       // map over attachmentSettingKeys to ensure a fixed order
       return attachmentSettingKeys

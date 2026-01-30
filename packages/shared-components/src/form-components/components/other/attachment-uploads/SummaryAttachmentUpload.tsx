@@ -24,8 +24,8 @@ const SummaryAttachmentUpload = (props: FormComponentProps) => {
         {submissionAttachments.map((submissionAttachment) =>
           hasUploadedFiles(submissionAttachment) ? (
             <FormSummary.Value key={submissionAttachment.attachmentId}>
-              {submissionAttachment.title && <Label>{submissionAttachment.title}</Label>}
-              <VStack gap="space-2" as="ul">
+              {submissionAttachment.title && <Label>{translate(submissionAttachment.title)}</Label>}
+              <VStack gap="2" as="ul">
                 {(submissionAttachment.files ?? []).map((file) => (
                   <FileUpload.Item
                     as="li"

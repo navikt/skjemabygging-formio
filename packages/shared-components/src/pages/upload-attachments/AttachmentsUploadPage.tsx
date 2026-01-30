@@ -70,8 +70,8 @@ const AttachmentsUploadPage = () => {
         <AttachmentComponent
           key={navId}
           className={clsx(index !== attachments.length - 1 && styles.attachmentUpload)}
-          label={label}
-          description={description}
+          label={translate(label)}
+          description={translate(description)}
           attachmentValues={attachmentValues ?? values}
           type={attachmentType}
           componentId={navId as string}
