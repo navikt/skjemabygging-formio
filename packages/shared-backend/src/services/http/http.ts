@@ -1,7 +1,7 @@
 import { ErrorCode, ErrorResponse } from '@navikt/skjemadigitalisering-shared-domain';
 import crypto from 'crypto';
 import correlator from 'express-correlation-id';
-import { logger } from './logger';
+import { logger } from '../logger/logger';
 
 type MimeType =
   | 'application/json'

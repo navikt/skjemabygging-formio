@@ -1,4 +1,4 @@
-import { url } from '@navikt/skjemadigitalisering-shared-backend';
+import { urlUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import { config } from '../config/config';
 import { QueryParamSub } from '../types/custom';
 
@@ -11,7 +11,7 @@ const loginRedirect = (req, res, next) => {
       const sub = req.query.sub as QueryParamSub;
 
       if (sub === 'digital' && !authHeader) {
-        return res.redirect(`${url.getBaseUrl(req)}/fyllut/oauth2/login?redirect=${url.getCurrentUrl(req)}`);
+        return res.redirect(`${urlUtil.getBaseUrl(req)}/fyllut/oauth2/login?redirect=${urlUtil.getCurrentUrl(req)}`);
       }
     }
 

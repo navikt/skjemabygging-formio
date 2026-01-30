@@ -1,12 +1,12 @@
 import { ErrorResponse, StaticPdf } from '@navikt/skjemadigitalisering-shared-domain';
 import 'multer';
-import http from '../../util/http';
-import { logger } from '../../util/logger';
-import service from '../../util/service';
+import serviceUtil from '../../util/service/serviceUtil';
+import http from '../http/http';
+import { logger } from '../logger/logger';
 
 const createUrl = (baseUrl: string, formPath: string, languageCode?: string) => {
-  service.validateFormPath(formPath);
-  service.validateLanguageCode(languageCode);
+  serviceUtil.validateFormPath(formPath);
+  serviceUtil.validateLanguageCode(languageCode);
 
   return `${baseUrl}/v1/forms/${formPath}/static-pdfs${languageCode ? `/${languageCode}` : ''}`;
 };

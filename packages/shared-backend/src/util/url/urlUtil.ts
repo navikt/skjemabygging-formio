@@ -16,10 +16,10 @@ const getBaseUrl = (req: Request) => {
   return req.protocol + '://' + req.get('host');
 };
 
-const url = {
+const urlUtil = {
   getBaseUrl,
   getCurrentUrl,
   isValidPath,
 };
 
-export default url;
+export default urlUtil;

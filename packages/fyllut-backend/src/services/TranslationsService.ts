@@ -1,4 +1,4 @@
-import { url } from '@navikt/skjemadigitalisering-shared-backend';
+import { urlUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import {
   FormioTranslationPayload,
   FormsApiTranslation,
@@ -50,7 +50,7 @@ class TranslationsService {
   }
 
   private validateFormPath(formPath: string) {
-    if (!url.isValidPath(formPath)) {
+    if (!urlUtil.isValidPath(formPath)) {
       throw new Error(`Invalid formPath: ${formPath}`);
     }
   }

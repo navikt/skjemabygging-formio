@@ -1,5 +1,5 @@
+import errorHandler from './middleware/error/errorHandler';
 import staticPdfService from './services/static-pdf/staticPdfService';
-import errorHandler from './util/errorHandler';
-import url from './util/url';
+import urlUtil from './util/url/urlUtil';
 
-export { errorHandler, staticPdfService, url };
+export { errorHandler, staticPdfService, urlUtil };

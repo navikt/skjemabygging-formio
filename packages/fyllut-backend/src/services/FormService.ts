@@ -1,4 +1,4 @@
-import { url } from '@navikt/skjemadigitalisering-shared-backend';
+import { urlUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import { Form, formioFormsApiUtils, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { config } from '../config/config';
 import { logger } from '../logger';
@@ -8,7 +8,7 @@ const { mocksEnabled, useFormsApiStaging, skjemaDir, formioApiServiceUrl, formsA
 
 class FormService {
   async loadForm(formPath: string, select?: string): Promise<NavFormType | undefined> {
-    if (!url.isValidPath(formPath)) {
+    if (!urlUtil.isValidPath(formPath)) {
       return;
     }
     let form: NavFormType | Form | undefined;
