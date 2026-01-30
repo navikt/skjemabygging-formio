@@ -8,17 +8,17 @@ const createUrl = (baseUrl: string, formPath: string, languageCode?: string) =>
   `${baseUrl}/v1/forms/${formPath}/static-pdfs${languageCode ? `/${languageCode}` : ''}`;
 
 const getAll = async (baseUrl: string, formPath: string) => {
-  logger.debug(`Get all static pdfs ${formPath}`);
+  service.validateParams([formPath]);
 
-  service.isFormPathValid(formPath);
+  logger.debug(`Get all static pdfs ${formPath}`);
 
   return await http.get<StaticPdf[]>(createUrl(baseUrl, formPath));
 };
 
 const downloadPdf = async (baseUrl: string, formPath: string, languageCode: string) => {
-  logger.info(`Download new static pdf ${formPath} for ${languageCode}`);
+  service.validateParams([formPath, languageCode]);
 
-  service.isFormPathValid(formPath);
+  logger.info(`Download new static pdf ${formPath} for ${languageCode}`);
 
   const pdf = await http.get(createUrl(baseUrl, formPath, languageCode));
   if (pdf) {
@@ -39,7 +39,7 @@ const uploadPdf = async (
   accessToken: string,
   file?: Express.Multer.File,
 ) => {
-  service.isFormPathValid(formPath);
+  service.validateParams([formPath, languageCode]);
 
   logger.info(`Upload new static pdf ${formPath} for ${languageCode}`);
 
@@ -63,7 +63,7 @@ const uploadPdf = async (
 };
 
 const deletePdf = async (baseUrl: string, formPath: string, languageCode: string, accessToken: string) => {
-  service.isFormPathValid(formPath);
+  service.validateParams([formPath, languageCode]);
 
   logger.info(`Delete static pdf ${formPath} for ${languageCode}`);
 
