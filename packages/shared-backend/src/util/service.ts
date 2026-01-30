@@ -1,9 +1,9 @@
 import { ErrorResponse } from '@navikt/skjemadigitalisering-shared-domain';
 import { url } from '../index';
 
-const validateParams = (params: string[]): boolean => {
+const validateParams = (params: (string | undefined)[]): boolean => {
   for (const param of params) {
-    if (!url.isValidPath(param)) {
+    if (param && !url.isValidPath(param)) {
       throw {
         message: `${param} contain invalid characters.`,
         status: 400,

@@ -4,20 +4,19 @@ import http from '../../util/http';
 import { logger } from '../../util/logger';
 import service from '../../util/service';
 
-const createUrl = (baseUrl: string, formPath: string, languageCode?: string) =>
-  `${baseUrl}/v1/forms/${formPath}/static-pdfs${languageCode ? `/${languageCode}` : ''}`;
+const createUrl = (baseUrl: string, formPath: string, languageCode?: string) => {
+  service.validateParams([formPath, languageCode]);
+
+  return `${baseUrl}/v1/forms/${formPath}/static-pdfs${languageCode ? `/${languageCode}` : ''}`;
+};
 
 const getAll = async (baseUrl: string, formPath: string) => {
-  service.validateParams([formPath]);
-
   logger.debug(`Get all static pdfs ${formPath}`);
 
   return await http.get<StaticPdf[]>(createUrl(baseUrl, formPath));
 };
 
 const downloadPdf = async (baseUrl: string, formPath: string, languageCode: string) => {
-  service.validateParams([formPath, languageCode]);
-
   logger.info(`Download new static pdf ${formPath} for ${languageCode}`);
 
   const pdf = await http.get(createUrl(baseUrl, formPath, languageCode));
@@ -39,8 +38,6 @@ const uploadPdf = async (
   accessToken: string,
   file?: Express.Multer.File,
 ) => {
-  service.validateParams([formPath, languageCode]);
-
   logger.info(`Upload new static pdf ${formPath} for ${languageCode}`);
 
   if (!file?.buffer) {
@@ -63,8 +60,6 @@ const uploadPdf = async (
 };
 
 const deletePdf = async (baseUrl: string, formPath: string, languageCode: string, accessToken: string) => {
-  service.validateParams([formPath, languageCode]);
-
   logger.info(`Delete static pdf ${formPath} for ${languageCode}`);
 
   await http.delete(createUrl(baseUrl, formPath, languageCode), { accessToken });
