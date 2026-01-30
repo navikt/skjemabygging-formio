@@ -1,7 +1,11 @@
 import { Request } from 'express';
 
-const isValidPath = (path: string) => {
-  return /^[a-z0-9]+$/.test(path);
+const isValidPath = (path: string, strict: boolean = true) => {
+  if (strict) {
+    return /^[a-z0-9]+$/.test(path);
+  }
+
+  return /^[A-Za-z0-9_-]+$/.test(path);
 };
 
 const getCurrentUrl = (req: Request) => {
