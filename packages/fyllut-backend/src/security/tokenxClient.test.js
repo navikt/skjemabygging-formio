@@ -42,18 +42,14 @@ describe('TokenX client', () => {
   });
 
   it('throws error when response from TokenX is not ok', async () => {
-    let errorOccured = false;
     const tokenxNockScope = nock(extractHost(token_endpoint))
       .post(extractPath(token_endpoint), recorder.saveBody)
       .reply(500, { message: 'Error occurred' }, { 'Content-Type': 'application/json' });
-    try {
-      await client.exchangeToken('idporten-jwt', 'unittest-gcp:namespace:app-a');
-    } catch (err) {
-      errorOccured = true;
-      expect(err.message).toBe('Failed to exchange token');
-      expect(err.http_response_body).toEqual({ message: 'Error occurred' });
-    }
-    expect(errorOccured).toBe(true);
+
+    await expect(client.exchangeToken('idporten-jwt', 'unittest-gcp:namespace:app-a')).rejects.toMatchObject({
+      message: 'Failed to exchange token',
+      http_response_body: { message: 'Error occurred' },
+    });
 
     tokenxNockScope.done();
     expect(recorder.bodies).toHaveLength(1);
