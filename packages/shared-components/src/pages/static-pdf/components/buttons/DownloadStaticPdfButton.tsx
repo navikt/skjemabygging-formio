@@ -1,7 +1,7 @@
 import { FilePdfIcon } from '@navikt/aksel-icons';
-import { DownloadPdfButton } from '@navikt/skjemadigitalisering-shared-components';
 import { dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import { useStaticPdf } from '../StaticPdfContext';
+import { DownloadPdfButton } from '../../../../index';
+import { useStaticPdf } from '../../StaticPdfContext';
 
 interface Props {
   languageCode: string;

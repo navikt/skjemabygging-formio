@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-base.json",
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "paths": {
+      "@navikt/skjemadigitalisering-shared-domain": ["../shared-domain/src"]
+    }
+  },
+  "include": ["src"]
+}

@@ -1,16 +1,15 @@
-import { b64toBlob, http as baseHttp, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { StaticPdf } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo } from 'react';
-import { useFeedbackEmit } from '../context/notifications/FeedbackContext';
+import { useFeedbackEmit } from '../../../../bygger/src/context/notifications/FeedbackContext';
+import { b64toBlob, http as baseHttp, useAppConfig } from '../../index';
 
 const useFormsApiStaticPdf = () => {
   const feedbackEmit = useFeedbackEmit();
   const appConfig = useAppConfig();
-  const { logger } = appConfig;
+  const { logger, baseUrl } = appConfig;
   const http = appConfig.http ?? baseHttp;
-  const baseUrl = '/api/forms';
   const getUrl = (formPath: string, languageCode?: string) =>
-    `${baseUrl}/${formPath}/static-pdfs${languageCode ? `/${languageCode}` : ''}`;
+    `${baseUrl}/api/forms/${formPath}/static-pdfs${languageCode ? `/${languageCode}` : ''}`;
 
   const getAll = async (formPath: string) => {
     try {
@@ -27,8 +26,7 @@ const useFormsApiStaticPdf = () => {
     try {
       const formData = new FormData();
       formData.append('fileContent', file);
-      const response = await http.postFile<{ data: StaticPdf }>(getUrl(formPath, languageCode), formData);
-      return response?.data;
+      return await http.postFile<StaticPdf>(getUrl(formPath, languageCode), formData);
     } catch (error) {
       const message = (error as Error)?.message;
       logger?.error('Failed upload static pdf', { message });

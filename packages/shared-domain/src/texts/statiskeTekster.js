@@ -350,4 +350,16 @@ export const statiske = {
     selectDefault: 'Velg enhet',
     fetchError: 'En feil har oppstått. Vi kunne ikke laste enheter. Beklager ulempen, prøv igjen senere.',
   },
+  staticPdf: {
+    languageError: 'Skjemaet er kun tilgjengelig på {{language}}',
+    selectLanguage: 'Velg hvilket språk du ønsker at skjemaet skal ha',
+    selectLanguageDescription: 'Det er ikke sikkert at alle vedleggsskjemaene finnes på ditt valgte språk.',
+    instructions: {
+      title: 'Instruksjoner for innsending',
+      step1: 'Fyll ut skjema. Husk å signere til slutt.',
+      step2: 'Legg førstesiden med strekkode på toppen av dokumentene.',
+      step3: 'Legg ved alle vedlegg som er listet på førstesiden.',
+      step4: 'Legg dokumentene i en konvolutt som du sender i posten til adressen som står på førstesiden.',
+    },
+  },
 };

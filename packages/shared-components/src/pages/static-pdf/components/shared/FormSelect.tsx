@@ -29,7 +29,7 @@ const FormSelect = (props: FormSelectProps) => {
     description,
     values,
     validators,
-    bottom = 'space-40',
+    bottom = 'space-32',
     inputWidth,
     selectText,
     onChange,

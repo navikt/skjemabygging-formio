@@ -41,6 +41,8 @@ jobs:
         run: yarn test:shared-components
       - name: 'Test shared-domain'
         run: yarn test:shared-domain
+      - name: 'Test shared-backend'
+        run: yarn test:shared-backend
 
   package-and-push-bygger:
     if: github.ref == 'refs/heads/master'

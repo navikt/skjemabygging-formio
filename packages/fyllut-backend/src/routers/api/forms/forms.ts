@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { FormsResponseForm } from '../../../../shared-domain/src/form';
-import { formService } from '../../services';
+import { FormsResponseForm } from '../../../../../shared-domain/src/form';
+import { formService } from '../../../services';
 
 const mapForm = (form): FormsResponseForm => ({
   _id: form.id ? String(form.id) : form._id,

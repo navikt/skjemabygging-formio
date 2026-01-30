@@ -29,7 +29,7 @@ const StaticPdfInputPage = () => {
 
   return (
     <>
-      <FormBox bottom="space-40">
+      <FormBox bottom="space-32">
         {enhetMaVelgesVedPapirInnsending ? (
           <FormNavUnitSelector submissionPath="navUnit" />
         ) : (
@@ -47,7 +47,10 @@ const StaticPdfInputPage = () => {
                 <FormSurname submissionPath="surname" />
                 <FormStreetAddress submissionPath="address.streetAddress" />
                 <FormPostalCode submissionPath="address.postalCode" />
-                <FormPostalName submissionPath="postalName" />
+                <FormPostalName submissionPath="address.postalName" />
+                {
+                  // TODO: Add country
+                }
               </>
             )}
           </div>

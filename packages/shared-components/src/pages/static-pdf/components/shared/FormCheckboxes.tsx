@@ -28,7 +28,7 @@ const FormCheckboxes = (props: FormCheckboxGroupProps) => {
     legend,
     description,
     validators,
-    bottom = 'space-40',
+    bottom = 'space-32',
     inputWidth,
     onChange,
     readOnly,
