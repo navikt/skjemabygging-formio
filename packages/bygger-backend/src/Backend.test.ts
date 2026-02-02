@@ -1,5 +1,8 @@
 import { Mock } from 'vitest';
+import { configForTest, createBackendForTest } from '../testTools/backend/testUtils.js';
+import { stringTobase64 } from './fetchUtils';
 import {
+  GitHubRepo,
   mockRepoCreateOrUpdateFileContents,
   mockRepoCreatePullRequest,
   mockRepoCreateRef,
@@ -8,16 +11,13 @@ import {
   mockRepoGetFileIfItExists,
   mockRepoGetRef,
   mockRepoMergePullRequest,
-} from '../__mocks__/GitHubRepo';
-import { configForTest, createBackendForTest } from '../testTools/backend/testUtils.js';
-import { GitHubRepo } from './GitHubRepo.js';
-import { stringTobase64 } from './fetchUtils';
+} from './GitHubRepo.js';
 import { pushEventWithCommitMessage } from './testdata/default-github-push-event';
+vi.mock('./GitHubRepo.js', async () => await import('../__mocks__/GitHubRepo.js'));
 
 vi.mock('uuid', () => {
   return { v4: vi.fn().mockReturnValue('1234') };
 });
-vi.mock('./GitHubRepo.js');
 
 describe('Backend', () => {
   const formPath = 'skjema';
@@ -201,21 +201,14 @@ describe('Backend', () => {
       });
 
       it('deletes publish branch', async () => {
-        let error: Error | undefined = undefined;
-        try {
-          await backend.publishForm({ title: 'Form' }, { en: {} }, formPath);
-        } catch (err) {
-          error = err as Error;
-          expect(mockRepoGetRef).toHaveBeenCalledTimes(2);
-          expect(mockRepoCreateRef).toHaveBeenCalledOnce();
-          expect(mockRepoCreateRef).toHaveBeenCalledWith(expectedBranchName, MAIN_BRANCH_SHA);
-          expect(mockRepoDeleteRef).toHaveBeenCalledOnce();
-          expect(mockRepoDeleteRef).toHaveBeenCalledWith(expectedBranchName);
-          expect(mockRepoCreatePullRequest).not.toHaveBeenCalled();
-          expect(mockRepoMergePullRequest).not.toHaveBeenCalled();
-        }
-        expect(error).toBeDefined();
-        expect(error?.message).toEqual(ERROR_MESSAGE);
+        await expect(backend.publishForm({ title: 'Form' }, { en: {} }, formPath)).rejects.toThrow(ERROR_MESSAGE);
+        expect(mockRepoGetRef).toHaveBeenCalledTimes(2);
+        expect(mockRepoCreateRef).toHaveBeenCalledOnce();
+        expect(mockRepoCreateRef).toHaveBeenCalledWith(expectedBranchName, MAIN_BRANCH_SHA);
+        expect(mockRepoDeleteRef).toHaveBeenCalledOnce();
+        expect(mockRepoDeleteRef).toHaveBeenCalledWith(expectedBranchName);
+        expect(mockRepoCreatePullRequest).not.toHaveBeenCalled();
+        expect(mockRepoMergePullRequest).not.toHaveBeenCalled();
       });
     });
   });

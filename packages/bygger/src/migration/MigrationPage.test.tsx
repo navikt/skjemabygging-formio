@@ -198,7 +198,7 @@ describe('MigrationPage', () => {
       setMigrateOptionInput('search-filters', 0, 'prop1', true);
       setMigrateOptionInput('edit-options', 0, 'prop1', false);
       fireEvent.click(screen.getByRole('button', { name: 'Simuler og kontroller migrering' }));
-      await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
+      await waitFor(() => fetchSpy.mock.calls.length > 0);
     });
 
     it('displays the number of components that will be affected by migration', async () => {
@@ -228,7 +228,7 @@ describe('MigrationPage', () => {
         setMigrateOptionInput('search-filters', 0, 'prop1', true);
         setMigrateOptionInput('edit-options', 0, 'prop1', false);
         fireEvent.click(screen.getByRole('button', { name: 'Simuler og kontroller migrering' }));
-        await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
+        await waitFor(() => fetchSpy.mock.calls.length > 0);
         fireEvent.click(screen.getAllByLabelText('Inkluder i migrering')[1]);
         fireEvent.click(screen.getByRole('button', { name: 'Migrer' }));
         const selectForMigration = await screen.findAllByRole('checkbox', { name: 'Inkluder i migrering' });
