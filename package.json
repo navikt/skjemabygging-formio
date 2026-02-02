@@ -23,8 +23,8 @@
   },
   "scripts": {
     "build": "yarn workspaces run build",
-    "build:bygger": "yarn workspace @navikt/skjemadigitalisering-shared-domain build && yarn workspace @navikt/skjemadigitalisering-shared-components build && workspace @navikt/skjemadigitalisering-shared-backend build && concurrently --kill-others-on-fail \"yarn workspace @navikt/bygger-backend build\" \"yarn workspace @navikt/bygger-frontend build\"",
-    "build:fyllut": "yarn workspace @navikt/skjemadigitalisering-shared-domain build && yarn workspace @navikt/skjemadigitalisering-shared-components build && workspace @navikt/skjemadigitalisering-shared-backend build && concurrently --kill-others-on-fail \"yarn workspace @navikt/fyllut-backend build\" \"yarn workspace @navikt/fyllut-frontend build\"",
+    "build:bygger": "yarn workspace @navikt/skjemadigitalisering-shared-domain build && yarn workspace @navikt/skjemadigitalisering-shared-components build && yarn workspace @navikt/skjemadigitalisering-shared-backend build && concurrently --kill-others-on-fail \"yarn workspace @navikt/bygger-backend build\" \"yarn workspace @navikt/bygger-frontend build\"",
+    "build:fyllut": "yarn workspace @navikt/skjemadigitalisering-shared-domain build && yarn workspace @navikt/skjemadigitalisering-shared-components build && yarn workspace @navikt/skjemadigitalisering-shared-backend build && concurrently --kill-others-on-fail \"yarn workspace @navikt/fyllut-backend build\" \"yarn workspace @navikt/fyllut-frontend build\"",
     "clean": "yarn workspaces run clean",
     "get-tokens": "node bin/token-generator.mjs",
     "start": "concurrently --kill-others-on-fail \"yarn:start:fyllut\" \"yarn:start:bygger\"",
