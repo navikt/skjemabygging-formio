@@ -64,7 +64,10 @@ Cypress.Commands.add('testDownloadPdf', () => {
     Object.entries(submissionData).forEach(([key, submissionValue]) => {
       const component = navFormUtils.findByKey(key, components);
       const value = formatValue(submissionValue, component);
-      expect(pdfFormDataString).to.include(`"label":"${component.label}","verdi":"${value}"`);
+      const expectedSnippet = `"label":"${component.label}","verdi":"${value}"`;
+      if (!pdfFormDataString.includes(expectedSnippet)) {
+        throw new Error(`Missing PDF snippet: ${expectedSnippet}`);
+      }
     });
   }).as('downloadPdf');
 
