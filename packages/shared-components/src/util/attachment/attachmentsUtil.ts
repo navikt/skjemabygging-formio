@@ -44,7 +44,7 @@ const getAllAttachments = (form: NavFormType, submission: Submission): Attachmen
     .map((comp) => {
       return {
         ...comp,
-        navId: comp.navId || comp.id,
+        navId: navFormUtils.getNavId(comp),
       };
     });
 };
@@ -74,7 +74,7 @@ const toAttachment = (comp: Component): Attachment => {
      **   We should trigger a change on all attachment components to generate a navId,
      **   and then remove the code below that assigns comp.id to formioId (see task: https://trello.com/c/ok0YWpGI).
      */
-    formioId: (comp.navId ?? comp.id)!,
+    formioId: navFormUtils.getNavId(comp)!,
   };
 };
 

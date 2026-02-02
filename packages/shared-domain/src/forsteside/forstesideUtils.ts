@@ -58,13 +58,13 @@ const getUserData = (form: NavFormType, submission: SubmissionData): BrukerInfo 
   }
 };
 
-const getAttachmentTitles = (form: NavFormType, submission: SubmissionData): string[] => {
+const getAttachmentTitles = (form: NavFormType, submission: Submission): string[] => {
   return getAttachments(submission, form).map((component) => component.properties!.vedleggstittel!);
 };
 
 const getAttachmentLabels = (
   form: NavFormType,
-  submission: SubmissionData,
+  submission: Submission,
   translate?: (text: string, textReplacements?: I18nTranslationReplacements) => string,
 ): string[] => {
   return getAttachments(submission, form).map((component) =>
@@ -72,15 +72,21 @@ const getAttachmentLabels = (
   );
 };
 
-const getAttachments = (submission: SubmissionData, form: NavFormType) => {
+const getAttachments = (submission: Submission, form: NavFormType) => {
   return navFormUtils
     .flattenComponents(form.components)
     .filter((component) => component.properties && !!component.properties.vedleggskode)
-    .filter(
-      (component) =>
-        submission[component.key] === 'leggerVedNaa' ||
-        (submission[component.key] as SubmissionAttachmentValue)?.key === 'leggerVedNaa',
-    );
+    .filter((component) => {
+      const submissionData = { ...submission.data };
+      const submissionAttachment =
+        submission.attachments?.find((attachment) => navFormUtils.getNavId(component) === attachment.navId)?.value ??
+        submissionData[component.key];
+
+      return (
+        submissionAttachment === 'leggerVedNaa' ||
+        (submissionAttachment as SubmissionAttachmentValue)?.key === 'leggerVedNaa'
+      );
+    });
 };
 
 const getTitle = (title: string, number: string) => {
@@ -148,8 +154,8 @@ const genererFoerstesideData = (
     overskriftstittel: formTitle,
     arkivtittel: formTitle,
     tema,
-    vedleggsliste: getAttachmentTitles(form, submission.data),
-    dokumentlisteFoersteside: [formTitle, ...getAttachmentLabels(form, submission.data, translate)],
+    vedleggsliste: getAttachmentTitles(form, submission),
+    dokumentlisteFoersteside: [formTitle, ...getAttachmentLabels(form, submission, translate)],
     ...getRecipients(mottaksadresseId, recipients, unitNumber),
   };
 };

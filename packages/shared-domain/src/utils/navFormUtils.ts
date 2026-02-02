@@ -106,6 +106,8 @@ const findComponent = (isMatch: ComponentMatcherFunction, components: Component[
   return undefined;
 };
 
+const getNavId = (component: Component): string | undefined => component.navId ?? component.id;
+
 const findById = (id: string, components: Component[]): Component | undefined =>
   findComponent((c) => c.id === id, components);
 const findByKey = (key: string, components: Component[]): Component | undefined =>
@@ -358,7 +360,7 @@ const getActiveComponents = (components: Component[], conditionals?: any): Compo
         };
       }
 
-      return { navId: component.navId ?? component.id, ...component };
+      return { navId: getNavId(component), ...component };
     });
 };
 
@@ -428,6 +430,7 @@ const navFormUtils = {
   isSubmissionMethodAllowed,
   isVedleggspanel,
   removeVedleggspanel,
+  getNavId,
   findByKey,
   findByNavId,
   findComponentsByProperty,
