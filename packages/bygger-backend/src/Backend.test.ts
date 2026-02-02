@@ -1,38 +1,23 @@
 import { Mock } from 'vitest';
+import {
+  mockRepoCreateOrUpdateFileContents,
+  mockRepoCreatePullRequest,
+  mockRepoCreateRef,
+  mockRepoDeleteFile,
+  mockRepoDeleteRef,
+  mockRepoGetFileIfItExists,
+  mockRepoGetRef,
+  mockRepoMergePullRequest,
+} from '../__mocks__/GitHubRepo';
 import { configForTest, createBackendForTest } from '../testTools/backend/testUtils.js';
 import { GitHubRepo } from './GitHubRepo.js';
 import { stringTobase64 } from './fetchUtils';
 import { pushEventWithCommitMessage } from './testdata/default-github-push-event';
 
-const mockRepoGetRef = vi.fn().mockReturnValue({ data: { object: { sha: 'sha' } } });
-const mockRepoCreateRef = vi.fn();
-const mockRepoDeleteRef = vi.fn();
-const mockRepoGetFileIfItExists = vi.fn().mockReturnValue({ data: { sha: 'existing-file-sha', content: 'content' } });
-const mockRepoCreateOrUpdateFileContents = vi.fn().mockReturnValue({ data: { commit: { sha: 'new-commit-sha' } } });
-const mockRepoCreatePullRequest = vi.fn().mockReturnValue({ data: { number: 14 } });
-const mockRepoMergePullRequest = vi.fn();
-const mockRepoDeleteFile = vi.fn().mockImplementation(() => Promise.resolve());
-
 vi.mock('uuid', () => {
   return { v4: vi.fn().mockReturnValue('1234') };
 });
-vi.mock('./GitHubRepo.js', () => {
-  return {
-    GitHubRepo: vi.fn().mockImplementation(() => {
-      return {
-        authenticate: vi.fn(),
-        getRef: mockRepoGetRef,
-        createRef: mockRepoCreateRef,
-        deleteRef: mockRepoDeleteRef,
-        getFileIfItExists: mockRepoGetFileIfItExists,
-        createOrUpdateFileContents: mockRepoCreateOrUpdateFileContents,
-        createPullRequest: mockRepoCreatePullRequest,
-        mergePullRequest: mockRepoMergePullRequest,
-        deleteFile: mockRepoDeleteFile,
-      };
-    }),
-  };
-});
+vi.mock('./GitHubRepo.js');
 
 describe('Backend', () => {
   const formPath = 'skjema';
@@ -216,15 +201,21 @@ describe('Backend', () => {
       });
 
       it('deletes publish branch', async () => {
-        await expect(backend.publishForm({ title: 'Form' }, { en: {} }, formPath)).rejects.toThrow(ERROR_MESSAGE);
-
-        expect(mockRepoGetRef).toHaveBeenCalledTimes(2);
-        expect(mockRepoCreateRef).toHaveBeenCalledOnce();
-        expect(mockRepoCreateRef).toHaveBeenCalledWith(expectedBranchName, MAIN_BRANCH_SHA);
-        expect(mockRepoDeleteRef).toHaveBeenCalledOnce();
-        expect(mockRepoDeleteRef).toHaveBeenCalledWith(expectedBranchName);
-        expect(mockRepoCreatePullRequest).not.toHaveBeenCalled();
-        expect(mockRepoMergePullRequest).not.toHaveBeenCalled();
+        let error: Error | undefined = undefined;
+        try {
+          await backend.publishForm({ title: 'Form' }, { en: {} }, formPath);
+        } catch (err) {
+          error = err as Error;
+          expect(mockRepoGetRef).toHaveBeenCalledTimes(2);
+          expect(mockRepoCreateRef).toHaveBeenCalledOnce();
+          expect(mockRepoCreateRef).toHaveBeenCalledWith(expectedBranchName, MAIN_BRANCH_SHA);
+          expect(mockRepoDeleteRef).toHaveBeenCalledOnce();
+          expect(mockRepoDeleteRef).toHaveBeenCalledWith(expectedBranchName);
+          expect(mockRepoCreatePullRequest).not.toHaveBeenCalled();
+          expect(mockRepoMergePullRequest).not.toHaveBeenCalled();
+        }
+        expect(error).toBeDefined();
+        expect(error?.message).toEqual(ERROR_MESSAGE);
       });
     });
   });
