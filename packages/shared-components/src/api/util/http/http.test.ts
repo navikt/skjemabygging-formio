@@ -63,7 +63,7 @@ describe('http requests', () => {
         .get('/error')
         .reply(404, { message: errorMessage });
 
-      await expect(http.get('https://www.nav.no/error')).rejects.toThrowError(errorMessage);
+      await expect(http.get('https://www.nav.no/error')).rejects.toThrow(errorMessage);
 
       nock.isDone();
     });
@@ -77,7 +77,7 @@ describe('http requests', () => {
         .get('/error')
         .reply(404, errorMessage);
 
-      await expect(http.get('https://www.nav.no/error')).rejects.toThrowError(errorMessage);
+      await expect(http.get('https://www.nav.no/error')).rejects.toThrow(errorMessage);
 
       nock.isDone();
     });
@@ -91,7 +91,7 @@ describe('http requests', () => {
         .get('/error')
         .reply(404);
 
-      await expect(http.get('https://www.nav.no/error')).rejects.toThrowError('Not Found');
+      await expect(http.get('https://www.nav.no/error')).rejects.toThrow('Not Found');
 
       nock.isDone();
     });
