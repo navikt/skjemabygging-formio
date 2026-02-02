@@ -6,7 +6,7 @@ import { b64toBlob, http as baseHttp, useAppConfig } from '../../index';
 const useFormsApiStaticPdf = () => {
   const feedbackEmit = useFeedbackEmit();
   const appConfig = useAppConfig();
-  const { logger, baseUrl } = appConfig;
+  const { baseUrl } = appConfig;
   const http = appConfig.http ?? baseHttp;
   const getUrl = (formPath: string, languageCode?: string) =>
     `${baseUrl ?? ''}/api/forms/${formPath}/static-pdfs${languageCode ? `/${languageCode}` : ''}`;
@@ -15,8 +15,6 @@ const useFormsApiStaticPdf = () => {
     try {
       return (await http.get<StaticPdf[]>(getUrl(formPath))) ?? [];
     } catch (error) {
-      const message = (error as Error)?.message;
-      logger?.error('Failed to fetch static pdfs', { message });
       feedbackEmit.error('Feil ved henting av pdf-filer');
       throw error;
     }
@@ -28,8 +26,6 @@ const useFormsApiStaticPdf = () => {
       formData.append('fileContent', file);
       return await http.postFile<StaticPdf>(getUrl(formPath, languageCode), formData);
     } catch (error) {
-      const message = (error as Error)?.message;
-      logger?.error('Failed upload static pdf', { message });
       feedbackEmit.error('Feil ved opplasting av pdf');
       throw error;
     }
@@ -40,8 +36,6 @@ const useFormsApiStaticPdf = () => {
       const response = await http.get<{ pdfBase64: string }>(getUrl(formPath, languageCode));
       return b64toBlob(response.pdfBase64, 'application/pdf');
     } catch (error) {
-      const message = (error as Error)?.message;
-      logger?.error('Failed to download static pdf', { message });
       feedbackEmit.error('Feil ved nedlasting av pdf');
       throw error;
     }
@@ -51,8 +45,6 @@ const useFormsApiStaticPdf = () => {
     try {
       return await http.delete(getUrl(formPath, languageCode));
     } catch (error) {
-      const message = (error as Error)?.message;
-      logger?.error('Failed to delete static pdf', { message });
       feedbackEmit.error('Feil ved sletting av pdf');
       throw error;
     }

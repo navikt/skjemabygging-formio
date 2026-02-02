@@ -81,7 +81,9 @@ const createHeaders = (options?: HttpOptions): HeadersInit => {
 };
 
 const createBody = (body?: any, options?: HttpOptions): BodyInit | undefined => {
-  return options?.contentType === 'application/json' ? JSON.stringify(body) : body;
+  if (body) {
+    return options?.contentType === 'application/json' ? JSON.stringify(body) : body;
+  }
 };
 
 const isResponseType = (response: Response, mimeType: MimeType) => {

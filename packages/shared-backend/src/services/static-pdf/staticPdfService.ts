@@ -51,7 +51,7 @@ const uploadPdf = async (
 const deletePdf = async (baseUrl: string, formPath: string, languageCode: string, accessToken: string) => {
   logger.info(`Delete static pdf ${formPath} for ${languageCode}`);
 
-  await http.delete(createUrl(baseUrl, formPath, languageCode), { accessToken });
+  await http.delete(createUrl(baseUrl, formPath, languageCode), undefined, { accessToken });
 };
 
 const staticPdfService = {
