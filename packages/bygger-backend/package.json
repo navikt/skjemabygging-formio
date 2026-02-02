@@ -24,7 +24,6 @@
     "csv-stringify": "^6.6.0",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
-    "express-correlation-id": "^3.0.1",
     "express-rate-limit": "^8.1.0",
     "http-proxy": "^1.18.1",
     "luxon": "^3.7.2",
@@ -39,7 +38,6 @@
   "devDependencies": {
     "@types/bcryptjs": "^3.0.0",
     "@types/express": "^5.0.3",
-    "@types/express-correlation-id": "^3.0.0",
     "@types/http-proxy": "^1.17.15",
     "@types/jsonwebtoken": "9.0.10",
     "@types/luxon": "^3.7.1",

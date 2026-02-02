@@ -1,4 +1,4 @@
-import correlator from 'express-correlation-id';
+import { correlator } from '@navikt/skjemadigitalisering-shared-backend';
 import { HttpError } from './errors/HttpError';
 
 async function responseToError(response: any, errorMessage: string, functional = false) {

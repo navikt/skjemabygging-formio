@@ -1,6 +1,6 @@
+import { correlator } from '@navikt/skjemadigitalisering-shared-backend';
 import cors from 'cors';
 import express, { NextFunction, Request, Response } from 'express';
-import correlator from 'express-correlation-id';
 import mustacheExpress from 'mustache-express';
 import { checkConfigConsistency, config } from './config/config';
 import { NaisCluster } from './config/nais-cluster';

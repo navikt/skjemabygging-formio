@@ -1,6 +1,6 @@
+import { correlator } from '@navikt/skjemadigitalisering-shared-backend';
 import { Enhetstype, EnhetstypeNorg } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
-import correlator from 'express-correlation-id';
 import fetch, { HeadersInit } from 'node-fetch';
 import { config } from '../../config/config';
 import { responseToError } from '../../utils/errorHandling';

@@ -56,16 +56,20 @@ class FrontendLogger {
     return this.log('error', message, metadata);
   }
 
-  private async log(level: LogLevel, message: string, metadata?: object) {
+  private async log(level: LogLevel, message: string, metadata?: object, correlationId?: string) {
     if (this.config.enabled && this.logLevelIsEnabled(level)) {
       if (this.config.browserOnly) {
         console.log(message, { ...metadata, level });
       } else {
         return this.http
-          .post(`${this.baseUrl}/api/log/${level}`, {
-            message,
-            metadata,
-          })
+          .post(
+            `${this.baseUrl}/api/log/${level}`,
+            {
+              message,
+              metadata,
+            },
+            { ...(correlationId ? { 'x-correlation-id': correlationId } : {}) },
+          )
           .catch(noop);
       }
     }

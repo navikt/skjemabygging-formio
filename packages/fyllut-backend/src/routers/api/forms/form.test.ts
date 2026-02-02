@@ -5,10 +5,10 @@ import {
   NavFormType,
   translationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import FormService from '../../services/FormService';
-import TranslationsService from '../../services/TranslationsService';
-import { mockRequest, mockResponse } from '../../test/testHelpers';
-import form, { mapAttachmentValues } from './forms/form';
+import FormService from '../../../services/FormService';
+import TranslationsService from '../../../services/TranslationsService';
+import { mockRequest, mockResponse } from '../../../test/testHelpers';
+import form, { mapAttachmentValues } from './form';
 
 const testForm: NavFormType = {
   tags: [],

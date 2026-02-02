@@ -61,6 +61,7 @@ import forstesideUtils, {
   UkjentBruker,
 } from './forsteside';
 import type { ErrorCode, ErrorResponse } from './http';
+import { ResponseError } from './http';
 import languagesUtil from './languages/languagesUtil';
 import type {
   FormioTranslation,
@@ -186,6 +187,7 @@ export {
   objectUtils,
   paginationUtils,
   PrefillType,
+  ResponseError,
   signatureUtils,
   stringUtils,
   submissionTypesUtils,

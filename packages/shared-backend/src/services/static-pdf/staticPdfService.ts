@@ -1,13 +1,9 @@
-import { ErrorResponse, StaticPdf } from '@navikt/skjemadigitalisering-shared-domain';
+import { ResponseError, StaticPdf } from '@navikt/skjemadigitalisering-shared-domain';
 import 'multer';
-import serviceUtil from '../../util/service/serviceUtil';
 import http from '../http/http';
 import { logger } from '../logger/logger';
 
 const createUrl = (baseUrl: string, formPath: string, languageCode?: string) => {
-  serviceUtil.validateFormPath(formPath);
-  serviceUtil.validateLanguageCode(languageCode);
-
   return `${baseUrl}/v1/forms/${formPath}/static-pdfs${languageCode ? `/${languageCode}` : ''}`;
 };
 
@@ -24,11 +20,7 @@ const downloadPdf = async (baseUrl: string, formPath: string, languageCode: stri
   if (pdf) {
     return { pdfBase64: pdf };
   } else {
-    throw {
-      message: 'PDF not found',
-      status: 404,
-      errorCode: 'NOT_FOUND',
-    } as ErrorResponse;
+    throw new ResponseError('NOT_FOUND', 'PDF not found');
   }
 };
 
@@ -42,11 +34,7 @@ const uploadPdf = async (
   logger.info(`Upload new static pdf ${formPath} for ${languageCode}`);
 
   if (!file?.buffer) {
-    throw {
-      message: 'No file in request',
-      status: 400,
-      errorCode: 'BAD_REQUEST',
-    } as ErrorResponse;
+    throw new ResponseError('BAD_REQUEST', 'No file in request');
   }
 
   const fileBlob = new Blob([Uint8Array.from(file.buffer)], { type: file.mimetype });

@@ -9,7 +9,7 @@ const useFormsApiStaticPdf = () => {
   const { logger, baseUrl } = appConfig;
   const http = appConfig.http ?? baseHttp;
   const getUrl = (formPath: string, languageCode?: string) =>
-    `${baseUrl}/api/forms/${formPath}/static-pdfs${languageCode ? `/${languageCode}` : ''}`;
+    `${baseUrl ?? ''}/api/forms/${formPath}/static-pdfs${languageCode ? `/${languageCode}` : ''}`;
 
   const getAll = async (formPath: string) => {
     try {

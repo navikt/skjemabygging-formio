@@ -1,4 +1,4 @@
-import { ErrorCode, ErrorResponse } from '@navikt/skjemadigitalisering-shared-domain';
+import { ErrorCode, ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import crypto from 'crypto';
 import correlator from 'express-correlation-id';
 import { logger } from '../logger/logger';
@@ -113,17 +113,25 @@ const handleResponse = async <T>(response: Response): Promise<T> => {
     return await handleBody(response);
   }
 
-  const error: HttpErrorResponse = {
-    message: response.statusText,
-    status: response.status,
-    errorCode: getErrorCode(response.status),
-    body: await handleBody(response),
-  };
+  const errorBody = await handleBody(response);
+  const error = new HttpResponseError(getErrorCode(response.status), response.statusText, errorBody);
 
-  logger.error(error);
+  logger.warn(`Http request to ${response.url} failed with status ${response.status}`, {
+    correlation_id: correlator.getId(),
+    body: errorBody,
+  });
 
   throw error;
 };
+
+class HttpResponseError extends ResponseError {
+  public readonly body: any;
+
+  constructor(errorCode: ErrorCode, message: string, body: any, userMessage?: string) {
+    super(errorCode, message, userMessage);
+    this.body = body;
+  }
+}
 
 const getErrorCode = (status: number): ErrorCode => {
   switch (status) {
@@ -135,16 +143,14 @@ const getErrorCode = (status: number): ErrorCode => {
       return 'FORBIDDEN';
     case 404:
       return 'NOT_FOUND';
+    case 500:
+      return 'INTERNAL_SERVER_ERROR';
     case 503:
       return 'SERVICE_UNAVAILABLE';
     default:
       return 'ERROR';
   }
 };
-
-interface HttpErrorResponse extends ErrorResponse {
-  body: any;
-}
 
 const http = {
   get,

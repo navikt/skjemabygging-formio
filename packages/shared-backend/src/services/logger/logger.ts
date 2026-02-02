@@ -7,7 +7,10 @@ const correlationIdFormat = format((info) => {
 });
 
 export const logger = createLogger({
-  level: process.env.BYGGER_BACKEND_LOGLEVEL || (process.env.NODE_ENV === 'test' ? 'warning' : 'info'),
+  level:
+    process.env.FYLLUT_BACKEND_LOGLEVEL ||
+    process.env.BYGGER_BACKEND_LOGLEVEL ||
+    (process.env.NODE_ENV === 'test' ? 'warning' : 'info'),
   silent: process.env.NODE_ENV === 'test',
   format: format.combine(correlationIdFormat(), format.json()),
   transports: [new transports.Console()],
