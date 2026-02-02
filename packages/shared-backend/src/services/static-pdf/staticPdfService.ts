@@ -29,13 +29,9 @@ const uploadPdf = async (
   formPath: string,
   languageCode: string,
   accessToken: string,
-  file?: Express.Multer.File,
+  file: Express.Multer.File,
 ) => {
   logger.info(`Upload new static pdf ${formPath} for ${languageCode}`);
-
-  if (!file?.buffer) {
-    throw new ResponseError('BAD_REQUEST', 'No file in request');
-  }
 
   const fileBlob = new Blob([Uint8Array.from(file.buffer)], { type: file.mimetype });
   const originalFileName = Buffer.from(file.originalname, 'latin1').toString('utf8');

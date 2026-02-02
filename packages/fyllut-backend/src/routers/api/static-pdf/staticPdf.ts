@@ -1,4 +1,4 @@
-import { staticPdfService } from '@navikt/skjemadigitalisering-shared-backend';
+import { requestUtil, staticPdfService } from '@navikt/skjemadigitalisering-shared-backend';
 import { NextFunction, Request, Response } from 'express';
 import { config } from '../../../config/config';
 
@@ -7,7 +7,7 @@ const { formsApiUrl } = config;
 const staticPdf = {
   getAll: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { formPath } = req.params;
+      const formPath = requestUtil.getStringParam('formPath', req);
 
       const result = await staticPdfService.getAll(formsApiUrl, formPath);
       res.json(result);
@@ -17,7 +17,8 @@ const staticPdf = {
   },
   downloadPdf: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { formPath, languageCode } = req.params;
+      const formPath = requestUtil.getStringParam('formPath', req);
+      const languageCode = requestUtil.getStringParam('languageCode', req);
 
       const result = await staticPdfService.downloadPdf(formsApiUrl, formPath, languageCode);
       res.json(result);
