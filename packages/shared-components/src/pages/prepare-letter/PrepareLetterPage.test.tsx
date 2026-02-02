@@ -163,15 +163,16 @@ describe('PrepareLetterPage', () => {
     describe("When form property 'enhetstyper' is provided", () => {
       beforeEach(async () => {
         renderPrepareLetterPage(formWithProperties({ enhetMaVelgesVedPapirInnsending: true, enhetstyper }));
-        await waitFor(() => expect(fetchMock).toHaveBeenCalled());
       });
 
-      it('fetches Enhetsliste', () => {
+      it('fetches Enhetsliste', async () => {
+        await waitFor(() => fetchMock.mock.calls.length > 0);
         expect(fetchMock).toHaveBeenCalledTimes(1);
         expect(fetchMock).toHaveBeenCalledWith('/api/enhetsliste');
       });
 
-      it("EnhetSelector only lists Enhet if their type is present in 'enhetstyper'", () => {
+      it("EnhetSelector only lists Enhet if their type is present in 'enhetstyper'", async () => {
+        await waitFor(() => fetchMock.mock.calls.length > 0);
         const enhetSelector = screen.getByText(TEXTS.statiske.prepareLetterPage.selectEntityDefault);
         fireEvent.keyDown(enhetSelector, DOWN_ARROW);
 
@@ -204,10 +205,10 @@ describe('PrepareLetterPage', () => {
             skjemanummer: SKJEMANUMMER,
           }),
         );
-        await waitFor(() => expect(fetchMock).toHaveBeenCalled());
       });
 
-      it('defaults to rendering complete enhetsliste', () => {
+      it('defaults to rendering complete enhetsliste', async () => {
+        await waitFor(() => fetchMock.mock.calls.length > 0);
         expect(fetchMock.mock.calls[0][0]).toBe('/api/enhetsliste');
 
         const enhetSelector = screen.getByText(TEXTS.statiske.prepareLetterPage.selectEntityDefault);
@@ -217,7 +218,8 @@ describe('PrepareLetterPage', () => {
         expect(enhetSelectList).toHaveLength(6);
       });
 
-      it('fetch error message is not rendered', () => {
+      it('fetch error message is not rendered', async () => {
+        await waitFor(() => fetchMock.mock.calls.length > 0);
         const errorMessage = screen.queryByText(TEXTS.statiske.prepareLetterPage.entityFetchError);
         expect(errorMessage).not.toBeInTheDocument();
       });
@@ -246,15 +248,16 @@ describe('PrepareLetterPage', () => {
           return Promise.reject<Response>();
         });
         renderPrepareLetterPage(formWithProperties({ enhetMaVelgesVedPapirInnsending: true, enhetstyper }));
-        await waitFor(() => expect(fetchMock).toHaveBeenCalled());
       });
 
-      it('select list is not renderes', () => {
+      it('select list is not renderes', async () => {
+        await waitFor(() => fetchMock.mock.calls.length > 0);
         const enhetSelectList = screen.queryAllByText(/^Nav-ENHET/);
         expect(enhetSelectList).toHaveLength(0);
       });
 
-      it('fetch error message is rendered', () => {
+      it('fetch error message is rendered', async () => {
+        await waitFor(() => fetchMock.mock.calls.length > 0);
         const errorMessage = screen.getByText(TEXTS.statiske.prepareLetterPage.entityFetchError);
         expect(errorMessage).toBeInTheDocument();
       });

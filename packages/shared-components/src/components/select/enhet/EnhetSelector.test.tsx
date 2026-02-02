@@ -31,7 +31,7 @@ describe('EnhetSelector', () => {
       const DOWN_ARROW = { keyCode: 40 };
       const enhetSelector = screen.getByText(TEXTS.statiske.prepareLetterPage.selectEntityDefault);
       fireEvent.keyDown(enhetSelector, DOWN_ARROW);
-      await waitFor(() => expect(screen.getByText('Nav abc')).toBeTruthy());
+      await waitFor(() => screen.getByText('Nav abc'));
     });
 
     it.each(mockEnhetsListe)('renders each option', (enhet) => {

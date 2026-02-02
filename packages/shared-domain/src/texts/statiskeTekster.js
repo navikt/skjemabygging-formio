@@ -79,6 +79,9 @@ export const statiske = {
     totalFileSizeTooLarge: 'Summen av alle filene kan ikke være mer enn {{maxAttachmentSize}}.',
     fileNotSupportedError: 'Filen kan ikke lastes opp. Prøv igjen med en annen fil i et gyldig format.',
   },
+  nologin: {
+    temporarilyUnavailable: 'Det er ikke mulig å sende inn digitalt uten å logge inn nå. Velg innsending på papir.',
+  },
   paabegynt: {
     activeTasksHeading: 'Du har {{amount}} påbegynte utkast til denne søknaden',
     oneActiveTaskHeading: 'Du har ett påbegynt utkast til denne søknaden',
@@ -219,6 +222,7 @@ export const statiske = {
     addNewAttachment: 'Legg til nytt vedlegg',
     attachmentMissing: 'Du må svare på {{label}} før du kan fortsette',
     attachmentError: 'Du må fylle ut vedlegg',
+    selectAttachments: 'Velg hvilken dokumentasjon du skal legge ved',
   },
   activities: {
     label: 'Hvilken aktivitet søker du om støtte i forbindelse med?',
@@ -293,8 +297,13 @@ export const statiske = {
       'Du velger selv hvor lenge adressen skal være gyldig, maksimalt 1 år. Etter 1 år må du endre eller forlenge adressen.',
   },
   identity: {
+    firstName: 'Fornavn',
+    surname: 'Etternavn',
     doYouHaveIdentityNumber: 'Har du norsk fødselsnummer eller d-nummer?',
+    submissionFor: 'Hvem gjelder innsendingen for?',
     identityNumber: 'Fødselsnummer eller d-nummer',
+    personIdentityNumber: 'Person som har fødselsnummer eller d-nummer',
+    personNoIdentityNumber: 'Person som ikke har fødselsnummer eller d-nummer',
     yourBirthdate: 'Fødselsdato (dd.mm.åååå)',
   },
   dataFetcher: {
@@ -335,5 +344,10 @@ export const statiske = {
     areaCodeLabel: 'Landskode',
     phoneNumberLabel: 'Telefonnummer',
     fetchError: 'En feil oppsto under uthenting av landskoder. Vennligst forsøk igjen senere.',
+  },
+  navUnit: {
+    choose: 'Velg hvilken Nav-enhet som skal motta innsendingen',
+    selectDefault: 'Velg enhet',
+    fetchError: 'En feil har oppstått. Vi kunne ikke laste enheter. Beklager ulempen, prøv igjen senere.',
   },
 };

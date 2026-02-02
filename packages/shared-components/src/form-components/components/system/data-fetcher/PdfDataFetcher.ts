@@ -15,6 +15,7 @@ const PdfDataFetcher = (props: PdfComponentProps) => {
     verdiliste: selected.map((value) => {
       return { label: value };
     }),
+    visningsVariant: 'PUNKTLISTE',
   };
 };
 

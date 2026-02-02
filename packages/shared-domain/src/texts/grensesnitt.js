@@ -11,6 +11,8 @@ export const grensesnitt = {
     instructions: 'Instruksjoner for innsending',
     exit: 'Avslutt',
     summaryPageError: 'Du må fullføre utfyllingen før du kan fortsette',
+    continue: 'Fortsett',
+    prevPage: 'Forrige side',
   },
   mostRecentSave: 'Sist lagret',
   emptySubmissionError: 'Kan ikke fortsette. Innsendingen er tom.',

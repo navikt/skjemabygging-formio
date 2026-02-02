@@ -41,6 +41,7 @@ class HttpError extends Error {
 class UnauthenticatedError extends Error {}
 class TooManyRequestsError extends Error {}
 class TooManyPagesError extends Error {}
+class ServiceUnavailable extends Error {}
 
 const defaultHeaders = (headers?: FetchHeader) => {
   return {
@@ -129,6 +130,10 @@ const handleResponse = async (response: Response, opts?: FetchOptions) => {
       throw new TooManyPagesError(errorMessage);
     }
 
+    if (errorCode === 'SERVICE_UNAVAILABLE') {
+      throw new ServiceUnavailable(errorMessage);
+    }
+
     throw new HttpError(errorMessage || response.statusText, response.status, errorCode);
   }
 
@@ -171,6 +176,7 @@ const http = {
   UnauthenticatedError,
   TooManyRequestsError,
   TooManyPagesError,
+  ServiceUnavailable,
   SubmissionMethodType,
 };
 
