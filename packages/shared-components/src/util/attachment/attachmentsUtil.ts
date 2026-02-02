@@ -28,7 +28,7 @@ interface Attachment {
 const getAttachment = (navId: string, form: NavFormType): Attachment | undefined => {
   return navFormUtils
     .flattenComponents(form.components)
-    .filter((comp) => comp.type === 'attachment' && (comp as Component).navId === navId)
+    .filter((comp) => comp.type === 'attachment' && navFormUtils.getNavId(comp) === navId)
     .map(toAttachment)[0];
 };
 
