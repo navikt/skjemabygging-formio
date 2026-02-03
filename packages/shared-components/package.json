@@ -32,7 +32,7 @@
     "@navikt/nav-dekoratoren-moduler": "^3.6.1",
     "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
     "@types/dompurify": "^3.2.0",
-    "classnames": "2.5.1",
+    "clsx": "^2.1.1",
     "dompurify": "^3.3.1",
     "eventemitter2": "^6.4.9",
     "file-saver": "2.0.5",

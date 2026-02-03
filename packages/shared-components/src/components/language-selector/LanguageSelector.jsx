@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import makeStyles from '../../util/styles/jss/jss';
 import { navCssVariables } from '../../util/styles/nav-css/navCssVariables';
 import Select from './select/Select';
@@ -72,7 +72,7 @@ const LanguageSelector = ({ label, ariaLabel = 'Velg språk', options, className
   const classes = useLanguageSelectorStyling();
   return (
     <div
-      className={classNames(classes.languageToggleWrapper, {
+      className={clsx(classes.languageToggleWrapper, {
         [className]: className,
       })}
     >

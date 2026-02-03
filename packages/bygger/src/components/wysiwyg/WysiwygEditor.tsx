@@ -1,5 +1,5 @@
 import { FieldsetErrorMessage, htmlUtils, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { forwardRef, useState } from 'react';
 import {
   BtnBold,
@@ -91,7 +91,7 @@ const WysiwygEditor = forwardRef<HTMLDivElement, Props>(
           value={htmlValue}
           onChange={handleChange}
           onBlur={handleBlur}
-          containerProps={{ className: error ? classNames(styles.editor, styles.error) : styles.editor }}
+          containerProps={{ className: error ? clsx(styles.editor, styles.error) : styles.editor }}
           data-testid="wysiwyg-editor"
         >
           <Toolbar>

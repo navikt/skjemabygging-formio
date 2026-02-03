@@ -1,5 +1,5 @@
 import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
-import classNames from 'classnames';
+import clsx from 'clsx';
 
 const useStyles = makeStyles({
   buttonRow: {
@@ -21,7 +21,7 @@ const ButtonRow = ({ children, className }) => {
   const styles = useStyles();
   return (
     <ul
-      className={classNames(styles.buttonRow, {
+      className={clsx(styles.buttonRow, {
         [className]: className,
       })}
     >
