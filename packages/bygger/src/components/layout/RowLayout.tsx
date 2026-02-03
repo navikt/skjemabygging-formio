@@ -1,5 +1,5 @@
 import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
-import classNames from 'classnames';
+import clsx from 'clsx';
 import React from 'react';
 
 export interface Props {
@@ -25,11 +25,9 @@ const RowLayout = ({ children, left, right, fullWidth, overflowHidden, className
   const styles = useStyles();
 
   return (
-    <div className={classNames('row-layout', styles.sidePadding, className)}>
+    <div className={clsx('row-layout', styles.sidePadding, className)}>
       {(left || !fullWidth) && <div className="row-layout__left">{left}</div>}
-      <div className={classNames('row-layout__main', { [styles.overflowHidden]: overflowHidden }, className)}>
-        {children}
-      </div>
+      <div className={clsx('row-layout__main', { [styles.overflowHidden]: overflowHidden }, className)}>{children}</div>
       {(right || !fullWidth) && <div className="row-layout__right">{right}</div>}
     </div>
   );

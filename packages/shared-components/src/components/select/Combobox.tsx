@@ -1,6 +1,6 @@
 import { UNSAFE_Combobox } from '@navikt/ds-react';
 import { ComponentValue, FieldSize } from '@navikt/skjemadigitalisering-shared-domain';
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { forwardRef, ReactNode, useEffect, useState } from 'react';
 import useComponentStyle from '../../util/styles/useComponentStyle';
 
@@ -67,7 +67,7 @@ const Combobox = forwardRef<HTMLInputElement, Props>(
         options={filteredOptions}
         description={description}
         onToggleSelected={handleChange}
-        className={classNames(styles.fieldSize, className)}
+        className={clsx(styles.fieldSize, className)}
         readOnly={readOnly}
         error={error}
         isMultiSelect={false}
