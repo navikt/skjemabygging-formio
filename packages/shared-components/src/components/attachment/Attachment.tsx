@@ -5,6 +5,7 @@ import {
   ComponentValue,
   SubmissionAttachmentValue,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import clsx from 'clsx';
 import { MutableRefObject } from 'react';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
@@ -87,6 +88,7 @@ const Attachment = ({
 
   return (
     <AttachmentOptionSelect
+      className={clsx('mb', className)}
       title={label}
       description={description}
       error={attachmentError?.message}

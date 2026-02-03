@@ -18,10 +18,11 @@ interface Props {
   onChange: (value: SubmissionAttachmentValue | undefined) => void;
   translate: (text: string, params?: any) => string;
   deadline?: string;
+  className?: string;
 }
 
 const AttachmentOptionSelect = forwardRef<HTMLFieldSetElement, Props>(
-  ({ attachmentValues, value, title, description, error, onChange, translate, deadline }: Props, ref) => {
+  ({ attachmentValues, value, title, description, error, onChange, translate, deadline, className }: Props, ref) => {
     const additionalDocumentation = attachmentValues?.[value?.key]?.additionalDocumentation;
     const showDeadline = !!attachmentValues?.[value?.key]?.showDeadline;
 
@@ -53,7 +54,7 @@ const AttachmentOptionSelect = forwardRef<HTMLFieldSetElement, Props>(
     };
 
     return (
-      <div>
+      <div className={className}>
         <SingleSelect
           values={values}
           value={value?.key ?? ''}
