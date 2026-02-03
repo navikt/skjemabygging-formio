@@ -1297,10 +1297,10 @@
     jscodeshift-add-imports "1.0.11"
     lodash "4.17.23"
 
-"@navikt/ds-css@^8.0.0", "@navikt/ds-css@^8.1.0":
-  version "8.1.0"
-  resolved "https://npm.pkg.github.com/download/@navikt/ds-css/8.1.0/d7a3f7b5e1a04e2f589982b9cd511d592534032b#d7a3f7b5e1a04e2f589982b9cd511d592534032b"
-  integrity sha512-dKQIBRMtjk1+hC4EMkl7W4psguBkz/NLGBa9YN/N6Jb7FbX9AkHbc9XGHKVS/dOc3sRX811M2tXE/k5nncDruA==
+"@navikt/ds-css@^8.1.0", "@navikt/ds-css@^8.2.0":
+  version "8.2.0"
+  resolved "https://npm.pkg.github.com/download/@navikt/ds-css/8.2.0/b8e8326ecf70d2dd9fcaeddaabaf8c37a906c6ef#b8e8326ecf70d2dd9fcaeddaabaf8c37a906c6ef"
+  integrity sha512-cPlUu16bCNgfRTyQUeBBJr7DSwz2546j9KpHoMfZeDC8e4utLSzzs6vqOPBjuOOXwlhM79zFI+NyccaxtO50Qw==
 
 "@navikt/ds-react@^8.0.0":
   version "8.0.0"
