@@ -40,13 +40,10 @@ describe('Static PDF', () => {
     cy.intercept('POST', '/api/forms/cypresssettings/static-pdfs/en', {
       status: 201,
       body: {
-        status: 'OK',
-        data: {
-          languageCode: 'en',
-          fileName: 'skjemanummer-en-01012026.pdf',
-          createdAt: '2026-01-01T09:10:41.989+01',
-          createdBy: 'Ola Nordmann',
-        },
+        languageCode: 'en',
+        fileName: 'skjemanummer-en-01012026.pdf',
+        createdAt: '2026-01-01T09:10:41.989+01',
+        createdBy: 'Ola Nordmann',
       },
     }).as('uploadStaticPdfs');
 
