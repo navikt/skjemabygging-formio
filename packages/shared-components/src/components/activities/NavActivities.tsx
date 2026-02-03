@@ -51,7 +51,7 @@ const NavActivities = forwardRef<HTMLFieldSetElement, Props>((props: Props, ref)
             setActivitySelections(submissionActivities);
           }
           setLoading(false);
-        } catch (ex) {
+        } catch (_ex) {
           setLoading(false);
           setShowError(true);
         }

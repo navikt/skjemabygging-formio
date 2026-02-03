@@ -30,7 +30,6 @@
     "uuid": "^13.0.0"
   },
   "devDependencies": {
-    "@types/luxon": "^3.7.1",
-    "@types/uuid": "^10.0.0"
+    "@types/luxon": "^3.7.1"
   }
 }

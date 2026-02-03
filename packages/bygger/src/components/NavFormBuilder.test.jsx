@@ -34,7 +34,7 @@ describe('NavFormBuilder', () => {
     fetchMock.resetMocks();
     vi.restoreAllMocks();
     cleanup();
-    await waitFor(() => expect(Object.keys(NavFormioJs.Formio.forms).length).toBe(0));
+    await waitFor(() => Object.keys(NavFormioJs.Formio.forms).length === 0);
   });
 
   describe('mounting', () => {
@@ -43,9 +43,9 @@ describe('NavFormBuilder', () => {
       const { unmount } = render(
         <NavFormBuilder form={testform} onChange={onChangeMock} formBuilderOptions={DEFAULT_FORM_BUILDER_OPTIONS} />,
       );
-      await waitFor(() => expect(Object.keys(NavFormioJs.Formio.forms).length).toBeGreaterThan(0));
+      await waitFor(() => Object.keys(NavFormioJs.Formio.forms).length > 0);
       unmount();
-      await waitFor(() => expect(Object.keys(NavFormioJs.Formio.forms).length).toBe(0));
+      await waitFor(() => Object.keys(NavFormioJs.Formio.forms).length === 0);
     });
   });
 
@@ -66,7 +66,7 @@ describe('NavFormBuilder', () => {
         />,
       );
       rerender = outRerender;
-      await waitFor(() => expect(onReadyMock.mock.calls).toHaveLength(1));
+      await waitFor(() => onReadyMock.mock.calls.length === 1);
       onChangeMock.mockReset();
     });
 
@@ -78,7 +78,7 @@ describe('NavFormBuilder', () => {
       const leggTilNyttStegKnapp = await screen.findByRole('button', { name: 'Legg til nytt steg' });
       await userEvent.click(leggTilNyttStegKnapp);
       expect(await screen.findByRole('link', { name: 'Page 3' })).toBeTruthy();
-      await waitFor(() => expect(onChangeMock.mock.calls).toHaveLength(1));
+      await waitFor(() => onChangeMock.mock.calls.length === 1);
     }, 10000);
 
     describe('remove button', () => {

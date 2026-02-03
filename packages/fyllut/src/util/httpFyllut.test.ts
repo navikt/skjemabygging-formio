@@ -35,11 +35,8 @@ describe('httpFyllut', () => {
       });
     });
 
-    try {
-      await httpFyllut.get('https://www.nav.no');
-    } catch (_e) {
-      expect(replace).toHaveBeenCalledTimes(1);
-    }
+    await expect(httpFyllut.get('https://www.nav.no')).rejects.toThrow(httpFyllut.UnauthenticatedError);
+    expect(replace).toHaveBeenCalledTimes(1);
 
     // @ts-expect-error Possible bug in typescript: https://github.com/microsoft/TypeScript/issues/61335
     window.location = originalWindowLocation;

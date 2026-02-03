@@ -27,7 +27,7 @@ const NavDrivingList = () => {
             setActivities(result);
           }
           setLoading(false);
-        } catch (ex) {
+        } catch (_ex) {
           setLoading(false);
           setShowError(true);
         }

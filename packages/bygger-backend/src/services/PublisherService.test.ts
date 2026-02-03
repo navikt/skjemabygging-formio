@@ -43,14 +43,7 @@ describe('PublisherService', () => {
       it('an error is thrown', async () => {
         const translations = { en: {} };
         const form: NavFormType = { _id: '2', properties: {} } as NavFormType;
-        let errorThrown = false;
-        try {
-          await publisherService.publishForm(form, translations);
-        } catch (error: any) {
-          errorThrown = true;
-          expect(error.message).toBe('Publisering feilet');
-        }
-        expect(errorThrown).toBe(true);
+        await expect(publisherService.publishForm(form, translations)).rejects.toThrow('Publisering feilet');
       });
     });
   });
@@ -91,16 +84,7 @@ describe('PublisherService', () => {
           path: 'nav123456',
           properties: { published: '2022-07-28T10:00:10.325Z', publishedBy: 'ernie' },
         } as NavFormType;
-        let errorThrown;
-
-        try {
-          await publisherService.unpublishForm(testForm.path);
-        } catch (error: any) {
-          errorThrown = true;
-          expect(error.message).toBe('Avpublisering feilet');
-        }
-
-        expect(errorThrown).toBe(true);
+        await expect(publisherService.unpublishForm(testForm.path)).rejects.toThrow('Avpublisering feilet');
       });
     });
   });
