@@ -6,7 +6,8 @@ import FormPostalCode from './components/shared/address/FormPostalCode';
 import FormPostalName from './components/shared/address/FormPostalName';
 import FormStreetAddress from './components/shared/address/FormStreetAddress';
 import FormBox from './components/shared/FormBox';
-import FormNavUnitSelector from './components/shared/FormNavUnitSelector';
+import FormCountrySelect from './components/shared/FormCountrySelect';
+import FormNavUnitSelect from './components/shared/FormNavUnitSelect';
 import FormTextField from './components/shared/FormTextField';
 import FormFirstName from './components/shared/identity/FormFirstName';
 import FormSurname from './components/shared/identity/FormSurname';
@@ -31,7 +32,7 @@ const StaticPdfInputPage = () => {
     <>
       <FormBox bottom="space-32">
         {enhetMaVelgesVedPapirInnsending ? (
-          <FormNavUnitSelector submissionPath="navUnit" />
+          <FormNavUnitSelect submissionPath="navUnit" />
         ) : (
           <div>
             <StaticPdfIdentityType submissionPath="identityType" />
@@ -48,9 +49,7 @@ const StaticPdfInputPage = () => {
                 <FormStreetAddress submissionPath="address.streetAddress" />
                 <FormPostalCode submissionPath="address.postalCode" />
                 <FormPostalName submissionPath="address.postalName" />
-                {
-                  // TODO: Add country
-                }
+                <FormCountrySelect submissionPath="addreess.country" />
               </>
             )}
           </div>

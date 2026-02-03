@@ -276,6 +276,7 @@ export const statiske = {
     postalCode: 'Postnummer',
     postalName: 'Poststed',
     location: 'By / stedsnavn',
+    selectCountry: 'Velg land',
     country: 'Land',
     co: {
       label: 'C/O',
