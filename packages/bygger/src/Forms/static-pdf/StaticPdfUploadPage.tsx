@@ -4,6 +4,7 @@ import { AppLayout } from '../../components/AppLayout';
 import RowLayout from '../../components/layout/RowLayout';
 import Title from '../../components/layout/Title';
 import TitleRowLayout from '../../components/layout/TitleRowLayout';
+import UserFeedback from '../../components/UserFeedback';
 import StaticPdfTable from './StaticPdfTable';
 
 interface Props {
@@ -27,7 +28,7 @@ const StaticPdfUploadPage = ({ form }: Props) => {
       <TitleRowLayout>
         <Title subTitle={skjemanummer}>{title}</Title>
       </TitleRowLayout>
-      <RowLayout>
+      <RowLayout right={<UserFeedback />}>
         <StaticPdfProvider formPath={path}>
           <StaticPdfTable />
         </StaticPdfProvider>
