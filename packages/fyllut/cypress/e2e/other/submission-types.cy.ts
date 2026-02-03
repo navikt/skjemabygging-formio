@@ -63,13 +63,14 @@ describe('Submission Type', () => {
 
         cy.clickDownloadInstructions();
 
+        cy.findByText('Her er litt forklaring').should('not.exist');
         cy.get('a[href="/fyllut/nav100754"]')
           .should('exist')
           .should('have.attr', 'target', '_blank')
           .should('contain', 'Nav skjema test');
       });
 
-      it('Show attachments', () => {
+      it('Should show attachments', () => {
         cy.clickStart();
 
         cy.clickShowAllSteps();
@@ -311,7 +312,7 @@ describe('Submission Type', () => {
       cy.defaultWaits();
     });
 
-    it('Only allow user to continue from summary page if form is valid', () => {
+    it('only allows user to continue from summary page if form is valid', () => {
       cy.clickStart();
       cy.url().should('not.include', '?');
 
@@ -325,6 +326,14 @@ describe('Submission Type', () => {
       cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
       cy.clickNextStep();
 
+      cy.findByRole('group', { name: 'Nav skjema test' }).within(() => {
+        cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).click();
+      });
+      cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+        cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
+      });
+      cy.clickNextStep();
+
       cy.get('dl')
         .first()
         .within(() => {
@@ -334,6 +343,52 @@ describe('Submission Type', () => {
       cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions }).click();
 
       cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).should('exist');
+    });
+
+    it('should render attachment links when vedleggskjema field exists', () => {
+      cy.clickStart();
+      cy.findByRole('textbox', { name: 'Tekstfelt' }).type('test');
+      cy.clickNextStep();
+
+      cy.findByRole('group', { name: 'Nav skjema test' }).within(() => {
+        cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).click();
+      });
+
+      cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+        cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
+      });
+
+      cy.clickNextStep();
+
+      cy.clickDownloadInstructions();
+
+      cy.findByText('Her er litt forklaring').should('be.visible');
+      // TODO: Re-enable when we render attachment list for none submission type
+      // cy.get('a[href="/fyllut/nav100754"]')
+      //   .should('exist')
+      //   .should('have.attr', 'target', '_blank')
+      //   .should('contain', 'Nav skjema test');
+    });
+
+    it('Should show attachments', () => {
+      cy.clickStart();
+
+      cy.clickShowAllSteps();
+      cy.findByRole('link', { name: 'Vedlegg' }).should('exist');
+    });
+
+    it('displays an error message when sub is manually set in url', () => {
+      cy.visit('/fyllut/stnone?sub=digital');
+      cy.defaultWaits();
+      cy.findByRole('heading', { name: 'Ugyldig innsendingsvalg' }).should('exist');
+    });
+
+    it('does not add sub if missing (INCLUDE_DIST_TESTS)', () => {
+      cy.skipIfNoIncludeDistTests();
+
+      cy.visit('/fyllut/stnone');
+      cy.defaultWaits();
+      cy.url().should('not.include', 'sub=');
     });
   });
 

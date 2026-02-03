@@ -72,14 +72,17 @@ const AttachmentsUploadButtonRow = ({ attachments, onError }: { attachments: Att
           onClick={{
             digitalnologin: () => validateUploadsAndGoNext(),
             paper: () => validateValuesAndGoNext(),
+            none: () => validateValuesAndGoNext(),
           }}
           label={{
             digitalnologin: translate(TEXTS.grensesnitt.navigation.next),
             paper: translate(TEXTS.grensesnitt.navigation.next),
+            none: translate(TEXTS.grensesnitt.navigation.next),
           }}
           href={{
             digitalnologin: `${baseUrl}/${form.path}/oppsummering${search}`,
             paper: `${baseUrl}/${form.path}/oppsummering${search}`,
+            none: `${baseUrl}/${form.path}/oppsummering${search}`,
           }}
         />
       }
@@ -88,14 +91,17 @@ const AttachmentsUploadButtonRow = ({ attachments, onError }: { attachments: Att
           onClick={{
             digitalnologin: () => navigate({ pathname: previousPage(), search }),
             paper: () => navigate({ pathname: previousPage(), search }),
+            none: () => navigate({ pathname: previousPage(), search }),
           }}
           label={{
             digitalnologin: translate(TEXTS.grensesnitt.navigation.previous),
             paper: translate(TEXTS.grensesnitt.navigation.previous),
+            none: translate(TEXTS.grensesnitt.navigation.previous),
           }}
           href={{
             digitalnologin: previousPage(),
             paper: previousPage(),
+            none: previousPage(),
           }}
         />
       }
