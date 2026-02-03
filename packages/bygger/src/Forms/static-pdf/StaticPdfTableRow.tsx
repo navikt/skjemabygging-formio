@@ -1,10 +1,10 @@
 import { Table } from '@navikt/ds-react';
+import { useStaticPdf } from '@navikt/skjemadigitalisering-shared-components';
 import { dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo } from 'react';
-import DeleteStaticPdfButton from './components/buttons/DeleteStaticPdfButton';
-import DownloadStaticPdfButton from './components/buttons/DownloadStaticPdfButton';
-import UploadStaticPdfButton from './components/buttons/UploadStaticPdfButton';
-import { useStaticPdf } from './StaticPdfContext';
+import DeleteStaticPdfButton from './buttons/DeleteStaticPdfButton';
+import DownloadStaticPdfButton from './buttons/DownloadStaticPdfButton';
+import UploadStaticPdfButton from './buttons/UploadStaticPdfButton';
 
 interface Props {
   language: string;

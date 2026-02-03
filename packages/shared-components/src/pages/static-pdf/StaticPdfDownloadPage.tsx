@@ -3,7 +3,7 @@ import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import DownloadPdfButton from '../../components/button/DownloadPdfButton';
 import { useForm } from '../../context/form/FormContext';
-import { useLanguages } from '../../index';
+import { useLanguages } from '../../context/languages';
 import FormBox from './components/shared/FormBox';
 import { useStaticPdf } from './StaticPdfContext';
 

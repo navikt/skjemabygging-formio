@@ -34,12 +34,10 @@ const getStatusFromErrorCode = (errorCode: ErrorCode): number => {
 const errorHandler = (error: any, _req: Request, res: Response, _next: NextFunction) => {
   const errorResponse = createErrorResponse(error);
 
-  if (
-    errorResponse.errorCode === 'ERROR' ||
-    errorResponse.errorCode === 'INTERNAL_SERVER_ERROR' ||
-    errorResponse.errorCode === 'SERVICE_UNAVAILABLE'
-  ) {
+  if (errorResponse.errorCode === 'ERROR' || errorResponse.errorCode === 'INTERNAL_SERVER_ERROR') {
     logger.error(errorResponse);
+    res.locals = res.locals || {};
+    res.locals.errorAlreadyLogged = true;
   } else {
     logger.warn(errorResponse);
   }

@@ -19,7 +19,7 @@ const uploadPdf: RequestHandler = async (req: Request, res: Response, next: Next
   const { formPath, languageCode } = req.params;
 
   try {
-    const accessToken = requestUtil.getAccessToken(req);
+    const accessToken = requestUtil.getAzureAccessToken(req);
     const file = requestUtil.getFile(req);
 
     const pdf = await staticPdfService.uploadPdf(formsApi.url, formPath, languageCode, accessToken, file);
@@ -44,7 +44,7 @@ const deletePdf: RequestHandler = async (req: Request, res: Response, next: Next
   const { formPath, languageCode } = req.params;
 
   try {
-    const accessToken = requestUtil.getAccessToken(req);
+    const accessToken = requestUtil.getAzureAccessToken(req);
 
     await staticPdfService.deletePdf(formsApi.url, formPath, languageCode, accessToken);
     res.status(204).send();

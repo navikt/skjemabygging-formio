@@ -10,7 +10,7 @@ const getFile = (req: Request): Express.Multer.File => {
   return file;
 };
 
-const getAccessToken = (req: Request) => {
+const getAzureAccessToken = (req: Request) => {
   const accessToken = req.headers.AzureAccessToken as string;
   if (accessToken === undefined) {
     throw new ResponseError('BAD_REQUEST', 'Could not find AzureAccessToken in request headers');
@@ -20,7 +20,7 @@ const getAccessToken = (req: Request) => {
 };
 
 const requestUtil = {
-  getAccessToken,
+  getAzureAccessToken,
   getFile,
 };
 

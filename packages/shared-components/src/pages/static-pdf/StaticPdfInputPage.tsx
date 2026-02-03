@@ -1,6 +1,5 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect } from 'react';
-
 import { useForm } from '../../context/form/FormContext';
 import FormPostalCode from './components/shared/address/FormPostalCode';
 import FormPostalName from './components/shared/address/FormPostalName';

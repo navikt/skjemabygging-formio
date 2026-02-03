@@ -1,8 +1,8 @@
 import { UploadIcon } from '@navikt/aksel-icons';
 import { Button, FileObject, FileUpload } from '@navikt/ds-react';
+import { ConfirmationModal, useStaticPdf } from '@navikt/skjemadigitalisering-shared-components';
 import { useState } from 'react';
-import { ConfirmationModal } from '../../../../index';
-import { useStaticPdf } from '../../StaticPdfContext';
+import { useFeedbackEmit } from '../../../context/notifications/FeedbackContext';
 
 interface Props {
   language: string;
@@ -11,6 +11,7 @@ interface Props {
 }
 
 const UploadStaticPdfButton = ({ language, languageCode, replace }: Props) => {
+  const feedbackEmit = useFeedbackEmit();
   const { uploadFile } = useStaticPdf();
   const [open, setOpen] = useState(false);
   const [file, setFile] = useState<File>();
@@ -34,6 +35,8 @@ const UploadStaticPdfButton = ({ language, languageCode, replace }: Props) => {
     setLoading(true);
     try {
       await uploadFile(languageCode, file);
+    } catch (_e) {
+      feedbackEmit.error('Feil ved opplasting av pdf');
     } finally {
       setLoading(false);
     }

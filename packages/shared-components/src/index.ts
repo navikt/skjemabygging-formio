@@ -26,8 +26,7 @@ import { mapTranslationsToFormioI18nObject } from './context/languages/mapper/tr
 import FormBuilderOptions from './formio/form-builder-options';
 import './formio/overrides';
 import FyllUtRouter from './pages/FyllUtRouter';
-import { StaticPdfProvider } from './pages/static-pdf/StaticPdfContext';
-import StaticPdfTable from './pages/static-pdf/StaticPdfTable';
+import { StaticPdfProvider, useStaticPdf } from './pages/static-pdf/StaticPdfContext';
 import Styles from './styles';
 import { b64toBlob } from './util/blob/blob';
 import { getCountries } from './util/countries/countries';
@@ -75,7 +74,6 @@ export {
   NavFormioJs,
   SkeletonList,
   StaticPdfProvider,
-  StaticPdfTable,
   Styles,
   url,
   useAppConfig,
@@ -83,5 +81,6 @@ export {
   useLanguageCodeFromURL,
   useLanguages,
   useModal,
+  useStaticPdf,
 };
 export type { FetchHeader, FetchOptions };

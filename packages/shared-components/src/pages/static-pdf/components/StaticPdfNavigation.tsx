@@ -5,7 +5,7 @@ import { PreviousButton } from '../../../components/navigation/PreviousButton';
 import { useLanguages } from '../../../context/languages';
 import { useInputValidation } from '../../../context/validator/InputValidationContext';
 import type StaticPdfPage from '../StaticPdfWrapper';
-import StaticPdfCancelButton from './StaticPdfCancelButton';
+import CancelStaticPdfButton from './buttons/CancelStaticPdfButton';
 
 interface Props {
   page: StaticPdfPage;
@@ -46,7 +46,7 @@ const StaticPdfNavigation = ({ page, setPage }: Props) => {
           />
         )
       }
-      cancelButton={<StaticPdfCancelButton page={page} />}
+      cancelButton={<CancelStaticPdfButton page={page} />}
     />
   );
 };

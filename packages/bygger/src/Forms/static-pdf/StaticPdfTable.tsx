@@ -1,6 +1,5 @@
 import { Table } from '@navikt/ds-react';
-import makeStyles from '../../util/styles/jss/jss';
-import { useStaticPdf } from './StaticPdfContext';
+import { makeStyles, useStaticPdf } from '@navikt/skjemadigitalisering-shared-components';
 import StaticPdfTableRow from './StaticPdfTableRow';
 
 const useStyles = makeStyles({

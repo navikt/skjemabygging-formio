@@ -1,8 +1,8 @@
 import { TrashIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
+import { ConfirmationModal, useStaticPdf } from '@navikt/skjemadigitalisering-shared-components';
 import { useState } from 'react';
-import { ConfirmationModal } from '../../../../index';
-import { useStaticPdf } from '../../StaticPdfContext';
+import { useFeedbackEmit } from '../../../context/notifications/FeedbackContext';
 
 interface Props {
   language: string;
@@ -10,6 +10,7 @@ interface Props {
 }
 
 const DeleteStaticPdfButton = ({ language, languageCode }: Props) => {
+  const feedbackEmit = useFeedbackEmit();
   const { deleteFile } = useStaticPdf();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -18,6 +19,8 @@ const DeleteStaticPdfButton = ({ language, languageCode }: Props) => {
     setLoading(true);
     try {
       await deleteFile(languageCode);
+    } catch (_e) {
+      feedbackEmit.error('Feil ved sletting av pdf');
     } finally {
       setLoading(false);
     }
