@@ -1,5 +1,5 @@
+import { correlator } from '@navikt/skjemadigitalisering-shared-backend';
 import express from 'express';
-import correlator from 'express-correlation-id';
 import config from './config';
 import { buildDirectory, buildDirectoryIndexHtml } from './context.js';
 import authHandler from './middleware/authHandler';

@@ -1,14 +1,14 @@
+import { urlUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import { Form, formioFormsApiUtils, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { config } from '../config/config';
 import { logger } from '../logger';
 import { fetchFromApi, loadAllJsonFilesFromDirectory, loadFileFromDirectory } from '../utils/forms';
-import { isValidPath } from '../utils/url';
 
 const { mocksEnabled, useFormsApiStaging, skjemaDir, formioApiServiceUrl, formsApiUrl } = config;
 
 class FormService {
   async loadForm(formPath: string, select?: string): Promise<NavFormType | undefined> {
-    if (!isValidPath(formPath)) {
+    if (!urlUtil.isValidPath(formPath)) {
       return;
     }
     let form: NavFormType | Form | undefined;

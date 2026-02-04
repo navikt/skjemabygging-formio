@@ -9,7 +9,7 @@ import {
   translationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { Request, Response } from 'express';
-import { formService, translationsService } from '../../services';
+import { formService, translationsService } from '../../../services';
 
 type TranslateFunction = (text: string, textReplacements?: I18nTranslationReplacements) => string;
 

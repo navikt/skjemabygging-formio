@@ -1,6 +1,6 @@
 import ecsFormat from '@elastic/ecs-morgan-format';
+import { correlator } from '@navikt/skjemadigitalisering-shared-backend';
 import { context, trace } from '@opentelemetry/api';
-import correlator from 'express-correlation-id';
 import morgan from 'morgan';
 import { config } from '../config/config';
 import { isEnabled } from '../logging';

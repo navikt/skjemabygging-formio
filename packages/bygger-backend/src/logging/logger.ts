@@ -1,4 +1,4 @@
-import correlator from 'express-correlation-id';
+import { correlator } from '@navikt/skjemadigitalisering-shared-backend';
 import { createLogger, format, transports } from 'winston';
 
 const correlationIdFormat = format((info) => {

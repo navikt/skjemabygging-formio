@@ -25,7 +25,7 @@ const FormTextField = (props: FormTextFieldProps) => {
     label,
     description,
     validators,
-    bottom = 'space-40',
+    bottom = 'space-32',
     inputWidth,
     onChange,
     readOnly,

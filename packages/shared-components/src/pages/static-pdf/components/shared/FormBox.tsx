@@ -2,7 +2,7 @@ import { Box } from '@navikt/ds-react';
 
 interface FormBoxProps {
   inputWidth?: 'input--xxs' | 'input--xs' | 'input--s' | 'input--m' | 'input--l' | 'input--xl' | 'input--xxl';
-  bottom?: 'space-16' | 'space-40' | 'space-56';
+  bottom?: 'space-16' | 'space-32' | 'space-40' | 'space-56';
   children?: React.ReactNode;
 }
 

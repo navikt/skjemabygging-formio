@@ -1,6 +1,6 @@
 import { StaticPdf } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
-import useFormsApiStaticPdf from '../../api/useFormsApiStaticPdf';
+import useFormsApiStaticPdf from '../../api/static-pdf/useFormsApiStaticPdf';
 
 interface StaticPdfContextType {
   formPath: string;
@@ -44,7 +44,7 @@ export const StaticPdfProvider = ({ children, formPath }: Props) => {
   }, [formPath, getAll]);
 
   const getFile = (languageCode: string) => {
-    if (files) {
+    if (files?.length > 0) {
       return files.find((file) => file.languageCode === languageCode);
     }
   };

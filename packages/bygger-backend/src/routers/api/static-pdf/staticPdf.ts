@@ -1,57 +1,52 @@
-import { RequestHandler } from 'express';
-import { staticPdfService } from '../../../services';
+import { requestUtil, staticPdfService } from '@navikt/skjemadigitalisering-shared-backend';
+import { NextFunction, Request, RequestHandler, Response } from 'express';
+import config from '../../../config';
 
-const getAll: RequestHandler = async (req, res, next) => {
-  const accessToken = req.headers.AzureAccessToken as string;
+const { formsApi } = config;
+
+const getAll: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
   const { formPath } = req.params;
 
   try {
-    const allPdfs = await staticPdfService.getAll(formPath, accessToken);
+    const allPdfs = await staticPdfService.getAll(formsApi.url, formPath);
     res.json(allPdfs);
   } catch (error) {
     next(error);
   }
 };
 
-const uploadPdf: RequestHandler = async (req, res, next) => {
-  const accessToken = req.headers.AzureAccessToken as string;
+const uploadPdf: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
   const { formPath, languageCode } = req.params;
-  const file = req.file;
-
-  if (!file?.buffer) {
-    return res.status(400).json({ message: 'Error: Ingen fil sendt med forespørselen' });
-  }
 
   try {
-    const pdf = await staticPdfService.uploadPdf(file, formPath, languageCode, accessToken);
+    const accessToken = requestUtil.getAzureAccessToken(req);
+    const file = requestUtil.getFile(req);
+
+    const pdf = await staticPdfService.uploadPdf(formsApi.url, formPath, languageCode, accessToken, file);
     res.status(201).json(pdf);
   } catch (error) {
     next(error);
   }
 };
 
-const downloadPdf: RequestHandler = async (req, res, next) => {
-  const accessToken = req.headers.AzureAccessToken as string;
+const downloadPdf: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
   const { formPath, languageCode } = req.params;
 
   try {
-    const pdf = await staticPdfService.downloadPdf(formPath, languageCode, accessToken);
-    if (pdf) {
-      res.status(200).json({ pdfBase64: pdf });
-    } else {
-      res.status(404).json({ message: 'PDF not found' });
-    }
+    const pdf = await staticPdfService.downloadPdf(formsApi.url, formPath, languageCode);
+    res.json(pdf);
   } catch (error) {
     next(error);
   }
 };
 
-const deletePdf: RequestHandler = async (req, res, next) => {
-  const accessToken = req.headers.AzureAccessToken as string;
+const deletePdf: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
   const { formPath, languageCode } = req.params;
 
   try {
-    await staticPdfService.deletePdf(formPath, languageCode, accessToken);
+    const accessToken = requestUtil.getAzureAccessToken(req);
+
+    await staticPdfService.deletePdf(formsApi.url, formPath, languageCode, accessToken);
     res.status(204).send();
   } catch (error) {
     next(error);

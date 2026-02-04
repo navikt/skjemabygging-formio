@@ -9,7 +9,7 @@ interface Props {
   submissionPath: string;
 }
 
-const FormNavUnitSelector = ({ submissionPath }: Props) => {
+const FormNavUnitSelect = ({ submissionPath }: Props) => {
   const { baseUrl } = useAppConfig();
   const { form } = useForm();
   const { enhetstyper } = form.properties;
@@ -45,4 +45,4 @@ const FormNavUnitSelector = ({ submissionPath }: Props) => {
   );
 };
 
-export default FormNavUnitSelector;
+export default FormNavUnitSelect;
