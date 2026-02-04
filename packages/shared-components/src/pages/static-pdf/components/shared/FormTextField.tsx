@@ -44,9 +44,9 @@ const FormTextField = (props: FormTextFieldProps) => {
 
     if (onChange) {
       onChange(value);
+    } else {
+      updateSubmission(submissionPath, value);
     }
-
-    updateSubmission(submissionPath, value);
   };
 
   useEffect(() => {

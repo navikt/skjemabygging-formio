@@ -45,9 +45,9 @@ const FormRadio = (props: FormRadioProps) => {
   const handleChange = (value: string) => {
     if (onChange) {
       onChange(value);
+    } else {
+      updateSubmission(submissionPath, value);
     }
-
-    updateSubmission(submissionPath, value);
   };
 
   useEffect(() => {

@@ -1,11 +1,11 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect } from 'react';
 import { useForm } from '../../context/form/FormContext';
+import FormCountrySelect from './components/shared/address/FormCountrySelect';
 import FormPostalCode from './components/shared/address/FormPostalCode';
 import FormPostalName from './components/shared/address/FormPostalName';
 import FormStreetAddress from './components/shared/address/FormStreetAddress';
 import FormBox from './components/shared/FormBox';
-import FormCountrySelect from './components/shared/FormCountrySelect';
 import FormNavUnitSelect from './components/shared/FormNavUnitSelect';
 import FormTextField from './components/shared/FormTextField';
 import FormFirstName from './components/shared/identity/FormFirstName';
@@ -48,7 +48,7 @@ const StaticPdfInputPage = () => {
                 <FormStreetAddress submissionPath="address.streetAddress" />
                 <FormPostalCode submissionPath="address.postalCode" />
                 <FormPostalName submissionPath="address.postalName" />
-                <FormCountrySelect submissionPath="addreess.country" />
+                <FormCountrySelect submissionPath="address.country" />
               </>
             )}
           </div>

@@ -20,6 +20,8 @@ interface FormSelectProps extends FormBoxProps {
   onChange?: (value: string) => void;
   readOnly?: boolean;
   error?: string;
+  autoComplete?: string;
+  defaultValue?: string;
 }
 
 const FormSelect = (props: FormSelectProps) => {
@@ -35,6 +37,8 @@ const FormSelect = (props: FormSelectProps) => {
     onChange,
     readOnly,
     error,
+    autoComplete,
+    defaultValue,
   } = props;
   const { logger } = useAppConfig();
   const { updateSubmission, submission } = useForm();
@@ -49,9 +53,9 @@ const FormSelect = (props: FormSelectProps) => {
 
     if (onChange) {
       onChange(value);
+    } else {
+      updateSubmission(submissionPath, value);
     }
-
-    updateSubmission(submissionPath, value);
   };
 
   useEffect(() => {
@@ -71,7 +75,8 @@ const FormSelect = (props: FormSelectProps) => {
         onChange={handleChange}
         ref={ref}
         error={error ?? getRefError(ref)}
-        defaultValue={formComponentUtils.getSubmissionValue(submissionPath, submission)}
+        autoComplete={autoComplete}
+        defaultValue={defaultValue ?? formComponentUtils.getSubmissionValue(submissionPath, submission)}
       >
         {selectText && <option value="">{translate(selectText)}</option>}
         {values.map(({ value, label }) => (

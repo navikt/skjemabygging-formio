@@ -45,9 +45,9 @@ const FormCheckboxes = (props: FormCheckboxGroupProps) => {
   const handleChange = (value: string[]) => {
     if (onChange) {
       onChange(value);
+    } else {
+      updateSubmission(submissionPath, value);
     }
-
-    updateSubmission(submissionPath, value);
   };
 
   useEffect(() => {
