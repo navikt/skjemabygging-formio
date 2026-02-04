@@ -1,6 +1,6 @@
 import { Heading, Tag } from '@navikt/ds-react';
 import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { useLanguages } from '../../../context/languages';
 import makeStyles from '../../../util/styles/jss/jss';
 import FormIcon from './FormIcon';
@@ -46,7 +46,7 @@ export function FormTitle({ form, title, hideIconOnMobile }: Props) {
 
   return (
     <header className={styles.titleHeader}>
-      <div className={classNames(styles.titleIcon, { [styles.titleIconHidden]: hideIconOnMobile })}>
+      <div className={clsx(styles.titleIcon, { [styles.titleIconHidden]: hideIconOnMobile })}>
         <FormIcon className={styles.titleIconSvg} />
       </div>
       {title && (

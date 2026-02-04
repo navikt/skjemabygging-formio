@@ -1,5 +1,5 @@
 import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
-import classNames from 'classnames';
+import clsx from 'clsx';
 
 const useStyles = makeStyles({
   column: {
@@ -21,7 +21,7 @@ const Column = ({ children, className = '' }) => {
   const styles = useStyles();
   return (
     <div
-      className={classNames(styles.column, {
+      className={clsx(styles.column, {
         [className]: className,
       })}
     >

@@ -1,6 +1,6 @@
 import { Select as AkselSelect } from '@navikt/ds-react';
 import { ComponentValue, FieldSize } from '@navikt/skjemadigitalisering-shared-domain';
-import classNames from 'classnames';
+import clsx from 'clsx';
 import React, { forwardRef, ReactNode } from 'react';
 import useComponentStyle from '../../util/styles/useComponentStyle';
 
@@ -44,7 +44,7 @@ const Select = forwardRef<HTMLSelectElement, Props>(
         value={value?.value}
         description={description}
         onChange={handleChange}
-        className={classNames(styles.fieldSize, className)}
+        className={clsx(styles.fieldSize, className)}
         readOnly={readOnly}
         error={error}
       >
