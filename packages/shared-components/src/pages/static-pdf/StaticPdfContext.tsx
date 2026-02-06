@@ -1,4 +1,4 @@
-import { StaticPdf } from '@navikt/skjemadigitalisering-shared-domain';
+import { CoverPageType, StaticPdf } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import useFormsApiStaticPdf from '../../api/static-pdf/useFormsApiStaticPdf';
 
@@ -8,6 +8,7 @@ interface StaticPdfContextType {
   getFile: (languageCode: string) => StaticPdf | undefined;
   uploadFile: (languageCode: string, file: File) => Promise<StaticPdf>;
   downloadFile: (languageCode: string) => Promise<Blob>;
+  downloadCoverPageAndFile: (languageCode: string, coverPage: CoverPageType) => Promise<Blob>;
   deleteFile: (languageCode: string) => Promise<void>;
 }
 
@@ -21,7 +22,7 @@ const StaticPdfContext = createContext<StaticPdfContextType>({} as StaticPdfCont
 export const StaticPdfProvider = ({ children, formPath }: Props) => {
   const [files, setFiles] = useState<StaticPdf[]>([]);
   const [loadingFiles, setLoadingFiles] = useState<boolean>(false);
-  const { getAll, uploadPdf, deletePdf, downloadPdf } = useFormsApiStaticPdf();
+  const { getAll, uploadPdf, deletePdf, downloadPdf, downloadCoverPageAndPdf } = useFormsApiStaticPdf();
 
   const removeFile = useCallback((languageCode: string) => {
     setFiles((prevFiles) => prevFiles.filter((f) => f.languageCode !== languageCode));
@@ -65,6 +66,13 @@ export const StaticPdfProvider = ({ children, formPath }: Props) => {
     [formPath, downloadPdf],
   );
 
+  const downloadCoverPageAndFile = useCallback(
+    async (languageCode: string, coverPage: CoverPageType) => {
+      return await downloadCoverPageAndPdf(formPath, languageCode, coverPage);
+    },
+    [formPath, downloadCoverPageAndPdf],
+  );
+
   const deleteFile = useCallback(
     async (languageCode: string) => {
       await deletePdf(formPath, languageCode);
@@ -87,6 +95,7 @@ export const StaticPdfProvider = ({ children, formPath }: Props) => {
         getFile,
         uploadFile,
         downloadFile,
+        downloadCoverPageAndFile,
         deleteFile,
       }}
     >

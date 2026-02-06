@@ -1,4 +1,5 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { useForm } from '../../../../context/form/FormContext';
 import FormRadio from './FormRadio';
 
 interface Props {
@@ -6,6 +7,15 @@ interface Props {
 }
 
 const StaticPdfNavigation = ({ submissionPath }: Props) => {
+  const { updateSubmission, submission } = useForm();
+
+  const handleChange = (value: string) => {
+    updateSubmission(submissionPath, value);
+    if (submission?.data.coverPage['user']) {
+      updateSubmission('coverPage.user', undefined);
+    }
+  };
+
   return (
     <FormRadio
       submissionPath={submissionPath}
@@ -20,6 +30,7 @@ const StaticPdfNavigation = ({ submissionPath }: Props) => {
           value: 'noIdentityNumber',
         },
       ]}
+      onChange={handleChange}
     />
   );
 };

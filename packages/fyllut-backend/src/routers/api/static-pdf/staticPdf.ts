@@ -1,15 +1,24 @@
-import { staticPdfService } from '@navikt/skjemadigitalisering-shared-backend';
+import {
+  coverPageService,
+  formService,
+  mergeFileService,
+  staticPdfService,
+} from '@navikt/skjemadigitalisering-shared-backend';
+import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import { config } from '../../../config/config';
 
-const { formsApiUrl } = config;
+const { formsApiUrl, skjemabyggingProxyUrl, sendInnConfig } = config;
 
 const staticPdf = {
   getAll: async (req: Request, res: Response, next: NextFunction) => {
     const { formPath } = req.params;
 
     try {
-      const result = await staticPdfService.getAll(formsApiUrl, formPath);
+      const result = await staticPdfService.getAll({
+        baseUrl: formsApiUrl,
+        formPath,
+      });
       res.json(result);
     } catch (error: any) {
       next(error);
@@ -17,10 +26,45 @@ const staticPdf = {
   },
   downloadPdf: async (req: Request, res: Response, next: NextFunction) => {
     const { formPath, languageCode } = req.params;
+    const coverPageData = req.body;
+    const coverPageToken = req.headers.AzureAccessToken as string;
+    const mergePdfToken = req.headers.MergePdfToken as string;
+
+    if (!coverPageData) {
+      throw new ResponseError('BAD_REQUEST', 'Missing cover page data in request body');
+    }
 
     try {
-      const result = await staticPdfService.downloadPdf(formsApiUrl, formPath, languageCode);
-      res.json(result);
+      // TODO: Get form from static
+      const form = await formService.getForm({ baseUrl: formsApiUrl, formPath });
+
+      const staticPdf = await staticPdfService.downloadPdf({
+        baseUrl: formsApiUrl,
+        formPath,
+        languageCode,
+      });
+
+      const coverPagePdf = await coverPageService.downloadCoverPage({
+        baseUrl: skjemabyggingProxyUrl,
+        languageCode,
+        accessToken: coverPageToken,
+        data: {
+          ...coverPageData,
+          form,
+        },
+      });
+
+      const pdf = await mergeFileService.mergeFiles({
+        baseUrl: `${sendInnConfig.host}${sendInnConfig.paths.mergeFiles}`,
+        accessToken: mergePdfToken,
+        body: {
+          title: form.title,
+          language: 'nb-NO', // TODO: Use correct language
+          files: [staticPdf, coverPagePdf],
+        },
+      });
+
+      res.json({ pdfBase64: pdf });
     } catch (error: any) {
       next(error);
     }

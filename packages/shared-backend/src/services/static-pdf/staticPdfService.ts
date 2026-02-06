@@ -3,34 +3,41 @@ import 'multer';
 import http from '../http/http';
 import { logger } from '../logger/logger';
 
-const createUrl = (baseUrl: string, formPath: string, languageCode?: string) => {
+interface CreateUrlType {
+  baseUrl: string;
+  formPath: string;
+  languageCode?: string;
+}
+const createUrl = ({ baseUrl, formPath, languageCode }: CreateUrlType) => {
   return `${baseUrl}/v1/forms/${formPath}/static-pdfs${languageCode ? `/${languageCode}` : ''}`;
 };
 
-const getAll = async (baseUrl: string, formPath: string) => {
+const getAll = async (props: Omit<CreateUrlType, 'languageCode'>) => {
+  const { formPath } = props;
   logger.debug(`Get all static pdfs ${formPath}`);
 
-  return await http.get<StaticPdf[]>(createUrl(baseUrl, formPath));
+  return await http.get<StaticPdf[]>(createUrl(props));
 };
 
-const downloadPdf = async (baseUrl: string, formPath: string, languageCode: string) => {
+const downloadPdf = async (props: CreateUrlType) => {
+  const { formPath, languageCode } = props;
   logger.info(`Download new static pdf ${formPath} for ${languageCode}`);
 
-  const pdf = await http.get(createUrl(baseUrl, formPath, languageCode));
-  if (pdf) {
-    return { pdfBase64: pdf };
-  } else {
+  const pdf = await http.get<string>(createUrl(props));
+
+  if (!pdf) {
     throw new ResponseError('NOT_FOUND', 'PDF not found');
   }
+
+  return pdf;
 };
 
-const uploadPdf = async (
-  baseUrl: string,
-  formPath: string,
-  languageCode: string,
-  accessToken: string,
-  file: Express.Multer.File,
-) => {
+interface UploadPdfType extends CreateUrlType {
+  accessToken: string;
+  file: Express.Multer.File;
+}
+const uploadPdf = async (props: UploadPdfType) => {
+  const { formPath, languageCode, accessToken, file } = props;
   logger.info(`Upload new static pdf ${formPath} for ${languageCode}`);
 
   const fileBlob = new Blob([Uint8Array.from(file.buffer)], { type: file.mimetype });
@@ -38,16 +45,20 @@ const uploadPdf = async (
   const body = new FormData();
   body.append('fileContent', fileBlob, originalFileName);
 
-  return await http.post<StaticPdf>(createUrl(baseUrl, formPath, languageCode), body, {
+  return await http.post<StaticPdf>(createUrl(props), body, {
     accessToken,
     contentType: undefined,
   });
 };
 
-const deletePdf = async (baseUrl: string, formPath: string, languageCode: string, accessToken: string) => {
+interface DeletePdfType extends CreateUrlType {
+  accessToken: string;
+}
+const deletePdf = async (props: DeletePdfType) => {
+  const { formPath, languageCode, accessToken } = props;
   logger.info(`Delete static pdf ${formPath} for ${languageCode}`);
 
-  await http.delete(createUrl(baseUrl, formPath, languageCode), undefined, { accessToken });
+  await http.delete(createUrl(props), undefined, { accessToken });
 };
 
 const staticPdfService = {

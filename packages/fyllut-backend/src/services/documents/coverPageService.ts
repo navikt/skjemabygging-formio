@@ -95,6 +95,7 @@ const log = (forsteside: ForstesideRequestBody, response: any, logMeta: LogMetad
 
 const coverPageService = {
   createPdf,
+  createPdfRequest,
 };
 
 export default coverPageService;

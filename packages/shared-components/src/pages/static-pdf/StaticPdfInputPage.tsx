@@ -31,31 +31,30 @@ const StaticPdfInputPage = () => {
     <>
       <FormBox bottom="space-32">
         {enhetMaVelgesVedPapirInnsending ? (
-          <FormNavUnitSelect submissionPath="navUnit" />
+          <FormNavUnitSelect submissionPath="coverPage.recipient.navUnit" />
         ) : (
           <div>
             <StaticPdfIdentityType submissionPath="identityType" />
             {!submission?.data.identityType || submission?.data.identityType === 'identityNumber' ? (
               <FormTextField
-                submissionPath="nationalIdentityNumber"
+                submissionPath="coverPage.user.nationalIdentityNumber"
                 label={TEXTS.statiske.identity.identityNumber}
-                validators={{ required: true }}
               />
             ) : (
               <>
-                <FormFirstName submissionPath="firstName" />
-                <FormSurname submissionPath="surname" />
-                <FormStreetAddress submissionPath="address.streetAddress" />
-                <FormPostalCode submissionPath="address.postalCode" />
-                <FormPostalName submissionPath="address.postalName" />
-                <FormCountrySelect submissionPath="address.country" />
+                <FormFirstName submissionPath="coverPage.user.firstName" />
+                <FormSurname submissionPath="coverPage.user.surname" />
+                <FormStreetAddress submissionPath="coverPage.user.address.streetAddress" />
+                <FormPostalCode submissionPath="coverPage.user.address.postalCode" />
+                <FormPostalName submissionPath="coverPage.user.address.postalName" />
+                <FormCountrySelect submissionPath="coverPage.user.address.country" />
               </>
             )}
           </div>
         )}
       </FormBox>
 
-      <SelectAttachmentList submissionPath="attachments" />
+      <SelectAttachmentList submissionPath="coverPage.attachments" />
     </>
   );
 };

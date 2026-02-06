@@ -60,6 +60,7 @@ import forstesideUtils, {
   KjentBruker,
   UkjentBruker,
 } from './forsteside';
+import { CoverPageType } from './forsteside/coverPage';
 import type { ErrorCode, ErrorResponse } from './http';
 import { ResponseError } from './http';
 import languagesUtil from './languages/languagesUtil';
@@ -216,6 +217,7 @@ export type {
   ComponentError,
   ComponentValue,
   ConfigType,
+  CoverPageType,
   CustomLabels,
   DataFetcherComponent,
   DataFetcherData,
