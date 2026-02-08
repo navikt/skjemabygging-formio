@@ -1,12 +1,12 @@
 import { Alert, FileUpload, FormSummary, Label, VStack } from '@navikt/ds-react';
-import { SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { navFormUtils, SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { FormComponentProps } from '../../../types';
 
 const SummaryAttachmentUpload = (props: FormComponentProps) => {
   const { component, submission, translate, formProperties } = props;
   const { label } = component;
   const submissionAttachments = submission?.attachments?.filter(
-    (attachment) => component.navId && attachment.attachmentId.startsWith(component.navId),
+    (attachment) => navFormUtils.getNavId(component) === attachment.navId,
   );
   const showDeadline = (submissionAttachment: SubmissionAttachment) =>
     submissionAttachment?.value && !!component.attachmentValues?.[submissionAttachment.value]?.showDeadline;
@@ -24,7 +24,7 @@ const SummaryAttachmentUpload = (props: FormComponentProps) => {
         {submissionAttachments.map((submissionAttachment) =>
           hasUploadedFiles(submissionAttachment) ? (
             <FormSummary.Value key={submissionAttachment.attachmentId}>
-              {submissionAttachment.title && <Label>{submissionAttachment.title}</Label>}
+              {submissionAttachment.title && <Label>{translate(submissionAttachment.title)}</Label>}
               <VStack gap="space-2" as="ul">
                 {(submissionAttachment.files ?? []).map((file) => (
                   <FileUpload.Item

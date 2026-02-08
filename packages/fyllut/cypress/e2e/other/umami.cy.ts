@@ -225,6 +225,16 @@ describe('Umami', () => {
       cy.findByLabelText('Tekstfelt').type('Test');
       cy.clickNextStep();
 
+      cy.findByRole('heading', { name: /Vedlegg/ }).should('exist');
+      cy.findByRole('group', { name: /Nav skjema test/ }).within(() =>
+        cy.findByLabelText('Jeg legger det ved dette skjemaet').check(),
+      );
+
+      cy.findByLabelText('Annen dokumentasjon').within(() => {
+        cy.findByLabelText('Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved').check();
+      });
+      cy.clickNextStep();
+
       cy.findByRole('heading', { name: /Oppsummering/ }).should('exist');
 
       cy.findByRole('link', { name: 'Instruksjoner for innsending' }).click();

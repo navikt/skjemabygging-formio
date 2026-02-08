@@ -494,6 +494,16 @@ describe('Form navigation', () => {
       cy.findByRole('textbox', { name: 'Tekstfelt' }).type('Test');
       cy.findByRole('link', { name: 'Neste steg' }).click();
 
+      cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
+      cy.url().should('include', '/fyllut/stnone/vedlegg');
+      cy.findByRole('group', { name: /Nav skjema test/ }).within(() =>
+        cy.findByLabelText('Jeg legger det ved dette skjemaet').check(),
+      );
+      cy.findByLabelText('Annen dokumentasjon').within(() => {
+        cy.findByLabelText('Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved').check();
+      });
+      cy.findByRole('link', { name: 'Neste steg' }).click();
+
       cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
       cy.url().should('include', '/fyllut/stnone/oppsummering');
       cy.findByRole('link', { name: 'Instruksjoner for innsending' }).click();

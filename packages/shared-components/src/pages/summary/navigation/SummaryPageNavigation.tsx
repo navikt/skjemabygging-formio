@@ -1,5 +1,6 @@
 import { Alert } from '@navikt/ds-react';
 import {
+  attachmentUtils,
   NavFormType,
   navFormUtils,
   PanelValidation,
@@ -40,7 +41,7 @@ const SummaryPageNavigation = ({ form, submission, panelValidationList, isValid 
   const hasValidationErrors = panelValidationList?.some((panelValidation) => panelValidation.hasValidationErrors);
 
   const getPreviousPathname = () => {
-    if (submissionMethod === 'digitalnologin' && navFormUtils.hasAttachment(form)) {
+    if (attachmentUtils.renderAttachmentPanel(submissionMethod) && navFormUtils.hasAttachment(form)) {
       return '../vedlegg';
     }
 

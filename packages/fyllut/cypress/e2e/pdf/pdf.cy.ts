@@ -551,7 +551,12 @@ describe('Pdf', () => {
         cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
         cy.clickNextStep();
 
-        cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
+        cy.findByRole('group', { name: /Nav skjema test/ }).within(() => {
+          cy.findByRole('radio', { name: TEXTS.statiske.attachment.ettersender }).check();
+        });
+        cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+          cy.findByRole('radio', { name: TEXTS.statiske.attachment.nei }).check();
+        });
         cy.clickNextStep();
 
         cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {

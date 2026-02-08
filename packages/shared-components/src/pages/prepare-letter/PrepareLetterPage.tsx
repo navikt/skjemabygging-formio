@@ -68,7 +68,7 @@ export function PrepareLetterPage() {
     return <LoadingComponent />;
   }
 
-  const attachments = submission?.data ? getAttachments(submission?.data, form) : [];
+  const attachments = submission ? getAttachments(submission, form) : [];
   const hasAttachments = attachments.length > 0;
 
   return (

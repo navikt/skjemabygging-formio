@@ -1,6 +1,8 @@
 import {
   AttachmentSettingValues,
+  AttachmentType,
   Component,
+  ComponentValue,
   NavFormType,
   navFormUtils,
   Submission,
@@ -18,14 +20,15 @@ interface Attachment {
   formioId: string;
   vedleggskjema?: string;
   description?: string;
+  values?: ComponentValue[];
   attachmentValues?: AttachmentSettingValues;
-  attachmentType?: string;
+  attachmentType?: AttachmentType;
 }
 
 const getAttachment = (navId: string, form: NavFormType): Attachment | undefined => {
   return navFormUtils
     .flattenComponents(form.components)
-    .filter((comp) => comp.type === 'attachment' && (comp as Component).navId === navId)
+    .filter((comp) => comp.type === 'attachment' && navFormUtils.getNavId(comp) === navId)
     .map(toAttachment)[0];
 };
 
@@ -41,7 +44,7 @@ const getAllAttachments = (form: NavFormType, submission: Submission): Attachmen
     .map((comp) => {
       return {
         ...comp,
-        navId: comp.navId || comp.id,
+        navId: navFormUtils.getNavId(comp),
       };
     });
 };
@@ -71,7 +74,7 @@ const toAttachment = (comp: Component): Attachment => {
      **   We should trigger a change on all attachment components to generate a navId,
      **   and then remove the code below that assigns comp.id to formioId (see task: https://trello.com/c/ok0YWpGI).
      */
-    formioId: (comp.navId ?? comp.id)!,
+    formioId: navFormUtils.getNavId(comp)!,
   };
 };
 

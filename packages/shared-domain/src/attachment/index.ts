@@ -70,6 +70,11 @@ interface LimitedFormAttachment {
   deadlineWarning?: string | null;
 }
 
+const renderAttachmentPanel = (submissionMethod?: string) => submissionMethod !== 'digital';
+
+const enableAttachmentUpload = (submissionMethod?: string) =>
+  submissionMethod === 'digital' || submissionMethod === 'digitalnologin';
+
 const shouldEnableUpload = (value: string) => value === 'leggerVedNaa';
 
 const mapKeysToOptions = (
@@ -78,7 +83,11 @@ const mapKeysToOptions = (
 ): ComponentValue[] => {
   if (attachmentValues) {
     if (Array.isArray(attachmentValues)) {
-      return attachmentValues;
+      return attachmentValues.map((option) => ({
+        ...option,
+        label: translate(option.label),
+        ...(option.description ? { description: translate(option.description) } : {}),
+      }));
     } else if (typeof attachmentValues === 'object') {
       // map over attachmentSettingKeys to ensure a fixed order
       return attachmentSettingKeys
@@ -128,6 +137,8 @@ const mapToAttachmentSummary = ({
 };
 
 const attachmentUtils = {
+  renderAttachmentPanel,
+  enableAttachmentUpload,
   attachmentSettingKeys,
   mapToAttachmentSummary,
   mapKeysToOptions,
