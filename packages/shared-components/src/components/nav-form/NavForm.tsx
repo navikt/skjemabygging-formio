@@ -82,7 +82,8 @@ const NavForm = ({
   setTitle,
 }: Props) => {
   useStyles();
-  const [webform, setWebform] = useState<Webform>();
+  const webformRef = useRef<Webform>();
+  const [webformVersion, setWebformVersion] = useState(0);
   const { prefillData } = useForm();
   const appConfig = useAppConfig();
   const ref = useRef(null);
@@ -106,76 +107,85 @@ const NavForm = ({
 
         appConfig.logger?.debug('Form ready', {
           newWebformId: newWebform.id,
-          oldWebformId: webform?.id,
+          oldWebformId: webformRef.current?.id,
           language,
           submission,
         });
 
         events?.onReady?.();
-        setWebform(newWebform);
+        webformRef.current = newWebform;
+        setWebformVersion((version) => version + 1);
       }
     },
-    [appConfig, webform, language, i18n, submission],
+    [appConfig, events, i18n, language, panelSlug, submission],
   );
 
   /**
    * Handle events from formio and destroy the webform instance on unmount.
    */
   useEffect(() => {
-    (async () => {
-      if (webform) {
-        webform.onAny((event: string, ...args: any[]) => {
-          appConfig.logger?.trace(`Formio event '${event}'`, { webformId: webform?.id, eventArgs: args });
-          if (event.startsWith('formio.')) {
-            const funcName = `on${event.charAt(7).toUpperCase()}${event.slice(8)}`;
-            if (events && funcName in events) {
-              events[funcName](...args);
-            }
-          }
+    const currentWebform = webformRef.current;
+
+    if (currentWebform) {
+      currentWebform.onAny((event: string, ...args: any[]) => {
+        appConfig.logger?.trace(`Formio event '${event}'`, {
+          webformId: currentWebform.id,
+          eventArgs: args,
         });
-      }
-    })();
+        if (event.startsWith('formio.')) {
+          const funcName = `on${event.charAt(7).toUpperCase()}${event.slice(8)}`;
+          if (events && funcName in events) {
+            events[funcName](...args);
+          }
+        }
+      });
+    }
 
     return () => {
-      if (webform) {
-        appConfig.logger?.debug('Destroy formio on unmount', { webformId: webform.id });
-        webform.destroy(true);
+      if (currentWebform) {
+        appConfig.logger?.debug('Destroy formio on unmount', { webformId: currentWebform.id });
+        currentWebform.destroy(true);
       }
     };
     // Do not want to include events in the dependency array
     // eslint-disable-next-line
-  }, [appConfig.logger, webform]);
+  }, [appConfig.logger, webformVersion]);
 
   /**
    * Set the correct formio page based on url changes (panelSlug)
    */
   useEffect(() => {
-    if (webform && panelSlug && webform.currentPanel?.key !== panelSlug) {
-      const panelIndex = webform.currentPanels.indexOf(panelSlug);
+    const currentWebform = webformRef.current;
+
+    if (currentWebform && panelSlug && currentWebform.currentPanel?.key !== panelSlug) {
+      const panelIndex = currentWebform.currentPanels.indexOf(panelSlug);
       appConfig.logger?.trace(`Update new slug: ${panelSlug}`);
       if (panelIndex >= 0) {
-        webform.setPage(panelIndex);
+        currentWebform.setPage(panelIndex);
       } else {
-        webform.setPage(0);
+        currentWebform.setPage(0);
       }
     }
-  }, [appConfig.logger, webform, panelSlug]);
+  }, [appConfig.logger, panelSlug, webformVersion]);
 
   useEffect(() => {
-    webform?.emitNavigationPathsChanged?.();
-    webform?.emit('submissionChanged', webform._data);
-  }, [webform]);
+    const currentWebform = webformRef.current;
+    currentWebform?.emitNavigationPathsChanged?.();
+    currentWebform?.emit('submissionChanged', currentWebform._data);
+  }, [webformVersion]);
 
   /**
    * Handle fyllut events (focusOnComponent, validateOnNextPage)
    */
   useEffect(() => {
-    if (webform) {
+    const currentWebform = webformRef.current;
+
+    if (currentWebform) {
       appConfig.logger?.trace('Setup fyllut events');
-      fyllutEvents?.on('focusOnComponent', (args) => webform.focusOnComponent(args));
+      fyllutEvents?.on('focusOnComponent', (args) => currentWebform.focusOnComponent(args));
       fyllutEvents?.on('validateOnNextPage', ({ validationResultCallback }) => {
         appConfig.logger?.trace(`Fyllut event 'validateOnNextPage'`);
-        webform.validateOnNextPage(validationResultCallback);
+        currentWebform.validateOnNextPage(validationResultCallback);
       });
       return () => {
         appConfig.logger?.debug('Remove fyllut events');
@@ -183,64 +193,72 @@ const NavForm = ({
         fyllutEvents?.removeListener('validateOnNextPage');
       };
     }
-  }, [appConfig.logger, webform, fyllutEvents]);
+  }, [appConfig.logger, fyllutEvents, webformVersion]);
 
   /**
    * Update form when the user change language
    */
   useEffect(() => {
-    if (webform && webform?.language !== language) {
-      appConfig.logger?.debug('Set language', { webformId: webform?.id, language });
-      webform.language = language;
+    const currentWebform = webformRef.current;
+
+    if (currentWebform && currentWebform.language !== language) {
+      appConfig.logger?.debug('Set language', { webformId: currentWebform.id, language });
+      currentWebform.language = language;
     }
-  }, [appConfig.logger, webform, language]);
+  }, [appConfig.logger, language, webformVersion]);
 
   /**
    * Prefill the form with data
    */
   useEffect(() => {
-    if (webform?.form && prefillData && Object.keys(prefillData).length > 0) {
+    const currentWebform = webformRef.current;
+
+    if (currentWebform?.form && prefillData && Object.keys(prefillData).length > 0) {
       appConfig.logger?.debug('Prefill data and set form if prefill data exist', {
-        webformId: webform?.id,
+        webformId: currentWebform.id,
         prefillData,
       });
-      webform.form = NavFormHelper.prefillForm(webform.form, prefillData);
+      currentWebform.form = NavFormHelper.prefillForm(currentWebform.form, prefillData);
 
       // Need to trigger a handle change event after prefilling form or else
       // submission will not have correct initial state.
       if (events?.onSubmissionChanged) {
-        events.onSubmissionChanged(webform._data);
+        events.onSubmissionChanged(currentWebform._data);
       }
-      webform.emitNavigationPathsChanged();
+      currentWebform.emitNavigationPathsChanged();
     }
     // Do not want to include events in the dependency array
     // eslint-disable-next-line
-  }, [appConfig.logger, webform, prefillData]);
+  }, [appConfig.logger, prefillData, webformVersion]);
 
   /**
    * Initialize the form
    */
   useEffect(() => {
     (async () => {
-      if (Object.keys(i18n).length !== 0 && !webform && !webformStartRef.current) {
+      if (Object.keys(i18n).length !== 0 && !webformRef.current && !webformStartRef.current) {
         webformStartRef.current = true;
         await createForm(form || src);
       }
     })();
-  }, [appConfig.logger, i18n, createForm, webform, src, form]);
+  }, [createForm, form, i18n, src]);
 
   useEffect(() => {
-    if (webform && hash) {
+    const currentWebform = webformRef.current;
+
+    if (currentWebform && hash) {
       const fragmentPath = hash.substring(1);
-      webform.focusOnComponent({ path: decodeURIComponent(fragmentPath) });
+      currentWebform.focusOnComponent({ path: decodeURIComponent(fragmentPath) });
     }
-  }, [webform, hash]);
+  }, [hash, webformVersion]);
 
   useEffect(() => {
-    if (webform?.currentPanel?.title && setTitle) {
-      setTitle(webform.currentPanel.title);
+    const currentWebform = webformRef.current;
+
+    if (currentWebform?.currentPanel?.title && setTitle) {
+      setTitle(currentWebform.currentPanel.title);
     }
-  }, [webform?.currentPanel, setTitle]);
+  }, [setTitle, webformVersion]);
 
   return <div className={className} data-testid="formMountElement" ref={ref} />;
 };
