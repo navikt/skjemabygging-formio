@@ -1,5 +1,6 @@
 import { Label, VStack } from '@navikt/ds-react';
 import { SubmissionAttachmentValue, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { useRef } from 'react';
 import { useLanguages } from '../../context/languages';
 import Attachment from '../attachment/Attachment';
 import { useAttachmentUpload } from '../attachment/AttachmentUploadContext';
@@ -7,9 +8,10 @@ import { attachmentValidator } from '../attachment/attachmentValidator';
 import FileUploader from '../file-uploader/FileUploader';
 import PersonalIdUploadReadMore from './PersonalIdUploadReadMore';
 
-const PersonalIdUpload = ({ refs }: { refs?: any }) => {
+const PersonalIdUpload = ({ refs: _forwardedRefs }: { refs?: any }) => {
   const { translate } = useLanguages();
   const { changeAttachmentValue, submissionAttachments, errors } = useAttachmentUpload();
+  const localRefs = useRef<Record<string, HTMLInputElement | HTMLFieldSetElement | null>>({});
 
   const options = [
     { value: 'norwegianPassport', label: translate(TEXTS.statiske.uploadId.norwegianPassport), upload: true },
@@ -45,9 +47,7 @@ const PersonalIdUpload = ({ refs }: { refs?: any }) => {
           onChange={handleValueChange}
           translate={translate}
           ref={(ref) => {
-            if (refs?.current) {
-              refs.current[`${attachmentId}-VALUE`] = ref;
-            }
+            localRefs.current[`${attachmentId}-VALUE`] = ref;
           }}
         />
       )}
