@@ -55,6 +55,7 @@ const ActiveTasksPage = () => {
 
   useEffect(() => {
     const initialize = async () => {
+      if (!form) return;
       const response = await getActiveTasks(form, appConfig);
       setMellomlagringer(
         response
@@ -64,7 +65,7 @@ const ActiveTasksPage = () => {
       setHasEttersendelse(response.some((task) => task.soknadstype === 'ettersendelse'));
     };
     initialize();
-  }, []);
+  }, [form, appConfig]);
 
   const getUrl = (path: string = '', additionalSearchParams: Record<string, string> | undefined = {}) => {
     const existingAndAdditionalSearchParams = new URLSearchParams({
