@@ -2,7 +2,7 @@ import { Skeleton, Table, UNSAFE_Combobox } from '@navikt/ds-react';
 import { ComboboxOption } from '@navikt/ds-react/esm/form/combobox/types';
 import { ButtonWithSpinner, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { AppLayout } from '../components/AppLayout';
 import RowLayout from '../components/layout/RowLayout';
 import Title from '../components/layout/Title';
@@ -36,11 +36,12 @@ const ImportFormsPage = () => {
       .catch((_err) => setFormsErrorMessage('Feil ved henting av skjema fra produksjon'));
   }, []);
 
+  const mappedOptions = useMemo(() => forms.map(mapToOption), [forms]);
+
   useEffect(() => {
-    const opts = forms.map(mapToOption);
-    setOptions(opts);
-    setFilteredOptions(opts);
-  }, [forms]);
+    setOptions(mappedOptions);
+    setFilteredOptions(mappedOptions);
+  }, [mappedOptions]);
 
   const filterOptions = useCallback(
     (searchTerm: string | undefined) => {
