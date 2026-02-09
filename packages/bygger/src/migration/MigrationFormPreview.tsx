@@ -8,7 +8,7 @@ import {
   makeStyles,
   Styles,
 } from '@navikt/skjemadigitalisering-shared-components';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 
 const useStyles = makeStyles({
@@ -27,18 +27,31 @@ const MigrationFormPreview = () => {
   const navigate = useNavigate();
 
   const styles = useStyles();
+  const requestUrl = useMemo(() => `/api/migrate/preview/${formPath ?? ''}${search}`, [formPath, search]);
+
   useEffect(() => {
-    try {
-      fetch(`/api/migrate/preview/${formPath}${search}`, {
-        method: 'GET',
-        headers: {
-          'content-type': 'application/json',
-        },
-      }).then((response) => response.json().then(setForm));
-    } catch (err: any) {
-      setError(err instanceof Error ? (err as Error).message : 'Noe galt skjedde da vi prøvde å laste skjemaet');
-    }
-  }, [formPath, search]);
+    let cancelled = false;
+
+    fetch(requestUrl, {
+      method: 'GET',
+      headers: {
+        'content-type': 'application/json',
+      },
+    })
+      .then(async (response) => {
+        if (cancelled) return;
+        const json = await response.json();
+        setForm(json);
+      })
+      .catch((err: unknown) => {
+        if (cancelled) return;
+        setError(err instanceof Error ? err.message : 'Noe galt skjedde da vi prøvde å laste skjemaet');
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [requestUrl]);
 
   if (!form && !error) {
     return <LoadingComponent />;
