@@ -1,7 +1,7 @@
 import { Alert, Table } from '@navikt/ds-react';
 import { htmlUtils } from '@navikt/skjemadigitalisering-shared-components';
 import { FormsApiTranslation, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { TranslationError } from '../../context/translations/utils/errorUtils';
 import { getInputHeightInRows } from '../utils/translationsUtils';
 import { useTranslationTableStyles } from './styles';
@@ -26,14 +26,10 @@ const TranslationRow = ({ translation, updateTranslation, errors, editState, isK
     [errors, translation.key],
   );
 
-  useEffect(() => {
-    if (editState === 'SAVED' && !error) {
-      setIsEditing(false);
-    }
-  }, [editState, error]);
+  const effectiveEditing = editState === 'SAVED' && !error ? false : isEditing;
 
   const handleRowClick = () => {
-    if (!isEditing) {
+    if (!effectiveEditing) {
       setIsEditing(true);
     }
   };
@@ -48,8 +44,8 @@ const TranslationRow = ({ translation, updateTranslation, errors, editState, isK
   const hasGlobalOverride = !!translation.globalTranslationId;
 
   return (
-    <Table.Row className={isEditing ? '' : styles.clickableRow} onClick={handleRowClick}>
-      {isEditing ? (
+    <Table.Row className={effectiveEditing ? '' : styles.clickableRow} onClick={handleRowClick}>
+      {effectiveEditing ? (
         <>
           {isKeyBased ? (
             <Table.DataCell className={styles.column}>
