@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 type LoaderState<T> = {
   data?: T;
@@ -11,9 +11,19 @@ type LoaderState<T> = {
  */
 export const useAsyncLoader = <T>(fetchFn: () => Promise<T>) => {
   const [state, setState] = useState<LoaderState<T>>({ isReady: false });
+  const isMountedRef = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   const reload = useCallback(async () => {
     const data = await fetchFn();
+    if (!isMountedRef.current) {
+      return data;
+    }
     setState({ data, isReady: true });
     return data;
   }, [fetchFn]);
