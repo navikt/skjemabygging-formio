@@ -32,10 +32,17 @@ interface Props {
   componentId: string;
   description?: string;
   className?: string;
-  refs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | HTMLButtonElement | null>>;
+  attachmentRefs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | HTMLButtonElement | null>>;
 }
 
-const OtherAttachmentUpload = ({ label, attachmentValues, componentId, description, className, refs }: Props) => {
+const OtherAttachmentUpload = ({
+  label,
+  attachmentValues,
+  componentId,
+  description,
+  className,
+  attachmentRefs: attachmentRefsRef,
+}: Props) => {
   const styles = useAttachmentStyles();
   const { translate } = useLanguages();
   const { changeAttachmentValue, handleDeleteAttachment, submissionAttachments, errors } = useAttachmentUpload();
@@ -119,8 +126,11 @@ const OtherAttachmentUpload = ({ label, attachmentValues, componentId, descripti
           translate={translate}
           deadline={form.properties?.ettersendelsesfrist}
           ref={(ref) => {
-            if (refs?.current) {
-              refs.current[`${componentId}-VALUE`] = ref;
+            if (attachmentRefsRef) {
+              attachmentRefsRef.current = {
+                ...(attachmentRefsRef.current ?? {}),
+                [`${componentId}-VALUE`]: ref,
+              };
             }
           }}
         />
@@ -142,7 +152,7 @@ const OtherAttachmentUpload = ({ label, attachmentValues, componentId, descripti
                 attachmentValue={otherAttachment?.value}
                 showDeleteAttachmentButton={attachments.length > 1}
                 onDeleteAttachment={handleDelete}
-                refs={refs}
+                attachmentRefs={attachmentRefsRef}
                 readMore={<FileUploadReadMore />}
               />
             ))}
