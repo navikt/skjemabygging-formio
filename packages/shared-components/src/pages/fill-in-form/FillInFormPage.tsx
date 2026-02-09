@@ -33,7 +33,13 @@ export const FillInFormPage = () => {
   const navigate = useNavigate();
   const { search } = useLocation();
   const { submissionMethod, logger } = useAppConfig();
-  const [formForRendering, setFormForRendering] = useState<NavFormType>();
+  const formForRendering = useMemo<NavFormType | undefined>(
+    () =>
+      submissionMethod === 'digital' || submissionMethod === 'digitalnologin'
+        ? navFormUtils.removeVedleggspanel(form)
+        : form,
+    [form, submissionMethod],
+  );
   const [formIsReady, setFormIsReady] = useState<boolean>(false);
   const { mellomlagringError, isMellomlagringAvailable, isMellomlagringReady } = useSendInn();
   const { currentLanguage, translationsForNavForm, translate } = useLanguages();
@@ -137,14 +143,6 @@ export const FillInFormPage = () => {
   );
 
   const updateFormIsReady = useCallback(() => setFormIsReady(true), []);
-
-  useEffect(() => {
-    setFormForRendering(
-      submissionMethod === 'digital' || submissionMethod === 'digitalnologin'
-        ? navFormUtils.removeVedleggspanel(form)
-        : form,
-    );
-  }, [form, submissionMethod]);
 
   if (!translationsForNavForm) {
     return null;
