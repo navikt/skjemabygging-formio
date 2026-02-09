@@ -1,6 +1,6 @@
 import { Alert, Checkbox, CheckboxGroup, Radio, RadioGroup, Skeleton } from '@navikt/ds-react';
 import { SendInnAktivitet, SubmissionActivity, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { ReactNode, forwardRef, useEffect, useState } from 'react';
+import { ReactNode, forwardRef, useEffect, useMemo, useState } from 'react';
 import { getActivities } from '../../api/sendinn/sendInnActivities';
 import { useComponentUtils } from '../../context/component/componentUtilsContext';
 import { mapToSubmissionActivity } from '../../formio/components/core/activities/Activities.utils';
@@ -24,7 +24,7 @@ type ActivityDataType = 'aktivitet' | 'vedtak';
 // Renders a activity-data from Arena
 // In some cases it's more relevant to list all 'vedtak' that are part of the activities instead
 const NavActivities = forwardRef<HTMLFieldSetElement, Props>((props: Props, ref) => {
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(!props.activities);
   const [activitySelections, setActivitySelections] = useState<SubmissionActivity[]>([]);
   const [showError, setShowError] = useState<boolean>(false);
   const { translate, locale, appConfig } = useComponentUtils();
@@ -32,6 +32,12 @@ const NavActivities = forwardRef<HTMLFieldSetElement, Props>((props: Props, ref)
   const submissionMethod = appConfig?.submissionMethod;
   const isLoggedIn = appConfig?.config?.isLoggedIn;
   const app = appConfig?.app;
+
+  const autoSelectSingleActivity = (submissionActivities: SubmissionActivity[]) => {
+    if (submissionActivities.length === 1 && props.shouldAutoSelectSingleActivity) {
+      props.onChange(submissionActivities[0], { modified: true, autoSelect: true });
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -67,18 +73,18 @@ const NavActivities = forwardRef<HTMLFieldSetElement, Props>((props: Props, ref)
     if (props.activities) {
       const submissionActivities = mapToSubmissionActivity(props.activities, props.dataType, locale);
       autoSelectSingleActivity(submissionActivities);
-      setActivitySelections(submissionActivities);
     }
   }, [props.activities, props.dataType]);
 
+  const derivedActivities = useMemo(
+    () => (props.activities ? mapToSubmissionActivity(props.activities, props.dataType, locale) : activitySelections),
+    [activitySelections, locale, props.activities, props.dataType],
+  );
+
+  const derivedLoading = props.activities ? false : loading;
+
   const getId = (activity: SubmissionActivity) => {
     return activity.vedtaksId ?? activity.aktivitetId;
-  };
-
-  const autoSelectSingleActivity = (submissionActivities: SubmissionActivity[]) => {
-    if (submissionActivities.length === 1 && props.shouldAutoSelectSingleActivity) {
-      props.onChange(submissionActivities[0], { modified: true, autoSelect: true });
-    }
   };
 
   const renderCheckbox = () => {
@@ -105,8 +111,8 @@ const NavActivities = forwardRef<HTMLFieldSetElement, Props>((props: Props, ref)
     } else if (value === 'ingenAktivitet') {
       props.onChange(props.defaultActivity, { modified: true });
     } else {
-      const vedtakActivity = activitySelections.find((x) => x.vedtaksId === value);
-      const activity = activitySelections.find((x) => x.aktivitetId === value);
+      const vedtakActivity = derivedActivities.find((x) => x.vedtaksId === value);
+      const activity = derivedActivities.find((x) => x.aktivitetId === value);
 
       if (vedtakActivity) {
         props.onChange(vedtakActivity, { modified: true });
@@ -129,7 +135,7 @@ const NavActivities = forwardRef<HTMLFieldSetElement, Props>((props: Props, ref)
         tabIndex={-1}
         ref={ref}
       >
-        {activitySelections?.map((activity: SubmissionActivity) => {
+        {derivedActivities?.map((activity: SubmissionActivity) => {
           return (
             <Radio key={getId(activity)} value={getId(activity)}>
               {activity.text}
@@ -151,11 +157,11 @@ const NavActivities = forwardRef<HTMLFieldSetElement, Props>((props: Props, ref)
   // Show radio buttons if there are multiple activities (including the default activity)
   // Show checkbox if there are no activities (default activity is shown)
   const renderActivities = () => {
-    if (loading) {
+    if (derivedLoading) {
       return <Skeleton variant="rounded" width="100%" height={150} />;
-    } else if (activitySelections.length === 1 && props.shouldAutoSelectSingleActivity) {
+    } else if (derivedActivities.length === 1 && props.shouldAutoSelectSingleActivity) {
       return <></>;
-    } else if (activitySelections.length > 0) {
+    } else if (derivedActivities.length > 0) {
       return renderRadioGroup();
     } else if (props.defaultActivity) {
       return renderCheckbox();
