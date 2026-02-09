@@ -1,6 +1,6 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { Utils } from 'formiojs';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import ReactSelect, { components, OnChangeValue } from 'react-select';
 import Select from 'react-select/base';
 import http from '../../../../api/util/http/http';
@@ -45,7 +45,15 @@ const ReactSelectWrapper = ({
   screenReaderStatus,
   loadingMessage,
 }) => {
-  const selectedOption = useMemo(() => options.find((o) => o?.value === value) ?? null, [options, value]);
+  const [selectedOption, setSelectedOption] = useState(value);
+  const selectedOptionFromValue = useMemo(() => {
+    if (!value) return null;
+    if (typeof value === 'object' && 'value' in value) {
+      return options.find((o) => o?.value === value.value) ?? value;
+    }
+    return options.find((o) => o?.value === value) ?? null;
+  }, [options, value]);
+  const resolvedSelectedOption = selectedOptionFromValue ?? (selectedOption || null);
 
   return (
     <ReactSelect
@@ -55,7 +63,7 @@ const ReactSelectWrapper = ({
       aria-describedby={component.description ? `d-${component.id}-${component.key}` : ''}
       aria-label={label}
       options={options}
-      value={selectedOption}
+      value={resolvedSelectedOption}
       defaultValue={component.defaultValue}
       inputId={`${component.id}-${component.key}`}
       required={component.validate.required}
@@ -75,10 +83,12 @@ const ReactSelectWrapper = ({
           case 'select-option': {
             const newValue = event.value;
             const selectedOption = options.find((o) => o.value === newValue);
+            setSelectedOption(selectedOption);
             onChange(selectedOption);
             break;
           }
           case 'clear':
+            setSelectedOption('');
             onChange('');
         }
       }}
