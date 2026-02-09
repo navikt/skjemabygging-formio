@@ -63,14 +63,14 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
   const updateSubmission = useCallback(
     (submissionPath: string, value: any) => {
       setSubmission((prevSubmission) => {
-        if (!prevSubmission) return prevSubmission;
+        const baseSubmission: Submission = prevSubmission ?? { data: {} };
         const nextData = setDeepValue(
-          prevSubmission.data ?? {},
+          baseSubmission.data ?? {},
           submissionPath.split('.'),
           value,
         ) as Submission['data'];
         return {
-          ...prevSubmission,
+          ...baseSubmission,
           data: nextData,
         };
       });
