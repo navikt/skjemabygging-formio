@@ -1,7 +1,7 @@
 import { UploadIcon } from '@navikt/aksel-icons';
 import { Button, FileObject, FileUpload, VStack } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { MutableRefObject, ReactNode, useState } from 'react';
+import { MutableRefObject, ReactNode, useCallback, useState } from 'react';
 import { FILE_ACCEPT, MAX_SIZE_ATTACHMENT_FILE_BYTES } from '../../constants/fileUpload';
 import { useLanguages } from '../../context/languages';
 import makeStyles from '../../util/styles/jss/jss';
@@ -31,7 +31,7 @@ const UploadButton = ({
   attachmentId,
   variant = 'primary',
   allowUpload,
-  refs,
+  refs: refsRef,
   readMore,
   translationParams,
   accept = FILE_ACCEPT,
@@ -43,6 +43,16 @@ const UploadButton = ({
   const { handleUploadFile, errors, addError } = useAttachmentUpload();
 
   const [loading, setLoading] = useState(false);
+
+  const registerFileButtonRef = useCallback(
+    (ref: HTMLButtonElement | null) => {
+      if (!refsRef) {
+        return;
+      }
+      refsRef.current = { ...(refsRef.current ?? {}), [`${attachmentId}-FILE`]: ref };
+    },
+    [attachmentId, refsRef],
+  );
 
   const uploadErrorMessage = errors[attachmentId]?.find((error) => error.type === 'FILE')?.message;
 
@@ -69,11 +79,7 @@ const UploadButton = ({
             className={styles.button}
             loading={loading}
             icon={<UploadIcon aria-hidden fontSize="1.5rem" />}
-            ref={(ref) => {
-              if (refs?.current) {
-                refs.current[`${attachmentId}-FILE`] = ref;
-              }
-            }}
+            ref={registerFileButtonRef}
           >
             {translate(
               variant === 'primary' ? TEXTS.statiske.uploadFile.selectFile : TEXTS.statiske.uploadFile.uploadMoreFiles,
@@ -85,11 +91,7 @@ const UploadButton = ({
           variant={variant}
           className={styles.button}
           icon={<UploadIcon aria-hidden fontSize="1.5rem" />}
-          ref={(ref) => {
-            if (refs?.current) {
-              refs.current[`${attachmentId}-FILE`] = ref;
-            }
-          }}
+          ref={registerFileButtonRef}
           onClick={() =>
             addError(
               attachmentId,
