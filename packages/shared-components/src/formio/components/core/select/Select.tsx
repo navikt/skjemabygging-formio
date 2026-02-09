@@ -1,6 +1,6 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { Utils } from 'formiojs';
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import ReactSelect, { components, OnChangeValue } from 'react-select';
 import Select from 'react-select/base';
 import http from '../../../../api/util/http/http';
@@ -45,10 +45,7 @@ const ReactSelectWrapper = ({
   screenReaderStatus,
   loadingMessage,
 }) => {
-  const [selectedOption, setSelectedOption] = useState(value);
-  useEffect(() => {
-    setSelectedOption(value);
-  }, [value, options]);
+  const selectedOption = useMemo(() => options.find((o) => o?.value === value) ?? null, [options, value]);
 
   return (
     <ReactSelect
@@ -78,12 +75,10 @@ const ReactSelectWrapper = ({
           case 'select-option': {
             const newValue = event.value;
             const selectedOption = options.find((o) => o.value === newValue);
-            setSelectedOption(selectedOption);
             onChange(selectedOption);
             break;
           }
           case 'clear':
-            setSelectedOption('');
             onChange('');
         }
       }}
