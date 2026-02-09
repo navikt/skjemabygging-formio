@@ -377,10 +377,11 @@ describe('Submission Type', () => {
       cy.findByRole('link', { name: 'Vedlegg' }).should('exist');
     });
 
-    it('displays an error message when sub is manually set in url', () => {
+    it('redirects when non-supported sub is manually set in url', () => {
       cy.visit('/fyllut/stnone?sub=digital');
       cy.defaultWaits();
-      cy.findByRole('heading', { name: 'Ugyldig innsendingsvalg' }).should('exist');
+      cy.findByRole('heading', { name: 'Introduksjon' }).should('exist');
+      cy.url().should('not.include', 'sub=');
     });
 
     it('does not add sub if missing (INCLUDE_DIST_TESTS)', () => {
