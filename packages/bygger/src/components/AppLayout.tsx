@@ -1,5 +1,6 @@
 import { Page } from '@navikt/ds-react';
 import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import React from 'react';
 import PageWrapper from '../Forms/PageWrapper';
 import { NavBar, NavBarProps } from './Navbar/NavBar';
@@ -7,6 +8,7 @@ import { NavBar, NavBarProps } from './Navbar/NavBar';
 export interface Props {
   children: React.ReactNode;
   navBarProps?: NavBarProps;
+  form?: Form;
 }
 
 const useStyles = makeStyles({
@@ -22,12 +24,12 @@ const useStyles = makeStyles({
   },
 });
 
-export const AppLayout = ({ children, navBarProps }: Props) => {
+export const AppLayout = ({ children, navBarProps, form }: Props) => {
   const styles = useStyles();
   return (
     <Page className={styles.page}>
       <div className={styles.headerContainer}>
-        <NavBar {...navBarProps} />
+        <NavBar {...navBarProps} form={form} />
       </div>
       <Page.Block width="2xl">
         <PageWrapper>{children}</PageWrapper>

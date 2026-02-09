@@ -1,11 +1,16 @@
 import { ChatExclamationmarkIcon, CogIcon, EyeIcon, FilePdfIcon, GlobeIcon, PencilIcon } from '@navikt/aksel-icons';
+import { Form, submissionTypesUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useAuth } from '../../../context/auth-context';
 import useUnsavedChangesModal from '../../../hooks/useUnsavedChangesModal';
 import { MenuLink } from './MenuLink';
 
-export const FormMenu = ({ formPath }) => {
+export const FormMenu = ({ formPath, form }: { formPath?: string; form?: Form }) => {
   const { unsavedChangesModalContent, showUnsavedChangesModal } = useUnsavedChangesModal();
   const { userData } = useAuth();
+
+  if (!formPath) {
+    return null;
+  }
 
   return (
     <>
@@ -42,7 +47,7 @@ export const FormMenu = ({ formPath }) => {
         <span>Oversettelser</span>
       </MenuLink>
 
-      {userData?.isAdmin && (
+      {userData?.isAdmin && submissionTypesUtils.isStaticPdf(form?.properties?.submissionTypes) && (
         <MenuLink to={`/forms/${formPath}/pdf`} noIconStyling={false}>
           <FilePdfIcon fontSize="1.5rem" role="presentation" />
           <span>PDF</span>

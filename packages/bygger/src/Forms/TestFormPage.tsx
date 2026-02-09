@@ -42,6 +42,7 @@ export function TestFormPage({ form }) {
         formMenu: true,
         formPath: form.path,
       }}
+      form={form}
     >
       <LanguagesProvider translations={i18n}>
         <FyllUtRouter form={form} />

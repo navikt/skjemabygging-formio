@@ -9,18 +9,10 @@ interface Props {
   error?: any;
   onChange: (value: any[]) => void;
   readonly?: boolean;
-  excludeDigitalNoLogin?: boolean;
+  hideTypes?: ('DIGITAL_NO_LOGIN' | 'STATIC_PDF')[];
 }
 
-export const SubmissionTypeCheckbox = ({
-  name,
-  label,
-  value,
-  onChange,
-  error,
-  readonly,
-  excludeDigitalNoLogin,
-}: Props) => {
+export const SubmissionTypeCheckbox = ({ name, label, value, onChange, error, readonly, hideTypes }: Props) => {
   const { userData } = useAuth();
 
   // TODO: Remove userData.isAdmin when digital no login is released
@@ -37,7 +29,16 @@ export const SubmissionTypeCheckbox = ({
     >
       <Checkbox value="PAPER">Papir</Checkbox>
       <Checkbox value="DIGITAL">Digital</Checkbox>
-      {!excludeDigitalNoLogin && userData?.isAdmin && <Checkbox value="DIGITAL_NO_LOGIN">Uinnlogget digital</Checkbox>}
+      {!hideTypes?.includes('DIGITAL_NO_LOGIN') && (
+        <Checkbox value="DIGITAL_NO_LOGIN" disabled={!userData?.isAdmin}>
+          Uinnlogget digital
+        </Checkbox>
+      )}
+      {!hideTypes?.includes('STATIC_PDF') && (
+        <Checkbox value="STATIC_PDF" disabled={!userData?.isAdmin}>
+          Statisk PDF
+        </Checkbox>
+      )}
     </CheckboxGroup>
   );
 };

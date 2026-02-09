@@ -28,6 +28,10 @@ function isNoneSubmission(submissionTypes?: SubmissionType[]): boolean {
   return !!submissionTypes && !submissionTypes.length;
 }
 
+function isStaticPdf(submissionTypes?: SubmissionType[]): boolean {
+  return !!submissionTypes?.includes('STATIC_PDF');
+}
+
 function asMethod(submissionType: SubmissionType): SubmissionMethod {
   switch (submissionType) {
     case 'DIGITAL':
@@ -36,6 +40,8 @@ function asMethod(submissionType: SubmissionType): SubmissionMethod {
       return 'digitalnologin';
     case 'PAPER':
       return 'paper';
+    case 'STATIC_PDF':
+      return 'staticpdf';
   }
 }
 
@@ -47,6 +53,7 @@ const submissionTypesUtils = {
   isNoneSubmission,
   isPaperSubmission,
   isPaperSubmissionOnly,
+  isStaticPdf,
   asMethod,
 };
 

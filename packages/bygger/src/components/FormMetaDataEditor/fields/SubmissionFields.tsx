@@ -40,7 +40,7 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
         value={subsequentSubmissionTypes}
         error={errors?.subsequentSubmissionTypes}
         readonly={isLockedForm}
-        excludeDigitalNoLogin={true}
+        hideTypes={['DIGITAL_NO_LOGIN', 'STATIC_PDF']}
         onChange={(data) =>
           onChange({
             ...form,
