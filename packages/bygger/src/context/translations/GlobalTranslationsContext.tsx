@@ -1,5 +1,5 @@
 import { FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useMemo } from 'react';
 import ApiError from '../../api/ApiError';
 import useGlobalTranslationsApi from '../../api/useGlobalTranslationsApi';
 import { useFeedbackEmit } from '../notifications/FeedbackContext';
@@ -10,6 +10,7 @@ import {
   getTagsWithIncompleteTranslations,
   GlobalTranslationTag,
 } from './utils/globalTranslationsUtils';
+import { useAsyncLoader } from './utils/useAsyncLoader';
 
 interface ContextValue {
   translations: FormsApiTranslation[];
@@ -42,46 +43,19 @@ const GlobalTranslationsContext = createContext<ContextValue>(defaultValue);
 const GlobalTranslationsProvider = ({ children }) => {
   const feedbackEmit = useFeedbackEmit();
 
-  const [state, setState] = useState<{
-    isReady: boolean;
-    data?: FormsApiTranslation[];
-  }>({
-    isReady: false,
-  });
   const translationsApi = useGlobalTranslationsApi();
 
   const fetchTranslations = useCallback(async () => translationsApi.get(), [translationsApi]);
 
+  const { data, isReady, reload, setData } = useAsyncLoader(fetchTranslations);
+
   const loadTranslations = useCallback(async () => {
-    const data = await fetchTranslations();
-    setState({ data, isReady: true });
-  }, [fetchTranslations]);
-
-  useEffect(() => {
-    if (state.isReady) {
-      return;
-    }
-
-    let cancelled = false;
-
-    fetchTranslations()
-      .then((data) => {
-        if (cancelled) return;
-        setState({ data, isReady: true });
-      })
-      .catch(() => {
-        if (cancelled) return;
-        setState((current) => ({ ...current, isReady: true }));
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [fetchTranslations, state.isReady]);
+    await reload();
+  }, [reload]);
 
   const storedTranslationsMap = useMemo<Record<string, FormsApiTranslation>>(
-    () => (state.data ?? []).reduce((acc, translation) => ({ ...acc, [translation.key]: translation }), {}),
-    [state.data],
+    () => (data ?? []).reduce((acc, translation) => ({ ...acc, [translation.key]: translation }), {}),
+    [data],
   );
 
   const translationsPerTag = useMemo(() => generateAndPopulateTags(storedTranslationsMap), [storedTranslationsMap]);
@@ -115,10 +89,7 @@ const GlobalTranslationsProvider = ({ children }) => {
   const deleteTranslation = async (id: number) => {
     const result = await translationsApi.delete(id);
     if (result) {
-      setState((current) => ({
-        ...current,
-        data: current.data?.filter((translation) => translation.id !== id),
-      }));
+      setData((current) => current?.filter((translation) => translation.id !== id));
     }
   };
 
@@ -134,11 +105,11 @@ const GlobalTranslationsProvider = ({ children }) => {
   };
 
   const value = {
-    translations: state.data ?? [],
+    translations: data ?? [],
     storedTranslations: storedTranslationsMap,
     translationsPerTag,
     loadTranslations,
-    isReady: state.isReady,
+    isReady,
     saveTranslation,
     createNewTranslation,
     deleteTranslation,

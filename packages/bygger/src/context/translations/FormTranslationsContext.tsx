@@ -1,7 +1,8 @@
 import { FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
-import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, ReactNode, useCallback, useContext, useMemo } from 'react';
 import useFormTranslationsApi from '../../api/useFormTranslationsApi';
 import { TimestampEvent } from '../../Forms/status/types';
+import { useAsyncLoader } from './utils/useAsyncLoader';
 import { findLastSaveTimestamp } from './utils/utils';
 
 interface ContextValue {
@@ -31,22 +32,16 @@ const defaultValue: ContextValue = {
 
 const FormTranslationsContext = createContext<ContextValue>(defaultValue);
 
-type State = { isReady: boolean; data?: FormsApiTranslation[]; lastSave?: TimestampEvent | undefined };
-
 const FormTranslationsProvider = ({ children, formPath }: Props) => {
-  const [state, setState] = useState<State>({ isReady: false });
   const translationsApi = useFormTranslationsApi();
 
-  const loadTranslations = useCallback(async () => {
-    const data = await translationsApi.get(formPath);
-    setState({ data, isReady: true, lastSave: findLastSaveTimestamp(data) });
-  }, [formPath, translationsApi]);
+  const fetchTranslations = useCallback(async () => translationsApi.get(formPath), [formPath, translationsApi]);
 
-  useEffect(() => {
-    if (!state.isReady) {
-      loadTranslations();
-    }
-  }, [loadTranslations, state.isReady]);
+  const { data, isReady, reload, setData } = useAsyncLoader(fetchTranslations);
+
+  const loadTranslations = useCallback(async () => {
+    await reload();
+  }, [reload]);
 
   const saveTranslation = async (translation: FormsApiTranslation): Promise<FormsApiTranslation> => {
     if (!translation.key) {
@@ -62,23 +57,22 @@ const FormTranslationsProvider = ({ children, formPath }: Props) => {
   const deleteTranslation = async (id: number) => {
     const result = await translationsApi.delete(formPath, id);
     if (result) {
-      setState((current) => ({
-        ...current,
-        data: current.data?.filter((translation) => translation.id !== id),
-      }));
+      setData((current) => current?.filter((translation) => translation.id !== id));
     }
   };
 
   const storedTranslations = useMemo<Record<string, FormsApiTranslation>>(
-    () => (state.data ?? []).reduce((acc, translation) => ({ ...acc, [translation.key]: translation }), {}),
-    [state.data],
+    () => (data ?? []).reduce((acc, translation) => ({ ...acc, [translation.key]: translation }), {}),
+    [data],
   );
 
+  const lastSave = useMemo<TimestampEvent | undefined>(() => findLastSaveTimestamp(data ?? []), [data]);
+
   const value = {
-    translations: state.data ?? [],
+    translations: data ?? [],
     storedTranslations,
-    isReady: state.isReady,
-    lastSave: state.lastSave,
+    isReady,
+    lastSave,
     loadTranslations,
     saveTranslation,
     deleteTranslation,
