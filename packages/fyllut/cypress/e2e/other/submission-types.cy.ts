@@ -378,6 +378,8 @@ describe('Submission Type', () => {
     });
 
     it('redirects when non-supported sub is manually set in url', () => {
+      cy.skipIfNoIncludeDistTests();
+
       cy.visit('/fyllut/stnone?sub=digital');
       cy.defaultWaits();
       cy.findByRole('heading', { name: 'Introduksjon' }).should('exist');
