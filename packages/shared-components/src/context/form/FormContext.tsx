@@ -7,7 +7,6 @@ import {
   Submission,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, Dispatch, SetStateAction, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import UtilsOverrides from '../../formio/overrides/utils-overrides/utils-overrides';
 import { useAppConfig } from '../config/configContext';
 
 interface FormContextType {
@@ -35,7 +34,6 @@ const FormContext = createContext<FormContextType>({} as FormContextType);
 
 export const FormProvider = ({ children, form }: FormProviderProps) => {
   const [submission, setSubmission] = useState<Submission>();
-  const [activeComponents, setActiveComponents] = useState<Component[]>([]);
   const [formProgressOpen, setFormProgressOpen] = useState<boolean>(false);
   const [formProgressVisible, setFormProgressVisible] = useState<boolean>(false);
   const [prefillData, setPrefillData] = useState<PrefillData>({});
@@ -47,42 +45,35 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
     return activeAttachmentPanel ? (JSON.parse(JSON.stringify(activeAttachmentPanel)) as Panel) : undefined;
   }, [form, submission, submissionMethod]);
 
-  const checkConditions = useCallback(
-    (components: Component[]): Component[] => {
-      return components
-        .map((component) => {
-          if (!UtilsOverrides.checkCondition(component, undefined, submission?.data, form, undefined, submission)) {
-            return;
-          }
-
-          if (component.components?.length) {
-            component.components = checkConditions(component.components);
-          }
-
-          return component;
-        })
-        .filter((component) => component !== undefined);
-    },
-    [form, submission],
-  );
-
   const setDeepValue = useCallback((obj: object, path: string[], value: any) => {
-    if (path.length === 1) {
-      return { ...obj, [path[0]]: value };
-    }
-    const [key, ...rest] = path;
-    return {
-      ...obj,
-      [key]: setDeepValue(obj?.[key] ?? {}, rest, value),
+    const assignPath = (node: object, remainingPath: string[], newValue: any): object => {
+      if (remainingPath.length === 1) {
+        return { ...node, [remainingPath[0]]: newValue };
+      }
+      const [key, ...rest] = remainingPath;
+      return {
+        ...node,
+        [key]: assignPath((node as any)?.[key] ?? {}, rest, newValue),
+      };
     };
+
+    return assignPath(obj, path, value);
   }, []);
 
   const updateSubmission = useCallback(
     (submissionPath: string, value: any) => {
-      setSubmission((prevSubmission) => ({
-        ...prevSubmission,
-        data: setDeepValue(prevSubmission?.data ?? {}, submissionPath.split('.'), value),
-      }));
+      setSubmission((prevSubmission) => {
+        if (!prevSubmission) return prevSubmission;
+        const nextData = setDeepValue(
+          prevSubmission.data ?? {},
+          submissionPath.split('.'),
+          value,
+        ) as Submission['data'];
+        return {
+          ...prevSubmission,
+          data: nextData,
+        };
+      });
     },
     [setSubmission, setDeepValue],
   );
@@ -116,8 +107,12 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
   useEffect(() => {
     const currentActiveComponents = navFormUtils.getActiveComponentsFromForm(form, submission, submissionMethod);
     logger?.debug('Current active components', { form, currentActiveComponents });
-    setActiveComponents(currentActiveComponents);
   }, [form, logger, submission, submissionMethod]);
+
+  const activeComponents = useMemo(
+    () => navFormUtils.getActiveComponentsFromForm(form, submission, submissionMethod),
+    [form, submission, submissionMethod],
+  );
 
   return (
     <FormContext.Provider
