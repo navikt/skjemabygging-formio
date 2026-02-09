@@ -1,6 +1,6 @@
 import { Accordion, Button, Heading, Radio, RadioGroup } from '@navikt/ds-react';
 import { TEXTS, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useComponentUtils } from '../../context/component/componentUtilsContext';
 import {
   allFieldsForPeriodsAreSet,
@@ -32,16 +32,12 @@ const DrivingListFromDates = () => {
   const allPeriodFieldsSet = useMemo(() => allFieldsForPeriodsAreSet(values), [values]);
 
   // Generate periods when coming from summary page
-  const generateInitialPeriods = useCallback(() => {
+  useEffect(() => {
     if (allPeriodFieldsSet) {
       const periods = dateUtils.generateWeeklyPeriods(values?.selectedDate, values?.periods?.length) ?? [];
       updateValues({ periods });
     }
-  }, [allPeriodFieldsSet]);
-
-  useEffect(() => {
-    generateInitialPeriods();
-  }, [generateInitialPeriods]);
+  }, [allPeriodFieldsSet, updateValues, values?.periods?.length, values?.selectedDate]);
 
   const onDateChange = (date?: string) => {
     if (values?.selectedDate === date) return;
