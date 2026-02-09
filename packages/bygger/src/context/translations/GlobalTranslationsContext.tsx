@@ -50,16 +50,34 @@ const GlobalTranslationsProvider = ({ children }) => {
   });
   const translationsApi = useGlobalTranslationsApi();
 
+  const fetchTranslations = useCallback(async () => translationsApi.get(), [translationsApi]);
+
   const loadTranslations = useCallback(async () => {
-    const data = await translationsApi.get();
+    const data = await fetchTranslations();
     setState({ data, isReady: true });
-  }, [translationsApi]);
+  }, [fetchTranslations]);
 
   useEffect(() => {
-    if (!state.isReady) {
-      loadTranslations();
+    if (state.isReady) {
+      return;
     }
-  }, [state.isReady, loadTranslations]);
+
+    let cancelled = false;
+
+    fetchTranslations()
+      .then((data) => {
+        if (cancelled) return;
+        setState({ data, isReady: true });
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setState((current) => ({ ...current, isReady: true }));
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [fetchTranslations, state.isReady]);
 
   const storedTranslationsMap = useMemo<Record<string, FormsApiTranslation>>(
     () => (state.data ?? []).reduce((acc, translation) => ({ ...acc, [translation.key]: translation }), {}),
