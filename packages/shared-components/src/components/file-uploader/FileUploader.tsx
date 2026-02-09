@@ -26,7 +26,7 @@ interface Props {
   showDeleteAttachmentButton?: boolean;
   onDeleteAttachment?: (attachmentId: string) => Promise<void>;
   multiple?: boolean;
-  refs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | HTMLButtonElement | null>>;
+  attachmentRefs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | HTMLButtonElement | null>>;
   readMore?: ReactNode;
   accept?: string;
   maxFileSizeInBytes?: number;
@@ -39,7 +39,7 @@ const FileUploader = ({
   showDeleteAttachmentButton,
   onDeleteAttachment,
   multiple,
-  refs,
+  attachmentRefs: attachmentRefsRef,
   readMore,
   accept,
   maxFileSizeInBytes,
@@ -53,6 +53,16 @@ const FileUploader = ({
     useAttachmentUpload();
   const { attachmentId } = initialAttachment;
   const attachment = submissionAttachments.find((attachment) => attachment.attachmentId === attachmentId);
+
+  const registerTitleRef = useCallback(
+    (ref: HTMLInputElement | null) => {
+      if (!attachmentRefsRef) {
+        return;
+      }
+      attachmentRefsRef.current = { ...(attachmentRefsRef.current ?? {}), [`${attachmentId}-TITLE`]: ref };
+    },
+    [attachmentId, attachmentRefsRef],
+  );
 
   const logUploadEvent = useCallback(() => {
     const formAttachment = getAttachment(initialAttachment.navId, form);
@@ -125,11 +135,7 @@ const FileUploader = ({
               maxLength={50}
               defaultValue={attachment?.title}
               error={attachmentTitleErrorMessage}
-              ref={(ref) => {
-                if (refs?.current) {
-                  refs.current[`${attachmentId}-TITLE`] = ref;
-                }
-              }}
+              ref={registerTitleRef}
               onChange={handleTitleChange}
             />
           )}
@@ -138,7 +144,7 @@ const FileUploader = ({
               attachmentId={attachmentId}
               variant={initialUpload ? 'primary' : 'secondary'}
               allowUpload={!requireAttachmentTitle || !!attachment?.title?.trim()}
-              refs={refs}
+              attachmentRefs={attachmentRefsRef}
               translationParams={translationErrorParams}
               accept={accept}
               readMore={readMore}

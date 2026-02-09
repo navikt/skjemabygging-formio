@@ -19,7 +19,7 @@ interface Props {
   attachmentId: string;
   variant: 'primary' | 'secondary';
   allowUpload?: boolean;
-  refs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | HTMLButtonElement | null>>;
+  attachmentRefs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | HTMLButtonElement | null>>;
   readMore?: ReactNode;
   translationParams?: Record<string, string>;
   accept?: string;
@@ -31,7 +31,7 @@ const UploadButton = ({
   attachmentId,
   variant = 'primary',
   allowUpload,
-  refs: refsRef,
+  attachmentRefs: attachmentRefsRef,
   readMore,
   translationParams,
   accept = FILE_ACCEPT,
@@ -46,12 +46,12 @@ const UploadButton = ({
 
   const registerFileButtonRef = useCallback(
     (ref: HTMLButtonElement | null) => {
-      if (!refsRef) {
+      if (!attachmentRefsRef) {
         return;
       }
-      refsRef.current = { ...(refsRef.current ?? {}), [`${attachmentId}-FILE`]: ref };
+      attachmentRefsRef.current = { ...(attachmentRefsRef.current ?? {}), [`${attachmentId}-FILE`]: ref };
     },
-    [attachmentId, refsRef],
+    [attachmentId, attachmentRefsRef],
   );
 
   const uploadErrorMessage = errors[attachmentId]?.find((error) => error.type === 'FILE')?.message;
