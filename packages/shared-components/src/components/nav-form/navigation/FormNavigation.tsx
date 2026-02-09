@@ -1,5 +1,5 @@
 import { Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { To, useLocation } from 'react-router';
 import { useAppConfig } from '../../../context/config/configContext';
 import { useLanguages } from '../../../context/languages';
@@ -27,21 +27,15 @@ const FormNavigation = ({ paths, isValid, submission, navigateTo, finalStep }: P
   const { search } = useLocation();
   const { translate } = useLanguages();
 
-  const [nextLocation, setNextLocation] = useState<To | undefined>({
-    pathname: `../${paths.next ?? finalStep}`,
-    search,
-  });
-  const [prevLocation, setPrevLocation] = useState<To | undefined>(
-    paths.prev ? { pathname: `../${paths.prev}`, search } : undefined,
+  const nextLocation = useMemo<To | undefined>(
+    () => ({ pathname: `../${paths.next ?? finalStep}`, search }),
+    [finalStep, paths.next, search],
   );
 
-  useEffect(() => {
-    setNextLocation({ pathname: `../${paths.next ?? finalStep}`, search });
-  }, [search, paths.next, finalStep]);
-
-  useEffect(() => {
-    setPrevLocation(paths.prev ? { pathname: `../${paths.prev}`, search } : undefined);
-  }, [search, paths.prev]);
+  const prevLocation = useMemo<To | undefined>(
+    () => (paths.prev ? { pathname: `../${paths.prev}`, search } : undefined),
+    [paths.prev, search],
+  );
 
   const nextClickHandler = useCallback(async () => {
     if (!nextLocation) {
@@ -58,7 +52,7 @@ const FormNavigation = ({ paths, isValid, submission, navigateTo, finalStep }: P
 
     navigateTo(nextLocation);
     return true;
-  }, [isMellomlagringActive, isValid, navigateTo, nextLocation, submission, updateMellomlagring]);
+  }, [isValid, navigateTo, nextLocation, submission, submissionMethod, updateMellomlagring]);
 
   const prevClickHandler = useCallback(async () => {
     if (!prevLocation) {
