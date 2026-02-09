@@ -1,6 +1,7 @@
 import { Recipient } from '@navikt/skjemadigitalisering-shared-domain';
-import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react';
+import { createContext, ReactNode, useCallback, useContext, useState } from 'react';
 import useFormsApiRecipients from '../../api/useFormsApiRecipients';
+import { useAsyncLoader } from '../translations/utils/useAsyncLoader';
 
 interface RecipientsContextValues {
   isReady: boolean;
@@ -22,8 +23,6 @@ const defaultContextValue = {
 };
 
 interface RecipientState {
-  isReady: boolean;
-  recipients: Recipient[];
   new?: Partial<Recipient>;
 }
 
@@ -31,18 +30,20 @@ const RecipientsContext = createContext<RecipientsContextValues>(defaultContextV
 
 const RecipientsProvider = ({ children }: { children: ReactNode }) => {
   const recipientsApi = useFormsApiRecipients();
-  const [recipientState, setRecipientState] = useState<RecipientState>({ isReady: false, recipients: [] });
+  const [recipientState, setRecipientState] = useState<RecipientState>({});
+
+  const {
+    data: recipients = [],
+    isReady,
+    reload,
+  } = useAsyncLoader(async () => {
+    const fetched = await recipientsApi.getAll();
+    return fetched ?? [];
+  });
 
   const loadRecipients = useCallback(async (): Promise<void> => {
-    const recipients = await recipientsApi.getAll();
-    setRecipientState((state) => ({ ...state, recipients: recipients ?? [] }));
-  }, [recipientsApi]);
-
-  useEffect(() => {
-    if (!recipientState.isReady) {
-      loadRecipients().then(() => setRecipientState((state) => ({ ...state, isReady: true })));
-    }
-  }, [recipientState.isReady, loadRecipients]);
+    await reload();
+  }, [reload]);
 
   const saveRecipient = async (changedRecipient: Recipient) => {
     const result = await recipientsApi.save(changedRecipient);
@@ -71,8 +72,8 @@ const RecipientsProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const value = {
-    isReady: recipientState.isReady,
-    recipients: recipientState.recipients,
+    isReady,
+    recipients,
     newRecipient: recipientState.new,
     addNewRecipient,
     cancelNewRecipient,
