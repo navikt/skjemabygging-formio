@@ -36,7 +36,7 @@ export const useAsyncLoader = <T>(fetchFn: () => Promise<T>) => {
       })
       .catch(() => {
         if (cancelled) return;
-        setState((previous) => ({ ...previous, isReady: true }));
+        setState((previous) => ({ ...previous }));
       });
 
     return () => {
