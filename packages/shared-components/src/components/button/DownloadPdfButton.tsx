@@ -12,7 +12,7 @@ interface Props {
   size?: 'small' | 'medium';
   children?: React.ReactNode;
   icon?: React.ReactNode;
-  pdfContent: () => Promise<Blob>;
+  pdfContent: () => Promise<Blob | undefined>;
   dataTestId?: string;
 }
 
@@ -32,6 +32,18 @@ const DownloadPdfButton = ({
 }: Props) => {
   const [downloading, setDownloading] = useState<boolean>(false);
 
+  const createLink = (content: Blob) => {
+    const url = URL.createObjectURL(content);
+
+    if (!url) {
+      throw new Error('Could not create PDF url');
+    }
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    a.click();
+  };
+
   const clickDownload = async () => {
     if ((isValid && !isValid()) || downloading) {
       return;
@@ -44,18 +56,13 @@ const DownloadPdfButton = ({
 
     try {
       const content = await pdfContent();
-      const url = URL.createObjectURL(content);
 
-      if (!url) {
-        throw new Error('Could not create PDF url');
-      }
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = fileName;
-      a.click();
+      if (content) {
+        createLink(content);
 
-      if (onSuccess) {
-        onSuccess();
+        if (onSuccess) {
+          onSuccess();
+        }
       }
     } catch (_error) {
       if (onError) {

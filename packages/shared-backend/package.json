@@ -1,0 +1,42 @@
+{
+  "name": "@navikt/skjemadigitalisering-shared-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Kode som er delt mellom bygger-backend og fyllut-backend",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/navikt/skjemabygging-formio.git",
+    "directory": "packages/shared-backend"
+  },
+  "type": "module",
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "license": "SEE LICENSE IN LICENSE.md",
+  "scripts": {
+    "build": "tsc && vite build",
+    "check-types": "tsc",
+    "clean": "rimraf dist coverage node_modules",
+    "watch": "vite build --watch",
+    "test": "vitest --run",
+    "test:coverage": "vitest --run --coverage",
+    "prepare": "yarn build"
+  },
+  "dependencies": {
+    "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
+    "express-correlation-id": "^3.0.1",
+    "winston": "^3.18.3"
+  },
+  "peerDependencies": {
+    "express": "^5.2.1",
+    "multer": "^2.0.2"
+  },
+  "devDependencies": {
+    "@types/express-correlation-id": "^3.0.0",
+    "@types/express": "^5.0.3",
+    "@types/multer": "^2.0.0",
+    "express": "^5.2.1",
+    "multer": "^2.0.2"
+  }
+}

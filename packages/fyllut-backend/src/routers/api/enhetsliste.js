@@ -1,5 +1,5 @@
+import { correlator } from '@navikt/skjemadigitalisering-shared-backend';
 import { supportedEnhetstyper } from '@navikt/skjemadigitalisering-shared-domain';
-import correlator from 'express-correlation-id';
 import fetch from 'node-fetch';
 import { config } from '../../config/config';
 import { toJsonOrThrowError } from '../../utils/errorHandling';

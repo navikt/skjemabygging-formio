@@ -1,3 +1,4 @@
+import { correlator } from '@navikt/skjemadigitalisering-shared-backend';
 import {
   I18nTranslationMap,
   localizationUtils,
@@ -9,7 +10,6 @@ import {
   UploadedFile,
   validatorUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import correlator from 'express-correlation-id';
 import { ConfigType } from '../config/types';
 import { logger } from '../logger';
 import { assembleNologinSoknadBody } from '../routers/api/helpers/nologin';

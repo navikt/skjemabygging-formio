@@ -1,5 +1,5 @@
 import { ExclamationmarkTriangleFillIcon } from '@navikt/aksel-icons';
-import classNames from 'classnames';
+import clsx from 'clsx';
 import makeStyles from '../../../util/styles/jss/jss';
 import InnerHtmlLong from '../../inner-html/InnerHtmlLong';
 
@@ -39,7 +39,7 @@ const StandaloneValidationError = ({ children }: Props) => {
   return (
     <div className={styles.container}>
       <ExclamationmarkTriangleFillIcon aria-hidden fontSize="1rem" className={styles.icon} />
-      <InnerHtmlLong content={children} className={classNames(styles.text, 'aksel-label')} />
+      <InnerHtmlLong content={children} className={clsx(styles.text, 'aksel-label')} />
     </div>
   );
 };

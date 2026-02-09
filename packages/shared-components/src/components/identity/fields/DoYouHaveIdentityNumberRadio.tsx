@@ -1,5 +1,5 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { useComponentUtils } from '../../../context/component/componentUtilsContext';
 import Radio from '../../radio/Radio';
 import { useIdentity } from '../identityContext';
@@ -35,7 +35,7 @@ const DoYouHaveIdentityNumberRadio = ({ label }: Props) => {
         },
       ]}
       onChange={(value) => handleChange(value)}
-      className={classNames('mb', className)}
+      className={clsx('mb', className)}
       readOnly={readOnly}
       ref={(ref) => addRef(refId, ref)}
       error={getComponentError(refId)}

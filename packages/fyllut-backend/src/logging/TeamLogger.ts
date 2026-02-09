@@ -1,4 +1,4 @@
-import correlator from 'express-correlation-id';
+import { correlator } from '@navikt/skjemadigitalisering-shared-backend';
 import { config } from '../config/config';
 import { ConfigType } from '../config/types';
 import { logger } from '../logger';

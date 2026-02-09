@@ -1,4 +1,4 @@
-import correlator from 'express-correlation-id';
+import { correlator } from '@navikt/skjemadigitalisering-shared-backend';
 import { v4 as uuid } from 'uuid';
 
 const createHeaders = (accessToken?: string, revisionId?: number, skipContentType?: boolean) => {

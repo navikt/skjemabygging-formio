@@ -1,3 +1,4 @@
+import { errorHandler, paramValidation } from '@navikt/skjemadigitalisering-shared-backend';
 import { Router } from 'express';
 import multer from 'multer';
 import authHandlers from '../helpers/authHandlers';
@@ -7,9 +8,13 @@ const upload = multer();
 const formsApiStaticPdfRouter = Router({ mergeParams: true });
 const { formsApiAuthHandler } = authHandlers;
 
+formsApiStaticPdfRouter.param('languageCode', paramValidation.languageCode);
+
 formsApiStaticPdfRouter.get('/', staticPdf.getAll);
 formsApiStaticPdfRouter.get('/:languageCode', staticPdf.downloadPdf);
 formsApiStaticPdfRouter.post('/:languageCode', formsApiAuthHandler, upload.single('fileContent'), staticPdf.uploadPdf);
 formsApiStaticPdfRouter.delete('/:languageCode', formsApiAuthHandler, staticPdf.deletePdf);
+
+formsApiStaticPdfRouter.use(errorHandler);
 
 export default formsApiStaticPdfRouter;

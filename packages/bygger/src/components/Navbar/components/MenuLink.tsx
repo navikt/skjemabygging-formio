@@ -1,5 +1,5 @@
 import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
-import classNames from 'classnames';
+import clsx from 'clsx';
 import React from 'react';
 import { NavLink } from 'react-router';
 
@@ -36,7 +36,7 @@ export const MenuLink = ({ children, to, dataKey, noIconStyling, onClick }: Prop
   return (
     <>
       <NavLink
-        className={classNames(styles.navBarLink, { [styles.navBarLinkNoIcon]: noIconStyling })}
+        className={clsx(styles.navBarLink, { [styles.navBarLinkNoIcon]: noIconStyling })}
         to={to}
         data-key={dataKey}
         onClick={onClick}

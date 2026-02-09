@@ -1,3 +1,4 @@
+import { paramValidation } from '@navikt/skjemadigitalisering-shared-backend';
 import express from 'express';
 import formsApiFormTranslationsRouter from '../forms-api-form-translations';
 import authHandlers from '../helpers/authHandlers';
@@ -6,6 +7,8 @@ import forms from './forms';
 
 const formsRouter = express.Router();
 const { formsApiAuthHandler } = authHandlers;
+
+formsRouter.param('formPath', paramValidation.formPath);
 
 formsRouter.get('/', forms.getAll);
 formsRouter.get('/:formPath', forms.get);
