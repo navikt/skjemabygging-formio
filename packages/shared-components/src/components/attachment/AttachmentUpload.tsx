@@ -35,7 +35,7 @@ const AttachmentUpload = ({
   type = 'default',
   description,
   className,
-  refs,
+  refs: attachmentRefsRef,
 }: Props) => {
   const styles = useAttachmentStyles();
   const { translate } = useLanguages();
@@ -87,8 +87,11 @@ const AttachmentUpload = ({
           translate={translate}
           deadline={form.properties?.ettersendelsesfrist}
           ref={(ref) => {
-            if (refs?.current) {
-              refs.current[`${componentId}-VALUE`] = ref;
+            if (attachmentRefsRef) {
+              attachmentRefsRef.current = {
+                ...(attachmentRefsRef.current ?? {}),
+                [`${componentId}-VALUE`]: ref,
+              };
             }
           }}
         />
@@ -111,7 +114,7 @@ const AttachmentUpload = ({
           )}
           <FileUploader
             initialAttachment={{ attachmentId: componentId, navId: componentId, type }}
-            refs={refs}
+            attachmentRefs={attachmentRefsRef}
             multiple
             readMore={<FileUploadReadMore />}
           />
