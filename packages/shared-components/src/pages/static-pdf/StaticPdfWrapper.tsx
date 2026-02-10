@@ -1,4 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
+import submissionTypesUtils from '../../../../shared-domain/src/utils/submissionTypesUtils';
+import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import InputValidationProvider from '../../context/validator/InputValidationContext';
 import { StaticPdfProvider } from './StaticPdfContext';
@@ -12,6 +15,15 @@ type StaticPdfPage = 'input' | 'download';
 const StaticPdfPage = () => {
   const [page, setPage] = useState<StaticPdfPage>('input');
   const { form } = useForm();
+  const { logger } = useAppConfig();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (form && !submissionTypesUtils.isStaticPdf(form.properties?.submissionTypes)) {
+      logger?.info(`Tried to access static pdf for form ${form?.path}, but it is not enabled for this form`);
+      navigate('/soknad-ikke-funnet');
+    }
+  }, [form, navigate, logger]);
 
   return (
     <InputValidationProvider>
