@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import { useEffect, useRef } from 'react';
 import AttachmentComponent from '../../components/attachment/Attachment';
 import { useAttachmentUpload } from '../../components/attachment/AttachmentUploadContext';
+import InnerHtml from '../../components/inner-html/InnerHtml';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { Attachment, getAllAttachments } from '../../util/attachment/attachmentsUtil';
@@ -71,7 +72,7 @@ const AttachmentsUploadPage = () => {
           key={navId}
           className={clsx(index !== attachments.length - 1 && styles.attachmentUpload)}
           label={translate(label)}
-          description={translate(description)}
+          description={description ? <InnerHtml content={translate(description)} /> : undefined}
           attachmentValues={attachmentValues ?? values}
           type={attachmentType}
           componentId={navId as string}

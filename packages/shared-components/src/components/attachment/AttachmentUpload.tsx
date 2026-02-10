@@ -9,7 +9,7 @@ import {
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import clsx from 'clsx';
-import { MutableRefObject } from 'react';
+import { MutableRefObject, ReactNode } from 'react';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import FileUploader from '../file-uploader/FileUploader';
@@ -23,7 +23,7 @@ interface Props {
   attachmentValues?: AttachmentSettingValues | ComponentValue[];
   componentId: string;
   type?: Exclude<AttachmentType, 'other'>;
-  description?: string;
+  description?: ReactNode;
   submissionAttachment?: SubmissionAttachment;
   onValueChange: (value?: Partial<SubmissionAttachmentValue>) => void;
   error?: AttachmentError;

@@ -6,11 +6,10 @@ import {
   SubmissionAttachmentValue,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import clsx from 'clsx';
-import { MutableRefObject } from 'react';
+import { MutableRefObject, ReactNode } from 'react';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
-import htmlUtils from '../../util/html/htmlUtils';
 import AttachmentOptionSelect from './AttachmentOptionSelect';
 import AttachmentUpload from './AttachmentUpload';
 import { useAttachmentUpload } from './AttachmentUploadContext';
@@ -23,7 +22,7 @@ interface AttachmentProps {
   attachmentValues?: AttachmentSettingValues | ComponentValue[];
   componentId: string;
   type?: AttachmentType;
-  description?: string;
+  description?: ReactNode;
   className?: string;
   refs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | HTMLButtonElement | null>>;
 }
@@ -61,7 +60,7 @@ const Attachment = ({
         key={componentId}
         className={className}
         label={label}
-        description={htmlUtils.extractTextContent(description as string)}
+        description={description}
         attachmentValues={attachmentValues}
         componentId={componentId}
         submissionAttachment={attachment}
@@ -74,7 +73,7 @@ const Attachment = ({
         key={componentId}
         className={className}
         label={label}
-        description={htmlUtils.extractTextContent(description as string)}
+        description={description}
         attachmentValues={attachmentValues}
         componentId={componentId}
         submissionAttachment={attachment}
