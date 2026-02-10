@@ -1,6 +1,6 @@
 import { Radio, RadioGroup } from '@navikt/ds-react';
 import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useAppConfig } from '../../../../context/config/configContext';
 import { useForm } from '../../../../context/form/FormContext';
 import { useLanguages } from '../../../../context/languages';
@@ -41,6 +41,7 @@ const FormRadio = (props: FormRadioProps) => {
   const { required } = validators || { required: true };
 
   const ref = useRef(null);
+  const [refError, setRefError] = useState<string | undefined>(undefined);
 
   const handleChange = (value: string) => {
     if (onChange) {
@@ -59,6 +60,12 @@ const FormRadio = (props: FormRadioProps) => {
     };
   }, [logger, addValidation, removeValidation, submissionPath, ref, required, legend]);
 
+  useEffect(() => {
+    if (!error) {
+      setRefError(getRefError(ref));
+    }
+  }, [error, getRefError, ref]);
+
   return (
     <FormBox inputWidth={inputWidth} bottom={bottom}>
       <RadioGroup
@@ -66,7 +73,7 @@ const FormRadio = (props: FormRadioProps) => {
         description={<TranslatedDescription>{description}</TranslatedDescription>}
         onChange={handleChange}
         ref={ref}
-        error={error ?? getRefError(ref)}
+        error={error ?? refError}
         defaultValue={formComponentUtils.getSubmissionValue(submissionPath, submission)}
       >
         {values.map(({ value, label, description }) => (
