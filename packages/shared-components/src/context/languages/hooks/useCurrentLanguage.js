@@ -1,21 +1,13 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const defaultLanguage = 'nb-NO';
 
 const useCurrentLanguage = (languageCodeFromUrl, translations) => {
-  const initialLanguage = useRef(
+  const [initialLanguage] = useState(() =>
     Object.keys(translations).indexOf(languageCodeFromUrl) !== -1 ? languageCodeFromUrl : defaultLanguage,
   );
 
-  const [currentLanguage, setCurrentLanguage] = useState(initialLanguage.current);
-
-  useEffect(() => {
-    if (languageCodeFromUrl) {
-      setCurrentLanguage(languageCodeFromUrl);
-    } else {
-      setCurrentLanguage(initialLanguage.current);
-    }
-  }, [languageCodeFromUrl]);
+  const currentLanguage = languageCodeFromUrl || initialLanguage;
 
   useEffect(() => {
     document.documentElement.lang = currentLanguage;
