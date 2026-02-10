@@ -352,7 +352,8 @@ export const statiske = {
     fetchError: 'En feil har oppstått. Vi kunne ikke laste enheter. Beklager ulempen, prøv igjen senere.',
   },
   staticPdf: {
-    languageError: 'Skjemaet er kun tilgjengelig på {{language}}',
+    languageError: 'Skjemaet er ikke tilgjengelig.',
+    selectLanguageMismatch: 'Skjemaet er kun tilgjengelig på {{language}}',
     selectLanguage: 'Velg hvilket språk du ønsker at skjemaet skal ha',
     selectLanguageDescription: 'Det er ikke sikkert at alle vedleggsskjemaene finnes på ditt valgte språk.',
     instructions: {

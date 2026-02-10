@@ -38,7 +38,7 @@ const StaticPdfDownloadPage = () => {
 
   return (
     <>
-      <FormStaticPdfLanguage submissionPath="coverPage.languageCode" />
+      <FormStaticPdfLanguage submissionPath="coverPage.languageCode" languageCode={coverPageData.languageCode} />
       <FormBox bottom="space-32">
         <DownloadPdfButton
           fileName={fileName}

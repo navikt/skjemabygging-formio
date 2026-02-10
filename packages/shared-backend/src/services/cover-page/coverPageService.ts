@@ -71,7 +71,7 @@ const downloadCoverPage = async (props: DownloadCoverPageType) => {
     }
   };
 
-  const parseLanguage = (language: string) => {
+  const parseCoverPageLanguage = (language: string) => {
     switch (language) {
       case 'nn-NO':
       case 'nn':
@@ -91,7 +91,7 @@ const downloadCoverPage = async (props: DownloadCoverPageType) => {
   const body: ForstesideRequestBody = {
     foerstesidetype: type,
     navSkjemaId: form.skjemanummer,
-    spraakkode: parseLanguage(languageCode),
+    spraakkode: parseCoverPageLanguage(languageCode),
     overskriftstittel: formTitle,
     arkivtittel: formTitle,
     tema: properties.tema,
