@@ -12,18 +12,60 @@ const createUrl = ({ baseUrl, formPath, languageCode }: CreateUrlType) => {
   return `${baseUrl}/v1/forms/${formPath}/static-pdfs${languageCode ? `/${languageCode}` : ''}`;
 };
 
+const getValidLanguageCode = async (props: CreateUrlType) => {
+  const { formPath, languageCode } = props;
+
+  if (!languageCode) {
+    throw new ResponseError('BAD_REQUEST', 'Language code is required to download a static pdf');
+  }
+
+  const all = await getAll(props);
+  const languageCodes = all.map((staticPdf) => staticPdf.languageCode);
+
+  if (languageCodes.length === 0) {
+    throw new ResponseError('BAD_REQUEST', `No static pdfs found for form ${formPath}`);
+  }
+
+  if (languageCodes.includes(languageCode)) {
+    return languageCode;
+  } else if (languageCode !== 'nn' && languageCodes.includes('en')) {
+    logger.info(`Downloading static pdf for ${formPath} in english, since ${languageCode} was not found.`);
+    return 'en';
+  } else if (languageCodes.includes('nb')) {
+    logger.info(`Downloading static pdf for ${formPath} in bokmål, since ${languageCode} was not found.`);
+    return 'nb';
+  }
+
+  throw new ResponseError(
+    'BAD_REQUEST',
+    `Language code ${languageCode} is not valid for form ${formPath} and not other valid fallback languages found`,
+  );
+};
+
 const getAll = async (props: Omit<CreateUrlType, 'languageCode'>) => {
-  const { formPath } = props;
+  const { baseUrl, formPath } = props;
   logger.debug(`Get all static pdfs ${formPath}`);
 
-  return await http.get<StaticPdf[]>(createUrl(props));
+  return await http.get<StaticPdf[]>(
+    createUrl({
+      baseUrl,
+      formPath,
+    }),
+  );
 };
 
 const downloadPdf = async (props: CreateUrlType) => {
   const { formPath, languageCode } = props;
   logger.info(`Download new static pdf ${formPath} for ${languageCode}`);
 
-  const pdf = await http.get<string>(createUrl(props));
+  const validLanguageCode = await getValidLanguageCode(props);
+
+  const pdf = await http.get<string>(
+    createUrl({
+      ...props,
+      languageCode: validLanguageCode,
+    }),
+  );
 
   if (!pdf) {
     throw new ResponseError('NOT_FOUND', 'PDF not found');

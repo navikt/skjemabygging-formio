@@ -1,6 +1,7 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect } from 'react';
 import { useForm } from '../../context/form/FormContext';
+import { useLanguages } from '../../context/languages';
 import FormCountrySelect from './components/shared/address/FormCountrySelect';
 import FormPostalCode from './components/shared/address/FormPostalCode';
 import FormPostalName from './components/shared/address/FormPostalName';
@@ -16,16 +17,20 @@ import StaticPdfIdentityType from './components/shared/StaticPdfIdentityType';
 const StaticPdfInputPage = () => {
   const { form, setSubmission, submission } = useForm();
   const { enhetMaVelgesVedPapirInnsending } = form.properties;
+  const { currentLanguage } = useLanguages();
 
   useEffect(() => {
     if (!submission) {
       setSubmission({
         data: {
           identityType: 'identityNumber',
+          coverPage: {
+            languageCode: currentLanguage,
+          },
         },
       });
     }
-  }, [setSubmission, submission]);
+  }, [setSubmission, submission, currentLanguage]);
 
   return (
     <>

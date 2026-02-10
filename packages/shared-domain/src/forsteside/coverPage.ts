@@ -1,4 +1,5 @@
 import { Form } from '../forms-api-form';
+import { TranslationLang } from '../translations/FormsApiTranslation';
 import { ForstesideType } from './index';
 
 interface NationalIdentityNumberType {
@@ -50,6 +51,7 @@ type RecipientType = RecipientNavUnitType | RecipientAddressType;
 
 interface CoverPageType {
   type?: ForstesideType;
+  languageCode: TranslationLang;
   form: Form;
   user: UserType;
   recipient?: RecipientType;

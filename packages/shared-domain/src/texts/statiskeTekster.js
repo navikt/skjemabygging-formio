@@ -362,5 +362,12 @@ export const statiske = {
       step3: 'Legg ved alle vedlegg som er listet på førstesiden.',
       step4: 'Legg dokumentene i en konvolutt som du sender i posten til adressen som står på førstesiden.',
     },
+    languages: {
+      en: 'Engelsk',
+      nb: 'Bokmål',
+      nn: 'Nynorsk',
+      se: 'Samisk',
+      fr: 'Fransk',
+    },
   },
 };

@@ -5,6 +5,7 @@ import DownloadPdfButton from '../../components/button/DownloadPdfButton';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import FormBox from './components/shared/FormBox';
+import FormStaticPdfLanguage from './components/shared/FormStaticPdfLanguage';
 import { useStaticPdf } from './StaticPdfContext';
 
 interface DownloadState {
@@ -19,9 +20,7 @@ const StaticPdfDownloadPage = () => {
   const [status, setStatus] = useState<DownloadState | undefined>();
 
   const coverPageData = submission?.data.coverPage as unknown as CoverPageType;
-  const fileName = `${form.path}s-${dateUtils.toLocaleDate().replace(/\./g, '')}.pdf`;
-
-  console.log(coverPageData);
+  const fileName = `${form.path}-${coverPageData.languageCode}-${dateUtils.toLocaleDate().replace(/\./g, '')}.pdf`;
 
   const handleError = () => {
     setStatus({
@@ -39,10 +38,11 @@ const StaticPdfDownloadPage = () => {
 
   return (
     <>
+      <FormStaticPdfLanguage submissionPath="coverPage.languageCode" />
       <FormBox bottom="space-32">
         <DownloadPdfButton
           fileName={fileName}
-          pdfContent={() => downloadCoverPageAndFile('nb', coverPageData)}
+          pdfContent={() => downloadCoverPageAndFile(coverPageData)}
           onError={handleError}
           onSuccess={handleSuccess}
         >

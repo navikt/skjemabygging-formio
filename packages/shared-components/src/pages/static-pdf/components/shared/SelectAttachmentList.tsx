@@ -32,9 +32,6 @@ const SelectAttachmentList = ({ submissionPath }: Props) => {
           description,
         };
       })}
-      validators={{
-        required: false,
-      }}
     />
   );
 };

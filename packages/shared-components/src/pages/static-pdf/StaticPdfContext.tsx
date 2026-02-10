@@ -5,10 +5,11 @@ import useFormsApiStaticPdf from '../../api/static-pdf/useFormsApiStaticPdf';
 interface StaticPdfContextType {
   formPath: string;
   loadingFiles: boolean;
+  files: StaticPdf[];
   getFile: (languageCode: string) => StaticPdf | undefined;
   uploadFile: (languageCode: string, file: File) => Promise<StaticPdf>;
   downloadFile: (languageCode: string) => Promise<Blob>;
-  downloadCoverPageAndFile: (languageCode: string, coverPage: CoverPageType) => Promise<Blob>;
+  downloadCoverPageAndFile: (coverPage: CoverPageType) => Promise<Blob>;
   deleteFile: (languageCode: string) => Promise<void>;
 }
 
@@ -67,8 +68,8 @@ export const StaticPdfProvider = ({ children, formPath }: Props) => {
   );
 
   const downloadCoverPageAndFile = useCallback(
-    async (languageCode: string, coverPage: CoverPageType) => {
-      return await downloadCoverPageAndPdf(formPath, languageCode, coverPage);
+    async (coverPage: CoverPageType) => {
+      return await downloadCoverPageAndPdf(formPath, coverPage);
     },
     [formPath, downloadCoverPageAndPdf],
   );
@@ -92,6 +93,7 @@ export const StaticPdfProvider = ({ children, formPath }: Props) => {
       value={{
         formPath,
         loadingFiles,
+        files,
         getFile,
         uploadFile,
         downloadFile,

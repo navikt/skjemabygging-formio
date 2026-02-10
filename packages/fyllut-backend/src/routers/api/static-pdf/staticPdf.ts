@@ -4,9 +4,10 @@ import {
   mergeFileService,
   staticPdfService,
 } from '@navikt/skjemadigitalisering-shared-backend';
-import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
+import { CoverPageType, navFormUtils, ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import { config } from '../../../config/config';
+import { logger } from '../../../logger';
 
 const { formsApiUrl, skjemabyggingProxyUrl, sendInnConfig } = config;
 
@@ -26,7 +27,7 @@ const staticPdf = {
   },
   downloadPdf: async (req: Request, res: Response, next: NextFunction) => {
     const { formPath, languageCode } = req.params;
-    const coverPageData = req.body;
+    const coverPageData = req.body as CoverPageType;
     const coverPageToken = req.headers.AzureAccessToken as string;
     const mergePdfToken = req.headers.MergePdfToken as string;
 
@@ -35,14 +36,8 @@ const staticPdf = {
     }
 
     try {
-      // TODO: Get form from static
+      // TODO: Get form from published revision
       const form = await formService.getForm({ baseUrl: formsApiUrl, formPath });
-
-      const staticPdf = await staticPdfService.downloadPdf({
-        baseUrl: formsApiUrl,
-        formPath,
-        languageCode,
-      });
 
       const coverPagePdf = await coverPageService.downloadCoverPage({
         baseUrl: skjemabyggingProxyUrl,
@@ -54,13 +49,45 @@ const staticPdf = {
         },
       });
 
+      const staticPdf = await staticPdfService.downloadPdf({
+        baseUrl: formsApiUrl,
+        formPath,
+        languageCode,
+      });
+
+      const attachmentStaticPdfs: string[] = [];
+
+      try {
+        const attachmentComponents = navFormUtils
+          .flattenComponents(form.components)
+          .filter((component) => component.type === 'attachment' && component.properties?.vedleggskjema);
+
+        for (const component of attachmentComponents) {
+          const attachmentForm = await formService.getForm({
+            baseUrl: formsApiUrl,
+            formPath: component.properties?.vedleggskjema,
+          });
+
+          if (attachmentForm) {
+            const attachmentStaticPdf = await staticPdfService.downloadPdf({
+              baseUrl: formsApiUrl,
+              formPath,
+              languageCode,
+            });
+            attachmentStaticPdfs.push(attachmentStaticPdf);
+          }
+        }
+      } catch (error) {
+        logger.warn(`Failed to add attachments for ${formPath} static pdf.`, error);
+      }
+
       const pdf = await mergeFileService.mergeFiles({
         baseUrl: `${sendInnConfig.host}${sendInnConfig.paths.mergeFiles}`,
         accessToken: mergePdfToken,
         body: {
           title: form.title,
-          language: 'nb-NO', // TODO: Use correct language
-          files: [staticPdf, coverPagePdf],
+          language: languageCode,
+          files: [coverPagePdf, staticPdf, ...attachmentStaticPdfs],
         },
       });
 

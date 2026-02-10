@@ -24,12 +24,8 @@ const useFormsApiStaticPdf = () => {
     return b64toBlob(response.pdfBase64, 'application/pdf');
   };
 
-  const downloadCoverPageAndPdf = async (
-    formPath: string,
-    languageCode: string,
-    coverPage: Omit<CoverPageType, 'form'>,
-  ) => {
-    const response = await http.post<{ pdfBase64: string }>(getUrl(formPath, languageCode), coverPage);
+  const downloadCoverPageAndPdf = async (formPath: string, coverPage: Omit<CoverPageType, 'form'>) => {
+    const response = await http.post<{ pdfBase64: string }>(getUrl(formPath, coverPage.languageCode), coverPage);
     return b64toBlob(response.pdfBase64, 'application/pdf');
   };
 
