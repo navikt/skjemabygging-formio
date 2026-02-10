@@ -34,7 +34,7 @@ const PersonalIdUpload = ({ refs }: { refs?: any }) => {
   };
 
   return (
-    <VStack gap="space-6" className={'mb'}>
+    <VStack gap="space-24" className={'mb'}>
       {!uploadedFile && (
         <AttachmentOptionSelect
           title={translate(TEXTS.statiske.uploadId.label)}
@@ -52,7 +52,7 @@ const PersonalIdUpload = ({ refs }: { refs?: any }) => {
         />
       )}
       {uploadSelected && (
-        <VStack gap="space-2">
+        <VStack gap="space-8">
           {!uploadedFile && <Label>{translate(TEXTS.statiske.uploadId.selectFileLabel)}</Label>}
           <FileUploader
             initialAttachment={{ attachmentId, navId: attachmentId, type: 'personal-id' }}

@@ -99,7 +99,7 @@ const OtherAttachmentUpload = ({
   };
 
   return (
-    <VStack gap="space-6" className={clsx('mb', className)}>
+    <VStack gap="space-24" className={clsx('mb', className)}>
       {uploadedAttachmentFiles.length > 0 ? (
         <div>
           <Label className={'mb-0'}>{label}</Label>
@@ -123,14 +123,14 @@ const OtherAttachmentUpload = ({
         />
       )}
       {uploadSelected && (
-        <VStack gap="space-2">
+        <VStack gap="space-8">
           {uploadedAttachmentFiles.length > 0 && (
             <div className={styles.uploadedFilesHeader}>
               <Label>{translate(TEXTS.statiske.attachment.filesUploadedNotSent)}</Label>
             </div>
           )}
 
-          <VStack gap="space-8">
+          <VStack gap="space-32">
             {attachments.map((attachment) => (
               <FileUploader
                 key={attachment.attachmentId}

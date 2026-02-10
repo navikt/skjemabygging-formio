@@ -73,7 +73,7 @@ const NewFormPage = () => {
       <RowLayout
         right={
           <SidebarLayout noScroll={true}>
-            <VStack gap="space-1">
+            <VStack gap="space-4">
               <Button onClick={validateAndSave} size="small">
                 Opprett
               </Button>

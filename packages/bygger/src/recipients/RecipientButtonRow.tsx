@@ -14,7 +14,7 @@ const RecipientButtonRow = ({ isNew, onSave, onCancel, onDelete }: Props) => {
   return (
     <Table.Row shadeOnHover={false}>
       <Table.DataCell colSpan={5}>
-        <HStack gap="space-4" justify="end">
+        <HStack gap="space-16" justify="end">
           <Button
             size="small"
             loading={state.isSaving}

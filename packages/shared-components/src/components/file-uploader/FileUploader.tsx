@@ -107,7 +107,7 @@ const FileUploader = ({
   };
 
   return (
-    <VStack gap="space-6" data-cy={`upload-button-${attachmentId}`}>
+    <VStack gap="space-24" data-cy={`upload-button-${attachmentId}`}>
       {(!showButton || fileItems.length > 0) && (
         <FilesPreview
           label={!showButton ? label : undefined}
@@ -118,7 +118,7 @@ const FileUploader = ({
         />
       )}
       {showButton && (
-        <VStack gap="space-8">
+        <VStack gap="space-32">
           {requireAttachmentTitle && (
             <TextField
               label={translate(TEXTS.statiske.attachment.attachmentTitle)}
@@ -133,7 +133,7 @@ const FileUploader = ({
               onChange={handleTitleChange}
             />
           )}
-          <HStack gap="space-4">
+          <HStack gap="space-16">
             <UploadButton
               attachmentId={attachmentId}
               variant={initialUpload ? 'primary' : 'secondary'}

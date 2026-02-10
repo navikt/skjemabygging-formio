@@ -73,7 +73,7 @@ const BulkPublishPanel = ({ forms }: Props) => {
   const willNotBePublished = forms.filter((form) => !state[form.path]);
   return (
     <>
-      <Box padding="space-4" borderRadius="2">
+      <Box padding="space-16" borderRadius="2">
         <Heading level="3" size="medium">
           Skjemaer som er klare for publisering
         </Heading>
