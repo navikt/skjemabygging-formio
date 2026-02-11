@@ -13,7 +13,7 @@ import { useFormTranslations } from '../context/translations/FormTranslationsCon
 import { useGlobalTranslations } from '../context/translations/GlobalTranslationsContext';
 
 interface Props {
-  form: NavFormType;
+  form?: NavFormType;
 }
 
 const TestFormPage = ({ form }: Props) => {

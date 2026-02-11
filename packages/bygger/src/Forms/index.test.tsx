@@ -2,6 +2,7 @@ import { AppConfigProvider, LanguagesProvider } from '@navikt/skjemadigitaliseri
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router';
+import { MockInstance } from 'vitest';
 import createMockImplementation, { DEFAULT_PROJECT_URL } from '../../test/backendMockImplementation';
 import featureToggles from '../../test/featureToggles';
 import AuthenticatedApp from '../AuthenticatedApp';
@@ -9,20 +10,24 @@ import { AuthContext } from '../context/auth-context';
 import FeedbackProvider from '../context/notifications/FeedbackContext';
 
 describe('FormsRouter', () => {
+  let fetchSpy: MockInstance;
+  const projectUrl = 'http://test.example.org';
+
   beforeAll(() => {
-    fetchMock.mockImplementation(createMockImplementation());
+    fetchSpy = vi.spyOn(global, 'fetch');
+    fetchSpy.mockImplementation(createMockImplementation({ projectUrl }));
   });
 
   afterEach(() => {
-    fetchMock.mockClear();
+    fetchSpy.mockClear();
   });
 
-  function renderApp(pathname) {
+  function renderApp(pathname: string) {
     return render(
       <MemoryRouter initialEntries={[pathname]}>
         <AuthContext.Provider
           value={{
-            userData: 'fakeUser',
+            userData: { name: 'fakeUser', isAdmin: true },
             login: () => {},
           }}
         >
