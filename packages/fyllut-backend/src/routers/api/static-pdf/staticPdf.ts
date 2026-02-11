@@ -73,18 +73,20 @@ const staticPdf = {
           .filter((component) => component.type === 'attachment' && component.properties?.vedleggskjema);
 
         for (const component of attachmentComponents) {
-          const attachmentForm = await formService.getForm({
-            baseUrl: formsApiUrl,
-            formPath: component.properties?.vedleggskjema,
-          });
-
-          if (attachmentForm) {
-            const attachmentStaticPdf = await staticPdfService.downloadPdf({
+          if (component.properties?.vedleggskjema) {
+            const attachmentForm = await formService.getForm({
               baseUrl: formsApiUrl,
-              formPath,
-              languageCode,
+              formPath: component.properties?.vedleggskjema,
             });
-            attachmentStaticPdfs.push(attachmentStaticPdf);
+
+            if (attachmentForm) {
+              const attachmentStaticPdf = await staticPdfService.downloadPdf({
+                baseUrl: formsApiUrl,
+                formPath,
+                languageCode,
+              });
+              attachmentStaticPdfs.push(attachmentStaticPdf);
+            }
           }
         }
       } catch (error) {
