@@ -10,7 +10,7 @@ import FormIntroPage from './intro-page/FormIntroPage';
 import { FormSettingsPage } from './settings/FormSettingsPage';
 import FormSkeleton from './skeleton/FormSkeleton';
 import StaticPdfUploadPage from './static-pdf/StaticPdfUploadPage.tsx';
-import { TestFormPage } from './TestFormPage';
+import TestFormPage from './TestFormPage';
 
 export const FormPage = () => {
   const { formState } = useForm();
