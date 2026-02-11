@@ -241,3 +241,5 @@ Interne henvendelser kan sendes via Slack i kanalen #team-fyllut-sendinn
 ## 🤖 Kode generert av GitHub Copilot
 
 Dette repoet bruker GitHub Copilot til å generere kode.
+
+# test
