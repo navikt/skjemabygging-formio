@@ -1,25 +1,16 @@
-import { ResponseError, StaticPdf } from '@navikt/skjemadigitalisering-shared-domain';
+import { ResponseError, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import 'multer';
-import http from '../http/http';
 import { logger } from '../logger/logger';
+import staticPdfApiService from './staticPdfApiService';
 
-interface CreateUrlType {
-  baseUrl: string;
-  formPath: string;
-  languageCode?: string;
-}
-const createUrl = ({ baseUrl, formPath, languageCode }: CreateUrlType) => {
-  return `${baseUrl}/v1/forms/${formPath}/static-pdfs${languageCode ? `/${languageCode}` : ''}`;
-};
-
-const getValidLanguageCode = async (props: CreateUrlType) => {
-  const { formPath, languageCode } = props;
+const getValidLanguageCode = async (props: DownloadPdfType) => {
+  const { baseUrl, formPath, languageCode } = props;
 
   if (!languageCode) {
     throw new ResponseError('BAD_REQUEST', 'Language code is required to download a static pdf');
   }
 
-  const all = await getAll(props);
+  const all = await getAll({ baseUrl, formPath });
   const languageCodes = all.map((staticPdf) => staticPdf.languageCode);
 
   if (languageCodes.length === 0) {
@@ -42,65 +33,54 @@ const getValidLanguageCode = async (props: CreateUrlType) => {
   );
 };
 
-const getAll = async (props: Omit<CreateUrlType, 'languageCode'>) => {
+interface GetAllType {
+  baseUrl: string;
+  formPath: string;
+}
+const getAll = async (props: GetAllType) => {
   const { baseUrl, formPath } = props;
-  logger.debug(`Get all static pdfs ${formPath}`);
 
-  return await http.get<StaticPdf[]>(
-    createUrl({
-      baseUrl,
-      formPath,
-    }),
-  );
+  return staticPdfApiService.getAll({ baseUrl, formPath });
 };
 
-const downloadPdf = async (props: CreateUrlType) => {
-  const { formPath, languageCode } = props;
-  logger.info(`Download new static pdf ${formPath} for ${languageCode}`);
+interface DownloadPdfType {
+  baseUrl: string;
+  formPath: string;
+  languageCode: TranslationLang;
+}
+const downloadPdf = async (props: DownloadPdfType) => {
+  const { baseUrl, formPath } = props;
 
   const validLanguageCode = await getValidLanguageCode(props);
-
-  const pdf = await http.get<string>(
-    createUrl({
-      ...props,
-      languageCode: validLanguageCode,
-    }),
-  );
-
-  if (!pdf) {
-    throw new ResponseError('NOT_FOUND', 'PDF not found');
-  }
-
-  return pdf;
+  return staticPdfApiService.downloadPdf({ baseUrl, formPath, languageCode: validLanguageCode });
 };
 
-interface UploadPdfType extends CreateUrlType {
+interface UploadPdfType {
+  baseUrl: string;
+  formPath: string;
+  languageCode: TranslationLang;
   accessToken: string;
   file: Express.Multer.File;
 }
 const uploadPdf = async (props: UploadPdfType) => {
-  const { formPath, languageCode, accessToken, file } = props;
-  logger.info(`Upload new static pdf ${formPath} for ${languageCode}`);
+  const { baseUrl, formPath, languageCode, accessToken, file } = props;
 
   const fileBlob = new Blob([Uint8Array.from(file.buffer)], { type: file.mimetype });
   const originalFileName = Buffer.from(file.originalname, 'latin1').toString('utf8');
   const body = new FormData();
   body.append('fileContent', fileBlob, originalFileName);
 
-  return await http.post<StaticPdf>(createUrl(props), body, {
-    accessToken,
-    contentType: undefined,
-  });
+  return staticPdfApiService.uploadPdf({ baseUrl, formPath, languageCode, accessToken, body });
 };
 
-interface DeletePdfType extends CreateUrlType {
+interface DeletePdfType {
+  baseUrl: string;
+  formPath: string;
+  languageCode: TranslationLang;
   accessToken: string;
 }
 const deletePdf = async (props: DeletePdfType) => {
-  const { formPath, languageCode, accessToken } = props;
-  logger.info(`Delete static pdf ${formPath} for ${languageCode}`);
-
-  await http.delete(createUrl(props), undefined, { accessToken });
+  await staticPdfApiService.deletePdf(props);
 };
 
 const staticPdfService = {

@@ -2,6 +2,17 @@ import { FormsApiTranslation, TranslationLang } from '@navikt/skjemadigitaliseri
 import translationUtil from '../../util/translation/translationUtil';
 import translationApiService from './translationApiService';
 
+const convertToFormsApiTranslationMap = (translations: FormsApiTranslation[]) => {
+  return translations.reduce((accumulator, currentItem: FormsApiTranslation) => {
+    accumulator[currentItem.key] = {
+      nb: currentItem.nb,
+      nn: currentItem.nn,
+      en: currentItem.en,
+    };
+    return accumulator;
+  }, {});
+};
+
 interface GetFormTranslationsType {
   baseUrl: string;
   formPath: string;
@@ -18,14 +29,7 @@ const getFormTranslations = async (props: GetFormTranslationsType) => {
     return {};
   }
 
-  return translations.reduce((accumulator, currentItem: FormsApiTranslation) => {
-    accumulator[currentItem.key] = {
-      nb: currentItem.nb,
-      nn: currentItem.nn,
-      en: currentItem.en,
-    };
-    return accumulator;
-  }, {});
+  return convertToFormsApiTranslationMap(translations);
 };
 
 interface GetGlobalTranslationsType {
@@ -42,14 +46,7 @@ const getGlobalTranslations = async (props: GetGlobalTranslationsType) => {
     return {};
   }
 
-  return translations.reduce((accumulator, currentItem: FormsApiTranslation) => {
-    accumulator[currentItem.key] = {
-      nb: currentItem.nb,
-      nn: currentItem.nn,
-      en: currentItem.en,
-    };
-    return accumulator;
-  }, {});
+  return convertToFormsApiTranslationMap(translations);
 };
 
 interface GetTranslationsType {
