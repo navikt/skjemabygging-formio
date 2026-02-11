@@ -1,4 +1,5 @@
 import { requestUtil, staticPdfService } from '@navikt/skjemadigitalisering-shared-backend';
+import { TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, RequestHandler, Response } from 'express';
 import config from '../../../config';
 
@@ -19,7 +20,8 @@ const getAll: RequestHandler = async (req: Request, res: Response, next: NextFun
 };
 
 const uploadPdf: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
-  const { formPath, languageCode } = req.params;
+  const { formPath } = req.params;
+  const languageCode = req.params.languageCode as TranslationLang;
 
   try {
     const accessToken = requestUtil.getAzureAccessToken(req);
@@ -39,7 +41,8 @@ const uploadPdf: RequestHandler = async (req: Request, res: Response, next: Next
 };
 
 const downloadPdf: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
-  const { formPath, languageCode } = req.params;
+  const { formPath } = req.params;
+  const languageCode = req.params.languageCode as TranslationLang;
 
   try {
     const pdf = await staticPdfService.downloadPdf({
@@ -55,7 +58,8 @@ const downloadPdf: RequestHandler = async (req: Request, res: Response, next: Ne
 };
 
 const deletePdf: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
-  const { formPath, languageCode } = req.params;
+  const { formPath } = req.params;
+  const languageCode = req.params.languageCode as TranslationLang;
 
   try {
     const accessToken = requestUtil.getAzureAccessToken(req);
