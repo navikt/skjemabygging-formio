@@ -37,17 +37,19 @@ const SummaryAttachmentUpload = (props: FormComponentProps) => {
             </FormSummary.Value>
           ) : (
             <FormSummary.Value key={submissionAttachment.attachmentId}>
-              {translate(TEXTS.statiske.attachment[submissionAttachment.value])}
-              {submissionAttachment.additionalDocumentation && (
-                <div>{translate(submissionAttachment.additionalDocumentation)}</div>
-              )}
-              {showDeadline(submissionAttachment) && formProperties?.ettersendelsesfrist && (
-                <Alert variant="warning">
-                  {translate(TEXTS.statiske.attachment.deadline, {
-                    deadline: formProperties?.ettersendelsesfrist,
-                  })}
-                </Alert>
-              )}
+              <VStack gap="space-8">
+                {translate(TEXTS.statiske.attachment[submissionAttachment.value])}
+                {submissionAttachment.additionalDocumentation && (
+                  <div>{translate(submissionAttachment.additionalDocumentation)}</div>
+                )}
+                {showDeadline(submissionAttachment) && formProperties?.ettersendelsesfrist && (
+                  <Alert variant="warning">
+                    {translate(TEXTS.statiske.attachment.deadline, {
+                      deadline: formProperties?.ettersendelsesfrist,
+                    })}
+                  </Alert>
+                )}
+              </VStack>
             </FormSummary.Value>
           ),
         )}
