@@ -23,18 +23,71 @@
           }
         }
       ]
+    },
+    {
+      "id": "er8l2dg",
+      "key": "vedlegg",
+      "type": "panel",
+      "title": "Vedlegg",
+      "isAttachmentPanel": true,
+      "components": [
+        {
+          "id": "testvedlegg1",
+          "label": "Nav skjema test",
+          "type": "attachment",
+          "key": "navSkjemaTest",
+          "attachmentType": "default",
+          "properties": {
+            "vedleggstittel": "Kursbevis",
+            "vedleggskode": "K1",
+            "vedleggskjema": "nav100754"
+          },
+          "validate": {
+            "required": true
+          },
+          "attachmentValues": {
+            "leggerVedNaa": {
+              "enabled": true
+            },
+            "ettersender": {
+              "enabled": true
+            }
+          }
+        },
+        {
+          "id": "ewftv5w",
+          "label": "Annen dokumentasjon",
+          "description": "Har du noen annen dokumentasjon du ønsker å legge ved?",
+          "type": "attachment",
+          "key": "annenDokumentasjon",
+          "attachmentType": "other",
+          "properties": {
+            "vedleggstittel": "Annet",
+            "vedleggskode": "N6"
+          },
+          "validate": {
+            "required": true
+          },
+          "attachmentValues": {
+            "leggerVedNaa": {
+              "enabled": true
+            },
+            "ettersender": {
+              "enabled": true
+            },
+            "nei": {
+              "enabled": true
+            }
+          }
+        }
+      ]
     }
   ],
   "properties": {
     "submissionTypes": [],
-    "publishedLanguages": [
-      "nb",
-      "en"
-    ]
+    "publishedLanguages": ["nb", "en"],
+    "innsendingForklaring": "Her er litt forklaring"
   },
-  "publishedLanguages": [
-    "nb",
-    "en"
-  ],
+  "publishedLanguages": ["nb", "en"],
   "status": "published"
 }

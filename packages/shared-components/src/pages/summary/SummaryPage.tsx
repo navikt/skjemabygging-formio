@@ -1,5 +1,6 @@
 import { Alert, BodyShort, ConfirmationPanel, Heading, VStack } from '@navikt/ds-react';
 import {
+  attachmentUtils,
   DeclarationType,
   formioFormsApiUtils,
   navFormUtils,
@@ -70,12 +71,15 @@ export function SummaryPage() {
         appConfig.submissionMethod,
       );
       if (attachmentPanel) {
-        const validator = attachmentValidator(translate, ['value', 'fileUploaded']);
+        const validator = attachmentUtils.enableAttachmentUpload(appConfig.submissionMethod)
+          ? attachmentValidator(translate, ['value', 'fileUploaded'])
+          : attachmentValidator(translate, ['value']);
         const invalidAttachment = findFirstValidationErrorInAttachmentPanel(
           attachmentPanel,
           submission ?? { data: {} },
           validator,
         );
+
         if (invalidAttachment) {
           panelValidations.push({
             key: attachmentPanel.key,

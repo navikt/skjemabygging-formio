@@ -11,7 +11,8 @@ import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
 import { validateFileUpload, validateTotalFilesSize } from '../../util/form/attachment-validation/attachmentValidation';
 
-type ErrorType = 'FILE' | 'VALUE' | 'TITLE';
+type AttachmentErrorType = 'FILE' | 'VALUE' | 'TITLE';
+type AttachmentError = { message: string; type: AttachmentErrorType };
 type ActionStatus = 'ok' | 'error' | 'auth-error' | 'invalid' | 'unknown';
 interface AttachmentUploadContextType {
   handleUploadFile: (attachmentId: string, file: FileObject) => Promise<{ status: ActionStatus }>;
@@ -19,7 +20,7 @@ interface AttachmentUploadContextType {
   handleDeleteAllFilesForAttachment: (attachmentId: string) => Promise<void>;
   handleDeleteAttachment: (attachmentId: string) => Promise<void>;
   handleDeleteAllFiles: () => Promise<void>;
-  addError: (attachmentId: string, error: string, type: ErrorType) => void;
+  addError: (attachmentId: string, error: string, type: AttachmentErrorType) => void;
   setCaptchaValue: (value: Record<string, string>) => void;
   removeError: (attachmentId: string) => void;
   removeAllErrors: () => void;
@@ -29,7 +30,7 @@ interface AttachmentUploadContextType {
     values?: Pick<SubmissionAttachment, 'value' | 'title' | 'additionalDocumentation'>,
     validator?: { validate: (label: string, attachment: SubmissionAttachment) => string | undefined },
   ) => void;
-  errors: Record<string, Array<{ message: string; type: ErrorType }>>;
+  errors: Record<string, Array<AttachmentError>>;
   uploadsInProgress: Record<string, Record<string, FileObject>>;
 }
 
@@ -59,7 +60,7 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
   const { translate } = useLanguages();
   const [captchaValue, setCaptchaValue] = useState<Record<string, string>>({});
   const [uploadsInProgress, setUploadsInProgress] = useState<Record<string, Record<string, FileObject>>>({});
-  const [errors, setErrors] = useState<Record<string, Array<{ message: string; type: ErrorType }>>>({});
+  const [errors, setErrors] = useState<Record<string, Array<{ message: string; type: AttachmentErrorType }>>>({});
 
   const fileIdentifier = (file: FileObject) => `${file.file.name}-${file.file.size}`;
 
@@ -124,7 +125,7 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
     );
   };
 
-  const addError = (attachmentId: string, message: string, type: ErrorType) => {
+  const addError = (attachmentId: string, message: string, type: AttachmentErrorType) => {
     setErrors((prev) => {
       const existingErrorIndex = prev[attachmentId]?.findIndex((error) => error.type === type);
       if (existingErrorIndex !== undefined && existingErrorIndex >= 0) {
@@ -376,5 +377,6 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
 
 const useAttachmentUpload = () => useContext(AttachmentUploadContext);
 
+export type { AttachmentError, AttachmentErrorType };
 export default AttachmentUploadProvider;
 export { useAttachmentUpload };

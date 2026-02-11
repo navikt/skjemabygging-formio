@@ -176,8 +176,10 @@ describe('forsteside', () => {
     it('adds all vedlegg which are set as leggerVedNaa', () => {
       const actual = getAttachments(
         {
-          vedleggQ7: 'leggerVedNaa',
-          vedleggO9: 'leggerVedNaa',
+          data: {
+            vedleggQ7: 'leggerVedNaa',
+            vedleggO9: 'leggerVedNaa',
+          },
         },
         formMedVedlegg,
       );
@@ -187,8 +189,10 @@ describe('forsteside', () => {
     it('does not add vedlegg which should not be submitted now', () => {
       const actual = getAttachments(
         {
-          vedleggQ7: 'levertTidligere',
-          vedleggO9: 'ettersender',
+          data: {
+            vedleggQ7: 'levertTidligere',
+            vedleggO9: 'ettersender',
+          },
         },
         formMedVedlegg,
       );
@@ -198,9 +202,11 @@ describe('forsteside', () => {
     it('handles several vedlegg with the same vedleggskode', () => {
       const actual = getAttachments(
         {
-          vedlegg1: 'leggerVedNaa',
-          vedlegg2: 'leggerVedNaa',
-          vedlegg3: 'leggerVedNaa',
+          data: {
+            vedlegg1: 'leggerVedNaa',
+            vedlegg2: 'leggerVedNaa',
+            vedlegg3: 'leggerVedNaa',
+          },
         },
         {
           components: [
@@ -217,26 +223,28 @@ describe('forsteside', () => {
       it('onlye leggerVedNaa should be included', () => {
         const actual = getAttachments(
           {
-            vedlegg1: {
-              key: 'ettersender',
-            },
-            vedlegg2: {
-              key: 'nei',
-            },
-            vedlegg3: {
-              key: 'leggerVedNaa',
-            },
-            vedlegg4: {
-              key: 'levertTidligere',
-            },
-            vedlegg5: {
-              key: 'harIkke',
-            },
-            vedlegg6: {
-              key: 'andre',
-            },
-            vedlegg7: {
-              key: 'nav',
+            data: {
+              vedlegg1: {
+                key: 'ettersender',
+              },
+              vedlegg2: {
+                key: 'nei',
+              },
+              vedlegg3: {
+                key: 'leggerVedNaa',
+              },
+              vedlegg4: {
+                key: 'levertTidligere',
+              },
+              vedlegg5: {
+                key: 'harIkke',
+              },
+              vedlegg6: {
+                key: 'andre',
+              },
+              vedlegg7: {
+                key: 'nav',
+              },
             },
           },
           {
@@ -258,7 +266,9 @@ describe('forsteside', () => {
 
   describe('genererVedleggsListe', () => {
     it('generates correct vedleggsListe', () => {
-      const actual = getAttachmentTitles(formMedVedlegg, { vedleggQ7: 'leggerVedNaa', vedleggO9: 'leggerVedNaa' });
+      const actual = getAttachmentTitles(formMedVedlegg, {
+        data: { vedleggQ7: 'leggerVedNaa', vedleggO9: 'leggerVedNaa' },
+      });
       expect(actual).toEqual([
         'Bekreftelse fra studiested/skole',
         'Dokumentasjon av utgifter i forbindelse med utdanning',
@@ -266,7 +276,7 @@ describe('forsteside', () => {
     });
 
     it('handles correctly when no vedlegg will be submitted', () => {
-      const actual = getAttachmentTitles(formMedVedlegg, { vedleggQ7: 'ettersender' });
+      const actual = getAttachmentTitles(formMedVedlegg, { data: { vedleggQ7: 'ettersender' } });
       expect(actual).toEqual([]);
     });
   });
@@ -274,8 +284,10 @@ describe('forsteside', () => {
   describe('genererDokumentListeFoersteside', () => {
     it('generates correct dokumentListeFoersteside', () => {
       const actual = getAttachmentLabels(formMedVedlegg, {
-        vedleggQ7: 'leggerVedNaa',
-        vedleggO9: 'leggerVedNaa',
+        data: {
+          vedleggQ7: 'leggerVedNaa',
+          vedleggO9: 'leggerVedNaa',
+        },
       });
       expect(actual).toEqual(['Skriftlig bekreftelse på studieplass', 'Faktura fra utdanningsinstitusjon']);
     });
