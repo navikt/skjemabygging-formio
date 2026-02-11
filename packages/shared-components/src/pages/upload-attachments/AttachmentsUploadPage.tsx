@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import AttachmentComponent from '../../components/attachment/Attachment';
 import { useAttachmentUpload } from '../../components/attachment/AttachmentUploadContext';
 import InnerHtml from '../../components/inner-html/InnerHtml';
+import { fileUploadErrorParams } from '../../constants/fileUpload';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { Attachment, getAllAttachments } from '../../util/attachment/attachmentsUtil';
@@ -31,7 +32,7 @@ const AttachmentsUploadPage = () => {
   const errors: ComponentError[] = (Object.entries(uploadErrors) ?? []).flatMap(([attachmentId, attachmentErrors]) =>
     attachmentErrors.map((error) => ({
       elementId: error.type,
-      message: error.message,
+      message: translate(error.message, fileUploadErrorParams),
       path: attachmentId,
       level: 'error',
     })),
