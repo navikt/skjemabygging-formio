@@ -2,7 +2,7 @@ import { Component, navFormUtils, TEXTS } from '@navikt/skjemadigitalisering-sha
 import { useMemo } from 'react';
 import { useForm } from '../../../../context/form/FormContext';
 import { useLanguages } from '../../../../context/languages';
-import FormCheckboxes from './FormCheckboxes';
+import FormCheckboxes from './form/FormCheckboxes';
 
 interface Props {
   submissionPath: string;

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import DownloadPdfButton from '../../components/button/DownloadPdfButton';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
-import FormBox from './components/shared/FormBox';
+import FormBox from './components/shared/form/FormBox';
 import FormStaticPdfLanguage from './components/shared/FormStaticPdfLanguage';
 import { useStaticPdf } from './StaticPdfContext';
 

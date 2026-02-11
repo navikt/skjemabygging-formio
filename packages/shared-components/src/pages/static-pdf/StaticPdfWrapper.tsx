@@ -8,7 +8,7 @@ import { StaticPdfProvider } from './StaticPdfContext';
 import StaticPdfDownloadPage from './StaticPdfDownloadPage';
 import StaticPdfInputPage from './StaticPdfInputPage';
 import StaticPdfNavigation from './components/StaticPdfNavigation';
-import FormErrorSummary from './components/shared/FormErrorSummary';
+import FormErrorSummary from './components/shared/form/FormErrorSummary';
 
 type StaticPdfPage = 'input' | 'download';
 
@@ -21,7 +21,7 @@ const StaticPdfPage = () => {
   useEffect(() => {
     if (form && !submissionTypesUtils.isStaticPdf(form.properties?.submissionTypes)) {
       logger?.info(`Tried to access static pdf for form ${form?.path}, but it is not enabled for this form`);
-      navigate('/soknad-ikke-funnet');
+      navigate('/404');
     }
   }, [form, navigate, logger]);
 

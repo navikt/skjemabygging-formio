@@ -1,11 +1,12 @@
 import { Select } from '@navikt/ds-react';
 import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
 import { ChangeEvent, useEffect, useRef } from 'react';
-import { useAppConfig } from '../../../../context/config/configContext';
-import { useForm } from '../../../../context/form/FormContext';
-import { useLanguages } from '../../../../context/languages';
-import { useInputValidation, Validators } from '../../../../context/validator/InputValidationContext';
-import formComponentUtils from '../../../../form-components/utils/formComponent';
+import { useAppConfig } from '../../../../../context/config/configContext';
+import { useForm } from '../../../../../context/form/FormContext';
+import { useLanguages } from '../../../../../context/languages';
+import { useInputValidation, Validators } from '../../../../../context/validator/InputValidationContext';
+import formComponentUtils from '../../../../../form-components/utils/formComponent';
+import { FormInputWidth, useFormInputStyles } from '../formStylingUtil';
 import FormBox, { FormBoxProps } from './FormBox';
 import TranslatedDescription from './TranslatedDescription';
 import TranslatedLabel from './TranslatedLabel';
@@ -21,7 +22,7 @@ interface FormSelectProps extends FormBoxProps {
   readOnly?: boolean;
   error?: string;
   autoComplete?: string;
-  defaultValue?: string;
+  width?: FormInputWidth;
 }
 
 const FormSelect = (props: FormSelectProps) => {
@@ -32,19 +33,19 @@ const FormSelect = (props: FormSelectProps) => {
     values,
     validators,
     bottom = 'space-32',
-    inputWidth,
+    width = 'input--xl',
     selectText,
     onChange,
     readOnly,
     error,
     autoComplete,
-    defaultValue,
   } = props;
   const { logger } = useAppConfig();
   const { updateSubmission, submission } = useForm();
   const { addValidation, removeValidation, getRefError } = useInputValidation();
   const { translate } = useLanguages();
   const { required } = validators || { required: true };
+  const styles = useFormInputStyles();
 
   const ref = useRef(null);
 
@@ -67,16 +68,22 @@ const FormSelect = (props: FormSelectProps) => {
     };
   }, [logger, addValidation, removeValidation, submissionPath, ref, required, label]);
 
+  const getDefaultValue = () => {
+    const defaultValue = formComponentUtils.getSubmissionValue(submissionPath, submission);
+    return defaultValue?.value ?? defaultValue;
+  };
+
   return (
-    <FormBox inputWidth={inputWidth} bottom={bottom}>
+    <FormBox bottom={bottom}>
       <Select
+        className={styles[width ?? 'input--xl']}
         label={<TranslatedLabel options={{ required, readOnly }}>{label}</TranslatedLabel>}
         description={<TranslatedDescription>{description}</TranslatedDescription>}
         onChange={handleChange}
         ref={ref}
         error={error ?? getRefError(ref)}
         autoComplete={autoComplete}
-        defaultValue={defaultValue ?? formComponentUtils.getSubmissionValue(submissionPath, submission)}
+        defaultValue={getDefaultValue()}
       >
         {selectText && <option value="">{translate(selectText)}</option>}
         {values.map(({ value, label }) => (

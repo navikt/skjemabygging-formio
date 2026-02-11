@@ -1,4 +1,4 @@
-import { urlUtil } from '@navikt/skjemadigitalisering-shared-backend';
+import { fileUtil, urlUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import {
   FormioTranslationPayload,
   FormsApiTranslation,
@@ -8,7 +8,6 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import fetch from 'node-fetch';
 import { ConfigType } from '../config/types';
-import { loadFileFromDirectory } from '../utils/forms';
 
 const toFyllutLang = (lang: string): Language => {
   switch (lang) {
@@ -135,7 +134,7 @@ class TranslationsService {
     }
     return useFormsApiStaging
       ? await this.fetchTranslationsFromFormsApi(formPath)
-      : await loadFileFromDirectory(translationDir, formPath);
+      : ((await fileUtil.loadJsonFileFromDirectory(translationDir, formPath)) ?? {});
   }
 
   async loadGlobalTranslations(lang: string): Promise<I18nTranslations> {
@@ -143,7 +142,8 @@ class TranslationsService {
     if (useFormsApiStaging || mocksEnabled) {
       return this.fetchGlobalTranslationsFromFormsApi(lang);
     }
-    const globalTranslations = await loadFileFromDirectory(resourcesDir, `global-translations-${lang}`);
+    const globalTranslations =
+      (await fileUtil.loadJsonFileFromDirectory(resourcesDir, `global-translations-${lang}`)) ?? {};
     return languagesUtil.flattenGlobalI18nGroupedByTag(globalTranslations);
   }
 

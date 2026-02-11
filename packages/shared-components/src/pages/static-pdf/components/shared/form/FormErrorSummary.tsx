@@ -1,7 +1,7 @@
 import { ErrorSummary } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useLanguages } from '../../../../context/languages';
-import { useInputValidation } from '../../../../context/validator/InputValidationContext';
+import { useLanguages } from '../../../../../context/languages';
+import { useInputValidation } from '../../../../../context/validator/InputValidationContext';
 
 const FormErrorSummary = () => {
   const { errors } = useInputValidation();

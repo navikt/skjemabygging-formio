@@ -133,6 +133,7 @@ import externalStorageTexts, { TElement, Tkey } from './texts/externalStorage';
 import { Activity } from './tilleggsstonader/activity';
 import {
   FormsApiTranslation,
+  FormsApiTranslationMap,
   formsApiTranslations,
   PublishedTranslations,
   TranslationLang,
@@ -246,6 +247,7 @@ export type {
   FormPropertiesPublishing,
   FormPropertiesType,
   FormsApiTranslation,
+  FormsApiTranslationMap,
   FormSettingsDiff,
   FormSignaturesType,
   FormsResponseForm,

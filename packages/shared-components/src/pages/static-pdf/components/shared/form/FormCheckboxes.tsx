@@ -1,27 +1,27 @@
-import { Radio, RadioGroup } from '@navikt/ds-react';
+import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
 import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useRef } from 'react';
-import { useAppConfig } from '../../../../context/config/configContext';
-import { useForm } from '../../../../context/form/FormContext';
-import { useLanguages } from '../../../../context/languages';
-import { useInputValidation, Validators } from '../../../../context/validator/InputValidationContext';
-import formComponentUtils from '../../../../form-components/utils/formComponent';
+import { useAppConfig } from '../../../../../context/config/configContext';
+import { useForm } from '../../../../../context/form/FormContext';
+import { useLanguages } from '../../../../../context/languages';
+import { useInputValidation, Validators } from '../../../../../context/validator/InputValidationContext';
+import formComponentUtils from '../../../../../form-components/utils/formComponent';
 import FormBox, { FormBoxProps } from './FormBox';
 import TranslatedDescription from './TranslatedDescription';
 import TranslatedLabel from './TranslatedLabel';
 
-interface FormRadioProps extends FormBoxProps {
+interface FormCheckboxGroupProps extends FormBoxProps {
   submissionPath: string;
   legend: string;
   values: ComponentValue[];
   description?: string;
   validators?: Pick<Validators, 'required'>;
-  onChange?: (value: any) => void;
+  onChange?: (value: string[]) => void;
   readOnly?: boolean;
   error?: string;
 }
 
-const FormRadio = (props: FormRadioProps) => {
+const FormCheckboxes = (props: FormCheckboxGroupProps) => {
   const {
     submissionPath,
     values,
@@ -29,7 +29,6 @@ const FormRadio = (props: FormRadioProps) => {
     description,
     validators,
     bottom = 'space-32',
-    inputWidth,
     onChange,
     readOnly,
     error,
@@ -42,7 +41,7 @@ const FormRadio = (props: FormRadioProps) => {
 
   const ref = useRef(null);
 
-  const handleChange = (value: string) => {
+  const handleChange = (value: string[]) => {
     if (onChange) {
       onChange(value);
     } else {
@@ -59,25 +58,30 @@ const FormRadio = (props: FormRadioProps) => {
     };
   }, [logger, addValidation, removeValidation, submissionPath, ref, required, legend]);
 
+  const getDefaultValue = () => {
+    const defaultValue = formComponentUtils.getSubmissionValue(submissionPath, submission);
+    return defaultValue?.value ?? defaultValue;
+  };
+
   return (
-    <FormBox inputWidth={inputWidth} bottom={bottom}>
-      <RadioGroup
+    <FormBox bottom={bottom}>
+      <CheckboxGroup
         legend={<TranslatedLabel options={{ required, readOnly: readOnly }}>{legend}</TranslatedLabel>}
         description={<TranslatedDescription>{description}</TranslatedDescription>}
         onChange={handleChange}
         ref={ref}
         error={error ?? getRefError(ref)}
-        defaultValue={formComponentUtils.getSubmissionValue(submissionPath, submission)}
+        defaultValue={getDefaultValue()}
       >
         {values.map(({ value, label, description }) => (
-          <Radio key={value} value={value} description={translate(description)}>
+          <Checkbox key={value} value={value} description={translate(description)}>
             {translate(label)}
-          </Radio>
+          </Checkbox>
         ))}
-      </RadioGroup>
+      </CheckboxGroup>
     </FormBox>
   );
 };
 
-export default FormRadio;
-export type { FormRadioProps };
+export default FormCheckboxes;
+export type { FormCheckboxGroupProps };

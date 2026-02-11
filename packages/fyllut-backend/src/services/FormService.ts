@@ -1,8 +1,8 @@
-import { urlUtil } from '@navikt/skjemadigitalisering-shared-backend';
+import { fileUtil, urlUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import { Form, formioFormsApiUtils, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { config } from '../config/config';
 import { logger } from '../logger';
-import { fetchFromApi, loadAllJsonFilesFromDirectory, loadFileFromDirectory } from '../utils/forms';
+import { fetchFromApi } from '../utils/forms';
 
 const { mocksEnabled, useFormsApiStaging, skjemaDir, formioApiServiceUrl, formsApiUrl } = config;
 
@@ -21,7 +21,7 @@ class FormService {
         form = (await fetchFromApi(url)) as Form;
         return formioFormsApiUtils.mapFormToNavForm(form);
       } else {
-        return await loadFileFromDirectory(skjemaDir, formPath, undefined);
+        return await fileUtil.loadJsonFileFromDirectory(skjemaDir, formPath);
       }
     } catch (error) {
       logger.error(`Failed to load form ${formPath}`, error as Error);
@@ -45,7 +45,7 @@ class FormService {
       )) as Form[];
       return list.map((f) => formioFormsApiUtils.mapFormToNavForm(f));
     } else {
-      return await loadAllJsonFilesFromDirectory(skjemaDir);
+      return await fileUtil.loadAllJsonFilesFromDirectory(skjemaDir);
     }
   }
 }

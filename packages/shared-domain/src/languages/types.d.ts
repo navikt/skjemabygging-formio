@@ -47,4 +47,4 @@ export interface FormioTranslationPayload extends FormioResource {
   data: FormioTranslationData;
 }
 
-export type TranslateFunction = (text?: string, textReplacements?: I18nTranslationReplacements) => string;
+export type TranslateFunction = (text?: string | TKey, textReplacements?: I18nTranslationReplacements) => string;

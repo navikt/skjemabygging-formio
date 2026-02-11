@@ -1,4 +1,4 @@
-import { useLanguages } from '../../../../context/languages';
+import { useLanguages } from '../../../../../context/languages';
 
 type LabelOptions = {
   required?: boolean;

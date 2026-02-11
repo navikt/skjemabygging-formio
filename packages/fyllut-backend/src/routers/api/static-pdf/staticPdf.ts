@@ -3,8 +3,14 @@ import {
   formService,
   mergeFileService,
   staticPdfService,
+  translationService,
 } from '@navikt/skjemadigitalisering-shared-backend';
-import { CoverPageType, navFormUtils, ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  CoverPageType,
+  navFormUtils,
+  ResponseError,
+  TranslationLang,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import { config } from '../../../config/config';
 import { logger } from '../../../logger';
@@ -26,7 +32,8 @@ const staticPdf = {
     }
   },
   downloadPdf: async (req: Request, res: Response, next: NextFunction) => {
-    const { formPath, languageCode } = req.params;
+    const { formPath } = req.params;
+    const languageCode = req.params.languageCode as TranslationLang;
     const coverPageData = req.body as CoverPageType;
     const coverPageToken = req.headers.AzureAccessToken as string;
     const mergePdfToken = req.headers.MergePdfToken as string;
@@ -39,6 +46,11 @@ const staticPdf = {
       // TODO: Get form from published revision
       const form = await formService.getForm({ baseUrl: formsApiUrl, formPath });
 
+      const translate = await translationService.createTranslate({ baseUrl: formsApiUrl, formPath, languageCode });
+
+      console.log('-----------');
+      console.log(translate('Fornavn'));
+
       const coverPagePdf = await coverPageService.downloadCoverPage({
         baseUrl: skjemabyggingProxyUrl,
         languageCode,
@@ -47,6 +59,7 @@ const staticPdf = {
           ...coverPageData,
           form,
         },
+        translate,
       });
 
       const staticPdf = await staticPdfService.downloadPdf({
