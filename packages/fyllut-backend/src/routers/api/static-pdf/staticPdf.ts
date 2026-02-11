@@ -43,13 +43,10 @@ const staticPdf = {
     }
 
     try {
-      // TODO: Get form from published revision
+      // TODO: Get form from published revision or get from github
       const form = await formService.getForm({ baseUrl: formsApiUrl, formPath });
 
       const translate = await translationService.createTranslate({ baseUrl: formsApiUrl, formPath, languageCode });
-
-      console.log('-----------');
-      console.log(translate('Fornavn'));
 
       const coverPagePdf = await coverPageService.downloadCoverPage({
         baseUrl: skjemabyggingProxyUrl,
