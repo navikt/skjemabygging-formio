@@ -55,17 +55,17 @@ export function SummaryPageNextButton({
       return;
     }
 
+    if (submissionTypesUtils.isNoneSubmission(submissionTypes)) {
+      navigate({ pathname: '../ingen-innsending', search });
+      return;
+    }
+
     if (
       submissionMethod === 'paper' ||
       app === 'bygger' ||
       submissionTypesUtils.isPaperSubmissionOnly(submissionTypes)
     ) {
       navigate({ pathname: '../send-i-posten', search });
-      return;
-    }
-
-    if (submissionTypesUtils.isNoneSubmission(submissionTypes)) {
-      navigate({ pathname: '../ingen-innsending', search });
       return;
     }
 
