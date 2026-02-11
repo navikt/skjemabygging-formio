@@ -1,6 +1,7 @@
 import { Form, Submission, SubmissionMethod, submissionTypesUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router';
+import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 
 export enum IntroPageState {
@@ -35,6 +36,7 @@ export const IntroPageProvider = ({ children, form }: IntroPageProviderProps) =>
   const [searchParams] = useSearchParams();
   const submissionMethod = (searchParams.get('sub') as SubmissionMethod) ?? undefined;
   const { submission, setSubmission } = useForm();
+  const appConfig = useAppConfig();
   const [error, setError] = useState<string | undefined>();
 
   const setSelfDeclaration = useCallback(
@@ -52,6 +54,12 @@ export const IntroPageProvider = ({ children, form }: IntroPageProviderProps) =>
 
   const toState = useCallback(
     (sub?: SubmissionMethod) => {
+      if (appConfig.app === 'bygger') {
+        return submissionTypesUtils.isNoneSubmission(form.properties.submissionTypes)
+          ? IntroPageState.NONE
+          : IntroPageState.PAPER;
+      }
+
       if (sub) {
         switch (sub) {
           case 'digitalnologin':
@@ -80,7 +88,7 @@ export const IntroPageProvider = ({ children, form }: IntroPageProviderProps) =>
 
       return IntroPageState.DEFAULT;
     },
-    [form.properties?.submissionTypes],
+    [appConfig, form.properties.submissionTypes],
   );
 
   const [state, setState] = useState<IntroPageState>(toState(submissionMethod));
