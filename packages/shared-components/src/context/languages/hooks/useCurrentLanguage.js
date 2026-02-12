@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 
 const defaultLanguage = 'nb-NO';
 
 const useCurrentLanguage = (languageCodeFromUrl, translations) => {
-  const [initialLanguage] = useState(() =>
-    Object.keys(translations).indexOf(languageCodeFromUrl) !== -1 ? languageCodeFromUrl : defaultLanguage,
+  const initialLanguage = useMemo(
+    () => (Object.keys(translations).indexOf(languageCodeFromUrl) !== -1 ? languageCodeFromUrl : defaultLanguage),
+    [languageCodeFromUrl, translations],
   );
 
   const currentLanguage = languageCodeFromUrl || initialLanguage;
