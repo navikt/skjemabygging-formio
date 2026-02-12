@@ -418,7 +418,7 @@
               "label": "Jeg har levert denne dokumentasjonen tidligere"
             }
           ],
-          "type": "radiopanel",
+          "type": "attachment",
           "input": true,
           "clearOnHide": true,
           "validateOn": "blur",

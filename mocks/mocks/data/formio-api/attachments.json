@@ -136,7 +136,7 @@
             "vedleggstittel": "Test",
             "vedleggskode": "O9"
           },
-          "type": "radiopanel",
+          "type": "attachment",
           "input": true,
           "validateOn": "blur",
           "tableView": false,

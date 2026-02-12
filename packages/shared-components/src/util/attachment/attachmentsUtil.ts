@@ -84,7 +84,7 @@ const hasOtherDocumentation = (form, submission: Submission) => {
 };
 
 const isAttachment = (component: Component): boolean => {
-  return component.type === 'attachment' || !!component.properties?.vedleggskode;
+  return component.type === 'attachment';
 };
 
 const isOtherDocumentation = (component: Component): boolean => {
