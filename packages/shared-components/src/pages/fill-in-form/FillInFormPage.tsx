@@ -142,6 +142,7 @@ export const FillInFormPage = () => {
   const updateFormIsReady = useCallback(() => setFormIsReady(true), []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setFormForRendering(
       submissionMethod === 'digital' || attachmentUtils.renderAttachmentPanel(submissionMethod)
         ? navFormUtils.removeVedleggspanel(form)
