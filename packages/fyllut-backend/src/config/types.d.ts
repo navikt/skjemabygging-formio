@@ -19,6 +19,7 @@ export type SendInnConfig = {
     activities: string;
     mergeFiles: string;
     nologinFile: string;
+    nologinApplication: string;
     nologinSubmit: string;
   };
 };

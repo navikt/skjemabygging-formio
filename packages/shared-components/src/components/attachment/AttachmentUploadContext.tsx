@@ -261,7 +261,7 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
   const handleDeleteFile = async (attachmentId: string, fileId: string) => {
     try {
       removeError(attachmentId);
-      await deleteFile(fileId, nologinToken);
+      await deleteFile(attachmentId, fileId, nologinToken);
       removeFileFromSubmission(attachmentId, fileId);
     } catch (error: any) {
       if (isAuthenticationError(error)) {

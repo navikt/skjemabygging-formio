@@ -3,7 +3,6 @@ import {
   I18nTranslationMap,
   localizationUtils,
   NavFormType,
-  Receipt,
   ReceiptSummary,
   Submission,
   translationUtils,
@@ -15,9 +14,10 @@ import { logger } from '../logger';
 import { assembleNologinSoknadBody } from '../routers/api/helpers/nologin';
 import { stringifyPdf } from '../routers/api/helpers/pdfUtils';
 import { LogMetadata } from '../types/log';
+import { SubmitApplicationResponse } from '../types/sendinn/sendinn';
 import { responseToError } from '../utils/errorHandling';
 import applicationService from './documents/applicationService';
-import { mapReceiptToSummary } from './nologin/receiptMapper';
+import { mapToReceiptSummary } from './nologin/receiptMapper';
 
 class NoLoginFileService {
   private readonly _config: ConfigType;
@@ -30,7 +30,7 @@ class NoLoginFileService {
     file: Express.Multer.File,
     accessToken: string,
     attachmentId: string,
-    innsendingsId?: string,
+    innsendingsId: string,
   ): Promise<UploadedFile> {
     const correlationId = correlator.getId();
     const { sendInnConfig } = this._config;
@@ -39,9 +39,9 @@ class NoLoginFileService {
     const originalFileName = Buffer.from(file.originalname, 'latin1').toString('utf8');
 
     const form = new FormData();
-    form.append('filinnhold', fileBlob, originalFileName);
+    form.append('file', fileBlob, originalFileName);
 
-    const targetUrl = `${sendInnConfig.host}${sendInnConfig.paths.nologinFile}?vedleggId=${attachmentId}${innsendingsId ? `&innsendingId=${innsendingsId}` : ''}`;
+    const targetUrl = `${sendInnConfig.host}${sendInnConfig.paths.nologinApplication}/${innsendingsId}/attachments/${attachmentId}`;
     const response = await fetch(targetUrl, {
       method: 'POST',
       headers: {
@@ -52,13 +52,13 @@ class NoLoginFileService {
       body: form,
     });
     if (response.ok) {
-      const { filId, vedleggId, innsendingId, filnavn, storrelse } = await response.json();
+      const { id, name, size } = await response.json();
       return {
-        fileId: filId,
-        attachmentId: vedleggId,
-        innsendingId,
-        fileName: filnavn,
-        size: storrelse,
+        fileId: id,
+        attachmentId,
+        innsendingId: innsendingsId,
+        fileName: name,
+        size,
       };
     } else {
       logger.debug('Failed to upload file for user with no login');
@@ -79,14 +79,10 @@ class NoLoginFileService {
       throw new Error('Ingen fileId, attachmentId, eller innsendingId angitt');
     }
 
-    const queryParams = attachmentId
-      ? `?vedleggId=${attachmentId}&innsendingId=${innsendingsId}`
-      : `?innsendingId=${innsendingsId}`;
-    const targetUrl =
-      fileId && validatorUtils.isValidUuid(fileId)
-        ? `${sendInnConfig.host}${sendInnConfig.paths.nologinFile}/${fileId}${queryParams}`
-        : `${sendInnConfig.host}${sendInnConfig.paths.nologinFile}${queryParams}`;
+    const fileIdPath = fileId && validatorUtils.isValidUuid(fileId) ? `/${fileId}` : '';
+    const targetUrl = `${sendInnConfig.host}${sendInnConfig.paths.nologinApplication}/${innsendingsId}/attachments/${attachmentId}${fileIdPath}`;
 
+    logger.info(`Deleting file(s) for nologin application, targetUrl: ${targetUrl}`);
     const response = await fetch(targetUrl, {
       method: 'DELETE',
       headers: {
@@ -129,7 +125,7 @@ class NoLoginFileService {
     );
 
     const { host, paths } = this._config.sendInnConfig;
-    const nologinSubmitUrl = `${host}${paths.nologinSubmit}`;
+    const nologinSubmitUrl = `${host}${paths.nologinApplication}/${innsendingsId}`;
     logger.info(`${innsendingsId}: Submitting nologin application to ${nologinSubmitUrl}`, logMeta);
     const response = await fetch(nologinSubmitUrl, {
       method: 'POST',
@@ -143,8 +139,8 @@ class NoLoginFileService {
     });
 
     if (response.ok) {
-      const receiptResponse: Receipt = await response.json();
-      const receipt = mapReceiptToSummary(receiptResponse);
+      const submitResponse: SubmitApplicationResponse = await response.json();
+      const receipt = mapToReceiptSummary(submitResponse);
       logger.info(`${innsendingsId}: Successfully submitted nologin application`, logMeta);
       return { pdf: applicationPdf, receipt };
     }

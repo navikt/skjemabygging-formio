@@ -99,7 +99,7 @@ import {
   SendInnMaalgruppe,
   VedtakBetalingsplan,
 } from './sendinn/activity';
-import { Receipt, ReceiptSummary, ReceiptSummaryAttachment, SubmittedAttachment } from './sendinn/receipt';
+import { ReceiptSummary, ReceiptSummaryAttachment } from './sendinn/receipt';
 import type { StaticPdf } from './static-pdf';
 import { SubmissionActivity } from './submission/activity';
 import SubmissionAddress from './submission/address';
@@ -279,7 +279,6 @@ export type {
   PrefillData,
   PrefillKey,
   PublishedTranslations,
-  Receipt,
   ReceiptSummary,
   ReceiptSummaryAttachment,
   Recipient,
@@ -303,7 +302,6 @@ export type {
   SubmissionMethod,
   SubmissionType,
   SubmissionYourInformation,
-  SubmittedAttachment,
   SummaryActivity,
   SummaryAddress,
   SummaryAttachment,

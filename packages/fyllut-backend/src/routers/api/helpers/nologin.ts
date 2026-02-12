@@ -8,11 +8,11 @@ import {
   yourInformationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import {
+  Attachment,
   AvsenderId,
   BrukerDto,
-  DokumentV2,
   OpplastingsStatus,
-  SendInnSoknadBodyV2,
+  SubmitApplicationRequest,
 } from '../../../types/sendinn/sendinn';
 import { base64EncodeByteArray } from '../../../utils/base64';
 import { objectToByteArray } from './sendInn';
@@ -21,10 +21,10 @@ const assembleNologinSoknadBody = (
   innsendingsId: string,
   form: NavFormType,
   submission: Submission,
-  language: string,
+  language: 'nb' | 'nn' | 'en',
   submissionPdfAsByteArray: number[],
   translate: (text: string, textReplacements?: I18nTranslationMap) => string,
-): SendInnSoknadBodyV2 => {
+): SubmitApplicationRequest => {
   const activeAttachments: Component[] =
     navFormUtils.getActiveAttachmentPanelFromForm(form, submission, 'digitalnologin')?.components ?? [];
   const bruker = extractBruker(form, submission);
@@ -34,61 +34,39 @@ const assembleNologinSoknadBody = (
   }
 
   return {
-    innsendingsId,
-    ...(bruker && { brukerDto: bruker }),
-    ...(avsender && { avsenderId: avsender }),
-    skjemanr: form.properties.skjemanummer,
-    tittel: translate(form.title),
+    ...(bruker && { bruker: bruker.id }),
+    ...(avsender && { avsender }),
+    formNumber: form.properties.skjemanummer,
+    title: translate(form.title),
     tema: form.properties.tema,
-    spraak: language,
-    hoveddokument: {
-      vedleggsnr: form.properties.skjemanummer,
-      tittel: translate(form.title),
-      pakrevd: true,
-      opplastingsStatus: 'LastetOpp',
-      mimetype: 'application/pdf',
-      document: base64EncodeByteArray(submissionPdfAsByteArray),
-      label: translate(form.title),
-      fyllutId: null,
-      beskrivelse: null,
-      propertyNavn: null,
-    } as DokumentV2,
-    hoveddokumentVariant: {
-      vedleggsnr: form.properties.skjemanummer,
-      tittel: translate(form.title),
-      label: translate(form.title),
-      pakrevd: true,
-      opplastingsStatus: 'LastetOpp',
-      mimetype: 'application/json',
-      document: base64EncodeByteArray(
-        objectToByteArray({
-          language,
-          data: submission,
-        }),
-      ),
-      fyllutId: null,
-      beskrivelse: null,
-      propertyNavn: null,
-    } as DokumentV2,
-    vedleggsListe: submission.attachments
-      ?.filter(
-        (attachment) => attachment.type === 'personal-id' || activeAttachments.some((c) => c.navId == attachment.navId),
-      )
-      .map((attachment) => {
-        const component = activeAttachments.find((c) => c.navId === attachment.navId);
-        return {
-          vedleggsnr: attachment.type === 'personal-id' ? 'K2' : (component?.properties?.vedleggskode ?? 'Ukjent'),
-          label: translate(attachment.title ?? component?.label ?? 'Ukjent label'),
-          tittel: translate(component?.properties?.vedleggstittel ?? attachment.title ?? 'Ukjent tittel'),
-          opplastingsStatus: attachment.type === 'personal-id' ? 'LastetOpp' : mapToStatus(attachment.value),
-          mimetype: 'application/pdf',
-          pakrevd: attachment.type !== 'other',
-          filIdListe: attachment.files?.map((f) => f.fileId),
-          fyllutId: attachment.attachmentId,
-          beskrivelse: component?.description ? translate(component?.description) : null,
-          propertyNavn: null,
-        } as DokumentV2;
+    language,
+    mainDocument: base64EncodeByteArray(submissionPdfAsByteArray),
+    mainDocumentAlt: base64EncodeByteArray(
+      objectToByteArray({
+        language,
+        data: submission,
       }),
+    ),
+    attachments:
+      submission.attachments
+        ?.filter(
+          (attachment) =>
+            attachment.type === 'personal-id' || activeAttachments.some((c) => c.navId == attachment.navId),
+        )
+        .map((attachment) => {
+          const component = activeAttachments.find((c) => c.navId === attachment.navId);
+          return {
+            attachmentCode:
+              attachment.type === 'personal-id' ? 'K2' : (component?.properties?.vedleggskode ?? 'Ukjent'),
+            label: translate(attachment.title ?? component?.label ?? 'Ukjent label'),
+            title: translate(component?.properties?.vedleggstittel ?? attachment.title ?? 'Ukjent tittel'),
+            uploadStatus: attachment.type === 'personal-id' ? 'LastetOpp' : mapToStatus(attachment.value),
+            fileIds: attachment.files?.map((f) => f.fileId),
+            description: component?.description ? translate(component?.description) : null,
+            formNumberPath: component?.properties?.vedleggskjema,
+          } as Attachment;
+        }) ?? [],
+    otherUploadAvailable: false,
   };
 };
 

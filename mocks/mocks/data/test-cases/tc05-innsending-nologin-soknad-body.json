@@ -1,70 +1,37 @@
 {
   "innsendingsId": "69d49fb4-543d-491d-bc18-824b6b10267f",
-  "brukerDto": { "id": "08842748500", "idType": "FNR" },
-  "skjemanr": "TST 19-81.07",
-  "tittel": "Uinnlogget søknad",
+  "bruker": "08842748500",
+  "formNumber": "TST 19-81.07",
+  "title": "Uinnlogget søknad",
   "tema": "BIL",
-  "spraak": "nb",
-  "hoveddokument": {
-    "vedleggsnr": "TST 19-81.07",
-    "tittel": "Uinnlogget søknad",
-    "pakrevd": true,
-    "opplastingsStatus": "LastetOpp",
-    "mimetype": "application/pdf",
-    "document": "eyJjb250ZW50IjoicGRmIn0=",
-    "label": "Uinnlogget søknad",
-    "fyllutId": null,
-    "beskrivelse": null,
-    "propertyNavn": null
-  },
-  "hoveddokumentVariant": {
-    "vedleggsnr": "TST 19-81.07",
-    "tittel": "Uinnlogget søknad",
-    "label": "Uinnlogget søknad",
-    "pakrevd": true,
-    "opplastingsStatus": "LastetOpp",
-    "mimetype": "application/json",
-    "document": "<IGNORED>",
-    "fyllutId": null,
-    "beskrivelse": null,
-    "propertyNavn": null
-  },
-  "vedleggsListe": [
+  "language": "nb",
+  "mainDocument": "eyJjb250ZW50IjoicGRmIn0=",
+  "mainDocumentAlt": "<IGNORED>",
+  "attachments": [
     {
-      "vedleggsnr": "K2",
+      "attachmentCode": "K2",
       "label": "Norsk pass",
-      "tittel": "Norsk pass",
-      "opplastingsStatus": "LastetOpp",
-      "mimetype": "application/pdf",
-      "pakrevd": true,
-      "filIdListe": ["<IGNORED>"],
-      "fyllutId": "personal-id",
-      "beskrivelse": null,
-      "propertyNavn": null
+      "title": "Norsk pass",
+      "uploadStatus": "LastetOpp",
+      "fileIds": ["<IGNORED>"],
+      "description": null
     },
     {
-      "vedleggsnr": "V2",
+      "attachmentCode": "V2",
       "label": "Vedlegg med masse greier",
-      "tittel": "Vanlig vedlegg",
-      "opplastingsStatus": "LevertDokumentasjonTidligere",
-      "mimetype": "application/pdf",
-      "pakrevd": true,
-      "filIdListe": [],
-      "fyllutId": "eyobqqf",
-      "beskrivelse": "<p>Beskrivelse til vedlegget</p>",
-      "propertyNavn": null
+      "title": "Vanlig vedlegg",
+      "uploadStatus": "LevertDokumentasjonTidligere",
+      "fileIds": [],
+      "description": "<p>Beskrivelse til vedlegget</p>"
     },
     {
-      "vedleggsnr": "N6",
+      "attachmentCode": "N6",
       "label": "Annen dokumentasjon",
-      "tittel": "Annet",
-      "opplastingsStatus": "SendesIkke",
-      "mimetype": "application/pdf",
-      "pakrevd": false,
-      "filIdListe": [],
-      "fyllutId": "en5h1c",
-      "beskrivelse": "Har du noen annen dokumentasjon du ønsker å legge ved?",
-      "propertyNavn": null
+      "title": "Annet",
+      "uploadStatus": "SendesIkke",
+      "fileIds": [],
+      "description": "Har du noen annen dokumentasjon du ønsker å legge ved?"
     }
-  ]
+  ],
+  "otherUploadAvailable": false
 }
