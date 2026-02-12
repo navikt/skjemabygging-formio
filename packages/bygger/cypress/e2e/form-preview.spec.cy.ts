@@ -9,7 +9,9 @@ describe('FormPreview', () => {
       cy.intercept('GET', '/api/forms/testpreviewsubdigital', { fixture: 'testPreview-sub-digital.json' }).as(
         'getForm',
       );
-      cy.intercept('GET', '/api/forms/testpreviewsubdigital/translations').as('getFormTranslations');
+      cy.intercept('GET', '/api/forms/testpreviewsubdigital/translations', (req) => req.reply(200, [])).as(
+        'getFormTranslations',
+      );
     });
 
     it('should end up on page for preparing paper submission', () => {
@@ -63,7 +65,9 @@ describe('FormPreview', () => {
   describe('When the form supports no submission', () => {
     beforeEach(() => {
       cy.intercept('GET', '/api/forms/testpreviewsubnone', { fixture: 'testPreview-sub-none.json' }).as('getForm');
-      cy.intercept('GET', '/api/forms/testpreviewsubnone/translations').as('getFormTranslations');
+      cy.intercept('GET', '/api/forms/testpreviewsubnone/translations', (req) => req.reply(200, [])).as(
+        'getFormTranslations',
+      );
     });
 
     it('should not end up on page for preparing paper submission', () => {
@@ -117,7 +121,9 @@ describe('FormPreview', () => {
       cy.intercept('GET', '/api/forms/testpreviewnointropage', { fixture: 'testPreview-no-intropage.json' }).as(
         'getForm',
       );
-      cy.intercept('GET', '/api/forms/testpreviewnointropage/translations').as('getFormTranslations');
+      cy.intercept('GET', '/api/forms/testpreviewnointropage/translations', (req) => req.reply(200, [])).as(
+        'getFormTranslations',
+      );
     });
 
     it('should go to default intro page (not submission type selection)', () => {
