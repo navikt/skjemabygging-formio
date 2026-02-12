@@ -663,7 +663,7 @@
             "vedleggskode": "N6",
             "vedleggErValgfritt": "ja"
           },
-          "type": "radiopanel",
+          "type": "attachment",
           "input": true,
           "tableView": false,
           "placeholder": "",
@@ -751,7 +751,7 @@
             "vedleggskode": "O9",
             "vedleggErValgfritt": "ja"
           },
-          "type": "radiopanel",
+          "type": "attachment",
           "input": true,
           "validateOn": "blur",
           "tableView": false,
