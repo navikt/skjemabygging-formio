@@ -9,8 +9,8 @@ import FormError from './error/FormError';
 import FormIntroPage from './intro-page/FormIntroPage';
 import { FormSettingsPage } from './settings/FormSettingsPage';
 import FormSkeleton from './skeleton/FormSkeleton';
-import StaticPdfUploadPage from './static-pdf/StaticPdfUploadPage.tsx';
-import { TestFormPage } from './TestFormPage';
+import StaticPdfUploadPage from './static-pdf/StaticPdfUploadPage';
+import TestFormPage from './TestFormPage';
 
 export const FormPage = () => {
   const { formState } = useForm();
@@ -32,9 +32,7 @@ export const FormPage = () => {
       <GlobalTranslationsProvider>
         <Routes>
           <Route path="edit" element={<EditFormPage form={formState.form} />} />
-          <Route path="view">
-            <Route path="*" element={<TestFormPage form={formState.formioForm} />} />
-          </Route>
+          <Route path="view/*" element={<TestFormPage form={formState.formioForm} />} />
           <Route path="settings" element={<FormSettingsPage form={formState.form} />} />
           <Route
             path="intropage"
