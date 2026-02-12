@@ -1,6 +1,6 @@
 import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
-import { urlUtil } from '../../index';
+import { urlUtil } from '../../util';
 
 const formPath = (_req: Request, _res: Response, next: NextFunction, value: string) => {
   if (value && !urlUtil.isValidPath(value)) {

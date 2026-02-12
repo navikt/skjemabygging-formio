@@ -1,6 +1,6 @@
 import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
-import http from '../http/http';
-import { logger } from '../logger/logger';
+import http from '../../shared/http/http';
+import { logger } from '../../shared/logger/logger';
 
 interface MergeFilesType {
   baseUrl: string;

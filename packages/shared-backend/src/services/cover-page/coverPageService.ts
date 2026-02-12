@@ -1,5 +1,5 @@
 import { CoverPageType, ForstesideRequestBody, TranslateFunction } from '@navikt/skjemadigitalisering-shared-domain';
-import { logger } from '../logger/logger';
+import { logger } from '../../shared/logger/logger';
 import coverPageApiService from './coverPageApiService';
 
 const addressLine = (text?: string, prefix: string = ', ') => {

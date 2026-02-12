@@ -1,6 +1,6 @@
 import { glob } from 'glob';
 import fs from 'node:fs';
-import { logger } from '../../services/logger/logger';
+import { logger } from '../../shared/logger/logger';
 
 const readFile = async (filepath: string) => {
   const fileHandle = await fs.promises.open(filepath, 'r');

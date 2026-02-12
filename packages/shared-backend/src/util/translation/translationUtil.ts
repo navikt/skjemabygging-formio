@@ -11,23 +11,35 @@ import {
 interface TranslateProps {
   textOrKey: string | Tkey;
   params?: I18nTranslationReplacements;
-  translations?: FormsApiTranslationMap;
-  currentLanguage?: TranslationLang;
+  translations: FormsApiTranslationMap;
+  currentLanguage: TranslationLang;
 }
 const translateWithTextReplacements = ({
   textOrKey,
   params,
-  translations = {},
-  currentLanguage = 'nb',
+  translations,
+  currentLanguage,
 }: TranslateProps): string => {
-  const translation = translations[textOrKey];
-
   return injectParams({
-    textOrKey: translation?.[currentLanguage] ? translation[currentLanguage] : textOrKey,
+    textOrKey: getTranslation({ textOrKey, translations, currentLanguage }),
     params,
     translations,
     currentLanguage,
   });
+};
+
+const getTranslation = ({ textOrKey, translations, currentLanguage }: Omit<TranslateProps, 'params'>): string => {
+  const translation = translations[textOrKey];
+
+  if (translation?.[currentLanguage]) {
+    return translation[currentLanguage];
+  } else if (translation?.['nb']) {
+    // Key is often Norwegian, but might also be code.
+    // So we want to make sure Norwegian is returned if possible and not just return the key.
+    return translation['nb'];
+  }
+
+  return textOrKey;
 };
 
 const injectParams = ({ textOrKey, params, translations, currentLanguage }: TranslateProps) => {

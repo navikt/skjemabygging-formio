@@ -1,6 +1,6 @@
 import { ResponseError, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import 'multer';
-import { logger } from '../logger/logger';
+import { logger } from '../../shared/logger/logger';
 import staticPdfApiService from './staticPdfApiService';
 
 const getValidLanguageCode = async (props: DownloadPdfType) => {
