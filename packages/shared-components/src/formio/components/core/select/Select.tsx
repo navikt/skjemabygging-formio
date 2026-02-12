@@ -47,6 +47,7 @@ const ReactSelectWrapper = ({
 }) => {
   const [selectedOption, setSelectedOption] = useState(value);
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSelectedOption(value);
   }, [value, options]);
 

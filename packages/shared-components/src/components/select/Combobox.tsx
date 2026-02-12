@@ -1,7 +1,7 @@
 import { UNSAFE_Combobox } from '@navikt/ds-react';
 import { ComponentValue, FieldSize } from '@navikt/skjemadigitalisering-shared-domain';
 import clsx from 'clsx';
-import { forwardRef, ReactNode, useEffect, useState } from 'react';
+import { forwardRef, ReactNode, useMemo } from 'react';
 import useComponentStyle from '../../util/styles/useComponentStyle';
 
 interface Props {
@@ -35,11 +35,10 @@ const Combobox = forwardRef<HTMLInputElement, Props>(
     }: Props,
     ref,
   ) => {
-    const [filteredOptions, setFilteredOptions] = useState<ComponentValue[]>([]);
-
-    useEffect(() => {
-      setFilteredOptions(options?.filter((option) => !ignoreOptions?.includes(option.value)) ?? []);
-    }, [options, ignoreOptions]);
+    const filteredOptions = useMemo(
+      () => options?.filter((option) => !ignoreOptions?.includes(option.value)) ?? [],
+      [options, ignoreOptions],
+    );
 
     const styles = useComponentStyle({
       fieldSize,

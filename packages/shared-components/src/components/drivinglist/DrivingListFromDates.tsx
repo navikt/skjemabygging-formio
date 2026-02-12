@@ -32,6 +32,7 @@ const DrivingListFromDates = () => {
   const allPeriodFieldsSet = useMemo(() => allFieldsForPeriodsAreSet(values), [values]);
 
   // Generate periods when coming from summary page
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization
   const generateInitialPeriods = useCallback(() => {
     if (allPeriodFieldsSet) {
       const periods = dateUtils.generateWeeklyPeriods(values?.selectedDate, values?.periods?.length) ?? [];

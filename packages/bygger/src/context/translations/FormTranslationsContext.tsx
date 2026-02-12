@@ -44,6 +44,7 @@ const FormTranslationsProvider = ({ children, formPath }: Props) => {
 
   useEffect(() => {
     if (!state.isReady) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       loadTranslations();
     }
   }, [loadTranslations, state.isReady]);
