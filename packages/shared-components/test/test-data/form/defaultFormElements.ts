@@ -53,7 +53,7 @@ const panelVedleggsliste = {
 };
 
 const vedleggBekreftelseBostedsadresse = {
-  type: 'radiopanel',
+  type: 'attachment',
   label: 'Bekreftelse på bostedsadresse i utlandet',
   input: true,
   inputType: 'radio',
