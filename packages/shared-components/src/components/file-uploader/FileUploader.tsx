@@ -1,8 +1,7 @@
 import { Button, FileItem, HStack, TextField, VStack } from '@navikt/ds-react';
 import { AttachmentSettingValues, SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { ChangeEvent, MutableRefObject, ReactNode, useCallback } from 'react';
-import { useLocation } from 'react-router';
-import { MAX_SIZE_ATTACHMENT_FILE_TEXT, MAX_TOTAL_SIZE_ATTACHMENT_FILES_TEXT } from '../../constants/fileUpload';
+import { fileUploadErrorParams } from '../../constants/fileUpload';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
@@ -46,9 +45,8 @@ const FileUploader = ({
 }: Props) => {
   const { translate } = useLanguages();
   const styles = useStyles();
-  const { baseUrl, logEvent, submissionMethod } = useAppConfig();
+  const { logEvent, submissionMethod } = useAppConfig();
   const { form } = useForm();
-  const { search } = useLocation();
   const { changeAttachmentValue, handleDeleteFile, submissionAttachments, errors, uploadsInProgress } =
     useAttachmentUpload();
   const { attachmentId } = initialAttachment;
@@ -82,12 +80,6 @@ const FileUploader = ({
   const attachmentTitleErrorMessage = errors[attachmentId]?.find((error) => error.type === 'TITLE')?.message;
   const attachmentTitleValidator = attachmentValidator(translate, ['otherDocumentationTitle']);
 
-  const translationErrorParams = {
-    href: `${baseUrl}/${form.path}/legitimasjon${search}`,
-    maxFileSize: MAX_SIZE_ATTACHMENT_FILE_TEXT,
-    maxAttachmentSize: MAX_TOTAL_SIZE_ATTACHMENT_FILES_TEXT,
-  };
-
   const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
     changeAttachmentValue(
       initialAttachment,
@@ -107,18 +99,18 @@ const FileUploader = ({
   };
 
   return (
-    <VStack gap="space-6" data-cy={`upload-button-${attachmentId}`}>
+    <VStack gap="space-24" data-cy={`upload-button-${attachmentId}`}>
       {(!showButton || fileItems.length > 0) && (
         <FilesPreview
           label={!showButton ? label : undefined}
           uploaded={uploadedFiles}
           inProgress={inProgress}
           onDeleteFileItem={handleDeleteFileItem}
-          translationParams={translationErrorParams}
+          translationParams={fileUploadErrorParams}
         />
       )}
       {showButton && (
-        <VStack gap="space-8">
+        <VStack gap="space-32">
           {requireAttachmentTitle && (
             <TextField
               label={translate(TEXTS.statiske.attachment.attachmentTitle)}
@@ -127,19 +119,20 @@ const FileUploader = ({
               error={attachmentTitleErrorMessage}
               ref={(ref) => {
                 if (refs?.current) {
+                  // eslint-disable-next-line react-hooks/immutability
                   refs.current[`${attachmentId}-TITLE`] = ref;
                 }
               }}
               onChange={handleTitleChange}
             />
           )}
-          <HStack gap="space-4">
+          <HStack gap="space-16">
             <UploadButton
               attachmentId={attachmentId}
               variant={initialUpload ? 'primary' : 'secondary'}
               allowUpload={!requireAttachmentTitle || !!attachment?.title?.trim()}
               refs={refs}
-              translationParams={translationErrorParams}
+              translationParams={fileUploadErrorParams}
               accept={accept}
               readMore={readMore}
               maxFileSizeInBytes={maxFileSizeInBytes}

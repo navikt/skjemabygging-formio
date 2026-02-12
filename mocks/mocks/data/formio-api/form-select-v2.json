@@ -378,7 +378,7 @@
         {
           "label": "Annen dokumentasjon",
           "description": "Har du noen annen dokumentasjon du ønsker å legge ved?",
-          "type": "radiopanel",
+          "type": "attachment",
           "key": "annenDokumentasjon",
           "otherDocumentation": true,
           "input": true,

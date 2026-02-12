@@ -1,13 +1,13 @@
 import { Label, VStack } from '@navikt/ds-react';
 import { SubmissionAttachmentValue, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useLanguages } from '../../context/languages';
-import Attachment from '../attachment/Attachment';
+import AttachmentOptionSelect from '../attachment/AttachmentOptionSelect';
 import { useAttachmentUpload } from '../attachment/AttachmentUploadContext';
 import { attachmentValidator } from '../attachment/attachmentValidator';
 import FileUploader from '../file-uploader/FileUploader';
 import PersonalIdUploadReadMore from './PersonalIdUploadReadMore';
 
-const PersonalIdUpload = ({ refs }: { refs?: any }) => {
+const PersonalIdUpload = ({ refs: refsRef }: { refs?: any }) => {
   const { translate } = useLanguages();
   const { changeAttachmentValue, submissionAttachments, errors } = useAttachmentUpload();
 
@@ -34,9 +34,9 @@ const PersonalIdUpload = ({ refs }: { refs?: any }) => {
   };
 
   return (
-    <VStack gap="space-6" className={'mb'}>
+    <VStack gap="space-24" className={'mb'}>
       {!uploadedFile && (
-        <Attachment
+        <AttachmentOptionSelect
           title={translate(TEXTS.statiske.uploadId.label)}
           description={null}
           error={attachmentError?.message}
@@ -45,14 +45,17 @@ const PersonalIdUpload = ({ refs }: { refs?: any }) => {
           onChange={handleValueChange}
           translate={translate}
           ref={(ref) => {
-            if (refs?.current) {
-              refs.current[`${attachmentId}-VALUE`] = ref;
+            if (refsRef) {
+              refsRef.current = {
+                ...(refsRef.current ?? {}),
+                [`${attachmentId}-VALUE`]: ref,
+              };
             }
           }}
         />
       )}
       {uploadSelected && (
-        <VStack gap="space-2">
+        <VStack gap="space-8">
           {!uploadedFile && <Label>{translate(TEXTS.statiske.uploadId.selectFileLabel)}</Label>}
           <FileUploader
             initialAttachment={{ attachmentId, navId: attachmentId, type: 'personal-id' }}

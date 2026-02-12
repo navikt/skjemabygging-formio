@@ -19,11 +19,11 @@ const FilesPreview = ({ label, uploaded = [], inProgress = [], onDeleteFileItem,
   const fileItems = [...uploaded, ...inProgress];
 
   return (
-    <VStack gap="space-2">
+    <VStack gap="space-8">
       {label && <Label>{label}</Label>}
       {fileItems.length > 0 && (
         <FileUpload translations={{ item: { uploading: translate(TEXTS.statiske.uploadFile.uploading) } }}>
-          <VStack gap="space-2" as="ul">
+          <VStack gap="space-8" as="ul">
             {uploaded.map(({ fileId, fileName, size }) => (
               <FileUpload.Item
                 as="li"

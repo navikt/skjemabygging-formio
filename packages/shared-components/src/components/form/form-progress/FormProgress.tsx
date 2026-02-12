@@ -1,5 +1,5 @@
 import { FormProgress as AkselFormProgress } from '@navikt/ds-react';
-import { navFormUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { attachmentUtils, navFormUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate, useParams, useResolvedPath } from 'react-router';
 import { useAppConfig } from '../../../context/config/configContext';
@@ -31,7 +31,7 @@ const FormProgress = () => {
       ...formioSteps,
     ];
 
-    if (navFormUtils.hasAttachment(form) && submissionMethod === 'digitalnologin') {
+    if (navFormUtils.hasAttachment(form) && attachmentUtils.renderAttachmentPanel(submissionMethod)) {
       steps.push({
         key: 'vedlegg',
         label: TEXTS.statiske.attachment.title,

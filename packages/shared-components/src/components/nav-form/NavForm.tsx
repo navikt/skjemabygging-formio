@@ -191,6 +191,7 @@ const NavForm = ({
   useEffect(() => {
     if (webform && webform?.language !== language) {
       appConfig.logger?.debug('Set language', { webformId: webform?.id, language });
+      // eslint-disable-next-line react-hooks/immutability
       webform.language = language;
     }
   }, [appConfig.logger, webform, language]);
@@ -204,6 +205,7 @@ const NavForm = ({
         webformId: webform?.id,
         prefillData,
       });
+      // eslint-disable-next-line react-hooks/immutability
       webform.form = NavFormHelper.prefillForm(webform.form, prefillData);
 
       // Need to trigger a handle change event after prefilling form or else

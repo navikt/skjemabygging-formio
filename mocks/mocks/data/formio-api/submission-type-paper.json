@@ -23,7 +23,8 @@
           }
         }
       ]
-    }, {
+    },
+    {
       "id": "er8l2dg",
       "key": "vedlegg",
       "type": "panel",
@@ -83,17 +84,10 @@
     }
   ],
   "properties": {
-    "submissionTypes": [
-      "PAPER"
-    ],
-    "publishedLanguages": [
-      "nb",
-      "en"
-    ]
+    "submissionTypes": ["PAPER"],
+    "publishedLanguages": ["nb", "en"],
+    "innsendingForklaring": "Her er litt forklaring"
   },
-  "publishedLanguages": [
-    "nb",
-    "en"
-  ],
+  "publishedLanguages": ["nb", "en"],
   "status": "published"
 }

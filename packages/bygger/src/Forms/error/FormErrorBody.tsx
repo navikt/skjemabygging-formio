@@ -38,7 +38,7 @@ const FormErrorBody = ({ type }: Props) => {
         {getTitle()}
       </Heading>
 
-      <VStack gap="space-6">
+      <VStack gap="space-20">
         <BodyShort size="medium">{getDescription()}</BodyShort>
 
         {config?.isDevelopment && ['FORM_ERROR', 'FORMS_ERROR'].includes(type) && (

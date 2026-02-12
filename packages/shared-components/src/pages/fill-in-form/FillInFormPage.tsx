@@ -1,4 +1,5 @@
 import {
+  attachmentUtils,
   ComponentError,
   FormioChangeEvent,
   NavFormType,
@@ -46,7 +47,9 @@ export const FillInFormPage = () => {
 
   const exitUrl = urlUtils.getExitUrl(window.location.href);
   const formNavigationFinalStep =
-    navFormUtils.hasAttachment(form) && submissionMethod === 'digitalnologin' ? 'vedlegg' : 'oppsummering';
+    navFormUtils.hasAttachment(form) && attachmentUtils.renderAttachmentPanel(submissionMethod)
+      ? 'vedlegg'
+      : 'oppsummering';
 
   const focusOnComponent = useCallback<(id: KeyOrFocusComponentId) => void>(
     (id: KeyOrFocusComponentId) => fyllutEvents.emit('focusOnComponent', id),
@@ -139,8 +142,9 @@ export const FillInFormPage = () => {
   const updateFormIsReady = useCallback(() => setFormIsReady(true), []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setFormForRendering(
-      submissionMethod === 'digital' || submissionMethod === 'digitalnologin'
+      submissionMethod === 'digital' || attachmentUtils.renderAttachmentPanel(submissionMethod)
         ? navFormUtils.removeVedleggspanel(form)
         : form,
     );

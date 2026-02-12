@@ -40,6 +40,7 @@ const RecipientsProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (!recipientState.isReady) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       loadRecipients().then(() => setRecipientState((state) => ({ ...state, isReady: true })));
     }
   }, [recipientState.isReady, loadRecipients]);

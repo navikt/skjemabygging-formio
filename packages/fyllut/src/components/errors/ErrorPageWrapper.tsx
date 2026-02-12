@@ -29,9 +29,9 @@ export function ErrorPageWrapper({ children }: { children: ReactNode }) {
       <div className={styles.maxContentWidth}>
         <Page tabIndex={-1}>
           <Page.Block width="xl" gutters>
-            <Box paddingBlock="space-20 space-8">
-              <VStack gap="space-16">
-                <VStack gap="space-8" align="start">
+            <Box paddingBlock="space-80 space-32">
+              <VStack gap="space-64">
+                <VStack gap="space-32" align="start">
                   {children}
                 </VStack>
               </VStack>

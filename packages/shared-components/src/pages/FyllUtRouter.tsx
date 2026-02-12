@@ -1,4 +1,4 @@
-import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { attachmentUtils, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { Route, Routes } from 'react-router';
 import AttachmentUploadProvider from '../components/attachment/AttachmentUploadContext';
 import { useAppConfig } from '../context/config/configContext';
@@ -29,7 +29,7 @@ const FyllUtRouter = ({ form }: Props) => {
         <Routes>
           <Route element={<FormLayout />}>
             <Route path="oppsummering" element={<SummaryPage />} />
-            {submissionMethod === 'digitalnologin' && (
+            {attachmentUtils.renderAttachmentPanel(submissionMethod) && (
               <Route
                 path="vedlegg"
                 element={

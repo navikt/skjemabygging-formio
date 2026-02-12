@@ -15,7 +15,7 @@ export const FormsRouter = () => {
       <Route
         path=":formPath/*"
         element={
-          <FormProvider featureToggles={featureToggles}>
+          <FormProvider featureToggles={featureToggles ?? {}}>
             <FormPage />
           </FormProvider>
         }

@@ -12,7 +12,7 @@ const FileUploadReadMore = ({ maxTotalAttachmentSizeText = MAX_TOTAL_SIZE_ATTACH
 
   return (
     <ReadMore header={translate(TEXTS.statiske.attachment.sizeAndFormatHeader)}>
-      <HStack gap="space-4" align="start">
+      <HStack gap="space-16" align="start">
         <BodyShort>
           <strong>{translate(TEXTS.statiske.attachment.validFormatsLabel)} </strong>
           {translate(TEXTS.statiske.attachment.validFormatsDescrption)}

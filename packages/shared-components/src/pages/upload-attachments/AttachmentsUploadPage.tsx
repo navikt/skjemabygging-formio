@@ -1,13 +1,13 @@
 import { ComponentError, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import clsx from 'clsx';
 import { useEffect, useRef } from 'react';
-import AttachmentUpload from '../../components/attachment/AttachmentUpload';
+import AttachmentComponent from '../../components/attachment/Attachment';
 import { useAttachmentUpload } from '../../components/attachment/AttachmentUploadContext';
-import OtherAttachmentUpload from '../../components/attachment/OtherAttachmentUpload';
+import InnerHtml from '../../components/inner-html/InnerHtml';
+import { fileUploadErrorParams } from '../../constants/fileUpload';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { Attachment, getAllAttachments } from '../../util/attachment/attachmentsUtil';
-import htmlUtils from '../../util/html/htmlUtils';
 import makeStyles from '../../util/styles/jss/jss';
 import FormErrorSummary from '../fill-in-form/FormErrorSummary';
 import AttachmentsUploadButtonRow from './AttachmentsUploadButtonRow';
@@ -19,7 +19,7 @@ const useStyles = makeStyles({
   },
 });
 
-export function AttachmentsUploadPage() {
+const AttachmentsUploadPage = () => {
   const { form, submission, setTitle, setFormProgressVisible } = useForm();
   const { errors: uploadErrors } = useAttachmentUpload();
   const { translate } = useLanguages();
@@ -32,7 +32,7 @@ export function AttachmentsUploadPage() {
   const errors: ComponentError[] = (Object.entries(uploadErrors) ?? []).flatMap(([attachmentId, attachmentErrors]) =>
     attachmentErrors.map((error) => ({
       elementId: error.type,
-      message: error.message,
+      message: translate(error.message, fileUploadErrorParams),
       path: attachmentId,
       level: 'error',
     })),
@@ -68,32 +68,21 @@ export function AttachmentsUploadPage() {
         focusOnComponent={focusOnComponent}
         ref={(ref) => (errorSummaryRef.current = ref)}
       />
-      {attachments.map(({ label, description, attachmentValues, navId, attachmentType }, index) => {
-        return attachmentType === 'other' ? (
-          <OtherAttachmentUpload
-            key={navId}
-            className={clsx(index !== attachments.length - 1 && styles.attachmentUpload)}
-            label={label}
-            description={htmlUtils.extractTextContent(description as string)}
-            attachmentValues={attachmentValues}
-            componentId={navId as string}
-            refs={attachmentRefs}
-          />
-        ) : (
-          <AttachmentUpload
-            key={navId}
-            className={clsx(index !== attachments.length - 1 && styles.attachmentUpload)}
-            label={label}
-            description={htmlUtils.extractTextContent(description as string)}
-            attachmentValues={attachmentValues}
-            componentId={navId as string}
-            refs={attachmentRefs}
-          />
-        );
-      })}
+      {attachments.map(({ label, description, attachmentValues, values, navId, attachmentType }, index) => (
+        <AttachmentComponent
+          key={navId}
+          className={clsx(index !== attachments.length - 1 && styles.attachmentUpload)}
+          label={translate(label)}
+          description={description ? <InnerHtml content={translate(description)} /> : undefined}
+          attachmentValues={attachmentValues ?? values}
+          type={attachmentType}
+          componentId={navId as string}
+          refs={attachmentRefs}
+        />
+      ))}
       <AttachmentsUploadButtonRow attachments={attachments} onError={focusOnErrorSummary} />
     </>
   );
-}
+};
 
 export default AttachmentsUploadPage;

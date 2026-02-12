@@ -1,4 +1,4 @@
-import NavAttachment from '../../../../../components/attachment/Attachment';
+import NavAttachment from '../../../../../components/attachment/AttachmentOptionSelect';
 import { ComponentUtilsProvider } from '../../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../../base/BaseComponent';
 import AdditionalDescription from '../../../base/components/AdditionalDescription';

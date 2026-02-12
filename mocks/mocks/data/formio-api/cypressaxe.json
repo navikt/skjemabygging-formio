@@ -5,10 +5,7 @@
   "path": "cypressaxe",
   "type": "form",
   "display": "wizard",
-  "tags": [
-    "nav-skjema",
-    ""
-  ],
+  "tags": ["nav-skjema", ""],
   "owner": "T164824",
   "components": [
     {
@@ -2923,8 +2920,7 @@
       "hideLabel": false,
       "disabled": false,
       "modalEdit": false,
-      "key": "vedleggpanel",
-      "isAttachmentPanel": true,
+      "key": "bedriftOrganisasjon",
       "tags": [],
       "properties": {},
       "customConditional": "",
@@ -5726,9 +5722,7 @@
   "properties": {
     "skjemanummer": "cypress-axe",
     "tema": "",
-    "submissionTypes": [
-      "PAPER"
-    ],
+    "submissionTypes": ["PAPER"],
     "hasLabeledSignatures": false,
     "signatures": {
       "signature1": "",
@@ -5746,11 +5740,7 @@
   "access": [
     {
       "type": "read_all",
-      "roles": [
-        "628ca77305690db58c974d04",
-        "628ca77305690db58c974d09",
-        "628ca77305690db58c974d0e"
-      ]
+      "roles": ["628ca77305690db58c974d04", "628ca77305690db58c974d09", "628ca77305690db58c974d0e"]
     }
   ],
   "submissionAccess": [],

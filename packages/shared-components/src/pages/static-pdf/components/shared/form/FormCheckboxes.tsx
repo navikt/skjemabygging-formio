@@ -70,6 +70,7 @@ const FormCheckboxes = (props: FormCheckboxGroupProps) => {
         description={<TranslatedDescription>{description}</TranslatedDescription>}
         onChange={handleChange}
         ref={ref}
+        // eslint-disable-next-line react-hooks/refs
         error={error ?? getRefError(ref)}
         defaultValue={getDefaultValue()}
       >

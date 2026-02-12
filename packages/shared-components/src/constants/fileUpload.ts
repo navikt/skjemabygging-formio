@@ -1,8 +1,13 @@
 const FILE_ACCEPT = '.pdf,.jpeg,.jpg,.docx,.doc,.odt,.rtf,.txt,.png,.tiff,.tif,.bmp,.gif';
 const MAX_SIZE_ATTACHMENT_FILE_BYTES = 150 * 1024 * 1024; // 150 MB
 const MAX_SIZE_ATTACHMENT_FILE_TEXT = '150 MB';
-const MAX_TOTAL_SIZE_ATTACHMENT_FILES_BYTES = 150 * 1024 * 1024; // 300 MB
+const MAX_TOTAL_SIZE_ATTACHMENT_FILES_BYTES = 150 * 1024 * 1024; // 150 MB
 const MAX_TOTAL_SIZE_ATTACHMENT_FILES_TEXT = '150 MB';
+
+const fileUploadErrorParams = {
+  maxFileSize: MAX_SIZE_ATTACHMENT_FILE_TEXT,
+  maxAttachmentSize: MAX_TOTAL_SIZE_ATTACHMENT_FILES_TEXT,
+};
 
 export {
   FILE_ACCEPT,
@@ -10,4 +15,5 @@ export {
   MAX_SIZE_ATTACHMENT_FILE_TEXT,
   MAX_TOTAL_SIZE_ATTACHMENT_FILES_BYTES,
   MAX_TOTAL_SIZE_ATTACHMENT_FILES_TEXT,
+  fileUploadErrorParams,
 };

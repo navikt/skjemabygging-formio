@@ -128,6 +128,7 @@ const RenderSummaryForm = ({
   const attachmentUploadsComponentRegistry = {
     ...componentRegistry,
     attachment: SummaryAttachmentUpload,
+    radiopanel: SummaryAttachmentUpload,
   };
 
   return (

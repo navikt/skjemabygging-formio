@@ -9,19 +9,16 @@ import {
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import clsx from 'clsx';
-import { MutableRefObject, useState } from 'react';
+import { MutableRefObject, ReactNode, useState } from 'react';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import FileUploader from '../file-uploader/FileUploader';
-import Attachment from './Attachment';
-import { useAttachmentUpload } from './AttachmentUploadContext';
-import { attachmentValidator } from './attachmentValidator';
+import AttachmentOptionSelect from './AttachmentOptionSelect';
+import { AttachmentError, useAttachmentUpload } from './AttachmentUploadContext';
 import FileUploadReadMore from './FileUploadReadMore';
 import { useAttachmentStyles } from './styles';
 import {
   filterAttachmentsByComponentId,
-  findAttachmentByAttachmentId,
-  findAttachmentByComponentId,
   getDefaultOtherAttachment,
   getLargestAttachmentIdCounter,
 } from './utils/attachmentUploadUtils';
@@ -30,41 +27,41 @@ interface Props {
   label: string;
   attachmentValues?: AttachmentSettingValues | ComponentValue[];
   componentId: string;
-  description?: string;
+  description?: ReactNode;
+  submissionAttachment?: SubmissionAttachment;
+  onValueChange: (value?: Partial<SubmissionAttachmentValue>) => void;
+  error?: AttachmentError;
   className?: string;
   refs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | HTMLButtonElement | null>>;
 }
 
-const OtherAttachmentUpload = ({ label, attachmentValues, componentId, description, className, refs }: Props) => {
+const OtherAttachmentUpload = ({
+  label,
+  attachmentValues,
+  componentId,
+  description,
+  submissionAttachment,
+  onValueChange,
+  error,
+  className,
+  refs,
+}: Props) => {
   const styles = useAttachmentStyles();
   const { translate } = useLanguages();
-  const { changeAttachmentValue, handleDeleteAttachment, submissionAttachments, errors } = useAttachmentUpload();
+  const { handleDeleteAttachment, submissionAttachments } = useAttachmentUpload();
   const { form } = useForm();
 
-  const validator = attachmentValidator(translate, ['value']);
   const defaultAttachmentValues: Pick<SubmissionAttachment, 'navId' | 'type'> = { navId: componentId, type: 'other' };
-  const otherAttachment = findAttachmentByComponentId(submissionAttachments, componentId);
   const [attachments, setAttachments] = useState(
-    otherAttachment
+    submissionAttachment
       ? filterAttachmentsByComponentId(submissionAttachments, componentId)
       : [getDefaultOtherAttachment(componentId)],
   );
   const [attachmentCounter, setAttachmentCounter] = useState(getLargestAttachmentIdCounter(attachments));
 
-  const uploadedAttachmentFiles = otherAttachment?.files ?? [];
+  const uploadedAttachmentFiles = submissionAttachment?.files ?? [];
   const options = attachmentUtils.mapKeysToOptions(attachmentValues, translate);
-  const uploadSelected = !!options.find((option) => option.value === otherAttachment?.value)?.upload;
-  const attachmentError = errors[componentId]?.find((error) => error.type === 'VALUE');
-
-  const handleValueChange = (
-    value: Partial<SubmissionAttachmentValue> | undefined,
-    attachmentId: string = componentId,
-  ) => {
-    const currentAttachment = findAttachmentByAttachmentId(attachments, attachmentId);
-    if (currentAttachment) {
-      changeAttachmentValue(currentAttachment, value ? { value: value.key } : {}, validator);
-    }
-  };
+  const uploadSelected = !!options.find((option) => option.value === submissionAttachment?.value)?.upload;
 
   const handleDelete = async (attachmentId: string) => {
     try {
@@ -102,44 +99,45 @@ const OtherAttachmentUpload = ({ label, attachmentValues, componentId, descripti
   };
 
   return (
-    <VStack gap="space-6" className={clsx('mb', className)}>
+    <VStack gap="space-24" className={clsx('mb', className)}>
       {uploadedAttachmentFiles.length > 0 ? (
         <div>
           <Label className={'mb-0'}>{label}</Label>
           <BodyShort>{description}</BodyShort>
         </div>
       ) : (
-        <Attachment
+        <AttachmentOptionSelect
           title={label}
           description={description}
-          error={attachmentError?.message}
-          value={otherAttachment?.value ? { key: otherAttachment.value } : undefined}
+          error={error?.message}
+          value={submissionAttachment?.value ? { key: submissionAttachment.value } : undefined}
           attachmentValues={attachmentValues}
-          onChange={handleValueChange}
+          onChange={onValueChange}
           translate={translate}
           deadline={form.properties?.ettersendelsesfrist}
           ref={(ref) => {
             if (refs?.current) {
+              // eslint-disable-next-line react-hooks/immutability
               refs.current[`${componentId}-VALUE`] = ref;
             }
           }}
         />
       )}
       {uploadSelected && (
-        <VStack gap="space-2">
+        <VStack gap="space-8">
           {uploadedAttachmentFiles.length > 0 && (
             <div className={styles.uploadedFilesHeader}>
               <Label>{translate(TEXTS.statiske.attachment.filesUploadedNotSent)}</Label>
             </div>
           )}
 
-          <VStack gap="space-8">
+          <VStack gap="space-32">
             {attachments.map((attachment) => (
               <FileUploader
                 key={attachment.attachmentId}
                 initialAttachment={attachment}
                 requireAttachmentTitle
-                attachmentValue={otherAttachment?.value}
+                attachmentValue={submissionAttachment?.value}
                 showDeleteAttachmentButton={attachments.length > 1}
                 onDeleteAttachment={handleDelete}
                 refs={refs}

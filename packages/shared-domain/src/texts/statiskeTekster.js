@@ -54,8 +54,6 @@ export const statiske = {
     selectFileLabel: 'Last opp gyldig legitimasjon',
     selectFileButton: 'Velg fil',
     missingUploadError: 'Du må laste opp et gyldig identifikasjonsdokument før du kan fortsette.',
-    tokenExpiredError:
-      'Sesjonen din har utløpt. For å sende inn må du laste opp legitimasjon og fylle ut skjemaet på nytt. <a href="{{href}}">Start på nytt</a>.',
     readMoreHeader: 'Bildet du laster opp må inneholde/vise',
     readMoreTypeOfId: 'Hva slags ID det er (pass, førerkort eller ID-kort)',
     readMoreName: 'Fullt navn',

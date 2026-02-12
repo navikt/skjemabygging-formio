@@ -29,7 +29,7 @@ export const FormMenu = ({ formPath, form }: { formPath?: string; form?: Form })
         <span>Rediger skjema</span>
       </MenuLink>
 
-      <MenuLink to={`/forms/${formPath}/view/veiledning`} noIconStyling={false}>
+      <MenuLink to={`/forms/${formPath}/view`} noIconStyling={false}>
         <EyeIcon fontSize="1.5rem" role="presentation" />
         <span>Forhåndsvis</span>
       </MenuLink>

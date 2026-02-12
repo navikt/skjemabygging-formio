@@ -28,6 +28,7 @@ const EnhetSettings = ({
         value: type.kodenavn,
         label: `${type.term} (${type.kodenavn})`,
       }));
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setOptions(opts);
     }
   }, [enhetstyperNorg, options]);

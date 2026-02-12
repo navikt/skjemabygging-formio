@@ -1,6 +1,8 @@
 import {
   AttachmentSettingValues,
+  AttachmentType,
   Component,
+  ComponentValue,
   NavFormType,
   navFormUtils,
   Submission,
@@ -18,14 +20,15 @@ interface Attachment {
   formioId: string;
   vedleggskjema?: string;
   description?: string;
+  values?: ComponentValue[];
   attachmentValues?: AttachmentSettingValues;
-  attachmentType?: string;
+  attachmentType?: AttachmentType;
 }
 
 const getAttachment = (navId: string, form: NavFormType): Attachment | undefined => {
   return navFormUtils
     .flattenComponents(form.components)
-    .filter((comp) => comp.type === 'attachment' && (comp as Component).navId === navId)
+    .filter((comp) => comp.type === 'attachment' && navFormUtils.getNavId(comp) === navId)
     .map(toAttachment)[0];
 };
 
@@ -33,15 +36,13 @@ const getAttachment = (navId: string, form: NavFormType): Attachment | undefined
 const getAllAttachments = (form: NavFormType, submission: Submission): Attachment[] => {
   return navFormUtils
     .flattenComponents(form.components)
-    .filter(
-      (component) => (component.properties && !!component.properties.vedleggskode) || isOtherDocumentation(component),
-    )
+    .filter((component) => isAttachment(component) || isOtherDocumentation(component))
     .map(sanitize)
     .filter((comp) => UtilsOverrides.checkCondition(comp, undefined, submission?.data, form, undefined, submission))
     .map((comp) => {
       return {
         ...comp,
-        navId: comp.navId || comp.id,
+        navId: navFormUtils.getNavId(comp),
       };
     });
 };
@@ -49,9 +50,7 @@ const getAllAttachments = (form: NavFormType, submission: Submission): Attachmen
 const getRelevantAttachments = (form: NavFormType, submission: Submission): Attachment[] => {
   return navFormUtils
     .flattenComponents(form.components)
-    .filter(
-      (component) => component.properties && !!component.properties.vedleggskode && !isOtherDocumentation(component),
-    )
+    .filter((component) => isAttachment(component) && !isOtherDocumentation(component))
     .map(sanitize)
     .filter((comp) => UtilsOverrides.checkCondition(comp, undefined, submission?.data, form, undefined, submission))
     .map(toAttachment);
@@ -71,7 +70,7 @@ const toAttachment = (comp: Component): Attachment => {
      **   We should trigger a change on all attachment components to generate a navId,
      **   and then remove the code below that assigns comp.id to formioId (see task: https://trello.com/c/ok0YWpGI).
      */
-    formioId: (comp.navId ?? comp.id)!,
+    formioId: navFormUtils.getNavId(comp)!,
   };
 };
 
@@ -82,6 +81,10 @@ const hasOtherDocumentation = (form, submission: Submission) => {
     .filter((comp) => UtilsOverrides.checkCondition(comp, undefined, submission?.data, form, undefined, submission))
     .some((component) => isOtherDocumentation(component));
   // TODO: Remove otherDocumentation from component when all attachments have attachmentType set
+};
+
+const isAttachment = (component: Component): boolean => {
+  return component.type === 'attachment';
 };
 
 const isOtherDocumentation = (component: Component): boolean => {

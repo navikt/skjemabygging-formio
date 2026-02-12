@@ -34,7 +34,7 @@ export function BaseButton({
 }: BaseButtonProps) {
   const { submissionMethod } = useAppConfig();
 
-  const activeSubmissionMethod: SubmissionMethod | 'default' | 'none' = submissionMethod ?? 'default';
+  const activeSubmissionMethod: SubmissionMethod | 'default' | 'none' = submissionMethod ?? 'none';
   const handleClick = onClick?.[activeSubmissionMethod] ?? onClick?.default;
   const buttonLabel = label[activeSubmissionMethod] ?? label.default;
   const buttonHref = href?.[activeSubmissionMethod] ?? href?.default;
