@@ -102,6 +102,7 @@ const Attachment = ({
       deadline={form.properties?.ettersendelsesfrist}
       ref={(ref) => {
         if (refs?.current) {
+          // eslint-disable-next-line react-hooks/immutability
           refs.current[`${componentId}-VALUE`] = ref;
         }
       }}
