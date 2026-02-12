@@ -57,6 +57,7 @@ const GlobalTranslationsProvider = ({ children }) => {
 
   useEffect(() => {
     if (!state.isReady) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       loadTranslations();
     }
   }, [state.isReady, loadTranslations]);
