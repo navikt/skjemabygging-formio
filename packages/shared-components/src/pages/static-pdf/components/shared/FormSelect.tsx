@@ -1,6 +1,6 @@
 import { Select } from '@navikt/ds-react';
 import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useRef } from 'react';
 import { useAppConfig } from '../../../../context/config/configContext';
 import { useForm } from '../../../../context/form/FormContext';
 import { useLanguages } from '../../../../context/languages';
@@ -43,7 +43,6 @@ const FormSelect = (props: FormSelectProps) => {
   const { required } = validators || { required: true };
 
   const ref = useRef(null);
-  const [refError, setRefError] = useState<string | undefined>(undefined);
 
   const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const { value } = event.target;
@@ -64,12 +63,6 @@ const FormSelect = (props: FormSelectProps) => {
     };
   }, [logger, addValidation, removeValidation, submissionPath, ref, required, label]);
 
-  useEffect(() => {
-    if (!error) {
-      setRefError(getRefError(ref));
-    }
-  }, [error, getRefError, ref]);
-
   return (
     <FormBox inputWidth={inputWidth} bottom={bottom}>
       <Select
@@ -77,7 +70,7 @@ const FormSelect = (props: FormSelectProps) => {
         description={<TranslatedDescription>{description}</TranslatedDescription>}
         onChange={handleChange}
         ref={ref}
-        error={error ?? refError}
+        error={error ?? getRefError(ref)}
         defaultValue={formComponentUtils.getSubmissionValue(submissionPath, submission)}
       >
         {selectText && <option value="">{translate(selectText)}</option>}

@@ -1,5 +1,5 @@
 import { TextField } from '@navikt/ds-react';
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useRef } from 'react';
 import { useAppConfig } from '../../../../context/config/configContext';
 import { useForm } from '../../../../context/form/FormContext';
 import { useInputValidation, Validators } from '../../../../context/validator/InputValidationContext';
@@ -38,7 +38,6 @@ const FormTextField = (props: FormTextFieldProps) => {
   const { required, minLength, maxLength } = validators || { required: true };
 
   const ref = useRef(null);
-  const [refError, setRefError] = useState<string | undefined>(undefined);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
@@ -59,12 +58,6 @@ const FormTextField = (props: FormTextFieldProps) => {
     };
   }, [logger, addValidation, removeValidation, submissionPath, ref, label, required, minLength, maxLength]);
 
-  useEffect(() => {
-    if (!error) {
-      setRefError(getRefError(ref));
-    }
-  }, [error, getRefError, ref]);
-
   return (
     <FormBox inputWidth={inputWidth} bottom={bottom}>
       <TextField
@@ -72,7 +65,7 @@ const FormTextField = (props: FormTextFieldProps) => {
         description={<TranslatedDescription>{description}</TranslatedDescription>}
         onChange={handleChange}
         ref={ref}
-        error={error ?? refError}
+        error={error ?? getRefError(ref)}
         defaultValue={formComponentUtils.getSubmissionValue(submissionPath, submission)}
         autoComplete={autoComplete}
       />
