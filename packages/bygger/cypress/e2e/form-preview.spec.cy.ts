@@ -9,12 +9,14 @@ describe('FormPreview', () => {
       cy.intercept('GET', '/api/forms/testpreviewsubdigital', { fixture: 'testPreview-sub-digital.json' }).as(
         'getForm',
       );
+      cy.intercept('GET', '/api/forms/testpreviewsubdigital/translations').as('getFormTranslations');
     });
 
     it('should end up on page for preparing paper submission', () => {
       cy.visit('/forms/testpreviewsubdigital');
       cy.wait('@getConfig');
       cy.wait('@getForm');
+      cy.wait('@getFormTranslations');
       cy.wait('@getTranslations');
       cy.findByRole('link', { name: 'Forhåndsvis' }).click();
       cy.findByRole('heading', { name: 'Test forhåndsvisning (kun digital)' }).should('be.visible');
@@ -61,12 +63,14 @@ describe('FormPreview', () => {
   describe('When the form supports no submission', () => {
     beforeEach(() => {
       cy.intercept('GET', '/api/forms/testpreviewsubnone', { fixture: 'testPreview-sub-none.json' }).as('getForm');
+      cy.intercept('GET', '/api/forms/testpreviewsubnone/translations').as('getFormTranslations');
     });
 
     it('should not end up on page for preparing paper submission', () => {
       cy.visit('/forms/testpreviewsubnone');
       cy.wait('@getConfig');
       cy.wait('@getForm');
+      cy.wait('@getFormTranslations');
       cy.wait('@getTranslations');
       cy.findByRole('link', { name: 'Forhåndsvis' }).click();
       cy.findByRole('heading', { name: 'Test forhåndsvisning (ingen innsending)' }).should('be.visible');
@@ -113,12 +117,14 @@ describe('FormPreview', () => {
       cy.intercept('GET', '/api/forms/testpreviewnointropage', { fixture: 'testPreview-no-intropage.json' }).as(
         'getForm',
       );
+      cy.intercept('GET', '/api/forms/testpreviewnointropage/translations').as('getFormTranslations');
     });
 
     it('should go to default intro page (not submission type selection)', () => {
       cy.visit('/forms/testpreviewnointropage');
       cy.wait('@getConfig');
       cy.wait('@getForm');
+      cy.wait('@getFormTranslations');
       cy.wait('@getTranslations');
       cy.findByRole('link', { name: 'Forhåndsvis' }).click();
       cy.findByRole('heading', { name: 'Test forhåndsvisning (uten standard introside)' }).should('be.visible');
