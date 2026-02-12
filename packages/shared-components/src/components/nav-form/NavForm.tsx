@@ -83,7 +83,6 @@ const NavForm = ({
 }: Props) => {
   useStyles();
   const [webform, setWebform] = useState<Webform>();
-  const webformRef = useRef<Webform>();
   const { prefillData } = useForm();
   const appConfig = useAppConfig();
   const ref = useRef(null);
@@ -116,12 +115,8 @@ const NavForm = ({
         setWebform(newWebform);
       }
     },
-    [appConfig, webform, language, i18n, submission, panelSlug, events],
+    [appConfig, webform, language, i18n, submission],
   );
-
-  useEffect(() => {
-    webformRef.current = webform;
-  }, [webform]);
 
   /**
    * Handle events from formio and destroy the webform instance on unmount.
@@ -194,10 +189,9 @@ const NavForm = ({
    * Update form when the user change language
    */
   useEffect(() => {
-    const currentWebform = webformRef.current;
-    if (currentWebform && currentWebform?.language !== language) {
-      appConfig.logger?.debug('Set language', { webformId: currentWebform?.id, language });
-      currentWebform.language = language;
+    if (webform && webform?.language !== language) {
+      appConfig.logger?.debug('Set language', { webformId: webform?.id, language });
+      webform.language = language;
     }
   }, [appConfig.logger, webform, language]);
 
@@ -205,20 +199,19 @@ const NavForm = ({
    * Prefill the form with data
    */
   useEffect(() => {
-    const currentWebform = webformRef.current;
-    if (currentWebform?.form && prefillData && Object.keys(prefillData).length > 0) {
+    if (webform?.form && prefillData && Object.keys(prefillData).length > 0) {
       appConfig.logger?.debug('Prefill data and set form if prefill data exist', {
-        webformId: currentWebform?.id,
+        webformId: webform?.id,
         prefillData,
       });
-      currentWebform.form = NavFormHelper.prefillForm(currentWebform.form, prefillData);
+      webform.form = NavFormHelper.prefillForm(webform.form, prefillData);
 
       // Need to trigger a handle change event after prefilling form or else
       // submission will not have correct initial state.
       if (events?.onSubmissionChanged) {
-        events.onSubmissionChanged(currentWebform._data);
+        events.onSubmissionChanged(webform._data);
       }
-      currentWebform.emitNavigationPathsChanged();
+      webform.emitNavigationPathsChanged();
     }
     // Do not want to include events in the dependency array
     // eslint-disable-next-line
