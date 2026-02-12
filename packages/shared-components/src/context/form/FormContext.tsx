@@ -7,7 +7,6 @@ import {
   Submission,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, Dispatch, SetStateAction, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import UtilsOverrides from '../../formio/overrides/utils-overrides/utils-overrides';
 import { useAppConfig } from '../config/configContext';
 
 interface FormContextType {
@@ -46,29 +45,6 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
     const activeAttachmentPanel = navFormUtils.getActiveAttachmentPanelFromForm(form, submission, submissionMethod);
     return activeAttachmentPanel ? (JSON.parse(JSON.stringify(activeAttachmentPanel)) as Panel) : undefined;
   }, [form, submission, submissionMethod]);
-
-  const _checkConditions = useCallback(
-    (components: Component[]): Component[] => {
-      const walkComponents = (items: Component[]): Component[] => {
-        return items
-          .map((component) => {
-            if (!UtilsOverrides.checkCondition(component, undefined, submission?.data, form, undefined, submission)) {
-              return;
-            }
-
-            if (component.components?.length) {
-              component.components = walkComponents(component.components);
-            }
-
-            return component;
-          })
-          .filter((component) => component !== undefined);
-      };
-
-      return walkComponents(components);
-    },
-    [form, submission],
-  );
 
   const setDeepValue = useCallback((obj: object, path: string[], value: any) => {
     const setValue = (target: any, currentPath: string[]) => {
