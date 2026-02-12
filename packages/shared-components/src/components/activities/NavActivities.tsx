@@ -73,6 +73,7 @@ const NavActivities = forwardRef<HTMLFieldSetElement, Props>((props: Props, ref)
     if (props.activities) {
       const submissionActivities = mapToSubmissionActivity(props.activities, props.dataType, locale);
       autoSelectSingleActivity(submissionActivities);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setActivitySelections(submissionActivities);
     }
   }, [props.activities, props.dataType]);
