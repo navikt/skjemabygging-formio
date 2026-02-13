@@ -50,26 +50,18 @@ const convertToInnsendingApiResponse = (json: any): any => {
   };
 };
 
-function replySubmittedNologinApplication(body: any): any {
+function replySubmittedNologinApplication(reqBody: any, innsendingsId: string): any {
   return {
-    innsendingsId: body.innsendingsId,
-    label: body.tittel,
-    status: 'Innsendt',
-    mottattdato: '2023-10-10T10:02:00.328667+02:00',
-    hoveddokumentRef: null,
-    innsendteVedlegg: body.vedleggsListe
-      .filter((v: any) => v.opplastingsStatus === 'LastetOpp')
-      .map((v: any) => ({ vedleggsnr: v.vedleggsnr, tittel: v.label })),
-    skalEttersendes: body.vedleggsListe
-      .filter((v: any) => v.opplastingsStatus === 'SendSenere')
-      .map((v: any) => ({ vedleggsnr: v.vedleggsnr, tittel: v.label })),
-    skalSendesAvAndre: body.vedleggsListe
-      .filter((v) => v.opplastingsStatus === 'SendesAvAndre')
-      .map((v) => ({ vedleggsnr: v.vedleggsnr, tittel: v.label })),
-    levertTidligere: [],
-    sendesIkkeInn: [],
-    navKanInnhente: [],
-    ettersendingsfrist: null,
+    innsendingsId: innsendingsId,
+    submittedAt: '2023-10-10T10:02:00.328667+02:00',
+    title: reqBody.title,
+    mainDocumentFileId: null,
+    attachments: reqBody.attachments.map((a) => ({
+      ...a,
+      uploadStatus: a.uploadStatus === 'LastetOpp' ? 'Innsendt' : a.uploadStatus,
+    })),
+    subsequentSubmissionDeadline: null,
+    ettersendingsId: null,
   };
 }
 
@@ -441,24 +433,20 @@ export default [
   },
   {
     id: 'upload-file',
-    url: '/send-inn/v1/nologin-fillager',
+    url: '/send-inn/v1/application-nologin/:innsendingsId/attachments/:attachmentId',
     method: 'POST',
     variants: [
       {
         id: 'success',
         type: 'middleware',
         options: {
-          middleware(req, res) {
-            const vedleggId = req.query['vedleggId'] || 'vedlegg-id';
-            const innsendingId = req.query['innsendingId'] || 'innsending-id';
+          middleware(_req, res) {
             res.status(201);
             res.contentType('application/json; charset=UTF-8');
             res.send({
-              filId: '92ee15dd-dc49-4c95-b9b6-6224bae088bb',
-              vedleggId,
-              innsendingId,
-              filnavn: 'test.txt',
-              storrelse: 40000,
+              id: '92ee15dd-dc49-4c95-b9b6-6224bae088bb',
+              name: 'test.txt',
+              size: 40000,
             });
           },
         },
@@ -501,7 +489,7 @@ export default [
   },
   {
     id: 'delete-files',
-    url: '/send-inn/v1/nologin-fillager',
+    url: '/send-inn/v1/application-nologin/:innsendingsId/attachments/:attachmentId',
     method: 'DELETE',
     variants: [
       {
@@ -515,7 +503,7 @@ export default [
   },
   {
     id: 'delete-file',
-    url: '/send-inn/v1/nologin-fillager/:filId',
+    url: '/send-inn/v1/application-nologin/:innsendingsId/attachments/:attachmentId/:fileId',
     method: 'DELETE',
     variants: [
       {
@@ -620,7 +608,7 @@ export default [
   },
   {
     id: 'post-nologin-soknad',
-    url: '/send-inn/v1/nologin-soknad',
+    url: '/send-inn/v1/application-nologin/:innsendingsId',
     method: 'POST',
     variants: [
       {
@@ -628,10 +616,11 @@ export default [
         type: 'middleware',
         options: {
           middleware(req, res) {
-            const { body } = req;
+            const { body, params } = req;
+            const { innsendingsId } = params;
             res.status(200);
             res.contentType('application/json; charset=UTF-8');
-            res.send(replySubmittedNologinApplication(body));
+            res.send(replySubmittedNologinApplication(body, innsendingsId));
           },
         },
       },
@@ -649,12 +638,13 @@ export default [
         options: {
           middleware: compareBodyMiddleware(
             tc01,
-            ['innsendingsId', 'hoveddokument.document', 'hoveddokumentVariant.document', 'vedleggsListe.filIdListe'],
+            ['innsendingsId', 'mainDocument', 'mainDocumentAlt', 'attachments.fileIds'],
             (req, res) => {
-              const { body } = req;
+              const { body, params } = req;
+              const { innsendingsId } = params;
               res.status(200);
               res.contentType('application/json; charset=UTF-8');
-              res.send(replySubmittedNologinApplication(body));
+              res.send(replySubmittedNologinApplication(body, innsendingsId));
             },
           ),
         },
@@ -665,12 +655,13 @@ export default [
         options: {
           middleware: compareBodyMiddleware(
             tc02,
-            ['innsendingsId', 'hoveddokument.document', 'hoveddokumentVariant.document', 'vedleggsListe.filIdListe'],
+            ['innsendingsId', 'mainDocument', 'mainDocumentAlt', 'attachments.fileIds'],
             (req, res) => {
-              const { body } = req;
+              const { body, params } = req;
+              const { innsendingsId } = params;
               res.status(200);
               res.contentType('application/json; charset=UTF-8');
-              res.send(replySubmittedNologinApplication(body));
+              res.send(replySubmittedNologinApplication(body, innsendingsId));
             },
           ),
         },
@@ -681,12 +672,13 @@ export default [
         options: {
           middleware: compareBodyMiddleware(
             tc05,
-            ['innsendingsId', 'hoveddokument.document', 'hoveddokumentVariant.document', 'vedleggsListe.filIdListe'],
+            ['innsendingsId', 'mainDocument', 'mainDocumentAlt', 'attachments.fileIds'],
             (req, res) => {
-              const { body } = req;
+              const { body, params } = req;
+              const { innsendingsId } = params;
               res.status(200);
               res.contentType('application/json; charset=UTF-8');
-              res.send(replySubmittedNologinApplication(body));
+              res.send(replySubmittedNologinApplication(body, innsendingsId));
             },
           ),
         },

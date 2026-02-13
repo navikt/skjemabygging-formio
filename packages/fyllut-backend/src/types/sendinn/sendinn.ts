@@ -1,36 +1,39 @@
+import { TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
+
 export type BrukerDto = { id: string; idType: 'FNR' };
 export type AvsenderId = { navn?: string; id?: string; idType?: 'FNR' };
 
-export interface SendInnSoknadBodyV2 {
-  brukerDto?: BrukerDto;
-  avsenderId?: AvsenderId;
-  innsendingsId?: string | null;
-  skjemanr: string;
-  tittel: string;
+export interface SubmitApplicationRequest {
+  bruker?: string | null;
+  avsender?: AvsenderId | null;
+  formNumber: string;
+  title: string;
   tema: string;
-  spraak: string;
-  hoveddokument: DokumentV2;
-  hoveddokumentVariant: DokumentV2;
-  fristForEttersendelse?: number;
-  vedleggsListe?: DokumentV2[] | null;
-  kanLasteOppAnnet?: boolean | null;
-  mellomlagringDager?: number;
-  visningsType?: VisningsType | null;
+  language: TranslationLang;
+  mainDocument: string;
+  mainDocumentAlt: string;
+  attachments: Attachment[];
+  otherUploadAvailable: boolean;
 }
 
-export interface DokumentV2 {
-  vedleggsnr: string;
+export interface Attachment {
+  attachmentCode: string;
   label: string;
-  tittel: string;
-  opplastingsStatus: OpplastingsStatus;
-  mimetype: 'application/json' | 'application/pdf';
-  pakrevd: boolean;
-  document?: string | null;
-  filIdListe?: string[] | null;
-  fyllutId: string | null;
-  beskrivelse: string | null;
-  propertyNavn: string | null;
-  vedleggsurl?: string;
+  title: string;
+  uploadStatus: OpplastingsStatus;
+  description: string | null;
+  formNumberPath: string | undefined | null;
+  fileIds?: string[] | null;
+}
+
+export interface SubmitApplicationResponse {
+  innsendingsId: string;
+  submittedAt: string;
+  title: string;
+  mainDocumentFileId?: string;
+  attachments: Attachment[];
+  subsequentSubmissionDeadline?: string | null;
+  ettersendingsId?: string | null;
 }
 
 export type OpplastingsStatus =
@@ -44,5 +47,3 @@ export type OpplastingsStatus =
   | 'LevertDokumentasjonTidligere'
   | 'HarIkkeDokumentasjonen'
   | 'NavKanHenteDokumentasjon';
-
-type VisningsType = 'fyllUt' | 'dokumentinnsending' | 'ettersending' | 'lospost' | 'nologin';
