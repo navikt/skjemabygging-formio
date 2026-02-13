@@ -1,3 +1,5 @@
+import { TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
+
 export type BrukerDto = { id: string; idType: 'FNR' };
 export type AvsenderId = { navn?: string; id?: string; idType?: 'FNR' };
 
@@ -7,7 +9,7 @@ export interface SubmitApplicationRequest {
   formNumber: string;
   title: string;
   tema: string;
-  language: 'nb' | 'nn' | 'en';
+  language: TranslationLang;
   mainDocument: string;
   mainDocumentAlt: string;
   attachments: Attachment[];
@@ -19,8 +21,8 @@ export interface Attachment {
   label: string;
   title: string;
   uploadStatus: OpplastingsStatus;
-  description: string;
-  formNumberPath: string;
+  description: string | null;
+  formNumberPath: string | undefined | null;
   fileIds?: string[] | null;
 }
 

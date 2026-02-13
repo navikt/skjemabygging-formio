@@ -5,6 +5,7 @@ import {
   NavFormType,
   navFormUtils,
   Submission,
+  TranslationLang,
   yourInformationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import {
@@ -21,7 +22,7 @@ const assembleNologinSoknadBody = (
   innsendingsId: string,
   form: NavFormType,
   submission: Submission,
-  language: 'nb' | 'nn' | 'en',
+  language: TranslationLang,
   submissionPdfAsByteArray: number[],
   translate: (text: string, textReplacements?: I18nTranslationMap) => string,
 ): SubmitApplicationRequest => {
@@ -55,19 +56,34 @@ const assembleNologinSoknadBody = (
         )
         .map((attachment) => {
           const component = activeAttachments.find((c) => c.navId === attachment.navId);
-          return {
-            attachmentCode:
-              attachment.type === 'personal-id' ? 'K2' : (component?.properties?.vedleggskode ?? 'Ukjent'),
-            label: translate(attachment.title ?? component?.label ?? 'Ukjent label'),
-            title: translate(component?.properties?.vedleggstittel ?? attachment.title ?? 'Ukjent tittel'),
-            uploadStatus: attachment.type === 'personal-id' ? 'LastetOpp' : mapToStatus(attachment.value),
-            fileIds: attachment.files?.map((f) => f.fileId),
-            description: component?.description ? translate(component?.description) : null,
-            formNumberPath: component?.properties?.vedleggskjema,
-          } as Attachment;
+          return validateAttachment(
+            {
+              attachmentCode: attachment.type === 'personal-id' ? 'K2' : (component?.properties?.vedleggskode ?? ''),
+              label: translate(attachment.title ?? component?.label ?? ''),
+              title: translate(component?.properties?.vedleggstittel ?? attachment.title ?? ''),
+              uploadStatus: attachment.type === 'personal-id' ? 'LastetOpp' : mapToStatus(attachment.value),
+              fileIds: attachment.files?.map((f) => f.fileId),
+              description: component?.description ? translate(component?.description) : null,
+              formNumberPath: component?.properties?.vedleggskjema,
+            },
+            component?.navId ?? attachment.type,
+          );
         }) ?? [],
     otherUploadAvailable: false,
   };
+};
+
+const validateAttachment = (attachment: Attachment, validationId: string): Attachment => {
+  if (!attachment.attachmentCode) {
+    throw new Error(`Attachment is missing attachmentCode - ${validationId}`);
+  }
+  if (!attachment.label) {
+    throw new Error(`Attachment is missing label - ${validationId}`);
+  }
+  if (!attachment.title) {
+    throw new Error(`Attachment is missing title - ${validationId}`);
+  }
+  return attachment;
 };
 
 const extractBruker = (form: NavFormType, submission: Submission): BrukerDto | undefined => {
