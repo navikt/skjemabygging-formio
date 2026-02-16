@@ -52,7 +52,7 @@ type RecipientType = RecipientNavUnitType | RecipientAddressType;
 interface CoverPageType {
   type?: ForstesideType;
   languageCode: TranslationLang;
-  form: Form;
+  form: Pick<Form, 'title' | 'skjemanummer' | 'properties'>;
   user: UserType;
   recipient?: RecipientType;
   attachments: string[];

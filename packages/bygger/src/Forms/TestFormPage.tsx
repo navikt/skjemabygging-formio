@@ -5,7 +5,7 @@ import {
   LanguagesProvider,
   SkeletonList,
 } from '@navikt/skjemadigitalisering-shared-components';
-import { I18nTranslations, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { formioFormsApiUtils, I18nTranslations, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo } from 'react';
 import { AppLayout } from '../components/AppLayout';
 import RowLayout from '../components/layout/RowLayout';
@@ -46,7 +46,7 @@ const TestFormPage = ({ form }: Props) => {
         formMenu: true,
         formPath: form.path,
       }}
-      form={form}
+      form={formioFormsApiUtils.mapNavFormToForm(form)}
     >
       <LanguagesProvider translations={i18n}>
         <FyllUtRouter form={form} />

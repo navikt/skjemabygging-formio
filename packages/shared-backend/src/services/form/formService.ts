@@ -1,19 +1,57 @@
+import { Form, formioFormsApiUtils, ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
+import { fileUtil } from '../../util';
 import formApiService from './formApiService';
 
 interface GetFormsType {
   baseUrl: string;
+  formsApiStaging?: boolean;
+  mocksEnabled?: boolean;
+  formsLocation?: string;
+  select: (keyof Form)[];
 }
-const getForms = async (props: GetFormsType) => {
-  return formApiService.getForms(props);
+const getForms = async <S extends (keyof Form)[]>(
+  props: Omit<GetFormsType, 'select'> & { select: S },
+): Promise<Array<Pick<Form, S[number]>>> => {
+  const { baseUrl, formsApiStaging, mocksEnabled, formsLocation, select } = props;
+
+  if (!select) {
+    throw new ResponseError('BAD_REQUEST', 'Select properties are required to fetch forms');
+  }
+
+  if (formsApiStaging || mocksEnabled) {
+    return formApiService.getForms<Pick<Form, S[number]>>({ baseUrl, select: select.join(',') });
+  } else {
+    const navForms = await fileUtil.loadAllJsonFilesFromDirectory(formsLocation);
+    return navForms.map(formioFormsApiUtils.mapNavFormToForm) as Array<Pick<Form, S[number]>>;
+  }
 };
 
 interface GetFormType {
   baseUrl: string;
   formPath: string;
+  formsApiStaging?: boolean;
+  mocksEnabled?: boolean;
+  formsLocation?: string;
+  select: (keyof Form)[];
 }
-const getForm = async (props: GetFormType) => {
-  // TODO: Add support to get them from GitHub instead of the database
-  return formApiService.getForm(props);
+const getForm = async <S extends (keyof Form)[]>(
+  props: Omit<GetFormType, 'select'> & { select: S },
+): Promise<Pick<Form, S[number]>> => {
+  const { baseUrl, formPath, formsApiStaging, mocksEnabled, formsLocation, select } = props;
+
+  if (!select) {
+    throw new ResponseError('BAD_REQUEST', 'Select properties are required to fetch form');
+  }
+
+  if (formsApiStaging || mocksEnabled) {
+    return formApiService.getForm<Pick<Form, S[number]>>({ baseUrl, formPath, select: select.join(',') });
+  } else {
+    const form = await fileUtil.loadJsonFileFromDirectory(formsLocation);
+    if (!form) {
+      throw new ResponseError('NOT_FOUND', `Form with path ${formPath} not found in directory ${formsLocation}`);
+    }
+    return formioFormsApiUtils.mapNavFormToForm(form) as Pick<Form, S[number]>;
+  }
 };
 
 const formService = {

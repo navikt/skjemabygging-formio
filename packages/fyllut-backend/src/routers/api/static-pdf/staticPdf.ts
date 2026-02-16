@@ -15,7 +15,7 @@ import { NextFunction, Request, Response } from 'express';
 import { config } from '../../../config/config';
 import { logger } from '../../../logger';
 
-const { formsApiUrl, skjemabyggingProxyUrl, sendInnConfig } = config;
+const { formsApiUrl, skjemabyggingProxyUrl, sendInnConfig, useFormsApiStaging, skjemaDir, mocksEnabled } = config;
 
 const staticPdf = {
   getAll: async (req: Request, res: Response, next: NextFunction) => {
@@ -44,7 +44,14 @@ const staticPdf = {
 
     try {
       // TODO: Get form from published revision or get from github
-      const form = await formService.getForm({ baseUrl: formsApiUrl, formPath });
+      const form = await formService.getForm({
+        baseUrl: formsApiUrl,
+        formPath,
+        select: ['skjemanummer', 'title', 'components', 'properties'],
+        formsApiStaging: useFormsApiStaging,
+        formsLocation: skjemaDir,
+        mocksEnabled,
+      });
 
       const translate = await translationService.createTranslate({ baseUrl: formsApiUrl, formPath, languageCode });
 
@@ -74,19 +81,12 @@ const staticPdf = {
 
         for (const component of attachmentComponents) {
           if (component.properties?.vedleggskjema) {
-            const attachmentForm = await formService.getForm({
+            const attachmentStaticPdf = await staticPdfService.downloadPdf({
               baseUrl: formsApiUrl,
               formPath: component.properties?.vedleggskjema,
+              languageCode,
             });
-
-            if (attachmentForm) {
-              const attachmentStaticPdf = await staticPdfService.downloadPdf({
-                baseUrl: formsApiUrl,
-                formPath,
-                languageCode,
-              });
-              attachmentStaticPdfs.push(attachmentStaticPdf);
-            }
+            attachmentStaticPdfs.push(attachmentStaticPdf);
           }
         }
       } catch (error) {

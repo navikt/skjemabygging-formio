@@ -6,23 +6,25 @@ const formsUrl = 'v1/forms';
 
 interface GetFormsType {
   baseUrl: string;
+  select?: string;
 }
-const getForms = async (props: GetFormsType) => {
+const getForms = async <T = Form>(props: GetFormsType): Promise<T[]> => {
   const { baseUrl } = props;
   logger.info(`Get all forms`);
 
-  return await http.get<Form[]>(`${baseUrl}/${formsUrl}`);
+  return await http.get<T[]>(`${baseUrl}/${formsUrl}`);
 };
 
 interface GetFormType {
   baseUrl: string;
   formPath: string;
+  select?: string;
 }
-const getForm = async (props: GetFormType) => {
+const getForm = async <T = Form>(props: GetFormType): Promise<T> => {
   const { baseUrl, formPath } = props;
   logger.info(`Get form ${formPath}`);
 
-  return await http.get<Form>(`${baseUrl}/${formsUrl}/${formPath}`);
+  return await http.get<T>(`${baseUrl}/${formsUrl}/${formPath}`);
 };
 
 const formService = {
