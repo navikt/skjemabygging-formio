@@ -1,4 +1,3 @@
-import { glob } from 'glob';
 import fs from 'node:fs';
 import { logger } from '../../shared/logger/logger';
 
@@ -26,7 +25,10 @@ const loadJsonFileFromDirectory = async (dir?: string, filename?: string) => {
 
 const loadAllJsonFilesFromDirectory = async (dir?: string) => {
   if (dir && fs.existsSync(dir)) {
-    const files = glob.sync(`${dir}/*.json`);
+    const files = fs
+      .readdirSync(dir)
+      .filter((file) => file.endsWith('.json'))
+      .map((file) => `${dir}/${file}`);
     const promises = files.map(readFile);
     const fileContentsList = await Promise.all(promises);
     // TODO: Verify that this is correct
