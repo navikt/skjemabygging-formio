@@ -9,6 +9,7 @@ import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
+import { formUtils } from '../../index';
 import { useIntroPage } from './IntroPageContext';
 
 const IntroPageButtonRow = () => {
@@ -23,6 +24,7 @@ const IntroPageButtonRow = () => {
 
   const href = `${form.path}?${searchParams.toString()}`;
   const validationError: Tkey = 'introPage.selfDeclaration.validationError';
+  const firstPanelSlug = form.firstPanelSlug ? form.firstPanelSlug : formUtils.getPanelSlug(form, 0);
 
   const navigateToFormPage = async () => {
     if (form.introPage?.enabled && !selfDeclaration) {
@@ -33,8 +35,7 @@ const IntroPageButtonRow = () => {
     if (submissionMethod === 'digital' && submission) {
       await updateMellomlagring(submission);
     }
-
-    navigate(`${form.firstPanelSlug}?${searchParams.toString()}`);
+    navigate(`${firstPanelSlug}?${searchParams.toString()}`);
   };
 
   return (

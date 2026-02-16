@@ -28,6 +28,7 @@ const TranslationRow = ({ translation, updateTranslation, errors, editState, isK
 
   useEffect(() => {
     if (editState === 'SAVED' && !error) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsEditing(false);
     }
   }, [editState, error]);

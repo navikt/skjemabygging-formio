@@ -38,6 +38,7 @@ const ImportFormsPage = () => {
 
   useEffect(() => {
     const opts = forms.map(mapToOption);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setOptions(opts);
     setFilteredOptions(opts);
   }, [forms]);

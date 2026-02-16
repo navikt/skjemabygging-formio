@@ -1514,7 +1514,7 @@
         {
           "label": "Annen dokumentasjon",
           "description": "Har du noen annen dokumentasjon du ønsker å legge ved?",
-          "type": "radiopanel",
+          "type": "attachment",
           "key": "annenDokumentasjon",
           "otherDocumentation": true,
           "input": true,
@@ -1632,7 +1632,7 @@
             "vedleggstittel": "Bekreftelse på oppmøte",
             "vedleggskode": "M2"
           },
-          "type": "radiopanel",
+          "type": "attachment",
           "input": true,
           "validateOn": "blur",
           "tableView": false,
@@ -1723,7 +1723,7 @@
             "vedleggstittel": " Dokumentasjon av behov for dyrere transportmiddel",
             "vedleggskode": "M4"
           },
-          "type": "radiopanel",
+          "type": "attachment",
           "input": true,
           "validateOn": "blur",
           "tableView": false,

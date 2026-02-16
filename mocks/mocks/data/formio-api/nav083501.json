@@ -5941,7 +5941,7 @@
             "vedleggskode": "L2"
           },
           "customConditional": "show=\r\n(data.hvaOnskerDuALeggeVed.personinntektsskjema === true);",
-          "type": "radiopanel",
+          "type": "attachment",
           "input": true,
           "validateOn": "blur",
           "tableView": false,
@@ -6032,7 +6032,7 @@
             "vedleggskode": "L2"
           },
           "customConditional": "show=\r\n(data.hvaOnskerDuALeggeVed.resultatregnskap === true);\r\n",
-          "type": "radiopanel",
+          "type": "attachment",
           "input": true,
           "validateOn": "blur",
           "tableView": false,
@@ -6123,7 +6123,7 @@
             "vedleggskode": "L1"
           },
           "customConditional": "show=\r\n(data.hvaOnskerDuALeggeVed.naeringsoppgave === true);",
-          "type": "radiopanel",
+          "type": "attachment",
           "input": true,
           "validateOn": "blur",
           "tableView": false,
@@ -6215,7 +6215,7 @@
             "vedleggskode": "N6"
           },
           "customConditional": "show=\r\n((data.hvaSlagsVirksomhetDriverDu.frilanser === true) && (data.hvaSlagsVirksomhetDriverDu.selvstendigNaeringsdrivende === false)) ||\r\n((data.hvaSlagsVirksomhetDriverDu.selvstendigNaeringsdrivende === true) && (data.hvaOnskerDuALeggeVed.annet === true));\r\n",
-          "type": "radiopanel",
+          "type": "attachment",
           "input": true,
           "tableView": false,
           "placeholder": "",

@@ -119,6 +119,7 @@ const FileUploader = ({
               error={attachmentTitleErrorMessage}
               ref={(ref) => {
                 if (refs?.current) {
+                  // eslint-disable-next-line react-hooks/immutability
                   refs.current[`${attachmentId}-TITLE`] = ref;
                 }
               }}

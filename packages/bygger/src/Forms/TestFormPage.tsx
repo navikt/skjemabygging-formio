@@ -5,14 +5,18 @@ import {
   LanguagesProvider,
   SkeletonList,
 } from '@navikt/skjemadigitalisering-shared-components';
-import { I18nTranslations } from '@navikt/skjemadigitalisering-shared-domain';
+import { I18nTranslations, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo } from 'react';
 import { AppLayout } from '../components/AppLayout';
 import RowLayout from '../components/layout/RowLayout';
 import { useFormTranslations } from '../context/translations/FormTranslationsContext';
 import { useGlobalTranslations } from '../context/translations/GlobalTranslationsContext';
 
-export function TestFormPage({ form }) {
+interface Props {
+  form?: NavFormType;
+}
+
+const TestFormPage = ({ form }: Props) => {
   const { isReady: formTranslationIsReady, translations: formTranslations } = useFormTranslations();
   const { isReady: globalTranslationIsReady, translations: globalTranslations } = useGlobalTranslations();
 
@@ -48,4 +52,6 @@ export function TestFormPage({ form }) {
       </LanguagesProvider>
     </AppLayout>
   );
-}
+};
+
+export default TestFormPage;

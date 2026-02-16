@@ -7,7 +7,7 @@ import { attachmentValidator } from '../attachment/attachmentValidator';
 import FileUploader from '../file-uploader/FileUploader';
 import PersonalIdUploadReadMore from './PersonalIdUploadReadMore';
 
-const PersonalIdUpload = ({ refs }: { refs?: any }) => {
+const PersonalIdUpload = ({ refs: refsRef }: { refs?: any }) => {
   const { translate } = useLanguages();
   const { changeAttachmentValue, submissionAttachments, errors } = useAttachmentUpload();
 
@@ -45,8 +45,11 @@ const PersonalIdUpload = ({ refs }: { refs?: any }) => {
           onChange={handleValueChange}
           translate={translate}
           ref={(ref) => {
-            if (refs?.current) {
-              refs.current[`${attachmentId}-VALUE`] = ref;
+            if (refsRef) {
+              refsRef.current = {
+                ...(refsRef.current ?? {}),
+                [`${attachmentId}-VALUE`]: ref,
+              };
             }
           }}
         />

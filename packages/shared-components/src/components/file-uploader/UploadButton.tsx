@@ -71,6 +71,7 @@ const UploadButton = ({
             icon={<UploadIcon aria-hidden fontSize="1.5rem" />}
             ref={(ref) => {
               if (refs?.current) {
+                // eslint-disable-next-line react-hooks/immutability
                 refs.current[`${attachmentId}-FILE`] = ref;
               }
             }}
@@ -87,6 +88,7 @@ const UploadButton = ({
           icon={<UploadIcon aria-hidden fontSize="1.5rem" />}
           ref={(ref) => {
             if (refs?.current) {
+              // eslint-disable-next-line react-hooks/immutability
               refs.current[`${attachmentId}-FILE`] = ref;
             }
           }}

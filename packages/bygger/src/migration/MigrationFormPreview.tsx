@@ -36,6 +36,7 @@ const MigrationFormPreview = () => {
         },
       }).then((response) => response.json().then(setForm));
     } catch (err: any) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setError(err instanceof Error ? (err as Error).message : 'Noe galt skjedde da vi prøvde å laste skjemaet');
     }
   }, [formPath, search]);

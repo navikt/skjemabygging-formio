@@ -182,6 +182,7 @@ export default function FormIntroPage({ form }: { form: Form }) {
           <AutomaticProcessing form={form} handleChange={changeForm} errors={errors} refMap={refMap} />
         )}
         {optional && <Optional form={form} handleChange={changeForm} refMap={refMap} errors={errors} />}
+        {/* eslint-disable-next-line react-hooks/refs */}
         <SelfDeclaration ref={refMap['selfDeclaration']} form={form} handleChange={changeForm} errors={errors} />
 
         <PublishModalComponents

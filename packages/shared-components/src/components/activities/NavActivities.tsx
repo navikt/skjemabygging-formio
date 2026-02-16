@@ -33,6 +33,12 @@ const NavActivities = forwardRef<HTMLFieldSetElement, Props>((props: Props, ref)
   const isLoggedIn = appConfig?.config?.isLoggedIn;
   const app = appConfig?.app;
 
+  const autoSelectSingleActivity = (submissionActivities: SubmissionActivity[]) => {
+    if (submissionActivities.length === 1 && props.shouldAutoSelectSingleActivity) {
+      props.onChange(submissionActivities[0], { modified: true, autoSelect: true });
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       if (app === 'fyllut' && isLoggedIn && submissionMethod === 'digital' && !props.activities) {
@@ -67,18 +73,13 @@ const NavActivities = forwardRef<HTMLFieldSetElement, Props>((props: Props, ref)
     if (props.activities) {
       const submissionActivities = mapToSubmissionActivity(props.activities, props.dataType, locale);
       autoSelectSingleActivity(submissionActivities);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setActivitySelections(submissionActivities);
     }
   }, [props.activities, props.dataType]);
 
   const getId = (activity: SubmissionActivity) => {
     return activity.vedtaksId ?? activity.aktivitetId;
-  };
-
-  const autoSelectSingleActivity = (submissionActivities: SubmissionActivity[]) => {
-    if (submissionActivities.length === 1 && props.shouldAutoSelectSingleActivity) {
-      props.onChange(submissionActivities[0], { modified: true, autoSelect: true });
-    }
   };
 
   const renderCheckbox = () => {

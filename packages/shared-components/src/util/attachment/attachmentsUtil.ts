@@ -36,9 +36,7 @@ const getAttachment = (navId: string, form: NavFormType): Attachment | undefined
 const getAllAttachments = (form: NavFormType, submission: Submission): Attachment[] => {
   return navFormUtils
     .flattenComponents(form.components)
-    .filter(
-      (component) => (component.properties && !!component.properties.vedleggskode) || isOtherDocumentation(component),
-    )
+    .filter((component) => isAttachment(component) || isOtherDocumentation(component))
     .map(sanitize)
     .filter((comp) => UtilsOverrides.checkCondition(comp, undefined, submission?.data, form, undefined, submission))
     .map((comp) => {
@@ -52,9 +50,7 @@ const getAllAttachments = (form: NavFormType, submission: Submission): Attachmen
 const getRelevantAttachments = (form: NavFormType, submission: Submission): Attachment[] => {
   return navFormUtils
     .flattenComponents(form.components)
-    .filter(
-      (component) => component.properties && !!component.properties.vedleggskode && !isOtherDocumentation(component),
-    )
+    .filter((component) => isAttachment(component) && !isOtherDocumentation(component))
     .map(sanitize)
     .filter((comp) => UtilsOverrides.checkCondition(comp, undefined, submission?.data, form, undefined, submission))
     .map(toAttachment);
@@ -85,6 +81,10 @@ const hasOtherDocumentation = (form, submission: Submission) => {
     .filter((comp) => UtilsOverrides.checkCondition(comp, undefined, submission?.data, form, undefined, submission))
     .some((component) => isOtherDocumentation(component));
   // TODO: Remove otherDocumentation from component when all attachments have attachmentType set
+};
+
+const isAttachment = (component: Component): boolean => {
+  return component.type === 'attachment';
 };
 
 const isOtherDocumentation = (component: Component): boolean => {

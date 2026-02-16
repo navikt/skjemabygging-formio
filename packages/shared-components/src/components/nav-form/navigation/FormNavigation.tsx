@@ -36,10 +36,12 @@ const FormNavigation = ({ paths, isValid, submission, navigateTo, finalStep }: P
   );
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setNextLocation({ pathname: `../${paths.next ?? finalStep}`, search });
   }, [search, paths.next, finalStep]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setPrevLocation(paths.prev ? { pathname: `../${paths.prev}`, search } : undefined);
   }, [search, paths.prev]);
 
@@ -58,7 +60,7 @@ const FormNavigation = ({ paths, isValid, submission, navigateTo, finalStep }: P
 
     navigateTo(nextLocation);
     return true;
-  }, [isMellomlagringActive, isValid, navigateTo, nextLocation, submission, updateMellomlagring]);
+  }, [isValid, navigateTo, nextLocation, submission, submissionMethod, updateMellomlagring]);
 
   const prevClickHandler = useCallback(async () => {
     if (!prevLocation) {

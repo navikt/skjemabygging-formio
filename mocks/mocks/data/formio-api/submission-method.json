@@ -602,7 +602,7 @@
         {
           "label": "Annen dokumentasjon",
           "description": "Har du noen annen dokumentasjon du ønsker å legge ved?",
-          "type": "radiopanel",
+          "type": "attachment",
           "key": "annenDokumentasjon",
           "otherDocumentation": true,
           "input": true,
@@ -738,7 +738,7 @@
             "json": ""
           },
           "customConditional": "show = data.hvaSokerDuStotteTil.value === \"briller\"",
-          "type": "radiopanel",
+          "type": "attachment",
           "input": true,
           "validateOn": "blur",
           "tableView": false,
