@@ -63,6 +63,7 @@ const FormCheckboxes = (props: FormCheckboxGroupProps) => {
     return defaultValue?.value ?? defaultValue;
   };
 
+  // As of 17.02.2026 there is no support for ReactNode on Checkbox description.
   return (
     <FormBox bottom={bottom}>
       <CheckboxGroup
@@ -75,7 +76,7 @@ const FormCheckboxes = (props: FormCheckboxGroupProps) => {
         defaultValue={getDefaultValue()}
       >
         {values.map(({ value, label, description }) => (
-          <Checkbox key={value} value={value} description={translate(description)}>
+          <Checkbox key={value} value={value} description={description}>
             {translate(label)}
           </Checkbox>
         ))}

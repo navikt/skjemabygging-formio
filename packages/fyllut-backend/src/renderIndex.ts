@@ -72,7 +72,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
       if (form && form.properties) {
         const { submissionTypes } = form.properties;
         if (!qpSub) {
-          if (req.originalUrl.match(new RegExp('/pdf$')) && submissionTypesUtils.isStaticPdf(submissionTypes)) {
+          if (req.originalUrl.match(new RegExp('/pdf[^/]*')) && submissionTypesUtils.isStaticPdf(submissionTypes)) {
             logger.info('Static pdf', { formPath });
           } else if (submissionTypes && submissionTypes.length > 1) {
             logger.info('Submission query param is missing', { formPath });

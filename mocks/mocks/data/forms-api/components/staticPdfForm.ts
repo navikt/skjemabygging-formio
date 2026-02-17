@@ -4,7 +4,7 @@ import formProperties from '../../../form-builder/form/formProperties';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
 
 const staticPdfForm = () => {
-  const formNumber = 'staticpdf';
+  const formNumber = 'pdfstatic';
 
   return form({
     title: 'Static PDF',
@@ -15,15 +15,15 @@ const staticPdfForm = () => {
         title: 'Vedlegg',
         isAttachmentPanel: true,
         components: [
-          attachment({ attachmentType: 'default', label: 'Vedlegg 1', description: 'Beskrivelse 1' }),
-          attachment({ attachmentType: 'default', label: 'Vedlegg 2', description: 'Beskrivelse 2' }),
+          attachment({ attachmentType: 'default', key: 'vedlegg1', label: 'Vedlegg 1', description: 'Beskrivelse 1' }),
+          attachment({ attachmentType: 'default', key: 'vedlegg2', label: 'Vedlegg 2', description: 'Beskrivelse 2' }),
           attachment({ attachmentType: 'other' }),
         ],
       }),
     ],
     properties: formProperties({
       formNumber,
-      submissionTypes: ['STATIC_PDF'],
+      submissionTypes: ['STATIC_PDF', 'PAPER'],
     }),
   });
 };

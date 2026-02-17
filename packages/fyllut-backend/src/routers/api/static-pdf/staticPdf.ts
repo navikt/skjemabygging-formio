@@ -80,8 +80,7 @@ const staticPdf = {
             (component) =>
               component.type === 'attachment' &&
               component.properties?.vedleggskjema &&
-              component.properties?.vedleggskode &&
-              coverPageData.attachments.includes(component.properties.vedleggskode),
+              coverPageData.attachments.includes(component.key),
           );
 
         for (const component of attachmentComponents) {
@@ -92,6 +91,7 @@ const staticPdf = {
               languageCode,
             });
             attachmentStaticPdfs.push(attachmentStaticPdf);
+            logger.info(`Add attachments ${component.properties?.vedleggskjema} for static pdf ${formPath}.`);
           }
         }
       } catch (error) {
