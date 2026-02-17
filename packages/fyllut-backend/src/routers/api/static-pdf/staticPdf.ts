@@ -76,7 +76,13 @@ const staticPdf = {
       try {
         const attachmentComponents = navFormUtils
           .flattenComponents(form.components)
-          .filter((component) => component.type === 'attachment' && component.properties?.vedleggskjema);
+          .filter(
+            (component) =>
+              component.type === 'attachment' &&
+              component.properties?.vedleggskjema &&
+              component.properties?.vedleggskode &&
+              coverPageData.attachments.includes(component.properties.vedleggskode),
+          );
 
         for (const component of attachmentComponents) {
           if (component.properties?.vedleggskjema) {
