@@ -26,6 +26,7 @@ const FormsPageRow = ({ form }: FormRowProps) => {
   const paper = navFormUtils.isSubmissionMethodAllowed('paper', form);
   const digital = navFormUtils.isSubmissionMethodAllowed('digital', form);
   const ingen = submissionTypesUtils.isNoneSubmission(form.properties.submissionTypes);
+  const staticPdf = submissionTypesUtils.isStaticPdf(form.properties.submissionTypes);
   const noDigitalLogin = submissionTypesUtils.isDigitalNoLoginSubmission(form.properties.submissionTypes);
   const noDigitalLoginOnly = submissionTypesUtils.isDigitalNoLoginSubmissionOnly(form.properties.submissionTypes);
   const isDevelopment = config?.isDevelopment;
@@ -71,6 +72,13 @@ const FormsPageRow = ({ form }: FormRowProps) => {
             {ingen && (
               <span>
                 [<a href={`/fyllut/${form.path}`}>ingen</a>]
+              </span>
+            )}
+          </td>
+          <td>
+            {staticPdf && (
+              <span>
+                [<a href={`/fyllut/${form.path}/pdf`}>pdf</a>]
               </span>
             )}
           </td>
