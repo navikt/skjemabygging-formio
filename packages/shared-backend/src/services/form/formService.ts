@@ -46,7 +46,7 @@ const getForm = async <S extends (keyof Form)[]>(
   if (formsApiStaging || mocksEnabled) {
     return formApiService.getForm<Pick<Form, S[number]>>({ baseUrl, formPath, select: select.join(',') });
   } else {
-    const form = await fileUtil.loadJsonFileFromDirectory(formsLocation);
+    const form = await fileUtil.loadJsonFileFromDirectory(formsLocation, formPath);
     if (!form) {
       throw new ResponseError('NOT_FOUND', `Form with path ${formPath} not found in directory ${formsLocation}`);
     }

@@ -43,7 +43,6 @@ const staticPdf = {
     }
 
     try {
-      // TODO: Get form from published revision or get from github
       const form = await formService.getForm({
         baseUrl: formsApiUrl,
         formPath,

@@ -31,8 +31,6 @@ const loadAllJsonFilesFromDirectory = async (dir?: string) => {
       .map((file) => `${dir}/${file}`);
     const promises = files.map(readFile);
     const fileContentsList = await Promise.all(promises);
-    // TODO: Verify that this is correct
-    //return fileContentsList.map(JSON.parse);
     return fileContentsList.map((content) => JSON.parse(content));
   }
   logger.warn(`Directory does not exist: ${dir}`);
