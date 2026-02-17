@@ -23,11 +23,10 @@ const SelectAttachmentList = ({ submissionPath }: Props) => {
       legend={TEXTS.statiske.attachment.title}
       description={TEXTS.statiske.attachment.selectAttachments}
       submissionPath={submissionPath}
-      values={attachments?.map(({ key, label, description }) => {
+      values={attachments?.map(({ key, label }) => {
         return {
           value: key,
           label,
-          description,
         };
       })}
     />

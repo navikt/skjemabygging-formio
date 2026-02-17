@@ -1,5 +1,6 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback } from 'react';
+import { validateNationalIdentityNumber as validateNationalIdentityNumberUtil } from '../../components/identity/NationalIdentityNumberValidator';
 import formComponentUtils from '../../form-components/utils/formComponent';
 import { useForm } from '../form/FormContext';
 import { useLanguages } from '../languages';
@@ -8,6 +9,7 @@ interface Validators {
   required?: boolean;
   minLength?: number;
   maxLength?: number;
+  nationalIdentityNumber?: boolean;
 }
 
 interface FormComponentValidation {
@@ -84,6 +86,25 @@ const useValidators = () => {
     [translate],
   );
 
+  const validateNationalIdentityNumber = useCallback(
+    (componentValidation: FormComponentValidation, value: any, errors: FormComponentError[]) => {
+      const { submissionPath, ref, validators } = componentValidation;
+      if (validators?.nationalIdentityNumber) {
+        // This function should function probably be split up to only return true false, so we can have message in this file.
+        // Also need to add support for test types in test environments, but that can be done laster.
+        const message = validateNationalIdentityNumberUtil({ value, allowTestTypes: false }, translate);
+        if (message) {
+          errors.push({
+            submissionPath,
+            ref,
+            message,
+          });
+        }
+      }
+    },
+    [translate],
+  );
+
   const validateAll = useCallback(
     (componentValidations: FormComponentValidation[]): FormComponentError[] => {
       return (
@@ -96,13 +117,14 @@ const useValidators = () => {
             validateRequired(componentValidation, value, errors);
             validateMinLength(componentValidation, value, errors);
             validateMaxLength(componentValidation, value, errors);
+            validateNationalIdentityNumber(componentValidation, value, errors);
 
             return errors;
           })
           .filter((componentError) => componentError !== undefined) ?? []
       );
     },
-    [submission, validateMaxLength, validateMinLength, validateRequired],
+    [submission, validateMaxLength, validateMinLength, validateRequired, validateNationalIdentityNumber],
   );
 
   return {

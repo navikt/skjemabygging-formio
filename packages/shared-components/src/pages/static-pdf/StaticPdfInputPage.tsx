@@ -1,4 +1,3 @@
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect } from 'react';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
@@ -7,9 +6,9 @@ import FormPostalCode from './components/shared/address/FormPostalCode';
 import FormPostalName from './components/shared/address/FormPostalName';
 import FormStreetAddress from './components/shared/address/FormStreetAddress';
 import FormBox from './components/shared/form/FormBox';
-import FormTextField from './components/shared/form/FormTextField';
 import FormNavUnitSelect from './components/shared/FormNavUnitSelect';
 import FormFirstName from './components/shared/identity/FormFirstName';
+import FormNationalIdentityNumber from './components/shared/identity/FormNationalIdentityNumber';
 import FormSurname from './components/shared/identity/FormSurname';
 import SelectAttachmentList from './components/shared/SelectAttachmentList';
 import StaticPdfIdentityType from './components/shared/StaticPdfIdentityType';
@@ -41,10 +40,7 @@ const StaticPdfInputPage = () => {
           <div>
             <StaticPdfIdentityType submissionPath="identityType" />
             {!submission?.data.identityType || submission?.data.identityType === 'identityNumber' ? (
-              <FormTextField
-                submissionPath="coverPage.user.nationalIdentityNumber"
-                label={TEXTS.statiske.identity.identityNumber}
-              />
+              <FormNationalIdentityNumber submissionPath="coverPage.user.nationalIdentityNumber" />
             ) : (
               <>
                 <FormFirstName submissionPath="coverPage.user.firstName" />
