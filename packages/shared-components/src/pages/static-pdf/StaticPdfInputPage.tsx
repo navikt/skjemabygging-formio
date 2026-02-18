@@ -20,11 +20,12 @@ const StaticPdfInputPage = () => {
 
   useEffect(() => {
     if (!submission) {
+      const languageCode = currentLanguage.slice(0, 2);
       setSubmission({
         data: {
           identityType: 'identityNumber',
           coverPage: {
-            languageCode: currentLanguage,
+            languageCode,
           },
         },
       });

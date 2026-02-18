@@ -1,4 +1,9 @@
-import { CoverPageType, ForstesideRequestBody, TranslateFunction } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  CoverPageType,
+  ForstesideRequestBody,
+  ResponseError,
+  TranslateFunction,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { logger } from '../../shared/logger/logger';
 import coverPageApiService from './coverPageApiService';
 
@@ -83,6 +88,10 @@ const downloadCoverPage = async (props: DownloadCoverPageType) => {
   const { type = 'SKJEMA', form, user, recipient, attachments } = data;
   const { properties } = form;
 
+  if (!form.skjemanummer || !form.title) {
+    throw new ResponseError('BAD_REQUEST', 'Missing required form values for cover page.');
+  }
+
   logger.info(`Download cover page for ${form.skjemanummer}`);
 
   const formTitle = `${form.skjemanummer} ${translate ? translate(form.title) : form.title}`;
@@ -93,7 +102,7 @@ const downloadCoverPage = async (props: DownloadCoverPageType) => {
     spraakkode: parseCoverPageLanguage(languageCode),
     overskriftstittel: formTitle,
     arkivtittel: formTitle,
-    tema: properties.tema,
+    tema: properties?.tema,
     vedleggsliste: attachments,
     dokumentlisteFoersteside: [formTitle, ...attachments],
     ...getUser(user),

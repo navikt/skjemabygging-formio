@@ -92,7 +92,7 @@ const useValidators = () => {
       if (validators?.nationalIdentityNumber) {
         // This function should function probably be split up to only return true false, so we can have message in this file.
         // Also need to add support for test types in test environments, but that can be done laster.
-        const message = validateNationalIdentityNumberUtil({ value, allowTestTypes: false }, translate);
+        const message = validateNationalIdentityNumberUtil({ value, allowTestTypes: true }, translate);
         if (message) {
           errors.push({
             submissionPath,

@@ -23,7 +23,7 @@ const staticPdfForm = () => {
     ],
     properties: formProperties({
       formNumber,
-      submissionTypes: ['STATIC_PDF', 'PAPER'],
+      submissionTypes: ['STATIC_PDF'],
     }),
   });
 };
