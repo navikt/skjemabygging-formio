@@ -81,7 +81,6 @@ const verifyJsonBody = (actualBody, expectedBody, excludeKeys = []) => {
 
 export const compareBodyMiddleware = (expectedBody: any, excludeKeys: any = [], onSuccess) => {
   return async (req, res) => {
-    console.error(`request body: ${JSON.stringify(req.body)}`);
     const mismatches = verifyJsonBody(req.body, expectedBody, excludeKeys);
     if (mismatches.length) {
       console.error(
