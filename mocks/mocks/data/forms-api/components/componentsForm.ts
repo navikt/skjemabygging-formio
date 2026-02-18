@@ -37,6 +37,7 @@ import {
   textArea,
   textField,
   year,
+  yourInformation,
 } from '../../../form-builder/components';
 import form from '../../../form-builder/form/form';
 import formProperties from '../../../form-builder/form/formProperties';
@@ -55,11 +56,7 @@ const componentsForm = () => {
         ...defaultProps,
         title: 'Dine opplysninger',
         components: [
-          container({
-            ...defaultProps,
-            label: 'Dine opplysninger',
-            key: 'dineopplysningercontainer',
-            yourInformation: true,
+          yourInformation({
             components: [identity({ ...defaultProps })],
           }),
         ],
@@ -236,7 +233,20 @@ const componentsForm = () => {
         title: 'Vedlegg',
         isAttachmentPanel: true,
         components: [
-          attachment({ ...defaultProps, attachmentType: 'default' }),
+          attachment({
+            ...defaultProps,
+            attachmentType: 'default',
+            attachmentValues: {
+              leggerVedNaa: {
+                enabled: true,
+                additionalDocumentation: {
+                  label: 'Mer info',
+                  enabled: true,
+                  description: 'Vennligst gi oss mer info',
+                },
+              },
+            },
+          }),
           attachment({ ...defaultProps, attachmentType: 'other' }),
         ],
       }),

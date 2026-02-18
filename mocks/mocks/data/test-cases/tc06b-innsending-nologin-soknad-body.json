@@ -1,0 +1,30 @@
+{
+  "avsender": {
+    "navn": "Ola Nordmann"
+  },
+  "formNumber": "Nologin 001",
+  "title": "Nologin test form",
+  "tema": "HJE",
+  "language": "nb",
+  "mainDocument": "eyJjb250ZW50IjoicGRmIn0=",
+  "mainDocumentAlt": "eyJsYW5ndWFnZSI6Im5iIiwiZGF0YSI6eyJkYXRhIjp7ImRpbmVPcHBseXNuaW5nZXIiOnsiZm9ybmF2biI6Ik9sYSIsImV0dGVybmF2biI6Ik5vcmRtYW5uIiwiaWRlbnRpdGV0Ijp7ImhhckR1Rm9kc2Vsc251bW1lciI6Im5laSIsImZvZHNlbHNkYXRvIjoiMTk4MC0wMS0wMSJ9LCJhZHJlc3NlIjp7ImJvckR1SU5vcmdlIjoiamEiLCJ2ZWdhZHJlc3NlRWxsZXJQb3N0Ym9rc2FkcmVzc2UiOiJ2ZWdhZHJlc3NlIiwiYWRyZXNzZSI6IlRlc3R2ZWllbiAxQyIsInBvc3RudW1tZXIiOiIxMjM0IiwiYnlTdGVkIjoiUGxhc3NlbiJ9LCJhZHJlc3NldmFyaWdoZXQiOnsiZ3lsZGlnRnJhT2dNZWQiOiIyMDI2LTAyLTE3In19LCJob3llc3RlRnVsbGZvcnRlVXRkYW5uaW5nIjoidmlkZXJlZ2FlbmRlIn0sImF0dGFjaG1lbnRzIjpbeyJhdHRhY2htZW50SWQiOiJwZXJzb25hbC1pZCIsIm5hdklkIjoicGVyc29uYWwtaWQiLCJ0eXBlIjoicGVyc29uYWwtaWQiLCJ2YWx1ZSI6Im5vcndlZ2lhblBhc3Nwb3J0IiwidGl0bGUiOiJOb3JzayBwYXNzIiwiZmlsZXMiOlt7ImZpbGVJZCI6IjkyZWUxNWRkLWRjNDktNGM5NS1iOWI2LTYyMjRiYWUwODhiYiIsImF0dGFjaG1lbnRJZCI6InBlcnNvbmFsLWlkIiwiaW5uc2VuZGluZ0lkIjoiYjkwYTNkZDQtNWFmZi00MTJlLTk5ZmYtMWE3MmViNmRiODU0IiwiZmlsZU5hbWUiOiJ0ZXN0LnR4dCIsInNpemUiOjQwMDAwfV19LHsiYXR0YWNobWVudElkIjoiMzA4MzAzMzM4IiwibmF2SWQiOiIzMDgzMDMzMzgiLCJ0eXBlIjoib3RoZXIiLCJ2YWx1ZSI6Im5laSIsImZpbGVzIjpbXX1dLCJzZWxmRGVjbGFyYXRpb24iOnRydWV9fQ==",
+  "attachments": [
+    {
+      "attachmentCode": "K2",
+      "label": "Norsk pass",
+      "title": "Norsk pass",
+      "uploadStatus": "LastetOpp",
+      "fileIds": ["92ee15dd-dc49-4c95-b9b6-6224bae088bb"],
+      "description": null
+    },
+    {
+      "attachmentCode": "N6",
+      "label": "Annen dokumentasjon",
+      "title": "Annet",
+      "uploadStatus": "SendesIkke",
+      "fileIds": [],
+      "description": "<p>Har du noen annen dokumentasjon du ønsker å legge ved?</p>"
+    }
+  ],
+  "otherUploadAvailable": false
+}

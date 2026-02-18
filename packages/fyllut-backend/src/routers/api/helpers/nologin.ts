@@ -29,7 +29,9 @@ const assembleNologinSoknadBody = (
   const activeAttachments: Component[] =
     navFormUtils.getActiveAttachmentPanelFromForm(form, submission, 'digitalnologin')?.components ?? [];
   const bruker = extractBruker(form, submission);
-  const avsender = extractAvsender(submission);
+  const avsender =
+    extractAvsender(submission) ?? (bruker ? undefined : extractAvsenderFromYourInformation(form, submission));
+
   if (!bruker && !avsender) {
     throw new Error(`${innsendingsId}: Could not find user nor sender from nologin submission (formPath=${form.path})`);
   }
@@ -99,6 +101,18 @@ const extractAvsender = (submission: Submission): AvsenderId | undefined => {
   const avsenderEtternavn = submission.data.etternavnAvsender;
   if (avsenderFornavn && avsenderEtternavn) {
     return { navn: `${avsenderFornavn} ${avsenderEtternavn}` };
+  }
+  return undefined;
+};
+
+const extractAvsenderFromYourInformation = (form: NavFormType, submission: Submission): AvsenderId | undefined => {
+  const yourInformation = yourInformationUtils.getYourInformation(form, submission.data);
+  if (yourInformation?.fornavn && yourInformation?.etternavn) {
+    const navn = `${yourInformation.fornavn} ${yourInformation.etternavn}`;
+    if (yourInformation.identitet?.identitetsnummer) {
+      return { id: yourInformation.identitet.identitetsnummer, idType: 'FNR', navn };
+    }
+    return { navn };
   }
   return undefined;
 };

@@ -3,6 +3,8 @@ import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 interface AddressType extends BaseComponentType {
   addressType?: 'NORWEGIAN_ADDRESS' | 'POST_OFFICE_BOX' | 'FOREIGN_ADDRESS';
   prefill?: boolean;
+  prefillKey?: string;
+  protectedApiKey?: boolean;
 }
 
 const address = (props?: AddressType) => {
@@ -65,6 +67,9 @@ const staticDefaultValues = {
   addons: [],
   fieldSize: 'input--xxl',
   keyModified: true,
+  customLabels: {
+    livesInNorway: 'Bor du i Norge?',
+  },
 };
 
 export default address;

@@ -13,6 +13,7 @@ import nationalIdentityNumber from './cutomized/nationalIdentityNumber';
 import organizationNumber from './cutomized/organizationNumber';
 import phoneNumber from './cutomized/phoneNumber';
 import surname from './cutomized/surname';
+import yourInformation from './cutomized/yourInformation';
 import datePicker from './date/datePicker';
 import monthPicker from './date/monthPicker';
 import year from './date/year';
@@ -78,4 +79,5 @@ export {
   textArea,
   textField,
   year,
+  yourInformation,
 };

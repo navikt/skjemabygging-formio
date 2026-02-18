@@ -41,7 +41,7 @@ import nav111221bTranslations from '../data/formio-api/nav111221b-translations.j
 import nav111221b from '../data/formio-api/nav111221b.json';
 import formNavdatepicker from '../data/formio-api/navdatepicker.json';
 import nologinTranslationsNb from '../data/formio-api/nologin-translations-nb.json';
-import nologinForm from '../data/formio-api/nologin.json';
+import nologinFormOld from '../data/formio-api/nologin.json';
 import numberForm from '../data/formio-api/number.json';
 import formPengerOgKonto from '../data/formio-api/pengerOgKonto.json';
 import formPhoneNumberAreaCode from '../data/formio-api/phone-number-area-code.json';
@@ -78,6 +78,7 @@ import {
 } from '../data/forms-api/components/simpleConditionalForm';
 import { textFieldForm, textFieldTranslations } from '../data/forms-api/components/textFieldForm';
 import largeForm from '../data/forms-api/largeForm';
+import { nologinForm, nologinTranslations } from '../data/forms-api/nologinForm';
 
 const allForms = [
   { form: formCypress101, translations: translationsCypress101 },
@@ -133,7 +134,7 @@ const allForms = [
   { form: submissionTypeDigitalNoLogin, translations: undefined },
   { form: submissionTypePaperDigitalNoLogin, translations: undefined },
   { form: submissionTypePaperNoLogin, translations: undefined },
-  { form: nologinForm, translations: nologinTranslationsNb },
+  { form: nologinFormOld, translations: nologinTranslationsNb },
   { form: digitalNoLoginWithAttachmentPanel, translations: undefined },
   { form: dataGridLogicBug, translations: undefined },
   { form: dataGridSkjemagruppeBug, translations: undefined },
@@ -146,6 +147,7 @@ const allForms = [
   { form: largeForm(), translations: undefined },
   { form: conditionalRowForm(), translations: conditionalRowTranslations() },
   { form: simpleConditionalForm(), translations: simpleConditionalTranslations() },
+  { form: nologinForm(), translations: nologinTranslations() },
 ];
 
 const findTestdata = (formPath: string) => allForms.find((testdata) => testdata.form.path === formPath);

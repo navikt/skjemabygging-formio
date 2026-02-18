@@ -3,6 +3,8 @@ import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 interface SurnameType extends BaseComponentType {
   autocomplete?: string;
   prefill?: boolean;
+  prefillKey?: string;
+  protectedApiKey?: boolean;
 }
 
 const surname = (props?: SurnameType) => {
