@@ -1,8 +1,8 @@
 import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { PdfComponentProps } from '../../../types';
+import { PdfComponentProps, PdfData } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 
-const PdfAddressValidity = (props: PdfComponentProps) => {
+const PdfAddressValidity = (props: PdfComponentProps): PdfData[] | null => {
   const { submissionPath, submission, translate } = props;
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
 
@@ -10,16 +10,23 @@ const PdfAddressValidity = (props: PdfComponentProps) => {
     return null;
   }
 
-  return [
-    {
+  const result: PdfData[] = [];
+
+  if (value.gyldigFraOgMed) {
+    result.push({
       label: translate(TEXTS.statiske.address.validFrom),
       verdi: dateUtils.toLocaleDate(value.gyldigFraOgMed),
-    },
-    {
+    });
+  }
+
+  if (value.gyldigTilOgMed) {
+    result.push({
       label: translate(TEXTS.statiske.address.validTo),
       verdi: dateUtils.toLocaleDate(value.gyldigTilOgMed),
-    },
-  ];
+    });
+  }
+
+  return result;
 };
 
 export default PdfAddressValidity;
