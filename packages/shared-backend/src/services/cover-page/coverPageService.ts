@@ -84,7 +84,7 @@ interface DownloadCoverPageProps {
 }
 const downloadCoverPage = async (props: DownloadCoverPageProps) => {
   const { baseUrl, languageCode = 'NB', accessToken, data, translate } = props;
-  const { type = 'SKJEMA', form, user, recipient, attachments } = data;
+  const { type = 'SKJEMA', form, user, recipient, attachments, submissionType } = data;
   const { properties } = form;
 
   if (!form.skjemanummer || !form.title) {
@@ -108,12 +108,23 @@ const downloadCoverPage = async (props: DownloadCoverPageProps) => {
     ...getRecipient(recipient),
   };
 
-  return coverPageApiService.downloadCoverPage({
+  const response = await coverPageApiService.downloadCoverPage({
     baseUrl,
-    languageCode,
     accessToken,
     body,
   });
+
+  logger.info(`Cover page for ${body.navSkjemaId} with id (loepenummer) ${response.loepenummer} created successfully`, {
+    skjemanummer: body.navSkjemaId,
+    submissionMethod: submissionType,
+    loepenummer: response.loepenummer,
+    foerstesidetype: body.foerstesidetype,
+    tema: body.tema,
+    enhetsnummer: body.enhetsnummer,
+    spraakkode: body.spraakkode,
+  });
+
+  return response.foersteside;
 };
 
 const coverPageService = {

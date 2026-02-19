@@ -1,3 +1,4 @@
+import { SubmissionType } from '../form';
 import { Form } from '../forms-api-form';
 import { TranslationLang } from '../translations/FormsApiTranslation';
 import { ForstesideType } from './index';
@@ -51,6 +52,7 @@ type RecipientType = RecipientNavUnitType | RecipientAddressType;
 
 interface CoverPageDownloadType {
   type?: ForstesideType;
+  submissionType: SubmissionType;
   languageCode: TranslationLang;
   form: Pick<Form, 'title' | 'skjemanummer' | 'properties'>;
   user: UserType;

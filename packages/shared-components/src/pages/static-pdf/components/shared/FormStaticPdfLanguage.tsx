@@ -46,7 +46,9 @@ const FormStaticPdfLanguage = ({ submissionPath, languageCode }: Props) => {
         label: getLanguageLabel(file.languageCode),
         value: file.languageCode,
       }))
-      .sort((a, b) => a.label.localeCompare(b.label));
+      .sort((a, b) => a.label.localeCompare(b.label))
+      .sort((a) => (a.value === 'nn' ? -1 : 0))
+      .sort((a) => (a.value === 'nb' ? -1 : 0));
   }, [files]);
 
   return (

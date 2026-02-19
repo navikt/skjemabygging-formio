@@ -4,7 +4,6 @@ import { logger } from '../../shared/logger/logger';
 
 interface DownloadCoverPageProps {
   baseUrl: string;
-  languageCode?: string;
   accessToken?: string;
   body: ForstesideRequestBody;
 }
@@ -21,9 +20,7 @@ const downloadCoverPage = async (props: DownloadCoverPageProps) => {
     throw new ResponseError('NOT_FOUND', 'Cover page not found');
   }
 
-  logger.info(`Cover page for ${body.navSkjemaId} with id (loepenummer) ${pdf.loepenummer} created successfully`);
-
-  return pdf.foersteside;
+  return pdf;
 };
 
 const coverPageApiService = {

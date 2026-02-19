@@ -69,7 +69,7 @@ export const StaticPdfProvider = ({ children, formPath }: Props) => {
 
   const downloadCoverPageAndFile = useCallback(
     async (coverPage: CoverPageDownloadType) => {
-      return await downloadCoverPageAndPdf(formPath, coverPage);
+      return await downloadCoverPageAndPdf(formPath, { ...coverPage, submissionType: 'STATIC_PDF' });
     },
     [formPath, downloadCoverPageAndPdf],
   );

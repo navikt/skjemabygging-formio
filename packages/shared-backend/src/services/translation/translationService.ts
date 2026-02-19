@@ -1,8 +1,12 @@
-import { FormsApiTranslation, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  FormsApiTranslation,
+  FormsApiTranslationMap,
+  TranslationLang,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { translationUtil } from '../../util';
 import translationApiService from './translationApiService';
 
-const convertToFormsApiTranslationMap = (translations: FormsApiTranslation[]) => {
+const convertToFormsApiTranslationMap = (translations: FormsApiTranslation[]): FormsApiTranslationMap => {
   return translations.reduce((accumulator, currentItem: FormsApiTranslation) => {
     accumulator[currentItem.key] = {
       nb: currentItem.nb,
