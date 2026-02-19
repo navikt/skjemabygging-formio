@@ -1,8 +1,16 @@
 import { v4 as uuidv4 } from 'uuid';
-import attachmentUtils from '../attachment';
-import { Attachment, Component, FormsResponseForm, NavFormType, Panel, Submission, SubmissionMethod } from '../form';
 import { Form, formSummaryUtil, submissionTypesUtils } from '../index';
+import {
+  Attachment,
+  Component,
+  FormsResponseForm,
+  NavFormType,
+  Panel,
+  Submission,
+  SubmissionMethod,
+} from '../model/form';
 import FormioUtils from '../utils/formio/FormioUtils';
+import attachmentUtils from './attachment';
 import { camelCase } from './stringUtils';
 
 export const toFormPath = (text: string) => camelCase(text).toLowerCase();

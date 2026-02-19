@@ -1,4 +1,4 @@
-import { FormsApiTranslation } from '../../../translations/FormsApiTranslation';
+import { FormsApiTranslation } from '../../../utils/translations/FormsApiTranslation';
 import { Tkey } from '../keys';
 import introPage from './introPage';
 

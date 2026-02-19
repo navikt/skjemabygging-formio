@@ -1,4 +1,4 @@
-import objectUtils from './objectUtils';
+import objectUtils from './objectUtils.ts';
 
 describe('objectUtils', () => {
   const nestedObject = {

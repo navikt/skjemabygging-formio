@@ -1,4 +1,4 @@
-import { SubmissionMethod, SubmissionType } from '../form';
+import { SubmissionMethod, SubmissionType } from '../model/form';
 
 function isDigitalSubmission(submissionTypes?: SubmissionType[]): boolean {
   return !!submissionTypes?.includes('DIGITAL');

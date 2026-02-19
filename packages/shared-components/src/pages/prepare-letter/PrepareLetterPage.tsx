@@ -1,6 +1,6 @@
 import { Enhet, SubmissionType, submissionTypesUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
-import { getAttachments } from '../../../../shared-domain/src/forsteside/forstesideUtils';
+import { getAttachments } from '../../../../shared-domain/src/utils/cover-page/forstesideUtils';
 import { compareEnheter, fetchEnhetsliste, isEnhetSupported } from '../../api/enhetsliste/fetchEnhetsliste';
 import NavigateButtonComponent from '../../components/button/navigation/pages/NavigateButtonComponent';
 import ErrorPage from '../../components/error/page/ErrorPage';

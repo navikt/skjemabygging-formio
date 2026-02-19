@@ -1,7 +1,7 @@
 import { Component, Form, FormPropertiesType, PublishedTranslations } from '@navikt/skjemadigitalisering-shared-domain';
 import MemoryStream from 'memorystream';
 import nock from 'nock';
-import { ComponentProperties } from '../../../shared-domain/src/form';
+import { ComponentProperties } from '../../../shared-domain/src/model/form';
 import config from '../config';
 import ReportService from './ReportService';
 import { formPublicationsService, formsService } from './index';

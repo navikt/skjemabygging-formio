@@ -1,4 +1,4 @@
-import { KjentBruker, UkjentBruker } from './index';
+import { KjentBruker, UkjentBruker } from '../../model/cover-page';
 
 type BrukerInfo = KjentBruker | UkjentBruker;
 

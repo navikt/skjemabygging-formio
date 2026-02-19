@@ -1,4 +1,4 @@
-import { Language, TranslationResource } from '../languages/types';
+import { Language, TranslationResource } from '../../utils/languages/types';
 import { Mottaksadresse } from '../mottaksadresse';
 
 /**

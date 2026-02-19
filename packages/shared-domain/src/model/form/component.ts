@@ -1,5 +1,5 @@
+import { AttachmentSettingValues } from '../../utils/attachment';
 import { AccordionSettingValues } from '../accordion';
-import { AttachmentSettingValues } from '../attachment';
 import { DataFetcherSourceId } from '../data-fetcher';
 import { TextSize } from '../text';
 import { NavFormType } from './navFormType';

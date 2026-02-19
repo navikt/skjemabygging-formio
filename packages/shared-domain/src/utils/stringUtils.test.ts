@@ -1,4 +1,4 @@
-import stringUtils from './stringUtils';
+import stringUtils from './stringUtils.ts';
 
 describe('stringUtils', () => {
   describe('camelCase', () => {

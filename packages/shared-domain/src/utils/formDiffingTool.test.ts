@@ -1,5 +1,5 @@
-import { Component, FormPropertiesType, NavFormType } from '../form';
 import { Form, navFormUtils } from '../index';
+import { Component, FormPropertiesType, NavFormType } from '../model/form';
 import tool, { DiffStatus, generateNavFormDiff } from './formDiffingTool';
 import testdataPublishedForm from './testdata/diff/published-form';
 import form from './testdata/nav100750';

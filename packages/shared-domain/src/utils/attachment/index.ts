@@ -1,7 +1,7 @@
 import { TFunction } from 'i18next';
-import { UploadedFile } from '../file';
-import { AttachmentType, Component, ComponentValue, NavFormType } from '../form';
-import TEXTS from '../texts';
+import { UploadedFile } from '../../model/file';
+import { AttachmentType, Component, ComponentValue, NavFormType } from '../../model/form';
+import TEXTS from '../../texts';
 
 type AttachmentOption = {
   label: string;

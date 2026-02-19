@@ -1,6 +1,6 @@
-import { NavFormType, Submission, SubmissionData } from '../form';
 import { Form, navFormUtils } from '../index';
-import SubmissionYourInformation from '../submission/yourInformation';
+import { NavFormType, Submission, SubmissionData } from '../model/form';
+import SubmissionYourInformation from '../model/submission/yourInformation';
 
 /**
  * Returns the first your information object from the submission data.

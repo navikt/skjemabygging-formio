@@ -1,4 +1,4 @@
-import { CheckboxGroupSubmissionData, Submission } from '../../form';
+import { CheckboxGroupSubmissionData, Submission } from '../../model/form';
 import { DataFetcherData, DataFetcherElement, DataFetcherUtil } from './index';
 
 /**

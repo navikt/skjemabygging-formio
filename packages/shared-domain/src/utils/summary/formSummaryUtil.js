@@ -1,16 +1,16 @@
 import moment from 'moment';
 import 'moment/locale/nb';
-import attachmentUtils from '../attachment';
-import { formatPhoneNumber, numberUtils } from '../index';
-import TEXTS from '../texts';
-import currencyUtils from '../utils/currencyUtils';
-import { dataFetcher } from '../utils/data-fetcher/DataFetcherUtils';
-import dateUtils from '../utils/date';
-import { bankAccountRegex, formatIBAN, formatNationalIdentityNumber, orgNrRegex } from '../utils/format-utils';
-import FormioUtils from '../utils/formio/FormioUtils';
-import sanitizeJavaScriptCode from '../utils/formio/sanitize-javascript-code';
-import { addToMap } from '../utils/objectUtils';
-import { toPascalCase } from '../utils/stringUtils';
+import { formatPhoneNumber, numberUtils } from '../../index.ts';
+import TEXTS from '../../texts/index.ts';
+import attachmentUtils from '../attachment/index.ts';
+import currencyUtils from '../currencyUtils.ts';
+import { dataFetcher } from '../data-fetcher/DataFetcherUtils.ts';
+import dateUtils from '../date.ts';
+import { bankAccountRegex, formatIBAN, formatNationalIdentityNumber, orgNrRegex } from '../format-utils.ts';
+import FormioUtils from '../formio/FormioUtils.ts';
+import sanitizeJavaScriptCode from '../formio/sanitize-javascript-code.js';
+import { addToMap } from '../objectUtils.ts';
+import { toPascalCase } from '../stringUtils.ts';
 
 function createComponentKey(parentContainerKey, key) {
   return parentContainerKey.length > 0 ? `${parentContainerKey}.${key}` : key;

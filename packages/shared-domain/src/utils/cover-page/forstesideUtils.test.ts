@@ -1,6 +1,6 @@
-import { Component, NavFormType, Submission, SubmissionData } from '../form';
-import { Recipient } from '../recipient/Recipient';
-import SubmissionYourInformation from '../submission/yourInformation';
+import { Component, NavFormType, Submission, SubmissionData } from '../../model/form';
+import { Recipient } from '../../model/recipient/Recipient';
+import SubmissionYourInformation from '../../model/submission/yourInformation';
 import { genererAdresse, genererPersonalia } from './forstesideDepricatedUtils';
 import {
   genererFoerstesideData,

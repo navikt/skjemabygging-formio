@@ -1,5 +1,5 @@
+import { SubmissionActivity } from '../../model/submission/activity';
 import { AttachmentValue } from '../attachment';
-import { SubmissionActivity } from '../submission/activity';
 
 export type SummarySubmissionValue = string | number;
 

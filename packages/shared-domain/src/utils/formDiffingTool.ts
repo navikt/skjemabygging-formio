@@ -1,5 +1,5 @@
-import { Component, FormPropertiesType, NavFormType, NewFormSignatureType } from '../form';
 import { Form, navFormUtils } from '../index';
+import { Component, FormPropertiesType, NavFormType, NewFormSignatureType } from '../model/form';
 
 enum DiffStatus {
   NEW = 'Ny',

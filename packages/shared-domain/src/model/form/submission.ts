@@ -1,4 +1,4 @@
-import { SubmissionAttachment } from '../attachment';
+import { SubmissionAttachment } from '../../utils/attachment';
 import { Component } from './component';
 import { FyllutState } from './state';
 

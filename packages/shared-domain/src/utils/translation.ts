@@ -1,6 +1,6 @@
 import { localizationUtils } from '../index';
-import { I18nTranslationMap, I18nTranslationReplacements, I18nTranslations } from '../languages/types';
 import { Tkey } from '../texts/externalStorage';
+import { I18nTranslationMap, I18nTranslationReplacements, I18nTranslations } from './languages/types';
 
 const translateWithTextReplacements = ({
   textOrKey = '',

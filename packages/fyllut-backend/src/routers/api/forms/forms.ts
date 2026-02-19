@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { FormsResponseForm } from '../../../../../shared-domain/src/form';
+import { FormsResponseForm } from '../../../../../shared-domain/src/model/form';
 import { formService } from '../../../services';
 
 const mapForm = (form): FormsResponseForm => ({

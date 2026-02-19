@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { FormSignaturesType, NewFormSignatureType } from '../form';
+import { FormSignaturesType, NewFormSignatureType } from '../model/form';
 
 const defaultSignature = [{ label: '', description: '', key: uuidv4() }];
 

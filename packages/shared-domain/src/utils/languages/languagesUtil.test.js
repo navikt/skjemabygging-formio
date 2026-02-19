@@ -1,10 +1,10 @@
-import { flattenGlobalI18nGroupedByTag, globalEntitiesToI18nGroupedByTag } from './languagesUtil';
-import globalTranslationsEn from './testdata/global-translations-en';
-import globalTranslationsNnNO from './testdata/global-translations-nn-NO';
-import globalGrensesnittEn from './testdata/language-globalGrensesnitt-en';
-import globalGrensesnittNnNO from './testdata/language-globalGrensesnitt-nn-NO';
-import globalValideringEn from './testdata/language-globalValidering-en';
-import globalValideringNnNO from './testdata/language-globalValidering-nn-NO';
+import { flattenGlobalI18nGroupedByTag, globalEntitiesToI18nGroupedByTag } from './languagesUtil.js';
+import globalTranslationsEn from './testdata/global-translations-en.js';
+import globalTranslationsNnNO from './testdata/global-translations-nn-NO.js';
+import globalGrensesnittEn from './testdata/language-globalGrensesnitt-en.js';
+import globalGrensesnittNnNO from './testdata/language-globalGrensesnitt-nn-NO.js';
+import globalValideringEn from './testdata/language-globalValidering-en.js';
+import globalValideringNnNO from './testdata/language-globalValidering-nn-NO.js';
 
 describe('languagesUtil', () => {
   describe('globalEntitiesToI18nGroupedByTag', () => {

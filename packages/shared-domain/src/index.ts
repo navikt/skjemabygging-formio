@@ -1,22 +1,18 @@
-import { AccordionSettingValue, AccordionSettingValues } from './accordion';
-import Address from './address/address';
-import attachmentUtils, {
-  AttachmentOption,
-  AttachmentSettingValue,
-  AttachmentSettingValues,
-  AttachmentValue,
-  LimitedFormAttachment,
-  SubmissionAttachment,
-  SubmissionAttachmentValue,
-} from './attachment';
-import { ComponentError } from './component';
-import configUtils from './config';
-import type { ConfigType } from './config/types';
-import type { DataFetcherSourceId } from './data-fetcher';
-import { dataFetcherSources } from './data-fetcher';
-import { Enhet, Enhetstype, EnhetstypeNorg, supportedEnhetstyper } from './enhet';
-import type { FieldSize } from './field-size';
-import { UploadedFile } from './file';
+import { AccordionSettingValue, AccordionSettingValues } from './model/accordion';
+import Address from './model/address/address';
+import { ComponentError } from './model/component';
+import {
+  ForstesideRecipientAddress,
+  ForstesideRequestBody,
+  ForstesideType,
+  KjentBruker,
+  UkjentBruker,
+} from './model/cover-page';
+import type { DataFetcherSourceId } from './model/data-fetcher';
+import { dataFetcherSources } from './model/data-fetcher';
+import { Enhet, Enhetstype, EnhetstypeNorg, supportedEnhetstyper } from './model/enhet';
+import type { FieldSize } from './model/field-size';
+import { UploadedFile } from './model/file';
 import {
   AddressType,
   Attachment,
@@ -51,18 +47,61 @@ import {
   SubmissionType,
   UsageContext,
   Webform,
-} from './form';
-import { Form } from './forms-api-form';
-import forstesideUtils, {
-  ForstesideRecipientAddress,
-  ForstesideRequestBody,
-  ForstesideType,
-  KjentBruker,
-  UkjentBruker,
-} from './forsteside';
-import type { ErrorCode, ErrorResponse } from './http';
-import { ResponseError } from './http';
-import languagesUtil from './languages/languagesUtil';
+} from './model/form';
+import { Form } from './model/forms-api-form';
+import type { ErrorCode, ErrorResponse } from './model/http';
+import { ResponseError } from './model/http';
+import type { Mottaksadresse, MottaksadresseData } from './model/mottaksadresse';
+import PrefillAddress from './model/prefill/prefillAddress';
+import type { Recipient } from './model/recipient/Recipient';
+import type { ReportDefinition } from './model/reports';
+import type { FormioResource, ResourceName } from './model/resource';
+import type {
+  GlobalTranslationsResourceContent,
+  MottaksadresserResourceContent,
+  ResourceContent,
+} from './model/resource/published';
+import {
+  AktivitetPeriode,
+  AktivitetVedtaksinformasjon,
+  SendInnAktivitet,
+  SendInnMaalgruppe,
+  VedtakBetalingsplan,
+} from './model/sendinn/activity';
+import { Receipt, ReceiptSummary, ReceiptSummaryAttachment, SubmittedAttachment } from './model/sendinn/receipt';
+import type { StaticPdf } from './model/static-pdf';
+import { SubmissionActivity } from './model/submission/activity';
+import SubmissionAddress from './model/submission/address';
+import { DrivingListPeriod, DrivingListSubmission, DrivingListValues } from './model/submission/drivingList';
+import SubmissionIdentity from './model/submission/identity';
+import { SubmissionMaalgruppe } from './model/submission/maalgruppe';
+import SubmissionYourInformation from './model/submission/yourInformation';
+import { TextSize, TextSizeShort } from './model/text';
+import { Activity } from './model/tilleggsstonader/activity';
+import TEXTS from './texts';
+import externalStorageTexts, { TElement, Tkey } from './texts/externalStorage';
+import attachmentUtils, {
+  AttachmentOption,
+  AttachmentSettingValue,
+  AttachmentSettingValues,
+  AttachmentValue,
+  LimitedFormAttachment,
+  SubmissionAttachment,
+  SubmissionAttachmentValue,
+} from './utils/attachment';
+import configUtils from './utils/config';
+import type { ConfigType } from './utils/config/types';
+import forstesideUtils from './utils/cover-page';
+import currencyUtils from './utils/currencyUtils';
+import type { DataFetcherData, DataFetcherElement, DataFetcherUtil } from './utils/data-fetcher';
+import { dataFetcherUtils } from './utils/data-fetcher';
+import dateUtils from './utils/date';
+import featureUtils, { FeatureTogglesMap } from './utils/featureUtils';
+import formDiffingTool, { FormSettingsDiff } from './utils/formDiffingTool';
+import navFormioUtils from './utils/formio';
+import formioFormsApiUtils from './utils/forms-api-backwards-compatibility';
+import { guid } from './utils/guid';
+import languagesUtil from './utils/languages/languagesUtil';
 import type {
   FormioTranslation,
   FormioTranslationData,
@@ -77,36 +116,19 @@ import type {
   TranslationResource,
   TranslationScope,
   TranslationTag,
-} from './languages/types';
-import loggingUtils from './logging';
-import type { FrontendLoggerConfigType, LogLevel } from './logging/types';
-import migrationUtils, { MigrationLevel } from './migration';
-import { Operator } from './migration/operator';
-import type { Mottaksadresse, MottaksadresseData } from './mottaksadresse';
-import PrefillAddress from './prefill/prefillAddress';
-import type { Recipient } from './recipient/Recipient';
-import type { ReportDefinition } from './reports';
-import type { FormioResource, ResourceName } from './resource';
-import type {
-  GlobalTranslationsResourceContent,
-  MottaksadresserResourceContent,
-  ResourceContent,
-} from './resource/published';
-import {
-  AktivitetPeriode,
-  AktivitetVedtaksinformasjon,
-  SendInnAktivitet,
-  SendInnMaalgruppe,
-  VedtakBetalingsplan,
-} from './sendinn/activity';
-import { Receipt, ReceiptSummary, ReceiptSummaryAttachment, SubmittedAttachment } from './sendinn/receipt';
-import type { StaticPdf } from './static-pdf';
-import { SubmissionActivity } from './submission/activity';
-import SubmissionAddress from './submission/address';
-import { DrivingListPeriod, DrivingListSubmission, DrivingListValues } from './submission/drivingList';
-import SubmissionIdentity from './submission/identity';
-import { SubmissionMaalgruppe } from './submission/maalgruppe';
-import SubmissionYourInformation from './submission/yourInformation';
+} from './utils/languages/types';
+import localizationUtils from './utils/localization';
+import loggingUtils from './utils/logging';
+import type { FrontendLoggerConfigType, LogLevel } from './utils/logging/types';
+import migrationUtils, { MigrationLevel } from './utils/migration';
+import { Operator } from './utils/migration/operator';
+import navFormUtils, { DependencyType } from './utils/navFormUtils';
+import numberUtils from './utils/numberUtils';
+import objectUtils from './utils/objectUtils';
+import paginationUtils from './utils/pagination';
+import signatureUtils from './utils/signatureUtils';
+import stringUtils from './utils/stringUtils';
+import submissionTypesUtils from './utils/submissionTypesUtils';
 import {
   SummaryActivity,
   SummaryAddress,
@@ -122,39 +144,18 @@ import {
   SummaryPanel,
   SummarySelectboxes,
   SummarySubmissionValue,
-} from './summary/FormSummaryType';
-import MockedComponentObjectForTest from './summary/MockedComponentObjectForTest';
-import formSummaryUtil from './summary/formSummaryUtil';
-import type PanelValidation from './summary/panelValidation';
-import { TextSize, TextSizeShort } from './text';
-import TEXTS from './texts';
-import externalStorageTexts, { TElement, Tkey } from './texts/externalStorage';
-import { Activity } from './tilleggsstonader/activity';
+} from './utils/summary/FormSummaryType';
+import MockedComponentObjectForTest from './utils/summary/MockedComponentObjectForTest';
+import formSummaryUtil from './utils/summary/formSummaryUtil';
+import type PanelValidation from './utils/summary/panelValidation';
+import { JwtToken, NologinToken, tokenUtils } from './utils/token';
+import translationUtils from './utils/translation';
 import {
   FormsApiTranslation,
   formsApiTranslations,
   PublishedTranslations,
   TranslationLang,
-} from './translations/FormsApiTranslation';
-import currencyUtils from './utils/currencyUtils';
-import type { DataFetcherData, DataFetcherElement, DataFetcherUtil } from './utils/data-fetcher';
-import { dataFetcherUtils } from './utils/data-fetcher';
-import dateUtils from './utils/date';
-import featureUtils, { FeatureTogglesMap } from './utils/featureUtils';
-import formDiffingTool, { FormSettingsDiff } from './utils/formDiffingTool';
-import navFormioUtils from './utils/formio';
-import formioFormsApiUtils from './utils/forms-api-backwards-compatibility';
-import { guid } from './utils/guid';
-import localizationUtils from './utils/localization';
-import navFormUtils, { DependencyType } from './utils/navFormUtils';
-import numberUtils from './utils/numberUtils';
-import objectUtils from './utils/objectUtils';
-import paginationUtils from './utils/pagination';
-import signatureUtils from './utils/signatureUtils';
-import stringUtils from './utils/stringUtils';
-import submissionTypesUtils from './utils/submissionTypesUtils';
-import { JwtToken, NologinToken, tokenUtils } from './utils/token';
-import translationUtils from './utils/translation';
+} from './utils/translations/FormsApiTranslation';
 import validatorUtils from './utils/validatorUtils';
 import yourInformationUtils from './utils/yourInformationUtils';
 

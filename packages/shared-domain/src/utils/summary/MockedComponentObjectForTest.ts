@@ -1,8 +1,8 @@
+import { formioFormsApiUtils } from '../../index';
+import type { Component, ComponentProperties, FormPropertiesType, NavFormType } from '../../model/form';
+import { Form } from '../../model/forms-api-form';
 import { AttachmentSettingValues } from '../attachment';
-import type { Component, ComponentProperties, FormPropertiesType, NavFormType } from '../form';
-import { Form } from '../forms-api-form';
-import { formioFormsApiUtils } from '../index';
-import FormioUtils from '../utils/formio/FormioUtils';
+import FormioUtils from '../formio/FormioUtils';
 
 const keyFromLabel = (label = '') => label.toLowerCase().replace(/\s/gi, '');
 const createNavId = () => FormioUtils.getRandomComponentId();

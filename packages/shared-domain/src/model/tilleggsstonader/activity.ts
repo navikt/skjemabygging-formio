@@ -1,4 +1,4 @@
-import { DataFetcherElement } from '../utils/data-fetcher';
+import { DataFetcherElement } from '../../utils/data-fetcher';
 
 export interface Activity extends DataFetcherElement {
   value: string;

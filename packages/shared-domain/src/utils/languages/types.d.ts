@@ -1,4 +1,4 @@
-import { FormioResource } from '../resource';
+import { FormioResource } from '../../model/resource';
 
 export type Language = 'nb-NO' | 'nn-NO' | 'en';
 export type TranslationScope = 'global' | 'local' | 'component-countryName';

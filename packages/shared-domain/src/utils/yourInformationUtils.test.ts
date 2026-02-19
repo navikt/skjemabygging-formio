@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { NavFormType, SubmissionData } from '../form';
 import { yourInformationUtils } from '../index';
+import { NavFormType, SubmissionData } from '../model/form';
 
 describe('getYourInformationUtils', () => {
   it('returns your information object when present in submission data', () => {

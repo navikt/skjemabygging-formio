@@ -1,10 +1,10 @@
-import { flattenComponents } from '../utils/navFormUtils';
-import formSummaryUtil from './formSummaryUtil';
-import MockedComponentObjectForTest from './MockedComponentObjectForTest';
-import datoISkjemagruppeIDatagrid from './testdata/datovelger-skjemagruppe-datagrid';
-import testformCustomConditional from './testdata/form-alertstripe-cusom-conditional';
-import testformContainerConditional from './testdata/form-container-conditional';
-import testImgFormCustomConditional from './testdata/form-image-custom-conditional';
+import { flattenComponents } from '../navFormUtils.ts';
+import formSummaryUtil from './formSummaryUtil.js';
+import MockedComponentObjectForTest from './MockedComponentObjectForTest.ts';
+import datoISkjemagruppeIDatagrid from './testdata/datovelger-skjemagruppe-datagrid.js';
+import testformCustomConditional from './testdata/form-alertstripe-cusom-conditional.js';
+import testformContainerConditional from './testdata/form-container-conditional.js';
+import testImgFormCustomConditional from './testdata/form-image-custom-conditional.js';
 
 const { createFormSummaryObject, handleComponent, mapAndEvaluateConditionals } = formSummaryUtil;
 

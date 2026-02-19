@@ -1,5 +1,5 @@
+import dateUtils from '../date';
 import { TranslationTag } from '../languages/types';
-import dateUtils from '../utils/date';
 
 type TranslationLang = 'nb' | 'nn' | 'en';
 type FormsApiTranslation = {

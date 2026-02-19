@@ -1,5 +1,5 @@
-import { NavFormType } from '../../form';
-import { Form, FormStatus } from '../../forms-api-form';
+import { NavFormType } from '../../model/form';
+import { Form, FormStatus } from '../../model/forms-api-form';
 
 const mapFormToNavForm = (form: Form): NavFormType => {
   const { title } = form;

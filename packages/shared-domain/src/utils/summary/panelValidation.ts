@@ -1,4 +1,4 @@
-import { Component } from '../form';
+import { Component } from '../../model/form';
 
 type PanelValidation = {
   key: string;

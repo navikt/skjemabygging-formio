@@ -1,4 +1,4 @@
-import localizationUtils from './localization';
+import localizationUtils from './localization.ts';
 
 describe('localization', () => {
   describe('getLanguageCodeAsIso639_1', () => {
