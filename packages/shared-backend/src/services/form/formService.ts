@@ -2,15 +2,17 @@ import { Form, formioFormsApiUtils, ResponseError } from '@navikt/skjemadigitali
 import { fileUtil } from '../../util';
 import formApiService from './formApiService';
 
-interface GetFormsType {
+type FormSelectType = keyof Form;
+
+interface GetFormsProps {
   baseUrl: string;
   formsApiStaging?: boolean;
   mocksEnabled?: boolean;
   formsLocation?: string;
-  select: (keyof Form)[];
+  select: Omit<FormSelectType, 'components'>[];
 }
-const getForms = async <S extends (keyof Form)[]>(
-  props: Omit<GetFormsType, 'select'> & { select: S },
+const getForms = async <S extends FormSelectType[]>(
+  props: Omit<GetFormsProps, 'select'> & { select: S },
 ): Promise<Array<Pick<Form, S[number]>>> => {
   const { baseUrl, formsApiStaging, mocksEnabled, formsLocation, select } = props;
 
@@ -26,16 +28,16 @@ const getForms = async <S extends (keyof Form)[]>(
   }
 };
 
-interface GetFormType {
+interface GetFormProps {
   baseUrl: string;
   formPath: string;
   formsApiStaging?: boolean;
   mocksEnabled?: boolean;
   formsLocation?: string;
-  select: (keyof Form)[];
+  select: FormSelectType[];
 }
-const getForm = async <S extends (keyof Form)[]>(
-  props: Omit<GetFormType, 'select'> & { select: S },
+const getForm = async <S extends FormSelectType[]>(
+  props: Omit<GetFormProps, 'select'> & { select: S },
 ): Promise<Pick<Form, S[number]>> => {
   const { baseUrl, formPath, formsApiStaging, mocksEnabled, formsLocation, select } = props;
 

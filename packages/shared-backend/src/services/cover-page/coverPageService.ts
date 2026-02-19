@@ -1,5 +1,5 @@
 import {
-  CoverPageType,
+  CoverPageDownloadType,
   ForstesideRequestBody,
   ResponseError,
   TranslateFunction,
@@ -75,15 +75,14 @@ const parseCoverPageLanguage = (language: string) => {
   }
 };
 
-interface DownloadCoverPageType {
+interface DownloadCoverPageProps {
   baseUrl: string;
   languageCode?: string;
   accessToken?: string;
-  data: CoverPageType;
+  data: CoverPageDownloadType;
   translate?: TranslateFunction;
 }
-
-const downloadCoverPage = async (props: DownloadCoverPageType) => {
+const downloadCoverPage = async (props: DownloadCoverPageProps) => {
   const { baseUrl, languageCode = 'NB', accessToken, data, translate } = props;
   const { type = 'SKJEMA', form, user, recipient, attachments } = data;
   const { properties } = form;
@@ -92,7 +91,7 @@ const downloadCoverPage = async (props: DownloadCoverPageType) => {
     throw new ResponseError('BAD_REQUEST', 'Missing required form values for cover page.');
   }
 
-  logger.info(`Download cover page for ${form.skjemanummer}`);
+  logger.debug(`Download cover page for ${form.skjemanummer}`);
 
   const formTitle = `${form.skjemanummer} ${translate ? translate(form.title) : form.title}`;
 

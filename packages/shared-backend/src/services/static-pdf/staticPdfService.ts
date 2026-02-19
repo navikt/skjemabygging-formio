@@ -3,7 +3,7 @@ import 'multer';
 import { logger } from '../../shared/logger/logger';
 import staticPdfApiService from './staticPdfApiService';
 
-const getValidLanguageCode = async (props: DownloadPdfType) => {
+const getValidLanguageCode = async (props: DownloadPdfProps) => {
   const { baseUrl, formPath, languageCode } = props;
 
   if (!languageCode) {
@@ -33,36 +33,36 @@ const getValidLanguageCode = async (props: DownloadPdfType) => {
   );
 };
 
-interface GetAllType {
+interface GetAllProps {
   baseUrl: string;
   formPath: string;
 }
-const getAll = async (props: GetAllType) => {
+const getAll = async (props: GetAllProps) => {
   const { baseUrl, formPath } = props;
 
   return staticPdfApiService.getAll({ baseUrl, formPath });
 };
 
-interface DownloadPdfType {
+interface DownloadPdfProps {
   baseUrl: string;
   formPath: string;
   languageCode: TranslationLang;
 }
-const downloadPdf = async (props: DownloadPdfType) => {
+const downloadPdf = async (props: DownloadPdfProps) => {
   const { baseUrl, formPath } = props;
 
   const validLanguageCode = await getValidLanguageCode(props);
   return staticPdfApiService.downloadPdf({ baseUrl, formPath, languageCode: validLanguageCode });
 };
 
-interface UploadPdfType {
+interface UploadPdfProps {
   baseUrl: string;
   formPath: string;
   languageCode: TranslationLang;
   accessToken: string;
   file: Express.Multer.File;
 }
-const uploadPdf = async (props: UploadPdfType) => {
+const uploadPdf = async (props: UploadPdfProps) => {
   const { baseUrl, formPath, languageCode, accessToken, file } = props;
 
   const fileBlob = new Blob([Uint8Array.from(file.buffer)], { type: file.mimetype });
@@ -73,13 +73,13 @@ const uploadPdf = async (props: UploadPdfType) => {
   return staticPdfApiService.uploadPdf({ baseUrl, formPath, languageCode, accessToken, body });
 };
 
-interface DeletePdfType {
+interface DeletePdfProps {
   baseUrl: string;
   formPath: string;
   languageCode: TranslationLang;
   accessToken: string;
 }
-const deletePdf = async (props: DeletePdfType) => {
+const deletePdf = async (props: DeletePdfProps) => {
   await staticPdfApiService.deletePdf(props);
 };
 

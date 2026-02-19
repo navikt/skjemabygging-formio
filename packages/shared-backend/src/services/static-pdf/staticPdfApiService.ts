@@ -5,23 +5,23 @@ import { logger } from '../../shared/logger/logger';
 
 const formsUrl = 'v1/forms';
 
-interface GetAllType {
+interface GetAllProps {
   baseUrl: string;
   formPath: string;
 }
-const getAll = async (props: GetAllType) => {
+const getAll = async (props: GetAllProps) => {
   const { baseUrl, formPath } = props;
   logger.debug(`Get all static pdfs ${formPath}`);
 
   return await http.get<StaticPdf[]>(`${baseUrl}/${formsUrl}/${formPath}/static-pdfs`);
 };
 
-interface DownloadPdfType {
+interface DownloadPdfProps {
   baseUrl: string;
   formPath: string;
   languageCode: TranslationLang;
 }
-const downloadPdf = async (props: DownloadPdfType) => {
+const downloadPdf = async (props: DownloadPdfProps) => {
   const { baseUrl, formPath, languageCode } = props;
   logger.info(`Download new static pdf ${formPath} for ${languageCode}`);
 
@@ -34,14 +34,14 @@ const downloadPdf = async (props: DownloadPdfType) => {
   return pdf;
 };
 
-interface UploadPdfType {
+interface UploadPdfProps {
   baseUrl: string;
   formPath: string;
   languageCode: TranslationLang;
   accessToken: string;
   body: FormData;
 }
-const uploadPdf = async (props: UploadPdfType) => {
+const uploadPdf = async (props: UploadPdfProps) => {
   const { baseUrl, formPath, languageCode, accessToken, body } = props;
   logger.info(`Upload new static pdf ${formPath} for ${languageCode}`);
 
@@ -51,13 +51,13 @@ const uploadPdf = async (props: UploadPdfType) => {
   });
 };
 
-interface DeletePdfType {
+interface DeletePdfProps {
   baseUrl: string;
   formPath: string;
   languageCode: TranslationLang;
   accessToken: string;
 }
-const deletePdf = async (props: DeletePdfType) => {
+const deletePdf = async (props: DeletePdfProps) => {
   const { baseUrl, formPath, languageCode, accessToken } = props;
   logger.info(`Delete static pdf ${formPath} for ${languageCode}`);
 

@@ -5,12 +5,12 @@ interface MergeFilesBodyType {
   language: string;
   files: string[];
 }
-interface MergeFilesType {
+interface MergeFilesProps {
   baseUrl: string;
   accessToken: string;
   body: MergeFilesBodyType;
 }
-const mergeFiles = async (props: MergeFilesType): Promise<any> => {
+const mergeFiles = async (props: MergeFilesProps): Promise<any> => {
   const { baseUrl, body, accessToken } = props;
 
   const requestBody = {

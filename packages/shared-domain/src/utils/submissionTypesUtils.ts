@@ -32,7 +32,7 @@ function isStaticPdf(submissionTypes?: SubmissionType[]): boolean {
   return !!submissionTypes?.includes('STATIC_PDF');
 }
 
-function asMethod(submissionType: SubmissionType): SubmissionMethod {
+function asMethod(submissionType: SubmissionType): SubmissionMethod | undefined {
   switch (submissionType) {
     case 'DIGITAL':
       return 'digital';
@@ -40,8 +40,8 @@ function asMethod(submissionType: SubmissionType): SubmissionMethod {
       return 'digitalnologin';
     case 'PAPER':
       return 'paper';
-    case 'STATIC_PDF':
-      return 'staticpdf';
+    default:
+      return;
   }
 }
 

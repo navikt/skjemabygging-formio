@@ -42,7 +42,7 @@ const mapNavFormToForm = (form: NavFormType): Form => {
   return {
     id,
     revision,
-    skjemanummer: properties?.skjemanummer,
+    skjemanummer: properties.skjemanummer,
     path,
     title,
     components,

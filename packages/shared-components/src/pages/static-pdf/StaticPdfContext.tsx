@@ -1,4 +1,4 @@
-import { CoverPageType, StaticPdf } from '@navikt/skjemadigitalisering-shared-domain';
+import { CoverPageDownloadType, StaticPdf } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import useFormsApiStaticPdf from '../../api/static-pdf/useFormsApiStaticPdf';
 
@@ -9,7 +9,7 @@ interface StaticPdfContextType {
   getFile: (languageCode: string) => StaticPdf | undefined;
   uploadFile: (languageCode: string, file: File) => Promise<StaticPdf>;
   downloadFile: (languageCode: string) => Promise<Blob>;
-  downloadCoverPageAndFile: (coverPage: CoverPageType) => Promise<Blob>;
+  downloadCoverPageAndFile: (coverPage: CoverPageDownloadType) => Promise<Blob>;
   deleteFile: (languageCode: string) => Promise<void>;
 }
 
@@ -68,7 +68,7 @@ export const StaticPdfProvider = ({ children, formPath }: Props) => {
   );
 
   const downloadCoverPageAndFile = useCallback(
-    async (coverPage: CoverPageType) => {
+    async (coverPage: CoverPageDownloadType) => {
       return await downloadCoverPageAndPdf(formPath, coverPage);
     },
     [formPath, downloadCoverPageAndPdf],

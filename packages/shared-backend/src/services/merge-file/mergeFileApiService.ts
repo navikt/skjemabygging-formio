@@ -2,7 +2,7 @@ import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import http from '../../shared/http/http';
 import { logger } from '../../shared/logger/logger';
 
-interface MergeFilesType {
+interface MergeFilesProps {
   baseUrl: string;
   accessToken: string;
   body: {
@@ -11,7 +11,7 @@ interface MergeFilesType {
     filer: string[];
   };
 }
-const mergeFiles = async (props: MergeFilesType): Promise<any> => {
+const mergeFiles = async (props: MergeFilesProps): Promise<any> => {
   const { baseUrl, body, accessToken } = props;
 
   logger.info(`Merge files with title ${body.tittel} and language ${body.spraak}`);

@@ -91,7 +91,7 @@ export default [
         },
       },
       {
-        id: 'nb',
+        id: 'only-nb',
         type: 'middleware',
         options: {
           middleware: (req, res) => {
@@ -110,7 +110,7 @@ export default [
         },
       },
       {
-        id: 'en',
+        id: 'only-en',
         type: 'middleware',
         options: {
           middleware: (req, res) => {
@@ -129,7 +129,7 @@ export default [
         },
       },
       {
-        id: 'fr',
+        id: 'only-fr',
         type: 'middleware',
         options: {
           middleware: (req, res) => {

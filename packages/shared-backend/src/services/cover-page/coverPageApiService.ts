@@ -2,13 +2,13 @@ import { ForstesideRequestBody, ResponseError } from '@navikt/skjemadigitaliseri
 import http from '../../shared/http/http';
 import { logger } from '../../shared/logger/logger';
 
-interface DownloadCoverPageType {
+interface DownloadCoverPageProps {
   baseUrl: string;
   languageCode?: string;
   accessToken?: string;
   body: ForstesideRequestBody;
 }
-const downloadCoverPage = async (props: DownloadCoverPageType) => {
+const downloadCoverPage = async (props: DownloadCoverPageProps) => {
   const { baseUrl, accessToken, body } = props;
   logger.info(`Download cover page for ${body.navSkjemaId}`);
 

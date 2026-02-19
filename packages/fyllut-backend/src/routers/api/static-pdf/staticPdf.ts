@@ -6,7 +6,7 @@ import {
   translationService,
 } from '@navikt/skjemadigitalisering-shared-backend';
 import {
-  CoverPageType,
+  CoverPageDownloadType,
   navFormUtils,
   ResponseError,
   TranslationLang,
@@ -34,7 +34,7 @@ const staticPdf = {
   downloadPdf: async (req: Request, res: Response, next: NextFunction) => {
     const { formPath } = req.params;
     const languageCode = req.params.languageCode as TranslationLang;
-    const coverPageData = req.body as CoverPageType;
+    const coverPageData = req.body as CoverPageDownloadType;
     const coverPageToken = req.headers.AzureAccessToken as string;
     const mergePdfToken = req.headers.MergePdfToken as string;
 
@@ -73,29 +73,29 @@ const staticPdf = {
 
       const attachmentStaticPdfs: string[] = [];
 
-      try {
-        const attachmentComponents = navFormUtils
-          .flattenComponents(form.components)
-          .filter(
-            (component) =>
-              component.type === 'attachment' &&
-              component.properties?.vedleggskjema &&
-              coverPageData.attachments.includes(component.key),
-          );
+      const attachmentComponents = navFormUtils
+        .flattenComponents(form.components)
+        .filter(
+          (component) =>
+            component.type === 'attachment' &&
+            component.properties?.vedleggskjema &&
+            coverPageData.attachments.includes(component.key),
+        );
 
-        for (const component of attachmentComponents) {
-          if (component.properties?.vedleggskjema) {
+      for (const component of attachmentComponents) {
+        if (component.properties?.vedleggskjema) {
+          try {
             const attachmentStaticPdf = await staticPdfService.downloadPdf({
               baseUrl: formsApiUrl,
               formPath: component.properties?.vedleggskjema,
               languageCode,
             });
             attachmentStaticPdfs.push(attachmentStaticPdf);
-            logger.info(`Add attachments ${component.properties?.vedleggskjema} for static pdf ${formPath}.`);
+            logger.debug(`Add attachments ${component.properties?.vedleggskjema} for static pdf ${formPath}.`);
+          } catch (error) {
+            logger.warn(`Failed to add attachments for ${formPath} static pdf.`, error);
           }
         }
-      } catch (error) {
-        logger.warn(`Failed to add attachments for ${formPath} static pdf.`, error);
       }
 
       const pdf = await mergeFileService.mergeFiles({

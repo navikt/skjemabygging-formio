@@ -49,7 +49,7 @@ interface RecipientAddressType {
 
 type RecipientType = RecipientNavUnitType | RecipientAddressType;
 
-interface CoverPageType {
+interface CoverPageDownloadType {
   type?: ForstesideType;
   languageCode: TranslationLang;
   form: Pick<Form, 'title' | 'skjemanummer' | 'properties'>;
@@ -58,4 +58,4 @@ interface CoverPageType {
   attachments: string[];
 }
 
-export type { CoverPageType };
+export type { CoverPageDownloadType };

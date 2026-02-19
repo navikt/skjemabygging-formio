@@ -1,5 +1,5 @@
 import { Alert, Heading, List } from '@navikt/ds-react';
-import { CoverPageType, dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { CoverPageDownloadType, dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import DownloadPdfButton from '../../components/button/DownloadPdfButton';
 import { useForm } from '../../context/form/FormContext';
@@ -19,7 +19,7 @@ const StaticPdfDownloadPage = () => {
   const { downloadCoverPageAndFile } = useStaticPdf();
   const [status, setStatus] = useState<DownloadState | undefined>();
 
-  const coverPageData = submission?.data.coverPage as unknown as CoverPageType;
+  const coverPageData = submission?.data.coverPage as unknown as CoverPageDownloadType;
   const fileName = `${form.path}-${coverPageData.languageCode}-${dateUtils.toLocaleDate().replace(/\./g, '')}.pdf`;
 
   const handleError = () => {

@@ -13,11 +13,11 @@ const convertToFormsApiTranslationMap = (translations: FormsApiTranslation[]) =>
   }, {});
 };
 
-interface GetFormTranslationsType {
+interface GetFormTranslationsProps {
   baseUrl: string;
   formPath: string;
 }
-const getFormTranslations = async (props: GetFormTranslationsType) => {
+const getFormTranslations = async (props: GetFormTranslationsProps) => {
   const { baseUrl, formPath } = props;
 
   const translations = await translationApiService.getFormTranslations({
@@ -32,10 +32,10 @@ const getFormTranslations = async (props: GetFormTranslationsType) => {
   return convertToFormsApiTranslationMap(translations);
 };
 
-interface GetGlobalTranslationsType {
+interface GetGlobalTranslationsProps {
   baseUrl: string;
 }
-const getGlobalTranslations = async (props: GetGlobalTranslationsType) => {
+const getGlobalTranslations = async (props: GetGlobalTranslationsProps) => {
   const { baseUrl } = props;
 
   const translations = await translationApiService.getGlobalTranslations({
@@ -49,11 +49,11 @@ const getGlobalTranslations = async (props: GetGlobalTranslationsType) => {
   return convertToFormsApiTranslationMap(translations);
 };
 
-interface GetTranslationsType {
+interface GetTranslationsProps {
   baseUrl: string;
   formPath: string;
 }
-const getTranslations = async (props: GetTranslationsType) => {
+const getTranslations = async (props: GetTranslationsProps) => {
   const { baseUrl, formPath } = props;
 
   const translations = await Promise.all([
@@ -69,12 +69,12 @@ const getTranslations = async (props: GetTranslationsType) => {
   return { ...translations[0], ...translations[1] };
 };
 
-interface CreateTranslationsType {
+interface CreateTranslationsProps {
   baseUrl: string;
   formPath: string;
   languageCode: TranslationLang;
 }
-const createTranslate = async (props: CreateTranslationsType) => {
+const createTranslate = async (props: CreateTranslationsProps) => {
   const { baseUrl, formPath, languageCode } = props;
   const translations = await getTranslations({
     baseUrl,
