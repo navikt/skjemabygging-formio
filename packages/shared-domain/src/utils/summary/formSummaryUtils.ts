@@ -6,7 +6,7 @@ import { attachmentUtils } from '../attachment';
 import { currencyUtils } from '../currency';
 import { dataFetcherUtils } from '../data-fetcher';
 import { dateUtils } from '../date';
-import { formatUtils, orgNrRegex } from '../format';
+import { bankAccountRegex, formatUtils, orgNrRegex } from '../format';
 import { navFormioUtils } from '../formio';
 import sanitizeJavascriptCode from '../formio/sanitizeJavascriptCode';
 import { numberUtils } from '../number';
@@ -84,7 +84,7 @@ function formatValue(component, value, translate, form, language, opts = {}) {
       });
     case 'bankAccount': {
       const [bankAccountMatch, ...bankAccountGroups] =
-        (typeof value === 'string' && value?.match(formatUtils.bankAccountRegex)) || [];
+        (typeof value === 'string' && value?.match(bankAccountRegex)) || [];
       if (bankAccountMatch) {
         return bankAccountGroups.join(' ');
       }

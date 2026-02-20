@@ -17,7 +17,7 @@ const flatten = (nestedObject, withValueAsKey = false) =>
   ).reduce(addToMap, {});
 
 function isObject(item) {
-  return item && typeof item === 'object' && !Array.isArray(item);
+  return !!(item && typeof item === 'object' && !Array.isArray(item));
 }
 
 function deepMerge(objectA = {}, objectB = {}) {

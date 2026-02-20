@@ -98,11 +98,11 @@ const UtilsOverrides = {
   data,
 };
 
-if (typeof global === 'object' && global.NavFormioUtils) {
+if (typeof global === 'object' && global.FormioUtils) {
   Object.entries(UtilsOverrides).forEach(([key, value]) => {
     Utils[key] = value;
     // FormioUtils is set on global scope by Formio if global is object
-    global.NavFormioUtils[key] = value;
+    global.FormioUtils[key] = value;
   });
 }
 

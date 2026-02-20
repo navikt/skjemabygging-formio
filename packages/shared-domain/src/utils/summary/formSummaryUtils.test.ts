@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { navFormUtils } from '../form';
 import { formSummaryUtils } from './formSummaryUtils';
-import mockedComponentObjectForTest from './mockedComponentObjectForTest';
+import { mockedComponentObjectForTest } from './mockedComponentObjectForTest';
 import datoISkjemagruppeIDatagrid from './testdata/datovelger-skjemagruppe-datagrid';
 import testformCustomConditional from './testdata/form-alertstripe-cusom-conditional';
 import testformContainerConditional from './testdata/form-container-conditional';
