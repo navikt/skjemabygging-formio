@@ -1,17 +1,15 @@
-import { Component, NavFormType, Submission, SubmissionData } from '../../model/form';
-import { Recipient } from '../../model/recipient/Recipient';
-import SubmissionYourInformation from '../../model/submission/yourInformation';
-import { genererAdresse, genererPersonalia } from './forstesideDepricatedUtils';
 import {
-  genererFoerstesideData,
-  getAttachmentLabels,
-  getAttachments,
-  getAttachmentTitles,
-  getRecipients,
-  getTitle,
-  getUserData,
-} from './forstesideUtils';
-import { ForstesideRequestBody } from './index';
+  Component,
+  ForstesideRequestBody,
+  NavFormType,
+  Recipient,
+  Submission,
+  SubmissionData,
+  SubmissionYourInformation,
+} from '../../models';
+
+import { genererAdresse, genererPersonalia } from './forstesideDepricatedUtils';
+import { forstesideUtils } from './forstesideUtils';
 
 const genererVedleggComponent = (key, label, vedleggskode, vedleggstittel) => ({
   label,
@@ -113,7 +111,7 @@ describe('forsteside', () => {
     } as unknown as NavFormType;
 
     it('returns user if we have identitynumber', () => {
-      const data = getUserData(defaultForm, {
+      const data = forstesideUtils.getUserData(defaultForm, {
         dineOpplysninger: {
           identitet: {
             identitetsnummer: '12345678911',
@@ -129,7 +127,7 @@ describe('forsteside', () => {
     });
 
     it('returns ukjentBruker if we do not have identitynumber', () => {
-      const data = getUserData(defaultForm, {
+      const data = forstesideUtils.getUserData(defaultForm, {
         dineOpplysninger: {
           fornavn: 'Test',
           etternavn: 'Testesen',
@@ -149,7 +147,7 @@ describe('forsteside', () => {
     });
 
     it('returns user if we have identitynumber on second container with yourInformation', () => {
-      const data = getUserData(defaultForm, {
+      const data = forstesideUtils.getUserData(defaultForm, {
         dineOpplysninger2: {
           identitet: {
             identitetsnummer: '12345678911',
@@ -167,14 +165,14 @@ describe('forsteside', () => {
 
   describe('genererSkjemaTittel', () => {
     it('generates correct skjemaTittel', () => {
-      const actual = getTitle('Registreringsskjema for tilskudd til utdanning', 'NAV 76-07.10');
+      const actual = forstesideUtils.getTitle('Registreringsskjema for tilskudd til utdanning', 'NAV 76-07.10');
       expect(actual).toBe('NAV 76-07.10 Registreringsskjema for tilskudd til utdanning');
     });
   });
 
   describe('getVedleggsFelterSomSkalSendes', () => {
     it('adds all vedlegg which are set as leggerVedNaa', () => {
-      const actual = getAttachments(
+      const actual = forstesideUtils.getAttachments(
         {
           data: {
             vedleggQ7: 'leggerVedNaa',
@@ -187,7 +185,7 @@ describe('forsteside', () => {
     });
 
     it('does not add vedlegg which should not be submitted now', () => {
-      const actual = getAttachments(
+      const actual = forstesideUtils.getAttachments(
         {
           data: {
             vedleggQ7: 'levertTidligere',
@@ -200,7 +198,7 @@ describe('forsteside', () => {
     });
 
     it('handles several vedlegg with the same vedleggskode', () => {
-      const actual = getAttachments(
+      const actual = forstesideUtils.getAttachments(
         {
           data: {
             vedlegg1: 'leggerVedNaa',
@@ -221,7 +219,7 @@ describe('forsteside', () => {
 
     describe('handles new attachment type', () => {
       it('onlye leggerVedNaa should be included', () => {
-        const actual = getAttachments(
+        const actual = forstesideUtils.getAttachments(
           {
             data: {
               vedlegg1: {
@@ -266,7 +264,7 @@ describe('forsteside', () => {
 
   describe('genererVedleggsListe', () => {
     it('generates correct vedleggsListe', () => {
-      const actual = getAttachmentTitles(formMedVedlegg, {
+      const actual = forstesideUtils.getAttachmentTitles(formMedVedlegg, {
         data: { vedleggQ7: 'leggerVedNaa', vedleggO9: 'leggerVedNaa' },
       });
       expect(actual).toEqual([
@@ -276,14 +274,14 @@ describe('forsteside', () => {
     });
 
     it('handles correctly when no vedlegg will be submitted', () => {
-      const actual = getAttachmentTitles(formMedVedlegg, { data: { vedleggQ7: 'ettersender' } });
+      const actual = forstesideUtils.getAttachmentTitles(formMedVedlegg, { data: { vedleggQ7: 'ettersender' } });
       expect(actual).toEqual([]);
     });
   });
 
   describe('genererDokumentListeFoersteside', () => {
     it('generates correct dokumentListeFoersteside', () => {
-      const actual = getAttachmentLabels(formMedVedlegg, {
+      const actual = forstesideUtils.getAttachmentLabels(formMedVedlegg, {
         data: {
           vedleggQ7: 'leggerVedNaa',
           vedleggO9: 'leggerVedNaa',
@@ -347,12 +345,12 @@ describe('forsteside', () => {
 
   describe('genererMottaksAdresse', () => {
     it('returns default netsPostboks if neither mottaksadresseId or enhet is provided', () => {
-      expect(getRecipients(undefined, [])).toStrictEqual({ netsPostboks: '1400' });
+      expect(forstesideUtils.getRecipients(undefined, [])).toStrictEqual({ netsPostboks: '1400' });
     });
 
     it('finds and returns the correct mottaksadresse when mottaksadresseId and mottaksadresser is provided', () => {
       expect(
-        getRecipients('002', [
+        forstesideUtils.getRecipients('002', [
           { recipientId: '001', name: 'Gate 1', poBoxAddress: 'PB 123', postalCode: '0001', postalName: 'By' },
           {
             recipientId: '002',
@@ -375,14 +373,17 @@ describe('forsteside', () => {
 
     it("returns default netsPostboks if mottaksadresseId doesn't match any of the provided mottaksadresse", () => {
       expect(
-        getRecipients('123', [
+        forstesideUtils.getRecipients('123', [
           { recipientId: '001', name: 'Gate 1', poBoxAddress: 'PB 1', postalCode: '0001', postalName: 'By' },
         ] as Recipient[]),
       ).toStrictEqual({ netsPostboks: '1400' });
     });
 
     it('returns enhetsnummer and default netsPostboks if mottaksadresseId is undefined and enhetsnummer is provided', () => {
-      expect(getRecipients(undefined, [], '123')).toStrictEqual({ enhetsnummer: '123', netsPostboks: '1400' });
+      expect(forstesideUtils.getRecipients(undefined, [], '123')).toStrictEqual({
+        enhetsnummer: '123',
+        netsPostboks: '1400',
+      });
     });
   });
 
@@ -398,7 +399,7 @@ describe('forsteside', () => {
     } as unknown as NavFormType;
 
     it('correctly generates foersteside data', () => {
-      const actual = genererFoerstesideData(
+      const actual = forstesideUtils.genererFoerstesideData(
         {
           ...formMedVedlegg,
           properties: { skjemanummer: 'NAV 76-07.10', tema: 'OPP' },
@@ -448,27 +449,27 @@ describe('forsteside', () => {
       } as Submission;
 
       it('Bokmål brukes dersom språk ikke er valgt', () => {
-        const forstesideRequest = genererFoerstesideData(defaultForm, defaultSubmission, undefined);
+        const forstesideRequest = forstesideUtils.genererFoerstesideData(defaultForm, defaultSubmission, undefined);
         expect(forstesideRequest.spraakkode).toBe('NB');
       });
 
       it("Bokmål brukes dersom 'nb-NO' er valgt", () => {
-        const forstesideRequest = genererFoerstesideData(defaultForm, defaultSubmission, 'nb-NO');
+        const forstesideRequest = forstesideUtils.genererFoerstesideData(defaultForm, defaultSubmission, 'nb-NO');
         expect(forstesideRequest.spraakkode).toBe('NB');
       });
 
       it("Nynorsk brukes dersom 'nn-NO' er valgt", () => {
-        const forstesideRequest = genererFoerstesideData(defaultForm, defaultSubmission, 'nn-NO');
+        const forstesideRequest = forstesideUtils.genererFoerstesideData(defaultForm, defaultSubmission, 'nn-NO');
         expect(forstesideRequest.spraakkode).toBe('NN');
       });
 
       it("Engelsk brukes dersom 'en' er valgt", () => {
-        const forstesideRequest = genererFoerstesideData(defaultForm, defaultSubmission, 'en');
+        const forstesideRequest = forstesideUtils.genererFoerstesideData(defaultForm, defaultSubmission, 'en');
         expect(forstesideRequest.spraakkode).toBe('EN');
       });
 
       it('Engelsk brukes dersom et annet språk er valgt', () => {
-        const forstesideRequest = genererFoerstesideData(defaultForm, defaultSubmission, 'pl');
+        const forstesideRequest = forstesideUtils.genererFoerstesideData(defaultForm, defaultSubmission, 'pl');
         expect(forstesideRequest.spraakkode).toBe('EN');
       });
     });
@@ -491,7 +492,7 @@ describe('forsteside', () => {
               gateadresseSoker: 'Flåklypatoppen 1',
             },
           };
-          const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
+          const forsteside: ForstesideRequestBody = forstesideUtils.genererFoerstesideData(defaultForm, submission);
           expect(forsteside.ukjentBrukerPersoninfo).toBe('Solan Gundersen, Flåklypatoppen 1, 3520 Jevnaker, Norge.');
         });
 
@@ -503,7 +504,7 @@ describe('forsteside', () => {
               fodselsnummerDNummerArbeidstaker: '12345678911',
             },
           };
-          const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
+          const forsteside: ForstesideRequestBody = forstesideUtils.genererFoerstesideData(defaultForm, submission);
           expect(forsteside.ukjentBrukerPersoninfo).toBe('');
         });
 
@@ -517,7 +518,7 @@ describe('forsteside', () => {
               },
             },
           };
-          const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
+          const forsteside: ForstesideRequestBody = forstesideUtils.genererFoerstesideData(defaultForm, submission);
           expect(forsteside.ukjentBrukerPersoninfo).toBe('Solan Gundersen, Flåklypatoppen 1, 3520 Jevnaker, Norge.');
         });
 
@@ -532,7 +533,7 @@ describe('forsteside', () => {
               },
             },
           };
-          const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
+          const forsteside: ForstesideRequestBody = forstesideUtils.genererFoerstesideData(defaultForm, submission);
           expect(forsteside.ukjentBrukerPersoninfo).toBe(
             'Solan Gundersen, c/o Reodor Felgen, Flåklypatoppen 1, 3520 Jevnaker, Norge.',
           );
@@ -553,7 +554,7 @@ describe('forsteside', () => {
               },
             },
           };
-          const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
+          const forsteside: ForstesideRequestBody = forstesideUtils.genererFoerstesideData(defaultForm, submission);
           expect(forsteside.ukjentBrukerPersoninfo).toBe(
             'Solan Gundersen, c/o Reodor Felgen, Postboks 55 Toppen, 3520 Jevnaker, Norge.',
           );
@@ -572,7 +573,7 @@ describe('forsteside', () => {
               },
             },
           };
-          const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
+          const forsteside: ForstesideRequestBody = forstesideUtils.genererFoerstesideData(defaultForm, submission);
           expect(forsteside.ukjentBrukerPersoninfo).toBe('Solan Gundersen, Postboks 55 Toppen, 3520 Jevnaker, Norge.');
         });
       });
@@ -594,7 +595,7 @@ describe('forsteside', () => {
               },
             },
           };
-          const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
+          const forsteside: ForstesideRequestBody = forstesideUtils.genererFoerstesideData(defaultForm, submission);
           expect(forsteside.ukjentBrukerPersoninfo).toBe(
             'Solan Gundersen, 12603 Denmark Drive, Apt.556, VA 22071-9945 Herndon, USA.',
           );
@@ -616,7 +617,7 @@ describe('forsteside', () => {
               },
             },
           };
-          const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
+          const forsteside: ForstesideRequestBody = forstesideUtils.genererFoerstesideData(defaultForm, submission);
           expect(forsteside.ukjentBrukerPersoninfo).toBe(
             'Solan Gundersen, c/o Bart Simpson, 12603 Denmark Drive, Apt.556, VA 22071-9945 Herndon, USA.',
           );
@@ -638,7 +639,7 @@ describe('forsteside', () => {
               },
             },
           };
-          const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
+          const forsteside: ForstesideRequestBody = forstesideUtils.genererFoerstesideData(defaultForm, submission);
           expect(forsteside.ukjentBrukerPersoninfo).toBe(
             'Solan Gundersen, 12603 Denmark Drive, Apt.556, VA 22071-9945 Herndon, Dulles, USA.',
           );

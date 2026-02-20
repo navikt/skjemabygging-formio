@@ -1,5 +1,5 @@
+import { FormsResponseForm } from '@navikt/skjemadigitalisering-shared-domain';
 import { Request, Response } from 'express';
-import { FormsResponseForm } from '../../../../../shared-domain/src/model/form';
 import { formService } from '../../../services';
 
 const mapForm = (form): FormsResponseForm => ({

@@ -1,0 +1,55 @@
+import { I18nTranslationMap, I18nTranslationReplacements, I18nTranslations } from '../../models';
+import { Tkey } from '../../texts';
+import { localizationUtils } from './localizationUtils';
+
+const translateWithTextReplacements = ({
+  textOrKey = '',
+  params,
+  translations = {},
+  currentLanguage = 'nb-NO',
+}: {
+  textOrKey: string | Tkey;
+  params?: I18nTranslationReplacements;
+  translations?: I18nTranslations | I18nTranslationMap;
+  currentLanguage?: string;
+}) => {
+  const currentTranslation =
+    currentLanguage && translations?.[currentLanguage] ? translations?.[currentLanguage] : translations;
+
+  return currentTranslation && currentTranslation[textOrKey]
+    ? injectParams(currentTranslation[textOrKey], params, translations, currentLanguage)
+    : injectParams(textOrKey, params, translations, currentLanguage);
+};
+
+const injectParams = (
+  template: string | number,
+  params?: I18nTranslationReplacements,
+  translations?: I18nTranslations | I18nTranslationMap,
+  currentLanguage?: string,
+) => {
+  if (template && params && typeof template === 'string') {
+    return template.replace(
+      /{{2}([^{}]+)}{2}/g,
+      (match, $1) => translateWithTextReplacements({ textOrKey: params[$1], translations, currentLanguage }) || match,
+    );
+  }
+  return template;
+};
+
+const createTranslate = (translations: I18nTranslationMap, language: string) => {
+  const languageCode = localizationUtils.getLanguageCodeAsIso639_1(language.toLowerCase());
+
+  return (text: string, textReplacements?: I18nTranslationReplacements) =>
+    translateWithTextReplacements({
+      translations,
+      textOrKey: text,
+      params: textReplacements,
+      currentLanguage: languageCode,
+    });
+};
+
+const translationUtils = {
+  translateWithTextReplacements,
+  createTranslate,
+};
+export { translationUtils };

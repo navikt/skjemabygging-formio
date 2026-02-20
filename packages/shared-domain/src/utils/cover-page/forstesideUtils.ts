@@ -1,10 +1,17 @@
-import { ForstesideRecipientAddress, ForstesideRequestBody, KjentBruker, UkjentBruker } from '../../model/cover-page';
-import { NavFormType, Submission, SubmissionData } from '../../model/form';
-import { Recipient } from '../../model/recipient/Recipient';
-import { SubmissionAttachmentValue } from '../attachment';
-import { I18nTranslationReplacements } from '../languages/types';
-import navFormUtils from '../navFormUtils';
-import yourInformationUtils from '../yourInformationUtils';
+import {
+  ForstesideRecipientAddress,
+  ForstesideRequestBody,
+  I18nTranslationReplacements,
+  KjentBruker,
+  NavFormType,
+  Recipient,
+  Submission,
+  SubmissionAttachmentValue,
+  SubmissionData,
+  UkjentBruker,
+} from '../../models';
+import { navFormUtils } from '../form';
+import { yourInformationUtils } from '../submission';
 import { genererPersonalia } from './forstesideDepricatedUtils';
 
 type BrukerInfo = KjentBruker | UkjentBruker;
@@ -155,7 +162,7 @@ const genererFoerstesideData = (
   };
 };
 
-export {
+const forstesideUtils = {
   genererFoerstesideData,
   getAttachmentLabels,
   getAttachments,
@@ -165,3 +172,5 @@ export {
   getUserData,
   parseLanguage,
 };
+
+export { forstesideUtils };

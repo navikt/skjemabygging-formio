@@ -1,4 +1,4 @@
-import { formatNationalIdentityNumber, removeAllSpaces } from '@navikt/skjemadigitalisering-shared-domain';
+import { formatUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { FocusEventHandler } from 'react';
 import { validateNationalIdentityNumber } from '../../../../components/identity/NationalIdentityNumberValidator';
 import BaseComponent from '../../base/BaseComponent';
@@ -59,18 +59,18 @@ export default class NationalIdentityNumber extends TextField {
 
   onBlur(): FocusEventHandler<HTMLInputElement> {
     return (event: React.FocusEvent<HTMLInputElement>) => {
-      const value = removeAllSpaces(event.currentTarget.value);
+      const value = formatUtils.removeAllSpaces(event.currentTarget.value);
       if (value !== '') {
-        super.setValueOnReactInstance(formatNationalIdentityNumber(value));
+        super.setValueOnReactInstance(formatUtils.formatNationalIdentityNumber(value));
       }
     };
   }
 
   getDisplayValue(): string {
-    return formatNationalIdentityNumber(super.getDisplayValue());
+    return formatUtils.formatNationalIdentityNumber(super.getDisplayValue());
   }
 
   handleChange(value: string) {
-    super.handleChange(removeAllSpaces(value));
+    super.handleChange(formatUtils.removeAllSpaces(value));
   }
 }

@@ -1,9 +1,4 @@
-import {
-  dateUtils,
-  formatNationalIdentityNumber,
-  SubmissionIdentity,
-  TEXTS,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { dateUtils, formatUtils, SubmissionIdentity, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
 const getIdentityLabel = (value: SubmissionIdentity) => {
   return value?.identitetsnummer ? TEXTS.statiske.identity.identityNumber : TEXTS.statiske.identity.yourBirthdate;
@@ -12,7 +7,7 @@ const getIdentityLabel = (value: SubmissionIdentity) => {
 const getIdentityValue = (value: SubmissionIdentity, format: boolean = true) => {
   return value?.identitetsnummer
     ? format
-      ? formatNationalIdentityNumber(value?.identitetsnummer)
+      ? formatUtils.formatNationalIdentityNumber(value?.identitetsnummer)
       : value?.identitetsnummer
     : value?.fodselsdato
       ? dateUtils.toLocaleDate(value?.fodselsdato)

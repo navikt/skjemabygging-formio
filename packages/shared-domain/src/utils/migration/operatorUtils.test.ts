@@ -1,4 +1,4 @@
-import { Operator } from './operator';
+import { Operator } from '../../models';
 import { combinePropAndOperator, getPropAndOperatorFromKey } from './operatorUtils';
 
 describe('operatorUtils', () => {

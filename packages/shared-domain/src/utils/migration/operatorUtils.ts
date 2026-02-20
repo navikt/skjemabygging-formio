@@ -1,4 +1,4 @@
-import { Operator, operators, unaryOperators } from './operator';
+import { Operator, operators, unaryOperators } from '../../models';
 
 export const isUnaryOperator = (operator: Operator) => unaryOperators.includes(operator);
 const isValidOperator = (operator: any): operator is Operator => operators.includes(operator);

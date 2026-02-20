@@ -349,6 +349,13 @@ export const statiske = {
     selectDefault: 'Velg enhet',
     fetchError: 'En feil har oppstått. Vi kunne ikke laste enheter. Beklager ulempen, prøv igjen senere.',
   },
+  pdf: {
+    placeAndDate: 'Sted og dato',
+    signature: 'Underskrift',
+    signatureName: 'Navn med blokkbokstaver',
+    formCreated: 'Skjemaet ble opprettet',
+    formVersion: 'Skjemaversjon',
+  },
   staticPdf: {
     languageError: 'Skjemaet er kun tilgjengelig på {{language}}',
     selectLanguage: 'Velg hvilket språk du ønsker at skjemaet skal ha',
@@ -361,4 +368,5 @@ export const statiske = {
       step4: 'Legg dokumentene i en konvolutt som du sender i posten til adressen som står på førstesiden.',
     },
   },
+  loading: 'Laster',
 };

@@ -1,6 +1,4 @@
-import { GlobalTranslationsResourceContent } from '../../model/resource/published';
-import { TranslationResource } from '../languages/types';
-import { PublishedTranslations } from '../translations/FormsApiTranslation';
+import { GlobalTranslationsResourceContent, PublishedTranslations, TranslationResource } from '../../models';
 
 const populateWithScope = (
   translationRecord: Record<string, string>,

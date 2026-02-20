@@ -1,6 +1,7 @@
 import common from './common';
+import externalStorageTexts from './externalStorage';
+import { TElement, Tkey } from './externalStorage/keys';
 import { grensesnitt } from './grensesnitt';
-import { pdfStatiske } from './pdfStatiskeTekster';
 import { statiske } from './statiskeTekster';
 import { validering } from './validering';
 
@@ -9,6 +10,8 @@ const TEXTS = {
   grensesnitt,
   statiske,
   validering,
-  pdfStatiske,
 };
-export default TEXTS;
+
+export { externalStorageTexts, TEXTS };
+
+export type { TElement, Tkey };

@@ -1,4 +1,4 @@
-import { formatAccountNumber, removeAllSpaces, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { formatUtils, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { FocusEventHandler } from 'react';
 import BaseComponent from '../../base/BaseComponent';
 import TextField from '../../core/textfield/TextField';
@@ -34,19 +34,19 @@ class AccountNumber extends TextField {
 
   onBlur(): FocusEventHandler<HTMLInputElement> {
     return (event: React.FocusEvent<HTMLInputElement>) => {
-      const value = removeAllSpaces(event.currentTarget.value);
+      const value = formatUtils.removeAllSpaces(event.currentTarget.value);
       if (value !== '') {
-        super.setValueOnReactInstance(formatAccountNumber(value));
+        super.setValueOnReactInstance(formatUtils.formatAccountNumber(value));
       }
     };
   }
 
   getDisplayValue(): string {
-    return formatAccountNumber(super.getDisplayValue());
+    return formatUtils.formatAccountNumber(super.getDisplayValue());
   }
 
   handleChange(value: string) {
-    super.handleChange(removeAllSpaces(value));
+    super.handleChange(formatUtils.removeAllSpaces(value));
   }
 }
 
