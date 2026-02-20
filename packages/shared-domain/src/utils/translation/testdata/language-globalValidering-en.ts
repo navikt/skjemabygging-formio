@@ -1,3 +1,4 @@
+// noinspection JSNonASCIINames
 const dbEntity = {
   _id: '6183ff2454676700031b7cff',
   owner: '5f896c4afaa0860003a2bc39',

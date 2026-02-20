@@ -1,3 +1,4 @@
+// noinspection JSNonASCIINames
 const nnNO = {
   'nn-NO': [
     {
