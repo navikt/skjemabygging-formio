@@ -1,7 +1,7 @@
 import { ErrorCode, ErrorResponse, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import correlator from 'express-correlation-id';
-import { logger } from '../../services/logger/logger';
+import { logger } from '../../shared/logger/logger';
 
 const createErrorResponse = (error: any): ErrorResponse => {
   return {
@@ -35,7 +35,10 @@ const errorHandler = (error: any, _req: Request, res: Response, _next: NextFunct
   const errorResponse = createErrorResponse(error);
 
   if (errorResponse.errorCode === 'ERROR' || errorResponse.errorCode === 'INTERNAL_SERVER_ERROR') {
-    logger.error(errorResponse);
+    logger.error({
+      ...errorResponse,
+      stackTrace: error.stack,
+    });
     res.locals = res.locals || {};
     res.locals.errorAlreadyLogged = true;
   } else {

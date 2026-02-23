@@ -1,9 +1,10 @@
 import { TextField } from '@navikt/ds-react';
 import { ChangeEvent, useEffect, useRef } from 'react';
-import { useAppConfig } from '../../../../context/config/configContext';
-import { useForm } from '../../../../context/form/FormContext';
-import { useInputValidation, Validators } from '../../../../context/validator/InputValidationContext';
-import formComponentUtils from '../../../../form-components/utils/formComponent';
+import { useAppConfig } from '../../../../../context/config/configContext';
+import { useForm } from '../../../../../context/form/FormContext';
+import { useInputValidation, Validators } from '../../../../../context/validator/InputValidationContext';
+import formComponentUtils from '../../../../../form-components/utils/formComponent';
+import { FormInputWidth, useFormInputStyles } from '../formStylingUtil';
 import FormBox, { FormBoxProps } from './FormBox';
 import TranslatedDescription from './TranslatedDescription';
 import TranslatedLabel from './TranslatedLabel';
@@ -12,11 +13,12 @@ interface FormTextFieldProps extends FormBoxProps {
   submissionPath: string;
   label: string;
   description?: string;
-  validators?: Pick<Validators, 'required' | 'minLength' | 'maxLength'>;
+  validators?: Pick<Validators, 'required' | 'minLength' | 'maxLength' | 'nationalIdentityNumber'>;
   onChange?: (value: string) => void;
   readOnly?: boolean;
   error?: string;
   autoComplete?: string;
+  width?: FormInputWidth;
 }
 
 const FormTextField = (props: FormTextFieldProps) => {
@@ -26,7 +28,7 @@ const FormTextField = (props: FormTextFieldProps) => {
     description,
     validators,
     bottom = 'space-32',
-    inputWidth,
+    width = 'input--xl',
     onChange,
     readOnly,
     error,
@@ -35,7 +37,8 @@ const FormTextField = (props: FormTextFieldProps) => {
   const { logger } = useAppConfig();
   const { updateSubmission, submission } = useForm();
   const { addValidation, removeValidation, getRefError } = useInputValidation();
-  const { required, minLength, maxLength } = validators || { required: true };
+  const { required, minLength, maxLength, nationalIdentityNumber } = validators || { required: true };
+  const styles = useFormInputStyles();
 
   const ref = useRef(null);
 
@@ -44,23 +47,35 @@ const FormTextField = (props: FormTextFieldProps) => {
 
     if (onChange) {
       onChange(value);
+    } else {
+      updateSubmission(submissionPath, value);
     }
-
-    updateSubmission(submissionPath, value);
   };
 
   useEffect(() => {
     logger?.debug(`Add validation for ${submissionPath}`);
-    addValidation(submissionPath, ref, { required, minLength, maxLength }, label);
+    addValidation(submissionPath, ref, { required, minLength, maxLength, nationalIdentityNumber }, label);
     return () => {
       logger?.debug(`Remove validation for ${submissionPath}`);
       removeValidation(submissionPath);
     };
-  }, [logger, addValidation, removeValidation, submissionPath, ref, label, required, minLength, maxLength]);
+  }, [
+    logger,
+    addValidation,
+    removeValidation,
+    submissionPath,
+    ref,
+    label,
+    required,
+    minLength,
+    maxLength,
+    nationalIdentityNumber,
+  ]);
 
   return (
-    <FormBox inputWidth={inputWidth} bottom={bottom}>
+    <FormBox bottom={bottom}>
       <TextField
+        className={styles[width]}
         label={<TranslatedLabel options={{ required, readOnly: readOnly }}>{label}</TranslatedLabel>}
         description={<TranslatedDescription>{description}</TranslatedDescription>}
         onChange={handleChange}

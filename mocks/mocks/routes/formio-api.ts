@@ -76,6 +76,7 @@ import {
   simpleConditionalForm,
   simpleConditionalTranslations,
 } from '../data/forms-api/components/simpleConditionalForm';
+import { staticPdfForm, staticPdfTranslations } from '../data/forms-api/components/staticPdfForm';
 import { textFieldForm, textFieldTranslations } from '../data/forms-api/components/textFieldForm';
 import largeForm from '../data/forms-api/largeForm';
 
@@ -146,13 +147,14 @@ const allForms = [
   { form: largeForm(), translations: undefined },
   { form: conditionalRowForm(), translations: conditionalRowTranslations() },
   { form: simpleConditionalForm(), translations: simpleConditionalTranslations() },
+  { form: staticPdfForm(), translations: staticPdfTranslations() },
 ];
 
 const findTestdata = (formPath: string) => allForms.find((testdata) => testdata.form.path === formPath);
 
 export default [
   {
-    id: 'get-form',
+    id: 'get-form-deprecated',
     url: '/formio-api/form',
     method: 'GET',
     variants: [
@@ -162,12 +164,14 @@ export default [
         options: {
           middleware: (req: any, res: any) => {
             const formPath = req.query.path;
+            // Value just to handle redirect from forms-api mock.
+            const single = req.query.single;
             if (formPath) {
               const testdata = findTestdata(formPath);
               if (testdata) {
                 res.status(200);
                 res.contentType('application/json; charset=UTF-8');
-                res.send([testdata.form]);
+                res.send(single ? testdata.form : [testdata.form]);
               } else {
                 res.status(404);
                 res.send();
@@ -186,13 +190,15 @@ export default [
         options: {
           middleware: (req: any, res: any) => {
             const formPath = req.query.path;
+            // Value just to handle redirect from forms-api mock.
+            const single = req.query.single;
             if (formPath) {
               const testdata = findTestdata(formPath);
               const form = testdata?.formV2 ?? testdata?.form;
               if (form) {
                 res.status(200);
                 res.contentType('application/json; charset=UTF-8');
-                res.send([form]);
+                res.send(single ? form : [form]);
               } else {
                 res.status(404);
                 res.send();
@@ -208,7 +214,7 @@ export default [
     ],
   },
   {
-    id: 'get-translations',
+    id: 'get-translations-deprecated',
     url: '/formio-api/language/submission',
     method: 'GET',
     variants: [

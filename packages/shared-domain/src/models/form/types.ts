@@ -1,5 +1,5 @@
 export type DisplayType = 'wizard' | 'form';
-export type SubmissionType = 'PAPER' | 'DIGITAL' | 'DIGITAL_NO_LOGIN';
+export type SubmissionType = 'PAPER' | 'DIGITAL' | 'DIGITAL_NO_LOGIN' | 'STATIC_PDF';
 export type SubmissionMethod = 'paper' | 'digital' | 'digitalnologin';
 
 export enum DeclarationType {

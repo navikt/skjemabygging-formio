@@ -1,25 +1,12 @@
 import { Alert, Heading, List } from '@navikt/ds-react';
-import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { CoverPageDownloadType, dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import DownloadPdfButton from '../../components/button/DownloadPdfButton';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
-import FormBox from './components/shared/FormBox';
+import FormBox from './components/shared/form/FormBox';
+import FormStaticPdfLanguage from './components/shared/FormStaticPdfLanguage';
 import { useStaticPdf } from './StaticPdfContext';
-
-interface StaticPdfSubmissionData {
-  identityType: string;
-  nationalIdentityNumber: string;
-  firstName: string;
-  surname: string;
-  address: {
-    streetAddress: string;
-    postalCode: string;
-    postalName: string;
-    countryCode: string;
-  };
-  attachments?: string[];
-}
 
 interface DownloadState {
   message: string;
@@ -29,11 +16,11 @@ interface DownloadState {
 const StaticPdfDownloadPage = () => {
   const { translate } = useLanguages();
   const { submission, form } = useForm();
-  const { downloadFile } = useStaticPdf();
+  const { downloadCoverPageAndFile } = useStaticPdf();
   const [status, setStatus] = useState<DownloadState | undefined>();
 
-  const data: StaticPdfSubmissionData = submission?.data as unknown as StaticPdfSubmissionData;
-  const fileName = `${form.path}s-${dateUtils.toLocaleDate().replace(/\./g, '')}.pdf`;
+  const coverPageData = submission?.data.coverPage as unknown as CoverPageDownloadType;
+  const fileName = `${form.path}-${coverPageData.languageCode}-${dateUtils.toLocaleDate().replace(/\./g, '')}.pdf`;
 
   const handleError = () => {
     setStatus({
@@ -51,10 +38,11 @@ const StaticPdfDownloadPage = () => {
 
   return (
     <>
+      <FormStaticPdfLanguage submissionPath="coverPage.languageCode" languageCode={coverPageData.languageCode} />
       <FormBox bottom="space-32">
         <DownloadPdfButton
           fileName={fileName}
-          pdfContent={() => downloadFile('nb')}
+          pdfContent={() => downloadCoverPageAndFile(coverPageData)}
           onError={handleError}
           onSuccess={handleSuccess}
         >
@@ -73,7 +61,7 @@ const StaticPdfDownloadPage = () => {
         <List as="ol">
           <List.Item>{translate(TEXTS.statiske.staticPdf.instructions.step1)}</List.Item>
           <List.Item>{translate(TEXTS.statiske.staticPdf.instructions.step2)}</List.Item>
-          {data?.attachments && data?.attachments.length > 1 && (
+          {coverPageData?.attachments && coverPageData?.attachments.length > 1 && (
             <List.Item>{translate(TEXTS.statiske.staticPdf.instructions.step3)}</List.Item>
           )}
           <List.Item>{translate(TEXTS.statiske.staticPdf.instructions.step4)}</List.Item>

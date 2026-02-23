@@ -71,8 +71,6 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
     [setSubmission, setDeepValue],
   );
 
-  // ...existing code...
-
   useEffect(() => {
     const loadPrefillData = async (navForm: NavFormType) => {
       const prefillComponents = navFormUtils.findComponentsByProperty('prefillKey', navForm);

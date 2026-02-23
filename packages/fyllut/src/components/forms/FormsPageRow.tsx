@@ -18,7 +18,10 @@ const useStyles = makeStyles({
   },
 });
 
-const toSubParam = (submissionType: SubmissionType): string => `sub=${submissionTypesUtils.asMethod(submissionType)}`;
+const toSubParam = (submissionType: SubmissionType): string => {
+  const sub = submissionTypesUtils.asMethod(submissionType);
+  return sub ? `?sub=${sub}` : '';
+};
 
 const FormsPageRow = ({ form }: FormRowProps) => {
   const { config, baseUrl } = useAppConfig();
@@ -26,6 +29,7 @@ const FormsPageRow = ({ form }: FormRowProps) => {
   const paper = navFormUtils.isSubmissionMethodAllowed('paper', form);
   const digital = navFormUtils.isSubmissionMethodAllowed('digital', form);
   const ingen = submissionTypesUtils.isNoneSubmission(form.properties.submissionTypes);
+  const staticPdf = submissionTypesUtils.isStaticPdf(form.properties.submissionTypes);
   const noDigitalLogin = submissionTypesUtils.isDigitalNoLoginSubmission(form.properties.submissionTypes);
   const noDigitalLoginOnly = submissionTypesUtils.isDigitalNoLoginSubmissionOnly(form.properties.submissionTypes);
   const isDevelopment = config?.isDevelopment;
@@ -33,7 +37,7 @@ const FormsPageRow = ({ form }: FormRowProps) => {
   if (noDigitalLoginOnly) {
     skjemaPath += `/legitimasjon?${toSubParam('DIGITAL_NO_LOGIN')}`;
   } else if (form.properties.submissionTypes?.length === 1) {
-    skjemaPath += `?${toSubParam(form.properties.submissionTypes[0])}`;
+    skjemaPath += `${toSubParam(form.properties.submissionTypes[0])}`;
   }
 
   return (
@@ -71,6 +75,13 @@ const FormsPageRow = ({ form }: FormRowProps) => {
             {ingen && (
               <span>
                 [<a href={`/fyllut/${form.path}`}>ingen</a>]
+              </span>
+            )}
+          </td>
+          <td>
+            {staticPdf && (
+              <span>
+                [<a href={`/fyllut/${form.path}/pdf`}>pdf</a>]
               </span>
             )}
           </td>

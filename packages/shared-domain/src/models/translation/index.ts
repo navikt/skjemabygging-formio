@@ -1,7 +1,10 @@
+import { Tkey } from '../../texts';
+
 type TranslationLang = 'nb' | 'nn' | 'en';
-type FormsApiTranslation = {
+type FormsApiTranslationLanguages = {
   [key in TranslationLang]?: string;
-} & {
+};
+type FormsApiTranslation = FormsApiTranslationLanguages & {
   id?: number;
   key: string;
   revision?: number;
@@ -10,6 +13,10 @@ type FormsApiTranslation = {
   tag?: TranslationTag;
   globalTranslationId?: number; // only applicable for form translations
 };
+type FormsApiTranslationMap = {
+  [key: string]: FormsApiTranslationLanguages;
+};
+
 type PublishedTranslations = {
   publishedAt: string;
   publishedBy: string;
@@ -59,7 +66,7 @@ interface FormioTranslationPayload extends FormioResource {
   data: FormioTranslationData;
 }
 
-type TranslateFunction = (text?: string, textReplacements?: I18nTranslationReplacements) => string;
+type TranslateFunction = (text?: string | Tkey, textReplacements?: I18nTranslationReplacements) => string;
 
 export type {
   FormioTranslation,
@@ -67,6 +74,7 @@ export type {
   FormioTranslationMap,
   FormioTranslationPayload,
   FormsApiTranslation,
+  FormsApiTranslationMap,
   I18nTranslationMap,
   I18nTranslationReplacements,
   I18nTranslations,
