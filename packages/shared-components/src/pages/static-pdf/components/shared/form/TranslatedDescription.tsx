@@ -1,5 +1,5 @@
-import InnerHtml from '../../../../components/inner-html/InnerHtml';
-import { useLanguages } from '../../../../context/languages';
+import InnerHtml from '../../../../../components/inner-html/InnerHtml';
+import { useLanguages } from '../../../../../context/languages';
 
 type Props = {
   children?: string;

@@ -60,6 +60,7 @@ export function FormSettingsPage({ form }: FormSettingsPageProps) {
         formMenu: true,
         formPath: form.path,
       }}
+      form={form}
     >
       <TitleRowLayout>
         <Title subTitle={skjemanummer} lockedForm={isLockedForm}>

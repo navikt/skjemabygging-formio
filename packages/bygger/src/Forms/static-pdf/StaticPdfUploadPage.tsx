@@ -24,6 +24,7 @@ const StaticPdfUploadPage = ({ form }: Props) => {
         formMenu: true,
         formPath: path,
       }}
+      form={form}
     >
       <TitleRowLayout>
         <Title subTitle={skjemanummer}>{title}</Title>

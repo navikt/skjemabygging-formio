@@ -130,6 +130,7 @@ export default function FormIntroPage({ form }: { form: Form }) {
         formMenu: true,
         formPath: path,
       }}
+      form={form}
     >
       <TitleRowLayout>
         <Title subTitle={skjemanummer} lockedForm={isLockedForm}>

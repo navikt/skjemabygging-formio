@@ -2,9 +2,10 @@ import { TranslationTag } from '../languages/types';
 import dateUtils from '../utils/date';
 
 type TranslationLang = 'nb' | 'nn' | 'en';
-type FormsApiTranslation = {
+type FormsApiTranslationLanguages = {
   [key in TranslationLang]?: string;
-} & {
+};
+type FormsApiTranslation = FormsApiTranslationLanguages & {
   id?: number;
   key: string;
   revision?: number;
@@ -13,6 +14,10 @@ type FormsApiTranslation = {
   tag?: TranslationTag;
   globalTranslationId?: number; // only applicable for form translations
 };
+type FormsApiTranslationMap = {
+  [key: string]: FormsApiTranslationLanguages;
+};
+
 type PublishedTranslations = {
   publishedAt: string;
   publishedBy: string;
@@ -31,4 +36,4 @@ const findMostRecentlyChanged = (data: FormsApiTranslation[] | undefined): Forms
 
 const formsApiTranslations = { findMostRecentlyChanged };
 export { formsApiTranslations };
-export type { FormsApiTranslation, PublishedTranslations, TranslationLang };
+export type { FormsApiTranslation, FormsApiTranslationMap, PublishedTranslations, TranslationLang };

@@ -13,11 +13,10 @@ const attachment = (props: AttachmentType) => {
     ...staticDefaultValues,
     ...baseComponent({
       ...props,
-      label: (label ?? attachmentType === 'other') ? 'Annen dokumentasjon' : 'Vedlegg',
+      label: label ?? (attachmentType === 'other' ? 'Annen dokumentasjon' : 'Vedlegg'),
       description:
-        (description ?? attachmentType === 'other')
-          ? '<p>Har du noen annen dokumentasjon du ønsker å legge ved?</p>'
-          : '',
+        description ??
+        (attachmentType === 'other' ? '<p>Har du noen annen dokumentasjon du ønsker å legge ved?</p>' : ''),
     }),
     attachmentType,
     attachmentValues:

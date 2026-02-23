@@ -60,6 +60,7 @@ import forstesideUtils, {
   KjentBruker,
   UkjentBruker,
 } from './forsteside';
+import { CoverPageDownloadType } from './forsteside/coverPage';
 import type { ErrorCode, ErrorResponse } from './http';
 import { ResponseError } from './http';
 import languagesUtil from './languages/languagesUtil';
@@ -132,6 +133,7 @@ import externalStorageTexts, { TElement, Tkey } from './texts/externalStorage';
 import { Activity } from './tilleggsstonader/activity';
 import {
   FormsApiTranslation,
+  FormsApiTranslationMap,
   formsApiTranslations,
   PublishedTranslations,
   TranslationLang,
@@ -216,6 +218,7 @@ export type {
   ComponentError,
   ComponentValue,
   ConfigType,
+  CoverPageDownloadType,
   CustomLabels,
   DataFetcherComponent,
   DataFetcherData,
@@ -244,6 +247,7 @@ export type {
   FormPropertiesPublishing,
   FormPropertiesType,
   FormsApiTranslation,
+  FormsApiTranslationMap,
   FormSettingsDiff,
   FormSignaturesType,
   FormsResponseForm,

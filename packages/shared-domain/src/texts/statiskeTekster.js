@@ -350,7 +350,8 @@ export const statiske = {
     fetchError: 'En feil har oppstått. Vi kunne ikke laste enheter. Beklager ulempen, prøv igjen senere.',
   },
   staticPdf: {
-    languageError: 'Skjemaet er kun tilgjengelig på {{language}}',
+    languageError: 'Skjemaet er ikke tilgjengelig.',
+    selectLanguageMismatch: 'Skjemaet er kun tilgjengelig på {{language}}',
     selectLanguage: 'Velg hvilket språk du ønsker at skjemaet skal ha',
     selectLanguageDescription: 'Det er ikke sikkert at alle vedleggsskjemaene finnes på ditt valgte språk.',
     instructions: {
@@ -359,6 +360,13 @@ export const statiske = {
       step2: 'Legg førstesiden med strekkode på toppen av dokumentene.',
       step3: 'Legg ved alle vedlegg som er listet på førstesiden.',
       step4: 'Legg dokumentene i en konvolutt som du sender i posten til adressen som står på førstesiden.',
+    },
+    languages: {
+      en: 'Engelsk',
+      nb: 'Bokmål',
+      nn: 'Nynorsk',
+      se: 'Samisk',
+      fr: 'Fransk',
     },
   },
 };

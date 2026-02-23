@@ -8,6 +8,7 @@ type MimeType =
   | 'application/pdf'
   | 'application/octet-stream'
   | 'text/plain'
+  | 'text/html'
   | 'multipart/form-data';
 
 interface HttpOptions {
@@ -18,51 +19,43 @@ interface HttpOptions {
 }
 
 const get = async <T>(url: string, options?: HttpOptions): Promise<T> => {
+  logger.debug(`GET request to ${url}`);
   const response = await fetch(url, {
     method: 'GET',
-    headers: createHeaders({
-      contentType: 'application/json',
-      ...options,
-    }),
+    headers: createHeaders(defaultOptions(options)),
   });
 
   return handleResponse<T>(response);
 };
 
 const post = async <T>(url: string, body?: object, options?: HttpOptions): Promise<T> => {
+  logger.debug(`POST request to ${url}`);
   const response = await fetch(url, {
     method: 'POST',
-    headers: createHeaders({
-      contentType: 'application/json',
-      ...options,
-    }),
-    body: createBody(body, options),
+    headers: createHeaders(defaultOptions(options)),
+    body: createBody(body, defaultOptions(options)),
   });
 
   return handleResponse(response);
 };
 
 const put = async <T>(url: string, body?: object, options?: HttpOptions): Promise<T> => {
+  logger.debug(`PUT request to ${url}`);
   const response = await fetch(url, {
     method: 'PUT',
-    headers: createHeaders({
-      contentType: 'application/json',
-      ...options,
-    }),
-    body: createBody(body, options),
+    headers: createHeaders(defaultOptions(options)),
+    body: createBody(body, defaultOptions(options)),
   });
 
   return handleResponse(response);
 };
 
 const httpDelete = async <T>(url: string, body?: object, options?: HttpOptions): Promise<T> => {
+  logger.debug(`DELETE request to ${url}`);
   const response = await fetch(url, {
     method: 'DELETE',
-    headers: createHeaders({
-      contentType: 'application/json',
-      ...options,
-    }),
-    body: createBody(body, options),
+    headers: createHeaders(defaultOptions(options)),
+    body: createBody(body, defaultOptions(options)),
   });
 
   return handleResponse(response);
@@ -81,9 +74,11 @@ const createHeaders = (options?: HttpOptions): HeadersInit => {
 };
 
 const createBody = (body?: any, options?: HttpOptions): BodyInit | undefined => {
-  if (body) {
-    return options?.contentType === 'application/json' ? JSON.stringify(body) : body;
+  if (body && typeof body === 'object' && options?.contentType === 'application/json') {
+    return JSON.stringify(body);
   }
+
+  return body;
 };
 
 const isResponseType = (response: Response, mimeType: MimeType) => {
@@ -94,11 +89,21 @@ const stringToBase64 = (str: any) => {
   return Buffer.from(str).toString('base64');
 };
 
+const defaultOptions = (options?: HttpOptions): HttpOptions => ({
+  contentType: 'application/json',
+  ...options,
+});
+
 const handleBody = async (response: Response) => {
   try {
+    // TODO fjern når riktig header på merge kallet
+    if (response.url.includes('merge')) {
+      return stringToBase64(await response.arrayBuffer());
+    }
+
     if (isResponseType(response, 'application/json')) {
       return await response.json();
-    } else if (isResponseType(response, 'text/plain')) {
+    } else if (isResponseType(response, 'text/plain') || isResponseType(response, 'text/html')) {
       return response.text();
     } else if (isResponseType(response, 'application/octet-stream')) {
       return stringToBase64(await response.arrayBuffer());
@@ -119,7 +124,6 @@ const handleResponse = async <T>(response: Response): Promise<T> => {
   const error = new HttpResponseError(getErrorCode(response.status), response.statusText, errorBody);
 
   logger.warn(`Http request to ${response.url} failed with status ${response.status}`, {
-    correlation_id: correlator.getId(),
     body: errorBody,
   });
 

@@ -1,4 +1,4 @@
-import { StaticPdf } from '@navikt/skjemadigitalisering-shared-domain';
+import { CoverPageDownloadType, StaticPdf } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo } from 'react';
 import { b64toBlob, http as baseHttp, useAppConfig } from '../../index';
 
@@ -24,6 +24,11 @@ const useFormsApiStaticPdf = () => {
     return b64toBlob(response.pdfBase64, 'application/pdf');
   };
 
+  const downloadCoverPageAndPdf = async (formPath: string, coverPage: Omit<CoverPageDownloadType, 'form'>) => {
+    const response = await http.post<{ pdfBase64: string }>(getUrl(formPath, coverPage.languageCode), coverPage);
+    return b64toBlob(response.pdfBase64, 'application/pdf');
+  };
+
   const deletePdf = async (formPath: string, languageCode: string) => {
     return await http.delete(getUrl(formPath, languageCode));
   };
@@ -33,6 +38,7 @@ const useFormsApiStaticPdf = () => {
       getAll,
       uploadPdf,
       downloadPdf,
+      downloadCoverPageAndPdf,
       deletePdf,
     }),
     // Adding dependencies will cause unnecessary re-renders

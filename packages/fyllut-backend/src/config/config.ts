@@ -143,6 +143,7 @@ const localDevelopmentConfig: DefaultConfig = {
     jwtSecret: 'verysecret',
     tokenLifetimeHours: 1,
   },
+  skjemaDir: process.env.SKJEMA_DIR,
   teamLogsConfig,
 };
 
