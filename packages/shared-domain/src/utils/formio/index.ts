@@ -1,3 +1,1 @@
-import FormioUtils from './FormioUtils';
-
-export default FormioUtils;
+export * from './navFormioUtils';

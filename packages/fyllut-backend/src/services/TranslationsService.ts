@@ -4,7 +4,7 @@ import {
   FormsApiTranslation,
   I18nTranslations,
   Language,
-  languagesUtil,
+  languageUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import fetch from 'node-fetch';
 import { ConfigType } from '../config/types';
@@ -144,7 +144,7 @@ class TranslationsService {
     }
     const globalTranslations =
       (await fileUtil.loadJsonFileFromDirectory(resourcesDir, `global-translations-${lang}`)) ?? {};
-    return languagesUtil.flattenGlobalI18nGroupedByTag(globalTranslations);
+    return languageUtils.flattenGlobalI18nGroupedByTag(globalTranslations);
   }
 
   async getTranslationsForLanguage(formPath: string, lang: string): Promise<Record<string, string>> {

@@ -9,7 +9,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 
 interface TranslateProps {
-  textOrKey: string | Tkey;
+  textOrKey?: string | Tkey;
   params?: I18nTranslationReplacements;
   translations: FormsApiTranslationMap;
   currentLanguage: TranslationLang;
@@ -29,6 +29,10 @@ const translateWithTextReplacements = ({
 };
 
 const getTranslation = ({ textOrKey, translations, currentLanguage }: Omit<TranslateProps, 'params'>): string => {
+  if (!textOrKey) {
+    return '';
+  }
+
   const translation = translations[textOrKey];
 
   if (translation?.[currentLanguage]) {
@@ -43,7 +47,11 @@ const getTranslation = ({ textOrKey, translations, currentLanguage }: Omit<Trans
 };
 
 const injectParams = ({ textOrKey, params, translations, currentLanguage }: TranslateProps) => {
-  if (textOrKey && params) {
+  if (!textOrKey) {
+    return '';
+  }
+
+  if (params) {
     return textOrKey.replace(
       /{{2}([^{}]+)}{2}/g,
       (match, $1) => translateWithTextReplacements({ textOrKey: params[$1], translations, currentLanguage }) || match,
@@ -58,7 +66,7 @@ const createTranslate = (translations: FormsApiTranslationMap, languageCode: Tra
     throw new ResponseError('BAD_REQUEST', 'Missing required parameters for creating translate function');
   }
 
-  return (text: string | Tkey, textReplacements?: I18nTranslationReplacements) =>
+  return (text?: string | Tkey, textReplacements?: I18nTranslationReplacements) =>
     translateWithTextReplacements({
       translations,
       textOrKey: text,

@@ -1,8 +1,8 @@
-import { Form, FormsApiTranslation, MockedComponentObjectForTest } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, FormsApiTranslation, mockedComponentObjectForTest } from '@navikt/skjemadigitalisering-shared-domain';
 import { generateAndPopulateTranslationsForForm, generateUnsavedGlobalTranslations } from './editFormTranslationsUtils';
 
 const { createFormsApiFormObject, createPanelObject, createDummyTextfield, createDummySelectComponent } =
-  MockedComponentObjectForTest;
+  mockedComponentObjectForTest;
 
 describe('editFormTranslationsUtils', () => {
   let form: Form;
