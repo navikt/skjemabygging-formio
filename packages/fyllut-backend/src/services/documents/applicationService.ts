@@ -10,6 +10,21 @@ import { appMetrics } from '../index';
 
 const { familiePdfGeneratorUrl } = config;
 
+export const sanitizePdfFormData = (pdfFormData: string): string => {
+  return (
+    pdfFormData
+      // Remove scripts tags and all content inside them.
+      .replace(/<script[\s\S]*?<\/script>/gi, '')
+      // Remove some possible harmfull tags.
+      .replace(/<\/?\s*(img|svg|animateTransform|meta|object|embed|link|iframe|script)[^>]*>/gi, '')
+      // Remove <a> tags with href where hostname does not contain nav.no, keep inner text
+      .replace(/<a[^>]+href=["'](?!(https?:\/\/)?[^"'/]*nav\.no)[^"']*["'][^>]*>(.*?)<\/\s*a\s*>/gi, '$2')
+      // Remove <a> tags with no href or empty href (including whitespace)
+      .replace(/<a\s*((?!href=)[^>])*?>((.|\n)*?)<\/a>/gi, '$2')
+  );
+  // Remove <a> tags with no href or empty href (including whitespace)
+};
+
 const createFormPdf = async (accessToken: string, pdfFormData: string, logMeta: LogMetadata = {}) => {
   const familiePdfUrl = `${familiePdfGeneratorUrl}/api/pdf/v3/opprett-pdf`;
   logger.info(`Creating PDF, calling ${familiePdfUrl}`, logMeta);
