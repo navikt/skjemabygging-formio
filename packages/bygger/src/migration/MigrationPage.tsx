@@ -1,11 +1,12 @@
 import { Button, Heading, Pagination, ToggleGroup } from '@navikt/ds-react';
 import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
-import { Form, MigrationLevel, paginationUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, MigrationLevel } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo, useReducer, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
 import { FormMigrationLogData } from '../../types/migration';
 import UserFeedback from '../components/UserFeedback';
 import Column from '../components/layout/Column';
+import paginationUtils from '../utils/pagination';
 import { runMigrationDryRun, runMigrationWithUpdate } from './api';
 import BulkPublishPanel from './components/BulkPublishPanel';
 import ConfirmMigration from './components/ConfirmMigration';

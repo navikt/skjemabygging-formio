@@ -1,6 +1,6 @@
+import { submissionTypesUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
-import submissionTypesUtils from '../../../../shared-domain/src/utils/submissionTypesUtils';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import InputValidationProvider from '../../context/validator/InputValidationContext';

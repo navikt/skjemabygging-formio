@@ -6,7 +6,7 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router';
 import App from './App';
 import { AuthProvider } from './context/auth-context';
-import httpBygger from './util/httpBygger';
+import httpBygger from './utils/httpBygger';
 
 const dokumentinnsendingDevURL = 'https://tjenester-q0.nav.no/dokumentinnsending';
 

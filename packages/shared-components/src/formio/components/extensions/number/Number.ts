@@ -1,11 +1,4 @@
-import {
-  formatNumber,
-  InputMode,
-  numberUtils,
-  removeAllSpaces,
-  removeAllSpacesAndCommas,
-  TEXTS,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { formatUtils, InputMode, numberUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { FocusEventHandler } from 'react';
 import BaseComponent from '../../base/BaseComponent';
 import TextField from '../../core/textfield/TextField';
@@ -94,7 +87,7 @@ class Number extends TextField {
   handleChange(value: string) {
     if (value !== undefined) {
       const normalizedValue = value?.toString().replace(',', '.') ?? value;
-      const dataValue = removeAllSpacesAndCommas(normalizedValue);
+      const dataValue = formatUtils.removeAllSpacesAndCommas(normalizedValue);
       if (
         (this.getInputMode() === 'decimal' && numberUtils.isValidDecimal(dataValue)) ||
         (this.getInputMode() === 'numeric' && numberUtils.isValidInteger(dataValue))
@@ -124,10 +117,10 @@ class Number extends TextField {
   onBlur(): FocusEventHandler<HTMLInputElement> | undefined {
     if (this.component?.type !== 'year') {
       return (event: React.FocusEvent<HTMLInputElement>) => {
-        const value = removeAllSpaces(event.currentTarget.value);
+        const value = formatUtils.removeAllSpaces(event.currentTarget.value);
 
         if (value !== '') {
-          super.setValueOnReactInstance(formatNumber(value, this.getInputMode() === 'numeric'));
+          super.setValueOnReactInstance(formatUtils.formatNumber(value, this.getInputMode() === 'numeric'));
         }
       };
     }
@@ -136,7 +129,7 @@ class Number extends TextField {
 
   getDisplayValue(): string {
     if (this.component?.type !== 'year') {
-      return formatNumber(super.getValue(), this.getInputMode() === 'numeric');
+      return formatUtils.formatNumber(super.getValue(), this.getInputMode() === 'numeric');
     }
     return super.getDisplayValue();
   }

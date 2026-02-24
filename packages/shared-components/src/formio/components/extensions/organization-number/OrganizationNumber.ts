@@ -1,4 +1,4 @@
-import { formatOrganizationNumber, removeAllSpaces, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { formatUtils, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { FocusEventHandler } from 'react';
 import BaseComponent from '../../base/BaseComponent';
 import TextField from '../../core/textfield/TextField';
@@ -36,19 +36,19 @@ class OrganizationNumber extends TextField {
 
   onBlur(): FocusEventHandler<HTMLInputElement> {
     return (event: React.FocusEvent<HTMLInputElement>) => {
-      const value = removeAllSpaces(event.currentTarget.value);
+      const value = formatUtils.removeAllSpaces(event.currentTarget.value);
       if (value !== '') {
-        super.setValueOnReactInstance(formatOrganizationNumber(value));
+        super.setValueOnReactInstance(formatUtils.formatOrganizationNumber(value));
       }
     };
   }
 
   getDisplayValue(): string {
-    return formatOrganizationNumber(super.getDisplayValue());
+    return formatUtils.formatOrganizationNumber(super.getDisplayValue());
   }
 
   handleChange(value: string) {
-    super.handleChange(removeAllSpaces(value));
+    super.handleChange(formatUtils.removeAllSpaces(value));
   }
 }
 

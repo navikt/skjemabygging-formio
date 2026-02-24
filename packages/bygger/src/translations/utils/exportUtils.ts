@@ -64,9 +64,9 @@ const getRowsForExportFromGlobalTexts = (translations: FormsApiTranslation[]) =>
 };
 
 const getTranslationKeysForAllPredefinedTexts = (): string[] => {
-  const { grensesnitt, statiske, validering, common, pdfStatiske } = TEXTS;
+  const { grensesnitt, statiske, validering, common } = TEXTS;
   return [
-    ...objectUtils.flattenToArray({ grensesnitt, statiske, common, pdfStatiske }, ([_key, value]) => value),
+    ...objectUtils.flattenToArray({ grensesnitt, statiske, common }, ([_key, value]) => value),
     ...objectUtils.flattenToArray(validering, ([key]) => key),
   ];
 };

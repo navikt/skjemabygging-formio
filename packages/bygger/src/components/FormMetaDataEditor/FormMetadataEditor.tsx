@@ -1,6 +1,6 @@
 import { Alert, Fieldset, Textarea, TextField } from '@navikt/ds-react';
 import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
-import { Form, formDiffingTool, TEXTS, UsageContext } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, formDiffingUtils, TEXTS, UsageContext } from '@navikt/skjemadigitalisering-shared-domain';
 import { useForm } from '../../context/old_form/FormContext';
 import AddressFields from './fields/AddressFields';
 import BasicFields from './fields/BasicFields';
@@ -25,7 +25,9 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
   const { diffOn } = useAppConfig();
   const { formState } = useForm();
   const diff =
-    diffOn && formState.publishedForm ? formDiffingTool.generateNavFormSettingsDiff(formState.publishedForm, form) : {};
+    diffOn && formState.publishedForm
+      ? formDiffingUtils.generateNavFormSettingsDiff(formState.publishedForm, form)
+      : {};
   const {
     properties: { downloadPdfButtonText, descriptionOfSignatures },
   } = form;

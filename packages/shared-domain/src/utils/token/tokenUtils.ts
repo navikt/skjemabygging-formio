@@ -1,4 +1,4 @@
-import { JwtToken } from './types';
+import { JwtToken } from '../../models';
 
 const parseToken = <T = JwtToken>(token: string | undefined): T | undefined => {
   if (!token) {
@@ -13,6 +13,4 @@ const tokenUtils = {
   parseToken,
 };
 
-export type { JwtToken };
-
-export default tokenUtils;
+export { tokenUtils };

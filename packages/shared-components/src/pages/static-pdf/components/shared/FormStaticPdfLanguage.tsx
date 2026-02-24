@@ -69,7 +69,7 @@ const FormStaticPdfLanguage = ({ submissionPath, languageCode }: Props) => {
       )}
       {languages?.length === 1 && languages[0].value !== languageCode && (
         <InlineMessage status="warning">
-          {translate(TEXTS.statiske.staticPdf.selectLanguageMismatach, { language: translate(languages[0].label) })}
+          {translate(TEXTS.statiske.staticPdf.selectLanguageMismatch, { language: translate(languages[0].label) })}
         </InlineMessage>
       )}
       {languages?.length === 0 && (
