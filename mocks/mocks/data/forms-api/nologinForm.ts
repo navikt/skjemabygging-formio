@@ -16,8 +16,8 @@ const nologinForm = () => {
     components: [
       panel({
         title: 'Dine opplysninger',
-        key: 'dineOpplysninger',
-        components: [yourInformation({ key: 'dineOpplysningerContainer' })],
+        key: 'personopplysninger',
+        components: [yourInformation()],
       }),
       panel({
         title: 'Utdanning',

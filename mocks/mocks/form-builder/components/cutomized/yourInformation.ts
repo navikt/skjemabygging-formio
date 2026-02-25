@@ -9,7 +9,7 @@ const yourInformation = (props: YourInformationType = {}) => {
   const { components, key, label } = props;
 
   return container({
-    key: key ?? 'dineOpplysninger2',
+    key: key ?? 'dineOpplysninger',
     label: label ?? 'Dine opplysninger',
     yourInformation: true,
     components: components || [

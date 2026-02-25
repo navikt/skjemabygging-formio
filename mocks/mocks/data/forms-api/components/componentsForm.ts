@@ -55,6 +55,7 @@ const componentsForm = () => {
       panel({
         ...defaultProps,
         title: 'Dine opplysninger',
+        key: 'personopplysninger',
         components: [
           yourInformation({
             components: [identity({ ...defaultProps })],
