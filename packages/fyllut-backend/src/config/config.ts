@@ -48,6 +48,7 @@ const sendInnConfig: SendInnConfig = {
     activities: '/fyllUt/v1/aktiviteter',
     mergeFiles: '/fyllUt/v1/merge-filer',
     nologinFile: '/v1/nologin-fillager',
+    nologinApplication: '/v1/application-nologin',
     nologinSubmit: '/v1/nologin-soknad',
   },
 };

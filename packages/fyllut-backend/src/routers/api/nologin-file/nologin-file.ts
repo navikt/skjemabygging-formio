@@ -7,6 +7,7 @@ const nologinFile = {
   post: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const noLoginContext = req.getNologinContext();
+      const innsendingsId = noLoginContext?.innsendingsId;
       const attachmentId = req.query.attachmentId as string;
       const accessToken = req.headers.AzureAccessToken as string;
       const file = req.file;
@@ -15,7 +16,11 @@ const nologinFile = {
         return res.status(400).json({ message: 'Error: Ingen fil sendt med forespørselen' });
       }
 
-      const result = await noLoginFileService.postFile(file, accessToken, attachmentId, noLoginContext?.innsendingsId);
+      if (!innsendingsId) {
+        return res.status(500).json({ message: 'Error: innsendingsId mangler i konteksten' });
+      }
+
+      const result = await noLoginFileService.postFile(file, accessToken, attachmentId, innsendingsId);
       res.status(201).json(result);
     } catch (error: any) {
       if (error instanceof HttpError && error.http_status === 403) {

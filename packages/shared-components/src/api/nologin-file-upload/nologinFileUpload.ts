@@ -9,8 +9,8 @@ const useNologinFileUpload = () => {
     return await postFile(`${url}${searchParams}`, file, token);
   };
 
-  const deleteFile = async (fileId: string, token?: string): Promise<void> => {
-    return deleteFiles(`${url}/${fileId}`, token);
+  const deleteFile = async (attachmentId: string, fileId: string, token?: string): Promise<void> => {
+    return deleteFiles(`${url}/${fileId}?attachmentId=${attachmentId}`, token);
   };
 
   const deleteAllFilesForAttachment = async (attachmentId: string, token?: string): Promise<void> => {
