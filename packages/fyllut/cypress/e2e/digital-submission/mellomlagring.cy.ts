@@ -419,7 +419,7 @@ describe('Mellomlagring', () => {
 
       describe('When stored submission contains value which no longer is available in select', () => {
         it('hides save-and-continue button and renders info message on summary page', () => {
-          cy.mocksUseRouteVariant('get-form:success-v2');
+          cy.mocksUseRouteVariant('get-form-deprecated:success-v2');
 
           cy.visit(
             '/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO',
@@ -460,7 +460,7 @@ describe('Mellomlagring', () => {
           });
 
           it('when form-v2 does not allow value anymore', () => {
-            cy.mocksUseRouteVariant('get-form:success-v2');
+            cy.mocksUseRouteVariant('get-form-deprecated:success-v2');
             cy.mocksUseRouteVariant('get-soknad:form-select-invalid-instrument-v1');
 
             cy.visit(

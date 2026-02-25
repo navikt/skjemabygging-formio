@@ -1,9 +1,9 @@
-import { Form, FormPropertiesType, MockedComponentObjectForTest } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, FormPropertiesType, mockedComponentObjectForTest } from '@navikt/skjemadigitalisering-shared-domain';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import PublishSettingsModal, { getCompleteTranslationLanguageCodeList } from './PublishSettingsModal';
 
-const { createDummyRadioPanel, createFormObject, createPanelObject } = MockedComponentObjectForTest;
+const { createDummyRadioPanel, createFormObject, createPanelObject } = mockedComponentObjectForTest;
 
 vi.mock('../../context/translations/FormTranslationsContext', () => {
   const mockTranslations = [

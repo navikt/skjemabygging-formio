@@ -29,11 +29,11 @@ const PdfSignature = ({ properties, submission, submissionMethod, translate }: P
     }
 
     return {
-      label: translate(TEXTS.pdfStatiske.signature),
+      label: translate(TEXTS.statiske.pdf.signature),
       verdiliste: [
         {
           label: translate(TEXTS.statiske.uploadId.title),
-          verdi: translate(TEXTS.statiske.uploadId[personalId.value]),
+          verdi: translate(TEXTS.statiske.uploadId[personalId.value!]),
         },
       ],
     };
@@ -44,21 +44,21 @@ const PdfSignature = ({ properties, submission, submissionMethod, translate }: P
   const getSignatureField = (description: string) => {
     return [
       { label: translate(description), verdi: ' ' },
-      { label: translate(TEXTS.pdfStatiske.placeAndDate), verdi: ' ' },
-      { label: translate(TEXTS.pdfStatiske.signature), verdi: ' ' },
-      { label: translate(TEXTS.pdfStatiske.signatureName), verdi: ' ' },
+      { label: translate(TEXTS.statiske.pdf.placeAndDate), verdi: ' ' },
+      { label: translate(TEXTS.statiske.pdf.signature), verdi: ' ' },
+      { label: translate(TEXTS.statiske.pdf.signatureName), verdi: ' ' },
     ];
   };
 
   if (signatureList.length === 1 && (signatureList[0].label === undefined || signatureList[0].label === '')) {
     return {
-      label: translate(TEXTS.pdfStatiske.signature),
+      label: translate(TEXTS.statiske.pdf.signature),
       verdiliste: getSignatureField(signatureList[0].description),
     };
   }
 
   return {
-    label: translate(TEXTS.pdfStatiske.signature),
+    label: translate(TEXTS.statiske.pdf.signature),
     verdiliste: [
       {
         label: translate(descriptionOfSignatures || ''),

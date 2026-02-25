@@ -1,4 +1,4 @@
-import { formDiffingTool, navFormioUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { formDiffingUtils, navFormioUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { Formio, Utils } from 'formiojs';
 import baseComponentUtils from '../../components/base/baseComponentUtils';
 
@@ -56,7 +56,7 @@ const getBuilderTags = (ctx) => {
     // Formio.js invokes mergeSchema on component which is put on ctx object. Therefore we must do the same
     // prior to comparing with published version to avoid misleading diff tags due to changes in a component's schema.
     const mergeSchema = self.mergeSchema.bind(self);
-    const diff = formDiffingTool.getComponentDiff(component, publishedForm, mergeSchema);
+    const diff = formDiffingUtils.getComponentDiff(component, publishedForm, mergeSchema);
     const tags = [];
     if (publishedForm && diff.isNew) {
       tags.push(`${TAG('Ny')}`);

@@ -7,4 +7,4 @@ const formioFormsApiUtils = {
   mapPublishedGlobalTranslationsToFormioFormat,
 };
 
-export default formioFormsApiUtils;
+export { formioFormsApiUtils };

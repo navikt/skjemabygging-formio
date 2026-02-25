@@ -63,14 +63,14 @@ const populateTagFromTextObject = (
 const generateAndPopulateTags = (
   translationsMap: Record<string, FormsApiTranslation>,
 ): Record<GlobalTranslationTag, FormsApiTranslation[]> => {
-  const { common, grensesnitt, statiske, pdfStatiske, validering } = TEXTS;
+  const { common, grensesnitt, statiske, validering } = TEXTS;
   const { introPage: introPageInit } = externalStorageTexts.initValues;
   const { introPage: introPageKeys } = externalStorageTexts.keys;
   return {
     introPage: populateTagFromInitValues('introPage', introPageKeys, introPageInit, translationsMap),
     skjematekster: Object.values(translationsMap).filter((translation) => translation.tag === 'skjematekster'),
     grensesnitt: populateTagFromTextObject('grensesnitt', { ...common, ...grensesnitt }, translationsMap),
-    'statiske-tekster': populateTagFromTextObject('statiske-tekster', { ...statiske, pdfStatiske }, translationsMap),
+    'statiske-tekster': populateTagFromTextObject('statiske-tekster', { ...statiske }, translationsMap),
     validering: populateTagFromTextObject('validering', { validering }, translationsMap),
   };
 };

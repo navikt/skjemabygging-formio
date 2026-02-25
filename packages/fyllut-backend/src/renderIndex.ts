@@ -72,7 +72,13 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
       if (form && form.properties) {
         const { submissionTypes } = form.properties;
         if (!qpSub) {
-          if (submissionTypes && submissionTypes.length > 1) {
+          if (req.originalUrl.match(new RegExp('/pdf[^/]*$'))) {
+            if (!submissionTypesUtils.isStaticPdf(submissionTypes)) {
+              logger.debug('Tried to access static pdf, but static pdf is not enabled for this form', { formPath });
+              httpStatusCode = 404;
+            }
+            logger.debug('Static pdf', { formPath });
+          } else if (submissionTypes && submissionTypes.length > 1) {
             logger.info('Submission query param is missing', { formPath });
             const targetUrl = `${config.fyllutPath}/${formPath}`;
             if (req.baseUrl !== targetUrl) {

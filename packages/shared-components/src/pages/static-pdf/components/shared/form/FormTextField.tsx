@@ -1,0 +1,93 @@
+import { TextField } from '@navikt/ds-react';
+import { ChangeEvent, useEffect, useRef } from 'react';
+import { useAppConfig } from '../../../../../context/config/configContext';
+import { useForm } from '../../../../../context/form/FormContext';
+import { useInputValidation, Validators } from '../../../../../context/validator/InputValidationContext';
+import formComponentUtils from '../../../../../form-components/utils/formComponent';
+import { FormInputWidth, useFormInputStyles } from '../formStylingUtil';
+import FormBox, { FormBoxProps } from './FormBox';
+import TranslatedDescription from './TranslatedDescription';
+import TranslatedLabel from './TranslatedLabel';
+
+interface FormTextFieldProps extends FormBoxProps {
+  submissionPath: string;
+  label: string;
+  description?: string;
+  validators?: Pick<Validators, 'required' | 'minLength' | 'maxLength' | 'nationalIdentityNumber'>;
+  onChange?: (value: string) => void;
+  readOnly?: boolean;
+  error?: string;
+  autoComplete?: string;
+  width?: FormInputWidth;
+}
+
+const FormTextField = (props: FormTextFieldProps) => {
+  const {
+    submissionPath,
+    label,
+    description,
+    validators,
+    bottom = 'space-32',
+    width = 'input--xl',
+    onChange,
+    readOnly,
+    error,
+    autoComplete,
+  } = props;
+  const { logger } = useAppConfig();
+  const { updateSubmission, submission } = useForm();
+  const { addValidation, removeValidation, getRefError } = useInputValidation();
+  const { required, minLength, maxLength, nationalIdentityNumber } = validators || { required: true };
+  const styles = useFormInputStyles();
+
+  const ref = useRef(null);
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+
+    if (onChange) {
+      onChange(value);
+    } else {
+      updateSubmission(submissionPath, value);
+    }
+  };
+
+  useEffect(() => {
+    logger?.debug(`Add validation for ${submissionPath}`);
+    addValidation(submissionPath, ref, { required, minLength, maxLength, nationalIdentityNumber }, label);
+    return () => {
+      logger?.debug(`Remove validation for ${submissionPath}`);
+      removeValidation(submissionPath);
+    };
+  }, [
+    logger,
+    addValidation,
+    removeValidation,
+    submissionPath,
+    ref,
+    label,
+    required,
+    minLength,
+    maxLength,
+    nationalIdentityNumber,
+  ]);
+
+  return (
+    <FormBox bottom={bottom}>
+      <TextField
+        className={styles[width]}
+        label={<TranslatedLabel options={{ required, readOnly: readOnly }}>{label}</TranslatedLabel>}
+        description={<TranslatedDescription>{description}</TranslatedDescription>}
+        onChange={handleChange}
+        ref={ref}
+        // eslint-disable-next-line react-hooks/refs
+        error={error ?? getRefError(ref)}
+        defaultValue={formComponentUtils.getSubmissionValue(submissionPath, submission)}
+        autoComplete={autoComplete}
+      />
+    </FormBox>
+  );
+};
+
+export default FormTextField;
+export type { FormTextFieldProps };

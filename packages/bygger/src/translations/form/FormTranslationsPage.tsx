@@ -42,7 +42,7 @@ const FormTranslationsPage = ({ form }: Props) => {
   }, [isTranslationsReady, isGlobalTranslationsReady, form, storedTranslations, globalTranslations]);
 
   return (
-    <AppLayout navBarProps={{ formMenu: true, formPath: form.path }}>
+    <AppLayout navBarProps={{ formMenu: true, formPath: form.path }} form={form}>
       <TitleRowLayout>
         <Title>
           {form.skjemanummer}, {form.title}

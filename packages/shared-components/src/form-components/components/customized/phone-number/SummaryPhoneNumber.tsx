@@ -1,5 +1,5 @@
 import { FormSummary } from '@navikt/ds-react';
-import { formatPhoneNumber } from '@navikt/skjemadigitalisering-shared-domain';
+import { formatUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { FormComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 import DefaultLabel from '../../shared/form-summary/DefaultLabel';
@@ -13,7 +13,9 @@ const SummaryPhoneNumber = (props: FormComponentProps) => {
     return null;
   }
 
-  const phoneNumber = showAreaCode ? `${value.areaCode} ${formatPhoneNumber(value.number, value.areaCode)}` : value;
+  const phoneNumber = showAreaCode
+    ? `${value.areaCode} ${formatUtils.formatPhoneNumber(value.number, value.areaCode)}`
+    : value;
 
   return (
     <FormSummary.Answer>

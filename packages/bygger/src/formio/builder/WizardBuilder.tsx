@@ -1,5 +1,5 @@
 import { NavFormioJs } from '@navikt/skjemadigitalisering-shared-components';
-import { formDiffingTool, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { formDiffingUtils, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 
 class WizardBuilder extends NavFormioJs.Builders.builders.wizard {
   constructor(...args) {
@@ -78,7 +78,7 @@ class WizardBuilder extends NavFormioJs.Builders.builders.wizard {
       this.navFormDiff = null;
       const { publishedForm } = this.options.formConfig;
       if (publishedForm) {
-        const diff = formDiffingTool.getComponentDiff(original, publishedForm);
+        const diff = formDiffingUtils.getComponentDiff(original, publishedForm);
         if (diff.changesToCurrentComponent.length || diff.deletedComponents.length) {
           this.navFormDiff = diff;
         }

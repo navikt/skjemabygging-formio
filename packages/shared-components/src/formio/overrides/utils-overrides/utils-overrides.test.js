@@ -1,4 +1,4 @@
-import { formDiffingTool, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { formDiffingUtils, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import moment from 'moment/moment';
 import panelDiffDeletedDatagrid from '../../../../test/test-data/diff/diff-deleted-datagrid';
 import panelDiffDeletedRadiopanel from '../../../../test/test-data/diff/diff-deleted-radio';
@@ -155,7 +155,7 @@ describe('utils-overrides', () => {
         key: 'fornavn',
         type: 'textfield',
       };
-      const diffSummary = formDiffingTool.createDiffSummary(changes);
+      const diffSummary = formDiffingUtils.createDiffSummary(changes);
       const html = UtilsOverrides.navFormDiffToHtml(diffSummary);
       expect(html).toMatchSnapshot();
     });
@@ -194,19 +194,19 @@ describe('utils-overrides', () => {
         key: 'svarJaEllerNei',
         type: 'radiopanel',
       };
-      const diffSummary = formDiffingTool.createDiffSummary(changes);
+      const diffSummary = formDiffingUtils.createDiffSummary(changes);
       const html = UtilsOverrides.navFormDiffToHtml(diffSummary);
       expect(html).toMatchSnapshot();
     });
 
     it('generates html list with deleted radiopanel from panel', () => {
-      const diffSummary = formDiffingTool.createDiffSummary(panelDiffDeletedRadiopanel);
+      const diffSummary = formDiffingUtils.createDiffSummary(panelDiffDeletedRadiopanel);
       const html = UtilsOverrides.navFormDiffToHtml(diffSummary);
       expect(html).toMatchSnapshot();
     });
 
     it('generates nested html list with deleted datagrid and its components', () => {
-      const diffSummary = formDiffingTool.createDiffSummary(panelDiffDeletedDatagrid);
+      const diffSummary = formDiffingUtils.createDiffSummary(panelDiffDeletedDatagrid);
       const html = UtilsOverrides.navFormDiffToHtml(diffSummary);
       expect(html).toMatchSnapshot();
     });
@@ -228,7 +228,7 @@ describe('utils-overrides', () => {
     describe('Form -> diff -> html', () => {
       it('empty html when navSelect is not changed', () => {
         const navSelect = navFormUtils.findByNavId('e0a8kbj', publishedForm.components);
-        const componentDiff = formDiffingTool.getComponentDiff(navSelect, publishedForm);
+        const componentDiff = formDiffingUtils.getComponentDiff(navSelect, publishedForm);
         const html = UtilsOverrides.navFormDiffToHtml(componentDiff);
         expect(html).toBe('');
         expect(html).toMatchSnapshot();
@@ -236,21 +236,21 @@ describe('utils-overrides', () => {
 
       it('should list changes for navSelect', () => {
         const navSelect = navFormUtils.findByNavId('e0a8kbj', formNavSelectChanges.components);
-        const componentDiff = formDiffingTool.getComponentDiff(navSelect, publishedForm);
+        const componentDiff = formDiffingUtils.getComponentDiff(navSelect, publishedForm);
         const html = UtilsOverrides.navFormDiffToHtml(componentDiff);
         expect(html).toMatchSnapshot();
       });
 
       it('should list changed key', () => {
         const radiopanel = navFormUtils.findByKey('doYouLiveInNorway', formNavSelectChanges.components);
-        const componentDiff = formDiffingTool.getComponentDiff(radiopanel, publishedForm);
+        const componentDiff = formDiffingUtils.getComponentDiff(radiopanel, publishedForm);
         const html = UtilsOverrides.navFormDiffToHtml(componentDiff);
         expect(html).toMatchSnapshot();
       });
 
       it('should list change in conditional', () => {
         const alertstripe = navFormUtils.findByKey('alertstripeArstid', formNavSelectChanges.components);
-        const componentDiff = formDiffingTool.getComponentDiff(alertstripe, publishedForm);
+        const componentDiff = formDiffingUtils.getComponentDiff(alertstripe, publishedForm);
         const html = UtilsOverrides.navFormDiffToHtml(componentDiff);
         expect(html).toMatchSnapshot();
       });

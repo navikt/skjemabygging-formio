@@ -1,4 +1,4 @@
-import { Form, MigrationLevel, NavFormType, formioFormsApiUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, formioFormsApiUtils, MigrationLevel, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import { migrateForms } from '../../migration/migrationScripts';
 import { formsService } from '../../services';

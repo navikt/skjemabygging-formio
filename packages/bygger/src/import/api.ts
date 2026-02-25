@@ -1,5 +1,5 @@
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
-import httpBygger from '../util/httpBygger';
+import httpBygger from '../utils/httpBygger';
 
 export const getFormsInProduction = async (): Promise<Form[]> => {
   return await httpBygger.get('/api/import/source-forms');

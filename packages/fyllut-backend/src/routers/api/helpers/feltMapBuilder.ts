@@ -1,8 +1,9 @@
+// noinspection JSNonASCIINames
 import {
   dateUtils,
   DeclarationType,
   FormPropertiesType,
-  formSummaryUtil,
+  formSummaryUtils,
   I18nTranslationReplacements,
   NavFormType,
   signatureUtils,
@@ -40,7 +41,7 @@ export const createFeltMapFromSubmission = (
 ) => {
   const identityNumber = yourInformationUtils.getIdentityNumber(form, submission) ?? '—';
 
-  const symmaryPanels: SummaryPanel[] = formSummaryUtil.createFormSummaryPanels(
+  const symmaryPanels: SummaryPanel[] = formSummaryUtils.createFormSummaryPanels(
     form,
     submission,
     translate,
@@ -287,9 +288,9 @@ const signatureSection = (
   const signatureList = signatureUtils.mapBackwardCompatibleSignatures(signatures);
   if (signatureList.length > 0) {
     const translatedDescriptionOfSignatures = translate(descriptionOfSignatures || '');
-    const translatedPlaceDate = translate(TEXTS.pdfStatiske.placeAndDate);
-    const translatedSignature = translate(TEXTS.pdfStatiske.signature);
-    const translatedBlockSignature = translate(TEXTS.pdfStatiske.signatureName);
+    const translatedPlaceDate = translate(TEXTS.statiske.pdf.placeAndDate);
+    const translatedSignature = translate(TEXTS.statiske.pdf.signature);
+    const translatedBlockSignature = translate(TEXTS.statiske.pdf.signatureName);
 
     const verdilisteMap = signatureList.map((signatureObject) => {
       return lagSubVerdilisteElement(
