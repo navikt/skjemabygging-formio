@@ -1,8 +1,9 @@
+import { PdfData } from '@navikt/skjemadigitalisering-shared-domain';
 import renderPdfComponent from '../../../render/RenderPdfComponent';
-import { PdfComponentProps, PdfListElement } from '../../../types';
+import { PdfComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 
-const PdfContainer = (props: PdfComponentProps): PdfListElement => {
+const PdfContainer = (props: PdfComponentProps): PdfData[] | null => {
   const { component, submissionPath, submission } = props;
   const { components } = component;
 
@@ -20,7 +21,7 @@ const PdfContainer = (props: PdfComponentProps): PdfListElement => {
         submissionPath: componentSubmissionPath,
       });
     })
-    .filter(Boolean) as PdfListElement;
+    .filter(Boolean) as PdfData[];
 };
 
 export default PdfContainer;

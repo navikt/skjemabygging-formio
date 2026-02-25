@@ -32,7 +32,7 @@ import { b64toBlob } from './util/blob/blob';
 import { getCountries } from './util/countries/countries';
 import * as formUtils from './util/form/form.js';
 import NavFormioJs from './util/formio/formiojs';
-import htmlUtils from './util/html/htmlUtils';
+import htmlTranslationUtils from './util/html/htmlTranslationUtils';
 import i18nUtils from './util/i18n';
 import listSort from './util/list/sort';
 import makeStyles from './util/styles/jss/jss';
@@ -56,7 +56,7 @@ export {
   FyllUtRouter,
   getCountries,
   guid,
-  htmlUtils,
+  htmlTranslationUtils,
   http,
   i18nUtils,
   InnerHtml,

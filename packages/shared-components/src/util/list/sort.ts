@@ -1,5 +1,6 @@
 import { SortState } from '@navikt/ds-react';
-import htmlUtils from '../html/htmlUtils';
+import { htmlUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import htmlTranslationUtils from '../html/htmlTranslationUtils';
 
 type SortDirection = SortState['direction'];
 
@@ -7,7 +8,7 @@ const normalizeString = (value: string | undefined) => {
   const textValue = `${value ?? ''}`;
 
   if (htmlUtils.isHtmlString(textValue)) {
-    return htmlUtils.extractTextContent(textValue).trim();
+    return htmlTranslationUtils.extractTextContent(textValue).trim();
   }
   return textValue.trim();
 };

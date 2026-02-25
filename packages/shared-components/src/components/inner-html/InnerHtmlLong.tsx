@@ -1,5 +1,5 @@
 import { BodyLong } from '@navikt/ds-react';
-import htmlUtils from '../../util/html/htmlUtils';
+import htmlTranslationUtils from '../../../../shared-backend/src/util/html/htmlTranslationUtils';
 
 interface Props {
   content: string;
@@ -11,7 +11,7 @@ const InnerHtmlLong = ({ content, className, spacing }: Props) => {
   return (
     /* @ts-expect-error BodyLong expect to contain a string, but we are passing sanitized HTML. */
     <BodyLong
-      dangerouslySetInnerHTML={{ __html: htmlUtils.sanitizeHtmlString(content) }}
+      dangerouslySetInnerHTML={{ __html: htmlTranslationUtils.sanitizeHtmlString(content) }}
       className={className}
       spacing={spacing}
     />

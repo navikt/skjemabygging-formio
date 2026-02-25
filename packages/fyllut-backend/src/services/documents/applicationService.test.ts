@@ -1,79 +1,50 @@
-import { sanitizePdfFormData } from './applicationService';
+import { sanitizeLabel, sanitizeValue } from './applicationService';
 
-describe('sanitizePdfFormData', () => {
-  it('removes <script> tags', () => {
-    expect(sanitizePdfFormData('<div>hello<script>alert(1)</script></div>')).toBe('<div>hello</div>');
-    expect(sanitizePdfFormData('<script type="text/javascript">alert(1)</script>foo')).toBe('foo');
-    expect(sanitizePdfFormData('<div><script src="x.js"></script>bar</div>')).toBe('<div>bar</div>');
-    expect(sanitizePdfFormData('<div><script>alert(1)</div>')).toBe('<div>alert(1)</div>');
+describe('Sanitize values before sending to PDF generation', () => {
+  describe('sanitizeLabel', () => {
+    it('removes script and unwanted tags, allows only allowed tags and attributes', () => {
+      expect(
+        sanitizeLabel(
+          '<script>alert(1)</script><h2>Header</h2><b>bold</b><a href="https://www.nav.no" target="_blank">link</a>',
+        ),
+      ).toBe('<h2>Header</h2><b>bold</b><a href="https://www.nav.no">link</a>');
+      expect(sanitizeLabel('<img src="x" /><div>text</div>')).toBe('<div>text</div>');
+      expect(sanitizeLabel('<a href="https://evil.com" onclick="alert(1)">bad</a>')).toBe(
+        '<a href="https://evil.com">bad</a>',
+      );
+      expect(sanitizeLabel('<a href="https://www.nav.no" onclick="alert(1)">good</a>')).toBe(
+        '<a href="https://www.nav.no">good</a>',
+      );
+      expect(sanitizeLabel('<a href="https://www.nav.no" class="foo" target="_blank">good</a>')).toBe(
+        '<a href="https://www.nav.no">good</a>',
+      );
+      expect(sanitizeLabel('<a href="https://example.com">bad</a>')).toBe('<a href="https://example.com">bad</a>');
+      expect(sanitizeLabel('<a>no href</a>')).toBe('<a>no href</a>');
+      expect(sanitizeLabel('<p>hello</p>')).toBe('<p>hello</p>');
+      expect(sanitizeLabel('plain text')).toBe('plain text');
+    });
+
+    it('returns undefined for undefined or empty input', () => {
+      expect(sanitizeLabel(undefined)).toBeUndefined();
+      expect(sanitizeLabel('')).toBeUndefined();
+    });
   });
 
-  it('removes <img> tags', () => {
-    expect(sanitizePdfFormData('<img src="x" /><div>text</div>')).toBe('<div>text</div>');
-    expect(sanitizePdfFormData('<img width="100" height="100">')).toBe('');
-    expect(sanitizePdfFormData('<img src="x" alt="y" /><span>ok</span>')).toBe('<span>ok</span>');
-  });
+  describe('sanitizeValue', () => {
+    it('removes all HTML tags except text', () => {
+      expect(sanitizeValue('<script>alert(1)</script>hello')).toBe('hello');
+      expect(sanitizeValue('<script>alert(1) hello')).toBe('');
+      expect(sanitizeValue('<b>bold</b> <i>italic</i>')).toBe('bold italic');
+      expect(sanitizeValue('<a href="https://www.nav.no">link</a>')).toBe('link');
+      expect(sanitizeValue('<img src="x">foo')).toBe('foo');
+      expect(sanitizeValue('<div>bar</div>baz')).toBe('barbaz');
+    });
 
-  it('removes nested unwanted tags', () => {
-    expect(sanitizePdfFormData('<div><script>alert(1)</script><img src="x"><a href="http://bad">bad</a></div>')).toBe(
-      '<div>bad</div>',
-    );
-  });
-
-  it('removes multiple unwanted tags in one go', () => {
-    const input =
-      '<img src="x"><script>bad()</script><a href="https://foo.com">bad</a><a href="https://www.nav.no">good</a>';
-    const expected = 'bad<a href="https://www.nav.no">good</a>';
-    expect(sanitizePdfFormData(input)).toBe(expected);
-  });
-
-  it('removes multiple unwanted tags in mixed content', () => {
-    const input =
-      '<img src="x"><script>bad()</script><a href="https://foo.com">bad</a><a href="https://www.nav.no">good</a><a>no href</a>';
-    const expected = 'bad<a href="https://www.nav.no">good</a>no href';
-    expect(sanitizePdfFormData(input)).toBe(expected);
-  });
-
-  it('removes <a> tags with non-nav.no href, keeps inner text', () => {
-    expect(sanitizePdfFormData('<a href="https://example.com">bad</a>')).toBe('bad');
-    expect(sanitizePdfFormData('<a href="http://foo.bar">bad</a>')).toBe('bad');
-    expect(sanitizePdfFormData('<a href="http://evil.com">bad</a>')).toBe('bad');
-    expect(sanitizePdfFormData('<a href="mailto:foo@bar.com">mail</a>')).toBe('mail');
-    expect(sanitizePdfFormData('<a href="">empty</a>')).toBe('empty');
-    expect(sanitizePdfFormData('<a href="https://example.com?redirect=https://www.nav.no">bad</a>')).toBe('bad');
-    expect(sanitizePdfFormData('<a href="https://foo.bar/nav.no">bad</a>')).toBe('bad');
-  });
-
-  it('removes <a> tags with no href', () => {
-    expect(sanitizePdfFormData('<a>no href</a>')).toBe('no href');
-    expect(sanitizePdfFormData('<a name="anchor">anchor</a>')).toBe('anchor');
-  });
-
-  it('keeps <a> tags with nav.no in href', () => {
-    expect(sanitizePdfFormData('<a href="https://www.nav.no/abc">good</a>')).toBe(
-      '<a href="https://www.nav.no/abc">good</a>',
-    );
-    expect(sanitizePdfFormData('<a href="https://nav.no/xyz">good</a>')).toBe('<a href="https://nav.no/xyz">good</a>');
-    expect(sanitizePdfFormData('<a href="https://subdomain.nav.no/path">good</a>')).toBe(
-      '<a href="https://subdomain.nav.no/path">good</a>',
-    );
-    expect(sanitizePdfFormData('<a href="https://www.nav.no" class="foo" target="_blank">good</a>')).toBe(
-      '<a href="https://www.nav.no" class="foo" target="_blank">good</a>',
-    );
-    expect(sanitizePdfFormData('<a class="foo" target="_blank" href="https://www.nav.no">good</a>')).toBe(
-      '<a href="https://www.nav.no" class="foo" target="_blank">good</a>',
-    );
-  });
-
-  it('preserves unrelated HTML and text', () => {
-    expect(sanitizePdfFormData('<p>hello</p>')).toBe('<p>hello</p>');
-    expect(sanitizePdfFormData('plain text')).toBe('plain text');
-  });
-
-  it('handles malformed HTML', () => {
-    expect(sanitizePdfFormData('<div><script>alert(1)</div>')).toBe('<div>alert(1)</div>');
-    expect(sanitizePdfFormData('<img src="x"><a href="https://www.nav.no">good')).toBe(
-      '<a href="https://www.nav.no">good',
-    );
+    it('returns undefined for non-string or empty input', () => {
+      expect(sanitizeValue(undefined)).toBeUndefined();
+      expect(sanitizeValue(null)).toBeUndefined();
+      expect(sanitizeValue(123)).toBeUndefined();
+      expect(sanitizeValue('')).toBe('');
+    });
   });
 });

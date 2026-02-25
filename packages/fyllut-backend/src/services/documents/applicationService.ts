@@ -1,4 +1,5 @@
 import { correlator } from '@navikt/skjemadigitalisering-shared-backend';
+import { htmlUtils, PdfData, PdfFormData } from '@navikt/skjemadigitalisering-shared-domain';
 import { Response } from 'node-fetch';
 import { config } from '../../config/config';
 import { logger } from '../../logger';
@@ -10,19 +11,53 @@ import { appMetrics } from '../index';
 
 const { familiePdfGeneratorUrl } = config;
 
-export const sanitizePdfFormData = (pdfFormData: string): string => {
-  return (
-    pdfFormData
-      // Remove scripts tags and all content inside them.
-      .replace(/<script[\s\S]*?<\/script>/gi, '')
-      // Remove some possible harmfull tags.
-      .replace(/<\/?\s*(img|svg|animateTransform|meta|object|embed|link|iframe|script)[^>]*>/gi, '')
-      // Remove <a> tags with href where hostname does not contain nav.no, keep inner text
-      .replace(/<a[^>]+href=["'](?!(https?:\/\/)?[^"'/]*nav\.no)[^"']*["'][^>]*>(.*?)<\/\s*a\s*>/gi, '$2')
-      // Remove <a> tags with no href or empty href (including whitespace)
-      .replace(/<a\s*((?!href=)[^>])*?>((.|\n)*?)<\/a>/gi, '$2')
-  );
-  // Remove <a> tags with no href or empty href (including whitespace)
+/**
+ * This is only needed while we allow labels to come from frontend.
+ * Delete this when it comes from backend.
+ */
+export const sanitizeLabel = (label?: string): string | undefined => {
+  if (!label) {
+    return undefined;
+  }
+
+  return htmlUtils.sanitize(label, {
+    ALLOWED_TAGS: ['H2', 'H3', 'P', 'OL', 'UL', 'DIV', 'A', 'B', 'STRONG', 'BR'],
+    ALLOWED_ATTR: ['href'],
+  });
+};
+
+export const sanitizeValue = (value?: string | number | null) => {
+  return typeof value === 'string' ? htmlUtils.sanitize(value, { ALLOWED_TAGS: ['#text'] }) : undefined;
+};
+
+const sanitizeList = (list?: PdfData[]) => {
+  return list ? list.map((item) => sanitizeData(item)) : undefined;
+};
+
+const sanitizeData = (data: PdfData): PdfData => {
+  const label = sanitizeLabel(data.label);
+  const verdi = sanitizeValue(data.verdi);
+  const verdiliste = sanitizeList(data?.verdiliste);
+
+  return {
+    ...data,
+    ...(label && { label }),
+    ...(verdi && { verdi }),
+    ...(verdiliste && { verdiliste }),
+  };
+};
+
+const sanitizePdfFormData = (pdfFormData: string): string => {
+  const data: PdfFormData = JSON.parse(pdfFormData);
+  if (!data || typeof data !== 'object') {
+    return pdfFormData;
+  }
+
+  return JSON.stringify({
+    ...data,
+    label: sanitizeLabel(data.label),
+    verdiliste: sanitizeList(data?.verdiliste),
+  });
 };
 
 const createFormPdf = async (accessToken: string, pdfFormData: string, logMeta: LogMetadata = {}) => {
@@ -46,7 +81,7 @@ const createFormPdf = async (accessToken: string, pdfFormData: string, logMeta: 
         accept: '*/*',
       } as HeadersInit,
       method: 'POST',
-      body: pdfFormData,
+      body: sanitizePdfFormData(pdfFormData),
     });
   } catch (e) {
     errorOccurred = true;

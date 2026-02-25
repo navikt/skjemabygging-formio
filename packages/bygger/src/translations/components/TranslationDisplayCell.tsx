@@ -1,6 +1,7 @@
 import { PadlockLockedIcon } from '@navikt/aksel-icons';
 import { Table } from '@navikt/ds-react';
-import { InnerHtml, htmlUtils } from '@navikt/skjemadigitalisering-shared-components';
+import { InnerHtml } from '@navikt/skjemadigitalisering-shared-components';
+import { htmlUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useTranslationTableStyles } from './styles';
 
 interface Props {

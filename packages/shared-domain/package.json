@@ -24,6 +24,7 @@
     "prepare": "yarn build"
   },
   "dependencies": {
+    "isomorphic-dompurify": "^3.0.0",
     "formiojs": "4.20.0",
     "luxon": "^3.7.2",
     "moment": "^2.30.1",

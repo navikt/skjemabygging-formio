@@ -2,41 +2,11 @@ import {
   Component,
   FormPropertiesType,
   PanelValidation,
+  PdfData,
   Submission,
   TranslateFunction,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { AppConfigContextType } from '../context/config/configContext';
-
-type PdfListElement = PdfData | PdfData[] | null;
-
-interface PdfFormData {
-  label?: string;
-  verdiliste?: PdfListElement[];
-  pdfConfig?: PdfConfig | null;
-  skjemanummer?: string | null;
-  bunntekst?: PdfFooter | null;
-  vannmerke?: string | null;
-}
-
-interface PdfData {
-  label?: string;
-  verdi?: string | number | null;
-  verdiliste?: PdfListElement[];
-  visningsVariant?: string | null;
-}
-
-interface PdfConfig {
-  harInnholdsfortegnelse: boolean;
-  språk: string;
-}
-
-interface PdfFooter {
-  upperleft: string | null;
-  lowerleft: string | null;
-  upperMiddle: string | null;
-  lowerMiddle: string | null;
-  upperRight: string | null;
-}
 
 interface FormComponentProps {
   component: Component;
@@ -64,17 +34,7 @@ interface PdfComponentProps {
 }
 
 interface PdfComponentRegistry {
-  [key: string]: (props: PdfComponentProps) => PdfListElement;
+  [key: string]: (props: PdfComponentProps) => PdfData[] | PdfData | null;
 }
 
-export type {
-  FormComponentProps,
-  FormComponentRegistry,
-  PdfComponentProps,
-  PdfComponentRegistry,
-  PdfConfig,
-  PdfData,
-  PdfFooter,
-  PdfFormData,
-  PdfListElement,
-};
+export type { FormComponentProps, FormComponentRegistry, PdfComponentProps, PdfComponentRegistry };

@@ -1,12 +1,12 @@
 import {
   FormPropertiesType,
+  PdfData,
   signatureUtils,
   Submission,
   SubmissionMethod,
   TEXTS,
   TranslateFunction,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { PdfData } from '../../../types';
 
 interface Props {
   properties: FormPropertiesType;

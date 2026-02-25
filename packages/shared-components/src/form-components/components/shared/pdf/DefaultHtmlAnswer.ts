@@ -1,6 +1,7 @@
+import { PdfData } from '@navikt/skjemadigitalisering-shared-domain';
 import { PdfComponentProps } from '../../../types';
 
-const DefaultHtmlAnswer = (props: PdfComponentProps) => {
+const DefaultHtmlAnswer = (props: PdfComponentProps): PdfData | null => {
   const { component, translate } = props;
   const { textDisplay, content } = component;
 

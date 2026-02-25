@@ -1,6 +1,11 @@
-import { Language, NavFormType, ReceiptSummary, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  Language,
+  NavFormType,
+  PdfFormData,
+  ReceiptSummary,
+  Submission,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { AppConfigContextType } from '../../context/config/configContext';
-import { PdfFormData } from '../../form-components/types';
 
 export const postNologinSoknad = async (
   appConfig: AppConfigContextType,

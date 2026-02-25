@@ -1,5 +1,5 @@
 import React from 'react';
-import htmlUtils from '../../util/html/htmlUtils';
+import htmlTranslationUtils from '../../../../shared-backend/src/util/html/htmlTranslationUtils';
 
 interface Props {
   tag?: string;
@@ -10,7 +10,7 @@ interface Props {
 const InnerHtml = ({ tag = 'div', content, className }: Props) => {
   return React.createElement(tag, {
     dangerouslySetInnerHTML: {
-      __html: htmlUtils.sanitizeHtmlString(content),
+      __html: htmlTranslationUtils.sanitizeHtmlString(content),
     },
     className,
   });

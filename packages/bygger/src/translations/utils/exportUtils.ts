@@ -1,7 +1,8 @@
-import { htmlUtils } from '@navikt/skjemadigitalisering-shared-components';
+import { htmlTranslationUtils } from '@navikt/skjemadigitalisering-shared-components';
 import {
   Form,
   FormsApiTranslation,
+  htmlUtils,
   objectUtils,
   TEXTS,
   TranslationLang,
@@ -28,7 +29,7 @@ const escapeQuote = (text?: string) => {
 const sanitizeForCsv = (text?: string) => escapeQuote(removeLineBreaks(text));
 
 const sanitizeHtmlForCsv = (htmlString: string) => {
-  const { removeTags, removeEmptyTags, groupLonelySiblings, sanitizeHtmlString } = htmlUtils;
+  const { removeTags, removeEmptyTags, groupLonelySiblings, sanitizeHtmlString } = htmlTranslationUtils;
   const sanitizedHtml = removeEmptyTags(sanitizeHtmlString(removeLineBreaks(htmlString) ?? ''));
   return groupLonelySiblings(removeTags(sanitizedHtml, 'span'));
 };
@@ -39,13 +40,13 @@ const getRowsForExport = (textKeys: string[], translations: FormsApiTranslation[
     const translation = translations.find((translation) => translation.key === key);
     const nb = translation?.nb ?? key;
     if (htmlUtils.isHtmlString(nb)) {
-      const nn = translation?.nn ? htmlUtils.getTexts(sanitizeHtmlForCsv(translation.nn)) : [];
-      const en = translation?.en ? htmlUtils.getTexts(sanitizeHtmlForCsv(translation.en)) : [];
+      const nn = translation?.nn ? htmlTranslationUtils.getTexts(sanitizeHtmlForCsv(translation.nn)) : [];
+      const en = translation?.en ? htmlTranslationUtils.getTexts(sanitizeHtmlForCsv(translation.en)) : [];
       const htmlTranslations = {
         nn: nn.filter((text) => text.trim().length > 0),
         en: en.filter((text) => text.trim().length > 0),
       };
-      const htmlStrings = htmlUtils.getTexts(sanitizeHtmlForCsv(nb));
+      const htmlStrings = htmlTranslationUtils.getTexts(sanitizeHtmlForCsv(nb));
       return createTranslationsHtmlRows(`${++textIndex}`.padStart(3, '0'), htmlStrings, htmlTranslations);
     } else {
       return createTranslationsTextRow(`${++textIndex}`.padStart(3, '0'), nb, translation);

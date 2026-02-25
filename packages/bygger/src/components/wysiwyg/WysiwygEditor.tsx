@@ -1,4 +1,5 @@
-import { FieldsetErrorMessage, htmlUtils, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { FieldsetErrorMessage, htmlTranslationUtils, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
+import { htmlUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import clsx from 'clsx';
 import { forwardRef, useState } from 'react';
 import {
@@ -43,8 +44,8 @@ const WysiwygEditor = forwardRef<HTMLDivElement, Props>(
 
     const styles = useStyles();
 
-    const { isHtmlString, groupLonelySiblings, sanitizeHtmlString, removeEmptyTags, removeTags, extractTextContent } =
-      htmlUtils;
+    const { groupLonelySiblings, sanitizeHtmlString, removeEmptyTags, removeTags, extractTextContent } =
+      htmlTranslationUtils;
 
     const unwantedTags = [
       'font',
@@ -67,7 +68,7 @@ const WysiwygEditor = forwardRef<HTMLDivElement, Props>(
     const handleChange = (event) => {
       const value = event.target.value;
       // make sure that non-html strings are wrapped in a tag.
-      if (isHtmlString(value)) {
+      if (htmlUtils.isHtmlString(value)) {
         setHtmlValue(removeUnwantedTags(value));
       } else {
         setHtmlValue(`<${defaultTag}>${value}</${defaultTag}>`);
