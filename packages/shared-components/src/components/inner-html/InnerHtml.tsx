@@ -1,5 +1,5 @@
 import React from 'react';
-import htmlTranslationUtils from '../../../../shared-backend/src/util/html/htmlTranslationUtils';
+import htmlTranslationUtils from '../../util/html/htmlTranslationUtils';
 
 interface Props {
   tag?: string;

@@ -1,5 +1,5 @@
 import { BodyShort } from '@navikt/ds-react';
-import htmlTranslationUtils from '../../../../shared-backend/src/util/html/htmlTranslationUtils';
+import htmlTranslationUtils from '../../util/html/htmlTranslationUtils';
 
 interface Props {
   content: string;
