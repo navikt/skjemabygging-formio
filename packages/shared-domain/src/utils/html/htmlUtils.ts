@@ -1,5 +1,5 @@
 import DOMPurify from 'isomorphic-dompurify';
-import { DOMPurifyConfig } from '../../models';
+import type { DOMPurifyConfig } from '../../models/html';
 
 const sanitize = (htmlString: string | Node, options?: DOMPurifyConfig): string => {
   return DOMPurify.sanitize(htmlString, options).toString();
