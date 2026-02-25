@@ -2,6 +2,10 @@ import * as path from 'path';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
+  ssr: {
+    // Add libraries that should not be bundled for the browser
+    external: ['jsdom'],
+  },
   build: {
     minify: true,
     lib: {
