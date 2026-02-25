@@ -1,5 +1,4 @@
-import { FieldsetErrorMessage, htmlTranslationUtils, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
-import { htmlUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { FieldsetErrorMessage, htmlUtils, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import clsx from 'clsx';
 import { forwardRef, useState } from 'react';
 import {
@@ -44,8 +43,7 @@ const WysiwygEditor = forwardRef<HTMLDivElement, Props>(
 
     const styles = useStyles();
 
-    const { groupLonelySiblings, sanitizeHtmlString, removeEmptyTags, removeTags, extractTextContent } =
-      htmlTranslationUtils;
+    const { groupLonelySiblings, sanitizeHtmlString, removeEmptyTags, removeTags, extractTextContent } = htmlUtils;
 
     const unwantedTags = [
       'font',

@@ -10,7 +10,6 @@ export * from './format';
 export * from './formio';
 export * from './forms-api-backwards-compatibility';
 export * from './guid';
-export * from './html';
 export * from './logging';
 export * from './migration';
 export * from './number';

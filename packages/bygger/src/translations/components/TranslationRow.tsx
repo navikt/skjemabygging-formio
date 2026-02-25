@@ -1,6 +1,6 @@
 import { Alert, Table } from '@navikt/ds-react';
-import { htmlTranslationUtils } from '@navikt/skjemadigitalisering-shared-components';
-import { FormsApiTranslation, htmlUtils, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
+import { htmlUtils } from '@navikt/skjemadigitalisering-shared-components';
+import { FormsApiTranslation, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo, useState } from 'react';
 import { TranslationError } from '../../context/translations/utils/errorUtils';
 import { getInputHeightInRows } from '../utils/translationsUtils';
@@ -45,7 +45,7 @@ const TranslationRow = ({ translation, updateTranslation, errors, editState, isK
 
   const autoFocus = isKeyBased ? 'nb' : 'nn';
   const isHtml = htmlUtils.isHtmlString(translation.nb ?? '');
-  const defaultHtmlTag = isHtml && htmlTranslationUtils.getHtmlTag(translation.nb ?? '') === 'P' ? 'p' : 'div';
+  const defaultHtmlTag = isHtml && htmlUtils.getHtmlTag(translation.nb ?? '') === 'P' ? 'p' : 'div';
   const hasGlobalOverride = !!translation.globalTranslationId;
 
   return (

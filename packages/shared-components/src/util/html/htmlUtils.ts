@@ -1,10 +1,16 @@
-import { DOMPurifyConfig, htmlUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import DOMPurify from 'dompurify';
 import { defaultLeafTags, generateMarkdown } from './markdown';
 
-type SanitizeOptions = Omit<DOMPurifyConfig, 'RETURN_DOM_FRAGMENT' | 'RETURN_DOM'>;
+type SanitizeOptions = Omit<DOMPurify.Config, 'RETURN_DOM_FRAGMENT' | 'RETURN_DOM'>;
 
 const topLevelTags = ['H2', 'H3', 'P', 'OL', 'UL', 'DIV'];
 const textFormattingTags = ['A', 'B', 'STRONG', 'BR'];
+
+/**
+ * Regex matches that there is an html-tag in the string,
+ * excluding the <br>-tag (with possible whitespace and self-closing "/").
+ */
+const isHtmlString = (text: string) => /<(?!br\s*\/?)[^>]+>/gm.test(text);
 
 const getHtmlTag = (htmlString: string): string | null => {
   const div = document.createElement('div');
@@ -49,10 +55,14 @@ const removeEmptyTags = (htmlString: string): string => {
   return div.innerHTML;
 };
 
+const sanitize = (htmlString: string, options?: SanitizeOptions): string => {
+  return DOMPurify.sanitize(htmlString, options);
+};
+
 const sanitizeHtmlString = (htmlString: string, options?: SanitizeOptions): string => {
   const defaultOptions: SanitizeOptions = { ADD_ATTR: ['target'] };
   const sanitizeOptions = { ...defaultOptions, ...options };
-  return htmlUtils.sanitize(htmlUtils.sanitize(htmlString, sanitizeOptions), sanitizeOptions);
+  return DOMPurify.sanitize(DOMPurify.sanitize(htmlString, sanitizeOptions), sanitizeOptions);
 };
 
 const removeTags = (htmlString: string, tag: string | string[]): string => {
@@ -129,7 +139,9 @@ const groupLonelySiblings = (htmlString: string): string => {
   return div.innerHTML;
 };
 
-const htmlTranslationUtils = {
+const htmlUtils = {
+  isHtmlString,
+  sanitize,
   getHtmlTag,
   extractTextContent,
   removeEmptyTags,
@@ -138,4 +150,4 @@ const htmlTranslationUtils = {
   getTexts,
   groupLonelySiblings,
 };
-export default htmlTranslationUtils;
+export default htmlUtils;

@@ -1,10 +1,5 @@
-import { htmlTranslationUtils } from '@navikt/skjemadigitalisering-shared-components';
-import {
-  FormsApiTranslation,
-  htmlUtils,
-  stringUtils,
-  TranslationLang,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { htmlUtils } from '@navikt/skjemadigitalisering-shared-components';
+import { FormsApiTranslation, stringUtils, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useContext, useEffect, useReducer } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useFeedbackEmit } from '../notifications/FeedbackContext';
@@ -98,7 +93,7 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
     if (validationErrors.length > 0) {
       dispatch({ type: 'VALIDATION_ERROR', payload: { errors: validationErrors } });
       validationErrors.forEach((error) => {
-        const key = htmlUtils.isHtmlString(error.key) ? htmlTranslationUtils.extractTextContent(error.key) : error.key;
+        const key = htmlUtils.isHtmlString(error.key) ? htmlUtils.extractTextContent(error.key) : error.key;
         feedbackEmit.error(`${stringUtils.truncate(key, 50)}: ${error.message}`);
       });
       return;

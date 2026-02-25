@@ -10,7 +10,6 @@ export * from './field-size';
 export * from './file';
 export * from './form';
 export * from './forms-api-form';
-export * from './html';
 export * from './http';
 export * from './logging';
 export * from './migration';
