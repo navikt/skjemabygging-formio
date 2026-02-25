@@ -55,10 +55,6 @@ const removeEmptyTags = (htmlString: string): string => {
   return div.innerHTML;
 };
 
-const sanitize = (htmlString: string, options?: SanitizeOptions): string => {
-  return DOMPurify.sanitize(htmlString, options);
-};
-
 const sanitizeHtmlString = (htmlString: string, options?: SanitizeOptions): string => {
   const defaultOptions: SanitizeOptions = { ADD_ATTR: ['target'] };
   const sanitizeOptions = { ...defaultOptions, ...options };
@@ -141,7 +137,6 @@ const groupLonelySiblings = (htmlString: string): string => {
 
 const htmlUtils = {
   isHtmlString,
-  sanitize,
   getHtmlTag,
   extractTextContent,
   removeEmptyTags,

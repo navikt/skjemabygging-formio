@@ -1,5 +1,4 @@
-import { correlator } from '@navikt/skjemadigitalisering-shared-backend';
-import { htmlTranslationUtils } from '@navikt/skjemadigitalisering-shared-components';
+import { correlator, htmlServerUtils } from '@navikt/skjemadigitalisering-shared-backend';
 import { PdfData, PdfFormData } from '@navikt/skjemadigitalisering-shared-domain';
 import { Response } from 'node-fetch';
 import { config } from '../../config/config';
@@ -21,14 +20,14 @@ export const sanitizeLabel = (label?: string): string | undefined => {
     return undefined;
   }
 
-  return htmlTranslationUtils.sanitize(label, {
+  return htmlServerUtils.sanitize(label, {
     ALLOWED_TAGS: ['H2', 'H3', 'P', 'OL', 'UL', 'DIV', 'A', 'B', 'STRONG', 'BR'],
     ALLOWED_ATTR: ['href'],
   });
 };
 
 export const sanitizeValue = (value?: string | number | null) => {
-  return typeof value === 'string' ? htmlTranslationUtils.sanitize(value, { ALLOWED_TAGS: ['#text'] }) : undefined;
+  return typeof value === 'string' ? htmlServerUtils.sanitize(value, { ALLOWED_TAGS: ['#text'] }) : undefined;
 };
 
 const sanitizeList = (list?: PdfData[]) => {

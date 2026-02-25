@@ -1,7 +1,7 @@
 import { expect } from 'vitest';
 import htmlUtils from './htmlUtils';
 
-describe('htmlTranslationUtils', () => {
+describe('htmlUtils', () => {
   describe('getHtmlTag', () => {
     it('returns the tag name of the first html element in the string', () => {
       expect(htmlUtils.getHtmlTag('<p>hello</p>')).toBe('P');
