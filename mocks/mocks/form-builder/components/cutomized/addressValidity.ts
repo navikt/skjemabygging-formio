@@ -1,6 +1,10 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
-const addressValidity = (props?: BaseComponentType) => {
+interface AddressValidityType extends BaseComponentType {
+  protectedApiKey?: boolean;
+}
+
+const addressValidity = (props?: AddressValidityType) => {
   const { customConditional, label } = props ?? {};
   return {
     ...staticDefaultValues,

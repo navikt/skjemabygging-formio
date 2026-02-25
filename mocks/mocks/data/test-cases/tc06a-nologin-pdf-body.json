@@ -1,0 +1,70 @@
+{
+  "label": "Nologin test form",
+  "verdiliste": [
+    {
+      "label": "Introduksjon",
+      "verdiliste": [
+        {
+          "label": "Jeg bekrefter at jeg vil svare så riktig som jeg kan.",
+          "verdi": "Ja"
+        }
+      ]
+    },
+    {
+      "label": "Dine opplysninger",
+      "verdiliste": [
+        {
+          "label": "Fornavn",
+          "verdi": "Ola"
+        },
+        {
+          "label": "Etternavn",
+          "verdi": "Nordmann"
+        },
+        {
+          "label": "Fødselsnummer eller d-nummer",
+          "verdi": "08842748500"
+        }
+      ]
+    },
+    {
+      "label": "Utdanning",
+      "verdiliste": [
+        {
+          "label": "Høyeste fullførte utdanning",
+          "verdi": "Videregående"
+        }
+      ]
+    },
+    {
+      "label": "Vedlegg",
+      "verdiliste": [
+        {
+          "label": "Annen dokumentasjon",
+          "verdi": "Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved"
+        }
+      ]
+    },
+    {
+      "label": "Underskrift",
+      "verdiliste": [
+        {
+          "label": "Legitimasjon",
+          "verdi": "Norsk pass"
+        }
+      ]
+    }
+  ],
+  "skjemanummer": "Nologin 001",
+  "pdfConfig": {
+    "harInnholdsfortegnelse": false,
+    "språk": "nb"
+  },
+  "bunntekst": {
+    "upperleft": "F.nr: 08842748500",
+    "lowerleft": "Skjemanummer: Nologin 001",
+    "upperRight": null,
+    "upperMiddle": "Opprettet: 17 februar 2026, 15:13",
+    "lowerMiddle": "Versjon: local"
+  }
+}

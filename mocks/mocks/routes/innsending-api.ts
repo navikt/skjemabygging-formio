@@ -32,6 +32,8 @@ import mellomlagringSelectBoxes from '../data/innsending-api/select-boxes/mellom
 import tc01 from '../data/test-cases/tc01-innsending-nologin-soknad-body.json';
 import tc02 from '../data/test-cases/tc02-innsending-nologin-soknad-body.json';
 import tc05 from '../data/test-cases/tc05-innsending-nologin-soknad-body.json';
+import tc06a from '../data/test-cases/tc06a-innsending-nologin-soknad-body.json';
+import tc06b from '../data/test-cases/tc06b-innsending-nologin-soknad-body.json';
 import { compareBodyMiddleware } from '../utils/testCaseUtils';
 
 const objectToByteArray = (obj: any): number[] => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
@@ -64,6 +66,14 @@ function replySubmittedNologinApplication(reqBody: any, innsendingsId: string): 
     ettersendingsId: null,
   };
 }
+
+const okResponseHandlerNologinSubmission = (req, res) => {
+  const { body, params } = req;
+  const { innsendingsId } = params;
+  res.status(200);
+  res.contentType('application/json; charset=UTF-8');
+  res.send(replySubmittedNologinApplication(body, innsendingsId));
+};
 
 export default [
   {
@@ -639,13 +649,7 @@ export default [
           middleware: compareBodyMiddleware(
             tc01,
             ['innsendingsId', 'mainDocument', 'mainDocumentAlt', 'attachments.fileIds'],
-            (req, res) => {
-              const { body, params } = req;
-              const { innsendingsId } = params;
-              res.status(200);
-              res.contentType('application/json; charset=UTF-8');
-              res.send(replySubmittedNologinApplication(body, innsendingsId));
-            },
+            okResponseHandlerNologinSubmission,
           ),
         },
       },
@@ -656,13 +660,7 @@ export default [
           middleware: compareBodyMiddleware(
             tc02,
             ['innsendingsId', 'mainDocument', 'mainDocumentAlt', 'attachments.fileIds'],
-            (req, res) => {
-              const { body, params } = req;
-              const { innsendingsId } = params;
-              res.status(200);
-              res.contentType('application/json; charset=UTF-8');
-              res.send(replySubmittedNologinApplication(body, innsendingsId));
-            },
+            okResponseHandlerNologinSubmission,
           ),
         },
       },
@@ -673,13 +671,29 @@ export default [
           middleware: compareBodyMiddleware(
             tc05,
             ['innsendingsId', 'mainDocument', 'mainDocumentAlt', 'attachments.fileIds'],
-            (req, res) => {
-              const { body, params } = req;
-              const { innsendingsId } = params;
-              res.status(200);
-              res.contentType('application/json; charset=UTF-8');
-              res.send(replySubmittedNologinApplication(body, innsendingsId));
-            },
+            okResponseHandlerNologinSubmission,
+          ),
+        },
+      },
+      {
+        id: 'success-tc06a',
+        type: 'middleware',
+        options: {
+          middleware: compareBodyMiddleware(
+            tc06a,
+            ['innsendingsId', 'mainDocument', 'mainDocumentAlt', 'attachments.fileIds'],
+            okResponseHandlerNologinSubmission,
+          ),
+        },
+      },
+      {
+        id: 'success-tc06b',
+        type: 'middleware',
+        options: {
+          middleware: compareBodyMiddleware(
+            tc06b,
+            ['innsendingsId', 'mainDocument', 'mainDocumentAlt', 'attachments.fileIds'],
+            okResponseHandlerNologinSubmission,
           ),
         },
       },

@@ -2,12 +2,12 @@ import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
 interface AttachmentType extends BaseComponentType {
   attachmentType: 'default' | 'other';
-  attachmentValues?: typeof defaultAttachmentValues;
+  attachmentValues?: Partial<typeof defaultAttachmentValues>;
   properties?: Record<string, any>;
 }
 
 const attachment = (props: AttachmentType) => {
-  const { label, description, attachmentType, properties, attachmentValues } = props ?? {};
+  const { label, description, attachmentType, properties, attachmentValues = {} } = props ?? {};
 
   return {
     ...staticDefaultValues,
@@ -20,12 +20,21 @@ const attachment = (props: AttachmentType) => {
     }),
     attachmentType,
     attachmentValues:
-      attachmentType === 'other' ? defaultOtherAttachmentValues : (attachmentValues ?? defaultAttachmentValues),
-    properties: attachmentType === 'other' ? defaultProperties : (properties ?? defaultProperties),
+      attachmentType === 'other' ? defaultOtherAttachmentValues : { ...defaultAttachmentValues, ...attachmentValues },
+    properties: attachmentType === 'other' ? defaultOtherProperties : (properties ?? createDefaultProperties()),
   };
 };
 
-const defaultProperties = {
+const randomAttachmentCodes = ['U1', 'T1', 'M1', 'M2', 'E6', 'E7', 'U7', 'U8', 'U9', 'U10'];
+const createDefaultProperties = () => {
+  const vedleggskode = randomAttachmentCodes[Math.floor(Math.random() * randomAttachmentCodes.length)];
+  return {
+    vedleggskode,
+    vedleggstittel: `Vedleggstittel for ${vedleggskode}`,
+  };
+};
+
+const defaultOtherProperties = {
   vedleggskode: 'N6',
   vedleggstittel: 'Annet',
 };
@@ -62,11 +71,7 @@ const defaultAttachmentValues = {
   },
   leggerVedNaa: {
     enabled: true,
-    additionalDocumentation: {
-      label: 'Mer info',
-      enabled: true,
-      description: 'Vennligst gi oss mer info',
-    },
+    additionalDocumentation: {},
   },
   levertTidligere: {
     enabled: true,

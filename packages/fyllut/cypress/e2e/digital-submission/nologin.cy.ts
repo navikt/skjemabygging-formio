@@ -1,4 +1,5 @@
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { DateTime } from 'luxon';
 
 describe('Digital submission without user login', () => {
   before(() => {
@@ -116,6 +117,82 @@ describe('Digital submission without user login', () => {
       cy.findByText(TEXTS.statiske.error.alreadySubmitted).should('exist');
       cy.go('forward');
       cy.findByText(TEXTS.statiske.error.alreadySubmitted).should('exist');
+    });
+  });
+
+  describe('Your information', () => {
+    beforeEach(() => {
+      cy.visit('/fyllut/nologin001/legitimasjon?sub=digitalnologin');
+      cy.defaultWaits();
+
+      cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
+        cy.findByLabelText('Norsk pass').check(),
+      );
+      cy.uploadFile('id-billy-bruker.jpg');
+      cy.clickNextStep();
+
+      cy.clickIntroPageConfirmation();
+      cy.clickNextStep();
+
+      cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
+    });
+
+    it('should use "your information" to identify user ssn', () => {
+      cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola');
+      cy.findByRole('textbox', { name: 'Etternavn' }).type('Nordmann');
+      cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
+        cy.findByLabelText('Ja').check(),
+      );
+      cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).type('08842748500');
+      cy.clickNextStep();
+
+      cy.findByRole('group', { name: 'Høyeste fullførte utdanning' }).within(() =>
+        cy.findByLabelText('Videregående').check(),
+      );
+      cy.clickNextStep();
+
+      cy.findByLabelText('Annen dokumentasjon').within(() =>
+        cy.findByLabelText('Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved').check(),
+      );
+      cy.clickNextStep();
+
+      cy.mocksUseRouteVariant('post-familie-pdf:success-tc06a');
+      cy.mocksUseRouteVariant('post-nologin-soknad:success-tc06a');
+      cy.clickSendNav();
+    });
+
+    it('should support user without ssn', () => {
+      cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola');
+      cy.findByRole('textbox', { name: 'Etternavn' }).type('Nordmann');
+      cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
+        cy.findByLabelText('Nei').check(),
+      );
+      cy.findByRole('textbox', { name: /Fødselsdato/ }).type('01.01.1980');
+      cy.findByRole('group', { name: 'Bor du i Norge?' }).within(() => cy.findByLabelText('Ja').check());
+
+      cy.findByRole('group', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?' }).within(() =>
+        cy.findByLabelText('Vegadresse').check(),
+      );
+
+      cy.findByRole('textbox', { name: 'Vegadresse' }).type('Testveien 1C');
+      cy.findByRole('textbox', { name: 'Postnummer' }).type('1234');
+      cy.findByRole('textbox', { name: 'Poststed' }).type('Plassen');
+      cy.findByRole('textbox', { name: /^Gyldig fra/ }).type(DateTime.now().toFormat(dateUtils.inputFormat));
+      cy.clickNextStep();
+
+      cy.findByRole('group', { name: 'Høyeste fullførte utdanning' }).within(() =>
+        cy.findByLabelText('Videregående').check(),
+      );
+      cy.clickNextStep();
+
+      cy.findByLabelText('Annen dokumentasjon').within(() =>
+        cy.findByLabelText('Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved').check(),
+      );
+      cy.clickNextStep();
+
+      cy.mocksUseRouteVariant('post-familie-pdf:success-tc06b');
+      cy.mocksUseRouteVariant('post-nologin-soknad:success-tc06b');
+      cy.clickSendNav();
     });
   });
 

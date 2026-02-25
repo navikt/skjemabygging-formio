@@ -5,7 +5,12 @@ const generateId = () => {
 const sanitizeAndLowerCase = (value?: string) => {
   if (!value) return '';
 
-  return value.toLowerCase().replace(/[\s.()/]/g, '');
+  return value
+    .toLowerCase()
+    .replace(/[\s.()/]/g, '')
+    .replace('æ', 'ae')
+    .replace('ø', 'o')
+    .replace('å', 'a');
 };
 
 const insertLanguage = (value: string, language: string) => {
