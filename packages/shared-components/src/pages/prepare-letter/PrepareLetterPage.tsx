@@ -1,6 +1,11 @@
-import { Enhet, SubmissionType, submissionTypesUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  Enhet,
+  forstesideUtils,
+  SubmissionType,
+  submissionTypesUtils,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
-import { getAttachments } from '../../../../shared-domain/src/forsteside/forstesideUtils';
 import { compareEnheter, fetchEnhetsliste, isEnhetSupported } from '../../api/enhetsliste/fetchEnhetsliste';
 import NavigateButtonComponent from '../../components/button/navigation/pages/NavigateButtonComponent';
 import ErrorPage from '../../components/error/page/ErrorPage';
@@ -68,7 +73,7 @@ export function PrepareLetterPage() {
     return <LoadingComponent />;
   }
 
-  const attachments = submission ? getAttachments(submission, form) : [];
+  const attachments = submission ? forstesideUtils.getAttachments(submission, form) : [];
   const hasAttachments = attachments.length > 0;
 
   return (

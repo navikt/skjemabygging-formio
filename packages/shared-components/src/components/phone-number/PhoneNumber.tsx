@@ -1,11 +1,5 @@
 import { Alert, BodyShort, Select, TextField } from '@navikt/ds-react';
-import {
-  CustomLabels,
-  FieldSize,
-  formatPhoneNumber,
-  removeAllSpaces,
-  TEXTS,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { CustomLabels, FieldSize, formatUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import clsx from 'clsx';
 import { useCallback, useEffect, useState } from 'react';
 import { getAreaCodes } from '../../api/common-codes/area-codes';
@@ -69,7 +63,7 @@ const PhoneNumber = ({ value, onChange, showAreaCode, error }: Props) => {
     if (showAreaCode) {
       const updated: PhoneNumber = {
         ...(typeof phoneNumber === 'object' && phoneNumber ? phoneNumber : { areaCode: '+47', number: '' }),
-        [key]: removeAllSpaces(value),
+        [key]: formatUtils.removeAllSpaces(value),
       };
       setPhoneNumber(updated);
       onChange(updated);
@@ -82,18 +76,18 @@ const PhoneNumber = ({ value, onChange, showAreaCode, error }: Props) => {
   function handleBlur() {
     if (showAreaCode && typeof phoneNumber === 'object' && phoneNumber) {
       const { areaCode, number } = phoneNumber;
-      const updated = { ...phoneNumber, number: formatPhoneNumber(number, areaCode) };
+      const updated = { ...phoneNumber, number: formatUtils.formatPhoneNumber(number, areaCode) };
       setPhoneNumber(updated);
-      const updatedNoSpace = { ...phoneNumber, number: removeAllSpaces(number) };
+      const updatedNoSpace = { ...phoneNumber, number: formatUtils.removeAllSpaces(number) };
       onChange(updatedNoSpace);
     }
   }
 
   function handleFocus() {
     if (showAreaCode && typeof phoneNumber === 'object' && phoneNumber) {
-      setPhoneNumber({ ...phoneNumber, number: removeAllSpaces(phoneNumber.number) });
+      setPhoneNumber({ ...phoneNumber, number: formatUtils.removeAllSpaces(phoneNumber.number) });
     } else if (!showAreaCode && typeof phoneNumber === 'string') {
-      setPhoneNumber(removeAllSpaces(phoneNumber));
+      setPhoneNumber(formatUtils.removeAllSpaces(phoneNumber));
     }
   }
 

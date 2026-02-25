@@ -1,4 +1,4 @@
-import { formDiffingTool, formioFormsApiUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { formDiffingUtils, formioFormsApiUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import { backendInstance, formsService } from '../../services';
 import { NotFoundError } from './helpers/errors';
@@ -19,7 +19,7 @@ const formDiff = async (req: Request, res: Response, next: NextFunction) => {
 
     const form = formioFormsApiUtils.mapFormToNavForm(await formsService.get(formPath));
 
-    res.json(formDiffingTool.generateNavFormDiff(publishedForm, form!));
+    res.json(formDiffingUtils.generateNavFormDiff(publishedForm, form!));
   } catch (error) {
     next(error);
   }

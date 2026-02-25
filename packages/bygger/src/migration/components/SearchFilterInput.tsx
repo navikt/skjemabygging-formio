@@ -1,6 +1,6 @@
 import { Select, TextField } from '@navikt/ds-react';
 import { makeStyles } from '@navikt/skjemadigitalisering-shared-components';
-import { Operator, migrationUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { migrationUtils, Operator } from '@navikt/skjemadigitalisering-shared-domain';
 import { Dispatch } from 'react';
 import { MigrationOption } from '../../../types/migration';
 import { isJSON } from '../utils';

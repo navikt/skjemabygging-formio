@@ -1,4 +1,4 @@
-import { formatIBAN, removeAllSpaces } from '@navikt/skjemadigitalisering-shared-domain';
+import { formatUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { FocusEventHandler } from 'react';
 import BaseComponent from '../../base/BaseComponent';
 import TextField from '../../core/textfield/TextField';
@@ -52,19 +52,19 @@ class IBAN extends TextField {
 
   onBlur(): FocusEventHandler<HTMLInputElement> {
     return (event: React.FocusEvent<HTMLInputElement>) => {
-      const value = removeAllSpaces(event.currentTarget.value);
+      const value = formatUtils.removeAllSpaces(event.currentTarget.value);
       if (value !== '') {
-        super.setValueOnReactInstance(formatIBAN(value));
+        super.setValueOnReactInstance(formatUtils.formatIBAN(value));
       }
     };
   }
 
   getDisplayValue(): string {
-    return formatIBAN(super.getDisplayValue());
+    return formatUtils.formatIBAN(super.getDisplayValue());
   }
 
   handleChange(value: string) {
-    super.handleChange(removeAllSpaces(value));
+    super.handleChange(formatUtils.removeAllSpaces(value));
   }
 }
 

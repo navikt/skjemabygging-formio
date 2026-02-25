@@ -1,6 +1,7 @@
 import { HouseFillIcon } from '@navikt/aksel-icons';
 import { InternalHeader, Link } from '@navikt/ds-react';
 import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
+import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { Link as ReactRouterLink } from 'react-router';
 import { useAuth } from '../../context/auth-context';
 import useUnsavedChangesModal from '../../hooks/useUnsavedChangesModal';
@@ -17,9 +18,10 @@ export interface NavBarProps {
   formMenu?: boolean;
   formListMenu?: boolean;
   translationMenu?: boolean;
+  form?: Form;
 }
 
-export const NavBar = ({ formPath, formMenu, formListMenu, translationMenu }: NavBarProps) => {
+export const NavBar = ({ formPath, formMenu, formListMenu, translationMenu, form }: NavBarProps) => {
   const { userData } = useAuth();
   const { config } = useAppConfig();
   const styles = useNavBarStyles();
@@ -39,7 +41,7 @@ export const NavBar = ({ formPath, formMenu, formListMenu, translationMenu }: Na
           <HouseFillIcon fontSize="1.5rem" role="presentation" />
         </Link>
         <div className={styles.navBarLinks}>
-          {formMenu && <FormMenu formPath={formPath} />}
+          {formMenu && <FormMenu formPath={formPath} form={form} />}
           {formListMenu && <ListMenu />}
           {translationMenu && <TranslationsMenu />}
         </div>

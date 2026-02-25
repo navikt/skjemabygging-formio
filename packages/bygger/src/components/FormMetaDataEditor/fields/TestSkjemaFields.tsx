@@ -4,7 +4,7 @@ import { UpdateFormFunction } from '../utils/utils';
 
 import { FilesIcon } from '@navikt/aksel-icons';
 import { makeStyles, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
-import copy from '../../../util/copy';
+import copy from '../../../utils/copy';
 
 export interface TestSkjemaFieldsProps {
   onChange: UpdateFormFunction;

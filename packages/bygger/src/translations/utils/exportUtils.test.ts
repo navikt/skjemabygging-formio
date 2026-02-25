@@ -1,7 +1,7 @@
-import { Form, FormsApiTranslation, MockedComponentObjectForTest } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, FormsApiTranslation, mockedComponentObjectForTest } from '@navikt/skjemadigitalisering-shared-domain';
 import { getHeadersForExport, getRowsForExportFromForm } from './exportUtils';
 
-const { createFormsApiFormObject, createDummyTextfield, createDummyHTMLElement } = MockedComponentObjectForTest;
+const { createFormsApiFormObject, createDummyTextfield, createDummyHTMLElement } = mockedComponentObjectForTest;
 
 const withNB: FormsApiTranslation[] = [
   { key: 'nb1', nb: 'nb1' },

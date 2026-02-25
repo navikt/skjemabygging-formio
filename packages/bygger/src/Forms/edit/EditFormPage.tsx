@@ -59,6 +59,7 @@ const EditFormPage = ({ form }: EditFormPageProps) => {
           formMenu: true,
           formPath: form.path,
         }}
+        form={form}
       >
         <TitleRowLayout left={<SkjemaVisningSelect onChange={setDisplay} />}>
           <Title subTitle={skjemanummer} lockedForm={isLockedForm}>

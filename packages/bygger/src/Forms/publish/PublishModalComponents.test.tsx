@@ -1,9 +1,9 @@
-import { MockedComponentObjectForTest } from '@navikt/skjemadigitalisering-shared-domain';
+import { mockedComponentObjectForTest } from '@navikt/skjemadigitalisering-shared-domain';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import PublishModalComponents from './PublishModalComponents';
 
-const { createDummyAttachment, createFormObject, createPanelObject } = MockedComponentObjectForTest;
+const { createDummyAttachment, createFormObject, createPanelObject } = mockedComponentObjectForTest;
 
 const ERROR_MESSAGE_MISSING_KODE_OR_TITTEL =
   'Du må fylle ut vedleggskode og vedleggstittel for alle vedlegg før skjemaet kan publiseres.';

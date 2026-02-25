@@ -1,5 +1,5 @@
 import { Tag } from '@navikt/ds-react';
-import { Component, formDiffingTool } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, formDiffingUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useComponentUtils } from '../../../../context/component/componentUtilsContext';
 import baseComponentUtils from '../baseComponentUtils';
 import { ReactComponentType } from '../index';
@@ -22,7 +22,7 @@ const BuilderTags = ({ component, parent, editFields }: Props) => {
     return <></>;
   }
 
-  const diff = formDiffingTool.generateComponentDiff(component, publishedForm, editFields);
+  const diff = formDiffingUtils.generateComponentDiff(component, publishedForm, editFields);
 
   return (
     <>

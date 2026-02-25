@@ -1,8 +1,7 @@
 import { Component, navFormUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo } from 'react';
 import { useForm } from '../../../../context/form/FormContext';
-import { useLanguages } from '../../../../context/languages';
-import FormCheckboxes from './FormCheckboxes';
+import FormCheckboxes from './form/FormCheckboxes';
 
 interface Props {
   submissionPath: string;
@@ -10,7 +9,6 @@ interface Props {
 
 const SelectAttachmentList = ({ submissionPath }: Props) => {
   const { form } = useForm();
-  const { translate } = useLanguages();
 
   const attachments: Component[] = useMemo(() => {
     return navFormUtils.flattenComponents(form.components).filter((component) => component.type === 'attachment');
@@ -22,19 +20,15 @@ const SelectAttachmentList = ({ submissionPath }: Props) => {
 
   return (
     <FormCheckboxes
-      legend={translate(TEXTS.statiske.attachment.title)}
-      description={translate(TEXTS.statiske.attachment.selectAttachments)}
+      legend={TEXTS.statiske.attachment.title}
+      description={TEXTS.statiske.attachment.selectAttachments}
       submissionPath={submissionPath}
-      values={attachments?.map(({ key, label, description }) => {
+      values={attachments?.map(({ key, label }) => {
         return {
           value: key,
           label,
-          description,
         };
       })}
-      validators={{
-        required: false,
-      }}
     />
   );
 };

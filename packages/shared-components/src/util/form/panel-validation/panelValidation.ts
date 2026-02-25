@@ -1,6 +1,6 @@
 import {
   Component,
-  formSummaryUtil,
+  formSummaryUtils,
   NavFormType,
   navFormUtils,
   Panel,
@@ -32,14 +32,14 @@ const findFirstInputWithValidationError = (wizardComponent, data): string | unde
 };
 
 export const validateWizardPanels = (formioInstance, form: NavFormType, submission: Submission): PanelValidation[] => {
-  const formSummaryPanels = formSummaryUtil.createFormSummaryPanels(form, submission, (txt: string) => txt, false);
+  const formSummaryPanels = formSummaryUtils.createFormSummaryPanels(form, submission, (txt: string) => txt, false);
   return formSummaryPanels
     .map((panel) => formioInstance.components.find((wizardComponent) => wizardComponent.key === panel.key))
     .filter(
       (wizardComponent) => wizardComponent.component.type === 'panel' && !wizardComponent.component.isAttachmentPanel,
     )
     .map((panel): PanelValidation => {
-      const firstInput = formSummaryUtil.findFirstInput(panel);
+      const firstInput = formSummaryUtils.findFirstInput(panel);
       const firstInputWithValidationError = findFirstInputWithValidationError(panel, submission?.data ?? {});
       return {
         key: panel.key as string,
@@ -102,7 +102,7 @@ export const findFormStartingPoint = (
   if (!firstEmptyPanelIndex) firstEmptyPanelIndex = 0;
   // return the key of the panel and the key of the panel's first input component, if any
   const panel = panelValidations[firstEmptyPanelIndex].key;
-  const firstInputInPanel: Component | undefined = formSummaryUtil.findFirstInput(
+  const firstInputInPanel: Component | undefined = formSummaryUtils.findFirstInput(
     form.components?.[firstEmptyPanelIndex],
   );
   const component = firstInputInPanel?.key ?? '';

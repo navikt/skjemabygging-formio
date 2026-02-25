@@ -5,11 +5,16 @@ export interface FormSignatureType {
   description?: string;
 }
 
+/**
+ * Copy from shared-domain since mock cant use shared-domain
+ */
+type SubmissionType = 'PAPER' | 'DIGITAL' | 'DIGITAL_NO_LOGIN' | 'STATIC_PDF';
+
 export interface FormPropertiesType {
   formNumber: string;
   subjectOfSubmission?: string;
-  submissionTypes?: string[];
-  subsequentSubmissionTypes?: string[];
+  submissionTypes?: SubmissionType[];
+  subsequentSubmissionTypes?: SubmissionType[];
   mellomlagringDurationDays?: string;
   signatures?: {
     values: FormSignatureType[];

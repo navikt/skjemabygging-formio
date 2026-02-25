@@ -2,8 +2,8 @@
   {
     "id": "fyllut-base",
     "routes": [
-      "get-form:success",
-      "get-translations:success",
+      "get-form-deprecated:success",
+      "get-translations-deprecated:success",
       "get-global-translations:success",
       "post-azure-openid-token:success",
       "get-kodeverk-currencies:success",
@@ -30,7 +30,11 @@
       "foersteside:success",
       "merge-files:success",
       "team-logs:success",
-      "post-umami-event:success"
+      "post-umami-event:success",
+      "get-static-pdfs:success",
+      "download-static-pdf:success",
+      "get-form:success",
+      "get-form-translations:success"
     ]
   }
 ]

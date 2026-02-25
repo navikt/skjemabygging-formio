@@ -38,7 +38,7 @@ const SummaryAttachmentUpload = (props: FormComponentProps) => {
           ) : (
             <FormSummary.Value key={submissionAttachment.attachmentId}>
               <VStack gap="space-8">
-                {translate(TEXTS.statiske.attachment[submissionAttachment.value])}
+                {translate(TEXTS.statiske.attachment[submissionAttachment.value!])}
                 {submissionAttachment.additionalDocumentation && (
                   <div>{translate(submissionAttachment.additionalDocumentation)}</div>
                 )}

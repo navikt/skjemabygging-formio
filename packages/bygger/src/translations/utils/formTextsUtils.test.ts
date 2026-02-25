@@ -1,4 +1,4 @@
-import { FormsApiTranslation, MockedComponentObjectForTest, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormsApiTranslation, mockedComponentObjectForTest, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { getHeadersForExport, getRowsForExportFromForm } from './exportUtils';
 import { getTextKeysFromForm } from './formTextsUtils';
 
@@ -21,7 +21,7 @@ const {
   createFormPropertiesObject,
   createPanelObject,
   createFormsApiFormObject,
-} = MockedComponentObjectForTest;
+} = mockedComponentObjectForTest;
 
 const form = createFormsApiFormObject(
   [

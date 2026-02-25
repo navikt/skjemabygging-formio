@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { fetchFilteredEnhetsliste } from '../../../../api/enhetsliste/fetchEnhetsliste';
 import { useAppConfig } from '../../../../context/config/configContext';
 import { useForm } from '../../../../context/form/FormContext';
-import FormSelect from './FormSelect';
+import FormSelect from './form/FormSelect';
 
 interface Props {
   submissionPath: string;

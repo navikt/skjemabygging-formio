@@ -1,5 +1,5 @@
 import { FormSummary } from '@navikt/ds-react';
-import { formatNationalIdentityNumber } from '@navikt/skjemadigitalisering-shared-domain';
+import { formatUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { FormComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 import DefaultLabel from '../../shared/form-summary/DefaultLabel';
@@ -15,7 +15,7 @@ const SummaryNationalIdentityNumber = (props: FormComponentProps) => {
   return (
     <FormSummary.Answer>
       <DefaultLabel {...props} />
-      <FormSummary.Value>{formatNationalIdentityNumber(value)}</FormSummary.Value>
+      <FormSummary.Value>{formatUtils.formatNationalIdentityNumber(value)}</FormSummary.Value>
     </FormSummary.Answer>
   );
 };
