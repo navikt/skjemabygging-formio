@@ -4,6 +4,8 @@ export interface ValidateComponentType {
   minLength?: number;
   digitsOnly?: boolean;
   custom?: string;
+  min?: number | string;
+  max?: number | string;
 }
 
 const validateComponent = (props?: ValidateComponentType) => {
