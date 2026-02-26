@@ -4,6 +4,7 @@ import { Response } from 'node-fetch';
 import { config } from '../../config/config';
 import { logger } from '../../logger';
 import teamLogger from '../../logging/TeamLogger';
+import { stringifyPdf } from '../../routers/api/helpers/pdfUtils';
 import { LogMetadata } from '../../types/log';
 import { responseToError } from '../../utils/errorHandling';
 import fetchWithRetry, { HeadersInit } from '../../utils/fetchWithRetry';
@@ -53,7 +54,7 @@ const sanitizePdfFormData = (pdfFormData: string): string => {
     return pdfFormData;
   }
 
-  return JSON.stringify({
+  return stringifyPdf({
     ...data,
     label: sanitizeLabel(data.label),
     verdiliste: sanitizeList(data?.verdiliste),
