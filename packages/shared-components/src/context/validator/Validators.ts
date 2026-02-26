@@ -1,4 +1,4 @@
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { TEXTS, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback } from 'react';
 import { validateNationalIdentityNumber as validateNationalIdentityNumberUtil } from '../../components/identity/NationalIdentityNumberValidator';
 import formComponentUtils from '../../form-components/utils/formComponent';
@@ -10,6 +10,7 @@ interface Validators {
   minLength?: number;
   maxLength?: number;
   nationalIdentityNumber?: boolean;
+  coverPage?: boolean;
 }
 
 interface FormComponentValidation {
@@ -29,24 +30,12 @@ const useValidators = () => {
   const { translate } = useLanguages();
   const { submission } = useForm();
 
-  const isRequired = (value: any) => {
-    return value === '' || value === null || value === undefined || (Array.isArray(value) && value.length === 0);
-  };
-
-  const isMinLength = (value: any, minLength: number) => {
-    return (typeof value === 'string' || value instanceof String) && value.length < minLength;
-  };
-
-  const isMaxLength = (value: any, maxLength: number) => {
-    return (typeof value === 'string' || value instanceof String) && value.length > maxLength;
-  };
-
   const validateRequired = useCallback(
     (componentValidation: FormComponentValidation, value: any, errors: FormComponentError[]) => {
       const { submissionPath, ref, field, validators } = componentValidation;
 
       if (validators?.required === true) {
-        if (isRequired(value)) {
+        if (validatorUtils.isEmpty(value)) {
           errors.push({ submissionPath, ref, message: translate(TEXTS.validering.required, { field }) });
         }
       }
@@ -58,7 +47,7 @@ const useValidators = () => {
     (componentValidation: FormComponentValidation, value: any, errors: FormComponentError[]) => {
       const { submissionPath, ref, field, validators } = componentValidation;
       if (validators?.minLength !== undefined) {
-        if (isMinLength(value, validators?.minLength)) {
+        if (!validatorUtils.isValidMinLength(value, validators?.minLength)) {
           errors.push({
             submissionPath,
             ref,
@@ -74,7 +63,7 @@ const useValidators = () => {
     (componentValidation: FormComponentValidation, value: any, errors: FormComponentError[]) => {
       const { submissionPath, ref, field, validators } = componentValidation;
       if (validators?.maxLength !== undefined) {
-        if (isMaxLength(value, validators?.maxLength)) {
+        if (!validatorUtils.isValidMaxLength(value, validators?.maxLength)) {
           errors.push({
             submissionPath,
             ref,
@@ -105,6 +94,22 @@ const useValidators = () => {
     [translate],
   );
 
+  const validateCoverPage = useCallback(
+    (componentValidation: FormComponentValidation, value: any, errors: FormComponentError[]) => {
+      const { submissionPath, ref, field, validators } = componentValidation;
+      if (validators?.coverPage) {
+        if (!validatorUtils.isValidCoverPageValue(value)) {
+          errors.push({
+            submissionPath,
+            ref,
+            message: translate(TEXTS.validering.containsInvalidCharacters, { field }),
+          });
+        }
+      }
+    },
+    [translate],
+  );
+
   const validateAll = useCallback(
     (componentValidations: FormComponentValidation[]): FormComponentError[] => {
       return (
@@ -118,13 +123,21 @@ const useValidators = () => {
             validateMinLength(componentValidation, value, errors);
             validateMaxLength(componentValidation, value, errors);
             validateNationalIdentityNumber(componentValidation, value, errors);
+            validateCoverPage(componentValidation, value, errors);
 
             return errors;
           })
           .filter((componentError) => componentError !== undefined) ?? []
       );
     },
-    [submission, validateMaxLength, validateMinLength, validateRequired, validateNationalIdentityNumber],
+    [
+      submission,
+      validateMaxLength,
+      validateMinLength,
+      validateRequired,
+      validateNationalIdentityNumber,
+      validateCoverPage,
+    ],
   );
 
   return {
