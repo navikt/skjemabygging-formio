@@ -70,6 +70,7 @@ import formYourInformation from '../data/formio-api/your-information.json';
 import { bankAccountForm, bankAccountTranslations } from '../data/forms-api/components/bankAccountForm';
 import componentsForm from '../data/forms-api/components/componentsForm';
 import { conditionalRowForm, conditionalRowTranslations } from '../data/forms-api/components/conditionalRowForm';
+import { countrySelectForm, countrySelectTranslations } from '../data/forms-api/components/countrySelectForm';
 import { createMonthPickerForm, monthPickerTranslations } from '../data/forms-api/components/createMonthPickerForm';
 import { currencySelectForm, currencySelectTranslations } from '../data/forms-api/components/currencySelectForm';
 import { emailForm as emailComponentForm, emailTranslations } from '../data/forms-api/components/emailForm';
@@ -178,6 +179,7 @@ const allForms = [
   { form: organizationNumberForm(), translations: organizationNumberTranslations() },
   { form: phoneNumberForm(), translations: phoneNumberTranslations() },
   { form: passwordForm(), translations: passwordTranslations() },
+  { form: countrySelectForm(), translations: countrySelectTranslations() },
   { form: currencySelectForm(), translations: currencySelectTranslations() },
 ];
 
