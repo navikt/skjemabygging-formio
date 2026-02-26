@@ -72,6 +72,7 @@ import { conditionalRowForm, conditionalRowTranslations } from '../data/forms-ap
 import { createMonthPickerForm, monthPickerTranslations } from '../data/forms-api/components/createMonthPickerForm';
 import { firstNameForm, firstNameTranslations } from '../data/forms-api/components/firstNameForm';
 import { fnrFieldForm, fnrFieldTranslations } from '../data/forms-api/components/fnrFieldForm';
+import { ibanForm, ibanTranslations } from '../data/forms-api/components/ibanForm';
 import { navCheckboxForm, navCheckboxTranslations } from '../data/forms-api/components/navCheckboxForm';
 import { numberForm, numberTranslations } from '../data/forms-api/components/numberForm';
 import { radioPanelForm, radioPanelTranslations } from '../data/forms-api/components/radioPanelForm';
@@ -80,6 +81,7 @@ import {
   simpleConditionalTranslations,
 } from '../data/forms-api/components/simpleConditionalForm';
 import { staticPdfForm, staticPdfTranslations } from '../data/forms-api/components/staticPdfForm';
+import { surnameForm, surnameTranslations } from '../data/forms-api/components/surnameForm';
 import { textAreaForm, textAreaTranslations } from '../data/forms-api/components/textAreaForm';
 import { textFieldForm, textFieldTranslations } from '../data/forms-api/components/textFieldForm';
 import largeForm from '../data/forms-api/largeForm';
@@ -158,6 +160,8 @@ const allForms = [
   { form: textAreaForm(), translations: textAreaTranslations() },
   { form: navCheckboxForm(), translations: navCheckboxTranslations() },
   { form: firstNameForm(), translations: firstNameTranslations() },
+  { form: surnameForm(), translations: surnameTranslations() },
+  { form: ibanForm(), translations: ibanTranslations() },
 ];
 
 const findTestdata = (formPath: string) => allForms.find((testdata) => testdata.form.path === formPath);

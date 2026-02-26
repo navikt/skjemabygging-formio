@@ -1,7 +1,13 @@
 /**
  * Test functions for form components
  */
-import { Component, dateUtils, navFormUtils, stringUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  Component,
+  dateUtils,
+  formatUtils,
+  navFormUtils,
+  stringUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
 
 Cypress.Commands.add('withinComponent', (label, fn) => {
   return cy.findByLabelText(label).closest('.form-group').within(fn);
@@ -50,6 +56,8 @@ Cypress.Commands.add('testDownloadPdf', () => {
         return formatRadiopanelValue(value, component.values);
       case 'monthPicker':
         return formatMonthPickerValue(value);
+      case 'iban':
+        return formatUtils.formatIBAN(value as string);
       default:
         return value;
     }
