@@ -92,6 +92,10 @@ import { passwordForm, passwordTranslations } from '../data/forms-api/components
 import { phoneNumberForm, phoneNumberTranslations } from '../data/forms-api/components/phoneNumberForm';
 import { radioPanelForm, radioPanelTranslations } from '../data/forms-api/components/radioPanelForm';
 import {
+  selectBoxesForm as selectBoxesComponentForm,
+  selectBoxesTranslations,
+} from '../data/forms-api/components/selectBoxesForm';
+import {
   simpleConditionalForm,
   simpleConditionalTranslations,
 } from '../data/forms-api/components/simpleConditionalForm';
@@ -188,6 +192,7 @@ const allForms = [
   { form: alertForm(), translations: alertTranslations() },
   { form: htmlElementForm(), translations: htmlElementTranslations() },
   { form: imageForm(), translations: imageTranslations() },
+  { form: selectBoxesComponentForm(), translations: selectBoxesTranslations() },
   { form: countrySelectForm(), translations: countrySelectTranslations() },
   { form: navSelectForm(), translations: navSelectTranslations() },
   { form: currencySelectForm(), translations: currencySelectTranslations() },
