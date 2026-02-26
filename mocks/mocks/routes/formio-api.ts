@@ -42,7 +42,7 @@ import nav111221b from '../data/formio-api/nav111221b.json';
 import formNavdatepicker from '../data/formio-api/navdatepicker.json';
 import nologinTranslationsNb from '../data/formio-api/nologin-translations-nb.json';
 import nologinFormOld from '../data/formio-api/nologin.json';
-import numberForm from '../data/formio-api/number.json';
+import numberJsonForm from '../data/formio-api/number.json';
 import formPengerOgKonto from '../data/formio-api/pengerOgKonto.json';
 import formPhoneNumberAreaCode from '../data/formio-api/phone-number-area-code.json';
 import radioForm from '../data/formio-api/radio.json';
@@ -71,6 +71,7 @@ import componentsForm from '../data/forms-api/components/componentsForm';
 import { conditionalRowForm, conditionalRowTranslations } from '../data/forms-api/components/conditionalRowForm';
 import { createMonthPickerForm, monthPickerTranslations } from '../data/forms-api/components/createMonthPickerForm';
 import { fnrFieldForm, fnrFieldTranslations } from '../data/forms-api/components/fnrFieldForm';
+import { numberForm, numberTranslations } from '../data/forms-api/components/numberForm';
 import { radioPanelForm, radioPanelTranslations } from '../data/forms-api/components/radioPanelForm';
 import {
   simpleConditionalForm,
@@ -111,7 +112,7 @@ const allForms = [
   { form: formYear, translations: undefined },
   { form: formTextfield, translations: undefined },
   { form: formatTextfield, translations: undefined },
-  { form: numberForm, translations: undefined },
+  { form: numberJsonForm, translations: undefined },
   { form: formAccordion, translations: undefined },
   { form: checkboxForm, translations: undefined },
   { form: hiddenConditionalForm, translations: undefined },
@@ -151,6 +152,7 @@ const allForms = [
   { form: simpleConditionalForm(), translations: simpleConditionalTranslations() },
   { form: staticPdfForm(), translations: staticPdfTranslations() },
   { form: nologinForm(), translations: nologinTranslations() },
+  { form: numberForm(), translations: numberTranslations() },
   { form: textAreaForm(), translations: textAreaTranslations() },
 ];
 
