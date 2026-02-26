@@ -71,6 +71,7 @@ import { bankAccountForm, bankAccountTranslations } from '../data/forms-api/comp
 import componentsForm from '../data/forms-api/components/componentsForm';
 import { conditionalRowForm, conditionalRowTranslations } from '../data/forms-api/components/conditionalRowForm';
 import { createMonthPickerForm, monthPickerTranslations } from '../data/forms-api/components/createMonthPickerForm';
+import { currencySelectForm, currencySelectTranslations } from '../data/forms-api/components/currencySelectForm';
 import { emailForm as emailComponentForm, emailTranslations } from '../data/forms-api/components/emailForm';
 import { firstNameForm, firstNameTranslations } from '../data/forms-api/components/firstNameForm';
 import { fnrFieldForm, fnrFieldTranslations } from '../data/forms-api/components/fnrFieldForm';
@@ -177,6 +178,7 @@ const allForms = [
   { form: organizationNumberForm(), translations: organizationNumberTranslations() },
   { form: phoneNumberForm(), translations: phoneNumberTranslations() },
   { form: passwordForm(), translations: passwordTranslations() },
+  { form: currencySelectForm(), translations: currencySelectTranslations() },
 ];
 
 const findTestdata = (formPath: string) => allForms.find((testdata) => testdata.form.path === formPath);
