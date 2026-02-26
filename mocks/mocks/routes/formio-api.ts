@@ -70,6 +70,7 @@ import formYourInformation from '../data/formio-api/your-information.json';
 import componentsForm from '../data/forms-api/components/componentsForm';
 import { conditionalRowForm, conditionalRowTranslations } from '../data/forms-api/components/conditionalRowForm';
 import { createMonthPickerForm, monthPickerTranslations } from '../data/forms-api/components/createMonthPickerForm';
+import { emailForm as emailComponentForm, emailTranslations } from '../data/forms-api/components/emailForm';
 import { firstNameForm, firstNameTranslations } from '../data/forms-api/components/firstNameForm';
 import { fnrFieldForm, fnrFieldTranslations } from '../data/forms-api/components/fnrFieldForm';
 import { ibanForm, ibanTranslations } from '../data/forms-api/components/ibanForm';
@@ -162,6 +163,7 @@ const allForms = [
   { form: firstNameForm(), translations: firstNameTranslations() },
   { form: surnameForm(), translations: surnameTranslations() },
   { form: ibanForm(), translations: ibanTranslations() },
+  { form: emailComponentForm(), translations: emailTranslations() },
 ];
 
 const findTestdata = (formPath: string) => allForms.find((testdata) => testdata.form.path === formPath);
