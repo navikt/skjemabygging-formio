@@ -29,6 +29,7 @@ import htmlElement from './standard/htmlElement';
 import image from './standard/image';
 import navSelect from './standard/navSelect';
 import number from './standard/number';
+import password from './standard/password';
 import radio from './standard/radio';
 import select from './standard/select';
 import selectBoxes from './standard/selectBoxes';
@@ -70,6 +71,7 @@ export {
   number,
   organizationNumber,
   panel,
+  password,
   phoneNumber,
   radio,
   row,

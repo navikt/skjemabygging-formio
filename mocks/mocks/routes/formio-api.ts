@@ -81,6 +81,8 @@ import {
   organizationNumberForm,
   organizationNumberTranslations,
 } from '../data/forms-api/components/organizationNumberForm';
+import { passwordForm, passwordTranslations } from '../data/forms-api/components/passwordForm';
+import { phoneNumberForm, phoneNumberTranslations } from '../data/forms-api/components/phoneNumberForm';
 import { radioPanelForm, radioPanelTranslations } from '../data/forms-api/components/radioPanelForm';
 import {
   simpleConditionalForm,
@@ -173,6 +175,8 @@ const allForms = [
   { form: bankAccountForm(), translations: bankAccountTranslations() },
   { form: yearForm(), translations: yearTranslations() },
   { form: organizationNumberForm(), translations: organizationNumberTranslations() },
+  { form: phoneNumberForm(), translations: phoneNumberTranslations() },
+  { form: passwordForm(), translations: passwordTranslations() },
 ];
 
 const findTestdata = (formPath: string) => allForms.find((testdata) => testdata.form.path === formPath);
