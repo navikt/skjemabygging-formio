@@ -67,6 +67,7 @@ import formTextfield from '../data/formio-api/textfield.json';
 import formYear from '../data/formio-api/year.json';
 import formYourInformationTranslations from '../data/formio-api/your-information-translations.json';
 import formYourInformation from '../data/formio-api/your-information.json';
+import { bankAccountForm, bankAccountTranslations } from '../data/forms-api/components/bankAccountForm';
 import componentsForm from '../data/forms-api/components/componentsForm';
 import { conditionalRowForm, conditionalRowTranslations } from '../data/forms-api/components/conditionalRowForm';
 import { createMonthPickerForm, monthPickerTranslations } from '../data/forms-api/components/createMonthPickerForm';
@@ -85,6 +86,7 @@ import { staticPdfForm, staticPdfTranslations } from '../data/forms-api/componen
 import { surnameForm, surnameTranslations } from '../data/forms-api/components/surnameForm';
 import { textAreaForm, textAreaTranslations } from '../data/forms-api/components/textAreaForm';
 import { textFieldForm, textFieldTranslations } from '../data/forms-api/components/textFieldForm';
+import { yearForm, yearTranslations } from '../data/forms-api/components/yearForm';
 import largeForm from '../data/forms-api/largeForm';
 import { nologinForm, nologinTranslations } from '../data/forms-api/nologinForm';
 
@@ -164,6 +166,8 @@ const allForms = [
   { form: surnameForm(), translations: surnameTranslations() },
   { form: ibanForm(), translations: ibanTranslations() },
   { form: emailComponentForm(), translations: emailTranslations() },
+  { form: bankAccountForm(), translations: bankAccountTranslations() },
+  { form: yearForm(), translations: yearTranslations() },
 ];
 
 const findTestdata = (formPath: string) => allForms.find((testdata) => testdata.form.path === formPath);

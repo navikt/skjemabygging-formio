@@ -58,6 +58,8 @@ Cypress.Commands.add('testDownloadPdf', () => {
         return formatMonthPickerValue(value);
       case 'iban':
         return formatUtils.formatIBAN(value as string);
+      case 'bankAccount':
+        return formatUtils.formatAccountNumber(value as string);
       default:
         return value;
     }
