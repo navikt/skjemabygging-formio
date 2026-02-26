@@ -66,6 +66,8 @@ Cypress.Commands.add('testDownloadPdf', () => {
         return (value as { label: string; value: string })?.label;
       case 'landvelger':
         return (value as { label: string; value: string })?.label;
+      case 'navSelect':
+        return (value as { label: string; value: string })?.label;
       case 'phoneNumber': {
         if (typeof value === 'object' && value !== null) {
           const { areaCode, number } = value as { areaCode: string; number: string };

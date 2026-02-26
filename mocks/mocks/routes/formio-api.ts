@@ -78,6 +78,7 @@ import { firstNameForm, firstNameTranslations } from '../data/forms-api/componen
 import { fnrFieldForm, fnrFieldTranslations } from '../data/forms-api/components/fnrFieldForm';
 import { ibanForm, ibanTranslations } from '../data/forms-api/components/ibanForm';
 import { navCheckboxForm, navCheckboxTranslations } from '../data/forms-api/components/navCheckboxForm';
+import { navSelectForm, navSelectTranslations } from '../data/forms-api/components/navSelectForm';
 import { numberForm, numberTranslations } from '../data/forms-api/components/numberForm';
 import {
   organizationNumberForm,
@@ -180,6 +181,7 @@ const allForms = [
   { form: phoneNumberForm(), translations: phoneNumberTranslations() },
   { form: passwordForm(), translations: passwordTranslations() },
   { form: countrySelectForm(), translations: countrySelectTranslations() },
+  { form: navSelectForm(), translations: navSelectTranslations() },
   { form: currencySelectForm(), translations: currencySelectTranslations() },
 ];
 
