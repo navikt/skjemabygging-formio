@@ -223,7 +223,7 @@ class Address extends BaseComponent {
 
   validateTextInput(address: SubmissionAddress, addressType: SubmissionAddressType, label: string) {
     const elementId = `address:${addressType}`;
-    if (!validatorUtils.isValidFoerstesideValue((address[addressType] ?? '') as string)) {
+    if (!validatorUtils.isValidCoverPageValue((address[addressType] ?? '') as string)) {
       super.addError(this.translate('containsInvalidCharacters', { field: this.translate(label) }), elementId);
     }
   }
