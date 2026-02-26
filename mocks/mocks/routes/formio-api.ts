@@ -71,6 +71,7 @@ import componentsForm from '../data/forms-api/components/componentsForm';
 import { conditionalRowForm, conditionalRowTranslations } from '../data/forms-api/components/conditionalRowForm';
 import { createMonthPickerForm, monthPickerTranslations } from '../data/forms-api/components/createMonthPickerForm';
 import { fnrFieldForm, fnrFieldTranslations } from '../data/forms-api/components/fnrFieldForm';
+import { navCheckboxForm, navCheckboxTranslations } from '../data/forms-api/components/navCheckboxForm';
 import { numberForm, numberTranslations } from '../data/forms-api/components/numberForm';
 import { radioPanelForm, radioPanelTranslations } from '../data/forms-api/components/radioPanelForm';
 import {
@@ -154,6 +155,7 @@ const allForms = [
   { form: nologinForm(), translations: nologinTranslations() },
   { form: numberForm(), translations: numberTranslations() },
   { form: textAreaForm(), translations: textAreaTranslations() },
+  { form: navCheckboxForm(), translations: navCheckboxTranslations() },
 ];
 
 const findTestdata = (formPath: string) => allForms.find((testdata) => testdata.form.path === formPath);
