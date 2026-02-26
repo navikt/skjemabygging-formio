@@ -24,19 +24,19 @@ Cypress.Commands.add('clickErrorMessageRequired', (label) => {
 });
 
 Cypress.Commands.add('findAllByErrorMessageMinLength', (label) => {
-  return cy.findAllByText(new RegExp(`${label} må ha minst . tegn`));
+  return cy.findAllByText(new RegExp(`${label} må ha minst \\d+ tegn`));
 });
 
 Cypress.Commands.add('clickErrorMessageMinLength', (label) => {
-  return cy.findByRole('link', { name: new RegExp(`${label} må ha minst . tegn`) }).click();
+  return cy.findByRole('link', { name: new RegExp(`${label} må ha minst \\d+ tegn`) }).click();
 });
 
 Cypress.Commands.add('findAllByErrorMessageMaxLength', (label) => {
-  return cy.findAllByText(new RegExp(`${label} kan ikke ha mer enn . tegn`));
+  return cy.findAllByText(new RegExp(`${label} kan ikke ha mer enn \\d+ tegn`));
 });
 
 Cypress.Commands.add('clickErrorMessageMaxLength', (label) => {
-  return cy.findByRole('link', { name: new RegExp(`${label} kan ikke ha mer enn . tegn`) }).click();
+  return cy.findByRole('link', { name: new RegExp(`${label} kan ikke ha mer enn \\d+ tegn`) }).click();
 });
 
 Cypress.Commands.add('testDownloadPdf', () => {

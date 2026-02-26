@@ -77,6 +77,7 @@ import {
   simpleConditionalTranslations,
 } from '../data/forms-api/components/simpleConditionalForm';
 import { staticPdfForm, staticPdfTranslations } from '../data/forms-api/components/staticPdfForm';
+import { textAreaForm, textAreaTranslations } from '../data/forms-api/components/textAreaForm';
 import { textFieldForm, textFieldTranslations } from '../data/forms-api/components/textFieldForm';
 import largeForm from '../data/forms-api/largeForm';
 import { nologinForm, nologinTranslations } from '../data/forms-api/nologinForm';
@@ -150,6 +151,7 @@ const allForms = [
   { form: simpleConditionalForm(), translations: simpleConditionalTranslations() },
   { form: staticPdfForm(), translations: staticPdfTranslations() },
   { form: nologinForm(), translations: nologinTranslations() },
+  { form: textAreaForm(), translations: textAreaTranslations() },
 ];
 
 const findTestdata = (formPath: string) => allForms.find((testdata) => testdata.form.path === formPath);
