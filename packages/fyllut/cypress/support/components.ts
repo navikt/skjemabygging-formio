@@ -60,6 +60,8 @@ Cypress.Commands.add('testDownloadPdf', () => {
         return formatUtils.formatIBAN(value as string);
       case 'bankAccount':
         return formatUtils.formatAccountNumber(value as string);
+      case 'orgNr':
+        return formatUtils.formatOrganizationNumber(value as string);
       default:
         return value;
     }

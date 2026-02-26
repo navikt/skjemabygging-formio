@@ -77,6 +77,10 @@ import { fnrFieldForm, fnrFieldTranslations } from '../data/forms-api/components
 import { ibanForm, ibanTranslations } from '../data/forms-api/components/ibanForm';
 import { navCheckboxForm, navCheckboxTranslations } from '../data/forms-api/components/navCheckboxForm';
 import { numberForm, numberTranslations } from '../data/forms-api/components/numberForm';
+import {
+  organizationNumberForm,
+  organizationNumberTranslations,
+} from '../data/forms-api/components/organizationNumberForm';
 import { radioPanelForm, radioPanelTranslations } from '../data/forms-api/components/radioPanelForm';
 import {
   simpleConditionalForm,
@@ -168,6 +172,7 @@ const allForms = [
   { form: emailComponentForm(), translations: emailTranslations() },
   { form: bankAccountForm(), translations: bankAccountTranslations() },
   { form: yearForm(), translations: yearTranslations() },
+  { form: organizationNumberForm(), translations: organizationNumberTranslations() },
 ];
 
 const findTestdata = (formPath: string) => allForms.find((testdata) => testdata.form.path === formPath);
