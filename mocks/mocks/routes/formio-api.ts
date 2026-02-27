@@ -76,6 +76,7 @@ import { conditionalRowForm, conditionalRowTranslations } from '../data/forms-ap
 import { containerForm, containerTranslations } from '../data/forms-api/components/containerForm';
 import { countrySelectForm, countrySelectTranslations } from '../data/forms-api/components/countrySelectForm';
 import { createMonthPickerForm, monthPickerTranslations } from '../data/forms-api/components/createMonthPickerForm';
+import { currencyForm, currencyTranslations } from '../data/forms-api/components/currencyForm';
 import { currencySelectForm, currencySelectTranslations } from '../data/forms-api/components/currencySelectForm';
 import { dataGridForm, dataGridTranslations } from '../data/forms-api/components/dataGridForm';
 import { datePickerForm, datePickerTranslations } from '../data/forms-api/components/datePickerForm';
@@ -208,6 +209,7 @@ const allForms = [
   { form: formGroupTestForm(), translations: formGroupTranslations() },
   { form: countrySelectForm(), translations: countrySelectTranslations() },
   { form: navSelectForm(), translations: navSelectTranslations() },
+  { form: currencyForm(), translations: currencyTranslations() },
   { form: currencySelectForm(), translations: currencySelectTranslations() },
   { form: dataGridForm(), translations: dataGridTranslations() },
   { form: panelTestForm(), translations: panelTranslations() },
