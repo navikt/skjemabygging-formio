@@ -72,6 +72,7 @@ import { activitiesTestForm, activitiesTranslations } from '../data/forms-api/co
 import { addressValidityTestForm, addressValidityTranslations } from '../data/forms-api/components/addressValidityForm';
 import { adresseTestForm, adresseTranslations } from '../data/forms-api/components/adresseForm';
 import { alertForm, alertTranslations } from '../data/forms-api/components/alertForm';
+import { attachmentTestForm, attachmentTranslations } from '../data/forms-api/components/attachmentForm';
 import { bankAccountForm, bankAccountTranslations } from '../data/forms-api/components/bankAccountForm';
 import componentsForm from '../data/forms-api/components/componentsForm';
 import { conditionalRowForm, conditionalRowTranslations } from '../data/forms-api/components/conditionalRowForm';
@@ -217,6 +218,7 @@ const allForms = [
   { form: countrySelectForm(), translations: countrySelectTranslations() },
   { form: navSelectForm(), translations: navSelectTranslations() },
   { form: currencyForm(), translations: currencyTranslations() },
+  { form: attachmentTestForm(), translations: attachmentTranslations() },
   { form: currencySelectForm(), translations: currencySelectTranslations() },
   { form: dataFetcherTestForm(), translations: dataFetcherTranslations() },
   { form: dataGridForm(), translations: dataGridTranslations() },
