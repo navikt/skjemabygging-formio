@@ -81,6 +81,7 @@ import { currencyForm, currencyTranslations } from '../data/forms-api/components
 import { currencySelectForm, currencySelectTranslations } from '../data/forms-api/components/currencySelectForm';
 import { dataGridForm, dataGridTranslations } from '../data/forms-api/components/dataGridForm';
 import { datePickerForm, datePickerTranslations } from '../data/forms-api/components/datePickerForm';
+import { drivingListTestForm, drivingListTranslations } from '../data/forms-api/components/drivingListForm';
 import { emailForm as emailComponentForm, emailTranslations } from '../data/forms-api/components/emailForm';
 import { firstNameForm, firstNameTranslations } from '../data/forms-api/components/firstNameForm';
 import { fnrFieldForm, fnrFieldTranslations } from '../data/forms-api/components/fnrFieldForm';
@@ -207,6 +208,7 @@ const allForms = [
   { form: selectBoxesComponentForm(), translations: selectBoxesTranslations() },
   { form: maalgruppeForm(), translations: maalgruppeTranslations() },
   { form: datePickerForm(), translations: datePickerTranslations() },
+  { form: drivingListTestForm(), translations: drivingListTranslations() },
   { form: containerForm(), translations: containerTranslations() },
   { form: formGroupTestForm(), translations: formGroupTranslations() },
   { form: countrySelectForm(), translations: countrySelectTranslations() },
