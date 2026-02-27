@@ -68,6 +68,7 @@ import formYear from '../data/formio-api/year.json';
 import formYourInformationTranslations from '../data/formio-api/your-information-translations.json';
 import formYourInformation from '../data/formio-api/your-information.json';
 import { accordionForm, accordionTranslations } from '../data/forms-api/components/accordionForm';
+import { adresseTestForm, adresseTranslations } from '../data/forms-api/components/adresseForm';
 import { alertForm, alertTranslations } from '../data/forms-api/components/alertForm';
 import { bankAccountForm, bankAccountTranslations } from '../data/forms-api/components/bankAccountForm';
 import componentsForm from '../data/forms-api/components/componentsForm';
@@ -208,6 +209,7 @@ const allForms = [
   { form: currencySelectForm(), translations: currencySelectTranslations() },
   { form: dataGridForm(), translations: dataGridTranslations() },
   { form: panelTestForm(), translations: panelTranslations() },
+  { form: adresseTestForm(), translations: adresseTranslations() },
 ];
 
 const findTestdata = (formPath: string) => allForms.find((testdata) => testdata.form.path === formPath);
