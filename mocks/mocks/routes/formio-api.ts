@@ -76,6 +76,7 @@ import { containerForm, containerTranslations } from '../data/forms-api/componen
 import { countrySelectForm, countrySelectTranslations } from '../data/forms-api/components/countrySelectForm';
 import { createMonthPickerForm, monthPickerTranslations } from '../data/forms-api/components/createMonthPickerForm';
 import { currencySelectForm, currencySelectTranslations } from '../data/forms-api/components/currencySelectForm';
+import { dataGridForm, dataGridTranslations } from '../data/forms-api/components/dataGridForm';
 import { datePickerForm, datePickerTranslations } from '../data/forms-api/components/datePickerForm';
 import { emailForm as emailComponentForm, emailTranslations } from '../data/forms-api/components/emailForm';
 import { firstNameForm, firstNameTranslations } from '../data/forms-api/components/firstNameForm';
@@ -204,6 +205,7 @@ const allForms = [
   { form: countrySelectForm(), translations: countrySelectTranslations() },
   { form: navSelectForm(), translations: navSelectTranslations() },
   { form: currencySelectForm(), translations: currencySelectTranslations() },
+  { form: dataGridForm(), translations: dataGridTranslations() },
 ];
 
 const findTestdata = (formPath: string) => allForms.find((testdata) => testdata.form.path === formPath);
