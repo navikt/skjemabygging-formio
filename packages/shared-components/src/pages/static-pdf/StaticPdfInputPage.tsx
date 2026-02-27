@@ -41,14 +41,29 @@ const StaticPdfInputPage = () => {
           <div>
             <StaticPdfIdentityType submissionPath="identityType" />
             {!submission?.data.identityType || submission?.data.identityType === 'identityNumber' ? (
-              <FormNationalIdentityNumber submissionPath="coverPage.user.nationalIdentityNumber" />
+              <FormNationalIdentityNumber
+                submissionPath="coverPage.user.nationalIdentityNumber"
+                validators={{ required: true, coverPage: true }}
+              />
             ) : (
               <>
-                <FormFirstName submissionPath="coverPage.user.firstName" />
-                <FormSurname submissionPath="coverPage.user.surname" />
-                <FormStreetAddress submissionPath="coverPage.user.address.streetAddress" />
-                <FormPostalCode submissionPath="coverPage.user.address.postalCode" />
-                <FormPostalName submissionPath="coverPage.user.address.postalName" />
+                <FormFirstName
+                  submissionPath="coverPage.user.firstName"
+                  validators={{ required: true, coverPage: true }}
+                />
+                <FormSurname submissionPath="coverPage.user.surname" validators={{ required: true, coverPage: true }} />
+                <FormStreetAddress
+                  submissionPath="coverPage.user.address.streetAddress"
+                  validators={{ required: true, coverPage: true }}
+                />
+                <FormPostalCode
+                  submissionPath="coverPage.user.address.postalCode"
+                  validators={{ required: true, coverPage: true }}
+                />
+                <FormPostalName
+                  submissionPath="coverPage.user.address.postalName"
+                  validators={{ required: true, coverPage: true }}
+                />
                 <FormCountrySelect submissionPath="coverPage.user.address.country" />
               </>
             )}
