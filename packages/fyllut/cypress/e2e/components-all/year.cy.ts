@@ -1,3 +1,6 @@
+// Settings from Year.form.ts: label, description, additionalDescription, required, minYear, maxYear,
+// customValidation.
+
 describe('Year', () => {
   beforeEach(() => {
     cy.defaultIntercepts();

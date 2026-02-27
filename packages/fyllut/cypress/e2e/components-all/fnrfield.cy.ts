@@ -1,3 +1,10 @@
+// Settings from NationalIdentityNumber.form.ts: label, description.
+//
+// Note: NationalIdentityNumber.form.ts has no validation tab — there is no configurable 'required'
+// setting in the form builder. Required and format (checksum) validation are built-in behaviors.
+// Note: additionalDescription is not exposed in the form builder (not in NationalIdentityNumber.form.ts),
+// but the component still renders it if the value is set directly in form data. It is tested here.
+
 describe('FnrField', () => {
   beforeEach(() => {
     cy.defaultIntercepts();

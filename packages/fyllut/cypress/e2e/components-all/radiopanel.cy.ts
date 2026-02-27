@@ -1,3 +1,10 @@
+// Settings from Radio.form.ts: label, description, additionalDescription, values (with per-option description),
+// defaultValue (data), required, customValidation, properties (api).
+//
+// Note: defaultValue pre-selects a radio option but is not specifically tested here.
+// Note: customValidation is available in Radio.form.ts but is not tested here.
+// Note: properties (api tab) sets custom HTML attributes on the component and is not tested here.
+
 const assertRadioWithDescription = (label: string, description: string) => {
   cy.findByRole('radio', { name: label }).should('exist');
   cy.contains(description).should('exist');

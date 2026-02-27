@@ -1,7 +1,11 @@
+// Settings from PhoneNumber.form.ts: label, description, showAreaCode, required, minLength, maxLength,
+// customValidation.
+//
+// Note: PhoneNumber does not render description (form.ts lists it, but renderReact does not pass it to NavPhoneNumber).
+// Note: minLength, maxLength and customValidation from form.ts have no effect — checkComponentValidity is overridden
+//       without calling super, so only built-in validation (required and phone number length) runs.
+
 describe('PhoneNumber', () => {
-  // Note: PhoneNumber does not render description (form.ts lists it, but renderReact does not pass it to NavPhoneNumber).
-  // Note: minLength, maxLength and customValidation from form.ts have no effect — checkComponentValidity is overridden
-  //       without calling super, so only built-in validation (required, digitsOnly, phoneNumberLength) runs.
   beforeEach(() => {
     cy.defaultIntercepts();
   });

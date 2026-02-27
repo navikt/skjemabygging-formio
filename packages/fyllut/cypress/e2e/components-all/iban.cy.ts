@@ -1,3 +1,8 @@
+// Settings from IBAN.form.ts: label, description, required.
+//
+// Note: IBAN.form.ts has no additionalDescription or customValidation settings.
+// Note: IBAN format validation (length and checksum) is always active and not configurable.
+
 describe('IBAN', () => {
   beforeEach(() => {
     cy.defaultIntercepts();

@@ -1,3 +1,5 @@
+// Settings from Checkbox.form.ts: label, description, additionalDescription, required, customValidation.
+
 describe('NavCheckbox', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
