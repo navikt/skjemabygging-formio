@@ -1,6 +1,3 @@
-// Settings from MonthPicker.form.ts: label, description, additionalDescription, required, minYear, maxYear,
-// limitRelativelyToToday (earliestAllowedDate / latestAllowedDate).
-
 describe('MonthPicker', () => {
   beforeEach(() => {
     // Overwrite native global definition of current date

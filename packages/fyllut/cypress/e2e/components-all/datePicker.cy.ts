@@ -1,7 +1,3 @@
-// Note: visArvelger (showYearPicker) is defined in DatePicker.form.ts but is NOT passed to the
-// ReactDatePicker component in DatePicker.tsx. The calendar year dropdown (dropdownCaption) is
-// only shown when both fromDate AND toDate are set, not controlled by visArvelger.
-//
 // Note: beforeDateInputKey (fra-til-dato, date constraint relative to another field) and
 // customValidation require more complex setup and are not tested here.
 

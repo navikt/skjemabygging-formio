@@ -1,9 +1,3 @@
-// Settings from TextField.form.ts: label, fieldSize, description, additionalDescription, autoComplete,
-// spellCheck, calculateValue (data), required, digitsOnly, minLength, maxLength, customValidation.
-//
-// Note: fieldSize controls the visual width of the input and is not specifically tested.
-// Note: autoComplete and spellCheck are tested together in the 'should have properties' test.
-
 describe('TextField', () => {
   beforeEach(() => {
     cy.defaultIntercepts();

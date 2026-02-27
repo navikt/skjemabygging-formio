@@ -1,8 +1,3 @@
-// Note: hideLabel is always true for DrivingList — the component label is never rendered.
-//
-// Note: DrivingList.form.ts only has label, description, and additionalDescription settings.
-// There are no validation (required/customValidation) or data (calculateValue) settings exposed.
-//
 // Note: Digital mode (DrivingListFromActivities) requires an external activities API and is not
 // tested here.
 

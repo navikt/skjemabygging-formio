@@ -1,9 +1,3 @@
-// Settings from SelectBoxes.form.ts: label, description, additionalDescription, values (with per-option
-// description), defaultValue (data), required, customValidation.
-//
-// Note: customValidation is available in SelectBoxes.form.ts but is not tested here
-// as it requires custom server-side validation logic.
-
 describe('SelectBoxes', () => {
   beforeEach(() => {
     cy.defaultIntercepts();

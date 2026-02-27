@@ -1,18 +1,3 @@
-// DataGrid (isNavDataGrid) renders a <fieldset> with optional label, description, rowTitle,
-// and add/remove buttons.
-// Settings from DataGrid.form.ts: label, rowTitle, description, addAnother, removeAnother.
-//
-// The DataGrid uses a custom EJS template (navdesign/datagrid/form.ejs).
-// - label is rendered as <legend class="aksel-fieldset__legend-formio-template"> for the fieldset
-//   when hideLabel is false.
-// - description is rendered as <div class="description"> inside the fieldset.
-// - rowTitle is rendered as <legend class="aksel-fieldset__legend-formio-template"> per row.
-// - addAnother sets the "Legg til" button text (defaults to 'Legg til').
-// - removeAnother sets the "Fjern" button text (defaults to 'Fjern').
-//   The remove button only appears when there are 2+ rows (index > 0 || rows.length > 1).
-//
-// Note: DataGrid has no validation settings — checkComponentValidity always returns true.
-
 describe('DataGrid', () => {
   beforeEach(() => {
     cy.defaultIntercepts();

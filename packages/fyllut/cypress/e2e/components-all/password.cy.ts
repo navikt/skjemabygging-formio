@@ -1,9 +1,3 @@
-// Note: Password uses TextField.form.ts (no dedicated Password.form.ts exists).
-// Note: Password fields have protected: true — their values are stripped from submission data.
-//       testDownloadPdf is therefore skipped; the PDF renderer receives no password values.
-// Note: fieldSize, autoComplete, spellCheck, calculateValue are inherited from TextField.form.ts
-//       but are not specifically tested here as they are identical to the TextField test.
-
 describe('Password', () => {
   beforeEach(() => {
     cy.defaultIntercepts();

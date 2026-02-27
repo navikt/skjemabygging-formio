@@ -1,7 +1,3 @@
-// Settings from AccountNumber.form.ts: label, description, additionalDescription, required, customValidation.
-//
-// Note: customValidation is available in AccountNumber.form.ts but is not tested here.
-
 describe('BankAccount', () => {
   beforeEach(() => {
     cy.defaultIntercepts();

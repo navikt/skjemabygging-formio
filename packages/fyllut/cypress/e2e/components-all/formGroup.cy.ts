@@ -1,17 +1,3 @@
-// FormGroup (navSkjemagruppe) renders a <fieldset> with a <legend> and optional description.
-// Settings from FormGroup.form.ts: legend (label), description, backgroundColor, conditional.
-//
-// Note: FormGroup uses a custom EJS template (navSkjemagruppe/form.ejs), not React.
-// The legend is wrapped in a <span class="label-track-changes"> inside the <fieldset>,
-// so findByRole('group', { name: ... }) does not resolve the accessible name correctly.
-// Use .formio-component-{key} + .aksel-fieldset__legend-formio-template selectors instead.
-//
-// Description renders as <div class="description"> inside the fieldset.
-// backgroundColor: true (default) adds CSS class 'aksel-fieldset__content--background-color'.
-// backgroundColor: false removes the background color class.
-//
-// Note: FormGroup has no additionalDescription or validation settings.
-
 describe('FormGroup', () => {
   beforeEach(() => {
     cy.defaultIntercepts();

@@ -1,7 +1,4 @@
 // Note: altText is rendered directly as the img alt attribute and is not translated.
-// Note: BuilderTags in Image.tsx only renders in builder mode, not in fyllut.
-// Note: The image component only renders if the image array is non-empty (image.length > 0).
-//       If no image is uploaded in the form builder, nothing is shown.
 
 describe('Image', () => {
   beforeEach(() => {

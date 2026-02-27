@@ -1,17 +1,3 @@
-// Settings from DataFetcher.form.ts:
-// - label ✓
-// - showOther ✓
-// - dataFetcherSourceId ✓
-// - description ✓
-// - additionalDescription ✓
-// - required (validation tested via error summary)
-// - customValidation (requires custom JS setup, not tested here)
-// - key (internal identifier, not rendered visually)
-// - queryParams (backend filtering, not testable in isolation)
-// - conditional (tested via visibility)
-//
-// Note: Paper mode hides the component entirely and skips API fetch.
-
 describe('DataFetcher', () => {
   const LABEL = 'Aktivitetsvelger';
   const LABEL_WITH_DESCRIPTION = 'Aktivitetsvelger med beskrivelse';

@@ -1,8 +1,3 @@
-// Settings from Email.form.ts: label, description, required, customValidation.
-//
-// Note: Email.form.ts has no additionalDescription setting.
-// Note: The email input always has autocomplete='email' as a built-in HTML attribute; this is not a builder setting.
-
 describe('Email', () => {
   beforeEach(() => {
     cy.defaultIntercepts();

@@ -1,8 +1,3 @@
-// Settings from Number.form.ts: label, inputType, fieldSize, description, additionalDescription,
-// calculateValue (data), required, minNumber, maxNumber, customValidation.
-//
-// Note: fieldSize controls the visual width of the input and is not specifically tested.
-
 describe('Number', () => {
   beforeEach(() => {
     cy.defaultIntercepts();

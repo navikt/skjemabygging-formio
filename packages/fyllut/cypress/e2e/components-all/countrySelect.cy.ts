@@ -1,8 +1,3 @@
-// Note: CountrySelect has no additionalDescription setting (not in CountrySelect.form.ts
-//       and CountrySelect.tsx renders Description directly without AdditionalDescription).
-// Note: CountrySelect has no customValidation setting (not in CountrySelect.form.ts).
-// Note: CountrySelect loads countries from a local library (i18n-iso-countries), no API call needed.
-
 describe('CountrySelect', () => {
   beforeEach(() => {
     cy.defaultIntercepts();

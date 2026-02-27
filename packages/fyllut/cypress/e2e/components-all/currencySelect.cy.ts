@@ -1,7 +1,3 @@
-// Note: CurrencySelect has no dedicated CurrencySelect.form.ts; it uses Select.form.ts.
-// Note: additionalDescription is NOT available for CurrencySelect: Select.form.ts does not
-//       include additionalDescription, and Select.tsx does not render AdditionalDescription.
-
 describe('CurrencySelect', () => {
   beforeEach(() => {
     cy.defaultIntercepts();

@@ -1,11 +1,3 @@
-// Container groups child components under a key. It uses formio's native rendering (not React).
-// Settings from Container.form.ts: label, hideLabel, yourInformation, conditional.
-//
-// Note: yourInformation is a builder metadata flag that marks the container as the sender
-// identity container on the PDF cover page. It has no visible effect in fyllut.
-//
-// Note: Container has no description, additionalDescription, or validation settings.
-
 describe('Container', () => {
   beforeEach(() => {
     cy.defaultIntercepts();

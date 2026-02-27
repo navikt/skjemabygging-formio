@@ -1,9 +1,3 @@
-// Note: textDisplay is available in Alert.form.ts with values 'form', 'formPdf', and 'pdf'.
-//       When textDisplay is 'pdf', the form builder sets hidden: true on the component, so it is
-//       not rendered in the form view. This behaviour is tested below.
-// Note: contentForPdf is available in Alert.form.ts but is deprecated and not tested.
-// Note: TextDisplayTag and BuilderTags in Alert.tsx only render in builder mode, not in fyllut.
-
 describe('Alert', () => {
   beforeEach(() => {
     cy.defaultIntercepts();

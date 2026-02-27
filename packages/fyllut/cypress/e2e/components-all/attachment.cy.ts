@@ -1,16 +1,3 @@
-// Settings from DefaultAttachment.form.ts: label, description, additionalDescription,
-// attachmentValues (data tab — which options are enabled + per-option additionalDocumentation
-// and showDeadline config), key, vedleggstittel, vedleggskode, vedleggskjema (api), conditional.
-//
-// Note: attachmentValues (data tab) configure which submission options appear (leggerVedNaa,
-// ettersender, levertTidligere, harIkke, andre, nav) and their per-option settings
-// (additionalDocumentation textarea, showDeadline alert). These are covered in
-// packages/fyllut/cypress/e2e/components-complex/attachment.cy.ts.
-// Note: vedleggstittel, vedleggskode, and vedleggskjema (api tab) are submission metadata
-// displayed on the attachment summary page — they have no visible effect on the option select.
-// Note: There are two attachmentType values: 'default' (configurable options) and 'other'
-// (fixed read-only options: leggerVedNaa + nei).
-
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
 describe('Attachment', () => {

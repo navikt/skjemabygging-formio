@@ -1,18 +1,3 @@
-// Currency (navCurrency) settings from Currency.form.ts:
-// - label: field label
-// - inputType: 'decimal' (default) or 'numeric' — controls inputmode attribute and
-//   decimal vs integer validation
-// - fieldSize: visual width of the input (not easily testable)
-// - description: description text shown below the label
-// - additionalDescription: expandable "read more" section (label + text)
-// - calculateValue: JS expression to calculate the field value automatically
-// - validate.required: whether the field is required
-// - validate.customValidation: custom JS validation expression
-//
-// Note: Currency has no min/max validation settings (unlike Number).
-// Note: Currency sets currency: 'nok' internally but this has no visual effect in the
-//   rendered form (no "kr" suffix is appended to the input).
-
 describe('Currency', () => {
   beforeEach(() => {
     cy.defaultIntercepts();

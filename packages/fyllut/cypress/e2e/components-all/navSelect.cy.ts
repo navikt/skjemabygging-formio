@@ -1,8 +1,3 @@
-// Note: NavSelect has no additionalDescription setting (not in Select.form.ts and
-//       NavSelect (Select.tsx) does not render AdditionalDescription).
-// Note: customValidation is available in Select.form.ts but is not tested here,
-//       as validation is not triggered on panel navigation for select components with validateOn: 'blur'.
-
 describe('NavSelect', () => {
   beforeEach(() => {
     cy.defaultIntercepts();

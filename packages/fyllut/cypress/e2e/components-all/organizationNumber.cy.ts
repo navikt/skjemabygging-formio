@@ -1,5 +1,3 @@
-// Settings from OrganizationNumber.form.ts: label, description, additionalDescription, required, customValidation.
-
 describe('OrganizationNumber', () => {
   beforeEach(() => {
     cy.defaultIntercepts();

@@ -1,9 +1,4 @@
-// Settings from Surname.form.ts: label, fieldSize, description, autoComplete, prefillKey (data), required.
-//
-// Note: fieldSize controls the visual width of the input and is not specifically tested.
-// Note: autoComplete sets the HTML autocomplete attribute to 'family-name'; it is not explicitly tested here.
 // Note: prefillKey ('sokerEtternavn') prefills the field from PDL in digital mode and has no visible effect in paper mode.
-// Note: Surname has no additionalDescription setting.
 
 describe('Surname', () => {
   beforeEach(() => {
