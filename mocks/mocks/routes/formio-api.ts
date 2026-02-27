@@ -75,12 +75,14 @@ import { conditionalRowForm, conditionalRowTranslations } from '../data/forms-ap
 import { countrySelectForm, countrySelectTranslations } from '../data/forms-api/components/countrySelectForm';
 import { createMonthPickerForm, monthPickerTranslations } from '../data/forms-api/components/createMonthPickerForm';
 import { currencySelectForm, currencySelectTranslations } from '../data/forms-api/components/currencySelectForm';
+import { datePickerForm, datePickerTranslations } from '../data/forms-api/components/datePickerForm';
 import { emailForm as emailComponentForm, emailTranslations } from '../data/forms-api/components/emailForm';
 import { firstNameForm, firstNameTranslations } from '../data/forms-api/components/firstNameForm';
 import { fnrFieldForm, fnrFieldTranslations } from '../data/forms-api/components/fnrFieldForm';
 import { htmlElementForm, htmlElementTranslations } from '../data/forms-api/components/htmlElementForm';
 import { ibanForm, ibanTranslations } from '../data/forms-api/components/ibanForm';
 import { imageForm, imageTranslations } from '../data/forms-api/components/imageForm';
+import { maalgruppeForm, maalgruppeTranslations } from '../data/forms-api/components/maalgruppeForm';
 import { navCheckboxForm, navCheckboxTranslations } from '../data/forms-api/components/navCheckboxForm';
 import { navSelectForm, navSelectTranslations } from '../data/forms-api/components/navSelectForm';
 import { numberForm, numberTranslations } from '../data/forms-api/components/numberForm';
@@ -193,6 +195,8 @@ const allForms = [
   { form: htmlElementForm(), translations: htmlElementTranslations() },
   { form: imageForm(), translations: imageTranslations() },
   { form: selectBoxesComponentForm(), translations: selectBoxesTranslations() },
+  { form: maalgruppeForm(), translations: maalgruppeTranslations() },
+  { form: datePickerForm(), translations: datePickerTranslations() },
   { form: countrySelectForm(), translations: countrySelectTranslations() },
   { form: navSelectForm(), translations: navSelectTranslations() },
   { form: currencySelectForm(), translations: currencySelectTranslations() },
