@@ -1,8 +1,3 @@
-// Settings from TextArea.form.ts: label, fieldSize, description, additionalDescription, autoExpand,
-// required, minLength, maxLength, customValidation.
-//
-// Note: fieldSize controls the visual width of the textarea and is not specifically tested.
-
 describe('TextArea', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
