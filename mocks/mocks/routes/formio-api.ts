@@ -9,7 +9,7 @@ import formConditionalXmas from '../data/formio-api/conditionalxmas.json';
 import formContainerDatagrid from '../data/formio-api/container-datagrid.json';
 import formContainer from '../data/formio-api/container123.json';
 import formCustomCompsAlert from '../data/formio-api/custom-components-alert.json';
-import checkboxForm from '../data/formio-api/custom-components-checkbox.json';
+import checkboxFormJson from '../data/formio-api/custom-components-checkbox.json';
 import formCustomCompsDatagrid from '../data/formio-api/custom-components-datagrid.json';
 import translationsCustomComps from '../data/formio-api/custom-components-translations.json';
 import formCustomComps from '../data/formio-api/custom-components.json';
@@ -47,7 +47,7 @@ import formPengerOgKonto from '../data/formio-api/pengerOgKonto.json';
 import formPhoneNumberAreaCode from '../data/formio-api/phone-number-area-code.json';
 import radioForm from '../data/formio-api/radio.json';
 import selectBoxesForm from '../data/formio-api/select-boxes.json';
-import selectForm from '../data/formio-api/select.json';
+import selectFormJson from '../data/formio-api/select.json';
 import formSkjemagruppeTest from '../data/formio-api/skjemagruppetest.json';
 import translationsSubmissionMethod from '../data/formio-api/submission-method-translations.json';
 import formSubmissionMethod from '../data/formio-api/submission-method.json';
@@ -74,6 +74,7 @@ import { adresseTestForm, adresseTranslations } from '../data/forms-api/componen
 import { alertForm, alertTranslations } from '../data/forms-api/components/alertForm';
 import { attachmentTestForm, attachmentTranslations } from '../data/forms-api/components/attachmentForm';
 import { bankAccountForm, bankAccountTranslations } from '../data/forms-api/components/bankAccountForm';
+import { checkboxForm, checkboxTranslations } from '../data/forms-api/components/checkboxForm';
 import componentsForm from '../data/forms-api/components/componentsForm';
 import { conditionalRowForm, conditionalRowTranslations } from '../data/forms-api/components/conditionalRowForm';
 import { containerForm, containerTranslations } from '../data/forms-api/components/containerForm';
@@ -94,8 +95,6 @@ import { ibanForm, ibanTranslations } from '../data/forms-api/components/ibanFor
 import { identityTestForm, identityTranslations } from '../data/forms-api/components/identityForm';
 import { imageForm, imageTranslations } from '../data/forms-api/components/imageForm';
 import { maalgruppeForm, maalgruppeTranslations } from '../data/forms-api/components/maalgruppeForm';
-import { navCheckboxForm, navCheckboxTranslations } from '../data/forms-api/components/navCheckboxForm';
-import { navSelectForm, navSelectTranslations } from '../data/forms-api/components/navSelectForm';
 import { numberForm, numberTranslations } from '../data/forms-api/components/numberForm';
 import {
   organizationNumberForm,
@@ -109,6 +108,7 @@ import {
   selectBoxesForm as selectBoxesComponentForm,
   selectBoxesTranslations,
 } from '../data/forms-api/components/selectBoxesForm';
+import { selectForm, selectTranslations } from '../data/forms-api/components/selectForm';
 import {
   simpleConditionalForm,
   simpleConditionalTranslations,
@@ -152,11 +152,11 @@ const allForms = [
   { form: formatTextfield, translations: undefined },
   { form: numberJsonForm, translations: undefined },
   { form: formAccordion, translations: undefined },
-  { form: checkboxForm, translations: undefined },
+  { form: checkboxFormJson, translations: undefined },
   { form: hiddenConditionalForm, translations: undefined },
   { form: radioForm, translations: undefined },
   { form: selectBoxesForm, translations: undefined },
-  { form: selectForm, translations: undefined },
+  { form: selectFormJson, translations: undefined },
   { form: monthPickerForm, translations: undefined },
   { form: emailForm, translations: undefined },
   { form: nav111221b, translations: nav111221bTranslations },
@@ -192,7 +192,7 @@ const allForms = [
   { form: nologinForm(), translations: nologinTranslations() },
   { form: numberForm(), translations: numberTranslations() },
   { form: textAreaForm(), translations: textAreaTranslations() },
-  { form: navCheckboxForm(), translations: navCheckboxTranslations() },
+  { form: checkboxForm(), translations: checkboxTranslations() },
   { form: firstNameForm(), translations: firstNameTranslations() },
   { form: surnameForm(), translations: surnameTranslations() },
   { form: ibanForm(), translations: ibanTranslations() },
@@ -216,7 +216,7 @@ const allForms = [
   { form: containerForm(), translations: containerTranslations() },
   { form: formGroupTestForm(), translations: formGroupTranslations() },
   { form: countrySelectForm(), translations: countrySelectTranslations() },
-  { form: navSelectForm(), translations: navSelectTranslations() },
+  { form: selectForm(), translations: selectTranslations() },
   { form: currencyForm(), translations: currencyTranslations() },
   { form: attachmentTestForm(), translations: attachmentTranslations() },
   { form: currencySelectForm(), translations: currencySelectTranslations() },

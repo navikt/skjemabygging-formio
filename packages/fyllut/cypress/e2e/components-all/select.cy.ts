@@ -1,11 +1,11 @@
-describe('NavSelect', () => {
+describe('Select', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
   });
 
   describe('Display', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/navselect/visning?sub=paper');
+      cy.visit('/fyllut/select/visning?sub=paper');
       cy.defaultWaits();
     });
 
@@ -35,7 +35,7 @@ describe('NavSelect', () => {
 
   describe('Validation', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/navselect/validering?sub=paper');
+      cy.visit('/fyllut/select/validering?sub=paper');
       cy.defaultWaits();
     });
 
@@ -57,7 +57,7 @@ describe('NavSelect', () => {
 
   describe('Form', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/navselect?sub=paper');
+      cy.visit('/fyllut/select?sub=paper');
       cy.defaultWaits();
     });
 
@@ -97,7 +97,7 @@ describe('NavSelect', () => {
 
   describe('Translation', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/navselect/visning?sub=paper&lang=en');
+      cy.visit('/fyllut/select/visning?sub=paper&lang=en');
       cy.defaultWaits();
     });
 

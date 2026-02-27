@@ -2,11 +2,11 @@ import { checkbox, panel } from '../../../form-builder/components';
 import form from '../../../form-builder/form/form';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
 
-const navCheckboxForm = () => {
-  const formNumber = 'navcheckbox';
+const checkboxForm = () => {
+  const formNumber = 'checkbox';
 
   return form({
-    title: 'NavCheckbox component test form',
+    title: 'Checkbox component test form',
     formNumber: formNumber,
     path: formNumber,
     components: [
@@ -51,8 +51,8 @@ const navCheckboxForm = () => {
   });
 };
 
-const navCheckboxTranslations = () => {
-  return getMockTranslationsFromForm(navCheckboxForm());
+const checkboxTranslations = () => {
+  return getMockTranslationsFromForm(checkboxForm());
 };
 
-export { navCheckboxForm, navCheckboxTranslations };
+export { checkboxForm, checkboxTranslations };

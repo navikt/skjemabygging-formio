@@ -8,11 +8,11 @@ const options = [
   { label: 'Alternativ 3', value: 'alt3' },
 ];
 
-const navSelectForm = () => {
-  const formNumber = 'navselect';
+const selectForm = () => {
+  const formNumber = 'select';
 
   return form({
-    title: 'NavSelect component test form',
+    title: 'Select component test form',
     formNumber: formNumber,
     path: formNumber,
     components: [
@@ -48,6 +48,6 @@ const navSelectForm = () => {
   });
 };
 
-const navSelectTranslations = () => getMockTranslationsFromForm(navSelectForm());
+const selectTranslations = () => getMockTranslationsFromForm(selectForm());
 
-export { navSelectForm, navSelectTranslations };
+export { selectForm, selectTranslations };

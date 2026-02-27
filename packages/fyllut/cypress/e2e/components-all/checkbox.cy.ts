@@ -1,11 +1,11 @@
-describe('NavCheckbox', () => {
+describe('Checkbox', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
   });
 
   describe('Display', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/navcheckbox/visning?sub=paper');
+      cy.visit('/fyllut/checkbox/visning?sub=paper');
       cy.defaultWaits();
     });
 
@@ -28,7 +28,7 @@ describe('NavCheckbox', () => {
 
   describe('Validation', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/navcheckbox/validering?sub=paper');
+      cy.visit('/fyllut/checkbox/validering?sub=paper');
       cy.defaultWaits();
     });
 
@@ -60,7 +60,7 @@ describe('NavCheckbox', () => {
 
   describe('Form', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/navcheckbox?sub=paper');
+      cy.visit('/fyllut/checkbox?sub=paper');
       cy.defaultWaits();
     });
 
@@ -99,7 +99,7 @@ describe('NavCheckbox', () => {
 
   describe('Translation', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/navcheckbox/visning?sub=paper&lang=en');
+      cy.visit('/fyllut/checkbox/visning?sub=paper&lang=en');
       cy.defaultWaits();
     });
 
