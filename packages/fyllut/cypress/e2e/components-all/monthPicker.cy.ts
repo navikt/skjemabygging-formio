@@ -11,7 +11,7 @@ describe('MonthPicker', () => {
 
   describe('Display', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/monthpicker/visning?sub=paper');
+      cy.visit('/fyllut/createmonthpicker/visning?sub=paper');
       cy.defaultWaits();
     });
 
@@ -37,7 +37,7 @@ describe('MonthPicker', () => {
 
   describe('Validation', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/monthpicker/validering?sub=paper');
+      cy.visit('/fyllut/createmonthpicker/validering?sub=paper');
       cy.defaultWaits();
     });
 
@@ -118,7 +118,7 @@ describe('MonthPicker', () => {
 
   describe('Form', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/monthpicker?sub=paper');
+      cy.visit('/fyllut/createmonthpicker?sub=paper');
       cy.defaultWaits();
     });
     it('should submit form with valid month picker values', () => {
@@ -167,7 +167,7 @@ describe('MonthPicker', () => {
 
   describe('Translations', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/monthpicker/visning?sub=paper&lang=en');
+      cy.visit('/fyllut/createmonthpicker/visning?sub=paper&lang=en');
       cy.defaultWaits();
     });
 

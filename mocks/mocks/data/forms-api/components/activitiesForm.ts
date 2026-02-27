@@ -1,9 +1,10 @@
 import { activites, panel } from '../../../form-builder/components';
 import form from '../../../form-builder/form/form';
+import formProperties from '../../../form-builder/form/formProperties';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
 
 const activitiesTestForm = () => {
-  const formNumber = 'aktiviteter';
+  const formNumber = 'activities';
 
   return form({
     title: 'Activities component test form',
@@ -24,6 +25,7 @@ const activitiesTestForm = () => {
         ],
       }),
     ],
+    properties: formProperties({ formNumber, submissionTypes: ['DIGITAL'] }),
   });
 };
 

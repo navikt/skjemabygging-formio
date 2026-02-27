@@ -21,7 +21,7 @@ describe('Identity', () => {
 
   describe('Default label', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/identitet/standard?sub=paper');
+      cy.visit('/fyllut/identity/standard?sub=paper');
       cy.defaultWaits();
     });
 
@@ -47,7 +47,7 @@ describe('Identity', () => {
 
   describe('Custom label (customLabels.doYouHaveIdentityNumber)', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/identitet/tilpassetledetekst?sub=paper');
+      cy.visit('/fyllut/identity/tilpassetledetekst?sub=paper');
       cy.defaultWaits();
     });
 
@@ -63,7 +63,7 @@ describe('Identity', () => {
 
   describe('Translation', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/identitet/tilpassetledetekst?sub=paper&lang=en');
+      cy.visit('/fyllut/identity/tilpassetledetekst?sub=paper&lang=en');
       cy.defaultWaits();
     });
 

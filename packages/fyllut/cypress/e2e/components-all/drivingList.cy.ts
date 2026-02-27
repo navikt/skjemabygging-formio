@@ -19,7 +19,7 @@ describe('DrivingList', () => {
 
   describe('Display', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/kjoreliste/standard?sub=paper');
+      cy.visit('/fyllut/drivinglist/standard?sub=paper');
       cy.defaultWaits();
     });
 
@@ -73,7 +73,7 @@ describe('DrivingList', () => {
 
   describe('Description', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/kjoreliste/beskrivelse?sub=paper');
+      cy.visit('/fyllut/drivinglist/beskrivelse?sub=paper');
       cy.defaultWaits();
     });
 
@@ -91,7 +91,7 @@ describe('DrivingList', () => {
 
   describe('Translation', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/kjoreliste/beskrivelse?sub=paper&lang=en');
+      cy.visit('/fyllut/drivinglist/beskrivelse?sub=paper&lang=en');
       cy.defaultWaits();
     });
 

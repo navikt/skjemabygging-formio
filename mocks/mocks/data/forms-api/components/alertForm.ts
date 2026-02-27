@@ -3,7 +3,7 @@ import form from '../../../form-builder/form/form';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
 
 const alertForm = () => {
-  const formNumber = 'alertstripe';
+  const formNumber = 'alert';
 
   return form({
     title: 'Alert component test form',

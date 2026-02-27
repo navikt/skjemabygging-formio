@@ -1,12 +1,3 @@
-// Note: Activities ONLY renders in digital mode (submissionMethod === 'digital').
-// In paper mode the component renders nothing. All tests must use ?sub=digital.
-//
-// Note: Activities.form.ts only exposes label, description, and additionalDescription settings.
-// There are no validation (required is handled by custom checkValidity) or data settings.
-//
-// Note: Activities fetches from the send-inn activities API when isLoggedIn is true (always
-// true in the local dev/test environment). The mock returns one activity: "Arbeidstrening".
-
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
 const ACTIVITIES_LABEL = TEXTS.statiske.activities.label;
@@ -27,7 +18,7 @@ describe('Activities', () => {
 
   describe('Display', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/aktiviteter/visning?sub=digital');
+      cy.visit('/fyllut/activities/visning?sub=digital');
       cy.defaultWaits();
       cy.wait('@getActivities');
     });
@@ -80,7 +71,7 @@ describe('Activities', () => {
 
   describe('Translation', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/aktiviteter/visning?sub=digital&lang=en');
+      cy.visit('/fyllut/activities/visning?sub=digital&lang=en');
       cy.defaultWaits();
       cy.wait('@getActivities');
     });

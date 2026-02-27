@@ -11,7 +11,7 @@ describe('Alert', () => {
 
   describe('Display', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/alertstripe/visning?sub=paper');
+      cy.visit('/fyllut/alert/visning?sub=paper');
       cy.defaultWaits();
     });
 
@@ -42,7 +42,7 @@ describe('Alert', () => {
 
   describe('Translation', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/alertstripe/visning?sub=paper&lang=en');
+      cy.visit('/fyllut/alert/visning?sub=paper&lang=en');
       cy.defaultWaits();
     });
 

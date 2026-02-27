@@ -3,7 +3,7 @@ import form from '../../../form-builder/form/form';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
 
 const drivingListTestForm = () => {
-  const formNumber = 'kjoreliste';
+  const formNumber = 'drivinglist';
 
   return form({
     title: 'DrivingList component test form',

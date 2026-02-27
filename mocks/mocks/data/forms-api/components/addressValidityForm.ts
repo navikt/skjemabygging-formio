@@ -3,7 +3,7 @@ import form from '../../../form-builder/form/form';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
 
 const addressValidityTestForm = () => {
-  const formNumber = 'adressevarighet';
+  const formNumber = 'addressvalidity';
 
   return form({
     title: 'AddressValidity component test form',

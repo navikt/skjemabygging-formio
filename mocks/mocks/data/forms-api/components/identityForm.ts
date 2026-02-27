@@ -3,7 +3,7 @@ import form from '../../../form-builder/form/form';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
 
 const identityTestForm = () => {
-  const formNumber = 'identitet';
+  const formNumber = 'identity';
 
   return form({
     title: 'Identity component test form',

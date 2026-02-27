@@ -1,20 +1,3 @@
-// Address (navAddress) renders different fields depending on addressType setting.
-// Settings from Address.form.ts: prefillKey, customLabels.livesInNorway, addressType, required.
-//
-// - addressType: 'NORWEGIAN_ADDRESS' shows C/O, Vegadresse, Postnummer, Poststed.
-// - addressType: 'POST_OFFICE_BOX' shows C/O, Postboks, Postnummer, Poststed.
-// - addressType: 'FOREIGN_ADDRESS' shows C/O, Vegnavn og husnummer.., Bygning, Postnummer,
-//   By/stedsnavn, Region, and a Land combobox.
-// - When prefillKey is set (and no addressType), paper mode shows an address type choice:
-//   "Bor du i Norge?" radio. The customLabels.livesInNorway setting customizes this label.
-//   Selecting "Ja" shows "Er kontaktadressen en vegadresse eller postboksadresse?".
-//
-// Note: Address has hideLabel: true by default — the component label is not displayed.
-// Note: Field labels inside the address come from static TEXTS (not translated via
-//   component-level translations), so there are no component translation tests here.
-// Note: addressPriority (bosted/opphold/kontakt) is only relevant for prefill from PDL
-//   in digital mode — it has no visible effect in paper mode testing.
-
 describe('Address', () => {
   beforeEach(() => {
     cy.defaultIntercepts();

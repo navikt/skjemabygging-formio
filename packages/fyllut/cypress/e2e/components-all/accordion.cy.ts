@@ -1,7 +1,3 @@
-// Note: titleSize is available in Accordion.form.ts (values: XS, S) but is not used in
-//       Accordion.tsx renderReact — getTitleSize() is defined but never passed to NavAccordion.
-//       The setting therefore has no visual effect and is not tested.
-
 describe('Accordion', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
