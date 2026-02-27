@@ -1,4 +1,4 @@
-const isValidFoerstesideValue = (value: string) => {
+const isValidCoverPageValue = (value: string) => {
   // Regex is from "foerstesidegenerator" and checks that a string only contains characters that are defined as valid.
   // https://github.com/navikt/foerstesidegenerator/blob/20170afdb8e8efbfa7ced1940290ff40cdc7bb95/app/src/main/java/no/nav/foerstesidegenerator/service/support/PostFoerstesideRequestValidator.java#L42C70-L42C124
   // The flag /u enables full Unicode support. Allows us to match based on Unicode properties such as:
@@ -44,11 +44,26 @@ const isValidUuid = (value: string): boolean => {
   return validUuidExpr.test(value);
 };
 
+const isEmpty = (value: any) => {
+  return value === '' || value === null || value === undefined || (Array.isArray(value) && value.length === 0);
+};
+
+const isValidMinLength = (value: any, minLength: number) => {
+  return (typeof value === 'string' || value instanceof String) && value.length < minLength;
+};
+
+const isValidMaxLength = (value: any, maxLength: number) => {
+  return (typeof value === 'string' || value instanceof String) && value.length > maxLength;
+};
+
 const validatorUtils = {
   isOrganizationNumber,
   isAccountNumber,
-  isValidFoerstesideValue,
+  isValidCoverPageValue,
   isValidUuid,
+  isEmpty,
+  isValidMinLength,
+  isValidMaxLength,
 };
 
 export { validatorUtils };
