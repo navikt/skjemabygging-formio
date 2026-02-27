@@ -93,6 +93,7 @@ import {
   organizationNumberForm,
   organizationNumberTranslations,
 } from '../data/forms-api/components/organizationNumberForm';
+import { panelTestForm, panelTranslations } from '../data/forms-api/components/panelForm';
 import { passwordForm, passwordTranslations } from '../data/forms-api/components/passwordForm';
 import { phoneNumberForm, phoneNumberTranslations } from '../data/forms-api/components/phoneNumberForm';
 import { radioPanelForm, radioPanelTranslations } from '../data/forms-api/components/radioPanelForm';
@@ -206,6 +207,7 @@ const allForms = [
   { form: navSelectForm(), translations: navSelectTranslations() },
   { form: currencySelectForm(), translations: currencySelectTranslations() },
   { form: dataGridForm(), translations: dataGridTranslations() },
+  { form: panelTestForm(), translations: panelTranslations() },
 ];
 
 const findTestdata = (formPath: string) => allForms.find((testdata) => testdata.form.path === formPath);
