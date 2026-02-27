@@ -72,6 +72,7 @@ import { alertForm, alertTranslations } from '../data/forms-api/components/alert
 import { bankAccountForm, bankAccountTranslations } from '../data/forms-api/components/bankAccountForm';
 import componentsForm from '../data/forms-api/components/componentsForm';
 import { conditionalRowForm, conditionalRowTranslations } from '../data/forms-api/components/conditionalRowForm';
+import { containerForm, containerTranslations } from '../data/forms-api/components/containerForm';
 import { countrySelectForm, countrySelectTranslations } from '../data/forms-api/components/countrySelectForm';
 import { createMonthPickerForm, monthPickerTranslations } from '../data/forms-api/components/createMonthPickerForm';
 import { currencySelectForm, currencySelectTranslations } from '../data/forms-api/components/currencySelectForm';
@@ -79,6 +80,7 @@ import { datePickerForm, datePickerTranslations } from '../data/forms-api/compon
 import { emailForm as emailComponentForm, emailTranslations } from '../data/forms-api/components/emailForm';
 import { firstNameForm, firstNameTranslations } from '../data/forms-api/components/firstNameForm';
 import { fnrFieldForm, fnrFieldTranslations } from '../data/forms-api/components/fnrFieldForm';
+import { formGroupTestForm, formGroupTranslations } from '../data/forms-api/components/formGroupForm';
 import { htmlElementForm, htmlElementTranslations } from '../data/forms-api/components/htmlElementForm';
 import { ibanForm, ibanTranslations } from '../data/forms-api/components/ibanForm';
 import { imageForm, imageTranslations } from '../data/forms-api/components/imageForm';
@@ -197,6 +199,8 @@ const allForms = [
   { form: selectBoxesComponentForm(), translations: selectBoxesTranslations() },
   { form: maalgruppeForm(), translations: maalgruppeTranslations() },
   { form: datePickerForm(), translations: datePickerTranslations() },
+  { form: containerForm(), translations: containerTranslations() },
+  { form: formGroupTestForm(), translations: formGroupTranslations() },
   { form: countrySelectForm(), translations: countrySelectTranslations() },
   { form: navSelectForm(), translations: navSelectTranslations() },
   { form: currencySelectForm(), translations: currencySelectTranslations() },
