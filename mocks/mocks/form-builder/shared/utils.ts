@@ -68,6 +68,13 @@ const getMockTranslationsFromComponents = (components: any[], language: string) 
     if (component.removeAnother) {
       translations[component.removeAnother] = insertLanguage(component.removeAnother, language);
     }
+    if (component.customLabels) {
+      Object.values(component.customLabels).forEach((value) => {
+        if (typeof value === 'string' && value) {
+          translations[value] = insertLanguage(value, language);
+        }
+      });
+    }
     if (component.values) {
       component.values.forEach((value: any) => {
         if (value.label) {

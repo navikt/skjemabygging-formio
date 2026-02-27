@@ -85,6 +85,7 @@ import { fnrFieldForm, fnrFieldTranslations } from '../data/forms-api/components
 import { formGroupTestForm, formGroupTranslations } from '../data/forms-api/components/formGroupForm';
 import { htmlElementForm, htmlElementTranslations } from '../data/forms-api/components/htmlElementForm';
 import { ibanForm, ibanTranslations } from '../data/forms-api/components/ibanForm';
+import { identityTestForm, identityTranslations } from '../data/forms-api/components/identityForm';
 import { imageForm, imageTranslations } from '../data/forms-api/components/imageForm';
 import { maalgruppeForm, maalgruppeTranslations } from '../data/forms-api/components/maalgruppeForm';
 import { navCheckboxForm, navCheckboxTranslations } from '../data/forms-api/components/navCheckboxForm';
@@ -198,6 +199,7 @@ const allForms = [
   { form: accordionForm(), translations: accordionTranslations() },
   { form: alertForm(), translations: alertTranslations() },
   { form: htmlElementForm(), translations: htmlElementTranslations() },
+  { form: identityTestForm(), translations: identityTranslations() },
   { form: imageForm(), translations: imageTranslations() },
   { form: selectBoxesComponentForm(), translations: selectBoxesTranslations() },
   { form: maalgruppeForm(), translations: maalgruppeTranslations() },
