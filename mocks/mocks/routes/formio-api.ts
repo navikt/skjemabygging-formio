@@ -80,6 +80,7 @@ import { countrySelectForm, countrySelectTranslations } from '../data/forms-api/
 import { createMonthPickerForm, monthPickerTranslations } from '../data/forms-api/components/createMonthPickerForm';
 import { currencyForm, currencyTranslations } from '../data/forms-api/components/currencyForm';
 import { currencySelectForm, currencySelectTranslations } from '../data/forms-api/components/currencySelectForm';
+import { dataFetcherTestForm, dataFetcherTranslations } from '../data/forms-api/components/dataFetcherForm';
 import { dataGridForm, dataGridTranslations } from '../data/forms-api/components/dataGridForm';
 import { datePickerForm, datePickerTranslations } from '../data/forms-api/components/datePickerForm';
 import { drivingListTestForm, drivingListTranslations } from '../data/forms-api/components/drivingListForm';
@@ -217,6 +218,7 @@ const allForms = [
   { form: navSelectForm(), translations: navSelectTranslations() },
   { form: currencyForm(), translations: currencyTranslations() },
   { form: currencySelectForm(), translations: currencySelectTranslations() },
+  { form: dataFetcherTestForm(), translations: dataFetcherTranslations() },
   { form: dataGridForm(), translations: dataGridTranslations() },
   { form: panelTestForm(), translations: panelTranslations() },
   { form: adresseTestForm(), translations: adresseTranslations() },
