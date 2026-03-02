@@ -2,10 +2,6 @@ import { container, panel, textField } from '../../../form-builder/components';
 import form from '../../../form-builder/form/form';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
 
-// Container groups child components under a key.
-// Settings: label, hideLabel, yourInformation (+ conditional).
-// No description, additionalDescription or validation settings.
-
 const containerForm = () => {
   const formNumber = 'container';
 
