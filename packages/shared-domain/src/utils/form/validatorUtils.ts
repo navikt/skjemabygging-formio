@@ -56,11 +56,17 @@ const isValidMaxLength = (value: any, maxLength: number) => {
   return (typeof value === 'string' || value instanceof String) && value.length > maxLength;
 };
 
+const validAttachmentIdExpr = /^[a-zA-Z0-9_-]+$/;
+const isValidAttachmentId = (value: string): boolean => {
+  return validAttachmentIdExpr.test(value);
+};
+
 const validatorUtils = {
   isOrganizationNumber,
   isAccountNumber,
   isValidCoverPageValue,
   isValidUuid,
+  isValidAttachmentId,
   isEmpty,
   isValidMinLength,
   isValidMaxLength,
