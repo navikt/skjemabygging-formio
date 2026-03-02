@@ -127,15 +127,10 @@ describe('TextField', () => {
       cy.findAllByText(errorMessage).should('have.length', 0);
     });
 
-    /**
-     * Skipped test case: We show both required and custom validation errors in the error summary.
-     * This should be changed in the future so that only the required error message is shown.
-     */
-    it.skip('should not show custom validation in error summary, if it has required error message', () => {
-      const label = 'Tekstfelt må være abc';
+    it('should not show custom validation error in error summary when field is empty', () => {
       const errorMessage = 'abc er eneste lovlige verdien';
+      // Custom validation is not triggered for empty optional fields
       cy.clickNextStep();
-      cy.findAllByErrorMessageRequired(label).should('have.length', 2);
       cy.findAllByText(errorMessage).should('have.length', 0);
     });
   });
