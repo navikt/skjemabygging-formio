@@ -39,12 +39,14 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
   const [formProgressVisible, setFormProgressVisible] = useState<boolean>(false);
   const [prefillData, setPrefillData] = useState<PrefillData>({});
   const [title, setTitle] = useState<string | undefined>();
-  const { http, baseUrl, submissionMethod, logger } = useAppConfig();
+  const { attachmentPageEnabled, http, baseUrl, submissionMethod, logger } = useAppConfig();
 
   const activeAttachmentUploadsPanel = useMemo(() => {
-    const activeAttachmentPanel = navFormUtils.getActiveAttachmentPanelFromForm(form, submission, submissionMethod);
+    const activeAttachmentPanel = attachmentPageEnabled
+      ? navFormUtils.getActiveAttachmentPanelFromForm(form, submission)
+      : undefined;
     return activeAttachmentPanel ? (JSON.parse(JSON.stringify(activeAttachmentPanel)) as Panel) : undefined;
-  }, [form, submission, submissionMethod]);
+  }, [form, submission, attachmentPageEnabled]);
 
   const setDeepValue = useCallback((obj: object, path: string[], value: any) => {
     const setValue = (target: any, currentPath: string[]) => {
@@ -96,11 +98,11 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
   }, [baseUrl, form, http, submissionMethod]);
 
   useEffect(() => {
-    const currentActiveComponents = navFormUtils.getActiveComponentsFromForm(form, submission, submissionMethod);
+    const currentActiveComponents = navFormUtils.getActiveComponentsFromForm(form, submission);
     logger?.debug('Current active components', { form, currentActiveComponents });
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setActiveComponents(currentActiveComponents);
-  }, [form, logger, submission, submissionMethod]);
+  }, [form, logger, submission]);
 
   return (
     <FormContext.Provider

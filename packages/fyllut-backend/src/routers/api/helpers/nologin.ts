@@ -27,7 +27,7 @@ const assembleNologinSoknadBody = (
   translate: (text: string, textReplacements?: I18nTranslationMap) => string,
 ): SubmitApplicationRequest => {
   const activeAttachments: Component[] =
-    navFormUtils.getActiveAttachmentPanelFromForm(form, submission, 'digitalnologin')?.components ?? [];
+    navFormUtils.getActiveAttachmentPanelFromForm(form, submission)?.components ?? [];
   const bruker = extractBruker(form, submission);
   const avsender =
     extractAvsender(submission) ?? (bruker ? undefined : extractAvsenderFromYourInformation(form, submission));

@@ -19,8 +19,6 @@ const attachmentSettingKeys = [
   'nav',
 ] as const;
 
-const renderAttachmentPanel = (submissionMethod?: string) => submissionMethod !== 'digital';
-
 const enableAttachmentUpload = (submissionMethod?: string) =>
   submissionMethod === 'digital' || submissionMethod === 'digitalnologin';
 
@@ -86,7 +84,6 @@ const mapToAttachmentSummary = ({
 };
 
 const attachmentUtils = {
-  renderAttachmentPanel,
   enableAttachmentUpload,
   mapToAttachmentSummary,
   mapKeysToOptions,
