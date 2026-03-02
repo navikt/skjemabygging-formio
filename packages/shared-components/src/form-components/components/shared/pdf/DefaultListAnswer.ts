@@ -1,7 +1,8 @@
+import { PdfData } from '@navikt/skjemadigitalisering-shared-domain';
 import { PdfComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 
-const DefaultListAnswer = (props: PdfComponentProps) => {
+const DefaultListAnswer = (props: PdfComponentProps): PdfData | null => {
   const { component, submissionPath, submission, translate } = props;
   const { values, label } = component;
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);

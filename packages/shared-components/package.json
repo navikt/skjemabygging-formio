@@ -31,7 +31,6 @@
     "@navikt/fnrvalidator": "^2.2.1",
     "@navikt/nav-dekoratoren-moduler": "^3.6.1",
     "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
-    "@types/dompurify": "^3.2.0",
     "clsx": "^2.1.1",
     "dompurify": "^3.3.1",
     "eventemitter2": "^6.4.9",
@@ -48,6 +47,7 @@
   },
   "devDependencies": {
     "@testing-library/react": "^16.3.2",
+    "@types/dompurify": "^3.2.0",
     "i18next": "^25.8.0",
     "lodash.merge": "^4.6.2",
     "lodash.template": "^4.5.0",

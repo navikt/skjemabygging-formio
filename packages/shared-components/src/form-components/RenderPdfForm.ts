@@ -3,6 +3,8 @@ import {
   dateUtils,
   Form,
   Panel,
+  PdfData,
+  PdfFormData,
   Submission,
   SubmissionMethod,
   TEXTS,
@@ -48,7 +50,6 @@ import {
 } from './components/standard';
 import { PdfActivities, PdfDataFetcher, PdfDrivingList, PdfMaalgruppe } from './components/system';
 import renderPdfComponent from './render/RenderPdfComponent';
-import { PdfFormData } from './types';
 
 interface Props {
   activeComponents: Component[];
@@ -166,7 +167,7 @@ const renderPdfForm = ({
           ]
         : []),
       PdfSignature({ properties: form.properties, submission, translate, submissionMethod }),
-    ].filter(Boolean),
+    ].filter(Boolean) as PdfData[],
     skjemanummer: form.properties?.skjemanummer,
     pdfConfig: {
       harInnholdsfortegnelse: false,

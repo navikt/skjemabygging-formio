@@ -1,8 +1,8 @@
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { PdfData, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { PdfComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 
-const PdfCheckbox = (props: PdfComponentProps) => {
+const PdfCheckbox = (props: PdfComponentProps): PdfData | null => {
   const { component, submissionPath, submission, translate } = props;
   const { label } = component;
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
