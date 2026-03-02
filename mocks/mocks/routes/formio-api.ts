@@ -101,7 +101,6 @@ import {
   organizationNumberTranslations,
 } from '../data/forms-api/components/organizationNumberForm';
 import { panelTestForm, panelTranslations } from '../data/forms-api/components/panelForm';
-import { passwordForm, passwordTranslations } from '../data/forms-api/components/passwordForm';
 import { phoneNumberForm, phoneNumberTranslations } from '../data/forms-api/components/phoneNumberForm';
 import { radioPanelForm, radioPanelTranslations } from '../data/forms-api/components/radioPanelForm';
 import {
@@ -201,7 +200,6 @@ const allForms = [
   { form: yearForm(), translations: yearTranslations() },
   { form: organizationNumberForm(), translations: organizationNumberTranslations() },
   { form: phoneNumberForm(), translations: phoneNumberTranslations() },
-  { form: passwordForm(), translations: passwordTranslations() },
   { form: accordionForm(), translations: accordionTranslations() },
   { form: addressValidityTestForm(), translations: addressValidityTranslations() },
   { form: alertForm(), translations: alertTranslations() },
