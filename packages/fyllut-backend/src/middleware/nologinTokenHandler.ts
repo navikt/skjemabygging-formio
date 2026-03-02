@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { nologinService } from '../services';
+import { nologinTokenService } from '../services';
 
 const nologinTokenHandler = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -8,7 +8,7 @@ const nologinTokenHandler = (req: Request, res: Response, next: NextFunction) =>
       return res.sendStatus(403);
     }
 
-    const payload = nologinService.verifyToken(token);
+    const payload = nologinTokenService.verifyToken(token);
     const now = Math.floor(Date.now() / 1000);
     if (!payload || !payload.exp || payload.exp < now) {
       return res.sendStatus(401);

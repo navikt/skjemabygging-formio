@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express';
-import { appMetrics, nologinService } from '../../../services';
+import { appMetrics, nologinTokenService } from '../../../services';
 import { CaptchaError } from './types';
 
 const post: RequestHandler = async (req, res, next) => {
@@ -11,7 +11,7 @@ const post: RequestHandler = async (req, res, next) => {
       return next(new CaptchaError('Captcha validation failed due to unexpected body', req.body));
     }
 
-    const token = nologinService.generateToken();
+    const token = nologinTokenService.generateToken();
     res.json({ success: true, access_token: token });
   } catch (err) {
     next(err);

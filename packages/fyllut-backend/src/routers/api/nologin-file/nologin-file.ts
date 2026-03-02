@@ -1,13 +1,15 @@
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { TEXTS, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
-import { noLoginFileService } from '../../../services';
+import { nologinService } from '../../../services';
+import { NologinContext } from '../../../types/nologin';
 import { HttpError } from '../../../utils/errors/HttpError';
 
 const nologinFile = {
   post: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const noLoginContext = req.getNologinContext();
-      const innsendingsId = noLoginContext?.innsendingsId;
+      const noLoginContext = validateNologinContext(req.getNologinContext());
+
+      const innsendingsId = noLoginContext.innsendingsId;
       const attachmentId = req.query.attachmentId as string;
       const accessToken = req.headers.AzureAccessToken as string;
       const file = req.file;
@@ -15,12 +17,9 @@ const nologinFile = {
       if (!file?.buffer) {
         return res.status(400).json({ message: 'Error: Ingen fil sendt med forespørselen' });
       }
+      validateAttachmentId(attachmentId);
 
-      if (!innsendingsId) {
-        return res.status(500).json({ message: 'Error: innsendingsId mangler i konteksten' });
-      }
-
-      const result = await noLoginFileService.postFile(file, accessToken, attachmentId, innsendingsId);
+      const result = await nologinService.postFile(file, accessToken, attachmentId, innsendingsId);
       res.status(201).json(result);
     } catch (error: any) {
       if (error instanceof HttpError && error.http_status === 403) {
@@ -48,17 +47,37 @@ const nologinFile = {
   },
   delete: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const nologinContext = req.getNologinContext();
+      const nologinContext = validateNologinContext(req.getNologinContext());
+
+      const innsendingsId = nologinContext.innsendingsId;
       const attachmentId = req.query.attachmentId as string | undefined;
       const fileId = req.params.fileId as string | undefined;
       const accessToken = req.headers.AzureAccessToken as string;
 
-      await noLoginFileService.delete(accessToken, nologinContext?.innsendingsId, attachmentId, fileId);
+      validateAttachmentId(attachmentId);
+
+      await nologinService.delete(accessToken, innsendingsId, attachmentId, fileId);
       res.sendStatus(204);
     } catch (error) {
       next(error);
     }
   },
+};
+
+const validateNologinContext = (context: NologinContext | undefined): NologinContext => {
+  if (!context) {
+    throw Error('Nologin context is missing');
+  }
+  if (!validatorUtils.isValidUuid(context.innsendingsId)) {
+    throw Error('Invalid innsendingsId in nologin context');
+  }
+  return context;
+};
+
+const validateAttachmentId = (attachmentId: string | undefined) => {
+  if (attachmentId && !validatorUtils.isValidAttachmentId(attachmentId)) {
+    throw Error(`Invalid attachmentId: ${attachmentId}`);
+  }
 };
 
 export default nologinFile;

@@ -6,7 +6,7 @@ import {
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
-import { noLoginFileService } from '../../../../services';
+import { nologinService } from '../../../../services';
 import { LogMetadata } from '../../../../types/log';
 import { HttpError } from '../../../../utils/errors/HttpError';
 
@@ -34,7 +34,7 @@ const post = async (req: Request, res: Response, next: NextFunction) => {
       fyllutRequestPath: req.path,
     };
 
-    const { pdf, receipt }: { pdf: Uint8Array; receipt: ReceiptSummary } = await noLoginFileService.submit(
+    const { pdf, receipt }: { pdf: Uint8Array; receipt: ReceiptSummary } = await nologinService.submit(
       pdfAccessToken,
       accessToken,
       innsendingsId,
