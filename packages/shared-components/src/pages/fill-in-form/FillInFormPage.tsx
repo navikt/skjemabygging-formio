@@ -1,5 +1,4 @@
 import {
-  attachmentUtils,
   ComponentError,
   FormioChangeEvent,
   NavFormType,
@@ -33,7 +32,7 @@ export const FillInFormPage = () => {
   const { form, submission, setSubmission, setTitle, setFormProgressVisible } = useForm();
   const navigate = useNavigate();
   const { search } = useLocation();
-  const { submissionMethod, logger } = useAppConfig();
+  const { attachmentPageEnabled, submissionMethod, logger } = useAppConfig();
   const [formForRendering, setFormForRendering] = useState<NavFormType>();
   const [formIsReady, setFormIsReady] = useState<boolean>(false);
   const { mellomlagringError, isMellomlagringAvailable, isMellomlagringReady } = useSendInn();
@@ -47,9 +46,7 @@ export const FillInFormPage = () => {
 
   const exitUrl = urlUtils.getExitUrl(window.location.href);
   const formNavigationFinalStep =
-    navFormUtils.hasAttachment(form) && attachmentUtils.renderAttachmentPanel(submissionMethod)
-      ? 'vedlegg'
-      : 'oppsummering';
+    navFormUtils.hasAttachment(form) && attachmentPageEnabled ? 'vedlegg' : 'oppsummering';
 
   const focusOnComponent = useCallback<(id: KeyOrFocusComponentId) => void>(
     (id: KeyOrFocusComponentId) => fyllutEvents.emit('focusOnComponent', id),
@@ -143,11 +140,7 @@ export const FillInFormPage = () => {
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setFormForRendering(
-      submissionMethod === 'digital' || attachmentUtils.renderAttachmentPanel(submissionMethod)
-        ? navFormUtils.removeVedleggspanel(form)
-        : form,
-    );
+    setFormForRendering(navFormUtils.removeVedleggspanel(form));
   }, [form, submissionMethod]);
 
   if (!translationsForNavForm) {

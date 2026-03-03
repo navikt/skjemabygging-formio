@@ -1,6 +1,5 @@
 import { Alert } from '@navikt/ds-react';
 import {
-  attachmentUtils,
   NavFormType,
   navFormUtils,
   PanelValidation,
@@ -31,7 +30,7 @@ export interface Props {
 
 const SummaryPageNavigation = ({ form, submission, panelValidationList, isValid }: Props) => {
   const { mellomlagringError } = useSendInn();
-  const { submissionMethod } = useAppConfig();
+  const { attachmentPageEnabled } = useAppConfig();
   const [error, setError] = useState<Error>();
   const [validationError, setValidationError] = useState<string | undefined>();
   const { search } = useLocation();
@@ -41,7 +40,7 @@ const SummaryPageNavigation = ({ form, submission, panelValidationList, isValid 
   const hasValidationErrors = panelValidationList?.some((panelValidation) => panelValidation.hasValidationErrors);
 
   const getPreviousPathname = () => {
-    if (attachmentUtils.renderAttachmentPanel(submissionMethod) && navFormUtils.hasAttachment(form)) {
+    if (attachmentPageEnabled && navFormUtils.hasAttachment(form)) {
       return '../vedlegg';
     }
 

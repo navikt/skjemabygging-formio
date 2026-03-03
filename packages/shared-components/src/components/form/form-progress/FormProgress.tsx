@@ -1,5 +1,5 @@
 import { FormProgress as AkselFormProgress } from '@navikt/ds-react';
-import { attachmentUtils, navFormUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { navFormUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate, useParams, useResolvedPath } from 'react-router';
 import { useAppConfig } from '../../../context/config/configContext';
@@ -8,7 +8,7 @@ import { useLanguages } from '../../../context/languages';
 
 const FormProgress = () => {
   const { form, submission, formProgressOpen, setFormProgressOpen } = useForm();
-  const { submissionMethod, baseUrl } = useAppConfig();
+  const { baseUrl, attachmentPageEnabled } = useAppConfig();
   const [screenSmall, setScreenSmall] = useState<boolean>(false);
   const params = useParams();
   const panelSlug = params.panelSlug ?? params['*'];
@@ -20,7 +20,7 @@ const FormProgress = () => {
 
   const formSteps = useMemo(() => {
     const formioSteps = navFormUtils
-      .getActivePanelsFromForm(form, submission, submissionMethod)
+      .getActivePanelsFromForm(form, submission)
       .map((panel) => ({ label: panel.title, key: panel.key }));
 
     const steps = [
@@ -31,7 +31,7 @@ const FormProgress = () => {
       ...formioSteps,
     ];
 
-    if (navFormUtils.hasAttachment(form) && attachmentUtils.renderAttachmentPanel(submissionMethod)) {
+    if (navFormUtils.hasAttachment(form) && attachmentPageEnabled) {
       steps.push({
         key: 'vedlegg',
         label: TEXTS.statiske.attachment.title,
@@ -44,7 +44,7 @@ const FormProgress = () => {
     });
 
     return steps;
-  }, [form, submissionMethod, submission]);
+  }, [attachmentPageEnabled, form, submission]);
 
   const getActiveStepper = () => {
     return formSteps.findIndex((step) => step.key === panelSlug);

@@ -65,11 +65,9 @@ export function SummaryPage() {
         });
       }
 
-      const attachmentPanel = navFormUtils.getActiveAttachmentPanelFromForm(
-        form,
-        submission,
-        appConfig.submissionMethod,
-      );
+      const attachmentPanel = appConfig.attachmentPageEnabled
+        ? navFormUtils.getActiveAttachmentPanelFromForm(form, submission)
+        : undefined;
       if (attachmentPanel) {
         const validator = attachmentUtils.enableAttachmentUpload(appConfig.submissionMethod)
           ? attachmentValidator(translate, ['value', 'fileUploaded'])
