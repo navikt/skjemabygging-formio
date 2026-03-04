@@ -10,7 +10,7 @@ const dataFetcher = (props: DataFetcherType) => {
 
   return {
     ...staticDefaultValues,
-    ...baseComponent({ ...props, label: (label ?? dataFetcherSourceId === 'activities') ? 'Aktivitetsvelger' : '' }),
+    ...baseComponent({ ...props, label: label ?? (dataFetcherSourceId === 'activities' ? 'Aktivitetsvelger' : '') }),
     dataFetcherSourceId,
     showOther: showOther ?? false,
   };

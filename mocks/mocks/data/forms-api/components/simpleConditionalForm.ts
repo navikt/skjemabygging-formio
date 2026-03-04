@@ -4,7 +4,7 @@ import form from '../../../form-builder/form/form';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
 
 const simpleConditionalForm = () => {
-  const formNumber = 'simpleConditional';
+  const formNumber = 'simpleconditional';
 
   return form({
     title: 'Enkel betinget visning',

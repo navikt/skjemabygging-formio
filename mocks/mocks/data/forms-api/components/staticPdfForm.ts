@@ -4,7 +4,7 @@ import formProperties from '../../../form-builder/form/formProperties';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
 
 const staticPdfForm = () => {
-  const formNumber = 'pdfstatic';
+  const formNumber = 'staticpdf';
 
   return form({
     title: 'Static PDF',
