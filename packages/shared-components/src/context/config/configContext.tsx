@@ -21,6 +21,8 @@ interface AppConfigContextType {
   logger?: FrontendLogger;
   diffOn?: boolean;
   setDiffOn?: (diffOn: boolean) => void;
+  attachmentPageEnabled?: boolean;
+  setAttachmentPageEnabled?: (enabled: boolean) => void;
   logEvent?: LogEventFunction;
 }
 
@@ -52,6 +54,7 @@ function AppConfigProvider({
   }, [app, config, logger]);
 
   const [internalDiffOn, setDiffOn] = useState<boolean>(diffOn!);
+  const [attachmentPageEnabled, setAttachmentPageEnabled] = useState<boolean>(submissionMethod !== 'digital');
   return (
     <AppConfigContext.Provider
       value={{
@@ -67,6 +70,8 @@ function AppConfigProvider({
         logEvent,
         diffOn: internalDiffOn,
         setDiffOn,
+        attachmentPageEnabled,
+        setAttachmentPageEnabled,
       }}
     >
       {children}

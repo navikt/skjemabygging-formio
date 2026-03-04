@@ -24,6 +24,7 @@ if (import.meta.env.PROD) {
   // serve built app in production (served by vite in development)
   app.use(express.static(buildDirectory));
   app.get('/*path', fsAccessRateLimiter, (req, res) => {
+    res.setHeader('X-Robots-Tag', 'noindex');
     res.sendFile(buildDirectoryIndexHtml);
   });
 }

@@ -1,5 +1,5 @@
-import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { PdfComponentProps, PdfData } from '../../../types';
+import { dateUtils, PdfData, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { PdfComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 
 const PdfAddressValidity = (props: PdfComponentProps): PdfData[] | null => {

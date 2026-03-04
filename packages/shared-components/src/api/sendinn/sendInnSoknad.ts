@@ -1,6 +1,11 @@
-import { I18nTranslationMap, Language, NavFormType, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  I18nTranslationMap,
+  Language,
+  NavFormType,
+  PdfFormData,
+  Submission,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { AppConfigContextType } from '../../context/config/configContext';
-import { PdfFormData } from '../../form-components/types';
 import { getRelevantAttachments, hasOtherDocumentation } from '../../util/attachment/attachmentsUtil';
 
 export interface SendInnSoknadResponse {

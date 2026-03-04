@@ -1,6 +1,7 @@
-import { PdfComponentProps, PdfListElement } from '../types';
+import { PdfData } from '@navikt/skjemadigitalisering-shared-domain';
+import { PdfComponentProps } from '../types';
 
-const renderPdfComponent = (props: PdfComponentProps): PdfListElement => {
+const renderPdfComponent = (props: PdfComponentProps): PdfData | PdfData[] | null => {
   const { componentRegistry, component } = props;
   const { type } = component;
 

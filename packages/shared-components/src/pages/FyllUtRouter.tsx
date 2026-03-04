@@ -1,4 +1,4 @@
-import { attachmentUtils, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { Route, Routes } from 'react-router';
 import AttachmentUploadProvider from '../components/attachment/AttachmentUploadContext';
 import { useAppConfig } from '../context/config/configContext';
@@ -21,7 +21,7 @@ interface Props {
 }
 
 const FyllUtRouter = ({ form }: Props) => {
-  const { submissionMethod } = useAppConfig();
+  const { attachmentPageEnabled } = useAppConfig();
 
   return (
     <FormProvider form={form}>
@@ -29,7 +29,7 @@ const FyllUtRouter = ({ form }: Props) => {
         <Routes>
           <Route element={<FormLayout />}>
             <Route path="oppsummering" element={<SummaryPage />} />
-            {attachmentUtils.renderAttachmentPanel(submissionMethod) && (
+            {attachmentPageEnabled && (
               <Route
                 path="vedlegg"
                 element={

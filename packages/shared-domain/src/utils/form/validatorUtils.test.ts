@@ -44,4 +44,20 @@ describe('validatorUtils.ts', () => {
       expect(validatorUtils.isOrganizationNumber('NO889640782MVA')).toBe(false);
     });
   });
+  describe('validatorUtils.isValidAttachmentId', () => {
+    it('should return true for valid attachment IDs', () => {
+      expect(validatorUtils.isValidAttachmentId('eqgxv3g')).toBe(true);
+      expect(validatorUtils.isValidAttachmentId('e26woel')).toBe(true);
+      expect(validatorUtils.isValidAttachmentId('personal-id')).toBe(true);
+      expect(validatorUtils.isValidAttachmentId('_')).toBe(true);
+    });
+
+    it('should return false for invalid attachment IDs', () => {
+      expect(validatorUtils.isValidAttachmentId('$fd343j')).toBe(false);
+      expect(validatorUtils.isValidAttachmentId('{sdfg44}')).toBe(false);
+      expect(validatorUtils.isValidAttachmentId('p%rsonal-id')).toBe(false);
+      expect(validatorUtils.isValidAttachmentId('p rsonal-id')).toBe(false);
+      expect(validatorUtils.isValidAttachmentId('personal=id')).toBe(false);
+    });
+  });
 });

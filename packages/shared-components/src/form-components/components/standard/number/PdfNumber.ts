@@ -1,8 +1,8 @@
-import { numberUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { numberUtils, PdfData } from '@navikt/skjemadigitalisering-shared-domain';
 import { PdfComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 
-const PdfNumber = (props: PdfComponentProps) => {
+const PdfNumber = (props: PdfComponentProps): PdfData | null => {
   const { component, submissionPath, submission, translate } = props;
   const { label } = component;
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);

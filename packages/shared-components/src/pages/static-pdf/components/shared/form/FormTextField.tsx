@@ -13,7 +13,7 @@ interface FormTextFieldProps extends FormBoxProps {
   submissionPath: string;
   label: string;
   description?: string;
-  validators?: Pick<Validators, 'required' | 'minLength' | 'maxLength' | 'nationalIdentityNumber'>;
+  validators?: Pick<Validators, 'required' | 'minLength' | 'maxLength' | 'nationalIdentityNumber' | 'coverPage'>;
   onChange?: (value: string) => void;
   readOnly?: boolean;
   error?: string;
@@ -37,7 +37,7 @@ const FormTextField = (props: FormTextFieldProps) => {
   const { logger } = useAppConfig();
   const { updateSubmission, submission } = useForm();
   const { addValidation, removeValidation, getRefError } = useInputValidation();
-  const { required, minLength, maxLength, nationalIdentityNumber } = validators || { required: true };
+  const { required, minLength, maxLength, nationalIdentityNumber, coverPage } = validators || { required: true };
   const styles = useFormInputStyles();
 
   const ref = useRef(null);
@@ -54,7 +54,7 @@ const FormTextField = (props: FormTextFieldProps) => {
 
   useEffect(() => {
     logger?.debug(`Add validation for ${submissionPath}`);
-    addValidation(submissionPath, ref, { required, minLength, maxLength, nationalIdentityNumber }, label);
+    addValidation(submissionPath, ref, { required, minLength, maxLength, nationalIdentityNumber, coverPage }, label);
     return () => {
       logger?.debug(`Remove validation for ${submissionPath}`);
       removeValidation(submissionPath);
@@ -70,6 +70,7 @@ const FormTextField = (props: FormTextFieldProps) => {
     minLength,
     maxLength,
     nationalIdentityNumber,
+    coverPage,
   ]);
 
   return (

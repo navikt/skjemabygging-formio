@@ -35,7 +35,7 @@ class FirstName extends TextField {
 
   private validateInput() {
     const value = this.getValue();
-    if (!validatorUtils.isValidFoerstesideValue(value ?? '')) {
+    if (!validatorUtils.isValidCoverPageValue(value ?? '')) {
       return this.translateWithLabel(TEXTS.validering.containsInvalidCharacters);
     }
   }

@@ -3,11 +3,16 @@ import {
   ForstesideRequestBody,
   ResponseError,
   TranslateFunction,
+  validatorUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { logger } from '../../shared/logger/logger';
 import coverPageApiService from './coverPageApiService';
 
 const addressLine = (text?: string, prefix: string = ', ') => {
+  if (text && !validatorUtils.isValidCoverPageValue(text)) {
+    throw new ResponseError('BAD_REQUEST', `Invalid value for cover page: ${text}`);
+  }
+
   return text ? `${prefix}${text}` : '';
 };
 
@@ -17,6 +22,9 @@ const getUser = (user) => {
   }
 
   if (user.nationalIdentityNumber) {
+    if (user.nationalIdentityNumber && !validatorUtils.isValidCoverPageValue(user.nationalIdentityNumber)) {
+      throw new ResponseError('BAD_REQUEST', 'Invalid value for cover page');
+    }
     return {
       bruker: {
         brukerId: user.nationalIdentityNumber,

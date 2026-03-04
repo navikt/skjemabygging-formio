@@ -1,5 +1,4 @@
-import { Form, Submission, TEXTS, Tkey, TranslateFunction } from '@navikt/skjemadigitalisering-shared-domain';
-import { PdfListElement } from '../../../types';
+import { Form, PdfData, Submission, TEXTS, Tkey, TranslateFunction } from '@navikt/skjemadigitalisering-shared-domain';
 
 interface Props {
   submission: Submission;
@@ -7,7 +6,7 @@ interface Props {
   translate: TranslateFunction;
 }
 
-const PdfIntroPage = ({ submission, form, translate }: Props): PdfListElement => {
+const PdfIntroPage = ({ submission, form, translate }: Props): PdfData | null => {
   if (!form.introPage?.enabled) {
     return null;
   }

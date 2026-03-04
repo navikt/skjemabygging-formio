@@ -1,8 +1,9 @@
+import { PdfData } from '@navikt/skjemadigitalisering-shared-domain';
 import renderPdfComponent from '../../../render/RenderPdfComponent';
 import { PdfComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 
-const PdfDataGrid = (props: PdfComponentProps) => {
+const PdfDataGrid = (props: PdfComponentProps): PdfData[] | null => {
   const { component, submissionPath, submission, translate } = props;
   const { label, components } = component;
   const dataGridValues = formComponentUtils.getSubmissionValue(submissionPath, submission);
@@ -31,7 +32,7 @@ const PdfDataGrid = (props: PdfComponentProps) => {
             component,
           });
         })
-        .filter(Boolean),
+        .filter(Boolean) as PdfData[],
     };
   });
 };
