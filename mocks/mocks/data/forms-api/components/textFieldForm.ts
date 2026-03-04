@@ -78,7 +78,8 @@ const textFieldForm = () => {
           textField({
             label: 'Tekstfelt må være abc',
             validate: {
-              custom: 'valid = input === "abc" ? true : "abc er eneste lovlige verdien"',
+              required: false,
+              custom: 'valid = !input || input === "abc" ? true : "abc er eneste lovlige verdien"',
             },
           }),
         ],

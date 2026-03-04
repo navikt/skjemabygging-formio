@@ -117,11 +117,11 @@ describe('TextField', () => {
     it('should support custom validation', () => {
       const label = 'Tekstfelt må være abc';
       const errorMessage = 'abc er eneste lovlige verdien';
-      cy.findByLabelText(label).type('ab');
+      cy.findByLabelOptional(label).type('ab');
       cy.clickNextStep();
       cy.findAllByText(errorMessage).should('have.length', 2);
       cy.findByRole('link', { name: errorMessage }).click();
-      cy.findByLabelText(label).should('have.focus');
+      cy.findByLabelOptional(label).should('have.focus');
       cy.focused().clear();
       cy.focused().type('abc');
       cy.findAllByText(errorMessage).should('have.length', 0);
@@ -161,7 +161,7 @@ describe('TextField', () => {
       cy.findByRole('textbox', { name: 'Tekstfelt ikke påkrevd (valgfritt)' }).type('valid2');
       cy.findByRole('textbox', { name: 'Tekstfelt kun siffer' }).type('123');
       cy.findByRole('textbox', { name: 'Tekstfelt min og max lengde' }).type('valid3');
-      cy.findByRole('textbox', { name: 'Tekstfelt må være abc' }).type('abc');
+      cy.findByRole('textbox', { name: 'Tekstfelt må være abc (valgfritt)' }).type('abc');
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');

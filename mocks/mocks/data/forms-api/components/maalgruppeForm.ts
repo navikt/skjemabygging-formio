@@ -20,10 +20,12 @@ const maalgruppeForm = () => {
           checkbox({
             label: 'Enslig forsørger arbeidssøker',
             key: 'ensligArbSoker',
+            validate: { required: false },
           }),
           checkbox({
             label: 'Dagpenger',
             key: 'dagpenger',
+            validate: { required: false },
           }),
           maalgruppe(),
         ],
