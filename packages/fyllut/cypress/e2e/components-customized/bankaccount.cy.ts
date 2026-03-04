@@ -52,7 +52,7 @@ describe('BankAccount', () => {
     });
 
     it('should validate invalid account number', () => {
-      const label = 'Kontonummer ugyldig';
+      const label = 'Kontonummer ikke påkrevd';
       const errorMessage = 'Dette er ikke et gyldig kontonummer. Sjekk at du har tastet riktig.';
       cy.findByLabelText(`${label} (valgfritt)`).type('12345678901');
       cy.clickNextStep();
@@ -83,7 +83,6 @@ describe('BankAccount', () => {
       cy.findByRole('heading', { name: 'Validering' }).should('exist');
       cy.findByRole('textbox', { name: 'Kontonummer påkrevd' }).type('01234567892');
       cy.findByRole('textbox', { name: 'Kontonummer ikke påkrevd (valgfritt)' }).type('01234567892');
-      cy.findByRole('textbox', { name: 'Kontonummer ugyldig (valgfritt)' }).type('01234567892');
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
@@ -98,8 +97,6 @@ describe('BankAccount', () => {
         cy.get('dd').eq(0).should('contain.text', '0123 45 67892');
         cy.get('dt').eq(1).should('contain.text', 'Kontonummer ikke påkrevd');
         cy.get('dd').eq(1).should('contain.text', '0123 45 67892');
-        cy.get('dt').eq(2).should('contain.text', 'Kontonummer ugyldig');
-        cy.get('dd').eq(2).should('contain.text', '0123 45 67892');
       });
       cy.clickDownloadInstructions();
 

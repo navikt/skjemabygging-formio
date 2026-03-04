@@ -49,7 +49,7 @@ describe('IBAN', () => {
     });
 
     it('should validate invalid IBAN', () => {
-      const label = 'IBAN ugyldig';
+      const label = 'IBAN ikke påkrevd';
       const errorMessage = 'Oppgitt IBAN har feil lengde.';
       cy.findByLabelText(`${label} (valgfritt)`).type('NO1234');
       cy.clickNextStep();
@@ -80,7 +80,6 @@ describe('IBAN', () => {
       cy.findByRole('heading', { name: 'Validering' }).should('exist');
       cy.findByRole('textbox', { name: 'IBAN påkrevd' }).type('NO9386011117947');
       cy.findByRole('textbox', { name: 'IBAN ikke påkrevd (valgfritt)' }).type('NO9386011117947');
-      cy.findByRole('textbox', { name: 'IBAN ugyldig (valgfritt)' }).type('NO9386011117947');
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
@@ -95,8 +94,6 @@ describe('IBAN', () => {
         cy.get('dd').eq(0).should('contain.text', 'NO93 8601 1117 947');
         cy.get('dt').eq(1).should('contain.text', 'IBAN ikke påkrevd');
         cy.get('dd').eq(1).should('contain.text', 'NO93 8601 1117 947');
-        cy.get('dt').eq(2).should('contain.text', 'IBAN ugyldig');
-        cy.get('dd').eq(2).should('contain.text', 'NO93 8601 1117 947');
       });
       cy.clickDownloadInstructions();
 

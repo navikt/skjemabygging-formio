@@ -30,7 +30,7 @@ const adresseTestForm = () => {
             // addressType is omitted so the address type choice is shown (borDuINorge radio)
             addressType: undefined,
             prefillKey: 'sokerAdresser',
-            customLabels: { livesInNorway: 'Bor du i Sverige?' },
+            customLabels: { livesInNorway: 'Bor du i Norge?' },
           },
         ],
       }),

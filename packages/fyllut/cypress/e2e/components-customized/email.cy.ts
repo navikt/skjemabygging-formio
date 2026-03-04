@@ -50,8 +50,8 @@ describe('Email', () => {
     });
 
     it('should validate invalid email format', () => {
-      const label = 'E-post ugyldig format';
-      const errorMessage = 'E-post ugyldig format må være en gyldig epost-adresse (for eksempel navn@eksempel.no)';
+      const label = 'E-post ikke påkrevd';
+      const errorMessage = 'E-post ikke påkrevd må være en gyldig epost-adresse (for eksempel navn@eksempel.no)';
       cy.findByLabelText(`${label} (valgfritt)`).type('ugyldig-epost');
       cy.clickNextStep();
       cy.findAllByText(errorMessage).should('have.length', 2);
@@ -94,7 +94,6 @@ describe('Email', () => {
       cy.findByRole('heading', { name: 'Validering' }).should('exist');
       cy.findByRole('textbox', { name: 'E-post påkrevd' }).type('test@nav.no');
       cy.findByRole('textbox', { name: 'E-post ikke påkrevd (valgfritt)' }).type('test@nav.no');
-      cy.findByRole('textbox', { name: 'E-post ugyldig format (valgfritt)' }).type('test@nav.no');
       cy.findByRole('textbox', { name: 'E-post egendefinert (valgfritt)' }).type('test@nav.no');
       cy.clickNextStep();
 
@@ -110,10 +109,8 @@ describe('Email', () => {
         cy.get('dd').eq(0).should('contain.text', 'test@nav.no');
         cy.get('dt').eq(1).should('contain.text', 'E-post ikke påkrevd');
         cy.get('dd').eq(1).should('contain.text', 'test@nav.no');
-        cy.get('dt').eq(2).should('contain.text', 'E-post ugyldig format');
+        cy.get('dt').eq(2).should('contain.text', 'E-post egendefinert');
         cy.get('dd').eq(2).should('contain.text', 'test@nav.no');
-        cy.get('dt').eq(3).should('contain.text', 'E-post egendefinert');
-        cy.get('dd').eq(3).should('contain.text', 'test@nav.no');
       });
       cy.clickDownloadInstructions();
 

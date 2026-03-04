@@ -52,7 +52,7 @@ describe('FirstName', () => {
     });
 
     it('should reject invalid characters', () => {
-      const label = 'Fornavn spesialtegn';
+      const label = 'Fornavn ikke påkrevd';
       const errorMessage = `${label} inneholder ugyldige tegn`;
       cy.findByLabelText(`${label} (valgfritt)`).type('{{}');
       cy.clickNextStep();
@@ -82,8 +82,7 @@ describe('FirstName', () => {
 
       cy.findByRole('heading', { name: 'Validering' }).should('exist');
       cy.findByRole('textbox', { name: 'Fornavn påkrevd' }).type('Ole');
-      cy.findByRole('textbox', { name: 'Fornavn ikke påkrevd (valgfritt)' }).type('Nora');
-      cy.findByRole('textbox', { name: 'Fornavn spesialtegn (valgfritt)' }).type('Kari');
+      cy.findByRole('textbox', { name: 'Fornavn ikke påkrevd (valgfritt)' }).type('Kari');
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
@@ -97,9 +96,7 @@ describe('FirstName', () => {
         cy.get('dt').eq(0).should('contain.text', 'Fornavn påkrevd');
         cy.get('dd').eq(0).should('contain.text', 'Ole');
         cy.get('dt').eq(1).should('contain.text', 'Fornavn ikke påkrevd');
-        cy.get('dd').eq(1).should('contain.text', 'Nora');
-        cy.get('dt').eq(2).should('contain.text', 'Fornavn spesialtegn');
-        cy.get('dd').eq(2).should('contain.text', 'Kari');
+        cy.get('dd').eq(1).should('contain.text', 'Kari');
       });
       cy.clickDownloadInstructions();
 

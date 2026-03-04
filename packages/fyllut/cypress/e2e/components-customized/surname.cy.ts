@@ -52,7 +52,7 @@ describe('Surname', () => {
     });
 
     it('should reject invalid characters', () => {
-      const label = 'Etternavn spesialtegn';
+      const label = 'Etternavn ikke påkrevd';
       const errorMessage = `${label} inneholder ugyldige tegn`;
       cy.findByLabelText(`${label} (valgfritt)`).type('{{}');
       cy.clickNextStep();
@@ -82,8 +82,7 @@ describe('Surname', () => {
 
       cy.findByRole('heading', { name: 'Validering' }).should('exist');
       cy.findByRole('textbox', { name: 'Etternavn påkrevd' }).type('Nilsen');
-      cy.findByRole('textbox', { name: 'Etternavn ikke påkrevd (valgfritt)' }).type('Berg');
-      cy.findByRole('textbox', { name: 'Etternavn spesialtegn (valgfritt)' }).type('Dahl');
+      cy.findByRole('textbox', { name: 'Etternavn ikke påkrevd (valgfritt)' }).type('Dahl');
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
@@ -97,9 +96,7 @@ describe('Surname', () => {
         cy.get('dt').eq(0).should('contain.text', 'Etternavn påkrevd');
         cy.get('dd').eq(0).should('contain.text', 'Nilsen');
         cy.get('dt').eq(1).should('contain.text', 'Etternavn ikke påkrevd');
-        cy.get('dd').eq(1).should('contain.text', 'Berg');
-        cy.get('dt').eq(2).should('contain.text', 'Etternavn spesialtegn');
-        cy.get('dd').eq(2).should('contain.text', 'Dahl');
+        cy.get('dd').eq(1).should('contain.text', 'Dahl');
       });
       cy.clickDownloadInstructions();
 

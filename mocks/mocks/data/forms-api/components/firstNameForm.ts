@@ -37,12 +37,6 @@ const firstNameForm = () => {
               required: false,
             },
           }),
-          firstName({
-            label: 'Fornavn spesialtegn',
-            validate: {
-              required: false,
-            },
-          }),
         ],
       }),
     ],

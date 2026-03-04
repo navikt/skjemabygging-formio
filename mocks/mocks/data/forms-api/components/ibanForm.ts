@@ -37,12 +37,6 @@ const ibanForm = () => {
               required: false,
             },
           }),
-          iban({
-            label: 'IBAN ugyldig',
-            validate: {
-              required: false,
-            },
-          }),
         ],
       }),
     ],

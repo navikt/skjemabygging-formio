@@ -37,12 +37,6 @@ const surnameForm = () => {
               required: false,
             },
           }),
-          surname({
-            label: 'Etternavn spesialtegn',
-            validate: {
-              required: false,
-            },
-          }),
         ],
       }),
     ],

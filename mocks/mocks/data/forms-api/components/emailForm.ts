@@ -42,13 +42,6 @@ const emailForm = () => {
             },
           }),
           email({
-            label: 'E-post ugyldig format',
-            key: 'epostugyldigformat',
-            validate: {
-              required: false,
-            },
-          }),
-          email({
             label: 'E-post egendefinert',
             key: 'epostegendefinert',
             validate: {

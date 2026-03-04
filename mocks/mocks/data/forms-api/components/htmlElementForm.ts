@@ -40,26 +40,6 @@ const htmlElementForm = () => {
   });
 };
 
-const htmlElementTranslations = () => {
-  const formData = htmlElementForm();
-  const baseTrans = getMockTranslationsFromForm(formData);
-
-  // getMockTranslationsFromForm does not handle the content field of htmlElement,
-  // so add content translations manually
-  const insertLanguage = (value: string) => {
-    const regex = /(<\/[^>]+>$)/;
-    return regex.test(value) ? value.replace(regex, ' (en)$1') : `${value} (en)`;
-  };
-
-  formData.components.forEach((panelComp: any) => {
-    panelComp.components?.forEach((comp: any) => {
-      if (comp.type === 'htmlelement' && comp.content) {
-        baseTrans.data.i18n[comp.content] = insertLanguage(comp.content);
-      }
-    });
-  });
-
-  return baseTrans;
-};
+const htmlElementTranslations = () => getMockTranslationsFromForm(htmlElementForm());
 
 export { htmlElementForm, htmlElementTranslations };

@@ -53,6 +53,9 @@ const getMockTranslationsFromComponents = (components: any[], language: string) 
     if (component.additionalDescriptionText) {
       translations[component.additionalDescriptionText] = insertLanguage(component.additionalDescriptionText, language);
     }
+    if (component.content) {
+      translations[component.content] = insertLanguage(component.content, language);
+    }
     if (component.additionalDescriptionLabel) {
       translations[component.additionalDescriptionLabel] = insertLanguage(
         component.additionalDescriptionLabel,

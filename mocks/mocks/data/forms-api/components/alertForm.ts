@@ -52,26 +52,6 @@ const alertForm = () => {
   });
 };
 
-const alertTranslations = () => {
-  const formData = alertForm();
-  const baseTrans = getMockTranslationsFromForm(formData);
-
-  // getMockTranslationsFromForm does not handle the content field of alert,
-  // so add content translations manually
-  const insertLanguage = (value: string) => {
-    const regex = /(<\/[^>]+>$)/;
-    return regex.test(value) ? value.replace(regex, ' (en)$1') : `${value} (en)`;
-  };
-
-  formData.components.forEach((panelComp: any) => {
-    panelComp.components?.forEach((comp: any) => {
-      if (comp.type === 'alertstripe' && comp.content) {
-        baseTrans.data.i18n[comp.content] = insertLanguage(comp.content);
-      }
-    });
-  });
-
-  return baseTrans;
-};
+const alertTranslations = () => getMockTranslationsFromForm(alertForm());
 
 export { alertForm, alertTranslations };

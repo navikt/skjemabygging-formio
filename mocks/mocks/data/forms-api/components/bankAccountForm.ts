@@ -41,13 +41,6 @@ const bankAccountForm = () => {
               custom: 'valid = instance.validateAccountNumber(input)',
             },
           }),
-          accountNumber({
-            label: 'Kontonummer ugyldig',
-            validate: {
-              required: false,
-              custom: 'valid = instance.validateAccountNumber(input)',
-            },
-          }),
         ],
       }),
     ],
