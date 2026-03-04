@@ -5,6 +5,7 @@ import countrySelectBuilder from '../components/extensions/country-select/Countr
 import emailBuilder from '../components/extensions/email/Email.builder';
 import firstNameBuilder from '../components/extensions/first-name/FirstName.builder';
 import nationalIdentityNumberBuilder from '../components/extensions/national-identity-number/NationalIdentityNumber.builder';
+import recipientBuilder from '../components/extensions/recipient/Recipient.builder';
 import surnameBuilder from '../components/extensions/surname/Surname.builder';
 import yourInformationBuilder from '../components/groups/your-information/YourInformation.builder';
 import postnummerSchema from '../form-builder-options/schemas/postnummerSchema';
@@ -35,6 +36,7 @@ const personGroup = {
     email: emailBuilder(),
     phoneNumber: phoneNumberBuilder(),
     citizenship: citizenshipBuilder(),
+    recipient: recipientBuilder(),
   },
 };
 
