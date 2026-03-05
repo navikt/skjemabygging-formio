@@ -1,6 +1,16 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
+import { ValidateComponentType } from '../../shared/validateComponent';
 
-const year = (props?: BaseComponentType) => {
+interface ValidateYearType extends ValidateComponentType {
+  minYear?: number;
+  maxYear?: number;
+}
+
+interface YearType extends BaseComponentType {
+  validate?: ValidateYearType;
+}
+
+const year = (props?: YearType) => {
   const { label } = props ?? {};
 
   // Add override for year validation values.

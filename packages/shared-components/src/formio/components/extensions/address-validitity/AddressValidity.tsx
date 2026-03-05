@@ -44,7 +44,7 @@ export default class AddressValidity extends BaseComponent {
       {
         required: this.isRequired(),
         value: address.gyldigFraOgMed,
-        label: TEXTS.statiske.address.validTo,
+        label: TEXTS.statiske.address.validFrom,
         fromDate: dateUtils.addDays(-365),
         toDate: dateUtils.addDays(365),
       },
@@ -59,7 +59,7 @@ export default class AddressValidity extends BaseComponent {
       {
         required: false,
         value: address.gyldigTilOgMed,
-        label: TEXTS.statiske.address.validFrom,
+        label: TEXTS.statiske.address.validTo,
         fromDate: address?.gyldigFraOgMed || dateUtils.addDays(-365),
         toDate: dateUtils.addDays(365),
       },
