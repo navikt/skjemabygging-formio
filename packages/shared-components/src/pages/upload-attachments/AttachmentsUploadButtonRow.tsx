@@ -9,6 +9,7 @@ import { PreviousButton } from '../../components/navigation/PreviousButton';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
+import { useSendInn } from '../../context/sendInn/sendInnContext';
 import { Attachment } from '../../util/attachment/attachmentsUtil';
 import { validateAttachment } from '../../util/form/attachment-validation/attachmentValidation';
 
@@ -19,6 +20,7 @@ const AttachmentsUploadButtonRow = ({ attachments, onError }: { attachments: Att
   const { translate } = useLanguages();
   const { addError, removeAllErrors, submissionAttachments } = useAttachmentUpload();
   const { activeComponents, form } = useForm();
+  const { updateMellomlagring } = useSendInn();
 
   const valueValidator = attachmentValidator(translate, ['value']);
   const fileValidator = attachmentValidator(translate, ['fileUploaded']);
@@ -50,6 +52,18 @@ const AttachmentsUploadButtonRow = ({ attachments, onError }: { attachments: Att
     }
   };
 
+  const validateUploadsSaveAndGoNext = async () => {
+    removeAllErrors();
+    let isValid = validateValues();
+    isValid = validateFileUploads() && isValid;
+    if (isValid) {
+      await updateMellomlagring();
+      navigate({ pathname: '../oppsummering', search });
+    } else {
+      onError();
+    }
+  };
+
   const validateValuesAndGoNext = () => {
     removeAllErrors();
     const isValid = validateValues();
@@ -71,16 +85,19 @@ const AttachmentsUploadButtonRow = ({ attachments, onError }: { attachments: Att
         <NextButton
           onClick={{
             digitalnologin: () => validateUploadsAndGoNext(),
+            digital: () => validateUploadsSaveAndGoNext(),
             paper: () => validateValuesAndGoNext(),
             none: () => validateValuesAndGoNext(),
           }}
           label={{
             digitalnologin: translate(TEXTS.grensesnitt.navigation.next),
+            digital: translate(TEXTS.grensesnitt.navigation.saveAndContinue),
             paper: translate(TEXTS.grensesnitt.navigation.next),
             none: translate(TEXTS.grensesnitt.navigation.next),
           }}
           href={{
             digitalnologin: `${baseUrl}/${form.path}/oppsummering${search}`,
+            digital: `${baseUrl}/${form.path}/oppsummering${search}`,
             paper: `${baseUrl}/${form.path}/oppsummering${search}`,
             none: `${baseUrl}/${form.path}/oppsummering${search}`,
           }}
@@ -90,16 +107,19 @@ const AttachmentsUploadButtonRow = ({ attachments, onError }: { attachments: Att
         <PreviousButton
           onClick={{
             digitalnologin: () => navigate({ pathname: previousPage(), search }),
+            digital: () => navigate({ pathname: previousPage(), search }),
             paper: () => navigate({ pathname: previousPage(), search }),
             none: () => navigate({ pathname: previousPage(), search }),
           }}
           label={{
             digitalnologin: translate(TEXTS.grensesnitt.navigation.previous),
+            digital: translate(TEXTS.grensesnitt.navigation.previous),
             paper: translate(TEXTS.grensesnitt.navigation.previous),
             none: translate(TEXTS.grensesnitt.navigation.previous),
           }}
           href={{
             digitalnologin: previousPage(),
+            digital: previousPage(),
             paper: previousPage(),
             none: previousPage(),
           }}

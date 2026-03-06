@@ -220,7 +220,9 @@ describe('Attachments page', () => {
     });
 
     it('should remove all attachments when delete all button is clicked', () => {
-      cy.intercept('/fyllut/api/nologin-file?attachmentId=eiajfi8').as('deleteAllFilesByAttachmentId');
+      cy.intercept('POST', '/fyllut/api/send-inn/nologin-application/attachments/eiajfi8').as(
+        'deleteAllFilesByAttachmentId',
+      );
       cy.findAllByLabelText(TEXTS.statiske.attachment.leggerVedNaa).first().click();
       cy.uploadFile();
       cy.findByText('test.txt').should('exist');
@@ -231,7 +233,7 @@ describe('Attachments page', () => {
     });
 
     it('should remove all attachments on cancel', () => {
-      cy.intercept('/fyllut/api/nologin-file').as('deleteAllFiles');
+      cy.intercept('DELETE', '/fyllut/api/send-inn/nologin-application').as('deleteAllFiles');
       cy.findAllByLabelText(TEXTS.statiske.attachment.leggerVedNaa).first().click();
       cy.uploadFile();
       cy.findByText('test.txt').should('exist');

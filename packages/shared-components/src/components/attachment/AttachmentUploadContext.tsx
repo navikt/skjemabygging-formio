@@ -1,9 +1,9 @@
 import { FileItem, FileObject } from '@navikt/ds-react';
 import { Submission, SubmissionAttachment, TEXTS, UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useMemo, useState } from 'react';
 import { submitCaptchaValue } from '../../api/captcha/captcha';
-import useNologinFileUpload from '../../api/nologin-file-upload/nologinFileUpload';
-import http from '../../api/util/http/http';
+import getFileUploadApi from '../../api/nologin-file-upload/nologinFileUpload';
+import baseHttp from '../../api/util/http/http';
 import { MAX_TOTAL_SIZE_ATTACHMENT_FILES_BYTES } from '../../constants/fileUpload';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
@@ -53,10 +53,13 @@ const initialContext: AttachmentUploadContextType = {
 const AttachmentUploadContext = createContext<AttachmentUploadContextType>(initialContext);
 
 const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boolean; children: React.ReactNode }) => {
-  const config = useAppConfig();
+  const { http, logger, submissionMethod } = useAppConfig();
   const { submission, setSubmission } = useForm();
-  const { nologinToken, setNologinToken, handleSessionExpired } = useSendInn();
-  const { deleteAllFiles, deleteAllFilesForAttachment, deleteFile, uploadFile } = useNologinFileUpload();
+  const { nologinToken, setNologinToken, handleSessionExpired, innsendingsId } = useSendInn();
+  const { deleteAllFiles, deleteAllFilesForAttachment, deleteFile, uploadFile } = useMemo(
+    () => getFileUploadApi(submissionMethod === 'digitalnologin' ? 'nologin' : 'digital', innsendingsId),
+    [innsendingsId, submissionMethod],
+  );
   const { translate } = useLanguages();
   const [captchaValue, setCaptchaValue] = useState<Record<string, string>>({});
   const [uploadsInProgress, setUploadsInProgress] = useState<Record<string, Record<string, FileObject>>>({});
@@ -156,7 +159,7 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
 
   const resolveCaptcha = async () => {
     if (!nologinToken && useCaptcha) {
-      const response = await submitCaptchaValue(captchaValue, config);
+      const response = await submitCaptchaValue(captchaValue, http);
       if (response?.access_token) {
         setNologinToken(response.access_token);
       }
@@ -165,24 +168,12 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
     return nologinToken;
   };
 
-  const isAuthenticationError = (error: any) => {
-    return error instanceof http.UnauthenticatedError;
-  };
-
-  const isTooManyPagesError = (error: any) => {
-    return error instanceof http.TooManyPagesError;
-  };
-
-  const isServiceUnavailable = (error: any) => {
-    return error instanceof http.ServiceUnavailable;
-  };
-
   const validateTotalAttachmentSize = (attachmentId: string, file: FileObject): string | undefined => {
     const attachment = submission?.attachments?.find((attachment) => attachment.attachmentId === attachmentId);
     return validateTotalFilesSize(
       MAX_TOTAL_SIZE_ATTACHMENT_FILES_BYTES,
       [...(attachment?.files ?? []), file.file],
-      config.logger,
+      logger,
     );
   };
 
@@ -222,7 +213,7 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
     try {
       addFileInProgress(attachmentId, file);
       removeError(attachmentId);
-      if (validateFileUpload(file, config.logger)) {
+      if (validateFileUpload(file, logger)) {
         addFileInProgress(attachmentId, file);
         return Promise.resolve({ status: 'invalid' });
       }
@@ -376,6 +367,12 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
 };
 
 const useAttachmentUpload = () => useContext(AttachmentUploadContext);
+
+const isAuthenticationError = (error: any): boolean => error instanceof baseHttp.UnauthenticatedError;
+
+const isTooManyPagesError = (error: any): boolean => error instanceof baseHttp.TooManyPagesError;
+
+const isServiceUnavailable = (error: any): boolean => error instanceof baseHttp.ServiceUnavailable;
 
 export type { AttachmentError, AttachmentErrorType };
 export default AttachmentUploadProvider;

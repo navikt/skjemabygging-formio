@@ -368,64 +368,64 @@ describe('Form navigation', () => {
       });
     });
 
-    // describex('Digital with attachment upload flow', () => {
-    //   beforeEach(() => {
-    //     cy.mocksUseRouteVariant('post-soknad:success-v2');
-    //     cy.intercept('POST', '/fyllut/api/send-inn/digital-application/*').as('submitApplication');
-    //
-    //     cy.visit('/fyllut/formwithattachments?sub=digital');
-    //     cy.defaultWaits();
-    //     cy.wait('@createMellomlagring');
-    //   });
-    //
-    //   itx('Renders attachments page', () => {
-    //     cy.clickShowAllSteps();
-    //     cy.findByRole('link', { name: 'Vedlegg' }).click();
-    //
-    //     cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
-    //     cy.findByRole('link', { name: 'Lagre og fortsett' }).should('exist');
-    //     cy.findByRole('link', { name: 'Forrige steg' }).should('exist');
-    //   });
-    //
-    //   itx('Normal flow', () => {
-    //     cy.clickIntroPageConfirmation();
-    //     cy.clickSaveAndContinue();
-    //     cy.wait('@updateMellomlagring');
-    //
-    //     cy.findByRole('heading', { level: 2, name: 'Dine opplysninger' }).should('exist');
-    //     cy.clickSaveAndContinue();
-    //     cy.wait('@updateMellomlagring');
-    //
-    //     cy.findByRole('heading', { level: 2, name: 'Diverse' }).should('exist');
-    //     cy.findByRole('group', { name: /Radiopanel 1/ }).within(() => cy.findByLabelText('Radiovalg 1').check());
-    //     cy.clickSaveAndContinue();
-    //     cy.wait('@updateMellomlagring');
-    //
-    //     cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
-    //     cy.findByRole('group', { name: /Vedlegg 1/ }).within(() => {
-    //       cy.findByRole('radio', { name: TEXTS.statiske.attachment.ettersender }).check();
-    //     });
-    //     cy.findByRole('group', { name: /Vedlegg 2/ }).within(() => {
-    //       cy.findByRole('radio', { name: TEXTS.statiske.attachment.ettersender }).check();
-    //     });
-    //     cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
-    //       cy.findByRole('radio', { name: TEXTS.statiske.attachment.nei }).check();
-    //     });
-    //     cy.clickSaveAndContinue();
-    //     cy.wait('@updateMellomlagring');
-    //
-    //     cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
-    //     cy.findByRole('link', { name: 'Send til Nav' }).should('exist').click();
-    //     cy.wait('@submitApplication');
-    //
-    //     cy.findByRole('heading', { level: 2, name: 'Kvittering' }).should('exist');
-    //   });
-    // });
+    describe('Digital with attachment upload flow', () => {
+      beforeEach(() => {
+        cy.mocksUseRouteVariant('post-soknad:success-v2');
+        cy.intercept('POST', '/fyllut/api/send-inn/digital-application/*').as('submitApplication');
+
+        cy.visit('/fyllut/formwithattachments?sub=digital');
+        cy.defaultWaits();
+        cy.wait('@createMellomlagring');
+      });
+
+      it('Renders attachments page', () => {
+        cy.clickShowAllSteps();
+        cy.findByRole('link', { name: 'Vedlegg' }).click();
+
+        cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
+        cy.findByRole('link', { name: 'Lagre og fortsett' }).should('exist');
+        cy.findByRole('link', { name: 'Forrige steg' }).should('exist');
+      });
+
+      it('Normal flow', () => {
+        cy.clickIntroPageConfirmation();
+        cy.clickSaveAndContinue();
+        cy.wait('@updateMellomlagring');
+
+        cy.findByRole('heading', { level: 2, name: 'Dine opplysninger' }).should('exist');
+        cy.clickSaveAndContinue();
+        cy.wait('@updateMellomlagring');
+
+        cy.findByRole('heading', { level: 2, name: 'Diverse' }).should('exist');
+        cy.findByRole('group', { name: /Radiopanel 1/ }).within(() => cy.findByLabelText('Radiovalg 1').check());
+        cy.clickSaveAndContinue();
+        cy.wait('@updateMellomlagring');
+
+        cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
+        cy.findByRole('group', { name: /Vedlegg 1/ }).within(() => {
+          cy.findByRole('radio', { name: TEXTS.statiske.attachment.ettersender }).check();
+        });
+        cy.findByRole('group', { name: /Vedlegg 2/ }).within(() => {
+          cy.findByRole('radio', { name: TEXTS.statiske.attachment.ettersender }).check();
+        });
+        cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+          cy.findByRole('radio', { name: TEXTS.statiske.attachment.nei }).check();
+        });
+        cy.clickSaveAndContinue();
+        cy.wait('@updateMellomlagring');
+
+        cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
+        cy.findByRole('link', { name: 'Send til Nav' }).should('exist').click();
+        cy.wait('@submitApplication');
+
+        cy.findByRole('heading', { level: 2, name: 'Kvittering' }).should('exist');
+      });
+    });
   });
 
   describe('Type: Digital, no login', () => {
     beforeEach(() => {
-      cy.intercept('POST', '/fyllut/api/send-inn/nologin-soknad').as('nologinSubmit');
+      cy.intercept('POST', '/fyllut/api/send-inn/nologin-application').as('nologinSubmit');
       cy.visit('/fyllut/stnologin/legitimasjon?sub=digitalnologin');
       cy.defaultWaits();
 
@@ -434,7 +434,7 @@ describe('Form navigation', () => {
       cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
         cy.findByLabelText('Norsk pass').check(),
       );
-      cy.intercept('POST', '/fyllut/api/nologin-file?attachmentId=personal-id').as('uploadIdFile');
+      cy.intercept('POST', '/fyllut/api/send-inn/nologin-application/attachments/personal-id').as('uploadIdFile');
       cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
       cy.wait('@uploadIdFile');
       cy.findByRole('link', { name: 'Neste steg' }).click();
