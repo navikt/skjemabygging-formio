@@ -43,7 +43,7 @@ describe('PublishSettingsModal', () => {
   };
 
   it('renders disabled checkbox for Norsk bokmål', () => {
-    const oldForm = createFormObject([createPanelObject('test', [createDummyRadioPanel('Bor du i Sverige?')])]);
+    const oldForm = createFormObject([createPanelObject('test', [createDummyRadioPanel('Bor du i Norge?')])]);
     const form: Form = {
       path: 'nav123456',
       title: 'Skjematittel',

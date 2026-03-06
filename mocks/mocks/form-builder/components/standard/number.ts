@@ -2,15 +2,19 @@ import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
 interface NumberType extends BaseComponentType {
   inputType?: 'numeric' | 'decimal';
+  calculateValue?: string;
+  readOnly?: boolean;
 }
 
 const number = (props: NumberType) => {
-  const { inputType } = props ?? {};
+  const { inputType, calculateValue, readOnly } = props ?? {};
 
   return {
     ...staticDefaultValues,
     ...baseComponent(props),
     inputType: inputType ?? 'numeric',
+    calculateValue: calculateValue ?? '',
+    readOnly: readOnly ?? false,
   };
 };
 

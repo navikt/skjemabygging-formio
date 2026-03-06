@@ -123,6 +123,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     const decoratorFragments = await getDecorator(createRedirectUrl(req, res));
+    res.setHeader('X-Robots-Tag', 'noindex');
     res.status(httpStatusCode).render('index.html', {
       ...decoratorFragments,
       ...pageMeta,

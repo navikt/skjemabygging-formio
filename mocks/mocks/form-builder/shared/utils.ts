@@ -53,11 +53,30 @@ const getMockTranslationsFromComponents = (components: any[], language: string) 
     if (component.additionalDescriptionText) {
       translations[component.additionalDescriptionText] = insertLanguage(component.additionalDescriptionText, language);
     }
+    if (component.content) {
+      translations[component.content] = insertLanguage(component.content, language);
+    }
     if (component.additionalDescriptionLabel) {
       translations[component.additionalDescriptionLabel] = insertLanguage(
         component.additionalDescriptionLabel,
         language,
       );
+    }
+    if (component.rowTitle) {
+      translations[component.rowTitle] = insertLanguage(component.rowTitle, language);
+    }
+    if (component.addAnother) {
+      translations[component.addAnother] = insertLanguage(component.addAnother, language);
+    }
+    if (component.removeAnother) {
+      translations[component.removeAnother] = insertLanguage(component.removeAnother, language);
+    }
+    if (component.customLabels) {
+      Object.values(component.customLabels).forEach((value) => {
+        if (typeof value === 'string' && value) {
+          translations[value] = insertLanguage(value, language);
+        }
+      });
     }
     if (component.values) {
       component.values.forEach((value: any) => {
