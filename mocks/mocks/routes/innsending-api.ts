@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import paabegyntInnsendt from '../data/innsending-api/active-tasks/ettersending.json';
 import paabegyntMellomlagring from '../data/innsending-api/active-tasks/mellomlagring.json';
 import paabegyntMellomlagringOgInnsendt from '../data/innsending-api/active-tasks/mellomlagringOgEttersending.json';
@@ -52,7 +53,7 @@ const convertToInnsendingApiResponse = (json: any): any => {
   };
 };
 
-function replySubmittedNologinApplication(reqBody: any, innsendingsId: string): any {
+function replySubmittedApplication(reqBody: any, innsendingsId: string): any {
   return {
     innsendingsId: innsendingsId,
     submittedAt: '2023-10-10T10:02:00.328667+02:00',
@@ -72,7 +73,7 @@ const okResponseHandlerNologinSubmission = (req, res) => {
   const { innsendingsId } = params;
   res.status(200);
   res.contentType('application/json; charset=UTF-8');
-  res.send(replySubmittedNologinApplication(body, innsendingsId));
+  res.send(replySubmittedApplication(body, innsendingsId));
 };
 
 export default [
@@ -118,6 +119,20 @@ export default [
         options: {
           status: 201,
           body: responseWithInnsendingsId,
+        },
+      },
+      {
+        id: 'success-v2',
+        type: 'middleware',
+        options: {
+          middleware: (req, res) => {
+            res.status(200);
+            res.contentType('application/json; charset=UTF-8');
+            res.send({
+              ...convertToInnsendingApiResponse(req.body),
+              innsendingsId: uuidv4(),
+            });
+          },
         },
       },
       {
@@ -617,6 +632,26 @@ export default [
     ],
   },
   {
+    id: 'post-digital-soknad',
+    url: '/send-inn/v1/application-digital/:innsendingsId',
+    method: 'POST',
+    variants: [
+      {
+        id: 'success',
+        type: 'middleware',
+        options: {
+          middleware(req, res) {
+            const { body, params } = req;
+            const { innsendingsId } = params;
+            res.status(200);
+            res.contentType('application/json; charset=UTF-8');
+            res.send(replySubmittedApplication(body, innsendingsId));
+          },
+        },
+      },
+    ],
+  },
+  {
     id: 'post-nologin-soknad',
     url: '/send-inn/v1/application-nologin/:innsendingsId',
     method: 'POST',
@@ -630,7 +665,7 @@ export default [
             const { innsendingsId } = params;
             res.status(200);
             res.contentType('application/json; charset=UTF-8');
-            res.send(replySubmittedNologinApplication(body, innsendingsId));
+            res.send(replySubmittedApplication(body, innsendingsId));
           },
         },
       },

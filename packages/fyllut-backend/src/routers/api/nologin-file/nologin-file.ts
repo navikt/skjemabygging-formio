@@ -19,7 +19,7 @@ const nologinFile = {
       }
       validateAttachmentId(attachmentId);
 
-      const result = await nologinService.postFile(file, accessToken, attachmentId, innsendingsId);
+      const result = await nologinService.postFile(file, accessToken, attachmentId, innsendingsId, 'nologin');
       res.status(201).json(result);
     } catch (error: any) {
       if (error instanceof HttpError && error.http_status === 403) {
@@ -56,7 +56,7 @@ const nologinFile = {
 
       validateAttachmentId(attachmentId);
 
-      await nologinService.delete(accessToken, innsendingsId, attachmentId, fileId);
+      await nologinService.delete(accessToken, innsendingsId, attachmentId, fileId, 'nologin');
       res.sendStatus(204);
     } catch (error) {
       next(error);
@@ -64,7 +64,7 @@ const nologinFile = {
   },
 };
 
-const validateNologinContext = (context: NologinContext | undefined): NologinContext => {
+export const validateNologinContext = (context: NologinContext | undefined): NologinContext => {
   if (!context) {
     throw Error('Nologin context is missing');
   }

@@ -86,6 +86,7 @@ export type DefaultConfig = {
   formsApiUrl: string;
   nologin: NologinConfig;
   teamLogsConfig: TeamLogsConfig;
+  flowFormNumbers: string[];
 };
 
 export type ConfigType = DefaultConfig & {

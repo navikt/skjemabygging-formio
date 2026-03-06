@@ -16,10 +16,13 @@ import applicationService from '../documents/applicationService';
 import { mapToReceiptSummary } from './receiptMapper';
 
 class NologinService {
-  private readonly applicationClient: ApplicationClientType;
+  private readonly clients: Record<'nologin' | 'digital', ApplicationClientType>;
 
   constructor(config: ConfigType) {
-    this.applicationClient = ApplicationClient(config, 'nologin');
+    this.clients = {
+      nologin: ApplicationClient(config, 'nologin'),
+      digital: ApplicationClient(config, 'digital'),
+    };
   }
 
   public async postFile(
@@ -27,8 +30,9 @@ class NologinService {
     accessToken: string,
     attachmentId: string,
     innsendingsId: string,
+    type: 'nologin' | 'digital' = 'nologin',
   ): Promise<UploadedFile> {
-    return this.applicationClient.uploadFile(file, accessToken, attachmentId, innsendingsId);
+    return this.clients[type].uploadFile(file, accessToken, attachmentId, innsendingsId);
   }
 
   public async delete(
@@ -36,8 +40,9 @@ class NologinService {
     innsendingsId: string,
     attachmentId?: string,
     fileId?: string,
+    type: 'nologin' | 'digital' = 'nologin',
   ): Promise<void> {
-    return this.applicationClient.deleteFile(accessToken, innsendingsId, attachmentId, fileId);
+    return this.clients[type].deleteFile(accessToken, innsendingsId, attachmentId, fileId);
   }
 
   public async submit(
@@ -50,6 +55,7 @@ class NologinService {
     language: string,
     pdfFormData?: any,
     logMeta: LogMetadata = {},
+    type: 'nologin' | 'digital' = 'nologin',
   ): Promise<{ pdf: Uint8Array; receipt: ReceiptSummary }> {
     const lang = localizationUtils.getLanguageCodeAsIso639_1(language);
     const translate = translationUtils.createTranslate(translation, language);
@@ -65,7 +71,7 @@ class NologinService {
       translate,
     );
 
-    const submitResponse = await this.applicationClient.submitApplication(
+    const submitResponse = await this.clients[type].submitApplication(
       innsendingsId,
       nologinApplication,
       logMeta,
