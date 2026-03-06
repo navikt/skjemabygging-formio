@@ -26,7 +26,7 @@ describe('Digital submission without user login', () => {
       cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
         cy.findByLabelText('Norsk pass').check(),
       );
-      cy.uploadFile('id-billy-bruker.jpg');
+      cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
       cy.clickNextStep();
 
       cy.clickIntroPageConfirmation();
@@ -128,7 +128,7 @@ describe('Digital submission without user login', () => {
       cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
         cy.findByLabelText('Norsk pass').check(),
       );
-      cy.uploadFile('id-billy-bruker.jpg');
+      cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
       cy.clickNextStep();
 
       cy.clickIntroPageConfirmation();
@@ -206,7 +206,7 @@ describe('Digital submission without user login', () => {
     cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
       cy.findByLabelText('Norsk pass').check(),
     );
-    cy.uploadFile('id-billy-bruker.jpg');
+    cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
     cy.findByRole('button', { name: 'Slett filen' }).should('exist');
     cy.go('back');
 
@@ -250,7 +250,7 @@ describe('Digital submission without user login', () => {
 
     it('shows service unavailable error when submission fails due to service unavailability', () => {
       cy.mocksUseRouteVariant('post-nologin-soknad:service-unavailable');
-      cy.uploadFile('id-billy-bruker.jpg');
+      cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
       cy.clickNextStep();
       cy.clickIntroPageConfirmation();
       cy.clickNextStep();
@@ -295,7 +295,7 @@ describe('Digital submission without user login', () => {
         cy.findByLabelText('Norsk pass').check(),
       );
 
-      cy.uploadFile('id-billy-bruker.jpg');
+      cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
       cy.clickNextStep();
       cy.clickIntroPageConfirmation();
       cy.clickNextStep();
@@ -472,7 +472,7 @@ describe('Digital submission without user login', () => {
       cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
         cy.findByLabelText('Norsk pass').check(),
       );
-      cy.uploadFile('id-billy-bruker.jpg');
+      cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
       cy.clickNextStep();
 
       // standard fill start
@@ -531,7 +531,7 @@ describe('Digital submission without user login', () => {
       cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
         cy.findByLabelText('Norsk pass').check(),
       );
-      cy.uploadFile('id-billy-bruker.jpg');
+      cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
       cy.clickNextStep();
 
       // standard fill start
@@ -604,7 +604,7 @@ describe('Digital submission without user login', () => {
         cy.findByLabelText('Norsk pass').check(),
       );
       cy.clock(Date.now());
-      cy.uploadFile('id-billy-bruker.jpg');
+      cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
       cy.clickNextStep();
 
       cy.tick(3660000); // Move time forward by 1 hour and 1 minute (in ms)

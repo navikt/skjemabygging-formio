@@ -16,7 +16,7 @@ describe('Digital no login', () => {
       cy.defaultWaits();
       cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigitalNoLogin }).click();
       cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
-      cy.uploadFile();
+      cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
       cy.clickNextStep();
     });
 
@@ -109,7 +109,7 @@ describe('Digital no login', () => {
       cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
       cy.findByText(TEXTS.statiske.uploadId.selectFileButton).should('exist').should('be.visible');
 
-      cy.uploadFile();
+      cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
 
       cy.findByText('test.txt').should('exist');
       cy.findByText('0,04 MB').should('exist');
@@ -133,7 +133,7 @@ describe('Digital no login', () => {
 
     it('does not navigate to attachment panel', () => {
       cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
-      cy.uploadFile();
+      cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
       cy.clickNextStep();
       cy.clickShowAllSteps();
       cy.findByRole('link', { name: 'Dine opplysninger' }).should('exist');
@@ -162,7 +162,7 @@ describe('Digital no login', () => {
     describe('Deleting files', () => {
       beforeEach(() => {
         cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
-        cy.uploadFile();
+        cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
       });
 
       it('deletes a file when clicking the delete button', () => {

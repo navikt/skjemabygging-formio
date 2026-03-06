@@ -11,7 +11,7 @@ describe('Attachments page', () => {
     cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
     cy.findByText(TEXTS.statiske.uploadId.selectFileButton).should('exist').should('be.visible');
 
-    cy.uploadFile();
+    cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
 
     cy.clickNextStep();
     cy.clickStart();

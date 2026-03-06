@@ -115,16 +115,21 @@ Cypress.Commands.add('clickDownloadApplication', () => {
 
 Cypress.Commands.add(
   'uploadFile',
-  (fileName: string = 'small-file.txt', options: { index?: number; id?: string } = {}) => {
+  (fileName: string = 'small-file.txt', options: { index?: number; id?: string; verifyUpload?: boolean } = {}) => {
+    // Until we fix the mock setup, we need to use the hardcoded file name in the response for the lookup after upload
+    // This lookup stabilizes the test by ensuring we wait for the file to be uploaded and the response to be processed before moving on
+    const hardcodedMockFileName = 'test.txt';
     if (options.id) {
-      return cy
-        .get(`[data-cy="upload-button-${options.id}"] input[type=file]`)
-        .selectFile(`cypress/fixtures/files/${fileName}`, { force: true });
+      cy.get(`[data-cy="upload-button-${options.id}"] input[type=file]`).selectFile(
+        `cypress/fixtures/files/${fileName}`,
+        { force: true },
+      );
+      return options.verifyUpload ? cy.findByText(hardcodedMockFileName).should('be.visible') : cy;
     } else {
-      return cy
-        .get('input[type=file]')
+      cy.get('input[type=file]')
         .eq(options.index ?? 0)
         .selectFile(`cypress/fixtures/files/${fileName}`, { force: true });
+      return options.verifyUpload ? cy.findByText(hardcodedMockFileName).should('be.visible') : cy;
     }
   },
 );
