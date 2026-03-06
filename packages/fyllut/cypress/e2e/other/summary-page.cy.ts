@@ -615,7 +615,7 @@ describe('SummaryPage', () => {
     cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
       cy.findByLabelText('Norsk pass').check(),
     );
-    cy.uploadFile('id-billy-bruker.jpg');
+    cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
     cy.clickNextStep();
 
     cy.defaultWaits();

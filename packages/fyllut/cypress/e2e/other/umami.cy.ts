@@ -21,7 +21,7 @@ describe('Umami', () => {
       cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
         cy.findByLabelText('Norsk pass').check(),
       );
-      cy.uploadFile('id-billy-bruker.jpg');
+      cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
       cy.wait('@umamiEvent');
       cy.clickNextStep();
 
@@ -107,7 +107,7 @@ describe('Umami', () => {
         cy.findByLabelText('Norsk pass').check(),
       );
       cy.clock(Date.now());
-      cy.uploadFile('id-billy-bruker.jpg');
+      cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
       cy.wait('@umamiEvent');
       cy.clickNextStep();
 
