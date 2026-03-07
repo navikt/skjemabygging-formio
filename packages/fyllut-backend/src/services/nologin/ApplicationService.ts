@@ -15,7 +15,7 @@ import { LogMetadata } from '../../types/log';
 import applicationService from '../documents/applicationService';
 import { mapToReceiptSummary } from './receiptMapper';
 
-class NologinService {
+class ApplicationService {
   private readonly clients: Record<'nologin' | 'digital', ApplicationClientType>;
 
   constructor(config: ConfigType) {
@@ -25,7 +25,7 @@ class NologinService {
     };
   }
 
-  public async postFile(
+  public async uploadFile(
     file: Express.Multer.File,
     accessToken: string,
     attachmentId: string,
@@ -35,7 +35,7 @@ class NologinService {
     return this.clients[type].uploadFile(file, accessToken, attachmentId, innsendingsId);
   }
 
-  public async delete(
+  public async deleteFile(
     accessToken: string,
     innsendingsId: string,
     attachmentId?: string,
@@ -82,4 +82,4 @@ class NologinService {
   }
 }
 
-export default NologinService;
+export default ApplicationService;

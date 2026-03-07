@@ -1,6 +1,6 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
-import { nologinService } from '../../../../../services';
+import { applicationService } from '../../../../../services';
 import { HttpError } from '../../../../../utils/errors/HttpError';
 
 const post = async (req: Request, res: Response, next: NextFunction) => {
@@ -13,7 +13,7 @@ const post = async (req: Request, res: Response, next: NextFunction) => {
       return res.status(400).json({ message: 'Error: Ingen fil sendt med forespørselen' });
     }
 
-    const result = await nologinService.postFile(file, accessToken, attachmentId, innsendingsId, 'digital');
+    const result = await applicationService.uploadFile(file, accessToken, attachmentId, innsendingsId, 'digital');
     res.status(201).json(result);
   } catch (error) {
     if (error instanceof HttpError && error.http_response_body.errorCode === 'temporarilyUnavailable') {
@@ -31,7 +31,7 @@ const deleteFile = async (req: Request, res: Response, next: NextFunction) => {
     const { innsendingsId, attachmentId, fileId } = req.params;
     const accessToken = req.getTokenxAccessToken();
 
-    await nologinService.delete(accessToken, innsendingsId, attachmentId, fileId, 'digital');
+    await applicationService.deleteFile(accessToken, innsendingsId, attachmentId, fileId, 'digital');
     res.sendStatus(204);
   } catch (error) {
     next(error);

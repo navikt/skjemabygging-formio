@@ -4,7 +4,7 @@ import {
   ReceiptSummary,
   Submission,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { nologinService } from '../../../../services';
+import { applicationService } from '../../../../services';
 import { LogMetadata } from '../../../../types/log';
 
 export const generatePdfAndSubmit = async (
@@ -28,7 +28,7 @@ export const generatePdfAndSubmit = async (
     fyllutRequestPath: req.path,
   };
 
-  const { pdf, receipt }: { pdf: Uint8Array; receipt: ReceiptSummary } = await nologinService.submit(
+  const { pdf, receipt }: { pdf: Uint8Array; receipt: ReceiptSummary } = await applicationService.submit(
     pdfAccessToken,
     accessToken,
     innsendingsId,

@@ -1,6 +1,6 @@
 import { TEXTS, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
-import { nologinService } from '../../../services';
+import { applicationService } from '../../../services';
 import { NologinContext } from '../../../types/nologin';
 import { HttpError } from '../../../utils/errors/HttpError';
 
@@ -19,7 +19,7 @@ const nologinFile = {
       }
       validateAttachmentId(attachmentId);
 
-      const result = await nologinService.postFile(file, accessToken, attachmentId, innsendingsId, 'nologin');
+      const result = await applicationService.uploadFile(file, accessToken, attachmentId, innsendingsId, 'nologin');
       res.status(201).json(result);
     } catch (error: any) {
       if (error instanceof HttpError && error.http_status === 403) {
@@ -56,7 +56,7 @@ const nologinFile = {
 
       validateAttachmentId(attachmentId);
 
-      await nologinService.delete(accessToken, innsendingsId, attachmentId, fileId, 'nologin');
+      await applicationService.deleteFile(accessToken, innsendingsId, attachmentId, fileId, 'nologin');
       res.sendStatus(204);
     } catch (error) {
       next(error);
