@@ -1,13 +1,13 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
 interface AttachmentType extends BaseComponentType {
-  attachmentType: 'default' | 'other';
+  attachmentType?: 'default' | 'other';
   attachmentValues?: Partial<typeof defaultAttachmentValues>;
   properties?: Record<string, any>;
 }
 
 const attachment = (props: AttachmentType) => {
-  const { label, description, attachmentType, properties, attachmentValues = {} } = props ?? {};
+  const { label, description, attachmentType = 'default', properties, attachmentValues = {} } = props ?? {};
 
   return {
     ...staticDefaultValues,

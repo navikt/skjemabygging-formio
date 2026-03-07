@@ -145,6 +145,7 @@ const localDevelopmentConfig: DefaultConfig = {
   },
   skjemaDir: process.env.SKJEMA_DIR,
   teamLogsConfig,
+  flowFormNumbers: ['formwithattachments', 'nav060404'],
 };
 
 const defaultConfig: DefaultConfig = {
@@ -189,6 +190,7 @@ const defaultConfig: DefaultConfig = {
       nais_container_name: process.env.NAIS_APP_NAME!,
     },
   },
+  flowFormNumbers: [],
 };
 
 const config: ConfigType = {

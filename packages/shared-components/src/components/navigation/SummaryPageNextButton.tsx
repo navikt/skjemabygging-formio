@@ -30,7 +30,7 @@ export function SummaryPageNextButton({
   isValid,
   setSubmitError,
 }: Props) {
-  const { app, submissionMethod } = useAppConfig();
+  const { app, submissionMethod, attachmentPageEnabled } = useAppConfig();
   const canSubmit =
     !panelValidationList || panelValidationList.every((panelValidation) => !panelValidation.hasValidationErrors);
   const navigate = useNavigate();
@@ -42,6 +42,7 @@ export function SummaryPageNextButton({
   const digitalWithoutAttachments =
     (submissionMethod === 'digital' || submissionTypesUtils.isDigitalSubmissionOnly(submissionTypes)) &&
     !hasRelevantAttachments(form, submission ?? { data: {} });
+  const digitalWithUploadsInFyllut = submissionMethod === 'digital' && attachmentPageEnabled;
 
   const submit = async (e) => {
     if (!canSubmit || !submission || !submission.data) {
@@ -81,9 +82,10 @@ export function SummaryPageNextButton({
   return (
     <NextButton
       label={{
-        digital: digitalWithoutAttachments
-          ? translate(TEXTS.grensesnitt.navigation.sendToNav)
-          : translate(TEXTS.grensesnitt.navigation.saveAndContinue),
+        digital:
+          digitalWithoutAttachments || digitalWithUploadsInFyllut
+            ? translate(TEXTS.grensesnitt.navigation.sendToNav)
+            : translate(TEXTS.grensesnitt.navigation.saveAndContinue),
         digitalnologin: translate(TEXTS.grensesnitt.navigation.sendToNav),
         default: translate(TEXTS.grensesnitt.navigation.instructions),
       }}
