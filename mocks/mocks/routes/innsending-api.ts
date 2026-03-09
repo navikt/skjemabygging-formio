@@ -1,3 +1,4 @@
+import multer from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import paabegyntInnsendt from '../data/innsending-api/active-tasks/ettersending.json';
 import paabegyntMellomlagring from '../data/innsending-api/active-tasks/mellomlagring.json';
@@ -35,7 +36,10 @@ import tc02 from '../data/test-cases/tc02-innsending-nologin-soknad-body.json';
 import tc05 from '../data/test-cases/tc05-innsending-nologin-soknad-body.json';
 import tc06a from '../data/test-cases/tc06a-innsending-nologin-soknad-body.json';
 import tc06b from '../data/test-cases/tc06b-innsending-nologin-soknad-body.json';
+import tc07 from '../data/test-cases/tc07-innsending-soknad-body.json';
 import { compareBodyMiddleware } from '../utils/testCaseUtils';
+
+const upload = multer();
 
 const objectToByteArray = (obj: any): number[] => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
 
@@ -114,7 +118,7 @@ export default [
     method: 'POST',
     variants: [
       {
-        id: 'success',
+        id: 'success-hardcoded',
         type: 'json',
         options: {
           status: 201,
@@ -122,7 +126,7 @@ export default [
         },
       },
       {
-        id: 'success-v2',
+        id: 'success',
         type: 'middleware',
         options: {
           middleware: (req, res) => {
@@ -458,20 +462,25 @@ export default [
   },
   {
     id: 'upload-file',
-    url: '/send-inn/v1/application-nologin/:innsendingsId/attachments/:attachmentId',
+    url: '/send-inn/v1/application-(nologin|digital)/:innsendingsId/attachments/:attachmentId',
     method: 'POST',
     variants: [
       {
         id: 'success',
         type: 'middleware',
         options: {
-          middleware(_req, res) {
-            res.status(201);
-            res.contentType('application/json; charset=UTF-8');
-            res.send({
-              id: '92ee15dd-dc49-4c95-b9b6-6224bae088bb',
-              name: 'test.txt',
-              size: 40000,
+          middleware(req, res, next) {
+            upload.single('file')(req, res, (err) => {
+              if (err) {
+                return next(err);
+              }
+              res.status(201);
+              res.contentType('application/json; charset=UTF-8');
+              res.send({
+                id: uuidv4(),
+                name: req.file?.originalname ?? 'test.txt',
+                size: req.file?.size ?? 40000,
+              });
             });
           },
         },
@@ -647,6 +656,17 @@ export default [
             res.contentType('application/json; charset=UTF-8');
             res.send(replySubmittedApplication(body, innsendingsId));
           },
+        },
+      },
+      {
+        id: 'success-tc07',
+        type: 'middleware',
+        options: {
+          middleware: compareBodyMiddleware(
+            tc07,
+            ['innsendingsId', 'mainDocument', 'mainDocumentAlt', 'attachments.fileIds'],
+            okResponseHandlerNologinSubmission,
+          ),
         },
       },
     ],

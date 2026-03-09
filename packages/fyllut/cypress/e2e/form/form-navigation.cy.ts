@@ -7,6 +7,7 @@ describe('Form navigation', () => {
 
   beforeEach(() => {
     cy.mocksRestoreRouteVariants();
+    cy.mocksUseRouteVariant('post-soknad:success-hardcoded');
     cy.defaultIntercepts();
   });
 
@@ -370,7 +371,7 @@ describe('Form navigation', () => {
 
     describe('Digital with attachment upload flow', () => {
       beforeEach(() => {
-        cy.mocksUseRouteVariant('post-soknad:success-v2');
+        cy.mocksUseRouteVariant('post-soknad:success');
         cy.intercept('POST', '/fyllut/api/send-inn/digital-application/*').as('submitApplication');
 
         cy.visit('/fyllut/formwithattachments?sub=digital');
