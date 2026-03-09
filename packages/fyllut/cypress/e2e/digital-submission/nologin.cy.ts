@@ -1,5 +1,4 @@
-import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { DateTime } from 'luxon';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
 describe('Digital submission without user login', () => {
   before(() => {
@@ -159,6 +158,8 @@ describe('Digital submission without user login', () => {
       cy.mocksUseRouteVariant('post-familie-pdf:success-tc06a');
       cy.mocksUseRouteVariant('post-nologin-soknad:success-tc06a');
       cy.clickSendNav();
+
+      cy.findByRole('heading', { name: 'Kvittering' }).should('exist');
     });
 
     it('should support user without ssn', () => {
@@ -177,7 +178,7 @@ describe('Digital submission without user login', () => {
       cy.findByRole('textbox', { name: 'Vegadresse' }).type('Testveien 1C');
       cy.findByRole('textbox', { name: 'Postnummer' }).type('1234');
       cy.findByRole('textbox', { name: 'Poststed' }).type('Plassen');
-      cy.findByRole('textbox', { name: /^Gyldig fra/ }).type(DateTime.now().toFormat(dateUtils.inputFormat));
+      cy.findByRole('textbox', { name: /^Gyldig fra/ }).type('18.02.2026');
       cy.clickNextStep();
 
       cy.findByRole('group', { name: 'Høyeste fullførte utdanning' }).within(() =>
@@ -193,6 +194,8 @@ describe('Digital submission without user login', () => {
       cy.mocksUseRouteVariant('post-familie-pdf:success-tc06b');
       cy.mocksUseRouteVariant('post-nologin-soknad:success-tc06b');
       cy.clickSendNav();
+
+      cy.findByRole('heading', { name: 'Kvittering' }).should('exist');
     });
   });
 
