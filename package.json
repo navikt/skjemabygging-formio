@@ -96,7 +96,7 @@
     "vitest-fetch-mock": "^0.4.5"
   },
   "engines": {
-    "node": ">=22.12.0"
+    "node": ">=24"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,mjs}": [
