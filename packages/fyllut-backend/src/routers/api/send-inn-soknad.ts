@@ -15,7 +15,7 @@ import {
   validateInnsendingsId,
 } from './helpers/sendInn';
 
-const { sendInnConfig, flowFormNumbers } = config;
+const { sendInnConfig, tempAttachmentUploadForms } = config;
 const getErrorMessage = 'Kan ikke hente mellomlagret søknad.';
 const postErrorMessage = 'Kan ikke starte mellomlagring av søknaden.';
 const putErrorMessage = 'Kan ikke oppdatere mellomlagret søknad.';
@@ -212,7 +212,7 @@ const sendInnSoknad = {
 const shouldUploadAttachmentsInFyllut = (soknad: SendInnSoknadBody) => {
   return {
     shouldUploadAttachmentsInFyllut:
-      flowFormNumbers.includes(soknad.skjemaPath) && (soknad.vedleggsListe?.length || 0) === 0,
+      tempAttachmentUploadForms.includes(soknad.skjemaPath) && (soknad.vedleggsListe?.length || 0) === 0,
   };
 };
 
