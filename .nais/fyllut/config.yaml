@@ -87,6 +87,8 @@ spec:
   env:
     - name: ENABLED_FEATURES
       value: {{enabled-features}}
+    - name: FEATURE_ATTACHMENT_UPLOAD_FORMS
+      value: "{{feature-attachment-upload-forms}}"
     - name: DECORATOR_URL
       value: {{dekorator-url}}
     - name: FOERSTESIDE_URL

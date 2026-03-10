@@ -190,7 +190,7 @@ const defaultConfig: DefaultConfig = {
       nais_container_name: process.env.NAIS_APP_NAME!,
     },
   },
-  flowFormNumbers: [],
+  flowFormNumbers: featureUtils.splitCommaSeparated(process.env.FEATURE_ATTACHMENT_UPLOAD_FORMS),
 };
 
 const config: ConfigType = {
