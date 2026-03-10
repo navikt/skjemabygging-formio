@@ -37,7 +37,7 @@ const assembleNologinSoknadBody = (
   }
 
   return {
-    ...(bruker && { bruker: bruker.id }),
+    ...(bruker && { bruker: bruker.id?.replace(/\s/g, '') }),
     ...(avsender && { avsender }),
     formNumber: form.properties.skjemanummer,
     title: translate(form.title),
