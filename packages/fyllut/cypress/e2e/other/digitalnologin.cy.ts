@@ -109,10 +109,10 @@ describe('Digital no login', () => {
       cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
       cy.findByText(TEXTS.statiske.uploadId.selectFileButton).should('exist').should('be.visible');
 
-      cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
+      cy.uploadFile('test.txt', { verifyUpload: true });
 
       cy.findByText('test.txt').should('exist');
-      cy.findByText('0,04 MB').should('exist');
+      cy.findByText('0,01 MB').should('exist');
 
       cy.clickNextStep();
       cy.clickStart();
@@ -162,7 +162,7 @@ describe('Digital no login', () => {
     describe('Deleting files', () => {
       beforeEach(() => {
         cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
-        cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
+        cy.uploadFile('test.txt', { verifyUpload: true });
       });
 
       it('deletes a file when clicking the delete button', () => {
