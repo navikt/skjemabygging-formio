@@ -67,6 +67,7 @@ import formTextfield from '../data/formio-api/textfield.json';
 import formYear from '../data/formio-api/year.json';
 import formYourInformationTranslations from '../data/formio-api/your-information-translations.json';
 import formYourInformation from '../data/formio-api/your-information.json';
+import { attachmentsForm, attachmentsTranslations } from '../data/forms-api/attachmentsForm';
 import { accordionForm, accordionTranslations } from '../data/forms-api/components/accordionForm';
 import { activitiesTestForm, activitiesTranslations } from '../data/forms-api/components/activitiesForm';
 import { addressValidityTestForm, addressValidityTranslations } from '../data/forms-api/components/addressValidityForm';
@@ -222,6 +223,7 @@ const allForms = [
   { form: dataGridForm(), translations: dataGridTranslations() },
   { form: panelTestForm(), translations: panelTranslations() },
   { form: adresseTestForm(), translations: adresseTranslations() },
+  { form: attachmentsForm(), translations: attachmentsTranslations() },
 ];
 
 const findTestdata = (formPath: string) => allForms.find((testdata) => testdata.form.path === formPath);

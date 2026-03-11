@@ -22,7 +22,9 @@ import registerDataRouter from './register-data/register-data';
 import sendInnSoknad from './send-inn-soknad';
 import sendInnUtfyltSoknad from './send-inn-utfylt-soknad';
 import activities from './send-inn/activities/send-inn-activities';
-import nologin from './send-inn/nologin';
+import digitalApplicationRouter from './send-inn/application/digital/router';
+import nologin from './send-inn/application/nologin/application';
+import nologinApplicationRouter from './send-inn/application/nologin/router';
 import prefillData from './send-inn/prefill-data/send-inn-prefill-data';
 import status from './status';
 import translations from './translations.js';
@@ -68,6 +70,15 @@ apiRouter.get('/send-inn/activities', tokenxSendInn, activities.get);
 apiRouter.use('/register-data', registerDataRouter);
 
 const rateLimitHandler = rateLimiter(60000, appConfig.isTest ? 1000 : 40);
+apiRouter.use(
+  '/send-inn/nologin-application',
+  rateLimitHandler,
+  nologinTokenHandler,
+  azureM2MSendInn,
+  nologinApplicationRouter,
+);
+apiRouter.use('/send-inn/digital-application', tokenxSendInn, digitalApplicationRouter);
+// Deprecated start - delete when /api/send-inn/nologin-application is used
 apiRouter.use('/nologin-file', rateLimitHandler, nologinTokenHandler, nologinFileRouter);
 apiRouter.post(
   '/send-inn/nologin-soknad',
@@ -77,6 +88,7 @@ apiRouter.post(
   azurePdfGeneratorToken,
   nologin.post,
 );
+// Deprecated end
 
 if (featureToggles.enablePdl) {
   apiRouter.get('/pdl/person/:id', tokenxPdl, pdl.person);

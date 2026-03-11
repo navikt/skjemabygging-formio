@@ -469,7 +469,7 @@ describe('Pdf', () => {
         cy.clickNextStep();
 
         cy.fixture('pdf/request-components-identity-nologin.json').then((fixture) => {
-          cy.intercept('POST', '/fyllut/api/send-inn/nologin-soknad', (req) => {
+          cy.intercept('POST', '/fyllut/api/send-inn/nologin-application', (req) => {
             // Check that timestamp is present in footer before removing it for comparison.
             expect(req.body.pdfFormData.bunntekst.upperMiddle).not.to.be.null;
             const actual = getCleanedUpPdfFormData(req);

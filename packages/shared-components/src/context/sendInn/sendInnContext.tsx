@@ -28,7 +28,7 @@ import { mellomlagringReducer } from './reducer/mellomlagringReducer';
 import { getSubmissionWithFyllutState, transformSubmissionBeforeSubmitting } from './utils/utils';
 
 interface SendInnContextType {
-  updateMellomlagring: (submission: Submission) => Promise<SendInnSoknadResponse | undefined>;
+  updateMellomlagring: (submission?: Submission) => Promise<SendInnSoknadResponse | undefined>;
   submitSoknad: (submission: Submission) => Promise<void>;
   deleteMellomlagring: () => Promise<{ status: string; info: string } | undefined>;
   isMellomlagringActive: boolean;
@@ -55,7 +55,8 @@ const SendInnContext = createContext<SendInnContextType>({} as SendInnContextTyp
 
 const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const appConfig = useAppConfig();
-  const { app, submissionMethod, logger, baseUrl, logEvent } = appConfig;
+  const { app, submissionMethod, logger, baseUrl, logEvent, attachmentPageEnabled, setAttachmentPageEnabled } =
+    appConfig;
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -123,13 +124,16 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const retrieveMellomlagring = useCallback(
     async (innsendingsId: string) => {
       const response = await getSoknad(innsendingsId, appConfig);
+      if (response?.shouldUploadAttachmentsInFyllut && setAttachmentPageEnabled) {
+        setAttachmentPageEnabled(true);
+      }
       if (response?.hoveddokumentVariant.document) {
         addSearchParamToUrl('lang', response.hoveddokumentVariant.document.language);
         setSubmission(getSubmissionWithFyllutState(response, form));
         dispatchFyllutMellomlagring({ type: 'init', response });
       }
     },
-    [addSearchParamToUrl, appConfig, form, setSubmission],
+    [addSearchParamToUrl, appConfig, form, setSubmission, setAttachmentPageEnabled],
   );
 
   const nbNO: Language = 'nb-NO';
@@ -182,6 +186,9 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         setInnsendingsId(response?.innsendingsId);
         removeSearchParamFromUrl('forceMellomlagring');
         addSearchParamToUrl('innsendingsId', response?.innsendingsId);
+        if (response?.shouldUploadAttachmentsInFyllut && setAttachmentPageEnabled) {
+          setAttachmentPageEnabled(true);
+        }
         if (response) {
           setIsMellomlagringReady(true);
         }
@@ -201,14 +208,19 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
       logger,
       setSubmission,
       removeSearchParamFromUrl,
+      setAttachmentPageEnabled,
       addSearchParamToUrl,
       navigate,
     ],
   );
 
-  const updateMellomlagring = async (submission: Submission): Promise<SendInnSoknadResponse | undefined> => {
+  const updateMellomlagring = async (submissionParam?: Submission): Promise<SendInnSoknadResponse | undefined> => {
     if (!isMellomlagringAvailable || !isMellomlagringReady) {
       return;
+    }
+    const submissionForSave = submissionParam ?? submission;
+    if (!submissionForSave) {
+      throw Error('No submission to save');
     }
 
     try {
@@ -217,7 +229,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
       const response = await updateSoknad(
         appConfig,
         form,
-        transformSubmissionBeforeSubmitting(submission),
+        transformSubmissionBeforeSubmitting(submissionForSave),
         currentLanguage,
         translation,
         innsendingsId,
@@ -258,7 +270,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
     }
   };
 
-  const submitDigitalNologin = useCallback(
+  const submitDigitalFyllut = useCallback(
     async (language: Language, translation: any, submission: Submission) => {
       try {
         const response = await postNologinSoknad(
@@ -268,6 +280,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
           submission,
           language,
           translation,
+          submissionMethod,
           renderPdfForm({
             activeComponents,
             activeAttachmentUploadsPanel,
@@ -278,6 +291,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
             appConfig,
             submissionMethod,
           }),
+          innsendingsId,
         );
         logEvent?.({
           name: 'skjema fullført',
@@ -320,6 +334,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
       activeComponents,
       activeAttachmentUploadsPanel,
       currentLanguage,
+      innsendingsId,
       translate,
       submissionMethod,
       logEvent,
@@ -398,8 +413,8 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
     const translation = translationForLanguage(currentLanguage);
     const submission = transformSubmissionBeforeSubmitting(appSubmission);
 
-    if (submissionMethod === 'digitalnologin') {
-      await submitDigitalNologin(currentLanguage, translation, submission);
+    if (submissionMethod === 'digitalnologin' || attachmentPageEnabled) {
+      await submitDigitalFyllut(currentLanguage, translation, submission);
     } else {
       await submitDigital(currentLanguage, translation, submission);
     }

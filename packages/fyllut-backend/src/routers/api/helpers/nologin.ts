@@ -71,7 +71,7 @@ const assembleNologinSoknadBody = (
             component?.navId ?? attachment.type,
           );
         }) ?? [],
-    otherUploadAvailable: false,
+    otherUploadAvailable: activeAttachments.some((a) => a.attachmentType === 'other'),
   };
 };
 

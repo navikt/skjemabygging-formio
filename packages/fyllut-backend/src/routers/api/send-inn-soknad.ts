@@ -15,7 +15,7 @@ import {
   validateInnsendingsId,
 } from './helpers/sendInn';
 
-const { sendInnConfig } = config;
+const { sendInnConfig, tempAttachmentUploadForms } = config;
 const getErrorMessage = 'Kan ikke hente mellomlagret søknad.';
 const postErrorMessage = 'Kan ikke starte mellomlagring av søknaden.';
 const putErrorMessage = 'Kan ikke oppdatere mellomlagret søknad.';
@@ -69,6 +69,7 @@ const sendInnSoknad = {
             document: byteArrayToObject(base64Decode(json.hoveddokumentVariant.document)),
           }),
         },
+        ...shouldUploadAttachmentsInFyllut(json),
       };
       res.json(response);
     } catch (error) {
@@ -97,7 +98,11 @@ const sendInnSoknad = {
       if (sendInnResponse.ok) {
         logger.debug(sendInnResponse.status === 200 ? 'User has active tasks' : 'Successfylly posted data to SendInn');
         res.status(sendInnResponse.status);
-        res.json(await sendInnResponse.json());
+        const soknad = (await sendInnResponse.json()) as SendInnSoknadBody;
+        res.json({
+          ...soknad,
+          ...shouldUploadAttachmentsInFyllut(soknad),
+        });
       } else {
         logger.debug('Failed to post data to SendInn');
         next(await responseToError(sendInnResponse, `Feil ved kall til SendInn. ${postErrorMessage}`, true));
@@ -202,6 +207,13 @@ const sendInnSoknad = {
       next(err);
     }
   },
+};
+
+const shouldUploadAttachmentsInFyllut = (soknad: SendInnSoknadBody) => {
+  return {
+    shouldUploadAttachmentsInFyllut:
+      tempAttachmentUploadForms.includes(soknad.skjemaPath) && (soknad.vedleggsListe?.length || 0) === 0,
+  };
 };
 
 export default sendInnSoknad;
