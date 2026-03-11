@@ -1,7 +1,8 @@
 import { CheckmarkCircleFillIcon, DownloadIcon } from '@navikt/aksel-icons';
-import { Alert, BodyShort, Box, Heading, HStack, Link, List, VStack } from '@navikt/ds-react';
-import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { Alert, BodyShort, Box, Button, Heading, HStack, Link, List, VStack } from '@navikt/ds-react';
+import { dateUtils, stringUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useMemo } from 'react';
+import { Link as ReactRouterLink } from 'react-router';
 import InnerHtml from '../../components/inner-html/InnerHtml';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
@@ -175,6 +176,19 @@ export function ReceiptPage() {
               </Heading>
               <InnerHtml content={translate(TEXTS.statiske.receipt.deadlineWarningBody)} />
             </Alert>
+          )}
+
+          {submissionMethod === 'digital' && (
+            <div>
+              <Button
+                role="link"
+                as={ReactRouterLink}
+                to={translate(TEXTS.statiske.external.minSide.url)}
+                variant="secondary"
+              >
+                {stringUtils.capitalize(translate(TEXTS.statiske.error.goToMyPage))}
+              </Button>
+            </div>
           )}
         </>
       ) : (
