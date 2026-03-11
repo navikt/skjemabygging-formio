@@ -1,7 +1,45 @@
 import { featureUtils } from './featureUtils';
-const { toFeatureToggles } = featureUtils;
+const { toFeatureToggles, splitCommaSeparated } = featureUtils;
 
 describe('features', () => {
+  describe('splitCommaSeparated', () => {
+    it('returns empty array when undefined', () => {
+      expect(splitCommaSeparated(undefined)).toEqual([]);
+    });
+
+    it('returns empty array when null', () => {
+      expect(splitCommaSeparated(null)).toEqual([]);
+    });
+
+    it('returns empty array when empty string', () => {
+      expect(splitCommaSeparated('')).toEqual([]);
+    });
+
+    it('returns single item array for a single value', () => {
+      expect(splitCommaSeparated('nav123456')).toEqual(['nav123456']);
+    });
+
+    it('splits comma-separated values into an array', () => {
+      expect(splitCommaSeparated('nav123456,nav432345,formwithattachments')).toEqual([
+        'nav123456',
+        'nav432345',
+        'formwithattachments',
+      ]);
+    });
+
+    it('trims whitespace around values', () => {
+      expect(splitCommaSeparated(' nav123456 , nav432345 , formwithattachments ')).toEqual([
+        'nav123456',
+        'nav432345',
+        'formwithattachments',
+      ]);
+    });
+
+    it('filters out empty entries from consecutive commas', () => {
+      expect(splitCommaSeparated('nav123456,,nav432345')).toEqual(['nav123456', 'nav432345']);
+    });
+  });
+
   describe('toFeatureToggles', () => {
     it('returns empty object when undefined', () => {
       const featureToggles = toFeatureToggles(undefined);

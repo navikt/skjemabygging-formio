@@ -86,6 +86,7 @@ export type DefaultConfig = {
   formsApiUrl: string;
   nologin: NologinConfig;
   teamLogsConfig: TeamLogsConfig;
+  tempAttachmentUploadForms: string[];
 };
 
 export type ConfigType = DefaultConfig & {

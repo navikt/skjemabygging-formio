@@ -99,7 +99,7 @@ const OtherAttachmentUpload = ({
   };
 
   return (
-    <VStack gap="space-24" className={clsx('mb', className)}>
+    <VStack gap="space-24" className={clsx('mb', className)} data-cy="attachment-upload">
       {uploadedAttachmentFiles.length > 0 ? (
         <div>
           <Label className={'mb-0'}>{label}</Label>
