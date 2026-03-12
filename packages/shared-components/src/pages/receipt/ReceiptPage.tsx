@@ -9,6 +9,7 @@ import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
 import makeStyles from '../../util/styles/jss/jss';
+import urlUtils from '../../util/url/url';
 
 const useStyles = makeStyles({
   downloadLink: {
@@ -183,7 +184,7 @@ export function ReceiptPage() {
               <Button
                 role="link"
                 as={ReactRouterLink}
-                to={translate(TEXTS.statiske.external.minSide.url)}
+                to={translate(urlUtils.getMyPageUrl(window.location.href))}
                 variant="secondary"
               >
                 {stringUtils.capitalize(translate(TEXTS.statiske.error.goToMyPage))}
