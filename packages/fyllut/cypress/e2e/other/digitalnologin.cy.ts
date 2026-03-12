@@ -16,7 +16,7 @@ describe('Digital no login', () => {
       cy.defaultWaits();
       cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigitalNoLogin }).click();
       cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
-      cy.uploadFile();
+      cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
       cy.clickNextStep();
     });
 
@@ -109,10 +109,10 @@ describe('Digital no login', () => {
       cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
       cy.findByText(TEXTS.statiske.uploadId.selectFileButton).should('exist').should('be.visible');
 
-      cy.uploadFile();
+      cy.uploadFile('test.txt', { verifyUpload: true });
 
       cy.findByText('test.txt').should('exist');
-      cy.findByText('0,04 MB').should('exist');
+      cy.findByText('0,01 MB').should('exist');
 
       cy.clickNextStep();
       cy.clickStart();
@@ -133,7 +133,7 @@ describe('Digital no login', () => {
 
     it('does not navigate to attachment panel', () => {
       cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
-      cy.uploadFile();
+      cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
       cy.clickNextStep();
       cy.clickShowAllSteps();
       cy.findByRole('link', { name: 'Dine opplysninger' }).should('exist');
@@ -162,7 +162,7 @@ describe('Digital no login', () => {
     describe('Deleting files', () => {
       beforeEach(() => {
         cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
-        cy.uploadFile();
+        cy.uploadFile('test.txt', { verifyUpload: true });
       });
 
       it('deletes a file when clicking the delete button', () => {
@@ -176,7 +176,7 @@ describe('Digital no login', () => {
       });
 
       it('deletes files when clicking the cancel button', () => {
-        cy.intercept('/fyllut/api/nologin-file').as('deleteAllFiles');
+        cy.intercept('DELETE', '/fyllut/api/send-inn/nologin-application').as('deleteAllFiles');
         cy.findByText(TEXTS.statiske.uploadId.label).should('not.exist');
         cy.findByRole('button', { name: TEXTS.statiske.uploadId.selectFileButton }).should('not.exist');
         cy.findByText('test.txt').should('exist');

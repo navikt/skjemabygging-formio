@@ -9,7 +9,7 @@ import formConditionalXmas from '../data/formio-api/conditionalxmas.json';
 import formContainerDatagrid from '../data/formio-api/container-datagrid.json';
 import formContainer from '../data/formio-api/container123.json';
 import formCustomCompsAlert from '../data/formio-api/custom-components-alert.json';
-import checkboxForm from '../data/formio-api/custom-components-checkbox.json';
+import checkboxFormJson from '../data/formio-api/custom-components-checkbox.json';
 import formCustomCompsDatagrid from '../data/formio-api/custom-components-datagrid.json';
 import translationsCustomComps from '../data/formio-api/custom-components-translations.json';
 import formCustomComps from '../data/formio-api/custom-components.json';
@@ -42,12 +42,12 @@ import nav111221b from '../data/formio-api/nav111221b.json';
 import formNavdatepicker from '../data/formio-api/navdatepicker.json';
 import nologinTranslationsNb from '../data/formio-api/nologin-translations-nb.json';
 import nologinFormOld from '../data/formio-api/nologin.json';
-import numberForm from '../data/formio-api/number.json';
+import numberJsonForm from '../data/formio-api/number.json';
 import formPengerOgKonto from '../data/formio-api/pengerOgKonto.json';
 import formPhoneNumberAreaCode from '../data/formio-api/phone-number-area-code.json';
 import radioForm from '../data/formio-api/radio.json';
 import selectBoxesForm from '../data/formio-api/select-boxes.json';
-import selectForm from '../data/formio-api/select.json';
+import selectFormJson from '../data/formio-api/select.json';
 import formSkjemagruppeTest from '../data/formio-api/skjemagruppetest.json';
 import translationsSubmissionMethod from '../data/formio-api/submission-method-translations.json';
 import formSubmissionMethod from '../data/formio-api/submission-method.json';
@@ -67,18 +67,58 @@ import formTextfield from '../data/formio-api/textfield.json';
 import formYear from '../data/formio-api/year.json';
 import formYourInformationTranslations from '../data/formio-api/your-information-translations.json';
 import formYourInformation from '../data/formio-api/your-information.json';
+import { attachmentsForm, attachmentsTranslations } from '../data/forms-api/attachmentsForm';
+import { accordionForm, accordionTranslations } from '../data/forms-api/components/accordionForm';
+import { activitiesTestForm, activitiesTranslations } from '../data/forms-api/components/activitiesForm';
+import { addressValidityTestForm, addressValidityTranslations } from '../data/forms-api/components/addressValidityForm';
+import { adresseTestForm, adresseTranslations } from '../data/forms-api/components/adresseForm';
+import { alertForm, alertTranslations } from '../data/forms-api/components/alertForm';
+import { attachmentTestForm, attachmentTranslations } from '../data/forms-api/components/attachmentForm';
+import { bankAccountForm, bankAccountTranslations } from '../data/forms-api/components/bankAccountForm';
+import { checkboxForm, checkboxTranslations } from '../data/forms-api/components/checkboxForm';
 import componentsForm from '../data/forms-api/components/componentsForm';
 import { conditionalRowForm, conditionalRowTranslations } from '../data/forms-api/components/conditionalRowForm';
+import { containerForm, containerTranslations } from '../data/forms-api/components/containerForm';
+import { countrySelectForm, countrySelectTranslations } from '../data/forms-api/components/countrySelectForm';
 import { createMonthPickerForm, monthPickerTranslations } from '../data/forms-api/components/createMonthPickerForm';
+import { currencyForm, currencyTranslations } from '../data/forms-api/components/currencyForm';
+import { currencySelectForm, currencySelectTranslations } from '../data/forms-api/components/currencySelectForm';
+import { dataFetcherTestForm, dataFetcherTranslations } from '../data/forms-api/components/dataFetcherForm';
+import { dataGridForm, dataGridTranslations } from '../data/forms-api/components/dataGridForm';
+import { datePickerForm, datePickerTranslations } from '../data/forms-api/components/datePickerForm';
+import { drivingListTestForm, drivingListTranslations } from '../data/forms-api/components/drivingListForm';
+import { emailForm as emailComponentForm, emailTranslations } from '../data/forms-api/components/emailForm';
+import { firstNameForm, firstNameTranslations } from '../data/forms-api/components/firstNameForm';
 import { fnrFieldForm, fnrFieldTranslations } from '../data/forms-api/components/fnrFieldForm';
+import { formGroupTestForm, formGroupTranslations } from '../data/forms-api/components/formGroupForm';
+import { htmlElementForm, htmlElementTranslations } from '../data/forms-api/components/htmlElementForm';
+import { ibanForm, ibanTranslations } from '../data/forms-api/components/ibanForm';
+import { identityTestForm, identityTranslations } from '../data/forms-api/components/identityForm';
+import { imageForm, imageTranslations } from '../data/forms-api/components/imageForm';
+import { maalgruppeForm, maalgruppeTranslations } from '../data/forms-api/components/maalgruppeForm';
+import { numberForm, numberTranslations } from '../data/forms-api/components/numberForm';
+import {
+  organizationNumberForm,
+  organizationNumberTranslations,
+} from '../data/forms-api/components/organizationNumberForm';
+import { panelTestForm, panelTranslations } from '../data/forms-api/components/panelForm';
+import { phoneNumberForm, phoneNumberTranslations } from '../data/forms-api/components/phoneNumberForm';
 import { radioPanelForm, radioPanelTranslations } from '../data/forms-api/components/radioPanelForm';
+import {
+  selectBoxesForm as selectBoxesComponentForm,
+  selectBoxesTranslations,
+} from '../data/forms-api/components/selectBoxesForm';
+import { selectForm, selectTranslations } from '../data/forms-api/components/selectForm';
 import { senderForm, senderTranslations } from '../data/forms-api/components/senderForm';
 import {
   simpleConditionalForm,
   simpleConditionalTranslations,
 } from '../data/forms-api/components/simpleConditionalForm';
 import { staticPdfForm, staticPdfTranslations } from '../data/forms-api/components/staticPdfForm';
+import { surnameForm, surnameTranslations } from '../data/forms-api/components/surnameForm';
+import { textAreaForm, textAreaTranslations } from '../data/forms-api/components/textAreaForm';
 import { textFieldForm, textFieldTranslations } from '../data/forms-api/components/textFieldForm';
+import { yearForm, yearTranslations } from '../data/forms-api/components/yearForm';
 import largeForm from '../data/forms-api/largeForm';
 import { nologinForm, nologinTranslations } from '../data/forms-api/nologinForm';
 
@@ -111,13 +151,13 @@ const allForms = [
   { form: formYear, translations: undefined },
   { form: formTextfield, translations: undefined },
   { form: formatTextfield, translations: undefined },
-  { form: numberForm, translations: undefined },
+  { form: numberJsonForm, translations: undefined },
   { form: formAccordion, translations: undefined },
-  { form: checkboxForm, translations: undefined },
+  { form: checkboxFormJson, translations: undefined },
   { form: hiddenConditionalForm, translations: undefined },
   { form: radioForm, translations: undefined },
   { form: selectBoxesForm, translations: undefined },
-  { form: selectForm, translations: undefined },
+  { form: selectFormJson, translations: undefined },
   { form: monthPickerForm, translations: undefined },
   { form: emailForm, translations: undefined },
   { form: nav111221b, translations: nav111221bTranslations },
@@ -152,6 +192,40 @@ const allForms = [
   { form: simpleConditionalForm(), translations: simpleConditionalTranslations() },
   { form: staticPdfForm(), translations: staticPdfTranslations() },
   { form: nologinForm(), translations: nologinTranslations() },
+  { form: numberForm(), translations: numberTranslations() },
+  { form: textAreaForm(), translations: textAreaTranslations() },
+  { form: checkboxForm(), translations: checkboxTranslations() },
+  { form: firstNameForm(), translations: firstNameTranslations() },
+  { form: surnameForm(), translations: surnameTranslations() },
+  { form: ibanForm(), translations: ibanTranslations() },
+  { form: emailComponentForm(), translations: emailTranslations() },
+  { form: bankAccountForm(), translations: bankAccountTranslations() },
+  { form: yearForm(), translations: yearTranslations() },
+  { form: organizationNumberForm(), translations: organizationNumberTranslations() },
+  { form: phoneNumberForm(), translations: phoneNumberTranslations() },
+  { form: accordionForm(), translations: accordionTranslations() },
+  { form: addressValidityTestForm(), translations: addressValidityTranslations() },
+  { form: alertForm(), translations: alertTranslations() },
+  { form: htmlElementForm(), translations: htmlElementTranslations() },
+  { form: identityTestForm(), translations: identityTranslations() },
+  { form: activitiesTestForm(), translations: activitiesTranslations() },
+  { form: imageForm(), translations: imageTranslations() },
+  { form: selectBoxesComponentForm(), translations: selectBoxesTranslations() },
+  { form: maalgruppeForm(), translations: maalgruppeTranslations() },
+  { form: datePickerForm(), translations: datePickerTranslations() },
+  { form: drivingListTestForm(), translations: drivingListTranslations() },
+  { form: containerForm(), translations: containerTranslations() },
+  { form: formGroupTestForm(), translations: formGroupTranslations() },
+  { form: countrySelectForm(), translations: countrySelectTranslations() },
+  { form: selectForm(), translations: selectTranslations() },
+  { form: currencyForm(), translations: currencyTranslations() },
+  { form: attachmentTestForm(), translations: attachmentTranslations() },
+  { form: currencySelectForm(), translations: currencySelectTranslations() },
+  { form: dataFetcherTestForm(), translations: dataFetcherTranslations() },
+  { form: dataGridForm(), translations: dataGridTranslations() },
+  { form: panelTestForm(), translations: panelTranslations() },
+  { form: adresseTestForm(), translations: adresseTranslations() },
+  { form: attachmentsForm(), translations: attachmentsTranslations() },
 ];
 
 const findTestdata = (formPath: string) => allForms.find((testdata) => testdata.form.path === formPath);

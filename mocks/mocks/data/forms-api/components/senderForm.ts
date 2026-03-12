@@ -3,10 +3,10 @@ import form from '../../../form-builder/form/form';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
 
 const senderForm = () => {
-  const formNumber = 'recipient';
+  const formNumber = 'sender';
 
   return form({
-    title: 'Recipient component test form',
+    title: 'Sender component test form',
     formNumber,
     path: formNumber,
     components: [
@@ -16,8 +16,7 @@ const senderForm = () => {
           sender({
             label: 'Mottaker (person)',
             key: 'mottakerPerson',
-            role: 'person',
-            validate: { required: true },
+            senderRole: 'person',
           }),
         ],
       }),
@@ -27,8 +26,7 @@ const senderForm = () => {
           sender({
             label: 'Mottaker (organisasjon)',
             key: 'mottakerOrganisasjon',
-            role: 'organization',
-            validate: { required: true },
+            senderRole: 'organization',
           }),
         ],
       }),

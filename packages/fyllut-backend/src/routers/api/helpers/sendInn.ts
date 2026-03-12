@@ -31,7 +31,7 @@ interface Attachment {
 interface SendInnSoknadBody {
   brukerId: string;
   skjemanr: string;
-  skjemapath: string;
+  skjemaPath: string;
   tittel: string;
   tema: string;
   spraak: string;
@@ -116,7 +116,7 @@ const assembleSendInnSoknadBody = (
   const body: SendInnSoknadBody = {
     brukerId: idportenPid,
     skjemanr: form.properties.skjemanummer,
-    skjemapath: form.path,
+    skjemaPath: form.path,
     tittel: translate(form.title),
     tema: form.properties.tema,
     spraak: language || DEFAULT_LANGUAGE,

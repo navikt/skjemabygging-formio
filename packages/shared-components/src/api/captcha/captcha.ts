@@ -1,4 +1,4 @@
-import { AppConfigContextType } from '../../context/config/configContext';
+import baseHttp from '../util/http/http';
 
 interface CaptchaResponse {
   success: boolean;
@@ -9,9 +9,8 @@ const DEFAULT = 'ja';
 
 const submitCaptchaValue = async (
   data: Record<string, string>,
-  config: AppConfigContextType,
+  http?: typeof baseHttp,
 ): Promise<CaptchaResponse | undefined> => {
-  const { http } = config;
   return http?.post('/fyllut/api/captcha', { ...data, data_33: DEFAULT });
 };
 

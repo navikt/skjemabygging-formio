@@ -1,40 +1,56 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
-interface SenderType extends BaseComponentType {
-  role?: 'person' | 'organization';
-  labels?: {
-    nationalIdentityNumber?: string;
-    firstName?: string;
-    surname?: string;
-    organization?: string;
-    organizationName?: string;
-  };
+interface SenderType extends Omit<
+  BaseComponentType,
+  'validate' | 'description' | 'additionalDescriptionText' | 'additionalDescriptionLabel'
+> {
+  senderRole?: 'person' | 'organization';
   descriptions?: {
-    organization?: string;
+    nationalIdentityNumber?: string;
+    organizationNumber?: string;
   };
 }
 
 const sender = (props?: SenderType) => {
-  const { role, label, labels, descriptions } = props ?? {};
+  const { label, senderRole, descriptions } = props ?? {};
 
   return {
     ...staticDefaultValues,
     ...baseComponent({
       ...props,
-      label: label ?? 'Mottaker',
-      key: props?.key ?? 'mottaker',
+      label: label ?? 'Avsender',
+      key: props?.key ?? 'avsender',
     }),
-    role: role ?? 'person',
-    labels: labels ?? {},
+    role: senderRole ?? 'person',
     descriptions: descriptions ?? {},
+    labels:
+      senderRole === 'organization'
+        ? {
+            organizationNumber: 'Organisasjonsnummeret til den virksomheten / underenheten du representerer',
+            organizationName: 'Virksomhetens navn',
+          }
+        : {
+            nationalIdentityNumber: 'Representantens fødselsnummer eller d-nummer',
+            firstName: 'Representantens fornavn',
+            surname: 'Representantens etternavn',
+          },
   };
 };
 
 const staticDefaultValues = {
-  type: 'recipient',
   input: true,
   tableView: false,
-  spellcheck: false,
+  validate: {
+    required: true,
+    custom: '',
+    customPrivate: false,
+    strictDateValidation: false,
+    multiple: false,
+    unique: false,
+  },
+  type: 'sender',
+  senderRole: 'person',
+  navId: 'esrkxdj',
   placeholder: '',
   prefix: '',
   customClass: '',
@@ -51,6 +67,7 @@ const staticDefaultValues = {
   modalEdit: false,
   dataGridLabel: false,
   labelPosition: 'top',
+  description: '',
   errorLabel: '',
   tooltip: '',
   hideLabel: false,
@@ -64,7 +81,18 @@ const staticDefaultValues = {
   widget: null,
   attributes: {},
   validateOn: 'blur',
-  overlay: { style: '', left: '', top: '', width: '', height: '' },
+  conditional: {
+    show: null,
+    when: null,
+    eq: '',
+  },
+  overlay: {
+    style: '',
+    left: '',
+    top: '',
+    width: '',
+    height: '',
+  },
   allowCalculateOverride: false,
   encrypted: false,
   showCharCount: false,
@@ -72,6 +100,9 @@ const staticDefaultValues = {
   properties: {},
   allowMultipleMasks: false,
   addons: [],
+  fieldSize: 'input--xxl',
+  spellcheck: false,
+  id: 'ef6gur8',
   keyModified: true,
 };
 

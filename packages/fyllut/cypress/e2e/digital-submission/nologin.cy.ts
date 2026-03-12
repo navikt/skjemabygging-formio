@@ -1,5 +1,4 @@
-import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { DateTime } from 'luxon';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
 describe('Digital submission without user login', () => {
   before(() => {
@@ -26,7 +25,7 @@ describe('Digital submission without user login', () => {
       cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
         cy.findByLabelText('Norsk pass').check(),
       );
-      cy.uploadFile('id-billy-bruker.jpg');
+      cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
       cy.clickNextStep();
 
       cy.clickIntroPageConfirmation();
@@ -128,7 +127,7 @@ describe('Digital submission without user login', () => {
       cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
         cy.findByLabelText('Norsk pass').check(),
       );
-      cy.uploadFile('id-billy-bruker.jpg');
+      cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
       cy.clickNextStep();
 
       cy.clickIntroPageConfirmation();
@@ -159,6 +158,8 @@ describe('Digital submission without user login', () => {
       cy.mocksUseRouteVariant('post-familie-pdf:success-tc06a');
       cy.mocksUseRouteVariant('post-nologin-soknad:success-tc06a');
       cy.clickSendNav();
+
+      cy.findByRole('heading', { name: 'Kvittering' }).should('exist');
     });
 
     it('should support user without ssn', () => {
@@ -177,7 +178,7 @@ describe('Digital submission without user login', () => {
       cy.findByRole('textbox', { name: 'Vegadresse' }).type('Testveien 1C');
       cy.findByRole('textbox', { name: 'Postnummer' }).type('1234');
       cy.findByRole('textbox', { name: 'Poststed' }).type('Plassen');
-      cy.findByRole('textbox', { name: /^Gyldig fra/ }).type(DateTime.now().toFormat(dateUtils.inputFormat));
+      cy.findByRole('textbox', { name: /^Gyldig fra/ }).type('18.02.2026');
       cy.clickNextStep();
 
       cy.findByRole('group', { name: 'Høyeste fullførte utdanning' }).within(() =>
@@ -193,6 +194,8 @@ describe('Digital submission without user login', () => {
       cy.mocksUseRouteVariant('post-familie-pdf:success-tc06b');
       cy.mocksUseRouteVariant('post-nologin-soknad:success-tc06b');
       cy.clickSendNav();
+
+      cy.findByRole('heading', { name: 'Kvittering' }).should('exist');
     });
   });
 
@@ -206,7 +209,7 @@ describe('Digital submission without user login', () => {
     cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
       cy.findByLabelText('Norsk pass').check(),
     );
-    cy.uploadFile('id-billy-bruker.jpg');
+    cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
     cy.findByRole('button', { name: 'Slett filen' }).should('exist');
     cy.go('back');
 
@@ -250,7 +253,7 @@ describe('Digital submission without user login', () => {
 
     it('shows service unavailable error when submission fails due to service unavailability', () => {
       cy.mocksUseRouteVariant('post-nologin-soknad:service-unavailable');
-      cy.uploadFile('id-billy-bruker.jpg');
+      cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
       cy.clickNextStep();
       cy.clickIntroPageConfirmation();
       cy.clickNextStep();
@@ -295,7 +298,7 @@ describe('Digital submission without user login', () => {
         cy.findByLabelText('Norsk pass').check(),
       );
 
-      cy.uploadFile('id-billy-bruker.jpg');
+      cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
       cy.clickNextStep();
       cy.clickIntroPageConfirmation();
       cy.clickNextStep();
@@ -342,16 +345,17 @@ describe('Digital submission without user login', () => {
 
         cy.findByRole('textbox', { name: 'Gi vedlegget et beskrivende navn' }).type('Vitnemål');
         cy.findByRole('button', { name: 'Velg fil' }).click();
-        cy.uploadFile('id-billy-bruker.jpg', { id: 'en5h1c' });
+        cy.uploadFile('small-file.txt', { id: 'en5h1c' });
         cy.findByRole('button', { name: 'Legg til nytt vedlegg' }).click();
         cy.findByRole('textbox', { name: 'Gi vedlegget et beskrivende navn' }).type('Egenerklæring');
-        cy.uploadFile('small-file.txt', { id: 'en5h1c-1' });
+        cy.uploadFile('another-small-file.txt', { id: 'en5h1c-1' });
         cy.clickNextStep();
 
-        cy.get('.aksel-form-summary')
-          .eq(4)
+        cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
+        cy.findByRole('heading', { level: 3, name: 'Vedlegg' })
+          .should('exist')
+          .closest('[data-cy=form-summary-panel]')
           .within(() => {
-            cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
             cy.findByText('Vedlegg med masse greier').should('exist');
             cy.findByText(TEXTS.statiske.attachment.leggerVedNaa).should('not.exist');
             cy.findByText(
@@ -360,7 +364,9 @@ describe('Digital submission without user login', () => {
             cy.findByText('Annen dokumentasjon').should('exist');
             cy.findByText('Vitnemål').should('exist');
             cy.findByText('Egenerklæring').should('exist');
-            cy.findAllByText('test.txt').should('have.length', 3);
+            cy.findByText('id-billy-bruker.jpg').should('exist');
+            cy.findByText('small-file.txt').should('exist');
+            cy.findByText('another-small-file.txt').should('exist');
           });
       });
     });
@@ -472,7 +478,7 @@ describe('Digital submission without user login', () => {
       cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
         cy.findByLabelText('Norsk pass').check(),
       );
-      cy.uploadFile('id-billy-bruker.jpg');
+      cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
       cy.clickNextStep();
 
       // standard fill start
@@ -531,7 +537,7 @@ describe('Digital submission without user login', () => {
       cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
         cy.findByLabelText('Norsk pass').check(),
       );
-      cy.uploadFile('id-billy-bruker.jpg');
+      cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
       cy.clickNextStep();
 
       // standard fill start
@@ -604,7 +610,7 @@ describe('Digital submission without user login', () => {
         cy.findByLabelText('Norsk pass').check(),
       );
       cy.clock(Date.now());
-      cy.uploadFile('id-billy-bruker.jpg');
+      cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
       cy.clickNextStep();
 
       cy.tick(3660000); // Move time forward by 1 hour and 1 minute (in ms)

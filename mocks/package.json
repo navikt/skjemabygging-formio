@@ -12,5 +12,9 @@
   "scripts": {
     "mocks:fyllut": "yarn && ts-node mocks/server.ts",
     "mocks:fyllut:no-cli": "yarn && ts-node mocks/server.ts --no-plugins.inquirerCli.enabled"
+  },
+  "dependencies": {
+    "@types/multer": "^2.1.0",
+    "multer": "^2.1.1"
   }
 }

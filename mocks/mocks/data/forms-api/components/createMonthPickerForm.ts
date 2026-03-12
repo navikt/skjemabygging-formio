@@ -3,7 +3,7 @@ import form from '../../../form-builder/form/form';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
 
 const createMonthPickerForm = () => {
-  const formNumber = 'monthpicker';
+  const formNumber = 'createmonthpicker';
 
   return form({
     title: 'MonthPicker component test form',

@@ -117,25 +117,20 @@ describe('TextField', () => {
     it('should support custom validation', () => {
       const label = 'Tekstfelt må være abc';
       const errorMessage = 'abc er eneste lovlige verdien';
-      cy.findByLabelText(label).type('ab');
+      cy.findByLabelOptional(label).type('ab');
       cy.clickNextStep();
       cy.findAllByText(errorMessage).should('have.length', 2);
       cy.findByRole('link', { name: errorMessage }).click();
-      cy.findByLabelText(label).should('have.focus');
+      cy.findByLabelOptional(label).should('have.focus');
       cy.focused().clear();
       cy.focused().type('abc');
       cy.findAllByText(errorMessage).should('have.length', 0);
     });
 
-    /**
-     * Skipped test case: We show both required and custom validation errors in the error summary.
-     * This should be changed in the future so that only the required error message is shown.
-     */
-    it.skip('should not show custom validation in error summary, if it has required error message', () => {
-      const label = 'Tekstfelt må være abc';
+    it('should not show custom validation error in error summary when field is empty', () => {
       const errorMessage = 'abc er eneste lovlige verdien';
+      // Custom validation is not triggered for empty optional fields
       cy.clickNextStep();
-      cy.findAllByErrorMessageRequired(label).should('have.length', 2);
       cy.findAllByText(errorMessage).should('have.length', 0);
     });
   });
@@ -166,7 +161,7 @@ describe('TextField', () => {
       cy.findByRole('textbox', { name: 'Tekstfelt ikke påkrevd (valgfritt)' }).type('valid2');
       cy.findByRole('textbox', { name: 'Tekstfelt kun siffer' }).type('123');
       cy.findByRole('textbox', { name: 'Tekstfelt min og max lengde' }).type('valid3');
-      cy.findByRole('textbox', { name: 'Tekstfelt må være abc' }).type('abc');
+      cy.findByRole('textbox', { name: 'Tekstfelt må være abc (valgfritt)' }).type('abc');
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');

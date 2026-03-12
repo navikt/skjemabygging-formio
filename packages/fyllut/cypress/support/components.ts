@@ -1,7 +1,13 @@
 /**
  * Test functions for form components
  */
-import { Component, dateUtils, navFormUtils, stringUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  Component,
+  dateUtils,
+  formatUtils,
+  navFormUtils,
+  stringUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
 
 Cypress.Commands.add('withinComponent', (label, fn) => {
   return cy.findByLabelText(label).closest('.form-group').within(fn);
@@ -24,19 +30,19 @@ Cypress.Commands.add('clickErrorMessageRequired', (label) => {
 });
 
 Cypress.Commands.add('findAllByErrorMessageMinLength', (label) => {
-  return cy.findAllByText(new RegExp(`${label} må ha minst . tegn`));
+  return cy.findAllByText(new RegExp(`${label} må ha minst \\d+ tegn`));
 });
 
 Cypress.Commands.add('clickErrorMessageMinLength', (label) => {
-  return cy.findByRole('link', { name: new RegExp(`${label} må ha minst . tegn`) }).click();
+  return cy.findByRole('link', { name: new RegExp(`${label} må ha minst \\d+ tegn`) }).click();
 });
 
 Cypress.Commands.add('findAllByErrorMessageMaxLength', (label) => {
-  return cy.findAllByText(new RegExp(`${label} kan ikke ha mer enn . tegn`));
+  return cy.findAllByText(new RegExp(`${label} kan ikke ha mer enn \\d+ tegn`));
 });
 
 Cypress.Commands.add('clickErrorMessageMaxLength', (label) => {
-  return cy.findByRole('link', { name: new RegExp(`${label} kan ikke ha mer enn . tegn`) }).click();
+  return cy.findByRole('link', { name: new RegExp(`${label} kan ikke ha mer enn \\d+ tegn`) }).click();
 });
 
 Cypress.Commands.add('testDownloadPdf', () => {
@@ -50,6 +56,25 @@ Cypress.Commands.add('testDownloadPdf', () => {
         return formatRadiopanelValue(value, component.values);
       case 'monthPicker':
         return formatMonthPickerValue(value);
+      case 'iban':
+        return formatUtils.formatIBAN(value as string);
+      case 'bankAccount':
+        return formatUtils.formatAccountNumber(value as string);
+      case 'orgNr':
+        return formatUtils.formatOrganizationNumber(value as string);
+      case 'valutavelger':
+        return (value as { label: string; value: string })?.label;
+      case 'landvelger':
+        return (value as { label: string; value: string })?.label;
+      case 'navSelect':
+        return (value as { label: string; value: string })?.label;
+      case 'phoneNumber': {
+        if (typeof value === 'object' && value !== null) {
+          const { areaCode, number } = value as { areaCode: string; number: string };
+          return `${areaCode} ${number}`;
+        }
+        return value;
+      }
       default:
         return value;
     }

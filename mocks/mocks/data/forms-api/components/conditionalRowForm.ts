@@ -4,7 +4,7 @@ import form from '../../../form-builder/form/form';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
 
 const conditionalRowForm = () => {
-  const formNumber = 'conditionalRow';
+  const formNumber = 'conditionalrow';
 
   return form({
     title: 'Betinget visning med sjekk på row',
