@@ -72,6 +72,7 @@ import { conditionalRowForm, conditionalRowTranslations } from '../data/forms-ap
 import { createMonthPickerForm, monthPickerTranslations } from '../data/forms-api/components/createMonthPickerForm';
 import { fnrFieldForm, fnrFieldTranslations } from '../data/forms-api/components/fnrFieldForm';
 import { radioPanelForm, radioPanelTranslations } from '../data/forms-api/components/radioPanelForm';
+import { senderForm, senderTranslations } from '../data/forms-api/components/senderForm';
 import {
   simpleConditionalForm,
   simpleConditionalTranslations,
@@ -142,6 +143,7 @@ const allForms = [
   { form: conditionalPage, translations: undefined },
   { form: textFieldForm(), translations: textFieldTranslations() },
   { form: fnrFieldForm(), translations: fnrFieldTranslations() },
+  { form: senderForm(), translations: senderTranslations() },
   { form: radioPanelForm(), translations: radioPanelTranslations() },
   { form: createMonthPickerForm(), translations: monthPickerTranslations() },
   { form: componentsForm(), translations: formComponentsTranslations },

@@ -5,7 +5,7 @@ import countrySelectBuilder from '../components/extensions/country-select/Countr
 import emailBuilder from '../components/extensions/email/Email.builder';
 import firstNameBuilder from '../components/extensions/first-name/FirstName.builder';
 import nationalIdentityNumberBuilder from '../components/extensions/national-identity-number/NationalIdentityNumber.builder';
-import recipientBuilder from '../components/extensions/recipient/Recipient.builder';
+import senderBuilder from '../components/extensions/sender/Sender.builder';
 import surnameBuilder from '../components/extensions/surname/Surname.builder';
 import yourInformationBuilder from '../components/groups/your-information/YourInformation.builder';
 import postnummerSchema from '../form-builder-options/schemas/postnummerSchema';
@@ -36,8 +36,42 @@ const personGroup = {
     email: emailBuilder(),
     phoneNumber: phoneNumberBuilder(),
     citizenship: citizenshipBuilder(),
-    recipient: recipientBuilder(),
+    senderPerson: senderBuilder({
+      labels: {
+        nationalIdentityNumber: 'Representantens fødselsnummer eller d-nummer',
+        firstName: 'Representantens fornavn',
+        surname: 'Representantens etternavn',
+        organizationNumber: 'Organisasjonsnummeret til den virksomheten / underenheten du representerer',
+        organizationName: 'Virksomhetens navn',
+      },
+      label: 'Avsender person',
+      senderRole: 'person',
+    }),
   },
 };
+
+/**
+ * {
+ *           ...firstNameBuilder().schema,
+ *           prefill: true,
+ *           prefillKey: 'sokerFornavn',
+ *           protectedApiKey: true,
+ *         },
+ *         {
+ *           ...surnameBuilder().schema,
+ *           prefill: true,
+ *           prefillKey: 'sokerEtternavn',
+ *           protectedApiKey: true,
+ *         },
+ *         {
+ *           ...identityBuilder().schema,
+ *           prefill: true,
+ *           prefillKey: 'sokerIdentifikasjonsnummer',
+ *           protectedApiKey: true,
+ *           customLabels: {
+ *             doYouHaveIdentityNumber: TEXTS.statiske.identity.doYouHaveIdentityNumber,
+ *           },
+ *         },
+ */
 
 export default personGroup;

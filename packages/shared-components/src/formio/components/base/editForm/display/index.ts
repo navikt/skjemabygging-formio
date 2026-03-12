@@ -19,9 +19,9 @@ import editFormInline from './editFormIsInline';
 import editFormLabel from './editFormLabel';
 import editFormLegend from './editFormLegend';
 import editFormRemoveAnother from './editFormRemoveAnother';
-import editFormRole from './editFormRole';
 import editFormRowTitle from './editFormRowTitle';
 import editFormRows from './editFormRows';
+import editFormSenderRole from './editFormSenderRole';
 import editFormSpellCheck from './editFormSpellCheck';
 import editFormTextDisplay from './editFormTextDisplay';
 import editFormTitle from './editFormTitle';
@@ -59,7 +59,7 @@ const editFormDisplay = {
   backgroundColor: editFormBackgroundColor,
   yourInformation: editFormYourInformation,
   customLabels: editFormCustomLabels,
-  role: editFormRole,
+  senderRole: editFormSenderRole,
 };
 
 export default editFormDisplay;

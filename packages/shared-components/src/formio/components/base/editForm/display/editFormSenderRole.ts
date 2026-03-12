@@ -1,8 +1,8 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 
-const editFormRole = (): Component => ({
+const editFormSenderRole = (): Component => ({
   type: 'radiopanel',
-  key: 'role',
+  key: 'senderRole',
   defaultValue: 'person',
   label: 'Rolle',
   dataSrc: 'values',
@@ -15,4 +15,4 @@ const editFormRole = (): Component => ({
   },
 });
 
-export default editFormRole;
+export default editFormSenderRole;

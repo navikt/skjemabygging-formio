@@ -30,6 +30,8 @@ export interface CustomLabels {
   [key: string]: string;
 }
 
+export type RecipientRole = 'person' | 'organization';
+
 export interface Component {
   id?: string;
   navId?: string;
@@ -135,6 +137,9 @@ export interface Component {
   logic?: any;
   currency?: string;
   isAmountWithCurrencySelector?: boolean;
+  senderRole?: RecipientRole;
+  labels?: Record<string, string>;
+  descriptions?: Record<string, string>;
   builderErrors?: string[];
 }
 
