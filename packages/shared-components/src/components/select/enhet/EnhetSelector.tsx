@@ -11,7 +11,7 @@ const useStyles = makeStyles({
   },
 });
 
-const EnhetSelector = ({ enhetsliste = [], onSelectEnhet, error }: EnhetSelectorProps) => {
+const EnhetSelector = ({ enhetsliste = [], onSelectEnhet, error, description }: EnhetSelectorProps) => {
   const { translate } = useLanguages();
   const styles = useStyles();
   const reactSelectCustomStyles = {
@@ -31,6 +31,7 @@ const EnhetSelector = ({ enhetsliste = [], onSelectEnhet, error }: EnhetSelector
       <label htmlFor="enhetSelect" className="aksel-label">
         {translate(TEXTS.statiske.prepareLetterPage.chooseEntity)}
       </label>
+      {description && <p className="aksel-body-short aksel-form-field__description">{description}</p>}
       <ReactSelect
         id="enhetSelect"
         className={styles.enhetsliste}
@@ -55,6 +56,7 @@ interface EnhetSelectorProps {
   enhetsliste: Enhet[];
   onSelectEnhet: (enhetNummer: string | null) => void;
   error?: string;
+  description?: string;
 }
 
 export default EnhetSelector;

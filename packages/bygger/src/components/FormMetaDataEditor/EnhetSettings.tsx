@@ -1,4 +1,4 @@
-import { Box, Checkbox, Skeleton, UNSAFE_Combobox } from '@navikt/ds-react';
+import { Box, Checkbox, Skeleton, Textarea, UNSAFE_Combobox } from '@navikt/ds-react';
 import { ComboboxOption } from '@navikt/ds-react/esm/form/combobox/types';
 import { Enhetstype, EnhetstypeNorg, supportedEnhetstyper } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useState } from 'react';
@@ -7,8 +7,10 @@ interface EnhetSettingsProps {
   enhetstyperNorg: EnhetstypeNorg[] | undefined;
   enhetMaVelges: boolean;
   selectedEnhetstyper?: Enhetstype[];
+  navUnitDescription?: string;
   onChangeEnhetMaVelges: (value: boolean) => void;
   onChangeEnhetstyper: (enhetstyper: Enhetstype[]) => void;
+  onChangeNavUnitDescription: (description: string) => void;
   readOnly?: boolean;
 }
 
@@ -16,8 +18,10 @@ const EnhetSettings = ({
   enhetstyperNorg,
   enhetMaVelges,
   selectedEnhetstyper,
+  navUnitDescription,
   onChangeEnhetMaVelges,
   onChangeEnhetstyper,
+  onChangeNavUnitDescription,
   readOnly,
 }: EnhetSettingsProps) => {
   const [options, setOptions] = useState<ComboboxOption[] | undefined>(undefined);
@@ -71,7 +75,21 @@ const EnhetSettings = ({
       >
         {'Bruker må velge enhet ved innsending på papir'}
       </Checkbox>
-      {enhetMaVelges && renderCombobox()}
+      {enhetMaVelges && (
+        <>
+          <Box paddingBlock="space-4 space-0">
+            <Textarea
+              label="Beskrivelse"
+              description="Vises på nedlastingssiden ved valg av enhet"
+              value={navUnitDescription || ''}
+              onChange={(e) => onChangeNavUnitDescription(e.target.value)}
+              readOnly={readOnly}
+              maxLength={500}
+            />
+          </Box>
+          {renderCombobox()}
+        </>
+      )}
     </>
   );
 };

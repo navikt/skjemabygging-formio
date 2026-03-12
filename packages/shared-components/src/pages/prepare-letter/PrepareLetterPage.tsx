@@ -34,8 +34,14 @@ export function PrepareLetterPage() {
   const [enhetslisteFilteringError, setEnhetslisteFilteringError] = useState(false);
   const { form, submission, setFormProgressVisible, setTitle } = useForm();
 
-  const { enhetMaVelgesVedPapirInnsending, enhetstyper, skjemanummer, uxSignalsId, uxSignalsSubmissionTypes } =
-    form.properties;
+  const {
+    enhetMaVelgesVedPapirInnsending,
+    enhetstyper,
+    skjemanummer,
+    uxSignalsId,
+    uxSignalsSubmissionTypes,
+    navUnitDescription,
+  } = form.properties;
   const includeUxSignals = !!uxSignalsId && submissionTypeIncludesPaperOrIsNoSubmission(uxSignalsSubmissionTypes);
 
   useEffect(() => {
@@ -79,7 +85,7 @@ export function PrepareLetterPage() {
   return (
     <>
       <FormMainContent>
-        <LetterDownload index={1} enhetsListe={enhetsListe} />
+        <LetterDownload index={1} enhetsListe={enhetsListe} navUnitDescription={navUnitDescription} />
         <LetterPrint index={2} />
         {hasAttachments && <LetterAddAttachment index={3} attachments={attachments} />}
         <LetterInTheMail index={hasAttachments ? 4 : 3} attachments={attachments} />

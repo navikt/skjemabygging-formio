@@ -15,7 +15,8 @@ export interface EnhetFieldsProps {
 }
 
 const EnhetFields = ({ onChange, form }: EnhetFieldsProps) => {
-  const { submissionTypes, mottaksadresseId, enhetMaVelgesVedPapirInnsending, enhetstyper } = form.properties;
+  const { submissionTypes, mottaksadresseId, enhetMaVelgesVedPapirInnsending, enhetstyper, navUnitDescription } =
+    form.properties;
   const { http } = useAppConfig();
   const [enhetstyperNorg, setEnhetstyperNorg] = useState<EnhetstypeNorg[] | undefined>(undefined);
   const isLockedForm = !!form.lock;
@@ -37,6 +38,7 @@ const EnhetFields = ({ onChange, form }: EnhetFieldsProps) => {
             enhetstyperNorg={enhetstyperNorg}
             enhetMaVelges={!!enhetMaVelgesVedPapirInnsending}
             selectedEnhetstyper={enhetstyper}
+            navUnitDescription={navUnitDescription}
             readOnly={isLockedForm}
             onChangeEnhetMaVelges={(selected) =>
               onChange({
@@ -45,11 +47,15 @@ const EnhetFields = ({ onChange, form }: EnhetFieldsProps) => {
                   ...form.properties,
                   enhetMaVelgesVedPapirInnsending: selected,
                   enhetstyper: selected ? form.properties.enhetstyper : undefined,
+                  navUnitDescription: selected ? form.properties.navUnitDescription : undefined,
                 },
               })
             }
             onChangeEnhetstyper={(enhetstyper) =>
               onChange({ ...form, properties: { ...form.properties, enhetstyper } })
+            }
+            onChangeNavUnitDescription={(description) =>
+              onChange({ ...form, properties: { ...form.properties, navUnitDescription: description } })
             }
           />
         </div>
