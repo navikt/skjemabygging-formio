@@ -12,6 +12,7 @@ const organizationNumberForm = () => {
     display([
       editFormDisplay.label(),
       editFormDisplay.description(),
+      editFormDisplay.coverPageBruker(),
       editFormDisplay.additionalDescription(),
     ]),
     validation([

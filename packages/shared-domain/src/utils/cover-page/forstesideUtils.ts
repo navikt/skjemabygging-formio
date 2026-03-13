@@ -11,6 +11,7 @@ import {
   UkjentBruker,
 } from '../../models';
 import { navFormUtils } from '../form';
+import { formatUtils } from '../format';
 import { yourInformationUtils } from '../submission';
 import { genererPersonalia } from './forstesideDepricatedUtils';
 
@@ -24,10 +25,42 @@ const addressLine = (text?: string, prefix: string = ', ') => {
   return `${prefix}${text}`;
 };
 
+const getOrganizationNumberBruker = (form: NavFormType, submission: SubmissionData): KjentBruker | undefined => {
+  const organizationNumberComponent = navFormUtils
+    .flattenComponents(form.components)
+    .find((component) => component.type === 'orgNr' && component.coverPageBruker && submission[component.key]);
+
+  if (!organizationNumberComponent) {
+    return undefined;
+  }
+
+  const organizationNumber = submission[organizationNumberComponent.key];
+  if (typeof organizationNumber !== 'string' && typeof organizationNumber !== 'number') {
+    return undefined;
+  }
+
+  const brukerId = formatUtils.removeAllSpaces(`${organizationNumber}`);
+  if (!brukerId) {
+    return undefined;
+  }
+
+  return {
+    bruker: {
+      brukerId,
+      brukerType: 'ORGANISASJON',
+    },
+  };
+};
+
 const getUserData = (form: NavFormType, submission: SubmissionData): BrukerInfo => {
   const yourInformation = yourInformationUtils.getYourInformation(form, submission);
 
   if (!yourInformation) {
+    const organizationNumberBruker = getOrganizationNumberBruker(form, submission);
+    if (organizationNumberBruker) {
+      return organizationNumberBruker;
+    }
+
     // Denne er for å støtte gamle formatet på dine opplysninger.
     // Når alle skjemaer er skrevet om til nytt format kan denne fjernes.
     return genererPersonalia(submission);

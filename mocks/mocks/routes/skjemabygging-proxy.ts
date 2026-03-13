@@ -1,4 +1,5 @@
 import tc08a from '../data/test-cases/tc08a-cover-page-body.json';
+import tc08b from '../data/test-cases/tc08b-cover-page-body.json';
 import { compareBodyMiddleware } from '../utils/testCaseUtils';
 
 const defaultResponseBody = {
@@ -43,6 +44,13 @@ export default [
             ['innsendingsId', 'mainDocument', 'mainDocumentAlt', 'attachments.fileIds'],
             onSuccess,
           ),
+        },
+      },
+      {
+        id: 'success-organizationnumber',
+        type: 'middleware',
+        options: {
+          middleware: compareBodyMiddleware(tc08b, [], onSuccess),
         },
       },
     ],

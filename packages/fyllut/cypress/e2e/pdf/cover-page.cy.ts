@@ -39,4 +39,36 @@ describe('Cover page', () => {
 
     cy.findByText(/Nedlastingen er ferdig/).shouldBeVisible();
   });
+
+  it('should create cover page with organization number as bruker', () => {
+    cy.mocksUseRouteVariant('foersteside:success-organizationnumber');
+
+    cy.visit('/fyllut/coverpageorganizationnumber?sub=paper');
+    cy.defaultWaits();
+
+    cy.clickIntroPageConfirmation();
+    cy.clickNextStep();
+
+    cy.findByRole('textbox', { name: 'Organisasjonsnummer' }).type('889640782');
+    cy.findByRole('textbox', { name: 'Organisasjonsnummer med beskrivelse' }).type('974652277');
+    cy.clickNextStep();
+
+    cy.findByRole('textbox', { name: 'Organisasjonsnummer påkrevd' }).type('889640782');
+    cy.findByRole('textbox', { name: 'Organisasjonsnummer ikke påkrevd (valgfritt)' }).type('974652277');
+    cy.findByRole('textbox', { name: 'Organisasjonsnummer ugyldig format (valgfritt)' }).type('889640782');
+    cy.findByRole('textbox', { name: 'Organisasjonsnummer egendefinert (valgfritt)' }).type('889640782');
+    cy.clickNextStep();
+
+    cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
+      req.on('response', (res) => {
+        expect(res.statusCode).to.eq(200);
+      });
+    }).as('downloadPdf');
+
+    cy.findByRole('link', { name: 'Instruksjoner for innsending' }).click();
+    cy.findByRole('button', { name: /Last ned skjema|Download form/ }).click();
+    cy.wait('@downloadPdf');
+
+    cy.findByText(/Nedlastingen er ferdig/).shouldBeVisible();
+  });
 });

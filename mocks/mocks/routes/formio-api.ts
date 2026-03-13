@@ -118,6 +118,10 @@ import { surnameForm, surnameTranslations } from '../data/forms-api/components/s
 import { textAreaForm, textAreaTranslations } from '../data/forms-api/components/textAreaForm';
 import { textFieldForm, textFieldTranslations } from '../data/forms-api/components/textFieldForm';
 import { yearForm, yearTranslations } from '../data/forms-api/components/yearForm';
+import {
+  organizationNumberCoverPageForm,
+  organizationNumberCoverPageTranslations,
+} from '../data/forms-api/cover-page/organizationNumberCoverPageForm';
 import largeForm from '../data/forms-api/largeForm';
 import { nologinForm, nologinTranslations } from '../data/forms-api/nologinForm';
 
@@ -200,6 +204,7 @@ const allForms = [
   { form: bankAccountForm(), translations: bankAccountTranslations() },
   { form: yearForm(), translations: yearTranslations() },
   { form: organizationNumberForm(), translations: organizationNumberTranslations() },
+  { form: organizationNumberCoverPageForm(), translations: organizationNumberCoverPageTranslations() },
   { form: phoneNumberForm(), translations: phoneNumberTranslations() },
   { form: accordionForm(), translations: accordionTranslations() },
   { form: addressValidityTestForm(), translations: addressValidityTranslations() },
