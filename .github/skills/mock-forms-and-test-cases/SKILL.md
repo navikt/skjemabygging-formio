@@ -91,5 +91,8 @@ When a new mock form does not load:
 2. Check that `form.path` matches the path used in Cypress.
 3. Avoid invalid `formPath` values if backend validation only accepts a subset
    of characters.
-4. Verify the form can be fetched through the mocked forms API before debugging
-   the frontend.
+4. If you changed files under `mocks/mocks/`, assume the mock server may have
+   crashed or needs a restart.
+5. Verify the form can be fetched through the mocked forms API before debugging
+   the frontend, and always confirm that the mock server is running before
+   starting Cypress.

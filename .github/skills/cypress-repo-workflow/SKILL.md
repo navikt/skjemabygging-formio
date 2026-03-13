@@ -58,6 +58,9 @@ Important:
 
 - `MOCKS_ENABLED=true` is required for local `fyllut` Cypress runs that depend
   on mocked forms and backend responses.
+- If you have changed files under `mocks/mocks/`, assume the mock server may
+  have crashed or needs a restart. Always verify that it is running before
+  starting Cypress.
 - If `fyllut` opens a "Beklager, fant ikke siden" page, the mock server is
   usually down or returning the wrong form path.
 - If PDF download calls fail with `500`, check whether the local send-inn/PDF
@@ -89,5 +92,7 @@ cd packages/bygger && yarn cypress run --browser electron --spec cypress/e2e/<sp
   mode is running.
 - `http://localhost:3000/internal/isready` should answer for `bygger`.
 - `http://localhost:3300` should answer when mocks are running.
+- After changes under `mocks/mocks/`, explicitly re-check `http://localhost:3300`
+  before running Cypress.
 - If a form loads in backend probes but not in the browser, check the route path
   and whether the backend allows that `formPath`.
