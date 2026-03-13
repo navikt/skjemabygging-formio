@@ -35,7 +35,13 @@ class Sender extends BaseComponent {
   }
 
   initPrefill() {
-    console.log(this.component?.prefillValue);
+    console.log(
+      this.component?.prefillValue,
+      this.hasPrefill(),
+      this.isSubmissionDigital(),
+      this.component?.prefillKey,
+      !!this.component?.prefillKey,
+    );
     if (this.hasPrefill() && this.component?.prefillValue) {
       const value: SubmissionSender = {
         person: {
