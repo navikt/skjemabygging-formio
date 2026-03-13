@@ -21,12 +21,23 @@ must verify an expected request body.
 ### Prefer dedicated mock forms for scenario-specific tests
 
 Do not overload a shared component showcase form when a test needs special
-behavior that only one spec cares about.
+behavior that only one spec or Cypress area cares about.
+
+Important:
+
+- Never add new mock forms under `mocks/mocks/data/formio-api`.
+- Avoid reusing or extending those legacy JSON forms for new test scenarios.
+- Those files are legacy fixtures that we want to phase out. New work should use
+  `mocks/mocks/data/forms-api/...` instead.
+- One Cypress spec can have multiple dedicated mock forms if needed, but they
+  should not be shared across specs.
 
 Instead:
 
 1. Create a dedicated form under `mocks/mocks/data/forms-api/...`.
-2. Put cover-page-only forms under `mocks/mocks/data/forms-api/cover-page/`.
+2. Place the form in a folder named after the Cypress spec it belongs to. For
+   example, `cover-page.cy.ts` should keep its dedicated mock forms under
+   `mocks/mocks/data/forms-api/cover-page/`.
 3. Register the form in `mocks/mocks/routes/formio-api.ts`.
 4. Point the Cypress spec at the dedicated form path.
 

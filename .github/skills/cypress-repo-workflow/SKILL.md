@@ -75,8 +75,9 @@ cd packages/bygger && yarn cypress run --browser electron --spec cypress/e2e/<sp
 1. Use focused specs while iterating.
 2. Rebuild shared packages if Cypress does not see changes coming from
    `shared-components`, `shared-domain`, or `shared-backend`.
-3. Prefer accessible queries in tests such as `findByRole` and tolerate
-   optional-label suffixes like `(valgfritt)` with regexes when needed.
+3. Prefer accessible queries in tests such as `findByRole`, tolerate
+   optional-label suffixes like `(valgfritt)` with regexes when needed, and
+   avoid using component classnames in queries.
 4. Keep tests close to the behavior you changed and avoid editing unrelated
    Cypress suites.
 
