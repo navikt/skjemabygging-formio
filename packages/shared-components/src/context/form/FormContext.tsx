@@ -81,20 +81,16 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
       if (prefillComponents.length === 0) return null;
 
       // No need to fetch prefill data if submission method is paper
-      //if (submissionMethod !== 'digital') return null;
+      if (submissionMethod !== 'digital') return null;
 
       const properties = prefillComponents.flatMap((component) => component.prefillKey);
-      const properties2 = prefillComponents.map((component) => component.prefillKey);
 
-      console.log(properties, properties2);
       const uniqueProperties = [...new Set(properties)].join(',');
 
-      console.log('uniqueProperties', uniqueProperties);
       const fyllutPrefillData = await http?.get<PrefillData>(
         `${baseUrl}/api/send-inn/prefill-data?properties=${uniqueProperties}`,
       );
 
-      console.log('fyllutPrefillData', fyllutPrefillData);
       if (fyllutPrefillData) setPrefillData(fyllutPrefillData);
     };
 
