@@ -1,4 +1,5 @@
 import NavSender from '../../../../components/Sender/Sender';
+import { SubmissionSender } from '../../../../components/Sender/types';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
 import senderBuilder from './Sender.builder';
@@ -16,6 +17,7 @@ class Sender extends BaseComponent {
       label: 'Avsender',
       type: 'sender',
       spellcheck: false,
+      hideLabel: true,
     });
   }
 
@@ -33,13 +35,20 @@ class Sender extends BaseComponent {
   }
 
   initPrefill() {
-    if (this.hasPrefill()) {
-      // Call parent setValue so ignore prefillKey block on local setValue.
-      super.setValue(this.component?.prefillValue);
+    console.log(this.component?.prefillValue);
+    if (this.hasPrefill() && this.component?.prefillValue) {
+      const value: SubmissionSender = {
+        person: {
+          nationalIdentityNumber: this.component?.prefillValue['sokerIdentifikasjonsnummer'],
+          firstName: this.component?.prefillValue['sokerFornavn'],
+          surname: this.component?.prefillValue['sokerEtternavn'],
+        },
+      };
+      super.setValue(value);
     }
   }
 
-  handleChange(value) {
+  handleChange(value: SubmissionSender) {
     super.handleChange(value);
     this.rerender();
   }

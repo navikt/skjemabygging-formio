@@ -76,13 +76,14 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
   useEffect(() => {
     const loadPrefillData = async (navForm: NavFormType) => {
       const prefillComponents = navFormUtils.findComponentsByProperty('prefillKey', navForm);
+
       // No need to fetch prefill data if there are no components with prefillKey
       if (prefillComponents.length === 0) return null;
 
       // No need to fetch prefill data if submission method is paper (currently not supported)
       if (submissionMethod !== 'digital') return null;
 
-      const properties = prefillComponents.map((component) => component.prefillKey);
+      const properties = prefillComponents.flatMap((component) => component.prefillKey);
       const uniqueProperties = [...new Set(properties)].join(',');
 
       const fyllutPrefillData = await http?.get<PrefillData>(

@@ -8,7 +8,12 @@ interface PrefillAddress {
   };
 }
 
-type PrefillKey = 'sokerFornavn' | 'sokerEtternavn' | 'sokerTelefonnummer' | 'sokerKjonn';
+type PrefillKey =
+  | 'sokerFornavn'
+  | 'sokerEtternavn'
+  | 'sokerTelefonnummer'
+  | 'sokerKjonn'
+  | 'sokerIdentifikasjonsnummer';
 
 type PrefillData = {
   sokerFornavn?: string;

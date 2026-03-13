@@ -55,7 +55,7 @@ export interface Component {
   components?: Component[];
   otherDocumentation?: boolean;
   isAttachmentPanel?: boolean;
-  prefillKey?: PrefillKey;
+  prefillKey?: PrefillKey | PrefillKey[];
   values?: ComponentValue[];
   attachmentValues?: AttachmentSettingValues;
   accordionValues?: AccordionSettingValues;

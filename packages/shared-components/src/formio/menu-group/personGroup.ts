@@ -46,32 +46,9 @@ const personGroup = {
       },
       label: 'Avsender person',
       senderRole: 'person',
+      prefillKey: ['sokerFornavn', 'sokerEtternavn', 'sokerIdentifikasjonsnummer'],
     }),
   },
 };
-
-/**
- * {
- *           ...firstNameBuilder().schema,
- *           prefill: true,
- *           prefillKey: 'sokerFornavn',
- *           protectedApiKey: true,
- *         },
- *         {
- *           ...surnameBuilder().schema,
- *           prefill: true,
- *           prefillKey: 'sokerEtternavn',
- *           protectedApiKey: true,
- *         },
- *         {
- *           ...identityBuilder().schema,
- *           prefill: true,
- *           prefillKey: 'sokerIdentifikasjonsnummer',
- *           protectedApiKey: true,
- *           customLabels: {
- *             doYouHaveIdentityNumber: TEXTS.statiske.identity.doYouHaveIdentityNumber,
- *           },
- *         },
- */
 
 export default personGroup;
