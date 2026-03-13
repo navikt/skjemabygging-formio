@@ -10,7 +10,7 @@ export interface BaseComponentType {
   description?: string;
   additionalDescriptionText?: string;
   additionalDescriptionLabel?: string;
-  coverPageBruker?: boolean;
+  coverPageUser?: boolean;
   validate?: ValidateComponentType;
   customConditional?: string;
   conditional?: ConditionalComponentType;

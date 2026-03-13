@@ -81,7 +81,7 @@ only the pages and fields needed by the spec.
 
 If a mock form needs a new component property, make sure the mock form-builder
 types also allow it. For example, mock component base types may need updating so
-properties like `coverPageBruker` compile inside `mocks`.
+properties like `coverPageUser` compile inside `mocks`.
 
 ## Troubleshooting
 

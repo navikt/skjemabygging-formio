@@ -115,7 +115,7 @@ describe('forsteside', () => {
         {
           type: 'orgNr',
           key: 'organizationNumber',
-          coverPageBruker: true,
+          coverPageUser: true,
         },
         ...defaultForm.components,
       ] as Component[],
@@ -193,12 +193,12 @@ describe('forsteside', () => {
             {
               type: 'orgNr',
               key: 'organizationNumber',
-              coverPageBruker: true,
+              coverPageUser: true,
             },
             {
               type: 'orgNr',
               key: 'secondaryOrganizationNumber',
-              coverPageBruker: true,
+              coverPageUser: true,
             },
           ] as Component[],
         } as unknown as NavFormType,

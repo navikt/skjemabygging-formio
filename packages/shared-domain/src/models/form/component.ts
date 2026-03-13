@@ -131,7 +131,7 @@ export interface Component {
   prefillValue?: string | object;
   protectedApiKey?: boolean;
   yourInformation?: boolean;
-  coverPageBruker?: boolean;
+  coverPageUser?: boolean;
   widthPercent?: number;
   logic?: any;
   currency?: string;

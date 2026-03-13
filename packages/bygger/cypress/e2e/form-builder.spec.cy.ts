@@ -222,7 +222,7 @@ describe('Form Builder', () => {
           .flattenComponents<Component>(req.body.components)
           .find((comp) => comp.type === 'orgNr');
 
-        expect(organizationNumber?.coverPageBruker).to.equal(true);
+        expect(organizationNumber?.coverPageUser).to.equal(true);
         req.reply(200, req.body);
       }).as('putOrgNrForm');
 

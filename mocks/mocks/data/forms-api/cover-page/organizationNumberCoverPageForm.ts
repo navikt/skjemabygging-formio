@@ -12,7 +12,7 @@ const organizationNumberCoverPageForm = () => {
     components: [
       organizationNumber({
         label: 'Organisasjonsnummer',
-        coverPageBruker: true,
+        coverPageUser: true,
       }),
     ],
   });

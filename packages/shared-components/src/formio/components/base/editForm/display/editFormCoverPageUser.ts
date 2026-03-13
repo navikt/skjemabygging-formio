@@ -1,10 +1,10 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 
-const editFormCoverPageBruker = (): Component => {
+const editFormCoverPageUser = (): Component => {
   return {
     type: 'navCheckbox',
     label: 'Bruk organisasjonsnummer som bruker på førsteside',
-    key: 'coverPageBruker',
+    key: 'coverPageUser',
     defaultValue: false,
     additionalDescriptionLabel: 'Hva innebærer dette?',
     additionalDescriptionText:
@@ -12,4 +12,4 @@ const editFormCoverPageBruker = (): Component => {
   };
 };
 
-export default editFormCoverPageBruker;
+export default editFormCoverPageUser;

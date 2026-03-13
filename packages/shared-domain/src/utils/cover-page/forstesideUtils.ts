@@ -28,7 +28,7 @@ const addressLine = (text?: string, prefix: string = ', ') => {
 const getOrganizationNumberBruker = (form: NavFormType, submission: SubmissionData): KjentBruker | undefined => {
   const organizationNumberComponent = navFormUtils
     .flattenComponents(form.components)
-    .find((component) => component.type === 'orgNr' && component.coverPageBruker && submission[component.key]);
+    .find((component) => component.type === 'orgNr' && component.coverPageUser && submission[component.key]);
 
   if (!organizationNumberComponent) {
     return undefined;
