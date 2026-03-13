@@ -9,8 +9,6 @@ const SenderPerson = ({ labels, descriptions, value, onChange, readOnly, fieldSi
   });
   const { translate, addRef, getComponentError } = useComponentUtils();
 
-  console.log('sender person', value);
-
   const handleChange = (field: string, e: React.ChangeEvent<HTMLInputElement>) => {
     onChange({
       ...value,

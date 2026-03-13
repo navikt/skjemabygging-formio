@@ -40,8 +40,10 @@ const prefillForm = (form?: NavFormType, prefillData?: any) => {
 
     Utils.eachComponent(formCopy.components, (component: Component) => {
       if (component.prefillKey && prefillData) {
+        console.log('prefillKey', component.prefillKey, prefillData);
         if (Array.isArray(component.prefillKey)) {
           const values = component.prefillKey.map((key) => ({ [key]: prefillData[key] }));
+          console.log('values', values);
           if (values) {
             component.prefillValue = values;
           }
