@@ -13,7 +13,7 @@ describe('Cover page', () => {
   it('should create cover page', () => {
     cy.mocksUseRouteVariant('foersteside:success-tc08a');
 
-    cy.visit('/fyllut/components?sub=paper');
+    cy.visit('/fyllut/coverpageperson?sub=paper');
     cy.defaultWaits();
 
     cy.clickIntroPageConfirmation();
@@ -48,15 +48,7 @@ describe('Cover page', () => {
 
     cy.clickIntroPageConfirmation();
     cy.clickNextStep();
-
-    cy.findByRole('textbox', { name: 'Organisasjonsnummer' }).type('889640782');
-    cy.findByRole('textbox', { name: 'Organisasjonsnummer med beskrivelse' }).type('974652277');
-    cy.clickNextStep();
-
-    cy.findByRole('textbox', { name: 'Organisasjonsnummer påkrevd' }).type('889640782');
-    cy.findByRole('textbox', { name: 'Organisasjonsnummer ikke påkrevd (valgfritt)' }).type('974652277');
-    cy.findByRole('textbox', { name: 'Organisasjonsnummer ugyldig format (valgfritt)' }).type('889640782');
-    cy.findByRole('textbox', { name: 'Organisasjonsnummer egendefinert (valgfritt)' }).type('889640782');
+    cy.findAllByRole('textbox', { name: 'Organisasjonsnummer' }).first().type('889640782');
     cy.clickNextStep();
 
     cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {

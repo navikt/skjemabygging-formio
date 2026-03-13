@@ -122,6 +122,7 @@ import {
   organizationNumberCoverPageForm,
   organizationNumberCoverPageTranslations,
 } from '../data/forms-api/cover-page/organizationNumberCoverPageForm';
+import { personCoverPageForm, personCoverPageTranslations } from '../data/forms-api/cover-page/personCoverPageForm';
 import largeForm from '../data/forms-api/largeForm';
 import { nologinForm, nologinTranslations } from '../data/forms-api/nologinForm';
 
@@ -204,6 +205,7 @@ const allForms = [
   { form: bankAccountForm(), translations: bankAccountTranslations() },
   { form: yearForm(), translations: yearTranslations() },
   { form: organizationNumberForm(), translations: organizationNumberTranslations() },
+  { form: personCoverPageForm(), translations: personCoverPageTranslations() },
   { form: organizationNumberCoverPageForm(), translations: organizationNumberCoverPageTranslations() },
   { form: phoneNumberForm(), translations: phoneNumberTranslations() },
   { form: accordionForm(), translations: accordionTranslations() },
