@@ -35,7 +35,7 @@ const getOrganizationNumberBruker = (form: NavFormType, submission: SubmissionDa
   }
 
   const organizationNumber = submission[organizationNumberComponent.key];
-  if (typeof organizationNumber !== 'string' && typeof organizationNumber !== 'number') {
+  if (!organizationNumber) {
     return undefined;
   }
 
