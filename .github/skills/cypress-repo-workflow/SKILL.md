@@ -80,6 +80,8 @@ cd packages/bygger && yarn cypress run --browser electron --spec cypress/e2e/<sp
    avoid using component classnames in queries.
 4. Keep tests close to the behavior you changed and avoid editing unrelated
    Cypress suites.
+5. Shut down any local servers you started for testing before finishing the
+   task, including `fyllut`, `bygger`, mock servers, and helper proxies.
 
 ## Troubleshooting
 
