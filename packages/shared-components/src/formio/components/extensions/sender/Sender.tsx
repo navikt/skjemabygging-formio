@@ -47,6 +47,10 @@ class Sender extends BaseComponent {
     }
   }
 
+  getReadOnly() {
+    return this.hasPrefill() || super.getReadOnly();
+  }
+
   handleChange(value: SubmissionSender) {
     super.handleChange(value);
     this.rerender();
