@@ -1,7 +1,7 @@
 import { FrontendLoggerConfigType, configUtils, featureUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import dotenv from 'dotenv';
 import { logger } from '../logger';
-import { NaisCluster } from './nais-cluster.js';
+import { NaisCluster } from './nais-cluster';
 import {
   ConfigType,
   DefaultConfig,

@@ -10,10 +10,10 @@ import captchaRouter from './captcha';
 import commonCodes from './common-codes';
 import config from './config';
 import documentsRouter from './documents';
-import enhetsliste from './enhetsliste.js';
-import formsApiRouter from './forms/index.ts';
+import enhetsliste from './enhetsliste';
+import formsApiRouter from './forms/index';
 import forsteside from './forsteside';
-import globalTranslations from './global-translations.js';
+import globalTranslations from './global-translations';
 import log from './log';
 import nologinFileRouter from './nologin-file';
 import pdl from './pdl';
@@ -27,7 +27,7 @@ import nologin from './send-inn/application/nologin/application';
 import nologinApplicationRouter from './send-inn/application/nologin/router';
 import prefillData from './send-inn/prefill-data/send-inn-prefill-data';
 import status from './status';
-import translations from './translations.js';
+import translations from './translations';
 
 const apiRouter = express.Router();
 

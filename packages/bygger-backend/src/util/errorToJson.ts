@@ -1,11 +1,11 @@
 if (!('toJSON' in Error.prototype)) {
   Object.defineProperty(Error.prototype, 'toJSON', {
-    value: function () {
-      var alt = {};
+    value: function (this: Error & Record<string, unknown>) {
+      const alt: Record<string, unknown> = {};
 
-      Object.getOwnPropertyNames(this).forEach(function (key) {
+      Object.getOwnPropertyNames(this).forEach((key) => {
         alt[key] = this[key];
-      }, this);
+      });
 
       return alt;
     },

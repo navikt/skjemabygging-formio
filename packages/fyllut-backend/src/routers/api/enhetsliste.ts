@@ -16,7 +16,7 @@ const enhetsliste = {
   get: (req, res, next) => {
     return fetch(`${norg2.url}/norg2/api/v1/enhet?enhetStatusListe=AKTIV`, {
       headers: {
-        'x-correlation-id': correlator.getId(),
+        'x-correlation-id': correlator.getId() ?? '',
         consumerId: clientId,
       },
     })

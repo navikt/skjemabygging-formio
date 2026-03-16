@@ -1,7 +1,7 @@
 import nock from 'nock';
 import { config } from '../config/config';
 import { extractHost, extractPath } from '../test/testHelpers';
-import TokenXClient from './tokenxClient.js';
+import TokenXClient from './tokenxClient';
 
 const { tokenx: tokenxConfig } = config;
 
@@ -11,7 +11,7 @@ const mockTokenxAccessToken = '123456';
 describe('TokenX client', () => {
   const { instance: client } = TokenXClient;
 
-  let recorder;
+  let recorder: Recorder;
 
   beforeEach(() => {
     recorder = new Recorder();
@@ -58,10 +58,12 @@ describe('TokenX client', () => {
   });
 
   class Recorder {
-    bodies = [];
-    saveBody = (body) => {
-      this.bodies.push(body);
-      return body;
+    bodies: Array<Record<string, string>> = [];
+
+    saveBody = (body: string | Record<string, string>) => {
+      const parsedBody = typeof body === 'string' ? Object.fromEntries(new URLSearchParams(body).entries()) : body;
+      this.bodies.push(parsedBody);
+      return true;
     };
   }
 });

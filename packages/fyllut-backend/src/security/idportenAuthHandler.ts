@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { FlattenedJWSInput, JWSHeaderParameters, createRemoteJWKSet, jwtVerify } from 'jose';
 import { GetKeyFunction } from 'jose/dist/types/types';
 import { config } from '../config/config';
-import { logger } from '../logger.js';
+import { logger } from '../logger';
 import { appMetrics } from '../services';
 import { IdportenTokenPayload } from '../types/custom';
 

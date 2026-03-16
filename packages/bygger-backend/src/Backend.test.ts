@@ -1,5 +1,5 @@
 import { Mock } from 'vitest';
-import { configForTest, createBackendForTest } from '../testTools/backend/testUtils.js';
+import { configForTest, createBackendForTest } from '../testTools/backend/testUtils';
 import { stringTobase64 } from './fetchUtils';
 import {
   GitHubRepo,
@@ -11,9 +11,9 @@ import {
   mockRepoGetFileIfItExists,
   mockRepoGetRef,
   mockRepoMergePullRequest,
-} from './GitHubRepo.js';
+} from './GitHubRepo';
 import { pushEventWithCommitMessage } from './testdata/default-github-push-event';
-vi.mock('./GitHubRepo.js', async () => await import('../__mocks__/GitHubRepo.js'));
+vi.mock('./GitHubRepo', async () => await import('../__mocks__/GitHubRepo'));
 
 vi.mock('uuid', () => {
   return { v4: vi.fn().mockReturnValue('1234') };

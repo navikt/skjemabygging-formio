@@ -1,6 +1,6 @@
 import migrateSignatures from './migrateSignatures';
 
-const createMockForm = (signatures, hasLabeledSignatures) => ({
+const createMockForm = (signatures: Record<string, string> | undefined = undefined, hasLabeledSignatures = false) => ({
   components: [],
   display: 'wizard',
   name: 'mockForm',
@@ -17,7 +17,7 @@ const createMockForm = (signatures, hasLabeledSignatures) => ({
 });
 
 describe('Migration of signatures', () => {
-  let migrationScript;
+  let migrationScript: ReturnType<typeof migrateSignatures>;
 
   beforeAll(() => {
     migrationScript = migrateSignatures({}, []);

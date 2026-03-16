@@ -10,7 +10,7 @@ export interface NavFormType {
   _id?: string;
   tags: string[];
   type: string;
-  display: DisplayType;
+  display: DisplayType | string;
   name: string;
   title: string;
   path: string;

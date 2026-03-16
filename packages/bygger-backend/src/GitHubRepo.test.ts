@@ -1,4 +1,22 @@
-import {
+import { Octokit } from '@octokit/rest';
+import { configForTest } from '../testTools/backend/testUtils';
+import { GitHubRepo } from './GitHubRepo';
+
+const octokitMocks = vi.hoisted(() => ({
+  mockGetRef: vi.fn(),
+  mockCreateRef: vi.fn(),
+  mockDeleteRef: vi.fn(),
+  mockGetTree: vi.fn(),
+  mockCreateTree: vi.fn(),
+  mockCreateCommit: vi.fn(),
+  mockUpdateRef: vi.fn(),
+  mockGetContent: vi.fn(),
+  mockCreateOrUpdateFileContents: vi.fn(),
+  mockCreatePullRequest: vi.fn(),
+  mockMergePullRequest: vi.fn(),
+}));
+
+const {
   mockCreateCommit,
   mockCreateOrUpdateFileContents,
   mockCreatePullRequest,
@@ -10,12 +28,31 @@ import {
   mockGetTree,
   mockMergePullRequest,
   mockUpdateRef,
-  Octokit,
-} from '@octokit/rest';
-import { configForTest } from '../testTools/backend/testUtils';
-import { GitHubRepo } from './GitHubRepo.js';
+} = octokitMocks;
 
-vi.mock('@octokit/rest');
+vi.mock('@octokit/rest', () => ({
+  Octokit: vi.fn().mockImplementation(() => ({
+    rest: {
+      git: {
+        getRef: mockGetRef,
+        createRef: mockCreateRef,
+        deleteRef: mockDeleteRef,
+        getTree: mockGetTree,
+        createTree: mockCreateTree,
+        createCommit: mockCreateCommit,
+        updateRef: mockUpdateRef,
+      },
+      repos: {
+        getContent: mockGetContent,
+        createOrUpdateFileContents: mockCreateOrUpdateFileContents,
+      },
+      pulls: {
+        create: mockCreatePullRequest,
+        merge: mockMergePullRequest,
+      },
+    },
+  })),
+}));
 
 describe('GitHubRepo', () => {
   let repo;
@@ -28,7 +65,7 @@ describe('GitHubRepo', () => {
   });
 
   afterEach(() => {
-    Octokit.mockClear();
+    vi.mocked(Octokit).mockClear();
     mockGetRef.mockClear();
     mockCreateRef.mockClear();
     mockDeleteRef.mockClear();
