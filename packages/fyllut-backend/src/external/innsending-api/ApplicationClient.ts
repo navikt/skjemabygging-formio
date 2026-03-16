@@ -16,7 +16,12 @@ const ApplicationClient = (config: ConfigType, type: 'nologin' | 'digital') => {
     innsendingsId: string,
   ): Promise<UploadedFile> => {
     const correlationId = correlator.getId();
-    const fileBlob = new Blob([Uint8Array.from(file.buffer)], { type: file.mimetype });
+    const fileBlob = new Blob(
+      [new Uint8Array(file.buffer.buffer as ArrayBuffer, file.buffer.byteOffset, file.buffer.byteLength)],
+      {
+        type: file.mimetype,
+      },
+    );
     const originalFileName = Buffer.from(file.originalname, 'latin1').toString('utf8');
 
     const form = new FormData();
