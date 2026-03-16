@@ -98,15 +98,6 @@ const extractBruker = (form: NavFormType, submission: Submission): BrukerDto | u
 };
 
 const extractAvsender = (submission: Submission): AvsenderId | undefined => {
-  const avsenderFornavn = submission.data.fornavnAvsender;
-  const avsenderEtternavn = submission.data.etternavnAvsender;
-  if (avsenderFornavn && avsenderEtternavn) {
-    return { navn: `${avsenderFornavn} ${avsenderEtternavn}` };
-  }
-  return undefined;
-};
-
-const extractAvsenderFromYourInformation = (form: NavFormType, submission: Submission): AvsenderId | undefined => {
   const sender = senderUtils.getSender(form, submission.data);
   if (sender) {
     if (sender.person) {
@@ -123,6 +114,17 @@ const extractAvsenderFromYourInformation = (form: NavFormType, submission: Submi
       };
     }
   }
+
+  // TODO: Fjern kode når de få skjemaene som har denne er fjernet.
+  const avsenderFornavn = submission.data.fornavnAvsender;
+  const avsenderEtternavn = submission.data.etternavnAvsender;
+  if (avsenderFornavn && avsenderEtternavn) {
+    return { navn: `${avsenderFornavn} ${avsenderEtternavn}` };
+  }
+  return undefined;
+};
+
+const extractAvsenderFromYourInformation = (form: NavFormType, submission: Submission): AvsenderId | undefined => {
   const yourInformation = yourInformationUtils.getYourInformation(form, submission.data);
   if (yourInformation?.fornavn && yourInformation?.etternavn) {
     const navn = `${yourInformation.fornavn} ${yourInformation.etternavn}`;
