@@ -1,5 +1,5 @@
+import { SubmissionSender } from '@navikt/skjemadigitalisering-shared-domain';
 import NavSender from '../../../../components/Sender/Sender';
-import { SubmissionSender } from '../../../../components/Sender/types';
 import { ComponentUtilsProvider } from '../../../../context/component/componentUtilsContext';
 import BaseComponent from '../../base/BaseComponent';
 import senderBuilder from './Sender.builder';

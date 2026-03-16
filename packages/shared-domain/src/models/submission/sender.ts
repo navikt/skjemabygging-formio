@@ -1,4 +1,5 @@
-import { FieldSize, RecipientRole } from '@navikt/skjemadigitalisering-shared-domain';
+import { FieldSize } from '../field-size';
+import { RecipientRole } from '../form';
 
 interface SenderLabels {
   nationalIdentityNumber?: string;

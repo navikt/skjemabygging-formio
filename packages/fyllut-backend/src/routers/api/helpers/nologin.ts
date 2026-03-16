@@ -4,6 +4,7 @@ import {
   I18nTranslationMap,
   NavFormType,
   navFormUtils,
+  senderUtils,
   Submission,
   TranslationLang,
   yourInformationUtils,
@@ -106,6 +107,22 @@ const extractAvsender = (submission: Submission): AvsenderId | undefined => {
 };
 
 const extractAvsenderFromYourInformation = (form: NavFormType, submission: Submission): AvsenderId | undefined => {
+  const sender = senderUtils.getSender(form, submission.data);
+  if (sender) {
+    if (sender.person) {
+      return {
+        idType: 'FNR',
+        id: sender.person?.nationalIdentityNumber,
+        navn: `${sender.person?.firstName} ${sender.person?.surname}`,
+      };
+    } else if (sender.organization) {
+      return {
+        idType: 'ORGNR',
+        id: sender.organization?.number,
+        navn: sender.organization?.name,
+      };
+    }
+  }
   const yourInformation = yourInformationUtils.getYourInformation(form, submission.data);
   if (yourInformation?.fornavn && yourInformation?.etternavn) {
     const navn = `${yourInformation.fornavn} ${yourInformation.etternavn}`;

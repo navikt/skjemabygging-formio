@@ -1,6 +1,6 @@
+import { SenderProps } from '@navikt/skjemadigitalisering-shared-domain';
 import SenderOrganization from './SenderOrganization';
 import SenderPerson from './SenderPerson';
-import { SenderProps } from './types';
 
 const Sender = (props: SenderProps) => {
   const { role } = props;

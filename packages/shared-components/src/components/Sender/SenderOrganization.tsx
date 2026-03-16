@@ -1,7 +1,7 @@
 import { TextField } from '@navikt/ds-react';
+import { SenderProps, SubmissionSender } from '@navikt/skjemadigitalisering-shared-domain';
 import { useComponentUtils } from '../../context/component/componentUtilsContext';
 import useComponentStyle from '../../util/styles/useComponentStyle';
-import { SenderProps, SubmissionSender } from './types';
 
 const SenderOrganization = ({ labels, descriptions, value, onChange, readOnly, fieldSize }: SenderProps) => {
   const styles = useComponentStyle({
