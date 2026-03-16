@@ -2,6 +2,10 @@ import { Octokit } from '@octokit/rest';
 import { configForTest } from '../testTools/backend/testUtils';
 import { GitHubRepo } from './GitHubRepo';
 
+const authAppMocks = vi.hoisted(() => ({
+  createAppAuth: vi.fn().mockReturnValue(async () => ({ token: undefined })),
+}));
+
 const octokitMocks = vi.hoisted(() => ({
   mockGetRef: vi.fn(),
   mockCreateRef: vi.fn(),
@@ -29,6 +33,8 @@ const {
   mockMergePullRequest,
   mockUpdateRef,
 } = octokitMocks;
+
+vi.mock('@octokit/auth-app', () => authAppMocks);
 
 vi.mock('@octokit/rest', () => ({
   Octokit: vi.fn().mockImplementation(() => ({
@@ -59,9 +65,9 @@ describe('GitHubRepo', () => {
   const owner = 'myOrganization';
   const repoName = 'myRepo';
 
-  beforeEach(() => {
+  beforeEach(async () => {
     repo = new GitHubRepo(owner, repoName, configForTest.githubApp);
-    repo.authenticate();
+    await repo.authenticate();
   });
 
   afterEach(() => {
