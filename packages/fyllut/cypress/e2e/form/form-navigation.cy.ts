@@ -420,6 +420,7 @@ describe('Form navigation', () => {
         cy.wait('@submitApplication');
 
         cy.findByRole('heading', { level: 2, name: 'Kvittering' }).should('exist');
+        cy.findByRole('link', { name: 'Gå til Min side' }).should('exist');
       });
     });
   });

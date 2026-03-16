@@ -110,6 +110,17 @@ describe('forsteside', () => {
       ] as Component[],
     } as unknown as NavFormType;
 
+    const defaultFormWithOrganizationNumber = {
+      components: [
+        {
+          type: 'orgNr',
+          key: 'organizationNumber',
+          coverPageUser: true,
+        },
+        ...defaultForm.components,
+      ] as Component[],
+    } as unknown as NavFormType;
+
     it('returns user if we have identitynumber', () => {
       const data = forstesideUtils.getUserData(defaultForm, {
         dineOpplysninger: {
@@ -159,6 +170,93 @@ describe('forsteside', () => {
           brukerId: '12345678911',
           brukerType: 'PERSON',
         },
+      });
+    });
+
+    it('returns organization number as bruker when yourInformation is missing', () => {
+      const data = forstesideUtils.getUserData(defaultFormWithOrganizationNumber, {
+        organizationNumber: '889 640 782',
+      } as SubmissionData);
+
+      expect(data).toEqual({
+        bruker: {
+          brukerId: '889640782',
+          brukerType: 'ORGANISASJON',
+        },
+      });
+    });
+
+    it('uses the first marked organization number with a submitted value', () => {
+      const data = forstesideUtils.getUserData(
+        {
+          components: [
+            {
+              type: 'orgNr',
+              key: 'organizationNumber',
+              coverPageUser: true,
+            },
+            {
+              type: 'orgNr',
+              key: 'secondaryOrganizationNumber',
+              coverPageUser: true,
+            },
+          ] as Component[],
+        } as unknown as NavFormType,
+        {
+          organizationNumber: '889 640 782',
+          secondaryOrganizationNumber: '991 012 133',
+        } as SubmissionData,
+      );
+
+      expect(data).toEqual({
+        bruker: {
+          brukerId: '889640782',
+          brukerType: 'ORGANISASJON',
+        },
+      });
+    });
+
+    it('prioritizes yourInformation over organization number bruker fallback', () => {
+      const data = forstesideUtils.getUserData(defaultFormWithOrganizationNumber, {
+        organizationNumber: '889 640 782',
+        dineOpplysninger: {
+          identitet: {
+            identitetsnummer: '12345678911',
+          },
+        } as SubmissionYourInformation,
+      } as SubmissionData);
+
+      expect(data).toEqual({
+        bruker: {
+          brukerId: '12345678911',
+          brukerType: 'PERSON',
+        },
+      });
+    });
+
+    it('falls back to legacy personalia when organization number is missing or unmarked', () => {
+      const data = forstesideUtils.getUserData(
+        {
+          components: [
+            {
+              type: 'orgNr',
+              key: 'organizationNumber',
+            },
+          ] as Component[],
+        } as unknown as NavFormType,
+        {
+          organizationNumber: '889 640 782',
+          fornavnSoker: 'Test',
+          etternavnSoker: 'Testesen',
+          gateadresseSoker: 'Testveien 1',
+          postnummerSoker: '1234',
+          poststedSoker: 'Oslo',
+          landSoker: 'Norge',
+        } as SubmissionData,
+      );
+
+      expect(data).toEqual({
+        ukjentBrukerPersoninfo: 'Test Testesen, Testveien 1, 1234 Oslo, Norge.',
       });
     });
   });

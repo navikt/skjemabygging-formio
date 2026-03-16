@@ -7,6 +7,7 @@ import editFormBackgroundColor from './editFormBackgroundColor';
 import editFormButtonText from './editFormButtonText';
 import editFormContent from './editFormContent';
 import editFormContentForPdf from './editFormContentForPdf';
+import editFormCoverPageUser from './editFormCoverPageUser';
 import editFormCustomLabels from './editFormCustomLabels';
 import editFormDescription from './editFormDescription';
 import editFormDisabled from './editFormDisabled';
@@ -46,6 +47,7 @@ const editFormDisplay = {
   buttonText: editFormButtonText,
   alertType: editFormAlertType,
   contentForPdf: editFormContentForPdf,
+  coverPageUser: editFormCoverPageUser,
   content: editFormContent,
   inline: editFormInline,
   addAnother: editFormAddAnother,

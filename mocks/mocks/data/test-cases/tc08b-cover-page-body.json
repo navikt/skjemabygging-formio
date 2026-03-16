@@ -1,0 +1,12 @@
+{
+  "bruker": { "brukerId": "889640782", "brukerType": "ORGANISASJON" },
+  "foerstesidetype": "SKJEMA",
+  "navSkjemaId": "coverpageorganizationnumber",
+  "spraakkode": "NB",
+  "overskriftstittel": "coverpageorganizationnumber Cover page organization number test form",
+  "arkivtittel": "coverpageorganizationnumber Cover page organization number test form",
+  "tema": "HJE",
+  "vedleggsliste": [],
+  "dokumentlisteFoersteside": ["coverpageorganizationnumber Cover page organization number test form"],
+  "netsPostboks": "1400"
+}

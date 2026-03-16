@@ -202,6 +202,41 @@ describe('Form Builder', () => {
     // TODO: Add test for radio group when it gets the new data values.
   });
 
+  describe('Organization number', () => {
+    beforeEach(() => {
+      cy.intercept('GET', '/api/forms/orgnr-builder', { fixture: 'orgnr-builder.json' }).as('getOrgNrForm');
+      cy.intercept('GET', '/api/forms/orgnr-builder/translations', { fixture: 'form123456-translations.json' }).as(
+        'getOrgNrFormTranslations',
+      );
+
+      cy.visit('forms/orgnr-builder');
+      cy.wait('@getConfig');
+      cy.wait('@getOrgNrForm');
+      cy.wait('@getOrgNrFormTranslations');
+      cy.wait('@getTranslations');
+    });
+
+    it('saves cover page bruker flag on organization number component', () => {
+      cy.intercept('PUT', '/api/forms/orgnr-builder', (req) => {
+        const organizationNumber = navFormUtils
+          .flattenComponents<Component>(req.body.components)
+          .find((comp) => comp.type === 'orgNr');
+
+        expect(organizationNumber?.coverPageUser).to.equal(true);
+        req.reply(200, req.body);
+      }).as('putOrgNrForm');
+
+      cy.openEditComponentModal(cy.findByRole('textbox', { name: /Organisasjonsnummer/ }));
+      cy.findByRole('checkbox', { name: /Bruk organisasjonsnummer som bruker på førsteside/ }).check({
+        force: true,
+      });
+      cy.get('[data-testid="editorSaveButton"]').click();
+
+      cy.findByRole('button', { name: 'Lagre' }).click();
+      cy.wait('@putOrgNrForm');
+    });
+  });
+
   describe('Duplicate component keys', () => {
     beforeEach(() => {
       cy.intercept('GET', '/api/forms/cypresssettings', { fixture: 'getForm.json' }).as('getCypressForm');
