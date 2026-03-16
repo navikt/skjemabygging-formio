@@ -3,6 +3,7 @@ import { UploadedFile, validatorUtils } from '@navikt/skjemadigitalisering-share
 import { openAsBlob } from 'node:fs';
 import { ConfigType } from '../../config/types';
 import { logger } from '../../logger';
+import { appMetrics } from '../../services';
 import { LogMetadata } from '../../types/log';
 import { SubmitApplicationRequest, SubmitApplicationResponse } from '../../types/sendinn/sendinn';
 import { responseToError } from '../../utils/errorHandling';
@@ -59,16 +60,30 @@ const ApplicationClient = (config: ConfigType, type: 'nologin' | 'digital') => {
       targetUrl,
       ...logMeta,
     });
-    const response = await fetch(targetUrl, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        ...(correlationId && { 'x-correlation-id': correlationId }),
-        ...(innsendingsId && { 'x-innsendingsid': innsendingsId }),
-      },
-      body: form,
-    });
-    if (response.ok) {
+    const stopUploadDurationTimer = appMetrics.innsendingApiUploadDuration.startTimer({ type });
+    let response: Response | undefined;
+    let uploadError = false;
+    try {
+      response = await fetch(targetUrl, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          ...(correlationId && { 'x-correlation-id': correlationId }),
+          ...(innsendingsId && { 'x-innsendingsid': innsendingsId }),
+        },
+        body: form,
+      });
+    } catch (error) {
+      uploadError = true;
+      throw error;
+    } finally {
+      const error = uploadError || !response?.ok;
+      const errorLabel = String(error);
+      appMetrics.innsendingApiUploadFileSize.observe({ type, error: errorLabel }, fileBlob.size);
+      stopUploadDurationTimer({ error: errorLabel });
+    }
+
+    if (response?.ok) {
       const { id, name, size } = await response.json();
       logger.info(`${innsendingsId}: File uploaded for ${type} application`, logMeta);
       return {
@@ -78,6 +93,10 @@ const ApplicationClient = (config: ConfigType, type: 'nologin' | 'digital') => {
         fileName: name,
         size,
       };
+    }
+
+    if (!response) {
+      throw new Error('Unexpected missing response after file upload');
     }
 
     logger.warn(`${innsendingsId}: Failed to upload file for ${type} application`, logMeta);
