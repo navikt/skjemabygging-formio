@@ -1,5 +1,6 @@
 import { correlator } from '@navikt/skjemadigitalisering-shared-backend';
 import { UploadedFile, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { openAsBlob } from 'node:fs';
 import { ConfigType } from '../../config/types';
 import { logger } from '../../logger';
 import { LogMetadata } from '../../types/log';
@@ -9,6 +10,23 @@ import { responseToError } from '../../utils/errorHandling';
 const ApplicationClient = (config: ConfigType, type: 'nologin' | 'digital') => {
   const basePath = `${config.sendInnConfig.host}/v1/application-${type}`;
 
+  const createFileBlob = async (file: Express.Multer.File): Promise<Blob> => {
+    if (file.path) {
+      return openAsBlob(file.path, { type: file.mimetype });
+    }
+
+    if (file.buffer) {
+      const fileData = new Uint8Array(
+        file.buffer.buffer as ArrayBuffer,
+        file.buffer.byteOffset,
+        file.buffer.byteLength,
+      );
+      return new Blob([fileData], { type: file.mimetype });
+    }
+
+    throw new Error('Uploaded file has neither path nor buffer');
+  };
+
   const uploadAttachment = async (
     file: Express.Multer.File,
     accessToken: string,
@@ -16,27 +34,29 @@ const ApplicationClient = (config: ConfigType, type: 'nologin' | 'digital') => {
     innsendingsId: string,
   ): Promise<UploadedFile> => {
     const correlationId = correlator.getId();
-    const fileBlob = new Blob(
-      [new Uint8Array(file.buffer.buffer as ArrayBuffer, file.buffer.byteOffset, file.buffer.byteLength)],
-      {
-        type: file.mimetype,
-      },
-    );
     const originalFileName = Buffer.from(file.originalname, 'latin1').toString('utf8');
+    const logMeta = {
+      innsendingsId,
+      correlationId,
+      attachmentId,
+    };
+    logger.info(`${innsendingsId}: Preparing file upload for ${type} application`, {
+      storageMode: file.path ? 'disk' : 'memory',
+      fileSize: file.size,
+      fileType: file.mimetype,
+      hasTempFile: Boolean(file.path),
+      ...logMeta,
+    });
+    const fileBlob = await createFileBlob(file);
 
     const form = new FormData();
     form.append('file', fileBlob, originalFileName);
 
     const targetUrl = `${basePath}/${innsendingsId}/attachments/${attachmentId}`;
-    const logMeta = {
-      innsendingsId,
-      correlationId,
-      attachmentId,
-      targetUrl,
-    };
     logger.info(`${innsendingsId}: Uploading file for ${type} application`, {
       fileSize: fileBlob.size,
       fileType: fileBlob.type,
+      targetUrl,
       ...logMeta,
     });
     const response = await fetch(targetUrl, {
