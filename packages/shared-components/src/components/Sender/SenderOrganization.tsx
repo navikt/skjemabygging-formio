@@ -1,3 +1,4 @@
+import type { ChangeEvent } from 'react';
 import { TextField } from '@navikt/ds-react';
 import { SenderProps, SubmissionSender } from '@navikt/skjemadigitalisering-shared-domain';
 import { useComponentUtils } from '../../context/component/componentUtilsContext';
@@ -9,7 +10,7 @@ const SenderOrganization = ({ labels, descriptions, value, onChange, readOnly, f
   });
   const { translate, addRef, getComponentError } = useComponentUtils();
 
-  const handleChange = (field: string, e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (field: string, e: ChangeEvent<HTMLInputElement>) => {
     onChange({
       ...value,
       organization: {
