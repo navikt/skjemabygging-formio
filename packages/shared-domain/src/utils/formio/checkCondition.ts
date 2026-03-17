@@ -111,6 +111,14 @@ const createConditionInstance = (
   return conditionInstance;
 };
 
+const shouldCreateSyntheticInstance = (component: Partial<Component>, instance?: ConditionComponent) => {
+  if (instance) {
+    return false;
+  }
+
+  return Boolean(component.customConditional || component.conditional?.when || component.conditional?.json);
+};
+
 const getCheckConditionUtils = (
   Utils,
   evaluate: (func: unknown, args: Record<string, unknown>, ret?: string, tokenize?: boolean) => unknown,
@@ -166,9 +174,9 @@ const getCheckConditionUtils = (
     submission?: Submission,
     options?: CheckConditionOptions,
   ) => {
-    const effectiveInstance = instance ?? createConditionInstance(component, form, evaluate, options?.submissionMethod);
-
     if (component.customConditional) {
+      const effectiveInstance =
+        instance ?? createConditionInstance(component, form, evaluate, options?.submissionMethod);
       return checkCustomConditional(
         component,
         component.customConditional,
@@ -182,6 +190,10 @@ const getCheckConditionUtils = (
         options,
       );
     }
+
+    const effectiveInstance = shouldCreateSyntheticInstance(component, instance)
+      ? createConditionInstance(component, form, evaluate, options?.submissionMethod)
+      : instance;
 
     return originalCheckCondition(component, row, data, form, effectiveInstance);
   };
