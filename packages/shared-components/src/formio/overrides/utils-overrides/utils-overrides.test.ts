@@ -1,5 +1,9 @@
-import type { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
-import { formDiffingUtils, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  formDiffingUtils,
+  navFormUtils,
+  checkCondition as sharedCheckCondition,
+  type NavFormType,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import moment from 'moment/moment';
 import panelDiffDeletedDatagrid from '../../../../test/test-data/diff/diff-deleted-datagrid';
 import panelDiffDeletedRadiopanel from '../../../../test/test-data/diff/diff-deleted-radio';
@@ -11,6 +15,41 @@ const publishedFormFixture = publishedForm as unknown as NavFormType;
 const formNavSelectChangesFixture = formNavSelectChanges as unknown as NavFormType;
 
 describe('utils-overrides', () => {
+  describe('checkCondition', () => {
+    it('uses the shared condition implementation for custom conditionals with fallback instance helpers', () => {
+      const component = {
+        key: 'digitalOnly',
+        type: 'textfield',
+        input: true,
+        customConditional: 'show = instance.isSubmissionDigital()',
+      };
+      const form = {
+        components: [component],
+        properties: {
+          skjemanummer: 'TEST',
+          tema: 'TES',
+          submissionTypes: ['PAPER', 'DIGITAL'],
+          subsequentSubmissionTypes: [],
+        },
+      } as unknown as NavFormType;
+
+      expect(
+        UtilsOverrides.checkCondition(component, undefined, {}, form, undefined, undefined, {
+          submissionMethod: 'digital',
+        }),
+      ).toBe(
+        sharedCheckCondition(component, undefined, {}, form, undefined, undefined, {
+          submissionMethod: 'digital',
+        }),
+      );
+      expect(
+        UtilsOverrides.checkCondition(component, undefined, {}, form, undefined, undefined, {
+          submissionMethod: 'paper',
+        }),
+      ).toBe(false);
+    });
+  });
+
   describe('sanitizeJavaScriptCode', () => {
     it('does not change a string without chained lookups', () => {
       const aSentence = 'this is a string.';
