@@ -1,0 +1,33 @@
+{
+  "name": "@navikt/skjemadigitalisering-shared-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Frontend code shared between the builder and the form filling app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/navikt/skjemabygging-formio.git",
+    "directory": "packages/shared-frontend"
+  },
+  "type": "module",
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "license": "SEE LICENSE IN LICENSE.md",
+  "scripts": {
+    "build": "tsc && vite build",
+    "check-types": "tsc",
+    "clean": "rimraf dist coverage node_modules",
+    "watch": "vite build --watch",
+    "test": "vitest --run",
+    "test:coverage": "vitest --run --coverage",
+    "prepare": "yarn build"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^16.3.2"
+  }
+}

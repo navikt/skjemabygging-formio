@@ -1,4 +1,3 @@
-/// <reference types="vitest" />
 import react from '@vitejs/plugin-react';
 import { readFileSync } from 'fs';
 import lodashTemplate from 'lodash/template';
@@ -69,11 +68,5 @@ export default defineConfig(({ mode }) => {
       dedupe: ['react-router', '@navikt/ds-react', '@navikt/aksel-icons'],
     },
     plugins,
-    test: {
-      globals: true,
-      environment: 'jsdom',
-      setupFiles: './src/setupTests.ts',
-      include: ['src/(**/)?*.test.[jt]s(x)?'],
-    },
   };
 });

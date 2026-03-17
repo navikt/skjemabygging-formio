@@ -7,6 +7,7 @@
     "types": ["cypress", "@testing-library/cypress"],
     "resolveJsonModule": true,
     "paths": {
+      "@navikt/skjemadigitalisering-shared-frontend": ["../../shared-frontend/src"],
       "@navikt/skjemadigitalisering-shared-components": ["../../shared-components/src"],
       "@navikt/skjemadigitalisering-shared-domain": ["../../shared-domain/src"]
     }

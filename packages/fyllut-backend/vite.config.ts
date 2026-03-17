@@ -1,4 +1,3 @@
-/// <reference types="vitest" />
 import { defineConfig, PluginOption } from 'vite';
 import { VitePluginNode } from 'vite-plugin-node';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
@@ -49,10 +48,5 @@ export default defineConfig(({ mode }) => {
       target: 'es2022',
     },
     plugins,
-    test: {
-      globals: true,
-      setupFiles: './src/setupTests.ts',
-      include: ['src/(**/)?*.test.[jt]s(x)?'],
-    },
   };
 });
