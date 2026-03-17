@@ -109,7 +109,7 @@ const renderPdfForm = ({
     orgNr: PdfOrganizationNumber,
     password: PdfPassword,
     phoneNumber: PdfPhoneNumber,
-    recipient: PdfSender,
+    sender: PdfSender,
     surname: PdfSurname,
 
     /* Date */
