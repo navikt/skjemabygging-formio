@@ -104,7 +104,7 @@ const RenderSummaryForm = ({
     orgNr: SummaryOrganizationNumber,
     password: SummaryPassword,
     phoneNumber: SummaryPhoneNumber,
-    recipient: SummarySender,
+    sender: SummarySender,
     surname: SummarySurname,
 
     /* Date */

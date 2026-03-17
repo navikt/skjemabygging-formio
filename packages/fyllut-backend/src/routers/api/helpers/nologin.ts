@@ -31,7 +31,7 @@ const assembleNologinSoknadBody = (
     navFormUtils.getActiveAttachmentPanelFromForm(form, submission)?.components ?? [];
   const bruker = extractBruker(form, submission);
   const avsender =
-    extractAvsender(submission) ?? (bruker ? undefined : extractAvsenderFromYourInformation(form, submission));
+    extractAvsender(form, submission) ?? (bruker ? undefined : extractAvsenderFromYourInformation(form, submission));
 
   if (!bruker && !avsender) {
     throw new Error(`${innsendingsId}: Could not find user nor sender from nologin submission (formPath=${form.path})`);
@@ -97,7 +97,7 @@ const extractBruker = (form: NavFormType, submission: Submission): BrukerDto | u
   return undefined;
 };
 
-const extractAvsender = (submission: Submission): AvsenderId | undefined => {
+const extractAvsender = (form: NavFormType, submission: Submission): AvsenderId | undefined => {
   const sender = senderUtils.getSender(form, submission.data);
   if (sender) {
     if (sender.person) {
