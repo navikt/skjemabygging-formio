@@ -1,6 +1,6 @@
 import { config } from '../config/config';
-import { logger } from '../logger.js';
-import TokenXClient from './tokenxClient.js';
+import { logger } from '../logger';
+import TokenXClient from './tokenxClient';
 
 const { isDevelopment } = config;
 

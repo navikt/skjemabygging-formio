@@ -1,3 +1,4 @@
+import type { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { formDiffingUtils, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import moment from 'moment/moment';
 import panelDiffDeletedDatagrid from '../../../../test/test-data/diff/diff-deleted-datagrid';
@@ -5,6 +6,9 @@ import panelDiffDeletedRadiopanel from '../../../../test/test-data/diff/diff-del
 import formNavSelectChanges from '../../../../test/test-data/form/form-navSelect-changes';
 import publishedForm from '../../../../test/test-data/form/published-form';
 import UtilsOverrides from './utils-overrides';
+
+const publishedFormFixture = publishedForm as unknown as NavFormType;
+const formNavSelectChangesFixture = formNavSelectChanges as unknown as NavFormType;
 
 describe('utils-overrides', () => {
   describe('sanitizeJavaScriptCode', () => {
@@ -219,7 +223,7 @@ describe('utils-overrides', () => {
         const html = UtilsOverrides.navFormDiffToHtml(diffSummary);
         expect(html).toMatchSnapshot();
       } catch (e) {
-        throw new Error(`Should never fail, but it did: ${e.message}`);
+        throw new Error(`Should never fail, but it did: ${e instanceof Error ? e.message : String(e)}`);
       } finally {
         console.error = originalConsoleError;
       }
@@ -227,30 +231,30 @@ describe('utils-overrides', () => {
 
     describe('Form -> diff -> html', () => {
       it('empty html when navSelect is not changed', () => {
-        const navSelect = navFormUtils.findByNavId('e0a8kbj', publishedForm.components);
-        const componentDiff = formDiffingUtils.getComponentDiff(navSelect, publishedForm);
+        const navSelect = navFormUtils.findByNavId('e0a8kbj', publishedFormFixture.components);
+        const componentDiff = formDiffingUtils.getComponentDiff(navSelect!, publishedFormFixture);
         const html = UtilsOverrides.navFormDiffToHtml(componentDiff);
         expect(html).toBe('');
         expect(html).toMatchSnapshot();
       });
 
       it('should list changes for navSelect', () => {
-        const navSelect = navFormUtils.findByNavId('e0a8kbj', formNavSelectChanges.components);
-        const componentDiff = formDiffingUtils.getComponentDiff(navSelect, publishedForm);
+        const navSelect = navFormUtils.findByNavId('e0a8kbj', formNavSelectChangesFixture.components);
+        const componentDiff = formDiffingUtils.getComponentDiff(navSelect!, publishedFormFixture);
         const html = UtilsOverrides.navFormDiffToHtml(componentDiff);
         expect(html).toMatchSnapshot();
       });
 
       it('should list changed key', () => {
-        const radiopanel = navFormUtils.findByKey('doYouLiveInNorway', formNavSelectChanges.components);
-        const componentDiff = formDiffingUtils.getComponentDiff(radiopanel, publishedForm);
+        const radiopanel = navFormUtils.findByKey('doYouLiveInNorway', formNavSelectChangesFixture.components);
+        const componentDiff = formDiffingUtils.getComponentDiff(radiopanel!, publishedFormFixture);
         const html = UtilsOverrides.navFormDiffToHtml(componentDiff);
         expect(html).toMatchSnapshot();
       });
 
       it('should list change in conditional', () => {
-        const alertstripe = navFormUtils.findByKey('alertstripeArstid', formNavSelectChanges.components);
-        const componentDiff = formDiffingUtils.getComponentDiff(alertstripe, publishedForm);
+        const alertstripe = navFormUtils.findByKey('alertstripeArstid', formNavSelectChangesFixture.components);
+        const componentDiff = formDiffingUtils.getComponentDiff(alertstripe!, publishedFormFixture);
         const html = UtilsOverrides.navFormDiffToHtml(componentDiff);
         expect(html).toMatchSnapshot();
       });
@@ -259,12 +263,12 @@ describe('utils-overrides', () => {
 
   describe('getBuilderTags', () => {
     it('returns no tag when component is unchanged', () => {
-      const navSelect = navFormUtils.findByNavId('e0a8kbj', publishedForm.components);
+      const navSelect = navFormUtils.findByNavId('e0a8kbj', publishedFormFixture.components);
       const ctx = {
         builder: true,
         component: navSelect,
         config: {
-          publishedForm,
+          publishedForm: publishedFormFixture,
         },
         self: {
           mergeSchema: (comp) => comp,
@@ -275,12 +279,12 @@ describe('utils-overrides', () => {
     });
 
     it("returns tag 'Endring' when component is changed", () => {
-      const navSelect = navFormUtils.findByNavId('e0a8kbj', formNavSelectChanges.components);
+      const navSelect = navFormUtils.findByNavId('e0a8kbj', formNavSelectChangesFixture.components);
       const ctx = {
         builder: true,
         component: navSelect,
         config: {
-          publishedForm,
+          publishedForm: publishedFormFixture,
         },
         self: {
           mergeSchema: (comp) => comp,
@@ -291,12 +295,12 @@ describe('utils-overrides', () => {
     });
 
     it('returns no tag even if component is changed when it renders outside builder', () => {
-      const navSelect = navFormUtils.findByNavId('e0a8kbj', formNavSelectChanges.components);
+      const navSelect = navFormUtils.findByNavId('e0a8kbj', formNavSelectChangesFixture.components);
       const ctx = {
         builder: false,
         component: navSelect,
         config: {
-          publishedForm,
+          publishedForm: publishedFormFixture,
         },
         self: {
           mergeSchema: (comp) => comp,
@@ -312,7 +316,7 @@ describe('utils-overrides', () => {
         builder: true,
         component,
         config: {
-          publishedForm,
+          publishedForm: publishedFormFixture,
         },
         self: {
           mergeSchema: (comp) => comp,
@@ -326,12 +330,12 @@ describe('utils-overrides', () => {
       const MERGE_SCHEMA_NEW_PROP = (comp) => ({ ...comp, newValue2: true });
 
       it('returns no tag if component has not changed, only default schema', () => {
-        const navSelect = MERGE_SCHEMA_NEW_PROP(navFormUtils.findByNavId('e0a8kbj', publishedForm.components));
+        const navSelect = MERGE_SCHEMA_NEW_PROP(navFormUtils.findByNavId('e0a8kbj', publishedFormFixture.components));
         const ctx = {
           builder: true,
           component: navSelect,
           config: {
-            publishedForm,
+            publishedForm: publishedFormFixture,
           },
           self: {
             mergeSchema: MERGE_SCHEMA_NEW_PROP,

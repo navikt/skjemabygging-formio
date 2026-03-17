@@ -1,6 +1,11 @@
 import { createAppAuth } from '@octokit/auth-app';
 import { Octokit } from '@octokit/rest';
+import type { GithubAppConfig } from './config/types';
 import { logger } from './logging/logger';
+
+type GitHubCredentials = Partial<GithubAppConfig> & {
+  token?: string;
+};
 
 // Not exhaustive
 export const gitTreeMode = {
@@ -10,7 +15,13 @@ export const gitTreeMode = {
 };
 
 export class GitHubRepo {
-  constructor(owner, repo, credentials) {
+  private readonly owner: string;
+  private readonly repo: string;
+  private readonly credentials: GitHubCredentials;
+  private authentication?: { token?: string };
+  private octokit!: Octokit;
+
+  constructor(owner: string, repo: string, credentials: GitHubCredentials) {
     this.owner = owner;
     this.repo = repo;
     this.credentials = credentials;
@@ -82,7 +93,7 @@ export class GitHubRepo {
     try {
       remoteFileContent = await this.octokit.rest.repos.getContent({ owner: this.owner, repo: this.repo, ref, path });
     } catch (error) {
-      if (error?.status === 404) {
+      if ((error as { status?: number }).status === 404) {
         logger.info(`Was not able to retrieve file ${path} from ${ref} in repo ${this.repo}`, error);
       } else {
         logger.error(`Failed to fetch file from Github repo ${this.repo}`, error);
@@ -92,18 +103,26 @@ export class GitHubRepo {
   }
 
   createOrUpdateFileContents(branch, path, message, content, sha) {
-    let parameters = {
+    if (sha) {
+      return this.octokit.rest.repos.createOrUpdateFileContents({
+        owner: this.owner,
+        repo: this.repo,
+        branch,
+        path,
+        message,
+        content,
+        sha,
+      });
+    }
+
+    return this.octokit.rest.repos.createOrUpdateFileContents({
       owner: this.owner,
       repo: this.repo,
       branch,
       path,
       message,
       content,
-    };
-    if (sha) {
-      parameters = { ...parameters, sha };
-    }
-    return this.octokit.rest.repos.createOrUpdateFileContents(parameters);
+    });
   }
 
   createPullRequest(title, head, base) {
@@ -127,7 +146,7 @@ export class GitHubRepo {
   }
 
   deleteFile(branch, path, message, sha) {
-    let parameters = {
+    const parameters = {
       owner: this.owner,
       repo: this.repo,
       branch,

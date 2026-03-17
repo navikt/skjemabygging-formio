@@ -1,7 +1,7 @@
 import { I18nTranslations, NavFormType, ResourceContent } from '@navikt/skjemadigitalisering-shared-domain';
 import { PushEvent } from '@octokit/webhooks-types';
 import { v4 as uuidv4 } from 'uuid';
-import { GitHubRepo } from './GitHubRepo.js';
+import { GitHubRepo } from './GitHubRepo';
 import { ConfigType } from './config/types';
 import { base64ToString, fetchWithErrorHandling } from './fetchUtils';
 import { logger } from './logging/logger';
@@ -12,11 +12,11 @@ import {
   getTranslationFilePath,
   performChangesOnSeparateBranch,
   pushFilesAndUpdateMonorepoRefCallback,
-} from './repoUtils.js';
+} from './repoUtils';
 
-const BULK_PUBLISH_REGEXP = /^\[bulk-publisering\] (\d+) skjemaer publisert, monorepo ref: (.*)$/;
-const PUBLISH_REGEXP = /^\[publisering\] skjema "(.*)", monorepo ref: (.*)$/;
-const UNPUBLISH_REGEXP = /^\[avpublisering\] skjema (.*), monorepo ref: (.*)$/;
+const BULK_PUBLISH_REGEXP = /^\[bulk-publisering] (\d+) skjemaer publisert, monorepo ref: (.*)$/;
+const PUBLISH_REGEXP = /^\[publisering] skjema "(.*)", monorepo ref: (.*)$/;
+const UNPUBLISH_REGEXP = /^\[avpublisering] skjema (.*), monorepo ref: (.*)$/;
 
 export class Backend {
   private readonly config: ConfigType;

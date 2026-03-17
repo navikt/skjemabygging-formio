@@ -1,4 +1,4 @@
-import { description } from './description.js';
+import { description } from './description';
 
 export const advancedDescription = [
   ...description,

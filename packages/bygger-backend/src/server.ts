@@ -1,7 +1,7 @@
 import { correlator } from '@navikt/skjemadigitalisering-shared-backend';
 import express from 'express';
 import config from './config';
-import { buildDirectory, buildDirectoryIndexHtml } from './context.js';
+import { buildDirectory, buildDirectoryIndexHtml } from './context';
 import authHandler from './middleware/authHandler';
 import { fsAccessRateLimiter } from './middleware/ratelimit';
 import apiRouter from './routers/api';

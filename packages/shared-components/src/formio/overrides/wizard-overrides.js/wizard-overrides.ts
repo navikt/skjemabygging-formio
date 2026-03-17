@@ -2,8 +2,15 @@ import { Formio, Utils } from 'formiojs';
 import focusOnComponent from './focusOnComponent';
 import { emitNavigationPathsChanged } from './navigationPaths';
 
-const Wizard = Formio.Displays.displays.wizard;
-const WebForm = Formio.Displays.displays.webform;
+const FormioWithDisplays = Formio as typeof Formio & {
+  Displays: { displays: { wizard: any; webform: any } };
+};
+const UtilsWithStringPath = Utils as typeof Utils & {
+  getStringFromComponentPath: (path: unknown) => string | undefined;
+};
+
+const Wizard = FormioWithDisplays.Displays.displays.wizard;
+const WebForm = FormioWithDisplays.Displays.displays.webform;
 
 WebForm.prototype.cancel = function () {
   this.emit('cancel', { page: this.page, submission: this.submission, currentPanels: this.currentPanels });
@@ -115,11 +122,11 @@ Wizard.prototype.validateOnNextPage = function (validationResultCallback) {
 const originalRebuild = Wizard.prototype.rebuild;
 Wizard.prototype.rebuild = function () {
   const currentPage = this.page;
-  const setCurrentPage = function () {
+  const setCurrentPage = () => {
     this.setPage(currentPage);
     this.emitNavigationPathsChanged();
   };
-  return originalRebuild.call(this).then(setCurrentPage.bind(this));
+  return originalRebuild.call(this).then(setCurrentPage);
 };
 
 const originalOnChange = Wizard.prototype.onChange;
@@ -148,7 +155,7 @@ const getErrors = (components) => {
     .map((err) => {
       return {
         message: err.message || err.messages?.[0]?.message,
-        path: err.path || Utils.getStringFromComponentPath(err.messages?.[0]?.path),
+        path: err.path || UtilsWithStringPath.getStringFromComponentPath(err.messages?.[0]?.path),
         elementId: err.elementId,
       };
     });

@@ -2,10 +2,16 @@ import { formDiffingUtils, navFormioUtils } from '@navikt/skjemadigitalisering-s
 import { Formio, Utils } from 'formiojs';
 import baseComponentUtils from '../../components/base/baseComponentUtils';
 
+declare global {
+  interface Window {
+    _: unknown;
+  }
+}
+
 const navFormDiffToHtml = (diffSummary) => {
   try {
     const { changesToCurrentComponent, deletedComponents } = diffSummary;
-    const html = [];
+    const html: string[] = [];
     if (changesToCurrentComponent.length) {
       const labelId = 'nav-form-diff-changed-elements';
       html.push(`<span id="${labelId}" class="aksel-body-short font-ax-bold">Endringer</span>`);
@@ -24,12 +30,13 @@ const navFormDiffToHtml = (diffSummary) => {
     }
     return html.join('');
   } catch (err) {
-    console.error(`Failed to render form diff: ${err.message} diffSummery="${JSON.stringify(diffSummary)}"`, err);
+    const message = err instanceof Error ? err.message : String(err);
+    console.error(`Failed to render form diff: ${message} diffSummery="${JSON.stringify(diffSummary)}"`, err);
     return '<span>Det oppstod dessverre en feil under behandling av endringene i dette skjemaet.</span>';
   }
 };
 
-const createList = (components, labelId) => {
+const createList = (components, labelId?: string) => {
   if (components && components.length > 0) {
     const labelledBy = labelId ? ` aria-labelledby="${labelId}"` : '';
     return `<ul${labelledBy}>`
@@ -57,7 +64,7 @@ const getBuilderTags = (ctx) => {
     // prior to comparing with published version to avoid misleading diff tags due to changes in a component's schema.
     const mergeSchema = self.mergeSchema.bind(self);
     const diff = formDiffingUtils.getComponentDiff(component, publishedForm, mergeSchema);
-    const tags = [];
+    const tags: string[] = [];
     if (publishedForm && diff.isNew) {
       tags.push(`${TAG('Ny')}`);
     }
@@ -79,9 +86,13 @@ const getBuilderTags = (ctx) => {
  * This is a helper function for developers to easily access submission data from browser console
  */
 const data = () => {
-  let forms = [];
-  if (Formio.forms) {
-    for (const [_id, form] of Object.entries(Formio.forms)) {
+  const forms: unknown[] = [];
+  const formioWithForms = Formio as typeof Formio & {
+    forms?: Record<string, { submission?: { data: unknown } }>;
+  };
+
+  if (formioWithForms.forms) {
+    for (const [_id, form] of Object.entries(formioWithForms.forms)) {
       forms.push(form?.submission?.data);
     }
   }
@@ -107,8 +118,9 @@ if (typeof global === 'object' && global.FormioUtils) {
 }
 
 // Formio require lodash to be available on window for custom conditionals.
-if (!!Utils._ && !window._) {
-  window._ = Utils._;
+const utilsWithLodash = Utils as typeof Utils & { _: unknown };
+if (utilsWithLodash._ && !window._) {
+  window._ = utilsWithLodash._;
 }
 
 export default UtilsOverrides;
