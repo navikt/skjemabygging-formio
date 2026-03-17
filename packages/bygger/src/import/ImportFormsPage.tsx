@@ -1,5 +1,4 @@
-import { Skeleton, Table, UNSAFE_Combobox } from '@navikt/ds-react';
-import { ComboboxOption } from '@navikt/ds-react/esm/form/combobox/types';
+import { type ComboboxProps, Skeleton, Table, UNSAFE_Combobox } from '@navikt/ds-react';
 import { ButtonWithSpinner, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useState } from 'react';
@@ -9,6 +8,8 @@ import Title from '../components/layout/Title';
 import TitleRowLayout from '../components/layout/TitleRowLayout';
 import { formMatches, mapToOption } from './ImportFormsPage.utils';
 import api from './api';
+
+type ComboboxOption = Exclude<NonNullable<ComboboxProps['options']>[number], string>;
 
 export const useStyles = makeStyles({
   submitButton: {

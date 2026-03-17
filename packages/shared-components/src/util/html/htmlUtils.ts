@@ -1,7 +1,7 @@
-import DOMPurify from 'dompurify';
+import DOMPurify, { type Config as DOMPurifyConfig } from 'dompurify';
 import { defaultLeafTags, generateMarkdown } from './markdown';
 
-type SanitizeOptions = Omit<DOMPurify.Config, 'RETURN_DOM_FRAGMENT' | 'RETURN_DOM'>;
+type SanitizeOptions = Omit<DOMPurifyConfig, 'RETURN_DOM_FRAGMENT' | 'RETURN_DOM'>;
 
 const topLevelTags = ['H2', 'H3', 'P', 'OL', 'UL', 'DIV'];
 const textFormattingTags = ['A', 'B', 'STRONG', 'BR'];

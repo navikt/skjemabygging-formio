@@ -1,5 +1,4 @@
-import { DatePicker as AkselDatePicker, useDatepicker } from '@navikt/ds-react';
-import { UseDatepickerOptions } from '@navikt/ds-react/esm/date/datepicker/hooks/useDatepicker';
+import { DatePicker as AkselDatePicker, type UseDatepickerOptions, useDatepicker } from '@navikt/ds-react';
 import { dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { ReactNode, useEffect } from 'react';
 import { useComponentUtils } from '../../context/component/componentUtilsContext';
