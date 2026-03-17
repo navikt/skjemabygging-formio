@@ -4,6 +4,7 @@ import { unlink } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { logger } from '../../../logger';
 
+// Allow files up to 150MB by default, can be overridden per route if needed
 const MAX_UPLOAD_FILE_SIZE_BYTES = 150 * 1024 * 1024;
 
 interface UploadSingleFileOptions {
