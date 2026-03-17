@@ -14,16 +14,16 @@ const SummarySender = (props: FormComponentProps) => {
   if (senderRole === 'organization') {
     return (
       <>
-        {value.organizationNumber && (
+        {value.organization?.number && (
           <FormSummary.Answer>
             <FormSummary.Label>{translate(labels.organizationNumber)}</FormSummary.Label>
-            <FormSummary.Value>{value.organizationNumber}</FormSummary.Value>
+            <FormSummary.Value>{value.organization.number}</FormSummary.Value>
           </FormSummary.Answer>
         )}
-        {value.organizationName && (
+        {value.organization?.name && (
           <FormSummary.Answer>
             <FormSummary.Label>{translate(labels.organizationName)}</FormSummary.Label>
-            <FormSummary.Value>{value.organizationName}</FormSummary.Value>
+            <FormSummary.Value>{value.organization.name}</FormSummary.Value>
           </FormSummary.Answer>
         )}
       </>
@@ -32,22 +32,22 @@ const SummarySender = (props: FormComponentProps) => {
 
   return (
     <>
-      {value.nationalIdentityNumber && (
+      {value.person?.nationalIdentityNumber && (
         <FormSummary.Answer>
           <FormSummary.Label>{translate(labels.nationalIdentityNumber)}</FormSummary.Label>
-          <FormSummary.Value>{value.nationalIdentityNumber}</FormSummary.Value>
+          <FormSummary.Value>{value.person.nationalIdentityNumber}</FormSummary.Value>
         </FormSummary.Answer>
       )}
-      {value.firstName && (
+      {value.person?.firstName && (
         <FormSummary.Answer>
           <FormSummary.Label>{translate(labels.firstName)}</FormSummary.Label>
-          <FormSummary.Value>{value.firstName}</FormSummary.Value>
+          <FormSummary.Value>{value.person.firstName}</FormSummary.Value>
         </FormSummary.Answer>
       )}
-      {value.surname && (
+      {value.person?.surname && (
         <FormSummary.Answer>
           <FormSummary.Label>{translate(labels.surname)}</FormSummary.Label>
-          <FormSummary.Value>{value.surname}</FormSummary.Value>
+          <FormSummary.Value>{value.person.surname}</FormSummary.Value>
         </FormSummary.Answer>
       )}
     </>
