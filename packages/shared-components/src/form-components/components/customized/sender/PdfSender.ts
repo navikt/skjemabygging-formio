@@ -14,21 +14,21 @@ const PdfSender = (props: PdfComponentProps): PdfData[] | null => {
   const result: PdfData[] = [];
 
   if (senderRole === 'organization') {
-    if (value.organizationNumber) {
-      result.push({ label: translate(labels.organizationNumber), verdi: value.organizationNumber });
+    if (value.organization?.number) {
+      result.push({ label: translate(labels.organizationNumber), verdi: value.organization.number });
     }
-    if (value.organizationName) {
-      result.push({ label: translate(labels.organizationName), verdi: value.organizationName });
+    if (value.organization?.name) {
+      result.push({ label: translate(labels.organizationName), verdi: value.organization.name });
     }
   } else {
-    if (value.nationalIdentityNumber) {
-      result.push({ label: translate(labels.nationalIdentityNumber), verdi: value.nationalIdentityNumber });
+    if (value.person?.nationalIdentityNumber) {
+      result.push({ label: translate(labels.nationalIdentityNumber), verdi: value.person.nationalIdentityNumber });
     }
-    if (value.firstName) {
-      result.push({ label: translate(labels.firstName), verdi: value.firstName });
+    if (value.person?.firstName) {
+      result.push({ label: translate(labels.firstName), verdi: value.person.firstName });
     }
-    if (value.surname) {
-      result.push({ label: translate(labels.surname), verdi: value.surname });
+    if (value.person?.surname) {
+      result.push({ label: translate(labels.surname), verdi: value.person.surname });
     }
   }
 
