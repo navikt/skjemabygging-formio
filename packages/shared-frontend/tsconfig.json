@@ -2,12 +2,12 @@
   "extends": "../../tsconfig-base.json",
   "compilerOptions": {
     "jsx": "react-jsx",
-    "lib": ["dom", "dom.iterable", "ES2021"],
+    "lib": ["dom", "dom.iterable", "ES2022"],
     "moduleResolution": "bundler",
     "types": ["node", "vite/client", "vitest/globals"],
     "paths": {
       "@navikt/skjemadigitalisering-shared-domain": ["../shared-domain/src"]
     }
   },
-  "include": ["src", "vite.config.ts"]
+  "include": ["src", "vite.config.ts", "vitest.config.ts"]
 }

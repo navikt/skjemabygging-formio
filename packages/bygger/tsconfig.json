@@ -2,14 +2,14 @@
   "extends": "../../tsconfig-base.json",
   "compilerOptions": {
     "jsx": "react-jsx",
-    "lib": ["dom", "dom.iterable", "ES2021"],
-    "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true,
+    "lib": ["dom", "dom.iterable", "ES2022"],
+    "moduleResolution": "bundler",
+    "types": ["node", "vite/client", "vitest/globals"],
     "paths": {
       "@navikt/skjemadigitalisering-shared-frontend": ["../shared-frontend/src"],
       "@navikt/skjemadigitalisering-shared-components": ["../shared-components/src"],
       "@navikt/skjemadigitalisering-shared-domain": ["../shared-domain/src"]
     }
   },
-  "include": ["src"]
+  "include": ["src", "vite.config.ts", "vitest.config.ts"]
 }
