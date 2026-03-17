@@ -99,10 +99,16 @@ describe('Sender', () => {
 
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
       cy.withinSummaryGroup('Person', () => {
-        cy.contains('Unsupported component type: sender').should('exist');
+        PERSON_FIELDS.forEach(({ label, value }) => {
+          cy.contains(label).should('exist');
+          cy.contains(value).should('exist');
+        });
       });
       cy.withinSummaryGroup('Organisasjon', () => {
-        cy.contains('Unsupported component type: sender').should('exist');
+        ORGANIZATION_FIELDS.forEach(({ label, value }) => {
+          cy.contains(label).should('exist');
+          cy.contains(value).should('exist');
+        });
       });
     });
   });
