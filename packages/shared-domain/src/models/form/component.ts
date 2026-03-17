@@ -91,7 +91,7 @@ export interface Component {
   as?: string;
   style?: object;
   theme?: string;
-  defaultValue?: string | number | boolean | any[] | object;
+  defaultValue?: string | number | boolean | any[] | object | null;
   tooltip?: string;
   reorder?: boolean;
   dataGridLabel?: boolean;
@@ -182,8 +182,10 @@ export interface ComponentValidate {
 }
 
 export interface ComponentConditional {
-  when?: string;
-  json?: object;
+  show?: boolean | null;
+  when?: string | null;
+  eq?: string | null;
+  json?: object | string;
 }
 
 export interface Webform {

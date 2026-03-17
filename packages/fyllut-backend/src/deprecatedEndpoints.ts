@@ -1,8 +1,8 @@
 import apiConfig from './routers/api/config';
 import forms from './routers/api/forms';
 import form from './routers/api/forms/form';
-import globalTranslations from './routers/api/global-translations.js';
-import translations from './routers/api/translations.js';
+import globalTranslations from './routers/api/global-translations';
+import translations from './routers/api/translations';
 
 export const setupDeprecatedEndpoints = (skjemaApp) => {
   // TODO fjern når vi har tatt i bruk tilsvarende endepunkt under /api

@@ -4,14 +4,16 @@ import { context, trace } from '@opentelemetry/api';
 import morgan from 'morgan';
 import { config } from '../config/config';
 import { isEnabled } from '../logging';
-import { clean } from '../utils/logCleaning.js';
+import { clean } from '../utils/logCleaning';
 
 const { isTest } = config;
 
 const INTERNAL_PATHS = /.*\/(internal|static)\/.*/i;
+const formatEcsLog = ecsFormat({ apmIntegration: false, format: 'combined' });
+
 const httpRequestLogger = morgan(
   (tokens, req, res) => {
-    const logEntry = JSON.parse(ecsFormat({ apmIntegration: false })(tokens, req, res));
+    const logEntry = JSON.parse(formatEcsLog(tokens, req, res));
     const span = trace.getSpan(context.active());
     const traceId = span ? span.spanContext().traceId : undefined;
     return JSON.stringify(

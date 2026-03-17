@@ -1,5 +1,5 @@
-import { clean } from './logCleaning.js';
-import logStatement1 from './testdata/log-statement-1.js';
+import { clean } from './logCleaning';
+import logStatement1 from './testdata/log-statement-1';
 
 const replace = (logStatement, map) => {
   let str = JSON.stringify(logStatement1);

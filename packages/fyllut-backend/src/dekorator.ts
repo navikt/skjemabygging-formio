@@ -20,7 +20,6 @@ const getDecorator = async (redirect) => {
       redirectToUrl: redirect,
       level: 'Level4',
       simple: true,
-      urlLookupTable: false,
       logoutWarning: true,
     },
   });

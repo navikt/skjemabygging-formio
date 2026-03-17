@@ -1,8 +1,8 @@
 import request from 'supertest';
 import { createApp } from './app';
 
-vi.mock('./logger.js');
-vi.mock('./dekorator.js', () => ({
+vi.mock('./logger');
+vi.mock('./dekorator', () => ({
   getDecorator: () => {},
   createRedirectUrl: () => '',
 }));

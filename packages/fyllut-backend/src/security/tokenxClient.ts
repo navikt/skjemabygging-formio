@@ -1,10 +1,11 @@
 import { guid } from '@navikt/skjemadigitalisering-shared-domain';
+import type { SignOptions } from 'jsonwebtoken';
 import jwt from 'jsonwebtoken';
 import fetch from 'node-fetch';
 import jose from 'node-jose';
 import qs from 'qs';
 import { config } from '../config/config';
-import { logger } from '../logger.js';
+import { logger } from '../logger';
 import { toJsonOrThrowError } from '../utils/errorHandling';
 
 const grant_type = 'urn:ietf:params:oauth:grant-type:token-exchange';
@@ -16,7 +17,7 @@ const { tokenx: tokenxConfig } = config;
 class TokenXClient {
   static instance = new TokenXClient();
 
-  tokenEndpoint = null;
+  tokenEndpoint: string | null = null;
 
   exchangeToken = async (idportenToken, targetClientId) => {
     const tokenEndpoint = await this.getTokenEndpoint();
@@ -53,7 +54,7 @@ class TokenXClient {
       exp: now + 60, // max 120
     };
     const key = await this.asKey(tokenxConfig.privateJwk);
-    const options = {
+    const options: SignOptions = {
       algorithm: 'RS256',
       header: {
         kid: key.kid,

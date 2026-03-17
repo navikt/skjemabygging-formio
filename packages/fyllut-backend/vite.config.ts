@@ -8,7 +8,7 @@ export default defineConfig(({ mode }) => {
   const plugins: PluginOption = [
     ...VitePluginNode({
       adapter: 'express',
-      appPath: './src/server.js',
+      appPath: './src/server.ts',
       outputFormat: 'module',
     }),
     viteStaticCopy({
@@ -39,7 +39,7 @@ export default defineConfig(({ mode }) => {
     build: {
       target: 'es2022',
       rollupOptions: {
-        input: './src/server.js',
+        input: './src/server.ts',
         output: {
           entryFileNames: '[name].mjs',
         },
