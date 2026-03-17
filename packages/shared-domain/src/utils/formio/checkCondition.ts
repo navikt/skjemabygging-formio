@@ -4,6 +4,12 @@ import { submissionTypesUtils } from '../submission';
 const lodashShim = {
   some: <T>(collection: T[], predicate: (item: T) => boolean) => Array.from(collection).some(predicate),
   every: <T>(collection: T[], predicate: (item: T) => boolean) => Array.from(collection).every(predicate),
+  get: (obj: unknown, path: string, defaultValue?: unknown) => {
+    const result = path
+      .split('.')
+      .reduce<unknown>((acc, key) => (acc != null ? (acc as Record<string, unknown>)[key] : undefined), obj);
+    return result === undefined ? defaultValue : result;
+  },
 };
 
 type LegacyForm = NavFormType & {
