@@ -42,7 +42,8 @@ const prefillForm = (form?: NavFormType, prefillData?: any) => {
       if (component.prefillKey && prefillData) {
         if (Array.isArray(component.prefillKey)) {
           const values = component.prefillKey.reduce((acc, key) => ({ ...acc, [key]: prefillData[key] }), {});
-          if (values) {
+          const hasDefinedValue = Object.values(values).some((value) => value !== undefined);
+          if (hasDefinedValue) {
             component.prefillValue = values;
           }
         } else if (prefillData[component.prefillKey]) {
