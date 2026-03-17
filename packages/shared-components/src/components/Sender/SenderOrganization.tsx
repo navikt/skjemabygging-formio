@@ -27,9 +27,9 @@ const SenderOrganization = ({ labels, descriptions, value, onChange, readOnly, f
           label={translate(labels.organizationNumber)}
           description={translate(descriptions.organizationNumber)}
           value={value?.organization?.number ?? ''}
-          onChange={(e) => handleChange('organization', e)}
-          ref={(ref) => addRef('sender:organization', ref)}
-          error={getComponentError('sender:organization')}
+          onChange={(e) => handleChange('number', e)}
+          ref={(ref) => addRef('sender:organizationNumber', ref)}
+          error={getComponentError('sender:organizationNumber')}
           readOnly={readOnly}
           className={styles.fieldSize}
         />
@@ -38,7 +38,7 @@ const SenderOrganization = ({ labels, descriptions, value, onChange, readOnly, f
         <TextField
           label={translate(labels.organizationName)}
           value={value?.organization?.name ?? ''}
-          onChange={(e) => handleChange('organizationName', e)}
+          onChange={(e) => handleChange('name', e)}
           ref={(ref) => addRef('sender:organizationName', ref)}
           error={getComponentError('sender:organizationName')}
           readOnly={readOnly}
