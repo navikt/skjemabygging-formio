@@ -19,6 +19,7 @@ const testMellomlagringConfirmationModal = (
   cy.findByText(modalTexts.body).should('be.visible');
   cy.findByRole('button', { name: modalTexts.cancel }).click();
   cy.findByRole('button', { name: buttonText }).click();
+  cy.findByText(modalTexts.body).should('be.visible');
   cy.findByRole('button', { name: modalTexts.confirm }).click();
 };
 
@@ -380,6 +381,7 @@ describe('Mellomlagring', () => {
           cy.findByText(body).should('be.visible');
           cy.findByRole('button', { name: TEXTS.grensesnitt.confirmSavePrompt.cancel }).click();
           cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveDraft }).click();
+          cy.findByText(body).should('be.visible');
           cy.findByRole('button', { name: TEXTS.grensesnitt.confirmSavePrompt.confirm }).click();
 
           cy.wait('@updateMellomlagring');
