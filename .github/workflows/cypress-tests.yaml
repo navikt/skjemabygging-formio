@@ -21,7 +21,7 @@ jobs:
       - name: Generate list of folders containing cypress tests
         id: generate-cypress-folders
         run: |
-          echo cypress-folders=$(node bin/get-folders.mjs packages/fyllut/cypress/e2e) >> "$GITHUB_OUTPUT"
+          echo cypress-folders=$(node bin/get-folders.mjs packages/fyllut/cypress/e2e production) >> "$GITHUB_OUTPUT"
 
   cypress-run-fyllut:
     name: fyllut ${{ matrix.folder }}
@@ -61,7 +61,7 @@ jobs:
           start: yarn preview:fyllut
           wait-on: 'http://localhost:3001/fyllut/internal/isready'
           wait-on-timeout: 120
-          command: yarn cypress:fyllut --spec cypress/e2e/${{ matrix.folder }}/**/* --env INCLUDE_DIST_TESTS=true
+          command: yarn cypress:fyllut --spec "cypress/e2e/${{ matrix.folder }}/**/*" --env INCLUDE_DIST_TESTS=true
         env:
           FYLLUT_BACKEND_LOGLEVEL: ${{ runner.debug == '1' && 'debug' || 'error' }}
       - name: Upload screenshots
@@ -69,8 +69,7 @@ jobs:
         if: failure()
         with:
           name: cypress-screenshots-${{ strategy.job-index }}
-          path:  ${{ github.workspace }}/packages/fyllut/cypress/screenshots/*
-
+          path: ${{ github.workspace }}/packages/fyllut/cypress/screenshots/*
 
   cypress-run-bygger:
     runs-on: ubuntu-latest-8-cores
@@ -108,4 +107,4 @@ jobs:
         if: failure()
         with:
           name: cypress-bygger-screenshots-${{ strategy.job-index }}
-          path:  ${{ github.workspace }}/packages/bygger/cypress/screenshots/*
+          path: ${{ github.workspace }}/packages/bygger/cypress/screenshots/*
