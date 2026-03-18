@@ -37,6 +37,7 @@ import NationalIdentityNumber from './extensions/national-identity-number/Nation
 import Number from './extensions/number/Number';
 import OrganizationNumber from './extensions/organization-number/OrganizationNumber';
 import Password from './extensions/password/Password';
+import Sender from './extensions/sender/Sender';
 import Surname from './extensions/surname/Surname';
 import Year from './extensions/year/Year';
 
@@ -82,5 +83,6 @@ const customComponents = {
   firstName: FirstName,
   surname: Surname,
   dataFetcher: DataFetcher,
+  sender: Sender,
 };
 export default customComponents;
