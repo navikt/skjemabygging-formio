@@ -30,6 +30,17 @@ declare global {
 
       clickStart(): Chainable<JQuery<HTMLElement>>;
 
+      visitFixtureForm(
+        formPath: string,
+        options?: {
+          fixture?: string;
+          path?: string;
+          skipIntroSteps?: number;
+          startOnFirstStep?: boolean;
+          sub?: 'paper' | 'digital' | 'digitalnologin';
+        },
+      ): Chainable<JQuery<HTMLElement>>;
+
       clickIntroPageConfirmation(): Chainable<JQuery<HTMLElement>>;
 
       clickShowAllSteps(): Chainable<JQuery<HTMLElement>>;
