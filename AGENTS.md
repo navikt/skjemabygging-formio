@@ -25,3 +25,7 @@ More specific, advanced, or workflow/package-specific guidance belongs in skills
 
 - Use the test framework for small unit-style tests of isolated logic.
 - Use Cypress for UI behavior and end-to-end flows. Legacy UI tests in the test framework should be replaced, not expanded.
+
+## Starting dev servers (sub-agents)
+
+Use `yarn start:fyllut:auto` or `yarn start:bygger:auto` — see the `start-dev-servers` skill for the full pattern.
