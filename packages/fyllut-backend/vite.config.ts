@@ -28,11 +28,11 @@ export default defineConfig(({ mode }) => {
   return {
     base: '/fyllut',
     server: {
-      port: parseInt(process.env.FYLLUT_BACKEND_PORT || '8081'),
+      port: 8081,
       strictPort: true,
     },
     preview: {
-      port: parseInt(process.env.FYLLUT_BACKEND_PORT || '8081'),
+      port: 8081,
       strictPort: true,
     },
     build: {

@@ -18,11 +18,11 @@ export default defineConfig(({ mode }) => {
 
   return {
     server: {
-      port: parseInt(process.env.BYGGER_BACKEND_PORT || '8080'),
+      port: 8080,
       strictPort: true,
     },
     preview: {
-      port: parseInt(process.env.BYGGER_BACKEND_PORT || '8080'),
+      port: 8080,
       strictPort: true,
     },
     build: {

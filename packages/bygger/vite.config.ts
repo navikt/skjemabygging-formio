@@ -5,6 +5,8 @@ import { defineConfig, loadEnv, PluginOption } from 'vite';
 import { createHtmlPlugin } from 'vite-plugin-html';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
+const backendPort = process.argv.find((a) => a.startsWith('--backend-port='))?.split('=')[1] ?? '8080';
+
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, 'env');
   const plugins: PluginOption = [
@@ -50,17 +52,17 @@ export default defineConfig(({ mode }) => {
     base: '/',
     server: {
       open: false,
-      port: parseInt(process.env.BYGGER_FRONTEND_PORT || '3000'),
+      port: 3000,
       strictPort: true,
       proxy: {
         '/api': {
-          target: `http://localhost:${process.env.BYGGER_BACKEND_PORT || '8080'}`,
+          target: `http://localhost:${backendPort}`,
           changeOrigin: true,
         },
       },
     },
     preview: {
-      port: parseInt(process.env.BYGGER_FRONTEND_PORT || '3000'),
+      port: 3000,
       strictPort: true,
     },
     resolve: {

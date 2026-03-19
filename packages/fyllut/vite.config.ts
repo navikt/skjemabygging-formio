@@ -5,6 +5,8 @@ import { defineConfig, loadEnv, PluginOption } from 'vite';
 import { createHtmlPlugin } from 'vite-plugin-html';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
+const backendPort = process.argv.find((a) => a.startsWith('--backend-port='))?.split('=')[1] ?? '8081';
+
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, 'env');
 
@@ -51,17 +53,17 @@ export default defineConfig(({ mode }) => {
     base: '/fyllut',
     server: {
       open: false,
-      port: parseInt(process.env.FYLLUT_FRONTEND_PORT || '3001'),
+      port: 3001,
       strictPort: true,
       proxy: {
         '/fyllut/api': {
-          target: `http://localhost:${process.env.FYLLUT_BACKEND_PORT || '8081'}`,
+          target: `http://localhost:${backendPort}`,
           changeOrigin: true,
         },
       },
     },
     preview: {
-      port: parseInt(process.env.FYLLUT_FRONTEND_PORT || '3001'),
+      port: 3001,
       strictPort: true,
     },
     resolve: {
