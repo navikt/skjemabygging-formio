@@ -6,6 +6,7 @@ import {
   ComponentValue,
   NavFormType,
   SubmissionAttachmentValue,
+  SubmissionMethod,
 } from '../../models';
 import { TEXTS } from '../../texts';
 
@@ -24,9 +25,40 @@ const enableAttachmentUpload = (submissionMethod?: string) =>
 
 const shouldEnableUpload = (value: string) => value === 'leggerVedNaa';
 
+const digitalAttachmentLabelKeyMap: Record<
+  (typeof attachmentSettingKeys)[number],
+  keyof typeof TEXTS.statiske.attachment
+> = {
+  leggerVedNaa: 'uploadNow',
+  ettersender: 'uploadLater',
+  nei: 'noAdditionalAttachments',
+  levertTidligere: 'alreadySent',
+  harIkke: 'dontHave',
+  andre: 'other',
+  nav: 'navWillFetch',
+};
+
+const isDigitalSubmissionMethod = (submissionMethod?: SubmissionMethod) =>
+  submissionMethod === 'digital' || submissionMethod === 'digitalnologin';
+
+const resolveAttachmentLabelKey = (
+  key: keyof AttachmentSettingValues,
+  submissionMethod?: SubmissionMethod,
+): keyof typeof TEXTS.statiske.attachment => {
+  if (isDigitalSubmissionMethod(submissionMethod)) {
+    return digitalAttachmentLabelKeyMap[key];
+  }
+
+  return key;
+};
+
+const getAttachmentLabel = (key: keyof AttachmentSettingValues, submissionMethod?: SubmissionMethod) =>
+  TEXTS.statiske.attachment[resolveAttachmentLabelKey(key, submissionMethod)];
+
 const mapKeysToOptions = (
   attachmentValues: AttachmentSettingValues | ComponentValue[] | undefined,
   translate: (text: string, params?: any) => string,
+  submissionMethod?: SubmissionMethod,
 ): ComponentValue[] => {
   if (attachmentValues) {
     if (Array.isArray(attachmentValues)) {
@@ -45,7 +77,7 @@ const mapKeysToOptions = (
           } else {
             return {
               value: key,
-              label: translate(TEXTS.statiske.attachment[key]),
+              label: translate(getAttachmentLabel(key, submissionMethod)),
               upload: shouldEnableUpload(key),
             };
           }
@@ -61,18 +93,20 @@ const mapToAttachmentSummary = ({
   value,
   component,
   form,
+  submissionMethod,
 }: {
   translate: TFunction;
   value: SubmissionAttachmentValue;
   component: Component;
   form: NavFormType;
+  submissionMethod?: SubmissionMethod;
 }): AttachmentValue => {
   const additionalDocumentationLabel = component.attachmentValues?.[value.key]?.additionalDocumentation?.label;
   const shouldShowDeadline =
     !!component.attachmentValues?.[value.key]?.showDeadline && form.properties?.ettersendelsesfrist;
 
   return {
-    description: translate(TEXTS.statiske.attachment[value.key]),
+    description: translate(getAttachmentLabel(value.key, submissionMethod)),
     ...(additionalDocumentationLabel && { additionalDocumentationLabel: translate(additionalDocumentationLabel) }),
     ...(value.additionalDocumentation && { additionalDocumentation: translate(value.additionalDocumentation) }),
     ...(shouldShowDeadline && {
@@ -85,8 +119,10 @@ const mapToAttachmentSummary = ({
 
 const attachmentUtils = {
   enableAttachmentUpload,
+  getAttachmentLabel,
   mapToAttachmentSummary,
   mapKeysToOptions,
+  resolveAttachmentLabelKey,
 };
 
 export { attachmentSettingKeys, attachmentUtils };

@@ -1,9 +1,9 @@
 import { Alert, FileUpload, FormSummary, Label, VStack } from '@navikt/ds-react';
-import { navFormUtils, SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { attachmentUtils, navFormUtils, SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { FormComponentProps } from '../../../types';
 
 const SummaryAttachmentUpload = (props: FormComponentProps) => {
-  const { component, submission, translate, formProperties } = props;
+  const { component, submission, translate, formProperties, appConfig } = props;
   const { label } = component;
   const submissionAttachments = submission?.attachments?.filter(
     (attachment) => navFormUtils.getNavId(component) === attachment.navId,
@@ -38,7 +38,7 @@ const SummaryAttachmentUpload = (props: FormComponentProps) => {
           ) : (
             <FormSummary.Value key={submissionAttachment.attachmentId}>
               <VStack gap="space-8">
-                {translate(TEXTS.statiske.attachment[submissionAttachment.value!])}
+                {translate(attachmentUtils.getAttachmentLabel(submissionAttachment.value!, appConfig.submissionMethod))}
                 {submissionAttachment.additionalDocumentation && (
                   <div>{translate(submissionAttachment.additionalDocumentation)}</div>
                 )}
