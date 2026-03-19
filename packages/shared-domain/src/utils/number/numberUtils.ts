@@ -46,7 +46,9 @@ const toLocaleString = (value?: string | number, options: Intl.NumberFormatOptio
   if (Number.isNaN(number)) {
     return value;
   }
-  return number.toLocaleString('no', options);
+
+  // Problem on number component since toLocaleString \u002d (hyphen-minus) with \u2212 (minus) and that causes problem.
+  return number.toLocaleString('no', options).replace('\u2212', '-');
 };
 
 const numberUtils = {
