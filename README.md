@@ -51,6 +51,19 @@ lokalt, og det er to steder det kan være interessant å opprette .env-filer:
 | <nobr>`packages/bygger-backend/.env`</nobr> | Byggeren kan startes lokalt uten å sette noen miljøvariabler, men i .env-filen kan man overstyre ulike miljøvariablerf.eks. hvis man ønsker å kjøre mot lokal Fyllut (`FYLLUT_BASE_URL`), egen Pusher-instans eller man vil endre loglevel. |
 | <nobr>`packages/fyllut-backend/.env`</nobr> | FyllUt kan startes lokalt uten å sette noen miljøvariabler, men for at alle funksjoner skal fungere så må man leggeinn konfigurasjon i denne filen.                                                                                         |
 
+### 🪟 Kjøre flere worktrees samtidig (portoverstyring)
+
+Alle porter kan overstyres med miljøvariabler, noe som er nyttig når man kjører to worktrees parallelt (f.eks. for Cypress-testing i separate arbeidsområder).
+
+| Miljøvariabel                            | Default | Beskrivelse              |
+| ---------------------------------------- | ------- | ------------------------ |
+| `BYGGER_FRONTEND_PORT`                   | `3000`  | Bygger frontend (Vite)   |
+| `FYLLUT_FRONTEND_PORT`                   | `3001`  | Fyllut frontend (Vite)   |
+| `BYGGER_BACKEND_PORT`                    | `8080`  | Bygger backend (Vite)    |
+| `FYLLUT_BACKEND_PORT`                    | `8081`  | Fyllut backend (Vite)    |
+| `MOCKS_SERVER_SERVER_PORT`               | `3300`  | Mock server              |
+| `MOCKS_SERVER_PLUGINS_ADMIN_API_PORT`    | `3310`  | Mock server admin API    |
+
 ### 📝 Frontend logger
 
 Både bygger og fyllut har støtte for å logge feil som skjer i frontend. Begge backends har et endepunkt

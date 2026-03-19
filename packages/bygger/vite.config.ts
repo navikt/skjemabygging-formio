@@ -50,17 +50,17 @@ export default defineConfig(({ mode }) => {
     base: '/',
     server: {
       open: false,
-      port: 3000,
+      port: parseInt(process.env.BYGGER_FRONTEND_PORT || '3000'),
       strictPort: true,
       proxy: {
         '/api': {
-          target: 'http://localhost:8080',
+          target: `http://localhost:${process.env.BYGGER_BACKEND_PORT || '8080'}`,
           changeOrigin: true,
         },
       },
     },
     preview: {
-      port: 3000,
+      port: parseInt(process.env.BYGGER_FRONTEND_PORT || '3000'),
       strictPort: true,
     },
     resolve: {

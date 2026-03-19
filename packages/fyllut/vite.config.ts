@@ -51,17 +51,17 @@ export default defineConfig(({ mode }) => {
     base: '/fyllut',
     server: {
       open: false,
-      port: 3001,
+      port: parseInt(process.env.FYLLUT_FRONTEND_PORT || '3001'),
       strictPort: true,
       proxy: {
         '/fyllut/api': {
-          target: 'http://localhost:8081',
+          target: `http://localhost:${process.env.FYLLUT_BACKEND_PORT || '8081'}`,
           changeOrigin: true,
         },
       },
     },
     preview: {
-      port: 3001,
+      port: parseInt(process.env.FYLLUT_FRONTEND_PORT || '3001'),
       strictPort: true,
     },
     resolve: {
