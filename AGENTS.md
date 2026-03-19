@@ -23,5 +23,8 @@ More specific, advanced, or workflow/package-specific guidance belongs in skills
 
 ## Testing
 
-- Use the test framework for small unit-style tests of isolated logic.
-- Use Cypress for UI behavior and end-to-end flows. Legacy UI tests in the test framework should be replaced, not expanded.
+- Use the test framework only for isolated non-UI logic (for example shared utilities, mappers, validation, and domain/backend logic).
+- Use Cypress for UI behavior and end-to-end flows.
+- `@testing-library` UI tests in this repository are considered legacy/outdated.
+- Do not add new `@testing-library` UI behavior tests, and do not expand existing ones.
+- When touching UI behavior currently covered by legacy `@testing-library` tests, prefer replacing/migrating them to Cypress instead of extending them.
