@@ -352,7 +352,7 @@ export default [
         },
       },
       {
-        id: 'nav083501-complete-v1',
+        id: 'nav083501-test-complete-v1',
         type: 'json',
         options: {
           status: 200,

@@ -4,11 +4,11 @@
 
 ## Progress
 
-| Status                       | Count                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ✅ Done (all passing)        | 43 (nav100750, nav031601, nav082005, nav040201, nav040307, nav082105, nav100711, nav100713, nav120615, nav082012, nav110307, nav130021, nav082115, nav083002, nav100743, nav100704, nav111224b, nav140508, nav190110, nav210305, nav230505, nav250118, nav341601, nav550071, nav760715, nav761303, nav761352, nav761354, nav761385, nav761389, nav761390, nav020806, nav040610, nav100723, nav100744, nav031605, nav080907, nav031610, nav020808, nav001004, nav040608, nav080906, nav081401, nav082020) |
-| ⚠️ Done (with skipped tests) | 1 (nav100753 — 1 skipped)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| ❌ Not started               | 141                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Status                       | Count |
+| ---------------------------- | ----- |
+| ✅ Done (all passing)        | 87    |
+| ⚠️ Done (with skipped tests) | 4     |
+| ❌ Not started               | 91    |
 
 ## Process rules
 
@@ -25,6 +25,8 @@
 | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
 | nav100753 | Summary — wizard skips Vedlegg panel when navigating sequentially (cause unknown)                                                                   |
 | nav083501 | 12 tests skipped — agent timed out (>10 min); failing tests use `it.skip`. Identity/address fields and several virksomhet conditionals not working. |
+| nav100734 | 3 skipped — getConfig timeout during heavy panel traversal; child fnr `07011688396` fails form validation blocking summary navigation               |
+| nav100736 | 1 skipped — identity `row.X` conditional doesn't fire when visiting panel URL directly (wizard context missing); inverse test passes                |
 
 ## Running fleets of agents
 
@@ -66,7 +68,7 @@ When generating tests with agents, provide the agent:
 | [x]  | nav100711  | 0      | 0      | 0    | 3      | PAPER                          |       | Innsending av førstegangssøknad om ortopedisk hjelpemiddel — 1/1 passing                                                                              |
 | [x]  | nav100713  | 0      | 0      | 0    | 3      | PAPER                          |       | Innsending av søknad om fornyelse av ortopedisk hjelpemiddel — 1/1 passing                                                                            |
 | [x]  | nav100743  | 2      | 0      | 0    | 7      | PAPER                          |       | Tilleggsskjema fra ergo- eller fysioterapeut — 3/3 passing                                                                                            |
-| [x]  | nav100753  | 1      | 4      | 0    | 5      | PAPER,DIGITAL                  |       | Søknad om dekning av ekstraordinære veterinærutgifter — 4/5 passing, 1 SKIPPED (summary: wizard skips Vedlegg panel in sequential nav, cause unknown) |
+| ⚠️   | nav100753  | 1      | 4      | 0    | 5      | PAPER,DIGITAL                  |       | Søknad om dekning av ekstraordinære veterinærutgifter — 4/5 passing, 1 skipped (summary: wizard skips Vedlegg panel in sequential nav, cause unknown) |
 | [x]  | nav110307  | 2      | 0      | 0    | 5      | PAPER,DIGITAL                  |       | Søknad om å beholde arbeidsavklaringspenger under opphold — 3/3 passing                                                                               |
 | [x]  | nav111224b | 0      | 5      | 0    | 4      | PAPER,DIGITAL                  |       | Refusjon av utgifter til daglig reise med bruk av egen bil — 4/4 passing                                                                              |
 | [x]  | nav120615  | 3      | 0      | 0    | 4      | PAPER,DIGITAL                  |       | Bekreftelse på vedtak om uføretrygd — 3/3 passing                                                                                                     |
@@ -90,75 +92,75 @@ When generating tests with agents, provide the agent:
 
 ## Medium — 6–20 conditionals (66 forms)
 
-| Done | Form       | Simple | Custom | Both | Panels | Submission                     | Intro | Title                                                              |
-| ---- | ---------- | ------ | ------ | ---- | ------ | ------------------------------ | ----- | ------------------------------------------------------------------ |
-| [x]  | nav001004  | 6      | 3      | 0    | 7      | PAPER,DIGITAL                  | ✓     | Registrering av aktivitet ved import av dagpenger                  |
-| [x]  | nav020808  | 11     | 0      | 0    | 7      | none                           |       | Skjema for arbeidsgiver – bekreftelse på utsending i EØS           |
-| [x]  | nav031605  | 3      | 4      | 0    | 5      | PAPER,DIGITAL_NO_LOGIN,DIGITAL |       | Søknad om pensjonsopptjening for omsorgsarbeid                     |
-| [x]  | nav031610  | 11     | 0      | 0    | 5      | PAPER                          |       | Overføring av omsorgsopptjening                                    |
-| [x]  | nav040608  | 17     | 2      | 0    | 9      | PAPER,DIGITAL                  |       | Søknad om dagpenger under etablering av egen virksomhet            |
-| [x]  | nav040610  | 7      | 0      | 0    | 4      | none                           |       | Næringsfaglig vurdering av etableringsplaner                       |
-| [x]  | nav080906  | 11     | 6      | 0    | 7      | PAPER,DIGITAL,DIGITAL_NO_LOGIN |       | Egenerklæring for utenlandske sykemeldinger                        |
-| [x]  | nav080907  | 4      | 4      | 0    | 6      | PAPER                          |       | Søknad om å beholde sykepenger under opphold i utlandet            |
-| [x]  | nav081401  | 13     | 1      | 0    | 7      | PAPER                          |       | Søknad om refusjon av reisetilskudd til arbeidsreiser              |
-| [x]  | nav082020  | 14     | 0      | 0    | 5      | PAPER                          |       | Søknad om unntak fra arbeidsgiveransvar for sykepenger             |
-| [x]  | nav083001  | 21     | 1      | 0    | 5      | PAPER                          |       | Inntektsmelding for sykmeldt arbeidstaker                          |
-| ⚠️   | nav083501  | 15     | 4      | 1    | 10     | PAPER,DIGITAL                  |       | Inntektsopplysninger for selvstendig næringsdrivende               |
-| [x]  | nav083605  | 10     | 3      | 0    | 9      | PAPER,DIGITAL                  |       | Søknad fra selvstendig næringsdrivende/frilansere om omsorgspenger |
-| [ ]  | nav083606  | 3      | 4      | 0    | 3      | DIGITAL                        |       | Si opp forsikring - Sykepenger                                     |
-| [ ]  | nav084705  | 12     | 0      | 0    | 5      | PAPER,DIGITAL                  |       | Krav om sykepenger – midlertidig ute av inntektsgivende arbeid     |
-| [ ]  | nav100705  | 4      | 4      | 0    | 6      | PAPER                          |       | Bestilling av tekniske hjelpemidler                                |
-| [ ]  | nav100706  | 15     | 4      | 0    | 6      | PAPER,DIGITAL                  |       | Søknad om tolk til døve, døvblinde og hørselshemmede               |
-| [ ]  | nav100708  | 9      | 10     | 0    | 4      | PAPER                          |       | Søknad om høreapparat / tinnitusmaskerer / tilleggsutstyr          |
-| [ ]  | nav100715  | 5      | 4      | 0    | 5      | PAPER                          |       | Søknad om dekning av utgifter til irislinser                       |
-| [ ]  | nav100718  | 16     | 5      | 0    | 8      | PAPER,DIGITAL                  |       | Søknad om stønad til tilpasningskurs                               |
-| [x]  | nav100723  | 1      | 4      | 0    | 6      | PAPER                          |       | Behov for hjelpemidler knyttet til individuell plan                |
-| [ ]  | nav100726  | 9      | 8      | 0    | 8      | PAPER                          |       | Søknad om tilskudd til apper og programvare                        |
-| [ ]  | nav100727  | 11     | 8      | 0    | 8      | PAPER                          |       | Søknad om tilskudd til rimelige hjelpemidler                       |
-| [ ]  | nav100730  | 16     | 3      | 0    | 6      | PAPER                          |       | Søknad om lese- og sekretærhjelp for blinde og svaksynte           |
-| [ ]  | nav100734  | 16     | 1      | 0    | 4      | PAPER                          |       | Tilskudd ved kjøp av briller til barn                              |
-| [ ]  | nav100736  | 7      | 7      | 0    | 5      | PAPER                          |       | Pristilbud for behandlingsbriller eller irislinser                 |
-| [ ]  | nav100742  | 10     | 0      | 0    | 5      | PAPER                          |       | Legeerklæring for motorkjøretøy                                    |
-| [x]  | nav100744  | 9      | 0      | 0    | 4      | PAPER                          |       | Tilleggsskjema for stønad til kassebil ved utagerende atferd       |
-| [x]  | nav100750  | 7      | 4      | 0    | 5      | PAPER,DIGITAL                  |       | Søknad om førerhund                                                |
-| [ ]  | nav100754  | 8      | 4      | 0    | 6      | PAPER,DIGITAL                  |       | Søknad om servicehund                                              |
-| [ ]  | nav100755  | 14     | 6      | 0    | 5      | PAPER,DIGITAL                  |       | Søknad om stønad til grunnmønster og søm                           |
-| [ ]  | nav100759  | 11     | 8      | 0    | 5      | PAPER,DIGITAL                  |       | Søknad om stønad til brystprotese eller spesialbrystholder         |
-| [ ]  | nav100760  | 9      | 5      | 0    | 5      | PAPER,DIGITAL                  |       | Søknad om stønad til alminnelig fottøy ved ulik fotstørrelse       |
-| [ ]  | nav100761  | 19     | 4      | 0    | 6      | PAPER,DIGITAL                  |       | Søknad om refusjon av betalt egenandel for fottøy                  |
-| [ ]  | nav100763  | 8      | 2      | 0    | 5      | none                           |       | Innlevering av tekniske hjelpemidler                               |
-| [ ]  | nav100780  | 6      | 5      | 0    | 4      | none                           |       | Bekreftelse på utlån og tildeling av høreapparat                   |
-| [ ]  | nav111205  | 3      | 4      | 0    | 6      | PAPER,DIGITAL                  |       | Søknad om reisestønad (AAP)                                        |
-| [ ]  | nav111219b | 15     | 5      | 0    | 7      | PAPER,DIGITAL                  |       | Tilleggsstønad - støtte til bolig og overnatting                   |
-| [ ]  | nav111223b | 6      | 9      | 0    | 6      | PAPER,DIGITAL                  |       | Tilleggsstønad - støtte til flytting                               |
-| [ ]  | nav120607  | 12     | 0      | 0    | 6      | none                           |       | Inntektsskjema for næringsdrivende og ansatt i eget aksjeselskap   |
-| [ ]  | nav120609  | 8      | 0      | 0    | 6      | none                           |       | Inntektsskjema for gårdbrukere - uføretrygd                        |
-| [ ]  | nav120901  | 6      | 0      | 0    | 4      | PAPER,DIGITAL                  |       | Søknad om endret inntektsgrense                                    |
-| [ ]  | nav131305  | 4      | 4      | 0    | 5      | PAPER                          |       | Søknad fra selvstendig næringsdrivende og frilansere om AAP        |
-| [ ]  | nav131705  | 11     | 5      | 0    | 7      | PAPER,DIGITAL                  |       | Søknad om menerstatning                                            |
-| [ ]  | nav140507  | 8      | 1      | 0    | 7      | PAPER                          |       | Søknad om engangsstønad ved fødsel                                 |
-| [ ]  | nav150801  | 3      | 4      | 0    | 5      | PAPER                          |       | Enslig mor eller far som er arbeidssøker                           |
-| [ ]  | nav180405  | 5      | 5      | 0    | 5      | PAPER,DIGITAL,DIGITAL_NO_LOGIN |       | Søknad om barnepensjon etter fylte 18 år                           |
-| [ ]  | nav210405  | 6      | 0      | 0    | 5      | PAPER                          |       | Melding til Nav om elevs fravær fra skolen                         |
-| [ ]  | nav250201  | 10     | 0      | 0    | 6      | PAPER                          |       | Oppfølgingsplan ved sykmelding                                     |
-| [ ]  | nav310003  | 7      | 5      | 0    | 10     | PAPER                          |       | Krigspensjoneringen - Krav om etterlattepensjon                    |
-| [ ]  | nav361301  | 17     | 0      | 0    | 4      | PAPER                          |       | Innsyn med hjemmel                                                 |
-| [ ]  | nav361302  | 16     | 0      | 0    | 4      | PAPER                          |       | Innsyn med fullmakt eller samtykke                                 |
-| [ ]  | nav361801  | 14     | 4      | 0    | 4      | PAPER,DIGITAL,DIGITAL_NO_LOGIN |       | Innsyn i egen sak                                                  |
-| [ ]  | nav550060  | 19     | 1      | 0    | 7      | PAPER                          |       | Avtale om barnebidrag                                              |
-| [ ]  | nav550063  | 17     | 1      | 0    | 7      | PAPER                          |       | Avtale om barnebidrag for barn over 18 år                          |
-| [ ]  | nav554401  | 5      | 11     | 0    | 5      | PAPER,DIGITAL_NO_LOGIN         |       | Fordeling av barns reisekostnader ved samvær                       |
-| [ ]  | nav620016  | 7      | 3      | 0    | 7      | PAPER,DIGITAL                  |       | Opplysningsskjema til Nav for avtalefestet pensjon (AFP)           |
-| [ ]  | nav760710  | 7      | 4      | 0    | 5      | PAPER,DIGITAL                  |       | Registreringsskjema for tilskudd til utdanning                     |
-| [ ]  | nav761300  | 15     | 4      | 0    | 8      | PAPER,DIGITAL                  | ✓     | Søknad om stønad til arbeids- og utdanningsreiser                  |
-| [ ]  | nav761318  | 8      | 1      | 0    | 5      | PAPER                          |       | Refusjonskrav - opplæring                                          |
-| [ ]  | nav761353  | 12     | 0      | 0    | 6      | PAPER                          |       | Refusjonskrav – AFT og VTA i skjermet virksomhet                   |
-| [ ]  | nav761380  | 10     | 1      | 0    | 6      | PAPER                          |       | Søknad om funksjonsassistanse                                      |
-| [ ]  | nav761381  | 14     | 6      | 0    | 8      | PAPER                          |       | Refusjonskrav - Funksjonsassistanse                                |
-| [ ]  | nav951509  | 7      | 1      | 0    | 3      | PAPER,DIGITAL                  | ✓     | Samtykke til arbeidsrettet oppfølging for barn under 18 år         |
-| [ ]  | nav952002  | 12     | 8      | 0    | 6      | PAPER,DIGITAL_NO_LOGIN         |       | Melding om frivillig skattetrekk                                   |
-| [ ]  | nav952003  | 11     | 4      | 0    | 6      | DIGITAL                        |       | Melding om frivillig skattetrekk for barnepensjon                  |
-| [ ]  | nav952005  | 9      | 0      | 0    | 5      | PAPER                          |       | Skjema for tips om mulig misbruk av stønad                         |
+| Done | Form       | Simple | Custom | Both | Panels | Submission                     | Intro | Title                                                                                                                                                  |
+| ---- | ---------- | ------ | ------ | ---- | ------ | ------------------------------ | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [x]  | nav001004  | 6      | 3      | 0    | 7      | PAPER,DIGITAL                  | ✓     | Registrering av aktivitet ved import av dagpenger                                                                                                      |
+| [x]  | nav020808  | 11     | 0      | 0    | 7      | none                           |       | Skjema for arbeidsgiver – bekreftelse på utsending i EØS                                                                                               |
+| [x]  | nav031605  | 3      | 4      | 0    | 5      | PAPER,DIGITAL_NO_LOGIN,DIGITAL |       | Søknad om pensjonsopptjening for omsorgsarbeid                                                                                                         |
+| [x]  | nav031610  | 11     | 0      | 0    | 5      | PAPER                          |       | Overføring av omsorgsopptjening                                                                                                                        |
+| [x]  | nav040608  | 17     | 2      | 0    | 9      | PAPER,DIGITAL                  |       | Søknad om dagpenger under etablering av egen virksomhet                                                                                                |
+| [x]  | nav040610  | 7      | 0      | 0    | 4      | none                           |       | Næringsfaglig vurdering av etableringsplaner                                                                                                           |
+| [x]  | nav080906  | 11     | 6      | 0    | 7      | PAPER,DIGITAL,DIGITAL_NO_LOGIN |       | Egenerklæring for utenlandske sykemeldinger                                                                                                            |
+| [x]  | nav080907  | 4      | 4      | 0    | 6      | PAPER                          |       | Søknad om å beholde sykepenger under opphold i utlandet                                                                                                |
+| [x]  | nav081401  | 13     | 1      | 0    | 7      | PAPER                          |       | Søknad om refusjon av reisetilskudd til arbeidsreiser                                                                                                  |
+| [x]  | nav082020  | 14     | 0      | 0    | 5      | PAPER                          |       | Søknad om unntak fra arbeidsgiveransvar for sykepenger                                                                                                 |
+| [x]  | nav083001  | 21     | 1      | 0    | 5      | PAPER                          |       | Inntektsmelding for sykmeldt arbeidstaker                                                                                                              |
+| ⚠️   | nav083501  | 15     | 4      | 1    | 10     | PAPER,DIGITAL                  |       | Inntektsopplysninger for selvstendig næringsdrivende                                                                                                   |
+| [x]  | nav083605  | 10     | 3      | 0    | 9      | PAPER,DIGITAL                  |       | Søknad fra selvstendig næringsdrivende/frilansere om omsorgspenger                                                                                     |
+| [x]  | nav083606  | 3      | 4      | 0    | 3      | DIGITAL                        |       | Si opp forsikring - Sykepenger — 4/4 passing                                                                                                           |
+| [x]  | nav084705  | 12     | 0      | 0    | 5      | PAPER,DIGITAL                  |       | Krav om sykepenger – midlertidig ute av inntektsgivende arbeid — 7/7 passing                                                                           |
+| [x]  | nav100705  | 4      | 4      | 0    | 6      | PAPER                          |       | Bestilling av tekniske hjelpemidler — 8/8 passing                                                                                                      |
+| [x]  | nav100706  | 15     | 4      | 0    | 6      | PAPER,DIGITAL                  |       | Søknad om tolk til døve, døvblinde og hørselshemmede — 10/10 passing                                                                                   |
+| [x]  | nav100708  | 9      | 10     | 0    | 4      | PAPER                          |       | Søknad om høreapparat / tinnitusmaskerer / tilleggsutstyr — 10/10 passing                                                                              |
+| [x]  | nav100715  | 5      | 4      | 0    | 5      | PAPER                          |       | Søknad om dekning av utgifter til irislinser — 8/8 passing                                                                                             |
+| [x]  | nav100718  | 16     | 5      | 0    | 8      | PAPER,DIGITAL                  |       | Søknad om stønad til tilpasningskurs — 12/12 passing                                                                                                   |
+| [x]  | nav100723  | 1      | 4      | 0    | 6      | PAPER                          |       | Behov for hjelpemidler knyttet til individuell plan                                                                                                    |
+| [x]  | nav100726  | 9      | 8      | 0    | 8      | PAPER                          |       | Søknad om tilskudd til apper og programvare — 12/12 passing                                                                                            |
+| [x]  | nav100727  | 11     | 8      | 0    | 8      | PAPER                          |       | Søknad om tilskudd til rimelige hjelpemidler — 12/12 passing                                                                                           |
+| [x]  | nav100730  | 16     | 3      | 0    | 6      | PAPER                          |       | Søknad om lese- og sekretærhjelp for blinde og svaksynte — 15/15 passing                                                                               |
+| ⚠️   | nav100734  | 16     | 1      | 0    | 4      | PAPER                          |       | Tilskudd ved kjøp av briller til barn — 13/16 passing, 3 skipped (getConfig timeout; child fnr validation blocking summary)                            |
+| ⚠️   | nav100736  | 7      | 7      | 0    | 5      | PAPER                          |       | Pristilbud for behandlingsbriller eller irislinser — 5/6 passing, 1 skipped (identity row.X conditional doesn't fire when visiting panel URL directly) |
+| [x]  | nav100742  | 10     | 0      | 0    | 5      | PAPER                          |       | Legeerklæring for motorkjøretøy — 11/11 passing                                                                                                        |
+| [x]  | nav100744  | 9      | 0      | 0    | 4      | PAPER                          |       | Tilleggsskjema for stønad til kassebil ved utagerende atferd                                                                                           |
+| [x]  | nav100750  | 7      | 4      | 0    | 5      | PAPER,DIGITAL                  |       | Søknad om førerhund                                                                                                                                    |
+| [x]  | nav100754  | 8      | 4      | 0    | 6      | PAPER,DIGITAL                  |       | Søknad om servicehund — 10/10 passing                                                                                                                  |
+| [x]  | nav100755  | 14     | 6      | 0    | 5      | PAPER,DIGITAL                  |       | Søknad om stønad til grunnmønster og søm — 14/14 passing                                                                                               |
+| [x]  | nav100759  | 11     | 8      | 0    | 5      | PAPER,DIGITAL                  |       | Søknad om stønad til brystprotese eller spesialbrystholder — 16/16 passing                                                                             |
+| [x]  | nav100760  | 9      | 5      | 0    | 5      | PAPER,DIGITAL                  |       | Søknad om stønad til alminnelig fottøy ved ulik fotstørrelse — 13/13 passing                                                                           |
+| [x]  | nav100761  | 19     | 4      | 0    | 6      | PAPER,DIGITAL                  |       | Søknad om refusjon av betalt egenandel for fottøy — 11/11 passing                                                                                      |
+| [x]  | nav100763  | 8      | 2      | 0    | 5      | none                           |       | Innlevering av tekniske hjelpemidler — 8/8 passing                                                                                                     |
+| [x]  | nav100780  | 6      | 5      | 0    | 4      | none                           |       | Bekreftelse på utlån og tildeling av høreapparat — 12/12 passing                                                                                       |
+| [x]  | nav111205  | 3      | 4      | 0    | 6      | PAPER,DIGITAL                  |       | Søknad om reisestønad (AAP) — 6/6 passing                                                                                                              |
+| [x]  | nav111219b | 15     | 5      | 0    | 7      | PAPER,DIGITAL                  |       | Tilleggsstønad - støtte til bolig og overnatting — 13/13 passing                                                                                       |
+| [x]  | nav111223b | 6      | 9      | 0    | 6      | PAPER,DIGITAL                  |       | Tilleggsstønad - støtte til flytting — 10/10 passing                                                                                                   |
+| [x]  | nav120607  | 12     | 0      | 0    | 6      | none                           |       | Inntektsskjema for næringsdrivende og ansatt i eget aksjeselskap — 11/11 passing                                                                       |
+| [x]  | nav120609  | 8      | 0      | 0    | 6      | none                           |       | Inntektsskjema for gårdbrukere - uføretrygd — 9/9 passing                                                                                              |
+| [x]  | nav120901  | 6      | 0      | 0    | 4      | PAPER,DIGITAL                  |       | Søknad om endret inntektsgrense — 6/6 passing                                                                                                          |
+| [x]  | nav131305  | 4      | 4      | 0    | 5      | PAPER                          |       | Søknad fra selvstendig næringsdrivende og frilansere om AAP — 6/6 passing                                                                              |
+| [x]  | nav131705  | 11     | 5      | 0    | 7      | PAPER,DIGITAL                  |       | Søknad om menerstatning — 13/13 passing                                                                                                                |
+| [x]  | nav140507  | 8      | 1      | 0    | 7      | PAPER                          |       | Søknad om engangsstønad ved fødsel — 11/11 passing                                                                                                     |
+| [x]  | nav150801  | 3      | 4      | 0    | 5      | PAPER                          |       | Enslig mor eller far som er arbeidssøker — 9/9 passing                                                                                                 |
+| [x]  | nav180405  | 5      | 5      | 0    | 5      | PAPER,DIGITAL,DIGITAL_NO_LOGIN |       | Søknad om barnepensjon etter fylte 18 år — 10/10 passing                                                                                               |
+| ✅   | nav210405  | 6      | 0      | 0    | 5      | PAPER                          |       | Melding til Nav om elevs fravær fra skolen — 6/6 ✅                                                                                                    |
+| [x]  | nav250201  | 10     | 0      | 0    | 6      | PAPER                          |       | Oppfølgingsplan ved sykmelding — 10/10 passing                                                                                                         |
+| ✅   | nav310003  | 7      | 5      | 0    | 10     | PAPER                          |       | Krigspensjoneringen - Krav om etterlattepensjon — 10/10 ✅                                                                                             |
+| ✅   | nav361301  | 17     | 0      | 0    | 4      | PAPER                          |       | Innsyn med hjemmel — 17/17 ✅                                                                                                                          |
+| ✅   | nav361302  | 16     | 0      | 0    | 4      | PAPER                          |       | Innsyn med fullmakt eller samtykke — 12/12 ✅                                                                                                          |
+| [x]  | nav361801  | 14     | 4      | 0    | 4      | PAPER,DIGITAL,DIGITAL_NO_LOGIN |       | Innsyn i egen sak — 9/9 passing                                                                                                                        |
+| ✅   | nav550060  | 19     | 1      | 0    | 7      | PAPER                          |       | Avtale om barnebidrag — 14/14 ✅                                                                                                                       |
+| ✅   | nav550063  | 17     | 1      | 0    | 7      | PAPER                          |       | Avtale om barnebidrag for barn over 18 år — 15/15 ✅                                                                                                   |
+| ✅   | nav554401  | 5      | 11     | 0    | 5      | PAPER,DIGITAL_NO_LOGIN         |       | Fordeling av barns reisekostnader ved samvær — 14/14 ✅                                                                                                |
+| ✅   | nav620016  | 7      | 3      | 0    | 7      | PAPER,DIGITAL                  |       | Opplysningsskjema til Nav for avtalefestet pensjon (AFP) — 10/10 ✅                                                                                    |
+| [x]  | nav760710  | 7      | 4      | 0    | 5      | PAPER,DIGITAL                  |       | Registreringsskjema for tilskudd til utdanning — 8/8 passing                                                                                           |
+| ✅   | nav761300  | 15     | 4      | 0    | 8      | PAPER,DIGITAL                  | ✓     | Søknad om stønad til arbeids- og utdanningsreiser — 13/13 ✅                                                                                           |
+| [ ]  | nav761318  | 8      | 1      | 0    | 5      | PAPER                          |       | Refusjonskrav - opplæring                                                                                                                              |
+| [ ]  | nav761353  | 12     | 0      | 0    | 6      | PAPER                          |       | Refusjonskrav – AFT og VTA i skjermet virksomhet                                                                                                       |
+| [ ]  | nav761380  | 10     | 1      | 0    | 6      | PAPER                          |       | Søknad om funksjonsassistanse                                                                                                                          |
+| [ ]  | nav761381  | 14     | 6      | 0    | 8      | PAPER                          |       | Refusjonskrav - Funksjonsassistanse                                                                                                                    |
+| [ ]  | nav951509  | 7      | 1      | 0    | 3      | PAPER,DIGITAL                  | ✓     | Samtykke til arbeidsrettet oppfølging for barn under 18 år                                                                                             |
+| [ ]  | nav952002  | 12     | 8      | 0    | 6      | PAPER,DIGITAL_NO_LOGIN         |       | Melding om frivillig skattetrekk                                                                                                                       |
+| [ ]  | nav952003  | 11     | 4      | 0    | 6      | DIGITAL                        |       | Melding om frivillig skattetrekk for barnepensjon                                                                                                      |
+| [ ]  | nav952005  | 9      | 0      | 0    | 5      | PAPER                          |       | Skjema for tips om mulig misbruk av stønad                                                                                                             |
 
 ---
 

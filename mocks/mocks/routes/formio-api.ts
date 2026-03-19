@@ -39,8 +39,6 @@ import introPage from '../data/formio-api/intro-page.json';
 import formTestMellomlagringNested from '../data/formio-api/mellomlagring-nested-values.json';
 import monthPickerForm from '../data/formio-api/month-picker.json';
 import nav083501 from '../data/formio-api/nav083501.json';
-import nav111221bTranslations from '../data/formio-api/nav111221b-translations.json';
-import nav111221b from '../data/formio-api/nav111221b.json';
 import formNavdatepicker from '../data/formio-api/navdatepicker.json';
 import nologinTranslationsNb from '../data/formio-api/nologin-translations-nb.json';
 import nologinFormOld from '../data/formio-api/nologin.json';
@@ -177,7 +175,6 @@ const allForms = [
   { form: selectFormJson, translations: undefined },
   { form: monthPickerForm, translations: undefined },
   { form: emailForm, translations: undefined },
-  { form: nav111221b, translations: nav111221bTranslations },
   { form: formUtilsCheckCondition, translations: undefined },
   { form: formSkjemagruppeTest, translations: undefined },
   { form: errorSummaryFocusForm, translations: undefined },

@@ -241,6 +241,10 @@ describe('<formPath>', () => {
 
 ### Template for digital submission
 
+### ⚠️ `clickShowAllSteps()` in digital mode causes blank page
+
+In `?sub=digital` mode, `cy.clickShowAllSteps()` triggers a mellomlagring save-and-redirect that fails without a valid session, leaving a blank page. **Never call `clickShowAllSteps()` in digital-mode tests.** If you need stepper navigation to reach a Vedlegg or conditional panel, switch to `?sub=paper` for that test even if the form also supports digital.
+
 When the form only supports `DIGITAL` (no `PAPER`), use digital mode:
 
 ```typescript
@@ -356,7 +360,7 @@ cy.findByRole('textbox', { name: 'Label' }).type('value');
 cy.findByLabelText('Antall').type('5');
 ```
 
-If `findByRole('textbox')` finds nothing for a numeric field, switch to `findByLabelText`.
+**Never use `findByRole('spinbutton')` for number fields in Electron** — it does not reliably match. Always use `findByLabelText` for number inputs.
 
 ### Date picker (navDatepicker — 1,179 instances)
 
@@ -366,6 +370,13 @@ cy.findByRole('textbox', { name: /Dato.*\(dd\.mm\.åååå\)/ }).type('15.01.202
 
 **Some date pickers validate a range** (e.g., ±186 days from today). If `01.01.2025`
 causes a validation error, use a date within the valid window — e.g., today ±3 months.
+
+If the component has `earliestAllowedDate: 0`, the value must be **today or later**.
+Use a dynamic date instead of a hard-coded literal:
+
+```typescript
+cy.findByRole('textbox', { name: /Dato/ }).type(Cypress.dayjs().format('DD.MM.YYYY'));
+```
 
 ### Month picker (monthPicker)
 
@@ -379,7 +390,13 @@ cy.findByRole('textbox', { name: /tidspunkt.*\(mm\.åååå\)/i }).type('01.2026
 ### Checkbox (navCheckbox)
 
 ```typescript
-cy.findByRole('checkbox', { name: 'Label' }).check();
+cy.findByRole('checkbox', { name: 'Label' }).click();
+```
+
+**Use `.click()` not `.check()`** — `navCheckbox` renders inside an `<fieldset class="aksel-checkbox-group">`. If `findByRole('checkbox')` resolves the fieldset wrapper instead of the input, use:
+
+```typescript
+cy.findByRole('checkbox', { name: 'Label' }).find('input[type="checkbox"]').click();
 ```
 
 ### Select boxes (selectboxes — 281 instances, 90 forms use in conditionals)
@@ -416,6 +433,23 @@ cy.findByRole('textbox', { name: 'Beskriv annet' }).should('not.exist');
 cy.findByRole('combobox', { name: 'Label' }).type('Norg{downArrow}{enter}');
 ```
 
+`landvelger` inside `navSkjemagruppe` can be flaky when you try to re-select the
+already-default country. If the field already defaults to `Norge` / `NO` and the
+conditional you need is the Norway path, prefer asserting the default state and
+continuing with the visible dependent fields instead of re-driving the selector.
+
+Some custom dropdowns are **Choices.js**, not native `<select>` or standard ARIA
+combobox widgets. In those cases, `findByRole(..., { name })` and `.select()`
+may both fail. A reliable pattern is:
+
+```typescript
+cy.get('select[name="data[leverandor1]"]').parent().find('[role="combobox"]').click();
+cy.findByRole('option', { name: /leverandor/i }).click();
+```
+
+If a form-specific custom dropdown works this way, prefer targeting the hidden
+`<select name="data[...]">` as the anchor rather than guessing from labels alone.
+
 ### Phone number
 
 Phone number fields render as `input[type="tel"]`. The `phoneNumber` component
@@ -433,6 +467,17 @@ same panel), fall back to:
 
 ```typescript
 cy.get('input[type="tel"]').type('12345678');
+```
+
+If the panel has multiple phone fields or the visible custom label is **not**
+properly bound to the input, scope from the visible `<label>` to the containing
+`.form-group` and then find the tel input:
+
+```typescript
+cy.contains('label', 'Telefonnummer til kontaktpersonen')
+    .closest('.form-group')
+    .find('input[type="tel"]')
+    .type('12345678');
 ```
 
 If the phone number component includes an area-code selector:
@@ -569,60 +614,100 @@ wrappers. Query their **children** instead.
 
 ## Attachment panels (isAttachmentPanel=true)
 
-Some panels have `isAttachmentPanel: true` in the form JSON. The wizard
-**silently skips these panels** during sequential `clickNextStep()` navigation —
-the user lands on the next non-attachment panel instead.
+Some panels have `isAttachmentPanel: true` in the form JSON. These panels
+**are shown normally** in the wizard — `clickNextStep()` navigates to them like
+any other panel. The flag does not cause them to be skipped.
 
 **Always check each panel for `isAttachmentPanel: true` when analysing the
-form.** If a Vedlegg (or any other) panel has this flag, sequential navigation
-will skip it.
+form.** Include it in the sequential `clickNextStep()` flow as a normal step.
 
-In the summary flow, handle attachment panels with the stepper. The number of
-`clickNextStep()` calls at the end depends on whether the attachment panel is
-the **last** panel before Oppsummering:
+> Note: nav100753 has a known unexplained issue where the Vedlegg panel is
+> skipped during sequential navigation — this is a form-specific bug, not
+> caused by `isAttachmentPanel`.
 
-### Case A — attachment panel is the last panel (nothing after it)
+### Conditional attachments — HIGH PRIORITY
+
+**Conditional attachments are especially important to test.** Attachment fields
+(`type: "attachment"`) inside the Vedlegg panel are often shown or hidden based
+on answers from earlier panels. These are critical to verify because users who
+miss them may be unable to submit their application.
+
+When an attachment field has a `conditional` or `customConditional`, write a
+dedicated `it` block for it:
 
 ```typescript
-// Fill all regular panels via clickNextStep() as normal up to the last one before Vedlegg.
-// Then use the stepper to jump to Vedlegg.
-cy.clickShowAllSteps();
-cy.findByRole('link', { name: 'Vedlegg' }).click();
+describe('Vedlegg conditionals', () => {
+    beforeEach(() => {
+        cy.visit('/fyllut/<formPath>/vedlegg?sub=paper');
+        cy.defaultWaits();
+    });
+
+    it('shows <attachmentLabel> when <triggerField> is <value>', () => {
+        // Attachment fields triggered by data from earlier panels need the
+        // trigger value set in URL state or via cross-panel navigation.
+        // Use cy.visit with the panel that has the trigger, set the value,
+        // then navigate to vedlegg via the stepper.
+    });
+});
+```
+
+For cross-panel attachment conditionals (trigger on panel A, attachment on Vedlegg):
+
+```typescript
+it('shows lege attachment when hasDoctor is ja', () => {
+    cy.visit('/fyllut/<formPath>/<triggerPanel>?sub=paper');
+    cy.defaultWaits();
+    cy.withinComponent('Har du vært hos lege?', () => {
+        cy.findByRole('radio', { name: 'Ja' }).click();
+    });
+    cy.clickShowAllSteps();
+    cy.findByRole('link', { name: 'Vedlegg' }).click();
+    cy.findByRole('group', { name: /Legeerklæring/ }).should('exist');
+});
+
+it('hides lege attachment when hasDoctor is nei', () => {
+    cy.visit('/fyllut/<formPath>/<triggerPanel>?sub=paper');
+    cy.defaultWaits();
+    cy.withinComponent('Har du vært hos lege?', () => {
+        cy.findByRole('radio', { name: 'Nei' }).click();
+    });
+    cy.clickShowAllSteps();
+    cy.findByRole('link', { name: 'Vedlegg' }).click();
+    cy.findByRole('group', { name: /Legeerklæring/ }).should('not.exist');
+});
+```
+
+In the summary flow, handle the attachment panel like any other panel — fill
+any required attachment fields and call `cy.clickNextStep()` to proceed:
+
+```typescript
+// Attachment panel — treat as a normal wizard step
 cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
     cy.findByRole('radio', { name: /ettersender|Nei/ }).click();
 });
-
-// Only ONE clickNextStep() needed — Vedlegg is last, so Next goes directly to Oppsummering
 cy.clickNextStep();
 
 cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
 ```
 
-### Case B — panels exist after the attachment panel
+**Note:** Attachment radio labels vary per form — always check `attachmentValues` in the attachment component JSON. If `ettersender: false`, the "Jeg ettersender" option does not exist. Available options depend on which keys in `attachmentValues` are not `false`. Do not assume `/ettersender/i` is present.
 
-```typescript
-// Fill panel before the attachment panel — do NOT call clickNextStep() yet.
-cy.findByRole('textbox', { name: 'Some field' }).type('Value');
+For negative conditional coverage, do **not** force an assertion on the Vedlegg
+page if the UI does not make “absence” observable there. Prefer asserting the
+source-panel conditional UI state (for example the info message or trigger-side
+behavior) and keep the positive Vedlegg coverage on the attachment panel.
 
-// Use stepper to visit Vedlegg
-cy.clickShowAllSteps();
-cy.findByRole('link', { name: 'Vedlegg' }).click();
-cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
-    cy.findByRole('radio', { name: /ettersender|Nei/ }).click();
-});
+Also trust the **actual wizard/stepper order** over the raw JSON panel order.
+For some forms, the real flow differs from the static panel array. If a summary
+flow fails around Vedlegg, inspect the live stepper order and adapt to that
+instead of assuming the JSON order is authoritative.
 
-// Navigate to the remaining panels via stepper (still expanded) and fill them
-cy.findByRole('link', { name: 'Last Panel' }).click();
-// fill fields...
+For forms with panels after Vedlegg, a successful summary path can require:
 
-// TWO clickNextStep() calls needed:
-// First:  wizard reinserts the skipped attachment panel into the sequential flow
-// Second: advances past the reinserted attachment panel to Oppsummering
-cy.clickNextStep();
-cy.clickNextStep();
-
-cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
-```
+1. stepper to `Vedlegg`
+2. stepper to the following panel
+3. two `cy.clickNextStep()` calls to re-enter the normal wizard flow and reach
+   `Oppsummering`
 
 ## Intro page (self-declaration)
 
