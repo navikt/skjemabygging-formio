@@ -10,6 +10,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import clsx from 'clsx';
 import { MutableRefObject, ReactNode, useState } from 'react';
+import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import FileUploader from '../file-uploader/FileUploader';
@@ -48,6 +49,7 @@ const OtherAttachmentUpload = ({
 }: Props) => {
   const styles = useAttachmentStyles();
   const { translate } = useLanguages();
+  const { submissionMethod } = useAppConfig();
   const { handleDeleteAttachment, submissionAttachments } = useAttachmentUpload();
   const { form } = useForm();
 
@@ -60,7 +62,7 @@ const OtherAttachmentUpload = ({
   const [attachmentCounter, setAttachmentCounter] = useState(getLargestAttachmentIdCounter(attachments));
 
   const uploadedAttachmentFiles = submissionAttachment?.files ?? [];
-  const options = attachmentUtils.mapKeysToOptions(attachmentValues, translate);
+  const options = attachmentUtils.mapKeysToOptions(attachmentValues, translate, submissionMethod);
   const uploadSelected = !!options.find((option) => option.value === submissionAttachment?.value)?.upload;
 
   const handleDelete = async (attachmentId: string) => {

@@ -1,10 +1,10 @@
 import { FormSummary } from '@navikt/ds-react';
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { attachmentUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { FormComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 
 const SummaryAttachment = (props: FormComponentProps) => {
-  const { submission, submissionPath, translate, component, formProperties } = props;
+  const { submission, submissionPath, translate, component, formProperties, appConfig } = props;
   const { label } = component;
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
 
@@ -16,7 +16,7 @@ const SummaryAttachment = (props: FormComponentProps) => {
     <FormSummary.Answer>
       <FormSummary.Label>{translate(label)}</FormSummary.Label>
       <FormSummary.Value>
-        {translate(TEXTS.statiske.attachment[value.key])}
+        {translate(attachmentUtils.getAttachmentOptionLabel(value.key, appConfig.submissionMethod))}
         {value.additionalDocumentation && <div>{translate(value.additionalDocumentation)}</div>}
         {value.showDeadline && formProperties?.ettersendelsesfrist && (
           <div>

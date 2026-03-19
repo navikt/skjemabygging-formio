@@ -1,5 +1,38 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
+describe('Attachments page - paper submission', () => {
+  beforeEach(() => {
+    cy.defaultIntercepts();
+    cy.visit('/fyllut/stpaperdigital?sub=paper');
+    cy.defaultWaits();
+
+    cy.clickStart();
+    cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
+    cy.clickNextStep();
+    cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
+  });
+
+  it('shows paper texts for selected attachment options', () => {
+    cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+      cy.findByRole('radio', { name: TEXTS.statiske.attachment.ettersender }).check();
+      cy.findByRole('radio', { name: TEXTS.statiske.attachment.ettersender }).should('be.checked');
+    });
+
+    cy.findByRole('radio', { name: TEXTS.statiske.attachment.digitalRadioOptions.sendSenere }).should('not.exist');
+    cy.findByRole('radio', { name: TEXTS.statiske.attachment.digitalRadioOptions.lasterOppNaa }).should('not.exist');
+    cy.clickNextStep();
+
+    cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
+    cy.findByRole('heading', { level: 3, name: 'Vedlegg' })
+      .parent()
+      .parent()
+      .within(() => {
+        cy.findByText(TEXTS.statiske.attachment.ettersender).should('exist');
+        cy.findByText(TEXTS.statiske.attachment.digitalRadioOptions.sendSenere).should('not.exist');
+      });
+  });
+});
+
 describe('Attachments page', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
@@ -34,7 +67,7 @@ describe('Attachments page', () => {
 
     it('validates required attachment with one option', () => {
       cy.findByRole('group', { name: 'Informasjon om din næringsinntekt fra Norge eller utlandet' }).within(() => {
-        cy.findByRole('radio', { name: TEXTS.statiske.attachment.ettersender }).click();
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.digitalRadioOptions.sendSenere }).click();
       });
       cy.findByRole('group', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
@@ -42,8 +75,8 @@ describe('Attachments page', () => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.nei }).click();
       });
       cy.findByRole('group', { name: 'Vedlegg med ett valg' }).within(() => {
-        cy.findByRole('checkbox', { name: TEXTS.statiske.attachment.leggerVedNaa }).check();
-        cy.findByRole('checkbox', { name: TEXTS.statiske.attachment.leggerVedNaa }).uncheck();
+        cy.findByRole('checkbox', { name: TEXTS.statiske.attachment.digitalRadioOptions.lasterOppNaa }).check();
+        cy.findByRole('checkbox', { name: TEXTS.statiske.attachment.digitalRadioOptions.lasterOppNaa }).uncheck();
       });
       cy.clickNextStep();
       cy.findAllByText('Du må fylle ut: Vedlegg med ett valg').should('have.length', 2);
@@ -51,11 +84,11 @@ describe('Attachments page', () => {
   });
 
   it('should render additional description and deadline when existing', () => {
-    cy.findByLabelText(TEXTS.statiske.attachment.ettersender).click();
+    cy.findByLabelText(TEXTS.statiske.attachment.digitalRadioOptions.sendSenere).click();
     cy.findByText(
       'Hvis vi ikke har mottatt dette vedlegget innen 14 dager blir saken behandlet med de opplysningene som foreligger.',
     ).should('exist');
-    cy.findByLabelText(TEXTS.statiske.attachment.levertTidligere).click();
+    cy.findByLabelText(TEXTS.statiske.attachment.digitalRadioOptions.levertDokumentasjonTidligere).click();
     cy.findByLabelText('Tittel tilleggsinformasjon').should('exist');
     cy.findByText('Beskrivelse tilleggsinformasjon').should('exist');
   });
@@ -65,7 +98,7 @@ describe('Attachments page', () => {
       cy.findByRole('group', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
       }).within(() => {
-        cy.findByRole('radio', { name: TEXTS.statiske.attachment.leggerVedNaa }).click();
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.digitalRadioOptions.lasterOppNaa }).click();
       });
       cy.findByRole('button', { name: TEXTS.statiske.uploadFile.selectFile }).click();
       cy.findAllByText(`Du må fylle ut: ${TEXTS.statiske.attachment.attachmentTitle}`).should('have.length', 2);
@@ -78,7 +111,7 @@ describe('Attachments page', () => {
       cy.findByRole('group', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
       }).within(() => {
-        cy.findByRole('radio', { name: TEXTS.statiske.attachment.leggerVedNaa }).click();
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.digitalRadioOptions.lasterOppNaa }).click();
       });
       cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel 1');
       cy.uploadFile('test.txt');
@@ -93,16 +126,16 @@ describe('Attachments page', () => {
 
     it('lets you add more attachments after visiting summary page', () => {
       cy.findByRole('group', { name: 'Informasjon om din næringsinntekt fra Norge eller utlandet' }).within(() => {
-        cy.findByRole('radio', { name: TEXTS.statiske.attachment.ettersender }).click();
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.digitalRadioOptions.sendSenere }).click();
       });
       cy.findByRole('group', { name: 'Vedlegg med ett valg' }).within(() => {
-        cy.findByRole('checkbox', { name: TEXTS.statiske.attachment.leggerVedNaa }).click();
+        cy.findByRole('checkbox', { name: TEXTS.statiske.attachment.digitalRadioOptions.lasterOppNaa }).click();
       });
       cy.uploadFile('test.txt');
       cy.findByRole('group', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
       }).within(() => {
-        cy.findByRole('radio', { name: TEXTS.statiske.attachment.leggerVedNaa }).click();
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.digitalRadioOptions.lasterOppNaa }).click();
       });
       cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel 1');
       cy.uploadFile('test.txt', { index: 1 });
@@ -131,7 +164,7 @@ describe('Attachments page', () => {
       cy.findByRole('group', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
       }).within(() => {
-        cy.findByRole('radio', { name: TEXTS.statiske.attachment.leggerVedNaa }).click();
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.digitalRadioOptions.lasterOppNaa }).click();
       });
       cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel 1');
       cy.uploadFile();
@@ -147,7 +180,7 @@ describe('Attachments page', () => {
       cy.findByRole('group', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
       }).within(() => {
-        cy.findByRole('radio', { name: TEXTS.statiske.attachment.leggerVedNaa }).click();
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.digitalRadioOptions.lasterOppNaa }).click();
       });
       cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel 1');
       cy.uploadFile('test.txt');
@@ -164,16 +197,16 @@ describe('Attachments page', () => {
 
     it('is still valid after deleting the first attachment', () => {
       cy.findByRole('group', { name: 'Informasjon om din næringsinntekt fra Norge eller utlandet' }).within(() => {
-        cy.findByRole('radio', { name: TEXTS.statiske.attachment.ettersender }).click();
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.digitalRadioOptions.sendSenere }).click();
       });
       cy.findByRole('group', { name: 'Vedlegg med ett valg' }).within(() => {
-        cy.findByRole('checkbox', { name: TEXTS.statiske.attachment.leggerVedNaa }).click();
+        cy.findByRole('checkbox', { name: TEXTS.statiske.attachment.digitalRadioOptions.lasterOppNaa }).click();
       });
       cy.uploadFile('test.txt');
       cy.findByRole('group', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
       }).within(() => {
-        cy.findByRole('radio', { name: TEXTS.statiske.attachment.leggerVedNaa }).click();
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.digitalRadioOptions.lasterOppNaa }).click();
       });
       cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel 1');
       cy.uploadFile('test.txt', { index: 1 });
@@ -223,7 +256,7 @@ describe('Attachments page', () => {
       cy.intercept('POST', '/fyllut/api/send-inn/nologin-application/attachments/eiajfi8').as(
         'deleteAllFilesByAttachmentId',
       );
-      cy.findAllByLabelText(TEXTS.statiske.attachment.leggerVedNaa).first().click();
+      cy.findAllByLabelText(TEXTS.statiske.attachment.digitalRadioOptions.lasterOppNaa).first().click();
       cy.uploadFile('test.txt');
       cy.findByText('test.txt').should('exist');
       cy.uploadFile('test.txt');
@@ -234,7 +267,7 @@ describe('Attachments page', () => {
 
     it('should remove all attachments on cancel', () => {
       cy.intercept('DELETE', '/fyllut/api/send-inn/nologin-application').as('deleteAllFiles');
-      cy.findAllByLabelText(TEXTS.statiske.attachment.leggerVedNaa).first().click();
+      cy.findAllByLabelText(TEXTS.statiske.attachment.digitalRadioOptions.lasterOppNaa).first().click();
       cy.uploadFile('test.txt');
       cy.findByText('test.txt').should('exist');
       cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.cancelAndDelete }).click();

@@ -1,4 +1,10 @@
-import { Component, Submission, SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  Component,
+  Submission,
+  SubmissionAttachment,
+  SubmissionMethod,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { PdfComponentProps } from '../../../types';
 import PdfAttachmentUpload from './PdfAttachmentUpload';
 import { component as attachmentOtherOld } from './testdata/attachment-old-other';
@@ -6,13 +12,18 @@ import { component as attachmentOld } from './testdata/attachment-type-and-attac
 import { component as attachmentOther } from './testdata/attachment-type-other';
 import { component as attachment } from './testdata/attachment-with-the-lot';
 
-const createProps = (component: Component, submission: Partial<Submission> = { data: {} }): PdfComponentProps => ({
+const createProps = (
+  component: Component,
+  submission: Partial<Submission> = { data: {} },
+  submissionMethod?: SubmissionMethod,
+): PdfComponentProps => ({
   submission: submission as Submission,
   translate: (textOrKey?: string) => textOrKey!,
   component,
   submissionPath: '',
   componentRegistry: {},
   currentLanguage: 'nb',
+  submissionMethod,
 });
 
 describe('PdfAttachmentUpload', () => {
@@ -59,6 +70,50 @@ describe('PdfAttachmentUpload', () => {
       {
         label: 'Uttalelse fra lege',
         verdi: TEXTS.statiske.attachment.leggerVedNaa,
+      },
+    ]);
+  });
+
+  it('should include digital labels when submission method is digital', () => {
+    const testComponent = attachment;
+    const navId = testComponent.navId!;
+    const submissionAttachments: SubmissionAttachment[] = [
+      {
+        attachmentId: navId,
+        navId: navId,
+        type: 'default',
+        value: 'leggerVedNaa',
+        files: [],
+      },
+    ];
+    const props = createProps(testComponent, { attachments: submissionAttachments }, 'digital');
+    const pdfFormData = PdfAttachmentUpload(props);
+    expect(pdfFormData).toEqual([
+      {
+        label: 'Uttalelse fra lege',
+        verdi: TEXTS.statiske.attachment.digitalRadioOptions.lasterOppNaa,
+      },
+    ]);
+  });
+
+  it('should include digital labels when submission method is digitalnologin', () => {
+    const testComponent = attachment;
+    const navId = testComponent.navId!;
+    const submissionAttachments: SubmissionAttachment[] = [
+      {
+        attachmentId: navId,
+        navId: navId,
+        type: 'default',
+        value: 'leggerVedNaa',
+        files: [],
+      },
+    ];
+    const props = createProps(testComponent, { attachments: submissionAttachments }, 'digitalnologin');
+    const pdfFormData = PdfAttachmentUpload(props);
+    expect(pdfFormData).toEqual([
+      {
+        label: 'Uttalelse fra lege',
+        verdi: TEXTS.statiske.attachment.digitalRadioOptions.lasterOppNaa,
       },
     ]);
   });
@@ -151,6 +206,52 @@ describe('PdfAttachmentUpload', () => {
       {
         label: 'Annen dokumentasjon - Førerkort',
         verdi: TEXTS.statiske.attachment.leggerVedNaa,
+      },
+    ]);
+  });
+
+  it('should include digital labels for "other" attachments when submission method is digital', () => {
+    const testComponent = attachmentOther;
+    const navId = testComponent.navId!;
+    const submissionAttachments: SubmissionAttachment[] = [
+      {
+        attachmentId: navId,
+        navId: navId,
+        type: 'other',
+        value: 'andre',
+        files: [],
+        title: 'Førerkort',
+      },
+    ];
+    const props = createProps(testComponent, { attachments: submissionAttachments }, 'digital');
+    const pdfFormData = PdfAttachmentUpload(props);
+    expect(pdfFormData).toEqual([
+      {
+        label: 'Annen dokumentasjon',
+        verdi: TEXTS.statiske.attachment.digitalRadioOptions.sendesAvAndre,
+      },
+    ]);
+  });
+
+  it('should include digital labels for "other" attachments when submission method is digitalnologin', () => {
+    const testComponent = attachmentOther;
+    const navId = testComponent.navId!;
+    const submissionAttachments: SubmissionAttachment[] = [
+      {
+        attachmentId: navId,
+        navId: navId,
+        type: 'other',
+        value: 'andre',
+        files: [],
+        title: 'Førerkort',
+      },
+    ];
+    const props = createProps(testComponent, { attachments: submissionAttachments }, 'digitalnologin');
+    const pdfFormData = PdfAttachmentUpload(props);
+    expect(pdfFormData).toEqual([
+      {
+        label: 'Annen dokumentasjon',
+        verdi: TEXTS.statiske.attachment.digitalRadioOptions.sendesAvAndre,
       },
     ]);
   });

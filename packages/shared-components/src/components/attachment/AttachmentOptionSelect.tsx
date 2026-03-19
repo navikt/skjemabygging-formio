@@ -7,6 +7,7 @@ import {
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { ChangeEvent, forwardRef, ReactNode } from 'react';
+import { useAppConfig } from '../../context/config/configContext';
 import SingleSelect from '../single-select/SingleSelect';
 
 interface Props {
@@ -23,11 +24,12 @@ interface Props {
 
 const AttachmentOptionSelect = forwardRef<HTMLFieldSetElement, Props>(
   ({ attachmentValues, value, title, description, error, onChange, translate, deadline, className }: Props, ref) => {
+    const { submissionMethod } = useAppConfig();
     const additionalDocumentation = attachmentValues?.[value?.key]?.additionalDocumentation;
     const showDeadline = !!attachmentValues?.[value?.key]?.showDeadline;
 
     const additionalDocumentationMaxLength = 200;
-    const values = attachmentUtils.mapKeysToOptions(attachmentValues, translate);
+    const values = attachmentUtils.mapKeysToOptions(attachmentValues, translate, submissionMethod);
 
     const handleAttachmentChange = (key: string | undefined) => {
       if (key) {
