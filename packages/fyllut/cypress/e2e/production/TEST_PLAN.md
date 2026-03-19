@@ -13,7 +13,7 @@
 ## Process rules
 
 1. **Never start or restart servers.** The user controls both the preview server (`localhost:3001`) and mock server (`localhost:3300`). If a server is down, ask the user to start it.
-2. **Run 3 agents at a time** to avoid rate limits.
+2. **Run 4 agents at a time** to avoid rate limits.
 3. **Update plan and skill as soon as each agent finishes** — don't wait for the other agent before launching the next form.
 4. **After each agent completes**, update the skill document (`.github/skills/production-form-cypress-tests/SKILL.md`) with any new learnings.
 5. **Validate unvalidated tests** before marking them ✅. Tests created while servers were down need a Cypress run to confirm they pass.
