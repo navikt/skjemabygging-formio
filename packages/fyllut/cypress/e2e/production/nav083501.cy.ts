@@ -357,7 +357,6 @@ describe('nav083501', () => {
       cy.findByRole('group', { name: /Hva ønsker du å legge ved/ }).within(() => {
         cy.findByRole('checkbox', { name: 'Personinntektsskjema' }).check();
       });
-      cy.clickShowAllSteps();
       cy.findByRole('link', { name: 'Vedlegg' }).click();
       cy.findByRole('group', { name: /Personinntektsskjema/ }).should('exist');
     });
@@ -366,7 +365,6 @@ describe('nav083501', () => {
       cy.findByRole('group', { name: /Hva ønsker du å legge ved/ }).within(() => {
         cy.findByRole('checkbox', { name: 'Resultatregnskap' }).check();
       });
-      cy.clickShowAllSteps();
       cy.findByRole('link', { name: 'Vedlegg' }).click();
       cy.findByRole('group', { name: /Resultatregnskap/ }).should('exist');
     });
@@ -375,7 +373,6 @@ describe('nav083501', () => {
       cy.findByRole('group', { name: /Hva ønsker du å legge ved/ }).within(() => {
         cy.findByRole('checkbox', { name: 'Næringsoppgave' }).check();
       });
-      cy.clickShowAllSteps();
       cy.findByRole('link', { name: 'Vedlegg' }).click();
       cy.findByRole('group', { name: /Næringsoppgave/ }).should('exist');
     });
@@ -415,6 +412,9 @@ describe('nav083501', () => {
 
       // Type virksomhet – check selvstendigNaeringsdrivende (shows panels 6 and 7)
       checkSelvstendigNaeringsdrivende();
+      cy.findByRole('group', { name: /Hva slags selvstendig næringsvirksomhet/ }).within(() => {
+        cy.findByRole('checkbox', { name: 'Enkeltpersonforetak' }).check();
+      });
       cy.withinComponent(/Har du inntekter som arbeidstaker i tillegg/, () => {
         cy.findByRole('radio', { name: 'Nei' }).click();
       });

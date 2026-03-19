@@ -93,8 +93,10 @@ and extract:
 | Numeric comparison          | 10 forms  | `show = data.antallBarn > 1`                        |
 | `instance.isSubmission*()`  | 9 forms   | `show = instance.isSubmissionDigital()`             |
 
-**`row.X` conditionals** are scoped to the current datagrid row — they only
-trigger inside that datagrid. Test them by filling fields within the same row.
+**`row.X` conditionals** are not limited to datagrids. They can also appear
+inside composite components such as `identity` and `navAddress`, where `row`
+refers to the current component instance rather than a datagrid row. Always
+check the surrounding component before deciding how to trigger the conditional.
 
 ### Step 2 — Plan the test structure
 
@@ -281,12 +283,12 @@ Always prefer these over raw selectors. Defined in `cypress.d.ts`:
 
 ### Setup
 
-| Command                               | Use when                                                                                  |
-| ------------------------------------- | ----------------------------------------------------------------------------------------- |
-| `cy.defaultIntercepts()`              | Always call in `beforeEach` for production form tests.                                    |
-| `cy.defaultInterceptsMellomlagring()` | Also call in `beforeEach` when testing digital submission (draft persistence).            |
-| `cy.defaultInterceptsExternal()`      | Call in `beforeEach` when the form uses external data sources (prefill-data, activities). |
-| `cy.defaultWaits()`                   | Always call after `cy.visit()`. Waits for `@getConfig`, `@getForm`, `@getTranslations`.   |
+| Command                               | Use when                                                                                                                                                                              |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `cy.defaultIntercepts()`              | Always call in `beforeEach` for production form tests.                                                                                                                                |
+| `cy.defaultInterceptsMellomlagring()` | Also call in `beforeEach` when testing digital submission (draft persistence).                                                                                                        |
+| `cy.defaultInterceptsExternal()`      | Call in `beforeEach` when the form uses external data sources (prefill-data, activities). Forms with `prefillKey` on `identity`, `navAddress`, or similar components often need this. |
+| `cy.defaultWaits()`                   | Always call after `cy.visit()`. Waits for `@getConfig`, `@getForm`, `@getTranslations`.                                                                                               |
 
 ### Component scoping
 
@@ -426,6 +428,14 @@ cy.findByRole('group', { name: 'Velg type' }).within(() => {
 });
 cy.findByRole('textbox', { name: 'Beskriv annet' }).should('not.exist');
 ```
+
+This is intentionally different from **standalone `navCheckbox`** components:
+
+- **selectboxes**: use `.check()` / `.uncheck()` on the option inputs
+- **standalone navCheckbox**: use `.click()`
+
+Many selectboxes options also get `(valgfritt)` appended to their accessible
+name, so regex matching is often safer than an exact string.
 
 ### Combobox / Select / Country selector (landvelger)
 
@@ -696,6 +706,16 @@ For negative conditional coverage, do **not** force an assertion on the Vedlegg
 page if the UI does not make “absence” observable there. Prefer asserting the
 source-panel conditional UI state (for example the info message or trigger-side
 behavior) and keep the positive Vedlegg coverage on the attachment panel.
+
+When a form supports both `PAPER` and `DIGITAL`, a useful split is:
+
+- keep **same-panel** conditionals in `?sub=digital` if you want to preserve the
+  real digital behavior
+- move **stepper-dependent** tests (cross-panel conditionals, Vedlegg, summary)
+  to `?sub=paper` when they require `cy.clickShowAllSteps()`
+
+This is the practical workaround for forms where digital mode blanks the page
+when the stepper is expanded.
 
 Also trust the **actual wizard/stepper order** over the raw JSON panel order.
 For some forms, the real flow differs from the static panel array. If a summary

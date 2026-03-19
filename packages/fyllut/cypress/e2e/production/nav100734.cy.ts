@@ -151,20 +151,20 @@ describe('nav100734', () => {
       });
     });
 
-    // eslint-disable-next-line vitest/no-disabled-tests
-    it.skip('shows norsk adresse choice when bor i Norge', () => {
+    it('shows norsk adresse choice when bor i Norge', () => {
       cy.withinComponent('Bor du i Norge?', () => {
         cy.findByRole('radio', { name: 'Ja' }).click();
       });
       cy.findByLabelText('Er kontaktadressen din en vegadresse eller postboksadresse?').should('exist');
+      cy.findByRole('textbox', { name: 'Land' }).should('not.exist');
     });
 
-    // eslint-disable-next-line vitest/no-disabled-tests
-    it.skip('shows utenlandsk adresse when bor ikke i Norge', () => {
+    it('shows utenlandsk adresse when bor ikke i Norge', () => {
       cy.withinComponent('Bor du i Norge?', () => {
         cy.findByRole('radio', { name: 'Nei' }).click();
       });
       cy.findByLabelText('Er kontaktadressen din en vegadresse eller postboksadresse?').should('not.exist');
+      cy.findByRole('textbox', { name: 'Land' }).should('exist');
     });
   });
 
@@ -204,8 +204,7 @@ describe('nav100734', () => {
       cy.clickNextStep();
     });
 
-    // eslint-disable-next-line vitest/no-disabled-tests
-    it.skip('fills required fields and verifies summary', () => {
+    it('fills required fields and verifies summary', () => {
       // Veiledning – answer screening questions to allow proceeding
       cy.withinComponent('Har barnet vært hos optiker?', () => {
         cy.findByRole('radio', { name: 'Ja' }).click();
@@ -231,7 +230,7 @@ describe('nav100734', () => {
       cy.clickNextStep();
 
       // Barnets opplysninger
-      cy.findByLabelText('Fødselsnummer / D-nummer').type('07011688396');
+      cy.findByLabelText('Fødselsnummer / D-nummer').type('07011601396');
       cy.findByRole('textbox', { name: 'Fornavn' }).type('Lille');
       cy.findByRole('textbox', { name: 'Etternavn' }).type('Nordmann');
       cy.clickNextStep();
@@ -248,12 +247,16 @@ describe('nav100734', () => {
       // Summary
       cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
       cy.withinSummaryGroup('Innsender', () => {
-        cy.get('dt').eq(0).should('contain.text', 'Hvem fyller ut søknaden?');
-        cy.get('dd').eq(0).should('contain.text', 'Barnets forelder');
+        cy.contains('dt', 'Hvem fyller ut søknaden?').should('exist');
+        cy.contains('dd', 'Barnets forelder').should('exist');
+        cy.contains('dt', 'Fornavn').should('exist');
+        cy.contains('dd', 'Kari').should('exist');
       });
       cy.withinSummaryGroup('Barnets opplysninger', () => {
-        cy.get('dt').eq(1).should('contain.text', 'Fornavn');
-        cy.get('dd').eq(1).should('contain.text', 'Lille');
+        cy.contains('dt', 'Fornavn').should('exist');
+        cy.contains('dd', 'Lille').should('exist');
+        cy.contains('dt', 'Etternavn').should('exist');
+        cy.contains('dd', 'Nordmann').should('exist');
       });
     });
   });
