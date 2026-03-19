@@ -28,31 +28,31 @@ describe('nav100750', () => {
     });
 
     it('shows mobilitetspedagog question only for forstegangsSoknad', () => {
-      cy.findByRole('group', { name: 'Vet du navnet på mobilitetspedagog(er)?' }).should('not.exist');
+      cy.findByLabelText('Vet du navnet på mobilitetspedagog(er)?').should('not.exist');
 
-      cy.findByRole('group', { name: 'Hva søker du om?' }).within(() => {
-        cy.findByRole('radio', { name: 'Førstegangs søknad om førerhund' }).check();
+      cy.withinComponent('Hva søker du om?', () => {
+        cy.findByRole('radio', { name: 'Førstegangs søknad om førerhund' }).click();
       });
-      cy.findByRole('group', { name: 'Vet du navnet på mobilitetspedagog(er)?' }).should('exist');
+      cy.findByLabelText('Vet du navnet på mobilitetspedagog(er)?').should('exist');
 
-      cy.findByRole('group', { name: 'Hva søker du om?' }).within(() => {
-        cy.findByRole('radio', { name: 'Gjenanskaffelse av førerhund og dispensasjon fra forkurs' }).check();
+      cy.withinComponent('Hva søker du om?', () => {
+        cy.findByRole('radio', { name: 'Gjenanskaffelse av førerhund og dispensasjon fra forkurs' }).click();
       });
-      cy.findByRole('group', { name: 'Vet du navnet på mobilitetspedagog(er)?' }).should('not.exist');
+      cy.findByLabelText('Vet du navnet på mobilitetspedagog(er)?').should('not.exist');
     });
 
     it('shows mobilitetspedagog datagrid when vet navn på mobilitetspedagog', () => {
-      cy.findByRole('group', { name: 'Hva søker du om?' }).within(() => {
-        cy.findByRole('radio', { name: 'Førstegangs søknad om førerhund' }).check();
+      cy.withinComponent('Hva søker du om?', () => {
+        cy.findByRole('radio', { name: 'Førstegangs søknad om førerhund' }).click();
       });
 
-      cy.findByRole('group', { name: 'Vet du navnet på mobilitetspedagog(er)?' }).within(() => {
-        cy.findByRole('radio', { name: 'Ja' }).check();
+      cy.withinComponent('Vet du navnet på mobilitetspedagog(er)?', () => {
+        cy.findByRole('radio', { name: 'Ja' }).click();
       });
       cy.findByRole('textbox', { name: 'Fornavn / Etternavn' }).should('exist');
 
-      cy.findByRole('group', { name: 'Vet du navnet på mobilitetspedagog(er)?' }).within(() => {
-        cy.findByRole('radio', { name: 'Nei' }).check();
+      cy.withinComponent('Vet du navnet på mobilitetspedagog(er)?', () => {
+        cy.findByRole('radio', { name: 'Nei' }).click();
       });
       cy.findByRole('textbox', { name: 'Fornavn / Etternavn' }).should('not.exist');
     });
@@ -65,27 +65,27 @@ describe('nav100750', () => {
     });
 
     it('shows gjenanskaffelse-specific fields on behov panel', () => {
-      cy.findByRole('group', { name: 'Hva søker du om?' }).within(() => {
-        cy.findByRole('radio', { name: 'Gjenanskaffelse av førerhund og dispensasjon fra forkurs' }).check();
+      cy.withinComponent('Hva søker du om?', () => {
+        cy.findByRole('radio', { name: 'Gjenanskaffelse av førerhund og dispensasjon fra forkurs' }).click();
       });
 
       cy.clickShowAllSteps();
       cy.findByRole('link', { name: 'Behov' }).click();
 
       cy.findByRole('textbox', { name: 'Oppgi navn på førerhundskolen du sist fikk hund fra' }).should('exist');
-      cy.findByRole('group', { name: 'Ønsker du ny hund fra samme skole som sist?' }).should('exist');
+      cy.findByLabelText('Ønsker du ny hund fra samme skole som sist?').should('exist');
     });
 
     it('hides gjenanskaffelse-specific fields for forstegangsSoknad on behov panel', () => {
-      cy.findByRole('group', { name: 'Hva søker du om?' }).within(() => {
-        cy.findByRole('radio', { name: 'Førstegangs søknad om førerhund' }).check();
+      cy.withinComponent('Hva søker du om?', () => {
+        cy.findByRole('radio', { name: 'Førstegangs søknad om førerhund' }).click();
       });
 
       cy.clickShowAllSteps();
       cy.findByRole('link', { name: 'Behov' }).click();
 
       cy.findByRole('textbox', { name: 'Oppgi navn på førerhundskolen du sist fikk hund fra' }).should('not.exist');
-      cy.findByRole('group', { name: 'Ønsker du ny hund fra samme skole som sist?' }).should('not.exist');
+      cy.findByLabelText('Ønsker du ny hund fra samme skole som sist?').should('not.exist');
     });
   });
 
@@ -96,25 +96,25 @@ describe('nav100750', () => {
     });
 
     it('shows mobilitetsopplaering attachment for forstegangsSoknad', () => {
-      cy.findByRole('group', { name: 'Hva søker du om?' }).within(() => {
-        cy.findByRole('radio', { name: 'Førstegangs søknad om førerhund' }).check();
+      cy.withinComponent('Hva søker du om?', () => {
+        cy.findByRole('radio', { name: 'Førstegangs søknad om førerhund' }).click();
       });
 
       cy.clickShowAllSteps();
       cy.findByRole('link', { name: 'Vedlegg' }).click();
 
-      cy.findByRole('group', { name: 'Dokumentasjon på gjennomført mobilitetsopplæring' }).should('exist');
+      cy.findByLabelText('Dokumentasjon på gjennomført mobilitetsopplæring').should('exist');
     });
 
     it('hides mobilitetsopplaering attachment for gjenanskaffelse', () => {
-      cy.findByRole('group', { name: 'Hva søker du om?' }).within(() => {
-        cy.findByRole('radio', { name: 'Gjenanskaffelse av førerhund og dispensasjon fra forkurs' }).check();
+      cy.withinComponent('Hva søker du om?', () => {
+        cy.findByRole('radio', { name: 'Gjenanskaffelse av førerhund og dispensasjon fra forkurs' }).click();
       });
 
       cy.clickShowAllSteps();
       cy.findByRole('link', { name: 'Vedlegg' }).click();
 
-      cy.findByRole('group', { name: 'Dokumentasjon på gjennomført mobilitetsopplæring' }).should('not.exist');
+      cy.findByLabelText('Dokumentasjon på gjennomført mobilitetsopplæring').should('not.exist');
     });
   });
 
@@ -125,22 +125,21 @@ describe('nav100750', () => {
     });
 
     it('shows adresse section when user has no fnr', () => {
-      // Adresse (including the "Bor du i Norge?" sub-field) is hidden until identity is answered
-      cy.findByRole('group', { name: 'Bor du i Norge?' }).should('not.exist');
+      cy.findByLabelText('Bor du i Norge?').should('not.exist');
 
-      cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() => {
-        cy.findByRole('radio', { name: 'Nei' }).check();
+      cy.withinComponent('Har du norsk fødselsnummer eller d-nummer?', () => {
+        cy.findByRole('radio', { name: 'Nei' }).click();
       });
 
-      cy.findByRole('group', { name: 'Bor du i Norge?' }).should('exist');
+      cy.findByLabelText('Bor du i Norge?').should('exist');
     });
 
     it('keeps adresse section hidden when user has fnr', () => {
-      cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() => {
-        cy.findByRole('radio', { name: 'Ja' }).check();
+      cy.withinComponent('Har du norsk fødselsnummer eller d-nummer?', () => {
+        cy.findByRole('radio', { name: 'Ja' }).click();
       });
 
-      cy.findByRole('group', { name: 'Bor du i Norge?' }).should('not.exist');
+      cy.findByLabelText('Bor du i Norge?').should('not.exist');
     });
   });
 
@@ -157,21 +156,21 @@ describe('nav100750', () => {
       cy.clickNextStep();
 
       // Søknaden gjelder – forstegangsSoknad path, no mobilitetspedagog name known
-      cy.findByRole('group', { name: 'Hva søker du om?' }).within(() => {
-        cy.findByRole('radio', { name: 'Førstegangs søknad om førerhund' }).check();
+      cy.withinComponent('Hva søker du om?', () => {
+        cy.findByRole('radio', { name: 'Førstegangs søknad om førerhund' }).click();
       });
-      cy.findByRole('group', { name: 'Vet du navnet på mobilitetspedagog(er)?' }).within(() => {
-        cy.findByRole('radio', { name: 'Nei' }).check();
+      cy.withinComponent('Vet du navnet på mobilitetspedagog(er)?', () => {
+        cy.findByRole('radio', { name: 'Nei' }).click();
       });
       cy.clickNextStep();
 
       // Dine opplysninger – use fnr path (adresse/adresseVarighet hidden when fnr provided)
       cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola');
       cy.findByRole('textbox', { name: 'Etternavn' }).type('Nordmann');
-      cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() => {
-        cy.findByRole('radio', { name: 'Ja' }).check();
+      cy.withinComponent('Har du norsk fødselsnummer eller d-nummer?', () => {
+        cy.findByRole('radio', { name: 'Ja' }).click();
       });
-      cy.findByRole('textbox', { name: /fødselsnummer/ }).type('17912099997');
+      cy.findByRole('textbox', { name: /fødselsnummer/i }).type('17912099997');
       cy.findByLabelText('Telefonnummer').type('12345678');
       cy.clickNextStep();
 
@@ -179,23 +178,23 @@ describe('nav100750', () => {
       cy.findByRole('textbox', {
         name: 'Beskriv i hvilke situasjoner og miljøer det er behov for førerhund',
       }).type('Trenger hjelp til å navigere i trafikken.');
-      cy.findByRole('group', { name: 'Ønsker du å søke om grunnstønad til hold av førerhund?' }).within(() => {
-        cy.findByRole('radio', { name: 'Nei' }).check();
+      cy.withinComponent('Ønsker du å søke om grunnstønad til hold av førerhund?', () => {
+        cy.findByRole('radio', { name: 'Nei' }).click();
       });
       cy.clickNextStep();
 
       // Vedlegg – ettersend all attachments (mobilitetsopplaering shown for forstegangsSoknad)
       cy.findByRole('group', { name: 'Uttalelse fra øyelege' }).within(() => {
-        cy.findByRole('radio', { name: 'Jeg ettersender dokumentasjonen senere' }).check();
+        cy.findByRole('radio', { name: 'Jeg ettersender dokumentasjonen senere' }).click();
       });
       cy.findByRole('group', { name: 'Legeerklæring om alminnelig helsetilstand' }).within(() => {
-        cy.findByRole('radio', { name: 'Jeg ettersender dokumentasjonen senere' }).check();
+        cy.findByRole('radio', { name: 'Jeg ettersender dokumentasjonen senere' }).click();
       });
-      cy.findByRole('group', { name: 'Dokumentasjon på gjennomført mobilitetsopplæring' }).within(() => {
-        cy.findByRole('radio', { name: 'Jeg ettersender dokumentasjonen senere' }).check();
+      cy.findByRole('group', { name: /Dokumentasjon på gjennomført mobilitetsopplæring/ }).within(() => {
+        cy.findByRole('radio', { name: 'Jeg ettersender dokumentasjonen senere' }).click();
       });
-      cy.findByRole('group', { name: 'Annen dokumentasjon' }).within(() => {
-        cy.findByRole('radio', { name: 'Jeg ettersender dokumentasjonen senere' }).check();
+      cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+        cy.findByRole('radio', { name: /ettersender|Nei/ }).click();
       });
       cy.clickNextStep();
 

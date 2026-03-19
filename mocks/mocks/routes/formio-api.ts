@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import formAccordion from '../data/formio-api/accordion.json';
 import formActivities from '../data/formio-api/activities.json';
 import formAttachment from '../data/formio-api/attachments.json';
@@ -125,6 +127,17 @@ import {
 import { personCoverPageForm, personCoverPageTranslations } from '../data/forms-api/cover-page/personCoverPageForm';
 import largeForm from '../data/forms-api/largeForm';
 import { nologinForm, nologinTranslations } from '../data/forms-api/nologinForm';
+
+const productionFormsDir = path.join(__dirname, '../data/forms-api/production-forms');
+
+const loadProductionForm = (formPath: string): object | null => {
+  const filePath = path.join(productionFormsDir, `${formPath}.json`);
+  try {
+    return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+  } catch {
+    return null;
+  }
+};
 
 const allForms = [
   { form: formCypress101, translations: translationsCypress101 },
@@ -256,8 +269,15 @@ export default [
                 res.contentType('application/json; charset=UTF-8');
                 res.send(single ? testdata.form : [testdata.form]);
               } else {
-                res.status(404);
-                res.send();
+                const productionForm = loadProductionForm(formPath);
+                if (productionForm) {
+                  res.status(200);
+                  res.contentType('application/json; charset=UTF-8');
+                  res.send(single ? productionForm : [productionForm]);
+                } else {
+                  res.status(404);
+                  res.send();
+                }
               }
             } else {
               res.status(200);
