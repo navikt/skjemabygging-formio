@@ -49,7 +49,7 @@ const waitForPort = (port, timeout = 60000) =>
     attempt();
   });
 
-const getFreePorts = async (count, start = 3100) => {
+const getFreePorts = async (count, start = 3440) => {
   const ports = [];
   let port = start;
   while (ports.length < count) {
