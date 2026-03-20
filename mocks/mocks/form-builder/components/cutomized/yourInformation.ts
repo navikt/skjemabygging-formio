@@ -1,5 +1,10 @@
 import { BaseComponentType } from '../../shared/baseComponent';
-import { address, addressValidity, container, firstName, identity, surname } from '../index';
+import container from '../group/container';
+import address from './address';
+import addressValidity from './addressValidity';
+import firstName from './firstName';
+import identity from './identity';
+import surname from './surname';
 
 interface YourInformationType extends BaseComponentType {
   components?: any[];

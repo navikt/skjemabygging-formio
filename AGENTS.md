@@ -32,3 +32,7 @@ More specific, advanced, or workflow/package-specific guidance belongs in skills
 ## Planning
 
 - When creating or updating implementation plan documents for this repository, always use `@.github/agents/planner.agent.md`.
+
+## Starting dev servers (sub-agents)
+
+Use `yarn start:fyllut:mocks` or `yarn start:bygger:mocks` — see the `start-dev-servers` skill for the full pattern.
