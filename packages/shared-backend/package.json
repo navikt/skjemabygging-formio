@@ -32,7 +32,7 @@
   },
   "peerDependencies": {
     "express": "^5.2.1",
-    "multer": "^2.0.2"
+    "multer": "^2.1.1"
   },
   "devDependencies": {
     "@types/dompurify": "^2.3.3",
@@ -40,6 +40,6 @@
     "@types/express": "^5.0.3",
     "@types/multer": "^2.0.0",
     "express": "^5.2.1",
-    "multer": "^2.0.2"
+    "multer": "^2.1.1"
   }
 }
