@@ -1,3 +1,5 @@
+import { numberUtils } from '../number';
+
 export const orgNrRegex = /^(\d{3})(\d{3})(\d{3})$/;
 export const bankAccountRegex = /^(\d{4})(\d{2})(\d{5})$/;
 
@@ -17,7 +19,7 @@ function formatAccountNumber(value: string): string {
   return value.replace(bankAccountRegex, '$1 $2 $3');
 }
 
-function formatNumber(value: string, isInteger: boolean): string {
+function formatNumber(value: string, isInteger: boolean) {
   if (value === undefined || value === null || value === '') {
     return '';
   }
@@ -29,7 +31,7 @@ function formatNumber(value: string, isInteger: boolean): string {
     return value;
   }
 
-  return number.toLocaleString('no', {
+  return numberUtils.toLocaleString(number, {
     style: 'decimal',
     minimumFractionDigits: isInteger ? 0 : 2,
     maximumFractionDigits: isInteger ? 0 : 2,

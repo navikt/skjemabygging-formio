@@ -30,11 +30,13 @@ describe('format-utils', () => {
     it('should format a number as currency with two decimal places by default', () => {
       expect(formatUtils.formatNumber('1234.5', false)).toBe('1\u00A0234,50');
       expect(formatUtils.formatNumber('1234', false)).toBe('1\u00A0234,00');
+      expect(formatUtils.formatNumber('-1234.5', false)).toBe('-1\u00A0234,50');
     });
 
     it('should format a number as an integer when isInteger is true', () => {
       expect(formatUtils.formatNumber('1234.5', true)).toBe('1\u00A0235');
       expect(formatUtils.formatNumber('1234', true)).toBe('1\u00A0234');
+      expect(formatUtils.formatNumber('-1234.5', true)).toBe('-1\u00A0235');
     });
 
     it('should return the original value if it is not a valid number', () => {
