@@ -47,8 +47,8 @@ const toLocaleString = (value?: string | number, options: Intl.NumberFormatOptio
     return value;
   }
 
-  // Problem on number component since toLocaleString \u002d (hyphen-minus) with \u2212 (minus) and that causes problem.
-  return number.toLocaleString('no', options).replace('\u2212', '-');
+  // Problem on number component since toLocaleString changes the hyphen.
+  return number.toLocaleString('no', options).replace(/[\u2011\u2012\u2013\u2212]/g, '-');
 };
 
 const numberUtils = {
