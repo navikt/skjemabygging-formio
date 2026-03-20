@@ -8,13 +8,13 @@ description: >-
 
 # Starting dev servers
 
-Use `yarn start:fyllut:auto` or `yarn start:bygger:auto` to start servers on free ports.
+Use `yarn start:fyllut:mocks` or `yarn start:bygger:mocks` to start servers on free ports.
 
 ## Pattern
 
 ```
 # 1. Start in async bash mode
-bash (async): yarn start:fyllut:auto
+bash (async): yarn start:fyllut:mocks
 
 # 2. Read output — wait for READY=true before proceeding
 #   FYLLUT_MOCK_PORT=3042

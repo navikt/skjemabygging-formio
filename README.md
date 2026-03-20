@@ -35,6 +35,8 @@ _(Les mer om bruk av Github npm registry i Nav her: https://github.com/navikt/fr
 | `yarn test:coverage`  | Tester med rapportering av dekningsgrad                             |
 | `yarn cypress:bygger` | Kjører Cypress-tester for Bygger                                    |
 | `yarn cypress:fyllut` | Kjører Cypress-tester for Fyllut                                    |
+| `yarn start:fyllut:mocks` | Starter Fyllut med mock server på ledige porter (for sub-agenter og Cypress) |
+| `yarn start:bygger:mocks` | Starter Bygger med mock server på ledige porter (for sub-agenter og Cypress) |
 | `yarn mocks:fyllut`   | Starter Mocks Server for Fyllut (brukes ved Cypress-testing)        |
 | `yarn check-types`    | Sjekker TypeScript-typer                                            |
 | `yarn clean`          | Sletter `node_modules`, `dist`, `build`, `coverage` for alle pakker |
@@ -50,35 +52,6 @@ lokalt, og det er to steder det kan være interessant å opprette .env-filer:
 | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | <nobr>`packages/bygger-backend/.env`</nobr> | Byggeren kan startes lokalt uten å sette noen miljøvariabler, men i .env-filen kan man overstyre ulike miljøvariablerf.eks. hvis man ønsker å kjøre mot lokal Fyllut (`FYLLUT_BASE_URL`), egen Pusher-instans eller man vil endre loglevel. |
 | <nobr>`packages/fyllut-backend/.env`</nobr> | FyllUt kan startes lokalt uten å sette noen miljøvariabler, men for at alle funksjoner skal fungere så må man leggeinn konfigurasjon i denne filen.                                                                                         |
-
-### 🪟 Kjøre flere worktrees samtidig (portoverstyring)
-
-Alle Vite-porter kan overstyres med `--port`-flagget, noe som er nyttig når man kjører to worktrees parallelt (f.eks. for Cypress-testing i separate arbeidsområder).
-
-Frontend-konfigene støtter også `--backend-port=<port>` for å styre proxy-målet mot backend.
-
-```sh
-# Backend starter på tilpasset port (Vite håndterer --port nativt)
-yarn workspace @navikt/fyllut-backend start -- --port 8181
-yarn workspace @navikt/bygger-backend start -- --port 8180
-
-# Frontend starter på tilpasset port og proxyer til riktig backend
-yarn workspace @navikt/fyllut-frontend start -- --port 3101 --backend-port=8181
-yarn workspace @navikt/bygger-frontend start -- --port 3100 --backend-port=8180
-
-# Mock server
-yarn mocks:fyllut --server.port=3400 --plugins.adminApi.port=3410
-```
-
-For å finne ledige porter automatisk kan man bruke `bin/get-free-port.mjs`:
-
-```sh
-read MOCK BE_FYLLUT FE_FYLLUT BE_BYGGER FE_BYGGER <<<$(node bin/get-free-port.mjs 5)
-
-yarn mocks:fyllut --server.port=$MOCK &
-yarn workspace @navikt/fyllut-backend start -- --port $BE_FYLLUT &
-yarn workspace @navikt/fyllut-frontend start -- --port $FE_FYLLUT --backend-port=$BE_FYLLUT &
-```
 
 ### 📝 Frontend logger
 
