@@ -38,14 +38,11 @@ const digitalAttachmentLabelKeyMap: Record<
   nav: 'navWillFetch',
 };
 
-const isDigitalSubmissionMethod = (submissionMethod?: SubmissionMethod) =>
-  submissionMethod === 'digital' || submissionMethod === 'digitalnologin';
-
 const resolveAttachmentLabelKey = (
   key: keyof AttachmentSettingValues,
   submissionMethod?: SubmissionMethod,
 ): keyof typeof TEXTS.statiske.attachment => {
-  if (isDigitalSubmissionMethod(submissionMethod)) {
+  if (submissionMethod === 'digital' || submissionMethod === 'digitalnologin') {
     return digitalAttachmentLabelKeyMap[key];
   }
 
