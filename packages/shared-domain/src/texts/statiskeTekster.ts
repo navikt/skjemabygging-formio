@@ -202,7 +202,7 @@ export const statiske = {
     deadline:
       'Hvis vi ikke har mottatt dette vedlegget innen {{deadline}} dager blir saken behandlet med de opplysningene som foreligger.',
     uploadNow: 'Jeg laster opp dette nå',
-    uploadLater: 'Jeg ettersender dette senere',
+    uploadLater: 'Jeg laster opp dette senere',
     alreadySent: 'Jeg har levert denne dokumentasjonen tidligere',
     dontHave: 'Jeg har ikke denne dokumentasjonen',
     other: 'Sendes inn av andre (for eksempel lege, arbeidsgiver)',

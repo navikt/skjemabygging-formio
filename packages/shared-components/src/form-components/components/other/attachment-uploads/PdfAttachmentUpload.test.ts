@@ -6,13 +6,18 @@ import { component as attachmentOld } from './testdata/attachment-type-and-attac
 import { component as attachmentOther } from './testdata/attachment-type-other';
 import { component as attachment } from './testdata/attachment-with-the-lot';
 
-const createProps = (component: Component, submission: Partial<Submission> = { data: {} }): PdfComponentProps => ({
+const createProps = (
+  component: Component,
+  submission: Partial<Submission> = { data: {} },
+  submissionMethod: PdfComponentProps['submissionMethod'] = undefined,
+): PdfComponentProps => ({
   submission: submission as Submission,
   translate: (textOrKey?: string) => textOrKey!,
   component,
   submissionPath: '',
   componentRegistry: {},
   currentLanguage: 'nb',
+  submissionMethod,
 });
 
 describe('PdfAttachmentUpload', () => {
@@ -59,6 +64,50 @@ describe('PdfAttachmentUpload', () => {
       {
         label: 'Uttalelse fra lege',
         verdi: TEXTS.statiske.attachment.leggerVedNaa,
+      },
+    ]);
+  });
+
+  it('should use digital label for selected answer when submissionMethod is digital', () => {
+    const testComponent = attachment;
+    const navId = testComponent.navId!;
+    const submissionAttachments: SubmissionAttachment[] = [
+      {
+        attachmentId: navId,
+        navId: navId,
+        type: 'default',
+        value: 'leggerVedNaa',
+        files: [],
+      },
+    ];
+    const props = createProps(testComponent, { attachments: submissionAttachments }, 'digital');
+    const pdfFormData = PdfAttachmentUpload(props);
+    expect(pdfFormData).toEqual([
+      {
+        label: 'Uttalelse fra lege',
+        verdi: TEXTS.statiske.attachment.uploadNow,
+      },
+    ]);
+  });
+
+  it('should keep paper label for selected answer when submissionMethod is paper', () => {
+    const testComponent = attachment;
+    const navId = testComponent.navId!;
+    const submissionAttachments: SubmissionAttachment[] = [
+      {
+        attachmentId: navId,
+        navId: navId,
+        type: 'default',
+        value: 'ettersender',
+        files: [],
+      },
+    ];
+    const props = createProps(testComponent, { attachments: submissionAttachments }, 'paper');
+    const pdfFormData = PdfAttachmentUpload(props);
+    expect(pdfFormData).toEqual([
+      {
+        label: 'Uttalelse fra lege',
+        verdi: TEXTS.statiske.attachment.ettersender,
       },
     ]);
   });

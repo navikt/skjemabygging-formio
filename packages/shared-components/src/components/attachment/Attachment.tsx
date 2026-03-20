@@ -100,6 +100,7 @@ const Attachment = ({
       onChange={handleValueChange}
       translate={translate}
       deadline={form.properties?.ettersendelsesfrist}
+      submissionMethod={config?.submissionMethod}
       ref={(ref) => {
         if (refs?.current) {
           // eslint-disable-next-line react-hooks/immutability
