@@ -35,6 +35,8 @@ _(Les mer om bruk av Github npm registry i Nav her: https://github.com/navikt/fr
 | `yarn test:coverage`  | Tester med rapportering av dekningsgrad                             |
 | `yarn cypress:bygger` | Kjører Cypress-tester for Bygger                                    |
 | `yarn cypress:fyllut` | Kjører Cypress-tester for Fyllut                                    |
+| `yarn start:fyllut:mocks` | Starter Fyllut med mock server på ledige porter (for sub-agenter og Cypress) |
+| `yarn start:bygger:mocks` | Starter Bygger med mock server på ledige porter (for sub-agenter og Cypress) |
 | `yarn mocks:fyllut`   | Starter Mocks Server for Fyllut (brukes ved Cypress-testing)        |
 | `yarn check-types`    | Sjekker TypeScript-typer                                            |
 | `yarn clean`          | Sletter `node_modules`, `dist`, `build`, `coverage` for alle pakker |
