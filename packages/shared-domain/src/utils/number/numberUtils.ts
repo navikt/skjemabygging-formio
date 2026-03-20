@@ -36,7 +36,14 @@ const isSmallerOrEqualMax = (value?: string | number, max?: string | number) => 
   return valueFloat <= maxFloat;
 };
 
-const toLocaleString = (value?: string | number, options: Intl.NumberFormatOptions = { maximumFractionDigits: 2 }) => {
+const normalizeIntlNumberString = (value: string) => {
+  return value.replace(/\u2212/g, '-');
+};
+
+const toLocaleString = (
+  value?: string | number,
+  options: Intl.NumberFormatOptions = { maximumFractionDigits: 2 },
+): string => {
   if (value === undefined || value === null || value === '') {
     return '';
   }
@@ -44,11 +51,10 @@ const toLocaleString = (value?: string | number, options: Intl.NumberFormatOptio
   const number = Number(value);
 
   if (Number.isNaN(number)) {
-    return value;
+    return String(value);
   }
 
-  // Problem on number component since toLocaleString changes the hyphen.
-  return number.toLocaleString('no', options).replace(/[\u2011\u2012\u2013\u2212]/g, '-');
+  return normalizeIntlNumberString(number.toLocaleString('no', options));
 };
 
 const numberUtils = {
