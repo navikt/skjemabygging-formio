@@ -6,9 +6,9 @@
 
 | Status                       | Count |
 | ---------------------------- | ----- |
-| ✅ Done (all passing)        | 91    |
+| ✅ Done (all passing)        | 124   |
 | ⚠️ Done (with skipped tests) | 0     |
-| ❌ Not started               | 91    |
+| ❌ Not started               | 58    |
 
 ## Process rules
 
@@ -149,59 +149,59 @@ When generating tests with agents, provide the agent:
 | ✅   | nav620016  | 7      | 3      | 0    | 7      | PAPER,DIGITAL                  |       | Opplysningsskjema til Nav for avtalefestet pensjon (AFP) — 10/10 ✅              |
 | [x]  | nav760710  | 7      | 4      | 0    | 5      | PAPER,DIGITAL                  |       | Registreringsskjema for tilskudd til utdanning — 8/8 passing                     |
 | ✅   | nav761300  | 15     | 4      | 0    | 8      | PAPER,DIGITAL                  | ✓     | Søknad om stønad til arbeids- og utdanningsreiser — 13/13 ✅                     |
-| [ ]  | nav761318  | 8      | 1      | 0    | 5      | PAPER                          |       | Refusjonskrav - opplæring                                                        |
-| [ ]  | nav761353  | 12     | 0      | 0    | 6      | PAPER                          |       | Refusjonskrav – AFT og VTA i skjermet virksomhet                                 |
-| [ ]  | nav761380  | 10     | 1      | 0    | 6      | PAPER                          |       | Søknad om funksjonsassistanse                                                    |
-| [ ]  | nav761381  | 14     | 6      | 0    | 8      | PAPER                          |       | Refusjonskrav - Funksjonsassistanse                                              |
-| [ ]  | nav951509  | 7      | 1      | 0    | 3      | PAPER,DIGITAL                  | ✓     | Samtykke til arbeidsrettet oppfølging for barn under 18 år                       |
-| [ ]  | nav952002  | 12     | 8      | 0    | 6      | PAPER,DIGITAL_NO_LOGIN         |       | Melding om frivillig skattetrekk                                                 |
-| [ ]  | nav952003  | 11     | 4      | 0    | 6      | DIGITAL                        |       | Melding om frivillig skattetrekk for barnepensjon                                |
-| [ ]  | nav952005  | 9      | 0      | 0    | 5      | PAPER                          |       | Skjema for tips om mulig misbruk av stønad                                       |
+| [x]  | nav761318  | 8      | 1      | 0    | 5      | none                           |       | Refusjonskrav - opplæring — 4/4 passing                                          |
+| [x]  | nav761353  | 12     | 0      | 0    | 6      | PAPER                          |       | Refusjonskrav – AFT og VTA i skjermet virksomhet — 3/3 passing                   |
+| [x]  | nav761380  | 10     | 1      | 0    | 6      | PAPER                          |       | Søknad om funksjonsassistanse — 7/7 passing                                      |
+| [x]  | nav761381  | 14     | 6      | 0    | 8      | PAPER                          |       | Refusjonskrav - Funksjonsassistanse — 9/9 passing                                |
+| [x]  | nav951509  | 7      | 1      | 0    | 3      | PAPER,DIGITAL                  | ✓     | Samtykke til arbeidsrettet oppfølging for barn under 18 år — 6/6 passing         |
+| [x]  | nav952002  | 12     | 8      | 0    | 6      | PAPER,DIGITAL_NO_LOGIN         |       | Melding om frivillig skattetrekk — 12/12 passing                                 |
+| [x]  | nav952003  | 11     | 4      | 0    | 6      | DIGITAL                        |       | Melding om frivillig skattetrekk for barnepensjon — 9/9 passing                  |
+| [x]  | nav952005  | 9      | 0      | 0    | 5      | PAPER                          |       | Skjema for tips om mulig misbruk av stønad — 4/4 passing                         |
 
 ---
 
 ## Complex — 21–40 conditionals (41 forms)
 
-| Done | Form       | Simple | Custom | Both | Panels | Submission                     | Intro | Title                                                        |
-| ---- | ---------- | ------ | ------ | ---- | ------ | ------------------------------ | ----- | ------------------------------------------------------------ |
-| [ ]  | nav040203  | 25     | 3      | 0    | 8      | PAPER                          |       | Bekreftelse på ansettelsesforhold                            |
-| [ ]  | nav040205  | 19     | 9      | 0    | 9      | PAPER,DIGITAL                  |       | Søknad om attest PD U1/N-301                                 |
-| [ ]  | nav040605  | 21     | 9      | 0    | 15     | PAPER,DIGITAL                  |       | Søknad om å beholde dagpengene mens du tar utdanning         |
-| [ ]  | nav040803  | 26     | 13     | 1    | 7      | PAPER                          |       | Bekreftelse på sluttårsak/nedsatt arbeidstid                 |
-| [ ]  | nav040804  | 30     | 3      | 0    | 9      | PAPER                          |       | Bekreftelse på arbeidsforhold og permittering                |
-| [ ]  | nav060702  | 29     | 5      | 0    | 10     | PAPER,DIGITAL,DIGITAL_NO_LOGIN | ✓     | Svar på brev om vurdering av hjelpestønad                    |
-| [ ]  | nav080708  | 25     | 1      | 0    | 14     | PAPER                          |       | Legeerklæring ved arbeidsuførhet                             |
-| [ ]  | nav100725  | 16     | 10     | 0    | 11     | PAPER                          |       | Søknad om tilskudd til PC eller nettbrett                    |
-| [ ]  | nav100757  | 30     | 6      | 0    | 6      | PAPER,DIGITAL                  |       | Søknad om stønad til parykk                                  |
-| [ ]  | nav100758  | 22     | 7      | 0    | 5      | PAPER,DIGITAL                  |       | Søknad om stønad til øyeprotese eller ansiktsprotese         |
-| [ ]  | nav100787  | 33     | 3      | 0    | 10     | PAPER,DIGITAL                  |       | Søknad om synshjelpemidler                                   |
-| [ ]  | nav111215b | 14     | 11     | 0    | 7      | PAPER                          |       | Tilleggsstønad - støtte til pass av barn                     |
-| [ ]  | nav111216b | 14     | 8      | 0    | 5      | PAPER                          |       | Tilleggsstønad - støtte til læremidler                       |
-| [ ]  | nav111217b | 22     | 9      | 0    | 8      | PAPER,DIGITAL                  |       | Tilleggsstønad - støtte til reise til samling                |
-| [ ]  | nav111218b | 25     | 9      | 0    | 9      | PAPER,DIGITAL                  |       | Tilleggsstønad - støtte til reise ved oppstart/avslutning    |
-| [ ]  | nav111219  | 19     | 9      | 0    | 6      | PAPER,DIGITAL                  |       | Pengestøtte til bolig eller overnatting                      |
-| [ ]  | nav111221b | 25     | 9      | 0    | 8      | PAPER,DIGITAL                  |       | Tilleggsstønad - støtte til daglig reise                     |
-| [ ]  | nav111222b | 25     | 11     | 0    | 7      | PAPER,DIGITAL                  |       | Tilleggsstønad - støtte til reise for å komme i arbeid       |
-| [ ]  | nav111308  | 15     | 7      | 0    | 9      | PAPER,DIGITAL                  |       | Søknad om arbeidsavklaringspenger under etablering           |
-| [ ]  | nav111309  | 17     | 7      | 0    | 9      | PAPER,DIGITAL                  |       | Søknad om arbeidsavklaringspenger under etablering           |
-| [ ]  | nav120606  | 37     | 0      | 0    | 5      | none                           |       | Inntektsskjema for arbeidstakere - uføretrygd                |
-| [ ]  | nav121401  | 25     | 0      | 0    | 6      | PAPER                          |       | Melding om inntektsendring når du har uføretrygd             |
-| [ ]  | nav121501  | 27     | 7      | 0    | 6      | PAPER,DIGITAL,DIGITAL_NO_LOGIN |       | Søknad om barnetillegg for deg som har uføretrygd            |
-| [ ]  | nav140410  | 21     | 4      | 0    | 6      | PAPER                          |       | Søknad om svangerskapspenger til selvstendig næringsdrivende |
-| [ ]  | nav171501  | 21     | 4      | 0    | 11     | PAPER,DIGITAL                  |       | Søknad om ytelser til tidligere familiepleier                |
-| [ ]  | nav190105  | 27     | 7      | 0    | 14     | PAPER                          |       | Søknad om alderspensjon                                      |
-| [ ]  | nav230301  | 25     | 5      | 0    | 10     | PAPER,DIGITAL                  |       | Inntektsskjema for beregning av trygdeavgift                 |
-| [ ]  | nav310002  | 21     | 8      | 0    | 16     | PAPER                          |       | Krigspensjoneringen - Krav om invalidepensjon                |
-| [ ]  | nav520501  | 14     | 18     | 1    | 7      | PAPER,DIGITAL                  |       | Melding om at Skatteetaten skal kreve inn barnebidraget      |
-| [ ]  | nav570008  | 22     | 5      | 0    | 8      | PAPER,DIGITAL,DIGITAL_NO_LOGIN |       | Skjema for oppfostringsbidrag                                |
-| [ ]  | nav620301  | 16     | 6      | 0    | 5      | PAPER,DIGITAL                  |       | Skjema for tilbakemelding til Nav om inntekt                 |
-| [ ]  | nav760501  | 25     | 8      | 0    | 7      | PAPER,DIGITAL                  |       | Ungdomsprogram - støtte til daglig reise                     |
-| [ ]  | nav760502  | 22     | 8      | 0    | 7      | PAPER,DIGITAL                  |       | Ungdomsprogram - støtte til reise til samling                |
-| [ ]  | nav760503  | 25     | 8      | 0    | 8      | PAPER,DIGITAL                  |       | Ungdomsprogram - støtte til reise ved oppstart/avslutning    |
-| [ ]  | nav760510  | 17     | 4      | 0    | 6      | PAPER                          | ✓     | Meldekort for tiltakspenger                                  |
-| [ ]  | nav761345  | 21     | 4      | 0    | 7      | PAPER                          | ✓     | Søknad om tiltakspenger                                      |
-| [ ]  | nav951536  | 22     | 5      | 0    | 6      | PAPER,DIGITAL_NO_LOGIN         |       | Generell fullmakt                                            |
-| [ ]  | nav952000  | 14     | 14     | 0    | 5      | PAPER                          |       | Melding om nytt bankkontonummer                              |
+| Done | Form       | Simple | Custom | Both | Panels | Submission                     | Intro | Title                                                                                   |
+| ---- | ---------- | ------ | ------ | ---- | ------ | ------------------------------ | ----- | --------------------------------------------------------------------------------------- |
+| [x]  | nav040203  | 25     | 3      | 0    | 8      | PAPER                          |       | Bekreftelse på ansettelsesforhold — 9/9 passing                                         |
+| [x]  | nav040205  | 19     | 9      | 0    | 9      | PAPER,DIGITAL                  |       | Søknad om attest PD U1/N-301 — 10/10 passing                                            |
+| [x]  | nav040605  | 21     | 9      | 0    | 15     | PAPER,DIGITAL                  |       | Søknad om å beholde dagpengene mens du tar utdanning — 10/10 passing                    |
+| [x]  | nav040803  | 26     | 13     | 1    | 7      | PAPER                          |       | Bekreftelse på sluttårsak/nedsatt arbeidstid — 11/11 passing                            |
+| [x]  | nav040804  | 30     | 3      | 0    | 9      | PAPER                          |       | Bekreftelse på arbeidsforhold og permittering — 11/11 passing                           |
+| [x]  | nav060702  | 29     | 5      | 0    | 10     | PAPER,DIGITAL,DIGITAL_NO_LOGIN | ✓     | Svar på brev om vurdering av hjelpestønad — 8/8 passing                                 |
+| [x]  | nav080708  | 25     | 1      | 0    | 14     | PAPER                          |       | Legeerklæring ved arbeidsuførhet — 10/10 passing                                        |
+| [x]  | nav100725  | 16     | 10     | 0    | 11     | PAPER                          |       | Søknad om tilskudd til PC eller nettbrett — 12/12 passing                               |
+| [x]  | nav100757  | 30     | 6      | 0    | 6      | PAPER,DIGITAL                  |       | Søknad om stønad til parykk — 12/12 passing                                             |
+| [x]  | nav100758  | 22     | 7      | 0    | 5      | PAPER,DIGITAL                  |       | Søknad om stønad til øyeprotese eller ansiktsprotese — 9/9 passing                      |
+| [x]  | nav100787  | 33     | 3      | 0    | 10     | PAPER,DIGITAL                  |       | Søknad om synshjelpemidler — 11/11 passing                                              |
+| [x]  | nav111215b | 14     | 11     | 0    | 7      | PAPER                          |       | Tilleggsstønad - støtte til pass av barn — 15/15 passing                                |
+| [x]  | nav111216b | 14     | 8      | 0    | 5      | PAPER                          |       | Tilleggsstønad - støtte til læremidler — 9/9 passing                                    |
+| [x]  | nav111217b | 22     | 9      | 0    | 8      | PAPER,DIGITAL                  |       | Tilleggsstønad - støtte til reise til samling — 16/16 passing                           |
+| [x]  | nav111218b | 25     | 9      | 0    | 9      | PAPER,DIGITAL                  |       | Tilleggsstønad - støtte til reise ved oppstart/avslutning — 9/9 passing                 |
+| [x]  | nav111219  | 19     | 9      | 0    | 6      | PAPER,DIGITAL                  |       | Pengestøtte til bolig eller overnatting — 12/12 passing                                 |
+| [x]  | nav111221b | 25     | 9      | 0    | 8      | PAPER,DIGITAL                  |       | Tilleggsstønad - støtte til daglig reise — 14/14 passing                                |
+| [x]  | nav111222b | 25     | 11     | 0    | 7      | PAPER,DIGITAL                  |       | Tilleggsstønad - støtte til reise for å komme i arbeid — 17/17 passing                  |
+| [x]  | nav111308  | 15     | 7      | 0    | 9      | PAPER,DIGITAL                  |       | Søknad om arbeidsavklaringspenger under etablering — 13/13 passing                      |
+| [x]  | nav111309  | 17     | 7      | 0    | 9      | PAPER,DIGITAL                  |       | Søknad om arbeidsavklaringspenger under etablering — 9/9 passing                        |
+| [x]  | nav120606  | 37     | 0      | 0    | 5      | none                           |       | Inntektsskjema for arbeidstakere - uføretrygd — 9/9 passing                             |
+| [x]  | nav121401  | 25     | 0      | 0    | 6      | PAPER                          |       | Melding om inntektsendring når du har uføretrygd — 4/4 passing                          |
+| [x]  | nav121501  | 27     | 7      | 0    | 6      | PAPER,DIGITAL,DIGITAL_NO_LOGIN |       | Søknad om barnetillegg for deg som har uføretrygd — 10/10 passing                       |
+| [x]  | nav140410  | 21     | 4      | 0    | 8      | PAPER                          |       | Søknad om svangerskapspenger til selvstendig næringsdrivende og frilanser — 8/8 passing |
+| [x]  | nav171501  | 21     | 4      | 0    | 11     | PAPER,DIGITAL                  |       | Søknad om ytelser til tidligere familiepleier — 11/11 passing                           |
+| [x]  | nav190105  | 27     | 7      | 0    | 14     | PAPER                          |       | Søknad om alderspensjon — 16/16 passing                                                 |
+| [x]  | nav230301  | 25     | 5      | 0    | 10     | PAPER,DIGITAL                  |       | Inntektsskjema for beregning av trygdeavgift — 11/11 passing                            |
+| [x]  | nav310002  | 21     | 8      | 0    | 16     | PAPER                          |       | Krigspensjoneringen - Krav om invalidepensjon — 15/15 passing                           |
+| [ ]  | nav520501  | 14     | 18     | 1    | 7      | PAPER,DIGITAL                  |       | Melding om at Skatteetaten skal kreve inn barnebidraget                                 |
+| [ ]  | nav570008  | 22     | 5      | 0    | 8      | PAPER,DIGITAL,DIGITAL_NO_LOGIN |       | Skjema for oppfostringsbidrag                                                           |
+| [ ]  | nav620301  | 16     | 6      | 0    | 5      | PAPER,DIGITAL                  |       | Skjema for tilbakemelding til Nav om inntekt                                            |
+| [ ]  | nav760501  | 25     | 8      | 0    | 7      | PAPER,DIGITAL                  |       | Ungdomsprogram - støtte til daglig reise                                                |
+| [ ]  | nav760502  | 22     | 8      | 0    | 7      | PAPER,DIGITAL                  |       | Ungdomsprogram - støtte til reise til samling                                           |
+| [ ]  | nav760503  | 25     | 8      | 0    | 8      | PAPER,DIGITAL                  |       | Ungdomsprogram - støtte til reise ved oppstart/avslutning                               |
+| [ ]  | nav760510  | 17     | 4      | 0    | 6      | PAPER                          | ✓     | Meldekort for tiltakspenger                                                             |
+| [ ]  | nav761345  | 21     | 4      | 0    | 7      | PAPER                          | ✓     | Søknad om tiltakspenger                                                                 |
+| [ ]  | nav951536  | 22     | 5      | 0    | 6      | PAPER,DIGITAL_NO_LOGIN         |       | Generell fullmakt                                                                       |
+| [ ]  | nav952000  | 14     | 14     | 0    | 5      | PAPER                          |       | Melding om nytt bankkontonummer                                                         |
 
 ---
 

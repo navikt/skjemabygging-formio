@@ -111,8 +111,14 @@ Create one `describe` block per panel that has conditionals. Inside it:
 - **Cross-panel conditionals** (trigger on this panel, target on another): set
   the trigger, then use `cy.clickShowAllSteps()` + stepper link to jump to the
   target panel and assert. Group triggers sharing a source panel.
+  When you need to flip the source answer again after reaching the target
+  panel, navigate back to the source panel with the stepper before changing it;
+  do not expect the trigger field to exist on the target panel.
 - **Panel-level conditionals** (entire panel shown/hidden): verify the panel
   link appears/disappears in the stepper after toggling the trigger.
+  If the trigger directly changes which panel `clickNextStep()` reaches next,
+  validating with normal next/previous navigation can be more reliable than
+  asserting only on stepper-link visibility.
 
 #### One end-to-end flow for the summary
 
@@ -290,6 +296,70 @@ Always prefer these over raw selectors. Defined in `cypress.d.ts`:
 | `cy.defaultInterceptsExternal()`      | Call in `beforeEach` when the form uses external data sources (prefill-data, activities). Forms with `prefillKey` on `identity`, `navAddress`, or similar components often need this. |
 | `cy.defaultWaits()`                   | Always call after `cy.visit()`. Waits for `@getConfig`, `@getForm`, `@getTranslations`.                                                                                               |
 
+Paper forms with `prefillKey`-driven `identity` / `navAddress` components can
+still require `cy.defaultInterceptsExternal()`. Do not assume external
+intercepts are only needed in digital mode.
+
+In some of those prefilled `identity` flows, the schema can reference
+`row.identitet.identitetsnummer` in a `customConditional` even though the live
+UI does **not** expose a label-addressable `identitetsnummer` textbox. When
+that happens, test the observable branch (for example address fields or
+folkeregister alerts) instead of forcing a selector for an input that is only
+present in hidden prefill data.
+
+Some paper-mode forms can also start at a real first wizard panel before the
+informational `Veiledning` panel when you visit the root URL. If a summary flow
+seems shifted by one panel, trust the live wizard order and adapt the root
+sequence instead of assuming `Veiledning` comes first.
+
+Other paper-mode forms can do the opposite: the root URL opens on an
+informational **`Introduksjon`** screen even though `introPage.enabled` is not
+set in the JSON. In those cases, call `cy.clickNextStep()` once to enter the
+real first wizard panel before looking for required fields on that panel.
+
+The inverse can also happen: some root summary flows still land on an
+informational start page such as `Veiledning` or `Introduksjon` even without
+an explicit intro page. When the summary path stalls on that first
+informational panel, add the extra `cy.clickNextStep()` inside the summary `it`
+block instead of assuming the shared `beforeEach` already advanced past it.
+
+On some `Introduksjon` pages, the body can also render extra level-2 headings.
+When building reusable start-panel helpers, prefer the unique page-title anchor
+(`h2#page-title`) over a generic `findByRole('heading', { level: 2 })` query.
+
+Some forms require **both** adjustments from the root URL: the first
+`cy.clickNextStep()` enters the wizard from an implicit start page, and the
+second leaves an informational `Veiledning` panel before the first real data
+panel appears. If your summary flow is still on `Veiledning` after one click,
+add the second click explicitly in the summary `it` block.
+
+When a paper-mode summary flow is especially inconsistent, a durable pattern is
+to inspect the current page heading and keep advancing while it is still an
+informational start panel such as `Introduksjon` or `Veiledning`, instead of
+hard-coding exactly one or two initial `clickNextStep()` calls.
+
+Some `Introduksjon` screens also render an extra content heading at level 2 in
+the body. If you automate this pattern, prefer the unique page title heading
+(`#page-title`) over a generic `findByRole('heading', { level: 2 })`, otherwise
+your helper can grab the wrong `<h2>` and never advance past the start screen.
+
+Some no-submission-type wizard forms can still keep landing on a static
+`Veiledning` page when you drive the summary flow from the root URL, even
+though downstream panel URLs work normally. If that first panel contains only
+informational text and no branching inputs, it is acceptable to start the
+summary flow and same-panel suites at the first real data panel URL instead of
+forcing the root `Veiledning` step through `clickNextStep()`.
+
+Repeated direct-panel visits in `beforeEach` can sometimes flake with a missing
+`getConfig` request even though the panel works fine. If one suite starts
+failing only on the second `beforeEach`, move the `cy.visit(...);
+cy.defaultWaits();` into each `it` block for that suite.
+
+If a later direct-panel `cy.visit()` still reuses cached config and
+`cy.defaultWaits()` hangs on `@getConfig`, wait for a stable page cue such as
+`#page-title` or the expected panel heading instead of forcing the intercept
+sequence for that specific test.
+
 ### Component scoping
 
 | Command                                    | Use when                                                                                                                                                                     |
@@ -330,6 +400,18 @@ cy.withinComponent('Hva søker du om?', () => {
 change events. **Never use `findByRole('group')` for radiopanel** — it does not
 have the `group` role.
 
+Do not assume the option labels are title-cased `Ja` / `Nei`. Some production
+forms expose lowercase option labels such as `ja` / `nei` in the accessibility
+tree. Match the actual live label (or the JSON `values[].label`) instead of
+normalizing the casing yourself.
+
+Some forms reveal a new textbox with the **same label** as the radiopanel after
+you pick one option (for example a `Utenlandsk` branch that reveals a free-text
+country field with the same label as the citizenship radio). Once that happens,
+`withinComponent('<label>')` becomes ambiguous. Use the labeled radiopanel only
+for the first toggle, then switch back by clicking the uniquely named radio
+option directly (for example `cy.findByRole('radio', { name: 'Norsk' }).click()`).
+
 To assert a conditionally shown radiopanel field exists or not:
 
 ```typescript
@@ -353,6 +435,10 @@ cy.findByRole('group', { name: 'Label' }).within(() => {
 cy.findByRole('textbox', { name: 'Label' }).type('value');
 ```
 
+Optional `currency` fields can also get `(valgfritt)` appended to their
+accessible names. For labels like `Bompenger`, prefer a regex such as
+`findByLabelText(/Bompenger/)` over an exact string.
+
 ### Number fields
 
 `number` type components render as `<input type="number">` with role `spinbutton`,
@@ -363,6 +449,11 @@ cy.findByLabelText('Antall').type('5');
 ```
 
 **Never use `findByRole('spinbutton')` for number fields in Electron** — it does not reliably match. Always use `findByLabelText` for number inputs.
+
+Some numeric IDs also have form-specific minimum validation. For example,
+`HPR-nummer` can reject short dummy values and require something like
+`1000000` or higher. If a numeric field fails unexpectedly, check the JSON
+validation rules before assuming the selector is wrong.
 
 ### Date picker (navDatepicker — 1,179 instances)
 
@@ -377,8 +468,19 @@ If the component has `earliestAllowedDate: 0`, the value must be **today or late
 Use a dynamic date instead of a hard-coded literal:
 
 ```typescript
-cy.findByRole('textbox', { name: /Dato/ }).type(Cypress.dayjs().format('DD.MM.YYYY'));
+const formatDate = (date: Date) =>
+    `${`${date.getDate()}`.padStart(2, '0')}.${`${date.getMonth() + 1}`.padStart(2, '0')}.${date.getFullYear()}`;
+
+cy.findByRole('textbox', { name: /Dato/ }).type(formatDate(new Date()));
 ```
+
+Do **not** assume `Cypress.dayjs()` exists in these specs. In this repo it is not
+available by default, so plain `Date` formatting is the safer reusable pattern.
+
+Some question-style datepickers render their accessible name **without** the
+usual `(dd.mm.åååå)` suffix even when other datepickers in the same form keep
+it. If an exact label with the suffix fails, fall back to a regex for the
+stable question text, such as `findByRole('textbox', { name: /Når begynte/ })`.
 
 ### Month picker (monthPicker)
 
@@ -400,6 +502,19 @@ cy.findByRole('checkbox', { name: 'Label' }).click();
 ```typescript
 cy.findByRole('checkbox', { name: 'Label' }).find('input[type="checkbox"]').click();
 ```
+
+Some forms expose the trigger only as a group-labelled fieldset rather than a
+directly label-addressable checkbox. In those cases, query the group by its
+visible label and click the nested `input[type="checkbox"]`.
+
+Other forms expose the checkbox only through the visible `<label>` text, not as
+an accessible `checkbox` role with that exact name. In those cases, anchor on
+the label text and click the nested `input[type="checkbox"]`.
+
+Optional standalone `navCheckbox` inputs can also append `(valgfritt)` to the
+checkbox input's accessible name even when the surrounding fieldset/group label
+does not include that suffix. Prefer a regex such as `/Bolig/` over an exact
+string when toggling those branches.
 
 ### Select boxes (selectboxes — 281 instances, 90 forms use in conditionals)
 
@@ -437,6 +552,17 @@ This is intentionally different from **standalone `navCheckbox`** components:
 Many selectboxes options also get `(valgfritt)` appended to their accessible
 name, so regex matching is often safer than an exact string.
 
+Selectboxes can mix a broad customConditional with a narrower simple
+conditional. In those cases, shared target fields can stay visible for multiple
+checked options while option-specific fields only appear for one branch. Assert
+the shared fields and the branch-specific field separately rather than treating
+the whole group as one toggle.
+
+When selectboxes have overlapping option labels (for example `Lønn til
+funksjonsassistent` and `Lønn til funksjonsassistent ved arbeidsreiser`), use
+exact or anchored option names. A loose regex can match the wrong checkbox and
+make the conditional assertions flaky.
+
 ### Combobox / Select / Country selector (landvelger)
 
 ```typescript
@@ -447,6 +573,17 @@ cy.findByRole('combobox', { name: 'Label' }).type('Norg{downArrow}{enter}');
 already-default country. If the field already defaults to `Norge` / `NO` and the
 conditional you need is the Norway path, prefer asserting the default state and
 continuing with the visible dependent fields instead of re-driving the selector.
+
+Foreign-address branches inside composite `navAddress` components can also mix
+field types and wording compared with the raw JSON. For example, `Land` may
+render as a **combobox** instead of a textbox, and `Vegnavn og husnummer, evt.
+postboks` in JSON can render as `Vegnavn og husnummer, eller postboks` in the
+browser. When testing those branches, trust the live accessible labels/roles
+and switch to regex matching if the JSON wording does not line up exactly.
+
+Some foreign-address variants use `Postnummer` plus `By / stedsnavn` instead of
+an `Utenlandsk postkode` field. Always confirm the actual child labels in the
+form JSON before writing the non-Norway selectors.
 
 Some custom dropdowns are **Choices.js**, not native `<select>` or standard ARIA
 combobox widgets. In those cases, `findByRole(..., { name })` and `.select()`
@@ -459,6 +596,9 @@ cy.findByRole('option', { name: /leverandor/i }).click();
 
 If a form-specific custom dropdown works this way, prefer targeting the hidden
 `<select name="data[...]">` as the anchor rather than guessing from labels alone.
+For assertion-only coverage, the hidden `select[name="data[...]"]` itself can
+also be the most reliable signal that the conditional branch rendered, because
+some Choices.js widgets expose an empty-name combobox in the accessibility tree.
 
 ### Phone number
 
@@ -510,6 +650,16 @@ cy.findByRole('textbox', { name: /Utenlandsk postkode/ }).type('1234');
 cy.findByRole('textbox', { name: /Utenlandsk postkode/ }).should('not.exist');
 ```
 
+This also applies to fields inside table/datagrid helper flows. Optional
+textbox children there can render as labels like `Eventuelt dekknavn
+(valgfritt)`, so use a regex instead of an exact string before assuming the
+conditional failed to render. Checkbox branches can flake for the same reason.
+
+The same suffix can appear on standalone `navCheckbox` triggers such as
+`Jeg har ingen tidligere praksis`. Prefer
+`cy.findByRole('checkbox', { name: /Jeg har ingen tidligere praksis/ })` over
+an exact string when the checkbox is optional.
+
 ### Fødselsnummer (fnrfield — 183 instances)
 
 The rendered label varies across forms. Always use a case-insensitive regex:
@@ -518,15 +668,47 @@ The rendered label varies across forms. Always use a case-insensitive regex:
 cy.findByRole('textbox', { name: /fødselsnummer/i }).type('17912099997');
 ```
 
+For date-driven customConditionals, prefer clearly unambiguous test dates over
+boundary values when the form code relies on raw JavaScript date parsing. For
+example, a pre-2015 branch may behave more reliably with `11.12.2014` than
+with a boundary value like `31.12.2014`.
+
 ### Identity and address components — check labels in the form JSON
 
 `identity` and `navAddress` are composite components whose sub-field labels
 **can be overridden per form**. Do not assume default label text.
 Always check the actual `label` values in the form JSON before writing selectors.
 
+In some digital-only forms, `identity` / `navAddress` components are prefilled
+from the logged-in user and rendered effectively read-only. When that happens,
+JSON conditionals tied to those components may be real in the schema but not
+reachable through UI interaction; focus the spec on conditionals the user can
+actually drive in the browser.
+
 For example, a form may override the default `"Har du norsk fødselsnummer?"` with
 `"Har arbeidstakeren norsk fødselsnummer eller d-nummer?"`. Use that exact label
 (or a regex) in your test.
+
+Also verify the rendered input type in the browser instead of assuming it from
+the schema name alone. For example, `Utenlandsk personnummer` can render as a
+plain `textbox` with `(valgfritt)` in its accessible name, not as a
+`spinbutton`.
+
+When these components are nested in datagrids, invalid child FNR values can
+surface later as generic summary/navigation errors rather than an immediate
+field-level assertion failure. If a summary path breaks unexpectedly, verify
+the datagrid identity values before debugging the stepper flow.
+
+Also trust the live wizard flow over the raw panel list. Some forms skip
+intermediate panels for specific answer paths even when those panels exist in
+the JSON. If a summary path lands on a different next step than expected,
+follow the actual rendered heading/stepper order instead of forcing the JSON
+order.
+
+`addressValidity` is also a composite component. The wrapper label in JSON can
+be generic (for example `Adresse varighet`), while the rendered controls are
+its inner date fields. For visibility assertions, prefer the concrete child
+label such as `Gyldig fra (dd.mm.åååå)` over the wrapper label.
 
 ### Email
 
@@ -553,6 +735,16 @@ cy.findAllByRole('textbox', { name: 'Felt i rad' }).first().type('Verdi');
 cy.findByRole('button', { name: /Legg til rad/ }).click();
 cy.findAllByRole('textbox', { name: 'Felt i rad' }).eq(1).type('Verdi 2');
 ```
+
+Some datagrid branches include an "attach instead of filling the table" toggle
+that renders as a **group-labelled fieldset containing a nested checkbox**. In
+those cases, query the group by its label and click the inner
+`input[type="checkbox"]` instead of expecting a checkbox with the full group
+label as its own accessible name.
+
+Some `selectboxes` / checkbox-group labels include appended helper text in
+their accessible name. When that happens, use a regex for the group label
+instead of an exact string.
 
 **`row.X` conditionals in datagrids** (101 forms): Fields inside a datagrid
 may have `customConditional` using `row.X`. These are scoped to the row — fill
@@ -584,6 +776,10 @@ cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
 });
 ```
 
+Some forms use the full negative label instead of a short `Nei`, for example
+`Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved`. When a plain
+`Nei` query fails, match the full radio label.
+
 ### Alertstripe / HTML element (conditional display-only content)
 
 `alertstripe` (1,346 instances) and `htmlelement` (602 instances) are
@@ -600,6 +796,16 @@ cy.contains('dokumentasjon').should('exist');
 // Assert conditional alert disappears
 cy.findByText('Du må legge ved dokumentasjon').should('not.exist');
 ```
+
+If informational text is split across nested elements, prefer a stable partial
+match such as `cy.contains('Husk at i vedlegget')` over a longer exact sentence.
+
+The same applies to warning text tied to negative attachment/documentation
+answers: assert the stable fragment, not the entire sentence.
+
+This is especially useful when the JSON contains long alert/help copy for
+exceptions or eligibility warnings: pick a distinctive fragment from the JSON
+instead of matching the whole rendered paragraph.
 
 ### Container and navSkjemagruppe (1,393 instances total)
 
@@ -687,6 +893,12 @@ it('hides lege attachment when hasDoctor is nei', () => {
 });
 ```
 
+If a helper or `beforeEach` has already expanded the stepper, **do not call
+`cy.clickShowAllSteps()` again** before clicking the target panel. The toggle
+button label changes from `Vis alle steg` to `Skjul alle steg`, so a second
+`clickShowAllSteps()` call can fail while waiting for the "show" button. In
+that state, click the stepper link directly.
+
 In the summary flow, handle the attachment panel like any other panel — fill
 any required attachment fields and call `cy.clickNextStep()` to proceed:
 
@@ -701,6 +913,19 @@ cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
 ```
 
 **Note:** Attachment radio labels vary per form — always check `attachmentValues` in the attachment component JSON. If `ettersender: false`, the "Jeg ettersender" option does not exist. Available options depend on which keys in `attachmentValues` are not `false`. Do not assume `/ettersender/i` is present.
+
+Some forms only expose `nei` and `leggerVedNaa`, with no `ettersender` branch.
+Match the actual available options from `attachmentValues` instead of using a
+generic fallback regex.
+
+Attachment groups may also use the backend `vedleggstittel` in the rendered
+accessible name instead of the raw component label. If a regex based on the
+label fails, check `properties.vedleggstittel` in the JSON and match that text.
+
+The opposite can happen too: the rendered accessible name may follow the
+visible attachment label even when `vedleggstittel` differs slightly. Prefer a
+stable regex fragment that matches the live text before assuming either source
+string is always authoritative.
 
 For negative conditional coverage, do **not** force an assertion on the Vedlegg
 page if the UI does not make “absence” observable there. Prefer asserting the
@@ -721,6 +946,15 @@ Also trust the **actual wizard/stepper order** over the raw JSON panel order.
 For some forms, the real flow differs from the static panel array. If a summary
 flow fails around Vedlegg, inspect the live stepper order and adapt to that
 instead of assuming the JSON order is authoritative.
+
+Some forms also hide **later non-conditional panels** based on earlier answers
+even when those later panels have no panel-level `conditional` in the JSON. A
+real example is `nav121401`, where answering `Nei` to
+`mottarDuBarnetilleggTilUforetrygden` removes the spouse/child-income panels
+from the wizard. If a direct panel visit or `clickNextStep()` path keeps
+landing back on `Veiledning`, revisit the earlier branching answers and choose
+the path that keeps the downstream panel in the live wizard before concluding
+that the panel URL itself is broken.
 
 For forms with panels after Vedlegg, a successful summary path can require:
 
@@ -766,6 +1000,10 @@ cy.withinSummaryGroup('<Panel Title>', () => {
 For radiopanel fields the summary shows the selected option's **label** (not
 its value). For checkboxes it shows "Ja"/"Nei". For country selectors it shows
 the country name.
+
+Currency values on the summary page are usually localized (`1 500,00 NOK`) and
+often contain non-breaking spaces. Prefer a regex such as
+`cy.contains('dd', /1\s*500,00\s*NOK/)` over asserting the raw typed value.
 
 ## Choosing submission method
 
@@ -816,6 +1054,10 @@ If a field's `label` in the JSON contains multiple consecutive spaces (e.g. `"Gi
 cy.withinComponent(/Hvor er du\s+ansatt\?/, () => { ... });
 cy.findByLabelText(/Gir\s+vedlagt dokumentasjon/);
 ```
+
+Trailing spaces can also be normalized away in the DOM. If a generated selector
+ends with an extra space (for example `Mottar du eller har du søkt om bostøtte? `),
+trim it or switch to a regex before assuming the field is missing.
 
 - **Do not assert FNR values in the summary** — the fnr field renders with a
   space (e.g. `179120 99997`) which is hard to match. Assert on `Fornavn`/name
