@@ -18,9 +18,9 @@
     {
       "label": "Vedlegg",
       "verdiliste": [
-        { "label": "Vedlegg 1", "verdi": "Jeg legger det ved dette skjemaet" },
-        { "label": "Vedlegg 2", "verdi": "Jeg legger det ved dette skjemaet" },
-        { "label": "Annen dokumentasjon - Annet vedlegg 1", "verdi": "Jeg legger det ved dette skjemaet" }
+        { "label": "Vedlegg 1", "verdi": "Jeg laster opp dette nå" },
+        { "label": "Vedlegg 2", "verdi": "Jeg laster opp dette nå" },
+        { "label": "Annen dokumentasjon - Annet vedlegg 1", "verdi": "Jeg laster opp dette nå" }
       ]
     }
   ],

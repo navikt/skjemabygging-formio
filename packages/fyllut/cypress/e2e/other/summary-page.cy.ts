@@ -1,3 +1,5 @@
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+
 describe('SummaryPage', () => {
   before(() => {
     cy.configMocksServer();
@@ -127,7 +129,7 @@ describe('SummaryPage', () => {
     cy.findByRole('link', { name: 'Vedlegg' }).click();
     cy.findByRole('heading', { name: 'Vedlegg' }).shouldBeVisible();
     cy.findByRole('group', { name: /Vedlegg/ }).within(() => {
-      cy.findByRole('radio', { name: 'Jeg ettersender dokumentasjonen senere' }).check();
+      cy.findByRole('radio', { name: TEXTS.statiske.attachment.ettersender }).check();
     });
     cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
       cy.findByRole('radio', { name: 'Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved' }).check();
@@ -302,7 +304,7 @@ describe('SummaryPage', () => {
       .parent()
       .within(() => {
         cy.get('dt').eq(0).should('contain.text', 'Vedlegg');
-        cy.get('dd').eq(0).should('contain.text', 'Jeg ettersender dokumentasjonen senere');
+        cy.get('dd').eq(0).should('contain.text', TEXTS.statiske.attachment.ettersender);
         cy.get('dt').eq(1).should('contain.text', 'Annen dokumentasjon');
         cy.get('dd').eq(1).should('contain.text', 'Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved');
       });
@@ -624,7 +626,7 @@ describe('SummaryPage', () => {
     cy.findByRole('link', { name: 'Vedlegg' }).click();
     cy.findByRole('heading', { name: 'Vedlegg' }).shouldBeVisible();
     cy.findByRole('group', { name: /Vedlegg/ }).within(() => {
-      cy.findByRole('radio', { name: 'Jeg ettersender dokumentasjonen senere' }).check();
+      cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadLater }).check();
     });
     cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
       cy.findByRole('radio', { name: 'Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved' }).check();
@@ -638,7 +640,7 @@ describe('SummaryPage', () => {
       .parent()
       .within(() => {
         cy.get('dt').eq(0).should('contain.text', 'Vedlegg');
-        cy.get('dd').eq(0).should('contain.text', 'Jeg ettersender dokumentasjonen senere');
+        cy.get('dd').eq(0).should('contain.text', TEXTS.statiske.attachment.uploadLater);
         cy.get('dt').eq(1).should('contain.text', 'Annen dokumentasjon');
         cy.get('dd').eq(1).should('contain.text', 'Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved');
       });

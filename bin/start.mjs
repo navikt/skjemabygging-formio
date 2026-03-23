@@ -73,7 +73,18 @@ const configs = {
       commands: [
         ['yarn', ['mocks:fyllut:no-cli', '--', `--server.port=${mockPort}`]],
         ['yarn', ['workspace', '@navikt/fyllut-backend', 'start', '--', '--port', String(backendPort)]],
-        ['yarn', ['workspace', '@navikt/fyllut-frontend', 'start', '--', '--port', String(frontendPort), `--backend-port=${backendPort}`]],
+        [
+          'yarn',
+          [
+            'workspace',
+            '@navikt/fyllut-frontend',
+            'start',
+            '--',
+            '--port',
+            String(frontendPort),
+            `--backend-port=${backendPort}`,
+          ],
+        ],
       ],
       ports: [mockPort, backendPort, frontendPort],
     };
@@ -87,7 +98,18 @@ const configs = {
     return {
       commands: [
         ['yarn', ['workspace', '@navikt/bygger-backend', 'start', '--', '--port', String(backendPort)]],
-        ['yarn', ['workspace', '@navikt/bygger-frontend', 'start', '--', '--port', String(frontendPort), `--backend-port=${backendPort}`]],
+        [
+          'yarn',
+          [
+            'workspace',
+            '@navikt/bygger-frontend',
+            'start',
+            '--',
+            '--port',
+            String(frontendPort),
+            `--backend-port=${backendPort}`,
+          ],
+        ],
       ],
       ports: [backendPort, frontendPort],
     };
@@ -111,7 +133,11 @@ procs.forEach((p) => p.unref());
 
 const killAll = (signal) => {
   procs.forEach((p) => {
-    try { process.kill(-p.pid, signal); } catch { /* already gone */ }
+    try {
+      process.kill(-p.pid, signal);
+    } catch {
+      /* already gone */
+    }
   });
 };
 
