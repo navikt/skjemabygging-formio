@@ -51,17 +51,17 @@ describe('Digital submission without user login', () => {
       cy.mocksUseRouteVariant('post-nologin-soknad:success-tc02');
 
       cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
-        cy.findByLabelText('Jeg ettersender dokumentasjonen senere').check(),
+        cy.findByLabelText(TEXTS.statiske.attachment.uploadLater).check(),
       );
 
       cy.findByRole('group', { name: 'Bekreftelse på utdanning' }).within(() =>
-        cy.findByLabelText('Jeg legger det ved dette skjemaet').check(),
+        cy.findByLabelText(TEXTS.statiske.attachment.uploadNow).check(),
       );
 
       cy.uploadFile('another-small-file.txt', { id: 'e3xh1d' });
 
       cy.findByLabelText('Annen dokumentasjon').within(() => {
-        cy.findByLabelText('Jeg legger det ved dette skjemaet').check();
+        cy.findByLabelText(TEXTS.statiske.attachment.uploadNow).check();
       });
       cy.findByLabelText('Gi vedlegget et beskrivende navn').type('Vitnemål');
       cy.uploadFile('small-file.txt', { id: 'en5h1c' });
@@ -80,7 +80,7 @@ describe('Digital submission without user login', () => {
 
     it('prevents further editing when navigating back after submission', () => {
       cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
-        cy.findByLabelText('Jeg ettersender dokumentasjonen senere').check(),
+        cy.findByLabelText(TEXTS.statiske.attachment.uploadLater).check(),
       );
 
       cy.findByLabelText('Annen dokumentasjon').within(() =>
@@ -88,7 +88,7 @@ describe('Digital submission without user login', () => {
       );
 
       cy.findByLabelText('Bekreftelse på utdanning').within(() =>
-        cy.findByLabelText('Jeg legger det ved dette skjemaet').check(),
+        cy.findByLabelText(TEXTS.statiske.attachment.uploadNow).check(),
       );
       cy.uploadFile('another-small-file.txt');
       cy.clickNextStep();
@@ -275,7 +275,7 @@ describe('Digital submission without user login', () => {
       cy.clickNextStep();
       cy.findByRole('link', { name: 'Vedlegg' }).click();
       cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
-        cy.findByLabelText(TEXTS.statiske.attachment.ettersender).check(),
+        cy.findByLabelText(TEXTS.statiske.attachment.uploadLater).check(),
       );
       cy.findByRole('group', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
@@ -309,7 +309,7 @@ describe('Digital submission without user login', () => {
     describe('Summary page', () => {
       it('shows titles, value and deadline for attachments with no uploads', () => {
         cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
-          cy.findByLabelText(TEXTS.statiske.attachment.ettersender).check(),
+          cy.findByLabelText(TEXTS.statiske.attachment.uploadLater).check(),
         );
         cy.findByRole('group', {
           name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
@@ -322,7 +322,7 @@ describe('Digital submission without user login', () => {
           .within(() => {
             cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
             cy.findByText('Vedlegg med masse greier').should('exist');
-            cy.findByText(TEXTS.statiske.attachment.ettersender).should('exist');
+            cy.findByText(TEXTS.statiske.attachment.uploadLater).should('exist');
             cy.findByText('Bekreftelse på utdanning').should('not.exist');
             cy.findByText(
               'Hvis vi ikke har mottatt dette vedlegget innen 14 dager blir saken behandlet med de opplysningene som foreligger.',
@@ -334,13 +334,13 @@ describe('Digital submission without user login', () => {
 
       it('shows file names and titles for attachments with uploads', () => {
         cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
-          cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).check(),
+          cy.findByLabelText(TEXTS.statiske.attachment.uploadNow).check(),
         );
         cy.uploadFile('id-billy-bruker.jpg');
         cy.findByRole('group', {
           name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
         }).within(() => {
-          cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).check();
+          cy.findByLabelText(TEXTS.statiske.attachment.uploadNow).check();
         });
 
         cy.findByRole('textbox', { name: 'Gi vedlegget et beskrivende navn' }).type('Vitnemål');
@@ -357,7 +357,7 @@ describe('Digital submission without user login', () => {
           .closest('[data-cy=form-summary-panel]')
           .within(() => {
             cy.findByText('Vedlegg med masse greier').should('exist');
-            cy.findByText(TEXTS.statiske.attachment.leggerVedNaa).should('not.exist');
+            cy.findByText(TEXTS.statiske.attachment.uploadNow).should('not.exist');
             cy.findByText(
               'Hvis vi ikke har mottatt dette vedlegget innen 14 dager blir saken behandlet med de opplysningene som foreligger.',
             ).should('not.exist');
@@ -386,7 +386,7 @@ describe('Digital submission without user login', () => {
         cy.findByRole('link', { name: 'Vedlegg' }).click();
 
         cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
-          cy.findByLabelText(TEXTS.statiske.attachment.ettersender).check(),
+          cy.findByLabelText(TEXTS.statiske.attachment.uploadLater).check(),
         );
         cy.findByRole('group', {
           name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
@@ -401,7 +401,7 @@ describe('Digital submission without user login', () => {
 
       it('validates that files are uploaded for attachment', () => {
         cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
-          cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).check(),
+          cy.findByLabelText(TEXTS.statiske.attachment.uploadNow).check(),
         );
         cy.findByRole('group', {
           name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
@@ -427,12 +427,12 @@ describe('Digital submission without user login', () => {
 
       it('validates that files are uploaded for other attachment', () => {
         cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
-          cy.findByLabelText(TEXTS.statiske.attachment.ettersender).check(),
+          cy.findByLabelText(TEXTS.statiske.attachment.uploadLater).check(),
         );
         cy.findByRole('group', {
           name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
         }).within(() => {
-          cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).check();
+          cy.findByLabelText(TEXTS.statiske.attachment.uploadNow).check();
         });
         cy.clickNextStep();
         cy.get('[data-cy=error-summary]').should('exist');
@@ -507,7 +507,7 @@ describe('Digital submission without user login', () => {
       cy.findByRole('textbox', { name: 'Tilleggsinfo 3' }).type('Ble levert i fjor');
 
       cy.findByRole('group', { name: 'Bekreftelse på utdanning' }).within(() =>
-        cy.findByLabelText('Jeg legger det ved dette skjemaet').check(),
+        cy.findByLabelText(TEXTS.statiske.attachment.uploadNow).check(),
       );
       cy.uploadFile('another-small-file.txt', { id: 'e3xh1d' });
 
@@ -565,7 +565,7 @@ describe('Digital submission without user login', () => {
       cy.findByRole('textbox', { name: 'Tilleggsinfo 3' }).type('Ble levert i fjor');
 
       cy.findByRole('group', { name: 'Bekreftelse på utdanning' }).within(() =>
-        cy.findByLabelText('Jeg legger det ved dette skjemaet').check(),
+        cy.findByLabelText(TEXTS.statiske.attachment.uploadNow).check(),
       );
       cy.uploadFile('another-small-file.txt', { id: 'e3xh1d' });
 

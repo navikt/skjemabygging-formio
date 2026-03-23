@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 import moment from 'moment';
 import 'moment/locale/nb';
@@ -109,7 +110,13 @@ function formatValue(component, value, translate, form, language, opts = {}) {
       return prefix + numberUtils.toLocaleString(value) + suffix;
     }
     case 'attachment':
-      return attachmentUtils.mapToAttachmentSummary({ translate, value, component, form });
+      return attachmentUtils.mapToAttachmentSummary({
+        translate,
+        value,
+        component,
+        form,
+        submissionMethod: opts?.submissionMethod,
+      });
     case 'navAddress': {
       const addressComponents = [
         value?.co ? `c/o ${value.co}` : undefined,

@@ -1,10 +1,11 @@
-/// <reference types="vitest" />
 import react from '@vitejs/plugin-react';
 import { readFileSync } from 'fs';
 import lodashTemplate from 'lodash/template';
 import { defineConfig, loadEnv, PluginOption } from 'vite';
 import { createHtmlPlugin } from 'vite-plugin-html';
 import tsconfigPaths from 'vite-tsconfig-paths';
+
+const backendPort = process.argv.find((a) => a.startsWith('--backend-port='))?.split('=')[1] ?? '8080';
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, 'env');
@@ -55,7 +56,7 @@ export default defineConfig(({ mode }) => {
       strictPort: true,
       proxy: {
         '/api': {
-          target: 'http://localhost:8080',
+          target: `http://localhost:${backendPort}`,
           changeOrigin: true,
         },
       },
@@ -68,11 +69,5 @@ export default defineConfig(({ mode }) => {
       dedupe: ['react-router', '@navikt/ds-react', '@navikt/aksel-icons'],
     },
     plugins,
-    test: {
-      globals: true,
-      environment: 'jsdom',
-      setupFiles: './src/setupTests.ts',
-      include: ['src/(**/)?*.test.[jt]s(x)?'],
-    },
   };
 });

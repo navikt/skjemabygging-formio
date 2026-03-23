@@ -153,6 +153,7 @@ const renderPdfForm = ({
             submission,
             translate,
             currentLanguage,
+            submissionMethod,
           }),
         )
         .filter(Boolean) ?? []),
@@ -165,6 +166,7 @@ const renderPdfForm = ({
               submission,
               translate,
               currentLanguage,
+              submissionMethod,
             }),
           ]
         : []),

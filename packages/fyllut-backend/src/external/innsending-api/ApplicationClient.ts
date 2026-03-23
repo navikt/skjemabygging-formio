@@ -1,13 +1,32 @@
 import { correlator } from '@navikt/skjemadigitalisering-shared-backend';
 import { UploadedFile, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { openAsBlob } from 'node:fs';
 import { ConfigType } from '../../config/types';
 import { logger } from '../../logger';
+import { appMetrics } from '../../services';
 import { LogMetadata } from '../../types/log';
 import { SubmitApplicationRequest, SubmitApplicationResponse } from '../../types/sendinn/sendinn';
 import { responseToError } from '../../utils/errorHandling';
 
 const ApplicationClient = (config: ConfigType, type: 'nologin' | 'digital') => {
   const basePath = `${config.sendInnConfig.host}/v1/application-${type}`;
+
+  const createFileBlob = async (file: Express.Multer.File): Promise<Blob> => {
+    if (file.path) {
+      return openAsBlob(file.path, { type: file.mimetype });
+    }
+
+    if (file.buffer) {
+      const fileData = new Uint8Array(
+        file.buffer.buffer as ArrayBuffer,
+        file.buffer.byteOffset,
+        file.buffer.byteLength,
+      );
+      return new Blob([fileData], { type: file.mimetype });
+    }
+
+    throw new Error('Uploaded file has neither path nor buffer');
+  };
 
   const uploadAttachment = async (
     file: Express.Multer.File,
@@ -16,34 +35,55 @@ const ApplicationClient = (config: ConfigType, type: 'nologin' | 'digital') => {
     innsendingsId: string,
   ): Promise<UploadedFile> => {
     const correlationId = correlator.getId();
-    const fileBlob = new Blob([Uint8Array.from(file.buffer)], { type: file.mimetype });
     const originalFileName = Buffer.from(file.originalname, 'latin1').toString('utf8');
+    const logMeta = {
+      innsendingsId,
+      correlationId,
+      attachmentId,
+    };
+    logger.info(`${innsendingsId}: Preparing file upload for ${type} application`, {
+      storageMode: file.path ? 'disk' : 'memory',
+      fileSize: file.size,
+      fileType: file.mimetype,
+      hasTempFile: Boolean(file.path),
+      ...logMeta,
+    });
+    const fileBlob = await createFileBlob(file);
 
     const form = new FormData();
     form.append('file', fileBlob, originalFileName);
 
     const targetUrl = `${basePath}/${innsendingsId}/attachments/${attachmentId}`;
-    const logMeta = {
-      innsendingsId,
-      correlationId,
-      attachmentId,
-      targetUrl,
-    };
     logger.info(`${innsendingsId}: Uploading file for ${type} application`, {
       fileSize: fileBlob.size,
       fileType: fileBlob.type,
+      targetUrl,
       ...logMeta,
     });
-    const response = await fetch(targetUrl, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        ...(correlationId && { 'x-correlation-id': correlationId }),
-        ...(innsendingsId && { 'x-innsendingsid': innsendingsId }),
-      },
-      body: form,
-    });
-    if (response.ok) {
+    const stopUploadDurationTimer = appMetrics.innsendingApiUploadDuration.startTimer({ type });
+    let response: Response | undefined;
+    let uploadError = false;
+    try {
+      response = await fetch(targetUrl, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          ...(correlationId && { 'x-correlation-id': correlationId }),
+          ...(innsendingsId && { 'x-innsendingsid': innsendingsId }),
+        },
+        body: form,
+      });
+    } catch (error) {
+      uploadError = true;
+      throw error;
+    } finally {
+      const error = uploadError || !response?.ok;
+      const errorLabel = String(error);
+      appMetrics.innsendingApiUploadFileSize.observe({ type, error: errorLabel }, fileBlob.size);
+      stopUploadDurationTimer({ error: errorLabel });
+    }
+
+    if (response?.ok) {
       const { id, name, size } = await response.json();
       logger.info(`${innsendingsId}: File uploaded for ${type} application`, logMeta);
       return {
@@ -53,6 +93,10 @@ const ApplicationClient = (config: ConfigType, type: 'nologin' | 'digital') => {
         fileName: name,
         size,
       };
+    }
+
+    if (!response) {
+      throw new Error('Unexpected missing response after file upload');
     }
 
     logger.warn(`${innsendingsId}: Failed to upload file for ${type} application`, logMeta);

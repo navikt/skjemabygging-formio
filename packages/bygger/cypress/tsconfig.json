@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
     "baseUrl": "./",
-    "target": "ES2021",
-    "lib": ["ES2021", "dom"],
+    "target": "ES2022",
+    "lib": ["ES2022", "dom"],
     "moduleResolution": "node",
     "types": ["cypress", "@testing-library/cypress"],
     "resolveJsonModule": true,
     "paths": {
+      "@navikt/skjemadigitalisering-shared-frontend": ["../../shared-frontend/src"],
       "@navikt/skjemadigitalisering-shared-components": ["../../shared-components/src"],
       "@navikt/skjemadigitalisering-shared-domain": ["../../shared-domain/src"]
     }
