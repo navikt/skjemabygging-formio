@@ -32,10 +32,10 @@ describe('Digital no login', () => {
       cy.findByRole('group', {
         name: 'Informasjon om din næringsinntekt fra Norge eller utlandet',
       }).within(() => {
-        cy.findByRole('radio', { name: TEXTS.statiske.attachment.ettersender }).click();
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadLater }).click();
       });
       cy.findByRole('group', { name: 'Vedlegg med ett valg' }).within(() => {
-        cy.findByRole('checkbox', { name: TEXTS.statiske.attachment.leggerVedNaa }).check();
+        cy.findByRole('checkbox', { name: TEXTS.statiske.attachment.uploadNow }).check();
       });
       cy.uploadFile();
       cy.findByRole('group', {
@@ -50,7 +50,7 @@ describe('Digital no login', () => {
         .parent()
         .within(() => {
           cy.findByText('Informasjon om din næringsinntekt fra Norge eller utlandet');
-          cy.findByText(TEXTS.statiske.attachment.ettersender);
+          cy.findByText(TEXTS.statiske.attachment.uploadLater);
           cy.findByText('Annen dokumentasjon');
           cy.findByText(TEXTS.statiske.attachment.nei);
         });
@@ -67,10 +67,10 @@ describe('Digital no login', () => {
       cy.findByRole('group', {
         name: 'Informasjon om din næringsinntekt fra Norge eller utlandet',
       }).within(() => {
-        cy.findByRole('radio', { name: TEXTS.statiske.attachment.ettersender }).click();
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadLater }).click();
       });
       cy.findByRole('group', { name: 'Vedlegg med ett valg' }).within(() => {
-        cy.findByRole('checkbox', { name: TEXTS.statiske.attachment.leggerVedNaa }).check();
+        cy.findByRole('checkbox', { name: TEXTS.statiske.attachment.uploadNow }).check();
       });
       cy.uploadFile();
       cy.findByRole('group', {

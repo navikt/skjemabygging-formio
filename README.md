@@ -22,26 +22,26 @@ _(Les mer om bruk av Github npm registry i Nav her: https://github.com/navikt/fr
 
 ## 📦 Kommandoer
 
-| **Kommando**          | **Beskrivelse**                                                     |
-| --------------------- | ------------------------------------------------------------------- |
-| `yarn install`        | Installerer alle avhengigheter                                      |
-| `yarn start`          | Starter både Bygger og Fyllut, inkludert backend                    |
-| `yarn start:bygger`   | Starter kun Bygger med backend                                      |
-| `yarn start:fyllut`   | Starter kun Fyllut med backend                                      |
-| `yarn build`          | Bygger React-appene (ikke nødvendig for lokal utvikling)            |
-| `yarn preview:bygger` | Starter Bygger fra bygd kode (`dist`-mappen)                        |
-| `yarn preview:fyllut` | Starter Fyllut fra bygd kode (`dist`-mappen)                        |
-| `yarn test`           | Kjører alle tester                                                  |
-| `yarn test:coverage`  | Tester med rapportering av dekningsgrad                             |
-| `yarn cypress:bygger` | Kjører Cypress-tester for Bygger                                    |
-| `yarn cypress:fyllut` | Kjører Cypress-tester for Fyllut                                    |
+| **Kommando**              | **Beskrivelse**                                                              |
+| ------------------------- | ---------------------------------------------------------------------------- |
+| `yarn install`            | Installerer alle avhengigheter                                               |
+| `yarn start`              | Starter både Bygger og Fyllut, inkludert backend                             |
+| `yarn start:bygger`       | Starter kun Bygger med backend                                               |
+| `yarn start:fyllut`       | Starter kun Fyllut med backend                                               |
+| `yarn build`              | Bygger React-appene (ikke nødvendig for lokal utvikling)                     |
+| `yarn preview:bygger`     | Starter Bygger fra bygd kode (`dist`-mappen)                                 |
+| `yarn preview:fyllut`     | Starter Fyllut fra bygd kode (`dist`-mappen)                                 |
+| `yarn test`               | Kjører alle tester                                                           |
+| `yarn test:coverage`      | Tester med rapportering av dekningsgrad                                      |
+| `yarn cypress:bygger`     | Kjører Cypress-tester for Bygger                                             |
+| `yarn cypress:fyllut`     | Kjører Cypress-tester for Fyllut                                             |
 | `yarn start:fyllut:mocks` | Starter Fyllut med mock server på ledige porter (for sub-agenter og Cypress) |
 | `yarn start:bygger:mocks` | Starter Bygger med mock server på ledige porter (for sub-agenter og Cypress) |
-| `yarn mocks:fyllut`   | Starter Mocks Server for Fyllut (brukes ved Cypress-testing)        |
-| `yarn check-types`    | Sjekker TypeScript-typer                                            |
-| `yarn clean`          | Sletter `node_modules`, `dist`, `build`, `coverage` for alle pakker |
-| `yarn lint`           | Sjekker kodekvalitet                                                |
-| `yarn get-tokens`     | Henter tokens for eksterne API-er ved lokal kjøring                 |
+| `yarn mocks:fyllut`       | Starter Mocks Server for Fyllut (brukes ved Cypress-testing)                 |
+| `yarn check-types`        | Sjekker TypeScript-typer                                                     |
+| `yarn clean`              | Sletter `node_modules`, `dist`, `build`, `coverage` for alle pakker          |
+| `yarn lint`               | Sjekker kodekvalitet                                                         |
+| `yarn get-tokens`         | Henter tokens for eksterne API-er ved lokal kjøring                          |
 
 ## ⚙️ Lokal konfigurasjon med dotenv
 
