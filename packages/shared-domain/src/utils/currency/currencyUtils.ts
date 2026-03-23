@@ -1,3 +1,5 @@
+import { numberUtils } from '../number';
+
 interface CurrencyOptions {
   currency?: string;
   iso?: boolean;
@@ -15,7 +17,7 @@ const toLocaleString = (value?: string | number, options?: CurrencyOptions) => {
     return value;
   }
 
-  return number.toLocaleString('no', {
+  return numberUtils.toLocaleString(number, {
     style: 'currency',
     currency: options?.currency || 'nok',
     currencyDisplay: options?.iso ? 'code' : 'symbol',
