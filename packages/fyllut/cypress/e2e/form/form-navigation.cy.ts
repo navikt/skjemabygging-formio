@@ -404,10 +404,10 @@ describe('Form navigation', () => {
 
         cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
         cy.findByRole('group', { name: /Vedlegg 1/ }).within(() => {
-          cy.findByRole('radio', { name: TEXTS.statiske.attachment.ettersender }).check();
+          cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadLater }).check();
         });
         cy.findByRole('group', { name: /Vedlegg 2/ }).within(() => {
-          cy.findByRole('radio', { name: TEXTS.statiske.attachment.ettersender }).check();
+          cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadLater }).check();
         });
         cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
           cy.findByRole('radio', { name: TEXTS.statiske.attachment.nei }).check();

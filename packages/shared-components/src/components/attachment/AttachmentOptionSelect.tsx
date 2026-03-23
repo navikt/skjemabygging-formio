@@ -4,6 +4,7 @@ import {
   attachmentUtils,
   ComponentValue,
   SubmissionAttachmentValue,
+  SubmissionMethod,
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { ChangeEvent, forwardRef, ReactNode } from 'react';
@@ -19,15 +20,30 @@ interface Props {
   translate: (text: string, params?: any) => string;
   deadline?: string;
   className?: string;
+  submissionMethod?: SubmissionMethod;
 }
 
 const AttachmentOptionSelect = forwardRef<HTMLFieldSetElement, Props>(
-  ({ attachmentValues, value, title, description, error, onChange, translate, deadline, className }: Props, ref) => {
+  (
+    {
+      attachmentValues,
+      value,
+      title,
+      description,
+      error,
+      onChange,
+      translate,
+      deadline,
+      className,
+      submissionMethod,
+    }: Props,
+    ref,
+  ) => {
     const additionalDocumentation = attachmentValues?.[value?.key]?.additionalDocumentation;
     const showDeadline = !!attachmentValues?.[value?.key]?.showDeadline;
 
     const additionalDocumentationMaxLength = 200;
-    const values = attachmentUtils.mapKeysToOptions(attachmentValues, translate);
+    const values = attachmentUtils.mapKeysToOptions(attachmentValues, translate, submissionMethod);
 
     const handleAttachmentChange = (key: string | undefined) => {
       if (key) {
