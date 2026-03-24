@@ -21,6 +21,7 @@ const getDecorator = async (redirect) => {
       level: 'Level4',
       simple: true,
       logoutWarning: true,
+      analyticsQueryParams: ['sub'],
     },
   });
 };
