@@ -30,7 +30,7 @@
 const ensureValue = (label: string | RegExp, value: string) => {
   cy.findByRole('textbox', { name: label }).then(($input) => {
     if (!$input.val() && !$input.is(':disabled') && !$input.attr('readonly')) {
-      cy.wrap($input).type(value);
+      cy.findByRole('textbox', { name: label }).type(value);
     }
   });
 };

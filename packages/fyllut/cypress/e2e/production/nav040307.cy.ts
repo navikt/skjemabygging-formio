@@ -126,7 +126,7 @@ describe('nav040307', () => {
 
       // Samtykke og erklæring – check all three required checkboxes
       cy.findAllByRole('checkbox').each(($cb) => {
-        cy.wrap($cb).check();
+        ($cb[0] as HTMLInputElement).click();
       });
       cy.clickNextStep();
 

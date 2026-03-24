@@ -36,19 +36,6 @@ const visitPanel = (panelKey: string) => {
   cy.defaultWaits();
 };
 
-const advancePastStartPanels = () => {
-  cy.get('#page-title')
-    .invoke('text')
-    .then((title) => {
-      const normalizedTitle = title.trim();
-
-      if (normalizedTitle === 'Veiledning' || normalizedTitle === 'Introduksjon') {
-        cy.clickNextStep();
-        advancePastStartPanels();
-      }
-    });
-};
-
 const fillDineOpplysninger = () => {
   cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola');
   cy.findByRole('textbox', { name: 'Etternavn' }).type('Nordmann');
@@ -82,17 +69,19 @@ const fillVedlegg = () => {
 };
 
 const goToBehandlingPanel = () => {
-  cy.visit('/fyllut/nav171501?sub=paper');
-  cy.defaultWaits();
-  advancePastStartPanels();
-  cy.findByRole('heading', { level: 2, name: 'Behandling av personopplysninger i søknaden' }).should('exist');
+  visitPanel('behandlingAvPersonopplysningerISoknaden');
+  cy.findByLabelText(/Vil du lese mer om hvordan NAV behandler personopplysninger/i).should('exist');
 };
 
 const goToSivilstatusPanel = () => {
-  goToBehandlingPanel();
-  selectRadio('Vil du lese mer om hvordan NAV behandler personopplysninger i forbindelse med søknaden din?', 'Nei');
-  cy.clickNextStep();
-  fillDineOpplysninger();
+  visitPanel('sivilstatus1');
+  cy.get('h2#page-title')
+    .invoke('text')
+    .then((title) => {
+      if (title.trim() === 'Dine opplysninger') {
+        fillDineOpplysninger();
+      }
+    });
   cy.findByRole('heading', { level: 2, name: 'Sivilstatus' }).should('exist');
 };
 
@@ -298,9 +287,7 @@ describe('nav171501', () => {
 
   describe('Summary', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav171501?sub=paper');
-      cy.defaultWaits();
-      advancePastStartPanels();
+      goToBehandlingPanel();
     });
 
     it('fills required fields and verifies summary', () => {

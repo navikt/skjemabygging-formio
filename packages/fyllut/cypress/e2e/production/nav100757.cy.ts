@@ -48,7 +48,10 @@ const clickCheckboxByName = (name: string | RegExp) => {
   cy.contains('label', name).then(($label) => {
     const inLabel = $label.find('input[type="checkbox"]');
     const inFieldset = $label.closest('fieldset').find('input[type="checkbox"]');
-    cy.wrap((inLabel.length ? inLabel : inFieldset).first()).click({ force: true });
+    const target = (inLabel.length ? inLabel : inFieldset).first().get(0) as HTMLInputElement | undefined;
+    if (target) {
+      target.click();
+    }
   });
 };
 

@@ -30,9 +30,9 @@ describe('nav100780', () => {
 
   beforeEach(() => {
     cy.defaultIntercepts();
-    cy.intercept('GET', '/fyllut/api/forms/nav100780*', { body: nav100780Form }).as('getForm');
-    cy.intercept('GET', '/fyllut/api/translations/nav100780*', { body: {} }).as('getTranslations');
-    cy.intercept('GET', '/fyllut/api/global-translations/*', { body: {} }).as('getGlobalTranslations');
+    cy.intercept('GET', '/fyllut/api/forms/nav100780*', { body: nav100780Form });
+    cy.intercept('GET', '/fyllut/api/translations/nav100780*', { body: {} });
+    cy.intercept('GET', '/fyllut/api/global-translations/*', { body: {} });
   });
 
   describe('Opplysninger om søker – address conditionals', () => {

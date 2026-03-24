@@ -54,11 +54,15 @@ const selectRadio = (label: string, option: string) => {
 };
 
 const openStepper = () => {
-  cy.findByRoleWhenAttached('button', { name: 'Vis alle steg' }).click();
+  cy.findByRoleWhenAttached('button', { name: 'Vis alle steg' }).then(($button) => {
+    ($button[0] as HTMLButtonElement).click();
+  });
 };
 
 const openStep = (name: string) => {
-  cy.findByRoleWhenAttached('link', { name }).click();
+  cy.findByRoleWhenAttached('link', { name }).then(($link) => {
+    ($link[0] as HTMLElement).click();
+  });
 };
 
 const fillDineOpplysningerForForeignApplicant = ({ refugee = true }: { refugee?: boolean } = {}) => {

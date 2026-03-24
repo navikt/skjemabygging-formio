@@ -39,7 +39,7 @@ const selectRadio = (label: string | RegExp, option: string | RegExp) => {
 const setCheckbox = (label: string | RegExp, checked: boolean) => {
   cy.findByRole('checkbox', { name: label }).then(($checkbox) => {
     if ($checkbox.is(':checked') !== checked) {
-      cy.wrap($checkbox).click();
+      cy.findByRole('checkbox', { name: label }).click();
     }
   });
 };
