@@ -12,6 +12,7 @@ import identity from './cutomized/identity';
 import nationalIdentityNumber from './cutomized/nationalIdentityNumber';
 import organizationNumber from './cutomized/organizationNumber';
 import phoneNumber from './cutomized/phoneNumber';
+import sender from './cutomized/sender';
 import surname from './cutomized/surname';
 import yourInformation from './cutomized/yourInformation';
 import datePicker from './date/datePicker';
@@ -75,6 +76,7 @@ export {
   row,
   select,
   selectBoxes,
+  sender,
   surname,
   textArea,
   textField,
