@@ -121,4 +121,103 @@ describe('attachmentUtils', () => {
       ]);
     });
   });
+
+  describe('isSingleUploadOnlyOption', () => {
+    const uploadOnlyValues = {
+      leggerVedNaa: { enabled: true },
+      ettersender: { enabled: false },
+      levertTidligere: { enabled: false },
+      harIkke: { enabled: false },
+      andre: { enabled: false },
+      nav: { enabled: false },
+      nei: { enabled: false },
+    };
+
+    it('returns true for digital with only leggerVedNaa enabled', () => {
+      expect(attachmentUtils.isSingleUploadOnlyOption(uploadOnlyValues, 'digital')).toBe(true);
+    });
+
+    it('returns true for digitalnologin with only leggerVedNaa enabled', () => {
+      expect(attachmentUtils.isSingleUploadOnlyOption(uploadOnlyValues, 'digitalnologin')).toBe(true);
+    });
+
+    it('returns false for paper even with only leggerVedNaa enabled', () => {
+      expect(attachmentUtils.isSingleUploadOnlyOption(uploadOnlyValues, 'paper')).toBe(false);
+    });
+
+    it('returns false when more than one option is enabled', () => {
+      expect(
+        attachmentUtils.isSingleUploadOnlyOption(
+          {
+            ...uploadOnlyValues,
+            ettersender: { enabled: true },
+          },
+          'digital',
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false when single enabled option is not leggerVedNaa', () => {
+      expect(
+        attachmentUtils.isSingleUploadOnlyOption(
+          {
+            ...uploadOnlyValues,
+            leggerVedNaa: { enabled: false },
+            ettersender: { enabled: true },
+          },
+          'digital',
+        ),
+      ).toBe(false);
+    });
+
+    it('supports array based options and returns true only when single leggerVedNaa option is present', () => {
+      expect(
+        attachmentUtils.isSingleUploadOnlyOption([{ value: 'leggerVedNaa', label: 'Upload now' }], 'digital'),
+      ).toBe(true);
+      expect(
+        attachmentUtils.isSingleUploadOnlyOption(
+          [
+            { value: 'leggerVedNaa', label: 'Upload now' },
+            { value: 'ettersender', label: 'Upload later' },
+          ],
+          'digital',
+        ),
+      ).toBe(false);
+    });
+  });
+
+  describe('getImplicitAttachmentValueForUploadOnly', () => {
+    const uploadOnlyValues = {
+      leggerVedNaa: { enabled: true },
+      ettersender: { enabled: false },
+      levertTidligere: { enabled: false },
+      harIkke: { enabled: false },
+      andre: { enabled: false },
+      nav: { enabled: false },
+      nei: { enabled: false },
+    };
+
+    it('returns leggerVedNaa for digital upload-only mode', () => {
+      expect(attachmentUtils.getImplicitAttachmentValueForUploadOnly(uploadOnlyValues, 'digital')).toBe('leggerVedNaa');
+    });
+
+    it('returns leggerVedNaa for digitalnologin upload-only mode', () => {
+      expect(attachmentUtils.getImplicitAttachmentValueForUploadOnly(uploadOnlyValues, 'digitalnologin')).toBe(
+        'leggerVedNaa',
+      );
+    });
+
+    it('returns undefined outside upload-only mode', () => {
+      expect(attachmentUtils.getImplicitAttachmentValueForUploadOnly(uploadOnlyValues, 'paper')).toBeUndefined();
+      expect(
+        attachmentUtils.getImplicitAttachmentValueForUploadOnly(
+          {
+            ...uploadOnlyValues,
+            ettersender: { enabled: true },
+          },
+          'digital',
+        ),
+      ).toBeUndefined();
+    });
+  });
 });

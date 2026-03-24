@@ -85,6 +85,12 @@ cd packages/bygger && yarn cypress run --browser electron --spec cypress/e2e/<sp
    Cypress suites.
 5. Shut down any local servers you started for testing before finishing the
    task, including `fyllut`, `bygger`, mock servers, and helper proxies.
+6. Prefer route-path form visits over `formPath` query usage:
+    - Use `cy.visit('/fyllut/<formPath>')` to open a form.
+    - Add `?sub=digital`, `?sub=digitalnologin`, or `?sub=paper` when testing a
+      specific submission method.
+    - Do not use `formPath` query param in normal tests unless the explicit test
+      purpose is to verify `formPath` query-param behavior itself.
 
 ## Troubleshooting
 

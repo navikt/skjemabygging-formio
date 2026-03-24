@@ -2,12 +2,16 @@ import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
 interface AttachmentType extends BaseComponentType {
   attachmentType?: 'default' | 'other';
-  attachmentValues?: Partial<typeof defaultAttachmentValues>;
+  attachmentValues?: Partial<typeof defaultAttachmentValues> | Partial<typeof defaultOtherAttachmentValues>;
   properties?: Record<string, any>;
 }
 
 const attachment = (props: AttachmentType) => {
   const { label, description, attachmentType = 'default', properties, attachmentValues = {} } = props ?? {};
+  const mergedAttachmentValues =
+    attachmentType === 'other'
+      ? { ...defaultOtherAttachmentValues, ...(attachmentValues as Partial<typeof defaultOtherAttachmentValues>) }
+      : { ...defaultAttachmentValues, ...(attachmentValues as Partial<typeof defaultAttachmentValues>) };
 
   return {
     ...staticDefaultValues,
@@ -19,8 +23,7 @@ const attachment = (props: AttachmentType) => {
         (attachmentType === 'other' ? '<p>Har du noen annen dokumentasjon du ønsker å legge ved?</p>' : ''),
     }),
     attachmentType,
-    attachmentValues:
-      attachmentType === 'other' ? defaultOtherAttachmentValues : { ...defaultAttachmentValues, ...attachmentValues },
+    attachmentValues: mergedAttachmentValues,
     properties: attachmentType === 'other' ? defaultOtherProperties : (properties ?? createDefaultProperties()),
   };
 };
