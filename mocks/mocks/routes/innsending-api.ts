@@ -418,12 +418,10 @@ export default [
     variants: [
       {
         id: 'success',
-        type: 'json',
+        type: 'middleware',
         options: {
-          status: 302,
-          body: {},
-          headers: {
-            Location: 'http://localhost:3300/send-inn-frontend',
+          middleware: (req, res) => {
+            res.redirect(302, `${req.protocol}://${req.get('host')}/send-inn-frontend`);
           },
         },
       },

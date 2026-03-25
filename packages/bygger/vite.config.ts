@@ -5,7 +5,8 @@ import { defineConfig, loadEnv, PluginOption } from 'vite';
 import { createHtmlPlugin } from 'vite-plugin-html';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
-const backendPort = process.argv.find((a) => a.startsWith('--backend-port='))?.split('=')[1] ?? '8080';
+const backendPort =
+  process.env.BACKEND_PORT ?? process.argv.find((a) => a.startsWith('--backend-port='))?.split('=')[1] ?? '8080';
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, 'env');
