@@ -15,6 +15,7 @@
  * Output (printed after servers are ready, easy to parse):
  *   START_PID=12345
  *   FYLLUT_MOCK_URL=http://127.0.0.1:3000
+ *   FYLLUT_MOCK_ADMIN_PORT=3310
  *   FYLLUT_BACKEND_URL=http://127.0.0.1:3001
  *   FYLLUT_FRONTEND_URL=http://127.0.0.1:3002
  */
@@ -75,7 +76,7 @@ const unknownArgs = args.filter((arg) => arg !== '--no-runtime-config');
 
 const configs = {
   fyllut: async () => {
-    const [mockPort, backendPort, frontendPort] = await getFreePorts(3);
+    const [mockPort, mockAdminPort, backendPort, frontendPort] = await getFreePorts(4);
     const mockUrl = `http://127.0.0.1:${mockPort}`;
     const backendUrl = `http://127.0.0.1:${backendPort}`;
     const frontendUrl = `http://127.0.0.1:${frontendPort}/fyllut`;
@@ -97,7 +98,12 @@ const configs = {
       commands: [
         [
           localBin(resolve(repoRoot, 'mocks'), 'ts-node'),
-          ['mocks/server.ts', '--no-plugins.inquirerCli.enabled', `--server.port=${mockPort}`],
+          [
+            'mocks/server.ts',
+            '--no-plugins.inquirerCli.enabled',
+            `--server.port=${mockPort}`,
+            `--plugins.adminApi.port=${mockAdminPort}`,
+          ],
           {},
           resolve(repoRoot, 'mocks'),
         ],
@@ -114,9 +120,10 @@ const configs = {
           resolve(repoRoot, 'packages/fyllut'),
         ],
       ],
-      ports: [mockPort, backendPort, frontendPort],
+      ports: [mockPort, mockAdminPort, backendPort, frontendPort],
       summaryLines: [
         `FYLLUT_MOCK_URL=${mockUrl}`,
+        `FYLLUT_MOCK_ADMIN_PORT=${mockAdminPort}`,
         `FYLLUT_BACKEND_URL=${backendUrl}`,
         `FYLLUT_FRONTEND_URL=${frontendUrl}`,
       ],
@@ -132,6 +139,7 @@ const configs = {
                     SKJEMABYGGING_PROXY_URL: `${mockUrl}/skjemabygging-proxy`,
                     AZURE_OPENID_CONFIG_TOKEN_ENDPOINT: `${mockUrl}/azure-openid/oauth2/v2.0/token`,
                     FORMIO_PROJECT_URL: `${mockUrl}/formio-api`,
+                    MOCKS_ADMIN_PORT: String(mockAdminPort),
                     SEND_INN_HOST: `${mockUrl}/send-inn`,
                     SEND_INN_FRONTEND: `${mockUrl}/send-inn-frontend`,
                     TOKEN_X_WELL_KNOWN_URL: `${mockUrl}/tokenx/.well-known`,
