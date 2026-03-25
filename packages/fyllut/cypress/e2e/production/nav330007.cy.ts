@@ -82,7 +82,12 @@ const goToSituasjonenDinForForelder = () => {
 };
 
 describe('nav330007', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.defaultInterceptsExternal();
   });

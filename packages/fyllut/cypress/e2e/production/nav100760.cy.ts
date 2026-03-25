@@ -20,7 +20,12 @@
  */
 
 describe('nav100760', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
   });
 
@@ -235,13 +240,11 @@ describe('nav100760', () => {
   });
 
   describe('Summary', () => {
-    beforeEach(() => {
+    it('fills required fields and verifies summary', () => {
       cy.visit('/fyllut/nav100760?sub=paper');
       cy.defaultWaits();
       cy.clickNextStep();
-    });
 
-    it('fills required fields and verifies summary', () => {
       // Veiledning – no required fields, proceed
       cy.clickNextStep();
 

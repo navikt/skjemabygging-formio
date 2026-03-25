@@ -47,23 +47,29 @@ const waitForComponent = (label: string | RegExp) => {
   cy.findByLabelText(label, undefined, { timeout: 20000 }).should('exist');
 };
 
+const visitPath = (path: string) => {
+  cy.visit(path);
+  cy.defaultWaits();
+};
+
 describe('nav040103', () => {
   const applicationDate = relativeDate(-14);
 
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
-    cy.intercept('GET', '/fyllut/api/forms/nav040103*', { body: form });
-    cy.intercept('GET', '/fyllut/api/translations/nav040103*', { body: { 'nb-NO': {} } });
+    cy.intercept('GET', '/fyllut/api/forms/nav040103*', { body: form }).as('getForm');
+    cy.intercept('GET', '/fyllut/api/translations/nav040103*', { body: { 'nb-NO': {} } }).as('getTranslations');
     cy.intercept('GET', '/fyllut/api/global-translations/*', { body: { 'nb-NO': {} } });
   });
 
   describe('Personalia conditionals', () => {
-    beforeEach(() => {
-      cy.visit('/fyllut/nav040103/personalia?sub=paper');
-      cy.defaultWaits();
-    });
-
     it('switches between fnr, birth date, and address branches based on identity answers', () => {
+      visitPath('/fyllut/nav040103/personalia?sub=paper');
       waitForComponent('Har du norsk fødselsnummer eller d-nummer?');
       cy.findByRole('textbox', { name: /fødselsnummer eller d-nummer/i }).should('not.exist');
       cy.findByRole('textbox', { name: /Din fødselsdato/ }).should('not.exist');
@@ -118,12 +124,8 @@ describe('nav040103', () => {
   });
 
   describe('Din situasjon conditionals', () => {
-    beforeEach(() => {
-      cy.visit('/fyllut/nav040103/dinSituasjon?sub=paper');
-      cy.defaultWaits();
-    });
-
     it('shows textarea only for the no-work branch and restores the arbeidsforhold grid otherwise', () => {
+      visitPath('/fyllut/nav040103/dinSituasjon?sub=paper');
       waitForComponent('Velg det alternativet som passer best for deg');
       cy.findByRole('textbox', { name: 'Hvis du ikke har vært i jobb, hva er da din situasjon?' }).should('not.exist');
 
@@ -144,12 +146,8 @@ describe('nav040103', () => {
   });
 
   describe('Arbeidsforhold i EØS conditionals', () => {
-    beforeEach(() => {
-      cy.visit('/fyllut/nav040103/arbeidsforholdIEos?sub=paper');
-      cy.defaultWaits();
-    });
-
     it('shows the EØS datagrid only when the user has worked abroad', () => {
+      visitPath('/fyllut/nav040103/arbeidsforholdIEos?sub=paper');
       waitForComponent(
         'Har du jobbet i et annet EØS-land, Sveits eller Storbritannia i løpet av de siste 36 månedene?',
       );
@@ -177,12 +175,8 @@ describe('nav040103', () => {
   });
 
   describe('Utdanning conditionals', () => {
-    beforeEach(() => {
-      cy.visit('/fyllut/nav040103/utdanning?sub=paper');
-      cy.defaultWaits();
-    });
-
     it('shows future-study question only when the user is not currently studying', () => {
+      visitPath('/fyllut/nav040103/utdanning?sub=paper');
       waitForComponent('Tar du utdanning eller opplæring?');
       cy.findByLabelText(
         'Planlegger du å starte eller fullføre utdanning eller opplæring samtidig som du mottar dagpenger?',
@@ -209,12 +203,8 @@ describe('nav040103', () => {
   });
 
   describe('Barnetillegg conditionals', () => {
-    beforeEach(() => {
-      cy.visit('/fyllut/nav040103/barnetillegg?sub=paper');
-      cy.defaultWaits();
-    });
-
     it('shows child details only when the user supports children under 18', () => {
+      visitPath('/fyllut/nav040103/barnetillegg?sub=paper');
       waitForComponent('Forsørger du barn under 18 år?');
       cy.findByRole('textbox', { name: 'Barnets fornavn' }).should('not.exist');
 
@@ -234,12 +224,8 @@ describe('nav040103', () => {
   });
 
   describe('Summary', () => {
-    beforeEach(() => {
-      cy.visit('/fyllut/nav040103?sub=paper');
-      cy.defaultWaits();
-    });
-
     it('fills required fields and verifies summary', () => {
+      visitPath('/fyllut/nav040103?sub=paper');
       cy.clickNextStep();
 
       // Veiledning

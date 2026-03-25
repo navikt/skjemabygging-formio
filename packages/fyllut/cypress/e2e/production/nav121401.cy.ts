@@ -56,7 +56,12 @@ const fillEgenInntektBarnetilleggPath = () => {
 };
 
 describe('nav121401', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
   });
 

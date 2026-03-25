@@ -85,7 +85,12 @@ const formatDate = (date: Date) => {
 };
 
 describe('nav040605', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.defaultInterceptsExternal();
   });

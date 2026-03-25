@@ -86,7 +86,12 @@ const openVedleggFromSoknaden = () => {
 };
 
 describe('nav100757', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.defaultInterceptsExternal();
   });

@@ -26,27 +26,43 @@ const dateOffset = (days: number) => {
   return formatDate(date);
 };
 
-const advancePastInformationalPanels = () => {
-  cy.get('#page-title').then(($heading) => {
-    const title = $heading.text().trim();
+const visitPath = (path: string) => {
+  cy.visit(path);
+  cy.defaultWaits();
+};
 
-    if (['Introduksjon', 'Veiledning'].includes(title)) {
-      cy.clickNextStep();
-      advancePastInformationalPanels();
-    }
-  });
+const advancePastInformationalPanels = () => {
+  cy.get('#page-title')
+    .invoke('text')
+    .then((title) => {
+      if (title.trim() === 'Introduksjon') {
+        cy.clickNextStep();
+      }
+    });
+  cy.get('#page-title')
+    .invoke('text')
+    .then((title) => {
+      if (title.trim() === 'Veiledning') {
+        cy.clickNextStep();
+      }
+    });
+  cy.get('#page-title').should('contain.text', 'Dine opplysninger');
 };
 
 describe('nav140410', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.defaultInterceptsExternal();
   });
 
   describe('Dine opplysninger conditionals', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav140410/dineOpplysninger?sub=paper');
-      cy.defaultWaits();
+      visitPath('/fyllut/nav140410/dineOpplysninger?sub=paper');
     });
 
     it('toggles address fields and folkeregister alerts based on the identity answer', () => {
@@ -98,8 +114,7 @@ describe('nav140410', () => {
 
   describe('Yrkesaktivitet conditionals', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav140410/yrkesaktivitet?sub=paper');
-      cy.defaultWaits();
+      visitPath('/fyllut/nav140410/yrkesaktivitet?sub=paper');
     });
 
     it('shows freelancer and self-employed follow-ups only for the matching answers', () => {
@@ -265,8 +280,7 @@ describe('nav140410', () => {
 
   describe('Summary', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav140410?sub=paper');
-      cy.defaultWaits();
+      visitPath('/fyllut/nav140410?sub=paper');
       advancePastInformationalPanels();
     });
 

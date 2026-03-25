@@ -39,6 +39,22 @@ const invoiceRecipientQuestion = /Hvem skal motta faktura for deg\?/i;
 const personInvoicePeriodQuestion = /For hvilken periode skal denne personen motta og betale faktura for deg\?/i;
 const companyInvoicePeriodQuestion = /For hvilken periode skal denne virksomheten motta og betale faktura for deg\?/i;
 
+const visitPath = (path: string) => {
+  cy.visit(path);
+  cy.get('#page-title').should('exist');
+};
+
+const visitPathWithFreshState = (path: string) => {
+  cy.clearCookies();
+  cy.visit(path, {
+    onBeforeLoad: (win) => {
+      win.localStorage.clear();
+      win.sessionStorage.clear();
+    },
+  });
+  cy.get('#page-title').should('exist');
+};
+
 const setupForm = () => {
   cy.defaultIntercepts();
   cy.intercept('GET', '/fyllut/api/forms/nav020805*', { body: nav020805Form });
@@ -47,13 +63,7 @@ const setupForm = () => {
 };
 
 const visitPanel = (panelKey: string) => {
-  cy.visit(`/fyllut/nav020805/${panelKey}${submission}`, {
-    onBeforeLoad: (win) => {
-      win.localStorage.clear();
-      win.sessionStorage.clear();
-    },
-  });
-  cy.get('#page-title').should('exist');
+  visitPath(`/fyllut/nav020805/${panelKey}${submission}`);
   cy.get('#page-title')
     .invoke('text')
     .then((title) => {
@@ -84,31 +94,7 @@ const selectCountry = (label: string | RegExp, value: string) => {
 };
 
 const visitRootForm = () => {
-  cy.visit(`/fyllut/nav020805${submission}`, {
-    onBeforeLoad: (win) => {
-      win.localStorage.clear();
-      win.sessionStorage.clear();
-    },
-  });
-  cy.get('#page-title').should('exist');
-  const advanceUntilVeiledningPrompt = (): void => {
-    cy.get('body').then(($body) => {
-      if ($body.text().match(onBehalfLabel)) {
-        return;
-      }
-
-      cy.get('#page-title')
-        .invoke('text')
-        .then((title) => {
-          if (title.includes('Introduksjon') || title.includes('Veiledning')) {
-            cy.clickNextStep();
-            advanceUntilVeiledningPrompt();
-          }
-        });
-    });
-  };
-
-  advanceUntilVeiledningPrompt();
+  visitPathWithFreshState(`/fyllut/nav020805/veiledning${submission}`);
   cy.findByLabelText(onBehalfLabel).should('exist');
 };
 
@@ -133,7 +119,12 @@ const goToRepresentantFromVeiledningAndWorkAnswers = () => {
 };
 
 describe('nav020805', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     setupForm();
   });
 

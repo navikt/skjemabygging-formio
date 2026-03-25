@@ -80,7 +80,12 @@ const goToVedleggFromTravel = () => {
 };
 
 describe('nav111221', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.defaultInterceptsExternal();
   });

@@ -84,7 +84,12 @@ const fillArbeidsforholdSummary = () => {
 };
 
 describe('nav040804', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
   });
 
@@ -230,15 +235,13 @@ describe('nav040804', () => {
   });
 
   describe('Arbeidstid siste 36 måneder conditionals', () => {
-    beforeEach(() => {
+    it('hides both 36-month datagrids when timelister will be attached', () => {
       cy.visit('/fyllut/nav040804/arbeidsforholdet?sub=paper');
       cy.defaultWaits();
       setWorkHistory(/^Arbeidstaker ønsker at Nav vurderer den gjennomsnittlige arbeidstiden/, true);
       cy.clickShowAllSteps();
       cy.findByRole('link', { name: 'Arbeidstid siste 36 måneder' }).click();
-    });
 
-    it('hides both 36-month datagrids when timelister will be attached', () => {
       cy.findAllByRole('textbox', { name: 'Uke/år' }).should('have.length', 2);
       cy.findAllByLabelText('Antall timer').should('have.length', 2);
 

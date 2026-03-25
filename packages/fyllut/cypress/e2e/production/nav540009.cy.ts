@@ -51,12 +51,13 @@ const visitPath = (path = '') => {
 };
 
 const advancePastIntroduksjon = () => {
-  cy.get('h2#page-title').then(($title) => {
-    if ($title.text().trim() === 'Introduksjon') {
-      cy.clickNextStep();
-      cy.get('h2#page-title').should('not.contain.text', 'Introduksjon');
-    }
-  });
+  cy.get('h2#page-title')
+    .invoke('text')
+    .then((title) => {
+      if (title.trim() === 'Introduksjon') {
+        cy.clickNextStep();
+      }
+    });
 };
 
 const answerRadio = (label: string | RegExp, value: string) => {
@@ -102,7 +103,12 @@ const openVedleggFromCurrentAgreement = () => {
 };
 
 describe('nav540009', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.defaultInterceptsExternal();
   });

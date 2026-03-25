@@ -53,7 +53,12 @@ const fillChildRow = (over18: 'Ja' | 'Nei') => {
 };
 
 describe('nav310002', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.defaultInterceptsExternal();
   });

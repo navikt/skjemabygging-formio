@@ -110,7 +110,12 @@ const chooseRegisteredNavAccount = () => {
 };
 
 describe('nav070208', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
   });
 

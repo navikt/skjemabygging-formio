@@ -56,11 +56,16 @@ const fillBaseVedlegg = () => {
 };
 
 describe('nav041604', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.defaultInterceptsExternal();
-    cy.intercept('GET', '/fyllut/api/forms/nav041604*', { body: nav041604Form });
-    cy.intercept('GET', '/fyllut/api/translations/nav041604*', { body: { 'nb-NO': {} } });
+    cy.intercept('GET', '/fyllut/api/forms/nav041604*', { body: nav041604Form }).as('getForm');
+    cy.intercept('GET', '/fyllut/api/translations/nav041604*', { body: { 'nb-NO': {} } }).as('getTranslations');
     cy.intercept('GET', '/fyllut/api/global-translations/*', { body: { 'nb-NO': {} } });
   });
 

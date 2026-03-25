@@ -19,14 +19,29 @@
  */
 
 describe('nav100718', () => {
+  const visitWithFreshState = (url: string) => {
+    cy.clearCookies();
+    cy.visit(url, {
+      onBeforeLoad: (win) => {
+        win.localStorage.clear();
+        win.sessionStorage.clear();
+      },
+    });
+    cy.defaultWaits();
+  };
+
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
   });
 
   describe('Veiledning – panel-level conditionals', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav100718/veiledning?sub=paper');
-      cy.defaultWaits();
+      visitWithFreshState('/fyllut/nav100718/veiledning?sub=paper');
     });
 
     it('hides soknadenGjelder, tilpasningskurs and begrunnelseFraFagpersoner for viaPasientjournalsystemet', () => {
@@ -58,8 +73,7 @@ describe('nav100718', () => {
 
   describe('Søknaden gjelder – opplysningerOmParorende cross-panel conditional', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav100718/veiledning?sub=paper');
-      cy.defaultWaits();
+      visitWithFreshState('/fyllut/nav100718/veiledning?sub=paper');
       cy.withinComponent('Hvordan ønsker du å fylle ut søknaden?', () => {
         cy.findByRole('radio', { name: 'Via dette skjemaet' }).click();
       });
@@ -93,8 +107,7 @@ describe('nav100718', () => {
 
   describe('Dine opplysninger – identity conditionals', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav100718/dineOpplysninger?sub=paper');
-      cy.defaultWaits();
+      visitWithFreshState('/fyllut/nav100718/dineOpplysninger?sub=paper');
     });
 
     it('shows adresse section when harDuFodselsnummer is nei', () => {
@@ -134,8 +147,7 @@ describe('nav100718', () => {
 
   describe('Begrunnelse fra fagperson(er) – same-panel conditionals', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav100718/begrunnelseFraFagpersoner?sub=paper');
-      cy.defaultWaits();
+      visitWithFreshState('/fyllut/nav100718/begrunnelseFraFagpersoner?sub=paper');
     });
 
     it('shows beskrivelse textareas when jegVilBeskriveDetIDenneSoknaden', () => {
@@ -162,8 +174,7 @@ describe('nav100718', () => {
 
   describe('Begrunnelse fra fagperson(er) – vedlegg cross-panel conditional', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav100718/begrunnelseFraFagpersoner?sub=paper');
-      cy.defaultWaits();
+      visitWithFreshState('/fyllut/nav100718/begrunnelseFraFagpersoner?sub=paper');
     });
 
     it('shows uttalelseFraFagpersonell attachment when jegLeggerVedBeskrivelseSomVedlegg', () => {
@@ -191,9 +202,7 @@ describe('nav100718', () => {
 
   describe('Summary', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav100718?sub=paper');
-      cy.defaultWaits();
-      cy.clickNextStep();
+      visitWithFreshState('/fyllut/nav100718/veiledning?sub=paper');
     });
 
     it('fills required fields and verifies summary', () => {

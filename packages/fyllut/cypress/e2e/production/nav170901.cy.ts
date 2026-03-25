@@ -68,7 +68,12 @@ const advancePastStartPanels = () => {
 };
 
 describe('nav170901', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
   });
 

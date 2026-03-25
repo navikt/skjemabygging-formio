@@ -133,11 +133,16 @@ const fillVeiledningAndApplicant = () => {
 };
 
 describe('nav100714', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.defaultInterceptsExternal();
-    cy.intercept('GET', '/fyllut/api/forms/nav100714*', { body: productionForm });
-    cy.intercept('GET', '/fyllut/api/translations/nav100714', { body: { 'nb-NO': {} } });
+    cy.intercept('GET', '/fyllut/api/forms/nav100714*', { body: productionForm }).as('getForm');
+    cy.intercept('GET', '/fyllut/api/translations/nav100714', { body: { 'nb-NO': {} } }).as('getTranslations');
     cy.intercept('GET', '/fyllut/api/global-translations/nb-NO', { body: { 'nb-NO': {} } });
   });
 

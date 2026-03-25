@@ -35,9 +35,19 @@ const selectRadio = (label: string | RegExp, option: string) => {
   });
 };
 
-const visitPanel = (panelKey: string) => {
-  cy.visit(`/fyllut/nav760501/${panelKey}?sub=paper`);
+const visitWithFreshState = (url: string) => {
+  cy.clearCookies();
+  cy.visit(url, {
+    onBeforeLoad: (win) => {
+      win.localStorage.clear();
+      win.sessionStorage.clear();
+    },
+  });
   cy.defaultWaits();
+};
+
+const visitPanel = (panelKey: string) => {
+  visitWithFreshState(`/fyllut/nav760501/${panelKey}?sub=paper`);
 };
 
 const chooseCountry = (label: string, value: string) => {
@@ -84,11 +94,16 @@ const goToVedleggFromTransportbehov = (setup: () => void) => {
 };
 
 describe('nav760501', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.defaultInterceptsExternal();
-    cy.intercept('GET', '/fyllut/api/forms/nav760501*', { body: nav760501Form });
-    cy.intercept('GET', '/fyllut/api/translations/nav760501*', { body: {} });
+    cy.intercept('GET', '/fyllut/api/forms/nav760501*', { body: nav760501Form }).as('getForm');
+    cy.intercept('GET', '/fyllut/api/translations/nav760501*', { body: {} }).as('getTranslations');
     cy.intercept('GET', '/fyllut/api/global-translations/*', { body: {} });
   });
 
@@ -254,26 +269,34 @@ describe('nav760501', () => {
       cy.findByRole('group', {
         name: /Legeerklæring på medisinske årsaker til at du ikke kan reise kollektivt|Medisinsk dokumentasjon/,
       }).should('exist');
+    });
 
-      cy.findByRole('link', { name: 'Transportbehov' }).click();
-      selectRadio(
-        'Hva er hovedårsaken til at du ikke kan reise kollektivt?',
-        'Henting eller levering av barn i barnehage eller skolefritidsordning (SFO)',
-      );
-      cy.findByRole('link', { name: 'Vedlegg' }).click();
+    it('shows the child-pickup attachment for the child-pickup branch', () => {
+      goToVedleggFromTransportbehov(() => {
+        selectRadio('Kan du reise kollektivt?', 'Nei');
+        selectRadio(
+          'Hva er hovedårsaken til at du ikke kan reise kollektivt?',
+          'Henting eller levering av barn i barnehage eller skolefritidsordning (SFO)',
+        );
+      });
+
       cy.findByRole('group', {
         name: /Dokumentasjon av plass i barnehage eller skolefritidsordning|Bekreftelse på barns plass i barnehage/,
       }).should('exist');
+    });
 
-      cy.findByRole('link', { name: 'Transportbehov' }).click();
-      selectRadio('Hva er hovedårsaken til at du ikke kan reise kollektivt?', 'Annet');
-      cy.findByRole('link', { name: 'Vedlegg' }).click();
+    it('shows the other-reason attachment for the other collective-transport branch', () => {
+      goToVedleggFromTransportbehov(() => {
+        selectRadio('Kan du reise kollektivt?', 'Nei');
+        selectRadio('Hva er hovedårsaken til at du ikke kan reise kollektivt?', 'Annet');
+      });
+
       cy.findByRole('group', {
         name: /Dokumentasjon av andre årsaker til at du ikke kan reise kollektivt|Dokumentasjon av reiseutgifter/,
       }).should('exist');
     });
 
-    it('shows own-car and taxi attachments for the matching no-collective branches', () => {
+    it('shows the own-car attachment when the applicant can use their own car', () => {
       goToVedleggFromTransportbehov(() => {
         selectRadio('Kan du reise kollektivt?', 'Nei');
         selectRadio('Hva er hovedårsaken til at du ikke kan reise kollektivt?', 'Dårlig transporttilbud');
@@ -287,19 +310,36 @@ describe('nav760501', () => {
       cy.findByRole('group', {
         name: /Dokumentasjon av utgifter knyttet til bruk av egen bil|Dokumentasjon på utgifter knyttet til bruk av egen bil/,
       }).should('exist');
+    });
 
-      cy.findByRole('link', { name: 'Transportbehov' }).click();
-      selectRadio('Kan du benytte egen bil?', 'Nei');
-      selectRadio('Hva er årsaken til at du ikke kan benytte egen bil?', 'Helsemessige årsaker');
-      cy.findByRole('link', { name: 'Vedlegg' }).click();
+    it('shows the health-based own-car attachment when the applicant cannot use their own car for health reasons', () => {
+      goToVedleggFromTransportbehov(() => {
+        selectRadio('Kan du reise kollektivt?', 'Nei');
+        selectRadio('Hva er hovedårsaken til at du ikke kan reise kollektivt?', 'Dårlig transporttilbud');
+        cy.findByRole('textbox', {
+          name: 'Beskriv de spesielle forholdene ved reiseveien som gjør at du ikke kan reise kollektivt',
+        }).type('Det går ingen buss på aktuelle tidspunkter.');
+        selectRadio('Kan du benytte egen bil?', 'Nei');
+        selectRadio('Hva er årsaken til at du ikke kan benytte egen bil?', 'Helsemessige årsaker');
+      });
+
       cy.findByRole('group', {
         name: /Legeerklæring på helsemessige årsaker til at du ikke kan benytte egen bil|Medisinsk dokumentasjon/,
       }).should('exist');
+    });
 
-      cy.findByRole('link', { name: 'Transportbehov' }).click();
-      selectRadio('Hva er årsaken til at du ikke kan benytte egen bil?', 'Annet');
-      selectRadio('Kan du benytte drosje?', 'Ja');
-      cy.findByRole('link', { name: 'Vedlegg' }).click();
+    it('shows the other-reason own-car and taxi attachments for the matching branch', () => {
+      goToVedleggFromTransportbehov(() => {
+        selectRadio('Kan du reise kollektivt?', 'Nei');
+        selectRadio('Hva er hovedårsaken til at du ikke kan reise kollektivt?', 'Dårlig transporttilbud');
+        cy.findByRole('textbox', {
+          name: 'Beskriv de spesielle forholdene ved reiseveien som gjør at du ikke kan reise kollektivt',
+        }).type('Det går ingen buss på aktuelle tidspunkter.');
+        selectRadio('Kan du benytte egen bil?', 'Nei');
+        selectRadio('Hva er årsaken til at du ikke kan benytte egen bil?', 'Annet');
+        selectRadio('Kan du benytte drosje?', 'Ja');
+      });
+
       cy.findByRole('group', {
         name: /Dokumentasjon av andre årsaker til at du ikke kan benytte egen bil|Dokumentasjon av reiseutgifter/,
       }).should('exist');
@@ -311,8 +351,7 @@ describe('nav760501', () => {
 
   describe('Summary', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav760501?sub=paper');
-      cy.defaultWaits();
+      visitWithFreshState('/fyllut/nav760501?sub=paper');
     });
 
     it('fills required fields and verifies summary', () => {

@@ -43,7 +43,12 @@ const checkSelvstendigNaeringsdrivende = () => {
 };
 
 describe('nav083501', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
   });
 

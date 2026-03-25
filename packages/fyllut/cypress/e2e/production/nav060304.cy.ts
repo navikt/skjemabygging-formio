@@ -143,10 +143,15 @@ const goToTekniskeHjelpemidlerSelf = () => {
 };
 
 describe('nav060304', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
-    cy.intercept('GET', `/fyllut/api/forms/${formPath}*`, { body: nav060304Form });
-    cy.intercept('GET', `/fyllut/api/translations/${formPath}*`, { body: { 'nb-NO': {} } });
+    cy.intercept('GET', `/fyllut/api/forms/${formPath}*`, { body: nav060304Form }).as('getForm');
+    cy.intercept('GET', `/fyllut/api/translations/${formPath}*`, { body: { 'nb-NO': {} } }).as('getTranslations');
     cy.intercept('GET', '/fyllut/api/global-translations/*', { body: { 'nb-NO': {} } });
   });
 

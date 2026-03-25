@@ -49,7 +49,12 @@ const answerRadio = (label: string | RegExp, value: string) => {
 };
 
 describe('nav540006', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
   });
 

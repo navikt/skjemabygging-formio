@@ -23,7 +23,12 @@
  */
 
 describe('nav111215b', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.defaultInterceptsExternal();
   });
@@ -144,12 +149,10 @@ describe('nav111215b', () => {
   });
 
   describe('Barn – datagrid conditionals', () => {
-    beforeEach(() => {
+    it('shows child support details when the child is included in the application', () => {
       cy.visit('/fyllut/nav111215b/page5?sub=paper');
       cy.defaultWaits();
-    });
 
-    it('shows child support details when the child is included in the application', () => {
       cy.findByLabelText('Hvem passer barnet?').should('not.exist');
 
       cy.findByRole('checkbox', { name: 'Jeg søker om stønad til pass av dette barnet.' }).click();
@@ -159,6 +162,9 @@ describe('nav111215b', () => {
     });
 
     it('shows the fifth-grade reasons when the child has started fifth grade', () => {
+      cy.visit('/fyllut/nav111215b/page5?sub=paper');
+      cy.defaultWaits();
+
       cy.findByRole('checkbox', { name: 'Jeg søker om stønad til pass av dette barnet.' }).click();
       cy.findByLabelText('Hva er årsaken til at barnet ditt trenger pass etter at han har begynt i 5. klasse?').should(
         'not.exist',
@@ -175,6 +181,9 @@ describe('nav111215b', () => {
     });
 
     it('shows the evening-activity information for the evening branch', () => {
+      cy.visit('/fyllut/nav111215b/page5?sub=paper');
+      cy.defaultWaits();
+
       cy.findByRole('checkbox', { name: 'Jeg søker om stønad til pass av dette barnet.' }).click();
       cy.withinComponent('Har barnet startet i 5. klasse i perioden du søker for?', () => {
         cy.findByRole('radio', { name: 'Ja' }).click();
@@ -196,6 +205,9 @@ describe('nav111215b', () => {
     });
 
     it('shows the health-personnel information for the care branch', () => {
+      cy.visit('/fyllut/nav111215b/page5?sub=paper');
+      cy.defaultWaits();
+
       cy.findByRole('checkbox', { name: 'Jeg søker om stønad til pass av dette barnet.' }).click();
       cy.withinComponent('Har barnet startet i 5. klasse i perioden du søker for?', () => {
         cy.findByRole('radio', { name: 'Ja' }).click();

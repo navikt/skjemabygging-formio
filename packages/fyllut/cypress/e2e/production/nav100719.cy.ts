@@ -121,7 +121,12 @@ const answerVedleggMinimum = () => {
 };
 
 describe('nav100719', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.defaultInterceptsExternal();
   });

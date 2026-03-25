@@ -34,7 +34,12 @@ const selectKjopstype = (option: string) => {
 const attachmentLaterOption = /Jeg ettersender dokumentasjonen senere|Jeg sender det etterpå/i;
 
 describe('nav100758', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.defaultInterceptsExternal();
   });

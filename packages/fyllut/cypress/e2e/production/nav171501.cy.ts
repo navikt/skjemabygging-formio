@@ -31,9 +31,19 @@ const selectRadio = (label: string | RegExp, option: string) => {
   });
 };
 
-const visitPanel = (panelKey: string) => {
-  cy.visit(`/fyllut/nav171501/${panelKey}?sub=paper`);
+const visitWithFreshState = (path: string) => {
+  cy.clearCookies();
+  cy.visit(path, {
+    onBeforeLoad: (win) => {
+      win.localStorage.clear();
+      win.sessionStorage.clear();
+    },
+  });
   cy.defaultWaits();
+};
+
+const visitPanel = (panelKey: string) => {
+  visitWithFreshState(`/fyllut/nav171501/${panelKey}?sub=paper`);
 };
 
 const fillDineOpplysninger = () => {
@@ -86,7 +96,12 @@ const goToSivilstatusPanel = () => {
 };
 
 describe('nav171501', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.defaultInterceptsExternal();
   });

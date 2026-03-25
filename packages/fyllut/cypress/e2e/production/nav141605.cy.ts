@@ -47,27 +47,52 @@ const setSelectboxOption = (label: string | RegExp, option: string | RegExp, che
   });
 };
 
-const visitPanel = (panelKey: string) => {
-  cy.visit(`/fyllut/nav141605/${panelKey}?sub=paper`);
+const visitPath = (path: string, freshState = false) => {
+  if (freshState) {
+    cy.clearCookies();
+  }
+  cy.visit(
+    path,
+    freshState
+      ? {
+          onBeforeLoad: (win) => {
+            win.localStorage.clear();
+            win.sessionStorage.clear();
+          },
+        }
+      : undefined,
+  );
   cy.defaultWaits();
 };
 
+const visitPanel = (panelKey: string) => {
+  visitPath(`/fyllut/nav141605/${panelKey}?sub=paper`, true);
+};
+
 const visitRootForm = () => {
-  cy.visit('/fyllut/nav141605?sub=paper');
-  cy.defaultWaits();
+  visitPath('/fyllut/nav141605?sub=paper', true);
+  cy.get('h2#page-title')
+    .invoke('text')
+    .then((rawTitle) => {
+      const title = rawTitle.trim();
 
-  const advanceToVeiledning = (): void => {
-    cy.get('body').then(($body) => {
-      if ($body.text().includes('Jeg bekrefter at jeg vil svare så riktig som jeg kan.')) {
-        return;
+      if (title.includes('Introduksjon')) {
+        cy.clickNextStep();
       }
-
-      cy.clickNextStep();
-      advanceToVeiledning();
     });
-  };
 
-  advanceToVeiledning();
+  cy.get('h2#page-title')
+    .invoke('text')
+    .then((rawTitle) => {
+      const title = rawTitle.trim();
+
+      if (title !== 'Veiledning') {
+        cy.clickShowAllSteps();
+        cy.findByRole('link', { name: 'Veiledning' }).click();
+      }
+    });
+
+  cy.findByRole('checkbox', { name: /Jeg bekrefter at jeg vil svare så riktig som jeg kan/ }).should('exist');
 };
 
 const fillDineOpplysninger = () => {
@@ -108,7 +133,12 @@ const goToPeriodeMedForeldrepengerMorPath = () => {
 };
 
 describe('nav141605', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.defaultInterceptsExternal();
   });

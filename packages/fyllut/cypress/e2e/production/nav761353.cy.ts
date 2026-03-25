@@ -32,7 +32,12 @@ const selectVta = () => {
 };
 
 describe('nav761353', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
   });
 

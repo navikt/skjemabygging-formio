@@ -96,7 +96,12 @@ const goToStudierPanel = () => {
 };
 
 describe('nav020807', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.intercept('GET', '/fyllut/api/forms/nav020807*', { body: nav020807Form });
     cy.intercept('GET', '/fyllut/api/translations/nav020807*', { body: {} });

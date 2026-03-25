@@ -78,6 +78,11 @@ const assertSupplementAmountFieldsVisible = (monthlyAmount: RegExp, fullPosition
   assertTextboxVisibility(fullPositionAmount, visible);
 };
 
+const visitPath = (path: string) => {
+  cy.visit(path);
+  cy.defaultWaits();
+};
+
 const testSupplementFollowUpFields = () => {
   supplementConfigs.forEach(({ question, monthlyAmount, fullPositionAmount }) => {
     assertSupplementAmountFieldsVisible(monthlyAmount, fullPositionAmount, false);
@@ -123,19 +128,24 @@ const fillSisteSykmeldingMinimum = (incomeOption: 'Per uke' | 'Per måned') => {
 };
 
 const advancePastInformationalPanels = () => {
-  cy.get('h2#page-title').then(($heading) => {
-    const title = $heading.text().trim();
-
-    if (title === 'Veiledning' || title === 'Introduksjon') {
-      cy.clickNextStep();
-      advancePastInformationalPanels();
-    }
-  });
+  cy.get('h2#page-title')
+    .invoke('text')
+    .then((title) => {
+      if (title.trim() === 'Introduksjon') {
+        cy.clickNextStep();
+      }
+    });
+  cy.get('h2#page-title')
+    .invoke('text')
+    .then((title) => {
+      if (title.trim() === 'Veiledning') {
+        cy.clickNextStep();
+      }
+    });
 };
 
 const goToPage4 = () => {
-  cy.visit('/fyllut/nav120606');
-  cy.defaultWaits();
+  visitPath('/fyllut/nav120606');
   advancePastInformationalPanels();
   cy.findByRole('heading', { level: 2, name: 'Personopplysninger' }).should('exist');
   fillPersonopplysninger();
@@ -151,7 +161,12 @@ const goToPage5 = () => {
 };
 
 describe('nav120606', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
   });
 

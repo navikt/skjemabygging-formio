@@ -114,7 +114,12 @@ const goToVedleggFromBarn = () => {
 };
 
 describe('nav121501', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.defaultInterceptsExternal();
   });

@@ -20,14 +20,29 @@
  */
 
 describe('nav100754', () => {
+  const visitWithFreshState = (url: string) => {
+    cy.clearCookies();
+    cy.visit(url, {
+      onBeforeLoad: (win) => {
+        win.localStorage.clear();
+        win.sessionStorage.clear();
+      },
+    });
+    cy.defaultWaits();
+  };
+
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
   });
 
   describe('Veiledning – servicehund erfaring conditional', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav100754/veiledning?sub=paper');
-      cy.defaultWaits();
+      visitWithFreshState('/fyllut/nav100754/veiledning?sub=paper');
     });
 
     it('shows erfaring fields only when harDuHattServicehundTidligere is ja', () => {
@@ -52,8 +67,7 @@ describe('nav100754', () => {
 
   describe('Dine opplysninger – identity conditionals', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav100754/dineOpplysninger?sub=paper');
-      cy.defaultWaits();
+      visitWithFreshState('/fyllut/nav100754/dineOpplysninger?sub=paper');
     });
 
     it('shows adresse section when user has no fnr', () => {
@@ -77,8 +91,7 @@ describe('nav100754', () => {
 
   describe('Bolig og arbeid – arbeid conditionals', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav100754/boligOgArbeid?sub=paper');
-      cy.defaultWaits();
+      visitWithFreshState('/fyllut/nav100754/boligOgArbeid?sub=paper');
     });
 
     it('shows hund-på-jobb question only when in arbeid or utdanning', () => {
@@ -120,8 +133,7 @@ describe('nav100754', () => {
 
   describe('Behov – kommunale tjenester og hjelp conditionals', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav100754/behov?sub=paper');
-      cy.defaultWaits();
+      visitWithFreshState('/fyllut/nav100754/behov?sub=paper');
     });
 
     it('shows kommunale tjenester field when mottarDuKommunaleTjenester is ja', () => {
@@ -165,8 +177,7 @@ describe('nav100754', () => {
 
   describe('Andre opplysninger – andre dyr conditional', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav100754/andreOpplysninger?sub=paper');
-      cy.defaultWaits();
+      visitWithFreshState('/fyllut/nav100754/andreOpplysninger?sub=paper');
     });
 
     it('shows hvilke dyr field only when harDuAndreDyr is ja', () => {
@@ -188,8 +199,7 @@ describe('nav100754', () => {
 
   describe('Vedlegg – attachment fields', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav100754/veiledning?sub=paper');
-      cy.defaultWaits();
+      visitWithFreshState('/fyllut/nav100754/veiledning?sub=paper');
     });
 
     it('shows legeerklaering and uttalelse attachments with ettersender option, annenDokumentasjon without', () => {
@@ -215,9 +225,7 @@ describe('nav100754', () => {
 
   describe('Summary', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav100754?sub=paper');
-      cy.defaultWaits();
-      cy.clickNextStep();
+      visitWithFreshState('/fyllut/nav100754/veiledning?sub=paper');
     });
 
     it('fills required fields across all panels and verifies summary', () => {

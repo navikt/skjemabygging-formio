@@ -380,6 +380,19 @@ Repeated direct-panel visits in `beforeEach` can sometimes flake with a missing
 failing only on the second `beforeEach`, move the `cy.visit(...);
 cy.defaultWaits();` into each `it` block for that suite.
 
+An even more common rescue is to clear browser state before every repeated
+direct visit. With `testIsolation: false`, the next `cy.visit()` can reuse
+cookies / localStorage / sessionStorage from the previous `it`, and then
+`cy.defaultWaits()` can hang on `@getConfig` or `@getForm` because the app
+never makes a fresh bootstrap request. For panel-visit suites and root-summary
+helpers, prefer a helper such as `visitWithClearedState(...)` /
+`visitWithFreshState(...)` that calls `cy.clearCookies()` and clears
+`localStorage` + `sessionStorage` in `onBeforeLoad` before the `cy.visit()`.
+
+If the failure message is exactly "timed out waiting for `@getConfig`" or
+"timed out waiting for `@getForm`" with **"No request ever occurred"**, treat
+stale client state as the first suspect before changing selectors.
+
 If a later direct-panel `cy.visit()` still reuses cached config and
 `cy.defaultWaits()` hangs on `@getConfig`, wait for a stable page cue such as
 `#page-title` or the expected panel heading instead of forcing the intercept

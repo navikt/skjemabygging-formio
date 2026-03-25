@@ -117,11 +117,16 @@ const goToBarnsBostedOgSamvaer = () => {
 };
 
 describe('nav540004', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.defaultInterceptsExternal();
-    cy.intercept('GET', `/fyllut/api/forms/${formPath}*`, { body: nav540004Form });
-    cy.intercept('GET', `/fyllut/api/translations/${formPath}*`, { body: { 'nb-NO': {} } });
+    cy.intercept('GET', `/fyllut/api/forms/${formPath}*`, { body: nav540004Form }).as('getForm');
+    cy.intercept('GET', `/fyllut/api/translations/${formPath}*`, { body: { 'nb-NO': {} } }).as('getTranslations');
     cy.intercept('GET', '/fyllut/api/global-translations/*', { body: { 'nb-NO': {} } });
   });
 

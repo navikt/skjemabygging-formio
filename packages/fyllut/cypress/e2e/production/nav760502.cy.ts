@@ -35,9 +35,13 @@ const selectRadio = (label: string | RegExp, option: string | RegExp) => {
   });
 };
 
-const visitPanel = (panelKey: string) => {
-  cy.visit(`/fyllut/nav760502/${panelKey}?sub=paper`);
+const visitPath = (path: string) => {
+  cy.visit(path);
   cy.defaultWaits();
+};
+
+const visitPanel = (panelKey: string) => {
+  visitPath(`/fyllut/nav760502/${panelKey}?sub=paper`);
 };
 
 const chooseCountry = (value: string) => {
@@ -95,11 +99,16 @@ const goToVeiledning = () => {
 };
 
 describe('nav760502', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.defaultInterceptsExternal();
-    cy.intercept('GET', '/fyllut/api/forms/nav760502*', { body: nav760502Form });
-    cy.intercept('GET', '/fyllut/api/translations/nav760502*', { body: {} });
+    cy.intercept('GET', '/fyllut/api/forms/nav760502*', { body: nav760502Form }).as('getForm');
+    cy.intercept('GET', '/fyllut/api/translations/nav760502*', { body: {} }).as('getTranslations');
     cy.intercept('GET', '/fyllut/api/global-translations/*', { body: {} });
   });
 
@@ -286,8 +295,7 @@ describe('nav760502', () => {
 
   describe('Summary', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav760502?sub=paper');
-      cy.defaultWaits();
+      visitPath('/fyllut/nav760502?sub=paper');
     });
 
     it('fills required fields and verifies summary', () => {

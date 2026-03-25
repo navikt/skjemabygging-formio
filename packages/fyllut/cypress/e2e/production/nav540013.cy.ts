@@ -79,7 +79,12 @@ const fillOtherPartyMinimal = () => {
 };
 
 describe('nav540013', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.defaultInterceptsExternal();
   });

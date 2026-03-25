@@ -73,7 +73,12 @@ const fillArbeidstidForSummary = () => {
 };
 
 describe('nav040803', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
   });
 

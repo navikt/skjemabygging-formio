@@ -188,7 +188,12 @@ const fillVurderingAvKravene = () => {
 };
 
 describe('nav670103', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
   });
 

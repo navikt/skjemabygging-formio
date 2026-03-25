@@ -104,16 +104,19 @@ const goToPanelAfterMotpart = (
 };
 
 describe('nav530005', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
   });
 
   describe('Kravet conditionals', () => {
-    beforeEach(() => {
-      visitWithFreshState('/fyllut/nav530005/kravet?sub=paper');
-    });
-
     it('toggles guidance alert and krav question from samtykke answer', () => {
+      visitWithFreshState('/fyllut/nav530005/kravet?sub=paper');
+
       cy.contains(/setter seg mot at NAV avgjør kravet/i).should('not.exist');
       cy.findByLabelText('Hva gjelder kravet?').should('not.exist');
 
@@ -127,6 +130,8 @@ describe('nav530005', () => {
     });
 
     it('shows fastsettelse fields only for selected checkbox branches', () => {
+      visitWithFreshState('/fyllut/nav530005/kravet?sub=paper');
+
       chooseKrav('Fastsettelse');
 
       cy.findByRole('group', {

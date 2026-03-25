@@ -59,11 +59,16 @@ const goToPanel = (panelTitle: string) => {
 };
 
 describe('nav570008', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.defaultInterceptsExternal();
-    cy.intercept('GET', '/fyllut/api/forms/nav570008*', { body: nav570008Form });
-    cy.intercept('GET', '/fyllut/api/translations/nav570008*', { body: {} });
+    cy.intercept('GET', '/fyllut/api/forms/nav570008*', { body: nav570008Form }).as('getForm');
+    cy.intercept('GET', '/fyllut/api/translations/nav570008*', { body: {} }).as('getTranslations');
     cy.intercept('GET', '/fyllut/api/global-translations/*', { body: {} });
   });
 

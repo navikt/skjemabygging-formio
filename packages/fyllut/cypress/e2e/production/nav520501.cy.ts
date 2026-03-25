@@ -56,9 +56,13 @@ const fillBackdatingMonth = () => {
   cy.findByRole('textbox', { name: /Jeg ønsker innkreving fra Skatteetaten fra og med/ }).type('01.2027');
 };
 
-const goToPartyPanel = () => {
-  cy.visit('/fyllut/nav520501/partISaken?sub=paper');
+const visitPath = (path: string) => {
+  cy.visit(path);
   cy.defaultWaits();
+};
+
+const goToPartyPanel = () => {
+  visitPath('/fyllut/nav520501/partISaken?sub=paper');
 };
 
 const choosePartyAndOpenPanel = (partyOption: string, panelTitle: string) => {
@@ -72,18 +76,23 @@ const goToVeiledningPanel = () => {
   cy.get('#page-title')
     .invoke('text')
     .then((title) => {
-      if (title.trim() !== 'Veiledning') {
+      if (title.includes('Introduksjon')) {
         cy.clickNextStep();
-        goToVeiledningPanel();
       }
     });
+  cy.get('#page-title').should('contain.text', 'Veiledning');
 };
 
 describe('nav520501', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
-    cy.intercept('GET', '/fyllut/api/forms/nav520501*', { body: nav520501Form });
-    cy.intercept('GET', '/fyllut/api/translations/nav520501*', { body: {} });
+    cy.intercept('GET', '/fyllut/api/forms/nav520501*', { body: nav520501Form }).as('getForm');
+    cy.intercept('GET', '/fyllut/api/translations/nav520501*', { body: {} }).as('getTranslations');
     cy.intercept('GET', '/fyllut/api/global-translations/*', { body: {} });
   });
 
@@ -225,8 +234,7 @@ describe('nav520501', () => {
 
   describe('Summary', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav520501?sub=paper');
-      cy.defaultWaits();
+      visitPath('/fyllut/nav520501?sub=paper');
       goToVeiledningPanel();
     });
 

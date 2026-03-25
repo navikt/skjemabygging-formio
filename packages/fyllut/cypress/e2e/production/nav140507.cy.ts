@@ -30,7 +30,12 @@ const getValidFutureTermDate = () => {
 };
 
 describe('nav140507', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
   });
 

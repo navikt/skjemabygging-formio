@@ -21,6 +21,11 @@
 const formPath = 'nav640100';
 const paperPath = (suffix = '') => `/fyllut/${formPath}${suffix}?sub=paper`;
 
+const visitPath = (path: string) => {
+  cy.visit(path);
+  cy.defaultWaits();
+};
+
 const waitForPageTitle = (title: string) => {
   cy.get('#page-title').should('contain.text', title);
 };
@@ -186,14 +191,15 @@ const fillUtenlandsoppholdNo = () => {
 };
 
 const goToSoknadenFromRoot = () => {
-  cy.visit(paperPath());
-  cy.defaultWaits();
+  visitPath(paperPath());
 
-  cy.get('body').then(($body) => {
-    if ($body.find('#page-title').text().trim() !== 'Veiledning') {
-      cy.clickNextStep();
-    }
-  });
+  cy.get('#page-title')
+    .invoke('text')
+    .then((title) => {
+      if (title.includes('Introduksjon')) {
+        cy.clickNextStep();
+      }
+    });
 
   waitForPageTitle('Veiledning');
   cy.findByRole('checkbox', { name: 'Jeg bekrefter at jeg vil svare så riktig som jeg kan.' }).click();
@@ -314,14 +320,19 @@ const chooseEttersender = (groupLabel: RegExp) => {
 };
 
 describe('nav640100', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.defaultInterceptsExternal();
   });
 
   describe('Søknaden conditionals', () => {
     beforeEach(() => {
-      cy.visit(paperPath('/soknaden'));
+      visitPath(paperPath('/soknaden'));
       waitForPageTitle('Søknaden');
     });
 
@@ -491,16 +502,17 @@ describe('nav640100', () => {
 
   describe('Summary', () => {
     beforeEach(() => {
-      cy.visit(paperPath());
-      cy.defaultWaits();
+      visitPath(paperPath());
     });
 
     it('fills the guardian happy path and verifies the summary', () => {
-      cy.get('body').then(($body) => {
-        if ($body.find('#page-title').text().trim() !== 'Veiledning') {
-          cy.clickNextStep();
-        }
-      });
+      cy.get('#page-title')
+        .invoke('text')
+        .then((title) => {
+          if (title.includes('Introduksjon')) {
+            cy.clickNextStep();
+          }
+        });
       waitForPageTitle('Veiledning');
       cy.findByRole('checkbox', { name: 'Jeg bekrefter at jeg vil svare så riktig som jeg kan.' }).click();
       cy.clickNextStep();

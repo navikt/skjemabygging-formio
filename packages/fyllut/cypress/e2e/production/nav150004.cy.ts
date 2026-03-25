@@ -71,7 +71,12 @@ const fillOtherParentBase = () => {
 };
 
 describe('nav150004', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.defaultInterceptsExternal();
   });

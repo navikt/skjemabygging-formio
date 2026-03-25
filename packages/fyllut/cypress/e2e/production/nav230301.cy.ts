@@ -45,7 +45,12 @@ const setCheckbox = (label: string | RegExp, checked: boolean) => {
 };
 
 describe('nav230301', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.defaultInterceptsExternal();
   });

@@ -59,7 +59,12 @@ describe('nav040205', () => {
     cy.findByRole('link', { name: 'Vedlegg' }).click();
   };
 
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
   });
 

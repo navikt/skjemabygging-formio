@@ -50,10 +50,15 @@ const chooseEttersender = (groupName: RegExp) => {
 };
 
 describe('nav620301', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
-    cy.intercept('GET', '/fyllut/api/forms/nav620301*', { body: nav620301Form });
-    cy.intercept('GET', '/fyllut/api/translations/nav620301*', { body: {} });
+    cy.intercept('GET', '/fyllut/api/forms/nav620301*', { body: nav620301Form }).as('getForm');
+    cy.intercept('GET', '/fyllut/api/translations/nav620301*', { body: {} }).as('getTranslations');
     cy.intercept('GET', '/fyllut/api/global-translations/*', { body: {} });
   });
 

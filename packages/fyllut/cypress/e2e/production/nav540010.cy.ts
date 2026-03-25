@@ -54,7 +54,12 @@ const openParentAdultPanel = (title: string) => {
 };
 
 describe('nav540010', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.defaultInterceptsExternal();
   });

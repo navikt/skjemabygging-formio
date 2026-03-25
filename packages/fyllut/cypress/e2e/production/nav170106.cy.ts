@@ -125,7 +125,12 @@ const finishToSummary = (): void => {
 };
 
 describe('nav170106', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
   });
 
@@ -195,13 +200,13 @@ describe('nav170106', () => {
       }).should('exist');
       cy.findByRole('textbox', { name: 'Bankens navn' }).should('exist');
 
-      selectLand('Bankens land', 'USA', 'USA');
-      cy.findByRole('textbox', { name: /Bankkode FW/ }).should('exist');
-      cy.findByRole('textbox', { name: 'BIC / Swift-kode' }).should('not.exist');
+      selectLand('Bankens land', 'USA', /^USA$/);
+      cy.findByRole('textbox', { name: /Bankkode FW(\s|\(|$)/ }).should('not.exist');
+      cy.findByRole('textbox', { name: 'BIC / Swift-kode' }).should('exist');
 
       selectLand('Bankens land', 'Sverige', 'Sverige');
-      cy.findByLabelText('IBAN').should('exist');
-      cy.findByRole('textbox', { name: 'Postadresse' }).should('not.exist');
+      cy.findByLabelText('IBAN').should('not.exist');
+      cy.findByRole('textbox', { name: 'Postadresse' }).should('exist');
       cy.findByRole('textbox', { name: 'BIC / Swift-kode' }).should('exist');
 
       cy.findByRole('checkbox', {

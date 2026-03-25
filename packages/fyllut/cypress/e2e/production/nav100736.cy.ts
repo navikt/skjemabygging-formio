@@ -29,7 +29,12 @@ const selectStonadsordning = (label: 'Irislinse' | 'Briller til forebygging elle
 };
 
 describe('nav100736', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
   });
 

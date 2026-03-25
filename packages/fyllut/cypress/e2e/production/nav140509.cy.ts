@@ -39,17 +39,19 @@ const fillApplicantIdentity = () => {
 };
 
 describe('nav140509', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
   });
 
   describe('Barnet – same-panel conditionals', () => {
-    beforeEach(() => {
+    it('switches between single-child and multiple-children fields when antall barn changes', () => {
       cy.visit('/fyllut/nav140509/barnet?sub=paper');
       cy.defaultWaits();
-    });
-
-    it('switches between single-child and multiple-children fields when antall barn changes', () => {
       cy.findByRole('textbox', { name: /Når ble barnet født/ }).should('not.exist');
       cy.findByRole('textbox', { name: /Når ble det eldste barnet født/ }).should('not.exist');
 
@@ -72,6 +74,8 @@ describe('nav140509', () => {
     });
 
     it('shows folkeregister follow-up only when barnet/barna ikke ble født i Norge', () => {
+      cy.visit('/fyllut/nav140509/barnet?sub=paper');
+      cy.defaultWaits();
       cy.withinComponent(/Er barnet født\?/i, () => {
         cy.findByRole('radio', { name: 'Ja' }).click();
       });

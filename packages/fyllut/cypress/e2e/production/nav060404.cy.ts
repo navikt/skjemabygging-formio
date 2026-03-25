@@ -83,7 +83,12 @@ const openPanelFromStart = ({
 };
 
 describe('nav060404', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.intercept('GET', '/fyllut/api/forms/nav060404*', { body: nav060404Form });
     cy.intercept('GET', '/fyllut/api/translations/nav060404*', { body: { 'nb-NO': {} } });

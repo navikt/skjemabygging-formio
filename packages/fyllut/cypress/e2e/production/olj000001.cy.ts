@@ -44,7 +44,12 @@ const chooseAttachmentLater = (groupName: RegExp) => {
 };
 
 describe('olj000001', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.defaultInterceptsExternal();
   });

@@ -103,10 +103,15 @@ const completeDeclarations = () => {
 };
 
 describe('nav040104', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
-    cy.intercept('GET', '/fyllut/api/forms/nav040104*', { body: nav040104Form });
-    cy.intercept('GET', '/fyllut/api/translations/nav040104*', { body: {} });
+    cy.intercept('GET', '/fyllut/api/forms/nav040104*', { body: nav040104Form }).as('getForm');
+    cy.intercept('GET', '/fyllut/api/translations/nav040104*', { body: {} }).as('getTranslations');
     cy.intercept('GET', '/fyllut/api/global-translations/*', { body: {} });
   });
 

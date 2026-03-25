@@ -47,7 +47,12 @@ const openPanelFromDinSituasjon = (
 };
 
 describe('nav140506', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.defaultInterceptsExternal();
   });

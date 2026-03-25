@@ -34,26 +34,23 @@ const labels = {
   extraInfo: /Har du noen flere\s+opplysninger til\s+søknaden\?/,
 };
 
-const visitPanel = (panelKey: string) => {
-  cy.visit(`/fyllut/nav020705/${panelKey}?sub=paper`);
+const visitWithFreshState = (url: string) => {
+  cy.clearCookies();
+  cy.visit(url, {
+    onBeforeLoad: (win) => {
+      win.localStorage.clear();
+      win.sessionStorage.clear();
+    },
+  });
   cy.get('h2#page-title').should('exist');
+};
+
+const visitPanel = (panelKey: string) => {
+  visitWithFreshState(`/fyllut/nav020705/${panelKey}?sub=paper`);
 };
 
 const visitForm = () => {
-  cy.visit('/fyllut/nav020705?sub=paper');
-  cy.get('h2#page-title').should('exist');
-  advancePastStartPage();
-};
-
-const advancePastStartPage = () => {
-  cy.get('h2#page-title')
-    .invoke('text')
-    .then((title) => {
-      if (title.trim() === 'Introduksjon') {
-        cy.clickNextStep();
-        cy.get('h2#page-title').should('exist');
-      }
-    });
+  visitWithFreshState('/fyllut/nav020705/veiledning?sub=paper');
 };
 
 const goToTrygdeavgiftPanel = () => {
@@ -106,7 +103,12 @@ const selectRadio = (label: string | RegExp, option: string | RegExp) => {
 };
 
 describe('nav020705', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.defaultInterceptsExternal();
     cy.intercept('GET', '/fyllut/api/forms/nav020705*', { body: nav020705Form });

@@ -103,7 +103,12 @@ const fillVedleggPanel = () => {
 };
 
 describe('nav080708', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
   });
 
@@ -266,12 +271,10 @@ describe('nav080708', () => {
   });
 
   describe('Medisinsk begrunnet vurdering av funksjonsevnen – same-panel conditionals', () => {
-    beforeEach(() => {
+    it('shows Beskriv Annet only when patient status is annet', () => {
       cy.visit('/fyllut/nav080708/medisinskBegrunnetVurderingAvFunksjonsevnen?sub=paper');
       cy.defaultWaits();
-    });
 
-    it('shows Beskriv Annet only when patient status is annet', () => {
       cy.findByRole('textbox', { name: 'Beskriv Annet' }).should('not.exist');
 
       cy.withinComponent('Er pasienten', () => {
@@ -286,6 +289,9 @@ describe('nav080708', () => {
     });
 
     it('switches between previous-work, other-work, and uncertain branches', () => {
+      cy.visit('/fyllut/nav080708/medisinskBegrunnetVurderingAvFunksjonsevnen?sub=paper');
+      cy.defaultWaits();
+
       cy.findByRole('textbox', { name: 'Begrunn hvorfor' }).should('not.exist');
       cy.findByLabelText('Når vil pasienten kunne gjenoppta det tidligere arbeidet eller sin fulle stilling?').should(
         'not.exist',

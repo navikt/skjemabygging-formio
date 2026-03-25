@@ -32,7 +32,12 @@ const selectNei = () => {
 };
 
 describe('nav100744', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
   });
 

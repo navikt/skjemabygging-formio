@@ -83,7 +83,12 @@ describe('nav761381', () => {
     cy.clickNextStep();
   };
 
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
   });
 

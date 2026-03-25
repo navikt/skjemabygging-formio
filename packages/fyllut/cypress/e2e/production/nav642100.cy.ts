@@ -106,7 +106,12 @@ const answerAttachmentLater = (name: RegExp) => {
 };
 
 describe('nav642100', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
   });
 

@@ -251,7 +251,12 @@ const goToSummaryFromVedlegg = () => {
 };
 
 describe('nav100716', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.defaultInterceptsExternal();
   });

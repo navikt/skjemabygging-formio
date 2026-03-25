@@ -21,7 +21,12 @@
  */
 
 describe('nav083606', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.defaultInterceptsMellomlagring();
   });

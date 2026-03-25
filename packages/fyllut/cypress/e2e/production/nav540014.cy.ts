@@ -94,7 +94,12 @@ const goToOmSaerbidraget = () => {
 };
 
 describe('nav540014', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.defaultInterceptsExternal();
   });

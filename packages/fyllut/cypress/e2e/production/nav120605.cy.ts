@@ -80,7 +80,12 @@ const incomeConditionals = [
 ] as const;
 
 describe('nav120605', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.defaultInterceptsExternal();
   });

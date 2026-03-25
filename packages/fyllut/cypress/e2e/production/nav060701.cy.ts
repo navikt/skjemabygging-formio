@@ -65,10 +65,15 @@ const goToEkstrautgifterAsSelf = () => {
 };
 
 describe('nav060701', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
-    cy.intercept('GET', '/fyllut/api/forms/nav060701*', { body: nav060701Form });
-    cy.intercept('GET', '/fyllut/api/translations/nav060701*', { body: { 'nb-NO': {} } });
+    cy.intercept('GET', '/fyllut/api/forms/nav060701*', { body: nav060701Form }).as('getForm');
+    cy.intercept('GET', '/fyllut/api/translations/nav060701*', { body: { 'nb-NO': {} } }).as('getTranslations');
     cy.intercept('GET', '/fyllut/api/global-translations/*', { body: { 'nb-NO': {} } });
   });
 

@@ -23,14 +23,29 @@
  */
 
 describe('nav020808', () => {
+  const visitWithFreshState = (path: string) => {
+    cy.clearCookies();
+    cy.visit(path, {
+      onBeforeLoad: (win) => {
+        win.localStorage.clear();
+        win.sessionStorage.clear();
+      },
+    });
+    cy.defaultWaits();
+  };
+
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
   });
 
   describe('Arbeidstakeren conditionals', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav020808/arbeidstakeren');
-      cy.defaultWaits();
+      visitWithFreshState('/fyllut/nav020808/arbeidstakeren');
     });
 
     it('shows fødselsnummer when Ja and fødselsdato when Nei', () => {
@@ -53,8 +68,7 @@ describe('nav020808', () => {
 
   describe('Arbeidsgiverens virksomhet i Norge conditionals', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav020808/arbeidsgiverensVirksomhetINorge');
-      cy.defaultWaits();
+      visitWithFreshState('/fyllut/nav020808/arbeidsgiverensVirksomhetINorge');
     });
 
     it('shows additional questions when employer is not public', () => {
@@ -75,8 +89,7 @@ describe('nav020808', () => {
 
   describe('Utenlandsoppdraget conditionals', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav020808/utenlandsoppdraget');
-      cy.defaultWaits();
+      visitWithFreshState('/fyllut/nav020808/utenlandsoppdraget');
     });
 
     it('shows reason field when employer has no assignment abroad', () => {
@@ -138,8 +151,7 @@ describe('nav020808', () => {
 
   describe('Arbeidstakerens lønn conditionals', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav020808/arbeidstakerensLonn');
-      cy.defaultWaits();
+      visitWithFreshState('/fyllut/nav020808/arbeidstakerensLonn');
     });
 
     it('shows selectboxes and datagrids based on salary payment', () => {
@@ -179,8 +191,7 @@ describe('nav020808', () => {
 
   describe('Du som fyller ut skjemaet conditionals', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav020808/duSomFyllerUtSkjemaet');
-      cy.defaultWaits();
+      visitWithFreshState('/fyllut/nav020808/duSomFyllerUtSkjemaet');
     });
 
     it('shows firm name when employed at representative firm', () => {
@@ -200,8 +211,7 @@ describe('nav020808', () => {
 
   describe('Summary', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav020808');
-      cy.defaultWaits();
+      visitWithFreshState('/fyllut/nav020808');
       cy.clickNextStep();
     });
 

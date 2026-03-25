@@ -18,17 +18,20 @@
  */
 
 describe('nav100706', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
   });
 
   describe('Dine opplysninger – identity conditionals', () => {
-    beforeEach(() => {
+    it('shows adresse section when harDuFodselsnummer is nei', () => {
       cy.visit('/fyllut/nav100706/personopplysninger?sub=paper');
       cy.defaultWaits();
-    });
 
-    it('shows adresse section when harDuFodselsnummer is nei', () => {
       cy.findByLabelText('Bor du i Norge?').should('not.exist');
 
       cy.withinComponent('Har du norsk fødselsnummer eller d-nummer?', () => {
@@ -39,6 +42,9 @@ describe('nav100706', () => {
     });
 
     it('keeps adresse hidden when harDuFodselsnummer is ja', () => {
+      cy.visit('/fyllut/nav100706/personopplysninger?sub=paper');
+      cy.defaultWaits();
+
       cy.withinComponent('Har du norsk fødselsnummer eller d-nummer?', () => {
         cy.findByRole('radio', { name: 'Ja' }).click();
       });
@@ -47,6 +53,9 @@ describe('nav100706', () => {
     });
 
     it('toggles telefonnummer and kontakt fields when jegHarIkkeTelefonnummer is checked', () => {
+      cy.visit('/fyllut/nav100706/personopplysninger?sub=paper');
+      cy.defaultWaits();
+
       cy.findByLabelText('Telefonnummer').should('exist');
       cy.findByRole('textbox', { name: 'Hvordan ønsker du at NAV skal kontakte deg?' }).should('not.exist');
 

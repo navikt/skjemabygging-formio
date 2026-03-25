@@ -107,7 +107,12 @@ const fillSpouseWithoutFnr = () => {
 };
 
 describe('nav190105', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
   });
 

@@ -62,7 +62,12 @@ const selectCanUseTaxi = (answer: 'Ja' | 'Nei') => {
 };
 
 describe('nav111218b', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     setupForm();
   });
 

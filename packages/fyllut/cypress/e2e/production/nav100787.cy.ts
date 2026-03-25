@@ -62,7 +62,12 @@ const visitBegrunnelsePanel = () => {
 };
 
 describe('nav100787', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
   });
 

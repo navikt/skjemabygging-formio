@@ -17,14 +17,29 @@
  */
 
 describe('nav100750', () => {
+  const visitWithFreshState = (url: string) => {
+    cy.clearCookies();
+    cy.visit(url, {
+      onBeforeLoad: (win) => {
+        win.localStorage.clear();
+        win.sessionStorage.clear();
+      },
+    });
+    cy.defaultWaits();
+  };
+
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
   });
 
   describe('Søknaden gjelder – same-panel conditionals', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav100750/soknadenGjelder?sub=paper');
-      cy.defaultWaits();
+      visitWithFreshState('/fyllut/nav100750/soknadenGjelder?sub=paper');
     });
 
     it('shows mobilitetspedagog question only for forstegangsSoknad', () => {
@@ -60,8 +75,7 @@ describe('nav100750', () => {
 
   describe('Behov – cross-panel conditionals from hvaSokerDuOm', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav100750/soknadenGjelder?sub=paper');
-      cy.defaultWaits();
+      visitWithFreshState('/fyllut/nav100750/soknadenGjelder?sub=paper');
     });
 
     it('shows gjenanskaffelse-specific fields on behov panel', () => {
@@ -91,8 +105,7 @@ describe('nav100750', () => {
 
   describe('Vedlegg – cross-panel conditional from hvaSokerDuOm', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav100750/soknadenGjelder?sub=paper');
-      cy.defaultWaits();
+      visitWithFreshState('/fyllut/nav100750/soknadenGjelder?sub=paper');
     });
 
     it('shows mobilitetsopplaering attachment for forstegangsSoknad', () => {
@@ -120,8 +133,7 @@ describe('nav100750', () => {
 
   describe('Dine opplysninger – identity conditionals', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav100750/dineOpplysninger?sub=paper');
-      cy.defaultWaits();
+      visitWithFreshState('/fyllut/nav100750/dineOpplysninger?sub=paper');
     });
 
     it('shows adresse section when user has no fnr', () => {
@@ -145,8 +157,7 @@ describe('nav100750', () => {
 
   describe('Summary', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav100750?sub=paper');
-      cy.defaultWaits();
+      visitWithFreshState('/fyllut/nav100750?sub=paper');
       cy.clickNextStep();
     });
 

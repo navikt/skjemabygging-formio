@@ -24,9 +24,13 @@ import nav100710Form from '../../../../../mocks/mocks/data/forms-api/production-
  *       hjelpemiddel reuse question = nei → fastlege attachment
  */
 
-const visitRoot = () => {
-  cy.visit('/fyllut/nav100710');
+const visitPath = (path: string) => {
+  cy.visit(path);
   cy.defaultWaits();
+};
+
+const visitRoot = () => {
+  visitPath('/fyllut/nav100710');
 };
 
 const goToVeiledning = () => {
@@ -37,8 +41,7 @@ const goToVeiledning = () => {
 };
 
 const visitPanel = (panelKey: string) => {
-  cy.visit(`/fyllut/nav100710/${panelKey}`);
-  cy.defaultWaits();
+  visitPath(`/fyllut/nav100710/${panelKey}`);
 };
 
 const selectRole = (option: 'Jeg er lege' | 'Jeg er ortopediingeniør') => {
@@ -106,10 +109,15 @@ const typeNumberField = (label: string | RegExp, value: string) => {
 };
 
 describe('nav100710', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
-    cy.intercept('GET', '/fyllut/api/forms/nav100710*', { body: nav100710Form });
-    cy.intercept('GET', '/fyllut/api/translations/nav100710*', { body: { 'nb-NO': {} } });
+    cy.intercept('GET', '/fyllut/api/forms/nav100710*', { body: nav100710Form }).as('getForm');
+    cy.intercept('GET', '/fyllut/api/translations/nav100710*', { body: { 'nb-NO': {} } }).as('getTranslations');
     cy.intercept('GET', '/fyllut/api/global-translations/*', { body: { 'nb-NO': {} } });
   });
 

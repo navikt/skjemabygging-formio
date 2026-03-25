@@ -60,16 +60,25 @@ const formatRelativeDate = (monthsFromNow: number) => {
   return `${day}.${month}.${year}`;
 };
 
+const visitPath = (path: string) => {
+  cy.visit(path);
+  cy.defaultWaits();
+};
+
 describe('nav111309', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.defaultInterceptsExternal();
   });
 
   describe('Dine opplysninger conditionals', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav111309/dineOpplysninger?sub=paper');
-      cy.defaultWaits();
+      visitPath('/fyllut/nav111309/dineOpplysninger?sub=paper');
     });
 
     it('switches between folkeregister and address fields based on identity answers', () => {
@@ -101,8 +110,7 @@ describe('nav111309', () => {
 
   describe('Din utdanning conditionals', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav111309/dinUtdanning?sub=paper');
-      cy.defaultWaits();
+      visitPath('/fyllut/nav111309/dinUtdanning?sub=paper');
     });
 
     it('shows education datagrid only when the user has education beyond primary school', () => {
@@ -301,8 +309,7 @@ describe('nav111309', () => {
 
   describe('Summary', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav111309?sub=paper');
-      cy.defaultWaits();
+      visitPath('/fyllut/nav111309?sub=paper');
     });
 
     it('fills required fields and verifies summary', () => {

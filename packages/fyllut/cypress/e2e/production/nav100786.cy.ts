@@ -108,7 +108,12 @@ const goToVedleggFromBegrunnelse = (harLevertTidligere: 'Ja' | 'Nei') => {
 };
 
 describe('nav100786', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.defaultInterceptsExternal();
   });

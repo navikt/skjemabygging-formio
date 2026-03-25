@@ -43,16 +43,31 @@ const selectExpenseType = (
   });
 };
 
+const visitWithFreshState = (url: string) => {
+  cy.clearCookies();
+  cy.visit(url, {
+    onBeforeLoad: (win) => {
+      win.localStorage.clear();
+      win.sessionStorage.clear();
+    },
+  });
+  cy.defaultWaits();
+};
+
 describe('nav111219', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.defaultInterceptsExternal();
   });
 
   describe('Personalia conditionals', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav111219/personopplysninger?sub=paper');
-      cy.defaultWaits();
+      visitWithFreshState('/fyllut/nav111219/personopplysninger?sub=paper');
     });
 
     it('toggles address fields and the folkeregister alert when the identity answer changes', () => {
@@ -88,8 +103,7 @@ describe('nav111219', () => {
 
   describe('Din situasjon conditionals', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav111219/dinSituasjonPanel?sub=paper');
-      cy.defaultWaits();
+      visitWithFreshState('/fyllut/nav111219/dinSituasjonPanel?sub=paper');
     });
 
     it('shows reduced work ability only for the relevant benefit combinations', () => {
@@ -167,8 +181,7 @@ describe('nav111219', () => {
   describe('Arbeidsrettet aktivitet conditionals (digital)', () => {
     beforeEach(() => {
       cy.defaultInterceptsMellomlagring();
-      cy.visit('/fyllut/nav111219/arbeidsrettetAktivitetPanel?sub=digital');
-      cy.defaultWaits();
+      visitWithFreshState('/fyllut/nav111219/arbeidsrettetAktivitetPanel?sub=digital');
       cy.wait('@getActivities');
     });
 
@@ -204,8 +217,7 @@ describe('nav111219', () => {
 
   describe('Bolig eller overnatting conditionals', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav111219/boligEllerOvernattingPanel?sub=paper');
-      cy.defaultWaits();
+      visitWithFreshState('/fyllut/nav111219/boligEllerOvernattingPanel?sub=paper');
     });
 
     it('switches between the fast housing and temporary lodging branches', () => {
@@ -246,8 +258,7 @@ describe('nav111219', () => {
 
   describe('Vedlegg conditionals', () => {
     it('shows the temporary lodging attachments for the temporary expense path', () => {
-      cy.visit('/fyllut/nav111219/boligEllerOvernattingPanel?sub=paper');
-      cy.defaultWaits();
+      visitWithFreshState('/fyllut/nav111219/boligEllerOvernattingPanel?sub=paper');
 
       selectExpenseType(
         'Utgifter til overnatting i forbindelse med studiesamling, kortvarig kurs, eksamen eller opptaksprøve',
@@ -264,8 +275,7 @@ describe('nav111219', () => {
     });
 
     it('shows the medical attachment when tailored housing is needed', () => {
-      cy.visit('/fyllut/nav111219/boligEllerOvernattingPanel?sub=paper');
-      cy.defaultWaits();
+      visitWithFreshState('/fyllut/nav111219/boligEllerOvernattingPanel?sub=paper');
 
       selectExpenseType('Faste utgifter til bolig ved aktivitetssted');
       cy.withinComponent('Trenger du tilpasset bolig på grunn av fysiske eller psykiske helseutfordringer?', () => {
@@ -281,8 +291,7 @@ describe('nav111219', () => {
 
   describe('Summary', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav111219?sub=paper');
-      cy.defaultWaits();
+      visitWithFreshState('/fyllut/nav111219?sub=paper');
     });
 
     it('fills required fields and verifies summary', () => {

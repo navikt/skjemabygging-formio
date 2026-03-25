@@ -24,14 +24,29 @@
  */
 
 describe('nav040203', () => {
+  const visitWithFreshState = (url: string) => {
+    cy.clearCookies();
+    cy.visit(url, {
+      onBeforeLoad: (win) => {
+        win.localStorage.clear();
+        win.sessionStorage.clear();
+      },
+    });
+    cy.defaultWaits();
+  };
+
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
   });
 
   describe('Arbeidstaker - Personopplysninger conditionals', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav040203/arbeidstakerPersonopplysninger?sub=paper');
-      cy.defaultWaits();
+      visitWithFreshState('/fyllut/nav040203/arbeidstakerPersonopplysninger?sub=paper');
     });
 
     it('toggles fnr and foreign id fields when arbeidstaker fnr answer changes', () => {
@@ -54,8 +69,7 @@ describe('nav040203', () => {
 
   describe('Arbeidstid conditionals', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav040203/arbeidstid?sub=paper');
-      cy.defaultWaits();
+      visitWithFreshState('/fyllut/nav040203/arbeidstid?sub=paper');
     });
 
     it('shows and hides branch fields for the selected work type', () => {
@@ -188,8 +202,7 @@ describe('nav040203', () => {
 
   describe('Sluttårsak conditionals', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav040203/sluttarsak?sub=paper');
-      cy.defaultWaits();
+      visitWithFreshState('/fyllut/nav040203/sluttarsak?sub=paper');
     });
 
     it('shows oppsigelse details only for oppsagt and self-resigned paths', () => {
@@ -238,8 +251,7 @@ describe('nav040203', () => {
 
   describe('Inntekt conditionals', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav040203/inntekt?sub=paper');
-      cy.defaultWaits();
+      visitWithFreshState('/fyllut/nav040203/inntekt?sub=paper');
     });
 
     it('toggles period fields for tax and trygdeavgift answers', () => {
@@ -335,9 +347,7 @@ describe('nav040203', () => {
 
   describe('Summary', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nav040203?sub=paper');
-      cy.defaultWaits();
-      cy.clickNextStep();
+      visitWithFreshState('/fyllut/nav040203/veiledning?sub=paper');
     });
 
     it('fills required fields and verifies summary', () => {

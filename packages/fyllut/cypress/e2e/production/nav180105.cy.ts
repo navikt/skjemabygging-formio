@@ -44,7 +44,12 @@ const chooseGuardian = (lost = 'En forelder') => {
 };
 
 describe('nav180105', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
   });
 
@@ -247,7 +252,6 @@ describe('nav180105', () => {
       cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
         cy.findByRole('radio', { name: /Nei/ }).click();
       });
-      cy.clickNextStep();
 
       cy.get('body').then(($body) => {
         if ($body.find('h2#page-title').text().trim() === 'Vedlegg') {

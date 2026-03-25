@@ -60,7 +60,12 @@ const ensureTextboxValue = (label: string | RegExp, value: string) => {
 };
 
 describe('nav111305', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.defaultInterceptsExternal();
   });

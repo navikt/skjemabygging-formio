@@ -21,17 +21,19 @@
  */
 
 describe('nav140508', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
   });
 
   describe('Utenlandsopphold – datagrid conditionals', () => {
-    beforeEach(() => {
+    it('shows future stays datagrid when boIUtlandetHeltEllerDelvis', () => {
       cy.visit('/fyllut/nav140508/page5?sub=paper');
       cy.defaultWaits();
-    });
-
-    it('shows future stays datagrid when boIUtlandetHeltEllerDelvis', () => {
       cy.findByRole('combobox', { name: 'Hvilket land skal du bo i?' }).should('not.exist');
 
       cy.withinComponent('Hvor skal du bo de neste 12 månedene?', () => {
@@ -48,6 +50,8 @@ describe('nav140508', () => {
     });
 
     it('shows past stays datagrid when boddIUtlandetHeltEllerDelvis', () => {
+      cy.visit('/fyllut/nav140508/page5?sub=paper');
+      cy.defaultWaits();
       cy.findByRole('combobox', { name: 'Hvilket land bodde du i?' }).should('not.exist');
 
       cy.withinComponent('Hvor har du bodd de siste 12 månedene?', () => {

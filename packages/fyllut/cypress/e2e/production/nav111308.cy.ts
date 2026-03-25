@@ -50,7 +50,12 @@ const selectMarketStudyDone = (answer: 'Ja' | 'Nei') => {
 };
 
 describe('nav111308', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.defaultInterceptsExternal();
   });

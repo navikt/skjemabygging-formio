@@ -22,7 +22,12 @@ describe('nav131305', () => {
     cy.findByRole('textbox', { name: 'Navn på virksomheten (firma)' }).should('exist');
   };
 
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
   });
 

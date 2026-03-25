@@ -57,23 +57,13 @@ const selectCheckboxOption = (groupLabel: string | RegExp, optionLabel: string |
 };
 
 const advancePastIntroduksjonIfPresent = () => {
-  cy.get('h2#page-title', { timeout: 10000 }).then(($title) => {
-    if ($title.text().trim() === 'Introduksjon') {
-      cy.clickNextStep();
-
-      cy.get('h2#page-title', { timeout: 10000 }).then(($nextTitle) => {
-        if ($nextTitle.text().trim() === 'Introduksjon') {
-          cy.clickNextStep();
-        }
-      });
-    }
-  });
-
-  cy.get('h2#page-title', { timeout: 10000 }).should(($title) => {
-    if ($title.text().trim() === 'Introduksjon') {
-      throw new Error('Still on Introduksjon');
-    }
-  });
+  cy.get('h2#page-title', { timeout: 10000 })
+    .invoke('text')
+    .then((title) => {
+      if (title.trim() === 'Introduksjon') {
+        cy.clickNextStep();
+      }
+    });
 
   cy.findByLabelText('Hvem fyller ut søknaden?').should('exist');
 };
@@ -103,7 +93,12 @@ const chooseEttersender = (groupName: RegExp) => {
 };
 
 describe('nav100740', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.defaultInterceptsExternal();
   });

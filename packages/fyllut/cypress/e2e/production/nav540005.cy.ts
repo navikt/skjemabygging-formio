@@ -159,7 +159,12 @@ const fillBarnsBostedOgSamvaerMinimal = ({ hasHolidayContact = 'Nei' }: { hasHol
 };
 
 describe('nav540005', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.defaultInterceptsExternal();
   });

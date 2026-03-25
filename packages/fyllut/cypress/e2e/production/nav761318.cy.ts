@@ -67,7 +67,12 @@ const fillDeltakeren = () => {
 };
 
 describe('nav761318', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
   });
 

@@ -112,10 +112,15 @@ const chooseNoExtraDocumentation = () => {
 };
 
 describe('nav952000', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
-    cy.intercept('GET', `/fyllut/api/forms/${formPath}*`, { body: nav952000Form });
-    cy.intercept('GET', `/fyllut/api/translations/${formPath}*`, { body: {} });
+    cy.intercept('GET', `/fyllut/api/forms/${formPath}*`, { body: nav952000Form }).as('getForm');
+    cy.intercept('GET', `/fyllut/api/translations/${formPath}*`, { body: {} }).as('getTranslations');
     cy.intercept('GET', '/fyllut/api/global-translations/*', { body: {} });
   });
 

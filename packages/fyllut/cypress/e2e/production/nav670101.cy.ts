@@ -123,7 +123,12 @@ const fillErklaringAndVedlegg = () => {
 };
 
 describe('nav670101', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
   });
 

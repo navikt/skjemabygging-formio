@@ -20,7 +20,12 @@
  */
 
 describe('nav250201', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
   });
 
@@ -105,12 +110,10 @@ describe('nav250201', () => {
   });
 
   describe('Tiltak og vurdering – NAV assistance conditionals', () => {
-    beforeEach(() => {
+    it('shows bistand fra NAV fields when ja is selected', () => {
       cy.visit('/fyllut/nav250201/tiltakOgVurdering?sub=paper');
       cy.defaultWaits();
-    });
 
-    it('shows bistand fra NAV fields when ja is selected', () => {
       // Check an individual option to verify the selectboxes group visibility
       cy.findByRole('checkbox', { name: 'Råd og veiledning' }).should('not.exist');
       cy.findByRole('textbox', { name: 'Gi en begrunnelse for ønsket bistand' }).should('not.exist');
@@ -130,6 +133,9 @@ describe('nav250201', () => {
     });
 
     it('shows bistand fra andre fields when ja is selected', () => {
+      cy.visit('/fyllut/nav250201/tiltakOgVurdering?sub=paper');
+      cy.defaultWaits();
+
       cy.findByRole('group', { name: 'Det er behov for bistand fra' }).should('not.exist');
       cy.findByRole('textbox', { name: 'Beskriv behov for bistand' }).should('not.exist');
 
@@ -148,6 +154,9 @@ describe('nav250201', () => {
     });
 
     it('shows avklaring med lege field when ja is selected', () => {
+      cy.visit('/fyllut/nav250201/tiltakOgVurdering?sub=paper');
+      cy.defaultWaits();
+
       cy.findByRole('textbox', { name: 'Beskriv behov for avklaring' }).should('not.exist');
 
       cy.withinComponent('Er det behov for avklaring med lege/sykmelder?', () => {
@@ -164,6 +173,9 @@ describe('nav250201', () => {
     });
 
     it('shows tilrettelegging reason when nei is selected', () => {
+      cy.visit('/fyllut/nav250201/tiltakOgVurdering?sub=paper');
+      cy.defaultWaits();
+
       cy.findByRole('textbox', { name: 'Beskriv hvorfor det ikke er mulig å tilrettelegge arbeidet' }).should(
         'not.exist',
       );
@@ -184,6 +196,9 @@ describe('nav250201', () => {
     });
 
     it('shows planlagt fremover field when videre framdrift is ja', () => {
+      cy.visit('/fyllut/nav250201/tiltakOgVurdering?sub=paper');
+      cy.defaultWaits();
+
       cy.findByRole('textbox', { name: 'Beskriv hva som er planlagt fremover' }).should('not.exist');
 
       cy.withinComponent('Videre framdrift av tiltaket', () => {
