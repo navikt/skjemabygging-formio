@@ -5,11 +5,6 @@ describe('clearOnHide', () => {
 
   beforeEach(() => {
     cy.defaultIntercepts();
-    cy.mocksRestoreRouteVariants();
-  });
-
-  after(() => {
-    cy.mocksRestoreRouteVariants();
   });
 
   describe('Basic', () => {
@@ -86,7 +81,7 @@ describe('clearOnHide', () => {
       cy.findByRole('link', { name: 'Within Container' }).click();
       cy.findByRole('heading', { name: 'Within Container' }).shouldBeVisible();
       cy.findByRole('checkbox', { name: 'Show TextField in Container' }).check();
-      //cy.findByRole('textbox', { name: 'TextField' }).should('have.value', '');
+      cy.findByRole('textbox', { name: 'TextField' }).should('have.value', '');
     });
   });
 
@@ -124,7 +119,7 @@ describe('clearOnHide', () => {
       cy.findByRole('link', { name: 'Within DataGrid' }).click();
       cy.findByRole('heading', { name: 'Within DataGrid' }).shouldBeVisible();
       cy.findByRole('checkbox', { name: 'Show TextField in DataGrid' }).check();
-      //cy.findByRole('textbox', { name: 'TextField' }).should('have.value', '');
+      cy.findByRole('textbox', { name: 'TextField' }).should('have.value', '');
     });
   });
 });
