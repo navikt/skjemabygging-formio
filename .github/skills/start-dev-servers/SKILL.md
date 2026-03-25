@@ -8,10 +8,6 @@ description: >-
 
 # Starting dev servers
 
-Use this skill when you need a local dev server on automatically allocated free ports.
-
-For AI-driven test or verification flows, always pass `-- --no-runtime-config` so the agent does not overwrite a user's existing `.runtime/cypress.mocks.json`.
-
 ## Commands
 
 ### Fyllut
@@ -45,10 +41,15 @@ bash (async): yarn start:fyllut:mocks -- --no-runtime-config
 #   FYLLUT_MOCK_URL=http://127.0.0.1:3042
 #   FYLLUT_MOCK_ADMIN_PORT=3043
 #   FYLLUT_BACKEND_URL=http://127.0.0.1:3044
-#   FYLLUT_FRONTEND_URL=http://127.0.0.1:3045
+#   FYLLUT_FRONTEND_URL=http://127.0.0.1:3045/fyllut
 #   START_PID=12345
 
-# 3. Do work using the URLs above
+# 3. Run Cypress — use FYLLUT_FRONTEND_URL as baseUrl (strip the /fyllut suffix):
+cd packages/fyllut && yarn cypress run \
+  --config "baseUrl=http://127.0.0.1:3045" \
+  --env "MOCKS_ADMIN_PORT=3043" \
+  --browser electron \
+  --spec cypress/e2e/path/to/spec.cy.ts
 
 # 4. Stop all servers (no permission prompt)
 bash: kill <START_PID>
@@ -63,7 +64,19 @@ bash (async): yarn start:bygger:mocks -- --no-runtime-config
 #   BYGGER_BACKEND_URL=http://127.0.0.1:3042
 #   BYGGER_FRONTEND_URL=http://127.0.0.1:3043
 #   START_PID=12345
+
+cd packages/bygger && yarn cypress run \
+  --config "baseUrl=http://127.0.0.1:3043" \
+  --env "MOCKS_ADMIN_PORT=<BYGGER_MOCK_ADMIN_PORT>" \
+  --browser electron \
+  --spec cypress/e2e/path/to/spec.cy.ts
 ```
+
+## When to use this skill vs. the preview flow
+
+**Use this skill (dev-server flow) for all Cypress runs.** It starts real servers with the current source code and is the standard approach. No build step is required.
+
+Do NOT reach for `yarn preview:fyllut` / `yarn mocks:fyllut:no-cli` as an alternative — that flow requires a manual build first, the servers are not port-conflict safe, and they are harder to manage as background processes.
 
 ## Notes
 
@@ -71,5 +84,3 @@ bash (async): yarn start:bygger:mocks -- --no-runtime-config
 - `START_PID` is printed last, so it is the simplest ready marker to wait for in async output.
 - All child processes (mock server, backend, frontend) are in separate process groups and are fully cleaned up on kill.
 - `-- --no-runtime-config` keeps AI-started servers from creating or deleting `.runtime/cypress.mocks.json`; omit it for normal user/Cypress flows that should manage runtime config.
-- Use the URLs printed by `bin/start.mjs` instead of assuming default ports.
-- For Cypress workflow details, especially built/preview-mode testing, use the `cypress-repo-workflow` skill.
