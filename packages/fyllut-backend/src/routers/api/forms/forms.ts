@@ -8,9 +8,9 @@ const mapForm = (form): FormsResponseForm => ({
   path: form.path,
   modified: form.publishedAt ?? form.modified,
   properties: {
-    skjemanummer: form.skjemanummer ?? form.properties.skjemanummer,
-    submissionTypes: form.properties.submissionTypes,
-    subsequentSubmissionTypes: form.properties.subsequentSubmissionTypes,
+    skjemanummer: form.skjemanummer ?? form.properties?.skjemanummer,
+    submissionTypes: form.properties?.submissionTypes,
+    subsequentSubmissionTypes: form.properties?.subsequentSubmissionTypes,
   },
 });
 

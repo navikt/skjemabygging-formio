@@ -1,10 +1,17 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 
-const editFormLabel = (): Component => {
+interface Props {
+  key?: string;
+  label?: string;
+  customConditional?: string;
+}
+
+const editFormLabel = ({ key = 'label', label = 'Ledetekst', customConditional }: Props = {}): Component => {
   return {
     type: 'textfield',
-    key: 'label',
-    label: 'Ledetekst',
+    key,
+    label,
+    customConditional,
     validate: {
       required: true,
     },

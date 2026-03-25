@@ -6,7 +6,7 @@
   "type": "module",
   "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {
-    "start": "cross-env-shell NODE_ENV=development vite",
+    "start": "cross-env NODE_ENV=development vite",
     "build": "tsc && vite build",
     "preview": "cross-env-shell NODE_ENV=development BYGGER_BUILD_DIR=\"../../bygger/dist\" PORT=3000 \"cd dist && node server.mjs\"",
     "check-types": "tsc",

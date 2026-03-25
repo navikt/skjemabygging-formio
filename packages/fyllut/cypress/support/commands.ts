@@ -189,7 +189,7 @@ Cypress.Commands.add('defaultWaits', () => {
 
 Cypress.Commands.add('configMocksServer', () => {
   cy.mocksConfigClient({
-    port: 3310,
+    port: Number(Cypress.env('MOCKS_ADMIN_PORT') ?? 3310),
   });
   return cy;
 });

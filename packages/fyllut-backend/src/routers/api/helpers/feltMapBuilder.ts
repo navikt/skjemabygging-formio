@@ -47,7 +47,7 @@ export const createFeltMapFromSubmission = (
     translate,
     true,
     lang,
-    { skipPdfFormatting: true },
+    { skipPdfFormatting: true, submissionMethod },
   );
   const confirmation = createConfirmationElement(form, translate);
   const signatures = signatureSection(form.properties, submissionMethod, translate);

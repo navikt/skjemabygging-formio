@@ -109,6 +109,7 @@ import {
   selectBoxesTranslations,
 } from '../data/forms-api/components/selectBoxesForm';
 import { selectForm, selectTranslations } from '../data/forms-api/components/selectForm';
+import { senderForm, senderTranslations } from '../data/forms-api/components/senderForm';
 import {
   simpleConditionalForm,
   simpleConditionalTranslations,
@@ -197,6 +198,7 @@ const allForms = [
   { form: conditionalPage, translations: undefined },
   { form: textFieldForm(), translations: textFieldTranslations() },
   { form: fnrFieldForm(), translations: fnrFieldTranslations() },
+  { form: senderForm(), translations: senderTranslations() },
   { form: radioPanelForm(), translations: radioPanelTranslations() },
   { form: createMonthPickerForm(), translations: monthPickerTranslations() },
   { form: componentsForm(), translations: formComponentsTranslations },

@@ -23,6 +23,7 @@ import {
   SummaryOrganizationNumber,
   SummaryPassword,
   SummaryPhoneNumber,
+  SummarySender,
   SummarySurname,
 } from './components/customized';
 import { SummaryDatePicker, SummaryMonthPicker, SummaryYear } from './components/date';
@@ -103,6 +104,7 @@ const RenderSummaryForm = ({
     orgNr: SummaryOrganizationNumber,
     password: SummaryPassword,
     phoneNumber: SummaryPhoneNumber,
+    sender: SummarySender,
     surname: SummarySurname,
 
     /* Date */
