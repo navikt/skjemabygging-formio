@@ -34,13 +34,13 @@ describe('Digital submission with attachments uploaded in Fyllut', () => {
 
     it('shows validation errors when files are not uploaded', () => {
       cy.findByRole('group', { name: /Vedlegg 1/ }).within(() => {
-        cy.findByRole('radio', { name: TEXTS.statiske.attachment.leggerVedNaa }).check();
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).check();
       });
       cy.findByRole('group', { name: /Vedlegg 2/ }).within(() => {
-        cy.findByRole('radio', { name: TEXTS.statiske.attachment.leggerVedNaa }).check();
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).check();
       });
       cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
-        cy.findByRole('radio', { name: TEXTS.statiske.attachment.leggerVedNaa }).check();
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).check();
       });
       cy.clickSaveAndContinue();
 
@@ -63,17 +63,17 @@ describe('Digital submission with attachments uploaded in Fyllut', () => {
     describe('uploading files', () => {
       beforeEach(() => {
         cy.findAttachment(/Vedlegg 1/).within(() => {
-          cy.findByRole('radio', { name: TEXTS.statiske.attachment.leggerVedNaa }).check();
+          cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).check();
           cy.uploadFile('small-file.txt');
         });
 
         cy.findAttachment(/Vedlegg 2/).within(() => {
-          cy.findByRole('radio', { name: TEXTS.statiske.attachment.leggerVedNaa }).check();
+          cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).check();
           cy.uploadFile('another-small-file.txt');
         });
 
         cy.findAttachment(/Annen dokumentasjon/).within(() => {
-          cy.findByRole('radio', { name: TEXTS.statiske.attachment.leggerVedNaa }).check();
+          cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).check();
           cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Annet vedlegg 1');
           cy.uploadFile('test.txt');
         });

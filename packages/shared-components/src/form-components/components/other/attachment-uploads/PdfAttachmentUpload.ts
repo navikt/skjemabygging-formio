@@ -1,8 +1,8 @@
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { attachmentUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { PdfComponentProps } from '../../../types';
 
 const PdfAttachmentUpload = (props: PdfComponentProps) => {
-  const { component, submission, translate } = props;
+  const { component, submission, translate, submissionMethod } = props;
   const { navId, label, attachmentValues, attachmentType, otherDocumentation } = component;
 
   if (!navId) {
@@ -16,7 +16,7 @@ const PdfAttachmentUpload = (props: PdfComponentProps) => {
     if (!filtered.length) return null;
     return filtered.map((a) => ({
       label: `${translate(label || 'Ukjent vedlegg')}${a.value === 'leggerVedNaa' ? ` - ${translate(a.title || 'Ukjent vedlegg')}` : ''}`,
-      verdi: translate(TEXTS.statiske.attachment[a.value!]),
+      verdi: translate(attachmentUtils.getAttachmentLabel(a.value!, submissionMethod)),
     }));
   } else if (attachmentType === 'default' || !attachmentType) {
     const found = attachments.find((a) => a.attachmentId.startsWith(navId));
@@ -25,7 +25,7 @@ const PdfAttachmentUpload = (props: PdfComponentProps) => {
     return [
       {
         label: translate(label || 'Ukjent vedlegg'),
-        verdi: `${translate(TEXTS.statiske.attachment[found.value])}`,
+        verdi: `${translate(attachmentUtils.getAttachmentLabel(found.value, submissionMethod))}`,
       },
       ...(commentRequired?.enabled
         ? [

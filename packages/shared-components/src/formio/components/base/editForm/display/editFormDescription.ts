@@ -1,11 +1,22 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import editFormWysiwygEditor from '../shared/editFormWysiwygEditor';
 
-const editFormDescription = (): Component => {
+interface Props {
+  key?: string;
+  label?: string;
+  customConditional?: string;
+}
+
+const editFormDescription = ({
+  key = 'description',
+  label = 'Beskrivelse',
+  customConditional,
+}: Props = {}): Component => {
   return {
     ...editFormWysiwygEditor(false),
-    key: 'description',
-    label: 'Beskrivelse',
+    key,
+    label,
+    customConditional,
     validate: {
       maxLength: 4000,
     },

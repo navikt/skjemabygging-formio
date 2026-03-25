@@ -44,18 +44,18 @@ describe('Umami', () => {
       cy.clickNextStep();
 
       cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
-        cy.findByLabelText('Jeg ettersender dokumentasjonen senere').check(),
+        cy.findByLabelText(TEXTS.statiske.attachment.uploadLater).check(),
       );
 
       cy.findByRole('group', { name: 'Bekreftelse på utdanning' }).within(() =>
-        cy.findByLabelText('Jeg legger det ved dette skjemaet').check(),
+        cy.findByLabelText(TEXTS.statiske.attachment.uploadNow).check(),
       );
 
       cy.uploadFile('another-small-file.txt', { id: 'e3xh1d' });
       cy.wait('@umamiEvent');
 
       cy.findByLabelText('Annen dokumentasjon').within(() => {
-        cy.findByLabelText('Jeg legger det ved dette skjemaet').check();
+        cy.findByLabelText(TEXTS.statiske.attachment.uploadNow).check();
       });
       cy.findByLabelText('Gi vedlegget et beskrivende navn').type('Vitnemål');
       cy.uploadFile('small-file.txt', { id: 'en5h1c' });

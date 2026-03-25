@@ -4,6 +4,7 @@ import {
   PanelValidation,
   PdfData,
   Submission,
+  SubmissionMethod,
   TranslateFunction,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { AppConfigContextType } from '../context/config/configContext';
@@ -31,6 +32,7 @@ interface PdfComponentProps {
   submission: Submission;
   translate: TranslateFunction;
   currentLanguage: string;
+  submissionMethod?: SubmissionMethod;
 }
 
 interface PdfComponentRegistry {
