@@ -58,6 +58,8 @@ jobs:
           timezoneLinux: 'Europe/Oslo'
       - name: 'Install dependencies'
         run: pnpm install --frozen-lockfile
+      - name: 'Install Cypress binary (fyllut)'
+        run: pnpm --dir packages/fyllut exec cypress install
       - name: 'Build fyllut'
         run: pnpm build:fyllut
       - name: 'Run mock server'
@@ -118,6 +120,8 @@ jobs:
           timezoneLinux: 'Europe/Oslo'
       - name: 'Install dependencies'
         run: pnpm install --frozen-lockfile
+      - name: 'Install Cypress binary (bygger)'
+        run: pnpm --dir packages/bygger exec cypress install
       - name: 'Build bygger'
         run: pnpm build:bygger
       - name: 'Start bygger preview'
