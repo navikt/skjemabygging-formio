@@ -1,3 +1,4 @@
+import { requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import { Request, Response } from 'express';
 import { config } from '../../config/config';
 import { getTokenxAccessToken } from '../../security/tokenHelper';
@@ -13,9 +14,10 @@ const { sendInnConfig } = config;
 
 const activeTasks = {
   get: async (req: Request, res: Response) => {
+    const skjemanummer = requestUtil.getStringParam(req, 'skjemanummer')!;
     const tokenxAccessToken = getTokenxAccessToken(req);
     const response = await fetch(
-      `${sendInnConfig.host}${sendInnConfig.paths.opprettedeSoknaderForSkjema(req.params.skjemanummer)}`,
+      `${sendInnConfig.host}${sendInnConfig.paths.opprettedeSoknaderForSkjema(skjemanummer)}`,
       {
         method: 'GET',
         headers: {

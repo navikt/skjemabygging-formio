@@ -10,8 +10,8 @@
     "typescript": "^5.9.3"
   },
   "scripts": {
-    "mocks:fyllut": "yarn && ts-node mocks/server.ts",
-    "mocks:fyllut:no-cli": "yarn && ts-node mocks/server.ts --no-plugins.inquirerCli.enabled"
+    "mocks:fyllut": "pnpm exec ts-node mocks/server.ts",
+    "mocks:fyllut:no-cli": "pnpm exec ts-node mocks/server.ts --no-plugins.inquirerCli.enabled"
   },
   "dependencies": {
     "@types/multer": "^2.1.0",

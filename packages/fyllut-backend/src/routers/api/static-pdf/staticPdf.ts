@@ -2,6 +2,7 @@ import {
   coverPageService,
   formService,
   mergeFileService,
+  requestUtil,
   staticPdfService,
   translationService,
 } from '@navikt/skjemadigitalisering-shared-backend';
@@ -19,7 +20,7 @@ const { formsApiUrl, skjemabyggingProxyUrl, sendInnConfig, useFormsApiStaging, s
 
 const staticPdf = {
   getAll: async (req: Request, res: Response, next: NextFunction) => {
-    const { formPath } = req.params;
+    const formPath = requestUtil.getStringParam(req, 'formPath')!;
 
     try {
       const result = await staticPdfService.getAll({
@@ -32,7 +33,7 @@ const staticPdf = {
     }
   },
   downloadPdf: async (req: Request, res: Response, next: NextFunction) => {
-    const { formPath } = req.params;
+    const formPath = requestUtil.getStringParam(req, 'formPath')!;
     const languageCode = req.params.languageCode as TranslationLang;
     const coverPageData = req.body as CoverPageDownloadType;
     const coverPageToken = req.headers.AzureAccessToken as string;

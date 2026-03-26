@@ -1,3 +1,4 @@
+import { requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import { Form, formioFormsApiUtils, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { RequestHandler } from 'express';
 import { logger } from '../../../logging/logger';
@@ -16,7 +17,7 @@ const getAll: RequestHandler = async (req, res, next) => {
 };
 
 const get: RequestHandler = async (req, res, next) => {
-  const { formPath } = req.params;
+  const formPath = requestUtil.getStringParam(req, 'formPath')!;
   try {
     const form = await formPublicationsService.get(formPath);
     res.json(form);
@@ -26,7 +27,7 @@ const get: RequestHandler = async (req, res, next) => {
 };
 
 const post: RequestHandler = async (req, res, next) => {
-  const { formPath } = req.params;
+  const formPath = requestUtil.getStringParam(req, 'formPath')!;
   const { languageCodes, revision } = req.query; // TODO
   const accessToken = req.headers.AzureAccessToken as string;
 
@@ -90,7 +91,7 @@ const postBulk: RequestHandler = async (req, res, next) => {
 
 const unpublish: RequestHandler = async (req, _res, next) => {
   try {
-    const { formPath } = req.params;
+    const formPath = requestUtil.getStringParam(req, 'formPath')!;
     const accessToken = req.headers.AzureAccessToken as string;
     await formPublicationsService.unpublish(formPath, accessToken);
     const form = await formsService.get(formPath);
@@ -102,7 +103,7 @@ const unpublish: RequestHandler = async (req, _res, next) => {
 };
 
 const getTranslations = async (req, res, next) => {
-  const { formPath } = req.params;
+  const formPath = requestUtil.getStringParam(req, 'formPath')!;
   const { languageCodes } = req.query;
   try {
     const translations = await formPublicationsService.getTranslations(formPath, languageCodes);

@@ -40,8 +40,8 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: '24.14.0'
-          cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
           registry-url: https://npm.pkg.github.com/
           scope: '@navikt'
       - name: set timezone
@@ -49,19 +49,19 @@ jobs:
         with:
           timezoneLinux: 'Europe/Oslo'
       - name: 'Install dependencies'
-        run: yarn --frozen-lockfile
+        run: pnpm install --frozen-lockfile
       - name: 'Build fyllut'
-        run: yarn build:fyllut
+        run: pnpm build:fyllut
       - name: 'Run mock server'
-        run: yarn mocks:fyllut:no-cli &
+        run: pnpm mocks:fyllut:no-cli &
       - name: 'Cypress tests (fyllut)'
         uses: cypress-io/github-action@v7
         with:
           install: false
-          start: yarn preview:fyllut
+          start: pnpm preview:fyllut
           wait-on: 'http://localhost:3001/fyllut/internal/isready'
           wait-on-timeout: 120
-          command: yarn cypress:fyllut --spec cypress/e2e/${{ matrix.folder }}/**/* --env INCLUDE_DIST_TESTS=true
+          command: pnpm cypress:fyllut --spec cypress/e2e/${{ matrix.folder }}/**/* --env INCLUDE_DIST_TESTS=true
         env:
           FYLLUT_BACKEND_LOGLEVEL: ${{ runner.debug == '1' && 'debug' || 'error' }}
       - name: Upload screenshots
@@ -83,8 +83,8 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: '24.14.0'
-          cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
           registry-url: https://npm.pkg.github.com/
           scope: '@navikt'
       - name: set timezone
@@ -92,17 +92,17 @@ jobs:
         with:
           timezoneLinux: 'Europe/Oslo'
       - name: 'Install dependencies'
-        run: yarn --frozen-lockfile
+        run: pnpm install --frozen-lockfile
       - name: 'Build bygger'
-        run: yarn build:bygger
+        run: pnpm build:bygger
       - name: 'Cypress tests (bygger)'
         uses: cypress-io/github-action@v7
         with:
           install: false
-          start: yarn preview:bygger
+          start: pnpm preview:bygger
           wait-on: 'http://localhost:3000/internal/isready'
           wait-on-timeout: 120
-          command: yarn cypress:bygger
+          command: pnpm cypress:bygger
       - name: Upload screenshots
         uses: actions/upload-artifact@v6
         if: failure()

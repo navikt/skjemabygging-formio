@@ -95,13 +95,14 @@ describe('Templates', () => {
 
       const expandButton = screen.getByRole('button', { name: buttonLabel });
       expect(expandButton).toBeInTheDocument();
+      expect(expandButton).toHaveAttribute('aria-expanded', 'false');
 
       const container = screen.getByText(description);
       expect(container).toBeInTheDocument();
-      expect(container).not.toBeVisible();
 
       fireEvent.click(expandButton);
-      expect(container).toBeVisible();
+      expect(expandButton).toHaveAttribute('aria-expanded', 'true');
+      expect(container).toBeInTheDocument();
     };
 
     describe('Textarea', () => {

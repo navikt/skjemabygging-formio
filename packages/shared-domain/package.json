@@ -15,13 +15,13 @@
   ],
   "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {
-    "build": "tsc && vite build",
-    "check-types": "tsc",
+    "build": "pnpm exec tsc && pnpm exec vite build",
+    "check-types": "pnpm exec tsc",
     "clean": "rimraf dist coverage node_modules",
     "watch": "vite build --watch",
     "test": "vitest --run",
     "test:coverage": "vitest --run --coverage",
-    "prepare": "yarn build"
+    "prepare": "pnpm run build"
   },
   "dependencies": {
     "formiojs": "4.20.0",

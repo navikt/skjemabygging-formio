@@ -17,8 +17,8 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: '24.14.0'
-          cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
           registry-url: https://npm.pkg.github.com/
           scope: '@navikt'
       - name: set timezone
@@ -26,23 +26,23 @@ jobs:
         with:
           timezoneLinux: 'Europe/Oslo'
       - name: 'Install dependencies'
-        run: yarn --frozen-lockfile
-      - name: 'No unstaged changes allowed (changes in yarn.lock?)'
+        run: pnpm install --frozen-lockfile
+      - name: 'No unstaged changes allowed (changes in pnpm-lock.yaml?)'
         run: git diff --quiet
       - name: 'Check types'
-        run: yarn check-types
+        run: pnpm check-types
       - name: 'Build'
-        run: yarn build
+        run: pnpm build
       - name: 'Test bygger'
-        run: yarn test:bygger
+        run: pnpm test:bygger
       - name: 'Test fyllut'
-        run: yarn test:fyllut
+        run: pnpm test:fyllut
       - name: 'Test shared-components'
-        run: yarn test:shared-components
+        run: pnpm test:shared-components
       - name: 'Test shared-domain'
-        run: yarn test:shared-domain
+        run: pnpm test:shared-domain
       - name: 'Test shared-backend'
-        run: yarn test:shared-backend
+        run: pnpm test:shared-backend
 
   package-and-push-bygger:
     if: github.ref == 'refs/heads/master'
@@ -57,15 +57,15 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: '24.14.0'
-          cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
           registry-url: https://npm.pkg.github.com/
           scope: '@navikt'
 
       - name: 'Build application: Bygger'
         env:
           VITE_GIT_VERSION: ${{ github.sha }}
-        run: yarn --frozen-lockfile && yarn build
+        run: pnpm install --frozen-lockfile && pnpm build
 
       - name: Build and push Docker image for bygger
         uses: nais/docker-build-push@v0
@@ -95,15 +95,15 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: '24.14.0'
-          cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
           registry-url: https://npm.pkg.github.com/
           scope: '@navikt'
 
       - name: 'Build application: Fyllut'
         env:
           VITE_GIT_VERSION: ${{ github.sha }}
-        run: yarn --frozen-lockfile && yarn build
+        run: pnpm install --frozen-lockfile && pnpm build
 
       - name: 'Build and push Docker image: fyllut-base-dev'
         uses: nais/docker-build-push@v0

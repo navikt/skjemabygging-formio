@@ -27,15 +27,15 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: '24.14.0'
-          cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
           registry-url: https://npm.pkg.github.com/
           scope: '@navikt'
       - name: 'Build application: Bygger'
         env:
           VITE_GIT_VERSION: ${{ github.sha }}
           VITE_GIT_BRANCH: ${{ github.ref_name }}
-        run: yarn --frozen-lockfile && yarn build
+        run: pnpm install --frozen-lockfile && pnpm build
 
       - name: 'Build and push Docker image for bygger'
         uses: nais/docker-build-push@v0
@@ -64,15 +64,15 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: '24.14.0'
-          cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
           registry-url: https://npm.pkg.github.com/
           scope: '@navikt'
       - name: 'Build application: Fyllut'
         env:
           VITE_GIT_VERSION: ${{ github.sha }}
           VITE_GIT_BRANCH: ${{ github.ref_name }}
-        run: yarn --frozen-lockfile && yarn build
+        run: pnpm install --frozen-lockfile && pnpm build
 
       - name: 'Build and push Docker image for fyllut'
         uses: nais/docker-build-push@v0

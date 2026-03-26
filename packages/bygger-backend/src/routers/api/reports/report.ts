@@ -1,9 +1,10 @@
+import { requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import { RequestHandler } from 'express';
 import { reportService } from '../../../services';
 import { ApiError } from '../helpers/errors';
 
 const report: RequestHandler = async (req, res, next) => {
-  const { reportId } = req.params;
+  const reportId = requestUtil.getStringParam(req, 'reportId')!;
   const report = reportService.getReportDefinition(reportId);
   if (!report) {
     throw new Error(`Report not implemented: ${reportId}`);
