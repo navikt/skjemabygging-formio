@@ -69,7 +69,7 @@ jobs:
           start: pnpm preview:fyllut
           wait-on: 'http://localhost:3001/fyllut/internal/isready'
           wait-on-timeout: 120
-          command: pnpm cypress:fyllut --spec cypress/e2e/${{ matrix.folder }}/**/* --env INCLUDE_DIST_TESTS=true
+          command: pnpm --dir packages/fyllut exec cypress run --browser electron --spec cypress/e2e/${{ matrix.folder }}/**/* --env INCLUDE_DIST_TESTS=true
         env:
           FYLLUT_BACKEND_LOGLEVEL: ${{ runner.debug == '1' && 'debug' || 'error' }}
       - name: Upload screenshots
@@ -114,7 +114,7 @@ jobs:
           start: pnpm preview:bygger
           wait-on: 'http://localhost:3000/internal/isready'
           wait-on-timeout: 120
-          command: pnpm cypress:bygger
+          command: pnpm --dir packages/bygger exec cypress run --browser electron
       - name: Upload screenshots
         uses: actions/upload-artifact@v6
         if: failure()
