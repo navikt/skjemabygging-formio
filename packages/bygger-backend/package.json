@@ -6,7 +6,7 @@
   "type": "module",
   "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {
-    "start": "cross-env-shell NODE_ENV=development vite",
+    "start": "cross-env NODE_ENV=development vite",
     "build": "tsc && vite build",
     "preview": "cross-env-shell NODE_ENV=development BYGGER_BUILD_DIR=\"../../bygger/dist\" PORT=3000 \"cd dist && node server.mjs\"",
     "check-types": "tsc",
@@ -24,7 +24,7 @@
     "csv-stringify": "^6.6.0",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
-    "express-rate-limit": "^8.1.0",
+    "express-rate-limit": "^8.2.2",
     "http-proxy": "^1.18.1",
     "luxon": "^3.7.2",
     "jose": "^6.1.3",

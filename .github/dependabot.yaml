@@ -30,11 +30,18 @@ updates:
       all-minor-patch:
         patterns:
           - '*'
+        exclude-patterns:
+          - '@navikt/ds-*'
+          - '@navikt/aksel-icons'
+          - '@navikt/nav-dekoratoren-moduler'
+          - 'csp-header'
+          - 'html-react-parser'
         update-types:
           - 'minor'
           - 'patch'
       typescript-eslint:
         patterns: 
+          - 'typescript-eslint'
           - '@typescript-eslint/*'
         update-types:
           - 'major'

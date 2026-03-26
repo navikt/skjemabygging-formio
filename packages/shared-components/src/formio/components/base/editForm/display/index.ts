@@ -7,6 +7,7 @@ import editFormBackgroundColor from './editFormBackgroundColor';
 import editFormButtonText from './editFormButtonText';
 import editFormContent from './editFormContent';
 import editFormContentForPdf from './editFormContentForPdf';
+import editFormCoverPageUser from './editFormCoverPageUser';
 import editFormCustomLabels from './editFormCustomLabels';
 import editFormDescription from './editFormDescription';
 import editFormDisabled from './editFormDisabled';
@@ -21,6 +22,7 @@ import editFormLegend from './editFormLegend';
 import editFormRemoveAnother from './editFormRemoveAnother';
 import editFormRowTitle from './editFormRowTitle';
 import editFormRows from './editFormRows';
+import editFormSenderRole from './editFormSenderRole';
 import editFormSpellCheck from './editFormSpellCheck';
 import editFormTextDisplay from './editFormTextDisplay';
 import editFormTitle from './editFormTitle';
@@ -45,6 +47,7 @@ const editFormDisplay = {
   buttonText: editFormButtonText,
   alertType: editFormAlertType,
   contentForPdf: editFormContentForPdf,
+  coverPageUser: editFormCoverPageUser,
   content: editFormContent,
   inline: editFormInline,
   addAnother: editFormAddAnother,
@@ -58,6 +61,7 @@ const editFormDisplay = {
   backgroundColor: editFormBackgroundColor,
   yourInformation: editFormYourInformation,
   customLabels: editFormCustomLabels,
+  senderRole: editFormSenderRole,
 };
 
 export default editFormDisplay;

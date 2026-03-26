@@ -28,6 +28,7 @@ import {
   PdfOrganizationNumber,
   PdfPassword,
   PdfPhoneNumber,
+  PdfSender,
   PdfSurname,
 } from './components/customized';
 import { PdfDatePicker, PdfMonthPicker, PdfYear } from './components/date';
@@ -108,6 +109,7 @@ const renderPdfForm = ({
     orgNr: PdfOrganizationNumber,
     password: PdfPassword,
     phoneNumber: PdfPhoneNumber,
+    sender: PdfSender,
     surname: PdfSurname,
 
     /* Date */
@@ -151,6 +153,7 @@ const renderPdfForm = ({
             submission,
             translate,
             currentLanguage,
+            submissionMethod,
           }),
         )
         .filter(Boolean) ?? []),
@@ -163,6 +166,7 @@ const renderPdfForm = ({
               submission,
               translate,
               currentLanguage,
+              submissionMethod,
             }),
           ]
         : []),

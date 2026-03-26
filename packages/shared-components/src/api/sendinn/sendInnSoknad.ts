@@ -13,6 +13,7 @@ export interface SendInnSoknadResponse {
   hoveddokumentVariant: {
     document: { data: Submission; language: Language };
   };
+  shouldUploadAttachmentsInFyllut: boolean;
   endretDato: string;
   skalSlettesDato: string;
 }

@@ -30,6 +30,8 @@ export interface CustomLabels {
   [key: string]: string;
 }
 
+export type RecipientRole = 'person' | 'organization';
+
 export interface Component {
   id?: string;
   navId?: string;
@@ -53,7 +55,7 @@ export interface Component {
   components?: Component[];
   otherDocumentation?: boolean;
   isAttachmentPanel?: boolean;
-  prefillKey?: PrefillKey;
+  prefillKey?: PrefillKey | PrefillKey[];
   values?: ComponentValue[];
   attachmentValues?: AttachmentSettingValues;
   accordionValues?: AccordionSettingValues;
@@ -89,7 +91,7 @@ export interface Component {
   as?: string;
   style?: object;
   theme?: string;
-  defaultValue?: string | number | boolean | any[] | object;
+  defaultValue?: string | number | boolean | any[] | object | null;
   tooltip?: string;
   reorder?: boolean;
   dataGridLabel?: boolean;
@@ -131,10 +133,14 @@ export interface Component {
   prefillValue?: string | object;
   protectedApiKey?: boolean;
   yourInformation?: boolean;
+  coverPageUser?: boolean;
   widthPercent?: number;
   logic?: any;
   currency?: string;
   isAmountWithCurrencySelector?: boolean;
+  senderRole?: RecipientRole;
+  labels?: Record<string, string>;
+  descriptions?: Record<string, string>;
   builderErrors?: string[];
 }
 
@@ -176,8 +182,10 @@ export interface ComponentValidate {
 }
 
 export interface ComponentConditional {
-  when?: string;
-  json?: object;
+  show?: boolean | null;
+  when?: string | null;
+  eq?: string | null;
+  json?: object | string;
 }
 
 export interface Webform {

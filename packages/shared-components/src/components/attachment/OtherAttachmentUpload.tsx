@@ -10,6 +10,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import clsx from 'clsx';
 import { MutableRefObject, ReactNode, useState } from 'react';
+import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import FileUploader from '../file-uploader/FileUploader';
@@ -47,6 +48,7 @@ const OtherAttachmentUpload = ({
   refs,
 }: Props) => {
   const styles = useAttachmentStyles();
+  const appConfig = useAppConfig();
   const { translate } = useLanguages();
   const { handleDeleteAttachment, submissionAttachments } = useAttachmentUpload();
   const { form } = useForm();
@@ -60,7 +62,7 @@ const OtherAttachmentUpload = ({
   const [attachmentCounter, setAttachmentCounter] = useState(getLargestAttachmentIdCounter(attachments));
 
   const uploadedAttachmentFiles = submissionAttachment?.files ?? [];
-  const options = attachmentUtils.mapKeysToOptions(attachmentValues, translate);
+  const options = attachmentUtils.mapKeysToOptions(attachmentValues, translate, appConfig.submissionMethod);
   const uploadSelected = !!options.find((option) => option.value === submissionAttachment?.value)?.upload;
 
   const handleDelete = async (attachmentId: string) => {
@@ -99,7 +101,7 @@ const OtherAttachmentUpload = ({
   };
 
   return (
-    <VStack gap="space-24" className={clsx('mb', className)}>
+    <VStack gap="space-24" className={clsx('mb', className)} data-cy="attachment-upload">
       {uploadedAttachmentFiles.length > 0 ? (
         <div>
           <Label className={'mb-0'}>{label}</Label>
@@ -115,6 +117,7 @@ const OtherAttachmentUpload = ({
           onChange={onValueChange}
           translate={translate}
           deadline={form.properties?.ettersendelsesfrist}
+          submissionMethod={appConfig.submissionMethod}
           ref={(ref) => {
             if (refs?.current) {
               // eslint-disable-next-line react-hooks/immutability

@@ -46,7 +46,12 @@ declare global {
 
       clickDownloadApplication(): Chainable<JQuery<HTMLElement>>;
 
-      uploadFile(fileTitle?: string, options?: { index?: number; id?: string }): Chainable<JQuery<HTMLElement>>;
+      findAttachment(name: RegExp | string): Chainable<JQuery<HTMLElement>>;
+
+      uploadFile(
+        fileTitle?: string,
+        options?: { index?: number; id?: string; verifyUpload?: boolean },
+      ): Chainable<JQuery<HTMLElement>>;
 
       verifySendInnRedirect(): Chainable<JQuery<HTMLElement>>;
 

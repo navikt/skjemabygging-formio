@@ -7,7 +7,7 @@
   "type": "module",
   "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {
-    "start": "cross-env-shell NODE_ENV=development vite",
+    "start": "cross-env NODE_ENV=development vite",
     "build": "tsc && vite build",
     "preview": "cross-env-shell NODE_ENV=development NO_DECORATOR=true FYLLUT_BUILD_DIR=\"../../fyllut/dist\" PORT=3001 \"node bin/copyDotEnvTestToDist.js && cd dist && node server.mjs\"",
     "check-types": "tsc",
@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@elastic/ecs-morgan-format": "^1.5.1",
-    "@navikt/nav-dekoratoren-moduler": "^3.6.1",
+    "@navikt/nav-dekoratoren-moduler": "^3.6.3",
     "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
     "@navikt/skjemadigitalisering-shared-backend": "1.0.0",
     "@opentelemetry/api": "^1.9.0",
@@ -26,7 +26,7 @@
     "csp-header": "^6.3.0",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
-    "express-rate-limit": "^8.1.0",
+    "express-rate-limit": "^8.2.2",
     "glob": "^11.0.3",
     "html-react-parser": "^5.2.15",
     "jose": "^6.1.3",

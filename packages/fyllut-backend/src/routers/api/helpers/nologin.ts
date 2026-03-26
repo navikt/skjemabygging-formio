@@ -4,6 +4,7 @@ import {
   I18nTranslationMap,
   NavFormType,
   navFormUtils,
+  senderUtils,
   Submission,
   TranslationLang,
   yourInformationUtils,
@@ -30,14 +31,14 @@ const assembleNologinSoknadBody = (
     navFormUtils.getActiveAttachmentPanelFromForm(form, submission)?.components ?? [];
   const bruker = extractBruker(form, submission);
   const avsender =
-    extractAvsender(submission) ?? (bruker ? undefined : extractAvsenderFromYourInformation(form, submission));
+    extractAvsender(form, submission) ?? (bruker ? undefined : extractAvsenderFromYourInformation(form, submission));
 
   if (!bruker && !avsender) {
     throw new Error(`${innsendingsId}: Could not find user nor sender from nologin submission (formPath=${form.path})`);
   }
 
   return {
-    ...(bruker && { bruker: bruker.id }),
+    ...(bruker && { bruker: bruker.id?.replace(/\s/g, '') }),
     ...(avsender && { avsender }),
     formNumber: form.properties.skjemanummer,
     title: translate(form.title),
@@ -71,7 +72,7 @@ const assembleNologinSoknadBody = (
             component?.navId ?? attachment.type,
           );
         }) ?? [],
-    otherUploadAvailable: false,
+    otherUploadAvailable: activeAttachments.some((a) => a.attachmentType === 'other'),
   };
 };
 
@@ -96,7 +97,25 @@ const extractBruker = (form: NavFormType, submission: Submission): BrukerDto | u
   return undefined;
 };
 
-const extractAvsender = (submission: Submission): AvsenderId | undefined => {
+const extractAvsender = (form: NavFormType, submission: Submission): AvsenderId | undefined => {
+  const sender = senderUtils.getSender(form, submission.data);
+  if (sender) {
+    if (sender.person) {
+      return {
+        idType: 'FNR',
+        id: sender.person?.nationalIdentityNumber,
+        navn: `${sender.person?.firstName} ${sender.person?.surname}`,
+      };
+    } else if (sender.organization) {
+      return {
+        idType: 'ORGNR',
+        id: sender.organization?.number,
+        navn: sender.organization?.name,
+      };
+    }
+  }
+
+  // TODO: Fjern kode når de få skjemaene som har denne er fjernet.
   const avsenderFornavn = submission.data.fornavnAvsender;
   const avsenderEtternavn = submission.data.etternavnAvsender;
   if (avsenderFornavn && avsenderEtternavn) {

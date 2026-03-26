@@ -30,7 +30,7 @@ import { StaticPdfProvider, useStaticPdf } from './pages/static-pdf/StaticPdfCon
 import Styles from './styles';
 import { b64toBlob } from './util/blob/blob';
 import { getCountries } from './util/countries/countries';
-import * as formUtils from './util/form/form.js';
+import * as formUtils from './util/form/form';
 import NavFormioJs from './util/formio/formiojs';
 import htmlUtils from './util/html/htmlUtils';
 import i18nUtils from './util/i18n';

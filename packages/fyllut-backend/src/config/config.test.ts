@@ -1,6 +1,6 @@
 import { MockedFunction } from 'vitest';
 import { checkConfigConsistency } from './config';
-import { NaisCluster } from './nais-cluster.js';
+import { NaisCluster } from './nais-cluster';
 import { ConfigType } from './types';
 
 describe('config', () => {

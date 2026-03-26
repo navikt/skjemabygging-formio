@@ -7,7 +7,7 @@ import { createApp } from './app';
 import { config } from './config/config';
 import { createMockIdportenJwt, extractHost, extractPath, generateJwk } from './test/testHelpers';
 
-vi.mock('./dekorator.js', () => ({
+vi.mock('./dekorator', () => ({
   getDecorator: () => {},
   createRedirectUrl: () => '',
 }));

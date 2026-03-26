@@ -1,0 +1,12 @@
+{
+  "bruker": { "brukerId": "20905995783", "brukerType": "PERSON" },
+  "foerstesidetype": "SKJEMA",
+  "navSkjemaId": "coverpageperson",
+  "spraakkode": "NB",
+  "overskriftstittel": "coverpageperson Cover page person test form",
+  "arkivtittel": "coverpageperson Cover page person test form",
+  "tema": "HJE",
+  "vedleggsliste": [],
+  "dokumentlisteFoersteside": ["coverpageperson Cover page person test form"],
+  "netsPostboks": "1400"
+}

@@ -113,18 +113,24 @@ Cypress.Commands.add('clickDownloadApplication', () => {
   cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).click();
 });
 
+Cypress.Commands.add('findAttachment', (name: RegExp | string) => {
+  cy.findByRole('group', { name }).closest('[data-cy=attachment-upload]');
+});
+
 Cypress.Commands.add(
   'uploadFile',
-  (fileName: string = 'small-file.txt', options: { index?: number; id?: string } = {}) => {
+  (fileName: string = 'small-file.txt', options: { index?: number; id?: string; verifyUpload?: boolean } = {}) => {
     if (options.id) {
-      return cy
-        .get(`[data-cy="upload-button-${options.id}"] input[type=file]`)
-        .selectFile(`cypress/fixtures/files/${fileName}`, { force: true });
+      cy.get(`[data-cy="upload-button-${options.id}"] input[type=file]`).selectFile(
+        `cypress/fixtures/files/${fileName}`,
+        { force: true },
+      );
+      return options.verifyUpload ? cy.findByText(fileName).should('be.visible') : cy;
     } else {
-      return cy
-        .get('input[type=file]')
+      cy.get('input[type=file]')
         .eq(options.index ?? 0)
         .selectFile(`cypress/fixtures/files/${fileName}`, { force: true });
+      return options.verifyUpload ? cy.findByText(fileName).should('be.visible') : cy;
     }
   },
 );
@@ -183,7 +189,7 @@ Cypress.Commands.add('defaultWaits', () => {
 
 Cypress.Commands.add('configMocksServer', () => {
   cy.mocksConfigClient({
-    port: 3310,
+    port: Number(Cypress.env('MOCKS_ADMIN_PORT') ?? 3310),
   });
   return cy;
 });

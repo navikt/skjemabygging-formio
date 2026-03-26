@@ -1,6 +1,6 @@
 import type { Mock } from 'vitest';
 
-declare module './GitHubRepo.js' {
+declare module './GitHubRepo' {
   export const mockRepoGetRef: Mock;
   export const mockRepoCreateRef: Mock;
   export const mockRepoDeleteRef: Mock;

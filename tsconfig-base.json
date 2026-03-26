@@ -1,13 +1,15 @@
 {
   "compilerOptions": {
-    "target": "ES2021",
+    "target": "ES2022",
     "module": "ESNext",
     "allowJs": true,
     "checkJs": false,
+    "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitAny": false,
+    "resolveJsonModule": true,
     "skipLibCheck": true,
     "types": ["vite/client", "vitest/globals"],
     "moduleResolution": "node",

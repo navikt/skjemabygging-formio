@@ -153,6 +153,7 @@ export const sendInnResponseBody = {
   status: 'Opprettet',
   vedleggsListe: [],
   kanLasteOppAnnet: true,
+  shouldUploadAttachmentsInFyllut: false,
   fristForEttersendelse: 14,
   endretDato: '2023-08-24T11:28:51.854038+02:00',
 };
@@ -209,6 +210,7 @@ export const decodedResponseBody = {
   status: 'Opprettet',
   vedleggsListe: [],
   kanLasteOppAnnet: true,
+  shouldUploadAttachmentsInFyllut: false,
   fristForEttersendelse: 14,
   endretDato: '2023-08-24T11:28:51.854038+02:00',
 };

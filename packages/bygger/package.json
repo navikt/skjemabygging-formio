@@ -11,11 +11,11 @@
   "type": "module",
   "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {
-    "start": "cross-env-shell NODE_ENV=development vite",
+    "start": "cross-env NODE_ENV=development vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "check-types": "tsc",
-    "clean": "rimraf dist coverage node_modules",
+    "clean": "rimraf dist coverage node_modules .runtime",
     "test": "vitest --run",
     "test:coverage": "vitest --run --coverage",
     "cypress": "cypress run",

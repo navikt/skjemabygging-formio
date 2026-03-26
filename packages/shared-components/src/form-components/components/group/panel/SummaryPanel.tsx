@@ -14,7 +14,7 @@ const SummaryPanel = (props: FormComponentProps) => {
   const panelValidation = panelValidationList?.find((panel) => panel.key === key);
 
   return (
-    <FormSummary>
+    <FormSummary data-cy="form-summary-panel">
       <FormSummary.Header>
         <FormSummary.Heading level="3">
           {translate(title)}

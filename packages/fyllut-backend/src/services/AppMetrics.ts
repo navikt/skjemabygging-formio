@@ -7,6 +7,8 @@ class AppMetrics {
   private readonly _familiePdfFailuresCounter: Counter;
   private readonly _paperSubmissionsCounter: Counter;
   private readonly _outgoingRequestDuration: Histogram;
+  private readonly _innsendingApiUploadFileSize: Histogram;
+  private readonly _innsendingApiUploadDuration: Histogram;
   private readonly _expressJsonBodyParserDuration: Histogram;
   private readonly _idportenVerifyTokenDuration: Histogram;
   private readonly _nologinCaptchaRequestsCounter: Counter;
@@ -68,6 +70,43 @@ class AppMetrics {
     this._outgoingRequestDuration.zero({ service: 'familiepdf', method: 'createPdf', error: 'false' });
     this._outgoingRequestDuration.zero({ service: 'familiepdf', method: 'createPdf', error: 'true' });
 
+    this._innsendingApiUploadFileSize = new Histogram({
+      name: 'fyllut_innsending_api_upload_file_size_bytes',
+      help: 'Size of files uploaded to innsending-api in bytes',
+      labelNames: ['type', 'error'],
+      buckets: [
+        64 * 1024,
+        128 * 1024,
+        256 * 1024,
+        512 * 1024,
+        1024 * 1024,
+        2 * 1024 * 1024,
+        5 * 1024 * 1024,
+        10 * 1024 * 1024,
+        20 * 1024 * 1024,
+        50 * 1024 * 1024,
+        100 * 1024 * 1024,
+        150 * 1024 * 1024,
+      ],
+      registers: [this._register],
+    });
+    this._innsendingApiUploadFileSize.zero({ type: 'nologin', error: 'false' });
+    this._innsendingApiUploadFileSize.zero({ type: 'nologin', error: 'true' });
+    this._innsendingApiUploadFileSize.zero({ type: 'digital', error: 'false' });
+    this._innsendingApiUploadFileSize.zero({ type: 'digital', error: 'true' });
+
+    this._innsendingApiUploadDuration = new Histogram({
+      name: 'fyllut_innsending_api_upload_duration_seconds',
+      help: 'Duration of file uploads to innsending-api in seconds',
+      labelNames: ['type', 'error'],
+      buckets: [0.25, 0.5, 1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0, 128.0],
+      registers: [this._register],
+    });
+    this._innsendingApiUploadDuration.zero({ type: 'nologin', error: 'false' });
+    this._innsendingApiUploadDuration.zero({ type: 'nologin', error: 'true' });
+    this._innsendingApiUploadDuration.zero({ type: 'digital', error: 'false' });
+    this._innsendingApiUploadDuration.zero({ type: 'digital', error: 'true' });
+
     this._expressJsonBodyParserDuration = new Histogram({
       name: 'fyllut_express_json_body_parser_seconds',
       help: 'Express json body parser duration',
@@ -115,6 +154,14 @@ class AppMetrics {
 
   public get outgoingRequestDuration() {
     return this._outgoingRequestDuration;
+  }
+
+  public get innsendingApiUploadFileSize() {
+    return this._innsendingApiUploadFileSize;
+  }
+
+  public get innsendingApiUploadDuration() {
+    return this._innsendingApiUploadDuration;
   }
 
   public get idportenVerifyTokenDuration() {

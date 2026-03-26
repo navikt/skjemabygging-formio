@@ -1,5 +1,4 @@
-import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { DateTime } from 'luxon';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
 describe('Digital submission without user login', () => {
   before(() => {
@@ -26,7 +25,7 @@ describe('Digital submission without user login', () => {
       cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
         cy.findByLabelText('Norsk pass').check(),
       );
-      cy.uploadFile('id-billy-bruker.jpg');
+      cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
       cy.clickNextStep();
 
       cy.clickIntroPageConfirmation();
@@ -52,17 +51,17 @@ describe('Digital submission without user login', () => {
       cy.mocksUseRouteVariant('post-nologin-soknad:success-tc02');
 
       cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
-        cy.findByLabelText('Jeg ettersender dokumentasjonen senere').check(),
+        cy.findByLabelText(TEXTS.statiske.attachment.uploadLater).check(),
       );
 
       cy.findByRole('group', { name: 'Bekreftelse på utdanning' }).within(() =>
-        cy.findByLabelText('Jeg legger det ved dette skjemaet').check(),
+        cy.findByLabelText(TEXTS.statiske.attachment.uploadNow).check(),
       );
 
       cy.uploadFile('another-small-file.txt', { id: 'e3xh1d' });
 
       cy.findByLabelText('Annen dokumentasjon').within(() => {
-        cy.findByLabelText('Jeg legger det ved dette skjemaet').check();
+        cy.findByLabelText(TEXTS.statiske.attachment.uploadNow).check();
       });
       cy.findByLabelText('Gi vedlegget et beskrivende navn').type('Vitnemål');
       cy.uploadFile('small-file.txt', { id: 'en5h1c' });
@@ -81,7 +80,7 @@ describe('Digital submission without user login', () => {
 
     it('prevents further editing when navigating back after submission', () => {
       cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
-        cy.findByLabelText('Jeg ettersender dokumentasjonen senere').check(),
+        cy.findByLabelText(TEXTS.statiske.attachment.uploadLater).check(),
       );
 
       cy.findByLabelText('Annen dokumentasjon').within(() =>
@@ -89,7 +88,7 @@ describe('Digital submission without user login', () => {
       );
 
       cy.findByLabelText('Bekreftelse på utdanning').within(() =>
-        cy.findByLabelText('Jeg legger det ved dette skjemaet').check(),
+        cy.findByLabelText(TEXTS.statiske.attachment.uploadNow).check(),
       );
       cy.uploadFile('another-small-file.txt');
       cy.clickNextStep();
@@ -128,7 +127,7 @@ describe('Digital submission without user login', () => {
       cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
         cy.findByLabelText('Norsk pass').check(),
       );
-      cy.uploadFile('id-billy-bruker.jpg');
+      cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
       cy.clickNextStep();
 
       cy.clickIntroPageConfirmation();
@@ -159,6 +158,8 @@ describe('Digital submission without user login', () => {
       cy.mocksUseRouteVariant('post-familie-pdf:success-tc06a');
       cy.mocksUseRouteVariant('post-nologin-soknad:success-tc06a');
       cy.clickSendNav();
+
+      cy.findByRole('heading', { name: 'Kvittering' }).should('exist');
     });
 
     it('should support user without ssn', () => {
@@ -177,7 +178,7 @@ describe('Digital submission without user login', () => {
       cy.findByRole('textbox', { name: 'Vegadresse' }).type('Testveien 1C');
       cy.findByRole('textbox', { name: 'Postnummer' }).type('1234');
       cy.findByRole('textbox', { name: 'Poststed' }).type('Plassen');
-      cy.findByRole('textbox', { name: /^Gyldig fra/ }).type(DateTime.now().toFormat(dateUtils.inputFormat));
+      cy.findByRole('textbox', { name: /^Gyldig fra/ }).type('18.02.2026');
       cy.clickNextStep();
 
       cy.findByRole('group', { name: 'Høyeste fullførte utdanning' }).within(() =>
@@ -193,6 +194,8 @@ describe('Digital submission without user login', () => {
       cy.mocksUseRouteVariant('post-familie-pdf:success-tc06b');
       cy.mocksUseRouteVariant('post-nologin-soknad:success-tc06b');
       cy.clickSendNav();
+
+      cy.findByRole('heading', { name: 'Kvittering' }).should('exist');
     });
   });
 
@@ -206,7 +209,7 @@ describe('Digital submission without user login', () => {
     cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
       cy.findByLabelText('Norsk pass').check(),
     );
-    cy.uploadFile('id-billy-bruker.jpg');
+    cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
     cy.findByRole('button', { name: 'Slett filen' }).should('exist');
     cy.go('back');
 
@@ -250,7 +253,7 @@ describe('Digital submission without user login', () => {
 
     it('shows service unavailable error when submission fails due to service unavailability', () => {
       cy.mocksUseRouteVariant('post-nologin-soknad:service-unavailable');
-      cy.uploadFile('id-billy-bruker.jpg');
+      cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
       cy.clickNextStep();
       cy.clickIntroPageConfirmation();
       cy.clickNextStep();
@@ -272,7 +275,7 @@ describe('Digital submission without user login', () => {
       cy.clickNextStep();
       cy.findByRole('link', { name: 'Vedlegg' }).click();
       cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
-        cy.findByLabelText(TEXTS.statiske.attachment.ettersender).check(),
+        cy.findByLabelText(TEXTS.statiske.attachment.uploadLater).check(),
       );
       cy.findByRole('group', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
@@ -295,7 +298,7 @@ describe('Digital submission without user login', () => {
         cy.findByLabelText('Norsk pass').check(),
       );
 
-      cy.uploadFile('id-billy-bruker.jpg');
+      cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
       cy.clickNextStep();
       cy.clickIntroPageConfirmation();
       cy.clickNextStep();
@@ -306,7 +309,7 @@ describe('Digital submission without user login', () => {
     describe('Summary page', () => {
       it('shows titles, value and deadline for attachments with no uploads', () => {
         cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
-          cy.findByLabelText(TEXTS.statiske.attachment.ettersender).check(),
+          cy.findByLabelText(TEXTS.statiske.attachment.uploadLater).check(),
         );
         cy.findByRole('group', {
           name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
@@ -319,7 +322,7 @@ describe('Digital submission without user login', () => {
           .within(() => {
             cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
             cy.findByText('Vedlegg med masse greier').should('exist');
-            cy.findByText(TEXTS.statiske.attachment.ettersender).should('exist');
+            cy.findByText(TEXTS.statiske.attachment.uploadLater).should('exist');
             cy.findByText('Bekreftelse på utdanning').should('not.exist');
             cy.findByText(
               'Hvis vi ikke har mottatt dette vedlegget innen 14 dager blir saken behandlet med de opplysningene som foreligger.',
@@ -331,36 +334,39 @@ describe('Digital submission without user login', () => {
 
       it('shows file names and titles for attachments with uploads', () => {
         cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
-          cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).check(),
+          cy.findByLabelText(TEXTS.statiske.attachment.uploadNow).check(),
         );
         cy.uploadFile('id-billy-bruker.jpg');
         cy.findByRole('group', {
           name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
         }).within(() => {
-          cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).check();
+          cy.findByLabelText(TEXTS.statiske.attachment.uploadNow).check();
         });
 
         cy.findByRole('textbox', { name: 'Gi vedlegget et beskrivende navn' }).type('Vitnemål');
         cy.findByRole('button', { name: 'Velg fil' }).click();
-        cy.uploadFile('id-billy-bruker.jpg', { id: 'en5h1c' });
+        cy.uploadFile('small-file.txt', { id: 'en5h1c' });
         cy.findByRole('button', { name: 'Legg til nytt vedlegg' }).click();
         cy.findByRole('textbox', { name: 'Gi vedlegget et beskrivende navn' }).type('Egenerklæring');
-        cy.uploadFile('small-file.txt', { id: 'en5h1c-1' });
+        cy.uploadFile('another-small-file.txt', { id: 'en5h1c-1' });
         cy.clickNextStep();
 
-        cy.get('.aksel-form-summary')
-          .eq(4)
+        cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
+        cy.findByRole('heading', { level: 3, name: 'Vedlegg' })
+          .should('exist')
+          .closest('[data-cy=form-summary-panel]')
           .within(() => {
-            cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
             cy.findByText('Vedlegg med masse greier').should('exist');
-            cy.findByText(TEXTS.statiske.attachment.leggerVedNaa).should('not.exist');
+            cy.findByText(TEXTS.statiske.attachment.uploadNow).should('not.exist');
             cy.findByText(
               'Hvis vi ikke har mottatt dette vedlegget innen 14 dager blir saken behandlet med de opplysningene som foreligger.',
             ).should('not.exist');
             cy.findByText('Annen dokumentasjon').should('exist');
             cy.findByText('Vitnemål').should('exist');
             cy.findByText('Egenerklæring').should('exist');
-            cy.findAllByText('test.txt').should('have.length', 3);
+            cy.findByText('id-billy-bruker.jpg').should('exist');
+            cy.findByText('small-file.txt').should('exist');
+            cy.findByText('another-small-file.txt').should('exist');
           });
       });
     });
@@ -380,7 +386,7 @@ describe('Digital submission without user login', () => {
         cy.findByRole('link', { name: 'Vedlegg' }).click();
 
         cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
-          cy.findByLabelText(TEXTS.statiske.attachment.ettersender).check(),
+          cy.findByLabelText(TEXTS.statiske.attachment.uploadLater).check(),
         );
         cy.findByRole('group', {
           name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
@@ -395,7 +401,7 @@ describe('Digital submission without user login', () => {
 
       it('validates that files are uploaded for attachment', () => {
         cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
-          cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).check(),
+          cy.findByLabelText(TEXTS.statiske.attachment.uploadNow).check(),
         );
         cy.findByRole('group', {
           name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
@@ -421,12 +427,12 @@ describe('Digital submission without user login', () => {
 
       it('validates that files are uploaded for other attachment', () => {
         cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
-          cy.findByLabelText(TEXTS.statiske.attachment.ettersender).check(),
+          cy.findByLabelText(TEXTS.statiske.attachment.uploadLater).check(),
         );
         cy.findByRole('group', {
           name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
         }).within(() => {
-          cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).check();
+          cy.findByLabelText(TEXTS.statiske.attachment.uploadNow).check();
         });
         cy.clickNextStep();
         cy.get('[data-cy=error-summary]').should('exist');
@@ -472,7 +478,7 @@ describe('Digital submission without user login', () => {
       cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
         cy.findByLabelText('Norsk pass').check(),
       );
-      cy.uploadFile('id-billy-bruker.jpg');
+      cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
       cy.clickNextStep();
 
       // standard fill start
@@ -501,7 +507,7 @@ describe('Digital submission without user login', () => {
       cy.findByRole('textbox', { name: 'Tilleggsinfo 3' }).type('Ble levert i fjor');
 
       cy.findByRole('group', { name: 'Bekreftelse på utdanning' }).within(() =>
-        cy.findByLabelText('Jeg legger det ved dette skjemaet').check(),
+        cy.findByLabelText(TEXTS.statiske.attachment.uploadNow).check(),
       );
       cy.uploadFile('another-small-file.txt', { id: 'e3xh1d' });
 
@@ -531,7 +537,7 @@ describe('Digital submission without user login', () => {
       cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
         cy.findByLabelText('Norsk pass').check(),
       );
-      cy.uploadFile('id-billy-bruker.jpg');
+      cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
       cy.clickNextStep();
 
       // standard fill start
@@ -559,7 +565,7 @@ describe('Digital submission without user login', () => {
       cy.findByRole('textbox', { name: 'Tilleggsinfo 3' }).type('Ble levert i fjor');
 
       cy.findByRole('group', { name: 'Bekreftelse på utdanning' }).within(() =>
-        cy.findByLabelText('Jeg legger det ved dette skjemaet').check(),
+        cy.findByLabelText(TEXTS.statiske.attachment.uploadNow).check(),
       );
       cy.uploadFile('another-small-file.txt', { id: 'e3xh1d' });
 
@@ -604,7 +610,7 @@ describe('Digital submission without user login', () => {
         cy.findByLabelText('Norsk pass').check(),
       );
       cy.clock(Date.now());
-      cy.uploadFile('id-billy-bruker.jpg');
+      cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
       cy.clickNextStep();
 
       cy.tick(3660000); // Move time forward by 1 hour and 1 minute (in ms)

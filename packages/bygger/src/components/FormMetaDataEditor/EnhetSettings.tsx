@@ -3,6 +3,8 @@ import { ComboboxOption } from '@navikt/ds-react/esm/form/combobox/types';
 import { Enhetstype, EnhetstypeNorg, supportedEnhetstyper } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useState } from 'react';
 
+type ComboboxOption = Exclude<NonNullable<ComboboxProps['options']>[number], string>;
+
 interface EnhetSettingsProps {
   enhetstyperNorg: EnhetstypeNorg[] | undefined;
   enhetMaVelges: boolean;

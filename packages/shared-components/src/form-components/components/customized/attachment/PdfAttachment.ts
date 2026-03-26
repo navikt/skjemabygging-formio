@@ -1,9 +1,9 @@
-import { PdfData, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { attachmentUtils, PdfData } from '@navikt/skjemadigitalisering-shared-domain';
 import { PdfComponentProps } from '../../../types';
 import formComponentUtils from '../../../utils/formComponent';
 
 const PdfAttachment = (props: PdfComponentProps): PdfData[] | null => {
-  const { component, submissionPath, submission, translate } = props;
+  const { component, submissionPath, submission, translate, submissionMethod } = props;
   const { label, attachmentValues } = component;
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
 
@@ -23,7 +23,7 @@ const PdfAttachment = (props: PdfComponentProps): PdfData[] | null => {
   return [
     {
       label: translate(label),
-      verdi: translate(TEXTS.statiske.attachment[value.key]),
+      verdi: translate(attachmentUtils.getAttachmentLabel(value.key, submissionMethod)),
     },
     ...(comment ? [comment] : []),
   ];

@@ -4,6 +4,7 @@ ingresses:
 replicas-min: 3
 replicas-max: 6
 enabled-features: ""
+feature-attachment-upload-forms: "nav951509"
 foersteside-url: https://www.nav.no/soknader/api/forsteside
 dekorator-url: https://www.nav.no/dekoratoren?simple=true
 skjemabygging-proxy-client-id: 031863f2-9881-44af-ace5-6b5ab52afeb1

@@ -1,4 +1,3 @@
-/// <reference types="vitest" />
 import { defineConfig, PluginOption } from 'vite';
 import { VitePluginNode } from 'vite-plugin-node';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
@@ -8,7 +7,7 @@ export default defineConfig(({ mode }) => {
   const plugins: PluginOption = [
     ...VitePluginNode({
       adapter: 'express',
-      appPath: './src/server.js',
+      appPath: './src/server.ts',
       outputFormat: 'module',
     }),
     viteStaticCopy({
@@ -39,7 +38,7 @@ export default defineConfig(({ mode }) => {
     build: {
       target: 'es2022',
       rollupOptions: {
-        input: './src/server.js',
+        input: './src/server.ts',
         output: {
           entryFileNames: '[name].mjs',
         },
@@ -49,10 +48,5 @@ export default defineConfig(({ mode }) => {
       target: 'es2022',
     },
     plugins,
-    test: {
-      globals: true,
-      setupFiles: './src/setupTests.ts',
-      include: ['src/(**/)?*.test.[jt]s(x)?'],
-    },
   };
 });

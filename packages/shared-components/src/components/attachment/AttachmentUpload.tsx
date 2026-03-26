@@ -10,6 +10,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import clsx from 'clsx';
 import { MutableRefObject, ReactNode } from 'react';
+import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import FileUploader from '../file-uploader/FileUploader';
@@ -44,12 +45,13 @@ const AttachmentUpload = ({
   refs,
 }: Props) => {
   const styles = useAttachmentStyles();
+  const appConfig = useAppConfig();
   const { translate } = useLanguages();
   const { handleDeleteAllFilesForAttachment } = useAttachmentUpload();
   const { form } = useForm();
 
   const uploadedAttachmentFiles = submissionAttachment?.files ?? [];
-  const options = attachmentUtils.mapKeysToOptions(attachmentValues, translate);
+  const options = attachmentUtils.mapKeysToOptions(attachmentValues, translate, appConfig.submissionMethod);
   const uploadSelected = !!options.find((option) => option.value === submissionAttachment?.value)?.upload;
 
   const handleDeleteAllFiles = async (attachmentId: string) => {
@@ -57,7 +59,7 @@ const AttachmentUpload = ({
   };
 
   return (
-    <VStack gap="space-24" className={clsx('mb', className)}>
+    <VStack gap="space-24" className={clsx('mb', className)} data-cy="attachment-upload">
       {uploadedAttachmentFiles.length > 0 ? (
         <div>
           <Label>{label}</Label>
@@ -80,6 +82,7 @@ const AttachmentUpload = ({
           onChange={onValueChange}
           translate={translate}
           deadline={form.properties?.ettersendelsesfrist}
+          submissionMethod={appConfig.submissionMethod}
           ref={(ref) => {
             if (refs?.current) {
               // eslint-disable-next-line react-hooks/immutability
