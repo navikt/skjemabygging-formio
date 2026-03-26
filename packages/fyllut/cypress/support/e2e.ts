@@ -17,4 +17,19 @@ import { register } from '@mocks-server/cypress-commands';
 import 'cypress-axe';
 import './commands';
 import './components';
+
+const isProductionSpec = () => Cypress.spec.relative.startsWith('cypress/e2e/production/');
+
+beforeEach(() => {
+  if (!isProductionSpec()) {
+    return;
+  }
+
+  cy.clearCookies();
+  cy.clearLocalStorage();
+  cy.window({ log: false }).then((win) => {
+    win.sessionStorage.clear();
+  });
+});
+
 register();
