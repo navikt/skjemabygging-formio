@@ -45,19 +45,16 @@ cd packages/bygger && yarn cypress run --browser electron --spec cypress/e2e/<sp
 Use development mode when you need faster iteration or when editing frontend
 code and rerunning the same spec repeatedly.
 
-For `fyllut`, ensure the backend uses mocks:
+Preferred way to start the server under test:
 
-```bash
-cd packages/fyllut-backend && MOCKS_ENABLED=true yarn start
-cd packages/fyllut && yarn start --host 0.0.0.0 --port 3001
-yarn mocks:fyllut:no-cli
-cd packages/fyllut && yarn cypress run --browser electron --spec cypress/e2e/<spec>
-```
+- Use the `start-dev-servers` skill.
+- Treat that skill as the source of truth for local startup commands and runtime-config handling.
 
 Important:
 
 - `MOCKS_ENABLED=true` is required for local `fyllut` Cypress runs that depend
-  on mocked forms and backend responses.
+  on mocked forms and backend responses. The `start-dev-servers` skill handles
+  this for you.
 - If you have changed files under `mocks/mocks/`, assume the mock server may
   have crashed or needs a restart. Always verify that it is running before
   starting Cypress.
@@ -65,13 +62,6 @@ Important:
   usually down or returning the wrong form path.
 - If PDF download calls fail with `500`, check whether the local send-inn/PDF
   dependency is mocked or proxied correctly before changing the test itself.
-
-For `bygger`, a normal local loop is:
-
-```bash
-cd packages/bygger && yarn start --host 0.0.0.0 --port 3000
-cd packages/bygger && yarn cypress run --browser electron --spec cypress/e2e/<spec>
-```
 
 ## Repo-specific habits
 
