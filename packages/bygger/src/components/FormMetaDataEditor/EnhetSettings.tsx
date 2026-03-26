@@ -1,5 +1,4 @@
-import { Box, Checkbox, Skeleton, Textarea, UNSAFE_Combobox } from '@navikt/ds-react';
-import { ComboboxOption } from '@navikt/ds-react/esm/form/combobox/types';
+import { Box, Checkbox, type ComboboxProps, Skeleton, Textarea, UNSAFE_Combobox } from '@navikt/ds-react';
 import { Enhetstype, EnhetstypeNorg, supportedEnhetstyper } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useState } from 'react';
 
