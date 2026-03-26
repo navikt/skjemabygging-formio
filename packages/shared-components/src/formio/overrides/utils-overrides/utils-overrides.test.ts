@@ -9,9 +9,7 @@ import UtilsOverrides from './utils-overrides';
 
 const publishedFormFixture = publishedForm as unknown as NavFormType;
 const formNavSelectChangesFixture = formNavSelectChanges as unknown as NavFormType;
-const expectHtmlSnapshot = (html) => {
-  expect(typeof html === 'string' ? html : '').toMatchSnapshot();
-};
+const normalizeHtml = (html) => (typeof html === 'string' ? html : '');
 
 describe('utils-overrides', () => {
   describe('sanitizeJavaScriptCode', () => {
@@ -164,7 +162,7 @@ describe('utils-overrides', () => {
       };
       const diffSummary = formDiffingUtils.createDiffSummary(changes);
       const html = UtilsOverrides.navFormDiffToHtml(diffSummary);
-      expectHtmlSnapshot(html);
+      expect(normalizeHtml(html)).toMatchSnapshot();
     });
 
     it('ignores props whos value changes from undefined to falsy', () => {
@@ -203,19 +201,19 @@ describe('utils-overrides', () => {
       };
       const diffSummary = formDiffingUtils.createDiffSummary(changes);
       const html = UtilsOverrides.navFormDiffToHtml(diffSummary);
-      expectHtmlSnapshot(html);
+      expect(normalizeHtml(html)).toMatchSnapshot();
     });
 
     it('generates html list with deleted radiopanel from panel', () => {
       const diffSummary = formDiffingUtils.createDiffSummary(panelDiffDeletedRadiopanel);
       const html = UtilsOverrides.navFormDiffToHtml(diffSummary);
-      expectHtmlSnapshot(html);
+      expect(normalizeHtml(html)).toMatchSnapshot();
     });
 
     it('generates nested html list with deleted datagrid and its components', () => {
       const diffSummary = formDiffingUtils.createDiffSummary(panelDiffDeletedDatagrid);
       const html = UtilsOverrides.navFormDiffToHtml(diffSummary);
-      expectHtmlSnapshot(html);
+      expect(normalizeHtml(html)).toMatchSnapshot();
     });
 
     it('handles failure when diffSummary is of unexpected type', () => {
@@ -224,7 +222,7 @@ describe('utils-overrides', () => {
       try {
         const diffSummary = { some: 'thing', is: 'wrong', with: ['this', 'obj', 'ect'] };
         const html = UtilsOverrides.navFormDiffToHtml(diffSummary);
-        expectHtmlSnapshot(html);
+        expect(normalizeHtml(html)).toMatchSnapshot();
       } catch (e) {
         throw new Error(`Should never fail, but it did: ${e instanceof Error ? e.message : String(e)}`);
       } finally {
@@ -238,28 +236,28 @@ describe('utils-overrides', () => {
         const componentDiff = formDiffingUtils.getComponentDiff(navSelect!, publishedFormFixture);
         const html = UtilsOverrides.navFormDiffToHtml(componentDiff);
         expect(html).toBe('');
-        expectHtmlSnapshot(html);
+        expect(normalizeHtml(html)).toMatchSnapshot();
       });
 
       it('should list changes for navSelect', () => {
         const navSelect = navFormUtils.findByNavId('e0a8kbj', formNavSelectChangesFixture.components);
         const componentDiff = formDiffingUtils.getComponentDiff(navSelect!, publishedFormFixture);
         const html = UtilsOverrides.navFormDiffToHtml(componentDiff);
-        expectHtmlSnapshot(html);
+        expect(normalizeHtml(html)).toMatchSnapshot();
       });
 
       it('should list changed key', () => {
         const radiopanel = navFormUtils.findByKey('doYouLiveInNorway', formNavSelectChangesFixture.components);
         const componentDiff = formDiffingUtils.getComponentDiff(radiopanel!, publishedFormFixture);
         const html = UtilsOverrides.navFormDiffToHtml(componentDiff);
-        expectHtmlSnapshot(html);
+        expect(normalizeHtml(html)).toMatchSnapshot();
       });
 
       it('should list change in conditional', () => {
         const alertstripe = navFormUtils.findByKey('alertstripeArstid', formNavSelectChangesFixture.components);
         const componentDiff = formDiffingUtils.getComponentDiff(alertstripe!, publishedFormFixture);
         const html = UtilsOverrides.navFormDiffToHtml(componentDiff);
-        expectHtmlSnapshot(html);
+        expect(normalizeHtml(html)).toMatchSnapshot();
       });
     });
   });
@@ -278,7 +276,7 @@ describe('utils-overrides', () => {
         },
       };
       const html = UtilsOverrides.getBuilderTags(ctx);
-      expectHtmlSnapshot(html);
+      expect(normalizeHtml(html)).toMatchSnapshot();
     });
 
     it("returns tag 'Endring' when component is changed", () => {
@@ -294,7 +292,7 @@ describe('utils-overrides', () => {
         },
       };
       const html = UtilsOverrides.getBuilderTags(ctx);
-      expectHtmlSnapshot(html);
+      expect(normalizeHtml(html)).toMatchSnapshot();
     });
 
     it('returns no tag even if component is changed when it renders outside builder', () => {
@@ -310,7 +308,7 @@ describe('utils-overrides', () => {
         },
       };
       const html = UtilsOverrides.getBuilderTags(ctx);
-      expectHtmlSnapshot(html);
+      expect(normalizeHtml(html)).toMatchSnapshot();
     });
 
     it("returns tag 'Ny' when component does not exist in published form", () => {
@@ -326,7 +324,7 @@ describe('utils-overrides', () => {
         },
       };
       const html = UtilsOverrides.getBuilderTags(ctx);
-      expectHtmlSnapshot(html);
+      expect(normalizeHtml(html)).toMatchSnapshot();
     });
 
     describe('component has new default prop in schema', () => {
@@ -345,7 +343,7 @@ describe('utils-overrides', () => {
           },
         };
         const html = UtilsOverrides.getBuilderTags(ctx);
-        expectHtmlSnapshot(html);
+        expect(normalizeHtml(html)).toMatchSnapshot();
       });
 
       it('returns tag "NY" if component does not exist in published form', () => {
@@ -366,7 +364,7 @@ describe('utils-overrides', () => {
           },
         };
         const html = UtilsOverrides.getBuilderTags(ctx);
-        expectHtmlSnapshot(html);
+        expect(normalizeHtml(html)).toMatchSnapshot();
       });
     });
   });
