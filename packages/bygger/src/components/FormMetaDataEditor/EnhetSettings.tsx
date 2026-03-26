@@ -43,7 +43,7 @@ const EnhetSettings = ({
       return <Skeleton />;
     }
     return (
-      <Box>
+      <Box paddingBlock="space-8">
         <UNSAFE_Combobox
           label="Velg hvilke enhetstyper det skal være mulig å sende inn til"
           options={options}
@@ -78,17 +78,17 @@ const EnhetSettings = ({
       </Checkbox>
       {enhetMaVelges && (
         <>
-          <Box paddingBlock="space-4 space-0">
+          {renderCombobox()}
+          <Box paddingBlock="space-8">
             <Textarea
-              label="Beskrivelse"
+              label="Instruksjoner for valg av enhet"
               description="Vises på nedlastingssiden ved valg av enhet"
               value={navUnitDescription || ''}
               onChange={(e) => onChangeNavUnitDescription(e.target.value)}
               readOnly={readOnly}
-              maxLength={500}
+              maxLength={250}
             />
           </Box>
-          {renderCombobox()}
         </>
       )}
     </>
