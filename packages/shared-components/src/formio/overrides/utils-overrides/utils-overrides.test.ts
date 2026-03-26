@@ -9,7 +9,9 @@ import UtilsOverrides from './utils-overrides';
 
 const publishedFormFixture = publishedForm as unknown as NavFormType;
 const formNavSelectChangesFixture = formNavSelectChanges as unknown as NavFormType;
-const expectHtmlSnapshot = (html) => expect(html ?? '').toMatchSnapshot();
+const expectHtmlSnapshot = (html) => {
+  expect(typeof html === 'string' ? html : '').toMatchSnapshot();
+};
 
 describe('utils-overrides', () => {
   describe('sanitizeJavaScriptCode', () => {
