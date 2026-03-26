@@ -80,13 +80,6 @@ jobs:
         run: pnpm --dir packages/fyllut exec cypress run --browser electron --spec cypress/e2e/${{ matrix.folder }}/**/* --env INCLUDE_DIST_TESTS=true
         env:
           FYLLUT_BACKEND_LOGLEVEL: ${{ runner.debug == '1' && 'debug' || 'error' }}
-      - name: 'Print fyllut logs'
-        if: failure()
-        run: |
-          echo '--- fyllut preview log ---'
-          cat /tmp/fyllut-preview.log || true
-          echo '--- fyllut mocks log ---'
-          cat /tmp/fyllut-mocks.log || true
       - name: Upload screenshots
         uses: actions/upload-artifact@v6
         if: failure()
@@ -138,11 +131,6 @@ jobs:
           exit 1
       - name: 'Cypress tests (bygger)'
         run: pnpm --dir packages/bygger exec cypress run --browser electron
-      - name: 'Print bygger logs'
-        if: failure()
-        run: |
-          echo '--- bygger preview log ---'
-          cat /tmp/bygger-preview.log || true
       - name: Upload screenshots
         uses: actions/upload-artifact@v6
         if: failure()

@@ -20,7 +20,8 @@
     "clean": "rimraf dist coverage node_modules",
     "watch": "vite build --watch",
     "test": "vitest --run",
-    "test:coverage": "vitest --run --coverage"
+    "test:coverage": "vitest --run --coverage",
+    "prepare": "pnpm run build"
   },
   "dependencies": {
     "@navikt/fnrvalidator": "^2.2.1",
