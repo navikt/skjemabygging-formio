@@ -31,6 +31,10 @@ jobs:
           cache-dependency-path: 'pnpm-lock.yaml'
           registry-url: https://npm.pkg.github.com/
           scope: '@navikt'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.32.1
+          run_install: false
       - name: 'Build application: Bygger'
         env:
           VITE_GIT_VERSION: ${{ github.sha }}
@@ -68,6 +72,10 @@ jobs:
           cache-dependency-path: 'pnpm-lock.yaml'
           registry-url: https://npm.pkg.github.com/
           scope: '@navikt'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.32.1
+          run_install: false
       - name: 'Build application: Fyllut'
         env:
           VITE_GIT_VERSION: ${{ github.sha }}
