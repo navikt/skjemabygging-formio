@@ -61,17 +61,30 @@ jobs:
       - name: 'Build fyllut'
         run: pnpm build:fyllut
       - name: 'Run mock server'
-        run: pnpm mocks:fyllut:no-cli &
+        run: pnpm mocks:fyllut:no-cli > /tmp/fyllut-mocks.log 2>&1 &
+      - name: 'Start fyllut preview'
+        run: pnpm preview:fyllut > /tmp/fyllut-preview.log 2>&1 &
+      - name: 'Wait for fyllut preview'
+        run: |
+          for attempt in $(seq 1 120); do
+            if curl --silent --fail http://localhost:3001/fyllut/internal/isready > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/fyllut-preview.log
+          exit 1
       - name: 'Cypress tests (fyllut)'
-        uses: cypress-io/github-action@v7
-        with:
-          install: false
-          start: pnpm preview:fyllut
-          wait-on: 'http://localhost:3001/fyllut/internal/isready'
-          wait-on-timeout: 120
-          command: pnpm --dir packages/fyllut exec cypress run --browser electron --spec cypress/e2e/${{ matrix.folder }}/**/* --env INCLUDE_DIST_TESTS=true
+        run: pnpm --dir packages/fyllut exec cypress run --browser electron --spec cypress/e2e/${{ matrix.folder }}/**/* --env INCLUDE_DIST_TESTS=true
         env:
           FYLLUT_BACKEND_LOGLEVEL: ${{ runner.debug == '1' && 'debug' || 'error' }}
+      - name: 'Print fyllut logs'
+        if: failure()
+        run: |
+          echo '--- fyllut preview log ---'
+          cat /tmp/fyllut-preview.log || true
+          echo '--- fyllut mocks log ---'
+          cat /tmp/fyllut-mocks.log || true
       - name: Upload screenshots
         uses: actions/upload-artifact@v6
         if: failure()
@@ -107,14 +120,25 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: 'Build bygger'
         run: pnpm build:bygger
+      - name: 'Start bygger preview'
+        run: pnpm preview:bygger > /tmp/bygger-preview.log 2>&1 &
+      - name: 'Wait for bygger preview'
+        run: |
+          for attempt in $(seq 1 120); do
+            if curl --silent --fail http://localhost:3000/internal/isready > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/bygger-preview.log
+          exit 1
       - name: 'Cypress tests (bygger)'
-        uses: cypress-io/github-action@v7
-        with:
-          install: false
-          start: pnpm preview:bygger
-          wait-on: 'http://localhost:3000/internal/isready'
-          wait-on-timeout: 120
-          command: pnpm --dir packages/bygger exec cypress run --browser electron
+        run: pnpm --dir packages/bygger exec cypress run --browser electron
+      - name: 'Print bygger logs'
+        if: failure()
+        run: |
+          echo '--- bygger preview log ---'
+          cat /tmp/bygger-preview.log || true
       - name: Upload screenshots
         uses: actions/upload-artifact@v6
         if: failure()
