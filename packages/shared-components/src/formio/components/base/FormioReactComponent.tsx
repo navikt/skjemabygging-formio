@@ -139,6 +139,14 @@ class FormioReactComponent extends (ReactComponent as unknown as IReactComponent
     }
   }
 
+  clearOnHide() {
+    const hadValue = this.hasValue();
+    super.clearOnHide();
+    if (hadValue && !this.hasValue() && this.root?._data) {
+      this.emit('submissionChanged', { ...this.root._data });
+    }
+  }
+
   handleChange(value, flags = {}): any {
     if (value === null || value === undefined) {
       this.deleteValue();
