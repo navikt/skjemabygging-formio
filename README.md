@@ -203,9 +203,9 @@ Fyllut støtter uinnlogget utfylling av skjemaer, men har også mulighet for inn
 ## 🐳 Docker
 
 Dersom man trenger å teste produksjonsbygg av applikasjonene lokalt kan man bygge docker image lokalt, men først må man
-bygge applikasjonen.
+bygge applikasjonen og generere deploy-artifaktene som Dockerfilene bruker.
 
-    pnpm install && pnpm build
+    pnpm install && pnpm build && pnpm deploy:docker
 
 Docker-image bygges og startes lokalt på følgende måte:
 

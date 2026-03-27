@@ -4,8 +4,7 @@ ARG git_sha
 
 WORKDIR /app
 COPY bygger/dist build
-COPY bygger-backend/dist server
-COPY bygger-backend/node_modules server/node_modules
+COPY .deploy/bygger-backend server
 
 ENV GIT_SHA=${git_sha}
 WORKDIR server

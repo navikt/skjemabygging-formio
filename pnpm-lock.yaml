@@ -3,6 +3,7 @@ lockfileVersion: '9.0'
 settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
+  injectWorkspacePackages: true
 
 importers:
 
@@ -154,10 +155,10 @@ importers:
         specifier: ^8.2.2
         version: 8.8.0(@types/react@18.3.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@navikt/skjemadigitalisering-shared-components':
-        specifier: 1.0.0
+        specifier: workspace:*
         version: link:../shared-components
       '@navikt/skjemadigitalisering-shared-domain':
-        specifier: 1.0.0
+        specifier: workspace:*
         version: link:../shared-domain
       clsx:
         specifier: ^2.1.1
@@ -239,10 +240,10 @@ importers:
   packages/bygger-backend:
     dependencies:
       '@navikt/skjemadigitalisering-shared-backend':
-        specifier: 1.0.0
+        specifier: workspace:*
         version: link:../shared-backend
       '@navikt/skjemadigitalisering-shared-domain':
-        specifier: 1.0.0
+        specifier: workspace:*
         version: link:../shared-domain
       '@octokit/auth-app':
         specifier: ^8.1.1
@@ -357,10 +358,10 @@ importers:
         specifier: ^8.2.2
         version: 8.8.0(@types/react@18.3.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@navikt/skjemadigitalisering-shared-components':
-        specifier: 1.0.0
+        specifier: workspace:*
         version: link:../shared-components
       '@navikt/skjemadigitalisering-shared-domain':
-        specifier: 1.0.0
+        specifier: workspace:*
         version: link:../shared-domain
       axe-core:
         specifier: ^4.11.1
@@ -433,10 +434,10 @@ importers:
         specifier: ^3.6.3
         version: 3.6.3(csp-header@6.3.1)(html-react-parser@5.2.17(@types/react@18.3.11)(react@18.3.1))(jsdom@28.1.0(@noble/hashes@1.8.0))(react@18.3.1)
       '@navikt/skjemadigitalisering-shared-backend':
-        specifier: 1.0.0
+        specifier: workspace:*
         version: link:../shared-backend
       '@navikt/skjemadigitalisering-shared-domain':
-        specifier: 1.0.0
+        specifier: workspace:*
         version: link:../shared-domain
       '@opentelemetry/api':
         specifier: ^1.9.0
@@ -551,7 +552,7 @@ importers:
   packages/shared-backend:
     dependencies:
       '@navikt/skjemadigitalisering-shared-domain':
-        specifier: 1.0.0
+        specifier: workspace:*
         version: link:../shared-domain
       dompurify:
         specifier: ^3.3.1
@@ -606,7 +607,7 @@ importers:
         specifier: ^3.6.3
         version: 3.6.3(csp-header@6.3.1)(html-react-parser@5.2.17(@types/react@18.3.11)(react@18.3.1))(jsdom@28.1.0(@noble/hashes@1.8.0))(react@18.3.1)
       '@navikt/skjemadigitalisering-shared-domain':
-        specifier: 1.0.0
+        specifier: workspace:*
         version: link:../shared-domain
       clsx:
         specifier: ^2.1.1
@@ -8614,7 +8615,7 @@ snapshots:
       msw: 2.12.14(@types/node@24.12.0)(typescript@5.9.3)
       sirv: 3.0.2
       tinyrainbow: 1.2.0
-      vitest: 2.1.9(@types/node@24.12.0)(@vitest/browser@2.1.9)(jsdom@27.4.0(@noble/hashes@1.8.0))(msw@2.12.14(@types/node@24.12.0)(typescript@5.9.3))(terser@5.46.1)
+      vitest: 2.1.9(@types/node@24.12.0)(@vitest/browser@2.1.9)(jsdom@28.1.0(@noble/hashes@1.8.0))(msw@2.12.14(@types/node@24.12.0)(typescript@5.9.3))(terser@5.46.1)
       ws: 8.20.0
     transitivePeerDependencies:
       - '@types/node'

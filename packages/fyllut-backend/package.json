@@ -5,6 +5,10 @@
   "description": "",
   "main": "dist/server.mjs",
   "type": "module",
+  "files": [
+    "dist",
+    "fonts"
+  ],
   "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {
     "start": "cross-env NODE_ENV=development vite",
@@ -18,8 +22,8 @@
   "dependencies": {
     "@elastic/ecs-morgan-format": "^1.5.1",
     "@navikt/nav-dekoratoren-moduler": "^3.6.3",
-    "@navikt/skjemadigitalisering-shared-backend": "1.0.0",
-    "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
+    "@navikt/skjemadigitalisering-shared-backend": "workspace:*",
+    "@navikt/skjemadigitalisering-shared-domain": "workspace:*",
     "@opentelemetry/api": "^1.9.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",

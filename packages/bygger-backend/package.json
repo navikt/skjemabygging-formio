@@ -4,6 +4,9 @@
   "private": true,
   "main": "dist/server.mjs",
   "type": "module",
+  "files": [
+    "dist"
+  ],
   "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {
     "start": "cross-env NODE_ENV=development vite",
@@ -15,8 +18,8 @@
     "test:coverage": "vitest --run --coverage"
   },
   "dependencies": {
-    "@navikt/skjemadigitalisering-shared-backend": "1.0.0",
-    "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
+    "@navikt/skjemadigitalisering-shared-backend": "workspace:*",
+    "@navikt/skjemadigitalisering-shared-domain": "workspace:*",
     "@octokit/auth-app": "^8.1.1",
     "@octokit/rest": "^22.0.0",
     "@octokit/webhooks-types": "^7.6.1",

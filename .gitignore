@@ -15,6 +15,7 @@
 # production
 **/build
 **/dist
+packages/.deploy
 
 # misc
 .DS_Store
