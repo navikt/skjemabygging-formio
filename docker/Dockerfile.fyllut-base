@@ -10,6 +10,6 @@ ENV GIT_SHA=${git_sha}
 ENV MONOREPO_GIT_SHA=${git_sha}
 
 WORKDIR server
-CMD ["node", "server.mjs"]
+CMD ["node", "dist/server.mjs"]
 
 EXPOSE 8080

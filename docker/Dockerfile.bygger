@@ -8,4 +8,4 @@ COPY .deploy/bygger-backend server
 
 ENV GIT_SHA=${git_sha}
 WORKDIR server
-CMD ["node", "server.mjs"]
+CMD ["node", "dist/server.mjs"]
