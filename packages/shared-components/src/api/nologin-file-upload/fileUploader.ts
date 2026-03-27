@@ -16,8 +16,12 @@ const postFile = async (url: string, file: File, token?: string): Promise<Upload
   return await http.postFile<UploadedFile>(url, formData, getHeaders(token));
 };
 
+const getFile = async (url: string, token?: string): Promise<Blob> => {
+  return await http.get<Blob>(url, getHeaders(token));
+};
+
 const deleteFiles = async (url: string, token?: string): Promise<void> => {
   return await http.delete(url, undefined, getHeaders(token));
 };
 
-export { deleteFiles, postFile };
+export { deleteFiles, getFile, postFile };

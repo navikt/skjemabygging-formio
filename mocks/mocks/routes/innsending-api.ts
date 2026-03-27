@@ -1,4 +1,5 @@
 import multer from 'multer';
+import { readFileSync } from 'node:fs';
 import { v4 as uuidv4 } from 'uuid';
 import paabegyntInnsendt from '../data/innsending-api/active-tasks/ettersending.json';
 import paabegyntMellomlagring from '../data/innsending-api/active-tasks/mellomlagring.json';
@@ -40,6 +41,8 @@ import tc07 from '../data/test-cases/tc07-innsending-soknad-body.json';
 import { compareBodyMiddleware } from '../utils/testCaseUtils';
 
 const upload = multer();
+
+const miniPdfFileBuffer = readFileSync(`${__dirname}/../data/innsending-api/files/mini.pdf`);
 
 const objectToByteArray = (obj: any): number[] => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
 
@@ -515,6 +518,33 @@ export default [
         options: {
           status: 503,
           body: { message: 'NOLOGIN is not available', errorCode: 'temporarilyUnavailable' },
+        },
+      },
+    ],
+  },
+  {
+    id: 'download-file-digital',
+    url: '/send-inn/v1/application-digital/:innsendingsId/attachments/:attachmentId/:fileId',
+    method: 'GET',
+    variants: [
+      {
+        id: 'success',
+        type: 'middleware',
+        options: {
+          middleware(req, res) {
+            res.status(200);
+            res.setHeader('Content-Type', 'application/octet-stream');
+            res.setHeader('Content-Disposition', `attachment; filename="${req.params.fileId}.txt"`);
+            res.send(miniPdfFileBuffer);
+          },
+        },
+      },
+      {
+        id: 'failure',
+        type: 'json',
+        options: {
+          status: 500,
+          body: { message: 'Feil ved nedlasting av fil', errorCode: 'fileDownloadError' },
         },
       },
     ],

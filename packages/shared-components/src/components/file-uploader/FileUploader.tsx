@@ -47,8 +47,14 @@ const FileUploader = ({
   const styles = useStyles();
   const { logEvent, submissionMethod } = useAppConfig();
   const { form } = useForm();
-  const { changeAttachmentValue, handleDeleteFile, submissionAttachments, errors, uploadsInProgress } =
-    useAttachmentUpload();
+  const {
+    changeAttachmentValue,
+    handleDeleteFile,
+    handleDownloadFile,
+    submissionAttachments,
+    errors,
+    uploadsInProgress,
+  } = useAttachmentUpload();
   const { attachmentId } = initialAttachment;
   const attachment = submissionAttachments.find((attachment) => attachment.attachmentId === attachmentId);
 
@@ -98,6 +104,10 @@ const FileUploader = ({
     return handleDeleteFile(attachmentId, fileId, file);
   };
 
+  const handleDownloadFileItem = (fileId: string, fileName: string) => {
+    return handleDownloadFile(attachmentId, fileId, fileName);
+  };
+
   return (
     <VStack gap="space-24" data-cy={`upload-button-${attachmentId}`}>
       {(!showButton || fileItems.length > 0) && (
@@ -106,6 +116,7 @@ const FileUploader = ({
           uploaded={uploadedFiles}
           inProgress={inProgress}
           onDeleteFileItem={handleDeleteFileItem}
+          onDownloadFileItem={submissionMethod === 'digital' ? handleDownloadFileItem : undefined}
           translationParams={fileUploadErrorParams}
         />
       )}

@@ -1,5 +1,6 @@
 import { UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
-import { deleteFiles, postFile } from './fileUploader';
+import { normalizeAttachmentDownloadBlob } from '../../components/attachment/utils/attachmentUploadUtils';
+import { deleteFiles, getFile, postFile } from './fileUploader';
 
 type ApplicationType = 'nologin' | 'digital';
 
@@ -17,6 +18,11 @@ const useNologinFileUpload = (type: ApplicationType = 'nologin', innsendingsId?:
     return deleteFiles(`${url}/attachments/${attachmentId}/${fileId}`, token);
   };
 
+  const downloadFile = async (attachmentId: string, fileId: string, token?: string): Promise<Blob> => {
+    const blob = await getFile(`${url}/attachments/${attachmentId}/${fileId}`, token);
+    return normalizeAttachmentDownloadBlob(blob);
+  };
+
   const deleteAllFilesForAttachment = async (attachmentId: string, token?: string): Promise<void> => {
     return deleteFiles(`${url}/attachments/${attachmentId}`, token);
   };
@@ -25,7 +31,7 @@ const useNologinFileUpload = (type: ApplicationType = 'nologin', innsendingsId?:
     return deleteFiles(url, token);
   };
 
-  return { uploadFile, deleteFile, deleteAllFilesForAttachment, deleteAllFiles };
+  return { uploadFile, downloadFile, deleteFile, deleteAllFilesForAttachment, deleteAllFiles };
 };
 
 export default useNologinFileUpload;
