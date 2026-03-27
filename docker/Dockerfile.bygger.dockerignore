@@ -1,4 +1,5 @@
 *
 !bygger/dist
-!bygger-backend/dist
-!bygger-backend/node_modules
+!.deploy
+!.deploy/bygger-backend
+!.deploy/bygger-backend/**

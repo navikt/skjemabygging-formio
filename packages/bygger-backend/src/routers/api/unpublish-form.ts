@@ -1,3 +1,4 @@
+import { requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import { NextFunction, Request, Response } from 'express';
 import { logger } from '../../logging/logger';
 import { publisherService } from '../../services';
@@ -5,7 +6,7 @@ import { BadRequest } from './helpers/errors';
 
 const unpublishForm = async (req: Request, res: Response, next: NextFunction) => {
   const userName = req.getUser().name;
-  const { formPath } = req.params;
+  const formPath = requestUtil.getStringParam(req, 'formPath')!;
   const { formsApiForm } = req.body;
 
   if (formPath !== formsApiForm.path) {

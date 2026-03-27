@@ -18,6 +18,9 @@ vi.mock('@navikt/skjemadigitalisering-shared-backend', () => ({
   mergeFileService: {
     mergeFiles: vi.fn(),
   },
+  requestUtil: {
+    getStringParam: vi.fn((req, key) => req.params?.[key]),
+  },
   staticPdfService: {
     downloadPdf: vi.fn(),
     getAll: vi.fn(),

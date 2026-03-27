@@ -6,7 +6,7 @@ import config from '../../../config';
 const { formsApi } = config;
 
 const getAll: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
-  const { formPath } = req.params;
+  const formPath = requestUtil.getStringParam(req, 'formPath')!;
 
   try {
     const allPdfs = await staticPdfService.getAll({
@@ -20,7 +20,7 @@ const getAll: RequestHandler = async (req: Request, res: Response, next: NextFun
 };
 
 const uploadPdf: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
-  const { formPath } = req.params;
+  const formPath = requestUtil.getStringParam(req, 'formPath')!;
   const languageCode = req.params.languageCode as TranslationLang;
 
   try {
@@ -41,7 +41,7 @@ const uploadPdf: RequestHandler = async (req: Request, res: Response, next: Next
 };
 
 const downloadPdf: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
-  const { formPath } = req.params;
+  const formPath = requestUtil.getStringParam(req, 'formPath')!;
   const languageCode = req.params.languageCode as TranslationLang;
 
   try {
@@ -58,7 +58,7 @@ const downloadPdf: RequestHandler = async (req: Request, res: Response, next: Ne
 };
 
 const deletePdf: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
-  const { formPath } = req.params;
+  const formPath = requestUtil.getStringParam(req, 'formPath')!;
   const languageCode = req.params.languageCode as TranslationLang;
 
   try {
