@@ -64,6 +64,7 @@ const staticPdf = {
           form,
         },
         translate,
+        formNumber: form.skjemanummer.replace(/^(\S+)/, '$1p'),
       });
 
       const staticPdf = await staticPdfService.downloadPdf({
