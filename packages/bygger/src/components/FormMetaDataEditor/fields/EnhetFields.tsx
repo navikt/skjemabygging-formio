@@ -7,14 +7,15 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import EnhetSettings from '../EnhetSettings';
-import { UpdateFormFunction } from '../utils/utils';
+import { FormMetadataError, UpdateFormFunction } from '../utils/utils';
 
 export interface EnhetFieldsProps {
   onChange: UpdateFormFunction;
   form: Form;
+  errors?: FormMetadataError;
 }
 
-const EnhetFields = ({ onChange, form }: EnhetFieldsProps) => {
+const EnhetFields = ({ onChange, form, errors }: EnhetFieldsProps) => {
   const { submissionTypes, mottaksadresseId, enhetMaVelgesVedPapirInnsending, enhetstyper, navUnitDescription } =
     form.properties;
   const { http } = useAppConfig();
@@ -39,6 +40,7 @@ const EnhetFields = ({ onChange, form }: EnhetFieldsProps) => {
             enhetMaVelges={!!enhetMaVelgesVedPapirInnsending}
             selectedEnhetstyper={enhetstyper}
             navUnitDescription={navUnitDescription}
+            error={errors?.navUnitDescription}
             readOnly={isLockedForm}
             onChangeEnhetMaVelges={(selected) =>
               onChange({

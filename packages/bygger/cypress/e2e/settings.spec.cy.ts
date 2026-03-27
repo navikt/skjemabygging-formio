@@ -159,6 +159,8 @@ describe('FormSettingsPage', () => {
   describe('Enhetstyper', () => {
     const CHECKBOX_LABEL_USER_MUST_CHOOSE_ENHET = 'Bruker må velge enhet ved innsending på papir';
     const COMBOBOX_LABEL_ENHETER = 'Velg hvilke enhetstyper det skal være mulig å sende inn til';
+    const NAV_UNIT_DESCRIPTION_LABEL = 'Instruksjoner for valg av enhet';
+    const NAV_UNIT_DESCRIPTION_ERROR = 'Instruksjoner for valg av enhet kan ikke være lengre enn 250 tegn';
 
     beforeEach(() => {
       cy.intercept('GET', '/api/forms/cypresssettings', { fixture: 'getForm.json' }).as('getForm');
@@ -242,6 +244,30 @@ describe('FormSettingsPage', () => {
 
       cy.contains('Lagre').click();
       cy.get('[aria-live="polite"]').should('contain.text', `Lagret skjema ${originalForm.title}`);
+    });
+
+    it('should prevent save when nav unit description is longer than 250 characters', () => {
+      const tooLongDescription = 'a'.repeat(251);
+      const saveSpy = cy.spy().as('saveForm');
+
+      cy.intercept('PUT', '/api/forms/cypresssettings', (req) => {
+        saveSpy(req);
+        req.reply(req.body);
+      });
+
+      cy.findByRole('checkbox', { name: CHECKBOX_LABEL_USER_MUST_CHOOSE_ENHET }).check({ force: true });
+      cy.findByRole('textbox', { name: NAV_UNIT_DESCRIPTION_LABEL }).then(($textarea) => {
+        const textarea = $textarea[0] as HTMLTextAreaElement;
+        const setValue = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value')?.set;
+        setValue?.call(textarea, tooLongDescription);
+        textarea.dispatchEvent(new Event('input', { bubbles: true }));
+      });
+
+      cy.contains('Lagre').click();
+
+      cy.findByText(NAV_UNIT_DESCRIPTION_ERROR).should('be.visible');
+      cy.get('@saveForm').should('not.have.been.called');
+      cy.get('[aria-live="polite"]').should('not.contain.text', `Lagret skjema ${originalForm.title}`);
     });
 
     it('should be disabled when mottaksadresse is selected', () => {

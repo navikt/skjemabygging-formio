@@ -9,6 +9,7 @@ interface EnhetSettingsProps {
   enhetMaVelges: boolean;
   selectedEnhetstyper?: Enhetstype[];
   navUnitDescription?: string;
+  error?: string;
   onChangeEnhetMaVelges: (value: boolean) => void;
   onChangeEnhetstyper: (enhetstyper: Enhetstype[]) => void;
   onChangeNavUnitDescription: (description: string) => void;
@@ -20,6 +21,7 @@ const EnhetSettings = ({
   enhetMaVelges,
   selectedEnhetstyper,
   navUnitDescription,
+  error,
   onChangeEnhetMaVelges,
   onChangeEnhetstyper,
   onChangeNavUnitDescription,
@@ -87,6 +89,7 @@ const EnhetSettings = ({
               onChange={(e) => onChangeNavUnitDescription(e.target.value)}
               readOnly={readOnly}
               maxLength={250}
+              error={error}
             />
           </Box>
         </>
