@@ -3,8 +3,8 @@ ENV NODE_ENV=production
 ARG git_sha
 
 WORKDIR /app
-COPY bygger/dist build
 COPY .deploy/bygger-backend server
+COPY bygger/dist server/build
 
 ENV GIT_SHA=${git_sha}
 WORKDIR server

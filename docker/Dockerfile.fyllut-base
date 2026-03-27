@@ -3,8 +3,8 @@ ENV NODE_ENV=production
 ARG git_sha
 
 WORKDIR /app
-COPY fyllut/dist build
 COPY .deploy/fyllut-backend server
+COPY fyllut/dist server/build
 
 ENV GIT_SHA=${git_sha}
 ENV MONOREPO_GIT_SHA=${git_sha}
