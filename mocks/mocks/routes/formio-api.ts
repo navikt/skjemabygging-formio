@@ -126,6 +126,7 @@ import {
 import { personCoverPageForm, personCoverPageTranslations } from '../data/forms-api/cover-page/personCoverPageForm';
 import largeForm from '../data/forms-api/largeForm';
 import { nologinForm, nologinTranslations } from '../data/forms-api/nologinForm';
+import { clearOnHideForm, clearOnHideTranslations } from '../data/forms-api/clear-on-hide/clearOnHideForm';
 
 const allForms = [
   { form: formCypress101, translations: translationsCypress101 },
@@ -233,6 +234,7 @@ const allForms = [
   { form: panelTestForm(), translations: panelTranslations() },
   { form: adresseTestForm(), translations: adresseTranslations() },
   { form: attachmentsForm(), translations: attachmentsTranslations() },
+  { form: clearOnHideForm(), translations: clearOnHideTranslations() },
 ];
 
 const findTestdata = (formPath: string) => allForms.find((testdata) => testdata.form.path === formPath);
