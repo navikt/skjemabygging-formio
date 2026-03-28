@@ -21,7 +21,7 @@ jobs:
       - name: Generate list of folders containing cypress tests
         id: generate-cypress-folders
         run: |
-          echo cypress-folders=$(node bin/get-folders.mjs packages/fyllut/cypress/e2e) >> "$GITHUB_OUTPUT"
+          echo cypress-folders=$(node bin/get-folders.mjs packages/fyllut/cypress/e2e production) >> "$GITHUB_OUTPUT"
 
   cypress-run-fyllut:
     name: fyllut ${{ matrix.folder }}
@@ -69,8 +69,7 @@ jobs:
         if: failure()
         with:
           name: cypress-screenshots-${{ strategy.job-index }}
-          path:  ${{ github.workspace }}/packages/fyllut/cypress/screenshots/*
-
+          path: ${{ github.workspace }}/packages/fyllut/cypress/screenshots/*
 
   cypress-run-bygger:
     runs-on: ubuntu-latest-8-cores
@@ -108,4 +107,4 @@ jobs:
         if: failure()
         with:
           name: cypress-bygger-screenshots-${{ strategy.job-index }}
-          path:  ${{ github.workspace }}/packages/bygger/cypress/screenshots/*
+          path: ${{ github.workspace }}/packages/bygger/cypress/screenshots/*

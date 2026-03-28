@@ -71,10 +71,10 @@
           "timezone": "Europe/Oslo",
           "offset": 60,
           "origin": "https://fyllut-preprod.intern.dev.nav.no",
-          "referrer": "https://fyllut-preprod.intern.dev.nav.no/fyllut/nav083501",
+          "referrer": "https://fyllut-preprod.intern.dev.nav.no/fyllut/nav083501-test",
           "browserName": "Netscape",
           "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
-          "pathName": "/fyllut/nav083501/vedlegg",
+          "pathName": "/fyllut/nav083501-test/vedlegg",
           "onLine": true
         },
         "state": "submitted",
@@ -106,6 +106,6 @@
   "fristForEttersendelse": 14,
   "endretDato": "2024-02-15T10:26:31.152815+01:00",
   "skalSlettesDato": "2024-04-11",
-  "skjemaPath": "nav083501",
+  "skjemaPath": "nav083501-test",
   "visningsType": "fyllUt"
 }

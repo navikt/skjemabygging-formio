@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import formAccordion from '../data/formio-api/accordion.json';
 import formActivities from '../data/formio-api/activities.json';
 import formAttachment from '../data/formio-api/attachments.json';
@@ -37,8 +39,6 @@ import introPage from '../data/formio-api/intro-page.json';
 import formTestMellomlagringNested from '../data/formio-api/mellomlagring-nested-values.json';
 import monthPickerForm from '../data/formio-api/month-picker.json';
 import nav083501 from '../data/formio-api/nav083501.json';
-import nav111221bTranslations from '../data/formio-api/nav111221b-translations.json';
-import nav111221b from '../data/formio-api/nav111221b.json';
 import formNavdatepicker from '../data/formio-api/navdatepicker.json';
 import nologinTranslationsNb from '../data/formio-api/nologin-translations-nb.json';
 import nologinFormOld from '../data/formio-api/nologin.json';
@@ -127,6 +127,17 @@ import { personCoverPageForm, personCoverPageTranslations } from '../data/forms-
 import largeForm from '../data/forms-api/largeForm';
 import { nologinForm, nologinTranslations } from '../data/forms-api/nologinForm';
 
+const productionFormsDir = path.join(__dirname, '../data/forms-api/production-forms');
+
+const loadProductionForm = (formPath: string): object | null => {
+  const filePath = path.join(productionFormsDir, `${formPath}.json`);
+  try {
+    return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+  } catch {
+    return null;
+  }
+};
+
 const allForms = [
   { form: formCypress101, translations: translationsCypress101 },
   { form: introPage, translations: introPageTranslations },
@@ -165,7 +176,6 @@ const allForms = [
   { form: selectFormJson, translations: undefined },
   { form: monthPickerForm, translations: undefined },
   { form: emailForm, translations: undefined },
-  { form: nav111221b, translations: nav111221bTranslations },
   { form: formUtilsCheckCondition, translations: undefined },
   { form: formSkjemagruppeTest, translations: undefined },
   { form: errorSummaryFocusForm, translations: undefined },
@@ -258,8 +268,15 @@ export default [
                 res.contentType('application/json; charset=UTF-8');
                 res.send(single ? testdata.form : [testdata.form]);
               } else {
-                res.status(404);
-                res.send();
+                const productionForm = loadProductionForm(formPath);
+                if (productionForm) {
+                  res.status(200);
+                  res.contentType('application/json; charset=UTF-8');
+                  res.send(single ? productionForm : [productionForm]);
+                } else {
+                  res.status(404);
+                  res.send();
+                }
               }
             } else {
               res.status(200);

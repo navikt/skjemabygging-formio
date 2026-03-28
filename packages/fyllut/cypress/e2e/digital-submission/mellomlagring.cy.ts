@@ -558,7 +558,7 @@ describe('Mellomlagring', () => {
       });
 
       it('Allows user to submit complete submission', () => {
-        cy.mocksUseRouteVariant('get-soknad:nav083501-complete-v1');
+        cy.mocksUseRouteVariant('get-soknad:nav083501-test-complete-v1');
         cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
           const { submission, attachments } = req.body;
           expect(submission.data.landvelger).to.deep.eq({ label: 'Frankrike', value: 'FR' });
@@ -569,7 +569,7 @@ describe('Mellomlagring', () => {
         cy.intercept('GET', '/fyllut/api/send-inn/soknad/2db25aab-3524-4426-a333-489542bf16bf').as('getMellomlagring');
 
         cy.visit(
-          '/fyllut/nav083501/oppsummering?sub=digital&innsendingsId=2db25aab-3524-4426-a333-489542bf16bf&lang=nb-NO',
+          '/fyllut/nav083501-test/oppsummering?sub=digital&innsendingsId=2db25aab-3524-4426-a333-489542bf16bf&lang=nb-NO',
         );
         cy.defaultWaits();
         cy.wait('@getMellomlagring');
