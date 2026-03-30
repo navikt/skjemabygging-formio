@@ -41,26 +41,25 @@ const AttachmentOptionSelect = forwardRef<HTMLFieldSetElement, Props>(
   ) => {
     const additionalDocumentationMaxLength = 200;
     const values = attachmentUtils.mapKeysToOptions(attachmentValues, translate, submissionMethod);
-    const implicitValue = attachmentUtils.getImplicitAttachmentValueForUploadOnly(attachmentValues, submissionMethod);
-    const uploadOnlyMode = !!implicitValue;
-    const selectedValueKey = value?.key ?? implicitValue;
+    const implicitValueKey = attachmentUtils.getImplicitValueKey(attachmentValues, submissionMethod);
+    const selectedValueKey = value?.key ?? implicitValueKey;
     const additionalDocumentation = selectedValueKey
       ? attachmentValues?.[selectedValueKey]?.additionalDocumentation
       : undefined;
     const showDeadline = selectedValueKey ? !!attachmentValues?.[selectedValueKey]?.showDeadline : false;
 
     useEffect(() => {
-      if (!implicitValue || value?.key === implicitValue) {
+      if (!implicitValueKey || value?.key === implicitValueKey) {
         return;
       }
 
       onChange({
-        key: implicitValue,
-        additionalDocumentation: attachmentValues?.[implicitValue]?.additionalDocumentation?.enabled
+        key: implicitValueKey,
+        additionalDocumentation: attachmentValues?.[implicitValueKey]?.additionalDocumentation?.enabled
           ? value?.additionalDocumentation
           : undefined,
       });
-    }, [attachmentValues, implicitValue, onChange, value?.additionalDocumentation, value?.key]);
+    }, [attachmentValues, implicitValueKey, onChange, value?.additionalDocumentation, value?.key]);
 
     const handleAttachmentChange = (key: string | undefined) => {
       if (key) {
@@ -91,7 +90,7 @@ const AttachmentOptionSelect = forwardRef<HTMLFieldSetElement, Props>(
 
     return (
       <div className={className}>
-        {uploadOnlyMode ? (
+        {implicitValueKey ? (
           <div className="mb-4">
             <Label>{title}</Label>
             <BodyShort>{description}</BodyShort>

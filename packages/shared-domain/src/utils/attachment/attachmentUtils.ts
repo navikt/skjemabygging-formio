@@ -81,7 +81,7 @@ const isSingleUploadOnlyOption = (
   return enabledKeys.length === 1 && enabledKeys[0] === 'leggerVedNaa';
 };
 
-const getImplicitAttachmentValueForUploadOnly = (
+const getImplicitValueKey = (
   attachmentValues: AttachmentSettingValues | ComponentValue[] | undefined,
   submissionMethod?: SubmissionMethod,
 ): keyof AttachmentSettingValues | undefined =>
@@ -151,7 +151,7 @@ const mapToAttachmentSummary = ({
 
 const attachmentUtils = {
   enableAttachmentUpload,
-  getImplicitAttachmentValueForUploadOnly,
+  getImplicitValueKey,
   getAttachmentLabel,
   isSingleUploadOnlyOption,
   mapToAttachmentSummary,

@@ -186,7 +186,7 @@ describe('attachmentUtils', () => {
     });
   });
 
-  describe('getImplicitAttachmentValueForUploadOnly', () => {
+  describe('getImplicitValueKey', () => {
     const uploadOnlyValues = {
       leggerVedNaa: { enabled: true },
       ettersender: { enabled: false },
@@ -198,19 +198,17 @@ describe('attachmentUtils', () => {
     };
 
     it('returns leggerVedNaa for digital upload-only mode', () => {
-      expect(attachmentUtils.getImplicitAttachmentValueForUploadOnly(uploadOnlyValues, 'digital')).toBe('leggerVedNaa');
+      expect(attachmentUtils.getImplicitValueKey(uploadOnlyValues, 'digital')).toBe('leggerVedNaa');
     });
 
     it('returns leggerVedNaa for digitalnologin upload-only mode', () => {
-      expect(attachmentUtils.getImplicitAttachmentValueForUploadOnly(uploadOnlyValues, 'digitalnologin')).toBe(
-        'leggerVedNaa',
-      );
+      expect(attachmentUtils.getImplicitValueKey(uploadOnlyValues, 'digitalnologin')).toBe('leggerVedNaa');
     });
 
     it('returns undefined outside upload-only mode', () => {
-      expect(attachmentUtils.getImplicitAttachmentValueForUploadOnly(uploadOnlyValues, 'paper')).toBeUndefined();
+      expect(attachmentUtils.getImplicitValueKey(uploadOnlyValues, 'paper')).toBeUndefined();
       expect(
-        attachmentUtils.getImplicitAttachmentValueForUploadOnly(
+        attachmentUtils.getImplicitValueKey(
           {
             ...uploadOnlyValues,
             ettersender: { enabled: true },
