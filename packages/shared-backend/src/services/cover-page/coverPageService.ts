@@ -89,9 +89,10 @@ interface DownloadCoverPageProps {
   accessToken?: string;
   data: CoverPageDownloadType;
   translate?: TranslateFunction;
+  formNumber?: string;
 }
 const downloadCoverPage = async (props: DownloadCoverPageProps) => {
-  const { baseUrl, languageCode = 'NB', accessToken, data, translate } = props;
+  const { baseUrl, languageCode = 'NB', accessToken, data, translate, formNumber } = props;
   const { type = 'SKJEMA', form, user, recipient, attachments, submissionType } = data;
   const { properties } = form;
 
@@ -105,7 +106,7 @@ const downloadCoverPage = async (props: DownloadCoverPageProps) => {
 
   const body: ForstesideRequestBody = {
     foerstesidetype: type,
-    navSkjemaId: form.skjemanummer,
+    navSkjemaId: formNumber ?? form.skjemanummer,
     spraakkode: parseCoverPageLanguage(languageCode),
     overskriftstittel: formTitle,
     arkivtittel: formTitle,
