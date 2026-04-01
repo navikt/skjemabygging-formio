@@ -2,7 +2,7 @@ import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import { fallbackShape } from './componentShapes/fallback';
 import { addressShape, identityShape, phoneNumberShape, senderShape } from './componentShapes/structuredValues';
 import { JsonSchema, SchemaGenerationContext } from './types';
-import { toOptionalInteger } from './validation';
+import { toOptionalInteger, toOptionalNumber } from './validation';
 
 const stringComponentTypes = new Set([
   'currency',
@@ -32,13 +32,15 @@ const enumComponentTypes = new Set(['attachment', 'radio', 'radiopanel', 'select
 const objectOfBooleanTypes = new Set(['selectboxes']);
 
 const withCommonValidation = (component: Component, schema: JsonSchema): JsonSchema => {
+  const minimum = toOptionalNumber(component.validate?.min);
+  const maximum = toOptionalNumber(component.validate?.max);
   const minLength = toOptionalInteger(component.validate?.minLength);
   const maxLength = toOptionalInteger(component.validate?.maxLength);
 
   return {
     ...schema,
-    ...(component.validate?.min !== undefined ? { minimum: component.validate.min } : {}),
-    ...(component.validate?.max !== undefined ? { maximum: component.validate.max } : {}),
+    ...(minimum !== undefined ? { minimum } : {}),
+    ...(maximum !== undefined ? { maximum } : {}),
     ...(minLength !== undefined ? { minLength } : {}),
     ...(maxLength !== undefined ? { maxLength } : {}),
     ...(component.validate?.pattern ? { pattern: component.validate.pattern } : {}),

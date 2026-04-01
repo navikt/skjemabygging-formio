@@ -146,6 +146,28 @@ describe('generateSchema', () => {
     });
   });
 
+  it('omits empty-string minimum and maximum from generated schemas', () => {
+    const schema = generateSchema(
+      createForm([
+        {
+          input: true,
+          key: 'monthlyAmount',
+          label: 'Monthly amount',
+          type: 'number',
+          validate: {
+            min: '' as unknown as number,
+            max: '' as unknown as number,
+          },
+        },
+      ]),
+    );
+
+    expect(getFormDataSchema(schema).properties.monthlyAmount).toEqual({
+      title: 'Monthly amount',
+      type: 'number',
+    });
+  });
+
   it('uses actual NAV component type names from shared-components', () => {
     const schema = generateSchema(
       createForm([
