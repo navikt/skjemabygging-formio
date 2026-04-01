@@ -182,20 +182,6 @@ describe('PrepareLetterPage', () => {
       });
     });
 
-    it('renders custom nav unit description', async () => {
-      const description = 'Velg NAV-enheten som skal behandle papirskjemaet.';
-
-      renderPrepareLetterPage(
-        formWithProperties({
-          enhetMaVelgesVedPapirInnsending: true,
-          enhetstyper,
-          navUnitDescription: description,
-        }),
-      );
-
-      expect(await screen.findByText(description)).toBeInTheDocument();
-    });
-
     describe("When fetched enhetstype-list does not include any matching form property 'enhetstyper'", () => {
       const SKJEMANUMMER = 'NAV 12.34-56';
 

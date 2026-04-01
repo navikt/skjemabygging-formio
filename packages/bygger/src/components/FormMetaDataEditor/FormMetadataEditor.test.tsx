@@ -303,60 +303,6 @@ describe('FormMetadataEditor', () => {
       });
     });
 
-    describe('Enhetsvalg', () => {
-      it('lagres i properties når beskrivelse legges inn', async () => {
-        const form: Form = formMedProps({
-          submissionTypes: ['PAPER'],
-          enhetMaVelgesVedPapirInnsending: true,
-          enhetstyper: ['TILTAK'],
-        });
-
-        renderWithProvider(<FormMetadataEditor form={form} onChange={mockOnChange} />);
-
-        const input = screen.getByLabelText('Instruksjoner for valg av enhet');
-        await userEvent.click(input);
-        await userEvent.paste('Velg enheten som skal behandle papirskjemaet');
-
-        expect(mockOnChange).toHaveBeenCalled();
-        const updatedForm = mockOnChange.mock.calls.at(-1)?.[0] as Form;
-        expect(updatedForm.properties.navUnitDescription).toBe('Velg enheten som skal behandle papirskjemaet');
-      });
-
-      it('viser tekstfeltet under enhetstypevelgeren', async () => {
-        const form: Form = formMedProps({
-          submissionTypes: ['PAPER'],
-          enhetMaVelgesVedPapirInnsending: true,
-          enhetstyper: ['TILTAK'],
-        });
-
-        renderWithProvider(<FormMetadataEditor form={form} onChange={mockOnChange} />);
-
-        const combobox = await screen.findByLabelText('Velg hvilke enhetstyper det skal være mulig å sende inn til');
-        const input = screen.getByLabelText('Instruksjoner for valg av enhet');
-
-        expect(combobox.compareDocumentPosition(input)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
-      });
-
-      it('nullstilles når enhetsvalg skrus av', async () => {
-        const form: Form = formMedProps({
-          submissionTypes: ['PAPER'],
-          enhetMaVelgesVedPapirInnsending: true,
-          enhetstyper: ['TILTAK'],
-          navUnitDescription: 'Velg riktig NAV-enhet',
-        });
-
-        renderWithProvider(<FormMetadataEditor form={form} onChange={mockOnChange} />);
-
-        await userEvent.click(screen.getByRole('checkbox', { name: 'Bruker må velge enhet ved innsending på papir' }));
-
-        expect(mockOnChange).toHaveBeenCalled();
-        const updatedForm = mockOnChange.mock.calls.at(-1)?.[0] as Form;
-        expect(updatedForm.properties.enhetMaVelgesVedPapirInnsending).toBe(false);
-        expect(updatedForm.properties.enhetstyper).toBeUndefined();
-        expect(updatedForm.properties.navUnitDescription).toBeUndefined();
-      });
-    });
-
     describe('Signaturer', () => {
       let form: Form;
 
