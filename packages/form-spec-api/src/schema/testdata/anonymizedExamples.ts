@@ -95,21 +95,26 @@ const anonymizedGroundSupportForm = createBaseForm('nav060304', 20, [
 ]);
 
 const anonymizedGroundSupportSubmission = {
-  adultApplicantInfo: {
-    firstName: 'Sample',
-    lastName: 'Person',
-    phoneNumber: { areaCode: '+00', number: '00000000' },
-  },
-  travelRows: [
-    {
-      destination: 'Sample destination',
-      distanceKm: 10,
-      transportInfo: {
-        comment: 'Sample comment',
+  language: 'nb',
+  data: {
+    data: {
+      adultApplicantInfo: {
+        firstName: 'Sample',
+        lastName: 'Person',
+        phoneNumber: { areaCode: '+00', number: '00000000' },
       },
+      travelRows: [
+        {
+          destination: 'Sample destination',
+          distanceKm: 10,
+          transportInfo: {
+            comment: 'Sample comment',
+          },
+        },
+      ],
+      whatAreYouApplyingFor: 'support',
     },
-  ],
-  whatAreYouApplyingFor: 'support',
+  },
 };
 
 const anonymizedDisabilityFormV1 = createBaseForm('nav120605', 3, [
@@ -175,15 +180,20 @@ const anonymizedConsentForm = createBaseForm('nav951509', 1, [
 ]);
 
 const anonymizedConsentSubmission = {
-  avsenderPerson: {
-    person: {
-      nationalIdentityNumber: '00000000000',
-      firstName: 'Sample',
-      surname: 'Person',
+  language: 'nb',
+  data: {
+    data: {
+      avsenderPerson: {
+        person: {
+          nationalIdentityNumber: '00000000000',
+          firstName: 'Sample',
+          surname: 'Person',
+        },
+      },
+      identitet: {
+        identitetsnummer: '00000000000',
+      },
     },
-  },
-  identitet: {
-    identitetsnummer: '00000000000',
   },
 };
 

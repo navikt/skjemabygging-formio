@@ -5,6 +5,7 @@ type JsonSchema = {
   $id?: string;
   title?: string;
   description?: string;
+  const?: string | number | boolean | null;
   type?: JsonSchemaPrimitiveType;
   format?: string;
   enum?: Array<string | number | boolean | null>;

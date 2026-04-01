@@ -54,7 +54,7 @@ describe('formSpecRouter', () => {
     const response = await request(createApp()).get('/api/forms/nav123456/spec').expect(200);
 
     expect(response.header['content-type']).toMatch(/application\/schema\+json/);
-    expect(response.body.properties.firstName).toEqual({
+    expect(response.body.properties.data.properties.data.properties.firstName).toEqual({
       title: 'First name',
       type: 'string',
     });

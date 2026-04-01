@@ -1,32 +1,38 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import { JsonSchema } from '../types';
+import { toOptionalInteger } from '../validation';
 
-const phoneNumberShape = (component: Component): JsonSchema => ({
-  title: component.label,
-  oneOf: [
-    {
-      type: 'string',
-      minLength: component.validate?.minLength,
-      maxLength: component.validate?.maxLength,
-      pattern: component.validate?.pattern,
-    },
-    {
-      type: 'object',
-      properties: {
-        areaCode: { type: 'string', title: 'Area code' },
-        number: {
-          type: 'string',
-          title: 'Phone number',
-          minLength: component.validate?.minLength,
-          maxLength: component.validate?.maxLength,
-          pattern: component.validate?.pattern,
-        },
+const phoneNumberShape = (component: Component): JsonSchema => {
+  const minLength = toOptionalInteger(component.validate?.minLength);
+  const maxLength = toOptionalInteger(component.validate?.maxLength);
+
+  return {
+    title: component.label,
+    oneOf: [
+      {
+        type: 'string',
+        ...(minLength !== undefined ? { minLength } : {}),
+        ...(maxLength !== undefined ? { maxLength } : {}),
+        ...(component.validate?.pattern ? { pattern: component.validate.pattern } : {}),
       },
-      required: ['number'],
-      additionalProperties: false,
-    },
-  ],
-});
+      {
+        type: 'object',
+        properties: {
+          areaCode: { type: 'string', title: 'Area code' },
+          number: {
+            type: 'string',
+            title: 'Phone number',
+            ...(minLength !== undefined ? { minLength } : {}),
+            ...(maxLength !== undefined ? { maxLength } : {}),
+            ...(component.validate?.pattern ? { pattern: component.validate.pattern } : {}),
+          },
+        },
+        required: ['number'],
+        additionalProperties: false,
+      },
+    ],
+  };
+};
 
 const addressShape = (component: Component): JsonSchema => ({
   title: component.label,

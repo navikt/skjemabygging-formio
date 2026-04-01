@@ -2,6 +2,7 @@ import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import { fallbackShape } from './componentShapes/fallback';
 import { addressShape, identityShape, phoneNumberShape, senderShape } from './componentShapes/structuredValues';
 import { JsonSchema, SchemaGenerationContext } from './types';
+import { toOptionalInteger } from './validation';
 
 const stringComponentTypes = new Set([
   'currency',
@@ -30,14 +31,19 @@ const booleanComponentTypes = new Set(['checkbox', 'navCheckbox']);
 const enumComponentTypes = new Set(['attachment', 'radio', 'radiopanel', 'select', 'navSelect']);
 const objectOfBooleanTypes = new Set(['selectboxes']);
 
-const withCommonValidation = (component: Component, schema: JsonSchema): JsonSchema => ({
-  ...schema,
-  ...(component.validate?.min !== undefined ? { minimum: component.validate.min } : {}),
-  ...(component.validate?.max !== undefined ? { maximum: component.validate.max } : {}),
-  ...(component.validate?.minLength !== undefined ? { minLength: component.validate.minLength } : {}),
-  ...(component.validate?.maxLength !== undefined ? { maxLength: component.validate.maxLength } : {}),
-  ...(component.validate?.pattern ? { pattern: component.validate.pattern } : {}),
-});
+const withCommonValidation = (component: Component, schema: JsonSchema): JsonSchema => {
+  const minLength = toOptionalInteger(component.validate?.minLength);
+  const maxLength = toOptionalInteger(component.validate?.maxLength);
+
+  return {
+    ...schema,
+    ...(component.validate?.min !== undefined ? { minimum: component.validate.min } : {}),
+    ...(component.validate?.max !== undefined ? { maximum: component.validate.max } : {}),
+    ...(minLength !== undefined ? { minLength } : {}),
+    ...(maxLength !== undefined ? { maxLength } : {}),
+    ...(component.validate?.pattern ? { pattern: component.validate.pattern } : {}),
+  };
+};
 
 const valuesToEnum = (component: Component) => {
   if (component.type === 'attachment') {
