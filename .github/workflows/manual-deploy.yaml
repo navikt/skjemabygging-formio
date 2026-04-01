@@ -35,7 +35,7 @@ jobs:
         env:
           VITE_GIT_VERSION: ${{ github.sha }}
           VITE_GIT_BRANCH: ${{ github.ref_name }}
-        run: yarn --frozen-lockfile && yarn build
+        run: yarn --frozen-lockfile && yarn build:bygger
 
       - name: 'Build and push Docker image for bygger'
         uses: nais/docker-build-push@v0
@@ -72,7 +72,7 @@ jobs:
         env:
           VITE_GIT_VERSION: ${{ github.sha }}
           VITE_GIT_BRANCH: ${{ github.ref_name }}
-        run: yarn --frozen-lockfile && yarn build
+        run: yarn --frozen-lockfile && yarn build:fyllut
 
       - name: 'Build and push Docker image for fyllut'
         uses: nais/docker-build-push@v0
@@ -91,9 +91,46 @@ jobs:
     outputs:
       image: ${{ steps.docker-build-push-fyllut.outputs.image }}
 
+  package-and-push-form-spec-api:
+    name: 'Package form-spec-api'
+    runs-on: ubuntu-latest-8-cores
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+      packages: 'read'
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24.14.0'
+          cache: 'yarn'
+          cache-dependency-path: '**/yarn.lock'
+          registry-url: https://npm.pkg.github.com/
+          scope: '@navikt'
+
+      - name: 'Build application: form-spec-api'
+        env:
+          VITE_GIT_VERSION: ${{ github.sha }}
+        run: yarn --frozen-lockfile && yarn build:form-spec-api
+
+      - name: 'Build and push Docker image for form-spec-api'
+        uses: nais/docker-build-push@v0
+        id: docker-build-push-form-spec-api
+        with:
+          team: skjemadigitalisering
+          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+          image_suffix: form-spec-api-${{ inputs.environment }}
+          build_args: |
+            git_sha=${{ github.sha }}
+          dockerfile: ./docker/Dockerfile.form-spec-api
+          docker_context: ./packages
+    outputs:
+      image: ${{ steps.docker-build-push-form-spec-api.outputs.image }}
+
   deploy-bygger-to-preprod:
     name: 'Deploy bygger to preprod'
-    needs: [package-and-push-bygger, package-and-push-fyllut-base]
+    needs: [package-and-push-bygger, package-and-push-fyllut-base, package-and-push-form-spec-api]
     if: ${{ !failure() && !cancelled() }}
     runs-on: ubuntu-latest
     permissions:
@@ -110,7 +147,7 @@ jobs:
 
   deploy-fyllut-to-preprod:
     name: 'Deploy fyllut to preprod'
-    needs: [package-and-push-bygger, package-and-push-fyllut-base]
+    needs: [package-and-push-bygger, package-and-push-fyllut-base, package-and-push-form-spec-api]
     if: ${{ !failure() && !cancelled() }}
     runs-on: ubuntu-latest
     permissions:
@@ -124,3 +161,20 @@ jobs:
           RESOURCE: './.nais/fyllut/config.yaml'
           VARS: './.nais/fyllut/${{ github.event.inputs.environment }}.yaml'
           VAR: image=${{ needs.package-and-push-fyllut-base.outputs.image }}
+
+  deploy-form-spec-api-to-dev:
+    name: 'Deploy form-spec-api to dev'
+    needs: [package-and-push-bygger, package-and-push-fyllut-base, package-and-push-form-spec-api]
+    if: ${{ !failure() && !cancelled() }}
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: 'write'
+    steps:
+      - uses: 'actions/checkout@v6'
+      - name: 'Deploy to DEV'
+        uses: 'nais/deploy/actions/deploy@v2'
+        env:
+          CLUSTER: 'dev-gcp'
+          RESOURCE: './.nais/form-spec-api/config.yaml'
+          VARS: './.nais/form-spec-api/${{ github.event.inputs.environment }}.yaml'
+          VAR: 'image=${{ needs.package-and-push-form-spec-api.outputs.image }}'
