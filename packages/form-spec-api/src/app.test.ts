@@ -15,7 +15,7 @@ describe('createApp', () => {
   });
 
   it('serves the Swagger UI page', async () => {
-    const response = await request(createApp()).get('/swagger/').expect(200);
+    const response = await request(createApp()).get('/swagger-ui/').expect(200);
 
     expect(response.header['content-type']).toMatch(/text\/html/);
     expect(response.text).toContain('Swagger UI');
