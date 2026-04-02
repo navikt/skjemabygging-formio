@@ -29,7 +29,7 @@
     "@navikt/ds-react": "^8.2.2",
     "@navikt/aksel-icons": "^8.2.0",
     "@navikt/fnrvalidator": "^2.2.1",
-    "@navikt/nav-dekoratoren-moduler": "^3.6.3",
+    "@navikt/nav-dekoratoren-moduler": "^3.7.1",
     "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
     "clsx": "^2.1.1",
     "dompurify": "^3.3.1",
