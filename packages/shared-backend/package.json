@@ -25,21 +25,21 @@
   },
   "dependencies": {
     "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
-    "dompurify": "^3.3.1",
+    "dompurify": "^3.3.3",
     "jsdom": "^28.1.0",
     "express-correlation-id": "^3.0.1",
     "winston": "^3.18.3"
   },
   "peerDependencies": {
     "express": "^5.2.1",
-    "multer": "^2.0.2"
+    "multer": "^2.1.1"
   },
   "devDependencies": {
-    "@types/dompurify": "^2.3.3",
+    "@types/dompurify": "^3.2.0",
     "@types/express-correlation-id": "^3.0.0",
     "@types/express": "^5.0.3",
-    "@types/multer": "^2.0.0",
+    "@types/multer": "^2.1.0",
     "express": "^5.2.1",
-    "multer": "^2.0.2"
+    "multer": "^2.1.1"
   }
 }
