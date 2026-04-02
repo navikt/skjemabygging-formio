@@ -65,7 +65,7 @@ jobs:
         env:
           FYLLUT_BACKEND_LOGLEVEL: ${{ runner.debug == '1' && 'debug' || 'error' }}
       - name: Upload screenshots
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: cypress-screenshots-${{ strategy.job-index }}
@@ -104,7 +104,7 @@ jobs:
           wait-on-timeout: 120
           command: yarn cypress:bygger
       - name: Upload screenshots
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: cypress-bygger-screenshots-${{ strategy.job-index }}
