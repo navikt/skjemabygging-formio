@@ -145,7 +145,7 @@ const localDevelopmentConfig: DefaultConfig = {
   },
   skjemaDir: process.env.SKJEMA_DIR,
   teamLogsConfig,
-  tempAttachmentUploadForms: ['formwithattachments', 'nav060404', 'attachmentuploadonly'],
+  tempAttachmentUploadForms: ['formwithattachments', 'nav060404', 'attachmentuploadonly', 'nav100754'],
 };
 
 const defaultConfig: DefaultConfig = {

@@ -10,12 +10,14 @@ import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
 import { validateFileUpload, validateTotalFilesSize } from '../../util/form/attachment-validation/attachmentValidation';
+import { normalizeAttachmentDownloadFileName } from './utils/attachmentUploadUtils';
 
 type AttachmentErrorType = 'FILE' | 'VALUE' | 'TITLE';
 type AttachmentError = { message: string; type: AttachmentErrorType };
 type ActionStatus = 'ok' | 'error' | 'auth-error' | 'invalid' | 'unknown';
 interface AttachmentUploadContextType {
   handleUploadFile: (attachmentId: string, file: FileObject) => Promise<{ status: ActionStatus }>;
+  handleDownloadFile: (attachmentId: string, fileId: string, fileName: string) => Promise<void>;
   handleDeleteFile: (attachmentId: string, fileId: string, file: FileItem) => Promise<void>;
   handleDeleteAllFilesForAttachment: (attachmentId: string) => Promise<void>;
   handleDeleteAttachment: (attachmentId: string) => Promise<void>;
@@ -36,6 +38,7 @@ interface AttachmentUploadContextType {
 
 const initialContext: AttachmentUploadContextType = {
   handleUploadFile: async () => Promise.resolve({ status: 'unknown' }),
+  handleDownloadFile: async () => {},
   handleDeleteFile: async () => {},
   handleDeleteAllFilesForAttachment: async () => {},
   handleDeleteAttachment: async () => {},
@@ -56,7 +59,7 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
   const { http, logger, submissionMethod } = useAppConfig();
   const { submission, setSubmission } = useForm();
   const { nologinToken, setNologinToken, handleSessionExpired, innsendingsId } = useSendInn();
-  const { deleteAllFiles, deleteAllFilesForAttachment, deleteFile, uploadFile } = useMemo(
+  const { deleteAllFiles, deleteAllFilesForAttachment, deleteFile, downloadFile, uploadFile } = useMemo(
     () => getFileUploadApi(submissionMethod === 'digitalnologin' ? 'nologin' : 'digital', innsendingsId),
     [innsendingsId, submissionMethod],
   );
@@ -263,6 +266,25 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
     }
   };
 
+  const handleDownloadFile = async (attachmentId: string, fileId: string, fileName: string) => {
+    try {
+      removeError(attachmentId);
+      const downloadedFile = await downloadFile(attachmentId, fileId, nologinToken);
+      const objectUrl = URL.createObjectURL(downloadedFile);
+      const link = document.createElement('a');
+      link.href = objectUrl;
+      link.download = normalizeAttachmentDownloadFileName(fileName);
+      link.click();
+      URL.revokeObjectURL(objectUrl);
+    } catch (error: any) {
+      if (isAuthenticationError(error)) {
+        handleSessionExpired();
+      } else {
+        addError(attachmentId, translate(TEXTS.statiske.uploadFile.downloadFileError), 'FILE');
+      }
+    }
+  };
+
   const handleDeleteAllFilesForAttachment = async (attachmentId: string) => {
     try {
       removeError(attachmentId);
@@ -350,6 +372,7 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
 
   const value = {
     handleUploadFile,
+    handleDownloadFile,
     handleDeleteFile,
     handleDeleteAllFilesForAttachment,
     handleDeleteAttachment,

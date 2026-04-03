@@ -8,6 +8,13 @@ import { LogMetadata } from '../../types/log';
 import { SubmitApplicationRequest, SubmitApplicationResponse } from '../../types/sendinn/sendinn';
 import { responseToError } from '../../utils/errorHandling';
 
+export interface DownloadedAttachment {
+  fileStream: ReadableStream;
+  contentType?: string;
+  contentDisposition?: string;
+  contentLength?: string;
+}
+
 const ApplicationClient = (config: ConfigType, type: 'nologin' | 'digital') => {
   const basePath = `${config.sendInnConfig.host}/v1/application-${type}`;
 
@@ -139,6 +146,62 @@ const ApplicationClient = (config: ConfigType, type: 'nologin' | 'digital') => {
     logger.info(`${innsendingsId}: Successfully deleted file for ${type} application`, logMeta);
   };
 
+  const downloadAttachment = async (
+    accessToken: string,
+    innsendingsId: string,
+    attachmentId: string,
+    fileId: string,
+  ): Promise<DownloadedAttachment> => {
+    const correlationId = correlator.getId();
+    if (!validatorUtils.isValidUuid(fileId)) {
+      throw new Error('Invalid fileId provided for download');
+    }
+
+    const targetUrl = `${basePath}/${innsendingsId}/attachments/${attachmentId}/${fileId}`;
+    const logMeta = {
+      innsendingsId,
+      attachmentId,
+      fileId,
+      correlationId,
+      targetUrl,
+    };
+    logger.info(`${innsendingsId}: Downloading file for ${type} application`, logMeta);
+
+    const response = await fetch(targetUrl, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        ...(correlationId && { 'x-correlation-id': correlationId }),
+        ...(innsendingsId && { 'x-innsendingsid': innsendingsId }),
+      },
+    });
+
+    if (!response.ok) {
+      logger.warn(`${innsendingsId}: Failed to download file for ${type} application`, logMeta);
+      throw await responseToError(response, `Feil ved nedlasting av fil`, true);
+    }
+
+    const fileStream = response.body;
+    if (!fileStream) {
+      logger.warn(`${innsendingsId}: Download response body missing for ${type} application`, logMeta);
+      throw new Error('Missing response body while downloading file');
+    }
+
+    const contentLength = response.headers.get('content-length');
+    logger.info(`${innsendingsId}: Successfully downloaded file for ${type} application`, {
+      ...logMeta,
+      contentLength,
+    });
+    const contentType = response.headers.get('content-type');
+    const contentDisposition = response.headers.get('content-disposition');
+    return {
+      fileStream,
+      contentType: contentType ?? undefined,
+      contentDisposition: contentDisposition ?? undefined,
+      contentLength: contentLength ?? undefined,
+    };
+  };
+
   const submitApplication = async (
     innsendingsId: string,
     request: SubmitApplicationRequest,
@@ -175,7 +238,12 @@ const ApplicationClient = (config: ConfigType, type: 'nologin' | 'digital') => {
     throw await responseToError(response, 'Feil ved innsending av søknad', true);
   };
 
-  return { uploadFile: uploadAttachment, deleteFile: deleteAttachment, submitApplication };
+  return {
+    uploadFile: uploadAttachment,
+    deleteFile: deleteAttachment,
+    downloadFile: downloadAttachment,
+    submitApplication,
+  };
 };
 
 export type ApplicationClientType = ReturnType<typeof ApplicationClient>;
