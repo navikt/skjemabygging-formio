@@ -57,5 +57,4 @@ const attachmentTestForm = () => {
 };
 
 const attachmentTranslations = () => getMockTranslationsFromForm(attachmentTestForm());
-
 export { attachmentTestForm, attachmentTranslations };

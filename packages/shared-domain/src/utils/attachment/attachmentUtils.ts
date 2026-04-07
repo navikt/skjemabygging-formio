@@ -25,6 +25,23 @@ const enableAttachmentUpload = (submissionMethod?: string) =>
 
 const shouldEnableUpload = (value: string) => value === 'leggerVedNaa';
 
+const isKnownAttachmentSettingKey = (key: string): key is (typeof attachmentSettingKeys)[number] =>
+  attachmentSettingKeys.includes(key as (typeof attachmentSettingKeys)[number]);
+
+const getEnabledAttachmentKeys = (
+  attachmentValues: AttachmentSettingValues | ComponentValue[] | undefined,
+): (typeof attachmentSettingKeys)[number][] => {
+  if (!attachmentValues) {
+    return [];
+  }
+
+  if (Array.isArray(attachmentValues)) {
+    return attachmentValues.map((option) => option.value).filter((value) => isKnownAttachmentSettingKey(value));
+  }
+
+  return attachmentSettingKeys.filter((key) => attachmentValues[key]?.enabled);
+};
+
 const digitalAttachmentLabelKeyMap: Record<
   (typeof attachmentSettingKeys)[number],
   keyof typeof TEXTS.statiske.attachment
@@ -51,6 +68,24 @@ const resolveAttachmentLabelKey = (
 
 const getAttachmentLabel = (key: keyof AttachmentSettingValues, submissionMethod?: SubmissionMethod) =>
   TEXTS.statiske.attachment[resolveAttachmentLabelKey(key, submissionMethod)];
+
+const isSingleUploadOnlyOption = (
+  attachmentValues: AttachmentSettingValues | ComponentValue[] | undefined,
+  submissionMethod?: SubmissionMethod,
+): boolean => {
+  if (!enableAttachmentUpload(submissionMethod)) {
+    return false;
+  }
+
+  const enabledKeys = getEnabledAttachmentKeys(attachmentValues);
+  return enabledKeys.length === 1 && enabledKeys[0] === 'leggerVedNaa';
+};
+
+const getImplicitValueKey = (
+  attachmentValues: AttachmentSettingValues | ComponentValue[] | undefined,
+  submissionMethod?: SubmissionMethod,
+): keyof AttachmentSettingValues | undefined =>
+  isSingleUploadOnlyOption(attachmentValues, submissionMethod) ? 'leggerVedNaa' : undefined;
 
 const mapKeysToOptions = (
   attachmentValues: AttachmentSettingValues | ComponentValue[] | undefined,
@@ -116,7 +151,9 @@ const mapToAttachmentSummary = ({
 
 const attachmentUtils = {
   enableAttachmentUpload,
+  getImplicitValueKey,
   getAttachmentLabel,
+  isSingleUploadOnlyOption,
   mapToAttachmentSummary,
   mapKeysToOptions,
   resolveAttachmentLabelKey,

@@ -50,6 +50,21 @@ const attachmentsForm = () => {
             customConditional: "show = data.radiopanel1 === 'radiovalg1' || data.radiopanel1 === 'radiovalg2';",
           }),
           attachment({
+            key: 'vedleggUploadOnly',
+            label: 'Vedlegg upload-only',
+            validate: { required: false },
+            properties: { vedleggskode: 'V9', vedleggstittel: 'Vedlegg upload-only' },
+            customConditional: "show = data.radiopanel1 === 'radiovalg1' || data.radiopanel1 === 'radiovalg2';",
+            attachmentValues: {
+              nav: { enabled: false, additionalDocumentation: {} },
+              andre: { enabled: false, additionalDocumentation: {} },
+              harIkke: { enabled: false, additionalDocumentation: {} },
+              ettersender: { enabled: false, showDeadline: false, additionalDocumentation: { enabled: false } },
+              leggerVedNaa: { enabled: true, additionalDocumentation: {} },
+              levertTidligere: { enabled: false, additionalDocumentation: { enabled: false } },
+            },
+          }),
+          attachment({
             ...defaultProps,
             label: 'Vedlegg 3',
             properties: { vedleggskode: 'V3', vedleggstittel: 'Vedleggstittel 3' },

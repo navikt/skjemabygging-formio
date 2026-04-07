@@ -10,6 +10,28 @@ describe('Attachment', () => {
   const VISNING_URL = '/fyllut/attachment/visning';
   const ANNET_URL = '/fyllut/attachment/annet';
   const VALIDERING_URL = '/fyllut/attachment/validering';
+  const UPLOAD_ONLY_URL = '/fyllut/attachmentuploadonly/visning';
+  const getUploadOnlyAttachment = () => cy.contains('[data-cy=attachment-upload]', 'Vedlegg upload-only');
+  const getUploadOnlyOtherAttachment = () =>
+    cy.contains('[data-cy=attachment-upload]', 'Annen dokumentasjon upload-only');
+
+  const navigateToAttachmentsForDigitalNoLogin = () => {
+    cy.findByRole('heading', { name: 'Legitimasjon' }).should('exist');
+    cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
+      cy.findByLabelText('Norsk pass').check(),
+    );
+    cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
+    cy.findByRole('link', { name: 'Neste steg' }).click();
+    cy.url().then((url) => {
+      if (url.includes('/legitimasjon')) {
+        cy.findByRole('link', { name: 'Neste steg' }).click();
+      }
+    });
+    cy.url().should('not.include', '/legitimasjon');
+    cy.clickShowAllSteps();
+    cy.findByRole('link', { name: 'Vedlegg' }).click();
+    cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
+  };
 
   beforeEach(() => {
     cy.defaultIntercepts();
@@ -108,6 +130,83 @@ describe('Attachment', () => {
       cy.withinComponent(`${LABEL_WITH_DESCRIPTION} (en)`, () => {
         cy.contains('Dette er en beskrivelse (en)').should('exist');
       });
+    });
+  });
+
+  describe('Upload-only digital mode', () => {
+    beforeEach(() => {
+      cy.defaultInterceptsMellomlagring();
+      cy.visit(`${UPLOAD_ONLY_URL}?sub=digital`);
+      cy.defaultWaits();
+      cy.wait('@createMellomlagring').its('response.body.shouldUploadAttachmentsInFyllut').should('eq', true);
+      cy.clickSaveAndContinue();
+      cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
+    });
+
+    it('does not render uploadNow selector and shows upload button immediately', () => {
+      cy.findByRole('group', { name: 'Vedlegg upload-only' }).should('not.exist');
+      getUploadOnlyAttachment().within(() => {
+        cy.findByRole('button', { name: TEXTS.statiske.uploadFile.selectFile }).should('exist');
+      });
+    });
+
+    it('allows direct upload without selecting option first', () => {
+      getUploadOnlyAttachment().within(() => {
+        cy.uploadFile('small-file.txt');
+      });
+      cy.findByText('small-file.txt').should('exist');
+    });
+  });
+
+  describe('Upload-only digital no login mode', () => {
+    beforeEach(() => {
+      cy.visit(`${UPLOAD_ONLY_URL}?sub=digitalnologin`);
+      cy.defaultWaits();
+      navigateToAttachmentsForDigitalNoLogin();
+    });
+
+    it('does not render uploadNow selector and shows upload button immediately', () => {
+      cy.findByRole('group', { name: 'Vedlegg upload-only' }).should('not.exist');
+      getUploadOnlyAttachment().within(() => {
+        cy.findByRole('button', { name: TEXTS.statiske.uploadFile.selectFile }).should('exist');
+      });
+    });
+  });
+
+  describe('Upload-only type other', () => {
+    beforeEach(() => {
+      cy.defaultInterceptsMellomlagring();
+      cy.visit(`${UPLOAD_ONLY_URL}?sub=digital`);
+      cy.defaultWaits();
+      cy.wait('@createMellomlagring').its('response.body.shouldUploadAttachmentsInFyllut').should('eq', true);
+      cy.clickSaveAndContinue();
+      cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
+    });
+
+    it('does not render uploadNow selector for other attachment and can upload directly', () => {
+      cy.findByRole('group', { name: 'Annen dokumentasjon upload-only' }).should('not.exist');
+      getUploadOnlyOtherAttachment().within(() => {
+        cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Direkte opplasting');
+        cy.uploadFile('test.txt');
+      });
+      cy.findByText('Direkte opplasting').should('exist');
+      cy.findByText('test.txt').should('exist');
+    });
+  });
+
+  describe('Upload-only validation', () => {
+    beforeEach(() => {
+      cy.defaultInterceptsMellomlagring();
+      cy.visit(`${UPLOAD_ONLY_URL}?sub=digital`);
+      cy.defaultWaits();
+      cy.wait('@createMellomlagring').its('response.body.shouldUploadAttachmentsInFyllut').should('eq', true);
+      cy.clickSaveAndContinue();
+      cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
+    });
+
+    it('requires uploaded file even when selector is hidden', () => {
+      cy.clickSaveAndContinue();
+      cy.findAllByText('Du må laste opp fil: Vedlegg upload-only').should('have.length', 2);
     });
   });
 });

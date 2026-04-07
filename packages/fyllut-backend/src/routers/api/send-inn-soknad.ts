@@ -1,3 +1,4 @@
+import { requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import { NextFunction, Request, Response } from 'express';
 import fetch from 'node-fetch';
 import { config } from '../../config/config';
@@ -25,8 +26,9 @@ const sendInnSoknad = {
   get: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const tokenxAccessToken = getTokenxAccessToken(req);
+      const innsendingsId = requestUtil.getStringParam(req, 'innsendingsId')!;
 
-      const sanitizedInnsendingsId = sanitizeInnsendingsId(req.params.innsendingsId);
+      const sanitizedInnsendingsId = sanitizeInnsendingsId(innsendingsId);
       const errorMessage = validateInnsendingsId(sanitizedInnsendingsId, getErrorMessage);
       if (errorMessage) {
         return res.sendStatus(404);
@@ -81,8 +83,9 @@ const sendInnSoknad = {
       const idportenPid = getIdportenPid(req);
       const tokenxAccessToken = getTokenxAccessToken(req);
       const fyllutUrl = getFyllutUrl(req);
+      const forceMellomlagring = req.query.forceMellomlagring as string | undefined;
       const body = assembleSendInnSoknadBody(req.body, idportenPid, fyllutUrl, null);
-      const forceCreateParam = req.query?.forceMellomlagring ? '?force=true' : '';
+      const forceCreateParam = forceMellomlagring ? '?force=true' : '';
       const envQualifier = req.getEnvQualifier();
 
       const sendInnResponse = await fetch(`${sendInnConfig.host}${sendInnConfig.paths.soknad}${forceCreateParam}`, {
@@ -165,8 +168,9 @@ const sendInnSoknad = {
   delete: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const tokenxAccessToken = getTokenxAccessToken(req);
+      const innsendingsId = requestUtil.getStringParam(req, 'innsendingsId')!;
 
-      const sanitizedInnsendingsId = sanitizeInnsendingsId(req.params.innsendingsId);
+      const sanitizedInnsendingsId = sanitizeInnsendingsId(innsendingsId);
       const errorMessage = validateInnsendingsId(sanitizedInnsendingsId, deleteErrorMessage);
       if (errorMessage) {
         next(new Error(errorMessage));
