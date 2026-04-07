@@ -67,7 +67,9 @@ const deleteFile = async (req: Request, res: Response, next: NextFunction) => {
 
 const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { innsendingsId, attachmentId, fileId } = req.params;
+    const innsendingsId = requestUtil.getStringParam(req, 'innsendingsId')!;
+    const attachmentId = requestUtil.getStringParam(req, 'attachmentId')!;
+    const fileId = requestUtil.getStringParam(req, 'fileId')!;
     const accessToken = req.getTokenxAccessToken();
     const { fileStream, contentType, contentDisposition, contentLength } = await applicationService.downloadFile(
       accessToken,
