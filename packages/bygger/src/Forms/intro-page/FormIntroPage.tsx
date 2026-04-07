@@ -19,7 +19,6 @@ import { AutomaticProcessing } from './sections/AutomaticProcessing';
 import { BeAwareOf } from './sections/BeAwareOf';
 import { DataDisclosure } from './sections/DataDisclosure';
 import { DataStorage } from './sections/DataStorage';
-import { DataTreatment } from './sections/DataTreatment';
 import { ImportantInformation } from './sections/ImportantInformation';
 import { Introduction } from './sections/Introduction';
 import { Optional } from './sections/Optional';
@@ -177,7 +176,6 @@ export default function FormIntroPage({ form }: { form: Form }) {
         )}
         <BeAwareOf submissionMethod={submissionMethod} />
         <DataDisclosure form={form} handleChange={changeForm} refMap={refMap} errors={errors} />
-        <DataTreatment form={form} handleChange={changeForm} errors={errors} refMap={refMap} />
         <DataStorage submissionMethod={submissionMethod} />
         {automaticProcessing && (
           <AutomaticProcessing form={form} handleChange={changeForm} errors={errors} refMap={refMap} />

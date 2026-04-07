@@ -1,7 +1,6 @@
 import AutomaticProcessing from './accordion/AutomaticProcessing';
 import DataDisclosure from './accordion/DataDisclosure';
 import DataStorage from './accordion/DataStorage';
-import DataTreatment from './accordion/DataTreatment';
 import Optional from './accordion/Optional';
 import BeAwareOf from './BeAwareOf';
 import GuidePanel from './GuidePanel';
@@ -19,7 +18,6 @@ const Intro = {
   Prerequisites,
   BeAwareOf,
   DataDisclosure,
-  DataTreatment,
   DataStorage,
   AutomaticProcessing,
   Optional,
