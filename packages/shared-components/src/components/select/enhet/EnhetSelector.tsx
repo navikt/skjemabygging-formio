@@ -1,3 +1,4 @@
+import { BodyShort } from '@navikt/ds-react';
 import { Enhet, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import ReactSelect from 'react-select';
 import { useLanguages } from '../../../context/languages';
@@ -11,9 +12,13 @@ const useStyles = makeStyles({
   },
 });
 
-const EnhetSelector = ({ enhetsliste = [], onSelectEnhet, error }: EnhetSelectorProps) => {
+const EnhetSelector = ({ enhetsliste = [], onSelectEnhet, error, description }: EnhetSelectorProps) => {
   const { translate } = useLanguages();
   const styles = useStyles();
+  const selectId = 'enhetSelect';
+  const descriptionId = 'enhetSelectDescription';
+  const errorId = 'enhetSelectError';
+  const describedBy = [description ? descriptionId : undefined, error ? errorId : undefined].filter(Boolean).join(' ');
   const reactSelectCustomStyles = {
     control: (base) => ({
       ...base,
@@ -28,22 +33,28 @@ const EnhetSelector = ({ enhetsliste = [], onSelectEnhet, error }: EnhetSelector
   const options = enhetsliste.map((enhet) => ({ label: enhet.navn, value: enhet.enhetNr }));
   return (
     <div className="mb-4 aksel-form-field">
-      <label htmlFor="enhetSelect" className="aksel-label">
+      <label htmlFor={selectId} className="aksel-label">
         {translate(TEXTS.statiske.prepareLetterPage.chooseEntity)}
       </label>
+      {description && (
+        <BodyShort id={descriptionId} as="div" className="aksel-form-field__description">
+          {description}
+        </BodyShort>
+      )}
       <ReactSelect
-        id="enhetSelect"
+        inputId={selectId}
+        instanceId={selectId}
         className={styles.enhetsliste}
         options={options}
         styles={reactSelectCustomStyles}
         placeholder={translate(TEXTS.statiske.prepareLetterPage.selectEntityDefault)}
-        aria-describedby="enhetSelectError"
+        aria-describedby={describedBy || undefined}
         onChange={(event) => {
           onSelectEnhet(event && event.value);
         }}
       />
       {error && (
-        <p id="enhetSelectError" className="aksel-error-message aksel-label">
+        <p id={errorId} className="aksel-error-message aksel-label">
           {error}
         </p>
       )}
@@ -55,6 +66,7 @@ interface EnhetSelectorProps {
   enhetsliste: Enhet[];
   onSelectEnhet: (enhetNummer: string | null) => void;
   error?: string;
+  description?: string;
 }
 
 export default EnhetSelector;
