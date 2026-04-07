@@ -1,3 +1,4 @@
+import { requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import { RequestHandler } from 'express';
 import { recipientService } from '../../../services';
 
@@ -12,7 +13,7 @@ const getAll: RequestHandler = async (req, res, next) => {
 
 const get: RequestHandler = async (req, res, next) => {
   try {
-    const { recipientId } = req.params;
+    const recipientId = requestUtil.getStringParam(req, 'recipientId')!;
     const recipient = await recipientService.get(recipientId);
     res.json(recipient);
   } catch (error) {
@@ -31,7 +32,7 @@ const post: RequestHandler = async (req, res, next) => {
 };
 
 const put: RequestHandler = async (req, res, next) => {
-  const { recipientId } = req.params;
+  const recipientId = requestUtil.getStringParam(req, 'recipientId')!;
   const accessToken = req.headers.AzureAccessToken as string;
   try {
     const recipient = await recipientService.put(recipientId, req.body, accessToken);
@@ -42,7 +43,7 @@ const put: RequestHandler = async (req, res, next) => {
 };
 
 const deleteRecipient: RequestHandler = async (req, res, next) => {
-  const { recipientId } = req.params;
+  const recipientId = requestUtil.getStringParam(req, 'recipientId')!;
   const accessToken = req.headers.AzureAccessToken as string;
   try {
     await recipientService.delete(recipientId, accessToken);
