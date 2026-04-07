@@ -1,6 +1,8 @@
 import { DeclarationType, Form, numberUtils, UsageContext } from '@navikt/skjemadigitalisering-shared-domain';
 
 export type UpdateFormFunction = (form: Form) => void;
+export const NAV_UNIT_DESCRIPTION_MAX_LENGTH = 250;
+
 export type FormMetadataErrorKeys =
   | 'title'
   | 'skjemanummer'
@@ -10,7 +12,8 @@ export type FormMetadataErrorKeys =
   | 'lockedFormReason'
   | 'declarationText'
   | 'uxSignalsId'
-  | 'mellomlagringDurationDays';
+  | 'mellomlagringDurationDays'
+  | 'navUnitDescription';
 export type FormMetadataError = Partial<{ [key in FormMetadataErrorKeys]: string }>;
 
 export const validateFormMetadata = (form: Form, usageContext: UsageContext) => {
@@ -38,6 +41,12 @@ export const validateFormMetadata = (form: Form, usageContext: UsageContext) => 
   if (usageContext === 'edit') {
     if (form.properties.declarationType === DeclarationType.custom && !form.properties.declarationText) {
       errors.declarationText = 'Du må lage en tilpasset erklæringstekst';
+    }
+    if (
+      form.properties.enhetMaVelgesVedPapirInnsending &&
+      (form.properties.navUnitDescription?.length ?? 0) > NAV_UNIT_DESCRIPTION_MAX_LENGTH
+    ) {
+      errors.navUnitDescription = `Instruksjoner for valg av enhet kan ikke være lengre enn ${NAV_UNIT_DESCRIPTION_MAX_LENGTH} tegn`;
     }
     if (
       !form.properties.mellomlagringDurationDays ||

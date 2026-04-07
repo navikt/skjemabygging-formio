@@ -70,6 +70,7 @@ describe('form', () => {
 
               properties: {
                 ettersendelsesfrist: '10',
+                navUnitDescription: 'Velg riktig NAV-enhet',
               },
 
               components: [
@@ -122,6 +123,9 @@ describe('form', () => {
           expect(response.json).toHaveBeenCalledWith(
             expect.objectContaining({
               title: 'Nynorsk skjematittel',
+              properties: expect.objectContaining({
+                navUnitDescription: 'Velg riktig NAV-enhet',
+              }),
             }),
           );
           const attachment = response.json.mock.calls[0][0].attachments[0];
