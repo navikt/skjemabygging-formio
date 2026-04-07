@@ -3,15 +3,13 @@ ENV NODE_ENV=production
 ARG git_sha
 
 WORKDIR /app
-COPY fyllut/dist build
-COPY fyllut-backend/dist server
-COPY fyllut-backend/fonts server/fonts
-COPY fyllut-backend/node_modules server/node_modules
+COPY .deploy/fyllut-backend server
+COPY fyllut/dist server/build
 
 ENV GIT_SHA=${git_sha}
 ENV MONOREPO_GIT_SHA=${git_sha}
 
 WORKDIR server
-CMD ["node", "server.mjs"]
+CMD ["node", "dist/server.mjs"]
 
 EXPOSE 8080
