@@ -1,4 +1,4 @@
-# 🛠️ Monorepo for bygger og fyllut test
+# 🛠️ Monorepo for bygger og fyllut
 
 Byggeren lar deg bygge form.io-skjemaer. Publisering av skjema vil bli en ny commit i
 [skjemautfylling-formio repoet](https://github.com/navikt/skjemautfylling-formio),
