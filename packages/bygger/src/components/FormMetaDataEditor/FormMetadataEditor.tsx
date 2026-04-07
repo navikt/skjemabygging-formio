@@ -65,7 +65,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
 
   const addressFields = () => <AddressFields onChange={onChange} diff={diff} form={form}></AddressFields>;
 
-  const enhetFields = () => <EnhetFields onChange={onChange} form={form}></EnhetFields>;
+  const enhetFields = () => <EnhetFields onChange={onChange} form={form} errors={errors}></EnhetFields>;
 
   const instructionFields = () => (
     <>

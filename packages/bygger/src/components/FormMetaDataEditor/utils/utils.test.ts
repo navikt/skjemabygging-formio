@@ -1,5 +1,5 @@
 import { Form, UsageContext } from '@navikt/skjemadigitalisering-shared-domain';
-import { isFormMetadataValid, validateFormMetadata } from './utils';
+import { isFormMetadataValid, NAV_UNIT_DESCRIPTION_MAX_LENGTH, validateFormMetadata } from './utils';
 
 describe('Form Metadata Validation', () => {
   let sampleForm: Form;
@@ -89,5 +89,33 @@ describe('Form Metadata Validation', () => {
 
     expect(errors).toEqual({});
     expect(isFormMetadataValid(errors)).toBe(true);
+  });
+
+  it('should allow navUnitDescription with 250 characters', () => {
+    const usageContext: UsageContext = 'edit';
+    sampleForm.properties.submissionTypes = ['DIGITAL'];
+    sampleForm.properties.subsequentSubmissionTypes = ['PAPER'];
+    sampleForm.properties.enhetMaVelgesVedPapirInnsending = true;
+    sampleForm.properties.navUnitDescription = 'a'.repeat(NAV_UNIT_DESCRIPTION_MAX_LENGTH);
+
+    const errors = validateFormMetadata(sampleForm, usageContext);
+
+    expect(errors).toEqual({});
+    expect(isFormMetadataValid(errors)).toBe(true);
+  });
+
+  it('should show error when navUnitDescription is longer than 250 characters', () => {
+    const usageContext: UsageContext = 'edit';
+    sampleForm.properties.submissionTypes = ['DIGITAL'];
+    sampleForm.properties.subsequentSubmissionTypes = ['PAPER'];
+    sampleForm.properties.enhetMaVelgesVedPapirInnsending = true;
+    sampleForm.properties.navUnitDescription = 'a'.repeat(NAV_UNIT_DESCRIPTION_MAX_LENGTH + 1);
+
+    const errors = validateFormMetadata(sampleForm, usageContext);
+
+    expect(errors).toEqual({
+      navUnitDescription: 'Instruksjoner for valg av enhet kan ikke være lengre enn 250 tegn',
+    });
+    expect(isFormMetadataValid(errors)).toBe(false);
   });
 });
