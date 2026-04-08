@@ -30,6 +30,7 @@ export interface FormPropertiesType {
   declarationText?: string;
   mottaksadresseId?: string;
   enhetMaVelgesVedPapirInnsending?: boolean;
+  navUnitDescription?: string;
   enhetstyper?: Enhetstype[];
   hasLabeledSignatures?: boolean;
   signatures?: NewFormSignatureType[] | FormSignaturesType;

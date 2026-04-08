@@ -1,3 +1,4 @@
+import { requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import { NextFunction, Request, Response } from 'express';
 import { backendInstance } from '../../services';
 import { ApiError, BadRequest } from './helpers/errors';
@@ -8,7 +9,7 @@ export const isValidResource = (resourceName: string) => {
 };
 
 const publishResource = async (req: Request, res: Response, next: NextFunction) => {
-  const { resourceName } = req.params;
+  const resourceName = requestUtil.getStringParam(req, 'resourceName')!;
   if (!isValidResource(resourceName)) {
     next(new BadRequest(`Illegal resourceName: ${resourceName}`));
     return;

@@ -47,6 +47,9 @@ const extractTextsFromProperties = (props: FormPropertiesType): string[] => {
   if (props?.downloadPdfButtonText) {
     array.push(props.downloadPdfButtonText);
   }
+  if (props?.navUnitDescription) {
+    array.push(props.navUnitDescription);
+  }
   if (props?.descriptionOfSignatures) {
     array.push(props.descriptionOfSignatures);
   }

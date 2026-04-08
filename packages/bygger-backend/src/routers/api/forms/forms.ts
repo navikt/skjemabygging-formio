@@ -1,3 +1,4 @@
+import { requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { RequestHandler } from 'express';
 import { HttpError as OldHttpError } from '../../../fetchUtils';
@@ -15,7 +16,7 @@ const getAll: RequestHandler = async (req, res, next) => {
 };
 
 const get: RequestHandler = async (req, res, next) => {
-  const { formPath } = req.params;
+  const formPath = requestUtil.getStringParam(req, 'formPath')!;
   try {
     const form = await formsService.get(formPath);
     res.json(form);
@@ -42,7 +43,7 @@ const post: RequestHandler = async (req, res, next) => {
 
 const put: RequestHandler = async (req, res, next) => {
   const accessToken = req.headers.AzureAccessToken as string;
-  const { formPath } = req.params;
+  const formPath = requestUtil.getStringParam(req, 'formPath')!;
   const { revision, title, properties, components, introPage } = req.body as Form;
   const body = { title, properties, components, introPage };
   try {
@@ -59,7 +60,7 @@ const put: RequestHandler = async (req, res, next) => {
 
 const resetForm: RequestHandler = async (req, res, next) => {
   const accessToken = req.headers.AzureAccessToken as string;
-  const { formPath } = req.params;
+  const formPath = requestUtil.getStringParam(req, 'formPath')!;
   const { revision } = req.query;
   try {
     const form = await formsService.resetForm(formPath, parseInt(revision as string), accessToken);
@@ -75,7 +76,7 @@ const resetForm: RequestHandler = async (req, res, next) => {
 
 const deleteForm: RequestHandler = async (req, res, next) => {
   const accessToken = req.headers.AzureAccessToken as string;
-  const { formPath } = req.params;
+  const formPath = requestUtil.getStringParam(req, 'formPath')!;
   const { revision } = req.query;
   try {
     await formsService.deleteForm(formPath, parseInt(revision as string), accessToken);
@@ -91,7 +92,7 @@ const deleteForm: RequestHandler = async (req, res, next) => {
 
 const postLockForm: RequestHandler = async (req, res, next) => {
   const accessToken = req.headers.AzureAccessToken as string;
-  const { formPath } = req.params;
+  const formPath = requestUtil.getStringParam(req, 'formPath')!;
   const { reason } = req.body;
   try {
     const form = await formsService.postLockForm(formPath, reason, accessToken);
@@ -107,7 +108,7 @@ const postLockForm: RequestHandler = async (req, res, next) => {
 
 const deleteLockForm: RequestHandler = async (req, res, next) => {
   const accessToken = req.headers.AzureAccessToken as string;
-  const { formPath } = req.params;
+  const formPath = requestUtil.getStringParam(req, 'formPath')!;
   try {
     const form = await formsService.deleteLockForm(formPath, accessToken);
     res.json(form);

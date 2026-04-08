@@ -1,3 +1,4 @@
+import { requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import {
   formioFormsApiUtils,
   FormsApiTranslation,
@@ -34,7 +35,7 @@ const post: RequestHandler = async (req, res, next) => {
 };
 
 const put: RequestHandler = async (req, res, next) => {
-  const { id } = req.params;
+  const id = requestUtil.getStringParam(req, 'id')!;
   const { revision, nb, nn, en } = req.body as FormsApiTranslation;
   const accessToken = req.headers.AzureAccessToken as string;
   const body = { nb, nn, en };
@@ -51,7 +52,7 @@ const put: RequestHandler = async (req, res, next) => {
 };
 
 const deleteTranslation = async (req, res, next) => {
-  const { id } = req.params;
+  const id = requestUtil.getStringParam(req, 'id')!;
   const accessToken = req.headers.AzureAccessToken as string;
   try {
     await globalTranslationsService.delete(id, accessToken);
