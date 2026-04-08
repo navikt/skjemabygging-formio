@@ -13,14 +13,6 @@ import '@testing-library/cypress/add-commands';
 import 'cypress-wait-until';
 import { CyHttpMessages } from 'cypress/types/net-stubbing';
 
-type VisitFixtureFormOptions = {
-  fixture?: string;
-  path?: string;
-  skipIntroSteps?: number;
-  startOnFirstStep?: boolean;
-  sub?: 'paper' | 'digital' | 'digitalnologin';
-};
-
 // -- This is a parent command --
 // Cypress.Commands.add('login', (email, password) => { ... })
 //
@@ -75,34 +67,6 @@ Cypress.Commands.add('clickStart', () => {
         : TEXTS.grensesnitt.navigation.next;
     return cy.findByRoleWhenAttached('link', { name }, 500).click();
   });
-});
-
-Cypress.Commands.add('visitFixtureForm', (formPath: string, options: VisitFixtureFormOptions = {}) => {
-  const {
-    fixture = `forms/${formPath}.json`,
-    path,
-    skipIntroSteps = 0,
-    startOnFirstStep = true,
-    sub = 'paper',
-  } = options;
-
-  cy.intercept('POST', '/fyllut/api/log*', { body: 'ok' }).as('logger');
-  cy.intercept('GET', '/fyllut/api/config*', { body: {} }).as('getConfig');
-  cy.intercept('GET', '/fyllut/api/global-translations/*', { body: {} }).as('getGlobalTranslations');
-  cy.intercept('GET', '/fyllut/api/common-codes/currencies*', { body: [] }).as('getCurrencies');
-  cy.intercept('GET', '/fyllut/api/common-codes/area-codes', { body: [] }).as('getAreaCodes');
-  cy.intercept('GET', `/fyllut/api/translations/${formPath}*`, { body: {} }).as('getTranslations');
-  cy.intercept('GET', `/fyllut/api/forms/${formPath}*`, { fixture }).as('getForm');
-  cy.visit(path ?? `/fyllut/${formPath}?sub=${sub}`);
-  cy.defaultWaits();
-
-  if (startOnFirstStep) {
-    cy.clickStart();
-  }
-
-  Cypress._.times(skipIntroSteps, () => cy.clickNextStep());
-
-  return cy;
 });
 
 Cypress.Commands.add('clickIntroPageConfirmation', () => {
