@@ -28,7 +28,14 @@ const FyllUtRouter = ({ form }: Props) => {
       <SendInnProvider>
         <Routes>
           <Route element={<FormLayout />}>
-            <Route path="oppsummering" element={<SummaryPage />} />
+            <Route
+              path="oppsummering"
+              element={
+                <AttachmentUploadProvider>
+                  <SummaryPage />
+                </AttachmentUploadProvider>
+              }
+            />
             {attachmentPageEnabled && (
               <Route
                 path="vedlegg"

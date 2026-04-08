@@ -1,5 +1,10 @@
 import { Button, FileItem, HStack, TextField, VStack } from '@navikt/ds-react';
-import { AttachmentSettingValues, SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  AttachmentSettingValues,
+  enableAttachmentDownload,
+  SubmissionAttachment,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { ChangeEvent, MutableRefObject, ReactNode, useCallback } from 'react';
 import { fileUploadErrorParams } from '../../constants/fileUpload';
 import { useAppConfig } from '../../context/config/configContext';
@@ -116,7 +121,7 @@ const FileUploader = ({
           uploaded={uploadedFiles}
           inProgress={inProgress}
           onDeleteFileItem={handleDeleteFileItem}
-          onDownloadFileItem={submissionMethod === 'digital' ? handleDownloadFileItem : undefined}
+          onDownloadFileItem={enableAttachmentDownload(submissionMethod) ? handleDownloadFileItem : undefined}
           translationParams={fileUploadErrorParams}
         />
       )}
