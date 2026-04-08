@@ -25,6 +25,6 @@ describe('nologinFileUpload', () => {
       `/fyllut/api/send-inn/digital-application/${innsendingsId}/attachments/${attachmentId}/${fileId}`,
       token,
     );
-    expect(result).toBe(blob);
+    expect(result).toStrictEqual(blob);
   });
 });

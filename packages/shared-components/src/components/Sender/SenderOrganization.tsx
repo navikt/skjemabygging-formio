@@ -1,6 +1,6 @@
-import type { ChangeEvent } from 'react';
 import { TextField } from '@navikt/ds-react';
 import { SenderProps, SubmissionSender } from '@navikt/skjemadigitalisering-shared-domain';
+import type { ChangeEvent } from 'react';
 import { useComponentUtils } from '../../context/component/componentUtilsContext';
 import useComponentStyle from '../../util/styles/useComponentStyle';
 

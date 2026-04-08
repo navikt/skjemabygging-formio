@@ -12,7 +12,7 @@ interface Props {
 const FormNavUnitSelect = ({ submissionPath }: Props) => {
   const { baseUrl } = useAppConfig();
   const { form } = useForm();
-  const { enhetstyper } = form.properties;
+  const { enhetstyper, navUnitDescription } = form.properties;
   const [list, setList] = useState<Enhet[]>([]);
   const [error, setError] = useState<string>();
 
@@ -33,6 +33,7 @@ const FormNavUnitSelect = ({ submissionPath }: Props) => {
     <FormSelect
       submissionPath={submissionPath}
       label={TEXTS.statiske.navUnit.choose}
+      description={navUnitDescription}
       values={list?.map(({ navn, enhetNr }) => {
         return {
           value: enhetNr,

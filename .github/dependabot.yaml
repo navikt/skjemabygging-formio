@@ -7,6 +7,8 @@ registries:
 updates:
   - package-ecosystem: 'npm'
     directory: '/'
+    exclude-paths:
+      - 'mocks/**'
     registries:
       - npm-github
     schedule:

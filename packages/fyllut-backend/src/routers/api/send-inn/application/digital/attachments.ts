@@ -1,3 +1,4 @@
+import { requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import { Readable } from 'node:stream';
@@ -10,8 +11,8 @@ import { removeUploadedTempFile } from '../../../helpers/upload';
 
 const post = async (req: Request, res: Response, next: NextFunction) => {
   const file = req.file;
-  const innsendingsId = req.params.innsendingsId as string;
-  const attachmentId = req.params.attachmentId as string;
+  const innsendingsId = requestUtil.getStringParam(req, 'innsendingsId')!;
+  const attachmentId = requestUtil.getStringParam(req, 'attachmentId')!;
   const logMeta = {
     innsendingsId,
     attachmentId,
@@ -52,7 +53,9 @@ const post = async (req: Request, res: Response, next: NextFunction) => {
 
 const deleteFile = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { innsendingsId, attachmentId, fileId } = req.params;
+    const innsendingsId = requestUtil.getStringParam(req, 'innsendingsId')!;
+    const attachmentId = requestUtil.getStringParam(req, 'attachmentId')!;
+    const fileId = requestUtil.getStringParam(req, 'fileId', true);
     const accessToken = req.getTokenxAccessToken();
 
     await applicationService.deleteFile(accessToken, innsendingsId, attachmentId, fileId, 'digital');
@@ -64,7 +67,9 @@ const deleteFile = async (req: Request, res: Response, next: NextFunction) => {
 
 const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { innsendingsId, attachmentId, fileId } = req.params;
+    const innsendingsId = requestUtil.getStringParam(req, 'innsendingsId')!;
+    const attachmentId = requestUtil.getStringParam(req, 'attachmentId')!;
+    const fileId = requestUtil.getStringParam(req, 'fileId')!;
     const accessToken = req.getTokenxAccessToken();
     const { fileStream, contentType, contentDisposition, contentLength } = await applicationService.downloadFile(
       accessToken,
