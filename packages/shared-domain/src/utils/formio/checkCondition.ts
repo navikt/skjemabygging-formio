@@ -12,12 +12,6 @@ const lodashShim = {
   },
 };
 
-type LegacyForm = NavFormType & {
-  properties?: NavFormType['properties'] & {
-    innsending?: string;
-  };
-};
-
 type ConditionComponent = Partial<Component> & {
   parent?: ConditionComponent;
   evaluate?: (func: unknown, args: Record<string, unknown>, ret?: string, tokenize?: boolean) => unknown;
@@ -30,13 +24,7 @@ interface CheckConditionOptions {
   submissionMethod?: SubmissionMethod;
 }
 
-const legacySubmissionMethods: Record<string, SubmissionMethod | undefined> = {
-  KUN_DIGITAL: 'digital',
-  KUN_PAPIR: 'paper',
-  KUN_DIGITAL_UTEN_INNLOGGING: 'digitalnologin',
-};
-
-const inferSubmissionMethod = (form?: LegacyForm, submissionMethod?: SubmissionMethod) => {
+const inferSubmissionMethod = (form?: NavFormType, submissionMethod?: SubmissionMethod) => {
   if (submissionMethod) {
     return submissionMethod;
   }
@@ -44,8 +32,6 @@ const inferSubmissionMethod = (form?: LegacyForm, submissionMethod?: SubmissionM
   if (form?.properties?.submissionTypes?.length === 1) {
     return submissionTypesUtils.asMethod(form.properties.submissionTypes[0]);
   }
-
-  return legacySubmissionMethods[form?.properties?.innsending ?? ''];
 };
 
 const isSameComponent = (target: Partial<Component>, candidate: Partial<Component>) => {
@@ -91,7 +77,7 @@ const findComponentWithParents = (
 
 const createConditionInstance = (
   component: Partial<Component>,
-  form: LegacyForm | undefined,
+  form: NavFormType | undefined,
   evaluate: (func: unknown, args: Record<string, unknown>, ret?: string, tokenize?: boolean) => unknown,
   submissionMethod?: SubmissionMethod,
 ): ConditionComponent => {
@@ -129,7 +115,7 @@ const getCheckConditionUtils = (
     custom,
     row,
     data,
-    form: LegacyForm | undefined,
+    form: NavFormType | undefined,
     variable,
     onError,
     instance,
@@ -169,7 +155,7 @@ const getCheckConditionUtils = (
     component: Partial<Component>,
     row,
     data,
-    form?: LegacyForm,
+    form?: NavFormType,
     instance?,
     submission?: Submission,
     options?: CheckConditionOptions,
