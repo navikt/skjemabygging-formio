@@ -12,8 +12,8 @@ description: >-
 
 ### Fyllut
 
-- AI/dev-server flow: `yarn start:fyllut:mocks -- --no-runtime-config`
-- User/Cypress flow that should write runtime config: `yarn start:fyllut:mocks`
+- AI/dev-server flow: `pnpm start:fyllut:mocks -- --no-runtime-config`
+- User/Cypress flow that should write runtime config: `pnpm start:fyllut:mocks`
 
 Starts:
 
@@ -23,8 +23,8 @@ Starts:
 
 ### Bygger
 
-- AI/dev-server flow: `yarn start:bygger:mocks -- --no-runtime-config`
-- User/Cypress flow that should write runtime config: `yarn start:bygger:mocks`
+- AI/dev-server flow: `pnpm start:bygger:mocks -- --no-runtime-config`
+- User/Cypress flow that should write runtime config: `pnpm start:bygger:mocks`
 
 Starts:
 
@@ -35,7 +35,7 @@ Starts:
 
 ```
 # 1. Start in async bash mode
-bash (async): yarn start:fyllut:mocks -- --no-runtime-config
+bash (async): pnpm start:fyllut:mocks -- --no-runtime-config
 
 # 2. Read output — wait until `START_PID` appears before proceeding
 #   FYLLUT_MOCK_URL=http://127.0.0.1:3042
@@ -45,7 +45,7 @@ bash (async): yarn start:fyllut:mocks -- --no-runtime-config
 #   START_PID=12345
 
 # 3. Run Cypress — use FYLLUT_FRONTEND_URL as baseUrl (strip the /fyllut suffix):
-cd packages/fyllut && yarn cypress run \
+cd packages/fyllut && pnpm cypress run \
   --config "baseUrl=http://127.0.0.1:3045" \
   --env "MOCKS_ADMIN_PORT=3043" \
   --browser electron \
@@ -58,14 +58,14 @@ bash: kill <START_PID>
 For bygger, use the same pattern:
 
 ```
-bash (async): yarn start:bygger:mocks -- --no-runtime-config
+bash (async): pnpm start:bygger:mocks -- --no-runtime-config
 
 # Wait for:
 #   BYGGER_BACKEND_URL=http://127.0.0.1:3042
 #   BYGGER_FRONTEND_URL=http://127.0.0.1:3043
 #   START_PID=12345
 
-cd packages/bygger && yarn cypress run \
+cd packages/bygger && pnpm cypress run \
   --config "baseUrl=http://127.0.0.1:3043" \
   --env "MOCKS_ADMIN_PORT=<BYGGER_MOCK_ADMIN_PORT>" \
   --browser electron \
@@ -76,7 +76,7 @@ cd packages/bygger && yarn cypress run \
 
 **Use this skill (dev-server flow) for all Cypress runs.** It starts real servers with the current source code and is the standard approach. No build step is required.
 
-Do NOT reach for `yarn preview:fyllut` / `yarn mocks:fyllut:no-cli` as an alternative — that flow requires a manual build first, the servers are not port-conflict safe, and they are harder to manage as background processes.
+Do NOT reach for `pnpm preview:fyllut` / `pnpm mocks:fyllut:no-cli` as an alternative — that flow requires a manual build first, the servers are not port-conflict safe, and they are harder to manage as background processes.
 
 ## Notes
 

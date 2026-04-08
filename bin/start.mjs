@@ -9,8 +9,8 @@
  *   node bin/start.mjs fyllut --no-runtime-config
  *   node bin/start.mjs bygger --no-runtime-config
  *
- *   yarn start:fyllut:auto
- *   yarn start:bygger:auto
+ *   pnpm start:fyllut:mocks
+ *   pnpm start:bygger:mocks
  *
  * Output (printed after servers are ready, easy to parse):
  *   START_PID=12345

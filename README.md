@@ -24,24 +24,24 @@ _(Les mer om bruk av Github npm registry i Nav her: https://github.com/navikt/fr
 
 | **Kommando**              | **Beskrivelse**                                                              |
 | ------------------------- | ---------------------------------------------------------------------------- |
-| `yarn install`            | Installerer alle avhengigheter                                               |
-| `yarn start`              | Starter både Bygger og Fyllut, inkludert backend                             |
-| `yarn start:bygger`       | Starter kun Bygger med backend                                               |
-| `yarn start:fyllut`       | Starter kun Fyllut med backend                                               |
-| `yarn build`              | Bygger React-appene (ikke nødvendig for lokal utvikling)                     |
-| `yarn preview:bygger`     | Starter Bygger fra bygd kode (`dist`-mappen)                                 |
-| `yarn preview:fyllut`     | Starter Fyllut fra bygd kode (`dist`-mappen)                                 |
-| `yarn test`               | Kjører alle tester                                                           |
-| `yarn test:coverage`      | Tester med rapportering av dekningsgrad                                      |
-| `yarn cypress:bygger`     | Kjører Cypress-tester for Bygger                                             |
-| `yarn cypress:fyllut`     | Kjører Cypress-tester for Fyllut                                             |
-| `yarn start:fyllut:mocks` | Starter Fyllut med mock server på ledige porter (for sub-agenter og Cypress) |
-| `yarn start:bygger:mocks` | Starter Bygger med mock server på ledige porter (for sub-agenter og Cypress) |
-| `yarn mocks:fyllut`       | Starter Mocks Server for Fyllut (brukes ved Cypress-testing)                 |
-| `yarn check-types`        | Sjekker TypeScript-typer                                                     |
-| `yarn clean`              | Sletter `node_modules`, `dist`, `build`, `coverage` for alle pakker          |
-| `yarn lint`               | Sjekker kodekvalitet                                                         |
-| `yarn get-tokens`         | Henter tokens for eksterne API-er ved lokal kjøring                          |
+| `pnpm install`            | Installerer alle avhengigheter                                               |
+| `pnpm start`              | Starter både Bygger og Fyllut, inkludert backend                             |
+| `pnpm start:bygger`       | Starter kun Bygger med backend                                               |
+| `pnpm start:fyllut`       | Starter kun Fyllut med backend                                               |
+| `pnpm build`              | Bygger React-appene (ikke nødvendig for lokal utvikling)                     |
+| `pnpm preview:bygger`     | Starter Bygger fra bygd kode (`dist`-mappen)                                 |
+| `pnpm preview:fyllut`     | Starter Fyllut fra bygd kode (`dist`-mappen)                                 |
+| `pnpm test`               | Kjører alle tester                                                           |
+| `pnpm test:coverage`      | Tester med rapportering av dekningsgrad                                      |
+| `pnpm cypress:bygger`     | Kjører Cypress-tester for Bygger                                             |
+| `pnpm cypress:fyllut`     | Kjører Cypress-tester for Fyllut                                             |
+| `pnpm start:fyllut:mocks` | Starter Fyllut med mock server på ledige porter (for sub-agenter og Cypress) |
+| `pnpm start:bygger:mocks` | Starter Bygger med mock server på ledige porter (for sub-agenter og Cypress) |
+| `pnpm mocks:fyllut`       | Starter Mocks Server for Fyllut (brukes ved Cypress-testing)                 |
+| `pnpm check-types`        | Sjekker TypeScript-typer                                                     |
+| `pnpm clean`              | Sletter `node_modules`, `dist`, `build`, `coverage` for alle pakker          |
+| `pnpm lint`               | Sjekker kodekvalitet                                                         |
+| `pnpm get-tokens`         | Henter tokens for eksterne API-er ved lokal kjøring                          |
 
 ## ⚙️ Lokal konfigurasjon med dotenv
 
@@ -66,7 +66,7 @@ nyttig under debugging lokalt. Dette gjøres ved sette `{"browserOnly":true}` i 
 
 ### 🧪 Kjøre Fyllut lokalt med integrasjon mot innsending-api
 
-For å teste digital innsending lokalt er det enklest å bruke `yarn get-tokens fyllut` for å hente nødvendige access
+For å teste digital innsending lokalt er det enklest å bruke `pnpm get-tokens fyllut` for å hente nødvendige access
 tokens for kommunikasjon med eksterne tjenester i dev-gcp.
 
 Man kan kjøre opp en lokal instans av `innsending-api`, men token er fremdeles nødvendig for generering av pdf. Se
@@ -80,12 +80,12 @@ Legg til url til den lokale instansen av innsending-api i miljøvariabelen `SEND
 [Forms API](https://github.com/navikt/forms-api) er vårt API som tilbyr vedlikehold av skjemadefinisjoner og
 oversettelser.
 
-Ved kjøring av Byggeren lokalt er det best å bruke `yarn get-tokens` for å hente access token ved hjelp av
+Ved kjøring av Byggeren lokalt er det best å bruke `pnpm get-tokens` for å hente access token ved hjelp av
 [azure-token-generator](https://azure-token-generator.intern.dev.nav.no/api/obo?aud=dev-gcp:fyllut-sendinn:forms-api)
 (krever trygdeetaten-bruker). Dette skriptet putter et token med begrenset gyldighetsperiode (ca. 1 time) i .env-filen
 til byggeren.
 
-    FORMS_API_ACCESS_TOKEN=<access-token> // Access token settes ved kjøring av yarn get-tokens
+    FORMS_API_ACCESS_TOKEN=<access-token> // Access token settes ved kjøring av pnpm get-tokens
 
 Alternativt kan man kjøre [Forms API](https://github.com/navikt/forms-api) lokalt.
 Sett miljøvariabelen `FORMS_API_URL` i byggeren sin `.env`-fil til riktig port på localhost. F.eks:
@@ -147,15 +147,15 @@ Eksempelet over ville ført til et featureToggles-objekt som ser slik ut:
 
 ### Kjøre mot bygd kode
 
-På GitHub går cypress-testene mot fyllut og bygger kjørende med bygd kode. Lokalt kjører man da først `yarn build`,
-og så `yarn preview:bygger` eller `yarn preview:fyllut` (starter app fra dist-mappen). For 'fyllut må man i tillegg
-kjøre opp Mocks Server med `yarn mocks:fyllut`. Deretter starter man cypress-testene med `yarn cypress:bygger`
-eller `yarn cypress:fyllut`.
+På GitHub går cypress-testene mot fyllut og bygger kjørende med bygd kode. Lokalt kjører man da først `pnpm build`,
+og så `pnpm preview:bygger` eller `pnpm preview:fyllut` (starter app fra dist-mappen). For 'fyllut må man i tillegg
+kjøre opp Mocks Server med `pnpm mocks:fyllut`. Deretter starter man cypress-testene med `pnpm cypress:bygger`
+eller `pnpm cypress:fyllut`.
 
 ### Kjøre mot utviklingsmiljø
 
-Man kan også kjøre cypress-testene mot vanlig utviklingsmiljø, dvs. `yarn start:bygger` eller `yarn start:fyllut`.
-Legg da inn `MOCKS_ENABLED=true` i `fyllut-backend/.env` og kjør opp `yarn mocks:fyllut` pga. at cypress-testene
+Man kan også kjøre cypress-testene mot vanlig utviklingsmiljø, dvs. `pnpm start:bygger` eller `pnpm start:fyllut`.
+Legg da inn `MOCKS_ENABLED=true` i `fyllut-backend/.env` og kjør opp `pnpm mocks:fyllut` pga. at cypress-testene
 basererer seg på responsdata fra Mocks Server.
 
 Ved kjøring mot lokalt utviklingsmiljø får man ikke testet eventuell logikk som skjer ved lasting av index.html siden
@@ -181,7 +181,7 @@ til google cloud) og hente ut miljøvariabler fra podden, f.eks slik:
 ### 🛠️ Bygger
 
 I byggeren logger vi inn med [Azure AD](https://doc.nais.io/security/auth/azure-ad/sidecar/). Lokalt må man
-kjøre `yarn get-tokens` for å hente et token (trygdeetaten-bruker) som skriptet legger inn i `.env`-filen til
+kjøre `pnpm get-tokens` for å hente et token (trygdeetaten-bruker) som skriptet legger inn i `.env`-filen til
 byggeren. Dette tokenet brukes for å autentisere mot Forms API som kjører i dev-gcp.
 
 I Azure AD er det opprettet grupper for tilgangsstyring til ulike funksjoner i applikasjonen. Gruppene har prefiks
@@ -203,9 +203,9 @@ Fyllut støtter uinnlogget utfylling av skjemaer, men har også mulighet for inn
 ## 🐳 Docker
 
 Dersom man trenger å teste produksjonsbygg av applikasjonene lokalt kan man bygge docker image lokalt, men først må man
-bygge applikasjonen.
+bygge applikasjonen og generere deploy-artifaktene som Dockerfilene bruker.
 
-    yarn && yarn build
+    pnpm install && pnpm build && pnpm deploy:docker
 
 Docker-image bygges og startes lokalt på følgende måte:
 

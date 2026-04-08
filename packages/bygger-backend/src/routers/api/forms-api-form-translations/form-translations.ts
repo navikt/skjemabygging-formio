@@ -1,3 +1,4 @@
+import { requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import { FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { RequestHandler } from 'express';
 import { HttpError as OldHttpError } from '../../../fetchUtils';
@@ -5,7 +6,7 @@ import { formTranslationsService } from '../../../services';
 import { HttpError } from '../helpers/errors';
 
 const get: RequestHandler = async (req, res, next) => {
-  const { formPath } = req.params;
+  const formPath = requestUtil.getStringParam(req, 'formPath')!;
   try {
     const translations = await formTranslationsService.get(formPath);
     res.json(translations);
@@ -15,7 +16,7 @@ const get: RequestHandler = async (req, res, next) => {
 };
 
 const post: RequestHandler = async (req, res, next) => {
-  const { formPath } = req.params;
+  const formPath = requestUtil.getStringParam(req, 'formPath')!;
   const accessToken = req.headers.AzureAccessToken as string;
   const { key, tag, nb, nn, en, globalTranslationId } = req.body as FormsApiTranslation;
   const body = globalTranslationId ? { key, tag, globalTranslationId } : { key, nb, nn, en, tag };
@@ -32,7 +33,8 @@ const post: RequestHandler = async (req, res, next) => {
 };
 
 const put: RequestHandler = async (req, res, next) => {
-  const { formPath, id } = req.params;
+  const formPath = requestUtil.getStringParam(req, 'formPath')!;
+  const id = requestUtil.getStringParam(req, 'id')!;
   const { revision, nb, nn, en, globalTranslationId } = req.body as FormsApiTranslation;
   const accessToken = req.headers.AzureAccessToken as string;
   const body = globalTranslationId ? { globalTranslationId } : { nb, nn, en };
@@ -49,7 +51,8 @@ const put: RequestHandler = async (req, res, next) => {
 };
 
 const deleteTranslation: RequestHandler = async (req, res, next) => {
-  const { formPath, id } = req.params;
+  const formPath = requestUtil.getStringParam(req, 'formPath')!;
+  const id = requestUtil.getStringParam(req, 'id')!;
   const accessToken = req.headers.AzureAccessToken as string;
   try {
     await formTranslationsService.delete(formPath, parseInt(id), accessToken);

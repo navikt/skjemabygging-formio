@@ -159,6 +159,8 @@ describe('FormSettingsPage', () => {
   describe('Enhetstyper', () => {
     const CHECKBOX_LABEL_USER_MUST_CHOOSE_ENHET = 'Bruker må velge enhet ved innsending på papir';
     const COMBOBOX_LABEL_ENHETER = 'Velg hvilke enhetstyper det skal være mulig å sende inn til';
+    const NAV_UNIT_DESCRIPTION_LABEL = 'Instruksjoner for valg av enhet';
+    const NAV_UNIT_DESCRIPTION_ERROR = 'Instruksjoner for valg av enhet kan ikke være lengre enn 250 tegn';
 
     beforeEach(() => {
       cy.intercept('GET', '/api/forms/cypresssettings', { fixture: 'getForm.json' }).as('getForm');
@@ -239,6 +241,65 @@ describe('FormSettingsPage', () => {
       });
 
       cy.findByRole('checkbox', { name: CHECKBOX_LABEL_USER_MUST_CHOOSE_ENHET }).check({ force: true });
+
+      cy.contains('Lagre').click();
+      cy.get('[aria-live="polite"]').should('contain.text', `Lagret skjema ${originalForm.title}`);
+    });
+
+    it('should save nav unit description', () => {
+      const navUnitDescription = 'Velg enheten som skal behandle papirskjemaet';
+
+      cy.intercept('PUT', '/api/forms/cypresssettings', (req) => {
+        expect(req.body.properties.enhetMaVelgesVedPapirInnsending).to.equal(true);
+        expect(req.body.properties.navUnitDescription).to.equal(navUnitDescription);
+        req.reply(req.body);
+      });
+
+      cy.findByRole('checkbox', { name: CHECKBOX_LABEL_USER_MUST_CHOOSE_ENHET }).check({ force: true });
+      cy.findByRole('textbox', { name: NAV_UNIT_DESCRIPTION_LABEL }).type(navUnitDescription);
+
+      cy.contains('Lagre').click();
+      cy.get('[aria-live="polite"]').should('contain.text', `Lagret skjema ${originalForm.title}`);
+    });
+
+    it('should prevent save when nav unit description is longer than 250 characters', () => {
+      const tooLongDescription = 'a'.repeat(251);
+      const saveSpy = cy.spy().as('saveForm');
+
+      cy.intercept('PUT', '/api/forms/cypresssettings', (req) => {
+        saveSpy(req);
+        req.reply(req.body);
+      });
+
+      cy.findByRole('checkbox', { name: CHECKBOX_LABEL_USER_MUST_CHOOSE_ENHET }).check({ force: true });
+      cy.findByRole('textbox', { name: NAV_UNIT_DESCRIPTION_LABEL }).then(($textarea) => {
+        const textarea = $textarea[0] as HTMLTextAreaElement;
+        const setValue = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value')?.set;
+        setValue?.call(textarea, tooLongDescription);
+        textarea.dispatchEvent(new Event('input', { bubbles: true }));
+      });
+
+      cy.contains('Lagre').click();
+
+      cy.findByText(NAV_UNIT_DESCRIPTION_ERROR).should('be.visible');
+      cy.get('@saveForm').should('not.have.been.called');
+      cy.get('[aria-live="polite"]').should('not.contain.text', `Lagret skjema ${originalForm.title}`);
+    });
+
+    it('should clear nav unit description when nav unit selection is turned off', () => {
+      const navUnitDescription = 'Velg riktig NAV-enhet';
+
+      cy.intercept('PUT', '/api/forms/cypresssettings', (req) => {
+        expect(req.body.properties.enhetMaVelgesVedPapirInnsending).to.equal(false);
+        expect(req.body.properties).to.not.have.property('enhetstyper');
+        expect(req.body.properties).to.not.have.property('navUnitDescription');
+        req.reply(req.body);
+      });
+
+      cy.findByRole('checkbox', { name: CHECKBOX_LABEL_USER_MUST_CHOOSE_ENHET }).check({ force: true });
+      cy.findByRole('textbox', { name: NAV_UNIT_DESCRIPTION_LABEL }).type(navUnitDescription);
+      cy.findByRole('checkbox', { name: CHECKBOX_LABEL_USER_MUST_CHOOSE_ENHET }).uncheck({ force: true });
+      cy.findByRole('textbox', { name: NAV_UNIT_DESCRIPTION_LABEL }).should('not.exist');
 
       cy.contains('Lagre').click();
       cy.get('[aria-live="polite"]').should('contain.text', `Lagret skjema ${originalForm.title}`);

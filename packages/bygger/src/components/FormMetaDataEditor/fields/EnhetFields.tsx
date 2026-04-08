@@ -7,15 +7,17 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 import EnhetSettings from '../EnhetSettings';
-import { UpdateFormFunction } from '../utils/utils';
+import { FormMetadataError, UpdateFormFunction } from '../utils/utils';
 
 export interface EnhetFieldsProps {
   onChange: UpdateFormFunction;
   form: Form;
+  errors?: FormMetadataError;
 }
 
-const EnhetFields = ({ onChange, form }: EnhetFieldsProps) => {
-  const { submissionTypes, mottaksadresseId, enhetMaVelgesVedPapirInnsending, enhetstyper } = form.properties;
+const EnhetFields = ({ onChange, form, errors }: EnhetFieldsProps) => {
+  const { submissionTypes, mottaksadresseId, enhetMaVelgesVedPapirInnsending, enhetstyper, navUnitDescription } =
+    form.properties;
   const { http } = useAppConfig();
   const [enhetstyperNorg, setEnhetstyperNorg] = useState<EnhetstypeNorg[] | undefined>(undefined);
   const isLockedForm = !!form.lock;
@@ -37,6 +39,8 @@ const EnhetFields = ({ onChange, form }: EnhetFieldsProps) => {
             enhetstyperNorg={enhetstyperNorg}
             enhetMaVelges={!!enhetMaVelgesVedPapirInnsending}
             selectedEnhetstyper={enhetstyper}
+            navUnitDescription={navUnitDescription}
+            error={errors?.navUnitDescription}
             readOnly={isLockedForm}
             onChangeEnhetMaVelges={(selected) =>
               onChange({
@@ -45,11 +49,15 @@ const EnhetFields = ({ onChange, form }: EnhetFieldsProps) => {
                   ...form.properties,
                   enhetMaVelgesVedPapirInnsending: selected,
                   enhetstyper: selected ? form.properties.enhetstyper : undefined,
+                  navUnitDescription: selected ? form.properties.navUnitDescription : undefined,
                 },
               })
             }
             onChangeEnhetstyper={(enhetstyper) =>
               onChange({ ...form, properties: { ...form.properties, enhetstyper } })
+            }
+            onChangeNavUnitDescription={(description) =>
+              onChange({ ...form, properties: { ...form.properties, navUnitDescription: description } })
             }
           />
         </div>

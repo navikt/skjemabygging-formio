@@ -63,7 +63,9 @@ const OtherAttachmentUpload = ({
 
   const uploadedAttachmentFiles = submissionAttachment?.files ?? [];
   const options = attachmentUtils.mapKeysToOptions(attachmentValues, translate, appConfig.submissionMethod);
-  const uploadSelected = !!options.find((option) => option.value === submissionAttachment?.value)?.upload;
+  const uploadOnlyMode = attachmentUtils.isSingleUploadOnlyOption(attachmentValues, appConfig.submissionMethod);
+  const uploadSelected =
+    uploadOnlyMode || !!options.find((option) => option.value === submissionAttachment?.value)?.upload;
 
   const handleDelete = async (attachmentId: string) => {
     try {

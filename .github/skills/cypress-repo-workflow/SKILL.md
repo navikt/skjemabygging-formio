@@ -26,18 +26,18 @@ against built apps, not plain development mode.
 For `fyllut`, the CI-aligned flow is:
 
 ```bash
-yarn build:fyllut
-yarn mocks:fyllut:no-cli
-yarn preview:fyllut
-cd packages/fyllut && yarn cypress run --browser electron --spec cypress/e2e/<folder-or-spec>
+pnpm build:fyllut
+pnpm mocks:fyllut:no-cli
+pnpm preview:fyllut
+cd packages/fyllut && pnpm exec cypress run --browser electron --spec cypress/e2e/<folder-or-spec>
 ```
 
 For `bygger`, the CI-aligned flow is:
 
 ```bash
-yarn build:bygger
-yarn preview:bygger
-cd packages/bygger && yarn cypress run --browser electron --spec cypress/e2e/<spec>
+pnpm build:bygger
+pnpm preview:bygger
+cd packages/bygger && pnpm exec cypress run --browser electron --spec cypress/e2e/<spec>
 ```
 
 ### Local development mode
@@ -75,6 +75,12 @@ Important:
    Cypress suites.
 5. Shut down any local servers you started for testing before finishing the
    task, including `fyllut`, `bygger`, mock servers, and helper proxies.
+6. Prefer route-path form visits over `formPath` query usage:
+    - Use `cy.visit('/fyllut/<formPath>')` to open a form.
+    - Add `?sub=digital`, `?sub=digitalnologin`, or `?sub=paper` when testing a
+      specific submission method.
+    - Do not use `formPath` query param in normal tests unless the explicit test
+      purpose is to verify `formPath` query-param behavior itself.
 
 ## Troubleshooting
 
