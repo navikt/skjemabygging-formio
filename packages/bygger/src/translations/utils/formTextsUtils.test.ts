@@ -399,6 +399,21 @@ describe('utils', () => {
       expect(actual).toEqual(['Testskjema', 'Last ned pdf']);
     });
 
+    it('Henter navUnitDescription fra form properties', () => {
+      const actual = getTextKeysFromForm(
+        createFormsApiFormObject(
+          [],
+          'Testskjema',
+          createFormPropertiesObject({
+            skjemanummer: 'TST 12.13-14',
+            submissionTypes: ['PAPER'],
+            navUnitDescription: 'Velg riktig NAV-enhet',
+          }),
+        ),
+      );
+      expect(actual).toEqual(['Testskjema', 'Velg riktig NAV-enhet']);
+    });
+
     it('Henter signatur-relaterte tekster fra form properties', () => {
       const actual = getTextKeysFromForm(
         createFormsApiFormObject(

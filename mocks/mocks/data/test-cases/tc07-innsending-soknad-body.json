@@ -8,11 +8,19 @@
   "mainDocumentAlt": "<IGNORED>",
   "attachments": [
     {
+      "attachmentCode": "V9",
+      "label": "Vedlegg upload-only",
+      "title": "Vedlegg upload-only",
+      "uploadStatus": "LastetOpp",
+      "fileIds": ["<IGNORED>"],
+      "description": null
+    },
+    {
       "attachmentCode": "V1",
       "label": "Vedlegg 1",
       "title": "Vedleggstittel 1",
       "uploadStatus": "LastetOpp",
-      "fileIds": ["7e47263e-4e6f-4764-b1a6-8c37eb761dd9"],
+      "fileIds": ["<IGNORED>"],
       "description": null
     },
     {
@@ -20,7 +28,7 @@
       "label": "Vedlegg 2",
       "title": "Vedleggstittel 2",
       "uploadStatus": "LastetOpp",
-      "fileIds": ["f68f7d4b-25cc-4cdb-a3c3-acf793e2395b"],
+      "fileIds": ["<IGNORED>"],
       "description": null
     },
     {
@@ -28,7 +36,7 @@
       "label": "Annet vedlegg 1",
       "title": "Annet",
       "uploadStatus": "LastetOpp",
-      "fileIds": ["26d1fa01-6dca-477d-b32d-efdddd6a99aa"],
+      "fileIds": ["<IGNORED>"],
       "description": "<p>Har du noen annen dokumentasjon du ønsker å legge ved?</p>"
     }
   ],

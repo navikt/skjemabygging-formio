@@ -1,0 +1,8 @@
+packages:
+  - 'packages/*'
+  - 'mocks'
+allowBuilds:
+  core-js: true
+  cypress: true
+  esbuild: true
+  msw: true

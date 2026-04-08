@@ -26,18 +26,18 @@ against built apps, not plain development mode.
 For `fyllut`, the CI-aligned flow is:
 
 ```bash
-yarn build:fyllut
-yarn mocks:fyllut:no-cli
-yarn preview:fyllut
-cd packages/fyllut && yarn cypress run --browser electron --spec cypress/e2e/<folder-or-spec>
+pnpm build:fyllut
+pnpm mocks:fyllut:no-cli
+pnpm preview:fyllut
+cd packages/fyllut && pnpm exec cypress run --browser electron --spec cypress/e2e/<folder-or-spec>
 ```
 
 For `bygger`, the CI-aligned flow is:
 
 ```bash
-yarn build:bygger
-yarn preview:bygger
-cd packages/bygger && yarn cypress run --browser electron --spec cypress/e2e/<spec>
+pnpm build:bygger
+pnpm preview:bygger
+cd packages/bygger && pnpm exec cypress run --browser electron --spec cypress/e2e/<spec>
 ```
 
 ### Local development mode
@@ -45,19 +45,16 @@ cd packages/bygger && yarn cypress run --browser electron --spec cypress/e2e/<sp
 Use development mode when you need faster iteration or when editing frontend
 code and rerunning the same spec repeatedly.
 
-For `fyllut`, ensure the backend uses mocks:
+Preferred way to start the server under test:
 
-```bash
-cd packages/fyllut-backend && MOCKS_ENABLED=true yarn start
-cd packages/fyllut && yarn start --host 0.0.0.0 --port 3001
-yarn mocks:fyllut:no-cli
-cd packages/fyllut && yarn cypress run --browser electron --spec cypress/e2e/<spec>
-```
+- Use the `start-dev-servers` skill.
+- Treat that skill as the source of truth for local startup commands and runtime-config handling.
 
 Important:
 
 - `MOCKS_ENABLED=true` is required for local `fyllut` Cypress runs that depend
-  on mocked forms and backend responses.
+  on mocked forms and backend responses. The `start-dev-servers` skill handles
+  this for you.
 - If you have changed files under `mocks/mocks/`, assume the mock server may
   have crashed or needs a restart. Always verify that it is running before
   starting Cypress.
@@ -65,13 +62,6 @@ Important:
   usually down or returning the wrong form path.
 - If PDF download calls fail with `500`, check whether the local send-inn/PDF
   dependency is mocked or proxied correctly before changing the test itself.
-
-For `bygger`, a normal local loop is:
-
-```bash
-cd packages/bygger && yarn start --host 0.0.0.0 --port 3000
-cd packages/bygger && yarn cypress run --browser electron --spec cypress/e2e/<spec>
-```
 
 ## Repo-specific habits
 
@@ -85,6 +75,12 @@ cd packages/bygger && yarn cypress run --browser electron --spec cypress/e2e/<sp
    Cypress suites.
 5. Shut down any local servers you started for testing before finishing the
    task, including `fyllut`, `bygger`, mock servers, and helper proxies.
+6. Prefer route-path form visits over `formPath` query usage:
+    - Use `cy.visit('/fyllut/<formPath>')` to open a form.
+    - Add `?sub=digital`, `?sub=digitalnologin`, or `?sub=paper` when testing a
+      specific submission method.
+    - Do not use `formPath` query param in normal tests unless the explicit test
+      purpose is to verify `formPath` query-param behavior itself.
 
 ## Troubleshooting
 

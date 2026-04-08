@@ -13,6 +13,8 @@ import PdfNationalIdentityNumber from './national-identity-number/PdfNationalIde
 import PdfOrganizationNumber from './organization-number/PdfOrganizationNumber';
 import PdfPassword from './password/PdfPassword';
 import PdfPhoneNumber from './phone-number/PdfPhoneNumber';
+import PdfSender from './sender/PdfSender';
+import SummarySender from './sender/SummarySender';
 import PdfSurname from './surname/PdfSurname';
 
 import SummaryAccountNumber from './account-number/SummaryAccountNumber';
@@ -48,6 +50,7 @@ export {
   PdfOrganizationNumber,
   PdfPassword,
   PdfPhoneNumber,
+  PdfSender,
   PdfSurname,
   SummaryAccountNumber,
   SummaryAddress,
@@ -64,5 +67,6 @@ export {
   SummaryOrganizationNumber,
   SummaryPassword,
   SummaryPhoneNumber,
+  SummarySender,
   SummarySurname,
 };

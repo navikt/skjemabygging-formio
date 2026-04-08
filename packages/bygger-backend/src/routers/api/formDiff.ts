@@ -1,3 +1,4 @@
+import { requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import { formDiffingUtils, formioFormsApiUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import { backendInstance, formsService } from '../../services';
@@ -5,7 +6,7 @@ import { NotFoundError } from './helpers/errors';
 
 const formDiff = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { formPath } = req.params;
+    const formPath = requestUtil.getStringParam(req, 'formPath')!;
     let publishedForm;
     try {
       publishedForm = await backendInstance.fetchPublishedForm(formPath);

@@ -21,23 +21,26 @@
     "watch": "vite build --watch",
     "test": "vitest --run",
     "test:coverage": "vitest --run --coverage",
-    "prepare": "yarn build"
+    "prepare": "pnpm run build"
   },
   "dependencies": {
     "@formio/react": "5.3.0",
+    "@navikt/aksel-icons": "^8.2.0",
     "@navikt/ds-css": "^8.2.0",
     "@navikt/ds-react": "^8.2.2",
-    "@navikt/aksel-icons": "^8.2.0",
     "@navikt/fnrvalidator": "^2.2.1",
-    "@navikt/nav-dekoratoren-moduler": "^3.6.1",
-    "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
+    "@navikt/nav-dekoratoren-moduler": "^3.6.3",
+    "@navikt/skjemadigitalisering-shared-domain": "workspace:*",
     "clsx": "^2.1.1",
     "dompurify": "^3.3.1",
     "eventemitter2": "^6.4.9",
+    "eventemitter3": "^5.0.4",
     "file-saver": "2.0.5",
     "formiojs": "4.20.0",
     "i18n-iso-countries": "^7.13.0",
     "ibantools": "^4.5.1",
+    "jss": "^10.10.0",
+    "jss-preset-default": "^10.10.0",
     "lodash.clonedeep": "^4.5.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -46,12 +49,19 @@
     "react-select": "^5.10.2"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
     "@types/dompurify": "^3.2.0",
+    "@types/node": "^24.12.0",
+    "ejs-loader": "^0.5.0",
     "i18next": "^25.8.0",
+    "lodash": "^4.17.23",
     "lodash.merge": "^4.6.2",
     "lodash.template": "^4.5.0",
+    "moment": "^2.30.1",
     "nock": "^14.0.10",
-    "power-assert": "^1.6.1"
+    "power-assert": "^1.6.1",
+    "vitest-fetch-mock": "^0.4.5"
   }
 }

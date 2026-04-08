@@ -15,16 +15,19 @@
   ],
   "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {
-    "build": "tsc && vite build",
-    "check-types": "tsc",
+    "build": "pnpm exec tsc && pnpm exec vite build",
+    "check-types": "pnpm exec tsc",
     "clean": "rimraf dist coverage node_modules",
     "watch": "vite build --watch",
     "test": "vitest --run",
     "test:coverage": "vitest --run --coverage",
-    "prepare": "yarn build"
+    "prepare": "pnpm run build"
   },
   "dependencies": {
+    "@navikt/fnrvalidator": "^2.2.1",
     "formiojs": "4.20.0",
+    "i18next": "^25.10.9",
+    "lodash": "^4.17.23",
     "luxon": "^3.7.2",
     "moment": "^2.30.1",
     "uuid": "^13.0.0"

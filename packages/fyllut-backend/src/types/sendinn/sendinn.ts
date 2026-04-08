@@ -1,7 +1,7 @@
 import { TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 
 export type BrukerDto = { id: string; idType: 'FNR' };
-export type AvsenderId = { navn?: string; id?: string; idType?: 'FNR' };
+export type AvsenderId = { navn?: string; id?: string; idType?: 'FNR' | 'ORGNR' };
 
 export interface SubmitApplicationRequest {
   bruker?: string | null;

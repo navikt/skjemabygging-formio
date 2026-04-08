@@ -24,6 +24,12 @@ describe('Form navigation', () => {
     });
   };
 
+  const uploadInAttachment = (attachmentLabel: string, fileName: string = 'test.txt') => {
+    cy.contains('[data-cy=attachment-upload]', attachmentLabel).within(() => {
+      cy.get('input[type=file]').last().selectFile(`cypress/fixtures/files/${fileName}`, { force: true });
+    });
+  };
+
   describe('Type: Paper', () => {
     beforeEach(() => {
       cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application').as('downloadPdf');
@@ -404,11 +410,12 @@ describe('Form navigation', () => {
 
         cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
         cy.findByRole('group', { name: /Vedlegg 1/ }).within(() => {
-          cy.findByRole('radio', { name: TEXTS.statiske.attachment.ettersender }).check();
+          cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadLater }).check();
         });
         cy.findByRole('group', { name: /Vedlegg 2/ }).within(() => {
-          cy.findByRole('radio', { name: TEXTS.statiske.attachment.ettersender }).check();
+          cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadLater }).check();
         });
+        uploadInAttachment('Vedlegg upload-only');
         cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
           cy.findByRole('radio', { name: TEXTS.statiske.attachment.nei }).check();
         });

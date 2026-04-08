@@ -15,19 +15,19 @@
   ],
   "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {
-    "build": "tsc && vite build",
-    "check-types": "tsc",
+    "build": "pnpm exec tsc && pnpm exec vite build",
+    "check-types": "pnpm exec tsc",
     "clean": "rimraf dist coverage node_modules",
     "watch": "vite build --watch",
     "test": "vitest --run",
     "test:coverage": "vitest --run --coverage",
-    "prepare": "yarn build"
+    "prepare": "pnpm run build"
   },
   "dependencies": {
-    "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
+    "@navikt/skjemadigitalisering-shared-domain": "workspace:*",
     "dompurify": "^3.3.1",
-    "jsdom": "^28.1.0",
     "express-correlation-id": "^3.0.1",
+    "jsdom": "^28.1.0",
     "winston": "^3.18.3"
   },
   "peerDependencies": {
@@ -36,8 +36,8 @@
   },
   "devDependencies": {
     "@types/dompurify": "^2.3.3",
-    "@types/express-correlation-id": "^3.0.0",
     "@types/express": "^5.0.3",
+    "@types/express-correlation-id": "^3.0.0",
     "@types/multer": "^2.0.0",
     "express": "^5.2.1",
     "multer": "^2.0.2"

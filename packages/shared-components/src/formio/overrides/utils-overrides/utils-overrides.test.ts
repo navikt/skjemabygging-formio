@@ -13,6 +13,21 @@ import UtilsOverrides from './utils-overrides';
 
 const publishedFormFixture = publishedForm as unknown as NavFormType;
 const formNavSelectChangesFixture = formNavSelectChanges as unknown as NavFormType;
+const normalizeHtml = (html) => (typeof html === 'string' ? html : '');
+const EXPECTED_HTML = {
+  changedProperties: `<span id="nav-form-diff-changed-elements" class="aksel-body-short font-ax-bold">Endringer</span><ul aria-labelledby="nav-form-diff-changed-elements"><li>label: Fra 'Fornavn' til 'Oppgi fornavn'</li><li>id: Fra 'ehnemzu' til 'e6s77h'</li></ul>`,
+  ignoresUndefinedToFalsy: `<span id="nav-form-diff-changed-elements" class="aksel-body-short font-ax-bold">Endringer</span><ul aria-labelledby="nav-form-diff-changed-elements"><li>label: Fra 'WIP' til 'Svar ja eller nei?'</li></ul>`,
+  deletedRadiopanel: `<span id="nav-form-diff-deleted-elements" class="aksel-body-short font-ax-bold">Slettede elementer</span><ul aria-labelledby="nav-form-diff-deleted-elements"><li>radiopanel: Bekreftelse på skoleplass</li></ul>`,
+  deletedDatagrid: `<span id="nav-form-diff-deleted-elements" class="aksel-body-short font-ax-bold">Slettede elementer</span><ul aria-labelledby="nav-form-diff-deleted-elements"><li>datagrid: Dine hunder<ul><li>textfield: Navn</li><li>textfield: Rase</li></ul></li></ul>`,
+  malformedDiff: `<span>Det oppstod dessverre en feil under behandling av endringene i dette skjemaet.</span>`,
+  unchangedNavSelect: '',
+  changedNavSelect: `<span id="nav-form-diff-changed-elements" class="aksel-body-short font-ax-bold">Endringer</span><ul aria-labelledby="nav-form-diff-changed-elements"><li>label: Fra 'Instrument' til 'Velg instrument'</li><li>data.values: Fra '[{"label":"Gitar","value":"gitar"},{"label":"Trommer","value":"trommer"},{"label":"Piano","value":"piano"},{"label":"Trekkspill","value":"trekkspill"},{"label":"Munnspill","value":"munnspill"}]' til '[{"label":"Gitar","value":"gitar"},{"label":"Trommer","value":"trommer"},{"label":"Piano","value":"piano"},{"label":"Trekkspill","value":"trekkspill"}]'</li><li>defaultValue: Fra 'undefined' til '{"label":"Trommer","value":"trommer"}'</li></ul>`,
+  changedKey: `<span id="nav-form-diff-changed-elements" class="aksel-body-short font-ax-bold">Endringer</span><ul aria-labelledby="nav-form-diff-changed-elements"><li>key: Fra 'borDuINorge1' til 'doYouLiveInNorway'</li></ul>`,
+  changedConditional: `<span id="nav-form-diff-changed-elements" class="aksel-body-short font-ax-bold">Endringer</span><ul aria-labelledby="nav-form-diff-changed-elements"><li>conditional.eq: Fra 'sommer' til 'vinter'</li></ul>`,
+  builderTagsUnchanged: '',
+  builderTagsChanged: `<span class="aksel-tag aksel-tag--warning aksel-tag--xsmall aksel-detail aksel-detail--small" data-testid="diff-tag">Endring</span>`,
+  builderTagsNew: `<span class="aksel-tag aksel-tag--warning aksel-tag--xsmall aksel-detail aksel-detail--small" data-testid="diff-tag">Ny</span>`,
+};
 
 describe('utils-overrides', () => {
   describe('checkCondition', () => {
@@ -200,7 +215,7 @@ describe('utils-overrides', () => {
       };
       const diffSummary = formDiffingUtils.createDiffSummary(changes);
       const html = UtilsOverrides.navFormDiffToHtml(diffSummary);
-      expect(html).toMatchSnapshot();
+      expect(normalizeHtml(html)).toBe(EXPECTED_HTML.changedProperties);
     });
 
     it('ignores props whos value changes from undefined to falsy', () => {
@@ -239,19 +254,19 @@ describe('utils-overrides', () => {
       };
       const diffSummary = formDiffingUtils.createDiffSummary(changes);
       const html = UtilsOverrides.navFormDiffToHtml(diffSummary);
-      expect(html).toMatchSnapshot();
+      expect(normalizeHtml(html)).toBe(EXPECTED_HTML.ignoresUndefinedToFalsy);
     });
 
     it('generates html list with deleted radiopanel from panel', () => {
       const diffSummary = formDiffingUtils.createDiffSummary(panelDiffDeletedRadiopanel);
       const html = UtilsOverrides.navFormDiffToHtml(diffSummary);
-      expect(html).toMatchSnapshot();
+      expect(normalizeHtml(html)).toBe(EXPECTED_HTML.deletedRadiopanel);
     });
 
     it('generates nested html list with deleted datagrid and its components', () => {
       const diffSummary = formDiffingUtils.createDiffSummary(panelDiffDeletedDatagrid);
       const html = UtilsOverrides.navFormDiffToHtml(diffSummary);
-      expect(html).toMatchSnapshot();
+      expect(normalizeHtml(html)).toBe(EXPECTED_HTML.deletedDatagrid);
     });
 
     it('handles failure when diffSummary is of unexpected type', () => {
@@ -260,7 +275,7 @@ describe('utils-overrides', () => {
       try {
         const diffSummary = { some: 'thing', is: 'wrong', with: ['this', 'obj', 'ect'] };
         const html = UtilsOverrides.navFormDiffToHtml(diffSummary);
-        expect(html).toMatchSnapshot();
+        expect(normalizeHtml(html)).toBe(EXPECTED_HTML.malformedDiff);
       } catch (e) {
         throw new Error(`Should never fail, but it did: ${e instanceof Error ? e.message : String(e)}`);
       } finally {
@@ -274,28 +289,28 @@ describe('utils-overrides', () => {
         const componentDiff = formDiffingUtils.getComponentDiff(navSelect!, publishedFormFixture);
         const html = UtilsOverrides.navFormDiffToHtml(componentDiff);
         expect(html).toBe('');
-        expect(html).toMatchSnapshot();
+        expect(normalizeHtml(html)).toBe(EXPECTED_HTML.unchangedNavSelect);
       });
 
       it('should list changes for navSelect', () => {
         const navSelect = navFormUtils.findByNavId('e0a8kbj', formNavSelectChangesFixture.components);
         const componentDiff = formDiffingUtils.getComponentDiff(navSelect!, publishedFormFixture);
         const html = UtilsOverrides.navFormDiffToHtml(componentDiff);
-        expect(html).toMatchSnapshot();
+        expect(normalizeHtml(html)).toBe(EXPECTED_HTML.changedNavSelect);
       });
 
       it('should list changed key', () => {
         const radiopanel = navFormUtils.findByKey('doYouLiveInNorway', formNavSelectChangesFixture.components);
         const componentDiff = formDiffingUtils.getComponentDiff(radiopanel!, publishedFormFixture);
         const html = UtilsOverrides.navFormDiffToHtml(componentDiff);
-        expect(html).toMatchSnapshot();
+        expect(normalizeHtml(html)).toBe(EXPECTED_HTML.changedKey);
       });
 
       it('should list change in conditional', () => {
         const alertstripe = navFormUtils.findByKey('alertstripeArstid', formNavSelectChangesFixture.components);
         const componentDiff = formDiffingUtils.getComponentDiff(alertstripe!, publishedFormFixture);
         const html = UtilsOverrides.navFormDiffToHtml(componentDiff);
-        expect(html).toMatchSnapshot();
+        expect(normalizeHtml(html)).toBe(EXPECTED_HTML.changedConditional);
       });
     });
   });
@@ -314,7 +329,7 @@ describe('utils-overrides', () => {
         },
       };
       const html = UtilsOverrides.getBuilderTags(ctx);
-      expect(html).toMatchSnapshot();
+      expect(normalizeHtml(html)).toBe(EXPECTED_HTML.builderTagsUnchanged);
     });
 
     it("returns tag 'Endring' when component is changed", () => {
@@ -330,7 +345,7 @@ describe('utils-overrides', () => {
         },
       };
       const html = UtilsOverrides.getBuilderTags(ctx);
-      expect(html).toMatchSnapshot();
+      expect(normalizeHtml(html)).toBe(EXPECTED_HTML.builderTagsChanged);
     });
 
     it('returns no tag even if component is changed when it renders outside builder', () => {
@@ -346,7 +361,7 @@ describe('utils-overrides', () => {
         },
       };
       const html = UtilsOverrides.getBuilderTags(ctx);
-      expect(html).toMatchSnapshot();
+      expect(normalizeHtml(html)).toBe(EXPECTED_HTML.builderTagsUnchanged);
     });
 
     it("returns tag 'Ny' when component does not exist in published form", () => {
@@ -362,7 +377,7 @@ describe('utils-overrides', () => {
         },
       };
       const html = UtilsOverrides.getBuilderTags(ctx);
-      expect(html).toMatchSnapshot();
+      expect(normalizeHtml(html)).toBe(EXPECTED_HTML.builderTagsNew);
     });
 
     describe('component has new default prop in schema', () => {
@@ -381,7 +396,7 @@ describe('utils-overrides', () => {
           },
         };
         const html = UtilsOverrides.getBuilderTags(ctx);
-        expect(html).toMatchSnapshot();
+        expect(normalizeHtml(html)).toBe(EXPECTED_HTML.builderTagsUnchanged);
       });
 
       it('returns tag "NY" if component does not exist in published form', () => {
@@ -402,7 +417,7 @@ describe('utils-overrides', () => {
           },
         };
         const html = UtilsOverrides.getBuilderTags(ctx);
-        expect(html).toMatchSnapshot();
+        expect(normalizeHtml(html)).toBe(EXPECTED_HTML.builderTagsNew);
       });
     });
   });

@@ -40,6 +40,15 @@ Instead:
    `mocks/mocks/data/forms-api/cover-page/`.
 3. Register the form in `mocks/mocks/routes/formio-api.ts`.
 4. Point the Cypress spec at the dedicated form path.
+5. Keep each `*Form.ts` file single-purpose:
+    - Export exactly one mock form and the translations derived from that same
+      form.
+    - Do not keep multiple forms in one file.
+    - If a scenario needs an additional variant, create a new descriptively named
+      file (for example `attachmentUploadOnlyForm.ts`) instead of extending an
+      existing file.
+    - Keep the form function and translation function paired in that file so
+      route registration stays explicit and predictable.
 
 This keeps shared component test forms reusable and avoids accidental coupling
 between unrelated Cypress suites.

@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 import { navFormUtils } from '../form';
 import { formSummaryUtils } from './formSummaryUtils';
@@ -33,6 +34,8 @@ const {
   createDummyAmountWithCurrency,
   createDummyBankAccountField,
   createDummyOrgNrField,
+  createDummyAttachment,
+  createDummyAttachmentValues,
 } = mockedComponentObjectForTest;
 
 const onlyAlertstripes = (comp) => comp.type === 'alertstripe';
@@ -142,6 +145,66 @@ describe('form summary', () => {
       it("are not added if they don't have a submission value", () => {
         const actual = handleComponent(createDummyTextfield(), {}, []);
         expect(actual.find((component) => component.type === 'textfield')).toBeUndefined();
+      });
+
+      it('attachment summary uses digital labels when submissionMethod is digital', () => {
+        const attachment = createDummyAttachment(
+          'Vedlegg',
+          { vedleggstittel: 'Dokument', vedleggskode: 'A1' },
+          createDummyAttachmentValues([{ key: 'leggerVedNaa' }]),
+        );
+
+        const actual = handleComponent(
+          attachment,
+          { data: { vedlegg: { key: 'leggerVedNaa' } } },
+          [],
+          '',
+          mockedTranslate,
+          undefined,
+          undefined,
+          createFormObject(),
+          'nb',
+          { submissionMethod: 'digital' },
+        );
+
+        expect(actual).toContainEqual({
+          label: 'Vedlegg',
+          key: 'vedlegg',
+          type: 'attachment',
+          value: {
+            description: 'Jeg laster opp dette nå',
+          },
+        });
+      });
+
+      it('attachment summary keeps paper labels when submissionMethod is paper', () => {
+        const attachment = createDummyAttachment(
+          'Vedlegg',
+          { vedleggstittel: 'Dokument', vedleggskode: 'A1' },
+          createDummyAttachmentValues([{ key: 'ettersender' }]),
+        );
+
+        const actual = handleComponent(
+          attachment,
+          { data: { vedlegg: { key: 'ettersender' } } },
+          [],
+          '',
+          mockedTranslate,
+          undefined,
+          undefined,
+          createFormObject(),
+          'nb',
+          { submissionMethod: 'paper' },
+        );
+
+        expect(actual).toContainEqual({
+          label: 'Vedlegg',
+          key: 'vedlegg',
+          type: 'attachment',
+          value: {
+            description: 'Jeg ettersender dokumentasjonen senere',
+          },
+        });
       });
     });
 

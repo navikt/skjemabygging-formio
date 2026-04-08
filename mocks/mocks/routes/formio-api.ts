@@ -74,6 +74,10 @@ import { addressValidityTestForm, addressValidityTranslations } from '../data/fo
 import { adresseTestForm, adresseTranslations } from '../data/forms-api/components/adresseForm';
 import { alertForm, alertTranslations } from '../data/forms-api/components/alertForm';
 import { attachmentTestForm, attachmentTranslations } from '../data/forms-api/components/attachmentForm';
+import {
+  attachmentUploadOnlyTestForm,
+  attachmentUploadOnlyTranslations,
+} from '../data/forms-api/components/attachmentUploadOnlyForm';
 import { bankAccountForm, bankAccountTranslations } from '../data/forms-api/components/bankAccountForm';
 import { checkboxForm, checkboxTranslations } from '../data/forms-api/components/checkboxForm';
 import componentsForm from '../data/forms-api/components/componentsForm';
@@ -109,6 +113,7 @@ import {
   selectBoxesTranslations,
 } from '../data/forms-api/components/selectBoxesForm';
 import { selectForm, selectTranslations } from '../data/forms-api/components/selectForm';
+import { senderForm, senderTranslations } from '../data/forms-api/components/senderForm';
 import {
   simpleConditionalForm,
   simpleConditionalTranslations,
@@ -187,6 +192,7 @@ const allForms = [
   { form: conditionalPage, translations: undefined },
   { form: textFieldForm(), translations: textFieldTranslations() },
   { form: fnrFieldForm(), translations: fnrFieldTranslations() },
+  { form: senderForm(), translations: senderTranslations() },
   { form: radioPanelForm(), translations: radioPanelTranslations() },
   { form: createMonthPickerForm(), translations: monthPickerTranslations() },
   { form: componentsForm(), translations: formComponentsTranslations },
@@ -225,6 +231,7 @@ const allForms = [
   { form: selectForm(), translations: selectTranslations() },
   { form: currencyForm(), translations: currencyTranslations() },
   { form: attachmentTestForm(), translations: attachmentTranslations() },
+  { form: attachmentUploadOnlyTestForm(), translations: attachmentUploadOnlyTranslations() },
   { form: currencySelectForm(), translations: currencySelectTranslations() },
   { form: dataFetcherTestForm(), translations: dataFetcherTranslations() },
   { form: dataGridForm(), translations: dataGridTranslations() },

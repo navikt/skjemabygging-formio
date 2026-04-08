@@ -1,6 +1,54 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
+describe('Attachments page (paper submission)', () => {
+  beforeEach(() => {
+    cy.defaultIntercepts();
+    cy.visit('/fyllut/nologinform?sub=paper');
+    cy.defaultWaits();
+
+    cy.clickIntroPageConfirmation();
+    cy.clickNextStep();
+    cy.findByRole('heading', { name: 'Veiledning' }).should('exist');
+
+    cy.clickNextStep();
+    cy.findByRole('heading', { name: /Dine opplysninger/ }).should('exist');
+    cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola');
+    cy.findByRole('textbox', { name: 'Etternavn' }).type('Nordmann');
+    cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
+      cy.findByLabelText('Ja').check(),
+    );
+    cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).type('08842748500');
+    cy.clickNextStep();
+
+    cy.findByRole('group', { name: 'Høyeste fullførte utdanning' }).within(() => cy.findByLabelText('Annet').check());
+    cy.clickNextStep();
+    cy.findByRole('heading', { name: /Vedlegg/ }).should('exist');
+  });
+
+  it('shows legacy paper labels for attachment options', () => {
+    cy.findByRole('group', { name: /Vedlegg med masse greier/ }).within(() => {
+      cy.findByRole('radio', { name: TEXTS.statiske.attachment.leggerVedNaa }).should('exist');
+      cy.findByRole('radio', { name: TEXTS.statiske.attachment.ettersender }).should('exist');
+      cy.findByRole('radio', { name: TEXTS.statiske.attachment.levertTidligere }).should('exist');
+      cy.findByRole('radio', { name: TEXTS.statiske.attachment.harIkke }).should('exist');
+      cy.findByRole('radio', { name: TEXTS.statiske.attachment.andre }).should('exist');
+      cy.findByRole('radio', { name: TEXTS.statiske.attachment.nav }).should('exist');
+
+      cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).should('not.exist');
+      cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadLater }).should('not.exist');
+    });
+  });
+});
+
 describe('Attachments page', () => {
+  const getUploadOnlyAttachment = () => cy.contains('[data-cy=attachment-upload]', 'Vedlegg med ett valg');
+  const getOtherAttachment = () => cy.contains('[data-cy=attachment-upload]', 'Annen dokumentasjon');
+  const getMainAttachment = () =>
+    cy.contains('[data-cy=attachment-upload]', 'Informasjon om din næringsinntekt fra Norge eller utlandet');
+  const uploadFileInCurrentScope = (fileName: string = 'test.txt') => {
+    cy.get('input[type=file]').last().selectFile(`cypress/fixtures/files/${fileName}`, { force: true });
+  };
+
   beforeEach(() => {
     cy.defaultIntercepts();
     cy.visit('/fyllut/digitalnologinwithattachmentpanel');
@@ -28,34 +76,52 @@ describe('Attachments page', () => {
         'have.length',
         2,
       );
-      cy.findAllByText('Du må fylle ut: Vedlegg med ett valg').should('have.length', 2);
+      cy.findAllByText('Du må laste opp fil: Vedlegg med ett valg').should('have.length', 2);
       cy.findAllByText('Du må fylle ut: Annen dokumentasjon').should('be.visible').should('have.length', 2);
     });
 
     it('validates required attachment with one option', () => {
       cy.findByRole('group', { name: 'Informasjon om din næringsinntekt fra Norge eller utlandet' }).within(() => {
-        cy.findByRole('radio', { name: TEXTS.statiske.attachment.ettersender }).click();
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadLater }).click();
       });
       cy.findByRole('group', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
       }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.nei }).click();
       });
-      cy.findByRole('group', { name: 'Vedlegg med ett valg' }).within(() => {
-        cy.findByRole('checkbox', { name: TEXTS.statiske.attachment.leggerVedNaa }).check();
-        cy.findByRole('checkbox', { name: TEXTS.statiske.attachment.leggerVedNaa }).uncheck();
+      getUploadOnlyAttachment().within(() => {
+        cy.findByRole('button', { name: TEXTS.statiske.uploadFile.selectFile }).should('exist');
       });
       cy.clickNextStep();
-      cy.findAllByText('Du må fylle ut: Vedlegg med ett valg').should('have.length', 2);
+      cy.findAllByText('Du må laste opp fil: Vedlegg med ett valg').should('have.length', 2);
     });
   });
 
+  it('shows digital option labels for digital no login attachments', () => {
+    cy.findByRole('group', { name: 'Informasjon om din næringsinntekt fra Norge eller utlandet' }).within(() => {
+      cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).should('exist');
+      cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadLater }).should('exist');
+
+      cy.findByRole('radio', { name: TEXTS.statiske.attachment.leggerVedNaa }).should('not.exist');
+      cy.findByRole('radio', { name: TEXTS.statiske.attachment.ettersender }).should('not.exist');
+    });
+  });
+
+  it('hides uploadNow selector when only upload-only option is enabled and allows direct upload', () => {
+    getUploadOnlyAttachment().within(() => {
+      cy.findByRole('button', { name: TEXTS.statiske.uploadFile.selectFile }).should('exist');
+      cy.get('input[type=radio], input[type=checkbox]').should('have.length', 0);
+      uploadFileInCurrentScope('test.txt');
+    });
+    cy.findByText('test.txt').should('exist');
+  });
+
   it('should render additional description and deadline when existing', () => {
-    cy.findByLabelText(TEXTS.statiske.attachment.ettersender).click();
+    cy.findByLabelText(TEXTS.statiske.attachment.uploadLater).click();
     cy.findByText(
       'Hvis vi ikke har mottatt dette vedlegget innen 14 dager blir saken behandlet med de opplysningene som foreligger.',
     ).should('exist');
-    cy.findByLabelText(TEXTS.statiske.attachment.levertTidligere).click();
+    cy.findByLabelText(TEXTS.statiske.attachment.alreadySent).click();
     cy.findByLabelText('Tittel tilleggsinformasjon').should('exist');
     cy.findByText('Beskrivelse tilleggsinformasjon').should('exist');
   });
@@ -65,12 +131,16 @@ describe('Attachments page', () => {
       cy.findByRole('group', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
       }).within(() => {
-        cy.findByRole('radio', { name: TEXTS.statiske.attachment.leggerVedNaa }).click();
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).click();
       });
-      cy.findByRole('button', { name: TEXTS.statiske.uploadFile.selectFile }).click();
+      getOtherAttachment().within(() => {
+        cy.findByRole('button', { name: TEXTS.statiske.uploadFile.selectFile }).click();
+      });
       cy.findAllByText(`Du må fylle ut: ${TEXTS.statiske.attachment.attachmentTitle}`).should('have.length', 2);
-      cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel');
-      cy.uploadFile();
+      getOtherAttachment().within(() => {
+        cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel');
+        uploadFileInCurrentScope('test.txt');
+      });
       cy.findAllByText(`Du må fylle ut: ${TEXTS.statiske.attachment.attachmentTitle}`).should('not.exist');
     });
 
@@ -78,14 +148,16 @@ describe('Attachments page', () => {
       cy.findByRole('group', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
       }).within(() => {
-        cy.findByRole('radio', { name: TEXTS.statiske.attachment.leggerVedNaa }).click();
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).click();
       });
-      cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel 1');
-      cy.uploadFile('test.txt');
-      cy.findByRole('button', { name: TEXTS.statiske.attachment.addNewAttachment }).click();
-      cy.findByRole('button', { name: TEXTS.statiske.attachment.addNewAttachment }).should('not.exist');
-      cy.findAllByLabelText(TEXTS.statiske.attachment.attachmentTitle).last().type('Vedleggstittel 2');
-      cy.uploadFile('test.txt');
+      getOtherAttachment().within(() => {
+        cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel 1');
+        uploadFileInCurrentScope('test.txt');
+        cy.findByRole('button', { name: TEXTS.statiske.attachment.addNewAttachment }).click();
+        cy.findByRole('button', { name: TEXTS.statiske.attachment.addNewAttachment }).should('not.exist');
+        cy.findAllByLabelText(TEXTS.statiske.attachment.attachmentTitle).last().type('Vedleggstittel 2');
+        uploadFileInCurrentScope('test.txt');
+      });
       cy.findByText('Vedleggstittel 1').should('exist');
       cy.findByText('Vedleggstittel 2').should('exist');
       cy.findAllByText('test.txt').should('have.length', 2);
@@ -93,28 +165,31 @@ describe('Attachments page', () => {
 
     it('lets you add more attachments after visiting summary page', () => {
       cy.findByRole('group', { name: 'Informasjon om din næringsinntekt fra Norge eller utlandet' }).within(() => {
-        cy.findByRole('radio', { name: TEXTS.statiske.attachment.ettersender }).click();
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadLater }).click();
       });
-      cy.findByRole('group', { name: 'Vedlegg med ett valg' }).within(() => {
-        cy.findByRole('checkbox', { name: TEXTS.statiske.attachment.leggerVedNaa }).click();
+      getUploadOnlyAttachment().within(() => {
+        uploadFileInCurrentScope('test.txt');
       });
-      cy.uploadFile('test.txt');
       cy.findByRole('group', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
       }).within(() => {
-        cy.findByRole('radio', { name: TEXTS.statiske.attachment.leggerVedNaa }).click();
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).click();
       });
-      cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel 1');
-      cy.uploadFile('test.txt', { index: 1 });
-      cy.findByRole('button', { name: TEXTS.statiske.attachment.addNewAttachment }).click();
-      cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel 2');
-      cy.uploadFile('test.txt', { index: 1 });
+      getOtherAttachment().within(() => {
+        cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel 1');
+        uploadFileInCurrentScope('test.txt');
+        cy.findByRole('button', { name: TEXTS.statiske.attachment.addNewAttachment }).click();
+        cy.findAllByLabelText(TEXTS.statiske.attachment.attachmentTitle).last().type('Vedleggstittel 2');
+        uploadFileInCurrentScope('test.txt');
+      });
       cy.clickNextStep();
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
       cy.findByRole('link', { name: 'Vedlegg' }).click();
-      cy.findByRole('button', { name: TEXTS.statiske.attachment.addNewAttachment }).click();
-      cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel 3');
-      cy.uploadFile('test.txt', { index: 1 });
+      getOtherAttachment().within(() => {
+        cy.findByRole('button', { name: TEXTS.statiske.attachment.addNewAttachment }).click();
+        cy.findAllByLabelText(TEXTS.statiske.attachment.attachmentTitle).last().type('Vedleggstittel 3');
+        uploadFileInCurrentScope('test.txt');
+      });
       cy.findByText('Vedleggstittel 1').should('exist');
       cy.findByText('Vedleggstittel 2').should('exist');
       cy.findByText('Vedleggstittel 3').should('exist');
@@ -131,13 +206,15 @@ describe('Attachments page', () => {
       cy.findByRole('group', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
       }).within(() => {
-        cy.findByRole('radio', { name: TEXTS.statiske.attachment.leggerVedNaa }).click();
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).click();
       });
-      cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel 1');
-      cy.uploadFile();
-      cy.findByRole('button', { name: TEXTS.statiske.attachment.addNewAttachment }).click();
-      cy.findAllByLabelText(TEXTS.statiske.attachment.attachmentTitle).last().type('Vedleggstittel 2');
-      cy.findByRole('button', { name: TEXTS.statiske.attachment.deleteAttachment }).click();
+      getOtherAttachment().within(() => {
+        cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel 1');
+        uploadFileInCurrentScope('test.txt');
+        cy.findByRole('button', { name: TEXTS.statiske.attachment.addNewAttachment }).click();
+        cy.findAllByLabelText(TEXTS.statiske.attachment.attachmentTitle).last().type('Vedleggstittel 2');
+        cy.findByRole('button', { name: TEXTS.statiske.attachment.deleteAttachment }).click();
+      });
       cy.findByText('Vedleggstittel 1').should('exist');
       cy.findByText('Vedleggstittel 2').should('not.exist');
       cy.findByText(TEXTS.statiske.attachment.attachmentTitle).should('not.exist');
@@ -147,15 +224,17 @@ describe('Attachments page', () => {
       cy.findByRole('group', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
       }).within(() => {
-        cy.findByRole('radio', { name: TEXTS.statiske.attachment.leggerVedNaa }).click();
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).click();
       });
-      cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel 1');
-      cy.uploadFile('test.txt');
-      cy.findByRole('button', { name: TEXTS.statiske.attachment.addNewAttachment }).click();
-      cy.findAllByLabelText(TEXTS.statiske.attachment.attachmentTitle).last().type('Vedleggstittel 2');
-      cy.uploadFile('test.txt');
-      cy.findAllByRole('button', { name: 'Slett filen' }).should('have.length', 2);
-      cy.findAllByRole('button', { name: 'Slett filen' }).last().click();
+      getOtherAttachment().within(() => {
+        cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel 1');
+        uploadFileInCurrentScope('test.txt');
+        cy.findByRole('button', { name: TEXTS.statiske.attachment.addNewAttachment }).click();
+        cy.findAllByLabelText(TEXTS.statiske.attachment.attachmentTitle).last().type('Vedleggstittel 2');
+        uploadFileInCurrentScope('test.txt');
+        cy.findAllByRole('button', { name: 'Slett filen' }).should('have.length', 2);
+        cy.findAllByRole('button', { name: 'Slett filen' }).last().click();
+      });
       cy.findAllByText('test.txt').should('have.length', 1);
       cy.findByText('Vedleggstittel 1').should('exist');
       cy.findByText('Vedleggstittel 2').should('not.exist');
@@ -164,27 +243,27 @@ describe('Attachments page', () => {
 
     it('is still valid after deleting the first attachment', () => {
       cy.findByRole('group', { name: 'Informasjon om din næringsinntekt fra Norge eller utlandet' }).within(() => {
-        cy.findByRole('radio', { name: TEXTS.statiske.attachment.ettersender }).click();
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadLater }).click();
       });
-      cy.findByRole('group', { name: 'Vedlegg med ett valg' }).within(() => {
-        cy.findByRole('checkbox', { name: TEXTS.statiske.attachment.leggerVedNaa }).click();
+      getUploadOnlyAttachment().within(() => {
+        uploadFileInCurrentScope('test.txt');
       });
-      cy.uploadFile('test.txt');
       cy.findByRole('group', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
       }).within(() => {
-        cy.findByRole('radio', { name: TEXTS.statiske.attachment.leggerVedNaa }).click();
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).click();
       });
-      cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel 1');
-      cy.uploadFile('test.txt', { index: 1 });
-      cy.findByRole('button', { name: TEXTS.statiske.attachment.addNewAttachment }).click();
-      cy.findAllByLabelText(TEXTS.statiske.attachment.attachmentTitle).last().type('Vedleggstittel 2');
-      cy.uploadFile('test.txt', { index: 1 });
-      cy.findAllByRole('button', { name: 'Slett filen' }).should('have.length', 2);
-      cy.findAllByRole('button', { name: 'Slett filen' }).eq(1).click();
+      getOtherAttachment().within(() => {
+        cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel 1');
+        uploadFileInCurrentScope('test.txt');
+        cy.findByRole('button', { name: TEXTS.statiske.attachment.addNewAttachment }).click();
+        cy.findAllByLabelText(TEXTS.statiske.attachment.attachmentTitle).last().type('Vedleggstittel 2');
+        uploadFileInCurrentScope('test.txt');
+        cy.findAllByRole('button', { name: 'Slett filen' }).should('have.length', 2);
+        cy.findAllByRole('button', { name: 'Slett filen' }).eq(1).click();
+      });
       cy.findAllByText('test.txt').should('have.length', 2);
-      cy.findByText('Vedleggstittel 1').should('not.exist');
-      cy.findByText('Vedleggstittel 2').should('exist');
+      cy.findAllByText(/^Vedleggstittel [12]$/).should('have.length', 1);
       cy.clickNextStep();
       cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
       cy.findByText('Du må fylle ut: Annen dokumentasjon').should('not.exist');
@@ -223,19 +302,22 @@ describe('Attachments page', () => {
       cy.intercept('POST', '/fyllut/api/send-inn/nologin-application/attachments/eiajfi8').as(
         'deleteAllFilesByAttachmentId',
       );
-      cy.findAllByLabelText(TEXTS.statiske.attachment.leggerVedNaa).first().click();
-      cy.uploadFile('test.txt');
-      cy.findByText('test.txt').should('exist');
-      cy.uploadFile('test.txt');
-      cy.findByText('test.txt').should('exist');
-      cy.findByRole('button', { name: TEXTS.statiske.attachment.deleteAllFiles }).click();
+      getMainAttachment().within(() => {
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).click();
+        uploadFileInCurrentScope('test.txt');
+        uploadFileInCurrentScope('test.txt');
+        cy.findAllByText('test.txt').should('have.length', 2);
+        cy.findByRole('button', { name: TEXTS.statiske.attachment.deleteAllFiles }).click();
+      });
       cy.wait('@deleteAllFilesByAttachmentId');
     });
 
     it('should remove all attachments on cancel', () => {
       cy.intercept('DELETE', '/fyllut/api/send-inn/nologin-application').as('deleteAllFiles');
-      cy.findAllByLabelText(TEXTS.statiske.attachment.leggerVedNaa).first().click();
-      cy.uploadFile('test.txt');
+      getMainAttachment().within(() => {
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).click();
+        uploadFileInCurrentScope('test.txt');
+      });
       cy.findByText('test.txt').should('exist');
       cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.cancelAndDelete }).click();
       cy.findByRole('button', { name: TEXTS.grensesnitt.confirmDiscardPrompt.confirm }).click();

@@ -1,5 +1,5 @@
 *
 !fyllut/dist
-!fyllut-backend/dist
-!fyllut-backend/fonts
-!fyllut-backend/node_modules
+!.deploy
+!.deploy/fyllut-backend
+!.deploy/fyllut-backend/**

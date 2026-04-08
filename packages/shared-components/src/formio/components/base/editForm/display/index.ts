@@ -22,6 +22,7 @@ import editFormLegend from './editFormLegend';
 import editFormRemoveAnother from './editFormRemoveAnother';
 import editFormRowTitle from './editFormRowTitle';
 import editFormRows from './editFormRows';
+import editFormSenderRole from './editFormSenderRole';
 import editFormSpellCheck from './editFormSpellCheck';
 import editFormTextDisplay from './editFormTextDisplay';
 import editFormTitle from './editFormTitle';
@@ -60,6 +61,7 @@ const editFormDisplay = {
   backgroundColor: editFormBackgroundColor,
   yourInformation: editFormYourInformation,
   customLabels: editFormCustomLabels,
+  senderRole: editFormSenderRole,
 };
 
 export default editFormDisplay;

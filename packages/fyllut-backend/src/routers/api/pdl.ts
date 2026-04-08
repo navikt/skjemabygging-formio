@@ -1,3 +1,4 @@
+import { requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import { NextFunction, Request, Response } from 'express';
 import fetch from 'node-fetch';
 import { config as appConfig } from '../../config/config';
@@ -16,7 +17,9 @@ const pdl = {
   person: async (req: Request, res: Response, next: NextFunction) => {
     try {
       validateRequest(req);
-      const data = await getPerson(getTokenxAccessToken(req), req.query.theme as string, req.params.id);
+      const id = requestUtil.getStringParam(req, 'id')!;
+      const theme = req.query.theme as string;
+      const data = await getPerson(getTokenxAccessToken(req), theme, id);
       res.send(data);
     } catch (e) {
       next(e);
@@ -25,12 +28,9 @@ const pdl = {
   children: async (req: Request, res: Response, next: NextFunction) => {
     try {
       validateRequest(req);
-      const data = await getPersonWithRelations(
-        req.headers.AzureAccessToken as string,
-        req.query.theme as string,
-        req.params.id,
-        'BARN',
-      );
+      const id = requestUtil.getStringParam(req, 'id')!;
+      const theme = req.query.theme as string;
+      const data = await getPersonWithRelations(req.headers.AzureAccessToken as string, theme, id, 'BARN');
       res.send(data);
     } catch (e) {
       next(e);
@@ -219,7 +219,9 @@ const pdlRequest = async (accessToken: string, theme: string, query: string) => 
 
 const validateRequest = (req: Request) => {
   const idPortenPid = getIdportenPid(req);
-  if (!req.query.theme) {
+  const id = requestUtil.getStringParam(req, 'id')!;
+  const theme = req.query.theme as string | undefined;
+  if (!theme) {
     throw new Error(`Theme query param is required.`);
   }
 
@@ -227,7 +229,7 @@ const validateRequest = (req: Request) => {
     throw new Error(`User have to be logged in to access pdl data.`);
   }
 
-  if (idPortenPid !== req.params.id) {
+  if (idPortenPid !== id) {
     throw new Error(`Logged in user do not match the person they tried to retrieve.`);
   }
 };
