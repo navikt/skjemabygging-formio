@@ -1,5 +1,8 @@
+import _ from 'lodash';
 import { Component, NavFormType, Submission, SubmissionMethod } from '../../models';
 import { submissionTypesUtils } from '../submission';
+
+const USE_FORMIO_CHECK_CONDITION = false;
 
 const lodashShim = {
   some: <T>(collection: T[], predicate: (item: T) => boolean) => Array.from(collection).some(predicate),
@@ -110,6 +113,41 @@ const getCheckConditionUtils = (
   evaluate: (func: unknown, args: Record<string, unknown>, ret?: string, tokenize?: boolean) => unknown,
   originalCheckCondition,
 ) => {
+  const formioCheckCustomConditional = (
+    _component: Partial<Component>,
+    custom,
+    row,
+    data,
+    form: NavFormType | undefined,
+    variable,
+    onError,
+    instance,
+    submission?: Submission,
+    _options?: CheckConditionOptions,
+  ) => {
+    if (typeof custom === 'string') {
+      custom = `var ${variable} = true; ${custom}; return ${variable};`;
+    }
+
+    const evaluateArgs = {
+      row,
+      data,
+      form,
+      utils: Utils,
+      ...(submission && { submission }),
+      _: _,
+    };
+
+    const value =
+      instance && instance.evaluate ? instance.evaluate(custom, evaluateArgs) : evaluate(custom, evaluateArgs);
+
+    if (value === null) {
+      return onError;
+    }
+
+    return value;
+  };
+
   const checkCustomConditional = (
     component: Partial<Component>,
     custom,
@@ -151,12 +189,40 @@ const getCheckConditionUtils = (
     return value;
   };
 
+  const formioCheckCondition = (
+    component: Partial<Component>,
+    row,
+    data,
+    form?: NavFormType,
+    instance?: ConditionComponent,
+    submission?: Submission,
+    options?: CheckConditionOptions,
+  ) => {
+    void options;
+
+    if (component.customConditional) {
+      return formioCheckCustomConditional(
+        component,
+        component.customConditional,
+        row,
+        data,
+        form,
+        'show',
+        true,
+        instance,
+        submission,
+      );
+    }
+
+    return originalCheckCondition(component, row, data, form, instance);
+  };
+
   const checkCondition = (
     component: Partial<Component>,
     row,
     data,
     form?: NavFormType,
-    instance?,
+    instance?: ConditionComponent,
     submission?: Submission,
     options?: CheckConditionOptions,
   ) => {
@@ -183,6 +249,15 @@ const getCheckConditionUtils = (
 
     return originalCheckCondition(component, row, data, form, effectiveInstance);
   };
+
+  // This stays here for us to quickly change back to old formio check condition.
+  // This should be deleted when we have run the new check condition for a while.
+  if (USE_FORMIO_CHECK_CONDITION) {
+    return {
+      checkCustomConditional: formioCheckCustomConditional,
+      checkCondition: formioCheckCondition,
+    };
+  }
 
   return {
     checkCustomConditional,
