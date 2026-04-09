@@ -8,7 +8,7 @@ import { StaticPdfProvider } from './StaticPdfContext';
 import StaticPdfDownloadPage from './StaticPdfDownloadPage';
 import StaticPdfInputPage from './StaticPdfInputPage';
 import StaticPdfNavigation from './components/StaticPdfNavigation';
-import FormErrorSummary from './components/shared/form/FormErrorSummary';
+import FormErrorSummary from './components/shared/form-adapters/FormErrorSummary';
 
 type StaticPdfPage = 'input' | 'download';
 

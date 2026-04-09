@@ -2,6 +2,14 @@ import type { Component, Submission, TranslateFunction } from '@navikt/skjemadig
 
 type SharedFormInputValue = string | number | boolean | string[] | null | undefined;
 
+interface SharedFormInputValidators {
+  required?: boolean;
+  minLength?: number;
+  maxLength?: number;
+  nationalIdentityNumber?: boolean;
+  coverPage?: boolean;
+}
+
 interface SharedFormInputProps {
   component: Component;
   submissionPath: string;
@@ -23,4 +31,20 @@ interface SharedFormInputNode {
   children?: SharedFormInputNode[];
 }
 
-export type { SharedFormInputNode, SharedFormInputProps, SharedFormInputValue };
+interface SharedFormTextFieldInputNode extends SharedFormInputNode {
+  type: 'text-field';
+  validators?: Pick<
+    SharedFormInputValidators,
+    'required' | 'minLength' | 'maxLength' | 'nationalIdentityNumber' | 'coverPage'
+  >;
+  autoComplete?: string;
+  readOnly?: boolean;
+}
+
+export type {
+  SharedFormInputNode,
+  SharedFormInputProps,
+  SharedFormInputValidators,
+  SharedFormInputValue,
+  SharedFormTextFieldInputNode,
+};

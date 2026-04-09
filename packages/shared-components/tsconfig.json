@@ -6,7 +6,9 @@
     "moduleResolution": "bundler",
     "types": ["node", "vite/client", "vitest/globals"],
     "paths": {
-      "@navikt/skjemadigitalisering-shared-domain": ["../shared-domain/src"], 
+      "@navikt/skjemadigitalisering-shared-domain": ["../shared-domain/src"],
+      "@navikt/skjemadigitalisering-shared-form": ["../shared-form/src"],
+      "@navikt/skjemadigitalisering-shared-frontend": ["../shared-frontend/src"]
     }
   },
   "include": ["src", "test", "vite.config.ts", "vitest.config.ts"]

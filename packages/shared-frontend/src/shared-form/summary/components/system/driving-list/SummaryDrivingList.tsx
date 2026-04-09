@@ -1,37 +1,22 @@
-import { Box, FormSummary, List } from '@navikt/ds-react';
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { buildDrivingListSummaryNode } from '@navikt/skjemadigitalisering-shared-form';
 import { FormComponentProps } from '../../../types';
-import formComponentUtils from '../../../utils/formComponent';
-import { getDrivingListItems } from './drivingListUtils';
+import { SummaryFieldNodeAnswers } from '../../shared/form-summary';
 
 const SummaryDrivingList = (props: FormComponentProps) => {
   const { component, submissionPath, submission, translate, currentLanguage } = props;
-  const { label } = component;
+  const summaryNode = buildDrivingListSummaryNode({
+    component,
+    submissionPath,
+    submission,
+    translate,
+    currentLanguage,
+  });
 
-  const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
-
-  if (value === undefined || !value?.dates || value?.dates.length === 0) {
+  if (!summaryNode) {
     return null;
   }
 
-  const drivingListDates = getDrivingListItems(value.dates, currentLanguage, translate);
-
-  return (
-    <FormSummary.Answer>
-      <FormSummary.Label>{translate(label)}</FormSummary.Label>
-      <FormSummary.Value>
-        {translate(TEXTS.statiske.drivingList.summaryDescription)}
-
-        <Box marginBlock="space-16" asChild>
-          <List data-aksel-migrated-v8 as="ul">
-            {drivingListDates.map((drivingListDate) => (
-              <List.Item key={drivingListDate}>{drivingListDate}</List.Item>
-            ))}
-          </List>
-        </Box>
-      </FormSummary.Value>
-    </FormSummary.Answer>
-  );
+  return <SummaryFieldNodeAnswers node={summaryNode} />;
 };
 
 export default SummaryDrivingList;

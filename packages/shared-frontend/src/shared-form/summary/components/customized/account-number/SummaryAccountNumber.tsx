@@ -1,23 +1,16 @@
-import { FormSummary } from '@navikt/ds-react';
-import { formatUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { buildAccountNumberSummaryNode } from '@navikt/skjemadigitalisering-shared-form';
 import { FormComponentProps } from '../../../types';
-import formComponentUtils from '../../../utils/formComponent';
-import DefaultLabel from '../../shared/form-summary/DefaultLabel';
+import { SummaryFieldNodeAnswers } from '../../shared/form-summary';
 
 const SummaryAccountNumber = (props: FormComponentProps) => {
-  const { submission, submissionPath } = props;
-  const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
+  const { component, submissionPath, submission, translate } = props;
+  const summaryNode = buildAccountNumberSummaryNode({ component, submissionPath, submission, translate });
 
-  if (value === undefined) {
+  if (!summaryNode) {
     return null;
   }
 
-  return (
-    <FormSummary.Answer>
-      <DefaultLabel {...props} />
-      <FormSummary.Value>{formatUtils.formatAccountNumber(value)}</FormSummary.Value>
-    </FormSummary.Answer>
-  );
+  return <SummaryFieldNodeAnswers node={summaryNode} />;
 };
 
 export default SummaryAccountNumber;

@@ -5,7 +5,7 @@ import FormCountrySelect from './components/shared/address/FormCountrySelect';
 import FormPostalCode from './components/shared/address/FormPostalCode';
 import FormPostalName from './components/shared/address/FormPostalName';
 import FormStreetAddress from './components/shared/address/FormStreetAddress';
-import FormBox from './components/shared/form/FormBox';
+import FormBox from './components/shared/form-adapters/FormBox';
 import FormNavUnitSelect from './components/shared/FormNavUnitSelect';
 import FormFirstName from './components/shared/identity/FormFirstName';
 import FormNationalIdentityNumber from './components/shared/identity/FormNationalIdentityNumber';

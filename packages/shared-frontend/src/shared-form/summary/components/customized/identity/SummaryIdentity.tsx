@@ -1,22 +1,16 @@
-import { FormSummary } from '@navikt/ds-react';
+import { buildIdentitySummaryNode } from '@navikt/skjemadigitalisering-shared-form';
 import { FormComponentProps } from '../../../types';
-import formComponentUtils from '../../../utils/formComponent';
-import { getIdentityLabel, getIdentityValue } from './identityUtils';
+import { SummaryFieldNodeAnswers } from '../../shared/form-summary';
 
 const SummaryIdentity = (props: FormComponentProps) => {
-  const { submission, submissionPath, translate } = props;
-  const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
+  const { component, submissionPath, submission, translate } = props;
+  const summaryNode = buildIdentitySummaryNode({ component, submissionPath, submission, translate });
 
-  if (value === undefined || (!value?.identitetsnummer && !value?.fodselsdato)) {
+  if (!summaryNode) {
     return null;
   }
 
-  return (
-    <FormSummary.Answer>
-      <FormSummary.Label>{translate(getIdentityLabel(value))}</FormSummary.Label>
-      <FormSummary.Value>{getIdentityValue(value)}</FormSummary.Value>
-    </FormSummary.Answer>
-  );
+  return <SummaryFieldNodeAnswers node={summaryNode} />;
 };
 
 export default SummaryIdentity;

@@ -1,22 +1,16 @@
-import { FormSummary } from '@navikt/ds-react';
+import { buildActivitiesSummaryNode } from '@navikt/skjemadigitalisering-shared-form';
 import { FormComponentProps } from '../../../types';
-import formComponentUtils from '../../../utils/formComponent';
+import { SummaryFieldNodeAnswers } from '../../shared/form-summary';
 
 const SummaryActivities = (props: FormComponentProps) => {
-  const { submission, submissionPath, component, translate } = props;
-  const { label } = component;
-  const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
+  const { component, submissionPath, submission, translate } = props;
+  const summaryNode = buildActivitiesSummaryNode({ component, submissionPath, submission, translate });
 
-  if (value === undefined) {
+  if (!summaryNode) {
     return null;
   }
 
-  return (
-    <FormSummary.Answer>
-      <FormSummary.Label>{translate(label)}</FormSummary.Label>
-      <FormSummary.Value>{value.text}</FormSummary.Value>
-    </FormSummary.Answer>
-  );
+  return <SummaryFieldNodeAnswers node={summaryNode} />;
 };
 
 export default SummaryActivities;

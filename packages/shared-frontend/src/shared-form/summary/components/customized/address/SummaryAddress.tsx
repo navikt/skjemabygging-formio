@@ -1,23 +1,16 @@
-import { FormSummary } from '@navikt/ds-react';
+import { buildAddressSummaryNode } from '@navikt/skjemadigitalisering-shared-form';
 import { FormComponentProps } from '../../../types';
-import formComponentUtils from '../../../utils/formComponent';
-import { addressToString } from './addressUtils';
+import { SummaryFieldNodeAnswers } from '../../shared/form-summary';
 
 const SummaryAddress = (props: FormComponentProps) => {
   const { component, submissionPath, submission, translate } = props;
-  const { label } = component;
-  const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
+  const summaryNode = buildAddressSummaryNode({ component, submissionPath, submission, translate });
 
-  if (value === undefined) {
+  if (!summaryNode) {
     return null;
   }
 
-  return (
-    <FormSummary.Answer>
-      <FormSummary.Label>{translate(label)}</FormSummary.Label>
-      <FormSummary.Value>{addressToString(value)}</FormSummary.Value>
-    </FormSummary.Answer>
-  );
+  return <SummaryFieldNodeAnswers node={summaryNode} />;
 };
 
 export default SummaryAddress;

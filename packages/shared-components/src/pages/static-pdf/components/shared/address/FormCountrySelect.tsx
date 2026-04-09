@@ -2,7 +2,7 @@ import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo } from 'react';
 import { useForm } from '../../../../../context/form/FormContext';
 import { getCountries, getCountryObject } from '../../../../../util/countries/countries';
-import FormSelect from '../form/FormSelect';
+import FormSelect from '../form-adapters/FormSelect';
 
 interface Props {
   submissionPath: string;

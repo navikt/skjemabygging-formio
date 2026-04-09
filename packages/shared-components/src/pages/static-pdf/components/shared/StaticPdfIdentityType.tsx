@@ -1,6 +1,6 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useForm } from '../../../../context/form/FormContext';
-import FormRadio from './form/FormRadio';
+import FormRadio from './form-adapters/FormRadio';
 
 interface Props {
   submissionPath: string;

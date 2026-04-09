@@ -1,6 +1,6 @@
-import { FormSummary } from '@navikt/ds-react';
 import { buildDefaultSelectSummaryNode } from '@navikt/skjemadigitalisering-shared-form';
 import { FormComponentProps } from '../../../types';
+import SummaryFieldNodeAnswers from './SummaryFieldNodeAnswers';
 
 const DefaultSelectAnswer = (props: FormComponentProps) => {
   const { component, submissionPath, submission, translate } = props;
@@ -15,12 +15,7 @@ const DefaultSelectAnswer = (props: FormComponentProps) => {
     return null;
   }
 
-  return (
-    <FormSummary.Answer>
-      {summaryNode.label && <FormSummary.Label>{summaryNode.label}</FormSummary.Label>}
-      <FormSummary.Value>{summaryNode.values[0]?.value}</FormSummary.Value>
-    </FormSummary.Answer>
-  );
+  return <SummaryFieldNodeAnswers node={summaryNode} />;
 };
 
 export default DefaultSelectAnswer;

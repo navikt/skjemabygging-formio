@@ -37,7 +37,7 @@ interface SharedFormInputRuntime {
   translate: SharedFormTranslate;
   validation: SharedFormInputValidationRuntime;
   logger?: {
-    debug?: (...args: unknown[]) => void;
+    debug?: (message: string, metadata?: object) => void;
   };
 }
 

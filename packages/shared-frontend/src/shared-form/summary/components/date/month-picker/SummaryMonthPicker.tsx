@@ -1,25 +1,22 @@
-import { FormSummary } from '@navikt/ds-react';
-import { dateUtils, stringUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { buildMonthSummaryNode } from '@navikt/skjemadigitalisering-shared-form';
 import { FormComponentProps } from '../../../types';
-import formComponentUtils from '../../../utils/formComponent';
-import DefaultLabel from '../../shared/form-summary/DefaultLabel';
+import { SummaryFieldNodeAnswers } from '../../shared/form-summary';
 
 const SummaryMonthPicker = (props: FormComponentProps) => {
-  const { submission, submissionPath, currentLanguage } = props;
-  const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
+  const { component, submissionPath, submission, translate, currentLanguage } = props;
+  const summaryNode = buildMonthSummaryNode({
+    component,
+    submissionPath,
+    submission,
+    translate,
+    currentLanguage,
+  });
 
-  if (value === undefined) {
+  if (!summaryNode) {
     return null;
   }
 
-  return (
-    <FormSummary.Answer>
-      <DefaultLabel {...props} />
-      <FormSummary.Value>
-        {stringUtils.toPascalCase(dateUtils.toLongMonthFormat(value, currentLanguage))}
-      </FormSummary.Value>
-    </FormSummary.Answer>
-  );
+  return <SummaryFieldNodeAnswers node={summaryNode} />;
 };
 
 export default SummaryMonthPicker;

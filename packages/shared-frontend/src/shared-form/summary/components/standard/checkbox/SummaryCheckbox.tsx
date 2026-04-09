@@ -1,24 +1,16 @@
-import { FormSummary } from '@navikt/ds-react';
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { buildCheckboxSummaryNode } from '@navikt/skjemadigitalisering-shared-form';
 import { FormComponentProps } from '../../../types';
-import formComponentUtils from '../../../utils/formComponent';
-import DefaultLabel from '../../shared/form-summary/DefaultLabel';
+import { SummaryFieldNodeAnswers } from '../../shared/form-summary';
 
 const SummaryCheckbox = (props: FormComponentProps) => {
-  const { submissionPath, submission, translate } = props;
-  const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
+  const { component, submissionPath, submission, translate } = props;
+  const summaryNode = buildCheckboxSummaryNode({ component, submissionPath, submission, translate });
 
-  // Do not show anything if the checkbox is not checked
-  if (!value) {
+  if (!summaryNode) {
     return null;
   }
 
-  return (
-    <FormSummary.Answer>
-      <DefaultLabel {...props} />
-      <FormSummary.Value>{value ? translate(TEXTS.common.yes) : translate(TEXTS.common.no)}</FormSummary.Value>
-    </FormSummary.Answer>
-  );
+  return <SummaryFieldNodeAnswers node={summaryNode} />;
 };
 
 export default SummaryCheckbox;

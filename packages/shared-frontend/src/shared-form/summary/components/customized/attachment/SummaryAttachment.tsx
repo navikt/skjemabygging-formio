@@ -1,33 +1,23 @@
-import { FormSummary } from '@navikt/ds-react';
-import { attachmentUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { buildAttachmentSummaryNode } from '@navikt/skjemadigitalisering-shared-form';
 import { FormComponentProps } from '../../../types';
-import formComponentUtils from '../../../utils/formComponent';
+import { SummaryFieldNodeAnswers } from '../../shared/form-summary';
 
 const SummaryAttachment = (props: FormComponentProps) => {
-  const { submission, submissionPath, translate, component, formProperties, appConfig } = props;
-  const { label } = component;
-  const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
+  const { component, submissionPath, submission, translate, formProperties, appConfig } = props;
+  const summaryNode = buildAttachmentSummaryNode({
+    component,
+    submissionPath,
+    submission,
+    translate,
+    formProperties,
+    submissionMethod: appConfig.submissionMethod,
+  });
 
-  if (value === undefined || !value.key) {
+  if (!summaryNode) {
     return null;
   }
 
-  return (
-    <FormSummary.Answer>
-      <FormSummary.Label>{translate(label)}</FormSummary.Label>
-      <FormSummary.Value>
-        {translate(attachmentUtils.getAttachmentLabel(value.key, appConfig.submissionMethod))}
-        {value.additionalDocumentation && <div>{translate(value.additionalDocumentation)}</div>}
-        {value.showDeadline && formProperties?.ettersendelsesfrist && (
-          <div>
-            {translate(TEXTS.statiske.attachment.deadline, {
-              deadline: formProperties?.ettersendelsesfrist,
-            })}
-          </div>
-        )}
-      </FormSummary.Value>
-    </FormSummary.Answer>
-  );
+  return <SummaryFieldNodeAnswers node={summaryNode} />;
 };
 
 export default SummaryAttachment;

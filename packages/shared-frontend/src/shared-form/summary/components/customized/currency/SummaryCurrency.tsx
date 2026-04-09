@@ -1,31 +1,16 @@
-import { FormSummary } from '@navikt/ds-react';
-import { currencyUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { buildCurrencySummaryNode } from '@navikt/skjemadigitalisering-shared-form';
 import { FormComponentProps } from '../../../types';
-import formComponentUtils from '../../../utils/formComponent';
-import DefaultLabel from '../../shared/form-summary/DefaultLabel';
+import { SummaryFieldNodeAnswers } from '../../shared/form-summary';
 
 const SummaryCurrency = (props: FormComponentProps) => {
-  const { submission, submissionPath, component } = props;
-  const { currency, inputType } = component;
+  const { component, submissionPath, submission, translate } = props;
+  const summaryNode = buildCurrencySummaryNode({ component, submissionPath, submission, translate });
 
-  const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
-
-  if (value === undefined) {
+  if (!summaryNode) {
     return null;
   }
 
-  const currencyValue = currencyUtils.toLocaleString(value, {
-    iso: true,
-    currency,
-    integer: inputType === 'numeric',
-  });
-
-  return (
-    <FormSummary.Answer>
-      <DefaultLabel {...props} />
-      <FormSummary.Value>{currencyValue}</FormSummary.Value>
-    </FormSummary.Answer>
-  );
+  return <SummaryFieldNodeAnswers node={summaryNode} />;
 };
 
 export default SummaryCurrency;

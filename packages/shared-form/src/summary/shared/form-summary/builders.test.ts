@@ -1,5 +1,7 @@
 import type { Component, Submission, TranslateFunction } from '@navikt/skjemadigitalisering-shared-domain';
 import {
+  buildAddressSummaryNode,
+  buildCheckboxSummaryNode,
   buildDefaultHtmlSummaryNode,
   buildDefaultListSummaryNode,
   buildDefaultSelectSummaryNode,
@@ -111,6 +113,38 @@ describe('summary form-summary builders', () => {
       });
 
       expect(node).toBeUndefined();
+    });
+  });
+
+  describe('buildCheckboxSummaryNode', () => {
+    it('maps checked values to a translated yes answer', () => {
+      const node = buildCheckboxSummaryNode({
+        component: createComponent({ type: 'checkbox' }),
+        submissionPath: 'field',
+        submission: createSubmission({ field: true }),
+        translate,
+      });
+
+      expect(node?.values).toEqual([{ value: 'translated:Ja' }]);
+    });
+  });
+
+  describe('buildAddressSummaryNode', () => {
+    it('formats address objects into a single summary value', () => {
+      const node = buildAddressSummaryNode({
+        component: createComponent({ type: 'address' }),
+        submissionPath: 'field',
+        submission: createSubmission({
+          field: {
+            adresse: 'Main street 1',
+            postnummer: '1234',
+            bySted: 'Oslo',
+          },
+        }),
+        translate,
+      });
+
+      expect(node?.values).toEqual([{ value: 'Main street 1, 1234 Oslo' }]);
     });
   });
 });

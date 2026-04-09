@@ -1,6 +1,6 @@
-import { FormSummary } from '@navikt/ds-react';
 import { buildDefaultSummaryNode } from '@navikt/skjemadigitalisering-shared-form';
 import { FormComponentProps } from '../../../types';
+import SummaryFieldNodeAnswers from './SummaryFieldNodeAnswers';
 
 interface Props extends FormComponentProps {
   valueFormat?: (value: any) => string | number;
@@ -20,12 +20,7 @@ const DefaultAnswer = (props: Props) => {
     return null;
   }
 
-  return (
-    <FormSummary.Answer>
-      {summaryNode.label && <FormSummary.Label>{summaryNode.label}</FormSummary.Label>}
-      <FormSummary.Value>{summaryNode.values[0]?.value}</FormSummary.Value>
-    </FormSummary.Answer>
-  );
+  return <SummaryFieldNodeAnswers node={summaryNode} />;
 };
 
 export default DefaultAnswer;

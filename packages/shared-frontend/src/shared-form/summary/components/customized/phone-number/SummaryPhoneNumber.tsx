@@ -1,28 +1,16 @@
-import { FormSummary } from '@navikt/ds-react';
-import { formatUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { buildPhoneNumberSummaryNode } from '@navikt/skjemadigitalisering-shared-form';
 import { FormComponentProps } from '../../../types';
-import formComponentUtils from '../../../utils/formComponent';
-import DefaultLabel from '../../shared/form-summary/DefaultLabel';
+import { SummaryFieldNodeAnswers } from '../../shared/form-summary';
 
 const SummaryPhoneNumber = (props: FormComponentProps) => {
-  const { component, submission, submissionPath } = props;
-  const { showAreaCode } = component;
-  const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
+  const { component, submissionPath, submission, translate } = props;
+  const summaryNode = buildPhoneNumberSummaryNode({ component, submissionPath, submission, translate });
 
-  if (value === undefined || (showAreaCode && (value.areaCode === undefined || value.number === undefined))) {
+  if (!summaryNode) {
     return null;
   }
 
-  const phoneNumber = showAreaCode
-    ? `${value.areaCode} ${formatUtils.formatPhoneNumber(value.number, value.areaCode)}`
-    : value;
-
-  return (
-    <FormSummary.Answer>
-      <DefaultLabel {...props} />
-      <FormSummary.Value>{phoneNumber}</FormSummary.Value>
-    </FormSummary.Answer>
-  );
+  return <SummaryFieldNodeAnswers node={summaryNode} />;
 };
 
 export default SummaryPhoneNumber;

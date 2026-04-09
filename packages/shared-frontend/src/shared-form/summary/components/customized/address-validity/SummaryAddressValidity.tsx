@@ -1,32 +1,16 @@
-import { FormSummary } from '@navikt/ds-react';
-import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { buildAddressValiditySummaryNode } from '@navikt/skjemadigitalisering-shared-form';
 import { FormComponentProps } from '../../../types';
-import formComponentUtils from '../../../utils/formComponent';
+import { SummaryFieldNodeAnswers } from '../../shared/form-summary';
 
 const SummaryAddressValidity = (props: FormComponentProps) => {
-  const { submission, submissionPath, translate } = props;
-  const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
+  const { component, submissionPath, submission, translate } = props;
+  const summaryNode = buildAddressValiditySummaryNode({ component, submissionPath, submission, translate });
 
-  if (value === undefined || (!value.gyldigFraOgMed && !value.gyldigTilOgMed)) {
+  if (!summaryNode) {
     return null;
   }
 
-  return (
-    <>
-      {value.gyldigFraOgMed && (
-        <FormSummary.Answer>
-          <FormSummary.Label>{translate(TEXTS.statiske.address.validFrom)}</FormSummary.Label>
-          <FormSummary.Value>{dateUtils.toLocaleDate(value.gyldigFraOgMed)}</FormSummary.Value>
-        </FormSummary.Answer>
-      )}
-      {value.gyldigTilOgMed && (
-        <FormSummary.Answer>
-          <FormSummary.Label>{translate(TEXTS.statiske.address.validTo)}</FormSummary.Label>
-          <FormSummary.Value>{dateUtils.toLocaleDate(value.gyldigTilOgMed)}</FormSummary.Value>
-        </FormSummary.Answer>
-      )}
-    </>
-  );
+  return <SummaryFieldNodeAnswers node={summaryNode} />;
 };
 
 export default SummaryAddressValidity;

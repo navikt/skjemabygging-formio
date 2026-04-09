@@ -4,8 +4,8 @@ import { useMemo } from 'react';
 import { useForm } from '../../../../context/form/FormContext';
 import { useLanguages } from '../../../../context/languages';
 import { useStaticPdf } from '../../StaticPdfContext';
-import FormBox from './form/FormBox';
-import FormRadio from './form/FormRadio';
+import FormBox from './form-adapters/FormBox';
+import FormRadio from './form-adapters/FormRadio';
 
 interface Props {
   submissionPath: string;

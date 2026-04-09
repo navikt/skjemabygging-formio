@@ -24,8 +24,8 @@ interface SharedFormPdfRuntime {
   gitVersion?: string;
   isDelingslenke?: boolean;
   logger?: {
-    warn?: (...args: unknown[]) => void;
-    error?: (...args: unknown[]) => void;
+    warn?: (message: string, metadata?: object) => void;
+    error?: (message: string, metadata?: object) => void;
   };
 }
 
