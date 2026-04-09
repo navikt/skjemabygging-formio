@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: 'Checkout'
         uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v5
         with:
           version: 10.32.1
           run_install: false
@@ -41,7 +41,7 @@ jobs:
     steps:
       - name: 'Checkout'
         uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v5
         with:
           version: 10.32.1
           run_install: false
@@ -75,7 +75,7 @@ jobs:
         env:
           FYLLUT_BACKEND_LOGLEVEL: ${{ runner.debug == '1' && 'debug' || 'error' }}
       - name: Upload screenshots
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: cypress-screenshots-${{ strategy.job-index }}
@@ -90,7 +90,7 @@ jobs:
     steps:
       - name: 'Checkout'
         uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v5
         with:
           version: 10.32.1
           run_install: false
@@ -120,7 +120,7 @@ jobs:
           wait-on-timeout: 120
           command: pnpm --dir packages/bygger exec cypress run --browser electron
       - name: Upload screenshots
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: cypress-bygger-screenshots-${{ strategy.job-index }}
