@@ -1,7 +1,6 @@
 import { FileItem, FileObject } from '@navikt/ds-react';
 import { Submission, SubmissionAttachment, TEXTS, UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, useContext, useMemo, useState } from 'react';
-import { submitCaptchaValue } from '../../api/captcha/captcha';
 import getFileUploadApi from '../../api/nologin-file-upload/nologinFileUpload';
 import baseHttp from '../../api/util/http/http';
 import { MAX_TOTAL_SIZE_ATTACHMENT_FILES_BYTES } from '../../constants/fileUpload';
@@ -23,7 +22,6 @@ interface AttachmentUploadContextType {
   handleDeleteAttachment: (attachmentId: string) => Promise<void>;
   handleDeleteAllFiles: () => Promise<void>;
   addError: (attachmentId: string, error: string, type: AttachmentErrorType) => void;
-  setCaptchaValue: (value: Record<string, string>) => void;
   removeError: (attachmentId: string) => void;
   removeAllErrors: () => void;
   submissionAttachments: SubmissionAttachment[];
@@ -44,7 +42,6 @@ const initialContext: AttachmentUploadContextType = {
   handleDeleteAttachment: async () => {},
   handleDeleteAllFiles: async () => {},
   addError: () => {},
-  setCaptchaValue: () => {},
   removeError: () => {},
   removeAllErrors: () => {},
   submissionAttachments: [],
@@ -55,16 +52,15 @@ const initialContext: AttachmentUploadContextType = {
 
 const AttachmentUploadContext = createContext<AttachmentUploadContextType>(initialContext);
 
-const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boolean; children: React.ReactNode }) => {
-  const { http, logger, submissionMethod } = useAppConfig();
+const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) => {
+  const { logger, submissionMethod } = useAppConfig();
   const { submission, setSubmission } = useForm();
-  const { nologinToken, setNologinToken, handleSessionExpired, innsendingsId } = useSendInn();
+  const { nologinToken, ensureUploadToken, handleSessionExpired, innsendingsId } = useSendInn();
   const { deleteAllFiles, deleteAllFilesForAttachment, deleteFile, downloadFile, uploadFile } = useMemo(
     () => getFileUploadApi(submissionMethod === 'digitalnologin' ? 'nologin' : 'digital', innsendingsId),
     [innsendingsId, submissionMethod],
   );
   const { translate } = useLanguages();
-  const [captchaValue, setCaptchaValue] = useState<Record<string, string>>({});
   const [uploadsInProgress, setUploadsInProgress] = useState<Record<string, Record<string, FileObject>>>({});
   const [errors, setErrors] = useState<Record<string, Array<{ message: string; type: AttachmentErrorType }>>>({});
 
@@ -160,17 +156,6 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
     setErrors({});
   };
 
-  const resolveCaptcha = async () => {
-    if (!nologinToken && useCaptcha) {
-      const response = await submitCaptchaValue(captchaValue, http);
-      if (response?.access_token) {
-        setNologinToken(response.access_token);
-      }
-      return response?.access_token;
-    }
-    return nologinToken;
-  };
-
   const validateTotalAttachmentSize = (attachmentId: string, file: FileObject): string | undefined => {
     const attachment = submission?.attachments?.find((attachment) => attachment.attachmentId === attachmentId);
     return validateTotalFilesSize(
@@ -228,7 +213,7 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
         return Promise.resolve({ status: 'invalid' });
       }
 
-      const token = await resolveCaptcha();
+      const token = (await ensureUploadToken()) ?? nologinToken;
       const result = await uploadFile(file.file, attachmentId, token);
       if (result) {
         removeAllFilesInProgress(attachmentId, (inProgress) => inProgress.error);
@@ -378,7 +363,6 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
     handleDeleteAttachment,
     handleDeleteAllFiles,
     addError,
-    setCaptchaValue,
     removeError,
     removeAllErrors,
     changeAttachmentValue,

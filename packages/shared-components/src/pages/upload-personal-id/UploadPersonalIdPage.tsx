@@ -18,7 +18,7 @@ const UploadPersonalIdPage = () => {
   }, [setTitle, setFormProgressVisible]);
 
   return (
-    <AttachmentUploadProvider useCaptcha>
+    <AttachmentUploadProvider>
       <Captcha />
       <VStack gap="space-32">
         <BodyShort>{translate(TEXTS.statiske.uploadId.description)}</BodyShort>
