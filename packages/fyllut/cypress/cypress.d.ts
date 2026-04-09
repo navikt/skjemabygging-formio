@@ -84,7 +84,7 @@ declare global {
        */
       withinComponent(label: string, fn: () => void): Chainable<JQuery<HTMLElement>>;
 
-      withinSummaryGroup(heading: string, fn: () => void): Chainable<JQuery<HTMLElement>>;
+      withinSummaryGroup(heading: string | RegExp, fn: () => void): Chainable<JQuery<HTMLElement>>;
 
       findByLabelOptional(label: string): Chainable<JQuery<HTMLElement>>;
 
