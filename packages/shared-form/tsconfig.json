@@ -1,4 +1,9 @@
 {
   "extends": "../../tsconfig-base.json",
+  "compilerOptions": {
+    "paths": {
+      "@navikt/skjemadigitalisering-shared-domain": ["../shared-domain/src"]
+    }
+  },
   "include": ["src"]
 }

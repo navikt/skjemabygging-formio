@@ -6,8 +6,13 @@
     "moduleResolution": "bundler",
     "types": ["node", "vite/client", "vitest/globals"],
     "paths": {
-      "@navikt/skjemadigitalisering-shared-domain": ["../shared-domain/src"], 
+      "@navikt/skjemadigitalisering-shared-backend": ["../shared-backend/src"],
+      "@navikt/skjemadigitalisering-shared-backend/form-pdf": ["../shared-backend/src/form-pdf"],
+      "@navikt/skjemadigitalisering-shared-domain": ["../shared-domain/src"],
+      "@navikt/skjemadigitalisering-shared-form": ["../shared-form/src"],
+      "@navikt/skjemadigitalisering-shared-frontend": ["../shared-frontend/src"],
+      "@navikt/skjemadigitalisering-shared-frontend/form-summary": ["../shared-frontend/src/form-summary"]
     }
   },
-  "include": ["src", "test", "vite.config.ts", "vitest.config.ts"]
+  "include": ["src", "vite.config.ts", "vitest.config.ts"]
 }

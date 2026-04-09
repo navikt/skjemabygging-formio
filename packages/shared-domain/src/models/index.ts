@@ -1,6 +1,7 @@
 export * from './accordion';
 export * from './address';
 export * from './attachment';
+export * from './component-model';
 export * from './config';
 export * from './cover-page';
 export * from './data-fetcher';

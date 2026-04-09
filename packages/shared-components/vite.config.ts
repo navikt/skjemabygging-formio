@@ -57,5 +57,17 @@ export default defineConfig(({ mode }) => {
       },
     },
     plugins,
+    resolve: {
+      alias: {
+        '@navikt/skjemadigitalisering-shared-backend/form-pdf': path.resolve(
+          __dirname,
+          '../shared-backend/src/form-pdf/index.ts',
+        ),
+        '@navikt/skjemadigitalisering-shared-frontend/form-summary': path.resolve(
+          __dirname,
+          '../shared-frontend/src/form-summary/index.ts',
+        ),
+      },
+    },
   };
 });

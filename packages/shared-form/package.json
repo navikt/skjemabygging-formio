@@ -22,5 +22,8 @@
     "test": "vitest --run",
     "test:coverage": "vitest --run --coverage",
     "prepare": "pnpm run build"
+  },
+  "dependencies": {
+    "@navikt/skjemadigitalisering-shared-domain": "workspace:*"
   }
 }

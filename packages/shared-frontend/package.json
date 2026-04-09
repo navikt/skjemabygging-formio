@@ -24,6 +24,8 @@
     "prepare": "pnpm run build"
   },
   "dependencies": {
+    "@navikt/ds-react": "^8.2.2",
+    "@navikt/skjemadigitalisering-shared-form": "workspace:*",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

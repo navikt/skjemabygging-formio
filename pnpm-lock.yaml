@@ -560,6 +560,9 @@ importers:
       '@navikt/skjemadigitalisering-shared-domain':
         specifier: workspace:*
         version: link:../shared-domain
+      '@navikt/skjemadigitalisering-shared-form':
+        specifier: workspace:*
+        version: link:../shared-form
       dompurify:
         specifier: ^3.3.1
         version: 3.3.3
@@ -612,9 +615,18 @@ importers:
       '@navikt/nav-dekoratoren-moduler':
         specifier: ^3.6.3
         version: 3.6.3(csp-header@6.3.1)(html-react-parser@5.2.17(@types/react@18.3.11)(react@18.3.1))(jsdom@28.1.0(@noble/hashes@1.8.0))(react@18.3.1)
+      '@navikt/skjemadigitalisering-shared-backend':
+        specifier: workspace:*
+        version: link:../shared-backend
       '@navikt/skjemadigitalisering-shared-domain':
         specifier: workspace:*
         version: link:../shared-domain
+      '@navikt/skjemadigitalisering-shared-form':
+        specifier: workspace:*
+        version: link:../shared-form
+      '@navikt/skjemadigitalisering-shared-frontend':
+        specifier: workspace:*
+        version: link:../shared-frontend
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -735,10 +747,20 @@ importers:
         specifier: ^3.7.1
         version: 3.7.1
 
-  packages/shared-form: {}
+  packages/shared-form:
+    dependencies:
+      '@navikt/skjemadigitalisering-shared-domain':
+        specifier: workspace:*
+        version: link:../shared-domain
 
   packages/shared-frontend:
     dependencies:
+      '@navikt/ds-react':
+        specifier: ^8.2.2
+        version: 8.8.0(@types/react@18.3.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@navikt/skjemadigitalisering-shared-form':
+        specifier: workspace:*
+        version: link:../shared-form
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -8593,26 +8615,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/browser@2.1.9(@types/node@24.12.0)(typescript@5.9.3)(vite@5.4.21(@types/node@24.12.0)(terser@5.46.1))(vitest@2.1.9)':
-    dependencies:
-      '@testing-library/dom': 10.4.1
-      '@testing-library/user-event': 14.6.1(@testing-library/dom@10.4.1)
-      '@vitest/mocker': 2.1.9(msw@2.12.14(@types/node@24.12.0)(typescript@5.9.3))(vite@5.4.21(@types/node@24.12.0)(terser@5.46.1))
-      '@vitest/utils': 2.1.9
-      magic-string: 0.30.21
-      msw: 2.12.14(@types/node@24.12.0)(typescript@5.9.3)
-      sirv: 3.0.2
-      tinyrainbow: 1.2.0
-      vitest: 2.1.9(@types/node@24.12.0)(@vitest/browser@2.1.9)(jsdom@28.1.0(@noble/hashes@1.8.0))(msw@2.12.14(@types/node@24.12.0)(typescript@5.9.3))(terser@5.46.1)
-      ws: 8.20.0
-    transitivePeerDependencies:
-      - '@types/node'
-      - bufferutil
-      - typescript
-      - utf-8-validate
-      - vite
-    optional: true
-
   '@vitest/browser@2.1.9(@types/node@24.12.0)(typescript@5.9.3)(vite@7.3.1(@types/node@24.12.0)(terser@5.46.1)(yaml@2.8.3))(vitest@2.1.9)':
     dependencies:
       '@testing-library/dom': 10.4.1
@@ -13718,7 +13720,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 24.12.0
-      '@vitest/browser': 2.1.9(@types/node@24.12.0)(typescript@5.9.3)(vite@5.4.21(@types/node@24.12.0)(terser@5.46.1))(vitest@2.1.9)
+      '@vitest/browser': 2.1.9(@types/node@24.12.0)(typescript@5.9.3)(vite@7.3.1(@types/node@24.12.0)(terser@5.46.1)(yaml@2.8.3))(vitest@2.1.9)
       jsdom: 28.1.0(@noble/hashes@1.8.0)
     transitivePeerDependencies:
       - less
