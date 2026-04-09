@@ -1,0 +1,22 @@
+import { Alert } from '@navikt/ds-react';
+import { FormComponentProps } from '../types';
+
+const RenderComponent = (props: FormComponentProps) => {
+  const { componentRegistry, component, appConfig } = props;
+  const { logger, config } = appConfig;
+  const { type } = component;
+  const RegistryComponent = componentRegistry[type];
+
+  if (!RegistryComponent) {
+    logger?.error?.(`Unsupported component type in summary: ${type}`);
+    if (config?.NAIS_CLUSTER_NAME !== 'prod-gcp') {
+      return <Alert variant="error">Unsupported component type: {type}</Alert>;
+    }
+
+    return null;
+  }
+
+  return <RegistryComponent {...props} />;
+};
+
+export default RenderComponent;

@@ -31,6 +31,8 @@
     "@navikt/fnrvalidator": "^2.2.1",
     "@navikt/nav-dekoratoren-moduler": "^3.6.3",
     "@navikt/skjemadigitalisering-shared-domain": "workspace:*",
+    "@navikt/skjemadigitalisering-shared-frontend": "workspace:*",
+    "@navikt/skjemadigitalisering-shared-form": "workspace:*",
     "clsx": "^2.1.1",
     "dompurify": "^3.3.1",
     "eventemitter2": "^6.4.9",

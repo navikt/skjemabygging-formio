@@ -1,10 +1,10 @@
 import { Alert } from '@navikt/ds-react';
 import { dateUtils, formioFormsApiUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { renderPdfForm } from '@navikt/skjemadigitalisering-shared-form';
 import React, { useCallback, useState } from 'react';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
-import renderPdfForm from '../../form-components/RenderPdfForm';
 import { http } from '../../index';
 import DownloadPdfButton from './DownloadPdfButton';
 

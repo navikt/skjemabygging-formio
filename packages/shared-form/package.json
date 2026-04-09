@@ -1,0 +1,32 @@
+{
+  "name": "@navikt/skjemadigitalisering-shared-form",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Shared form mapping and backend-safe PDF rendering",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/navikt/skjemabygging-formio.git",
+    "directory": "packages/shared-form"
+  },
+  "type": "module",
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "license": "SEE LICENSE IN LICENSE.md",
+  "scripts": {
+    "build": "pnpm exec tsc && pnpm exec vite build",
+    "check-types": "pnpm exec tsc",
+    "clean": "rimraf dist coverage node_modules",
+    "watch": "vite build --watch",
+    "test": "vitest --run",
+    "test:coverage": "vitest --run --coverage",
+    "prepare": "pnpm run build"
+  },
+  "dependencies": {
+    "@navikt/skjemadigitalisering-shared-domain": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^24.12.0"
+  }
+}

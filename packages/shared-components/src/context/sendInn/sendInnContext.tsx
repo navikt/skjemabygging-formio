@@ -7,6 +7,7 @@ import {
   Submission,
   tokenUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import { renderPdfForm } from '@navikt/skjemadigitalisering-shared-form';
 import React, { createContext, useCallback, useContext, useEffect, useReducer, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router';
 import { postNologinSoknad } from '../../api/sendinn/nologin';
@@ -19,7 +20,6 @@ import {
   updateSoknad,
   updateUtfyltSoknad,
 } from '../../api/sendinn/sendInnSoknad';
-import renderPdfForm from '../../form-components/RenderPdfForm';
 import { b64toBlob } from '../../util/blob/blob';
 import { useAppConfig } from '../config/configContext';
 import { useForm } from '../form/FormContext';

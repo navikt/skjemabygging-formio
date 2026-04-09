@@ -1,9 +1,9 @@
 import { TextField } from '@navikt/ds-react';
+import { formComponentUtils } from '@navikt/skjemadigitalisering-shared-form';
 import { ChangeEvent, useEffect, useRef } from 'react';
 import { useAppConfig } from '../../../../../context/config/configContext';
 import { useForm } from '../../../../../context/form/FormContext';
 import { useInputValidation, Validators } from '../../../../../context/validator/InputValidationContext';
-import formComponentUtils from '../../../../../form-components/utils/formComponent';
 import { FormInputWidth, useFormInputStyles } from '../formStylingUtil';
 import FormBox, { FormBoxProps } from './FormBox';
 import TranslatedDescription from './TranslatedDescription';
