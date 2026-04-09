@@ -735,6 +735,8 @@ importers:
         specifier: ^3.7.1
         version: 3.7.1
 
+  packages/shared-form: {}
+
   packages/shared-frontend:
     dependencies:
       react:
