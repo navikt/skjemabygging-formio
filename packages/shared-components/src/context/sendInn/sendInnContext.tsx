@@ -36,17 +36,13 @@ interface SendInnContextType {
   isMellomlagringAvailable: boolean;
   isMellomlagringReady: boolean;
   innsendingsId?: string;
-  nologinToken?: string;
   soknadPdfBlob?: Blob;
-  setNologinToken: (token: string | undefined) => void;
   setCaptchaValue: (value: Record<string, string>) => void;
-  setInnsendingsId: (innsendingsId: string | undefined) => void;
   mellomlagringError: MellomlagringError | undefined;
   submitted?: boolean;
   receipt?: ReceiptSummary;
-  setReceipt: (receipt: ReceiptSummary | undefined) => void;
   tokenDetails: NologinToken | undefined;
-  ensureUploadToken: () => Promise<string | undefined>;
+  getUploadToken: () => Promise<string | undefined>;
   handleSessionExpired: () => void;
 }
 
@@ -424,7 +420,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
     }
   };
 
-  const ensureUploadToken = useCallback(async () => {
+  const getUploadToken = useCallback(async () => {
     if (nologinToken) {
       return nologinToken;
     }
@@ -528,20 +524,16 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
     deleteMellomlagring,
     submitSoknad,
     innsendingsId,
-    setInnsendingsId,
-    nologinToken,
-    setNologinToken,
     setCaptchaValue,
     soknadPdfBlob,
     receipt,
-    setReceipt,
     isMellomlagringAvailable,
     isMellomlagringActive: !!fyllutMellomlagringState?.isActive,
     isMellomlagringReady,
     mellomlagringError: fyllutMellomlagringState?.error,
     submitted: !!soknadPdfBlob,
     tokenDetails,
-    ensureUploadToken,
+    getUploadToken,
     handleSessionExpired,
   };
 

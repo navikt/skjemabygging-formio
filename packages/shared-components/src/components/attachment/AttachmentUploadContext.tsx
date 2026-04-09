@@ -55,7 +55,7 @@ const AttachmentUploadContext = createContext<AttachmentUploadContextType>(initi
 const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) => {
   const { logger, submissionMethod } = useAppConfig();
   const { submission, setSubmission } = useForm();
-  const { nologinToken, ensureUploadToken, handleSessionExpired, innsendingsId } = useSendInn();
+  const { getUploadToken, handleSessionExpired, innsendingsId } = useSendInn();
   const { deleteAllFiles, deleteAllFilesForAttachment, deleteFile, downloadFile, uploadFile } = useMemo(
     () => getFileUploadApi(submissionMethod === 'digitalnologin' ? 'nologin' : 'digital', innsendingsId),
     [innsendingsId, submissionMethod],
@@ -213,7 +213,7 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
         return Promise.resolve({ status: 'invalid' });
       }
 
-      const token = (await ensureUploadToken()) ?? nologinToken;
+      const token = await getUploadToken();
       const result = await uploadFile(file.file, attachmentId, token);
       if (result) {
         removeAllFilesInProgress(attachmentId, (inProgress) => inProgress.error);
@@ -240,7 +240,8 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
   const handleDeleteFile = async (attachmentId: string, fileId: string) => {
     try {
       removeError(attachmentId);
-      await deleteFile(attachmentId, fileId, nologinToken);
+      const token = await getUploadToken();
+      await deleteFile(attachmentId, fileId, token);
       removeFileFromSubmission(attachmentId, fileId);
     } catch (error: any) {
       if (isAuthenticationError(error)) {
@@ -254,7 +255,8 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
   const handleDownloadFile = async (attachmentId: string, fileId: string, fileName: string) => {
     try {
       removeError(attachmentId);
-      const downloadedFile = await downloadFile(attachmentId, fileId, nologinToken);
+      const token = await getUploadToken();
+      const downloadedFile = await downloadFile(attachmentId, fileId, token);
       const objectUrl = URL.createObjectURL(downloadedFile);
       const link = document.createElement('a');
       link.href = objectUrl;
@@ -273,7 +275,8 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
   const handleDeleteAllFilesForAttachment = async (attachmentId: string) => {
     try {
       removeError(attachmentId);
-      await deleteAllFilesForAttachment(attachmentId, nologinToken);
+      const token = await getUploadToken();
+      await deleteAllFilesForAttachment(attachmentId, token);
       removeFilesFromSubmission(attachmentId);
     } catch (error: any) {
       if (isAuthenticationError(error)) {
@@ -287,7 +290,8 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
   const handleDeleteAttachment = async (attachmentId: string) => {
     try {
       removeError(attachmentId);
-      await deleteAllFilesForAttachment(attachmentId, nologinToken);
+      const token = await getUploadToken();
+      await deleteAllFilesForAttachment(attachmentId, token);
       removeAttachmentFromSubmission(attachmentId);
     } catch (error: any) {
       if (isAuthenticationError(error)) {
@@ -302,7 +306,8 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
   const handleDeleteAllFiles = async () => {
     try {
       setErrors({});
-      await deleteAllFiles(nologinToken);
+      const token = await getUploadToken();
+      await deleteAllFiles(token);
       setSubmission(
         (current) =>
           ({

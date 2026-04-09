@@ -25,14 +25,8 @@ const mockHttp = {
 
 describe('sendInnContext', () => {
   const TestComponent = ({ submission }) => {
-    const {
-      updateMellomlagring,
-      deleteMellomlagring,
-      submitSoknad,
-      innsendingsId,
-      setCaptchaValue,
-      ensureUploadToken,
-    } = useSendInn();
+    const { updateMellomlagring, deleteMellomlagring, submitSoknad, innsendingsId, setCaptchaValue, getUploadToken } =
+      useSendInn();
     const [uploadToken, setUploadToken] = useState<string | undefined>();
 
     return (
@@ -45,7 +39,7 @@ describe('sendInnContext', () => {
         <button onClick={() => setCaptchaValue({ firstName: 'Roar' })}>Sett captcha</button>
         <button
           onClick={async () => {
-            const token = await ensureUploadToken();
+            const token = await getUploadToken();
             setUploadToken(token);
           }}
         >
