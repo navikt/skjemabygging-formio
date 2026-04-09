@@ -313,8 +313,8 @@
     "enabled": true,
     "introduction": "7122de98-85f4-440e-ba39-a1db02286531",
     "sections": {
-      "dataTreatment": {
-        "description": "5803aa43-e021-4eaf-a9a6-227b39a8571d"
+      "dataDisclosure": {
+        "title": "introPage.dataDisclosure.title.alt1"
       }
     },
     "selfDeclaration": "introPage.selfDeclaration.description.alt1"

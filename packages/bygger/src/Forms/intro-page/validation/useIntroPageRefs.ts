@@ -6,10 +6,6 @@ export interface IntroPageRefs {
   'sections.prerequisites.description': RefObject<HTMLDivElement>;
   'sections.prerequisites.bulletPoints': RefObject<Array<HTMLDivElement | null>>;
   'sections.prerequisites.message': RefObject<HTMLDivElement>;
-  'sections.dataTreatment.title': RefObject<HTMLDivElement>;
-  'sections.dataTreatment.description': RefObject<HTMLDivElement>;
-  'sections.dataTreatment.bulletPoints': RefObject<Array<HTMLDivElement | null>>;
-  'sections.dataTreatment.message': RefObject<HTMLDivElement>;
   'sections.dataDisclosure.title': RefObject<HTMLInputElement>;
   'sections.dataDisclosure.bulletPoints': RefObject<Array<HTMLDivElement | null>>;
   'sections.scope.title': RefObject<HTMLInputElement>;
@@ -45,10 +41,6 @@ export function useIntroPageRefs() {
     'sections.outOfScope.description': useRef<HTMLDivElement>(null),
     'sections.outOfScope.bulletPoints': useRef<Array<HTMLDivElement | null>>([]),
     'sections.outOfScope.message': useRef<HTMLDivElement>(null),
-    'sections.dataTreatment.title': useRef<HTMLDivElement>(null),
-    'sections.dataTreatment.description': useRef<HTMLDivElement>(null),
-    'sections.dataTreatment.bulletPoints': useRef<Array<HTMLDivElement | null>>([]),
-    'sections.dataTreatment.message': useRef<HTMLDivElement>(null),
     'sections.prerequisites.title': useRef<HTMLInputElement>(null),
     'sections.prerequisites.description': useRef<HTMLDivElement>(null),
     'sections.prerequisites.bulletPoints': useRef<Array<HTMLDivElement | null>>([]),

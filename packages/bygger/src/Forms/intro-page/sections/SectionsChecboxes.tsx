@@ -30,7 +30,6 @@ export function SectionsChecboxes({ form, onChange, onToggleSubmissionMethod }: 
     { title: 'Før du søker / sender / fyller ut', key: 'prerequisites', isLocked: false },
     { title: 'Vær klar over', key: 'beAwareOf', isLocked: true },
     { title: 'Informasjon vi henter (om deg)', key: 'dataDisclosure', isLocked: true },
-    { title: 'Hvordan vi behandler personopplysninger', key: 'dataTreatment', isLocked: true },
     { title: 'Lagring underveis', key: 'dataStorage', isLocked: true },
     { title: 'Automatisk saksbehandling', key: 'automaticProcessing' },
     { title: 'Valgfri seksjon', key: 'optional' },
