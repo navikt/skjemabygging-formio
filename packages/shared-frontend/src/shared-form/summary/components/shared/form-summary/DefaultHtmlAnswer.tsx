@@ -1,19 +1,23 @@
 import { FormSummary } from '@navikt/ds-react';
+import { buildDefaultHtmlSummaryNode } from '@navikt/skjemadigitalisering-shared-form';
 import { FormComponentProps } from '../../../types';
 
 const DefaultHtmlAnswer = (props: FormComponentProps) => {
-  const { component, translate } = props;
-  const { textDisplay, content } = component;
+  const { component, submissionPath, translate } = props;
+  const summaryNode = buildDefaultHtmlSummaryNode({
+    component,
+    submissionPath,
+    translate,
+  });
 
-  if (!content || textDisplay === undefined || textDisplay === 'form') {
+  if (!summaryNode) {
     return null;
   }
 
   return (
     <FormSummary.Answer>
-      <FormSummary.Answer>
-        <div dangerouslySetInnerHTML={{ __html: translate(content) }} />
-      </FormSummary.Answer>
+      {summaryNode.label && <FormSummary.Label>{summaryNode.label}</FormSummary.Label>}
+      <div dangerouslySetInnerHTML={{ __html: summaryNode.values[0]?.html ?? '' }} />
     </FormSummary.Answer>
   );
 };

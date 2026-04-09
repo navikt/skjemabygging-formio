@@ -1,24 +1,29 @@
 import { FormSummary } from '@navikt/ds-react';
+import { buildDefaultSummaryNode } from '@navikt/skjemadigitalisering-shared-form';
 import { FormComponentProps } from '../../../types';
-import formComponentUtils from '../../../utils/formComponent';
-import DefaultLabel from './DefaultLabel';
 
 interface Props extends FormComponentProps {
   valueFormat?: (value: any) => string | number;
 }
 
 const DefaultAnswer = (props: Props) => {
-  const { submissionPath, submission, valueFormat } = props;
-  const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
+  const { component, submissionPath, submission, translate, valueFormat } = props;
+  const summaryNode = buildDefaultSummaryNode({
+    component,
+    submissionPath,
+    submission,
+    translate,
+    valueFormat,
+  });
 
-  if (value === undefined) {
+  if (!summaryNode) {
     return null;
   }
 
   return (
     <FormSummary.Answer>
-      <DefaultLabel {...props} />
-      <FormSummary.Value>{valueFormat === undefined ? value : valueFormat(value)}</FormSummary.Value>
+      {summaryNode.label && <FormSummary.Label>{summaryNode.label}</FormSummary.Label>}
+      <FormSummary.Value>{summaryNode.values[0]?.value}</FormSummary.Value>
     </FormSummary.Answer>
   );
 };

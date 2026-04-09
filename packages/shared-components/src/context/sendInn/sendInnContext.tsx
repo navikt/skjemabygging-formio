@@ -288,7 +288,11 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
             form: formioFormsApiUtils.mapNavFormToForm(form),
             currentLanguage,
             translate,
-            appConfig,
+            runtime: {
+              gitVersion: typeof appConfig.config?.gitVersion === 'string' ? appConfig.config.gitVersion : undefined,
+              isDelingslenke: appConfig.config?.isDelingslenke === true,
+              logger: appConfig.logger,
+            },
             submissionMethod,
           }),
           innsendingsId,
@@ -368,7 +372,11 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
             form: formioFormsApiUtils.mapNavFormToForm(form),
             currentLanguage,
             translate,
-            appConfig,
+            runtime: {
+              gitVersion: typeof appConfig.config?.gitVersion === 'string' ? appConfig.config.gitVersion : undefined,
+              isDelingslenke: appConfig.config?.isDelingslenke === true,
+              logger: appConfig.logger,
+            },
             submissionMethod,
           }),
         );

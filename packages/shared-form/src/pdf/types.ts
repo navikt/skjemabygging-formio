@@ -6,12 +6,6 @@ import {
   TranslateFunction,
 } from '@navikt/skjemadigitalisering-shared-domain';
 
-interface SharedFormPdfRuntimeConfig {
-  gitVersion?: string;
-  isDelingslenke?: boolean;
-  [key: string]: string | boolean | object | undefined;
-}
-
 interface PdfComponentProps {
   component: Component;
   submissionPath: string;
@@ -27,7 +21,12 @@ interface PdfComponentRegistry {
 }
 
 interface SharedFormPdfRuntime {
-  config?: SharedFormPdfRuntimeConfig;
+  gitVersion?: string;
+  isDelingslenke?: boolean;
+  logger?: {
+    warn?: (...args: unknown[]) => void;
+    error?: (...args: unknown[]) => void;
+  };
 }
 
 export type { PdfComponentProps, PdfComponentRegistry, SharedFormPdfRuntime };

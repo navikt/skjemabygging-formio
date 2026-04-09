@@ -60,7 +60,7 @@ interface Props {
   currentLanguage: string;
   translate: TranslateFunction;
   submissionMethod?: SubmissionMethod | undefined;
-  appConfig: SharedFormPdfRuntime;
+  runtime: SharedFormPdfRuntime;
 }
 
 const renderPdfForm = ({
@@ -71,7 +71,7 @@ const renderPdfForm = ({
   currentLanguage,
   translate,
   submissionMethod,
-  appConfig,
+  runtime,
 }: Props): PdfFormData | undefined => {
   if (!submission || !form) {
     return;
@@ -186,9 +186,9 @@ const renderPdfForm = ({
       upperMiddle:
         translate(TEXTS.statiske.footer.createdDatelabel) +
         `: ${dateUtils.toCurrentDayMonthYearHourMinute(languageCode)}`,
-      lowerMiddle: translate(TEXTS.statiske.footer.versionLabel) + `: ${appConfig.config?.gitVersion ?? ''}`,
+      lowerMiddle: translate(TEXTS.statiske.footer.versionLabel) + `: ${runtime.gitVersion ?? ''}`,
     },
-    vannmerke: appConfig.config?.isDelingslenke ? 'Testskjema - Ikke send til Nav' : undefined,
+    vannmerke: runtime.isDelingslenke ? 'Testskjema - Ikke send til Nav' : undefined,
   };
 };
 
