@@ -152,15 +152,6 @@ describe('Digital no login', () => {
       cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
     });
 
-    describe('Captcha', () => {
-      it('prevents uploading files when the captcha is incorrect', () => {
-        cy.get('[data-cy=firstName]').type('Wrong answer', { force: true });
-        cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
-        cy.uploadFile();
-        cy.findAllByText(TEXTS.statiske.uploadFile.uploadFileError).eq(0).should('exist');
-      });
-    });
-
     describe('Deleting files', () => {
       beforeEach(() => {
         cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
@@ -186,6 +177,48 @@ describe('Digital no login', () => {
         cy.findByRole('button', { name: TEXTS.grensesnitt.confirmDiscardPrompt.confirm }).click();
         cy.wait('@deleteAllFiles');
       });
+    });
+  });
+
+  describe('Captcha', () => {
+    beforeEach(() => {
+      cy.defaultIntercepts();
+      cy.intercept({
+        method: 'POST',
+        url: '/fyllut/api/send-inn/nologin-application/attachments/personal-id',
+      }).as('uploadPersonalId');
+      cy.intercept({
+        method: 'POST',
+        url: '/fyllut/api/captcha',
+      }).as('captchaRequest');
+
+      cy.visit('/fyllut/stdigitalnologin');
+      cy.defaultWaits();
+      cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigitalNoLogin }).click();
+    });
+
+    it('prevents uploading files when the honey pot is filled', () => {
+      cy.get('[data-cy=firstName]').type('Trym', { force: true });
+      cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
+      cy.uploadFile();
+      cy.findAllByText(TEXTS.statiske.uploadFile.uploadFileError).should('exist');
+    });
+
+    it('allows uploading files after captcha is completed', () => {
+      cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
+      cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
+      cy.findAllByText(TEXTS.statiske.uploadFile.uploadFileError).should('not.exist');
+    });
+
+    it('reuses the token on second upload without invoking captcha again', () => {
+      cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
+      cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
+      cy.findByRole('button', { name: 'Slett filen' }).click();
+      cy.uploadFile('small-file.txt', { verifyUpload: true });
+      // expect two invocations of @uploadPersonalId, but only one of @captchaRequest
+      cy.wait(['@uploadPersonalId', '@uploadPersonalId']);
+      cy.get('@uploadPersonalId.all').should('have.length', 2);
+      cy.get('@captchaRequest.all').should('have.length', 1);
     });
   });
 });
