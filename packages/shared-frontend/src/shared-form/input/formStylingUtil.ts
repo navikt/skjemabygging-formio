@@ -1,6 +1,6 @@
-import makeStyles from '../../../../util/styles/jss/jss';
+import { createUseStyles } from 'react-jss';
 
-const useFormInputStyles = makeStyles({
+const useFormInputStyles = createUseStyles({
   'input--xxs': {
     '& .aksel-text-field__input, & .aksel-select__container, & .aksel-textarea__input': {
       width: '35px',

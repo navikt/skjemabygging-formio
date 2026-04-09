@@ -765,12 +765,18 @@ importers:
       '@navikt/skjemadigitalisering-shared-form':
         specifier: workspace:*
         version: link:../shared-form
+      dompurify:
+        specifier: ^3.3.1
+        version: 3.3.3
       react:
         specifier: ^18.3.1
         version: 18.3.1
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
+      react-jss:
+        specifier: ^10.10.0
+        version: 10.10.0(react@18.3.1)
       react-router:
         specifier: ^7.12.0
         version: 7.13.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -8622,6 +8628,26 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@vitest/browser@2.1.9(@types/node@24.12.0)(typescript@5.9.3)(vite@5.4.21(@types/node@24.12.0)(terser@5.46.1))(vitest@2.1.9)':
+    dependencies:
+      '@testing-library/dom': 10.4.1
+      '@testing-library/user-event': 14.6.1(@testing-library/dom@10.4.1)
+      '@vitest/mocker': 2.1.9(msw@2.12.14(@types/node@24.12.0)(typescript@5.9.3))(vite@5.4.21(@types/node@24.12.0)(terser@5.46.1))
+      '@vitest/utils': 2.1.9
+      magic-string: 0.30.21
+      msw: 2.12.14(@types/node@24.12.0)(typescript@5.9.3)
+      sirv: 3.0.2
+      tinyrainbow: 1.2.0
+      vitest: 2.1.9(@types/node@24.12.0)(@vitest/browser@2.1.9)(jsdom@28.1.0(@noble/hashes@1.8.0))(msw@2.12.14(@types/node@24.12.0)(typescript@5.9.3))(terser@5.46.1)
+      ws: 8.20.0
+    transitivePeerDependencies:
+      - '@types/node'
+      - bufferutil
+      - typescript
+      - utf-8-validate
+      - vite
+    optional: true
+
   '@vitest/browser@2.1.9(@types/node@24.12.0)(typescript@5.9.3)(vite@7.3.1(@types/node@24.12.0)(terser@5.46.1)(yaml@2.8.3))(vitest@2.1.9)':
     dependencies:
       '@testing-library/dom': 10.4.1
@@ -13727,7 +13753,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 24.12.0
-      '@vitest/browser': 2.1.9(@types/node@24.12.0)(typescript@5.9.3)(vite@7.3.1(@types/node@24.12.0)(terser@5.46.1)(yaml@2.8.3))(vitest@2.1.9)
+      '@vitest/browser': 2.1.9(@types/node@24.12.0)(typescript@5.9.3)(vite@5.4.21(@types/node@24.12.0)(terser@5.46.1))(vitest@2.1.9)
       jsdom: 28.1.0(@noble/hashes@1.8.0)
     transitivePeerDependencies:
       - less

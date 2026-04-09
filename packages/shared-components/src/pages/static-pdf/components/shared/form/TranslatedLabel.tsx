@@ -1,3 +1,4 @@
+import { TranslatedLabel as SharedFrontendTranslatedLabel } from '@navikt/skjemadigitalisering-shared-frontend';
 import { useLanguages } from '../../../../../context/languages';
 
 type LabelOptions = {
@@ -5,20 +6,19 @@ type LabelOptions = {
   readOnly?: boolean;
 };
 
-interface Props {
+interface TranslatedLabelProps {
   children: string;
   options?: LabelOptions;
 }
 
-const TranslatedLabel = ({ children, options }: Props) => {
+const TranslatedLabel = (props: TranslatedLabelProps) => {
   const { translate } = useLanguages();
-  const { required = false, readOnly = false } = options ?? {};
+  const { children, options } = props;
 
   return (
-    <>
-      {translate(children)}
-      {required || readOnly ? '' : ` (${translate('valgfritt')})`}
-    </>
+    <SharedFrontendTranslatedLabel translate={translate} options={options}>
+      {children}
+    </SharedFrontendTranslatedLabel>
   );
 };
 

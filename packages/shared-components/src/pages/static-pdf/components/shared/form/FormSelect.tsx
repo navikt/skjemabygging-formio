@@ -1,15 +1,13 @@
-import { Select } from '@navikt/ds-react';
 import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
-import { formComponentUtils } from '@navikt/skjemadigitalisering-shared-form';
-import { ChangeEvent, useEffect, useRef } from 'react';
+import { FormSelect as SharedFrontendFormSelect } from '@navikt/skjemadigitalisering-shared-frontend';
+import { type RefObject } from 'react';
 import { useAppConfig } from '../../../../../context/config/configContext';
 import { useForm } from '../../../../../context/form/FormContext';
 import { useLanguages } from '../../../../../context/languages';
-import { useInputValidation, Validators } from '../../../../../context/validator/InputValidationContext';
-import { FormInputWidth, useFormInputStyles } from '../formStylingUtil';
-import FormBox, { FormBoxProps } from './FormBox';
-import TranslatedDescription from './TranslatedDescription';
-import TranslatedLabel from './TranslatedLabel';
+import { useInputValidation, type Validators } from '../../../../../context/validator/InputValidationContext';
+import type { FormBoxProps } from './FormBox';
+
+type FormInputWidth = 'input--xxs' | 'input--xs' | 'input--s' | 'input--m' | 'input--l' | 'input--xl' | 'input--xxl';
 
 interface FormSelectProps extends FormBoxProps {
   submissionPath: string;
@@ -26,74 +24,28 @@ interface FormSelectProps extends FormBoxProps {
 }
 
 const FormSelect = (props: FormSelectProps) => {
-  const {
-    submissionPath,
-    label,
-    description,
-    values,
-    validators,
-    bottom = 'space-32',
-    width = 'input--xl',
-    selectText,
-    onChange,
-    readOnly,
-    error,
-    autoComplete,
-  } = props;
   const { logger } = useAppConfig();
   const { updateSubmission, submission } = useForm();
-  const { addValidation, removeValidation, getRefError } = useInputValidation();
   const { translate } = useLanguages();
-  const { required } = validators || { required: true };
-  const styles = useFormInputStyles();
-
-  const ref = useRef(null);
-
-  const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    const { value } = event.target;
-
-    if (onChange) {
-      onChange(value);
-    } else {
-      updateSubmission(submissionPath, value);
-    }
-  };
-
-  useEffect(() => {
-    logger?.debug(`Add validation for ${submissionPath}`);
-    addValidation(submissionPath, ref, { required }, label);
-    return () => {
-      logger?.debug(`Remove validation for ${submissionPath}`);
-      removeValidation(submissionPath);
-    };
-  }, [logger, addValidation, removeValidation, submissionPath, ref, required, label]);
-
-  const getDefaultValue = () => {
-    const defaultValue = formComponentUtils.getSubmissionValue(submissionPath, submission);
-    return defaultValue?.value ?? defaultValue;
-  };
+  const { addValidation, errors, getRefError, removeValidation } = useInputValidation();
 
   return (
-    <FormBox bottom={bottom}>
-      <Select
-        className={styles[width ?? 'input--xl']}
-        label={<TranslatedLabel options={{ required, readOnly }}>{label}</TranslatedLabel>}
-        description={<TranslatedDescription>{description}</TranslatedDescription>}
-        onChange={handleChange}
-        ref={ref}
-        // eslint-disable-next-line react-hooks/refs
-        error={error ?? getRefError(ref)}
-        autoComplete={autoComplete}
-        defaultValue={getDefaultValue()}
-      >
-        {selectText && <option value="">{translate(selectText)}</option>}
-        {values.map(({ value, label }) => (
-          <option key={value} value={value}>
-            {translate(label)}
-          </option>
-        ))}
-      </Select>
-    </FormBox>
+    <SharedFrontendFormSelect
+      {...props}
+      runtime={{
+        logger,
+        submission,
+        translate,
+        updateSubmission,
+        validation: {
+          addValidation: (submissionPath, ref, validators, field) =>
+            addValidation(submissionPath, ref as RefObject<HTMLInputElement>, validators, field),
+          errors,
+          getRefError: (ref) => getRefError(ref as RefObject<HTMLInputElement>),
+          removeValidation,
+        },
+      }}
+    />
   );
 };
 
