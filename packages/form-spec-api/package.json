@@ -23,6 +23,7 @@
     "cors": "^2.8.6",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
+    "jsdom": "^28.1.0",
     "swagger-ui-express": "^5.0.1",
     "winston": "^3.19.0"
   },
