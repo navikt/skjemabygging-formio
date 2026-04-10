@@ -5,6 +5,9 @@
   "description": "Backend service exposing JSON Schema for form submissions",
   "main": "dist/server.mjs",
   "type": "module",
+  "files": [
+    "dist"
+  ],
   "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {
     "start": "cross-env NODE_ENV=development vite",
