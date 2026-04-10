@@ -366,6 +366,9 @@ importers:
       express:
         specifier: ^5.2.1
         version: 5.2.1
+      jsdom:
+        specifier: ^28.1.0
+        version: 28.1.0(@noble/hashes@1.8.0)
       swagger-ui-express:
         specifier: ^5.0.1
         version: 5.0.1(express@5.2.1)
