@@ -23,7 +23,6 @@ const createForm = (components: Component[] = [], introPageEnabled = false): For
             prerequisites: {},
             beAwareOf: {},
             dataDisclosure: {},
-            dataTreatment: {},
           },
           selfDeclaration: 'Self declaration',
         },

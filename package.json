@@ -39,6 +39,7 @@
     "test": "concurrently \"pnpm --filter @navikt/bygger-frontend run test\" \"pnpm --filter @navikt/bygger-backend run test\" \"pnpm --filter @navikt/fyllut-frontend run test\" \"pnpm --filter @navikt/fyllut-backend run test\" \"pnpm --filter @navikt/skjemadigitalisering-shared-domain run test\" \"pnpm --filter @navikt/skjemadigitalisering-shared-components run test\" \"pnpm --filter @navikt/skjemadigitalisering-shared-frontend run test\" \"pnpm --filter @navikt/skjemadigitalisering-shared-backend run test\"",
     "test:nowarnings": "NODE_OPTIONS=--no-warnings pnpm test",
     "test:bygger": "concurrently \"pnpm --filter @navikt/bygger-frontend run test\" \"pnpm --filter @navikt/bygger-backend run test\"",
+    "test:form-spec-api": "pnpm --filter @navikt/form-spec-api run test",
     "test:fyllut": "concurrently \"pnpm --filter @navikt/fyllut-frontend run test\" \"pnpm --filter @navikt/fyllut-backend run test\"",
     "test:shared-domain": "pnpm --filter @navikt/skjemadigitalisering-shared-domain run test",
     "test:shared-components": "pnpm --filter @navikt/skjemadigitalisering-shared-components run test",
