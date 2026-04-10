@@ -165,4 +165,65 @@ describe('checkCondition', () => {
       false,
     );
   });
+
+  it('treats missing collections like lodash in custom conditionals', () => {
+    const someComponent = {
+      key: 'missingSome',
+      label: 'Missing some',
+      type: 'textfield',
+      input: true,
+      customConditional: "show = _.some(data.transportmiddelRetur, (row) => row.harDuBenyttetBilferge === 'ja')",
+    };
+    const form = {
+      components: [someComponent],
+      properties: {
+        skjemanummer: 'TEST',
+        tema: 'TES',
+        submissionTypes: ['DIGITAL'],
+        subsequentSubmissionTypes: [],
+      },
+    } as unknown as NavFormType;
+
+    expect(checkCondition(someComponent, undefined, {}, form)).toBe(false);
+
+    const everyComponent = {
+      key: 'missingEvery',
+      label: 'Missing every',
+      type: 'textfield',
+      input: true,
+      customConditional: 'show = _.every(data.items, (item) => item.done === true)',
+    };
+
+    const everyForm = { ...form, components: [everyComponent] } as unknown as NavFormType;
+
+    expect(checkCondition(everyComponent, undefined, {}, everyForm)).toBe(true);
+  });
+
+  it('supports object collections in custom conditionals via lodash shim', () => {
+    const component = {
+      key: 'objectCollection',
+      label: 'Object collection',
+      type: 'textfield',
+      input: true,
+      customConditional: "show = _.some(data.children, (child) => child.relation === 'fosterforelder')",
+    };
+    const form = {
+      components: [component],
+      properties: {
+        skjemanummer: 'TEST',
+        tema: 'TES',
+        submissionTypes: ['DIGITAL'],
+        subsequentSubmissionTypes: [],
+      },
+    } as unknown as NavFormType;
+
+    expect(
+      checkCondition(
+        component,
+        undefined,
+        { children: { first: { relation: 'forelder' }, second: { relation: 'fosterforelder' } } },
+        form,
+      ),
+    ).toBe(true);
+  });
 });

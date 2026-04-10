@@ -4,9 +4,19 @@ import { submissionTypesUtils } from '../submission';
 
 const USE_FORMIO_CHECK_CONDITION = false;
 
+const toCollectionValues = <T>(collection: T[] | Record<string, T> | null | undefined) => {
+  if (collection == null) {
+    return [];
+  }
+
+  return Array.isArray(collection) ? collection : Object.values(collection);
+};
+
 const lodashShim = {
-  some: <T>(collection: T[], predicate: (item: T) => boolean) => Array.from(collection).some(predicate),
-  every: <T>(collection: T[], predicate: (item: T) => boolean) => Array.from(collection).every(predicate),
+  some: <T>(collection: T[] | Record<string, T> | null | undefined, predicate: (item: T) => boolean) =>
+    toCollectionValues(collection).some(predicate),
+  every: <T>(collection: T[] | Record<string, T> | null | undefined, predicate: (item: T) => boolean) =>
+    toCollectionValues(collection).every(predicate),
   get: (obj: unknown, path: string, defaultValue?: unknown) => {
     const result = path
       .split('.')
