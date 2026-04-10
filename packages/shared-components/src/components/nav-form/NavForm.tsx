@@ -7,7 +7,7 @@ import {
   SubmissionMetadata,
   Webform,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
@@ -89,6 +89,9 @@ const NavForm = ({
   const { panelSlug } = useParams();
   // This param is used to avoid creating two formio instances in React.StrictMode
   const webformStartRef = useRef(false);
+  // Keep a ref to events to avoid stale closures in layout effect cleanup
+  const eventsRef = useRef(events);
+  eventsRef.current = events;
 
   /**
    * Create a new instance of a formio Webform
@@ -115,6 +118,10 @@ const NavForm = ({
         setWebform(newWebform);
       }
     },
+    // events and panelSlug are intentionally excluded: including them would recreate the form
+    // on every panel navigation or events reference change. panelSlug is only needed as the
+    // initial page; subsequent changes are handled by the setPage effect below.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [appConfig, webform, language, i18n, submission],
   );
 
@@ -145,6 +152,21 @@ const NavForm = ({
     // Do not want to include events in the dependency array
     // eslint-disable-next-line
   }, [appConfig.logger, webform]);
+
+  /**
+   * Before destroying the webform, force-run conditions so hidden fields with clearOnHide=true
+   * have their values removed from React state. This handles the case where the user navigates
+   * away before formio's debounced triggerChange has had a chance to run clearOnHide.
+   */
+  useLayoutEffect(() => {
+    return () => {
+      if (webform) {
+        webform.pristine = false;
+        webform.checkConditions(webform._data);
+        eventsRef.current?.onSubmissionChanged?.({ ...webform._data });
+      }
+    };
+  }, [webform]);
 
   /**
    * Set the correct formio page based on url changes (panelSlug)
@@ -191,7 +213,7 @@ const NavForm = ({
   useEffect(() => {
     if (webform && webform?.language !== language) {
       appConfig.logger?.debug('Set language', { webformId: webform?.id, language });
-      // eslint-disable-next-line react-hooks/immutability
+
       webform.language = language;
     }
   }, [appConfig.logger, webform, language]);
@@ -205,7 +227,7 @@ const NavForm = ({
         webformId: webform?.id,
         prefillData,
       });
-      // eslint-disable-next-line react-hooks/immutability
+
       webform.form = NavFormHelper.prefillForm(webform.form, prefillData);
 
       // Need to trigger a handle change event after prefilling form or else

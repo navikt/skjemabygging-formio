@@ -18,9 +18,6 @@ const staticDefaultValues = {
     dataDisclosure: {
       title: 'introPage.dataDisclosure.title.alt1',
     },
-    dataTreatment: {
-      description: '01dc83d4-cc78-4b5f-8815-adbff6437378',
-    },
   },
 };
 

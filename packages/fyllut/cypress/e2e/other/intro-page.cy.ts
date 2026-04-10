@@ -1,3 +1,5 @@
+const privacyLinkText = /hvordan Nav behandler personopplysninger på nav.no/i;
+
 describe('Intro page', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
@@ -21,6 +23,15 @@ describe('Intro page', () => {
       cy.findByText('Du må bekrefte at du vil svare så riktig som du kan.').should('not.exist');
       cy.clickShowAllSteps();
       cy.findByRole('link', { name: 'Dine opplysninger' }).should('exist');
+    });
+
+    it('should render privacy link in data disclosure and hide standalone privacy section', () => {
+      cy.findByRole('button', { name: 'Hvordan vi behandler personopplysninger' }).should('not.exist');
+      cy.findByRole('button', { name: 'Informasjon vi henter om deg' }).click();
+      cy.contains('Du kan lese mer om').should('exist');
+      cy.contains('a', privacyLinkText)
+        .should('have.attr', 'href', 'https://www.nav.no/personvernerklaering')
+        .and('have.attr', 'target', '_blank');
     });
   });
 
