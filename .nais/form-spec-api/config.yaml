@@ -24,6 +24,13 @@ spec:
   azure:
     application:
       enabled: true
+      allowAllUsers: true
+    sidecar:
+      enabled: true
+      autoLogin: true
+      autoLoginIgnorePaths:
+        - /api/forms/*
+        - /internal/*
   liveness:
     path: /internal/isAlive
     initialDelay: 20

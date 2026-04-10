@@ -9,9 +9,10 @@ describe('createApp', () => {
       type: 'http',
       scheme: 'bearer',
       bearerFormat: 'JWT',
-      description: 'Provide the bearer token used to access the /api endpoints.',
+      description: 'Employee bearer token provided by the NAIS login sidecar after Entra ID authentication.',
     });
-    expect(response.body.paths['/api/forms/{formPath}/spec'].get.security).toEqual([{ bearerAuth: [] }]);
+    expect(response.body.paths['/api/employee/forms/{formPath}/spec'].get.security).toEqual([{ bearerAuth: [] }]);
+    expect(response.body.paths['/api/forms/{formPath}/spec']).toBeUndefined();
   });
 
   it('serves the Swagger UI page', async () => {

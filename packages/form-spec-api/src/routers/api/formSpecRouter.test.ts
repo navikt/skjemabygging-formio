@@ -86,3 +86,29 @@ describe('formSpecRouter', () => {
     expect(response.body.errorCode).toBe('NOT_FOUND');
   });
 });
+
+describe('employee formSpecRouter', () => {
+  beforeEach(() => {
+    mockedGetForm.mockReset();
+  });
+
+  it('returns a schema response via the employee endpoint', async () => {
+    mockedGetForm.mockResolvedValue(createForm());
+
+    const response = await request(createApp()).get('/api/employee/forms/nav123456/spec').expect(200);
+
+    expect(response.header['content-type']).toMatch(/application\/schema\+json/);
+    expect(response.body.properties.data.properties.data.properties.firstName).toEqual({
+      title: 'First name',
+      type: 'string',
+    });
+  });
+
+  it('returns 404 when the form is missing via the employee endpoint', async () => {
+    mockedGetForm.mockRejectedValue(new FormNotFoundError('nav654321'));
+
+    const response = await request(createApp()).get('/api/employee/forms/nav654321/spec').expect(404);
+
+    expect(response.body.errorCode).toBe('NOT_FOUND');
+  });
+});

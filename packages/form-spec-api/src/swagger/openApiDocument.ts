@@ -3,7 +3,8 @@ const openApiDocument = {
   info: {
     title: 'Form Spec API',
     version: '1.0.0',
-    description: 'API for retrieving JSON Schema documents for forms.',
+    description:
+      'API for retrieving JSON Schema documents for forms. Authenticate via Entra ID login — the NAIS sidecar handles the session and provides the bearer token automatically.',
   },
   tags: [
     {
@@ -17,7 +18,7 @@ const openApiDocument = {
         type: 'http',
         scheme: 'bearer',
         bearerFormat: 'JWT',
-        description: 'Provide the bearer token used to access the /api endpoints.',
+        description: 'Employee bearer token provided by the NAIS login sidecar after Entra ID authentication.',
       },
     },
     schemas: {
@@ -41,12 +42,13 @@ const openApiDocument = {
     },
   },
   paths: {
-    '/api/forms/{formPath}/spec': {
+    '/api/employee/forms/{formPath}/spec': {
       get: {
         tags: ['forms'],
-        operationId: 'getFormSpec',
-        summary: 'Get form submission schema',
-        description: 'Returns the generated JSON Schema for the requested form path.',
+        operationId: 'getEmployeeFormSpec',
+        summary: 'Get form submission schema (employee)',
+        description:
+          'Returns the generated JSON Schema for the requested form path. Requires employee authentication via Entra ID.',
         security: [{ bearerAuth: [] }],
         parameters: [
           {

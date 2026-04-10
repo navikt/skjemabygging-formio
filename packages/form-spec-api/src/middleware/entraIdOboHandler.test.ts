@@ -1,7 +1,7 @@
 import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import type { NextFunction, Request, Response } from 'express';
 import { describe, expect, it, vi } from 'vitest';
-import { createEntraIdHandler } from './entraIdHandler';
+import { createEntraIdOboHandler } from './entraIdOboHandler';
 
 const createRequest = (authorization?: string) =>
   ({
@@ -22,11 +22,11 @@ const createNext = () => {
   return { next, spy };
 };
 
-describe('entraIdHandler', () => {
+describe('entraIdOboHandler', () => {
   it('bypasses auth in development/test mode', async () => {
     const fetchImpl = vi.fn<typeof fetch>();
     const { next, spy } = createNext();
-    const handler = createEntraIdHandler({
+    const handler = createEntraIdOboHandler({
       fetchImpl,
       introspectionEndpoint: 'https://token-introspection.example',
       isBypassed: true,
@@ -38,7 +38,7 @@ describe('entraIdHandler', () => {
     expect(spy).toHaveBeenCalledWith(undefined);
   });
 
-  it('accepts an active Entra ID bearer token', async () => {
+  it('accepts an active Entra ID OBO bearer token', async () => {
     const fetchImpl = vi.fn<typeof fetch>().mockResolvedValue(
       new Response(JSON.stringify({ active: true }), {
         status: 200,
@@ -48,13 +48,13 @@ describe('entraIdHandler', () => {
       }),
     );
     const { next, spy } = createNext();
-    const handler = createEntraIdHandler({
+    const handler = createEntraIdOboHandler({
       fetchImpl,
       introspectionEndpoint: 'https://token-introspection.example',
       isBypassed: false,
     });
 
-    await handler(createRequest('Bearer valid-token'), createResponse(), next);
+    await handler(createRequest('Bearer valid-obo-token'), createResponse(), next);
 
     expect(fetchImpl).toHaveBeenCalledWith(
       'https://token-introspection.example',
@@ -69,13 +69,13 @@ describe('entraIdHandler', () => {
     );
 
     const requestInit = fetchImpl.mock.calls[0]?.[1];
-    expect(requestInit?.body?.toString()).toBe('identity_provider=entra_id&token=valid-token');
+    expect(requestInit?.body?.toString()).toBe('identity_provider=entra_id&token=valid-obo-token');
     expect(spy).toHaveBeenCalledWith(undefined);
   });
 
   it('rejects requests without a bearer token', async () => {
     const { next, spy } = createNext();
-    const handler = createEntraIdHandler({
+    const handler = createEntraIdOboHandler({
       fetchImpl: vi.fn<typeof fetch>(),
       introspectionEndpoint: 'https://token-introspection.example',
       isBypassed: false,
@@ -100,13 +100,13 @@ describe('entraIdHandler', () => {
       }),
     );
     const { next, spy } = createNext();
-    const handler = createEntraIdHandler({
+    const handler = createEntraIdOboHandler({
       fetchImpl,
       introspectionEndpoint: 'https://token-introspection.example',
       isBypassed: false,
     });
 
-    await handler(createRequest('Bearer invalid-token'), createResponse(), next);
+    await handler(createRequest('Bearer invalid-obo-token'), createResponse(), next);
 
     expect(spy).toHaveBeenCalledWith(expect.any(ResponseError));
     expect(spy.mock.calls[0]?.[0]).toMatchObject({
@@ -117,13 +117,13 @@ describe('entraIdHandler', () => {
 
   it('fails when introspection endpoint configuration is missing', async () => {
     const { next, spy } = createNext();
-    const handler = createEntraIdHandler({
+    const handler = createEntraIdOboHandler({
       fetchImpl: vi.fn<typeof fetch>(),
       introspectionEndpoint: undefined,
       isBypassed: false,
     });
 
-    await handler(createRequest('Bearer valid-token'), createResponse(), next);
+    await handler(createRequest('Bearer valid-obo-token'), createResponse(), next);
 
     expect(spy).toHaveBeenCalledWith(expect.any(ResponseError));
     expect(spy.mock.calls[0]?.[0]).toMatchObject({
