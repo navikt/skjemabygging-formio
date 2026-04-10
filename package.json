@@ -21,6 +21,7 @@
     "build": "pnpm -r --if-present run build",
     "build:bygger": "pnpm --filter @navikt/skjemadigitalisering-shared-domain run build && pnpm --filter @navikt/skjemadigitalisering-shared-components run build && pnpm --filter @navikt/skjemadigitalisering-shared-backend run build && concurrently --kill-others-on-fail \"pnpm --filter @navikt/bygger-backend run build\" \"pnpm --filter @navikt/bygger-frontend run build\"",
     "build:fyllut": "pnpm --filter @navikt/skjemadigitalisering-shared-domain run build && pnpm --filter @navikt/skjemadigitalisering-shared-components run build && pnpm --filter @navikt/skjemadigitalisering-shared-backend run build && concurrently --kill-others-on-fail \"pnpm --filter @navikt/fyllut-backend run build\" \"pnpm --filter @navikt/fyllut-frontend run build\"",
+    "build:form-spec-api": "pnpm --filter @navikt/skjemadigitalisering-shared-domain run build && pnpm --filter @navikt/skjemadigitalisering-shared-components run build && pnpm --filter @navikt/skjemadigitalisering-shared-backend run build && pnpm --filter @navikt/form-spec-api run build",
     "clean": "pnpm -r --if-present run clean",
     "deploy:bygger-backend": "pnpm --filter @navikt/bygger-backend deploy --prod packages/.deploy/bygger-backend",
     "deploy:fyllut-backend": "pnpm --filter @navikt/fyllut-backend deploy --prod packages/.deploy/fyllut-backend",
