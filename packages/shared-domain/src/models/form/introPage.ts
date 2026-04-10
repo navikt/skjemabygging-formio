@@ -11,7 +11,6 @@ interface IntroPage {
     prerequisites: IntroPageSection;
     beAwareOf?: IntroPageSection;
     dataDisclosure?: IntroPageSection;
-    dataTreatment: IntroPageSection;
     dataStorage?: IntroPageSection;
     automaticProcessing?: IntroPageSection;
     optional?: IntroPageSection;

@@ -68,12 +68,17 @@ import formYear from '../data/formio-api/year.json';
 import formYourInformationTranslations from '../data/formio-api/your-information-translations.json';
 import formYourInformation from '../data/formio-api/your-information.json';
 import { attachmentsForm, attachmentsTranslations } from '../data/forms-api/attachmentsForm';
+import { clearOnHideForm, clearOnHideTranslations } from '../data/forms-api/clear-on-hide/clearOnHideForm';
 import { accordionForm, accordionTranslations } from '../data/forms-api/components/accordionForm';
 import { activitiesTestForm, activitiesTranslations } from '../data/forms-api/components/activitiesForm';
 import { addressValidityTestForm, addressValidityTranslations } from '../data/forms-api/components/addressValidityForm';
 import { adresseTestForm, adresseTranslations } from '../data/forms-api/components/adresseForm';
 import { alertForm, alertTranslations } from '../data/forms-api/components/alertForm';
 import { attachmentTestForm, attachmentTranslations } from '../data/forms-api/components/attachmentForm';
+import {
+  attachmentUploadOnlyTestForm,
+  attachmentUploadOnlyTranslations,
+} from '../data/forms-api/components/attachmentUploadOnlyForm';
 import { bankAccountForm, bankAccountTranslations } from '../data/forms-api/components/bankAccountForm';
 import { checkboxForm, checkboxTranslations } from '../data/forms-api/components/checkboxForm';
 import componentsForm from '../data/forms-api/components/componentsForm';
@@ -227,12 +232,14 @@ const allForms = [
   { form: selectForm(), translations: selectTranslations() },
   { form: currencyForm(), translations: currencyTranslations() },
   { form: attachmentTestForm(), translations: attachmentTranslations() },
+  { form: attachmentUploadOnlyTestForm(), translations: attachmentUploadOnlyTranslations() },
   { form: currencySelectForm(), translations: currencySelectTranslations() },
   { form: dataFetcherTestForm(), translations: dataFetcherTranslations() },
   { form: dataGridForm(), translations: dataGridTranslations() },
   { form: panelTestForm(), translations: panelTranslations() },
   { form: adresseTestForm(), translations: adresseTranslations() },
   { form: attachmentsForm(), translations: attachmentsTranslations() },
+  { form: clearOnHideForm(), translations: clearOnHideTranslations() },
 ];
 
 const findTestdata = (formPath: string) => allForms.find((testdata) => testdata.form.path === formPath);

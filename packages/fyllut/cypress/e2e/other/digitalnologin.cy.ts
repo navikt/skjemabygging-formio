@@ -1,6 +1,14 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
 describe('Digital no login', () => {
+  const verifyUploadOnlyAttachmentAndUpload = () => {
+    cy.findByRole('group', { name: 'Vedlegg med ett valg' }).should('not.exist');
+    cy.contains('[data-cy=attachment-upload]', 'Vedlegg med ett valg').within(() => {
+      cy.findByRole('button', { name: TEXTS.statiske.uploadFile.selectFile }).should('exist');
+    });
+    cy.uploadFile();
+  };
+
   before(() => {
     cy.configMocksServer();
   });
@@ -34,10 +42,7 @@ describe('Digital no login', () => {
       }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadLater }).click();
       });
-      cy.findByRole('group', { name: 'Vedlegg med ett valg' }).within(() => {
-        cy.findByRole('checkbox', { name: TEXTS.statiske.attachment.uploadNow }).check();
-      });
-      cy.uploadFile();
+      verifyUploadOnlyAttachmentAndUpload();
       cy.findByRole('group', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
       }).within(() => {
@@ -69,10 +74,7 @@ describe('Digital no login', () => {
       }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadLater }).click();
       });
-      cy.findByRole('group', { name: 'Vedlegg med ett valg' }).within(() => {
-        cy.findByRole('checkbox', { name: TEXTS.statiske.attachment.uploadNow }).check();
-      });
-      cy.uploadFile();
+      verifyUploadOnlyAttachmentAndUpload();
       cy.findByRole('group', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
       }).within(() => {

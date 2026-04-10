@@ -32,7 +32,7 @@ export function validateIntroPage(
   const errors: IntroPageError = {};
   const fieldsWithPrefilledBulletPoints = ['dataDisclosure'];
   const fieldsWithPrefilledIngressAndBulletPoints = ['dataDisclosure'];
-  const fieldsWithoutTitle = ['automaticProcessing', 'dataTreatment'];
+  const fieldsWithoutTitle = ['automaticProcessing'];
   const fieldsWithTextFieldTitle = ['optional'];
   const fieldWithoutDescription = ['dataDisclosure'];
 
@@ -93,7 +93,7 @@ export function validateIntroPage(
     return Object.keys(sectionErrors).length > 0 ? sectionErrors : undefined;
   };
 
-  const requiredSections: (keyof IntroPage['sections'])[] = ['dataTreatment'];
+  const requiredSections: (keyof IntroPage['sections'])[] = [];
   const optionalSections: (keyof IntroPage['sections'])[] = [
     'prerequisites',
     'scope',

@@ -8,9 +8,10 @@ import EnhetSelector from '../select/enhet/EnhetSelector';
 interface Props {
   index: number;
   enhetsListe: Enhet[];
+  navUnitDescription?: string;
 }
 
-const LetterDownload = ({ index, enhetsListe }: Props) => {
+const LetterDownload = ({ index, enhetsListe, navUnitDescription }: Props) => {
   const { translate } = useLanguages();
   const [selectedEnhetNummer, setSelectedEnhetNummer] = useState<string | null>(null);
   const [isRequiredEnhetMissing, setIsRequiredEnhetMissing] = useState(false);
@@ -28,6 +29,7 @@ const LetterDownload = ({ index, enhetsListe }: Props) => {
           setIsRequiredEnhetMissing(false);
         }}
         error={isRequiredEnhetMissing ? translate(TEXTS.statiske.prepareLetterPage.entityNotSelectedError) : undefined}
+        description={navUnitDescription}
       />
 
       <DownloadCoverPageAndApplicationButton

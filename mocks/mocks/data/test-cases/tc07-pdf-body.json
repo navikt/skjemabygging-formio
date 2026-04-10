@@ -20,6 +20,7 @@
       "verdiliste": [
         { "label": "Vedlegg 1", "verdi": "Jeg laster opp dette nå" },
         { "label": "Vedlegg 2", "verdi": "Jeg laster opp dette nå" },
+        { "label": "Vedlegg upload-only", "verdi": "Jeg laster opp dette nå" },
         { "label": "Annen dokumentasjon - Annet vedlegg 1", "verdi": "Jeg laster opp dette nå" }
       ]
     }
@@ -30,7 +31,7 @@
     "upperleft": "F.nr: 08842748500",
     "lowerleft": "Skjemanummer: Attach 001",
     "upperRight": null,
-    "upperMiddle": "Opprettet: 9 mars 2026, 13:11",
+    "upperMiddle": "<WILL BE IGNORED>",
     "lowerMiddle": "Versjon: local"
   }
 }

@@ -14,11 +14,15 @@ jobs:
       packages: 'read'
     steps:
       - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.32.1
+          run_install: false
       - uses: actions/setup-node@v6
         with:
           node-version: '24.14.0'
-          cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
           registry-url: https://npm.pkg.github.com/
           scope: '@navikt'
       - name: set timezone
@@ -26,25 +30,25 @@ jobs:
         with:
           timezoneLinux: 'Europe/Oslo'
       - name: 'Install dependencies'
-        run: yarn --frozen-lockfile
-      - name: 'No unstaged changes allowed (changes in yarn.lock?)'
+        run: pnpm install --frozen-lockfile
+      - name: 'No unstaged changes allowed (changes in pnpm-lock.yaml?)'
         run: git diff --quiet
       - name: 'Check types'
-        run: yarn check-types
+        run: pnpm check-types
       - name: 'Build'
-        run: yarn build
+        run: pnpm build
       - name: 'Test bygger'
-        run: yarn test:bygger
+        run: pnpm test:bygger
       - name: 'Test fyllut'
-        run: yarn test:fyllut
+        run: pnpm test:fyllut
       - name: 'Test form-spec-api'
-        run: yarn test:form-spec-api
+        run: pnpm test:form-spec-api
       - name: 'Test shared-components'
-        run: yarn test:shared-components
+        run: pnpm test:shared-components
       - name: 'Test shared-domain'
-        run: yarn test:shared-domain
+        run: pnpm test:shared-domain
       - name: 'Test shared-backend'
-        run: yarn test:shared-backend
+        run: pnpm test:shared-backend
 
   package-and-push-bygger:
     if: github.ref == 'refs/heads/master'
@@ -56,18 +60,22 @@ jobs:
       packages: 'read'
     steps:
       - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.32.1
+          run_install: false
       - uses: actions/setup-node@v6
         with:
           node-version: '24.14.0'
-          cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
           registry-url: https://npm.pkg.github.com/
           scope: '@navikt'
 
       - name: 'Build application: Bygger'
         env:
           VITE_GIT_VERSION: ${{ github.sha }}
-        run: yarn --frozen-lockfile && yarn build:bygger
+        run: pnpm install --frozen-lockfile && pnpm build:bygger && pnpm run deploy:bygger-backend
 
       - name: Build and push Docker image for bygger
         uses: nais/docker-build-push@v0
@@ -94,18 +102,22 @@ jobs:
       packages: 'read'
     steps:
       - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.32.1
+          run_install: false
       - uses: actions/setup-node@v6
         with:
           node-version: '24.14.0'
-          cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
           registry-url: https://npm.pkg.github.com/
           scope: '@navikt'
 
       - name: 'Build application: Fyllut'
         env:
           VITE_GIT_VERSION: ${{ github.sha }}
-        run: yarn --frozen-lockfile && yarn build:fyllut
+        run: pnpm install --frozen-lockfile && pnpm build:fyllut && pnpm run deploy:fyllut-backend
 
       - name: 'Build and push Docker image: fyllut-base-dev'
         uses: nais/docker-build-push@v0
@@ -148,18 +160,22 @@ jobs:
       packages: 'read'
     steps:
       - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.32.1
+          run_install: false
       - uses: actions/setup-node@v6
         with:
           node-version: '24.14.0'
-          cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
           registry-url: https://npm.pkg.github.com/
           scope: '@navikt'
 
       - name: 'Build application: form-spec-api'
         env:
           VITE_GIT_VERSION: ${{ github.sha }}
-        run: yarn --frozen-lockfile && yarn build:form-spec-api
+        run: pnpm install --frozen-lockfile && pnpm build:form-spec-api && pnpm run deploy:form-spec-api
 
       - name: 'Build and push Docker image for form-spec-api'
         uses: nais/docker-build-push@v0

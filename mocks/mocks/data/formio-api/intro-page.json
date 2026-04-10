@@ -367,9 +367,6 @@
       "dataDisclosure": {
         "title": "introPage.dataDisclosure.title.alt1"
       },
-      "dataTreatment": {
-        "description": "test"
-      },
       "prerequisites": {
         "title": "introPage.prerequisites.title.alt1",
         "description": "test"

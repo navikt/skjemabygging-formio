@@ -1,6 +1,8 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
 describe('Digital submission with attachments uploaded in Fyllut', () => {
+  const getUploadOnlyAttachment = () => cy.contains('[data-cy=attachment-upload]', 'Vedlegg upload-only');
+
   before(() => {
     cy.configMocksServer();
   });
@@ -48,15 +50,16 @@ describe('Digital submission with attachments uploaded in Fyllut', () => {
         'Du må laste opp fil: Vedlegg 1',
         'Du må laste opp fil: Vedlegg 2',
         'Du må laste opp fil: Annen dokumentasjon',
+        'Du må laste opp fil: Vedlegg upload-only',
       ];
       cy.get('[data-cy=error-summary]')
         .should('exist')
         .within(() => {
-          cy.findAllByRole('link', { name: /^Du må laste opp fil: .*/ })
-            .should('have.length', validationErrors.length)
-            .each((link, index) => {
-              cy.wrap(link).should('have.text', validationErrors[index]);
-            });
+          cy.findAllByRole('link', { name: /^Du må laste opp fil: .*/ }).should('have.length', validationErrors.length);
+
+          validationErrors.forEach((message) => {
+            cy.findByRole('link', { name: message }).should('exist');
+          });
         });
     });
 
@@ -71,6 +74,7 @@ describe('Digital submission with attachments uploaded in Fyllut', () => {
           cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).check();
           cy.uploadFile('another-small-file.txt');
         });
+        getUploadOnlyAttachment().within(() => cy.uploadFile('test.txt'));
 
         cy.findAttachment(/Annen dokumentasjon/).within(() => {
           cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).check();
@@ -89,6 +93,7 @@ describe('Digital submission with attachments uploaded in Fyllut', () => {
           .within(() => {
             cy.findByText('Vedlegg 1').should('exist');
             cy.findByText('Vedlegg 2').should('exist');
+            cy.findByText('Vedlegg upload-only').should('exist');
             cy.findByText('Annet vedlegg 1').should('exist');
           });
       });
@@ -101,6 +106,7 @@ describe('Digital submission with attachments uploaded in Fyllut', () => {
         cy.findByRole('heading', { level: 2, name: 'Kvittering' }).should('exist');
         cy.findByText('Vedlegg 1').should('exist');
         cy.findByText('Vedlegg 2').should('exist');
+        cy.findByText('Vedlegg upload-only').should('exist');
         cy.findByText('Annet vedlegg 1').should('exist');
       });
     });

@@ -1,3 +1,4 @@
+import { requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import {
   AttachmentSettingValue,
   AttachmentSettingValues,
@@ -15,14 +16,17 @@ type TranslateFunction = (text: string, textReplacements?: I18nTranslationReplac
 
 const form = {
   get: async (req: Request, res: Response) => {
-    const { type, lang, select } = req.query;
-    const form = await formService.loadForm(req.params.formPath, select as string);
+    const formPath = requestUtil.getStringParam(req, 'formPath')!;
+    const type = req.query.type as string | undefined;
+    const lang = req.query.lang as string | undefined;
+    const select = req.query.select as string | undefined;
+    const form = await formService.loadForm(formPath, select);
 
     if (!form || !form.properties) {
       return res.sendStatus(404);
     }
 
-    const language = (lang ?? 'nb-NO') as string;
+    const language = lang ?? 'nb-NO';
 
     if (type === 'limited') {
       const translations = await translationsService.getTranslationsForLanguage(form.path, language);
@@ -54,6 +58,7 @@ const mapLimitedForm = (form: NavFormType, translate: TranslateFunction) => {
       subsequentSubmissionTypes: form.properties.subsequentSubmissionTypes,
       enhetstyper: form.properties.enhetstyper,
       enhetMaVelgesVedPapirInnsending: form.properties.enhetMaVelgesVedPapirInnsending,
+      navUnitDescription: form.properties.navUnitDescription,
       uxSignalsId: form.properties.uxSignalsId,
       uxSignalsSubmissionTypes: form.properties.uxSignalsSubmissionTypes,
       hideUserTypes: form.properties.hideUserTypes,
