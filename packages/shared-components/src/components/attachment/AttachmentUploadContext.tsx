@@ -1,7 +1,7 @@
 import { FileItem, FileObject } from '@navikt/ds-react';
 import { Submission, SubmissionAttachment, TEXTS, UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, useContext, useMemo, useState } from 'react';
-import getFileUploadApi from '../../api/nologin-file-upload/nologinFileUpload';
+import getFileUploadApi from '../../api/file-upload/fileUpload';
 import baseHttp from '../../api/util/http/http';
 import { MAX_TOTAL_SIZE_ATTACHMENT_FILES_BYTES } from '../../constants/fileUpload';
 import { useAppConfig } from '../../context/config/configContext';

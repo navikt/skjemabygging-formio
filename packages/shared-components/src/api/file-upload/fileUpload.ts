@@ -7,7 +7,7 @@ type ApplicationType = 'nologin' | 'digital';
 const getUrl = (type: ApplicationType, innsendingsId?: string) =>
   `/fyllut/api/send-inn/${type}-application${innsendingsId ? `/${innsendingsId}` : ''}`;
 
-const useNologinFileUpload = (type: ApplicationType = 'nologin', innsendingsId?: string) => {
+const useFileUpload = (type: ApplicationType = 'nologin', innsendingsId?: string) => {
   const url = getUrl(type, innsendingsId);
 
   const uploadFile = async (file: File, attachmentId: string, token?: string): Promise<UploadedFile> => {
@@ -34,4 +34,4 @@ const useNologinFileUpload = (type: ApplicationType = 'nologin', innsendingsId?:
   return { uploadFile, downloadFile, deleteFile, deleteAllFilesForAttachment, deleteAllFiles };
 };
 
-export default useNologinFileUpload;
+export default useFileUpload;

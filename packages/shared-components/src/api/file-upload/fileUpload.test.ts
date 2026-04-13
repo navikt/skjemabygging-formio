@@ -1,5 +1,5 @@
 import { vi } from 'vitest';
-import useNologinFileUpload from './nologinFileUpload';
+import useFileUpload from './fileUpload';
 
 const getFile = vi.fn();
 
@@ -9,7 +9,7 @@ vi.mock('./fileUploader', () => ({
   getFile: (...args: any[]) => getFile(...args),
 }));
 
-describe('nologinFileUpload', () => {
+describe('fileUpload', () => {
   it('downloads file from digital application endpoint and forwards nologin token header', async () => {
     const innsendingsId = '12345678-1234-1234-1234-12345678abcd';
     const attachmentId = 'eiajfi8';
@@ -18,7 +18,7 @@ describe('nologinFileUpload', () => {
     const blob = new Blob([new Uint8Array([1, 2, 3])], { type: 'application/octet-stream' });
     getFile.mockResolvedValueOnce(blob);
 
-    const { downloadFile } = useNologinFileUpload('digital', innsendingsId);
+    const { downloadFile } = useFileUpload('digital', innsendingsId);
     const result = await downloadFile(attachmentId, fileId, token);
 
     expect(getFile).toHaveBeenCalledWith(
