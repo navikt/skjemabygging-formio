@@ -46,6 +46,7 @@ import {
 } from './components/standard';
 import { SummaryActivities, SummaryDataFetcher, SummaryDrivingList, SummaryMaalgruppe } from './components/system';
 import RenderComponent from './render/RenderComponent';
+import { HandleAttachmentDownloadFile } from './types';
 
 interface Props {
   activeComponents: Component[];
@@ -56,6 +57,7 @@ interface Props {
   translate: TranslateFunction;
   panelValidationList?: PanelValidation[];
   appConfig: AppConfigContextType;
+  handleDownloadFile?: HandleAttachmentDownloadFile;
 }
 
 const RenderSummaryForm = ({
@@ -67,6 +69,7 @@ const RenderSummaryForm = ({
   translate,
   panelValidationList,
   appConfig,
+  handleDownloadFile,
 }: Props) => {
   if (!submission) {
     return null;
@@ -148,6 +151,7 @@ const RenderSummaryForm = ({
           formProperties={form.properties}
           panelValidationList={panelValidationList}
           appConfig={appConfig}
+          handleDownloadFile={handleDownloadFile}
         />
       ))}
       {activeAttachmentUploadsPanel && (
@@ -161,6 +165,7 @@ const RenderSummaryForm = ({
           formProperties={form.properties}
           panelValidationList={panelValidationList}
           appConfig={appConfig}
+          handleDownloadFile={handleDownloadFile}
         />
       )}
     </>

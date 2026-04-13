@@ -6,14 +6,13 @@ import {
   SubmissionAttachment,
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { useAttachmentUpload } from '../../../../components/attachment/AttachmentUploadContext';
 import { FormComponentProps } from '../../../types';
 
 const SummaryAttachmentUpload = (props: FormComponentProps) => {
-  const { component, submission, translate, formProperties, appConfig } = props;
+  const { component, submission, translate, formProperties, appConfig, handleDownloadFile } = props;
   const { label } = component;
-  const { handleDownloadFile } = useAttachmentUpload();
   const attachmentDownloadEnabled = enableAttachmentDownload(appConfig.submissionMethod);
+  const canDownloadAttachment = attachmentDownloadEnabled && !!handleDownloadFile;
   const submissionAttachments = submission?.attachments?.filter(
     (attachment) => navFormUtils.getNavId(component) === attachment.navId,
   );
@@ -40,9 +39,9 @@ const SummaryAttachmentUpload = (props: FormComponentProps) => {
                     as="li"
                     key={file.fileId}
                     file={{ name: file.fileName, size: file.size }}
-                    href={attachmentDownloadEnabled ? '#' : undefined}
+                    href={canDownloadAttachment ? '#' : undefined}
                     onFileClick={
-                      attachmentDownloadEnabled
+                      canDownloadAttachment
                         ? (event) => {
                             event.preventDefault();
                             void handleDownloadFile(submissionAttachment.attachmentId, file.fileId, file.fileName);
