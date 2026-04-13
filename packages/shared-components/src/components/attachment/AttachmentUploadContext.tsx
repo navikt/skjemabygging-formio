@@ -8,6 +8,7 @@ import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
+import { downloadBlob } from '../../util/blob/blob';
 import { validateFileUpload, validateTotalFilesSize } from '../../util/form/attachment-validation/attachmentValidation';
 import { normalizeAttachmentDownloadFileName } from './utils/attachmentUploadUtils';
 
@@ -257,12 +258,7 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
       removeError(attachmentId);
       const token = await getUploadToken();
       const downloadedFile = await downloadFile(attachmentId, fileId, token);
-      const objectUrl = URL.createObjectURL(downloadedFile);
-      const link = document.createElement('a');
-      link.href = objectUrl;
-      link.download = normalizeAttachmentDownloadFileName(fileName);
-      link.click();
-      URL.revokeObjectURL(objectUrl);
+      downloadBlob(downloadedFile, normalizeAttachmentDownloadFileName(fileName));
     } catch (error: any) {
       if (isAuthenticationError(error)) {
         handleSessionExpired();
