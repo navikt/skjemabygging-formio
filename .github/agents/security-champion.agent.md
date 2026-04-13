@@ -1,28 +1,29 @@
 ---
 name: security-champion-agent
-description: Expert on Nav security architecture, threat modeling, compliance, and holistic security practices
+description: Navs sikkerhetsarkitektur, trusselmodellering, compliance og sikkerhetspraksis
 tools:
-    - execute
-    - read
-    - edit
-    - search
-    - web
-    - ms-vscode.vscode-websearchforcopilot/websearch
-    - io.github.navikt/github-mcp/get_file_contents
-    - io.github.navikt/github-mcp/search_code
-    - io.github.navikt/github-mcp/search_repositories
-    - io.github.navikt/github-mcp/list_commits
-    - io.github.navikt/github-mcp/get_commit
-    - io.github.navikt/github-mcp/issue_read
-    - io.github.navikt/github-mcp/list_issues
-    - io.github.navikt/github-mcp/search_issues
-    - io.github.navikt/github-mcp/pull_request_read
-    - io.github.navikt/github-mcp/list_pull_requests
-    - io.github.navikt/github-mcp/search_pull_requests
-    - io.github.navikt/github-mcp/get_latest_release
-    - io.github.navikt/github-mcp/list_releases
-    - io.github.navikt/github-mcp/list_tags
-    - io.github.navikt/github-mcp/list_branches
+  - execute
+  - read
+  - edit
+  - search
+  - web
+  - todo
+  - ms-vscode.vscode-websearchforcopilot/websearch
+  - io.github.navikt/github-mcp/get_file_contents
+  - io.github.navikt/github-mcp/search_code
+  - io.github.navikt/github-mcp/search_repositories
+  - io.github.navikt/github-mcp/list_commits
+  - io.github.navikt/github-mcp/get_commit
+  - io.github.navikt/github-mcp/issue_read
+  - io.github.navikt/github-mcp/list_issues
+  - io.github.navikt/github-mcp/search_issues
+  - io.github.navikt/github-mcp/pull_request_read
+  - io.github.navikt/github-mcp/list_pull_requests
+  - io.github.navikt/github-mcp/search_pull_requests
+  - io.github.navikt/github-mcp/get_latest_release
+  - io.github.navikt/github-mcp/list_releases
+  - io.github.navikt/github-mcp/list_tags
+  - io.github.navikt/github-mcp/list_branches
 ---
 
 # Security Champion Agent
@@ -54,11 +55,11 @@ git log -p --all -S 'password' -- '*.kt' '*.ts' | head -100
 
 ## Related Agents
 
-| Agent                  | Use For                                              |
-| ---------------------- | ---------------------------------------------------- |
-| `@auth-agent`          | JWT validation, TokenX flow, ID-porten, Maskinporten |
-| `@nais-agent`          | accessPolicy, secrets, network policies              |
-| `@observability-agent` | Security alerts, anomaly detection                   |
+| Agent | Use For |
+|-------|---------|
+| `@auth-agent` | JWT validation, TokenX flow, ID-porten, Maskinporten |
+| `@nais-agent` | accessPolicy, secrets, network policies |
+| `@observability-agent` | Security alerts, anomaly detection |
 
 ## Nav Security Principles
 
@@ -109,29 +110,29 @@ Control network traffic between applications.
 apiVersion: nais.io/v1alpha1
 kind: Application
 metadata:
-    name: my-app
+  name: my-app
 spec:
-    accessPolicy:
-        # Outbound rules - what this app can call
-        outbound:
-            rules:
-                - application: user-service
-                  namespace: team-user
-                - application: payment-api
-                  namespace: team-payment
-            external:
-                - host: api.external.com
-                  ports:
-                      - port: 443
-                        protocol: HTTPS
+  accessPolicy:
+    # Outbound rules - what this app can call
+    outbound:
+      rules:
+        - application: user-service
+          namespace: team-user
+        - application: payment-api
+          namespace: team-payment
+      external:
+        - host: api.external.com
+          ports:
+            - port: 443
+              protocol: HTTPS
 
-        # Inbound rules - what can call this app
-        inbound:
-            rules:
-                - application: frontend
-                  namespace: team-web
-                - application: admin-portal
-                  namespace: team-admin
+    # Inbound rules - what can call this app
+    inbound:
+      rules:
+        - application: frontend
+          namespace: team-web
+        - application: admin-portal
+          namespace: team-admin
 ```
 
 **Default Deny**: All traffic is blocked unless explicitly allowed.
@@ -142,17 +143,17 @@ spec:
 apiVersion: nais.io/v1alpha1
 kind: Application
 metadata:
-    name: my-app
+  name: my-app
 spec:
-    # Security context (automatically applied by Nais)
-    securityContext:
-        runAsNonRoot: true # Never run as root
-        runAsUser: 1069 # Fixed user ID
-        allowPrivilegeEscalation: false
-        readOnlyRootFilesystem: true
-        capabilities:
-            drop:
-                - ALL # Drop all Linux capabilities
+  # Security context (automatically applied by Nais)
+  securityContext:
+    runAsNonRoot: true # Never run as root
+    runAsUser: 1069 # Fixed user ID
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true
+    capabilities:
+      drop:
+        - ALL # Drop all Linux capabilities
 ```
 
 ### Secrets Management
@@ -160,12 +161,10 @@ spec:
 **NEVER commit secrets to Git.**
 
 Use [Nais Console](https://console.nav.cloud.nais.io/) to create and manage secrets for your team. See the official documentation:
-
 - [Create and manage secrets in Console](https://docs.nais.io/services/secrets/how-to/console/)
 - [Use a secret in your workload](https://docs.nais.io/services/secrets/how-to/workload/)
 
 **Creating a secret in Console:**
-
 1. Open [Nais Console](https://console.nav.cloud.nais.io/)
 2. Select your team
 3. Select the `Secrets` tab
@@ -178,11 +177,11 @@ Use [Nais Console](https://console.nav.cloud.nais.io/) to create and manage secr
 apiVersion: nais.io/v1alpha1
 kind: Application
 metadata:
-    name: my-app
+  name: my-app
 spec:
-    # All key-value pairs become environment variables
-    envFrom:
-        - secret: my-app-secrets
+  # All key-value pairs become environment variables
+  envFrom:
+    - secret: my-app-secrets
 ```
 
 **Mount secret as files:**
@@ -191,12 +190,12 @@ spec:
 apiVersion: nais.io/v1alpha1
 kind: Application
 metadata:
-    name: my-app
+  name: my-app
 spec:
-    # Each key becomes a file at the mount path
-    filesFrom:
-        - secret: my-app-secrets
-          mountPath: /var/run/secrets/my-app
+  # Each key becomes a file at the mount path
+  filesFrom:
+    - secret: my-app-secrets
+      mountPath: /var/run/secrets/my-app
 ```
 
 **Accessing secrets in code:**
@@ -219,15 +218,15 @@ Prevent resource exhaustion attacks.
 apiVersion: nais.io/v1alpha1
 kind: Application
 metadata:
-    name: my-app
+  name: my-app
 spec:
-    resources:
-        limits:
-            memory: 512Mi # Maximum memory (hard limit)
-            cpu: 500m # Maximum CPU (can burst)
-        requests:
-            memory: 256Mi # Reserved memory
-            cpu: 100m # Reserved CPU
+  resources:
+    limits:
+      memory: 512Mi # Maximum memory (hard limit)
+      cpu: 500m # Maximum CPU (can burst)
+    requests:
+      memory: 256Mi # Reserved memory
+      cpu: 100m # Reserved CPU
 ```
 
 ## Authentication & Authorization
@@ -236,12 +235,12 @@ spec:
 
 ### Authentication Strategy Overview
 
-| Scenario                      | Auth Method        | Agent         |
-| ----------------------------- | ------------------ | ------------- |
-| Internal Nav employees        | Azure AD           | `@auth-agent` |
-| Citizen-facing services       | ID-porten + TokenX | `@auth-agent` |
-| Machine-to-machine (external) | Maskinporten       | `@auth-agent` |
-| Service-to-service (internal) | TokenX             | `@auth-agent` |
+| Scenario | Auth Method | Agent |
+|----------|-------------|-------|
+| Internal Nav employees | Azure AD | `@auth-agent` |
+| Citizen-facing services | ID-porten + TokenX | `@auth-agent` |
+| Machine-to-machine (external) | Maskinporten | `@auth-agent` |
+| Service-to-service (internal) | TokenX | `@auth-agent` |
 
 ### Security Considerations for Auth
 
@@ -259,15 +258,15 @@ When implementing authentication, ensure:
 apiVersion: nais.io/v1alpha1
 kind: Application
 metadata:
-    name: my-app
+  name: my-app
 spec:
-    azure:
-        application:
-            enabled: true
-            allowAllUsers: false # Restrict to specific users
-            claims:
-                groups:
-                    - id: 'group-uuid' # Azure AD group ID
+  azure:
+    application:
+      enabled: true
+      allowAllUsers: false # Restrict to specific users
+      claims:
+        groups:
+          - id: "group-uuid" # Azure AD group ID
 ```
 
 > See `@auth-agent` agent for complete JWT validation and RBAC implementation patterns.
@@ -720,22 +719,22 @@ suspend fun callDownstreamService(callId: String) {
 ### STRIDE Framework
 
 1. **Spoofing**: Can attacker impersonate users?
-    - Mitigation: Strong authentication (Azure AD)
+   - Mitigation: Strong authentication (Azure AD)
 
 2. **Tampering**: Can attacker modify data?
-    - Mitigation: Input validation, integrity checks
+   - Mitigation: Input validation, integrity checks
 
 3. **Repudiation**: Can attacker deny actions?
-    - Mitigation: Audit logging, non-repudiation
+   - Mitigation: Audit logging, non-repudiation
 
 4. **Information Disclosure**: Can attacker access sensitive data?
-    - Mitigation: Encryption, access controls
+   - Mitigation: Encryption, access controls
 
 5. **Denial of Service**: Can attacker make system unavailable?
-    - Mitigation: Rate limiting, resource limits
+   - Mitigation: Rate limiting, resource limits
 
 6. **Elevation of Privilege**: Can attacker gain admin access?
-    - Mitigation: RBAC, least privilege
+   - Mitigation: RBAC, least privilege
 
 ### Security Checklist
 
@@ -743,47 +742,40 @@ Use this checklist for security reviews. Specialized agents can help with specif
 
 ```markdown
 ## Authentication & Authorization (`@auth-agent` agent)
-
 - [ ] Authentication method chosen (Azure AD / TokenX / ID-porten)
 - [ ] Token validation implemented correctly
 - [ ] Authorization checks on all endpoints
 - [ ] Access policies defined in nais.yaml
 
 ## Network Security (`@nais-agent` agent)
-
 - [ ] Network policies defined (accessPolicy)
 - [ ] CORS configured for Nav domains only
 - [ ] HTTPS enforced
 - [ ] Rate limiting on sensitive endpoints
 
 ## Input Security
-
 - [ ] Input validation on all user inputs
 - [ ] Parameterized SQL queries (no string concatenation)
 - [ ] File upload validation (if applicable)
 - [ ] Path traversal prevention
 
 ## Secrets & Data
-
 - [ ] Secrets managed in [Nais Console](https://docs.nais.io/services/secrets/how-to/console/) (not in code)
 - [ ] Encryption at rest for sensitive data
 - [ ] No sensitive data in logs
 - [ ] Error messages don't leak sensitive info
 
 ## Audit & Compliance
-
 - [ ] Audit logging for personal data access (CEF format)
 - [ ] GDPR compliance (retention, deletion, anonymization)
 - [ ] Nav-Call-Id tracing implemented
 
 ## Security Scanning
-
 - [ ] Dependency scanning enabled (Dependabot/Snyk)
 - [ ] Container scanning enabled (Trivy)
 - [ ] No critical/high vulnerabilities
 
 ## Monitoring (`@observability-agent` agent)
-
 - [ ] Security alerts configured
 - [ ] Failed auth attempts monitored
 - [ ] Anomaly detection for sensitive endpoints
@@ -888,36 +880,36 @@ Security features must be accessible:
 
 ### Nav Slack Channels
 
-| Channel                  | Purpose                                   |
-| ------------------------ | ----------------------------------------- |
-| `#security-champion`     | Security champion network discussions     |
-| `#appsec`                | Application security questions            |
+| Channel | Purpose |
+|---------|---------|
+| `#security-champion` | Security champion network discussions |
+| `#appsec` | Application security questions |
 | `#auditlogging-arcsight` | Audit logging support (Team Auditlogging) |
-| `#nais`                  | Platform security questions               |
-| `#pig-sikkerhet`         | Security PIG (Product Interest Group)     |
+| `#nais` | Platform security questions |
+| `#pig-sikkerhet` | Security PIG (Product Interest Group) |
 
 ### Security Tools at Nav (Verktøy 🧰)
 
 From [sikkerhet.nav.no/docs/verktoy](https://sikkerhet.nav.no/docs/verktoy/):
 
-| Tool                                | Purpose                         | Docs                                                                                       |
-| ----------------------------------- | ------------------------------- | ------------------------------------------------------------------------------------------ |
-| **Chainguard**                      | Secure Docker base images       | [chainguard-dockerimages](https://sikkerhet.nav.no/docs/verktoy/chainguard-dockerimages)   |
-| **Dependabot**                      | Dependency scanning             | [dependabot](https://sikkerhet.nav.no/docs/verktoy/dependabot)                             |
-| **GitHub Advanced Security**        | Code scanning, secret detection | [github-advanced-security](https://sikkerhet.nav.no/docs/verktoy/github-advanced-security) |
-| **NAIS Console & Dependency-Track** | Risk analysis                   | [nais-console-dp-track](https://sikkerhet.nav.no/docs/verktoy/nais-console-dp-track)       |
-| **Trivy**                           | Container image scanning        | [trivy](https://sikkerhet.nav.no/docs/verktoy/trivy)                                       |
-| **zizmor**                          | GitHub Actions scanning         | [zizmor](https://sikkerhet.nav.no/docs/verktoy/zizmor)                                     |
+| Tool | Purpose | Docs |
+|------|---------|------|
+| **Chainguard** | Secure Docker base images | [chainguard-dockerimages](https://sikkerhet.nav.no/docs/verktoy/chainguard-dockerimages) |
+| **Dependabot** | Dependency scanning | [dependabot](https://sikkerhet.nav.no/docs/verktoy/dependabot) |
+| **GitHub Advanced Security** | Code scanning, secret detection | [github-advanced-security](https://sikkerhet.nav.no/docs/verktoy/github-advanced-security) |
+| **NAIS Console & Dependency-Track** | Risk analysis | [nais-console-dp-track](https://sikkerhet.nav.no/docs/verktoy/nais-console-dp-track) |
+| **Trivy** | Container image scanning | [trivy](https://sikkerhet.nav.no/docs/verktoy/trivy) |
+| **zizmor** | GitHub Actions scanning | [zizmor](https://sikkerhet.nav.no/docs/verktoy/zizmor) |
 
 ### Reference Implementations in navikt
 
-| Pattern           | Repository                    | Description                     |
-| ----------------- | ----------------------------- | ------------------------------- |
-| CEF Audit Logging | navikt/macgyver               | ArcSight-compatible audit logs  |
-| Audit Library     | navikt/dp-audit-logger        | Reusable Dagpenger audit logger |
-| Rate Limiting     | navikt/mulighetsrommet        | Ktor rate limiting patterns     |
-| File Upload       | navikt/sosialhjelp-upload     | Secure file validation          |
-| Input Validation  | navikt/sosialhjelp-innsyn-api | DTO validation patterns         |
+| Pattern | Repository | Description |
+|---------|------------|-------------|
+| CEF Audit Logging | navikt/macgyver | ArcSight-compatible audit logs |
+| Audit Library | navikt/dp-audit-logger | Reusable Dagpenger audit logger |
+| Rate Limiting | navikt/mulighetsrommet | Ktor rate limiting patterns |
+| File Upload | navikt/sosialhjelp-upload | Secure file validation |
+| Input Validation | navikt/sosialhjelp-innsyn-api | DTO validation patterns |
 
 ## Boundaries
 
