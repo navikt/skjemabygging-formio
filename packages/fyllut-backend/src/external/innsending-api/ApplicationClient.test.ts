@@ -50,6 +50,20 @@ describe('ApplicationClient', () => {
       expect(sendInnNockScope.isDone()).toBe(true);
     });
 
+    it('uses octet-stream when upstream content-type header is missing', async () => {
+      const fileContent = Buffer.from('attachment-content');
+      const sendInnNockScope = nock(sendInnConfig.host)
+        .get(`/v1/application-digital/${innsendingsId}/attachments/${attachmentId}/${fileId}`)
+        .matchHeader('authorization', `Bearer ${accessToken}`)
+        .matchHeader('x-innsendingsid', innsendingsId)
+        .reply(200, fileContent);
+
+      const result = await client.downloadFile(accessToken, innsendingsId, attachmentId, fileId);
+
+      expect(result.contentType).toBe('application/octet-stream');
+      expect(sendInnNockScope.isDone()).toBe(true);
+    });
+
     it('throws HttpError when upstream response is not ok', async () => {
       const sendInnNockScope = nock(sendInnConfig.host)
         .get(`/v1/application-digital/${innsendingsId}/attachments/${attachmentId}/${fileId}`)

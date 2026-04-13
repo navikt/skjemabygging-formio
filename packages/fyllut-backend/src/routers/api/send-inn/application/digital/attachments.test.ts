@@ -74,7 +74,7 @@ describe('[endpoint] send-inn/application/digital/attachments', () => {
       expect(pipelineMock).not.toHaveBeenCalled();
     });
 
-    it('uses octet-stream fallback when content-type is missing', async () => {
+    it('streams file content when optional download headers are missing', async () => {
       const fileStream = new ReadableStream({
         start: (controller) => {
           controller.close();
@@ -82,6 +82,7 @@ describe('[endpoint] send-inn/application/digital/attachments', () => {
       });
       vi.spyOn(applicationService, 'downloadFile').mockResolvedValue({
         fileStream,
+        contentType: 'application/octet-stream',
       });
 
       const req = mockRequest({
@@ -96,6 +97,7 @@ describe('[endpoint] send-inn/application/digital/attachments', () => {
       await attachmentsEndpoints.get(req, res, next);
 
       expect(res.contentType).toHaveBeenCalledWith('application/octet-stream');
+      expect(res.setHeader).not.toHaveBeenCalled();
       expect(next).not.toHaveBeenCalled();
     });
   });
