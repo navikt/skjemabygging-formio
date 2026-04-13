@@ -76,8 +76,15 @@ const inferValueSchema = (component: Component, context: SchemaGenerationContext
     return addressShape(component);
   }
 
-  if (component.type === 'identity' || component.type === 'fnrfield') {
+  if (component.type === 'identity') {
     return identityShape(component);
+  }
+
+  if (component.type === 'fnrfield') {
+    return withCommonValidation(component, {
+      type: 'string',
+      title: component.label,
+    });
   }
 
   if (component.type === 'sender') {

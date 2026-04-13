@@ -46,12 +46,11 @@ const identityShape = (component: Component): JsonSchema => ({
   title: component.label,
   type: 'object',
   properties: {
+    harDuFodselsnummer: { type: 'string', title: 'Do you have identity number' },
     identitetsnummer: { type: 'string', title: 'Identity number' },
-    identitetsNummer: { type: 'string', title: 'Identity number' },
-    nationalIdentityNumber: { type: 'string', title: 'National identity number' },
+    fodselsdato: { type: 'string', title: 'Birth date' },
   },
-  additionalProperties: true,
-  $comment: 'Identity component shape may vary between forms and is intentionally permissive.',
+  additionalProperties: false,
 });
 
 const senderShape = (component: Component): JsonSchema => ({

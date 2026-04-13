@@ -231,9 +231,9 @@ describe('generateSchema', () => {
       oneOf: expect.any(Array),
       title: 'Telefon',
     });
-    expect(formDataSchema.properties?.identitet).toMatchObject({
+    expect(formDataSchema.properties?.identitet).toEqual({
       title: 'Identitet',
-      type: 'object',
+      type: 'string',
     });
     expect(formDataSchema.properties?.adresse).toMatchObject({
       title: 'Adresse',
@@ -626,12 +626,11 @@ describe('generateSchema', () => {
       type: 'object',
     });
     expect(formDataSchema.properties?.identitet).toEqual({
-      $comment: 'Identity component shape may vary between forms and is intentionally permissive.',
-      additionalProperties: true,
+      additionalProperties: false,
       properties: {
-        identitetsNummer: { title: 'Identity number', type: 'string' },
+        fodselsdato: { title: 'Birth date', type: 'string' },
+        harDuFodselsnummer: { title: 'Do you have identity number', type: 'string' },
         identitetsnummer: { title: 'Identity number', type: 'string' },
-        nationalIdentityNumber: { title: 'National identity number', type: 'string' },
       },
       title: 'Identity',
       type: 'object',
