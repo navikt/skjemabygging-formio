@@ -10,7 +10,7 @@ import { responseToError } from '../../utils/errorHandling';
 
 export interface DownloadedAttachment {
   fileStream: ReadableStream;
-  contentType?: string;
+  contentType: string;
   contentDisposition?: string;
   contentLength?: string;
 }
@@ -187,18 +187,18 @@ const ApplicationClient = (config: ConfigType, type: 'nologin' | 'digital') => {
       throw new Error('Missing response body while downloading file');
     }
 
-    const contentLength = response.headers.get('content-length');
+    const contentLength = response.headers.get('content-length') ?? undefined;
     logger.info(`${innsendingsId}: Successfully downloaded file for ${type} application`, {
       ...logMeta,
       contentLength,
     });
-    const contentType = response.headers.get('content-type');
-    const contentDisposition = response.headers.get('content-disposition');
+    const contentType = response.headers.get('content-type') ?? 'application/octet-stream';
+    const contentDisposition = response.headers.get('content-disposition') ?? undefined;
     return {
       fileStream,
-      contentType: contentType ?? undefined,
-      contentDisposition: contentDisposition ?? undefined,
-      contentLength: contentLength ?? undefined,
+      contentType,
+      contentDisposition,
+      contentLength,
     };
   };
 

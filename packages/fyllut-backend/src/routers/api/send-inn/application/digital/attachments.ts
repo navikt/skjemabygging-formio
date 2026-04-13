@@ -79,7 +79,7 @@ const get = async (req: Request, res: Response, next: NextFunction) => {
       'digital',
     );
 
-    res.contentType(contentType ?? 'application/octet-stream');
+    res.contentType(contentType);
     if (contentLength) {
       res.setHeader('Content-Length', contentLength);
     }
