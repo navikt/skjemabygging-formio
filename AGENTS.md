@@ -29,10 +29,6 @@ More specific, advanced, or workflow/package-specific guidance belongs in skills
 - Do not add new `@testing-library` tests, and do not expand existing ones.
 - When touching UI behavior currently covered by legacy `@testing-library` tests, prefer replacing/migrating them to Cypress instead of extending them.
 
-## Planning
-
-- For repository plan documents, use `@.github/agents/planner.agent.md`.
-
 ## Starting dev servers (sub-agents)
 
 Use `pnpm start:fyllut:mocks` or `pnpm start:bygger:mocks` — see the `start-dev-servers` skill for the full pattern.
