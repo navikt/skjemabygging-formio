@@ -1,4 +1,4 @@
-import { Form } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, submissionTypesUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { buildObjectSchemaFromComponents } from './buildObjectSchemaFromComponents';
 import { JsonSchemaObject } from './types';
 
@@ -6,6 +6,7 @@ const generateSchema = (form: Form): JsonSchemaObject => {
   const formDataSchema = buildObjectSchemaFromComponents(form.components, {
     formPath: form.path,
     revision: form.revision,
+    supportsPersonalIdAttachment: submissionTypesUtils.isDigitalNoLoginSubmission(form.properties?.submissionTypes),
   });
   const { attachments, ...dataProperties } = formDataSchema.properties;
 

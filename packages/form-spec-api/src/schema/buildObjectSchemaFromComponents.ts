@@ -58,6 +58,45 @@ const buildAttachmentItemSchema = (component: Component, context: SchemaGenerati
   additionalProperties: false,
 });
 
+const personalIdAttachmentValues = [
+  'norwegianPassport',
+  'foreignPassport',
+  'nationalIdEU',
+  'driversLicense',
+  'driversLicenseEU',
+] as const;
+
+const personalIdAttachmentItemSchema: JsonSchemaObject = {
+  type: 'object',
+  title: 'Personal ID',
+  properties: {
+    attachmentId: {
+      type: 'string',
+      enum: ['personal-id'],
+    },
+    navId: {
+      type: 'string',
+      enum: ['personal-id'],
+    },
+    type: {
+      type: 'string',
+      enum: ['personal-id'],
+    },
+    value: {
+      type: 'string',
+      enum: [...personalIdAttachmentValues],
+    },
+    title: { type: 'string' },
+    additionalDocumentation: { type: 'string' },
+    files: {
+      type: 'array',
+      items: uploadedFileSchema,
+    },
+  },
+  required: ['attachmentId', 'navId', 'type'],
+  additionalProperties: false,
+};
+
 const warnIgnoredAttachmentPanelComponent = (
   component: Component,
   attachmentPanel: Component,
@@ -179,6 +218,9 @@ const buildObjectSchemaFromComponents = (
   context: SchemaGenerationContext,
 ): JsonSchemaObject => {
   const result = buildObjectSchemaFromComponentsInternal(components, context);
+  if (context.supportsPersonalIdAttachment) {
+    result.attachmentItemSchemas.unshift(personalIdAttachmentItemSchema);
+  }
   const attachmentsSchema = buildAttachmentsSchema(result.attachmentItemSchemas);
 
   if (attachmentsSchema) {

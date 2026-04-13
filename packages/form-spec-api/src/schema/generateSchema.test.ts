@@ -1,4 +1,4 @@
-import { Component, Form } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, Form, SubmissionType } from '@navikt/skjemadigitalisering-shared-domain';
 import { vi } from 'vitest';
 import { logger } from '../logger';
 import { generateSchema } from './generateSchema';
@@ -12,7 +12,11 @@ import {
 } from './testdata/anonymizedExamples';
 import { JsonSchemaObject } from './types';
 
-const createForm = (components: Component[] = [], introPageEnabled = false): Form => ({
+const createForm = (
+  components: Component[] = [],
+  introPageEnabled = false,
+  submissionTypes: SubmissionType[] = [],
+): Form => ({
   components,
   ...(introPageEnabled
     ? {
@@ -32,7 +36,7 @@ const createForm = (components: Component[] = [], introPageEnabled = false): For
   path: 'test-form',
   properties: {
     skjemanummer: 'NAV 00-00.00',
-    submissionTypes: [],
+    submissionTypes,
     subsequentSubmissionTypes: [],
     tema: 'TEST',
   },
@@ -268,6 +272,56 @@ describe('generateSchema', () => {
       enum: ['ettersender', 'leggerVedNaa'],
       title: 'Vedlegg',
       type: 'string',
+    });
+  });
+
+  it('allows the implicit personal-id attachment for DIGITAL_NO_LOGIN forms without attachment panels', () => {
+    const schema = generateSchema(createForm([], false, ['DIGITAL_NO_LOGIN']));
+
+    expect(getSubmissionPayloadSchema(schema).properties?.attachments).toEqual({
+      type: 'array',
+      title: 'Attachments',
+      items: {
+        type: 'object',
+        title: 'Personal ID',
+        properties: {
+          attachmentId: {
+            type: 'string',
+            enum: ['personal-id'],
+          },
+          navId: {
+            type: 'string',
+            enum: ['personal-id'],
+          },
+          type: {
+            type: 'string',
+            enum: ['personal-id'],
+          },
+          value: {
+            type: 'string',
+            enum: ['norwegianPassport', 'foreignPassport', 'nationalIdEU', 'driversLicense', 'driversLicenseEU'],
+          },
+          title: { type: 'string' },
+          additionalDocumentation: { type: 'string' },
+          files: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                fileId: { type: 'string' },
+                attachmentId: { type: 'string' },
+                innsendingId: { type: 'string' },
+                fileName: { type: 'string' },
+                size: { type: 'number' },
+              },
+              required: ['fileId', 'attachmentId', 'innsendingId', 'fileName', 'size'],
+              additionalProperties: false,
+            },
+          },
+        },
+        required: ['attachmentId', 'navId', 'type'],
+        additionalProperties: false,
+      },
     });
   });
 

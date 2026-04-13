@@ -31,6 +31,7 @@ type JsonSchemaObject = JsonSchema & {
 type SchemaGenerationContext = {
   formPath: string;
   revision?: number;
+  supportsPersonalIdAttachment?: boolean;
 };
 
 export type { JsonSchema, JsonSchemaObject, SchemaGenerationContext };
