@@ -73,21 +73,41 @@ describe('Submission type utils', () => {
     });
   });
 
-  describe('submissionTypesUtils.isNoneSubmission', () => {
+  describe('submissionTypesUtils.isPaperNoCoverPageSubmission', () => {
     it('should return true when submissionTypes is an empty list', () => {
-      expect(submissionTypesUtils.isNoneSubmission([])).toBeTruthy();
+      expect(submissionTypesUtils.isPaperNoCoverPageSubmission([])).toBeTruthy();
+    });
+
+    it('should return true when submissionTypes contains only PAPER_NO_COVER_PAGE', () => {
+      expect(submissionTypesUtils.isPaperNoCoverPageSubmission(['PAPER_NO_COVER_PAGE'])).toBeTruthy();
+    });
+
+    it('should return true when submissionTypes contains PAPER_NO_COVER_PAGE and STATIC_PDF', () => {
+      expect(submissionTypesUtils.isPaperNoCoverPageSubmission(['PAPER_NO_COVER_PAGE', 'STATIC_PDF'])).toBeTruthy();
+    });
+
+    it('should return false when submissionTypes contains PAPER_NO_COVER_PAGE and a regular type', () => {
+      expect(submissionTypesUtils.isPaperNoCoverPageSubmission(['PAPER_NO_COVER_PAGE', 'DIGITAL'])).toBeFalsy();
+    });
+
+    it('should return false when submissionTypes contains only STATIC_PDF', () => {
+      expect(submissionTypesUtils.isPaperNoCoverPageSubmission(['STATIC_PDF'])).toBeFalsy();
     });
 
     it('should return false when submissionTypes contains DIGITAL', () => {
-      expect(submissionTypesUtils.isNoneSubmission(['DIGITAL'])).toBeFalsy();
+      expect(submissionTypesUtils.isPaperNoCoverPageSubmission(['DIGITAL'])).toBeFalsy();
     });
 
     it('should return false when submissionTypes contains PAPER', () => {
-      expect(submissionTypesUtils.isNoneSubmission(['PAPER'])).toBeFalsy();
+      expect(submissionTypesUtils.isPaperNoCoverPageSubmission(['PAPER'])).toBeFalsy();
     });
 
     it('should return false when submissionTypes contains both PAPER and DIGITAL', () => {
-      expect(submissionTypesUtils.isNoneSubmission(['PAPER', 'DIGITAL'])).toBeFalsy();
+      expect(submissionTypesUtils.isPaperNoCoverPageSubmission(['PAPER', 'DIGITAL'])).toBeFalsy();
+    });
+
+    it('should return false when submissionTypes is undefined', () => {
+      expect(submissionTypesUtils.isPaperNoCoverPageSubmission(undefined)).toBeFalsy();
     });
   });
 });

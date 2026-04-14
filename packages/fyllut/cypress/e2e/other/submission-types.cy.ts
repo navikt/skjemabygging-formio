@@ -395,6 +395,27 @@ describe('Submission Type', () => {
     });
   });
 
+  describe('Type: Paper No Cover Page', () => {
+    beforeEach(() => {
+      cy.visit('/fyllut/papernocoverpage');
+      cy.defaultWaits();
+    });
+
+    it('navigates to ingen-innsending page from summary', () => {
+      cy.clickStart();
+      cy.url().should('not.include', '?');
+
+      cy.findByRole('textbox', { name: 'Tekstfelt' }).type('test');
+      cy.clickNextStep();
+
+      cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
+      cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions }).click();
+
+      cy.url().should('include', '/papernocoverpage/ingen-innsending');
+      cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).should('exist');
+    });
+  });
+
   describe('Other', () => {
     it('Make sure the url is correct when you already have search params.', () => {
       cy.visit('/fyllut/stpaperdigital?lang=en');

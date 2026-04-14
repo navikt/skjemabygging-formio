@@ -107,6 +107,7 @@ import {
   organizationNumberTranslations,
 } from '../data/forms-api/components/organizationNumberForm';
 import { panelTestForm, panelTranslations } from '../data/forms-api/components/panelForm';
+import { paperNoCoverPageForm, paperNoCoverPageTranslations } from '../data/forms-api/components/paperNoCoverPageForm';
 import { phoneNumberForm, phoneNumberTranslations } from '../data/forms-api/components/phoneNumberForm';
 import { radioPanelForm, radioPanelTranslations } from '../data/forms-api/components/radioPanelForm';
 import {
@@ -205,6 +206,7 @@ const allForms = [
   { form: conditionalRowForm(), translations: conditionalRowTranslations() },
   { form: simpleConditionalForm(), translations: simpleConditionalTranslations() },
   { form: staticPdfForm(), translations: staticPdfTranslations() },
+  { form: paperNoCoverPageForm(), translations: paperNoCoverPageTranslations() },
   { form: nologinForm(), translations: nologinTranslations() },
   { form: numberForm(), translations: numberTranslations() },
   { form: textAreaForm(), translations: textAreaTranslations() },

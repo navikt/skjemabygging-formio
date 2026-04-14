@@ -23,7 +23,8 @@ import FormMainContent from '../FormMainContent';
 
 const submissionTypeIncludesPaperOrIsNoSubmission = (submissionTypes?: SubmissionType[]) =>
   submissionTypes &&
-  (submissionTypesUtils.isNoneSubmission(submissionTypes) || submissionTypesUtils.isPaperSubmission(submissionTypes));
+  (submissionTypesUtils.isPaperNoCoverPageSubmission(submissionTypes) ||
+    submissionTypesUtils.isPaperSubmission(submissionTypes));
 
 export function PrepareLetterPage() {
   useEffect(() => scrollToAndSetFocus('main', 'start'), []);
