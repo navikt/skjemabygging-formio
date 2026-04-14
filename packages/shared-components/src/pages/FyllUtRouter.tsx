@@ -27,18 +27,15 @@ const FyllUtRouter = ({ form }: Props) => {
     <FormProvider form={form}>
       <SendInnProvider>
         <Routes>
-          <Route element={<FormLayout />}>
+          <Route
+            element={
+              <AttachmentUploadProvider>
+                <FormLayout />
+              </AttachmentUploadProvider>
+            }
+          >
             <Route path="oppsummering" element={<SummaryPage />} />
-            {attachmentPageEnabled && (
-              <Route
-                path="vedlegg"
-                element={
-                  <AttachmentUploadProvider>
-                    <AttachmentsUploadPage />
-                  </AttachmentUploadProvider>
-                }
-              />
-            )}
+            {attachmentPageEnabled && <Route path="vedlegg" element={<AttachmentsUploadPage />} />}
             <Route path=":panelSlug" element={<FillInFormPage />} />
             <Route path="" element={<IntroPage />} />
             <Route path="legitimasjon" element={<UploadPersonalIdPage />} />

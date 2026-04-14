@@ -13,6 +13,7 @@ router.param('attachmentId', paramValidation.attachmentId);
 router.param('fileId', paramValidation.fileId);
 
 router.post('/:innsendingsId/attachments/:attachmentId', uploadSingleFile('filinnhold'), attachmentsEndpoints.post);
+router.get('/:innsendingsId/attachments/:attachmentId/:fileId', attachmentsEndpoints.get);
 router.delete('/:innsendingsId/attachments/:attachmentId', attachmentsEndpoints.delete);
 router.delete('/:innsendingsId/attachments/:attachmentId/*fileId', attachmentsEndpoints.delete);
 router.post('/:innsendingsId', azurePdfGeneratorToken, applicationEndpoints.post);

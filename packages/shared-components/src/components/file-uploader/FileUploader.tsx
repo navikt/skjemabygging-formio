@@ -1,5 +1,10 @@
 import { Button, FileItem, HStack, TextField, VStack } from '@navikt/ds-react';
-import { AttachmentSettingValues, SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  AttachmentSettingValues,
+  enableAttachmentDownload,
+  SubmissionAttachment,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { ChangeEvent, MutableRefObject, ReactNode, useCallback } from 'react';
 import { fileUploadErrorParams } from '../../constants/fileUpload';
 import { useAppConfig } from '../../context/config/configContext';
@@ -47,8 +52,14 @@ const FileUploader = ({
   const styles = useStyles();
   const { logEvent, submissionMethod } = useAppConfig();
   const { form } = useForm();
-  const { changeAttachmentValue, handleDeleteFile, submissionAttachments, errors, uploadsInProgress } =
-    useAttachmentUpload();
+  const {
+    changeAttachmentValue,
+    handleDeleteFile,
+    handleDownloadFile,
+    submissionAttachments,
+    errors,
+    uploadsInProgress,
+  } = useAttachmentUpload();
   const { attachmentId } = initialAttachment;
   const attachment = submissionAttachments.find((attachment) => attachment.attachmentId === attachmentId);
 
@@ -98,6 +109,10 @@ const FileUploader = ({
     return handleDeleteFile(attachmentId, fileId, file);
   };
 
+  const handleDownloadFileItem = (fileId: string, fileName: string) => {
+    return handleDownloadFile(attachmentId, fileId, fileName);
+  };
+
   return (
     <VStack gap="space-24" data-cy={`upload-button-${attachmentId}`}>
       {(!showButton || fileItems.length > 0) && (
@@ -106,6 +121,7 @@ const FileUploader = ({
           uploaded={uploadedFiles}
           inProgress={inProgress}
           onDeleteFileItem={handleDeleteFileItem}
+          onDownloadFileItem={enableAttachmentDownload(submissionMethod) ? handleDownloadFileItem : undefined}
           translationParams={fileUploadErrorParams}
         />
       )}

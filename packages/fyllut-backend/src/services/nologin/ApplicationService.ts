@@ -8,7 +8,10 @@ import {
   UploadedFile,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { ConfigType } from '../../config/types';
-import ApplicationClient, { ApplicationClientType } from '../../external/innsending-api/ApplicationClient';
+import ApplicationClient, {
+  ApplicationClientType,
+  DownloadedAttachment,
+} from '../../external/innsending-api/ApplicationClient';
 import { assembleNologinSoknadBody } from '../../routers/api/helpers/nologin';
 import { stringifyPdf } from '../../routers/api/helpers/pdfUtils';
 import { LogMetadata } from '../../types/log';
@@ -43,6 +46,16 @@ class ApplicationService {
     type: 'nologin' | 'digital' = 'nologin',
   ): Promise<void> {
     return this.clients[type].deleteFile(accessToken, innsendingsId, attachmentId, fileId);
+  }
+
+  public async downloadFile(
+    accessToken: string,
+    innsendingsId: string,
+    attachmentId: string,
+    fileId: string,
+    type: 'nologin' | 'digital' = 'nologin',
+  ): Promise<DownloadedAttachment> {
+    return this.clients[type].downloadFile(accessToken, innsendingsId, attachmentId, fileId);
   }
 
   public async submit(

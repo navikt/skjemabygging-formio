@@ -1,4 +1,4 @@
-import { checkbox, container, panel, textField, dataGrid } from '../../../form-builder/components';
+import { checkbox, container, dataGrid, panel, textField } from '../../../form-builder/components';
 import form from '../../../form-builder/form/form';
 import formProperties from '../../../form-builder/form/formProperties';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
