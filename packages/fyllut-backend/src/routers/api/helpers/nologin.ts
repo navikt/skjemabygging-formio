@@ -62,8 +62,8 @@ const assembleNologinSoknadBody = (
           return validateAttachment(
             {
               attachmentCode: attachment.type === 'personal-id' ? 'K2' : (component?.properties?.vedleggskode ?? ''),
-              label: translate(attachment.title ?? component?.label ?? ''),
-              title: translate(component?.properties?.vedleggstittel ?? attachment.title ?? ''),
+              label: translate(attachment.title ?? component?.label ?? ''), // TODO filtrere?
+              title: translate(component?.properties?.vedleggstittel ?? attachment.title ?? ''), // TODO filtrere?
               uploadStatus: attachment.type === 'personal-id' ? 'LastetOpp' : mapToStatus(attachment.value),
               fileIds: attachment.files?.map((f) => f.fileId),
               description: component?.description ? translate(component?.description) : null,

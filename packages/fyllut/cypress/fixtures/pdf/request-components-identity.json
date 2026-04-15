@@ -38,6 +38,7 @@
     },
     {
       "label": "Underskrift",
+      "visningsVariant": "UNDERSKRIFT",
       "verdiliste": [
         {
           "label": "",
