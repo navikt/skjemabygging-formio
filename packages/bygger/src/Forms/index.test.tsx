@@ -34,7 +34,7 @@ describe('FormsRouter', () => {
           <FeedbackProvider>
             <AppConfigProvider featureToggles={featureToggles} baseUrl={DEFAULT_PROJECT_URL}>
               <LanguagesProvider translations={{}}>
-                <AuthenticatedApp serverURL={DEFAULT_PROJECT_URL} />
+                <AuthenticatedApp />
               </LanguagesProvider>
             </AppConfigProvider>
           </FeedbackProvider>

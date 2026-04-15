@@ -5,7 +5,7 @@ import createMockImplementation, { DEFAULT_PROJECT_URL } from '../../test/backen
 import NavFormBuilder from './NavFormBuilder';
 import testform from './testdata/conditional-multiple-dependencies';
 
-const findClosestWithAttribute = (element, { name, value }) => {
+const findClosestWithAttribute = (element: HTMLElement, { name, value }: { name: string; value: string }) => {
   if (element.getAttribute(name) === value) {
     return element;
   }
@@ -14,6 +14,12 @@ const findClosestWithAttribute = (element, { name, value }) => {
   }
   return findClosestWithAttribute(element.parentElement, { name, value });
 };
+
+const getBuilderComponent = (element: HTMLElement) => {
+  return findClosestWithAttribute(element, BUILDER_COMP_TESTID_ATTR) as HTMLElement;
+};
+
+const mockConfirm = (result: boolean) => vi.spyOn(window, 'confirm').mockImplementation(() => result);
 
 const BUILDER_COMP_TESTID_ATTR = { name: 'data-testid', value: 'builder-component' };
 
@@ -27,14 +33,14 @@ describe('NavFormBuilder', () => {
   });
 
   beforeEach(() => {
-    vi.spyOn(NavFormioJs.Formio, 'fetch').mockImplementation(createMockImplementation());
+    vi.spyOn(NavFormioJs.Formio, 'fetch').mockImplementation(createMockImplementation() as never);
   });
 
   afterEach(async () => {
     fetchMock.resetMocks();
     vi.restoreAllMocks();
     cleanup();
-    await waitFor(() => Object.keys(NavFormioJs.Formio.forms).length === 0);
+    await waitFor(() => Object.keys((NavFormioJs.Formio as any).forms).length === 0);
   });
 
   describe('mounting', () => {
@@ -43,16 +49,16 @@ describe('NavFormBuilder', () => {
       const { unmount } = render(
         <NavFormBuilder form={testform} onChange={onChangeMock} formBuilderOptions={DEFAULT_FORM_BUILDER_OPTIONS} />,
       );
-      await waitFor(() => Object.keys(NavFormioJs.Formio.forms).length > 0);
+      await waitFor(() => Object.keys((NavFormioJs.Formio as any).forms).length > 0);
       unmount();
-      await waitFor(() => Object.keys(NavFormioJs.Formio.forms).length === 0);
+      await waitFor(() => Object.keys((NavFormioJs.Formio as any).forms).length === 0);
     });
   });
 
   describe('A form with conditional dependencies', () => {
-    let onChangeMock;
-    let onReadyMock;
-    let rerender;
+    let onChangeMock: any;
+    let onReadyMock: any;
+    let rerender: any;
 
     beforeEach(async () => {
       onChangeMock = vi.fn();
@@ -66,7 +72,11 @@ describe('NavFormBuilder', () => {
         />,
       );
       rerender = outRerender;
-      await waitFor(() => onReadyMock.mock.calls.length === 1);
+      await waitFor(() => {
+        if (onReadyMock.mock.calls.length !== 1) {
+          throw new Error('NavFormBuilder not ready yet');
+        }
+      });
       onChangeMock.mockReset();
     });
 
@@ -78,7 +88,7 @@ describe('NavFormBuilder', () => {
       const leggTilNyttStegKnapp = await screen.findByRole('button', { name: 'Legg til nytt steg' });
       await userEvent.click(leggTilNyttStegKnapp);
       expect(await screen.findByRole('link', { name: 'Page 3' })).toBeTruthy();
-      await waitFor(() => onChangeMock.mock.calls.length === 1);
+      await waitFor(() => expect(onChangeMock.mock.calls).toHaveLength(1));
     }, 10000);
 
     describe('remove button', () => {
@@ -86,9 +96,7 @@ describe('NavFormBuilder', () => {
         const checkbox = await screen.findByLabelText('Oppgi din favorittfarge');
         expect(checkbox).toBeInTheDocument();
 
-        const builderComponent = findClosestWithAttribute(checkbox, BUILDER_COMP_TESTID_ATTR);
-
-        const removeComponentButton = await within(builderComponent).findByTitle('Slett');
+        const removeComponentButton = await within(getBuilderComponent(checkbox)).findByTitle('Slett');
         await userEvent.click(removeComponentButton);
 
         expect(screen.queryByLabelText('Oppgi din favorittfarge')).not.toBeInTheDocument();
@@ -96,13 +104,11 @@ describe('NavFormBuilder', () => {
       });
 
       it('prompts user when removing a component which other components depends on', async () => {
-        window.confirm = vi.fn().mockImplementation(() => true);
+        mockConfirm(true);
         const fieldset = await screen.findByRole('group', { name: /Your favorite time of the year/ });
         expect(fieldset).toBeInTheDocument();
 
-        const builderComponent = findClosestWithAttribute(fieldset, BUILDER_COMP_TESTID_ATTR);
-
-        const removeComponentButton = await within(builderComponent).findByTitle('Slett');
+        const removeComponentButton = await within(getBuilderComponent(fieldset)).findByTitle('Slett');
         await userEvent.click(removeComponentButton);
 
         expect(screen.queryByRole('group', { name: /Your favorite time of the year/ })).not.toBeInTheDocument();
@@ -110,30 +116,28 @@ describe('NavFormBuilder', () => {
       });
 
       it('does not remove component if user declines prompt', async () => {
-        window.confirm = vi.fn().mockImplementation(() => false);
+        const confirmMock = mockConfirm(false);
         const fieldset = await screen.findByRole('group', { name: /Your favorite time of the year/ });
         expect(fieldset).toBeInTheDocument();
 
-        const builderComponent = findClosestWithAttribute(fieldset, BUILDER_COMP_TESTID_ATTR);
-
-        const removeComponentButton = await within(builderComponent).findByTitle('Slett');
+        const removeComponentButton = await within(getBuilderComponent(fieldset)).findByTitle('Slett');
         await userEvent.click(removeComponentButton);
 
         expect(await screen.findByRole('group', { name: /Your favorite time of the year/ })).toBeInTheDocument();
         expect(onChangeMock.mock.calls).toHaveLength(0);
 
-        expect(window.confirm.mock.calls).toHaveLength(1);
-        expect(window.confirm.mock.calls[0][0]).toBe(
+        expect(confirmMock.mock.calls).toHaveLength(1);
+        expect(confirmMock.mock.calls[0][0]).toBe(
           'En eller flere andre komponenter har avhengighet til denne. Vil du fremdeles slette den?',
         );
       });
 
       it('prompts user when removing component containing component which other components depends on', async () => {
-        window.confirm = vi.fn().mockImplementation(() => true);
+        const confirmMock = mockConfirm(true);
         const panel = await screen.findByText('Tilbakemelding');
         expect(panel).toBeInTheDocument();
 
-        const builderComponent = findClosestWithAttribute(panel, BUILDER_COMP_TESTID_ATTR);
+        const builderComponent = getBuilderComponent(panel);
         const fieldset = await within(builderComponent).findByRole('group', { name: /Your favorite time of the year/ });
         expect(fieldset).toBeInTheDocument();
 
@@ -144,18 +148,18 @@ describe('NavFormBuilder', () => {
         expect(screen.queryByRole('group', { name: /Your favorite time of the year/ })).not.toBeInTheDocument();
         await waitFor(() => expect(onChangeMock.mock.calls).toHaveLength(1));
 
-        expect(window.confirm.mock.calls).toHaveLength(1);
-        expect(window.confirm.mock.calls[0][0]).toBe(
+        expect(confirmMock.mock.calls).toHaveLength(1);
+        expect(confirmMock.mock.calls[0][0]).toBe(
           'En eller flere andre komponenter har avhengighet til denne. Vil du fremdeles slette den?',
         );
       });
 
       it('prompts user when removing attachment panel', async () => {
-        window.confirm = vi.fn().mockImplementation(() => true);
+        const confirmMock = mockConfirm(true);
         onReadyMock.mockReset();
         rerender(
           <NavFormBuilder
-            form={{ ...testform, display: 'skjema' }}
+            form={{ ...testform, display: 'skjema' } as any}
             onChange={onChangeMock}
             onReady={onReadyMock}
             formBuilderOptions={DEFAULT_FORM_BUILDER_OPTIONS}
@@ -165,12 +169,11 @@ describe('NavFormBuilder', () => {
 
         const attachmentPanel = await screen.findByRole('button', { name: 'Vedlegg' });
         expect(attachmentPanel).toBeInTheDocument();
-        const builderComponent = findClosestWithAttribute(attachmentPanel, BUILDER_COMP_TESTID_ATTR);
-        const removeComponentButtons = await within(builderComponent).findAllByTitle('Slett');
+        const removeComponentButtons = await within(getBuilderComponent(attachmentPanel)).findAllByTitle('Slett');
         await userEvent.click(removeComponentButtons[0]);
 
-        expect(window.confirm.mock.calls).toHaveLength(1);
-        expect(window.confirm.mock.calls[0][0]).toBe(
+        expect(confirmMock.mock.calls).toHaveLength(1);
+        expect(confirmMock.mock.calls[0][0]).toBe(
           'Du forsøker nå å slette vedleggspanelet. For å gjenopprette må et predefinert vedleggspanel trekkes inn. Vil du fremdeles slette panelet?',
         );
 
@@ -179,11 +182,11 @@ describe('NavFormBuilder', () => {
       });
 
       it('does not remove attachment panel if user declines prompt', async () => {
-        window.confirm = vi.fn().mockImplementation(() => false);
+        const confirmMock = mockConfirm(false);
         onReadyMock.mockReset();
         rerender(
           <NavFormBuilder
-            form={{ ...testform, display: 'skjema' }}
+            form={{ ...testform, display: 'skjema' } as any}
             onChange={onChangeMock}
             onReady={onReadyMock}
             formBuilderOptions={DEFAULT_FORM_BUILDER_OPTIONS}
@@ -193,12 +196,11 @@ describe('NavFormBuilder', () => {
 
         const attachmentPanel = await screen.findByRole('button', { name: 'Vedlegg' });
         expect(attachmentPanel).toBeInTheDocument();
-        const builderComponent = findClosestWithAttribute(attachmentPanel, BUILDER_COMP_TESTID_ATTR);
-        const removeComponentButtons = await within(builderComponent).findAllByTitle('Slett');
+        const removeComponentButtons = await within(getBuilderComponent(attachmentPanel)).findAllByTitle('Slett');
         await userEvent.click(removeComponentButtons[0]);
 
-        expect(window.confirm.mock.calls).toHaveLength(1);
-        expect(window.confirm.mock.calls[0][0]).toBe(
+        expect(confirmMock.mock.calls).toHaveLength(1);
+        expect(confirmMock.mock.calls[0][0]).toBe(
           'Du forsøker nå å slette vedleggspanelet. For å gjenopprette må et predefinert vedleggspanel trekkes inn. Vil du fremdeles slette panelet?',
         );
 
@@ -212,9 +214,7 @@ describe('NavFormBuilder', () => {
         const fieldset = await screen.findByRole('group', { name: /Your favorite time of the year/ });
         expect(fieldset).toBeInTheDocument();
 
-        const builderComponent = findClosestWithAttribute(fieldset, BUILDER_COMP_TESTID_ATTR);
-
-        const editComponentButton = await within(builderComponent).findByTitle('Rediger');
+        const editComponentButton = await within(getBuilderComponent(fieldset)).findByTitle('Rediger');
         await userEvent.click(editComponentButton);
 
         const conditionalAlert = await screen.findByRole('list', {
@@ -229,9 +229,7 @@ describe('NavFormBuilder', () => {
         const textInput = await screen.findByLabelText('Oppgi din favorittfarge');
         expect(textInput).toBeInTheDocument();
 
-        const builderComponent = findClosestWithAttribute(textInput, BUILDER_COMP_TESTID_ATTR);
-
-        const editComponentButton = await within(builderComponent).findByTitle('Rediger');
+        const editComponentButton = await within(getBuilderComponent(textInput)).findByTitle('Rediger');
         await userEvent.click(editComponentButton);
 
         const conditionalAlert = screen.queryByRole('list', {

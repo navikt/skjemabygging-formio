@@ -2,7 +2,7 @@ import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useLanguages } from '../../../context/languages/index';
 import LanguageSelector from '../LanguageSelector';
 
-export const languagesInOriginalLanguage = {
+export const languagesInOriginalLanguage: Record<string, string> = {
   'nb-NO': 'Norsk bokmål',
   'nn-NO': 'Norsk nynorsk',
   en: 'English',
@@ -26,14 +26,12 @@ const FyllUtLanguageSelector = () => {
       params.set('lang', languageCode);
       return {
         languageCode,
-        optionLabel: languagesInOriginalLanguage[languageCode],
+        optionLabel: languagesInOriginalLanguage[languageCode] ?? languageCode,
         href: `?${params.toString()}`,
       };
     });
 
-  const label = languagesInOriginalLanguage[currentLanguage]
-    ? languagesInOriginalLanguage[currentLanguage]
-    : 'Norsk bokmål';
+  const label = languagesInOriginalLanguage[currentLanguage] ?? 'Norsk bokmål';
 
   return options.length > 0 ? (
     <LanguageSelector
