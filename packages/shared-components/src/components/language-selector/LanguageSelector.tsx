@@ -3,6 +3,13 @@ import makeStyles from '../../util/styles/jss/jss';
 import { navCssVariables } from '../../util/styles/nav-css/navCssVariables';
 import Select from './select/Select';
 
+interface Props {
+  label: string;
+  ariaLabel?: string;
+  options: Array<{ href: string; optionLabel: string; onClick?: () => void }>;
+  className?: string;
+}
+
 const useLanguageSelectorStyling = makeStyles({
   languageToggleWrapper: {
     outline: 'none',
@@ -68,14 +75,10 @@ const useLanguageSelectorStyling = makeStyles({
   },
 });
 
-const LanguageSelector = ({ label, ariaLabel = 'Velg språk', options, className }) => {
+const LanguageSelector = ({ label, ariaLabel = 'Velg språk', options, className }: Props) => {
   const classes = useLanguageSelectorStyling();
   return (
-    <div
-      className={clsx(classes.languageToggleWrapper, {
-        [className]: className,
-      })}
-    >
+    <div className={clsx(classes.languageToggleWrapper, className)}>
       <Select className={classes.languageSelect} label={label} options={options} ariaLabel={ariaLabel} />
     </div>
   );
