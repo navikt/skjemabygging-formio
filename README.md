@@ -97,7 +97,7 @@ Sett miljøvariabelen `FORMS_API_URL` i byggeren sin `.env`-fil til riktig port 
 Byggeren er konfigurert med default-verdier lokalt som sørger for at eventuelle publiseringer blir gjort mot en
 test-branch i repo'et [skjemaufylling-formio](https://github.com/navikt/skjemautfylling-formio). Hvilken branch som
 benyttes defineres av `PUBLISH_REPO_BASE`, og default-verdi kan overstyres i `packages/bygger-backend/.env`,
-men ikke test mot `main` siden det starter en deploy til produksjon :nerd_face:
+men ikke test mot `master` siden det starter en deploy til produksjon :nerd_face:
 
 For å autentisere deg er det anbefalt å bruke en personlig access token. Det vil gjøre det enklere å spore endringene i
 skjemautfylling-formio, siden committene vil ha eieren av tokenet som author. I prod og dev autentiserer byggeren seg
