@@ -11,23 +11,28 @@ describe('Attachment', () => {
   const ANNET_URL = '/fyllut/attachment/annet';
   const VALIDERING_URL = '/fyllut/attachment/validering';
   const UPLOAD_ONLY_URL = '/fyllut/attachmentuploadonly/visning';
+  const UPLOAD_ONLY_NOLOGIN_URL = '/fyllut/attachmentuploadonly/visning?sub=digitalnologin';
   const getUploadOnlyAttachment = () => cy.contains('[data-cy=attachment-upload]', 'Vedlegg upload-only');
   const getUploadOnlyOtherAttachment = () =>
     cy.contains('[data-cy=attachment-upload]', 'Annen dokumentasjon upload-only');
 
   const navigateToAttachmentsForDigitalNoLogin = () => {
-    cy.findByRole('heading', { name: 'Legitimasjon' }).should('exist');
-    cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
-      cy.findByLabelText('Norsk pass').check(),
-    );
-    cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
-    cy.findByRole('link', { name: 'Neste steg' }).click();
     cy.url().then((url) => {
       if (url.includes('/legitimasjon')) {
+        cy.findByRole('heading', { name: 'Legitimasjon' }).should('exist');
+        cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
+          cy.findByLabelText('Norsk pass').check(),
+        );
+        cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
         cy.findByRole('link', { name: 'Neste steg' }).click();
+        cy.url().then((currentUrl) => {
+          if (currentUrl.includes('/legitimasjon')) {
+            cy.findByRole('link', { name: 'Neste steg' }).click();
+          }
+        });
+        cy.url().should('not.include', '/legitimasjon');
       }
     });
-    cy.url().should('not.include', '/legitimasjon');
     cy.clickShowAllSteps();
     cy.findByRole('link', { name: 'Vedlegg' }).click();
     cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
@@ -156,11 +161,31 @@ describe('Attachment', () => {
       });
       cy.findByText('small-file.txt').should('exist');
     });
+
+    it('downloads uploaded file when clicking file name', () => {
+      cy.intercept({
+        method: 'POST',
+        url: '**/fyllut/api/send-inn/digital-application/*/attachments/*',
+      }).as('uploadAttachment');
+      cy.intercept({
+        method: 'GET',
+        url: '**/fyllut/api/send-inn/digital-application/*/attachments/*/*',
+      }).as('downloadAttachment');
+      getUploadOnlyAttachment().within(() => {
+        cy.uploadFile('small-file.txt');
+      });
+      cy.wait('@uploadAttachment').its('response.statusCode').should('eq', 201);
+      getUploadOnlyAttachment().within(() => {
+        cy.findByRole('link', { name: 'small-file.txt' }).should('not.have.attr', 'download');
+        cy.findByRoleWhenAttached('link', { name: 'small-file.txt' }, 500).click();
+      });
+      cy.wait('@downloadAttachment', { timeout: 10000 }).its('response.statusCode').should('eq', 200);
+    });
   });
 
   describe('Upload-only digital no login mode', () => {
     beforeEach(() => {
-      cy.visit(`${UPLOAD_ONLY_URL}?sub=digitalnologin`);
+      cy.visit(UPLOAD_ONLY_NOLOGIN_URL);
       cy.defaultWaits();
       navigateToAttachmentsForDigitalNoLogin();
     });

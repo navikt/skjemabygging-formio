@@ -1,4 +1,4 @@
-export const b64toBlob = (b64Data, contentType = '', sliceSize = 512) => {
+const b64toBlob = (b64Data, contentType = '', sliceSize = 512) => {
   const byteCharacters = atob(b64Data);
   const byteArrays: BlobPart[] = [];
 
@@ -16,3 +16,18 @@ export const b64toBlob = (b64Data, contentType = '', sliceSize = 512) => {
 
   return new Blob(byteArrays, { type: contentType });
 };
+
+const downloadBlob = (content: Blob, fileName: string) => {
+  const objectUrl = URL.createObjectURL(content);
+  const link = document.createElement('a');
+  link.href = objectUrl;
+  link.download = fileName;
+
+  try {
+    link.click();
+  } finally {
+    URL.revokeObjectURL(objectUrl);
+  }
+};
+
+export { b64toBlob, downloadBlob };
