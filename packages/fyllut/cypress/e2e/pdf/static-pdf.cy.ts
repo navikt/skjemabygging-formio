@@ -8,9 +8,9 @@ describe('Static PDF', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
     cy.mocksRestoreRouteVariants();
-    cy.intercept('GET', '/fyllut/api/forms/staticpdf/static-pdfs').as('getStaticPdf');
-    cy.intercept('POST', '/fyllut/api/forms/staticpdf/static-pdfs/*').as('download');
-    cy.visit('/fyllut/staticpdf/pdf');
+    cy.intercept('GET', '/fyllut/api/forms/pdfstatic/static-pdfs').as('getStaticPdf');
+    cy.intercept('POST', '/fyllut/api/forms/pdfstatic/static-pdfs/*').as('download');
+    cy.visit('/fyllut/pdfstatic/pdf');
     cy.defaultWaits();
     cy.wait('@getStaticPdf');
   });
