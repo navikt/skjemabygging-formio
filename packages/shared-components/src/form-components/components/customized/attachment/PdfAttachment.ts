@@ -15,14 +15,14 @@ const PdfAttachment = (props: PdfComponentProps): PdfData[] | null => {
   const comment = valueConfig?.additionalDocumentation?.enabled
     ? {
         label: translate(valueConfig.additionalDocumentation.label),
-        verdiliste: [{ label: value.additionalDocumentation || '' }], // TODO filtrer?
+        verdiliste: [{ label: value.additionalDocumentation || '' }],
         visningsVariant: 'PUNKTLISTE',
       }
     : null;
 
   return [
     {
-      label: translate(label), // TODO filtrer?
+      label: translate(label),
       verdi: translate(attachmentUtils.getAttachmentLabel(value.key, submissionMethod)),
     },
     ...(comment ? [comment] : []),
