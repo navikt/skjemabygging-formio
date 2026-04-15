@@ -86,8 +86,8 @@ describe('Submission type utils', () => {
       expect(submissionTypesUtils.isPaperNoCoverPageSubmission(['PAPER_NO_COVER_PAGE', 'STATIC_PDF'])).toBeTruthy();
     });
 
-    it('should return false when submissionTypes contains PAPER_NO_COVER_PAGE and a regular type', () => {
-      expect(submissionTypesUtils.isPaperNoCoverPageSubmission(['PAPER_NO_COVER_PAGE', 'DIGITAL'])).toBeFalsy();
+    it('should return true when submissionTypes contains PAPER_NO_COVER_PAGE and some other regular type', () => {
+      expect(submissionTypesUtils.isPaperNoCoverPageSubmission(['PAPER_NO_COVER_PAGE', 'DIGITAL'])).toBeTruthy();
     });
 
     it('should return false when submissionTypes contains only STATIC_PDF', () => {
