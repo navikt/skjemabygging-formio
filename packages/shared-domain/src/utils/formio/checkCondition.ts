@@ -13,6 +13,11 @@ const toCollectionValues = <T>(collection: T[] | Record<string, T> | null | unde
 };
 
 const lodashShim = {
+  get: (obj: unknown, path: string, defaultValue?: unknown) => {
+    const result = path.split('.').reduce<unknown>((acc, key) => (isObjectLike(acc) ? acc[key] : undefined), obj);
+
+    return result === undefined ? defaultValue : result;
+  },
   some: <T>(collection: T[] | Record<string, T> | null | undefined, predicate: (item: T) => boolean) =>
     toCollectionValues(collection).some(predicate),
   every: <T>(collection: T[] | Record<string, T> | null | undefined, predicate: (item: T) => boolean) =>
