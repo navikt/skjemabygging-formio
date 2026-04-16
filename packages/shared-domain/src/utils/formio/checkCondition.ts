@@ -1,6 +1,6 @@
-import _ from 'lodash';
 import { Component, NavFormType, Submission, SubmissionMethod } from '../../models';
 import { submissionTypesUtils } from '../submission';
+import getFormioCheckConditionUtils from './formioCheckCondition';
 
 const USE_FORMIO_CHECK_CONDITION = false;
 
@@ -17,13 +17,28 @@ const lodashShim = {
     toCollectionValues(collection).some(predicate),
   every: <T>(collection: T[] | Record<string, T> | null | undefined, predicate: (item: T) => boolean) =>
     toCollectionValues(collection).every(predicate),
-  get: (obj: unknown, path: string, defaultValue?: unknown) => {
-    const result = path
-      .split('.')
-      .reduce<unknown>((acc, key) => (acc != null ? (acc as Record<string, unknown>)[key] : undefined), obj);
-    return result === undefined ? defaultValue : result;
-  },
 };
+
+const isNil = (value: unknown): value is null | undefined => value == null;
+
+const isObjectLike = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null;
+
+const isEmptyValue = (value: unknown) => {
+  if (Array.isArray(value) || typeof value === 'string') {
+    return value.length === 0;
+  }
+
+  if (isObjectLike(value)) {
+    return Object.keys(value).length === 0;
+  }
+
+  return false;
+};
+
+const getByPath = (obj: unknown, path: string) =>
+  path.split('.').reduce<unknown>((acc, key) => (isObjectLike(acc) ? acc[key] : undefined), obj);
+
+const hasOwnKey = (value: unknown, key: string) => isObjectLike(value) && Object.hasOwn(value, key);
 
 type ConditionComponent = Partial<Component> & {
   parent?: ConditionComponent;
@@ -115,7 +130,94 @@ const shouldCreateSyntheticInstance = (component: Partial<Component>, instance?:
     return false;
   }
 
-  return Boolean(component.customConditional || component.conditional?.when || component.conditional?.json);
+  return Boolean(component.customConditional || component.conditional?.when);
+};
+
+const normalizeConditionalValue = (value: unknown) => {
+  if (isNil(value) || (isObjectLike(value) && isEmptyValue(value))) {
+    return '';
+  }
+
+  return value;
+};
+
+const getDataParentPath = (instance?: ConditionComponent) => {
+  const pathSegments: string[] = [];
+  let current = instance?.parent;
+
+  while (current) {
+    if (current.type === 'datagrid' && current.key) {
+      pathSegments.unshift(current.key);
+    }
+    current = current.parent;
+  }
+
+  return pathSegments.join('.');
+};
+
+const getScopedRowPath = (componentPath: string, instance?: ConditionComponent) => {
+  const dataParentPath = getDataParentPath(instance);
+
+  if (!dataParentPath) {
+    return;
+  }
+
+  if (componentPath === dataParentPath) {
+    return '';
+  }
+
+  const scopedPrefix = dataParentPath + '.';
+  return componentPath.startsWith(scopedPrefix) ? componentPath.slice(scopedPrefix.length) : undefined;
+};
+
+const getComponentActualValue = (componentPath: string, data: unknown, row: unknown, instance?: ConditionComponent) => {
+  const scopedRowPath = getScopedRowPath(componentPath, instance);
+
+  if (row && scopedRowPath !== undefined) {
+    const scopedRowValue = scopedRowPath ? getByPath(row, scopedRowPath) : row;
+    if (!isNil(scopedRowValue)) {
+      return normalizeConditionalValue(scopedRowValue);
+    }
+  }
+
+  const dataValue = data ? getByPath(data, componentPath) : undefined;
+  if (!isNil(dataValue)) {
+    return normalizeConditionalValue(dataValue);
+  }
+
+  const rowValue = row ? getByPath(row, componentPath) : undefined;
+  return normalizeConditionalValue(rowValue);
+};
+
+const checkSimpleConditional = (
+  component: Partial<Component>,
+  row: unknown,
+  data: unknown,
+  instance?: ConditionComponent,
+) => {
+  const condition = component.conditional;
+
+  if (!condition) {
+    return true;
+  }
+
+  if (condition.when) {
+    const value = getComponentActualValue(condition.when, data, row, instance);
+    const eq = String(condition.eq);
+    const show = String(condition.show);
+
+    if (isObjectLike(value) && hasOwnKey(value, String(condition.eq))) {
+      return String((value as Record<string, unknown>)[String(condition.eq)]) === show;
+    }
+
+    if (Array.isArray(value) && value.map(String).includes(eq)) {
+      return show === 'true';
+    }
+
+    return (String(value) === eq) === (show === 'true');
+  }
+
+  return true;
 };
 
 const getCheckConditionUtils = (
@@ -123,41 +225,6 @@ const getCheckConditionUtils = (
   evaluate: (func: unknown, args: Record<string, unknown>, ret?: string, tokenize?: boolean) => unknown,
   originalCheckCondition,
 ) => {
-  const formioCheckCustomConditional = (
-    _component: Partial<Component>,
-    custom,
-    row,
-    data,
-    form: NavFormType | undefined,
-    variable,
-    onError,
-    instance,
-    submission?: Submission,
-    _options?: CheckConditionOptions,
-  ) => {
-    if (typeof custom === 'string') {
-      custom = `var ${variable} = true; ${custom}; return ${variable};`;
-    }
-
-    const evaluateArgs = {
-      row,
-      data,
-      form,
-      utils: Utils,
-      ...(submission && { submission }),
-      _: _,
-    };
-
-    const value =
-      instance && instance.evaluate ? instance.evaluate(custom, evaluateArgs) : evaluate(custom, evaluateArgs);
-
-    if (value === null) {
-      return onError;
-    }
-
-    return value;
-  };
-
   const checkCustomConditional = (
     component: Partial<Component>,
     custom,
@@ -199,34 +266,6 @@ const getCheckConditionUtils = (
     return value;
   };
 
-  const formioCheckCondition = (
-    component: Partial<Component>,
-    row,
-    data,
-    form?: NavFormType,
-    instance?: ConditionComponent,
-    submission?: Submission,
-    options?: CheckConditionOptions,
-  ) => {
-    void options;
-
-    if (component.customConditional) {
-      return formioCheckCustomConditional(
-        component,
-        component.customConditional,
-        row,
-        data,
-        form,
-        'show',
-        true,
-        instance,
-        submission,
-      );
-    }
-
-    return originalCheckCondition(component, row, data, form, instance);
-  };
-
   const checkCondition = (
     component: Partial<Component>,
     row,
@@ -257,16 +296,17 @@ const getCheckConditionUtils = (
       ? createConditionInstance(component, form, evaluate, options?.submissionMethod)
       : instance;
 
-    return originalCheckCondition(component, row, data, form, effectiveInstance);
+    if (component.conditional?.when) {
+      return checkSimpleConditional(component, row, data, effectiveInstance);
+    }
+
+    return true;
   };
 
   // This stays here for us to quickly change back to old formio check condition.
   // This should be deleted when we have run the new check condition for a while.
   if (USE_FORMIO_CHECK_CONDITION) {
-    return {
-      checkCustomConditional: formioCheckCustomConditional,
-      checkCondition: formioCheckCondition,
-    };
+    return getFormioCheckConditionUtils(Utils, evaluate, originalCheckCondition);
   }
 
   return {

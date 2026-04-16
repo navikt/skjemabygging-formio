@@ -1,4 +1,4 @@
-import { NavFormType } from '../../models';
+import { Component, NavFormType, Submission } from '../../models';
 import { checkCondition } from './navFormioUtils';
 
 describe('checkCondition', () => {
@@ -8,6 +8,120 @@ describe('checkCondition', () => {
       type: 'textfield',
       input: true,
     };
+    const form = {
+      components: [component],
+      properties: {
+        skjemanummer: 'TEST',
+        tema: 'TES',
+        submissionTypes: ['DIGITAL'],
+        subsequentSubmissionTypes: [],
+      },
+    } as unknown as NavFormType;
+
+    expect(checkCondition(component, undefined, {}, form)).toBe(true);
+  });
+
+  it('evaluates legacy simple conditionals locally without Formio runtime', () => {
+    const controllingQuestion = {
+      key: 'hasDetails',
+      type: 'radiopanel',
+      input: true,
+    };
+    const component = {
+      key: 'details',
+      type: 'textfield',
+      input: true,
+      conditional: {
+        show: true,
+        when: 'hasDetails',
+        eq: 'ja',
+      },
+    };
+    const form = {
+      components: [controllingQuestion, component],
+      properties: {
+        skjemanummer: 'TEST',
+        tema: 'TES',
+        submissionTypes: ['DIGITAL'],
+        subsequentSubmissionTypes: [],
+      },
+    } as unknown as NavFormType;
+
+    expect(checkCondition(component, undefined, { hasDetails: 'ja' }, form)).toBe(true);
+    expect(checkCondition(component, undefined, { hasDetails: 'nei' }, form)).toBe(false);
+  });
+
+  it('evaluates production-like nested simple conditionals with boolean values and show false', () => {
+    const controllingQuestion = {
+      key: 'jegVetIkkeHvaOrganisasjonsnummeretEr',
+      type: 'checkbox',
+      input: true,
+    };
+    const component = {
+      key: 'organisasjonsnummerTilEnhetenSomSkalMottaFaktura',
+      type: 'textfield',
+      input: true,
+      conditional: {
+        show: false,
+        when: 'enArbeidsgiverEllerVirksomhet.jegVetIkkeHvaOrganisasjonsnummeretEr',
+        eq: true,
+      },
+    } as unknown as Partial<Component>;
+    const form = {
+      components: [
+        {
+          key: 'enArbeidsgiverEllerVirksomhet',
+          type: 'container',
+          input: true,
+          components: [controllingQuestion, component],
+        },
+      ],
+      properties: {
+        skjemanummer: 'TEST',
+        tema: 'TES',
+        submissionTypes: ['DIGITAL'],
+        subsequentSubmissionTypes: [],
+      },
+    } as unknown as NavFormType;
+
+    expect(
+      checkCondition(
+        component,
+        undefined,
+        {
+          enArbeidsgiverEllerVirksomhet: {
+            jegVetIkkeHvaOrganisasjonsnummeretEr: true,
+          },
+        },
+        form,
+      ),
+    ).toBe(false);
+    expect(
+      checkCondition(
+        component,
+        undefined,
+        {
+          enArbeidsgiverEllerVirksomhet: {
+            jegVetIkkeHvaOrganisasjonsnummeretEr: false,
+          },
+        },
+        form,
+      ),
+    ).toBe(true);
+  });
+
+  it('does not hide components for placeholder production conditional objects', () => {
+    const component = {
+      key: 'placeholderConditional',
+      type: 'textfield',
+      input: true,
+      conditional: {
+        show: '',
+        when: '',
+        eq: '',
+        json: '',
+      },
+    } as unknown as Partial<Component>;
     const form = {
       components: [component],
       properties: {
@@ -91,7 +205,184 @@ describe('checkCondition', () => {
       },
     };
 
-    expect(checkCondition(component, undefined, submission.data, form, undefined, submission)).toBe(true);
+    expect(
+      checkCondition(component, undefined, submission.data, form, undefined, submission as unknown as Submission),
+    ).toBe(true);
+  });
+
+  it('supports production custom conditionals using utils.dataFetcher selected count', () => {
+    const component = {
+      key: 'aktiviteterOgMaalgruppe',
+      type: 'textfield',
+      input: true,
+      customConditional:
+        "show = utils.dataFetcher('aktiviteter.aktiviteterOgMaalgruppe', submission).selected('COUNT') > 0",
+    };
+    const form = {
+      components: [component],
+      properties: {
+        skjemanummer: 'TEST',
+        tema: 'TES',
+        submissionTypes: ['DIGITAL'],
+        subsequentSubmissionTypes: [],
+      },
+    } as unknown as NavFormType;
+    const submission = {
+      data: {
+        aktiviteter: {
+          aktiviteterOgMaalgruppe: {
+            tiltakArbeidsrettetUtredning: true,
+            annet: true,
+          },
+        },
+      },
+      metadata: {
+        dataFetcher: {
+          aktiviteter: {
+            aktiviteterOgMaalgruppe: {
+              data: [{ value: 'tiltakArbeidsrettetUtredning' }, { value: 'annet' }],
+            },
+          },
+        },
+      },
+    };
+
+    expect(
+      checkCondition(component, undefined, submission.data, form, undefined, submission as unknown as Submission),
+    ).toBe(true);
+
+    const submissionWithOnlyAnnet = {
+      data: {
+        aktiviteter: {
+          aktiviteterOgMaalgruppe: {
+            annet: true,
+          },
+        },
+      },
+      metadata: submission.metadata,
+    };
+
+    expect(
+      checkCondition(
+        component,
+        undefined,
+        submissionWithOnlyAnnet.data,
+        form,
+        undefined,
+        submissionWithOnlyAnnet as unknown as Submission,
+      ),
+    ).toBe(false);
+  });
+
+  it('supports production row-based custom conditionals', () => {
+    const component = {
+      key: 'identitetsnummer',
+      type: 'textfield',
+      input: true,
+      customConditional:
+        'show = row.identitet.harDuFodselsnummer === "nei" || (row.identitet.identitetsnummer && !row.identitet.harDuFodselsnummer)',
+    };
+    const form = {
+      components: [component],
+      properties: {
+        skjemanummer: 'TEST',
+        tema: 'TES',
+        submissionTypes: ['DIGITAL'],
+        subsequentSubmissionTypes: [],
+      },
+    } as unknown as NavFormType;
+
+    expect(
+      checkCondition(
+        component,
+        {
+          identitet: {
+            harDuFodselsnummer: 'nei',
+          },
+        },
+        {},
+        form,
+      ),
+    ).toBeTruthy();
+    expect(
+      checkCondition(
+        component,
+        {
+          identitet: {
+            harDuFodselsnummer: false,
+            identitetsnummer: '12345678910',
+          },
+        },
+        {},
+        form,
+      ),
+    ).toBeTruthy();
+    expect(
+      checkCondition(
+        component,
+        {
+          identitet: {
+            harDuFodselsnummer: 'ja',
+            identitetsnummer: '',
+          },
+        },
+        {},
+        form,
+      ),
+    ).toBeFalsy();
+  });
+
+  it('supports production custom conditionals using optional chaining', () => {
+    const component = {
+      key: 'utenlandsarbeidEllerArbeidsinntekt',
+      type: 'textfield',
+      input: true,
+      customConditional:
+        'show = (data.skalDuArbeideEllerDriveNaeringIUtlandet === "ja") || (data.hvordanFinansiererDuStudiene?.arbeidsinntekt === true)',
+    };
+    const form = {
+      components: [component],
+      properties: {
+        skjemanummer: 'TEST',
+        tema: 'TES',
+        submissionTypes: ['DIGITAL'],
+        subsequentSubmissionTypes: [],
+      },
+    } as unknown as NavFormType;
+
+    expect(checkCondition(component, undefined, { hvordanFinansiererDuStudiene: { arbeidsinntekt: true } }, form)).toBe(
+      true,
+    );
+    expect(checkCondition(component, undefined, { skalDuArbeideEllerDriveNaeringIUtlandet: 'ja' }, form)).toBe(true);
+    expect(checkCondition(component, undefined, {}, form)).toBe(false);
+  });
+
+  it('supports production custom conditionals combining row and _.every', () => {
+    const component = {
+      key: 'barn',
+      type: 'textfield',
+      input: true,
+      customConditional:
+        'show = ((data.sokerForKunEttBarn.hvaSokerDuOm === "endringAvBarnebidrag") || (data.detDuSokerOmForHvertAvBarna.length > 0 && _.every(data.detDuSokerOmForHvertAvBarna, (child) => child.hvaSokerDuOm === "endringAvBarnebidrag"))) && ((row.erDetEndringIDetteBarnetsBosted === "nei") || (row.harBarnetDeltFastBosted1 === "nei"))',
+    };
+    const form = {
+      components: [component],
+      properties: {
+        skjemanummer: 'TEST',
+        tema: 'TES',
+        submissionTypes: ['DIGITAL'],
+        subsequentSubmissionTypes: [],
+      },
+    } as unknown as NavFormType;
+    const data = {
+      sokerForKunEttBarn: { hvaSokerDuOm: 'annet' },
+      detDuSokerOmForHvertAvBarna: [{ hvaSokerDuOm: 'endringAvBarnebidrag' }, { hvaSokerDuOm: 'endringAvBarnebidrag' }],
+    };
+
+    expect(checkCondition(component, { erDetEndringIDetteBarnetsBosted: 'nei' }, data, form)).toBe(true);
+    expect(
+      checkCondition(component, { erDetEndringIDetteBarnetsBosted: 'ja', harBarnetDeltFastBosted1: 'ja' }, data, form),
+    ).toBe(false);
   });
 
   it('supports custom conditionals that use instance submission helpers without a live instance', () => {
