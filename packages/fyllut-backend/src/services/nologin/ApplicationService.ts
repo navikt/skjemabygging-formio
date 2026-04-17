@@ -12,7 +12,7 @@ import ApplicationClient, {
   ApplicationClientType,
   DownloadedAttachment,
 } from '../../external/innsending-api/ApplicationClient';
-import { assembleNologinSoknadBody } from '../../routers/api/helpers/nologin';
+import { assembleSubmitApplicationRequest } from '../../routers/api/helpers/applicationUtils';
 import { stringifyPdf } from '../../routers/api/helpers/pdfUtils';
 import { LogMetadata } from '../../types/log';
 import applicationService from '../documents/applicationService';
@@ -75,7 +75,7 @@ class ApplicationService {
     const applicationPdf = await applicationService.createFormPdf(pdfAccessToken, stringifyPdf(pdfFormData), logMeta);
 
     const pdfByteArray = Array.from(applicationPdf);
-    const nologinApplication = assembleNologinSoknadBody(
+    const nologinApplication = assembleSubmitApplicationRequest(
       innsendingsId,
       form,
       submission,
