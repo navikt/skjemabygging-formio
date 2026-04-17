@@ -352,7 +352,7 @@ describe('checkCondition', () => {
     ).toBe(false);
   });
 
-  it('falls back to data for production-style row custom conditionals without row context', () => {
+  it('uses explicit empty row objects for production-style row custom conditionals', () => {
     const component = {
       key: 'avkryssingsboks1',
       type: 'checkbox',
@@ -369,6 +369,7 @@ describe('checkCondition', () => {
       },
     } as unknown as NavFormType;
 
+    expect(checkCondition(component, {}, { avkryssingsboks0: true }, form)).toBe(false);
     expect(checkCondition(component, undefined, { avkryssingsboks0: true }, form)).toBe(true);
     expect(checkCondition(component, undefined, { avkryssingsboks0: false }, form)).toBe(false);
   });

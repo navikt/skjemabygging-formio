@@ -148,11 +148,11 @@ const normalizeConditionalValue = (value: unknown) => {
 };
 
 const getEffectiveRowContext = (row: unknown, data: unknown, instance?: ConditionComponent) => {
-  if (!isNil(row) && !isEmptyValue(row)) {
+  if (!isNil(row)) {
     return row;
   }
 
-  if (!isNil(instance?.data) && !isEmptyValue(instance.data)) {
+  if (!isNil(instance?.data)) {
     return instance.data;
   }
 
