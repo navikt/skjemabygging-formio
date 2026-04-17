@@ -374,6 +374,27 @@ describe('checkCondition', () => {
     expect(checkCondition(component, undefined, { avkryssingsboks0: false }, form)).toBe(false);
   });
 
+  it('falls back to submission data when row context is an empty array', () => {
+    const component = {
+      key: 'avkryssingsboks1',
+      type: 'checkbox',
+      input: true,
+      customConditional: 'show = row.avkryssingsboks0 === true',
+    };
+    const form = {
+      components: [component],
+      properties: {
+        skjemanummer: 'TEST',
+        tema: 'TES',
+        submissionTypes: ['DIGITAL'],
+        subsequentSubmissionTypes: [],
+      },
+    } as unknown as NavFormType;
+
+    expect(checkCondition(component, [], { avkryssingsboks0: true }, form)).toBe(true);
+    expect(checkCondition(component, [], { avkryssingsboks0: false }, form)).toBe(false);
+  });
+
   it('supports production row-based custom conditionals', () => {
     const component = {
       key: 'identitetsnummer',
