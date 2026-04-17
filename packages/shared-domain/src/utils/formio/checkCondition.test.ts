@@ -183,6 +183,84 @@ describe('checkCondition', () => {
     expect(checkCondition(component, row, data, form)).toBe(true);
   });
 
+  it('evaluates simple datagrid container conditionals from instance data when row is missing', () => {
+    const ageField = {
+      key: 'alder',
+      type: 'textfield',
+      input: true,
+    };
+    const dependentQuestion = {
+      key: 'oppgiForsikringsselskapNarAlderEr5Ar',
+      type: 'textfield',
+      input: true,
+      conditional: {
+        show: true,
+        when: 'kjaeledyr.egenskaper.alder',
+        eq: '5',
+      },
+    };
+    const container = {
+      key: 'egenskaper',
+      type: 'container',
+      input: true,
+      components: [ageField, dependentQuestion],
+    };
+    const form = {
+      components: [
+        {
+          key: 'kjaeledyr',
+          type: 'datagrid',
+          input: true,
+          components: [container],
+        },
+      ],
+      properties: {
+        skjemanummer: 'TEST',
+        tema: 'TES',
+        submissionTypes: ['DIGITAL'],
+        subsequentSubmissionTypes: [],
+      },
+    } as unknown as NavFormType;
+
+    const createInstance = (alder: string) =>
+      ({
+        ...dependentQuestion,
+        data: {
+          egenskaper: { alder },
+        },
+        parent: {
+          ...container,
+          parent: {
+            key: 'kjaeledyr',
+            type: 'datagrid',
+          },
+        },
+      }) as unknown as NonNullable<Parameters<typeof checkCondition>[4]>;
+
+    expect(
+      checkCondition(
+        dependentQuestion,
+        undefined,
+        {
+          kjaeledyr: [{ egenskaper: { alder: '5' } }],
+        },
+        form,
+        createInstance('5'),
+      ),
+    ).toBe(true);
+    expect(
+      checkCondition(
+        dependentQuestion,
+        undefined,
+        {
+          kjaeledyr: [{ egenskaper: { alder: '4' } }],
+        },
+        form,
+        createInstance('4'),
+      ),
+    ).toBe(false);
+  });
+
   it('supports custom conditionals using utils and submission outside Formio runtime', () => {
     const component = {
       key: 'ageGate',
@@ -272,6 +350,27 @@ describe('checkCondition', () => {
         submissionWithOnlyAnnet as unknown as Submission,
       ),
     ).toBe(false);
+  });
+
+  it('falls back to data for production-style row custom conditionals without row context', () => {
+    const component = {
+      key: 'avkryssingsboks1',
+      type: 'checkbox',
+      input: true,
+      customConditional: 'show = row.avkryssingsboks0 === true',
+    };
+    const form = {
+      components: [component],
+      properties: {
+        skjemanummer: 'TEST',
+        tema: 'TES',
+        submissionTypes: ['DIGITAL'],
+        subsequentSubmissionTypes: [],
+      },
+    } as unknown as NavFormType;
+
+    expect(checkCondition(component, undefined, { avkryssingsboks0: true }, form)).toBe(true);
+    expect(checkCondition(component, undefined, { avkryssingsboks0: false }, form)).toBe(false);
   });
 
   it('supports production row-based custom conditionals', () => {

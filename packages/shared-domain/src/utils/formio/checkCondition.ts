@@ -46,6 +46,7 @@ const getByPath = (obj: unknown, path: string) =>
 const hasOwnKey = (value: unknown, key: string) => isObjectLike(value) && Object.hasOwn(value, key);
 
 type ConditionComponent = Partial<Component> & {
+  data?: unknown;
   parent?: ConditionComponent;
   evaluate?: (func: unknown, args: Record<string, unknown>, ret?: string, tokenize?: boolean) => unknown;
   isSubmissionPaper?: () => boolean;
@@ -146,6 +147,18 @@ const normalizeConditionalValue = (value: unknown) => {
   return value;
 };
 
+const getEffectiveRowContext = (row: unknown, data: unknown, instance?: ConditionComponent) => {
+  if (!isNil(row) && !isEmptyValue(row)) {
+    return row;
+  }
+
+  if (!isNil(instance?.data) && !isEmptyValue(instance.data)) {
+    return instance.data;
+  }
+
+  return data;
+};
+
 const getDataParentPath = (instance?: ConditionComponent) => {
   const pathSegments: string[] = [];
   let current = instance?.parent;
@@ -207,7 +220,7 @@ const checkSimpleConditional = (
   }
 
   if (condition.when) {
-    const value = getComponentActualValue(condition.when, data, row, instance);
+    const value = getComponentActualValue(condition.when, data, getEffectiveRowContext(row, data, instance), instance);
     const eq = String(condition.eq);
     const show = String(condition.show);
 
@@ -243,13 +256,14 @@ const getCheckConditionUtils = (
     options?: CheckConditionOptions,
   ) => {
     const effectiveInstance = instance ?? createConditionInstance(component, form, evaluate, options?.submissionMethod);
+    const effectiveRow = getEffectiveRowContext(row, data, effectiveInstance);
 
     if (typeof custom === 'string') {
       custom = `var ${variable} = true; ${custom}; return ${variable};`;
     }
 
     const evaluateArgs = {
-      row,
+      row: effectiveRow,
       data,
       form,
       component,
