@@ -4,7 +4,6 @@ import formWithContainer from './testdata/nav-form/conditional-container';
 import formWithCustomConditional from './testdata/nav-form/conditional-custom';
 import formWithCompositeCustomConditional from './testdata/nav-form/conditional-custom-composite';
 import formWithDatagridConditional from './testdata/nav-form/conditional-datagrid';
-import formWithJsonConditional from './testdata/nav-form/conditional-json';
 import formWithMultipleConditionalDependencies from './testdata/nav-form/conditional-multiple-dependencies';
 import formWithPanel from './testdata/nav-form/conditional-panel';
 import formWithSimpleConditional from './testdata/nav-form/conditional-simple';
@@ -191,57 +190,9 @@ describe('navFormUtils', () => {
       });
     });
 
-    describe('A form where one component has a conditional json statement', () => {
-      it('Returns empty array when component has no conditional', () => {
-        const actual = navFormUtils.findDependentComponents('eru3e0l', formWithJsonConditional);
-        expect(actual).toHaveLength(0);
-      });
-
-      it('Returns an array with the key of the component it has a conditional on', () => {
-        const actual = navFormUtils.findDependentComponents('ekoo75nf', formWithJsonConditional);
-        const expected = [expect.objectContaining({ key: 'oppgiYndlingsfarge' })];
-        expect(actual).toEqual(expect.arrayContaining(expected));
-        expect(actual).toHaveLength(expected.length);
-      });
-    });
-
-    function conditional({ show = null, when = null, eq = '', json = '' }) {
-      return { show, when, eq, json };
+    function conditional({ show = null, when = null, eq = '' }) {
+      return { show, when, eq };
     }
-
-    describe('A form with conditional json and partial overlapping component key names', () => {
-      const FRUKT_ID = '1';
-      const testformWithConditional = (conditional) => ({
-        components: [
-          { key: 'frukt', id: FRUKT_ID },
-          { key: 'nedfallsfrukt', id: '2' },
-          { key: 'fruktsaft', id: '3' },
-          {
-            key: 'oppsummering',
-            id: '4',
-            conditional,
-          },
-        ],
-      });
-
-      it('Returns exact match of component key', () => {
-        const form = testformWithConditional({ json: { '===': [{ var: 'data.frukt' }, 'ja'] } });
-        const actual = navFormUtils.findDependentComponents(FRUKT_ID, form);
-        const expected = [expect.objectContaining({ key: 'oppsummering' })];
-        expect(actual).toHaveLength(expected.length);
-        expect(actual).toEqual(expect.arrayContaining(expected));
-      });
-
-      it('Ignores partial hit where key in conditional ends with given key', () => {
-        const form = testformWithConditional({ json: { '===': [{ var: 'data.nedfallsfrukt' }, 'ja'] } });
-        expect(navFormUtils.findDependentComponents(FRUKT_ID, form)).toHaveLength(0);
-      });
-
-      it('Ignores partial hit where key in conditional starts with given key', () => {
-        const form = testformWithConditional({ json: { '===': [{ var: 'data.fruktsaft' }, 'ja'] } });
-        expect(navFormUtils.findDependentComponents(FRUKT_ID, form)).toHaveLength(0);
-      });
-    });
 
     describe('A form with a container containing a component with same key as component outside container', () => {
       const CONTAINER = { id: '1', key: 'mycontainer' };

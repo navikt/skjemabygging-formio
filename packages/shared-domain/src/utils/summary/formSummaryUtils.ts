@@ -8,7 +8,7 @@ import { currencyUtils } from '../currency';
 import { dataFetcherUtils } from '../data-fetcher';
 import { dateUtils } from '../date';
 import { bankAccountRegex, formatUtils, orgNrRegex } from '../format';
-import { navFormioUtils } from '../formio';
+import { checkCondition, navFormioUtils } from '../formio';
 import sanitizeJavascriptCode from '../formio/sanitizeJavascriptCode';
 import { numberUtils } from '../number';
 import { objectUtils } from '../object';
@@ -775,7 +775,7 @@ function evaluateConditionals(components = [], form, submission, row = []) {
     })
     .flatMap((component) => {
       const data = submission?.data || {};
-      if (!navFormioUtils.checkCondition(component, row, data, form, undefined, submission)) {
+      if (!checkCondition(component, row, data, form, undefined, submission)) {
         return [{ key: createComponentKeyWithNavId(component), value: false }];
       }
       switch (component.type) {
@@ -790,7 +790,7 @@ function evaluateConditionals(components = [], form, submission, row = []) {
         case 'alertstripe':
           return {
             key: createComponentKeyWithNavId(component),
-            value: navFormioUtils.checkCondition(component, row, data, form, undefined, submission),
+            value: true,
           };
         default:
           return [];
