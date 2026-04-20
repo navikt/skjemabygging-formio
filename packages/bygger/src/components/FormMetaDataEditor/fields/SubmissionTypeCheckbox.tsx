@@ -9,7 +9,7 @@ interface Props {
   error?: any;
   onChange: (value: any[]) => void;
   readonly?: boolean;
-  hideTypes?: ('DIGITAL_NO_LOGIN' | 'STATIC_PDF')[];
+  hideTypes?: ('DIGITAL_NO_LOGIN' | 'STATIC_PDF' | 'PAPER_NO_COVER_PAGE')[];
 }
 
 export const SubmissionTypeCheckbox = ({ name, label, value, onChange, error, readonly, hideTypes }: Props) => {
@@ -39,6 +39,7 @@ export const SubmissionTypeCheckbox = ({ name, label, value, onChange, error, re
           Statisk PDF
         </Checkbox>
       )}
+      {!hideTypes?.includes('PAPER_NO_COVER_PAGE') && <Checkbox value="PAPER_NO_COVER_PAGE">Ingen</Checkbox>}
     </CheckboxGroup>
   );
 };

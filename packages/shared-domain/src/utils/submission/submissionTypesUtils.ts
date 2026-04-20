@@ -24,8 +24,9 @@ function isPaperSubmissionOnly(submissionTypes?: SubmissionType[]): boolean {
   return !!submissionTypes?.includes('PAPER') && submissionTypes?.length === 1;
 }
 
-function isNoneSubmission(submissionTypes?: SubmissionType[]): boolean {
-  return !!submissionTypes && !submissionTypes.length;
+function isPaperNoCoverPageSubmission(submissionTypes?: SubmissionType[]): boolean {
+  if (!submissionTypes) return false;
+  return submissionTypes.length === 0 || submissionTypes.includes('PAPER_NO_COVER_PAGE');
 }
 
 function isStaticPdf(submissionTypes?: SubmissionType[]): boolean {
@@ -50,7 +51,7 @@ const submissionTypesUtils = {
   isDigitalSubmission,
   isDigitalNoLoginSubmission,
   isDigitalNoLoginSubmissionOnly,
-  isNoneSubmission,
+  isPaperNoCoverPageSubmission,
   isPaperSubmission,
   isPaperSubmissionOnly,
   isStaticPdf,

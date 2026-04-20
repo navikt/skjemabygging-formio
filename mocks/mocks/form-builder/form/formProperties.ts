@@ -8,7 +8,7 @@ export interface FormSignatureType {
 /**
  * Copy from shared-domain since mock cant use shared-domain
  */
-type SubmissionType = 'PAPER' | 'DIGITAL' | 'DIGITAL_NO_LOGIN' | 'STATIC_PDF';
+type SubmissionType = 'PAPER' | 'DIGITAL' | 'DIGITAL_NO_LOGIN' | 'STATIC_PDF' | 'PAPER_NO_COVER_PAGE';
 
 export interface FormPropertiesType {
   formNumber: string;

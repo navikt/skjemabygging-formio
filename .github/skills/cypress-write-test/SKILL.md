@@ -21,6 +21,21 @@ For local server startup and runtime-config handling, use `start-dev-servers`.
 - Use regexes when labels vary slightly, for example optional `(valgfritt)` suffixes
 - Avoid class selectors unless there is no stable user-facing alternative
 
+## Route selection and preview-only logic
+
+- Prefer explicit route-path visits in `cy.visit(...)` so the test does not depend
+  on backend-served `index.html` logic
+- Good examples:
+    - `cy.visit('/fyllut/<formPath>')`
+    - `cy.visit('/fyllut/<formPath>?sub=paper')`
+    - `cy.visit('/fyllut/<formPath>/pdf')`
+- Avoid tests that only pass because the backend rewrites, redirects, or normalizes
+  the initial URL before the frontend boots
+- If the test intentionally verifies behavior implemented while the backend serves
+  `index.html`, mark it with `cy.skipIfNoIncludeDistTests()`
+- Treat `cy.skipIfNoIncludeDistTests()` as required for preview-only entry logic,
+  not as a fallback for ordinary form navigation tests
+
 ## Intercepts and waits
 
 - Use existing shared intercept and wait helpers where available

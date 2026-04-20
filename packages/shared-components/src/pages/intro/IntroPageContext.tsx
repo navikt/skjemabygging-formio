@@ -55,7 +55,7 @@ export const IntroPageProvider = ({ children, form }: IntroPageProviderProps) =>
   const toState = useCallback(
     (sub?: SubmissionMethod) => {
       if (appConfig.app === 'bygger') {
-        return submissionTypesUtils.isNoneSubmission(form.properties.submissionTypes)
+        return submissionTypesUtils.isPaperNoCoverPageSubmission(form.properties.submissionTypes)
           ? IntroPageState.NONE
           : IntroPageState.PAPER;
       }
@@ -81,7 +81,7 @@ export const IntroPageProvider = ({ children, form }: IntroPageProviderProps) =>
         if (submissionTypesUtils.isDigitalNoLoginSubmissionOnly(form.properties.submissionTypes)) {
           return IntroPageState.DIGITAL_NO_LOGIN;
         }
-        if (submissionTypesUtils.isNoneSubmission(form.properties.submissionTypes)) {
+        if (submissionTypesUtils.isPaperNoCoverPageSubmission(form.properties.submissionTypes)) {
           return IntroPageState.NONE;
         }
       }

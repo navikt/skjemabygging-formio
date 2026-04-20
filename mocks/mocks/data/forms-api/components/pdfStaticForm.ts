@@ -3,8 +3,8 @@ import form from '../../../form-builder/form/form';
 import formProperties from '../../../form-builder/form/formProperties';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
 
-const staticPdfForm = () => {
-  const formNumber = 'staticpdf';
+const pdfStaticForm = () => {
+  const formNumber = 'pdfstatic';
 
   return form({
     title: 'Static PDF',
@@ -28,6 +28,6 @@ const staticPdfForm = () => {
   });
 };
 
-const staticPdfTranslations = () => getMockTranslationsFromForm(staticPdfForm());
+const pdfStaticTranslations = () => getMockTranslationsFromForm(pdfStaticForm());
 
-export { staticPdfForm, staticPdfTranslations };
+export { pdfStaticForm, pdfStaticTranslations };
