@@ -79,4 +79,15 @@ const senderShape = (component: Component): JsonSchema => ({
   $comment: 'Sender component shape may vary between person and organization senders.',
 });
 
-export { addressShape, identityShape, phoneNumberShape, senderShape };
+const countrySelectShape = (component: Component): JsonSchema => ({
+  title: component.label,
+  type: 'object',
+  properties: {
+    value: { type: 'string', title: 'Country code' },
+    label: { type: 'string', title: 'Country label' },
+  },
+  required: ['value', 'label'],
+  additionalProperties: false,
+});
+
+export { addressShape, countrySelectShape, identityShape, phoneNumberShape, senderShape };

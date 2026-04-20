@@ -229,7 +229,16 @@ describe('generateSchema', () => {
     const formDataSchema = getFormDataSchema(schema);
 
     expect(formDataSchema.properties?.fornavn).toEqual({ title: 'Fornavn', type: 'string' });
-    expect(formDataSchema.properties?.land).toEqual({ title: 'Land', type: 'string' });
+    expect(formDataSchema.properties?.land).toEqual({
+      additionalProperties: false,
+      properties: {
+        label: { title: 'Country label', type: 'string' },
+        value: { title: 'Country code', type: 'string' },
+      },
+      required: ['value', 'label'],
+      title: 'Land',
+      type: 'object',
+    });
     expect(formDataSchema.properties?.valg).toEqual({ enum: ['yes'], title: 'Valg', type: 'string' });
     expect(formDataSchema.properties?.telefon).toMatchObject({
       oneOf: expect.any(Array),

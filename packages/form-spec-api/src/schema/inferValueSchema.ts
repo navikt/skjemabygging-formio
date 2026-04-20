@@ -1,6 +1,12 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import { fallbackShape } from './componentShapes/fallback';
-import { addressShape, identityShape, phoneNumberShape, senderShape } from './componentShapes/structuredValues';
+import {
+  addressShape,
+  countrySelectShape,
+  identityShape,
+  phoneNumberShape,
+  senderShape,
+} from './componentShapes/structuredValues';
 import { JsonSchema, SchemaGenerationContext } from './types';
 import { toOptionalInteger, toOptionalNumber } from './validation';
 
@@ -12,7 +18,6 @@ const stringComponentTypes = new Set([
   'email',
   'firstName',
   'iban',
-  'landvelger',
   'monthPicker',
   'navDatepicker',
   'orgNr',
@@ -89,6 +94,10 @@ const inferValueSchema = (component: Component, context: SchemaGenerationContext
 
   if (component.type === 'sender') {
     return senderShape(component);
+  }
+
+  if (component.type === 'landvelger') {
+    return countrySelectShape(component);
   }
 
   if (objectOfBooleanTypes.has(component.type)) {
