@@ -131,6 +131,10 @@ import {
 import { personCoverPageForm, personCoverPageTranslations } from '../data/forms-api/cover-page/personCoverPageForm';
 import largeForm from '../data/forms-api/largeForm';
 import { nologinForm, nologinTranslations } from '../data/forms-api/nologinForm';
+import {
+  summaryPageAttachmentDownloadForm,
+  summaryPageAttachmentDownloadTranslations,
+} from '../data/forms-api/summary-page/summaryPageAttachmentDownloadForm';
 
 const allForms = [
   { form: formCypress101, translations: translationsCypress101 },
@@ -214,6 +218,7 @@ const allForms = [
   { form: organizationNumberForm(), translations: organizationNumberTranslations() },
   { form: personCoverPageForm(), translations: personCoverPageTranslations() },
   { form: organizationNumberCoverPageForm(), translations: organizationNumberCoverPageTranslations() },
+  { form: summaryPageAttachmentDownloadForm(), translations: summaryPageAttachmentDownloadTranslations() },
   { form: phoneNumberForm(), translations: phoneNumberTranslations() },
   { form: accordionForm(), translations: accordionTranslations() },
   { form: addressValidityTestForm(), translations: addressValidityTranslations() },

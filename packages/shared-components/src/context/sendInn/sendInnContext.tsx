@@ -9,6 +9,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import React, { createContext, useCallback, useContext, useEffect, useReducer, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router';
+import { submitCaptchaValue } from '../../api/captcha/captcha';
 import { postNologinSoknad } from '../../api/sendinn/nologin';
 import {
   createSoknad,
@@ -35,15 +36,13 @@ interface SendInnContextType {
   isMellomlagringAvailable: boolean;
   isMellomlagringReady: boolean;
   innsendingsId?: string;
-  nologinToken?: string;
   soknadPdfBlob?: Blob;
-  setNologinToken: (token: string | undefined) => void;
-  setInnsendingsId: (innsendingsId: string | undefined) => void;
+  setCaptchaValue: (value: Record<string, string>) => void;
   mellomlagringError: MellomlagringError | undefined;
   submitted?: boolean;
   receipt?: ReceiptSummary;
-  setReceipt: (receipt: ReceiptSummary | undefined) => void;
   tokenDetails: NologinToken | undefined;
+  getUploadToken: () => Promise<string | undefined>;
   handleSessionExpired: () => void;
 }
 
@@ -72,6 +71,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const [isCreateStarted, setIsCreateStarted] = useState(false);
   const [innsendingsId, setInnsendingsId] = useState<string>();
   const [nologinToken, setNologinToken] = useState<string | undefined>();
+  const [captchaValue, setCaptchaValue] = useState<Record<string, string>>({});
   const [tokenDetails, setTokenDetails] = useState<NologinToken | undefined>();
   const [fyllutMellomlagringState, dispatchFyllutMellomlagring] = useReducer(mellomlagringReducer, undefined);
   const [soknadPdfBlob, setSoknadPdfBlob] = useState<Blob | undefined>(undefined);
@@ -420,6 +420,23 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
     }
   };
 
+  const getUploadToken = useCallback(async () => {
+    if (nologinToken) {
+      return nologinToken;
+    }
+
+    if (submissionMethod !== 'digitalnologin') {
+      return undefined;
+    }
+
+    const response = await submitCaptchaValue(captchaValue, appConfig.http);
+    if (response?.access_token) {
+      setNologinToken(response.access_token);
+    }
+
+    return response?.access_token;
+  }, [appConfig.http, captchaValue, nologinToken, submissionMethod]);
+
   const handleSessionExpired = useCallback(() => {
     logger?.debug('Session has expired, redirecting to session expired page');
     logEvent?.({
@@ -507,18 +524,16 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
     deleteMellomlagring,
     submitSoknad,
     innsendingsId,
-    setInnsendingsId,
-    nologinToken,
-    setNologinToken,
+    setCaptchaValue,
     soknadPdfBlob,
     receipt,
-    setReceipt,
     isMellomlagringAvailable,
     isMellomlagringActive: !!fyllutMellomlagringState?.isActive,
     isMellomlagringReady,
     mellomlagringError: fyllutMellomlagringState?.error,
     submitted: !!soknadPdfBlob,
     tokenDetails,
+    getUploadToken,
     handleSessionExpired,
   };
 
