@@ -27,7 +27,7 @@ export function Optional({ handleChange, form, errors, refMap }: Props) {
   const showAddBulletList = bulletPoints.length === 0;
 
   const onTitleChange = (value: string) => {
-    const key = setKeyBasedText(value);
+    const key = setKeyBasedText(value, form?.introPage?.sections.optional?.title);
     updateSection(form, 'optional', 'title', key, handleChange);
   };
 
