@@ -23,11 +23,11 @@ export function Optional({ handleChange, form, errors, refMap }: Props) {
   const previewStyles = usePreviewStyles();
 
   const bulletPoints = form?.introPage?.sections?.optional?.bulletPoints || [];
-  const showIngress = form?.introPage?.sections.optional?.description !== undefined;
+  const showIngress = form?.introPage?.sections?.optional?.description !== undefined;
   const showAddBulletList = bulletPoints.length === 0;
 
   const onTitleChange = (value: string) => {
-    const key = setKeyBasedText(value, form?.introPage?.sections.optional?.title);
+    const key = setKeyBasedText(value, form?.introPage?.sections?.optional?.title);
     updateSection(form, 'optional', 'title', key, handleChange);
   };
 
@@ -41,7 +41,7 @@ export function Optional({ handleChange, form, errors, refMap }: Props) {
           </Heading>
           <TextFieldComponent
             label="Overskrift"
-            defaultValue={getKeyBasedText(form?.introPage?.sections.optional?.title) || ''}
+            defaultValue={getKeyBasedText(form?.introPage?.sections?.optional?.title) || ''}
             ref={refMap['sections.optional.title']}
             onChange={onTitleChange}
             error={errors?.sections?.optional?.title}
