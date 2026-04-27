@@ -34,6 +34,7 @@ export const FormIntroPageWysiwygEditor = forwardRef<HTMLDivElement, TexareaFiel
             {description}
           </BodyLong>
           <WysiwygEditor
+            key={defaultValue ?? ''}
             defaultTag={defaultTag}
             defaultValue={defaultValue}
             onBlur={onChange}

@@ -236,6 +236,98 @@ describe('FormSettingsPage', () => {
       });
       cy.get('[aria-live="polite"]').should('contain.text', `Lagret skjema ${submitData.title}`);
     });
+
+    it('deletes the selected saved bullet point instead of the last one', () => {
+      let initialBulletPointKeys: string[] = [];
+      const savedTranslations: Array<{ key: string; nb: string; [key: string]: unknown }> = [];
+      let saveCount = 0;
+
+      cy.intercept('GET', '/api/forms/cypresssettings/translations', (req) => {
+        req.reply(savedTranslations);
+      }).as('getSavedFormTranslations');
+
+      cy.intercept('POST', '/api/forms/cypresssettings/translations', (req) => {
+        const existingTranslationIndex = savedTranslations.findIndex(({ key }) => key === req.body.key);
+
+        if (existingTranslationIndex === -1) {
+          savedTranslations.push(req.body);
+        } else {
+          savedTranslations[existingTranslationIndex] = req.body;
+        }
+
+        req.reply(201, req.body);
+      }).as('saveTranslation');
+
+      cy.intercept('PUT', '/api/forms/cypresssettings', (req) => {
+        saveCount += 1;
+        const bulletPoints = req.body.introPage.sections.prerequisites.bulletPoints;
+
+        if (saveCount === 1) {
+          expect(bulletPoints).to.have.length(3);
+          initialBulletPointKeys = [...bulletPoints];
+        }
+
+        if (saveCount === 2) {
+          expect(bulletPoints).to.deep.equal([initialBulletPointKeys[0], initialBulletPointKeys[2]]);
+        }
+
+        req.reply(req.body);
+      }).as('saveForm');
+
+      cy.findByRole('checkbox', { name: 'Bruk standard introside' }).click();
+      cy.findByRole('checkbox', { name: 'Før du søker / sender / fyller ut' }).click();
+
+      cy.contains('Velkomstmelding')
+        .parent()
+        .within(() => {
+          typeAndBlur(0, 'Velkommen');
+        });
+
+      cy.get('[data-testid="prerequisites"]').within(() => {
+        cy.findByRole('radio', { name: 'Før du søker' }).check();
+        cy.contains('Legg til punktliste').click();
+        typeAndBlur(0, 'Kulepunkt 1');
+        cy.contains('Legg til kulepunkt').click();
+        typeAndBlur(1, 'Kulepunkt 2');
+        cy.contains('Legg til kulepunkt').click();
+        typeAndBlur(2, 'Kulepunkt 3');
+      });
+
+      cy.get('[data-testid="dataDisclosure"]').within(() => {
+        cy.findByRole('radio', { name: 'Informasjon vi henter' }).check();
+      });
+
+      cy.contains('Erklæring')
+        .closest('section')
+        .then(($section) => {
+          cy.wrap($section).within(() => {
+            cy.wrap($section).within(() => {
+              cy.findByRole('radio', { name: 'behandle henvendelsen din' }).check();
+            });
+          });
+        });
+
+      cy.contains('Lagre').click();
+      cy.wait('@saveForm');
+      cy.wait('@getSavedFormTranslations');
+
+      cy.get('[data-testid="prerequisites"]').within(() => {
+        cy.get('.rsw-editor [contenteditable="true"]').should('have.length', 3);
+        cy.get('.rsw-editor [contenteditable="true"]').eq(0).should('contain.text', 'Kulepunkt 1');
+        cy.get('.rsw-editor [contenteditable="true"]').eq(1).should('contain.text', 'Kulepunkt 2');
+        cy.get('.rsw-editor [contenteditable="true"]').eq(2).should('contain.text', 'Kulepunkt 3');
+
+        cy.findAllByRole('button', { name: 'Slett' }).eq(1).click();
+
+        cy.get('.rsw-editor [contenteditable="true"]').should('have.length', 2);
+        cy.get('.rsw-editor [contenteditable="true"]').eq(0).should('contain.text', 'Kulepunkt 1');
+        cy.get('.rsw-editor [contenteditable="true"]').eq(1).should('contain.text', 'Kulepunkt 3');
+        cy.contains('Kulepunkt 2').should('not.exist');
+      });
+
+      cy.contains('Lagre').click();
+      cy.wait('@saveForm');
+    });
   });
 
   describe('Validation', () => {
