@@ -222,12 +222,10 @@ describe('checkCondition', () => {
       },
     } as unknown as NavFormType;
 
-    const createInstance = (alder: string) =>
+    const createInstance = (data: Record<string, unknown>) =>
       ({
         ...dependentQuestion,
-        data: {
-          egenskaper: { alder },
-        },
+        data,
         parent: {
           ...container,
           parent: {
@@ -245,7 +243,7 @@ describe('checkCondition', () => {
           kjaeledyr: [{ egenskaper: { alder: '5' } }],
         },
         form,
-        createInstance('5'),
+        createInstance({ alder: '5' }),
       ),
     ).toBe(true);
     expect(
@@ -256,9 +254,140 @@ describe('checkCondition', () => {
           kjaeledyr: [{ egenskaper: { alder: '4' } }],
         },
         form,
-        createInstance('4'),
+        createInstance({ alder: '4' }),
       ),
     ).toBe(false);
+  });
+
+  it('evaluates simple datagrid container conditionals from row-scoped data with absolute paths inside containers', () => {
+    const ageField = {
+      key: 'alder',
+      type: 'textfield',
+      input: true,
+    };
+    const dependentQuestion = {
+      key: 'oppgiForsikringsselskapNarAlderEr5Ar',
+      type: 'textfield',
+      input: true,
+      conditional: {
+        show: true,
+        when: 'kjaeledyr.egenskaper.alder',
+        eq: '5',
+      },
+    };
+    const container = {
+      key: 'egenskaper',
+      type: 'container',
+      input: true,
+      components: [ageField, dependentQuestion],
+    };
+    const form = {
+      components: [
+        {
+          key: 'kjaeledyr',
+          type: 'datagrid',
+          input: true,
+          components: [container],
+        },
+      ],
+      properties: {
+        skjemanummer: 'TEST',
+        tema: 'TES',
+        submissionTypes: ['DIGITAL'],
+        subsequentSubmissionTypes: [],
+      },
+    } as unknown as NavFormType;
+
+    expect(checkCondition(dependentQuestion, { alder: '5' }, {}, form)).toBe(true);
+    expect(checkCondition(dependentQuestion, { alder: '4' }, {}, form)).toBe(false);
+  });
+
+  it('evaluates simple datagrid conditionals from row-scoped data with absolute paths outside containers', () => {
+    const ageField = {
+      key: 'alder',
+      type: 'textfield',
+      input: true,
+    };
+    const container = {
+      key: 'egenskaper',
+      type: 'container',
+      input: true,
+      components: [ageField],
+    };
+    const dependentQuestion = {
+      key: 'harDetBlittGjennomfortOyelysing',
+      type: 'radiopanel',
+      input: true,
+      conditional: {
+        show: true,
+        when: 'kjaeledyr.egenskaper.alder',
+        eq: '0',
+      },
+    };
+    const form = {
+      components: [
+        {
+          key: 'kjaeledyr',
+          type: 'datagrid',
+          input: true,
+          components: [container, dependentQuestion],
+        },
+      ],
+      properties: {
+        skjemanummer: 'TEST',
+        tema: 'TES',
+        submissionTypes: ['DIGITAL'],
+        subsequentSubmissionTypes: [],
+      },
+    } as unknown as NavFormType;
+
+    expect(checkCondition(dependentQuestion, { egenskaper: { alder: '0' } }, {}, form)).toBe(true);
+    expect(checkCondition(dependentQuestion, { egenskaper: { alder: '1' } }, {}, form)).toBe(false);
+    expect(checkCondition(dependentQuestion, { alder: '0' }, {}, form)).toBe(true);
+    expect(checkCondition(dependentQuestion, { alder: '1' }, {}, form)).toBe(false);
+    expect(checkCondition(dependentQuestion, undefined, { egenskaper: { alder: '0' } }, form)).toBe(true);
+    expect(checkCondition(dependentQuestion, undefined, { egenskaper: { alder: '1' } }, form)).toBe(false);
+    expect(checkCondition(dependentQuestion, undefined, { alder: '0' }, form)).toBe(true);
+    expect(checkCondition(dependentQuestion, undefined, { alder: '1' }, form)).toBe(false);
+  });
+
+  it('evaluates simple datagrid conditionals through array-backed full paths', () => {
+    const component = {
+      key: 'tekstfelt3MedNiva',
+      type: 'textfield',
+      input: true,
+      conditional: {
+        show: true,
+        when: 'repeterende.checkbox3repeterende',
+        eq: 'true',
+      },
+    };
+    const form = {
+      components: [
+        {
+          key: 'repeterende',
+          type: 'datagrid',
+          input: true,
+          components: [
+            {
+              key: 'checkbox3repeterende',
+              type: 'checkbox',
+              input: true,
+            },
+            component,
+          ],
+        },
+      ],
+      properties: {
+        skjemanummer: 'TEST',
+        tema: 'TES',
+        submissionTypes: ['DIGITAL'],
+        subsequentSubmissionTypes: [],
+      },
+    } as unknown as NavFormType;
+
+    expect(checkCondition(component, undefined, { repeterende: [{ checkbox3repeterende: true }] }, form)).toBe(true);
+    expect(checkCondition(component, undefined, { repeterende: [{ checkbox3repeterende: false }] }, form)).toBe(false);
   });
 
   it('supports custom conditionals using utils and submission outside Formio runtime', () => {

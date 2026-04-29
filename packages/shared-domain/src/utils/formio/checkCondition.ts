@@ -40,8 +40,32 @@ const isEmptyValue = (value: unknown) => {
   return false;
 };
 
-const getByPath = (obj: unknown, path: string) =>
-  path.split('.').reduce<unknown>((acc, key) => (isObjectLike(acc) ? acc[key] : undefined), obj);
+const getByPath = (obj: unknown, path: string): unknown => {
+  const keys = path.split('.');
+
+  const getNestedValue = (value: unknown, keyIndex: number): unknown => {
+    if (keyIndex >= keys.length) {
+      return value;
+    }
+
+    if (Array.isArray(value)) {
+      const arrayValues = value
+        .map((item) => getNestedValue(item, keyIndex))
+        .flatMap((item) => (Array.isArray(item) ? item : [item]))
+        .filter((item) => !isNil(item));
+
+      return arrayValues.length > 0 ? arrayValues : undefined;
+    }
+
+    if (isObjectLike(value)) {
+      return getNestedValue(value[keys[keyIndex]], keyIndex + 1);
+    }
+
+    return undefined;
+  };
+
+  return getNestedValue(obj, 0);
+};
 
 const hasOwnKey = (value: unknown, key: string) => isObjectLike(value) && Object.hasOwn(value, key);
 
@@ -159,51 +183,160 @@ const getEffectiveRowContext = (row: unknown, data: unknown, instance?: Conditio
   return data;
 };
 
-const getDataParentPath = (instance?: ConditionComponent) => {
-  const pathSegments: string[] = [];
+const getRelevantParentKeys = (instance?: ConditionComponent) => {
+  const parentKeys: string[] = [];
   let current = instance?.parent;
 
   while (current) {
-    if (current.type === 'datagrid' && current.key) {
-      pathSegments.unshift(current.key);
+    if (current.key && !['panel', 'fieldset', 'navSkjemagruppe'].includes(current.type ?? '')) {
+      parentKeys.unshift(current.key);
     }
     current = current.parent;
   }
 
-  return pathSegments.join('.');
+  return parentKeys;
 };
 
-const getScopedRowPath = (componentPath: string, instance?: ConditionComponent) => {
-  const dataParentPath = getDataParentPath(instance);
+const getScopedRowPaths = (componentPath: string, instance?: ConditionComponent) => {
+  const relevantParentKeys = getRelevantParentKeys(instance);
+  const scopedRowPaths: string[] = [];
 
-  if (!dataParentPath) {
-    return;
-  }
+  for (let index = relevantParentKeys.length; index > 0; index -= 1) {
+    const scopedPrefix = relevantParentKeys.slice(0, index).join('.');
 
-  if (componentPath === dataParentPath) {
-    return '';
-  }
+    if (componentPath === scopedPrefix) {
+      scopedRowPaths.push('');
+      continue;
+    }
 
-  const scopedPrefix = dataParentPath + '.';
-  return componentPath.startsWith(scopedPrefix) ? componentPath.slice(scopedPrefix.length) : undefined;
-};
-
-const getComponentActualValue = (componentPath: string, data: unknown, row: unknown, instance?: ConditionComponent) => {
-  const scopedRowPath = getScopedRowPath(componentPath, instance);
-
-  if (row && scopedRowPath !== undefined) {
-    const scopedRowValue = scopedRowPath ? getByPath(row, scopedRowPath) : row;
-    if (!isNil(scopedRowValue)) {
-      return normalizeConditionalValue(scopedRowValue);
+    const nestedPrefix = scopedPrefix + '.';
+    if (componentPath.startsWith(nestedPrefix)) {
+      scopedRowPaths.push(componentPath.slice(nestedPrefix.length));
     }
   }
 
-  const dataValue = data ? getByPath(data, componentPath) : undefined;
+  return scopedRowPaths;
+};
+
+const getPathSuffixes = (path: string) => {
+  const pathSegments = path.split('.');
+  const pathSuffixes: string[] = [];
+
+  for (let index = 1; index < pathSegments.length; index += 1) {
+    pathSuffixes.push(pathSegments.slice(index).join('.'));
+  }
+
+  return pathSuffixes;
+};
+
+const wrapValueWithPath = (value: unknown, path: string) =>
+  path
+    .split('.')
+    .slice(0, -1)
+    .reduceRight<unknown>(
+      (wrappedValue, pathSegment) => ({
+        [pathSegment]: wrappedValue,
+      }),
+      value,
+    );
+
+const wrapRowWithParentKeys = (row: unknown, instance?: ConditionComponent) =>
+  getRelevantParentKeys(instance).reduceRight<unknown>(
+    (wrappedRow, parentKey) => ({
+      [parentKey]: wrappedRow,
+    }),
+    row,
+  );
+
+const hasDatagridAncestor = (instance?: ConditionComponent) => {
+  let current = instance?.parent;
+
+  while (current) {
+    if (current.type === 'datagrid') {
+      return true;
+    }
+
+    current = current.parent;
+  }
+
+  return false;
+};
+
+const getComponentActualValue = (componentPath: string, data: unknown, row: unknown, instance?: ConditionComponent) => {
+  if (!isNil(row)) {
+    for (const scopedRowPath of getScopedRowPaths(componentPath, instance)) {
+      const scopedRowValue = scopedRowPath ? getByPath(row, scopedRowPath) : row;
+      if (!isNil(scopedRowValue)) {
+        return normalizeConditionalValue(scopedRowValue);
+      }
+
+      if (scopedRowPath) {
+        const wrappedScopedRowValue = getByPath(wrapValueWithPath(row, scopedRowPath), scopedRowPath);
+        if (!isNil(wrappedScopedRowValue)) {
+          return normalizeConditionalValue(wrappedScopedRowValue);
+        }
+      }
+    }
+
+    const wrappedRowValue = getByPath(wrapRowWithParentKeys(row, instance), componentPath);
+    if (!isNil(wrappedRowValue)) {
+      return normalizeConditionalValue(wrappedRowValue);
+    }
+
+    if (hasDatagridAncestor(instance)) {
+      for (const rowPathSuffix of getPathSuffixes(componentPath)) {
+        const rowPathSuffixValue = getByPath(row, rowPathSuffix);
+        if (!isNil(rowPathSuffixValue)) {
+          return normalizeConditionalValue(rowPathSuffixValue);
+        }
+
+        const wrappedRowPathSuffixValue = getByPath(wrapValueWithPath(row, rowPathSuffix), rowPathSuffix);
+        if (!isNil(wrappedRowPathSuffixValue)) {
+          return normalizeConditionalValue(wrappedRowPathSuffixValue);
+        }
+      }
+    }
+  }
+
+  for (const scopedDataPath of getScopedRowPaths(componentPath, instance)) {
+    const scopedDataValue = scopedDataPath ? getByPath(data, scopedDataPath) : data;
+    if (!isNil(scopedDataValue)) {
+      return normalizeConditionalValue(scopedDataValue);
+    }
+
+    if (scopedDataPath) {
+      const wrappedScopedDataValue = getByPath(wrapValueWithPath(data, scopedDataPath), scopedDataPath);
+      if (!isNil(wrappedScopedDataValue)) {
+        return normalizeConditionalValue(wrappedScopedDataValue);
+      }
+    }
+  }
+
+  const wrappedDataValue = !isNil(data) ? getByPath(wrapRowWithParentKeys(data, instance), componentPath) : undefined;
+  if (!isNil(wrappedDataValue)) {
+    return normalizeConditionalValue(wrappedDataValue);
+  }
+
+  if (hasDatagridAncestor(instance)) {
+    for (const dataPathSuffix of getPathSuffixes(componentPath)) {
+      const dataPathSuffixValue = getByPath(data, dataPathSuffix);
+      if (!isNil(dataPathSuffixValue)) {
+        return normalizeConditionalValue(dataPathSuffixValue);
+      }
+
+      const wrappedDataPathSuffixValue = getByPath(wrapValueWithPath(data, dataPathSuffix), dataPathSuffix);
+      if (!isNil(wrappedDataPathSuffixValue)) {
+        return normalizeConditionalValue(wrappedDataPathSuffixValue);
+      }
+    }
+  }
+
+  const dataValue = !isNil(data) ? getByPath(data, componentPath) : undefined;
   if (!isNil(dataValue)) {
     return normalizeConditionalValue(dataValue);
   }
 
-  const rowValue = row ? getByPath(row, componentPath) : undefined;
+  const rowValue = !isNil(row) ? getByPath(row, componentPath) : undefined;
   return normalizeConditionalValue(rowValue);
 };
 
