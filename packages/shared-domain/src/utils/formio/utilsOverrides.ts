@@ -1,4 +1,4 @@
-import getCheckConditionUtils from './checkCondition';
+import getCheckConditionUtils from '../check-condition';
 import sanitizeJavascriptCode from './sanitizeJavascriptCode';
 
 const getOverrides = (Utils) => {

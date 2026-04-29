@@ -1,5 +1,5 @@
 import { Component, NavFormType, Submission } from '../../models';
-import { checkCondition } from './navFormioUtils';
+import { checkCondition } from '../formio/navFormioUtils';
 
 describe('checkCondition', () => {
   it('returns true by default when component has no conditional', () => {
