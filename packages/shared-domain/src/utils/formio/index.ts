@@ -1,2 +1,2 @@
-export type { CheckConditionOptions } from '../check-condition';
+export type { CheckConditionOptions } from '../check-condition/checkCondition';
 export * from './navFormioUtils';
