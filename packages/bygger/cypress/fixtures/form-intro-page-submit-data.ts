@@ -23,13 +23,6 @@ export const submitData = {
         description: 'Dette er hva du må ha klart før du starter',
         bulletPoints: ['Et kulepunkt for informasjon om utfylling av skjemaet'],
       },
-      dataTreatment: {
-        description: 'Dette er hvordan vi behandler dine data',
-        bulletPoints: [
-          'Et kulepunkt for hvordan vi behandler personopplysninger',
-          'Enda et kulepunkt for hvordan vi behandler personopplysninger',
-        ],
-      },
       scope: {
         title: 'introPage.scope.title.alt1',
         description: 'Dette er hva skjemaet kan brukes til',

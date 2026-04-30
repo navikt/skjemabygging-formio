@@ -22,7 +22,7 @@ export default tseslint.config(
   pluginCypress.configs.globals,
   ...tseslint.configs.recommended,
   {
-    files: ['**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx', '**/*.mjs'],
+    files: ['**/*.ts', '**/*.tsx', '**/*.mjs'],
     plugins: {
       '@typescript-eslint': tseslint.plugin,
       react,

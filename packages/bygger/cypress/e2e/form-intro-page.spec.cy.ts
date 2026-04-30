@@ -55,8 +55,6 @@ describe('FormSettingsPage', () => {
         expect(req.body.introPage.sections.prerequisites.bulletPoints).to.have.length(1);
         expect(req.body.introPage.sections.automaticProcessing.description).to.match(uuidRegex);
         expect(req.body.introPage.sections.automaticProcessing.bulletPoints).to.have.length(2);
-        expect(req.body.introPage.sections.dataTreatment.description).to.match(uuidRegex);
-        expect(req.body.introPage.sections.dataTreatment.bulletPoints).to.have.length(2);
         expect(req.body.introPage.sections.dataDisclosure.title).to.equal(
           submitData.introPage.sections.dataDisclosure.title,
         );
@@ -77,11 +75,10 @@ describe('FormSettingsPage', () => {
       cy.findByRole('checkbox', { name: 'Bruk standard introside' }).should('exist');
       cy.findByRole('checkbox', { name: 'Bruk standard introside' }).click();
 
-      ['introduction', 'beAwareOf', 'dataDisclosure', 'dataTreatment', 'dataStorage', 'selfDeclaration'].forEach(
-        (value) => {
-          cy.get(`input[type="checkbox"][value="${value}"]`).should('be.checked');
-        },
-      );
+      ['introduction', 'beAwareOf', 'dataDisclosure', 'dataStorage', 'selfDeclaration'].forEach((value) => {
+        cy.get(`input[type="checkbox"][value="${value}"]`).should('be.checked');
+      });
+      cy.findByRole('heading', { name: 'Hvordan vi behandler personopplysninger' }).should('not.exist');
 
       checkAllOptionalFields();
 
@@ -138,15 +135,6 @@ describe('FormSettingsPage', () => {
         typeAndBlur(0, submitData.introPage.sections.dataDisclosure.bulletPoints[0]);
       });
 
-      cy.get('[data-testid="dataTreatment"]').within(() => {
-        cy.contains('Legg til ingress').click();
-        cy.contains('Legg til punktliste').click();
-        typeAndBlur(0, submitData.introPage.sections.dataTreatment.description);
-        typeAndBlur(1, submitData.introPage.sections.dataTreatment.bulletPoints[0]);
-        cy.contains('Legg til kulepunkt').click();
-        typeAndBlur(2, submitData.introPage.sections.dataTreatment.bulletPoints[1]);
-      });
-
       cy.get('[data-testid="automaticProcessing"]').within(() => {
         cy.contains('Legg til ingress').click();
         typeAndBlur(0, submitData.introPage.sections.automaticProcessing.description);
@@ -177,7 +165,7 @@ describe('FormSettingsPage', () => {
         });
 
       cy.contains('Lagre').click();
-      cy.wait(Array(22).fill('@postTranslations')).spread((...posts) => {
+      cy.wait(Array(19).fill('@postTranslations')).spread((...posts) => {
         [
           submitData.introPage.introduction,
           submitData.introPage.importantInformation.title,
@@ -191,9 +179,6 @@ describe('FormSettingsPage', () => {
           submitData.introPage.sections.prerequisites.description,
           submitData.introPage.sections.prerequisites.bulletPoints[0],
           submitData.introPage.sections.dataDisclosure.bulletPoints[0],
-          submitData.introPage.sections.dataTreatment.description,
-          submitData.introPage.sections.dataTreatment.bulletPoints[0],
-          submitData.introPage.sections.dataTreatment.bulletPoints[1],
           submitData.introPage.sections.automaticProcessing.description,
           submitData.introPage.sections.automaticProcessing.bulletPoints[0],
           submitData.introPage.sections.automaticProcessing.bulletPoints[1],
@@ -212,8 +197,6 @@ describe('FormSettingsPage', () => {
       cy.intercept('PUT', '/api/forms/cypresssettings', (req) => {
         expect(req.body.introPage.enabled).to.equal(submitData.introPage.enabled);
         expect(req.body.introPage.introduction).to.match(uuidRegex);
-        expect(req.body.introPage.sections.dataTreatment.description).to.match(uuidRegex);
-        expect(req.body.introPage.sections.dataTreatment.bulletPoints).to.have.length(2);
         expect(req.body.introPage.selfDeclaration).to.equal(submitData.introPage.selfDeclaration);
         req.reply(req.body);
       });
@@ -221,7 +204,7 @@ describe('FormSettingsPage', () => {
       cy.findByRole('checkbox', { name: 'Bruk standard introside' }).should('exist');
       cy.findByRole('checkbox', { name: 'Bruk standard introside' }).click();
 
-      ['introduction', 'beAwareOf', 'dataTreatment', 'dataStorage', 'selfDeclaration'].forEach((value) => {
+      ['introduction', 'beAwareOf', 'dataDisclosure', 'dataStorage', 'selfDeclaration'].forEach((value) => {
         cy.get(`input[type="checkbox"][value="${value}"]`).should('be.checked');
       });
 
@@ -231,13 +214,8 @@ describe('FormSettingsPage', () => {
           typeAndBlur(0, submitData.introPage.introduction);
         });
 
-      cy.get('[data-testid="dataTreatment"]').within(() => {
-        cy.contains('Legg til ingress').click();
-        cy.contains('Legg til punktliste').click();
-        typeAndBlur(0, submitData.introPage.sections.dataTreatment.description);
-        typeAndBlur(1, submitData.introPage.sections.dataTreatment.bulletPoints[0]);
-        cy.contains('Legg til kulepunkt').click();
-        typeAndBlur(2, submitData.introPage.sections.dataTreatment.bulletPoints[1]);
+      cy.get('[data-testid="dataDisclosure"]').within(() => {
+        cy.findByRole('radio', { name: 'Informasjon vi henter om deg' }).check();
       });
 
       cy.contains('Erklæring')
@@ -251,21 +229,104 @@ describe('FormSettingsPage', () => {
         });
 
       cy.contains('Lagre').click();
-      cy.wait(Array(4).fill('@postTranslations')).spread((post1, post2, post3, post4) => {
-        expect(post1.request.body).to.contain({
+      cy.wait('@postTranslations').then((post) => {
+        expect(post.request.body).to.contain({
           nb: `<p>${submitData.introPage.introduction}</p>`,
-        });
-        expect(post2.request.body).to.contain({
-          nb: `<p>${submitData.introPage.sections.dataTreatment.description}</p>`,
-        });
-        expect(post3.request.body).to.contain({
-          nb: `${submitData.introPage.sections.dataTreatment.bulletPoints[0]}`,
-        });
-        expect(post4.request.body).to.contain({
-          nb: `${submitData.introPage.sections.dataTreatment.bulletPoints[1]}`,
         });
       });
       cy.get('[aria-live="polite"]').should('contain.text', `Lagret skjema ${submitData.title}`);
+    });
+
+    it('deletes the selected saved bullet point instead of the last one', () => {
+      let initialBulletPointKeys: string[] = [];
+      const savedTranslations: Array<{ key: string; nb: string; [key: string]: unknown }> = [];
+      let saveCount = 0;
+
+      cy.intercept('GET', '/api/forms/cypresssettings/translations', (req) => {
+        req.reply(savedTranslations);
+      }).as('getSavedFormTranslations');
+
+      cy.intercept('POST', '/api/forms/cypresssettings/translations', (req) => {
+        const existingTranslationIndex = savedTranslations.findIndex(({ key }) => key === req.body.key);
+
+        if (existingTranslationIndex === -1) {
+          savedTranslations.push(req.body);
+        } else {
+          savedTranslations[existingTranslationIndex] = req.body;
+        }
+
+        req.reply(201, req.body);
+      }).as('saveTranslation');
+
+      cy.intercept('PUT', '/api/forms/cypresssettings', (req) => {
+        saveCount += 1;
+        const bulletPoints = req.body.introPage.sections.prerequisites.bulletPoints;
+
+        if (saveCount === 1) {
+          expect(bulletPoints).to.have.length(3);
+          initialBulletPointKeys = [...bulletPoints];
+        }
+
+        if (saveCount === 2) {
+          expect(bulletPoints).to.deep.equal([initialBulletPointKeys[0], initialBulletPointKeys[2]]);
+        }
+
+        req.reply(req.body);
+      }).as('saveForm');
+
+      cy.findByRole('checkbox', { name: 'Bruk standard introside' }).click();
+      cy.findByRole('checkbox', { name: 'Før du søker / sender / fyller ut' }).click();
+
+      cy.contains('Velkomstmelding')
+        .parent()
+        .within(() => {
+          typeAndBlur(0, 'Velkommen');
+        });
+
+      cy.get('[data-testid="prerequisites"]').within(() => {
+        cy.findByRole('radio', { name: 'Før du søker' }).check();
+        cy.contains('Legg til punktliste').click();
+        typeAndBlur(0, 'Kulepunkt 1');
+        cy.contains('Legg til kulepunkt').click();
+        typeAndBlur(1, 'Kulepunkt 2');
+        cy.contains('Legg til kulepunkt').click();
+        typeAndBlur(2, 'Kulepunkt 3');
+      });
+
+      cy.get('[data-testid="dataDisclosure"]').within(() => {
+        cy.findByRole('radio', { name: 'Informasjon vi henter' }).check();
+      });
+
+      cy.contains('Erklæring')
+        .closest('section')
+        .then(($section) => {
+          cy.wrap($section).within(() => {
+            cy.wrap($section).within(() => {
+              cy.findByRole('radio', { name: 'behandle henvendelsen din' }).check();
+            });
+          });
+        });
+
+      cy.contains('Lagre').click();
+      cy.wait('@saveForm');
+      cy.wait('@getSavedFormTranslations');
+
+      cy.get('[data-testid="prerequisites"]').within(() => {
+        cy.get('.rsw-editor [contenteditable="true"]').should('have.length', 3);
+        cy.get('.rsw-editor [contenteditable="true"]').eq(0).should('contain.text', 'Kulepunkt 1');
+        cy.get('.rsw-editor [contenteditable="true"]').eq(1).should('contain.text', 'Kulepunkt 2');
+        cy.get('.rsw-editor [contenteditable="true"]').eq(2).should('contain.text', 'Kulepunkt 3');
+
+        cy.findAllByRole('button', { name: 'Slett' }).eq(1).click();
+
+        cy.get('.rsw-editor [contenteditable="true"]').should('have.length', 2);
+        cy.get('.rsw-editor [contenteditable="true"]').eq(0).should('contain.text', 'Kulepunkt 1');
+        cy.get('.rsw-editor [contenteditable="true"]').eq(1).should('contain.text', 'Kulepunkt 3');
+        cy.contains('Kulepunkt 2').should('not.exist');
+      });
+
+      cy.contains('Lagre').click();
+      cy.wait('@saveForm');
     });
   });
 
@@ -319,11 +380,6 @@ describe('FormSettingsPage', () => {
         cy.findByRole('radio', { name: 'Informasjon vi henter' }).check();
       });
 
-      cy.get('[data-testid="dataTreatment"]').within(() => {
-        cy.contains('Legg til ingress').click();
-        typeAndBlur(0, 'Slik behandler vi dataene dine');
-      });
-
       cy.contains('Erklæring')
         .closest('section')
         .then(($section) => {
@@ -336,7 +392,7 @@ describe('FormSettingsPage', () => {
 
       cy.contains('Lagre').click();
       cy.get('[aria-live="polite"]').should('contain.text', `Lagret skjema ${submitData.title}`);
-      cy.get('[aria-live="polite"]').should('contain.text', '6 oversettelser ble lagret');
+      cy.get('[aria-live="polite"]').should('contain.text', '5 oversettelser ble lagret');
     });
 
     it('all required fields display error message when not filled out and enabled is true', () => {
@@ -350,12 +406,6 @@ describe('FormSettingsPage', () => {
         .closest('section')
         .within(() => {
           cy.contains('Velkomstmelding må fylles ut').should('exist');
-        });
-
-      cy.contains('Hvordan vi behandler personopplysninger')
-        .closest('section')
-        .within(() => {
-          cy.contains('Seksjonen må ha en ingress eller kulepunkter').should('exist');
         });
 
       cy.contains('Erklæring')
@@ -435,18 +485,6 @@ describe('FormSettingsPage', () => {
         typeAndBlur(1, '{selectall}{backspace}');
       });
 
-      cy.get('[data-testid="dataTreatment"]').within(() => {
-        cy.contains('Legg til ingress').click();
-        typeAndBlur(0, 'abc');
-        typeAndBlur(0, '{selectall}{backspace}');
-        cy.contains('Legg til punktliste').click();
-        typeAndBlur(1, 'abc');
-        typeAndBlur(1, '{selectall}{backspace}');
-        cy.contains('Legg til kulepunkt').click();
-        typeAndBlur(2, 'abc');
-        typeAndBlur(2, '{selectall}{backspace}');
-      });
-
       cy.get('[data-testid="automaticProcessing"]').within(() => {
         cy.contains('Legg til ingress').click();
         typeAndBlur(0, 'abc');
@@ -517,11 +555,6 @@ describe('FormSettingsPage', () => {
         cy.findAllByText('Kulepunktet må fylles ut').should('have.length', 2);
       });
 
-      cy.get('[data-testid="dataTreatment"]').within(() => {
-        cy.contains('Ingress må fylles ut').should('exist');
-        cy.findAllByText('Kulepunktet må fylles ut').should('have.length', 2);
-      });
-
       cy.get('[data-testid="automaticProcessing"]').within(() => {
         cy.contains('Ingress må fylles ut').should('exist');
         cy.findAllByText('Kulepunktet må fylles ut').should('have.length', 2);
@@ -535,8 +568,8 @@ describe('FormSettingsPage', () => {
 
       cy.findAllByText('Brødtekst må fylles ut').should('have.length', 1);
       cy.findAllByText('Overskrift må fylles ut').should('have.length', 2);
-      cy.findAllByText('Ingress må fylles ut').should('have.length', 6);
-      cy.findAllByText('Kulepunktet må fylles ut').should('have.length', 14);
+      cy.findAllByText('Ingress må fylles ut').should('have.length', 5);
+      cy.findAllByText('Kulepunktet må fylles ut').should('have.length', 12);
     });
 
     it('optional fields display does not display error message on save when enabled is false', () => {
@@ -598,12 +631,6 @@ describe('FormSettingsPage', () => {
           cy.contains('Overskrift må fylles ut').should('exist');
         });
 
-      cy.contains('Hvordan vi behandler personopplysninger')
-        .closest('section')
-        .within(() => {
-          cy.contains('Seksjonen må ha en ingress eller kulepunkter').should('exist');
-        });
-
       cy.contains('Automatisk saksbehandling')
         .closest('section')
         .within(() => {
@@ -654,13 +681,6 @@ describe('FormSettingsPage', () => {
         );
       });
 
-      cy.get('[data-testid="dataTreatment"]').within(() => {
-        cy.contains('Legg til punktliste').click();
-        cy.get('.rsw-editor [contenteditable="true"]').type(
-          submitData.introPage.sections.dataTreatment.bulletPoints[0],
-        );
-      });
-
       cy.get('[data-testid="automaticProcessing"]').within(() => {
         cy.contains('Legg til punktliste').click();
         cy.get('.rsw-editor [contenteditable="true"]').type(
@@ -695,12 +715,6 @@ describe('FormSettingsPage', () => {
       cy.get('[data-testid="dataDisclosure"]').within(() => {
         cy.contains('Vennligst legg til minst to kulepunkter').should('not.exist');
       });
-
-      cy.contains('Hvordan vi behandler personopplysninger')
-        .closest('section')
-        .within(() => {
-          cy.contains('Vennligst legg til minst to kulepunkter').should('exist');
-        });
 
       cy.contains('Automatisk saksbehandling')
         .closest('section')
@@ -749,7 +763,6 @@ describe('FormSettingsPage', () => {
         'Endringene ble ikke lagret fordi introsiden har valideringsfeil. Rett opp feltene markert med rødt.',
       );
       cy.contains('Velkomstmelding må fylles ut').then(assertInViewport);
-      cy.contains('Seksjonen må ha en ingress eller kulepunkter').then(assertBelowViewport);
       cy.contains('Egenerklæring må fylles ut').then(assertBelowViewport);
 
       cy.contains('Velkomstmelding')
@@ -759,12 +772,7 @@ describe('FormSettingsPage', () => {
         });
       cy.contains('Lagre').click();
       cy.contains('Velkomstmelding må fylles ut').should('not.exist');
-      cy.contains('Seksjonen må ha en ingress eller kulepunkter').then(assertInViewport);
-
-      cy.get('[data-testid="dataTreatment"]').within(() => {
-        cy.contains('Legg til ingress').click();
-        typeAndBlur(0, submitData.introPage.sections.dataTreatment.description);
-      });
+      cy.contains('Egenerklæring må fylles ut').then(assertInViewport);
 
       cy.contains('Erklæring')
         .closest('section')
