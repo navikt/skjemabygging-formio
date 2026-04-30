@@ -1,5 +1,5 @@
 import { Component, NavFormType, Submission, SubmissionMethod } from '../../models';
-import { submissionTypesUtils } from '../submission';
+import { submissionTypesUtils } from '../submission/submissionTypesUtils';
 import getFormioCheckConditionUtils from './formioCheckCondition';
 
 const USE_FORMIO_CHECK_CONDITION = false;
