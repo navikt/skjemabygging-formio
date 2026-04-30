@@ -46,6 +46,7 @@
     "cypress:fyllut": "pnpm --filter @navikt/fyllut-frontend run cypress",
     "cypress:bygger:open": "pnpm --filter @navikt/bygger-frontend run cypress:open",
     "cypress:fyllut:open": "pnpm --filter @navikt/fyllut-frontend run cypress:open",
+    "cypress:fyllut:production": "node bin/cypress-production.mjs",
     "check-types": "pnpm -r --if-present run check-types",
     "mocks:fyllut": "pnpm --dir mocks run mocks:fyllut",
     "mocks:fyllut:no-cli": "pnpm --dir mocks run mocks:fyllut:no-cli",
