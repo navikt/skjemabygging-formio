@@ -12,9 +12,15 @@ const toCollectionValues = <T>(collection: T[] | Record<string, T> | null | unde
   return Array.isArray(collection) ? collection : Object.values(collection);
 };
 
+const parsePath = (path: string): string[] =>
+  path
+    .replace(/\[(\d+)]/g, '.$1')
+    .split('.')
+    .filter(Boolean);
+
 const lodashShim = {
   get: (obj: unknown, path: string, defaultValue?: unknown) => {
-    const result = path.split('.').reduce<unknown>((acc, key) => (isObjectLike(acc) ? acc[key] : undefined), obj);
+    const result = parsePath(path).reduce<unknown>((acc, key) => (isObjectLike(acc) ? acc[key] : undefined), obj);
 
     return result === undefined ? defaultValue : result;
   },
@@ -43,14 +49,14 @@ const isEmptyValue = (value: unknown) => {
 const getByPath = (obj: unknown, path: string): unknown => {
   const keys = path.split('.');
 
-  const getNestedValue = (value: unknown, keyIndex: number): unknown => {
+  const traverse = (value: unknown, keyIndex: number): unknown => {
     if (keyIndex >= keys.length) {
       return value;
     }
 
     if (Array.isArray(value)) {
       const arrayValues = value
-        .map((item) => getNestedValue(item, keyIndex))
+        .map((item) => traverse(item, keyIndex))
         .flatMap((item) => (Array.isArray(item) ? item : [item]))
         .filter((item) => !isNil(item));
 
@@ -58,13 +64,13 @@ const getByPath = (obj: unknown, path: string): unknown => {
     }
 
     if (isObjectLike(value)) {
-      return getNestedValue(value[keys[keyIndex]], keyIndex + 1);
+      return traverse(value[keys[keyIndex]], keyIndex + 1);
     }
 
     return undefined;
   };
 
-  return getNestedValue(obj, 0);
+  return traverse(obj, 0);
 };
 
 const hasOwnKey = (value: unknown, key: string) => isObjectLike(value) && Object.hasOwn(value, key);
@@ -183,12 +189,14 @@ const getEffectiveRowContext = (row: unknown, data: unknown, instance?: Conditio
   return data;
 };
 
+const NON_DATA_PARENT_TYPES = ['panel', 'fieldset', 'navSkjemagruppe'];
+
 const getRelevantParentKeys = (instance?: ConditionComponent) => {
   const parentKeys: string[] = [];
   let current = instance?.parent;
 
   while (current) {
-    if (current.key && !['panel', 'fieldset', 'navSkjemagruppe'].includes(current.type ?? '')) {
+    if (current.key && !NON_DATA_PARENT_TYPES.includes(current.type ?? '')) {
       parentKeys.unshift(current.key);
     }
     current = current.parent;
@@ -229,25 +237,6 @@ const getPathSuffixes = (path: string) => {
   return pathSuffixes;
 };
 
-const wrapValueWithPath = (value: unknown, path: string) =>
-  path
-    .split('.')
-    .slice(0, -1)
-    .reduceRight<unknown>(
-      (wrappedValue, pathSegment) => ({
-        [pathSegment]: wrappedValue,
-      }),
-      value,
-    );
-
-const wrapRowWithParentKeys = (row: unknown, instance?: ConditionComponent) =>
-  getRelevantParentKeys(instance).reduceRight<unknown>(
-    (wrappedRow, parentKey) => ({
-      [parentKey]: wrappedRow,
-    }),
-    row,
-  );
-
 const hasDatagridAncestor = (instance?: ConditionComponent) => {
   let current = instance?.parent;
 
@@ -262,82 +251,60 @@ const hasDatagridAncestor = (instance?: ConditionComponent) => {
   return false;
 };
 
+interface ValueCandidate {
+  source: unknown;
+  path: string;
+}
+
+/**
+ * Resolves the value of a referenced component from either row (scoped context)
+ * or data (full submission). Returns the first non-nil match, normalized.
+ *
+ * Resolution order:
+ *   1. Row-scoped paths — strip parent key prefixes from componentPath
+ *   2. Row path suffixes — for datagrid/no-instance cross-scope references
+ *   3. Data direct — full componentPath against submission data (array-aware)
+ *   4. Row direct — full componentPath against row (last resort)
+ */
 const getComponentActualValue = (componentPath: string, data: unknown, row: unknown, instance?: ConditionComponent) => {
-  if (!isNil(row)) {
-    for (const scopedRowPath of getScopedRowPaths(componentPath, instance)) {
-      const scopedRowValue = scopedRowPath ? getByPath(row, scopedRowPath) : row;
-      if (!isNil(scopedRowValue)) {
-        return normalizeConditionalValue(scopedRowValue);
-      }
+  const candidates: ValueCandidate[] = [];
+  const scopedPaths = getScopedRowPaths(componentPath, instance);
+  const rowSources = [row, instance?.data].filter((source) => !isNil(source));
 
-      if (scopedRowPath) {
-        const wrappedScopedRowValue = getByPath(wrapValueWithPath(row, scopedRowPath), scopedRowPath);
-        if (!isNil(wrappedScopedRowValue)) {
-          return normalizeConditionalValue(wrappedScopedRowValue);
-        }
-      }
+  // 1. Row-scoped paths (strip parent key prefixes)
+  for (const source of rowSources) {
+    for (const scopedPath of scopedPaths) {
+      candidates.push({ source, path: scopedPath });
     }
+  }
 
-    const wrappedRowValue = getByPath(wrapRowWithParentKeys(row, instance), componentPath);
-    if (!isNil(wrappedRowValue)) {
-      return normalizeConditionalValue(wrappedRowValue);
-    }
-
-    if (hasDatagridAncestor(instance)) {
-      for (const rowPathSuffix of getPathSuffixes(componentPath)) {
-        const rowPathSuffixValue = getByPath(row, rowPathSuffix);
-        if (!isNil(rowPathSuffixValue)) {
-          return normalizeConditionalValue(rowPathSuffixValue);
-        }
-
-        const wrappedRowPathSuffixValue = getByPath(wrapValueWithPath(row, rowPathSuffix), rowPathSuffix);
-        if (!isNil(wrappedRowPathSuffixValue)) {
-          return normalizeConditionalValue(wrappedRowPathSuffixValue);
-        }
+  // 2. Row path suffixes (only when no instance or inside datagrid)
+  if (!instance || hasDatagridAncestor(instance)) {
+    for (const source of rowSources) {
+      for (const suffix of getPathSuffixes(componentPath)) {
+        candidates.push({ source, path: suffix });
       }
     }
   }
 
-  for (const scopedDataPath of getScopedRowPaths(componentPath, instance)) {
-    const scopedDataValue = scopedDataPath ? getByPath(data, scopedDataPath) : data;
-    if (!isNil(scopedDataValue)) {
-      return normalizeConditionalValue(scopedDataValue);
-    }
-
-    if (scopedDataPath) {
-      const wrappedScopedDataValue = getByPath(wrapValueWithPath(data, scopedDataPath), scopedDataPath);
-      if (!isNil(wrappedScopedDataValue)) {
-        return normalizeConditionalValue(wrappedScopedDataValue);
-      }
-    }
+  // 3. Full data path (direct, array-aware)
+  if (!isNil(data)) {
+    candidates.push({ source: data, path: componentPath });
   }
 
-  const wrappedDataValue = !isNil(data) ? getByPath(wrapRowWithParentKeys(data, instance), componentPath) : undefined;
-  if (!isNil(wrappedDataValue)) {
-    return normalizeConditionalValue(wrappedDataValue);
+  // 4. Row with full component path (last resort)
+  for (const source of rowSources) {
+    candidates.push({ source, path: componentPath });
   }
 
-  if (hasDatagridAncestor(instance)) {
-    for (const dataPathSuffix of getPathSuffixes(componentPath)) {
-      const dataPathSuffixValue = getByPath(data, dataPathSuffix);
-      if (!isNil(dataPathSuffixValue)) {
-        return normalizeConditionalValue(dataPathSuffixValue);
-      }
-
-      const wrappedDataPathSuffixValue = getByPath(wrapValueWithPath(data, dataPathSuffix), dataPathSuffix);
-      if (!isNil(wrappedDataPathSuffixValue)) {
-        return normalizeConditionalValue(wrappedDataPathSuffixValue);
-      }
+  for (const { source, path } of candidates) {
+    const value = path ? getByPath(source, path) : source;
+    if (!isNil(value)) {
+      return normalizeConditionalValue(value);
     }
   }
 
-  const dataValue = !isNil(data) ? getByPath(data, componentPath) : undefined;
-  if (!isNil(dataValue)) {
-    return normalizeConditionalValue(dataValue);
-  }
-
-  const rowValue = !isNil(row) ? getByPath(row, componentPath) : undefined;
-  return normalizeConditionalValue(rowValue);
+  return normalizeConditionalValue(undefined);
 };
 
 const checkSimpleConditional = (
@@ -353,7 +320,7 @@ const checkSimpleConditional = (
   }
 
   if (condition.when) {
-    const value = getComponentActualValue(condition.when, data, getEffectiveRowContext(row, data, instance), instance);
+    const value = getComponentActualValue(condition.when, data, row, instance);
     const eq = String(condition.eq);
     const show = String(condition.show);
 
@@ -371,11 +338,28 @@ const checkSimpleConditional = (
   return true;
 };
 
+const hasUnsupportedConditional = (component: Partial<Component>) => {
+  const conditional = component.conditional;
+  if (!conditional) {
+    return false;
+  }
+
+  return Boolean(
+    ('json' in conditional && conditional.json) || ('conditions' in conditional && conditional.conditions),
+  );
+};
+
 const getCheckConditionUtils = (
   Utils,
   evaluate: (func: unknown, args: Record<string, unknown>, ret?: string, tokenize?: boolean) => unknown,
   originalCheckCondition,
 ) => {
+  // Quick switchback to FormioJS condition logic.
+  // Delete this once the custom implementation has been validated in production.
+  if (USE_FORMIO_CHECK_CONDITION) {
+    return getFormioCheckConditionUtils(Utils, evaluate, originalCheckCondition);
+  }
+
   const checkCustomConditional = (
     component: Partial<Component>,
     custom,
@@ -444,6 +428,11 @@ const getCheckConditionUtils = (
       );
     }
 
+    if (hasUnsupportedConditional(component)) {
+      console.warn(`Unsupported conditional type on component "${component.key}". Treating as visible.`);
+      return true;
+    }
+
     const effectiveInstance = shouldCreateSyntheticInstance(component, instance)
       ? createConditionInstance(component, form, evaluate, options?.submissionMethod)
       : instance;
@@ -455,17 +444,12 @@ const getCheckConditionUtils = (
     return true;
   };
 
-  // This stays here for us to quickly change back to old formio check condition.
-  // This should be deleted when we have run the new check condition for a while.
-  if (USE_FORMIO_CHECK_CONDITION) {
-    return getFormioCheckConditionUtils(Utils, evaluate, originalCheckCondition);
-  }
-
   return {
     checkCustomConditional,
     checkCondition,
   };
 };
 
+export { getCheckConditionUtils };
 export type { CheckConditionOptions };
 export default getCheckConditionUtils;

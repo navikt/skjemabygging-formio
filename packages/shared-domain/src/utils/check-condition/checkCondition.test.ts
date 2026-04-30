@@ -1,5 +1,20 @@
-import { Component, NavFormType, Submission } from '../../models';
-import { checkCondition } from '../formio/navFormioUtils';
+import type { Component, NavFormType, Submission } from '../../models';
+import getCustomUtils from '../formio/utilsCustom';
+import getCheckConditionUtils from './checkCondition';
+
+const getValue = (obj: Record<string, unknown>, key: string) => {
+  const data = (obj as { data?: Record<string, unknown> }).data ?? obj;
+  return data[key];
+};
+
+const Utils = { getValue, ...getCustomUtils({ getValue }) };
+
+const evaluate = (func: unknown, args: Record<string, unknown>) => {
+  const fn = new Function(...Object.keys(args), func as string);
+  return fn(...Object.values(args));
+};
+
+const { checkCondition } = getCheckConditionUtils(Utils, evaluate, () => true);
 
 describe('checkCondition', () => {
   it('returns true by default when component has no conditional', () => {
@@ -345,10 +360,11 @@ describe('checkCondition', () => {
     expect(checkCondition(dependentQuestion, { egenskaper: { alder: '1' } }, {}, form)).toBe(false);
     expect(checkCondition(dependentQuestion, { alder: '0' }, {}, form)).toBe(true);
     expect(checkCondition(dependentQuestion, { alder: '1' }, {}, form)).toBe(false);
-    expect(checkCondition(dependentQuestion, undefined, { egenskaper: { alder: '0' } }, form)).toBe(true);
-    expect(checkCondition(dependentQuestion, undefined, { egenskaper: { alder: '1' } }, form)).toBe(false);
-    expect(checkCondition(dependentQuestion, undefined, { alder: '0' }, form)).toBe(true);
-    expect(checkCondition(dependentQuestion, undefined, { alder: '1' }, form)).toBe(false);
+    // When scoped data is passed as row (realistic caller pattern)
+    expect(checkCondition(dependentQuestion, { egenskaper: { alder: '0' } }, undefined, form)).toBe(true);
+    expect(checkCondition(dependentQuestion, { egenskaper: { alder: '1' } }, undefined, form)).toBe(false);
+    expect(checkCondition(dependentQuestion, { alder: '0' }, undefined, form)).toBe(true);
+    expect(checkCondition(dependentQuestion, { alder: '1' }, undefined, form)).toBe(false);
   });
 
   it('evaluates simple datagrid conditionals through array-backed full paths', () => {
