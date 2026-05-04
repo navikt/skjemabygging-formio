@@ -191,6 +191,9 @@ const getEffectiveRowContext = (row: unknown, data: unknown, instance?: Conditio
 
 const NON_DATA_PARENT_TYPES = ['panel', 'fieldset', 'navSkjemagruppe'];
 
+const contributesToDataPath = (component: Partial<Component>) =>
+  Boolean(component.key && component.tree !== false && !NON_DATA_PARENT_TYPES.includes(component.type ?? ''));
+
 const getRelevantParentKeys = (instance?: ConditionComponent) => {
   const parentKeys: string[] = [];
   let current = instance?.parent;
@@ -237,6 +240,28 @@ const getPathSuffixes = (path: string) => {
   return pathSuffixes;
 };
 
+const findComponentDataPathsByKey = (
+  components: Component[] | undefined,
+  targetKey: string,
+  parentPath: string[] = [],
+): string[] => {
+  const paths: string[] = [];
+
+  for (const component of components ?? []) {
+    const nextPath = contributesToDataPath(component) ? [...parentPath, component.key!] : parentPath;
+
+    if (component.key === targetKey && nextPath.length > 0) {
+      paths.push(nextPath.join('.'));
+    }
+
+    if (component.components?.length) {
+      paths.push(...findComponentDataPathsByKey(component.components, targetKey, nextPath));
+    }
+  }
+
+  return paths;
+};
+
 const hasDatagridAncestor = (instance?: ConditionComponent) => {
   let current = instance?.parent;
 
@@ -266,7 +291,13 @@ interface ValueCandidate {
  *   3. Data direct — full componentPath against submission data (array-aware)
  *   4. Row direct — full componentPath against row (last resort)
  */
-const getComponentActualValue = (componentPath: string, data: unknown, row: unknown, instance?: ConditionComponent) => {
+const getComponentActualValue = (
+  componentPath: string,
+  data: unknown,
+  row: unknown,
+  instance?: ConditionComponent,
+  form?: NavFormType,
+) => {
   const candidates: ValueCandidate[] = [];
   const scopedPaths = getScopedRowPaths(componentPath, instance);
   const rowSources = [row, instance?.data].filter((source) => !isNil(source));
@@ -304,6 +335,17 @@ const getComponentActualValue = (componentPath: string, data: unknown, row: unkn
     }
   }
 
+  if (!componentPath.includes('.') && form && !isNil(data)) {
+    const formDataPaths = findComponentDataPathsByKey(form.components, componentPath);
+
+    for (const path of formDataPaths) {
+      const value = getByPath(data, path);
+      if (!isNil(value)) {
+        return normalizeConditionalValue(value);
+      }
+    }
+  }
+
   return normalizeConditionalValue(undefined);
 };
 
@@ -311,6 +353,7 @@ const checkSimpleConditional = (
   component: Partial<Component>,
   row: unknown,
   data: unknown,
+  form: NavFormType | undefined,
   instance?: ConditionComponent,
 ) => {
   const condition = component.conditional;
@@ -320,7 +363,7 @@ const checkSimpleConditional = (
   }
 
   if (condition.when) {
-    const value = getComponentActualValue(condition.when, data, row, instance);
+    const value = getComponentActualValue(condition.when, data, row, instance, form);
     const eq = String(condition.eq);
     const show = String(condition.show);
 
@@ -438,7 +481,7 @@ const getCheckConditionUtils = (
       : instance;
 
     if (component.conditional?.when) {
-      return checkSimpleConditional(component, row, data, effectiveInstance);
+      return checkSimpleConditional(component, row, data, form, effectiveInstance);
     }
 
     return true;
