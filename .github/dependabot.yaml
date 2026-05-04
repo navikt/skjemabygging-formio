@@ -1,38 +1,46 @@
 version: 2
 registries:
+  npmjs:
+    type: npm-registry
+    url: https://registry.npmjs.org
+    replaces-base: true
   npm-github:
     type: npm-registry
     url: https://npm.pkg.github.com
     token: ${{secrets.READER_TOKEN}}
+    replaces-base: false
 updates:
   - package-ecosystem: 'npm'
     directory: '/'
     exclude-paths:
       - 'mocks/**'
     registries:
+      - npmjs
       - npm-github
     schedule:
       interval: 'monthly'
     versioning-strategy: increase
     open-pull-requests-limit: 20
+    # Default updates flow into patch/minor/major lanes.
+    # Special-case groups stay separate for higher-signal review.
     groups:
-      navikt-aksel-major:
-        patterns:
-          - '@navikt/ds-*'
-          - '@navikt/aksel-icons'
-        update-types:
-          - 'major'
-      navikt-aksel-minor-patch:
-        patterns:
-          - '@navikt/ds-*'
-          - '@navikt/aksel-icons'
-        update-types:
-          - 'minor'
-          - 'patch'
-      all-minor-patch:
+      global-patch:
         patterns:
           - '*'
         exclude-patterns:
+          - '@navikt/aksel'
+          - '@navikt/ds-*'
+          - '@navikt/aksel-icons'
+          - '@navikt/nav-dekoratoren-moduler'
+          - 'csp-header'
+          - 'html-react-parser'
+        update-types:
+          - 'patch'
+      global-minor:
+        patterns:
+          - '*'
+        exclude-patterns:
+          - '@navikt/aksel'
           - '@navikt/ds-*'
           - '@navikt/aksel-icons'
           - '@navikt/nav-dekoratoren-moduler'
@@ -40,15 +48,50 @@ updates:
           - 'html-react-parser'
         update-types:
           - 'minor'
+      global-major:
+        patterns:
+          - '*'
+        exclude-patterns:
+          - '@navikt/aksel'
+          - '@navikt/ds-*'
+          - '@navikt/aksel-icons'
+          - '@navikt/nav-dekoratoren-moduler'
+          - 'csp-header'
+          - 'html-react-parser'
+          - 'typescript-eslint'
+          - '@typescript-eslint/*'
+          - '@testing-library/*'
+        update-types:
+          - 'major'
+      aksel-major:
+        patterns:
+          - '@navikt/aksel'
+          - '@navikt/ds-*'
+          - '@navikt/aksel-icons'
+        update-types:
+          - 'major'
+      aksel-minor:
+        patterns:
+          - '@navikt/aksel'
+          - '@navikt/ds-*'
+          - '@navikt/aksel-icons'
+        update-types:
+          - 'minor'
+      aksel-patch:
+        patterns:
+          - '@navikt/aksel'
+          - '@navikt/ds-*'
+          - '@navikt/aksel-icons'
+        update-types:
           - 'patch'
-      typescript-eslint:
-        patterns: 
+      typescript-eslint-major:
+        patterns:
           - 'typescript-eslint'
           - '@typescript-eslint/*'
         update-types:
           - 'major'
-      testing-library:
-        patterns: 
+      testing-library-major:
+        patterns:
           - '@testing-library/*'
         update-types:
           - 'major'
@@ -59,13 +102,19 @@ updates:
           - 'html-react-parser'
         update-types:
           - 'major'
-      nav-dekoratoren-minor-patch:
+      nav-dekoratoren-minor:
         patterns:
           - '@navikt/nav-dekoratoren-moduler'
           - 'csp-header'
           - 'html-react-parser'
         update-types:
           - 'minor'
+      nav-dekoratoren-patch:
+        patterns:
+          - '@navikt/nav-dekoratoren-moduler'
+          - 'csp-header'
+          - 'html-react-parser'
+        update-types:
           - 'patch'
     ignore:
       - dependency-name: 'formiojs'
