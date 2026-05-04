@@ -77,6 +77,7 @@ const DatePicker = ({
       {...datepickerProps}
       selected={undefined}
       dropdownCaption={!!(fromDate && toDate)}
+      fixedWeeks={true}
     >
       <AkselDatePicker.Input
         id={id}

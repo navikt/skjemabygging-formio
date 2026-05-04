@@ -18,7 +18,7 @@ export const Introduction = forwardRef<HTMLDivElement, Props>(({ handleChange, f
   const { setKeyBasedText, getKeyBasedText } = useKeyBasedText();
 
   const onChange = (value: string) => {
-    const key = setKeyBasedText(value);
+    const key = setKeyBasedText(value, form.introPage?.introduction);
     if (form.introPage?.introduction === key) {
       return; // No change needed
     }

@@ -27,7 +27,7 @@ export function ImportantInformation({ form, handleChange, errors, refMap }: Pro
   const hasTitle = introPage?.importantInformation?.title !== undefined;
 
   const onChange = (value: string, property: 'title' | 'description') => {
-    const key = setKeyBasedText(value, property);
+    const key = setKeyBasedText(value, introPage?.importantInformation?.[property]);
     updateImportantInformation(form, property, key, handleChange);
   };
 
