@@ -1,6 +1,7 @@
 import type { Component, NavFormType, Submission } from '../../models';
 import getCustomUtils from '../formio/utilsCustom';
 import getCheckConditionUtils from './checkCondition';
+import type { EvaluateFunction } from './types';
 
 const getValue = (obj: Record<string, unknown>, key: string) => {
   const data = (obj as { data?: Record<string, unknown> }).data ?? obj;
@@ -9,8 +10,8 @@ const getValue = (obj: Record<string, unknown>, key: string) => {
 
 const Utils = { getValue, ...getCustomUtils({ getValue }) };
 
-const evaluate = (func: unknown, args: Record<string, unknown>) => {
-  const fn = new Function(...Object.keys(args), func as string);
+const evaluate: EvaluateFunction = (func, args) => {
+  const fn = new Function(...Object.keys(args), func);
   return fn(...Object.values(args));
 };
 

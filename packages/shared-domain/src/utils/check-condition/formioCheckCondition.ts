@@ -1,28 +1,36 @@
 import _ from 'lodash';
 import { Component, NavFormType, Submission, SubmissionMethod } from '../../models';
-
-type ConditionComponent = Partial<Component> & {
-  evaluate?: (func: unknown, args: Record<string, unknown>, ret?: string, tokenize?: boolean) => unknown;
-};
+import {
+  ConditionComponent,
+  ConditionData,
+  ConditionEvaluationArgs,
+  ConditionLibrary,
+  ConditionResult,
+  ConditionRow,
+  ConditionUtils,
+  OriginalCheckCondition,
+} from './types';
 
 interface CheckConditionOptions {
   submissionMethod?: SubmissionMethod;
 }
 
 const getFormioCheckConditionUtils = (
-  Utils,
-  evaluate: (func: unknown, args: Record<string, unknown>, ret?: string, tokenize?: boolean) => unknown,
-  originalCheckCondition,
+  Utils: ConditionUtils,
+  evaluate: (func: string, args: ConditionEvaluationArgs, ret?: string, tokenize?: boolean) => ConditionResult,
+  originalCheckCondition: OriginalCheckCondition,
 ) => {
+  const lodashLibrary: ConditionLibrary = _;
+
   const formioCheckCustomConditional = (
     _component: Partial<Component>,
-    custom,
-    row,
-    data,
+    custom: string,
+    row: ConditionRow,
+    data: ConditionData | undefined,
     form: NavFormType | undefined,
-    variable,
-    onError,
-    instance,
+    variable: string,
+    onError: boolean,
+    instance?: ConditionComponent,
     submission?: Submission,
     _options?: CheckConditionOptions,
   ) => {
@@ -30,16 +38,16 @@ const getFormioCheckConditionUtils = (
       custom = `var ${variable} = true; ${custom}; return ${variable};`;
     }
 
-    const evaluateArgs = {
+    const evaluateArgs: ConditionEvaluationArgs = {
       row,
       data,
       form,
       utils: Utils,
       ...(submission && { submission }),
-      _: _,
+      _: lodashLibrary,
     };
 
-    const value =
+    const value: ConditionResult =
       instance && instance.evaluate ? instance.evaluate(custom, evaluateArgs) : evaluate(custom, evaluateArgs);
 
     if (value === null) {
@@ -51,8 +59,8 @@ const getFormioCheckConditionUtils = (
 
   const formioCheckCondition = (
     component: Partial<Component>,
-    row,
-    data,
+    row: ConditionRow,
+    data: ConditionData | undefined,
     form?: NavFormType,
     instance?: ConditionComponent,
     submission?: Submission,
