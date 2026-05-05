@@ -24,16 +24,56 @@ describe('Submission type utils', () => {
       expect(submissionTypesUtils.isDigitalSubmissionOnly(['DIGITAL'])).toBeTruthy();
     });
 
+    it('should return true when submissionTypes contains DIGITAL and STATIC_PDF', () => {
+      expect(submissionTypesUtils.isDigitalSubmissionOnly(['DIGITAL', 'STATIC_PDF'])).toBeTruthy();
+    });
+
     it('should return false when submissionTypes contains both DIGITAL and PAPER', () => {
       expect(submissionTypesUtils.isDigitalSubmissionOnly(['PAPER', 'DIGITAL'])).toBeFalsy();
+    });
+
+    it('should return false when submissionTypes contains DIGITAL, PAPER and STATIC_PDF', () => {
+      expect(submissionTypesUtils.isDigitalSubmissionOnly(['PAPER', 'DIGITAL', 'STATIC_PDF'])).toBeFalsy();
     });
 
     it('should return false when submissionTypes contains only PAPER', () => {
       expect(submissionTypesUtils.isDigitalSubmissionOnly(['PAPER'])).toBeFalsy();
     });
 
+    it('should return false when submissionTypes contains only STATIC_PDF', () => {
+      expect(submissionTypesUtils.isDigitalSubmissionOnly(['STATIC_PDF'])).toBeFalsy();
+    });
+
     it('should return false when submissionTypes is an empty list', () => {
       expect(submissionTypesUtils.isDigitalSubmissionOnly([])).toBeFalsy();
+    });
+  });
+
+  describe('submissionTypesUtils.isDigitalNoLoginSubmissionOnly', () => {
+    it('should return true when submissionTypes contains only DIGITAL_NO_LOGIN', () => {
+      expect(submissionTypesUtils.isDigitalNoLoginSubmissionOnly(['DIGITAL_NO_LOGIN'])).toBeTruthy();
+    });
+
+    it('should return true when submissionTypes contains DIGITAL_NO_LOGIN and STATIC_PDF', () => {
+      expect(submissionTypesUtils.isDigitalNoLoginSubmissionOnly(['DIGITAL_NO_LOGIN', 'STATIC_PDF'])).toBeTruthy();
+    });
+
+    it('should return false when submissionTypes contains DIGITAL_NO_LOGIN, DIGITAL and STATIC_PDF', () => {
+      expect(
+        submissionTypesUtils.isDigitalNoLoginSubmissionOnly(['DIGITAL_NO_LOGIN', 'DIGITAL', 'STATIC_PDF']),
+      ).toBeFalsy();
+    });
+
+    it('should return false when submissionTypes contains only DIGITAL', () => {
+      expect(submissionTypesUtils.isDigitalNoLoginSubmissionOnly(['DIGITAL'])).toBeFalsy();
+    });
+
+    it('should return false when submissionTypes contains only STATIC_PDF', () => {
+      expect(submissionTypesUtils.isDigitalNoLoginSubmissionOnly(['STATIC_PDF'])).toBeFalsy();
+    });
+
+    it('should return false when submissionTypes is an empty list', () => {
+      expect(submissionTypesUtils.isDigitalNoLoginSubmissionOnly([])).toBeFalsy();
     });
   });
 
@@ -60,12 +100,24 @@ describe('Submission type utils', () => {
       expect(submissionTypesUtils.isPaperSubmissionOnly(['PAPER'])).toBeTruthy();
     });
 
+    it('should return true when submissionTypes contains PAPER and STATIC_PDF', () => {
+      expect(submissionTypesUtils.isPaperSubmissionOnly(['PAPER', 'STATIC_PDF'])).toBeTruthy();
+    });
+
     it('should return false when submissionTypes contains both PAPER and DIGITAL', () => {
       expect(submissionTypesUtils.isPaperSubmissionOnly(['PAPER', 'DIGITAL'])).toBeFalsy();
     });
 
+    it('should return false when submissionTypes contains PAPER, DIGITAL and STATIC_PDF', () => {
+      expect(submissionTypesUtils.isPaperSubmissionOnly(['PAPER', 'DIGITAL', 'STATIC_PDF'])).toBeFalsy();
+    });
+
     it('should return false when submissionTypes contains only DIGITAL', () => {
       expect(submissionTypesUtils.isPaperSubmissionOnly(['DIGITAL'])).toBeFalsy();
+    });
+
+    it('should return false when submissionTypes contains only STATIC_PDF', () => {
+      expect(submissionTypesUtils.isPaperSubmissionOnly(['STATIC_PDF'])).toBeFalsy();
     });
 
     it('should return false when submissionTypes is an empty list', () => {
