@@ -52,13 +52,13 @@ describe('Submission type', () => {
 
       it('shows Ingen checkbox in Innsending group', () => {
         cy.findByRole('group', { name: /Innsending/ }).within(() => {
-          cy.findByRole('checkbox', { name: 'Ingen' }).should('exist');
+          cy.findByRole('checkbox', { name: /Ingen innsending/ }).should('exist');
         });
       });
 
       it('hides Ingen checkbox in Ettersending group', () => {
         cy.findByRole('group', { name: /Ettersending/ }).within(() => {
-          cy.findByRole('checkbox', { name: 'Ingen' }).should('not.exist');
+          cy.findByRole('checkbox', { name: /Ingen innsending/ }).should('not.exist');
         });
       });
     });
@@ -72,7 +72,7 @@ describe('Submission type', () => {
 
       it('shows warning when PAPER_NO_COVER_PAGE is combined with DIGITAL', () => {
         cy.findByRole('group', { name: /Innsending/ }).within(() => {
-          cy.findByRole('checkbox', { name: 'Ingen' }).should('be.checked');
+          cy.findByRole('checkbox', { name: /Ingen innsending/ }).should('be.checked');
           cy.findByRole('checkbox', { name: 'Digital' }).check({ force: true });
         });
         cy.findByText(/uforutsett oppførsel/).should('be.visible');
@@ -80,14 +80,14 @@ describe('Submission type', () => {
 
       it('does not show warning when only PAPER_NO_COVER_PAGE is selected', () => {
         cy.findByRole('group', { name: /Innsending/ }).within(() => {
-          cy.findByRole('checkbox', { name: 'Ingen' }).should('be.checked');
+          cy.findByRole('checkbox', { name: /Ingen innsending/ }).should('be.checked');
         });
         cy.findByText(/uforutsett oppførsel/).should('not.exist');
       });
 
       it('does not show warning when PAPER_NO_COVER_PAGE is combined with STATIC_PDF', () => {
         cy.findByRole('group', { name: /Innsending/ }).within(() => {
-          cy.findByRole('checkbox', { name: 'Ingen' }).should('be.checked');
+          cy.findByRole('checkbox', { name: /Ingen innsending/ }).should('be.checked');
           cy.findByRole('checkbox', { name: 'Statisk PDF' }).check({ force: true });
         });
         cy.findByText(/uforutsett oppførsel/).should('not.exist');
@@ -120,7 +120,7 @@ describe('Submission type', () => {
 
       it('auto-checks Ingen when form has empty submissionTypes', () => {
         cy.findByRole('group', { name: /Innsending/ }).within(() => {
-          cy.findByRole('checkbox', { name: 'Ingen' }).should('be.checked');
+          cy.findByRole('checkbox', { name: /Ingen innsending/ }).should('be.checked');
         });
       });
 
