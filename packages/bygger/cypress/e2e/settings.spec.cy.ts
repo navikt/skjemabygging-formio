@@ -174,7 +174,7 @@ describe('FormSettingsPage', () => {
     describe('visibility', () => {
       beforeEach(() => {
         cy.findByRole('group', { name: 'Innsending' }).within(() => {
-          cy.findByRole('checkbox', { name: 'Papir' }).should('be.checked');
+          cy.findByRole('checkbox', { name: /Send i posten/ }).should('be.checked');
         });
       });
 
@@ -195,7 +195,9 @@ describe('FormSettingsPage', () => {
 
       it('should not be visible when paper submission is not allowed', () => {
         cy.findByRole('group', { name: 'Innsending' }).within(() => {
-          cy.findByRole('checkbox', { name: 'Papir' }).should('be.checked').uncheck({ force: true });
+          cy.findByRole('checkbox', { name: /Send i posten/ })
+            .should('be.checked')
+            .uncheck({ force: true });
         });
 
         cy.findByRole('checkbox', { name: CHECKBOX_LABEL_USER_MUST_CHOOSE_ENHET }).should('not.exist');

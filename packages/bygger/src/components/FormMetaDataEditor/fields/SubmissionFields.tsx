@@ -1,4 +1,4 @@
-import { Checkbox, Textarea, TextField } from '@navikt/ds-react';
+import { Alert, Checkbox, Textarea, TextField } from '@navikt/ds-react';
 import { Form, FormSettingsDiff, submissionTypesUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import LabelWithDiff from '../LabelWithDiff';
 import { FormMetadataError, UpdateFormFunction } from '../utils/utils';
@@ -14,6 +14,9 @@ export interface SubmissionFieldsProps {
 const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProps) => {
   const { submissionTypes, subsequentSubmissionTypes, ettersendelsesfrist, hideUserTypes } = form.properties;
   const isLockedForm = !!form.lock;
+  const hasIncompatibleCombination =
+    !!submissionTypes?.includes('PAPER_NO_COVER_PAGE') &&
+    submissionTypes.some((t) => t === 'PAPER' || t === 'DIGITAL' || t === 'DIGITAL_NO_LOGIN');
 
   return (
     <>
@@ -34,13 +37,20 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
         }
       />
 
+      {hasIncompatibleCombination && (
+        <Alert variant="warning" size="small" className="mb">
+          Kombinasjonen av &apos;Ingen&apos; med andre innsendingstyper kan gi uforutsett oppførsel. Test skjemaet
+          grundig.
+        </Alert>
+      )}
+
       <SubmissionTypeCheckbox
         name="form-subsequentSubmissionTypes"
         label={<LabelWithDiff label="Ettersending" diff={!!diff.subsequentSubmissionTypes} />}
         value={subsequentSubmissionTypes}
         error={errors?.subsequentSubmissionTypes}
         readonly={isLockedForm}
-        hideTypes={['DIGITAL_NO_LOGIN', 'STATIC_PDF']}
+        hideTypes={['DIGITAL_NO_LOGIN', 'STATIC_PDF', 'PAPER_NO_COVER_PAGE']}
         onChange={(data) =>
           onChange({
             ...form,
@@ -52,7 +62,7 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
         }
       />
 
-      {!submissionTypesUtils.isNoneSubmission(subsequentSubmissionTypes) && (
+      {!submissionTypesUtils.isPaperNoCoverPageSubmission(subsequentSubmissionTypes) && (
         <TextField
           onWheel={(e) => e.currentTarget.blur()} // disable scroll wheel on number input
           className="mb"
@@ -71,7 +81,7 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
         />
       )}
 
-      {submissionTypesUtils.isNoneSubmission(submissionTypes) && (
+      {submissionTypesUtils.isPaperNoCoverPageSubmission(submissionTypes) && (
         <>
           <TextField
             className="mb"

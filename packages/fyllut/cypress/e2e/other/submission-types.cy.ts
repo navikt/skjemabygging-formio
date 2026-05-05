@@ -1,4 +1,5 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { expect } from 'chai';
 
 const digitalLinkLoggedInName = TEXTS.grensesnitt.introPage.sendDigitalLoggedIn;
 
@@ -392,6 +393,76 @@ describe('Submission Type', () => {
       cy.visit('/fyllut/stnone');
       cy.defaultWaits();
       cy.url().should('not.include', 'sub=');
+    });
+  });
+
+  describe('Type: Paper No Cover Page', () => {
+    beforeEach(() => {
+      cy.visit('/fyllut/papernocoverpage');
+      cy.defaultWaits();
+    });
+
+    it('navigates to ingen-innsending page from summary', () => {
+      cy.clickIntroPageConfirmation();
+      cy.clickStart();
+      cy.url().should('not.include', '?');
+
+      cy.findByRole('textbox', { name: 'Tekstfelt' }).type('test');
+      cy.clickNextStep();
+
+      cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
+      cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions }).click();
+
+      cy.url().should('include', '/papernocoverpage/ingen-innsending');
+      cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).should('exist');
+    });
+  });
+
+  describe('Type: Static PDF and Paper No Cover Page', () => {
+    const paperNoCoverPageStaticPdfFormPath = 'papernocoverpagestaticpdf';
+
+    it('allows filling and downloading through the ingen-innsending flow', () => {
+      cy.intercept('POST', '/fyllut/api/documents/application').as('downloadApplication');
+      cy.visit(`/fyllut/${paperNoCoverPageStaticPdfFormPath}`);
+      cy.defaultWaits();
+
+      cy.clickIntroPageConfirmation();
+      cy.clickStart();
+      cy.findByRole('textbox', { name: 'Tekstfelt' }).type('test');
+      cy.findByLabelText(TEXTS.statiske.attachment.ettersender).click();
+      cy.clickNextStep();
+
+      cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
+      cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions }).click();
+
+      cy.url().should('include', `/${paperNoCoverPageStaticPdfFormPath}/ingen-innsending`);
+      cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).click();
+
+      cy.wait('@downloadApplication').then((interception) => {
+        expect(JSON.parse(interception.request.body.submission).data.tekstfelt).to.eq('test');
+        expect(interception.response?.statusCode).to.eq(200);
+      });
+    });
+
+    it('allows filling and downloading through the static-pdf flow', () => {
+      cy.intercept('GET', `/fyllut/api/forms/${paperNoCoverPageStaticPdfFormPath}/static-pdfs`).as('getStaticPdf');
+      cy.intercept('POST', `/fyllut/api/forms/${paperNoCoverPageStaticPdfFormPath}/static-pdfs/*`).as(
+        'downloadStaticPdf',
+      );
+      cy.visit(`/fyllut/${paperNoCoverPageStaticPdfFormPath}/pdf`);
+      cy.defaultWaits();
+      cy.wait('@getStaticPdf');
+
+      cy.findByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).type('22015614475');
+      cy.findByRole('checkbox', { name: 'Vedlegg 1' }).click();
+      cy.findByRole('link', { name: /Fortsett/ }).click();
+      cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).click();
+
+      cy.wait('@downloadStaticPdf').then((interception) => {
+        expect(interception.request.body?.user?.nationalIdentityNumber).to.eq('22015614475');
+        expect(interception.response?.statusCode).to.eq(200);
+        expect(interception.response?.body?.pdfBase64).to.be.a('string');
+      });
     });
   });
 

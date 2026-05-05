@@ -107,6 +107,8 @@ import {
   organizationNumberTranslations,
 } from '../data/forms-api/components/organizationNumberForm';
 import { panelTestForm, panelTranslations } from '../data/forms-api/components/panelForm';
+import { paperNoCoverPageForm, paperNoCoverPageTranslations } from '../data/forms-api/components/paperNoCoverPageForm';
+import { pdfStaticForm, pdfStaticTranslations } from '../data/forms-api/components/pdfStaticForm';
 import { phoneNumberForm, phoneNumberTranslations } from '../data/forms-api/components/phoneNumberForm';
 import { radioPanelForm, radioPanelTranslations } from '../data/forms-api/components/radioPanelForm';
 import {
@@ -119,7 +121,6 @@ import {
   simpleConditionalForm,
   simpleConditionalTranslations,
 } from '../data/forms-api/components/simpleConditionalForm';
-import { staticPdfForm, staticPdfTranslations } from '../data/forms-api/components/staticPdfForm';
 import { surnameForm, surnameTranslations } from '../data/forms-api/components/surnameForm';
 import { textAreaForm, textAreaTranslations } from '../data/forms-api/components/textAreaForm';
 import { textFieldForm, textFieldTranslations } from '../data/forms-api/components/textFieldForm';
@@ -131,6 +132,10 @@ import {
 import { personCoverPageForm, personCoverPageTranslations } from '../data/forms-api/cover-page/personCoverPageForm';
 import largeForm from '../data/forms-api/largeForm';
 import { nologinForm, nologinTranslations } from '../data/forms-api/nologinForm';
+import {
+  paperNoCoverPageStaticPdfForm,
+  staticPdfPaperNoCoverPageTranslations,
+} from '../data/forms-api/submission-types/paperNoCoverPageStaticPdfForm';
 import {
   summaryPageAttachmentDownloadForm,
   summaryPageAttachmentDownloadTranslations,
@@ -204,7 +209,8 @@ const allForms = [
   { form: largeForm(), translations: undefined },
   { form: conditionalRowForm(), translations: conditionalRowTranslations() },
   { form: simpleConditionalForm(), translations: simpleConditionalTranslations() },
-  { form: staticPdfForm(), translations: staticPdfTranslations() },
+  { form: pdfStaticForm(), translations: pdfStaticTranslations() },
+  { form: paperNoCoverPageForm(), translations: paperNoCoverPageTranslations() },
   { form: nologinForm(), translations: nologinTranslations() },
   { form: numberForm(), translations: numberTranslations() },
   { form: textAreaForm(), translations: textAreaTranslations() },
@@ -219,6 +225,7 @@ const allForms = [
   { form: personCoverPageForm(), translations: personCoverPageTranslations() },
   { form: organizationNumberCoverPageForm(), translations: organizationNumberCoverPageTranslations() },
   { form: summaryPageAttachmentDownloadForm(), translations: summaryPageAttachmentDownloadTranslations() },
+  { form: paperNoCoverPageStaticPdfForm(), translations: staticPdfPaperNoCoverPageTranslations() },
   { form: phoneNumberForm(), translations: phoneNumberTranslations() },
   { form: accordionForm(), translations: accordionTranslations() },
   { form: addressValidityTestForm(), translations: addressValidityTranslations() },

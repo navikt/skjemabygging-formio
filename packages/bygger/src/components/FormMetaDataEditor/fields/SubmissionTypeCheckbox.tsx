@@ -9,7 +9,7 @@ interface Props {
   error?: any;
   onChange: (value: any[]) => void;
   readonly?: boolean;
-  hideTypes?: ('DIGITAL_NO_LOGIN' | 'STATIC_PDF')[];
+  hideTypes?: ('DIGITAL_NO_LOGIN' | 'STATIC_PDF' | 'PAPER_NO_COVER_PAGE')[];
 }
 
 export const SubmissionTypeCheckbox = ({ name, label, value, onChange, error, readonly, hideTypes }: Props) => {
@@ -27,7 +27,7 @@ export const SubmissionTypeCheckbox = ({ name, label, value, onChange, error, re
       error={error}
       readOnly={readonly}
     >
-      <Checkbox value="PAPER">Papir</Checkbox>
+      <Checkbox value="PAPER">Send i posten</Checkbox>
       <Checkbox value="DIGITAL">Digital</Checkbox>
       {!hideTypes?.includes('DIGITAL_NO_LOGIN') && (
         <Checkbox value="DIGITAL_NO_LOGIN" disabled={!userData?.isAdmin}>
@@ -38,6 +38,9 @@ export const SubmissionTypeCheckbox = ({ name, label, value, onChange, error, re
         <Checkbox value="STATIC_PDF" disabled={!userData?.isAdmin}>
           Statisk PDF
         </Checkbox>
+      )}
+      {!hideTypes?.includes('PAPER_NO_COVER_PAGE') && (
+        <Checkbox value="PAPER_NO_COVER_PAGE">Ingen innsending til Nav / Vedleggsskjema</Checkbox>
       )}
     </CheckboxGroup>
   );
