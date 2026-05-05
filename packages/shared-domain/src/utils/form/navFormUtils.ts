@@ -72,9 +72,7 @@ function validatesBasedOn(paths: string[], component: Component) {
 
 function hasConditionalOn(paths: string[], component: Component) {
   return (
-    (component.conditional &&
-      ((component.conditional.when && paths.includes(component.conditional.when)) ||
-        areAnyPathsInText(paths, JSON.stringify(component.conditional.json)))) ||
+    (component.conditional && component.conditional.when && paths.includes(component.conditional.when)) ||
     areAnyPathsInText(paths, component.customConditional)
   );
 }
