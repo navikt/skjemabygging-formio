@@ -53,12 +53,14 @@ const PdfSignature = ({ properties, submission, submissionMethod, translate }: P
   if (signatureList.length === 1 && (signatureList[0].label === undefined || signatureList[0].label === '')) {
     return {
       label: translate(TEXTS.statiske.pdf.signature),
+      visningsVariant: 'HOLDSAMMEN',
       verdiliste: getSignatureField(signatureList[0].description),
     };
   }
 
   return {
     label: translate(TEXTS.statiske.pdf.signature),
+    visningsVariant: 'HOLDSAMMEN',
     verdiliste: [
       {
         label: translate(descriptionOfSignatures || ''),
