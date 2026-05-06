@@ -295,13 +295,11 @@ describe('Conditional rendering', () => {
 
       cy.findByRole('link', { name: 'Oppsummering' }).click();
       cy.withinSummaryGroup('Panel 1', () => {
-        cy.get('dt').should('have.length', 1);
+        cy.get('dt').should('have.length', 2);
         cy.get('dt').eq(0).should('contain.text', 'Vis tekstfelt 1');
         cy.get('dd').eq(0).should('contain.text', 'Ja');
-        // This should be visible.
-        // Link to case that fixes the row issue: https://trello.com/c/yLbeY03z
-        //cy.get('dt').eq(1).should('contain.text', 'Tekstfelt 1');
-        //cy.get('dd').eq(1).should('contain.text', 'abc');
+        cy.get('dt').eq(1).should('contain.text', 'Tekstfelt 1');
+        cy.get('dd').eq(1).should('contain.text', 'abc');
 
         cy.contains('Tekstfelt skjult når avkrysset').should('not.exist');
       });
@@ -324,9 +322,8 @@ describe('Conditional rendering', () => {
         cy.get('dt').should('have.length', 3);
         cy.get('dt').eq(0).should('contain.text', 'Vis tekstfelt 2');
         cy.get('dd').eq(0).should('contain.text', 'Ja');
-        // This should be visible.
-        //cy.get('dt').eq(1).should('contain.text', 'Tekstfelt 2-1 i beholder');
-        //cy.get('dd').eq(1).should('contain.text', 'abc');
+        cy.get('dt').eq(1).should('contain.text', 'Tekstfelt 2-1 i beholder');
+        cy.get('dd').eq(1).should('contain.text', 'abc');
       });
     });
 
