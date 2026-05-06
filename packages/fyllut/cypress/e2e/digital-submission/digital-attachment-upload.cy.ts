@@ -2,6 +2,11 @@ import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
 describe('Digital submission with attachments uploaded in Fyllut', () => {
   const getUploadOnlyAttachment = () => cy.contains('[data-cy=attachment-upload]', 'Vedlegg upload-only');
+  const submitDigitalApplication = () => {
+    cy.intercept('POST', '/fyllut/api/send-inn/digital-application/*').as('submitDigitalApplication');
+    cy.clickSendNav();
+    cy.wait('@submitDigitalApplication');
+  };
 
   before(() => {
     cy.configMocksServer();
@@ -52,15 +57,14 @@ describe('Digital submission with attachments uploaded in Fyllut', () => {
         'Du må laste opp fil: Annen dokumentasjon',
         'Du må laste opp fil: Vedlegg upload-only',
       ];
-      cy.get('[data-cy=error-summary]')
-        .should('exist')
-        .within(() => {
-          cy.findAllByRole('link', { name: /^Du må laste opp fil: .*/ }).should('have.length', validationErrors.length);
+      cy.get('[data-cy=error-summary]').should('exist');
+      cy.get('[data-cy=error-summary]').within(() => {
+        cy.findAllByRole('link', { name: /^Du må laste opp fil: .*/ }).should('have.length', validationErrors.length);
 
-          validationErrors.forEach((message) => {
-            cy.findByRole('link', { name: message }).should('exist');
-          });
+        validationErrors.forEach((message) => {
+          cy.findByRole('link', { name: message }).should('exist');
         });
+      });
     });
 
     describe('uploading files', () => {
@@ -99,9 +103,9 @@ describe('Digital submission with attachments uploaded in Fyllut', () => {
       });
 
       it('submits attachments with the form', () => {
-        cy.mocksUseRouteVariant('post-familie-pdf:success-tc07');
-        cy.mocksUseRouteVariant('post-digital-soknad:success-tc07');
-        cy.clickSendNav();
+        cy.mocksUseRouteVariant('post-familie-pdf:success');
+        cy.mocksUseRouteVariant('post-digital-soknad:success');
+        submitDigitalApplication();
 
         cy.findByRole('heading', { level: 2, name: 'Kvittering' }).should('exist');
         cy.findByText('Vedlegg 1').should('exist');

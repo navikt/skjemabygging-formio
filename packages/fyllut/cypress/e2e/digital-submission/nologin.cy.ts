@@ -1,6 +1,12 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
 describe('Digital submission without user login', () => {
+  const submitNologinApplication = () => {
+    cy.intercept('POST', '/fyllut/api/send-inn/nologin-application').as('submitNologinApplication');
+    cy.clickSendNav();
+    cy.wait('@submitNologinApplication');
+  };
+
   before(() => {
     cy.configMocksServer();
   });
@@ -48,7 +54,7 @@ describe('Digital submission without user login', () => {
     });
 
     it('should submit application successfully', () => {
-      cy.mocksUseRouteVariant('post-nologin-soknad:success-tc02');
+      cy.mocksUseRouteVariant('post-nologin-soknad:success');
 
       cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
         cy.findByLabelText(TEXTS.statiske.attachment.uploadLater).check(),
@@ -72,7 +78,7 @@ describe('Digital submission without user login', () => {
 
       cy.clickNextStep();
 
-      cy.clickSendNav();
+      submitNologinApplication();
       cy.findByRole('heading', { name: TEXTS.statiske.receipt.title }).should('exist');
       cy.findByRole('button', { name: 'Vis alle steg' }).should('not.exist');
       cy.findByRole('button', { name: 'Skjul alle steg' }).should('not.exist');
@@ -93,7 +99,7 @@ describe('Digital submission without user login', () => {
       cy.uploadFile('another-small-file.txt');
       cy.clickNextStep();
 
-      cy.clickSendNav();
+      submitNologinApplication();
 
       cy.findByText(TEXTS.statiske.receipt.title).should('exist');
       cy.findByRole('link', { name: TEXTS.statiske.receipt.downloadLinkLabel }).should('exist');
@@ -155,9 +161,9 @@ describe('Digital submission without user login', () => {
       );
       cy.clickNextStep();
 
-      cy.mocksUseRouteVariant('post-familie-pdf:success-tc06a');
-      cy.mocksUseRouteVariant('post-nologin-soknad:success-tc06a');
-      cy.clickSendNav();
+      cy.mocksUseRouteVariant('post-familie-pdf:success');
+      cy.mocksUseRouteVariant('post-nologin-soknad:success');
+      submitNologinApplication();
 
       cy.findByRole('heading', { name: 'Kvittering' }).should('exist');
     });
@@ -191,9 +197,9 @@ describe('Digital submission without user login', () => {
       );
       cy.clickNextStep();
 
-      cy.mocksUseRouteVariant('post-familie-pdf:success-tc06b');
-      cy.mocksUseRouteVariant('post-nologin-soknad:success-tc06b');
-      cy.clickSendNav();
+      cy.mocksUseRouteVariant('post-familie-pdf:success');
+      cy.mocksUseRouteVariant('post-nologin-soknad:success');
+      submitNologinApplication();
 
       cy.findByRole('heading', { name: 'Kvittering' }).should('exist');
     });
@@ -285,7 +291,7 @@ describe('Digital submission without user login', () => {
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: /Oppsummering/ }).should('exist');
-      cy.clickSendNav();
+      submitNologinApplication();
       cy.findByText(TEXTS.statiske.nologin.temporarilyUnavailable).shouldBeVisible();
     });
   });
@@ -472,8 +478,8 @@ describe('Digital submission without user login', () => {
     });
 
     it('includes signature and lists attachments in pdf, and submits application', () => {
-      cy.mocksUseRouteVariant('post-familie-pdf:success-tc01');
-      cy.mocksUseRouteVariant('post-nologin-soknad:success-tc01');
+      cy.mocksUseRouteVariant('post-familie-pdf:success');
+      cy.mocksUseRouteVariant('post-nologin-soknad:success');
 
       cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
         cy.findByLabelText('Norsk pass').check(),
@@ -515,7 +521,7 @@ describe('Digital submission without user login', () => {
         cy.findByLabelText('Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved').check(),
       );
       cy.clickNextStep();
-      cy.clickSendNav();
+      submitNologinApplication();
       cy.findByText(TEXTS.statiske.receipt.title).should('exist');
       cy.findByRole('link', { name: TEXTS.statiske.receipt.downloadLinkLabel }).should('exist');
       cy.contains('b', 'Vi har mottatt følgende dokumenter')
@@ -532,7 +538,7 @@ describe('Digital submission without user login', () => {
 
     it('does not include file for attachment that was hidden by condition after upload', () => {
       cy.mocksUseRouteVariant('post-familie-pdf:success');
-      cy.mocksUseRouteVariant('post-nologin-soknad:success-tc05');
+      cy.mocksUseRouteVariant('post-nologin-soknad:success');
 
       cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
         cy.findByLabelText('Norsk pass').check(),
@@ -584,7 +590,7 @@ describe('Digital submission without user login', () => {
       cy.findByText('Bekreftelse på utdanning').should('not.exist');
 
       cy.clickNextStep();
-      cy.clickSendNav();
+      submitNologinApplication();
       cy.findByText(TEXTS.statiske.receipt.title).should('exist');
       cy.findByRole('link', { name: TEXTS.statiske.receipt.downloadLinkLabel }).should('exist');
       cy.contains('b', 'Vi har mottatt følgende dokumenter')
