@@ -1,32 +1,10 @@
 import {
   Component,
-  FormPropertiesType,
-  PanelValidation,
   PdfData,
   Submission,
   SubmissionMethod,
   TranslateFunction,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { AppConfigContextType } from '../context/config/configContext';
-
-type HandleAttachmentDownloadFile = (attachmentId: string, fileId: string, fileName: string) => Promise<void>;
-
-interface FormComponentProps {
-  component: Component;
-  submissionPath: string;
-  componentRegistry: FormComponentRegistry;
-  panelValidationList?: PanelValidation[];
-  submission: Submission;
-  translate: TranslateFunction;
-  currentLanguage: string;
-  formProperties: FormPropertiesType;
-  appConfig: AppConfigContextType;
-  handleDownloadFile?: HandleAttachmentDownloadFile;
-}
-
-interface FormComponentRegistry {
-  [key: string]: React.ComponentType<FormComponentProps>;
-}
 
 interface PdfComponentProps {
   component: Component;
@@ -42,10 +20,4 @@ interface PdfComponentRegistry {
   [key: string]: (props: PdfComponentProps) => PdfData[] | PdfData | null;
 }
 
-export type {
-  FormComponentProps,
-  FormComponentRegistry,
-  HandleAttachmentDownloadFile,
-  PdfComponentProps,
-  PdfComponentRegistry,
-};
+export type { PdfComponentProps, PdfComponentRegistry };

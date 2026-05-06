@@ -12,7 +12,7 @@ export default defineConfig({
       fileName: 'index',
     },
     rollupOptions: {
-      external: ['react', 'react-dom'],
+      external: ['react', 'react-dom', 'react-router', '@navikt/aksel-icons', '@navikt/ds-react', 'dompurify'],
     },
   },
   plugins: [react()],
