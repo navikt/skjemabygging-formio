@@ -4,7 +4,6 @@ import {
   I18nTranslationReplacements,
   localizationUtils,
   NavFormType,
-  PdfFormData,
   Submission,
   translationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
@@ -20,7 +19,6 @@ import { mergeFrontPageAndApplication } from './mergeFilesService';
 interface ApplicationProps {
   accessToken: string;
   form: NavFormType;
-  pdfFormData?: PdfFormData;
   submissionMethod: string;
   submission: Submission;
   language: string;
@@ -28,24 +26,22 @@ interface ApplicationProps {
 }
 
 const application = async (props: CoverPageAndApplicationProps, logMeta: LogMetadata = {}) => {
-  const { accessToken, form, pdfFormData, submission, language, translations, submissionMethod } = props;
+  const { accessToken, form, submission, language, translations, submissionMethod } = props;
   const translate = createTranslate(translations, language);
 
   const applicationPdf = await applicationService.createFormPdf(
     accessToken,
-    pdfFormData
-      ? stringifyPdf(pdfFormData)
-      : stringifyPdf(
-          pdfFormDataService.createPdfFormDataFromSubmission({
-            form,
-            submission,
-            submissionMethod,
-            translate,
-            language,
-            gitVersion: config.gitVersion,
-            isDelingslenke: config.isDelingslenke,
-          }),
-        ),
+    stringifyPdf(
+      pdfFormDataService.createPdfFormDataFromSubmission({
+        form,
+        submission,
+        submissionMethod,
+        translate,
+        language,
+        gitVersion: config.gitVersion,
+        isDelingslenke: config.isDelingslenke,
+      }),
+    ),
     logMeta,
   );
 
@@ -67,7 +63,6 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps, logM
     accessToken,
     pdfGeneratorAccessToken,
     form,
-    pdfFormData,
     submission,
     language,
     unitNumber,
@@ -89,19 +84,17 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps, logM
     }),
     applicationService.createFormPdf(
       pdfGeneratorAccessToken,
-      pdfFormData
-        ? stringifyPdf(pdfFormData)
-        : stringifyPdf(
-            pdfFormDataService.createPdfFormDataFromSubmission({
-              form,
-              submission,
-              submissionMethod,
-              translate,
-              language,
-              gitVersion: config.gitVersion,
-              isDelingslenke: config.isDelingslenke,
-            }),
-          ),
+      stringifyPdf(
+        pdfFormDataService.createPdfFormDataFromSubmission({
+          form,
+          submission,
+          submissionMethod,
+          translate,
+          language,
+          gitVersion: config.gitVersion,
+          isDelingslenke: config.isDelingslenke,
+        }),
+      ),
       logMeta,
     ),
   ]);

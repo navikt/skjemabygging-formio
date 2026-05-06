@@ -39,6 +39,17 @@ const createComponent = (label: string, value: unknown, type = 'textfield', opti
 
 const translate = (text?: string) => text ?? '';
 
+const createForm = (components: any[] = [], properties: Record<string, unknown> = {}) =>
+  ({
+    title: 'Test form',
+    components,
+    properties: {
+      skjemanummer: 'NAV 00-00.00',
+      signatures: [],
+      ...properties,
+    },
+  }) as unknown as NavFormType;
+
 describe('pdfFormDataService', () => {
   describe('createPdfDataList', () => {
     it('maps nested panels and datagrids', () => {
@@ -99,6 +110,37 @@ describe('pdfFormDataService', () => {
   });
 
   describe('createPdfFormDataFromSubmission', () => {
+    it('omits empty panels from generated pdf payload', () => {
+      const form = createForm([
+        {
+          key: 'filled-panel',
+          label: 'Filled panel',
+          type: 'panel',
+          components: [{ key: 'filledField', label: 'Filled field', type: 'textfield', input: true }],
+        },
+        {
+          key: 'empty-panel',
+          label: 'Empty panel',
+          type: 'panel',
+          components: [{ key: 'emptyField', label: 'Empty field', type: 'textfield', input: true }],
+        },
+      ]);
+
+      const pdfFormData = pdfFormDataService.createPdfFormDataFromSubmission({
+        form,
+        submission: { data: { filledField: 'value' } } as Submission,
+        submissionMethod: 'digital',
+        translate,
+      });
+      const verdiliste = pdfFormData.verdiliste ?? [];
+
+      expect(verdiliste).toHaveLength(1);
+      expect(JSON.stringify(pdfFormData)).not.toContain('Empty panel');
+      expect(verdiliste[0]).toMatchObject({
+        verdiliste: [{ label: 'Filled field', verdi: 'value' }],
+      });
+    });
+
     it('creates pdf form data with default language and declaration', () => {
       const form = {
         title: 'Abc def',
@@ -166,6 +208,103 @@ describe('pdfFormDataService', () => {
 
       expect(JSON.stringify(pdfFormData)).toContain('introPage.selfDeclaration.inputLabel');
       expect(JSON.stringify(pdfFormData)).not.toContain(TEXTS.statiske.declaration.defaultText);
+    });
+
+    it('adds default paper signature section for paper submissions', () => {
+      const form = createForm([{ key: 'field', label: 'Field', type: 'textfield', input: true }], {
+        signatures: [{ label: '', description: '', key: 'signature-1' }],
+      });
+
+      const pdfFormData = pdfFormDataService.createPdfFormDataFromSubmission({
+        form,
+        submission: { data: { field: 'value' } } as Submission,
+        submissionMethod: 'paper',
+        translate,
+      });
+      const verdiliste = pdfFormData.verdiliste ?? [];
+
+      const signatureSection = verdiliste[verdiliste.length - 1];
+      expect(signatureSection).toMatchObject({
+        label: TEXTS.statiske.pdf.signature,
+        verdiliste: [
+          { label: '', verdi: ' ' },
+          { label: TEXTS.statiske.pdf.placeAndDate, verdi: ' ' },
+          { label: TEXTS.statiske.pdf.signature, verdi: ' ' },
+          { label: TEXTS.statiske.pdf.signatureName, verdi: ' ' },
+        ],
+      });
+    });
+
+    it('adds grouped signature sections for multiple signatures', () => {
+      const form = createForm([{ key: 'field', label: 'Field', type: 'textfield', input: true }], {
+        descriptionOfSignatures: 'Signatures description',
+        signatures: [
+          { label: 'Owner', description: 'Important 1', key: 'signature-1' },
+          { label: 'Co-owner', description: 'Important 2', key: 'signature-2' },
+        ],
+      });
+
+      const pdfFormData = pdfFormDataService.createPdfFormDataFromSubmission({
+        form,
+        submission: { data: { field: 'value' } } as Submission,
+        submissionMethod: 'paper',
+        translate,
+      });
+      const verdiliste = pdfFormData.verdiliste ?? [];
+
+      const signatureSection = verdiliste[verdiliste.length - 1];
+      expect(signatureSection.label).toBe(TEXTS.statiske.pdf.signature);
+      expect(signatureSection.verdiliste).toHaveLength(3);
+      expect(signatureSection.verdiliste?.[0]).toMatchObject({ label: 'Signatures description', verdi: '' });
+      expect(signatureSection.verdiliste?.[1]).toMatchObject({
+        label: 'Owner',
+        verdiliste: [
+          { label: 'Important 1', verdi: ' ' },
+          { label: TEXTS.statiske.pdf.placeAndDate, verdi: ' ' },
+          { label: TEXTS.statiske.pdf.signature, verdi: ' ' },
+          { label: TEXTS.statiske.pdf.signatureName, verdi: ' ' },
+        ],
+      });
+      expect(signatureSection.verdiliste?.[2]).toMatchObject({
+        label: 'Co-owner',
+        verdiliste: [
+          { label: 'Important 2', verdi: ' ' },
+          { label: TEXTS.statiske.pdf.placeAndDate, verdi: ' ' },
+          { label: TEXTS.statiske.pdf.signature, verdi: ' ' },
+          { label: TEXTS.statiske.pdf.signatureName, verdi: ' ' },
+        ],
+      });
+    });
+
+    it('normalizes tabs in title, values and footer strings', () => {
+      const form = {
+        title: 'Form\tTitle',
+        components: [
+          {
+            key: 'panel',
+            label: 'Panel\tLabel',
+            type: 'panel',
+            components: [{ key: 'field', label: 'Field\tLabel', type: 'textfield', input: true }],
+          },
+        ],
+        properties: { skjemanummer: 'NAV 00-00.00', signatures: [] },
+      } as unknown as NavFormType;
+
+      const pdfFormData = pdfFormDataService.createPdfFormDataFromSubmission({
+        form,
+        submission: { data: { field: 'Value\tWith\tTabs' } } as Submission,
+        submissionMethod: 'digital',
+        translate,
+        gitVersion: 'git\tversion',
+      });
+      const verdiliste = pdfFormData.verdiliste ?? [];
+
+      expect(pdfFormData.label).toBe('Form  Title');
+      expect(verdiliste[0]).toMatchObject({
+        verdiliste: [{ label: 'Field  Label', verdi: 'Value  With  Tabs' }],
+      });
+      expect(pdfFormData.bunntekst?.lowerMiddle).toContain('git  version');
+      expect(JSON.stringify(pdfFormData)).not.toContain('\t');
     });
 
     it('keeps identity numbers unformatted in summary-based mapping', () => {
