@@ -141,6 +141,7 @@ describe('pdfFormDataService', () => {
         isDelingslenke: true,
       });
 
+      // noinspection NonAsciiCharacters
       expect(pdfFormData.pdfConfig?.språk).toBe('nn');
       expect(pdfFormData.vannmerke).toBe('Testskjema - Ikke send til Nav');
     });

@@ -1,7 +1,6 @@
 import {
   Language,
   NavFormType,
-  PdfFormData,
   ReceiptSummary,
   Submission,
   SubmissionMethod,
@@ -14,7 +13,6 @@ export const postNologinSoknad = async (
   language: Language,
   translation: any,
   submissionMethod: SubmissionMethod | undefined,
-  pdfFormData?: PdfFormData,
   innsendingsId?: string,
 ): Promise<{ pdfBase64: string; receipt: ReceiptSummary }> => {
   const { http, baseUrl } = appConfig;
@@ -27,7 +25,6 @@ export const postNologinSoknad = async (
       submission,
       language,
       translation,
-      pdfFormData,
     },
     {
       NologinToken: nologinToken,

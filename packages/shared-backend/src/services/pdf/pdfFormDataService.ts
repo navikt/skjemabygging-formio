@@ -283,6 +283,7 @@ const createPdfFormDataFromSubmission = (props: CreatePdfFormDataFromSubmissionP
 
   return {
     label: normalizePdfString(translate(form.title)),
+    // noinspection NonAsciiCharacters
     pdfConfig: { harInnholdsfortegnelse: false, språk: mapPdfLanguage(language) },
     skjemanummer: form.properties?.skjemanummer,
     verdiliste,

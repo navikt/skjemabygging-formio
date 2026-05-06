@@ -1,10 +1,4 @@
-import {
-  I18nTranslationMap,
-  Language,
-  NavFormType,
-  PdfFormData,
-  Submission,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { I18nTranslationMap, Language, NavFormType, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { AppConfigContextType } from '../../context/config/configContext';
 import { getRelevantAttachments, hasOtherDocumentation } from '../../util/attachment/attachmentsUtil';
 
@@ -86,7 +80,6 @@ export const updateUtfyltSoknad = async (
   translation: I18nTranslationMap = {},
   innsendingsId: string | undefined,
   setRedirectLocation: (location: string) => void,
-  pdfFormData?: PdfFormData,
 ): Promise<SendInnSoknadResponse | undefined> => {
   const { http, baseUrl, submissionMethod, logger } = appConfig;
   const attachments = getRelevantAttachments(form, submission);
@@ -104,7 +97,6 @@ export const updateUtfyltSoknad = async (
         submissionMethod,
         attachments,
         otherDocumentation,
-        pdfFormData,
       },
       {},
       { setRedirectLocation },
