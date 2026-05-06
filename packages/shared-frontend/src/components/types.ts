@@ -12,7 +12,7 @@ type HandleAttachmentDownloadFile = (attachmentId: string, fileId: string, fileN
 interface SummaryRendererAppConfig {
   submissionMethod?: SubmissionMethod;
   logger?: {
-    error?: (...args: unknown[]) => void;
+    error?: (message: string, metadata?: object) => void;
   };
   config?: {
     NAIS_CLUSTER_NAME?: string;
