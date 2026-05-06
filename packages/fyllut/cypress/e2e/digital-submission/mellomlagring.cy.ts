@@ -239,24 +239,12 @@ describe('Mellomlagring', () => {
       describe('When url contains query param "innsendingsId"', () => {
         beforeEach(() => {
           cy.fixture('mellomlagring/submitTestMellomlagring.json').then((fixture) => {
-            cy.submitMellomlagring((req) => {
+            cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
               const { submission: bodySubmission, ...bodyRest } = req.body;
-              const { submission: fixtureSubmission, ...fixtureRest } = fixture;
+              const { submission: fixtureSubmission, pdfFormData: _fixturePdfFormData, ...fixtureRest } = fixture;
               expect(bodySubmission.data).to.deep.eq(fixtureSubmission.data);
-              expect({
-                ...bodyRest,
-                pdfFormData: {
-                  ...bodyRest.pdfFormData,
-                  bunntekst: undefined, // ignore bunntekst since it contains timestamps
-                },
-              }).to.deep.eq({
-                ...fixtureRest,
-                pdfFormData: {
-                  ...bodyRest.pdfFormData,
-                  bunntekst: undefined,
-                },
-              });
-            });
+              expect(bodyRest).to.deep.eq(fixtureRest);
+            }).as('submitMellomlagring');
           });
         });
 
@@ -390,7 +378,7 @@ describe('Mellomlagring', () => {
       describe('When stored submission contains values for inputs that have been removed from the form', () => {
         beforeEach(() => {
           cy.mocksUseRouteVariant('get-soknad:success-extra-values');
-          cy.submitMellomlagring((req) => {
+          cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
             const { submission } = req.body;
             expect(submission.data['slettetTekstfelt']).to.be.undefined;
             // Container
@@ -401,7 +389,7 @@ describe('Mellomlagring', () => {
             // value should be removed if the corresponding field is conditionally hidden
             expect(submission.data['hvaSyntesDuOmFrokosten']).to.be.undefined;
             req.reply(201);
-          });
+          }).as('submitMellomlagring');
         });
 
         it('removes the unused values from submission before submitting', () => {

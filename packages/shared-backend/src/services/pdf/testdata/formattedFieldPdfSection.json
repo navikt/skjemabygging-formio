@@ -1,0 +1,27 @@
+[
+  {
+    "label": "Kontonummer",
+    "verdi": "0123 45 67892",
+    "visningsVariant": null
+  },
+  {
+    "label": "IBAN",
+    "verdi": "NO93 8601 1117 947",
+    "visningsVariant": null
+  },
+  {
+    "label": "Organisasjonsnummer",
+    "verdi": "889 640 782",
+    "visningsVariant": null
+  },
+  {
+    "label": "MonthPicker",
+    "verdi": "Juli 2022",
+    "visningsVariant": null
+  },
+  {
+    "label": "Telefonnummer",
+    "verdi": "+47 12345678",
+    "visningsVariant": null
+  }
+]

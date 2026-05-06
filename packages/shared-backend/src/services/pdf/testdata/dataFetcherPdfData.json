@@ -1,0 +1,15 @@
+[
+  {
+    "label": "Aktivitetsvelger",
+    "verdi": null,
+    "verdiliste": [
+      {
+        "label": "Aktivitet 1"
+      },
+      {
+        "label": "Aktivitet 3"
+      }
+    ],
+    "visningsVariant": "PUNKTLISTE"
+  }
+]

@@ -12,6 +12,8 @@ import {
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import pdfFormDataService from './pdfFormDataService';
+import dataFetcherPdfData from './testdata/dataFetcherPdfData.json';
+import formattedFieldPdfSection from './testdata/formattedFieldPdfSection.json';
 
 const createContainer = (
   label: string,
@@ -107,6 +109,14 @@ describe('pdfFormDataService', () => {
       expect(listString).toContain('[object Object]');
       expect(listString).toContain('Attached file');
     });
+
+    it('maps data fetcher selections to exact punktliste payload', () => {
+      const list = pdfFormDataService.createPdfDataList([
+        createPanel('Panel', [createComponent('Aktivitetsvelger', ['Aktivitet 1', 'Aktivitet 3'], 'dataFetcher')]),
+      ]);
+
+      expect(list[0].verdiliste).toEqual(dataFetcherPdfData);
+    });
   });
 
   describe('createPdfFormDataFromSubmission', () => {
@@ -161,7 +171,7 @@ describe('pdfFormDataService', () => {
       });
 
       expect(pdfFormData.label).toBe('Abc def');
-      expect(pdfFormData.pdfConfig?.språk).toBe('nb');
+      expect(pdfFormData.pdfConfig?.['språk']).toBe('nb');
       expect(pdfFormData.bunntekst?.lowerMiddle).toContain('git version');
       expect(JSON.stringify(pdfFormData)).toContain(TEXTS.statiske.declaration.defaultText);
     });
@@ -183,8 +193,7 @@ describe('pdfFormDataService', () => {
         isDelingslenke: true,
       });
 
-      // noinspection NonAsciiCharacters
-      expect(pdfFormData.pdfConfig?.språk).toBe('nn');
+      expect(pdfFormData.pdfConfig?.['språk']).toBe('nn');
       expect(pdfFormData.vannmerke).toBe('Testskjema - Ikke send til Nav');
     });
 
@@ -336,6 +345,46 @@ describe('pdfFormDataService', () => {
       });
 
       expect(JSON.stringify(pdfFormData)).toContain('12345678901');
+    });
+
+    it('formats representative field values in backend-generated pdf payloads', () => {
+      const form = createForm([
+        {
+          key: 'panel',
+          label: 'Formatted values',
+          type: 'panel',
+          components: [
+            { key: 'bankAccount', label: 'Kontonummer', type: 'bankAccount', input: true },
+            { key: 'iban', label: 'IBAN', type: 'iban', input: true },
+            { key: 'orgNr', label: 'Organisasjonsnummer', type: 'orgNr', input: true },
+            { key: 'monthPicker', label: 'MonthPicker', type: 'monthPicker', input: true },
+            {
+              key: 'phoneNumber',
+              label: 'Telefonnummer',
+              type: 'phoneNumber',
+              input: true,
+              showAreaCode: true,
+            },
+          ],
+        },
+      ]);
+
+      const pdfFormData = pdfFormDataService.createPdfFormDataFromSubmission({
+        form,
+        submission: {
+          data: {
+            bankAccount: '01234567892',
+            iban: 'NO9386011117947',
+            orgNr: '889640782',
+            monthPicker: '2022-07',
+            phoneNumber: { areaCode: '+47', number: '12345678' },
+          },
+        } as Submission,
+        submissionMethod: 'digital',
+        translate,
+      });
+
+      expect(JSON.parse(JSON.stringify(pdfFormData.verdiliste?.[0]?.verdiliste))).toEqual(formattedFieldPdfSection);
     });
   });
 });

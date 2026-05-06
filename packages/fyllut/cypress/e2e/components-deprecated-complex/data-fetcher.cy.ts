@@ -108,11 +108,10 @@ describe('Data fetcher', () => {
       cy.visit('/fyllut/datafetchertest/arbeidsrettetaktivitet?sub=digital');
       cy.clickSaveAndContinue();
 
-      cy.get('[data-cy=error-summary]')
-        .should('exist')
-        .within(() => {
-          cy.findByRole('link', { name: 'Du må fylle ut: Aktivitetsvelger' }).should('exist').click();
-        });
+      cy.get('[data-cy=error-summary]').should('exist');
+      cy.get('[data-cy=error-summary]').within(() => {
+        cy.findByRole('link', { name: 'Du må fylle ut: Aktivitetsvelger' }).should('exist').click();
+      });
 
       cy.findByRole('group', { name: LABEL_AKTIVITETSVELGER })
         .should('exist')
@@ -165,8 +164,14 @@ describe('Data fetcher', () => {
   });
 
   describe('Paper submission', () => {
+    let registerDataRequestCount = 0;
+
     beforeEach(() => {
-      cy.intercept('GET', '/fyllut/api/register-data/*').as('registerData');
+      registerDataRequestCount = 0;
+      cy.intercept('GET', '/fyllut/api/register-data/*', (req) => {
+        registerDataRequestCount += 1;
+        req.continue();
+      });
       cy.mocksRestoreRouteVariants();
       cy.defaultIntercepts();
       cy.visit('/fyllut/datafetchertest/arbeidsrettetaktivitet?sub=paper');
@@ -177,7 +182,9 @@ describe('Data fetcher', () => {
       cy.get('.aksel-alert--warning').contains('Ingen aktiviteter ble hentet');
       cy.findByRole('group', { name: LABEL_AKTIVITETSVELGER }).should('not.exist');
       cy.findByRole('group', { name: LABEL_AKTIVITETSVELGER }).should('not.exist');
-      cy.get('@registerData.all').should('have.length', 0);
+      cy.then(() => {
+        expect(registerDataRequestCount).to.equal(0);
+      });
     });
 
     it('should not validate component', () => {
@@ -255,12 +262,10 @@ describe('Data fetcher', () => {
           });
       });
 
-      it('includes aktivitetsvelger in pdfFormData on submit', () => {
+      it('submits selected activity choices', () => {
         cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
-          const { pdfFormData } = req.body;
-          expect(pdfFormData.verdiliste[0].verdiliste[0].label).eq('Aktivitetsvelger');
-          expect(pdfFormData.verdiliste[0].verdiliste[0].verdiliste).to.have.length(1);
-          expect(pdfFormData.verdiliste[0].verdiliste[0].visningsVariant).eq('PUNKTLISTE');
+          expect(req.body.pdfFormData).to.be.undefined;
+          expect(req.body.submission).to.exist;
         }).as('submitMellomlagring');
         cy.clickSaveAndContinue();
         cy.wait('@submitMellomlagring');
