@@ -1,11 +1,24 @@
 import { SubmissionMethod, SubmissionType } from '../../models';
 
+const excludeStaticPdf = (submissionTypes?: SubmissionType[]) =>
+  submissionTypes?.filter((submissionType) => submissionType !== 'STATIC_PDF');
+
+const getOnlySubmissionType = (submissionTypes?: SubmissionType[]) => {
+  const filteredSubmissionTypes = excludeStaticPdf(submissionTypes);
+
+  if (filteredSubmissionTypes?.length !== 1) {
+    return undefined;
+  }
+
+  return filteredSubmissionTypes[0];
+};
+
 function isDigitalSubmission(submissionTypes?: SubmissionType[]): boolean {
   return !!submissionTypes?.includes('DIGITAL');
 }
 
 function isDigitalSubmissionOnly(submissionTypes?: SubmissionType[]): boolean {
-  return !!submissionTypes?.includes('DIGITAL') && submissionTypes?.length === 1;
+  return getOnlySubmissionType(submissionTypes) === 'DIGITAL';
 }
 
 function isDigitalNoLoginSubmission(submissionTypes?: SubmissionType[]): boolean {
@@ -13,7 +26,7 @@ function isDigitalNoLoginSubmission(submissionTypes?: SubmissionType[]): boolean
 }
 
 function isDigitalNoLoginSubmissionOnly(submissionTypes?: SubmissionType[]): boolean {
-  return !!submissionTypes?.includes('DIGITAL_NO_LOGIN') && submissionTypes?.length === 1;
+  return getOnlySubmissionType(submissionTypes) === 'DIGITAL_NO_LOGIN';
 }
 
 function isPaperSubmission(submissionTypes?: SubmissionType[]): boolean {
@@ -21,7 +34,7 @@ function isPaperSubmission(submissionTypes?: SubmissionType[]): boolean {
 }
 
 function isPaperSubmissionOnly(submissionTypes?: SubmissionType[]): boolean {
-  return !!submissionTypes?.includes('PAPER') && submissionTypes?.length === 1;
+  return getOnlySubmissionType(submissionTypes) === 'PAPER';
 }
 
 function isNoneSubmission(submissionTypes?: SubmissionType[]): boolean {
