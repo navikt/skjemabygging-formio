@@ -16,11 +16,7 @@ const checkSimpleConditional = (
 ) => {
   const condition = component.conditional;
 
-  if (!condition) {
-    return true;
-  }
-
-  if (!condition.when) {
+  if (!condition || !condition.when) {
     return true;
   }
 
