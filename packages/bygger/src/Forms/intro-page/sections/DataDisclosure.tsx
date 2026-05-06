@@ -24,7 +24,7 @@ export function DataDisclosure({ form, handleChange, refMap, errors }: Props) {
   const bulletPoints = form.introPage?.sections?.dataDisclosure?.bulletPoints || [];
 
   const onBulletPointChange = (value: string, index: number) => {
-    const key = setKeyBasedText(value, `bulletpoint-${index}`);
+    const key = setKeyBasedText(value, bulletPoints[index]);
     handleBulletPointChange(form, 'dataDisclosure', index, key, handleChange);
   };
 
@@ -49,7 +49,7 @@ export function DataDisclosure({ form, handleChange, refMap, errors }: Props) {
           </RadioGroup>
           {bulletPoints?.map((bullet, index) => (
             <FormIntroPageWysiwygEditor
-              key={index}
+              key={bullet || `dataDisclosure-bullet-${index}`}
               label="Kulepunkt"
               defaultTag="div"
               defaultValue={getKeyBasedText(bullet)}

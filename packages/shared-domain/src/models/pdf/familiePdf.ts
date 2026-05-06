@@ -11,7 +11,7 @@ interface PdfData {
   label?: string;
   verdi?: string | number | null;
   verdiliste?: PdfData[];
-  visningsVariant?: string | null; // 'TABELL' | 'VEDLEGG' | 'PUNKTLISTE' | 'HTML'
+  visningsVariant?: string | null; // 'TABELL' | 'VEDLEGG' | 'PUNKTLISTE' | 'HTML' | 'HOLDSAMMEN'
 }
 
 interface PdfConfig {
