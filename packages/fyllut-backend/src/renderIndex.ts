@@ -78,8 +78,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
               httpStatusCode = 404;
             }
             logger.debug('Static pdf', { formPath });
-          } else if (submissionTypes && submissionTypes.length > 1) {
-            logger.info('Submission query param is missing', { formPath });
+          } else if (submissionTypesUtils.containsMultipleStandardSubmissionTypes(submissionTypes)) {
             const targetUrl = `${config.fyllutPath}/${formPath}`;
             if (req.baseUrl !== targetUrl) {
               const logMeta = { formPath, targetUrl, baseUrl: req.baseUrl };

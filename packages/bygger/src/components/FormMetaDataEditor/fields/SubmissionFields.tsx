@@ -14,8 +14,8 @@ export interface SubmissionFieldsProps {
 const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProps) => {
   const { submissionTypes, subsequentSubmissionTypes, ettersendelsesfrist, hideUserTypes } = form.properties;
   const isLockedForm = !!form.lock;
-  const hasIncompatibleCombination =
-    !!submissionTypes?.includes('PAPER_NO_COVER_PAGE') &&
+  const paperNoCoverPageWarning =
+    submissionTypes?.includes('PAPER_NO_COVER_PAGE') &&
     submissionTypes.some((t) => t === 'PAPER' || t === 'DIGITAL' || t === 'DIGITAL_NO_LOGIN');
 
   return (
@@ -37,10 +37,10 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
         }
       />
 
-      {hasIncompatibleCombination && (
+      {paperNoCoverPageWarning && (
         <Alert variant="warning" size="small" className="mb">
-          Kombinasjonen av &apos;Ingen&apos; med andre innsendingstyper kan gi uforutsett oppførsel. Test skjemaet
-          grundig.
+          Når man kombinerer ingen innsending til Nav med andre standard innsendingstyper er det viktig at lenken for
+          førstnevnte inneholde <pre>?sub=papernocoverpage</pre>.
         </Alert>
       )}
 

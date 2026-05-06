@@ -59,7 +59,7 @@ export const FormsPage = () => {
               <tr>
                 <th>Skjemanummer</th>
                 <th>Skjematittel</th>
-                <th colSpan={4}>Innsending</th>
+                <th colSpan={5}>Innsending</th>
               </tr>
             </thead>
           )}
