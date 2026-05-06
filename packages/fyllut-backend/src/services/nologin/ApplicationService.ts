@@ -3,7 +3,6 @@ import {
   I18nTranslationMap,
   localizationUtils,
   NavFormType,
-  PdfFormData,
   ReceiptSummary,
   Submission,
   translationUtils,
@@ -69,7 +68,6 @@ class ApplicationService {
     submission: Submission,
     translation: I18nTranslationMap = {},
     language: string,
-    pdfFormData?: PdfFormData,
     logMeta: LogMetadata = {},
     type: 'nologin' | 'digital' = 'nologin',
   ): Promise<{ pdf: Uint8Array; receipt: ReceiptSummary }> {
@@ -78,16 +76,15 @@ class ApplicationService {
     const applicationPdf = await applicationService.createFormPdf(
       pdfAccessToken,
       stringifyPdf(
-        pdfFormData ??
-          pdfFormDataService.createPdfFormDataFromSubmission({
-            form,
-            submission,
-            submissionMethod: type,
-            translate,
-            language,
-            gitVersion: config.gitVersion,
-            isDelingslenke: config.isDelingslenke,
-          }),
+        pdfFormDataService.createPdfFormDataFromSubmission({
+          form,
+          submission,
+          submissionMethod: type,
+          translate,
+          language,
+          gitVersion: config.gitVersion,
+          isDelingslenke: config.isDelingslenke,
+        }),
       ),
       logMeta,
     );

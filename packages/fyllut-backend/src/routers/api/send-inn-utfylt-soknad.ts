@@ -3,7 +3,6 @@ import {
   I18nTranslationMap,
   I18nTranslationReplacements,
   localizationUtils,
-  PdfFormData,
   translationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
@@ -28,9 +27,8 @@ const sendInnUtfyltSoknad = {
       const fyllutUrl = getFyllutUrl(req);
       const envQualifier = req.getEnvQualifier();
 
-      const { form, pdfFormData, submission, submissionMethod, translation, language, innsendingsId } = req.body as {
+      const { form, submission, submissionMethod, translation, language, innsendingsId } = req.body as {
         form: any;
-        pdfFormData?: PdfFormData;
         submission: any;
         submissionMethod: string;
         translation: I18nTranslationMap;
@@ -75,19 +73,17 @@ const sendInnUtfyltSoknad = {
 
       const applicationPdf = await applicationService.createFormPdf(
         req.headers.PdfAccessToken as string,
-        pdfFormData
-          ? stringifyPdf(pdfFormData)
-          : stringifyPdf(
-              pdfFormDataService.createPdfFormDataFromSubmission({
-                form,
-                submission,
-                submissionMethod,
-                translate: createTranslate(translation, language),
-                language: localizationUtils.getLanguageCodeAsIso639_1(language),
-                gitVersion: config.gitVersion,
-                isDelingslenke: config.isDelingslenke,
-              }),
-            ),
+        stringifyPdf(
+          pdfFormDataService.createPdfFormDataFromSubmission({
+            form,
+            submission,
+            submissionMethod,
+            translate: createTranslate(translation, language),
+            language: localizationUtils.getLanguageCodeAsIso639_1(language),
+            gitVersion: config.gitVersion,
+            isDelingslenke: config.isDelingslenke,
+          }),
+        ),
         logMeta,
       );
       const pdfByteArray = Array.from(applicationPdf) ?? [];

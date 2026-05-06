@@ -1,7 +1,6 @@
 import {
   I18nTranslationMap,
   NavFormType,
-  PdfFormData,
   ReceiptSummary,
   Submission,
 } from '@navikt/skjemadigitalisering-shared-domain';
@@ -14,12 +13,11 @@ export const generatePdfAndSubmit = async (
   innsendingsId: string,
   accessToken: string,
 ) => {
-  const { form, submission, language, translation, pdfFormData } = req.body as {
+  const { form, submission, language, translation } = req.body as {
     form: NavFormType;
     submission: Submission;
     language: string;
     translation: I18nTranslationMap;
-    pdfFormData?: PdfFormData;
   };
   const pdfAccessToken = req.headers.PdfAccessToken as string;
   const logMeta: LogMetadata = {
@@ -37,7 +35,6 @@ export const generatePdfAndSubmit = async (
     submission,
     translation,
     language,
-    pdfFormData,
     logMeta,
     applicationType,
   );
