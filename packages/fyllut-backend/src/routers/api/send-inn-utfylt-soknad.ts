@@ -1,7 +1,9 @@
+import { pdfFormDataService } from '@navikt/skjemadigitalisering-shared-backend';
 import {
   I18nTranslationMap,
   I18nTranslationReplacements,
   localizationUtils,
+  PdfFormData,
   translationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
@@ -13,7 +15,6 @@ import applicationService from '../../services/documents/applicationService';
 import { LogMetadata } from '../../types/log';
 import { responseToError } from '../../utils/errorHandling';
 import { getFyllutUrl } from '../../utils/url';
-import { createFeltMapFromSubmission } from './helpers/feltMapBuilder';
 import { stringifyPdf } from './helpers/pdfUtils';
 import { assembleSendInnSoknadBody, isNotFound, sanitizeInnsendingsId, validateInnsendingsId } from './helpers/sendInn';
 
@@ -27,7 +28,15 @@ const sendInnUtfyltSoknad = {
       const fyllutUrl = getFyllutUrl(req);
       const envQualifier = req.getEnvQualifier();
 
-      const { form, pdfFormData, submission, submissionMethod, translation, language, innsendingsId } = req.body;
+      const { form, pdfFormData, submission, submissionMethod, translation, language, innsendingsId } = req.body as {
+        form: any;
+        pdfFormData?: PdfFormData;
+        submission: any;
+        submissionMethod: string;
+        translation: I18nTranslationMap;
+        language: string;
+        innsendingsId: string;
+      };
       if (!req.headers.PdfAccessToken) {
         logger.warn('Azure access token is missing. Will be unable to generate pdf');
       }
@@ -68,12 +77,16 @@ const sendInnUtfyltSoknad = {
         req.headers.PdfAccessToken as string,
         pdfFormData
           ? stringifyPdf(pdfFormData)
-          : createFeltMapFromSubmission(
-              form,
-              submission,
-              submissionMethod,
-              createTranslate(translation, language),
-              localizationUtils.getLanguageCodeAsIso639_1(language),
+          : stringifyPdf(
+              pdfFormDataService.createPdfFormDataFromSubmission({
+                form,
+                submission,
+                submissionMethod,
+                translate: createTranslate(translation, language),
+                language: localizationUtils.getLanguageCodeAsIso639_1(language),
+                gitVersion: config.gitVersion,
+                isDelingslenke: config.isDelingslenke,
+              }),
             ),
         logMeta,
       );

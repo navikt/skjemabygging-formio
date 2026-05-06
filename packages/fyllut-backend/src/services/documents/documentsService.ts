@@ -1,13 +1,15 @@
+import { pdfFormDataService } from '@navikt/skjemadigitalisering-shared-backend';
 import {
   I18nTranslationMap,
   I18nTranslationReplacements,
   localizationUtils,
   NavFormType,
+  PdfFormData,
   Submission,
   translationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import { config } from '../../config/config';
 import { logger } from '../../logger';
-import { createFeltMapFromSubmission } from '../../routers/api/helpers/feltMapBuilder';
 import { stringifyPdf } from '../../routers/api/helpers/pdfUtils';
 import { LogMetadata } from '../../types/log';
 import { base64Decode } from '../../utils/base64';
@@ -18,7 +20,7 @@ import { mergeFrontPageAndApplication } from './mergeFilesService';
 interface ApplicationProps {
   accessToken: string;
   form: NavFormType;
-  pdfFormData?: any;
+  pdfFormData?: PdfFormData;
   submissionMethod: string;
   submission: Submission;
   language: string;
@@ -27,17 +29,22 @@ interface ApplicationProps {
 
 const application = async (props: CoverPageAndApplicationProps, logMeta: LogMetadata = {}) => {
   const { accessToken, form, pdfFormData, submission, language, translations, submissionMethod } = props;
+  const translate = createTranslate(translations, language);
 
   const applicationPdf = await applicationService.createFormPdf(
     accessToken,
     pdfFormData
       ? stringifyPdf(pdfFormData)
-      : createFeltMapFromSubmission(
-          form,
-          submission,
-          submissionMethod,
-          createTranslate(translations, language),
-          language,
+      : stringifyPdf(
+          pdfFormDataService.createPdfFormDataFromSubmission({
+            form,
+            submission,
+            submissionMethod,
+            translate,
+            language,
+            gitVersion: config.gitVersion,
+            isDelingslenke: config.isDelingslenke,
+          }),
         ),
     logMeta,
   );
@@ -68,13 +75,14 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps, logM
     submissionMethod,
     mergePdfAccessToken,
   } = props;
+  const translate = createTranslate(translations, language);
 
   const [coverPageResponse, applicationResponse] = await Promise.all([
     coverPageService.createPdf({
       accessToken,
       form,
       submission,
-      translate: createTranslate(translations, language),
+      translate,
       language,
       unitNumber,
       logMeta,
@@ -83,12 +91,16 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps, logM
       pdfGeneratorAccessToken,
       pdfFormData
         ? stringifyPdf(pdfFormData)
-        : createFeltMapFromSubmission(
-            form,
-            submission,
-            submissionMethod,
-            createTranslate(translations, language),
-            language,
+        : stringifyPdf(
+            pdfFormDataService.createPdfFormDataFromSubmission({
+              form,
+              submission,
+              submissionMethod,
+              translate,
+              language,
+              gitVersion: config.gitVersion,
+              isDelingslenke: config.isDelingslenke,
+            }),
           ),
       logMeta,
     ),
