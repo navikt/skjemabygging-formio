@@ -1,6 +1,12 @@
 import { expect } from 'chai';
 
 describe('Static PDF', () => {
+  const visitStaticPdfPage = (search = '') => {
+    cy.visit(`/fyllut/staticpdf/pdf${search}`);
+    cy.defaultWaits();
+    cy.wait('@getStaticPdf');
+  };
+
   before(() => {
     cy.configMocksServer();
   });
@@ -10,12 +16,11 @@ describe('Static PDF', () => {
     cy.mocksRestoreRouteVariants();
     cy.intercept('GET', '/fyllut/api/forms/staticpdf/static-pdfs').as('getStaticPdf');
     cy.intercept('POST', '/fyllut/api/forms/staticpdf/static-pdfs/*').as('download');
-    cy.visit('/fyllut/staticpdf/pdf');
-    cy.defaultWaits();
-    cy.wait('@getStaticPdf');
   });
 
   it('should be possible to download pdf with social security number', () => {
+    visitStaticPdfPage();
+
     cy.findByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).type('22015614475');
     cy.findByRole('checkbox', { name: /Vedlegg 1/ }).click();
 
@@ -34,6 +39,8 @@ describe('Static PDF', () => {
   });
 
   it('should be possible to download pdf with name and address', () => {
+    visitStaticPdfPage();
+
     cy.findByRole('radio', { name: /Person som ikke har fødselsnummer eller d-nummer/ }).click();
 
     cy.findByRole('textbox', { name: /Fornavn/ }).type('Ola');
@@ -64,5 +71,37 @@ describe('Static PDF', () => {
       expect(interception.response.statusCode).to.eq(200);
       expect(interception.response.body?.pdfBase64, 'PDF base64 exists').to.be.a('string');
     });
+  });
+
+  it('shows all attachments when filter is empty', () => {
+    visitStaticPdfPage('?filter=');
+
+    cy.findByRole('checkbox', { name: /Vedlegg 1/ }).should('exist');
+    cy.findByRole('checkbox', { name: /Vedlegg 2/ }).should('exist');
+    cy.findByRole('checkbox', { name: /Vedlegg uten kode/ }).should('exist');
+  });
+
+  it('shows only the matching attachment for a single filter code', () => {
+    visitStaticPdfPage('?filter=R4');
+
+    cy.findByRole('checkbox', { name: /Vedlegg 1/ }).should('exist');
+    cy.findByRole('checkbox', { name: /Vedlegg 2/ }).should('not.exist');
+    cy.findByRole('checkbox', { name: /Vedlegg uten kode/ }).should('not.exist');
+  });
+
+  it('shows all matching attachments for multiple filter codes and ignores whitespace', () => {
+    visitStaticPdfPage('?filter=%20R4%20,%20,%20K2%20');
+
+    cy.findByRole('checkbox', { name: /Vedlegg 1/ }).should('exist');
+    cy.findByRole('checkbox', { name: /Vedlegg 2/ }).should('exist');
+    cy.findByRole('checkbox', { name: /Vedlegg uten kode/ }).should('not.exist');
+  });
+
+  it('ignores unknown filter codes', () => {
+    visitStaticPdfPage('?filter=R4,ZZ');
+
+    cy.findByRole('checkbox', { name: /Vedlegg 1/ }).should('exist');
+    cy.findByRole('checkbox', { name: /Vedlegg 2/ }).should('not.exist');
+    cy.findByRole('checkbox', { name: /Vedlegg uten kode/ }).should('not.exist');
   });
 });
