@@ -135,7 +135,6 @@ describe('app', () => {
       submission: { data: { fodselsnummerDNummerSoker: '12345678911' } },
       attachments: [],
       language: 'nb-NO',
-      submissionMethod: 'digital',
       innsendingsId,
     };
 

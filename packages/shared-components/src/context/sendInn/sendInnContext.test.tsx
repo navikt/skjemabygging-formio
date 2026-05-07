@@ -105,7 +105,6 @@ describe('sendInnContext', () => {
           expect.objectContaining({
             form,
             submission,
-            submissionMethod,
             innsendingsId,
           }),
           headers,

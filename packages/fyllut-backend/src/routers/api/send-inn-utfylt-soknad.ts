@@ -24,10 +24,9 @@ const sendInnUtfyltSoknad = {
       const fyllutUrl = getFyllutUrl(req);
       const envQualifier = req.getEnvQualifier();
 
-      const { form, submission, submissionMethod, language, innsendingsId } = req.body as {
+      const { form, submission, language, innsendingsId } = req.body as {
         form: any;
         submission: any;
-        submissionMethod: string;
         language: string;
         innsendingsId: string;
       };
@@ -64,7 +63,7 @@ const sendInnUtfyltSoknad = {
           pdfFormDataService.createPdfFormDataFromSubmission({
             form,
             submission,
-            submissionMethod,
+            submissionMethod: 'digital',
             translate,
             language: localizationUtils.getLanguageCodeAsIso639_1(language),
             gitVersion: config.gitVersion,
