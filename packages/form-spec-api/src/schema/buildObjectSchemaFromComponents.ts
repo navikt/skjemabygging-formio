@@ -153,12 +153,15 @@ const buildAttachmentsSchema = (attachmentItemSchemas: JsonSchemaObject[]): Json
 const buildObjectSchemaFromComponentsInternal = (
   components: Component[] = [],
   context: SchemaGenerationContext,
+  ancestorHasConditionalLogic = false,
 ): SchemaBuildResult => {
   const properties: JsonSchemaObject['properties'] = {};
   const required = new Set<string>();
   const attachmentItemSchemas: JsonSchemaObject[] = [];
 
   for (const component of components) {
+    const descendantHasConditionalLogic = ancestorHasConditionalLogic || hasConditionalLogic(component);
+
     if (isAttachmentPanel(component)) {
       attachmentItemSchemas.push(
         ...collectAttachmentPanelItemSchemas(getNestedComponents(component), component, context),
@@ -167,7 +170,11 @@ const buildObjectSchemaFromComponentsInternal = (
     }
 
     if (shouldFlattenComponent(component)) {
-      const nestedResult = buildObjectSchemaFromComponentsInternal(getNestedComponents(component), context);
+      const nestedResult = buildObjectSchemaFromComponentsInternal(
+        getNestedComponents(component),
+        context,
+        descendantHasConditionalLogic,
+      );
       Object.assign(properties, nestedResult.schema.properties);
       nestedResult.schema.required?.forEach((key) => required.add(key));
       attachmentItemSchemas.push(...nestedResult.attachmentItemSchemas);
@@ -179,14 +186,22 @@ const buildObjectSchemaFromComponentsInternal = (
     }
 
     if (createsObjectScope(component)) {
-      const nestedResult = buildObjectSchemaFromComponentsInternal(getNestedComponents(component), context);
+      const nestedResult = buildObjectSchemaFromComponentsInternal(
+        getNestedComponents(component),
+        context,
+        descendantHasConditionalLogic,
+      );
       properties[component.key] = {
         title: component.label,
         ...nestedResult.schema,
       };
       attachmentItemSchemas.push(...nestedResult.attachmentItemSchemas);
     } else if (createsArrayScope(component)) {
-      const nestedResult = buildObjectSchemaFromComponentsInternal(getNestedComponents(component), context);
+      const nestedResult = buildObjectSchemaFromComponentsInternal(
+        getNestedComponents(component),
+        context,
+        descendantHasConditionalLogic,
+      );
       properties[component.key] = {
         type: 'array',
         title: component.label,
@@ -197,7 +212,7 @@ const buildObjectSchemaFromComponentsInternal = (
       properties[component.key] = inferValueSchema(component, context);
     }
 
-    if (component.validate?.required && !hasConditionalLogic(component)) {
+    if (component.validate?.required && !descendantHasConditionalLogic) {
       required.add(component.key);
     }
   }

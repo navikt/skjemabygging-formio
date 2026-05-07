@@ -47,6 +47,14 @@ const getSubmissionPayloadSchema = (schema: ReturnType<typeof generateSchema>) =
   schema.properties.data as JsonSchemaObject;
 const getFormDataSchema = (schema: ReturnType<typeof generateSchema>) =>
   getSubmissionPayloadSchema(schema).properties.data as JsonSchemaObject;
+const conditionalVisibility = { eq: 'yes', show: true, when: 'needsDetails' } as const;
+const createRequiredTextfield = (key: string, label: string): Component => ({
+  input: true,
+  key,
+  label,
+  type: 'textfield',
+  validate: { required: true },
+});
 
 describe('generateSchema', () => {
   it('creates a minimal schema for an empty form', () => {
@@ -464,7 +472,7 @@ describe('generateSchema', () => {
     const schema = generateSchema(
       createForm([
         {
-          conditional: { eq: 'yes', show: true, when: 'needsDetails' },
+          conditional: conditionalVisibility,
           input: true,
           key: 'details',
           label: 'Details',
@@ -475,6 +483,176 @@ describe('generateSchema', () => {
     );
 
     expect(getFormDataSchema(schema).required).toBeUndefined();
+  });
+
+  it('does not mark required fields inside a conditional navSkjemagruppe as required', () => {
+    const schema = generateSchema(
+      createForm([
+        {
+          components: [createRequiredTextfield('whichCountryWorkedIn', 'Which country worked in')],
+          conditional: conditionalVisibility,
+          key: 'employmentGroup',
+          label: 'Employment group',
+          type: 'navSkjemagruppe',
+        },
+      ]),
+    );
+
+    expect(getFormDataSchema(schema).properties).toEqual({
+      whichCountryWorkedIn: {
+        title: 'Which country worked in',
+        type: 'string',
+      },
+    });
+    expect(getFormDataSchema(schema).required).toBeUndefined();
+  });
+
+  it('does not mark required fields inside a conditional panel as required', () => {
+    const schema = generateSchema(
+      createForm([
+        {
+          components: [createRequiredTextfield('details', 'Details')],
+          conditional: conditionalVisibility,
+          key: 'detailsPanel',
+          label: 'Details panel',
+          type: 'panel',
+        },
+      ]),
+    );
+
+    expect(getFormDataSchema(schema).properties).toEqual({
+      details: {
+        title: 'Details',
+        type: 'string',
+      },
+    });
+    expect(getFormDataSchema(schema).required).toBeUndefined();
+  });
+
+  it('keeps required fields inside a non-conditional navSkjemagruppe required', () => {
+    const schema = generateSchema(
+      createForm([
+        {
+          components: [createRequiredTextfield('whichCountryWorkedIn', 'Which country worked in')],
+          key: 'employmentGroup',
+          label: 'Employment group',
+          type: 'navSkjemagruppe',
+        },
+      ]),
+    );
+
+    expect(getFormDataSchema(schema).required).toEqual(['whichCountryWorkedIn']);
+  });
+
+  it('suppresses required entries for a conditional container and its children', () => {
+    const schema = generateSchema(
+      createForm([
+        {
+          components: [createRequiredTextfield('country', 'Country')],
+          conditional: conditionalVisibility,
+          key: 'workDetails',
+          label: 'Work details',
+          type: 'container',
+          validate: { required: true },
+        },
+      ]),
+    );
+
+    expect(getFormDataSchema(schema).properties.workDetails).toEqual({
+      additionalProperties: false,
+      properties: {
+        country: {
+          title: 'Country',
+          type: 'string',
+        },
+      },
+      title: 'Work details',
+      type: 'object',
+    });
+    expect(getFormDataSchema(schema).required).toBeUndefined();
+  });
+
+  it('suppresses required entries for a conditional datagrid and its items', () => {
+    const schema = generateSchema(
+      createForm([
+        {
+          components: [createRequiredTextfield('destination', 'Destination')],
+          conditional: conditionalVisibility,
+          key: 'travelRows',
+          label: 'Travel rows',
+          type: 'datagrid',
+          validate: { required: true },
+        },
+      ]),
+    );
+
+    expect(getFormDataSchema(schema).properties.travelRows).toEqual({
+      items: {
+        additionalProperties: false,
+        properties: {
+          destination: {
+            title: 'Destination',
+            type: 'string',
+          },
+        },
+        type: 'object',
+      },
+      title: 'Travel rows',
+      type: 'array',
+    });
+    expect(getFormDataSchema(schema).required).toBeUndefined();
+  });
+
+  it('propagates conditional required suppression through nested scopes', () => {
+    const schema = generateSchema(
+      createForm([
+        {
+          components: [
+            {
+              components: [createRequiredTextfield('employeeId', 'Employee ID')],
+              key: 'employmentDetails',
+              label: 'Employment details',
+              type: 'container',
+              validate: { required: true },
+            },
+          ],
+          conditional: conditionalVisibility,
+          key: 'detailsPanel',
+          label: 'Details panel',
+          type: 'panel',
+        },
+      ]),
+    );
+
+    expect(getFormDataSchema(schema).properties.employmentDetails).toEqual({
+      additionalProperties: false,
+      properties: {
+        employeeId: {
+          title: 'Employee ID',
+          type: 'string',
+        },
+      },
+      title: 'Employment details',
+      type: 'object',
+    });
+    expect(getFormDataSchema(schema).required).toBeUndefined();
+  });
+
+  it('does not leak conditional required suppression to sibling fields', () => {
+    const schema = generateSchema(
+      createForm([
+        {
+          components: [createRequiredTextfield('conditionalDetails', 'Conditional details')],
+          conditional: conditionalVisibility,
+          key: 'detailsPanel',
+          label: 'Details panel',
+          type: 'panel',
+        },
+        createRequiredTextfield('alwaysRequired', 'Always required'),
+      ]),
+    );
+
+    expect(getFormDataSchema(schema).required).toEqual(['alwaysRequired']);
   });
 
   it('skips display-only components using actual shared-components type names', () => {
