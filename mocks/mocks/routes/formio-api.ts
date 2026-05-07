@@ -133,6 +133,14 @@ import { personCoverPageForm, personCoverPageTranslations } from '../data/forms-
 import largeForm from '../data/forms-api/largeForm';
 import { nologinForm, nologinTranslations } from '../data/forms-api/nologinForm';
 import {
+  paperNoCoverPageDigitalForm,
+  paperNoCoverPageDigitalTranslations,
+} from '../data/forms-api/submission-types/paperNoCoverPageDigitalForm';
+import {
+  paperNoCoverPagePaperForm,
+  paperNoCoverPagePaperTranslations,
+} from '../data/forms-api/submission-types/paperNoCoverPagePaperForm';
+import {
   paperNoCoverPageStaticPdfForm,
   staticPdfPaperNoCoverPageTranslations,
 } from '../data/forms-api/submission-types/paperNoCoverPageStaticPdfForm';
@@ -225,6 +233,8 @@ const allForms = [
   { form: personCoverPageForm(), translations: personCoverPageTranslations() },
   { form: organizationNumberCoverPageForm(), translations: organizationNumberCoverPageTranslations() },
   { form: summaryPageAttachmentDownloadForm(), translations: summaryPageAttachmentDownloadTranslations() },
+  { form: paperNoCoverPageDigitalForm(), translations: paperNoCoverPageDigitalTranslations() },
+  { form: paperNoCoverPagePaperForm(), translations: paperNoCoverPagePaperTranslations() },
   { form: paperNoCoverPageStaticPdfForm(), translations: staticPdfPaperNoCoverPageTranslations() },
   { form: phoneNumberForm(), translations: phoneNumberTranslations() },
   { form: accordionForm(), translations: accordionTranslations() },

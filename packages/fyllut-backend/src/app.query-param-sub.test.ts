@@ -1,7 +1,7 @@
 import { NavFormType, SubmissionType } from '@navikt/skjemadigitalisering-shared-domain';
 import nock from 'nock';
 import request from 'supertest';
-import { afterEach, describe, it } from 'vitest';
+import { afterEach, describe, it, vi } from 'vitest';
 import { createApp } from './app';
 import { config } from './config/config';
 
@@ -140,6 +140,26 @@ describe('Fyllut backend :: query param sub', () => {
       const res = await request(createApp()).get('/fyllut/testform107?sub=paper&lang=en').expect(302);
 
       expect(res.get('location')).toBe('/fyllut/testform107?lang=en');
+    });
+  });
+
+  describe('when qpSub=papernocoverpage is allowed for the form', () => {
+    it('renders for paper and paper-no-cover-page forms', async () => {
+      mockForm('testform111', ['PAPER', 'PAPER_NO_COVER_PAGE']);
+
+      await request(createApp()).get('/fyllut/testform111?sub=papernocoverpage').expect(200);
+    });
+
+    it('renders for digital and paper-no-cover-page forms', async () => {
+      mockForm('testform112', ['DIGITAL', 'PAPER_NO_COVER_PAGE']);
+
+      await request(createApp()).get('/fyllut/testform112?sub=papernocoverpage').expect(200);
+    });
+
+    it('renders for static-pdf and paper-no-cover-page forms', async () => {
+      mockForm('testform113', ['STATIC_PDF', 'PAPER_NO_COVER_PAGE']);
+
+      await request(createApp()).get('/fyllut/testform113?sub=papernocoverpage').expect(200);
     });
   });
 

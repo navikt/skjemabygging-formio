@@ -8,6 +8,28 @@ function assertDigitalLinksNotExist() {
   cy.findByRole('link', { name: digitalLinkLoggedInName }).should('not.exist');
 }
 
+function fillPaperNoCoverPageToSummary(fieldName: string | RegExp = 'Tekstfelt', value = 'test') {
+  cy.clickIntroPageConfirmation();
+  cy.clickStart();
+  cy.findByRole('textbox', { name: fieldName }).type(value);
+  cy.clickNextStep();
+  cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
+}
+
+function assertNoCoverPageSubmissionFlow(formPath: string, fieldName?: string | RegExp, value?: string) {
+  fillPaperNoCoverPageToSummary(fieldName, value);
+  cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions }).click();
+  cy.url().should('include', `/${formPath}/ingen-innsending`);
+  cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).should('exist');
+}
+
+function assertPaperSubmissionFlow(formPath: string, fieldName?: string | RegExp, value?: string) {
+  fillPaperNoCoverPageToSummary(fieldName, value);
+  cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions }).click();
+  cy.url().should('include', `/${formPath}/send-i-posten`);
+  cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).should('exist');
+}
+
 describe('Submission Type', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
@@ -397,31 +419,65 @@ describe('Submission Type', () => {
   });
 
   describe('Type: Paper No Cover Page', () => {
+    const paperNoCoverPageFormPath = 'papernocoverpage';
+
     beforeEach(() => {
-      cy.visit('/fyllut/papernocoverpage');
+      cy.visit(`/fyllut/${paperNoCoverPageFormPath}`);
       cy.defaultWaits();
     });
 
-    it('navigates to ingen-innsending page from summary', () => {
-      cy.clickIntroPageConfirmation();
-      cy.clickStart();
+    it('handles query param sub=papernocoverpage', () => {
+      cy.visit(`/fyllut/${paperNoCoverPageFormPath}?sub=papernocoverpage`);
+      cy.defaultWaits();
+      cy.url().should('include', 'sub=papernocoverpage');
+
+      assertNoCoverPageSubmissionFlow(paperNoCoverPageFormPath);
+    });
+
+    it('does not require query param sub=papernocoverpage when it is the only available', () => {
       cy.url().should('not.include', '?');
+      assertNoCoverPageSubmissionFlow(paperNoCoverPageFormPath);
+    });
+  });
 
-      cy.findByRole('textbox', { name: 'Tekstfelt' }).type('test');
-      cy.clickNextStep();
+  describe('Type: Paper and Paper No Cover Page', () => {
+    const paperAndPaperNoCoverPageFormPath = 'papernocoverpagepaper';
 
-      cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
-      cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions }).click();
+    it('redirects default to sub=paper when sub is missing (INCLUDE_DIST_TESTS)', () => {
+      cy.skipIfNoIncludeDistTests(); // because the redirect happens in backend
 
-      cy.url().should('include', '/papernocoverpage/ingen-innsending');
-      cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).should('exist');
+      cy.visit(`/fyllut/${paperAndPaperNoCoverPageFormPath}`);
+      cy.defaultWaits();
+      cy.url().should('include', 'sub=paper');
+
+      assertPaperSubmissionFlow(paperAndPaperNoCoverPageFormPath);
+    });
+
+    it('sub=papernocoverpage is required when form has multiple submission types', () => {
+      cy.visit(`/fyllut/${paperAndPaperNoCoverPageFormPath}?sub=papernocoverpage`);
+      cy.defaultWaits();
+      cy.url().should('include', 'sub=papernocoverpage');
+
+      assertNoCoverPageSubmissionFlow(paperAndPaperNoCoverPageFormPath);
+    });
+  });
+
+  describe('Type: Digital and Paper No Cover Page', () => {
+    const digitalAndPaperNoCoverPageFormPath = 'papernocoverpagedigital';
+
+    it('uses sub=papernocoverpage for the no-cover-page flow', () => {
+      cy.visit(`/fyllut/${digitalAndPaperNoCoverPageFormPath}?sub=papernocoverpage`);
+      cy.defaultWaits();
+      cy.url().should('include', 'sub=papernocoverpage');
+
+      assertNoCoverPageSubmissionFlow(digitalAndPaperNoCoverPageFormPath);
     });
   });
 
   describe('Type: Static PDF and Paper No Cover Page', () => {
     const paperNoCoverPageStaticPdfFormPath = 'papernocoverpagestaticpdf';
 
-    it('allows filling and downloading through the ingen-innsending flow', () => {
+    it('allows filling and downloading through the no-cover-page flow', () => {
       cy.intercept('POST', '/fyllut/api/documents/application').as('downloadApplication');
       cy.visit(`/fyllut/${paperNoCoverPageStaticPdfFormPath}`);
       cy.defaultWaits();
