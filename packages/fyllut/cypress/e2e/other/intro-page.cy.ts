@@ -1,3 +1,5 @@
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+
 const privacyLinkText = /hvordan Nav behandler personopplysninger på nav.no/i;
 
 describe('Intro page', () => {
@@ -49,6 +51,53 @@ describe('Intro page', () => {
 
       cy.findByRole('heading', { name: /Introduksjon/ }).should('exist');
       cy.findByText(/Du må fullføre innen kl. \d\d\.\d\d/).should('exist');
+    });
+  });
+
+  describe('Submission type "papernocoverpage"', () => {
+    const onlypapernocoverpageFormPath = 'onlypapernocoverpage';
+
+    it('should render intro page when only paper-no-cover-page is supported', () => {
+      cy.visit(`/fyllut/${onlypapernocoverpageFormPath}`);
+      cy.defaultWaits();
+      cy.findByRole('heading', { name: TEXTS.grensesnitt.introPage.title }).shouldBeVisible();
+      cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigitalLoggedIn }).should('not.exist');
+      cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendOnPaper }).should('not.exist');
+    });
+  });
+
+  describe('Submission type combinations', () => {
+    describe('Form with paper, digital and papernocoverpage', () => {
+      const multiplesubtypesFormPath = 'multiplesubtypes';
+
+      it('should render page for selecting submission type', () => {
+        cy.visit(`/fyllut/${multiplesubtypesFormPath}`);
+        cy.defaultWaits();
+        cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigitalLoggedIn }).should('exist');
+        cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendOnPaper }).should('exist');
+      });
+
+      it('should render paper intro page', () => {
+        cy.visit(`/fyllut/${multiplesubtypesFormPath}?sub=paper`);
+        cy.defaultWaits();
+        cy.findByRole('heading', { name: TEXTS.grensesnitt.introPage.title }).shouldBeVisible();
+        cy.contains('Du må fylle ut skjemaet digitalt, og så sende det i posten.').should('exist');
+        cy.findByRole('button', { name: 'Vi lagrer svar underveis' }).should('not.exist');
+        cy.clickIntroPageConfirmation();
+        cy.clickNextStep();
+        cy.findByRole('heading', { name: 'Dine opplysninger' }).shouldBeVisible();
+      });
+
+      it('should render digital intro page', () => {
+        cy.visit(`/fyllut/${multiplesubtypesFormPath}?sub=digital`);
+        cy.defaultWaits();
+        cy.findByRole('heading', { name: TEXTS.grensesnitt.introPage.title }).shouldBeVisible();
+        cy.findByRole('button', { name: 'Vi lagrer svar underveis' }).click();
+        cy.contains('Vi lagrer et utkast av skjemaet automatisk').should('exist');
+        cy.clickIntroPageConfirmation();
+        cy.clickSaveAndContinue();
+        cy.findByRole('heading', { name: 'Dine opplysninger' }).shouldBeVisible();
+      });
     });
   });
 });

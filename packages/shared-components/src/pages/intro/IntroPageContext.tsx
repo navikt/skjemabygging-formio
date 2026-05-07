@@ -83,7 +83,7 @@ export const IntroPageProvider = ({ children, form }: IntroPageProviderProps) =>
         if (submissionTypesUtils.isDigitalNoLoginSubmissionOnly(form.properties.submissionTypes)) {
           return IntroPageState.DIGITAL_NO_LOGIN;
         }
-        if (submissionTypesUtils.isPaperNoCoverPageSubmission(form.properties.submissionTypes)) {
+        if (submissionTypesUtils.isPaperNoCoverPageSubmissionOnly(form.properties.submissionTypes)) {
           return IntroPageState.PAPER_NO_COVER_PAGE;
         }
       }

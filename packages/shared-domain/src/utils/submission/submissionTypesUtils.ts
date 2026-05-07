@@ -39,6 +39,11 @@ function isPaperNoCoverPageSubmission(submissionTypes?: SubmissionType[]): boole
   return submissionTypes.length === 0 || submissionTypes.includes('PAPER_NO_COVER_PAGE');
 }
 
+function isPaperNoCoverPageSubmissionOnly(submissionTypes?: SubmissionType[]): boolean {
+  if (!submissionTypes) return false;
+  return submissionTypes.length === 0 || (submissionTypes.length === 1 && submissionTypes[0] == 'PAPER_NO_COVER_PAGE');
+}
+
 function isStaticPdf(submissionTypes?: SubmissionType[]): boolean {
   return !!submissionTypes?.includes('STATIC_PDF');
 }
@@ -72,6 +77,7 @@ const submissionTypesUtils = {
   isDigitalNoLoginSubmission,
   isDigitalNoLoginSubmissionOnly,
   isPaperNoCoverPageSubmission,
+  isPaperNoCoverPageSubmissionOnly,
   isPaperSubmission,
   isPaperSubmissionOnly,
   isStaticPdf,
