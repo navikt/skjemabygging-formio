@@ -2,6 +2,7 @@ import {
   I18nTranslationMap,
   localizationUtils,
   NavFormType,
+  PdfFormData,
   ReceiptSummary,
   Submission,
   translationUtils,
@@ -66,7 +67,7 @@ class ApplicationService {
     submission: Submission,
     translation: I18nTranslationMap = {},
     language: string,
-    pdfFormData?: any,
+    pdfFormData?: PdfFormData,
     logMeta: LogMetadata = {},
     type: 'nologin' | 'digital' = 'nologin',
   ): Promise<{ pdf: Uint8Array; receipt: ReceiptSummary }> {

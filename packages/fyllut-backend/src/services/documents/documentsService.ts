@@ -3,11 +3,11 @@ import {
   I18nTranslationReplacements,
   localizationUtils,
   NavFormType,
+  PdfFormData,
   Submission,
   translationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { logger } from '../../logger';
-import { createFeltMapFromSubmission } from '../../routers/api/helpers/feltMapBuilder';
 import { stringifyPdf } from '../../routers/api/helpers/pdfUtils';
 import { LogMetadata } from '../../types/log';
 import { base64Decode } from '../../utils/base64';
@@ -17,30 +17,14 @@ import { mergeFrontPageAndApplication } from './mergeFilesService';
 
 interface ApplicationProps {
   accessToken: string;
-  form: NavFormType;
-  pdfFormData?: any;
-  submissionMethod: string;
-  submission: Submission;
-  language: string;
-  translations: I18nTranslationMap;
+  pdfFormData: PdfFormData;
 }
 
 const application = async (props: CoverPageAndApplicationProps, logMeta: LogMetadata = {}) => {
-  const { accessToken, form, pdfFormData, submission, language, translations, submissionMethod } = props;
+  const { accessToken, pdfFormData } = props;
+  const stringifiedPdfFormData = stringifyPdf(pdfFormData);
 
-  const applicationPdf = await applicationService.createFormPdf(
-    accessToken,
-    pdfFormData
-      ? stringifyPdf(pdfFormData)
-      : createFeltMapFromSubmission(
-          form,
-          submission,
-          submissionMethod,
-          createTranslate(translations, language),
-          language,
-        ),
-    logMeta,
-  );
+  const applicationPdf = await applicationService.createFormPdf(accessToken, stringifiedPdfFormData, logMeta);
 
   if (applicationPdf === undefined) {
     throw new Error('Generering av søknads PDF feilet');
@@ -50,6 +34,10 @@ const application = async (props: CoverPageAndApplicationProps, logMeta: LogMeta
 };
 
 interface CoverPageAndApplicationProps extends ApplicationProps {
+  form: NavFormType;
+  submission: Submission;
+  language: string;
+  translations: I18nTranslationMap;
   pdfGeneratorAccessToken: string;
   mergePdfAccessToken: string;
   unitNumber: string;
@@ -65,9 +53,9 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps, logM
     language,
     unitNumber,
     translations,
-    submissionMethod,
     mergePdfAccessToken,
   } = props;
+  const stringifiedPdfFormData = stringifyPdf(pdfFormData);
 
   const [coverPageResponse, applicationResponse] = await Promise.all([
     coverPageService.createPdf({
@@ -79,19 +67,7 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps, logM
       unitNumber,
       logMeta,
     }),
-    applicationService.createFormPdf(
-      pdfGeneratorAccessToken,
-      pdfFormData
-        ? stringifyPdf(pdfFormData)
-        : createFeltMapFromSubmission(
-            form,
-            submission,
-            submissionMethod,
-            createTranslate(translations, language),
-            language,
-          ),
-      logMeta,
-    ),
+    applicationService.createFormPdf(pdfGeneratorAccessToken, stringifiedPdfFormData, logMeta),
   ]);
 
   const coverPagePdf = base64Decode(coverPageResponse.foersteside);

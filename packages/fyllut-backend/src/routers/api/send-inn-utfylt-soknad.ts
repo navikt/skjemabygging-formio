@@ -1,9 +1,3 @@
-import {
-  I18nTranslationMap,
-  I18nTranslationReplacements,
-  localizationUtils,
-  translationUtils,
-} from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import fetch from 'node-fetch';
 import { config } from '../../config/config';
@@ -13,7 +7,6 @@ import applicationService from '../../services/documents/applicationService';
 import { LogMetadata } from '../../types/log';
 import { responseToError } from '../../utils/errorHandling';
 import { getFyllutUrl } from '../../utils/url';
-import { createFeltMapFromSubmission } from './helpers/feltMapBuilder';
 import { stringifyPdf } from './helpers/pdfUtils';
 import { assembleSendInnSoknadBody, isNotFound, sanitizeInnsendingsId, validateInnsendingsId } from './helpers/sendInn';
 
@@ -27,22 +20,10 @@ const sendInnUtfyltSoknad = {
       const fyllutUrl = getFyllutUrl(req);
       const envQualifier = req.getEnvQualifier();
 
-      const { form, pdfFormData, submission, submissionMethod, translation, language, innsendingsId } = req.body;
+      const { form, pdfFormData, language, innsendingsId } = req.body;
       if (!req.headers.PdfAccessToken) {
         logger.warn('Azure access token is missing. Will be unable to generate pdf');
       }
-
-      const createTranslate = (translations: I18nTranslationMap, language: string) => {
-        const languageCode = localizationUtils.getLanguageCodeAsIso639_1(language.toLowerCase());
-
-        return (text: string, textReplacements?: I18nTranslationReplacements) =>
-          translationUtils.translateWithTextReplacements({
-            translations,
-            textOrKey: text,
-            params: textReplacements,
-            currentLanguage: languageCode,
-          });
-      };
 
       const sanitizedInnsendingsId = sanitizeInnsendingsId(innsendingsId);
       const errorMessage = validateInnsendingsId(
@@ -66,15 +47,7 @@ const sendInnUtfyltSoknad = {
 
       const applicationPdf = await applicationService.createFormPdf(
         req.headers.PdfAccessToken as string,
-        pdfFormData
-          ? stringifyPdf(pdfFormData)
-          : createFeltMapFromSubmission(
-              form,
-              submission,
-              submissionMethod,
-              createTranslate(translation, language),
-              localizationUtils.getLanguageCodeAsIso639_1(language),
-            ),
+        stringifyPdf(pdfFormData),
         logMeta,
       );
       const pdfByteArray = Array.from(applicationPdf) ?? [];

@@ -10,6 +10,9 @@ import { responseToError } from '../../utils/errorHandling';
 
 const { skjemabyggingProxyUrl } = config;
 
+/**
+ * @deprecated This is the old endpoint used by fyllut-ettersending. Will be deleted when remove fyllut-ettersending.
+ */
 const forsteside = {
   post: async (req: Request, res: Response, next: NextFunction) => {
     try {

@@ -5,7 +5,7 @@ import { LogMetadata } from '../../../types/log';
 
 const application: RequestHandler = async (req, res, next) => {
   try {
-    const { form, pdfFormData, submission, language, enhetNummer, submissionMethod, translations } = req.body;
+    const { form, pdfFormData, submission, language, enhetNummer, translations } = req.body;
     if (!submission) {
       throw new Error('Missing submission data to generate PDF');
     }
@@ -33,7 +33,6 @@ const application: RequestHandler = async (req, res, next) => {
         accessToken: pdfGeneratorToken,
         pdfGeneratorAccessToken: pdfGeneratorToken,
         mergePdfAccessToken: req.headers.MergePdfToken as string,
-        submissionMethod,
         translations: translationsParsed,
       },
       logMeta,
@@ -49,7 +48,7 @@ const application: RequestHandler = async (req, res, next) => {
 
 const coverPageAndApplication: RequestHandler = async (req, res, next) => {
   try {
-    const { form, submission, language, enhetNummer, submissionMethod, translations, pdfFormData } = req.body;
+    const { form, submission, language, enhetNummer, translations, pdfFormData } = req.body;
     if (!submission) {
       throw new Error('Missing submission data to generate PDF');
     }
@@ -86,7 +85,6 @@ const coverPageAndApplication: RequestHandler = async (req, res, next) => {
         accessToken: frontPageGeneratorToken,
         pdfGeneratorAccessToken: pdfGeneratorToken,
         mergePdfAccessToken: mergePdfToken,
-        submissionMethod,
         translations: translationsParsed,
       },
       logMeta,
