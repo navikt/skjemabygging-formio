@@ -25,7 +25,7 @@ const DownloadCoverPageAndApplicationButton = ({
   const appConfig = useAppConfig();
   const { fyllutBaseURL, submissionMethod, logEvent } = appConfig;
   const { form, submission } = useForm();
-  const { currentLanguage, translationsForNavForm, translate } = useLanguages();
+  const { currentLanguage, translate } = useLanguages();
   const [downloadState, setDownloadState] = useState<DownloadState>();
 
   const onClick = () => {
@@ -63,11 +63,6 @@ const DownloadCoverPageAndApplicationButton = ({
         language: currentLanguage,
         form: JSON.stringify(form),
         submission: JSON.stringify(submission),
-        translations: JSON.stringify(
-          currentLanguage !== 'nb-NO' && translationsForNavForm?.[currentLanguage]
-            ? translationsForNavForm[currentLanguage]
-            : {},
-        ),
         enhetNummer,
         submissionMethod,
       },

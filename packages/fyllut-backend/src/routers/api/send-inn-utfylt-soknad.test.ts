@@ -8,6 +8,7 @@ import sendInnUtfyltSoknad from './send-inn-utfylt-soknad';
 const SEND_LOCATION = 'http://www.unittest.nav.no/sendInn/123';
 
 const { sendInnConfig } = config;
+const mockTranslations = [];
 
 const mockRequestWithPidAndTokenX = ({ headers = {}, body }: MockRequestParams) => {
   const req = mockRequest({ headers, body });
@@ -22,15 +23,19 @@ const soknadPdf = readFileSync(filePathSoknad);
 describe('[endpoint] send-inn/utfyltsoknad', () => {
   const innsendingsId = '12345678-1234-1234-1234-12345678abcd';
   const defaultBody = {
-    form: { title: 'default form', components: [], properties: { skjemanummer: 'NAV 12.34-56' } },
+    form: { path: '12345', title: 'default form', components: [], properties: { skjemanummer: 'NAV 12.34-56' } },
     submission: { data: {} },
     attachments: [],
     language: 'nb-NO',
-    translation: (text: string) => text,
     innsendingsId,
   };
 
   it('returns 201 and location header if success', async () => {
+    const translationsMock = nock(config.formioApiServiceUrl!)
+      .get('/language/submission')
+      .query({ 'data.form': '12345', limit: '1000' })
+      .reply(200, mockTranslations);
+    const globalTranslationsMock = nock(config.formsApiUrl!).get('/v1/global-translations').reply(200, []);
     const skjemabyggingproxyScope = nock(process.env.FAMILIE_PDF_GENERATOR_URL!)
       .post('/api/pdf/v3/opprett-pdf')
       .reply(200, soknadPdf);
@@ -48,11 +53,18 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
       Location: SEND_LOCATION,
     });
     expect(next).not.toHaveBeenCalled();
+    expect(translationsMock.isDone()).toBe(true);
+    expect(globalTranslationsMock.isDone()).toBe(true);
     expect(skjemabyggingproxyScope.isDone()).toBe(true);
     expect(sendInnNockScope.isDone()).toBe(true);
   });
 
   it('calls next if SendInn returns error', async () => {
+    const translationsMock = nock(config.formioApiServiceUrl!)
+      .get('/language/submission')
+      .query({ 'data.form': '12345', limit: '1000' })
+      .reply(200, mockTranslations);
+    const globalTranslationsMock = nock(config.formsApiUrl!).get('/v1/global-translations').reply(200, []);
     const skjemabyggingproxyScope = nock(process.env.FAMILIE_PDF_GENERATOR_URL!)
       .post('/api/pdf/v3/opprett-pdf')
       .reply(200, soknadPdf);
@@ -70,11 +82,18 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
     expect(error.message).toBe('Feil ved kall til SendInn');
     expect(res.sendStatus).not.toHaveBeenCalled();
     expect(res.header).not.toHaveBeenCalled();
+    expect(translationsMock.isDone()).toBe(true);
+    expect(globalTranslationsMock.isDone()).toBe(true);
     expect(skjemabyggingproxyScope.isDone()).toBe(true);
     expect(sendInnNockScope.isDone()).toBe(true);
   });
 
   it('calls next if exstream returns error', async () => {
+    const translationsMock = nock(config.formioApiServiceUrl!)
+      .get('/language/submission')
+      .query({ 'data.form': '12345', limit: '1000' })
+      .reply(200, mockTranslations);
+    const globalTranslationsMock = nock(config.formsApiUrl!).get('/v1/global-translations').reply(200, []);
     const skjemabyggingproxyScope = nock(process.env.FAMILIE_PDF_GENERATOR_URL!)
       .post('/api/pdf/v3/opprett-pdf')
       .reply(500, 'error body');
@@ -89,6 +108,8 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
     expect(error.message).toBe('Could not create pdf');
     expect(res.sendStatus).not.toHaveBeenCalled();
     expect(res.header).not.toHaveBeenCalled();
+    expect(translationsMock.isDone()).toBe(true);
+    expect(globalTranslationsMock.isDone()).toBe(true);
     expect(skjemabyggingproxyScope.isDone()).toBe(true);
   });
 

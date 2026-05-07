@@ -1,7 +1,5 @@
 import { pdfFormDataService } from '@navikt/skjemadigitalisering-shared-backend';
 import {
-  I18nTranslationMap,
-  I18nTranslationReplacements,
   localizationUtils,
   NavFormType,
   Submission,
@@ -12,9 +10,12 @@ import { logger } from '../../logger';
 import { stringifyPdf } from '../../routers/api/helpers/pdfUtils';
 import { LogMetadata } from '../../types/log';
 import { base64Decode } from '../../utils/base64';
+import TranslationsService from '../TranslationsService';
 import applicationService from './applicationService';
 import coverPageService from './coverPageService';
 import { mergeFrontPageAndApplication } from './mergeFilesService';
+
+const translationsService = new TranslationsService(config);
 
 interface ApplicationProps {
   accessToken: string;
@@ -22,12 +23,11 @@ interface ApplicationProps {
   submissionMethod: string;
   submission: Submission;
   language: string;
-  translations: I18nTranslationMap;
 }
 
 const application = async (props: CoverPageAndApplicationProps, logMeta: LogMetadata = {}) => {
-  const { accessToken, form, submission, language, translations, submissionMethod } = props;
-  const translate = createTranslate(translations, language);
+  const { accessToken, form, submission, language, submissionMethod } = props;
+  const translate = await createTranslate(form.path, language);
 
   const applicationPdf = await applicationService.createFormPdf(
     accessToken,
@@ -66,11 +66,10 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps, logM
     submission,
     language,
     unitNumber,
-    translations,
     submissionMethod,
     mergePdfAccessToken,
   } = props;
-  const translate = createTranslate(translations, language);
+  const translate = await createTranslate(form.path, language);
 
   const [coverPageResponse, applicationResponse] = await Promise.all([
     coverPageService.createPdf({
@@ -128,16 +127,12 @@ const coverPageAndApplication = async (props: CoverPageAndApplicationProps, logM
   return Buffer.from(new Uint8Array(mergedFile));
 };
 
-const createTranslate = (translations: I18nTranslationMap, language: string) => {
-  const languageCode = localizationUtils.getLanguageCodeAsIso639_1(language.toLowerCase());
-
-  return (text: string, textReplacements?: I18nTranslationReplacements) =>
-    translationUtils.translateWithTextReplacements({
-      translations,
-      textOrKey: text,
-      params: textReplacements,
-      currentLanguage: languageCode,
-    });
+const createTranslate = async (formPath: string, language: string) => {
+  const normalizedLanguage = localizationUtils.getLanguageCodeAsIso639_1(language.toLowerCase());
+  return translationUtils.createTranslate(
+    await translationsService.getTranslationsForLanguage(formPath, normalizedLanguage),
+    normalizedLanguage,
+  );
 };
 
 const documentsService = {

@@ -5,13 +5,12 @@ import { LogMetadata } from '../../../types/log';
 
 const application: RequestHandler = async (req, res, next) => {
   try {
-    const { form, submission, language, enhetNummer, submissionMethod, translations } = req.body;
+    const { form, submission, language, enhetNummer, submissionMethod } = req.body;
     if (!submission) {
       throw new Error('Missing submission data to generate PDF');
     }
     const formParsed = JSON.parse(form);
     const submissionParsed = JSON.parse(submission);
-    const translationsParsed = JSON.parse(translations);
     const pdfGeneratorToken = req.headers.PdfAccessToken as string;
 
     if (!pdfGeneratorToken) {
@@ -33,7 +32,6 @@ const application: RequestHandler = async (req, res, next) => {
         pdfGeneratorAccessToken: pdfGeneratorToken,
         mergePdfAccessToken: req.headers.MergePdfToken as string,
         submissionMethod,
-        translations: translationsParsed,
       },
       logMeta,
     );
@@ -48,13 +46,12 @@ const application: RequestHandler = async (req, res, next) => {
 
 const coverPageAndApplication: RequestHandler = async (req, res, next) => {
   try {
-    const { form, submission, language, enhetNummer, submissionMethod, translations } = req.body;
+    const { form, submission, language, enhetNummer, submissionMethod } = req.body;
     if (!submission) {
       throw new Error('Missing submission data to generate PDF');
     }
     const formParsed = JSON.parse(form);
     const submissionParsed = JSON.parse(submission);
-    const translationsParsed = JSON.parse(translations);
     const frontPageGeneratorToken = req.headers.AzureAccessToken as string;
     const pdfGeneratorToken = req.headers.PdfAccessToken as string;
     const mergePdfToken = req.headers.MergePdfToken as string;
@@ -85,7 +82,6 @@ const coverPageAndApplication: RequestHandler = async (req, res, next) => {
         pdfGeneratorAccessToken: pdfGeneratorToken,
         mergePdfAccessToken: mergePdfToken,
         submissionMethod,
-        translations: translationsParsed,
       },
       logMeta,
     );

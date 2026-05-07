@@ -11,7 +11,6 @@ export const postNologinSoknad = async (
   form: NavFormType,
   submission: Submission,
   language: Language,
-  translation: any,
   submissionMethod: SubmissionMethod | undefined,
   innsendingsId?: string,
 ): Promise<{ pdfBase64: string; receipt: ReceiptSummary }> => {
@@ -24,7 +23,6 @@ export const postNologinSoknad = async (
       form,
       submission,
       language,
-      translation,
     },
     {
       NologinToken: nologinToken,

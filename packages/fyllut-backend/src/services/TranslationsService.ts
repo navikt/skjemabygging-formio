@@ -40,7 +40,9 @@ const toFormsApiLang = (lang: string) => {
       return 'nb';
   }
 };
-
+/**
+ * @deprecated Use translationService from @navikt/skjemadigitalisering-shared-backend directly.
+ */
 class TranslationsService {
   private readonly _config: ConfigType;
 

@@ -7,12 +7,13 @@ import { mockNext, mockRequest, mockResponse } from '../../test/requestTestHelpe
 
 import documents from '../../routers/api/documents/documents';
 
-const { skjemabyggingProxyUrl, formsApiUrl, familiePdfGeneratorUrl, sendInnConfig } = config;
+const { formioApiServiceUrl, skjemabyggingProxyUrl, formsApiUrl, familiePdfGeneratorUrl, sendInnConfig } = config;
 
 const formTitle = 'testskjema';
 const filePathForsteside = path.join(process.cwd(), '/src/services/documents/testdata/test-forsteside.pdf');
 const filePathSoknad = path.join(process.cwd(), '/src/services/documents/testdata/test-skjema.pdf');
 const filePathMerged = path.join(process.cwd(), '/src/services/documents/testdata/test-merged.pdf');
+const mockTranslations = [];
 
 describe('[endpoint] documents', () => {
   beforeAll(() => {
@@ -40,6 +41,11 @@ describe('[endpoint] documents', () => {
       return `mock-token-for:${scope}`;
     });
     const recipientsMock = nock(formsApiUrl).get('/v1/recipients').reply(200, []);
+    const translationsMock = nock(formioApiServiceUrl!)
+      .get('/language/submission')
+      .query({ 'data.form': '12345', limit: '1000' })
+      .reply(200, mockTranslations);
+    const globalTranslationsMock = nock(formsApiUrl!).get('/v1/global-translations').reply(200, []);
     const generateFileMock = nock(skjemabyggingProxyUrl!)
       .post('/foersteside')
       .reply(200, { foersteside: encodedForstesidedPdf });
@@ -61,6 +67,7 @@ describe('[endpoint] documents', () => {
       },
       body: {
         form: JSON.stringify({
+          path: '12345',
           title: formTitle,
           components: [],
           properties: { mottaksadresseId: 'mottaksadresseId', path: '12345', skjemanummer: 'NAV 12.34-56' },
@@ -68,13 +75,14 @@ describe('[endpoint] documents', () => {
         submissionMethod: 'paper',
         language: 'nb-NO',
         submission: JSON.stringify({ data: {} }),
-        translations: JSON.stringify({}),
       },
     });
 
     await documents.coverPageAndApplication(req, mockResponse(), mockNext());
 
     expect(recipientsMock.isDone()).toBe(true);
+    expect(translationsMock.isDone()).toBe(true);
+    expect(globalTranslationsMock.isDone()).toBe(true);
     expect(generateFileMock.isDone()).toBe(true);
     expect(skjemabyggingproxyScope.isDone()).toBe(true);
     expect(mergePdfScope.isDone()).toBe(true);
@@ -103,6 +111,11 @@ describe('[endpoint] documents', () => {
     });
 
     const recipientsMock = nock(formsApiUrl).get('/v1/recipients').reply(200, []);
+    const translationsMock = nock(formioApiServiceUrl!)
+      .get('/language/submission')
+      .query({ 'data.form': '12345', limit: '1000' })
+      .reply(200, mockTranslations);
+    const globalTranslationsMock = nock(formsApiUrl!).get('/v1/global-translations').reply(200, []);
     const generateFileMock = nock(skjemabyggingProxyUrl!)
       .post('/foersteside')
       .reply(200, { foersteside: encodedForstesidedPdf });
@@ -124,6 +137,7 @@ describe('[endpoint] documents', () => {
       },
       body: {
         form: JSON.stringify({
+          path: '12345',
           title: formTitle,
           components: [],
           properties: { mottaksadresseId: 'mottaksadresseId', path: '12345', skjemanummer: 'NAV 12.34-56' },
@@ -131,13 +145,14 @@ describe('[endpoint] documents', () => {
         submissionMethod: 'paper',
         language: 'EN',
         submission: JSON.stringify({ data: {} }),
-        translations: JSON.stringify({}),
       },
     });
 
     await documents.coverPageAndApplication(req, mockResponse(), mockNext());
 
     expect(recipientsMock.isDone()).toBe(true);
+    expect(translationsMock.isDone()).toBe(true);
+    expect(globalTranslationsMock.isDone()).toBe(true);
     expect(generateFileMock.isDone()).toBe(true);
     expect(skjemabyggingproxyScope.isDone()).toBe(true);
     expect(mergePdfScope.isDone()).toBe(true);

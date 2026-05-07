@@ -77,7 +77,6 @@ export const updateUtfyltSoknad = async (
   form: NavFormType,
   submission: Submission,
   language: string,
-  translation: I18nTranslationMap = {},
   innsendingsId: string | undefined,
   setRedirectLocation: (location: string) => void,
 ): Promise<SendInnSoknadResponse | undefined> => {
@@ -93,7 +92,6 @@ export const updateUtfyltSoknad = async (
         form,
         submission,
         language,
-        translation,
         submissionMethod,
         attachments,
         otherDocumentation,

@@ -1,16 +1,12 @@
 import { pdfFormDataService } from '@navikt/skjemadigitalisering-shared-backend';
-import {
-  I18nTranslationMap,
-  I18nTranslationReplacements,
-  localizationUtils,
-  translationUtils,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { localizationUtils, translationUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import fetch from 'node-fetch';
 import { config } from '../../config/config';
 import { logger } from '../../logger';
 import { getIdportenPid, getTokenxAccessToken } from '../../security/tokenHelper';
 import applicationService from '../../services/documents/applicationService';
+import TranslationsService from '../../services/TranslationsService';
 import { LogMetadata } from '../../types/log';
 import { responseToError } from '../../utils/errorHandling';
 import { getFyllutUrl } from '../../utils/url';
@@ -18,6 +14,7 @@ import { stringifyPdf } from './helpers/pdfUtils';
 import { assembleSendInnSoknadBody, isNotFound, sanitizeInnsendingsId, validateInnsendingsId } from './helpers/sendInn';
 
 const { sendInnConfig } = config;
+const translationsService = new TranslationsService(config);
 
 const sendInnUtfyltSoknad = {
   put: async (req: Request, res: Response, next: NextFunction) => {
@@ -27,29 +24,16 @@ const sendInnUtfyltSoknad = {
       const fyllutUrl = getFyllutUrl(req);
       const envQualifier = req.getEnvQualifier();
 
-      const { form, submission, submissionMethod, translation, language, innsendingsId } = req.body as {
+      const { form, submission, submissionMethod, language, innsendingsId } = req.body as {
         form: any;
         submission: any;
         submissionMethod: string;
-        translation: I18nTranslationMap;
         language: string;
         innsendingsId: string;
       };
       if (!req.headers.PdfAccessToken) {
         logger.warn('Azure access token is missing. Will be unable to generate pdf');
       }
-
-      const createTranslate = (translations: I18nTranslationMap, language: string) => {
-        const languageCode = localizationUtils.getLanguageCodeAsIso639_1(language.toLowerCase());
-
-        return (text: string, textReplacements?: I18nTranslationReplacements) =>
-          translationUtils.translateWithTextReplacements({
-            translations,
-            textOrKey: text,
-            params: textReplacements,
-            currentLanguage: languageCode,
-          });
-      };
 
       const sanitizedInnsendingsId = sanitizeInnsendingsId(innsendingsId);
       const errorMessage = validateInnsendingsId(
@@ -71,6 +55,9 @@ const sendInnUtfyltSoknad = {
         logger.warn(`Language code "${language}" is not supported. Language code will be defaulted to "nb".`, logMeta);
       }
 
+      const translations = await translationsService.getTranslationsForLanguage(form.path, language);
+      const translate = translationUtils.createTranslate(translations, language);
+
       const applicationPdf = await applicationService.createFormPdf(
         req.headers.PdfAccessToken as string,
         stringifyPdf(
@@ -78,7 +65,7 @@ const sendInnUtfyltSoknad = {
             form,
             submission,
             submissionMethod,
-            translate: createTranslate(translation, language),
+            translate,
             language: localizationUtils.getLanguageCodeAsIso639_1(language),
             gitVersion: config.gitVersion,
             isDelingslenke: config.isDelingslenke,
@@ -88,7 +75,12 @@ const sendInnUtfyltSoknad = {
       );
       const pdfByteArray = Array.from(applicationPdf) ?? [];
 
-      const body = assembleSendInnSoknadBody(req.body, idportenPid, fyllutUrl, pdfByteArray);
+      const body = assembleSendInnSoknadBody(
+        { ...req.body, translation: translations },
+        idportenPid,
+        fyllutUrl,
+        pdfByteArray,
+      );
 
       const sendInnResponse = await fetch(
         `${sendInnConfig.host}${sendInnConfig.paths.utfyltSoknad}/${sanitizedInnsendingsId}`,

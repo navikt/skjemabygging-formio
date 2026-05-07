@@ -277,7 +277,6 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
           form!,
           submission,
           language,
-          translation,
           submissionMethod,
           innsendingsId,
         );
@@ -338,15 +337,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
       let redirectLocation: string | undefined = undefined;
       const setRedirectLocation = (loc: string) => (redirectLocation = loc);
       try {
-        await updateUtfyltSoknad(
-          appConfig,
-          form,
-          submission,
-          language,
-          translation,
-          innsendingsId,
-          setRedirectLocation,
-        );
+        await updateUtfyltSoknad(appConfig, form, submission, language, innsendingsId, setRedirectLocation);
         logger?.info(`${innsendingsId}: Mellomlagring was submitted`);
         if (redirectLocation) {
           window.location.href = redirectLocation;

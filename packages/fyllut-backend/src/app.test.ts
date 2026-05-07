@@ -135,7 +135,6 @@ describe('app', () => {
       submission: { data: { fodselsnummerDNummerSoker: '12345678911' } },
       attachments: [],
       language: 'nb-NO',
-      translation: (text: string) => text,
       submissionMethod: 'digital',
       innsendingsId,
     };
@@ -143,6 +142,11 @@ describe('app', () => {
     const azureOpenidScope = nock(extractHost(azureTokenEndpoint))
       .post(extractPath(azureTokenEndpoint))
       .reply(200, { access_token: 'azure-access-token' });
+    const translationsScope = nock(config.formioApiServiceUrl!)
+      .get('/language/submission')
+      .query({ 'data.form': 'nav123456', limit: '1000' })
+      .reply(200, []);
+    const globalTranslationsScope = nock(config.formsApiUrl!).get('/v1/global-translations').reply(200, []);
     const skjemabyggingproxyScope = nock(process.env.FAMILIE_PDF_GENERATOR_URL as string)
       .post('/api/pdf/v3/opprett-pdf')
       .reply(200, encodedSoknadPdf);
@@ -165,6 +169,8 @@ describe('app', () => {
     expect(res.headers['location']).toMatch(sendInnLocation);
 
     azureOpenidScope.done();
+    translationsScope.done();
+    globalTranslationsScope.done();
     skjemabyggingproxyScope.done();
     tokenxWellKnownScope.done();
     tokenEndpointNockScope.done();
