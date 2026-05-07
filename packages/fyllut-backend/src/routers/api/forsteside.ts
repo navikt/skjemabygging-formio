@@ -7,39 +7,26 @@ import { logger } from '../../logger';
 import { appMetrics } from '../../services';
 import { LogMetadata } from '../../types/log';
 import { responseToError } from '../../utils/errorHandling';
-import forstesideV2 from './forstesideV2';
 
 const { skjemabyggingProxyUrl } = config;
 
-/*
- * TODO: This version of forsteside is deprecated.
- * v2 is can be removed, but the default version is used by fyllut-ettersending
- * @deprecated
- **/
 const forsteside = {
   post: async (req: Request, res: Response, next: NextFunction) => {
-    if (req.body.version === 'v2') {
-      logger.warn(
-        `Unexpected invocation of forstesideV2 (navSkjemaId=${req.body.navSkjemaId}, foerstesidetype=${req.body.foerstesidetype}).`,
-      );
-      await forstesideV2.post(req, res, next);
-    } else {
-      try {
-        const requestBody = req.body as ForstesideRequestBody;
-        if (requestBody.foerstesidetype === 'SKJEMA') {
-          logger.warn(`Unexpected foerstesidetype SKJEMA (navSkjemaId=${requestBody.navSkjemaId}).`);
-        }
-        const forsteside = await validateForstesideRequest(requestBody);
-        const response = await forstesideRequest(req, JSON.stringify(forsteside));
-        logForsteside(req.body, response, {
-          fyllutRequestPath: req.path,
-        });
-        appMetrics.paperSubmissionsCounter.inc({ source: resolveSource(requestBody.foerstesidetype) });
-        res.contentType('application/json');
-        res.send(response);
-      } catch (e) {
-        next(e);
+    try {
+      const requestBody = req.body as ForstesideRequestBody;
+      if (requestBody.foerstesidetype === 'SKJEMA') {
+        logger.warn(`Unexpected foerstesidetype SKJEMA (navSkjemaId=${requestBody.navSkjemaId}).`);
       }
+      const forsteside = await validateForstesideRequest(requestBody);
+      const response = await forstesideRequest(req, JSON.stringify(forsteside));
+      logForsteside(req.body, response, {
+        fyllutRequestPath: req.path,
+      });
+      appMetrics.paperSubmissionsCounter.inc({ source: resolveSource(requestBody.foerstesidetype) });
+      res.contentType('application/json');
+      res.send(response);
+    } catch (e) {
+      next(e);
     }
   },
 };

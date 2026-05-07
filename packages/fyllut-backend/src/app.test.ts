@@ -1,4 +1,3 @@
-import { forstesideUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { readFileSync } from 'fs';
 import nock from 'nock';
 import path from 'path';
@@ -91,7 +90,6 @@ describe('app', () => {
   });
 
   it('Returns error message and a correlation_id', async () => {
-    forstesideUtils.genererFoerstesideData = vi.fn();
     const tokenEndpoint = process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT!;
     const azureOpenidScope = nock(extractHost(tokenEndpoint))
       .post(extractPath(tokenEndpoint))
@@ -101,7 +99,14 @@ describe('app', () => {
       .post('/foersteside')
       .reply(400, 'Validering av ident feilet. brukerId=110550, brukerType=PERSON. Kunne ikke opprette førsteside.');
 
-    const foerstesideBody = { form: JSON.stringify({ properties: {} }), submissionData: '{}' };
+    const foerstesideBody = {
+      foerstesidetype: 'ETTERSENDELSE',
+      navSkjemaId: 'NAV 10.10.10',
+      spraakkode: 'NB',
+      overskriftstittel: 'Tittel',
+      arkivtittel: 'Tittel',
+      tema: 'HJE',
+    };
     const res = await request(createApp())
       .post('/fyllut/api/foersteside')
       .send(foerstesideBody)
