@@ -75,14 +75,14 @@ describe('Submission type', () => {
           cy.findByRole('checkbox', { name: /Ingen innsending/ }).should('be.checked');
           cy.findByRole('checkbox', { name: 'Digital' }).check({ force: true });
         });
-        cy.findByText(/uforutsett oppførsel/).should('be.visible');
+        cy.findByTestId('paper-no-cover-page-warning').should('be.visible');
       });
 
       it('does not show warning when only PAPER_NO_COVER_PAGE is selected', () => {
         cy.findByRole('group', { name: /Innsending/ }).within(() => {
           cy.findByRole('checkbox', { name: /Ingen innsending/ }).should('be.checked');
         });
-        cy.findByText(/uforutsett oppførsel/).should('not.exist');
+        cy.findByTestId('paper-no-cover-page-warning').should('not.exist');
       });
 
       it('does not show warning when PAPER_NO_COVER_PAGE is combined with STATIC_PDF', () => {
@@ -90,7 +90,7 @@ describe('Submission type', () => {
           cy.findByRole('checkbox', { name: /Ingen innsending/ }).should('be.checked');
           cy.findByRole('checkbox', { name: 'Statisk PDF' }).check({ force: true });
         });
-        cy.findByText(/uforutsett oppførsel/).should('not.exist');
+        cy.findByTestId('paper-no-cover-page-warning').should('not.exist');
       });
     });
 
