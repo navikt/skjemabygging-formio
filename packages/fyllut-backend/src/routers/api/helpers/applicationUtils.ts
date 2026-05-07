@@ -19,7 +19,7 @@ import {
 import { base64EncodeByteArray } from '../../../utils/base64';
 import { objectToByteArray } from './sendInn';
 
-const assembleNologinSoknadBody = (
+const assembleSubmitApplicationRequest = (
   innsendingsId: string,
   form: NavFormType,
   submission: Submission,
@@ -48,6 +48,7 @@ const assembleNologinSoknadBody = (
     mainDocumentAlt: base64EncodeByteArray(
       objectToByteArray({
         language,
+        formRevision: form.revision,
         data: submission,
       }),
     ),
@@ -160,4 +161,4 @@ function mapToStatus(value?: keyof AttachmentSettingValues): OpplastingsStatus {
   }
 }
 
-export { assembleNologinSoknadBody };
+export { assembleSubmitApplicationRequest };

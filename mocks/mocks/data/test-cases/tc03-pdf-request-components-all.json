@@ -285,6 +285,7 @@
     },
     {
       "label": "Underskrift",
+      "visningsVariant": "HOLDSAMMEN",
       "verdiliste": [
         {
           "label": "",

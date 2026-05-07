@@ -77,6 +77,9 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
 
   const updateKeyBasedText = (value: string, key: string) => {
     const original = state.changes[key] ?? storedTranslations[key];
+    if (!original) {
+      return addKeyBasedText(value);
+    }
     updateTranslation(original, 'nb', value);
     return key;
   };

@@ -34,12 +34,12 @@ export function IngressBulletPointRow({
   const sectionRefPrefix = `sections.${field}`;
 
   const onDescriptionChange = (value: string) => {
-    const key = setKeyBasedText(value, 'description');
+    const key = setKeyBasedText(value, sectionField?.description);
     updateSection(form, field, 'description', key, handleChange);
   };
 
   const onBulletPointChange = (value: string, index: number) => {
-    const key = setKeyBasedText(value, `bulletpoint-${index}`);
+    const key = setKeyBasedText(value, sectionField?.bulletPoints?.[index]);
     handleBulletPointChange(form, field, index, key, handleChange);
   };
 
@@ -72,7 +72,7 @@ export function IngressBulletPointRow({
         <>
           {bulletPoints.map((value, index) => (
             <FormIntroPageWysiwygEditor
-              key={index}
+              key={value || `${field}-bullet-${index}`}
               label="Kulepunkt"
               defaultTag="div"
               defaultValue={getKeyBasedText(value)}

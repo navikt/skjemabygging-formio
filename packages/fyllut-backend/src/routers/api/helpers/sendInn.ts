@@ -108,6 +108,7 @@ const assembleSendInnSoknadBody = (
     document: base64EncodeByteArray(
       objectToByteArray({
         language: language || DEFAULT_LANGUAGE,
+        formRevision: form.revision,
         data: submission,
       }),
     ),
