@@ -130,16 +130,16 @@ import {
   organizationNumberCoverPageTranslations,
 } from '../data/forms-api/cover-page/organizationNumberCoverPageForm';
 import { personCoverPageForm, personCoverPageTranslations } from '../data/forms-api/cover-page/personCoverPageForm';
-import largeForm from '../data/forms-api/largeForm';
-import { nologinForm, nologinTranslations } from '../data/forms-api/nologinForm';
 import {
   paperNoCoverPageDigitalForm,
   paperNoCoverPageDigitalTranslations,
-} from '../data/forms-api/submission-types/paperNoCoverPageDigitalForm';
+} from '../data/forms-api/form-navigation/paperNoCoverPageDigitalForm';
 import {
   paperNoCoverPagePaperForm,
   paperNoCoverPagePaperTranslations,
-} from '../data/forms-api/submission-types/paperNoCoverPagePaperForm';
+} from '../data/forms-api/form-navigation/paperNoCoverPagePaperForm';
+import largeForm from '../data/forms-api/largeForm';
+import { nologinForm, nologinTranslations } from '../data/forms-api/nologinForm';
 import {
   paperNoCoverPageStaticPdfForm,
   staticPdfPaperNoCoverPageTranslations,

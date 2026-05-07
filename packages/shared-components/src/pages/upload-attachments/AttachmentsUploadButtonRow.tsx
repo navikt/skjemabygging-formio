@@ -87,18 +87,21 @@ const AttachmentsUploadButtonRow = ({ attachments, onError }: { attachments: Att
             digitalnologin: () => validateUploadsAndGoNext(),
             digital: () => validateUploadsSaveAndGoNext(),
             paper: () => validateValuesAndGoNext(),
+            papernocoverpage: () => validateValuesAndGoNext(),
             none: () => validateValuesAndGoNext(),
           }}
           label={{
             digitalnologin: translate(TEXTS.grensesnitt.navigation.next),
             digital: translate(TEXTS.grensesnitt.navigation.saveAndContinue),
             paper: translate(TEXTS.grensesnitt.navigation.next),
+            papernocoverpage: translate(TEXTS.grensesnitt.navigation.next),
             none: translate(TEXTS.grensesnitt.navigation.next),
           }}
           href={{
             digitalnologin: `${baseUrl}/${form.path}/oppsummering${search}`,
             digital: `${baseUrl}/${form.path}/oppsummering${search}`,
             paper: `${baseUrl}/${form.path}/oppsummering${search}`,
+            papernocoverpage: `${baseUrl}/${form.path}/oppsummering${search}`,
             none: `${baseUrl}/${form.path}/oppsummering${search}`,
           }}
         />
@@ -109,18 +112,21 @@ const AttachmentsUploadButtonRow = ({ attachments, onError }: { attachments: Att
             digitalnologin: () => navigate({ pathname: previousPage(), search }),
             digital: () => navigate({ pathname: previousPage(), search }),
             paper: () => navigate({ pathname: previousPage(), search }),
+            papernocoverpage: () => navigate({ pathname: previousPage(), search }),
             none: () => navigate({ pathname: previousPage(), search }),
           }}
           label={{
             digitalnologin: translate(TEXTS.grensesnitt.navigation.previous),
             digital: translate(TEXTS.grensesnitt.navigation.previous),
             paper: translate(TEXTS.grensesnitt.navigation.previous),
+            papernocoverpage: translate(TEXTS.grensesnitt.navigation.previous),
             none: translate(TEXTS.grensesnitt.navigation.previous),
           }}
           href={{
             digitalnologin: previousPage(),
             digital: previousPage(),
             paper: previousPage(),
+            papernocoverpage: previousPage(),
             none: previousPage(),
           }}
         />

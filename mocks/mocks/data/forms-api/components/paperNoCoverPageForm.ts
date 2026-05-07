@@ -1,4 +1,4 @@
-import { panel, textField } from '../../../form-builder/components';
+import { attachment, panel, textField } from '../../../form-builder/components';
 import form from '../../../form-builder/form/form';
 import formProperties from '../../../form-builder/form/formProperties';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
@@ -14,6 +14,17 @@ const paperNoCoverPageForm = () => {
       panel({
         title: 'Dine opplysninger',
         components: [textField({ label: 'Tekstfelt' })],
+      }),
+      panel({
+        title: 'Vedlegg',
+        isAttachmentPanel: true,
+        components: [
+          attachment({
+            label: 'Vedlegg 1',
+            properties: { vedleggskode: 'V1', vedleggstittel: 'Vedleggstittel 1' },
+            validate: { required: true },
+          }),
+        ],
       }),
     ],
     properties: formProperties({
