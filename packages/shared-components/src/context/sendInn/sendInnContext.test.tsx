@@ -103,7 +103,7 @@ describe('sendInnContext', () => {
         expect(mockHttp.put).toHaveBeenCalledWith(
           'http://test.example.no/api/send-inn/utfyltsoknad',
           expect.objectContaining({
-            form,
+            formPath: form.path,
             submission,
             innsendingsId,
           }),

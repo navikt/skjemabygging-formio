@@ -1,3 +1,4 @@
+import { formService } from '@navikt/skjemadigitalisering-shared-backend';
 import { ForstesideRequestBody, forstesideUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { readFileSync } from 'fs';
 import nock from 'nock';
@@ -14,6 +15,12 @@ const filePathForsteside = path.join(process.cwd(), '/src/services/documents/tes
 const filePathSoknad = path.join(process.cwd(), '/src/services/documents/testdata/test-skjema.pdf');
 const filePathMerged = path.join(process.cwd(), '/src/services/documents/testdata/test-merged.pdf');
 const mockTranslations = [];
+const mockForm = {
+  path: '12345',
+  title: formTitle,
+  components: [],
+  properties: { mottaksadresseId: 'mottaksadresseId', path: '12345', skjemanummer: 'NAV 12.34-56' },
+};
 
 describe('[endpoint] documents', () => {
   beforeAll(() => {
@@ -40,6 +47,7 @@ describe('[endpoint] documents', () => {
     const mockAzureAccessTokenHandler = vi.fn((scope: string) => {
       return `mock-token-for:${scope}`;
     });
+    vi.spyOn(formService, 'getForm').mockResolvedValueOnce(mockForm as any);
     const recipientsMock = nock(formsApiUrl).get('/v1/recipients').reply(200, []);
     const translationsMock = nock(formioApiServiceUrl!)
       .get('/language/submission')
@@ -66,12 +74,7 @@ describe('[endpoint] documents', () => {
         MergePdfToken: mockAzureAccessTokenHandler('azureMergePdfToken'),
       },
       body: {
-        form: JSON.stringify({
-          path: '12345',
-          title: formTitle,
-          components: [],
-          properties: { mottaksadresseId: 'mottaksadresseId', path: '12345', skjemanummer: 'NAV 12.34-56' },
-        }),
+        formPath: '12345',
         submissionMethod: 'paper',
         language: 'nb-NO',
         submission: JSON.stringify({ data: {} }),
@@ -110,6 +113,7 @@ describe('[endpoint] documents', () => {
       return `mock-token-for:${scope}`;
     });
 
+    vi.spyOn(formService, 'getForm').mockResolvedValueOnce(mockForm as any);
     const recipientsMock = nock(formsApiUrl).get('/v1/recipients').reply(200, []);
     const translationsMock = nock(formioApiServiceUrl!)
       .get('/language/submission')
@@ -136,12 +140,7 @@ describe('[endpoint] documents', () => {
         MergePdfToken: mockAzureAccessTokenHandler('azureMergePdfToken'),
       },
       body: {
-        form: JSON.stringify({
-          path: '12345',
-          title: formTitle,
-          components: [],
-          properties: { mottaksadresseId: 'mottaksadresseId', path: '12345', skjemanummer: 'NAV 12.34-56' },
-        }),
+        formPath: '12345',
         submissionMethod: 'paper',
         language: 'EN',
         submission: JSON.stringify({ data: {} }),

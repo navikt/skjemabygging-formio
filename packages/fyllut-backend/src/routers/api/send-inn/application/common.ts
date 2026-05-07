@@ -1,6 +1,7 @@
-import { NavFormType, ReceiptSummary, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import { ReceiptSummary, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { applicationService } from '../../../../services';
 import { LogMetadata } from '../../../../types/log';
+import { loadNavForm } from '../../../../utils/form';
 
 export const generatePdfAndSubmit = async (
   applicationType: 'nologin' | 'digital',
@@ -8,11 +9,15 @@ export const generatePdfAndSubmit = async (
   innsendingsId: string,
   accessToken: string,
 ) => {
-  const { form, submission, language } = req.body as {
-    form: NavFormType;
+  const { formPath, submission, language } = req.body as {
+    formPath: string;
     submission: Submission;
     language: string;
   };
+  const form = await loadNavForm(formPath);
+  if (!form) {
+    throw new Error(`Form not found for path: ${formPath}`);
+  }
   const pdfAccessToken = req.headers.PdfAccessToken as string;
   const logMeta: LogMetadata = {
     innsendingsId,

@@ -61,7 +61,7 @@ const DownloadCoverPageAndApplicationButton = ({
       actionUrl,
       {
         language: currentLanguage,
-        form: JSON.stringify(form),
+        formPath: form.path,
         submission: JSON.stringify(submission),
         enhetNummer,
         submissionMethod,

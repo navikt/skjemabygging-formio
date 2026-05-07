@@ -89,7 +89,7 @@ export const updateUtfyltSoknad = async (
       `${baseUrl}/api/send-inn/utfyltsoknad`,
       {
         innsendingsId,
-        form,
+        formPath: form.path,
         submission,
         language,
         attachments,

@@ -20,7 +20,7 @@ export const postNologinSoknad = async (
   return await http!.post<{ pdfBase64: string; receipt: ReceiptSummary }>(
     url,
     {
-      form,
+      formPath: form.path,
       submission,
       language,
     },

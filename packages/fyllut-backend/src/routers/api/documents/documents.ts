@@ -2,14 +2,18 @@ import { RequestHandler } from 'express';
 import { appMetrics } from '../../../services';
 import documentsService from '../../../services/documents/documentsService';
 import { LogMetadata } from '../../../types/log';
+import { loadNavForm } from '../../../utils/form';
 
 const application: RequestHandler = async (req, res, next) => {
   try {
-    const { form, submission, language, enhetNummer, submissionMethod } = req.body;
+    const { formPath, submission, language, enhetNummer, submissionMethod } = req.body;
     if (!submission) {
       throw new Error('Missing submission data to generate PDF');
     }
-    const formParsed = JSON.parse(form);
+    const formParsed = await loadNavForm(formPath);
+    if (!formParsed) {
+      throw new Error(`Form not found for path: ${formPath}`);
+    }
     const submissionParsed = JSON.parse(submission);
     const pdfGeneratorToken = req.headers.PdfAccessToken as string;
 
@@ -46,11 +50,14 @@ const application: RequestHandler = async (req, res, next) => {
 
 const coverPageAndApplication: RequestHandler = async (req, res, next) => {
   try {
-    const { form, submission, language, enhetNummer, submissionMethod } = req.body;
+    const { formPath, submission, language, enhetNummer, submissionMethod } = req.body;
     if (!submission) {
       throw new Error('Missing submission data to generate PDF');
     }
-    const formParsed = JSON.parse(form);
+    const formParsed = await loadNavForm(formPath);
+    if (!formParsed) {
+      throw new Error(`Form not found for path: ${formPath}`);
+    }
     const submissionParsed = JSON.parse(submission);
     const frontPageGeneratorToken = req.headers.AzureAccessToken as string;
     const pdfGeneratorToken = req.headers.PdfAccessToken as string;

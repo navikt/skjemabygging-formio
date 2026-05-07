@@ -9,6 +9,7 @@ import applicationService from '../../services/documents/applicationService';
 import TranslationsService from '../../services/TranslationsService';
 import { LogMetadata } from '../../types/log';
 import { responseToError } from '../../utils/errorHandling';
+import { loadNavForm } from '../../utils/form';
 import { getFyllutUrl } from '../../utils/url';
 import { stringifyPdf } from './helpers/pdfUtils';
 import { assembleSendInnSoknadBody, isNotFound, sanitizeInnsendingsId, validateInnsendingsId } from './helpers/sendInn';
@@ -24,12 +25,17 @@ const sendInnUtfyltSoknad = {
       const fyllutUrl = getFyllutUrl(req);
       const envQualifier = req.getEnvQualifier();
 
-      const { form, submission, language, innsendingsId } = req.body as {
-        form: any;
+      const { formPath, submission, language, innsendingsId } = req.body as {
+        formPath: string;
         submission: any;
         language: string;
         innsendingsId: string;
       };
+      const form = await loadNavForm(formPath);
+      if (!form) {
+        next(new Error(`Form not found for path: ${formPath}`));
+        return;
+      }
       if (!req.headers.PdfAccessToken) {
         logger.warn('Azure access token is missing. Will be unable to generate pdf');
       }
@@ -75,7 +81,7 @@ const sendInnUtfyltSoknad = {
       const pdfByteArray = Array.from(applicationPdf) ?? [];
 
       const body = assembleSendInnSoknadBody(
-        { ...req.body, translation: translations },
+        { ...req.body, form, translation: translations },
         idportenPid,
         fyllutUrl,
         pdfByteArray,

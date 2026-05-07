@@ -1,3 +1,4 @@
+import { formService } from '@navikt/skjemadigitalisering-shared-backend';
 import { forstesideUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { readFileSync } from 'fs';
 import nock from 'nock';
@@ -126,12 +127,7 @@ describe('app', () => {
     const azureTokenEndpoint = process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT!;
     const tokenxEndpoint = 'http://tokenx-unittest.nav.no/token';
     const applicationData = {
-      form: {
-        components: [],
-        path: 'nav123456',
-        title: 'NAV 12.34-56',
-        properties: { skjemanummer: 'NAV 12.34-56', tema: 'BIL' },
-      },
+      formPath: 'nav123456',
       submission: { data: { fodselsnummerDNummerSoker: '12345678911' } },
       attachments: [],
       language: 'nb-NO',
@@ -141,6 +137,13 @@ describe('app', () => {
     const azureOpenidScope = nock(extractHost(azureTokenEndpoint))
       .post(extractPath(azureTokenEndpoint))
       .reply(200, { access_token: 'azure-access-token' });
+    vi.spyOn(formService, 'getForm').mockResolvedValueOnce({
+      components: [],
+      path: 'nav123456',
+      title: 'NAV 12.34-56',
+      skjemanummer: 'NAV 12.34-56',
+      properties: { skjemanummer: 'NAV 12.34-56', tema: 'BIL' },
+    } as any);
     const translationsScope = nock(config.formioApiServiceUrl!)
       .get('/language/submission')
       .query({ 'data.form': 'nav123456', limit: '1000' })

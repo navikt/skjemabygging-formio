@@ -7,6 +7,7 @@ import { fetchFromApi } from '../utils/forms';
 const { mocksEnabled, useFormsApiStaging, skjemaDir, formioApiServiceUrl, formsApiUrl } = config;
 
 class FormService {
+  /** @deprecated Keep existing implementation for now. Prefer shared-backend formService in new code. */
   async loadForm(formPath: string, select?: string): Promise<NavFormType | undefined> {
     if (!urlUtil.isValidPath(formPath)) {
       return;
@@ -35,6 +36,7 @@ class FormService {
     }
   }
 
+  /** @deprecated Keep existing implementation for now. Prefer shared-backend formService in new code. */
   async loadForms() {
     if (mocksEnabled) {
       const select = '_id,title,path,modified,properties.skjemanummer,properties.innsending,properties.ettersending';

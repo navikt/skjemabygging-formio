@@ -1,3 +1,4 @@
+import { formService } from '@navikt/skjemadigitalisering-shared-backend';
 import { readFileSync } from 'fs';
 import nock from 'nock';
 import path from 'path';
@@ -9,6 +10,12 @@ const SEND_LOCATION = 'http://www.unittest.nav.no/sendInn/123';
 
 const { sendInnConfig } = config;
 const mockTranslations = [];
+const mockForm = {
+  path: '12345',
+  title: 'default form',
+  components: [],
+  properties: { skjemanummer: 'NAV 12.34-56', tema: 'BIL' },
+};
 
 const mockRequestWithPidAndTokenX = ({ headers = {}, body }: MockRequestParams) => {
   const req = mockRequest({ headers, body });
@@ -23,7 +30,7 @@ const soknadPdf = readFileSync(filePathSoknad);
 describe('[endpoint] send-inn/utfyltsoknad', () => {
   const innsendingsId = '12345678-1234-1234-1234-12345678abcd';
   const defaultBody = {
-    form: { path: '12345', title: 'default form', components: [], properties: { skjemanummer: 'NAV 12.34-56' } },
+    formPath: '12345',
     submission: { data: {} },
     attachments: [],
     language: 'nb-NO',
@@ -31,6 +38,7 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
   };
 
   it('returns 201 and location header if success', async () => {
+    vi.spyOn(formService, 'getForm').mockResolvedValueOnce(mockForm as any);
     const translationsMock = nock(config.formioApiServiceUrl!)
       .get('/language/submission')
       .query({ 'data.form': '12345', limit: '1000' })
@@ -60,6 +68,7 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
   });
 
   it('calls next if SendInn returns error', async () => {
+    vi.spyOn(formService, 'getForm').mockResolvedValueOnce(mockForm as any);
     const translationsMock = nock(config.formioApiServiceUrl!)
       .get('/language/submission')
       .query({ 'data.form': '12345', limit: '1000' })
@@ -89,6 +98,7 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
   });
 
   it('calls next if exstream returns error', async () => {
+    vi.spyOn(formService, 'getForm').mockResolvedValueOnce(mockForm as any);
     const translationsMock = nock(config.formioApiServiceUrl!)
       .get('/language/submission')
       .query({ 'data.form': '12345', limit: '1000' })
