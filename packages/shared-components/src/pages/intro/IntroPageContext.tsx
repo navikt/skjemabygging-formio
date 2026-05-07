@@ -6,11 +6,11 @@ import { useForm } from '../../context/form/FormContext';
 
 export enum IntroPageState {
   DEFAULT = 'default',
-  NONE = 'none',
   PAPER = 'paper',
   DIGITAL = 'digital',
   DIGITAL_NO_LOGIN = 'digitalnologin',
   NO_LOGIN = 'no_login',
+  PAPER_NO_COVER_PAGE = 'papernocoverpage',
 }
 
 interface IntroPageContextType {
@@ -56,7 +56,7 @@ export const IntroPageProvider = ({ children, form }: IntroPageProviderProps) =>
     (sub?: SubmissionMethod) => {
       if (appConfig.app === 'bygger') {
         return submissionTypesUtils.isPaperNoCoverPageSubmission(form.properties.submissionTypes)
-          ? IntroPageState.NONE
+          ? IntroPageState.PAPER_NO_COVER_PAGE
           : IntroPageState.PAPER;
       }
 
@@ -68,6 +68,8 @@ export const IntroPageProvider = ({ children, form }: IntroPageProviderProps) =>
             return IntroPageState.DIGITAL;
           case 'paper':
             return IntroPageState.PAPER;
+          case 'papernocoverpage':
+            return IntroPageState.PAPER_NO_COVER_PAGE;
         }
       }
 
@@ -82,7 +84,7 @@ export const IntroPageProvider = ({ children, form }: IntroPageProviderProps) =>
           return IntroPageState.DIGITAL_NO_LOGIN;
         }
         if (submissionTypesUtils.isPaperNoCoverPageSubmission(form.properties.submissionTypes)) {
-          return IntroPageState.NONE;
+          return IntroPageState.PAPER_NO_COVER_PAGE;
         }
       }
 
