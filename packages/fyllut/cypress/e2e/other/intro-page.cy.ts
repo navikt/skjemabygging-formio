@@ -99,5 +99,17 @@ describe('Intro page', () => {
         cy.findByRole('heading', { name: 'Dine opplysninger' }).shouldBeVisible();
       });
     });
+
+    describe('Form with papernocoverpage and staticpdf', () => {
+      const papernocoverpagestaticpdfFormPath = 'papernocoverpagestaticpdf';
+
+      it('should render intro page correctly even if staticpdf', () => {
+        cy.visit(`/fyllut/${papernocoverpagestaticpdfFormPath}`);
+        cy.defaultWaits();
+        cy.findByRole('heading', { name: TEXTS.grensesnitt.introPage.title }).shouldBeVisible();
+        cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigitalLoggedIn }).should('not.exist');
+        cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendOnPaper }).should('not.exist');
+      });
+    });
   });
 });

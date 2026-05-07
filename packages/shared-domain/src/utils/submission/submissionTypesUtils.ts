@@ -41,7 +41,8 @@ function isPaperNoCoverPageSubmission(submissionTypes?: SubmissionType[]): boole
 
 function isPaperNoCoverPageSubmissionOnly(submissionTypes?: SubmissionType[]): boolean {
   if (!submissionTypes) return false;
-  return submissionTypes.length === 0 || (submissionTypes.length === 1 && submissionTypes[0] == 'PAPER_NO_COVER_PAGE');
+  const filteredTypes = submissionTypes.filter((type) => type !== 'STATIC_PDF');
+  return filteredTypes.length === 0 || (filteredTypes.length === 1 && filteredTypes[0] == 'PAPER_NO_COVER_PAGE');
 }
 
 function isStaticPdf(submissionTypes?: SubmissionType[]): boolean {
