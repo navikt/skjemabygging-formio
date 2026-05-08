@@ -1,7 +1,6 @@
 import { BodyShort, VStack } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect } from 'react';
-import AttachmentUploadProvider from '../../components/attachment/AttachmentUploadContext';
 import Captcha from '../../components/captcha/Captcha';
 import PersonalIdUpload from '../../components/personal-id/PersonalIdUpload';
 import { useForm } from '../../context/form/FormContext';
@@ -18,14 +17,14 @@ const UploadPersonalIdPage = () => {
   }, [setTitle, setFormProgressVisible]);
 
   return (
-    <AttachmentUploadProvider useCaptcha>
+    <>
       <Captcha />
       <VStack gap="space-32">
         <BodyShort>{translate(TEXTS.statiske.uploadId.description)}</BodyShort>
         <PersonalIdUpload />
       </VStack>
       <UploadPersonalIdButtonRow />
-    </AttachmentUploadProvider>
+    </>
   );
 };
 

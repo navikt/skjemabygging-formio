@@ -1,5 +1,6 @@
 import { FormsApiTranslation, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { useState } from 'react';
 import ApiError from '../../api/ApiError';
 import EditFormTranslationsProvider, { useEditFormTranslations } from './EditFormTranslationsContext';
 
@@ -29,10 +30,13 @@ vi.mock('../../notifications/FeedbackContext', () => {
 
 const TestComponent = ({
   updates = [],
+  keyBasedUpdate,
 }: {
   updates?: Array<[original: FormsApiTranslation, lang: TranslationLang, value: string]>;
+  keyBasedUpdate?: { key: string; value: string };
 }) => {
-  const { updateTranslation, saveChanges, errors, editState } = useEditFormTranslations();
+  const { updateTranslation, updateKeyBasedText, saveChanges, errors, editState } = useEditFormTranslations();
+  const [returnedKey, setReturnedKey] = useState('');
 
   const onSave = async () => {
     try {
@@ -53,16 +57,24 @@ const TestComponent = ({
       >
         Update Translations
       </button>
+      <button
+        onClick={() => keyBasedUpdate && setReturnedKey(updateKeyBasedText(keyBasedUpdate.value, keyBasedUpdate.key))}
+      >
+        Update Key Based Text
+      </button>
       <button onClick={onSave}>Save Changes</button>
       <div data-testid="errors">{errors.map((error) => error.message).toString()}</div>
       <div data-testid="editState">{editState}</div>
+      <div data-testid="returnedKey">{returnedKey}</div>
     </div>
   );
 };
 
 describe('EditFormTranslationsContext', () => {
   afterEach(() => {
-    mocks.saveTranslation.mockClear();
+    mocks.saveTranslation.mockReset();
+    mocks.saveTranslation.mockImplementation((translation) => Promise.resolve(translation));
+    mocks.loadTranslations.mockReset();
   });
 
   it('should initialize with default values', () => {
@@ -157,6 +169,29 @@ describe('EditFormTranslationsContext', () => {
     await waitFor(() =>
       expect(screen.getByTestId('errors')).toHaveTextContent('Det oppsto en konflikt. Last siden på nytt for å endre'),
     );
+    await waitFor(() => expect(screen.getByTestId('editState')).toHaveTextContent('SAVED'));
+  });
+
+  it('should create a new intro page translation when updateKeyBasedText gets an unknown key', async () => {
+    render(
+      <EditFormTranslationsProvider>
+        <TestComponent keyBasedUpdate={{ key: 'missing-key', value: 'Ny tekst' }} />
+      </EditFormTranslationsProvider>,
+    );
+
+    fireEvent.click(screen.getByText('Update Key Based Text'));
+
+    await waitFor(() => expect(screen.getByTestId('returnedKey')).not.toHaveTextContent(''));
+    expect(screen.getByTestId('returnedKey')).not.toHaveTextContent('missing-key');
+
+    fireEvent.click(screen.getByText('Save Changes'));
+
+    expect(mocks.saveTranslation).toHaveBeenCalledTimes(1);
+    expect(mocks.saveTranslation).toHaveBeenCalledWith({
+      key: screen.getByTestId('returnedKey').textContent,
+      nb: 'Ny tekst',
+      tag: 'introPage',
+    });
     await waitFor(() => expect(screen.getByTestId('editState')).toHaveTextContent('SAVED'));
   });
 });

@@ -68,6 +68,7 @@ import formYear from '../data/formio-api/year.json';
 import formYourInformationTranslations from '../data/formio-api/your-information-translations.json';
 import formYourInformation from '../data/formio-api/your-information.json';
 import { attachmentsForm, attachmentsTranslations } from '../data/forms-api/attachmentsForm';
+import { clearOnHideForm, clearOnHideTranslations } from '../data/forms-api/clear-on-hide/clearOnHideForm';
 import { accordionForm, accordionTranslations } from '../data/forms-api/components/accordionForm';
 import { activitiesTestForm, activitiesTranslations } from '../data/forms-api/components/activitiesForm';
 import { addressValidityTestForm, addressValidityTranslations } from '../data/forms-api/components/addressValidityForm';
@@ -130,6 +131,10 @@ import {
 import { personCoverPageForm, personCoverPageTranslations } from '../data/forms-api/cover-page/personCoverPageForm';
 import largeForm from '../data/forms-api/largeForm';
 import { nologinForm, nologinTranslations } from '../data/forms-api/nologinForm';
+import {
+  summaryPageAttachmentDownloadForm,
+  summaryPageAttachmentDownloadTranslations,
+} from '../data/forms-api/summary-page/summaryPageAttachmentDownloadForm';
 
 const allForms = [
   { form: formCypress101, translations: translationsCypress101 },
@@ -213,6 +218,7 @@ const allForms = [
   { form: organizationNumberForm(), translations: organizationNumberTranslations() },
   { form: personCoverPageForm(), translations: personCoverPageTranslations() },
   { form: organizationNumberCoverPageForm(), translations: organizationNumberCoverPageTranslations() },
+  { form: summaryPageAttachmentDownloadForm(), translations: summaryPageAttachmentDownloadTranslations() },
   { form: phoneNumberForm(), translations: phoneNumberTranslations() },
   { form: accordionForm(), translations: accordionTranslations() },
   { form: addressValidityTestForm(), translations: addressValidityTranslations() },
@@ -238,6 +244,7 @@ const allForms = [
   { form: panelTestForm(), translations: panelTranslations() },
   { form: adresseTestForm(), translations: adresseTranslations() },
   { form: attachmentsForm(), translations: attachmentsTranslations() },
+  { form: clearOnHideForm(), translations: clearOnHideTranslations() },
 ];
 
 const findTestdata = (formPath: string) => allForms.find((testdata) => testdata.form.path === formPath);

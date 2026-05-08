@@ -1,12 +1,13 @@
+import { I18nTranslations } from '@navikt/skjemadigitalisering-shared-domain';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router';
 import { LanguagesProvider } from '../../../context/languages';
 import FyllUtLanguageSelector from './FyllUtLanguageSelector';
 
-const defaultTranslations = {};
+const defaultTranslations: I18nTranslations = {};
 
-const renderFyllUtLanguageSelector = (translations, path = '') => {
+const renderFyllUtLanguageSelector = (translations: I18nTranslations = defaultTranslations, path = '') => {
   render(
     <MemoryRouter initialEntries={[path]}>
       <LanguagesProvider translations={translations || defaultTranslations}>
@@ -62,9 +63,8 @@ describe('Test FyllUtLanguageSelector in FyllUtRouter', () => {
   });
 
   it('Keep all search params in url when selecting other language', async () => {
-    const originalWindowLocation = window.location;
-    delete window.location;
-    window.location = new URL('https://www.unittest.nav.no/fyllut/nav123456?sub=digital&lang=nn-NO&foo=bar');
+    const originalPath = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+    window.history.pushState({}, '', '/fyllut/nav123456?sub=digital&lang=nn-NO&foo=bar');
 
     renderFyllUtLanguageSelector(
       { 'nn-NO': { Etternavn: 'Etternamn', Fornavn: 'Fornamn' } },
@@ -75,6 +75,6 @@ describe('Test FyllUtLanguageSelector in FyllUtRouter', () => {
     const bokmalLink = screen.getByRole('link', { name: 'Norsk bokmål' });
     expect(bokmalLink).toHaveAttribute('href', '/nav123456?sub=digital&lang=nb-NO&foo=bar');
 
-    window.location = originalWindowLocation;
+    window.history.pushState({}, '', originalPath || '/');
   });
 });

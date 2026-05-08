@@ -1,10 +1,18 @@
 import { Alert, FileUpload, FormSummary, Label, VStack } from '@navikt/ds-react';
-import { attachmentUtils, navFormUtils, SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  attachmentUtils,
+  enableAttachmentDownload,
+  navFormUtils,
+  SubmissionAttachment,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { FormComponentProps } from '../../../types';
 
 const SummaryAttachmentUpload = (props: FormComponentProps) => {
-  const { component, submission, translate, formProperties, appConfig } = props;
+  const { component, submission, translate, formProperties, appConfig, handleDownloadFile } = props;
   const { label } = component;
+  const attachmentDownloadEnabled = enableAttachmentDownload(appConfig.submissionMethod);
+  const canDownloadAttachment = attachmentDownloadEnabled && !!handleDownloadFile;
   const submissionAttachments = submission?.attachments?.filter(
     (attachment) => navFormUtils.getNavId(component) === attachment.navId,
   );
@@ -31,6 +39,15 @@ const SummaryAttachmentUpload = (props: FormComponentProps) => {
                     as="li"
                     key={file.fileId}
                     file={{ name: file.fileName, size: file.size }}
+                    href={canDownloadAttachment ? '#' : undefined}
+                    onFileClick={
+                      canDownloadAttachment
+                        ? (event) => {
+                            event.preventDefault();
+                            void handleDownloadFile(submissionAttachment.attachmentId, file.fileId, file.fileName);
+                          }
+                        : undefined
+                    }
                   ></FileUpload.Item>
                 ))}
               </VStack>

@@ -8,17 +8,17 @@ import RecipientsPage from './recipients/RecipientsPage';
 import ReportsPage from './reports/ReportsPage';
 import GlobalTranslationsPage from './translations/global/GlobalTranslationsPage';
 
-function AuthenticatedApp({ serverURL }) {
+function AuthenticatedApp() {
   return (
     <>
       <Routes>
-        <Route path="/forms/*" element={<FormsRouter serverURL={serverURL} />} />
+        <Route path="/forms/*" element={<FormsRouter />} />
         <Route path="/oversettelser" element={<Navigate to="/oversettelser/skjematekster" replace />} />
         <Route
           path="/oversettelser/:tag"
           element={
             <GlobalTranslationsProvider>
-              <GlobalTranslationsPage serverURL={serverURL} />
+              <GlobalTranslationsPage />
             </GlobalTranslationsProvider>
           }
         />

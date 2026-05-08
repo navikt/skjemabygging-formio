@@ -49,7 +49,7 @@ jobs:
         run: pnpm test:shared-backend
 
   package-and-push-bygger:
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/main'
     name: 'Package bygger'
     runs-on: ubuntu-latest-8-cores
     permissions:
@@ -82,7 +82,7 @@ jobs:
           team: skjemadigitalisering
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-          image_suffix: ${{ github.ref == 'refs/heads/master' && 'bygger' || 'bygger-dev' }}
+          image_suffix: ${{ github.ref == 'refs/heads/main' && 'bygger' || 'bygger-dev' }}
           build_args: |
             git_sha=${{ github.sha }}
           dockerfile: ./docker/Dockerfile.bygger
@@ -91,7 +91,7 @@ jobs:
       image: ${{ steps.docker-build-push-bygger.outputs.image }}
 
   package-and-push-fyllut-base:
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/main'
     name: 'Package fyllut'
     runs-on: ubuntu-latest-8-cores
     permissions:
@@ -133,7 +133,7 @@ jobs:
           tag: ${{ github.sha }}
 
       - name: 'Build and push Docker image: fyllut-base'
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/main'
         uses: nais/docker-build-push@v0
         id: docker-build-push
         with:
@@ -150,7 +150,7 @@ jobs:
 
   deploy-bygger-to-prod:
     name: 'Deploy bygger to prod'
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/main'
     needs: [build-and-test, package-and-push-bygger, package-and-push-fyllut-base]
     runs-on: ubuntu-latest
     permissions:

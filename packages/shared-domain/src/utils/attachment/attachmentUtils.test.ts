@@ -218,4 +218,22 @@ describe('attachmentUtils', () => {
       ).toBeUndefined();
     });
   });
+
+  describe('enableAttachmentDownload', () => {
+    it('returns true for digital submission method', () => {
+      expect(attachmentUtils.enableAttachmentDownload('digital')).toBe(true);
+    });
+
+    it('returns false for digitalnologin submission method', () => {
+      expect(attachmentUtils.enableAttachmentDownload('digitalnologin')).toBe(false);
+    });
+
+    it('returns false for paper submission method', () => {
+      expect(attachmentUtils.enableAttachmentDownload('paper')).toBe(false);
+    });
+
+    it('returns false when submission method is undefined', () => {
+      expect(attachmentUtils.enableAttachmentDownload()).toBe(false);
+    });
+  });
 });

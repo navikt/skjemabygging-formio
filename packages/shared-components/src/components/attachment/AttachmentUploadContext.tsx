@@ -1,27 +1,28 @@
 import { FileItem, FileObject } from '@navikt/ds-react';
 import { Submission, SubmissionAttachment, TEXTS, UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, useContext, useMemo, useState } from 'react';
-import { submitCaptchaValue } from '../../api/captcha/captcha';
-import getFileUploadApi from '../../api/nologin-file-upload/nologinFileUpload';
+import getFileUploadApi from '../../api/file-upload/fileUpload';
 import baseHttp from '../../api/util/http/http';
 import { MAX_TOTAL_SIZE_ATTACHMENT_FILES_BYTES } from '../../constants/fileUpload';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
+import { downloadBlob } from '../../util/blob/blob';
 import { validateFileUpload, validateTotalFilesSize } from '../../util/form/attachment-validation/attachmentValidation';
+import { normalizeAttachmentDownloadFileName } from './utils/attachmentUploadUtils';
 
 type AttachmentErrorType = 'FILE' | 'VALUE' | 'TITLE';
 type AttachmentError = { message: string; type: AttachmentErrorType };
 type ActionStatus = 'ok' | 'error' | 'auth-error' | 'invalid' | 'unknown';
 interface AttachmentUploadContextType {
   handleUploadFile: (attachmentId: string, file: FileObject) => Promise<{ status: ActionStatus }>;
+  handleDownloadFile: (attachmentId: string, fileId: string, fileName: string) => Promise<void>;
   handleDeleteFile: (attachmentId: string, fileId: string, file: FileItem) => Promise<void>;
   handleDeleteAllFilesForAttachment: (attachmentId: string) => Promise<void>;
   handleDeleteAttachment: (attachmentId: string) => Promise<void>;
   handleDeleteAllFiles: () => Promise<void>;
   addError: (attachmentId: string, error: string, type: AttachmentErrorType) => void;
-  setCaptchaValue: (value: Record<string, string>) => void;
   removeError: (attachmentId: string) => void;
   removeAllErrors: () => void;
   submissionAttachments: SubmissionAttachment[];
@@ -36,12 +37,12 @@ interface AttachmentUploadContextType {
 
 const initialContext: AttachmentUploadContextType = {
   handleUploadFile: async () => Promise.resolve({ status: 'unknown' }),
+  handleDownloadFile: async () => {},
   handleDeleteFile: async () => {},
   handleDeleteAllFilesForAttachment: async () => {},
   handleDeleteAttachment: async () => {},
   handleDeleteAllFiles: async () => {},
   addError: () => {},
-  setCaptchaValue: () => {},
   removeError: () => {},
   removeAllErrors: () => {},
   submissionAttachments: [],
@@ -52,16 +53,15 @@ const initialContext: AttachmentUploadContextType = {
 
 const AttachmentUploadContext = createContext<AttachmentUploadContextType>(initialContext);
 
-const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boolean; children: React.ReactNode }) => {
-  const { http, logger, submissionMethod } = useAppConfig();
+const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) => {
+  const { logger, submissionMethod } = useAppConfig();
   const { submission, setSubmission } = useForm();
-  const { nologinToken, setNologinToken, handleSessionExpired, innsendingsId } = useSendInn();
-  const { deleteAllFiles, deleteAllFilesForAttachment, deleteFile, uploadFile } = useMemo(
+  const { getUploadToken, handleSessionExpired, innsendingsId } = useSendInn();
+  const { deleteAllFiles, deleteAllFilesForAttachment, deleteFile, downloadFile, uploadFile } = useMemo(
     () => getFileUploadApi(submissionMethod === 'digitalnologin' ? 'nologin' : 'digital', innsendingsId),
     [innsendingsId, submissionMethod],
   );
   const { translate } = useLanguages();
-  const [captchaValue, setCaptchaValue] = useState<Record<string, string>>({});
   const [uploadsInProgress, setUploadsInProgress] = useState<Record<string, Record<string, FileObject>>>({});
   const [errors, setErrors] = useState<Record<string, Array<{ message: string; type: AttachmentErrorType }>>>({});
 
@@ -157,17 +157,6 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
     setErrors({});
   };
 
-  const resolveCaptcha = async () => {
-    if (!nologinToken && useCaptcha) {
-      const response = await submitCaptchaValue(captchaValue, http);
-      if (response?.access_token) {
-        setNologinToken(response.access_token);
-      }
-      return response?.access_token;
-    }
-    return nologinToken;
-  };
-
   const validateTotalAttachmentSize = (attachmentId: string, file: FileObject): string | undefined => {
     const attachment = submission?.attachments?.find((attachment) => attachment.attachmentId === attachmentId);
     return validateTotalFilesSize(
@@ -225,7 +214,7 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
         return Promise.resolve({ status: 'invalid' });
       }
 
-      const token = await resolveCaptcha();
+      const token = await getUploadToken();
       const result = await uploadFile(file.file, attachmentId, token);
       if (result) {
         removeAllFilesInProgress(attachmentId, (inProgress) => inProgress.error);
@@ -252,7 +241,8 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
   const handleDeleteFile = async (attachmentId: string, fileId: string) => {
     try {
       removeError(attachmentId);
-      await deleteFile(attachmentId, fileId, nologinToken);
+      const token = await getUploadToken();
+      await deleteFile(attachmentId, fileId, token);
       removeFileFromSubmission(attachmentId, fileId);
     } catch (error: any) {
       if (isAuthenticationError(error)) {
@@ -263,10 +253,26 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
     }
   };
 
+  const handleDownloadFile = async (attachmentId: string, fileId: string, fileName: string) => {
+    try {
+      removeError(attachmentId);
+      const token = await getUploadToken();
+      const downloadedFile = await downloadFile(attachmentId, fileId, token);
+      downloadBlob(downloadedFile, normalizeAttachmentDownloadFileName(fileName));
+    } catch (error: any) {
+      if (isAuthenticationError(error)) {
+        handleSessionExpired();
+      } else {
+        addError(attachmentId, translate(TEXTS.statiske.uploadFile.downloadFileError), 'FILE');
+      }
+    }
+  };
+
   const handleDeleteAllFilesForAttachment = async (attachmentId: string) => {
     try {
       removeError(attachmentId);
-      await deleteAllFilesForAttachment(attachmentId, nologinToken);
+      const token = await getUploadToken();
+      await deleteAllFilesForAttachment(attachmentId, token);
       removeFilesFromSubmission(attachmentId);
     } catch (error: any) {
       if (isAuthenticationError(error)) {
@@ -280,7 +286,8 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
   const handleDeleteAttachment = async (attachmentId: string) => {
     try {
       removeError(attachmentId);
-      await deleteAllFilesForAttachment(attachmentId, nologinToken);
+      const token = await getUploadToken();
+      await deleteAllFilesForAttachment(attachmentId, token);
       removeAttachmentFromSubmission(attachmentId);
     } catch (error: any) {
       if (isAuthenticationError(error)) {
@@ -295,7 +302,8 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
   const handleDeleteAllFiles = async () => {
     try {
       setErrors({});
-      await deleteAllFiles(nologinToken);
+      const token = await getUploadToken();
+      await deleteAllFiles(token);
       setSubmission(
         (current) =>
           ({
@@ -350,12 +358,12 @@ const AttachmentUploadProvider = ({ useCaptcha, children }: { useCaptcha?: boole
 
   const value = {
     handleUploadFile,
+    handleDownloadFile,
     handleDeleteFile,
     handleDeleteAllFilesForAttachment,
     handleDeleteAttachment,
     handleDeleteAllFiles,
     addError,
-    setCaptchaValue,
     removeError,
     removeAllErrors,
     changeAttachmentValue,

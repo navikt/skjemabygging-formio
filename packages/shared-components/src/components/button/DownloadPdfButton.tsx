@@ -1,5 +1,6 @@
 import { Button } from '@navikt/ds-react';
 import React, { useState } from 'react';
+import { downloadBlob } from '../../util/blob/blob';
 
 interface Props {
   fileName: string;
@@ -32,18 +33,6 @@ const DownloadPdfButton = ({
 }: Props) => {
   const [downloading, setDownloading] = useState<boolean>(false);
 
-  const createLink = (content: Blob) => {
-    const url = URL.createObjectURL(content);
-
-    if (!url) {
-      throw new Error('Could not create PDF url');
-    }
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = fileName;
-    a.click();
-  };
-
   const clickDownload = async () => {
     if ((isValid && !isValid()) || downloading) {
       return;
@@ -58,7 +47,7 @@ const DownloadPdfButton = ({
       const content = await pdfContent();
 
       if (content) {
-        createLink(content);
+        downloadBlob(content, fileName);
 
         if (onSuccess) {
           onSuccess();

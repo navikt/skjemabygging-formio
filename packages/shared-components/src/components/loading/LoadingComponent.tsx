@@ -2,13 +2,17 @@ import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useLanguages } from '../../context/languages';
 import makeStyles from '../../util/styles/jss/jss';
 
-const useLoadingStyles = makeStyles({
+interface Props {
+  heightOffsetRem?: number;
+}
+
+const useLoadingStyles = makeStyles<'root', Props>({
   root: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     textAlign: 'center',
-    height: (offset) => `calc(100vh - ${offset}rem)`,
+    height: ({ heightOffsetRem = 0 }) => `calc(100vh - ${heightOffsetRem}rem)`,
     '& h1': {
       fontSize: '3rem',
       fontWeight: 'bolder',
@@ -16,9 +20,9 @@ const useLoadingStyles = makeStyles({
   },
 });
 
-const LoadingComponent = ({ heightOffsetRem = 0 }) => {
+const LoadingComponent = ({ heightOffsetRem = 0 }: Props) => {
   const { translate } = useLanguages();
-  const classes = useLoadingStyles(heightOffsetRem);
+  const classes = useLoadingStyles({ heightOffsetRem });
   return (
     <div className={classes.root}>
       <h1>{translate ? translate(TEXTS.statiske.loading) : TEXTS.statiske.loading}</h1>

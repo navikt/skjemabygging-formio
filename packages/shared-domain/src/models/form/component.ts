@@ -201,6 +201,8 @@ export interface Webform {
   focusOnComponent: (args: any) => void;
   validateOnNextPage: (resultCallback: (valid: boolean) => void) => void;
   redrawNavigation: () => void;
+  checkConditions: (data: SubmissionData) => void;
+  pristine: boolean;
   checkData: (data: SubmissionData, flags: any[], row: any) => void;
   currentPanel: Component;
   currentPanels: string[];

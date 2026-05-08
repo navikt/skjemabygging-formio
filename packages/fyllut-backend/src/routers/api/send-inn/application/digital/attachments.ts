@@ -1,6 +1,9 @@
 import { requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
+import { Readable } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
+import { ReadableStream as NodeReadableStream } from 'node:stream/web';
 import { logger } from '../../../../../logger';
 import { applicationService } from '../../../../../services';
 import { HttpError } from '../../../../../utils/errors/HttpError';
@@ -62,7 +65,37 @@ const deleteFile = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const get = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const innsendingsId = requestUtil.getStringParam(req, 'innsendingsId')!;
+    const attachmentId = requestUtil.getStringParam(req, 'attachmentId')!;
+    const fileId = requestUtil.getStringParam(req, 'fileId')!;
+    const accessToken = req.getTokenxAccessToken();
+    const { fileStream, contentType, contentDisposition, contentLength } = await applicationService.downloadFile(
+      accessToken,
+      innsendingsId,
+      attachmentId,
+      fileId,
+      'digital',
+    );
+
+    res.contentType(contentType);
+    if (contentLength) {
+      res.setHeader('Content-Length', contentLength);
+    }
+    if (contentDisposition) {
+      res.setHeader('Content-Disposition', contentDisposition);
+    }
+
+    res.status(200);
+    await pipeline(Readable.fromWeb(fileStream as NodeReadableStream), res);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
+  get,
   post,
   delete: deleteFile,
 };

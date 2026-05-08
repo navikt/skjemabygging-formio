@@ -111,7 +111,7 @@ I `packages/bygger-backend/.env` kan man legge inn følgende miljøvariabler:
 | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | GITHUB_ACCESS_TOKEN                  | GitHub personal access token (se framgangsmåte i neste avsnitt). Anbefalt måte å autentisere seg lokalt.                                                           |
 | GITHUB*CLIENT*...<br/>GITHUB*APP*... | Alternativ autentisering med GitHub app installation token i stedet for personal access token. Se `github-app-installation` i Google Cloud Console Secret Manager. |
-| GIT_SHA                              | Gyldig monorepo commit id (skjemabygging-formio), f.eks. `git rev-parse origin/master`                                                                             |
+| GIT_SHA                              | Gyldig monorepo commit id (skjemabygging-formio), f.eks. `git rev-parse origin/main`                                                                               |
 | PUBLISH_REPO_BASE                    | Denne blir satt til test-publishing hvis ikke satt for lokalt utviklingsmiljø                                                                                      |
 
 #### Hvordan opprette et personal access token på GitHub
@@ -192,8 +192,8 @@ _Eierene_ av gruppene kan legge til nye medlemmer.
 En oversikt over gruppenes id'er vil dessuten ligge i nais-config for bygger såfremt de faktisk er i bruk (se
 `ad_groups`):
 
-- [prod.yaml](https://github.com/navikt/skjemabygging-formio/blob/master/.nais/bygger/prod.yaml)
-- [preprod.yaml](https://github.com/navikt/skjemabygging-formio/blob/master/.nais/bygger/preprod.yaml)
+- [prod.yaml](https://github.com/navikt/skjemabygging-formio/blob/main/.nais/bygger/prod.yaml)
+- [preprod.yaml](https://github.com/navikt/skjemabygging-formio/blob/main/.nais/bygger/preprod.yaml)
 
 ### 📝 Fyllut
 

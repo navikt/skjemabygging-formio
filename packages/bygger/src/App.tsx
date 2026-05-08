@@ -18,10 +18,10 @@ const useStyles = makeStyles({
   },
 });
 
-function App({ serverURL }) {
+function App() {
   const styles = useStyles();
   const { userData } = useAuth();
-  const contentFunc = userData ? () => <AuthenticatedApp serverURL={serverURL} /> : () => <UnauthenticatedApp />;
+  const contentFunc = userData ? () => <AuthenticatedApp /> : () => <UnauthenticatedApp />;
 
   return (
     <Theme theme="light">

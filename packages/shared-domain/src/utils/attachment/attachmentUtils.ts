@@ -23,6 +23,8 @@ const attachmentSettingKeys = [
 const enableAttachmentUpload = (submissionMethod?: string) =>
   submissionMethod === 'digital' || submissionMethod === 'digitalnologin';
 
+const enableAttachmentDownload = (submissionMethod?: SubmissionMethod): boolean => submissionMethod === 'digital';
+
 const shouldEnableUpload = (value: string) => value === 'leggerVedNaa';
 
 const isKnownAttachmentSettingKey = (key: string): key is (typeof attachmentSettingKeys)[number] =>
@@ -150,6 +152,7 @@ const mapToAttachmentSummary = ({
 };
 
 const attachmentUtils = {
+  enableAttachmentDownload,
   enableAttachmentUpload,
   getImplicitValueKey,
   getAttachmentLabel,
@@ -159,4 +162,4 @@ const attachmentUtils = {
   resolveAttachmentLabelKey,
 };
 
-export { attachmentSettingKeys, attachmentUtils };
+export { attachmentSettingKeys, attachmentUtils, enableAttachmentDownload };

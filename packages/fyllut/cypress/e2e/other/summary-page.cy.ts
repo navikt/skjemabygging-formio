@@ -10,6 +10,109 @@ describe('SummaryPage', () => {
     cy.mocksRestoreRouteVariants();
   });
 
+  describe('Submission type digital', () => {
+    const SUMMARY_DOWNLOAD_URL = '/fyllut/summarypagedownload/visning?sub=digital';
+    const SUMMARY_DOWNLOAD_NOLOGIN_URL = '/fyllut/summarypagedownload/legitimasjon?sub=digitalnologin';
+    const getUploadOnlyAttachment = () => cy.contains('[data-cy=attachment-upload]', 'Vedlegg upload-only');
+
+    const navigateToSummary = () => {
+      cy.findByRoleWhenAttached(
+        'link',
+        { name: /Lagre og fortsett|Save and continue|Neste steg|Next step/ },
+        500,
+      ).click();
+      cy.findByRole('heading', { level: 2, name: /Oppsummering|Summary/, timeout: 10000 }).shouldBeVisible();
+    };
+
+    const completePersonalIdStep = () => {
+      cy.findByRole('heading', { name: 'Legitimasjon' }).should('exist');
+      cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
+        cy.findByLabelText('Norsk pass').check(),
+      );
+      cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
+      cy.wait('@uploadPersonalId').its('response.statusCode').should('eq', 201);
+      cy.findByRole('link', { name: 'Neste steg' }).click();
+      cy.url().then((currentUrl) => {
+        if (currentUrl.includes('/legitimasjon')) {
+          cy.findByRole('link', { name: 'Neste steg' }).click();
+        }
+      });
+      cy.url().should('not.include', '/legitimasjon');
+    };
+
+    const navigateToAttachmentsForDigitalNoLogin = () => {
+      cy.url().then((url) => {
+        if (url.includes('/legitimasjon')) {
+          completePersonalIdStep();
+        }
+      });
+      cy.clickShowAllSteps();
+      cy.findByRole('link', { name: 'Vedlegg' }).click();
+      cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
+    };
+
+    it('downloads uploaded attachment from summary', () => {
+      cy.defaultInterceptsMellomlagring();
+      cy.intercept({
+        method: 'POST',
+        url: '**/fyllut/api/send-inn/digital-application/*/attachments/*',
+      }).as('uploadAttachment');
+      cy.intercept({
+        method: 'GET',
+        url: '**/fyllut/api/send-inn/digital-application/*/attachments/*/*',
+      }).as('downloadAttachment');
+
+      cy.visit(SUMMARY_DOWNLOAD_URL);
+      cy.defaultWaits();
+      cy.wait('@createMellomlagring').its('response.body.shouldUploadAttachmentsInFyllut').should('eq', true);
+
+      cy.clickSaveAndContinue();
+      cy.findByRole('heading', { name: 'Vedlegg' }).shouldBeVisible();
+      getUploadOnlyAttachment().within(() => {
+        cy.uploadFile('small-file.txt');
+      });
+      cy.wait('@uploadAttachment').its('response.statusCode').should('eq', 201);
+      getUploadOnlyAttachment().within(() => {
+        cy.findByRole('link', { name: 'small-file.txt' }).should('exist');
+      });
+
+      navigateToSummary();
+      cy.findByRole('link', { name: 'small-file.txt' }).should('not.have.attr', 'download');
+      cy.findByRoleWhenAttached('link', { name: 'small-file.txt' }, 500).click();
+      cy.wait('@downloadAttachment', { timeout: 10000 }).its('response.statusCode').should('eq', 200);
+    });
+
+    it('does not expose summary attachment download in digital no-login mode', () => {
+      cy.intercept({
+        method: 'POST',
+        url: '**/fyllut/api/send-inn/nologin-application/attachments/personal-id',
+      }).as('uploadPersonalId');
+      cy.intercept({
+        method: 'GET',
+        url: '**/fyllut/api/send-inn/nologin-application/attachments/*/*',
+      }).as('downloadAttachment');
+
+      cy.visit(SUMMARY_DOWNLOAD_NOLOGIN_URL);
+      cy.defaultWaits();
+
+      navigateToAttachmentsForDigitalNoLogin();
+      cy.intercept({
+        method: 'POST',
+        url: '**/fyllut/api/send-inn/nologin-application/attachments/*',
+      }).as('uploadAttachment');
+      getUploadOnlyAttachment().within(() => {
+        cy.uploadFile('small-file.txt');
+      });
+      cy.wait('@uploadAttachment').its('response.statusCode').should('eq', 201);
+      cy.findByText('small-file.txt').should('exist');
+
+      navigateToSummary();
+      cy.findByText('small-file.txt').should('exist');
+      cy.findByRole('link', { name: 'small-file.txt' }).should('not.exist');
+      cy.get('@downloadAttachment.all').should('have.length', 0);
+    });
+  });
+
   it('All values', () => {
     cy.visit('/fyllut/components?sub=paper');
     cy.defaultWaits();

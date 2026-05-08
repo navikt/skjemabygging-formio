@@ -1,22 +1,17 @@
 import { AppConfigProvider, NavFormioJs } from '@navikt/skjemadigitalisering-shared-components';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
-import createMockImplementation, { DEFAULT_PROJECT_URL } from '../test/backendMockImplementation';
+import createMockImplementation from '../test/backendMockImplementation';
 import featureToggles from '../test/featureToggles';
 import App from './App';
 import { AuthContext } from './context/auth-context';
-
-const createFakeChannel = () => ({
-  bind: vi.fn(),
-  unbind: vi.fn(),
-});
 
 describe('App', () => {
   let formioFetch;
 
   beforeEach(() => {
     formioFetch = vi.spyOn(NavFormioJs.Formio, 'fetch');
-    formioFetch.mockImplementation(createMockImplementation());
+    formioFetch.mockImplementation(createMockImplementation() as never);
   });
 
   afterEach(() => {
@@ -33,7 +28,7 @@ describe('App', () => {
           }}
         >
           <AppConfigProvider featureToggles={featureToggles} {...appConfigProps}>
-            <App projectURL={DEFAULT_PROJECT_URL} pusher={{ subscribe: () => createFakeChannel() }} />
+            <App />
           </AppConfigProvider>
         </AuthContext.Provider>
       </MemoryRouter>,

@@ -9,7 +9,25 @@ const useStyles = makeStyles({
   },
 });
 
-const SignatureComponent = ({ signature, index, onChange, onDelete, diff = undefined, readonly }) => {
+interface SignatureComponentProps {
+  signature: any;
+  index: number;
+  onChange: (signature: any) => void;
+  onDelete: () => void;
+  diff?: {
+    status?: boolean | string;
+  };
+  readonly?: boolean;
+}
+
+const SignatureComponent = ({
+  signature,
+  index,
+  onChange,
+  onDelete,
+  diff = undefined,
+  readonly,
+}: SignatureComponentProps) => {
   const styles = useStyles();
   return (
     <Panel className="mb-4" border>
@@ -21,17 +39,19 @@ const SignatureComponent = ({ signature, index, onChange, onDelete, diff = undef
         aria-label={'Slett signatur ' + (index + 1)}
         disabled={readonly}
       />
-      <Fieldset data-testid="signatures">
-        <legend>
+      <Fieldset
+        data-testid="signatures"
+        legend={
           <LabelWithDiff
             label={
               <Heading level="2" size="small">
                 {'Signatur ' + (index + 1)}
               </Heading>
             }
-            diff={diff?.status}
+            diff={diff?.status ?? false}
           />
-        </legend>
+        }
+      >
         <TextField
           label="Hvem skal signere?"
           type="text"

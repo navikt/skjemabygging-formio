@@ -9,6 +9,8 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { AppConfigContextType } from '../context/config/configContext';
 
+type HandleAttachmentDownloadFile = (attachmentId: string, fileId: string, fileName: string) => Promise<void>;
+
 interface FormComponentProps {
   component: Component;
   submissionPath: string;
@@ -19,6 +21,7 @@ interface FormComponentProps {
   currentLanguage: string;
   formProperties: FormPropertiesType;
   appConfig: AppConfigContextType;
+  handleDownloadFile?: HandleAttachmentDownloadFile;
 }
 
 interface FormComponentRegistry {
@@ -39,4 +42,10 @@ interface PdfComponentRegistry {
   [key: string]: (props: PdfComponentProps) => PdfData[] | PdfData | null;
 }
 
-export type { FormComponentProps, FormComponentRegistry, PdfComponentProps, PdfComponentRegistry };
+export type {
+  FormComponentProps,
+  FormComponentRegistry,
+  HandleAttachmentDownloadFile,
+  PdfComponentProps,
+  PdfComponentRegistry,
+};

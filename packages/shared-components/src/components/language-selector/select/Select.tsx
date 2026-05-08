@@ -27,23 +27,23 @@ const handleTabKeyPressed = (event, firstItem, lastItem, index, numberOfItemsInL
   }
   if (event.shiftKey && index === 0) {
     event.preventDefault();
-    lastItem.current.focus();
+    lastItem.current?.focus();
   } else if (!event.shiftKey && index === numberOfItemsInList - 1) {
     event.preventDefault();
-    firstItem.current.focus();
+    firstItem.current?.focus();
   }
 };
 
 const Select = ({ label, className, options, ariaLabel }) => {
-  const buttonRef = useRef(null);
-  const firstListItemLinkRef = useRef(null);
-  const lastListItemLinkRef = useRef(null);
+  const buttonRef = useRef<any>(null);
+  const firstListItemLinkRef = useRef<any>(null);
+  const lastListItemLinkRef = useRef<any>(null);
   const [showItems, setShowItems] = useState(false);
   const classes = useSelectStyle();
 
   const closeListAndResetFocus = () => {
     setShowItems(false);
-    buttonRef.current.focus();
+    buttonRef.current?.focus();
   };
 
   const closeOnEscape = (event) => {

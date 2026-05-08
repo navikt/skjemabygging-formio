@@ -5,6 +5,8 @@ import {
   findAttachmentByComponentId,
   getDefaultOtherAttachment,
   getLargestAttachmentIdCounter,
+  normalizeAttachmentDownloadBlob,
+  normalizeAttachmentDownloadFileName,
 } from './attachmentUploadUtils';
 
 describe('attachmentUploadUtils', () => {
@@ -139,6 +141,60 @@ describe('attachmentUploadUtils', () => {
         type: 'other',
         value: value,
       });
+    });
+  });
+
+  describe('normalizeAttachmentDownloadFileName', () => {
+    it('adds .pdf when file has no extension', () => {
+      const result = normalizeAttachmentDownloadFileName('receipt');
+      expect(result).toBe('receipt.pdf');
+    });
+
+    it('changes existing extension to .pdf', () => {
+      const result = normalizeAttachmentDownloadFileName('receipt.jpg');
+      expect(result).toBe('receipt.pdf');
+    });
+
+    it('keeps .pdf extension and normalizes casing', () => {
+      const result = normalizeAttachmentDownloadFileName('receipt.PDF');
+      expect(result).toBe('receipt.pdf');
+    });
+
+    it('uses fallback filename for blank values', () => {
+      const result = normalizeAttachmentDownloadFileName('   ');
+      expect(result).toBe('attachment.pdf');
+    });
+  });
+
+  describe('normalizeAttachmentDownloadBlob', () => {
+    it('keeps pdf blob unchanged', () => {
+      const blob = new Blob([new Uint8Array([1, 2, 3])], { type: 'application/pdf' });
+      const result = normalizeAttachmentDownloadBlob(blob);
+      expect(result).toBe(blob);
+      expect(result.type).toBe('application/pdf');
+    });
+
+    it('converts octet-stream blob to pdf blob type', () => {
+      const blob = new Blob([new Uint8Array([1, 2, 3])], { type: 'application/octet-stream' });
+      const result = normalizeAttachmentDownloadBlob(blob);
+      expect(result).not.toBe(blob);
+      expect(result.type).toBe('application/pdf');
+      expect(result.size).toBe(blob.size);
+    });
+
+    it('converts blob without type to pdf blob type', () => {
+      const blob = new Blob([new Uint8Array([1, 2, 3])], { type: '' });
+      const result = normalizeAttachmentDownloadBlob(blob);
+      expect(result).not.toBe(blob);
+      expect(result.type).toBe('application/pdf');
+      expect(result.size).toBe(blob.size);
+    });
+
+    it('keeps non-octet-stream non-pdf blob unchanged', () => {
+      const blob = new Blob([new Uint8Array([1, 2, 3])], { type: 'image/jpeg' });
+      const result = normalizeAttachmentDownloadBlob(blob);
+      expect(result).toBe(blob);
+      expect(result.type).toBe('image/jpeg');
     });
   });
 });

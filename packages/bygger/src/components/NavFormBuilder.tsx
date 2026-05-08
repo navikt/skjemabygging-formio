@@ -32,7 +32,15 @@ import { builderStyles } from './styles';
 
 const useBuilderMountElementStyles = makeStyles(builderStyles);
 
-const BuilderMountElement = ({ children, className, setRef, ...rest }) => {
+interface Props {
+  form: any;
+  onChange: (form: any) => void;
+  onReady?: () => void;
+  formBuilderOptions: any;
+  className?: string;
+}
+
+const BuilderMountElement = ({ children, className, setRef, ...rest }: any) => {
   useBuilderMountElementStyles();
   return (
     <div className={className} ref={setRef} {...rest}>
@@ -41,9 +49,12 @@ const BuilderMountElement = ({ children, className, setRef, ...rest }) => {
   );
 };
 
-class NavFormBuilder extends Component {
+class NavFormBuilder extends Component<Props> {
   builderState = 'preparing';
-  element = React.createRef();
+  element = React.createRef<any>();
+  builder: any = null;
+  builderReady: Promise<any> = Promise.resolve();
+
   static propTypes = {
     form: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
@@ -56,19 +67,19 @@ class NavFormBuilder extends Component {
     return appConfig?.logger;
   }
 
-  handleChange = (data) => {
+  handleChange = (data: any) => {
     if (data.type === 'form') {
       this.props.onChange(cloneDeep(this.builder.instance.form));
     }
   };
 
-  traceEvent = (event, ...args) => {
-    this.logger?.trace(`FormBuilder event '${event}`, { eventArgs: args });
+  traceEvent = (event: string, ...args: any[]) => {
+    this.logger?.trace?.(`FormBuilder event '${event}`, { eventArgs: args });
   };
 
-  createBuilder = (page) => {
-    this.logger?.debug('FormBuilder create', { page });
-    this.builder = new NavFormioJs.Formio.FormBuilder(
+  createBuilder = (page?: any) => {
+    this.logger?.debug?.('FormBuilder create', { page });
+    this.builder = new (NavFormioJs.Formio as any).FormBuilder(
       this.element.current,
       cloneDeep(this.props.form),
       this.props.formBuilderOptions,
@@ -78,7 +89,7 @@ class NavFormBuilder extends Component {
     }
     this.builderReady = this.builder.ready;
     this.builderReady.then(() => {
-      this.logger?.debug('FormBuilder ready');
+      this.logger?.debug?.('FormBuilder ready');
       this.builder?.instance?.on('change', this.handleChange);
       this.builder?.instance?.onAny(this.traceEvent);
       this.builderState = 'ready';
@@ -89,7 +100,10 @@ class NavFormBuilder extends Component {
   };
 
   destroyBuilder = () => {
-    this.logger?.debug('FormBuilder destroy');
+    if (!this.builder) {
+      return;
+    }
+    this.logger?.debug?.('FormBuilder destroy');
     this.builder.instance.off('change', this.handleChange);
     this.builder.instance.offAny(this.traceEvent);
     this.builder.instance.destroy(true);
@@ -108,21 +122,24 @@ class NavFormBuilder extends Component {
     this.createBuilder();
   };
 
-  componentDidUpdate = (prevProps) => {
+  componentDidUpdate = (prevProps: Readonly<Props>) => {
+    if (!this.builder) {
+      return;
+    }
     const builderInstance = this.builder.instance;
     const prevPublishedForm = prevProps.formBuilderOptions.formConfig.publishedForm;
     const nextPublishedForm = this.props.formBuilderOptions.formConfig.publishedForm;
 
     if (!navFormUtils.isEqual(nextPublishedForm, prevPublishedForm)) {
-      this.logger?.debug('FormBuilder published form changed, will redraw');
+      this.logger?.debug?.('FormBuilder published form changed, will redraw');
       builderInstance.options.formConfig.publishedForm = nextPublishedForm;
       builderInstance.redraw();
     }
     if (navFormUtils.isEqual(builderInstance.form, this.props.form, ['modified'])) {
-      this.logger?.debug('FormBuilder form not changed, return');
+      this.logger?.debug?.('FormBuilder form not changed, return');
       return;
     }
-    this.logger?.debug('FormBuilder form changed, will update');
+    this.logger?.debug?.('FormBuilder form changed, will update');
     this.updateFormBuilder();
   };
 
@@ -133,7 +150,7 @@ class NavFormBuilder extends Component {
   render = () => {
     return (
       <BuilderMountElement
-        className={`${this.props.className}`}
+        className={`${this.props.className ?? ''}`}
         data-testid="builderMountElement"
         setRef={this.element}
       ></BuilderMountElement>

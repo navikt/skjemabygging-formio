@@ -1,5 +1,5 @@
 import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
-import React, { MouseEventHandler, useState } from 'react';
+import React, { MouseEventHandler, ReactNode, useState } from 'react';
 import { useNavigate } from 'react-router';
 
 interface UserData {
@@ -13,9 +13,14 @@ interface UserData {
 }
 
 interface ContextProps {
-  userData?: UserData;
+  userData?: UserData | null;
   login?: (user: UserData) => void;
   logout?: MouseEventHandler<HTMLAnchorElement> | undefined;
+}
+
+interface AuthProviderProps {
+  children: ReactNode;
+  user?: UserData | null;
 }
 
 const enforceUserName = (formioUser: UserData) => {
@@ -36,13 +41,15 @@ const devUser: UserData = {
 };
 
 const AuthContext = React.createContext<ContextProps>({});
-function AuthProvider(props) {
+function AuthProvider({ children, user }: AuthProviderProps) {
   const { config } = useAppConfig();
-  const [userData, setUserData] = useState(props.user || (config?.isDevelopment && devUser));
+  const [userData, setUserData] = useState<UserData | null | undefined>(
+    user || (config?.isDevelopment ? devUser : undefined),
+  );
   const navigate = useNavigate();
 
-  const login = (user: UserData) => {
-    setUserData(enforceUserName(user));
+  const login = (nextUser: UserData) => {
+    setUserData(enforceUserName(nextUser));
     navigate('/forms');
   };
   const logout = async () => {
@@ -53,7 +60,7 @@ function AuthProvider(props) {
       window.location.replace(`${origin}/oauth2/logout`);
     }
   };
-  return <AuthContext.Provider value={{ userData, login, logout }} {...props} />;
+  return <AuthContext.Provider value={{ userData, login, logout }}>{children}</AuthContext.Provider>;
 }
 const useAuth = () => React.useContext(AuthContext);
 

@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useEditFormTranslations } from '../context/translations/EditFormTranslationsContext';
 import { useFormTranslations } from '../context/translations/FormTranslationsContext';
 import { useGlobalTranslations } from '../context/translations/GlobalTranslationsContext';
@@ -7,7 +6,6 @@ const useKeyBasedText = () => {
   const { storedTranslations: globalTranslations } = useGlobalTranslations();
   const { storedTranslations } = useFormTranslations();
   const { addKeyBasedText, updateKeyBasedText, getTextFromCurrentChanges } = useEditFormTranslations();
-  const [translationKey, setTranslationKey] = useState<Record<string, string>>({});
 
   const getKeyBasedText = (key?: string): string => {
     if (!key) {
@@ -19,13 +17,12 @@ const useKeyBasedText = () => {
     return current || stored || globalStored || '';
   };
 
-  const setKeyBasedText = (value: string, identifier = 'none') => {
-    if (translationKey[identifier]) {
-      return updateKeyBasedText(value, translationKey[identifier]);
+  const setKeyBasedText = (value: string, existingKey?: string) => {
+    if (existingKey) {
+      return updateKeyBasedText(value, existingKey);
     }
-    const key = addKeyBasedText(value);
-    setTranslationKey((keys) => ({ ...keys, [identifier]: key }));
-    return key;
+
+    return addKeyBasedText(value);
   };
 
   return { setKeyBasedText, getKeyBasedText };

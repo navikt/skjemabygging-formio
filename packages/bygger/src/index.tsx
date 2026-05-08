@@ -34,7 +34,7 @@ const renderReact = (config) => {
           http={httpBygger}
         >
           <AuthProvider user={config.user}>
-            <App serverURL={config.fyllutBaseUrl} />
+            <App />
           </AuthProvider>
         </AppConfigProvider>
       </BrowserRouter>

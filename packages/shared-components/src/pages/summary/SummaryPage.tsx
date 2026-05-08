@@ -9,6 +9,7 @@ import {
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useRef, useState } from 'react';
+import { useAttachmentUpload } from '../../components/attachment/AttachmentUploadContext';
 import { attachmentValidator } from '../../components/attachment/attachmentValidator';
 import ButtonRow from '../../components/button/ButtonRow';
 import EditAnswersButton from '../../components/button/navigation/edit-answers/EditAnswersButton';
@@ -27,6 +28,7 @@ import SummaryPageNavigation from './navigation/SummaryPageNavigation';
 
 export function SummaryPage() {
   const appConfig = useAppConfig();
+  const { handleDownloadFile } = useAttachmentUpload();
   const { translate, availableLanguages, currentLanguage } = useLanguages();
   const {
     prefillData,
@@ -153,6 +155,7 @@ export function SummaryPage() {
         translate={translate}
         panelValidationList={panelValidationList}
         appConfig={appConfig}
+        handleDownloadFile={handleDownloadFile}
       />
 
       {hasDeclaration && (

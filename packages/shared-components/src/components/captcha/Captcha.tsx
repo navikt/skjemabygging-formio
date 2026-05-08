@@ -1,5 +1,5 @@
+import { useSendInn } from '../../context/sendInn/sendInnContext';
 import makeStyles from '../../util/styles/jss/jss';
-import { useAttachmentUpload } from '../attachment/AttachmentUploadContext';
 
 const useStyles = makeStyles({
   firstNameInput: {
@@ -16,7 +16,7 @@ const useStyles = makeStyles({
 });
 
 const Captcha = () => {
-  const { setCaptchaValue } = useAttachmentUpload();
+  const { setCaptchaValue } = useSendInn();
   const styles = useStyles();
   return (
     <input

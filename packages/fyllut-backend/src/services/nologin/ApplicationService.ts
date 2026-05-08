@@ -8,8 +8,11 @@ import {
   UploadedFile,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { ConfigType } from '../../config/types';
-import ApplicationClient, { ApplicationClientType } from '../../external/innsending-api/ApplicationClient';
-import { assembleNologinSoknadBody } from '../../routers/api/helpers/nologin';
+import ApplicationClient, {
+  ApplicationClientType,
+  DownloadedAttachment,
+} from '../../external/innsending-api/ApplicationClient';
+import { assembleSubmitApplicationRequest } from '../../routers/api/helpers/applicationUtils';
 import { stringifyPdf } from '../../routers/api/helpers/pdfUtils';
 import { LogMetadata } from '../../types/log';
 import applicationService from '../documents/applicationService';
@@ -45,6 +48,16 @@ class ApplicationService {
     return this.clients[type].deleteFile(accessToken, innsendingsId, attachmentId, fileId);
   }
 
+  public async downloadFile(
+    accessToken: string,
+    innsendingsId: string,
+    attachmentId: string,
+    fileId: string,
+    type: 'nologin' | 'digital' = 'nologin',
+  ): Promise<DownloadedAttachment> {
+    return this.clients[type].downloadFile(accessToken, innsendingsId, attachmentId, fileId);
+  }
+
   public async submit(
     pdfAccessToken: string,
     nologinM2MAccessToken: string,
@@ -62,7 +75,7 @@ class ApplicationService {
     const applicationPdf = await applicationService.createFormPdf(pdfAccessToken, stringifyPdf(pdfFormData), logMeta);
 
     const pdfByteArray = Array.from(applicationPdf);
-    const nologinApplication = assembleNologinSoknadBody(
+    const nologinApplication = assembleSubmitApplicationRequest(
       innsendingsId,
       form,
       submission,
