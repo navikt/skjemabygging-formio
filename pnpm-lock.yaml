@@ -146,8 +146,8 @@ importers:
   packages/bygger:
     dependencies:
       '@navikt/aksel-icons':
-        specifier: ^8.2.0
-        version: 8.8.0
+        specifier: ^8.10.5
+        version: 8.10.5
       '@navikt/ds-css':
         specifier: ^8.2.0
         version: 8.8.0
@@ -156,10 +156,10 @@ importers:
         version: 8.8.0(@types/react@18.3.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@navikt/skjemadigitalisering-shared-components':
         specifier: workspace:*
-        version: link:../shared-components
+        version: file:packages/shared-components(@types/react@18.3.11)(html-react-parser@5.2.17(@types/react@18.3.11)(react@18.3.1))(typescript@5.9.3)
       '@navikt/skjemadigitalisering-shared-domain':
         specifier: workspace:*
-        version: link:../shared-domain
+        version: file:packages/shared-domain(typescript@5.9.3)
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -241,10 +241,10 @@ importers:
     dependencies:
       '@navikt/skjemadigitalisering-shared-backend':
         specifier: workspace:*
-        version: link:../shared-backend
+        version: file:packages/shared-backend(@noble/hashes@1.8.0)(express@5.2.1)(multer@2.1.1)(typescript@5.9.3)
       '@navikt/skjemadigitalisering-shared-domain':
         specifier: workspace:*
-        version: link:../shared-domain
+        version: file:packages/shared-domain(typescript@5.9.3)
       '@octokit/auth-app':
         specifier: ^8.1.1
         version: 8.2.0
@@ -352,8 +352,8 @@ importers:
   packages/fyllut:
     dependencies:
       '@navikt/aksel-icons':
-        specifier: ^8.2.0
-        version: 8.8.0
+        specifier: ^8.10.5
+        version: 8.10.5
       '@navikt/ds-css':
         specifier: ^8.2.0
         version: 8.8.0
@@ -362,10 +362,10 @@ importers:
         version: 8.8.0(@types/react@18.3.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@navikt/skjemadigitalisering-shared-components':
         specifier: workspace:*
-        version: link:../shared-components
+        version: file:packages/shared-components(@types/react@18.3.11)(html-react-parser@5.2.17(@types/react@18.3.11)(react@18.3.1))(typescript@5.9.3)
       '@navikt/skjemadigitalisering-shared-domain':
         specifier: workspace:*
-        version: link:../shared-domain
+        version: file:packages/shared-domain(typescript@5.9.3)
       axe-core:
         specifier: ^4.11.1
         version: 4.11.1
@@ -438,10 +438,10 @@ importers:
         version: 3.6.3(csp-header@6.3.1)(html-react-parser@5.2.17(@types/react@18.3.11)(react@18.3.1))(jsdom@28.1.0(@noble/hashes@1.8.0))(react@18.3.1)
       '@navikt/skjemadigitalisering-shared-backend':
         specifier: workspace:*
-        version: link:../shared-backend
+        version: file:packages/shared-backend(@noble/hashes@1.8.0)(express@5.2.1)(multer@2.1.1)(typescript@5.9.3)
       '@navikt/skjemadigitalisering-shared-domain':
         specifier: workspace:*
-        version: link:../shared-domain
+        version: file:packages/shared-domain(typescript@5.9.3)
       '@opentelemetry/api':
         specifier: ^1.9.0
         version: 1.9.1
@@ -559,7 +559,7 @@ importers:
     dependencies:
       '@navikt/skjemadigitalisering-shared-domain':
         specifier: workspace:*
-        version: link:../shared-domain
+        version: file:packages/shared-domain(typescript@5.9.3)
       dompurify:
         specifier: ^3.3.1
         version: 3.3.3
@@ -598,8 +598,8 @@ importers:
         specifier: 5.3.0
         version: 5.3.0(formiojs@4.20.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@navikt/aksel-icons':
-        specifier: ^8.2.0
-        version: 8.8.0
+        specifier: ^8.10.5
+        version: 8.10.5
       '@navikt/ds-css':
         specifier: ^8.2.0
         version: 8.8.0
@@ -614,7 +614,7 @@ importers:
         version: 3.6.3(csp-header@6.3.1)(html-react-parser@5.2.17(@types/react@18.3.11)(react@18.3.1))(jsdom@28.1.0(@noble/hashes@1.8.0))(react@18.3.1)
       '@navikt/skjemadigitalisering-shared-domain':
         specifier: workspace:*
-        version: link:../shared-domain
+        version: file:packages/shared-domain(typescript@5.9.3)
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -1680,8 +1680,8 @@ packages:
     resolution: {integrity: sha512-cXu86tF4VQVfwz8W1SPbhoRyHJkti6mjH/XJIxp40jhO4j2k1m4KYrEykxqWPkFF3vrK4rgQppBh//AwyGSXPA==}
     engines: {node: '>=18'}
 
-  '@navikt/aksel-icons@8.8.0':
-    resolution: {integrity: sha512-VUyD/P/LLsmOisc127ih1/AIvx8kG6ENwfZNgQLgOjASkNLfzhvDBZ582q7m2lFLS+jC/D6hxJMNlRr76zsvGQ==, tarball: https://npm.pkg.github.com/download/@navikt/aksel-icons/8.8.0/9b61d6181f2dec2ea5f721c40f24d10e8fb42d21}
+  '@navikt/aksel-icons@8.10.5':
+    resolution: {integrity: sha512-XDmygarYMyGhGxE5x5uVDCxPPW5dty2A0yVvdT+I6VyRjvDDY/jtAw0NU/HV5itAm7prCwO19IKf1DvjuzU31g==, tarball: https://npm.pkg.github.com/download/@navikt/aksel-icons/8.10.5/5904f4043e27a4f7f7005fd9fd2fe1ceed130d3b}
 
   '@navikt/aksel@8.1.0':
     resolution: {integrity: sha512-if0aONlTahFlQJ8/Q79PTz7BEPUGv4jPGowSvQy2pFdiwZ4CKj25/yWTgAJwkId+wbNwiTiVO68gT8ZY7ceX8Q==, tarball: https://npm.pkg.github.com/download/@navikt/aksel/8.1.0/756f5d3d4cf01b6d225ab75456aac3137ce527bb}
@@ -1697,9 +1697,6 @@ packages:
       '@types/react': ^17.0.30 || ^18 || ^19
       react: ^17 || ^18 || ^19
       react-dom: ^17 || ^18 || ^19
-    peerDependenciesMeta:
-      '@types/react':
-        optional: true
 
   '@navikt/ds-tokens@8.8.0':
     resolution: {integrity: sha512-xrX+4l4EOOSdLXy4NdIft87052I95m3tLDNPjTuyOBMyZZdEivLskc8KbemLhTGJJZ2TfiDe6jpkYwP0iFFLGA==, tarball: https://npm.pkg.github.com/download/@navikt/ds-tokens/8.8.0/1b64643ec409921069ede0fc5eab1850afa23393}
@@ -1715,9 +1712,25 @@ packages:
       html-react-parser: '>=5.x'
       jsdom: '>=16.x'
       react: '>=17.x'
-    peerDependenciesMeta:
-      react:
-        optional: true
+
+  '@navikt/nav-dekoratoren-moduler@3.7.1':
+    resolution: {integrity: sha512-MQLxR4uoADCd6i0hFnWHN/XLPevEfxkBK9yEgbtcY0v2gsj69nALH/7DvTKqSxqRovxOHibVa7mZKZEBAMRBvg==, tarball: https://npm.pkg.github.com/download/@navikt/nav-dekoratoren-moduler/3.7.1/09490a131cedd7779e35d413d20c36bd01ef57a0}
+    engines: {node: 24.x}
+    peerDependencies:
+      html-react-parser: '>=5.x'
+      react: '>=17.x'
+
+  '@navikt/skjemadigitalisering-shared-backend@file:packages/shared-backend':
+    resolution: {directory: packages/shared-backend, type: directory}
+    peerDependencies:
+      express: ^5.2.1
+      multer: ^2.0.2
+
+  '@navikt/skjemadigitalisering-shared-components@file:packages/shared-components':
+    resolution: {directory: packages/shared-components, type: directory}
+
+  '@navikt/skjemadigitalisering-shared-domain@file:packages/shared-domain':
+    resolution: {directory: packages/shared-domain, type: directory}
 
   '@noble/hashes@1.8.0':
     resolution: {integrity: sha512-jCs9ldd7NwzpgXDIf6P3+NrHh9/sD6CQdxHyjQI+h/6rDNo88ypBxxz45UDuZHz9r3tNz7N/VInSVoVdtXEI4A==}
@@ -3348,6 +3361,9 @@ packages:
   dompurify@3.3.3:
     resolution: {integrity: sha512-Oj6pzI2+RqBfFG+qOaOLbFXLQ90ARpcGG6UePL82bJLtdsa6CYJD7nmiU8MW9nQNOtCHV3lZ/Bzq1X0QYbBZCA==}
 
+  dompurify@3.4.2:
+    resolution: {integrity: sha512-lHeS9SA/IKeIFFyYciHBr2n0v1VMPlSj843HdLOwjb2OxNwdq9Xykxqhk+FE42MzAdHvInbAolSE4mhahPpjXA==}
+
   domutils@2.8.0:
     resolution: {integrity: sha512-w96Cjofp72M5IIhpjgobBimYEfoPjx1Vx0BSX9P30WBdZW2WIKU0T1Bd0kz2eNZ9ikjKgHbEyKx8BB6H1L3h3A==}
 
@@ -4208,6 +4224,14 @@ packages:
   i18next@22.4.12:
     resolution: {integrity: sha512-2lE+vRXxQ3lGLub1CVbwgO0IfkLHmUSDVOAVdPh22CsxttMXi+35n2qgxh2wZIkKl6t/NMzPfgFPRDiFQOmiCg==}
 
+  i18next@25.10.10:
+    resolution: {integrity: sha512-cqUW2Z3EkRx7NqSyywjkgCLK7KLCL6IFVFcONG7nVYIJ3ekZ1/N5jUsihHV6Bq37NfhgtczxJcxduELtjTwkuQ==}
+    peerDependencies:
+      typescript: ^5 || ^6
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
   i18next@25.10.9:
     resolution: {integrity: sha512-hQY9/bFoQKGlSKMlaCuLR8w1h5JjieqrsnZvEmj1Ja6Ec7fbyc4cTrCsY9mb9Sd8YQ/swsrKz1S9M8AcvVI70w==}
     peerDependencies:
@@ -4218,6 +4242,9 @@ packages:
 
   ibantools@4.5.1:
     resolution: {integrity: sha512-DfKQpLlFq9yEUIEnFuCJzss3XavD7iHZTU5PyqXiAJ+rmaMp+NFP3hboumHKuK8nZjuOJg93WemTzcQ5b9jOZA==}
+
+  ibantools@4.5.4:
+    resolution: {integrity: sha512-6jX1gh4aH6XH+o0ey+wtkMTzkcvsEta7DakIOZSng9voZYpMw3U+gK1+tZChk3aRcPcloEt0NOzksjaRZiqXbw==}
 
   iconv-lite@0.4.24:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
@@ -4886,6 +4913,9 @@ packages:
 
   lodash@4.17.23:
     resolution: {integrity: sha512-LgVTMpQtIopCi79SJeDiP0TfWi5CNEc/L/aRdTh3yIvmZXTnheWpKjSZhnvMl8iXbC1tFg9gdHHDMLoV7CnG+w==}
+
+  lodash@4.18.1:
+    resolution: {integrity: sha512-dMInicTPVE8d1e5otfwmmjlxkZoUpiVLwyeTdUsi/Caj/gfzzblBcCE5sRHV/AsjuCmxWrte2TNGSYuCeCq+0Q==}
 
   log-symbols@4.1.0:
     resolution: {integrity: sha512-8XPvpAA8uyhfteu8pIvQxpJZ7SYYdpUivZpGy6sFsBuKRY/7rQGavedeB8aK+Zkyq6upMFVL/9AW6vOYzfRyLg==}
@@ -6580,15 +6610,17 @@ packages:
 
   uuid@3.4.0:
     resolution: {integrity: sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==}
-    deprecated: Please upgrade  to version 7 or higher.  Older versions may use Math.random() in certain circumstances, which is known to be problematic.  See https://v8.dev/blog/math-random for details.
+    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
     hasBin: true
 
   uuid@8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
+    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
     hasBin: true
 
   uuid@9.0.1:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
+    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
     hasBin: true
 
   v8-compile-cache-lib@3.0.1:
@@ -7929,7 +7961,7 @@ snapshots:
       outvariant: 1.4.3
       strict-event-emitter: 0.5.1
 
-  '@navikt/aksel-icons@8.8.0': {}
+  '@navikt/aksel-icons@8.10.5': {}
 
   '@navikt/aksel@8.1.0':
     dependencies:
@@ -7956,14 +7988,13 @@ snapshots:
     dependencies:
       '@floating-ui/react': 0.27.8(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@floating-ui/react-dom': 2.1.8(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@navikt/aksel-icons': 8.8.0
+      '@navikt/aksel-icons': 8.10.5
       '@navikt/ds-tokens': 8.8.0
+      '@types/react': 18.3.11
       date-fns: 4.1.0
       react: 18.3.1
       react-day-picker: 9.7.0(react@18.3.1)
       react-dom: 18.3.1(react@18.3.1)
-    optionalDependencies:
-      '@types/react': 18.3.11
 
   '@navikt/ds-tokens@8.8.0': {}
 
@@ -7975,8 +8006,75 @@ snapshots:
       html-react-parser: 5.2.17(@types/react@18.3.11)(react@18.3.1)
       js-cookie: 3.0.5
       jsdom: 28.1.0(@noble/hashes@1.8.0)
-    optionalDependencies:
       react: 18.3.1
+
+  '@navikt/nav-dekoratoren-moduler@3.7.1(html-react-parser@5.2.17(@types/react@18.3.11)(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      csp-header: 6.3.1
+      html-react-parser: 5.2.17(@types/react@18.3.11)(react@18.3.1)
+      js-cookie: 3.0.5
+      react: 18.3.1
+
+  '@navikt/skjemadigitalisering-shared-backend@file:packages/shared-backend(@noble/hashes@1.8.0)(express@5.2.1)(multer@2.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@navikt/skjemadigitalisering-shared-domain': file:packages/shared-domain(typescript@5.9.3)
+      dompurify: 3.4.2
+      express: 5.2.1
+      express-correlation-id: 3.0.1
+      jsdom: 28.1.0(@noble/hashes@1.8.0)
+      multer: 2.1.1
+      winston: 3.19.0
+    transitivePeerDependencies:
+      - '@noble/hashes'
+      - canvas
+      - encoding
+      - supports-color
+      - typescript
+
+  '@navikt/skjemadigitalisering-shared-components@file:packages/shared-components(@types/react@18.3.11)(html-react-parser@5.2.17(@types/react@18.3.11)(react@18.3.1))(typescript@5.9.3)':
+    dependencies:
+      '@formio/react': 5.3.0(formiojs@4.20.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@navikt/aksel-icons': 8.10.5
+      '@navikt/ds-css': 8.8.0
+      '@navikt/ds-react': 8.8.0(@types/react@18.3.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@navikt/fnrvalidator': 2.2.1
+      '@navikt/nav-dekoratoren-moduler': 3.7.1(html-react-parser@5.2.17(@types/react@18.3.11)(react@18.3.1))(react@18.3.1)
+      '@navikt/skjemadigitalisering-shared-domain': file:packages/shared-domain(typescript@5.9.3)
+      clsx: 2.1.1
+      dompurify: 3.4.2
+      eventemitter2: 6.4.9
+      eventemitter3: 5.0.4
+      file-saver: 2.0.5
+      formiojs: 4.20.0
+      i18n-iso-countries: 7.14.0
+      ibantools: 4.5.4
+      jss: 10.10.0
+      jss-preset-default: 10.10.0
+      lodash.clonedeep: 4.5.0
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+      react-jss: 10.10.0(react@18.3.1)
+      react-router: 7.13.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-select: 5.10.2(@types/react@18.3.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+    transitivePeerDependencies:
+      - '@types/react'
+      - encoding
+      - html-react-parser
+      - supports-color
+      - typescript
+
+  '@navikt/skjemadigitalisering-shared-domain@file:packages/shared-domain(typescript@5.9.3)':
+    dependencies:
+      '@navikt/fnrvalidator': 2.2.1
+      formiojs: 4.20.0
+      i18next: 25.10.10(typescript@5.9.3)
+      lodash: 4.17.23
+      luxon: 3.7.2
+      moment: 2.30.1
+      uuid: 13.0.0
+    transitivePeerDependencies:
+      - encoding
+      - typescript
 
   '@noble/hashes@1.8.0': {}
 
@@ -9741,6 +9839,10 @@ snapshots:
     optionalDependencies:
       '@types/trusted-types': 2.0.7
 
+  dompurify@3.4.2:
+    optionalDependencies:
+      '@types/trusted-types': 2.0.7
+
   domutils@2.8.0:
     dependencies:
       dom-serializer: 1.4.1
@@ -10750,7 +10852,7 @@ snapshots:
   globule@1.3.4:
     dependencies:
       glob: 7.1.7
-      lodash: 4.17.23
+      lodash: 4.17.21
       minimatch: 3.0.8
 
   gopd@1.2.0: {}
@@ -10775,7 +10877,7 @@ snapshots:
 
   graphlib@2.1.8:
     dependencies:
-      lodash: 4.17.23
+      lodash: 4.18.1
 
   graphql@16.13.2: {}
 
@@ -10933,6 +11035,12 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.2
 
+  i18next@25.10.10(typescript@5.9.3):
+    dependencies:
+      '@babel/runtime': 7.29.2
+    optionalDependencies:
+      typescript: 5.9.3
+
   i18next@25.10.9(typescript@5.9.3):
     dependencies:
       '@babel/runtime': 7.29.2
@@ -10940,6 +11048,8 @@ snapshots:
       typescript: 5.9.3
 
   ibantools@4.5.1: {}
+
+  ibantools@4.5.4: {}
 
   iconv-lite@0.4.24:
     dependencies:
@@ -11002,7 +11112,7 @@ snapshots:
       cli-width: 3.0.0
       external-editor: 3.1.0
       figures: 3.2.0
-      lodash: 4.17.23
+      lodash: 4.17.21
       mute-stream: 0.0.8
       ora: 5.4.1
       run-async: 2.4.1
@@ -11440,7 +11550,7 @@ snapshots:
       commander: 4.1.1
       graphlib: 2.1.8
       js-yaml: 3.14.2
-      lodash: 4.17.23
+      lodash: 4.18.1
       native-promise-only: 0.8.1
       path-loader: 1.0.12
       slash: 3.0.0
@@ -11716,6 +11826,8 @@ snapshots:
 
   lodash@4.17.23: {}
 
+  lodash@4.18.1: {}
+
   log-symbols@4.1.0:
     dependencies:
       chalk: 4.1.2
@@ -11986,7 +12098,7 @@ snapshots:
 
   node-emoji@1.11.0:
     dependencies:
-      lodash: 4.17.23
+      lodash: 4.17.21
 
   node-exports-info@1.6.0:
     dependencies:
