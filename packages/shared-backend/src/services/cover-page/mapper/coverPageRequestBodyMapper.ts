@@ -4,7 +4,7 @@ import {
   ResponseError,
   validatorUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { ForstesideRequestBody } from '../foersteside';
+import { ForstesideRequestBody } from '../coverPageRequestTypes';
 
 const addressLine = (text?: string, prefix: string = ', ') => {
   if (!text) {
