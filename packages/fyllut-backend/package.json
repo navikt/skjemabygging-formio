@@ -46,7 +46,7 @@
     "prom-client": "^15.1.3",
     "qs": "^6.14.1",
     "react": "^18.3.1",
-    "vite-plugin-static-copy": "^3.1.5",
+    "vite-plugin-static-copy": "^4.1.0",
     "winston": "^3.19.0"
   },
   "devDependencies": {
@@ -63,6 +63,6 @@
     "nock": "^14.0.10",
     "supertest": "^7.2.2",
     "vite-plugin-node": "^7.0.0",
-    "vite-plugin-static-copy": "^3.1.5"
+    "vite-plugin-static-copy": "^4.1.0"
   }
 }
