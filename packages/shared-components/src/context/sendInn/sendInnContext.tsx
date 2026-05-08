@@ -473,6 +473,10 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
 
   useEffect(() => {
     const initializeMellomlagring = async () => {
+      if (isMellomlagringReady) {
+        return;
+      }
+
       if (!innsendingsId || innsendingsIdFromParams !== innsendingsId) {
         try {
           if (innsendingsIdFromParams) {
@@ -514,6 +518,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
     navigate,
     pathname,
     retrieveMellomlagring,
+    isMellomlagringReady,
     soknadNotFoundUrl,
     startMellomlagring,
     submission,
