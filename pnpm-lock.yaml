@@ -156,10 +156,10 @@ importers:
         version: 8.8.0(@types/react@18.3.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@navikt/skjemadigitalisering-shared-components':
         specifier: workspace:*
-        version: link:../shared-components
+        version: file:packages/shared-components(@types/react@18.3.11)(html-react-parser@6.1.0(@types/react@18.3.11)(react@18.3.1))(typescript@5.9.3)
       '@navikt/skjemadigitalisering-shared-domain':
         specifier: workspace:*
-        version: link:../shared-domain
+        version: file:packages/shared-domain(typescript@5.9.3)
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -241,10 +241,10 @@ importers:
     dependencies:
       '@navikt/skjemadigitalisering-shared-backend':
         specifier: workspace:*
-        version: link:../shared-backend
+        version: file:packages/shared-backend(@noble/hashes@1.8.0)(express@5.2.1)(multer@2.1.1)(typescript@5.9.3)
       '@navikt/skjemadigitalisering-shared-domain':
         specifier: workspace:*
-        version: link:../shared-domain
+        version: file:packages/shared-domain(typescript@5.9.3)
       '@octokit/auth-app':
         specifier: ^8.1.1
         version: 8.2.0
@@ -362,10 +362,10 @@ importers:
         version: 8.8.0(@types/react@18.3.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@navikt/skjemadigitalisering-shared-components':
         specifier: workspace:*
-        version: link:../shared-components
+        version: file:packages/shared-components(@types/react@18.3.11)(html-react-parser@6.1.0(@types/react@18.3.11)(react@18.3.1))(typescript@5.9.3)
       '@navikt/skjemadigitalisering-shared-domain':
         specifier: workspace:*
-        version: link:../shared-domain
+        version: file:packages/shared-domain(typescript@5.9.3)
       axe-core:
         specifier: ^4.11.1
         version: 4.11.1
@@ -434,14 +434,14 @@ importers:
         specifier: ^1.5.1
         version: 1.5.1
       '@navikt/nav-dekoratoren-moduler':
-        specifier: ^3.6.3
-        version: 3.6.3(csp-header@6.3.1)(html-react-parser@5.2.17(@types/react@18.3.11)(react@18.3.1))(jsdom@28.1.0(@noble/hashes@1.8.0))(react@18.3.1)
+        specifier: ^4.0.0
+        version: 4.0.0(html-react-parser@6.1.0(@types/react@18.3.11)(react@18.3.1))(react@18.3.1)
       '@navikt/skjemadigitalisering-shared-backend':
         specifier: workspace:*
-        version: link:../shared-backend
+        version: file:packages/shared-backend(@noble/hashes@1.8.0)(express@5.2.1)(multer@2.1.1)(typescript@5.9.3)
       '@navikt/skjemadigitalisering-shared-domain':
         specifier: workspace:*
-        version: link:../shared-domain
+        version: file:packages/shared-domain(typescript@5.9.3)
       '@opentelemetry/api':
         specifier: ^1.9.0
         version: 1.9.1
@@ -467,8 +467,8 @@ importers:
         specifier: ^11.0.3
         version: 11.1.0
       html-react-parser:
-        specifier: ^5.2.15
-        version: 5.2.17(@types/react@18.3.11)(react@18.3.1)
+        specifier: ^6.1.0
+        version: 6.1.0(@types/react@18.3.11)(react@18.3.1)
       jose:
         specifier: ^6.1.3
         version: 6.2.2
@@ -559,7 +559,7 @@ importers:
     dependencies:
       '@navikt/skjemadigitalisering-shared-domain':
         specifier: workspace:*
-        version: link:../shared-domain
+        version: file:packages/shared-domain(typescript@5.9.3)
       dompurify:
         specifier: ^3.3.1
         version: 3.3.3
@@ -610,11 +610,11 @@ importers:
         specifier: ^2.2.1
         version: 2.2.1
       '@navikt/nav-dekoratoren-moduler':
-        specifier: ^3.6.3
-        version: 3.6.3(csp-header@6.3.1)(html-react-parser@5.2.17(@types/react@18.3.11)(react@18.3.1))(jsdom@28.1.0(@noble/hashes@1.8.0))(react@18.3.1)
+        specifier: ^4.0.0
+        version: 4.0.0(html-react-parser@6.1.0(@types/react@18.3.11)(react@18.3.1))(react@18.3.1)
       '@navikt/skjemadigitalisering-shared-domain':
         specifier: workspace:*
-        version: link:../shared-domain
+        version: file:packages/shared-domain(typescript@5.9.3)
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -1688,6 +1688,10 @@ packages:
     engines: {node: '>=22.0.0'}
     hasBin: true
 
+  '@navikt/analytics-types@0.0.9':
+    resolution: {integrity: sha512-bopCvqEogyFcmrJiBxK/Mr25d6yPKF7GR36MGrJqiHCPJYf1rDu6lK4cpooTG4Q//D/1xTkHRom8ZH5BI6dTew==, tarball: https://npm.pkg.github.com/download/@navikt/analytics-types/0.0.9/5919241a6dbb782eb101fff3234ce5c36d16e942}
+    engines: {node: '>=20.0.0', npm: '>=9.0.0'}
+
   '@navikt/ds-css@8.8.0':
     resolution: {integrity: sha512-9rJyi5l1NDSJKqN53pUcGqiI0Tenql9YxRjUb9I7Ot4pQfJbvmXI7UMlbhmESD268w4uhaxPSXbs1Fa9jnqKRQ==, tarball: https://npm.pkg.github.com/download/@navikt/ds-css/8.8.0/a54b515f23598d8b8e5850625b64b3a800221bca}
 
@@ -1697,9 +1701,6 @@ packages:
       '@types/react': ^17.0.30 || ^18 || ^19
       react: ^17 || ^18 || ^19
       react-dom: ^17 || ^18 || ^19
-    peerDependenciesMeta:
-      '@types/react':
-        optional: true
 
   '@navikt/ds-tokens@8.8.0':
     resolution: {integrity: sha512-xrX+4l4EOOSdLXy4NdIft87052I95m3tLDNPjTuyOBMyZZdEivLskc8KbemLhTGJJZ2TfiDe6jpkYwP0iFFLGA==, tarball: https://npm.pkg.github.com/download/@navikt/ds-tokens/8.8.0/1b64643ec409921069ede0fc5eab1850afa23393}
@@ -1707,17 +1708,24 @@ packages:
   '@navikt/fnrvalidator@2.2.1':
     resolution: {integrity: sha512-R6x3MBFC0E/B7oTs+P2jAP+ym7+d6cwSpDsLeMja9IwPpJq3HV/OClFBVWm9fJZPmXfumKRMGy6gqsQPj90ftg==, tarball: https://npm.pkg.github.com/download/@navikt/fnrvalidator/2.2.1/37ed0feb23a7525139ad5512684ff6b0977112c6}
 
-  '@navikt/nav-dekoratoren-moduler@3.6.3':
-    resolution: {integrity: sha512-NDPgv2G0qlrfwurHAjeXo+0hXKCpWn0RxyCgRYmxLPeDJKEL0GC3EAMsvAKM+0eGQmeOkZFUb9DOoNowcCCDgg==, tarball: https://npm.pkg.github.com/download/@navikt/nav-dekoratoren-moduler/3.6.3/fe2fc4979ca3fbd5e38c2f25d985ae58e867a23f}
+  '@navikt/nav-dekoratoren-moduler@4.0.0':
+    resolution: {integrity: sha512-jsZmmEnXT63gwy0Or6skvdrxVG+acFmK55SURFah9LuPn8KAmrQa3EHhUhRZNsdt+tP5UgsnPA8HVoyurwLPXA==, tarball: https://npm.pkg.github.com/download/@navikt/nav-dekoratoren-moduler/4.0.0/65595610e69365df6008576d13e7f24511715683}
     engines: {node: 24.x}
     peerDependencies:
-      csp-header: '>=5.x'
       html-react-parser: '>=5.x'
-      jsdom: '>=16.x'
       react: '>=17.x'
-    peerDependenciesMeta:
-      react:
-        optional: true
+
+  '@navikt/skjemadigitalisering-shared-backend@file:packages/shared-backend':
+    resolution: {directory: packages/shared-backend, type: directory}
+    peerDependencies:
+      express: ^5.2.1
+      multer: ^2.0.2
+
+  '@navikt/skjemadigitalisering-shared-components@file:packages/shared-components':
+    resolution: {directory: packages/shared-components, type: directory}
+
+  '@navikt/skjemadigitalisering-shared-domain@file:packages/shared-domain':
+    resolution: {directory: packages/shared-domain, type: directory}
 
   '@noble/hashes@1.8.0':
     resolution: {integrity: sha512-jCs9ldd7NwzpgXDIf6P3+NrHh9/sD6CQdxHyjQI+h/6rDNo88ypBxxz45UDuZHz9r3tNz7N/VInSVoVdtXEI4A==}
@@ -3328,8 +3336,9 @@ packages:
   dom-serializer@1.4.1:
     resolution: {integrity: sha512-VHwB3KfrcOOkelEG2ZOfxqLZdfkil8PtJi4P8N2MMXucZq2yLp75ClViUlOVwyoHEDjYU433Aq+5zWP61+RGag==}
 
-  dom-serializer@2.0.0:
-    resolution: {integrity: sha512-wIkAryiqt/nV5EQKqQpo3SToSOV9J0DnbJqwK7Wv/Trc92zIAYZ4FlMu+JPFW1DfGFt81ZTCGgDEabffXeLyJg==}
+  dom-serializer@3.1.1:
+    resolution: {integrity: sha512-4MEa38/QexBob6gFNwu+EGdWvhJ1OKuNwdYY3Y3NyeWDQfnGeDYQUDfIRzWu5B5gsv03so2Uxd28YC6zrsx3Lw==}
+    engines: {node: '>=20.19.0'}
 
   dom-set@1.1.1:
     resolution: {integrity: sha512-sUi2aSvRsK3Ixx++gwX9cnaWk9ZxGVFry8+HnTRVmDimybU5PaiI4wX0o00mVtjFKlQNZLmtGoPTLorYbN0+Rw==}
@@ -3337,22 +3346,30 @@ packages:
   domelementtype@2.3.0:
     resolution: {integrity: sha512-OLETBj6w0OsagBwdXnPdN0cnMfF9opN69co+7ZrbfPGrdpPVNBUj02spi6B1N7wChLQiPn4CSH/zJvXw56gmHw==}
 
+  domelementtype@3.0.0:
+    resolution: {integrity: sha512-umCQid3jKbDmVjx8jGaW7uUykm4DEUeyV21hPxNMo2nV955DhUThwqyOIDtreepP31hl84X7G5U9ZfsWvIB3Pg==}
+    engines: {node: '>=20.19.0'}
+
   domhandler@4.3.1:
     resolution: {integrity: sha512-GrwoxYN+uWlzO8uhUXRl0P+kHE4GtVPfYzVLcUxPL7KNdHKj66vvlhiweIHqYYXWlw+T8iLMp42Lm67ghw4WMQ==}
     engines: {node: '>= 4'}
 
-  domhandler@5.0.3:
-    resolution: {integrity: sha512-cgwlv/1iFQiFnU96XXgROh8xTeetsnJiDsTc7TYCLFd9+/WNkIqPTxiM/8pSd8VIrhXGTf1Ny1q1hquVqDJB5w==}
-    engines: {node: '>= 4'}
+  domhandler@6.0.1:
+    resolution: {integrity: sha512-gYzvtM72ZtxQO0T048kd6HWSbbGCNOUwcnfQ01cqIJ4X2IYKFFHZ5mKvrQETcFXxsRObZulDaKmy//R7TPtsBg==}
+    engines: {node: '>=20.19.0'}
 
   dompurify@3.3.3:
     resolution: {integrity: sha512-Oj6pzI2+RqBfFG+qOaOLbFXLQ90ARpcGG6UePL82bJLtdsa6CYJD7nmiU8MW9nQNOtCHV3lZ/Bzq1X0QYbBZCA==}
 
+  dompurify@3.4.2:
+    resolution: {integrity: sha512-lHeS9SA/IKeIFFyYciHBr2n0v1VMPlSj843HdLOwjb2OxNwdq9Xykxqhk+FE42MzAdHvInbAolSE4mhahPpjXA==}
+
   domutils@2.8.0:
     resolution: {integrity: sha512-w96Cjofp72M5IIhpjgobBimYEfoPjx1Vx0BSX9P30WBdZW2WIKU0T1Bd0kz2eNZ9ikjKgHbEyKx8BB6H1L3h3A==}
 
-  domutils@3.2.2:
-    resolution: {integrity: sha512-6kZKyUajlDuqlHKVX1w7gyslj9MPIXzIFiz/rGu35uC1wMi+kMhQwGhl4lt9unC9Vb9INnY9Z3/ZA3+FhASLaw==}
+  domutils@4.0.2:
+    resolution: {integrity: sha512-qI4JLRKnSzqFqr7hAlS5xQDusBCjKSEG4t4+7aNrIQMHBcsC2TGEhuyABJdYkgSewL57PNLYEiibY2iPKhKpaA==}
+    engines: {node: '>=20.19.0'}
 
   dot-case@3.0.4:
     resolution: {integrity: sha512-Kv5nKlh6yRrdrGvxeJ2e5y2eRUpkUosIW4A2AS38zwSz27zu7ufDwQPi5Jhs3XAlGNetl3bmnGhQsMtkKJnj3w==}
@@ -3449,17 +3466,13 @@ packages:
   entities@2.2.0:
     resolution: {integrity: sha512-p92if5Nz619I0w+akJrLZH0MX0Pb5DX39XOwQTtXSdQQOaYH03S1uIQp4mhOZtAXrxq4ViO67YTiLBo2638o9A==}
 
-  entities@4.5.0:
-    resolution: {integrity: sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw==}
-    engines: {node: '>=0.12'}
-
   entities@6.0.1:
     resolution: {integrity: sha512-aN97NXWF6AWBTahfVOIrB/NShkzi5H7F9r1s9mD3cDj4Ko5f2qhhVoYMibXF7GlLveb/D2ioWay8lxI97Ven3g==}
     engines: {node: '>=0.12'}
 
-  entities@7.0.1:
-    resolution: {integrity: sha512-TWrgLOFUQTH994YUyl1yT4uyavY5nNB5muff+RtWaqNVCAK408b5ZnnbNAUEWLTCpum9w6arT70i1XdQ4UeOPA==}
-    engines: {node: '>=0.12'}
+  entities@8.0.0:
+    resolution: {integrity: sha512-zwfzJecQ/Uej6tusMqwAqU/6KL2XaB2VZ2Jg54Je6ahNBGNH6Ek6g3jjNCF0fG9EWQKGZNddNjU5F1ZQn/sBnA==}
+    engines: {node: '>=20.19.0'}
 
   environment@1.1.0:
     resolution: {integrity: sha512-xUtoPkMggbz0MPyPiIWr1Kp4aeWJjDZ6SMvURhimjdZgsRuDplF5/s9hcgGhyXMhs+6vpnuoiZ2kFiu3FMnS8Q==}
@@ -4131,8 +4144,8 @@ packages:
   hoist-non-react-statics@3.3.2:
     resolution: {integrity: sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==}
 
-  html-dom-parser@5.1.8:
-    resolution: {integrity: sha512-MCIUng//mF2qTtGHXJWr6OLfHWmg3Pm8ezpfiltF83tizPWY17JxT4dRLE8lykJ5bChJELoY3onQKPbufJHxYA==}
+  html-dom-parser@7.1.0:
+    resolution: {integrity: sha512-83BgaFSW/Sj6QTotGenvPvKfGxFzpFfrJNYes77mzqnq+YjVm12d4qeG0+108w4ejnam/+nCnnLuyyJlXkuPtA==}
 
   html-encoding-sniffer@6.0.0:
     resolution: {integrity: sha512-CV9TW3Y3f8/wT0BRFc1/KAVQ3TUHiXmaAb6VW9vtiMFf7SLoMd1PdAc4W3KFOFETBJUb90KatHqlsZMWV+R9Gg==}
@@ -4146,8 +4159,8 @@ packages:
     engines: {node: '>=12'}
     hasBin: true
 
-  html-react-parser@5.2.17:
-    resolution: {integrity: sha512-m+K/7Moq1jodAB4VL0RXSOmtwLUYoAsikZhwd+hGQe5Vtw2dbWfpFd60poxojMU0Tsh9w59mN1QLEcoHz0Dx9w==}
+  html-react-parser@6.1.0:
+    resolution: {integrity: sha512-FoFY2aZrSAMcPPhUmb4R87gwfhwvYT6luJIQ++Xl9qm2x/4IDGjf+B2F+wcdrhMVOe/o44Nq7IEbvsKfq6fq+Q==}
     peerDependencies:
       '@types/react': 0.14 || 15 || 16 || 17 || 18 || 19
       react: 0.14 || 15 || 16 || 17 || 18 || 19
@@ -4155,8 +4168,9 @@ packages:
       '@types/react':
         optional: true
 
-  htmlparser2@10.1.0:
-    resolution: {integrity: sha512-VTZkM9GWRAtEpveh7MSF6SjjrpNVNNVJfFup7xTY3UpFtm67foy9HDVXneLtFVt4pMz5kZtgNcvCniNFb1hlEQ==}
+  htmlparser2@12.0.0:
+    resolution: {integrity: sha512-Tz7u1i95/g2x2jz81+x0FBVhBhY5aRTvD3tXXdFaljuNdzDLJ8UGNRrTcj2cgQvAg3iW/h77Fz15nLW0L0CrZw==}
+    engines: {node: '>=20.19.0'}
 
   http-cache-semantics@4.2.0:
     resolution: {integrity: sha512-dTxcvPXqPvXBQpq5dUr6mEMJX4oIEFv6bwom3FDwKRDsuIjjJGANqhBuoAn9c1RQJIdAKav33ED65E2ys+87QQ==}
@@ -4208,6 +4222,14 @@ packages:
   i18next@22.4.12:
     resolution: {integrity: sha512-2lE+vRXxQ3lGLub1CVbwgO0IfkLHmUSDVOAVdPh22CsxttMXi+35n2qgxh2wZIkKl6t/NMzPfgFPRDiFQOmiCg==}
 
+  i18next@25.10.10:
+    resolution: {integrity: sha512-cqUW2Z3EkRx7NqSyywjkgCLK7KLCL6IFVFcONG7nVYIJ3ekZ1/N5jUsihHV6Bq37NfhgtczxJcxduELtjTwkuQ==}
+    peerDependencies:
+      typescript: ^5 || ^6
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
   i18next@25.10.9:
     resolution: {integrity: sha512-hQY9/bFoQKGlSKMlaCuLR8w1h5JjieqrsnZvEmj1Ja6Ec7fbyc4cTrCsY9mb9Sd8YQ/swsrKz1S9M8AcvVI70w==}
     peerDependencies:
@@ -4218,6 +4240,9 @@ packages:
 
   ibantools@4.5.1:
     resolution: {integrity: sha512-DfKQpLlFq9yEUIEnFuCJzss3XavD7iHZTU5PyqXiAJ+rmaMp+NFP3hboumHKuK8nZjuOJg93WemTzcQ5b9jOZA==}
+
+  ibantools@4.5.4:
+    resolution: {integrity: sha512-6jX1gh4aH6XH+o0ey+wtkMTzkcvsEta7DakIOZSng9voZYpMw3U+gK1+tZChk3aRcPcloEt0NOzksjaRZiqXbw==}
 
   iconv-lite@0.4.24:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
@@ -4886,6 +4911,9 @@ packages:
 
   lodash@4.17.23:
     resolution: {integrity: sha512-LgVTMpQtIopCi79SJeDiP0TfWi5CNEc/L/aRdTh3yIvmZXTnheWpKjSZhnvMl8iXbC1tFg9gdHHDMLoV7CnG+w==}
+
+  lodash@4.18.1:
+    resolution: {integrity: sha512-dMInicTPVE8d1e5otfwmmjlxkZoUpiVLwyeTdUsi/Caj/gfzzblBcCE5sRHV/AsjuCmxWrte2TNGSYuCeCq+0Q==}
 
   log-symbols@4.1.0:
     resolution: {integrity: sha512-8XPvpAA8uyhfteu8pIvQxpJZ7SYYdpUivZpGy6sFsBuKRY/7rQGavedeB8aK+Zkyq6upMFVL/9AW6vOYzfRyLg==}
@@ -6578,17 +6606,23 @@ packages:
     resolution: {integrity: sha512-XQegIaBTVUjSHliKqcnFqYypAd4S+WCYt5NIeRs6w/UAry7z8Y9j5ZwRRL4kzq9U3sD6v+85er9FvkEaBpji2w==}
     hasBin: true
 
+  uuid@13.0.2:
+    resolution: {integrity: sha512-vzi9uRZ926x4XV73S/4qQaTwPXM2JBj6/6lI/byHH1jOpCzb0zDbfytgA9LcN/hzb2l7WQSQnxITOVx5un/wGw==}
+    hasBin: true
+
   uuid@3.4.0:
     resolution: {integrity: sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==}
-    deprecated: Please upgrade  to version 7 or higher.  Older versions may use Math.random() in certain circumstances, which is known to be problematic.  See https://v8.dev/blog/math-random for details.
+    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
     hasBin: true
 
   uuid@8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
+    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
     hasBin: true
 
   uuid@9.0.1:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
+    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
     hasBin: true
 
   v8-compile-cache-lib@3.0.1:
@@ -7950,6 +7984,8 @@ snapshots:
       - '@babel/preset-env'
       - supports-color
 
+  '@navikt/analytics-types@0.0.9': {}
+
   '@navikt/ds-css@8.8.0': {}
 
   '@navikt/ds-react@8.8.0(@types/react@18.3.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
@@ -7958,25 +7994,84 @@ snapshots:
       '@floating-ui/react-dom': 2.1.8(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@navikt/aksel-icons': 8.8.0
       '@navikt/ds-tokens': 8.8.0
+      '@types/react': 18.3.11
       date-fns: 4.1.0
       react: 18.3.1
       react-day-picker: 9.7.0(react@18.3.1)
       react-dom: 18.3.1(react@18.3.1)
-    optionalDependencies:
-      '@types/react': 18.3.11
 
   '@navikt/ds-tokens@8.8.0': {}
 
   '@navikt/fnrvalidator@2.2.1': {}
 
-  '@navikt/nav-dekoratoren-moduler@3.6.3(csp-header@6.3.1)(html-react-parser@5.2.17(@types/react@18.3.11)(react@18.3.1))(jsdom@28.1.0(@noble/hashes@1.8.0))(react@18.3.1)':
+  '@navikt/nav-dekoratoren-moduler@4.0.0(html-react-parser@6.1.0(@types/react@18.3.11)(react@18.3.1))(react@18.3.1)':
     dependencies:
+      '@navikt/analytics-types': 0.0.9
       csp-header: 6.3.1
-      html-react-parser: 5.2.17(@types/react@18.3.11)(react@18.3.1)
+      html-react-parser: 6.1.0(@types/react@18.3.11)(react@18.3.1)
       js-cookie: 3.0.5
-      jsdom: 28.1.0(@noble/hashes@1.8.0)
-    optionalDependencies:
       react: 18.3.1
+
+  '@navikt/skjemadigitalisering-shared-backend@file:packages/shared-backend(@noble/hashes@1.8.0)(express@5.2.1)(multer@2.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@navikt/skjemadigitalisering-shared-domain': file:packages/shared-domain(typescript@5.9.3)
+      dompurify: 3.4.2
+      express: 5.2.1
+      express-correlation-id: 3.0.1
+      jsdom: 28.1.0(@noble/hashes@1.8.0)
+      multer: 2.1.1
+      winston: 3.19.0
+    transitivePeerDependencies:
+      - '@noble/hashes'
+      - canvas
+      - encoding
+      - supports-color
+      - typescript
+
+  '@navikt/skjemadigitalisering-shared-components@file:packages/shared-components(@types/react@18.3.11)(html-react-parser@6.1.0(@types/react@18.3.11)(react@18.3.1))(typescript@5.9.3)':
+    dependencies:
+      '@formio/react': 5.3.0(formiojs@4.20.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@navikt/aksel-icons': 8.8.0
+      '@navikt/ds-css': 8.8.0
+      '@navikt/ds-react': 8.8.0(@types/react@18.3.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@navikt/fnrvalidator': 2.2.1
+      '@navikt/nav-dekoratoren-moduler': 4.0.0(html-react-parser@6.1.0(@types/react@18.3.11)(react@18.3.1))(react@18.3.1)
+      '@navikt/skjemadigitalisering-shared-domain': file:packages/shared-domain(typescript@5.9.3)
+      clsx: 2.1.1
+      dompurify: 3.4.2
+      eventemitter2: 6.4.9
+      eventemitter3: 5.0.4
+      file-saver: 2.0.5
+      formiojs: 4.20.0
+      i18n-iso-countries: 7.14.0
+      ibantools: 4.5.4
+      jss: 10.10.0
+      jss-preset-default: 10.10.0
+      lodash.clonedeep: 4.5.0
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+      react-jss: 10.10.0(react@18.3.1)
+      react-router: 7.13.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-select: 5.10.2(@types/react@18.3.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+    transitivePeerDependencies:
+      - '@types/react'
+      - encoding
+      - html-react-parser
+      - supports-color
+      - typescript
+
+  '@navikt/skjemadigitalisering-shared-domain@file:packages/shared-domain(typescript@5.9.3)':
+    dependencies:
+      '@navikt/fnrvalidator': 2.2.1
+      formiojs: 4.20.0
+      i18next: 25.10.10(typescript@5.9.3)
+      lodash: 4.18.1
+      luxon: 3.7.2
+      moment: 2.30.1
+      uuid: 13.0.2
+    transitivePeerDependencies:
+      - encoding
+      - typescript
 
   '@noble/hashes@1.8.0': {}
 
@@ -9715,11 +9810,11 @@ snapshots:
       domhandler: 4.3.1
       entities: 2.2.0
 
-  dom-serializer@2.0.0:
+  dom-serializer@3.1.1:
     dependencies:
-      domelementtype: 2.3.0
-      domhandler: 5.0.3
-      entities: 4.5.0
+      domelementtype: 3.0.0
+      domhandler: 6.0.1
+      entities: 8.0.0
 
   dom-set@1.1.1:
     dependencies:
@@ -9729,15 +9824,21 @@ snapshots:
 
   domelementtype@2.3.0: {}
 
+  domelementtype@3.0.0: {}
+
   domhandler@4.3.1:
     dependencies:
       domelementtype: 2.3.0
 
-  domhandler@5.0.3:
+  domhandler@6.0.1:
     dependencies:
-      domelementtype: 2.3.0
+      domelementtype: 3.0.0
 
   dompurify@3.3.3:
+    optionalDependencies:
+      '@types/trusted-types': 2.0.7
+
+  dompurify@3.4.2:
     optionalDependencies:
       '@types/trusted-types': 2.0.7
 
@@ -9747,11 +9848,11 @@ snapshots:
       domelementtype: 2.3.0
       domhandler: 4.3.1
 
-  domutils@3.2.2:
+  domutils@4.0.2:
     dependencies:
-      dom-serializer: 2.0.0
-      domelementtype: 2.3.0
-      domhandler: 5.0.3
+      dom-serializer: 3.1.1
+      domelementtype: 3.0.0
+      domhandler: 6.0.1
 
   dot-case@3.0.4:
     dependencies:
@@ -9842,11 +9943,9 @@ snapshots:
 
   entities@2.2.0: {}
 
-  entities@4.5.0: {}
-
   entities@6.0.1: {}
 
-  entities@7.0.1: {}
+  entities@8.0.0: {}
 
   environment@1.1.0: {}
 
@@ -10750,7 +10849,7 @@ snapshots:
   globule@1.3.4:
     dependencies:
       glob: 7.1.7
-      lodash: 4.17.23
+      lodash: 4.17.21
       minimatch: 3.0.8
 
   gopd@1.2.0: {}
@@ -10775,7 +10874,7 @@ snapshots:
 
   graphlib@2.1.8:
     dependencies:
-      lodash: 4.17.23
+      lodash: 4.18.1
 
   graphql@16.13.2: {}
 
@@ -10831,10 +10930,10 @@ snapshots:
     dependencies:
       react-is: 16.13.1
 
-  html-dom-parser@5.1.8:
+  html-dom-parser@7.1.0:
     dependencies:
-      domhandler: 5.0.3
-      htmlparser2: 10.1.0
+      domhandler: 6.0.1
+      htmlparser2: 12.0.0
 
   html-encoding-sniffer@6.0.0(@noble/hashes@1.8.0):
     dependencies:
@@ -10854,22 +10953,22 @@ snapshots:
       relateurl: 0.2.7
       terser: 5.46.1
 
-  html-react-parser@5.2.17(@types/react@18.3.11)(react@18.3.1):
+  html-react-parser@6.1.0(@types/react@18.3.11)(react@18.3.1):
     dependencies:
-      domhandler: 5.0.3
-      html-dom-parser: 5.1.8
+      domhandler: 6.0.1
+      html-dom-parser: 7.1.0
       react: 18.3.1
       react-property: 2.0.2
       style-to-js: 1.1.21
     optionalDependencies:
       '@types/react': 18.3.11
 
-  htmlparser2@10.1.0:
+  htmlparser2@12.0.0:
     dependencies:
-      domelementtype: 2.3.0
-      domhandler: 5.0.3
-      domutils: 3.2.2
-      entities: 7.0.1
+      domelementtype: 3.0.0
+      domhandler: 6.0.1
+      domutils: 4.0.2
+      entities: 8.0.0
 
   http-cache-semantics@4.2.0: {}
 
@@ -10933,6 +11032,12 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.2
 
+  i18next@25.10.10(typescript@5.9.3):
+    dependencies:
+      '@babel/runtime': 7.29.2
+    optionalDependencies:
+      typescript: 5.9.3
+
   i18next@25.10.9(typescript@5.9.3):
     dependencies:
       '@babel/runtime': 7.29.2
@@ -10940,6 +11045,8 @@ snapshots:
       typescript: 5.9.3
 
   ibantools@4.5.1: {}
+
+  ibantools@4.5.4: {}
 
   iconv-lite@0.4.24:
     dependencies:
@@ -11002,7 +11109,7 @@ snapshots:
       cli-width: 3.0.0
       external-editor: 3.1.0
       figures: 3.2.0
-      lodash: 4.17.23
+      lodash: 4.17.21
       mute-stream: 0.0.8
       ora: 5.4.1
       run-async: 2.4.1
@@ -11440,7 +11547,7 @@ snapshots:
       commander: 4.1.1
       graphlib: 2.1.8
       js-yaml: 3.14.2
-      lodash: 4.17.23
+      lodash: 4.18.1
       native-promise-only: 0.8.1
       path-loader: 1.0.12
       slash: 3.0.0
@@ -11716,6 +11823,8 @@ snapshots:
 
   lodash@4.17.23: {}
 
+  lodash@4.18.1: {}
+
   log-symbols@4.1.0:
     dependencies:
       chalk: 4.1.2
@@ -11986,7 +12095,7 @@ snapshots:
 
   node-emoji@1.11.0:
     dependencies:
-      lodash: 4.17.23
+      lodash: 4.17.21
 
   node-exports-info@1.6.0:
     dependencies:
@@ -13537,6 +13646,8 @@ snapshots:
   utils-merge@1.0.1: {}
 
   uuid@13.0.0: {}
+
+  uuid@13.0.2: {}
 
   uuid@3.4.0: {}
 
