@@ -1,9 +1,5 @@
 version: 2
 registries:
-  npmjs:
-    type: npm-registry
-    url: https://registry.npmjs.org
-    replaces-base: true
   npm-github:
     type: npm-registry
     url: https://npm.pkg.github.com
@@ -15,7 +11,6 @@ updates:
     exclude-paths:
       - 'mocks/**'
     registries:
-      - npmjs
       - npm-github
     schedule:
       interval: 'monthly'
