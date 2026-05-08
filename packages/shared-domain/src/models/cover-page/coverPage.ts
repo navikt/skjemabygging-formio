@@ -1,10 +1,20 @@
 import { SubmissionType } from '../form';
 import { Form } from '../forms-api-form';
 import { TranslationLang } from '../translation';
-import { ForstesideType } from './index';
+
+type ForstesideType = 'SKJEMA' | 'ETTERSENDELSE' | 'LOESPOST';
 
 interface NationalIdentityNumberType {
   nationalIdentityNumber: string;
+  organizationNumber?: never;
+  firstName?: never;
+  surname?: never;
+  address?: never;
+}
+
+interface OrganizationNumberType {
+  nationalIdentityNumber?: never;
+  organizationNumber: string;
   firstName?: never;
   surname?: never;
   address?: never;
@@ -29,7 +39,7 @@ interface UnknownUser {
   };
 }
 
-type UserType = NationalIdentityNumberType | UnknownUser;
+type UserType = NationalIdentityNumberType | OrganizationNumberType | UnknownUser;
 
 interface RecipientNavUnitType {
   navUnit: string;
@@ -60,4 +70,4 @@ interface CoverPageDownloadType {
   attachments: string[];
 }
 
-export type { CoverPageDownloadType };
+export type { CoverPageDownloadType, ForstesideType };

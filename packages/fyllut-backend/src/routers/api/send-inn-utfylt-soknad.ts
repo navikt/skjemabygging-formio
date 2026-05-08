@@ -1,16 +1,16 @@
+import { applicationPdfService } from '@navikt/skjemadigitalisering-shared-backend';
 import { NextFunction, Request, Response } from 'express';
 import fetch from 'node-fetch';
 import { config } from '../../config/config';
 import { logger } from '../../logger';
 import { getIdportenPid, getTokenxAccessToken } from '../../security/tokenHelper';
-import applicationService from '../../services/documents/applicationService';
 import { LogMetadata } from '../../types/log';
+import { base64Decode } from '../../utils/base64';
 import { responseToError } from '../../utils/errorHandling';
 import { getFyllutUrl } from '../../utils/url';
-import { stringifyPdf } from './helpers/pdfUtils';
 import { assembleSendInnSoknadBody, isNotFound, sanitizeInnsendingsId, validateInnsendingsId } from './helpers/sendInn';
 
-const { sendInnConfig } = config;
+const { familiePdfGeneratorUrl, sendInnConfig } = config;
 
 const sendInnUtfyltSoknad = {
   put: async (req: Request, res: Response, next: NextFunction) => {
@@ -45,11 +45,15 @@ const sendInnUtfyltSoknad = {
         logger.warn(`Language code "${language}" is not supported. Language code will be defaulted to "nb".`, logMeta);
       }
 
-      const applicationPdf = await applicationService.createFormPdf(
-        req.headers.PdfAccessToken as string,
-        stringifyPdf(pdfFormData),
-        logMeta,
-      );
+      const applicationPdfBase64 = await applicationPdfService.createPdf({
+        baseUrl: familiePdfGeneratorUrl,
+        accessToken: req.headers.PdfAccessToken as string,
+        pdfFormData,
+      });
+      const applicationPdf = base64Decode(applicationPdfBase64);
+      if (!applicationPdf) {
+        throw new Error('Generering av søknads PDF feilet');
+      }
       const pdfByteArray = Array.from(applicationPdf) ?? [];
 
       const body = assembleSendInnSoknadBody(req.body, idportenPid, fyllutUrl, pdfByteArray);

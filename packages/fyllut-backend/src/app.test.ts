@@ -12,9 +12,8 @@ vi.mock('./dekorator', () => ({
 }));
 
 const { sendInnConfig, tokenx: tokenxConfig, formioApiServiceUrl } = config;
-const filePathSoknad = path.join(process.cwd(), '/src/services/documents/testdata/test-skjema.pdf');
+const filePathSoknad = path.join(process.cwd(), '/src/test/testdata/documents/test-skjema.pdf');
 const soknadPdf = readFileSync(filePathSoknad);
-const encodedSoknadPdf = soknadPdf.toString('base64');
 const pdfFormData = {
   label: 'NAV 12.34-56',
   pdfConfig: { harInnholdsfortegnelse: false, språk: 'nb' },
@@ -164,7 +163,7 @@ describe('app', () => {
       .reply(200, { access_token: 'azure-access-token' });
     const skjemabyggingproxyScope = nock(process.env.FAMILIE_PDF_GENERATOR_URL as string)
       .post('/api/pdf/v3/opprett-pdf')
-      .reply(200, encodedSoknadPdf);
+      .reply(200, soknadPdf, { 'Content-Type': 'application/pdf' });
     const tokenxWellKnownScope = nock(extractHost(tokenxConfig?.wellKnownUrl))
       .get(extractPath(tokenxConfig?.wellKnownUrl))
       .reply(200, { token_endpoint: tokenxEndpoint });

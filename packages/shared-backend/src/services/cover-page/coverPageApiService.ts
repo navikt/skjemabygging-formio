@@ -1,6 +1,7 @@
-import { ForstesideRequestBody, ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
+import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import http from '../../shared/http/http';
 import { logger } from '../../shared/logger/logger';
+import { ForstesideRequestBody } from './foersteside';
 
 interface DownloadCoverPageProps {
   baseUrl: string;

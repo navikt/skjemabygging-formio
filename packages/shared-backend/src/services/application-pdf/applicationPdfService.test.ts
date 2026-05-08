@@ -1,4 +1,4 @@
-import { sanitizeLabel, sanitizeValue } from './applicationService';
+import { sanitizeLabel, sanitizeValue } from './applicationPdfService';
 
 describe('Sanitize values before sending to PDF generation', () => {
   describe('sanitizeLabel', () => {

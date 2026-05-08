@@ -1,18 +1,16 @@
-import { ForstesideRequestBody, forstesideUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { readFileSync } from 'fs';
 import nock from 'nock';
 import path from 'path';
-import { config } from '../../config/config';
-import { mockNext, mockRequest, mockResponse } from '../../test/requestTestHelpers';
+import { config } from '../../../config/config';
+import { mockNext, mockRequest, mockResponse } from '../../../test/requestTestHelpers';
+import documents from './documents';
 
-import documents from '../../routers/api/documents/documents';
-
-const { skjemabyggingProxyUrl, formsApiUrl, familiePdfGeneratorUrl, sendInnConfig } = config;
+const { familiePdfGeneratorUrl, formsApiUrl, skjemabyggingProxyUrl, sendInnConfig } = config;
 
 const formTitle = 'testskjema';
-const filePathForsteside = path.join(process.cwd(), '/src/services/documents/testdata/test-forsteside.pdf');
-const filePathSoknad = path.join(process.cwd(), '/src/services/documents/testdata/test-skjema.pdf');
-const filePathMerged = path.join(process.cwd(), '/src/services/documents/testdata/test-merged.pdf');
+const filePathForsteside = path.join(process.cwd(), '/src/test/testdata/documents/test-forsteside.pdf');
+const filePathSoknad = path.join(process.cwd(), '/src/test/testdata/documents/test-skjema.pdf');
+const filePathMerged = path.join(process.cwd(), '/src/test/testdata/documents/test-merged.pdf');
 const createPdfFormData = (language = 'nb') => ({
   label: 'Testskjema',
   pdfConfig: { harInnholdsfortegnelse: false, språk: language },
@@ -28,26 +26,11 @@ const createPdfFormData = (language = 'nb') => ({
 });
 
 describe('[endpoint] documents', () => {
-  beforeAll(() => {
-    vi.spyOn(forstesideUtils, 'genererFoerstesideData').mockImplementation(
-      () =>
-        ({
-          foerstesidetype: 'ETTERSENDELSE',
-          navSkjemaId: 'NAV 10.10.10',
-          spraakkode: 'NB',
-          overskriftstittel: 'Tittel',
-          arkivtittel: 'Tittel',
-          tema: 'HJE',
-        }) as ForstesideRequestBody,
-    );
-  });
-
   it('Create front page and application', async () => {
     const forstesidePdf = readFileSync(filePathForsteside);
     const soknadPdf = readFileSync(filePathSoknad);
     const mergedPdf = readFileSync(filePathMerged);
     const encodedForstesidedPdf = forstesidePdf.toString('base64');
-    const encodedSoknadPdf = soknadPdf.toString('base64');
 
     const mockAzureAccessTokenHandler = vi.fn((scope: string) => {
       return `mock-token-for:${scope}`;
@@ -58,7 +41,7 @@ describe('[endpoint] documents', () => {
       .reply(200, { foersteside: encodedForstesidedPdf });
     const skjemabyggingproxyScope = nock(familiePdfGeneratorUrl!)
       .post('/api/pdf/v3/opprett-pdf')
-      .reply(200, encodedSoknadPdf);
+      .reply(200, soknadPdf, { 'Content-Type': 'application/pdf' });
 
     const mergePdfScope = nock(sendInnConfig.host!)
       .intercept('/fyllUt/v1/merge-filer', 'POST', (body) => {
@@ -95,23 +78,10 @@ describe('[endpoint] documents', () => {
   }, 10000);
 
   it('Create front page and application  - english', async () => {
-    vi.spyOn(forstesideUtils, 'genererFoerstesideData').mockImplementation(
-      () =>
-        ({
-          foerstesidetype: 'ETTERSENDELSE',
-          navSkjemaId: 'NAV 10.10.10',
-          spraakkode: 'en',
-          overskriftstittel: 'Tittel',
-          arkivtittel: 'Tittel',
-          tema: 'HJE',
-        }) as ForstesideRequestBody,
-    );
-
     const forstesidePdf = readFileSync(filePathForsteside);
     const soknadPdf = readFileSync(filePathSoknad);
     const mergedPdf = readFileSync(filePathMerged);
     const encodedForstesidedPdf = forstesidePdf.toString('base64');
-    const encodedSoknadPdf = soknadPdf.toString('base64');
     const mockAzureAccessTokenHandler = vi.fn((scope: string) => {
       return `mock-token-for:${scope}`;
     });
@@ -122,7 +92,7 @@ describe('[endpoint] documents', () => {
       .reply(200, { foersteside: encodedForstesidedPdf });
     const skjemabyggingproxyScope = nock(familiePdfGeneratorUrl!)
       .post('/api/pdf/v3/opprett-pdf')
-      .reply(200, encodedSoknadPdf);
+      .reply(200, soknadPdf, { 'Content-Type': 'application/pdf' });
 
     const mergePdfScope = nock(sendInnConfig.host!)
       .intercept('/fyllUt/v1/merge-filer', 'POST', (body) => {

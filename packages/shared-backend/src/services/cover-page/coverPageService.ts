@@ -1,87 +1,7 @@
-import {
-  CoverPageDownloadType,
-  ForstesideRequestBody,
-  ResponseError,
-  TranslateFunction,
-  validatorUtils,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { CoverPageDownloadType, TranslateFunction } from '@navikt/skjemadigitalisering-shared-domain';
 import { logger } from '../../shared/logger/logger';
 import coverPageApiService from './coverPageApiService';
-
-const addressLine = (text?: string, prefix: string = ', ') => {
-  if (text && !validatorUtils.isValidCoverPageValue(text)) {
-    throw new ResponseError('BAD_REQUEST', `Invalid value for cover page: ${text}`);
-  }
-
-  return text ? `${prefix}${text}` : '';
-};
-
-const getUser = (user) => {
-  if (!user) {
-    return {};
-  }
-
-  if (user.nationalIdentityNumber) {
-    if (user.nationalIdentityNumber && !validatorUtils.isValidCoverPageValue(user.nationalIdentityNumber)) {
-      throw new ResponseError('BAD_REQUEST', 'Invalid value for cover page');
-    }
-    return {
-      bruker: {
-        brukerId: user.nationalIdentityNumber,
-        brukerType: 'PERSON',
-      },
-    };
-  }
-
-  return {
-    ukjentBrukerPersoninfo:
-      addressLine(user.firstName, '') +
-      addressLine(user.surname, ' ') +
-      addressLine(user.address?.co, ', c/o ') +
-      addressLine(user.address?.postOfficeBox, ', Postboks ') +
-      addressLine(user.address?.streetAddress) +
-      addressLine(user.address?.building) +
-      addressLine(user.address?.postalCode) +
-      addressLine(user.address?.postalName, ' ') +
-      addressLine(user.address?.region) +
-      addressLine(user.address?.country?.label ?? 'Norge'),
-  };
-};
-
-const getRecipient = (recipient) => {
-  if (recipient?.name) {
-    return {
-      adresse: {
-        adresselinje1: recipient.name,
-        adresselinje2: recipient.postOfficeBox,
-        postnummer: recipient.postalCode,
-        poststed: recipient.postalName,
-      },
-    };
-  } else if (recipient?.navUnit) {
-    return {
-      enhetsnummer: recipient.navUnit,
-      netsPostboks: '1400',
-    };
-  } else {
-    return {
-      netsPostboks: '1400',
-    };
-  }
-};
-
-const parseCoverPageLanguage = (language: string) => {
-  switch (language) {
-    case 'nn-NO':
-    case 'nn':
-      return 'NN';
-    case 'nb-NO':
-    case 'nb':
-      return 'NB';
-    default:
-      return 'EN';
-  }
-};
+import { coverPageMapper } from './mapper';
 
 interface DownloadCoverPageProps {
   baseUrl: string;
@@ -92,30 +12,18 @@ interface DownloadCoverPageProps {
   formNumber?: string;
 }
 const downloadCoverPage = async (props: DownloadCoverPageProps) => {
-  const { baseUrl, languageCode = 'NB', accessToken, data, translate, formNumber } = props;
-  const { type = 'SKJEMA', form, user, recipient, attachments, submissionType } = data;
-  const { properties } = form;
-
-  if (!form.skjemanummer || !form.title) {
-    throw new ResponseError('BAD_REQUEST', 'Missing required form values for cover page.');
-  }
-
-  logger.debug(`Download cover page for ${form.skjemanummer}`);
-
-  const formTitle = `${form.skjemanummer} ${translate ? translate(form.title) : form.title}`;
-
-  const body: ForstesideRequestBody = {
-    foerstesidetype: type,
-    navSkjemaId: formNumber ?? form.skjemanummer,
-    spraakkode: parseCoverPageLanguage(languageCode),
-    overskriftstittel: formTitle,
-    arkivtittel: formTitle,
-    tema: properties?.tema,
-    vedleggsliste: attachments,
-    dokumentlisteFoersteside: [formTitle, ...attachments],
-    ...getUser(user),
-    ...getRecipient(recipient),
+  const { baseUrl, accessToken } = props;
+  const { body } = {
+    body: coverPageMapper.createRequestBodyFromDownloadData(
+      props.data,
+      props.languageCode,
+      props.translate,
+      props.formNumber,
+    ),
   };
+  const { submissionType } = props.data;
+
+  logger.debug(`Download cover page for ${props.data.form.skjemanummer}`);
 
   const response = await coverPageApiService.downloadCoverPage({
     baseUrl,

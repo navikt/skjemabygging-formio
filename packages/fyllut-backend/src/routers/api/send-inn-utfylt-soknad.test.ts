@@ -16,7 +16,7 @@ const mockRequestWithPidAndTokenX = ({ headers = {}, body }: MockRequestParams) 
   req.getEnvQualifier = () => undefined;
   return req;
 };
-const filePathSoknad = path.join(process.cwd(), '/src/services/documents/testdata/test-skjema.pdf');
+const filePathSoknad = path.join(process.cwd(), '/src/test/testdata/documents/test-skjema.pdf');
 const soknadPdf = readFileSync(filePathSoknad);
 const pdfFormData = {
   label: 'default form',
@@ -47,7 +47,7 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
   it('returns 201 and location header if success', async () => {
     const skjemabyggingproxyScope = nock(process.env.FAMILIE_PDF_GENERATOR_URL!)
       .post('/api/pdf/v3/opprett-pdf')
-      .reply(200, soknadPdf);
+      .reply(200, soknadPdf, { 'Content-Type': 'application/pdf' });
     const sendInnNockScope = nock(sendInnConfig.host)
       .put(`${sendInnConfig.paths.utfyltSoknad}/${innsendingsId}`)
       .reply(302, 'FOUND', { Location: SEND_LOCATION });
@@ -69,7 +69,7 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
   it('calls next if SendInn returns error', async () => {
     const skjemabyggingproxyScope = nock(process.env.FAMILIE_PDF_GENERATOR_URL!)
       .post('/api/pdf/v3/opprett-pdf')
-      .reply(200, soknadPdf);
+      .reply(200, soknadPdf, { 'Content-Type': 'application/pdf' });
     const sendInnNockScope = nock(sendInnConfig.host)
       .put(`${sendInnConfig.paths.utfyltSoknad}/${innsendingsId}`)
       .reply(500, 'error body');
@@ -99,8 +99,8 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
 
     expect(next).toHaveBeenCalledTimes(1);
     const error: any = next.mock.calls[0][0];
-    expect(error.functional).toBe(false);
-    expect(error.message).toBe('Could not create pdf');
+    expect(error.errorCode).toBe('INTERNAL_SERVER_ERROR');
+    expect(error.message).toBe('Internal Server Error');
     expect(res.sendStatus).not.toHaveBeenCalled();
     expect(res.header).not.toHaveBeenCalled();
     expect(skjemabyggingproxyScope.isDone()).toBe(true);

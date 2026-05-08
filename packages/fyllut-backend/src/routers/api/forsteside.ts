@@ -1,5 +1,5 @@
-import { correlator } from '@navikt/skjemadigitalisering-shared-backend';
-import { ForstesideRequestBody, ForstesideType } from '@navikt/skjemadigitalisering-shared-domain';
+import { correlator, ForstesideRequestBody } from '@navikt/skjemadigitalisering-shared-backend';
+import { ForstesideType } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import fetch, { BodyInit, HeadersInit } from 'node-fetch';
 import { config } from '../../config/config';

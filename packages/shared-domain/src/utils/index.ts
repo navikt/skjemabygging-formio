@@ -1,6 +1,5 @@
 export * from './attachment';
 export * from './config';
-export * from './cover-page';
 export * from './currency';
 export * from './data-fetcher';
 export * from './date';

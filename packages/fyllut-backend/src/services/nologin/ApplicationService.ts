@@ -1,3 +1,4 @@
+import { applicationPdfService } from '@navikt/skjemadigitalisering-shared-backend';
 import {
   I18nTranslationMap,
   localizationUtils,
@@ -14,15 +15,16 @@ import ApplicationClient, {
   DownloadedAttachment,
 } from '../../external/innsending-api/ApplicationClient';
 import { assembleNologinSoknadBody } from '../../routers/api/helpers/nologin';
-import { stringifyPdf } from '../../routers/api/helpers/pdfUtils';
 import { LogMetadata } from '../../types/log';
-import applicationService from '../documents/applicationService';
+import { base64Decode } from '../../utils/base64';
 import { mapToReceiptSummary } from './receiptMapper';
 
 class ApplicationService {
   private readonly clients: Record<'nologin' | 'digital', ApplicationClientType>;
+  private readonly config: ConfigType;
 
   constructor(config: ConfigType) {
+    this.config = config;
     this.clients = {
       nologin: ApplicationClient(config, 'nologin'),
       digital: ApplicationClient(config, 'digital'),
@@ -73,7 +75,15 @@ class ApplicationService {
   ): Promise<{ pdf: Uint8Array; receipt: ReceiptSummary }> {
     const lang = localizationUtils.getLanguageCodeAsIso639_1(language);
     const translate = translationUtils.createTranslate(translation, language);
-    const applicationPdf = await applicationService.createFormPdf(pdfAccessToken, stringifyPdf(pdfFormData), logMeta);
+    const applicationPdfBase64 = await applicationPdfService.createPdf({
+      baseUrl: this.config.familiePdfGeneratorUrl,
+      accessToken: pdfAccessToken,
+      pdfFormData,
+    });
+    const applicationPdf = base64Decode(applicationPdfBase64);
+    if (!applicationPdf) {
+      throw new Error('Generering av søknads PDF feilet');
+    }
 
     const pdfByteArray = Array.from(applicationPdf);
     const nologinApplication = assembleNologinSoknadBody(
