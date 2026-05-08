@@ -58,7 +58,7 @@
     "@eslint/compat": "^1.4.0",
     "@eslint/eslintrc": "^3.3.3",
     "@eslint/js": "^9.39.2",
-    "@navikt/aksel": "^8.1.0",
+    "@navikt/aksel": "^8.10.5",
     "@types/eslint__js": "^9.14.0",
     "@types/jest": "^30.0.0",
     "@types/react": "18.3.11",
