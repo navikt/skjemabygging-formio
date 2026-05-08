@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@navikt/aksel-icons": "^8.2.0",
-    "@navikt/ds-css": "^8.2.0",
+    "@navikt/ds-css": "^8.10.5",
     "@navikt/ds-react": "^8.2.2",
     "@navikt/skjemadigitalisering-shared-components": "workspace:*",
     "@navikt/skjemadigitalisering-shared-domain": "workspace:*",
