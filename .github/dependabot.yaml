@@ -20,47 +20,31 @@ updates:
     schedule:
       interval: 'monthly'
     versioning-strategy: increase
-    open-pull-requests-limit: 20
-    # Default updates flow into patch/minor/major lanes.
-    # Special-case groups stay separate for higher-signal review.
+    open-pull-requests-limit: 10
+    # Default updates flow into one grouped minor/patch PR and one grouped major PR.
+    # Only selected major upgrades stay separate for higher-signal review.
     groups:
-      global-patch:
+      all-minor-patch:
         patterns:
           - '*'
-        exclude-patterns:
-          - '@navikt/aksel'
-          - '@navikt/ds-*'
-          - '@navikt/aksel-icons'
-          - '@navikt/nav-dekoratoren-moduler'
-          - 'csp-header'
-          - 'html-react-parser'
-        update-types:
-          - 'patch'
-      global-minor:
-        patterns:
-          - '*'
-        exclude-patterns:
-          - '@navikt/aksel'
-          - '@navikt/ds-*'
-          - '@navikt/aksel-icons'
-          - '@navikt/nav-dekoratoren-moduler'
-          - 'csp-header'
-          - 'html-react-parser'
         update-types:
           - 'minor'
-      global-major:
+          - 'patch'
+      all-major:
         patterns:
           - '*'
         exclude-patterns:
-          - '@navikt/aksel'
           - '@navikt/ds-*'
           - '@navikt/aksel-icons'
+          - '@navikt/aksel'
           - '@navikt/nav-dekoratoren-moduler'
           - 'csp-header'
           - 'html-react-parser'
-          - 'typescript-eslint'
-          - '@typescript-eslint/*'
-          - '@testing-library/*'
+          - 'react-router'
+          - 'react'
+          - 'react-dom'
+          - '@types/react'
+          - '@types/react-dom'
         update-types:
           - 'major'
       aksel-major:
@@ -70,31 +54,6 @@ updates:
           - '@navikt/aksel-icons'
         update-types:
           - 'major'
-      aksel-minor:
-        patterns:
-          - '@navikt/aksel'
-          - '@navikt/ds-*'
-          - '@navikt/aksel-icons'
-        update-types:
-          - 'minor'
-      aksel-patch:
-        patterns:
-          - '@navikt/aksel'
-          - '@navikt/ds-*'
-          - '@navikt/aksel-icons'
-        update-types:
-          - 'patch'
-      typescript-eslint-major:
-        patterns:
-          - 'typescript-eslint'
-          - '@typescript-eslint/*'
-        update-types:
-          - 'major'
-      testing-library-major:
-        patterns:
-          - '@testing-library/*'
-        update-types:
-          - 'major'
       nav-dekoratoren-major:
         patterns:
           - '@navikt/nav-dekoratoren-moduler'
@@ -102,22 +61,26 @@ updates:
           - 'html-react-parser'
         update-types:
           - 'major'
-      nav-dekoratoren-minor:
+      react-router-major:
         patterns:
-          - '@navikt/nav-dekoratoren-moduler'
-          - 'csp-header'
-          - 'html-react-parser'
+          - 'react-router'
         update-types:
-          - 'minor'
-      nav-dekoratoren-patch:
-        patterns:
-          - '@navikt/nav-dekoratoren-moduler'
-          - 'csp-header'
-          - 'html-react-parser'
-        update-types:
-          - 'patch'
+          - 'major'
     ignore:
       - dependency-name: 'formiojs'
+      - dependency-name: '@formio/react'
+      - dependency-name: 'react'
+        update-types:
+          - 'version-update:semver-major'
+      - dependency-name: 'react-dom'
+        update-types:
+          - 'version-update:semver-major'
+      - dependency-name: '@types/react'
+        update-types:
+          - 'version-update:semver-major'
+      - dependency-name: '@types/react-dom'
+        update-types:
+          - 'version-update:semver-major'
 
   - package-ecosystem: 'github-actions'
     directory: '/'
