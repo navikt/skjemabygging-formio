@@ -142,6 +142,7 @@ describe('app', () => {
     const sendInnLocation = 'http://www.unittest.nav.no/sendInn/123';
     const azureTokenEndpoint = process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT!;
     const tokenxEndpoint = 'http://tokenx-unittest.nav.no/token';
+    const encodedSoknadPdf = soknadPdf.toString('base64');
     const applicationData = {
       form: {
         components: [],
@@ -163,7 +164,7 @@ describe('app', () => {
       .reply(200, { access_token: 'azure-access-token' });
     const skjemabyggingproxyScope = nock(process.env.FAMILIE_PDF_GENERATOR_URL as string)
       .post('/api/pdf/v3/opprett-pdf')
-      .reply(200, soknadPdf, { 'Content-Type': 'application/pdf' });
+      .reply(200, { content: encodedSoknadPdf }, { 'Content-Type': 'application/json' });
     const tokenxWellKnownScope = nock(extractHost(tokenxConfig?.wellKnownUrl))
       .get(extractPath(tokenxConfig?.wellKnownUrl))
       .reply(200, { token_endpoint: tokenxEndpoint });

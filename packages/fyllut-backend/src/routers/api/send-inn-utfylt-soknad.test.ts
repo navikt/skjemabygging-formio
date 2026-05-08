@@ -34,6 +34,7 @@ const pdfFormData = {
 
 describe('[endpoint] send-inn/utfyltsoknad', () => {
   const innsendingsId = '12345678-1234-1234-1234-12345678abcd';
+  const encodedSoknadPdf = soknadPdf.toString('base64');
   const defaultBody = {
     form: { title: 'default form', components: [], properties: { skjemanummer: 'NAV 12.34-56' } },
     submission: { data: {} },
@@ -47,7 +48,7 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
   it('returns 201 and location header if success', async () => {
     const skjemabyggingproxyScope = nock(process.env.FAMILIE_PDF_GENERATOR_URL!)
       .post('/api/pdf/v3/opprett-pdf')
-      .reply(200, soknadPdf, { 'Content-Type': 'application/pdf' });
+      .reply(200, { content: encodedSoknadPdf }, { 'Content-Type': 'application/json' });
     const sendInnNockScope = nock(sendInnConfig.host)
       .put(`${sendInnConfig.paths.utfyltSoknad}/${innsendingsId}`)
       .reply(302, 'FOUND', { Location: SEND_LOCATION });
@@ -69,7 +70,7 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
   it('calls next if SendInn returns error', async () => {
     const skjemabyggingproxyScope = nock(process.env.FAMILIE_PDF_GENERATOR_URL!)
       .post('/api/pdf/v3/opprett-pdf')
-      .reply(200, soknadPdf, { 'Content-Type': 'application/pdf' });
+      .reply(200, { content: encodedSoknadPdf }, { 'Content-Type': 'application/json' });
     const sendInnNockScope = nock(sendInnConfig.host)
       .put(`${sendInnConfig.paths.utfyltSoknad}/${innsendingsId}`)
       .reply(500, 'error body');

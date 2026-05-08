@@ -31,6 +31,7 @@ describe('[endpoint] documents', () => {
     const soknadPdf = readFileSync(filePathSoknad);
     const mergedPdf = readFileSync(filePathMerged);
     const encodedForstesidedPdf = forstesidePdf.toString('base64');
+    const encodedSoknadPdf = soknadPdf.toString('base64');
 
     const mockAzureAccessTokenHandler = vi.fn((scope: string) => {
       return `mock-token-for:${scope}`;
@@ -41,7 +42,7 @@ describe('[endpoint] documents', () => {
       .reply(200, { foersteside: encodedForstesidedPdf });
     const skjemabyggingproxyScope = nock(familiePdfGeneratorUrl!)
       .post('/api/pdf/v3/opprett-pdf')
-      .reply(200, soknadPdf, { 'Content-Type': 'application/pdf' });
+      .reply(200, { content: encodedSoknadPdf }, { 'Content-Type': 'application/json' });
 
     const mergePdfScope = nock(sendInnConfig.host!)
       .intercept('/fyllUt/v1/merge-filer', 'POST', (body) => {
@@ -82,6 +83,7 @@ describe('[endpoint] documents', () => {
     const soknadPdf = readFileSync(filePathSoknad);
     const mergedPdf = readFileSync(filePathMerged);
     const encodedForstesidedPdf = forstesidePdf.toString('base64');
+    const encodedSoknadPdf = soknadPdf.toString('base64');
     const mockAzureAccessTokenHandler = vi.fn((scope: string) => {
       return `mock-token-for:${scope}`;
     });
@@ -92,7 +94,7 @@ describe('[endpoint] documents', () => {
       .reply(200, { foersteside: encodedForstesidedPdf });
     const skjemabyggingproxyScope = nock(familiePdfGeneratorUrl!)
       .post('/api/pdf/v3/opprett-pdf')
-      .reply(200, soknadPdf, { 'Content-Type': 'application/pdf' });
+      .reply(200, { content: encodedSoknadPdf }, { 'Content-Type': 'application/json' });
 
     const mergePdfScope = nock(sendInnConfig.host!)
       .intercept('/fyllUt/v1/merge-filer', 'POST', (body) => {
