@@ -2,7 +2,7 @@ import { SubmissionType } from '../form';
 import { Form } from '../forms-api-form';
 import { TranslationLang } from '../translation';
 
-type ForstesideType = 'SKJEMA' | 'ETTERSENDELSE' | 'LOESPOST';
+type CoverPageType = 'SKJEMA' | 'ETTERSENDELSE' | 'LOESPOST';
 
 interface NationalIdentityNumberType {
   nationalIdentityNumber: string;
@@ -61,7 +61,7 @@ interface RecipientAddressType {
 type RecipientType = RecipientNavUnitType | RecipientAddressType;
 
 interface CoverPageDownloadType {
-  type?: ForstesideType;
+  type?: CoverPageType;
   submissionType: SubmissionType;
   languageCode: TranslationLang;
   form: Pick<Form, 'title' | 'skjemanummer' | 'properties'>;
@@ -70,4 +70,4 @@ interface CoverPageDownloadType {
   attachments: string[];
 }
 
-export type { CoverPageDownloadType, ForstesideType };
+export type { CoverPageDownloadType, CoverPageType };

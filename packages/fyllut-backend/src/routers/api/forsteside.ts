@@ -1,5 +1,5 @@
 import { correlator, ForstesideRequestBody } from '@navikt/skjemadigitalisering-shared-backend';
-import { ForstesideType } from '@navikt/skjemadigitalisering-shared-domain';
+import { CoverPageType } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import fetch, { BodyInit, HeadersInit } from 'node-fetch';
 import { config } from '../../config/config';
@@ -34,7 +34,7 @@ const forsteside = {
   },
 };
 
-const resolveSource = (type?: ForstesideType) => {
+const resolveSource = (type?: CoverPageType) => {
   if (type) {
     switch (type) {
       case 'ETTERSENDELSE':

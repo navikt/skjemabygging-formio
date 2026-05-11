@@ -1,4 +1,4 @@
-import { ForstesideType } from '@navikt/skjemadigitalisering-shared-domain';
+import { CoverPageType } from '@navikt/skjemadigitalisering-shared-domain';
 
 interface Bruker {
   brukerId: string;
@@ -6,7 +6,7 @@ interface Bruker {
 }
 
 interface ForstesideRequestBody {
-  foerstesidetype: ForstesideType;
+  foerstesidetype: CoverPageType;
   navSkjemaId: string;
   spraakkode: string;
   overskriftstittel: string;
