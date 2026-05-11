@@ -100,6 +100,7 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
             label={<LabelWithDiff label="Forklaring til innsending" diff={!!diff.innsendingForklaring} />}
             value={form.properties.innsendingForklaring || ''}
             readOnly={isLockedForm}
+            description="Forklaringen vil stå ovenfor knapp for nedlasting av ferdig utfylt pdf og skal hjelpe brukere å forstå hva de skal gjøre med den nedlastede pdfen og eventuelle vedlegg."
             onChange={(event) =>
               onChange({
                 ...form,
