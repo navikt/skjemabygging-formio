@@ -1,9 +1,9 @@
-import { applicationPdfService } from '@navikt/skjemadigitalisering-shared-backend';
 import { NextFunction, Request, Response } from 'express';
 import fetch from 'node-fetch';
 import { config } from '../../config/config';
 import { logger } from '../../logger';
 import { getIdportenPid, getTokenxAccessToken } from '../../security/tokenHelper';
+import { applicationPdfService } from '../../services';
 import { LogMetadata } from '../../types/log';
 import { base64Decode } from '../../utils/base64';
 import { responseToError } from '../../utils/errorHandling';

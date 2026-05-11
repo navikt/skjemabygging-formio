@@ -12,18 +12,13 @@ interface DownloadCoverPageProps {
   formNumber?: string;
 }
 const downloadCoverPage = async (props: DownloadCoverPageProps) => {
-  const { baseUrl, accessToken } = props;
+  const { baseUrl, accessToken, data, languageCode, translate, formNumber } = props;
   const { body } = {
-    body: coverPageMapper.createRequestBodyFromDownloadData(
-      props.data,
-      props.languageCode,
-      props.translate,
-      props.formNumber,
-    ),
+    body: coverPageMapper.createRequestBodyFromDownloadData(data, languageCode, translate, formNumber),
   };
-  const { submissionType } = props.data;
+  const { submissionType } = data;
 
-  logger.debug(`Download cover page for ${props.data.form.skjemanummer}`);
+  logger.debug(`Download cover page for ${data.form.skjemanummer}`);
 
   const response = await coverPageApiService.downloadCoverPage({
     baseUrl,

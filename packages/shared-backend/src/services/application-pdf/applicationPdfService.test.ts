@@ -1,4 +1,5 @@
-import { sanitizeLabel, sanitizeValue } from './applicationPdfService';
+import { describe, expect, it, vi } from 'vitest';
+import { createApplicationPdfService, sanitizeLabel, sanitizeValue } from './applicationPdfService';
 
 describe('Sanitize values before sending to PDF generation', () => {
   describe('sanitizeLabel', () => {
@@ -46,5 +47,78 @@ describe('Sanitize values before sending to PDF generation', () => {
       expect(sanitizeValue(123)).toBeUndefined();
       expect(sanitizeValue('')).toBe('');
     });
+  });
+});
+
+describe('createApplicationPdfService', () => {
+  const createMetrics = () => {
+    const stopTimer = vi.fn();
+
+    return {
+      stopTimer,
+      metrics: {
+        onRequest: vi.fn(),
+        onFailure: vi.fn(),
+        startDuration: vi.fn(() => stopTimer),
+      },
+    };
+  };
+
+  const createPdfFormData = () => ({
+    label: 'Test',
+    pdfConfig: { harInnholdsfortegnelse: false, språk: 'nb' },
+    skjemanummer: 'NAV 00-00.00',
+    verdiliste: [],
+    bunntekst: {
+      upperleft: null,
+      lowerleft: null,
+      upperMiddle: null,
+      lowerMiddle: null,
+      upperRight: null,
+    },
+  });
+
+  it('records request and duration on success', async () => {
+    const { metrics, stopTimer } = createMetrics();
+    const apiService = {
+      createPdf: vi.fn().mockResolvedValue('pdf-base64'),
+    };
+    const service = createApplicationPdfService({ metrics, apiService });
+
+    const result = await service.createPdf({
+      baseUrl: 'http://familie-pdf',
+      accessToken: 'token',
+      pdfFormData: createPdfFormData(),
+    });
+
+    expect(result).toBe('pdf-base64');
+    expect(metrics.onRequest).toHaveBeenCalledWith({ service: 'familiepdf', method: 'createPdf' });
+    expect(metrics.onFailure).not.toHaveBeenCalled();
+    expect(stopTimer).toHaveBeenCalledWith({ error: false });
+  });
+
+  it('records failure and duration on error', async () => {
+    const { metrics, stopTimer } = createMetrics();
+    const error = new Error('pdf failed');
+    const apiService = {
+      createPdf: vi.fn().mockRejectedValue(error),
+    };
+    const service = createApplicationPdfService({ metrics, apiService });
+
+    await expect(
+      service.createPdf({
+        baseUrl: 'http://familie-pdf',
+        accessToken: 'token',
+        pdfFormData: createPdfFormData(),
+      }),
+    ).rejects.toThrow(error);
+
+    expect(metrics.onRequest).toHaveBeenCalledWith({ service: 'familiepdf', method: 'createPdf' });
+    expect(metrics.onFailure).toHaveBeenCalledWith({
+      service: 'familiepdf',
+      method: 'createPdf',
+      error,
+    });
+    expect(stopTimer).toHaveBeenCalledWith({ error: true });
   });
 });

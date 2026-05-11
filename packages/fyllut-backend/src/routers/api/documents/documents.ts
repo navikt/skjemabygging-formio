@@ -1,5 +1,4 @@
 import {
-  applicationPdfService,
   coverPageMapper,
   coverPageService,
   mergeFileService,
@@ -13,7 +12,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { RequestHandler } from 'express';
 import { config } from '../../../config/config';
-import { appMetrics } from '../../../services';
+import { appMetrics, applicationPdfService } from '../../../services';
 import { base64Decode } from '../../../utils/base64';
 
 const { familiePdfGeneratorUrl, formsApiUrl, sendInnConfig, skjemabyggingProxyUrl } = config;

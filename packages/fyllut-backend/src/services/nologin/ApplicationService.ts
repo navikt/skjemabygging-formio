@@ -1,4 +1,4 @@
-import { applicationPdfService } from '@navikt/skjemadigitalisering-shared-backend';
+import { ApplicationPdfService } from '@navikt/skjemadigitalisering-shared-backend';
 import {
   I18nTranslationMap,
   localizationUtils,
@@ -20,10 +20,12 @@ import { base64Decode } from '../../utils/base64';
 import { mapToReceiptSummary } from './receiptMapper';
 
 class ApplicationService {
+  private readonly applicationPdfService: ApplicationPdfService;
   private readonly clients: Record<'nologin' | 'digital', ApplicationClientType>;
   private readonly config: ConfigType;
 
-  constructor(config: ConfigType) {
+  constructor(config: ConfigType, applicationPdfService: ApplicationPdfService) {
+    this.applicationPdfService = applicationPdfService;
     this.config = config;
     this.clients = {
       nologin: ApplicationClient(config, 'nologin'),
@@ -75,7 +77,7 @@ class ApplicationService {
   ): Promise<{ pdf: Uint8Array; receipt: ReceiptSummary }> {
     const lang = localizationUtils.getLanguageCodeAsIso639_1(language);
     const translate = translationUtils.createTranslate(translation, language);
-    const applicationPdfBase64 = await applicationPdfService.createPdf({
+    const applicationPdfBase64 = await this.applicationPdfService.createPdf({
       baseUrl: this.config.familiePdfGeneratorUrl,
       accessToken: pdfAccessToken,
       pdfFormData,

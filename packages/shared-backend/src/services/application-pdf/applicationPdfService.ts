@@ -1,6 +1,7 @@
 import { PdfData, PdfFormData, ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import { logger } from '../../shared/logger/logger';
 import { htmlServerUtils } from '../../util';
+import { ServiceMetrics, withMetrics } from '../serviceMetrics';
 import applicationPdfApiService from './applicationPdfApiService';
 
 /**
@@ -53,30 +54,48 @@ interface CreatePdfProps {
   pdfFormData?: PdfFormData;
 }
 
-const createPdf = async (props: CreatePdfProps) => {
-  const { baseUrl, accessToken, pdfFormData } = props;
-
-  if (!pdfFormData || typeof pdfFormData !== 'object') {
-    const error = new ResponseError('BAD_REQUEST', 'Missing pdfFormData to generate PDF');
-    logger.warn(error.message, { pdfFormData });
-    throw error;
-  }
-
-  try {
-    return await applicationPdfApiService.createPdf({
-      baseUrl,
-      accessToken,
-      body: sanitizePdfFormData(pdfFormData),
-    });
-  } catch (error) {
-    logger.warn('Could not create pdf', { error });
-    throw error;
-  }
+type ApplicationPdfApiService = Pick<typeof applicationPdfApiService, 'createPdf'>;
+type ApplicationPdfMetrics = ServiceMetrics<'familiepdf', 'createPdf'>;
+type ApplicationPdfService = {
+  createPdf: (props: CreatePdfProps) => Promise<string>;
 };
 
-const applicationPdfService = {
-  createPdf,
+interface CreateApplicationPdfServiceDependencies {
+  metrics: ApplicationPdfMetrics;
+  apiService?: ApplicationPdfApiService;
+}
+
+const createApplicationPdfService = ({
+  metrics,
+  apiService = applicationPdfApiService,
+}: CreateApplicationPdfServiceDependencies): ApplicationPdfService => {
+  const createPdf = async (props: CreatePdfProps) => {
+    const { baseUrl, accessToken, pdfFormData } = props;
+
+    if (!pdfFormData || typeof pdfFormData !== 'object') {
+      const error = new ResponseError('BAD_REQUEST', 'Missing pdfFormData to generate PDF');
+      logger.warn(error.message, { pdfFormData });
+      throw error;
+    }
+
+    try {
+      return await withMetrics(metrics, { service: 'familiepdf', method: 'createPdf' }, async () =>
+        apiService.createPdf({
+          baseUrl,
+          accessToken,
+          body: sanitizePdfFormData(pdfFormData),
+        }),
+      );
+    } catch (error) {
+      logger.warn('Could not create pdf', { error });
+      throw error;
+    }
+  };
+
+  return {
+    createPdf,
+  };
 };
 
-export { sanitizeLabel, sanitizeValue };
-export default applicationPdfService;
+export { createApplicationPdfService, sanitizeLabel, sanitizeValue };
+export type { ApplicationPdfMetrics, ApplicationPdfService };
