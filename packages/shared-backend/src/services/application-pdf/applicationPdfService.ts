@@ -1,7 +1,7 @@
 import { PdfData, PdfFormData, ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import { logger } from '../../shared/logger/logger';
 import { htmlServerUtils } from '../../util';
-import { ServiceMetrics, withMetrics } from '../serviceMetrics';
+import { createCounterMetric, createDurationMetric, MetricServiceConfig } from '../metrics/metricService';
 import applicationPdfApiService from './applicationPdfApiService';
 
 /**
@@ -55,20 +55,39 @@ interface CreatePdfProps {
 }
 
 type ApplicationPdfApiService = Pick<typeof applicationPdfApiService, 'createPdf'>;
-type ApplicationPdfMetrics = ServiceMetrics<'familiepdf', 'createPdf'>;
+
 type ApplicationPdfService = {
   createPdf: (props: CreatePdfProps) => Promise<string>;
 };
 
 interface CreateApplicationPdfServiceDependencies {
-  metrics: ApplicationPdfMetrics;
+  metrics?: MetricServiceConfig;
   apiService?: ApplicationPdfApiService;
 }
+
+const createApplicationPdfMetrics = (config?: MetricServiceConfig) => {
+  return {
+    failures: createCounterMetric(config, {
+      metricName: 'familie_pdf_failures_total',
+      help: 'Number of familie pdf requests which failed',
+    }),
+    requests: createCounterMetric(config, {
+      metricName: 'familie_pdf_requests_total',
+      help: 'Number of familie pdf requests',
+    }),
+    duration: createDurationMetric(config, {
+      metricName: 'familie_pdf_duration_seconds',
+      help: 'Request duration for familie pdf requests in seconds',
+    }),
+  };
+};
 
 const createApplicationPdfService = ({
   metrics,
   apiService = applicationPdfApiService,
 }: CreateApplicationPdfServiceDependencies): ApplicationPdfService => {
+  const applicationPdfMetrics = createApplicationPdfMetrics(metrics);
+
   const createPdf = async (props: CreatePdfProps) => {
     const { baseUrl, accessToken, pdfFormData } = props;
 
@@ -78,15 +97,21 @@ const createApplicationPdfService = ({
       throw error;
     }
 
+    applicationPdfMetrics.requests.increment();
+    const timer = applicationPdfMetrics.duration.start();
+
     try {
-      return await withMetrics(metrics, { service: 'familiepdf', method: 'createPdf' }, async () =>
-        apiService.createPdf({
-          baseUrl,
-          accessToken,
-          body: sanitizePdfFormData(pdfFormData),
-        }),
-      );
+      const pdf = await apiService.createPdf({
+        baseUrl,
+        accessToken,
+        body: sanitizePdfFormData(pdfFormData),
+      });
+
+      timer.success();
+      return pdf;
     } catch (error) {
+      applicationPdfMetrics.failures.increment();
+      timer.failure();
       logger.warn('Could not create pdf', { error });
       throw error;
     }
@@ -98,4 +123,4 @@ const createApplicationPdfService = ({
 };
 
 export { createApplicationPdfService, sanitizeLabel, sanitizeValue };
-export type { ApplicationPdfMetrics, ApplicationPdfService };
+export type { ApplicationPdfService };

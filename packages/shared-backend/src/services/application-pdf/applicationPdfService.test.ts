@@ -1,3 +1,4 @@
+import { Registry } from 'prom-client';
 import { describe, expect, it, vi } from 'vitest';
 import { createApplicationPdfService, sanitizeLabel, sanitizeValue } from './applicationPdfService';
 
@@ -51,19 +52,6 @@ describe('Sanitize values before sending to PDF generation', () => {
 });
 
 describe('createApplicationPdfService', () => {
-  const createMetrics = () => {
-    const stopTimer = vi.fn();
-
-    return {
-      stopTimer,
-      metrics: {
-        onRequest: vi.fn(),
-        onFailure: vi.fn(),
-        startDuration: vi.fn(() => stopTimer),
-      },
-    };
-  };
-
   const createPdfFormData = () => ({
     label: 'Test',
     pdfConfig: { harInnholdsfortegnelse: false, språk: 'nb' },
@@ -79,11 +67,17 @@ describe('createApplicationPdfService', () => {
   });
 
   it('records request and duration on success', async () => {
-    const { metrics, stopTimer } = createMetrics();
+    const registry = new Registry();
     const apiService = {
       createPdf: vi.fn().mockResolvedValue('pdf-base64'),
     };
-    const service = createApplicationPdfService({ metrics, apiService });
+    const service = createApplicationPdfService({
+      metrics: {
+        appName: 'fyllut',
+        registry,
+      },
+      apiService,
+    });
 
     const result = await service.createPdf({
       baseUrl: 'http://familie-pdf',
@@ -92,18 +86,27 @@ describe('createApplicationPdfService', () => {
     });
 
     expect(result).toBe('pdf-base64');
-    expect(metrics.onRequest).toHaveBeenCalledWith({ service: 'familiepdf', method: 'createPdf' });
-    expect(metrics.onFailure).not.toHaveBeenCalled();
-    expect(stopTimer).toHaveBeenCalledWith({ error: false });
+    expect(registry.getSingleMetric('fyllut_familie_pdf_requests_total')).toBeTruthy();
+    expect(registry.getSingleMetric('fyllut_familie_pdf_failures_total')).toBeTruthy();
+    expect(registry.getSingleMetric('fyllut_familie_pdf_duration_seconds')).toBeTruthy();
+    expect(await registry.metrics()).toContain('fyllut_familie_pdf_requests_total 1');
+    expect(await registry.metrics()).toContain('fyllut_familie_pdf_failures_total 0');
+    expect(await registry.metrics()).toContain('fyllut_familie_pdf_duration_seconds_count{error="false"} 1');
   });
 
   it('records failure and duration on error', async () => {
-    const { metrics, stopTimer } = createMetrics();
+    const registry = new Registry();
     const error = new Error('pdf failed');
     const apiService = {
       createPdf: vi.fn().mockRejectedValue(error),
     };
-    const service = createApplicationPdfService({ metrics, apiService });
+    const service = createApplicationPdfService({
+      metrics: {
+        appName: 'fyllut',
+        registry,
+      },
+      apiService,
+    });
 
     await expect(
       service.createPdf({
@@ -113,12 +116,43 @@ describe('createApplicationPdfService', () => {
       }),
     ).rejects.toThrow(error);
 
-    expect(metrics.onRequest).toHaveBeenCalledWith({ service: 'familiepdf', method: 'createPdf' });
-    expect(metrics.onFailure).toHaveBeenCalledWith({
-      service: 'familiepdf',
-      method: 'createPdf',
-      error,
+    expect(await registry.metrics()).toContain('fyllut_familie_pdf_requests_total 1');
+    expect(await registry.metrics()).toContain('fyllut_familie_pdf_failures_total 1');
+    expect(await registry.metrics()).toContain('fyllut_familie_pdf_duration_seconds_count{error="true"} 1');
+  });
+
+  it('reuses existing metrics when the same registry is passed more than once', async () => {
+    const registry = new Registry();
+    const apiService = {
+      createPdf: vi.fn().mockResolvedValue('pdf-base64'),
+    };
+    const firstService = createApplicationPdfService({
+      metrics: {
+        appName: 'fyllut',
+        registry,
+      },
+      apiService,
     });
-    expect(stopTimer).toHaveBeenCalledWith({ error: true });
+    const secondService = createApplicationPdfService({
+      metrics: {
+        appName: 'fyllut',
+        registry,
+      },
+      apiService,
+    });
+
+    await firstService.createPdf({
+      baseUrl: 'http://familie-pdf',
+      accessToken: 'token',
+      pdfFormData: createPdfFormData(),
+    });
+    await secondService.createPdf({
+      baseUrl: 'http://familie-pdf',
+      accessToken: 'token',
+      pdfFormData: createPdfFormData(),
+    });
+
+    expect(await registry.getMetricsAsJSON()).toHaveLength(3);
+    expect(await registry.metrics()).toContain('fyllut_familie_pdf_requests_total 2');
   });
 });

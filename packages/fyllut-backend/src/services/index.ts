@@ -2,7 +2,6 @@ import { createApplicationPdfService } from '@navikt/skjemadigitalisering-shared
 import { config } from '../config/config';
 import AppMetrics from './AppMetrics';
 import FormService from './FormService';
-import createOutgoingServiceMetrics from './metrics/outgoingServiceMetrics';
 import ApplicationService from './nologin/ApplicationService';
 import NologinTokenService from './nologin/NologinTokenService';
 import TranslationsService from './TranslationsService';
@@ -10,10 +9,10 @@ import TranslationsService from './TranslationsService';
 const appMetrics: AppMetrics = new AppMetrics();
 
 const applicationPdfService = createApplicationPdfService({
-  metrics: createOutgoingServiceMetrics(appMetrics, {
-    requestCounter: appMetrics.familiePdfRequestsCounter,
-    failureCounter: appMetrics.familiePdfFailuresCounter,
-  }),
+  metrics: {
+    appName: 'fyllut',
+    registry: appMetrics.register,
+  },
 });
 
 const translationsService = new TranslationsService(config);

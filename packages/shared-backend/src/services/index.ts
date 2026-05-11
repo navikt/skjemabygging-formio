@@ -6,9 +6,17 @@ import recipientService from './recipient/recipientService';
 import staticPdfService from './static-pdf/staticPdfService';
 import translationService from './translation/translationService';
 export { createApplicationPdfService } from './application-pdf/applicationPdfService';
-export type { ApplicationPdfMetrics, ApplicationPdfService } from './application-pdf/applicationPdfService';
+export type { ApplicationPdfService } from './application-pdf/applicationPdfService';
 export type { ForstesideRequestBody } from './cover-page/coverPageRequestTypes';
-export type { ServiceMetrics } from './serviceMetrics';
+export type {
+  CounterMetric,
+  DurationMetric,
+  DurationMetricTimer,
+  HistogramMetric,
+  MetricLabels,
+  MetricServiceConfig,
+} from './metrics/metricService';
+export type { PrometheusMetricsConfig } from './metrics/prometheusMetrics';
 
 export {
   coverPageMapper,
