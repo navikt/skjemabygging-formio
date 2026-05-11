@@ -1,6 +1,7 @@
 import { Registry } from 'prom-client';
 import { describe, expect, it, vi } from 'vitest';
-import { createApplicationPdfService, sanitizeLabel, sanitizeValue } from './applicationPdfService';
+import { sanitizeLabel, sanitizeValue } from './applicationPdfSerializer';
+import { createApplicationPdfService } from './applicationPdfService';
 
 describe('Sanitize values before sending to PDF generation', () => {
   describe('sanitizeLabel', () => {
