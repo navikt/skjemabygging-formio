@@ -15,8 +15,8 @@ const getPaperNoCoverPageErrorMessage = (form: Form) => {
   }
 
   const missingFields = [
-    !(form.properties.innsendingOverskrift ?? '').trim() && '«Overskrift til innsending»',
-    !(form.properties.innsendingForklaring ?? '').trim() && '«Forklaring til innsending»',
+    !(form.properties.innsendingOverskrift ?? '').trim() && '"Overskrift til innsending"',
+    !(form.properties.innsendingForklaring ?? '').trim() && '"Forklaring til innsending"',
   ].filter((field): field is string => Boolean(field));
 
   if (missingFields.length === 0) {

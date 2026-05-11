@@ -1,7 +1,7 @@
 import { FormPropertiesType, FormStatus } from '@navikt/skjemadigitalisering-shared-domain';
 
 const ERROR_MESSAGE_MISSING_INNSENDING_OVERSKRIFT =
-  'Du må fylle ut «Overskrift til innsending» under skjemainnstillinger før skjemaet kan publiseres.';
+  'Du må fylle ut "Overskrift til innsending" under skjemainnstillinger før skjemaet kan publiseres.';
 const ERROR_MESSAGE_MISSING_ATTACHMENT_METADATA =
   'Du må fylle ut vedleggskode og vedleggstittel for alle vedlegg før skjemaet kan publiseres.';
 

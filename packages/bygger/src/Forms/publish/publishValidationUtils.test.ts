@@ -9,11 +9,11 @@ import {
 const { createDummyAttachment, createFormsApiFormObject, createPanelObject } = mockedComponentObjectForTest;
 
 const ERROR_MESSAGE_MISSING_INNSENDING_OVERSKRIFT =
-  'Du må fylle ut «Overskrift til innsending» under skjemainnstillinger før skjemaet kan publiseres.';
+  'Du må fylle ut "Overskrift til innsending" under skjemainnstillinger før skjemaet kan publiseres.';
 const ERROR_MESSAGE_MISSING_INNSENDING_FORKLARING =
-  'Du må fylle ut «Forklaring til innsending» under skjemainnstillinger før skjemaet kan publiseres.';
+  'Du må fylle ut "Forklaring til innsending" under skjemainnstillinger før skjemaet kan publiseres.';
 const ERROR_MESSAGE_MISSING_INNSENDING_FIELDS =
-  'Du må fylle ut «Overskrift til innsending» og «Forklaring til innsending» under skjemainnstillinger før skjemaet kan publiseres.';
+  'Du må fylle ut "Overskrift til innsending" og "Forklaring til innsending" under skjemainnstillinger før skjemaet kan publiseres.';
 
 type AttachmentProperties = {
   vedleggskode?: string;
