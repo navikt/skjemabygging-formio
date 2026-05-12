@@ -13,7 +13,8 @@ const getRecipients = async (props: GetRecipientsProps): Promise<Recipient[]> =>
     return [];
   }
 
-  return await recipientApiService.getRecipients({ baseUrl });
+  const recipient = await recipientApiService.getRecipient({ baseUrl, recipientId });
+  return [recipient];
 };
 
 const recipientService = {

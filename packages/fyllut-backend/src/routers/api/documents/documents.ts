@@ -12,6 +12,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { RequestHandler } from 'express';
 import { config } from '../../../config/config';
+import { logger } from '../../../logger';
 import { appMetrics, applicationPdfService } from '../../../services';
 import { base64Decode } from '../../../utils/base64';
 
@@ -47,13 +48,18 @@ const toPdfBuffer = (pdfBase64: string | null | undefined, errorMessage: string)
 
 const application: RequestHandler = async (req, res, next) => {
   try {
-    const { form, pdfFormData, submission } = req.body;
+    const { form, pdfFormData, submission, language } = req.body;
     if (!submission) {
       throw new Error('Missing submission data to generate PDF');
     }
     assertPdfFormData(pdfFormData);
     const formParsed = JSON.parse(form);
     const pdfGeneratorToken = req.headers.PdfAccessToken as string;
+
+    logger.info(`Create application pdf for ${formParsed?.properties?.skjemanummer ?? 'unknown form'}`, {
+      skjemanummer: formParsed?.properties?.skjemanummer,
+      language,
+    });
 
     if (!pdfGeneratorToken) {
       throw new Error('Azure PDF generator token is missing. Unable to generate PDF');

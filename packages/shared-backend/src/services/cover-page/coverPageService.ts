@@ -13,9 +13,7 @@ interface DownloadCoverPageProps {
 }
 const downloadCoverPage = async (props: DownloadCoverPageProps) => {
   const { baseUrl, accessToken, data, languageCode, translate, formNumber } = props;
-  const { body } = {
-    body: coverPageMapper.createRequestBodyFromDownloadData(data, languageCode, translate, formNumber),
-  };
+  const body = coverPageMapper.createRequestBodyFromDownloadData(data, languageCode, translate, formNumber);
   const { submissionType } = data;
 
   logger.debug(`Download cover page for ${data.form.skjemanummer}`);
