@@ -36,7 +36,9 @@ describe('[endpoint] documents', () => {
     const mockAzureAccessTokenHandler = vi.fn((scope: string) => {
       return `mock-token-for:${scope}`;
     });
-    const recipientsMock = nock(formsApiUrl).get('/v1/recipients').reply(200, []);
+    const recipientsMock = nock(formsApiUrl)
+      .get('/v1/recipients/mottaksadresseId')
+      .reply(200, { adresselinje1: 'Test' });
     const generateFileMock = nock(skjemabyggingProxyUrl!)
       .post('/foersteside')
       .reply(200, { foersteside: encodedForstesidedPdf });
@@ -88,7 +90,9 @@ describe('[endpoint] documents', () => {
       return `mock-token-for:${scope}`;
     });
 
-    const recipientsMock = nock(formsApiUrl).get('/v1/recipients').reply(200, []);
+    const recipientsMock = nock(formsApiUrl)
+      .get('/v1/recipients/mottaksadresseId')
+      .reply(200, { adresselinje1: 'Test' });
     const generateFileMock = nock(skjemabyggingProxyUrl!)
       .post('/foersteside')
       .reply(200, { foersteside: encodedForstesidedPdf });
