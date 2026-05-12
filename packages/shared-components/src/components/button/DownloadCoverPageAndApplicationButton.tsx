@@ -58,34 +58,35 @@ const DownloadCoverPageAndApplicationButton = ({
   const actionUrl = `${fyllutBaseURL}/api/documents${type === 'application' ? '/application' : '/cover-page-and-application'}`;
 
   const getPdfContent = async () => {
-    return await http.post<Blob>(
-      actionUrl,
-      {
-        language: currentLanguage,
-        form: JSON.stringify(form),
-        submission: JSON.stringify(submission),
-        translations: JSON.stringify(
-          currentLanguage !== 'nb-NO' && translationsForNavForm?.[currentLanguage]
-            ? translationsForNavForm[currentLanguage]
-            : {},
-        ),
-        enhetNummer,
+    const body: Record<string, unknown> = {
+      language: currentLanguage,
+      form: JSON.stringify(form),
+      submission: JSON.stringify(submission),
+      pdfFormData: renderPdfForm({
+        activeComponents,
+        activeAttachmentUploadsPanel,
+        submission,
+        form: formioFormsApiUtils.mapNavFormToForm(form),
+        currentLanguage,
+        translate,
+        appConfig,
         submissionMethod,
-        pdfFormData: renderPdfForm({
-          activeComponents,
-          activeAttachmentUploadsPanel,
-          submission,
-          form: formioFormsApiUtils.mapNavFormToForm(form),
-          currentLanguage,
-          translate,
-          appConfig,
-          submissionMethod,
-        }),
-      },
-      {
-        Accept: http.MimeType.PDF,
-      },
-    );
+      }),
+    };
+
+    if (type === 'coverPageAndApplication') {
+      body.translations = JSON.stringify(
+        currentLanguage !== 'nb-NO' && translationsForNavForm?.[currentLanguage]
+          ? translationsForNavForm[currentLanguage]
+          : {},
+      );
+      body.enhetNummer = enhetNummer;
+      body.submissionMethod = submissionMethod;
+    }
+
+    return await http.post<Blob>(actionUrl, body, {
+      Accept: http.MimeType.PDF,
+    });
   };
 
   return (

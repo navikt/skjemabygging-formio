@@ -15,8 +15,21 @@ const getRecipients = async (props: GetRecipientsProps) => {
   return await http.get<Recipient[]>(`${baseUrl}/${recipientsUrl}`);
 };
 
+interface GetRecipientProps {
+  baseUrl: string;
+  recipientId: string;
+}
+
+const getRecipient = async (props: GetRecipientProps) => {
+  const { baseUrl, recipientId } = props;
+  logger.info(`Get recipient ${recipientId}`);
+
+  return await http.get<Recipient>(`${baseUrl}/${recipientsUrl}/${recipientId}`);
+};
+
 const recipientApiService = {
   getRecipients,
+  getRecipient,
 };
 
 export default recipientApiService;
