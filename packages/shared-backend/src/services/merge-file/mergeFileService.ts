@@ -6,28 +6,44 @@ interface MergeFilesBodyType {
   files: string[];
 }
 interface MergeFilesProps {
-  baseUrl: string;
   accessToken: string;
   body: MergeFilesBodyType;
 }
-const mergeFiles = async (props: MergeFilesProps): Promise<any> => {
-  const { baseUrl, body, accessToken } = props;
+type MergeFileApiService = Pick<typeof mergeFileApiService, 'mergeFiles'>;
 
-  const requestBody = {
-    tittel: body.title,
-    spraak: body.language,
-    filer: body.files,
+type MergeFileService = {
+  mergeFiles: (props: MergeFilesProps) => Promise<any>;
+};
+
+interface CreateMergeFileServiceProps {
+  baseUrl: string;
+  apiService?: MergeFileApiService;
+}
+
+const createMergeFileService = ({
+  baseUrl,
+  apiService = mergeFileApiService,
+}: CreateMergeFileServiceProps): MergeFileService => {
+  const mergeFiles = async (props: MergeFilesProps): Promise<any> => {
+    const { body, accessToken } = props;
+
+    const requestBody = {
+      tittel: body.title,
+      spraak: body.language,
+      filer: body.files,
+    };
+
+    return apiService.mergeFiles({
+      baseUrl,
+      body: requestBody,
+      accessToken,
+    });
   };
 
-  return mergeFileApiService.mergeFiles({
-    baseUrl,
-    body: requestBody,
-    accessToken,
-  });
+  return {
+    mergeFiles,
+  };
 };
 
-const mergeFileService = {
-  mergeFiles,
-};
-
-export default mergeFileService;
+export { createMergeFileService };
+export type { MergeFileService };

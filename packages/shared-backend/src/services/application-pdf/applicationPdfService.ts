@@ -6,7 +6,6 @@ import { createApplicationPdfMetrics } from './applicationPdfMetrics';
 import { sanitizePdfFormData } from './applicationPdfSerializer';
 
 interface CreatePdfProps {
-  baseUrl: string;
   accessToken: string;
   pdfFormData?: PdfFormData;
 }
@@ -18,6 +17,7 @@ type ApplicationPdfService = {
 };
 
 interface CreateApplicationPdfServiceProps {
+  baseUrl: string;
   metrics?: MetricServiceConfig;
   apiService?: ApplicationPdfApiService;
 }
@@ -33,13 +33,14 @@ const requirePdfFormData = (pdfFormData?: PdfFormData): PdfFormData => {
 };
 
 const createApplicationPdfService = ({
+  baseUrl,
   metrics,
   apiService = applicationPdfApiService,
 }: CreateApplicationPdfServiceProps): ApplicationPdfService => {
   const applicationPdfMetrics = createApplicationPdfMetrics(metrics);
 
   const createPdf = async (props: CreatePdfProps) => {
-    const { baseUrl, accessToken, pdfFormData } = props;
+    const { accessToken, pdfFormData } = props;
     const validatedPdfFormData = requirePdfFormData(pdfFormData);
 
     applicationPdfMetrics.requests.increment();

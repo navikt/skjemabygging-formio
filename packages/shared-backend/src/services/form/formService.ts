@@ -3,62 +3,65 @@ import { fileUtil } from '../../util';
 import formApiService from './formApiService';
 
 type FormSelectType = keyof Form;
+type FormApiService = Pick<typeof formApiService, 'getForms' | 'getForm'>;
 
-interface GetFormsProps {
-  baseUrl: string;
+interface GetFormsConfig {
   formsApiStaging?: boolean;
   mocksEnabled?: boolean;
   formsLocation?: string;
-  select: Omit<FormSelectType, 'components'>[];
 }
-const getForms = async <S extends FormSelectType[]>(
-  props: Omit<GetFormsProps, 'select'> & { select: S },
-): Promise<Array<Pick<Form, S[number]>>> => {
-  const { baseUrl, formsApiStaging, mocksEnabled, formsLocation, select } = props;
 
-  if (!select) {
-    throw new ResponseError('BAD_REQUEST', 'Select properties are required to fetch forms');
-  }
-
-  if (formsApiStaging || mocksEnabled) {
-    return formApiService.getForms<Pick<Form, S[number]>>({ baseUrl, select: select.join(',') });
-  } else {
-    const navForms = await fileUtil.loadAllJsonFilesFromDirectory(formsLocation);
-    return navForms.map(formioFormsApiUtils.mapNavFormToForm) as Array<Pick<Form, S[number]>>;
-  }
+type FormService = {
+  getForms: <S extends FormSelectType[]>(props: { select: S }) => Promise<Array<Pick<Form, S[number]>>>;
+  getForm: <S extends FormSelectType[]>(props: { formPath: string; select: S }) => Promise<Pick<Form, S[number]>>;
 };
 
-interface GetFormProps {
+interface CreateFormServiceProps extends GetFormsConfig {
   baseUrl: string;
-  formPath: string;
-  formsApiStaging?: boolean;
-  mocksEnabled?: boolean;
-  formsLocation?: string;
-  select: FormSelectType[];
+  apiService?: FormApiService;
 }
-const getForm = async <S extends FormSelectType[]>(
-  props: Omit<GetFormProps, 'select'> & { select: S },
-): Promise<Pick<Form, S[number]>> => {
-  const { baseUrl, formPath, formsApiStaging, mocksEnabled, formsLocation, select } = props;
 
-  if (!select) {
-    throw new ResponseError('BAD_REQUEST', 'Select properties are required to fetch form');
-  }
+const createFormService = ({
+  baseUrl,
+  formsApiStaging,
+  mocksEnabled,
+  formsLocation,
+  apiService = formApiService,
+}: CreateFormServiceProps): FormService => {
+  const getForms: FormService['getForms'] = async ({ select }) => {
+    if (!select) {
+      throw new ResponseError('BAD_REQUEST', 'Select properties are required to fetch forms');
+    }
 
-  if (formsApiStaging || mocksEnabled) {
-    return formApiService.getForm<Pick<Form, S[number]>>({ baseUrl, formPath, select: select.join(',') });
-  } else {
+    if (formsApiStaging || mocksEnabled) {
+      return apiService.getForms<Pick<Form, (typeof select)[number]>>({ baseUrl, select: select.join(',') });
+    }
+
+    const navForms = await fileUtil.loadAllJsonFilesFromDirectory(formsLocation);
+    return navForms.map(formioFormsApiUtils.mapNavFormToForm) as Array<Pick<Form, (typeof select)[number]>>;
+  };
+
+  const getForm: FormService['getForm'] = async ({ formPath, select }) => {
+    if (!select) {
+      throw new ResponseError('BAD_REQUEST', 'Select properties are required to fetch form');
+    }
+
+    if (formsApiStaging || mocksEnabled) {
+      return apiService.getForm<Pick<Form, (typeof select)[number]>>({ baseUrl, formPath, select: select.join(',') });
+    }
+
     const form = await fileUtil.loadJsonFileFromDirectory(formsLocation, formPath);
     if (!form) {
       throw new ResponseError('NOT_FOUND', `Form with path ${formPath} not found in directory ${formsLocation}`);
     }
-    return formioFormsApiUtils.mapNavFormToForm(form) as Pick<Form, S[number]>;
-  }
+    return formioFormsApiUtils.mapNavFormToForm(form) as Pick<Form, (typeof select)[number]>;
+  };
+
+  return {
+    getForms,
+    getForm,
+  };
 };
 
-const formService = {
-  getForms,
-  getForm,
-};
-
-export default formService;
+export { createFormService };
+export type { FormService };

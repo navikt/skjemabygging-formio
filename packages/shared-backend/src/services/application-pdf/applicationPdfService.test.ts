@@ -73,6 +73,7 @@ describe('createApplicationPdfService', () => {
       createPdf: vi.fn().mockResolvedValue('pdf-base64'),
     };
     const service = createApplicationPdfService({
+      baseUrl: 'http://familie-pdf',
       metrics: {
         appName: 'fyllut',
         registry,
@@ -81,7 +82,6 @@ describe('createApplicationPdfService', () => {
     });
 
     const result = await service.createPdf({
-      baseUrl: 'http://familie-pdf',
       accessToken: 'token',
       pdfFormData: createPdfFormData(),
     });
@@ -102,6 +102,7 @@ describe('createApplicationPdfService', () => {
       createPdf: vi.fn().mockRejectedValue(error),
     };
     const service = createApplicationPdfService({
+      baseUrl: 'http://familie-pdf',
       metrics: {
         appName: 'fyllut',
         registry,
@@ -111,7 +112,6 @@ describe('createApplicationPdfService', () => {
 
     await expect(
       service.createPdf({
-        baseUrl: 'http://familie-pdf',
         accessToken: 'token',
         pdfFormData: createPdfFormData(),
       }),
@@ -128,6 +128,7 @@ describe('createApplicationPdfService', () => {
       createPdf: vi.fn().mockResolvedValue('pdf-base64'),
     };
     const firstService = createApplicationPdfService({
+      baseUrl: 'http://familie-pdf',
       metrics: {
         appName: 'fyllut',
         registry,
@@ -135,6 +136,7 @@ describe('createApplicationPdfService', () => {
       apiService,
     });
     const secondService = createApplicationPdfService({
+      baseUrl: 'http://familie-pdf',
       metrics: {
         appName: 'fyllut',
         registry,
@@ -143,12 +145,10 @@ describe('createApplicationPdfService', () => {
     });
 
     await firstService.createPdf({
-      baseUrl: 'http://familie-pdf',
       accessToken: 'token',
       pdfFormData: createPdfFormData(),
     });
     await secondService.createPdf({
-      baseUrl: 'http://familie-pdf',
       accessToken: 'token',
       pdfFormData: createPdfFormData(),
     });

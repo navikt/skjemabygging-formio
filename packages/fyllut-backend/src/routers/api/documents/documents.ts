@@ -1,9 +1,4 @@
-import {
-  coverPageMapper,
-  coverPageService,
-  mergeFileService,
-  recipientService,
-} from '@navikt/skjemadigitalisering-shared-backend';
+import { coverPageMapper } from '@navikt/skjemadigitalisering-shared-backend';
 import {
   I18nTranslationMap,
   SubmissionMethod,
@@ -11,11 +6,14 @@ import {
   translationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { RequestHandler } from 'express';
-import { config } from '../../../config/config';
-import { appMetrics, applicationPdfService } from '../../../services';
+import {
+  appMetrics,
+  applicationPdfService,
+  coverPageService,
+  mergeFileService,
+  recipientService,
+} from '../../../services';
 import { base64Decode } from '../../../utils/base64';
-
-const { familiePdfGeneratorUrl, formsApiUrl, sendInnConfig, skjemabyggingProxyUrl } = config;
 
 const assertPdfFormData = (pdfFormData: unknown) => {
   if (!pdfFormData || typeof pdfFormData !== 'object') {
@@ -60,7 +58,6 @@ const application: RequestHandler = async (req, res, next) => {
     }
 
     const applicationPdfBase64 = await applicationPdfService.createPdf({
-      baseUrl: familiePdfGeneratorUrl,
       accessToken: pdfGeneratorToken,
       pdfFormData,
     });
@@ -101,7 +98,6 @@ const coverPageAndApplication: RequestHandler = async (req, res, next) => {
       throw new Error('MergePDF generator token is missing. Unable to merge front page and application PDFs');
     }
     const recipients = await recipientService.getRecipients({
-      baseUrl: formsApiUrl,
       recipientId: formParsed?.properties?.mottaksadresseId,
     });
     const coverPageData = coverPageMapper.createDownloadDataFromSubmission(
@@ -116,20 +112,17 @@ const coverPageAndApplication: RequestHandler = async (req, res, next) => {
     const coverPageTitle = getCoverPageTitle(formParsed, translate);
     const [coverPagePdfBase64, applicationPdfBase64] = await Promise.all([
       coverPageService.downloadCoverPage({
-        baseUrl: skjemabyggingProxyUrl,
         accessToken: frontPageGeneratorToken,
         data: coverPageData,
         languageCode: language,
         translate,
       }),
       applicationPdfService.createPdf({
-        baseUrl: familiePdfGeneratorUrl,
         accessToken: pdfGeneratorToken,
         pdfFormData,
       }),
     ]);
     const mergedPdfBase64 = await mergeFileService.mergeFiles({
-      baseUrl: `${sendInnConfig.host}${sendInnConfig.paths.mergeFiles}`,
       accessToken: mergePdfToken,
       body: {
         title: coverPageTitle,

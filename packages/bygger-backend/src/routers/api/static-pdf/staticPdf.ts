@@ -1,16 +1,13 @@
-import { requestUtil, staticPdfService } from '@navikt/skjemadigitalisering-shared-backend';
+import { requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import { TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, RequestHandler, Response } from 'express';
-import config from '../../../config';
-
-const { formsApi } = config;
+import { staticPdfService } from '../../../services';
 
 const getAll: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
   const formPath = requestUtil.getStringParam(req, 'formPath')!;
 
   try {
     const allPdfs = await staticPdfService.getAll({
-      baseUrl: formsApi.url,
       formPath,
     });
     res.json(allPdfs);
@@ -28,7 +25,6 @@ const uploadPdf: RequestHandler = async (req: Request, res: Response, next: Next
     const file = requestUtil.getFile(req);
 
     const pdf = await staticPdfService.uploadPdf({
-      baseUrl: formsApi.url,
       formPath,
       languageCode,
       accessToken,
@@ -46,7 +42,6 @@ const downloadPdf: RequestHandler = async (req: Request, res: Response, next: Ne
 
   try {
     const pdf = await staticPdfService.downloadPdf({
-      baseUrl: formsApi.url,
       formPath,
       languageCode,
     });
@@ -65,7 +60,6 @@ const deletePdf: RequestHandler = async (req: Request, res: Response, next: Next
     const accessToken = requestUtil.getAzureAccessToken(req);
 
     await staticPdfService.deletePdf({
-      baseUrl: formsApi.url,
       formPath,
       languageCode,
       accessToken,

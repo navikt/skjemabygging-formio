@@ -1,23 +1,39 @@
 import { Recipient } from '@navikt/skjemadigitalisering-shared-domain';
 import recipientApiService from './recipientApiService';
 
+type RecipientApiService = Pick<typeof recipientApiService, 'getRecipients'>;
+
 interface GetRecipientsProps {
-  baseUrl: string;
   recipientId?: string;
 }
 
-const getRecipients = async (props: GetRecipientsProps): Promise<Recipient[]> => {
-  const { baseUrl, recipientId } = props;
-
-  if (!recipientId) {
-    return [];
-  }
-
-  return await recipientApiService.getRecipients({ baseUrl });
+type RecipientService = {
+  getRecipients: (props: GetRecipientsProps) => Promise<Recipient[]>;
 };
 
-const recipientService = {
-  getRecipients,
+interface CreateRecipientServiceProps {
+  baseUrl: string;
+  apiService?: RecipientApiService;
+}
+
+const createRecipientService = ({
+  baseUrl,
+  apiService = recipientApiService,
+}: CreateRecipientServiceProps): RecipientService => {
+  const getRecipients = async (props: GetRecipientsProps): Promise<Recipient[]> => {
+    const { recipientId } = props;
+
+    if (!recipientId) {
+      return [];
+    }
+
+    return await apiService.getRecipients({ baseUrl });
+  };
+
+  return {
+    getRecipients,
+  };
 };
 
-export default recipientService;
+export { createRecipientService };
+export type { RecipientService };
