@@ -239,3 +239,7 @@ jobs:
       git_sha: ${{ github.sha }}
       environment: 'prod'
     secrets: inherit
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+      packages: 'read'
