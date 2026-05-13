@@ -33,8 +33,8 @@ const createPdf = async (props: CreatePdfProps) => {
   return pdf;
 };
 
-const applicationPdfApiService = {
+const applicationPdfClient = {
   createPdf,
 };
 
-export default applicationPdfApiService;
+export default applicationPdfClient;

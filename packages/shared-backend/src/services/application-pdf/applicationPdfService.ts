@@ -1,7 +1,7 @@
 import { PdfFormData, ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import { logger } from '../../shared/logger/logger';
 import { MetricServiceConfig } from '../metrics/metricService';
-import applicationPdfApiService from './applicationPdfApiService';
+import applicationPdfClient from './applicationPdfClient';
 import { createApplicationPdfMetrics } from './applicationPdfMetrics';
 import { sanitizePdfFormData } from './applicationPdfSerializer';
 
@@ -10,7 +10,7 @@ interface CreatePdfProps {
   pdfFormData?: PdfFormData;
 }
 
-type ApplicationPdfApiService = Pick<typeof applicationPdfApiService, 'createPdf'>;
+type ApplicationPdfClient = Pick<typeof applicationPdfClient, 'createPdf'>;
 
 type ApplicationPdfService = {
   createPdf: (props: CreatePdfProps) => Promise<string>;
@@ -19,7 +19,7 @@ type ApplicationPdfService = {
 interface CreateApplicationPdfServiceProps {
   baseUrl: string;
   metrics?: MetricServiceConfig;
-  apiService?: ApplicationPdfApiService;
+  client?: ApplicationPdfClient;
 }
 
 const requirePdfFormData = (pdfFormData?: PdfFormData): PdfFormData => {
@@ -35,7 +35,7 @@ const requirePdfFormData = (pdfFormData?: PdfFormData): PdfFormData => {
 const createApplicationPdfService = ({
   baseUrl,
   metrics,
-  apiService = applicationPdfApiService,
+  client = applicationPdfClient,
 }: CreateApplicationPdfServiceProps): ApplicationPdfService => {
   const applicationPdfMetrics = createApplicationPdfMetrics(metrics);
 
@@ -47,7 +47,7 @@ const createApplicationPdfService = ({
     const timer = applicationPdfMetrics.duration.start();
 
     try {
-      const pdf = await apiService.createPdf({
+      const pdf = await client.createPdf({
         baseUrl,
         accessToken,
         body: sanitizePdfFormData(validatedPdfFormData),

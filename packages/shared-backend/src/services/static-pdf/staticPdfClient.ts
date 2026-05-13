@@ -64,11 +64,11 @@ const deletePdf = async (props: DeletePdfProps) => {
   await http.delete(`${baseUrl}/${formsUrl}/${formPath}/static-pdfs/${languageCode}`, undefined, { accessToken });
 };
 
-const staticPdfApiService = {
+const staticPdfClient = {
   getAll,
   uploadPdf,
   downloadPdf,
   deletePdf,
 };
 
-export default staticPdfApiService;
+export default staticPdfClient;

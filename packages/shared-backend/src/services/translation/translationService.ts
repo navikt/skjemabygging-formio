@@ -4,9 +4,9 @@ import {
   TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { translationUtil } from '../../util';
-import translationApiService from './translationApiService';
+import translationClient from './translationClient';
 
-type TranslationApiService = Pick<typeof translationApiService, 'getFormTranslations' | 'getGlobalTranslations'>;
+type TranslationClient = Pick<typeof translationClient, 'getFormTranslations' | 'getGlobalTranslations'>;
 
 const convertToFormsApiTranslationMap = (translations: FormsApiTranslation[]): FormsApiTranslationMap => {
   return translations.reduce((accumulator, currentItem: FormsApiTranslation) => {
@@ -39,17 +39,17 @@ type TranslationService = {
 
 interface CreateTranslationServiceProps {
   baseUrl: string;
-  apiService?: TranslationApiService;
+  client?: TranslationClient;
 }
 
 const createTranslationService = ({
   baseUrl,
-  apiService = translationApiService,
+  client = translationClient,
 }: CreateTranslationServiceProps): TranslationService => {
   const getFormTranslations = async (props: GetFormTranslationsProps) => {
     const { formPath } = props;
 
-    const translations = await apiService.getFormTranslations({
+    const translations = await client.getFormTranslations({
       baseUrl,
       formPath,
     });
@@ -62,7 +62,7 @@ const createTranslationService = ({
   };
 
   const getGlobalTranslations = async () => {
-    const translations = await apiService.getGlobalTranslations({
+    const translations = await client.getGlobalTranslations({
       baseUrl,
     });
 

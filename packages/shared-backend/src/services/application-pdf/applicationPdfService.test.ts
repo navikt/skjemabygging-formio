@@ -69,7 +69,7 @@ describe('createApplicationPdfService', () => {
 
   it('records request and duration on success', async () => {
     const registry = new Registry();
-    const apiService = {
+    const client = {
       createPdf: vi.fn().mockResolvedValue('pdf-base64'),
     };
     const service = createApplicationPdfService({
@@ -78,7 +78,7 @@ describe('createApplicationPdfService', () => {
         appName: 'fyllut',
         registry,
       },
-      apiService,
+      client,
     });
 
     const result = await service.createPdf({
@@ -98,7 +98,7 @@ describe('createApplicationPdfService', () => {
   it('records failure and duration on error', async () => {
     const registry = new Registry();
     const error = new Error('pdf failed');
-    const apiService = {
+    const client = {
       createPdf: vi.fn().mockRejectedValue(error),
     };
     const service = createApplicationPdfService({
@@ -107,7 +107,7 @@ describe('createApplicationPdfService', () => {
         appName: 'fyllut',
         registry,
       },
-      apiService,
+      client,
     });
 
     await expect(
@@ -124,7 +124,7 @@ describe('createApplicationPdfService', () => {
 
   it('reuses existing metrics when the same registry is passed more than once', async () => {
     const registry = new Registry();
-    const apiService = {
+    const client = {
       createPdf: vi.fn().mockResolvedValue('pdf-base64'),
     };
     const firstService = createApplicationPdfService({
@@ -133,7 +133,7 @@ describe('createApplicationPdfService', () => {
         appName: 'fyllut',
         registry,
       },
-      apiService,
+      client,
     });
     const secondService = createApplicationPdfService({
       baseUrl: 'http://familie-pdf',
@@ -141,7 +141,7 @@ describe('createApplicationPdfService', () => {
         appName: 'fyllut',
         registry,
       },
-      apiService,
+      client,
     });
 
     await firstService.createPdf({

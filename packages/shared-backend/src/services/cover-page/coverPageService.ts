@@ -1,9 +1,9 @@
 import { CoverPageDownloadType, TranslateFunction } from '@navikt/skjemadigitalisering-shared-domain';
 import { logger } from '../../shared/logger/logger';
-import coverPageApiService from './coverPageApiService';
+import coverPageClient from './coverPageClient';
 import { coverPageMapper } from './mapper';
 
-type CoverPageApiService = Pick<typeof coverPageApiService, 'downloadCoverPage'>;
+type CoverPageClient = Pick<typeof coverPageClient, 'downloadCoverPage'>;
 
 interface DownloadCoverPageProps {
   languageCode?: string;
@@ -19,12 +19,12 @@ type CoverPageService = {
 
 interface CreateCoverPageServiceProps {
   baseUrl: string;
-  apiService?: CoverPageApiService;
+  client?: CoverPageClient;
 }
 
 const createCoverPageService = ({
   baseUrl,
-  apiService = coverPageApiService,
+  client = coverPageClient,
 }: CreateCoverPageServiceProps): CoverPageService => {
   const downloadCoverPage = async (props: DownloadCoverPageProps) => {
     const { accessToken, data, languageCode, translate, formNumber } = props;
@@ -35,7 +35,7 @@ const createCoverPageService = ({
 
     logger.debug(`Download cover page for ${data.form.skjemanummer}`);
 
-    const response = await apiService.downloadCoverPage({
+    const response = await client.downloadCoverPage({
       baseUrl,
       accessToken,
       body,

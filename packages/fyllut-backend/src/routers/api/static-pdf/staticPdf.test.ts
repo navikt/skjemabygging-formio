@@ -1,7 +1,7 @@
 import {
   coverPageService,
+  formService,
   mergeFileService,
-  sharedFormService,
   staticPdfService,
   translationService,
 } from '../../../services';
@@ -18,7 +18,7 @@ vi.mock('../../../services', () => ({
   coverPageService: {
     downloadCoverPage: vi.fn(),
   },
-  sharedFormService: {
+  formService: {
     getForm: vi.fn(),
   },
   mergeFileService: {
@@ -39,7 +39,7 @@ describe('[endpoint] staticPdf', () => {
   });
 
   it('adds p suffix to the first form number token before downloading cover page', async () => {
-    vi.mocked(sharedFormService.getForm).mockResolvedValue({
+    vi.mocked(formService.getForm).mockResolvedValue({
       skjemanummer: 'NAV 12.34-56',
       path: 'nav123456',
       title: 'Test form',

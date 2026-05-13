@@ -27,9 +27,9 @@ const getRecipient = async (props: GetRecipientProps) => {
   return await http.get<Recipient>(`${baseUrl}/${recipientsUrl}/${recipientId}`);
 };
 
-const recipientApiService = {
+const recipientClient = {
   getRecipients,
   getRecipient,
 };
 
-export default recipientApiService;
+export default recipientClient;

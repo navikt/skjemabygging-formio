@@ -24,8 +24,8 @@ const downloadCoverPage = async (props: DownloadCoverPageProps) => {
   return pdf;
 };
 
-const coverPageApiService = {
+const coverPageClient = {
   downloadCoverPage,
 };
 
-export default coverPageApiService;
+export default coverPageClient;

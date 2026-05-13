@@ -1,9 +1,9 @@
 import { ResponseError, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import 'multer';
 import { logger } from '../../shared/logger/logger';
-import staticPdfApiService from './staticPdfApiService';
+import staticPdfClient from './staticPdfClient';
 
-type StaticPdfApiService = Pick<typeof staticPdfApiService, 'getAll' | 'downloadPdf' | 'uploadPdf' | 'deletePdf'>;
+type StaticPdfClient = Pick<typeof staticPdfClient, 'getAll' | 'downloadPdf' | 'uploadPdf' | 'deletePdf'>;
 
 interface GetAllProps {
   formPath: string;
@@ -28,25 +28,25 @@ interface DeletePdfProps {
 }
 
 type StaticPdfService = {
-  getAll: (props: GetAllProps) => ReturnType<StaticPdfApiService['getAll']>;
-  uploadPdf: (props: UploadPdfProps) => ReturnType<StaticPdfApiService['uploadPdf']>;
+  getAll: (props: GetAllProps) => ReturnType<StaticPdfClient['getAll']>;
+  uploadPdf: (props: UploadPdfProps) => ReturnType<StaticPdfClient['uploadPdf']>;
   downloadPdf: (props: DownloadPdfProps) => Promise<string>;
   deletePdf: (props: DeletePdfProps) => Promise<void>;
 };
 
 interface CreateStaticPdfServiceProps {
   baseUrl: string;
-  apiService?: StaticPdfApiService;
+  client?: StaticPdfClient;
 }
 
 const createStaticPdfService = ({
   baseUrl,
-  apiService = staticPdfApiService,
+  client = staticPdfClient,
 }: CreateStaticPdfServiceProps): StaticPdfService => {
   const getAll = async (props: GetAllProps) => {
     const { formPath } = props;
 
-    return apiService.getAll({ baseUrl, formPath });
+    return client.getAll({ baseUrl, formPath });
   };
 
   const getValidLanguageCode = async (props: DownloadPdfProps) => {
@@ -83,7 +83,7 @@ const createStaticPdfService = ({
     const { formPath } = props;
 
     const validLanguageCode = await getValidLanguageCode(props);
-    return apiService.downloadPdf({ baseUrl, formPath, languageCode: validLanguageCode });
+    return client.downloadPdf({ baseUrl, formPath, languageCode: validLanguageCode });
   };
 
   const uploadPdf = async (props: UploadPdfProps) => {
@@ -94,12 +94,12 @@ const createStaticPdfService = ({
     const body = new FormData();
     body.append('fileContent', fileBlob, originalFileName);
 
-    return apiService.uploadPdf({ baseUrl, formPath, languageCode, accessToken, body });
+    return client.uploadPdf({ baseUrl, formPath, languageCode, accessToken, body });
   };
 
   const deletePdf = async (props: DeletePdfProps) => {
     const { formPath, languageCode, accessToken } = props;
-    await apiService.deletePdf({ baseUrl, formPath, languageCode, accessToken });
+    await client.deletePdf({ baseUrl, formPath, languageCode, accessToken });
   };
 
   return {

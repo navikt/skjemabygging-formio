@@ -1,9 +1,9 @@
 import { Form, formioFormsApiUtils, ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import { fileUtil } from '../../util';
-import formApiService from './formApiService';
+import formClient from './formClient';
 
 type FormSelectType = keyof Form;
-type FormApiService = Pick<typeof formApiService, 'getForms' | 'getForm'>;
+type FormClient = Pick<typeof formClient, 'getForms' | 'getForm'>;
 
 interface GetFormsConfig {
   formsApiStaging?: boolean;
@@ -18,7 +18,7 @@ type FormService = {
 
 interface CreateFormServiceProps extends GetFormsConfig {
   baseUrl: string;
-  apiService?: FormApiService;
+  client?: FormClient;
 }
 
 const createFormService = ({
@@ -26,7 +26,7 @@ const createFormService = ({
   formsApiStaging,
   mocksEnabled,
   formsLocation,
-  apiService = formApiService,
+  client = formClient,
 }: CreateFormServiceProps): FormService => {
   const getForms: FormService['getForms'] = async ({ select }) => {
     if (!select) {
@@ -34,7 +34,7 @@ const createFormService = ({
     }
 
     if (formsApiStaging || mocksEnabled) {
-      return apiService.getForms<Pick<Form, (typeof select)[number]>>({ baseUrl, select: select.join(',') });
+      return client.getForms<Pick<Form, (typeof select)[number]>>({ baseUrl, select: select.join(',') });
     }
 
     const navForms = await fileUtil.loadAllJsonFilesFromDirectory(formsLocation);
@@ -47,7 +47,7 @@ const createFormService = ({
     }
 
     if (formsApiStaging || mocksEnabled) {
-      return apiService.getForm<Pick<Form, (typeof select)[number]>>({ baseUrl, formPath, select: select.join(',') });
+      return client.getForm<Pick<Form, (typeof select)[number]>>({ baseUrl, formPath, select: select.join(',') });
     }
 
     const form = await fileUtil.loadJsonFileFromDirectory(formsLocation, formPath);
