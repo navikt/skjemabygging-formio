@@ -9,7 +9,7 @@ import {
   Submission,
   SubmissionMethod,
 } from '../../models';
-import { navFormioUtils } from '../formio';
+import { checkCondition, navFormioUtils } from '../formio';
 import { stringUtils } from '../string';
 import { submissionTypesUtils } from '../submission';
 import { formSummaryUtils } from '../summary';
@@ -316,13 +316,10 @@ export const enrichComponentsWithNavIds = (
  * @param submission
  */
 const getActivePanelsFromForm = (form: NavFormType, submission?: Submission): Panel[] => {
-  const conditionals = formSummaryUtils.mapAndEvaluateConditionals(form, submission ?? { data: {} });
+  const data = submission?.data ?? {};
   return form.components
     .filter((component: Component) => component.type === 'panel')
-    .filter((panel): panel is Panel => {
-      const key = formSummaryUtils.createComponentKeyWithNavId(panel);
-      return conditionals[key] !== false;
-    })
+    .filter((panel): panel is Panel => checkCondition(panel, [], data, form, undefined, submission) !== false)
     .filter((panel) => !isVedleggspanel(panel));
 };
 

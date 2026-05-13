@@ -594,6 +594,64 @@ describe('navFormUtils', () => {
     });
   });
 
+  describe('getActivePanelsFromForm', () => {
+    it('filters panels by their own conditional without needing nested evaluations', () => {
+      const form = {
+        components: [
+          {
+            id: 'panel-1',
+            key: 'panel1',
+            title: 'Panel 1',
+            type: 'panel',
+            components: [],
+          },
+          {
+            id: 'panel-2',
+            key: 'panel2',
+            title: 'Panel 2',
+            type: 'panel',
+            conditional: { show: true, when: 'showPanel2', eq: 'true' },
+            components: [
+              {
+                id: 'panel-2-field',
+                key: 'field2',
+                type: 'textfield',
+              },
+            ],
+          },
+        ],
+      };
+
+      expect(navFormUtils.getActivePanelsFromForm(form, { data: {} }).map((panel) => panel.key)).toEqual(['panel1']);
+      expect(
+        navFormUtils.getActivePanelsFromForm(form, { data: { showPanel2: true } }).map((panel) => panel.key),
+      ).toEqual(['panel1', 'panel2']);
+    });
+
+    it('keeps panels active when only nested child conditionals are hidden', () => {
+      const form = {
+        components: [
+          {
+            id: 'panel-1',
+            key: 'panel1',
+            title: 'Panel 1',
+            type: 'panel',
+            components: [
+              {
+                id: 'child-1',
+                key: 'child1',
+                type: 'textfield',
+                conditional: { show: true, when: 'showChild', eq: 'true' },
+              },
+            ],
+          },
+        ],
+      };
+
+      expect(navFormUtils.getActivePanelsFromForm(form, { data: {} }).map((panel) => panel.key)).toEqual(['panel1']);
+    });
+  });
+
   describe('isSubmissionMethodAllowed', () => {
     const createTestForm = (submissionTypes) => ({ properties: { submissionTypes } });
 
