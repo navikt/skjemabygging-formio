@@ -141,3 +141,7 @@ jobs:
       git_sha: ${{ github.sha }}
       environment: ${{ github.event.inputs.environment }}
     secrets: inherit
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+      packages: 'read'
