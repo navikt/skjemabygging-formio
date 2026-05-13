@@ -98,6 +98,7 @@ export const updateUtfyltSoknad = async (
       {
         innsendingsId,
         form,
+        formPath: form.path,
         submission,
         language,
         translation,
