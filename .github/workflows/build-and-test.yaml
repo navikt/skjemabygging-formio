@@ -1,4 +1,4 @@
-name: Build and test monorepo, and deploy bygger
+name: Build and test monorepo, and deploy apps
 on: push
 env:
   NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -49,6 +49,8 @@ jobs:
         run: pnpm test:shared-domain
       - name: 'Test shared-backend'
         run: pnpm test:shared-backend
+      - name: 'Test shared-frontend'
+        run: pnpm test:shared-frontend
 
   package-and-push-bygger:
     if: github.ref == 'refs/heads/main'
@@ -150,52 +152,10 @@ jobs:
           pull: true
           tag: ${{ github.sha }}
 
-  package-and-push-form-spec-api:
-    if: github.ref == 'refs/heads/main'
-    name: 'Package form-spec-api'
-    runs-on: ubuntu-latest-8-cores
-    permissions:
-      contents: 'read'
-      id-token: 'write'
-      packages: 'read'
-    steps:
-      - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10.32.1
-          run_install: false
-      - uses: actions/setup-node@v6
-        with:
-          node-version: '24.14.0'
-          cache: 'pnpm'
-          cache-dependency-path: 'pnpm-lock.yaml'
-          registry-url: https://npm.pkg.github.com/
-          scope: '@navikt'
-
-      - name: 'Build application: form-spec-api'
-        env:
-          VITE_GIT_VERSION: ${{ github.sha }}
-        run: pnpm install --frozen-lockfile && pnpm build:form-spec-api && pnpm run deploy:form-spec-api
-
-      - name: 'Build and push Docker image for form-spec-api'
-        uses: nais/docker-build-push@v0
-        id: docker-build-push-form-spec-api
-        with:
-          team: skjemadigitalisering
-          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-          image_suffix: 'form-spec-api'
-          build_args: |
-            git_sha=${{ github.sha }}
-          dockerfile: ./docker/Dockerfile.form-spec-api
-          docker_context: ./packages
-    outputs:
-      image: ${{ steps.docker-build-push-form-spec-api.outputs.image }}
-
   deploy-bygger-to-prod:
     name: 'Deploy bygger to prod'
     if: github.ref == 'refs/heads/main'
-    needs: [build-and-test, package-and-push-bygger, package-and-push-fyllut-base, package-and-push-form-spec-api]
+    needs: [build-and-test, package-and-push-bygger, package-and-push-fyllut-base]
     runs-on: ubuntu-latest
     permissions:
       id-token: 'write'
@@ -211,7 +171,7 @@ jobs:
 
   trigger-deploy-fyllut-to-dev:
     name: 'Trigger deploy fyllut to dev'
-    needs: [build-and-test, package-and-push-bygger, package-and-push-fyllut-base, package-and-push-form-spec-api]
+    needs: [build-and-test, package-and-push-bygger, package-and-push-fyllut-base]
     runs-on: ubuntu-latest
     steps:
       - name: 'Generate app installation access token'
@@ -231,18 +191,51 @@ jobs:
           token: ${{ steps.generate-token.outputs.token }}
           inputs: '{ "monorepoGitHash": "${{ github.sha }}" }'
 
-  deploy-form-spec-api-to-prod:
-    name: 'Deploy form-spec-api to prod'
-    needs: [build-and-test, package-and-push-bygger, package-and-push-fyllut-base, package-and-push-form-spec-api]
+  detect-changes:
+    name: 'Detect changes'
+    if: github.ref == 'refs/heads/main'
+    needs: [deploy-bygger-to-prod]
     runs-on: ubuntu-latest
     permissions:
-      id-token: 'write'
+      contents: 'read'
+    outputs:
+      app-infra: ${{ steps.filter.outputs.app-infra }}
+      form-spec-api: ${{ steps.filter.outputs.form-spec-api }}
     steps:
-      - uses: 'actions/checkout@v6'
-      - name: 'Deploy form-spec-api to PROD'
-        uses: 'nais/deploy/actions/deploy@v2'
-        env:
-          CLUSTER: 'prod-gcp'
-          RESOURCE: './.nais/form-spec-api/config.yaml'
-          VARS: './.nais/form-spec-api/prod.yaml'
-          VAR: 'image=${{ needs.package-and-push-form-spec-api.outputs.image }}'
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: 'Detect changed paths'
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            app-infra:
+              - '.github/workflows/build-and-test.yaml'
+              - '.npmrc'
+              - 'package.json'
+              - 'pnpm-lock.yaml'
+              - 'pnpm-workspace.yaml'
+              - 'tsconfig-base.json'
+            form-spec-api:
+              - '.github/workflows/deploy-form-spec-api.yaml'
+              - '.nais/form-spec-api/**'
+              - 'docker/Dockerfile.form-spec-api'
+              - 'packages/shared-domain/**'
+              - 'packages/shared-backend/**'
+              - 'packages/form-spec-api/**'
+
+  deploy-form-spec-api:
+    name: 'Deploy form-spec-api to prod'
+    needs: [detect-changes]
+    if: |
+      github.ref == 'refs/heads/main' &&
+      (
+        needs.detect-changes.outputs.app-infra == 'true' ||
+        needs.detect-changes.outputs.form-spec-api == 'true'
+      )
+    uses: ./.github/workflows/deploy-form-spec-api.yaml
+    with:
+      git_sha: ${{ github.sha }}
+      environment: 'prod'
+    secrets: inherit
