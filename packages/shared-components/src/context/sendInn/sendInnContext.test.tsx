@@ -37,7 +37,12 @@ describe('sendInnContext', () => {
   };
 
   const innsendingsId = 'abc-123-456';
-  const form = { title: 'TestSkjema', components: [], properties: { signatures: [] } } as unknown as NavFormType;
+  const form = {
+    title: 'TestSkjema',
+    path: 'testskjema',
+    components: [],
+    properties: { signatures: [] },
+  } as unknown as NavFormType;
   const submission = { data: { question: 'answer' } } as unknown as Submission;
   const submissionMethod = 'digital';
   const headers = {};
@@ -104,6 +109,7 @@ describe('sendInnContext', () => {
           'http://test.example.no/api/send-inn/utfyltsoknad',
           expect.objectContaining({
             form,
+            formPath: form.path,
             submission,
             submissionMethod,
             innsendingsId,
