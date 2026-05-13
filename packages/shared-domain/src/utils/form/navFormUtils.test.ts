@@ -650,6 +650,38 @@ describe('navFormUtils', () => {
 
       expect(navFormUtils.getActivePanelsFromForm(form, { data: {} }).map((panel) => panel.key)).toEqual(['panel1']);
     });
+
+    it('keeps panels hidden while a dataFetcher-based panel conditional is unresolved', () => {
+      const form = {
+        components: [
+          {
+            id: 'panel-1',
+            key: 'panel1',
+            title: 'Panel 1',
+            type: 'panel',
+            components: [],
+          },
+          {
+            id: 'panel-2',
+            key: 'panel2',
+            title: 'Panel 2',
+            type: 'panel',
+            customConditional: "show = utils.dataFetcher('aktivitetsvelger', submission).success;",
+            components: [],
+          },
+        ],
+      };
+
+      expect(navFormUtils.getActivePanelsFromForm(form, { data: {} }).map((panel) => panel.key)).toEqual(['panel1']);
+      expect(
+        navFormUtils
+          .getActivePanelsFromForm(form, {
+            data: {},
+            metadata: { dataFetcher: { aktivitetsvelger: { data: [{ value: '1', label: 'One' }] } } },
+          })
+          .map((panel) => panel.key),
+      ).toEqual(['panel1', 'panel2']);
+    });
   });
 
   describe('isSubmissionMethodAllowed', () => {

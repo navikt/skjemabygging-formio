@@ -319,7 +319,7 @@ const getActivePanelsFromForm = (form: NavFormType, submission?: Submission): Pa
   const data = submission?.data ?? {};
   return form.components
     .filter((component: Component) => component.type === 'panel')
-    .filter((panel): panel is Panel => checkCondition(panel, [], data, form, undefined, submission) !== false)
+    .filter((panel): panel is Panel => Boolean(checkCondition(panel, [], data, form, undefined, submission)))
     .filter((panel) => !isVedleggspanel(panel));
 };
 
