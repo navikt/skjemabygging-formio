@@ -1,5 +1,5 @@
 name: Deploy form-spec-api
-run-name: Deploy form-spec-api to ${{ inputs.environment }}
+run-name: Form-spec-api [${{ inputs.environment }}]
 on:
   workflow_call:
     inputs:
@@ -16,7 +16,7 @@ env:
 
 jobs:
   package-and-push:
-    name: 'Package form-spec-api'
+    name: 'Package'
     runs-on: ubuntu-latest-8-cores
     permissions:
       contents: 'read'
@@ -57,7 +57,7 @@ jobs:
       image: ${{ steps.docker-build-push-form-spec-api.outputs.image }}
 
   deploy-gcp:
-    name: 'Deploy form-spec-api'
+    name: 'Deploy'
     needs: [package-and-push]
     if: ${{ !failure() && !cancelled() }}
     runs-on: ubuntu-latest
