@@ -14,6 +14,7 @@ vi.mock('./dekorator', () => ({
 
 const { sendInnConfig, familiePdfGeneratorUrl } = config;
 const soknadPdf = Buffer.from('fake-pdf-content-for-tests');
+const encodedSoknadPdf = soknadPdf.toString('base64');
 
 const submitApplicationTestCases: SubmitApplicationTestCase[] = [
   {
@@ -66,7 +67,7 @@ describe('Fyllut backend :: submit application', () => {
       const pdfGeneratorScope = nock(familiePdfGeneratorUrl)
         .post('/api/pdf/v3/opprett-pdf')
         .matchHeader('authorization', `Bearer ${tokenSetup.azureAccessToken}`)
-        .reply(200, soknadPdf);
+        .reply(200, { content: encodedSoknadPdf }, { 'Content-Type': 'application/json' });
 
       let capturedRequestBody: SubmitApplicationRequest | undefined;
       const sendInnScope = nock(sendInnConfig.host)
@@ -79,7 +80,6 @@ describe('Fyllut backend :: submit application', () => {
         });
 
       const res = await request(createApp()).post(route).send(applicationData).set(tokenSetup.headers);
-
       expect(res.status).toBe(200);
       expectSuccessfulSubmitResponse(res.body, applicationData, submitResponse);
 
