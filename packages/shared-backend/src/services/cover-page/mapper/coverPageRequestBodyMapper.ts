@@ -6,6 +6,8 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { ForstesideRequestBody } from '../coverPageRequestTypes';
 
+type DownloadUserData = Pick<ForstesideRequestBody, 'bruker' | 'ukjentBrukerPersoninfo'>;
+
 const addressLine = (text?: string, prefix: string = ', ') => {
   if (!text) {
     return '';
@@ -25,9 +27,11 @@ const getTitle = (title: string, number: string) => {
 const parseLanguage = (language: string) => {
   switch (language) {
     case 'nn':
+    case 'NN':
     case 'nn-NO':
       return 'NN';
     case 'nb':
+    case 'NB':
     case 'nb-NO':
       return 'NB';
     default:
@@ -68,7 +72,7 @@ const createRequestBody = ({
   ...recipientData,
 });
 
-const getDownloadUserData = (user?: CoverPageDownloadType['user']) => {
+const getDownloadUserData = (user?: CoverPageDownloadType['user']): Partial<DownloadUserData> => {
   if (!user) {
     return {};
   }

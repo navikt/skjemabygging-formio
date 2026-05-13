@@ -5,6 +5,14 @@ interface Bruker {
   brukerType: string;
 }
 
+interface UkjentBruker {
+  ukjentBrukerPersoninfo: string;
+}
+
+interface KjentBruker {
+  bruker: Bruker;
+}
+
 interface ForstesideRequestBody {
   foerstesidetype: CoverPageType;
   navSkjemaId: string;
@@ -29,4 +37,4 @@ interface ForstesideRecipientAddress {
   poststed: string;
 }
 
-export type { ForstesideRequestBody };
+export type { Bruker, ForstesideRecipientAddress, ForstesideRequestBody, KjentBruker, UkjentBruker };

@@ -15,10 +15,13 @@ import {
   yourInformationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 
+type CoverPageUser = CoverPageDownloadType['user'];
+type OrganizationNumberUser = Extract<CoverPageUser, { organizationNumber: string }>;
+
 const getOrganizationNumberUser = (
   form: NavFormType,
   submission: SubmissionData,
-): CoverPageDownloadType['user'] | undefined => {
+): OrganizationNumberUser | undefined => {
   const organizationNumberComponent = navFormUtils
     .flattenComponents(form.components)
     .find((component) => component.type === 'orgNr' && component.coverPageUser && submission[component.key]);
@@ -39,7 +42,7 @@ const getOrganizationNumberUser = (
 
   return {
     organizationNumber: organizationNumberValue,
-  } as CoverPageDownloadType['user'];
+  };
 };
 
 type LegacySubmission = {
@@ -117,7 +120,7 @@ const getLegacyAddress = (submission: LegacySubmission) => {
   };
 };
 
-const getSubmissionUserData = (form: NavFormType, submission: SubmissionData): CoverPageDownloadType['user'] => {
+const getSubmissionUserData = (form: NavFormType, submission: SubmissionData): CoverPageUser => {
   const yourInformation = yourInformationUtils.getYourInformation(form, submission);
 
   if (!yourInformation) {
