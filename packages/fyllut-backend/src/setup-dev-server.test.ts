@@ -24,6 +24,9 @@ describe('Setup dev server', () => {
         { path: '/fyllut/internal/metrics', ip: IP_NAV, cookies: [], expectedHttpStatus: 200 },
         { path: '/fyllut/internal/isalive', ip: IP_NAV, cookies: [], expectedHttpStatus: 200 },
         { path: '/fyllut/internal/isready', ip: IP_NAV, cookies: [], expectedHttpStatus: 200 },
+        { path: '/fyllut/internal/metrics', ip: IP_EXTERNAL, cookies: [], expectedHttpStatus: 200 },
+        { path: '/fyllut/internal/isready', ip: IP_EXTERNAL, cookies: [], expectedHttpStatus: 200 },
+        { path: '/fyllut/internal/isalive', ip: IP_EXTERNAL, cookies: [], expectedHttpStatus: 200 },
       ];
 
       it.each(requests)('%j', async ({ path, ip, cookies, expectedHttpStatus }) => {

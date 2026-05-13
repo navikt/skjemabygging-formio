@@ -54,7 +54,9 @@ describe('PrepareIngenInnsendingPage', () => {
   });
 
   test('Nedlasting av pdf', async () => {
-    const scope = nock(fyllutBaseURL).post('/api/documents/application').reply(200);
+    const scope = nock(fyllutBaseURL)
+      .post('/api/documents/application', (body) => body.formPath === testForm.path)
+      .reply(200);
 
     const lastNedSoknadKnapp = screen.getByRole('button', { name: TEXTS.grensesnitt.downloadApplication });
     await userEvent.click(lastNedSoknadKnapp);
