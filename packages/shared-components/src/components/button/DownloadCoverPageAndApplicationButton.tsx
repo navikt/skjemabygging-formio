@@ -63,6 +63,7 @@ const DownloadCoverPageAndApplicationButton = ({
       {
         language: currentLanguage,
         form: JSON.stringify(form),
+        formPath: form.path,
         submission: JSON.stringify(submission),
         translations: JSON.stringify(
           currentLanguage !== 'nb-NO' && translationsForNavForm?.[currentLanguage]

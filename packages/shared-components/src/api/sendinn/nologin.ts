@@ -24,6 +24,7 @@ export const postNologinSoknad = async (
     url,
     {
       form,
+      formPath: form.path,
       submission,
       language,
       translation,
