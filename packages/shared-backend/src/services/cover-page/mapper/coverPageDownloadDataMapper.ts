@@ -195,19 +195,16 @@ const getAttachmentLabels = (
 
 const getRecipient = (
   recipientId?: string,
-  recipients?: Recipient[],
+  recipient?: Recipient,
   unitNumber?: string,
 ): CoverPageDownloadType['recipient'] | undefined => {
-  if (recipientId && recipients) {
-    const recipient = recipients.find((currentRecipient) => currentRecipient.recipientId === recipientId);
-    if (recipient) {
-      return {
-        name: recipient.name,
-        postOfficeBox: recipient.poBoxAddress,
-        postalCode: recipient.postalCode,
-        postalName: recipient.postalName,
-      };
-    }
+  if (recipientId && recipient?.recipientId === recipientId) {
+    return {
+      name: recipient.name,
+      postOfficeBox: recipient.poBoxAddress,
+      postalCode: recipient.postalCode,
+      postalName: recipient.postalName,
+    };
   }
 
   if (unitNumber) {
@@ -249,7 +246,7 @@ const createDownloadDataFromSubmission = (
   form: NavFormType,
   submission: Submission,
   languageCode = 'nb-NO',
-  recipients: Recipient[] = [],
+  recipient?: Recipient,
   unitNumber?: string,
   translate?: (text: string, textReplacements?: I18nTranslationReplacements) => string,
   submissionMethod: SubmissionMethod = 'paper',
@@ -264,7 +261,7 @@ const createDownloadDataFromSubmission = (
       properties: form.properties,
     },
     user: getSubmissionUserData(form, submission.data),
-    recipient: getRecipient(form.properties.mottaksadresseId, recipients, unitNumber),
+    recipient: getRecipient(form.properties.mottaksadresseId, recipient, unitNumber),
     attachments: getAttachmentLabels(form, submission, translate),
   };
 };
