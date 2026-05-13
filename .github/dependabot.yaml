@@ -4,6 +4,7 @@ registries:
     type: npm-registry
     url: https://npm.pkg.github.com
     token: ${{secrets.READER_TOKEN}}
+    replaces-base: false
 updates:
   - package-ecosystem: 'npm'
     directory: '/'
@@ -14,61 +15,38 @@ updates:
     schedule:
       interval: 'monthly'
     versioning-strategy: increase
-    open-pull-requests-limit: 20
+    open-pull-requests-limit: 10
+    # For regular npm version updates, the target shape is one grouped minor/patch PR
+    # and one grouped major PR. GitHub Actions and security updates can still open separate PRs.
     groups:
-      navikt-aksel-major:
-        patterns:
-          - '@navikt/ds-*'
-          - '@navikt/aksel-icons'
-        update-types:
-          - 'major'
-      navikt-aksel-minor-patch:
-        patterns:
-          - '@navikt/ds-*'
-          - '@navikt/aksel-icons'
-        update-types:
-          - 'minor'
-          - 'patch'
       all-minor-patch:
-        patterns:
-          - '*'
-        exclude-patterns:
-          - '@navikt/ds-*'
-          - '@navikt/aksel-icons'
-          - '@navikt/nav-dekoratoren-moduler'
-          - 'csp-header'
-          - 'html-react-parser'
+        applies-to: 'version-updates'
         update-types:
           - 'minor'
           - 'patch'
-      typescript-eslint:
-        patterns: 
-          - 'typescript-eslint'
-          - '@typescript-eslint/*'
+      all-major:
+        applies-to: 'version-updates'
         update-types:
           - 'major'
-      testing-library:
-        patterns: 
-          - '@testing-library/*'
-        update-types:
-          - 'major'
-      nav-dekoratoren-major:
-        patterns:
-          - '@navikt/nav-dekoratoren-moduler'
-          - 'csp-header'
-          - 'html-react-parser'
-        update-types:
-          - 'major'
-      nav-dekoratoren-minor-patch:
-        patterns:
-          - '@navikt/nav-dekoratoren-moduler'
-          - 'csp-header'
-          - 'html-react-parser'
-        update-types:
-          - 'minor'
-          - 'patch'
     ignore:
+      - dependency-name: '@navikt/aksel'
+      - dependency-name: '@navikt/aksel-icons'
+      - dependency-name: '@navikt/ds-css'
+      - dependency-name: '@navikt/ds-react'
       - dependency-name: 'formiojs'
+      - dependency-name: '@formio/react'
+      - dependency-name: 'react'
+        update-types:
+          - 'version-update:semver-major'
+      - dependency-name: 'react-dom'
+        update-types:
+          - 'version-update:semver-major'
+      - dependency-name: '@types/react'
+        update-types:
+          - 'version-update:semver-major'
+      - dependency-name: '@types/react-dom'
+        update-types:
+          - 'version-update:semver-major'
 
   - package-ecosystem: 'github-actions'
     directory: '/'

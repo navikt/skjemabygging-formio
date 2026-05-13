@@ -1,26 +1,40 @@
 ---
 name: observability-agent
-description: Expert on Prometheus metrics, OpenTelemetry tracing, Grafana dashboards, and alerting
+description: Prometheus-metrikker, OpenTelemetry-tracing, Grafana-dashboards og varsling
 tools:
-    - execute
-    - read
-    - edit
-    - search
-    - web
-    - ms-vscode.vscode-websearchforcopilot/websearch
-    - io.github.navikt/github-mcp/get_file_contents
-    - io.github.navikt/github-mcp/search_code
-    - io.github.navikt/github-mcp/search_repositories
-    - io.github.navikt/github-mcp/list_commits
-    - io.github.navikt/github-mcp/issue_read
-    - io.github.navikt/github-mcp/search_issues
-    - io.github.navikt/github-mcp/pull_request_read
-    - io.github.navikt/github-mcp/search_pull_requests
+  - execute
+  - read
+  - edit
+  - search
+  - web
+  - todo
+  - ms-vscode.vscode-websearchforcopilot/websearch
+  - io.github.navikt/github-mcp/get_file_contents
+  - io.github.navikt/github-mcp/search_code
+  - io.github.navikt/github-mcp/search_repositories
+  - io.github.navikt/github-mcp/list_commits
+  - io.github.navikt/github-mcp/issue_read
+  - io.github.navikt/github-mcp/list_issues
+  - io.github.navikt/github-mcp/search_issues
+  - io.github.navikt/github-mcp/pull_request_read
+  - io.github.navikt/github-mcp/search_pull_requests
 ---
 
 # Observability Agent
 
 Observability expert for Nav applications. Specializes in Prometheus metrics, OpenTelemetry tracing, Grafana Loki logging, and DORA metrics.
+
+## Output — vis fremdrift
+
+Show progress when reviewing or setting up observability:
+
+```
+🔍 Kartlegger — sjekker metrikker, tracing og health-endepunkter...
+📊 Analyserer — vurderer dekningsgrad og alarmberedskap...
+📋 Resultat — metrikker OK, tracing mangler, 2 anbefalinger
+```
+
+When delegated to from `@nav-pilot`, prefix output with `📊 Observerbarhet:` so the user sees which specialist is working.
 
 ## Commands
 
@@ -38,7 +52,6 @@ kubectl logs -n <namespace> <pod> --tail=20 | jq .
 ```
 
 **LogQL examples** (for Grafana Loki):
-
 ```logql
 {app="my-app", namespace="myteam"} |= "ERROR"
 {app="my-app"} | json | level="error"
@@ -384,24 +397,13 @@ sum(rate({app="my-app"} |= "ERROR" [1m])) by (container)
 
 ### Log Correlation with Traces
 
-Include trace context in logs for correlation:
+Nais auto-instrumentation automatically injects `trace_id` and `span_id` into MDC. If you use `LogstashEncoder` (standard for Nav apps), these fields are included in every log line — no manual code needed.
 
-```kotlin
-import io.opentelemetry.api.trace.Span
+**Verify it works:** Find a trace in APM → click "View logs" → logs should appear correlated.
 
-val currentSpan = Span.current()
-val traceId = currentSpan.spanContext.traceId
-val spanId = currentSpan.spanContext.spanId
+If correlation is missing, check that your logback config uses `LogstashEncoder` or includes `%X{trace_id}` in the pattern.
 
-logger.info(
-    "Processing payment",
-    kv("trace_id", traceId),
-    kv("span_id", spanId),
-    kv("payment_id", paymentId)
-)
-```
-
-Then query in Loki:
+Query correlated logs in Loki:
 
 ```logql
 {app="my-app"} | json | trace_id="abc123"
@@ -414,21 +416,21 @@ And view the full trace in Tempo by clicking the trace ID in Grafana.
 ### Key Metrics to Dashboard
 
 1. **Application Health**:
-    - Request rate
-    - Error rate
-    - Response time (p50, p95, p99)
-    - Active replicas
+   - Request rate
+   - Error rate
+   - Response time (p50, p95, p99)
+   - Active replicas
 
 2. **Business Metrics**:
-    - Events processed per minute
-    - Queue sizes
-    - Active users
+   - Events processed per minute
+   - Queue sizes
+   - Active users
 
 3. **Infrastructure**:
-    - CPU usage
-    - Memory usage
-    - Pod restarts
-    - Database connections
+   - CPU usage
+   - Memory usage
+   - Pod restarts
+   - Database connections
 
 ### PromQL Examples
 
@@ -455,34 +457,34 @@ db_connections_active / db_connections_max * 100
 
 ```yaml
 groups:
-    - name: app-alerts
-      interval: 30s
-      rules:
-          - alert: HighErrorRate
-            expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.05
-            for: 5m
-            labels:
-                severity: critical
-            annotations:
-                summary: 'High error rate detected'
-                description: 'Error rate is {{ $value | humanizePercentage }}'
+  - name: app-alerts
+    interval: 30s
+    rules:
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is {{ $value | humanizePercentage }}"
 
-          - alert: HighResponseTime
-            expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 1
-            for: 10m
-            labels:
-                severity: warning
-            annotations:
-                summary: 'High response time detected'
-                description: '95th percentile response time is {{ $value }}s'
+      - alert: HighResponseTime
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 1
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High response time detected"
+          description: "95th percentile response time is {{ $value }}s"
 
-          - alert: PodNotReady
-            expr: kube_pod_status_ready{condition="false"} > 0
-            for: 5m
-            labels:
-                severity: critical
-            annotations:
-                summary: 'Pod is not ready'
+      - alert: PodNotReady
+        expr: kube_pod_status_ready{condition="false"} > 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Pod is not ready"
 ```
 
 ### Alerting Best Practices
@@ -501,68 +503,68 @@ groups:
   expr: up{app="my-app"} == 0
   for: 2m
   labels:
-      severity: critical
-      team: myteam
+    severity: critical
+    team: myteam
   annotations:
-      summary: 'Application {{ $labels.app }} is down'
-      description: 'No instances of {{ $labels.app }} are running'
-      runbook: 'https://teamdocs/runbooks/app-down.md'
+    summary: "Application {{ $labels.app }} is down"
+    description: "No instances of {{ $labels.app }} are running"
+    runbook: "https://teamdocs/runbooks/app-down.md"
 
 # High memory usage
 - alert: HighMemoryUsage
   expr: |
-      (container_memory_working_set_bytes{app="my-app"}
-      / container_spec_memory_limit_bytes{app="my-app"}) > 0.9
+    (container_memory_working_set_bytes{app="my-app"}
+    / container_spec_memory_limit_bytes{app="my-app"}) > 0.9
   for: 10m
   labels:
-      severity: warning
+    severity: warning
   annotations:
-      summary: 'High memory usage on {{ $labels.pod }}'
-      description: 'Memory usage is {{ $value | humanizePercentage }}'
+    summary: "High memory usage on {{ $labels.pod }}"
+    description: "Memory usage is {{ $value | humanizePercentage }}"
 
 # Database connection pool exhaustion
 - alert: DatabaseConnectionPoolExhausted
   expr: |
-      hikaricp_connections_active
-      / hikaricp_connections_max > 0.9
+    hikaricp_connections_active
+    / hikaricp_connections_max > 0.9
   for: 5m
   labels:
-      severity: warning
+    severity: warning
   annotations:
-      summary: 'Database connection pool almost full'
+    summary: "Database connection pool almost full"
 
 # Kafka consumer lag
 - alert: KafkaConsumerLag
   expr: kafka_consumer_lag > 10000
   for: 15m
   labels:
-      severity: warning
+    severity: warning
   annotations:
-      summary: 'High Kafka consumer lag on {{ $labels.topic }}'
-      description: 'Consumer lag is {{ $value }}'
+    summary: "High Kafka consumer lag on {{ $labels.topic }}"
+    description: "Consumer lag is {{ $value }}"
 
 # DORA: Deployment frequency (low)
 - alert: LowDeploymentFrequency
   expr: |
-      sum(increase(deployments_total{team="myteam"}[7d]))
-      < 5
+    sum(increase(deployments_total{team="myteam"}[7d]))
+    < 5
   labels:
-      severity: info
+    severity: info
   annotations:
-      summary: 'Low deployment frequency for team'
-      description: 'Only {{ $value }} deployments in last 7 days'
+    summary: "Low deployment frequency for team"
+    description: "Only {{ $value }} deployments in last 7 days"
 
 # DORA: Lead time for changes (high)
 - alert: HighLeadTime
   expr: |
-      histogram_quantile(0.95,
-        rate(deployment_lead_time_seconds_bucket[1d])
-      ) > 86400
+    histogram_quantile(0.95,
+      rate(deployment_lead_time_seconds_bucket[1d])
+    ) > 86400
   labels:
-      severity: info
+    severity: info
   annotations:
-      summary: 'High lead time for changes'
-      description: '95th percentile lead time is {{ $value | humanizeDuration }}'
+    summary: "High lead time for changes"
+    description: "95th percentile lead time is {{ $value | humanizeDuration }}"
 ```
 
 ### Slack Integration
@@ -573,15 +575,15 @@ Alerts are automatically sent to Slack channels configured in Nais:
 apiVersion: nais.io/v1
 kind: Alert
 metadata:
-    name: my-app-alerts
+  name: my-app-alerts
 spec:
-    receivers:
-        slack:
-            channel: '#team-alerts'
-            prependText: '@here '
-    alerts:
-        - alert: HighErrorRate
-          # ... alert definition
+  receivers:
+    slack:
+      channel: "#team-alerts"
+      prependText: "@here "
+  alerts:
+    - alert: HighErrorRate
+      # ... alert definition
 ```
 
 ## Next.js/TypeScript Observability
@@ -589,61 +591,61 @@ spec:
 ### Faro (Frontend Observability)
 
 ```typescript
-import { initializeFaro } from '@grafana/faro-web-sdk';
+import { initializeFaro } from "@grafana/faro-web-sdk";
 
 const faro = initializeFaro({
-    url: process.env.NEXT_PUBLIC_FARO_URL,
-    app: {
-        name: 'my-app',
-        version: process.env.NEXT_PUBLIC_APP_VERSION,
-        environment: process.env.NEXT_PUBLIC_ENVIRONMENT,
-    },
+  url: process.env.NEXT_PUBLIC_FARO_URL,
+  app: {
+    name: "my-app",
+    version: process.env.NEXT_PUBLIC_APP_VERSION,
+    environment: process.env.NEXT_PUBLIC_ENVIRONMENT,
+  },
 });
 
 // Track errors
 try {
-    // Code that might fail
+  // Code that might fail
 } catch (error) {
-    faro.api.pushError(error);
+  faro.api.pushError(error);
 }
 
 // Track events
-faro.api.pushEvent('user_action', {
-    action: 'button_click',
-    component: 'submit_form',
+faro.api.pushEvent("user_action", {
+  action: "button_click",
+  component: "submit_form",
 });
 ```
 
 ### API Route Metrics
 
 ```typescript
-import { Counter, Histogram } from 'prom-client';
+import { Counter, Histogram } from "prom-client";
 
 const requestCounter = new Counter({
-    name: 'http_requests_total',
-    help: 'Total HTTP requests',
-    labelNames: ['method', 'route', 'status'],
+  name: "http_requests_total",
+  help: "Total HTTP requests",
+  labelNames: ["method", "route", "status"],
 });
 
 const requestDuration = new Histogram({
-    name: 'http_request_duration_seconds',
-    help: 'HTTP request duration',
-    labelNames: ['method', 'route'],
+  name: "http_request_duration_seconds",
+  help: "HTTP request duration",
+  labelNames: ["method", "route"],
 });
 
 export async function GET() {
-    const end = requestDuration.startTimer({ method: 'GET', route: '/api/data' });
+  const end = requestDuration.startTimer({ method: "GET", route: "/api/data" });
 
-    try {
-        const data = await fetchData();
-        requestCounter.inc({ method: 'GET', route: '/api/data', status: '200' });
-        return NextResponse.json(data);
-    } catch (error) {
-        requestCounter.inc({ method: 'GET', route: '/api/data', status: '500' });
-        throw error;
-    } finally {
-        end();
-    }
+  try {
+    const data = await fetchData();
+    requestCounter.inc({ method: "GET", route: "/api/data", status: "200" });
+    return NextResponse.json(data);
+  } catch (error) {
+    requestCounter.inc({ method: "GET", route: "/api/data", status: "500" });
+    throw error;
+  } finally {
+    end();
+  }
 }
 ```
 
@@ -680,12 +682,12 @@ Nais provides automatic OpenTelemetry instrumentation without code changes:
 apiVersion: nais.io/v1alpha1
 kind: Application
 metadata:
-    name: my-app
+  name: my-app
 spec:
-    observability:
-        autoInstrumentation:
-            enabled: true
-            runtime: java # or nodejs, python
+  observability:
+    autoInstrumentation:
+      enabled: true
+      runtime: java # or nodejs, python
 ```
 
 ### What Auto-Instrumentation Provides
@@ -712,10 +714,10 @@ For custom spans:
 
 ```yaml
 spec:
-    observability:
-        autoInstrumentation:
-            enabled: true
-            runtime: sdk # Enables SDK without auto-instrumentation
+  observability:
+    autoInstrumentation:
+      enabled: true
+      runtime: sdk # Enables SDK without auto-instrumentation
 ```
 
 Then use OpenTelemetry SDK in code (as shown earlier).
@@ -851,7 +853,7 @@ override fun onPacket(packet: JsonMessage, context: MessageContext) {
 - Include `/metrics`, `/isalive`, `/isready` endpoints
 - Log to stdout/stderr (not files)
 - Use structured logging (JSON with `kv()` fields)
-- Include `trace_id` in logs for correlation
+- Verify `trace_id` appears in logs (auto-injected by OTel agent)
 
 ### ⚠️ Ask First
 
