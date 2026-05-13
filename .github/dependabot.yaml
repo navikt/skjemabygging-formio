@@ -16,15 +16,23 @@ updates:
       interval: 'monthly'
     versioning-strategy: increase
     open-pull-requests-limit: 10
-    # Default updates flow into one grouped minor/patch PR.
-    # Major updates remain individual PRs unless ignored below.
+    # For regular npm version updates, the target shape is one grouped minor/patch PR
+    # and one grouped major PR. GitHub Actions and security updates can still open separate PRs.
     groups:
       all-minor-patch:
         applies-to: 'version-updates'
         update-types:
           - 'minor'
           - 'patch'
+      all-major:
+        applies-to: 'version-updates'
+        update-types:
+          - 'major'
     ignore:
+      - dependency-name: '@navikt/aksel'
+      - dependency-name: '@navikt/aksel-icons'
+      - dependency-name: '@navikt/ds-css'
+      - dependency-name: '@navikt/ds-react'
       - dependency-name: 'formiojs'
       - dependency-name: '@formio/react'
       - dependency-name: 'react'
