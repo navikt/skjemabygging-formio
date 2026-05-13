@@ -8,6 +8,7 @@ const DEV_ACCESS_COOKIE = 'fyllut-dev-access';
 
 // 155.55.* is Navs public IP range. Also includes the private IP range used by our
 // internal network (10.*), and localhost. Takes the IPv6 prefix ::ffff: into account.
+// FIXME This ip range is probably not correct anymore
 const isNavIp = (ip: string) => /^(::ffff:)?(155\.55\.|10\.|127\.)/.test(ip);
 const isFormPath = (value: string) => /^\w*$/.test(value);
 
@@ -43,7 +44,10 @@ export const setupDevServer = (expressApp: Express, fyllutRouter: Router, config
   });
 
   expressApp.all(/^(?!.*\/(test\/login|api)).*$/, cookieParser(), (req: Request, res: Response, next: NextFunction) => {
-    if (isNavIp(req.ip || '') || req.cookies[DEV_ACCESS_COOKIE]) {
+    if (req.path.startsWith('/fyllut/internal/')) {
+      logger.debug('Allowing access to probes - urls containing /internal is blocked from external access');
+      return next();
+    } else if (isNavIp(req.ip || '') || req.cookies[DEV_ACCESS_COOKIE]) {
       logger.debug('Dev access is valid');
       return next();
     } else {
