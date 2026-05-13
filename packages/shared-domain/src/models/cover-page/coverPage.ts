@@ -22,6 +22,7 @@ interface OrganizationNumberType {
 
 interface UnknownUser {
   nationalIdentityNumber?: never;
+  organizationNumber?: never;
   firstName: string;
   surname: string;
   address: {

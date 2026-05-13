@@ -85,6 +85,42 @@ describe('coverPageRequestBodyMapper', () => {
     });
   });
 
+  it('creates organization request body matching main payload', () => {
+    const actual = coverPageRequestBodyMapper.createRequestBodyFromDownloadData({
+      ...defaultData,
+      form: {
+        skjemanummer: 'coverpageorganizationnumber',
+        title: 'Cover page organization number test form',
+        properties: {
+          skjemanummer: 'coverpageorganizationnumber',
+          tema: 'HJE',
+          submissionTypes: ['STATIC_PDF'],
+          subsequentSubmissionTypes: [],
+        },
+      },
+      user: {
+        organizationNumber: '889640782',
+      },
+      attachments: [],
+    });
+
+    expect(actual).toEqual({
+      bruker: {
+        brukerId: '889640782',
+        brukerType: 'ORGANISASJON',
+      },
+      foerstesidetype: 'SKJEMA',
+      navSkjemaId: 'coverpageorganizationnumber',
+      spraakkode: 'NB',
+      overskriftstittel: 'coverpageorganizationnumber Cover page organization number test form',
+      arkivtittel: 'coverpageorganizationnumber Cover page organization number test form',
+      tema: 'HJE',
+      vedleggsliste: [],
+      dokumentlisteFoersteside: ['coverpageorganizationnumber Cover page organization number test form'],
+      netsPostboks: '1400',
+    });
+  });
+
   it('throws on invalid user values', () => {
     expect(() =>
       coverPageRequestBodyMapper.createRequestBodyFromDownloadData({

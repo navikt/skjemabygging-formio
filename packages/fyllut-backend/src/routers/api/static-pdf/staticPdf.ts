@@ -46,12 +46,24 @@ const staticPdf = {
       });
 
       const translate = await translationService.createTranslate({ formPath, languageCode });
+      const attachmentComponents = navFormUtils
+        .flattenComponents(form.components)
+        .filter((component) => component.type === 'attachment' && coverPageData.attachments.includes(component.key));
+      const attachmentLabels = coverPageData.attachments.map((attachmentKey) => {
+        const attachmentComponent = attachmentComponents.find((component) => component.key === attachmentKey);
+        if (!attachmentComponent?.label) {
+          return attachmentKey;
+        }
+
+        return translate ? translate(attachmentComponent.label) : attachmentComponent.label;
+      });
 
       const coverPagePdf = await coverPageService.downloadCoverPage({
         languageCode,
         accessToken: coverPageToken,
         data: {
           ...coverPageData,
+          attachments: attachmentLabels,
           form,
         },
         translate,
@@ -64,15 +76,6 @@ const staticPdf = {
       });
 
       const attachmentStaticPdfs: string[] = [];
-
-      const attachmentComponents = navFormUtils
-        .flattenComponents(form.components)
-        .filter(
-          (component) =>
-            component.type === 'attachment' &&
-            component.properties?.vedleggskjema &&
-            coverPageData.attachments.includes(component.key),
-        );
 
       for (const component of attachmentComponents) {
         if (component.properties?.vedleggskjema) {

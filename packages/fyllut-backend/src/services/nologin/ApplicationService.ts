@@ -14,7 +14,7 @@ import ApplicationClient, {
   ApplicationClientType,
   DownloadedAttachment,
 } from '../../external/innsending-api/ApplicationClient';
-import { assembleNologinSoknadBody } from '../../routers/api/helpers/nologin';
+import { assembleSubmitApplicationRequest } from '../../routers/api/helpers/applicationUtils';
 import { LogMetadata } from '../../types/log';
 import { base64Decode } from '../../utils/base64';
 import { mapToReceiptSummary } from './receiptMapper';
@@ -87,7 +87,7 @@ class ApplicationService {
     }
 
     const pdfByteArray = Array.from(applicationPdf);
-    const nologinApplication = assembleNologinSoknadBody(
+    const nologinApplication = assembleSubmitApplicationRequest(
       innsendingsId,
       form,
       submission,

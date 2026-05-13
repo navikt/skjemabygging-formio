@@ -15,10 +15,13 @@ import {
   yourInformationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 
+type CoverPageUser = CoverPageDownloadType['user'];
+type OrganizationNumberUser = Extract<CoverPageUser, { organizationNumber: string }>;
+
 const getOrganizationNumberUser = (
   form: NavFormType,
   submission: SubmissionData,
-): CoverPageDownloadType['user'] | undefined => {
+): OrganizationNumberUser | undefined => {
   const organizationNumberComponent = navFormUtils
     .flattenComponents(form.components)
     .find((component) => component.type === 'orgNr' && component.coverPageUser && submission[component.key]);
@@ -39,7 +42,7 @@ const getOrganizationNumberUser = (
 
   return {
     organizationNumber: organizationNumberValue,
-  } as CoverPageDownloadType['user'];
+  };
 };
 
 type LegacySubmission = {
@@ -117,7 +120,7 @@ const getLegacyAddress = (submission: LegacySubmission) => {
   };
 };
 
-const getSubmissionUserData = (form: NavFormType, submission: SubmissionData): CoverPageDownloadType['user'] => {
+const getSubmissionUserData = (form: NavFormType, submission: SubmissionData): CoverPageUser => {
   const yourInformation = yourInformationUtils.getYourInformation(form, submission);
 
   if (!yourInformation) {
@@ -195,19 +198,16 @@ const getAttachmentLabels = (
 
 const getRecipient = (
   recipientId?: string,
-  recipients?: Recipient[],
+  recipient?: Recipient,
   unitNumber?: string,
 ): CoverPageDownloadType['recipient'] | undefined => {
-  if (recipientId && recipients) {
-    const recipient = recipients.find((currentRecipient) => currentRecipient.recipientId === recipientId);
-    if (recipient) {
-      return {
-        name: recipient.name,
-        postOfficeBox: recipient.poBoxAddress,
-        postalCode: recipient.postalCode,
-        postalName: recipient.postalName,
-      };
-    }
+  if (recipientId && recipient?.recipientId === recipientId) {
+    return {
+      name: recipient.name,
+      postOfficeBox: recipient.poBoxAddress,
+      postalCode: recipient.postalCode,
+      postalName: recipient.postalName,
+    };
   }
 
   if (unitNumber) {
@@ -249,7 +249,7 @@ const createDownloadDataFromSubmission = (
   form: NavFormType,
   submission: Submission,
   languageCode = 'nb-NO',
-  recipients: Recipient[] = [],
+  recipient?: Recipient,
   unitNumber?: string,
   translate?: (text: string, textReplacements?: I18nTranslationReplacements) => string,
   submissionMethod: SubmissionMethod = 'paper',
@@ -264,7 +264,7 @@ const createDownloadDataFromSubmission = (
       properties: form.properties,
     },
     user: getSubmissionUserData(form, submission.data),
-    recipient: getRecipient(form.properties.mottaksadresseId, recipients, unitNumber),
+    recipient: getRecipient(form.properties.mottaksadresseId, recipient, unitNumber),
     attachments: getAttachmentLabels(form, submission, translate),
   };
 };

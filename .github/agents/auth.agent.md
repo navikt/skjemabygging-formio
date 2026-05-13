@@ -1,18 +1,20 @@
 ---
 name: auth-agent
-description: Expert on Azure AD, TokenX, ID-porten, Maskinporten, and JWT validation for Nav applications
+description: Azure AD, TokenX, ID-porten, Maskinporten og JWT-validering for Nav-apper
 tools:
     - execute
     - read
     - edit
     - search
     - web
+    - todo
     - ms-vscode.vscode-websearchforcopilot/websearch
     - io.github.navikt/github-mcp/get_file_contents
     - io.github.navikt/github-mcp/search_code
     - io.github.navikt/github-mcp/search_repositories
     - io.github.navikt/github-mcp/list_commits
     - io.github.navikt/github-mcp/issue_read
+    - io.github.navikt/github-mcp/list_issues
     - io.github.navikt/github-mcp/search_issues
     - io.github.navikt/github-mcp/pull_request_read
     - io.github.navikt/github-mcp/search_pull_requests
@@ -21,6 +23,18 @@ tools:
 # Authentication Agent
 
 Authentication and authorization expert for Nav applications. Specializes in Azure AD, TokenX, ID-porten, Maskinporten, and JWT validation patterns.
+
+## Output — vis fremdrift
+
+Show progress when reviewing or implementing auth:
+
+```
+🔍 Kartlegger — identifiserer auth-mønstre og caller-typer...
+📊 Analyserer — sjekker JWT-validering, azp, accessPolicy...
+📋 Funn — 1 kritisk, 2 anbefalinger, 4 god praksis
+```
+
+When delegated to from `@nav-pilot`, prefix output with `🔐 Auth:` so the user sees which specialist is working.
 
 ## Commands
 
@@ -33,8 +47,9 @@ echo "<token>" | cut -d'.' -f2 | base64 -d 2>/dev/null | jq .
 # Fetch Azure AD OpenID config
 curl -s "https://login.microsoftonline.com/nav.no/.well-known/openid-configuration" | jq .
 
-# Check auth env vars in running pod
-kubectl exec -it <pod> -n <namespace> -- env | grep -E 'AZURE|TOKEN_X|IDPORTEN'
+# Check auth env vars in running pod (works with distroless/Chainguard)
+kubectl get pod <pod> -n <namespace> -o jsonpath='{range .spec.containers[0].env[*]}{.name}={.value}{"\n"}{end}' | grep -E 'AZURE|TOKEN_X|IDPORTEN'
+# Or use Nais Console: https://console.nav.cloud.nais.io → App → Env vars
 
 # Test if JWKS endpoint is reachable
 curl -s "$AZURE_OPENID_CONFIG_JWKS_URI" | jq '.keys | length'
@@ -93,6 +108,33 @@ routing {
 }
 ```
 
+**TypeScript/Next.js with `@navikt/oasis`**:
+
+```typescript
+import { validateAzureToken } from '@navikt/oasis';
+
+export async function GET(request: Request) {
+    const token = getToken(request);
+    if (!token) {
+        return new Response('Unauthorized', { status: 401 });
+    }
+
+    const validation = await validateAzureToken(token);
+    if (!validation.ok) {
+        return new Response('Forbidden', { status: 403 });
+    }
+
+    // Token is valid — access claims via validation.payload
+    const userId = validation.payload.sub;
+    return Response.json({ userId });
+}
+
+function getToken(request: Request): string | null {
+    const auth = request.headers.get('Authorization');
+    return auth?.replace('Bearer ', '') ?? null;
+}
+```
+
 **Environment Variables** (auto-injected by Nais):
 
 - `AZURE_APP_CLIENT_ID`
@@ -147,6 +189,36 @@ suspend fun exchangeToken(token: String, targetApp: String): String {
 }
 ```
 
+**TypeScript/Next.js with `@navikt/oasis`**:
+
+```typescript
+import { requestOboToken, getToken } from '@navikt/oasis';
+
+export async function GET(request: Request) {
+    const token = getToken(request);
+    if (!token) {
+        return new Response('Unauthorized', { status: 401 });
+    }
+
+    // TokenX audience format: "cluster:namespace:app-name"
+    const obo = await requestOboToken(token, 'dev-gcp:team-namespace:downstream-service');
+    if (!obo.ok) {
+        return new Response('Token exchange failed', { status: 403 });
+    }
+
+    // Use obo.token to call downstream service
+    const response = await fetch('http://downstream-service/api/data', {
+        headers: { Authorization: `Bearer ${obo.token}` },
+    });
+
+    return Response.json(await response.json());
+}
+```
+
+> **Note**: `@navikt/oasis` auto-caches OBO tokens. Azure AD audience uses different format: `"api://dev-gcp.namespace.app-name/.default"`
+
+````
+
 **Environment Variables** (auto-injected):
 
 - `TOKEN_X_WELL_KNOWN_URL`
@@ -161,11 +233,11 @@ suspend fun exchangeToken(token: String, targetApp: String): String {
 
 ```yaml
 idporten:
+  enabled: true
+  sidecar:
     enabled: true
-    sidecar:
-        enabled: true
-        level: Level4 # or Level3
-```
+    level: Level4 # or Level3
+````
 
 **Usage**:
 
@@ -233,6 +305,27 @@ install(Authentication) {
         }
     }
 }
+```
+
+**TypeScript/Next.js with `@navikt/oasis`**:
+
+```typescript
+import { validateToken, parseAzureUserToken } from '@navikt/oasis';
+
+// Simple validation (any issuer configured in Nais)
+const validation = await validateToken(token);
+if (!validation.ok) {
+    return new Response('Invalid token', { status: 401 });
+}
+
+// Azure-specific validation with user info parsing
+const azure = await parseAzureUserToken(token);
+if (!azure.ok) {
+    return new Response('Invalid Azure token', { status: 401 });
+}
+
+const { name, NAVident, preferred_username } = azure;
+console.log(`User: ${name} (${NAVident})`);
 ```
 
 ## Authorization Patterns
@@ -316,6 +409,74 @@ class AuthenticationTest {
 }
 ```
 
+### Testing with Vitest (TypeScript)
+
+```typescript
+import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { validateAzureToken, requestOboToken } from '@navikt/oasis';
+
+vi.mock('@navikt/oasis', () => ({
+    validateAzureToken: vi.fn(),
+    requestOboToken: vi.fn(),
+    getToken: vi.fn(),
+}));
+
+describe('auth middleware', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
+    it('should accept valid Azure token', async () => {
+        vi.mocked(validateAzureToken).mockResolvedValue({
+            ok: true,
+            payload: { sub: 'user-123', aud: 'client-id' },
+        });
+
+        const response = await GET(mockRequest('valid-token'));
+        expect(response.status).toBe(200);
+    });
+
+    it('should reject invalid token', async () => {
+        vi.mocked(validateAzureToken).mockResolvedValue({
+            ok: false,
+            error: new Error('Invalid signature'),
+            errorType: 'token validation failed',
+        });
+
+        const response = await GET(mockRequest('invalid-token'));
+        expect(response.status).toBe(403);
+    });
+});
+```
+
+## Machine-to-Machine (M2M) Validation
+
+When a service accepts Azure AD M2M tokens (`sub == oid`), always validate `azp` (authorized party) against `AZURE_APP_PRE_AUTHORIZED_APPS` to restrict which apps can call you:
+
+```kotlin
+// ✅ Correct — validate azp against pre-authorized apps
+validate { credentials ->
+    if (!erMaskinTilMaskin(credentials)) return@validate null
+
+    val azpClaim = credentials.payload.getClaim("azp").asString()
+    val preAuthorizedApp = preAuthorizedApps
+        .firstOrNull { it.clientId == azpClaim }
+        ?: return@validate null  // reject unknown callers
+
+    JWTPrincipal(credentials.payload)
+}
+
+// ❌ Wrong — accepts ANY app in the Azure AD tenant
+validate { credentials ->
+    if (!erMaskinTilMaskin(credentials)) return@validate null
+    JWTPrincipal(credentials.payload)  // no azp check!
+}
+```
+
+Cross-check auth code against `.nais/nais.yaml` `accessPolicy.inbound.rules` — every app allowed at the network level should also be validated at the token level, and vice versa.
+
+Reference: [sikkerhet.nav.no — Golden Path](https://sikkerhet.nav.no/docs/goldenpath/)
+
 ## Security Best Practices
 
 1. **Always validate JWT**:
@@ -323,16 +484,19 @@ class AuthenticationTest {
     - Audience
     - Expiration
     - Signature
+    - **`azp` claim for M2M** (against `AZURE_APP_PRE_AUTHORIZED_APPS`)
 
-2. **Use HTTPS only** for token transmission
+2. **Cross-check auth vs accessPolicy**: Auth code and `.nais/` `accessPolicy.inbound.rules` should match — dead code or missing rules indicate drift
 
-3. **Short token lifetimes**: Refresh tokens when needed
+3. **Use HTTPS only** for token transmission
 
-4. **Principle of least privilege**: Minimal access policies
+4. **Short token lifetimes**: Refresh tokens when needed
 
-5. **Audit logging**: Log all authentication attempts
+5. **Principle of least privilege**: Minimal access policies
 
-6. **Token rotation**: Support for key rotation
+6. **Audit logging**: Log all authentication attempts
+
+7. **Token rotation**: Support for key rotation
 
 ## Common Issues & Solutions
 
@@ -362,6 +526,8 @@ class AuthenticationTest {
 ### ✅ Always
 
 - Validate JWT issuer, audience, expiration, and signature
+- Validate `azp` against pre-authorized apps for M2M tokens
+- Cross-check auth code against `.nais/` accessPolicy inbound rules
 - Use HTTPS only for token transmission
 - Define explicit `accessPolicy` for authenticated services
 - Log authentication failures for monitoring

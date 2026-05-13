@@ -102,14 +102,14 @@ const coverPageAndApplication: RequestHandler = async (req, res, next) => {
     if (!mergePdfToken) {
       throw new Error('MergePDF generator token is missing. Unable to merge front page and application PDFs');
     }
-    const recipients = await recipientService.getRecipients({
+    const recipient = await recipientService.getRecipient({
       recipientId: formParsed?.properties?.mottaksadresseId,
     });
     const coverPageData = coverPageMapper.createDownloadDataFromSubmission(
       formParsed,
       submissionParsed,
       language,
-      recipients,
+      recipient,
       enhetNummer,
       translate,
       submissionMethod as SubmissionMethod | undefined,
