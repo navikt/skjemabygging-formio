@@ -1,10 +1,9 @@
 import { FormSummary } from '@navikt/ds-react';
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { TEXTS, submissionUtils as formComponentUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { Link, useLocation } from 'react-router';
 import ValidationExclamationIcon from '../../../../components/icons/ValidationExclamationIcon';
 import RenderComponent from '../../../render/RenderComponent';
 import { FormComponentProps } from '../../../types';
-import formComponentUtils from '../../../utils/formComponent';
 
 const SummaryPanel = (props: FormComponentProps) => {
   const { submissionPath, translate, component, panelValidationList } = props;

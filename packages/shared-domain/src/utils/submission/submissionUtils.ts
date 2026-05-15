@@ -1,4 +1,5 @@
-import { Component, Submission, SubmissionData } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component } from '../../models/form/component';
+import { Submission, SubmissionData } from '../../models/form/submission';
 
 /**
  * Recursively searches for a value in a submission object based on the provided submissionPath.
@@ -84,13 +85,13 @@ const noChildValues = (parentSubmissionPath: string, components?: Component[], s
   }
 
   return components.every((component) => {
-    const submissionPath = formComponentUtils.getComponentSubmissionPath(component, parentSubmissionPath);
+    const submissionPath = submissionUtils.getComponentSubmissionPath(component, parentSubmissionPath);
     return getSubmissionValue(submissionPath, submission) === undefined;
   });
 };
 
 const noChildValuesForDataGrid = (parentSubmissionPath: string, components: Component[], submission?: Submission) => {
-  const dataGridValues = formComponentUtils.getSubmissionValue(parentSubmissionPath, submission);
+  const dataGridValues = submissionUtils.getSubmissionValue(parentSubmissionPath, submission);
   if (!submission || !components || !dataGridValues || !Array.isArray(dataGridValues) || dataGridValues.length === 0) {
     return true;
   }
@@ -105,7 +106,7 @@ const getComponentSubmissionPath = (component: Component, parentSubmissionPath: 
   return tree || input ? (parentSubmissionPath ? `${parentSubmissionPath}.${key}` : key) : (parentSubmissionPath ?? '');
 };
 
-const formComponentUtils = {
+const submissionUtils = {
   getSubmissionValue,
   getPdfSubmissionValue,
   noChildValues,
@@ -113,4 +114,4 @@ const formComponentUtils = {
   getComponentSubmissionPath,
 };
 
-export default formComponentUtils;
+export { submissionUtils };

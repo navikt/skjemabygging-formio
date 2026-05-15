@@ -1,7 +1,6 @@
-import { PdfData } from '@navikt/skjemadigitalisering-shared-domain';
+import { PdfData, submissionUtils as formComponentUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import renderPdfComponent from '../../../render/RenderPdfComponent';
 import { PdfComponentProps } from '../../../types';
-import formComponentUtils from '../../../utils/formComponent';
 
 const DefaultSection = (props: PdfComponentProps): PdfData | null => {
   const { component, submissionPath, translate } = props;

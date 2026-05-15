@@ -1,7 +1,6 @@
 import { FormSummary } from '@navikt/ds-react';
-import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { dateUtils, submissionUtils as formComponentUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { FormComponentProps } from '../../../types';
-import formComponentUtils from '../../../utils/formComponent';
 
 const SummaryAddressValidity = (props: FormComponentProps) => {
   const { submission, submissionPath, translate } = props;

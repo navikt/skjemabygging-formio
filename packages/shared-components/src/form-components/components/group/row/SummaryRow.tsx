@@ -1,7 +1,7 @@
 import { FormSummary } from '@navikt/ds-react';
+import { submissionUtils as formComponentUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import RenderComponent from '../../../render/RenderComponent';
 import { FormComponentProps } from '../../../types';
-import formComponentUtils from '../../../utils/formComponent';
 import { getCurrencyValue } from './rowUtils';
 
 const SummaryRow = (props: FormComponentProps) => {

@@ -1,5 +1,9 @@
-import { Component, currencyUtils, Submission } from '@navikt/skjemadigitalisering-shared-domain';
-import formComponentUtils from '../../../utils/formComponent';
+import {
+  Component,
+  currencyUtils,
+  submissionUtils as formComponentUtils,
+  Submission,
+} from '@navikt/skjemadigitalisering-shared-domain';
 
 const getChildSubmissionValue = (
   type: string,

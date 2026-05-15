@@ -1,6 +1,6 @@
 import { FormSummary } from '@navikt/ds-react';
+import { submissionUtils as formComponentUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { FormComponentProps } from '../../../types';
-import formComponentUtils from '../../../utils/formComponent';
 import { addressToString } from './addressUtils';
 
 const SummaryAddress = (props: FormComponentProps) => {

@@ -1,6 +1,6 @@
 import { Box, FormSummary, List } from '@navikt/ds-react';
+import { submissionUtils as formComponentUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { FormComponentProps } from '../../../types';
-import formComponentUtils from '../../../utils/formComponent';
 import DefaultLabel from '../../shared/form-summary/DefaultLabel';
 
 const SummarySelectBoxes = (props: FormComponentProps) => {

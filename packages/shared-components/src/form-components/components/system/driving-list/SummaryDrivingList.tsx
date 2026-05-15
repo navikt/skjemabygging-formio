@@ -1,7 +1,6 @@
 import { Box, FormSummary, List } from '@navikt/ds-react';
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { TEXTS, submissionUtils as formComponentUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { FormComponentProps } from '../../../types';
-import formComponentUtils from '../../../utils/formComponent';
 import { getDrivingListItems } from './drivingListUtils';
 
 const SummaryDrivingList = (props: FormComponentProps) => {

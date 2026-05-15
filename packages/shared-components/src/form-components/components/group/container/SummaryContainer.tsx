@@ -1,6 +1,6 @@
+import { submissionUtils as formComponentUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import RenderComponent from '../../../render/RenderComponent';
 import { FormComponentProps } from '../../../types';
-import formComponentUtils from '../../../utils/formComponent';
 
 const SummaryContainer = (props: FormComponentProps) => {
   const { submission, submissionPath, component } = props;

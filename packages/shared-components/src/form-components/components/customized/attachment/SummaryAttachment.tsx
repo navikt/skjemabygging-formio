@@ -1,7 +1,10 @@
 import { FormSummary } from '@navikt/ds-react';
-import { attachmentUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  attachmentUtils,
+  submissionUtils as formComponentUtils,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { FormComponentProps } from '../../../types';
-import formComponentUtils from '../../../utils/formComponent';
 
 const SummaryAttachment = (props: FormComponentProps) => {
   const { submission, submissionPath, translate, component, formProperties, appConfig } = props;

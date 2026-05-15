@@ -1,7 +1,7 @@
 import { FormSummary } from '@navikt/ds-react';
+import { submissionUtils as formComponentUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import RenderComponent from '../../../render/RenderComponent';
 import { FormComponentProps } from '../../../types';
-import formComponentUtils from '../../../utils/formComponent';
 import FormSummaryAnswersNested from '../../shared/form-summary/FormSummaryAnswersNested';
 
 const SummaryFormGroup = (props: FormComponentProps) => {

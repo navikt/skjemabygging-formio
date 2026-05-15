@@ -1,7 +1,6 @@
 import { FormSummary } from '@navikt/ds-react';
-import { formatUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { formatUtils, submissionUtils as formComponentUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { FormComponentProps } from '../../../types';
-import formComponentUtils from '../../../utils/formComponent';
 import DefaultLabel from '../../shared/form-summary/DefaultLabel';
 
 const SummaryPhoneNumber = (props: FormComponentProps) => {

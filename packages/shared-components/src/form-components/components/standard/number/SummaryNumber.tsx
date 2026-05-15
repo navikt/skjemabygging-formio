@@ -1,7 +1,6 @@
 import { FormSummary } from '@navikt/ds-react';
-import { numberUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { submissionUtils as formComponentUtils, numberUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { FormComponentProps } from '../../../types';
-import formComponentUtils from '../../../utils/formComponent';
 import DefaultLabel from '../../shared/form-summary/DefaultLabel';
 
 const SummaryNumber = (props: FormComponentProps) => {

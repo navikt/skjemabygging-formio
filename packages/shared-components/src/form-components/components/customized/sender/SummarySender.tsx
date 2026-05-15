@@ -1,6 +1,6 @@
 import { FormSummary } from '@navikt/ds-react';
+import { submissionUtils as formComponentUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { FormComponentProps } from '../../../types';
-import formComponentUtils from '../../../utils/formComponent';
 
 const SummarySender = (props: FormComponentProps) => {
   const { component, submissionPath, submission, translate } = props;

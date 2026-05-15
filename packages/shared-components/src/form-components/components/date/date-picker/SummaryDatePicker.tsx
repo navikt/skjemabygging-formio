@@ -1,7 +1,6 @@
 import { FormSummary } from '@navikt/ds-react';
-import { dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { dateUtils, submissionUtils as formComponentUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { FormComponentProps } from '../../../types';
-import formComponentUtils from '../../../utils/formComponent';
 import DefaultLabel from '../../shared/form-summary/DefaultLabel';
 
 const SummaryDatePicker = (props: FormComponentProps) => {
