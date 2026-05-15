@@ -69,19 +69,19 @@ describe('createApplicationPdfService', () => {
 
   it('records request and duration on success', async () => {
     const registry = new Registry();
-    const apiService = {
+    const client = {
       createPdf: vi.fn().mockResolvedValue('pdf-base64'),
     };
     const service = createApplicationPdfService({
+      baseUrl: 'http://familie-pdf',
       metrics: {
         appName: 'fyllut',
         registry,
       },
-      apiService,
+      client,
     });
 
     const result = await service.createPdf({
-      baseUrl: 'http://familie-pdf',
       accessToken: 'token',
       pdfFormData: createPdfFormData(),
     });
@@ -98,20 +98,20 @@ describe('createApplicationPdfService', () => {
   it('records failure and duration on error', async () => {
     const registry = new Registry();
     const error = new Error('pdf failed');
-    const apiService = {
+    const client = {
       createPdf: vi.fn().mockRejectedValue(error),
     };
     const service = createApplicationPdfService({
+      baseUrl: 'http://familie-pdf',
       metrics: {
         appName: 'fyllut',
         registry,
       },
-      apiService,
+      client,
     });
 
     await expect(
       service.createPdf({
-        baseUrl: 'http://familie-pdf',
         accessToken: 'token',
         pdfFormData: createPdfFormData(),
       }),
@@ -124,31 +124,31 @@ describe('createApplicationPdfService', () => {
 
   it('reuses existing metrics when the same registry is passed more than once', async () => {
     const registry = new Registry();
-    const apiService = {
+    const client = {
       createPdf: vi.fn().mockResolvedValue('pdf-base64'),
     };
     const firstService = createApplicationPdfService({
+      baseUrl: 'http://familie-pdf',
       metrics: {
         appName: 'fyllut',
         registry,
       },
-      apiService,
+      client,
     });
     const secondService = createApplicationPdfService({
+      baseUrl: 'http://familie-pdf',
       metrics: {
         appName: 'fyllut',
         registry,
       },
-      apiService,
+      client,
     });
 
     await firstService.createPdf({
-      baseUrl: 'http://familie-pdf',
       accessToken: 'token',
       pdfFormData: createPdfFormData(),
     });
     await secondService.createPdf({
-      baseUrl: 'http://familie-pdf',
       accessToken: 'token',
       pdfFormData: createPdfFormData(),
     });

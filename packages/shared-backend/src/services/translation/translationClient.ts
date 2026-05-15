@@ -26,9 +26,9 @@ const getGlobalTranslations = async (props: GetGlobalTranslationsProps) => {
   return await http.get<FormsApiTranslation[]>(`${baseUrl}/${globalTranslationUrl}`);
 };
 
-const translationApiService = {
+const translationClient = {
   getFormTranslations,
   getGlobalTranslations,
 };
 
-export default translationApiService;
+export default translationClient;

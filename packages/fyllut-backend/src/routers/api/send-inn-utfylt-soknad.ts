@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
 import fetch from 'node-fetch';
-import { config } from '../../config/config';
 import { logger } from '../../logger';
 import { getIdportenPid, getTokenxAccessToken } from '../../security/tokenHelper';
 import { applicationPdfService } from '../../services';
@@ -10,7 +9,9 @@ import { responseToError } from '../../utils/errorHandling';
 import { getFyllutUrl } from '../../utils/url';
 import { assembleSendInnSoknadBody, isNotFound, sanitizeInnsendingsId, validateInnsendingsId } from './helpers/sendInn';
 
-const { familiePdfGeneratorUrl, sendInnConfig } = config;
+import { config } from '../../config/config';
+
+const { sendInnConfig } = config;
 
 const sendInnUtfyltSoknad = {
   put: async (req: Request, res: Response, next: NextFunction) => {
@@ -46,7 +47,6 @@ const sendInnUtfyltSoknad = {
       }
 
       const applicationPdfBase64 = await applicationPdfService.createPdf({
-        baseUrl: familiePdfGeneratorUrl,
         accessToken: req.headers.PdfAccessToken as string,
         pdfFormData,
       });

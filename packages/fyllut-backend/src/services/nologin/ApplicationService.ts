@@ -78,7 +78,6 @@ class ApplicationService {
     const lang = localizationUtils.getLanguageCodeAsIso639_1(language);
     const translate = translationUtils.createTranslate(translation, language);
     const applicationPdfBase64 = await this.applicationPdfService.createPdf({
-      baseUrl: this.config.familiePdfGeneratorUrl,
       accessToken: pdfAccessToken,
       pdfFormData,
     });
