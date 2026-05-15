@@ -1,7 +1,6 @@
 import { errorHandler } from '@navikt/skjemadigitalisering-shared-backend';
 import express from 'express';
-import entraIdM2mHandler from '../../middleware/entraIdM2mHandler';
-import entraIdOboHandler from '../../middleware/entraIdOboHandler';
+import { entraIdM2mHandler, entraIdOboHandler } from '../../middleware/entraIdHandlers';
 import formSpecRouter from './formSpecRouter';
 
 const apiRouter = express.Router();
