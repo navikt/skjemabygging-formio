@@ -1,0 +1,27 @@
+{
+  "label": "Test forhåndsvisning (kun digital)",
+  "verdiliste": [
+    {
+      "label": "Introduksjon",
+      "verdiliste": [
+        {
+          "label": "introPage.selfDeclaration.inputLabel",
+          "verdi": "-"
+        }
+      ]
+    }
+  ],
+  "skjemanummer": "test-preview",
+  "pdfConfig": {
+    "harInnholdsfortegnelse": false,
+    "språk": "nb"
+  },
+  "bunntekst": {
+    "upperleft": "F.nr: —",
+    "lowerleft": "Skjemanummer: test-preview",
+    "upperRight": null,
+    "upperMiddle": "Opprettet: 15 januar 2024, 11:30",
+    "lowerMiddle": "Versjon: snapshot-test"
+  },
+  "vannmerke": "__undefined__"
+}
