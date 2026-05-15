@@ -1,5 +1,5 @@
+import { getSelectedValues } from '@navikt/skjemadigitalisering-shared-domain';
 import { PdfComponentProps } from '../../../types';
-import { getSelectedValues } from './dataFetcherUtils';
 
 const PdfDataFetcher = (props: PdfComponentProps) => {
   const { component, submissionPath, submission, translate } = props;

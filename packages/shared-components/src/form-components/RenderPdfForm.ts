@@ -2,6 +2,7 @@ import {
   Component,
   dateUtils,
   Form,
+  FormComponentType,
   Panel,
   PdfData,
   PdfFormData,
@@ -51,6 +52,7 @@ import {
 } from './components/standard';
 import { PdfActivities, PdfDataFetcher, PdfDrivingList, PdfMaalgruppe } from './components/system';
 import renderPdfComponent from './render/RenderPdfComponent';
+import { PdfComponentRegistry } from './types';
 
 interface Props {
   activeComponents: Component[];
@@ -130,7 +132,7 @@ const renderPdfForm = ({
     dataFetcher: PdfDataFetcher,
     drivinglist: PdfDrivingList,
     maalgruppe: PdfMaalgruppe,
-  };
+  } satisfies Record<FormComponentType, PdfComponentRegistry[string]>;
 
   const attachmentUploadsComponentRegistry = {
     ...componentRegistry,

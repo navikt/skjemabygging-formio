@@ -1,6 +1,9 @@
-import { attachmentUtils, PdfData } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  attachmentUtils,
+  submissionUtils as formComponentUtils,
+  PdfData,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { PdfComponentProps } from '../../../types';
-import formComponentUtils from '../../../utils/formComponent';
 
 const PdfAttachment = (props: PdfComponentProps): PdfData[] | null => {
   const { component, submissionPath, submission, translate, submissionMethod } = props;

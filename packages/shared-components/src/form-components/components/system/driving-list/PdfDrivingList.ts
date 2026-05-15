@@ -1,7 +1,10 @@
-import { PdfData, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  PdfData,
+  TEXTS,
+  submissionUtils as formComponentUtils,
+  getDrivingListItems,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { PdfComponentProps } from '../../../types';
-import formComponentUtils from '../../../utils/formComponent';
-import { getDrivingListItems } from './drivingListUtils';
 
 const PdfDrivingList = (props: PdfComponentProps): PdfData | null => {
   const { component, submissionPath, submission, translate, currentLanguage } = props;

@@ -1,7 +1,6 @@
+import { submissionUtils as formComponentUtils, getCurrencyValue } from '@navikt/skjemadigitalisering-shared-domain';
 import { PdfComponentProps } from '../../../types';
-import formComponentUtils from '../../../utils/formComponent';
 import DefaultSection from '../../shared/pdf/DefaultSection';
-import { getCurrencyValue } from './rowUtils';
 
 const PdfRow = (props: PdfComponentProps) => {
   const { component, submissionPath, submission, translate } = props;

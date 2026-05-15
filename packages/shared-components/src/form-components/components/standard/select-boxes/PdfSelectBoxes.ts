@@ -1,5 +1,5 @@
+import { submissionUtils as formComponentUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { PdfComponentProps } from '../../../types';
-import formComponentUtils from '../../../utils/formComponent';
 
 const PdfSelectBoxes = (props: PdfComponentProps) => {
   const { component, submissionPath, submission, translate } = props;
