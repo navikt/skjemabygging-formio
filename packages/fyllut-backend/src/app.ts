@@ -3,7 +3,6 @@ import cors from 'cors';
 import express, { NextFunction, Request, Response } from 'express';
 import mustacheExpress from 'mustache-express';
 import { checkConfigConsistency, config } from './config/config';
-import { NaisCluster } from './config/nais-cluster';
 import { buildDirectory } from './context';
 import { setupDeprecatedEndpoints } from './deprecatedEndpoints';
 import expressJsonMetricHandler from './middleware/expressJsonMetricHandler';
@@ -35,7 +34,7 @@ export const createApp = (setupDev: boolean = false) => {
 
   const fyllutRouter = express.Router();
 
-  if (config.naisClusterName === NaisCluster.DEV || setupDev) {
+  if (config.isDelingslenke || setupDev) {
     setupDevServer(app, fyllutRouter, config);
   }
 
