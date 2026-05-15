@@ -1,6 +1,9 @@
-import { submissionUtils as formComponentUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  submissionUtils as formComponentUtils,
+  getIdentityLabel,
+  getIdentityValue,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { PdfComponentProps } from '../../../types';
-import { getIdentityLabel, getIdentityValue } from './identityUtils';
 
 const PdfIdentity = (props: PdfComponentProps) => {
   const { submissionPath, submission, translate } = props;
