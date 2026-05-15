@@ -138,8 +138,8 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
 
   const translationForLanguage = useCallback(
     (language: Language = nbNO) => {
-      if (language !== nbNO && Object.keys(translations).length > 0) {
-        return translations[language] ?? {};
+      if (Object.keys(translations).length > 0) {
+        return translations[language] ?? translations[nbNO] ?? {};
       }
       return {};
     },

@@ -28,6 +28,7 @@ export const postNologinSoknad = async (
       submission,
       language,
       translation,
+      submissionMethod,
     },
     {
       NologinToken: nologinToken,

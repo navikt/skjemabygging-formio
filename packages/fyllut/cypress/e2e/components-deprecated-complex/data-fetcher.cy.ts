@@ -255,12 +255,13 @@ describe('Data fetcher', () => {
           });
       });
 
-      it('includes aktivitetsvelger in pdfFormData on submit', () => {
+      it('submits activity selection with backend-rendered PDF contract', () => {
         cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
-          const { pdfFormData } = req.body;
-          expect(pdfFormData.verdiliste[0].verdiliste[0].label).eq('Aktivitetsvelger');
-          expect(pdfFormData.verdiliste[0].verdiliste[0].verdiliste).to.have.length(1);
-          expect(pdfFormData.verdiliste[0].verdiliste[0].visningsVariant).eq('PUNKTLISTE');
+          expect(req.body.form).to.exist;
+          expect(req.body.submission).to.exist;
+          expect(req.body.translation).to.exist;
+          expect(req.body.submissionMethod).to.eq('digital');
+          expect(req.body.pdfFormData).to.be.undefined;
         }).as('submitMellomlagring');
         cy.clickSaveAndContinue();
         cy.wait('@submitMellomlagring');
