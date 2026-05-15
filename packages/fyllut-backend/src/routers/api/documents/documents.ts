@@ -6,6 +6,7 @@ import {
   translationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { RequestHandler } from 'express';
+import { logger } from '../../../logger';
 import {
   appMetrics,
   applicationPdfService,

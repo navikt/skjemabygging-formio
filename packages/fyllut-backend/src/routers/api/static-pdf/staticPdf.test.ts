@@ -1,7 +1,7 @@
 import {
   coverPageService,
-  formService,
   mergeFileService,
+  sharedFormService,
   staticPdfService,
   translationService,
 } from '../../../services';
@@ -9,6 +9,9 @@ import { mockNext, mockRequest, mockResponse } from '../../../test/requestTestHe
 import staticPdf from './staticPdf';
 
 vi.mock('@navikt/skjemadigitalisering-shared-backend', () => ({
+  correlator: {
+    getId: vi.fn(),
+  },
   requestUtil: {
     getStringParam: vi.fn((req, key) => req.params?.[key]),
   },
@@ -18,10 +21,7 @@ vi.mock('../../../services', () => ({
   coverPageService: {
     downloadCoverPage: vi.fn(),
   },
-  correlator: {
-    getId: vi.fn(),
-  },
-  formService: {
+  sharedFormService: {
     getForm: vi.fn(),
   },
   mergeFileService: {
@@ -42,7 +42,7 @@ describe('[endpoint] staticPdf', () => {
   });
 
   it('adds p suffix to the first form number token before downloading cover page', async () => {
-    vi.mocked(formService.getForm).mockResolvedValue({
+    vi.mocked(sharedFormService.getForm).mockResolvedValue({
       skjemanummer: 'NAV 12.34-56',
       path: 'nav123456',
       title: 'Test form',
@@ -88,7 +88,7 @@ describe('[endpoint] staticPdf', () => {
   });
 
   it('uses attachment labels instead of attachment keys on the cover page for static pdfs', async () => {
-    vi.mocked(formService.getForm).mockResolvedValue({
+    vi.mocked(sharedFormService.getForm).mockResolvedValue({
       skjemanummer: 'NAV 12.34-56',
       path: 'nav123456',
       title: 'Test form',
