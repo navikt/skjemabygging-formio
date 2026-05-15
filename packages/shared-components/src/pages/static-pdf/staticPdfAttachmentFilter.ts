@@ -24,11 +24,4 @@ const filterStaticPdfAttachments = (attachments: Component[], attachmentCodeFilt
   });
 };
 
-const pruneStaticPdfAttachmentSelections = (attachmentSelections: unknown[], allowedAttachmentKeys: Set<string>) => {
-  return attachmentSelections.filter(
-    (attachmentSelection): attachmentSelection is string =>
-      typeof attachmentSelection === 'string' && allowedAttachmentKeys.has(attachmentSelection),
-  );
-};
-
-export { filterStaticPdfAttachments, normalizeStaticPdfAttachmentCodeFilter, pruneStaticPdfAttachmentSelections };
+export { filterStaticPdfAttachments, normalizeStaticPdfAttachmentCodeFilter };

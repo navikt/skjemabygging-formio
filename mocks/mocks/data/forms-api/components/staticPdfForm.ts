@@ -29,13 +29,6 @@ const staticPdfForm = () => {
             description: 'Beskrivelse 2',
             properties: { vedleggskode: 'K2', vedleggstittel: 'Vedleggstittel 2' },
           }),
-          attachment({
-            attachmentType: 'default',
-            key: 'vedleggUtenKode',
-            label: 'Vedlegg uten kode',
-            description: 'Beskrivelse uten kode',
-            properties: {},
-          }),
         ],
       }),
     ],

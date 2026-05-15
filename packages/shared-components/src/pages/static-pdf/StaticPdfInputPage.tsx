@@ -1,4 +1,4 @@
-import { Component, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router';
 import { useForm } from '../../context/form/FormContext';
@@ -14,34 +14,20 @@ import FormNationalIdentityNumber from './components/shared/identity/FormNationa
 import FormSurname from './components/shared/identity/FormSurname';
 import SelectAttachmentList from './components/shared/SelectAttachmentList';
 import StaticPdfIdentityType from './components/shared/StaticPdfIdentityType';
-import {
-  filterStaticPdfAttachments,
-  normalizeStaticPdfAttachmentCodeFilter,
-  pruneStaticPdfAttachmentSelections,
-} from './staticPdfAttachmentFilter';
-
-interface StaticPdfCoverPageData {
-  attachments?: unknown;
-  [key: string]: unknown;
-}
+import { filterStaticPdfAttachments, normalizeStaticPdfAttachmentCodeFilter } from './staticPdfAttachmentFilter';
 
 const StaticPdfInputPage = () => {
   const { form, setSubmission, submission } = useForm();
   const { enhetMaVelgesVedPapirInnsending } = form.properties;
   const { currentLanguage } = useLanguages();
   const [searchParams] = useSearchParams();
-  const attachments: Component[] = useMemo(() => {
-    return navFormUtils.flattenComponents(form.components).filter((component) => component.type === 'attachment');
-  }, [form.components]);
-  const attachmentCodeFilter = useMemo(() => {
-    return normalizeStaticPdfAttachmentCodeFilter(searchParams.get('filter'));
-  }, [searchParams]);
+  const filterValue = searchParams.get('filter');
   const filteredAttachments = useMemo(() => {
-    return filterStaticPdfAttachments(attachments, attachmentCodeFilter);
-  }, [attachmentCodeFilter, attachments]);
-  const allowedAttachmentKeys = useMemo(() => {
-    return new Set(filteredAttachments.map((attachment) => attachment.key));
-  }, [filteredAttachments]);
+    const attachments = navFormUtils
+      .flattenComponents(form.components)
+      .filter((component) => component.type === 'attachment');
+    return filterStaticPdfAttachments(attachments, normalizeStaticPdfAttachmentCodeFilter(filterValue));
+  }, [filterValue, form.components]);
 
   useEffect(() => {
     if (!submission) {
@@ -56,59 +42,6 @@ const StaticPdfInputPage = () => {
       });
     }
   }, [setSubmission, submission, currentLanguage]);
-
-  useEffect(() => {
-    if (attachmentCodeFilter.length === 0) {
-      return;
-    }
-
-    const coverPage = submission?.data?.coverPage;
-    if (!coverPage || typeof coverPage !== 'object') {
-      return;
-    }
-
-    const selectedAttachments = (coverPage as StaticPdfCoverPageData).attachments;
-    if (!Array.isArray(selectedAttachments)) {
-      return;
-    }
-
-    const prunedAttachments = pruneStaticPdfAttachmentSelections(selectedAttachments, allowedAttachmentKeys);
-    if (prunedAttachments.length === selectedAttachments.length) {
-      return;
-    }
-
-    setSubmission((prevSubmission) => {
-      if (!prevSubmission) {
-        return prevSubmission;
-      }
-
-      const currentCoverPage = prevSubmission.data?.coverPage;
-      if (!currentCoverPage || typeof currentCoverPage !== 'object') {
-        return prevSubmission;
-      }
-
-      const currentAttachments = (currentCoverPage as StaticPdfCoverPageData).attachments;
-      if (!Array.isArray(currentAttachments)) {
-        return prevSubmission;
-      }
-
-      const nextAttachments = pruneStaticPdfAttachmentSelections(currentAttachments, allowedAttachmentKeys);
-      if (nextAttachments.length === currentAttachments.length) {
-        return prevSubmission;
-      }
-
-      return {
-        ...prevSubmission,
-        data: {
-          ...prevSubmission.data,
-          coverPage: {
-            ...currentCoverPage,
-            attachments: nextAttachments,
-          },
-        },
-      };
-    });
-  }, [allowedAttachmentKeys, attachmentCodeFilter.length, setSubmission, submission?.data?.coverPage]);
 
   return (
     <>

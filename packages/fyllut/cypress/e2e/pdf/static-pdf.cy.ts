@@ -78,7 +78,6 @@ describe('Static PDF', () => {
 
     cy.findByRole('checkbox', { name: /Vedlegg 1/ }).should('exist');
     cy.findByRole('checkbox', { name: /Vedlegg 2/ }).should('exist');
-    cy.findByRole('checkbox', { name: /Vedlegg uten kode/ }).should('exist');
   });
 
   it('shows only the matching attachment for a single filter code', () => {
@@ -86,7 +85,6 @@ describe('Static PDF', () => {
 
     cy.findByRole('checkbox', { name: /Vedlegg 1/ }).should('exist');
     cy.findByRole('checkbox', { name: /Vedlegg 2/ }).should('not.exist');
-    cy.findByRole('checkbox', { name: /Vedlegg uten kode/ }).should('not.exist');
   });
 
   it('shows all matching attachments for multiple filter codes and ignores whitespace', () => {
@@ -94,7 +92,6 @@ describe('Static PDF', () => {
 
     cy.findByRole('checkbox', { name: /Vedlegg 1/ }).should('exist');
     cy.findByRole('checkbox', { name: /Vedlegg 2/ }).should('exist');
-    cy.findByRole('checkbox', { name: /Vedlegg uten kode/ }).should('not.exist');
   });
 
   it('ignores unknown filter codes', () => {
@@ -102,6 +99,5 @@ describe('Static PDF', () => {
 
     cy.findByRole('checkbox', { name: /Vedlegg 1/ }).should('exist');
     cy.findByRole('checkbox', { name: /Vedlegg 2/ }).should('not.exist');
-    cy.findByRole('checkbox', { name: /Vedlegg uten kode/ }).should('not.exist');
   });
 });

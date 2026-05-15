@@ -1,16 +1,12 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
-import {
-  filterStaticPdfAttachments,
-  normalizeStaticPdfAttachmentCodeFilter,
-  pruneStaticPdfAttachmentSelections,
-} from './staticPdfAttachmentFilter';
+import { filterStaticPdfAttachments, normalizeStaticPdfAttachmentCodeFilter } from './staticPdfAttachmentFilter';
 
-const createAttachment = (key: string, vedleggskode?: string) =>
+const createAttachment = (key: string, vedleggskode: string) =>
   ({
     key,
     label: key,
     type: 'attachment',
-    properties: vedleggskode ? { vedleggskode } : {},
+    properties: { vedleggskode },
   }) as Component;
 
 describe('staticPdfAttachmentFilter', () => {
@@ -31,11 +27,7 @@ describe('staticPdfAttachmentFilter', () => {
   });
 
   describe('filterStaticPdfAttachments', () => {
-    const attachments = [
-      createAttachment('vedlegg1', 'R4'),
-      createAttachment('vedlegg2', 'K2'),
-      createAttachment('vedleggUtenKode'),
-    ];
+    const attachments = [createAttachment('vedlegg1', 'R4'), createAttachment('vedlegg2', 'K2')];
 
     it('returns all attachments when there is no active filter', () => {
       expect(filterStaticPdfAttachments(attachments, [])).toEqual(attachments);
@@ -46,17 +38,9 @@ describe('staticPdfAttachmentFilter', () => {
       expect(filterStaticPdfAttachments(attachments, ['R4', 'K2'])).toEqual([attachments[0], attachments[1]]);
     });
 
-    it('ignores unknown codes and hides attachments without vedleggskode when a filter is present', () => {
+    it('ignores unknown codes when a filter is present', () => {
       expect(filterStaticPdfAttachments(attachments, ['R4', 'ZZ'])).toEqual([attachments[0]]);
       expect(filterStaticPdfAttachments(attachments, ['ZZ'])).toEqual([]);
-    });
-  });
-
-  describe('pruneStaticPdfAttachmentSelections', () => {
-    it('removes selected attachment keys that are no longer allowed', () => {
-      expect(pruneStaticPdfAttachmentSelections(['vedlegg1', 'vedlegg2', 'other'], new Set(['vedlegg1']))).toEqual([
-        'vedlegg1',
-      ]);
     });
   });
 });
