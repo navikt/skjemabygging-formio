@@ -1,0 +1,126 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`RenderPdfForm snapshot baseline > renders testPreview-no-intropage with submissionMethod=undefined 1`] = `
+{
+  "bunntekst": {
+    "lowerMiddle": "Versjon: snapshot-test",
+    "lowerleft": "Skjemanummer: test-preview",
+    "upperMiddle": "Opprettet: 15 januar 2024, 11:30",
+    "upperRight": null,
+    "upperleft": "F.nr: —",
+  },
+  "label": "Test forhåndsvisning (uten standard introside)",
+  "pdfConfig": {
+    "harInnholdsfortegnelse": false,
+    "språk": "nb",
+  },
+  "skjemanummer": "test-preview",
+  "vannmerke": undefined,
+  "verdiliste": [
+    {
+      "label": "Underskrift",
+      "verdiliste": [
+        {
+          "label": "",
+          "verdi": " ",
+        },
+        {
+          "label": "Sted og dato",
+          "verdi": " ",
+        },
+        {
+          "label": "Underskrift",
+          "verdi": " ",
+        },
+        {
+          "label": "Navn med blokkbokstaver",
+          "verdi": " ",
+        },
+      ],
+      "visningsVariant": "HOLDSAMMEN",
+    },
+  ],
+}
+`;
+
+exports[`RenderPdfForm snapshot baseline > renders testPreview-sub-digital with submissionMethod=digital 1`] = `
+{
+  "bunntekst": {
+    "lowerMiddle": "Versjon: snapshot-test",
+    "lowerleft": "Skjemanummer: test-preview",
+    "upperMiddle": "Opprettet: 15 januar 2024, 11:30",
+    "upperRight": null,
+    "upperleft": "F.nr: —",
+  },
+  "label": "Test forhåndsvisning (kun digital)",
+  "pdfConfig": {
+    "harInnholdsfortegnelse": false,
+    "språk": "nb",
+  },
+  "skjemanummer": "test-preview",
+  "vannmerke": undefined,
+  "verdiliste": [
+    {
+      "label": "Introduksjon",
+      "verdiliste": [
+        {
+          "label": "introPage.selfDeclaration.inputLabel",
+          "verdi": "-",
+        },
+      ],
+    },
+  ],
+}
+`;
+
+exports[`RenderPdfForm snapshot baseline > renders testPreview-sub-none with submissionMethod=paper 1`] = `
+{
+  "bunntekst": {
+    "lowerMiddle": "Versjon: snapshot-test",
+    "lowerleft": "Skjemanummer: test-preview",
+    "upperMiddle": "Opprettet: 15 januar 2024, 11:30",
+    "upperRight": null,
+    "upperleft": "F.nr: —",
+  },
+  "label": "Test forhåndsvisning (ingen innsending)",
+  "pdfConfig": {
+    "harInnholdsfortegnelse": false,
+    "språk": "nb",
+  },
+  "skjemanummer": "test-preview",
+  "vannmerke": undefined,
+  "verdiliste": [
+    {
+      "label": "Introduksjon",
+      "verdiliste": [
+        {
+          "label": "introPage.selfDeclaration.inputLabel",
+          "verdi": "-",
+        },
+      ],
+    },
+    {
+      "label": "Underskrift",
+      "verdiliste": [
+        {
+          "label": "",
+          "verdi": " ",
+        },
+        {
+          "label": "Sted og dato",
+          "verdi": " ",
+        },
+        {
+          "label": "Underskrift",
+          "verdi": " ",
+        },
+        {
+          "label": "Navn med blokkbokstaver",
+          "verdi": " ",
+        },
+      ],
+      "visningsVariant": "HOLDSAMMEN",
+    },
+  ],
+}
+`;
