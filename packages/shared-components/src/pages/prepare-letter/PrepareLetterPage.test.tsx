@@ -8,7 +8,15 @@ import { FormProvider } from '../../context/form/FormContext';
 import { PrepareLetterPage } from './PrepareLetterPage';
 
 vi.mock('../../context/languages', () => ({
-  useLanguages: () => ({ translate: (text) => text }),
+  useLanguages: () => ({
+    currentLanguage: 'nb-NO',
+    translate: (text) => text,
+    translationsForNavForm: {
+      'nb-NO': {
+        'introPage.selfDeclaration.inputLabel': 'Jeg bekrefter at jeg vil svare sa riktig som jeg kan.',
+      },
+    },
+  }),
 }));
 
 vi.mock('../../components/letter/ux-signals/LetterUXSignals', () => {
@@ -138,7 +146,11 @@ describe('PrepareLetterPage', () => {
 
       expect(fetchMock).toHaveBeenCalledTimes(1);
       const [, requestInit] = fetchMock.mock.calls[0];
-      expect(JSON.parse(requestInit?.body as string).formPath).toBe(defaultForm.path);
+      const requestBody = JSON.parse(requestInit?.body as string);
+      expect(requestBody.formPath).toBe(defaultForm.path);
+      expect(JSON.parse(requestBody.translations)).toEqual({
+        'introPage.selfDeclaration.inputLabel': 'Jeg bekrefter at jeg vil svare sa riktig som jeg kan.',
+      });
     });
 
     it('Laster ikke ned førsteside pdf dersom enhet ikke er valgt, og viser feilmelding i stedet', async () => {

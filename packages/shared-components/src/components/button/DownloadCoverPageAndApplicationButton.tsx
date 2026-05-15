@@ -27,6 +27,8 @@ const DownloadCoverPageAndApplicationButton = ({
   const { form, submission } = useForm();
   const { currentLanguage, translationsForNavForm, translate } = useLanguages();
   const [downloadState, setDownloadState] = useState<DownloadState>();
+  const translationsForCurrentLanguage =
+    translationsForNavForm?.[currentLanguage] ?? translationsForNavForm?.['nb-NO'] ?? {};
 
   const onClick = () => {
     setDownloadState(undefined);
@@ -64,11 +66,7 @@ const DownloadCoverPageAndApplicationButton = ({
         form: JSON.stringify(form),
         formPath: form.path,
         submission: JSON.stringify(submission),
-        translations: JSON.stringify(
-          currentLanguage !== 'nb-NO' && translationsForNavForm?.[currentLanguage]
-            ? translationsForNavForm[currentLanguage]
-            : {},
-        ),
+        translations: JSON.stringify(translationsForCurrentLanguage),
         enhetNummer,
         submissionMethod,
       },
