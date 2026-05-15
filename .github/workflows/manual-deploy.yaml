@@ -134,7 +134,7 @@ jobs:
           VAR: image=${{ needs.package-and-push-fyllut-base.outputs.image }}
 
   deploy-form-spec-api-to-dev:
-    name: 'Deploy form-spec-api to dev'
+    name: 'Form-spec-api'
     if: ${{ !failure() && !cancelled() }}
     uses: ./.github/workflows/deploy-form-spec-api.yaml
     with:

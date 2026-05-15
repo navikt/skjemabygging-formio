@@ -226,7 +226,7 @@ jobs:
               - 'packages/form-spec-api/**'
 
   deploy-form-spec-api:
-    name: 'Deploy form-spec-api to prod'
+    name: 'Form-spec-api'
     needs: [detect-changes]
     if: |
       github.ref == 'refs/heads/main' &&
