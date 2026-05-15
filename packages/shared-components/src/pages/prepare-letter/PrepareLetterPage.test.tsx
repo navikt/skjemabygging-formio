@@ -58,6 +58,7 @@ const mockEnhetsListe = [
 
 const defaultForm = {
   title: 'Testskjema',
+  path: 'testskjema',
   components: [
     {
       label: 'Page 1',
@@ -136,6 +137,8 @@ describe('PrepareLetterPage', () => {
       await userEvent.click(screen.getByRole('button', { name: TEXTS.grensesnitt.downloadApplication }));
 
       expect(fetchMock).toHaveBeenCalledTimes(1);
+      const [, requestInit] = fetchMock.mock.calls[0];
+      expect(JSON.parse(requestInit?.body as string).formPath).toBe(defaultForm.path);
     });
 
     it('Laster ikke ned førsteside pdf dersom enhet ikke er valgt, og viser feilmelding i stedet', async () => {
