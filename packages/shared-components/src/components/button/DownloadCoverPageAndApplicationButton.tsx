@@ -1,10 +1,9 @@
 import { Alert } from '@navikt/ds-react';
-import { dateUtils, formioFormsApiUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import React, { useCallback, useState } from 'react';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
-import renderPdfForm from '../../form-components/RenderPdfForm';
 import { http } from '../../index';
 import DownloadPdfButton from './DownloadPdfButton';
 
@@ -25,7 +24,7 @@ const DownloadCoverPageAndApplicationButton = ({
 }: Props) => {
   const appConfig = useAppConfig();
   const { fyllutBaseURL, submissionMethod, logEvent } = appConfig;
-  const { form, submission, activeComponents, activeAttachmentUploadsPanel } = useForm();
+  const { form, submission } = useForm();
   const { currentLanguage, translationsForNavForm, translate } = useLanguages();
   const [downloadState, setDownloadState] = useState<DownloadState>();
 
@@ -72,16 +71,6 @@ const DownloadCoverPageAndApplicationButton = ({
         ),
         enhetNummer,
         submissionMethod,
-        pdfFormData: renderPdfForm({
-          activeComponents,
-          activeAttachmentUploadsPanel,
-          submission,
-          form: formioFormsApiUtils.mapNavFormToForm(form),
-          currentLanguage,
-          translate,
-          appConfig,
-          submissionMethod,
-        }),
       },
       {
         Accept: http.MimeType.PDF,

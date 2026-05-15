@@ -18,19 +18,6 @@ const mockRequestWithPidAndTokenX = ({ headers = {}, body }: MockRequestParams) 
 };
 const filePathSoknad = path.join(process.cwd(), '/src/test/testdata/documents/test-skjema.pdf');
 const soknadPdf = readFileSync(filePathSoknad);
-const pdfFormData = {
-  label: 'default form',
-  pdfConfig: { harInnholdsfortegnelse: false, språk: 'nb' },
-  skjemanummer: 'NAV 12.34-56',
-  verdiliste: [],
-  bunntekst: {
-    upperleft: null,
-    lowerleft: null,
-    upperMiddle: null,
-    lowerMiddle: null,
-    upperRight: null,
-  },
-};
 
 describe('[endpoint] send-inn/utfyltsoknad', () => {
   const innsendingsId = '12345678-1234-1234-1234-12345678abcd';
@@ -40,9 +27,8 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
     submission: { data: {} },
     attachments: [],
     language: 'nb-NO',
-    translation: (text: string) => text,
+    translation: {},
     innsendingsId,
-    pdfFormData,
   };
 
   it('returns 201 and location header if success', async () => {
@@ -145,11 +131,11 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
     expect(sendInnNockScope.isDone()).toBe(false);
   });
 
-  it('calls next with error if pdfFormData is missing', async () => {
+  it('calls next with error if pdfFormData generation fails', async () => {
     const req = mockRequestWithPidAndTokenX({
       body: {
         ...defaultBody,
-        pdfFormData: undefined,
+        form: undefined,
       },
     });
     const res = mockResponse();
@@ -159,7 +145,7 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
 
     expect(next).toHaveBeenCalledTimes(1);
     const error: any = next.mock.calls[0][0];
-    expect(error.message).toBe('Missing pdfFormData to generate PDF');
+    expect(error).toBeDefined();
     expect(res.sendStatus).not.toHaveBeenCalled();
     expect(res.header).not.toHaveBeenCalled();
   });

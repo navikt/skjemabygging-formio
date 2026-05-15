@@ -1,5 +1,4 @@
 import {
-  formioFormsApiUtils,
   Language,
   MellomlagringError,
   NologinToken,
@@ -20,7 +19,6 @@ import {
   updateSoknad,
   updateUtfyltSoknad,
 } from '../../api/sendinn/sendInnSoknad';
-import renderPdfForm from '../../form-components/RenderPdfForm';
 import { b64toBlob } from '../../util/blob/blob';
 import { useAppConfig } from '../config/configContext';
 import { useForm } from '../form/FormContext';
@@ -59,9 +57,9 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { setSubmission, form, submission, activeComponents, activeAttachmentUploadsPanel } = useForm();
+  const { setSubmission, form, submission } = useForm();
   const soknadNotFoundUrl = `${baseUrl}/soknad-ikke-funnet`;
-  const { translationsForNavForm: translations, translate, currentLanguage } = useLanguages();
+  const { translationsForNavForm: translations, translate } = useLanguages();
   const innsendingsIdFromParams = searchParams.get('innsendingsId');
 
   const isMellomlagringAvailable = app === 'fyllut' && submissionMethod === 'digital';
@@ -281,16 +279,6 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
           language,
           translation,
           submissionMethod,
-          renderPdfForm({
-            activeComponents,
-            activeAttachmentUploadsPanel,
-            submission,
-            form: formioFormsApiUtils.mapNavFormToForm(form),
-            currentLanguage,
-            translate,
-            appConfig,
-            submissionMethod,
-          }),
           innsendingsId,
         );
         logEvent?.({
@@ -331,9 +319,6 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
       appConfig,
       nologinToken,
       form,
-      activeComponents,
-      activeAttachmentUploadsPanel,
-      currentLanguage,
       innsendingsId,
       translate,
       submissionMethod,
@@ -361,16 +346,6 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
           translation,
           innsendingsId,
           setRedirectLocation,
-          renderPdfForm({
-            activeComponents,
-            activeAttachmentUploadsPanel,
-            submission,
-            form: formioFormsApiUtils.mapNavFormToForm(form),
-            currentLanguage,
-            translate,
-            appConfig,
-            submissionMethod,
-          }),
         );
         logger?.info(`${innsendingsId}: Mellomlagring was submitted`);
         if (redirectLocation) {
@@ -394,18 +369,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         }
       }
     },
-    [
-      activeAttachmentUploadsPanel,
-      activeComponents,
-      appConfig,
-      currentLanguage,
-      form,
-      innsendingsId,
-      isMellomlagringReady,
-      logger,
-      submissionMethod,
-      translate,
-    ],
+    [appConfig, form, innsendingsId, isMellomlagringReady, logger, submissionMethod, translate],
   );
 
   const submitSoknad = async (appSubmission: Submission): Promise<void> => {

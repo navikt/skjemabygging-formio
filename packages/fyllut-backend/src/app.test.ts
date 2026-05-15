@@ -14,19 +14,6 @@ vi.mock('./dekorator', () => ({
 const { sendInnConfig, tokenx: tokenxConfig, formioApiServiceUrl } = config;
 const filePathSoknad = path.join(process.cwd(), '/src/test/testdata/documents/test-skjema.pdf');
 const soknadPdf = readFileSync(filePathSoknad);
-const pdfFormData = {
-  label: 'NAV 12.34-56',
-  pdfConfig: { harInnholdsfortegnelse: false, språk: 'nb' },
-  skjemanummer: 'NAV 12.34-56',
-  verdiliste: [],
-  bunntekst: {
-    upperleft: null,
-    lowerleft: null,
-    upperMiddle: null,
-    lowerMiddle: null,
-    upperRight: null,
-  },
-};
 
 describe('app', () => {
   describe('index.html', () => {
@@ -153,10 +140,9 @@ describe('app', () => {
       submission: { data: { fodselsnummerDNummerSoker: '12345678911' } },
       attachments: [],
       language: 'nb-NO',
-      translation: (text: string) => text,
+      translation: {},
       submissionMethod: 'digital',
       innsendingsId,
-      pdfFormData,
     };
 
     const azureOpenidScope = nock(extractHost(azureTokenEndpoint))

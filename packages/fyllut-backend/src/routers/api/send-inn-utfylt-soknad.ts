@@ -1,3 +1,4 @@
+import { renderApplicationPdf } from '@navikt/skjemadigitalisering-shared-backend';
 import { NextFunction, Request, Response } from 'express';
 import fetch from 'node-fetch';
 import { logger } from '../../logger';
@@ -21,7 +22,7 @@ const sendInnUtfyltSoknad = {
       const fyllutUrl = getFyllutUrl(req);
       const envQualifier = req.getEnvQualifier();
 
-      const { form, pdfFormData, language, innsendingsId } = req.body;
+      const { form, submission, translation, language, innsendingsId, submissionMethod } = req.body;
       if (!req.headers.PdfAccessToken) {
         logger.warn('Azure access token is missing. Will be unable to generate pdf');
       }
@@ -45,6 +46,15 @@ const sendInnUtfyltSoknad = {
       if (!['nb-NO', 'nn-NO', 'en'].includes(language)) {
         logger.warn(`Language code "${language}" is not supported. Language code will be defaulted to "nb".`, logMeta);
       }
+
+      const pdfFormData = renderApplicationPdf({
+        form,
+        submission,
+        language,
+        translations: translation,
+        submissionMethod,
+        appConfig: { config: { gitVersion: config.gitVersion } },
+      });
 
       const applicationPdfBase64 = await applicationPdfService.createPdf({
         accessToken: req.headers.PdfAccessToken as string,

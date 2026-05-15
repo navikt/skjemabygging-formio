@@ -110,7 +110,6 @@ const createApplicationData = (formRevision: number) => ({
   attachments: [],
   language: 'nb-NO',
   translation: {},
-  pdfFormData: { label: 'Application title', verdiliste: [] },
 });
 
 const createSubmitResponse = (innsendingsId: string, title: string): SubmitApplicationResponse => ({
