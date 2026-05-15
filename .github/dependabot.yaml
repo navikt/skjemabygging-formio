@@ -16,52 +16,23 @@ updates:
       interval: 'monthly'
     versioning-strategy: increase
     open-pull-requests-limit: 10
-    # Default updates flow into one grouped minor/patch PR and one grouped major PR.
-    # Only selected major upgrades stay separate for higher-signal review.
+    # For regular npm version updates, the target shape is one grouped minor/patch PR
+    # and one grouped major PR. GitHub Actions and security updates can still open separate PRs.
     groups:
       all-minor-patch:
-        patterns:
-          - '*'
+        applies-to: 'version-updates'
         update-types:
           - 'minor'
           - 'patch'
       all-major:
-        patterns:
-          - '*'
-        exclude-patterns:
-          - '@navikt/ds-*'
-          - '@navikt/aksel-icons'
-          - '@navikt/aksel'
-          - '@navikt/nav-dekoratoren-moduler'
-          - 'csp-header'
-          - 'html-react-parser'
-          - 'react-router'
-          - 'react'
-          - 'react-dom'
-          - '@types/react'
-          - '@types/react-dom'
-        update-types:
-          - 'major'
-      aksel-major:
-        patterns:
-          - '@navikt/aksel'
-          - '@navikt/ds-*'
-          - '@navikt/aksel-icons'
-        update-types:
-          - 'major'
-      nav-dekoratoren-major:
-        patterns:
-          - '@navikt/nav-dekoratoren-moduler'
-          - 'csp-header'
-          - 'html-react-parser'
-        update-types:
-          - 'major'
-      react-router-major:
-        patterns:
-          - 'react-router'
+        applies-to: 'version-updates'
         update-types:
           - 'major'
     ignore:
+      - dependency-name: '@navikt/aksel'
+      - dependency-name: '@navikt/aksel-icons'
+      - dependency-name: '@navikt/ds-css'
+      - dependency-name: '@navikt/ds-react'
       - dependency-name: 'formiojs'
       - dependency-name: '@formio/react'
       - dependency-name: 'react'
