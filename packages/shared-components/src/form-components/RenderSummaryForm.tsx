@@ -1,6 +1,7 @@
 import {
   Component,
   Form,
+  FormComponentType,
   Panel,
   PanelValidation,
   Submission,
@@ -46,7 +47,7 @@ import {
 } from './components/standard';
 import { SummaryActivities, SummaryDataFetcher, SummaryDrivingList, SummaryMaalgruppe } from './components/system';
 import RenderComponent from './render/RenderComponent';
-import { HandleAttachmentDownloadFile } from './types';
+import { FormComponentRegistry, HandleAttachmentDownloadFile } from './types';
 
 interface Props {
   activeComponents: Component[];
@@ -128,7 +129,7 @@ const RenderSummaryForm = ({
     dataFetcher: SummaryDataFetcher,
     drivinglist: SummaryDrivingList,
     maalgruppe: SummaryMaalgruppe,
-  };
+  } satisfies Record<FormComponentType, FormComponentRegistry[string]>;
 
   const attachmentUploadsComponentRegistry = {
     ...componentRegistry,

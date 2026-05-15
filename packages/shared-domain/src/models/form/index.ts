@@ -1,5 +1,6 @@
 export * from './component';
 export * from './componentError';
+export * from './formComponentType';
 export * from './formProperties';
 export * from './introPage';
 export * from './navFormType';
