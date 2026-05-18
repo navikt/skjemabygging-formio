@@ -148,9 +148,7 @@ describe('PrepareLetterPage', () => {
       const [, requestInit] = fetchMock.mock.calls[0];
       const requestBody = JSON.parse(requestInit?.body as string);
       expect(requestBody.formPath).toBe(defaultForm.path);
-      expect(JSON.parse(requestBody.translations)).toEqual({
-        'introPage.selfDeclaration.inputLabel': 'Jeg bekrefter at jeg vil svare sa riktig som jeg kan.',
-      });
+      expect(requestBody.translations).toBeUndefined();
     });
 
     it('Laster ikke ned førsteside pdf dersom enhet ikke er valgt, og viser feilmelding i stedet', async () => {

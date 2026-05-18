@@ -59,7 +59,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { setSubmission, form, submission } = useForm();
   const soknadNotFoundUrl = `${baseUrl}/soknad-ikke-funnet`;
-  const { translationsForNavForm: translations, translate } = useLanguages();
+  const { translate } = useLanguages();
   const innsendingsIdFromParams = searchParams.get('innsendingsId');
 
   const isMellomlagringAvailable = app === 'fyllut' && submissionMethod === 'digital';
@@ -136,16 +136,6 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
 
   const nbNO: Language = 'nb-NO';
 
-  const translationForLanguage = useCallback(
-    (language: Language = nbNO) => {
-      if (Object.keys(translations).length > 0) {
-        return translations[language] ?? translations[nbNO] ?? {};
-      }
-      return {};
-    },
-    [translations],
-  );
-
   const getLanguageFromSearchParams = (): Language => {
     return (new URL(window.location.href).searchParams.get('lang') as Language) || nbNO;
   };
@@ -159,14 +149,12 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
       try {
         setIsCreateStarted(true);
         const currentLanguage = getLanguageFromSearchParams();
-        const translation = translationForLanguage(currentLanguage);
         const forceMellomlagring = !!searchParams.get('forceMellomlagring');
         const response = await createSoknad(
           appConfig,
           form,
           transformSubmissionBeforeSubmitting(submission),
           currentLanguage,
-          translation,
           forceMellomlagring,
         );
 
@@ -199,7 +187,6 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
     [
       isMellomlagringReady,
       isCreateStarted,
-      translationForLanguage,
       searchParams,
       appConfig,
       form,
@@ -223,13 +210,11 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
 
     try {
       const currentLanguage = getLanguageFromSearchParams();
-      const translation = translationForLanguage(currentLanguage);
       const response = await updateSoknad(
         appConfig,
         form,
         transformSubmissionBeforeSubmitting(submissionForSave),
         currentLanguage,
-        translation,
         innsendingsId,
       );
       logger?.info(`${innsendingsId}: Mellomlagring was updated`);
@@ -269,7 +254,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   };
 
   const submitDigitalFyllut = useCallback(
-    async (language: Language, translation: any, submission: Submission) => {
+    async (language: Language, submission: Submission) => {
       try {
         const response = await postNologinSoknad(
           appConfig,
@@ -277,7 +262,6 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
           form!,
           submission,
           language,
-          translation,
           submissionMethod,
           innsendingsId,
         );
@@ -330,7 +314,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   );
 
   const submitDigital = useCallback(
-    async (language: Language, translation: any, submission: Submission) => {
+    async (language: Language, submission: Submission) => {
       if (!isMellomlagringReady) {
         return;
       }
@@ -338,15 +322,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
       let redirectLocation: string | undefined = undefined;
       const setRedirectLocation = (loc: string) => (redirectLocation = loc);
       try {
-        await updateUtfyltSoknad(
-          appConfig,
-          form,
-          submission,
-          language,
-          translation,
-          innsendingsId,
-          setRedirectLocation,
-        );
+        await updateUtfyltSoknad(appConfig, form, submission, language, innsendingsId, setRedirectLocation);
         logger?.info(`${innsendingsId}: Mellomlagring was submitted`);
         if (redirectLocation) {
           window.location.href = redirectLocation;
@@ -357,7 +333,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         } else {
           logger?.error(`${innsendingsId}: Failed to submit, will try to store changes`, submitError as Error);
           try {
-            await updateSoknad(appConfig, form, submission, language, translation, innsendingsId);
+            await updateSoknad(appConfig, form, submission, language, innsendingsId);
             dispatchFyllutMellomlagring({ type: 'error', error: 'SUBMIT_FAILED' });
           } catch (updateError) {
             logger?.error(
@@ -369,18 +345,17 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         }
       }
     },
-    [appConfig, form, innsendingsId, isMellomlagringReady, logger, submissionMethod, translate],
+    [appConfig, form, innsendingsId, isMellomlagringReady, logger],
   );
 
   const submitSoknad = async (appSubmission: Submission): Promise<void> => {
     const currentLanguage = getLanguageFromSearchParams();
-    const translation = translationForLanguage(currentLanguage);
     const submission = transformSubmissionBeforeSubmitting(appSubmission);
 
     if (submissionMethod === 'digitalnologin' || attachmentPageEnabled) {
-      await submitDigitalFyllut(currentLanguage, translation, submission);
+      await submitDigitalFyllut(currentLanguage, submission);
     } else {
-      await submitDigital(currentLanguage, translation, submission);
+      await submitDigital(currentLanguage, submission);
     }
   };
 

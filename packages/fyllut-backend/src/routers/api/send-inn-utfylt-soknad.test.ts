@@ -7,7 +7,7 @@ import sendInnUtfyltSoknad from './send-inn-utfylt-soknad';
 
 const SEND_LOCATION = 'http://www.unittest.nav.no/sendInn/123';
 
-const { sendInnConfig } = config;
+const { formsApiUrl, sendInnConfig } = config;
 
 const mockRequestWithPidAndTokenX = ({ headers = {}, body }: MockRequestParams) => {
   const req = mockRequest({ headers, body });
@@ -27,7 +27,7 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
     submission: { data: {} },
     attachments: [],
     language: 'nb-NO',
-    translation: {},
+    formPath: 'default-form',
     innsendingsId,
   };
 
@@ -35,6 +35,8 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
     const skjemabyggingproxyScope = nock(process.env.FAMILIE_PDF_GENERATOR_URL!)
       .post('/api/pdf/v3/opprett-pdf')
       .reply(200, { content: encodedSoknadPdf }, { 'Content-Type': 'application/json' });
+    const globalTranslationsScope = nock(formsApiUrl).get('/v1/global-translations').reply(200, []);
+    const formTranslationsScope = nock(formsApiUrl).get('/v1/forms/default-form/translations').reply(200, []);
     const sendInnNockScope = nock(sendInnConfig.host)
       .put(`${sendInnConfig.paths.utfyltSoknad}/${innsendingsId}`)
       .reply(302, 'FOUND', { Location: SEND_LOCATION });
@@ -49,6 +51,8 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
       Location: SEND_LOCATION,
     });
     expect(next).not.toHaveBeenCalled();
+    expect(globalTranslationsScope.isDone()).toBe(true);
+    expect(formTranslationsScope.isDone()).toBe(true);
     expect(skjemabyggingproxyScope.isDone()).toBe(true);
     expect(sendInnNockScope.isDone()).toBe(true);
   });
@@ -57,6 +61,8 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
     const skjemabyggingproxyScope = nock(process.env.FAMILIE_PDF_GENERATOR_URL!)
       .post('/api/pdf/v3/opprett-pdf')
       .reply(200, { content: encodedSoknadPdf }, { 'Content-Type': 'application/json' });
+    const globalTranslationsScope = nock(formsApiUrl).get('/v1/global-translations').reply(200, []);
+    const formTranslationsScope = nock(formsApiUrl).get('/v1/forms/default-form/translations').reply(200, []);
     const sendInnNockScope = nock(sendInnConfig.host)
       .put(`${sendInnConfig.paths.utfyltSoknad}/${innsendingsId}`)
       .reply(500, 'error body');
@@ -71,6 +77,8 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
     expect(error.message).toBe('Feil ved kall til SendInn');
     expect(res.sendStatus).not.toHaveBeenCalled();
     expect(res.header).not.toHaveBeenCalled();
+    expect(globalTranslationsScope.isDone()).toBe(true);
+    expect(formTranslationsScope.isDone()).toBe(true);
     expect(skjemabyggingproxyScope.isDone()).toBe(true);
     expect(sendInnNockScope.isDone()).toBe(true);
   });
@@ -79,6 +87,8 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
     const skjemabyggingproxyScope = nock(process.env.FAMILIE_PDF_GENERATOR_URL!)
       .post('/api/pdf/v3/opprett-pdf')
       .reply(500, 'error body');
+    const globalTranslationsScope = nock(formsApiUrl).get('/v1/global-translations').reply(200, []);
+    const formTranslationsScope = nock(formsApiUrl).get('/v1/forms/default-form/translations').reply(200, []);
     const req = mockRequestWithPidAndTokenX({ body: defaultBody });
     const res = mockResponse();
     const next = vi.fn();
@@ -90,6 +100,8 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
     expect(error.message).toBe('Internal Server Error');
     expect(res.sendStatus).not.toHaveBeenCalled();
     expect(res.header).not.toHaveBeenCalled();
+    expect(globalTranslationsScope.isDone()).toBe(true);
+    expect(formTranslationsScope.isDone()).toBe(true);
     expect(skjemabyggingproxyScope.isDone()).toBe(true);
   });
 

@@ -7,6 +7,7 @@ import { applicationPdfService } from '../../services';
 import { LogMetadata } from '../../types/log';
 import { base64Decode } from '../../utils/base64';
 import { responseToError } from '../../utils/errorHandling';
+import { getTranslationsForForm } from '../../utils/translations';
 import { getFyllutUrl } from '../../utils/url';
 import { assembleSendInnSoknadBody, isNotFound, sanitizeInnsendingsId, validateInnsendingsId } from './helpers/sendInn';
 
@@ -22,7 +23,7 @@ const sendInnUtfyltSoknad = {
       const fyllutUrl = getFyllutUrl(req);
       const envQualifier = req.getEnvQualifier();
 
-      const { form, submission, translation, language, innsendingsId, submissionMethod } = req.body;
+      const { form, submission, language, innsendingsId, submissionMethod } = req.body;
       if (!req.headers.PdfAccessToken) {
         logger.warn('Azure access token is missing. Will be unable to generate pdf');
       }
@@ -47,6 +48,8 @@ const sendInnUtfyltSoknad = {
         logger.warn(`Language code "${language}" is not supported. Language code will be defaulted to "nb".`, logMeta);
       }
 
+      const translation = await getTranslationsForForm(form?.path ?? req.body.formPath, language);
+
       const pdfFormData = renderApplicationPdf({
         form,
         submission,
@@ -66,7 +69,7 @@ const sendInnUtfyltSoknad = {
       }
       const pdfByteArray = Array.from(applicationPdf) ?? [];
 
-      const body = assembleSendInnSoknadBody(req.body, idportenPid, fyllutUrl, pdfByteArray);
+      const body = assembleSendInnSoknadBody({ ...req.body, translation }, idportenPid, fyllutUrl, pdfByteArray);
 
       const sendInnResponse = await fetch(
         `${sendInnConfig.host}${sendInnConfig.paths.utfyltSoknad}/${sanitizedInnsendingsId}`,

@@ -12,7 +12,7 @@ vi.mock('./dekorator', () => ({
   createRedirectUrl: () => '',
 }));
 
-const { sendInnConfig, familiePdfGeneratorUrl } = config;
+const { sendInnConfig, familiePdfGeneratorUrl, formsApiUrl } = config;
 const soknadPdf = Buffer.from('fake-pdf-content-for-tests');
 const encodedSoknadPdf = soknadPdf.toString('base64');
 
@@ -68,6 +68,8 @@ describe('Fyllut backend :: submit application', () => {
         .post('/api/pdf/v3/opprett-pdf')
         .matchHeader('authorization', `Bearer ${tokenSetup.azureAccessToken}`)
         .reply(200, { content: encodedSoknadPdf }, { 'Content-Type': 'application/json' });
+      const globalTranslationsScope = nock(formsApiUrl).get('/v1/global-translations').reply(200, []);
+      const formTranslationsScope = nock(formsApiUrl).get('/v1/forms/nav123456/translations').reply(200, []);
 
       let capturedRequestBody: SubmitApplicationRequest | undefined;
       const sendInnScope = nock(sendInnConfig.host)
@@ -92,6 +94,8 @@ describe('Fyllut backend :: submit application', () => {
       });
 
       tokenSetup.assertDone();
+      globalTranslationsScope.done();
+      formTranslationsScope.done();
       pdfGeneratorScope.done();
       sendInnScope.done();
     },
@@ -109,7 +113,6 @@ const createApplicationData = (formRevision: number) => ({
   submission: { data: { fodselsnummerDNummerSoker: '12345678911', field: 'value' } },
   attachments: [],
   language: 'nb-NO',
-  translation: {},
 });
 
 const createSubmitResponse = (innsendingsId: string, title: string): SubmitApplicationResponse => ({

@@ -17,6 +17,7 @@ import {
   recipientService,
 } from '../../../services';
 import { base64Decode } from '../../../utils/base64';
+import { getTranslationsForForm } from '../../../utils/translations';
 
 const assertPdfFormData = (pdfFormData: PdfFormData | undefined) => {
   if (!pdfFormData || typeof pdfFormData !== 'object') {
@@ -48,13 +49,13 @@ const toPdfBuffer = (pdfBase64: string | null | undefined, errorMessage: string)
 
 const application: RequestHandler = async (req, res, next) => {
   try {
-    const { form, submission, language, translations, submissionMethod } = req.body;
+    const { form, formPath, submission, language, submissionMethod } = req.body;
     if (!submission) {
       throw new Error('Missing submission data to generate PDF');
     }
     const formParsed = JSON.parse(form);
     const submissionParsed = JSON.parse(submission);
-    const translationsParsed: I18nTranslationMap = translations ? JSON.parse(translations) : {};
+    const translationsParsed = await getTranslationsForForm(formParsed.path ?? formPath, language);
     const pdfGeneratorToken = req.headers.PdfAccessToken as string;
 
     logger.info(`Create application pdf for ${formParsed?.properties?.skjemanummer ?? 'unknown form'}`, {
@@ -92,13 +93,13 @@ const application: RequestHandler = async (req, res, next) => {
 
 const coverPageAndApplication: RequestHandler = async (req, res, next) => {
   try {
-    const { form, submission, language, enhetNummer, translations, submissionMethod } = req.body;
+    const { form, formPath, submission, language, enhetNummer, submissionMethod } = req.body;
     if (!submission) {
       throw new Error('Missing submission data to generate PDF');
     }
     const formParsed = JSON.parse(form);
     const submissionParsed = JSON.parse(submission);
-    const translationsParsed = JSON.parse(translations);
+    const translationsParsed = await getTranslationsForForm(formParsed.path ?? formPath, language);
     const translate = createTranslate(translationsParsed, language);
     const frontPageGeneratorToken = req.headers.AzureAccessToken as string;
     const pdfGeneratorToken = req.headers.PdfAccessToken as string;
