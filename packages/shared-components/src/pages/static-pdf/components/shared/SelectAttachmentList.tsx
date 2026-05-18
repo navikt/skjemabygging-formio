@@ -1,19 +1,12 @@
-import { Component, navFormUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useMemo } from 'react';
-import { useForm } from '../../../../context/form/FormContext';
+import { Component, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import FormCheckboxes from './form/FormCheckboxes';
 
 interface Props {
+  attachments: Component[];
   submissionPath: string;
 }
 
-const SelectAttachmentList = ({ submissionPath }: Props) => {
-  const { form } = useForm();
-
-  const attachments: Component[] = useMemo(() => {
-    return navFormUtils.flattenComponents(form.components).filter((component) => component.type === 'attachment');
-  }, [form.components]);
-
+const SelectAttachmentList = ({ submissionPath, attachments }: Props) => {
   if (attachments.length === 0) {
     return null;
   }

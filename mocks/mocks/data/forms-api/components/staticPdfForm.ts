@@ -15,9 +15,20 @@ const staticPdfForm = () => {
         title: 'Vedlegg',
         isAttachmentPanel: true,
         components: [
-          attachment({ attachmentType: 'default', key: 'vedlegg1', label: 'Vedlegg 1', description: 'Beskrivelse 1' }),
-          attachment({ attachmentType: 'default', key: 'vedlegg2', label: 'Vedlegg 2', description: 'Beskrivelse 2' }),
-          attachment({ attachmentType: 'other' }),
+          attachment({
+            attachmentType: 'default',
+            key: 'vedlegg1',
+            label: 'Vedlegg 1',
+            description: 'Beskrivelse 1',
+            properties: { vedleggskode: 'R4', vedleggstittel: 'Vedleggstittel 1' },
+          }),
+          attachment({
+            attachmentType: 'default',
+            key: 'vedlegg2',
+            label: 'Vedlegg 2',
+            description: 'Beskrivelse 2',
+            properties: { vedleggskode: 'K2', vedleggstittel: 'Vedleggstittel 2' },
+          }),
         ],
       }),
     ],
