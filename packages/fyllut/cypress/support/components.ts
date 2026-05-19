@@ -83,13 +83,22 @@ Cypress.Commands.add('testDownloadPdf', () => {
   cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
     const { pdfFormData, submission, form } = req.body;
     const submissionData = JSON.parse(submission).data;
-    const pdfFormDataString = JSON.stringify(pdfFormData);
     const components = JSON.parse(form).components;
 
     Object.entries(submissionData).forEach(([key, submissionValue]) => {
       const component = navFormUtils.findByKey(key, components);
+      if (!component) {
+        throw new Error(`Missing component definition for submission key: ${key}`);
+      }
+
+      if (!pdfFormData) {
+        // The backend now renders the PDF payload server-side, so the browser request no longer includes pdfFormData.
+        return;
+      }
+
       const value = formatValue(submissionValue, component);
       const expectedSnippet = `"label":"${component.label}","verdi":"${value}"`;
+      const pdfFormDataString = JSON.stringify(pdfFormData);
       if (!pdfFormDataString.includes(expectedSnippet)) {
         throw new Error(`Missing PDF snippet: ${expectedSnippet}`);
       }

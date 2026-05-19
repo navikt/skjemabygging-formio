@@ -1,6 +1,7 @@
 import {
   FormsApiTranslation,
   FormsApiTranslationMap,
+  ResponseError,
   TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { translationUtil } from '../../util';
@@ -75,6 +76,10 @@ const createTranslationService = ({
 
   const getTranslations = async (props: GetTranslationsProps) => {
     const { formPath } = props;
+
+    if (!formPath) {
+      throw new ResponseError('BAD_REQUEST', 'Form path is required when getting translations');
+    }
 
     const translations = await Promise.all([
       getGlobalTranslations(),

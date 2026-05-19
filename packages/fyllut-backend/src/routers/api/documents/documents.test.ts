@@ -11,19 +11,6 @@ const formTitle = 'testskjema';
 const filePathForsteside = path.join(process.cwd(), '/src/test/testdata/documents/test-forsteside.pdf');
 const filePathSoknad = path.join(process.cwd(), '/src/test/testdata/documents/test-skjema.pdf');
 const filePathMerged = path.join(process.cwd(), '/src/test/testdata/documents/test-merged.pdf');
-const createPdfFormData = (language = 'nb') => ({
-  label: 'Testskjema',
-  pdfConfig: { harInnholdsfortegnelse: false, språk: language },
-  skjemanummer: 'NAV 12.34-56',
-  verdiliste: [],
-  bunntekst: {
-    upperleft: null,
-    lowerleft: null,
-    upperMiddle: null,
-    lowerMiddle: null,
-    upperRight: null,
-  },
-});
 
 describe('[endpoint] documents', () => {
   it('Create front page and application', async () => {
@@ -39,6 +26,8 @@ describe('[endpoint] documents', () => {
     const recipientsMock = nock(formsApiUrl)
       .get('/v1/recipients/mottaksadresseId')
       .reply(200, { adresselinje1: 'Test' });
+    const globalTranslationsScope = nock(formsApiUrl).get('/v1/global-translations').reply(200, []);
+    const formTranslationsScope = nock(formsApiUrl).get('/v1/forms/testskjema/translations').reply(200, []);
     const generateFileMock = nock(skjemabyggingProxyUrl!)
       .post('/foersteside')
       .reply(200, { foersteside: encodedForstesidedPdf });
@@ -61,20 +50,22 @@ describe('[endpoint] documents', () => {
       body: {
         form: JSON.stringify({
           title: formTitle,
+          path: 'testskjema',
           components: [],
           properties: { mottaksadresseId: 'mottaksadresseId', path: '12345', skjemanummer: 'NAV 12.34-56' },
         }),
+        formPath: 'testskjema',
         submissionMethod: 'paper',
         language: 'nb-NO',
         submission: JSON.stringify({ data: {} }),
-        translations: JSON.stringify({}),
-        pdfFormData: createPdfFormData(),
       },
     });
 
     await documents.coverPageAndApplication(req, mockResponse(), mockNext());
 
     expect(recipientsMock.isDone()).toBe(true);
+    expect(globalTranslationsScope.isDone()).toBe(true);
+    expect(formTranslationsScope.isDone()).toBe(true);
     expect(generateFileMock.isDone()).toBe(true);
     expect(skjemabyggingproxyScope.isDone()).toBe(true);
     expect(mergePdfScope.isDone()).toBe(true);
@@ -93,6 +84,8 @@ describe('[endpoint] documents', () => {
     const recipientsMock = nock(formsApiUrl)
       .get('/v1/recipients/mottaksadresseId')
       .reply(200, { adresselinje1: 'Test' });
+    const globalTranslationsScope = nock(formsApiUrl).get('/v1/global-translations').reply(200, []);
+    const formTranslationsScope = nock(formsApiUrl).get('/v1/forms/testskjema/translations').reply(200, []);
     const generateFileMock = nock(skjemabyggingProxyUrl!)
       .post('/foersteside')
       .reply(200, { foersteside: encodedForstesidedPdf });
@@ -115,47 +108,47 @@ describe('[endpoint] documents', () => {
       body: {
         form: JSON.stringify({
           title: formTitle,
+          path: 'testskjema',
           components: [],
           properties: { mottaksadresseId: 'mottaksadresseId', path: '12345', skjemanummer: 'NAV 12.34-56' },
         }),
+        formPath: 'testskjema',
         submissionMethod: 'paper',
         language: 'EN',
         submission: JSON.stringify({ data: {} }),
-        translations: JSON.stringify({}),
-        pdfFormData: createPdfFormData('en'),
       },
     });
 
     await documents.coverPageAndApplication(req, mockResponse(), mockNext());
 
     expect(recipientsMock.isDone()).toBe(true);
+    expect(globalTranslationsScope.isDone()).toBe(true);
+    expect(formTranslationsScope.isDone()).toBe(true);
     expect(generateFileMock.isDone()).toBe(true);
     expect(skjemabyggingproxyScope.isDone()).toBe(true);
     expect(mergePdfScope.isDone()).toBe(true);
   }, 10000);
 
-  it('fails if pdfFormData is missing', async () => {
+  it('fails if submission is missing in application endpoint', async () => {
     const req = mockRequest({
       headers: {
-        AzureAccessToken: 'azure-access-token',
         PdfAccessToken: 'pdf-access-token',
-        MergePdfToken: 'merge-pdf-token',
       },
       body: {
         form: JSON.stringify({
           title: formTitle,
+          path: 'testskjema',
           components: [],
           properties: { mottaksadresseId: 'mottaksadresseId', path: '12345', skjemanummer: 'NAV 12.34-56' },
         }),
+        formPath: 'testskjema',
         language: 'nb-NO',
-        submission: JSON.stringify({ data: {} }),
-        translations: JSON.stringify({}),
       },
     });
     const next = vi.fn();
 
-    await documents.coverPageAndApplication(req, mockResponse(), next);
+    await documents.application(req, mockResponse(), next);
 
-    expect(next).toHaveBeenCalledWith(expect.objectContaining({ message: 'Missing pdfFormData to generate PDF' }));
+    expect(next).toHaveBeenCalledWith(expect.objectContaining({ message: 'Missing submission data to generate PDF' }));
   });
 });

@@ -7,7 +7,7 @@ import sendInnUtfyltSoknad from './send-inn-utfylt-soknad';
 
 const SEND_LOCATION = 'http://www.unittest.nav.no/sendInn/123';
 
-const { sendInnConfig } = config;
+const { formsApiUrl, sendInnConfig } = config;
 
 const mockRequestWithPidAndTokenX = ({ headers = {}, body }: MockRequestParams) => {
   const req = mockRequest({ headers, body });
@@ -18,19 +18,6 @@ const mockRequestWithPidAndTokenX = ({ headers = {}, body }: MockRequestParams) 
 };
 const filePathSoknad = path.join(process.cwd(), '/src/test/testdata/documents/test-skjema.pdf');
 const soknadPdf = readFileSync(filePathSoknad);
-const pdfFormData = {
-  label: 'default form',
-  pdfConfig: { harInnholdsfortegnelse: false, språk: 'nb' },
-  skjemanummer: 'NAV 12.34-56',
-  verdiliste: [],
-  bunntekst: {
-    upperleft: null,
-    lowerleft: null,
-    upperMiddle: null,
-    lowerMiddle: null,
-    upperRight: null,
-  },
-};
 
 describe('[endpoint] send-inn/utfyltsoknad', () => {
   const innsendingsId = '12345678-1234-1234-1234-12345678abcd';
@@ -40,15 +27,16 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
     submission: { data: {} },
     attachments: [],
     language: 'nb-NO',
-    translation: (text: string) => text,
+    formPath: 'default-form',
     innsendingsId,
-    pdfFormData,
   };
 
   it('returns 201 and location header if success', async () => {
     const skjemabyggingproxyScope = nock(process.env.FAMILIE_PDF_GENERATOR_URL!)
       .post('/api/pdf/v3/opprett-pdf')
       .reply(200, { content: encodedSoknadPdf }, { 'Content-Type': 'application/json' });
+    const globalTranslationsScope = nock(formsApiUrl).get('/v1/global-translations').reply(200, []);
+    const formTranslationsScope = nock(formsApiUrl).get('/v1/forms/default-form/translations').reply(200, []);
     const sendInnNockScope = nock(sendInnConfig.host)
       .put(`${sendInnConfig.paths.utfyltSoknad}/${innsendingsId}`)
       .reply(302, 'FOUND', { Location: SEND_LOCATION });
@@ -63,6 +51,8 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
       Location: SEND_LOCATION,
     });
     expect(next).not.toHaveBeenCalled();
+    expect(globalTranslationsScope.isDone()).toBe(true);
+    expect(formTranslationsScope.isDone()).toBe(true);
     expect(skjemabyggingproxyScope.isDone()).toBe(true);
     expect(sendInnNockScope.isDone()).toBe(true);
   });
@@ -71,6 +61,8 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
     const skjemabyggingproxyScope = nock(process.env.FAMILIE_PDF_GENERATOR_URL!)
       .post('/api/pdf/v3/opprett-pdf')
       .reply(200, { content: encodedSoknadPdf }, { 'Content-Type': 'application/json' });
+    const globalTranslationsScope = nock(formsApiUrl).get('/v1/global-translations').reply(200, []);
+    const formTranslationsScope = nock(formsApiUrl).get('/v1/forms/default-form/translations').reply(200, []);
     const sendInnNockScope = nock(sendInnConfig.host)
       .put(`${sendInnConfig.paths.utfyltSoknad}/${innsendingsId}`)
       .reply(500, 'error body');
@@ -85,6 +77,8 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
     expect(error.message).toBe('Feil ved kall til SendInn');
     expect(res.sendStatus).not.toHaveBeenCalled();
     expect(res.header).not.toHaveBeenCalled();
+    expect(globalTranslationsScope.isDone()).toBe(true);
+    expect(formTranslationsScope.isDone()).toBe(true);
     expect(skjemabyggingproxyScope.isDone()).toBe(true);
     expect(sendInnNockScope.isDone()).toBe(true);
   });
@@ -93,6 +87,8 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
     const skjemabyggingproxyScope = nock(process.env.FAMILIE_PDF_GENERATOR_URL!)
       .post('/api/pdf/v3/opprett-pdf')
       .reply(500, 'error body');
+    const globalTranslationsScope = nock(formsApiUrl).get('/v1/global-translations').reply(200, []);
+    const formTranslationsScope = nock(formsApiUrl).get('/v1/forms/default-form/translations').reply(200, []);
     const req = mockRequestWithPidAndTokenX({ body: defaultBody });
     const res = mockResponse();
     const next = vi.fn();
@@ -104,6 +100,8 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
     expect(error.message).toBe('Internal Server Error');
     expect(res.sendStatus).not.toHaveBeenCalled();
     expect(res.header).not.toHaveBeenCalled();
+    expect(globalTranslationsScope.isDone()).toBe(true);
+    expect(formTranslationsScope.isDone()).toBe(true);
     expect(skjemabyggingproxyScope.isDone()).toBe(true);
   });
 
@@ -145,11 +143,11 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
     expect(sendInnNockScope.isDone()).toBe(false);
   });
 
-  it('calls next with error if pdfFormData is missing', async () => {
+  it('calls next with error if pdfFormData generation fails', async () => {
     const req = mockRequestWithPidAndTokenX({
       body: {
         ...defaultBody,
-        pdfFormData: undefined,
+        form: undefined,
       },
     });
     const res = mockResponse();
@@ -159,7 +157,7 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
 
     expect(next).toHaveBeenCalledTimes(1);
     const error: any = next.mock.calls[0][0];
-    expect(error.message).toBe('Missing pdfFormData to generate PDF');
+    expect(error).toBeDefined();
     expect(res.sendStatus).not.toHaveBeenCalled();
     expect(res.header).not.toHaveBeenCalled();
   });

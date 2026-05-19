@@ -6,6 +6,7 @@ import { logger } from '../../logger';
 import { getIdportenPid, getTokenxAccessToken } from '../../security/tokenHelper';
 import { base64Decode } from '../../utils/base64';
 import { responseToError } from '../../utils/errorHandling';
+import { getTranslationsForForm } from '../../utils/translations';
 import { getFyllutUrl } from '../../utils/url';
 import {
   assembleSendInnSoknadBody,
@@ -84,7 +85,8 @@ const sendInnSoknad = {
       const tokenxAccessToken = getTokenxAccessToken(req);
       const fyllutUrl = getFyllutUrl(req);
       const forceMellomlagring = req.query.forceMellomlagring as string | undefined;
-      const body = assembleSendInnSoknadBody(req.body, idportenPid, fyllutUrl, null);
+      const translation = await getTranslationsForForm(req.body.form?.path, req.body.language);
+      const body = assembleSendInnSoknadBody({ ...req.body, translation }, idportenPid, fyllutUrl, null);
       const forceCreateParam = forceMellomlagring ? '?force=true' : '';
       const envQualifier = req.getEnvQualifier();
 
@@ -129,7 +131,8 @@ const sendInnSoknad = {
         next(new Error(errorMessage));
         return;
       }
-      const body = assembleSendInnSoknadBody(req.body, idportenPid, fyllutUrl, null);
+      const translation = await getTranslationsForForm(req.body.form?.path, req.body.language);
+      const body = assembleSendInnSoknadBody({ ...req.body, translation }, idportenPid, fyllutUrl, null);
 
       const sendInnResponse = await fetch(
         `${sendInnConfig.host}${sendInnConfig.paths.soknad}/${sanitizedInnsendingsId}`,
