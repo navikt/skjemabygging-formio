@@ -9,7 +9,7 @@ import {
   Submission,
   SubmissionMethod,
 } from '../../models';
-import { navFormioUtils } from '../formio';
+import { checkCondition, navFormioUtils } from '../formio';
 import { stringUtils } from '../string';
 import { submissionTypesUtils } from '../submission';
 import { formSummaryUtils } from '../summary';
@@ -72,9 +72,7 @@ function validatesBasedOn(paths: string[], component: Component) {
 
 function hasConditionalOn(paths: string[], component: Component) {
   return (
-    (component.conditional &&
-      ((component.conditional.when && paths.includes(component.conditional.when)) ||
-        areAnyPathsInText(paths, JSON.stringify(component.conditional.json)))) ||
+    (component.conditional && component.conditional.when && paths.includes(component.conditional.when)) ||
     areAnyPathsInText(paths, component.customConditional)
   );
 }
@@ -320,13 +318,10 @@ export const enrichComponentsWithNavIds = (
  * @param submission
  */
 const getActivePanelsFromForm = (form: NavFormType, submission?: Submission): Panel[] => {
-  const conditionals = formSummaryUtils.mapAndEvaluateConditionals(form, submission ?? { data: {} });
+  const data = submission?.data ?? {};
   return form.components
     .filter((component: Component) => component.type === 'panel')
-    .filter((panel): panel is Panel => {
-      const key = formSummaryUtils.createComponentKeyWithNavId(panel);
-      return conditionals[key] !== false;
-    })
+    .filter((panel): panel is Panel => Boolean(checkCondition(panel, [], data, form, undefined, submission)))
     .filter((panel) => !isVedleggspanel(panel));
 };
 

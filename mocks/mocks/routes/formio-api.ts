@@ -82,7 +82,6 @@ import {
 import { bankAccountForm, bankAccountTranslations } from '../data/forms-api/components/bankAccountForm';
 import { checkboxForm, checkboxTranslations } from '../data/forms-api/components/checkboxForm';
 import componentsForm from '../data/forms-api/components/componentsForm';
-import { conditionalRowForm, conditionalRowTranslations } from '../data/forms-api/components/conditionalRowForm';
 import { containerForm, containerTranslations } from '../data/forms-api/components/containerForm';
 import { countrySelectForm, countrySelectTranslations } from '../data/forms-api/components/countrySelectForm';
 import { createMonthPickerForm, monthPickerTranslations } from '../data/forms-api/components/createMonthPickerForm';
@@ -125,6 +124,7 @@ import { surnameForm, surnameTranslations } from '../data/forms-api/components/s
 import { textAreaForm, textAreaTranslations } from '../data/forms-api/components/textAreaForm';
 import { textFieldForm, textFieldTranslations } from '../data/forms-api/components/textFieldForm';
 import { yearForm, yearTranslations } from '../data/forms-api/components/yearForm';
+import { conditionalRowForm, conditionalRowTranslations } from '../data/forms-api/conditional-row/conditionalRowForm';
 import {
   organizationNumberCoverPageForm,
   organizationNumberCoverPageTranslations,
