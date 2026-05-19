@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import getCheckConditionUtils from '../check-condition/checkCondition';
 import sanitizeJavascriptCode from './sanitizeJavascriptCode';
 
 const getOverrides = (Utils) => {
@@ -27,35 +27,8 @@ const getOverrides = (Utils) => {
     return translate(template);
   };
 
-  /* Override to ensure that utils and submission are passed to evaluate.
-   * These are automagically passed by Formio when the form is rendered using templates,
-   * but not when checkCondition is invoked manually, e.g., when formSummaryUtils is used in
-   * fyllut-backend, or when rendering FormStepper (React).
-   */
-  const checkCustomConditional = (component, custom, row, data, form, variable, onError, instance, submission) => {
-    if (typeof custom === 'string') {
-      custom = `var ${variable} = true; ${custom}; return ${variable};`;
-    }
-    const evaluateArgs = { row, data, form, utils: Utils, ...(submission && { submission }), _ };
-    const value =
-      instance && instance.evaluate ? instance.evaluate(custom, evaluateArgs) : evaluate(custom, evaluateArgs);
-    if (value === null) {
-      return onError;
-    }
-    return value;
-  };
-
-  /*
-   * Override to invoke checkCustomConditional with submission, which is needed for miscellaneous util functions
-   */
   const originalCheckCondition = Utils.checkCondition;
-  const checkCondition = (component, row, data, form, instance, submission) => {
-    const { customConditional } = component;
-    if (customConditional) {
-      return checkCustomConditional(component, customConditional, row, data, form, 'show', true, instance, submission);
-    }
-    return originalCheckCondition(component, row, data, form, instance);
-  };
+  const { checkCustomConditional, checkCondition } = getCheckConditionUtils(Utils, evaluate, originalCheckCondition);
 
   return {
     sanitize,

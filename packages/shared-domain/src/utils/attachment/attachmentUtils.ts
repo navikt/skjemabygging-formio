@@ -1,5 +1,6 @@
 import { TFunction } from 'i18next';
 import {
+  attachmentSettingKeys,
   AttachmentSettingValues,
   AttachmentValue,
   Component,
@@ -9,16 +10,6 @@ import {
   SubmissionMethod,
 } from '../../models';
 import { TEXTS } from '../../texts';
-
-const attachmentSettingKeys = [
-  'leggerVedNaa',
-  'ettersender',
-  'nei',
-  'levertTidligere',
-  'harIkke',
-  'andre',
-  'nav',
-] as const;
 
 const enableAttachmentUpload = (submissionMethod?: string) =>
   submissionMethod === 'digital' || submissionMethod === 'digitalnologin';
