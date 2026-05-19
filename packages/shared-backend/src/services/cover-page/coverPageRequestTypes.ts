@@ -1,20 +1,20 @@
-export type ForstesideType = 'SKJEMA' | 'ETTERSENDELSE' | 'LOESPOST';
+import { CoverPageType } from '@navikt/skjemadigitalisering-shared-domain';
 
 interface Bruker {
   brukerId: string;
   brukerType: string;
 }
 
-export interface UkjentBruker {
+interface UkjentBruker {
   ukjentBrukerPersoninfo: string;
 }
 
-export interface KjentBruker {
+interface KjentBruker {
   bruker: Bruker;
 }
 
-export interface ForstesideRequestBody {
-  foerstesidetype: ForstesideType;
+interface ForstesideRequestBody {
+  foerstesidetype: CoverPageType;
   navSkjemaId: string;
   spraakkode: string;
   overskriftstittel: string;
@@ -29,10 +29,12 @@ export interface ForstesideRequestBody {
   enhetsnummer?: string;
 }
 
-export interface ForstesideRecipientAddress {
+interface ForstesideRecipientAddress {
   adresselinje1: string;
   adresselinje2?: string;
   adresselinje3?: string;
   postnummer: string;
   poststed: string;
 }
+
+export type { Bruker, ForstesideRecipientAddress, ForstesideRequestBody, KjentBruker, UkjentBruker };

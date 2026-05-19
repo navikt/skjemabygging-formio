@@ -1,6 +1,7 @@
-import { ForstesideRequestBody, ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
+import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import http from '../../shared/http/http';
 import { logger } from '../../shared/logger/logger';
+import { ForstesideRequestBody } from './coverPageRequestTypes';
 
 interface DownloadCoverPageProps {
   baseUrl: string;
@@ -23,8 +24,8 @@ const downloadCoverPage = async (props: DownloadCoverPageProps) => {
   return pdf;
 };
 
-const coverPageApiService = {
+const coverPageClient = {
   downloadCoverPage,
 };
 
-export default coverPageApiService;
+export default coverPageClient;

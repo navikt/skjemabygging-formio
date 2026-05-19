@@ -1,21 +1,15 @@
-import {
-  I18nTranslationMap,
-  I18nTranslationReplacements,
-  localizationUtils,
-  translationUtils,
-} from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import fetch from 'node-fetch';
-import { config } from '../../config/config';
 import { logger } from '../../logger';
 import { getIdportenPid, getTokenxAccessToken } from '../../security/tokenHelper';
-import applicationService from '../../services/documents/applicationService';
+import { applicationPdfService } from '../../services';
 import { LogMetadata } from '../../types/log';
+import { base64Decode } from '../../utils/base64';
 import { responseToError } from '../../utils/errorHandling';
 import { getFyllutUrl } from '../../utils/url';
-import { createFeltMapFromSubmission } from './helpers/feltMapBuilder';
-import { stringifyPdf } from './helpers/pdfUtils';
 import { assembleSendInnSoknadBody, isNotFound, sanitizeInnsendingsId, validateInnsendingsId } from './helpers/sendInn';
+
+import { config } from '../../config/config';
 
 const { sendInnConfig } = config;
 
@@ -27,22 +21,10 @@ const sendInnUtfyltSoknad = {
       const fyllutUrl = getFyllutUrl(req);
       const envQualifier = req.getEnvQualifier();
 
-      const { form, pdfFormData, submission, submissionMethod, translation, language, innsendingsId } = req.body;
+      const { form, pdfFormData, language, innsendingsId } = req.body;
       if (!req.headers.PdfAccessToken) {
         logger.warn('Azure access token is missing. Will be unable to generate pdf');
       }
-
-      const createTranslate = (translations: I18nTranslationMap, language: string) => {
-        const languageCode = localizationUtils.getLanguageCodeAsIso639_1(language.toLowerCase());
-
-        return (text: string, textReplacements?: I18nTranslationReplacements) =>
-          translationUtils.translateWithTextReplacements({
-            translations,
-            textOrKey: text,
-            params: textReplacements,
-            currentLanguage: languageCode,
-          });
-      };
 
       const sanitizedInnsendingsId = sanitizeInnsendingsId(innsendingsId);
       const errorMessage = validateInnsendingsId(
@@ -64,19 +46,14 @@ const sendInnUtfyltSoknad = {
         logger.warn(`Language code "${language}" is not supported. Language code will be defaulted to "nb".`, logMeta);
       }
 
-      const applicationPdf = await applicationService.createFormPdf(
-        req.headers.PdfAccessToken as string,
-        pdfFormData
-          ? stringifyPdf(pdfFormData)
-          : createFeltMapFromSubmission(
-              form,
-              submission,
-              submissionMethod,
-              createTranslate(translation, language),
-              localizationUtils.getLanguageCodeAsIso639_1(language),
-            ),
-        logMeta,
-      );
+      const applicationPdfBase64 = await applicationPdfService.createPdf({
+        accessToken: req.headers.PdfAccessToken as string,
+        pdfFormData,
+      });
+      const applicationPdf = base64Decode(applicationPdfBase64);
+      if (!applicationPdf) {
+        throw new Error('Generering av søknads PDF feilet');
+      }
       const pdfByteArray = Array.from(applicationPdf) ?? [];
 
       const body = assembleSendInnSoknadBody(req.body, idportenPid, fyllutUrl, pdfByteArray);

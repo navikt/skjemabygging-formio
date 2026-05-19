@@ -1,6 +1,6 @@
 import {
+  attachmentUtils,
   Enhet,
-  forstesideUtils,
   SubmissionType,
   submissionTypesUtils,
   TEXTS,
@@ -79,7 +79,7 @@ export function PrepareLetterPage() {
     return <LoadingComponent />;
   }
 
-  const attachments = submission ? forstesideUtils.getAttachments(submission, form) : [];
+  const attachments = submission ? attachmentUtils.getAttachmentsForCoverPage(submission, form) : [];
   const hasAttachments = attachments.length > 0;
 
   return (

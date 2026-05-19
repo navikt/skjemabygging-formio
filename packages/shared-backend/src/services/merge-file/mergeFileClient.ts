@@ -25,8 +25,8 @@ const mergeFiles = async (props: MergeFilesProps): Promise<any> => {
   return pdf;
 };
 
-const mergeFileApiService = {
+const mergeFileClient = {
   mergeFiles,
 };
 
-export default mergeFileApiService;
+export default mergeFileClient;

@@ -27,9 +27,9 @@ const getForm = async <T = Form>(props: GetFormProps): Promise<T> => {
   return await http.get<T>(`${baseUrl}/${formsUrl}/${formPath}`);
 };
 
-const formService = {
+const formClient = {
   getForms,
   getForm,
 };
 
-export default formService;
+export default formClient;
