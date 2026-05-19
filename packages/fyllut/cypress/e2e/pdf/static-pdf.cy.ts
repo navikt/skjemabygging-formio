@@ -2,7 +2,7 @@ import { expect } from 'chai';
 
 describe('Static PDF', () => {
   const visitStaticPdfPage = (search = '') => {
-    cy.visit(`/fyllut/staticpdf/pdf${search}`);
+    cy.visit(`/fyllut/pdfstatic/pdf${search}`);
     cy.defaultWaits();
     cy.wait('@getStaticPdf');
   };
