@@ -99,8 +99,8 @@ const coverPageAndApplication: RequestHandler = async (req, res, next) => {
     }
     const formParsed = JSON.parse(form);
     const submissionParsed = JSON.parse(submission);
-    const translationsParsed = await getTranslationsForForm(formParsed.path ?? formPath, language);
-    const translate = createTranslate(translationsParsed, language);
+    const translations = await getTranslationsForForm(formParsed.path ?? formPath, language);
+    const translate = createTranslate(translations, language);
     const frontPageGeneratorToken = req.headers.AzureAccessToken as string;
     const pdfGeneratorToken = req.headers.PdfAccessToken as string;
     const mergePdfToken = req.headers.MergePdfToken as string;
@@ -121,7 +121,7 @@ const coverPageAndApplication: RequestHandler = async (req, res, next) => {
       form: formParsed,
       submission: submissionParsed,
       language,
-      translations: translationsParsed,
+      translations,
       submissionMethod: submissionMethod as SubmissionMethod | undefined,
       appConfig: { config: { gitVersion: config.gitVersion } },
     });
