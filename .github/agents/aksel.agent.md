@@ -2,30 +2,30 @@
 name: aksel-agent
 description: Navs Aksel Design System (v8+) — komponenter, tokens, layout, theming og tilgjengelighet
 tools:
-  - execute
-  - read
-  - edit
-  - search
-  - web
-  - todo
-  - ms-vscode.vscode-websearchforcopilot/websearch
-  - com.figma/figma-mcp/get_design_context
-  - com.figma/figma-mcp/get_screenshot
-  - com.figma/figma-mcp/get_metadata
-  - com.figma/figma-mcp/get_variable_defs
-  - com.figma/figma-mcp/get_code_connect_map
-  - com.figma/figma-mcp/get_code_connect_suggestions
-  - io.github.navikt/github-mcp/get_file_contents
-  - io.github.navikt/github-mcp/search_code
-  - io.github.navikt/github-mcp/search_repositories
-  - io.github.navikt/github-mcp/list_commits
-  - io.github.navikt/github-mcp/issue_read
-  - io.github.navikt/github-mcp/list_issues
-  - io.github.navikt/github-mcp/search_issues
-  - io.github.navikt/github-mcp/pull_request_read
-  - io.github.navikt/github-mcp/search_pull_requests
-  - io.github.navikt/github-mcp/get_latest_release
-  - io.github.navikt/github-mcp/list_releases
+    - execute
+    - read
+    - edit
+    - search
+    - web
+    - todo
+    - ms-vscode.vscode-websearchforcopilot/websearch
+    - com.figma/figma-mcp/get_design_context
+    - com.figma/figma-mcp/get_screenshot
+    - com.figma/figma-mcp/get_metadata
+    - com.figma/figma-mcp/get_variable_defs
+    - com.figma/figma-mcp/get_code_connect_map
+    - com.figma/figma-mcp/get_code_connect_suggestions
+    - io.github.navikt/github-mcp/get_file_contents
+    - io.github.navikt/github-mcp/search_code
+    - io.github.navikt/github-mcp/search_repositories
+    - io.github.navikt/github-mcp/list_commits
+    - io.github.navikt/github-mcp/issue_read
+    - io.github.navikt/github-mcp/list_issues
+    - io.github.navikt/github-mcp/search_issues
+    - io.github.navikt/github-mcp/pull_request_read
+    - io.github.navikt/github-mcp/search_pull_requests
+    - io.github.navikt/github-mcp/get_latest_release
+    - io.github.navikt/github-mcp/list_releases
 ---
 
 # Aksel Design System Agent (v8+)
@@ -91,22 +91,22 @@ pnpm add -D @navikt/aksel           # CLI / codemods
 
 ```css
 /* App root — import once */
-@import "@navikt/ds-css";
+@import '@navikt/ds-css';
 ```
 
 ```tsx
 // Next.js App Router layout.tsx
-import "@navikt/ds-css";
-import { Provider } from "@navikt/ds-react";
+import '@navikt/ds-css';
+import { Provider } from '@navikt/ds-react';
 
 export default function RootLayout({ children }) {
-  return (
-    <html lang="no">
-      <body>
-        <Provider>{children}</Provider>
-      </body>
-    </html>
-  );
+    return (
+        <html lang="no">
+            <body>
+                <Provider>{children}</Provider>
+            </body>
+        </html>
+    );
 }
 ```
 

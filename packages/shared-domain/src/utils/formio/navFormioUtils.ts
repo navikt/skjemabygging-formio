@@ -22,10 +22,11 @@ const navFormioUtils =
 
 const overrides = getOverrides(navFormioUtils);
 Object.assign(navFormioUtils, overrides);
+const { checkCondition, checkCustomConditional } = overrides;
 
 const customUtils = getCustomUtils(navFormioUtils);
 Object.assign(navFormioUtils, customUtils);
 
 navFormioUtils.overrideFunctionNames = [...Object.keys(overrides), ...Object.keys(customUtils)];
 
-export { navFormioUtils };
+export { checkCondition, checkCustomConditional, navFormioUtils };
