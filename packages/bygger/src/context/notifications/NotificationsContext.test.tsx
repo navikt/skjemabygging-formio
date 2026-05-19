@@ -4,6 +4,8 @@ import Pusher, { Channel } from 'pusher-js';
 import { Mock } from 'vitest';
 import PusherNotificationsProvider, { CHANNEL, EVENT, usePusherNotifications } from './NotificationsContext';
 
+vi.mock('pusher-js', () => ({ default: vi.fn() }));
+
 const DEFAULT_CONFIG = { pusherKey: 'pusher', pusherCluster: 'eu' };
 const wrapper = ({ children }) => (
   <AppConfigProvider config={DEFAULT_CONFIG}>
@@ -18,29 +20,36 @@ describe('NotificationsContext', () => {
   let mockSubscribe: Mock;
 
   beforeEach(() => {
+    channelSubscriptions = {};
     mockUnsubscribe = vi.fn();
     mockDisconnect = vi.fn();
     mockSubscribe = vi.fn();
-    vi.spyOn(Pusher.prototype, 'unsubscribe').mockImplementation(mockUnsubscribe);
-    vi.spyOn(Pusher.prototype, 'disconnect').mockImplementation(mockDisconnect);
-    vi.spyOn(Pusher.prototype, 'subscribe').mockImplementation((channel) => {
-      mockSubscribe(channel);
-      return {
-        bind: (eventName, callback) => {
-          if (!channelSubscriptions[channel]) channelSubscriptions[channel] = {};
-          channelSubscriptions[channel][eventName] = callback;
-        },
-        unbind: (eventName) => {
-          if (channelSubscriptions[channel]) {
-            channelSubscriptions[channel][eventName] = undefined;
-          }
-        },
-      } as Channel;
-    });
+    vi.mocked(Pusher).mockImplementation(
+      () =>
+        ({
+          unsubscribe: mockUnsubscribe,
+          disconnect: mockDisconnect,
+          subscribe: (channel) => {
+            mockSubscribe(channel);
+            return {
+              bind: (eventName, callback) => {
+                if (!channelSubscriptions[channel]) channelSubscriptions[channel] = {};
+                channelSubscriptions[channel][eventName] = callback;
+              },
+              unbind: (eventName) => {
+                if (channelSubscriptions[channel]) {
+                  channelSubscriptions[channel][eventName] = undefined;
+                }
+              },
+            } as Channel;
+          },
+        }) as never,
+    );
   });
 
   afterEach(() => {
-    channelSubscriptions = {};
+    cleanup();
+    vi.clearAllMocks();
   });
 
   describe('usePusherNotifications', () => {
@@ -66,16 +75,16 @@ describe('NotificationsContext', () => {
     });
 
     it('unsubscribes and disconnects on unmount', () => {
-      renderHook(() => usePusherNotifications(), { wrapper });
-      cleanup();
+      const { unmount } = renderHook(() => usePusherNotifications(), { wrapper });
+      unmount();
       expect(mockUnsubscribe).toHaveBeenCalledWith('fyllut-deployment');
       expect(mockDisconnect).toHaveBeenCalledTimes(1);
     });
 
     it('does not reconnect on rerender', () => {
-      const { rerender } = renderHook(() => usePusherNotifications(), { wrapper });
+      const { rerender, unmount } = renderHook(() => usePusherNotifications(), { wrapper });
       rerender();
-      cleanup();
+      unmount();
       expect(mockSubscribe).toHaveBeenCalledTimes(1);
       expect(mockUnsubscribe).toHaveBeenCalledWith('fyllut-deployment');
       expect(mockDisconnect).toHaveBeenCalledTimes(1);
