@@ -1,6 +1,15 @@
-import { attachmentSettingKeys } from '../../utils';
-import { UploadedFile } from '../file';
-import { AttachmentType } from '../form';
+import type { UploadedFile } from '../file';
+import type { AttachmentType } from '../form';
+
+const attachmentSettingKeys = [
+  'leggerVedNaa',
+  'ettersender',
+  'nei',
+  'levertTidligere',
+  'harIkke',
+  'andre',
+  'nav',
+] as const;
 
 type AttachmentOption = {
   label: string;
@@ -59,6 +68,7 @@ interface LimitedFormAttachment {
   deadlineWarning?: string | null;
 }
 
+export { attachmentSettingKeys };
 export type {
   AttachmentOption,
   AttachmentSettingValue,
