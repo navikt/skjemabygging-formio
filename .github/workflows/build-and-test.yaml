@@ -1,4 +1,4 @@
-name: Build and test monorepo, and deploy bygger
+name: Build and test monorepo, and deploy apps
 on: push
 env:
   NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -41,12 +41,16 @@ jobs:
         run: pnpm test:bygger
       - name: 'Test fyllut'
         run: pnpm test:fyllut
+      - name: 'Test form-spec-api'
+        run: pnpm test:form-spec-api
       - name: 'Test shared-components'
         run: pnpm test:shared-components
       - name: 'Test shared-domain'
         run: pnpm test:shared-domain
       - name: 'Test shared-backend'
         run: pnpm test:shared-backend
+      - name: 'Test shared-frontend'
+        run: pnpm test:shared-frontend
 
   package-and-push-bygger:
     if: github.ref == 'refs/heads/main'
@@ -186,3 +190,56 @@ jobs:
           ref: 'dev-deploy'
           token: ${{ steps.generate-token.outputs.token }}
           inputs: '{ "monorepoGitHash": "${{ github.sha }}" }'
+
+  detect-changes:
+    name: 'Detect changes'
+    if: github.ref == 'refs/heads/main'
+    needs: [deploy-bygger-to-prod]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+    outputs:
+      app-infra: ${{ steps.filter.outputs.app-infra }}
+      form-spec-api: ${{ steps.filter.outputs.form-spec-api }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: 'Detect changed paths'
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            app-infra:
+              - '.github/workflows/build-and-test.yaml'
+              - '.npmrc'
+              - 'package.json'
+              - 'pnpm-lock.yaml'
+              - 'pnpm-workspace.yaml'
+              - 'tsconfig-base.json'
+            form-spec-api:
+              - '.github/workflows/deploy-form-spec-api.yaml'
+              - '.nais/form-spec-api/**'
+              - 'docker/Dockerfile.form-spec-api'
+              - 'packages/shared-domain/**'
+              - 'packages/shared-backend/**'
+              - 'packages/form-spec-api/**'
+
+  deploy-form-spec-api:
+    name: 'Form-spec-api'
+    needs: [detect-changes]
+    if: |
+      github.ref == 'refs/heads/main' &&
+      (
+        needs.detect-changes.outputs.app-infra == 'true' ||
+        needs.detect-changes.outputs.form-spec-api == 'true'
+      )
+    uses: ./.github/workflows/deploy-form-spec-api.yaml
+    with:
+      git_sha: ${{ github.sha }}
+      environment: 'prod'
+    secrets: inherit
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+      packages: 'read'

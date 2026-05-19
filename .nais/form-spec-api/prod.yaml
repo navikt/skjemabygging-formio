@@ -1,0 +1,10 @@
+app-name: form-spec-api
+ingresses:
+  - "https://form-spec-api.intern.nav.no"
+replicas-min: 2
+replicas-max: 4
+forms-api-url: http://forms-api.fyllut-sendinn
+forms-api-cluster: prod-gcp
+accessPolicy:
+  inbound:
+    rules: []
