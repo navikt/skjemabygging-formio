@@ -243,6 +243,8 @@ export const isSubmissionMethodAllowed = (
       return submissionTypesUtils.isPaperSubmission(submissionTypes);
     case 'digitalnologin':
       return submissionTypesUtils.isDigitalNoLoginSubmission(submissionTypes);
+    case 'papernocoverpage':
+      return submissionTypesUtils.isPaperNoCoverPageSubmission(submissionTypes);
   }
   return false;
 };
