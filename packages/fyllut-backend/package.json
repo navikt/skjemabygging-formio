@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@elastic/ecs-morgan-format": "^1.5.1",
-    "@navikt/nav-dekoratoren-moduler": "^3.6.3",
+    "@navikt/nav-dekoratoren-moduler": "^4.1.1",
     "@navikt/skjemadigitalisering-shared-backend": "workspace:*",
     "@navikt/skjemadigitalisering-shared-domain": "workspace:*",
     "@opentelemetry/api": "^1.9.0",
@@ -30,9 +30,9 @@
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "express-rate-limit": "^8.5.2",
-    "glob": "^11.0.3",
-    "html-react-parser": "^5.2.15",
-    "jsdom": "^28.1.0",
+    "glob": "^13.0.6",
+    "html-react-parser": "^6.1.1",
+    "jsdom": "^29.1.1",
     "jose": "^6.2.3",
     "jsonwebtoken": "^9.0.3",
     "luxon": "^3.7.2",
@@ -45,7 +45,7 @@
     "prom-client": "^15.1.3",
     "qs": "^6.15.2",
     "react": "^18.3.1",
-    "vite-plugin-static-copy": "^3.1.5",
+    "vite-plugin-static-copy": "^4.1.0",
     "winston": "^3.19.0"
   },
   "devDependencies": {
@@ -55,13 +55,13 @@
     "@types/jsonwebtoken": "9.0.10",
     "@types/multer": "^2.0.0",
     "@types/mustache-express": "^1.2.5",
-    "@types/node": "^24.6.2",
+    "@types/node": "^25.9.1",
     "@types/node-fetch": "^2.6.13",
     "@types/node-jose": "^1.1.13",
-    "@types/supertest": "^6.0.2",
+    "@types/supertest": "^7.2.0",
     "nock": "^14.0.15",
     "supertest": "^7.2.2",
-    "vite-plugin-node": "^7.0.0",
-    "vite-plugin-static-copy": "^3.1.5"
+    "vite-plugin-node": "^8.0.0",
+    "vite-plugin-static-copy": "^4.1.0"
   }
 }
