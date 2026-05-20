@@ -1,6 +1,7 @@
 import {
   ComponentError,
   FormioChangeEvent,
+  formioFormsApiUtils,
   NavFormType,
   navFormUtils,
   SubmissionData,
@@ -46,7 +47,9 @@ export const FillInFormPage = () => {
 
   const exitUrl = urlUtils.getExitUrl(window.location.href);
   const formNavigationFinalStep =
-    navFormUtils.hasAttachment(form) && attachmentPageEnabled ? 'vedlegg' : 'oppsummering';
+    navFormUtils.hasAttachment(formioFormsApiUtils.mapNavFormToForm(form)) && attachmentPageEnabled
+      ? 'vedlegg'
+      : 'oppsummering';
 
   const focusOnComponent = useCallback<(id: KeyOrFocusComponentId) => void>(
     (id: KeyOrFocusComponentId) => fyllutEvents.emit('focusOnComponent', id),

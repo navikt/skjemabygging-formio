@@ -1,4 +1,4 @@
-import { Language, NavFormType, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import { Language, localizationUtils, NavFormType, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { AppConfigContextType } from '../../context/config/configContext';
 import { getRelevantAttachments, hasOtherDocumentation } from '../../util/attachment/attachmentsUtil';
 
@@ -40,9 +40,9 @@ export const createSoknad = async (
     ? `${baseUrl}/api/send-inn/soknad?forceMellomlagring=true`
     : `${baseUrl}/api/send-inn/soknad`;
   return http?.post<SendInnSoknadResponse>(url, {
-    form,
+    formPath: form.path,
     submission,
-    language,
+    language: localizationUtils.getLanguageCodeAsIso639_1(language),
     submissionMethod,
   });
 };
@@ -58,9 +58,9 @@ export const updateSoknad = async (
   if (innsendingsId) {
     return http?.put<SendInnSoknadResponse>(`${baseUrl}/api/send-inn/soknad`, {
       innsendingsId,
-      form,
+      formPath: form.path,
       submission,
-      language,
+      language: localizationUtils.getLanguageCodeAsIso639_1(language),
       submissionMethod,
     });
   } else {
@@ -85,10 +85,9 @@ export const updateUtfyltSoknad = async (
       `${baseUrl}/api/send-inn/utfyltsoknad`,
       {
         innsendingsId,
-        form,
         formPath: form.path,
         submission,
-        language,
+        language: localizationUtils.getLanguageCodeAsIso639_1(language),
         submissionMethod,
         attachments,
         otherDocumentation,

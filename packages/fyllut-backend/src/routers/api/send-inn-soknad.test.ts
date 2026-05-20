@@ -3,7 +3,13 @@ import { config } from '../../config/config';
 import { mockRequest, MockRequestParams, mockResponse } from '../../test/testHelpers';
 import { EnvQualifier, EnvQualifierType } from '../../types/env';
 import sendInnSoknad from './send-inn-soknad';
-import { decodedResponseBody, innsendingsId, requestBody, sendInnResponseBody } from './testdata/mellomlagring';
+import {
+  decodedResponseBody,
+  innsendingsId,
+  mockFormData,
+  requestBody,
+  sendInnResponseBody,
+} from './testdata/mellomlagring';
 
 const { formsApiUrl, sendInnConfig } = config;
 
@@ -109,6 +115,7 @@ describe('[endpoint] send-inn/soknad', () => {
 
   describe('POST', () => {
     it('returns response body if success', async () => {
+      const formScope = nock(formsApiUrl).get('/v1/forms/nav999999').query(true).reply(200, mockFormData);
       const globalTranslationsScope = nock(formsApiUrl).get('/v1/global-translations').reply(200, []);
       const formTranslationsScope = nock(formsApiUrl).get('/v1/forms/nav999999/translations').reply(200, []);
       const sendInnNockScope = nock(sendInnConfig.host)
@@ -124,12 +131,14 @@ describe('[endpoint] send-inn/soknad', () => {
 
       expect(res.json).toHaveBeenCalledWith(sendInnResponseBody);
       expect(next).not.toHaveBeenCalled();
+      expect(formScope.isDone()).toBe(true);
       expect(globalTranslationsScope.isDone()).toBe(true);
       expect(formTranslationsScope.isDone()).toBe(true);
       expect(sendInnNockScope.isDone()).toBe(true);
     });
 
     it('includes header Nav-Env-Qualifier if specified', async () => {
+      const formScope = nock(formsApiUrl).get('/v1/forms/nav999999').query(true).reply(200, mockFormData);
       const globalTranslationsScope = nock(formsApiUrl).get('/v1/global-translations').reply(200, []);
       const formTranslationsScope = nock(formsApiUrl).get('/v1/forms/nav999999/translations').reply(200, []);
       const sendInnNockScope = nock(sendInnConfig.host)
@@ -145,6 +154,7 @@ describe('[endpoint] send-inn/soknad', () => {
       const next = vi.fn();
       await sendInnSoknad.post(req, res, next);
 
+      expect(formScope.isDone()).toBe(true);
       expect(globalTranslationsScope.isDone()).toBe(true);
       expect(formTranslationsScope.isDone()).toBe(true);
       expect(sendInnNockScope.isDone()).toBe(true);
@@ -153,6 +163,7 @@ describe('[endpoint] send-inn/soknad', () => {
     });
 
     it('calls next if SendInn returns error', async () => {
+      nock(formsApiUrl).get('/v1/forms/nav999999').query(true).reply(200, mockFormData);
       const globalTranslationsScope = nock(formsApiUrl).get('/v1/global-translations').reply(200, []);
       const formTranslationsScope = nock(formsApiUrl).get('/v1/forms/nav999999/translations').reply(200, []);
       const sendInnNockScope = nock(sendInnConfig.host).post(sendInnConfig.paths.soknad).reply(500, 'error body');
@@ -204,6 +215,7 @@ describe('[endpoint] send-inn/soknad', () => {
 
   describe('PUT', () => {
     it('returns response body if success', async () => {
+      nock(formsApiUrl).get('/v1/forms/nav999999').query(true).reply(200, mockFormData);
       const globalTranslationsScope = nock(formsApiUrl).get('/v1/global-translations').reply(200, []);
       const formTranslationsScope = nock(formsApiUrl).get('/v1/forms/nav999999/translations').reply(200, []);
       const sendInnNockScope = nock(sendInnConfig.host)
@@ -225,6 +237,7 @@ describe('[endpoint] send-inn/soknad', () => {
     });
 
     it('calls next if SendInn returns error', async () => {
+      nock(formsApiUrl).get('/v1/forms/nav999999').query(true).reply(200, mockFormData);
       const globalTranslationsScope = nock(formsApiUrl).get('/v1/global-translations').reply(200, []);
       const formTranslationsScope = nock(formsApiUrl).get('/v1/forms/nav999999/translations').reply(200, []);
       const sendInnNockScope = nock(sendInnConfig.host)

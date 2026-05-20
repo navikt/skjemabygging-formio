@@ -60,10 +60,12 @@ describe('Fyllut backend :: submit application', () => {
   it.each(submitApplicationTestCases)(
     'creates and submits the $name application request with formRevision in mainDocumentAlt',
     async ({ innsendingsId, formRevision, route, sendInnPath, setupTokens }) => {
-      const applicationData = createApplicationData(formRevision);
-      const submitResponse = createSubmitResponse(innsendingsId, applicationData.form.title);
+      const applicationData = createApplicationData();
+      const mockFormData = createMockFormData(formRevision);
+      const submitResponse = createSubmitResponse(innsendingsId, mockFormData.title);
       const tokenSetup = await setupTokens(innsendingsId);
 
+      const formScope = nock(formsApiUrl).get('/v1/forms/nav123456').query(true).reply(200, mockFormData);
       const pdfGeneratorScope = nock(familiePdfGeneratorUrl)
         .post('/api/pdf/v3/opprett-pdf')
         .matchHeader('authorization', `Bearer ${tokenSetup.azureAccessToken}`)
@@ -83,10 +85,10 @@ describe('Fyllut backend :: submit application', () => {
 
       const res = await request(createApp()).post(route).send(applicationData).set(tokenSetup.headers);
       expect(res.status).toBe(200);
-      expectSuccessfulSubmitResponse(res.body, applicationData, submitResponse);
+      expectSuccessfulSubmitResponse(res.body, submitResponse);
 
       expect(capturedRequestBody).toBeDefined();
-      expectSubmitRequest(capturedRequestBody!, applicationData);
+      expectSubmitRequest(capturedRequestBody!);
       expect(decodeMainDocumentAlt(capturedRequestBody!.mainDocumentAlt)).toEqual({
         language: 'nb',
         formRevision,
@@ -94,6 +96,7 @@ describe('Fyllut backend :: submit application', () => {
       });
 
       tokenSetup.assertDone();
+      formScope.done();
       globalTranslationsScope.done();
       formTranslationsScope.done();
       pdfGeneratorScope.done();
@@ -102,17 +105,20 @@ describe('Fyllut backend :: submit application', () => {
   );
 });
 
-const createApplicationData = (formRevision: number) => ({
-  form: {
-    components: [],
-    path: 'nav123456',
-    revision: formRevision,
-    title: 'Application title',
-    properties: { skjemanummer: 'NAV 12.34-56', tema: 'BIL' },
-  },
+const createMockFormData = (revision: number) => ({
+  skjemanummer: 'NAV 12.34-56',
+  title: 'Application title',
+  path: 'nav123456',
+  revision,
+  properties: { skjemanummer: 'NAV 12.34-56', tema: 'BIL' },
+  components: [],
+});
+
+const createApplicationData = () => ({
+  formPath: 'nav123456',
   submission: { data: { fodselsnummerDNummerSoker: '12345678911', field: 'value' } },
   attachments: [],
-  language: 'nb-NO',
+  language: 'nb',
 });
 
 const createSubmitResponse = (innsendingsId: string, title: string): SubmitApplicationResponse => ({
@@ -121,8 +127,6 @@ const createSubmitResponse = (innsendingsId: string, title: string): SubmitAppli
   title,
   attachments: [],
 });
-
-type ApplicationData = ReturnType<typeof createApplicationData>;
 
 type TokenSetupResult = {
   azureAccessToken: string;
@@ -148,15 +152,11 @@ const parseSubmitApplicationRequest = (requestBody: string | Buffer | object): S
 const decodeMainDocumentAlt = (mainDocumentAlt: string) =>
   JSON.parse(base64Decode(mainDocumentAlt)?.toString('utf-8') ?? '{}');
 
-const expectSuccessfulSubmitResponse = (
-  responseBody: unknown,
-  applicationData: ApplicationData,
-  submitResponse: SubmitApplicationResponse,
-) => {
+const expectSuccessfulSubmitResponse = (responseBody: unknown, submitResponse: SubmitApplicationResponse) => {
   expect(responseBody).toEqual({
     pdfBase64: soknadPdf.toString('base64'),
     receipt: {
-      title: applicationData.form.title,
+      title: 'Application title',
       receivedDate: submitResponse.submittedAt,
       sendLaterDeadline: undefined,
       receivedAttachments: [],
@@ -166,12 +166,12 @@ const expectSuccessfulSubmitResponse = (
   });
 };
 
-const expectSubmitRequest = (requestBody: SubmitApplicationRequest, applicationData: ApplicationData) => {
+const expectSubmitRequest = (requestBody: SubmitApplicationRequest) => {
   expect(requestBody).toMatchObject({
     bruker: '12345678911',
-    formNumber: applicationData.form.properties.skjemanummer,
-    title: applicationData.form.title,
-    tema: applicationData.form.properties.tema,
+    formNumber: 'NAV 12.34-56',
+    title: 'Application title',
+    tema: 'BIL',
     language: 'nb',
     mainDocument: soknadPdf.toString('base64'),
     attachments: [],

@@ -1,11 +1,5 @@
-import { coverPageMapper, renderApplicationPdf } from '@navikt/skjemadigitalisering-shared-backend';
-import {
-  I18nTranslationMap,
-  PdfFormData,
-  SubmissionMethod,
-  TranslateFunction,
-  translationUtils,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { coverPageMapper, renderApplicationPdf, translationUtil } from '@navikt/skjemadigitalisering-shared-backend';
+import { PdfFormData, SubmissionMethod, TranslateFunction } from '@navikt/skjemadigitalisering-shared-domain';
 import { RequestHandler } from 'express';
 import { config } from '../../../config/config';
 import { logger } from '../../../logger';
@@ -15,20 +9,15 @@ import {
   coverPageService,
   mergeFileService,
   recipientService,
+  sharedFormService,
+  translationService,
 } from '../../../services';
 import { base64Decode } from '../../../utils/base64';
-import { getTranslationsForForm } from '../../../utils/translations';
 
 const assertPdfFormData = (pdfFormData: PdfFormData | undefined) => {
   if (!pdfFormData || typeof pdfFormData !== 'object') {
     throw new Error('Missing pdfFormData to generate PDF');
   }
-};
-
-const createTranslate = (translations: I18nTranslationMap, language: string): TranslateFunction => {
-  const translate = translationUtils.createTranslate(translations, language);
-
-  return (text, textReplacements) => (text ? `${translate(text, textReplacements)}` : '');
 };
 
 const getCoverPageTitle = (
@@ -49,17 +38,20 @@ const toPdfBuffer = (pdfBase64: string | null | undefined, errorMessage: string)
 
 const application: RequestHandler = async (req, res, next) => {
   try {
-    const { form, formPath, submission, language, submissionMethod } = req.body;
+    const { formPath, submission, language, submissionMethod } = req.body;
     if (!submission) {
       throw new Error('Missing submission data to generate PDF');
     }
-    const formParsed = JSON.parse(form);
+    const form = await sharedFormService.getForm({
+      formPath,
+      select: ['skjemanummer', 'title', 'path', 'properties', 'components'],
+    });
     const submissionParsed = JSON.parse(submission);
-    const translationsParsed = await getTranslationsForForm(formParsed.path ?? formPath, language);
+    const translations = await translationService.getTranslations({ formPath });
     const pdfGeneratorToken = req.headers.PdfAccessToken as string;
 
-    logger.info(`Create application pdf for ${formParsed?.properties?.skjemanummer ?? 'unknown form'}`, {
-      skjemanummer: formParsed?.properties?.skjemanummer,
+    logger.info(`Create application pdf for ${form?.properties?.skjemanummer ?? 'unknown form'}`, {
+      skjemanummer: form?.properties?.skjemanummer,
       language,
     });
 
@@ -68,10 +60,10 @@ const application: RequestHandler = async (req, res, next) => {
     }
 
     const pdfFormData = renderApplicationPdf({
-      form: formParsed,
+      form,
       submission: submissionParsed,
       language,
-      translations: translationsParsed,
+      translations,
       submissionMethod: submissionMethod as SubmissionMethod | undefined,
       appConfig: { config: { gitVersion: config.gitVersion } },
     });
@@ -84,7 +76,7 @@ const application: RequestHandler = async (req, res, next) => {
     const fileBuffer = toPdfBuffer(applicationPdfBase64, 'Generering av søknads PDF feilet');
     appMetrics.paperSubmissionsCounter.inc({ source: 'ingen' });
     res.contentType('application/pdf');
-    res.setHeader('Content-Disposition', `inline; filename=${encodeURIComponent(`${formParsed.path}.pdf`)}`);
+    res.setHeader('Content-Disposition', `inline; filename=${encodeURIComponent(`${form.path}.pdf`)}`);
     res.send(fileBuffer);
   } catch (e) {
     next(e);
@@ -93,14 +85,17 @@ const application: RequestHandler = async (req, res, next) => {
 
 const coverPageAndApplication: RequestHandler = async (req, res, next) => {
   try {
-    const { form, formPath, submission, language, enhetNummer, submissionMethod } = req.body;
+    const { formPath, submission, language, enhetNummer, submissionMethod } = req.body;
     if (!submission) {
       throw new Error('Missing submission data to generate PDF');
     }
-    const formParsed = JSON.parse(form);
+    const form = await sharedFormService.getForm({
+      formPath,
+      select: ['skjemanummer', 'title', 'path', 'properties', 'components'],
+    });
     const submissionParsed = JSON.parse(submission);
-    const translations = await getTranslationsForForm(formParsed.path ?? formPath, language);
-    const translate = createTranslate(translations, language);
+    const translations = await translationService.getTranslations({ formPath });
+    const translate = translationUtil.createTranslate(translations, language);
     const frontPageGeneratorToken = req.headers.AzureAccessToken as string;
     const pdfGeneratorToken = req.headers.PdfAccessToken as string;
     const mergePdfToken = req.headers.MergePdfToken as string;
@@ -118,7 +113,7 @@ const coverPageAndApplication: RequestHandler = async (req, res, next) => {
     }
 
     const pdfFormData = renderApplicationPdf({
-      form: formParsed,
+      form,
       submission: submissionParsed,
       language,
       translations,
@@ -128,10 +123,10 @@ const coverPageAndApplication: RequestHandler = async (req, res, next) => {
     assertPdfFormData(pdfFormData);
 
     const recipient = await recipientService.getRecipient({
-      recipientId: formParsed?.properties?.mottaksadresseId,
+      recipientId: form?.properties?.mottaksadresseId,
     });
     const coverPageData = coverPageMapper.createDownloadDataFromSubmission(
-      formParsed,
+      form,
       submissionParsed,
       language,
       recipient,
@@ -139,7 +134,7 @@ const coverPageAndApplication: RequestHandler = async (req, res, next) => {
       translate,
       submissionMethod as SubmissionMethod | undefined,
     );
-    const coverPageTitle = getCoverPageTitle(formParsed, translate);
+    const coverPageTitle = getCoverPageTitle(form, translate);
     const [coverPagePdfBase64, applicationPdfBase64] = await Promise.all([
       coverPageService.downloadCoverPage({
         accessToken: frontPageGeneratorToken,
@@ -163,7 +158,7 @@ const coverPageAndApplication: RequestHandler = async (req, res, next) => {
     const fileBuffer = toPdfBuffer(mergedPdfBase64, 'Sammenslåing av forside og søknad feilet');
     appMetrics.paperSubmissionsCounter.inc({ source: 'fyllUt' });
     res.contentType('application/pdf');
-    res.setHeader('Content-Disposition', `inline; filename=${encodeURIComponent(`${formParsed.path}.pdf`)}`);
+    res.setHeader('Content-Disposition', `inline; filename=${encodeURIComponent(`${form.path}.pdf`)}`);
     res.send(fileBuffer);
   } catch (e) {
     next(e);

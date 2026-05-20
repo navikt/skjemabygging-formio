@@ -1,4 +1,4 @@
-import { Component, NavFormType, Submission } from '../../models';
+import { Component, Form, Submission } from '../../models';
 import { createConditionInstance, getEffectiveRowContext } from './conditionInstance';
 import { lodashShim } from './lodashShim';
 import {
@@ -17,7 +17,7 @@ const createCheckCustomConditional = (Utils: ConditionUtils, evaluate: EvaluateF
     custom: string,
     row: ConditionRow,
     data: ConditionData | undefined,
-    form: NavFormType | undefined,
+    form: Form | undefined,
     variable: string,
     onError: boolean,
     instance?: ConditionComponent,

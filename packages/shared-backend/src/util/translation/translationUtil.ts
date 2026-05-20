@@ -1,7 +1,6 @@
 import {
   FormsApiTranslationMap,
   I18nTranslationReplacements,
-  localizationUtils,
   ResponseError,
   Tkey,
   TranslateFunction,
@@ -62,8 +61,12 @@ const injectParams = ({ textOrKey, params, translations, currentLanguage }: Tran
 };
 
 const createTranslate = (translations: FormsApiTranslationMap, languageCode: TranslationLang): TranslateFunction => {
-  if (!languageCode || !translations || Object.keys(translations).length === 0) {
+  if (!languageCode) {
     throw new ResponseError('BAD_REQUEST', 'Missing required parameters for creating translate function');
+  }
+
+  if (!translations || Object.keys(translations).length === 0) {
+    return (text) => (text ? `${text}` : '');
   }
 
   return (text?: string | Tkey, textReplacements?: I18nTranslationReplacements) =>
@@ -71,7 +74,7 @@ const createTranslate = (translations: FormsApiTranslationMap, languageCode: Tra
       translations,
       textOrKey: text,
       params: textReplacements,
-      currentLanguage: localizationUtils.getLanguageCodeAsIso639_1(languageCode.toLowerCase()),
+      currentLanguage: languageCode,
     });
 };
 

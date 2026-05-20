@@ -1,7 +1,7 @@
 import {
   CoverPageDownloadType,
+  Form,
   I18nTranslationReplacements,
-  NavFormType,
   Recipient,
   ResponseError,
   Submission,
@@ -18,10 +18,7 @@ import {
 type CoverPageUser = CoverPageDownloadType['user'];
 type OrganizationNumberUser = Extract<CoverPageUser, { organizationNumber: string }>;
 
-const getOrganizationNumberUser = (
-  form: NavFormType,
-  submission: SubmissionData,
-): OrganizationNumberUser | undefined => {
+const getOrganizationNumberUser = (form: Form, submission: SubmissionData): OrganizationNumberUser | undefined => {
   const organizationNumberComponent = navFormUtils
     .flattenComponents(form.components)
     .find((component) => component.type === 'orgNr' && component.coverPageUser && submission[component.key]);
@@ -120,7 +117,7 @@ const getLegacyAddress = (submission: LegacySubmission) => {
   };
 };
 
-const getSubmissionUserData = (form: NavFormType, submission: SubmissionData): CoverPageUser => {
+const getSubmissionUserData = (form: Form, submission: SubmissionData): CoverPageUser => {
   const yourInformation = yourInformationUtils.getYourInformation(form, submission);
 
   if (!yourInformation) {
@@ -169,7 +166,7 @@ const getSubmissionUserData = (form: NavFormType, submission: SubmissionData): C
   throw new ResponseError('BAD_REQUEST', 'User needs to submit either identification number or address');
 };
 
-const getAttachments = (submission: Submission, form: NavFormType) => {
+const getAttachments = (submission: Submission, form: Form) => {
   return navFormUtils
     .flattenComponents(form.components)
     .filter((component) => component.properties && !!component.properties.vedleggskode)
@@ -187,7 +184,7 @@ const getAttachments = (submission: Submission, form: NavFormType) => {
 };
 
 const getAttachmentLabels = (
-  form: NavFormType,
+  form: Form,
   submission: Submission,
   translate?: (text: string, textReplacements?: I18nTranslationReplacements) => string,
 ): string[] => {
@@ -246,7 +243,7 @@ const asTranslationLanguage = (languageCode?: string): TranslationLang => {
 };
 
 const createDownloadDataFromSubmission = (
-  form: NavFormType,
+  form: Form,
   submission: Submission,
   languageCode = 'nb-NO',
   recipient?: Recipient,

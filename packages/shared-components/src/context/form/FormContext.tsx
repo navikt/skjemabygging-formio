@@ -1,5 +1,6 @@
 import {
   Component,
+  formioFormsApiUtils,
   NavFormType,
   navFormUtils,
   Panel,
@@ -43,7 +44,7 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
 
   const activeAttachmentUploadsPanel = useMemo(() => {
     const activeAttachmentPanel = attachmentPageEnabled
-      ? navFormUtils.getActiveAttachmentPanelFromForm(form, submission)
+      ? navFormUtils.getActiveAttachmentPanelFromForm(formioFormsApiUtils.mapNavFormToForm(form), submission)
       : undefined;
     return activeAttachmentPanel ? (JSON.parse(JSON.stringify(activeAttachmentPanel)) as Panel) : undefined;
   }, [form, submission, attachmentPageEnabled]);
@@ -100,7 +101,10 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
   }, [baseUrl, form, http, submissionMethod]);
 
   useEffect(() => {
-    const currentActiveComponents = navFormUtils.getActiveComponentsFromForm(form, submission);
+    const currentActiveComponents = navFormUtils.getActiveComponentsFromForm(
+      formioFormsApiUtils.mapNavFormToForm(form),
+      submission,
+    );
     logger?.debug('Current active components', { form, currentActiveComponents });
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setActiveComponents(currentActiveComponents);

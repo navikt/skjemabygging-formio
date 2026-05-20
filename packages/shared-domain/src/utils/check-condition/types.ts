@@ -1,4 +1,4 @@
-import { Component, NavFormType, Submission, SubmissionData, SubmissionMethod } from '../../models';
+import { Component, Form, Submission, SubmissionData, SubmissionMethod } from '../../models';
 
 type ConditionPrimitive = string | number | boolean | null | undefined;
 
@@ -29,14 +29,14 @@ type ConditionEvaluationValue =
   | Submission
   | Partial<Component>
   | ConditionComponent
-  | NavFormType
+  | Form
   | undefined;
 
 interface ConditionEvaluationArgs {
   [key: string]: ConditionEvaluationValue;
   row: ConditionData | ConditionRow;
   data: ConditionData | undefined;
-  form?: NavFormType;
+  form?: Form;
   component?: Partial<Component>;
   instance?: ConditionComponent;
   utils: ConditionUtils;
@@ -55,7 +55,7 @@ type OriginalCheckCondition = (
   component: Partial<Component>,
   row: ConditionRow,
   data: ConditionData | undefined,
-  form?: NavFormType,
+  form?: Form,
   instance?: ConditionComponent,
 ) => boolean;
 

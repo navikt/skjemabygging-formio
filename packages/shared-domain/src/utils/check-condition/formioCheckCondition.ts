@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { Component, NavFormType, Submission, SubmissionMethod } from '../../models';
+import { Component, Form, Submission, SubmissionMethod } from '../../models';
 import {
   ConditionComponent,
   ConditionData,
@@ -27,7 +27,7 @@ const getFormioCheckConditionUtils = (
     custom: string,
     row: ConditionRow,
     data: ConditionData | undefined,
-    form: NavFormType | undefined,
+    form: Form | undefined,
     variable: string,
     onError: boolean,
     instance?: ConditionComponent,
@@ -61,7 +61,7 @@ const getFormioCheckConditionUtils = (
     component: Partial<Component>,
     row: ConditionRow,
     data: ConditionData | undefined,
-    form?: NavFormType,
+    form?: Form,
     instance?: ConditionComponent,
     submission?: Submission,
     options?: CheckConditionOptions,

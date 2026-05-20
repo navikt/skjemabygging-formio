@@ -67,7 +67,7 @@ export function SummaryPage() {
       }
 
       const attachmentPanel = appConfig.attachmentPageEnabled
-        ? navFormUtils.getActiveAttachmentPanelFromForm(form, submission)
+        ? navFormUtils.getActiveAttachmentPanelFromForm(formioFormsApiUtils.mapNavFormToForm(form), submission)
         : undefined;
       if (attachmentPanel) {
         const invalidAttachment = findFirstValidationErrorInAttachmentPanel(

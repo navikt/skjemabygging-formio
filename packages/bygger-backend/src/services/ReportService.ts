@@ -1,10 +1,4 @@
-import {
-  Form,
-  formioFormsApiUtils,
-  navFormUtils,
-  ReportDefinition,
-  submissionTypesUtils,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, navFormUtils, ReportDefinition, submissionTypesUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { stringify } from 'csv-stringify';
 import { Writable } from 'stream';
 import config from '../config';
@@ -80,8 +74,7 @@ class ReportService {
     const stringifier = stringify({ header: true, columns, delimiter: ';' });
     stringifier.pipe(writableStream);
     for (const formCompact of allFormsCompact) {
-      const formsApiForm = await this.formsService.get(formCompact.path);
-      const form = formioFormsApiUtils.mapFormToNavForm(formsApiForm);
+      const form = await this.formsService.get(formCompact.path);
       const attachments = navFormUtils.getAttachmentProperties(form);
 
       const { title, skjemanummer } = formCompact;
@@ -143,8 +136,7 @@ class ReportService {
     const stringifier = stringify({ header: true, columns, delimiter: ';' });
     stringifier.pipe(writableStream);
     for (const formCompact of allFormsCompact) {
-      const formsApiForm = await this.formsService.get(formCompact.path);
-      const form = formioFormsApiUtils.mapFormToNavForm(formsApiForm);
+      const form = await this.formsService.get(formCompact.path);
       const hasAttachment = navFormUtils.hasAttachment(form);
       const attachments = navFormUtils.getAttachmentProperties(form);
       const numberOfAttachments = attachments.length;

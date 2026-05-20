@@ -28,15 +28,19 @@ describe('prefillDataContext', () => {
 
   const formWithPrefillKeys = {
     title: 'TestSkjema',
+    path: 'testskjema',
     components: [
       { type: 'textfield', prefillKey: 'sokerFornavn' },
       { type: 'textfield', prefillKey: 'sokerEtternavn' },
     ],
+    properties: { skjemanummer: 'NAV 00-00.00', tema: 'TES' },
   } as unknown as NavFormType;
 
   const formWithoutPrefillKeys = {
     title: 'TestSkjema',
+    path: 'testskjema',
     components: [],
+    properties: { skjemanummer: 'NAV 00-00.00', tema: 'TES' },
   } as unknown as NavFormType;
 
   const submissionMethod = 'digital';

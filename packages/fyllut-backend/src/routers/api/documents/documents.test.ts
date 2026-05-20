@@ -13,6 +13,14 @@ const filePathSoknad = path.join(process.cwd(), '/src/test/testdata/documents/te
 const filePathMerged = path.join(process.cwd(), '/src/test/testdata/documents/test-merged.pdf');
 
 describe('[endpoint] documents', () => {
+  const mockForm = {
+    skjemanummer: 'NAV 12.34-56',
+    title: formTitle,
+    path: 'testskjema',
+    components: [],
+    properties: { mottaksadresseId: 'mottaksadresseId', path: '12345', skjemanummer: 'NAV 12.34-56' },
+  };
+
   it('Create front page and application', async () => {
     const forstesidePdf = readFileSync(filePathForsteside);
     const soknadPdf = readFileSync(filePathSoknad);
@@ -23,6 +31,7 @@ describe('[endpoint] documents', () => {
     const mockAzureAccessTokenHandler = vi.fn((scope: string) => {
       return `mock-token-for:${scope}`;
     });
+    const formScope = nock(formsApiUrl).get('/v1/forms/testskjema').query(true).reply(200, mockForm);
     const recipientsMock = nock(formsApiUrl)
       .get('/v1/recipients/mottaksadresseId')
       .reply(200, { adresselinje1: 'Test' });
@@ -48,21 +57,16 @@ describe('[endpoint] documents', () => {
         MergePdfToken: mockAzureAccessTokenHandler('azureMergePdfToken'),
       },
       body: {
-        form: JSON.stringify({
-          title: formTitle,
-          path: 'testskjema',
-          components: [],
-          properties: { mottaksadresseId: 'mottaksadresseId', path: '12345', skjemanummer: 'NAV 12.34-56' },
-        }),
         formPath: 'testskjema',
         submissionMethod: 'paper',
-        language: 'nb-NO',
+        language: 'nb',
         submission: JSON.stringify({ data: {} }),
       },
     });
 
     await documents.coverPageAndApplication(req, mockResponse(), mockNext());
 
+    expect(formScope.isDone()).toBe(true);
     expect(recipientsMock.isDone()).toBe(true);
     expect(globalTranslationsScope.isDone()).toBe(true);
     expect(formTranslationsScope.isDone()).toBe(true);
@@ -81,6 +85,7 @@ describe('[endpoint] documents', () => {
       return `mock-token-for:${scope}`;
     });
 
+    const formScope = nock(formsApiUrl).get('/v1/forms/testskjema').query(true).reply(200, mockForm);
     const recipientsMock = nock(formsApiUrl)
       .get('/v1/recipients/mottaksadresseId')
       .reply(200, { adresselinje1: 'Test' });
@@ -106,21 +111,16 @@ describe('[endpoint] documents', () => {
         MergePdfToken: mockAzureAccessTokenHandler('azureMergePdfToken'),
       },
       body: {
-        form: JSON.stringify({
-          title: formTitle,
-          path: 'testskjema',
-          components: [],
-          properties: { mottaksadresseId: 'mottaksadresseId', path: '12345', skjemanummer: 'NAV 12.34-56' },
-        }),
         formPath: 'testskjema',
         submissionMethod: 'paper',
-        language: 'EN',
+        language: 'en',
         submission: JSON.stringify({ data: {} }),
       },
     });
 
     await documents.coverPageAndApplication(req, mockResponse(), mockNext());
 
+    expect(formScope.isDone()).toBe(true);
     expect(recipientsMock.isDone()).toBe(true);
     expect(globalTranslationsScope.isDone()).toBe(true);
     expect(formTranslationsScope.isDone()).toBe(true);
@@ -135,14 +135,8 @@ describe('[endpoint] documents', () => {
         PdfAccessToken: 'pdf-access-token',
       },
       body: {
-        form: JSON.stringify({
-          title: formTitle,
-          path: 'testskjema',
-          components: [],
-          properties: { mottaksadresseId: 'mottaksadresseId', path: '12345', skjemanummer: 'NAV 12.34-56' },
-        }),
         formPath: 'testskjema',
-        language: 'nb-NO',
+        language: 'nb',
       },
     });
     const next = vi.fn();

@@ -3,11 +3,10 @@ import { NextFunction, Request, Response } from 'express';
 import fetch from 'node-fetch';
 import { logger } from '../../logger';
 import { getIdportenPid, getTokenxAccessToken } from '../../security/tokenHelper';
-import { applicationPdfService } from '../../services';
+import { applicationPdfService, sharedFormService, translationService } from '../../services';
 import { LogMetadata } from '../../types/log';
 import { base64Decode } from '../../utils/base64';
 import { responseToError } from '../../utils/errorHandling';
-import { getTranslationsForForm } from '../../utils/translations';
 import { getFyllutUrl } from '../../utils/url';
 import { assembleSendInnSoknadBody, isNotFound, sanitizeInnsendingsId, validateInnsendingsId } from './helpers/sendInn';
 
@@ -23,7 +22,7 @@ const sendInnUtfyltSoknad = {
       const fyllutUrl = getFyllutUrl(req);
       const envQualifier = req.getEnvQualifier();
 
-      const { form, submission, language, innsendingsId, submissionMethod } = req.body;
+      const { formPath, submission, language, innsendingsId, submissionMethod } = req.body;
       if (!req.headers.PdfAccessToken) {
         logger.warn('Azure access token is missing. Will be unable to generate pdf');
       }
@@ -38,23 +37,28 @@ const sendInnUtfyltSoknad = {
         return;
       }
 
+      const form = await sharedFormService.getForm({
+        formPath,
+        select: ['skjemanummer', 'title', 'path', 'properties', 'components'],
+      });
+
       const logMeta: LogMetadata = {
         innsendingsId: sanitizedInnsendingsId,
         skjemanummer: form?.properties?.skjemanummer,
         language,
         fyllutRequestPath: req.path,
       };
-      if (!['nb-NO', 'nn-NO', 'en'].includes(language)) {
+      if (!['nb', 'nn', 'en'].includes(language)) {
         logger.warn(`Language code "${language}" is not supported. Language code will be defaulted to "nb".`, logMeta);
       }
 
-      const translation = await getTranslationsForForm(form?.path ?? req.body.formPath, language);
+      const translations = await translationService.getTranslations({ formPath });
 
       const pdfFormData = renderApplicationPdf({
         form,
         submission,
         language,
-        translations: translation,
+        translations,
         submissionMethod,
         appConfig: { config: { gitVersion: config.gitVersion } },
       });
@@ -69,7 +73,7 @@ const sendInnUtfyltSoknad = {
       }
       const pdfByteArray = Array.from(applicationPdf) ?? [];
 
-      const body = assembleSendInnSoknadBody({ ...req.body, translation }, idportenPid, fyllutUrl, pdfByteArray);
+      const body = assembleSendInnSoknadBody({ ...req.body, form, translations }, idportenPid, fyllutUrl, pdfByteArray);
 
       const sendInnResponse = await fetch(
         `${sendInnConfig.host}${sendInnConfig.paths.utfyltSoknad}/${sanitizedInnsendingsId}`,

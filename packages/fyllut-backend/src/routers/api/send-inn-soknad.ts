@@ -4,9 +4,9 @@ import fetch from 'node-fetch';
 import { config } from '../../config/config';
 import { logger } from '../../logger';
 import { getIdportenPid, getTokenxAccessToken } from '../../security/tokenHelper';
+import { sharedFormService, translationService } from '../../services';
 import { base64Decode } from '../../utils/base64';
 import { responseToError } from '../../utils/errorHandling';
-import { getTranslationsForForm } from '../../utils/translations';
 import { getFyllutUrl } from '../../utils/url';
 import {
   assembleSendInnSoknadBody,
@@ -85,8 +85,15 @@ const sendInnSoknad = {
       const tokenxAccessToken = getTokenxAccessToken(req);
       const fyllutUrl = getFyllutUrl(req);
       const forceMellomlagring = req.query.forceMellomlagring as string | undefined;
-      const translation = await getTranslationsForForm(req.body.form?.path, req.body.language);
-      const body = assembleSendInnSoknadBody({ ...req.body, translation }, idportenPid, fyllutUrl, null);
+
+      const { formPath } = req.body;
+      const form = await sharedFormService.getForm({
+        formPath,
+        select: ['skjemanummer', 'title', 'path', 'properties', 'components'],
+      });
+      const translations = await translationService.getTranslations({ formPath });
+
+      const body = assembleSendInnSoknadBody({ ...req.body, form, translations }, idportenPid, fyllutUrl, null);
       const forceCreateParam = forceMellomlagring ? '?force=true' : '';
       const envQualifier = req.getEnvQualifier();
 
@@ -123,7 +130,7 @@ const sendInnSoknad = {
       const tokenxAccessToken = getTokenxAccessToken(req);
       const fyllutUrl = getFyllutUrl(req);
 
-      const { innsendingsId } = req.body;
+      const { innsendingsId, formPath } = req.body;
 
       const sanitizedInnsendingsId = sanitizeInnsendingsId(innsendingsId);
       const errorMessage = validateInnsendingsId(sanitizedInnsendingsId, putErrorMessage);
@@ -131,8 +138,14 @@ const sendInnSoknad = {
         next(new Error(errorMessage));
         return;
       }
-      const translation = await getTranslationsForForm(req.body.form?.path, req.body.language);
-      const body = assembleSendInnSoknadBody({ ...req.body, translation }, idportenPid, fyllutUrl, null);
+
+      const form = await sharedFormService.getForm({
+        formPath,
+        select: ['skjemanummer', 'title', 'path', 'properties', 'components'],
+      });
+      const translations = await translationService.getTranslations({ formPath });
+
+      const body = assembleSendInnSoknadBody({ ...req.body, form, translations }, idportenPid, fyllutUrl, null);
 
       const sendInnResponse = await fetch(
         `${sendInnConfig.host}${sendInnConfig.paths.soknad}/${sanitizedInnsendingsId}`,

@@ -1,4 +1,4 @@
-import { NavFormType, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { base64Decode, base64EncodeByteArray } from '../../../utils/base64';
 import {
   Attachment,
@@ -11,13 +11,19 @@ import {
 } from './sendInn';
 
 const defaultFormProperties = { skjemanummer: 'NAV123', tema: 'TEMA', ettersendelsesfrist: '14' };
-const defaultForm = { title: 'Standard skjema', properties: defaultFormProperties };
+const defaultForm = {
+  skjemanummer: 'NAV123',
+  title: 'Standard skjema',
+  path: 'nav123',
+  components: [],
+  properties: defaultFormProperties,
+} as unknown as Form;
 const fyllutUrl = 'https://www.nav.test.dev.no/fyllut';
 
 const defaultRequestBody = {
-  form: defaultForm as NavFormType,
+  form: defaultForm,
   submission: { q: 'a' } as unknown as Submission,
-  language: 'nb-NO',
+  language: 'nb' as const,
 };
 
 const attachment1 = {
@@ -46,8 +52,8 @@ const submissionPdfAsByteArray = [123, 234, 56];
 const submissionPdfAsBase64 = base64EncodeByteArray(submissionPdfAsByteArray);
 
 const expectedSubmissionAsBase64 = base64EncodeByteArray([
-  123, 34, 108, 97, 110, 103, 117, 97, 103, 101, 34, 58, 34, 110, 98, 45, 78, 79, 34, 44, 34, 100, 97, 116, 97, 34, 58,
-  123, 34, 113, 34, 58, 34, 97, 34, 125, 125,
+  123, 34, 108, 97, 110, 103, 117, 97, 103, 101, 34, 58, 34, 110, 98, 34, 44, 34, 100, 97, 116, 97, 34, 58, 123, 34,
+  113, 34, 58, 34, 97, 34, 125, 125,
 ]);
 
 describe('sendInn API helper', () => {
@@ -158,12 +164,12 @@ describe('sendInn API helper', () => {
     describe('With translations', () => {
       const requestBodyWithTranslation = {
         ...requestBodyWithAttachments,
-        language: 'en',
-        translation: {
-          'Standard skjema': 'Form',
-          'Vedlegg 1': 'Attachment 1',
-          'Vedlegg 2': 'Attachment 2',
-          Beskrivelse: 'Description',
+        language: 'en' as const,
+        translations: {
+          'Standard skjema': { en: 'Form' },
+          'Vedlegg 1': { en: 'Attachment 1' },
+          'Vedlegg 2': { en: 'Attachment 2' },
+          Beskrivelse: { en: 'Description' },
         },
       };
 

@@ -1,12 +1,15 @@
-import { ApplicationPdfService, renderApplicationPdf } from '@navikt/skjemadigitalisering-shared-backend';
 import {
-  I18nTranslationMap,
-  localizationUtils,
-  NavFormType,
+  ApplicationPdfService,
+  renderApplicationPdf,
+  translationUtil,
+} from '@navikt/skjemadigitalisering-shared-backend';
+import {
+  Form,
+  FormsApiTranslationMap,
   ReceiptSummary,
   Submission,
   SubmissionMethod,
-  translationUtils,
+  TranslationLang,
   UploadedFile,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { ConfigType } from '../../config/types';
@@ -67,21 +70,20 @@ class ApplicationService {
     pdfAccessToken: string,
     nologinM2MAccessToken: string,
     innsendingsId: string,
-    form: NavFormType,
+    form: Form,
     submission: Submission,
-    translation: I18nTranslationMap = {},
-    language: string,
+    translations: FormsApiTranslationMap = {},
+    language: TranslationLang,
     submissionMethod: SubmissionMethod | undefined,
     logMeta: LogMetadata = {},
     type: 'nologin' | 'digital' = 'nologin',
   ): Promise<{ pdf: Uint8Array; receipt: ReceiptSummary }> {
-    const lang = localizationUtils.getLanguageCodeAsIso639_1(language);
-    const translate = translationUtils.createTranslate(translation, language);
+    const translate = translationUtil.createTranslate(translations, language);
     const pdfFormData = renderApplicationPdf({
       form,
       submission,
       language,
-      translations: translation,
+      translations,
       submissionMethod,
       appConfig: { config: { gitVersion: this.config.gitVersion } },
     });
@@ -99,7 +101,7 @@ class ApplicationService {
       innsendingsId,
       form,
       submission,
-      lang,
+      language,
       pdfByteArray,
       translate,
     );
