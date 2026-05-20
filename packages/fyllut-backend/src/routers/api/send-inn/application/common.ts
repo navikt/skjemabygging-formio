@@ -25,7 +25,10 @@ export const generatePdfAndSubmit = async (
     formPath,
     select: ['skjemanummer', 'title', 'path', 'properties', 'components', 'revision'],
   });
-  const translations: FormsApiTranslationMap = await translationService.getTranslations({ formPath });
+  const translations: FormsApiTranslationMap = await translationService.getTranslations({
+    formPath,
+    languageCodes: [language],
+  });
   const pdfAccessToken = req.headers.PdfAccessToken as string;
   const logMeta: LogMetadata = {
     innsendingsId,

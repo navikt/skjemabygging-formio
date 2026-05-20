@@ -47,7 +47,7 @@ const application: RequestHandler = async (req, res, next) => {
       select: ['skjemanummer', 'title', 'path', 'properties', 'components'],
     });
     const submissionParsed = JSON.parse(submission);
-    const translations = await translationService.getTranslations({ formPath });
+    const translations = await translationService.getTranslations({ formPath, languageCodes: [language] });
     const pdfGeneratorToken = req.headers.PdfAccessToken as string;
 
     logger.info(`Create application pdf for ${form?.properties?.skjemanummer ?? 'unknown form'}`, {
@@ -94,7 +94,7 @@ const coverPageAndApplication: RequestHandler = async (req, res, next) => {
       select: ['skjemanummer', 'title', 'path', 'properties', 'components'],
     });
     const submissionParsed = JSON.parse(submission);
-    const translations = await translationService.getTranslations({ formPath });
+    const translations = await translationService.getTranslations({ formPath, languageCodes: [language] });
     const translate = translationUtil.createTranslate(translations, language);
     const frontPageGeneratorToken = req.headers.AzureAccessToken as string;
     const pdfGeneratorToken = req.headers.PdfAccessToken as string;

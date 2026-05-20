@@ -52,7 +52,7 @@ const sendInnUtfyltSoknad = {
         logger.warn(`Language code "${language}" is not supported. Language code will be defaulted to "nb".`, logMeta);
       }
 
-      const translations = await translationService.getTranslations({ formPath });
+      const translations = await translationService.getTranslations({ formPath, languageCodes: [language] });
 
       const pdfFormData = renderApplicationPdf({
         form,

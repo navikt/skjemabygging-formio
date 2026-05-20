@@ -22,6 +22,8 @@ const {
   skjemabyggingProxyUrl,
   useFormsApiStaging,
   skjemaDir,
+  translationDir,
+  resourcesDir,
   mocksEnabled,
 } = config;
 
@@ -58,6 +60,10 @@ const staticPdfService = createStaticPdfService({
 
 const translationService = createTranslationService({
   baseUrl: formsApiUrl,
+  formsApiStaging: useFormsApiStaging,
+  translationsLocation: translationDir,
+  globalTranslationsLocation: resourcesDir,
+  mocksEnabled,
 });
 
 const translationsService = new TranslationsService(config);
