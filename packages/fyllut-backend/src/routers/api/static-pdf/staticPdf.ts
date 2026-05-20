@@ -54,10 +54,11 @@ const staticPdf = {
       });
 
       const translate = await translationService.createTranslate({ baseUrl: formsApiUrl, formPath, languageCode });
+      const selectedAttachmentKeys = coverPageData.attachments ?? [];
       const attachmentComponents = navFormUtils
         .flattenComponents(form.components)
-        .filter((component) => component.type === 'attachment' && coverPageData.attachments.includes(component.key));
-      const attachmentLabels = coverPageData.attachments.map((attachmentKey) => {
+        .filter((component) => component.type === 'attachment' && selectedAttachmentKeys.includes(component.key));
+      const attachmentLabels = selectedAttachmentKeys.map((attachmentKey) => {
         const attachmentComponent = attachmentComponents.find((component) => component.key === attachmentKey);
         if (!attachmentComponent?.label) {
           return attachmentKey;
