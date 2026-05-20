@@ -1,4 +1,5 @@
 import { guid } from '@navikt/skjemadigitalisering-shared-domain';
+import { RenderSummaryForm, ValidationExclamationIcon } from '@navikt/skjemadigitalisering-shared-frontend';
 import jss from 'jss';
 import preset from 'jss-preset-default';
 import type { FetchHeader, FetchOptions } from './api/util/http/http';
@@ -72,6 +73,7 @@ export {
   navCssVariables,
   NavForm,
   NavFormioJs,
+  RenderSummaryForm,
   SkeletonList,
   StaticPdfProvider,
   Styles,
@@ -82,5 +84,6 @@ export {
   useLanguages,
   useModal,
   useStaticPdf,
+  ValidationExclamationIcon,
 };
 export type { FetchHeader, FetchOptions };
