@@ -6,8 +6,8 @@ import {
   Panel,
   PanelValidation,
   Submission,
+  SubmissionAttachment,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { AttachmentValidator } from '../../../components/attachment/attachmentValidator';
 
 const findFirstInputWithValidationError = (wizardComponent, data): string | undefined => {
   // Need to tell the Formio root component that the form has been submitted, to trigger validation.
@@ -54,13 +54,13 @@ export const validateWizardPanels = (formioInstance, form: NavFormType, submissi
 export const findFirstValidationErrorInAttachmentPanel = (
   attachmentPanel: Panel,
   submission: Submission,
-  validator: AttachmentValidator,
+  validator: (label: string, attachment: SubmissionAttachment | undefined, component: Component) => string | undefined,
 ): Component | undefined => {
   return attachmentPanel?.components?.filter(navFormUtils.isAttachment).find((component) => {
     const submissionAttachment = submission.attachments?.find(
       (attachment) => navFormUtils.getNavId(component) === attachment.navId,
     );
-    return !!validator.validate(component.label, submissionAttachment);
+    return !!validator(component.label, submissionAttachment, component);
   });
 };
 

@@ -1,10 +1,4 @@
-import {
-  I18nTranslationMap,
-  Language,
-  NavFormType,
-  PdfFormData,
-  Submission,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { Language, NavFormType, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { AppConfigContextType } from '../../context/config/configContext';
 import { getRelevantAttachments, hasOtherDocumentation } from '../../util/attachment/attachmentsUtil';
 
@@ -39,7 +33,6 @@ export const createSoknad = async (
   form: NavFormType,
   submission: Submission,
   language: string,
-  translation: I18nTranslationMap = {},
   forceMellomlagring?: boolean,
 ): Promise<SendInnSoknadResponse | InnsendingApiStatusResponse | undefined> => {
   const { http, baseUrl, submissionMethod } = appConfig;
@@ -50,7 +43,6 @@ export const createSoknad = async (
     form,
     submission,
     language,
-    translation,
     submissionMethod,
   });
 };
@@ -60,7 +52,6 @@ export const updateSoknad = async (
   form: NavFormType,
   submission: Submission,
   language: string,
-  translation: I18nTranslationMap = {},
   innsendingsId?: string,
 ): Promise<SendInnSoknadResponse | undefined> => {
   const { http, baseUrl, submissionMethod, logger } = appConfig;
@@ -70,7 +61,6 @@ export const updateSoknad = async (
       form,
       submission,
       language,
-      translation,
       submissionMethod,
     });
   } else {
@@ -83,10 +73,8 @@ export const updateUtfyltSoknad = async (
   form: NavFormType,
   submission: Submission,
   language: string,
-  translation: I18nTranslationMap = {},
   innsendingsId: string | undefined,
   setRedirectLocation: (location: string) => void,
-  pdfFormData?: PdfFormData,
 ): Promise<SendInnSoknadResponse | undefined> => {
   const { http, baseUrl, submissionMethod, logger } = appConfig;
   const attachments = getRelevantAttachments(form, submission);
@@ -101,11 +89,9 @@ export const updateUtfyltSoknad = async (
         formPath: form.path,
         submission,
         language,
-        translation,
         submissionMethod,
         attachments,
         otherDocumentation,
-        pdfFormData,
       },
       {},
       { setRedirectLocation },

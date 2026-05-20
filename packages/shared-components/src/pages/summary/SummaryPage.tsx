@@ -70,13 +70,20 @@ export function SummaryPage() {
         ? navFormUtils.getActiveAttachmentPanelFromForm(form, submission)
         : undefined;
       if (attachmentPanel) {
-        const validator = attachmentUtils.enableAttachmentUpload(appConfig.submissionMethod)
-          ? attachmentValidator(translate, ['value', 'fileUploaded'])
-          : attachmentValidator(translate, ['value']);
         const invalidAttachment = findFirstValidationErrorInAttachmentPanel(
           attachmentPanel,
           submission ?? { data: {} },
-          validator,
+          (label, submissionAttachment, component) => {
+            const uploadOnlyMode = attachmentUtils.isSingleUploadOnlyOption(
+              component.attachmentValues ?? component.values,
+              appConfig.submissionMethod,
+            );
+            const validator = attachmentUtils.enableAttachmentUpload(appConfig.submissionMethod)
+              ? attachmentValidator(translate, uploadOnlyMode ? ['fileUploaded'] : ['value', 'fileUploaded'])
+              : attachmentValidator(translate, ['value']);
+
+            return validator.validate(label, submissionAttachment);
+          },
         );
 
         if (invalidAttachment) {
