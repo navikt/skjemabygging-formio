@@ -1,27 +1,27 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { expect } from 'chai';
 
-const getCleanedUpPdfFormData = (request, date?: string) => {
-  const pdfFormData = JSON.parse(JSON.stringify(request.body.pdfFormData));
-  pdfFormData.verdiliste.forEach((panel, index, object) => {
-    if (panel.label === 'Person' && date) {
-      panel.verdiliste.forEach((component) => {
-        if (component.verdi.match(/^\d{2}.\d{2}.\d{4}$/)) {
-          component.verdi = date;
-        }
-      });
-    } else if (panel.label === 'Underskrift' && request.submissionMethod === 'digital') {
-      object.splice(index, 1);
-    }
-  });
+const parseSubmission = (requestBody: { submission: unknown }) =>
+  typeof requestBody.submission === 'string' ? JSON.parse(requestBody.submission) : requestBody.submission;
 
-  return {
-    ...pdfFormData,
-    bunntekst: {
-      ...pdfFormData.bunntekst,
-      upperMiddle: null, // Remove timestamp for comparison.
-    },
-  };
+const expectPdfRequestContract = (
+  request: { body: { form?: unknown; submission: unknown; pdfFormData?: unknown; submissionMethod?: unknown } },
+  submissionMethod?: string,
+  dataLength?: number,
+) => {
+  const submission = parseSubmission(request.body);
+
+  expect(request.body.form).to.exist;
+  expect(submission).to.exist;
+  expect(request.body.pdfFormData).to.be.undefined;
+
+  if (submissionMethod) {
+    expect(request.body.submissionMethod).to.eq(submissionMethod);
+  }
+
+  if (dataLength !== undefined) {
+    expect(Object.keys(submission.data ?? {})).to.have.length(dataLength);
+  }
 };
 
 const downloadPdf = (submissionType: 'digital' | 'paper' | 'digitalnologin' = 'paper') => {
@@ -67,10 +67,7 @@ describe('Pdf', () => {
       cy.findByRole('heading', { name: 'Oppsummering' }).shouldBeVisible();
 
       cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
-        const { submission, pdfFormData } = req.body;
-        expect(Object.keys(submission.data)).to.have.length(4);
-        expect(Object.keys(pdfFormData.verdiliste)).to.have.length(4);
-        expect(Object.keys(pdfFormData.verdiliste[3].verdiliste)).to.have.length(3);
+        expectPdfRequestContract(req, 'digital', 4);
       }).as('submitMellomlagring');
 
       cy.clickSendNav();
@@ -89,11 +86,7 @@ describe('Pdf', () => {
       cy.clickSaveAndContinue();
 
       cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
-        const { submission, pdfFormData } = req.body;
-        expect(Object.keys(submission.data)).to.have.length(1);
-        // This is 1 and not 2, because the conditional page (page 2) is not shown in pdf since it have no values.
-        // It is shown in summary page since it there have an edit link.
-        expect(Object.keys(pdfFormData.verdiliste)).to.have.length(1);
+        expectPdfRequestContract(req, 'digital', 1);
       }).as('submitMellomlagring');
       cy.findByRole('heading', { name: 'Oppsummering' }).shouldBeVisible();
       cy.clickSendNav();
@@ -119,10 +112,7 @@ describe('Pdf', () => {
       cy.findByRole('link', { name: 'Instruksjoner for innsending' }).click();
 
       cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
-        const { submission, pdfFormData } = req.body;
-        expect(Object.keys(JSON.parse(submission).data)).to.have.length(3);
-        // pdfFormData.verdiliste is longer since signature is added for paper forms.
-        expect(Object.keys(pdfFormData.verdiliste)).to.have.length(4);
+        expectPdfRequestContract(req, 'paper', 3);
       }).as('downloadPdf');
 
       cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).click();
@@ -148,13 +138,9 @@ describe('Pdf', () => {
         cy.findByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).type('20905995783');
         cy.clickNextStep();
 
-        cy.fixture('pdf/request-components-identity.json').then((fixture) => {
-          cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
-            // Check that timestamp is present in footer before removing it for comparison.
-            expect(req.body.pdfFormData.bunntekst.upperMiddle).not.to.be.null;
-            expect(getCleanedUpPdfFormData(req)).deep.eq(fixture);
-          }).as('downloadPdf');
-        });
+        cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
+          expectPdfRequestContract(req, 'paper');
+        }).as('downloadPdf');
 
         downloadPdf();
       });
@@ -307,13 +293,9 @@ describe('Pdf', () => {
           cy.findByRole('radio', { name: 'Ingen relevant aktivitet registrert på meg' }).check();
         });
 
-        cy.fixture('pdf/request-components-identity-digital.json').then((fixture) => {
-          cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
-            // Check that timestamp is present in footer before removing it for comparison.
-            expect(req.body.pdfFormData.bunntekst.upperMiddle).not.to.be.null;
-            expect(getCleanedUpPdfFormData(req)).deep.eq(fixture);
-          }).as('downloadPdf');
-        });
+        cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
+          expectPdfRequestContract(req, 'digital');
+        }).as('downloadPdf');
 
         downloadPdf('digital');
       });
@@ -429,11 +411,9 @@ describe('Pdf', () => {
           cy.findByRole('radio', { name: 'Ingen relevant aktivitet registrert på meg' }).check();
         });
 
-        cy.fixture('pdf/request-components-all-digital.json').then((fixture) => {
-          cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
-            expect(getCleanedUpPdfFormData(req, date)).deep.eq(fixture);
-          }).as('downloadPdf');
-        });
+        cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
+          expectPdfRequestContract(req, 'digital');
+        }).as('downloadPdf');
 
         downloadPdf('digital');
       });
@@ -468,14 +448,9 @@ describe('Pdf', () => {
 
         cy.clickNextStep();
 
-        cy.fixture('pdf/request-components-identity-nologin.json').then((fixture) => {
-          cy.intercept('POST', '/fyllut/api/send-inn/nologin-application', (req) => {
-            // Check that timestamp is present in footer before removing it for comparison.
-            expect(req.body.pdfFormData.bunntekst.upperMiddle).not.to.be.null;
-            const actual = getCleanedUpPdfFormData(req);
-            expect(actual, 'PDF form data should match fixture for nologin submission').deep.eq(fixture);
-          }).as('downloadPdf');
-        });
+        cy.intercept('POST', '/fyllut/api/send-inn/nologin-application', (req) => {
+          expectPdfRequestContract(req, 'digitalnologin');
+        }).as('downloadPdf');
 
         downloadPdf('digitalnologin');
       });
@@ -513,18 +488,7 @@ describe('Pdf', () => {
         cy.clickNextStep();
 
         cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
-          const signatures = req.body.pdfFormData.verdiliste.pop();
-
-          expect(signatures.label).eq('Underskrift');
-          expect(signatures.verdiliste.length).eq(4);
-          expect(signatures.verdiliste[0].label).eq('');
-          expect(signatures.verdiliste[0].verdi).eq(' ');
-          expect(signatures.verdiliste[1].label).eq('Sted og dato');
-          expect(signatures.verdiliste[1].verdi).eq(' ');
-          expect(signatures.verdiliste[2].label).eq('Underskrift');
-          expect(signatures.verdiliste[2].verdi).eq(' ');
-          expect(signatures.verdiliste[3].label).eq('Navn med blokkbokstaver');
-          expect(signatures.verdiliste[3].verdi).eq(' ');
+          expectPdfRequestContract(req, 'paper');
         }).as('downloadPdf');
 
         downloadPdf();
@@ -560,18 +524,7 @@ describe('Pdf', () => {
         cy.clickNextStep();
 
         cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
-          const signatures = req.body.pdfFormData.verdiliste.pop();
-
-          expect(signatures.label).eq('Underskrift');
-          expect(signatures.verdiliste.length).eq(4);
-          expect(signatures.verdiliste[0].label).eq('');
-          expect(signatures.verdiliste[0].verdi).eq(' ');
-          expect(signatures.verdiliste[1].label).eq('Sted og dato');
-          expect(signatures.verdiliste[1].verdi).eq(' ');
-          expect(signatures.verdiliste[2].label).eq('Underskrift');
-          expect(signatures.verdiliste[2].verdi).eq(' ');
-          expect(signatures.verdiliste[3].label).eq('Navn med blokkbokstaver');
-          expect(signatures.verdiliste[3].verdi).eq(' ');
+          expectPdfRequestContract(req, 'paper');
         }).as('downloadPdf');
 
         downloadPdf();
@@ -593,31 +546,7 @@ describe('Pdf', () => {
         cy.clickNextStep();
 
         cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
-          const signatures = req.body.pdfFormData.verdiliste.pop();
-
-          expect(signatures.label).eq('Underskrift');
-          expect(signatures.verdiliste.length).eq(3);
-          expect(signatures.verdiliste[0].label).eq('');
-
-          expect(signatures.verdiliste[1].label).eq('Eier');
-          expect(signatures.verdiliste[1].verdiliste[0].label).eq('Viktig1');
-          expect(signatures.verdiliste[1].verdiliste[0].verdi).eq(' ');
-          expect(signatures.verdiliste[1].verdiliste[1].label).eq('Sted og dato');
-          expect(signatures.verdiliste[1].verdiliste[1].verdi).eq(' ');
-          expect(signatures.verdiliste[1].verdiliste[2].label).eq('Underskrift');
-          expect(signatures.verdiliste[1].verdiliste[2].verdi).eq(' ');
-          expect(signatures.verdiliste[1].verdiliste[3].label).eq('Navn med blokkbokstaver');
-          expect(signatures.verdiliste[1].verdiliste[3].verdi).eq(' ');
-
-          expect(signatures.verdiliste[2].label).eq('Deleier');
-          expect(signatures.verdiliste[2].verdiliste[0].label).eq('Viktig2');
-          expect(signatures.verdiliste[2].verdiliste[0].verdi).eq(' ');
-          expect(signatures.verdiliste[2].verdiliste[1].label).eq('Sted og dato');
-          expect(signatures.verdiliste[2].verdiliste[1].verdi).eq(' ');
-          expect(signatures.verdiliste[2].verdiliste[2].label).eq('Underskrift');
-          expect(signatures.verdiliste[2].verdiliste[2].verdi).eq(' ');
-          expect(signatures.verdiliste[2].verdiliste[3].label).eq('Navn med blokkbokstaver');
-          expect(signatures.verdiliste[2].verdiliste[3].verdi).eq(' ');
+          expectPdfRequestContract(req, 'paper');
         }).as('downloadPdf');
 
         downloadPdf();
@@ -639,31 +568,7 @@ describe('Pdf', () => {
         cy.clickNextStep();
 
         cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
-          const signatures = req.body.pdfFormData.verdiliste.pop();
-
-          expect(signatures.label).eq('Signature');
-          expect(signatures.verdiliste.length).eq(3);
-          expect(signatures.verdiliste[0].label).eq('');
-
-          expect(signatures.verdiliste[1].label).eq('Owner');
-          expect(signatures.verdiliste[1].verdiliste[0].label).eq('Important1');
-          expect(signatures.verdiliste[1].verdiliste[0].verdi).eq(' ');
-          expect(signatures.verdiliste[1].verdiliste[1].label).eq('Place and date');
-          expect(signatures.verdiliste[1].verdiliste[1].verdi).eq(' ');
-          expect(signatures.verdiliste[1].verdiliste[2].label).eq('Signature');
-          expect(signatures.verdiliste[1].verdiliste[2].verdi).eq(' ');
-          expect(signatures.verdiliste[1].verdiliste[3].label).eq('Name with capital letters');
-          expect(signatures.verdiliste[1].verdiliste[3].verdi).eq(' ');
-
-          expect(signatures.verdiliste[2].label).eq('Co-owner');
-          expect(signatures.verdiliste[2].verdiliste[0].label).eq('Important2');
-          expect(signatures.verdiliste[2].verdiliste[0].verdi).eq(' ');
-          expect(signatures.verdiliste[2].verdiliste[1].label).eq('Place and date');
-          expect(signatures.verdiliste[2].verdiliste[1].verdi).eq(' ');
-          expect(signatures.verdiliste[2].verdiliste[2].label).eq('Signature');
-          expect(signatures.verdiliste[2].verdiliste[2].verdi).eq(' ');
-          expect(signatures.verdiliste[2].verdiliste[3].label).eq('Name with capital letters');
-          expect(signatures.verdiliste[2].verdiliste[3].verdi).eq(' ');
+          expectPdfRequestContract(req, 'paper');
         }).as('downloadPdf');
 
         downloadPdf();
@@ -701,29 +606,7 @@ describe('Pdf', () => {
         cy.clickNextStep();
 
         cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
-          const vedleggspanel = req.body.pdfFormData.verdiliste.find((item) => {
-            return item.label === 'Vedlegg';
-          });
-
-          expect(vedleggspanel, 'Forventer å finne vedleggspanelet').to.be.not.undefined;
-          expect(vedleggspanel.label).eq('Vedlegg');
-          expect(vedleggspanel.verdiliste[0], 'Forventer at vedlegg er valgt').to.be.not.undefined;
-          expect(vedleggspanel.verdiliste[0].label).eq('Vedlegg');
-          expect(vedleggspanel.verdiliste[0].verdi).eq('Jeg legger det ved dette skjemaet');
-          expect(vedleggspanel.verdiliste[1], 'Forventer kommentar til vedlegget (additional documentation)').to.be.not
-            .undefined;
-          expect(vedleggspanel.verdiliste[1].label).eq('Mer info');
-          expect(vedleggspanel.verdiliste[1].verdiliste, 'Verdiliste må være satt (additional documentation)').to.be.not
-            .undefined;
-          expect(
-            vedleggspanel.verdiliste[1].verdiliste[0],
-            'Verdiliste må inneholde et element (additional documentation)',
-          ).to.be.not.undefined;
-          expect(vedleggspanel.verdiliste[1].verdiliste[0].label).eq('Dette er en kommentar til vedlegget.');
-          expect(vedleggspanel.verdiliste[1].visningsVariant).eq('PUNKTLISTE');
-          expect(vedleggspanel.verdiliste[2], 'Forventer annen dokumentasjon').to.be.not.undefined;
-          expect(vedleggspanel.verdiliste[2].label).eq('Annen dokumentasjon');
-          expect(vedleggspanel.verdiliste[2].verdi).eq('Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved');
+          expectPdfRequestContract(req, 'paper');
         }).as('downloadPdf');
 
         downloadPdf();

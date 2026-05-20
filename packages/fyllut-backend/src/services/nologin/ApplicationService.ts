@@ -1,11 +1,11 @@
-import { ApplicationPdfService } from '@navikt/skjemadigitalisering-shared-backend';
+import { ApplicationPdfService, renderApplicationPdf } from '@navikt/skjemadigitalisering-shared-backend';
 import {
   I18nTranslationMap,
   localizationUtils,
   NavFormType,
-  PdfFormData,
   ReceiptSummary,
   Submission,
+  SubmissionMethod,
   translationUtils,
   UploadedFile,
 } from '@navikt/skjemadigitalisering-shared-domain';
@@ -71,12 +71,20 @@ class ApplicationService {
     submission: Submission,
     translation: I18nTranslationMap = {},
     language: string,
-    pdfFormData?: PdfFormData,
+    submissionMethod: SubmissionMethod | undefined,
     logMeta: LogMetadata = {},
     type: 'nologin' | 'digital' = 'nologin',
   ): Promise<{ pdf: Uint8Array; receipt: ReceiptSummary }> {
     const lang = localizationUtils.getLanguageCodeAsIso639_1(language);
     const translate = translationUtils.createTranslate(translation, language);
+    const pdfFormData = renderApplicationPdf({
+      form,
+      submission,
+      language,
+      translations: translation,
+      submissionMethod,
+      appConfig: { config: { gitVersion: this.config.gitVersion } },
+    });
     const applicationPdfBase64 = await this.applicationPdfService.createPdf({
       accessToken: pdfAccessToken,
       pdfFormData,

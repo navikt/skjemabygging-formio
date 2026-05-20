@@ -1,5 +1,4 @@
 import {
-  formioFormsApiUtils,
   Language,
   MellomlagringError,
   NologinToken,
@@ -20,7 +19,6 @@ import {
   updateSoknad,
   updateUtfyltSoknad,
 } from '../../api/sendinn/sendInnSoknad';
-import renderPdfForm from '../../form-components/RenderPdfForm';
 import { b64toBlob } from '../../util/blob/blob';
 import { useAppConfig } from '../config/configContext';
 import { useForm } from '../form/FormContext';
@@ -59,9 +57,9 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { setSubmission, form, submission, activeComponents, activeAttachmentUploadsPanel } = useForm();
+  const { setSubmission, form, submission } = useForm();
   const soknadNotFoundUrl = `${baseUrl}/soknad-ikke-funnet`;
-  const { translationsForNavForm: translations, translate, currentLanguage } = useLanguages();
+  const { translate } = useLanguages();
   const innsendingsIdFromParams = searchParams.get('innsendingsId');
 
   const isMellomlagringAvailable = app === 'fyllut' && submissionMethod === 'digital';
@@ -138,16 +136,6 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
 
   const nbNO: Language = 'nb-NO';
 
-  const translationForLanguage = useCallback(
-    (language: Language = nbNO) => {
-      if (language !== nbNO && Object.keys(translations).length > 0) {
-        return translations[language] ?? {};
-      }
-      return {};
-    },
-    [translations],
-  );
-
   const getLanguageFromSearchParams = (): Language => {
     return (new URL(window.location.href).searchParams.get('lang') as Language) || nbNO;
   };
@@ -161,14 +149,12 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
       try {
         setIsCreateStarted(true);
         const currentLanguage = getLanguageFromSearchParams();
-        const translation = translationForLanguage(currentLanguage);
         const forceMellomlagring = !!searchParams.get('forceMellomlagring');
         const response = await createSoknad(
           appConfig,
           form,
           transformSubmissionBeforeSubmitting(submission),
           currentLanguage,
-          translation,
           forceMellomlagring,
         );
 
@@ -201,7 +187,6 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
     [
       isMellomlagringReady,
       isCreateStarted,
-      translationForLanguage,
       searchParams,
       appConfig,
       form,
@@ -225,13 +210,11 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
 
     try {
       const currentLanguage = getLanguageFromSearchParams();
-      const translation = translationForLanguage(currentLanguage);
       const response = await updateSoknad(
         appConfig,
         form,
         transformSubmissionBeforeSubmitting(submissionForSave),
         currentLanguage,
-        translation,
         innsendingsId,
       );
       logger?.info(`${innsendingsId}: Mellomlagring was updated`);
@@ -271,7 +254,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   };
 
   const submitDigitalFyllut = useCallback(
-    async (language: Language, translation: any, submission: Submission) => {
+    async (language: Language, submission: Submission) => {
       try {
         const response = await postNologinSoknad(
           appConfig,
@@ -279,18 +262,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
           form!,
           submission,
           language,
-          translation,
           submissionMethod,
-          renderPdfForm({
-            activeComponents,
-            activeAttachmentUploadsPanel,
-            submission,
-            form: formioFormsApiUtils.mapNavFormToForm(form),
-            currentLanguage,
-            translate,
-            appConfig,
-            submissionMethod,
-          }),
           innsendingsId,
         );
         logEvent?.({
@@ -331,9 +303,6 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
       appConfig,
       nologinToken,
       form,
-      activeComponents,
-      activeAttachmentUploadsPanel,
-      currentLanguage,
       innsendingsId,
       translate,
       submissionMethod,
@@ -345,7 +314,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   );
 
   const submitDigital = useCallback(
-    async (language: Language, translation: any, submission: Submission) => {
+    async (language: Language, submission: Submission) => {
       if (!isMellomlagringReady) {
         return;
       }
@@ -353,25 +322,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
       let redirectLocation: string | undefined = undefined;
       const setRedirectLocation = (loc: string) => (redirectLocation = loc);
       try {
-        await updateUtfyltSoknad(
-          appConfig,
-          form,
-          submission,
-          language,
-          translation,
-          innsendingsId,
-          setRedirectLocation,
-          renderPdfForm({
-            activeComponents,
-            activeAttachmentUploadsPanel,
-            submission,
-            form: formioFormsApiUtils.mapNavFormToForm(form),
-            currentLanguage,
-            translate,
-            appConfig,
-            submissionMethod,
-          }),
-        );
+        await updateUtfyltSoknad(appConfig, form, submission, language, innsendingsId, setRedirectLocation);
         logger?.info(`${innsendingsId}: Mellomlagring was submitted`);
         if (redirectLocation) {
           window.location.href = redirectLocation;
@@ -382,7 +333,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         } else {
           logger?.error(`${innsendingsId}: Failed to submit, will try to store changes`, submitError as Error);
           try {
-            await updateSoknad(appConfig, form, submission, language, translation, innsendingsId);
+            await updateSoknad(appConfig, form, submission, language, innsendingsId);
             dispatchFyllutMellomlagring({ type: 'error', error: 'SUBMIT_FAILED' });
           } catch (updateError) {
             logger?.error(
@@ -394,29 +345,17 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         }
       }
     },
-    [
-      activeAttachmentUploadsPanel,
-      activeComponents,
-      appConfig,
-      currentLanguage,
-      form,
-      innsendingsId,
-      isMellomlagringReady,
-      logger,
-      submissionMethod,
-      translate,
-    ],
+    [appConfig, form, innsendingsId, isMellomlagringReady, logger],
   );
 
   const submitSoknad = async (appSubmission: Submission): Promise<void> => {
     const currentLanguage = getLanguageFromSearchParams();
-    const translation = translationForLanguage(currentLanguage);
     const submission = transformSubmissionBeforeSubmitting(appSubmission);
 
     if (submissionMethod === 'digitalnologin' || attachmentPageEnabled) {
-      await submitDigitalFyllut(currentLanguage, translation, submission);
+      await submitDigitalFyllut(currentLanguage, submission);
     } else {
-      await submitDigital(currentLanguage, translation, submission);
+      await submitDigital(currentLanguage, submission);
     }
   };
 

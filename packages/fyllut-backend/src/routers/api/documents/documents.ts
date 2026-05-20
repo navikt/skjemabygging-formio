@@ -1,11 +1,13 @@
-import { coverPageMapper } from '@navikt/skjemadigitalisering-shared-backend';
+import { coverPageMapper, renderApplicationPdf } from '@navikt/skjemadigitalisering-shared-backend';
 import {
   I18nTranslationMap,
+  PdfFormData,
   SubmissionMethod,
   TranslateFunction,
   translationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { RequestHandler } from 'express';
+import { config } from '../../../config/config';
 import { logger } from '../../../logger';
 import {
   appMetrics,
@@ -15,8 +17,9 @@ import {
   recipientService,
 } from '../../../services';
 import { base64Decode } from '../../../utils/base64';
+import { getTranslationsForForm } from '../../../utils/translations';
 
-const assertPdfFormData = (pdfFormData: unknown) => {
+const assertPdfFormData = (pdfFormData: PdfFormData | undefined) => {
   if (!pdfFormData || typeof pdfFormData !== 'object') {
     throw new Error('Missing pdfFormData to generate PDF');
   }
@@ -46,12 +49,13 @@ const toPdfBuffer = (pdfBase64: string | null | undefined, errorMessage: string)
 
 const application: RequestHandler = async (req, res, next) => {
   try {
-    const { form, pdfFormData, submission, language } = req.body;
+    const { form, formPath, submission, language, submissionMethod } = req.body;
     if (!submission) {
       throw new Error('Missing submission data to generate PDF');
     }
-    assertPdfFormData(pdfFormData);
     const formParsed = JSON.parse(form);
+    const submissionParsed = JSON.parse(submission);
+    const translationsParsed = await getTranslationsForForm(formParsed.path ?? formPath, language);
     const pdfGeneratorToken = req.headers.PdfAccessToken as string;
 
     logger.info(`Create application pdf for ${formParsed?.properties?.skjemanummer ?? 'unknown form'}`, {
@@ -62,6 +66,16 @@ const application: RequestHandler = async (req, res, next) => {
     if (!pdfGeneratorToken) {
       throw new Error('Azure PDF generator token is missing. Unable to generate PDF');
     }
+
+    const pdfFormData = renderApplicationPdf({
+      form: formParsed,
+      submission: submissionParsed,
+      language,
+      translations: translationsParsed,
+      submissionMethod: submissionMethod as SubmissionMethod | undefined,
+      appConfig: { config: { gitVersion: config.gitVersion } },
+    });
+    assertPdfFormData(pdfFormData);
 
     const applicationPdfBase64 = await applicationPdfService.createPdf({
       accessToken: pdfGeneratorToken,
@@ -79,15 +93,14 @@ const application: RequestHandler = async (req, res, next) => {
 
 const coverPageAndApplication: RequestHandler = async (req, res, next) => {
   try {
-    const { form, submission, language, enhetNummer, translations, pdfFormData, submissionMethod } = req.body;
+    const { form, formPath, submission, language, enhetNummer, submissionMethod } = req.body;
     if (!submission) {
       throw new Error('Missing submission data to generate PDF');
     }
-    assertPdfFormData(pdfFormData);
     const formParsed = JSON.parse(form);
     const submissionParsed = JSON.parse(submission);
-    const translationsParsed = JSON.parse(translations);
-    const translate = createTranslate(translationsParsed, language);
+    const translations = await getTranslationsForForm(formParsed.path ?? formPath, language);
+    const translate = createTranslate(translations, language);
     const frontPageGeneratorToken = req.headers.AzureAccessToken as string;
     const pdfGeneratorToken = req.headers.PdfAccessToken as string;
     const mergePdfToken = req.headers.MergePdfToken as string;
@@ -103,6 +116,17 @@ const coverPageAndApplication: RequestHandler = async (req, res, next) => {
     if (!mergePdfToken) {
       throw new Error('MergePDF generator token is missing. Unable to merge front page and application PDFs');
     }
+
+    const pdfFormData = renderApplicationPdf({
+      form: formParsed,
+      submission: submissionParsed,
+      language,
+      translations,
+      submissionMethod: submissionMethod as SubmissionMethod | undefined,
+      appConfig: { config: { gitVersion: config.gitVersion } },
+    });
+    assertPdfFormData(pdfFormData);
+
     const recipient = await recipientService.getRecipient({
       recipientId: formParsed?.properties?.mottaksadresseId,
     });

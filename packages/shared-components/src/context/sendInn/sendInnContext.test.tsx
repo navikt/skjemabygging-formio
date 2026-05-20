@@ -12,7 +12,10 @@ vi.mock('../../context/languages', async (importOriginal) => {
   const actual = await importOriginal();
   return {
     ...(actual as any),
-    useLanguages: () => ({ translate: (text) => text }),
+    useLanguages: () => ({
+      translate: (text) => text,
+      translationsForNavForm: { 'nb-NO': {} },
+    }),
   };
 });
 

@@ -243,19 +243,7 @@ describe('Mellomlagring', () => {
               const { submission: bodySubmission, ...bodyRest } = req.body;
               const { submission: fixtureSubmission, ...fixtureRest } = fixture;
               expect(bodySubmission.data).to.deep.eq(fixtureSubmission.data);
-              expect({
-                ...bodyRest,
-                pdfFormData: {
-                  ...bodyRest.pdfFormData,
-                  bunntekst: undefined, // ignore bunntekst since it contains timestamps
-                },
-              }).to.deep.eq({
-                ...fixtureRest,
-                pdfFormData: {
-                  ...bodyRest.pdfFormData,
-                  bunntekst: undefined,
-                },
-              });
+              expect(bodyRest).to.deep.eq(fixtureRest);
             });
           });
         });
