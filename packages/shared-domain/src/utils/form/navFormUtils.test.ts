@@ -4,7 +4,6 @@ import formWithContainer from './testdata/nav-form/conditional-container';
 import formWithCustomConditional from './testdata/nav-form/conditional-custom';
 import formWithCompositeCustomConditional from './testdata/nav-form/conditional-custom-composite';
 import formWithDatagridConditional from './testdata/nav-form/conditional-datagrid';
-import formWithJsonConditional from './testdata/nav-form/conditional-json';
 import formWithMultipleConditionalDependencies from './testdata/nav-form/conditional-multiple-dependencies';
 import formWithPanel from './testdata/nav-form/conditional-panel';
 import formWithSimpleConditional from './testdata/nav-form/conditional-simple';
@@ -191,57 +190,9 @@ describe('navFormUtils', () => {
       });
     });
 
-    describe('A form where one component has a conditional json statement', () => {
-      it('Returns empty array when component has no conditional', () => {
-        const actual = navFormUtils.findDependentComponents('eru3e0l', formWithJsonConditional);
-        expect(actual).toHaveLength(0);
-      });
-
-      it('Returns an array with the key of the component it has a conditional on', () => {
-        const actual = navFormUtils.findDependentComponents('ekoo75nf', formWithJsonConditional);
-        const expected = [expect.objectContaining({ key: 'oppgiYndlingsfarge' })];
-        expect(actual).toEqual(expect.arrayContaining(expected));
-        expect(actual).toHaveLength(expected.length);
-      });
-    });
-
-    function conditional({ show = null, when = null, eq = '', json = '' }) {
-      return { show, when, eq, json };
+    function conditional({ show = null, when = null, eq = '' }) {
+      return { show, when, eq };
     }
-
-    describe('A form with conditional json and partial overlapping component key names', () => {
-      const FRUKT_ID = '1';
-      const testformWithConditional = (conditional) => ({
-        components: [
-          { key: 'frukt', id: FRUKT_ID },
-          { key: 'nedfallsfrukt', id: '2' },
-          { key: 'fruktsaft', id: '3' },
-          {
-            key: 'oppsummering',
-            id: '4',
-            conditional,
-          },
-        ],
-      });
-
-      it('Returns exact match of component key', () => {
-        const form = testformWithConditional({ json: { '===': [{ var: 'data.frukt' }, 'ja'] } });
-        const actual = navFormUtils.findDependentComponents(FRUKT_ID, form);
-        const expected = [expect.objectContaining({ key: 'oppsummering' })];
-        expect(actual).toHaveLength(expected.length);
-        expect(actual).toEqual(expect.arrayContaining(expected));
-      });
-
-      it('Ignores partial hit where key in conditional ends with given key', () => {
-        const form = testformWithConditional({ json: { '===': [{ var: 'data.nedfallsfrukt' }, 'ja'] } });
-        expect(navFormUtils.findDependentComponents(FRUKT_ID, form)).toHaveLength(0);
-      });
-
-      it('Ignores partial hit where key in conditional starts with given key', () => {
-        const form = testformWithConditional({ json: { '===': [{ var: 'data.fruktsaft' }, 'ja'] } });
-        expect(navFormUtils.findDependentComponents(FRUKT_ID, form)).toHaveLength(0);
-      });
-    });
 
     describe('A form with a container containing a component with same key as component outside container', () => {
       const CONTAINER = { id: '1', key: 'mycontainer' };
@@ -640,6 +591,96 @@ describe('navFormUtils', () => {
           }),
         ]),
       );
+    });
+  });
+
+  describe('getActivePanelsFromForm', () => {
+    it('filters panels by their own conditional without needing nested evaluations', () => {
+      const form = {
+        components: [
+          {
+            id: 'panel-1',
+            key: 'panel1',
+            title: 'Panel 1',
+            type: 'panel',
+            components: [],
+          },
+          {
+            id: 'panel-2',
+            key: 'panel2',
+            title: 'Panel 2',
+            type: 'panel',
+            conditional: { show: true, when: 'showPanel2', eq: 'true' },
+            components: [
+              {
+                id: 'panel-2-field',
+                key: 'field2',
+                type: 'textfield',
+              },
+            ],
+          },
+        ],
+      };
+
+      expect(navFormUtils.getActivePanelsFromForm(form, { data: {} }).map((panel) => panel.key)).toEqual(['panel1']);
+      expect(
+        navFormUtils.getActivePanelsFromForm(form, { data: { showPanel2: true } }).map((panel) => panel.key),
+      ).toEqual(['panel1', 'panel2']);
+    });
+
+    it('keeps panels active when only nested child conditionals are hidden', () => {
+      const form = {
+        components: [
+          {
+            id: 'panel-1',
+            key: 'panel1',
+            title: 'Panel 1',
+            type: 'panel',
+            components: [
+              {
+                id: 'child-1',
+                key: 'child1',
+                type: 'textfield',
+                conditional: { show: true, when: 'showChild', eq: 'true' },
+              },
+            ],
+          },
+        ],
+      };
+
+      expect(navFormUtils.getActivePanelsFromForm(form, { data: {} }).map((panel) => panel.key)).toEqual(['panel1']);
+    });
+
+    it('keeps panels hidden while a dataFetcher-based panel conditional is unresolved', () => {
+      const form = {
+        components: [
+          {
+            id: 'panel-1',
+            key: 'panel1',
+            title: 'Panel 1',
+            type: 'panel',
+            components: [],
+          },
+          {
+            id: 'panel-2',
+            key: 'panel2',
+            title: 'Panel 2',
+            type: 'panel',
+            customConditional: "show = utils.dataFetcher('aktivitetsvelger', submission).success;",
+            components: [],
+          },
+        ],
+      };
+
+      expect(navFormUtils.getActivePanelsFromForm(form, { data: {} }).map((panel) => panel.key)).toEqual(['panel1']);
+      expect(
+        navFormUtils
+          .getActivePanelsFromForm(form, {
+            data: {},
+            metadata: { dataFetcher: { aktivitetsvelger: { data: [{ value: '1', label: 'One' }] } } },
+          })
+          .map((panel) => panel.key),
+      ).toEqual(['panel1', 'panel2']);
     });
   });
 

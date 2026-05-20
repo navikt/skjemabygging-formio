@@ -6,8 +6,7 @@
   "main": "dist/server.mjs",
   "type": "module",
   "files": [
-    "dist",
-    "fonts"
+    "dist"
   ],
   "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {
