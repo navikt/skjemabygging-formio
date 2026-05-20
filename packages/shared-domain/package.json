@@ -26,7 +26,7 @@
   "dependencies": {
     "@navikt/fnrvalidator": "^2.2.1",
     "formiojs": "4.20.0",
-    "i18next": "^25.10.9",
+    "i18next": "^26.2.0",
     "lodash": "^4.18.1",
     "luxon": "^3.7.2",
     "moment": "^2.30.1",
