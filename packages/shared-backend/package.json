@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "@navikt/skjemadigitalisering-shared-domain": "workspace:*",
-    "dompurify": "^3.4.3",
+    "dompurify": "^3.4.5",
     "express-correlation-id": "^3.0.1",
     "jsdom": "^28.1.0",
     "winston": "^3.18.3"
