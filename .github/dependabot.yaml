@@ -17,7 +17,7 @@ updates:
     versioning-strategy: increase
     open-pull-requests-limit: 10
     # For regular npm version updates, the target shape is one grouped minor/patch PR
-    # and one grouped major PR. GitHub Actions and security updates can still open separate PRs.
+    # and one grouped major PR. Security updates are also grouped separately below.
     groups:
       all-minor-patch:
         applies-to: 'version-updates'
@@ -28,6 +28,8 @@ updates:
         applies-to: 'version-updates'
         update-types:
           - 'major'
+      all-security:
+        applies-to: 'security-updates'
     ignore:
       - dependency-name: '@navikt/aksel'
       - dependency-name: '@navikt/aksel-icons'
