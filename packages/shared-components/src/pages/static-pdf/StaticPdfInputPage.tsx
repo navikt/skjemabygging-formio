@@ -1,4 +1,6 @@
-import { useEffect } from 'react';
+import { navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { useEffect, useMemo } from 'react';
+import { useSearchParams } from 'react-router';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import FormCountrySelect from './components/shared/address/FormCountrySelect';
@@ -12,11 +14,20 @@ import FormNationalIdentityNumber from './components/shared/identity/FormNationa
 import FormSurname from './components/shared/identity/FormSurname';
 import SelectAttachmentList from './components/shared/SelectAttachmentList';
 import StaticPdfIdentityType from './components/shared/StaticPdfIdentityType';
+import { filterStaticPdfAttachments, normalizeStaticPdfAttachmentCodeFilter } from './staticPdfAttachmentFilter';
 
 const StaticPdfInputPage = () => {
   const { form, setSubmission, submission } = useForm();
   const { enhetMaVelgesVedPapirInnsending } = form.properties;
   const { currentLanguage } = useLanguages();
+  const [searchParams] = useSearchParams();
+  const filterValue = searchParams.get('filter');
+  const filteredAttachments = useMemo(() => {
+    const attachments = navFormUtils
+      .flattenComponents(form.components)
+      .filter((component) => component.type === 'attachment');
+    return filterStaticPdfAttachments(attachments, normalizeStaticPdfAttachmentCodeFilter(filterValue));
+  }, [filterValue, form.components]);
 
   useEffect(() => {
     if (!submission) {
@@ -71,7 +82,7 @@ const StaticPdfInputPage = () => {
         )}
       </FormBox>
 
-      <SelectAttachmentList submissionPath="coverPage.attachments" />
+      <SelectAttachmentList attachments={filteredAttachments} submissionPath="coverPage.attachments" />
     </>
   );
 };
