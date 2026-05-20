@@ -1,6 +1,7 @@
 import {
   FormPropertiesType,
   PdfData,
+  ResponseError,
   signatureUtils,
   Submission,
   SubmissionMethod,
@@ -25,7 +26,7 @@ const PdfSignature = ({ properties, submission, submissionMethod, translate }: P
   if (submissionMethod === 'digitalnologin') {
     const personalId = submission?.attachments?.find((attachment) => attachment.attachmentId === 'personal-id');
     if (!personalId) {
-      throw Error('Finner ikke opplastet legitimasjon');
+      throw new ResponseError('INTERNAL_SERVER_ERROR', 'PdfSignature: Missing uploaded personal ID attachment');
     }
 
     return {
