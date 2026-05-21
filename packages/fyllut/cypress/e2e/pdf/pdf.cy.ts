@@ -5,13 +5,13 @@ const parseSubmission = (requestBody: { submission: unknown }) =>
   typeof requestBody.submission === 'string' ? JSON.parse(requestBody.submission) : requestBody.submission;
 
 const expectPdfRequestContract = (
-  request: { body: { form?: unknown; submission: unknown; pdfFormData?: unknown; submissionMethod?: unknown } },
+  request: { body: { formPath?: unknown; submission: unknown; pdfFormData?: unknown; submissionMethod?: unknown } },
   submissionMethod?: string,
   dataLength?: number,
 ) => {
   const submission = parseSubmission(request.body);
 
-  expect(request.body.form).to.exist;
+  expect(request.body.formPath).to.exist;
   expect(submission).to.exist;
   expect(request.body.pdfFormData).to.be.undefined;
 

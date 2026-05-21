@@ -1,13 +1,6 @@
 /**
  * Test functions for form components
  */
-import {
-  Component,
-  dateUtils,
-  formatUtils,
-  navFormUtils,
-  stringUtils,
-} from '@navikt/skjemadigitalisering-shared-domain';
 
 Cypress.Commands.add('withinComponent', (label, fn) => {
   return cy.findByLabelText(label).closest('.form-group').within(fn);
@@ -46,63 +39,18 @@ Cypress.Commands.add('clickErrorMessageMaxLength', (label) => {
 });
 
 Cypress.Commands.add('testDownloadPdf', () => {
-  const formatRadiopanelValue = (value: string, options: Array<{ label: string; value: string }>) =>
-    options.find((option) => option.value === value)?.label;
-  const formatMonthPickerValue = (value: string) => stringUtils.toPascalCase(dateUtils.toLongMonthFormat(value));
-
-  const formatValue = (value: any, component: Component) => {
-    switch (component.type) {
-      case 'radiopanel':
-        return formatRadiopanelValue(value, component.values);
-      case 'monthPicker':
-        return formatMonthPickerValue(value);
-      case 'iban':
-        return formatUtils.formatIBAN(value as string);
-      case 'bankAccount':
-        return formatUtils.formatAccountNumber(value as string);
-      case 'orgNr':
-        return formatUtils.formatOrganizationNumber(value as string);
-      case 'valutavelger':
-        return (value as { label: string; value: string })?.label;
-      case 'landvelger':
-        return (value as { label: string; value: string })?.label;
-      case 'navSelect':
-        return (value as { label: string; value: string })?.label;
-      case 'phoneNumber': {
-        if (typeof value === 'object' && value !== null) {
-          const { areaCode, number } = value as { areaCode: string; number: string };
-          return `${areaCode} ${number}`;
-        }
-        return value;
-      }
-      default:
-        return value;
-    }
-  };
-
   cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
-    const { pdfFormData, submission, form } = req.body;
+    const { submission, formPath } = req.body;
+    if (!submission) {
+      throw new Error('Missing submission in PDF download request');
+    }
+    if (!formPath) {
+      throw new Error('Missing formPath in PDF download request');
+    }
     const submissionData = JSON.parse(submission).data;
-    const components = JSON.parse(form).components;
-
-    Object.entries(submissionData).forEach(([key, submissionValue]) => {
-      const component = navFormUtils.findByKey(key, components);
-      if (!component) {
-        throw new Error(`Missing component definition for submission key: ${key}`);
-      }
-
-      if (!pdfFormData) {
-        // The backend now renders the PDF payload server-side, so the browser request no longer includes pdfFormData.
-        return;
-      }
-
-      const value = formatValue(submissionValue, component);
-      const expectedSnippet = `"label":"${component.label}","verdi":"${value}"`;
-      const pdfFormDataString = JSON.stringify(pdfFormData);
-      if (!pdfFormDataString.includes(expectedSnippet)) {
-        throw new Error(`Missing PDF snippet: ${expectedSnippet}`);
-      }
-    });
+    if (!submissionData || Object.keys(submissionData).length === 0) {
+      throw new Error('Submission data is empty');
+    }
   }).as('downloadPdf');
 
   cy.clickDownloadApplication();

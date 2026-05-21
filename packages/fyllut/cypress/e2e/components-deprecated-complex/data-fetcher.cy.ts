@@ -257,7 +257,7 @@ describe('Data fetcher', () => {
 
       it('submits activity selection with backend-rendered PDF contract', () => {
         cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
-          expect(req.body.form).to.exist;
+          expect(req.body.formPath).to.exist;
           expect(req.body.submission).to.exist;
           expect(req.body.translation).to.be.undefined;
           expect(req.body.submissionMethod).to.eq('digital');
