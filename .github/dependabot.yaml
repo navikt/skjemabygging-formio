@@ -30,6 +30,7 @@ updates:
           - 'major'
       all-security:
         applies-to: 'security-updates'
+        dependency-type: direct
         patterns:
           - '*'
     ignore:
