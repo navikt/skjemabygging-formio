@@ -70,8 +70,11 @@ describe('Fyllut backend :: submit application', () => {
         .post('/api/pdf/v3/opprett-pdf')
         .matchHeader('authorization', `Bearer ${tokenSetup.azureAccessToken}`)
         .reply(200, { content: encodedSoknadPdf }, { 'Content-Type': 'application/json' });
-      const globalTranslationsScope = nock(formsApiUrl).get('/v1/global-translations').reply(200, []);
-      const formTranslationsScope = nock(formsApiUrl).get('/v1/forms/nav123456/translations').reply(200, []);
+      const globalTranslationsScope = nock(formsApiUrl).get('/v1/global-translations').query(true).reply(200, []);
+      const formTranslationsScope = nock(formsApiUrl)
+        .get('/v1/forms/nav123456/translations')
+        .query(true)
+        .reply(200, []);
 
       let capturedRequestBody: SubmitApplicationRequest | undefined;
       const sendInnScope = nock(sendInnConfig.host)

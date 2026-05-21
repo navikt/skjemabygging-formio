@@ -155,8 +155,8 @@ describe('app', () => {
     const skjemabyggingproxyScope = nock(process.env.FAMILIE_PDF_GENERATOR_URL as string)
       .post('/api/pdf/v3/opprett-pdf')
       .reply(200, { content: encodedSoknadPdf }, { 'Content-Type': 'application/json' });
-    const globalTranslationsScope = nock(formsApiUrl).get('/v1/global-translations').reply(200, []);
-    const formTranslationsScope = nock(formsApiUrl).get('/v1/forms/nav123456/translations').reply(200, []);
+    const globalTranslationsScope = nock(formsApiUrl).get('/v1/global-translations').query(true).reply(200, []);
+    const formTranslationsScope = nock(formsApiUrl).get('/v1/forms/nav123456/translations').query(true).reply(200, []);
     const tokenxWellKnownScope = nock(extractHost(tokenxConfig?.wellKnownUrl))
       .get(extractPath(tokenxConfig?.wellKnownUrl))
       .reply(200, { token_endpoint: tokenxEndpoint });

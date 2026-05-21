@@ -39,8 +39,11 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
 
   const mockFormServiceAndTranslations = () => {
     const formScope = nock(formsApiUrl).get('/v1/forms/default-form').query(true).reply(200, mockForm);
-    const globalTranslationsScope = nock(formsApiUrl).get('/v1/global-translations').reply(200, []);
-    const formTranslationsScope = nock(formsApiUrl).get('/v1/forms/default-form/translations').reply(200, []);
+    const globalTranslationsScope = nock(formsApiUrl).get('/v1/global-translations').query(true).reply(200, []);
+    const formTranslationsScope = nock(formsApiUrl)
+      .get('/v1/forms/default-form/translations')
+      .query(true)
+      .reply(200, []);
     return { formScope, globalTranslationsScope, formTranslationsScope };
   };
 

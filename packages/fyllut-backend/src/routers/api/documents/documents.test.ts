@@ -35,8 +35,8 @@ describe('[endpoint] documents', () => {
     const recipientsMock = nock(formsApiUrl)
       .get('/v1/recipients/mottaksadresseId')
       .reply(200, { adresselinje1: 'Test' });
-    const globalTranslationsScope = nock(formsApiUrl).get('/v1/global-translations').reply(200, []);
-    const formTranslationsScope = nock(formsApiUrl).get('/v1/forms/testskjema/translations').reply(200, []);
+    const globalTranslationsScope = nock(formsApiUrl).get('/v1/global-translations').query(true).reply(200, []);
+    const formTranslationsScope = nock(formsApiUrl).get('/v1/forms/testskjema/translations').query(true).reply(200, []);
     const generateFileMock = nock(skjemabyggingProxyUrl!)
       .post('/foersteside')
       .reply(200, { foersteside: encodedForstesidedPdf });
@@ -89,8 +89,8 @@ describe('[endpoint] documents', () => {
     const recipientsMock = nock(formsApiUrl)
       .get('/v1/recipients/mottaksadresseId')
       .reply(200, { adresselinje1: 'Test' });
-    const globalTranslationsScope = nock(formsApiUrl).get('/v1/global-translations').reply(200, []);
-    const formTranslationsScope = nock(formsApiUrl).get('/v1/forms/testskjema/translations').reply(200, []);
+    const globalTranslationsScope = nock(formsApiUrl).get('/v1/global-translations').query(true).reply(200, []);
+    const formTranslationsScope = nock(formsApiUrl).get('/v1/forms/testskjema/translations').query(true).reply(200, []);
     const generateFileMock = nock(skjemabyggingProxyUrl!)
       .post('/foersteside')
       .reply(200, { foersteside: encodedForstesidedPdf });
