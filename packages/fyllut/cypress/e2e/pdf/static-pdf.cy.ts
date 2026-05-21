@@ -76,6 +76,26 @@ describe('Static PDF', () => {
     });
   });
 
+  it('should be possible to continue and download pdf without selecting attachments', () => {
+    visitStaticPdfPage();
+
+    cy.findByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).type('22015614475');
+    cy.findByRole('checkbox', { name: /Vedlegg 1/ }).should('exist');
+    cy.findByRole('checkbox', { name: /Vedlegg 2/ }).should('exist');
+
+    cy.findByRole('link', { name: /Fortsett/ }).click();
+    cy.findByRole('button', { name: /Last ned skjema/ }).click();
+
+    cy.wait('@download').then((interception) => {
+      expect(interception.request.body?.languageCode).to.eq('nb');
+      expect(interception.request.body?.attachments).to.be.undefined;
+      expect(interception.request.body?.user?.nationalIdentityNumber).to.eq('22015614475');
+
+      expect(interception.response.statusCode).to.eq(200);
+      expect(interception.response.body?.pdfBase64, 'PDF base64 exists').to.be.a('string');
+    });
+  });
+
   it('shows all attachments when filter is empty', () => {
     visitStaticPdfPage('?filter=');
 
