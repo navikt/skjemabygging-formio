@@ -1,3 +1,6 @@
+import fs from 'fs';
+import path from 'path';
+
 const filterKeys = (obj, excludeKeys) => {
   if (!obj || typeof obj !== 'object') return obj;
   const filtered = Array.isArray(obj) ? [...obj] : { ...obj };
@@ -93,6 +96,23 @@ export const compareBodyMiddleware = (expectedBody: any, excludeKeys: any = [], 
         mismatches: mismatches,
       });
       return;
+    }
+    onSuccess(req, res);
+  };
+};
+
+export const captureBodyMiddleware = (filename: string, onSuccess) => {
+  let counter = 0;
+  return async (req, res) => {
+    try {
+      const outputDir = '/tmp/captured-pdf';
+      fs.mkdirSync(outputDir, { recursive: true });
+      const baseName = filename.replace('.json', '');
+      const outputPath = path.join(outputDir, `${baseName}-${counter++}.json`);
+      fs.writeFileSync(outputPath, JSON.stringify(req.body, null, 2));
+      console.log(`[capture] Wrote request body to ${outputPath}`);
+    } catch (err: unknown) {
+      console.error(`[capture] ERROR: ${err}`);
     }
     onSuccess(req, res);
   };

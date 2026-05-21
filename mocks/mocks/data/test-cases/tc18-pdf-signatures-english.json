@@ -1,0 +1,104 @@
+{
+  "label": "Components",
+  "verdiliste": [
+    {
+      "label": "Introduction",
+      "verdiliste": [
+        {
+          "label": "I confirm that I will answer as accurately as I can.",
+          "verdi": "Yes"
+        }
+      ]
+    },
+    {
+      "label": "Your personal information",
+      "verdiliste": [
+        {
+          "label": "Norwegian national identification number or D number",
+          "verdi": "20905995783"
+        }
+      ]
+    },
+    {
+      "label": "Standard felter",
+      "verdiliste": [
+        {
+          "label": "<p>Alert suksess</p>",
+          "visningsVariant": "HTML"
+        },
+        {
+          "label": "<p>Alert error</p>",
+          "visningsVariant": "HTML"
+        },
+        {
+          "label": "<p>HTML Blokk</p>",
+          "visningsVariant": "HTML"
+        }
+      ]
+    },
+    {
+      "label": "Signature",
+      "visningsVariant": "HOLDSAMMEN",
+      "verdiliste": [
+        {
+          "label": "",
+          "verdi": ""
+        },
+        {
+          "label": "Eier",
+          "verdiliste": [
+            {
+              "label": "Viktig1",
+              "verdi": " "
+            },
+            {
+              "label": "Place and date",
+              "verdi": " "
+            },
+            {
+              "label": "Signature",
+              "verdi": " "
+            },
+            {
+              "label": "Name with capital letters",
+              "verdi": " "
+            }
+          ]
+        },
+        {
+          "label": "Deleier",
+          "verdiliste": [
+            {
+              "label": "Viktig2",
+              "verdi": " "
+            },
+            {
+              "label": "Place and date",
+              "verdi": " "
+            },
+            {
+              "label": "Signature",
+              "verdi": " "
+            },
+            {
+              "label": "Name with capital letters",
+              "verdi": " "
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "skjemanummer": "components",
+  "pdfConfig": {
+    "harInnholdsfortegnelse": false,
+    "språk": "en"
+  },
+  "bunntekst": {
+    "upperleft": "ID: 20905995783",
+    "lowerleft": "Form number: components",
+    "upperRight": null,
+    "upperMiddle": "Created: 21 May 2026, 16:38",
+    "lowerMiddle": "Version: local"
+  }
+}
