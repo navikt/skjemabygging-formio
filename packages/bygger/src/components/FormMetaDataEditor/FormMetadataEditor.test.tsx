@@ -127,7 +127,7 @@ describe('FormMetadataEditor', () => {
         const { rerender } = renderWithProvider(<FormMetadataEditor form={form} onChange={mockOnChange} />);
         expect(screen.queryByLabelText('Forklaring til innsending')).not.toBeNull();
 
-        const papirCheckboxes = screen.getAllByRole('checkbox', { name: /Papir/i });
+        const papirCheckboxes = screen.getAllByRole('checkbox', { name: /Send i posten/i });
         const papirInnsending = papirCheckboxes[0];
 
         await userEvent.click(papirInnsending);
@@ -156,7 +156,7 @@ describe('FormMetadataEditor', () => {
       };
       const { rerender } = renderWithProvider(<FormMetadataEditor form={form} onChange={mockOnChange} />);
       expect(screen.queryByLabelText('Forklaring til innsending')).not.toBeNull();
-      const papirCheckboxes = screen.getAllByRole('checkbox', { name: /Papir/i });
+      const papirCheckboxes = screen.getAllByRole('checkbox', { name: /Send i posten/i });
       const papirInnsending = papirCheckboxes[0];
 
       await userEvent.click(papirInnsending);
@@ -466,7 +466,7 @@ describe('FormMetadataEditor', () => {
 
           const checkboxGroup = screen.queryByRole('group', { name: LABEL_INNSENDING });
           expect(checkboxGroup).toBeInTheDocument();
-          expect(within(checkboxGroup!).getByRole('checkbox', { name: 'Papir' })).toBeChecked();
+          expect(within(checkboxGroup!).getByRole('checkbox', { name: 'Send i posten' })).toBeChecked();
           expect(within(checkboxGroup!).getByRole('checkbox', { name: 'Digital' })).toBeChecked();
         });
       });

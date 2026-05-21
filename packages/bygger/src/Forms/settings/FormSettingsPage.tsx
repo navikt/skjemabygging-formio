@@ -1,7 +1,7 @@
 import { Alert, Heading } from '@navikt/ds-react';
 import { useAppConfig, useModal } from '@navikt/skjemadigitalisering-shared-components';
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AppLayout } from '../../components/AppLayout';
 import { FormMetadataEditor } from '../../components/FormMetaDataEditor/FormMetadataEditor';
 import { isFormMetadataValid, validateFormMetadata } from '../../components/FormMetaDataEditor/utils/utils';
@@ -30,6 +30,19 @@ export function FormSettingsPage({ form }: FormSettingsPageProps) {
 
   const [errors, setErrors] = useState({});
   const { config } = useAppConfig();
+
+  // Auto-migrate legacy "ingen" forms: replace empty submissionTypes with explicit PAPER_NO_COVER_PAGE
+  useEffect(() => {
+    if (form.properties.submissionTypes.length === 0) {
+      changeForm({
+        ...form,
+        properties: {
+          ...form.properties,
+          submissionTypes: ['PAPER_NO_COVER_PAGE'],
+        },
+      });
+    }
+  }, [form.properties.submissionTypes.length, changeForm]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Set default properties if they are not set
   const setDefaultProperties = (form: Form) => {
