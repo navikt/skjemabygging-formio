@@ -33,7 +33,7 @@ export function FormSettingsPage({ form }: FormSettingsPageProps) {
 
   // Auto-migrate legacy "ingen" forms: replace empty submissionTypes with explicit PAPER_NO_COVER_PAGE
   useEffect(() => {
-    if (form.properties.submissionTypes.length === 0) {
+    if (!form.properties.submissionTypes || form.properties.submissionTypes.length === 0) {
       changeForm({
         ...form,
         properties: {
@@ -42,7 +42,7 @@ export function FormSettingsPage({ form }: FormSettingsPageProps) {
         },
       });
     }
-  }, [form.properties.submissionTypes.length, changeForm]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [form.properties, changeForm]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Set default properties if they are not set
   const setDefaultProperties = (form: Form) => {

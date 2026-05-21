@@ -40,7 +40,7 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
       {paperNoCoverPageWarning && (
         <Alert variant="warning" size="small" className="mb" data-testid="paper-no-cover-page-warning">
           Når man kombinerer ingen innsending til Nav med andre standard innsendingstyper er det viktig at lenken for
-          førstnevnte inneholde ?sub=papernocoverpage.
+          førstnevnte inneholder ?sub=papernocoverpage.
         </Alert>
       )}
 
@@ -100,6 +100,7 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
             label={<LabelWithDiff label="Forklaring til innsending" diff={!!diff.innsendingForklaring} />}
             value={form.properties.innsendingForklaring || ''}
             readOnly={isLockedForm}
+            description="Forklaringen vil stå ovenfor knapp for nedlasting av ferdig utfylt pdf og skal hjelpe brukere å forstå hva de skal gjøre med den nedlastede pdfen og eventuelle vedlegg."
             onChange={(event) =>
               onChange({
                 ...form,
