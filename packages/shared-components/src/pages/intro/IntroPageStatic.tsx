@@ -49,7 +49,7 @@ const IntroPageStatic = () => {
       };
     }
 
-    if (state === IntroPageState.NONE) {
+    if (state === IntroPageState.PAPER_NO_COVER_PAGE) {
       return {
         descriptionBold: TEXTS.statiske.introPage.noSubmissionDescriptionBold,
         description: TEXTS.statiske.introPage.noSubmissionDescription,
