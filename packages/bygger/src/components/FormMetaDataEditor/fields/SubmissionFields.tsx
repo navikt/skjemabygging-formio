@@ -1,4 +1,4 @@
-import { Checkbox, Textarea, TextField } from '@navikt/ds-react';
+import { Alert, Checkbox, Textarea, TextField } from '@navikt/ds-react';
 import { Form, FormSettingsDiff, submissionTypesUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import LabelWithDiff from '../LabelWithDiff';
 import { FormMetadataError, UpdateFormFunction } from '../utils/utils';
@@ -14,6 +14,9 @@ export interface SubmissionFieldsProps {
 const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProps) => {
   const { submissionTypes, subsequentSubmissionTypes, ettersendelsesfrist, hideUserTypes } = form.properties;
   const isLockedForm = !!form.lock;
+  const paperNoCoverPageWarning =
+    submissionTypes?.includes('PAPER_NO_COVER_PAGE') &&
+    submissionTypes.some((t) => t === 'PAPER' || t === 'DIGITAL' || t === 'DIGITAL_NO_LOGIN');
 
   return (
     <>
@@ -34,13 +37,20 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
         }
       />
 
+      {paperNoCoverPageWarning && (
+        <Alert variant="warning" size="small" className="mb" data-testid="paper-no-cover-page-warning">
+          Når man kombinerer ingen innsending til Nav med andre standard innsendingstyper er det viktig at lenken for
+          førstnevnte inneholder ?sub=papernocoverpage.
+        </Alert>
+      )}
+
       <SubmissionTypeCheckbox
         name="form-subsequentSubmissionTypes"
         label={<LabelWithDiff label="Ettersending" diff={!!diff.subsequentSubmissionTypes} />}
         value={subsequentSubmissionTypes}
         error={errors?.subsequentSubmissionTypes}
         readonly={isLockedForm}
-        hideTypes={['DIGITAL_NO_LOGIN', 'STATIC_PDF']}
+        hideTypes={['DIGITAL_NO_LOGIN', 'STATIC_PDF', 'PAPER_NO_COVER_PAGE']}
         onChange={(data) =>
           onChange({
             ...form,
@@ -52,7 +62,7 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
         }
       />
 
-      {!submissionTypesUtils.isNoneSubmission(subsequentSubmissionTypes) && (
+      {!submissionTypesUtils.isPaperNoCoverPageSubmission(subsequentSubmissionTypes) && (
         <TextField
           onWheel={(e) => e.currentTarget.blur()} // disable scroll wheel on number input
           className="mb"
@@ -71,7 +81,7 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
         />
       )}
 
-      {submissionTypesUtils.isNoneSubmission(submissionTypes) && (
+      {submissionTypesUtils.isPaperNoCoverPageSubmission(submissionTypes) && (
         <>
           <TextField
             className="mb"
@@ -90,6 +100,7 @@ const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProp
             label={<LabelWithDiff label="Forklaring til innsending" diff={!!diff.innsendingForklaring} />}
             value={form.properties.innsendingForklaring || ''}
             readOnly={isLockedForm}
+            description="Forklaringen vil stå ovenfor knapp for nedlasting av ferdig utfylt pdf og skal hjelpe brukere å forstå hva de skal gjøre med den nedlastede pdfen og eventuelle vedlegg."
             onChange={(event) =>
               onChange({
                 ...form,

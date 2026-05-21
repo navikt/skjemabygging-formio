@@ -2,22 +2,22 @@
 name: auth-agent
 description: Azure AD, TokenX, ID-porten, Maskinporten og JWT-validering for Nav-apper
 tools:
-  - execute
-  - read
-  - edit
-  - search
-  - web
-  - todo
-  - ms-vscode.vscode-websearchforcopilot/websearch
-  - io.github.navikt/github-mcp/get_file_contents
-  - io.github.navikt/github-mcp/search_code
-  - io.github.navikt/github-mcp/search_repositories
-  - io.github.navikt/github-mcp/list_commits
-  - io.github.navikt/github-mcp/issue_read
-  - io.github.navikt/github-mcp/list_issues
-  - io.github.navikt/github-mcp/search_issues
-  - io.github.navikt/github-mcp/pull_request_read
-  - io.github.navikt/github-mcp/search_pull_requests
+    - execute
+    - read
+    - edit
+    - search
+    - web
+    - todo
+    - ms-vscode.vscode-websearchforcopilot/websearch
+    - io.github.navikt/github-mcp/get_file_contents
+    - io.github.navikt/github-mcp/search_code
+    - io.github.navikt/github-mcp/search_repositories
+    - io.github.navikt/github-mcp/list_commits
+    - io.github.navikt/github-mcp/issue_read
+    - io.github.navikt/github-mcp/list_issues
+    - io.github.navikt/github-mcp/search_issues
+    - io.github.navikt/github-mcp/pull_request_read
+    - io.github.navikt/github-mcp/search_pull_requests
 ---
 
 # Authentication Agent
@@ -75,9 +75,9 @@ curl -s "$AZURE_OPENID_CONFIG_JWKS_URI" | jq '.keys | length'
 
 ```yaml
 azure:
-  application:
-    enabled: true
-    tenant: nav.no
+    application:
+        enabled: true
+        tenant: nav.no
 ```
 
 **Kotlin/Ktor Implementation**:
@@ -111,27 +111,27 @@ routing {
 **TypeScript/Next.js with `@navikt/oasis`**:
 
 ```typescript
-import { validateAzureToken } from "@navikt/oasis";
+import { validateAzureToken } from '@navikt/oasis';
 
 export async function GET(request: Request) {
-  const token = getToken(request);
-  if (!token) {
-    return new Response("Unauthorized", { status: 401 });
-  }
+    const token = getToken(request);
+    if (!token) {
+        return new Response('Unauthorized', { status: 401 });
+    }
 
-  const validation = await validateAzureToken(token);
-  if (!validation.ok) {
-    return new Response("Forbidden", { status: 403 });
-  }
+    const validation = await validateAzureToken(token);
+    if (!validation.ok) {
+        return new Response('Forbidden', { status: 403 });
+    }
 
-  // Token is valid — access claims via validation.payload
-  const userId = validation.payload.sub;
-  return Response.json({ userId });
+    // Token is valid — access claims via validation.payload
+    const userId = validation.payload.sub;
+    return Response.json({ userId });
 }
 
 function getToken(request: Request): string | null {
-  const auth = request.headers.get("Authorization");
-  return auth?.replace("Bearer ", "") ?? null;
+    const auth = request.headers.get('Authorization');
+    return auth?.replace('Bearer ', '') ?? null;
 }
 ```
 
@@ -151,17 +151,17 @@ function getToken(request: Request): string | null {
 
 ```yaml
 tokenx:
-  enabled: true
+    enabled: true
 
 accessPolicy:
-  inbound:
-    rules:
-      - application: calling-service
-        namespace: team-calling
-  outbound:
-    rules:
-      - application: downstream-service
-        namespace: team-downstream
+    inbound:
+        rules:
+            - application: calling-service
+              namespace: team-calling
+    outbound:
+        rules:
+            - application: downstream-service
+              namespace: team-downstream
 ```
 
 **Token Exchange**:
@@ -192,31 +192,32 @@ suspend fun exchangeToken(token: String, targetApp: String): String {
 **TypeScript/Next.js with `@navikt/oasis`**:
 
 ```typescript
-import { requestOboToken, getToken } from "@navikt/oasis";
+import { requestOboToken, getToken } from '@navikt/oasis';
 
 export async function GET(request: Request) {
-  const token = getToken(request);
-  if (!token) {
-    return new Response("Unauthorized", { status: 401 });
-  }
+    const token = getToken(request);
+    if (!token) {
+        return new Response('Unauthorized', { status: 401 });
+    }
 
-  // TokenX audience format: "cluster:namespace:app-name"
-  const obo = await requestOboToken(token, "dev-gcp:team-namespace:downstream-service");
-  if (!obo.ok) {
-    return new Response("Token exchange failed", { status: 403 });
-  }
+    // TokenX audience format: "cluster:namespace:app-name"
+    const obo = await requestOboToken(token, 'dev-gcp:team-namespace:downstream-service');
+    if (!obo.ok) {
+        return new Response('Token exchange failed', { status: 403 });
+    }
 
-  // Use obo.token to call downstream service
-  const response = await fetch("http://downstream-service/api/data", {
-    headers: { Authorization: `Bearer ${obo.token}` },
-  });
+    // Use obo.token to call downstream service
+    const response = await fetch('http://downstream-service/api/data', {
+        headers: { Authorization: `Bearer ${obo.token}` },
+    });
 
-  return Response.json(await response.json());
+    return Response.json(await response.json());
 }
 ```
 
 > **Note**: `@navikt/oasis` auto-caches OBO tokens. Azure AD audience uses different format: `"api://dev-gcp.namespace.app-name/.default"`
-```
+
+````
 
 **Environment Variables** (auto-injected):
 
@@ -236,7 +237,7 @@ idporten:
   sidecar:
     enabled: true
     level: Level4 # or Level3
-```
+````
 
 **Usage**:
 
@@ -252,10 +253,10 @@ idporten:
 
 ```yaml
 maskinporten:
-  enabled: true
-  scopes:
-    consumes:
-      - name: "nav:example/scope"
+    enabled: true
+    scopes:
+        consumes:
+            - name: 'nav:example/scope'
 ```
 
 ## JWT Validation Pattern
@@ -309,18 +310,18 @@ install(Authentication) {
 **TypeScript/Next.js with `@navikt/oasis`**:
 
 ```typescript
-import { validateToken, parseAzureUserToken } from "@navikt/oasis";
+import { validateToken, parseAzureUserToken } from '@navikt/oasis';
 
 // Simple validation (any issuer configured in Nais)
 const validation = await validateToken(token);
 if (!validation.ok) {
-  return new Response("Invalid token", { status: 401 });
+    return new Response('Invalid token', { status: 401 });
 }
 
 // Azure-specific validation with user info parsing
 const azure = await parseAzureUserToken(token);
 if (!azure.ok) {
-  return new Response("Invalid Azure token", { status: 401 });
+    return new Response('Invalid Azure token', { status: 401 });
 }
 
 const { name, NAVident, preferred_username } = azure;
@@ -411,40 +412,40 @@ class AuthenticationTest {
 ### Testing with Vitest (TypeScript)
 
 ```typescript
-import { vi, describe, it, expect, beforeEach } from "vitest";
-import { validateAzureToken, requestOboToken } from "@navikt/oasis";
+import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { validateAzureToken, requestOboToken } from '@navikt/oasis';
 
-vi.mock("@navikt/oasis", () => ({
-  validateAzureToken: vi.fn(),
-  requestOboToken: vi.fn(),
-  getToken: vi.fn(),
+vi.mock('@navikt/oasis', () => ({
+    validateAzureToken: vi.fn(),
+    requestOboToken: vi.fn(),
+    getToken: vi.fn(),
 }));
 
-describe("auth middleware", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
-  it("should accept valid Azure token", async () => {
-    vi.mocked(validateAzureToken).mockResolvedValue({
-      ok: true,
-      payload: { sub: "user-123", aud: "client-id" },
+describe('auth middleware', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
     });
 
-    const response = await GET(mockRequest("valid-token"));
-    expect(response.status).toBe(200);
-  });
+    it('should accept valid Azure token', async () => {
+        vi.mocked(validateAzureToken).mockResolvedValue({
+            ok: true,
+            payload: { sub: 'user-123', aud: 'client-id' },
+        });
 
-  it("should reject invalid token", async () => {
-    vi.mocked(validateAzureToken).mockResolvedValue({
-      ok: false,
-      error: new Error("Invalid signature"),
-      errorType: "token validation failed",
+        const response = await GET(mockRequest('valid-token'));
+        expect(response.status).toBe(200);
     });
 
-    const response = await GET(mockRequest("invalid-token"));
-    expect(response.status).toBe(403);
-  });
+    it('should reject invalid token', async () => {
+        vi.mocked(validateAzureToken).mockResolvedValue({
+            ok: false,
+            error: new Error('Invalid signature'),
+            errorType: 'token validation failed',
+        });
+
+        const response = await GET(mockRequest('invalid-token'));
+        expect(response.status).toBe(403);
+    });
 });
 ```
 
@@ -479,11 +480,11 @@ Reference: [sikkerhet.nav.no — Golden Path](https://sikkerhet.nav.no/docs/gold
 ## Security Best Practices
 
 1. **Always validate JWT**:
-   - Issuer
-   - Audience
-   - Expiration
-   - Signature
-   - **`azp` claim for M2M** (against `AZURE_APP_PRE_AUTHORIZED_APPS`)
+    - Issuer
+    - Audience
+    - Expiration
+    - Signature
+    - **`azp` claim for M2M** (against `AZURE_APP_PRE_AUTHORIZED_APPS`)
 
 2. **Cross-check auth vs accessPolicy**: Auth code and `.nais/` `accessPolicy.inbound.rules` should match — dead code or missing rules indicate drift
 

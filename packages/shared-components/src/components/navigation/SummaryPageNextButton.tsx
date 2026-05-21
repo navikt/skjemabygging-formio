@@ -56,7 +56,10 @@ export function SummaryPageNextButton({
       return;
     }
 
-    if (submissionTypesUtils.isNoneSubmission(submissionTypes)) {
+    if (
+      (!submissionMethod || submissionMethod == 'papernocoverpage') &&
+      submissionTypesUtils.isPaperNoCoverPageSubmission(submissionTypes)
+    ) {
       navigate({ pathname: '../ingen-innsending', search });
       return;
     }
