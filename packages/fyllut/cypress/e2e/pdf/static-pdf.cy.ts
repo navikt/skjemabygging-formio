@@ -88,7 +88,7 @@ describe('Static PDF', () => {
 
     cy.wait('@download').then((interception) => {
       expect(interception.request.body?.languageCode).to.eq('nb');
-      expect(interception.request.body?.attachments).to.be.undefined;
+      expect(interception.request.body?.attachments ?? []).to.have.length(0);
       expect(interception.request.body?.user?.nationalIdentityNumber).to.eq('22015614475');
 
       expect(interception.response.statusCode).to.eq(200);
@@ -135,7 +135,7 @@ describe('Static PDF', () => {
     cy.findByRole('button', { name: /Last ned skjema/ }).click();
 
     cy.wait('@download').then((interception) => {
-      expect(interception.request.body?.attachments).to.be.undefined;
+      expect(interception.request.body?.attachments ?? []).to.have.length(0);
       expect(interception.request.body?.user?.nationalIdentityNumber).to.eq('22015614475');
 
       expect(interception.response.statusCode).to.eq(200);

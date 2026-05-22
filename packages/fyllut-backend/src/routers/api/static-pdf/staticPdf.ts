@@ -35,11 +35,11 @@ const staticPdf = {
   downloadPdf: async (req: Request, res: Response, next: NextFunction) => {
     const formPath = requestUtil.getStringParam(req, 'formPath')!;
     const languageCode = req.params.languageCode as TranslationLang;
-    const coverPageData = req.body as CoverPageDownloadType;
+    const coverPageData = req.body as CoverPageDownloadType | undefined;
     const coverPageToken = req.headers.AzureAccessToken as string;
     const mergePdfToken = req.headers.MergePdfToken as string;
 
-    if (!coverPageData) {
+    if (!coverPageData || typeof coverPageData !== 'object' || Array.isArray(coverPageData)) {
       throw new ResponseError('BAD_REQUEST', 'Missing cover page data in request body');
     }
 
@@ -54,7 +54,7 @@ const staticPdf = {
       });
 
       const translate = await translationService.createTranslate({ baseUrl: formsApiUrl, formPath, languageCode });
-      const selectedAttachmentKeys = coverPageData.attachments ?? [];
+      const selectedAttachmentKeys = Array.isArray(coverPageData.attachments) ? coverPageData.attachments : [];
       const attachmentComponents = navFormUtils
         .flattenComponents(form.components)
         .filter((component) => component.type === 'attachment' && selectedAttachmentKeys.includes(component.key));
