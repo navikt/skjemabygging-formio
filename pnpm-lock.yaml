@@ -356,13 +356,13 @@ importers:
         version: link:../shared-backend
       '@navikt/skjemadigitalisering-shared-domain':
         specifier: 1.0.0
-        version: link:../shared-domain
+        version: file:packages/shared-domain(typescript@5.9.3)
       cors:
         specifier: ^2.8.6
         version: 2.8.6
       dotenv:
         specifier: ^17.2.3
-        version: 17.3.1
+        version: 17.4.2
       express:
         specifier: ^5.2.1
         version: 5.2.1
@@ -393,13 +393,13 @@ importers:
         version: 4.1.8
       nock:
         specifier: ^14.0.10
-        version: 14.0.11
+        version: 14.0.15
       supertest:
         specifier: ^7.2.2
         version: 7.2.2
       vite-plugin-node:
         specifier: ^7.0.0
-        version: 7.0.0(vite@7.3.1(@types/node@24.12.0)(terser@5.46.1)(yaml@2.8.3))
+        version: 7.0.0(vite@7.3.3(@types/node@24.12.0)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.8.3))
 
   packages/fyllut:
     dependencies:
