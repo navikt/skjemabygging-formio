@@ -16,7 +16,7 @@ import tc17 from '../data/test-cases/tc17-pdf-signature-old-default.json';
 import tc18 from '../data/test-cases/tc18-pdf-signatures-english.json';
 import tc19 from '../data/test-cases/tc19-pdf-attachment-with-comment.json';
 import tc20 from '../data/test-cases/tc20-pdf-data-fetcher-activity.json';
-import { captureBodyMiddleware, compareBodyMiddleware } from '../utils/testCaseUtils';
+import { compareBodyMiddleware } from '../utils/testCaseUtils';
 
 export default [
   {
@@ -226,17 +226,6 @@ export default [
         type: 'middleware',
         options: {
           middleware: compareBodyMiddleware(tc20, ['bunntekst.upperMiddle'], (_, res) => {
-            res.status(200);
-            res.contentType('application/json; charset=UTF-8');
-            res.send({ content: 'pdf' });
-          }),
-        },
-      },
-      {
-        id: 'capture',
-        type: 'middleware',
-        options: {
-          middleware: captureBodyMiddleware('captured-pdf-body.json', (_, res) => {
             res.status(200);
             res.contentType('application/json; charset=UTF-8');
             res.send({ content: 'pdf' });

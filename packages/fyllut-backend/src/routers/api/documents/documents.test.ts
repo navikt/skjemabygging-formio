@@ -18,7 +18,7 @@ describe('[endpoint] documents', () => {
     title: formTitle,
     path: 'testskjema',
     components: [],
-    properties: { mottaksadresseId: 'mottaksadresseId', path: '12345', skjemanummer: 'NAV 12.34-56' },
+    properties: { mottaksadresseId: 'mottaksadresseId', skjemanummer: 'NAV 12.34-56' },
   };
 
   it('Create front page and application', async () => {
