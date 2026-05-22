@@ -5,7 +5,7 @@ import {
   SubmissionMethod,
   TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { applicationService, sharedFormService, translationService } from '../../../../services';
+import { applicationService, formService, translationService } from '../../../../services';
 import { LogMetadata } from '../../../../types/log';
 
 export const generatePdfAndSubmit = async (
@@ -21,7 +21,7 @@ export const generatePdfAndSubmit = async (
     submissionMethod?: SubmissionMethod;
   };
 
-  const form = await sharedFormService.getForm({
+  const form = await formService.getForm({
     formPath,
     select: ['skjemanummer', 'title', 'path', 'properties', 'components', 'revision'],
   });

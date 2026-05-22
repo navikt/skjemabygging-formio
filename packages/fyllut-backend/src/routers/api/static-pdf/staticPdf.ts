@@ -9,8 +9,8 @@ import { NextFunction, Request, Response } from 'express';
 import { logger } from '../../../logger';
 import {
   coverPageService,
+  formService,
   mergeFileService,
-  sharedFormService,
   staticPdfService,
   translationService,
 } from '../../../services';
@@ -40,7 +40,7 @@ const staticPdf = {
     }
 
     try {
-      const form = await sharedFormService.getForm({
+      const form = await formService.getForm({
         formPath,
         select: ['skjemanummer', 'title', 'components', 'properties'],
       });

@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 import fetch from 'node-fetch';
 import { logger } from '../../logger';
 import { getIdportenPid, getTokenxAccessToken } from '../../security/tokenHelper';
-import { applicationPdfService, sharedFormService, translationService } from '../../services';
+import { applicationPdfService, formService, translationService } from '../../services';
 import { LogMetadata } from '../../types/log';
 import { base64Decode } from '../../utils/base64';
 import { responseToError } from '../../utils/errorHandling';
@@ -37,7 +37,7 @@ const sendInnUtfyltSoknad = {
         return;
       }
 
-      const form = await sharedFormService.getForm({
+      const form = await formService.getForm({
         formPath,
         select: ['skjemanummer', 'title', 'path', 'properties', 'components'],
       });

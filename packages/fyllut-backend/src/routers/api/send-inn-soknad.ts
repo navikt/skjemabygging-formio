@@ -4,7 +4,7 @@ import fetch from 'node-fetch';
 import { config } from '../../config/config';
 import { logger } from '../../logger';
 import { getIdportenPid, getTokenxAccessToken } from '../../security/tokenHelper';
-import { sharedFormService, translationService } from '../../services';
+import { formService, translationService } from '../../services';
 import { base64Decode } from '../../utils/base64';
 import { responseToError } from '../../utils/errorHandling';
 import { getFyllutUrl } from '../../utils/url';
@@ -87,7 +87,7 @@ const sendInnSoknad = {
       const forceMellomlagring = req.query.forceMellomlagring as string | undefined;
 
       const { formPath } = req.body;
-      const form = await sharedFormService.getForm({
+      const form = await formService.getForm({
         formPath,
         select: ['skjemanummer', 'title', 'path', 'properties', 'components'],
       });
@@ -139,7 +139,7 @@ const sendInnSoknad = {
         return;
       }
 
-      const form = await sharedFormService.getForm({
+      const form = await formService.getForm({
         formPath,
         select: ['skjemanummer', 'title', 'path', 'properties', 'components'],
       });

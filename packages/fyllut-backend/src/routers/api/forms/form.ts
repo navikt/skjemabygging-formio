@@ -10,7 +10,7 @@ import {
   translationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { Request, Response } from 'express';
-import { formService, translationsService } from '../../../services';
+import { oldFormService, translationsService } from '../../../services';
 
 type TranslateFunction = (text: string, textReplacements?: I18nTranslationReplacements) => string;
 
@@ -20,7 +20,7 @@ const form = {
     const type = req.query.type as string | undefined;
     const lang = req.query.lang as string | undefined;
     const select = req.query.select as string | undefined;
-    const form = await formService.loadForm(formPath, select);
+    const form = await oldFormService.loadForm(formPath, select);
 
     if (!form || !form.properties) {
       return res.sendStatus(404);

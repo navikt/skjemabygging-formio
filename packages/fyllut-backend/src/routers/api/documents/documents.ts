@@ -7,9 +7,9 @@ import {
   appMetrics,
   applicationPdfService,
   coverPageService,
+  formService,
   mergeFileService,
   recipientService,
-  sharedFormService,
   translationService,
 } from '../../../services';
 import { base64Decode } from '../../../utils/base64';
@@ -42,7 +42,7 @@ const application: RequestHandler = async (req, res, next) => {
     if (!submission) {
       throw new Error('Missing submission data to generate PDF');
     }
-    const form = await sharedFormService.getForm({
+    const form = await formService.getForm({
       formPath,
       select: ['skjemanummer', 'title', 'path', 'properties', 'components'],
     });
@@ -89,7 +89,7 @@ const coverPageAndApplication: RequestHandler = async (req, res, next) => {
     if (!submission) {
       throw new Error('Missing submission data to generate PDF');
     }
-    const form = await sharedFormService.getForm({
+    const form = await formService.getForm({
       formPath,
       select: ['skjemanummer', 'title', 'path', 'properties', 'components'],
     });

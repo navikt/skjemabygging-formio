@@ -35,13 +35,13 @@ const getAttachment = (navId: string, form: NavFormType): Attachment | undefined
 };
 
 // TODO getAllAttachments should return Component[], not Attachment[]
-const getAllAttachments = (form: NavFormType, submission: Submission): Attachment[] => {
-  const formAsForm = formioFormsApiUtils.mapNavFormToForm(form);
+const getAllAttachments = (navForm: NavFormType, submission: Submission): Attachment[] => {
+  const form = formioFormsApiUtils.mapNavFormToForm(navForm);
   return navFormUtils
     .flattenComponents(form.components)
     .filter((component) => isAttachment(component) || isOtherDocumentation(component))
     .map(sanitize)
-    .filter((comp) => checkCondition(comp, undefined, submission?.data, formAsForm, undefined, submission))
+    .filter((comp) => checkCondition(comp, undefined, submission?.data, form, undefined, submission))
     .map((comp) => {
       return {
         ...comp,

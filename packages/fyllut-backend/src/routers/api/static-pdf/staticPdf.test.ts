@@ -1,7 +1,7 @@
 import {
   coverPageService,
+  formService,
   mergeFileService,
-  sharedFormService,
   staticPdfService,
   translationService,
 } from '../../../services';
@@ -42,7 +42,7 @@ describe('[endpoint] staticPdf', () => {
   });
 
   it('adds p suffix to the first form number token before downloading cover page', async () => {
-    vi.mocked(sharedFormService.getForm).mockResolvedValue({
+    vi.mocked(formService.getForm).mockResolvedValue({
       skjemanummer: 'NAV 12.34-56',
       path: 'nav123456',
       title: 'Test form',
@@ -88,7 +88,7 @@ describe('[endpoint] staticPdf', () => {
   });
 
   it('uses attachment labels instead of attachment keys on the cover page for static pdfs', async () => {
-    vi.mocked(sharedFormService.getForm).mockResolvedValue({
+    vi.mocked(formService.getForm).mockResolvedValue({
       skjemanummer: 'NAV 12.34-56',
       path: 'nav123456',
       title: 'Test form',
