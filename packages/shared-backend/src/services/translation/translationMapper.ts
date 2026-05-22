@@ -2,14 +2,9 @@ import {
   FormsApiTranslation,
   FormsApiTranslationMap,
   I18nTranslations,
+  localizationUtils,
   TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
-
-const langMapping: Record<string, 'nb' | 'nn' | 'en'> = {
-  'nb-NO': 'nb',
-  'nn-NO': 'nn',
-  en: 'en',
-};
 
 const getGlobalTranslationFilename = (lang: TranslationLang): string => {
   switch (lang) {
@@ -38,7 +33,7 @@ const convertI18nTranslationsToFormsApiTranslationMap = (
 ): FormsApiTranslationMap => {
   const result: FormsApiTranslationMap = {};
   for (const [lang, translations] of Object.entries(i18nTranslations)) {
-    const mappedLang = langMapping[lang] ?? lang;
+    const mappedLang = localizationUtils.getLanguageCodeAsIso639_1(lang);
     if (mappedLang !== 'nb' && mappedLang !== 'nn' && mappedLang !== 'en') {
       continue;
     }
@@ -56,5 +51,4 @@ export {
   convertI18nTranslationsToFormsApiTranslationMap,
   convertToFormsApiTranslationMap,
   getGlobalTranslationFilename,
-  langMapping,
 };
