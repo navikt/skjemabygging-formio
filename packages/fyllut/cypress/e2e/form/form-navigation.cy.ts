@@ -1,5 +1,38 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
+function fillPaperNoCoverPageToSummary(fieldName: string | RegExp = 'Tekstfelt', value = 'test') {
+  cy.clickIntroPageConfirmation();
+  cy.clickStart();
+  cy.findByRole('textbox', { name: fieldName }).type(value);
+  cy.clickNextStep();
+  cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
+  cy.findByLabelText('Vedlegg 1')
+    .should('exist')
+    .within(() => {
+      cy.findByRole('radio', {
+        name: RegExp(`${TEXTS.statiske.attachment.uploadLater}|${TEXTS.statiske.attachment.ettersender}`),
+      })
+        .should('exist')
+        .check();
+    });
+  cy.clickNextStep();
+  cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
+}
+
+function assertNoCoverPageSubmissionFlow(formPath: string, fieldName?: string | RegExp, value?: string) {
+  fillPaperNoCoverPageToSummary(fieldName, value);
+  cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions }).click();
+  cy.url().should('include', `/${formPath}/ingen-innsending`);
+  cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).should('exist');
+}
+
+function assertPaperSubmissionFlow(formPath: string, fieldName?: string | RegExp, value?: string) {
+  fillPaperNoCoverPageToSummary(fieldName, value);
+  cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions }).click();
+  cy.url().should('include', `/${formPath}/send-i-posten`);
+  cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).should('exist');
+}
+
 describe('Form navigation', () => {
   before(() => {
     cy.configMocksServer();
@@ -540,43 +573,103 @@ describe('Form navigation', () => {
     });
   });
 
-  describe('Type: None', () => {
-    beforeEach(() => {
-      cy.intercept('POST', '/fyllut/api/documents/application').as('downloadPdf');
-      cy.visit('/fyllut/stnone');
-      cy.defaultWaits();
+  describe('Type: Paper, no cover page', () => {
+    describe('Legacy None flow (empty submissionTypes array)', () => {
+      beforeEach(() => {
+        cy.intercept('POST', '/fyllut/api/documents/application').as('downloadPdf');
+        cy.visit('/fyllut/stnone');
+        cy.defaultWaits();
+      });
+
+      it('Normal legacy flow', () => {
+        cy.findByRole('heading', { level: 2, name: 'Introduksjon' }).should('exist');
+        cy.url().should('include', '/fyllut/stnone');
+        cy.findByRole('link', { name: 'Neste steg' }).click();
+
+        cy.findByRole('heading', { level: 2, name: 'Dine opplysninger' }).should('exist');
+        cy.url().should('include', '/fyllut/stnone/dineOpplysninger');
+        cy.findByRole('textbox', { name: 'Tekstfelt' }).type('Test');
+        cy.findByRole('link', { name: 'Neste steg' }).click();
+
+        cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
+        cy.url().should('include', '/fyllut/stnone/vedlegg');
+        cy.findByRole('group', { name: /Nav skjema test/ }).within(() =>
+          cy.findByLabelText('Jeg legger det ved dette skjemaet').check(),
+        );
+        cy.findByLabelText('Annen dokumentasjon').within(() => {
+          cy.findByLabelText('Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved').check();
+        });
+        cy.findByRole('link', { name: 'Neste steg' }).click();
+
+        cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
+        cy.url().should('include', '/fyllut/stnone/oppsummering');
+        cy.findByRole('link', { name: 'Instruksjoner for innsending' }).click();
+
+        cy.findByRole('heading', { level: 1, name: 'Submission Type: None' }).should('exist');
+        cy.url().should('include', '/fyllut/stnone/ingen-innsending');
+        cy.findByRole('button', { name: 'Last ned skjema' }).click();
+        cy.wait('@downloadPdf');
+
+        cy.findByRole('link', { name: 'Forrige steg' }).should('exist');
+      });
     });
 
-    it('Normal flow', () => {
-      cy.findByRole('heading', { level: 2, name: 'Introduksjon' }).should('exist');
-      cy.url().should('include', '/fyllut/stnone');
-      cy.findByRole('link', { name: 'Neste steg' }).click();
+    describe('Normal flow with submission method PAPER_NO_COVER_PAGE', () => {
+      describe('Type: Paper No Cover Page', () => {
+        const paperNoCoverPageFormPath = 'papernocoverpage';
 
-      cy.findByRole('heading', { level: 2, name: 'Dine opplysninger' }).should('exist');
-      cy.url().should('include', '/fyllut/stnone/dineOpplysninger');
-      cy.findByRole('textbox', { name: 'Tekstfelt' }).type('Test');
-      cy.findByRole('link', { name: 'Neste steg' }).click();
+        beforeEach(() => {
+          cy.visit(`/fyllut/${paperNoCoverPageFormPath}`);
+          cy.defaultWaits();
+        });
 
-      cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
-      cy.url().should('include', '/fyllut/stnone/vedlegg');
-      cy.findByRole('group', { name: /Nav skjema test/ }).within(() =>
-        cy.findByLabelText('Jeg legger det ved dette skjemaet').check(),
-      );
-      cy.findByLabelText('Annen dokumentasjon').within(() => {
-        cy.findByLabelText('Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved').check();
+        it('handles query param sub=papernocoverpage', () => {
+          cy.visit(`/fyllut/${paperNoCoverPageFormPath}?sub=papernocoverpage`);
+          cy.defaultWaits();
+          cy.url().should('include', 'sub=papernocoverpage');
+
+          assertNoCoverPageSubmissionFlow(paperNoCoverPageFormPath);
+        });
+
+        it('does not require query param sub=papernocoverpage when it is the only available', () => {
+          cy.url().should('not.include', '?');
+          assertNoCoverPageSubmissionFlow(paperNoCoverPageFormPath);
+        });
       });
-      cy.findByRole('link', { name: 'Neste steg' }).click();
 
-      cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
-      cy.url().should('include', '/fyllut/stnone/oppsummering');
-      cy.findByRole('link', { name: 'Instruksjoner for innsending' }).click();
+      describe('Type: Paper and Paper No Cover Page', () => {
+        const paperAndPaperNoCoverPageFormPath = 'papernocoverpagepaper';
 
-      cy.findByRole('heading', { level: 1, name: 'Submission Type: None' }).should('exist');
-      cy.url().should('include', '/fyllut/stnone/ingen-innsending');
-      cy.findByRole('button', { name: 'Last ned skjema' }).click();
-      cy.wait('@downloadPdf');
+        it('redirects default to sub=paper when sub is missing (INCLUDE_DIST_TESTS)', () => {
+          // cy.skipIfNoIncludeDistTests(); // because the redirect happens in backend
 
-      cy.findByRole('link', { name: 'Forrige steg' }).should('exist');
+          cy.visit(`/fyllut/${paperAndPaperNoCoverPageFormPath}?sub=paper`);
+          cy.defaultWaits();
+          cy.url().should('include', 'sub=paper');
+
+          assertPaperSubmissionFlow(paperAndPaperNoCoverPageFormPath);
+        });
+
+        it('sub=papernocoverpage is required when form has multiple submission types', () => {
+          cy.visit(`/fyllut/${paperAndPaperNoCoverPageFormPath}?sub=papernocoverpage`);
+          cy.defaultWaits();
+          cy.url().should('include', 'sub=papernocoverpage');
+
+          assertNoCoverPageSubmissionFlow(paperAndPaperNoCoverPageFormPath);
+        });
+      });
+
+      describe('Type: Digital and Paper No Cover Page', () => {
+        const digitalAndPaperNoCoverPageFormPath = 'papernocoverpagedigital';
+
+        it('uses sub=papernocoverpage for the no-cover-page flow', () => {
+          cy.visit(`/fyllut/${digitalAndPaperNoCoverPageFormPath}?sub=papernocoverpage`);
+          cy.defaultWaits();
+          cy.url().should('include', 'sub=papernocoverpage');
+
+          assertNoCoverPageSubmissionFlow(digitalAndPaperNoCoverPageFormPath);
+        });
+      });
     });
   });
 

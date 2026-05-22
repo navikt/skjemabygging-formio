@@ -1,5 +1,5 @@
 import { ConfirmationModal, useModal } from '@navikt/skjemadigitalisering-shared-components';
-import { Form, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo, useState } from 'react';
 import { useFormTranslations } from '../../context/translations/FormTranslationsContext';
 import { useGlobalTranslations } from '../../context/translations/GlobalTranslationsContext';
@@ -7,18 +7,13 @@ import { generateUnsavedGlobalTranslations } from '../../translations/utils/edit
 import LockedFormModal from '../lockedFormModal/LockedFormModal';
 import ConfirmPublishModal from './ConfirmPublishModal';
 import PublishSettingsModal from './PublishSettingsModal';
+import { getPublishValidationMessage } from './publishValidationUtils';
 
 interface PublishModalComponentsProps {
   form: Form;
   openPublishSettingModal: boolean;
   setOpenPublishSettingModal: (open: boolean) => void;
 }
-
-const validateAttachments = (form: Form) =>
-  navFormUtils
-    .flattenComponents(form.components)
-    .filter(navFormUtils.isAttachment)
-    .every((comp) => comp.properties?.vedleggskode && comp.properties?.vedleggstittel);
 
 const PublishModalComponents = ({
   form,
@@ -33,13 +28,13 @@ const PublishModalComponents = ({
   const { storedTranslations: globalTranslations, isReady: isFormTranslationsReady } = useGlobalTranslations();
   const { storedTranslations: formTranslations, isReady: isGlobalTranslationsReady } = useFormTranslations();
   const isLockedForm = !!form.lock;
+  const publishValidationMessage = useMemo(() => getPublishValidationMessage(form), [form]);
 
   useEffect(() => {
     if (openPublishSettingModal) {
-      const attachmentsAreValid = validateAttachments(form);
       if (isLockedForm) {
         setLockedFormModal(true);
-      } else if (attachmentsAreValid) {
+      } else if (!publishValidationMessage) {
         setOpenPublishSettingModalValidated(true);
       } else {
         setOpenPublishSettingModal(false);
@@ -56,6 +51,7 @@ const PublishModalComponents = ({
     setUserMessageModal,
     isLockedForm,
     setLockedFormModal,
+    publishValidationMessage,
   ]);
 
   const unsavedGlobalTranslations = useMemo(
@@ -93,7 +89,7 @@ const PublishModalComponents = ({
         texts={{
           title: 'Brukermelding',
           confirm: 'Ok',
-          body: 'Du må fylle ut vedleggskode og vedleggstittel for alle vedlegg før skjemaet kan publiseres.',
+          body: publishValidationMessage ?? '',
         }}
       />
       <LockedFormModal open={lockedFormModal} onClose={() => setLockedFormModal(false)} form={form} />

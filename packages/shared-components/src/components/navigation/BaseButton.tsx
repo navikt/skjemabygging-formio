@@ -11,10 +11,10 @@ type HrefProps = {
 };
 export type BaseButtonProps = {
   onClick?: Partial<
-    Record<SubmissionMethod | 'none' | 'default', (() => void) | ((e?: unknown) => void) | (() => Promise<void>)>
+    Record<SubmissionMethod | 'default', (() => void) | ((e?: unknown) => void) | (() => Promise<void>)>
   >;
-  label: Partial<Record<SubmissionMethod | 'none' | 'default', string>>;
-  href?: Partial<Record<SubmissionMethod | 'none' | 'default', HrefProps | string>>;
+  label: Partial<Record<SubmissionMethod | 'default', string>>;
+  href?: Partial<Record<SubmissionMethod | 'default', HrefProps | string>>;
   icon?: ReactNode;
   variant?: 'primary' | 'secondary' | 'tertiary';
   iconPosition?: 'left' | 'right';
@@ -34,7 +34,7 @@ export function BaseButton({
 }: BaseButtonProps) {
   const { submissionMethod } = useAppConfig();
 
-  const activeSubmissionMethod: SubmissionMethod | 'default' | 'none' = submissionMethod ?? 'none';
+  const activeSubmissionMethod: SubmissionMethod | 'default' = submissionMethod ?? 'papernocoverpage';
   const handleClick = onClick?.[activeSubmissionMethod] ?? onClick?.default;
   const buttonLabel = label[activeSubmissionMethod] ?? label.default;
   const buttonHref = href?.[activeSubmissionMethod] ?? href?.default;
