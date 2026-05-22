@@ -37,22 +37,41 @@ const isPortFree = (port) =>
     server.listen(port, '127.0.0.1');
   });
 
+const loopbackHosts = ['127.0.0.1', 'localhost', '::1'];
+
+const canConnectToPort = (port, host) =>
+  new Promise((resolve) => {
+    const socket = connect(port, host);
+    socket.once('connect', () => {
+      socket.destroy();
+      resolve(true);
+    });
+    socket.once('error', () => {
+      socket.destroy();
+      resolve(false);
+    });
+  });
+
 const waitForPort = (port, timeout = 60000) =>
   new Promise((resolve, reject) => {
     const start = Date.now();
-    const attempt = () => {
-      const socket = connect(port, '127.0.0.1');
-      socket.once('connect', () => {
-        socket.destroy();
-        resolve();
-      });
-      socket.once('error', () => {
-        socket.destroy();
-        if (Date.now() - start > timeout) return reject(new Error(`Port ${port} not ready after ${timeout}ms`));
-        setTimeout(attempt, 250);
-      });
+    const attempt = async () => {
+      for (const host of loopbackHosts) {
+        if (await canConnectToPort(port, host)) {
+          resolve(host);
+          return;
+        }
+      }
+
+      if (Date.now() - start > timeout) {
+        reject(new Error(`Port ${port} not ready after ${timeout}ms`));
+        return;
+      }
+
+      setTimeout(() => void attempt(), 250);
     };
-    attempt();
+
+    void attempt();
   });
 
 const getFreePorts = async (count, start = 3440) => {
@@ -78,8 +97,6 @@ const configs = {
   fyllut: async () => {
     const [mockPort, mockAdminPort, backendPort, frontendPort] = await getFreePorts(4);
     const mockUrl = `http://127.0.0.1:${mockPort}`;
-    const backendUrl = `http://127.0.0.1:${backendPort}`;
-    const frontendUrl = `http://127.0.0.1:${frontendPort}/fyllut`;
     const fyllutBackendEnv = {
       NODE_ENV: 'development',
       MOCKS_ENABLED: 'true',
@@ -121,20 +138,20 @@ const configs = {
         ],
       ],
       ports: [mockPort, mockAdminPort, backendPort, frontendPort],
-      summaryLines: [
-        `FYLLUT_MOCK_URL=${mockUrl}`,
+      getSummaryLines: ([mockHost, , backendHost, frontendHost]) => [
+        `FYLLUT_MOCK_URL=http://${mockHost}:${mockPort}`,
         `FYLLUT_MOCK_ADMIN_PORT=${mockAdminPort}`,
-        `FYLLUT_BACKEND_URL=${backendUrl}`,
-        `FYLLUT_FRONTEND_URL=${frontendUrl}`,
+        `FYLLUT_BACKEND_URL=http://${backendHost}:${backendPort}`,
+        `FYLLUT_FRONTEND_URL=http://${frontendHost}:${frontendPort}/fyllut`,
       ],
       onReady: shouldWriteRuntimeConfig
-        ? () => {
+        ? ([, , , frontendHost]) => {
             mkdirSync(resolve(repoRoot, 'packages/fyllut/.runtime'), { recursive: true });
             writeFileSync(
               fyllutCypressRuntimePath,
               JSON.stringify(
                 {
-                  baseUrl: `http://127.0.0.1:${frontendPort}`,
+                  baseUrl: `http://${frontendHost}:${frontendPort}`,
                   env: {
                     SKJEMABYGGING_PROXY_URL: `${mockUrl}/skjemabygging-proxy`,
                     AZURE_OPENID_CONFIG_TOKEN_ENDPOINT: `${mockUrl}/azure-openid/oauth2/v2.0/token`,
@@ -143,7 +160,7 @@ const configs = {
                     SEND_INN_HOST: `${mockUrl}/send-inn`,
                     SEND_INN_FRONTEND: `${mockUrl}/send-inn-frontend`,
                     TOKEN_X_WELL_KNOWN_URL: `${mockUrl}/tokenx/.well-known`,
-                    BASE_URL: `http://127.0.0.1:${frontendPort}`,
+                    BASE_URL: `http://${frontendHost}:${frontendPort}`,
                     FAMILIE_PDF_GENERATOR_URL: mockUrl,
                   },
                 },
@@ -158,8 +175,6 @@ const configs = {
   },
   bygger: async () => {
     const [backendPort, frontendPort] = await getFreePorts(2);
-    const backendUrl = `http://127.0.0.1:${backendPort}`;
-    const frontendUrl = `http://127.0.0.1:${frontendPort}`;
     return {
       commands: [
         [
@@ -176,15 +191,18 @@ const configs = {
         ],
       ],
       ports: [backendPort, frontendPort],
-      summaryLines: [`BYGGER_BACKEND_URL=${backendUrl}`, `BYGGER_FRONTEND_URL=${frontendUrl}`],
+      getSummaryLines: ([backendHost, frontendHost]) => [
+        `BYGGER_BACKEND_URL=http://${backendHost}:${backendPort}`,
+        `BYGGER_FRONTEND_URL=http://${frontendHost}:${frontendPort}`,
+      ],
       onReady: shouldWriteRuntimeConfig
-        ? () => {
+        ? ([, frontendHost]) => {
             mkdirSync(resolve(repoRoot, 'packages/bygger/.runtime'), { recursive: true });
             writeFileSync(
               byggerCypressRuntimePath,
               JSON.stringify(
                 {
-                  baseUrl: frontendUrl,
+                  baseUrl: `http://${frontendHost}:${frontendPort}`,
                 },
                 null,
                 2,
@@ -202,12 +220,24 @@ if (!configs[target] || unknownArgs.length > 0) {
   process.exit(1);
 }
 
-const { commands, ports, summaryLines, onReady, onCleanup } = await configs[target]();
+const { commands, ports, getSummaryLines, onReady, onCleanup } = await configs[target]();
 
-const opts = { stdio: 'inherit', shell: false };
-const procs = commands.map(([cmd, args, env = {}, cwd = repoRoot]) =>
-  spawn(cmd, args, { ...opts, cwd, env: { ...process.env, ...env } }),
-);
+const spawnProcess = (cmd, args, env = {}, cwd = repoRoot) => {
+  const options = {
+    stdio: 'inherit',
+    shell: false,
+    cwd,
+    env: { ...process.env, ...env },
+  };
+
+  if (isWindows && (cmd.endsWith('.cmd') || cmd.endsWith('.bat'))) {
+    return spawn(process.env.comspec || 'cmd.exe', ['/d', '/s', '/c', cmd, ...args], options);
+  }
+
+  return spawn(cmd, args, options);
+};
+
+const procs = commands.map(([cmd, args, env = {}, cwd = repoRoot]) => spawnProcess(cmd, args, env, cwd));
 
 const killProcess = (pid, signal) =>
   new Promise((resolve) => {
@@ -246,10 +276,10 @@ process.on('SIGINT', () => void shutdown('SIGINT', 130));
 process.on('SIGTERM', () => void shutdown('SIGTERM', 143));
 
 // Wait for all ports to accept connections, then signal readiness
-Promise.all(ports.map((p) => waitForPort(p))).then(() => {
-  onReady?.();
+Promise.all(ports.map((p) => waitForPort(p))).then((readyHosts) => {
+  onReady?.(readyHosts);
   console.log('');
-  console.log(summaryLines.join('\n'));
+  console.log(getSummaryLines(readyHosts).join('\n'));
   console.log(`START_PID=${process.pid}`);
 });
 
