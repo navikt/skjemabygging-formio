@@ -162,7 +162,7 @@ class ReportService {
           ? `https://www.nav.no/fyllut-ettersending/${form.path}`
           : `https://fyllut-ettersending.intern.dev.nav.no/fyllut-ettersending/${form.path}`;
 
-      const paperInnsendingUrl = submissionTypesUtils.isNoneSubmission(submissionTypes)
+      const paperInnsendingUrl = submissionTypesUtils.isPaperNoCoverPageSubmission(submissionTypes)
         ? `${baseInnsendingUrl}`
         : submissionTypesUtils.isPaperSubmission(submissionTypes)
           ? `${baseInnsendingUrl}?sub=paper`
