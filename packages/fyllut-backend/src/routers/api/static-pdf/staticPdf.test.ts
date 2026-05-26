@@ -21,7 +21,7 @@ vi.mock('../../../services', () => ({
   coverPageService: {
     downloadCoverPage: vi.fn(),
   },
-  sharedFormService: {
+  formService: {
     getForm: vi.fn(),
   },
   mergeFileService: {
