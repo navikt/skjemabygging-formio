@@ -15,7 +15,7 @@ interface RenderApplicationPdfProps {
   form: Form;
   submission: Submission;
   language: TranslationLang;
-  translations?: FormsApiTranslationMap;
+  translations: FormsApiTranslationMap;
   submissionMethod?: SubmissionMethod;
   appConfig?: PdfRendererAppConfig;
 }
@@ -28,7 +28,7 @@ const renderApplicationPdf = ({
   submissionMethod,
   appConfig,
 }: RenderApplicationPdfProps): PdfFormData | undefined => {
-  const translate = translationUtil.createTranslate(translations ?? {}, language);
+  const translate = translationUtil.createTranslate(translations, language);
 
   const activeComponents = navFormUtils.getActiveComponentsFromForm(form, submission);
   const activeAttachmentUploadsPanel =

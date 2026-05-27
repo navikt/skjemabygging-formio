@@ -72,7 +72,7 @@ class ApplicationService {
     innsendingsId: string,
     form: Form,
     submission: Submission,
-    translations: FormsApiTranslationMap = {},
+    translations: FormsApiTranslationMap,
     language: TranslationLang,
     submissionMethod: SubmissionMethod | undefined,
     logMeta: LogMetadata = {},

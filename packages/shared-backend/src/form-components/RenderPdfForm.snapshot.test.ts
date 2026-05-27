@@ -4,7 +4,6 @@ import {
   navFormUtils,
   Submission,
   SubmissionMethod,
-  translationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { readFileSync } from 'fs';
 import path from 'path';
@@ -15,10 +14,10 @@ import subDigital from './__fixtures__/testPreview-sub-digital.json';
 import subNone from './__fixtures__/testPreview-sub-none.json';
 
 const FIXED_DATE = new Date('2024-01-15T10:30:00Z');
+const identityTranslate = (text?: string) => (text ? `${text}` : '');
 
 const renderFixture = (form: NavFormType, submissionMethod: SubmissionMethod | undefined) => {
   const submission: Submission = { data: {} } as Submission;
-  const translate = translationUtils.createTranslate({}, 'nb-NO');
   const mappedForm = formioFormsApiUtils.mapNavFormToForm(form);
   const activeComponents = navFormUtils.getActiveComponentsFromForm(mappedForm, submission);
   const activeAttachmentUploadsPanel =
@@ -30,7 +29,7 @@ const renderFixture = (form: NavFormType, submissionMethod: SubmissionMethod | u
     submission,
     form: mappedForm,
     currentLanguage: 'nb-NO',
-    translate: (text, replacements) => (text ? `${translate(text, replacements)}` : ''),
+    translate: identityTranslate,
     submissionMethod,
     appConfig: { config: { gitVersion: 'snapshot-test' } } as never,
   });
