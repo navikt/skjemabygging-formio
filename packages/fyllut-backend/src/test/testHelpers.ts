@@ -25,6 +25,7 @@ interface MockedResponse extends Response {
   status: Mock;
   sendStatus: Mock;
   header: Mock;
+  setHeader: Mock;
 }
 
 function mockResponse(): MockedResponse {
@@ -35,6 +36,7 @@ function mockResponse(): MockedResponse {
     status: vi.fn(),
     sendStatus: vi.fn(),
     header: vi.fn(),
+    setHeader: vi.fn(),
   } as unknown as MockedResponse;
 }
 

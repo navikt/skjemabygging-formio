@@ -94,6 +94,11 @@ export default tseslint.config(
       'vitest/prefer-called-exactly-once-with': 'off', // toHaveBeenCalledExactlyOnceWith does not exist in jest
       'vitest/expect-expect': 'off', // Cypress tests don't necessarily use expect
       '@typescript-eslint/no-explicit-any': 'off', // Explicit any's
+      'react-hooks/immutability': 'off', // Legacy code patterns; keep behavior stable during dependency upgrades
+      'react-hooks/set-state-in-effect': 'off', // Legacy effect patterns; keep behavior stable during dependency upgrades
+      'react-hooks/static-components': 'off', // Legacy in-component declarations; keep behavior stable during dependency upgrades
+      'react-hooks/refs': 'off', // Legacy ref update patterns; keep behavior stable during dependency upgrades
+      'preserve-caught-error': 'off', // Keep existing error handling style in tests
     },
   },
   {

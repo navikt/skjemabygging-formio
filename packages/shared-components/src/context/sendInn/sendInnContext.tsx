@@ -72,7 +72,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const [innsendingsId, setInnsendingsId] = useState<string>();
   const [nologinToken, setNologinToken] = useState<string | undefined>();
   const [captchaValue, setCaptchaValue] = useState<Record<string, string>>({});
-  const tokenDetails = useMemo(() => tokenUtils.parseToken(nologinToken), [nologinToken]);
+  const tokenDetails = useMemo(() => tokenUtils.parseToken<NologinToken>(nologinToken), [nologinToken]);
   const [fyllutMellomlagringState, dispatchFyllutMellomlagring] = useReducer(mellomlagringReducer, undefined);
   const [soknadPdfBlob, setSoknadPdfBlob] = useState<Blob | undefined>(undefined);
   const [receipt, setReceipt] = useState<ReceiptSummary | undefined>(undefined);

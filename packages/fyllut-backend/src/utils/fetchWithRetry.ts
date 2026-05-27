@@ -40,7 +40,7 @@ const fetchWithRetry = (url: RequestInfo, init: RequestInitWithRetry): Promise<R
         });
       }
       await delay(retryDelay);
-      return await fetchWrapper(++retryNo);
+      return await fetchWrapper(retryNo + 1);
     };
     return fetchWrapper(1);
   });

@@ -2,6 +2,7 @@
   "extends": "../../tsconfig-base.json",
   "compilerOptions": {
     "outDir": "./dist",
+    "rootDir": "..",
     "paths": {
       "@navikt/skjemadigitalisering-shared-domain": ["../shared-domain/src"],
       "@navikt/skjemadigitalisering-shared-backend": ["../shared-backend/src"]

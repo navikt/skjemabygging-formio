@@ -36,8 +36,10 @@ Cypress.Commands.add('findByRoleWhenAttached', (role, options, wait: number = 10
         cy
           .findByRole(role, options)
           .as('elementWhenAttached')
-          .wait(wait) // for some reason this is needed, otherwise isAttached returns `true` regardless
-          .then(($el) => Cypress.dom.isAttached($el)),
+          .then(
+            ($el) =>
+              new Cypress.Promise<boolean>((resolve) => setTimeout(() => resolve(Cypress.dom.isAttached($el)), wait)),
+          ),
       { timeout: 2000, interval: 10 },
     )
     .get('@elementWhenAttached');

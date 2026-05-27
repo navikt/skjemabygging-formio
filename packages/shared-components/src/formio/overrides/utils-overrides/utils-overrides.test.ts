@@ -277,7 +277,7 @@ describe('utils-overrides', () => {
         const html = UtilsOverrides.navFormDiffToHtml(diffSummary);
         expect(normalizeHtml(html)).toBe(EXPECTED_HTML.malformedDiff);
       } catch (e) {
-        throw new Error(`Should never fail, but it did: ${e instanceof Error ? e.message : String(e)}`);
+        throw new Error(`Should never fail, but it did: ${e instanceof Error ? e.message : String(e)}`, { cause: e });
       } finally {
         console.error = originalConsoleError;
       }
