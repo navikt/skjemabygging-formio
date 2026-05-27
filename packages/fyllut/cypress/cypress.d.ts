@@ -65,7 +65,11 @@ declare global {
 
       defaultWaits(): Chainable<JQuery<HTMLElement>>;
 
+      updateMellomlagring(callback: (req: CyHttpMessages.IncomingHttpRequest) => void): Chainable<JQuery<HTMLElement>>;
+
       submitMellomlagring(callback: (req: CyHttpMessages.IncomingHttpRequest) => void): Chainable<JQuery<HTMLElement>>;
+
+      submitApplication(callback: (req: CyHttpMessages.IncomingHttpRequest) => void): Chainable<JQuery<HTMLElement>>;
 
       shouldBeVisible(): Chainable<JQuery>;
 

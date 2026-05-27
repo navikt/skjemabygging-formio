@@ -109,20 +109,23 @@ describe('Submission Type', () => {
         cy.findByRole('link', { name: TEXTS.statiske.summaryPage.title }).click();
 
         cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
-        cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.sendToNav }).should('not.exist');
+        cy.clickSendNav();
+        cy.contains('Du må fullføre utfyllingen før du kan fortsette').should('exist');
         cy.clickEditAnswers();
 
         cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
         cy.clickSaveAndContinue();
+        cy.findByRole('link', { name: 'Oppsummering' }).click();
 
-        cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should('exist');
+        cy.clickSendNav();
+        cy.findByRole('heading', { name: 'Kvittering' }).should('exist');
       });
 
-      it('Do not show attachments', () => {
+      it('Do show link to attachments panel', () => {
         cy.clickStart();
 
         cy.clickShowAllSteps();
-        cy.findByRole('link', { name: 'Vedlegg' }).should('not.exist');
+        cy.findByRole('link', { name: 'Vedlegg' }).should('exist');
       });
     });
 

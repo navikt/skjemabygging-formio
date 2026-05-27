@@ -167,9 +167,25 @@ Cypress.Commands.add('defaultInterceptsMellomlagring', () => {
 });
 
 Cypress.Commands.add('submitMellomlagring', (callback: (req: CyHttpMessages.IncomingHttpRequest) => void) => {
-  cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
+  cy.intercept('POST', '/fyllut/api/send-inn/digital-application/*', (req) => {
     callback(req);
   }).as('submitMellomlagring');
+
+  return cy;
+});
+
+Cypress.Commands.add('submitApplication', (callback: (req: CyHttpMessages.IncomingHttpRequest) => void) => {
+  cy.intercept('POST', '/fyllut/api/send-inn/digital-application/*', (req) => {
+    callback(req);
+  }).as('submitApplication');
+
+  return cy;
+});
+
+Cypress.Commands.add('updateMellomlagring', (callback: (req: CyHttpMessages.IncomingHttpRequest) => void) => {
+  cy.intercept('PUT', '/fyllut/api/send-inn/soknad', (req) => {
+    callback(req);
+  }).as('updateMellomlagring');
 
   return cy;
 });

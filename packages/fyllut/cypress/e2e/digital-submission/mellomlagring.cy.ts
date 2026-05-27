@@ -239,7 +239,7 @@ describe('Mellomlagring', () => {
       describe('When url contains query param "innsendingsId"', () => {
         beforeEach(() => {
           cy.fixture('mellomlagring/submitTestMellomlagring.json').then((fixture) => {
-            cy.submitMellomlagring((req) => {
+            cy.submitApplication((req) => {
               const { submission: bodySubmission, ...bodyRest } = req.body;
               const { submission: fixtureSubmission, ...fixtureRest } = fixture;
               expect(bodySubmission.data).to.deep.eq(fixtureSubmission.data);
@@ -268,9 +268,9 @@ describe('Mellomlagring', () => {
           cy.wait('@getMellomlagringValid');
           cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
           cy.findByText('Ønsker du å få gaven innpakket').should('exist');
-          cy.clickSaveAndContinue();
-          cy.wait('@submitMellomlagring');
-          cy.verifySendInnRedirect();
+          cy.clickSendNav();
+          cy.wait('@submitApplication');
+          cy.findByRole('heading', { name: 'Kvittering' }).should('exist');
         });
 
         it('retrieves mellomlagring and lets you navigate to first panel with error', () => {
@@ -390,7 +390,7 @@ describe('Mellomlagring', () => {
       describe('When stored submission contains values for inputs that have been removed from the form', () => {
         beforeEach(() => {
           cy.mocksUseRouteVariant('get-soknad:success-extra-values');
-          cy.submitMellomlagring((req) => {
+          cy.submitApplication((req) => {
             const { submission } = req.body;
             expect(submission.data['slettetTekstfelt']).to.be.undefined;
             // Container
@@ -412,8 +412,10 @@ describe('Mellomlagring', () => {
           cy.wait('@getMellomlagringValid');
           cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
           cy.findByText('Ønsker du å få gaven innpakket').should('exist');
-          cy.clickSaveAndContinue();
-          cy.wait('@submitMellomlagring');
+
+          cy.clickSendNav();
+          cy.wait('@submitApplication');
+          cy.findByRole('heading', { name: 'Kvittering' }).should('exist');
         });
       });
 
@@ -488,14 +490,14 @@ describe('Mellomlagring', () => {
           it('when submission data is complete and valid', () => {
             cy.mocksUseRouteVariant('get-soknad:form-select-complete-v1');
 
-            cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
+            cy.submitApplication((req) => {
               const { submission, attachments } = req.body;
               expect(submission.data.velgInstrument).to.deep.eq({ label: 'Piano', value: 'piano' });
               expect(submission.data.velgLand).to.deep.eq({ label: 'Italia', value: 'IT' });
               expect(submission.data.velgValutaDuVilBetaleMed).to.deep.eq({ label: 'Euro (EUR)', value: 'EUR' });
               expect(attachments).to.have.length(1);
               expect(attachments[0].vedleggsnr).to.eq('P2');
-            }).as('submitMellomlagring');
+            });
 
             cy.visit(
               '/fyllut/testselect/oppsummering?sub=digital&innsendingsId=df6c8a69-9eb0-4878-b51f-38b3849ef9b6&lang=nb-NO',
@@ -516,21 +518,22 @@ describe('Mellomlagring', () => {
             cy.contains(TEXTS.statiske.summaryPage.validationMessage).should('not.exist');
             cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
 
-            cy.clickSaveAndContinue();
-            cy.wait('@submitMellomlagring');
+            cy.clickSendNav();
+            cy.wait('@submitApplication');
+            cy.findByRole('heading', { name: 'Kvittering' }).should('exist');
           });
 
           it('even if submission data contains an invalid country', () => {
             cy.mocksUseRouteVariant('get-soknad:form-select-invalid-country-v1');
 
-            cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
+            cy.submitApplication((req) => {
               const { submission, attachments } = req.body;
               expect(submission.data.velgInstrument).to.deep.eq({ label: 'Piano', value: 'piano' });
               expect(submission.data.velgLand).to.deep.eq({ label: 'Invalid country', value: 'INVALID' });
               expect(submission.data.velgValutaDuVilBetaleMed).to.deep.eq({ label: 'Euro (EUR)', value: 'EUR' });
               expect(attachments).to.have.length(1);
               expect(attachments[0].vedleggsnr).to.eq('P2');
-            }).as('submitMellomlagring');
+            });
 
             cy.visit(
               '/fyllut/testselect/oppsummering?sub=digital&innsendingsId=df6c8a69-9eb0-4878-b51f-38b3849ef9b6&lang=nb-NO',
@@ -551,21 +554,22 @@ describe('Mellomlagring', () => {
             cy.contains(TEXTS.statiske.summaryPage.validationMessage).should('not.exist');
             cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
 
-            cy.clickSaveAndContinue();
-            cy.wait('@submitMellomlagring');
+            cy.clickSendNav();
+            cy.wait('@submitApplication');
+            cy.findByRole('heading', { name: 'Kvittering' }).should('exist');
           });
         });
       });
 
       it('Allows user to submit complete submission', () => {
         cy.mocksUseRouteVariant('get-soknad:nav083501-complete-v1');
-        cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
+        cy.submitApplication((req) => {
           const { submission, attachments } = req.body;
           expect(submission.data.landvelger).to.deep.eq({ label: 'Frankrike', value: 'FR' });
           expect(attachments).to.have.length(2);
           expect(attachments[0].label).to.eq('Personinntektsskjema');
           expect(attachments[1].label).to.eq('Resultatregnskap');
-        }).as('submitMellomlagring');
+        });
         cy.intercept('GET', '/fyllut/api/send-inn/soknad/2db25aab-3524-4426-a333-489542bf16bf').as('getMellomlagring');
 
         cy.visit(
@@ -575,8 +579,10 @@ describe('Mellomlagring', () => {
         cy.wait('@getMellomlagring');
         cy.contains(TEXTS.statiske.summaryPage.validationMessage).should('not.exist');
         cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
-        cy.clickSaveAndContinue();
-        cy.wait('@submitMellomlagring');
+
+        cy.clickSendNav();
+        cy.wait('@submitApplication');
+        cy.findByRole('heading', { name: 'Kvittering' }).should('exist');
       });
     });
   });

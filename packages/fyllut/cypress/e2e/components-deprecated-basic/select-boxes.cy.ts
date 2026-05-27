@@ -87,9 +87,7 @@ describe('Select boxes', () => {
         cy.findByRole('checkbox', { name: 'Choice 4' }).check();
       });
 
-      cy.clickSaveAndContinue();
-
-      cy.submitMellomlagring((req) => {
+      cy.updateMellomlagring((req) => {
         const {
           submission: { data },
         } = req.body;
@@ -113,7 +111,7 @@ describe('Select boxes', () => {
       });
 
       cy.clickSaveAndContinue();
-      cy.wait('@submitMellomlagring');
+      cy.wait('@updateMellomlagring');
     });
 
     it('should load mellomlagring', () => {
