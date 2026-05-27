@@ -1,5 +1,6 @@
 import {
   Language,
+  localizationUtils,
   NavFormType,
   ReceiptSummary,
   Submission,
@@ -22,10 +23,9 @@ export const postNologinSoknad = async (
   return await http!.post<{ pdfBase64: string; receipt: ReceiptSummary }>(
     url,
     {
-      form,
       formPath: form.path,
       submission,
-      language,
+      language: localizationUtils.getLanguageCodeAsIso639_1(language),
       submissionMethod,
     },
     {

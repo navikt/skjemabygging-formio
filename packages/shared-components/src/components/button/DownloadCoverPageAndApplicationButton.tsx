@@ -1,5 +1,5 @@
 import { Alert } from '@navikt/ds-react';
-import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { dateUtils, localizationUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import React, { useCallback, useState } from 'react';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
@@ -60,8 +60,7 @@ const DownloadCoverPageAndApplicationButton = ({
     return await http.post<Blob>(
       actionUrl,
       {
-        language: currentLanguage,
-        form: JSON.stringify(form),
+        language: localizationUtils.getLanguageCodeAsIso639_1(currentLanguage),
         formPath: form.path,
         submission: JSON.stringify(submission),
         enhetNummer,

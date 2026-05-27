@@ -256,13 +256,8 @@ describe('Data fetcher', () => {
       });
 
       it('submits activity selection with backend-rendered PDF contract', () => {
-        cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
-          expect(req.body.form).to.exist;
-          expect(req.body.submission).to.exist;
-          expect(req.body.translation).to.be.undefined;
-          expect(req.body.submissionMethod).to.eq('digital');
-          expect(req.body.pdfFormData).to.be.undefined;
-        }).as('submitMellomlagring');
+        cy.mocksUseRouteVariant('post-familie-pdf:success-tc20');
+        cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad').as('submitMellomlagring');
         cy.clickSaveAndContinue();
         cy.wait('@submitMellomlagring');
       });

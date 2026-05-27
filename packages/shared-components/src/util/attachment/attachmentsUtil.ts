@@ -4,6 +4,7 @@ import {
   checkCondition,
   Component,
   ComponentValue,
+  formioFormsApiUtils,
   NavFormType,
   navFormUtils,
   Submission,
@@ -34,7 +35,8 @@ const getAttachment = (navId: string, form: NavFormType): Attachment | undefined
 };
 
 // TODO getAllAttachments should return Component[], not Attachment[]
-const getAllAttachments = (form: NavFormType, submission: Submission): Attachment[] => {
+const getAllAttachments = (navForm: NavFormType, submission: Submission): Attachment[] => {
+  const form = formioFormsApiUtils.mapNavFormToForm(navForm);
   return navFormUtils
     .flattenComponents(form.components)
     .filter((component) => isAttachment(component) || isOtherDocumentation(component))
@@ -49,11 +51,12 @@ const getAllAttachments = (form: NavFormType, submission: Submission): Attachmen
 };
 
 const getRelevantAttachments = (form: NavFormType, submission: Submission): Attachment[] => {
+  const formAsForm = formioFormsApiUtils.mapNavFormToForm(form);
   return navFormUtils
     .flattenComponents(form.components)
     .filter((component) => isAttachment(component) && !isOtherDocumentation(component))
     .map(sanitize)
-    .filter((comp) => checkCondition(comp, undefined, submission?.data, form, undefined, submission))
+    .filter((comp) => checkCondition(comp, undefined, submission?.data, formAsForm, undefined, submission))
     .map(toAttachment);
 };
 
@@ -76,10 +79,11 @@ const toAttachment = (comp: Component): Attachment => {
 };
 
 const hasOtherDocumentation = (form, submission: Submission) => {
+  const formAsForm = formioFormsApiUtils.mapNavFormToForm(form);
   return navFormUtils
     .flattenComponents(form.components)
     .map(sanitize)
-    .filter((comp) => checkCondition(comp, undefined, submission?.data, form, undefined, submission))
+    .filter((comp) => checkCondition(comp, undefined, submission?.data, formAsForm, undefined, submission))
     .some((component) => isOtherDocumentation(component));
   // TODO: Remove otherDocumentation from component when all attachments have attachmentType set
 };

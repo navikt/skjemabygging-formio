@@ -1,5 +1,6 @@
 import { Alert } from '@navikt/ds-react';
 import {
+  formioFormsApiUtils,
   NavFormType,
   navFormUtils,
   PanelValidation,
@@ -40,7 +41,7 @@ const SummaryPageNavigation = ({ form, submission, panelValidationList, isValid 
   const hasValidationErrors = panelValidationList?.some((panelValidation) => panelValidation.hasValidationErrors);
 
   const getPreviousPathname = () => {
-    if (attachmentPageEnabled && navFormUtils.hasAttachment(form)) {
+    if (attachmentPageEnabled && navFormUtils.hasAttachment(formioFormsApiUtils.mapNavFormToForm(form))) {
       return '../vedlegg';
     }
 

@@ -1,4 +1,4 @@
-import { Component, NavFormType } from '../../models';
+import { Component, Form } from '../../models';
 import { getComponentActualValue } from './resolveConditionalValue';
 import { ConditionComponent, ConditionData, ConditionInput, ConditionObject, ConditionRow } from './types';
 
@@ -11,7 +11,7 @@ const checkSimpleConditional = (
   component: Partial<Component>,
   row: ConditionRow,
   data: ConditionData | undefined,
-  form: NavFormType | undefined,
+  form: Form | undefined,
   instance?: ConditionComponent,
 ) => {
   const condition = component.conditional;

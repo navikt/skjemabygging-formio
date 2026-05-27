@@ -1,5 +1,5 @@
 import { FormProgress as AkselFormProgress } from '@navikt/ds-react';
-import { navFormUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { formioFormsApiUtils, navFormUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate, useParams, useResolvedPath } from 'react-router';
 import { useAppConfig } from '../../../context/config/configContext';
@@ -20,7 +20,7 @@ const FormProgress = () => {
 
   const formSteps = useMemo(() => {
     const formioSteps = navFormUtils
-      .getActivePanelsFromForm(form, submission)
+      .getActivePanelsFromForm(formioFormsApiUtils.mapNavFormToForm(form), submission)
       .map((panel) => ({ label: panel.title, key: panel.key }));
 
     const steps = [
@@ -31,7 +31,7 @@ const FormProgress = () => {
       ...formioSteps,
     ];
 
-    if (navFormUtils.hasAttachment(form) && attachmentPageEnabled) {
+    if (navFormUtils.hasAttachment(formioFormsApiUtils.mapNavFormToForm(form)) && attachmentPageEnabled) {
       steps.push({
         key: 'vedlegg',
         label: TEXTS.statiske.attachment.title,

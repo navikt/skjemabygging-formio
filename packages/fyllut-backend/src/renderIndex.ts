@@ -5,7 +5,7 @@ import url from 'url';
 import { config } from './config/config';
 import { createRedirectUrl, getDecorator } from './dekorator';
 import { logger } from './logger';
-import { formService } from './services';
+import { oldFormService } from './services';
 import { QueryParamSub } from './types/custom';
 import { excludeQueryParam } from './utils/express';
 import { logFormNotFound } from './utils/formError';
@@ -68,7 +68,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
     let httpStatusCode = 200;
     if (formPath) {
       logger.debug('Loading form...', { formPath });
-      const form = await formService.loadForm(formPath);
+      const form = await oldFormService.loadForm(formPath);
       if (form && form.properties) {
         const { submissionTypes } = form.properties;
         if (!qpSub) {

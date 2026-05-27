@@ -1,4 +1,4 @@
-import { Component, NavFormType, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, Form, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { coverPageDownloadDataMapper } from './coverPageDownloadDataMapper';
 
 describe('coverPageDownloadDataMapper', () => {
@@ -30,7 +30,7 @@ describe('coverPageDownloadDataMapper', () => {
       },
       generateAttachmentComponent('attachment1', 'Vedlegg label', 'A1', 'Vedlegg title'),
     ] as Component[],
-  } as unknown as NavFormType;
+  } as unknown as Form;
 
   it('creates download data from submission', () => {
     const actual = coverPageDownloadDataMapper.createDownloadDataFromSubmission(
@@ -106,7 +106,7 @@ describe('coverPageDownloadDataMapper', () => {
             coverPageUser: true,
           },
         ] as Component[],
-      } as unknown as NavFormType,
+      } as unknown as Form,
       {
         data: {
           organizationNumber: '889 640 782',

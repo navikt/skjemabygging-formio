@@ -1,122 +1,122 @@
 export const innsendingsId = '12345678-1234-1234-1234-12345678abcd';
 
+export const mockFormData = {
+  skjemanummer: 'NAV 99-99.99',
+  title: 'Mellomlagring',
+  path: 'nav999999',
+  components: [
+    {
+      title: 'Dine opplysninger',
+      type: 'panel',
+      input: false,
+      key: 'dineOpplysninger',
+      components: [
+        {
+          label: 'Fornavn',
+          type: 'textfield',
+          key: 'fornavnSoker',
+          input: true,
+          id: 'eggmhbi',
+          navId: 'ekllqag',
+        },
+        {
+          label: 'Etternavn',
+          type: 'textfield',
+          key: 'etternavnSoker',
+          input: true,
+          id: 'ecc9zph',
+          navId: 'ei5ul7b',
+        },
+      ],
+      id: 'e4vm4go',
+      navId: 'e9la3po',
+    },
+    {
+      title: 'Vedlegg',
+      type: 'panel',
+      input: false,
+      key: 'vedlegg',
+      isAttachmentPanel: true,
+      components: [
+        {
+          label: 'Annen dokumentasjon',
+          key: 'annenDokumentasjon',
+          otherDocumentation: true,
+          properties: { vedleggstittel: 'Annet', vedleggskode: 'N6' },
+          values: [
+            {
+              value: 'nei',
+              label: 'Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved.',
+            },
+            { value: 'leggerVedNaa', label: 'Ja, jeg legger det ved denne søknaden.' },
+            {
+              value: 'ettersender',
+              label: 'Jeg ettersender dokumentasjonen senere.',
+            },
+          ],
+          id: 'ezh0do4',
+          navId: 'ebrfmp',
+        },
+        {
+          label: 'Oppmøtebekreftelse',
+          values: [
+            {
+              value: 'leggerVedNaa',
+              label: 'Jeg legger det ved denne søknaden (anbefalt)',
+              shortcut: '',
+            },
+            {
+              value: 'ettersender',
+              label:
+                'Jeg ettersender dokumentasjonen senere (jeg er klar over at Nav ikke kan behandle søknaden før jeg har levert dokumentasjonen)',
+              shortcut: '',
+            },
+            { value: 'levertTidligere', label: 'Jeg har levert denne dokumentasjonen tidligere', shortcut: '' },
+          ],
+          key: 'oppmotebekreftelse',
+          properties: { vedleggstittel: 'Bekreftelse på oppmøte', vedleggskode: 'M2' },
+          id: 'ez5vv0v',
+          navId: 'eijyzy',
+        },
+        {
+          label: 'Bekreftelse på at du av helsemessige årsaker må benytte dyrere transport',
+          values: [
+            {
+              value: 'leggerVedNaa',
+              label: 'Jeg legger det ved denne søknaden (anbefalt)',
+              shortcut: '',
+            },
+            {
+              value: 'ettersender',
+              label:
+                'Jeg ettersender dokumentasjonen senere (jeg er klar over at Nav ikke kan behandle søknaden før jeg har levert dokumentasjonen)',
+              shortcut: '',
+            },
+            { value: 'levertTidligere', label: 'Jeg har levert denne dokumentasjonen tidligere', shortcut: '' },
+          ],
+          key: 'bekreftelsePaAtDuAvHelsemessigeArsakerMaBenytteDyrereTransport',
+          properties: { vedleggstittel: ' Dokumentasjon av behov for dyrere transportmiddel', vedleggskode: 'M4' },
+          id: 'eqdukn',
+          navId: 'e3dw1sg',
+        },
+      ],
+      id: 'eog3hr',
+      navId: 'e4fmriw',
+    },
+  ],
+  properties: {
+    skjemanummer: 'NAV 99-99.99',
+    tema: 'AGR',
+    innsending: 'PAPIR_OG_DIGITAL',
+    ettersending: 'PAPIR_OG_DIGITAL',
+  },
+};
+
 export const requestBody = {
   innsendingsId: '95fd632d-8a09-4b58-aefa-07ca3b8b2273',
-  form: {
-    _id: '64e73d49afdb6ff7c0196270',
-    title: 'Mellomlagring',
-    name: 'nav999999',
-    path: 'nav999999',
-    components: [
-      {
-        title: 'Dine opplysninger',
-        type: 'panel',
-        input: false,
-        key: 'dineOpplysninger',
-        components: [
-          {
-            label: 'Fornavn',
-            type: 'textfield',
-            key: 'fornavnSoker',
-            input: true,
-            id: 'eggmhbi',
-            navId: 'ekllqag',
-          },
-          {
-            label: 'Etternavn',
-            type: 'textfield',
-            key: 'etternavnSoker',
-            input: true,
-            id: 'ecc9zph',
-            navId: 'ei5ul7b',
-          },
-        ],
-        id: 'e4vm4go',
-        navId: 'e9la3po',
-      },
-      {
-        title: 'Vedlegg',
-        type: 'panel',
-        input: false,
-        key: 'vedlegg',
-        isAttachmentPanel: true,
-        components: [
-          {
-            label: 'Annen dokumentasjon',
-            key: 'annenDokumentasjon',
-            otherDocumentation: true,
-            properties: { vedleggstittel: 'Annet', vedleggskode: 'N6' },
-            values: [
-              {
-                value: 'nei',
-                label: 'Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved.',
-              },
-              { value: 'leggerVedNaa', label: 'Ja, jeg legger det ved denne søknaden.' },
-              {
-                value: 'ettersender',
-                label: 'Jeg ettersender dokumentasjonen senere.',
-              },
-            ],
-            id: 'ezh0do4',
-            navId: 'ebrfmp',
-          },
-          {
-            label: 'Oppmøtebekreftelse',
-            values: [
-              {
-                value: 'leggerVedNaa',
-                label: 'Jeg legger det ved denne søknaden (anbefalt)',
-                shortcut: '',
-              },
-              {
-                value: 'ettersender',
-                label:
-                  'Jeg ettersender dokumentasjonen senere (jeg er klar over at Nav ikke kan behandle søknaden før jeg har levert dokumentasjonen)',
-                shortcut: '',
-              },
-              { value: 'levertTidligere', label: 'Jeg har levert denne dokumentasjonen tidligere', shortcut: '' },
-            ],
-            key: 'oppmotebekreftelse',
-            properties: { vedleggstittel: 'Bekreftelse på oppmøte', vedleggskode: 'M2' },
-            id: 'ez5vv0v',
-            navId: 'eijyzy',
-          },
-          {
-            label: 'Bekreftelse på at du av helsemessige årsaker må benytte dyrere transport',
-            values: [
-              {
-                value: 'leggerVedNaa',
-                label: 'Jeg legger det ved denne søknaden (anbefalt)',
-                shortcut: '',
-              },
-              {
-                value: 'ettersender',
-                label:
-                  'Jeg ettersender dokumentasjonen senere (jeg er klar over at Nav ikke kan behandle søknaden før jeg har levert dokumentasjonen)',
-                shortcut: '',
-              },
-              { value: 'levertTidligere', label: 'Jeg har levert denne dokumentasjonen tidligere', shortcut: '' },
-            ],
-            key: 'bekreftelsePaAtDuAvHelsemessigeArsakerMaBenytteDyrereTransport',
-            properties: { vedleggstittel: ' Dokumentasjon av behov for dyrere transportmiddel', vedleggskode: 'M4' },
-            id: 'eqdukn',
-            navId: 'e3dw1sg',
-          },
-        ],
-        id: 'eog3hr',
-        navId: 'e4fmriw',
-      },
-    ],
-    properties: {
-      skjemanummer: 'NAV 99-99.99',
-      tema: 'AGR',
-      innsending: 'PAPIR_OG_DIGITAL',
-      ettersending: 'PAPIR_OG_DIGITAL',
-    },
-  },
+  formPath: 'nav999999',
   submission: { data: { fornavnSoker: 'Kalle', etternavnSoker: 'Hansen' } },
-  language: 'nb-NO',
-  translation: {},
+  language: 'nb',
   submissionMethod: 'digital',
 };
 

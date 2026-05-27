@@ -1,4 +1,4 @@
-import { attachmentUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { attachmentUtils, ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import { PdfComponentProps } from '../../types';
 
 const PdfAttachmentUpload = (props: PdfComponentProps) => {
@@ -6,7 +6,7 @@ const PdfAttachmentUpload = (props: PdfComponentProps) => {
   const { navId, label, attachmentValues, attachmentType, otherDocumentation } = component;
 
   if (!navId) {
-    throw Error('PdfAttachmentUpload: navId is required on component');
+    throw new ResponseError('INTERNAL_SERVER_ERROR', 'PdfAttachmentUpload: navId is required on component');
   }
 
   const attachments = submission?.attachments ?? [];

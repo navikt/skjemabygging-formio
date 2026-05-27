@@ -1,21 +1,21 @@
 import {
-  formioFormsApiUtils,
-  I18nTranslationMap,
-  NavFormType,
+  Form,
+  FormsApiTranslationMap,
   navFormUtils,
   PdfFormData,
   Submission,
   SubmissionMethod,
-  translationUtils,
+  TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import translationUtil from '../util/translation/translationUtil';
 import renderPdfForm from './RenderPdfForm';
 import { PdfRendererAppConfig } from './types';
 
 interface RenderApplicationPdfProps {
-  form: NavFormType;
+  form: Form;
   submission: Submission;
-  language: string;
-  translations?: I18nTranslationMap;
+  language: TranslationLang;
+  translations: FormsApiTranslationMap;
   submissionMethod?: SubmissionMethod;
   appConfig?: PdfRendererAppConfig;
 }
@@ -28,9 +28,7 @@ const renderApplicationPdf = ({
   submissionMethod,
   appConfig,
 }: RenderApplicationPdfProps): PdfFormData | undefined => {
-  const baseTranslate = translationUtils.createTranslate(translations ?? {}, language);
-  const translate = (text: string | undefined, textReplacements?: Record<string, string>) =>
-    text ? `${baseTranslate(text, textReplacements)}` : '';
+  const translate = translationUtil.createTranslate(translations, language);
 
   const activeComponents = navFormUtils.getActiveComponentsFromForm(form, submission);
   const activeAttachmentUploadsPanel =
@@ -40,7 +38,7 @@ const renderApplicationPdf = ({
     activeComponents,
     activeAttachmentUploadsPanel,
     submission,
-    form: formioFormsApiUtils.mapNavFormToForm(form),
+    form,
     currentLanguage: language,
     translate,
     submissionMethod,

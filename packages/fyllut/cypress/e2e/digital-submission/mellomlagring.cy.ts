@@ -184,6 +184,7 @@ describe('Mellomlagring', () => {
 
     describe('When partially filling out a form', () => {
       it('should navigate to first component with validation error from summary', () => {
+        cy.intercept('GET', '/fyllut/api/send-inn/activities*').as('getActivities');
         cy.visit('/fyllut/components?sub=digital');
         cy.defaultWaits();
         cy.clickIntroPageConfirmation();
@@ -194,6 +195,7 @@ describe('Mellomlagring', () => {
         cy.findByRole('link', { name: TEXTS.statiske.summaryPage.title }).click();
         cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
         cy.findAllByRole('link', { name: 'Fortsett utfylling' }).first().click();
+        cy.wait('@getActivities');
         cy.findByRole('group', { name: 'Hvilken aktivitet søker du om støtte i forbindelse med?' }).should(
           'have.focus',
         );

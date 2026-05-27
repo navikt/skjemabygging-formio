@@ -22,6 +22,8 @@ const {
   skjemabyggingProxyUrl,
   useFormsApiStaging,
   skjemaDir,
+  translationDir,
+  resourcesDir,
   mocksEnabled,
 } = config;
 
@@ -37,7 +39,7 @@ const coverPageService = createCoverPageService({
   baseUrl: skjemabyggingProxyUrl,
 });
 
-const sharedFormService = createFormService({
+const formService = createFormService({
   baseUrl: formsApiUrl,
   formsApiStaging: useFormsApiStaging,
   formsLocation: skjemaDir,
@@ -58,13 +60,17 @@ const staticPdfService = createStaticPdfService({
 
 const translationService = createTranslationService({
   baseUrl: formsApiUrl,
+  formsApiStaging: useFormsApiStaging,
+  translationsLocation: translationDir,
+  globalTranslationsLocation: resourcesDir,
+  mocksEnabled,
 });
 
 const translationsService = new TranslationsService(config);
 
 const applicationService = new ApplicationService(config, applicationPdfService);
 
-const formService = new FormService();
+const oldFormService = new FormService();
 
 const nologinTokenService = NologinTokenService(config);
 
@@ -76,8 +82,8 @@ export {
   formService,
   mergeFileService,
   nologinTokenService,
+  oldFormService,
   recipientService,
-  sharedFormService,
   staticPdfService,
   translationService,
   translationsService,

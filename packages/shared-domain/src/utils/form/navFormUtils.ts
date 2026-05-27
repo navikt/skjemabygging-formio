@@ -315,7 +315,7 @@ export const enrichComponentsWithNavIds = (
  * @param form
  * @param submission
  */
-const getActivePanelsFromForm = (form: NavFormType, submission?: Submission): Panel[] => {
+const getActivePanelsFromForm = (form: Form, submission?: Submission): Panel[] => {
   const data = submission?.data ?? {};
   return form.components
     .filter((component: Component) => component.type === 'panel')
@@ -323,7 +323,7 @@ const getActivePanelsFromForm = (form: NavFormType, submission?: Submission): Pa
     .filter((panel) => !isVedleggspanel(panel));
 };
 
-const getActiveComponentsFromForm = (form: NavFormType, submission?: Submission): Component[] => {
+const getActiveComponentsFromForm = (form: Form, submission?: Submission): Component[] => {
   const conditionals = formSummaryUtils.mapAndEvaluateConditionals(form, submission ?? { data: {} });
 
   const panels = form.components.filter((component) => component.type === 'panel' && !isVedleggspanel(component));
@@ -351,23 +351,23 @@ const getActiveComponents = (components: Component[], conditionals?: any): Compo
 };
 
 // For attachment panel when submission values are in submission.attachments rather than submission.data
-const getActiveAttachmentPanelFromForm = (form: NavFormType, submission?: Submission): Panel | undefined => {
+const getActiveAttachmentPanelFromForm = (form: Form, submission?: Submission): Panel | undefined => {
   const conditionals = formSummaryUtils.mapAndEvaluateConditionals(form, submission ?? { data: {} });
   const attachmentPanel = getAttachmentPanel(form);
   const [activeAttachmentPanel] = attachmentPanel ? getActiveComponents([attachmentPanel], conditionals) : [];
   return activeAttachmentPanel && isVedleggspanel(activeAttachmentPanel) ? activeAttachmentPanel : undefined;
 };
 
-const getAttachmentPanel = (form: NavFormType) => {
+const getAttachmentPanel = (form: Form) => {
   return form.components.find(isVedleggspanel);
 };
 
-const hasAttachment = (form: NavFormType) => {
+const hasAttachment = (form: Form) => {
   const attachmentPanel = getAttachmentPanel(form);
   return !!attachmentPanel?.components?.length;
 };
 
-const getAttachmentProperties = (form: NavFormType): Attachment[] => {
+const getAttachmentProperties = (form: Form): Attachment[] => {
   const attachmentPanel = getAttachmentPanel(form);
   if (!attachmentPanel || !attachmentPanel.components) return [];
 

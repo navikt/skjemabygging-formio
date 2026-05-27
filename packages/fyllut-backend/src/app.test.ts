@@ -131,15 +131,10 @@ describe('app', () => {
     const tokenxEndpoint = 'http://tokenx-unittest.nav.no/token';
     const encodedSoknadPdf = soknadPdf.toString('base64');
     const applicationData = {
-      form: {
-        components: [],
-        path: 'nav123456',
-        title: 'NAV 12.34-56',
-        properties: { skjemanummer: 'NAV 12.34-56', tema: 'BIL' },
-      },
+      formPath: 'nav123456',
       submission: { data: { fodselsnummerDNummerSoker: '12345678911' } },
       attachments: [],
-      language: 'nb-NO',
+      language: 'nb',
       submissionMethod: 'digital',
       innsendingsId,
     };
@@ -147,11 +142,21 @@ describe('app', () => {
     const azureOpenidScope = nock(extractHost(azureTokenEndpoint))
       .post(extractPath(azureTokenEndpoint))
       .reply(200, { access_token: 'azure-access-token' });
+    const formScope = nock(formsApiUrl)
+      .get('/v1/forms/nav123456')
+      .query(true)
+      .reply(200, {
+        skjemanummer: 'NAV 12.34-56',
+        title: 'NAV 12.34-56',
+        path: 'nav123456',
+        properties: { skjemanummer: 'NAV 12.34-56', tema: 'BIL' },
+        components: [],
+      });
     const skjemabyggingproxyScope = nock(process.env.FAMILIE_PDF_GENERATOR_URL as string)
       .post('/api/pdf/v3/opprett-pdf')
       .reply(200, { content: encodedSoknadPdf }, { 'Content-Type': 'application/json' });
-    const globalTranslationsScope = nock(formsApiUrl).get('/v1/global-translations').reply(200, []);
-    const formTranslationsScope = nock(formsApiUrl).get('/v1/forms/nav123456/translations').reply(200, []);
+    const globalTranslationsScope = nock(formsApiUrl).get('/v1/global-translations').query(true).reply(200, []);
+    const formTranslationsScope = nock(formsApiUrl).get('/v1/forms/nav123456/translations').query(true).reply(200, []);
     const tokenxWellKnownScope = nock(extractHost(tokenxConfig?.wellKnownUrl))
       .get(extractPath(tokenxConfig?.wellKnownUrl))
       .reply(200, { token_endpoint: tokenxEndpoint });
@@ -171,6 +176,7 @@ describe('app', () => {
     expect(res.headers['location']).toMatch(sendInnLocation);
 
     azureOpenidScope.done();
+    formScope.done();
     skjemabyggingproxyScope.done();
     globalTranslationsScope.done();
     formTranslationsScope.done();
