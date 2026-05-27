@@ -33,7 +33,7 @@ describe('Backend', () => {
     mockRepoMergePullRequest.mockClear();
     mockRepoDeleteFile.mockClear();
     backend = createBackendForTest();
-    (GitHubRepo as Mock).mockImplementation(() => {
+    (GitHubRepo as Mock).mockImplementation(function () {
       return {
         authenticate: vi.fn(),
         getRef: mockRepoGetRef,

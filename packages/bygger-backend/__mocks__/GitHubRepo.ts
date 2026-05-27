@@ -11,7 +11,7 @@ export const mockRepoCreatePullRequest = vi.fn().mockReturnValue({ data: { numbe
 export const mockRepoMergePullRequest = vi.fn();
 export const mockRepoDeleteFile = vi.fn().mockImplementation(() => Promise.resolve());
 
-export const GitHubRepo = vi.fn().mockImplementation(() => {
+export const GitHubRepo = vi.fn().mockImplementation(function () {
   return {
     getRef: mockRepoGetRef,
     createRef: mockRepoCreateRef,

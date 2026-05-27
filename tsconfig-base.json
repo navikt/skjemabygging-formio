@@ -13,6 +13,7 @@
     "skipLibCheck": true,
     "types": ["vite/client", "vitest/globals"],
     "moduleResolution": "node",
+    "ignoreDeprecations": "6.0",
     "isolatedModules": true,
     "noEmit": true,
     "noFallthroughCasesInSwitch": true

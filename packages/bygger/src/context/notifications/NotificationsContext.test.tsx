@@ -24,27 +24,26 @@ describe('NotificationsContext', () => {
     mockUnsubscribe = vi.fn();
     mockDisconnect = vi.fn();
     mockSubscribe = vi.fn();
-    vi.mocked(Pusher).mockImplementation(
-      () =>
-        ({
-          unsubscribe: mockUnsubscribe,
-          disconnect: mockDisconnect,
-          subscribe: (channel) => {
-            mockSubscribe(channel);
-            return {
-              bind: (eventName, callback) => {
-                if (!channelSubscriptions[channel]) channelSubscriptions[channel] = {};
-                channelSubscriptions[channel][eventName] = callback;
-              },
-              unbind: (eventName) => {
-                if (channelSubscriptions[channel]) {
-                  channelSubscriptions[channel][eventName] = undefined;
-                }
-              },
-            } as Channel;
-          },
-        }) as never,
-    );
+    vi.mocked(Pusher).mockImplementation(function () {
+      return {
+        unsubscribe: mockUnsubscribe,
+        disconnect: mockDisconnect,
+        subscribe: (channel) => {
+          mockSubscribe(channel);
+          return {
+            bind: (eventName, callback) => {
+              if (!channelSubscriptions[channel]) channelSubscriptions[channel] = {};
+              channelSubscriptions[channel][eventName] = callback;
+            },
+            unbind: (eventName) => {
+              if (channelSubscriptions[channel]) {
+                channelSubscriptions[channel][eventName] = undefined;
+              }
+            },
+          } as Channel;
+        },
+      } as never;
+    });
   });
 
   afterEach(() => {

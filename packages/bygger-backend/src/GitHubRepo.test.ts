@@ -37,27 +37,29 @@ const {
 vi.mock('@octokit/auth-app', () => authAppMocks);
 
 vi.mock('@octokit/rest', () => ({
-  Octokit: vi.fn().mockImplementation(() => ({
-    rest: {
-      git: {
-        getRef: mockGetRef,
-        createRef: mockCreateRef,
-        deleteRef: mockDeleteRef,
-        getTree: mockGetTree,
-        createTree: mockCreateTree,
-        createCommit: mockCreateCommit,
-        updateRef: mockUpdateRef,
+  Octokit: vi.fn().mockImplementation(function () {
+    return {
+      rest: {
+        git: {
+          getRef: mockGetRef,
+          createRef: mockCreateRef,
+          deleteRef: mockDeleteRef,
+          getTree: mockGetTree,
+          createTree: mockCreateTree,
+          createCommit: mockCreateCommit,
+          updateRef: mockUpdateRef,
+        },
+        repos: {
+          getContent: mockGetContent,
+          createOrUpdateFileContents: mockCreateOrUpdateFileContents,
+        },
+        pulls: {
+          create: mockCreatePullRequest,
+          merge: mockMergePullRequest,
+        },
       },
-      repos: {
-        getContent: mockGetContent,
-        createOrUpdateFileContents: mockCreateOrUpdateFileContents,
-      },
-      pulls: {
-        create: mockCreatePullRequest,
-        merge: mockMergePullRequest,
-      },
-    },
-  })),
+    };
+  }),
 }));
 
 describe('GitHubRepo', () => {

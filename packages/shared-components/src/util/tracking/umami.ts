@@ -18,7 +18,7 @@ export const umamiEventHandler =
         const sanitizedLanguage = event.data.language
           ? { language: localizationUtils.getLanguageCodeAsIso639_1(event.data.language) }
           : undefined;
-        await logEvent(event.name, { ...event.data, ...sanitizedLanguage, applicationName });
+        await logEvent.custom(event.name, { ...event.data, ...sanitizedLanguage, applicationName });
       } catch (e: any) {
         frontendLogger.info('Failed to log umami event', {
           errorMessage: e?.message,
@@ -31,7 +31,9 @@ const getLocalAnalyticsInstance = (
   config: Record<string, string | boolean | object>,
   frontendLogger: FrontendLogger,
 ): ReturnType<typeof getAnalyticsInstance> => {
-  return async (name, data) => {
+  const localAnalyticsInstance = getAnalyticsInstance('fyllut-sendinn');
+
+  localAnalyticsInstance.custom = async (name, data) => {
     if (config.mocksEnabled) {
       await fetch('http://localhost:3300/umami', {
         method: 'POST',
@@ -42,4 +44,6 @@ const getLocalAnalyticsInstance = (
       frontendLogger.debug(`Log umami event: '${name}'`, data);
     }
   };
+
+  return localAnalyticsInstance;
 };

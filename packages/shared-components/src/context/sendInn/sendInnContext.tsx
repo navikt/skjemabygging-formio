@@ -7,7 +7,7 @@ import {
   Submission,
   tokenUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import React, { createContext, useCallback, useContext, useEffect, useReducer, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router';
 import { submitCaptchaValue } from '../../api/captcha/captcha';
 import { postNologinSoknad } from '../../api/sendinn/nologin';
@@ -72,7 +72,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const [innsendingsId, setInnsendingsId] = useState<string>();
   const [nologinToken, setNologinToken] = useState<string | undefined>();
   const [captchaValue, setCaptchaValue] = useState<Record<string, string>>({});
-  const [tokenDetails, setTokenDetails] = useState<NologinToken | undefined>();
+  const tokenDetails = useMemo(() => tokenUtils.parseToken(nologinToken), [nologinToken]);
   const [fyllutMellomlagringState, dispatchFyllutMellomlagring] = useReducer(mellomlagringReducer, undefined);
   const [soknadPdfBlob, setSoknadPdfBlob] = useState<Blob | undefined>(undefined);
   const [receipt, setReceipt] = useState<ReceiptSummary | undefined>(undefined);
@@ -315,7 +315,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         navigate(`/${form.path}/kvittering?${searchParams.toString()}`);
       } catch (error: any) {
         logEvent?.({
-          name: 'skjemainnsending feilet',
+          name: 'skjema innsending feilet',
           data: {
             skjemaId: form.properties.skjemanummer,
             skjemanavn: translate(form.title),
@@ -454,10 +454,6 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   }, [form, logEvent, logger, navigate, setSubmission, submissionMethod, translate]);
 
   useEffect(() => {
-    setTokenDetails(tokenUtils.parseToken(nologinToken));
-  }, [nologinToken]);
-
-  useEffect(() => {
     if (!tokenDetails) return;
 
     const msUntilExp = tokenDetails.exp * 1000 - Date.now();
@@ -467,7 +463,10 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
       }, msUntilExp);
       return () => clearTimeout(timeoutId);
     } else {
-      handleSessionExpired();
+      const timeoutId = setTimeout(() => {
+        handleSessionExpired();
+      }, 0);
+      return () => clearTimeout(timeoutId);
     }
   }, [tokenDetails, handleSessionExpired]);
 
