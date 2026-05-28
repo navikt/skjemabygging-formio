@@ -28,13 +28,16 @@ const FormsPageRow = ({ form }: FormRowProps) => {
   const styles = useStyles();
   const paper = navFormUtils.isSubmissionMethodAllowed('paper', form);
   const digital = navFormUtils.isSubmissionMethodAllowed('digital', form);
-  const ingen = submissionTypesUtils.isNoneSubmission(form.properties.submissionTypes);
+  const paperNoCoverPage = submissionTypesUtils.isPaperNoCoverPageSubmission(form.properties.submissionTypes);
   const staticPdf = submissionTypesUtils.isStaticPdf(form.properties.submissionTypes);
   const noDigitalLogin = submissionTypesUtils.isDigitalNoLoginSubmission(form.properties.submissionTypes);
   const noDigitalLoginOnly = submissionTypesUtils.isDigitalNoLoginSubmissionOnly(form.properties.submissionTypes);
   const isDevelopment = config?.isDevelopment;
+  const staticPdfOnly = submissionTypesUtils.isStaticPdfOnly(form.properties.submissionTypes);
   let skjemaPath = `${baseUrl}/${form.path}`;
-  if (noDigitalLoginOnly) {
+  if (staticPdfOnly) {
+    skjemaPath += '/pdf';
+  } else if (noDigitalLoginOnly) {
     skjemaPath += `/legitimasjon?${toSubParam('DIGITAL_NO_LOGIN')}`;
   } else if (form.properties.submissionTypes?.length === 1) {
     skjemaPath += `${toSubParam(form.properties.submissionTypes[0])}`;
@@ -72,9 +75,9 @@ const FormsPageRow = ({ form }: FormRowProps) => {
             )}
           </td>
           <td>
-            {ingen && (
+            {paperNoCoverPage && (
               <span>
-                [<a href={`/fyllut/${form.path}`}>ingen</a>]
+                [<a href={`/fyllut/${form.path}?sub=papernocoverpage`}>papir (u/førsteside)</a>]
               </span>
             )}
           </td>

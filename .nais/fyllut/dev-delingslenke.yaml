@@ -4,7 +4,7 @@ ingresses:
 replicas-min: 2
 replicas-max: 4
 enabled-features: ""
-feature-attachment-upload-forms: "nav060304,nav951509,nav100754,nav570008,nav540004,nav121501,nav080906,nav361801"
+feature-attachment-upload-forms: "nav951509,nav060304,nav100754,nav570008,nav540004,nav121501,nav080906,nav361801,nav020807,nav020705,nav020805,nav040205,nav040605,nav040608,nav060701,nav070208,nav083501,nav100706,nav100716,nav100717,nav100727,nav100740,nav100750,nav100755,nav100757,nav100758,nav100759,nav100760,nav100761,nav100786,nav100787,nav111205,nav111217b"
 dekorator-url: https://www.nav.no/dekoratoren?simple=true
 skjemabygging-proxy-client-id: 95170319-b4d7-4190-8271-118ed19bafbf
 skjemabygging-proxy-url: https://skjemabygging-proxy.dev-fss-pub.nais.io
