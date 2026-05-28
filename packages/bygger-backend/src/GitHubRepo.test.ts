@@ -37,7 +37,8 @@ const {
 vi.mock('@octokit/auth-app', () => authAppMocks);
 
 vi.mock('@octokit/rest', () => ({
-  Octokit: vi.fn().mockImplementation(() => ({
+  Octokit: vi.fn().mockImplementation(function () {
+    return {
     rest: {
       git: {
         getRef: mockGetRef,
@@ -57,7 +58,8 @@ vi.mock('@octokit/rest', () => ({
         merge: mockMergePullRequest,
       },
     },
-  })),
+  };
+  }),
 }));
 
 describe('GitHubRepo', () => {

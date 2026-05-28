@@ -25,8 +25,8 @@ describe('NotificationsContext', () => {
     mockDisconnect = vi.fn();
     mockSubscribe = vi.fn();
     vi.mocked(Pusher).mockImplementation(
-      () =>
-        ({
+      function () {
+        return {
           unsubscribe: mockUnsubscribe,
           disconnect: mockDisconnect,
           subscribe: (channel) => {
@@ -43,7 +43,8 @@ describe('NotificationsContext', () => {
               },
             } as Channel;
           },
-        }) as never,
+        } as never;
+      },
     );
   });
 
