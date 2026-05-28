@@ -315,7 +315,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         navigate(`/${form.path}/kvittering?${searchParams.toString()}`);
       } catch (error: any) {
         logEvent?.({
-          name: 'skjemainnsending feilet',
+          name: 'skjema innsending feilet',
           data: {
             skjemaId: form.properties.skjemanummer,
             skjemanavn: translate(form.title),

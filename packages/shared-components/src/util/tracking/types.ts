@@ -7,7 +7,7 @@ interface EventData {
 
 type EventName =
   | 'skjema fullført'
-  | 'skjemainnsending feilet'
+  | 'skjema innsending feilet'
   | 'skjema slettet'
   | 'last opp'
   | 'last ned'
@@ -29,7 +29,7 @@ type SkjemaFullfortEvent = Event & {
 };
 
 type SkjemainnsendingFeiletEvent = Event & {
-  name: 'skjemainnsending feilet';
+  name: 'skjema innsending feilet';
   data: EventData & {
     skjemaId: string;
     skjemanavn: string;
