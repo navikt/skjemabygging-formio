@@ -16,7 +16,7 @@ import {
   validateInnsendingsId,
 } from './helpers/sendInn';
 
-const { sendInnConfig, tempAttachmentUploadForms } = config;
+const { sendInnConfig, tempAttachmentUploadForms, isDevelopment } = config;
 const getErrorMessage = 'Kan ikke hente mellomlagret søknad.';
 const postErrorMessage = 'Kan ikke starte mellomlagring av søknaden.';
 const putErrorMessage = 'Kan ikke oppdatere mellomlagret søknad.';
@@ -214,9 +214,19 @@ const sendInnSoknad = {
 };
 
 const shouldUploadAttachmentsInFyllut = (soknad: SendInnSoknadBody) => {
+  // FIXME workaround until cypress tests are updated to handle attachment upload in Fyllut.
+  const shouldUploadAttachmentsInFyllut = isDevelopment
+    ? tempAttachmentUploadForms.includes(soknad.skjemaPath) && (soknad.vedleggsListe?.length || 0) === 0
+    : (soknad.vedleggsListe?.length || 0) === 0;
+  if (!shouldUploadAttachmentsInFyllut) {
+    logger.info(`${soknad.innsendingsId}: Attachment upload in Fyllut disabled, send-inn-frontend will be used`, {
+      skjemanummer: soknad.skjemanr,
+      attachmentsCount: soknad.vedleggsListe?.length,
+      formPath: soknad.skjemaPath,
+    });
+  }
   return {
-    shouldUploadAttachmentsInFyllut:
-      tempAttachmentUploadForms.includes(soknad.skjemaPath) && (soknad.vedleggsListe?.length || 0) === 0,
+    shouldUploadAttachmentsInFyllut,
   };
 };
 
