@@ -4,6 +4,7 @@
     "target": "ES2022",
     "lib": ["ES2022", "dom"],
     "moduleResolution": "node",
+    "ignoreDeprecations": "6.0",
     "types": ["cypress", "@testing-library/cypress"],
     "resolveJsonModule": true,
     "paths": {

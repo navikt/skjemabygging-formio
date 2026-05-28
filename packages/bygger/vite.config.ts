@@ -12,6 +12,7 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, 'env');
   const plugins: PluginOption = [
     react(),
+    tsconfigPaths(),
     createHtmlPlugin({
       minify: true,
       inject: {
@@ -44,10 +45,6 @@ export default defineConfig(({ mode }) => {
       },
     },
   ];
-
-  if (mode !== 'production') {
-    plugins.push(tsconfigPaths());
-  }
 
   return {
     base: '/',

@@ -6,13 +6,16 @@ import AdditionalDescription from '../../base/components/AdditionalDescription';
 import Description from '../../base/components/Description';
 import Label from '../../base/components/Label';
 import { blurHandler, focusHandler } from '../../base/focus-helpers';
+import resolveFormioDefault from '../../base/resolveFormioDefault';
 import { getSelectedValuesAsList, getSelectedValuesMap } from '../../utils';
 import selectBoxesBuilder from './SelectBoxes.builder';
 import selectBoxesForm from './SelectBoxes.form';
 
+const SelectBoxesBase = resolveFormioDefault(FormioSelectBoxes);
+
 class SelectBoxes extends BaseComponent {
   static schema() {
-    return FormioSelectBoxes.schema({
+    return SelectBoxesBase.schema({
       label: 'Flervalg',
       type: 'selectboxes',
       key: 'selectboxes',

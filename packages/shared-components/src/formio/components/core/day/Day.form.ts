@@ -1,7 +1,10 @@
 import FormioDayEditForm from 'formiojs/components/day/Day.form';
+import resolveFormioDefault from '../../base/resolveFormioDefault';
+
+const dayEditFormFactory = resolveFormioDefault(FormioDayEditForm);
 
 const alertForm = () => {
-  return FormioDayEditForm([
+  return dayEditFormFactory([
     {
       label: 'Day',
       key: 'day',

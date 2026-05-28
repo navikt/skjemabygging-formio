@@ -1,9 +1,12 @@
 import Fieldset from 'formiojs/components/fieldset/Fieldset';
+import resolveFormioDefault from '../../base/resolveFormioDefault';
 import formGroupForm from './FormGroup.form';
 
-class FormGroup extends Fieldset {
+const FieldsetBase = resolveFormioDefault(Fieldset);
+
+class FormGroup extends FieldsetBase {
   static schema() {
-    return Fieldset.schema({
+    return FieldsetBase.schema({
       label: 'Skjemagruppe',
       key: 'navSkjemagruppe',
       type: 'navSkjemagruppe',

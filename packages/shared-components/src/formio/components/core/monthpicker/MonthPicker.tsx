@@ -8,12 +8,15 @@ import BaseComponent from '../../base/BaseComponent';
 import AdditionalDescription from '../../base/components/AdditionalDescription';
 import Description from '../../base/components/Description';
 import Label from '../../base/components/Label';
+import resolveFormioDefault from '../../base/resolveFormioDefault';
 import monthPickerBuilder from './MonthPicker.builder';
 import monthPickerForm from './MonthPicker.form';
 
+const DayBase = resolveFormioDefault(FormioDay);
+
 class MonthPicker extends BaseComponent {
   static schema() {
-    return FormioDay.schema({
+    return DayBase.schema({
       label: 'Månedsvelger (mm.åååå)',
       type: 'monthPicker',
       key: 'monthPicker',

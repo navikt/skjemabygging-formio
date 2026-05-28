@@ -1,10 +1,13 @@
 // @ts-nocheck
 import FormioDay from 'formiojs/components/day/Day';
+import resolveFormioDefault from '../../base/resolveFormioDefault';
 import dayForm from './Day.form';
 
-class Day extends FormioDay {
+const DayBase = resolveFormioDefault(FormioDay);
+
+class Day extends DayBase {
   static schema() {
-    return FormioDay.schema({
+    return DayBase.schema({
       label: 'Mnd / år',
       type: 'day',
       key: 'manedAr',

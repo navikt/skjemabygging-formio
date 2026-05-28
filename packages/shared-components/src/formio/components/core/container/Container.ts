@@ -1,10 +1,13 @@
 import FormioContainer from 'formiojs/components/container/Container';
+import resolveFormioDefault from '../../base/resolveFormioDefault';
 import containerForm from './Container.form';
 
-class Container extends FormioContainer {
+const ContainerBase = resolveFormioDefault(FormioContainer);
+
+class Container extends ContainerBase {
   static schema(...extend) {
     return {
-      ...FormioContainer.schema(...extend),
+      ...ContainerBase.schema(...extend),
       label: 'Beholder',
     };
   }

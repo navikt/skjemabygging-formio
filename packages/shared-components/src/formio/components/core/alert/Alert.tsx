@@ -5,12 +5,15 @@ import { ComponentUtilsProvider } from '../../../../context/component/componentU
 import BaseComponent from '../../base/BaseComponent';
 import BuilderTags from '../../base/components/BuilderTags';
 import TextDisplayTag from '../../base/components/TextDisplayTag';
+import resolveFormioDefault from '../../base/resolveFormioDefault';
 import alertBuilder from './Alert.builder';
 import alertForm from './Alert.form';
 
+const FormioField = resolveFormioDefault(Field);
+
 class Alert extends BaseComponent {
   static schema() {
-    return Field.schema({
+    return FormioField.schema({
       type: 'alertstripe',
       key: 'alertstripe',
       alerttype: 'info',

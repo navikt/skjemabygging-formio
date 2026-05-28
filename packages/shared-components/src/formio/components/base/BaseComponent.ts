@@ -3,6 +3,9 @@ import Field from 'formiojs/components/_classes/field/Field';
 import { TFunction, TOptions } from 'i18next';
 import FormioReactComponent from './FormioReactComponent';
 import baseComponentUtils from './baseComponentUtils';
+import resolveFormioDefault from './resolveFormioDefault';
+
+const FormioField = resolveFormioDefault(Field);
 
 /**
  * When creating a custom component that extends BaseComponent,
@@ -21,7 +24,7 @@ class BaseComponent extends FormioReactComponent {
    * with the component schema values like label, type, key and more.
    */
   static schema(values) {
-    return Field.schema({
+    return FormioField.schema({
       fieldSize: 'input--xxl',
       validateOn: 'blur',
       ...values,

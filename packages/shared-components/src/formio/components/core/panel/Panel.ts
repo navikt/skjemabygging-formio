@@ -1,9 +1,12 @@
 import FormioPanel from 'formiojs/components/panel/Panel';
+import resolveFormioDefault from '../../base/resolveFormioDefault';
 import panelForm from './Panel.form';
 
-class Panel extends FormioPanel {
+const PanelBase = resolveFormioDefault(FormioPanel);
+
+class Panel extends PanelBase {
   static schema() {
-    return super.schema();
+    return PanelBase.schema();
   }
 
   static editForm() {

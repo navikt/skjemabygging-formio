@@ -1,6 +1,9 @@
 import { Component, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import FormioUtils from 'formiojs/utils';
 import BaseComponent from '../../base/BaseComponent';
+import resolveFormioDefault from '../../base/resolveFormioDefault';
+
+const formioUtils = resolveFormioDefault(FormioUtils);
 
 /**
  * Get component matching beforeDateInputKey and if parentPath
@@ -18,7 +21,7 @@ const getBeforeDateInputPath = (components: Component[], beforeDateInputKey: str
     .flattenComponents(components)
     .filter(
       (component) =>
-        FormioUtils.getComponentPath(component) === beforeDateInputKey &&
+        formioUtils.getComponentPath(component) === beforeDateInputKey &&
         (!parentPath || component.path?.startsWith(parentPath)),
     )
     .map((component) => component.path);
@@ -39,7 +42,7 @@ const getBeforeDateInputValue = (instance: BaseComponent) => {
     beforeDateInputPath = getBeforeDateInputPath(instance.root.getComponents(), beforeDateInputPath, parentPath);
   }
 
-  return FormioUtils.getValue(instance.root.submission, beforeDateInputPath);
+  return formioUtils.getValue(instance.root.submission, beforeDateInputPath);
 };
 
 /**
@@ -48,7 +51,7 @@ const getBeforeDateInputValue = (instance: BaseComponent) => {
  * @param instance
  */
 const getComponentsWithDateInputKey = (instance: BaseComponent): Component[] => {
-  const beforeDateInputKey = FormioUtils.getComponentPath(instance);
+  const beforeDateInputKey = formioUtils.getComponentPath(instance);
   return navFormUtils
     .flattenComponents(instance.root.getComponents() as Component[])
     .filter((component) => component.component?.beforeDateInputKey === beforeDateInputKey);

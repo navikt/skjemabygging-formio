@@ -1,4 +1,5 @@
 import FormioTextArea from 'formiojs/components/textarea/TextArea';
+import resolveFormioDefault from './base/resolveFormioDefault';
 import Accordion from './core/accordion/Accordion';
 import Activities from './core/activities/Activities';
 import Address from './core/address/Address';
@@ -41,6 +42,8 @@ import Sender from './extensions/sender/Sender';
 import Surname from './extensions/surname/Surname';
 import Year from './extensions/year/Year';
 
+const TextAreaBase = resolveFormioDefault(FormioTextArea);
+
 const customComponents = {
   container: Container,
   activities: Activities,
@@ -61,7 +64,7 @@ const customComponents = {
   datagrid: DataGrid,
   textfield: TextField,
   textarea: TextArea,
-  formioTextArea: FormioTextArea,
+  formioTextArea: TextAreaBase,
   number: Number,
   navSkjemagruppe: FormGroup,
   selectboxes: SelectBoxes,

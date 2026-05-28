@@ -1,5 +1,8 @@
 import FormioUtils from 'formiojs/utils';
 import FormioReactComponent from './FormioReactComponent';
+import resolveFormioDefault from './resolveFormioDefault';
+
+const formioUtils = resolveFormioDefault(FormioUtils);
 
 /**
  * The focus and blur handlers are copied from Formio Component#addFocusBlurEvents.
@@ -33,7 +36,7 @@ export const focusHandler =
 export const blurHandler =
   (thisComponent: FormioReactComponent, opts: Opts = {}) =>
   () => {
-    thisComponent.root.pendingBlur = FormioUtils.delay(() => {
+    thisComponent.root.pendingBlur = formioUtils.delay(() => {
       if (!opts.skipEmit) {
         thisComponent.emit('blur', thisComponent);
       }

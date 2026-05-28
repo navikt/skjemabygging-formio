@@ -1,14 +1,17 @@
 import Field from 'formiojs/components/_classes/field/Field';
 import FormioDataGrid from 'formiojs/components/datagrid/DataGrid';
 import { scrollToAndSetFocus } from '../../../../util/focus-management/focus-management';
+import resolveFormioDefault from '../../base/resolveFormioDefault';
 import dataGridBuilder from './DataGrid.builder';
 import dataGridForm from './DataGrid.form';
 
-const originalRemoveRow = FormioDataGrid.prototype.removeRow;
+const FormioField = resolveFormioDefault(Field);
+const DataGridBase = resolveFormioDefault(FormioDataGrid);
+const originalRemoveRow = DataGridBase.prototype.removeRow;
 
-class DataGrid extends FormioDataGrid {
+class DataGrid extends DataGridBase {
   static schema() {
-    return Field.schema({
+    return FormioField.schema({
       label: 'Repeterende data',
       key: 'datagrid',
       type: 'datagrid',
@@ -28,7 +31,7 @@ class DataGrid extends FormioDataGrid {
 
   get defaultSchema() {
     // Ved å bruke FormioDataGrid.schema() så får man formio sin datagrid i editoren.
-    return FormioDataGrid.schema();
+    return DataGridBase.schema();
   }
 
   checkComponentValidity(_data, _dirty, _row, _options = {}) {
