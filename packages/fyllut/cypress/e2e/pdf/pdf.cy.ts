@@ -27,9 +27,7 @@ const getCleanedUpPdfFormData = (request, date?: string) => {
 const downloadPdf = (submissionType: 'digital' | 'paper' | 'digitalnologin' = 'paper') => {
   cy.findByRole('link', { name: /Oppsummering|Summary/ }).click();
   cy.findByRole('heading', { name: /Oppsummering|Summary/ }).shouldBeVisible();
-  if (submissionType === 'digital') {
-    cy.clickSaveAndContinue();
-  } else if (submissionType === 'digitalnologin') {
+  if (submissionType === 'digitalnologin' || submissionType === 'digital') {
     cy.clickSendNav();
   } else {
     cy.findByRole('link', { name: 'Instruksjoner for innsending' }).click();
@@ -66,16 +64,16 @@ describe('Pdf', () => {
       cy.clickSaveAndContinue();
       cy.findByRole('heading', { name: 'Oppsummering' }).shouldBeVisible();
 
-      cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
+      cy.submitApplication((req) => {
         const { submission, pdfFormData } = req.body;
         expect(Object.keys(submission.data)).to.have.length(4);
         expect(Object.keys(pdfFormData.verdiliste)).to.have.length(4);
         expect(Object.keys(pdfFormData.verdiliste[3].verdiliste)).to.have.length(3);
-      }).as('submitMellomlagring');
+      });
 
       cy.clickSendNav();
 
-      cy.wait('@submitMellomlagring');
+      cy.wait('@submitApplication');
     });
 
     it('pdfFormData get populated with the correct number of pages', () => {
@@ -88,17 +86,17 @@ describe('Pdf', () => {
       cy.findByRole('heading', { name: 'Page 1' }).shouldBeVisible();
       cy.clickSaveAndContinue();
 
-      cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
+      cy.submitApplication((req) => {
         const { submission, pdfFormData } = req.body;
         expect(Object.keys(submission.data)).to.have.length(1);
         // This is 1 and not 2, because the conditional page (page 2) is not shown in pdf since it have no values.
         // It is shown in summary page since it there have an edit link.
         expect(Object.keys(pdfFormData.verdiliste)).to.have.length(1);
-      }).as('submitMellomlagring');
+      });
       cy.findByRole('heading', { name: 'Oppsummering' }).shouldBeVisible();
       cy.clickSendNav();
 
-      cy.wait('@submitMellomlagring');
+      cy.wait('@submitApplication');
     });
 
     it('pdfFormData get populated with the correct number of pages, paper', () => {
@@ -308,7 +306,7 @@ describe('Pdf', () => {
         });
 
         cy.fixture('pdf/request-components-identity-digital.json').then((fixture) => {
-          cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
+          cy.intercept('POST', '/fyllut/api/send-inn/digital-application/*', (req) => {
             // Check that timestamp is present in footer before removing it for comparison.
             expect(req.body.pdfFormData.bunntekst.upperMiddle).not.to.be.null;
             expect(getCleanedUpPdfFormData(req)).deep.eq(fixture);
@@ -430,7 +428,7 @@ describe('Pdf', () => {
         });
 
         cy.fixture('pdf/request-components-all-digital.json').then((fixture) => {
-          cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
+          cy.intercept('POST', '/fyllut/api/send-inn/digital-application/*', (req) => {
             expect(getCleanedUpPdfFormData(req, date)).deep.eq(fixture);
           }).as('downloadPdf');
         });
