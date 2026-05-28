@@ -1,7 +1,7 @@
 import { correlator } from '@navikt/skjemadigitalisering-shared-backend';
 import { UploadedFile, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { openAsBlob } from 'node:fs';
-import { ConfigType } from '../../config/types';
+import { FyllutBackendConfig } from '../../config/types';
 import { logger } from '../../logger';
 import { appMetrics } from '../../services';
 import { LogMetadata } from '../../types/log';
@@ -15,7 +15,7 @@ export interface DownloadedAttachment {
   contentLength?: string;
 }
 
-const ApplicationClient = (config: ConfigType, type: 'nologin' | 'digital') => {
+const ApplicationClient = (config: FyllutBackendConfig, type: 'nologin' | 'digital') => {
   const basePath = `${config.sendInnConfig.host}/v1/application-${type}`;
 
   const createFileBlob = async (file: Express.Multer.File): Promise<Blob> => {

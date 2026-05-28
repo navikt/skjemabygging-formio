@@ -2,7 +2,7 @@ import { I18nTranslations, NavFormType, ResourceContent } from '@navikt/skjemadi
 import { PushEvent } from '@octokit/webhooks-types';
 import { v4 as uuidv4 } from 'uuid';
 import { GitHubRepo } from './GitHubRepo';
-import { ConfigType } from './config/types';
+import { ByggerBackendConfig } from './config/types';
 import { base64ToString, fetchWithErrorHandling } from './fetchUtils';
 import { logger } from './logging/logger';
 import {
@@ -19,9 +19,9 @@ const PUBLISH_REGEXP = /^\[publisering] skjema "(.*)", monorepo ref: (.*)$/;
 const UNPUBLISH_REGEXP = /^\[avpublisering] skjema (.*), monorepo ref: (.*)$/;
 
 export class Backend {
-  private readonly config: ConfigType;
+  private readonly config: ByggerBackendConfig;
 
-  constructor(config: ConfigType) {
+  constructor(config: ByggerBackendConfig) {
     this.config = config;
   }
 

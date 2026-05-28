@@ -9,6 +9,27 @@ type FeatureTogglesMap = {
 };
 
 type ApplicationName = 'bygger' | 'fyllut';
+type FrontendConfig = {
+  NAIS_CLUSTER_NAME?: string;
+  FEATURE_TOGGLES?: FeatureTogglesMap;
+  featureToggles?: FeatureTogglesMap;
+  isProdGcp?: boolean;
+  isDevelopment?: boolean;
+  isDelingslenke?: boolean;
+  isLoggedIn?: boolean;
+  mocksEnabled?: boolean;
+  gitVersion?: string;
+  applicationName?: string;
+  fyllutBaseUrl?: string;
+  skjemadelingslenkeUrl?: string;
+  pusherCluster?: string;
+  pusherKey?: string;
+  user?: unknown;
+  mellomlagringDurationDays?: string;
+  loggerConfig?: Partial<LoggerConfig>;
+  isTest?: boolean;
+  [key: string]: unknown;
+};
 interface AppConfigContextType {
   dokumentinnsendingBaseURL?: string;
   baseUrl?: string;
@@ -16,7 +37,7 @@ interface AppConfigContextType {
   featureToggles?: FeatureTogglesMap;
   submissionMethod?: SubmissionMethod;
   app?: ApplicationName;
-  config?: Record<string, string | boolean | object>;
+  config?: FrontendConfig;
   http?: typeof baseHttp;
   logger?: FrontendLogger;
   diffOn?: boolean;
@@ -82,4 +103,4 @@ function AppConfigProvider({
 const useAppConfig = () => useContext(AppConfigContext);
 
 export { AppConfigProvider, useAppConfig };
-export type { AppConfigContextType };
+export type { AppConfigContextType, FrontendConfig };

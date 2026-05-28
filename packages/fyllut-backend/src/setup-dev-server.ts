@@ -1,6 +1,6 @@
 import cookieParser from 'cookie-parser';
 import { Express, NextFunction, Request, Response, Router } from 'express';
-import { ConfigType } from './config/types';
+import { FyllutBackendConfig } from './config/types';
 import { logger } from './logger';
 import { QueryParamSub } from './types/custom';
 
@@ -12,7 +12,7 @@ const DEV_ACCESS_COOKIE = 'fyllut-dev-access';
 const isNavIp = (ip: string) => /^(::ffff:)?(155\.55\.|10\.|127\.)/.test(ip);
 const isFormPath = (value: string) => /^\w*$/.test(value);
 
-export const setupDevServer = (expressApp: Express, fyllutRouter: Router, config: ConfigType) => {
+export const setupDevServer = (expressApp: Express, fyllutRouter: Router, config: FyllutBackendConfig) => {
   logger.info('Server setup dev');
 
   // Trust proxy IP headers, to ensure we get the actaual req.ip for the client
