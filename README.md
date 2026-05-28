@@ -116,8 +116,7 @@ I `packages/bygger-backend/.env` kan man legge inn følgende miljøvariabler:
 
 #### Hvordan opprette et personal access token på GitHub
 
-Se [GitHub docs](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
-.
+Se [GitHub docs](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token).
 
 Velg `repo` under `scopes`, og _authorize_ dette token for organisasjon `navikt` etter opprettelsen (_Configure SSO_).
 
