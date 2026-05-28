@@ -29,7 +29,7 @@
     "express": "^5.2.1",
     "express-rate-limit": "^8.5.2",
     "http-proxy": "^1.18.1",
-    "jsdom": "^28.1.0",
+    "jsdom": "^29.1.1",
     "jose": "^6.2.3",
     "luxon": "^3.7.2",
     "multer": "^2.0.2",
@@ -37,7 +37,7 @@
     "node-jose": "^2.2.0",
     "pusher": "^5.3.2",
     "qs": "^6.15.2",
-    "uuid": "^13.0.0",
+    "uuid": "^14.0.0",
     "winston": "^3.19.0"
   },
   "devDependencies": {
@@ -48,13 +48,13 @@
     "@types/luxon": "^3.7.1",
     "@types/memorystream": "^0.3.4",
     "@types/multer": "^2.0.0",
-    "@types/node": "^24.6.2",
+    "@types/node": "^25.9.1",
     "@types/node-fetch": "^2.6.13",
     "@types/node-jose": "^1.1.13",
     "jsonwebtoken": "^9.0.3",
     "memorystream": "^0.3.1",
     "nock": "^14.0.15",
-    "vite-plugin-node": "^7.0.0",
-    "vitest-mock-extended": "^3.1.0"
+    "vite-plugin-node": "^8.0.0",
+    "vitest-mock-extended": "^4.0.0"
   }
 }
