@@ -109,7 +109,7 @@ importers:
         specifier: ^8.60.0
         version: 8.60.0(eslint@9.39.4)(typescript@5.9.3)
       vite:
-        specifier: ^7.3.1
+        specifier: ^7.3.2
         version: 7.3.3(@types/node@25.7.0)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.8.3)
       vite-plugin-html:
         specifier: ^3.2.2
@@ -203,8 +203,8 @@ importers:
         specifier: ^3.4.1
         version: 3.4.1(react@18.3.1)
       uuid:
-        specifier: ^13.0.0
-        version: 13.0.2
+        specifier: ^14.0.0
+        version: 14.0.0
     devDependencies:
       '@testing-library/cypress':
         specifier: ^10.1.3
@@ -297,8 +297,8 @@ importers:
         specifier: ^6.15.2
         version: 6.15.2
       uuid:
-        specifier: ^13.0.0
-        version: 13.0.2
+        specifier: ^14.0.0
+        version: 14.0.0
       winston:
         specifier: ^3.19.0
         version: 3.19.0
@@ -728,8 +728,8 @@ importers:
         specifier: ^2.30.1
         version: 2.30.1
       uuid:
-        specifier: ^13.0.0
-        version: 13.0.2
+        specifier: ^14.0.0
+        version: 14.0.0
     devDependencies:
       '@types/luxon':
         specifier: ^3.7.1
@@ -1702,6 +1702,9 @@ packages:
       '@types/react': ^17.0.30 || ^18 || ^19
       react: ^17 || ^18 || ^19
       react-dom: ^17 || ^18 || ^19
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
 
   '@navikt/ds-tokens@8.8.0':
     resolution: {integrity: sha512-xrX+4l4EOOSdLXy4NdIft87052I95m3tLDNPjTuyOBMyZZdEivLskc8KbemLhTGJJZ2TfiDe6jpkYwP0iFFLGA==, tarball: https://npm.pkg.github.com/download/@navikt/ds-tokens/8.8.0/1b64643ec409921069ede0fc5eab1850afa23393}
@@ -1717,6 +1720,9 @@ packages:
       html-react-parser: '>=5.x'
       jsdom: '>=16.x'
       react: '>=17.x'
+    peerDependenciesMeta:
+      react:
+        optional: true
 
   '@navikt/nav-dekoratoren-moduler@3.7.1':
     resolution: {integrity: sha512-MQLxR4uoADCd6i0hFnWHN/XLPevEfxkBK9yEgbtcY0v2gsj69nALH/7DvTKqSxqRovxOHibVa7mZKZEBAMRBvg==, tarball: https://npm.pkg.github.com/download/@navikt/nav-dekoratoren-moduler/3.7.1/09490a131cedd7779e35d413d20c36bd01ef57a0}
@@ -1724,6 +1730,9 @@ packages:
     peerDependencies:
       html-react-parser: '>=5.x'
       react: '>=17.x'
+    peerDependenciesMeta:
+      react:
+        optional: true
 
   '@navikt/skjemadigitalisering-shared-components@file:packages/shared-components':
     resolution: {directory: packages/shared-components, type: directory}
@@ -6687,6 +6696,10 @@ packages:
     resolution: {integrity: sha512-vzi9uRZ926x4XV73S/4qQaTwPXM2JBj6/6lI/byHH1jOpCzb0zDbfytgA9LcN/hzb2l7WQSQnxITOVx5un/wGw==}
     hasBin: true
 
+  uuid@14.0.0:
+    resolution: {integrity: sha512-Qo+uWgilfSmAhXCMav1uYFynlQO7fMFiMVZsQqZRMIXp0O7rR7qjkj+cPvBHLgBqi960QCoo/PH2/6ZtVqKvrg==}
+    hasBin: true
+
   uuid@3.4.0:
     resolution: {integrity: sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==}
     deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
@@ -8095,11 +8108,12 @@ snapshots:
       '@floating-ui/react-dom': 2.1.8(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@navikt/aksel-icons': 8.8.0
       '@navikt/ds-tokens': 8.8.0
-      '@types/react': 18.3.11
       date-fns: 4.1.0
       react: 18.3.1
       react-day-picker: 9.7.0(react@18.3.1)
       react-dom: 18.3.1(react@18.3.1)
+    optionalDependencies:
+      '@types/react': 18.3.11
 
   '@navikt/ds-tokens@8.8.0': {}
 
@@ -8111,6 +8125,7 @@ snapshots:
       html-react-parser: 5.2.17(@types/react@18.3.11)(react@18.3.1)
       js-cookie: 3.0.5
       jsdom: 28.1.0(@noble/hashes@1.8.0)
+    optionalDependencies:
       react: 18.3.1
 
   '@navikt/nav-dekoratoren-moduler@3.7.1(html-react-parser@5.2.17(@types/react@18.3.11)(react@18.3.1))(react@18.3.1)':
@@ -8118,6 +8133,7 @@ snapshots:
       csp-header: 6.3.1
       html-react-parser: 5.2.17(@types/react@18.3.11)(react@18.3.1)
       js-cookie: 3.0.5
+    optionalDependencies:
       react: 18.3.1
 
   '@navikt/skjemadigitalisering-shared-components@file:packages/shared-components(@types/react@18.3.11)(html-react-parser@5.2.17(@types/react@18.3.11)(react@18.3.1))(typescript@5.9.3)':
@@ -8160,7 +8176,7 @@ snapshots:
       lodash: 4.18.1
       luxon: 3.7.2
       moment: 2.30.1
-      uuid: 13.0.2
+      uuid: 14.0.0
     transitivePeerDependencies:
       - encoding
       - typescript
@@ -13821,6 +13837,8 @@ snapshots:
   utils-merge@1.0.1: {}
 
   uuid@13.0.2: {}
+
+  uuid@14.0.0: {}
 
   uuid@3.4.0: {}
 
