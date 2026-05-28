@@ -62,8 +62,12 @@ const injectParams = ({ textOrKey, params, translations, currentLanguage }: Tran
 };
 
 const createTranslate = (translations: FormsApiTranslationMap, languageCode: TranslationLang): TranslateFunction => {
-  if (!languageCode || !translations || Object.keys(translations).length === 0) {
+  if (!languageCode) {
     throw new ResponseError('BAD_REQUEST', 'Missing required parameters for creating translate function');
+  }
+
+  if (!translations || Object.keys(translations).length === 0) {
+    return (text?: string | Tkey) => (text ? `${text}` : '');
   }
 
   return (text?: string | Tkey, textReplacements?: I18nTranslationReplacements) =>
