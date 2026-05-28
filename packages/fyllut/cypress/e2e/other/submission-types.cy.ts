@@ -106,6 +106,13 @@ describe('Submission Type', () => {
         cy.clickStart();
 
         cy.clickShowAllSteps();
+        cy.findByRole('link', { name: 'Vedlegg' }).click();
+
+        cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+          cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
+        });
+        cy.clickSaveAndContinue();
+
         cy.findByRole('link', { name: TEXTS.statiske.summaryPage.title }).click();
 
         cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
