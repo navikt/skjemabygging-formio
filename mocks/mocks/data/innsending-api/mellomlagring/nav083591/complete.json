@@ -67,6 +67,32 @@
           "personinntektsskjema1": "leggerVedNaa",
           "resultatregnskap1": "leggerVedNaa"
         },
+        "attachments": [
+          {
+            "attachmentId": "eiaivlp",
+            "navId": "eiaivlp",
+            "type": "default",
+            "value": "ettersender",
+            "title": "Personinntektsskjema",
+            "files": []
+          },
+          {
+            "attachmentId": "etpewjh",
+            "navId": "etpewjh",
+            "type": "default",
+            "value": "ettersender",
+            "title": "Resultatregnskap",
+            "files": []
+          },
+          {
+            "attachmentId": "ec09wv",
+            "navId": "ec09wv",
+            "type": "other",
+            "value": "nei",
+            "title": "Annet",
+            "files": []
+          }
+        ],
         "metadata": {
           "timezone": "Europe/Oslo",
           "offset": 60,

@@ -135,12 +135,6 @@ Cypress.Commands.add(
   },
 );
 
-Cypress.Commands.add('verifySendInnRedirect', () => {
-  return cy.origin(Cypress.env('SEND_INN_FRONTEND'), () => {
-    cy.contains('Send Inn Frontend');
-  });
-});
-
 Cypress.Commands.add('verifyNavRedirect', () => {
   return cy.origin('https://www.nav.no', () => {
     cy.url().should('include', 'nav.no');

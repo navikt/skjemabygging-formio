@@ -486,17 +486,17 @@ describe('Mellomlagring', () => {
           });
         });
 
-        describe('allows user to continue to sendinn application', () => {
+        describe('allows user to submit application', () => {
           it('when submission data is complete and valid', () => {
             cy.mocksUseRouteVariant('get-soknad:form-select-complete-v1');
 
             cy.submitApplication((req) => {
-              const { submission, attachments } = req.body;
+              const { submission } = req.body;
               expect(submission.data.velgInstrument).to.deep.eq({ label: 'Piano', value: 'piano' });
               expect(submission.data.velgLand).to.deep.eq({ label: 'Italia', value: 'IT' });
               expect(submission.data.velgValutaDuVilBetaleMed).to.deep.eq({ label: 'Euro (EUR)', value: 'EUR' });
-              expect(attachments).to.have.length(1);
-              expect(attachments[0].vedleggsnr).to.eq('P2');
+              expect(submission.attachments).to.have.length(2);
+              expect(submission.attachments[0].title).to.eq('Kursbevis');
             });
 
             cy.visit(
@@ -527,12 +527,11 @@ describe('Mellomlagring', () => {
             cy.mocksUseRouteVariant('get-soknad:form-select-invalid-country-v1');
 
             cy.submitApplication((req) => {
-              const { submission, attachments } = req.body;
+              const { submission } = req.body;
               expect(submission.data.velgInstrument).to.deep.eq({ label: 'Piano', value: 'piano' });
               expect(submission.data.velgLand).to.deep.eq({ label: 'Invalid country', value: 'INVALID' });
               expect(submission.data.velgValutaDuVilBetaleMed).to.deep.eq({ label: 'Euro (EUR)', value: 'EUR' });
-              expect(attachments).to.have.length(1);
-              expect(attachments[0].vedleggsnr).to.eq('P2');
+              expect(submission.attachments).to.have.length(2);
             });
 
             cy.visit(
@@ -564,11 +563,11 @@ describe('Mellomlagring', () => {
       it('Allows user to submit complete submission', () => {
         cy.mocksUseRouteVariant('get-soknad:nav083501-complete-v1');
         cy.submitApplication((req) => {
-          const { submission, attachments } = req.body;
+          const { submission } = req.body;
           expect(submission.data.landvelger).to.deep.eq({ label: 'Frankrike', value: 'FR' });
-          expect(attachments).to.have.length(2);
-          expect(attachments[0].label).to.eq('Personinntektsskjema');
-          expect(attachments[1].label).to.eq('Resultatregnskap');
+          expect(submission.attachments).to.have.length(3);
+          expect(submission.attachments[0].label).to.eq('Personinntektsskjema');
+          expect(submission.attachments[1].label).to.eq('Resultatregnskap');
         });
         cy.intercept('GET', '/fyllut/api/send-inn/soknad/2db25aab-3524-4426-a333-489542bf16bf').as('getMellomlagring');
 

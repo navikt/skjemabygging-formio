@@ -21,11 +21,34 @@
       "language": "nb-NO",
       "data": {
         "data": {
+          "dineOpplysninger": {
+            "identitet": {
+              "identitetsnummer": "03876399856"
+            }
+          },
           "velgInstrument": {
             "label": "Piano",
             "value": "piano"
           }
-        }
+        },
+        "attachments": [
+          {
+            "attachmentId": "e772p7",
+            "navId": "e772p7",
+            "type": "default",
+            "value": "ettersender",
+            "title": "Kursbevis",
+            "files": []
+          },
+          {
+            "attachmentId": "e9er54e",
+            "navId": "e9er54e",
+            "type": "other",
+            "value": "nei",
+            "title": "Annet",
+            "files": []
+          }
+        ]
       }
     }
   },
