@@ -22,6 +22,7 @@ interface MockedResponse extends Response {
   json: Mock;
   send: Mock;
   contentType: Mock;
+  setHeader: Mock;
   status: Mock;
   sendStatus: Mock;
   header: Mock;
@@ -32,6 +33,7 @@ function mockResponse(): MockedResponse {
     json: vi.fn(),
     send: vi.fn(),
     contentType: vi.fn(),
+    setHeader: vi.fn(),
     status: vi.fn(),
     sendStatus: vi.fn(),
     header: vi.fn(),

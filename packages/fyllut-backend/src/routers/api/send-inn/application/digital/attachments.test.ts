@@ -38,9 +38,8 @@ describe('[endpoint] send-inn/application/digital/attachments', () => {
         params: { innsendingsId, attachmentId, fileId },
       });
       req.getTokenxAccessToken = () => accessToken;
-      const res = mockResponse() as ReturnType<typeof mockResponse> & { setHeader: ReturnType<typeof vi.fn> };
+      const res = mockResponse();
       res.status.mockReturnValue(res);
-      res.setHeader = vi.fn();
       const next = vi.fn();
 
       await attachmentsEndpoints.get(req, res, next);
@@ -63,9 +62,8 @@ describe('[endpoint] send-inn/application/digital/attachments', () => {
         params: { innsendingsId, attachmentId, fileId },
       });
       req.getTokenxAccessToken = () => accessToken;
-      const res = mockResponse() as ReturnType<typeof mockResponse> & { setHeader: ReturnType<typeof vi.fn> };
+      const res = mockResponse();
       res.status.mockReturnValue(res);
-      res.setHeader = vi.fn();
       const next = vi.fn();
 
       await attachmentsEndpoints.get(req, res, next);
@@ -89,9 +87,8 @@ describe('[endpoint] send-inn/application/digital/attachments', () => {
         params: { innsendingsId, attachmentId, fileId },
       });
       req.getTokenxAccessToken = () => accessToken;
-      const res = mockResponse() as ReturnType<typeof mockResponse> & { setHeader: ReturnType<typeof vi.fn> };
+      const res = mockResponse();
       res.status.mockReturnValue(res);
-      res.setHeader = vi.fn();
       const next = vi.fn();
 
       await attachmentsEndpoints.get(req, res, next);

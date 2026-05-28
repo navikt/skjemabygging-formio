@@ -33,6 +33,7 @@
     "uuid": "^14.0.0"
   },
   "devDependencies": {
-    "@types/luxon": "^3.7.1"
+    "@types/luxon": "^3.7.1",
+    "@types/node": "^25.9.1"
   }
 }

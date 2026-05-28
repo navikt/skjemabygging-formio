@@ -734,6 +734,9 @@ importers:
       '@types/luxon':
         specifier: ^3.7.1
         version: 3.7.1
+      '@types/node':
+        specifier: ^25.9.1
+        version: 25.9.1
 
   packages/shared-frontend:
     dependencies:
@@ -1576,6 +1579,9 @@ packages:
       '@types/react': ^17.0.30 || ^18 || ^19
       react: ^17 || ^18 || ^19
       react-dom: ^17 || ^18 || ^19
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
 
   '@navikt/ds-tokens@8.8.0':
     resolution: {integrity: sha512-xrX+4l4EOOSdLXy4NdIft87052I95m3tLDNPjTuyOBMyZZdEivLskc8KbemLhTGJJZ2TfiDe6jpkYwP0iFFLGA==, tarball: https://npm.pkg.github.com/download/@navikt/ds-tokens/8.8.0/1b64643ec409921069ede0fc5eab1850afa23393}
@@ -1589,6 +1595,9 @@ packages:
     peerDependencies:
       html-react-parser: '>=5.x'
       react: '>=17.x'
+    peerDependenciesMeta:
+      react:
+        optional: true
 
   '@navikt/skjemadigitalisering-shared-backend@file:packages/shared-backend':
     resolution: {directory: packages/shared-backend, type: directory}
@@ -7752,11 +7761,12 @@ snapshots:
       '@floating-ui/react-dom': 2.1.8(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@navikt/aksel-icons': 8.8.0
       '@navikt/ds-tokens': 8.8.0
-      '@types/react': 18.3.11
       date-fns: 4.1.0
       react: 18.3.1
       react-day-picker: 9.7.0(react@18.3.1)
       react-dom: 18.3.1(react@18.3.1)
+    optionalDependencies:
+      '@types/react': 18.3.11
 
   '@navikt/ds-tokens@8.8.0': {}
 
@@ -7768,6 +7778,7 @@ snapshots:
       csp-header: 6.3.1
       html-react-parser: 6.1.2(@types/react@18.3.11)(react@18.3.1)
       js-cookie: 3.0.7
+    optionalDependencies:
       react: 18.3.1
 
   '@navikt/skjemadigitalisering-shared-backend@file:packages/shared-backend(@noble/hashes@1.8.0)(express@5.2.1)(multer@2.1.1)(typescript@6.0.3)':
