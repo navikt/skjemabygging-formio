@@ -14,10 +14,12 @@ import { attachmentValidator } from '../../components/attachment/attachmentValid
 import ButtonRow from '../../components/button/ButtonRow';
 import EditAnswersButton from '../../components/button/navigation/edit-answers/EditAnswersButton';
 import ValidationExclamationIcon from '../../components/icons/ValidationExclamationIcon';
+import LoadingComponent from '../../components/loading/LoadingComponent';
 import NavFormHelper from '../../components/nav-form/NavFormHelper';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
+import { useSendInn } from '../../context/sendInn/sendInnContext';
 import RenderSummaryForm from '../../form-components/RenderSummaryForm';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
 import {
@@ -39,12 +41,16 @@ export function SummaryPage() {
     activeComponents,
     activeAttachmentUploadsPanel,
   } = useForm();
+  const { isMellomlagringAvailable, isMellomlagringReady, mellomlagringError } = useSendInn();
   const { declarationType, declarationText } = form.properties;
   const [declaration, setDeclaration] = useState<boolean | undefined>(undefined);
 
   const [panelValidationList, setPanelValidationList] = useState<PanelValidation[] | undefined>();
+  const isMellomlagringLoading = isMellomlagringAvailable && !isMellomlagringReady && !mellomlagringError;
 
   useEffect(() => {
+    if (isMellomlagringLoading) return;
+
     const initializePanelValidation = async () => {
       const submissionCopy: Submission = JSON.parse(JSON.stringify(submission || {}));
 
@@ -100,7 +106,7 @@ export function SummaryPage() {
     if (availableLanguages.length > 0) {
       initializePanelValidation();
     }
-  }, [form, submission, appConfig, prefillData, translate, availableLanguages]);
+  }, [form, submission, appConfig, prefillData, translate, availableLanguages, isMellomlagringLoading]);
 
   useEffect(() => {
     setTitle(TEXTS.statiske.summaryPage.title);
@@ -127,6 +133,10 @@ export function SummaryPage() {
   };
 
   const hasValidationErrors = panelValidationList?.some((panelValidation) => panelValidation.hasValidationErrors);
+
+  if (isMellomlagringLoading) {
+    return <LoadingComponent heightOffsetRem={18} />;
+  }
 
   return (
     <VStack gap="space-32">

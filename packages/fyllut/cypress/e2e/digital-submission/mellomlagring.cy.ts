@@ -379,6 +379,42 @@ describe('Mellomlagring', () => {
           cy.wait('@updateMellomlagring');
           cy.findByText(TEXTS.statiske.mellomlagringError.update.message).should('be.visible');
         });
+
+        it('shows loading state and submits correctly when entering directly on summary page', () => {
+          const innsendingsId = '8e3c3621-76d7-4ebd-90d4-34448ebcccc3';
+
+          // Override mellomlagring intercept with a delayed response to make the race deterministic
+          cy.intercept('GET', `/fyllut/api/send-inn/soknad/${innsendingsId}`, (req) => {
+            req.continue((res) => {
+              res.setDelay(500);
+            });
+          }).as('getMellomlagringDelayed');
+
+          // Visit summary page directly (simulates opening a temporarily stored application)
+          cy.visit(`/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=${innsendingsId}&lang=nb-NO`);
+          cy.defaultWaits();
+
+          // While mellomlagring is loading, the loading state should be visible
+          cy.findByRole('heading', { name: 'Laster' }).should('be.visible');
+
+          // Wait for delayed mellomlagring response
+          cy.wait('@getMellomlagringDelayed');
+
+          // Verify summary page renders with correct submission data
+          cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
+          cy.findByText('Ønsker du å få gaven innpakket').should('exist').next('dd').should('contain.text', 'Nei');
+
+          // Submit the application
+          cy.clickSendNav();
+          cy.wait('@submitApplication').then((interception) => {
+            const { pdfFormData } = interception.request.body;
+            // Verify pdfFormData contains actual form content (not empty due to race condition)
+            expect(pdfFormData.verdiliste).to.have.length.greaterThan(0);
+            expect(pdfFormData.verdiliste[0]).to.have.property('label', 'Gave');
+          });
+
+          cy.findByRole('heading', { name: 'Kvittering' }).should('exist');
+        });
       });
 
       describe('When stored submission contains values for inputs that have been removed from the form', () => {
