@@ -18,7 +18,9 @@ const testMellomlagringConfirmationModal = (
   cy.findByRole('button', { name: buttonText }).click();
   cy.findByText(modalTexts.body).should('be.visible');
   cy.findByRole('button', { name: modalTexts.cancel }).click();
+  cy.get('dialog[open]').should('not.exist');
   cy.findByRole('button', { name: buttonText }).click();
+  cy.findByText(modalTexts.body).should('be.visible');
   cy.findByRole('button', { name: modalTexts.confirm }).click();
 };
 
@@ -123,6 +125,21 @@ describe('Mellomlagring', () => {
       cy.wait('@updateMellomlagring');
       cy.clickSaveAndContinue();
       cy.wait('@updateMellomlagring');
+
+      // Attachment page (shown for digital forms with attachment components)
+      cy.findByRole('heading', { name: TEXTS.statiske.attachment.title }).should('exist');
+      cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+        cy.findByLabelText(/Nei, jeg har ingen ekstra dokumentasjon/).check();
+      });
+      cy.findByRole('group', { name: /Oppmøtebekreftelse/ }).within(() => {
+        cy.findByLabelText(/ettersender dokumentasjonen senere/).check();
+      });
+      cy.findByRole('group', { name: /Bekreftelse på at du av helsemessige/ }).within(() => {
+        cy.findByLabelText(/ettersender dokumentasjonen senere/).check();
+      });
+      cy.clickSaveAndContinue();
+      cy.wait('@updateMellomlagring');
+
       cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveDraft }).should('exist');
       cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.cancelAndDelete }).should('exist');
     });
@@ -286,7 +303,9 @@ describe('Mellomlagring', () => {
 
           cy.clickEditAnswers();
           cy.url().should('include', '/levering');
-          cy.findByRole('combobox', { name: 'Hvordan ønsker du å motta pakken?' }).should('have.focus');
+          cy.findByRole('combobox', { name: 'Hvordan ønsker du å motta pakken?' })
+            .should('be.visible')
+            .should('have.focus');
         });
 
         it('lets you edit and update submission data', () => {
@@ -596,8 +615,8 @@ describe('Mellomlagring', () => {
           const { submission } = req.body;
           expect(submission.data.landvelger).to.deep.eq({ label: 'Frankrike', value: 'FR' });
           expect(submission.attachments).to.have.length(3);
-          expect(submission.attachments[0].label).to.eq('Personinntektsskjema');
-          expect(submission.attachments[1].label).to.eq('Resultatregnskap');
+          expect(submission.attachments[0].title).to.eq('Personinntektsskjema');
+          expect(submission.attachments[1].title).to.eq('Resultatregnskap');
         });
         cy.intercept('GET', '/fyllut/api/send-inn/soknad/2db25aab-3524-4426-a333-489542bf16bf').as('getMellomlagring');
 
