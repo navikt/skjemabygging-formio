@@ -26,6 +26,11 @@
       "language": "nb-NO",
       "data": {
         "data": {
+          "dineOpplysninger": {
+            "identitet": {
+              "identitetsnummer": "03876399856"
+            }
+          },
           "hvaDrakkDuTilFrokost": "",
           "hvaSpisteDuTilFrokost": "",
           "onskerDuAFaGavenInnpakket": "nei",

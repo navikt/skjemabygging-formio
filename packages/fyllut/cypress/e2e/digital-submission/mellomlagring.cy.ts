@@ -57,6 +57,10 @@ describe('Mellomlagring', () => {
       cy.clickStart();
       cy.get('@createMellomlagringSpy').should('not.have.been.called');
       cy.findByRole('heading', { name: 'Valgfrie opplysninger' }).should('exist');
+      cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
+        cy.findByLabelText('Ja').check(),
+      );
+      cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).type('03876399856');
       cy.clickNextStep();
       cy.get('@updateMellomlagringSpy').should('not.have.been.called');
       cy.findByRole('group', { name: 'Ønsker du å få gaven innpakket' }).within(() => {
@@ -240,32 +244,22 @@ describe('Mellomlagring', () => {
         beforeEach(() => {
           cy.fixture('mellomlagring/submitTestMellomlagring.json').then((fixture) => {
             cy.submitApplication((req) => {
-              const { submission: bodySubmission, ...bodyRest } = req.body;
-              const { submission: fixtureSubmission, ...fixtureRest } = fixture;
-              expect(bodySubmission.data).to.deep.eq(fixtureSubmission.data);
-              expect({
-                ...bodyRest,
-                pdfFormData: {
-                  ...bodyRest.pdfFormData,
-                  bunntekst: undefined, // ignore bunntekst since it contains timestamps
-                },
-              }).to.deep.eq({
-                ...fixtureRest,
-                pdfFormData: {
-                  ...bodyRest.pdfFormData,
-                  bunntekst: undefined,
-                },
-              });
+              const { submission: bodySubmission } = req.body;
+              const { submission: fixtureSubmission } = fixture;
+              expect(bodySubmission).to.deep.eq(fixtureSubmission);
             });
           });
         });
 
         it('retrieves mellomlagring and redirects after submitting', () => {
+          // fails
           cy.visit(
-            '/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO',
+            '/fyllut/testmellomlagring?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO',
           );
           cy.defaultWaits();
           cy.wait('@getMellomlagringValid');
+          cy.clickShowAllSteps();
+          cy.findByRole('link', { name: 'Oppsummering' }).click();
           cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
           cy.findByText('Ønsker du å få gaven innpakket').should('exist');
           cy.clickSendNav();

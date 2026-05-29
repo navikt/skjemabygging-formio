@@ -2406,6 +2406,11 @@
   },
   "submission": {
     "data": {
+      "dineOpplysninger": {
+        "identitet": {
+          "identitetsnummer": "03876399856"
+        }
+      },
       "onskerDuAFaGavenInnpakket": "nei",
       "hvordanOnskerDuAMottaPakken": {
         "label": "På døra",
