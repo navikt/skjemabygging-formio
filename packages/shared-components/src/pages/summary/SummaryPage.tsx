@@ -51,6 +51,8 @@ export function SummaryPage() {
   useEffect(() => {
     if (isMellomlagringLoading) return;
 
+    let canceled = false;
+
     const initializePanelValidation = async () => {
       const submissionCopy: Submission = JSON.parse(JSON.stringify(submission || {}));
 
@@ -59,6 +61,14 @@ export function SummaryPage() {
         appConfig,
         submission: submissionCopy,
       });
+
+      if (canceled) {
+        webform.destroy(true);
+        if (formioSummary) {
+          formioSummary.innerHTML = '';
+        }
+        return;
+      }
 
       webform.form = NavFormHelper.prefillForm(webform.form, prefillData);
 
@@ -106,6 +116,10 @@ export function SummaryPage() {
     if (availableLanguages.length > 0) {
       initializePanelValidation();
     }
+
+    return () => {
+      canceled = true;
+    };
   }, [form, submission, appConfig, prefillData, translate, availableLanguages, isMellomlagringLoading]);
 
   useEffect(() => {
