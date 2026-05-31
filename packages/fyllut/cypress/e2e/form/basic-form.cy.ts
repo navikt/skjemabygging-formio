@@ -19,7 +19,7 @@ describe('Basic form', () => {
     }
   };
 
-  const fillInForm = (expectVedleggspanel: boolean, submissionMethod: 'paper' | 'digital') => {
+  const fillInForm = (submissionMethod: 'paper' | 'digital') => {
     // Steg 1 -> Steg 2
     clickNext(submissionMethod);
 
@@ -55,14 +55,12 @@ describe('Basic form', () => {
       .type(`01.01.${thisYear}`);
     cy.findByRole('textbox', { name: 'Velg måned' }).should('exist').type(`01.${thisYear}`);
 
-    if (expectVedleggspanel) {
-      // Steg 2 -> Steg 3
-      cy.clickNextStep();
-      cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
-      cy.findByLabelText('Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved.')
-        .should('exist')
-        .check({ force: true });
-    }
+    // Steg 2 -> Steg 3
+    clickNext(submissionMethod);
+    cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
+    cy.findByLabelText('Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved.')
+      .should('exist')
+      .check({ force: true });
 
     // Step 3 -> Oppsummering
     clickNext(submissionMethod);
@@ -77,10 +75,9 @@ describe('Basic form', () => {
 
     cy.findByRoleWhenAttached('heading', { level: 2, name: 'Dine opplysninger' }).should('exist');
     cy.findByRoleWhenAttached('textbox', { name: 'Din fødselsdato (dd.mm.åååå)' }).should('exist');
-    if (expectVedleggspanel) {
-      cy.clickNextStep();
-      cy.findByRoleWhenAttached('heading', { level: 2, name: 'Vedlegg' }).should('exist');
-    }
+
+    clickNext(submissionMethod);
+    cy.findByRoleWhenAttached('heading', { level: 2, name: 'Vedlegg' }).should('exist');
 
     clickNext(submissionMethod);
 
@@ -145,7 +142,7 @@ describe('Basic form', () => {
 
     describe('Fill in form', () => {
       it('fill in - go to summary - edit form - navigate back to summary', () => {
-        fillInForm(true, 'paper');
+        fillInForm('paper');
       });
     });
   });
@@ -160,7 +157,7 @@ describe('Basic form', () => {
       it('fill in - go to summary - edit form - navigate back to summary', () => {
         cy.clickStart();
         cy.wait('@createMellomlagring');
-        fillInForm(false, 'digital');
+        fillInForm('digital');
       });
     });
   });
@@ -176,7 +173,7 @@ describe('Basic form', () => {
         cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendOnPaper }).click();
         cy.findByRole('heading', { name: TEXTS.statiske.introPage.title });
         cy.clickStart();
-        fillInForm(true, 'paper');
+        fillInForm('paper');
       });
 
       it('select submission method digital - fill in - go to summary - edit form - navigate back to summary', () => {
@@ -184,7 +181,7 @@ describe('Basic form', () => {
         cy.findByRole('heading', { name: TEXTS.statiske.introPage.title });
         cy.clickStart();
         cy.wait('@createMellomlagring');
-        fillInForm(false, 'digital');
+        fillInForm('digital');
       });
     });
   });
