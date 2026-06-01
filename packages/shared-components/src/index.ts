@@ -1,4 +1,4 @@
-import { guid } from '@navikt/skjemadigitalisering-shared-domain';
+import { type FyllutFrontendConfig, guid } from '@navikt/skjemadigitalisering-shared-domain';
 import jss from 'jss';
 import preset from 'jss-preset-default';
 import type { FetchHeader, FetchOptions } from './api/util/http/http';
@@ -41,7 +41,7 @@ import url from './util/url/url';
 
 jss.setup(preset());
 
-export type { FrontendConfig } from './context/config/configContext';
+export type FrontendConfig = FyllutFrontendConfig;
 export {
   AppConfigProvider,
   b64toBlob,

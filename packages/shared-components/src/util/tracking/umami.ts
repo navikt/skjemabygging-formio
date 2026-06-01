@@ -8,7 +8,6 @@ type FrontendConfig = {
   NAIS_CLUSTER_NAME?: string;
   applicationName?: string;
   mocksEnabled?: boolean;
-  [key: string]: unknown;
 };
 
 export const umamiEventHandler =
