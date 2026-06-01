@@ -3,6 +3,7 @@ name: Cypress Tests
 on: push
 env:
   NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  TZ: Europe/Oslo
 
 jobs:
   setup-fyllut:
@@ -52,10 +53,6 @@ jobs:
           cache-dependency-path: 'pnpm-lock.yaml'
           registry-url: https://npm.pkg.github.com/
           scope: '@navikt'
-      - name: set timezone
-        uses: szenius/set-timezone@v2.0
-        with:
-          timezoneLinux: 'Europe/Oslo'
       - name: 'Install dependencies'
         run: pnpm install --frozen-lockfile
       - name: 'Install Cypress binary (fyllut)'
@@ -101,10 +98,6 @@ jobs:
           cache-dependency-path: 'pnpm-lock.yaml'
           registry-url: https://npm.pkg.github.com/
           scope: '@navikt'
-      - name: set timezone
-        uses: szenius/set-timezone@v2.0
-        with:
-          timezoneLinux: 'Europe/Oslo'
       - name: 'Install dependencies'
         run: pnpm install --frozen-lockfile
       - name: 'Install Cypress binary (bygger)'

@@ -7,6 +7,7 @@ import firstNameBuilder from '../components/extensions/first-name/FirstName.buil
 import nationalIdentityNumberBuilder from '../components/extensions/national-identity-number/NationalIdentityNumber.builder';
 import senderBuilder from '../components/extensions/sender/Sender.builder';
 import surnameBuilder from '../components/extensions/surname/Surname.builder';
+import userInformationBuilder from '../components/groups/user-information/UserInformation.builder';
 import yourInformationBuilder from '../components/groups/your-information/YourInformation.builder';
 import postnummerSchema from '../form-builder-options/schemas/postnummerSchema';
 import poststedSchema from '../form-builder-options/schemas/poststedSchema';
@@ -16,6 +17,7 @@ const personGroup = {
   title: 'Person',
   components: {
     yourInformation: yourInformationBuilder(),
+    userInformation: userInformationBuilder(),
     fnrfield: nationalIdentityNumberBuilder(),
     firstName: firstNameBuilder(),
     surname: surnameBuilder(),
