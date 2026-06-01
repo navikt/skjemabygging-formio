@@ -606,6 +606,17 @@ export default [
           body: {},
         },
       },
+      {
+        id: 'success-empty-maalgruppe',
+        type: 'json',
+        options: {
+          status: 200,
+          body: {
+            ...prefillData,
+            sokerMaalgruppe: undefined,
+          },
+        },
+      },
     ],
   },
   {
