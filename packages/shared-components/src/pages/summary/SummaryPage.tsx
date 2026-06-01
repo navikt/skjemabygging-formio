@@ -14,13 +14,13 @@ import { attachmentValidator } from '../../components/attachment/attachmentValid
 import ButtonRow from '../../components/button/ButtonRow';
 import EditAnswersButton from '../../components/button/navigation/edit-answers/EditAnswersButton';
 import ValidationExclamationIcon from '../../components/icons/ValidationExclamationIcon';
-import LoadingComponent from '../../components/loading/LoadingComponent';
 import NavFormHelper from '../../components/nav-form/NavFormHelper';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
 import RenderSummaryForm from '../../form-components/RenderSummaryForm';
+import { SkeletonList } from '../../index';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
 import {
   findFirstValidationErrorInAttachmentPanel,
@@ -62,14 +62,6 @@ export function SummaryPage() {
         submission: submissionCopy,
       });
 
-      if (canceled) {
-        webform.destroy(true);
-        if (formioSummary) {
-          formioSummary.innerHTML = '';
-        }
-        return;
-      }
-
       webform.form = NavFormHelper.prefillForm(webform.form, prefillData);
 
       webform.checkData(submissionCopy?.data, [], undefined);
@@ -105,7 +97,9 @@ export function SummaryPage() {
         }
       }
 
-      setPanelValidationList(panelValidations);
+      if (!canceled) {
+        setPanelValidationList(panelValidations);
+      }
       webform.destroy(true);
 
       if (formioSummary) {
@@ -149,7 +143,7 @@ export function SummaryPage() {
   const hasValidationErrors = panelValidationList?.some((panelValidation) => panelValidation.hasValidationErrors);
 
   if (isMellomlagringLoading) {
-    return <LoadingComponent heightOffsetRem={18} />;
+    return <SkeletonList size={10} height={60} />;
   }
 
   return (
