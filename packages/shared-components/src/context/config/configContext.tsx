@@ -1,4 +1,8 @@
-import { FyllutFrontendConfig, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  ByggerFrontendConfig,
+  FyllutFrontendConfig,
+  SubmissionMethod,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import React, { useContext, useMemo, useState } from 'react';
 import FrontendLogger, { LoggerConfig } from '../../api/frontend-logger/FrontendLogger';
 import baseHttp from '../../api/util/http/http';
@@ -9,6 +13,7 @@ type FeatureTogglesMap = {
 };
 
 type ApplicationName = 'bygger' | 'fyllut';
+type FrontendConfig = Partial<FyllutFrontendConfig & ByggerFrontendConfig>;
 interface AppConfigContextType {
   dokumentinnsendingBaseURL?: string;
   baseUrl?: string;
@@ -16,7 +21,7 @@ interface AppConfigContextType {
   featureToggles?: FeatureTogglesMap;
   submissionMethod?: SubmissionMethod;
   app?: ApplicationName;
-  config?: FyllutFrontendConfig;
+  config?: FrontendConfig;
   http?: typeof baseHttp;
   logger?: FrontendLogger;
   diffOn?: boolean;
@@ -82,4 +87,4 @@ function AppConfigProvider({
 const useAppConfig = () => useContext(AppConfigContext);
 
 export { AppConfigProvider, useAppConfig };
-export type { AppConfigContextType };
+export type { AppConfigContextType, FrontendConfig };
