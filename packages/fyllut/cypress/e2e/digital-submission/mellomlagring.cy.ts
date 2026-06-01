@@ -414,7 +414,7 @@ describe('Mellomlagring', () => {
           cy.defaultWaits();
 
           // While mellomlagring is loading, the loading state should be visible
-          cy.findByRole('heading', { name: 'Laster' }).should('be.visible');
+          cy.findAllByTestId('skeleton').should('have.length.greaterThan', 0);
 
           // Wait for delayed mellomlagring response
           cy.wait('@getMellomlagringDelayed');
