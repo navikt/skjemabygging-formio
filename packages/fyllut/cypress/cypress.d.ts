@@ -53,8 +53,6 @@ declare global {
         options?: { index?: number; id?: string; verifyUpload?: boolean },
       ): Chainable<JQuery<HTMLElement>>;
 
-      verifySendInnRedirect(): Chainable<JQuery<HTMLElement>>;
-
       verifyNavRedirect(): Chainable<JQuery<HTMLElement>>;
 
       defaultIntercepts(): Chainable<JQuery<HTMLElement>>;
@@ -65,7 +63,11 @@ declare global {
 
       defaultWaits(): Chainable<JQuery<HTMLElement>>;
 
+      updateMellomlagring(callback: (req: CyHttpMessages.IncomingHttpRequest) => void): Chainable<JQuery<HTMLElement>>;
+
       submitMellomlagring(callback: (req: CyHttpMessages.IncomingHttpRequest) => void): Chainable<JQuery<HTMLElement>>;
+
+      submitApplication(callback: (req: CyHttpMessages.IncomingHttpRequest) => void): Chainable<JQuery<HTMLElement>>;
 
       shouldBeVisible(): Chainable<JQuery>;
 

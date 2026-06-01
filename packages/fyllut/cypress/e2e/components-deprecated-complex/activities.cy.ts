@@ -31,7 +31,7 @@ const prefillMaalgruppe: SendInnMaalgruppe = {
 const activityJson = activitiesJson[0];
 
 const verifySubmissionValues = (maalgruppe: SubmissionMaalgruppe, aktivitet: Partial<SubmissionActivity>) => {
-  cy.submitMellomlagring((req) => {
+  cy.submitApplication((req) => {
     const {
       submission: {
         data: { container: aktivitetMaalgruppeSubmission },
@@ -137,7 +137,13 @@ describe('Activities', () => {
 
       // Select the activity from backend
       cy.findByRole('radio', { name: activityText }).check(activityJson.aktivitetId);
+      cy.clickSaveAndContinue();
 
+      // Attachments page
+      cy.findByRole('heading', { name: 'Vedlegg' }).shouldBeVisible();
+      cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+        cy.findByRole('radio', { name: 'Jeg ettersender dokumentasjonen senere.' }).check();
+      });
       cy.clickSaveAndContinue();
 
       // Should show activity in summary
@@ -145,9 +151,9 @@ describe('Activities', () => {
       cy.findByText(activityText).should('exist');
 
       // Submit
-      cy.clickSaveAndContinue();
-      cy.wait('@submitMellomlagring');
-      cy.verifySendInnRedirect();
+      cy.clickSendNav();
+      cy.wait('@submitApplication');
+      cy.findByRole('heading', { name: /Kvittering/ }).should('exist');
     });
 
     describe('saved application', () => {
@@ -173,7 +179,13 @@ describe('Activities', () => {
         });
 
         it('should keep prefilled maalgruppe from saved application, not overwrite with new value from prefill endpoint', () => {
-          // Go to summary page
+          cy.clickSaveAndContinue();
+
+          // Attachments page
+          cy.findByRole('heading', { name: 'Vedlegg' }).shouldBeVisible();
+          cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+            cy.findByRole('radio', { name: 'Jeg ettersender dokumentasjonen senere.' }).check();
+          });
           cy.clickSaveAndContinue();
 
           // Should show activity in summary
@@ -196,9 +208,9 @@ describe('Activities', () => {
           );
 
           // Submit
-          cy.clickSaveAndContinue();
-          cy.wait('@submitMellomlagring');
-          cy.verifySendInnRedirect();
+          cy.clickSendNav();
+          cy.wait('@submitApplication');
+          cy.findByRole('heading', { name: /Kvittering/ }).should('exist');
         });
 
         it('should allow user to change chosen activity and update selected maalgruppe to reflect that', () => {
@@ -214,8 +226,13 @@ describe('Activities', () => {
                 .should('exist')
                 .check(activityAvklaring.aktivitetId);
             });
+          cy.clickSaveAndContinue();
 
-          // Go to summary page
+          // Attachments page
+          cy.findByRole('heading', { name: 'Vedlegg' }).shouldBeVisible();
+          cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+            cy.findByRole('radio', { name: 'Jeg ettersender dokumentasjonen senere.' }).check();
+          });
           cy.clickSaveAndContinue();
 
           // Should show activity and maalgruppe in summary
@@ -238,9 +255,9 @@ describe('Activities', () => {
           );
 
           // Submit
-          cy.clickSaveAndContinue();
-          cy.wait('@submitMellomlagring');
-          cy.verifySendInnRedirect();
+          cy.clickSendNav();
+          cy.wait('@submitApplication');
+          cy.findByRole('heading', { name: /Kvittering/ }).should('exist');
         });
       });
     });
@@ -308,20 +325,27 @@ describe('Activities', () => {
 
       cy.clickSaveAndContinue();
 
+      // Attachments page
+      cy.findByRole('heading', { name: 'Vedlegg' }).shouldBeVisible();
+      cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+        cy.findByRole('radio', { name: 'Jeg ettersender dokumentasjonen senere.' }).check();
+      });
+      cy.clickSaveAndContinue();
+
       // Should show activity and maalgruppe in summary
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
       cy.findByText(defaultActivity.text).should('exist');
 
       // Submit
-      cy.clickSaveAndContinue();
-      cy.wait('@submitMellomlagring');
-      cy.verifySendInnRedirect();
+      cy.clickSendNav();
+      cy.wait('@submitApplication');
+      cy.findByRole('heading', { name: /Kvittering/ }).should('exist');
     });
 
     it('should default to ANNET for maalgruppe', () => {
       cy.mocksUseRouteVariant('get-soknad:success-activities-empty');
       cy.mocksUseRouteVariant('get-activities:success-empty');
-      cy.mocksUseRouteVariant('get-prefill-data:success-empty');
+      cy.mocksUseRouteVariant('get-prefill-data:success-empty-maalgruppe');
 
       // Check the submission values
       verifySubmissionValues(
@@ -342,16 +366,27 @@ describe('Activities', () => {
 
       cy.clickSaveAndContinue();
 
+      // Attachments page
+      cy.findByRole('heading', { name: 'Vedlegg' }).shouldBeVisible();
+      cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+        cy.findByRole('radio', { name: 'Jeg ettersender dokumentasjonen senere.' }).check();
+      });
+      cy.clickSaveAndContinue();
+
       // Should show activity and maalgruppe in summary
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
-      cy.get('dl').within(() => {
-        cy.get('dd').eq(0).should('contain.text', defaultActivity.text);
-      });
+      cy.findByRole('heading', { name: 'Aktiviteter', level: 3 })
+        .closest('[data-cy=form-summary-panel]')
+        .within(() => {
+          cy.get('dl').within(() => {
+            cy.get('dd').eq(0).should('contain.text', defaultActivity.text);
+          });
+        });
 
       // Submit
-      cy.clickSaveAndContinue();
-      cy.wait('@submitMellomlagring');
-      cy.verifySendInnRedirect();
+      cy.clickSendNav();
+      cy.wait('@submitApplication');
+      cy.findByRole('heading', { name: /Kvittering/ }).should('exist');
     });
   });
 
