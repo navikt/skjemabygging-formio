@@ -1,4 +1,4 @@
-import { SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
+import { FyllutFrontendConfig, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
 import React, { useContext, useMemo, useState } from 'react';
 import FrontendLogger, { LoggerConfig } from '../../api/frontend-logger/FrontendLogger';
 import baseHttp from '../../api/util/http/http';
@@ -9,27 +9,6 @@ type FeatureTogglesMap = {
 };
 
 type ApplicationName = 'bygger' | 'fyllut';
-type FrontendConfig = {
-  NAIS_CLUSTER_NAME?: string;
-  FEATURE_TOGGLES?: FeatureTogglesMap;
-  featureToggles?: FeatureTogglesMap;
-  isProdGcp?: boolean;
-  isDevelopment?: boolean;
-  isDelingslenke?: boolean;
-  isLoggedIn?: boolean;
-  mocksEnabled?: boolean;
-  gitVersion?: string;
-  applicationName?: string;
-  fyllutBaseUrl?: string;
-  skjemadelingslenkeUrl?: string;
-  pusherCluster?: string;
-  pusherKey?: string;
-  user?: unknown;
-  mellomlagringDurationDays?: string;
-  loggerConfig?: Partial<LoggerConfig>;
-  isTest?: boolean;
-  [key: string]: unknown;
-};
 interface AppConfigContextType {
   dokumentinnsendingBaseURL?: string;
   baseUrl?: string;
@@ -37,7 +16,7 @@ interface AppConfigContextType {
   featureToggles?: FeatureTogglesMap;
   submissionMethod?: SubmissionMethod;
   app?: ApplicationName;
-  config?: FrontendConfig;
+  config?: FyllutFrontendConfig;
   http?: typeof baseHttp;
   logger?: FrontendLogger;
   diffOn?: boolean;
@@ -103,4 +82,4 @@ function AppConfigProvider({
 const useAppConfig = () => useContext(AppConfigContext);
 
 export { AppConfigProvider, useAppConfig };
-export type { AppConfigContextType, FrontendConfig };
+export type { AppConfigContextType };
