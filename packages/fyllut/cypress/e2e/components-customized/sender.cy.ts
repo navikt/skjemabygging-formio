@@ -121,7 +121,7 @@ describe('Sender', () => {
 
       cy.findByRole('heading', { name: 'Person (en)' }).should('exist');
       PERSON_FIELDS.forEach(({ label }) => {
-        cy.findByRole('textbox', { name: label }).should('exist');
+        cy.findByRole('textbox', { name: `${label} (en)` }).should('exist');
       });
     });
 
@@ -131,7 +131,7 @@ describe('Sender', () => {
 
       cy.findByRole('heading', { name: 'Organisasjon (en)' }).should('exist');
       ORGANIZATION_FIELDS.forEach(({ label }) => {
-        cy.findByRole('textbox', { name: label }).should('exist');
+        cy.findByRole('textbox', { name: `${label} (en)` }).should('exist');
       });
     });
   });
