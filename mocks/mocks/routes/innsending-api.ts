@@ -18,6 +18,7 @@ import formSelectSoknadCompleteV1 from '../data/innsending-api/mellomlagring/for
 import formSelectSoknadInvalidCountryV1 from '../data/innsending-api/mellomlagring/form-select/saved-invalid-country-v1.json';
 import formSelectSoknadInvalidInstrumentV1 from '../data/innsending-api/mellomlagring/form-select/saved-invalid-instrument-v2.json';
 import formSelectSoknadPartialV1 from '../data/innsending-api/mellomlagring/form-select/saved-partial-v1.json';
+import mellomlagringValid1SendinnUpload from '../data/innsending-api/mellomlagring/getTestMellomlagring-valid-1-sendinn-upload.json';
 import mellomlagringValid1 from '../data/innsending-api/mellomlagring/getTestMellomlagring-valid-1.json';
 import mellomlagringValid2 from '../data/innsending-api/mellomlagring/getTestMellomlagring-valid-2.json';
 import mellomlagringValidExtraValues from '../data/innsending-api/mellomlagring/getTestMellomlagring-valid-extra-values.json';
@@ -200,6 +201,14 @@ export default [
         options: {
           status: 200,
           body: convertToInnsendingApiResponse(mellomlagringValid1),
+        },
+      },
+      {
+        id: 'success-1-sendinn-upload',
+        type: 'json',
+        options: {
+          status: 200,
+          body: convertToInnsendingApiResponse(mellomlagringValid1SendinnUpload),
         },
       },
       {

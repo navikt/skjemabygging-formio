@@ -269,7 +269,6 @@ describe('Mellomlagring', () => {
         });
 
         it('retrieves mellomlagring and redirects after submitting', () => {
-          // fails
           cy.visit(
             '/fyllut/testmellomlagring?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO',
           );
@@ -306,6 +305,33 @@ describe('Mellomlagring', () => {
           cy.findByRole('combobox', { name: 'Hvordan ønsker du å motta pakken?' })
             .should('be.visible')
             .should('have.focus');
+        });
+
+        describe('retrieves mellomlagring containing vedleggsliste', () => {
+          it('shows attachment page when empty', () => {
+            cy.visit(
+              '/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO',
+            );
+            cy.defaultWaits();
+            cy.wait('@getMellomlagringValid');
+            cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
+
+            cy.clickShowAllSteps();
+            cy.findByRole('link', { name: 'Vedlegg' }).should('exist');
+          });
+
+          it('hides attachment page when not empty', () => {
+            cy.mocksUseRouteVariant('get-soknad:success-1-sendinn-upload');
+            cy.visit(
+              '/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO',
+            );
+            cy.defaultWaits();
+            cy.wait('@getMellomlagringValid');
+            cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
+
+            cy.clickShowAllSteps();
+            cy.findByRole('link', { name: 'Vedlegg' }).should('not.exist');
+          });
         });
 
         it('lets you edit and update submission data', () => {
