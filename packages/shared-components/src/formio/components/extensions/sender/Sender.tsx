@@ -61,7 +61,7 @@ class Sender extends BaseComponent {
       <ComponentUtilsProvider component={this}>
         <NavSender
           role={this.component?.senderRole ?? 'person'}
-          labels={this.component?.labels ?? {}}
+          customLabels={this.component?.customLabels ?? {}}
           descriptions={this.component?.descriptions ?? {}}
           value={this.getValue()}
           onChange={this.handleChange.bind(this)}

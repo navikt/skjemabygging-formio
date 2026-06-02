@@ -23,7 +23,7 @@ const sender = (props?: SenderType) => {
     }),
     role: senderRole ?? 'person',
     descriptions: descriptions ?? {},
-    labels:
+    customLabels:
       senderRole === 'organization'
         ? {
             organizationNumber: 'Organisasjonsnummeret til den virksomheten / underenheten du representerer',
