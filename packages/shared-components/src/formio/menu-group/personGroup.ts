@@ -39,7 +39,7 @@ const personGroup = {
     phoneNumber: phoneNumberBuilder(),
     citizenship: citizenshipBuilder(),
     senderPerson: senderBuilder({
-      labels: {
+      customLabels: {
         nationalIdentityNumber: 'Representantens fødselsnummer eller d-nummer',
         firstName: 'Representantens fornavn',
         surname: 'Representantens etternavn',
