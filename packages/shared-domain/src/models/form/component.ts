@@ -139,6 +139,7 @@ export interface Component {
   currency?: string;
   isAmountWithCurrencySelector?: boolean;
   senderRole?: RecipientRole;
+  labels?: Record<string, string>;
   descriptions?: Record<string, string>;
   builderErrors?: string[];
 }
