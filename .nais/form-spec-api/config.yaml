@@ -1,0 +1,69 @@
+---
+apiVersion: nais.io/v1alpha1
+kind: Application
+metadata:
+  name: {{app-name}}
+  namespace: skjemadigitalisering
+  labels:
+    team: skjemadigitalisering
+spec:
+  image: {{image}}
+  port: 8080
+  ingresses:
+  {{#each ingresses as |url|}}
+    - {{url}}
+  {{/each}}
+  observability:
+    autoInstrumentation:
+      enabled: true
+      runtime: nodejs
+    logging:
+      destinations:
+        - id: loki
+        - id: elastic
+  azure:
+    application:
+      enabled: true
+      allowAllUsers: true
+    sidecar:
+      enabled: true
+      autoLogin: true
+      autoLoginIgnorePaths:
+        - /api/forms/*
+        - /internal/*
+  liveness:
+    path: /internal/isAlive
+    initialDelay: 20
+    timeout: 60
+  readiness:
+    path: /internal/isReady
+    initialDelay: 20
+    timeout: 60
+  replicas:
+    min: {{replicas-min}}
+    max: {{replicas-max}}
+    scalingStrategy:
+      cpu:
+        thresholdPercentage: 90
+  resources:
+    limits:
+      memory: 512Mi
+    requests:
+      cpu: 200m
+      memory: 256Mi
+  accessPolicy:
+    inbound:
+      rules:
+      {{#each accessPolicy.inbound.rules}}
+        - application: {{this.application}}
+          namespace: {{this.namespace}}
+          cluster: {{this.cluster}}
+      {{/each}}
+    outbound:
+      rules:
+        - application: forms-api
+          namespace: fyllut-sendinn
+          cluster: {{forms-api-cluster}}
+  env:
+    - name: FORMS_API_URL
+      value: {{forms-api-url}}

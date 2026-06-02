@@ -1,0 +1,12 @@
+app-name: form-spec-api-preprod-alt
+ingresses:
+  - "https://form-spec-api-preprod-alt.intern.dev.nav.no"
+replicas-min: 2
+replicas-max: 4
+forms-api-url: http://forms-api.fyllut-sendinn
+forms-api-cluster: dev-gcp
+accessPolicy:
+  inbound:
+    rules:
+      - application: azure-token-generator
+        namespace: nais
