@@ -7,4 +7,6 @@ forms-api-url: http://forms-api.fyllut-sendinn
 forms-api-cluster: prod-gcp
 accessPolicy:
   inbound:
-    rules: []
+    rules:
+      - application: skjemabygging
+        namespace: skjemadigitalisering

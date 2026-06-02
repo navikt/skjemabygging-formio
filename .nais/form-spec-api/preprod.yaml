@@ -8,5 +8,7 @@ forms-api-cluster: dev-gcp
 accessPolicy:
   inbound:
     rules:
+      - application: skjemabygging-preprod-alt
+        namespace: skjemadigitalisering
       - application: azure-token-generator
         namespace: nais
