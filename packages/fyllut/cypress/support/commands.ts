@@ -160,17 +160,17 @@ Cypress.Commands.add('defaultInterceptsMellomlagring', () => {
   return cy;
 });
 
-Cypress.Commands.add('submitMellomlagring', (callback: (req: CyHttpMessages.IncomingHttpRequest) => void) => {
+Cypress.Commands.add('submitMellomlagring', (callback?: (req: CyHttpMessages.IncomingHttpRequest) => void) => {
   cy.intercept('POST', '/fyllut/api/send-inn/digital-application/*', (req) => {
-    callback(req);
+    if (callback) callback(req);
   }).as('submitMellomlagring');
 
   return cy;
 });
 
-Cypress.Commands.add('submitApplication', (callback: (req: CyHttpMessages.IncomingHttpRequest) => void) => {
+Cypress.Commands.add('submitApplication', (callback?: (req: CyHttpMessages.IncomingHttpRequest) => void) => {
   cy.intercept('POST', '/fyllut/api/send-inn/digital-application/*', (req) => {
-    callback(req);
+    if (callback) callback(req);
   }).as('submitApplication');
 
   return cy;

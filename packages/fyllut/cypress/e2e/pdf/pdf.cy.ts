@@ -41,7 +41,7 @@ describe('Pdf', () => {
       cy.findByRole('checkbox', { name: /Avkryssingsboks 3/ }).click();
       cy.clickSaveAndContinue();
       cy.findByRole('heading', { name: 'Oppsummering' }).shouldBeVisible();
-      cy.submitApplication((_req) => {});
+      cy.submitApplication();
 
       cy.clickSendNav();
 
@@ -58,7 +58,7 @@ describe('Pdf', () => {
 
       cy.findByRole('heading', { name: 'Page 1' }).shouldBeVisible();
       cy.clickSaveAndContinue();
-      cy.submitApplication((_req) => {});
+      cy.submitApplication();
       cy.findByRole('heading', { name: 'Oppsummering' }).shouldBeVisible();
       cy.clickSendNav();
 

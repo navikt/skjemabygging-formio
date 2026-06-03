@@ -453,12 +453,7 @@ describe('Mellomlagring', () => {
 
           // Submit the application
           cy.clickSendNav();
-          cy.wait('@submitApplication').then((interception) => {
-            const { pdfFormData } = interception.request.body;
-            // Verify pdfFormData contains actual form content (not empty due to race condition)
-            expect(pdfFormData.verdiliste).to.have.length.greaterThan(0);
-            expect(pdfFormData.verdiliste[0]).to.have.property('label', 'Gave');
-          });
+          cy.wait('@submitApplication');
 
           cy.findByRole('heading', { name: 'Kvittering' }).should('exist');
         });

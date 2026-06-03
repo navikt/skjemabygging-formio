@@ -271,6 +271,7 @@ describe('Data fetcher', () => {
 
         cy.clickSaveAndContinue();
         cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+        cy.submitApplication();
         cy.clickSendNav();
         cy.wait('@submitApplication');
       });
