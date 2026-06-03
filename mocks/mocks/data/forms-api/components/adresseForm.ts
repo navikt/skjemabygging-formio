@@ -34,6 +34,62 @@ const adresseTestForm = () => {
           },
         ],
       }),
+      panel({
+        title: 'Utenprefillwizarduser',
+        components: [
+          {
+            ...address({ key: 'utenprefillWizardUser' }),
+            prefillKey: undefined,
+            addressTypeWizard: 'user',
+            addressType: undefined,
+            customLabels: { livesInNorway: 'Bor du i Norge?' },
+          },
+        ],
+      }),
+      panel({
+        title: 'Utenprefillpredefinedutentype',
+        components: [
+          {
+            ...address({ key: 'utenprefillPredefinedUtenType' }),
+            prefillKey: undefined,
+            addressTypeWizard: 'predefined',
+            addressType: undefined,
+          },
+        ],
+      }),
+      panel({
+        title: 'Utenprefillpredefinednorsk',
+        components: [
+          {
+            ...address({ key: 'utenprefillPredefinedNorsk' }),
+            prefillKey: undefined,
+            addressTypeWizard: 'predefined',
+            addressType: 'NORWEGIAN_ADDRESS',
+          },
+        ],
+      }),
+      panel({
+        title: 'Utenprefillundefinedutentype',
+        components: [
+          {
+            ...address({ key: 'utenprefillUndefinedUtenType' }),
+            prefillKey: undefined,
+            addressTypeWizard: undefined,
+            addressType: undefined,
+          },
+        ],
+      }),
+      panel({
+        title: 'Utenprefillundefinednorsk',
+        components: [
+          {
+            ...address({ key: 'utenprefillUndefinedNorsk' }),
+            prefillKey: undefined,
+            addressTypeWizard: undefined,
+            addressType: 'NORWEGIAN_ADDRESS',
+          },
+        ],
+      }),
     ],
   });
 };

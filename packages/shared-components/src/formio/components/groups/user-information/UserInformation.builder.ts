@@ -34,6 +34,7 @@ const userInformationBuilder = () => {
           customConditional:
             'show = row.identitet.harDuFodselsnummer === "nei" || (row.identitet.identitetsnummer && !row.identitet.harDuFodselsnummer)',
           protectedApiKey: true,
+          addressTypeWizard: 'user',
           customLabels: {
             livesInNorway: TEXTS.statiske.address.livesInNorway,
           },
