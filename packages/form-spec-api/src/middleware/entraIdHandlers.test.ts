@@ -1,24 +1,18 @@
 import type { RequestHandler } from 'express';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-
 const createEntraIdM2mHandler = vi.fn();
 const createEntraIdOboHandler = vi.fn();
 
-vi.mock('@navikt/skjemadigitalisering-shared-backend', async () => {
-  const actual = await vi.importActual<typeof import('@navikt/skjemadigitalisering-shared-backend')>(
-    '@navikt/skjemadigitalisering-shared-backend',
-  );
-
-  return {
-    ...actual,
-    createEntraIdM2mHandler,
-    createEntraIdOboHandler,
-  };
-});
+vi.mock('@navikt/skjemadigitalisering-shared-backend', () => ({
+  correlator: {
+    getId: vi.fn(),
+  },
+  createEntraIdM2mHandler,
+  createEntraIdOboHandler,
+}));
 
 describe('entraIdHandlers', () => {
   beforeEach(() => {
-    vi.resetModules();
     createEntraIdM2mHandler.mockReset();
     createEntraIdOboHandler.mockReset();
   });
