@@ -34,6 +34,25 @@
       "theme": "default",
       "components": [
         {
+          "label": "Dine opplysninger",
+          "key": "dineOpplysninger",
+          "type": "container",
+          "yourInformation": true,
+          "components": [
+            {
+              "input": true,
+              "key": "identitet",
+              "tableView": false,
+              "label": "Identitet",
+              "type": "identity",
+              "prefill": true,
+              "prefillKey": "sokerIdentifikasjonsnummer",
+              "protectedApiKey": true,
+              "navId": "eokkp96"
+            }
+          ]
+        },
+        {
           "validate": {
             "required": true,
             "custom": "",
@@ -381,6 +400,7 @@
           "type": "attachment",
           "key": "annenDokumentasjon",
           "otherDocumentation": true,
+          "attachmentType": "other",
           "input": true,
           "clearOnHide": true,
           "validate": {

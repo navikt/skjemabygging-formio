@@ -2,6 +2,7 @@
  * Tests the stepper, form navigation, showing/hiding attachments etc for different submission methods
  */
 
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { expect } from 'chai';
 
 describe('Submission method', () => {
@@ -17,11 +18,11 @@ describe('Submission method', () => {
       cy.wait('@getGlobalTranslations');
     });
 
-    it("Renders stepper without 'Vedlegg'", () => {
+    it('Renders stepper with links to all panels', () => {
       cy.clickShowAllSteps();
       cy.findByRole('link', { name: 'Veiledning' }).should('exist');
       cy.findByRole('link', { name: 'Dine opplysninger' }).should('exist');
-      cy.findByRole('link', { name: 'Vedlegg' }).should('not.exist');
+      cy.findByRole('link', { name: 'Vedlegg' }).should('exist');
       cy.findByRole('link', { name: 'Oppsummering' }).should('exist');
     });
 
@@ -41,44 +42,56 @@ describe('Submission method', () => {
         cy.findByRole('combobox', { name: 'Hva søker du støtte til?' }).should('exist');
         cy.findByRole('combobox', { name: 'Hva søker du støtte til?' }).type('Sykk{downArrow}{enter}');
         cy.clickSaveAndContinue();
+        cy.findByLabelText(/Annen dokumentasjon/).within(() => {
+          cy.findByRole('radio', { name: TEXTS.statiske.attachment.nei }).check();
+        });
+        cy.clickSaveAndContinue();
         cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
       });
 
-      it('renders stepper without "Vedlegg" on summary page', () => {
+      it('renders stepper with links to all panels on summary page', () => {
         cy.clickShowAllSteps();
         cy.findByRole('link', { name: 'Veiledning' }).should('exist');
         cy.findByRole('link', { name: 'Dine opplysninger' }).should('exist');
-        cy.findByRole('link', { name: 'Vedlegg' }).should('not.exist');
+        cy.findByRole('link', { name: 'Vedlegg' }).should('exist');
         cy.findByRole('link', { name: 'Oppsummering' }).should('exist');
       });
 
       it('includes zero attachments, but has flag otherDocumentation', () => {
-        cy.submitMellomlagring((req) => {
-          expect(req.body.attachments).to.have.length(0);
-          expect(req.body.otherDocumentation).to.eq(true);
+        cy.submitApplication((req) => {
+          console.log(`req.body: ${JSON.stringify(req.body)}`);
+          const { submission } = req.body;
+          expect(submission.attachments).to.have.length(1);
+          expect(submission.attachments[0].type).to.equal('other');
         });
 
         // submit application
-        cy.clickSaveAndContinue();
-        cy.wait('@submitMellomlagring');
+        cy.clickSendNav();
+        cy.wait('@submitApplication');
       });
 
       it('includes one attachment, and has flag otherDocumentation', () => {
         cy.clickShowAllSteps();
-        cy.submitMellomlagring((req) => {
-          expect(req.body.attachments).to.have.length(1);
-          expect(req.body.otherDocumentation).to.eq(true);
+        cy.submitApplication((req) => {
+          console.log(`req.body: ${JSON.stringify(req.body)}`);
+          const { submission } = req.body;
+          expect(submission.attachments).to.have.length(2);
         });
 
         // edit data so that conditional attachment is triggered
         cy.clickEditAnswer('Dine opplysninger');
         cy.findByRole('combobox', { name: 'Hva søker du støtte til?' }).should('exist');
         cy.findByRole('combobox', { name: 'Hva søker du støtte til?' }).type('Brill{downArrow}{enter}');
+        cy.clickSaveAndContinue();
+
+        cy.findByLabelText(/Bekreftelse fra optiker/).within(() => {
+          cy.findByRole('radio', { name: TEXTS.statiske.attachment.alreadySent }).check();
+        });
         cy.findByRole('link', { name: 'Oppsummering' }).click();
 
         // submit application
-        cy.findByRole('link', { name: 'Lagre og fortsett' }).click();
-        cy.wait('@submitMellomlagring');
+        cy.clickSendNav();
+        cy.wait('@submitApplication');
       });
     });
   });
@@ -90,7 +103,7 @@ describe('Submission method', () => {
       cy.wait('@getGlobalTranslations');
     });
 
-    it("Renders stepper with 'Vedlegg'", () => {
+    it('Renders stepper with links to all panels', () => {
       cy.clickShowAllSteps();
       cy.findByRole('link', { name: 'Veiledning' }).should('exist');
       cy.findByRole('link', { name: 'Dine opplysninger' }).should('exist');

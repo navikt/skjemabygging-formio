@@ -153,9 +153,7 @@ describe('Month picker', () => {
       cy.findByRole('textbox', { name: 'Relative monthPicker (valgfritt)' }).should('exist');
       cy.findByRole('textbox', { name: 'Relative monthPicker (valgfritt)' }).type('01.2020');
       cy.findByRole('textbox', { name: 'Relative monthPicker (valgfritt)' }).should('have.value', 'januar 2020');
-      cy.clickSaveAndContinue();
-
-      cy.submitMellomlagring((req) => {
+      cy.updateMellomlagring((req) => {
         const {
           submission: { data },
         } = req.body;
@@ -165,7 +163,7 @@ describe('Month picker', () => {
       });
 
       cy.clickSaveAndContinue();
-      cy.wait('@submitMellomlagring');
+      cy.wait('@updateMellomlagring');
     });
 
     it('should load mellomlagring', () => {

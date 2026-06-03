@@ -67,6 +67,32 @@
           "personinntektsskjema1": "leggerVedNaa",
           "resultatregnskap1": "leggerVedNaa"
         },
+        "attachments": [
+          {
+            "attachmentId": "eiaivlp",
+            "navId": "eiaivlp",
+            "type": "default",
+            "value": "ettersender",
+            "title": "Personinntektsskjema",
+            "files": []
+          },
+          {
+            "attachmentId": "etpewjh",
+            "navId": "etpewjh",
+            "type": "default",
+            "value": "ettersender",
+            "title": "Resultatregnskap",
+            "files": []
+          },
+          {
+            "attachmentId": "ec09wv",
+            "navId": "ec09wv",
+            "type": "other",
+            "value": "nei",
+            "title": "Annet",
+            "files": []
+          }
+        ],
         "metadata": {
           "timezone": "Europe/Oslo",
           "offset": 60,
@@ -84,24 +110,7 @@
   },
   "innsendingsId": "2db25aab-3524-4426-a333-489542bf16bf",
   "status": "Opprettet",
-  "vedleggsListe": [
-    {
-      "vedleggsnr": "L2",
-      "tittel": "Personinntektsskjema",
-      "label": "Personinntektsskjema",
-      "pakrevd": true,
-      "beskrivelse": "",
-      "formioId": "eiaivlp"
-    },
-    {
-      "vedleggsnr": "L2",
-      "tittel": "Resultatregnskap",
-      "label": "Resultatregnskap",
-      "pakrevd": true,
-      "beskrivelse": "",
-      "formioId": "etpewjh"
-    }
-  ],
+  "vedleggsListe": [],
   "kanLasteOppAnnet": true,
   "fristForEttersendelse": 14,
   "endretDato": "2024-02-15T10:26:31.152815+01:00",

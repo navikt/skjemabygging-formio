@@ -111,4 +111,40 @@ describe('Address', () => {
       cy.findByRole('combobox', { name: 'Land' }).should('exist');
     });
   });
+
+  describe('Address type wizard without prefill', () => {
+    it('should show wizard when addressTypeWizard is user', () => {
+      cy.visit('/fyllut/adresse/utenprefillwizarduser?sub=paper');
+      cy.defaultWaits();
+
+      cy.findByRole('group', { name: /Bor du i Norge/ }).should('exist');
+      cy.findByRole('textbox', { name: 'Vegadresse' }).should('not.exist');
+    });
+
+    it('should require addressType to show address fields when addressTypeWizard is predefined', () => {
+      cy.visit('/fyllut/adresse/utenprefillpredefinedutentype?sub=paper');
+      cy.defaultWaits();
+
+      cy.findByRole('group', { name: 'Bor du i Norge?' }).should('not.exist');
+      cy.findByRole('textbox', { name: 'Vegadresse' }).should('not.exist');
+
+      cy.visit('/fyllut/adresse/utenprefillpredefinednorsk?sub=paper');
+      cy.defaultWaits();
+
+      cy.findByRole('textbox', { name: 'Vegadresse' }).should('exist');
+    });
+
+    it('should require addressType to show address fields when addressTypeWizard is undefined', () => {
+      cy.visit('/fyllut/adresse/utenprefillundefinedutentype?sub=paper');
+      cy.defaultWaits();
+
+      cy.findByRole('group', { name: 'Bor du i Norge?' }).should('not.exist');
+      cy.findByRole('textbox', { name: 'Vegadresse' }).should('not.exist');
+
+      cy.visit('/fyllut/adresse/utenprefillundefinednorsk?sub=paper');
+      cy.defaultWaits();
+
+      cy.findByRole('textbox', { name: 'Vegadresse' }).should('exist');
+    });
+  });
 });

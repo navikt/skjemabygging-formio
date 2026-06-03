@@ -152,6 +152,11 @@ describe('Conditional rendering', () => {
       cy.visit('/fyllut/testmellomlagring?sub=paper');
       cy.defaultWaits();
       cy.clickStart();
+      cy.findByRole('heading', { name: 'Valgfrie opplysninger' }).should('exist');
+      cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
+        cy.findByLabelText('Ja').check(),
+      );
+      cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).type('03876399856');
       cy.findAllByRole('group', { name: 'Vis skjulte komponenter (valgfritt)' }).within(() => {
         cy.findAllByRole('radio', { name: 'Ja' }).should('exist');
         cy.findAllByRole('radio', { name: 'Ja' }).click();

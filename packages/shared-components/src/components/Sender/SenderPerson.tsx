@@ -3,7 +3,7 @@ import { SenderProps, SubmissionSender } from '@navikt/skjemadigitalisering-shar
 import { useComponentUtils } from '../../context/component/componentUtilsContext';
 import useComponentStyle from '../../util/styles/useComponentStyle';
 
-const SenderPerson = ({ labels, descriptions, value, onChange, readOnly, fieldSize }: SenderProps) => {
+const SenderPerson = ({ customLabels, descriptions, value, onChange, readOnly, fieldSize }: SenderProps) => {
   const styles = useComponentStyle({
     fieldSize,
   });
@@ -23,7 +23,7 @@ const SenderPerson = ({ labels, descriptions, value, onChange, readOnly, fieldSi
     <>
       <div className="form-group">
         <TextField
-          label={translate(labels.nationalIdentityNumber)}
+          label={translate(customLabels.nationalIdentityNumber)}
           description={translate(descriptions.nationalIdentityNumber)}
           value={value?.person?.nationalIdentityNumber ?? ''}
           onChange={(e) => handleChange('nationalIdentityNumber', e)}
@@ -35,7 +35,7 @@ const SenderPerson = ({ labels, descriptions, value, onChange, readOnly, fieldSi
       </div>
       <div className="form-group">
         <TextField
-          label={translate(labels.firstName)}
+          label={translate(customLabels.firstName)}
           value={value?.person?.firstName ?? ''}
           onChange={(e) => handleChange('firstName', e)}
           ref={(ref) => addRef('sender:firstName', ref)}
@@ -46,7 +46,7 @@ const SenderPerson = ({ labels, descriptions, value, onChange, readOnly, fieldSi
       </div>
       <div className="form-group">
         <TextField
-          label={translate(labels.surname)}
+          label={translate(customLabels.surname)}
           value={value?.person?.surname ?? ''}
           onChange={(e) => handleChange('surname', e)}
           ref={(ref) => addRef('sender:surname', ref)}

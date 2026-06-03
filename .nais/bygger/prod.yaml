@@ -14,6 +14,9 @@ accessPolicy:
       - application: skjemabygging-proxy
         namespace: skjemadigitalisering
         cluster: prod-fss
+      - application: form-spec-api
+        namespace: skjemadigitalisering
+        cluster: prod-gcp
     external:
       - host: skjemabygging-proxy.prod-fss-pub.nais.io
       - host: skjemadelingslenke.ekstern.dev.nav.no
