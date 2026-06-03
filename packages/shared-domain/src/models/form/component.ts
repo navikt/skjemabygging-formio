@@ -130,7 +130,7 @@ export interface Component {
   disableAddingRemovingRows?: boolean;
   addressPriority?: 'bostedsadresse' | 'oppholdsadresse' | 'kontaktadresse';
   addressType?: AddressType;
-  addressTypeWizard?: boolean;
+  addressTypeWizard?: 'predefined' | 'user';
   prefillValue?: string | object;
   protectedApiKey?: boolean;
   yourInformation?: boolean;

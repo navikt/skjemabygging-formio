@@ -9,14 +9,14 @@ const editFormAddressTypeWizard = (options: PropertyOptions): Component => {
     type: 'radio',
     label: 'Skal bruker velge adressetype?',
     key: 'addressTypeWizard',
-    defaultValue: false,
+    defaultValue: 'predefined',
     values: [
       {
-        value: 'false',
+        value: 'predefined',
         label: 'Nei, adressetype skal være predefinert',
       },
       {
-        value: 'true',
+        value: 'user',
         label: 'Ja, bruker må oppgi om de bor i Norge og adresstypen',
       },
     ],

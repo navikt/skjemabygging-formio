@@ -24,18 +24,14 @@ const addressForm = () => {
       }),
       editFormAddressPrefill({ customConditional: 'show = row.prefillKey === "sokerAdresser"' }),
       editFormAddressTypeWizard({ customConditional: 'show = row.prefillKey !== "sokerAdresser"' }),
-      editFormAddressType({ customConditional: 'show = row.prefillKey !== "sokerAdresser" && !row.addressTypeWizard' }),
+      editFormAddressType({
+        customConditional:
+          'show = row.prefillKey !== "sokerAdresser" && (row.addressTypeWizard === "predefined")',
+      }),
     ]),
-    validation([
-      editFormValidation.required(),
-    ]),
-    api([
-      editFormApi.key(),
-    ]),
-    conditional([
-      editFormConditional.simpleConditional(),
-      editFormConditional.advancedConditional(),
-    ]),
+    validation([editFormValidation.required()]),
+    api([editFormApi.key()]),
+    conditional([editFormConditional.simpleConditional(), editFormConditional.advancedConditional()]),
   );
 };
 

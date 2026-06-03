@@ -1,4 +1,42 @@
 describe('Address', () => {
+  const findComponentByKey = (components: any[] = [], key: string): any | undefined => {
+    for (const component of components) {
+      if (component?.key === key) {
+        return component;
+      }
+      const foundInChildren = findComponentByKey(component?.components, key);
+      if (foundInChildren) {
+        return foundInChildren;
+      }
+    }
+  };
+
+  const visitAddressWithConfig = ({
+    addressTypeWizard,
+    addressType,
+  }: {
+    addressTypeWizard?: 'user' | 'predefined';
+    addressType?: 'NORWEGIAN_ADDRESS' | 'POST_OFFICE_BOX' | 'FOREIGN_ADDRESS';
+  }) => {
+    cy.intercept('GET', '/fyllut/api/forms/adresse*', (req) => {
+      req.continue((res) => {
+        const addressComponent = findComponentByKey(res.body?.components, 'norsk');
+        if (!addressComponent) {
+          throw new Error('Address component "norsk" was not found in form response');
+        }
+
+        addressComponent.prefillKey = undefined;
+        addressComponent.addressTypeWizard = addressTypeWizard;
+        addressComponent.addressType = addressType;
+      });
+    }).as('getAddressFormWithConfig');
+
+    cy.visit('/fyllut/adresse/norskadresse?sub=paper');
+    cy.wait('@getConfig');
+    cy.wait('@getAddressFormWithConfig');
+    cy.wait('@getTranslations');
+  };
+
   beforeEach(() => {
     cy.defaultIntercepts();
   });
@@ -109,6 +147,33 @@ describe('Address', () => {
         cy.findByLabelText('Nei').check();
       });
       cy.findByRole('combobox', { name: 'Land' }).should('exist');
+    });
+  });
+
+  describe('Address type wizard without prefill', () => {
+    it('should show wizard when addressTypeWizard is user', () => {
+      visitAddressWithConfig({ addressTypeWizard: 'user' });
+
+      cy.findByRole('group', { name: 'Bor du i Norge?' }).should('exist');
+      cy.findByRole('textbox', { name: 'Vegadresse' }).should('not.exist');
+    });
+
+    it('should require addressType to show address fields when addressTypeWizard is predefined', () => {
+      visitAddressWithConfig({ addressTypeWizard: 'predefined' });
+      cy.findByRole('group', { name: 'Bor du i Norge?' }).should('not.exist');
+      cy.findByRole('textbox', { name: 'Vegadresse' }).should('not.exist');
+
+      visitAddressWithConfig({ addressTypeWizard: 'predefined', addressType: 'NORWEGIAN_ADDRESS' });
+      cy.findByRole('textbox', { name: 'Vegadresse' }).should('exist');
+    });
+
+    it('should require addressType to show address fields when addressTypeWizard is undefined', () => {
+      visitAddressWithConfig({});
+      cy.findByRole('group', { name: 'Bor du i Norge?' }).should('not.exist');
+      cy.findByRole('textbox', { name: 'Vegadresse' }).should('not.exist');
+
+      visitAddressWithConfig({ addressType: 'NORWEGIAN_ADDRESS' });
+      cy.findByRole('textbox', { name: 'Vegadresse' }).should('exist');
     });
   });
 });
