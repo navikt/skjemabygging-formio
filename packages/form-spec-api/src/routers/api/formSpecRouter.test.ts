@@ -1,26 +1,17 @@
-import { formApiService } from '@navikt/skjemadigitalisering-shared-backend';
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import request from 'supertest';
 import { beforeEach, vi } from 'vitest';
 import { createApp } from '../../app';
+import { formService } from '../../services';
 import { FormNotFoundError } from './helpers/errors';
 
-vi.mock('@navikt/skjemadigitalisering-shared-backend', async () => {
-  const actual = await vi.importActual<typeof import('@navikt/skjemadigitalisering-shared-backend')>(
-    '@navikt/skjemadigitalisering-shared-backend',
-  );
+vi.mock('../../services', () => ({
+  formService: {
+    getForm: vi.fn(),
+  },
+}));
 
-  return {
-    ...actual,
-    formApiService: {
-      ...actual.formApiService,
-      getForm: vi.fn(),
-    },
-    paramValidation: actual.paramValidation,
-  };
-});
-
-const mockedGetForm = vi.mocked(formApiService.getForm);
+const mockedGetForm = vi.mocked(formService.getForm);
 
 const createForm = (): Form => ({
   components: [
@@ -61,6 +52,7 @@ describe('formSpecRouter', () => {
     expect(mockedGetForm).toHaveBeenCalledWith(
       expect.objectContaining({
         formPath: 'nav123456',
+        select: ['components', 'introPage', 'path', 'properties', 'revision', 'skjemanummer', 'title'],
       }),
     );
   });
@@ -73,6 +65,7 @@ describe('formSpecRouter', () => {
     expect(mockedGetForm).toHaveBeenCalledWith(
       expect.objectContaining({
         formPath: 'nav123456',
+        select: ['components', 'introPage', 'path', 'properties', 'revision', 'skjemanummer', 'title'],
       }),
     );
     expect(response.body.$id).toBe('https://skjemabygging.nav.no/forms/nav123456/spec?revision=3');

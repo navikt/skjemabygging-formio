@@ -1,8 +1,8 @@
-import { formApiService, paramValidation } from '@navikt/skjemadigitalisering-shared-backend';
+import { paramValidation } from '@navikt/skjemadigitalisering-shared-backend';
 import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import express from 'express';
-import { config } from '../../config';
 import { generateSchema } from '../../schema/generateSchema';
+import { formService } from '../../services';
 import { FormNotFoundError } from './helpers/errors';
 
 const formSpecRouter = express.Router();
@@ -11,9 +11,9 @@ formSpecRouter.param('formPath', paramValidation.formPath);
 
 formSpecRouter.get('/:formPath/spec', async (req, res, next) => {
   try {
-    const form = await formApiService.getForm({
-      baseUrl: config.formsApiUrl,
+    const form = await formService.getForm({
       formPath: req.params.formPath,
+      select: ['components', 'introPage', 'path', 'properties', 'revision', 'skjemanummer', 'title'],
     });
     const schema = generateSchema(form);
 
