@@ -4,9 +4,7 @@ import { expect } from 'chai';
 const downloadPdf = (submissionType: 'digital' | 'paper' | 'digitalnologin' = 'paper') => {
   cy.findByRole('link', { name: /Oppsummering|Summary/ }).click();
   cy.findByRole('heading', { name: /Oppsummering|Summary/ }).shouldBeVisible();
-  if (submissionType === 'digital') {
-    cy.clickSaveAndContinue();
-  } else if (submissionType === 'digitalnologin') {
+  if (submissionType === 'digitalnologin' || submissionType === 'digital') {
     cy.clickSendNav();
   } else {
     cy.findByRole('link', { name: 'Instruksjoner for innsending' }).click();
@@ -43,10 +41,11 @@ describe('Pdf', () => {
       cy.findByRole('checkbox', { name: /Avkryssingsboks 3/ }).click();
       cy.clickSaveAndContinue();
       cy.findByRole('heading', { name: 'Oppsummering' }).shouldBeVisible();
+      cy.submitApplication((_req) => {});
 
-      cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad').as('submitMellomlagring');
       cy.clickSendNav();
-      cy.wait('@submitMellomlagring');
+
+      cy.wait('@submitApplication');
     });
 
     it('pdfFormData get populated with the correct number of pages', () => {
@@ -59,12 +58,11 @@ describe('Pdf', () => {
 
       cy.findByRole('heading', { name: 'Page 1' }).shouldBeVisible();
       cy.clickSaveAndContinue();
-
-      cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad').as('submitMellomlagring');
+      cy.submitApplication((_req) => {});
       cy.findByRole('heading', { name: 'Oppsummering' }).shouldBeVisible();
       cy.clickSendNav();
 
-      cy.wait('@submitMellomlagring');
+      cy.wait('@submitApplication');
     });
 
     it('pdfFormData get populated with the correct number of pages, paper', () => {
@@ -266,7 +264,7 @@ describe('Pdf', () => {
           cy.findByRole('radio', { name: 'Ingen relevant aktivitet registrert på meg' }).check();
         });
 
-        cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad').as('downloadPdf');
+        cy.intercept('POST', '/fyllut/api/send-inn/digital-application/*').as('downloadPdf');
 
         downloadPdf('digital');
       });
@@ -383,7 +381,7 @@ describe('Pdf', () => {
           cy.findByRole('radio', { name: 'Ingen relevant aktivitet registrert på meg' }).check();
         });
 
-        cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad').as('downloadPdf');
+        cy.intercept('POST', '/fyllut/api/send-inn/digital-application/*').as('downloadPdf');
 
         downloadPdf('digital');
       });

@@ -122,7 +122,7 @@ describe('Data fetcher', () => {
         });
       cy.get('[data-cy=error-summary]').should('not.exist');
       cy.clickSaveAndContinue();
-      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+      cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
     });
 
     it('should not display validation error when data is empty', () => {
@@ -130,7 +130,7 @@ describe('Data fetcher', () => {
       cy.visit('/fyllut/datafetchertest/arbeidsrettetaktivitet?sub=digital');
       cy.clickSaveAndContinue();
       cy.findByRole('link', { name: `Du må fylle ut: Aktivitetsvelger` }).should('not.exist');
-      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+      cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
     });
 
     it('should disregard required validation when fetch fails', () => {
@@ -141,7 +141,7 @@ describe('Data fetcher', () => {
 
       cy.clickSaveAndContinue();
       cy.findByRole('link', { name: `Du må fylle ut: Aktivitetsvelger` }).should('not.exist');
-      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+      cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
     });
   });
 
@@ -217,6 +217,8 @@ describe('Data fetcher', () => {
             cy.findByRole('checkbox', { name: 'Aktivitet 1' }).should('exist').check();
           });
         cy.clickSaveAndContinue();
+        cy.clickShowAllSteps();
+        cy.findByRole('link', { name: 'Oppsummering' }).click();
         cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
       });
 
@@ -240,6 +242,7 @@ describe('Data fetcher', () => {
             cy.findByRole('checkbox', { name: 'Aktivitet 3' }).should('not.be.checked').check();
           });
         cy.clickSaveAndContinue();
+        cy.findByRole('link', { name: 'Oppsummering' }).click();
         cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
 
         cy.findByRole('heading', { name: 'Velg aktivitet' })
@@ -255,25 +258,36 @@ describe('Data fetcher', () => {
           });
       });
 
-      it('submits activity selection with backend-rendered PDF contract', () => {
+      it('includes aktivitetsvelger in pdfFormData on submit', () => {
         cy.mocksUseRouteVariant('post-familie-pdf:success-tc20');
         cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad').as('submitMellomlagring');
+        cy.findByRole('link', { name: 'Vedlegg' }).click();
+        cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
+        cy.findByLabelText('Annen dokumentasjon')
+          .should('exist')
+          .within(() => {
+            cy.findByRole('radio', { name: TEXTS.statiske.attachment.nei }).should('exist').check();
+          });
+
         cy.clickSaveAndContinue();
-        cy.wait('@submitMellomlagring');
+        cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+        cy.clickSendNav();
+        cy.wait('@submitApplication');
       });
     });
   });
 
   describe('Attachments with conditional using dataFetcher util', () => {
+    // fails
     it('should be included', () => {
       cy.mocksUseRouteVariant('get-register-data-activities:success-two-activities');
 
-      cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
-        const { submission, attachments } = req.body;
+      cy.submitApplication((req) => {
+        const { submission } = req.body;
         expect(submission.data.hvorMangeAktiviteterErAktuelle).to.eq(2);
-        expect(attachments).to.have.length(1);
-        expect(attachments[0].vedleggsnr).to.eq('U1');
-      }).as('submitMellomlagring');
+        expect(submission.attachments).to.have.length(2);
+        expect(submission.attachments[0].attachmentId).to.eq('egba4jd');
+      });
 
       cy.visit('/fyllut/checkcondition?sub=digital');
       cy.clickStart();
@@ -294,19 +308,33 @@ describe('Data fetcher', () => {
       cy.findByRole('textbox', { name: 'Hvor mange aktiviteter er aktuelle?' }).should('exist').type('2');
       cy.clickSaveAndContinue();
 
-      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+      cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
+      cy.findByLabelText(/Uttalelse fra lege/)
+        .should('exist')
+        .within(() => {
+          cy.findByRole('radio', { name: TEXTS.statiske.attachment.levertTidligere }).should('exist').check();
+        });
+      cy.findByLabelText('Annen dokumentasjon')
+        .should('exist')
+        .within(() => {
+          cy.findByRole('radio', { name: TEXTS.statiske.attachment.nei }).should('exist').check();
+        });
       cy.clickSaveAndContinue();
-      cy.wait('@submitMellomlagring');
+
+      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+      cy.clickSendNav();
+      cy.wait('@submitApplication');
     });
 
     it('should not be included', () => {
       cy.mocksUseRouteVariant('get-register-data-activities:success-two-activities');
 
-      cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad', (req) => {
-        const { submission, attachments } = req.body;
+      cy.submitApplication((req) => {
+        const { submission } = req.body;
         expect(submission.data.hvorMangeAktiviteterErAktuelle).to.eq(2);
-        expect(attachments).to.have.length(0);
-      }).as('submitMellomlagring');
+        expect(submission.attachments).to.have.length(1);
+        expect(submission.attachments[0].attachmentId).to.eq('e9nlm84');
+      });
 
       cy.visit('/fyllut/checkcondition?sub=digital');
       cy.clickStart();
@@ -327,9 +355,17 @@ describe('Data fetcher', () => {
       cy.findByRole('textbox', { name: 'Hvor mange aktiviteter er aktuelle?' }).should('exist').type('2');
       cy.clickSaveAndContinue();
 
-      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+      cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
+      cy.findByLabelText('Annen dokumentasjon')
+        .should('exist')
+        .within(() => {
+          cy.findByRole('radio', { name: TEXTS.statiske.attachment.nei }).should('exist').check();
+        });
       cy.clickSaveAndContinue();
-      cy.wait('@submitMellomlagring');
+
+      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+      cy.clickSendNav();
+      cy.wait('@submitApplication');
     });
   });
 });

@@ -122,8 +122,8 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const retrieveMellomlagring = useCallback(
     async (innsendingsId: string) => {
       const response = await getSoknad(innsendingsId, appConfig);
-      if (response?.shouldUploadAttachmentsInFyllut && setAttachmentPageEnabled) {
-        setAttachmentPageEnabled(true);
+      if (!response?.shouldUploadAttachmentsInFyllut && setAttachmentPageEnabled) {
+        setAttachmentPageEnabled(false);
       }
       if (response?.hoveddokumentVariant.document) {
         addSearchParamToUrl('lang', response.hoveddokumentVariant.document.language);
@@ -172,9 +172,6 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         setInnsendingsId(response?.innsendingsId);
         removeSearchParamFromUrl('forceMellomlagring');
         addSearchParamToUrl('innsendingsId', response?.innsendingsId);
-        if (response?.shouldUploadAttachmentsInFyllut && setAttachmentPageEnabled) {
-          setAttachmentPageEnabled(true);
-        }
         if (response) {
           setIsMellomlagringReady(true);
         }
@@ -193,7 +190,6 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
       logger,
       setSubmission,
       removeSearchParamFromUrl,
-      setAttachmentPageEnabled,
       addSearchParamToUrl,
       navigate,
     ],
@@ -393,6 +389,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   }, [form, logEvent, logger, navigate, setSubmission, submissionMethod, translate]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setTokenDetails(tokenUtils.parseToken(nologinToken));
   }, [nologinToken]);
 
@@ -406,6 +403,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
       }, msUntilExp);
       return () => clearTimeout(timeoutId);
     } else {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       handleSessionExpired();
     }
   }, [tokenDetails, handleSessionExpired]);

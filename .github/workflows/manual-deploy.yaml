@@ -132,3 +132,16 @@ jobs:
           RESOURCE: './.nais/fyllut/config.yaml'
           VARS: './.nais/fyllut/${{ github.event.inputs.environment }}.yaml'
           VAR: image=${{ needs.package-and-push-fyllut-base.outputs.image }}
+
+  deploy-form-spec-api-to-dev:
+    name: 'Form-spec-api'
+    if: ${{ !failure() && !cancelled() }}
+    uses: ./.github/workflows/deploy-form-spec-api.yaml
+    with:
+      git_sha: ${{ github.sha }}
+      environment: ${{ github.event.inputs.environment }}
+    secrets: inherit
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+      packages: 'read'

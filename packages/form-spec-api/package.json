@@ -1,0 +1,40 @@
+{
+  "name": "@navikt/form-spec-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Backend service exposing JSON Schema for form submissions",
+  "main": "dist/server.mjs",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "license": "SEE LICENSE IN LICENSE.md",
+  "scripts": {
+    "start": "cross-env NODE_ENV=development vite",
+    "build": "tsc && vite build",
+    "check-types": "tsc",
+    "clean": "rimraf dist coverage node_modules",
+    "test": "vitest --run",
+    "test:coverage": "vitest --run --coverage"
+  },
+  "dependencies": {
+    "@navikt/skjemadigitalisering-shared-backend": "1.0.0",
+    "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "jsdom": "^28.1.0",
+    "swagger-ui-express": "^5.0.1",
+    "winston": "^3.19.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^24.6.2",
+    "@types/supertest": "^6.0.2",
+    "@types/swagger-ui-express": "^4.1.8",
+    "nock": "^14.0.10",
+    "supertest": "^7.2.2",
+    "vite-plugin-node": "^7.0.0"
+  }
+}

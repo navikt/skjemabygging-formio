@@ -54,7 +54,7 @@ function AppConfigProvider({
   }, [app, config, logger]);
 
   const [internalDiffOn, setDiffOn] = useState<boolean>(diffOn!);
-  const [attachmentPageEnabled, setAttachmentPageEnabled] = useState<boolean>(submissionMethod !== 'digital');
+  const [attachmentPageEnabled, setAttachmentPageEnabled] = useState<boolean>(true);
   return (
     <AppConfigContext.Provider
       value={{

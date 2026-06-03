@@ -26,6 +26,11 @@
       "language": "nb-NO",
       "data": {
         "data": {
+          "dineOpplysninger": {
+            "identitet": {
+              "identitetsnummer": "03876399856"
+            }
+          },
           "hvaDrakkDuTilFrokost": "",
           "hvaSpisteDuTilFrokost": "",
           "onskerDuAFaGavenInnpakket": "nei",
@@ -35,7 +40,33 @@
             "label": "På døra",
             "value": "paDora"
           }
-        }
+        },
+        "attachments": [
+          {
+            "attachmentId": "eijyzy",
+            "navId": "eijyzy",
+            "type": "default",
+            "value": "ettersender",
+            "title": "Oppmøtebekreftelse",
+            "files": []
+          },
+          {
+            "attachmentId": "e3dw1sg",
+            "navId": "e3dw1sg",
+            "type": "default",
+            "value": "ettersender",
+            "title": "Bekreftelse på at du av helsemessige årsaker må benytte dyrere transport",
+            "files": []
+          },
+          {
+            "attachmentId": "em26fir",
+            "navId": "em26fir",
+            "type": "other",
+            "value": "nei",
+            "title": "Annet",
+            "files": []
+          }
+        ]
       }
     },
     "propertyNavn": null,

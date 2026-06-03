@@ -1,9 +1,10 @@
 import { NavFormType, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { useEffect } from 'react';
 import { MemoryRouter } from 'react-router';
 import { vi } from 'vitest';
-import { http } from '../../index';
+import { http, useAppConfig } from '../../index';
 import { AppConfigProvider } from '../config/configContext';
 import { FormProvider } from '../form/FormContext';
 import { SendInnProvider, useSendInn } from './sendInnContext';
@@ -27,7 +28,11 @@ const mockHttp = {
 
 describe('sendInnContext', () => {
   const TestComponent = ({ submission }) => {
+    const { setAttachmentPageEnabled } = useAppConfig();
     const { updateMellomlagring, deleteMellomlagring, submitSoknad, innsendingsId } = useSendInn();
+    useEffect(() => {
+      setAttachmentPageEnabled?.(false);
+    }, [setAttachmentPageEnabled]);
 
     return (
       <>
