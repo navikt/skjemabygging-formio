@@ -7,6 +7,7 @@ import editFormTabs from '../../base/editForm/editFormTabs';
 import editFormValidation from '../../base/editForm/validation';
 import editFormAddressPrefill from './editForm/editFormAddressPrefill';
 import editFormAddressType from './editForm/editFormAddressType';
+import editFormAddressTypeWizard from './editForm/editFormAddressTypeWizard';
 
 const addressForm = () => {
   const { conditional, createTabs, api, data, validation } = editFormTabs;
@@ -14,15 +15,16 @@ const addressForm = () => {
   // prettier-ignore
   return createTabs(
     data([
-      editFormData.prefillKey({prefillKey: 'sokerAdresser'}),
+      editFormData.prefillKey({ prefillKey: 'sokerAdresser' }),
       editFormDisplay.customLabels({
         key: 'livesInNorway',
         label: 'Ledetekst',
         value: TEXTS.statiske.address.livesInNorway,
         customConditional: 'show = row.prefillKey === "sokerAdresser"',
       }),
-      editFormAddressPrefill({customConditional: 'show = row.prefillKey === "sokerAdresser"'}),
-      editFormAddressType({customConditional: 'show = row.prefillKey !== "sokerAdresser"'}),
+      editFormAddressPrefill({ customConditional: 'show = row.prefillKey === "sokerAdresser"' }),
+      editFormAddressTypeWizard({ customConditional: 'show = row.prefillKey !== "sokerAdresser"' }),
+      editFormAddressType({ customConditional: 'show = row.prefillKey !== "sokerAdresser" && !row.addressTypeWizard' }),
     ]),
     validation([
       editFormValidation.required(),
