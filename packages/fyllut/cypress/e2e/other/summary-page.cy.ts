@@ -116,7 +116,7 @@ describe('SummaryPage', () => {
   it('does not submit before summary validation is finished', () => {
     cy.defaultInterceptsMellomlagring();
     cy.submitMellomlagring(() => {});
-    cy.visit('/fyllut/components/oppsummering?sub=digital');
+    cy.visit('/fyllut/components/oppsummering?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3');
     cy.defaultWaits();
     cy.clickSendNav();
 
