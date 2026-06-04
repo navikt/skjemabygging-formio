@@ -3,8 +3,8 @@ import dotenv from 'dotenv';
 import { logger } from '../logger';
 import { NaisCluster } from './nais-cluster';
 import {
-  ConfigType,
   DefaultConfig,
+  FyllutBackendConfig,
   IdportenConfig,
   SendInnConfig,
   ServiceConfig,
@@ -199,7 +199,7 @@ const defaultConfig: DefaultConfig = {
   tempAttachmentUploadForms: featureUtils.splitCommaSeparated(process.env.FEATURE_ATTACHMENT_UPLOAD_FORMS),
 };
 
-const config: ConfigType = {
+const config: FyllutBackendConfig = {
   ...(process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test'
     ? localDevelopmentConfig
     : defaultConfig),
@@ -217,7 +217,7 @@ const config: ConfigType = {
   port: parseInt(process.env.PORT || '8080'),
 };
 
-const checkConfigConsistency = (config: ConfigType, logError = logger.error, exit = process.exit) => {
+const checkConfigConsistency = (config: FyllutBackendConfig, logError = logger.error, exit = process.exit) => {
   const { mocksEnabled, useFormsApiStaging, naisClusterName, formioApiServiceUrl, formsApiUrl } = config;
   if (mocksEnabled) {
     if (naisClusterName === NaisCluster.PROD || naisClusterName === NaisCluster.DEV) {

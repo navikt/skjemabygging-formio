@@ -1,9 +1,9 @@
 import {
   AttachmentSettingValues,
   AttachmentType,
-  checkCondition,
   Component,
   ComponentValue,
+  navFormioUtils,
   NavFormType,
   navFormUtils,
   Submission,
@@ -39,7 +39,7 @@ const getAllAttachments = (form: NavFormType, submission: Submission): Attachmen
     .flattenComponents(form.components)
     .filter((component) => isAttachment(component) || isOtherDocumentation(component))
     .map(sanitize)
-    .filter((comp) => checkCondition(comp, undefined, submission?.data, form, undefined, submission))
+    .filter((comp) => navFormioUtils.checkCondition(comp, undefined, submission?.data, form, undefined, submission))
     .map((comp) => {
       return {
         ...comp,
@@ -53,7 +53,7 @@ const getRelevantAttachments = (form: NavFormType, submission: Submission): Atta
     .flattenComponents(form.components)
     .filter((component) => isAttachment(component) && !isOtherDocumentation(component))
     .map(sanitize)
-    .filter((comp) => checkCondition(comp, undefined, submission?.data, form, undefined, submission))
+    .filter((comp) => navFormioUtils.checkCondition(comp, undefined, submission?.data, form, undefined, submission))
     .map(toAttachment);
 };
 
@@ -79,7 +79,7 @@ const hasOtherDocumentation = (form, submission: Submission) => {
   return navFormUtils
     .flattenComponents(form.components)
     .map(sanitize)
-    .filter((comp) => checkCondition(comp, undefined, submission?.data, form, undefined, submission))
+    .filter((comp) => navFormioUtils.checkCondition(comp, undefined, submission?.data, form, undefined, submission))
     .some((component) => isOtherDocumentation(component));
   // TODO: Remove otherDocumentation from component when all attachments have attachmentType set
 };

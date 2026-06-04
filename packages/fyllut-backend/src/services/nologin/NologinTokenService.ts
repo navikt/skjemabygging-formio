@@ -1,11 +1,11 @@
 import { correlator } from '@navikt/skjemadigitalisering-shared-backend';
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import { ConfigType } from '../../config/types';
+import { FyllutBackendConfig } from '../../config/types';
 import { logger } from '../../logger';
 
 const TOKEN_PURPOSE = 'nologin';
 
-const NologinTokenService = (config: ConfigType) => ({
+const NologinTokenService = (config: FyllutBackendConfig) => ({
   generateToken: (): string => {
     const innsendingsId = crypto.randomUUID();
     logger.info(`${innsendingsId}: Generating nologin token`, { correlationId: correlator.getId() });
