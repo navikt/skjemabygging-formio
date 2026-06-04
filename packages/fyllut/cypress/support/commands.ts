@@ -102,11 +102,13 @@ Cypress.Commands.add('clickEditAnswers', (linkText) => {
 });
 
 Cypress.Commands.add('clickSendNav', () => {
-  cy.findByRoleWhenAttached('link', { name: TEXTS.grensesnitt.navigation.sendToNav }, 1000).click();
+  // This render first after validation is done, so we need to wait for it.
+  cy.findByRoleWhenAttached('link', { name: TEXTS.grensesnitt.navigation.sendToNav }, 5000).click();
 });
 
 Cypress.Commands.add('clickDownloadInstructions', () => {
-  cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions }).click();
+  // This render first after validation is done, so we need to wait for it.
+  cy.findByRoleWhenAttached('link', { name: TEXTS.grensesnitt.navigation.instructions }, 5000).click();
 });
 
 Cypress.Commands.add('clickDownloadApplication', () => {
