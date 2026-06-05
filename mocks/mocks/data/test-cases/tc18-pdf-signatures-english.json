@@ -37,6 +37,19 @@
       ]
     },
     {
+      "label": "Attachments",
+      "verdiliste": [
+        {
+          "label": "Attachments",
+          "verdi": "I have provided this documentation previously"
+        },
+        {
+          "label": "Other documentation",
+          "verdi": "No, I have no additional documentation to attach"
+        }
+      ]
+    },
+    {
       "label": "Signature",
       "visningsVariant": "HOLDSAMMEN",
       "verdiliste": [

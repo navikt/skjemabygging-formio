@@ -13,6 +13,16 @@ const downloadPdf = (submissionType: 'digital' | 'paper' | 'digitalnologin' = 'p
   cy.wait('@downloadPdf');
 };
 
+const fillInAttachmentPage = () => {
+  cy.findByRole('link', { name: /Vedlegg/ }).click();
+  cy.findByRole('group', { name: /Vedlegg/ }).within(() =>
+    cy.findByLabelText(/Jeg har levert denne dokumentasjonen tidligere/).check(),
+  );
+  cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() =>
+    cy.findByLabelText('Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved').check(),
+  );
+};
+
 describe('Pdf', () => {
   before(() => {
     cy.configMocksServer();
@@ -108,6 +118,8 @@ describe('Pdf', () => {
         });
         cy.findByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).type('20905995783');
         cy.clickNextStep();
+
+        fillInAttachmentPage();
 
         cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application').as('downloadPdf');
 
@@ -228,14 +240,7 @@ describe('Pdf', () => {
         cy.findByRole('heading', { name: 'Andre' }).shouldBeVisible();
         cy.findByRole('checkbox', { name: /Jeg bekrefter/ }).check();
 
-        cy.findByRole('link', { name: 'Vedlegg' }).click();
-        cy.findByRole('heading', { name: 'Vedlegg' }).shouldBeVisible();
-        cy.findByRole('group', { name: /Vedlegg/ }).within(() => {
-          cy.findByRole('radio', { name: 'Jeg ettersender dokumentasjonen senere' }).check();
-        });
-        cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
-          cy.findByRole('radio', { name: 'Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved' }).check();
-        });
+        fillInAttachmentPage();
 
         cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application').as('downloadPdf');
 
@@ -263,6 +268,8 @@ describe('Pdf', () => {
         cy.findByRole('group', { name: /Hvilken aktivitet søker du om støtte i forbindelse med?/ }).within(() => {
           cy.findByRole('radio', { name: 'Ingen relevant aktivitet registrert på meg' }).check();
         });
+
+        fillInAttachmentPage();
 
         cy.intercept('POST', '/fyllut/api/send-inn/digital-application/*').as('downloadPdf');
 
@@ -381,6 +388,8 @@ describe('Pdf', () => {
           cy.findByRole('radio', { name: 'Ingen relevant aktivitet registrert på meg' }).check();
         });
 
+        fillInAttachmentPage();
+
         cy.intercept('POST', '/fyllut/api/send-inn/digital-application/*').as('downloadPdf');
 
         downloadPdf('digital');
@@ -416,6 +425,8 @@ describe('Pdf', () => {
         cy.findByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).type('20905995783');
 
         cy.clickNextStep();
+
+        fillInAttachmentPage();
 
         cy.intercept('POST', '/fyllut/api/send-inn/nologin-application').as('downloadPdf');
 
@@ -511,6 +522,8 @@ describe('Pdf', () => {
         cy.findByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).type('20905995783');
         cy.clickNextStep();
 
+        fillInAttachmentPage();
+
         cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application').as('downloadPdf');
 
         downloadPdf();
@@ -531,6 +544,15 @@ describe('Pdf', () => {
           },
         );
         cy.findByRole('textbox', { name: /Norwegian national identification number or D number/ }).type('20905995783');
+        cy.clickNextStep();
+
+        cy.findByRole('link', { name: /Attachments/ }).click();
+        cy.findByRole('group', { name: /Attachments/ }).within(() =>
+          cy.findByLabelText(/I have provided this documentation previously/).check(),
+        );
+        cy.findByRole('group', { name: /Other documentation/ }).within(() =>
+          cy.findByLabelText('No, I have no additional documentation to attach').check(),
+        );
         cy.clickNextStep();
 
         cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application').as('downloadPdf');
@@ -606,6 +628,8 @@ describe('Pdf', () => {
         },
       );
 
+      fillInAttachmentPage();
+
       cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application').as('downloadPdf');
       downloadPdf();
       cy.findByText(/Nedlastingen er ferdig/).shouldBeVisible();
@@ -628,6 +652,9 @@ describe('Pdf', () => {
         });
         cy.findByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).type('20905995783');
         cy.clickNextStep();
+
+        fillInAttachmentPage();
+
         cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
           req.on('response', (res) => {
             expect(res.statusCode).to.eq(expectedHttpStatusCode);
