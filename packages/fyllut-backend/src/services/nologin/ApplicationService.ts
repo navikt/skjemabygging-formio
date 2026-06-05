@@ -25,9 +25,11 @@ import { mapToReceiptSummary } from './receiptMapper';
 class ApplicationService {
   private readonly applicationPdfService: ApplicationPdfService;
   private readonly clients: Record<'nologin' | 'digital', ApplicationClientType>;
+  private readonly config: FyllutBackendConfig;
 
   constructor(config: FyllutBackendConfig, applicationPdfService: ApplicationPdfService) {
     this.applicationPdfService = applicationPdfService;
+    this.config = config;
     this.clients = {
       nologin: ApplicationClient(config, 'nologin'),
       digital: ApplicationClient(config, 'digital'),
