@@ -1,12 +1,12 @@
 import { correlator } from '@navikt/skjemadigitalisering-shared-backend';
 import { config } from '../config/config';
-import { ConfigType } from '../config/types';
+import { FyllutBackendConfig } from '../config/types';
 import { logger } from '../logger';
 import { LogMetadata } from '../types/log';
 
 type Severity = 'INFO' | 'WARN' | 'ERROR';
 
-const TeamLogger = (config: ConfigType) => ({
+const TeamLogger = (config: FyllutBackendConfig) => ({
   log: async (severity: Severity, message: string, metadata: LogMetadata) => {
     if (config.teamLogsConfig.enabled) {
       const correlation_id = correlator.getId();

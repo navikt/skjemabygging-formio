@@ -1,8 +1,8 @@
 import { Response } from 'node-fetch';
 import { Backend } from '../../src/Backend';
-import type { ConfigType } from '../../src/config/types';
+import type { ByggerBackendConfig } from '../../src/config/types';
 
-export const configForTest: ConfigType = {
+export const configForTest: ByggerBackendConfig = {
   azure: {
     openidTokenEndpoint: 'https://example.test/token',
     openidConfigJwksUri: 'https://example.test/jwks',

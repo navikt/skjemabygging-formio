@@ -88,7 +88,7 @@ export type DefaultConfig = {
   tempAttachmentUploadForms: string[];
 };
 
-export type ConfigType = DefaultConfig & {
+export type FyllutBackendConfig = DefaultConfig & {
   fyllutPath: string;
   clientSecret: string;
   featureToggles: FeatureTogglesMap;

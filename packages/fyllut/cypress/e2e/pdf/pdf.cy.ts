@@ -7,7 +7,7 @@ const downloadPdf = (submissionType: 'digital' | 'paper' | 'digitalnologin' = 'p
   if (submissionType === 'digitalnologin' || submissionType === 'digital') {
     cy.clickSendNav();
   } else {
-    cy.findByRole('link', { name: 'Instruksjoner for innsending' }).click();
+    cy.clickDownloadInstructions();
     cy.findByRole('button', { name: /Last ned skjema|Download form/ }).click();
   }
   cy.wait('@downloadPdf');

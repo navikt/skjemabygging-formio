@@ -51,7 +51,7 @@ export type GithubAppConfig = {
 
 export type NodeEnv = 'production' | 'development' | 'test';
 
-export type ConfigType = {
+export type ByggerBackendConfig = {
   azure: AzureConfig;
   skjemabyggingProxy: SkjemabyggingProxyConfig;
   publishRepo: PublishRepoConfig;

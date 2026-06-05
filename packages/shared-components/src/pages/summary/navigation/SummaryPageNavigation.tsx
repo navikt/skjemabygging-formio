@@ -38,6 +38,7 @@ const SummaryPageNavigation = ({ form, submission, panelValidationList, isValid 
   const { translate } = useLanguages();
   const { activeComponents } = useForm();
 
+  const isPanelValidationReady = panelValidationList !== undefined;
   const hasValidationErrors = panelValidationList?.some((panelValidation) => panelValidation.hasValidationErrors);
 
   const getPreviousPathname = () => {
@@ -65,35 +66,37 @@ const SummaryPageNavigation = ({ form, submission, panelValidationList, isValid 
 
       <FormSavedStatus submission={submission} />
 
-      <NavigationButtonRow
-        nextButton={
-          <SummaryPageNextButton
-            form={form}
-            submission={submission}
-            panelValidationList={panelValidationList}
-            setError={setError}
-            isValid={isValid}
-            setSubmitError={setValidationError}
-          />
-        }
-        previousButton={
-          hasValidationErrors ? (
-            <EditAnswersButton form={form} panelValidationList={panelValidationList} />
-          ) : (
-            <PreviousButton
-              label={{
-                default: translate(TEXTS.grensesnitt.navigation.previous),
-              }}
-              href={{
-                default: { pathname: getPreviousPathname(), search },
-              }}
+      {isPanelValidationReady && (
+        <NavigationButtonRow
+          nextButton={
+            <SummaryPageNextButton
+              form={form}
+              submission={submission}
+              panelValidationList={panelValidationList}
+              setError={setError}
+              isValid={isValid}
+              setSubmitError={setValidationError}
             />
-          )
-        }
-        saveButton={<SaveButton submission={submission} />}
-        cancelButton={<CancelAndDeleteButton />}
-        errorMessage={validationError}
-      />
+          }
+          previousButton={
+            hasValidationErrors ? (
+              <EditAnswersButton form={form} panelValidationList={panelValidationList} />
+            ) : (
+              <PreviousButton
+                label={{
+                  default: translate(TEXTS.grensesnitt.navigation.previous),
+                }}
+                href={{
+                  default: { pathname: getPreviousPathname(), search },
+                }}
+              />
+            )
+          }
+          saveButton={<SaveButton submission={submission} />}
+          cancelButton={<CancelAndDeleteButton />}
+          errorMessage={validationError}
+        />
+      )}
     </>
   );
 };
