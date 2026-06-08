@@ -41,11 +41,6 @@ describe('Form navigation', () => {
   beforeEach(() => {
     cy.mocksRestoreRouteVariants();
     cy.mocksUseRouteVariant('post-soknad:success-hardcoded');
-    cy.intercept('GET', /^https:\/\/www\.nav\.no\/?$/, {
-      statusCode: 200,
-      headers: { 'content-type': 'text/html; charset=utf-8' },
-      body: '<!doctype html><html><body>redirected to nav.no</body></html>',
-    });
     cy.defaultIntercepts();
   });
 

@@ -143,7 +143,16 @@ Cypress.Commands.add('verifyNavRedirect', () => {
   });
 });
 
+const interceptExternalNavRedirects = () => {
+  cy.intercept('GET', /^https:\/\/(?:[\w-]+\.)*nav\.no(?:\/.*)?$/, {
+    statusCode: 200,
+    headers: { 'content-type': 'text/html; charset=utf-8' },
+    body: '<!doctype html><html><body>redirected to nav.no</body></html>',
+  });
+};
+
 Cypress.Commands.add('defaultIntercepts', () => {
+  interceptExternalNavRedirects();
   cy.intercept('POST', '/fyllut/api/log*', { body: 'ok' }).as('logger');
   cy.intercept('GET', '/fyllut/api/config*').as('getConfig');
   cy.intercept('GET', '/fyllut/api/global-translations/*').as('getGlobalTranslations');
@@ -155,6 +164,7 @@ Cypress.Commands.add('defaultIntercepts', () => {
 });
 
 Cypress.Commands.add('defaultInterceptsMellomlagring', () => {
+  interceptExternalNavRedirects();
   cy.intercept('POST', '/fyllut/api/send-inn/soknad*').as('createMellomlagring');
   cy.intercept('PUT', '/fyllut/api/send-inn/soknad*').as('updateMellomlagring');
   cy.intercept('GET', '/fyllut/api/send-inn/soknad/*').as('getMellomlagring');
@@ -187,6 +197,7 @@ Cypress.Commands.add('updateMellomlagring', (callback: (req: CyHttpMessages.Inco
 });
 
 Cypress.Commands.add('defaultInterceptsExternal', () => {
+  interceptExternalNavRedirects();
   cy.intercept('GET', '/fyllut/api/send-inn/prefill-data*').as('getPrefillData');
   cy.intercept('GET', '/fyllut/api/send-inn/activities*').as('getActivities');
   return cy;
