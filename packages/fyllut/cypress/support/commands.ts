@@ -144,10 +144,18 @@ Cypress.Commands.add('verifyNavRedirect', () => {
 });
 
 const interceptExternalNavRedirects = () => {
-  cy.intercept('GET', /^https:\/\/(?:[\w-]+\.)*nav\.no(?:\/.*)?$/, {
-    statusCode: 200,
-    headers: { 'content-type': 'text/html; charset=utf-8' },
-    body: '<!doctype html><html><body>redirected to nav.no</body></html>',
+  cy.intercept('GET', /^https:\/\/(?:[\w-]+\.)*nav\.no(?:\/.*)?$/, (req) => {
+    // TODO: Replace this exception by routing currencies away from production in a separate PR.
+    if (req.url.includes('/fyllut/api/common-codes/currencies')) {
+      req.continue();
+      return;
+    }
+
+    req.reply({
+      statusCode: 200,
+      headers: { 'content-type': 'text/html; charset=utf-8' },
+      body: '<!doctype html><html><body>redirected to nav.no</body></html>',
+    });
   });
 };
 
