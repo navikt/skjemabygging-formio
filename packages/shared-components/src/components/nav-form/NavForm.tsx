@@ -91,6 +91,7 @@ const NavForm = ({
   const webformStartRef = useRef(false);
   // Keep a ref to events to avoid stale closures in layout effect cleanup
   const eventsRef = useRef(events);
+  // eslint-disable-next-line react-hooks/refs -- Formio cleanup handlers must read latest events without re-registering effects.
   eventsRef.current = events;
 
   /**

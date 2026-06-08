@@ -90,11 +90,15 @@ export default tseslint.config(
       // Warnings
       '@typescript-eslint/ban-ts-comment': 'warn', // No @ts-ignore or @ts-nocheck comments
 
-      // Disabled
+      // Disabled after ESLint 10 audit:
+      // - set-state-in-effect: 8 errors across contexts/effects; fixing requires broader state-flow refactors.
+      // - static-components: 1 error in PublishSettingsModal; extracting in-render components is deferred.
+      // - immutability: 3 errors, mostly Formio integration mutations in NavForm.
       'react-hooks/set-state-in-effect': 'off',
       'react-hooks/static-components': 'off',
       'react-hooks/immutability': 'off',
-      'react-hooks/refs': 'off',
+      // refs has 1 violation and is handled with a local, documented disable in NavForm.tsx.
+      'react-hooks/refs': 'error',
       'vitest/prefer-called-exactly-once-with': 'off', // toHaveBeenCalledExactlyOnceWith does not exist in jest
       'vitest/expect-expect': 'off', // Cypress tests don't necessarily use expect
       '@typescript-eslint/no-explicit-any': 'off', // Explicit any's
