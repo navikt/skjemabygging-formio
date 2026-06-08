@@ -416,7 +416,7 @@
               "id": "e85cd2j",
               "key": "valutavelger",
               "data": {
-                "url": "https://www.nav.no/fyllut/api/common-codes/currencies?lang=nb"
+                "url": "/fyllut/api/common-codes/currencies?lang=nb"
               },
               "type": "valutavelger",
               "input": true,
@@ -461,7 +461,7 @@
           "id": "egydjw",
           "key": "valutavelger",
           "data": {
-            "url": "https://www.nav.no/fyllut/api/common-codes/currencies?lang=nb"
+            "url": "/fyllut/api/common-codes/currencies?lang=nb"
           },
           "type": "valutavelger",
           "input": true,
