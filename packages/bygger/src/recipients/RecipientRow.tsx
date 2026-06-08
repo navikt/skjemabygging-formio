@@ -15,20 +15,18 @@ const RecipientRow = ({ recipient }: { recipient: Partial<Recipient> }) => {
     setValue((currentValue) => ({ ...currentValue, [key]: value }));
   };
 
-  const getValidationErrors = (currentRecipient: Partial<Recipient>) => {
+  const validationErrors = useMemo(() => {
     const required = 'Du må fylle ut';
     return {
-      name: currentRecipient.name ? undefined : `${required} ${LABELS.name}`,
-      poBoxAddress: currentRecipient.poBoxAddress ? undefined : `${required} ${LABELS.poBoxAddress}`,
-      postalCode: currentRecipient.postalCode ? undefined : `${required} ${LABELS.postalCode}`,
-      postalName: currentRecipient.postalName ? undefined : `${required} ${LABELS.postalName}`,
+      name: value.name ? undefined : `${required} ${LABELS.name}`,
+      poBoxAddress: value.poBoxAddress ? undefined : `${required} ${LABELS.poBoxAddress}`,
+      postalCode: value.postalCode ? undefined : `${required} ${LABELS.postalCode}`,
+      postalName: value.postalName ? undefined : `${required} ${LABELS.postalName}`,
     };
-  };
+  }, [value.name, value.poBoxAddress, value.postalCode, value.postalName]);
 
-  const validationErrors = useMemo(() => getValidationErrors(value), [value]);
-
-  const isValid = (currentRecipient: Partial<Recipient>): currentRecipient is Recipient =>
-    Object.values(getValidationErrors(currentRecipient)).every((value) => value === undefined);
+  const isValid = (_recipient: Partial<Recipient>): _recipient is Recipient =>
+    Object.values(validationErrors).every((value) => value === undefined);
 
   const onSave = async () => {
     if (!isValid(value)) {
