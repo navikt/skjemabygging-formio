@@ -79,6 +79,7 @@ describe('CurrencySelect', () => {
       // Skip 'Valuta ikke påkrevd' (optional)
       cy.clickNextStep();
 
+      cy.wait('@getCurrencies');
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
       cy.withinSummaryGroup('Visning', () => {
         cy.get('dt').eq(0).should('contain.text', 'Velg valuta');
