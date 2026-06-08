@@ -92,8 +92,6 @@ export default tseslint.config(
 
       // Disabled after ESLint 10 audit:
       // - set-state-in-effect: 8 errors across contexts/effects; fixing requires broader state-flow refactors.
-      // Immutability and refs are enabled globally; NavForm keeps documented local exceptions
-      // for imperative Formio instance updates.
       'react-hooks/set-state-in-effect': 'off',
       'react-hooks/static-components': 'error',
       'react-hooks/immutability': 'error',
