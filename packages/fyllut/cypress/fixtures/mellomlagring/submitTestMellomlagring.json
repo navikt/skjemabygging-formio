@@ -2406,12 +2406,43 @@
   },
   "submission": {
     "data": {
+      "dineOpplysninger": {
+        "identitet": {
+          "identitetsnummer": "03876399856"
+        }
+      },
       "onskerDuAFaGavenInnpakket": "nei",
       "hvordanOnskerDuAMottaPakken": {
         "label": "På døra",
         "value": "paDora"
       }
-    }
+    },
+    "attachments": [
+      {
+        "attachmentId": "eijyzy",
+        "navId": "eijyzy",
+        "type": "default",
+        "value": "ettersender",
+        "title": "Oppmøtebekreftelse",
+        "files": []
+      },
+      {
+        "attachmentId": "e3dw1sg",
+        "navId": "e3dw1sg",
+        "type": "default",
+        "value": "ettersender",
+        "title": "Bekreftelse på at du av helsemessige årsaker må benytte dyrere transport",
+        "files": []
+      },
+      {
+        "attachmentId": "em26fir",
+        "navId": "em26fir",
+        "type": "other",
+        "value": "nei",
+        "title": "Annet",
+        "files": []
+      }
+    ]
   },
   "pdfFormData": {
     "label": "Test mellomlagring",
@@ -2451,25 +2482,5 @@
   "language": "nb-NO",
   "translation": {},
   "submissionMethod": "digital",
-  "attachments": [
-    {
-      "vedleggsnr": "M2",
-      "tittel": "Bekreftelse på oppmøte",
-      "label": "Oppmøtebekreftelse",
-      "beskrivelse": "",
-      "pakrevd": true,
-      "propertyNavn": "oppmotebekreftelse",
-      "formioId": "eijyzy"
-    },
-    {
-      "vedleggsnr": "M4",
-      "tittel": " Dokumentasjon av behov for dyrere transportmiddel",
-      "label": "Bekreftelse på at du av helsemessige årsaker må benytte dyrere transport",
-      "beskrivelse": "",
-      "pakrevd": true,
-      "propertyNavn": "bekreftelsePaAtDuAvHelsemessigeArsakerMaBenytteDyrereTransport",
-      "formioId": "e3dw1sg"
-    }
-  ],
   "otherDocumentation": true
 }

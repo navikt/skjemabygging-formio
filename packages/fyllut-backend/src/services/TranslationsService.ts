@@ -7,7 +7,7 @@ import {
   languageUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import fetch from 'node-fetch';
-import { ConfigType } from '../config/types';
+import { FyllutBackendConfig } from '../config/types';
 
 const toFyllutLang = (lang: string): Language => {
   switch (lang) {
@@ -42,9 +42,9 @@ const toFormsApiLang = (lang: string) => {
 };
 
 class TranslationsService {
-  private readonly _config: ConfigType;
+  private readonly _config: FyllutBackendConfig;
 
-  constructor(config: ConfigType) {
+  constructor(config: FyllutBackendConfig) {
     this._config = config;
   }
 

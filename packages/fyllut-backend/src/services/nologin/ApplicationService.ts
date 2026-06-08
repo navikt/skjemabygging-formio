@@ -7,7 +7,7 @@ import {
   translationUtils,
   UploadedFile,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { ConfigType } from '../../config/types';
+import { FyllutBackendConfig } from '../../config/types';
 import ApplicationClient, {
   ApplicationClientType,
   DownloadedAttachment,
@@ -21,7 +21,7 @@ import { mapToReceiptSummary } from './receiptMapper';
 class ApplicationService {
   private readonly clients: Record<'nologin' | 'digital', ApplicationClientType>;
 
-  constructor(config: ConfigType) {
+  constructor(config: FyllutBackendConfig) {
     this.clients = {
       nologin: ApplicationClient(config, 'nologin'),
       digital: ApplicationClient(config, 'digital'),

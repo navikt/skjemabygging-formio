@@ -1,4 +1,5 @@
 import { AppConfigProvider } from '@navikt/skjemadigitalisering-shared-components';
+import { ByggerFrontendConfig } from '@navikt/skjemadigitalisering-shared-domain';
 import { Settings } from 'luxon';
 import Pusher from 'pusher-js';
 import { StrictMode } from 'react';
@@ -15,11 +16,11 @@ Settings.defaultZone = 'Europe/Oslo';
 
 fetch('/api/config')
   .then((res) => {
-    return res.json();
+    return res.json() as Promise<ByggerFrontendConfig>;
   })
   .then((config) => renderReact(config));
 
-const renderReact = (config) => {
+const renderReact = (config: ByggerFrontendConfig) => {
   const root = createRoot(document.getElementById('root')!);
 
   root.render(
@@ -29,7 +30,7 @@ const renderReact = (config) => {
           dokumentinnsendingBaseURL={dokumentinnsendingDevURL}
           fyllutBaseURL={config.fyllutBaseUrl}
           featureToggles={config.featureToggles}
-          config={config}
+          config={{ ...config }}
           app="bygger"
           http={httpBygger}
         >

@@ -150,4 +150,57 @@ describe('[endpoint] staticPdf', () => {
     );
     expect(next).not.toHaveBeenCalled();
   });
+
+  it('downloads static pdf when attachments are omitted from the request body', async () => {
+    vi.mocked(formService.getForm).mockResolvedValue({
+      skjemanummer: 'NAV 12.34-56',
+      path: 'nav123456',
+      title: 'Test form',
+      components: [],
+      properties: {
+        skjemanummer: 'NAV 12.34-56',
+        tema: 'TEST',
+        submissionTypes: [],
+        subsequentSubmissionTypes: [],
+      },
+    });
+    vi.mocked(translationService.createTranslate).mockResolvedValue((text) => text?.toString() ?? '');
+    vi.mocked(coverPageService.downloadCoverPage).mockResolvedValue('cover-page-pdf');
+    vi.mocked(staticPdfService.downloadPdf).mockResolvedValue('static-pdf');
+    vi.mocked(mergeFileService.mergeFiles).mockResolvedValue('merged-pdf');
+
+    const req = mockRequest({
+      headers: {
+        AzureAccessToken: 'azure-access-token',
+        MergePdfToken: 'merge-pdf-token',
+      },
+      body: {},
+    });
+    req.params = {
+      formPath: 'nav123456',
+      languageCode: 'nb',
+    };
+
+    const res = mockResponse();
+    const next = mockNext();
+
+    await staticPdf.downloadPdf(req, res, next);
+
+    expect(coverPageService.downloadCoverPage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          attachments: [],
+        }),
+      }),
+    );
+    expect(mergeFileService.mergeFiles).toHaveBeenCalledWith(
+      expect.objectContaining({
+        body: expect.objectContaining({
+          files: ['cover-page-pdf', 'static-pdf'],
+        }),
+      }),
+    );
+    expect(res.json).toHaveBeenCalledWith({ pdfBase64: 'merged-pdf' });
+    expect(next).not.toHaveBeenCalled();
+  });
 });

@@ -1,5 +1,5 @@
 import { AppConfigProvider, url } from '@navikt/skjemadigitalisering-shared-components';
-import { ConfigType, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
+import { FyllutFrontendConfig, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
 import { Settings } from 'luxon';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -15,11 +15,9 @@ const subissionMethod = url.getUrlParam(window.location.search, 'sub') as Submis
 Settings.defaultZone = 'Europe/Oslo';
 
 httpFyllut
-  .get<ConfigType>('/fyllut/api/config')
+  .get<FyllutFrontendConfig>('/fyllut/api/config')
   .then((json) => {
-    if (json.FEATURE_TOGGLES) {
-      featureToggles = json.FEATURE_TOGGLES;
-    }
+    featureToggles = json.featureToggles ?? json.FEATURE_TOGGLES ?? {};
     renderReact(getDokumentinnsendingBaseURL(json.NAIS_CLUSTER_NAME), json);
   })
   .catch((error) => {
@@ -38,7 +36,7 @@ const renderReact = (dokumentInnsendingBaseURL, config) => {
           fyllutBaseURL={'/fyllut'}
           submissionMethod={subissionMethod}
           app="fyllut"
-          config={config}
+          config={{ ...config }}
           http={httpFyllut}
         >
           {config.isDelingslenke && <ConfirmDelingslenkeModal />}

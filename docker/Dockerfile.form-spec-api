@@ -1,0 +1,11 @@
+FROM node:24.14.0-alpine
+ENV NODE_ENV=production
+ARG git_sha
+
+WORKDIR /app
+COPY .deploy/form-spec-api server
+COPY form-spec-api/dist server/dist
+
+ENV GIT_SHA=${git_sha}
+WORKDIR server
+CMD ["node", "dist/server.mjs"]

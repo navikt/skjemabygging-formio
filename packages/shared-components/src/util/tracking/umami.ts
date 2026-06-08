@@ -4,9 +4,14 @@ import FrontendLogger from '../../api/frontend-logger/FrontendLogger';
 import { FyllutUmamiEvent } from './types';
 
 export type LogEventFunction = (event: FyllutUmamiEvent) => Promise<void>;
+type FrontendConfig = {
+  NAIS_CLUSTER_NAME?: string;
+  applicationName?: string;
+  mocksEnabled?: boolean;
+};
 
 export const umamiEventHandler =
-  (config: Record<string, string | boolean | object>, frontendLogger: FrontendLogger): LogEventFunction =>
+  (config: FrontendConfig, frontendLogger: FrontendLogger): LogEventFunction =>
   (event: FyllutUmamiEvent) => {
     return (async () => {
       const isGcp = config?.NAIS_CLUSTER_NAME === 'prod-gcp' || config?.NAIS_CLUSTER_NAME === 'dev-gcp';
@@ -28,7 +33,7 @@ export const umamiEventHandler =
   };
 
 const getLocalAnalyticsInstance = (
-  config: Record<string, string | boolean | object>,
+  config: FrontendConfig,
   frontendLogger: FrontendLogger,
 ): ReturnType<typeof getAnalyticsInstance> => {
   return async (name, data) => {

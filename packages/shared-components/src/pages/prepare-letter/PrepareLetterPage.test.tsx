@@ -1,4 +1,10 @@
-import { Enhetstype, FormPropertiesType, NavFormType, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  Enhetstype,
+  FormPropertiesType,
+  FyllutFrontendConfig,
+  NavFormType,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router';
@@ -88,7 +94,7 @@ const formWithProperties = (props: Partial<FormPropertiesType>) => {
 
 const defaultConfig = {
   NAIS_CLUSTER_NAME: 'dev-gcp',
-};
+} as FyllutFrontendConfig;
 
 function renderPrepareLetterPage(form = defaultForm, config = defaultConfig, fyllutBaseURL?: string) {
   render(
@@ -286,10 +292,10 @@ describe('PrepareLetterPage', () => {
     const UX_SIGNALS_ID = 'abc-123';
     const DEV_CONFIG = {
       NAIS_CLUSTER_NAME: 'dev-gcp',
-    };
+    } as FyllutFrontendConfig;
     const PROD_CONFIG = {
       NAIS_CLUSTER_NAME: 'prod-gcp',
-    };
+    } as FyllutFrontendConfig;
 
     it('does not render when ux signals id is missing', () => {
       renderPrepareLetterPage(
@@ -305,7 +311,7 @@ describe('PrepareLetterPage', () => {
     it('renders in demo mode', async () => {
       const config = {
         NAIS_CLUSTER_NAME: 'dev-gcp',
-      };
+      } as FyllutFrontendConfig;
       renderPrepareLetterPage(
         formWithProperties({
           uxSignalsId: UX_SIGNALS_ID,
