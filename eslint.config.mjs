@@ -90,9 +90,7 @@ export default tseslint.config(
       // Warnings
       '@typescript-eslint/ban-ts-comment': 'warn', // No @ts-ignore or @ts-nocheck comments
 
-      // Disabled after ESLint 10 audit:
-      // - set-state-in-effect: 8 errors across contexts/effects; fixing requires broader state-flow refactors.
-      'react-hooks/set-state-in-effect': 'off',
+      'react-hooks/set-state-in-effect': 'error',
       'react-hooks/static-components': 'error',
       'react-hooks/immutability': 'error',
       'react-hooks/refs': 'error',

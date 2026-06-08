@@ -96,6 +96,7 @@ export const IntroPageProvider = ({ children, form }: IntroPageProviderProps) =>
   const [state, setState] = useState<IntroPageState>(toState(submissionMethod));
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intro state must track submission-method changes.
     setState(toState(submissionMethod));
   }, [submissionMethod, toState]);
 

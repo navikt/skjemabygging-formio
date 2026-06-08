@@ -85,6 +85,7 @@ const PublishSettingsModal = ({ open, onClose, onConfirm, form, unsavedGlobalTra
     const sanitizedCompleteTranslations = completeTranslations
       .map((langCode) => (langCode.length > 2 ? langCode.substring(0, 2) : langCode))
       .filter(skipBokmal);
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- derived modal state is synced from translation sources.
     setCompleteTranslationLanguageCodeList([...sanitizedCompleteTranslations, 'nb']);
     setCheckedLanguages([...sanitizedCompleteTranslations, 'nb']);
   }, [textKeysFromForm, form.introPage?.enabled, formTranslations, globalTranslations, unsavedGlobalTranslations]);
