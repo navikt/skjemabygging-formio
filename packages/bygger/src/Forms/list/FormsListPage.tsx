@@ -14,6 +14,19 @@ const FormsListPage = () => {
   const { logger } = useAppConfig();
   const { loadFormsList } = useForms();
 
+  const loadForms = useCallback(async () => {
+    if (loading) {
+      try {
+        const forms = await loadFormsList();
+        setForms(forms.map(mapFormToFormListType));
+      } catch (_e) {
+        logger?.error('Could not load forms.');
+      } finally {
+        setLoading(false);
+      }
+    }
+  }, [loadFormsList, logger, loading]);
+
   const mapFormToFormListType = (form: Form): FormListType => {
     const modified =
       form.publishedAt && form.changedAt && dateUtils.isAfter(form.publishedAt, form.changedAt)
@@ -29,19 +42,6 @@ const FormsListPage = () => {
       locked: !!form.lock,
     };
   };
-
-  const loadForms = useCallback(async () => {
-    if (loading) {
-      try {
-        const forms = await loadFormsList();
-        setForms(forms.map(mapFormToFormListType));
-      } catch (_e) {
-        logger?.error('Could not load forms.');
-      } finally {
-        setLoading(false);
-      }
-    }
-  }, [loadFormsList, logger, loading]);
 
   useEffect(() => {
     (async () => {
