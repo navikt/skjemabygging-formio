@@ -35,7 +35,7 @@ const staticPdf = {
   downloadPdf: async (req: Request, res: Response, next: NextFunction) => {
     const formPath = requestUtil.getStringParam(req, 'formPath')!;
     const languageCode = req.params.languageCode as TranslationLang;
-    const coverPageData = req.body as CoverPageDownloadType | undefined;
+    const coverPageData = req.body as CoverPageDownloadType;
     const coverPageToken = req.headers.AzureAccessToken as string;
     const mergePdfToken = req.headers.MergePdfToken as string;
 
