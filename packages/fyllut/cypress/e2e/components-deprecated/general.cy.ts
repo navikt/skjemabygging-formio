@@ -130,6 +130,8 @@ describe('React components', () => {
         cy.clickSaveAndContinue();
         cy.wait('@updateMellomlagring');
 
+        cy.clickShowAllSteps();
+        cy.findByRole('link', { name: /Oppsummering|Summary/ }).click();
         cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
         cy.get('dl')
           .first()

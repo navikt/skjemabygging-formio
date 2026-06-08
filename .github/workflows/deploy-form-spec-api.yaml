@@ -1,0 +1,74 @@
+name: Deploy form-spec-api
+run-name: Form-spec-api [${{ inputs.environment }}]
+on:
+  workflow_call:
+    inputs:
+      git_sha:
+        required: true
+        type: string
+      environment:
+        description: 'Target environment (prod|preprod|preprod-alt)'
+        required: true
+        type: string
+
+env:
+  NODE_AUTH_TOKEN: ${{ github.token }}
+
+jobs:
+  package-and-push:
+    name: 'Package'
+    runs-on: ubuntu-latest-8-cores
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+      packages: 'read'
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.32.1
+          run_install: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24.14.0'
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
+          registry-url: https://npm.pkg.github.com/
+          scope: '@navikt'
+
+      - name: 'Build application: form-spec-api'
+        env:
+          VITE_GIT_VERSION: ${{ inputs.git_sha }}
+        run: pnpm install --frozen-lockfile && pnpm build:form-spec-api && pnpm run deploy:form-spec-api
+
+      - name: 'Build and push Docker image for form-spec-api'
+        uses: nais/docker-build-push@v0
+        id: docker-build-push-form-spec-api
+        with:
+          team: skjemadigitalisering
+          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+          image_suffix: ${{ inputs.environment == 'prod' && 'form-spec-api' || format('form-spec-api-{0}', inputs.environment) }}
+          build_args: |
+            git_sha=${{ inputs.git_sha }}
+          dockerfile: ./docker/Dockerfile.form-spec-api
+          docker_context: ./packages
+    outputs:
+      image: ${{ steps.docker-build-push-form-spec-api.outputs.image }}
+
+  deploy-gcp:
+    name: 'Deploy'
+    needs: [package-and-push]
+    if: ${{ !failure() && !cancelled() }}
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: 'write'
+    steps:
+      - uses: 'actions/checkout@v6'
+      - name: 'Deploy form-spec-api'
+        uses: 'nais/deploy/actions/deploy@v2'
+        env:
+          CLUSTER: ${{ inputs.environment == 'prod' && 'prod-gcp' || 'dev-gcp' }}
+          RESOURCE: './.nais/form-spec-api/config.yaml'
+          VARS: './.nais/form-spec-api/${{ inputs.environment }}.yaml'
+          VAR: 'image=${{ needs.package-and-push.outputs.image }}'

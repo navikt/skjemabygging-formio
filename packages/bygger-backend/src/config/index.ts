@@ -11,7 +11,7 @@ import {
   devSkjemabyggingProxy,
   prodFormsApi,
 } from './development';
-import { ConfigType, NodeEnv } from './types';
+import { ByggerBackendConfig, NodeEnv } from './types';
 
 const nodeEnv = process.env.NODE_ENV as NodeEnv;
 
@@ -39,7 +39,7 @@ const naisClusterName = env('NAIS_CLUSTER_NAME') as 'dev-gcp' | 'prod-gcp' | und
 const isProduction = nodeEnv === 'production';
 const isDevelopment = nodeEnv === 'development';
 
-const config: ConfigType = {
+const config: ByggerBackendConfig = {
   azure: {
     openidTokenEndpoint: env('AZURE_OPENID_CONFIG_TOKEN_ENDPOINT', devAzure.openidTokenEndpoint),
     openidConfigJwksUri: env('AZURE_OPENID_CONFIG_JWKS_URI', devAzure.openidConfigJwksUri),

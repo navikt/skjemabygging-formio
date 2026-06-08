@@ -4,7 +4,7 @@ import type { ChangeEvent } from 'react';
 import { useComponentUtils } from '../../context/component/componentUtilsContext';
 import useComponentStyle from '../../util/styles/useComponentStyle';
 
-const SenderOrganization = ({ labels, descriptions, value, onChange, readOnly, fieldSize }: SenderProps) => {
+const SenderOrganization = ({ customLabels, descriptions, value, onChange, readOnly, fieldSize }: SenderProps) => {
   const styles = useComponentStyle({
     fieldSize,
   });
@@ -24,7 +24,7 @@ const SenderOrganization = ({ labels, descriptions, value, onChange, readOnly, f
     <>
       <div className="form-group">
         <TextField
-          label={translate(labels.organizationNumber)}
+          label={translate(customLabels.organizationNumber)}
           description={translate(descriptions.organizationNumber)}
           value={value?.organization?.number ?? ''}
           onChange={(e) => handleChange('number', e)}
@@ -36,7 +36,7 @@ const SenderOrganization = ({ labels, descriptions, value, onChange, readOnly, f
       </div>
       <div className="form-group">
         <TextField
-          label={translate(labels.organizationName)}
+          label={translate(customLabels.organizationName)}
           value={value?.organization?.name ?? ''}
           onChange={(e) => handleChange('name', e)}
           ref={(ref) => addRef('sender:organizationName', ref)}

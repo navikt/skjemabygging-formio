@@ -1,11 +1,11 @@
 import path from 'path';
-import { ConfigType } from '../config/types';
+import { FyllutBackendConfig } from '../config/types';
 import TranslationsService from './TranslationsService';
 
-const testConfig: ConfigType = {
+const testConfig: FyllutBackendConfig = {
   translationDir: path.join(__dirname + '/testdata/translations'),
   resourcesDir: path.join(__dirname + '/testdata/resources'),
-} as ConfigType;
+} as FyllutBackendConfig;
 
 describe('TranslationService', () => {
   describe('getTranslationsForLanguage', () => {

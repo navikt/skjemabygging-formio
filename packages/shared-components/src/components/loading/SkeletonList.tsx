@@ -5,7 +5,9 @@ interface Props extends SkeletonProps {
 }
 
 const SkeletonList = ({ size, variant = 'text', height, width }: Props) => {
-  return [...Array(size)].map((x, i) => <Skeleton key={i} variant={variant} width={width} height={height} />);
+  return [...Array(size)].map((x, i) => (
+    <Skeleton data-testid="skeleton" key={i} variant={variant} width={width} height={height} />
+  ));
 };
 
 export default SkeletonList;

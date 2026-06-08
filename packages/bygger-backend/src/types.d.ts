@@ -1,11 +1,12 @@
 import { Request } from 'express';
 
-interface User {
+export interface ByggerUser {
   name: string;
   preferredUsername: string;
   NAVident: string;
+  isAdmin: boolean;
 }
 
 export type ByggerRequest = Request & {
-  getUser?: () => User;
+  getUser?: () => ByggerUser;
 };

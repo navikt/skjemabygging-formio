@@ -1,4 +1,5 @@
-import { ConfigType } from '@navikt/skjemadigitalisering-shared-domain';
+import { createSharedFrontendConfig } from '@navikt/skjemadigitalisering-shared-backend';
+import { FyllutFrontendConfig } from '@navikt/skjemadigitalisering-shared-domain';
 import { config as configObject } from '../../config/config';
 import { getIsLoggedIn } from '../../security/tokenHelper';
 
@@ -14,20 +15,25 @@ const {
 } = configObject;
 
 const config = {
-  get: async (req, res): Promise<ConfigType> => {
+  get: async (req, res) => {
     const isLoggedIn = getIsLoggedIn(req);
-
-    return res.json({
-      NAIS_CLUSTER_NAME: naisClusterName,
-      FEATURE_TOGGLES: featureToggles,
-      isDelingslenke,
+    const sharedConfig = createSharedFrontendConfig({
+      naisClusterName,
+      featureToggles,
       isDevelopment,
+      loggerConfig: frontendLoggerConfig,
+    });
+
+    const payload = {
+      ...sharedConfig,
+      isDelingslenke,
       mocksEnabled,
       isLoggedIn,
       gitVersion,
-      loggerConfig: frontendLoggerConfig,
       applicationName,
-    });
+    } satisfies FyllutFrontendConfig;
+
+    return res.json(payload);
   },
 };
 
