@@ -92,10 +92,9 @@ export default tseslint.config(
 
       // Disabled after ESLint 10 audit:
       // - set-state-in-effect: 8 errors across contexts/effects; fixing requires broader state-flow refactors.
-      // - static-components: 1 error in PublishSettingsModal; extracting in-render components is deferred.
       // - immutability: 3 errors, mostly Formio integration mutations in NavForm.
       'react-hooks/set-state-in-effect': 'off',
-      'react-hooks/static-components': 'off',
+      'react-hooks/static-components': 'error',
       'react-hooks/immutability': 'off',
       // refs has 1 violation and is handled with a local, documented disable in NavForm.tsx.
       'react-hooks/refs': 'error',
