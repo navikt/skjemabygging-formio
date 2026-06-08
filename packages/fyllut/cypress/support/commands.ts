@@ -173,7 +173,6 @@ Cypress.Commands.add('defaultIntercepts', () => {
 });
 
 Cypress.Commands.add('defaultInterceptsMellomlagring', () => {
-  interceptExternalNavRedirects();
   cy.intercept('POST', '/fyllut/api/send-inn/soknad*').as('createMellomlagring');
   cy.intercept('PUT', '/fyllut/api/send-inn/soknad*').as('updateMellomlagring');
   cy.intercept('GET', '/fyllut/api/send-inn/soknad/*').as('getMellomlagring');
@@ -206,7 +205,6 @@ Cypress.Commands.add('updateMellomlagring', (callback: (req: CyHttpMessages.Inco
 });
 
 Cypress.Commands.add('defaultInterceptsExternal', () => {
-  interceptExternalNavRedirects();
   cy.intercept('GET', '/fyllut/api/send-inn/prefill-data*').as('getPrefillData');
   cy.intercept('GET', '/fyllut/api/send-inn/activities*').as('getActivities');
   return cy;
