@@ -147,6 +147,7 @@ const interceptExternalNavRedirects = () => {
   cy.intercept('GET', /^https:\/\/(?:[\w-]+\.)*nav\.no(?:\/.*)?$/, (req) => {
     // TODO: Replace this exception by routing currencies away from production in a separate PR.
     if (req.url.includes('/fyllut/api/common-codes/currencies')) {
+      req.alias = 'getCurrencies';
       req.continue();
       return;
     }
