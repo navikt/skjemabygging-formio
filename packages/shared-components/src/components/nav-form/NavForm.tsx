@@ -215,6 +215,7 @@ const NavForm = ({
     if (webform && webform?.language !== language) {
       appConfig.logger?.debug('Set language', { webformId: webform?.id, language });
 
+      // eslint-disable-next-line react-hooks/immutability -- Formio Webform is imperative and requires direct instance updates.
       webform.language = language;
     }
   }, [appConfig.logger, webform, language]);
@@ -229,6 +230,7 @@ const NavForm = ({
         prefillData,
       });
 
+      // eslint-disable-next-line react-hooks/immutability -- Formio Webform is imperative and requires direct instance updates.
       webform.form = NavFormHelper.prefillForm(webform.form, prefillData);
 
       // Need to trigger a handle change event after prefilling form or else
