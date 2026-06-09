@@ -45,6 +45,19 @@
       ]
     },
     {
+      "label": "Vedlegg",
+      "verdiliste": [
+        {
+          "label": "Vedlegg",
+          "verdi": "Jeg har levert denne dokumentasjonen tidligere"
+        },
+        {
+          "label": "Annen dokumentasjon",
+          "verdi": "Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved"
+        }
+      ]
+    },
+    {
       "label": "Underskrift",
       "visningsVariant": "HOLDSAMMEN",
       "verdiliste": [

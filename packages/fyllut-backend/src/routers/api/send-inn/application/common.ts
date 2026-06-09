@@ -1,10 +1,11 @@
 import {
-  I18nTranslationMap,
-  NavFormType,
+  FormsApiTranslationMap,
   ReceiptSummary,
   Submission,
+  SubmissionMethod,
+  TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { applicationService } from '../../../../services';
+import { applicationService, formService, translationService } from '../../../../services';
 import { LogMetadata } from '../../../../types/log';
 
 export const generatePdfAndSubmit = async (
@@ -13,13 +14,21 @@ export const generatePdfAndSubmit = async (
   innsendingsId: string,
   accessToken: string,
 ) => {
-  const { form, submission, language, translation, pdfFormData } = req.body as {
-    form: NavFormType;
+  const { formPath, submission, language, submissionMethod } = req.body as {
+    formPath: string;
     submission: Submission;
-    language: string;
-    translation: I18nTranslationMap;
-    pdfFormData: any; // TODO Bruk PdfFormData når den er flyttet til shared-domain
+    language: TranslationLang;
+    submissionMethod?: SubmissionMethod;
   };
+
+  const form = await formService.getForm({
+    formPath,
+    select: ['skjemanummer', 'title', 'path', 'properties', 'components', 'revision'],
+  });
+  const translations: FormsApiTranslationMap = await translationService.getTranslations({
+    formPath,
+    languageCodes: [language],
+  });
   const pdfAccessToken = req.headers.PdfAccessToken as string;
   const logMeta: LogMetadata = {
     innsendingsId,
@@ -34,9 +43,9 @@ export const generatePdfAndSubmit = async (
     innsendingsId,
     form,
     submission,
-    translation,
+    translations,
     language,
-    pdfFormData,
+    submissionMethod,
     logMeta,
     applicationType,
   );

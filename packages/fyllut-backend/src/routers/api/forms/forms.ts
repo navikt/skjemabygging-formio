@@ -1,6 +1,6 @@
 import { FormsResponseForm } from '@navikt/skjemadigitalisering-shared-domain';
 import { Request, Response } from 'express';
-import { formService } from '../../../services';
+import { oldFormService } from '../../../services';
 
 const mapForm = (form): FormsResponseForm => ({
   _id: form.id ? String(form.id) : form._id,
@@ -16,7 +16,7 @@ const mapForm = (form): FormsResponseForm => ({
 
 const forms = {
   get: async (req: Request, res: Response<FormsResponseForm[]>) => {
-    const forms = await formService.loadForms();
+    const forms = await oldFormService.loadForms();
     return res.json(forms.map(mapForm));
   },
 };

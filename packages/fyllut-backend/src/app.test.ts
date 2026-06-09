@@ -1,4 +1,3 @@
-import { forstesideUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { readFileSync } from 'fs';
 import nock from 'nock';
 import path from 'path';
@@ -12,10 +11,9 @@ vi.mock('./dekorator', () => ({
   createRedirectUrl: () => '',
 }));
 
-const { sendInnConfig, tokenx: tokenxConfig, formioApiServiceUrl } = config;
-const filePathSoknad = path.join(process.cwd(), '/src/services/documents/testdata/test-skjema.pdf');
+const { sendInnConfig, tokenx: tokenxConfig, formioApiServiceUrl, formsApiUrl } = config;
+const filePathSoknad = path.join(process.cwd(), '/src/test/testdata/documents/test-skjema.pdf');
 const soknadPdf = readFileSync(filePathSoknad);
-const encodedSoknadPdf = soknadPdf.toString('base64');
 
 describe('app', () => {
   describe('index.html', () => {
@@ -91,7 +89,6 @@ describe('app', () => {
   });
 
   it('Returns error message and a correlation_id', async () => {
-    forstesideUtils.genererFoerstesideData = vi.fn();
     const tokenEndpoint = process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT!;
     const azureOpenidScope = nock(extractHost(tokenEndpoint))
       .post(extractPath(tokenEndpoint))
@@ -101,7 +98,14 @@ describe('app', () => {
       .post('/foersteside')
       .reply(400, 'Validering av ident feilet. brukerId=110550, brukerType=PERSON. Kunne ikke opprette førsteside.');
 
-    const foerstesideBody = { form: JSON.stringify({ properties: {} }), submissionData: '{}' };
+    const foerstesideBody = {
+      foerstesidetype: 'ETTERSENDELSE',
+      navSkjemaId: 'NAV 10.10.10',
+      spraakkode: 'NB',
+      overskriftstittel: 'Tittel',
+      arkivtittel: 'Tittel',
+      tema: 'HJE',
+    };
     const res = await request(createApp())
       .post('/fyllut/api/foersteside')
       .send(foerstesideBody)
@@ -125,17 +129,12 @@ describe('app', () => {
     const sendInnLocation = 'http://www.unittest.nav.no/sendInn/123';
     const azureTokenEndpoint = process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT!;
     const tokenxEndpoint = 'http://tokenx-unittest.nav.no/token';
+    const encodedSoknadPdf = soknadPdf.toString('base64');
     const applicationData = {
-      form: {
-        components: [],
-        path: 'nav123456',
-        title: 'NAV 12.34-56',
-        properties: { skjemanummer: 'NAV 12.34-56', tema: 'BIL' },
-      },
+      formPath: 'nav123456',
       submission: { data: { fodselsnummerDNummerSoker: '12345678911' } },
       attachments: [],
-      language: 'nb-NO',
-      translation: (text: string) => text,
+      language: 'nb',
       submissionMethod: 'digital',
       innsendingsId,
     };
@@ -143,9 +142,21 @@ describe('app', () => {
     const azureOpenidScope = nock(extractHost(azureTokenEndpoint))
       .post(extractPath(azureTokenEndpoint))
       .reply(200, { access_token: 'azure-access-token' });
+    const formScope = nock(formsApiUrl)
+      .get('/v1/forms/nav123456')
+      .query(true)
+      .reply(200, {
+        skjemanummer: 'NAV 12.34-56',
+        title: 'NAV 12.34-56',
+        path: 'nav123456',
+        properties: { skjemanummer: 'NAV 12.34-56', tema: 'BIL' },
+        components: [],
+      });
     const skjemabyggingproxyScope = nock(process.env.FAMILIE_PDF_GENERATOR_URL as string)
       .post('/api/pdf/v3/opprett-pdf')
-      .reply(200, encodedSoknadPdf);
+      .reply(200, { content: encodedSoknadPdf }, { 'Content-Type': 'application/json' });
+    const globalTranslationsScope = nock(formsApiUrl).get('/v1/global-translations').query(true).reply(200, []);
+    const formTranslationsScope = nock(formsApiUrl).get('/v1/forms/nav123456/translations').query(true).reply(200, []);
     const tokenxWellKnownScope = nock(extractHost(tokenxConfig?.wellKnownUrl))
       .get(extractPath(tokenxConfig?.wellKnownUrl))
       .reply(200, { token_endpoint: tokenxEndpoint });
@@ -165,7 +176,10 @@ describe('app', () => {
     expect(res.headers['location']).toMatch(sendInnLocation);
 
     azureOpenidScope.done();
+    formScope.done();
     skjemabyggingproxyScope.done();
+    globalTranslationsScope.done();
+    formTranslationsScope.done();
     tokenxWellKnownScope.done();
     tokenEndpointNockScope.done();
     sendInnNockScope.done();

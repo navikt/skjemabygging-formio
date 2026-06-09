@@ -1,7 +1,9 @@
+import { translationUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import {
-  I18nTranslationMap,
-  NavFormType,
+  Form,
+  FormsApiTranslationMap,
   Submission,
+  TranslationLang,
   validatorUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { logger } from '../../../logger';
@@ -44,7 +46,7 @@ interface SendInnSoknadBody {
   mellomlagringDager?: number;
 }
 
-const DEFAULT_LANGUAGE = 'nb-NO';
+const DEFAULT_LANGUAGE = 'nb';
 const objectToByteArray = (obj: object) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
 
 const byteArrayToObject = (byteArray?: Buffer) => JSON.parse(new TextDecoder().decode(byteArray));
@@ -73,10 +75,10 @@ const validateInnsendingsId = (innsendingsId: string | undefined, supplementaryM
 
 const assembleSendInnSoknadBody = (
   requestBody: {
-    form: NavFormType;
+    form: Form;
     submission: Submission;
-    language: string;
-    translation?: I18nTranslationMap;
+    language: TranslationLang;
+    translations?: FormsApiTranslationMap;
     attachments?: Attachment[];
     otherDocumentation?: boolean | undefined;
     innsendingsId?: string;
@@ -85,8 +87,8 @@ const assembleSendInnSoknadBody = (
   fyllutUrl: string,
   submissionPdfAsByteArray: number[] | null = null,
 ): SendInnSoknadBody => {
-  const { form, submission, language, translation = {}, attachments, otherDocumentation, innsendingsId } = requestBody;
-  const translate = (term: string) => translation[term] ?? term;
+  const { form, submission, language, translations = {}, attachments, otherDocumentation, innsendingsId } = requestBody;
+  const translate = translationUtil.createTranslate(translations, language);
 
   const dokumentMetaData = {
     vedleggsnr: form.properties.skjemanummer,

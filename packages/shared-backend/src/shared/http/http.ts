@@ -105,7 +105,7 @@ const handleBody = async (response: Response) => {
       return await response.json();
     } else if (isResponseType(response, 'text/plain') || isResponseType(response, 'text/html')) {
       return response.text();
-    } else if (isResponseType(response, 'application/octet-stream')) {
+    } else if (isResponseType(response, 'application/octet-stream') || isResponseType(response, 'application/pdf')) {
       return stringToBase64(await response.arrayBuffer());
     } else {
       return response;

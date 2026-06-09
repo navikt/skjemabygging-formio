@@ -6,10 +6,12 @@ import {
   Component,
   ComponentValue,
   NavFormType,
+  Submission,
   SubmissionAttachmentValue,
   SubmissionMethod,
 } from '../../models';
 import { TEXTS } from '../../texts';
+import { navFormUtils } from '../form';
 
 const enableAttachmentUpload = (submissionMethod?: string) =>
   submissionMethod === 'digital' || submissionMethod === 'digitalnologin';
@@ -142,9 +144,27 @@ const mapToAttachmentSummary = ({
   };
 };
 
+const getAttachmentsForCoverPage = (submission: Submission, form: NavFormType): Component[] => {
+  return navFormUtils
+    .flattenComponents(form.components)
+    .filter((component) => component.properties && !!component.properties.vedleggskode)
+    .filter((component) => {
+      const submissionData = { ...submission.data };
+      const submissionAttachment =
+        submission.attachments?.find((attachment) => navFormUtils.getNavId(component) === attachment.navId)?.value ??
+        submissionData[component.key];
+
+      return (
+        submissionAttachment === 'leggerVedNaa' ||
+        (submissionAttachment as SubmissionAttachmentValue)?.key === 'leggerVedNaa'
+      );
+    });
+};
+
 const attachmentUtils = {
   enableAttachmentDownload,
   enableAttachmentUpload,
+  getAttachmentsForCoverPage,
   getImplicitValueKey,
   getAttachmentLabel,
   isSingleUploadOnlyOption,
@@ -153,4 +173,4 @@ const attachmentUtils = {
   resolveAttachmentLabelKey,
 };
 
-export { attachmentSettingKeys, attachmentUtils, enableAttachmentDownload };
+export { attachmentSettingKeys, attachmentUtils, enableAttachmentDownload, getAttachmentsForCoverPage };

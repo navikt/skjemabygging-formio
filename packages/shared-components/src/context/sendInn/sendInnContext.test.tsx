@@ -13,7 +13,10 @@ vi.mock('../../context/languages', async (importOriginal) => {
   const actual = await importOriginal();
   return {
     ...(actual as any),
-    useLanguages: () => ({ translate: (text) => text }),
+    useLanguages: () => ({
+      translate: (text) => text,
+      translationsForNavForm: { 'nb-NO': {} },
+    }),
   };
 });
 
@@ -105,7 +108,7 @@ describe('sendInnContext', () => {
         expect(mockHttp.put).toHaveBeenCalledWith(
           'http://test.example.no/api/send-inn/soknad',
           expect.objectContaining({
-            form,
+            formPath: form.path,
             submission,
             submissionMethod,
             innsendingsId,
@@ -131,7 +134,6 @@ describe('sendInnContext', () => {
         expect(mockHttp.put).toHaveBeenCalledWith(
           'http://test.example.no/api/send-inn/utfyltsoknad',
           expect.objectContaining({
-            form,
             formPath: form.path,
             submission,
             submissionMethod,

@@ -1,0 +1,31 @@
+{
+  "label": "DataFetcher i container",
+  "verdiliste": [
+    {
+      "label": "Velg aktivitet",
+      "verdiliste": [
+        {
+          "label": "Aktivitetsvelger",
+          "verdiliste": [
+            {
+              "label": "Aktivitet 1"
+            }
+          ],
+          "visningsVariant": "PUNKTLISTE"
+        }
+      ]
+    }
+  ],
+  "skjemanummer": "datafetchercontainer",
+  "pdfConfig": {
+    "harInnholdsfortegnelse": false,
+    "språk": "nb"
+  },
+  "bunntekst": {
+    "upperleft": "F.nr: —",
+    "lowerleft": "Skjemanummer: datafetchercontainer",
+    "upperRight": null,
+    "upperMiddle": "Opprettet: 21 mai 2026, 16:38",
+    "lowerMiddle": "Versjon: local"
+  }
+}

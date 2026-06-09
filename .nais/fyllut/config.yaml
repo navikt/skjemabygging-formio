@@ -91,8 +91,6 @@ spec:
       value: "{{feature-attachment-upload-forms}}"
     - name: DECORATOR_URL
       value: {{dekorator-url}}
-    - name: FOERSTESIDE_URL
-      value: {{foersteside-url}}
     - name: FORMS_SOURCE
       value: {{forms-source}}
     - name: NOLOGIN_TOKEN_LIFETIME_HOURS

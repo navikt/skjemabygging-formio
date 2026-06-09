@@ -60,7 +60,6 @@ export type DefaultConfig = {
   mocksEnabled: boolean;
   useFormsApiStaging: boolean;
   formioApiServiceUrl?: string;
-  forstesideUrl: string;
   decoratorUrl: string;
   skjemabyggingProxyUrl: string;
   skjemabyggingProxyClientId: string;

@@ -113,6 +113,17 @@ describe('SummaryPage', () => {
     });
   });
 
+  it('does not submit before summary validation is finished', () => {
+    cy.defaultInterceptsMellomlagring();
+    cy.submitMellomlagring(() => {});
+    cy.visit('/fyllut/components/oppsummering?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3');
+    cy.defaultWaits();
+    cy.clickSendNav();
+
+    cy.get('@submitMellomlagring.all').should('have.length', 0);
+    cy.contains('Du må fullføre utfyllingen før du kan fortsette').should('exist');
+  });
+
   it('All values', () => {
     cy.visit('/fyllut/components?sub=paper');
     cy.defaultWaits();

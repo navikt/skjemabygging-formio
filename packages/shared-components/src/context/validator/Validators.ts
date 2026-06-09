@@ -1,7 +1,10 @@
-import { TEXTS, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  submissionUtils as formComponentUtils,
+  TEXTS,
+  validatorUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback } from 'react';
 import { validateNationalIdentityNumber as validateNationalIdentityNumberUtil } from '../../components/identity/NationalIdentityNumberValidator';
-import formComponentUtils from '../../form-components/utils/formComponent';
 import { useForm } from '../form/FormContext';
 import { useLanguages } from '../languages';
 

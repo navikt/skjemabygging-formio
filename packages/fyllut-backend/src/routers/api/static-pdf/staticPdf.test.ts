@@ -4,25 +4,28 @@ import {
   mergeFileService,
   staticPdfService,
   translationService,
-} from '@navikt/skjemadigitalisering-shared-backend';
+} from '../../../services';
 import { mockNext, mockRequest, mockResponse } from '../../../test/requestTestHelpers';
 import staticPdf from './staticPdf';
 
 vi.mock('@navikt/skjemadigitalisering-shared-backend', () => ({
-  coverPageService: {
-    downloadCoverPage: vi.fn(),
-  },
   correlator: {
     getId: vi.fn(),
+  },
+  requestUtil: {
+    getStringParam: vi.fn((req, key) => req.params?.[key]),
+  },
+}));
+
+vi.mock('../../../services', () => ({
+  coverPageService: {
+    downloadCoverPage: vi.fn(),
   },
   formService: {
     getForm: vi.fn(),
   },
   mergeFileService: {
     mergeFiles: vi.fn(),
-  },
-  requestUtil: {
-    getStringParam: vi.fn((req, key) => req.params?.[key]),
   },
   staticPdfService: {
     downloadPdf: vi.fn(),
