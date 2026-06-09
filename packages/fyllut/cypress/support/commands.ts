@@ -102,11 +102,13 @@ Cypress.Commands.add('clickEditAnswers', (linkText) => {
 });
 
 Cypress.Commands.add('clickSendNav', () => {
-  cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.sendToNav }).click();
+  // This render first after validation is done, so we need to wait for it.
+  cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.sendToNav, timeout: 10000 }).click();
 });
 
 Cypress.Commands.add('clickDownloadInstructions', () => {
-  cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions }).click();
+  // This render first after validation is done, so we need to wait for it.
+  cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions, timeout: 10000 }).click();
 });
 
 Cypress.Commands.add('clickDownloadApplication', () => {
@@ -141,7 +143,25 @@ Cypress.Commands.add('verifyNavRedirect', () => {
   });
 });
 
+const interceptExternalNavRedirects = () => {
+  cy.intercept('GET', /^https:\/\/(?:[\w-]+\.)*nav\.no(?:\/.*)?$/, (req) => {
+    // TODO: Replace this exception by routing currencies away from production in a separate PR.
+    if (req.url.includes('/fyllut/api/common-codes/currencies')) {
+      req.alias = 'getCurrencies';
+      req.continue();
+      return;
+    }
+
+    req.reply({
+      statusCode: 200,
+      headers: { 'content-type': 'text/html; charset=utf-8' },
+      body: '<!doctype html><html><body>redirected to nav.no</body></html>',
+    });
+  });
+};
+
 Cypress.Commands.add('defaultIntercepts', () => {
+  interceptExternalNavRedirects();
   cy.intercept('POST', '/fyllut/api/log*', { body: 'ok' }).as('logger');
   cy.intercept('GET', '/fyllut/api/config*').as('getConfig');
   cy.intercept('GET', '/fyllut/api/global-translations/*').as('getGlobalTranslations');
@@ -160,17 +180,17 @@ Cypress.Commands.add('defaultInterceptsMellomlagring', () => {
   return cy;
 });
 
-Cypress.Commands.add('submitMellomlagring', (callback: (req: CyHttpMessages.IncomingHttpRequest) => void) => {
+Cypress.Commands.add('submitMellomlagring', (callback?: (req: CyHttpMessages.IncomingHttpRequest) => void) => {
   cy.intercept('POST', '/fyllut/api/send-inn/digital-application/*', (req) => {
-    callback(req);
+    if (callback) callback(req);
   }).as('submitMellomlagring');
 
   return cy;
 });
 
-Cypress.Commands.add('submitApplication', (callback: (req: CyHttpMessages.IncomingHttpRequest) => void) => {
+Cypress.Commands.add('submitApplication', (callback?: (req: CyHttpMessages.IncomingHttpRequest) => void) => {
   cy.intercept('POST', '/fyllut/api/send-inn/digital-application/*', (req) => {
-    callback(req);
+    if (callback) callback(req);
   }).as('submitApplication');
 
   return cy;

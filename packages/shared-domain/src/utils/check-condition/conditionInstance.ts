@@ -1,8 +1,8 @@
-import { Component, NavFormType, SubmissionMethod } from '../../models';
+import { Component, Form, SubmissionMethod } from '../../models';
 import { submissionTypesUtils } from '../submission/submissionTypesUtils';
 import { ConditionComponent, ConditionData, ConditionInstanceData, ConditionRow, EvaluateFunction } from './types';
 
-const inferSubmissionMethod = (form?: NavFormType, submissionMethod?: SubmissionMethod) => {
+const inferSubmissionMethod = (form?: Form, submissionMethod?: SubmissionMethod) => {
   if (submissionMethod) {
     return submissionMethod;
   }
@@ -56,7 +56,7 @@ const findComponentWithParents = (
 
 const createConditionInstance = (
   component: Partial<Component>,
-  form: NavFormType | undefined,
+  form: Form | undefined,
   evaluate: EvaluateFunction,
   submissionMethod?: SubmissionMethod,
 ): ConditionComponent => {

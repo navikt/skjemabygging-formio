@@ -1,5 +1,5 @@
-import { correlator } from '@navikt/skjemadigitalisering-shared-backend';
-import { ForstesideRequestBody, ForstesideType } from '@navikt/skjemadigitalisering-shared-domain';
+import { correlator, ForstesideRequestBody } from '@navikt/skjemadigitalisering-shared-backend';
+import { CoverPageType } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import fetch, { BodyInit, HeadersInit } from 'node-fetch';
 import { config } from '../../config/config';
@@ -7,44 +7,34 @@ import { logger } from '../../logger';
 import { appMetrics } from '../../services';
 import { LogMetadata } from '../../types/log';
 import { responseToError } from '../../utils/errorHandling';
-import forstesideV2 from './forstesideV2';
 
 const { skjemabyggingProxyUrl } = config;
 
-/*
- * TODO: This version of forsteside is deprecated.
- * v2 is can be removed, but the default version is used by fyllut-ettersending
- * @deprecated
- **/
+/**
+ * @deprecated This is the old endpoint used by fyllut-ettersending. Will be deleted when remove fyllut-ettersending.
+ */
 const forsteside = {
   post: async (req: Request, res: Response, next: NextFunction) => {
-    if (req.body.version === 'v2') {
-      logger.warn(
-        `Unexpected invocation of forstesideV2 (navSkjemaId=${req.body.navSkjemaId}, foerstesidetype=${req.body.foerstesidetype}).`,
-      );
-      await forstesideV2.post(req, res, next);
-    } else {
-      try {
-        const requestBody = req.body as ForstesideRequestBody;
-        if (requestBody.foerstesidetype === 'SKJEMA') {
-          logger.warn(`Unexpected foerstesidetype SKJEMA (navSkjemaId=${requestBody.navSkjemaId}).`);
-        }
-        const forsteside = await validateForstesideRequest(requestBody);
-        const response = await forstesideRequest(req, JSON.stringify(forsteside));
-        logForsteside(req.body, response, {
-          fyllutRequestPath: req.path,
-        });
-        appMetrics.paperSubmissionsCounter.inc({ source: resolveSource(requestBody.foerstesidetype) });
-        res.contentType('application/json');
-        res.send(response);
-      } catch (e) {
-        next(e);
+    try {
+      const requestBody = req.body as ForstesideRequestBody;
+      if (requestBody.foerstesidetype === 'SKJEMA') {
+        logger.warn(`Unexpected foerstesidetype SKJEMA (navSkjemaId=${requestBody.navSkjemaId}).`);
       }
+      const forsteside = await validateForstesideRequest(requestBody);
+      const response = await forstesideRequest(req, JSON.stringify(forsteside));
+      logForsteside(req.body, response, {
+        fyllutRequestPath: req.path,
+      });
+      appMetrics.paperSubmissionsCounter.inc({ source: resolveSource(requestBody.foerstesidetype) });
+      res.contentType('application/json');
+      res.send(response);
+    } catch (e) {
+      next(e);
     }
   },
 };
 
-const resolveSource = (type?: ForstesideType) => {
+const resolveSource = (type?: CoverPageType) => {
   if (type) {
     switch (type) {
       case 'ETTERSENDELSE':

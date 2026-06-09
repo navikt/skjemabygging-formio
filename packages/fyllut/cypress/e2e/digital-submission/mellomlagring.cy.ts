@@ -205,6 +205,7 @@ describe('Mellomlagring', () => {
 
     describe('When partially filling out a form', () => {
       it('should navigate to first component with validation error from summary', () => {
+        cy.intercept('GET', '/fyllut/api/send-inn/activities*').as('getActivities');
         cy.visit('/fyllut/components?sub=digital');
         cy.defaultWaits();
         cy.clickIntroPageConfirmation();
@@ -215,6 +216,7 @@ describe('Mellomlagring', () => {
         cy.findByRole('link', { name: TEXTS.statiske.summaryPage.title }).click();
         cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
         cy.findAllByRole('link', { name: 'Fortsett utfylling' }).first().click();
+        cy.wait('@getActivities');
         cy.findByRole('group', { name: 'Hvilken aktivitet søker du om støtte i forbindelse med?' }).should(
           'have.focus',
         );
@@ -263,7 +265,7 @@ describe('Mellomlagring', () => {
             cy.submitApplication((req) => {
               const { submission: bodySubmission } = req.body;
               const { submission: fixtureSubmission } = fixture;
-              expect(bodySubmission).to.deep.eq(fixtureSubmission);
+              expect(bodySubmission.data).to.deep.eq(fixtureSubmission.data);
             });
           });
         });
@@ -451,12 +453,7 @@ describe('Mellomlagring', () => {
 
           // Submit the application
           cy.clickSendNav();
-          cy.wait('@submitApplication').then((interception) => {
-            const { pdfFormData } = interception.request.body;
-            // Verify pdfFormData contains actual form content (not empty due to race condition)
-            expect(pdfFormData.verdiliste).to.have.length.greaterThan(0);
-            expect(pdfFormData.verdiliste[0]).to.have.property('label', 'Gave');
-          });
+          cy.wait('@submitApplication');
 
           cy.findByRole('heading', { name: 'Kvittering' }).should('exist');
         });

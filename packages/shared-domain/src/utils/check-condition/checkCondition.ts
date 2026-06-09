@@ -1,4 +1,4 @@
-import { Component, NavFormType, Submission } from '../../models';
+import { Component, Form, Submission } from '../../models';
 import { createConditionInstance, shouldCreateSyntheticInstance } from './conditionInstance';
 import { createCheckCustomConditional } from './customCondition';
 import getFormioCheckConditionUtils from './formioCheckCondition';
@@ -32,7 +32,7 @@ const getCheckConditionUtils = (
     component: Partial<Component>,
     row: ConditionRow,
     data: ConditionData | undefined,
-    form?: NavFormType,
+    form?: Form,
     instance?: ConditionComponent,
     submission?: Submission,
     options?: CheckConditionOptions,

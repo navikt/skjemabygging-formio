@@ -1,8 +1,8 @@
 import {
   AttachmentSettingValues,
   Component,
+  Form,
   I18nTranslationMap,
-  NavFormType,
   navFormUtils,
   senderUtils,
   Submission,
@@ -21,7 +21,7 @@ import { objectToByteArray } from './sendInn';
 
 const assembleSubmitApplicationRequest = (
   innsendingsId: string,
-  form: NavFormType,
+  form: Form,
   submission: Submission,
   language: TranslationLang,
   submissionPdfAsByteArray: number[],
@@ -90,7 +90,7 @@ const validateAttachment = (attachment: Attachment, validationId: string): Attac
   return attachment;
 };
 
-const extractBruker = (form: NavFormType, submission: Submission): BrukerDto | undefined => {
+const extractBruker = (form: Form, submission: Submission): BrukerDto | undefined => {
   const identityNumber = yourInformationUtils.getIdentityNumber(form, submission);
   if (identityNumber) {
     return { id: identityNumber, idType: 'FNR' };
@@ -98,7 +98,7 @@ const extractBruker = (form: NavFormType, submission: Submission): BrukerDto | u
   return undefined;
 };
 
-const extractAvsender = (form: NavFormType, submission: Submission): AvsenderId | undefined => {
+const extractAvsender = (form: Form, submission: Submission): AvsenderId | undefined => {
   const sender = senderUtils.getSender(form, submission.data);
   if (sender) {
     if (sender.person) {
@@ -125,7 +125,7 @@ const extractAvsender = (form: NavFormType, submission: Submission): AvsenderId 
   return undefined;
 };
 
-const extractAvsenderFromYourInformation = (form: NavFormType, submission: Submission): AvsenderId | undefined => {
+const extractAvsenderFromYourInformation = (form: Form, submission: Submission): AvsenderId | undefined => {
   const yourInformation = yourInformationUtils.getYourInformation(form, submission.data);
   if (yourInformation?.fornavn && yourInformation?.etternavn) {
     const navn = `${yourInformation.fornavn} ${yourInformation.etternavn}`;

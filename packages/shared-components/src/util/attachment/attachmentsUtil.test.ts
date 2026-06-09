@@ -11,6 +11,13 @@ import { getRelevantAttachments, hasOtherDocumentation } from './attachmentsUtil
 
 const borDuINorgeRadiopanelKey = borDuINorgeRadiopanel.key;
 
+const testFormProperties = {
+  skjemanummer: 'NAV 00-00.00',
+  tema: 'TES',
+  submissionTypes: ['DIGITAL'],
+  subsequentSubmissionTypes: [],
+};
+
 describe('attachmentUtil', () => {
   describe('getRelevantAttachments', () => {
     describe('form containing attachment triggered by radiopanel submission value', () => {
@@ -34,6 +41,7 @@ describe('attachmentUtil', () => {
             ],
           },
         ],
+        properties: testFormProperties,
       } as unknown as NavFormType;
 
       it('return attachment which is relevant', () => {
@@ -75,6 +83,7 @@ describe('attachmentUtil', () => {
             ],
           },
         ],
+        properties: testFormProperties,
       } as unknown as NavFormType;
 
       it('return attachment which is relevant', () => {
@@ -107,6 +116,7 @@ describe('attachmentUtil', () => {
             ],
           },
         ],
+        properties: testFormProperties,
       } as unknown as NavFormType;
 
       it('return attachment which is relevant', () => {
@@ -165,6 +175,7 @@ describe('attachmentUtil', () => {
           ],
         },
       ],
+      properties: testFormProperties,
     };
 
     it('does not return attachment which is not relevant', () => {
@@ -196,6 +207,7 @@ describe('attachmentUtil', () => {
           ],
         },
       ],
+      properties: testFormProperties,
     } as unknown as NavFormType;
 
     it('does not return attachment which is not relevant', () => {

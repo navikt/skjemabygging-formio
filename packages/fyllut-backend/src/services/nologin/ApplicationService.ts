@@ -1,10 +1,15 @@
 import {
-  I18nTranslationMap,
-  localizationUtils,
-  NavFormType,
+  ApplicationPdfService,
+  renderApplicationPdf,
+  translationUtil,
+} from '@navikt/skjemadigitalisering-shared-backend';
+import {
+  Form,
+  FormsApiTranslationMap,
   ReceiptSummary,
   Submission,
-  translationUtils,
+  SubmissionMethod,
+  TranslationLang,
   UploadedFile,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { FyllutBackendConfig } from '../../config/types';
@@ -13,15 +18,18 @@ import ApplicationClient, {
   DownloadedAttachment,
 } from '../../external/innsending-api/ApplicationClient';
 import { assembleSubmitApplicationRequest } from '../../routers/api/helpers/applicationUtils';
-import { stringifyPdf } from '../../routers/api/helpers/pdfUtils';
 import { LogMetadata } from '../../types/log';
-import applicationService from '../documents/applicationService';
+import { base64Decode } from '../../utils/base64';
 import { mapToReceiptSummary } from './receiptMapper';
 
 class ApplicationService {
+  private readonly applicationPdfService: ApplicationPdfService;
   private readonly clients: Record<'nologin' | 'digital', ApplicationClientType>;
+  private readonly config: FyllutBackendConfig;
 
-  constructor(config: FyllutBackendConfig) {
+  constructor(config: FyllutBackendConfig, applicationPdfService: ApplicationPdfService) {
+    this.applicationPdfService = applicationPdfService;
+    this.config = config;
     this.clients = {
       nologin: ApplicationClient(config, 'nologin'),
       digital: ApplicationClient(config, 'digital'),
@@ -62,24 +70,38 @@ class ApplicationService {
     pdfAccessToken: string,
     nologinM2MAccessToken: string,
     innsendingsId: string,
-    form: NavFormType,
+    form: Form,
     submission: Submission,
-    translation: I18nTranslationMap = {},
-    language: string,
-    pdfFormData?: any,
+    translations: FormsApiTranslationMap,
+    language: TranslationLang,
+    submissionMethod: SubmissionMethod | undefined,
     logMeta: LogMetadata = {},
     type: 'nologin' | 'digital' = 'nologin',
   ): Promise<{ pdf: Uint8Array; receipt: ReceiptSummary }> {
-    const lang = localizationUtils.getLanguageCodeAsIso639_1(language);
-    const translate = translationUtils.createTranslate(translation, language);
-    const applicationPdf = await applicationService.createFormPdf(pdfAccessToken, stringifyPdf(pdfFormData), logMeta);
+    const translate = translationUtil.createTranslate(translations, language);
+    const pdfFormData = renderApplicationPdf({
+      form,
+      submission,
+      language,
+      translations,
+      submissionMethod,
+      appConfig: { config: { gitVersion: this.config.gitVersion } },
+    });
+    const applicationPdfBase64 = await this.applicationPdfService.createPdf({
+      accessToken: pdfAccessToken,
+      pdfFormData,
+    });
+    const applicationPdf = base64Decode(applicationPdfBase64);
+    if (!applicationPdf) {
+      throw new Error('Generering av søknads PDF feilet');
+    }
 
     const pdfByteArray = Array.from(applicationPdf);
     const nologinApplication = assembleSubmitApplicationRequest(
       innsendingsId,
       form,
       submission,
-      lang,
+      language,
       pdfByteArray,
       translate,
     );

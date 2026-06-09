@@ -1,10 +1,9 @@
 import { Alert } from '@navikt/ds-react';
-import { dateUtils, formioFormsApiUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { dateUtils, localizationUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import React, { useCallback, useState } from 'react';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
-import renderPdfForm from '../../form-components/RenderPdfForm';
 import { http } from '../../index';
 import DownloadPdfButton from './DownloadPdfButton';
 
@@ -25,8 +24,8 @@ const DownloadCoverPageAndApplicationButton = ({
 }: Props) => {
   const appConfig = useAppConfig();
   const { fyllutBaseURL, submissionMethod, logEvent } = appConfig;
-  const { form, submission, activeComponents, activeAttachmentUploadsPanel } = useForm();
-  const { currentLanguage, translationsForNavForm, translate } = useLanguages();
+  const { form, submission } = useForm();
+  const { currentLanguage, translate } = useLanguages();
   const [downloadState, setDownloadState] = useState<DownloadState>();
 
   const onClick = () => {
@@ -61,27 +60,11 @@ const DownloadCoverPageAndApplicationButton = ({
     return await http.post<Blob>(
       actionUrl,
       {
-        language: currentLanguage,
-        form: JSON.stringify(form),
+        language: localizationUtils.getLanguageCodeAsIso639_1(currentLanguage),
         formPath: form.path,
         submission: JSON.stringify(submission),
-        translations: JSON.stringify(
-          currentLanguage !== 'nb-NO' && translationsForNavForm?.[currentLanguage]
-            ? translationsForNavForm[currentLanguage]
-            : {},
-        ),
         enhetNummer,
         submissionMethod,
-        pdfFormData: renderPdfForm({
-          activeComponents,
-          activeAttachmentUploadsPanel,
-          submission,
-          form: formioFormsApiUtils.mapNavFormToForm(form),
-          currentLanguage,
-          translate,
-          appConfig,
-          submissionMethod,
-        }),
       },
       {
         Accept: http.MimeType.PDF,

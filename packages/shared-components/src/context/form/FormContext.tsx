@@ -1,5 +1,6 @@
 import {
   Component,
+  formioFormsApiUtils,
   NavFormType,
   navFormUtils,
   Panel,
@@ -41,13 +42,13 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
   const { attachmentPageEnabled, http, baseUrl, submissionMethod } = useAppConfig();
 
   const activeComponents = useMemo(
-    () => navFormUtils.getActiveComponentsFromForm(form, submission),
+    () => navFormUtils.getActiveComponentsFromForm(formioFormsApiUtils.mapNavFormToForm(form), submission),
     [form, submission],
   );
 
   const activeAttachmentUploadsPanel = useMemo(() => {
     const activeAttachmentPanel = attachmentPageEnabled
-      ? navFormUtils.getActiveAttachmentPanelFromForm(form, submission)
+      ? navFormUtils.getActiveAttachmentPanelFromForm(formioFormsApiUtils.mapNavFormToForm(form), submission)
       : undefined;
     return activeAttachmentPanel ? (JSON.parse(JSON.stringify(activeAttachmentPanel)) as Panel) : undefined;
   }, [form, submission, attachmentPageEnabled]);

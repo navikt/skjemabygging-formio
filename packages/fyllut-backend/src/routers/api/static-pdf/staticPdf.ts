@@ -1,11 +1,4 @@
-import {
-  coverPageService,
-  formService,
-  mergeFileService,
-  requestUtil,
-  staticPdfService,
-  translationService,
-} from '@navikt/skjemadigitalisering-shared-backend';
+import { requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import {
   CoverPageDownloadType,
   navFormUtils,
@@ -13,10 +6,14 @@ import {
   TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
-import { config } from '../../../config/config';
 import { logger } from '../../../logger';
-
-const { formsApiUrl, skjemabyggingProxyUrl, sendInnConfig, useFormsApiStaging, skjemaDir, mocksEnabled } = config;
+import {
+  coverPageService,
+  formService,
+  mergeFileService,
+  staticPdfService,
+  translationService,
+} from '../../../services';
 
 const staticPdf = {
   getAll: async (req: Request, res: Response, next: NextFunction) => {
@@ -24,7 +21,6 @@ const staticPdf = {
 
     try {
       const result = await staticPdfService.getAll({
-        baseUrl: formsApiUrl,
         formPath,
       });
       res.json(result);
@@ -45,16 +41,13 @@ const staticPdf = {
 
     try {
       const form = await formService.getForm({
-        baseUrl: formsApiUrl,
         formPath,
         select: ['skjemanummer', 'title', 'components', 'properties'],
-        formsApiStaging: useFormsApiStaging,
-        formsLocation: skjemaDir,
-        mocksEnabled,
       });
 
-      const translate = await translationService.createTranslate({ baseUrl: formsApiUrl, formPath, languageCode });
+      const translate = await translationService.createTranslate({ formPath, languageCode });
       const selectedAttachmentKeys = Array.isArray(coverPageData.attachments) ? coverPageData.attachments : [];
+
       const attachmentComponents = navFormUtils
         .flattenComponents(form.components)
         .filter((component) => component.type === 'attachment' && selectedAttachmentKeys.includes(component.key));
@@ -68,7 +61,6 @@ const staticPdf = {
       });
 
       const coverPagePdf = await coverPageService.downloadCoverPage({
-        baseUrl: skjemabyggingProxyUrl,
         languageCode,
         accessToken: coverPageToken,
         data: {
@@ -81,7 +73,6 @@ const staticPdf = {
       });
 
       const staticPdf = await staticPdfService.downloadPdf({
-        baseUrl: formsApiUrl,
         formPath,
         languageCode,
       });
@@ -92,7 +83,6 @@ const staticPdf = {
         if (component.properties?.vedleggskjema) {
           try {
             const attachmentStaticPdf = await staticPdfService.downloadPdf({
-              baseUrl: formsApiUrl,
               formPath: component.properties?.vedleggskjema,
               languageCode,
             });
@@ -105,7 +95,6 @@ const staticPdf = {
       }
 
       const pdf = await mergeFileService.mergeFiles({
-        baseUrl: `${sendInnConfig.host}${sendInnConfig.paths.mergeFiles}`,
         accessToken: mergePdfToken,
         body: {
           title: form.title,

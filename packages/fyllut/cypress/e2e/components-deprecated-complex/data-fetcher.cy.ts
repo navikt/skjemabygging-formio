@@ -259,6 +259,8 @@ describe('Data fetcher', () => {
       });
 
       it('includes aktivitetsvelger in pdfFormData on submit', () => {
+        cy.mocksUseRouteVariant('post-familie-pdf:success-tc20');
+        cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad').as('submitMellomlagring');
         cy.findByRole('link', { name: 'Vedlegg' }).click();
         cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
         cy.findByLabelText('Annen dokumentasjon')
@@ -269,12 +271,7 @@ describe('Data fetcher', () => {
 
         cy.clickSaveAndContinue();
         cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
-        cy.submitApplication((req) => {
-          const { pdfFormData } = req.body;
-          expect(pdfFormData.verdiliste[0].verdiliste[0].label).eq('Aktivitetsvelger');
-          expect(pdfFormData.verdiliste[0].verdiliste[0].verdiliste).to.have.length(1);
-          expect(pdfFormData.verdiliste[0].verdiliste[0].visningsVariant).eq('PUNKTLISTE');
-        });
+        cy.submitApplication();
         cy.clickSendNav();
         cy.wait('@submitApplication');
       });

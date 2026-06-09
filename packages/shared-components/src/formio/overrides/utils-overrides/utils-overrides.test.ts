@@ -2,6 +2,7 @@ import {
   formDiffingUtils,
   navFormUtils,
   checkCondition as sharedCheckCondition,
+  type Form,
   type NavFormType,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import moment from 'moment/moment';
@@ -39,6 +40,9 @@ describe('utils-overrides', () => {
         customConditional: 'show = instance.isSubmissionDigital()',
       };
       const form = {
+        skjemanummer: 'TEST',
+        path: 'test',
+        title: 'Test',
         components: [component],
         properties: {
           skjemanummer: 'TEST',
@@ -46,7 +50,7 @@ describe('utils-overrides', () => {
           submissionTypes: ['PAPER', 'DIGITAL'],
           subsequentSubmissionTypes: [],
         },
-      } as unknown as NavFormType;
+      } as unknown as Form;
 
       expect(
         UtilsOverrides.checkCondition(component, undefined, {}, form, undefined, undefined, {

@@ -1,0 +1,56 @@
+{
+  "label": "Submission Type: Paper & Digital",
+  "verdiliste": [
+    {
+      "label": "Dine opplysninger",
+      "verdiliste": [
+        {
+          "label": "Tekstfelt",
+          "verdi": "asdf"
+        }
+      ]
+    },
+    {
+      "label": "Vedlegg",
+      "verdiliste": [
+        {
+          "label": "Annen dokumentasjon",
+          "verdi": "Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved"
+        }
+      ]
+    },
+    {
+      "label": "Underskrift",
+      "visningsVariant": "HOLDSAMMEN",
+      "verdiliste": [
+        {
+          "label": "",
+          "verdi": " "
+        },
+        {
+          "label": "Sted og dato",
+          "verdi": " "
+        },
+        {
+          "label": "Underskrift",
+          "verdi": " "
+        },
+        {
+          "label": "Navn med blokkbokstaver",
+          "verdi": " "
+        }
+      ]
+    }
+  ],
+  "pdfConfig": {
+    "harInnholdsfortegnelse": false,
+    "språk": "nb"
+  },
+  "bunntekst": {
+    "upperleft": "F.nr: —",
+    "lowerleft": "Skjemanummer: undefined",
+    "upperRight": null,
+    "upperMiddle": "Opprettet: 21 mai 2026, 16:38",
+    "lowerMiddle": "Versjon: local"
+  }
+}

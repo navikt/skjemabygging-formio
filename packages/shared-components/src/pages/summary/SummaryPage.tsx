@@ -8,18 +8,17 @@ import {
   Submission,
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import { RenderSummaryForm, ValidationExclamationIcon } from '@navikt/skjemadigitalisering-shared-frontend';
 import { useEffect, useRef, useState } from 'react';
 import { useAttachmentUpload } from '../../components/attachment/AttachmentUploadContext';
 import { attachmentValidator } from '../../components/attachment/attachmentValidator';
 import ButtonRow from '../../components/button/ButtonRow';
 import EditAnswersButton from '../../components/button/navigation/edit-answers/EditAnswersButton';
-import ValidationExclamationIcon from '../../components/icons/ValidationExclamationIcon';
 import NavFormHelper from '../../components/nav-form/NavFormHelper';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
-import RenderSummaryForm from '../../form-components/RenderSummaryForm';
 import { SkeletonList } from '../../index';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
 import {
@@ -76,16 +75,23 @@ export function SummaryPage() {
       }
 
       const attachmentPanel = appConfig.attachmentPageEnabled
-        ? navFormUtils.getActiveAttachmentPanelFromForm(form, submission)
+        ? navFormUtils.getActiveAttachmentPanelFromForm(formioFormsApiUtils.mapNavFormToForm(form), submission)
         : undefined;
       if (attachmentPanel) {
-        const validator = attachmentUtils.enableAttachmentUpload(appConfig.submissionMethod)
-          ? attachmentValidator(translate, ['value', 'fileUploaded'])
-          : attachmentValidator(translate, ['value']);
         const invalidAttachment = findFirstValidationErrorInAttachmentPanel(
           attachmentPanel,
           submission ?? { data: {} },
-          validator,
+          (label, submissionAttachment, component) => {
+            const uploadOnlyMode = attachmentUtils.isSingleUploadOnlyOption(
+              component.attachmentValues ?? component.values,
+              appConfig.submissionMethod,
+            );
+            const validator = attachmentUtils.enableAttachmentUpload(appConfig.submissionMethod)
+              ? attachmentValidator(translate, uploadOnlyMode ? ['fileUploaded'] : ['value', 'fileUploaded'])
+              : attachmentValidator(translate, ['value']);
+
+            return validator.validate(label, submissionAttachment);
+          },
         );
 
         if (invalidAttachment) {

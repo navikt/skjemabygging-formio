@@ -1,39 +1,26 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { expect } from 'chai';
 
-const getCleanedUpPdfFormData = (request, date?: string) => {
-  const pdfFormData = JSON.parse(JSON.stringify(request.body.pdfFormData));
-  pdfFormData.verdiliste.forEach((panel, index, object) => {
-    if (panel.label === 'Person' && date) {
-      panel.verdiliste.forEach((component) => {
-        if (component.verdi.match(/^\d{2}.\d{2}.\d{4}$/)) {
-          component.verdi = date;
-        }
-      });
-    } else if (panel.label === 'Underskrift' && request.submissionMethod === 'digital') {
-      object.splice(index, 1);
-    }
-  });
-
-  return {
-    ...pdfFormData,
-    bunntekst: {
-      ...pdfFormData.bunntekst,
-      upperMiddle: null, // Remove timestamp for comparison.
-    },
-  };
-};
-
 const downloadPdf = (submissionType: 'digital' | 'paper' | 'digitalnologin' = 'paper') => {
   cy.findByRole('link', { name: /Oppsummering|Summary/ }).click();
   cy.findByRole('heading', { name: /Oppsummering|Summary/ }).shouldBeVisible();
   if (submissionType === 'digitalnologin' || submissionType === 'digital') {
     cy.clickSendNav();
   } else {
-    cy.findByRole('link', { name: 'Instruksjoner for innsending' }).click();
+    cy.clickDownloadInstructions();
     cy.findByRole('button', { name: /Last ned skjema|Download form/ }).click();
   }
   cy.wait('@downloadPdf');
+};
+
+const fillInAttachmentPage = () => {
+  cy.findByRole('link', { name: /Vedlegg/ }).click();
+  cy.findByRole('group', { name: /Vedlegg/ }).within(() =>
+    cy.findByLabelText(/Jeg har levert denne dokumentasjonen tidligere/).check(),
+  );
+  cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() =>
+    cy.findByLabelText('Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved').check(),
+  );
 };
 
 describe('Pdf', () => {
@@ -48,6 +35,7 @@ describe('Pdf', () => {
 
   describe('Conditional rendering of pages', () => {
     it('pdfFormData get populated with the all conditional pages', () => {
+      cy.mocksUseRouteVariant('post-familie-pdf:success-tc13');
       cy.visit('/fyllut/conditionalpage?sub=digital');
       cy.defaultWaits();
       cy.clickIntroPageConfirmation();
@@ -63,13 +51,7 @@ describe('Pdf', () => {
       cy.findByRole('checkbox', { name: /Avkryssingsboks 3/ }).click();
       cy.clickSaveAndContinue();
       cy.findByRole('heading', { name: 'Oppsummering' }).shouldBeVisible();
-
-      cy.submitApplication((req) => {
-        const { submission, pdfFormData } = req.body;
-        expect(Object.keys(submission.data)).to.have.length(4);
-        expect(Object.keys(pdfFormData.verdiliste)).to.have.length(4);
-        expect(Object.keys(pdfFormData.verdiliste[3].verdiliste)).to.have.length(3);
-      });
+      cy.submitApplication();
 
       cy.clickSendNav();
 
@@ -77,6 +59,7 @@ describe('Pdf', () => {
     });
 
     it('pdfFormData get populated with the correct number of pages', () => {
+      cy.mocksUseRouteVariant('post-familie-pdf:success-tc14');
       cy.visit('/fyllut/conditionalpage?sub=digital');
       cy.defaultWaits();
 
@@ -85,14 +68,7 @@ describe('Pdf', () => {
 
       cy.findByRole('heading', { name: 'Page 1' }).shouldBeVisible();
       cy.clickSaveAndContinue();
-
-      cy.submitApplication((req) => {
-        const { submission, pdfFormData } = req.body;
-        expect(Object.keys(submission.data)).to.have.length(1);
-        // This is 1 and not 2, because the conditional page (page 2) is not shown in pdf since it have no values.
-        // It is shown in summary page since it there have an edit link.
-        expect(Object.keys(pdfFormData.verdiliste)).to.have.length(1);
-      });
+      cy.submitApplication();
       cy.findByRole('heading', { name: 'Oppsummering' }).shouldBeVisible();
       cy.clickSendNav();
 
@@ -100,6 +76,7 @@ describe('Pdf', () => {
     });
 
     it('pdfFormData get populated with the correct number of pages, paper', () => {
+      cy.mocksUseRouteVariant('post-familie-pdf:success-tc15');
       cy.visit('/fyllut/conditionalpage?sub=paper');
       cy.defaultWaits();
 
@@ -116,12 +93,7 @@ describe('Pdf', () => {
       cy.findByRole('heading', { name: 'Oppsummering' }).shouldBeVisible();
       cy.findByRole('link', { name: 'Instruksjoner for innsending' }).click();
 
-      cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
-        const { submission, pdfFormData } = req.body;
-        expect(Object.keys(JSON.parse(submission).data)).to.have.length(3);
-        // pdfFormData.verdiliste is longer since signature is added for paper forms.
-        expect(Object.keys(pdfFormData.verdiliste)).to.have.length(4);
-      }).as('downloadPdf');
+      cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application').as('downloadPdf');
 
       cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).click();
 
@@ -138,6 +110,7 @@ describe('Pdf', () => {
       });
 
       it('Only identity', () => {
+        cy.mocksUseRouteVariant('post-familie-pdf:success-tc09');
         cy.clickIntroPageConfirmation();
         cy.clickStart();
         cy.findByRole('group', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
@@ -146,15 +119,12 @@ describe('Pdf', () => {
         cy.findByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).type('20905995783');
         cy.clickNextStep();
 
-        cy.fixture('pdf/request-components-identity.json').then((fixture) => {
-          cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
-            // Check that timestamp is present in footer before removing it for comparison.
-            expect(req.body.pdfFormData.bunntekst.upperMiddle).not.to.be.null;
-            expect(getCleanedUpPdfFormData(req)).deep.eq(fixture);
-          }).as('downloadPdf');
-        });
+        fillInAttachmentPage();
+
+        cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application').as('downloadPdf');
 
         downloadPdf();
+        cy.findByText(/Nedlastingen er ferdig/).shouldBeVisible();
       });
 
       it('All values', () => {
@@ -270,14 +240,7 @@ describe('Pdf', () => {
         cy.findByRole('heading', { name: 'Andre' }).shouldBeVisible();
         cy.findByRole('checkbox', { name: /Jeg bekrefter/ }).check();
 
-        cy.findByRole('link', { name: 'Vedlegg' }).click();
-        cy.findByRole('heading', { name: 'Vedlegg' }).shouldBeVisible();
-        cy.findByRole('group', { name: /Vedlegg/ }).within(() => {
-          cy.findByRole('radio', { name: 'Jeg ettersender dokumentasjonen senere' }).check();
-        });
-        cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
-          cy.findByRole('radio', { name: 'Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved' }).check();
-        });
+        fillInAttachmentPage();
 
         cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application').as('downloadPdf');
 
@@ -295,6 +258,7 @@ describe('Pdf', () => {
       });
 
       it('Only identity', () => {
+        cy.mocksUseRouteVariant('post-familie-pdf:success-tc10');
         cy.clickIntroPageConfirmation();
         cy.clickStart();
 
@@ -305,18 +269,15 @@ describe('Pdf', () => {
           cy.findByRole('radio', { name: 'Ingen relevant aktivitet registrert på meg' }).check();
         });
 
-        cy.fixture('pdf/request-components-identity-digital.json').then((fixture) => {
-          cy.intercept('POST', '/fyllut/api/send-inn/digital-application/*', (req) => {
-            // Check that timestamp is present in footer before removing it for comparison.
-            expect(req.body.pdfFormData.bunntekst.upperMiddle).not.to.be.null;
-            expect(getCleanedUpPdfFormData(req)).deep.eq(fixture);
-          }).as('downloadPdf');
-        });
+        fillInAttachmentPage();
+
+        cy.intercept('POST', '/fyllut/api/send-inn/digital-application/*').as('downloadPdf');
 
         downloadPdf('digital');
       });
 
       it('All values', () => {
+        cy.mocksUseRouteVariant('post-familie-pdf:success-tc12');
         const date = '20.10.2025';
 
         cy.clickIntroPageConfirmation();
@@ -427,11 +388,9 @@ describe('Pdf', () => {
           cy.findByRole('radio', { name: 'Ingen relevant aktivitet registrert på meg' }).check();
         });
 
-        cy.fixture('pdf/request-components-all-digital.json').then((fixture) => {
-          cy.intercept('POST', '/fyllut/api/send-inn/digital-application/*', (req) => {
-            expect(getCleanedUpPdfFormData(req, date)).deep.eq(fixture);
-          }).as('downloadPdf');
-        });
+        fillInAttachmentPage();
+
+        cy.intercept('POST', '/fyllut/api/send-inn/digital-application/*').as('downloadPdf');
 
         downloadPdf('digital');
       });
@@ -456,6 +415,7 @@ describe('Pdf', () => {
       });
 
       it('Pdf does not contain signature field when submission method is digitalnologin', () => {
+        cy.mocksUseRouteVariant('post-familie-pdf:success-tc11');
         cy.clickIntroPageConfirmation();
         cy.clickStart();
         cy.findByRole('group', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
@@ -466,14 +426,9 @@ describe('Pdf', () => {
 
         cy.clickNextStep();
 
-        cy.fixture('pdf/request-components-identity-nologin.json').then((fixture) => {
-          cy.intercept('POST', '/fyllut/api/send-inn/nologin-application', (req) => {
-            // Check that timestamp is present in footer before removing it for comparison.
-            expect(req.body.pdfFormData.bunntekst.upperMiddle).not.to.be.null;
-            const actual = getCleanedUpPdfFormData(req);
-            expect(actual, 'PDF form data should match fixture for nologin submission').deep.eq(fixture);
-          }).as('downloadPdf');
-        });
+        fillInAttachmentPage();
+
+        cy.intercept('POST', '/fyllut/api/send-inn/nologin-application').as('downloadPdf');
 
         downloadPdf('digitalnologin');
       });
@@ -483,6 +438,7 @@ describe('Pdf', () => {
   describe('Verify signatures', () => {
     describe('Default signature', () => {
       it('Check the default empty signature', () => {
+        cy.mocksUseRouteVariant('post-familie-pdf:success-tc16');
         cy.intercept('GET', 'fyllut/api/forms/stpaper*', (req) => {
           req.continue((res) => {
             if (res.body) {
@@ -510,25 +466,13 @@ describe('Pdf', () => {
         cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
         cy.clickNextStep();
 
-        cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
-          const signatures = req.body.pdfFormData.verdiliste.pop();
-
-          expect(signatures.label).eq('Underskrift');
-          expect(signatures.verdiliste.length).eq(4);
-          expect(signatures.verdiliste[0].label).eq('');
-          expect(signatures.verdiliste[0].verdi).eq(' ');
-          expect(signatures.verdiliste[1].label).eq('Sted og dato');
-          expect(signatures.verdiliste[1].verdi).eq(' ');
-          expect(signatures.verdiliste[2].label).eq('Underskrift');
-          expect(signatures.verdiliste[2].verdi).eq(' ');
-          expect(signatures.verdiliste[3].label).eq('Navn med blokkbokstaver');
-          expect(signatures.verdiliste[3].verdi).eq(' ');
-        }).as('downloadPdf');
+        cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application').as('downloadPdf');
 
         downloadPdf();
       });
 
       it('Check the old default signature (undefined)', () => {
+        cy.mocksUseRouteVariant('post-familie-pdf:success-tc17');
         cy.intercept('GET', 'fyllut/api/forms/stpaper*', (req) => {
           req.continue((res) => {
             if (res.body) {
@@ -557,20 +501,7 @@ describe('Pdf', () => {
         });
         cy.clickNextStep();
 
-        cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
-          const signatures = req.body.pdfFormData.verdiliste.pop();
-
-          expect(signatures.label).eq('Underskrift');
-          expect(signatures.verdiliste.length).eq(4);
-          expect(signatures.verdiliste[0].label).eq('');
-          expect(signatures.verdiliste[0].verdi).eq(' ');
-          expect(signatures.verdiliste[1].label).eq('Sted og dato');
-          expect(signatures.verdiliste[1].verdi).eq(' ');
-          expect(signatures.verdiliste[2].label).eq('Underskrift');
-          expect(signatures.verdiliste[2].verdi).eq(' ');
-          expect(signatures.verdiliste[3].label).eq('Navn med blokkbokstaver');
-          expect(signatures.verdiliste[3].verdi).eq(' ');
-        }).as('downloadPdf');
+        cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application').as('downloadPdf');
 
         downloadPdf();
       });
@@ -578,6 +509,7 @@ describe('Pdf', () => {
 
     describe('Multiple signatures', () => {
       it('Check for two signatures', () => {
+        cy.mocksUseRouteVariant('post-familie-pdf:success-tc09');
         cy.visit('/fyllut/components?sub=paper');
         cy.defaultWaits();
         cy.clickShowAllSteps();
@@ -590,38 +522,16 @@ describe('Pdf', () => {
         cy.findByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).type('20905995783');
         cy.clickNextStep();
 
-        cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
-          const signatures = req.body.pdfFormData.verdiliste.pop();
+        fillInAttachmentPage();
 
-          expect(signatures.label).eq('Underskrift');
-          expect(signatures.verdiliste.length).eq(3);
-          expect(signatures.verdiliste[0].label).eq('');
-
-          expect(signatures.verdiliste[1].label).eq('Eier');
-          expect(signatures.verdiliste[1].verdiliste[0].label).eq('Viktig1');
-          expect(signatures.verdiliste[1].verdiliste[0].verdi).eq(' ');
-          expect(signatures.verdiliste[1].verdiliste[1].label).eq('Sted og dato');
-          expect(signatures.verdiliste[1].verdiliste[1].verdi).eq(' ');
-          expect(signatures.verdiliste[1].verdiliste[2].label).eq('Underskrift');
-          expect(signatures.verdiliste[1].verdiliste[2].verdi).eq(' ');
-          expect(signatures.verdiliste[1].verdiliste[3].label).eq('Navn med blokkbokstaver');
-          expect(signatures.verdiliste[1].verdiliste[3].verdi).eq(' ');
-
-          expect(signatures.verdiliste[2].label).eq('Deleier');
-          expect(signatures.verdiliste[2].verdiliste[0].label).eq('Viktig2');
-          expect(signatures.verdiliste[2].verdiliste[0].verdi).eq(' ');
-          expect(signatures.verdiliste[2].verdiliste[1].label).eq('Sted og dato');
-          expect(signatures.verdiliste[2].verdiliste[1].verdi).eq(' ');
-          expect(signatures.verdiliste[2].verdiliste[2].label).eq('Underskrift');
-          expect(signatures.verdiliste[2].verdiliste[2].verdi).eq(' ');
-          expect(signatures.verdiliste[2].verdiliste[3].label).eq('Navn med blokkbokstaver');
-          expect(signatures.verdiliste[2].verdiliste[3].verdi).eq(' ');
-        }).as('downloadPdf');
+        cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application').as('downloadPdf');
 
         downloadPdf();
+        cy.findByText(/Nedlastingen er ferdig/).shouldBeVisible();
       });
 
       it('Check for two signatures, english', () => {
+        cy.mocksUseRouteVariant('post-familie-pdf:success-tc18');
         cy.visit('/fyllut/components?sub=paper&lang=en');
         cy.defaultWaits();
         cy.clickShowAllSteps();
@@ -636,35 +546,19 @@ describe('Pdf', () => {
         cy.findByRole('textbox', { name: /Norwegian national identification number or D number/ }).type('20905995783');
         cy.clickNextStep();
 
-        cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
-          const signatures = req.body.pdfFormData.verdiliste.pop();
+        cy.findByRole('link', { name: /Attachments/ }).click();
+        cy.findByRole('group', { name: /Attachments/ }).within(() =>
+          cy.findByLabelText(/I have provided this documentation previously/).check(),
+        );
+        cy.findByRole('group', { name: /Other documentation/ }).within(() =>
+          cy.findByLabelText('No, I have no additional documentation to attach').check(),
+        );
+        cy.clickNextStep();
 
-          expect(signatures.label).eq('Signature');
-          expect(signatures.verdiliste.length).eq(3);
-          expect(signatures.verdiliste[0].label).eq('');
-
-          expect(signatures.verdiliste[1].label).eq('Owner');
-          expect(signatures.verdiliste[1].verdiliste[0].label).eq('Important1');
-          expect(signatures.verdiliste[1].verdiliste[0].verdi).eq(' ');
-          expect(signatures.verdiliste[1].verdiliste[1].label).eq('Place and date');
-          expect(signatures.verdiliste[1].verdiliste[1].verdi).eq(' ');
-          expect(signatures.verdiliste[1].verdiliste[2].label).eq('Signature');
-          expect(signatures.verdiliste[1].verdiliste[2].verdi).eq(' ');
-          expect(signatures.verdiliste[1].verdiliste[3].label).eq('Name with capital letters');
-          expect(signatures.verdiliste[1].verdiliste[3].verdi).eq(' ');
-
-          expect(signatures.verdiliste[2].label).eq('Co-owner');
-          expect(signatures.verdiliste[2].verdiliste[0].label).eq('Important2');
-          expect(signatures.verdiliste[2].verdiliste[0].verdi).eq(' ');
-          expect(signatures.verdiliste[2].verdiliste[1].label).eq('Place and date');
-          expect(signatures.verdiliste[2].verdiliste[1].verdi).eq(' ');
-          expect(signatures.verdiliste[2].verdiliste[2].label).eq('Signature');
-          expect(signatures.verdiliste[2].verdiliste[2].verdi).eq(' ');
-          expect(signatures.verdiliste[2].verdiliste[3].label).eq('Name with capital letters');
-          expect(signatures.verdiliste[2].verdiliste[3].verdi).eq(' ');
-        }).as('downloadPdf');
+        cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application').as('downloadPdf');
 
         downloadPdf();
+        cy.findByText(/The download is complete/).shouldBeVisible();
       });
     });
   });
@@ -672,6 +566,7 @@ describe('Pdf', () => {
   describe('Verify attachments', () => {
     describe('paper submission', () => {
       it('Check for attachment with comment', () => {
+        cy.mocksUseRouteVariant('post-familie-pdf:success-tc19');
         cy.visit('/fyllut/components?sub=paper');
         cy.defaultWaits();
         cy.clickShowAllSteps();
@@ -698,33 +593,10 @@ describe('Pdf', () => {
 
         cy.clickNextStep();
 
-        cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
-          const vedleggspanel = req.body.pdfFormData.verdiliste.find((item) => {
-            return item.label === 'Vedlegg';
-          });
-
-          expect(vedleggspanel, 'Forventer å finne vedleggspanelet').to.be.not.undefined;
-          expect(vedleggspanel.label).eq('Vedlegg');
-          expect(vedleggspanel.verdiliste[0], 'Forventer at vedlegg er valgt').to.be.not.undefined;
-          expect(vedleggspanel.verdiliste[0].label).eq('Vedlegg');
-          expect(vedleggspanel.verdiliste[0].verdi).eq('Jeg legger det ved dette skjemaet');
-          expect(vedleggspanel.verdiliste[1], 'Forventer kommentar til vedlegget (additional documentation)').to.be.not
-            .undefined;
-          expect(vedleggspanel.verdiliste[1].label).eq('Mer info');
-          expect(vedleggspanel.verdiliste[1].verdiliste, 'Verdiliste må være satt (additional documentation)').to.be.not
-            .undefined;
-          expect(
-            vedleggspanel.verdiliste[1].verdiliste[0],
-            'Verdiliste må inneholde et element (additional documentation)',
-          ).to.be.not.undefined;
-          expect(vedleggspanel.verdiliste[1].verdiliste[0].label).eq('Dette er en kommentar til vedlegget.');
-          expect(vedleggspanel.verdiliste[1].visningsVariant).eq('PUNKTLISTE');
-          expect(vedleggspanel.verdiliste[2], 'Forventer annen dokumentasjon').to.be.not.undefined;
-          expect(vedleggspanel.verdiliste[2].label).eq('Annen dokumentasjon');
-          expect(vedleggspanel.verdiliste[2].verdi).eq('Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved');
-        }).as('downloadPdf');
+        cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application').as('downloadPdf');
 
         downloadPdf();
+        cy.findByText(/Nedlastingen er ferdig/).shouldBeVisible();
       });
     });
   });
@@ -756,6 +628,8 @@ describe('Pdf', () => {
         },
       );
 
+      fillInAttachmentPage();
+
       cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application').as('downloadPdf');
       downloadPdf();
       cy.findByText(/Nedlastingen er ferdig/).shouldBeVisible();
@@ -778,6 +652,9 @@ describe('Pdf', () => {
         });
         cy.findByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).type('20905995783');
         cy.clickNextStep();
+
+        fillInAttachmentPage();
+
         cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
           req.on('response', (res) => {
             expect(res.statusCode).to.eq(expectedHttpStatusCode);

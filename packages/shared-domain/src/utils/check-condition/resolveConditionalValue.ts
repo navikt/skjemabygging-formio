@@ -1,4 +1,4 @@
-import { Component, NavFormType } from '../../models';
+import { Component, Form } from '../../models';
 import { ConditionComponent, ConditionData, ConditionInput, ConditionObject, ConditionRow } from './types';
 
 const isNil = (value: ConditionInput | ConditionRow | ConditionData | undefined) => value == null;
@@ -156,7 +156,7 @@ const getComponentActualValue = (
   data: ConditionData | undefined,
   row: ConditionRow,
   instance?: ConditionComponent,
-  form?: NavFormType,
+  form?: Form,
 ) => {
   const candidates: ValueCandidate[] = [];
   const scopedPaths = getScopedRowPaths(componentPath, instance);
