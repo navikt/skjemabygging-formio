@@ -4,6 +4,7 @@ import {
   createFormService,
   createMergeFileService,
   createRecipientService,
+  createRegisterDataService,
   createStaticPdfService,
   createTranslationService,
 } from '@navikt/skjemadigitalisering-shared-backend';
@@ -25,6 +26,7 @@ const {
   translationDir,
   resourcesDir,
   mocksEnabled,
+  tilleggsstonaderConfig,
 } = config;
 
 const applicationPdfService = createApplicationPdfService({
@@ -48,6 +50,10 @@ const formService = createFormService({
 
 const mergeFileService = createMergeFileService({
   baseUrl: `${sendInnConfig.host}${sendInnConfig.paths.mergeFiles}`,
+});
+
+const registerDataService = createRegisterDataService({
+  baseUrl: tilleggsstonaderConfig.host,
 });
 
 const recipientService = createRecipientService({
@@ -84,6 +90,7 @@ export {
   nologinTokenService,
   oldFormService,
   recipientService,
+  registerDataService,
   staticPdfService,
   translationService,
   translationsService,
