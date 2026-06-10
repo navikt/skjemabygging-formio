@@ -4,7 +4,7 @@ import { logger } from '../../../../../logger';
 import { applicationService } from '../../../../../services';
 import { HttpError } from '../../../../../utils/errors/HttpError';
 import { removeUploadedTempFile } from '../../../helpers/upload';
-import { validateNologinContext } from '../../../nologin-file/nologin-file';
+import { validateNologinContext } from './context';
 
 const post = async (req: Request, res: Response, next: NextFunction) => {
   const file = req.file;
