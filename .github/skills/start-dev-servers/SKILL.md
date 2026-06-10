@@ -67,7 +67,6 @@ bash (async): pnpm start:bygger:mocks -- --no-runtime-config
 
 cd packages/bygger && pnpm cypress run \
   --config "baseUrl=http://127.0.0.1:3043" \
-  --env "MOCKS_ADMIN_PORT=<BYGGER_MOCK_ADMIN_PORT>" \
   --browser electron \
   --spec cypress/e2e/path/to/spec.cy.ts
 ```
@@ -82,5 +81,6 @@ Do NOT reach for `pnpm preview:fyllut` / `pnpm mocks:fyllut:no-cli` as an altern
 
 - `kill <START_PID>` is preferred over `stop_bash` — no user permission prompt required.
 - `START_PID` is printed last, so it is the simplest ready marker to wait for in async output.
-- All child processes (mock server, backend, frontend) are in separate process groups and are fully cleaned up on kill.
+- Killing `START_PID` triggers launcher cleanup of the child processes it started.
 - `-- --no-runtime-config` keeps AI-started servers from creating or deleting `.runtime/cypress.mocks.json`; omit it for normal user/Cypress flows that should manage runtime config.
+- `pnpm` forwards the separator literally, so keep the command in the `pnpm start:*:mocks -- --no-runtime-config` form for the AI/dev-server flow.
