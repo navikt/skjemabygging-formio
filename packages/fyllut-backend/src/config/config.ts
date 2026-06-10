@@ -8,7 +8,6 @@ import {
   IdportenConfig,
   SendInnConfig,
   ServiceConfig,
-  TeamLogsConfig,
   TilleggsstonaderConfig,
   TokenxConfig,
 } from './types';
@@ -58,12 +57,6 @@ const tilleggsstonaderConfig: TilleggsstonaderConfig = {
   paths: {
     activities: '/api/ekstern/aktivitet',
   },
-};
-
-const teamLogsConfig: TeamLogsConfig = {
-  enabled: !!process.env.TEAM_LOGS_URL,
-  url: process.env.TEAM_LOGS_URL || '',
-  mandatoryFields: {},
 };
 
 const kodeverk: ServiceConfig = {
@@ -143,7 +136,6 @@ const localDevelopmentConfig: DefaultConfig = {
     tokenLifetimeHours: 1,
   },
   skjemaDir: process.env.SKJEMA_DIR,
-  teamLogsConfig,
   tempAttachmentUploadForms: [
     'formwithattachments',
     'nav060404',
@@ -183,16 +175,6 @@ const defaultConfig: DefaultConfig = {
   nologin: {
     jwtSecret: process.env.NOLOGIN_JWT_SECRET!,
     tokenLifetimeHours: parseInt(process.env.NOLOGIN_TOKEN_LIFETIME_HOURS!),
-  },
-  teamLogsConfig: {
-    ...teamLogsConfig,
-    mandatoryFields: {
-      ...teamLogsConfig.mandatoryFields,
-      google_cloud_project: process.env.GOOGLE_CLOUD_PROJECT!,
-      nais_namespace_name: process.env.NAIS_NAMESPACE!,
-      nais_pod_name: process.env.NAIS_POD_NAME!,
-      nais_container_name: process.env.NAIS_APP_NAME!,
-    },
   },
   tempAttachmentUploadForms: featureUtils.splitCommaSeparated(process.env.FEATURE_ATTACHMENT_UPLOAD_FORMS),
 };

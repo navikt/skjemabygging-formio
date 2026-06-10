@@ -36,12 +36,6 @@ export type NologinConfig = {
   tokenLifetimeHours: number;
 };
 
-export type TeamLogsConfig = {
-  enabled: boolean;
-  url: string;
-  mandatoryFields: Record<string, string>;
-};
-
 export type ServiceConfig = {
   url: string;
   scope?: string;
@@ -84,7 +78,6 @@ export type DefaultConfig = {
   frontendLoggerConfig: FrontendLoggerConfigType;
   formsApiUrl: string;
   nologin: NologinConfig;
-  teamLogsConfig: TeamLogsConfig;
   tempAttachmentUploadForms: string[];
 };
 

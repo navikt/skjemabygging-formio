@@ -1,7 +1,17 @@
+import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import { Registry } from 'prom-client';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { HttpResponseError } from '../../shared/http/http';
 import { sanitizeLabel, sanitizeValue } from './applicationPdfSerializer';
 import { createApplicationPdfService } from './applicationPdfService';
+
+const teamLoggerError = vi.hoisted(() => vi.fn());
+
+vi.mock('../../shared/logger/teamLogger', () => ({
+  teamLogger: {
+    error: teamLoggerError,
+  },
+}));
 
 describe('Sanitize values before sending to PDF generation', () => {
   describe('sanitizeLabel', () => {
@@ -53,6 +63,10 @@ describe('Sanitize values before sending to PDF generation', () => {
 });
 
 describe('createApplicationPdfService', () => {
+  beforeEach(() => {
+    teamLoggerError.mockClear();
+  });
+
   const createPdfFormData = () => ({
     label: 'Test',
     pdfConfig: { harInnholdsfortegnelse: false, språk: 'nb' },
@@ -120,6 +134,93 @@ describe('createApplicationPdfService', () => {
     expect(await registry.metrics()).toContain('fyllut_familie_pdf_requests_total 1');
     expect(await registry.metrics()).toContain('fyllut_familie_pdf_failures_total 1');
     expect(await registry.metrics()).toContain('fyllut_familie_pdf_duration_seconds_count{error="true"} 1');
+  });
+
+  it('logs to team-logs on non-401 HttpResponseError and rethrows', async () => {
+    const registry = new Registry();
+    const error = new HttpResponseError('SERVICE_UNAVAILABLE', 'boom', 'Internal server error', undefined, 503);
+    const client = {
+      createPdf: vi.fn().mockRejectedValue(error),
+    };
+    const service = createApplicationPdfService({
+      baseUrl: 'http://familie-pdf',
+      metrics: {
+        appName: 'fyllut',
+        registry,
+      },
+      client,
+    });
+
+    await expect(
+      service.createPdf({
+        accessToken: 'token',
+        pdfFormData: createPdfFormData(),
+      }),
+    ).rejects.toThrow(error);
+
+    expect(teamLoggerError).toHaveBeenCalledWith(
+      'Could not create pdf',
+      expect.objectContaining({
+        skjemanummer: 'NAV 00-00.00',
+        httpResponseStatus: 503,
+      }),
+    );
+  });
+
+  it('does not log to team-logs on unauthorized errors', async () => {
+    const registry = new Registry();
+    const error = new ResponseError('UNAUTHORIZED', 'nope');
+    const client = {
+      createPdf: vi.fn().mockRejectedValue(error),
+    };
+    const service = createApplicationPdfService({
+      baseUrl: 'http://familie-pdf',
+      metrics: {
+        appName: 'fyllut',
+        registry,
+      },
+      client,
+    });
+
+    await expect(
+      service.createPdf({
+        accessToken: 'token',
+        pdfFormData: createPdfFormData(),
+      }),
+    ).rejects.toThrow(error);
+
+    expect(teamLoggerError).not.toHaveBeenCalled();
+  });
+
+  it('logs to team-logs on non-HttpResponseError failures with undefined status and rethrows', async () => {
+    const registry = new Registry();
+    const error = new Error('pdf failed');
+    const client = {
+      createPdf: vi.fn().mockRejectedValue(error),
+    };
+    const service = createApplicationPdfService({
+      baseUrl: 'http://familie-pdf',
+      metrics: {
+        appName: 'fyllut',
+        registry,
+      },
+      client,
+    });
+
+    await expect(
+      service.createPdf({
+        accessToken: 'token',
+        pdfFormData: createPdfFormData(),
+      }),
+    ).rejects.toThrow(error);
+
+    expect(teamLoggerError).toHaveBeenCalledWith(
+      'Could not create pdf',
+      expect.objectContaining({
+        skjemanummer: 'NAV 00-00.00',
+        httpResponseStatus: undefined,
+      }),
+    );
   });
 
   it('reuses existing metrics when the same registry is passed more than once', async () => {

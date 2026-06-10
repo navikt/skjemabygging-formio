@@ -123,7 +123,13 @@ const handleResponse = async <T>(response: Response): Promise<T> => {
   }
 
   const errorBody = await handleBody(response);
-  const error = new HttpResponseError(getErrorCode(response.status), response.statusText, errorBody);
+  const error = new HttpResponseError(
+    getErrorCode(response.status),
+    response.statusText,
+    errorBody,
+    undefined,
+    response.status,
+  );
 
   logger.warn(`Http request to ${response.url} failed with status ${response.status}`, {
     body: errorBody,
@@ -134,10 +140,12 @@ const handleResponse = async <T>(response: Response): Promise<T> => {
 
 class HttpResponseError extends ResponseError {
   public readonly body: any;
+  public readonly status?: number;
 
-  constructor(errorCode: ErrorCode, message: string, body: any, userMessage?: string) {
+  constructor(errorCode: ErrorCode, message: string, body: any, userMessage?: string, status?: number) {
     super(errorCode, message, userMessage);
     this.body = body;
+    this.status = status;
   }
 }
 
