@@ -110,5 +110,26 @@ describe('TranslationService', () => {
         await expect(service.loadTranslation('nav123456')).resolves.toEqual({});
       });
     });
+
+    describe('mocksEnabled branch', () => {
+      const mocksConfig = {
+        ...testConfig,
+        mocksEnabled: true,
+        formioApiServiceUrl: 'http://formio-api',
+      } as FyllutBackendConfig;
+
+      it('uses formio translations instead of forms-api translations', async () => {
+        const service = new TranslationsService(mocksConfig);
+        const formioSpy = vi.spyOn(service, 'fetchTranslationsFromFormioApi').mockResolvedValueOnce({
+          en: { hello: 'hello' },
+        });
+
+        await expect(service.loadTranslation('nav123456')).resolves.toEqual({
+          en: { hello: 'hello' },
+        });
+        expect(formioSpy).toHaveBeenCalledWith('nav123456');
+        expect(translationClient.getFormTranslations).not.toHaveBeenCalled();
+      });
+    });
   });
 });

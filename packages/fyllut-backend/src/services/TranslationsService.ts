@@ -1,5 +1,11 @@
 import { HttpResponseError, fileUtil, translationClient, urlUtil } from '@navikt/skjemadigitalisering-shared-backend';
-import { I18nTranslations, Language, languageUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  FormioTranslationPayload,
+  I18nTranslations,
+  Language,
+  languageUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
+import fetch from 'node-fetch';
 import { FyllutBackendConfig } from '../config/types';
 
 const toFyllutLang = (lang: string): Language => {
@@ -45,6 +51,19 @@ class TranslationsService {
     if (!urlUtil.isValidPath(formPath)) {
       throw new Error(`Invalid formPath: ${formPath}`);
     }
+  }
+
+  async fetchTranslationsFromFormioApi(formPath: string): Promise<I18nTranslations> {
+    const { formioApiServiceUrl } = this._config;
+    this.validateFormPath(formPath);
+    const response = await fetch(`${formioApiServiceUrl}/language/submission?data.form=${formPath}&limit=1000`, {
+      method: 'GET',
+    });
+    if (response.ok) {
+      const translationsForForm = (await response.json()) as FormioTranslationPayload[];
+      return translationsForForm.reduce((acc, obj) => ({ ...acc, [obj.data.language]: { ...obj.data.i18n } }), {});
+    }
+    return {};
   }
 
   async fetchTranslationsFromFormsApi(formPath: string): Promise<I18nTranslations> {
@@ -123,7 +142,10 @@ class TranslationsService {
   async loadTranslation(formPath: string): Promise<I18nTranslations> {
     const { useFormsApiStaging, mocksEnabled, translationDir } = this._config;
     this.validateFormPath(formPath);
-    if (useFormsApiStaging || mocksEnabled) {
+    if (mocksEnabled) {
+      return this.fetchTranslationsFromFormioApi(formPath);
+    }
+    if (useFormsApiStaging) {
       return this.fetchTranslationsFromFormsApi(formPath);
     }
     return (await fileUtil.loadJsonFileFromDirectory(translationDir, formPath)) ?? {};
