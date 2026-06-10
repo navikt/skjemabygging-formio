@@ -1,41 +1,33 @@
 import { Enhet, supportedEnhetstyper } from '@navikt/skjemadigitalisering-shared-domain';
 import { Response } from 'express';
-import nock from 'nock';
 import { Mock } from 'vitest';
-import { config } from '../../config/config';
-import { mockNext } from '../../test/requestTestHelpers';
+import { navUnitService } from '../../services';
 import { mockRequest, mockResponse } from '../../test/testHelpers';
 import enhetslisteEndpoint from './enhetsliste';
 import enheter from './testdata/enheter';
 
-const { norg2 } = config;
+vi.mock('../../services', () => ({
+  navUnitService: {
+    getNavUnits: vi.fn(),
+  },
+}));
 
 const getEnhetslisteFromResponse = (res: Response): Enhet[] => (res.json as Mock).mock.calls[0][0];
 
 describe('[endpoint] enhetsliste', () => {
-  let fetchEnhetslisteMock: nock.Scope;
-
   afterEach(() => {
-    if (fetchEnhetslisteMock) {
-      fetchEnhetslisteMock.done();
-    }
+    vi.clearAllMocks();
   });
 
   describe('When proxy returns complete list containg all enheter', () => {
     beforeEach(() => {
-      fetchEnhetslisteMock = nock(norg2.url)
-        .get('/norg2/api/v1/enhet?enhetStatusListe=AKTIV')
-        .reply(200, JSON.stringify(enheter));
+      vi.mocked(navUnitService.getNavUnits).mockResolvedValue(enheter);
     });
 
     it('filters enheter with unsupported type', async () => {
-      const req = mockRequest({
-        headers: {
-          AzureAccessToken: '',
-        },
-      });
+      const req = mockRequest({});
       const res = mockResponse();
-      await enhetslisteEndpoint.get(req, res, mockNext());
+      await enhetslisteEndpoint.get(req, res);
       expect(res.json).toHaveBeenCalled();
 
       const enhetsliste = getEnhetslisteFromResponse(res);
@@ -47,13 +39,9 @@ describe('[endpoint] enhetsliste', () => {
     });
 
     it('only returns relevant data', async () => {
-      const req = mockRequest({
-        headers: {
-          AzureAccessToken: '',
-        },
-      });
+      const req = mockRequest({});
       const res = mockResponse();
-      await enhetslisteEndpoint.get(req, res, mockNext());
+      await enhetslisteEndpoint.get(req, res);
       expect(res.json).toHaveBeenCalled();
 
       const enhetsliste = getEnhetslisteFromResponse(res);
@@ -65,26 +53,14 @@ describe('[endpoint] enhetsliste', () => {
   });
 
   describe('When proxy returns status 500', () => {
-    beforeEach(() => {
-      fetchEnhetslisteMock = nock(norg2.url)
-        .get('/norg2/api/v1/enhet?enhetStatusListe=AKTIV')
-        .reply(500, JSON.stringify({ correlationId: '1234' }));
-    });
-
-    it('invokes next function with error', async () => {
-      const req = mockRequest({
-        headers: {
-          AzureAccessToken: '',
-        },
-      });
+    it('throws the service error', async () => {
+      const req = mockRequest({});
       const res = mockResponse();
-      const next = mockNext();
-      await enhetslisteEndpoint.get(req, res, next);
+      const error = new Error('upstream failed');
+      vi.mocked(navUnitService.getNavUnits).mockRejectedValueOnce(error);
+
+      await expect(enhetslisteEndpoint.get(req, res)).rejects.toBe(error);
       expect(res.json).not.toHaveBeenCalled();
-      expect(next).toHaveBeenCalledTimes(1);
-      const error = (next as Mock).mock.calls[0][0];
-      expect(error.message).toBe('Feil ved henting av enhetsliste');
-      expect(error.functional).toBe(true);
     });
   });
 

@@ -46,7 +46,7 @@ const {
 apiRouter.all('*path', rateLimiter(60000, 1000), idportenAuthHandler, envQualifier);
 apiRouter.use('/captcha', captchaRouter);
 apiRouter.get('/config', config.get);
-apiRouter.get('/enhetsliste', enhetsliste.get);
+apiRouter.get('/enhetsliste', tryCatch(enhetsliste.get));
 apiRouter.use('/forms', formsApiRouter);
 apiRouter.post('/foersteside', azureM2MSkjemabyggingProxy, forsteside.post);
 apiRouter.use('/documents', documentsRouter);
