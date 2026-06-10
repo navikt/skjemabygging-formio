@@ -59,10 +59,10 @@ apiRouter.delete('/send-inn/soknad/:innsendingsId', tokenxSendInn, sendInnSoknad
 apiRouter.post('/send-inn/soknad', tokenxSendInn, sendInnSoknad.post);
 apiRouter.put('/send-inn/soknad', tokenxSendInn, sendInnSoknad.put);
 apiRouter.put('/send-inn/utfyltsoknad', azurePdfGeneratorToken, tokenxSendInn, sendInnUtfyltSoknad.put);
-apiRouter.get('/common-codes/archive-subjects', kodeverkToken, commonCodes.getArchiveSubjects);
-apiRouter.get('/common-codes/currencies', kodeverkToken, commonCodes.getCurrencies);
-apiRouter.get('/common-codes/enhetstyper', kodeverkToken, commonCodes.getEnhetstyper);
-apiRouter.get('/common-codes/area-codes', kodeverkToken, commonCodes.getAreaCodes);
+apiRouter.get('/common-codes/archive-subjects', kodeverkToken, tryCatch(commonCodes.getArchiveSubjects));
+apiRouter.get('/common-codes/currencies', kodeverkToken, tryCatch(commonCodes.getCurrencies));
+apiRouter.get('/common-codes/enhetstyper', kodeverkToken, tryCatch(commonCodes.getNavUnitTypes));
+apiRouter.get('/common-codes/area-codes', kodeverkToken, tryCatch(commonCodes.getAreaCodes));
 apiRouter.post('/log/:level', rateLimiter(60000, 60), log.post);
 apiRouter.get('/health/status', status.get);
 apiRouter.get('/send-inn/prefill-data', tokenxSendInn, prefillData.get);

@@ -1,5 +1,6 @@
 import {
   createApplicationPdfService,
+  createCommonCodesService,
   createCoverPageService,
   createFormService,
   createMergeFileService,
@@ -25,6 +26,8 @@ const {
   translationDir,
   resourcesDir,
   mocksEnabled,
+  kodeverk,
+  clientId,
 } = config;
 
 const applicationPdfService = createApplicationPdfService({
@@ -37,6 +40,11 @@ const applicationPdfService = createApplicationPdfService({
 
 const coverPageService = createCoverPageService({
   baseUrl: skjemabyggingProxyUrl,
+});
+
+const commonCodesService = createCommonCodesService({
+  baseUrl: kodeverk.url,
+  consumerId: clientId,
 });
 
 const formService = createFormService({
@@ -78,6 +86,7 @@ export {
   applicationPdfService,
   applicationService,
   appMetrics,
+  commonCodesService,
   coverPageService,
   formService,
   mergeFileService,
