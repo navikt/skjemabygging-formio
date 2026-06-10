@@ -1,5 +1,7 @@
 import { PdfFormData, ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
+import { HttpResponseError } from '../../shared/http/http';
 import { logger } from '../../shared/logger/logger';
+import { teamLogger } from '../../shared/logger/teamLogger';
 import { MetricServiceConfig } from '../metrics/metricService';
 import applicationPdfClient from './applicationPdfClient';
 import { createApplicationPdfMetrics } from './applicationPdfMetrics';
@@ -22,6 +24,8 @@ interface CreateApplicationPdfServiceProps {
   client?: ApplicationPdfClient;
 }
 
+const getHttpResponseStatus = (error: unknown) => (error instanceof HttpResponseError ? error.status : undefined);
+
 const requirePdfFormData = (pdfFormData?: PdfFormData): PdfFormData => {
   if (pdfFormData && typeof pdfFormData === 'object') {
     return pdfFormData;
@@ -42,6 +46,7 @@ const createApplicationPdfService = ({
   const createPdf = async (props: CreatePdfProps) => {
     const { accessToken, pdfFormData } = props;
     const validatedPdfFormData = requirePdfFormData(pdfFormData);
+    const sanitizedPdfFormData = sanitizePdfFormData(validatedPdfFormData);
 
     applicationPdfMetrics.requests.increment();
     const timer = applicationPdfMetrics.duration.start();
@@ -50,7 +55,7 @@ const createApplicationPdfService = ({
       const pdf = await client.createPdf({
         baseUrl,
         accessToken,
-        body: sanitizePdfFormData(validatedPdfFormData),
+        body: sanitizedPdfFormData,
       });
 
       timer.success();
@@ -58,6 +63,14 @@ const createApplicationPdfService = ({
     } catch (error) {
       applicationPdfMetrics.failures.increment();
       timer.failure();
+      const isUnauthorized = error instanceof ResponseError && error.errorCode === 'UNAUTHORIZED';
+      if (!isUnauthorized) {
+        teamLogger.error('Could not create pdf', {
+          skjemanummer: validatedPdfFormData.skjemanummer ?? undefined,
+          httpResponseStatus: getHttpResponseStatus(error),
+          pdfRequestBody: JSON.stringify(sanitizedPdfFormData),
+        });
+      }
       logger.warn('Could not create pdf', { error });
       throw error;
     }
