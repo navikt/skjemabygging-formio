@@ -7,7 +7,6 @@ const {
   kodeverk,
   sendInnConfig,
   skjemabyggingProxyClientId,
-  pdlTokenScopeCluster,
   tilleggsstonaderConfig,
   familiePdfGeneratorScope,
   familiePdfDevToken,
@@ -18,7 +17,6 @@ const {
 const initApiConfig = () => {
   return {
     azureM2MSkjemabyggingProxy: azureTokenHandler(skjemabyggingProxyClientId!, 'AzureAccessToken'),
-    azureM2MPdl: azureTokenHandler(`${pdlTokenScopeCluster}.pdl.pdl-api`, 'AzureAccessToken'),
     azureM2MSendInn: azureTokenHandler(`${naisClusterName}.team-soknad.innsending-api`, 'AzureAccessToken', {
       token: sendInnConfig.devM2MToken,
     }),
@@ -26,7 +24,6 @@ const initApiConfig = () => {
     tokenxSendInn: tokenxHandler(sendInnConfig?.tokenxClientId, {
       token: sendInnConfig.devOBOToken,
     }),
-    tokenxPdl: tokenxHandler(`${pdlTokenScopeCluster}:pdl:pdl-api`),
     tokenxTilleggsstonader: tokenxHandler(tilleggsstonaderConfig.tokenxClientId),
     azurePdfGeneratorToken: azureTokenHandler(familiePdfGeneratorScope, 'PdfAccessToken', {
       token: familiePdfDevToken,
