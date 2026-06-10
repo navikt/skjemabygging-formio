@@ -119,15 +119,16 @@ describe('app', () => {
     skjemabyggingproxyScope.done();
   });
 
-  it('Preserves enhetsliste error response contract', async () => {
+  it('Returns the new enhetsliste error response contract', async () => {
     const norg2Scope = nock(norg2.url).get('/norg2/api/v1/enhet').query({ enhetStatusListe: 'AKTIV' }).reply(503, {
       message: 'upstream unavailable',
     });
 
-    const res = await request(createApp()).get('/fyllut/api/enhetsliste').expect('Content-Type', /json/).expect(500);
+    const res = await request(createApp()).get('/fyllut/api/enhetsliste').expect('Content-Type', /json/).expect(503);
 
-    expect(res.body.message).toBe('Feil ved henting av enhetsliste');
+    expect(res.body.errorCode).toBe('SERVICE_UNAVAILABLE');
     expect(res.body.correlation_id).not.toBeNull();
+    expect(res.body.body).toEqual({ message: 'upstream unavailable' });
 
     norg2Scope.done();
   });

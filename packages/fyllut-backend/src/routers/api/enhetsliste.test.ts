@@ -53,15 +53,13 @@ describe('[endpoint] enhetsliste', () => {
   });
 
   describe('When proxy returns status 500', () => {
-    it('throws the legacy route error', async () => {
+    it('throws the service error', async () => {
       const req = mockRequest({});
       const res = mockResponse();
-      vi.mocked(navUnitService.getNavUnits).mockRejectedValueOnce(new Error('upstream failed'));
+      const error = new Error('upstream failed');
+      vi.mocked(navUnitService.getNavUnits).mockRejectedValueOnce(error);
 
-      await expect(enhetslisteEndpoint.get(req, res)).rejects.toMatchObject({
-        message: 'Feil ved henting av enhetsliste',
-        functional: true,
-      });
+      await expect(enhetslisteEndpoint.get(req, res)).rejects.toBe(error);
       expect(res.json).not.toHaveBeenCalled();
     });
   });
