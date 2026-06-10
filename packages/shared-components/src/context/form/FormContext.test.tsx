@@ -1,6 +1,6 @@
-import { NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
+import { FyllutFrontendConfig, NavFormType } from '@navikt/skjemadigitalisering-shared-domain';
 import { render, screen } from '@testing-library/react';
-import { act } from 'react-dom/test-utils';
+import { act } from 'react';
 import { MemoryRouter } from 'react-router';
 import { http } from '../../index';
 import { AppConfigProvider } from '../config/configContext';
@@ -44,6 +44,22 @@ describe('prefillDataContext', () => {
   } as unknown as NavFormType;
 
   const submissionMethod = 'digital';
+  const config: FyllutFrontendConfig = {
+    FEATURE_TOGGLES: {},
+    featureToggles: {},
+    isProdGcp: false,
+    isDevelopment: true,
+    isDelingslenke: false,
+    isLoggedIn: false,
+    mocksEnabled: true,
+    gitVersion: 'test',
+    applicationName: 'fyllut',
+    loggerConfig: {
+      enabled: false,
+      browserOnly: false,
+      logLevel: 'info',
+    },
+  };
 
   afterEach(() => {
     vi.clearAllMocks();
@@ -60,7 +76,7 @@ describe('prefillDataContext', () => {
             featureToggles={{}}
             http={mockHttp as unknown as typeof http}
             baseUrl={'http://test.example.no'}
-            config={{ isTest: true }}
+            config={config}
           >
             <MemoryRouter>
               <FormProvider form={formWithPrefillKeys}>
@@ -97,7 +113,7 @@ describe('prefillDataContext', () => {
             featureToggles={{}}
             http={mockHttp as unknown as typeof http}
             baseUrl={'http://test.example.no'}
-            config={{ isTest: true }}
+            config={config}
           >
             <MemoryRouter>
               <FormProvider form={formWithoutPrefillKeys}>

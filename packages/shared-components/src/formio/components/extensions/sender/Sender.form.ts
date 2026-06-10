@@ -11,7 +11,7 @@ const senderForm = () => {
     display([
       editFormDisplay.label({
         label: 'Ledetekst fødselsnummer / d-nummer',
-        key: 'labels.nationalIdentityNumber',
+        key: 'customLabels.nationalIdentityNumber',
         customConditional: 'show = row.senderRole === "person"',
       }),
       editFormDisplay.description({
@@ -21,17 +21,17 @@ const senderForm = () => {
       }),
       editFormDisplay.label({
         label: 'Ledetekst fornavn',
-        key: 'labels.firstName',
+        key: 'customLabels.firstName',
         customConditional: 'show = row.senderRole === "person"',
       }),
       editFormDisplay.label({
         label: 'Ledetekst etternavn',
-        key: 'labels.surname',
+        key: 'customLabels.surname',
         customConditional: 'show = row.senderRole === "person"',
       }),
       editFormDisplay.label({
         label: 'Ledetekst organisasjonsnummer',
-        key: 'labels.organizationNumber',
+        key: 'customLabels.organizationNumber',
         customConditional: 'show = row.senderRole === "organization"',
       }),
       editFormDisplay.description({
@@ -41,7 +41,7 @@ const senderForm = () => {
       }),
       editFormDisplay.label({
         label: 'Ledetekst virksomhetsnavn',
-        key: 'labels.organizationName',
+        key: 'customLabels.organizationName',
         customConditional: 'show = row.senderRole === "organization"',
       }),
     ]),

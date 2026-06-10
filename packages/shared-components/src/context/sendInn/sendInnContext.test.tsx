@@ -1,9 +1,10 @@
-import { NavFormType, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import { FyllutFrontendConfig, NavFormType, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { act, useEffect } from 'react';
 import { MemoryRouter } from 'react-router';
 import { vi } from 'vitest';
-import { http } from '../../index';
+import { http, useAppConfig } from '../../index';
 import { AppConfigProvider } from '../config/configContext';
 import { FormProvider } from '../form/FormContext';
 import { SendInnProvider, useSendInn } from './sendInnContext';
@@ -27,7 +28,11 @@ const mockHttp = {
 
 describe('sendInnContext', () => {
   const TestComponent = ({ submission }) => {
+    const { setAttachmentPageEnabled } = useAppConfig();
     const { updateMellomlagring, deleteMellomlagring, submitSoknad, innsendingsId } = useSendInn();
+    useEffect(() => {
+      setAttachmentPageEnabled?.(false);
+    }, [setAttachmentPageEnabled]);
 
     return (
       <>
@@ -49,32 +54,50 @@ describe('sendInnContext', () => {
   const submission = { data: { question: 'answer' } } as unknown as Submission;
   const submissionMethod = 'digital';
   const headers = {};
+  const config: FyllutFrontendConfig = {
+    FEATURE_TOGGLES: {},
+    featureToggles: {},
+    isProdGcp: false,
+    isDevelopment: true,
+    isDelingslenke: false,
+    isLoggedIn: false,
+    mocksEnabled: true,
+    gitVersion: 'test',
+    applicationName: 'fyllut',
+    loggerConfig: {
+      enabled: false,
+      browserOnly: false,
+      logLevel: 'info',
+    },
+  };
 
   afterEach(() => {
     vi.clearAllMocks();
   });
 
   describe('When mellomlagring is enabled', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       mockHttp.post.mockReturnValue({ innsendingsId });
-      render(
-        <AppConfigProvider
-          app={'fyllut'}
-          submissionMethod={submissionMethod}
-          featureToggles={{}}
-          http={mockHttp as unknown as typeof http}
-          baseUrl={'http://test.example.no'}
-          config={{ isTest: true, loggerConfig: { enabled: false } }}
-        >
-          <MemoryRouter>
-            <FormProvider form={form}>
-              <SendInnProvider>
-                <TestComponent submission={submission} />
-              </SendInnProvider>
-            </FormProvider>
-          </MemoryRouter>
-        </AppConfigProvider>,
-      );
+      await act(async () => {
+        render(
+          <AppConfigProvider
+            app={'fyllut'}
+            submissionMethod={submissionMethod}
+            featureToggles={{}}
+            http={mockHttp as unknown as typeof http}
+            baseUrl={'http://test.example.no'}
+            config={config}
+          >
+            <MemoryRouter>
+              <FormProvider form={form}>
+                <SendInnProvider>
+                  <TestComponent submission={submission} />
+                </SendInnProvider>
+              </FormProvider>
+            </MemoryRouter>
+          </AppConfigProvider>,
+        );
+      });
     });
 
     describe('updateMellomlagring', () => {

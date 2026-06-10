@@ -94,9 +94,7 @@ describe('Checkbox', () => {
       cy.findByRole('checkbox', { name: 'Required checkbox' }).check();
       cy.findByRole('checkbox', { name: 'Checkbox description (valgfritt)' }).check();
 
-      cy.clickSaveAndContinue();
-
-      cy.submitMellomlagring((req) => {
+      cy.updateMellomlagring((req) => {
         const {
           submission: { data },
         } = req.body;
@@ -109,7 +107,7 @@ describe('Checkbox', () => {
       });
 
       cy.clickSaveAndContinue();
-      cy.wait('@submitMellomlagring');
+      cy.wait('@updateMellomlagring');
     });
 
     it('should load mellomlagring', () => {

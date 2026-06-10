@@ -605,6 +605,7 @@
           "type": "attachment",
           "key": "annenDokumentasjon",
           "otherDocumentation": true,
+          "attachmentType": "other",
           "input": true,
           "clearOnHide": true,
           "validate": {
@@ -623,7 +624,7 @@
           "values": [
             {
               "value": "nei",
-              "label": "Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved."
+              "label": "Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved"
             },
             {
               "value": "leggerVedNaa",
@@ -739,6 +740,7 @@
           },
           "customConditional": "show = data.hvaSokerDuStotteTil.value === \"briller\"",
           "type": "attachment",
+          "attachmentType": "default",
           "input": true,
           "validateOn": "blur",
           "tableView": false,

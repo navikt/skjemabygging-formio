@@ -4,15 +4,23 @@ import { expect } from 'chai';
 const downloadPdf = (submissionType: 'digital' | 'paper' | 'digitalnologin' = 'paper') => {
   cy.findByRole('link', { name: /Oppsummering|Summary/ }).click();
   cy.findByRole('heading', { name: /Oppsummering|Summary/ }).shouldBeVisible();
-  if (submissionType === 'digital') {
-    cy.clickSaveAndContinue();
-  } else if (submissionType === 'digitalnologin') {
+  if (submissionType === 'digitalnologin' || submissionType === 'digital') {
     cy.clickSendNav();
   } else {
-    cy.findByRole('link', { name: 'Instruksjoner for innsending' }).click();
+    cy.clickDownloadInstructions();
     cy.findByRole('button', { name: /Last ned skjema|Download form/ }).click();
   }
   cy.wait('@downloadPdf');
+};
+
+const fillInAttachmentPage = () => {
+  cy.findByRole('link', { name: /Vedlegg/ }).click();
+  cy.findByRole('group', { name: /Vedlegg/ }).within(() =>
+    cy.findByLabelText(/Jeg har levert denne dokumentasjonen tidligere/).check(),
+  );
+  cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() =>
+    cy.findByLabelText('Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved').check(),
+  );
 };
 
 describe('Pdf', () => {
@@ -43,10 +51,11 @@ describe('Pdf', () => {
       cy.findByRole('checkbox', { name: /Avkryssingsboks 3/ }).click();
       cy.clickSaveAndContinue();
       cy.findByRole('heading', { name: 'Oppsummering' }).shouldBeVisible();
+      cy.submitApplication();
 
-      cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad').as('submitMellomlagring');
       cy.clickSendNav();
-      cy.wait('@submitMellomlagring');
+
+      cy.wait('@submitApplication');
     });
 
     it('pdfFormData get populated with the correct number of pages', () => {
@@ -59,12 +68,11 @@ describe('Pdf', () => {
 
       cy.findByRole('heading', { name: 'Page 1' }).shouldBeVisible();
       cy.clickSaveAndContinue();
-
-      cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad').as('submitMellomlagring');
+      cy.submitApplication();
       cy.findByRole('heading', { name: 'Oppsummering' }).shouldBeVisible();
       cy.clickSendNav();
 
-      cy.wait('@submitMellomlagring');
+      cy.wait('@submitApplication');
     });
 
     it('pdfFormData get populated with the correct number of pages, paper', () => {
@@ -110,6 +118,8 @@ describe('Pdf', () => {
         });
         cy.findByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).type('20905995783');
         cy.clickNextStep();
+
+        fillInAttachmentPage();
 
         cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application').as('downloadPdf');
 
@@ -230,14 +240,7 @@ describe('Pdf', () => {
         cy.findByRole('heading', { name: 'Andre' }).shouldBeVisible();
         cy.findByRole('checkbox', { name: /Jeg bekrefter/ }).check();
 
-        cy.findByRole('link', { name: 'Vedlegg' }).click();
-        cy.findByRole('heading', { name: 'Vedlegg' }).shouldBeVisible();
-        cy.findByRole('group', { name: /Vedlegg/ }).within(() => {
-          cy.findByRole('radio', { name: 'Jeg ettersender dokumentasjonen senere' }).check();
-        });
-        cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
-          cy.findByRole('radio', { name: 'Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved' }).check();
-        });
+        fillInAttachmentPage();
 
         cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application').as('downloadPdf');
 
@@ -266,7 +269,9 @@ describe('Pdf', () => {
           cy.findByRole('radio', { name: 'Ingen relevant aktivitet registrert på meg' }).check();
         });
 
-        cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad').as('downloadPdf');
+        fillInAttachmentPage();
+
+        cy.intercept('POST', '/fyllut/api/send-inn/digital-application/*').as('downloadPdf');
 
         downloadPdf('digital');
       });
@@ -383,7 +388,9 @@ describe('Pdf', () => {
           cy.findByRole('radio', { name: 'Ingen relevant aktivitet registrert på meg' }).check();
         });
 
-        cy.intercept('PUT', '/fyllut/api/send-inn/utfyltsoknad').as('downloadPdf');
+        fillInAttachmentPage();
+
+        cy.intercept('POST', '/fyllut/api/send-inn/digital-application/*').as('downloadPdf');
 
         downloadPdf('digital');
       });
@@ -418,6 +425,8 @@ describe('Pdf', () => {
         cy.findByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).type('20905995783');
 
         cy.clickNextStep();
+
+        fillInAttachmentPage();
 
         cy.intercept('POST', '/fyllut/api/send-inn/nologin-application').as('downloadPdf');
 
@@ -513,6 +522,8 @@ describe('Pdf', () => {
         cy.findByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).type('20905995783');
         cy.clickNextStep();
 
+        fillInAttachmentPage();
+
         cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application').as('downloadPdf');
 
         downloadPdf();
@@ -533,6 +544,15 @@ describe('Pdf', () => {
           },
         );
         cy.findByRole('textbox', { name: /Norwegian national identification number or D number/ }).type('20905995783');
+        cy.clickNextStep();
+
+        cy.findByRole('link', { name: /Attachments/ }).click();
+        cy.findByRole('group', { name: /Attachments/ }).within(() =>
+          cy.findByLabelText(/I have provided this documentation previously/).check(),
+        );
+        cy.findByRole('group', { name: /Other documentation/ }).within(() =>
+          cy.findByLabelText('No, I have no additional documentation to attach').check(),
+        );
         cy.clickNextStep();
 
         cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application').as('downloadPdf');
@@ -608,6 +628,8 @@ describe('Pdf', () => {
         },
       );
 
+      fillInAttachmentPage();
+
       cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application').as('downloadPdf');
       downloadPdf();
       cy.findByText(/Nedlastingen er ferdig/).shouldBeVisible();
@@ -630,6 +652,9 @@ describe('Pdf', () => {
         });
         cy.findByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).type('20905995783');
         cy.clickNextStep();
+
+        fillInAttachmentPage();
+
         cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
           req.on('response', (res) => {
             expect(res.statusCode).to.eq(expectedHttpStatusCode);

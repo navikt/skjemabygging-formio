@@ -42,6 +42,7 @@ import url from './util/url/url';
 
 jss.setup(preset());
 
+export type { FrontendConfig } from './context/config/configContext';
 export {
   AppConfigProvider,
   b64toBlob,

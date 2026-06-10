@@ -34,7 +34,7 @@ const isPortFree = (port) =>
       server.close();
       resolve(true);
     });
-    server.listen(port, '127.0.0.1');
+    server.listen(port);
   });
 
 const waitForPort = (port, timeout = 60000) =>
@@ -67,12 +67,15 @@ const getFreePorts = async (count, start = 3440) => {
 
 const isWindows = process.platform === 'win32';
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const localBin = (cwd, name) => resolve(cwd, 'node_modules', '.bin', isWindows ? `${name}.cmd` : name);
+const nodeExecutable = process.execPath;
+const rootViteCliPath = resolve(repoRoot, 'node_modules/vite/bin/vite.js');
+const mocksTsNodeCliPath = resolve(repoRoot, 'mocks/node_modules/ts-node/dist/bin.js');
 const byggerCypressRuntimePath = resolve(repoRoot, 'packages/bygger/.runtime/cypress.mocks.json');
 const fyllutCypressRuntimePath = resolve(repoRoot, 'packages/fyllut/.runtime/cypress.mocks.json');
 const [target, ...args] = process.argv.slice(2);
-const shouldWriteRuntimeConfig = !args.includes('--no-runtime-config');
-const unknownArgs = args.filter((arg) => arg !== '--no-runtime-config');
+const normalizedArgs = args.filter((arg) => arg !== '--');
+const shouldWriteRuntimeConfig = !normalizedArgs.includes('--no-runtime-config');
+const unknownArgs = normalizedArgs.filter((arg) => arg !== '--no-runtime-config');
 
 const configs = {
   fyllut: async () => {
@@ -97,8 +100,9 @@ const configs = {
     return {
       commands: [
         [
-          localBin(resolve(repoRoot, 'mocks'), 'ts-node'),
+          nodeExecutable,
           [
+            mocksTsNodeCliPath,
             'mocks/server.ts',
             '--no-plugins.inquirerCli.enabled',
             `--server.port=${mockPort}`,
@@ -108,14 +112,14 @@ const configs = {
           resolve(repoRoot, 'mocks'),
         ],
         [
-          localBin(repoRoot, 'vite'),
-          ['--clearScreen', 'false', '--port', String(backendPort)],
+          nodeExecutable,
+          [rootViteCliPath, '--clearScreen', 'false', '--port', String(backendPort)],
           fyllutBackendEnv,
           resolve(repoRoot, 'packages/fyllut-backend'),
         ],
         [
-          localBin(repoRoot, 'vite'),
-          ['--clearScreen', 'false', '--port', String(frontendPort)],
+          nodeExecutable,
+          [rootViteCliPath, '--clearScreen', 'false', '--port', String(frontendPort)],
           { BACKEND_PORT: String(backendPort), NODE_ENV: 'development' },
           resolve(repoRoot, 'packages/fyllut'),
         ],
@@ -163,14 +167,14 @@ const configs = {
     return {
       commands: [
         [
-          localBin(repoRoot, 'vite'),
-          ['--clearScreen', 'false', '--port', String(backendPort)],
+          nodeExecutable,
+          [rootViteCliPath, '--clearScreen', 'false', '--port', String(backendPort)],
           { NODE_ENV: 'development' },
           resolve(repoRoot, 'packages/bygger-backend'),
         ],
         [
-          localBin(repoRoot, 'vite'),
-          ['--clearScreen', 'false', '--port', String(frontendPort)],
+          nodeExecutable,
+          [rootViteCliPath, '--clearScreen', 'false', '--port', String(frontendPort)],
           { BACKEND_PORT: String(backendPort), NODE_ENV: 'development' },
           resolve(repoRoot, 'packages/bygger'),
         ],

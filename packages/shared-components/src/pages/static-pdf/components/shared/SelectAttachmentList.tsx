@@ -16,6 +16,7 @@ const SelectAttachmentList = ({ submissionPath, attachments }: Props) => {
       legend={TEXTS.statiske.attachment.title}
       description={TEXTS.statiske.attachment.selectAttachments}
       submissionPath={submissionPath}
+      validators={{ required: false }}
       values={attachments?.map(({ key, label }) => {
         return {
           value: key,

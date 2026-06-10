@@ -18,6 +18,8 @@ import NavFormHelper from '../../components/nav-form/NavFormHelper';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
+import { useSendInn } from '../../context/sendInn/sendInnContext';
+import { SkeletonList } from '../../index';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
 import {
   findFirstValidationErrorInAttachmentPanel,
@@ -38,12 +40,18 @@ export function SummaryPage() {
     activeComponents,
     activeAttachmentUploadsPanel,
   } = useForm();
+  const { isMellomlagringAvailable, isMellomlagringReady, mellomlagringError } = useSendInn();
   const { declarationType, declarationText } = form.properties;
   const [declaration, setDeclaration] = useState<boolean | undefined>(undefined);
 
   const [panelValidationList, setPanelValidationList] = useState<PanelValidation[] | undefined>();
+  const isMellomlagringLoading = isMellomlagringAvailable && !isMellomlagringReady && !mellomlagringError;
 
   useEffect(() => {
+    if (isMellomlagringLoading) return;
+
+    let canceled = false;
+
     const initializePanelValidation = async () => {
       const submissionCopy: Submission = JSON.parse(JSON.stringify(submission || {}));
 
@@ -95,7 +103,9 @@ export function SummaryPage() {
         }
       }
 
-      setPanelValidationList(panelValidations);
+      if (!canceled) {
+        setPanelValidationList(panelValidations);
+      }
       webform.destroy(true);
 
       if (formioSummary) {
@@ -106,7 +116,11 @@ export function SummaryPage() {
     if (availableLanguages.length > 0) {
       initializePanelValidation();
     }
-  }, [form, submission, appConfig, prefillData, translate, availableLanguages]);
+
+    return () => {
+      canceled = true;
+    };
+  }, [form, submission, appConfig, prefillData, translate, availableLanguages, isMellomlagringLoading]);
 
   useEffect(() => {
     setTitle(TEXTS.statiske.summaryPage.title);
@@ -133,6 +147,10 @@ export function SummaryPage() {
   };
 
   const hasValidationErrors = panelValidationList?.some((panelValidation) => panelValidation.hasValidationErrors);
+
+  if (isMellomlagringLoading) {
+    return <SkeletonList size={10} height={60} />;
+  }
 
   return (
     <VStack gap="space-32">

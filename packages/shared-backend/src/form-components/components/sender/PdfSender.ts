@@ -3,7 +3,7 @@ import { PdfComponentProps } from '../../types';
 
 const PdfSender = (props: PdfComponentProps): PdfData[] | null => {
   const { component, submissionPath, submission, translate } = props;
-  const { senderRole, labels = {} } = component;
+  const { senderRole, customLabels = {} } = component;
   const value = formComponentUtils.getPdfSubmissionValue(submissionPath, submission);
 
   if (value === undefined) {
@@ -14,20 +14,23 @@ const PdfSender = (props: PdfComponentProps): PdfData[] | null => {
 
   if (senderRole === 'organization') {
     if (value.organization?.number) {
-      result.push({ label: translate(labels.organizationNumber), verdi: value.organization.number });
+      result.push({ label: translate(customLabels.organizationNumber), verdi: value.organization.number });
     }
     if (value.organization?.name) {
-      result.push({ label: translate(labels.organizationName), verdi: value.organization.name });
+      result.push({ label: translate(customLabels.organizationName), verdi: value.organization.name });
     }
   } else {
     if (value.person?.nationalIdentityNumber) {
-      result.push({ label: translate(labels.nationalIdentityNumber), verdi: value.person.nationalIdentityNumber });
+      result.push({
+        label: translate(customLabels.nationalIdentityNumber),
+        verdi: value.person.nationalIdentityNumber,
+      });
     }
     if (value.person?.firstName) {
-      result.push({ label: translate(labels.firstName), verdi: value.person.firstName });
+      result.push({ label: translate(customLabels.firstName), verdi: value.person.firstName });
     }
     if (value.person?.surname) {
-      result.push({ label: translate(labels.surname), verdi: value.person.surname });
+      result.push({ label: translate(customLabels.surname), verdi: value.person.surname });
     }
   }
 
