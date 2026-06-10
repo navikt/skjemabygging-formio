@@ -13,7 +13,10 @@ interface GetFormsConfig {
 
 type FormService = {
   getForms: <S extends FormSelectType[]>(props: { select: S }) => Promise<Array<Pick<Form, S[number]>>>;
-  getForm: <S extends FormSelectType[]>(props: { formPath: string; select: S }) => Promise<Pick<Form, S[number]>>;
+  getForm: {
+    <S extends FormSelectType[]>(props: { formPath: string; select: S }): Promise<Pick<Form, S[number]>>;
+    (props: { formPath: string; select?: undefined }): Promise<Form>;
+  };
 };
 
 interface CreateFormServiceProps extends GetFormsConfig {
@@ -41,12 +44,12 @@ const createFormService = ({
     return navForms.map(formioFormsApiUtils.mapNavFormToForm) as Array<Pick<Form, (typeof select)[number]>>;
   };
 
-  const getForm: FormService['getForm'] = async ({ formPath, select }) => {
-    if (!select) {
-      throw new ResponseError('BAD_REQUEST', 'Select properties are required to fetch form');
-    }
-
+  const getForm = (async ({ formPath, select }: { formPath: string; select?: FormSelectType[] }) => {
     if (formsApiStaging || mocksEnabled) {
+      if (!select) {
+        return client.getForm<Form>({ baseUrl, formPath });
+      }
+
       return client.getForm<Pick<Form, (typeof select)[number]>>({ baseUrl, formPath, select: select.join(',') });
     }
 
@@ -54,8 +57,14 @@ const createFormService = ({
     if (!form) {
       throw new ResponseError('NOT_FOUND', `Form with path ${formPath} not found in directory ${formsLocation}`);
     }
-    return formioFormsApiUtils.mapNavFormToForm(form) as Pick<Form, (typeof select)[number]>;
-  };
+
+    const mappedForm = formioFormsApiUtils.mapNavFormToForm(form);
+    if (!select) {
+      return mappedForm;
+    }
+
+    return mappedForm as Pick<Form, (typeof select)[number]>;
+  }) as FormService['getForm'];
 
   return {
     getForms,
