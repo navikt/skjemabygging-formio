@@ -21,6 +21,7 @@ export { createRecipientService } from './recipient/recipientService';
 export type { RecipientService } from './recipient/recipientService';
 export { createStaticPdfService } from './static-pdf/staticPdfService';
 export type { StaticPdfService } from './static-pdf/staticPdfService';
+export { default as translationClient } from './translation/translationClient';
 export { createTranslationService } from './translation/translationService';
 export type { TranslationService } from './translation/translationService';
 
