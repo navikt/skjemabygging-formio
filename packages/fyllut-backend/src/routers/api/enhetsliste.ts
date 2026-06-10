@@ -1,10 +1,8 @@
 import { correlator } from '@navikt/skjemadigitalisering-shared-backend';
 import { supportedEnhetstyper } from '@navikt/skjemadigitalisering-shared-domain';
-import fetch from 'node-fetch';
-import { config } from '../../config/config';
-import { toJsonOrThrowError } from '../../utils/errorHandling';
-
-const { norg2, clientId } = config;
+import { Request, Response } from 'express';
+import { navUnitService } from '../../services';
+import { HttpError } from '../../utils/errors/HttpError';
 
 const isEnhetstypeSupported = (enhet) => enhet.enhetNr !== '0000' && supportedEnhetstyper.includes(enhet.type);
 const pickRelevantProps = (enhet) => {
@@ -12,19 +10,23 @@ const pickRelevantProps = (enhet) => {
   return { enhetId, navn, enhetNr, type };
 };
 
+const createEnhetslisteError = () => {
+  const error = new HttpError('Feil ved henting av enhetsliste');
+  error.functional = true;
+  error.correlation_id = correlator.getId();
+  return error;
+};
+
 const enhetsliste = {
-  get: (req, res, next) => {
-    return fetch(`${norg2.url}/norg2/api/v1/enhet?enhetStatusListe=AKTIV`, {
-      headers: {
-        'x-correlation-id': correlator.getId() ?? '',
-        consumerId: clientId,
-      },
-    })
-      .then(toJsonOrThrowError('Feil ved henting av enhetsliste', true))
-      .then((enhetsliste) => res.json(enhetsliste.filter(isEnhetstypeSupported).map(pickRelevantProps)))
-      .catch((error) => {
-        next(error);
-      });
+  get: async (_req: Request, res: Response) => {
+    let navUnits;
+    try {
+      navUnits = await navUnitService.getNavUnits();
+    } catch {
+      throw createEnhetslisteError();
+    }
+
+    return res.json(navUnits.filter(isEnhetstypeSupported).map(pickRelevantProps));
   },
 };
 

@@ -11,7 +11,7 @@ vi.mock('./dekorator', () => ({
   createRedirectUrl: () => '',
 }));
 
-const { sendInnConfig, tokenx: tokenxConfig, formioApiServiceUrl, formsApiUrl } = config;
+const { sendInnConfig, tokenx: tokenxConfig, formioApiServiceUrl, formsApiUrl, norg2 } = config;
 const filePathSoknad = path.join(process.cwd(), '/src/test/testdata/documents/test-skjema.pdf');
 const soknadPdf = readFileSync(filePathSoknad);
 
@@ -117,6 +117,19 @@ describe('app', () => {
 
     azureOpenidScope.done();
     skjemabyggingproxyScope.done();
+  });
+
+  it('Preserves enhetsliste error response contract', async () => {
+    const norg2Scope = nock(norg2.url).get('/norg2/api/v1/enhet').query({ enhetStatusListe: 'AKTIV' }).reply(503, {
+      message: 'upstream unavailable',
+    });
+
+    const res = await request(createApp()).get('/fyllut/api/enhetsliste').expect('Content-Type', /json/).expect(500);
+
+    expect(res.body.message).toBe('Feil ved henting av enhetsliste');
+    expect(res.body.correlation_id).not.toBeNull();
+
+    norg2Scope.done();
   });
 
   it('Performs TokenX exchange and retrieves pdf from pdf generator before calling SendInn', async () => {

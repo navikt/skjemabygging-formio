@@ -3,6 +3,7 @@ import {
   createCoverPageService,
   createFormService,
   createMergeFileService,
+  createNavUnitService,
   createRecipientService,
   createStaticPdfService,
   createTranslationService,
@@ -25,6 +26,8 @@ const {
   translationDir,
   resourcesDir,
   mocksEnabled,
+  norg2,
+  clientId,
 } = config;
 
 const applicationPdfService = createApplicationPdfService({
@@ -48,6 +51,11 @@ const formService = createFormService({
 
 const mergeFileService = createMergeFileService({
   baseUrl: `${sendInnConfig.host}${sendInnConfig.paths.mergeFiles}`,
+});
+
+const navUnitService = createNavUnitService({
+  baseUrl: norg2.url,
+  consumerId: clientId,
 });
 
 const recipientService = createRecipientService({
@@ -81,6 +89,7 @@ export {
   coverPageService,
   formService,
   mergeFileService,
+  navUnitService,
   nologinTokenService,
   oldFormService,
   recipientService,
