@@ -21,7 +21,6 @@ kodeverk:
 forms-source: "static"
 nologin:
   token-lifetime-hours: 6
-pdl-token-scope-cluster: "prod-fss"
 environmentVars: []
 azure:
   application:
@@ -48,9 +47,6 @@ accessPolicy:
       - application: tilleggsstonader-integrasjoner
         namespace: tilleggsstonader
         cluster: prod-gcp
-      - application: pdl-api
-        namespace: pdl
-        cluster: prod-fss
       - application: nav-dekoratoren
         namespace: personbruker
         cluster: prod-gcp
