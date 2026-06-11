@@ -91,10 +91,13 @@ const validateAttachment = (attachment: Attachment, validationId: string): Attac
   return attachment;
 };
 
+const removeSpaces = (value: string): string => formatUtils.removeAllSpaces(value);
+const removeOptionalSpaces = (value?: string): string | undefined => (value ? removeSpaces(value) : value);
+
 const extractBruker = (form: Form, submission: Submission): BrukerDto | undefined => {
   const identityNumber = yourInformationUtils.getIdentityNumber(form, submission);
   if (identityNumber) {
-    return { id: formatUtils.removeAllSpaces(identityNumber), idType: 'FNR' };
+    return { id: removeSpaces(identityNumber), idType: 'FNR' };
   }
   return undefined;
 };
@@ -105,15 +108,13 @@ const extractAvsender = (form: Form, submission: Submission): AvsenderId | undef
     if (sender.person) {
       return {
         idType: 'FNR',
-        id: sender.person?.nationalIdentityNumber
-          ? formatUtils.removeAllSpaces(sender.person.nationalIdentityNumber)
-          : sender.person?.nationalIdentityNumber,
+        id: removeOptionalSpaces(sender.person?.nationalIdentityNumber),
         navn: `${sender.person?.firstName} ${sender.person?.surname}`,
       };
     } else if (sender.organization) {
       return {
         idType: 'ORGNR',
-        id: sender.organization?.number ? formatUtils.removeAllSpaces(sender.organization.number) : sender.organization?.number,
+        id: removeOptionalSpaces(sender.organization?.number),
         navn: sender.organization?.name,
       };
     }
@@ -133,7 +134,7 @@ const extractAvsenderFromYourInformation = (form: Form, submission: Submission):
   if (yourInformation?.fornavn && yourInformation?.etternavn) {
     const navn = `${yourInformation.fornavn} ${yourInformation.etternavn}`;
     if (yourInformation.identitet?.identitetsnummer) {
-      return { id: formatUtils.removeAllSpaces(yourInformation.identitet.identitetsnummer), idType: 'FNR', navn };
+      return { id: removeSpaces(yourInformation.identitet.identitetsnummer), idType: 'FNR', navn };
     }
     return { navn };
   }

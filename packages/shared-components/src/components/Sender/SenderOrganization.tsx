@@ -1,6 +1,6 @@
 import { TextField } from '@navikt/ds-react';
 import { formatUtils, SenderProps, SubmissionSender } from '@navikt/skjemadigitalisering-shared-domain';
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent, FocusEvent } from 'react';
 import { useComponentUtils } from '../../context/component/componentUtilsContext';
 import useComponentStyle from '../../util/styles/useComponentStyle';
 import InnerHtml from '../inner-html/InnerHtml';
@@ -11,16 +11,22 @@ const SenderOrganization = ({ customLabels, descriptions, value, onChange, readO
   });
   const { translate, addRef, getComponentError } = useComponentUtils();
 
-  const handleChange = (field: string, e: ChangeEvent<HTMLInputElement>) => {
-    const nextValue = field === 'number' ? formatUtils.removeAllSpaces(e.currentTarget.value) : e.currentTarget.value;
-
+  const setOrganizationValue = (field: string, fieldValue: string) => {
     onChange({
       ...value,
       organization: {
         ...value?.organization,
-        [field]: nextValue,
+        [field]: fieldValue,
       },
     } as SubmissionSender);
+  };
+
+  const handleChange = (field: string, e: ChangeEvent<HTMLInputElement>) => {
+    setOrganizationValue(field, e.currentTarget.value);
+  };
+
+  const handleOrganizationNumberBlur = (e: FocusEvent<HTMLInputElement>) => {
+    setOrganizationValue('number', formatUtils.removeAllSpaces(e.currentTarget.value));
   };
 
   return (
@@ -31,6 +37,7 @@ const SenderOrganization = ({ customLabels, descriptions, value, onChange, readO
           description={<InnerHtml content={translate(descriptions.organizationNumber)} />}
           value={value?.organization?.number ?? ''}
           onChange={(e) => handleChange('number', e)}
+          onBlur={handleOrganizationNumberBlur}
           ref={(ref) => addRef('sender:organizationNumber', ref)}
           error={getComponentError('sender:organizationNumber')}
           readOnly={readOnly}
