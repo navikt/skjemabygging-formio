@@ -1,5 +1,5 @@
 import { TextField } from '@navikt/ds-react';
-import { SenderProps, SubmissionSender } from '@navikt/skjemadigitalisering-shared-domain';
+import { formatUtils, SenderProps, SubmissionSender } from '@navikt/skjemadigitalisering-shared-domain';
 import type { ChangeEvent } from 'react';
 import { useComponentUtils } from '../../context/component/componentUtilsContext';
 import useComponentStyle from '../../util/styles/useComponentStyle';
@@ -12,11 +12,13 @@ const SenderOrganization = ({ customLabels, descriptions, value, onChange, readO
   const { translate, addRef, getComponentError } = useComponentUtils();
 
   const handleChange = (field: string, e: ChangeEvent<HTMLInputElement>) => {
+    const nextValue = field === 'number' ? formatUtils.removeAllSpaces(e.currentTarget.value) : e.currentTarget.value;
+
     onChange({
       ...value,
       organization: {
         ...value?.organization,
-        [field]: e.currentTarget.value,
+        [field]: nextValue,
       },
     } as SubmissionSender);
   };

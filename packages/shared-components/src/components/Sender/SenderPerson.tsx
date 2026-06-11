@@ -1,5 +1,5 @@
 import { TextField } from '@navikt/ds-react';
-import { SenderProps, SubmissionSender } from '@navikt/skjemadigitalisering-shared-domain';
+import { formatUtils, SenderProps, SubmissionSender } from '@navikt/skjemadigitalisering-shared-domain';
 import { useComponentUtils } from '../../context/component/componentUtilsContext';
 import useComponentStyle from '../../util/styles/useComponentStyle';
 import InnerHtml from '../inner-html/InnerHtml';
@@ -11,11 +11,14 @@ const SenderPerson = ({ customLabels, descriptions, value, onChange, readOnly, f
   const { translate, addRef, getComponentError } = useComponentUtils();
 
   const handleChange = (field: string, e: React.ChangeEvent<HTMLInputElement>) => {
+    const nextValue =
+      field === 'nationalIdentityNumber' ? formatUtils.removeAllSpaces(e.currentTarget.value) : e.currentTarget.value;
+
     onChange({
       ...value,
       person: {
         ...value?.person,
-        [field]: e.currentTarget.value,
+        [field]: nextValue,
       },
     } as SubmissionSender);
   };

@@ -55,6 +55,11 @@ describe('Sender', () => {
       cy.clickNextStep();
       cy.findByRole('heading', { name: 'Organisasjon' }).should('exist');
     });
+
+    it('should remove whitespace from national identity number', () => {
+      const label = 'Representantens fødselsnummer eller d-nummer';
+      cy.findByRole('textbox', { name: label }).type('123 456 78901').should('have.value', '12345678901');
+    });
   });
 
   describe('Organization (senderRole: organization)', () => {
@@ -76,6 +81,11 @@ describe('Sender', () => {
       fillFields(ORGANIZATION_FIELDS);
       cy.clickNextStep();
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+    });
+
+    it('should remove whitespace from organization number', () => {
+      const label = 'Organisasjonsnummeret til den virksomheten / underenheten du representerer';
+      cy.findByRole('textbox', { name: label }).type('889 640 782').should('have.value', '889640782');
     });
   });
 

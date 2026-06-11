@@ -2,6 +2,7 @@ import {
   AttachmentSettingValues,
   Component,
   Form,
+  formatUtils,
   I18nTranslationMap,
   navFormUtils,
   senderUtils,
@@ -93,7 +94,7 @@ const validateAttachment = (attachment: Attachment, validationId: string): Attac
 const extractBruker = (form: Form, submission: Submission): BrukerDto | undefined => {
   const identityNumber = yourInformationUtils.getIdentityNumber(form, submission);
   if (identityNumber) {
-    return { id: identityNumber, idType: 'FNR' };
+    return { id: formatUtils.removeAllSpaces(identityNumber), idType: 'FNR' };
   }
   return undefined;
 };
@@ -104,13 +105,15 @@ const extractAvsender = (form: Form, submission: Submission): AvsenderId | undef
     if (sender.person) {
       return {
         idType: 'FNR',
-        id: sender.person?.nationalIdentityNumber,
+        id: sender.person?.nationalIdentityNumber
+          ? formatUtils.removeAllSpaces(sender.person.nationalIdentityNumber)
+          : sender.person?.nationalIdentityNumber,
         navn: `${sender.person?.firstName} ${sender.person?.surname}`,
       };
     } else if (sender.organization) {
       return {
         idType: 'ORGNR',
-        id: sender.organization?.number,
+        id: sender.organization?.number ? formatUtils.removeAllSpaces(sender.organization.number) : sender.organization?.number,
         navn: sender.organization?.name,
       };
     }
@@ -130,7 +133,7 @@ const extractAvsenderFromYourInformation = (form: Form, submission: Submission):
   if (yourInformation?.fornavn && yourInformation?.etternavn) {
     const navn = `${yourInformation.fornavn} ${yourInformation.etternavn}`;
     if (yourInformation.identitet?.identitetsnummer) {
-      return { id: yourInformation.identitet.identitetsnummer, idType: 'FNR', navn };
+      return { id: formatUtils.removeAllSpaces(yourInformation.identitet.identitetsnummer), idType: 'FNR', navn };
     }
     return { navn };
   }
