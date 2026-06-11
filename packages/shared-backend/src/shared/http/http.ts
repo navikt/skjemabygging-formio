@@ -16,6 +16,7 @@ interface HttpOptions {
   accept?: MimeType;
   accessToken?: string;
   formRevisionId?: number;
+  headers?: Record<string, string>;
 }
 
 const get = async <T>(url: string, options?: HttpOptions): Promise<T> => {
@@ -62,7 +63,7 @@ const httpDelete = async <T>(url: string, body?: object, options?: HttpOptions):
 };
 
 const createHeaders = (options?: HttpOptions): HeadersInit => {
-  const { accessToken, contentType, accept, formRevisionId } = options ?? {};
+  const { accessToken, contentType, accept, formRevisionId, headers } = options ?? {};
 
   return {
     'x-correlation-id': correlator.getId() ?? crypto.randomUUID(),
@@ -70,6 +71,7 @@ const createHeaders = (options?: HttpOptions): HeadersInit => {
     ...(accept && { Accept: accept.toString() }),
     ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
     ...(formRevisionId && { 'Formsapi-Entity-Revision': `${formRevisionId}` }),
+    ...(headers && headers),
   };
 };
 
@@ -166,3 +168,4 @@ const http = {
 };
 
 export default http;
+export { HttpResponseError };
