@@ -39,10 +39,12 @@ export const LanguagesProvider = ({ children, translations }: Props) => {
   ) as unknown as CurrentLanguageType;
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- keep derived language list in sync with loaded translations.
     setAvailableLanguages(Object.keys(translations));
   }, [translations]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- provide latest translations to NavForm integration state.
     setTranslationsForNavForm(translations);
   }, [translations]);
 
