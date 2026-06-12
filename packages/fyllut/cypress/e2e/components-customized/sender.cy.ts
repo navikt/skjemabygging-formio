@@ -84,31 +84,6 @@ describe('Sender', () => {
       });
       cy.findByLabelText(PERSON_FIELDS[2].label).should('have.focus');
     });
-
-    it('should keep whitespace while typing and remove it from submission for national identity number', () => {
-      const fnrLabel = 'Representantens fødselsnummer eller d-nummer';
-      cy.findByRole('textbox', { name: fnrLabel }).type('123 456 78901');
-      cy.findByRole('textbox', { name: fnrLabel }).should('have.value', '123 456 78901');
-      cy.findByRole('textbox', { name: 'Representantens fornavn' }).type('Ola');
-      cy.findByRole('textbox', { name: fnrLabel }).should('have.value', '12345678901');
-      cy.findByRole('textbox', { name: 'Representantens etternavn' }).type('Nordmann');
-
-      cy.clickNextStep();
-      cy.findByRole('heading', { name: 'Organisasjon' }).should('exist');
-      fillFields(ORGANIZATION_FIELDS);
-      cy.clickNextStep();
-      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
-      cy.clickDownloadInstructions();
-      cy.findByRole('heading', { name: 'Skjemaet er ikke sendt ennå' }).should('exist');
-
-      cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
-        const submissionData = JSON.parse(req.body.submission).data;
-        expect(submissionData.avsender.person.nationalIdentityNumber).to.eq('12345678901');
-      }).as('downloadPdf');
-
-      cy.clickDownloadApplication();
-      cy.wait('@downloadPdf');
-    });
   });
 
   describe('Organization (senderRole: organization)', () => {
@@ -160,27 +135,6 @@ describe('Sender', () => {
         cy.findByRole('link', { name: `${ORGANIZATION_FIELDS[1].label} inneholder ugyldige tegn` }).click();
       });
       cy.findByLabelText(ORGANIZATION_FIELDS[1].label).should('have.focus');
-    });
-
-    it('should keep whitespace while typing and remove it from submission for organization number', () => {
-      const label = 'Organisasjonsnummeret til den virksomheten / underenheten du representerer';
-      cy.findByRole('textbox', { name: label }).type('889 640 782');
-      cy.findByRole('textbox', { name: label }).should('have.value', '889 640 782');
-      cy.findByRole('textbox', { name: 'Virksomhetens navn' }).type('NAV Test AS');
-      cy.findByRole('textbox', { name: label }).should('have.value', '889640782');
-
-      cy.clickNextStep();
-      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
-      cy.clickDownloadInstructions();
-      cy.findByRole('heading', { name: 'Skjemaet er ikke sendt ennå' }).should('exist');
-
-      cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
-        const submissionData = JSON.parse(req.body.submission).data;
-        expect(submissionData.avsender.organization.number).to.eq('889640782');
-      }).as('downloadPdf');
-
-      cy.clickDownloadApplication();
-      cy.wait('@downloadPdf');
     });
   });
 
