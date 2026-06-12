@@ -1,5 +1,6 @@
 import { TextField } from '@navikt/ds-react';
-import { SenderProps, SubmissionSender } from '@navikt/skjemadigitalisering-shared-domain';
+import { formatUtils, SenderProps, SubmissionSender } from '@navikt/skjemadigitalisering-shared-domain';
+import type { ChangeEvent, FocusEvent } from 'react';
 import { useComponentUtils } from '../../context/component/componentUtilsContext';
 import useComponentStyle from '../../util/styles/useComponentStyle';
 import InnerHtml from '../inner-html/InnerHtml';
@@ -10,14 +11,22 @@ const SenderPerson = ({ customLabels, descriptions, value, onChange, readOnly, f
   });
   const { translate, addRef, getComponentError } = useComponentUtils();
 
-  const handleChange = (field: string, e: React.ChangeEvent<HTMLInputElement>) => {
+  const setPersonValue = (field: string, fieldValue: string) => {
     onChange({
       ...value,
       person: {
         ...value?.person,
-        [field]: e.currentTarget.value,
+        [field]: fieldValue,
       },
     } as SubmissionSender);
+  };
+
+  const handleChange = (field: string, e: ChangeEvent<HTMLInputElement>) => {
+    setPersonValue(field, e.currentTarget.value);
+  };
+
+  const handleNationalIdentityNumberBlur = (e: FocusEvent<HTMLInputElement>) => {
+    setPersonValue('nationalIdentityNumber', formatUtils.removeAllSpaces(e.currentTarget.value));
   };
 
   return (
@@ -28,6 +37,7 @@ const SenderPerson = ({ customLabels, descriptions, value, onChange, readOnly, f
           description={<InnerHtml content={translate(descriptions.nationalIdentityNumber)} />}
           value={value?.person?.nationalIdentityNumber ?? ''}
           onChange={(e) => handleChange('nationalIdentityNumber', e)}
+          onBlur={handleNationalIdentityNumberBlur}
           ref={(ref) => addRef('sender:nationalIdentityNumber', ref)}
           error={getComponentError('sender:nationalIdentityNumber')}
           readOnly={readOnly}
