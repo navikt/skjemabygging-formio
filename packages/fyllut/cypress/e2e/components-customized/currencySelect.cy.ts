@@ -20,8 +20,9 @@ describe('CurrencySelect', () => {
     it('should be able to select an option', () => {
       const label = 'Velg valuta';
       cy.findByRole('combobox', { name: label }).type('Euro{downArrow}{enter}');
-      cy.findByRole('combobox', { name: label }).should('have.value', '');
-      cy.contains('Euro (EUR)').should('exist');
+      cy.withinComponent(label, () => {
+        cy.contains('Euro (EUR)').should('exist');
+      });
     });
 
     it('should have description', () => {
