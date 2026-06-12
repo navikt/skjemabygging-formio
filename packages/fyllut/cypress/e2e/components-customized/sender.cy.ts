@@ -84,6 +84,26 @@ describe('Sender', () => {
       });
       cy.findByLabelText(PERSON_FIELDS[2].label).should('have.focus');
     });
+
+    it('should keep whitespace while typing and remove it on blur for national identity number', () => {
+      const fnrLabel = PERSON_FIELDS[0].label;
+      cy.findByRole('textbox', { name: fnrLabel }).type('130 972 48022');
+      cy.findByRole('textbox', { name: fnrLabel }).should('have.value', '130 972 48022');
+      cy.findByRole('textbox', { name: PERSON_FIELDS[1].label }).type(PERSON_FIELDS[1].value);
+      cy.findByRole('textbox', { name: fnrLabel }).should('have.value', PERSON_FIELDS[0].value);
+      cy.findByRole('textbox', { name: PERSON_FIELDS[2].label }).type(PERSON_FIELDS[2].value);
+
+      cy.clickNextStep();
+      cy.findByRole('heading', { name: 'Organisasjon' }).should('exist');
+      fillFields(ORGANIZATION_FIELDS);
+      cy.clickNextStep();
+      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+      cy.withinSummaryGroup('Person', () => {
+        cy.contains(fnrLabel).should('exist');
+        cy.contains(PERSON_FIELDS[0].value).should('exist');
+        cy.contains('130 972 48022').should('not.exist');
+      });
+    });
   });
 
   describe('Organization (senderRole: organization)', () => {
@@ -135,6 +155,22 @@ describe('Sender', () => {
         cy.findByRole('link', { name: `${ORGANIZATION_FIELDS[1].label} inneholder ugyldige tegn` }).click();
       });
       cy.findByLabelText(ORGANIZATION_FIELDS[1].label).should('have.focus');
+    });
+
+    it('should keep whitespace while typing and remove it on blur for organization number', () => {
+      const organizationNumberLabel = ORGANIZATION_FIELDS[0].label;
+      cy.findByRole('textbox', { name: organizationNumberLabel }).type('889 640 782');
+      cy.findByRole('textbox', { name: organizationNumberLabel }).should('have.value', '889 640 782');
+      cy.findByRole('textbox', { name: ORGANIZATION_FIELDS[1].label }).type(ORGANIZATION_FIELDS[1].value);
+      cy.findByRole('textbox', { name: organizationNumberLabel }).should('have.value', ORGANIZATION_FIELDS[0].value);
+
+      cy.clickNextStep();
+      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+      cy.withinSummaryGroup('Organisasjon', () => {
+        cy.contains(organizationNumberLabel).should('exist');
+        cy.contains(ORGANIZATION_FIELDS[0].value).should('exist');
+        cy.contains('889 640 782').should('not.exist');
+      });
     });
   });
 
