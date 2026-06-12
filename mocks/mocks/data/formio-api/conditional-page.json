@@ -14,6 +14,30 @@
       "navId": "e07he0e",
       "components": [
         {
+          "type": "container",
+          "key": "dineOpplysninger",
+          "label": "Dine opplysninger",
+          "yourInformation": true,
+          "components": [
+            {
+              "input": true,
+              "key": "identitet",
+              "tableView": false,
+              "label": "Identitet",
+              "type": "identity",
+              "prefill": true,
+              "prefillKey": "sokerIdentifikasjonsnummer",
+              "protectedApiKey": true,
+              "customLabels": {
+                "doYouHaveIdentityNumber": "Har du norsk fødselsnummer eller d-nummer?"
+              },
+              "navId": "el3yfbm"
+            }
+          ],
+          "navId": "exztcom",
+          "input": true
+        },
+        {
           "key": "Avkryssingsboks",
           "type": "navCheckbox",
           "input": true,
