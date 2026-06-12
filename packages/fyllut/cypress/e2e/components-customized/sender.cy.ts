@@ -4,7 +4,7 @@ describe('Sender', () => {
   const ORGANIZATION_URL = `${FORM_URL}/organisasjon`;
 
   const PERSON_FIELDS = [
-    { label: 'Representantens fødselsnummer eller d-nummer', value: '12345678901' },
+    { label: 'Representantens fødselsnummer eller d-nummer', value: '13097248022' },
     { label: 'Representantens fornavn', value: 'Ola' },
     { label: 'Representantens etternavn', value: 'Nordmann' },
   ];
@@ -56,6 +56,35 @@ describe('Sender', () => {
       cy.findByRole('heading', { name: 'Organisasjon' }).should('exist');
     });
 
+    it('should show required errors for each person field', () => {
+      cy.clickNextStep();
+
+      PERSON_FIELDS.forEach(({ label }) => {
+        cy.findAllByText(`Du må fylle ut: ${label}`).should('have.length', 2);
+      });
+
+      cy.get('[data-cy=error-summary]').within(() => {
+        cy.findByRole('link', { name: `Du må fylle ut: ${PERSON_FIELDS[0].label}` }).click();
+      });
+      cy.findByLabelText(PERSON_FIELDS[0].label).should('have.focus');
+    });
+
+    it('should show field specific validation errors for invalid person values', () => {
+      cy.findByRole('textbox', { name: PERSON_FIELDS[0].label }).type('12345678911');
+      cy.findByRole('textbox', { name: PERSON_FIELDS[1].label }).type('Ola=');
+      cy.findByRole('textbox', { name: PERSON_FIELDS[2].label }).type('Nordmann!');
+      cy.clickNextStep();
+
+      cy.findAllByText('Dette er ikke et gyldig fødselsnummer eller d-nummer (11 siffer)').should('have.length', 2);
+      cy.findAllByText(`${PERSON_FIELDS[1].label} inneholder ugyldige tegn`).should('have.length', 2);
+      cy.findAllByText(`${PERSON_FIELDS[2].label} inneholder ugyldige tegn`).should('have.length', 2);
+
+      cy.get('[data-cy=error-summary]').within(() => {
+        cy.findByRole('link', { name: `${PERSON_FIELDS[2].label} inneholder ugyldige tegn` }).click();
+      });
+      cy.findByLabelText(PERSON_FIELDS[2].label).should('have.focus');
+    });
+
     it('should keep whitespace while typing and remove it from submission for national identity number', () => {
       const fnrLabel = 'Representantens fødselsnummer eller d-nummer';
       cy.findByRole('textbox', { name: fnrLabel }).type('123 456 78901');
@@ -100,6 +129,36 @@ describe('Sender', () => {
       fillFields(ORGANIZATION_FIELDS);
       cy.clickNextStep();
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+    });
+
+    it('should show required errors for each organization field', () => {
+      cy.clickNextStep();
+
+      ORGANIZATION_FIELDS.forEach(({ label }) => {
+        cy.findAllByText(`Du må fylle ut: ${label}`).should('have.length', 2);
+      });
+
+      cy.get('[data-cy=error-summary]').within(() => {
+        cy.findByRole('link', { name: `Du må fylle ut: ${ORGANIZATION_FIELDS[0].label}` }).click();
+      });
+      cy.findByLabelText(ORGANIZATION_FIELDS[0].label).should('have.focus');
+    });
+
+    it('should show field specific validation errors for invalid organization values', () => {
+      cy.findByRole('textbox', { name: ORGANIZATION_FIELDS[0].label }).type('123');
+      cy.findByRole('textbox', { name: ORGANIZATION_FIELDS[1].label }).type('NAV!');
+      cy.clickNextStep();
+
+      cy.findAllByText('Dette er ikke et gyldig organisasjonsnummer. Sjekk at du har tastet riktig.').should(
+        'have.length',
+        2,
+      );
+      cy.findAllByText(`${ORGANIZATION_FIELDS[1].label} inneholder ugyldige tegn`).should('have.length', 2);
+
+      cy.get('[data-cy=error-summary]').within(() => {
+        cy.findByRole('link', { name: `${ORGANIZATION_FIELDS[1].label} inneholder ugyldige tegn` }).click();
+      });
+      cy.findByLabelText(ORGANIZATION_FIELDS[1].label).should('have.focus');
     });
 
     it('should keep whitespace while typing and remove it from submission for organization number', () => {
