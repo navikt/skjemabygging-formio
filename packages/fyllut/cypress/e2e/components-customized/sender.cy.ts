@@ -99,6 +99,7 @@ describe('Sender', () => {
       cy.clickNextStep();
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
       cy.clickDownloadInstructions();
+      cy.findByRole('heading', { name: 'Skjemaet er ikke sendt ennå' }).should('exist');
 
       cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
         const submissionData = JSON.parse(req.body.submission).data;
@@ -171,6 +172,7 @@ describe('Sender', () => {
       cy.clickNextStep();
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
       cy.clickDownloadInstructions();
+      cy.findByRole('heading', { name: 'Skjemaet er ikke sendt ennå' }).should('exist');
 
       cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application', (req) => {
         const submissionData = JSON.parse(req.body.submission).data;
