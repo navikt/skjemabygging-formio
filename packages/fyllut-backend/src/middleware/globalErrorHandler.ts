@@ -32,6 +32,13 @@ const createJson = (err) => {
   };
 };
 
+const getCorrelationId = (err: ResponseError) => {
+  return (
+    err.correlationId ??
+    ('correlation_id' in err && typeof err.correlation_id === 'string' ? err.correlation_id : undefined)
+  );
+};
+
 const globalErrorHandler = (err, req, res, _next) => {
   if (!err.correlation_id) {
     err.correlation_id = correlator.getId();
@@ -56,7 +63,7 @@ const globalErrorHandler = (err, req, res, _next) => {
       .send({
         message: err.message,
         errorCode: err.errorCode,
-        correlation_id: err.correlationId,
+        correlation_id: getCorrelationId(err),
         userMessage: err.userMessage,
         ...(err instanceof HttpResponseError && err.body !== undefined ? { body: err.body } : {}),
       });
