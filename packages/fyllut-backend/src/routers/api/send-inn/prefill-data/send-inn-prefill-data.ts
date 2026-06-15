@@ -1,39 +1,24 @@
+import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
-import fetch from 'node-fetch';
-import { config } from '../../../../config/config';
 import { logger } from '../../../../logger';
 import { getTokenxAccessToken } from '../../../../security/tokenHelper';
-import { responseToError } from '../../../../utils/errorHandling';
+import { prefillService } from '../../../../services';
 
-const { sendInnConfig } = config;
+const prefillErrorMessage = 'Feil ved kall til SendInn for preutfylling';
 
 const sendInnPrefillData = {
   get: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const tokenxAccessToken = getTokenxAccessToken(req);
-      const propertiesParam = req.query?.properties ? `properties=${req.query.properties}` : '';
-
-      const sendInnResponse = await fetch(
-        `${sendInnConfig.host}${sendInnConfig.paths.prefillData}?${propertiesParam}`,
-        {
-          method: 'GET',
-          redirect: 'manual',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${tokenxAccessToken}`,
-          },
-        },
-      );
-
-      if (sendInnResponse.ok) {
-        res.status(sendInnResponse.status);
-        res.json(await sendInnResponse.json());
-      } else {
+      const accessToken = getTokenxAccessToken(req);
+      const properties = typeof req.query?.properties === 'string' ? req.query.properties : undefined;
+      const data = await prefillService.getPrefillData({ accessToken, properties });
+      res.json(data);
+    } catch (error) {
+      if (error instanceof ResponseError) {
         logger.debug('Failed to get prefill data from SendInn');
-        next(await responseToError(sendInnResponse, 'Feil ved kall til SendInn for preutfylling', true));
+        return next(new ResponseError(error.errorCode, prefillErrorMessage, error.correlationId, prefillErrorMessage));
       }
-    } catch (err) {
-      next(err);
+      next(error);
     }
   },
 };

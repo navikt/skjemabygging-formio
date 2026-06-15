@@ -123,7 +123,12 @@ const handleResponse = async <T>(response: Response): Promise<T> => {
   }
 
   const errorBody = await handleBody(response);
-  const error = new HttpResponseError(getErrorCode(response.status), response.statusText, errorBody);
+  const error = new HttpResponseError(
+    getErrorCode(response.status),
+    response.statusText,
+    errorBody,
+    response.headers.get('x-correlation-id') ?? undefined,
+  );
 
   logger.warn(`Http request to ${response.url} failed with status ${response.status}`, {
     body: errorBody,
@@ -135,8 +140,8 @@ const handleResponse = async <T>(response: Response): Promise<T> => {
 class HttpResponseError extends ResponseError {
   public readonly body: any;
 
-  constructor(errorCode: ErrorCode, message: string, body: any, userMessage?: string) {
-    super(errorCode, message, userMessage);
+  constructor(errorCode: ErrorCode, message: string, body: any, correlationId?: string, userMessage?: string) {
+    super(errorCode, message, correlationId, userMessage);
     this.body = body;
   }
 }

@@ -3,6 +3,7 @@ import {
   createCoverPageService,
   createFormService,
   createMergeFileService,
+  createPrefillService,
   createRecipientService,
   createStaticPdfService,
   createTranslationService,
@@ -50,6 +51,10 @@ const mergeFileService = createMergeFileService({
   baseUrl: `${sendInnConfig.host}${sendInnConfig.paths.mergeFiles}`,
 });
 
+const prefillService = createPrefillService({
+  baseUrl: `${sendInnConfig.host}${sendInnConfig.paths.prefillData}`,
+});
+
 const recipientService = createRecipientService({
   baseUrl: formsApiUrl,
 });
@@ -83,6 +88,7 @@ export {
   mergeFileService,
   nologinTokenService,
   oldFormService,
+  prefillService,
   recipientService,
   staticPdfService,
   translationService,
