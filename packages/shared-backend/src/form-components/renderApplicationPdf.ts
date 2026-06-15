@@ -31,8 +31,7 @@ const renderApplicationPdf = ({
   const translate = translationUtil.createTranslate(translations, language);
 
   const activeComponents = navFormUtils.getActiveComponentsFromForm(form, submission);
-  const activeAttachmentUploadsPanel =
-    submissionMethod !== 'digital' ? navFormUtils.getActiveAttachmentPanelFromForm(form, submission) : undefined;
+  const activeAttachmentUploadsPanel = navFormUtils.getActiveAttachmentPanelFromForm(form, submission);
 
   return renderPdfForm({
     activeComponents,
