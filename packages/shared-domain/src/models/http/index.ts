@@ -1,6 +1,7 @@
 type ErrorCode =
   | 'ERROR' // Default error code
   | 'WARNING' // Default warning code
+  | 'CONFLICT' // Http 409
   | 'FILE_TOO_MANY_PAGES' // Too many pages in PDF
   | 'BAD_REQUEST' // Http 400
   | 'UNAUTHORIZED' // Http 401
@@ -28,6 +29,8 @@ const getErrorCodeFromStatus = (status: number): ErrorCode => {
       return 'FORBIDDEN';
     case 404:
       return 'NOT_FOUND';
+    case 409:
+      return 'CONFLICT';
     case 429:
       return 'TOO_MANY_REQUESTS';
     case 440:
