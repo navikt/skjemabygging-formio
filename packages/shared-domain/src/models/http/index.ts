@@ -18,6 +18,29 @@ interface ErrorResponse {
   correlation_id?: string;
 }
 
+const getErrorCodeFromStatus = (status: number): ErrorCode => {
+  switch (status) {
+    case 400:
+      return 'BAD_REQUEST';
+    case 401:
+      return 'UNAUTHORIZED';
+    case 403:
+      return 'FORBIDDEN';
+    case 404:
+      return 'NOT_FOUND';
+    case 429:
+      return 'TOO_MANY_REQUESTS';
+    case 440:
+      return 'LOGIN_TIMEOUT';
+    case 500:
+      return 'INTERNAL_SERVER_ERROR';
+    case 503:
+      return 'SERVICE_UNAVAILABLE';
+    default:
+      return 'ERROR';
+  }
+};
+
 class ResponseError extends Error {
   public readonly errorCode: ErrorCode;
   public readonly userMessage: string | undefined;
@@ -37,5 +60,5 @@ class ResponseError extends Error {
   }
 }
 
-export { ResponseError };
+export { ResponseError, getErrorCodeFromStatus };
 export type { ErrorCode, ErrorResponse };

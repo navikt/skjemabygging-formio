@@ -1,6 +1,7 @@
 import {
   NavFormType,
   PanelValidation,
+  ResponseError,
   Submission,
   submissionTypesUtils,
   TEXTS,
@@ -17,7 +18,7 @@ type Props = {
   form: NavFormType;
   submission?: Submission;
   panelValidationList?: PanelValidation[];
-  setError: Dispatch<SetStateAction<Error | undefined>>;
+  setError: Dispatch<SetStateAction<ResponseError | undefined>>;
   setSubmitError: Dispatch<SetStateAction<string | undefined>>;
   isValid?: (e: React.MouseEvent<HTMLElement>) => boolean;
 };

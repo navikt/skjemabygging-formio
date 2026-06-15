@@ -1,13 +1,11 @@
 import { requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import { ReadableStream as NodeReadableStream } from 'node:stream/web';
 import { logger } from '../../../../../logger';
 import { applicationService } from '../../../../../services';
-import { HttpError } from '../../../../../utils/errors/HttpError';
-import { removeUploadedTempFile } from '../../../helpers/upload';
+import { createUploadResponseError, removeUploadedTempFile } from '../../../helpers/upload';
 
 const post = async (req: Request, res: Response, next: NextFunction) => {
   const file = req.file;
@@ -37,12 +35,10 @@ const post = async (req: Request, res: Response, next: NextFunction) => {
     });
     res.status(201).json(result);
   } catch (error) {
-    if (error instanceof HttpError && error.http_response_body.errorCode === 'temporarilyUnavailable') {
-      logger.warn(`${innsendingsId}: Upload failed for digital application due to temporary unavailability`, logMeta);
-      return res.status(503).json({
-        message: TEXTS.statiske.nologin.temporarilyUnavailable,
-        errorCode: 'SERVICE_UNAVAILABLE',
-      });
+    const uploadError = createUploadResponseError(error);
+    if (uploadError) {
+      logger.warn(`${innsendingsId}: Upload failed for digital application`, { ...logMeta, error: uploadError });
+      return next(uploadError);
     }
     logger.warn(`${innsendingsId}: Upload request failed for digital application`, { ...logMeta, error });
     next(error);
