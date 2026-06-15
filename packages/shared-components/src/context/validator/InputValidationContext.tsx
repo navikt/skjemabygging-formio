@@ -75,6 +75,7 @@ const InputValidationProvider = ({ children }: ValidatorProviderProps) => {
 
   useEffect(() => {
     if (errors.length > 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- re-run validation immediately when error set changes.
       validate();
     }
     // Do not include errors in dependency array to avoid infinite loop
