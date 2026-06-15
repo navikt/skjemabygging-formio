@@ -10,7 +10,7 @@ const organizationGroup = {
     senderOrganization: senderBuilder({
       label: 'Avsender organisasjon',
       senderRole: 'organization',
-      labels: {
+      customLabels: {
         organizationNumber: 'Organisasjonsnummeret til den virksomheten / underenheten du representerer',
         organizationName: 'Virksomhetens navn',
       },

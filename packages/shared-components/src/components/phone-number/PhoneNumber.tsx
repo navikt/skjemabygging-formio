@@ -55,6 +55,7 @@ const PhoneNumber = ({ value, onChange, showAreaCode, error }: Props) => {
 
   useEffect(() => {
     if (showAreaCode) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- async fetch populates component-local area-code state.
       fetchAreaCodes();
     }
   }, [fetchAreaCodes, showAreaCode, appConfig.fyllutBaseURL]);
