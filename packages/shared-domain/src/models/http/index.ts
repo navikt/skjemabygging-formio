@@ -4,8 +4,10 @@ type ErrorCode =
   | 'FILE_TOO_MANY_PAGES' // Too many pages in PDF
   | 'BAD_REQUEST' // Http 400
   | 'UNAUTHORIZED' // Http 401
+  | 'TOO_MANY_REQUESTS' // Http 429
   | 'FORBIDDEN' // Http 403
   | 'NOT_FOUND' // Http 404
+  | 'LOGIN_TIMEOUT' // Http 440
   | 'INTERNAL_SERVER_ERROR' // Http 500
   | 'SERVICE_UNAVAILABLE'; // Http 503
 

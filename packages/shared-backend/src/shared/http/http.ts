@@ -123,7 +123,7 @@ const handleResponse = async <T>(response: Response): Promise<T> => {
   }
 
   const errorBody = await handleBody(response);
-  const error = new HttpResponseError(getErrorCode(response.status), response.statusText, errorBody);
+  const error = new ResponseError(getErrorCode(response.status), response.statusText);
 
   logger.warn(`Http request to ${response.url} failed with status ${response.status}`, {
     body: errorBody,
@@ -132,25 +132,20 @@ const handleResponse = async <T>(response: Response): Promise<T> => {
   throw error;
 };
 
-class HttpResponseError extends ResponseError {
-  public readonly body: any;
-
-  constructor(errorCode: ErrorCode, message: string, body: any, userMessage?: string) {
-    super(errorCode, message, userMessage);
-    this.body = body;
-  }
-}
-
 const getErrorCode = (status: number): ErrorCode => {
   switch (status) {
     case 400:
       return 'BAD_REQUEST';
     case 401:
       return 'UNAUTHORIZED';
+    case 429:
+      return 'TOO_MANY_REQUESTS';
     case 403:
       return 'FORBIDDEN';
     case 404:
       return 'NOT_FOUND';
+    case 440:
+      return 'LOGIN_TIMEOUT';
     case 500:
       return 'INTERNAL_SERVER_ERROR';
     case 503:
@@ -168,4 +163,3 @@ const http = {
 };
 
 export default http;
-export { HttpResponseError };

@@ -18,10 +18,14 @@ const getStatusFromErrorCode = (errorCode: ErrorCode): number => {
       return 400;
     case 'UNAUTHORIZED':
       return 401;
+    case 'TOO_MANY_REQUESTS':
+      return 429;
     case 'FORBIDDEN':
       return 403;
     case 'NOT_FOUND':
       return 404;
+    case 'LOGIN_TIMEOUT':
+      return 440;
     case 'INTERNAL_SERVER_ERROR':
       return 500;
     case 'SERVICE_UNAVAILABLE':
