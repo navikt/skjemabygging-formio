@@ -1,10 +1,14 @@
-import { TEXTS, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { ResponseError, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
+import { openAsBlob } from 'node:fs';
 import { logger } from '../../../logger';
 import { applicationService } from '../../../services';
 import { NologinContext } from '../../../types/nologin';
-import { HttpError } from '../../../utils/errors/HttpError';
+import { hasErrorCode, isResponseError, wrapResponseError } from '../helpers/responseErrors';
 import { removeUploadedTempFile } from '../helpers/upload';
+
+const createBlobFromBuffer = (file: Express.Multer.File) =>
+  new Blob([Uint8Array.from(file.buffer)], { type: file.mimetype });
 
 const nologinFile = {
   post: async (req: Request, res: Response, next: NextFunction) => {
@@ -31,42 +35,52 @@ const nologinFile = {
       validateAttachmentId(attachmentId);
       logger.info(`${innsendingsId}: Received file upload request for nologin-file endpoint`, logMeta);
 
-      const result = await applicationService.uploadFile(file, accessToken, attachmentId, innsendingsId, 'nologin');
+      const fileBlob = file.path ? await openAsBlob(file.path, { type: file.mimetype }) : createBlobFromBuffer(file);
+      const result = await applicationService.uploadAttachment({
+        accessToken,
+        attachmentId,
+        fileBlob,
+        fileName: Buffer.from(file.originalname, 'latin1').toString('utf8'),
+        innsendingsId,
+        type: 'nologin',
+      });
       logger.info(`${innsendingsId}: Upload request completed for nologin-file endpoint`, {
         ...logMeta,
         uploadedFileId: result.fileId,
       });
       res.status(201).json(result);
-    } catch (error: any) {
+    } catch (error) {
       const innsendingsId = req.getNologinContext()?.innsendingsId;
       const logMeta = { ...baseLogMeta, innsendingsId };
-      if (error instanceof HttpError && error.http_status === 403) {
+      if (hasErrorCode(error, 'FORBIDDEN')) {
         logger.warn(`${innsendingsId}: Upload failed for nologin-file endpoint due to authorization error`, logMeta);
-        return res.status(403).json({
-          message: 'Feil ved opplasting av fil for uinnlogget søknad, autorisering feilet',
-        });
-      } else if (
-        error instanceof HttpError &&
-        error.http_status === 400 &&
-        error.http_response_body.errorCode === 'illegalAction.fileWithTooManyPages'
-      ) {
+        return next(
+          wrapResponseError({
+            error: error as ResponseError,
+            message: 'Nologin file upload forbidden',
+            userMessage: 'Feil ved opplasting av fil for uinnlogget søknad, autorisering feilet',
+          }),
+        );
+      } else if (hasErrorCode(error, 'FILE_TOO_MANY_PAGES')) {
         logger.warn(`${innsendingsId}: Upload failed for nologin-file endpoint due to too many pages`, logMeta);
-        return res.status(400).json({
-          message: 'Feil ved opplasting av fil for uinnlogget søknad.',
-          errorCode: 'FILE_TOO_MANY_PAGES',
-        });
-      } else if (error instanceof HttpError && error.http_response_body.errorCode === 'temporarilyUnavailable') {
+        return next(error);
+      } else if (hasErrorCode(error, 'SERVICE_UNAVAILABLE')) {
         logger.warn(
           `${innsendingsId}: Upload failed for nologin-file endpoint due to temporary unavailability`,
           logMeta,
         );
-        return res.status(503).json({
-          message: TEXTS.statiske.nologin.temporarilyUnavailable,
-          errorCode: 'SERVICE_UNAVAILABLE',
-        });
+        return next(error);
+      } else if (isResponseError(error)) {
+        logger.warn(`${innsendingsId}: Upload request failed for nologin-file endpoint`, { ...logMeta, error });
+        return next(
+          wrapResponseError({
+            error,
+            message: 'Nologin file upload failed',
+            userMessage: 'Feil ved opplasting av fil for uinnlogget søknad.',
+          }),
+        );
       }
 
-      logger.warn(`${innsendingsId}: Upload request failed for nologin-file endpoint`, { ...logMeta, error });
       next(error);
     } finally {
       await removeUploadedTempFile(file);
@@ -83,9 +97,18 @@ const nologinFile = {
 
       validateAttachmentId(attachmentId);
 
-      await applicationService.deleteFile(accessToken, innsendingsId, attachmentId, fileId, 'nologin');
+      await applicationService.deleteAttachment({ accessToken, attachmentId, fileId, innsendingsId, type: 'nologin' });
       res.sendStatus(204);
     } catch (error) {
+      if (isResponseError(error)) {
+        return next(
+          wrapResponseError({
+            error,
+            message: 'Nologin file delete failed',
+            userMessage: 'Feil ved sletting av fil',
+          }),
+        );
+      }
       next(error);
     }
   },

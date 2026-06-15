@@ -1,10 +1,10 @@
-import { HttpResponseError } from '@navikt/skjemadigitalisering-shared-backend';
+import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import { mockRequest } from '../test/testHelpers';
 import globalErrorHandler from './globalErrorHandler';
 
 describe('globalErrorHandler', () => {
   it('uses correlation_id fallback for ResponseError payloads', () => {
-    const error = new HttpResponseError('SERVICE_UNAVAILABLE', 'Upstream failed', { reason: 'timeout' }) as any;
+    const error = new ResponseError('SERVICE_UNAVAILABLE', 'Upstream failed', undefined, 'Visible message') as any;
     error.correlation_id = 'test-correlation-id';
 
     const res = {
@@ -24,8 +24,7 @@ describe('globalErrorHandler', () => {
       message: 'Upstream failed',
       errorCode: 'SERVICE_UNAVAILABLE',
       correlation_id: 'test-correlation-id',
-      userMessage: undefined,
-      body: { reason: 'timeout' },
+      userMessage: 'Visible message',
     });
   });
 });

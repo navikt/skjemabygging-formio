@@ -73,8 +73,9 @@ describe('[endpoint] send-inn/soknad', () => {
 
       expect(next).toHaveBeenCalledTimes(1);
       const error: any = next.mock.calls[0][0];
-      expect(error.functional).toBe(true);
-      expect(error.message).toBe('Feil ved kall til SendInn. Kan ikke hente mellomlagret søknad.');
+      expect(error.errorCode).toBe('INTERNAL_SERVER_ERROR');
+      expect(error.message).toBe('SendInn draft request failed');
+      expect(error.userMessage).toBe('Feil ved kall til SendInn. Kan ikke hente mellomlagret søknad.');
       expect(res.json).not.toHaveBeenCalled();
       expect(sendInnNockScope.isDone()).toBe(true);
     });
@@ -174,8 +175,9 @@ describe('[endpoint] send-inn/soknad', () => {
 
       expect(next).toHaveBeenCalledTimes(1);
       const error: any = next.mock.calls[0][0];
-      expect(error.functional).toBe(true);
-      expect(error.message).toBe('Feil ved kall til SendInn. Kan ikke starte mellomlagring av søknaden.');
+      expect(error.errorCode).toBe('INTERNAL_SERVER_ERROR');
+      expect(error.message).toBe('SendInn draft request failed');
+      expect(error.userMessage).toBe('Feil ved kall til SendInn. Kan ikke starte mellomlagring av søknaden.');
       expect(res.json).not.toHaveBeenCalled();
       expect(globalTranslationsScope.isDone()).toBe(true);
       expect(formTranslationsScope.isDone()).toBe(true);
@@ -250,8 +252,9 @@ describe('[endpoint] send-inn/soknad', () => {
 
       expect(next).toHaveBeenCalledTimes(1);
       const error: any = next.mock.calls[0][0];
-      expect(error.functional).toBe(true);
-      expect(error.message).toBe('Feil ved kall til SendInn. Kan ikke oppdatere mellomlagret søknad.');
+      expect(error.errorCode).toBe('INTERNAL_SERVER_ERROR');
+      expect(error.message).toBe('SendInn draft request failed');
+      expect(error.userMessage).toBe('Feil ved kall til SendInn. Kan ikke oppdatere mellomlagret søknad.');
       expect(res.json).not.toHaveBeenCalled();
       expect(globalTranslationsScope.isDone()).toBe(true);
       expect(formTranslationsScope.isDone()).toBe(true);
@@ -339,8 +342,9 @@ describe('[endpoint] send-inn/soknad', () => {
 
       expect(next).toHaveBeenCalledTimes(1);
       const error: any = next.mock.calls[0][0];
-      expect(error.functional).toBe(true);
-      expect(error.message).toBe('Feil ved kall til SendInn. Kan ikke slette mellomlagret søknad.');
+      expect(error.errorCode).toBe('INTERNAL_SERVER_ERROR');
+      expect(error.message).toBe('SendInn draft request failed');
+      expect(error.userMessage).toBe('Feil ved kall til SendInn. Kan ikke slette mellomlagret søknad.');
       expect(res.json).not.toHaveBeenCalled();
       expect(sendInnNockScope.isDone()).toBe(true);
     });

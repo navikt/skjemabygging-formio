@@ -115,10 +115,14 @@ const handleResponse = async (response: Response, opts?: FetchOptions) => {
 
     let errorMessage: string = '';
     let errorCode;
+    let userMessage: string | undefined;
     if (isResponseType(response, MimeType.JSON)) {
       const responseJson = await response.json();
       if (responseJson.message) {
         errorMessage = responseJson.message;
+      }
+      if (responseJson.userMessage) {
+        userMessage = responseJson.userMessage;
       }
       if (responseJson.errorCode) {
         errorCode = responseJson.errorCode;
@@ -127,15 +131,17 @@ const handleResponse = async (response: Response, opts?: FetchOptions) => {
       errorMessage = await response.text();
     }
 
+    const visibleMessage = userMessage || errorMessage || response.statusText;
+
     if (errorCode === 'FILE_TOO_MANY_PAGES') {
-      throw new TooManyPagesError(errorMessage);
+      throw new TooManyPagesError(visibleMessage);
     }
 
     if (errorCode === 'SERVICE_UNAVAILABLE') {
-      throw new ServiceUnavailable(errorMessage);
+      throw new ServiceUnavailable(visibleMessage);
     }
 
-    throw new HttpError(errorMessage || response.statusText, response.status, errorCode);
+    throw new HttpError(visibleMessage, response.status, errorCode);
   }
 
   if (opts?.redirectToLocation || opts?.setRedirectLocation) {

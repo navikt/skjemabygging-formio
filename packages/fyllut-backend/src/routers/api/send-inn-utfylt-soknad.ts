@@ -1,18 +1,24 @@
 import { renderApplicationPdf } from '@navikt/skjemadigitalisering-shared-backend';
+import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
-import fetch from 'node-fetch';
+import { config } from '../../config/config';
 import { logger } from '../../logger';
 import { getIdportenPid, getTokenxAccessToken } from '../../security/tokenHelper';
-import { applicationPdfService, formService, translationService } from '../../services';
+import { applicationPdfService, applicationService, formService, translationService } from '../../services';
 import { LogMetadata } from '../../types/log';
 import { base64Decode } from '../../utils/base64';
-import { responseToError } from '../../utils/errorHandling';
 import { getFyllutUrl } from '../../utils/url';
-import { assembleSendInnSoknadBody, isNotFound, sanitizeInnsendingsId, validateInnsendingsId } from './helpers/sendInn';
+import { isResponseError, wrapResponseError } from './helpers/responseErrors';
+import { assembleSendInnSoknadBody, sanitizeInnsendingsId, validateInnsendingsId } from './helpers/sendInn';
 
-import { config } from '../../config/config';
+const shouldRespondWithNotFound = (error: unknown) => error instanceof ResponseError && error.errorCode === 'NOT_FOUND';
 
-const { sendInnConfig } = config;
+const withSendInnMessage = (error: ResponseError, userMessage: string) =>
+  wrapResponseError({
+    error,
+    message: 'SendInn submit request failed',
+    userMessage,
+  });
 
 const sendInnUtfyltSoknad = {
   put: async (req: Request, res: Response, next: NextFunction) => {
@@ -74,41 +80,41 @@ const sendInnUtfyltSoknad = {
       const pdfByteArray = Array.from(applicationPdf) ?? [];
 
       const body = assembleSendInnSoknadBody({ ...req.body, form, translations }, idportenPid, fyllutUrl, pdfByteArray);
-
-      const sendInnResponse = await fetch(
-        `${sendInnConfig.host}${sendInnConfig.paths.utfyltSoknad}/${sanitizedInnsendingsId}`,
-        {
-          method: 'PUT',
-          redirect: 'manual',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${tokenxAccessToken}`,
-            ...(envQualifier && { 'Nav-Env-Qualifier': envQualifier }),
-          },
-          body: JSON.stringify(body),
-        },
-      );
-
-      if (sendInnResponse.ok || sendInnResponse.status === 302) {
-        const location = sendInnResponse.headers.get('location');
-        logger.debug(`Successfylly posted data to SendInn (location: ${location})`);
-        res.header({
-          'Access-Control-Expose-Headers': 'Location',
-          Location: location,
+      let response: { status: number; location?: string };
+      try {
+        response = await applicationService.submitUtfyltSoknad({
+          accessToken: tokenxAccessToken,
+          body,
+          envQualifier,
+          innsendingsId: sanitizedInnsendingsId,
         });
-        res.sendStatus(201);
-      } else {
-        const responseError = await responseToError(sendInnResponse, 'Feil ved kall til SendInn', true);
-        if (isNotFound(sendInnResponse, responseError)) {
-          logger.info(`${sanitizedInnsendingsId}: Not found. Failed to submit`, responseError);
+      } catch (error) {
+        if (shouldRespondWithNotFound(error)) {
+          logger.info(`${req.body.innsendingsId}: Not found. Failed to submit`, error);
           return res.sendStatus(404);
         }
-
-        logger.debug('Failed to post data to SendInn');
-        next(responseError);
+        if (isResponseError(error)) {
+          logger.debug('Failed to post data to SendInn');
+          return next(withSendInnMessage(error, 'Feil ved kall til SendInn'));
+        }
+        throw error;
       }
-    } catch (err) {
-      next(err);
+
+      if (response.status === 302 || (response.status >= 200 && response.status < 300)) {
+        const { location } = response;
+        logger.debug(`Successfylly posted data to SendInn (location: ${location})`);
+        if (location) {
+          res.header({
+            'Access-Control-Expose-Headers': 'Location',
+            Location: location,
+          });
+        }
+        res.sendStatus(201);
+      } else {
+        next(new Error('Unexpected response from SendInn while submitting utfylt soknad'));
+      }
+    } catch (error) {
+      next(error);
     }
   },
 };

@@ -88,8 +88,9 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
 
     expect(next).toHaveBeenCalledTimes(1);
     const error: any = next.mock.calls[0][0];
-    expect(error.functional).toBe(true);
-    expect(error.message).toBe('Feil ved kall til SendInn');
+    expect(error.errorCode).toBe('INTERNAL_SERVER_ERROR');
+    expect(error.message).toBe('SendInn submit request failed');
+    expect(error.userMessage).toBe('Feil ved kall til SendInn');
     expect(res.sendStatus).not.toHaveBeenCalled();
     expect(res.header).not.toHaveBeenCalled();
     expect(formScope.isDone()).toBe(true);

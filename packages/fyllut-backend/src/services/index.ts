@@ -1,5 +1,6 @@
 import {
   createApplicationPdfService,
+  createApplicationService,
   createCoverPageService,
   createFormService,
   createMergeFileService,
@@ -10,7 +11,6 @@ import {
 import { config } from '../config/config';
 import AppMetrics from './AppMetrics';
 import FormService from './FormService';
-import ApplicationService from './nologin/ApplicationService';
 import NologinTokenService from './nologin/NologinTokenService';
 import TranslationsService from './TranslationsService';
 
@@ -32,6 +32,18 @@ const applicationPdfService = createApplicationPdfService({
   metrics: {
     appName: 'fyllut',
     registry: appMetrics.register,
+  },
+});
+
+const applicationService = createApplicationService({
+  baseUrl: sendInnConfig.host,
+  paths: {
+    soknad: sendInnConfig.paths.soknad,
+    utfyltSoknad: sendInnConfig.paths.utfyltSoknad,
+  },
+  metrics: {
+    uploadDuration: appMetrics.innsendingApiUploadDuration,
+    uploadFileSize: appMetrics.innsendingApiUploadFileSize,
   },
 });
 
@@ -67,8 +79,6 @@ const translationService = createTranslationService({
 });
 
 const translationsService = new TranslationsService(config);
-
-const applicationService = new ApplicationService(config, applicationPdfService);
 
 const oldFormService = new FormService();
 

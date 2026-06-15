@@ -1,10 +1,10 @@
+import { SubmitApplicationRequest, SubmitApplicationResponse } from '@navikt/skjemadigitalisering-shared-backend';
 import nock from 'nock';
 import request from 'supertest';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createApp } from './app';
 import { config } from './config/config';
 import { createNologinToken, setupAzureTokenMocks, setupTokenMocks } from './test/integrationTestHelpers';
-import { SubmitApplicationRequest, SubmitApplicationResponse } from './types/sendinn/sendinn';
 import { base64Decode } from './utils/base64';
 
 vi.mock('./dekorator', () => ({

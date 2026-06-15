@@ -1,4 +1,4 @@
-import { correlator, HttpResponseError } from '@navikt/skjemadigitalisering-shared-backend';
+import { correlator } from '@navikt/skjemadigitalisering-shared-backend';
 import { ErrorCode, ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import { config } from '../config/config';
 import { logErrorWithStacktrace } from '../utils/errors';
@@ -9,6 +9,7 @@ const { isTest } = config;
 const getStatusFromErrorCode = (errorCode: ErrorCode): number => {
   switch (errorCode) {
     case 'BAD_REQUEST':
+    case 'FILE_TOO_MANY_PAGES':
       return 400;
     case 'UNAUTHORIZED':
       return 401;
@@ -65,7 +66,6 @@ const globalErrorHandler = (err, req, res, _next) => {
         errorCode: err.errorCode,
         correlation_id: getCorrelationId(err),
         userMessage: err.userMessage,
-        ...(err instanceof HttpResponseError && err.body !== undefined ? { body: err.body } : {}),
       });
     return;
   }

@@ -15,6 +15,7 @@ const createErrorResponse = (error: any): ErrorResponse => {
 const getStatusFromErrorCode = (errorCode: ErrorCode): number => {
   switch (errorCode) {
     case 'BAD_REQUEST':
+    case 'FILE_TOO_MANY_PAGES':
       return 400;
     case 'UNAUTHORIZED':
       return 401;
