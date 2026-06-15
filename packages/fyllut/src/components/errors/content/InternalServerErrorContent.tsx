@@ -15,6 +15,7 @@ export function InternalServerErrorContent() {
   useEffect(() => {
     const correlationId = searchParams.get('correlationId');
     if (correlationId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- state is intentionally hydrated from URL params on mount/update.
       setCorrelationId(correlationId);
       searchParams.delete('correlationId');
       setSearchParams(searchParams);
