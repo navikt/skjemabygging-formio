@@ -8,6 +8,7 @@ type ErrorCode =
   | 'TOO_MANY_REQUESTS' // Http 429
   | 'FORBIDDEN' // Http 403
   | 'NOT_FOUND' // Http 404
+  | 'METHOD_NOT_ALLOWED' // Http 405
   | 'LOGIN_TIMEOUT' // Http 440
   | 'INTERNAL_SERVER_ERROR' // Http 500
   | 'SERVICE_UNAVAILABLE'; // Http 503
@@ -29,6 +30,8 @@ const getErrorCodeFromStatus = (status: number): ErrorCode => {
       return 'FORBIDDEN';
     case 404:
       return 'NOT_FOUND';
+    case 405:
+      return 'METHOD_NOT_ALLOWED';
     case 409:
       return 'CONFLICT';
     case 429:
@@ -54,6 +57,8 @@ const getStatusFromErrorCode = (errorCode: ErrorCode): number => {
       return 403;
     case 'NOT_FOUND':
       return 404;
+    case 'METHOD_NOT_ALLOWED':
+      return 405;
     case 'CONFLICT':
       return 409;
     case 'TOO_MANY_REQUESTS':

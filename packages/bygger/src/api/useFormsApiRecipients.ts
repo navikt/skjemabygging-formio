@@ -1,5 +1,5 @@
 import { http as baseHttp, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
-import { Recipient } from '@navikt/skjemadigitalisering-shared-domain';
+import { Recipient, ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import { useFeedbackEmit } from '../context/notifications/FeedbackContext';
 
 const useFormsApiRecipients = () => {
@@ -49,8 +49,7 @@ const useFormsApiRecipients = () => {
       return await http.delete(`${baseUrl}/${recipientId}`);
     } catch (error: any) {
       const message = error?.message;
-      const status = error?.status;
-      if (status === 405) {
+      if (error instanceof ResponseError && error.errorCode === 'METHOD_NOT_ALLOWED') {
         feedbackEmit.error(
           `Mottaksadressen kan ikke slettes fordi den er i bruk i ett eller flere skjemaer. ${message}`,
         );
