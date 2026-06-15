@@ -1,15 +1,33 @@
-import { getStatusFromErrorCode, ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
+import { ErrorCode, getStatusFromErrorCode } from '@navikt/skjemadigitalisering-shared-domain';
 import ApiError from './ApiError';
 
-const isConflictError = (error: unknown): error is ResponseError =>
-  error instanceof ResponseError && error.errorCode === 'CONFLICT';
-
-const toApiError = (error: unknown): ApiError | undefined => {
-  if (!(error instanceof ResponseError)) {
+const getResponseErrorData = (error: unknown): { errorCode: ErrorCode; message: string } | undefined => {
+  if (
+    typeof error !== 'object' ||
+    error === null ||
+    !('errorCode' in error) ||
+    typeof error.errorCode !== 'string' ||
+    !('message' in error) ||
+    typeof error.message !== 'string'
+  ) {
     return undefined;
   }
 
-  return new ApiError(getStatusFromErrorCode(error.errorCode), error.message);
+  return {
+    errorCode: error.errorCode as ErrorCode,
+    message: error.message,
+  };
+};
+
+const isConflictError = (error: unknown): boolean => getResponseErrorData(error)?.errorCode === 'CONFLICT';
+
+const toApiError = (error: unknown): ApiError | undefined => {
+  const responseError = getResponseErrorData(error);
+  if (!responseError) {
+    return undefined;
+  }
+
+  return new ApiError(getStatusFromErrorCode(responseError.errorCode), responseError.message);
 };
 
 export { isConflictError, toApiError };
