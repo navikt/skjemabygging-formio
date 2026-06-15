@@ -2,6 +2,7 @@ import { TextField } from '@navikt/ds-react';
 import { SenderProps, SubmissionSender } from '@navikt/skjemadigitalisering-shared-domain';
 import { useComponentUtils } from '../../context/component/componentUtilsContext';
 import useComponentStyle from '../../util/styles/useComponentStyle';
+import InnerHtml from '../inner-html/InnerHtml';
 
 const SenderPerson = ({ customLabels, descriptions, value, onChange, readOnly, fieldSize }: SenderProps) => {
   const styles = useComponentStyle({
@@ -24,7 +25,7 @@ const SenderPerson = ({ customLabels, descriptions, value, onChange, readOnly, f
       <div className="form-group">
         <TextField
           label={translate(customLabels.nationalIdentityNumber)}
-          description={translate(descriptions.nationalIdentityNumber)}
+          description={<InnerHtml content={translate(descriptions.nationalIdentityNumber)} />}
           value={value?.person?.nationalIdentityNumber ?? ''}
           onChange={(e) => handleChange('nationalIdentityNumber', e)}
           ref={(ref) => addRef('sender:nationalIdentityNumber', ref)}

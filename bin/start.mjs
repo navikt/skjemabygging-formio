@@ -37,22 +37,36 @@ const isPortFree = (port) =>
     server.listen(port);
   });
 
+const loopbackHosts = ['127.0.0.1', '::1'];
+
+const canConnect = (port, host) =>
+  new Promise((resolve) => {
+    const socket = connect(port, host);
+    const done = (connected) => {
+      socket.removeAllListeners();
+      socket.destroy();
+      resolve(connected);
+    };
+    socket.once('connect', () => done(true));
+    socket.once('error', () => done(false));
+  });
+
 const waitForPort = (port, timeout = 60000) =>
   new Promise((resolve, reject) => {
     const start = Date.now();
-    const attempt = () => {
-      const socket = connect(port, '127.0.0.1');
-      socket.once('connect', () => {
-        socket.destroy();
+    const attempt = async () => {
+      const checks = await Promise.all(loopbackHosts.map((host) => canConnect(port, host)));
+      if (checks.some(Boolean)) {
         resolve();
-      });
-      socket.once('error', () => {
-        socket.destroy();
-        if (Date.now() - start > timeout) return reject(new Error(`Port ${port} not ready after ${timeout}ms`));
-        setTimeout(attempt, 250);
-      });
+        return;
+      }
+      if (Date.now() - start > timeout) {
+        reject(new Error(`Port ${port} not ready after ${timeout}ms`));
+        return;
+      }
+      setTimeout(() => void attempt(), 250);
     };
-    attempt();
+    void attempt();
   });
 
 const getFreePorts = async (count, start = 3440) => {

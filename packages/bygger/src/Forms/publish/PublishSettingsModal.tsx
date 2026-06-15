@@ -57,6 +57,8 @@ export const getCompleteTranslationLanguageCodeList = (
 const PublishSettingsModal = ({ open, onClose, onConfirm, form, unsavedGlobalTranslations }: Props) => {
   const { translations: formTranslations } = useFormTranslations();
   const { translations: globalTranslations } = useGlobalTranslations();
+  const statusPanelStyles = useStatusPanelStyles();
+  const statusStyles = useStatusStyles({});
   const [completeTranslationLanguageCodeList, setCompleteTranslationLanguageCodeList] = useState<string[]>([]);
   const [checkedLanguages, setCheckedLanguages] = useState<string[]>([]);
 
@@ -83,14 +85,39 @@ const PublishSettingsModal = ({ open, onClose, onConfirm, form, unsavedGlobalTra
     const sanitizedCompleteTranslations = completeTranslations
       .map((langCode) => (langCode.length > 2 ? langCode.substring(0, 2) : langCode))
       .filter(skipBokmal);
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- derived modal state is synced from translation sources.
     setCompleteTranslationLanguageCodeList([...sanitizedCompleteTranslations, 'nb']);
     setCheckedLanguages([...sanitizedCompleteTranslations, 'nb']);
   }, [textKeysFromForm, form.introPage?.enabled, formTranslations, globalTranslations, unsavedGlobalTranslations]);
 
-  const PublishStatusPanel = ({ form }: { form: Form }) => {
-    const statusPanelStyles = useStatusPanelStyles();
-    const statusStyles = useStatusStyles({});
-    return (
+  const LanguagePublishCheckbox = ({ languageCode }: { languageCode: string }) => (
+    <Checkbox
+      value={languageCode}
+    >{`${allLanguagesInNorwegian[languageCode]} (${languageCode.toUpperCase()})`}</Checkbox>
+  );
+
+  const IncompleteLanguageCheckbox = ({ languageCode }: { languageCode: string }) => (
+    <Checkbox value={languageCode} disabled>{`${
+      allLanguagesInNorwegian[languageCode]
+    } (${languageCode.toUpperCase()})`}</Checkbox>
+  );
+
+  const isTranslationComplete = (languageCode: string) => completeTranslationLanguageCodeList.includes(languageCode);
+  const isPreviouslyPublished = (languageCode: string) => form.publishedLanguages?.includes(languageCode);
+
+  return (
+    <ConfirmationModal
+      open={open}
+      onClose={onClose}
+      onConfirm={() =>
+        onConfirm(completeTranslationLanguageCodeList.filter((languageCode) => checkedLanguages.includes(languageCode)))
+      }
+      texts={{
+        title: 'Publiseringsinnstillinger',
+        confirm: 'Publiser',
+        cancel: 'Avbryt publisering',
+      }}
+    >
       <table className={statusPanelStyles.table}>
         <thead>
           <tr>
@@ -125,38 +152,6 @@ const PublishSettingsModal = ({ open, onClose, onConfirm, form, unsavedGlobalTra
           </tr>
         </tbody>
       </table>
-    );
-  };
-
-  const LanguagePublishCheckbox = ({ languageCode }: { languageCode: string }) => (
-    <Checkbox
-      value={languageCode}
-    >{`${allLanguagesInNorwegian[languageCode]} (${languageCode.toUpperCase()})`}</Checkbox>
-  );
-
-  const IncompleteLanguageCheckbox = ({ languageCode }: { languageCode: string }) => (
-    <Checkbox value={languageCode} disabled>{`${
-      allLanguagesInNorwegian[languageCode]
-    } (${languageCode.toUpperCase()})`}</Checkbox>
-  );
-
-  const isTranslationComplete = (languageCode: string) => completeTranslationLanguageCodeList.includes(languageCode);
-  const isPreviouslyPublished = (languageCode: string) => form.publishedLanguages?.includes(languageCode);
-
-  return (
-    <ConfirmationModal
-      open={open}
-      onClose={onClose}
-      onConfirm={() =>
-        onConfirm(completeTranslationLanguageCodeList.filter((languageCode) => checkedLanguages.includes(languageCode)))
-      }
-      texts={{
-        title: 'Publiseringsinnstillinger',
-        confirm: 'Publiser',
-        cancel: 'Avbryt publisering',
-      }}
-    >
-      <PublishStatusPanel form={form} />
       <Heading level="2" size="medium">
         Hvilke språkversjoner skal publiseres?
       </Heading>
