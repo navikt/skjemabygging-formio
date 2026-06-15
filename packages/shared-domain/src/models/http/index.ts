@@ -87,7 +87,6 @@ class ResponseError extends Error {
    */
   constructor(errorCode: ErrorCode, message: string, correlationId?: string, userMessage?: string) {
     super(message);
-    Object.setPrototypeOf(this, new.target.prototype);
     this.errorCode = errorCode;
     this.correlationId = correlationId;
     this.userMessage = userMessage;

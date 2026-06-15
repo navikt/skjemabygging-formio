@@ -19,7 +19,10 @@ const getResponseErrorData = (error: unknown): { errorCode: ErrorCode; message: 
   };
 };
 
-const isConflictError = (error: unknown): boolean => getResponseErrorData(error)?.errorCode === 'CONFLICT';
+const hasErrorCode = (error: unknown, errorCode: ErrorCode): boolean =>
+  getResponseErrorData(error)?.errorCode === errorCode;
+
+const isConflictError = (error: unknown): boolean => hasErrorCode(error, 'CONFLICT');
 
 const toApiError = (error: unknown): ApiError | undefined => {
   const responseError = getResponseErrorData(error);
@@ -30,4 +33,4 @@ const toApiError = (error: unknown): ApiError | undefined => {
   return new ApiError(getStatusFromErrorCode(responseError.errorCode), responseError.message);
 };
 
-export { isConflictError, toApiError };
+export { hasErrorCode, isConflictError, toApiError };
