@@ -44,6 +44,31 @@ const getErrorCodeFromStatus = (status: number): ErrorCode => {
   }
 };
 
+const getStatusFromErrorCode = (errorCode: ErrorCode): number => {
+  switch (errorCode) {
+    case 'BAD_REQUEST':
+      return 400;
+    case 'UNAUTHORIZED':
+      return 401;
+    case 'FORBIDDEN':
+      return 403;
+    case 'NOT_FOUND':
+      return 404;
+    case 'CONFLICT':
+      return 409;
+    case 'TOO_MANY_REQUESTS':
+      return 429;
+    case 'LOGIN_TIMEOUT':
+      return 440;
+    case 'INTERNAL_SERVER_ERROR':
+      return 500;
+    case 'SERVICE_UNAVAILABLE':
+      return 503;
+    default:
+      return 500;
+  }
+};
+
 class ResponseError extends Error {
   public readonly errorCode: ErrorCode;
   public readonly userMessage: string | undefined;
@@ -63,5 +88,5 @@ class ResponseError extends Error {
   }
 }
 
-export { ResponseError, getErrorCodeFromStatus };
+export { ResponseError, getErrorCodeFromStatus, getStatusFromErrorCode };
 export type { ErrorCode, ErrorResponse };

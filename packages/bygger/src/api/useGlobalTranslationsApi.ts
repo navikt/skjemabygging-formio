@@ -1,8 +1,7 @@
 import { http as baseHttp, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { useFeedbackEmit } from '../context/notifications/FeedbackContext';
-import ApiError from './ApiError';
-import { isConflictError } from './httpErrorUtils';
+import { isConflictError, toApiError } from './httpErrorUtils';
 
 const useGlobalTranslationsApi = () => {
   const feedbackEmit = useFeedbackEmit();
@@ -28,7 +27,7 @@ const useGlobalTranslationsApi = () => {
         const message = (error as Error)?.message;
         feedbackEmit.error(`Feil ved oppretting av global oversettelse med nøkkel ${translation.key}. ${message}`);
       }
-      throw isConflictError(error) ? new ApiError(409, error.message) : new Error(error);
+      throw toApiError(error) ?? new Error(error);
     }
   };
 
@@ -41,7 +40,7 @@ const useGlobalTranslationsApi = () => {
         const message = (error as Error)?.message;
         feedbackEmit.error(`Feil ved oppdatering av global oversettelse med nøkkel ${translation.key}. ${message}`);
       }
-      throw isConflictError(error) ? new ApiError(409, error.message) : new Error(error);
+      throw toApiError(error) ?? new Error(error);
     }
   };
 
