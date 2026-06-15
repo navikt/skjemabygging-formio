@@ -91,6 +91,7 @@ const NavForm = ({
   const webformStartRef = useRef(false);
   // Keep a ref to events to avoid stale closures in layout effect cleanup
   const eventsRef = useRef(events);
+  // eslint-disable-next-line react-hooks/refs -- Formio cleanup handlers must read latest events without re-registering effects.
   eventsRef.current = events;
 
   /**
@@ -214,6 +215,7 @@ const NavForm = ({
     if (webform && webform?.language !== language) {
       appConfig.logger?.debug('Set language', { webformId: webform?.id, language });
 
+      // eslint-disable-next-line react-hooks/immutability -- Formio Webform is imperative and requires direct instance updates.
       webform.language = language;
     }
   }, [appConfig.logger, webform, language]);
@@ -228,6 +230,7 @@ const NavForm = ({
         prefillData,
       });
 
+      // eslint-disable-next-line react-hooks/immutability -- Formio Webform is imperative and requires direct instance updates.
       webform.form = NavFormHelper.prefillForm(webform.form, prefillData);
 
       // Need to trigger a handle change event after prefilling form or else

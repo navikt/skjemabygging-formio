@@ -25,7 +25,7 @@ const RecipientRow = ({ recipient }: { recipient: Partial<Recipient> }) => {
     };
   }, [value.name, value.poBoxAddress, value.postalCode, value.postalName]);
 
-  const isValid = (recipient: Partial<Recipient>): recipient is Recipient =>
+  const isValid = (_recipient: Partial<Recipient>): _recipient is Recipient =>
     Object.values(validationErrors).every((value) => value === undefined);
 
   const onSave = async () => {
