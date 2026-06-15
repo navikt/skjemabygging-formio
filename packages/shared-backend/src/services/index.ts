@@ -1,4 +1,6 @@
 import { coverPageMapper } from './cover-page/mapper';
+export { createActiveTaskService } from './active-task';
+export type { ActiveTask, ActiveTaskService } from './active-task';
 export { createApplicationPdfService } from './application-pdf/applicationPdfService';
 export type { ApplicationPdfService } from './application-pdf/applicationPdfService';
 export type { ForstesideRequestBody } from './cover-page/coverPageRequestTypes';

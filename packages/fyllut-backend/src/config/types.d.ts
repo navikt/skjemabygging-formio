@@ -12,7 +12,6 @@ export type SendInnConfig = {
   devM2MToken?: string;
   devOBOToken?: string;
   paths: {
-    opprettedeSoknaderForSkjema: (skjemanummer: string, soknadsTyper?: Array<'soknad' | 'ettersendelse'>) => string;
     soknad: string;
     utfyltSoknad: string;
     prefillData: string;

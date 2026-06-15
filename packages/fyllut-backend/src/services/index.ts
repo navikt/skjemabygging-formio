@@ -1,4 +1,5 @@
 import {
+  createActiveTaskService,
   createApplicationPdfService,
   createCoverPageService,
   createFormService,
@@ -33,6 +34,11 @@ const applicationPdfService = createApplicationPdfService({
     appName: 'fyllut',
     registry: appMetrics.register,
   },
+});
+
+const activeTaskService = createActiveTaskService({
+  baseUrl: sendInnConfig.host,
+  activitiesPath: sendInnConfig.paths.activities,
 });
 
 const coverPageService = createCoverPageService({
@@ -75,6 +81,7 @@ const oldFormService = new FormService();
 const nologinTokenService = NologinTokenService(config);
 
 export {
+  activeTaskService,
   applicationPdfService,
   applicationService,
   appMetrics,
