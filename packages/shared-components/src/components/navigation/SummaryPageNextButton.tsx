@@ -43,6 +43,15 @@ export function SummaryPageNextButton({
     (submissionMethod === 'digital' || submissionTypesUtils.isDigitalSubmissionOnly(submissionTypes)) &&
     !hasRelevantAttachments(form, submission ?? { data: {} });
   const digitalWithUploadsInFyllut = submissionMethod === 'digital' && attachmentPageEnabled;
+  const toResponseError = (error: unknown) =>
+    error instanceof ResponseError
+      ? error
+      : new ResponseError(
+          'ERROR',
+          error instanceof Error ? error.message : 'Unknown submit error',
+          undefined,
+          TEXTS.statiske.error.serverErrorTitle,
+        );
 
   const submit = async (e) => {
     if (!canSubmit || !submission || !submission.data) {
@@ -77,7 +86,7 @@ export function SummaryPageNextButton({
       setLoading(true);
       await submitSoknad(submission);
     } catch (err: any) {
-      setError(err);
+      setError(toResponseError(err));
       setLoading(false);
     }
   };
