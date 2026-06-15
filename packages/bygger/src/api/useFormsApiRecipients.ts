@@ -50,9 +50,7 @@ const useFormsApiRecipients = () => {
     } catch (error: any) {
       const message = error?.message;
       if (error instanceof ResponseError && error.errorCode === 'METHOD_NOT_ALLOWED') {
-        feedbackEmit.error(
-          `Mottaksadressen kan ikke slettes fordi den er i bruk i ett eller flere skjemaer. ${message}`,
-        );
+        feedbackEmit.error(`Mottaksadressen kan ikke slettes fordi den er i bruk i ett eller flere skjemaer.`);
       } else {
         feedbackEmit.error(`Feil ved sletting av mottaker. ${message}`);
       }
