@@ -6,6 +6,7 @@ import { CancelAndDeleteButton } from '../../components/navigation/CancelAndDele
 import NavigationButtonRow from '../../components/navigation/NavigationButtonRow';
 import { NextButton } from '../../components/navigation/NextButton';
 import { PreviousButton } from '../../components/navigation/PreviousButton';
+import { SaveButton } from '../../components/navigation/SaveButton';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
@@ -19,8 +20,8 @@ const AttachmentsUploadButtonRow = ({ attachments, onError }: { attachments: Att
   const { search } = useLocation();
   const { translate } = useLanguages();
   const { addError, removeAllErrors, submissionAttachments } = useAttachmentUpload();
-  const { activeComponents, form } = useForm();
-  const { updateMellomlagring } = useSendInn();
+  const { activeComponents, form, submission } = useForm();
+  const { isMellomlagringActive, updateMellomlagring } = useSendInn();
 
   const valueValidator = attachmentValidator(translate, ['value']);
   const fileValidator = attachmentValidator(translate, ['fileUploaded']);
@@ -126,6 +127,7 @@ const AttachmentsUploadButtonRow = ({ attachments, onError }: { attachments: Att
         />
       }
       cancelButton={<CancelAndDeleteButton />}
+      saveButton={isMellomlagringActive && submission && <SaveButton submission={submission} />}
     />
   );
 };

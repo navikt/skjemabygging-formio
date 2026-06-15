@@ -3,6 +3,7 @@ import { SenderProps, SubmissionSender } from '@navikt/skjemadigitalisering-shar
 import type { ChangeEvent } from 'react';
 import { useComponentUtils } from '../../context/component/componentUtilsContext';
 import useComponentStyle from '../../util/styles/useComponentStyle';
+import InnerHtml from '../inner-html/InnerHtml';
 
 const SenderOrganization = ({ customLabels, descriptions, value, onChange, readOnly, fieldSize }: SenderProps) => {
   const styles = useComponentStyle({
@@ -25,7 +26,7 @@ const SenderOrganization = ({ customLabels, descriptions, value, onChange, readO
       <div className="form-group">
         <TextField
           label={translate(customLabels.organizationNumber)}
-          description={translate(descriptions.organizationNumber)}
+          description={<InnerHtml content={translate(descriptions.organizationNumber)} />}
           value={value?.organization?.number ?? ''}
           onChange={(e) => handleChange('number', e)}
           ref={(ref) => addRef('sender:organizationNumber', ref)}
