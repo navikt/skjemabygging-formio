@@ -1,5 +1,11 @@
 import { FileItem, FileObject } from '@navikt/ds-react';
-import { Submission, SubmissionAttachment, TEXTS, UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  ResponseError,
+  Submission,
+  SubmissionAttachment,
+  TEXTS,
+  UploadedFile,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, useContext, useMemo, useState } from 'react';
 import getFileUploadApi from '../../api/file-upload/fileUpload';
 import baseHttp from '../../api/util/http/http';
@@ -227,12 +233,14 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
       if (isAuthenticationError(error)) {
         handleSessionExpired();
         return Promise.resolve({ status: 'auth-error' });
-      } else if (isTooManyPagesError(error)) {
-        addFileInProgress(attachmentId, { ...file, error: true, reasons: ['uploadTooManyPages'] });
-      } else if (isServiceUnavailable(error)) {
-        addFileInProgress(attachmentId, { ...file, error: true, reasons: ['serviceUnavailable'] });
+      } else if (error instanceof ResponseError) {
+        addFileInProgress(attachmentId, {
+          ...file,
+          error: true,
+          reasons: [error.userMessage ?? TEXTS.statiske.uploadFile.uploadFileError],
+        });
       } else {
-        addFileInProgress(attachmentId, { ...file, error: true, reasons: ['uploadHttpError'] });
+        addFileInProgress(attachmentId, { ...file, error: true, reasons: [TEXTS.statiske.uploadFile.uploadFileError] });
       }
       return Promise.resolve({ status: 'error' });
     }
@@ -376,11 +384,7 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
 
 const useAttachmentUpload = () => useContext(AttachmentUploadContext);
 
-const isAuthenticationError = (error: any): boolean => error instanceof baseHttp.UnauthenticatedError;
-
-const isTooManyPagesError = (error: any): boolean => error instanceof baseHttp.TooManyPagesError;
-
-const isServiceUnavailable = (error: any): boolean => error instanceof baseHttp.ServiceUnavailable;
+const isAuthenticationError = (error: unknown): boolean => baseHttp.isAuthenticationError(error);
 
 export type { AttachmentError, AttachmentErrorType };
 export default AttachmentUploadProvider;
