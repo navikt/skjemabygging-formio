@@ -27,6 +27,7 @@ describe('coverPageDownloadDataMapper', () => {
         type: 'container',
         key: 'yourInformation',
         yourInformation: true,
+        tree: true,
       },
       generateAttachmentComponent('attachment1', 'Vedlegg label', 'A1', 'Vedlegg title'),
     ] as Component[],
