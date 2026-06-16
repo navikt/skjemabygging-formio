@@ -79,7 +79,7 @@ describe('http requests', () => {
           message: 'Internal upstream detail',
           userMessage: 'statiske.nologin.temporarilyUnavailable',
           errorCode: 'SERVICE_UNAVAILABLE',
-          correlation_id: 'corr-id',
+          correlationId: 'corr-id',
         });
 
       await expect(http.get('https://www.nav.no/response-error')).rejects.toMatchObject({
