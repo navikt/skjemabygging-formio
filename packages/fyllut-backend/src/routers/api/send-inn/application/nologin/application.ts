@@ -1,4 +1,4 @@
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { ResponseError, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import { HttpError } from '../../../../../utils/errors/HttpError';
 import { generatePdfAndSubmit } from '../common';
@@ -14,10 +14,14 @@ const post = async (req: Request, res: Response, next: NextFunction) => {
     res.json(receiptAndPdf);
   } catch (error) {
     if (error instanceof HttpError && error.http_response_body.errorCode === 'temporarilyUnavailable') {
-      return res.status(503).json({
-        message: TEXTS.statiske.nologin.temporarilyUnavailable,
-        errorCode: 'SERVICE_UNAVAILABLE',
-      });
+      return next(
+        new ResponseError(
+          'SERVICE_UNAVAILABLE',
+          'Nologin submit temporarily unavailable',
+          error.correlation_id,
+          TEXTS.statiske.nologin.temporarilyUnavailable,
+        ),
+      );
     }
     next(error);
   }

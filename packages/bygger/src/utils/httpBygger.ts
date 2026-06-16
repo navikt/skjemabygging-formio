@@ -4,7 +4,7 @@ const get = async <T>(url: string, headers?: FetchHeader, opts?: FetchOptions): 
   try {
     return await http.get(url, headers, opts);
   } catch (e) {
-    if (e instanceof http.UnauthenticatedError) {
+    if (http.isAuthenticationError(e)) {
       handleUnauthenticated();
     }
     throw e;
@@ -15,7 +15,7 @@ const put = async <T>(url: string, body: object, headers?: FetchHeader, opts?: F
   try {
     return await http.put(url, body, headers, opts);
   } catch (e) {
-    if (e instanceof http.UnauthenticatedError) {
+    if (http.isAuthenticationError(e)) {
       handleUnauthenticated();
     }
     throw e;
@@ -26,7 +26,7 @@ const post = async <T>(url: string, body: object, headers?: FetchHeader, opts?: 
   try {
     return await http.post(url, body, headers, opts);
   } catch (e) {
-    if (e instanceof http.UnauthenticatedError) {
+    if (http.isAuthenticationError(e)) {
       handleUnauthenticated();
     }
     throw e;

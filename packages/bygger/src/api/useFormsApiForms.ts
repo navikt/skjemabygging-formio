@@ -2,6 +2,7 @@ import { http as baseHttp, useAppConfig } from '@navikt/skjemadigitalisering-sha
 import { Form, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { useFeedbackEmit } from '../context/notifications/FeedbackContext';
 import { overwriteForm } from '../import/api';
+import { isConflictError } from './httpErrorUtils';
 
 const useFormsApiForms = () => {
   const feedbackEmit = useFeedbackEmit();
@@ -44,9 +45,8 @@ const useFormsApiForms = () => {
       return result;
     } catch (error: any) {
       const message = error?.message;
-      const status = error?.status;
       logger?.error(`Failed to create form: ${baseUrl}`, { message });
-      if (status === 409) {
+      if (isConflictError(error)) {
         feedbackEmit.error('Skjemanummer er allerede i bruk. Velg et annet skjemanummer.');
         return;
       }
@@ -65,9 +65,8 @@ const useFormsApiForms = () => {
       return result;
     } catch (error: any) {
       const message = error?.message;
-      const status = error?.status;
       logger?.error(`Failed to update form: ${url}`, { message });
-      if (status === 409) {
+      if (isConflictError(error)) {
         feedbackEmit.error('Skjemaet kan ikke oppdateres akkurat nå. Du kan prøve å laste siden på nytt.');
         return;
       }
@@ -88,8 +87,7 @@ const useFormsApiForms = () => {
       return result;
     } catch (error: any) {
       const message = error?.message;
-      const status = error?.status;
-      if (status === 409) {
+      if (isConflictError(error)) {
         feedbackEmit.error('Endringer kan ikke forkastes. Du kan prøve å laste siden på nytt.');
         return;
       }
