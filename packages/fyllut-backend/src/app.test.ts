@@ -80,6 +80,26 @@ describe('app', () => {
       .expect(200);
   });
 
+  it('returns a 404 response error when an api form is not found', async () => {
+    const formScope = nock(formsApiUrl)
+      .get('/v1/forms/testform001')
+      .query(true)
+      .reply(404, { message: 'not found', correlationId: 'corr-1' }, { 'Content-Type': 'application/json' });
+
+    const res = await request(createApp())
+      .get('/fyllut/api/forms/testform001')
+      .set('Accept', 'application/json')
+      .expect(404);
+
+    expect(res.body).toMatchObject({
+      message: 'not found',
+      errorCode: 'NOT_FOUND',
+      correlationId: 'corr-1',
+    });
+
+    formScope.done();
+  });
+
   it('Looks for Authorization header when Fyllut-Submission-Method=digital', async () => {
     await request(createApp())
       .get('/fyllut/api/config')
