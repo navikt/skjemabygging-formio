@@ -1,4 +1,4 @@
-import { ErrorCode, ErrorResponse, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { ErrorResponse, getStatusFromErrorCode, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import correlator from 'express-correlation-id';
 import { logger } from '../../shared/logger/logger';
@@ -10,25 +10,6 @@ const createErrorResponse = (error: any): ErrorResponse => {
     correlation_id: error.correlationId ?? correlator.getId(),
     userMessage: error.userMessage ?? TEXTS.statiske.error.serverErrorTitle,
   };
-};
-
-const getStatusFromErrorCode = (errorCode: ErrorCode): number => {
-  switch (errorCode) {
-    case 'BAD_REQUEST':
-      return 400;
-    case 'UNAUTHORIZED':
-      return 401;
-    case 'FORBIDDEN':
-      return 403;
-    case 'NOT_FOUND':
-      return 404;
-    case 'INTERNAL_SERVER_ERROR':
-      return 500;
-    case 'SERVICE_UNAVAILABLE':
-      return 503;
-    default:
-      return 500;
-  }
 };
 
 const errorHandler = (error: any, _req: Request, res: Response, _next: NextFunction) => {
