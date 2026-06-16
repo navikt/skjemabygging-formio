@@ -1,4 +1,4 @@
-import { panel, sender } from '../../../form-builder/components';
+import { container, panel, sender } from '../../../form-builder/components';
 import form from '../../../form-builder/form/form';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
 
@@ -23,10 +23,20 @@ const senderForm = () => {
       panel({
         title: 'Organisasjon',
         components: [
-          sender({
-            label: 'Mottaker (organisasjon)',
-            key: 'mottakerOrganisasjon',
-            senderRole: 'organization',
+          container({
+            key: 'containerOrganization',
+            components: [
+              container({
+                key: 'containerOrganizationNested',
+                components: [
+                  sender({
+                    label: 'Mottaker (organisasjon)',
+                    key: 'mottakerOrganisasjon',
+                    senderRole: 'organization',
+                  }),
+                ],
+              }),
+            ],
           }),
         ],
       }),

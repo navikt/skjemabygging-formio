@@ -1,5 +1,5 @@
 import { Form, NavFormType, Submission, SubmissionData, SubmissionYourInformation } from '../../models';
-import { navFormUtils } from '../form';
+import { submissionUtils } from './submissionUtils';
 
 /**
  * Returns the first your information object from the submission data.
@@ -10,12 +10,15 @@ const getYourInformation = (
   form: NavFormType | Form,
   submissionData: SubmissionData,
 ): SubmissionYourInformation | undefined => {
-  const yourInformationForm = navFormUtils
-    .flattenComponents(form.components)
-    .find((component) => component.yourInformation && submissionData[component.key]);
+  const submission = { data: submissionData };
 
-  if (yourInformationForm) {
-    return submissionData[yourInformationForm.key] as SubmissionYourInformation;
+  for (const { component, submissionPath } of submissionUtils.flattenComponentsWithPath(form.components)) {
+    if (component.yourInformation) {
+      const value = submissionUtils.getSubmissionValue(submissionPath, submission);
+      if (value !== undefined) {
+        return value as SubmissionYourInformation;
+      }
+    }
   }
 };
 
