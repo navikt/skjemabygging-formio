@@ -91,13 +91,12 @@ const validateAttachment = (attachment: Attachment, validationId: string): Attac
   return attachment;
 };
 
-const removeSpaces = (value: string): string => formatUtils.removeAllSpaces(value);
-const removeOptionalSpaces = (value?: string): string | undefined => (value ? removeSpaces(value) : value);
+const removeSpaces = (value?: string): string | undefined => (value ? formatUtils.removeAllSpaces(value) : value);
 
 const extractBruker = (form: Form, submission: Submission): BrukerDto | undefined => {
   const identityNumber = yourInformationUtils.getIdentityNumber(form, submission);
   if (identityNumber) {
-    return { id: removeSpaces(identityNumber), idType: 'FNR' };
+    return { id: removeSpaces(identityNumber)!, idType: 'FNR' };
   }
   return undefined;
 };
@@ -108,13 +107,13 @@ const extractAvsender = (form: Form, submission: Submission): AvsenderId | undef
     if (sender.person) {
       return {
         idType: 'FNR',
-        id: removeOptionalSpaces(sender.person?.nationalIdentityNumber),
+        id: removeSpaces(sender.person?.nationalIdentityNumber),
         navn: `${sender.person?.firstName} ${sender.person?.surname}`,
       };
     } else if (sender.organization) {
       return {
         idType: 'ORGNR',
-        id: removeOptionalSpaces(sender.organization?.number),
+        id: removeSpaces(sender.organization?.number),
         navn: sender.organization?.name,
       };
     }
