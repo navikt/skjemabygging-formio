@@ -60,14 +60,9 @@
     }
   ],
   "properties": {
-    "submissionTypes": [
-      "PAPER",
-      "DIGITAL"
-    ],
-    "publishedLanguages": [
-      "nb",
-      "en"
-    ],
+    "skjemanummer": "st-paper-digital",
+    "submissionTypes": ["PAPER", "DIGITAL"],
+    "publishedLanguages": ["nb", "en"],
     "signatures": [
       {
         "key": "e037eeae-cf54-4ece-94df-b9bc963396f1",

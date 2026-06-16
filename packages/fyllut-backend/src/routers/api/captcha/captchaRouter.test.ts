@@ -1,3 +1,4 @@
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { Express } from 'express';
 import request from 'supertest';
 import { createApp } from '../../../app';
@@ -56,7 +57,11 @@ describe('Captcha Handler Tests', () => {
         firstName: 'Roar',
       })
       .expect('Content-Type', /json/)
-      .expect(400);
+      .expect(400)
+      .expect((res) => {
+        expect(res.body.errorCode).toBe('BAD_REQUEST');
+        expect(res.body.userMessage).toBe(TEXTS.statiske.uploadFile.uploadFileError);
+      });
   });
 
   it('fails if data_33 is empty', async () => {
