@@ -9,6 +9,15 @@
           "verdi": "Ja"
         }
       ]
+    },
+    {
+      "label": "Page 1",
+      "verdiliste": [
+        {
+          "label": "Fødselsnummer eller d-nummer",
+          "verdi": "08842748500"
+        }
+      ]
     }
   ],
   "skjemanummer": "conditional-page",
@@ -17,7 +26,7 @@
     "språk": "nb"
   },
   "bunntekst": {
-    "upperleft": "F.nr: —",
+    "upperleft": "F.nr: 08842748500",
     "lowerleft": "Skjemanummer: conditional-page",
     "upperRight": null,
     "upperMiddle": "Opprettet: 21 mai 2026, 16:38",
