@@ -84,6 +84,7 @@
     }
   ],
   "properties": {
+    "skjemanummer": "stpaper",
     "submissionTypes": ["PAPER"],
     "publishedLanguages": ["nb", "en"],
     "innsendingForklaring": "Her er litt forklaring"

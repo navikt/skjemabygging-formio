@@ -1,3 +1,4 @@
+import { ResponseError, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import nock from 'nock';
 import http from './http';
 
@@ -68,6 +69,30 @@ describe('http requests', () => {
       nock.isDone();
     });
 
+    it('throws ResponseError and keeps userMessage separate from message', async () => {
+      nock('https://www.nav.no')
+        .defaultReplyHeaders({
+          'Content-Type': http.MimeType.JSON,
+        })
+        .get('/response-error')
+        .reply(503, {
+          message: 'Internal upstream detail',
+          userMessage: 'statiske.nologin.temporarilyUnavailable',
+          errorCode: 'SERVICE_UNAVAILABLE',
+          correlationId: 'corr-id',
+        });
+
+      await expect(http.get('https://www.nav.no/response-error')).rejects.toMatchObject({
+        constructor: ResponseError,
+        message: 'Internal upstream detail',
+        userMessage: 'statiske.nologin.temporarilyUnavailable',
+        errorCode: 'SERVICE_UNAVAILABLE',
+        correlationId: 'corr-id',
+      });
+
+      nock.isDone();
+    });
+
     it('error', async () => {
       const errorMessage = 'Error message';
       nock('https://www.nav.no')
@@ -92,6 +117,24 @@ describe('http requests', () => {
         .reply(404);
 
       await expect(http.get('https://www.nav.no/error')).rejects.toThrow('Not Found');
+
+      nock.isDone();
+    });
+
+    it('defaults userMessage when backend response does not provide one', async () => {
+      nock('https://www.nav.no')
+        .defaultReplyHeaders({
+          'Content-Type': http.MimeType.TEXT,
+        })
+        .get('/response-error-without-user-message')
+        .reply(503, 'Service unavailable');
+
+      await expect(http.get('https://www.nav.no/response-error-without-user-message')).rejects.toMatchObject({
+        constructor: ResponseError,
+        message: 'Service unavailable',
+        userMessage: TEXTS.statiske.error.serverErrorTitle,
+        errorCode: 'SERVICE_UNAVAILABLE',
+      });
 
       nock.isDone();
     });
