@@ -9,7 +9,6 @@ describe('getYourInformationUtils', () => {
         {
           key: 'yourInfo',
           yourInformation: true,
-          input: true,
           label: '',
           type: '',
         },
@@ -29,14 +28,12 @@ describe('getYourInformationUtils', () => {
         {
           key: 'yourInfo',
           yourInformation: true,
-          input: true,
           label: '',
           type: '',
         },
         {
           key: 'yourInfo2',
           yourInformation: true,
-          input: true,
           label: '',
           type: '',
         },
@@ -51,42 +48,12 @@ describe('getYourInformationUtils', () => {
     expect(result).toEqual({ name: 'Jane Doe' });
   });
 
-  it('returns the your information object when nested inside containers', () => {
-    const form = {
-      components: [
-        {
-          key: 'container',
-          type: 'container',
-          tree: true,
-          components: [
-            {
-              key: 'yourInfo',
-              yourInformation: true,
-              input: true,
-              label: '',
-              type: '',
-            },
-          ],
-        },
-      ],
-    } as unknown as NavFormType;
-    const submission: SubmissionData = {
-      container: {
-        yourInfo: { name: 'John Doe' },
-      },
-    };
-
-    const result = yourInformationUtils.getYourInformation(form, submission);
-    expect(result).toEqual({ name: 'John Doe' });
-  });
-
   it('returns undefined when your information object is not present in submission data', () => {
     const form = {
       components: [
         {
           key: 'yourInfo',
           yourInformation: true,
-          input: true,
           label: '',
           type: '',
         },
