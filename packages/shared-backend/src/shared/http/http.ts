@@ -1,4 +1,4 @@
-import { getErrorCodeFromStatus, ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
+import { ErrorCode, getErrorCodeFromStatus, ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import crypto from 'crypto';
 import correlator from 'express-correlation-id';
 import { logger } from '../logger/logger';
@@ -117,13 +117,63 @@ const handleBody = async (response: Response) => {
   }
 };
 
+const isErrorCode = (value: unknown): value is ErrorCode => {
+  return (
+    value === 'ERROR' ||
+    value === 'WARNING' ||
+    value === 'CONFLICT' ||
+    value === 'FILE_TOO_MANY_PAGES' ||
+    value === 'BAD_REQUEST' ||
+    value === 'UNAUTHORIZED' ||
+    value === 'TOO_MANY_REQUESTS' ||
+    value === 'FORBIDDEN' ||
+    value === 'NOT_FOUND' ||
+    value === 'METHOD_NOT_ALLOWED' ||
+    value === 'LOGIN_TIMEOUT' ||
+    value === 'INTERNAL_SERVER_ERROR' ||
+    value === 'SERVICE_UNAVAILABLE'
+  );
+};
+
+const createResponseError = (response: Response, errorBody: unknown) => {
+  const message =
+    typeof errorBody === 'string'
+      ? errorBody
+      : typeof errorBody === 'object' && errorBody && 'message' in errorBody && typeof errorBody.message === 'string'
+        ? errorBody.message
+        : response.statusText;
+
+  const errorCode =
+    typeof errorBody === 'object' && errorBody && 'errorCode' in errorBody && isErrorCode(errorBody.errorCode)
+      ? errorBody.errorCode
+      : getErrorCodeFromStatus(response.status);
+
+  const correlationId =
+    typeof errorBody === 'object' &&
+    errorBody &&
+    'correlation_id' in errorBody &&
+    typeof errorBody.correlation_id === 'string'
+      ? errorBody.correlation_id
+      : undefined;
+
+  const userMessage =
+    typeof errorBody === 'object' &&
+    errorBody &&
+    'userMessage' in errorBody &&
+    typeof errorBody.userMessage === 'string'
+      ? errorBody.userMessage
+      : undefined;
+
+  return new ResponseError(errorCode, message, correlationId, userMessage);
+};
+
 const handleResponse = async <T>(response: Response): Promise<T> => {
   if (response.ok) {
     return await handleBody(response);
   }
 
   const errorBody = await handleBody(response);
-  const error = new ResponseError(getErrorCodeFromStatus(response.status), response.statusText);
+  const error = createResponseError(response, errorBody);
 
   logger.warn(`Http request to ${response.url} failed with status ${response.status}`, {
     body: errorBody,
