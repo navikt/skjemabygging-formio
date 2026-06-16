@@ -105,7 +105,7 @@ const handleResponse = async (response: Response, opts?: FetchOptions) => {
     throw new ResponseError(
       errorResponse.errorCode ?? getErrorCodeFromStatus(response.status),
       errorResponse.message || response.statusText,
-      errorResponse.correlation_id,
+      errorResponse.correlationId,
       errorResponse.userMessage ?? TEXTS.statiske.error.serverErrorTitle,
     );
   }

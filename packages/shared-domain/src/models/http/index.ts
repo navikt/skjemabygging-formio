@@ -17,7 +17,7 @@ interface ErrorResponse {
   message: string;
   errorCode: ErrorCode;
   userMessage?: string;
-  correlation_id?: string;
+  correlationId?: string;
 }
 
 const getErrorCodeFromStatus = (status: number): ErrorCode => {
