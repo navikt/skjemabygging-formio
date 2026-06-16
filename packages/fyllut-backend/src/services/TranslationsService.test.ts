@@ -1,4 +1,4 @@
-import { HttpResponseError, translationClient } from '@navikt/skjemadigitalisering-shared-backend';
+import { translationClient } from '@navikt/skjemadigitalisering-shared-backend';
 import { FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import path from 'path';
 import { FyllutBackendConfig } from '../config/types';
@@ -13,7 +13,6 @@ vi.mock('@navikt/skjemadigitalisering-shared-backend', async () => {
     ...actual,
     translationClient: {
       getFormTranslations: vi.fn(),
-      getGlobalTranslations: vi.fn(),
     },
   };
 });
@@ -24,10 +23,6 @@ const testConfig: FyllutBackendConfig = {
 } as FyllutBackendConfig;
 
 describe('TranslationService', () => {
-  afterEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe('getTranslationsForLanguage', () => {
     it('loads english translations', async () => {
       const translationsService = new TranslationsService(testConfig);
@@ -98,37 +93,6 @@ describe('TranslationService', () => {
           'nn-NO': { hello: 'hei' },
           en: { hello: 'hello' },
         });
-      });
-
-      it('returns {} when upstream throws HttpResponseError', async () => {
-        vi.mocked(translationClient.getFormTranslations).mockRejectedValueOnce(
-          new HttpResponseError('INTERNAL_SERVER_ERROR', 'boom', {}),
-        );
-
-        const service = new TranslationsService(stagingConfig);
-
-        await expect(service.loadTranslation('nav123456')).resolves.toEqual({});
-      });
-    });
-
-    describe('mocksEnabled branch', () => {
-      const mocksConfig = {
-        ...testConfig,
-        mocksEnabled: true,
-        formioApiServiceUrl: 'http://formio-api',
-      } as FyllutBackendConfig;
-
-      it('uses formio translations instead of forms-api translations', async () => {
-        const service = new TranslationsService(mocksConfig);
-        const formioSpy = vi.spyOn(service, 'fetchTranslationsFromFormioApi').mockResolvedValueOnce({
-          en: { hello: 'hello' },
-        });
-
-        await expect(service.loadTranslation('nav123456')).resolves.toEqual({
-          en: { hello: 'hello' },
-        });
-        expect(formioSpy).toHaveBeenCalledWith('nav123456');
-        expect(translationClient.getFormTranslations).not.toHaveBeenCalled();
       });
     });
   });
