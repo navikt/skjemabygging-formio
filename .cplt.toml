@@ -24,11 +24,7 @@ allow_tmp_exec = true
 
 [propose.allow]
 localhost = [5173]
-read = [
-    "/proc/cpuinfo",
-    "/proc/self/mountinfo",
-    "/proc/sys/fs/inotify/max_user_watches",
-]
+read = ["/proc"]
 
 [propose.proxy]
 # forms-api, token generators, and other NAV services resolve to private IPs
