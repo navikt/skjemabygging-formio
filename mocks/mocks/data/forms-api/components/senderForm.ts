@@ -91,6 +91,7 @@ const senderForm = () => {
           radio({
             label: 'Velg avsendertype',
             key: 'senderRoleSelection',
+            defaultValue: 'organization',
             validate: {
               required: false,
             },
