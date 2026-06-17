@@ -4,7 +4,7 @@ describe('Sender', () => {
   const ORGANIZATION_URL = `${FORM_URL}/organisasjon`;
 
   const PERSON_FIELDS = [
-    { label: 'Representantens fødselsnummer eller d-nummer', value: '12345678901' },
+    { label: 'Representantens fødselsnummer eller d-nummer', value: '13097248022' },
     { label: 'Representantens fornavn', value: 'Ola' },
     { label: 'Representantens etternavn', value: 'Nordmann' },
   ];
@@ -55,6 +55,55 @@ describe('Sender', () => {
       cy.clickNextStep();
       cy.findByRole('heading', { name: 'Organisasjon' }).should('exist');
     });
+
+    it('should show required errors for each person field', () => {
+      cy.clickNextStep();
+
+      PERSON_FIELDS.forEach(({ label }) => {
+        cy.findAllByText(`Du må fylle ut: ${label}`).should('have.length', 2);
+      });
+
+      cy.get('[data-cy=error-summary]').within(() => {
+        cy.findByRole('link', { name: `Du må fylle ut: ${PERSON_FIELDS[0].label}` }).click();
+      });
+      cy.findByLabelText(PERSON_FIELDS[0].label).should('have.focus');
+    });
+
+    it('should show field specific validation errors for invalid person values', () => {
+      cy.findByRole('textbox', { name: PERSON_FIELDS[0].label }).type('12345678911');
+      cy.findByRole('textbox', { name: PERSON_FIELDS[1].label }).type('Ola=');
+      cy.findByRole('textbox', { name: PERSON_FIELDS[2].label }).type('Nordmann!');
+      cy.clickNextStep();
+
+      cy.findAllByText('Dette er ikke et gyldig fødselsnummer eller d-nummer (11 siffer)').should('have.length', 2);
+      cy.findAllByText(`${PERSON_FIELDS[1].label} inneholder ugyldige tegn`).should('have.length', 2);
+      cy.findAllByText(`${PERSON_FIELDS[2].label} inneholder ugyldige tegn`).should('have.length', 2);
+
+      cy.get('[data-cy=error-summary]').within(() => {
+        cy.findByRole('link', { name: `${PERSON_FIELDS[2].label} inneholder ugyldige tegn` }).click();
+      });
+      cy.findByLabelText(PERSON_FIELDS[2].label).should('have.focus');
+    });
+
+    it('should keep whitespace while typing and remove it on blur for national identity number', () => {
+      const fnrLabel = PERSON_FIELDS[0].label;
+      cy.findByRole('textbox', { name: fnrLabel }).type('130 972 48022');
+      cy.findByRole('textbox', { name: fnrLabel }).should('have.value', '130 972 48022');
+      cy.findByRole('textbox', { name: PERSON_FIELDS[1].label }).type(PERSON_FIELDS[1].value);
+      cy.findByRole('textbox', { name: fnrLabel }).should('have.value', PERSON_FIELDS[0].value);
+      cy.findByRole('textbox', { name: PERSON_FIELDS[2].label }).type(PERSON_FIELDS[2].value);
+
+      cy.clickNextStep();
+      cy.findByRole('heading', { name: 'Organisasjon' }).should('exist');
+      fillFields(ORGANIZATION_FIELDS);
+      cy.clickNextStep();
+      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+      cy.withinSummaryGroup('Person', () => {
+        cy.contains(fnrLabel).should('exist');
+        cy.contains(PERSON_FIELDS[0].value).should('exist');
+        cy.contains('130 972 48022').should('not.exist');
+      });
+    });
   });
 
   describe('Organization (senderRole: organization)', () => {
@@ -76,6 +125,52 @@ describe('Sender', () => {
       fillFields(ORGANIZATION_FIELDS);
       cy.clickNextStep();
       cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+    });
+
+    it('should show required errors for each organization field', () => {
+      cy.clickNextStep();
+
+      ORGANIZATION_FIELDS.forEach(({ label }) => {
+        cy.findAllByText(`Du må fylle ut: ${label}`).should('have.length', 2);
+      });
+
+      cy.get('[data-cy=error-summary]').within(() => {
+        cy.findByRole('link', { name: `Du må fylle ut: ${ORGANIZATION_FIELDS[0].label}` }).click();
+      });
+      cy.findByLabelText(ORGANIZATION_FIELDS[0].label).should('have.focus');
+    });
+
+    it('should show field specific validation errors for invalid organization values', () => {
+      cy.findByRole('textbox', { name: ORGANIZATION_FIELDS[0].label }).type('123');
+      cy.findByRole('textbox', { name: ORGANIZATION_FIELDS[1].label }).type('NAV!');
+      cy.clickNextStep();
+
+      cy.findAllByText('Dette er ikke et gyldig organisasjonsnummer. Sjekk at du har tastet riktig.').should(
+        'have.length',
+        2,
+      );
+      cy.findAllByText(`${ORGANIZATION_FIELDS[1].label} inneholder ugyldige tegn`).should('have.length', 2);
+
+      cy.get('[data-cy=error-summary]').within(() => {
+        cy.findByRole('link', { name: `${ORGANIZATION_FIELDS[1].label} inneholder ugyldige tegn` }).click();
+      });
+      cy.findByLabelText(ORGANIZATION_FIELDS[1].label).should('have.focus');
+    });
+
+    it('should keep whitespace while typing and remove it on blur for organization number', () => {
+      const organizationNumberLabel = ORGANIZATION_FIELDS[0].label;
+      cy.findByRole('textbox', { name: organizationNumberLabel }).type('889 640 782');
+      cy.findByRole('textbox', { name: organizationNumberLabel }).should('have.value', '889 640 782');
+      cy.findByRole('textbox', { name: ORGANIZATION_FIELDS[1].label }).type(ORGANIZATION_FIELDS[1].value);
+      cy.findByRole('textbox', { name: organizationNumberLabel }).should('have.value', ORGANIZATION_FIELDS[0].value);
+
+      cy.clickNextStep();
+      cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+      cy.withinSummaryGroup('Organisasjon', () => {
+        cy.contains(organizationNumberLabel).should('exist');
+        cy.contains(ORGANIZATION_FIELDS[0].value).should('exist');
+        cy.contains('889 640 782').should('not.exist');
+      });
     });
   });
 
@@ -121,7 +216,7 @@ describe('Sender', () => {
 
       cy.findByRole('heading', { name: 'Person (en)' }).should('exist');
       PERSON_FIELDS.forEach(({ label }) => {
-        cy.findByRole('textbox', { name: label }).should('exist');
+        cy.findByRole('textbox', { name: `${label} (en)` }).should('exist');
       });
     });
 
@@ -131,7 +226,7 @@ describe('Sender', () => {
 
       cy.findByRole('heading', { name: 'Organisasjon (en)' }).should('exist');
       ORGANIZATION_FIELDS.forEach(({ label }) => {
-        cy.findByRole('textbox', { name: label }).should('exist');
+        cy.findByRole('textbox', { name: `${label} (en)` }).should('exist');
       });
     });
   });

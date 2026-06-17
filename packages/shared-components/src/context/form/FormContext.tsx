@@ -1,5 +1,6 @@
 import {
   Component,
+  formioFormsApiUtils,
   NavFormType,
   navFormUtils,
   Panel,
@@ -34,16 +35,20 @@ const FormContext = createContext<FormContextType>({} as FormContextType);
 
 export const FormProvider = ({ children, form }: FormProviderProps) => {
   const [submission, setSubmission] = useState<Submission>();
-  const [activeComponents, setActiveComponents] = useState<Component[]>([]);
   const [formProgressOpen, setFormProgressOpen] = useState<boolean>(false);
   const [formProgressVisible, setFormProgressVisible] = useState<boolean>(false);
   const [prefillData, setPrefillData] = useState<PrefillData>({});
   const [title, setTitle] = useState<string | undefined>();
-  const { attachmentPageEnabled, http, baseUrl, submissionMethod, logger } = useAppConfig();
+  const { attachmentPageEnabled, http, baseUrl, submissionMethod } = useAppConfig();
+
+  const activeComponents = useMemo(
+    () => navFormUtils.getActiveComponentsFromForm(formioFormsApiUtils.mapNavFormToForm(form), submission),
+    [form, submission],
+  );
 
   const activeAttachmentUploadsPanel = useMemo(() => {
     const activeAttachmentPanel = attachmentPageEnabled
-      ? navFormUtils.getActiveAttachmentPanelFromForm(form, submission)
+      ? navFormUtils.getActiveAttachmentPanelFromForm(formioFormsApiUtils.mapNavFormToForm(form), submission)
       : undefined;
     return activeAttachmentPanel ? (JSON.parse(JSON.stringify(activeAttachmentPanel)) as Panel) : undefined;
   }, [form, submission, attachmentPageEnabled]);
@@ -98,13 +103,6 @@ export const FormProvider = ({ children, form }: FormProviderProps) => {
       loadPrefillData(form);
     }
   }, [baseUrl, form, http, submissionMethod]);
-
-  useEffect(() => {
-    const currentActiveComponents = navFormUtils.getActiveComponentsFromForm(form, submission);
-    logger?.debug('Current active components', { form, currentActiveComponents });
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setActiveComponents(currentActiveComponents);
-  }, [form, logger, submission]);
 
   return (
     <FormContext.Provider

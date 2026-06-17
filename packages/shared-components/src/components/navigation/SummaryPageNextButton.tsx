@@ -31,13 +31,12 @@ export function SummaryPageNextButton({
   setSubmitError,
 }: Props) {
   const { app, submissionMethod, attachmentPageEnabled } = useAppConfig();
-  const canSubmit =
-    !panelValidationList || panelValidationList.every((panelValidation) => !panelValidation.hasValidationErrors);
   const navigate = useNavigate();
   const { search } = useLocation();
   const { translate } = useLanguages();
   const { submitSoknad } = useSendInn();
   const [loading, setLoading] = useState(false);
+  const canSubmit = panelValidationList?.every((panelValidation) => !panelValidation.hasValidationErrors) ?? false;
   const submissionTypes = form?.properties.submissionTypes;
   const digitalWithoutAttachments =
     (submissionMethod === 'digital' || submissionTypesUtils.isDigitalSubmissionOnly(submissionTypes)) &&

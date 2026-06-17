@@ -21,9 +21,11 @@
     "build": "pnpm -r --if-present run build",
     "build:bygger": "pnpm --filter @navikt/skjemadigitalisering-shared-domain run build && pnpm --filter @navikt/skjemadigitalisering-shared-components run build && pnpm --filter @navikt/skjemadigitalisering-shared-backend run build && concurrently --kill-others-on-fail \"pnpm --filter @navikt/bygger-backend run build\" \"pnpm --filter @navikt/bygger-frontend run build\"",
     "build:fyllut": "pnpm --filter @navikt/skjemadigitalisering-shared-domain run build && pnpm --filter @navikt/skjemadigitalisering-shared-components run build && pnpm --filter @navikt/skjemadigitalisering-shared-backend run build && concurrently --kill-others-on-fail \"pnpm --filter @navikt/fyllut-backend run build\" \"pnpm --filter @navikt/fyllut-frontend run build\"",
+    "build:form-spec-api": "pnpm --filter @navikt/skjemadigitalisering-shared-domain run build && pnpm --filter @navikt/skjemadigitalisering-shared-backend run build && pnpm --filter @navikt/form-spec-api run build",
     "clean": "pnpm -r --if-present run clean",
     "deploy:bygger-backend": "pnpm --filter @navikt/bygger-backend deploy --prod packages/.deploy/bygger-backend",
     "deploy:fyllut-backend": "pnpm --filter @navikt/fyllut-backend deploy --prod packages/.deploy/fyllut-backend",
+    "deploy:form-spec-api": "pnpm --filter @navikt/form-spec-api deploy --prod packages/.deploy/form-spec-api",
     "deploy:docker": "rimraf packages/.deploy && pnpm run deploy:bygger-backend && pnpm run deploy:fyllut-backend",
     "get-tokens": "node bin/token-generator.mjs",
     "start": "concurrently --kill-others-on-fail \"pnpm run start:fyllut\" \"pnpm run start:bygger\"",
@@ -31,11 +33,13 @@
     "start:bygger:mocks": "node bin/start.mjs bygger",
     "start:fyllut": "concurrently --kill-others-on-fail \"pnpm --filter @navikt/fyllut-backend run start\" \"pnpm --filter @navikt/fyllut-frontend run start\"",
     "start:fyllut:mocks": "node bin/start.mjs fyllut",
+    "start:form-spec-api": "pnpm --filter @navikt/form-spec-api start",
     "preview:bygger": "pnpm --filter @navikt/bygger-backend run preview",
     "preview:fyllut": "pnpm --filter @navikt/fyllut-backend run preview",
     "test": "concurrently \"pnpm --filter @navikt/bygger-frontend run test\" \"pnpm --filter @navikt/bygger-backend run test\" \"pnpm --filter @navikt/fyllut-frontend run test\" \"pnpm --filter @navikt/fyllut-backend run test\" \"pnpm --filter @navikt/skjemadigitalisering-shared-domain run test\" \"pnpm --filter @navikt/skjemadigitalisering-shared-components run test\" \"pnpm --filter @navikt/skjemadigitalisering-shared-frontend run test\" \"pnpm --filter @navikt/skjemadigitalisering-shared-backend run test\"",
     "test:nowarnings": "NODE_OPTIONS=--no-warnings pnpm test",
     "test:bygger": "concurrently \"pnpm --filter @navikt/bygger-frontend run test\" \"pnpm --filter @navikt/bygger-backend run test\"",
+    "test:form-spec-api": "pnpm --filter @navikt/form-spec-api run test",
     "test:fyllut": "concurrently \"pnpm --filter @navikt/fyllut-frontend run test\" \"pnpm --filter @navikt/fyllut-backend run test\"",
     "test:shared-domain": "pnpm --filter @navikt/skjemadigitalisering-shared-domain run test",
     "test:shared-components": "pnpm --filter @navikt/skjemadigitalisering-shared-components run test",
@@ -55,9 +59,9 @@
     "prettier": "prettier --write ."
   },
   "devDependencies": {
-    "@eslint/compat": "^1.4.0",
+    "@eslint/compat": "^2.1.0",
     "@eslint/eslintrc": "^3.3.3",
-    "@eslint/js": "^9.39.2",
+    "@eslint/js": "^10.0.1",
     "@navikt/aksel": "^8.1.0",
     "@types/eslint__js": "^9.14.0",
     "@types/jest": "^30.0.0",
@@ -70,7 +74,7 @@
     "@vitest/eslint-plugin": "^1.6.18",
     "concurrently": "^9.2.1",
     "cross-env": "^10.1.0",
-    "eslint": "^9.39.2",
+    "eslint": "^10.4.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-chai-friendly": "^1.2.0",
     "eslint-plugin-cypress": "^5.2.1",
@@ -79,7 +83,7 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-testing-library": "^7.15.4",
-    "globals": "^15.15.0",
+    "globals": "^17.6.0",
     "husky": "^9.1.7",
     "jsdom": "^27.4.0",
     "lint-staged": "^16.2.7",
@@ -94,7 +98,7 @@
     "vitest": "^2.1.9"
   },
   "engines": {
-    "node": ">=24"
+    "node": ">=24.14.0"
   },
   "lint-staged": {
     "*.{ts,tsx,mjs}": [

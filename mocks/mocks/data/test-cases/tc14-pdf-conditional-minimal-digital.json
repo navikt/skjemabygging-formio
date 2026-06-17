@@ -1,0 +1,35 @@
+{
+  "label": "Conditional page",
+  "verdiliste": [
+    {
+      "label": "Introduksjon",
+      "verdiliste": [
+        {
+          "label": "Jeg bekrefter at jeg vil svare så riktig som jeg kan.",
+          "verdi": "Ja"
+        }
+      ]
+    },
+    {
+      "label": "Page 1",
+      "verdiliste": [
+        {
+          "label": "Fødselsnummer eller d-nummer",
+          "verdi": "08842748500"
+        }
+      ]
+    }
+  ],
+  "skjemanummer": "conditional-page",
+  "pdfConfig": {
+    "harInnholdsfortegnelse": false,
+    "språk": "nb"
+  },
+  "bunntekst": {
+    "upperleft": "F.nr: 08842748500",
+    "lowerleft": "Skjemanummer: conditional-page",
+    "upperRight": null,
+    "upperMiddle": "Opprettet: 21 mai 2026, 16:38",
+    "lowerMiddle": "Versjon: local"
+  }
+}

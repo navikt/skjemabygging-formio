@@ -1,6 +1,7 @@
 import {
   ComponentError,
   FormioChangeEvent,
+  formioFormsApiUtils,
   NavFormType,
   navFormUtils,
   SubmissionData,
@@ -9,7 +10,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import EventEmitter from 'eventemitter3';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { To, useLocation, useNavigate } from 'react-router';
+import { To, useLocation, useNavigate, useParams } from 'react-router';
 import FormError from '../../components/form/FormError';
 import FormSavedStatus from '../../components/form/FormSavedStatus';
 import ConfirmationModal from '../../components/modal/confirmation/ConfirmationModal';
@@ -32,6 +33,7 @@ export const FillInFormPage = () => {
   const { form, submission, setSubmission, setTitle, setFormProgressVisible } = useForm();
   const navigate = useNavigate();
   const { search } = useLocation();
+  const { panelSlug } = useParams<{ panelSlug?: string }>();
   const { attachmentPageEnabled, submissionMethod, logger } = useAppConfig();
   const [formForRendering, setFormForRendering] = useState<NavFormType>();
   const [formIsReady, setFormIsReady] = useState<boolean>(false);
@@ -46,7 +48,9 @@ export const FillInFormPage = () => {
 
   const exitUrl = urlUtils.getExitUrl(window.location.href);
   const formNavigationFinalStep =
-    navFormUtils.hasAttachment(form) && attachmentPageEnabled ? 'vedlegg' : 'oppsummering';
+    navFormUtils.hasAttachment(formioFormsApiUtils.mapNavFormToForm(form)) && attachmentPageEnabled
+      ? 'vedlegg'
+      : 'oppsummering';
 
   const focusOnComponent = useCallback<(id: KeyOrFocusComponentId) => void>(
     (id: KeyOrFocusComponentId) => fyllutEvents.emit('focusOnComponent', id),
@@ -127,8 +131,12 @@ export const FillInFormPage = () => {
   );
 
   const onFocusOnComponentPageChanged = useCallback<(page: { key: string }) => void>(
-    (page: { key: string }) => navigate({ pathname: `../${page.key}`, search }),
-    [navigate, search],
+    (page: { key: string }) => {
+      if (panelSlug !== page.key) {
+        navigate({ pathname: `../${page.key}`, search });
+      }
+    },
+    [navigate, search, panelSlug],
   );
 
   const isValid = useCallback(

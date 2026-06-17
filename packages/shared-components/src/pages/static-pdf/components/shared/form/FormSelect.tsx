@@ -1,11 +1,10 @@
 import { Select } from '@navikt/ds-react';
-import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
+import { ComponentValue, submissionUtils as formComponentUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { ChangeEvent, useEffect, useRef } from 'react';
 import { useAppConfig } from '../../../../../context/config/configContext';
 import { useForm } from '../../../../../context/form/FormContext';
 import { useLanguages } from '../../../../../context/languages';
 import { useInputValidation, Validators } from '../../../../../context/validator/InputValidationContext';
-import formComponentUtils from '../../../../../form-components/utils/formComponent';
 import { FormInputWidth, useFormInputStyles } from '../formStylingUtil';
 import FormBox, { FormBoxProps } from './FormBox';
 import TranslatedDescription from './TranslatedDescription';

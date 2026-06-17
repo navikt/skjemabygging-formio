@@ -1,32 +1,43 @@
 import { TextField } from '@navikt/ds-react';
-import { SenderProps, SubmissionSender } from '@navikt/skjemadigitalisering-shared-domain';
+import { formatUtils, SenderProps, SubmissionSender } from '@navikt/skjemadigitalisering-shared-domain';
+import type { ChangeEvent, FocusEvent } from 'react';
 import { useComponentUtils } from '../../context/component/componentUtilsContext';
 import useComponentStyle from '../../util/styles/useComponentStyle';
+import InnerHtml from '../inner-html/InnerHtml';
 
-const SenderPerson = ({ labels, descriptions, value, onChange, readOnly, fieldSize }: SenderProps) => {
+const SenderPerson = ({ customLabels, descriptions, value, onChange, readOnly, fieldSize }: SenderProps) => {
   const styles = useComponentStyle({
     fieldSize,
   });
   const { translate, addRef, getComponentError } = useComponentUtils();
 
-  const handleChange = (field: string, e: React.ChangeEvent<HTMLInputElement>) => {
+  const setPersonValue = (field: string, fieldValue: string) => {
     onChange({
       ...value,
       person: {
         ...value?.person,
-        [field]: e.currentTarget.value,
+        [field]: fieldValue,
       },
     } as SubmissionSender);
+  };
+
+  const handleChange = (field: string, e: ChangeEvent<HTMLInputElement>) => {
+    setPersonValue(field, e.currentTarget.value);
+  };
+
+  const handleNationalIdentityNumberBlur = (e: FocusEvent<HTMLInputElement>) => {
+    setPersonValue('nationalIdentityNumber', formatUtils.removeAllSpaces(e.currentTarget.value));
   };
 
   return (
     <>
       <div className="form-group">
         <TextField
-          label={translate(labels.nationalIdentityNumber)}
-          description={translate(descriptions.nationalIdentityNumber)}
+          label={translate(customLabels.nationalIdentityNumber)}
+          description={<InnerHtml content={translate(descriptions.nationalIdentityNumber)} />}
           value={value?.person?.nationalIdentityNumber ?? ''}
           onChange={(e) => handleChange('nationalIdentityNumber', e)}
+          onBlur={handleNationalIdentityNumberBlur}
           ref={(ref) => addRef('sender:nationalIdentityNumber', ref)}
           error={getComponentError('sender:nationalIdentityNumber')}
           readOnly={readOnly}
@@ -35,7 +46,7 @@ const SenderPerson = ({ labels, descriptions, value, onChange, readOnly, fieldSi
       </div>
       <div className="form-group">
         <TextField
-          label={translate(labels.firstName)}
+          label={translate(customLabels.firstName)}
           value={value?.person?.firstName ?? ''}
           onChange={(e) => handleChange('firstName', e)}
           ref={(ref) => addRef('sender:firstName', ref)}
@@ -46,7 +57,7 @@ const SenderPerson = ({ labels, descriptions, value, onChange, readOnly, fieldSi
       </div>
       <div className="form-group">
         <TextField
-          label={translate(labels.surname)}
+          label={translate(customLabels.surname)}
           value={value?.person?.surname ?? ''}
           onChange={(e) => handleChange('surname', e)}
           ref={(ref) => addRef('sender:surname', ref)}

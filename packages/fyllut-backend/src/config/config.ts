@@ -3,8 +3,8 @@ import dotenv from 'dotenv';
 import { logger } from '../logger';
 import { NaisCluster } from './nais-cluster';
 import {
-  ConfigType,
   DefaultConfig,
+  FyllutBackendConfig,
   IdportenConfig,
   SendInnConfig,
   ServiceConfig,
@@ -90,7 +90,6 @@ const localDevelopmentConfig: DefaultConfig = {
   mocksEnabled: process.env.MOCKS_ENABLED === 'true',
   useFormsApiStaging: !process.env.FORMS_SOURCE || process.env.FORMS_SOURCE === 'formsapi-staging',
   formioApiServiceUrl: loadFormioApiServiceUrl() || 'https://formio-api.intern.dev.nav.no/jvcemxwcpghcqjn',
-  forstesideUrl: 'https://www.nav.no/soknader/api/forsteside',
   decoratorUrl: 'https://www.nav.no/dekoratoren?simple=true',
   skjemabyggingProxyUrl: process.env.SKJEMABYGGING_PROXY_URL || 'https://skjemabygging-proxy.dev-fss-pub.nais.io',
   skjemabyggingProxyClientId: '95170319-b4d7-4190-8271-118ed19bafbf',
@@ -161,7 +160,6 @@ const defaultConfig: DefaultConfig = {
   mocksEnabled: process.env.MOCKS_ENABLED === 'true',
   useFormsApiStaging: process.env.FORMS_SOURCE === 'formsapi-staging',
   formioApiServiceUrl: loadFormioApiServiceUrl(),
-  forstesideUrl: process.env.FOERSTESIDE_URL!,
   decoratorUrl: process.env.DECORATOR_URL!,
   skjemabyggingProxyUrl: process.env.SKJEMABYGGING_PROXY_URL!,
   skjemabyggingProxyClientId: process.env.SKJEMABYGGING_PROXY_CLIENT_ID!,
@@ -199,7 +197,7 @@ const defaultConfig: DefaultConfig = {
   tempAttachmentUploadForms: featureUtils.splitCommaSeparated(process.env.FEATURE_ATTACHMENT_UPLOAD_FORMS),
 };
 
-const config: ConfigType = {
+const config: FyllutBackendConfig = {
   ...(process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test'
     ? localDevelopmentConfig
     : defaultConfig),
@@ -217,7 +215,7 @@ const config: ConfigType = {
   port: parseInt(process.env.PORT || '8080'),
 };
 
-const checkConfigConsistency = (config: ConfigType, logError = logger.error, exit = process.exit) => {
+const checkConfigConsistency = (config: FyllutBackendConfig, logError = logger.error, exit = process.exit) => {
   const { mocksEnabled, useFormsApiStaging, naisClusterName, formioApiServiceUrl, formsApiUrl } = config;
   if (mocksEnabled) {
     if (naisClusterName === NaisCluster.PROD || naisClusterName === NaisCluster.DEV) {

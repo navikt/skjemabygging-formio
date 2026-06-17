@@ -1,3 +1,4 @@
+import { createStaticPdfService } from '@navikt/skjemadigitalisering-shared-backend';
 import { Backend } from '../Backend';
 import config from '../config';
 import { createCopyService } from './copy/CopyService';
@@ -26,6 +27,10 @@ const formsService = createFormsService(config.formsApi.url);
 
 const formPublicationsService = createFormPublicationsService(config.formsApi.url);
 
+const staticPdfService = createStaticPdfService({
+  baseUrl: config.formsApi.url,
+});
+
 const reportService = new ReportService(formsService, formPublicationsService);
 
 const prodFormsApiUrl = config.prodFormsApi?.url;
@@ -51,4 +56,5 @@ export {
   pusherService,
   recipientService,
   reportService,
+  staticPdfService,
 };

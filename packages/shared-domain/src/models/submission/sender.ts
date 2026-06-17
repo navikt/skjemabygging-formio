@@ -32,7 +32,7 @@ interface SubmissionSender {
 
 interface SenderProps {
   role: RecipientRole;
-  labels: SenderLabels;
+  customLabels: SenderLabels;
   descriptions: SenderDescriptions;
   value?: SubmissionSender;
   onChange: (value: SubmissionSender) => void;

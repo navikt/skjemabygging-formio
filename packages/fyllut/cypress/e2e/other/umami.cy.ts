@@ -153,12 +153,23 @@ describe('Umami', () => {
         cy.findByLabelText('Videregående').check(),
       );
       cy.clickSaveAndContinue();
+      cy.clickSaveAndContinue();
+
+      cy.findByRole('heading', { name: /Vedlegg/ }).should('exist');
+      cy.findByRole('group', { name: 'Vedlegg med masse greier Beskrivelse til vedlegget' }).within(() =>
+        cy.findByLabelText(TEXTS.statiske.attachment.uploadLater).check(),
+      );
+
+      cy.findByLabelText('Annen dokumentasjon').within(() => {
+        cy.findByLabelText(TEXTS.statiske.attachment.nei).check();
+      });
+      cy.clickSaveAndContinue();
 
       cy.findByRole('heading', { name: /Oppsummering/ }).should('exist');
-      cy.clickSaveAndContinue();
-      cy.verifySendInnRedirect();
+      cy.clickSendNav();
+      cy.findByRole('heading', { name: /Kvittering/ }).should('exist');
 
-      cy.get('@umamiEvent.all').should('have.length', 0);
+      cy.get('@umamiEvent.all').should('have.length', 1);
     });
   });
 

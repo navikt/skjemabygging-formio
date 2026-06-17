@@ -8,17 +8,18 @@ import {
   Submission,
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import { RenderSummaryForm, ValidationExclamationIcon } from '@navikt/skjemadigitalisering-shared-frontend';
 import { useEffect, useRef, useState } from 'react';
 import { useAttachmentUpload } from '../../components/attachment/AttachmentUploadContext';
 import { attachmentValidator } from '../../components/attachment/attachmentValidator';
 import ButtonRow from '../../components/button/ButtonRow';
 import EditAnswersButton from '../../components/button/navigation/edit-answers/EditAnswersButton';
-import ValidationExclamationIcon from '../../components/icons/ValidationExclamationIcon';
 import NavFormHelper from '../../components/nav-form/NavFormHelper';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
-import RenderSummaryForm from '../../form-components/RenderSummaryForm';
+import { useSendInn } from '../../context/sendInn/sendInnContext';
+import { SkeletonList } from '../../index';
 import { scrollToAndSetFocus } from '../../util/focus-management/focus-management';
 import {
   findFirstValidationErrorInAttachmentPanel,
@@ -39,12 +40,18 @@ export function SummaryPage() {
     activeComponents,
     activeAttachmentUploadsPanel,
   } = useForm();
+  const { isMellomlagringAvailable, isMellomlagringReady, mellomlagringError } = useSendInn();
   const { declarationType, declarationText } = form.properties;
   const [declaration, setDeclaration] = useState<boolean | undefined>(undefined);
 
   const [panelValidationList, setPanelValidationList] = useState<PanelValidation[] | undefined>();
+  const isMellomlagringLoading = isMellomlagringAvailable && !isMellomlagringReady && !mellomlagringError;
 
   useEffect(() => {
+    if (isMellomlagringLoading) return;
+
+    let canceled = false;
+
     const initializePanelValidation = async () => {
       const submissionCopy: Submission = JSON.parse(JSON.stringify(submission || {}));
 
@@ -68,16 +75,23 @@ export function SummaryPage() {
       }
 
       const attachmentPanel = appConfig.attachmentPageEnabled
-        ? navFormUtils.getActiveAttachmentPanelFromForm(form, submission)
+        ? navFormUtils.getActiveAttachmentPanelFromForm(formioFormsApiUtils.mapNavFormToForm(form), submission)
         : undefined;
       if (attachmentPanel) {
-        const validator = attachmentUtils.enableAttachmentUpload(appConfig.submissionMethod)
-          ? attachmentValidator(translate, ['value', 'fileUploaded'])
-          : attachmentValidator(translate, ['value']);
         const invalidAttachment = findFirstValidationErrorInAttachmentPanel(
           attachmentPanel,
           submission ?? { data: {} },
-          validator,
+          (label, submissionAttachment, component) => {
+            const uploadOnlyMode = attachmentUtils.isSingleUploadOnlyOption(
+              component.attachmentValues ?? component.values,
+              appConfig.submissionMethod,
+            );
+            const validator = attachmentUtils.enableAttachmentUpload(appConfig.submissionMethod)
+              ? attachmentValidator(translate, uploadOnlyMode ? ['fileUploaded'] : ['value', 'fileUploaded'])
+              : attachmentValidator(translate, ['value']);
+
+            return validator.validate(label, submissionAttachment);
+          },
         );
 
         if (invalidAttachment) {
@@ -89,7 +103,9 @@ export function SummaryPage() {
         }
       }
 
-      setPanelValidationList(panelValidations);
+      if (!canceled) {
+        setPanelValidationList(panelValidations);
+      }
       webform.destroy(true);
 
       if (formioSummary) {
@@ -100,7 +116,11 @@ export function SummaryPage() {
     if (availableLanguages.length > 0) {
       initializePanelValidation();
     }
-  }, [form, submission, appConfig, prefillData, translate, availableLanguages]);
+
+    return () => {
+      canceled = true;
+    };
+  }, [form, submission, appConfig, prefillData, translate, availableLanguages, isMellomlagringLoading]);
 
   useEffect(() => {
     setTitle(TEXTS.statiske.summaryPage.title);
@@ -127,6 +147,10 @@ export function SummaryPage() {
   };
 
   const hasValidationErrors = panelValidationList?.some((panelValidation) => panelValidation.hasValidationErrors);
+
+  if (isMellomlagringLoading) {
+    return <SkeletonList size={10} height={60} />;
+  }
 
   return (
     <VStack gap="space-32">

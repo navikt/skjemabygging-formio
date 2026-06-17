@@ -1,4 +1,4 @@
-import type { Component, NavFormType, Submission } from '../../../models';
+import type { Component, Form, Submission } from '../../../models';
 import getCustomUtils from '../../formio/utilsCustom';
 import getCheckConditionUtils from '../checkCondition';
 import type { ConditionComponent, EvaluateFunction } from '../types';
@@ -30,6 +30,9 @@ const createComponent = (overrides: Partial<Component>): Component =>
 
 const createForm = (components: Component[], submissionTypes: string[] = ['DIGITAL']) =>
   ({
+    skjemanummer: 'TEST',
+    path: 'test',
+    title: 'Test',
     components,
     properties: {
       skjemanummer: 'TEST',
@@ -37,7 +40,7 @@ const createForm = (components: Component[], submissionTypes: string[] = ['DIGIT
       submissionTypes,
       subsequentSubmissionTypes: [],
     },
-  }) as unknown as NavFormType;
+  }) as unknown as Form;
 
 const createSubmission = (data: Submission['data'], metadata?: Submission['metadata']) =>
   ({

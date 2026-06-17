@@ -60,7 +60,6 @@ export type DefaultConfig = {
   mocksEnabled: boolean;
   useFormsApiStaging: boolean;
   formioApiServiceUrl?: string;
-  forstesideUrl: string;
   decoratorUrl: string;
   skjemabyggingProxyUrl: string;
   skjemabyggingProxyClientId: string;
@@ -89,7 +88,7 @@ export type DefaultConfig = {
   tempAttachmentUploadForms: string[];
 };
 
-export type ConfigType = DefaultConfig & {
+export type FyllutBackendConfig = DefaultConfig & {
   fyllutPath: string;
   clientSecret: string;
   featureToggles: FeatureTogglesMap;

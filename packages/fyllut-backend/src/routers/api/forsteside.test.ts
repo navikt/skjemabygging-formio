@@ -1,4 +1,4 @@
-import { ForstesideRequestBody } from '@navikt/skjemadigitalisering-shared-domain';
+import { ForstesideRequestBody } from '@navikt/skjemadigitalisering-shared-backend';
 import nock from 'nock';
 import { config } from '../../config/config';
 import { mockNext, mockRequest, mockResponse } from '../../test/requestTestHelpers';

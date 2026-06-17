@@ -1,33 +1,43 @@
 import { TextField } from '@navikt/ds-react';
-import { SenderProps, SubmissionSender } from '@navikt/skjemadigitalisering-shared-domain';
-import type { ChangeEvent } from 'react';
+import { formatUtils, SenderProps, SubmissionSender } from '@navikt/skjemadigitalisering-shared-domain';
+import type { ChangeEvent, FocusEvent } from 'react';
 import { useComponentUtils } from '../../context/component/componentUtilsContext';
 import useComponentStyle from '../../util/styles/useComponentStyle';
+import InnerHtml from '../inner-html/InnerHtml';
 
-const SenderOrganization = ({ labels, descriptions, value, onChange, readOnly, fieldSize }: SenderProps) => {
+const SenderOrganization = ({ customLabels, descriptions, value, onChange, readOnly, fieldSize }: SenderProps) => {
   const styles = useComponentStyle({
     fieldSize,
   });
   const { translate, addRef, getComponentError } = useComponentUtils();
 
-  const handleChange = (field: string, e: ChangeEvent<HTMLInputElement>) => {
+  const setOrganizationValue = (field: string, fieldValue: string) => {
     onChange({
       ...value,
       organization: {
         ...value?.organization,
-        [field]: e.currentTarget.value,
+        [field]: fieldValue,
       },
     } as SubmissionSender);
+  };
+
+  const handleChange = (field: string, e: ChangeEvent<HTMLInputElement>) => {
+    setOrganizationValue(field, e.currentTarget.value);
+  };
+
+  const handleOrganizationNumberBlur = (e: FocusEvent<HTMLInputElement>) => {
+    setOrganizationValue('number', formatUtils.removeAllSpaces(e.currentTarget.value));
   };
 
   return (
     <>
       <div className="form-group">
         <TextField
-          label={translate(labels.organizationNumber)}
-          description={translate(descriptions.organizationNumber)}
+          label={translate(customLabels.organizationNumber)}
+          description={<InnerHtml content={translate(descriptions.organizationNumber)} />}
           value={value?.organization?.number ?? ''}
           onChange={(e) => handleChange('number', e)}
+          onBlur={handleOrganizationNumberBlur}
           ref={(ref) => addRef('sender:organizationNumber', ref)}
           error={getComponentError('sender:organizationNumber')}
           readOnly={readOnly}
@@ -36,7 +46,7 @@ const SenderOrganization = ({ labels, descriptions, value, onChange, readOnly, f
       </div>
       <div className="form-group">
         <TextField
-          label={translate(labels.organizationName)}
+          label={translate(customLabels.organizationName)}
           value={value?.organization?.name ?? ''}
           onChange={(e) => handleChange('name', e)}
           ref={(ref) => addRef('sender:organizationName', ref)}
