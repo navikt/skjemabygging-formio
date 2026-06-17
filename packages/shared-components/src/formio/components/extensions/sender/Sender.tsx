@@ -30,10 +30,6 @@ class Sender extends BaseComponent {
     return senderBuilder();
   }
 
-  init() {
-    super.init();
-  }
-
   private applyPrefillIfVisible() {
     if (
       !this.hasPrefill() ||
