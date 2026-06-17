@@ -1,0 +1,13 @@
+{
+  "avsender": {
+    "idType": "FNR",
+    "id": "08842748500",
+    "navn": "Ola Nordmann"
+  },
+  "formNumber": "sender",
+  "title": "Sender component test form",
+  "tema": "HJE",
+  "language": "nb",
+  "attachments": [],
+  "otherUploadAvailable": false
+}

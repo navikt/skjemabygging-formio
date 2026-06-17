@@ -34,6 +34,9 @@ const assembleSubmitApplicationRequest = (
   const avsender =
     extractAvsender(form, submission) ?? (bruker ? undefined : extractAvsenderFromYourInformation(form, submission));
 
+  console.log('bruker', bruker);
+  console.log('avsender', avsender);
+
   if (!bruker && !avsender) {
     throw new Error(`${innsendingsId}: Could not find user nor sender from nologin submission (formPath=${form.path})`);
   }

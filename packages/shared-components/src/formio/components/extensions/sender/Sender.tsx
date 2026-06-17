@@ -33,10 +33,11 @@ class Sender extends BaseComponent {
   init() {
     super.init();
     this.initPrefill();
+    console.log('Key ' + this.key);
   }
 
   initPrefill() {
-    if (this.hasPrefill() && this.component?.prefillValue) {
+    if (this.hasPrefill() && this.component?.prefillValue && this.getSenderRole() === 'person') {
       const value: SubmissionSender = {
         person: {
           nationalIdentityNumber: this.component?.prefillValue['sokerIdentifikasjonsnummer'],
