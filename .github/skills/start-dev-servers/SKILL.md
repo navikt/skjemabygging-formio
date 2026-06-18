@@ -45,7 +45,7 @@ bash (async): pnpm start:fyllut:mocks -- --no-runtime-config
 #   START_PID=12345
 
 # 3. Run Cypress — use FYLLUT_FRONTEND_URL as baseUrl (strip the /fyllut suffix):
-cd packages/fyllut && pnpm cypress run \
+cd packages/fyllut && XDG_CONFIG_HOME="$PWD/.cypress-home" pnpm exec cypress run \
   --config "baseUrl=http://127.0.0.1:3045" \
   --env "MOCKS_ADMIN_PORT=3043" \
   --browser electron \
@@ -65,7 +65,7 @@ bash (async): pnpm start:bygger:mocks -- --no-runtime-config
 #   BYGGER_FRONTEND_URL=http://127.0.0.1:3043
 #   START_PID=12345
 
-cd packages/bygger && pnpm cypress run \
+cd packages/bygger && XDG_CONFIG_HOME="$PWD/.cypress-home" pnpm exec cypress run \
   --config "baseUrl=http://127.0.0.1:3043" \
   --browser electron \
   --spec cypress/e2e/path/to/spec.cy.ts
