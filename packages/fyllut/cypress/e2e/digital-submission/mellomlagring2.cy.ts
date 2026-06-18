@@ -16,6 +16,12 @@ const expectSummaryPage = () => {
   cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).shouldBeVisible();
 };
 
+const failOnSubmitApplicationAttempt = () => {
+  cy.intercept('POST', '/fyllut/api/send-inn/digital-application/*', () => {
+    throw new Error('Submission should be blocked by summary validation');
+  });
+};
+
 const openSummaryInStepper = () => {
   cy.clickShowAllSteps();
   cy.findByRole('link', { name: TEXTS.statiske.summaryPage.title }).click();
@@ -66,6 +72,13 @@ const confirmSaveDraftAfterCancellingOnce = () => {
   });
 };
 
+const expectSummaryValidationToBlockSubmission = () => {
+  cy.clickSendNav();
+  cy.contains(TEXTS.statiske.summaryPage.validationMessage).shouldBeVisible();
+  expectSummaryPage();
+  cy.url().should('not.include', '/kvittering');
+};
+
 describe('Mellomlagring v2', () => {
   before(() => {
     cy.configMocksServer();
@@ -88,7 +101,7 @@ describe('Mellomlagring v2', () => {
   });
 
   describe('When submission method is "paper"', () => {
-    it('redirects to start page if url does not contain "innsendingsId"', () => {
+    it('renders the summary page if url does not contain "innsendingsId"', () => {
       cy.visitRouteAndWait('/fyllut/testmellomlagring/oppsummering?sub=paper&lang=nb-NO');
       expectSummaryPage();
     });
@@ -191,13 +204,15 @@ describe('Mellomlagring v2', () => {
       cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.cancelAndDelete }).shouldBeVisible();
     });
 
-    it('fetches mellomlagring and navigates to "/summary" on start, when url contains "innsendingsId"', () => {
+    it('fetches mellomlagring and starts from the intro page when url contains "innsendingsId"', () => {
       cy.visitRouteAndWait(`/fyllut/testmellomlagring?sub=digital&innsendingsId=${validInnsendingsId}&lang=nb-NO`, [
         '@getMellomlagringValid',
       ]);
 
+      cy.url().should('include', `innsendingsId=${validInnsendingsId}`);
       cy.findByRole('heading', { name: TEXTS.statiske.introPage.title }).shouldBeVisible();
       cy.clickStart();
+      cy.url().should('include', `innsendingsId=${validInnsendingsId}`);
       cy.url().should('include', '/valgfrieOpplysninger');
     });
 
@@ -214,7 +229,7 @@ describe('Mellomlagring v2', () => {
       cy.url().should('equal', `${Cypress.env('BASE_URL')}/fyllut/soknad-ikke-funnet`);
     });
 
-    it('lets you delete mellomlagring', () => {
+    it('shows an error when deleting mellomlagring fails', () => {
       cy.mocksUseRouteVariant('delete-soknad:failure');
       cy.visitRouteAndWait(
         `/fyllut/testmellomlagring/gave?sub=digital&innsendingsId=${validInnsendingsId}&lang=nb-NO`,
@@ -227,7 +242,7 @@ describe('Mellomlagring v2', () => {
       cy.findByText(TEXTS.statiske.mellomlagringError.delete.message).shouldBeVisible();
     });
 
-    it('lets you save mellomlagring before cancelling', () => {
+    it('shows an error when saving mellomlagring before cancelling fails', () => {
       cy.mocksUseRouteVariant('put-soknad:failure');
       cy.visitRouteAndWait(
         `/fyllut/testmellomlagring/gave?sub=digital&innsendingsId=${updateErrorInnsendingsId}&lang=nb-NO`,
@@ -243,6 +258,7 @@ describe('Mellomlagring v2', () => {
     describe('When partially filling out a form', () => {
       it('should navigate to first component with validation error from summary', () => {
         cy.defaultInterceptsExternal();
+        failOnSubmitApplicationAttempt();
         cy.visitRouteAndWait('/fyllut/components?sub=digital');
 
         cy.clickIntroPageConfirmation();
@@ -251,6 +267,7 @@ describe('Mellomlagring v2', () => {
         cy.findByRole('heading', { name: 'Dine opplysninger' }).shouldBeVisible();
 
         openSummaryInStepper();
+        expectSummaryValidationToBlockSubmission();
         cy.clickEditAnswers();
         cy.wait('@getActivities');
         cy.findByRole('group', { name: 'Hvilken aktivitet søker du om støtte i forbindelse med?' }).should(
@@ -318,6 +335,7 @@ describe('Mellomlagring v2', () => {
         });
 
         it('retrieves mellomlagring and lets you navigate to first panel with error', () => {
+          failOnSubmitApplicationAttempt();
           cy.visitRouteAndWait(
             `/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=${validInnsendingsId}&lang=nb-NO`,
             ['@getMellomlagringValid'],
@@ -333,6 +351,7 @@ describe('Mellomlagring v2', () => {
             .click({ force: true });
 
           cy.findByRole('link', { name: TEXTS.statiske.summaryPage.title }).click();
+          expectSummaryValidationToBlockSubmission();
           cy.clickEditAnswers();
 
           cy.url().should('include', '/levering');
@@ -407,7 +426,7 @@ describe('Mellomlagring v2', () => {
           cy.findByText('Tekst på kortet').should('exist').next('dd').should('contain.text', 'Takk for hjelpen!');
         });
 
-        it('lets you delete mellomlagring', () => {
+        it('shows an error when deleting mellomlagring from summary fails', () => {
           cy.mocksUseRouteVariant('delete-soknad:failure');
           cy.visitRouteAndWait(
             `/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=${validInnsendingsId}&lang=nb-NO`,
@@ -419,7 +438,7 @@ describe('Mellomlagring v2', () => {
           cy.findByText(TEXTS.statiske.mellomlagringError.delete.message).shouldBeVisible();
         });
 
-        it('lets you save mellomlagring before cancelling', () => {
+        it('shows an error when saving mellomlagring from summary fails', () => {
           cy.mocksUseRouteVariant('put-soknad:failure');
           cy.visitRouteAndWait(
             `/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=${updateErrorInnsendingsId}&lang=nb-NO`,
@@ -482,8 +501,9 @@ describe('Mellomlagring v2', () => {
       });
 
       describe('When stored submission contains value which no longer is available in select', () => {
-        it('hides save-and-continue button and renders info message on summary page', () => {
+        it('shows an info message and blocks submission on the summary page', () => {
           cy.mocksUseRouteVariant('get-form-deprecated:success-v2');
+          failOnSubmitApplicationAttempt();
           cy.visitRouteAndWait(
             `/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=${validInnsendingsId}&lang=nb-NO`,
             ['@getMellomlagringValid'],
@@ -491,6 +511,7 @@ describe('Mellomlagring v2', () => {
 
           cy.contains(TEXTS.statiske.summaryPage.validationMessage).should('exist');
           expectSummaryPage();
+          expectSummaryValidationToBlockSubmission();
         });
       });
 
@@ -502,6 +523,7 @@ describe('Mellomlagring v2', () => {
         describe('it does not allow user to continue to sendinn application', () => {
           it('when submission data is not complete', () => {
             cy.mocksUseRouteVariant('get-soknad:form-select-partial-v1');
+            failOnSubmitApplicationAttempt();
             cy.visitRouteAndWait(
               `/fyllut/testselect/oppsummering?sub=digital&innsendingsId=${selectMellomlagringId}&lang=nb-NO`,
               ['@getMellomlagring'],
@@ -517,11 +539,13 @@ describe('Mellomlagring v2', () => {
 
             cy.contains(TEXTS.statiske.summaryPage.validationMessage).should('exist');
             expectSummaryPage();
+            expectSummaryValidationToBlockSubmission();
           });
 
           it('when form-v2 does not allow value anymore', () => {
             cy.mocksUseRouteVariant('get-form-deprecated:success-v2');
             cy.mocksUseRouteVariant('get-soknad:form-select-invalid-instrument-v1');
+            failOnSubmitApplicationAttempt();
             cy.visitRouteAndWait(
               `/fyllut/testselect/oppsummering?sub=digital&innsendingsId=${selectMellomlagringId}&lang=nb-NO`,
               ['@getMellomlagring'],
@@ -541,6 +565,7 @@ describe('Mellomlagring v2', () => {
 
             cy.contains(TEXTS.statiske.summaryPage.validationMessage).should('exist');
             expectSummaryPage();
+            expectSummaryValidationToBlockSubmission();
           });
         });
 
@@ -618,7 +643,7 @@ describe('Mellomlagring v2', () => {
         });
       });
 
-      it('Allows user to submit complete submission', () => {
+      it('allows user to submit complete submission', () => {
         cy.mocksUseRouteVariant('get-soknad:nav083501-complete-v1');
         cy.submitApplication((req) => {
           const { submission } = req.body;
