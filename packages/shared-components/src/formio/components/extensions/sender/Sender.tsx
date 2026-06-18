@@ -35,7 +35,6 @@ class Sender extends BaseComponent {
       !this.hasPrefill() ||
       !this.component?.prefillValue ||
       this.visible === false ||
-      this.hasValue() ||
       this.getSenderRole() !== 'person'
     ) {
       return undefined;
