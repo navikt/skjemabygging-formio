@@ -2,7 +2,6 @@ import { Heading } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useAppConfig } from '../../context/config/configContext';
 import { useLanguages } from '../../context/languages';
-import { createAttachmentFormUrl } from '../../util/attachment/attachmentFormUrl';
 
 interface Props {
   index: number;
@@ -32,7 +31,7 @@ const LetterAddAttachment = ({ index, attachments }: Props) => {
             {vedlegg.attachmentType === 'default' && vedlegg.properties?.vedleggskjema ? (
               <>
                 <a
-                  href={createAttachmentFormUrl(fyllutBaseURL, vedlegg.properties.vedleggskjema)}
+                  href={`${fyllutBaseURL}/${vedlegg.properties.vedleggskjema}?sub=papernocoverpage`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >

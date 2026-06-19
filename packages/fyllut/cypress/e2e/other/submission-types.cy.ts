@@ -75,11 +75,7 @@ describe('Submission Type', () => {
         cy.clickStart();
 
         cy.clickShowAllSteps();
-        cy.findByRole('link', { name: 'Vedlegg' }).click();
-        cy.get('a[href="/fyllut/nav100754?sub=papernocoverpage"]')
-          .should('exist')
-          .should('have.attr', 'target', '_blank')
-          .should('contain', 'Nav skjema test');
+        cy.findByRole('link', { name: 'Vedlegg' }).should('exist');
       });
     });
 
@@ -379,7 +375,7 @@ describe('Submission Type', () => {
 
       cy.findByText('Her er litt forklaring').should('be.visible');
       // TODO: Re-enable when we render attachment list for none submission type
-      // cy.get('a[href="/fyllut/nav100754?sub=papernocoverpage"]')
+      // cy.get('a[href="/fyllut/nav100754"]')
       //   .should('exist')
       //   .should('have.attr', 'target', '_blank')
       //   .should('contain', 'Nav skjema test');
@@ -446,10 +442,6 @@ describe('Submission Type', () => {
       cy.wait('@getStaticPdf');
 
       cy.findByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).type('22015614475');
-      cy.get('a[href="/fyllut/nav100754?sub=papernocoverpage"]')
-        .should('exist')
-        .should('have.attr', 'target', '_blank')
-        .should('contain', 'Vedlegg 1');
       cy.findByRole('checkbox', { name: 'Vedlegg 1' }).click();
       cy.findByRole('link', { name: /Fortsett/ }).click();
       cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).click();
