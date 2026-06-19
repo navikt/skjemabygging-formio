@@ -31,7 +31,7 @@ describe('createFormService', () => {
     id: 2,
     path: 'nav654321',
     title: 'Stored form',
-    modified: '2024-09-21T10:11:12.000Z',
+    changedAt: '2024-09-21T10:11:12.000Z',
     properties: {
       skjemanummer: 'NAV 65-43.21',
       submissionTypes: ['DIGITAL'],
@@ -111,12 +111,15 @@ describe('createFormService', () => {
       const fetchSpy = vi.spyOn(global, 'fetch');
       const service = createService({ formsLocation });
 
-      await expect(service.getForms({ select: ['id', 'title', 'skjemanummer', 'properties'] })).resolves.toMatchObject([
+      await expect(
+        service.getForms({ select: ['id', 'title', 'skjemanummer', 'changedAt', 'properties'] }),
+      ).resolves.toMatchObject([
         expect.objectContaining({
           id: 2,
           path: 'nav654321',
           title: 'Stored form',
           skjemanummer: 'NAV 65-43.21',
+          changedAt: '2024-09-21T10:11:12.000Z',
           properties: expect.objectContaining({
             skjemanummer: 'NAV 65-43.21',
             submissionTypes: ['DIGITAL'],
@@ -157,6 +160,7 @@ describe('createFormService', () => {
           path: 'nav654321',
           title: 'Stored form',
           skjemanummer: 'NAV 65-43.21',
+          changedAt: '2024-09-21T10:11:12.000Z',
           properties: expect.objectContaining({
             skjemanummer: 'NAV 65-43.21',
             submissionTypes: ['DIGITAL'],

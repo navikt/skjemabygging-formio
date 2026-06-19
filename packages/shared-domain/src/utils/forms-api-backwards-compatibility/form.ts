@@ -23,7 +23,6 @@ const mapNavFormToForm = (form: NavFormType): Form => {
   const {
     id,
     revision,
-    modified,
     path,
     title,
     components,
@@ -49,7 +48,7 @@ const mapNavFormToForm = (form: NavFormType): Form => {
     properties,
     createdAt,
     createdBy,
-    changedAt: changedAt ?? modified,
+    changedAt,
     changedBy,
     publishedAt,
     publishedBy,
