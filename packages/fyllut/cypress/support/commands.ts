@@ -48,15 +48,15 @@ Cypress.Commands.add('shouldBeVisible', { prevSubject: true }, (subject) => {
 });
 
 Cypress.Commands.add('clickNextStep', () => {
-  return cy.findByRoleWhenAttached('link', { name: /Neste steg|Next step/ }, 500).click();
+  return cy.findByRoleWhenAttached('link', { name: /Neste steg|Next step/ }, 1000).click();
 });
 
 Cypress.Commands.add('clickPreviousStep', () => {
-  return cy.findByRoleWhenAttached('link', { name: /Forrige steg|Previous step/ }, 500).click();
+  return cy.findByRoleWhenAttached('link', { name: /Forrige steg|Previous step/ }, 1000).click();
 });
 
 Cypress.Commands.add('clickSaveAndContinue', () => {
-  return cy.findByRoleWhenAttached('link', { name: /Lagre og fortsett|Save and continue/ }, 500).click();
+  return cy.findByRoleWhenAttached('link', { name: /Lagre og fortsett|Save and continue/ }, 1000).click();
 });
 
 Cypress.Commands.add('clickStart', () => {
@@ -65,7 +65,7 @@ Cypress.Commands.add('clickStart', () => {
       url.includes('sub=digital') && !url.includes('digitalnologin')
         ? TEXTS.grensesnitt.navigation.saveAndContinue
         : TEXTS.grensesnitt.navigation.next;
-    return cy.findByRoleWhenAttached('link', { name }, 500).click();
+    return cy.findByRoleWhenAttached('link', { name }, 1000).click();
   });
 });
 
@@ -74,7 +74,7 @@ Cypress.Commands.add('clickIntroPageConfirmation', () => {
 });
 
 Cypress.Commands.add('clickShowAllSteps', () => {
-  return cy.findByRoleWhenAttached('button', { name: /Vis alle steg|Show all steps/ }, 500).click();
+  return cy.findByRoleWhenAttached('button', { name: /Vis alle steg|Show all steps/ }, 1000).click();
 });
 
 Cypress.Commands.add('clickSendDigital', () => {
