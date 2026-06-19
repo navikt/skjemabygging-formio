@@ -25,6 +25,7 @@ interface Attachment {
   values?: ComponentValue[];
   attachmentValues?: AttachmentSettingValues;
   attachmentType?: AttachmentType;
+  properties?: Component['properties'];
 }
 
 const getAttachment = (navId: string, form: NavFormType): Attachment | undefined => {

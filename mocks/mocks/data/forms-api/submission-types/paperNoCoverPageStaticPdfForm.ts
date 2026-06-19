@@ -15,7 +15,16 @@ const paperNoCoverPageStaticPdfForm = () => {
         title: 'Dine opplysninger',
         components: [
           textField({ label: 'Tekstfelt' }),
-          attachment({ key: 'vedlegg1', label: 'Vedlegg 1', description: 'Beskrivelse 1' }),
+          attachment({
+            key: 'vedlegg1',
+            label: 'Vedlegg 1',
+            description: 'Beskrivelse 1',
+            properties: {
+              vedleggskode: 'U1',
+              vedleggstittel: 'Vedlegg 1',
+              vedleggskjema: 'nav100754',
+            },
+          }),
         ],
       }),
     ],

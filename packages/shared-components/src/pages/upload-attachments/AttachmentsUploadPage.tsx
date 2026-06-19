@@ -2,6 +2,7 @@ import { ComponentError, Submission, TEXTS } from '@navikt/skjemadigitalisering-
 import clsx from 'clsx';
 import { useEffect, useRef } from 'react';
 import AttachmentComponent from '../../components/attachment/Attachment';
+import AttachmentFormLink from '../../components/attachment/AttachmentFormLink';
 import { useAttachmentUpload } from '../../components/attachment/AttachmentUploadContext';
 import InnerHtml from '../../components/inner-html/InnerHtml';
 import { fileUploadErrorParams } from '../../constants/fileUpload';
@@ -68,12 +69,19 @@ const AttachmentsUploadPage = () => {
         focusOnComponent={focusOnComponent}
         ref={(ref) => (errorSummaryRef.current = ref)}
       />
-      {attachments.map(({ label, description, attachmentValues, values, navId, attachmentType }, index) => (
+      {attachments.map(({ label, description, attachmentValues, values, navId, attachmentType, properties }, index) => (
         <AttachmentComponent
           key={navId}
           className={clsx(index !== attachments.length - 1 && styles.attachmentUpload)}
           label={translate(label)}
-          description={description ? <InnerHtml content={translate(description)} /> : undefined}
+          description={
+            <>
+              {description && <InnerHtml content={translate(description)} />}
+              {properties?.vedleggskjema && (
+                <AttachmentFormLink formPath={properties.vedleggskjema}>{translate(label)}</AttachmentFormLink>
+              )}
+            </>
+          }
           attachmentValues={attachmentValues ?? values}
           type={attachmentType}
           componentId={navId as string}
