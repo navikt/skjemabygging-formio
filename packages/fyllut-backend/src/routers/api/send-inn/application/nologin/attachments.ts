@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { logger } from '../../../../../logger';
 import { applicationService } from '../../../../../services';
 import { createUploadResponseError, removeUploadedTempFile } from '../../../helpers/upload';
-import { validateNologinContext } from '../../../nologin-file/nologin-file';
+import { validateNologinContext } from './context';
 
 const post = async (req: Request, res: Response, next: NextFunction) => {
   const file = req.file;

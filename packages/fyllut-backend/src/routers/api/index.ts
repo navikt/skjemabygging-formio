@@ -15,14 +15,12 @@ import formsApiRouter from './forms/index';
 import forsteside from './forsteside';
 import globalTranslations from './global-translations';
 import log from './log';
-import nologinFileRouter from './nologin-file';
 import recipients from './recipients';
 import registerDataRouter from './register-data/register-data';
 import sendInnSoknad from './send-inn-soknad';
 import sendInnUtfyltSoknad from './send-inn-utfylt-soknad';
 import activities from './send-inn/activities/send-inn-activities';
 import digitalApplicationRouter from './send-inn/application/digital/router';
-import nologin from './send-inn/application/nologin/application';
 import nologinApplicationRouter from './send-inn/application/nologin/router';
 import prefillData from './send-inn/prefill-data/send-inn-prefill-data';
 import status from './status';
@@ -74,16 +72,5 @@ apiRouter.use(
   nologinApplicationRouter,
 );
 apiRouter.use('/send-inn/digital-application', tokenxSendInn, digitalApplicationRouter);
-// Deprecated start - delete when /api/send-inn/nologin-application is used
-apiRouter.use('/nologin-file', rateLimitHandler, nologinTokenHandler, nologinFileRouter);
-apiRouter.post(
-  '/send-inn/nologin-soknad',
-  rateLimitHandler,
-  nologinTokenHandler,
-  azureM2MSendInn,
-  azurePdfGeneratorToken,
-  nologin.post,
-);
-// Deprecated end
 
 export default apiRouter;
