@@ -1,22 +1,24 @@
 import {
   AttachmentSettingValues,
   Component,
+  Form,
   I18nTranslationReplacements,
-  NavFormType,
+  ResponseError,
   translationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import FormService from '../../../services/FormService';
-import TranslationsService from '../../../services/TranslationsService';
+import { formService, translationsService } from '../../../services';
 import { mockRequest, mockResponse } from '../../../test/testHelpers';
 import form, { mapAttachmentValues } from './form';
 
-const testForm: NavFormType = {
-  tags: [],
-  type: 'test',
-  display: 'form',
-  name: 'Test Form',
+vi.mock('../../../services', () => ({
+  formService: { getForm: vi.fn() },
+  translationsService: { getTranslationsForLanguage: vi.fn() },
+}));
+
+const testForm: Form = {
   title: 'Test Title',
   path: '/test-path',
+  skjemanummer: '',
   properties: {
     submissionTypes: ['PAPER', 'DIGITAL'],
     subsequentSubmissionTypes: ['PAPER', 'DIGITAL'],
@@ -39,40 +41,39 @@ const translate = (text: string, textReplacements?: I18nTranslationReplacements)
 describe('form', () => {
   describe('[endpoint] form', () => {
     it('returns 404 when form is not found', async () => {
-      vi.spyOn(FormService.prototype, 'loadForm').mockImplementationOnce(async (_formPath) => undefined);
+      vi.mocked(formService.getForm).mockRejectedValueOnce(new ResponseError('NOT_FOUND', 'not found'));
       const request = mockRequest({ params: { formPath: 'nav123456' } });
       const response = mockResponse();
-      await form.get(request, response);
+
+      await expect(form.get(request, response)).rejects.toMatchObject({ errorCode: 'NOT_FOUND' });
+
       expect(response.json).not.toHaveBeenCalled();
-      expect(response.sendStatus).toHaveBeenCalledWith(404);
     });
 
     describe("a form with 'nn' translations", () => {
       beforeEach(() => {
-        vi.spyOn(TranslationsService.prototype, 'getTranslationsForLanguage').mockImplementationOnce(
-          async (_, lang) => {
-            switch (lang) {
-              case 'nn':
-                return {
-                  'Norsk skjematittel': 'Nynorsk skjematittel',
-                  'Norsk vedleggsnavn': 'Nynorsk vedleggsnavn',
-                } as Record<string, string>;
-              default:
-                return {};
-            }
-          },
-        );
-        vi.spyOn(FormService.prototype, 'loadForm').mockImplementationOnce(
-          async (formPath) =>
+        vi.mocked(translationsService.getTranslationsForLanguage).mockImplementationOnce(async (_, lang) => {
+          switch (lang) {
+            case 'nn':
+              return {
+                'Norsk skjematittel': 'Nynorsk skjematittel',
+                'Norsk vedleggsnavn': 'Nynorsk vedleggsnavn',
+              } as Record<string, string>;
+            default:
+              return {};
+          }
+        });
+        vi.mocked(formService.getForm).mockImplementationOnce(
+          async ({ formPath }) =>
             ({
+              id: 1,
               path: formPath,
               title: 'Norsk skjematittel',
-
+              publishedLanguages: ['nb', 'nn'],
               properties: {
                 ettersendelsesfrist: '10',
                 navUnitDescription: 'Velg riktig NAV-enhet',
               },
-
               components: [
                 {
                   label: 'Norsk vedleggsnavn',
@@ -111,7 +112,8 @@ describe('form', () => {
                   },
                 } as Component,
               ],
-            }) as NavFormType,
+              skjemanummer: '',
+            }) as Form,
         );
       });
 
@@ -125,6 +127,7 @@ describe('form', () => {
               title: 'Nynorsk skjematittel',
               properties: expect.objectContaining({
                 navUnitDescription: 'Velg riktig NAV-enhet',
+                publishedLanguages: ['nb', 'nn'],
               }),
             }),
           );
