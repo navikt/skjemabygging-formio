@@ -229,19 +229,17 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
         return Promise.resolve({ status: 'ok' });
       }
       return Promise.resolve({ status: 'unknown' });
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (isAuthenticationError(error)) {
         handleSessionExpired();
         return Promise.resolve({ status: 'auth-error' });
-      } else if (error instanceof ResponseError) {
-        addFileInProgress(attachmentId, {
-          ...file,
-          error: true,
-          reasons: [error.userMessage ?? TEXTS.statiske.uploadFile.uploadFileError],
-        });
-      } else {
-        addFileInProgress(attachmentId, { ...file, error: true, reasons: [TEXTS.statiske.uploadFile.uploadFileError] });
       }
+      const userMessage = error instanceof ResponseError ? error.userMessage : undefined;
+      addFileInProgress(attachmentId, {
+        ...file,
+        error: true,
+        reasons: [userMessage ?? TEXTS.statiske.uploadFile.uploadFileError],
+      });
       return Promise.resolve({ status: 'error' });
     }
   };

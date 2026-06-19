@@ -1,0 +1,21 @@
+{
+  "avsender": {
+    "idType": "ORGNR",
+    "id": "889640782",
+    "navn": "Nested NAV Test AS"
+  },
+  "formNumber": "sender",
+  "title": "Sender component test form",
+  "tema": "HJE",
+  "language": "nb",
+  "attachments": [
+    {
+      "attachmentCode": "K2",
+      "label": "Norsk pass",
+      "title": "Norsk pass",
+      "uploadStatus": "LastetOpp",
+      "description": null
+    }
+  ],
+  "otherUploadAvailable": false
+}

@@ -88,7 +88,7 @@ describe('app', () => {
       .expect(401);
   });
 
-  it('Returns error message and a correlation_id', async () => {
+  it('Returns error message and a correlationId', async () => {
     const tokenEndpoint = process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT!;
     const azureOpenidScope = nock(extractHost(tokenEndpoint))
       .post(extractPath(tokenEndpoint))
@@ -113,7 +113,7 @@ describe('app', () => {
       .expect(500);
 
     expect(res.body.message).toBe('Feil ved generering av førsteside');
-    expect(res.body.correlation_id).not.toBeNull();
+    expect(res.body.correlationId).not.toBeNull();
 
     azureOpenidScope.done();
     skjemabyggingproxyScope.done();

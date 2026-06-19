@@ -1,5 +1,4 @@
-import { Component } from '../../models/form/component';
-import { Submission, SubmissionData } from '../../models/form/submission';
+import { Component, Submission, SubmissionData } from '../../models';
 
 /**
  * Recursively searches for a value in a submission object based on the provided submissionPath.
@@ -106,12 +105,33 @@ const getComponentSubmissionPath = (component: Component, parentSubmissionPath: 
   return tree || input ? (parentSubmissionPath ? `${parentSubmissionPath}.${key}` : key) : (parentSubmissionPath ?? '');
 };
 
+/**
+ * Flattens the component tree while keeping track of each component's submission path,
+ * resolving nesting (e.g. containers) the same way {@link getComponentSubmissionPath} does.
+ *
+ * @param components
+ * @param parentSubmissionPath
+ */
+const flattenComponentsWithPath = (
+  components: Component[] = [],
+  parentSubmissionPath = '',
+): { component: Component; submissionPath: string }[] =>
+  components.reduce<{ component: Component; submissionPath: string }[]>((flattened, component) => {
+    const submissionPath = getComponentSubmissionPath(component, parentSubmissionPath);
+    return [
+      ...flattened,
+      { component, submissionPath },
+      ...flattenComponentsWithPath(component.components, submissionPath),
+    ];
+  }, []);
+
 const submissionUtils = {
   getSubmissionValue,
   getPdfSubmissionValue,
   noChildValues,
   noChildValuesForDataGrid,
   getComponentSubmissionPath,
+  flattenComponentsWithPath,
 };
 
 export { submissionUtils };
