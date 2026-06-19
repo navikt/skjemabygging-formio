@@ -15,7 +15,6 @@ import formsApiRouter from './forms/index';
 import forsteside from './forsteside';
 import globalTranslations from './global-translations';
 import log from './log';
-import pdl from './pdl';
 import recipients from './recipients';
 import registerDataRouter from './register-data/register-data';
 import sendInnSoknad from './send-inn-soknad';
@@ -29,13 +28,10 @@ import translations from './translations';
 
 const apiRouter = express.Router();
 
-const { featureToggles } = appConfig;
 const {
   azureM2MSkjemabyggingProxy,
-  azureM2MPdl,
   azureM2MSendInn,
   kodeverkToken,
-  tokenxPdl,
   tokenxSendInn,
   azurePdfGeneratorToken,
   nologinTokenHandler,
@@ -76,10 +72,5 @@ apiRouter.use(
   nologinApplicationRouter,
 );
 apiRouter.use('/send-inn/digital-application', tokenxSendInn, digitalApplicationRouter);
-
-if (featureToggles.enablePdl) {
-  apiRouter.get('/pdl/person/:id', tokenxPdl, pdl.person);
-  apiRouter.get('/pdl/children/:id', azureM2MPdl, pdl.children);
-}
 
 export default apiRouter;

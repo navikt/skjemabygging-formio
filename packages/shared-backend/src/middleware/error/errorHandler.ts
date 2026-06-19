@@ -7,7 +7,7 @@ const createErrorResponse = (error: any): ErrorResponse => {
   return {
     message: error.message ?? 'Internal Server Error',
     errorCode: error.errorCode ?? 'ERROR',
-    correlation_id: error.correlationId ?? correlator.getId(),
+    correlationId: error.correlationId ?? correlator.getId(),
     userMessage: error.userMessage ?? TEXTS.statiske.error.serverErrorTitle,
   };
 };
@@ -26,8 +26,8 @@ const errorHandler = (error: any, _req: Request, res: Response, _next: NextFunct
     logger.warn(errorResponse);
   }
 
-  if (errorResponse.correlation_id) {
-    res.header('x-correlation-id', errorResponse.correlation_id);
+  if (errorResponse.correlationId) {
+    res.header('x-correlation-id', errorResponse.correlationId);
   }
 
   res.contentType('application/json').status(getStatusFromErrorCode(errorResponse.errorCode)).send(errorResponse);

@@ -123,7 +123,10 @@ const handleResponse = async <T>(response: Response): Promise<T> => {
   }
 
   const errorBody = await handleBody(response);
-  const error = new ResponseError(getErrorCodeFromStatus(response.status), response.statusText);
+  const message = typeof errorBody === 'string' ? errorBody : (errorBody?.message ?? response.statusText);
+  const correlationId =
+    typeof errorBody === 'string' ? undefined : (errorBody?.correlationId ?? errorBody?.correlation_id);
+  const error = new ResponseError(getErrorCodeFromStatus(response.status), message, correlationId);
 
   logger.warn(`Http request to ${response.url} failed with status ${response.status}`, {
     body: errorBody,
