@@ -1,5 +1,5 @@
 import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
-import { Form, FormPropertiesType, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, FormPropertiesType, ResponseError, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import { act, renderHook } from '@testing-library/react';
 import { Mock, vi } from 'vitest';
 import { useFeedbackEmit } from '../context/notifications/FeedbackContext';
@@ -43,10 +43,6 @@ const testForm: Form = {
   components: [],
   properties: {} as FormPropertiesType,
 };
-
-class ConflictError extends Error {
-  status = 409;
-}
 
 describe('useFormsApiForms', () => {
   beforeEach(() => {
@@ -146,7 +142,7 @@ describe('useFormsApiForms', () => {
         expectedMessage: 'Feil ved oppretting av skjema. Failed to create form',
       },
       {
-        error: new ConflictError(errorMessage),
+        error: new ResponseError('CONFLICT', errorMessage),
         expectedMessage: 'Skjemanummer er allerede i bruk. Velg et annet skjemanummer.',
       },
     ];
@@ -191,7 +187,7 @@ describe('useFormsApiForms', () => {
         expectedMessage: `Feil ved oppdatering av skjema. ${errorMessage}`,
       },
       {
-        error: new ConflictError(errorMessage),
+        error: new ResponseError('CONFLICT', errorMessage),
         expectedMessage: 'Skjemaet kan ikke oppdateres akkurat nå. Du kan prøve å laste siden på nytt.',
       },
     ];

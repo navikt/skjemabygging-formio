@@ -68,6 +68,14 @@ class BaseComponent extends FormioReactComponent {
     return this.translate(this.component?.values?.[index]?.description);
   }
 
+  getValue() {
+    if (this.hasPrefill() && this.shouldSetValue && this.dataForSetting) {
+      return this.dataForSetting;
+    }
+
+    return super.getValue();
+  }
+
   /**
    * @deprecated Use getFieldSize instead.
    *

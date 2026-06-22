@@ -3,6 +3,7 @@ import {
   MellomlagringError,
   NologinToken,
   ReceiptSummary,
+  ResponseError,
   Submission,
   tokenUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
@@ -217,7 +218,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
       dispatchFyllutMellomlagring({ type: 'update', response });
       return response;
     } catch (error: any) {
-      if (error.status === 404) {
+      if (isNotFoundError(error)) {
         dispatchFyllutMellomlagring({ type: 'error', error: 'UPDATE_FAILED_NOT_FOUND' });
         throw error;
       } else {
@@ -238,7 +239,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
       logger?.info(`${innsendingsId}: Mellomlagring was deleted`);
       return response;
     } catch (error: any) {
-      if (error.status === 404) {
+      if (isNotFoundError(error)) {
         dispatchFyllutMellomlagring({ type: 'error', error: 'DELETE_FAILED_NOT_FOUND' });
         throw error;
       } else {
@@ -324,7 +325,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
           window.location.href = redirectLocation;
         }
       } catch (submitError: any) {
-        if (submitError.status === 404) {
+        if (isNotFoundError(submitError)) {
           dispatchFyllutMellomlagring({ type: 'error', error: 'SUBMIT_FAILED_NOT_FOUND' });
         } else {
           logger?.error(`${innsendingsId}: Failed to submit, will try to store changes`, submitError as Error);
@@ -429,7 +430,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
             }
           }
         } catch (error: any) {
-          if (error.status === 404) {
+          if (isNotFoundError(error)) {
             logger?.info(
               `${innsendingsIdFromParams}: Mellomlagring does not exist. Redirects to ${soknadNotFoundUrl}`,
               error as Error,
@@ -483,5 +484,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
 };
 
 const useSendInn = () => useContext(SendInnContext);
+
+const isNotFoundError = (error: unknown): boolean => error instanceof ResponseError && error.errorCode === 'NOT_FOUND';
 
 export { SendInnProvider, useSendInn };
