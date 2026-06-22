@@ -21,6 +21,22 @@ export default [
     ],
   },
   {
+    id: 'get-forms',
+    url: '/forms-api/v1/forms',
+    method: 'GET',
+    variants: [
+      {
+        id: 'success',
+        type: 'middleware',
+        options: {
+          middleware: (_req: any, res: any) => {
+            res.redirect('/formio-api/form');
+          },
+        },
+      },
+    ],
+  },
+  {
     id: 'get-form',
     url: '/forms-api/v1/forms/:formPath',
     method: 'GET',
