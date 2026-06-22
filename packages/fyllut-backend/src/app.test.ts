@@ -147,8 +147,8 @@ describe('app', () => {
     const res = await request(createApp()).get('/fyllut/api/enhetsliste').expect('Content-Type', /json/).expect(503);
 
     expect(res.body.errorCode).toBe('SERVICE_UNAVAILABLE');
-    expect(res.body.correlation_id).not.toBeNull();
-    expect(res.body.body).toEqual({ message: 'upstream unavailable' });
+    expect(res.body.correlationId).not.toBeNull();
+    expect(res.body.message).toBe('upstream unavailable');
 
     norg2Scope.done();
   });
