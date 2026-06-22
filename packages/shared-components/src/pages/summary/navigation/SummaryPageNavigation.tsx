@@ -4,6 +4,7 @@ import {
   NavFormType,
   navFormUtils,
   PanelValidation,
+  ResponseError,
   Submission,
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
@@ -32,7 +33,7 @@ export interface Props {
 const SummaryPageNavigation = ({ form, submission, panelValidationList, isValid }: Props) => {
   const { mellomlagringError } = useSendInn();
   const { attachmentPageEnabled } = useAppConfig();
-  const [error, setError] = useState<Error>();
+  const [error, setError] = useState<ResponseError>();
   const [validationError, setValidationError] = useState<string | undefined>();
   const { search } = useLocation();
   const { translate } = useLanguages();
@@ -58,9 +59,9 @@ const SummaryPageNavigation = ({ form, submission, panelValidationList, isValid 
     <>
       <FormError error={mellomlagringError} />
 
-      {error && (
+      {error?.userMessage && (
         <Alert variant="error" className="mb" data-testid="error-message">
-          {error.message}
+          {translate(error.userMessage)}
         </Alert>
       )}
 

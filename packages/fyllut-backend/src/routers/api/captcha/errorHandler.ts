@@ -1,3 +1,4 @@
+import { ResponseError, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
 import { logger } from '../../../logger';
 import { appMetrics } from '../../../services';
@@ -7,7 +8,7 @@ const captchaErrorHandler: ErrorRequestHandler = (err: any, _req: Request, res: 
   if (err instanceof CaptchaError) {
     logger.info(`Captcha error: ${err.message} - body: ${JSON.stringify(err.reqBody)}`);
     appMetrics.nologinCaptchaFailuresCounter.inc();
-    res.status(400).json({ error: 'Captcha failed' });
+    next(new ResponseError('BAD_REQUEST', 'Captcha failed', undefined, TEXTS.statiske.uploadFile.uploadFileError));
     return;
   }
   next(err);

@@ -6,11 +6,13 @@ const downloadPdf = (submissionType: 'digital' | 'paper' | 'digitalnologin' = 'p
   cy.findByRole('heading', { name: /Oppsummering|Summary/ }).shouldBeVisible();
   if (submissionType === 'digitalnologin' || submissionType === 'digital') {
     cy.clickSendNav();
+    cy.wait('@submitApplication');
+    cy.findByRole('heading', { name: 'Kvittering' }).should('exist');
   } else {
     cy.clickDownloadInstructions();
     cy.findByRole('button', { name: /Last ned skjema|Download form/ }).click();
+    cy.wait('@downloadPdf');
   }
-  cy.wait('@downloadPdf');
 };
 
 const fillInAttachmentPage = () => {
@@ -56,6 +58,7 @@ describe('Pdf', () => {
       cy.clickSendNav();
 
       cy.wait('@submitApplication');
+      cy.findByRole('heading', { name: 'Kvittering' }).should('exist');
     });
 
     it('pdfFormData get populated with the correct number of pages', () => {
@@ -73,6 +76,7 @@ describe('Pdf', () => {
       cy.clickSendNav();
 
       cy.wait('@submitApplication');
+      cy.findByRole('heading', { name: 'Kvittering' }).should('exist');
     });
 
     it('pdfFormData get populated with the correct number of pages, paper', () => {
@@ -84,6 +88,10 @@ describe('Pdf', () => {
       cy.clickStart();
 
       cy.findByRole('heading', { name: 'Page 1' }).shouldBeVisible();
+      cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(($radio) =>
+        cy.findByLabelText('Ja').check(),
+      );
+      cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).type('08842748500');
       cy.findByRole('checkbox', { name: /Avkryssingsboks/ }).click();
       cy.clickNextStep();
       cy.findByRole('heading', { name: 'Page 2' }).shouldBeVisible();
@@ -271,8 +279,7 @@ describe('Pdf', () => {
 
         fillInAttachmentPage();
 
-        cy.intercept('POST', '/fyllut/api/send-inn/digital-application/*').as('downloadPdf');
-
+        cy.submitApplication();
         downloadPdf('digital');
       });
 
@@ -390,8 +397,7 @@ describe('Pdf', () => {
 
         fillInAttachmentPage();
 
-        cy.intercept('POST', '/fyllut/api/send-inn/digital-application/*').as('downloadPdf');
-
+        cy.submitApplication();
         downloadPdf('digital');
       });
     });
@@ -428,8 +434,7 @@ describe('Pdf', () => {
 
         fillInAttachmentPage();
 
-        cy.intercept('POST', '/fyllut/api/send-inn/nologin-application').as('downloadPdf');
-
+        cy.intercept('POST', '/fyllut/api/send-inn/nologin-application').as('submitApplication');
         downloadPdf('digitalnologin');
       });
     });
@@ -469,6 +474,7 @@ describe('Pdf', () => {
         cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application').as('downloadPdf');
 
         downloadPdf();
+        cy.findByText(/Nedlastingen er ferdig/).shouldBeVisible();
       });
 
       it('Check the old default signature (undefined)', () => {
@@ -504,6 +510,7 @@ describe('Pdf', () => {
         cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application').as('downloadPdf');
 
         downloadPdf();
+        cy.findByText(/Nedlastingen er ferdig/).shouldBeVisible();
       });
     });
 

@@ -1,6 +1,7 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
 interface RadioType extends BaseComponentType {
+  defaultValue?: string | null;
   values?: Array<{
     value: string;
     label: string;
@@ -9,7 +10,7 @@ interface RadioType extends BaseComponentType {
 }
 
 const radio = (props: RadioType) => {
-  const { values } = props ?? {};
+  const { values, defaultValue } = props ?? {};
 
   const defaultValues = [
     { value: 'valg1', label: 'Valg 1' },
@@ -19,6 +20,7 @@ const radio = (props: RadioType) => {
   return {
     ...staticDefaultValues,
     ...baseComponent(props),
+    defaultValue: defaultValue ?? null,
     values: values ?? defaultValues,
   };
 };

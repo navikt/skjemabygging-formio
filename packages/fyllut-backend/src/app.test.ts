@@ -11,7 +11,7 @@ vi.mock('./dekorator', () => ({
   createRedirectUrl: () => '',
 }));
 
-const { sendInnConfig, tokenx: tokenxConfig, formioApiServiceUrl, formsApiUrl, norg2 } = config;
+const { sendInnConfig, tokenx: tokenxConfig, formsApiUrl, norg2 } = config;
 const filePathSoknad = path.join(process.cwd(), '/src/test/testdata/documents/test-skjema.pdf');
 const soknadPdf = readFileSync(filePathSoknad);
 
@@ -27,7 +27,7 @@ describe('app', () => {
     });
 
     it('Returns 404 if form is not found', async () => {
-      nock(formioApiServiceUrl!).get('/form?type=form&tags=nav-skjema&path=testform001').reply(200, []);
+      nock(formsApiUrl).get('/v1/forms/testform001').query(true).reply(404);
 
       const res = await request(createApp()).get('/fyllut/testform001');
       expect(res.status).toBe(404);
@@ -80,6 +80,26 @@ describe('app', () => {
       .expect(200);
   });
 
+  it('returns a 404 response error when an api form is not found', async () => {
+    const formScope = nock(formsApiUrl)
+      .get('/v1/forms/testform001')
+      .query(true)
+      .reply(404, { message: 'not found', correlationId: 'corr-1' }, { 'Content-Type': 'application/json' });
+
+    const res = await request(createApp())
+      .get('/fyllut/api/forms/testform001')
+      .set('Accept', 'application/json')
+      .expect(404);
+
+    expect(res.body).toMatchObject({
+      message: 'not found',
+      errorCode: 'NOT_FOUND',
+      correlationId: 'corr-1',
+    });
+
+    formScope.done();
+  });
+
   it('Looks for Authorization header when Fyllut-Submission-Method=digital', async () => {
     await request(createApp())
       .get('/fyllut/api/config')
@@ -88,7 +108,7 @@ describe('app', () => {
       .expect(401);
   });
 
-  it('Returns error message and a correlation_id', async () => {
+  it('Returns error message and a correlationId', async () => {
     const tokenEndpoint = process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT!;
     const azureOpenidScope = nock(extractHost(tokenEndpoint))
       .post(extractPath(tokenEndpoint))
@@ -113,7 +133,7 @@ describe('app', () => {
       .expect(500);
 
     expect(res.body.message).toBe('Feil ved generering av førsteside');
-    expect(res.body.correlation_id).not.toBeNull();
+    expect(res.body.correlationId).not.toBeNull();
 
     azureOpenidScope.done();
     skjemabyggingproxyScope.done();
