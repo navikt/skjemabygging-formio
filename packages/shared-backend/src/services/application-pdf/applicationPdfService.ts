@@ -1,4 +1,4 @@
-import { PdfFormData, ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
+import { PdfFormData, ResponseError, getStatusFromErrorCode } from '@navikt/skjemadigitalisering-shared-domain';
 import { logger } from '../../shared/logger/logger';
 import { teamLogger } from '../../shared/logger/teamLogger';
 import { MetricServiceConfig } from '../metrics/metricService';
@@ -33,6 +33,9 @@ const requirePdfFormData = (pdfFormData?: PdfFormData): PdfFormData => {
   throw error;
 };
 
+const getHttpResponseStatus = (error: unknown) =>
+  error instanceof ResponseError ? getStatusFromErrorCode(error.errorCode) : undefined;
+
 const createApplicationPdfService = ({
   baseUrl,
   metrics,
@@ -64,7 +67,7 @@ const createApplicationPdfService = ({
       if (!isUnauthorized) {
         teamLogger.error('Could not create pdf', {
           skjemanummer: validatedPdfFormData.skjemanummer ?? undefined,
-          httpResponseStatus: undefined,
+          httpResponseStatus: getHttpResponseStatus(error),
           pdfRequestBody: JSON.stringify(sanitizedPdfFormData),
         });
       }

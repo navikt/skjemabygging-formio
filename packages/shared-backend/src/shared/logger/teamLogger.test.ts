@@ -17,6 +17,10 @@ describe('teamLogger', () => {
   const setup = async ({
     teamLogsUrl = 'http://team-logs.nais-system/',
     nodeEnv = 'development',
+    googleCloudProject = 'project-1',
+    naisNamespace = 'namespace-1',
+    naisPodName = 'pod-1',
+    naisAppName = 'app-1',
     postImpl = vi.fn().mockResolvedValue(undefined),
     warnImpl = vi.fn(),
     getIdImpl = vi.fn().mockReturnValue('corr-1'),
@@ -25,6 +29,10 @@ describe('teamLogger', () => {
       ...originalEnv,
       TEAM_LOGS_URL: teamLogsUrl,
       NODE_ENV: nodeEnv,
+      GOOGLE_CLOUD_PROJECT: googleCloudProject,
+      NAIS_NAMESPACE: naisNamespace,
+      NAIS_POD_NAME: naisPodName,
+      NAIS_APP_NAME: naisAppName,
     };
 
     vi.doMock('../http/http', () => ({
@@ -73,6 +81,10 @@ describe('teamLogger', () => {
         correlation_id: 'corr-1',
         skjemanummer: 'NAV 00-00.00',
         ok: true,
+        google_cloud_project: 'project-1',
+        nais_namespace_name: 'namespace-1',
+        nais_pod_name: 'pod-1',
+        nais_container_name: 'app-1',
       },
       {
         contentType: 'application/json',
