@@ -190,6 +190,30 @@ describe('Fyllut backend :: query param sub', () => {
   });
 
   describe('when accessing static pdf routes', () => {
+    it('redirects static-pdf-only forms to 404 from the normal fill-in route', async () => {
+      mockForm('pdfstaticonly', ['STATIC_PDF']);
+
+      const res = await request(createApp()).get('/fyllut/pdfstaticonly').expect(302);
+
+      expect(res.get('location')).toBe('/fyllut/404');
+    });
+
+    it('redirects static-pdf-only forms to 404 from normal fill-in subroutes', async () => {
+      mockForm('testform109staticpdfsummary', ['STATIC_PDF']);
+
+      const res = await request(createApp()).get('/fyllut/testform109staticpdfsummary/oppsummering').expect(302);
+
+      expect(res.get('location')).toBe('/fyllut/404');
+    });
+
+    it('keeps fill-in routes available when static pdf is combined with a standard submission method', async () => {
+      mockForm('testform109staticpdfpaper', ['PAPER', 'STATIC_PDF']);
+
+      const res = await request(createApp()).get('/fyllut/testform109staticpdfpaper').expect(302);
+
+      expect(res.get('location')).toBe('/fyllut/testform109staticpdfpaper?sub=paper');
+    });
+
     it('returns 404 when static pdf is not enabled for the form', async () => {
       mockForm('testform109', ['PAPER']);
 

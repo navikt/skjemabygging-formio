@@ -25,6 +25,8 @@ const redirectToSubmissionType = (req: Request, res: Response, sub: SubmissionMe
   );
 };
 
+const isStaticPdfRoute = (req: Request) => req.originalUrl.match(new RegExp('/pdf/?(\\?.*)?$'));
+
 const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
   logger.debug('Render index.html', { queryParams: { ...req.query }, baseUrl: req.baseUrl });
   try {
@@ -71,8 +73,14 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
       const form = await oldFormService.loadForm(formPath);
       if (form && form.properties) {
         const { submissionTypes } = form.properties;
+        const staticPdfRoute = isStaticPdfRoute(req);
+        if (submissionTypesUtils.isStaticPdfOnly(submissionTypes) && !staticPdfRoute) {
+          logger.info('Tried to access fill-in form, but only static pdf is enabled for this form', { formPath });
+          return res.redirect(`${config.fyllutPath}/404`);
+        }
+
         if (!qpSub) {
-          if (req.originalUrl.match(new RegExp('/pdf[^/]*$'))) {
+          if (staticPdfRoute) {
             if (!submissionTypesUtils.isStaticPdf(submissionTypes)) {
               logger.debug('Tried to access static pdf, but static pdf is not enabled for this form', { formPath });
               httpStatusCode = 404;

@@ -41,6 +41,14 @@ describe('Static PDF', () => {
     });
   });
 
+  it('redirects normal fill-in routes to 404 when the form only supports static pdf', () => {
+    cy.skipIfNoIncludeDistTests();
+
+    cy.visit('/fyllut/pdfstatic', { failOnStatusCode: false });
+    cy.url().should('include', '/fyllut/404');
+    cy.findByRole('heading', { name: 'Beklager, fant ikke siden' }).should('exist');
+  });
+
   it('should be possible to download pdf with name and address', () => {
     visitStaticPdfPage();
 
