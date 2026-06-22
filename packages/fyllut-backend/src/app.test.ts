@@ -1,3 +1,4 @@
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { readFileSync } from 'fs';
 import nock from 'nock';
 import path from 'path';
@@ -149,6 +150,8 @@ describe('app', () => {
     expect(res.body.errorCode).toBe('SERVICE_UNAVAILABLE');
     expect(res.body.correlationId).not.toBeNull();
     expect(res.body.message).toBe('upstream unavailable');
+    expect(res.body.userMessage).toBe(TEXTS.statiske.error.serverErrorTitle);
+    expect(res.headers['x-correlation-id']).toBe(res.body.correlationId);
 
     norg2Scope.done();
   });
