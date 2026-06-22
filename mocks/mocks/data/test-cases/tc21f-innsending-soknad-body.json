@@ -1,0 +1,13 @@
+{
+  "avsender": {
+    "idType": "ORGNR",
+    "id": "889640782",
+    "navn": "NAV Test AS"
+  },
+  "formNumber": "sender",
+  "title": "Sender component test form",
+  "tema": "HJE",
+  "language": "nb",
+  "attachments": [],
+  "otherUploadAvailable": false
+}

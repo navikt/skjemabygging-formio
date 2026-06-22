@@ -1,5 +1,5 @@
 import correlator from 'express-correlation-id';
-import http, { HttpResponseError } from '../http/http';
+import http from '../http/http';
 import { logger } from './logger';
 
 type Severity = 'INFO' | 'WARN' | 'ERROR';
@@ -27,7 +27,7 @@ const log = async (severity: Severity, message: string, metadata: LogMetadata = 
       },
     );
   } catch (error) {
-    if (error instanceof HttpResponseError || error instanceof Error) {
+    if (error instanceof Error) {
       logger.warn('Failed to post to team-logs', { error });
       return Promise.resolve();
     }

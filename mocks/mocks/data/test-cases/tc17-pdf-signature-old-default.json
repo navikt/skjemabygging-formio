@@ -50,9 +50,10 @@
     "harInnholdsfortegnelse": false,
     "språk": "nb"
   },
+  "skjemanummer": "stpaper",
   "bunntekst": {
     "upperleft": "F.nr: —",
-    "lowerleft": "Skjemanummer: undefined",
+    "lowerleft": "Skjemanummer: stpaper",
     "upperRight": null,
     "upperMiddle": "Opprettet: 21 mai 2026, 16:38",
     "lowerMiddle": "Versjon: local"

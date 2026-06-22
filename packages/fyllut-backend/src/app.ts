@@ -1,4 +1,4 @@
-import { correlator } from '@navikt/skjemadigitalisering-shared-backend';
+import { correlator, errorHandler } from '@navikt/skjemadigitalisering-shared-backend';
 import cors from 'cors';
 import express, { NextFunction, Request, Response } from 'express';
 import mustacheExpress from 'mustache-express';
@@ -6,8 +6,8 @@ import { checkConfigConsistency, config } from './config/config';
 import { buildDirectory } from './context';
 import { setupDeprecatedEndpoints } from './deprecatedEndpoints';
 import expressJsonMetricHandler from './middleware/expressJsonMetricHandler';
-import globalErrorHandler from './middleware/globalErrorHandler';
 import httpRequestLogger from './middleware/httpRequestLogger';
+import legacyErrorToResponseError from './middleware/legacyErrorToResponseError';
 import { stripTrailingSlash } from './middleware/stripTrailingSlash';
 import renderIndex from './renderIndex';
 import apiRouter from './routers/api/index';
@@ -58,7 +58,8 @@ export const createApp = (setupDev: boolean = false) => {
 
   app.use(config.fyllutPath, fyllutRouter);
 
-  app.use(globalErrorHandler);
+  app.use(legacyErrorToResponseError);
+  app.use(errorHandler);
 
   return app;
 };

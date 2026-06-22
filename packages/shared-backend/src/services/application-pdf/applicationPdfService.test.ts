@@ -1,7 +1,6 @@
 import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import { Registry } from 'prom-client';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { HttpResponseError } from '../../shared/http/http';
 import { sanitizeValue } from './applicationPdfSerializer';
 import { createApplicationPdfService } from './applicationPdfService';
 
@@ -107,9 +106,9 @@ describe('createApplicationPdfService', () => {
     expect(await registry.metrics()).toContain('fyllut_familie_pdf_duration_seconds_count{error="true"} 1');
   });
 
-  it('logs to team-logs on non-401 HttpResponseError and rethrows', async () => {
+  it('logs to team-logs on non-401 ResponseError and rethrows', async () => {
     const registry = new Registry();
-    const error = new HttpResponseError('SERVICE_UNAVAILABLE', 'boom', 'Internal server error', undefined, 503);
+    const error = new ResponseError('SERVICE_UNAVAILABLE', 'boom');
     const client = {
       createPdf: vi.fn().mockRejectedValue(error),
     };
@@ -133,7 +132,7 @@ describe('createApplicationPdfService', () => {
       'Could not create pdf',
       expect.objectContaining({
         skjemanummer: 'NAV 00-00.00',
-        httpResponseStatus: 503,
+        httpResponseStatus: undefined,
       }),
     );
   });
@@ -163,7 +162,7 @@ describe('createApplicationPdfService', () => {
     expect(teamLoggerError).not.toHaveBeenCalled();
   });
 
-  it('logs to team-logs on non-HttpResponseError failures with undefined status and rethrows', async () => {
+  it('logs to team-logs on non-ResponseError failures with undefined status and rethrows', async () => {
     const registry = new Registry();
     const error = new Error('pdf failed');
     const client = {

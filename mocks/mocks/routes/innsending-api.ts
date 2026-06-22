@@ -39,6 +39,12 @@ import tc05 from '../data/test-cases/tc05-innsending-nologin-soknad-body.json';
 import tc06a from '../data/test-cases/tc06a-innsending-nologin-soknad-body.json';
 import tc06b from '../data/test-cases/tc06b-innsending-nologin-soknad-body.json';
 import tc07 from '../data/test-cases/tc07-innsending-soknad-body.json';
+import tc21a from '../data/test-cases/tc21a-innsending-nologin-soknad-body.json';
+import tc21b from '../data/test-cases/tc21b-innsending-nologin-soknad-body.json';
+import tc21c from '../data/test-cases/tc21c-innsending-nologin-soknad-body.json';
+import tc21d from '../data/test-cases/tc21d-innsending-nologin-soknad-body.json';
+import tc21e from '../data/test-cases/tc21e-innsending-soknad-body.json';
+import tc21f from '../data/test-cases/tc21f-innsending-soknad-body.json';
 import { compareBodyMiddleware } from '../utils/testCaseUtils';
 
 const upload = multer();
@@ -717,6 +723,28 @@ export default [
           ),
         },
       },
+      {
+        id: 'success-tc21e',
+        type: 'middleware',
+        options: {
+          middleware: compareBodyMiddleware(
+            tc21e,
+            ['innsendingsId', 'mainDocument', 'mainDocumentAlt', 'attachments.fileIds'],
+            okResponseHandlerNologinSubmission,
+          ),
+        },
+      },
+      {
+        id: 'success-tc21f',
+        type: 'middleware',
+        options: {
+          middleware: compareBodyMiddleware(
+            tc21f,
+            ['innsendingsId', 'mainDocument', 'mainDocumentAlt', 'attachments.fileIds'],
+            okResponseHandlerNologinSubmission,
+          ),
+        },
+      },
     ],
   },
   {
@@ -795,6 +823,50 @@ export default [
         options: {
           middleware: compareBodyMiddleware(
             tc06b,
+            ['innsendingsId', 'mainDocument', 'mainDocumentAlt', 'attachments.fileIds'],
+            okResponseHandlerNologinSubmission,
+          ),
+        },
+      },
+      {
+        id: 'success-tc21a',
+        type: 'middleware',
+        options: {
+          middleware: compareBodyMiddleware(
+            tc21a,
+            ['innsendingsId', 'mainDocument', 'mainDocumentAlt', 'attachments.fileIds'],
+            okResponseHandlerNologinSubmission,
+          ),
+        },
+      },
+      {
+        id: 'success-tc21b',
+        type: 'middleware',
+        options: {
+          middleware: compareBodyMiddleware(
+            tc21b,
+            ['innsendingsId', 'mainDocument', 'mainDocumentAlt', 'attachments.fileIds'],
+            okResponseHandlerNologinSubmission,
+          ),
+        },
+      },
+      {
+        id: 'success-tc21c',
+        type: 'middleware',
+        options: {
+          middleware: compareBodyMiddleware(
+            tc21c,
+            ['innsendingsId', 'mainDocument', 'mainDocumentAlt', 'attachments.fileIds'],
+            okResponseHandlerNologinSubmission,
+          ),
+        },
+      },
+      {
+        id: 'success-tc21d',
+        type: 'middleware',
+        options: {
+          middleware: compareBodyMiddleware(
+            tc21d,
             ['innsendingsId', 'mainDocument', 'mainDocumentAlt', 'attachments.fileIds'],
             okResponseHandlerNologinSubmission,
           ),

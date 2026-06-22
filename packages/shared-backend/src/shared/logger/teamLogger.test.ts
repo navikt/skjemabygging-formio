@@ -28,7 +28,6 @@ describe('teamLogger', () => {
     };
 
     vi.doMock('../http/http', () => ({
-      HttpResponseError: class HttpResponseError extends Error {},
       default: {
         post: postImpl,
       },

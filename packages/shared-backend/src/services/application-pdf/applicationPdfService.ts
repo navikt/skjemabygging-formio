@@ -1,5 +1,4 @@
 import { PdfFormData, ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
-import { HttpResponseError } from '../../shared/http/http';
 import { logger } from '../../shared/logger/logger';
 import { teamLogger } from '../../shared/logger/teamLogger';
 import { MetricServiceConfig } from '../metrics/metricService';
@@ -23,8 +22,6 @@ interface CreateApplicationPdfServiceProps {
   metrics?: MetricServiceConfig;
   client?: ApplicationPdfClient;
 }
-
-const getHttpResponseStatus = (error: unknown) => (error instanceof HttpResponseError ? error.status : undefined);
 
 const requirePdfFormData = (pdfFormData?: PdfFormData): PdfFormData => {
   if (pdfFormData && typeof pdfFormData === 'object') {
@@ -67,7 +64,7 @@ const createApplicationPdfService = ({
       if (!isUnauthorized) {
         teamLogger.error('Could not create pdf', {
           skjemanummer: validatedPdfFormData.skjemanummer ?? undefined,
-          httpResponseStatus: getHttpResponseStatus(error),
+          httpResponseStatus: undefined,
           pdfRequestBody: JSON.stringify(sanitizedPdfFormData),
         });
       }
