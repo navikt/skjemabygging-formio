@@ -35,6 +35,7 @@
       "post-umami-event:success",
       "get-static-pdfs:success",
       "download-static-pdf:success",
+      "get-forms:success",
       "get-form:success",
       "get-form-translations:success"
     ]
