@@ -37,6 +37,15 @@
       ]
     },
     {
+      "label": "Andre",
+      "verdiliste": [
+        {
+          "label": "Hvilken aktivitet søker du om støtte i forbindelse med?",
+          "verdi": "Ingen relevant aktivitet registrert på meg"
+        }
+      ]
+    },
+    {
       "label": "Vedlegg",
       "verdiliste": [
         {
@@ -46,15 +55,6 @@
         {
           "label": "Annen dokumentasjon",
           "verdi": "Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved"
-        }
-      ]
-    },
-    {
-      "label": "Andre",
-      "verdiliste": [
-        {
-          "label": "Hvilken aktivitet søker du om støtte i forbindelse med?",
-          "verdi": "Ingen relevant aktivitet registrert på meg"
         }
       ]
     }

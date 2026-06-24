@@ -1,4 +1,9 @@
-import { ErrorCode } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  ErrorResponse,
+  getErrorCodeFromStatus,
+  ResponseError,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
 
 enum MimeType {
   JSON = 'application/json',
@@ -27,22 +32,6 @@ interface FetchOptions {
   redirectToLocation?: boolean;
   setRedirectLocation?: (location: string) => void;
 }
-
-class HttpError extends Error {
-  public readonly status: number;
-  public readonly errorCode: ErrorCode | undefined;
-
-  constructor(message: string, status: number, errorCode?: ErrorCode | undefined) {
-    super(message);
-    this.status = status;
-    this.errorCode = errorCode;
-  }
-}
-
-class UnauthenticatedError extends Error {}
-class TooManyRequestsError extends Error {}
-class TooManyPagesError extends Error {}
-class ServiceUnavailable extends Error {}
 
 const defaultHeaders = (headers?: FetchHeader) => {
   return {
@@ -106,42 +95,19 @@ const put = async <T>(url: string, body: object, headers?: FetchHeader, opts?: F
 
 const handleResponse = async (response: Response, opts?: FetchOptions) => {
   if (!response.ok) {
-    // Formio API server returns status 440 when token is expired
-    if (response.status === 401 || response.status === 403 || response.status === 440) {
-      throw new UnauthenticatedError(response.statusText);
-    } else if (response.status === 429) {
-      throw new TooManyRequestsError(response.statusText);
-    }
-
-    let errorMessage: string = '';
-    let errorCode;
-    let userMessage: string | undefined;
+    let errorResponse: Partial<ErrorResponse> = {};
     if (isResponseType(response, MimeType.JSON)) {
-      const responseJson = await response.json();
-      if (responseJson.message) {
-        errorMessage = responseJson.message;
-      }
-      if (responseJson.userMessage) {
-        userMessage = responseJson.userMessage;
-      }
-      if (responseJson.errorCode) {
-        errorCode = responseJson.errorCode;
-      }
+      errorResponse = (await response.json()) as Partial<ErrorResponse>;
     } else if (isResponseType(response, MimeType.TEXT)) {
-      errorMessage = await response.text();
+      errorResponse.message = await response.text();
     }
 
-    const visibleMessage = userMessage || errorMessage || response.statusText;
-
-    if (errorCode === 'FILE_TOO_MANY_PAGES') {
-      throw new TooManyPagesError(visibleMessage);
-    }
-
-    if (errorCode === 'SERVICE_UNAVAILABLE') {
-      throw new ServiceUnavailable(visibleMessage);
-    }
-
-    throw new HttpError(visibleMessage, response.status, errorCode);
+    throw new ResponseError(
+      errorResponse.errorCode ?? getErrorCodeFromStatus(response.status),
+      errorResponse.message || response.statusText,
+      errorResponse.correlationId,
+      errorResponse.userMessage ?? TEXTS.statiske.error.serverErrorTitle,
+    );
   }
 
   if (opts?.redirectToLocation || opts?.setRedirectLocation) {
@@ -172,6 +138,10 @@ const isResponseType = (response: Response, mimeType: MimeType) => {
   return contentType && contentType.includes(mimeType);
 };
 
+const isAuthenticationError = (error: unknown): error is ResponseError =>
+  error instanceof ResponseError &&
+  (error.errorCode === 'UNAUTHORIZED' || error.errorCode === 'FORBIDDEN' || error.errorCode === 'LOGIN_TIMEOUT');
+
 const http = {
   get,
   post,
@@ -179,11 +149,8 @@ const http = {
   postFile,
   delete: httpDelete,
   MimeType,
-  HttpError,
-  UnauthenticatedError,
-  TooManyRequestsError,
-  TooManyPagesError,
-  ServiceUnavailable,
+  ResponseError,
+  isAuthenticationError,
   SubmissionMethodType,
 };
 

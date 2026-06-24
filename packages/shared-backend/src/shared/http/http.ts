@@ -1,4 +1,4 @@
-import { ErrorCode, ResponseError, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { ErrorCode, ResponseError, TEXTS, getErrorCodeFromStatus } from '@navikt/skjemadigitalisering-shared-domain';
 import crypto from 'crypto';
 import correlator from 'express-correlation-id';
 import { logger } from '../logger/logger';
@@ -213,13 +213,17 @@ const handleResponse = async <T>(
   const errorBody = await handleBody(response);
   const upstreamErrorCode = getUpstreamErrorCode(errorBody);
   const errorCode = getNormalizedErrorCode(response.status, upstreamErrorCode);
-  const userMessage = getUserMessage(errorCode);
-  const error = new ResponseError(
-    errorCode,
-    response.statusText,
-    response.headers.get('x-correlation-id') ?? undefined,
-    userMessage,
-  );
+  const message = typeof errorBody === 'string' ? errorBody : (errorBody?.message ?? response.statusText);
+  const correlationId =
+    typeof errorBody === 'string'
+      ? (response.headers.get('x-correlation-id') ?? undefined)
+      : (errorBody?.correlationId ??
+        errorBody?.correlation_id ??
+        response.headers.get('x-correlation-id') ??
+        undefined);
+  const userMessage =
+    typeof errorBody === 'string' ? getUserMessage(errorCode) : (errorBody?.userMessage ?? getUserMessage(errorCode));
+  const error = new ResponseError(errorCode, message, correlationId, userMessage);
 
   logger.warn(`Http request to ${response.url} failed with status ${response.status}`, {
     body: errorBody,
@@ -250,7 +254,7 @@ const getNormalizedErrorCode = (status: number, upstreamErrorCode?: string): Err
     case 'temporarilyUnavailable':
       return 'SERVICE_UNAVAILABLE';
     default:
-      return getErrorCode(status);
+      return getErrorCodeFromStatus(status);
   }
 };
 
@@ -264,26 +268,6 @@ const getUserMessage = (errorCode: ErrorCode): string | undefined => {
       return undefined;
   }
 };
-
-const getErrorCode = (status: number): ErrorCode => {
-  switch (status) {
-    case 400:
-      return 'BAD_REQUEST';
-    case 401:
-      return 'UNAUTHORIZED';
-    case 403:
-      return 'FORBIDDEN';
-    case 404:
-      return 'NOT_FOUND';
-    case 500:
-      return 'INTERNAL_SERVER_ERROR';
-    case 503:
-      return 'SERVICE_UNAVAILABLE';
-    default:
-      return 'ERROR';
-  }
-};
-
 const http = {
   get,
   post,

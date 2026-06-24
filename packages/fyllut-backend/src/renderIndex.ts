@@ -1,11 +1,16 @@
-import { navFormUtils, SubmissionMethod, submissionTypesUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  navFormUtils,
+  ResponseError,
+  SubmissionMethod,
+  submissionTypesUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import { ParsedUrlQueryInput } from 'querystring';
 import url from 'url';
 import { config } from './config/config';
 import { createRedirectUrl, getDecorator } from './dekorator';
 import { logger } from './logger';
-import { oldFormService } from './services';
+import { formService } from './services';
 import { QueryParamSub } from './types/custom';
 import { excludeQueryParam } from './utils/express';
 import { logFormNotFound } from './utils/formError';
@@ -68,7 +73,13 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
     let httpStatusCode = 200;
     if (formPath) {
       logger.debug('Loading form...', { formPath });
-      const form = await oldFormService.loadForm(formPath);
+      const form = await formService.getForm({ formPath, select: ['title', 'path', 'properties'] }).catch((err) => {
+        if (err instanceof ResponseError && err.errorCode === 'NOT_FOUND') {
+          return undefined;
+        }
+
+        throw err;
+      });
       if (form && form.properties) {
         const { submissionTypes } = form.properties;
         if (!qpSub) {

@@ -6,8 +6,7 @@ import { pipeline } from 'node:stream/promises';
 import { ReadableStream as NodeReadableStream } from 'node:stream/web';
 import { logger } from '../../../../../logger';
 import { applicationService } from '../../../../../services';
-import { hasErrorCode, isResponseError, wrapResponseError } from '../../../helpers/responseErrors';
-import { removeUploadedTempFile } from '../../../helpers/upload';
+import { createUploadResponseError, removeUploadedTempFile } from '../../../helpers/upload';
 
 const createBlobFromBuffer = (file: Express.Multer.File) =>
   new Blob([Uint8Array.from(file.buffer)], { type: file.mimetype });
@@ -48,20 +47,12 @@ const post = async (req: Request, res: Response, next: NextFunction) => {
     });
     res.status(201).json(result);
   } catch (error) {
-    if (hasErrorCode(error, 'SERVICE_UNAVAILABLE')) {
-      logger.warn(`${innsendingsId}: Upload failed for digital application due to temporary unavailability`, logMeta);
-      return next(error);
+    const uploadError = createUploadResponseError(error);
+    if (uploadError) {
+      logger.warn(`${innsendingsId}: Upload failed for digital application`, { ...logMeta, error: uploadError });
+      return next(uploadError);
     }
-    if (isResponseError(error)) {
-      logger.warn(`${innsendingsId}: Upload request failed for digital application`, { ...logMeta, error });
-      return next(
-        wrapResponseError({
-          error,
-          message: 'Digital attachment upload failed',
-          userMessage: 'Feil ved opplasting av fil',
-        }),
-      );
-    }
+    logger.warn(`${innsendingsId}: Upload request failed for digital application`, { ...logMeta, error });
     next(error);
   } finally {
     await removeUploadedTempFile(file);
@@ -78,15 +69,6 @@ const deleteFile = async (req: Request, res: Response, next: NextFunction) => {
     await applicationService.deleteAttachment({ accessToken, attachmentId, fileId, innsendingsId, type: 'digital' });
     res.sendStatus(204);
   } catch (error) {
-    if (isResponseError(error)) {
-      return next(
-        wrapResponseError({
-          error,
-          message: 'Digital attachment delete failed',
-          userMessage: 'Feil ved sletting av fil',
-        }),
-      );
-    }
     next(error);
   }
 };
@@ -121,15 +103,6 @@ const get = async (req: Request, res: Response, next: NextFunction) => {
     res.status(200);
     await pipeline(Readable.fromWeb(fileStream as NodeReadableStream), res);
   } catch (error) {
-    if (isResponseError(error)) {
-      return next(
-        wrapResponseError({
-          error,
-          message: 'Digital attachment download failed',
-          userMessage: 'Feil ved nedlasting av fil',
-        }),
-      );
-    }
     next(error);
   }
 };

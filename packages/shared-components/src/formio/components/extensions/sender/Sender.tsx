@@ -30,22 +30,24 @@ class Sender extends BaseComponent {
     return senderBuilder();
   }
 
-  init() {
-    super.init();
-    this.initPrefill();
-  }
-
-  initPrefill() {
-    if (this.hasPrefill() && this.component?.prefillValue) {
-      const value: SubmissionSender = {
-        person: {
-          nationalIdentityNumber: this.component?.prefillValue['sokerIdentifikasjonsnummer'],
-          firstName: this.component?.prefillValue['sokerFornavn'],
-          surname: this.component?.prefillValue['sokerEtternavn'],
-        },
-      };
-      super.setValue(value);
+  private applyPrefillIfVisible() {
+    if (
+      !this.hasPrefill() ||
+      !this.component?.prefillValue ||
+      this.visible === false ||
+      this.hasValue() ||
+      this.getSenderRole() !== 'person'
+    ) {
+      return undefined;
     }
+
+    super.setValue({
+      person: {
+        nationalIdentityNumber: this.component?.prefillValue['sokerIdentifikasjonsnummer'],
+        firstName: this.component?.prefillValue['sokerFornavn'],
+        surname: this.component?.prefillValue['sokerEtternavn'],
+      },
+    });
   }
 
   getReadOnly() {
@@ -146,6 +148,8 @@ class Sender extends BaseComponent {
   }
 
   renderReact(element) {
+    this.applyPrefillIfVisible();
+
     element.render(
       <ComponentUtilsProvider component={this}>
         <NavSender

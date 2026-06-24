@@ -1,11 +1,9 @@
-import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import { openAsBlob } from 'node:fs';
 import { logger } from '../../../../../logger';
 import { applicationService } from '../../../../../services';
-import { hasErrorCode, isResponseError, wrapResponseError } from '../../../helpers/responseErrors';
-import { removeUploadedTempFile } from '../../../helpers/upload';
-import { validateNologinContext } from '../../../nologin-file/nologin-file';
+import { createUploadResponseError, removeUploadedTempFile } from '../../../helpers/upload';
+import { validateNologinContext } from './context';
 
 const createBlobFromBuffer = (file: Express.Multer.File) =>
   new Blob([Uint8Array.from(file.buffer)], { type: file.mimetype });
@@ -49,31 +47,12 @@ const post = async (req: Request, res: Response, next: NextFunction) => {
   } catch (error) {
     const innsendingsId = req.getNologinContext()?.innsendingsId;
     const logMeta = { ...baseLogMeta, innsendingsId };
-    if (hasErrorCode(error, 'FORBIDDEN')) {
-      logger.warn(`${innsendingsId}: Upload failed for nologin application due to authorization error`, logMeta);
-      return next(
-        wrapResponseError({
-          error: error as ResponseError,
-          message: 'Nologin attachment upload forbidden',
-          userMessage: 'Feil ved opplasting av fil for uinnlogget søknad, autorisering feilet',
-        }),
-      );
-    } else if (hasErrorCode(error, 'FILE_TOO_MANY_PAGES')) {
-      logger.warn(`${innsendingsId}: Upload failed for nologin application due to too many pages`, logMeta);
-      return next(error);
-    } else if (hasErrorCode(error, 'SERVICE_UNAVAILABLE')) {
-      logger.warn(`${innsendingsId}: Upload failed for nologin application due to temporary unavailability`, logMeta);
-      return next(error);
-    } else if (isResponseError(error)) {
-      logger.warn(`${innsendingsId}: Upload request failed for nologin application`, { ...logMeta, error });
-      return next(
-        wrapResponseError({
-          error,
-          message: 'Nologin attachment upload failed',
-          userMessage: 'Feil ved opplasting av fil for uinnlogget søknad.',
-        }),
-      );
+    const uploadError = createUploadResponseError(error);
+    if (uploadError) {
+      logger.warn(`${innsendingsId}: Upload failed for nologin application`, { ...logMeta, error: uploadError });
+      return next(uploadError);
     }
+    logger.warn(`${innsendingsId}: Upload request failed for nologin application`, { ...logMeta, error });
     next(error);
   } finally {
     await removeUploadedTempFile(file);
@@ -91,15 +70,6 @@ const deleteAttachment = async (req: Request, res: Response, next: NextFunction)
     await applicationService.deleteAttachment({ accessToken, attachmentId, fileId, innsendingsId, type: 'nologin' });
     res.sendStatus(204);
   } catch (error) {
-    if (isResponseError(error)) {
-      return next(
-        wrapResponseError({
-          error,
-          message: 'Nologin attachment delete failed',
-          userMessage: 'Feil ved sletting av fil',
-        }),
-      );
-    }
     next(error);
   }
 };

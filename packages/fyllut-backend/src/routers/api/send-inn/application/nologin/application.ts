@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
-import { validateNologinContext } from '../../../nologin-file/nologin-file';
 import { generatePdfAndSubmit } from '../common';
+import { validateNologinContext } from './context';
 
 const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
