@@ -5,7 +5,7 @@ import documents from './documents';
 const documentsRouter = express.Router();
 const { azureM2MSkjemabyggingProxy, azurePdfGeneratorToken, azureMergePdfToken } = initApiConfig();
 
-documentsRouter.post('/application', azurePdfGeneratorToken, azurePdfGeneratorToken, documents.application);
+documentsRouter.post('/application', azurePdfGeneratorToken, documents.application);
 documentsRouter.post(
   '/cover-page-and-application',
   azureM2MSkjemabyggingProxy,
