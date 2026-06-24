@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { TeamLoggerConfig } from './teamLogger';
 
 describe('teamLogger', () => {
   beforeEach(() => {
@@ -24,6 +25,11 @@ describe('teamLogger', () => {
     postImpl = vi.fn().mockResolvedValue(undefined),
     warnImpl = vi.fn(),
     getIdImpl = vi.fn().mockReturnValue('corr-1'),
+  }: {
+    config?: TeamLoggerConfig;
+    postImpl?: ReturnType<typeof vi.fn>;
+    warnImpl?: ReturnType<typeof vi.fn>;
+    getIdImpl?: ReturnType<typeof vi.fn>;
   } = {}) => {
     vi.doMock('../http/http', () => ({
       default: {
