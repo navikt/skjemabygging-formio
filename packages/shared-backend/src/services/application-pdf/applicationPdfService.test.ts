@@ -175,9 +175,9 @@ describe('createApplicationPdfService', () => {
     );
   });
 
-  it('does not log to team-logs on unauthorized errors', async () => {
+  it('does not log to team-logs on authentication errors', async () => {
     const registry = new Registry();
-    mockFetchResponse(JSON.stringify({ message: 'nope', correlationId: 'corr-unauthorized' }), 401, 'application/json');
+    mockFetchResponse(JSON.stringify({ message: 'nope', correlationId: 'corr-forbidden' }), 403, 'application/json');
     const service = createService(registry);
 
     await expect(
@@ -186,9 +186,9 @@ describe('createApplicationPdfService', () => {
         pdfFormData: createPdfFormData(),
       }),
     ).rejects.toMatchObject({
-      errorCode: 'UNAUTHORIZED',
+      errorCode: 'FORBIDDEN',
       message: 'nope',
-      correlationId: 'corr-unauthorized',
+      correlationId: 'corr-forbidden',
     });
 
     expect(teamLogger.error).not.toHaveBeenCalled();

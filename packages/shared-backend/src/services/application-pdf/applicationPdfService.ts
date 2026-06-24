@@ -1,5 +1,6 @@
 import { PdfFormData, ResponseError, getStatusFromErrorCode } from '@navikt/skjemadigitalisering-shared-domain';
 import type { TeamLogger } from '../../shared';
+import { isAuthenticationError } from '../../shared';
 import { logger } from '../../shared/logger/logger';
 import { MetricServiceConfig } from '../metrics/metricService';
 import applicationPdfClient from './applicationPdfClient';
@@ -65,8 +66,7 @@ const createApplicationPdfService = ({
     } catch (error) {
       applicationPdfMetrics.failures.increment();
       timer.failure();
-      const isUnauthorized = error instanceof ResponseError && error.errorCode === 'UNAUTHORIZED';
-      if (!isUnauthorized && teamLogger) {
+      if (!isAuthenticationError(error) && teamLogger) {
         teamLogger.error('Could not create pdf', {
           skjemanummer: validatedPdfFormData.skjemanummer ?? undefined,
           httpResponseStatus: getHttpResponseStatus(error),
