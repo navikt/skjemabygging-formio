@@ -33,7 +33,7 @@
     "@navikt/skjemadigitalisering-shared-domain": "workspace:*",
     "@navikt/skjemadigitalisering-shared-frontend": "workspace:*",
     "clsx": "^2.1.1",
-    "dompurify": "^3.4.7",
+    "dompurify": "^3.4.11",
     "eventemitter2": "^6.4.9",
     "eventemitter3": "^5.0.4",
     "file-saver": "2.0.5",
