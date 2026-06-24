@@ -18,10 +18,13 @@ const getStringParam = (req: Request, name: string, optional?: boolean) => {
   return value;
 };
 
-function getBodyValue<T = unknown>(req: Request, name: string): T;
-function getBodyValue<T = unknown>(req: Request, name: string, optional: false): T;
-function getBodyValue<T = unknown>(req: Request, name: string, optional: true): T | undefined;
-function getBodyValue<T = unknown>(req: Request, name: string, optional?: boolean) {
+type GetBodyValue = {
+  <T = unknown>(req: Request, name: string): T;
+  <T = unknown>(req: Request, name: string, optional: false): T;
+  <T = unknown>(req: Request, name: string, optional: true): T | undefined;
+};
+
+const getBodyValue: GetBodyValue = <T = unknown>(req: Request, name: string, optional?: boolean) => {
   const value = req.body?.[name] as T | null | undefined;
   if (value !== undefined && value !== null) {
     return value;
@@ -32,7 +35,7 @@ function getBodyValue<T = unknown>(req: Request, name: string, optional?: boolea
   }
 
   throw new ResponseError('BAD_REQUEST', `Missing body value "${name}"`);
-}
+};
 
 const getFile = (req: Request): Express.Multer.File => {
   const file = req.file;
