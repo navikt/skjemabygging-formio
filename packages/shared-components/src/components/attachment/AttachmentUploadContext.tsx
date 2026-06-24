@@ -1,5 +1,11 @@
 import { FileItem, FileObject } from '@navikt/ds-react';
-import { Submission, SubmissionAttachment, TEXTS, UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  ResponseError,
+  Submission,
+  SubmissionAttachment,
+  TEXTS,
+  UploadedFile,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, useContext, useMemo, useState } from 'react';
 import getFileUploadApi from '../../api/file-upload/fileUpload';
 import baseHttp from '../../api/util/http/http';
@@ -223,17 +229,17 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
         return Promise.resolve({ status: 'ok' });
       }
       return Promise.resolve({ status: 'unknown' });
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (isAuthenticationError(error)) {
         handleSessionExpired();
         return Promise.resolve({ status: 'auth-error' });
-      } else if (isTooManyPagesError(error)) {
-        addFileInProgress(attachmentId, { ...file, error: true, reasons: ['uploadTooManyPages'] });
-      } else if (isServiceUnavailable(error)) {
-        addFileInProgress(attachmentId, { ...file, error: true, reasons: ['serviceUnavailable'] });
-      } else {
-        addFileInProgress(attachmentId, { ...file, error: true, reasons: ['uploadHttpError'] });
       }
+      const userMessage = error instanceof ResponseError ? error.userMessage : undefined;
+      addFileInProgress(attachmentId, {
+        ...file,
+        error: true,
+        reasons: [userMessage ?? TEXTS.statiske.uploadFile.uploadFileError],
+      });
       return Promise.resolve({ status: 'error' });
     }
   };
@@ -376,11 +382,7 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
 
 const useAttachmentUpload = () => useContext(AttachmentUploadContext);
 
-const isAuthenticationError = (error: any): boolean => error instanceof baseHttp.UnauthenticatedError;
-
-const isTooManyPagesError = (error: any): boolean => error instanceof baseHttp.TooManyPagesError;
-
-const isServiceUnavailable = (error: any): boolean => error instanceof baseHttp.ServiceUnavailable;
+const isAuthenticationError = (error: unknown): boolean => baseHttp.isAuthenticationError(error);
 
 export type { AttachmentError, AttachmentErrorType };
 export default AttachmentUploadProvider;

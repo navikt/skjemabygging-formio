@@ -18,7 +18,7 @@ export const getQueryParamSub = (form: NavFormType): QueryParamSub => {
   return undefined;
 };
 
-export const getFormMeta = (form: NavFormType) => {
+export const getFormMeta = (form: Pick<NavFormType, 'title'>) => {
   return {
     PAGE_TITLE: form.title || defaultMeta.PAGE_TITLE,
     PAGE_DESCRIPTION: defaultMeta.PAGE_DESCRIPTION,
