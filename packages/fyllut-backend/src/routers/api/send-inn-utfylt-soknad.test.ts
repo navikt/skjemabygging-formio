@@ -89,8 +89,34 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
     expect(next).toHaveBeenCalledTimes(1);
     const error: any = next.mock.calls[0][0];
     expect(error.errorCode).toBe('INTERNAL_SERVER_ERROR');
-    expect(error.message).toBe('SendInn submit request failed');
-    expect(error.userMessage).toBe('Feil ved kall til SendInn');
+    expect(error.message).toBe('Internal Server Error');
+    expect(error.userMessage).toBeUndefined();
+    expect(res.sendStatus).not.toHaveBeenCalled();
+    expect(res.header).not.toHaveBeenCalled();
+    expect(formScope.isDone()).toBe(true);
+    expect(globalTranslationsScope.isDone()).toBe(true);
+    expect(formTranslationsScope.isDone()).toBe(true);
+    expect(skjemabyggingproxyScope.isDone()).toBe(true);
+    expect(sendInnNockScope.isDone()).toBe(true);
+  });
+
+  it('calls next with not found if SendInn returns status 404', async () => {
+    const skjemabyggingproxyScope = nock(process.env.FAMILIE_PDF_GENERATOR_URL!)
+      .post('/api/pdf/v3/opprett-pdf')
+      .reply(200, { content: encodedSoknadPdf }, { 'Content-Type': 'application/json' });
+    const { formScope, globalTranslationsScope, formTranslationsScope } = mockFormServiceAndTranslations();
+    const sendInnNockScope = nock(sendInnConfig.host)
+      .put(`${sendInnConfig.paths.utfyltSoknad}/${innsendingsId}`)
+      .reply(404, 'error body');
+    const req = mockRequestWithPidAndTokenX({ body: defaultBody });
+    const res = mockResponse();
+    const next = vi.fn();
+    await sendInnUtfyltSoknad.put(req, res, next);
+
+    expect(next).toHaveBeenCalledTimes(1);
+    const error: any = next.mock.calls[0][0];
+    expect(error.errorCode).toBe('NOT_FOUND');
+    expect(error.message).toBe('Not Found');
     expect(res.sendStatus).not.toHaveBeenCalled();
     expect(res.header).not.toHaveBeenCalled();
     expect(formScope.isDone()).toBe(true);
@@ -114,6 +140,7 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
     const error: any = next.mock.calls[0][0];
     expect(error.errorCode).toBe('INTERNAL_SERVER_ERROR');
     expect(error.message).toBe('Internal Server Error');
+    expect(error.userMessage).toBeUndefined();
     expect(res.sendStatus).not.toHaveBeenCalled();
     expect(res.header).not.toHaveBeenCalled();
     expect(formScope.isDone()).toBe(true);

@@ -1,24 +1,13 @@
 import { renderApplicationPdf } from '@navikt/skjemadigitalisering-shared-backend';
-import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import { config } from '../../config/config';
 import { logger } from '../../logger';
 import { getIdportenPid, getTokenxAccessToken } from '../../security/tokenHelper';
 import { applicationPdfService, applicationService, formService, translationService } from '../../services';
 import { LogMetadata } from '../../types/log';
-import { base64Decode } from '../../utils/base64';
+import { requireBase64Decode } from '../../utils/base64';
 import { getFyllutUrl } from '../../utils/url';
-import { isResponseError, wrapResponseError } from './helpers/responseErrors';
 import { assembleSendInnSoknadBody, sanitizeInnsendingsId, validateInnsendingsId } from './helpers/sendInn';
-
-const shouldRespondWithNotFound = (error: unknown) => error instanceof ResponseError && error.errorCode === 'NOT_FOUND';
-
-const withSendInnMessage = (error: ResponseError, userMessage: string) =>
-  wrapResponseError({
-    error,
-    message: 'SendInn submit request failed',
-    userMessage,
-  });
 
 const sendInnUtfyltSoknad = {
   put: async (req: Request, res: Response, next: NextFunction) => {
@@ -73,32 +62,16 @@ const sendInnUtfyltSoknad = {
         accessToken: req.headers.PdfAccessToken as string,
         pdfFormData,
       });
-      const applicationPdf = base64Decode(applicationPdfBase64);
-      if (!applicationPdf) {
-        throw new Error('Generering av søknads PDF feilet');
-      }
+      const applicationPdf = requireBase64Decode(applicationPdfBase64, 'Failed to decode generated application PDF');
       const pdfByteArray = Array.from(applicationPdf) ?? [];
 
       const body = assembleSendInnSoknadBody({ ...req.body, form, translations }, idportenPid, fyllutUrl, pdfByteArray);
-      let response: { status: number; location?: string };
-      try {
-        response = await applicationService.submitUtfyltSoknad({
-          accessToken: tokenxAccessToken,
-          body,
-          envQualifier,
-          innsendingsId: sanitizedInnsendingsId,
-        });
-      } catch (error) {
-        if (shouldRespondWithNotFound(error)) {
-          logger.info(`${req.body.innsendingsId}: Not found. Failed to submit`, error);
-          return res.sendStatus(404);
-        }
-        if (isResponseError(error)) {
-          logger.debug('Failed to post data to SendInn');
-          return next(withSendInnMessage(error, 'Feil ved kall til SendInn'));
-        }
-        throw error;
-      }
+      const response = await applicationService.submitUtfyltSoknad({
+        accessToken: tokenxAccessToken,
+        body,
+        envQualifier,
+        innsendingsId: sanitizedInnsendingsId,
+      });
 
       if (response.status === 302 || (response.status >= 200 && response.status < 300)) {
         const { location } = response;

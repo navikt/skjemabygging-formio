@@ -1,12 +1,10 @@
 import { requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
-import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import { logger } from '../../logger';
 import { getIdportenPid, getTokenxAccessToken } from '../../security/tokenHelper';
 import { applicationService, formService, translationService } from '../../services';
 import { base64Decode } from '../../utils/base64';
 import { getFyllutUrl } from '../../utils/url';
-import { isResponseError, wrapResponseError } from './helpers/responseErrors';
 import {
   assembleSendInnSoknadBody,
   byteArrayToObject,
@@ -16,18 +14,8 @@ import {
 } from './helpers/sendInn';
 
 const getErrorMessage = 'Kan ikke hente mellomlagret søknad.';
-const postErrorMessage = 'Kan ikke starte mellomlagring av søknaden.';
 const putErrorMessage = 'Kan ikke oppdatere mellomlagret søknad.';
 const deleteErrorMessage = 'Kan ikke slette mellomlagret søknad.';
-
-const shouldRespondWithNotFound = (error: unknown) => error instanceof ResponseError && error.errorCode === 'NOT_FOUND';
-
-const withSendInnMessage = (error: ResponseError, userMessage: string) =>
-  wrapResponseError({
-    error,
-    message: 'SendInn draft request failed',
-    userMessage: `Feil ved kall til SendInn. ${userMessage}`,
-  });
 
 const sendInnSoknad = {
   get: async (req: Request, res: Response, next: NextFunction) => {
@@ -58,14 +46,6 @@ const sendInnSoknad = {
       };
       res.json(response);
     } catch (error) {
-      if (shouldRespondWithNotFound(error)) {
-        logger.info(`${req.params.innsendingsId}: Not found. Failed to get`, error);
-        return res.sendStatus(404);
-      }
-      if (isResponseError(error)) {
-        logger.debug('Failed to fetch data from SendInn');
-        return next(withSendInnMessage(error, getErrorMessage));
-      }
       next(error);
     }
   },
@@ -85,25 +65,14 @@ const sendInnSoknad = {
 
       const body = assembleSendInnSoknadBody({ ...req.body, form, translations }, idportenPid, fyllutUrl, null);
       const envQualifier = req.getEnvQualifier();
-      let status: number;
-      let soknad: SendInnSoknadBody;
-      try {
-        const response = await applicationService.createSoknad<SendInnSoknadBody>({
-          accessToken: tokenxAccessToken,
-          body,
-          envQualifier,
-          force: Boolean(forceMellomlagring),
-          innsendingsId: req.body.innsendingsId ?? '',
-        });
-        status = response.status;
-        soknad = response.body;
-      } catch (error) {
-        if (isResponseError(error)) {
-          logger.debug('Failed to post data to SendInn');
-          return next(withSendInnMessage(error, postErrorMessage));
-        }
-        throw error;
-      }
+      const response = await applicationService.createSoknad<SendInnSoknadBody>({
+        accessToken: tokenxAccessToken,
+        body,
+        envQualifier,
+        force: Boolean(forceMellomlagring),
+        innsendingsId: req.body.innsendingsId ?? '',
+      });
+      const { status, body: soknad } = response;
 
       logger.debug(status === 200 ? 'User has active tasks' : 'Successfylly posted data to SendInn');
       res.status(status);
@@ -139,24 +108,11 @@ const sendInnSoknad = {
 
       const body = assembleSendInnSoknadBody({ ...req.body, form, translations }, idportenPid, fyllutUrl, null);
 
-      let response: SendInnSoknadBody;
-      try {
-        response = await applicationService.updateSoknad<SendInnSoknadBody>({
-          accessToken: tokenxAccessToken,
-          body,
-          innsendingsId: sanitizedInnsendingsId,
-        });
-      } catch (error) {
-        if (shouldRespondWithNotFound(error)) {
-          logger.info(`${req.body.innsendingsId}: Not found. Failed to update`, error);
-          return res.sendStatus(404);
-        }
-        if (isResponseError(error)) {
-          logger.debug('Failed to update data in SendInn');
-          return next(withSendInnMessage(error, putErrorMessage));
-        }
-        throw error;
-      }
+      const response = await applicationService.updateSoknad<SendInnSoknadBody>({
+        accessToken: tokenxAccessToken,
+        body,
+        innsendingsId: sanitizedInnsendingsId,
+      });
 
       logger.debug('Successfylly updated data in SendInn');
       res.json(response);
@@ -184,14 +140,6 @@ const sendInnSoknad = {
       logger.debug(`Successfylly deleted soknad with innsendingsId ${sanitizedInnsendingsId}`);
       res.json(response);
     } catch (error) {
-      if (shouldRespondWithNotFound(error)) {
-        logger.info(`${req.params.innsendingsId}: Not found. Failed to delete`, error);
-        return res.sendStatus(404);
-      }
-      if (isResponseError(error)) {
-        logger.debug(`Failed to delete soknad with innsendingsId ${req.params.innsendingsId}`);
-        return next(withSendInnMessage(error, deleteErrorMessage));
-      }
       next(error);
     }
   },

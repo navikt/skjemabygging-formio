@@ -143,6 +143,29 @@ describe('[endpoint] documents', () => {
 
     await documents.application(req, mockResponse(), next);
 
-    expect(next).toHaveBeenCalledWith(expect.objectContaining({ message: 'Missing submission data to generate PDF' }));
+    expect(next).toHaveBeenCalledWith(
+      expect.objectContaining({ errorCode: 'BAD_REQUEST', message: 'Missing submission data to generate PDF' }),
+    );
+  });
+
+  it('fails if pdf token is missing in application endpoint', async () => {
+    const req = mockRequest({
+      headers: {},
+      body: {
+        formPath: 'testskjema',
+        language: 'nb',
+        submission: JSON.stringify({ data: {} }),
+      },
+    });
+    const next = vi.fn();
+
+    await documents.application(req, mockResponse(), next);
+
+    expect(next).toHaveBeenCalledWith(
+      expect.objectContaining({
+        errorCode: 'BAD_REQUEST',
+        message: 'Could not find PdfAccessToken in request headers. Unable to generate PDF',
+      }),
+    );
   });
 });

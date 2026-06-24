@@ -8,9 +8,8 @@ import {
 import { config } from '../../../../config/config';
 import { applicationPdfService, applicationService, formService, translationService } from '../../../../services';
 import { mapToReceiptSummary } from '../../../../services/nologin/receiptMapper';
-import { base64Decode } from '../../../../utils/base64';
+import { requireBase64Decode } from '../../../../utils/base64';
 import { assembleSubmitApplicationRequest } from '../../helpers/applicationUtils';
-import { isResponseError, wrapResponseError } from '../../helpers/responseErrors';
 
 export const generatePdfAndSubmit = async (
   applicationType: 'nologin' | 'digital',
@@ -46,10 +45,7 @@ export const generatePdfAndSubmit = async (
     accessToken: pdfAccessToken,
     pdfFormData,
   });
-  const applicationPdf = base64Decode(applicationPdfBase64);
-  if (!applicationPdf) {
-    throw new Error('Generering av søknads PDF feilet');
-  }
+  const applicationPdf = requireBase64Decode(applicationPdfBase64, 'Failed to decode generated application PDF');
 
   const translate = translationUtil.createTranslate(translations, language);
   const submitRequest = assembleSubmitApplicationRequest(
@@ -60,24 +56,12 @@ export const generatePdfAndSubmit = async (
     Array.from(applicationPdf),
     translate,
   );
-  let submitResponse;
-  try {
-    submitResponse = await applicationService.submitApplication({
-      accessToken,
-      body: submitRequest,
-      innsendingsId,
-      type: applicationType,
-    });
-  } catch (error) {
-    if (isResponseError(error)) {
-      throw wrapResponseError({
-        error,
-        message: 'Application submit failed',
-        userMessage: error.errorCode === 'SERVICE_UNAVAILABLE' ? error.userMessage : 'Feil ved innsending av søknad',
-      });
-    }
-    throw error;
-  }
+  const submitResponse = await applicationService.submitApplication({
+    accessToken,
+    body: submitRequest,
+    innsendingsId,
+    type: applicationType,
+  });
 
   return {
     pdfBase64: Buffer.from(applicationPdf).toString('base64'),

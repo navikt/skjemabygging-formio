@@ -1,5 +1,10 @@
 import { coverPageMapper, renderApplicationPdf, translationUtil } from '@navikt/skjemadigitalisering-shared-backend';
-import { PdfFormData, SubmissionMethod, TranslateFunction } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  PdfFormData,
+  ResponseError,
+  SubmissionMethod,
+  TranslateFunction,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { RequestHandler } from 'express';
 import { config } from '../../../config/config';
 import { logger } from '../../../logger';
@@ -12,12 +17,28 @@ import {
   recipientService,
   translationService,
 } from '../../../services';
-import { base64Decode } from '../../../utils/base64';
+import { requireBase64Decode } from '../../../utils/base64';
 
 const assertPdfFormData = (pdfFormData: PdfFormData | undefined) => {
   if (!pdfFormData || typeof pdfFormData !== 'object') {
-    throw new Error('Missing pdfFormData to generate PDF');
+    throw new ResponseError('INTERNAL_SERVER_ERROR', 'Missing pdfFormData to generate PDF');
   }
+};
+
+const requireSubmission = (submission: unknown) => {
+  if (!submission) {
+    throw new ResponseError('BAD_REQUEST', 'Missing submission data to generate PDF');
+  }
+
+  return submission;
+};
+
+const requireHeaderToken = (token: string | undefined, headerName: string, action: string) => {
+  if (!token) {
+    throw new ResponseError('BAD_REQUEST', `Could not find ${headerName} in request headers. Unable to ${action}`);
+  }
+
+  return token;
 };
 
 const getCoverPageTitle = (
@@ -27,38 +48,26 @@ const getCoverPageTitle = (
   return `${form.properties.skjemanummer} ${translate(form.title)}`;
 };
 
-const toPdfBuffer = (pdfBase64: string | null | undefined, errorMessage: string) => {
-  const pdfBuffer = base64Decode(pdfBase64 ?? null);
-  if (!pdfBuffer) {
-    throw new Error(errorMessage);
-  }
-
-  return pdfBuffer;
-};
-
 const application: RequestHandler = async (req, res, next) => {
   try {
     const { formPath, submission, language, submissionMethod } = req.body;
-    if (!submission) {
-      throw new Error('Missing submission data to generate PDF');
-    }
+    const validSubmission = requireSubmission(submission);
+    const pdfGeneratorToken = requireHeaderToken(
+      req.headers.PdfAccessToken as string | undefined,
+      'PdfAccessToken',
+      'generate PDF',
+    );
     const form = await formService.getForm({
       formPath,
       select: ['skjemanummer', 'title', 'path', 'properties', 'components'],
     });
-    const submissionParsed = JSON.parse(submission);
+    const submissionParsed = JSON.parse(validSubmission);
     const translations = await translationService.getTranslations({ formPath, languageCodes: [language] });
-    const pdfGeneratorToken = req.headers.PdfAccessToken as string;
 
     logger.info(`Create application pdf for ${form?.properties?.skjemanummer ?? 'unknown form'}`, {
       skjemanummer: form?.properties?.skjemanummer,
       language,
     });
-
-    if (!pdfGeneratorToken) {
-      throw new Error('Azure PDF generator token is missing. Unable to generate PDF');
-    }
-
     const pdfFormData = renderApplicationPdf({
       form,
       submission: submissionParsed,
@@ -73,7 +82,7 @@ const application: RequestHandler = async (req, res, next) => {
       accessToken: pdfGeneratorToken,
       pdfFormData,
     });
-    const fileBuffer = toPdfBuffer(applicationPdfBase64, 'Generering av søknads PDF feilet');
+    const fileBuffer = requireBase64Decode(applicationPdfBase64, 'Failed to decode generated application PDF');
     appMetrics.paperSubmissionsCounter.inc({ source: 'ingen' });
     res.contentType('application/pdf');
     res.setHeader('Content-Disposition', `inline; filename=${encodeURIComponent(`${form.path}.pdf`)}`);
@@ -86,31 +95,29 @@ const application: RequestHandler = async (req, res, next) => {
 const coverPageAndApplication: RequestHandler = async (req, res, next) => {
   try {
     const { formPath, submission, language, enhetNummer, submissionMethod } = req.body;
-    if (!submission) {
-      throw new Error('Missing submission data to generate PDF');
-    }
+    const validSubmission = requireSubmission(submission);
+    const frontPageGeneratorToken = requireHeaderToken(
+      req.headers.AzureAccessToken as string | undefined,
+      'AzureAccessToken',
+      'generate PDF',
+    );
+    const pdfGeneratorToken = requireHeaderToken(
+      req.headers.PdfAccessToken as string | undefined,
+      'PdfAccessToken',
+      'generate PDF',
+    );
+    const mergePdfToken = requireHeaderToken(
+      req.headers.MergePdfToken as string | undefined,
+      'MergePdfToken',
+      'merge front page and application PDFs',
+    );
     const form = await formService.getForm({
       formPath,
       select: ['skjemanummer', 'title', 'path', 'properties', 'components'],
     });
-    const submissionParsed = JSON.parse(submission);
+    const submissionParsed = JSON.parse(validSubmission);
     const translations = await translationService.getTranslations({ formPath, languageCodes: [language] });
     const translate = translationUtil.createTranslate(translations, language);
-    const frontPageGeneratorToken = req.headers.AzureAccessToken as string;
-    const pdfGeneratorToken = req.headers.PdfAccessToken as string;
-    const mergePdfToken = req.headers.MergePdfToken as string;
-
-    if (!frontPageGeneratorToken) {
-      throw new Error('Azure access token is missing. Unable to generate PDF');
-    }
-
-    if (!pdfGeneratorToken) {
-      throw new Error('PDF generator token is missing. Unable to generate PDF');
-    }
-
-    if (!mergePdfToken) {
-      throw new Error('MergePDF generator token is missing. Unable to merge front page and application PDFs');
-    }
 
     const pdfFormData = renderApplicationPdf({
       form,
@@ -155,7 +162,7 @@ const coverPageAndApplication: RequestHandler = async (req, res, next) => {
         files: [coverPagePdfBase64, applicationPdfBase64],
       },
     });
-    const fileBuffer = toPdfBuffer(mergedPdfBase64, 'Sammenslåing av forside og søknad feilet');
+    const fileBuffer = requireBase64Decode(mergedPdfBase64, 'Failed to decode merged cover page and application PDF');
     appMetrics.paperSubmissionsCounter.inc({ source: 'fyllUt' });
     res.contentType('application/pdf');
     res.setHeader('Content-Disposition', `inline; filename=${encodeURIComponent(`${form.path}.pdf`)}`);
