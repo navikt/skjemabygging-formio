@@ -119,8 +119,6 @@ spec:
       value: {{kodeverk.scope}}
     - name: NORG2_URL
       value: "http://norg2.org"
-    - name: PDL_TOKEN_SCOPE_CLUSTER
-      value: {{pdl-token-scope-cluster}}
     - name: FORMS_API_URL
       value: {{forms-api-url}}{{^forms-api-url}}http://forms-api.fyllut-sendinn{{/forms-api-url}}
     - name: TEAM_LOGS_URL

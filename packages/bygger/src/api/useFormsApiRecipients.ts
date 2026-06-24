@@ -1,6 +1,7 @@
 import { http as baseHttp, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { Recipient } from '@navikt/skjemadigitalisering-shared-domain';
 import { useFeedbackEmit } from '../context/notifications/FeedbackContext';
+import { hasErrorCode } from './httpErrorUtils';
 
 const useFormsApiRecipients = () => {
   const feedbackEmit = useFeedbackEmit();
@@ -49,11 +50,8 @@ const useFormsApiRecipients = () => {
       return await http.delete(`${baseUrl}/${recipientId}`);
     } catch (error: any) {
       const message = error?.message;
-      const status = error?.status;
-      if (status === 405) {
-        feedbackEmit.error(
-          `Mottaksadressen kan ikke slettes fordi den er i bruk i ett eller flere skjemaer. ${message}`,
-        );
+      if (hasErrorCode(error, 'METHOD_NOT_ALLOWED')) {
+        feedbackEmit.error(`Mottaksadressen kan ikke slettes fordi den er i bruk i ett eller flere skjemaer.`);
       } else {
         feedbackEmit.error(`Feil ved sletting av mottaker. ${message}`);
       }

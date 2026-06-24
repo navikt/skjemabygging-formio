@@ -1,6 +1,9 @@
+import { errorHandler } from '@navikt/skjemadigitalisering-shared-backend';
+import { ResponseError, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import express from 'express';
 import request from 'supertest';
-import { removeUploadedTempFile, uploadSingleFile } from './upload';
+import { HttpError } from '../../../utils/errors/HttpError';
+import { createUploadResponseError, removeUploadedTempFile, uploadSingleFile } from './upload';
 
 const createUploadApp = (maxFileSizeBytes?: number) => {
   const app = express();
@@ -19,6 +22,7 @@ const createUploadApp = (maxFileSizeBytes?: number) => {
       await removeUploadedTempFile(file);
     }
   });
+  app.use(errorHandler);
 
   return app;
 };
@@ -43,9 +47,43 @@ describe('uploadSingleFile', () => {
       .attach('filinnhold', Buffer.from('123456'), 'large.txt')
       .expect(400);
 
-    expect(response.body).toEqual({
-      message: 'Feil ved opplasting av fil. Filen er for stor.',
+    expect(response.body).toMatchObject({
+      message: 'Uploaded file exceeds maximum size.',
       errorCode: 'BAD_REQUEST',
+      userMessage: TEXTS.statiske.uploadFile.fileTooLargeError,
     });
+  });
+});
+
+describe('createUploadResponseError', () => {
+  it('maps too many pages to ResponseError with userMessage', () => {
+    const error = new HttpError('Upload failed');
+    error.http_status = 400;
+    error.http_response_body = { errorCode: 'illegalAction.fileWithTooManyPages' };
+    error.correlation_id = 'corr-id';
+
+    expect(createUploadResponseError(error)).toEqual(
+      new ResponseError(
+        'BAD_REQUEST',
+        'Upload failed because file has too many pages',
+        'corr-id',
+        TEXTS.statiske.uploadFile.uploadFileToManyPagesError,
+      ),
+    );
+  });
+
+  it('maps temporarily unavailable to ResponseError with userMessage', () => {
+    const error = new HttpError('Upload failed');
+    error.http_status = 503;
+    error.http_response_body = { errorCode: 'temporarilyUnavailable' };
+
+    expect(createUploadResponseError(error)).toEqual(
+      new ResponseError(
+        'SERVICE_UNAVAILABLE',
+        'Upload temporarily unavailable',
+        undefined,
+        TEXTS.statiske.nologin.temporarilyUnavailable,
+      ),
+    );
   });
 });
