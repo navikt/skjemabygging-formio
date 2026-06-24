@@ -15,7 +15,7 @@ jobs:
       cypress-folders: ${{ steps.generate-cypress-folders.outputs.cypress-folders }}
     steps:
       - name: 'Checkout'
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
         with:
           version: 10.32.1
@@ -41,7 +41,7 @@ jobs:
         folder: ${{ fromJSON(needs.setup-fyllut.outputs.cypress-folders) }}
     steps:
       - name: 'Checkout'
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
         with:
           version: 10.32.1
@@ -86,7 +86,7 @@ jobs:
       packages: read
     steps:
       - name: 'Checkout'
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
         with:
           version: 10.32.1
