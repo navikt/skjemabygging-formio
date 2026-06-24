@@ -26,7 +26,7 @@ const get = async <T>(url: string, headers?: FetchHeader, opts?: FetchOptions): 
       opts,
     );
   } catch (e) {
-    if (e instanceof http.UnauthenticatedError) {
+    if (http.isAuthenticationError(e)) {
       redirectUnauthenticated();
     }
 
@@ -46,7 +46,7 @@ const put = async <T>(url: string, body: object, headers?: FetchHeader, opts?: F
       opts,
     );
   } catch (e) {
-    if (e instanceof http.UnauthenticatedError) {
+    if (http.isAuthenticationError(e)) {
       redirectUnauthenticated();
     }
 
@@ -66,7 +66,7 @@ const post = async <T>(url: string, body: object, headers?: FetchHeader, opts?: 
       opts,
     );
   } catch (e) {
-    if (e instanceof http.UnauthenticatedError) {
+    if (http.isAuthenticationError(e)) {
       redirectUnauthenticated();
     }
 

@@ -1,7 +1,7 @@
 import { http as baseHttp, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import { useFeedbackEmit } from '../context/notifications/FeedbackContext';
-import ApiError from './ApiError';
+import { isConflictError, toApiError } from './httpErrorUtils';
 
 const useGlobalTranslationsApi = () => {
   const feedbackEmit = useFeedbackEmit();
@@ -23,11 +23,11 @@ const useGlobalTranslationsApi = () => {
       const { key, tag, nb = null, nn = null, en = null } = translation;
       return await http.post<FormsApiTranslation>(basePath, { key, tag, nb, nn, en });
     } catch (error: any) {
-      if (error?.status !== 409) {
+      if (!isConflictError(error)) {
         const message = (error as Error)?.message;
         feedbackEmit.error(`Feil ved oppretting av global oversettelse med nøkkel ${translation.key}. ${message}`);
       }
-      throw error?.status ? new ApiError(error?.status) : new Error(error);
+      throw toApiError(error) ?? new Error(error);
     }
   };
 
@@ -36,11 +36,11 @@ const useGlobalTranslationsApi = () => {
       const { id, revision, nb = null, nn = null, en = null } = translation;
       return await http.put<FormsApiTranslation>(`${basePath}/${id}`, { revision, nb, nn, en });
     } catch (error: any) {
-      if (error?.status !== 409) {
+      if (!isConflictError(error)) {
         const message = (error as Error)?.message;
         feedbackEmit.error(`Feil ved oppdatering av global oversettelse med nøkkel ${translation.key}. ${message}`);
       }
-      throw error?.status ? new ApiError(error?.status) : new Error(error);
+      throw toApiError(error) ?? new Error(error);
     }
   };
 
@@ -62,9 +62,8 @@ const useGlobalTranslationsApi = () => {
       feedbackEmit.success(`Global oversettelse med id ${id} ble slettet`);
       return true;
     } catch (error: any) {
-      const status = error?.status;
       const message = (error as Error)?.message;
-      if (status === 409) {
+      if (isConflictError(error)) {
         feedbackEmit.error(
           `Kan ikke slette global oversettelse med id ${id} fordi den er i bruk av et eller flere skjemaer.`,
         );

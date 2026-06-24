@@ -1,4 +1,4 @@
-import { NavFormType, SubmissionType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, SubmissionType } from '@navikt/skjemadigitalisering-shared-domain';
 import nock from 'nock';
 import request from 'supertest';
 import { afterEach, describe, it, vi } from 'vitest';
@@ -10,20 +10,19 @@ vi.mock('./dekorator', () => ({
   createRedirectUrl: () => '',
 }));
 
-const { formioApiServiceUrl } = config;
+const { formsApiUrl } = config;
 
 const mockForm = (formPath: string, submissionTypes: SubmissionType[]) => {
-  nock(formioApiServiceUrl!)
-    .get(`/form?type=form&tags=nav-skjema&path=${formPath}`)
-    .reply(200, [
-      {
-        path: formPath,
-        title: `Title for ${formPath}`,
-        properties: {
-          submissionTypes,
-        },
-      } as NavFormType,
-    ]);
+  nock(formsApiUrl)
+    .get(`/v1/forms/${formPath}`)
+    .query(true)
+    .reply(200, {
+      path: formPath,
+      title: `Title for ${formPath}`,
+      properties: {
+        submissionTypes,
+      },
+    } as Partial<Form>);
 };
 
 const authenticatedGet = (path: string) => request(createApp()).get(path).set('Authorization', 'Bearer test-token');
