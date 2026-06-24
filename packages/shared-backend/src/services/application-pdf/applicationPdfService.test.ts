@@ -4,14 +4,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { sanitizeValue } from './applicationPdfSerializer';
 import { createApplicationPdfService } from './applicationPdfService';
 
-const teamLoggerError = vi.hoisted(() => vi.fn());
-
-vi.mock('../../shared/logger/teamLogger', () => ({
-  teamLogger: {
-    error: teamLoggerError,
-  },
-}));
-
 describe('Sanitize values before sending to PDF generation', () => {
   describe('sanitizeValue', () => {
     it('removes all HTML tags except text', () => {
@@ -34,9 +26,12 @@ describe('Sanitize values before sending to PDF generation', () => {
 
 describe('createApplicationPdfService', () => {
   const baseUrl = 'http://familie-pdf';
+  const teamLogger = {
+    error: vi.fn(),
+  };
 
   beforeEach(() => {
-    teamLoggerError.mockClear();
+    teamLogger.error.mockClear();
   });
 
   afterEach(() => {
@@ -69,6 +64,7 @@ describe('createApplicationPdfService', () => {
         appName: 'fyllut',
         registry,
       },
+      teamLogger,
     });
 
   const mockFetchResponse = (body: BodyInit, status: number, contentType: string) =>
@@ -170,7 +166,7 @@ describe('createApplicationPdfService', () => {
       correlationId: 'corr-pdf',
     });
 
-    expect(teamLoggerError).toHaveBeenCalledWith(
+    expect(teamLogger.error).toHaveBeenCalledWith(
       'Could not create pdf',
       expect.objectContaining({
         skjemanummer: 'NAV 00-00.00',
@@ -195,7 +191,7 @@ describe('createApplicationPdfService', () => {
       correlationId: 'corr-unauthorized',
     });
 
-    expect(teamLoggerError).not.toHaveBeenCalled();
+    expect(teamLogger.error).not.toHaveBeenCalled();
   });
 
   it('logs to team-logs on non-ResponseError failures with undefined status and rethrows', async () => {
@@ -211,7 +207,7 @@ describe('createApplicationPdfService', () => {
       }),
     ).rejects.toThrow(error);
 
-    expect(teamLoggerError).toHaveBeenCalledWith(
+    expect(teamLogger.error).toHaveBeenCalledWith(
       'Could not create pdf',
       expect.objectContaining({
         skjemanummer: 'NAV 00-00.00',

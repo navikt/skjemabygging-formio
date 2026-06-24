@@ -1,40 +1,30 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('teamLogger', () => {
-  const originalEnv = { ...process.env };
-
   beforeEach(() => {
     vi.resetModules();
   });
 
   afterEach(() => {
-    process.env = { ...originalEnv };
     vi.restoreAllMocks();
     vi.resetModules();
-    vi.unstubAllEnvs();
   });
 
   const setup = async ({
-    teamLogsUrl = 'http://team-logs.nais-system/',
-    nodeEnv = 'development',
-    googleCloudProject = 'project-1',
-    naisNamespace = 'namespace-1',
-    naisPodName = 'pod-1',
-    naisAppName = 'app-1',
+    config = {
+      enabled: true,
+      url: 'http://team-logs.nais-system/',
+      mandatoryFields: {
+        google_cloud_project: 'project-1',
+        nais_namespace_name: 'namespace-1',
+        nais_pod_name: 'pod-1',
+        nais_container_name: 'app-1',
+      },
+    },
     postImpl = vi.fn().mockResolvedValue(undefined),
     warnImpl = vi.fn(),
     getIdImpl = vi.fn().mockReturnValue('corr-1'),
   } = {}) => {
-    process.env = {
-      ...originalEnv,
-      TEAM_LOGS_URL: teamLogsUrl,
-      NODE_ENV: nodeEnv,
-      GOOGLE_CLOUD_PROJECT: googleCloudProject,
-      NAIS_NAMESPACE: naisNamespace,
-      NAIS_POD_NAME: naisPodName,
-      NAIS_APP_NAME: naisAppName,
-    };
-
     vi.doMock('../http/http', () => ({
       default: {
         post: postImpl,
@@ -53,15 +43,15 @@ describe('teamLogger', () => {
 
     const module = await import('./teamLogger');
     return {
-      teamLogger: module.teamLogger,
+      teamLogger: module.createTeamLogger(config),
       postImpl,
       warnImpl,
       getIdImpl,
     };
   };
 
-  it('does nothing in test mode even when TEAM_LOGS_URL is set', async () => {
-    const { teamLogger, postImpl } = await setup({ nodeEnv: 'test' });
+  it('does nothing when disabled', async () => {
+    const { teamLogger, postImpl } = await setup({ config: { enabled: false, url: '', mandatoryFields: {} } });
 
     await teamLogger.error('Could not create pdf', { skjemanummer: 'NAV 00-00.00' });
 

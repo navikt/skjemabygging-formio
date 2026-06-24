@@ -1,2 +1,2 @@
-export { teamLogger } from './logger/teamLogger';
-export type { LogMetadata } from './logger/teamLogger';
+export { createTeamLogger } from './logger/teamLogger';
+export type { LogMetadata, TeamLogger, TeamLoggerConfig } from './logger/teamLogger';

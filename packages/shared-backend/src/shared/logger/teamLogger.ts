@@ -4,52 +4,56 @@ import { logger } from './logger';
 
 type Severity = 'INFO' | 'WARN' | 'ERROR';
 type LogMetadata = Record<string, string | number | boolean | undefined>;
-
-const url = process.env.TEAM_LOGS_URL;
-const enabled = Boolean(url) && process.env.NODE_ENV !== 'test';
-const mandatoryFields = {
-  google_cloud_project: process.env.GOOGLE_CLOUD_PROJECT,
-  nais_namespace_name: process.env.NAIS_NAMESPACE,
-  nais_pod_name: process.env.NAIS_POD_NAME,
-  nais_container_name: process.env.NAIS_APP_NAME,
+type TeamLoggerConfig = {
+  enabled: boolean;
+  url: string;
+  mandatoryFields: Record<string, string>;
 };
 
-const log = async (severity: Severity, message: string, metadata: LogMetadata = {}) => {
-  if (!enabled || !url) {
-    return Promise.resolve();
-  }
+type TeamLogger = {
+  error: (message: string, metadata?: LogMetadata) => Promise<void>;
+  warn: (message: string, metadata?: LogMetadata) => Promise<void>;
+  info: (message: string, metadata?: LogMetadata) => Promise<void>;
+};
 
-  try {
-    await http.post(
-      url,
-      {
-        severity,
-        message,
-        correlation_id: correlator.getId(),
-        ...metadata,
-        ...mandatoryFields,
-      },
-      {
-        contentType: 'application/json',
-      },
-    );
-  } catch (error) {
-    if (error instanceof Error) {
-      logger.warn('Failed to post to team-logs', { error });
+const createTeamLogger = (config: TeamLoggerConfig): TeamLogger => {
+  const log = async (severity: Severity, message: string, metadata: LogMetadata = {}) => {
+    if (!config.enabled || !config.url) {
       return Promise.resolve();
     }
 
-    logger.warn('Failed to post to team-logs', { error: String(error) });
-  }
+    try {
+      await http.post(
+        config.url,
+        {
+          severity,
+          message,
+          correlation_id: correlator.getId(),
+          ...metadata,
+          ...config.mandatoryFields,
+        },
+        {
+          contentType: 'application/json',
+        },
+      );
+    } catch (error) {
+      if (error instanceof Error) {
+        logger.warn('Failed to post to team-logs', { error });
+        return Promise.resolve();
+      }
 
-  return Promise.resolve();
+      logger.warn('Failed to post to team-logs', { error: String(error) });
+    }
+
+    return Promise.resolve();
+  };
+
+  return {
+    error: async (message: string, metadata: LogMetadata = {}) => log('ERROR', message, metadata),
+    warn: async (message: string, metadata: LogMetadata = {}) => log('WARN', message, metadata),
+    info: async (message: string, metadata: LogMetadata = {}) => log('INFO', message, metadata),
+  };
 };
 
-const teamLogger = {
-  error: async (message: string, metadata: LogMetadata = {}) => log('ERROR', message, metadata),
-  warn: async (message: string, metadata: LogMetadata = {}) => log('WARN', message, metadata),
-  info: async (message: string, metadata: LogMetadata = {}) => log('INFO', message, metadata),
-};
-
-export { teamLogger };
-export type { LogMetadata };
+export { createTeamLogger };
+export type { LogMetadata, TeamLogger, TeamLoggerConfig };
