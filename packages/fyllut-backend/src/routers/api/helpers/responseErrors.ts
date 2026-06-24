@@ -4,6 +4,9 @@ const isResponseError = (error: unknown): error is ResponseError => error instan
 
 const hasErrorCode = (error: unknown, errorCode: ErrorCode) => isResponseError(error) && error.errorCode === errorCode;
 
+const isAuthenticationError = (error: ResponseError) =>
+  error.errorCode === 'UNAUTHORIZED' || error.errorCode === 'FORBIDDEN' || error.errorCode === 'LOGIN_TIMEOUT';
+
 const wrapResponseError = ({
   error,
   errorCode,
@@ -14,6 +17,12 @@ const wrapResponseError = ({
   errorCode?: ErrorCode;
   message: string;
   userMessage?: string;
-}) => new ResponseError(errorCode ?? error.errorCode, message, error.correlationId, userMessage ?? error.userMessage);
+}) =>
+  new ResponseError(
+    errorCode ?? (isAuthenticationError(error) ? 'INTERNAL_SERVER_ERROR' : error.errorCode),
+    message,
+    error.correlationId,
+    userMessage ?? error.userMessage,
+  );
 
-export { hasErrorCode, isResponseError, wrapResponseError };
+export { hasErrorCode, isAuthenticationError, isResponseError, wrapResponseError };
