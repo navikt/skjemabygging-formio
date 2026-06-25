@@ -69,8 +69,9 @@ opprette denne filen hvis den ikke finnes. Legg til følgende under `[sandbox]`-
 ```toml
 [sandbox]
 # Lar Cypress kjøre sin egen Chrome/Electron-binær som pakkes ut i ~/.cache (exec
-# derfra er blokkert som standard). Gjelder også `pnpm dlx`.
-allow_cache_exec = ["Cypress", "pnpm/dlx"]
+# derfra er blokkert som standard). Gjelder også `pnpm dlx`. `copilot/pkg` er bare nødvendig på Linux pga. at copilot
+# sin npm-pakke bare er en wrapper som kjører `copilot` fra cache.
+allow_cache_exec = ["Cypress", "pnpm/dlx", "copilot/pkg"]
 
 # cplt fjerner DISPLAY ved env-sanering. Uten DISPLAY tror Cypress at det
 # ikke finnes en X-server og prøver å starte sin egen Xvfb. Ved å sende
