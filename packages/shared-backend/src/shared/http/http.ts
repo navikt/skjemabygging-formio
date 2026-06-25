@@ -268,6 +268,10 @@ const getUserMessage = (errorCode: ErrorCode): string | undefined => {
       return undefined;
   }
 };
+const isAuthenticationError = (error: unknown): error is ResponseError =>
+  error instanceof ResponseError &&
+  (error.errorCode === 'UNAUTHORIZED' || error.errorCode === 'FORBIDDEN' || error.errorCode === 'LOGIN_TIMEOUT');
+
 const http = {
   get,
   post,
@@ -277,4 +281,5 @@ const http = {
 };
 
 export default http;
+export { isAuthenticationError };
 export type { HttpMetadataResponse, HttpStreamResponse };
