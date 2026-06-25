@@ -1,13 +1,16 @@
 import { Form, NavFormType, SubmissionData, SubmissionSender } from '../../models';
-import { navFormUtils } from '../form';
+import { submissionUtils } from './submissionUtils';
 
 const getSender = (form: NavFormType | Form, submissionData: SubmissionData): SubmissionSender | undefined => {
-  const senderComponent = navFormUtils
-    .flattenComponents(form.components)
-    .find((component) => component.type === 'sender' && submissionData[component.key]);
+  const submission = { data: submissionData };
 
-  if (senderComponent) {
-    return submissionData[senderComponent.key] as SubmissionSender;
+  for (const { component, submissionPath } of submissionUtils.flattenComponentsWithPath(form.components)) {
+    if (component.type === 'sender') {
+      const value = submissionUtils.getSubmissionValue(submissionPath, submission);
+      if (value !== undefined) {
+        return value as SubmissionSender;
+      }
+    }
   }
 };
 

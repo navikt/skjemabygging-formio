@@ -2,15 +2,15 @@ import { requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import {
   AttachmentSettingValue,
   AttachmentSettingValues,
+  Form,
   I18nTranslationReplacements,
   LimitedFormAttachment,
-  NavFormType,
   TEXTS,
   navFormUtils,
   translationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { Request, Response } from 'express';
-import { oldFormService, translationsService } from '../../../services';
+import { formService, translationsService } from '../../../services';
 
 type TranslateFunction = (text: string, textReplacements?: I18nTranslationReplacements) => string;
 
@@ -20,11 +20,9 @@ const form = {
     const type = req.query.type as string | undefined;
     const lang = req.query.lang as string | undefined;
     const select = req.query.select as string | undefined;
-    const form = await oldFormService.loadForm(formPath, select);
-
-    if (!form || !form.properties) {
-      return res.sendStatus(404);
-    }
+    const form = select
+      ? await formService.getForm({ formPath, select: select.split(',') as Array<keyof Form> })
+      : await formService.getForm({ formPath });
 
     const language = lang ?? 'nb-NO';
 
@@ -45,12 +43,12 @@ const form = {
   },
 };
 
-const mapLimitedForm = (form: NavFormType, translate: TranslateFunction) => {
+const mapLimitedForm = (form: Form, translate: TranslateFunction) => {
   return {
-    _id: form._id,
+    _id: form.id ? String(form.id) : undefined,
     title: translate(form.title),
     path: form.path,
-    modified: form.modified,
+    modified: form.publishedAt ?? form.changedAt,
     properties: {
       skjemanummer: form.properties.skjemanummer,
       tema: form.properties.tema,
@@ -62,7 +60,7 @@ const mapLimitedForm = (form: NavFormType, translate: TranslateFunction) => {
       uxSignalsId: form.properties.uxSignalsId,
       uxSignalsSubmissionTypes: form.properties.uxSignalsSubmissionTypes,
       hideUserTypes: form.properties.hideUserTypes,
-      publishedLanguages: form.properties.publishedLanguages ?? [],
+      publishedLanguages: form.publishedLanguages ?? [],
     },
     attachments: getAttachments(form, translate),
   };
@@ -74,7 +72,7 @@ const isNonNull = <T>(value: T | null): value is T => {
 
 const mapAttachmentValues = (
   translate: TranslateFunction,
-  form: NavFormType,
+  form: Form,
   attachmentValues?: AttachmentSettingValues,
 ): LimitedFormAttachment[] => {
   if (!attachmentValues || Object.keys(attachmentValues).length === 0) {
@@ -116,7 +114,7 @@ const mapAttachmentValues = (
     .filter(isNonNull);
 };
 
-const getAttachments = (form: NavFormType, translate: TranslateFunction) => {
+const getAttachments = (form: Form, translate: TranslateFunction) => {
   return navFormUtils
     .flattenComponents(form.components)
     .filter((component) => !!component.properties?.vedleggskode)
