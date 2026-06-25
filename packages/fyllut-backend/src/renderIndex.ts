@@ -87,10 +87,8 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
         const staticPdfRoute = isStaticPdfRoute(req);
         if (submissionTypesUtils.isStaticPdfOnly(submissionTypes) && !staticPdfRoute) {
           logger.info('Tried to access fill-in form, but only static pdf is enabled for this form', { formPath });
-          return res.redirect(`${config.fyllutPath}/404`);
-        }
-
-        if (!qpSub) {
+          httpStatusCode = 404;
+        } else if (!qpSub) {
           if (staticPdfRoute) {
             if (!submissionTypesUtils.isStaticPdf(submissionTypes)) {
               logger.debug('Tried to access static pdf, but static pdf is not enabled for this form', { formPath });
