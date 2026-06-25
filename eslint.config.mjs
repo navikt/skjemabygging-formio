@@ -90,7 +90,10 @@ export default tseslint.config(
       // Warnings
       '@typescript-eslint/ban-ts-comment': 'warn', // No @ts-ignore or @ts-nocheck comments
 
-      // Disabled
+      'react-hooks/set-state-in-effect': 'error',
+      'react-hooks/static-components': 'error',
+      'react-hooks/immutability': 'error',
+      'react-hooks/refs': 'error',
       'vitest/prefer-called-exactly-once-with': 'off', // toHaveBeenCalledExactlyOnceWith does not exist in jest
       'vitest/expect-expect': 'off', // Cypress tests don't necessarily use expect
       '@typescript-eslint/no-explicit-any': 'off', // Explicit any's

@@ -34,25 +34,39 @@ const isPortFree = (port) =>
       server.close();
       resolve(true);
     });
-    server.listen(port, '127.0.0.1');
+    server.listen(port);
+  });
+
+const loopbackHosts = ['127.0.0.1', '::1'];
+
+const canConnect = (port, host) =>
+  new Promise((resolve) => {
+    const socket = connect(port, host);
+    const done = (connected) => {
+      socket.removeAllListeners();
+      socket.destroy();
+      resolve(connected);
+    };
+    socket.once('connect', () => done(true));
+    socket.once('error', () => done(false));
   });
 
 const waitForPort = (port, timeout = 60000) =>
   new Promise((resolve, reject) => {
     const start = Date.now();
-    const attempt = () => {
-      const socket = connect(port, '127.0.0.1');
-      socket.once('connect', () => {
-        socket.destroy();
+    const attempt = async () => {
+      const checks = await Promise.all(loopbackHosts.map((host) => canConnect(port, host)));
+      if (checks.some(Boolean)) {
         resolve();
-      });
-      socket.once('error', () => {
-        socket.destroy();
-        if (Date.now() - start > timeout) return reject(new Error(`Port ${port} not ready after ${timeout}ms`));
-        setTimeout(attempt, 250);
-      });
+        return;
+      }
+      if (Date.now() - start > timeout) {
+        reject(new Error(`Port ${port} not ready after ${timeout}ms`));
+        return;
+      }
+      setTimeout(() => void attempt(), 250);
     };
-    attempt();
+    void attempt();
   });
 
 const getFreePorts = async (count, start = 3440) => {
@@ -67,12 +81,15 @@ const getFreePorts = async (count, start = 3440) => {
 
 const isWindows = process.platform === 'win32';
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const localBin = (cwd, name) => resolve(cwd, 'node_modules', '.bin', isWindows ? `${name}.cmd` : name);
+const nodeExecutable = process.execPath;
+const rootViteCliPath = resolve(repoRoot, 'node_modules/vite/bin/vite.js');
+const mocksTsNodeCliPath = resolve(repoRoot, 'mocks/node_modules/ts-node/dist/bin.js');
 const byggerCypressRuntimePath = resolve(repoRoot, 'packages/bygger/.runtime/cypress.mocks.json');
 const fyllutCypressRuntimePath = resolve(repoRoot, 'packages/fyllut/.runtime/cypress.mocks.json');
 const [target, ...args] = process.argv.slice(2);
-const shouldWriteRuntimeConfig = !args.includes('--no-runtime-config');
-const unknownArgs = args.filter((arg) => arg !== '--no-runtime-config');
+const normalizedArgs = args.filter((arg) => arg !== '--');
+const shouldWriteRuntimeConfig = !normalizedArgs.includes('--no-runtime-config');
+const unknownArgs = normalizedArgs.filter((arg) => arg !== '--no-runtime-config');
 
 const configs = {
   fyllut: async () => {
@@ -97,8 +114,9 @@ const configs = {
     return {
       commands: [
         [
-          localBin(resolve(repoRoot, 'mocks'), 'ts-node'),
+          nodeExecutable,
           [
+            mocksTsNodeCliPath,
             'mocks/server.ts',
             '--no-plugins.inquirerCli.enabled',
             `--server.port=${mockPort}`,
@@ -108,14 +126,14 @@ const configs = {
           resolve(repoRoot, 'mocks'),
         ],
         [
-          localBin(repoRoot, 'vite'),
-          ['--clearScreen', 'false', '--port', String(backendPort)],
+          nodeExecutable,
+          [rootViteCliPath, '--clearScreen', 'false', '--port', String(backendPort)],
           fyllutBackendEnv,
           resolve(repoRoot, 'packages/fyllut-backend'),
         ],
         [
-          localBin(repoRoot, 'vite'),
-          ['--clearScreen', 'false', '--port', String(frontendPort)],
+          nodeExecutable,
+          [rootViteCliPath, '--clearScreen', 'false', '--port', String(frontendPort)],
           { BACKEND_PORT: String(backendPort), NODE_ENV: 'development' },
           resolve(repoRoot, 'packages/fyllut'),
         ],
@@ -163,14 +181,14 @@ const configs = {
     return {
       commands: [
         [
-          localBin(repoRoot, 'vite'),
-          ['--clearScreen', 'false', '--port', String(backendPort)],
+          nodeExecutable,
+          [rootViteCliPath, '--clearScreen', 'false', '--port', String(backendPort)],
           { NODE_ENV: 'development' },
           resolve(repoRoot, 'packages/bygger-backend'),
         ],
         [
-          localBin(repoRoot, 'vite'),
-          ['--clearScreen', 'false', '--port', String(frontendPort)],
+          nodeExecutable,
+          [rootViteCliPath, '--clearScreen', 'false', '--port', String(frontendPort)],
           { BACKEND_PORT: String(backendPort), NODE_ENV: 'development' },
           resolve(repoRoot, 'packages/bygger'),
         ],

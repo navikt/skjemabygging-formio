@@ -1,4 +1,4 @@
-import { NavFormType, SubmissionType } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, SubmissionType } from '@navikt/skjemadigitalisering-shared-domain';
 import nock from 'nock';
 import request from 'supertest';
 import { afterEach, describe, it, vi } from 'vitest';
@@ -10,20 +10,19 @@ vi.mock('./dekorator', () => ({
   createRedirectUrl: () => '',
 }));
 
-const { formioApiServiceUrl } = config;
+const { formsApiUrl } = config;
 
 const mockForm = (formPath: string, submissionTypes: SubmissionType[]) => {
-  nock(formioApiServiceUrl!)
-    .get(`/form?type=form&tags=nav-skjema&path=${formPath}`)
-    .reply(200, [
-      {
-        path: formPath,
-        title: `Title for ${formPath}`,
-        properties: {
-          submissionTypes,
-        },
-      } as NavFormType,
-    ]);
+  nock(formsApiUrl)
+    .get(`/v1/forms/${formPath}`)
+    .query(true)
+    .reply(200, {
+      path: formPath,
+      title: `Title for ${formPath}`,
+      properties: {
+        submissionTypes,
+      },
+    } as Partial<Form>);
 };
 
 const authenticatedGet = (path: string) => request(createApp()).get(path).set('Authorization', 'Bearer test-token');
@@ -190,6 +189,26 @@ describe('Fyllut backend :: query param sub', () => {
   });
 
   describe('when accessing static pdf routes', () => {
+    it('returns 404 for static-pdf-only forms from the normal fill-in route', async () => {
+      mockForm('pdfstaticonly', ['STATIC_PDF']);
+
+      await request(createApp()).get('/fyllut/pdfstaticonly').expect(404);
+    });
+
+    it('returns 404 for static-pdf-only forms from normal fill-in subroutes', async () => {
+      mockForm('testform109staticpdfsummary', ['STATIC_PDF']);
+
+      await request(createApp()).get('/fyllut/testform109staticpdfsummary/oppsummering').expect(404);
+    });
+
+    it('keeps fill-in routes available when static pdf is combined with a standard submission method', async () => {
+      mockForm('testform109staticpdfpaper', ['PAPER', 'STATIC_PDF']);
+
+      const res = await request(createApp()).get('/fyllut/testform109staticpdfpaper').expect(302);
+
+      expect(res.get('location')).toBe('/fyllut/testform109staticpdfpaper?sub=paper');
+    });
+
     it('returns 404 when static pdf is not enabled for the form', async () => {
       mockForm('testform109', ['PAPER']);
 
