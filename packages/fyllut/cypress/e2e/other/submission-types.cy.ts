@@ -65,7 +65,7 @@ describe('Submission Type', () => {
         cy.clickDownloadInstructions();
 
         cy.findByText('Her er litt forklaring').should('not.exist');
-        cy.get('a[href="/fyllut/nav100754"]')
+        cy.get('a[href="/fyllut/nav100754?sub=papernocoverpage"]')
           .should('exist')
           .should('have.attr', 'target', '_blank')
           .should('contain', 'Nav skjema test');

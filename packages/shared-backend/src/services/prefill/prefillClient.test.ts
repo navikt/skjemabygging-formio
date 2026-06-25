@@ -1,5 +1,5 @@
+import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { HttpResponseError } from '../../shared/http/http';
 import prefillClient from './prefillClient';
 
 describe('prefillClient', () => {
@@ -58,7 +58,7 @@ describe('prefillClient', () => {
     );
   });
 
-  it('throws HttpResponseError when upstream request fails', async () => {
+  it('throws ResponseError when upstream request fails', async () => {
     vi.spyOn(global, 'fetch').mockResolvedValue(
       new Response(JSON.stringify({ message: 'Upstream failed' }), {
         status: 404,
@@ -72,6 +72,6 @@ describe('prefillClient', () => {
         accessToken,
         baseUrl,
       }),
-    ).rejects.toBeInstanceOf(HttpResponseError);
+    ).rejects.toBeInstanceOf(ResponseError);
   });
 });

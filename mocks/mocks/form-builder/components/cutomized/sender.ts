@@ -22,6 +22,7 @@ const sender = (props?: SenderType) => {
       key: props?.key ?? 'avsender',
     }),
     role: senderRole ?? 'person',
+    prefillKey: senderRole === 'organization' ? undefined : staticDefaultValues.prefillKey,
     descriptions: descriptions ?? {},
     customLabels:
       senderRole === 'organization'
@@ -100,6 +101,7 @@ const staticDefaultValues = {
   properties: {},
   allowMultipleMasks: false,
   addons: [],
+  prefillKey: ['sokerFornavn', 'sokerEtternavn', 'sokerIdentifikasjonsnummer'],
   fieldSize: 'input--xxl',
   spellcheck: false,
   id: 'ef6gur8',

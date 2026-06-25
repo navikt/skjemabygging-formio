@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import http, { HttpResponseError } from './http';
+import http from './http';
 
 describe('http', () => {
   afterEach(() => {
@@ -25,7 +25,7 @@ describe('http', () => {
     );
   });
 
-  it('throws HttpResponseError on non-2xx responses', async () => {
+  it('throws ResponseError on non-2xx responses', async () => {
     vi.spyOn(global, 'fetch').mockResolvedValue(
       new Response(JSON.stringify({ message: 'not found' }), {
         status: 404,
@@ -36,6 +36,9 @@ describe('http', () => {
       }),
     );
 
-    await expect(http.get('https://example.test/error')).rejects.toBeInstanceOf(HttpResponseError);
+    await expect(http.get('https://example.test/error')).rejects.toMatchObject({
+      errorCode: 'NOT_FOUND',
+      message: 'not found',
+    });
   });
 });

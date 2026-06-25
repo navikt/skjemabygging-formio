@@ -156,7 +156,7 @@ describe('sendInn API helper', () => {
         expect(body.kanLasteOppAnnet).toBe(true);
         expect(body.vedleggsListe).toEqual([
           attachment1,
-          { ...attachment2, vedleggsurl: `${fyllutUrl}/${attachment2.vedleggskjema}?sub=paper` },
+          { ...attachment2, vedleggsurl: `${fyllutUrl}/${attachment2.vedleggskjema}?sub=papernocoverpage` },
         ]);
       });
     });

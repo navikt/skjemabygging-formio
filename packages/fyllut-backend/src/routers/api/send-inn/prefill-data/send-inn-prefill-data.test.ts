@@ -1,4 +1,3 @@
-import { HttpResponseError } from '@navikt/skjemadigitalisering-shared-backend';
 import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import { mockRequest, mockResponse } from '../../../../test/testHelpers';
 
@@ -44,9 +43,7 @@ describe('[endpoint] send-inn/prefill-data', () => {
   });
 
   it('wraps ResponseError with prefill user-facing message', async () => {
-    getPrefillData.mockRejectedValue(
-      new HttpResponseError('NOT_FOUND', 'Upstream failed', { message: 'not found' }, 'corr-123'),
-    );
+    getPrefillData.mockRejectedValue(new ResponseError('NOT_FOUND', 'Upstream failed', 'corr-123'));
 
     const req = mockRequest({});
     req.getTokenxAccessToken = () => 'tokenx-access-token-for-unittest';

@@ -1,4 +1,4 @@
-import { ErrorCode, ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
+import { getErrorCodeFromStatus, ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import crypto from 'crypto';
 import correlator from 'express-correlation-id';
 import { logger } from '../logger/logger';
@@ -123,12 +123,15 @@ const handleResponse = async <T>(response: Response): Promise<T> => {
   }
 
   const errorBody = await handleBody(response);
-  const error = new HttpResponseError(
-    getErrorCode(response.status),
-    response.statusText,
-    errorBody,
-    response.headers.get('x-correlation-id') ?? undefined,
-  );
+  const message = typeof errorBody === 'string' ? errorBody : (errorBody?.message ?? response.statusText);
+  const correlationId =
+    typeof errorBody === 'string'
+      ? (response.headers.get('x-correlation-id') ?? undefined)
+      : (errorBody?.correlationId ??
+        errorBody?.correlation_id ??
+        response.headers.get('x-correlation-id') ??
+        undefined);
+  const error = new ResponseError(getErrorCodeFromStatus(response.status), message, correlationId);
 
   logger.warn(`Http request to ${response.url} failed with status ${response.status}`, {
     body: errorBody,
@@ -136,34 +139,9 @@ const handleResponse = async <T>(response: Response): Promise<T> => {
 
   throw error;
 };
-
-class HttpResponseError extends ResponseError {
-  public readonly body: any;
-
-  constructor(errorCode: ErrorCode, message: string, body: any, correlationId?: string, userMessage?: string) {
-    super(errorCode, message, correlationId, userMessage);
-    this.body = body;
-  }
-}
-
-const getErrorCode = (status: number): ErrorCode => {
-  switch (status) {
-    case 400:
-      return 'BAD_REQUEST';
-    case 401:
-      return 'UNAUTHORIZED';
-    case 403:
-      return 'FORBIDDEN';
-    case 404:
-      return 'NOT_FOUND';
-    case 500:
-      return 'INTERNAL_SERVER_ERROR';
-    case 503:
-      return 'SERVICE_UNAVAILABLE';
-    default:
-      return 'ERROR';
-  }
-};
+const isAuthenticationError = (error: unknown): error is ResponseError =>
+  error instanceof ResponseError &&
+  (error.errorCode === 'UNAUTHORIZED' || error.errorCode === 'FORBIDDEN' || error.errorCode === 'LOGIN_TIMEOUT');
 
 const http = {
   get,
@@ -173,4 +151,4 @@ const http = {
 };
 
 export default http;
-export { HttpResponseError };
+export { isAuthenticationError };

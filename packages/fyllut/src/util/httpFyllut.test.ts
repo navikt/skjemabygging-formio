@@ -1,4 +1,5 @@
 import { http } from '@navikt/skjemadigitalisering-shared-components';
+import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import { vi } from 'vitest';
 import httpFyllut from './httpFyllut';
 
@@ -31,11 +32,11 @@ describe('httpFyllut', () => {
 
     vi.spyOn(http, 'get').mockImplementation(() => {
       return new Promise((resolve, reject) => {
-        reject(new httpFyllut.UnauthenticatedError());
+        reject(new ResponseError('UNAUTHORIZED', 'Unauthorized'));
       });
     });
 
-    await expect(httpFyllut.get('https://www.nav.no')).rejects.toThrow(httpFyllut.UnauthenticatedError);
+    await expect(httpFyllut.get('https://www.nav.no')).rejects.toThrow(ResponseError);
     expect(replace).toHaveBeenCalledTimes(1);
 
     // @ts-expect-error Possible bug in typescript: https://github.com/microsoft/TypeScript/issues/61335
