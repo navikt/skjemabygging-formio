@@ -42,7 +42,6 @@ const applicationPdfService = createApplicationPdfService({
 
 const activeTaskService = createActiveTaskService({
   baseUrl: sendInnConfig.host,
-  activitiesPath: sendInnConfig.paths.activities,
 });
 
 const coverPageService = createCoverPageService({

@@ -15,7 +15,6 @@ export type SendInnConfig = {
     soknad: string;
     utfyltSoknad: string;
     prefillData: string;
-    activities: string;
     mergeFiles: string;
     nologinFile: string;
     nologinSubmit: string;

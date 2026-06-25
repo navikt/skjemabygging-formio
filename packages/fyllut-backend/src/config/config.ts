@@ -43,7 +43,6 @@ const sendInnConfig: SendInnConfig = {
     soknad: '/fyllUt/v1/soknad',
     utfyltSoknad: '/fyllUt/v1/utfyltSoknad',
     prefillData: '/fyllUt/v1/prefill-data',
-    activities: '/fyllUt/v1/aktiviteter',
     mergeFiles: '/fyllUt/v1/merge-filer',
     nologinFile: '/v1/nologin-fillager',
     nologinSubmit: '/v1/nologin-soknad',

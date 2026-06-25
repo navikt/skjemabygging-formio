@@ -6,7 +6,6 @@ type ActiveTaskClient = Pick<typeof activeTaskClient, 'getActiveTasks' | 'getAct
 
 interface CreateActiveTaskServiceProps {
   baseUrl: string;
-  activitiesPath: string;
   client?: ActiveTaskClient;
 }
 
@@ -38,7 +37,6 @@ const mapToActiveTask = ({ skjemanr, innsendingsId, endretDato, soknadstype }: U
 
 const createActiveTaskService = ({
   baseUrl,
-  activitiesPath,
   client = activeTaskClient,
 }: CreateActiveTaskServiceProps): ActiveTaskService => {
   const getActiveTasks = async ({
@@ -60,7 +58,6 @@ const createActiveTaskService = ({
     try {
       return await client.getActivities({
         accessToken,
-        activitiesPath,
         baseUrl,
         dagligreise,
         innsendingsId,

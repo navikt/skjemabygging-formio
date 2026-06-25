@@ -3,6 +3,8 @@ import http from '../../shared/http/http';
 import { logger } from '../../shared/logger/logger';
 import type { UpstreamActiveTask } from './activeTaskTypes';
 
+const activitiesPath = '/fyllUt/v1/aktiviteter';
+
 interface ActiveTaskBaseProps {
   accessToken: string;
   baseUrl: string;
@@ -14,7 +16,6 @@ interface GetActiveTasksProps extends ActiveTaskBaseProps {
 }
 
 interface GetActivitiesProps extends ActiveTaskBaseProps {
-  activitiesPath: string;
   dagligreise?: boolean;
   innsendingsId?: string;
 }
@@ -38,7 +39,6 @@ const getActiveTasks = async ({
 
 const getActivities = async ({
   accessToken,
-  activitiesPath,
   baseUrl,
   dagligreise = false,
   innsendingsId,

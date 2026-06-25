@@ -4,7 +4,6 @@ import { createActiveTaskService } from './activeTaskService';
 describe('createActiveTaskService', () => {
   const accessToken = 'tokenx-access-token';
   const baseUrl = 'https://send-inn.test';
-  const activitiesPath = '/fyllUt/v1/aktiviteter';
 
   afterEach(() => {
     vi.restoreAllMocks();
@@ -29,7 +28,7 @@ describe('createActiveTaskService', () => {
       ),
     );
 
-    const service = createActiveTaskService({ baseUrl, activitiesPath });
+    const service = createActiveTaskService({ baseUrl });
 
     await expect(service.getActiveTasks({ accessToken, skjemanummer: 'NAV123' })).resolves.toEqual([
       {
@@ -62,14 +61,14 @@ describe('createActiveTaskService', () => {
       }),
     );
 
-    const service = createActiveTaskService({ baseUrl, activitiesPath });
+    const service = createActiveTaskService({ baseUrl });
 
     await expect(service.getActivities({ accessToken, dagligreise: true, innsendingsId: 'abc-123' })).resolves.toEqual(
       activities,
     );
 
     expect(global.fetch).toHaveBeenCalledWith(
-      `${baseUrl}${activitiesPath}?dagligreise=true`,
+      `${baseUrl}/fyllUt/v1/aktiviteter?dagligreise=true`,
       expect.objectContaining({
         method: 'GET',
         headers: expect.objectContaining({
@@ -93,7 +92,7 @@ describe('createActiveTaskService', () => {
       }),
     );
 
-    const service = createActiveTaskService({ baseUrl, activitiesPath });
+    const service = createActiveTaskService({ baseUrl });
 
     await expect(service.getActivities({ accessToken })).rejects.toMatchObject({
       errorCode: 'SERVICE_UNAVAILABLE',
