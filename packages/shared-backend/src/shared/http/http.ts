@@ -127,10 +127,7 @@ const handleResponse = async <T>(response: Response): Promise<T> => {
   const correlationId =
     typeof errorBody === 'string'
       ? (response.headers.get('x-correlation-id') ?? undefined)
-      : (errorBody?.correlationId ??
-        errorBody?.correlation_id ??
-        response.headers.get('x-correlation-id') ??
-        undefined);
+      : (errorBody?.correlationId ?? response.headers.get('x-correlation-id') ?? undefined);
   const error = new ResponseError(getErrorCodeFromStatus(response.status), message, correlationId);
 
   logger.warn(`Http request to ${response.url} failed with status ${response.status}`, {
