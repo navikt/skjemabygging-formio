@@ -1,15 +1,11 @@
-import { requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
+import { fileUtil, requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import { NextFunction, Request, Response } from 'express';
-import { openAsBlob } from 'node:fs';
 import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import { ReadableStream as NodeReadableStream } from 'node:stream/web';
 import { logger } from '../../../../../logger';
 import { applicationService } from '../../../../../services';
 import { createUploadResponseError, removeUploadedTempFile } from '../../../helpers/upload';
-
-const createBlobFromBuffer = (file: Express.Multer.File) =>
-  new Blob([Uint8Array.from(file.buffer)], { type: file.mimetype });
 
 const post = async (req: Request, res: Response, next: NextFunction) => {
   const file = req.file;
@@ -32,7 +28,7 @@ const post = async (req: Request, res: Response, next: NextFunction) => {
     }
     logger.info(`${innsendingsId}: Received file upload request for digital application`, logMeta);
 
-    const fileBlob = file.path ? await openAsBlob(file.path, { type: file.mimetype }) : createBlobFromBuffer(file);
+    const fileBlob = await fileUtil.createBlobFromUploadedFile(file);
     const result = await applicationService.uploadAttachment({
       accessToken,
       attachmentId,

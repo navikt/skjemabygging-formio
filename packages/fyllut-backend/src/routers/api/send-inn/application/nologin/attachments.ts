@@ -1,12 +1,9 @@
+import { fileUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import { NextFunction, Request, Response } from 'express';
-import { openAsBlob } from 'node:fs';
 import { logger } from '../../../../../logger';
 import { applicationService } from '../../../../../services';
 import { createUploadResponseError, removeUploadedTempFile } from '../../../helpers/upload';
 import { validateNologinContext } from './context';
-
-const createBlobFromBuffer = (file: Express.Multer.File) =>
-  new Blob([Uint8Array.from(file.buffer)], { type: file.mimetype });
 
 const post = async (req: Request, res: Response, next: NextFunction) => {
   const file = req.file;
@@ -30,7 +27,7 @@ const post = async (req: Request, res: Response, next: NextFunction) => {
     }
     logger.info(`${innsendingsId}: Received file upload request for nologin application`, logMeta);
 
-    const fileBlob = file.path ? await openAsBlob(file.path, { type: file.mimetype }) : createBlobFromBuffer(file);
+    const fileBlob = await fileUtil.createBlobFromUploadedFile(file);
     const result = await applicationService.uploadAttachment({
       accessToken,
       attachmentId,
