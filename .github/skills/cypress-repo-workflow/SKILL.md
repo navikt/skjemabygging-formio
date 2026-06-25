@@ -18,7 +18,7 @@ Use this skill when you need to add, update, or run tests in
 
 ## Workflow
 
-### Prefer the same mode as CI
+### CI mode
 
 The GitHub workflow in `.github/workflows/cypress-tests.yaml` runs Cypress
 against built apps, not plain development mode.
