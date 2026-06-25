@@ -1,4 +1,8 @@
-import { PdfData, submissionUtils as formComponentUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  formatUtils,
+  submissionUtils as formComponentUtils,
+  PdfData,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { PdfComponentProps } from '../../types';
 
 const PdfSender = (props: PdfComponentProps): PdfData[] | null => {
@@ -14,7 +18,10 @@ const PdfSender = (props: PdfComponentProps): PdfData[] | null => {
 
   if (senderRole === 'organization') {
     if (value.organization?.number) {
-      result.push({ label: translate(customLabels.organizationNumber), verdi: value.organization.number });
+      result.push({
+        label: translate(customLabels.organizationNumber),
+        verdi: formatUtils.removeAllSpaces(value.organization.number),
+      });
     }
     if (value.organization?.name) {
       result.push({ label: translate(customLabels.organizationName), verdi: value.organization.name });
