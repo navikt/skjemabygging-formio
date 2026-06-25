@@ -3,8 +3,6 @@ import http from '../../shared/http/http';
 import { logger } from '../../shared/logger/logger';
 import type { UpstreamActiveTask } from './activeTaskTypes';
 
-const activitiesPath = '/fyllUt/v1/aktiviteter';
-
 interface ActiveTaskBaseProps {
   accessToken: string;
   baseUrl: string;
@@ -45,7 +43,7 @@ const getActivities = async ({
 }: GetActivitiesProps): Promise<SendInnAktivitet[]> => {
   logger.info('Get send-inn activities');
 
-  return await http.get<SendInnAktivitet[]>(`${baseUrl}${activitiesPath}?dagligreise=${dagligreise}`, {
+  return await http.get<SendInnAktivitet[]>(`${baseUrl}/fyllUt/v1/aktiviteter?dagligreise=${dagligreise}`, {
     accessToken,
     headers: innsendingsId ? { 'x-innsendingsid': innsendingsId } : undefined,
   });
