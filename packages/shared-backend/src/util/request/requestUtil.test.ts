@@ -1,5 +1,4 @@
 import { Request } from 'express';
-import { ParsedQs } from 'qs';
 import { describe, expect, it } from 'vitest';
 import requestUtil from './requestUtil';
 
@@ -8,7 +7,7 @@ const mockRequest = ({
   query = {},
 }: {
   params?: Record<string, string | string[] | undefined>;
-  query?: ParsedQs;
+  query?: Record<string, string | string[] | undefined>;
 }) =>
   ({
     params,
@@ -62,7 +61,7 @@ describe('requestUtil', () => {
     it('returns undefined when the optional query param is not a string', () => {
       expect(
         requestUtil.getStringQuery(
-          mockRequest({ query: { properties: ['sokerFornavn', 'sokerEtternavn'] as unknown as ParsedQs[string] } }),
+          mockRequest({ query: { properties: ['sokerFornavn', 'sokerEtternavn'] } }),
           'properties',
           true,
         ),
