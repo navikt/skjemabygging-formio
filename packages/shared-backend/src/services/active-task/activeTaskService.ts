@@ -1,3 +1,4 @@
+import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import activeTaskClient from './activeTaskClient';
 import type { ActiveTask, SendInnAktivitet, UpstreamActiveTask } from './activeTaskTypes';
 
@@ -26,6 +27,8 @@ type ActiveTaskService = {
   getActivities: (props: GetActivitiesProps) => Promise<SendInnAktivitet[]>;
 };
 
+const activitiesErrorMessage = 'Feil ved kall til SendInn for aktiviteter';
+
 const mapToActiveTask = ({ skjemanr, innsendingsId, endretDato, soknadstype }: UpstreamActiveTask): ActiveTask => ({
   skjemanr,
   innsendingsId,
@@ -53,14 +56,23 @@ const createActiveTaskService = ({
     return tasks.map(mapToActiveTask);
   };
 
-  const getActivities = async ({ accessToken, dagligreise, innsendingsId }: GetActivitiesProps) =>
-    await client.getActivities({
-      accessToken,
-      activitiesPath,
-      baseUrl,
-      dagligreise,
-      innsendingsId,
-    });
+  const getActivities = async ({ accessToken, dagligreise, innsendingsId }: GetActivitiesProps) => {
+    try {
+      return await client.getActivities({
+        accessToken,
+        activitiesPath,
+        baseUrl,
+        dagligreise,
+        innsendingsId,
+      });
+    } catch (error) {
+      if (error instanceof ResponseError) {
+        throw new ResponseError(error.errorCode, activitiesErrorMessage, error.correlationId, activitiesErrorMessage);
+      }
+
+      throw error;
+    }
+  };
 
   return {
     getActiveTasks,

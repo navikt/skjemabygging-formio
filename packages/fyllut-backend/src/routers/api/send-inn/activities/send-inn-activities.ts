@@ -1,5 +1,3 @@
-import { HttpResponseError } from '@navikt/skjemadigitalisering-shared-backend';
-import { ResponseError, SendInnAktivitet } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import { getTokenxAccessToken } from '../../../../security/tokenHelper';
 import { activeTaskService } from '../../../../services';
@@ -11,18 +9,8 @@ const sendInnActivities = {
       const innsendingsId = req.headers['x-innsendingsid'] as string | undefined;
       const dagligreise = req.query.dagligreise === 'true';
       const activities = await activeTaskService.getActivities({ accessToken, innsendingsId, dagligreise });
-      res.json(activities as SendInnAktivitet[]);
+      res.json(activities);
     } catch (error) {
-      if (error instanceof HttpResponseError) {
-        return next(
-          new ResponseError(
-            error.errorCode,
-            'Feil ved kall til SendInn for aktiviteter',
-            error.correlationId,
-            'Feil ved kall til SendInn for aktiviteter',
-          ),
-        );
-      }
       next(error);
     }
   },

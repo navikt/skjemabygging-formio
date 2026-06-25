@@ -1,29 +1,37 @@
-import { SendInnAktivitet } from '@navikt/skjemadigitalisering-shared-domain';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createActiveTaskService } from './activeTaskService';
 
 describe('createActiveTaskService', () => {
-  it('projects active tasks to the public response shape', async () => {
-    const client = {
-      getActiveTasks: vi.fn().mockResolvedValue([
+  const accessToken = 'tokenx-access-token';
+  const baseUrl = 'https://send-inn.test';
+  const activitiesPath = '/fyllUt/v1/aktiviteter';
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('gets and maps active tasks through the real service and client path', async () => {
+    vi.spyOn(global, 'fetch').mockResolvedValue(
+      new Response(
+        JSON.stringify([
+          {
+            skjemanr: 'NAV123',
+            innsendingsId: 'id-1',
+            endretDato: '2024-01-01',
+            soknadstype: 'soknad',
+            extraField: 'ignored',
+          },
+        ]),
         {
-          skjemanr: 'NAV123',
-          innsendingsId: 'id-1',
-          endretDato: '2024-01-01',
-          soknadstype: 'soknad',
-          extraField: 'ignored',
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
         },
-      ]),
-      getActivities: vi.fn(),
-    };
+      ),
+    );
 
-    const service = createActiveTaskService({
-      baseUrl: 'https://send-inn.test',
-      activitiesPath: '/fyllUt/v1/aktiviteter',
-      client,
-    });
+    const service = createActiveTaskService({ baseUrl, activitiesPath });
 
-    await expect(service.getActiveTasks({ accessToken: 'token', skjemanummer: 'NAV123' })).resolves.toEqual([
+    await expect(service.getActiveTasks({ accessToken, skjemanummer: 'NAV123' })).resolves.toEqual([
       {
         skjemanr: 'NAV123',
         innsendingsId: 'id-1',
@@ -31,40 +39,66 @@ describe('createActiveTaskService', () => {
         soknadstype: 'soknad',
       },
     ]);
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      `${baseUrl}/frontend/v1/skjema/NAV123/soknader?soknadstyper=soknad,ettersendelse`,
+      expect.objectContaining({
+        method: 'GET',
+        headers: expect.objectContaining({
+          Authorization: `Bearer ${accessToken}`,
+          Accept: 'application/json',
+          'x-correlation-id': expect.any(String),
+        }),
+      }),
+    );
   });
 
-  it('returns activities unchanged', async () => {
-    const activities = [
-      {
-        aktivitetId: '1',
-        aktivitetstype: 'X',
-        aktivitetsnavn: 'Aktivitet',
-        periode: { fom: '2024-01-01', tom: '2024-01-31' },
-        antallDagerPerUke: 5,
-        prosentAktivitetsdeltakelse: 100,
-        aktivitetsstatus: 'AKTIV',
-        aktivitetsstatusnavn: 'Aktiv',
-        erStoenadsberettigetAktivitet: true,
-        erUtdanningsaktivitet: false,
-        arrangoer: 'Nav',
-        saksinformasjon: {
-          saksnummerArena: 'A1',
-          sakstype: 'TYPE',
-          vedtaksinformasjon: [],
+  it('gets activities unchanged through the real service and client path', async () => {
+    const activities = [{ aktivitetId: '1', aktivitetsnavn: 'Aktivitet' }];
+    vi.spyOn(global, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify(activities), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    );
+
+    const service = createActiveTaskService({ baseUrl, activitiesPath });
+
+    await expect(service.getActivities({ accessToken, dagligreise: true, innsendingsId: 'abc-123' })).resolves.toEqual(
+      activities,
+    );
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      `${baseUrl}${activitiesPath}?dagligreise=true`,
+      expect.objectContaining({
+        method: 'GET',
+        headers: expect.objectContaining({
+          Authorization: `Bearer ${accessToken}`,
+          'x-innsendingsid': 'abc-123',
+          'x-correlation-id': expect.any(String),
+        }),
+      }),
+    );
+  });
+
+  it('wraps activity response errors with the activities-specific message', async () => {
+    vi.spyOn(global, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ message: 'upstream failed' }), {
+        status: 503,
+        statusText: 'Service Unavailable',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-correlation-id': 'corr-123',
         },
-      },
-    ] as SendInnAktivitet[];
-    const client = {
-      getActiveTasks: vi.fn(),
-      getActivities: vi.fn().mockResolvedValue(activities),
-    };
+      }),
+    );
 
-    const service = createActiveTaskService({
-      baseUrl: 'https://send-inn.test',
-      activitiesPath: '/fyllUt/v1/aktiviteter',
-      client,
+    const service = createActiveTaskService({ baseUrl, activitiesPath });
+
+    await expect(service.getActivities({ accessToken })).rejects.toMatchObject({
+      errorCode: 'SERVICE_UNAVAILABLE',
+      message: 'Feil ved kall til SendInn for aktiviteter',
+      userMessage: 'Feil ved kall til SendInn for aktiviteter',
     });
-
-    await expect(service.getActivities({ accessToken: 'token' })).resolves.toBe(activities);
   });
 });
