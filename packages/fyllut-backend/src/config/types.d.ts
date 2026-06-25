@@ -97,7 +97,6 @@ export type FyllutBackendConfig = DefaultConfig & {
   isProduction: boolean;
   isDelingslenke: boolean;
   backendLogLevel: string;
-  pdlTokenScopeCluster: string;
   umamiWebsiteId?: string;
   port: number;
 };

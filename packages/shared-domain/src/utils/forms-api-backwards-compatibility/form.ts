@@ -52,7 +52,7 @@ const mapNavFormToForm = (form: NavFormType): Form => {
     changedBy,
     publishedAt,
     publishedBy,
-    publishedLanguages,
+    publishedLanguages: publishedLanguages ?? properties.publishedLanguages,
     status: status as FormStatus,
     introPage,
     firstPanelSlug,

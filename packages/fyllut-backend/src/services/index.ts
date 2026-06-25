@@ -6,11 +6,11 @@ import {
   createMergeFileService,
   createRecipientService,
   createStaticPdfService,
+  createTeamLogger,
   createTranslationService,
 } from '@navikt/skjemadigitalisering-shared-backend';
 import { config } from '../config/config';
 import AppMetrics from './AppMetrics';
-import FormService from './FormService';
 import ApplicationService from './nologin/ApplicationService';
 import NologinTokenService from './nologin/NologinTokenService';
 import TranslationsService from './TranslationsService';
@@ -26,7 +26,10 @@ const {
   translationDir,
   resourcesDir,
   mocksEnabled,
+  teamLogsConfig,
 } = config;
+
+const teamLogger = createTeamLogger(teamLogsConfig);
 
 const applicationPdfService = createApplicationPdfService({
   baseUrl: familiePdfGeneratorUrl,
@@ -34,6 +37,7 @@ const applicationPdfService = createApplicationPdfService({
     appName: 'fyllut',
     registry: appMetrics.register,
   },
+  teamLogger,
 });
 
 const activeTaskService = createActiveTaskService({
@@ -76,8 +80,6 @@ const translationsService = new TranslationsService(config);
 
 const applicationService = new ApplicationService(config, applicationPdfService);
 
-const oldFormService = new FormService();
-
 const nologinTokenService = NologinTokenService(config);
 
 export {
@@ -89,7 +91,6 @@ export {
   formService,
   mergeFileService,
   nologinTokenService,
-  oldFormService,
   recipientService,
   staticPdfService,
   translationService,
