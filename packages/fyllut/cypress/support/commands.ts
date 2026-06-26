@@ -101,6 +101,19 @@ Cypress.Commands.add('clickEditAnswers', (linkText) => {
     .click();
 });
 
+Cypress.Commands.add('visitRouteAndWait', (route: string, waitAliases?: string[]) => {
+  cy.visit(route);
+  cy.defaultWaits();
+
+  if (waitAliases) {
+    waitAliases.forEach((alias) => {
+      cy.wait(alias);
+    });
+  }
+
+  return cy;
+});
+
 Cypress.Commands.add('clickSendNav', () => {
   // This render first after validation is done, so we need to wait for it.
   cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.sendToNav, timeout: 10000 }).click();
