@@ -1,0 +1,31 @@
+# Per-repo cplt sandbox config for skjemabygging-formio
+# See https://github.com/navikt/cplt for documentation
+#
+# [deny]    — applied automatically, tightens sandbox
+# [propose] — requires approval via `cplt trust accept`, relaxes sandbox
+
+[deny]
+env = [
+    "AZURE_APP_CLIENT_SECRET",
+    "TOKEN_X_PRIVATE_JWK",
+    "IDPORTEN_CLIENT_JWK",
+    "MASKINPORTEN_CLIENT_JWK",
+]
+
+[propose]
+# Suggested by: packages/bygger, packages/fyllut
+allow_browser = true
+# Vite HMR uses random ephemeral ports, and bin/start.mjs allocates dynamic ports from 3440+
+allow_localhost_any = true
+# pnpm lifecycle scripts (husky, esbuild binary installs, etc.)
+allow_lifecycle_scripts = true
+allow_env_files = true
+allow_tmp_exec = true
+
+[propose.allow]
+localhost = [5173]
+read = ["/proc"]
+
+[propose.proxy]
+# forms-api, token generators, and other NAV services resolve to private IPs
+allow_private_domains = ["intern.nav.no", "intern.dev.nav.no"]

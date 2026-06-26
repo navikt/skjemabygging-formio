@@ -11,6 +11,7 @@
 **/cypress/downloads
 **/cypress/videos
 **/cypress/screenshots
+**/.cypress-home
 
 # production
 **/build

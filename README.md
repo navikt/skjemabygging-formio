@@ -43,6 +43,45 @@ _(Les mer om bruk av Github npm registry i Nav her: https://github.com/navikt/fr
 | `pnpm lint`               | Sjekker kodekvalitet                                                        |
 | `pnpm get-tokens`         | Henter tokens for eksterne API-er ved lokal kjøring                         |
 
+## 🔒 cplt-sandbox (for agenter og lokal kjøring)
+
+Vi kjører Copilot/AI-agenter i [cplt](https://github.com/navikt/cplt), en sandbox som lar agenter skrive kode,
+men hindrer dem i å lese hemmeligheter, pushe til main eller eksfiltrere data. Repoet har en committet policy i
+`.cplt.toml` som gjelder hele teamet.
+
+### Kom i gang med cplt
+
+Se instruksjoner for installering i [cplt repoet](https://github.com/navikt/cplt#install).
+
+```bash
+cplt trust accept --all        # godkjenn repoets .cplt.toml (kjøres i repo-roten)
+cplt                           # kjør `copilot` i sandbox
+```
+
+NB! `.cplt.toml` leses fra git HEAD, så agenten kan ikke endre sin egen policy underveis.
+
+### Personlig config for Cypress
+
+Noen tillatelser som Cypress trenger er maskinspesifikke, og cplt tillater dem derfor **ikke** i den committede
+`.cplt.toml`. Disse må hver enkelt legge i sin egen `~/.config/cplt/config.toml`, kjør `cplt --init-config` for å
+opprette denne filen hvis den ikke finnes. Legg til følgende under `[sandbox]`-seksjonen:
+
+```toml
+[sandbox]
+# Lar Cypress kjøre sin egen Chrome/Electron-binær som pakkes ut i ~/.cache (exec
+# derfra er blokkert som standard). Gjelder også `pnpm dlx`. `copilot/pkg` er bare nødvendig på Linux pga. at copilot
+# sin npm-pakke bare er en wrapper som kjører `copilot` fra cache.
+allow_cache_exec = ["Cypress", "pnpm/dlx", "copilot/pkg"]
+
+# cplt fjerner DISPLAY ved env-sanering. Uten DISPLAY tror Cypress at det
+# ikke finnes en X-server og prøver å starte sin egen Xvfb. Ved å sende
+# DISPLAY videre bruker Cypress vertens X-server (som ved kjøring uten sandbox).
+pass_env = ["DISPLAY"]
+```
+
+Cypress-konfigurasjonen i repoet starter i tillegg Chromium/Electron med `--no-sandbox`, fordi cplt sin seccomp-filter
+blokkerer den nøstede Chromium-sandboxen. cplt sin Landlock + seccomp er fortsatt sikkerhetsgrensen.
+
 ## ⚙️ Lokal konfigurasjon med dotenv
 
 Vi bruker hovedsaklig [dotenv](https://www.npmjs.com/package/dotenv) for å konfigurere applikasjonene ved kjøring

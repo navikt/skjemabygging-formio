@@ -37,7 +37,7 @@ Starts:
 # 1. Start in async bash mode
 bash (async): pnpm start:fyllut:mocks -- --no-runtime-config
 
-# 2. Read output — wait until `START_PID` appears before proceeding
+# 2. Read output — ALWAYS WAIT UNTIL `START_PID` appears before proceeding
 #   FYLLUT_MOCK_URL=http://127.0.0.1:3042
 #   FYLLUT_MOCK_ADMIN_PORT=3043
 #   FYLLUT_BACKEND_URL=http://127.0.0.1:3044
@@ -45,7 +45,7 @@ bash (async): pnpm start:fyllut:mocks -- --no-runtime-config
 #   START_PID=12345
 
 # 3. Run Cypress — use FYLLUT_FRONTEND_URL as baseUrl (strip the /fyllut suffix):
-cd packages/fyllut && pnpm cypress run \
+cd packages/fyllut && XDG_CONFIG_HOME="$PWD/.cypress-home" pnpm exec cypress run \
   --config "baseUrl=http://127.0.0.1:3045" \
   --env "MOCKS_ADMIN_PORT=3043" \
   --browser electron \
@@ -65,7 +65,7 @@ bash (async): pnpm start:bygger:mocks -- --no-runtime-config
 #   BYGGER_FRONTEND_URL=http://127.0.0.1:3043
 #   START_PID=12345
 
-cd packages/bygger && pnpm cypress run \
+cd packages/bygger && XDG_CONFIG_HOME="$PWD/.cypress-home" pnpm exec cypress run \
   --config "baseUrl=http://127.0.0.1:3043" \
   --browser electron \
   --spec cypress/e2e/path/to/spec.cy.ts
@@ -80,7 +80,7 @@ Do NOT reach for `pnpm preview:fyllut` / `pnpm mocks:fyllut:no-cli` as an altern
 ## Notes
 
 - `kill <START_PID>` is preferred over `stop_bash` — no user permission prompt required.
-- `START_PID` is printed last, so it is the simplest ready marker to wait for in async output.
+- `START_PID` is printed **last and is the only reliable ready marker** — never run tests without confirming this marker has appeared.
 - Killing `START_PID` triggers launcher cleanup of the child processes it started.
 - `-- --no-runtime-config` keeps AI-started servers from creating or deleting `.runtime/cypress.mocks.json`; omit it for normal user/Cypress flows that should manage runtime config.
 - `pnpm` forwards the separator literally, so keep the command in the `pnpm start:*:mocks -- --no-runtime-config` form for the AI/dev-server flow.
