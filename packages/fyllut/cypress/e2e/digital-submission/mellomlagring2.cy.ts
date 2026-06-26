@@ -101,7 +101,7 @@ describe('Mellomlagring v2', () => {
   });
 
   describe('When submission method is "paper"', () => {
-    it('renders the summary page if url does not contain "innsendingsId"', () => {
+    it('navigates directly to and renders summary page even though submission is empty', () => {
       cy.visitRouteAndWait('/fyllut/testmellomlagring/oppsummering?sub=paper&lang=nb-NO');
       expectSummaryPage();
     });
@@ -110,8 +110,8 @@ describe('Mellomlagring v2', () => {
       cy.visitRouteAndWait('/fyllut/testmellomlagring?sub=paper');
 
       cy.clickStart();
-      cy.get('@createMellomlagringSpy').should('not.have.been.called');
       cy.findByRole('heading', { name: 'Valgfrie opplysninger' }).shouldBeVisible();
+      cy.get('@createMellomlagringSpy').should('not.have.been.called');
 
       cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() => {
         cy.findByLabelText('Ja').check();
