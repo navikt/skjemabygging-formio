@@ -1,4 +1,9 @@
-import { UploadedFile, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  HttpResponseError,
+  ResponseError,
+  UploadedFile,
+  validatorUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import http from '../../shared/http/http';
 import { logger } from '../../shared/logger/logger';
 import type {
@@ -106,15 +111,41 @@ const createUploadedFile = (
   size: response.size,
 });
 
+const getUpstreamErrorCode = (error: unknown): string | undefined => {
+  if (!(error instanceof HttpResponseError)) {
+    return undefined;
+  }
+
+  const errorCode = error.body?.errorCode;
+  return typeof errorCode === 'string' ? errorCode : undefined;
+};
+
+const rethrowNormalizedApplicationError = (error: unknown): never => {
+  switch (getUpstreamErrorCode(error)) {
+    case 'illegalAction.applicationSentInOrDeleted':
+      throw new ResponseError('NOT_FOUND', error instanceof Error ? error.message : 'Not Found');
+    case 'illegalAction.fileWithTooManyPages':
+      throw new ResponseError('FILE_TOO_MANY_PAGES', error instanceof Error ? error.message : 'Bad Request');
+    case 'temporarilyUnavailable':
+      throw new ResponseError('SERVICE_UNAVAILABLE', error instanceof Error ? error.message : 'Service Unavailable');
+    default:
+      throw error;
+  }
+};
+
 const getSoknad = async <T>(props: DraftBaseProps): Promise<T> => {
   const { baseUrl, paths, accessToken, innsendingsId, correlationId } = props;
   logger.info(`Getting soknad ${innsendingsId}`);
 
-  return await http.get<T>(getDraftUrl(baseUrl, paths.soknad, innsendingsId), {
-    accessToken,
-    accept: 'application/json',
-    headers: createHeaders({ correlationId, innsendingsId }),
-  });
+  try {
+    return await http.get<T>(getDraftUrl(baseUrl, paths.soknad, innsendingsId), {
+      accessToken,
+      accept: 'application/json',
+      headers: createHeaders({ correlationId, innsendingsId }),
+    });
+  } catch (error) {
+    return rethrowNormalizedApplicationError(error);
+  }
 };
 
 const createSoknad = async <T>(props: CreateSoknadProps): Promise<DraftResponse<T>> => {
@@ -138,32 +169,45 @@ const updateSoknad = async <T>(props: DraftMutationProps): Promise<T> => {
   const { baseUrl, paths, accessToken, body, innsendingsId, correlationId } = props;
   logger.info(`Updating soknad ${innsendingsId}`);
 
-  return await http.put<T>(getDraftUrl(baseUrl, paths.soknad, innsendingsId), body, {
-    accessToken,
-    headers: createHeaders({ correlationId, innsendingsId }),
-  });
+  try {
+    return await http.put<T>(getDraftUrl(baseUrl, paths.soknad, innsendingsId), body, {
+      accessToken,
+      headers: createHeaders({ correlationId, innsendingsId }),
+    });
+  } catch (error) {
+    return rethrowNormalizedApplicationError(error);
+  }
 };
 
 const deleteSoknad = async <T>(props: DraftBaseProps): Promise<T> => {
   const { baseUrl, paths, accessToken, innsendingsId, correlationId } = props;
   logger.info(`Deleting soknad ${innsendingsId}`);
 
-  return await http.delete<T>(getDraftUrl(baseUrl, paths.soknad, innsendingsId), undefined, {
-    accessToken,
-    headers: createHeaders({ correlationId, innsendingsId }),
-  });
+  try {
+    return await http.delete<T>(getDraftUrl(baseUrl, paths.soknad, innsendingsId), undefined, {
+      accessToken,
+      headers: createHeaders({ correlationId, innsendingsId }),
+    });
+  } catch (error) {
+    return rethrowNormalizedApplicationError(error);
+  }
 };
 
 const submitUtfyltSoknad = async (props: SubmitUtfyltSoknadProps) => {
   const { baseUrl, paths, accessToken, body, innsendingsId, envQualifier, correlationId } = props;
   logger.info(`Submitting utfylt soknad ${innsendingsId}`);
 
-  const response = await http.put(getDraftUrl(baseUrl, paths.utfyltSoknad, innsendingsId), body, {
-    accessToken,
-    redirect: 'manual',
-    responseType: 'metadata',
-    headers: createHeaders({ correlationId, envQualifier, innsendingsId }),
-  });
+  let response;
+  try {
+    response = await http.put(getDraftUrl(baseUrl, paths.utfyltSoknad, innsendingsId), body, {
+      accessToken,
+      redirect: 'manual',
+      responseType: 'metadata',
+      headers: createHeaders({ correlationId, envQualifier, innsendingsId }),
+    });
+  } catch (error) {
+    return rethrowNormalizedApplicationError(error);
+  }
 
   return {
     status: response.status,
@@ -178,14 +222,19 @@ const uploadAttachment = async (props: UploadAttachmentProps): Promise<UploadedF
   const formData = new FormData();
   formData.append('file', fileBlob, fileName);
 
-  const response = await http.postMultipart<UploadAttachmentResponse>(
-    getAttachmentsUrl({ baseUrl, innsendingsId, attachmentId, type }),
-    formData,
-    {
-      accessToken,
-      headers: createHeaders({ correlationId, innsendingsId }),
-    },
-  );
+  let response;
+  try {
+    response = await http.postMultipart<UploadAttachmentResponse>(
+      getAttachmentsUrl({ baseUrl, innsendingsId, attachmentId, type }),
+      formData,
+      {
+        accessToken,
+        headers: createHeaders({ correlationId, innsendingsId }),
+      },
+    );
+  } catch (error) {
+    return rethrowNormalizedApplicationError(error);
+  }
 
   return createUploadedFile(response, innsendingsId, attachmentId);
 };

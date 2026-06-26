@@ -1,4 +1,4 @@
-import { ErrorCode, ResponseError, TEXTS, getErrorCodeFromStatus } from '@navikt/skjemadigitalisering-shared-domain';
+import { HttpResponseError, ResponseError, getErrorCodeFromStatus } from '@navikt/skjemadigitalisering-shared-domain';
 import crypto from 'crypto';
 import correlator from 'express-correlation-id';
 import { logger } from '../logger/logger';
@@ -211,8 +211,6 @@ const handleResponse = async <T>(
   }
 
   const errorBody = await handleBody(response);
-  const upstreamErrorCode = getUpstreamErrorCode(errorBody);
-  const errorCode = getNormalizedErrorCode(response.status, upstreamErrorCode);
   const message = typeof errorBody === 'string' ? errorBody : (errorBody?.message ?? response.statusText);
   const correlationId =
     typeof errorBody === 'string'
@@ -221,52 +219,13 @@ const handleResponse = async <T>(
         errorBody?.correlation_id ??
         response.headers.get('x-correlation-id') ??
         undefined);
-  const userMessage =
-    typeof errorBody === 'string' ? getUserMessage(errorCode) : (errorBody?.userMessage ?? getUserMessage(errorCode));
-  const error = new ResponseError(errorCode, message, correlationId, userMessage);
+  const error = new HttpResponseError(getErrorCodeFromStatus(response.status), message, correlationId, errorBody);
 
   logger.warn(`Http request to ${response.url} failed with status ${response.status}`, {
     body: errorBody,
-    errorCode,
-    upstreamErrorCode,
   });
 
   throw error;
-};
-
-const getUpstreamErrorCode = (errorBody: unknown): string | undefined => {
-  if (
-    errorBody &&
-    typeof errorBody === 'object' &&
-    'errorCode' in errorBody &&
-    typeof errorBody.errorCode === 'string'
-  ) {
-    return errorBody.errorCode;
-  }
-};
-
-const getNormalizedErrorCode = (status: number, upstreamErrorCode?: string): ErrorCode => {
-  switch (upstreamErrorCode) {
-    case 'illegalAction.applicationSentInOrDeleted':
-      return 'NOT_FOUND';
-    case 'illegalAction.fileWithTooManyPages':
-      return 'FILE_TOO_MANY_PAGES';
-    case 'temporarilyUnavailable':
-      return 'SERVICE_UNAVAILABLE';
-    default:
-      return getErrorCodeFromStatus(status);
-  }
-};
-
-const getUserMessage = (errorCode: ErrorCode): string | undefined => {
-  switch (errorCode) {
-    case 'FILE_TOO_MANY_PAGES':
-      return TEXTS.statiske.uploadFile.uploadFileToManyPagesError;
-    case 'SERVICE_UNAVAILABLE':
-      return TEXTS.statiske.nologin.temporarilyUnavailable;
-    default:
-      return undefined;
-  }
 };
 const isAuthenticationError = (error: unknown): error is ResponseError =>
   error instanceof ResponseError &&
