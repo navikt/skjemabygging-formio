@@ -38,6 +38,8 @@ declare global {
 
       clickEditAnswers(linkText?: string): Chainable<JQuery<HTMLElement>>;
 
+      visitRouteAndWait(route: string, waitAliases?: string[]): Chainable<JQuery<HTMLElement>>;
+
       clickSendDigital(): Chainable<JQuery<HTMLElement>>;
 
       clickSendNav(): Chainable<JQuery<HTMLElement>>;
