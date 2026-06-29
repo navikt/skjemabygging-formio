@@ -1,4 +1,5 @@
 import {
+  createActiveTaskService,
   createApplicationPdfService,
   createCoverPageService,
   createFormService,
@@ -39,6 +40,10 @@ const applicationPdfService = createApplicationPdfService({
   teamLogger,
 });
 
+const activeTaskService = createActiveTaskService({
+  baseUrl: sendInnConfig.host,
+});
+
 const coverPageService = createCoverPageService({
   baseUrl: skjemabyggingProxyUrl,
 });
@@ -77,6 +82,7 @@ const applicationService = new ApplicationService(config, applicationPdfService)
 const nologinTokenService = NologinTokenService(config);
 
 export {
+  activeTaskService,
   applicationPdfService,
   applicationService,
   appMetrics,

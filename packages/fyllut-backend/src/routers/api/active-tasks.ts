@@ -1,41 +1,18 @@
 import { requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
-import { Request, Response } from 'express';
-import { config } from '../../config/config';
+import { NextFunction, Request, Response } from 'express';
 import { getTokenxAccessToken } from '../../security/tokenHelper';
-
-type Soknad = {
-  skjemanr: string;
-  innsendingsId: string;
-  endretDato: string;
-  soknadstype: 'soknad' | 'ettersendelse';
-};
-
-const { sendInnConfig } = config;
+import { activeTaskService } from '../../services';
 
 const activeTasks = {
-  get: async (req: Request, res: Response) => {
-    const skjemanummer = requestUtil.getStringParam(req, 'skjemanummer')!;
-    const tokenxAccessToken = getTokenxAccessToken(req);
-    const response = await fetch(
-      `${sendInnConfig.host}${sendInnConfig.paths.opprettedeSoknaderForSkjema(skjemanummer)}`,
-      {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          Authorization: `Bearer ${tokenxAccessToken}`,
-        },
-      },
-    );
-
-    const responseJson: Soknad[] = await response.json();
-    res.json(
-      responseJson.map(({ skjemanr, innsendingsId, endretDato, soknadstype }: Soknad) => ({
-        skjemanr,
-        innsendingsId,
-        endretDato,
-        soknadstype,
-      })),
-    );
+  get: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const skjemanummer = requestUtil.getStringParam(req, 'skjemanummer')!;
+      const accessToken = getTokenxAccessToken(req);
+      const tasks = await activeTaskService.getActiveTasks({ accessToken, skjemanummer });
+      res.json(tasks);
+    } catch (error) {
+      next(error);
+    }
   },
 };
 

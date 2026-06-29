@@ -40,12 +40,9 @@ const sendInnConfig: SendInnConfig = {
   host: process.env.SEND_INN_HOST!,
   tokenxClientId: process.env.SEND_INN_TOKEN_X_CLIENT_ID!,
   paths: {
-    opprettedeSoknaderForSkjema: (skjemanummer, soknadstyper = ['soknad', 'ettersendelse']) =>
-      `/frontend/v1/skjema/${skjemanummer}/soknader?soknadstyper=${soknadstyper.toString()}`,
     soknad: '/fyllUt/v1/soknad',
     utfyltSoknad: '/fyllUt/v1/utfyltSoknad',
     prefillData: '/fyllUt/v1/prefill-data',
-    activities: '/fyllUt/v1/aktiviteter',
     mergeFiles: '/fyllUt/v1/merge-filer',
     nologinFile: '/v1/nologin-fillager',
     nologinSubmit: '/v1/nologin-soknad',
