@@ -8,11 +8,6 @@ tools:
     - web
     - todo
     - edit
-    - io.github.navikt/github-mcp/get_file_contents
-    - io.github.navikt/github-mcp/search_code
-    - io.github.navikt/github-mcp/search_repositories
-    - io.github.navikt/github-mcp/pull_request_read
-    - io.github.navikt/github-mcp/search_pull_requests
     - ms-vscode.vscode-websearchforcopilot/websearch
 ---
 
@@ -52,8 +47,7 @@ You need:
    working directory.
 2. **`formio.js` @ v4.20.0** — the "before" behavior ground truth. **Mandatory.**
 3. **`skjemautfylling-formio`** — the published NavForm JSON definitions (real-world parity fixtures).
-   Strongly recommended; ask for it, but you may proceed on explicit user request without it (you then
-   cannot use real published forms as fixtures).
+   **Mandatory.**
 
 **Procedure when the agent is invoked:**
 
@@ -77,15 +71,16 @@ You need:
     # (HTTPS alternative)
     git clone --branch v4.20.0 --depth 1 https://github.com/formio/formio.js.git
 
-    # published NavForm definitions (recommended, for real parity fixtures)
+    # published NavForm definitions (REQUIRED, for real parity fixtures)
     git clone git@github.com:navikt/skjemautfylling-formio.git
     # (HTTPS alternative)
     git clone https://github.com/navikt/skjemautfylling-formio.git
     ```
 
-4. Only once `<FORMIO_SRC>` is present **and** confirmed at 4.20.0 do you begin the review. If the user
-   declines to provide it, explain that you cannot establish the "before" baseline and therefore cannot
-   assert behavioral equivalence — stop rather than guess.
+4. Only once `<FORMIO_SRC>` is present **and** confirmed at 4.20.0 **and** `<PUBLISHED_FORMS>` is present
+   do you begin the review. If the user declines to provide either repo, explain that you cannot
+   establish the required review baseline and fixture corpus, and therefore cannot assert behavioral
+   equivalence — stop rather than guess.
 
 > Throughout this document, `<FORMIO_SRC>` and `<PUBLISHED_FORMS>` stand for the paths the user gives
 > you. All `packages/...` paths are relative to the skjemabygging-formio repo root.
@@ -121,7 +116,8 @@ You need:
 ### formio.js 4.20.0 (the "before" behavior — ground truth)
 
 Local checkout: `<FORMIO_SRC>` (the path the user supplied; **must be confirmed at `version: 4.20.0`** —
-see the Startup section). Key files:
+see the Startup section). This local checkout is required; do not substitute GitHub MCP or web-fetched
+source for the baseline. Key files:
 
 - Base lifecycle/data/value/conditions/validation/calculate:
   `src/components/_classes/component/Component.js`
@@ -134,14 +130,11 @@ see the Startup section). Key files:
   panel, columns, container, datagrid, content, button, …)
 - Stock templates (structure only): `src/templates/bootstrap/{component,field,input}/form.ejs`
 
-If the local checkout is unavailable, fetch the same tag from GitHub `formio/formio.js` at the
-`v4.20.0` ref via the github-mcp tools. **Always confirm the ref is 4.20.0 before trusting a file.**
-
 ### skjemabygging-formio (the "after" code you review)
 
 - **Custom component registry (type → class):**
   `packages/shared-components/src/formio/components/index.ts`
-- **Canonical type union (single source of truth for used types):**
+- **Current type-union reference (not actually authoritative on its own):**
   `packages/shared-domain/src/models/form/formComponentType.ts`
 - **Schema/types for components & forms:**
   `packages/shared-domain/src/models/form/component.ts`,
@@ -178,11 +171,24 @@ If the local checkout is unavailable, fetch the same tag from GitHub `formio/for
 
 ---
 
-## 2. Component-type subset (authoritative)
+## 2. Component-type subset (currently internally inconsistent — verify before assuming)
 
-These are the **only** `type` values the project renders. Source of truth:
-`formComponentType.ts` (`FORM_COMPONENT_TYPES`) and the registry `components/index.ts`.
-Treat anything outside this list as out-of-scope (and flag if new code introduces it).
+The repo does **not** currently have one perfectly authoritative source for rendered `type` values.
+`formComponentType.ts` (`FORM_COMPONENT_TYPES`) and the runtime registry
+`packages/shared-components/src/formio/components/index.ts` disagree today, so do not blindly trust one
+file. Read both, note the mismatch in your review, and treat the practical in-scope set as the union of
+the current sources plus real published fixtures.
+
+**Current inconsistency, as of today:**
+
+- `FORM_COMPONENT_TYPES` includes `select` and `fieldset`, but does **not** include `day`.
+- The runtime registry in `components/index.ts` includes `day`, but does **not** register `select` or
+  `fieldset`.
+- Summary/domain code also refers to `select` and `day`, which reinforces that the wider repo surface is
+  not fully aligned on one canonical set.
+
+Treat anything outside the set below as out-of-scope unless it appears in real fixtures or newly touched
+code, in which case call it out explicitly.
 
 **Standard/layout:** `textfield`, `textarea`, `formioTextArea`, `number`, `navSelect` (`select`),
 `selectboxes`, `radiopanel`, `navCheckbox`, `htmlelement`, `image`, `alertstripe`, `accordion`,
@@ -197,8 +203,9 @@ Treat anything outside this list as out-of-scope (and flag if new code introduce
 
 **System/special:** `activities`, `dataFetcher`, `drivinglist`, `maalgruppe`.
 
-> When reviewing, first map each component in the form JSON to this list and to its registry entry.
-> If the new rendering does not handle a type that appears in real fixtures, that is a
+> When reviewing, first map each component in the form JSON to this list, `FORM_COMPONENT_TYPES`, and the
+> runtime registry entry. If the sources disagree, say so explicitly in the review instead of assuming
+> one is right. If the new rendering does not handle a type that appears in real fixtures, that is a
 > **blocking** discrepancy.
 
 ### 2.1 Real-world usage from the published corpus (≈232 forms)
@@ -392,8 +399,7 @@ When asked to review the new rendering (a PR, a diff, or a component), follow th
 6. **Report.** Deliver a structured review (see §7). Never hand-wave: cite formio file:line for each
    claimed "before" behavior, and skjemabygging file:line for each "after" behavior.
 
-Use the `todo` tool to track multi-component reviews. Use `search`/`read` first; only fetch from
-GitHub (github-mcp) when the local 4.20.0 checkout is missing a file.
+Use the `todo` tool to track multi-component reviews. Use `search`/`read` first.
 
 ---
 
