@@ -5,6 +5,7 @@ interface AccordionType extends BaseComponentType {
   accordionValues: Array<{
     title: string;
     content: string;
+    defaultOpen?: boolean;
   }>;
 }
 

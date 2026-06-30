@@ -15,7 +15,7 @@ describe('Form stepper', () => {
 
   describe('Conditional rendering of steps', () => {
     it('should support use of utils in panel conditional', () => {
-      cy.visit('/fyllut/checkcondition/diversedata?sub=paper');
+      cy.visit('/fyllut/formsteppercheckcondition/diversedata?sub=paper');
       cy.defaultWaits();
 
       cy.clickShowAllSteps();
@@ -28,7 +28,7 @@ describe('Form stepper', () => {
     it('should support use of dataFetcher in panel conditional', () => {
       cy.mocksUseRouteVariant('get-register-data-activities:success-two-activities');
 
-      cy.visit('/fyllut/checkcondition?sub=digital');
+      cy.visit('/fyllut/formsteppercheckcondition?sub=digital');
       cy.defaultWaits();
       cy.clickStart();
 
@@ -47,7 +47,7 @@ describe('Form stepper', () => {
     });
 
     it('should support use of lodash in panel conditional', () => {
-      cy.visit('/fyllut/checkcondition/diversedata?sub=paper');
+      cy.visit('/fyllut/formsteppercheckcondition/diversedata?sub=paper');
       cy.defaultWaits();
 
       cy.clickShowAllSteps();
@@ -61,7 +61,7 @@ describe('Form stepper', () => {
       cy.findByRole('textbox', { name: 'Hemmelig kodeord' }).should('exist').type('hello');
       cy.clickNextStep();
       cy.findByRole('heading', { name: 'World' }).should('exist');
-      cy.url().should('include', '/fyllut/checkcondition/world');
+      cy.url().should('include', '/fyllut/formsteppercheckcondition/world');
 
       cy.findByRole('link', { name: 'Viktige data' }).should('exist');
       cy.findByRole('link', { name: 'World' }).should('exist');

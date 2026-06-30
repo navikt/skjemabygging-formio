@@ -102,12 +102,12 @@ describe('Mellomlagring v2', () => {
 
   describe('When submission method is "paper"', () => {
     it('navigates directly to and renders summary page even though submission is empty', () => {
-      cy.visitRouteAndWait('/fyllut/testmellomlagring/oppsummering?sub=paper&lang=nb-NO');
+      cy.visitRouteAndWait('/fyllut/mellomlagring2mellomlagring/oppsummering?sub=paper&lang=nb-NO');
       expectSummaryPage();
     });
 
     it('does not fetch or update mellomlagring', () => {
-      cy.visitRouteAndWait('/fyllut/testmellomlagring?sub=paper');
+      cy.visitRouteAndWait('/fyllut/mellomlagring2mellomlagring?sub=paper');
 
       cy.clickStart();
       cy.findByRole('heading', { name: 'Valgfrie opplysninger' }).shouldBeVisible();
@@ -162,7 +162,7 @@ describe('Mellomlagring v2', () => {
     });
 
     it('creates and updates mellomlagring', () => {
-      cy.visitRouteAndWait('/fyllut/testmellomlagring?sub=digital');
+      cy.visitRouteAndWait('/fyllut/mellomlagring2mellomlagring?sub=digital');
 
       cy.clickStart();
       cy.wait('@createMellomlagring');
@@ -205,9 +205,10 @@ describe('Mellomlagring v2', () => {
     });
 
     it('fetches mellomlagring and starts from the intro page when url contains "innsendingsId"', () => {
-      cy.visitRouteAndWait(`/fyllut/testmellomlagring?sub=digital&innsendingsId=${validInnsendingsId}&lang=nb-NO`, [
-        '@getMellomlagringValid',
-      ]);
+      cy.visitRouteAndWait(
+        `/fyllut/mellomlagring2mellomlagring?sub=digital&innsendingsId=${validInnsendingsId}&lang=nb-NO`,
+        ['@getMellomlagringValid'],
+      );
 
       cy.url().should('include', `innsendingsId=${validInnsendingsId}`);
       cy.findByRole('heading', { name: TEXTS.statiske.introPage.title }).shouldBeVisible();
@@ -219,9 +220,10 @@ describe('Mellomlagring v2', () => {
     it('redirects to form not found page when not found', () => {
       cy.mocksUseRouteVariant('get-soknad:not-found');
 
-      cy.visitRouteAndWait(`/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=${validInnsendingsId}`, [
-        '@getMellomlagringValid',
-      ]);
+      cy.visitRouteAndWait(
+        `/fyllut/mellomlagring2mellomlagring/oppsummering?sub=digital&innsendingsId=${validInnsendingsId}`,
+        ['@getMellomlagringValid'],
+      );
 
       cy.url().should('not.include', validInnsendingsId);
       cy.url().should('not.include', 'sub=digital');
@@ -232,7 +234,7 @@ describe('Mellomlagring v2', () => {
     it('shows an error when deleting mellomlagring fails', () => {
       cy.mocksUseRouteVariant('delete-soknad:failure');
       cy.visitRouteAndWait(
-        `/fyllut/testmellomlagring/gave?sub=digital&innsendingsId=${validInnsendingsId}&lang=nb-NO`,
+        `/fyllut/mellomlagring2mellomlagring/gave?sub=digital&innsendingsId=${validInnsendingsId}&lang=nb-NO`,
         ['@getMellomlagringValid'],
       );
 
@@ -245,7 +247,7 @@ describe('Mellomlagring v2', () => {
     it('shows an error when saving mellomlagring before cancelling fails', () => {
       cy.mocksUseRouteVariant('put-soknad:failure');
       cy.visitRouteAndWait(
-        `/fyllut/testmellomlagring/gave?sub=digital&innsendingsId=${updateErrorInnsendingsId}&lang=nb-NO`,
+        `/fyllut/mellomlagring2mellomlagring/gave?sub=digital&innsendingsId=${updateErrorInnsendingsId}&lang=nb-NO`,
         ['@getMellomlagringForInnsendingWithUpdateError'],
       );
 
@@ -307,7 +309,7 @@ describe('Mellomlagring v2', () => {
     describe('When starting on the summary page', () => {
       it('redirects to start page if url does not contain "innsendingsId"', () => {
         cy.skipIfNoIncludeDistTests();
-        cy.visitRouteAndWait('/fyllut/testmellomlagring/oppsummering?sub=digital&lang=nb-NO');
+        cy.visitRouteAndWait('/fyllut/mellomlagring2mellomlagring/oppsummering?sub=digital&lang=nb-NO');
         cy.findByRole('heading', { name: TEXTS.statiske.introPage.title }).shouldBeVisible();
       });
 
@@ -323,9 +325,10 @@ describe('Mellomlagring v2', () => {
         });
 
         it('retrieves mellomlagring and redirects after submitting', () => {
-          cy.visitRouteAndWait(`/fyllut/testmellomlagring?sub=digital&innsendingsId=${validInnsendingsId}&lang=nb-NO`, [
-            '@getMellomlagringValid',
-          ]);
+          cy.visitRouteAndWait(
+            `/fyllut/mellomlagring2mellomlagring?sub=digital&innsendingsId=${validInnsendingsId}&lang=nb-NO`,
+            ['@getMellomlagringValid'],
+          );
 
           openSummaryInStepper();
           cy.findByText('Ønsker du å få gaven innpakket').should('exist');
@@ -337,7 +340,7 @@ describe('Mellomlagring v2', () => {
         it('retrieves mellomlagring and lets you navigate to first panel with error', () => {
           failOnSubmitApplicationAttempt();
           cy.visitRouteAndWait(
-            `/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=${validInnsendingsId}&lang=nb-NO`,
+            `/fyllut/mellomlagring2mellomlagring/oppsummering?sub=digital&innsendingsId=${validInnsendingsId}&lang=nb-NO`,
             ['@getMellomlagringValid'],
           );
 
@@ -363,7 +366,7 @@ describe('Mellomlagring v2', () => {
         describe('retrieves mellomlagring containing vedleggsliste', () => {
           it('shows attachment page when empty', () => {
             cy.visitRouteAndWait(
-              `/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=${validInnsendingsId}&lang=nb-NO`,
+              `/fyllut/mellomlagring2mellomlagring/oppsummering?sub=digital&innsendingsId=${validInnsendingsId}&lang=nb-NO`,
               ['@getMellomlagringValid'],
             );
             cy.clickShowAllSteps();
@@ -373,7 +376,7 @@ describe('Mellomlagring v2', () => {
           it('hides attachment page when not empty', () => {
             cy.mocksUseRouteVariant('get-soknad:success-1-sendinn-upload');
             cy.visitRouteAndWait(
-              `/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=${validInnsendingsId}&lang=nb-NO`,
+              `/fyllut/mellomlagring2mellomlagring/oppsummering?sub=digital&innsendingsId=${validInnsendingsId}&lang=nb-NO`,
               ['@getMellomlagringValid'],
             );
             cy.clickShowAllSteps();
@@ -383,7 +386,7 @@ describe('Mellomlagring v2', () => {
 
         it('lets you edit and update submission data', () => {
           cy.visitRouteAndWait(
-            `/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=${validInnsendingsId}&lang=nb-NO`,
+            `/fyllut/mellomlagring2mellomlagring/oppsummering?sub=digital&innsendingsId=${validInnsendingsId}&lang=nb-NO`,
             ['@getMellomlagringValid'],
           );
 
@@ -429,7 +432,7 @@ describe('Mellomlagring v2', () => {
         it('shows an error when deleting mellomlagring from summary fails', () => {
           cy.mocksUseRouteVariant('delete-soknad:failure');
           cy.visitRouteAndWait(
-            `/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=${validInnsendingsId}&lang=nb-NO`,
+            `/fyllut/mellomlagring2mellomlagring/oppsummering?sub=digital&innsendingsId=${validInnsendingsId}&lang=nb-NO`,
             ['@getMellomlagringValid'],
           );
 
@@ -441,7 +444,7 @@ describe('Mellomlagring v2', () => {
         it('shows an error when saving mellomlagring from summary fails', () => {
           cy.mocksUseRouteVariant('put-soknad:failure');
           cy.visitRouteAndWait(
-            `/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=${updateErrorInnsendingsId}&lang=nb-NO`,
+            `/fyllut/mellomlagring2mellomlagring/oppsummering?sub=digital&innsendingsId=${updateErrorInnsendingsId}&lang=nb-NO`,
             ['@getMellomlagringForInnsendingWithUpdateError'],
           );
 
@@ -458,7 +461,7 @@ describe('Mellomlagring v2', () => {
           }).as('getMellomlagringDelayed');
 
           cy.visitRouteAndWait(
-            `/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=${validInnsendingsId}&lang=nb-NO`,
+            `/fyllut/mellomlagring2mellomlagring/oppsummering?sub=digital&innsendingsId=${validInnsendingsId}&lang=nb-NO`,
           );
 
           cy.findAllByTestId('skeleton').should('have.length.greaterThan', 0);
@@ -489,7 +492,7 @@ describe('Mellomlagring v2', () => {
 
         it('removes the unused values from submission before submitting', () => {
           cy.visitRouteAndWait(
-            `/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=${validInnsendingsId}&lang=nb-NO`,
+            `/fyllut/mellomlagring2mellomlagring/oppsummering?sub=digital&innsendingsId=${validInnsendingsId}&lang=nb-NO`,
             ['@getMellomlagringValid'],
           );
 
@@ -505,7 +508,7 @@ describe('Mellomlagring v2', () => {
           cy.mocksUseRouteVariant('get-form-deprecated:success-v2');
           failOnSubmitApplicationAttempt();
           cy.visitRouteAndWait(
-            `/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=${validInnsendingsId}&lang=nb-NO`,
+            `/fyllut/mellomlagring2mellomlagring/oppsummering?sub=digital&innsendingsId=${validInnsendingsId}&lang=nb-NO`,
             ['@getMellomlagringValid'],
           );
 
@@ -525,7 +528,7 @@ describe('Mellomlagring v2', () => {
             cy.mocksUseRouteVariant('get-soknad:form-select-partial-v1');
             failOnSubmitApplicationAttempt();
             cy.visitRouteAndWait(
-              `/fyllut/testselect/oppsummering?sub=digital&innsendingsId=${selectMellomlagringId}&lang=nb-NO`,
+              `/fyllut/mellomlagring2select/oppsummering?sub=digital&innsendingsId=${selectMellomlagringId}&lang=nb-NO`,
               ['@getMellomlagring'],
             );
 
@@ -547,7 +550,7 @@ describe('Mellomlagring v2', () => {
             cy.mocksUseRouteVariant('get-soknad:form-select-invalid-instrument-v1');
             failOnSubmitApplicationAttempt();
             cy.visitRouteAndWait(
-              `/fyllut/testselect/oppsummering?sub=digital&innsendingsId=${selectMellomlagringId}&lang=nb-NO`,
+              `/fyllut/mellomlagring2select/oppsummering?sub=digital&innsendingsId=${selectMellomlagringId}&lang=nb-NO`,
               ['@getMellomlagring'],
             );
 
@@ -582,7 +585,7 @@ describe('Mellomlagring v2', () => {
             });
 
             cy.visitRouteAndWait(
-              `/fyllut/testselect/oppsummering?sub=digital&innsendingsId=${selectMellomlagringId}&lang=nb-NO`,
+              `/fyllut/mellomlagring2select/oppsummering?sub=digital&innsendingsId=${selectMellomlagringId}&lang=nb-NO`,
               ['@getMellomlagring'],
             );
 
@@ -617,7 +620,7 @@ describe('Mellomlagring v2', () => {
             });
 
             cy.visitRouteAndWait(
-              `/fyllut/testselect/oppsummering?sub=digital&innsendingsId=${selectMellomlagringId}&lang=nb-NO`,
+              `/fyllut/mellomlagring2select/oppsummering?sub=digital&innsendingsId=${selectMellomlagringId}&lang=nb-NO`,
               ['@getMellomlagring'],
             );
 

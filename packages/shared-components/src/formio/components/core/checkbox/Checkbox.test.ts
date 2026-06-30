@@ -1,7 +1,9 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import form from '../../../../../../../mocks/mocks/data/formio-api/custom-components-checkbox.json';
+import { checkboxDeprecatedForm } from '../../../../../../../mocks/mocks/data/forms-api/checkbox/checkboxDeprecatedForm';
 import { renderNavForm, setupNavFormio } from '../../../../../test/navform-render';
+
+const form = checkboxDeprecatedForm();
 
 describe('NavCheckbox', () => {
   beforeAll(setupNavFormio);

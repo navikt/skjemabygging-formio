@@ -17,7 +17,7 @@ describe('Conditional rendering', () => {
   describe('When form has panels that are hidden unless a condition is true', () => {
     beforeEach(() => {
       cy.defaultIntercepts();
-      cy.visit('/fyllut/conditionalxmas?sub=paper');
+      cy.visit('/fyllut/conditionalrenderingchristmas?sub=paper');
       cy.defaultWaits();
       cy.clickStart(); // <-- navigate from information page to the form
     });
@@ -120,7 +120,9 @@ describe('Conditional rendering', () => {
     });
 
     it('renders conditional fields when navigating from summary page', () => {
-      cy.visit('/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=01234567-abcd-4ebd-90d4-34448ebaaaa2');
+      cy.visit(
+        '/fyllut/conditionalrenderingmellomlagring/oppsummering?sub=digital&innsendingsId=01234567-abcd-4ebd-90d4-34448ebaaaa2',
+      );
       cy.defaultWaits();
       cy.wait('@getMellomlagring');
       cy.clickEditAnswer('Valgfrie opplysninger');
@@ -131,7 +133,7 @@ describe('Conditional rendering', () => {
     });
 
     it('removes values of conditional fields when they are hidden', () => {
-      cy.visit('/fyllut/testmellomlagring?sub=paper');
+      cy.visit('/fyllut/conditionalrenderingmellomlagring?sub=paper');
       cy.defaultWaits();
       cy.clickStart();
       cy.findByRole('textbox', { name: 'Hva drakk du til frokost (valgfritt)' }).should('be.visible');
@@ -149,7 +151,7 @@ describe('Conditional rendering', () => {
     });
 
     it('does not trigger validation on conditionally hidden components', () => {
-      cy.visit('/fyllut/testmellomlagring?sub=paper');
+      cy.visit('/fyllut/conditionalrenderingmellomlagring?sub=paper');
       cy.defaultWaits();
       cy.clickStart();
       cy.findByRole('heading', { name: 'Valgfrie opplysninger' }).should('exist');

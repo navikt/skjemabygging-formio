@@ -9,7 +9,7 @@ describe('Intro page', () => {
 
   describe('Submission type "paper"', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/intropage?sub=paper');
+      cy.visit('/fyllut/intropagepaper?sub=paper');
       cy.defaultWaits();
     });
 
@@ -39,7 +39,7 @@ describe('Intro page', () => {
 
   describe('Submission type "digitalnologin"', () => {
     it('should display the deadline by which the user must complete the application', () => {
-      cy.visit('/fyllut/nologinform/legitimasjon?sub=digitalnologin');
+      cy.visit('/fyllut/intropagedigitalnologindeadline/legitimasjon?sub=digitalnologin');
       cy.defaultWaits();
       cy.findByRole('heading', { name: 'Legitimasjon' }).should('exist');
 

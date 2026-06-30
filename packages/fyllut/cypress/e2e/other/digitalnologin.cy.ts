@@ -20,7 +20,7 @@ describe('Digital no login', () => {
   describe('Form with attachments', () => {
     beforeEach(() => {
       cy.defaultIntercepts();
-      cy.visit('/fyllut/digitalnologinwithattachmentpanel');
+      cy.visit('/fyllut/digitalnologinattachmentpanel');
       cy.defaultWaits();
       cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigitalNoLogin }).click();
       cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
@@ -90,7 +90,7 @@ describe('Digital no login', () => {
   describe('Form without attachments', () => {
     beforeEach(() => {
       cy.defaultIntercepts();
-      cy.visit('/fyllut/stdigitalnologin');
+      cy.visit('/fyllut/digitalnologindigitalnologin');
       cy.defaultWaits();
       cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigitalNoLogin }).click();
     });
@@ -193,7 +193,7 @@ describe('Digital no login', () => {
         url: '/fyllut/api/captcha',
       }).as('captchaRequest');
 
-      cy.visit('/fyllut/stdigitalnologin');
+      cy.visit('/fyllut/digitalnologindigitalnologin');
       cy.defaultWaits();
       cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigitalNoLogin }).click();
     });

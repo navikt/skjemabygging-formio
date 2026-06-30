@@ -1,13 +1,12 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 import { sanitizeAndLowerCase } from '../../shared/utils';
 
-interface PanelType
-  extends Omit<
-    BaseComponentType,
-    'description' | 'additionalDescriptionText' | 'additionalDescriptionLabel' | 'validate'
-  > {
+interface PanelType extends Omit<
+  BaseComponentType,
+  'description' | 'additionalDescriptionText' | 'additionalDescriptionLabel' | 'validate'
+> {
   title: string;
-  components: any[];
+  components?: any[];
   isAttachmentPanel?: boolean;
 }
 

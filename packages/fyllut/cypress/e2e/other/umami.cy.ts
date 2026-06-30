@@ -14,7 +14,7 @@ describe('Umami', () => {
 
   describe('Submission method "digitalnologin"', () => {
     const fillNologinForm = () => {
-      cy.visit('/fyllut/nologinform/legitimasjon?sub=digitalnologin');
+      cy.visit('/fyllut/umaminologin/legitimasjon?sub=digitalnologin');
       cy.defaultWaits();
       cy.findByRole('heading', { name: 'Legitimasjon' }).should('exist');
 
@@ -99,7 +99,7 @@ describe('Umami', () => {
     });
 
     it('logs umami events when session expires and user restarts', () => {
-      cy.visit('/fyllut/nologinform/legitimasjon?sub=digitalnologin');
+      cy.visit('/fyllut/umaminologin/legitimasjon?sub=digitalnologin');
       cy.defaultWaits();
       cy.findByRole('heading', { name: 'Legitimasjon' }).should('exist');
 
@@ -135,7 +135,7 @@ describe('Umami', () => {
 
   describe('Submission method "digital"', () => {
     it('logs umami events', () => {
-      cy.visit('/fyllut/nologinform?sub=digital');
+      cy.visit('/fyllut/umaminologin?sub=digital');
       cy.defaultWaits();
 
       cy.clickIntroPageConfirmation();
@@ -175,7 +175,7 @@ describe('Umami', () => {
 
   describe('Submission method "paper"', () => {
     it('logs umami events', () => {
-      cy.visit('/fyllut/nologinform?sub=paper');
+      cy.visit('/fyllut/umaminologin?sub=paper');
       cy.defaultWaits();
 
       cy.clickIntroPageConfirmation();

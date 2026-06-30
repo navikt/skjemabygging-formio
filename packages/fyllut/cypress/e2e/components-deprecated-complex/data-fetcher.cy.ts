@@ -290,7 +290,7 @@ describe('Data fetcher', () => {
         expect(submission.attachments[0].attachmentId).to.eq('egba4jd');
       });
 
-      cy.visit('/fyllut/checkcondition?sub=digital');
+      cy.visit('/fyllut/datafetchercheckcondition?sub=digital');
       cy.clickStart();
 
       cy.clickShowAllSteps();
@@ -337,7 +337,7 @@ describe('Data fetcher', () => {
         expect(submission.attachments[0].attachmentId).to.eq('e9nlm84');
       });
 
-      cy.visit('/fyllut/checkcondition?sub=digital');
+      cy.visit('/fyllut/datafetchercheckcondition?sub=digital');
       cy.clickStart();
 
       cy.clickShowAllSteps();

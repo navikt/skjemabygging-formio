@@ -1,7 +1,7 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
 interface DataGridType extends BaseComponentType {
-  components: any[];
+  components?: any[];
   addAnother?: string;
   removeAnother?: string;
   rowTitle?: string;

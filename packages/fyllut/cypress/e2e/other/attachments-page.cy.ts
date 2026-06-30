@@ -3,7 +3,7 @@ import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 describe('Attachments page (paper submission)', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
-    cy.visit('/fyllut/nologinform?sub=paper');
+    cy.visit('/fyllut/attachmentspagepaper?sub=paper');
     cy.defaultWaits();
 
     cy.clickIntroPageConfirmation();
@@ -51,7 +51,7 @@ describe('Attachments page', () => {
 
   beforeEach(() => {
     cy.defaultIntercepts();
-    cy.visit('/fyllut/digitalnologinwithattachmentpanel');
+    cy.visit('/fyllut/attachmentspagedigitalnologinattachmentpanel');
     cy.defaultWaits();
     cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigitalNoLogin }).click();
     cy.findByRole('heading', { name: TEXTS.statiske.uploadId.title }).should('exist');

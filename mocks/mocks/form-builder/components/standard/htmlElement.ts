@@ -1,7 +1,7 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
 interface HtmlElementType extends Omit<BaseComponentType, 'label'> {
-  content: string; // HTML content of the element
+  content?: string; // HTML content of the element
   textDisplay?: 'formPdf' | 'form' | 'pdf';
 }
 

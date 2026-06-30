@@ -1,8 +1,21 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
+interface AttachmentAdditionalDocumentation {
+  enabled?: boolean;
+  label?: string;
+  description?: string;
+}
+
+interface AttachmentValueConfig {
+  enabled?: boolean;
+  showDeadline?: boolean;
+  additionalDocumentation?: AttachmentAdditionalDocumentation;
+}
+
 interface AttachmentType extends BaseComponentType {
   attachmentType?: 'default' | 'other';
-  attachmentValues?: Partial<typeof defaultAttachmentValues> | Partial<typeof defaultOtherAttachmentValues>;
+  attachmentValues?: Partial<Record<keyof typeof defaultAttachmentValues, AttachmentValueConfig>> &
+    Partial<Record<keyof typeof defaultOtherAttachmentValues, AttachmentValueConfig>>;
   properties?: Record<string, any>;
 }
 
