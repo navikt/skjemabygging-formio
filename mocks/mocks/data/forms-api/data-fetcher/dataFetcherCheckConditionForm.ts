@@ -135,6 +135,7 @@ const dataFetcherCheckConditionForm = () =>
         key: 'world',
         title: 'World',
         customConditional: "show = _.get(data, 'hemmeligKodeord') === 'hello'",
+        components: [],
       }),
       panel({
         isAttachmentPanel: true,

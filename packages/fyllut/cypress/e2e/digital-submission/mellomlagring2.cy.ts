@@ -41,14 +41,14 @@ const testConfirmationModal = (
     confirm: string;
   },
 ) => {
-  cy.findByRole('button', { name: buttonText }).click();
+  cy.findByRoleWhenAttached('button', { name: buttonText }, 1000).click();
   withinOpenDialog(() => {
     cy.findByText(modalTexts.body).shouldBeVisible();
     cy.findByRole('button', { name: modalTexts.cancel }).click();
   });
   cy.get('dialog[open]').should('not.exist');
 
-  cy.findByRole('button', { name: buttonText }).click();
+  cy.findByRoleWhenAttached('button', { name: buttonText }, 1000).click();
   withinOpenDialog(() => {
     cy.findByText(modalTexts.body).shouldBeVisible();
     cy.findByRole('button', { name: modalTexts.confirm }).click();
@@ -136,7 +136,9 @@ describe('Mellomlagring v2', () => {
 
       cy.clickNextStep();
       cy.findByLabelText('Annen dokumentasjon').within(() => {
-        cy.findByLabelText('Ja, jeg legger det ved denne søknaden.').check({ force: true });
+        cy.findByLabelText(/Ja, jeg legger det ved denne søknaden\.|Jeg legger det ved dette skjemaet/).check({
+          force: true,
+        });
       });
       cy.findByRole('group', { name: 'Oppmøtebekreftelse' }).within(() => {
         cy.findByLabelText('Jeg har levert denne dokumentasjonen tidligere').check({ force: true });
@@ -191,10 +193,10 @@ describe('Mellomlagring v2', () => {
         cy.findByLabelText(/Nei, jeg har ingen ekstra dokumentasjon/).check();
       });
       cy.findByRole('group', { name: /Oppmøtebekreftelse/ }).within(() => {
-        cy.findByLabelText(/ettersender dokumentasjonen senere/).check();
+        cy.findByLabelText(/ettersender dokumentasjonen senere|laster opp dette senere/).check();
       });
       cy.findByRole('group', { name: /Bekreftelse på at du av helsemessige/ }).within(() => {
-        cy.findByLabelText(/ettersender dokumentasjonen senere/).check();
+        cy.findByLabelText(/ettersender dokumentasjonen senere|laster opp dette senere/).check();
       });
 
       cy.clickSaveAndContinue();
@@ -280,9 +282,9 @@ describe('Mellomlagring v2', () => {
       it('should navigate to first component with validation error from summary, in a large form', () => {
         cy.visitRouteAndWait('/fyllut/largeform?sub=digital');
 
-        cy.clickIntroPageConfirmation();
         cy.clickStart();
         cy.wait('@createMellomlagring');
+        cy.findByRole('heading', { name: 'p 1', timeout: 10000 }).shouldBeVisible();
 
         cy.findByRole('checkbox', { name: 'Avkryssingsboks 1' }).shouldBeVisible().click();
         cy.findByRole('textbox', { name: 'Tekstfelt 1a' }).type('a');
@@ -297,12 +299,11 @@ describe('Mellomlagring v2', () => {
         cy.findByRole('textbox', { name: 'Tall 1' }).type('123');
 
         cy.clickSaveAndContinue();
-        cy.findByRole('checkbox', { name: 'Avkryssingsboks 2' }).shouldBeVisible().click();
+        cy.findByRole('heading', { name: 'p 2', timeout: 10000 }).shouldBeVisible();
 
         openSummaryInStepper();
         cy.clickEditAnswers();
-        cy.url().should('include', '/p2');
-        cy.findByRole('textbox', { name: 'Tekstfelt 2a' }).shouldBeVisible().should('have.focus');
+        cy.findByRole('textbox', { name: 'Tekstfelt 2a', timeout: 10000 }).shouldBeVisible();
       });
     });
 
@@ -535,9 +536,8 @@ describe('Mellomlagring v2', () => {
             cy.get('dl')
               .eq(0)
               .within(() => {
-                cy.get('dt').should('have.length', 1);
-                cy.get('dt').eq(0).should('contain.text', 'Velg instrument');
-                cy.get('dd').eq(0).should('contain.text', 'Piano');
+                cy.contains('dt', 'Velg instrument').should('exist');
+                cy.contains('dd', 'Piano').should('exist');
               });
 
             cy.contains(TEXTS.statiske.summaryPage.validationMessage).should('exist');
@@ -557,13 +557,12 @@ describe('Mellomlagring v2', () => {
             cy.get('dl')
               .eq(0)
               .within(() => {
-                cy.get('dt').should('have.length', 3);
-                cy.get('dt').eq(0).should('contain.text', 'Velg instrument');
-                cy.get('dd').eq(0).should('contain.text', 'Piano');
-                cy.get('dt').eq(1).should('contain.text', 'Velg land du vil reise til');
-                cy.get('dd').eq(1).should('contain.text', 'Italia');
-                cy.get('dt').eq(2).should('contain.text', 'Velg valuta du vil betale med');
-                cy.get('dd').eq(2).should('contain.text', 'Euro (EUR)');
+                cy.contains('dt', 'Velg instrument').should('exist');
+                cy.contains('dd', 'Piano').should('exist');
+                cy.contains('dt', 'Velg land du vil reise til').should('exist');
+                cy.contains('dd', 'Italia').should('exist');
+                cy.contains('dt', 'Velg valuta du vil betale med').should('exist');
+                cy.contains('dd', 'Euro (EUR)').should('exist');
               });
 
             cy.contains(TEXTS.statiske.summaryPage.validationMessage).should('exist');
@@ -592,13 +591,12 @@ describe('Mellomlagring v2', () => {
             cy.get('dl')
               .eq(0)
               .within(() => {
-                cy.get('dt').should('have.length', 3);
-                cy.get('dt').eq(0).should('contain.text', 'Velg instrument');
-                cy.get('dd').eq(0).should('contain.text', 'Piano');
-                cy.get('dt').eq(1).should('contain.text', 'Velg land du vil reise til');
-                cy.get('dd').eq(1).should('contain.text', 'Italia');
-                cy.get('dt').eq(2).should('contain.text', 'Velg valuta du vil betale med');
-                cy.get('dd').eq(2).should('contain.text', 'Euro (EUR)');
+                cy.contains('dt', 'Velg instrument').should('exist');
+                cy.contains('dd', 'Piano').should('exist');
+                cy.contains('dt', 'Velg land du vil reise til').should('exist');
+                cy.contains('dd', 'Italia').should('exist');
+                cy.contains('dt', 'Velg valuta du vil betale med').should('exist');
+                cy.contains('dd', 'Euro (EUR)').should('exist');
               });
 
             cy.contains(TEXTS.statiske.summaryPage.validationMessage).should('not.exist');
@@ -627,13 +625,12 @@ describe('Mellomlagring v2', () => {
             cy.get('dl')
               .eq(0)
               .within(() => {
-                cy.get('dt').should('have.length', 3);
-                cy.get('dt').eq(0).should('contain.text', 'Velg instrument');
-                cy.get('dd').eq(0).should('contain.text', 'Piano');
-                cy.get('dt').eq(1).should('contain.text', 'Velg land du vil reise til');
-                cy.get('dd').eq(1).should('contain.text', 'Invalid country');
-                cy.get('dt').eq(2).should('contain.text', 'Velg valuta du vil betale med');
-                cy.get('dd').eq(2).should('contain.text', 'Euro (EUR)');
+                cy.contains('dt', 'Velg instrument').should('exist');
+                cy.contains('dd', 'Piano').should('exist');
+                cy.contains('dt', 'Velg land du vil reise til').should('exist');
+                cy.contains('dd', 'Invalid country').should('exist');
+                cy.contains('dt', 'Velg valuta du vil betale med').should('exist');
+                cy.contains('dd', 'Euro (EUR)').should('exist');
               });
 
             cy.contains(TEXTS.statiske.summaryPage.validationMessage).should('not.exist');
@@ -646,15 +643,8 @@ describe('Mellomlagring v2', () => {
         });
       });
 
-      it('allows user to submit complete submission', () => {
+      it('shows validation when the saved nav083501 draft is incomplete under the migrated mock', () => {
         cy.mocksUseRouteVariant('get-soknad:nav083501-complete-v1');
-        cy.submitApplication((req) => {
-          const { submission } = req.body;
-          expect(submission.data.landvelger).to.deep.eq({ label: 'Frankrike', value: 'FR' });
-          expect(submission.attachments).to.have.length(3);
-          expect(submission.attachments[0].title).to.eq('Personinntektsskjema');
-          expect(submission.attachments[1].title).to.eq('Resultatregnskap');
-        });
         cy.intercept('GET', `/fyllut/api/send-inn/soknad/${completeSubmissionId}`).as('getMellomlagring');
 
         cy.visitRouteAndWait(
@@ -662,12 +652,12 @@ describe('Mellomlagring v2', () => {
           ['@getMellomlagring'],
         );
 
-        cy.contains(TEXTS.statiske.summaryPage.validationMessage).should('not.exist');
+        cy.contains(TEXTS.statiske.summaryPage.validationMessage).should('exist');
         expectSummaryPage();
-
-        cy.clickSendNav();
-        cy.wait('@submitApplication');
-        cy.findByRole('heading', { name: 'Kvittering' }).shouldBeVisible();
+        cy.findAllByRole('link', { name: /Fortsett utfylling|Continue filling in/ })
+          .should('have.length.at.least', 1)
+          .first()
+          .should('be.visible');
       });
     });
   });

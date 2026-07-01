@@ -55,11 +55,13 @@ const textfieldFormattingForm = () =>
       panel({
         key: 'dineOpplysninger',
         title: 'Dine opplysninger',
+        components: [],
       }),
       panel({
         isAttachmentPanel: true,
         key: 'vedlegg',
         title: 'Vedlegg',
+        components: [],
       }),
     ],
     properties: formProperties({ formNumber: 'Kort skjema', submissionTypes: ['PAPER', 'DIGITAL'] }),

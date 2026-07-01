@@ -329,6 +329,7 @@ const a11yAxeForm = () =>
         components: [
           htmlElement({
             key: 'html',
+            content: 'HTML element',
           }),
           alert({
             content: 'Info',
@@ -386,6 +387,7 @@ const a11yAxeForm = () =>
               dataGrid({
                 key: 'datagrid',
                 label: 'Data Grid',
+                components: [],
               }),
             ],
           }),

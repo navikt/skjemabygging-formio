@@ -3,6 +3,7 @@ export interface ValidateComponentType {
   maxLength?: number;
   minLength?: number;
   digitsOnly?: boolean;
+  onlyAvailableItems?: boolean;
   custom?: string;
   min?: number | string;
   max?: number | string;

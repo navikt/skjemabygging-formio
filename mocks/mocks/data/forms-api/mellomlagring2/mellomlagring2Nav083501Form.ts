@@ -17,6 +17,7 @@ import {
   textField,
 } from '../../../form-builder/components';
 import form from '../../../form-builder/form/form';
+import { formIntroPageWithoutSelfDeclaration } from '../../../form-builder/form/formIntroPage';
 import formProperties from '../../../form-builder/form/formProperties';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
 
@@ -615,6 +616,7 @@ Du finner også papirskjema for å endre postadresse på samme siden hos Skattee
       }),
     ],
     properties: formProperties({ formNumber: 'nav083501', submissionTypes: ['PAPER', 'DIGITAL'] }),
+    introPage: formIntroPageWithoutSelfDeclaration(),
   });
 
 const mellomlagring2Nav083501Translations = () => getMockTranslationsFromForm(mellomlagring2Nav083501Form());

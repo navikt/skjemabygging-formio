@@ -12,17 +12,26 @@ interface AttachmentValueConfig {
   additionalDocumentation?: AttachmentAdditionalDocumentation;
 }
 
+interface AttachmentValueOption {
+  value: string;
+  label: string;
+  shortcut?: string;
+}
+
 interface AttachmentType extends BaseComponentType {
   attachmentType?: 'default' | 'other';
-  attachmentValues?: Partial<Record<keyof typeof defaultAttachmentValues, AttachmentValueConfig>> &
-    Partial<Record<keyof typeof defaultOtherAttachmentValues, AttachmentValueConfig>>;
+  attachmentValues?:
+    | AttachmentValueOption[]
+    | (Partial<Record<keyof typeof defaultAttachmentValues, AttachmentValueConfig>> &
+        Partial<Record<keyof typeof defaultOtherAttachmentValues, AttachmentValueConfig>>);
   properties?: Record<string, any>;
 }
 
 const attachment = (props: AttachmentType) => {
   const { label, description, attachmentType = 'default', properties, attachmentValues = {} } = props ?? {};
-  const mergedAttachmentValues =
-    attachmentType === 'other'
+  const mergedAttachmentValues = Array.isArray(attachmentValues)
+    ? attachmentValues
+    : attachmentType === 'other'
       ? { ...defaultOtherAttachmentValues, ...(attachmentValues as Partial<typeof defaultOtherAttachmentValues>) }
       : { ...defaultAttachmentValues, ...(attachmentValues as Partial<typeof defaultAttachmentValues>) };
 
