@@ -11,6 +11,15 @@
       ]
     },
     {
+      "label": "Veiledning",
+      "verdiliste": [
+        {
+          "label": "Her kan du søke om støtte til utgiftene.",
+          "visningsVariant": "HTML"
+        }
+      ]
+    },
+    {
       "label": "Dine opplysninger",
       "verdiliste": [
         {

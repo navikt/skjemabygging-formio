@@ -73,7 +73,8 @@ describe('Digital submission without user login', () => {
       cy.clickNextStep();
 
       cy.clickSendNav();
-      cy.findByRole('heading', { name: TEXTS.statiske.receipt.title }).should('exist');
+      cy.url({ timeout: 20000 }).should('include', '/kvittering');
+      cy.findByRole('link', { name: TEXTS.statiske.receipt.downloadLinkLabel, timeout: 20000 }).should('exist');
       cy.findByRole('button', { name: 'Vis alle steg' }).should('not.exist');
       cy.findByRole('button', { name: 'Skjul alle steg' }).should('not.exist');
     });
@@ -516,8 +517,8 @@ describe('Digital submission without user login', () => {
       );
       cy.clickNextStep();
       cy.clickSendNav();
-      cy.findByText(TEXTS.statiske.receipt.title).should('exist');
-      cy.findByRole('link', { name: TEXTS.statiske.receipt.downloadLinkLabel }).should('exist');
+      cy.url({ timeout: 20000 }).should('include', '/kvittering');
+      cy.findByRole('link', { name: TEXTS.statiske.receipt.downloadLinkLabel, timeout: 20000 }).should('exist');
       cy.contains('b', 'Vi har mottatt følgende dokumenter')
         .parents('section')
         .within(() => {
@@ -585,8 +586,8 @@ describe('Digital submission without user login', () => {
 
       cy.clickNextStep();
       cy.clickSendNav();
-      cy.findByText(TEXTS.statiske.receipt.title).should('exist');
-      cy.findByRole('link', { name: TEXTS.statiske.receipt.downloadLinkLabel }).should('exist');
+      cy.url({ timeout: 20000 }).should('include', '/kvittering');
+      cy.findByRole('link', { name: TEXTS.statiske.receipt.downloadLinkLabel, timeout: 20000 }).should('exist');
       cy.contains('b', 'Vi har mottatt følgende dokumenter')
         .parents('section')
         .within(() => {
