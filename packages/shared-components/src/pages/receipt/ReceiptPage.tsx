@@ -178,9 +178,8 @@ export function ReceiptPage() {
               <InnerHtml content={translate(TEXTS.statiske.receipt.deadlineWarningBody)} />
             </Alert>
           )}
-
-          {submissionMethod === 'digital' && (
-            <div>
+          <div>
+            {submissionMethod === 'digital' && (
               <Button
                 role="link"
                 as={ReactRouterLink}
@@ -189,8 +188,11 @@ export function ReceiptPage() {
               >
                 {stringUtils.capitalize(translate(TEXTS.statiske.error.goToMyPage))}
               </Button>
-            </div>
-          )}
+            )}
+            <Button type="button" onClick={() => window.print()} variant="tertiary">
+              {translate(TEXTS.statiske.receipt.printFriendlyVersion)}
+            </Button>
+          </div>
         </>
       ) : (
         <div>{translate(TEXTS.statiske.error.alreadySubmitted)}</div>
