@@ -1,6 +1,7 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
 const ACTIVITIES_LABEL = TEXTS.statiske.activities.label;
+const ACTIVITIES_LABEL_EN = 'What activity are you applying for support for?';
 const DEFAULT_ACTIVITY = TEXTS.statiske.activities.defaultActivity;
 const ACTIVITY_TEXT = 'Arbeidstrening: 01. desember 2023 - 06. april 2024';
 
@@ -77,7 +78,7 @@ describe('Activities', () => {
     });
 
     it('should translate label', () => {
-      cy.findByRole('group', { name: `${ACTIVITIES_LABEL} (en)` }).should('exist');
+      cy.findByRole('group', { name: ACTIVITIES_LABEL_EN }).should('exist');
     });
 
     it('should translate description', () => {
