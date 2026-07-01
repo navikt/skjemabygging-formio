@@ -21,6 +21,11 @@
       "language": "nb-NO",
       "data": {
         "data": {
+          "dineOpplysninger": {
+            "identitet": {
+              "identitetsnummer": "08842748500"
+            }
+          },
           "container": {
             "maalgruppe": {
               "calculated": {

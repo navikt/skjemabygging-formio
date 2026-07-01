@@ -1,4 +1,13 @@
-import { activites, alert, container, identity, maalgruppe, panel, radio } from '../../../form-builder/components';
+import {
+  activites,
+  alert,
+  attachment,
+  container,
+  identity,
+  maalgruppe,
+  panel,
+  yourInformation,
+} from '../../../form-builder/components';
 import form from '../../../form-builder/form/form';
 import formProperties from '../../../form-builder/form/formProperties';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
@@ -13,20 +22,24 @@ const activitiesDeprecatedForm = () =>
         key: 'aktiviteter',
         title: 'Aktiviteter',
         components: [
-          container({
+          yourInformation({
             key: 'dineOpplysninger',
-            label: 'Dine opplysninger',
+            hidden: true,
+            clearOnHide: false,
             components: [
               identity({
                 key: 'identitet',
                 label: 'Identitet',
                 prefill: true,
+                hidden: true,
+                clearOnHide: false,
+                validate: { required: false },
               }),
             ],
           }),
           container({
-            hideLabel: true,
             key: 'container',
+            hideLabel: true,
             label: 'Container',
             components: [
               activites({
@@ -53,15 +66,26 @@ const activitiesDeprecatedForm = () =>
         key: 'vedlegg',
         title: 'Vedlegg',
         components: [
-          radio({
+          attachment({
+            attachmentType: 'other',
+            attachmentValues: {
+              nei: {
+                enabled: true,
+              },
+              leggerVedNaa: {
+                enabled: true,
+              },
+              ettersender: {
+                enabled: true,
+                showDeadline: false,
+                additionalDocumentation: {
+                  enabled: false,
+                },
+              },
+            },
             description: 'Har du noen annen dokumentasjon du ønsker å legge ved?',
             key: 'annenDokumentasjon',
             label: 'Annen dokumentasjon',
-            values: [
-              { label: 'Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved.', value: 'nei' },
-              { label: 'Ja, jeg legger det ved denne søknaden.', value: 'leggerVedNaa' },
-              { label: 'Jeg ettersender dokumentasjonen senere.', value: 'ettersender' },
-            ],
           }),
         ],
       }),

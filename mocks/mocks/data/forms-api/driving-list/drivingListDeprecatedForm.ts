@@ -1,4 +1,4 @@
-import { panel } from '../../../form-builder/components';
+import { drivingList, panel } from '../../../form-builder/components';
 import form from '../../../form-builder/form/form';
 import formProperties from '../../../form-builder/form/formProperties';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
@@ -12,6 +12,7 @@ const drivingListDeprecatedForm = () =>
       panel({
         key: 'veiledning',
         title: 'Veiledning',
+        components: [drivingList({ key: 'drivinglist' })],
       }),
     ],
     properties: formProperties({ formNumber: 'testdrivinglist', submissionTypes: ['PAPER', 'DIGITAL'] }),

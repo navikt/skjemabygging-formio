@@ -1,4 +1,13 @@
-import { alert, attachment, container, dataFetcher, htmlElement, panel } from '../../../form-builder/components';
+import {
+  alert,
+  attachment,
+  container,
+  dataFetcher,
+  htmlElement,
+  identity,
+  panel,
+  yourInformation,
+} from '../../../form-builder/components';
 import form from '../../../form-builder/form/form';
 import formProperties from '../../../form-builder/form/formProperties';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
@@ -13,6 +22,21 @@ const dataFetcherContainerDeprecatedForm = () =>
         key: 'veiledning',
         title: 'Veiledning',
         components: [
+          yourInformation({
+            key: 'dineOpplysninger',
+            hidden: true,
+            clearOnHide: false,
+            components: [
+              identity({
+                key: 'identitet',
+                label: 'Identitet',
+                prefill: true,
+                hidden: true,
+                clearOnHide: false,
+                validate: { required: false },
+              }),
+            ],
+          }),
           htmlElement({
             content: '<p>Dette er en søknad for testing</p>',
             key: 'veiledningstekst',

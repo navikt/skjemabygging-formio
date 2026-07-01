@@ -6,6 +6,11 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
 describe('Conditional rendering', () => {
+  const startFromIntroPage = () => {
+    cy.clickIntroPageConfirmation();
+    cy.clickStart();
+  };
+
   before(() => {
     cy.configMocksServer();
   });
@@ -19,7 +24,7 @@ describe('Conditional rendering', () => {
       cy.defaultIntercepts();
       cy.visit('/fyllut/conditionalrenderingchristmas?sub=paper');
       cy.defaultWaits();
-      cy.clickStart(); // <-- navigate from information page to the form
+      startFromIntroPage();
     });
 
     it('Renders the first panel of the form', () => {
@@ -61,9 +66,9 @@ describe('Conditional rendering', () => {
         });
         cy.findByRole('link', { name: 'Pinnekjøtt' }).should('exist');
         cy.clickNextStep();
-        cy.findByRole('checkbox', { name: 'Rotmos (valgfritt)' }).check({ force: true });
+        cy.findByRole('checkbox', { name: 'Rotmos' }).check({ force: true });
         cy.clickNextStep();
-        cy.findByRole('checkbox', { name: 'Sjokoladetrekk (valgfritt)' }).check({ force: true });
+        cy.findByRole('checkbox', { name: 'Sjokoladetrekk' }).check({ force: true });
         cy.clickNextStep();
       });
 
@@ -75,8 +80,8 @@ describe('Conditional rendering', () => {
       it("navigates back to the added panel when 'rediger' link is clicked", () => {
         cy.clickEditAnswer('Pinnekjøtt');
         cy.url().should('include', '/pinnekjott');
-        cy.findByRole('checkbox', { name: 'Rotmos (valgfritt)' }).should('exist');
-        cy.findByRole('checkbox', { name: 'Rotmos (valgfritt)' }).should('be.checked');
+        cy.findByRole('checkbox', { name: 'Rotmos' }).should('exist');
+        cy.findByRole('checkbox', { name: 'Rotmos' }).should('be.checked');
       });
 
       it('displays the submission for a different added panel when form is edited', () => {
@@ -89,7 +94,7 @@ describe('Conditional rendering', () => {
         cy.findByRole('link', { name: 'Lutefisk' }).should('exist');
         cy.clickNextStep();
         cy.url().should('include', '/lutefisk');
-        cy.findByRole('checkbox', { name: 'Erterstuing (valgfritt)' }).click({ force: true });
+        cy.findByRole('checkbox', { name: 'Erterstuing' }).click({ force: true });
         cy.clickNextStep();
         cy.url().should('include', '/marsipangris');
         cy.clickNextStep();
@@ -106,8 +111,8 @@ describe('Conditional rendering', () => {
         cy.clickEditAnswer('Lamb ribs');
         cy.url().should('include', '/pinnekjott');
         cy.url().should('include', 'lang=en');
-        cy.findByRole('checkbox', { name: 'Root stew (optional)' }).should('exist');
-        cy.findByRole('checkbox', { name: 'Root stew (optional)' }).should('be.checked');
+        cy.findByRole('checkbox', { name: 'Root stew' }).should('exist');
+        cy.findByRole('checkbox', { name: 'Root stew' }).should('be.checked');
       });
     });
   });
@@ -195,9 +200,9 @@ describe('Conditional rendering', () => {
     it('shows components with textDisplay=form and hides components with textDisplay=pdf', () => {
       cy.visit('/fyllut/hiddentest?sub=paper');
       cy.defaultWaits();
-      cy.clickStart();
+      startFromIntroPage();
 
-      cy.findByRole('checkbox', { name: 'Show components (valgfritt)' }).click();
+      cy.findByRole('checkbox', { name: 'Show components' }).click();
 
       cy.findByText('This text should only be visible in form').should('exist');
       cy.findByText('This alert should only be visible in form').should('exist');
