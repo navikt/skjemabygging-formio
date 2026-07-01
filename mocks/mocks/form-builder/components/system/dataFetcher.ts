@@ -1,7 +1,7 @@
 import baseComponent, { BaseComponentType } from '../../shared/baseComponent';
 
 interface DataFetcherType extends BaseComponentType {
-  dataFetcherSourceId: 'activities';
+  dataFetcherSourceId?: 'activities';
   showOther?: boolean;
 }
 

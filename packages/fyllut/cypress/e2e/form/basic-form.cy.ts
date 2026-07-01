@@ -25,42 +25,52 @@ describe('Basic form', () => {
 
     cy.findByRole('combobox', { name: 'Tittel' }).should('exist').click();
     cy.findByText('Fru').should('exist').click();
-    cy.findByRole('textbox', { name: 'Fornavn' }).should('exist').type('Kari');
-    cy.findByRole('textbox', { name: 'Etternavn' }).should('exist').type('Norman');
 
-    cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller D-nummer?' })
-      .should('exist')
-      .within(() => {
-        cy.findByLabelText('Nei').should('exist').check();
-      });
+    if (submissionMethod === 'paper') {
+      cy.findByRole('textbox', { name: 'Fornavn' }).should('exist').type('Kari');
+      cy.findByRole('textbox', { name: 'Etternavn' }).should('exist').type('Norman');
 
-    cy.findByRole('textbox', { name: 'Din fødselsdato (dd.mm.åååå)' }).should('exist').type('10.05.1995');
-    cy.findByRole('group', { name: 'Bor du i Norge?' })
-      .should('exist')
-      .within(() => {
-        cy.findByLabelText('Ja').should('exist').check();
-      });
+      cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller D-nummer?' })
+        .should('exist')
+        .within(() => {
+          cy.findByLabelText('Nei').should('exist').check();
+        });
 
-    cy.findByRole('group', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?' })
-      .should('exist')
-      .within(() => {
-        cy.findByLabelText('Vegadresse').should('exist').check();
-      });
+      cy.findByRole('textbox', { name: /Fødselsdato.*dd\.mm\.åååå/ })
+        .should('exist')
+        .type('10.05.1995');
+      cy.findByRole('group', { name: 'Bor du i Norge?' })
+        .should('exist')
+        .within(() => {
+          cy.findByLabelText('Ja').should('exist').check();
+        });
 
-    cy.findByRole('textbox', { name: 'Vegadresse' }).should('exist').type('Kirkegata 1');
-    cy.findByRole('textbox', { name: 'Postnummer' }).should('exist').type('1234');
-    cy.findByRole('textbox', { name: 'Poststed' }).should('exist').type('Nesvik');
-    cy.findByRole('textbox', { name: 'Fra hvilken dato skal denne adressen brukes (dd.mm.åååå)?' })
-      .should('exist')
-      .type(`01.01.${thisYear}`);
+      cy.findByRole('group', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?' })
+        .should('exist')
+        .within(() => {
+          cy.findByLabelText('Vegadresse').should('exist').check();
+        });
+
+      cy.findByRole('textbox', { name: 'Vegadresse' }).should('exist').type('Kirkegata 1');
+      cy.findByRole('textbox', { name: 'Postnummer' }).should('exist').type('1234');
+      cy.findByRole('textbox', { name: 'Poststed' }).should('exist').type('Nesvik');
+      cy.findByRole('textbox', { name: 'Gyldig fra (dd.mm.åååå)' }).should('exist').type(`01.01.${thisYear}`);
+    } else {
+      cy.findByRole('textbox', { name: 'Fornavn' }).should('have.value', 'Ola');
+      cy.findByRole('textbox', { name: 'Etternavn' }).should('have.value', 'Nordmann');
+      cy.findByRole('textbox', { name: 'Fornavn' }).should('have.attr', 'readonly');
+      cy.findByRole('textbox', { name: 'Etternavn' }).should('have.attr', 'readonly');
+      cy.findByRole('textbox', { name: /Fødselsnummer.*d-nummer/ }).should('have.value', '08842748500');
+    }
+
     cy.findByRole('textbox', { name: 'Velg måned' }).should('exist').type(`01.${thisYear}`);
 
     // Steg 2 -> Steg 3
     clickNext(submissionMethod);
     cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
-    cy.findByLabelText('Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved.')
-      .should('exist')
-      .check({ force: true });
+    cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+      cy.findByRole('radio', { name: TEXTS.statiske.attachment.nei }).check({ force: true });
+    });
 
     // Step 3 -> Oppsummering
     clickNext(submissionMethod);
@@ -74,7 +84,12 @@ describe('Basic form', () => {
     clickNext(submissionMethod);
 
     cy.findByRoleWhenAttached('heading', { level: 2, name: 'Dine opplysninger' }).should('exist');
-    cy.findByRoleWhenAttached('textbox', { name: 'Din fødselsdato (dd.mm.åååå)' }).should('exist');
+    if (submissionMethod === 'paper') {
+      cy.findByRoleWhenAttached('textbox', { name: /Fødselsdato.*dd\.mm\.åååå/ }).should('exist');
+    } else {
+      cy.findByRoleWhenAttached('textbox', { name: 'Fornavn' }).should('have.value', 'Ola');
+      cy.findByRoleWhenAttached('textbox', { name: 'Etternavn' }).should('have.value', 'Nordmann');
+    }
 
     clickNext(submissionMethod);
     cy.findByRoleWhenAttached('heading', { level: 2, name: 'Vedlegg' }).should('exist');
@@ -83,33 +98,24 @@ describe('Basic form', () => {
 
     // Oppsummering
     cy.findByRoleWhenAttached('heading', { level: 2, name: 'Oppsummering' }).should('exist');
-    cy.get('dl')
-      .eq(1)
-      .within(() => {
-        cy.get('dt').eq(0).should('contain.text', 'Tittel');
-        cy.get('dd').eq(0).should('contain.text', 'Fru');
-        cy.get('dt').eq(1).should('contain.text', 'Fornavn');
-        cy.get('dd').eq(1).should('contain.text', 'Kari');
-        cy.get('dt').eq(2).should('contain.text', 'Etternavn');
-        cy.get('dd').eq(2).should('contain.text', 'Norman');
-        cy.get('dt').eq(3).should('contain.text', 'Har du norsk fødselsnummer eller D-nummer?');
-        cy.get('dd').eq(3).should('contain.text', 'Nei');
-        cy.get('dt').eq(4).should('contain.text', 'Din fødselsdato (dd.mm.åååå)');
-        cy.get('dd').eq(4).should('contain.text', '10.05.1995');
-        if (submissionMethod === 'digital') {
-          cy.get('dt').eq(5).should('contain.text', 'Folkeregistrert adresse');
-          cy.get('dd').eq(5).should('contain.text', 'Testveien 1C, 1234 Plassen');
-        }
-        if (submissionMethod === 'paper') {
-          cy.get('dt').eq(5).should('not.contain.text', 'Folkeregistrert adresse');
-          cy.get('dd').eq(5).should('not.contain.text', 'Testveien 1C, 1234 Plassen');
-        }
-      });
+    cy.contains('dt', 'Tittel').next('dd').should('contain.text', 'Fru');
+
+    if (submissionMethod === 'paper') {
+      cy.contains('dt', 'Fornavn').next('dd').should('contain.text', 'Kari');
+      cy.contains('dt', 'Etternavn').next('dd').should('contain.text', 'Norman');
+      cy.contains('dt', /Fødselsdato/)
+        .next('dd')
+        .should('contain.text', '10.05.1995');
+      cy.contains('dt', 'Folkeregistrert adresse').should('not.exist');
+    } else {
+      cy.contains('dt', 'Fornavn').next('dd').should('contain.text', 'Ola');
+      cy.contains('dt', 'Etternavn').next('dd').should('contain.text', 'Nordmann');
+    }
   };
 
   describe("submission method 'paper'", () => {
     beforeEach(() => {
-      cy.visit('/fyllut/cypress101/skjema?sub=paper');
+      cy.visit('/fyllut/basicformcypress101/skjema?sub=paper');
       cy.defaultWaits();
     });
 
@@ -149,7 +155,7 @@ describe('Basic form', () => {
 
   describe("submission method 'digital'", () => {
     beforeEach(() => {
-      cy.visit('/fyllut/cypress101?sub=digital');
+      cy.visit('/fyllut/basicformcypress101?sub=digital');
       cy.defaultWaits();
     });
 
@@ -164,7 +170,7 @@ describe('Basic form', () => {
 
   describe('submission method not specified in url', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/cypress101');
+      cy.visit('/fyllut/basicformcypress101');
       cy.defaultWaits();
     });
 

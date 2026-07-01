@@ -1,73 +1,38 @@
-import formAccordion from '../data/formio-api/accordion.json';
-import formActivities from '../data/formio-api/activities.json';
-import formAttachment from '../data/formio-api/attachments.json';
-import formComponentsTranslations from '../data/formio-api/components-translations.json';
-import formConditionalDatagrid from '../data/formio-api/conditional-datagrid.json';
-import conditionalPage from '../data/formio-api/conditional-page.json';
-import translationsConditionalXmas from '../data/formio-api/conditionalxmas-translation.json';
-import formConditionalXmas from '../data/formio-api/conditionalxmas.json';
-import formContainerDatagrid from '../data/formio-api/container-datagrid.json';
-import formContainer from '../data/formio-api/container123.json';
-import formCustomCompsAlert from '../data/formio-api/custom-components-alert.json';
-import checkboxFormJson from '../data/formio-api/custom-components-checkbox.json';
-import formCustomCompsDatagrid from '../data/formio-api/custom-components-datagrid.json';
-import translationsCustomComps from '../data/formio-api/custom-components-translations.json';
-import formCustomComps from '../data/formio-api/custom-components.json';
-import translationsCypress101 from '../data/formio-api/cypress101-translation.json';
-import formCypress101 from '../data/formio-api/cypress101.json';
-import formCypressaxe from '../data/formio-api/cypressaxe.json';
-import datafetcherAnnetForm from '../data/formio-api/data-fetcher-annet.json';
-import datafetcherContainer from '../data/formio-api/data-fetcher-container.json';
-import datafetcherForm from '../data/formio-api/data-fetcher.json';
-import formDatagridConditional from '../data/formio-api/datagrid-conditional.json';
-import dataGridLogicBug from '../data/formio-api/datagrid-logic-bug.json';
-import formDatagridReactComponents from '../data/formio-api/datagrid-react-components.json';
-import formDatagrid from '../data/formio-api/datagrid.json';
-import dataGridSkjemagruppeBug from '../data/formio-api/datagrid001.json';
-import digitalNoLoginWithAttachmentPanel from '../data/formio-api/digitalnologin-with-attachment-panel.json';
-import formDrivingList from '../data/formio-api/driving-list.json';
-import errorSummaryFocusForm from '../data/formio-api/errorSummaryFocus.json';
-import emailForm from '../data/formio-api/form-email.json';
-import formSelectV1 from '../data/formio-api/form-select-v1.json';
-import formSelectV2 from '../data/formio-api/form-select-v2.json';
-import formUtilsCheckCondition from '../data/formio-api/form-utils-check-condition.json';
-import hiddenConditionalForm from '../data/formio-api/hidden-conditional.json';
-import introPageTranslations from '../data/formio-api/intro-page-translations.json';
-import introPage from '../data/formio-api/intro-page.json';
-import formTestMellomlagringNested from '../data/formio-api/mellomlagring-nested-values.json';
-import monthPickerForm from '../data/formio-api/month-picker.json';
-import nav083501 from '../data/formio-api/nav083501.json';
-import nav111221bTranslations from '../data/formio-api/nav111221b-translations.json';
-import nav111221b from '../data/formio-api/nav111221b.json';
-import formNavdatepicker from '../data/formio-api/navdatepicker.json';
-import nologinTranslationsNb from '../data/formio-api/nologin-translations-nb.json';
-import nologinFormOld from '../data/formio-api/nologin.json';
-import numberJsonForm from '../data/formio-api/number.json';
-import formPengerOgKonto from '../data/formio-api/pengerOgKonto.json';
-import formPhoneNumberAreaCode from '../data/formio-api/phone-number-area-code.json';
-import radioForm from '../data/formio-api/radio.json';
-import selectBoxesForm from '../data/formio-api/select-boxes.json';
-import selectFormJson from '../data/formio-api/select.json';
-import formSkjemagruppeTest from '../data/formio-api/skjemagruppetest.json';
-import translationsSubmissionMethod from '../data/formio-api/submission-method-translations.json';
-import formSubmissionMethod from '../data/formio-api/submission-method.json';
-import submissionTypeDigitalNoAttachments from '../data/formio-api/submission-type-digital-no-attachments.json';
-import submissionTypeDigitalNoLogin from '../data/formio-api/submission-type-digital-no-login.json';
-import submissionTypeDigital from '../data/formio-api/submission-type-digital.json';
-import submissionTypeNoLogin from '../data/formio-api/submission-type-no-login.json';
-import submissionTypeNone from '../data/formio-api/submission-type-none.json';
-import submissionTypePaperDigitalNoLogin from '../data/formio-api/submission-type-paper-digital-no-login.json';
-import submissionTypePaperDigital from '../data/formio-api/submission-type-paper-digital.json';
-import submissionTypePaperNoLogin from '../data/formio-api/submission-type-paper-no-login.json';
-import submissionTypePaper from '../data/formio-api/submission-type-paper.json';
-import formTestMellomlagringV2 from '../data/formio-api/test-mellomlagring-v2.json';
-import formTestMellomlagring from '../data/formio-api/test-mellomlagring.json';
-import formatTextfield from '../data/formio-api/textfield-formating.json';
-import formTextfield from '../data/formio-api/textfield.json';
-import formYear from '../data/formio-api/year.json';
-import formYourInformationTranslations from '../data/formio-api/your-information-translations.json';
-import formYourInformation from '../data/formio-api/your-information.json';
+import { a11yAxeForm, a11yAxeTranslations } from '../data/forms-api/a11y-axe/a11yAxeForm';
+import {
+  accordionDeprecatedForm,
+  accordionDeprecatedTranslations,
+} from '../data/forms-api/accordion/accordionDeprecatedForm';
+import {
+  activeTasksMellomlagringForm,
+  activeTasksMellomlagringFormV2,
+} from '../data/forms-api/active-tasks/activeTasksMellomlagringForm';
+import {
+  activitiesDeprecatedForm,
+  activitiesDeprecatedTranslations,
+} from '../data/forms-api/activities/activitiesDeprecatedForm';
+import { alertDeprecatedForm, alertDeprecatedTranslations } from '../data/forms-api/alert/alertDeprecatedForm';
+import {
+  attachmentDeprecatedForm,
+  attachmentDeprecatedTranslations,
+} from '../data/forms-api/attachment/attachmentDeprecatedForm';
+import {
+  attachmentsPageDigitalNoLoginAttachmentPanelForm,
+  attachmentsPageDigitalNoLoginAttachmentPanelTranslations,
+} from '../data/forms-api/attachments-page/attachmentsPageDigitalNoLoginAttachmentPanelForm';
+import {
+  attachmentsPagePaperForm,
+  attachmentsPagePaperTranslations,
+} from '../data/forms-api/attachments-page/attachmentsPagePaperForm';
 import { attachmentsForm, attachmentsTranslations } from '../data/forms-api/attachmentsForm';
+import {
+  basicFormCypress101Form,
+  basicFormCypress101Translations,
+} from '../data/forms-api/basic-form/basicFormCypress101Form';
+import {
+  checkboxDeprecatedForm,
+  checkboxDeprecatedTranslations,
+} from '../data/forms-api/checkbox/checkboxDeprecatedForm';
 import { clearOnHideForm, clearOnHideTranslations } from '../data/forms-api/clear-on-hide/clearOnHideForm';
 import { accordionForm, accordionTranslations } from '../data/forms-api/components/accordionForm';
 import { activitiesTestForm, activitiesTranslations } from '../data/forms-api/components/activitiesForm';
@@ -81,7 +46,7 @@ import {
 } from '../data/forms-api/components/attachmentUploadOnlyForm';
 import { bankAccountForm, bankAccountTranslations } from '../data/forms-api/components/bankAccountForm';
 import { checkboxForm, checkboxTranslations } from '../data/forms-api/components/checkboxForm';
-import componentsForm from '../data/forms-api/components/componentsForm';
+import componentsForm, { componentsTranslations } from '../data/forms-api/components/componentsForm';
 import { containerForm, containerTranslations } from '../data/forms-api/components/containerForm';
 import { countrySelectForm, countrySelectTranslations } from '../data/forms-api/components/countrySelectForm';
 import { createMonthPickerForm, monthPickerTranslations } from '../data/forms-api/components/createMonthPickerForm';
@@ -124,12 +89,110 @@ import { surnameForm, surnameTranslations } from '../data/forms-api/components/s
 import { textAreaForm, textAreaTranslations } from '../data/forms-api/components/textAreaForm';
 import { textFieldForm, textFieldTranslations } from '../data/forms-api/components/textFieldForm';
 import { yearForm, yearTranslations } from '../data/forms-api/components/yearForm';
+import {
+  conditionalRenderingChristmasForm,
+  conditionalRenderingChristmasTranslations,
+} from '../data/forms-api/conditional-rendering/conditionalRenderingChristmasForm';
+import {
+  conditionalRenderingDatagridForm,
+  conditionalRenderingDatagridTranslations,
+} from '../data/forms-api/conditional-rendering/conditionalRenderingDatagridForm';
+import {
+  conditionalRenderingHiddenForm,
+  conditionalRenderingHiddenTranslations,
+} from '../data/forms-api/conditional-rendering/conditionalRenderingHiddenForm';
+import {
+  conditionalRenderingMellomlagringForm,
+  conditionalRenderingMellomlagringFormV2,
+} from '../data/forms-api/conditional-rendering/conditionalRenderingMellomlagringForm';
 import { conditionalRowForm, conditionalRowTranslations } from '../data/forms-api/conditional-row/conditionalRowForm';
+import {
+  containerSkjemagruppeContainerForm,
+  containerSkjemagruppeContainerTranslations,
+} from '../data/forms-api/container-and-skjemagruppe/containerSkjemagruppeContainerForm';
+import {
+  containerSkjemagruppeSkjemagruppeForm,
+  containerSkjemagruppeSkjemagruppeTranslations,
+} from '../data/forms-api/container-and-skjemagruppe/containerSkjemagruppeSkjemagruppeForm';
 import {
   organizationNumberCoverPageForm,
   organizationNumberCoverPageTranslations,
 } from '../data/forms-api/cover-page/organizationNumberCoverPageForm';
 import { personCoverPageForm, personCoverPageTranslations } from '../data/forms-api/cover-page/personCoverPageForm';
+import {
+  currencyAndAccountForm,
+  currencyAndAccountTranslations,
+} from '../data/forms-api/currency-and-account/currencyAndAccountForm';
+import {
+  dataFetcherAnnetDeprecatedForm,
+  dataFetcherAnnetDeprecatedTranslations,
+} from '../data/forms-api/data-fetcher/dataFetcherAnnetDeprecatedForm';
+import {
+  dataFetcherCheckConditionForm,
+  dataFetcherCheckConditionTranslations,
+} from '../data/forms-api/data-fetcher/dataFetcherCheckConditionForm';
+import {
+  dataFetcherContainerDeprecatedForm,
+  dataFetcherContainerDeprecatedTranslations,
+} from '../data/forms-api/data-fetcher/dataFetcherContainerDeprecatedForm';
+import {
+  dataFetcherDeprecatedForm,
+  dataFetcherDeprecatedTranslations,
+} from '../data/forms-api/data-fetcher/dataFetcherDeprecatedForm';
+import { datagridContainerForm, datagridContainerTranslations } from '../data/forms-api/datagrid/datagridContainerForm';
+import { datagridLogicBugForm, datagridLogicBugTranslations } from '../data/forms-api/datagrid/datagridLogicBugForm';
+import { datagridMainForm, datagridMainTranslations } from '../data/forms-api/datagrid/datagridMainForm';
+import { datagridReactForm, datagridReactTranslations } from '../data/forms-api/datagrid/datagridReactForm';
+import {
+  datagridSkjemagruppeBugForm,
+  datagridSkjemagruppeBugTranslations,
+} from '../data/forms-api/datagrid/datagridSkjemagruppeBugForm';
+import {
+  datePickerDeprecatedForm,
+  datePickerDeprecatedTranslations,
+} from '../data/forms-api/date-picker/datePickerDeprecatedForm';
+import {
+  digitalnologinAttachmentPanelForm,
+  digitalnologinAttachmentPanelTranslations,
+} from '../data/forms-api/digitalnologin/digitalnologinAttachmentPanelForm';
+import {
+  digitalnologinDigitalNoLoginForm,
+  digitalnologinDigitalNoLoginTranslations,
+} from '../data/forms-api/digitalnologin/digitalnologinDigitalNoLoginForm';
+import {
+  drivingListDeprecatedForm,
+  drivingListDeprecatedTranslations,
+} from '../data/forms-api/driving-list/drivingListDeprecatedForm';
+import {
+  emailDeprecatedForm,
+  emailDeprecatedTranslations,
+} from '../data/forms-api/email-deprecated/emailDeprecatedForm';
+import { errorSummaryForm, errorSummaryTranslations } from '../data/forms-api/error-summary/errorSummaryForm';
+import { focusHandlingForm, focusHandlingTranslations } from '../data/forms-api/focus-handling/focusHandlingForm';
+import {
+  formNavigationCypress101Form,
+  formNavigationCypress101Translations,
+} from '../data/forms-api/form-navigation/formNavigationCypress101Form';
+import {
+  formNavigationDigitalForm,
+  formNavigationDigitalTranslations,
+} from '../data/forms-api/form-navigation/formNavigationDigitalForm';
+import {
+  formNavigationDigitalNoAttachmentsForm,
+  formNavigationDigitalNoAttachmentsTranslations,
+} from '../data/forms-api/form-navigation/formNavigationDigitalNoAttachmentsForm';
+import {
+  formNavigationDigitalNoLoginForm,
+  formNavigationDigitalNoLoginTranslations,
+} from '../data/forms-api/form-navigation/formNavigationDigitalNoLoginForm';
+import {
+  formNavigationNoneForm,
+  formNavigationNoneTranslations,
+} from '../data/forms-api/form-navigation/formNavigationNoneForm';
+import {
+  formNavigationPaperForm,
+  formNavigationPaperTranslations,
+} from '../data/forms-api/form-navigation/formNavigationPaperForm';
 import {
   paperNoCoverPageDigitalForm,
   paperNoCoverPageDigitalTranslations,
@@ -138,137 +201,285 @@ import {
   paperNoCoverPagePaperForm,
   paperNoCoverPagePaperTranslations,
 } from '../data/forms-api/form-navigation/paperNoCoverPagePaperForm';
+import {
+  formStepperCheckConditionForm,
+  formStepperCheckConditionTranslations,
+} from '../data/forms-api/form-stepper/formStepperCheckConditionForm';
+import {
+  generalCustomCompsForm,
+  generalCustomCompsTranslations,
+} from '../data/forms-api/general/generalCustomCompsForm';
+import { generalDatagridForm, generalDatagridTranslations } from '../data/forms-api/general/generalDatagridForm';
+import {
+  introPageDigitalNoLoginDeadlineForm,
+  introPageDigitalNoLoginDeadlineTranslations,
+} from '../data/forms-api/intro-page/introPageDigitalNoLoginDeadlineForm';
+import { introPagePaperForm, introPagePaperTranslations } from '../data/forms-api/intro-page/introPagePaperForm';
 import { multipleSubTypesForm, multipleSubTypesTranslations } from '../data/forms-api/intro-page/multipleSubTypesForm';
 import {
   onlypapernocoverpageForm,
   onlypapernocoverpageTranslations,
 } from '../data/forms-api/intro-page/subTypePaperNoCoverPage';
 import largeForm from '../data/forms-api/largeForm';
+import {
+  mellomlagringNestedValuesForm,
+  mellomlagringNestedValuesTranslations,
+} from '../data/forms-api/mellomlagring-nested-values/mellomlagringNestedValuesForm';
+import {
+  mellomlagring2MellomlagringForm,
+  mellomlagring2MellomlagringFormV2,
+} from '../data/forms-api/mellomlagring2/mellomlagring2MellomlagringForm';
+import {
+  mellomlagring2Nav083501Form,
+  mellomlagring2Nav083501Translations,
+} from '../data/forms-api/mellomlagring2/mellomlagring2Nav083501Form';
+import {
+  mellomlagring2SelectForm,
+  mellomlagring2SelectFormV2,
+} from '../data/forms-api/mellomlagring2/mellomlagring2SelectForm';
+import {
+  monthPickerDeprecatedForm,
+  monthPickerDeprecatedTranslations,
+} from '../data/forms-api/month-picker/monthPickerDeprecatedForm';
+import {
+  nationalIdentityNumberCypress101Form,
+  nationalIdentityNumberCypress101Translations,
+} from '../data/forms-api/national-identity-number/nationalIdentityNumberCypress101Form';
+import { nologinSubmissionForm, nologinSubmissionTranslations } from '../data/forms-api/nologin/nologinSubmissionForm';
 import { nologinForm, nologinTranslations } from '../data/forms-api/nologinForm';
+import { numberDeprecatedForm, numberDeprecatedTranslations } from '../data/forms-api/number/numberDeprecatedForm';
+import { pdfConditionalPageForm, pdfConditionalPageTranslations } from '../data/forms-api/pdf/pdfConditionalPageForm';
+import { pdfPaperDigitalForm, pdfPaperDigitalTranslations } from '../data/forms-api/pdf/pdfPaperDigitalForm';
+import { pdfPaperForm, pdfPaperTranslations } from '../data/forms-api/pdf/pdfPaperForm';
+import {
+  phoneNumberDeprecatedForm,
+  phoneNumberDeprecatedTranslations,
+} from '../data/forms-api/phone-number/phoneNumberDeprecatedForm';
+import { radioDeprecatedForm, radioDeprecatedTranslations } from '../data/forms-api/radio/radioDeprecatedForm';
+import {
+  selectBoxesDeprecatedForm,
+  selectBoxesDeprecatedTranslations,
+} from '../data/forms-api/select-boxes/selectBoxesDeprecatedForm';
+import {
+  selectDeprecatedForm,
+  selectDeprecatedTranslations,
+} from '../data/forms-api/select-deprecated/selectDeprecatedForm';
+import {
+  submissionMethodForm,
+  submissionMethodTranslations,
+} from '../data/forms-api/submission-method/submissionMethodForm';
 import {
   paperNoCoverPageStaticPdfForm,
   staticPdfPaperNoCoverPageTranslations,
 } from '../data/forms-api/submission-types/paperNoCoverPageStaticPdfForm';
 import {
+  submissionTypesDigitalDigitalNoLoginForm,
+  submissionTypesDigitalDigitalNoLoginTranslations,
+} from '../data/forms-api/submission-types/submissionTypesDigitalDigitalNoLoginForm';
+import {
+  submissionTypesDigitalForm,
+  submissionTypesDigitalTranslations,
+} from '../data/forms-api/submission-types/submissionTypesDigitalForm';
+import {
+  submissionTypesDigitalNoLoginForm,
+  submissionTypesDigitalNoLoginTranslations,
+} from '../data/forms-api/submission-types/submissionTypesDigitalNoLoginForm';
+import {
+  submissionTypesNoneForm,
+  submissionTypesNoneTranslations,
+} from '../data/forms-api/submission-types/submissionTypesNoneForm';
+import {
+  submissionTypesPaperDigitalForm,
+  submissionTypesPaperDigitalTranslations,
+} from '../data/forms-api/submission-types/submissionTypesPaperDigitalForm';
+import {
+  submissionTypesPaperDigitalNoLoginForm,
+  submissionTypesPaperDigitalNoLoginTranslations,
+} from '../data/forms-api/submission-types/submissionTypesPaperDigitalNoLoginForm';
+import {
+  submissionTypesPaperForm,
+  submissionTypesPaperTranslations,
+} from '../data/forms-api/submission-types/submissionTypesPaperForm';
+import {
+  submissionTypesPaperNoLoginForm,
+  submissionTypesPaperNoLoginTranslations,
+} from '../data/forms-api/submission-types/submissionTypesPaperNoLoginForm';
+import {
   summaryPageAttachmentDownloadForm,
   summaryPageAttachmentDownloadTranslations,
 } from '../data/forms-api/summary-page/summaryPageAttachmentDownloadForm';
+import {
+  textfieldFormattingForm,
+  textfieldFormattingTranslations,
+} from '../data/forms-api/textfield/textfieldFormattingForm';
+import { textfieldMainForm, textfieldMainTranslations } from '../data/forms-api/textfield/textfieldMainForm';
+import {
+  translationCypress101Form,
+  translationCypress101Translations,
+} from '../data/forms-api/translation/translationCypress101Form';
+import { umamiNologinForm, umamiNologinTranslations } from '../data/forms-api/umami/umamiNologinForm';
+import { yearDeprecatedForm, yearDeprecatedTranslations } from '../data/forms-api/year-deprecated/yearDeprecatedForm';
+import {
+  yourInformationDeprecatedForm,
+  yourInformationDeprecatedTranslations,
+} from '../data/forms-api/your-information/yourInformationDeprecatedForm';
 
 const allForms = [
-  { form: formCypress101, translations: translationsCypress101 },
-  { form: introPage, translations: introPageTranslations },
-  { form: formCypressaxe, translations: undefined },
-  { form: formPengerOgKonto, translations: undefined },
-  { form: formPhoneNumberAreaCode, translations: undefined },
-  { form: formConditionalXmas, translations: translationsConditionalXmas },
-  { form: formConditionalDatagrid, translations: undefined },
-  { form: formContainer, translations: undefined },
-  { form: formContainerDatagrid, translations: undefined },
-  { form: formCustomComps, translations: translationsCustomComps },
-  { form: formCustomCompsDatagrid, translations: undefined },
-  { form: formCustomCompsAlert, translations: undefined },
-  { form: formDatagrid, translations: undefined },
-  { form: formNavdatepicker, translations: undefined },
-  { form: formSubmissionMethod, translations: translationsSubmissionMethod },
-  { form: formTestMellomlagring, formV2: formTestMellomlagringV2, translations: undefined },
-  { form: formYourInformation, translations: formYourInformationTranslations },
-  { form: formTestMellomlagringNested, translations: formYourInformationTranslations },
-  { form: formSelectV1, formV2: formSelectV2, translations: undefined },
-  { form: formActivities, translations: undefined },
-  { form: formDatagridConditional, translations: undefined },
-  { form: formDatagridReactComponents, translations: undefined },
-  { form: nav083501, translations: undefined },
-  { form: formDrivingList, translations: undefined },
-  { form: formAttachment, translations: undefined },
-  { form: formYear, translations: undefined },
-  { form: formTextfield, translations: undefined },
-  { form: formatTextfield, translations: undefined },
-  { form: numberJsonForm, translations: undefined },
-  { form: formAccordion, translations: undefined },
-  { form: checkboxFormJson, translations: undefined },
-  { form: hiddenConditionalForm, translations: undefined },
-  { form: radioForm, translations: undefined },
-  { form: selectBoxesForm, translations: undefined },
-  { form: selectFormJson, translations: undefined },
-  { form: monthPickerForm, translations: undefined },
-  { form: emailForm, translations: undefined },
-  { form: nav111221b, translations: nav111221bTranslations },
-  { form: formUtilsCheckCondition, translations: undefined },
-  { form: formSkjemagruppeTest, translations: undefined },
-  { form: errorSummaryFocusForm, translations: undefined },
-  { form: datafetcherForm, translations: undefined },
-  { form: datafetcherAnnetForm, translations: undefined },
-  { form: datafetcherContainer, translations: undefined },
-  { form: submissionTypePaper, translations: undefined },
-  { form: submissionTypeDigital, translations: undefined },
-  { form: submissionTypeDigitalNoAttachments, translations: undefined },
-  { form: submissionTypePaperDigital, translations: undefined },
-  { form: submissionTypeNone, translations: undefined },
-  { form: submissionTypeNoLogin, translations: undefined },
-  { form: submissionTypeDigitalNoLogin, translations: undefined },
-  { form: submissionTypePaperDigitalNoLogin, translations: undefined },
-  { form: submissionTypePaperNoLogin, translations: undefined },
-  { form: nologinFormOld, translations: nologinTranslationsNb },
-  { form: digitalNoLoginWithAttachmentPanel, translations: undefined },
-  { form: dataGridLogicBug, translations: undefined },
-  { form: dataGridSkjemagruppeBug, translations: undefined },
-  { form: conditionalPage, translations: undefined },
-  { form: textFieldForm(), translations: textFieldTranslations() },
-  { form: fnrFieldForm(), translations: fnrFieldTranslations() },
-  { form: senderForm(), translations: senderTranslations() },
-  { form: radioPanelForm(), translations: radioPanelTranslations() },
-  { form: createMonthPickerForm(), translations: monthPickerTranslations() },
-  { form: componentsForm(), translations: formComponentsTranslations },
-  { form: largeForm(), translations: undefined },
-  { form: conditionalRowForm(), translations: conditionalRowTranslations() },
-  { form: simpleConditionalForm(), translations: simpleConditionalTranslations() },
-  { form: pdfStaticForm(), translations: pdfStaticTranslations() },
-  { form: paperNoCoverPageForm(), translations: paperNoCoverPageTranslations() },
-  { form: nologinForm(), translations: nologinTranslations() },
-  { form: numberForm(), translations: numberTranslations() },
-  { form: textAreaForm(), translations: textAreaTranslations() },
-  { form: checkboxForm(), translations: checkboxTranslations() },
-  { form: firstNameForm(), translations: firstNameTranslations() },
-  { form: surnameForm(), translations: surnameTranslations() },
-  { form: ibanForm(), translations: ibanTranslations() },
-  { form: emailComponentForm(), translations: emailTranslations() },
+  { form: a11yAxeForm(), translations: a11yAxeTranslations() },
+  { form: accordionDeprecatedForm(), translations: accordionDeprecatedTranslations() },
+  {
+    form: activeTasksMellomlagringForm(),
+    formV2: activeTasksMellomlagringFormV2(),
+    translations: undefined,
+  },
+  { form: activitiesDeprecatedForm(), translations: activitiesDeprecatedTranslations() },
+  { form: alertDeprecatedForm(), translations: alertDeprecatedTranslations() },
+  { form: attachmentDeprecatedForm(), translations: attachmentDeprecatedTranslations() },
+  {
+    form: attachmentsPageDigitalNoLoginAttachmentPanelForm(),
+    translations: attachmentsPageDigitalNoLoginAttachmentPanelTranslations(),
+  },
+  { form: attachmentsPagePaperForm(), translations: attachmentsPagePaperTranslations() },
+  { form: attachmentsForm(), translations: attachmentsTranslations() },
+  { form: basicFormCypress101Form(), translations: basicFormCypress101Translations() },
+  { form: checkboxDeprecatedForm(), translations: checkboxDeprecatedTranslations() },
+  { form: clearOnHideForm(), translations: clearOnHideTranslations() },
+  { form: accordionForm(), translations: accordionTranslations() },
+  { form: activitiesTestForm(), translations: activitiesTranslations() },
+  { form: addressValidityTestForm(), translations: addressValidityTranslations() },
+  { form: adresseTestForm(), translations: adresseTranslations() },
+  { form: alertForm(), translations: alertTranslations() },
+  { form: attachmentTestForm(), translations: attachmentTranslations() },
+  { form: attachmentUploadOnlyTestForm(), translations: attachmentUploadOnlyTranslations() },
   { form: bankAccountForm(), translations: bankAccountTranslations() },
-  { form: yearForm(), translations: yearTranslations() },
+  { form: checkboxForm(), translations: checkboxTranslations() },
+  { form: componentsForm(), translations: componentsTranslations() },
+  { form: containerForm(), translations: containerTranslations() },
+  { form: countrySelectForm(), translations: countrySelectTranslations() },
+  { form: createMonthPickerForm(), translations: monthPickerTranslations() },
+  { form: currencyForm(), translations: currencyTranslations() },
+  { form: currencySelectForm(), translations: currencySelectTranslations() },
+  { form: dataFetcherTestForm(), translations: dataFetcherTranslations() },
+  { form: dataGridForm(), translations: dataGridTranslations() },
+  { form: datePickerForm(), translations: datePickerTranslations() },
+  { form: drivingListTestForm(), translations: drivingListTranslations() },
+  { form: emailComponentForm(), translations: emailTranslations() },
+  { form: firstNameForm(), translations: firstNameTranslations() },
+  { form: fnrFieldForm(), translations: fnrFieldTranslations() },
+  { form: formGroupTestForm(), translations: formGroupTranslations() },
+  { form: htmlElementForm(), translations: htmlElementTranslations() },
+  { form: ibanForm(), translations: ibanTranslations() },
+  { form: identityTestForm(), translations: identityTranslations() },
+  { form: imageForm(), translations: imageTranslations() },
+  { form: maalgruppeForm(), translations: maalgruppeTranslations() },
+  { form: numberForm(), translations: numberTranslations() },
   { form: organizationNumberForm(), translations: organizationNumberTranslations() },
-  { form: personCoverPageForm(), translations: personCoverPageTranslations() },
+  { form: panelTestForm(), translations: panelTranslations() },
+  { form: paperNoCoverPageForm(), translations: paperNoCoverPageTranslations() },
+  { form: pdfStaticForm(), translations: pdfStaticTranslations() },
+  { form: phoneNumberForm(), translations: phoneNumberTranslations() },
+  { form: radioPanelForm(), translations: radioPanelTranslations() },
+  { form: selectBoxesComponentForm(), translations: selectBoxesTranslations() },
+  { form: selectForm(), translations: selectTranslations() },
+  { form: senderForm(), translations: senderTranslations() },
+  { form: simpleConditionalForm(), translations: simpleConditionalTranslations() },
+  { form: surnameForm(), translations: surnameTranslations() },
+  { form: textAreaForm(), translations: textAreaTranslations() },
+  { form: textFieldForm(), translations: textFieldTranslations() },
+  { form: yearForm(), translations: yearTranslations() },
+  { form: conditionalRenderingChristmasForm(), translations: conditionalRenderingChristmasTranslations() },
+  { form: conditionalRenderingDatagridForm(), translations: conditionalRenderingDatagridTranslations() },
+  { form: conditionalRenderingHiddenForm(), translations: conditionalRenderingHiddenTranslations() },
+  {
+    form: conditionalRenderingMellomlagringForm(),
+    formV2: conditionalRenderingMellomlagringFormV2(),
+    translations: undefined,
+  },
+  { form: conditionalRowForm(), translations: conditionalRowTranslations() },
+  { form: containerSkjemagruppeContainerForm(), translations: containerSkjemagruppeContainerTranslations() },
+  { form: containerSkjemagruppeSkjemagruppeForm(), translations: containerSkjemagruppeSkjemagruppeTranslations() },
   { form: organizationNumberCoverPageForm(), translations: organizationNumberCoverPageTranslations() },
-  { form: summaryPageAttachmentDownloadForm(), translations: summaryPageAttachmentDownloadTranslations() },
+  { form: personCoverPageForm(), translations: personCoverPageTranslations() },
+  { form: currencyAndAccountForm(), translations: currencyAndAccountTranslations() },
+  { form: dataFetcherAnnetDeprecatedForm(), translations: dataFetcherAnnetDeprecatedTranslations() },
+  { form: dataFetcherCheckConditionForm(), translations: dataFetcherCheckConditionTranslations() },
+  { form: dataFetcherContainerDeprecatedForm(), translations: dataFetcherContainerDeprecatedTranslations() },
+  { form: dataFetcherDeprecatedForm(), translations: dataFetcherDeprecatedTranslations() },
+  { form: datePickerDeprecatedForm(), translations: datePickerDeprecatedTranslations() },
+  { form: datagridContainerForm(), translations: datagridContainerTranslations() },
+  { form: datagridLogicBugForm(), translations: datagridLogicBugTranslations() },
+  { form: datagridMainForm(), translations: datagridMainTranslations() },
+  { form: datagridReactForm(), translations: datagridReactTranslations() },
+  { form: datagridSkjemagruppeBugForm(), translations: datagridSkjemagruppeBugTranslations() },
+  { form: digitalnologinAttachmentPanelForm(), translations: digitalnologinAttachmentPanelTranslations() },
+  { form: digitalnologinDigitalNoLoginForm(), translations: digitalnologinDigitalNoLoginTranslations() },
+  { form: drivingListDeprecatedForm(), translations: drivingListDeprecatedTranslations() },
+  { form: emailDeprecatedForm(), translations: emailDeprecatedTranslations() },
+  { form: errorSummaryForm(), translations: errorSummaryTranslations() },
+  { form: focusHandlingForm(), translations: focusHandlingTranslations() },
+  { form: formNavigationCypress101Form(), translations: formNavigationCypress101Translations() },
+  { form: formNavigationDigitalForm(), translations: formNavigationDigitalTranslations() },
+  { form: formNavigationDigitalNoAttachmentsForm(), translations: formNavigationDigitalNoAttachmentsTranslations() },
+  { form: formNavigationDigitalNoLoginForm(), translations: formNavigationDigitalNoLoginTranslations() },
+  { form: formNavigationNoneForm(), translations: formNavigationNoneTranslations() },
+  { form: formNavigationPaperForm(), translations: formNavigationPaperTranslations() },
+  { form: formStepperCheckConditionForm(), translations: formStepperCheckConditionTranslations() },
+  { form: generalCustomCompsForm(), translations: generalCustomCompsTranslations() },
+  { form: generalDatagridForm(), translations: generalDatagridTranslations() },
+  { form: introPageDigitalNoLoginDeadlineForm(), translations: introPageDigitalNoLoginDeadlineTranslations() },
+  { form: introPagePaperForm(), translations: introPagePaperTranslations() },
+  { form: largeForm(), translations: undefined },
+  { form: mellomlagringNestedValuesForm(), translations: mellomlagringNestedValuesTranslations() },
+  {
+    form: mellomlagring2MellomlagringForm(),
+    formV2: mellomlagring2MellomlagringFormV2(),
+    translations: undefined,
+  },
+  { form: mellomlagring2Nav083501Form(), translations: mellomlagring2Nav083501Translations() },
+  {
+    form: mellomlagring2SelectForm(),
+    formV2: mellomlagring2SelectFormV2(),
+    translations: undefined,
+  },
+  { form: monthPickerDeprecatedForm(), translations: monthPickerDeprecatedTranslations() },
   { form: multipleSubTypesForm(), translations: multipleSubTypesTranslations() },
+  { form: nationalIdentityNumberCypress101Form(), translations: nationalIdentityNumberCypress101Translations() },
+  { form: nologinForm(), translations: nologinTranslations() },
+  { form: nologinSubmissionForm(), translations: nologinSubmissionTranslations() },
+  { form: numberDeprecatedForm(), translations: numberDeprecatedTranslations() },
   { form: onlypapernocoverpageForm(), translations: onlypapernocoverpageTranslations() },
   { form: paperNoCoverPageDigitalForm(), translations: paperNoCoverPageDigitalTranslations() },
   { form: paperNoCoverPagePaperForm(), translations: paperNoCoverPagePaperTranslations() },
   { form: paperNoCoverPageStaticPdfForm(), translations: staticPdfPaperNoCoverPageTranslations() },
-  { form: phoneNumberForm(), translations: phoneNumberTranslations() },
-  { form: accordionForm(), translations: accordionTranslations() },
-  { form: addressValidityTestForm(), translations: addressValidityTranslations() },
-  { form: alertForm(), translations: alertTranslations() },
-  { form: htmlElementForm(), translations: htmlElementTranslations() },
-  { form: identityTestForm(), translations: identityTranslations() },
-  { form: activitiesTestForm(), translations: activitiesTranslations() },
-  { form: imageForm(), translations: imageTranslations() },
-  { form: selectBoxesComponentForm(), translations: selectBoxesTranslations() },
-  { form: maalgruppeForm(), translations: maalgruppeTranslations() },
-  { form: datePickerForm(), translations: datePickerTranslations() },
-  { form: drivingListTestForm(), translations: drivingListTranslations() },
-  { form: containerForm(), translations: containerTranslations() },
-  { form: formGroupTestForm(), translations: formGroupTranslations() },
-  { form: countrySelectForm(), translations: countrySelectTranslations() },
-  { form: selectForm(), translations: selectTranslations() },
-  { form: currencyForm(), translations: currencyTranslations() },
-  { form: attachmentTestForm(), translations: attachmentTranslations() },
-  { form: attachmentUploadOnlyTestForm(), translations: attachmentUploadOnlyTranslations() },
-  { form: currencySelectForm(), translations: currencySelectTranslations() },
-  { form: dataFetcherTestForm(), translations: dataFetcherTranslations() },
-  { form: dataGridForm(), translations: dataGridTranslations() },
-  { form: panelTestForm(), translations: panelTranslations() },
-  { form: adresseTestForm(), translations: adresseTranslations() },
-  { form: attachmentsForm(), translations: attachmentsTranslations() },
-  { form: clearOnHideForm(), translations: clearOnHideTranslations() },
+  { form: pdfConditionalPageForm(), translations: pdfConditionalPageTranslations() },
+  { form: pdfPaperDigitalForm(), translations: pdfPaperDigitalTranslations() },
+  { form: pdfPaperForm(), translations: pdfPaperTranslations() },
+  { form: phoneNumberDeprecatedForm(), translations: phoneNumberDeprecatedTranslations() },
+  { form: radioDeprecatedForm(), translations: radioDeprecatedTranslations() },
+  { form: selectBoxesDeprecatedForm(), translations: selectBoxesDeprecatedTranslations() },
+  { form: selectDeprecatedForm(), translations: selectDeprecatedTranslations() },
+  { form: submissionMethodForm(), translations: submissionMethodTranslations() },
+  { form: submissionTypesDigitalForm(), translations: submissionTypesDigitalTranslations() },
+  {
+    form: submissionTypesDigitalDigitalNoLoginForm(),
+    translations: submissionTypesDigitalDigitalNoLoginTranslations(),
+  },
+  { form: submissionTypesDigitalNoLoginForm(), translations: submissionTypesDigitalNoLoginTranslations() },
+  { form: submissionTypesNoneForm(), translations: submissionTypesNoneTranslations() },
+  { form: submissionTypesPaperDigitalForm(), translations: submissionTypesPaperDigitalTranslations() },
+  {
+    form: submissionTypesPaperDigitalNoLoginForm(),
+    translations: submissionTypesPaperDigitalNoLoginTranslations(),
+  },
+  { form: submissionTypesPaperForm(), translations: submissionTypesPaperTranslations() },
+  { form: submissionTypesPaperNoLoginForm(), translations: submissionTypesPaperNoLoginTranslations() },
+  { form: summaryPageAttachmentDownloadForm(), translations: summaryPageAttachmentDownloadTranslations() },
+  { form: textfieldFormattingForm(), translations: textfieldFormattingTranslations() },
+  { form: textfieldMainForm(), translations: textfieldMainTranslations() },
+  { form: translationCypress101Form(), translations: translationCypress101Translations() },
+  { form: umamiNologinForm(), translations: umamiNologinTranslations() },
+  { form: yearDeprecatedForm(), translations: yearDeprecatedTranslations() },
+  { form: yourInformationDeprecatedForm(), translations: yourInformationDeprecatedTranslations() },
 ];
 
 const findTestdata = (formPath: string) => allForms.find((testdata) => testdata.form.path === formPath);

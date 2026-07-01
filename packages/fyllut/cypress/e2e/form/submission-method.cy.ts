@@ -13,7 +13,7 @@ describe('Submission method', () => {
 
   describe("Subscription method 'digital'", () => {
     beforeEach(() => {
-      cy.visit('/fyllut/bug101010/veiledning?sub=digital');
+      cy.visit('/fyllut/submissionmethod/veiledning?sub=digital');
       cy.defaultWaits();
       cy.wait('@getGlobalTranslations');
     });
@@ -98,7 +98,7 @@ describe('Submission method', () => {
 
   describe("Subscription method 'paper'", () => {
     beforeEach(() => {
-      cy.visit('/fyllut/bug101010/veiledning?sub=paper');
+      cy.visit('/fyllut/submissionmethod/veiledning?sub=paper');
       cy.defaultWaits();
       cy.wait('@getGlobalTranslations');
     });

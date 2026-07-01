@@ -65,7 +65,11 @@ Cypress.Commands.add('clickStart', () => {
       url.includes('sub=digital') && !url.includes('digitalnologin')
         ? TEXTS.grensesnitt.navigation.saveAndContinue
         : TEXTS.grensesnitt.navigation.next;
-    return cy.findByRoleWhenAttached('link', { name }, 1000).click();
+    const escapedName = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cy
+      .contains('button, a', new RegExp(`^${escapedName}$`))
+      .should('be.visible')
+      .click();
   });
 });
 

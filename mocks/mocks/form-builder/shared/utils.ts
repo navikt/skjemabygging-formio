@@ -1,3 +1,5 @@
+import globalTranslations from '../../data/forms-api/global-translations.json';
+
 const generateId = () => {
   return String(Math.floor(Math.random() * 2147483647));
 };
@@ -21,6 +23,25 @@ const insertLanguage = (value: string, language: string) => {
   return `${value} (${language})`;
 };
 
+type SupportedLanguage = 'nb' | 'nn' | 'en';
+
+type GlobalTranslationEntry = {
+  key: string;
+  nb?: string;
+  nn?: string;
+  en?: string;
+};
+
+const globalTranslationMap = new Map(
+  (globalTranslations as GlobalTranslationEntry[]).map((entry) => [entry.key, entry]),
+);
+
+const getTranslationValue = (value: string, language: string) => {
+  const supportedLanguage = language as SupportedLanguage;
+  const translatedValue = globalTranslationMap.get(value)?.[supportedLanguage];
+  return translatedValue || insertLanguage(value, language);
+};
+
 const getMockTranslationsFromForm = (form: any, language: string = 'en') => {
   return {
     _id: generateId(),
@@ -39,52 +60,55 @@ const getMockTranslationsFromForm = (form: any, language: string = 'en') => {
 const getMockTranslationsFromComponents = (components: any[], language: string) => {
   return components.reduce((translations: Record<string, string>, component) => {
     if (component.title) {
-      translations[component.title] = insertLanguage(component.title, language);
+      translations[component.title] = getTranslationValue(component.title, language);
     }
     if (component.label) {
-      translations[component.label] = insertLanguage(component.label, language);
+      translations[component.label] = getTranslationValue(component.label, language);
     }
     if (component.legend) {
-      translations[component.legend] = insertLanguage(component.legend, language);
+      translations[component.legend] = getTranslationValue(component.legend, language);
     }
     if (component.description) {
-      translations[component.description] = insertLanguage(component.description, language);
+      translations[component.description] = getTranslationValue(component.description, language);
     }
     if (component.additionalDescriptionText) {
-      translations[component.additionalDescriptionText] = insertLanguage(component.additionalDescriptionText, language);
+      translations[component.additionalDescriptionText] = getTranslationValue(
+        component.additionalDescriptionText,
+        language,
+      );
     }
     if (component.content) {
-      translations[component.content] = insertLanguage(component.content, language);
+      translations[component.content] = getTranslationValue(component.content, language);
     }
     if (component.additionalDescriptionLabel) {
-      translations[component.additionalDescriptionLabel] = insertLanguage(
+      translations[component.additionalDescriptionLabel] = getTranslationValue(
         component.additionalDescriptionLabel,
         language,
       );
     }
     if (component.rowTitle) {
-      translations[component.rowTitle] = insertLanguage(component.rowTitle, language);
+      translations[component.rowTitle] = getTranslationValue(component.rowTitle, language);
     }
     if (component.addAnother) {
-      translations[component.addAnother] = insertLanguage(component.addAnother, language);
+      translations[component.addAnother] = getTranslationValue(component.addAnother, language);
     }
     if (component.removeAnother) {
-      translations[component.removeAnother] = insertLanguage(component.removeAnother, language);
+      translations[component.removeAnother] = getTranslationValue(component.removeAnother, language);
     }
     if (component.customLabels) {
       Object.values(component.customLabels).forEach((value) => {
         if (typeof value === 'string' && value) {
-          translations[value] = insertLanguage(value, language);
+          translations[value] = getTranslationValue(value, language);
         }
       });
     }
     if (component.values) {
       component.values.forEach((value: any) => {
         if (value.label) {
-          translations[value.label] = insertLanguage(value.label, language);
+          translations[value.label] = getTranslationValue(value.label, language);
         }
         if (value.description) {
-          translations[value.description] = insertLanguage(value.description, language);
+          translations[value.description] = getTranslationValue(value.description, language);
         }
       });
     }

@@ -1,7 +1,7 @@
 export interface ConditionalComponentType {
   show?: boolean;
   when?: string;
-  eq?: string;
+  eq?: any;
 }
 
 const conditionalComponent = (props?: ConditionalComponentType) => {

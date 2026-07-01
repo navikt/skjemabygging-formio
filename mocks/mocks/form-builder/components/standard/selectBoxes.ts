@@ -4,6 +4,7 @@ interface SelectBoxesType extends BaseComponentType {
   values: {
     label: string;
     value: string;
+    description?: string;
   }[];
 }
 

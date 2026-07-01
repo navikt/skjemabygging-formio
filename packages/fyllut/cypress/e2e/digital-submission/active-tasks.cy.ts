@@ -31,7 +31,7 @@ describe('Active tasks', () => {
     });
 
     it('redirects to /fyllut/:skjemapath:/paabegynt', () => {
-      cy.visit('/fyllut/testmellomlagring?sub=digital');
+      cy.visit('/fyllut/activetasksmellomlagring?sub=digital');
       cy.wait('@getActiveTasks');
       cy.findByRole('heading', { name: TEXTS.statiske.paabegynt.oneActiveTaskHeading });
     });
@@ -40,14 +40,14 @@ describe('Active tasks', () => {
   describe('When user has mellomlagring and ettersending in progress for the form', () => {
     beforeEach(() => {
       cy.mocksUseRouteVariant('get-active-tasks:success');
-      cy.visit('/fyllut/testmellomlagring/paabegynt?sub=digital');
+      cy.visit('/fyllut/activetasksmellomlagring/paabegynt?sub=digital');
       cy.wait('@getActiveTasks');
     });
 
     it('lets you go to the original mellomlagring and the active ettersending', () => {
       cy.findByRole('link', { name: new RegExp(`${TEXTS.statiske.paabegynt.continueTask}`) })
         .should('have.attr', 'href')
-        .and('include', '/testmellomlagring/oppsummering')
+        .and('include', '/activetasksmellomlagring/oppsummering')
         .and('include', 'sub=digital')
         .and('include', 'innsendingsId=f99dc639-add1-468f-b4bb-961cdfd1e599');
       cy.findByRole('link', { name: TEXTS.statiske.paabegynt.sendAttachment })
@@ -61,7 +61,7 @@ describe('Active tasks', () => {
   describe('When user has a mellomlagring in progress for the form', () => {
     beforeEach(() => {
       cy.mocksUseRouteVariant('get-active-tasks:success-mellomlagring');
-      cy.visit('/fyllut/testmellomlagring/paabegynt?sub=digital');
+      cy.visit('/fyllut/activetasksmellomlagring/paabegynt?sub=digital');
       cy.wait('@getActiveTasks');
     });
 
@@ -85,7 +85,7 @@ describe('Active tasks', () => {
   describe('When user has an active ettersending in progress for the form', () => {
     beforeEach(() => {
       cy.mocksUseRouteVariant('get-active-tasks:success-ettersending');
-      cy.visit('/fyllut/testmellomlagring/paabegynt?sub=digital');
+      cy.visit('/fyllut/activetasksmellomlagring/paabegynt?sub=digital');
       cy.wait('@getActiveTasks');
     });
 

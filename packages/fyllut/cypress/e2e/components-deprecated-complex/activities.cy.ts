@@ -76,6 +76,11 @@ const verifySubmissionValues = (maalgruppe: SubmissionMaalgruppe, aktivitet: Par
 };
 
 describe('Activities', () => {
+  const startFromIntroPage = () => {
+    cy.clickIntroPageConfirmation();
+    cy.clickStart();
+  };
+
   before(() => {
     cy.configMocksServer();
   });
@@ -95,7 +100,7 @@ describe('Activities', () => {
     it('should not show activity component when submission method is paper', () => {
       cy.visit(`/fyllut/testingactivities?sub=paper`);
       cy.defaultWaits();
-      cy.clickStart();
+      startFromIntroPage();
       cy.findByRole('group', { name: 'Hvilken aktivitet søker du om støtte i forbindelse med?' }).should('not.exist');
     });
   });
@@ -106,7 +111,7 @@ describe('Activities', () => {
 
       cy.visit(`/fyllut/testingactivities?sub=digital`);
       cy.defaultWaits();
-      cy.clickStart();
+      startFromIntroPage();
       cy.wait('@getActivities');
 
       cy.findByRole('group', { name: 'Hvilken aktivitet søker du om støtte i forbindelse med?' })
@@ -132,7 +137,7 @@ describe('Activities', () => {
 
       cy.visit(`/fyllut/testingactivities?sub=digital`);
       cy.defaultWaits();
-      cy.clickStart();
+      startFromIntroPage();
       cy.wait('@getActivities');
 
       // Select the activity from backend
@@ -142,7 +147,7 @@ describe('Activities', () => {
       // Attachments page
       cy.findByRole('heading', { name: 'Vedlegg' }).shouldBeVisible();
       cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
-        cy.findByRole('radio', { name: 'Jeg ettersender dokumentasjonen senere.' }).check();
+        cy.findByRole('radio', { name: 'Jeg laster opp dette senere' }).check();
       });
       cy.clickSaveAndContinue();
 
@@ -169,6 +174,7 @@ describe('Activities', () => {
           cy.defaultWaits();
           cy.wait('@getMellomlagring');
           cy.wait('@getActivities');
+          cy.wait('@getPrefillData');
 
           // Verify that activity from saved application is checked
           cy.findByRole('group', { name: 'Hvilken aktivitet søker du om støtte i forbindelse med?' })
@@ -184,7 +190,7 @@ describe('Activities', () => {
           // Attachments page
           cy.findByRole('heading', { name: 'Vedlegg' }).shouldBeVisible();
           cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
-            cy.findByRole('radio', { name: 'Jeg ettersender dokumentasjonen senere.' }).check();
+            cy.findByRole('radio', { name: 'Jeg laster opp dette senere' }).check();
           });
           cy.clickSaveAndContinue();
 
@@ -231,7 +237,7 @@ describe('Activities', () => {
           // Attachments page
           cy.findByRole('heading', { name: 'Vedlegg' }).shouldBeVisible();
           cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
-            cy.findByRole('radio', { name: 'Jeg ettersender dokumentasjonen senere.' }).check();
+            cy.findByRole('radio', { name: 'Jeg laster opp dette senere' }).check();
           });
           cy.clickSaveAndContinue();
 
@@ -290,7 +296,7 @@ describe('Activities', () => {
 
       cy.visit(`/fyllut/testingactivities?sub=digital`);
       cy.defaultWaits();
-      cy.clickStart();
+      startFromIntroPage();
       cy.wait('@getActivities');
 
       cy.findByRole('group', { name: 'Hvilken aktivitet søker du om støtte i forbindelse med?' })
@@ -317,7 +323,7 @@ describe('Activities', () => {
 
       cy.visit(`/fyllut/testingactivities?sub=digital`);
       cy.defaultWaits();
-      cy.clickStart();
+      startFromIntroPage();
       cy.wait('@getActivities');
 
       // Select the default activity
@@ -328,7 +334,7 @@ describe('Activities', () => {
       // Attachments page
       cy.findByRole('heading', { name: 'Vedlegg' }).shouldBeVisible();
       cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
-        cy.findByRole('radio', { name: 'Jeg ettersender dokumentasjonen senere.' }).check();
+        cy.findByRole('radio', { name: 'Jeg laster opp dette senere' }).check();
       });
       cy.clickSaveAndContinue();
 
@@ -358,7 +364,7 @@ describe('Activities', () => {
 
       cy.visit(`/fyllut/testingactivities?sub=digital`);
       cy.defaultWaits();
-      cy.clickStart();
+      startFromIntroPage();
       cy.wait('@getActivities');
 
       // Select the default activity
@@ -369,7 +375,7 @@ describe('Activities', () => {
       // Attachments page
       cy.findByRole('heading', { name: 'Vedlegg' }).shouldBeVisible();
       cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
-        cy.findByRole('radio', { name: 'Jeg ettersender dokumentasjonen senere.' }).check();
+        cy.findByRole('radio', { name: 'Jeg laster opp dette senere' }).check();
       });
       cy.clickSaveAndContinue();
 
@@ -378,9 +384,7 @@ describe('Activities', () => {
       cy.findByRole('heading', { name: 'Aktiviteter', level: 3 })
         .closest('[data-cy=form-summary-panel]')
         .within(() => {
-          cy.get('dl').within(() => {
-            cy.get('dd').eq(0).should('contain.text', defaultActivity.text);
-          });
+          cy.contains('dd', defaultActivity.text).should('exist');
         });
 
       // Submit
@@ -396,7 +400,7 @@ describe('Activities', () => {
 
       cy.visit(`/fyllut/testingactivities?sub=digital`);
       cy.defaultWaits();
-      cy.clickStart();
+      startFromIntroPage();
       cy.wait('@getActivities');
 
       cy.contains('Hvilken aktivitet søker du om støtte i forbindelse med?');
@@ -412,7 +416,7 @@ describe('Activities', () => {
     it('should show validation errors', () => {
       cy.visit(`/fyllut/testingactivities?sub=digital`);
       cy.defaultWaits();
-      cy.clickStart();
+      startFromIntroPage();
       cy.wait('@getActivities');
 
       cy.clickSaveAndContinue();

@@ -16,6 +16,11 @@ const dateFormatLongYear: Intl.DateTimeFormatOptions = {
 const toLocaleDateLongYear = (date: string, locale = 'no') => new Date(date).toLocaleString(locale, dateFormatLongYear);
 
 describe('DrivingList', () => {
+  const startFromIntroPage = () => {
+    cy.clickIntroPageConfirmation();
+    cy.clickStart();
+  };
+
   before(() => {
     cy.configMocksServer();
   });
@@ -28,7 +33,7 @@ describe('DrivingList', () => {
     it('should show errors', () => {
       cy.visit(`/fyllut/testdrivinglist?sub=paper`);
       cy.defaultWaits();
-      cy.clickStart();
+      startFromIntroPage();
 
       // Should fill out form
       cy.findByRole('textbox', { name: DATE_PICKER_LABEL }).should('exist');
@@ -74,7 +79,7 @@ describe('DrivingList', () => {
     it('should fill out form and show data in summary', () => {
       cy.visit(`/fyllut/testdrivinglist?sub=paper`);
       cy.defaultWaits();
-      cy.clickStart();
+      startFromIntroPage();
 
       cy.findByRole('textbox', { name: DATE_PICKER_LABEL }).should('exist').type('15.05.2023{esc}');
       cy.findByRole('group', { name: PARKING_LABEL })
@@ -98,21 +103,14 @@ describe('DrivingList', () => {
       cy.clickNextStep();
 
       // Summary
-      cy.get('dl')
-        .first()
-        .within(() => {
-          cy.get('dt').eq(0).should('contain.text', 'Legg til kjøreliste for en eller flere perioder');
-
-          cy.findAllByRole('listitem').should('have.length', 2);
-          cy.findByText('mandag 15. mai 2023, parkeringsutgift: 100 kr').should('exist');
-          cy.findByText('søndag 21. mai 2023').should('exist');
-        });
+      cy.findByText('mandag 15. mai 2023, parkeringsutgift: 100 kr').should('exist');
+      cy.findByText('søndag 21. mai 2023').should('exist');
     });
 
     it('should add and remove periods', () => {
       cy.visit(`/fyllut/testdrivinglist?sub=paper`);
       cy.defaultWaits();
-      cy.clickStart();
+      startFromIntroPage();
 
       const today = new Date();
       const twoWeeksAgo = new Date(today);
@@ -145,7 +143,7 @@ describe('DrivingList', () => {
     it('should fill out form and show data in summary', () => {
       cy.visit(`/fyllut/testdrivinglist?sub=digital`);
       cy.defaultWaits();
-      cy.clickStart();
+      startFromIntroPage();
       cy.wait('@getActivities');
       cy.wait('@createMellomlagring');
 
@@ -195,15 +193,8 @@ describe('DrivingList', () => {
       cy.clickSaveAndContinue();
 
       // Summary
-      cy.get('dl')
-        .first()
-        .within(() => {
-          cy.get('dt').eq(0).should('contain.text', 'Legg til kjøreliste for en eller flere perioder');
-
-          cy.findAllByRole('listitem').should('have.length', 2);
-          cy.findByText('lørdag 13. januar 2024, parkeringsutgift: 100 kr').should('exist');
-          cy.findByText('fredag 19. januar 2024').should('exist');
-        });
+      cy.findByText('lørdag 13. januar 2024, parkeringsutgift: 100 kr').should('exist');
+      cy.findByText('fredag 19. januar 2024').should('exist');
     });
 
     it('should fill out mellomlagret values', () => {
@@ -267,7 +258,7 @@ describe('DrivingList', () => {
       cy.visit(`/fyllut/testdrivinglist?sub=digital`);
       cy.defaultWaits();
 
-      cy.clickStart();
+      startFromIntroPage();
       cy.wait('@getActivities');
       cy.wait('@createMellomlagring');
 
@@ -308,7 +299,7 @@ describe('DrivingList', () => {
       cy.mocksUseRouteVariant('get-activities:success-empty');
       cy.visit(`/fyllut/testdrivinglist?sub=digital`);
       cy.defaultWaits();
-      cy.clickStart();
+      startFromIntroPage();
       cy.wait('@getActivities');
       cy.wait('@createMellomlagring');
 

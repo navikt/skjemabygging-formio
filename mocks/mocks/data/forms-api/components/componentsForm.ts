@@ -41,6 +41,7 @@ import {
 } from '../../../form-builder/components';
 import form from '../../../form-builder/form/form';
 import formProperties from '../../../form-builder/form/formProperties';
+import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
 
 const defaultProps = { validate: { required: false } };
 
@@ -264,4 +265,80 @@ const componentsForm = () => {
   });
 };
 
+const componentsTranslations = () => {
+  const baseTranslations = getMockTranslationsFromForm(componentsForm());
+
+  return {
+    ...baseTranslations,
+    data: {
+      ...baseTranslations.data,
+      i18n: {
+        ...baseTranslations.data.i18n,
+        Components: 'Components',
+        Person: 'Person',
+        'Standard felter': 'Standard fields',
+        Tekstfelt: 'Text field',
+        Tekstområde: 'Text area',
+        Tall: 'Number',
+        Avkryssingsboks: 'Checkbox',
+        Flervalg: 'Multiple choice',
+        'Nedtrekksmeny (navSelect)': 'Dropdown (navSelect)',
+        'Nedtrekksmeny (select)': 'Dropdown (select)',
+        'Nedtrekksmeny (select HTML5)': 'Dropdown (select HTML5)',
+        Radiopanel: 'Radio panel',
+        'HTML Blokk': 'HTML Block',
+        '<p>HTML Blokk</p>': '<p>HTML Block</p>',
+        'Alert suksess': 'Alert success',
+        'Alert error': 'Alert error',
+        '<p>Alert suksess</p>': '<p>Alert success</p>',
+        '<p>Alert error</p>': '<p>Alert error</p>',
+        'Penger og konto': 'Money and account',
+        Beløp: 'Amount',
+        Kontonummer: 'Account number',
+        'Bedrift / organisasjon': 'Company / organization',
+        Organisasjonsnummer: 'Organisation number',
+        Arbeidsgiver: 'Employer',
+        'Dato og tid': 'Date and time',
+        Dato: 'Date',
+        'Dato (dd.mm.åååå)': 'Date',
+        'Klokkeslett (tt:mm)': 'Time',
+        Månedsvelger: 'Month picker',
+        'Månedsvelger (mm.åååå)': 'Month picker',
+        År: 'Year',
+        Årstall: 'Year',
+        Gruppering: 'Grouping',
+        Beholder: 'Container',
+        'Skjemagruppe 1': 'Form group 1',
+        'Skjemagruppe 2': 'Form group 2',
+        'Tekstfelt skjemagruppe 1': 'Text field form group 1',
+        'Tekstfelt skjemagruppe 2': 'Text field form group 2',
+        'Repeterende data': 'Repeating data',
+        'Tekstfelt repeterende data': 'Text field repeating data',
+        Andre: 'Other',
+        'Jeg bekrefter at jeg vil svare så riktig som jeg kan.': 'I confirm that I will answer as accurately as I can',
+        'Aktiviteter og målgruppe': 'Activities and target group',
+        Adresse: 'Address',
+        Vegadresse: 'Street address',
+        Postnummer: 'Postal code',
+        Poststed: 'City',
+        'Gyldig fra (dd.mm.åååå)': 'Valid from',
+        'Gyldig til (dd.mm.åååå)': 'Valid to',
+        'Velg land': 'Select country',
+        Land: 'Select country',
+        'E-post': 'E-mail',
+        Telefonnummer: 'Telephone number',
+        Statsborgerskap: 'Citizenship',
+        'Velg valuta': 'Select currency',
+        'Norsk krone (NOK)': 'Norwegian krone (NOK)',
+        'Svensk krone (SEK)': 'Swedish krona (SEK)',
+        'Mer info': 'More info',
+        'Vennligst gi oss mer info': 'Please give us more info',
+        'Les mer': 'Read more',
+        '<p>Utvidet beskrivelse på html blokk</p>': '<p>Extended description for HTML block</p>',
+      },
+    },
+  };
+};
+
+export { componentsTranslations };
 export default componentsForm;

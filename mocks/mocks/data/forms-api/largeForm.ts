@@ -1,5 +1,6 @@
 import { checkbox, number, panel, textArea, textField } from '../../form-builder/components';
 import form from '../../form-builder/form/form';
+import { formIntroPageWithoutSelfDeclaration } from '../../form-builder/form/formIntroPage';
 import formProperties from '../../form-builder/form/formProperties';
 
 const largeForm = () => {
@@ -27,6 +28,7 @@ const largeForm = () => {
       }),
     ),
     properties: formProperties({ formNumber }),
+    introPage: formIntroPageWithoutSelfDeclaration(),
   });
 };
 
