@@ -6,6 +6,8 @@ const digitalnologinDigitalNoLoginForm = () =>
     formNumber: 'DIGITALNOLOGIN-DIGITAL-NO-LOGIN',
     path: 'digitalnologindigitalnologin',
     submissionTypes: ['DIGITAL', 'DIGITAL_NO_LOGIN'],
+    includeAttachmentPanel: false,
+    includeSelfDeclaration: false,
     ettersendelsesfrist: 14,
   });
 
@@ -15,6 +17,8 @@ const digitalnologinDigitalNoLoginTranslations = () =>
     formNumber: 'DIGITALNOLOGIN-DIGITAL-NO-LOGIN',
     path: 'digitalnologindigitalnologin',
     submissionTypes: ['DIGITAL', 'DIGITAL_NO_LOGIN'],
+    includeAttachmentPanel: false,
+    includeSelfDeclaration: false,
     ettersendelsesfrist: 14,
   });
 

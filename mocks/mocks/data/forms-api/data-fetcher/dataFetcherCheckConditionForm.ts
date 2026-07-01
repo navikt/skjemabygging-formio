@@ -112,6 +112,7 @@ const dataFetcherCheckConditionForm = () =>
       panel({
         key: 'page5',
         title: 'Viktige data',
+        customConditional: "show = utils.isBornBeforeYear(2000, 'startdato', submission)",
         components: [
           textField({
             key: 'hemmeligKodeord',
@@ -122,6 +123,7 @@ const dataFetcherCheckConditionForm = () =>
       panel({
         key: 'page6',
         title: 'Mer om aktiviteter',
+        customConditional: "show = utils.dataFetcher('aktivitetsvelger', submission).success;",
         components: [
           number({
             key: 'hvorMangeAktiviteterErAktuelle',
@@ -132,6 +134,7 @@ const dataFetcherCheckConditionForm = () =>
       panel({
         key: 'world',
         title: 'World',
+        customConditional: "show = _.get(data, 'hemmeligKodeord') === 'hello'",
       }),
       panel({
         isAttachmentPanel: true,

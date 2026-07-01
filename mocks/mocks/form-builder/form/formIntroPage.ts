@@ -1,5 +1,12 @@
 export interface FormIntroPageType {
   enabled?: boolean;
+  introduction?: string;
+  selfDeclaration?: string;
+  sections?: {
+    dataDisclosure?: {
+      title?: string;
+    };
+  };
 }
 
 const formIntroPage = (props?: FormIntroPageType) => {
@@ -21,4 +28,9 @@ const staticDefaultValues = {
   },
 };
 
+const formIntroPageWithoutSelfDeclaration = (): FormIntroPageType => ({
+  enabled: false,
+});
+
 export default formIntroPage;
+export { formIntroPageWithoutSelfDeclaration };

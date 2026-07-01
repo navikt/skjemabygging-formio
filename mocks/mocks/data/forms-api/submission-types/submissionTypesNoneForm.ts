@@ -6,6 +6,7 @@ const submissionTypesNoneForm = () =>
     formNumber: 'SUBMISSION-TYPES-NONE',
     path: 'submissiontypesnone',
     submissionTypes: [],
+    includeSelfDeclaration: false,
     includeAttachmentLink: true,
     innsendingForklaring: 'Her er litt forklaring',
   });
@@ -16,6 +17,7 @@ const submissionTypesNoneTranslations = () =>
     formNumber: 'SUBMISSION-TYPES-NONE',
     path: 'submissiontypesnone',
     submissionTypes: [],
+    includeSelfDeclaration: false,
     includeAttachmentLink: true,
     innsendingForklaring: 'Her er litt forklaring',
   });

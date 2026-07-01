@@ -6,6 +6,7 @@ const submissionTypesDigitalForm = () =>
     formNumber: 'SUBMISSION-TYPES-DIGITAL',
     path: 'submissiontypesdigital',
     submissionTypes: ['DIGITAL'],
+    includeSelfDeclaration: false,
   });
 
 const submissionTypesDigitalTranslations = () =>
@@ -14,6 +15,7 @@ const submissionTypesDigitalTranslations = () =>
     formNumber: 'SUBMISSION-TYPES-DIGITAL',
     path: 'submissiontypesdigital',
     submissionTypes: ['DIGITAL'],
+    includeSelfDeclaration: false,
   });
 
 export { submissionTypesDigitalForm, submissionTypesDigitalTranslations };

@@ -122,7 +122,11 @@ describe('Submission Type', () => {
 
         cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
         cy.clickSaveAndContinue();
-        cy.findByRole('link', { name: 'Oppsummering' }).click();
+        cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
+        cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+          cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
+        });
+        cy.clickSaveAndContinue();
 
         cy.clickSendNav();
         cy.findByRole('heading', { name: 'Kvittering' }).should('exist');
@@ -201,7 +205,9 @@ describe('Submission Type', () => {
         cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
         cy.clickNextStep();
 
-        cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
+        cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+          cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
+        });
         cy.clickNextStep();
 
         cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions }).click();
@@ -458,7 +464,7 @@ describe('Submission Type', () => {
     it('Make sure the url is correct when you already have search params.', () => {
       cy.visit('/fyllut/submissiontypespaperdigital?lang=en');
       cy.defaultWaits();
-      cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendOnPaper }).click();
+      cy.findByRole('link', { name: /Send i posten|Send by post/ }).click();
 
       cy.url().should('include', 'fyllut/submissiontypespaperdigital?lang=en&sub=paper');
     });

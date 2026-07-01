@@ -6,6 +6,7 @@ const submissionTypesPaperForm = () =>
     formNumber: 'SUBMISSION-TYPES-PAPER',
     path: 'submissiontypespaper',
     submissionTypes: ['PAPER'],
+    includeSelfDeclaration: false,
     includeAttachmentLink: true,
     innsendingForklaring: 'Her er litt forklaring',
   });
@@ -16,6 +17,7 @@ const submissionTypesPaperTranslations = () =>
     formNumber: 'SUBMISSION-TYPES-PAPER',
     path: 'submissiontypespaper',
     submissionTypes: ['PAPER'],
+    includeSelfDeclaration: false,
     includeAttachmentLink: true,
     innsendingForklaring: 'Her er litt forklaring',
   });

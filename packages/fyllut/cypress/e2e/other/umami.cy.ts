@@ -228,7 +228,7 @@ describe('Umami', () => {
 
   describe('Submission method "ingen"', () => {
     it('logs umami events', () => {
-      cy.visit('/fyllut/stnone');
+      cy.visit('/fyllut/submissiontypesnone');
       cy.defaultWaits();
 
       cy.clickStart();

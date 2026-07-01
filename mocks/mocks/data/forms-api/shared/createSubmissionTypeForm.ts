@@ -1,5 +1,8 @@
 import { attachment, panel, textField } from '../../../form-builder/components';
+import identity from '../../../form-builder/components/cutomized/identity';
+import yourInformation from '../../../form-builder/components/cutomized/yourInformation';
 import form from '../../../form-builder/form/form';
+import { formIntroPageWithoutSelfDeclaration } from '../../../form-builder/form/formIntroPage';
 import formProperties from '../../../form-builder/form/formProperties';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
 
@@ -13,6 +16,7 @@ interface CreateSubmissionTypeFormOptions {
   submissionTypes: SubmissionType[];
   includeAttachmentPanel?: boolean;
   includeAttachmentLink?: boolean;
+  includeSelfDeclaration?: boolean;
   innsendingForklaring?: string;
   ettersendelsesfrist?: number;
   signatureMode?: SignatureMode;
@@ -88,11 +92,16 @@ const createAttachmentPanel = (includeAttachmentLink: boolean) =>
     ],
   });
 
+const shouldAddDigitalIdentityPrefill = (submissionTypes: SubmissionType[]) =>
+  submissionTypes.length === 1 && submissionTypes[0] === 'DIGITAL';
+
 const createSubmissionTypeForm = ({
   formNumber,
   includeAttachmentLink = false,
   includeAttachmentPanel = true,
+  includeSelfDeclaration = true,
   path,
+  submissionTypes,
   title,
   ...propertiesOptions
 }: CreateSubmissionTypeFormOptions) =>
@@ -103,11 +112,31 @@ const createSubmissionTypeForm = ({
     components: [
       panel({
         title: 'Dine opplysninger',
-        components: [textField({ label: 'Tekstfelt', validate: { required: true } })],
+        components: [
+          ...(shouldAddDigitalIdentityPrefill(submissionTypes)
+            ? [
+                yourInformation({
+                  key: 'dineOpplysninger',
+                  hidden: true,
+                  clearOnHide: false,
+                  components: [
+                    identity({
+                      prefill: true,
+                      hidden: true,
+                      clearOnHide: false,
+                      validate: { required: false },
+                    }),
+                  ],
+                }),
+              ]
+            : []),
+          textField({ label: 'Tekstfelt', validate: { required: true } }),
+        ],
       }),
       ...(includeAttachmentPanel ? [createAttachmentPanel(includeAttachmentLink)] : []),
     ],
-    properties: createProperties({ formNumber, ...propertiesOptions }),
+    properties: createProperties({ formNumber, submissionTypes, ...propertiesOptions }),
+    ...(includeSelfDeclaration ? {} : { introPage: formIntroPageWithoutSelfDeclaration() }),
   });
 
 const createSubmissionTypeTranslations = (options: CreateSubmissionTypeFormOptions) =>

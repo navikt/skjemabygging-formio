@@ -6,6 +6,7 @@ const submissionTypesPaperNoLoginForm = () =>
     formNumber: 'SUBMISSION-TYPES-PAPER-NO-LOGIN',
     path: 'submissiontypespapernologin',
     submissionTypes: ['PAPER', 'DIGITAL_NO_LOGIN'],
+    includeSelfDeclaration: false,
   });
 
 const submissionTypesPaperNoLoginTranslations = () =>
@@ -14,6 +15,7 @@ const submissionTypesPaperNoLoginTranslations = () =>
     formNumber: 'SUBMISSION-TYPES-PAPER-NO-LOGIN',
     path: 'submissiontypespapernologin',
     submissionTypes: ['PAPER', 'DIGITAL_NO_LOGIN'],
+    includeSelfDeclaration: false,
   });
 
 export { submissionTypesPaperNoLoginForm, submissionTypesPaperNoLoginTranslations };

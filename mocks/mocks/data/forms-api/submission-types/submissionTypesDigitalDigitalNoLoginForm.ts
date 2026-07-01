@@ -6,6 +6,7 @@ const submissionTypesDigitalDigitalNoLoginForm = () =>
     formNumber: 'SUBMISSION-TYPES-DIGITAL-DIGITAL-NO-LOGIN',
     path: 'submissiontypesdigitaldigitalnologin',
     submissionTypes: ['DIGITAL', 'DIGITAL_NO_LOGIN'],
+    includeSelfDeclaration: false,
     ettersendelsesfrist: 14,
   });
 
@@ -15,6 +16,7 @@ const submissionTypesDigitalDigitalNoLoginTranslations = () =>
     formNumber: 'SUBMISSION-TYPES-DIGITAL-DIGITAL-NO-LOGIN',
     path: 'submissiontypesdigitaldigitalnologin',
     submissionTypes: ['DIGITAL', 'DIGITAL_NO_LOGIN'],
+    includeSelfDeclaration: false,
     ettersendelsesfrist: 14,
   });
 

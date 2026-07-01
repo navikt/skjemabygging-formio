@@ -6,6 +6,7 @@ const formNavigationDigitalNoLoginForm = () =>
     formNumber: 'FORM-NAV-DIGITAL-NO-LOGIN',
     path: 'formnavigationdigitalnologin',
     submissionTypes: ['DIGITAL_NO_LOGIN'],
+    includeSelfDeclaration: false,
   });
 
 const formNavigationDigitalNoLoginTranslations = () =>
@@ -14,6 +15,7 @@ const formNavigationDigitalNoLoginTranslations = () =>
     formNumber: 'FORM-NAV-DIGITAL-NO-LOGIN',
     path: 'formnavigationdigitalnologin',
     submissionTypes: ['DIGITAL_NO_LOGIN'],
+    includeSelfDeclaration: false,
   });
 
 export { formNavigationDigitalNoLoginForm, formNavigationDigitalNoLoginTranslations };

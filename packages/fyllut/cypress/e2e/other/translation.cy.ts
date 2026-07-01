@@ -61,7 +61,7 @@ describe('Translations', () => {
         .first()
         .should('exist')
         .within(($radio) => cy.findByLabelText('Yes').should('exist').check({ force: true }));
-      cy.findByRole('textbox', { name: 'Norwegian national identification / D number' })
+      cy.findByRole('textbox', { name: 'Norwegian national identification number or D number' })
         .should('exist')
         .type('16020256145');
       cy.findByRole('textbox', { name: 'Velg måned' }).should('exist').type('02.2022');
@@ -74,7 +74,7 @@ describe('Translations', () => {
         .first()
         .should('exist')
         .within(($radio) =>
-          cy.findByLabelText('No, I have no other documentation.').should('exist').check({ force: true }),
+          cy.findByLabelText('No, I have no additional documentation to attach').should('exist').check({ force: true }),
         );
       cy.clickNextStep();
 

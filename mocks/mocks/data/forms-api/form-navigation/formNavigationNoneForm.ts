@@ -6,6 +6,7 @@ const formNavigationNoneForm = () =>
     formNumber: 'FORM-NAV-NONE',
     path: 'formnavigationnone',
     submissionTypes: [],
+    includeSelfDeclaration: false,
     includeAttachmentLink: true,
     innsendingForklaring: 'Her er litt forklaring',
   });
@@ -16,6 +17,7 @@ const formNavigationNoneTranslations = () =>
     formNumber: 'FORM-NAV-NONE',
     path: 'formnavigationnone',
     submissionTypes: [],
+    includeSelfDeclaration: false,
     includeAttachmentLink: true,
     innsendingForklaring: 'Her er litt forklaring',
   });

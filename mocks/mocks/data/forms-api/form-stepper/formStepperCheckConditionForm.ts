@@ -15,6 +15,7 @@ import {
   textField,
 } from '../../../form-builder/components';
 import form from '../../../form-builder/form/form';
+import { formIntroPageWithoutSelfDeclaration } from '../../../form-builder/form/formIntroPage';
 import formProperties from '../../../form-builder/form/formProperties';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
 
@@ -112,6 +113,7 @@ const formStepperCheckConditionForm = () =>
       panel({
         key: 'page5',
         title: 'Viktige data',
+        customConditional: "show = utils.isBornBeforeYear(2000, 'startdato', submission)",
         components: [
           textField({
             key: 'hemmeligKodeord',
@@ -122,6 +124,7 @@ const formStepperCheckConditionForm = () =>
       panel({
         key: 'page6',
         title: 'Mer om aktiviteter',
+        customConditional: "show = utils.dataFetcher('aktivitetsvelger', submission).success;",
         components: [
           number({
             key: 'hvorMangeAktiviteterErAktuelle',
@@ -132,6 +135,7 @@ const formStepperCheckConditionForm = () =>
       panel({
         key: 'world',
         title: 'World',
+        customConditional: "show = _.get(data, 'hemmeligKodeord') === 'hello'",
       }),
       panel({
         isAttachmentPanel: true,
@@ -234,6 +238,7 @@ const formStepperCheckConditionForm = () =>
       }),
     ],
     properties: formProperties({ formNumber: 'TST 19-81.05', submissionTypes: ['PAPER', 'DIGITAL'] }),
+    introPage: formIntroPageWithoutSelfDeclaration(),
   });
 
 const formStepperCheckConditionTranslations = () => getMockTranslationsFromForm(formStepperCheckConditionForm());

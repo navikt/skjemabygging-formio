@@ -46,7 +46,7 @@ import {
 } from '../data/forms-api/components/attachmentUploadOnlyForm';
 import { bankAccountForm, bankAccountTranslations } from '../data/forms-api/components/bankAccountForm';
 import { checkboxForm, checkboxTranslations } from '../data/forms-api/components/checkboxForm';
-import componentsForm from '../data/forms-api/components/componentsForm';
+import componentsForm, { componentsTranslations } from '../data/forms-api/components/componentsForm';
 import { containerForm, containerTranslations } from '../data/forms-api/components/containerForm';
 import { countrySelectForm, countrySelectTranslations } from '../data/forms-api/components/countrySelectForm';
 import { createMonthPickerForm, monthPickerTranslations } from '../data/forms-api/components/createMonthPickerForm';
@@ -323,7 +323,6 @@ import {
   yourInformationDeprecatedForm,
   yourInformationDeprecatedTranslations,
 } from '../data/forms-api/your-information/yourInformationDeprecatedForm';
-import { getMockTranslationsFromForm } from '../form-builder/shared/utils';
 
 const allForms = [
   { form: a11yAxeForm(), translations: a11yAxeTranslations() },
@@ -354,7 +353,7 @@ const allForms = [
   { form: attachmentUploadOnlyTestForm(), translations: attachmentUploadOnlyTranslations() },
   { form: bankAccountForm(), translations: bankAccountTranslations() },
   { form: checkboxForm(), translations: checkboxTranslations() },
-  { form: componentsForm(), translations: getMockTranslationsFromForm(componentsForm()) },
+  { form: componentsForm(), translations: componentsTranslations() },
   { form: containerForm(), translations: containerTranslations() },
   { form: countrySelectForm(), translations: countrySelectTranslations() },
   { form: createMonthPickerForm(), translations: monthPickerTranslations() },

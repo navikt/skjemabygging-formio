@@ -7,11 +7,12 @@ import {
   htmlElement,
   identity,
   monthPicker,
+  navSelect,
   panel,
-  select,
   surname,
 } from '../../../form-builder/components';
 import form from '../../../form-builder/form/form';
+import { formIntroPageWithoutSelfDeclaration } from '../../../form-builder/form/formIntroPage';
 import formProperties from '../../../form-builder/form/formProperties';
 
 interface CreateCypress101FormOptions {
@@ -46,7 +47,7 @@ const createCypress101Form = ({ path }: CreateCypress101FormOptions) =>
         title: 'Dine opplysninger',
         key: 'dineOpplysninger',
         components: [
-          select({
+          navSelect({
             key: 'oppgiTittel',
             label: 'Tittel',
             validate: { required: true },
@@ -93,6 +94,7 @@ const createCypress101Form = ({ path }: CreateCypress101FormOptions) =>
       formNumber: 'CYPRESS-101',
       submissionTypes: ['PAPER', 'DIGITAL'],
     }),
+    introPage: formIntroPageWithoutSelfDeclaration(),
   });
 
 const createCypress101Translations = (path: string) => ({
@@ -112,7 +114,8 @@ const createCypress101Translations = (path: string) => ({
       Herr: 'Mr',
       Fru: 'Mrs',
       Frøken: 'Ms',
-      'Har du norsk fødselsnummer eller D-nummer?': 'Do you have norwegian national identification number or D number?',
+      'Har du norsk fødselsnummer eller D-nummer?':
+        'Do you have a Norwegian national identification number or d number?',
       'Fødselsnummer / D-nummer': 'Norwegian national identification / D number',
       Oppsummering: 'Summary',
       'Annen dokumentasjon': 'Other documentation',

@@ -6,6 +6,7 @@ const submissionTypesPaperDigitalForm = () =>
     formNumber: 'SUBMISSION-TYPES-PAPER-DIGITAL',
     path: 'submissiontypespaperdigital',
     submissionTypes: ['PAPER', 'DIGITAL'],
+    includeSelfDeclaration: false,
   });
 
 const submissionTypesPaperDigitalTranslations = () =>
@@ -14,6 +15,7 @@ const submissionTypesPaperDigitalTranslations = () =>
     formNumber: 'SUBMISSION-TYPES-PAPER-DIGITAL',
     path: 'submissiontypespaperdigital',
     submissionTypes: ['PAPER', 'DIGITAL'],
+    includeSelfDeclaration: false,
   });
 
 export { submissionTypesPaperDigitalForm, submissionTypesPaperDigitalTranslations };

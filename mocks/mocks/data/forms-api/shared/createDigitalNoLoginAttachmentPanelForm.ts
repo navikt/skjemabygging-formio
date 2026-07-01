@@ -1,5 +1,6 @@
 import { attachment, panel, textField } from '../../../form-builder/components';
 import form from '../../../form-builder/form/form';
+import { formIntroPageWithoutSelfDeclaration } from '../../../form-builder/form/formIntroPage';
 import formProperties from '../../../form-builder/form/formProperties';
 
 interface CreateDigitalNoLoginAttachmentPanelFormOptions {
@@ -87,6 +88,7 @@ const createDigitalNoLoginAttachmentPanelForm = ({ path, title }: CreateDigitalN
       }),
       ettersendelsesfrist: 14,
     },
+    introPage: formIntroPageWithoutSelfDeclaration(),
   });
 
 export { createDigitalNoLoginAttachmentPanelForm };
