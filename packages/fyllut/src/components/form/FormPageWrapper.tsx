@@ -12,6 +12,7 @@ import { loadAllTranslations } from '../../api/useTranslations';
 import { NotFoundPage } from '../errors/NotFoundPage';
 import SubmissionMethodNotAllowed from '../SubmissionMethodNotAllowed';
 import FormPageSkeleton from './FormPageSkeleton';
+import NativeFillInForm from './NativeFillInForm';
 
 const FormPageWrapper = () => {
   const { formPath } = useParams();
@@ -19,7 +20,8 @@ const FormPageWrapper = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [form, setForm] = useState<NavFormType>();
   const { get } = useFormsApiForms();
-  const { submissionMethod } = useAppConfig();
+  const { submissionMethod, config } = useAppConfig();
+  const useNativeRender = !!formPath && (config?.nativeRenderForms ?? []).includes(formPath);
 
   const loadTranslations = useCallback(async () => {
     if (!formPath) {
@@ -97,7 +99,7 @@ const FormPageWrapper = () => {
 
   return (
     <LanguagesProvider translations={translations}>
-      <FyllUtRouter form={form} />
+      {useNativeRender ? <NativeFillInForm form={form} /> : <FyllUtRouter form={form} />}
     </LanguagesProvider>
   );
 };

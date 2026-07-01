@@ -12,6 +12,7 @@ export interface SharedFrontendConfig {
 
 export interface FyllutFrontendConfig extends SharedFrontendConfig {
   isDelingslenke: boolean;
+  nativeRenderForms?: string[];
   isLoggedIn: boolean;
   mocksEnabled: boolean;
   gitVersion: string;

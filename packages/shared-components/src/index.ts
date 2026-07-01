@@ -2,6 +2,8 @@ import { guid } from '@navikt/skjemadigitalisering-shared-domain';
 import { RenderSummaryForm, ValidationExclamationIcon } from '@navikt/skjemadigitalisering-shared-frontend';
 import jss from 'jss';
 import preset from 'jss-preset-default';
+import { postNologinSoknad } from './api/sendinn/nologin';
+import { createSoknad, deleteSoknad, getSoknad, updateSoknad, updateUtfyltSoknad } from './api/sendinn/sendInnSoknad';
 import type { FetchHeader, FetchOptions } from './api/util/http/http';
 import http from './api/util/http/http';
 import ButtonWithSpinner from './components/button/ButtonWithSpinner';
@@ -42,6 +44,15 @@ import url from './util/url/url';
 
 jss.setup(preset());
 
+const sendInnSoknadApi = {
+  createSoknad,
+  updateSoknad,
+  updateUtfyltSoknad,
+  getSoknad,
+  deleteSoknad,
+  postNologinSoknad,
+};
+
 export type { FrontendConfig } from './context/config/configContext';
 export {
   AppConfigProvider,
@@ -75,6 +86,7 @@ export {
   NavForm,
   NavFormioJs,
   RenderSummaryForm,
+  sendInnSoknadApi,
   SkeletonList,
   StaticPdfProvider,
   Styles,

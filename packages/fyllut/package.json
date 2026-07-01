@@ -21,6 +21,7 @@
     "@navikt/ds-css": "^8.2.0",
     "@navikt/ds-react": "^8.2.2",
     "@navikt/skjemadigitalisering-shared-components": "workspace:*",
+    "@navikt/skjemadigitalisering-shared-frontend": "workspace:*",
     "@navikt/skjemadigitalisering-shared-domain": "workspace:*",
     "axe-core": "^4.11.4",
     "luxon": "^3.7.2",

@@ -205,6 +205,7 @@ const config: FyllutBackendConfig = {
   clientSecret: process.env.AZURE_APP_CLIENT_SECRET!,
   naisClusterName: process.env.NAIS_CLUSTER_NAME!,
   featureToggles: featureUtils.toFeatureToggles(process.env.ENABLED_FEATURES ?? defaultEnabledFeatures),
+  nativeRenderForms: featureUtils.splitCommaSeparated(process.env.FEATURE_NATIVE_RENDER_FORMS),
   isDevelopment: process.env.NODE_ENV === 'development',
   isTest: process.env.NODE_ENV === 'test',
   isProduction: process.env.NODE_ENV === 'production',

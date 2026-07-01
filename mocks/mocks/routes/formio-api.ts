@@ -144,6 +144,7 @@ import {
   onlypapernocoverpageTranslations,
 } from '../data/forms-api/intro-page/subTypePaperNoCoverPage';
 import largeForm from '../data/forms-api/largeForm';
+import { nativeRenderForm, nativeRenderTranslations } from '../data/forms-api/native-render/nativeRenderForm';
 import { nologinForm, nologinTranslations } from '../data/forms-api/nologinForm';
 import {
   paperNoCoverPageStaticPdfForm,
@@ -236,6 +237,7 @@ const allForms = [
   { form: yearForm(), translations: yearTranslations() },
   { form: organizationNumberForm(), translations: organizationNumberTranslations() },
   { form: personCoverPageForm(), translations: personCoverPageTranslations() },
+  { form: nativeRenderForm(), translations: nativeRenderTranslations() },
   { form: organizationNumberCoverPageForm(), translations: organizationNumberCoverPageTranslations() },
   { form: summaryPageAttachmentDownloadForm(), translations: summaryPageAttachmentDownloadTranslations() },
   { form: multipleSubTypesForm(), translations: multipleSubTypesTranslations() },
