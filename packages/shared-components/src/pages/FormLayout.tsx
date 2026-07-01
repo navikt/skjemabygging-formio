@@ -8,18 +8,29 @@ import { useForm } from '../context/form/FormContext';
 import { LanguageSelector, useLanguages } from '../context/languages';
 import { useSendInn } from '../context/sendInn/sendInnContext';
 import { scrollToAndSetFocus } from '../util/focus-management/focus-management';
+import makeStyles from '../util/styles/jss/jss';
 
 interface Props {
   allowSubmittedApplication?: boolean;
 }
+
+const useStyles = makeStyles({
+  hideOnPrint: {
+    '@media print': {
+      display: 'none !important',
+    },
+  },
+});
 
 const FormLayout = ({ allowSubmittedApplication = false }: Props) => {
   const { form, formProgressVisible, title } = useForm();
   const { submitted } = useSendInn();
   const { translate } = useLanguages();
   const location = useLocation();
+  const styles = useStyles();
 
   const initialPageLoad = useRef(true);
+  const isReceiptPage = location.pathname.endsWith('/kvittering');
 
   useEffect(() => {
     if (initialPageLoad.current) {
@@ -31,8 +42,10 @@ const FormLayout = ({ allowSubmittedApplication = false }: Props) => {
 
   return (
     <FormContainer>
-      <LanguageSelector />
-      <FormTitle form={form} hideIconOnMobile={true} title={title} />
+      <div className={isReceiptPage ? styles.hideOnPrint : undefined}>
+        <LanguageSelector />
+        <FormTitle form={form} hideIconOnMobile={true} title={title} />
+      </div>
       {!allowSubmittedApplication && submitted ? (
         <div>{translate(TEXTS.statiske.error.alreadySubmitted)}</div>
       ) : (
