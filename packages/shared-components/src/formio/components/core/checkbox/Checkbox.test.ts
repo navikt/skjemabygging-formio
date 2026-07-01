@@ -12,7 +12,7 @@ describe('NavCheckbox', () => {
     await renderNavForm({
       form,
     });
-    const normalCheckbox = screen.getByLabelText('Normal checkbox (valgfritt)') as HTMLInputElement;
+    const normalCheckbox = screen.getByRole('checkbox', { name: 'Normal checkbox' }) as HTMLInputElement;
     expect(normalCheckbox).toBeInTheDocument();
     expect(normalCheckbox.checked).toBe(false);
 
