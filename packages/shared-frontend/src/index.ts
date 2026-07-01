@@ -1,5 +1,10 @@
 import FormErrorSummary from './components/error-summary/FormErrorSummary';
 import ValidationExclamationIcon from './components/icons/ValidationExclamationIcon';
+import { FormButtonRow, FormNextButton, FormPrevButton } from './components/layout/FormButtonRow';
+import FormHeader from './components/layout/FormHeader';
+import FormIcon from './components/layout/FormIcon';
+import FormLayout from './components/layout/FormLayout';
+import FormStepper from './components/layout/FormStepper';
 import { useAppConfig } from './context/app-config/AppConfigContext';
 import { useFormDefinition } from './context/form-definition/FormDefinitionContext';
 import { FormFrameworkProvider } from './context/FormFrameworkProvider';
@@ -33,8 +38,15 @@ export type {
 export type { SharedFrontendBoundaryProps } from './SharedFrontendBoundary';
 export type { WizardController } from './wizard/useWizardController';
 export {
+  FormButtonRow,
   FormErrorSummary,
   FormFrameworkProvider,
+  FormHeader,
+  FormIcon,
+  FormLayout,
+  FormNextButton,
+  FormPrevButton,
+  FormStepper,
   initializeSubmission,
   inputComponentRegistry,
   RenderInputForm,

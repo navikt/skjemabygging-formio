@@ -1,14 +1,16 @@
 import { panel, radio, select, textArea, textField } from '../../../form-builder/components';
 import form from '../../../form-builder/form/form';
+import formIntroPage from '../../../form-builder/form/formIntroPage';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
 
-const nativeRenderForm = () => {
-  const formNumber = 'nativerender';
+const newRenderForm = () => {
+  const formNumber = 'newrender';
 
   return form({
-    title: 'Native render test form',
+    title: 'new renderer test form',
     formNumber,
     path: formNumber,
+    introPage: formIntroPage({ enabled: false }),
     components: [
       panel({
         title: 'Page one',
@@ -44,6 +46,6 @@ const nativeRenderForm = () => {
   });
 };
 
-const nativeRenderTranslations = () => getMockTranslationsFromForm(nativeRenderForm());
+const newRenderTranslations = () => getMockTranslationsFromForm(newRenderForm());
 
-export { nativeRenderForm, nativeRenderTranslations };
+export { newRenderForm, newRenderTranslations };

@@ -2,6 +2,7 @@ import { FormSummary } from '@navikt/ds-react';
 import { Form, Submission, TEXTS, Tkey, TranslateFunction } from '@navikt/skjemadigitalisering-shared-domain';
 import { Link, useLocation } from 'react-router';
 import ValidationExclamationIcon from '../../../components/icons/ValidationExclamationIcon';
+import styles from './SummaryIntroPage.module.css';
 
 interface Props {
   submission: Submission;
@@ -25,7 +26,7 @@ const SummaryIntroPage = (props: Props) => {
   const inputLabel: Tkey = 'introPage.selfDeclaration.inputLabel';
 
   return (
-    <FormSummary>
+    <FormSummary className={styles.panel}>
       <FormSummary.Header>
         <FormSummary.Heading level="3">
           {translate(TEXTS.grensesnitt.introPage.title)}

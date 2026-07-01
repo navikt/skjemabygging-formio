@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router';
 import ValidationExclamationIcon from '../../../components/icons/ValidationExclamationIcon';
 import RenderComponent from '../../RenderComponent';
 import { FormComponentProps } from '../../types';
+import styles from './SummaryPanel.module.css';
 
 const SummaryPanel = (props: FormComponentProps) => {
   const { submissionPath, translate, component, panelValidationList } = props;
@@ -13,7 +14,7 @@ const SummaryPanel = (props: FormComponentProps) => {
   const panelValidation = panelValidationList?.find((panel) => panel.key === key);
 
   return (
-    <FormSummary data-cy="form-summary-panel">
+    <FormSummary data-cy="form-summary-panel" className={styles.panel}>
       <FormSummary.Header>
         <FormSummary.Heading level="3">
           {translate(title)}

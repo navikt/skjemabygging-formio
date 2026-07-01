@@ -21,6 +21,12 @@ More specific, advanced, or workflow/package-specific guidance belongs in skills
 - Prefer arrow functions over `function` declarations in new code.
 - Prefer exports at end of file
 
+## Styling in `packages/shared-frontend`
+
+- Use **CSS Modules** (`.module.css`) for component-specific styles that cannot be expressed via Aksel layout primitives.
+- Use **Aksel layout components** (`Box`, `HStack`, `VStack`) and their design-token props (e.g. `marginBlock="space-0 space-40"`) for spacing and layout that fits the Aksel system.
+- Do **not** use `react-jss` / `makeStyles` / `createUseStyles` in new shared-frontend code.
+
 ## Testing
 
 - Use `vitest` only for isolated non-UI logic (for example shared utilities, mappers, validation, and domain/backend logic).

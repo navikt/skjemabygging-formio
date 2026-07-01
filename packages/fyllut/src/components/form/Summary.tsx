@@ -1,8 +1,10 @@
-import { Button, HStack, Heading, VStack } from '@navikt/ds-react';
 import { useAppConfig, useLanguages } from '@navikt/skjemadigitalisering-shared-components';
 import { Panel } from '@navikt/skjemadigitalisering-shared-domain';
 import {
+  FormButtonRow,
   FormErrorSummary,
+  FormNextButton,
+  FormPrevButton,
   RenderSummaryForm,
   useFormDefinition,
   usePersistence,
@@ -14,7 +16,7 @@ interface Props {
   onBack: () => void;
 }
 
-const NativeSummary = ({ onBack }: Props) => {
+const Summary = ({ onBack }: Props) => {
   const appConfig = useAppConfig();
   const { translate, currentLanguage } = useLanguages();
   const { form, activeComponents, panels } = useFormDefinition();
@@ -32,8 +34,7 @@ const NativeSummary = ({ onBack }: Props) => {
   };
 
   return (
-    <VStack gap="space-24" aria-live="polite">
-      <Heading size="large">{translate(form.title)}</Heading>
+    <>
       <RenderSummaryForm
         activeComponents={activeComponents}
         submission={submission}
@@ -43,16 +44,14 @@ const NativeSummary = ({ onBack }: Props) => {
         appConfig={appConfig}
       />
       <FormErrorSummary />
-      <HStack gap="space-16">
-        <Button type="button" variant="secondary" onClick={onBack}>
-          {translate('Forrige')}
-        </Button>
-        <Button type="button" onClick={handleSubmit} loading={status === 'submitting'} disabled={!canSubmit}>
-          {translate('Send inn')}
-        </Button>
-      </HStack>
-    </VStack>
+      <FormButtonRow
+        previousButton={<FormPrevButton label={translate('Forrige')} onClick={onBack} />}
+        nextButton={
+          <FormNextButton label={translate('Send inn')} onClick={handleSubmit} loading={status === 'submitting'} />
+        }
+      />
+    </>
   );
 };
 
-export default NativeSummary;
+export default Summary;
