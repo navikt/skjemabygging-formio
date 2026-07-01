@@ -1,25 +1,22 @@
 import { FyllUtRouter, LanguagesProvider, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
-import {
-  formioFormsApiUtils,
-  I18nTranslations,
-  NavFormType,
-  navFormUtils,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, formioFormsApiUtils, I18nTranslations, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import useFormsApiForms from '../../api/useFormsApiForms';
 import { loadAllTranslations } from '../../api/useTranslations';
 import { NotFoundPage } from '../errors/NotFoundPage';
 import SubmissionMethodNotAllowed from '../SubmissionMethodNotAllowed';
+import FillInForm from './FillInForm';
 import FormPageSkeleton from './FormPageSkeleton';
 
 const FormPageWrapper = () => {
   const { formPath } = useParams();
   const [translations, setTranslations] = useState<I18nTranslations>();
   const [loading, setLoading] = useState<boolean>(true);
-  const [form, setForm] = useState<NavFormType>();
+  const [form, setForm] = useState<Form>();
   const { get } = useFormsApiForms();
-  const { submissionMethod } = useAppConfig();
+  const { submissionMethod, config } = useAppConfig();
+  const useNewRenderer = !!formPath && (config?.newRenderForms ?? []).includes(formPath);
 
   const loadTranslations = useCallback(async () => {
     if (!formPath) {
@@ -42,7 +39,7 @@ const FormPageWrapper = () => {
       'title,skjemanummer,path,revision,introPage,components,properties,firstPanelSlug',
     );
     if (formData) {
-      setForm(formioFormsApiUtils.mapFormToNavForm(formData));
+      setForm(formData);
     }
   }, [formPath, get]);
 
@@ -91,13 +88,16 @@ const FormPageWrapper = () => {
     return <NotFoundPage />;
   }
 
-  if (submissionMethod && !navFormUtils.isSubmissionMethodAllowed(submissionMethod, form)) {
+  if (
+    submissionMethod &&
+    !navFormUtils.isSubmissionMethodAllowed(submissionMethod, formioFormsApiUtils.mapFormToNavForm(form))
+  ) {
     return <SubmissionMethodNotAllowed submissionMethod={submissionMethod} />;
   }
 
   return (
     <LanguagesProvider translations={translations}>
-      <FyllUtRouter form={form} />
+      {useNewRenderer ? <FillInForm form={form} /> : <FyllUtRouter form={formioFormsApiUtils.mapFormToNavForm(form)} />}
     </LanguagesProvider>
   );
 };

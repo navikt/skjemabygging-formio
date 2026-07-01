@@ -1,0 +1,13 @@
+.row {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  gap: var(--ax-space-16);
+  flex-wrap: wrap;
+}
+
+.button {
+  min-width: 12rem;
+  flex-grow: 1;
+  max-width: 19.5rem;
+}

@@ -7,6 +7,7 @@ const {
   applicationName,
   naisClusterName,
   featureToggles,
+  newRenderForms,
   isDelingslenke,
   isDevelopment,
   frontendLoggerConfig,
@@ -27,6 +28,7 @@ const config = {
     const payload = {
       ...sharedConfig,
       isDelingslenke,
+      newRenderForms,
       mocksEnabled,
       isLoggedIn,
       gitVersion,
