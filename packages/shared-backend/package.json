@@ -39,7 +39,7 @@
     "@types/dompurify": "^3.2.0",
     "@types/express": "^5.0.3",
     "@types/express-correlation-id": "^3.0.0",
-    "@types/multer": "^2.0.0",
+    "@types/multer": "^2.2.0",
     "express": "^5.2.1",
     "multer": "^2.2.0"
   }
