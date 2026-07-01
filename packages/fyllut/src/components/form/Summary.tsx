@@ -7,7 +7,7 @@ import {
   FormPrevButton,
   RenderSummaryForm,
   useFormDefinition,
-  usePersistence,
+  useFormPersistence,
   useSubmission,
   useValidation,
 } from '@navikt/skjemadigitalisering-shared-frontend';
@@ -22,7 +22,7 @@ const Summary = ({ onBack }: Props) => {
   const { form, activeComponents, panels } = useFormDefinition();
   const { submission } = useSubmission();
   const { validatePages } = useValidation();
-  const { submit, status, canSubmit } = usePersistence();
+  const { submit, status, canSubmit } = useFormPersistence();
 
   const handleSubmit = () => {
     const valid = validatePages(

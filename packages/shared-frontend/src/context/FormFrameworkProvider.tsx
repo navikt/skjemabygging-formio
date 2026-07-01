@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import { AppConfigProvider, FrameworkLogger } from './app-config/AppConfigContext';
 import { FormDefinitionProvider } from './form-definition/FormDefinitionContext';
 import { LanguageProvider } from './language/LanguageContext';
-import { FormPersistenceHandlers, PersistenceProvider } from './persistence/PersistenceContext';
+import { FormPersistenceHandlers, FormPersistenceProvider } from './persistence/PersistenceContext';
 import { SubmissionProvider } from './submission/SubmissionContext';
 import { ValidationProvider } from './validation/ValidationContext';
 
@@ -36,9 +36,9 @@ const FormFrameworkProvider = ({
         <SubmissionProvider initialSubmission={initialSubmission}>
           <FormDefinitionProvider form={form}>
             <ValidationProvider>
-              <PersistenceProvider saveDraft={persistence?.saveDraft} submitForm={persistence?.submitForm}>
+              <FormPersistenceProvider saveDraft={persistence?.saveDraft} submitForm={persistence?.submitForm}>
                 {children}
-              </PersistenceProvider>
+              </FormPersistenceProvider>
             </ValidationProvider>
           </FormDefinitionProvider>
         </SubmissionProvider>

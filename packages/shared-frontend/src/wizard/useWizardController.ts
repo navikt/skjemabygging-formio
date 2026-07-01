@@ -1,7 +1,7 @@
 import { Component, Panel } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useMemo, useState } from 'react';
 import { useFormDefinition } from '../context/form-definition/FormDefinitionContext';
-import { usePersistence } from '../context/persistence/PersistenceContext';
+import { useFormPersistence } from '../context/persistence/PersistenceContext';
 import { useValidation } from '../context/validation/ValidationContext';
 
 interface WizardController {
@@ -23,7 +23,7 @@ interface WizardController {
 const useWizardController = (): WizardController => {
   const { panels } = useFormDefinition();
   const { validatePage, hideSummary } = useValidation();
-  const { saveDraft, canSaveDraft } = usePersistence();
+  const { saveDraft, canSaveDraft } = useFormPersistence();
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const currentPanel = panels[currentIndex];

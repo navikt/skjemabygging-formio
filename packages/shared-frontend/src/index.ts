@@ -9,7 +9,7 @@ import { useAppConfig } from './context/app-config/AppConfigContext';
 import { useFormDefinition } from './context/form-definition/FormDefinitionContext';
 import { FormFrameworkProvider } from './context/FormFrameworkProvider';
 import { useLanguage } from './context/language/LanguageContext';
-import { usePersistence } from './context/persistence/PersistenceContext';
+import { useFormPersistence } from './context/persistence/PersistenceContext';
 import { initializeSubmission } from './context/submission-init/initializeSubmission';
 import { useSubmission } from './context/submission/SubmissionContext';
 import { useValidation } from './context/validation/ValidationContext';
@@ -23,8 +23,8 @@ const sharedFrontendPackageName = '@navikt/skjemadigitalisering-shared-frontend'
 
 export type { FormFrameworkProviderProps } from './context/FormFrameworkProvider';
 export type {
+  FormPersistenceContextType,
   FormPersistenceHandlers,
-  PersistenceContextType,
   PersistenceStatus,
 } from './context/persistence/PersistenceContext';
 export type { InputComponentProps, InputComponentRegistry } from './form-components/inputComponentRegistry';
@@ -55,8 +55,8 @@ export {
   sharedFrontendPackageName,
   useAppConfig,
   useFormDefinition,
+  useFormPersistence,
   useLanguage,
-  usePersistence,
   useSubmission,
   useValidation,
   useWizardController,

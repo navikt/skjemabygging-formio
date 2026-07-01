@@ -14,7 +14,7 @@ interface FormPersistenceHandlers {
   submitForm?: (submission: Submission) => Promise<void>;
 }
 
-interface PersistenceContextType {
+interface FormPersistenceContextType {
   saveDraft: () => Promise<void>;
   submit: () => Promise<void>;
   status: PersistenceStatus;
@@ -27,9 +27,9 @@ interface Props extends FormPersistenceHandlers {
   children: ReactNode;
 }
 
-const PersistenceContext = createContext<PersistenceContextType>({} as PersistenceContextType);
+const FormPersistenceContext = createContext<FormPersistenceContextType>({} as FormPersistenceContextType);
 
-const PersistenceProvider = ({ children, saveDraft: saveDraftHandler, submitForm }: Props) => {
+const FormPersistenceProvider = ({ children, saveDraft: saveDraftHandler, submitForm }: Props) => {
   const { submission } = useSubmission();
   const [status, setStatus] = useState<PersistenceStatus>('idle');
   const [error, setError] = useState<unknown>();
@@ -72,10 +72,10 @@ const PersistenceProvider = ({ children, saveDraft: saveDraftHandler, submitForm
     [saveDraft, submit, status, error, saveDraftHandler, submitForm],
   );
 
-  return <PersistenceContext.Provider value={value}>{children}</PersistenceContext.Provider>;
+  return <FormPersistenceContext.Provider value={value}>{children}</FormPersistenceContext.Provider>;
 };
 
-const usePersistence = () => useContext(PersistenceContext);
+const useFormPersistence = () => useContext(FormPersistenceContext);
 
-export { PersistenceProvider, usePersistence };
-export type { FormPersistenceHandlers, PersistenceContextType, PersistenceStatus };
+export { FormPersistenceProvider, useFormPersistence };
+export type { FormPersistenceContextType, FormPersistenceHandlers, PersistenceStatus };
