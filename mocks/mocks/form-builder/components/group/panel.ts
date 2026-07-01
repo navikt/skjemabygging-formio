@@ -6,7 +6,7 @@ interface PanelType extends Omit<
   'description' | 'additionalDescriptionText' | 'additionalDescriptionLabel' | 'validate'
 > {
   title: string;
-  components?: any[];
+  components: any[];
   isAttachmentPanel?: boolean;
 }
 
