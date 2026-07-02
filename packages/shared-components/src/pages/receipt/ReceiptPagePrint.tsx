@@ -1,5 +1,6 @@
 import { BodyShort, Heading } from '@navikt/ds-react';
 import { dateUtils, NavFormType, ReceiptSummary, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { useEffect } from 'react';
 import InnerHtml from '../../components/inner-html/InnerHtml';
 import { useLanguages } from '../../context/languages';
 import makeStyles from '../../util/styles/jss/jss';
@@ -9,7 +10,24 @@ interface Props {
   receipt: ReceiptSummary;
 }
 
+const printBodyClass = 'receipt-page-print-active';
+
 const useStyles = makeStyles({
+  '@global': {
+    '@media print': {
+      [`body.${printBodyClass} *`]: {
+        visibility: 'hidden',
+      },
+      [`body.${printBodyClass} .receipt-page-print, body.${printBodyClass} .receipt-page-print *`]: {
+        visibility: 'visible',
+      },
+      [`body.${printBodyClass} .receipt-page-print`]: {
+        position: 'absolute',
+        inset: 0,
+        width: '100%',
+      },
+    },
+  },
   root: {
     display: 'none',
     '@media print': {
@@ -53,6 +71,13 @@ const useStyles = makeStyles({
 const ReceiptPagePrint = ({ form, receipt }: Props) => {
   const styles = useStyles();
   const { translate } = useLanguages();
+
+  useEffect(() => {
+    document.body.classList.add(printBodyClass);
+    return () => {
+      document.body.classList.remove(printBodyClass);
+    };
+  }, []);
 
   const allRequiredDocumentsSubmitted =
     receipt.attachmentsToSendLater.length === 0 && receipt.attachmentsToBeSentByOthers.length === 0;

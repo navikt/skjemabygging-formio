@@ -22,13 +22,6 @@ const useStyles = makeStyles({
   downloadLinkIcon: {
     fontSize: 'var(--ax-font-size-xlarge)',
   },
-  root: {
-    '@media print': {
-      '& > :not(.receipt-page-print)': {
-        display: 'none !important',
-      },
-    },
-  },
 });
 
 export function ReceiptPage() {
@@ -70,7 +63,7 @@ export function ReceiptPage() {
   const allRequiredDocumentsSubmitted = skalEttersendes.length === 0 && skalSendesAvAndre.length === 0;
 
   return (
-    <VStack gap="space-32" className={styles.root}>
+    <VStack gap="space-32">
       {receipt ? (
         <>
           {allRequiredDocumentsSubmitted && (
