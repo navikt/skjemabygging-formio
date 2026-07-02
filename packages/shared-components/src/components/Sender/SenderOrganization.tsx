@@ -2,6 +2,7 @@ import { Alert, TextField } from '@navikt/ds-react';
 import { formatUtils, SenderProps, SubmissionSender, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import type { ChangeEvent, FocusEvent } from 'react';
 import { useComponentUtils } from '../../context/component/componentUtilsContext';
+import { useAppConfig } from '../../context/config/configContext';
 import useComponentStyle from '../../util/styles/useComponentStyle';
 import InnerHtml from '../inner-html/InnerHtml';
 
@@ -10,6 +11,7 @@ const SenderOrganization = ({ customLabels, descriptions, value, onChange, readO
     fieldSize,
   });
   const { translate, addRef, getComponentError } = useComponentUtils();
+  const { submissionMethod } = useAppConfig();
 
   const setOrganizationValue = (field: string, fieldValue: string) => {
     onChange({
@@ -31,7 +33,9 @@ const SenderOrganization = ({ customLabels, descriptions, value, onChange, readO
 
   return (
     <>
-      <Alert variant="info">{translate(TEXTS.statiske.sender.applicationInsight)}</Alert>
+      {(submissionMethod === 'digital' || submissionMethod === 'digitalnologin') && (
+        <Alert variant="info">{translate(TEXTS.statiske.sender.applicationInsight)}</Alert>
+      )}
       <div className="form-group">
         <TextField
           label={translate(customLabels.organizationNumber)}
