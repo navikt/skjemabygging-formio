@@ -1,5 +1,5 @@
-import { TextField } from '@navikt/ds-react';
-import { formatUtils, SenderProps, SubmissionSender } from '@navikt/skjemadigitalisering-shared-domain';
+import { Alert, TextField } from '@navikt/ds-react';
+import { formatUtils, SenderProps, SubmissionSender, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import type { ChangeEvent, FocusEvent } from 'react';
 import { useComponentUtils } from '../../context/component/componentUtilsContext';
 import useComponentStyle from '../../util/styles/useComponentStyle';
@@ -9,7 +9,7 @@ const SenderPerson = ({ customLabels, descriptions, value, onChange, readOnly, f
   const styles = useComponentStyle({
     fieldSize,
   });
-  const { translate, addRef, getComponentError } = useComponentUtils();
+  const { translate, addRef, getComponentError, appConfig } = useComponentUtils();
 
   const setPersonValue = (field: string, fieldValue: string) => {
     onChange({
@@ -66,6 +66,9 @@ const SenderPerson = ({ customLabels, descriptions, value, onChange, readOnly, f
           className={styles.fieldSize}
         />
       </div>
+      {(appConfig.submissionMethod === 'digital' || appConfig.submissionMethod === 'digitalnologin') && (
+        <Alert variant="info">{translate(TEXTS.statiske.sender.applicationInsight)}</Alert>
+      )}
     </>
   );
 };
