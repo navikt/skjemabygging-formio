@@ -85,6 +85,42 @@ const removeUploadedTempFile = async (file?: Express.Multer.File): Promise<void>
 };
 
 const createUploadResponseError = (error: unknown): ResponseError | undefined => {
+  if (error instanceof ResponseError) {
+    if (error.errorCode === 'FORBIDDEN') {
+      return new ResponseError(
+        'FORBIDDEN',
+        'Upload failed because authorization failed',
+        error.correlationId,
+        TEXTS.statiske.uploadFile.uploadFileError,
+      );
+    }
+
+    if (error.errorCode === 'FILE_TOO_MANY_PAGES') {
+      return new ResponseError(
+        'BAD_REQUEST',
+        'Upload failed because file has too many pages',
+        error.correlationId,
+        TEXTS.statiske.uploadFile.uploadFileToManyPagesError,
+      );
+    }
+
+    if (error.errorCode === 'SERVICE_UNAVAILABLE') {
+      return new ResponseError(
+        'SERVICE_UNAVAILABLE',
+        'Upload temporarily unavailable',
+        error.correlationId,
+        TEXTS.statiske.nologin.temporarilyUnavailable,
+      );
+    }
+
+    return new ResponseError(
+      error.errorCode,
+      'Upload failed',
+      error.correlationId,
+      TEXTS.statiske.uploadFile.uploadFileError,
+    );
+  }
+
   if (!(error instanceof HttpError)) {
     return undefined;
   }

@@ -1,6 +1,21 @@
 import { coverPageMapper } from './cover-page/mapper';
+export type {
+  ApplicationMetrics,
+  ApplicationPaths,
+  ApplicationService,
+  ApplicationType,
+  Attachment,
+  AvsenderId,
+  BrukerDto,
+  DownloadedAttachment,
+  OpplastingsStatus,
+  SubmitApplicationRequest,
+  SubmitApplicationResponse,
+  UploadedFile,
+} from './application';
 export { createApplicationPdfService } from './application-pdf/applicationPdfService';
 export type { ApplicationPdfService } from './application-pdf/applicationPdfService';
+export { createApplicationService } from './application/applicationService';
 export type { ForstesideRequestBody } from './cover-page/coverPageRequestTypes';
 export { createCoverPageService } from './cover-page/coverPageService';
 export type { CoverPageService } from './cover-page/coverPageService';

@@ -93,5 +93,14 @@ class ResponseError extends Error {
   }
 }
 
-export { ResponseError, getErrorCodeFromStatus, getStatusFromErrorCode };
+class HttpResponseError extends ResponseError {
+  public readonly body: any;
+
+  constructor(errorCode: ErrorCode, message: string, correlationId?: string, body?: any, userMessage?: string) {
+    super(errorCode, message, correlationId, userMessage);
+    this.body = body;
+  }
+}
+
+export { HttpResponseError, ResponseError, getErrorCodeFromStatus, getStatusFromErrorCode };
 export type { ErrorCode, ErrorResponse };

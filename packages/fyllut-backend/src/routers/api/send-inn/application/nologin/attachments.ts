@@ -1,3 +1,4 @@
+import { fileUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import { NextFunction, Request, Response } from 'express';
 import { logger } from '../../../../../logger';
 import { applicationService } from '../../../../../services';
@@ -26,7 +27,15 @@ const post = async (req: Request, res: Response, next: NextFunction) => {
     }
     logger.info(`${innsendingsId}: Received file upload request for nologin application`, logMeta);
 
-    const result = await applicationService.uploadFile(file, accessToken, attachmentId, innsendingsId, 'nologin');
+    const fileBlob = await fileUtil.createBlobFromUploadedFile(file);
+    const result = await applicationService.uploadAttachment({
+      accessToken,
+      attachmentId,
+      fileBlob,
+      fileName: Buffer.from(file.originalname, 'latin1').toString('utf8'),
+      innsendingsId,
+      type: 'nologin',
+    });
     logger.info(`${innsendingsId}: Upload request completed for nologin application`, {
       ...logMeta,
       uploadedFileId: result.fileId,
@@ -55,7 +64,7 @@ const deleteAttachment = async (req: Request, res: Response, next: NextFunction)
     const fileId = req.params.fileId as string | undefined;
     const accessToken = req.headers.AzureAccessToken as string;
 
-    await applicationService.deleteFile(accessToken, innsendingsId, attachmentId, fileId, 'nologin');
+    await applicationService.deleteAttachment({ accessToken, attachmentId, fileId, innsendingsId, type: 'nologin' });
     res.sendStatus(204);
   } catch (error) {
     next(error);

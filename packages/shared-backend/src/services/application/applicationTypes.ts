@@ -1,7 +1,33 @@
-import { TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
+import { TranslationLang, UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
+import type { Histogram } from 'prom-client';
 
 export type BrukerDto = { id: string; idType: 'FNR' };
 export type AvsenderId = { navn?: string; id?: string; idType?: 'FNR' | 'ORGNR' };
+export type ApplicationType = 'nologin' | 'digital';
+export type ApplicationMetricLabel = 'type' | 'error';
+
+export interface DownloadedAttachment {
+  body: ReadableStream<Uint8Array>;
+  contentType: string;
+  contentDisposition?: string;
+  contentLength?: string;
+}
+
+export interface ApplicationPaths {
+  soknad: string;
+  utfyltSoknad: string;
+}
+
+export interface ApplicationMetrics {
+  uploadDuration: Histogram<ApplicationMetricLabel>;
+  uploadFileSize: Histogram<ApplicationMetricLabel>;
+}
+
+export interface UploadAttachmentResponse {
+  id: string;
+  name: string;
+  size: number;
+}
 
 export interface SubmitApplicationRequest {
   bruker?: string | null;
@@ -47,3 +73,10 @@ export type OpplastingsStatus =
   | 'LevertDokumentasjonTidligere'
   | 'HarIkkeDokumentasjonen'
   | 'NavKanHenteDokumentasjon';
+
+type DraftResponse<T> = {
+  status: number;
+  body: T;
+};
+
+export type { DraftResponse, UploadedFile };

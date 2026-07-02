@@ -56,6 +56,24 @@ describe('uploadSingleFile', () => {
 });
 
 describe('createUploadResponseError', () => {
+  it('maps response errors from shared-backend upload services', () => {
+    const error = new ResponseError(
+      'FILE_TOO_MANY_PAGES',
+      'Upstream rejected attachment',
+      'corr-id',
+      TEXTS.statiske.uploadFile.uploadFileToManyPagesError,
+    );
+
+    expect(createUploadResponseError(error)).toEqual(
+      new ResponseError(
+        'BAD_REQUEST',
+        'Upload failed because file has too many pages',
+        'corr-id',
+        TEXTS.statiske.uploadFile.uploadFileToManyPagesError,
+      ),
+    );
+  });
+
   it('maps too many pages to ResponseError with userMessage', () => {
     const error = new HttpError('Upload failed');
     error.http_status = 400;

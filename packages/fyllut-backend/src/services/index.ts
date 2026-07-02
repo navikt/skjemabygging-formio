@@ -1,5 +1,6 @@
 import {
   createApplicationPdfService,
+  createApplicationService,
   createCoverPageService,
   createFormService,
   createMergeFileService,
@@ -10,7 +11,6 @@ import {
 } from '@navikt/skjemadigitalisering-shared-backend';
 import { config } from '../config/config';
 import AppMetrics from './AppMetrics';
-import ApplicationService from './nologin/ApplicationService';
 import NologinTokenService from './nologin/NologinTokenService';
 import TranslationsService from './TranslationsService';
 
@@ -37,6 +37,18 @@ const applicationPdfService = createApplicationPdfService({
     registry: appMetrics.register,
   },
   teamLogger,
+});
+
+const applicationService = createApplicationService({
+  baseUrl: sendInnConfig.host,
+  paths: {
+    soknad: sendInnConfig.paths.soknad,
+    utfyltSoknad: sendInnConfig.paths.utfyltSoknad,
+  },
+  metrics: {
+    uploadDuration: appMetrics.innsendingApiUploadDuration,
+    uploadFileSize: appMetrics.innsendingApiUploadFileSize,
+  },
 });
 
 const coverPageService = createCoverPageService({
@@ -71,8 +83,6 @@ const translationService = createTranslationService({
 });
 
 const translationsService = new TranslationsService(config);
-
-const applicationService = new ApplicationService(config, applicationPdfService);
 
 const nologinTokenService = NologinTokenService(config);
 

@@ -1,4 +1,4 @@
-import { requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
+import { fileUtil, requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import { NextFunction, Request, Response } from 'express';
 import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
@@ -28,7 +28,15 @@ const post = async (req: Request, res: Response, next: NextFunction) => {
     }
     logger.info(`${innsendingsId}: Received file upload request for digital application`, logMeta);
 
-    const result = await applicationService.uploadFile(file, accessToken, attachmentId, innsendingsId, 'digital');
+    const fileBlob = await fileUtil.createBlobFromUploadedFile(file);
+    const result = await applicationService.uploadAttachment({
+      accessToken,
+      attachmentId,
+      fileBlob,
+      fileName: Buffer.from(file.originalname, 'latin1').toString('utf8'),
+      innsendingsId,
+      type: 'digital',
+    });
     logger.info(`${innsendingsId}: Upload request completed for digital application`, {
       ...logMeta,
       uploadedFileId: result.fileId,
@@ -54,7 +62,7 @@ const deleteFile = async (req: Request, res: Response, next: NextFunction) => {
     const fileId = requestUtil.getStringParam(req, 'fileId', true);
     const accessToken = req.getTokenxAccessToken();
 
-    await applicationService.deleteFile(accessToken, innsendingsId, attachmentId, fileId, 'digital');
+    await applicationService.deleteAttachment({ accessToken, attachmentId, fileId, innsendingsId, type: 'digital' });
     res.sendStatus(204);
   } catch (error) {
     next(error);
@@ -67,13 +75,18 @@ const get = async (req: Request, res: Response, next: NextFunction) => {
     const attachmentId = requestUtil.getStringParam(req, 'attachmentId')!;
     const fileId = requestUtil.getStringParam(req, 'fileId')!;
     const accessToken = req.getTokenxAccessToken();
-    const { fileStream, contentType, contentDisposition, contentLength } = await applicationService.downloadFile(
+    const {
+      body: fileStream,
+      contentType,
+      contentDisposition,
+      contentLength,
+    } = await applicationService.downloadAttachment({
       accessToken,
-      innsendingsId,
       attachmentId,
       fileId,
-      'digital',
-    );
+      innsendingsId,
+      type: 'digital',
+    });
 
     res.contentType(contentType);
     if (contentLength) {

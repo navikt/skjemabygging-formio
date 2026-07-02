@@ -143,6 +143,8 @@ describe('[endpoint] documents', () => {
 
     await documents.application(req, mockResponse(), next);
 
-    expect(next).toHaveBeenCalledWith(expect.objectContaining({ message: 'Missing submission data to generate PDF' }));
+    expect(next).toHaveBeenCalledWith(
+      expect.objectContaining({ errorCode: 'BAD_REQUEST', message: 'Missing body value "submission"' }),
+    );
   });
 });

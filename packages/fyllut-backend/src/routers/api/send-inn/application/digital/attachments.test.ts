@@ -27,8 +27,8 @@ describe('[endpoint] send-inn/application/digital/attachments', () => {
           controller.close();
         },
       });
-      const downloadSpy = vi.spyOn(applicationService, 'downloadFile').mockResolvedValue({
-        fileStream,
+      const downloadSpy = vi.spyOn(applicationService, 'downloadAttachment').mockResolvedValue({
+        body: fileStream,
         contentType: 'application/octet-stream',
         contentDisposition: 'attachment; filename="test.txt"',
         contentLength: '18',
@@ -45,7 +45,13 @@ describe('[endpoint] send-inn/application/digital/attachments', () => {
 
       await attachmentsEndpoints.get(req, res, next);
 
-      expect(downloadSpy).toHaveBeenCalledWith(accessToken, innsendingsId, attachmentId, fileId, 'digital');
+      expect(downloadSpy).toHaveBeenCalledWith({
+        accessToken,
+        attachmentId,
+        fileId,
+        innsendingsId,
+        type: 'digital',
+      });
       expect(res.contentType).toHaveBeenCalledWith('application/octet-stream');
       expect(res.setHeader).toHaveBeenCalledWith('Content-Disposition', 'attachment; filename="test.txt"');
       expect(res.setHeader).toHaveBeenCalledWith('Content-Length', '18');
@@ -57,7 +63,7 @@ describe('[endpoint] send-inn/application/digital/attachments', () => {
 
     it('calls next with error when download fails', async () => {
       const error = new Error('Download failed');
-      vi.spyOn(applicationService, 'downloadFile').mockRejectedValue(error);
+      vi.spyOn(applicationService, 'downloadAttachment').mockRejectedValue(error);
 
       const req = mockRequest({
         params: { innsendingsId, attachmentId, fileId },
@@ -80,8 +86,8 @@ describe('[endpoint] send-inn/application/digital/attachments', () => {
           controller.close();
         },
       });
-      vi.spyOn(applicationService, 'downloadFile').mockResolvedValue({
-        fileStream,
+      vi.spyOn(applicationService, 'downloadAttachment').mockResolvedValue({
+        body: fileStream,
         contentType: 'application/octet-stream',
       });
 
