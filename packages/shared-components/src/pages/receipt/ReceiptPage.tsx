@@ -1,7 +1,8 @@
 import { CheckmarkCircleFillIcon, DownloadIcon } from '@navikt/aksel-icons';
 import { Alert, BodyShort, Box, Button, Heading, HStack, Link, List, VStack } from '@navikt/ds-react';
 import { dateUtils, stringUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { flushSync } from 'react-dom';
 import { Link as ReactRouterLink } from 'react-router';
 import InnerHtml from '../../components/inner-html/InnerHtml';
 import { useAppConfig } from '../../context/config/configContext';
@@ -10,6 +11,7 @@ import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
 import makeStyles from '../../util/styles/jss/jss';
 import urlUtils from '../../util/url/url';
+import ReceiptPagePrint from './ReceiptPagePrint';
 
 const useStyles = makeStyles({
   downloadLink: {
@@ -29,6 +31,7 @@ export function ReceiptPage() {
   const styles = useStyles();
   const { currentLanguage, translate } = useLanguages();
   const { soknadPdfBlob, receipt } = useSendInn();
+  const [showPrintView, setShowPrintView] = useState(false);
 
   useEffect(() => {
     setFormProgressVisible(false);
@@ -51,6 +54,17 @@ export function ReceiptPage() {
       },
     });
   }, [currentLanguage, form, logEvent, submissionMethod, translate]);
+
+  useEffect(() => {
+    const hidePrintView = () => setShowPrintView(false);
+    window.addEventListener('afterprint', hidePrintView);
+    return () => window.removeEventListener('afterprint', hidePrintView);
+  }, []);
+
+  const openPrintDialog = useCallback(() => {
+    flushSync(() => setShowPrintView(true));
+    window.print();
+  }, []);
 
   const soknadPdfUrl = useMemo(() => {
     return soknadPdfBlob ? URL.createObjectURL(soknadPdfBlob) : undefined;
@@ -178,9 +192,8 @@ export function ReceiptPage() {
               <InnerHtml content={translate(TEXTS.statiske.receipt.deadlineWarningBody)} />
             </Alert>
           )}
-
-          {submissionMethod === 'digital' && (
-            <div>
+          <div>
+            {submissionMethod === 'digital' && (
               <Button
                 role="link"
                 as={ReactRouterLink}
@@ -189,8 +202,12 @@ export function ReceiptPage() {
               >
                 {stringUtils.capitalize(translate(TEXTS.statiske.error.goToMyPage))}
               </Button>
-            </div>
-          )}
+            )}
+            <Button type="button" onClick={openPrintDialog} variant="tertiary">
+              {translate(TEXTS.statiske.receipt.printFriendlyVersion)}
+            </Button>
+          </div>
+          {showPrintView && <ReceiptPagePrint form={form} receipt={receipt} />}
         </>
       ) : (
         <div>{translate(TEXTS.statiske.error.alreadySubmitted)}</div>
