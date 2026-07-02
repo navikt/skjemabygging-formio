@@ -17,7 +17,7 @@ interface Props {
 const useStyles = makeStyles({
   '@global': {
     '@media print': {
-      '#decorator-header, #decorator-footer': {
+      '#decorator-footer, #decorator-header skip-link, #decorator-header user-menu': {
         display: 'none !important',
       },
     },
@@ -50,8 +50,8 @@ const FormLayout = ({ allowSubmittedApplication = false }: Props) => {
     <FormContainer>
       <div className={styles.hideOnPrint}>
         <LanguageSelector />
-        <FormTitle form={form} hideIconOnMobile={true} title={title} />
       </div>
+      <FormTitle form={form} hideIconOnMobile={true} title={title} />
       {!allowSubmittedApplication && submitted ? (
         <div>{translate(TEXTS.statiske.error.alreadySubmitted)}</div>
       ) : (
