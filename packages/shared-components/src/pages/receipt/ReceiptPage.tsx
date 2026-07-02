@@ -1,8 +1,7 @@
 import { CheckmarkCircleFillIcon, DownloadIcon } from '@navikt/aksel-icons';
 import { Alert, BodyShort, Box, Button, Heading, HStack, Link, List, VStack } from '@navikt/ds-react';
 import { dateUtils, stringUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { flushSync } from 'react-dom';
+import { useCallback, useEffect, useMemo } from 'react';
 import { Link as ReactRouterLink } from 'react-router';
 import InnerHtml from '../../components/inner-html/InnerHtml';
 import { useAppConfig } from '../../context/config/configContext';
@@ -11,9 +10,13 @@ import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
 import makeStyles from '../../util/styles/jss/jss';
 import urlUtils from '../../util/url/url';
-import ReceiptPagePrint from './ReceiptPagePrint';
 
 const useStyles = makeStyles({
+  root: {
+    '@media print': {
+      color: '#000',
+    },
+  },
   downloadLink: {
     display: 'inline-flex',
     alignItems: 'center',
@@ -23,6 +26,41 @@ const useStyles = makeStyles({
   downloadLinkIcon: {
     fontSize: 'var(--ax-font-size-xlarge)',
   },
+  hideOnPrint: {
+    '@media print': {
+      display: 'none !important',
+    },
+  },
+  printAlert: {
+    '@media print': {
+      display: 'block',
+      padding: '0 !important',
+      border: '0 !important',
+      borderRadius: 0,
+      background: 'none !important',
+      boxShadow: 'none !important',
+      color: '#000 !important',
+      '& .aksel-alert__icon': {
+        display: 'none !important',
+      },
+      '& .aksel-alert__wrapper': {
+        maxWidth: 'none',
+      },
+      '& .aksel-heading': {
+        margin: 0,
+      },
+    },
+  },
+  printList: {
+    '@media print': {
+      '& .aksel-list__item-marker': {
+        color: '#000 !important',
+      },
+      '& svg': {
+        color: '#000 !important',
+      },
+    },
+  },
 });
 
 export function ReceiptPage() {
@@ -31,7 +69,6 @@ export function ReceiptPage() {
   const styles = useStyles();
   const { currentLanguage, translate } = useLanguages();
   const { soknadPdfBlob, receipt } = useSendInn();
-  const [showPrintView, setShowPrintView] = useState(false);
 
   useEffect(() => {
     setFormProgressVisible(false);
@@ -55,17 +92,6 @@ export function ReceiptPage() {
     });
   }, [currentLanguage, form, logEvent, submissionMethod, translate]);
 
-  useEffect(() => {
-    const hidePrintView = () => setShowPrintView(false);
-    window.addEventListener('afterprint', hidePrintView);
-    return () => window.removeEventListener('afterprint', hidePrintView);
-  }, []);
-
-  const openPrintDialog = useCallback(() => {
-    flushSync(() => setShowPrintView(true));
-    window.print();
-  }, []);
-
   const soknadPdfUrl = useMemo(() => {
     return soknadPdfBlob ? URL.createObjectURL(soknadPdfBlob) : undefined;
   }, [soknadPdfBlob]);
@@ -76,11 +102,11 @@ export function ReceiptPage() {
   const allRequiredDocumentsSubmitted = skalEttersendes.length === 0 && skalSendesAvAndre.length === 0;
 
   return (
-    <VStack gap="space-32">
+    <VStack gap="space-32" className={styles.root}>
       {receipt ? (
         <>
           {allRequiredDocumentsSubmitted && (
-            <Alert size="medium" variant="success">
+            <Alert size="medium" variant="success" className={styles.printAlert}>
               <Heading level="2" spacing size="xsmall">
                 {translate(TEXTS.statiske.receipt.alertSuccessHeading)}
               </Heading>
@@ -97,7 +123,7 @@ export function ReceiptPage() {
               </b>
             </BodyShort>
             <Box marginBlock="space-16" asChild>
-              <List data-aksel-migrated-v8>
+              <List data-aksel-migrated-v8 className={styles.printList}>
                 <List.Item
                   icon={
                     <CheckmarkCircleFillIcon
@@ -111,7 +137,7 @@ export function ReceiptPage() {
                   <HStack gap="space-8">
                     {receipt.title}
                     <Link
-                      className={styles.downloadLink}
+                      className={`${styles.downloadLink} ${styles.hideOnPrint}`}
                       href={soknadPdfUrl}
                       underline={false}
                       target="_blank"
@@ -181,7 +207,7 @@ export function ReceiptPage() {
           )}
 
           {!allRequiredDocumentsSubmitted && (
-            <Alert size="medium" variant="warning">
+            <Alert size="medium" variant="warning" className={styles.printAlert}>
               <Heading level="2" spacing size="xsmall">
                 <b>
                   {translate(TEXTS.statiske.receipt.deadlineWarningHeading, {
@@ -192,7 +218,7 @@ export function ReceiptPage() {
               <InnerHtml content={translate(TEXTS.statiske.receipt.deadlineWarningBody)} />
             </Alert>
           )}
-          <div>
+          <div className={styles.hideOnPrint}>
             {submissionMethod === 'digital' && (
               <Button
                 role="link"
@@ -203,11 +229,10 @@ export function ReceiptPage() {
                 {stringUtils.capitalize(translate(TEXTS.statiske.error.goToMyPage))}
               </Button>
             )}
-            <Button type="button" onClick={openPrintDialog} variant="tertiary">
+            <Button type="button" onClick={() => window.print()} variant="tertiary">
               {translate(TEXTS.statiske.receipt.printFriendlyVersion)}
             </Button>
           </div>
-          {showPrintView && <ReceiptPagePrint form={form} receipt={receipt} />}
         </>
       ) : (
         <div>{translate(TEXTS.statiske.error.alreadySubmitted)}</div>
