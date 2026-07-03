@@ -20,6 +20,9 @@ const useStyles = makeStyles({
       '#decorator-footer, #decorator-header skip-link, #decorator-header user-menu': {
         display: 'none !important',
       },
+      '#decorator-header a::after': {
+        content: '"" !important',
+      },
     },
   },
   hideOnPrint: {
