@@ -18,6 +18,19 @@ const getStringParam = (req: Request, name: string, optional?: boolean) => {
   return value;
 };
 
+const getStringQuery = (req: Request, name: string, optional?: boolean) => {
+  const value = req.query?.[name];
+  if (typeof value === 'string') {
+    return value;
+  }
+
+  if (optional) {
+    return undefined;
+  }
+
+  throw new ResponseError('BAD_REQUEST', `Missing query param "${name}"`);
+};
+
 const getFile = (req: Request): Express.Multer.File => {
   const file = req.file;
   if (!file?.buffer) {
@@ -40,6 +53,7 @@ const requestUtil = {
   getAzureAccessToken,
   getFile,
   getStringParam,
+  getStringQuery,
 };
 
 export default requestUtil;

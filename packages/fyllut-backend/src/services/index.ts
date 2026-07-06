@@ -5,6 +5,7 @@ import {
   createFormService,
   createMergeFileService,
   createNavUnitService,
+  createPrefillService,
   createRecipientService,
   createRegisterDataService,
   createStaticPdfService,
@@ -66,6 +67,10 @@ const mergeFileService = createMergeFileService({
   baseUrl: `${sendInnConfig.host}${sendInnConfig.paths.mergeFiles}`,
 });
 
+const prefillService = createPrefillService({
+  baseUrl: `${sendInnConfig.host}${sendInnConfig.paths.prefillData}`,
+});
+
 const registerDataService = createRegisterDataService({
   tilleggsstonaderBaseUrl: tilleggsstonaderConfig.host,
 });
@@ -107,6 +112,7 @@ export {
   mergeFileService,
   navUnitService,
   nologinTokenService,
+  prefillService,
   recipientService,
   registerDataService,
   staticPdfService,

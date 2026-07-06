@@ -21,6 +21,8 @@ export type {
 export type { PrometheusMetricsConfig } from './metrics/prometheusMetrics';
 export { createNavUnitService } from './nav-unit/navUnitService';
 export type { NavUnitService } from './nav-unit/navUnitService';
+export { createPrefillService } from './prefill';
+export type { PrefillService } from './prefill';
 export { createRecipientService } from './recipient/recipientService';
 export type { RecipientService } from './recipient/recipientService';
 export { createRegisterDataService } from './register-data/registerDataService';

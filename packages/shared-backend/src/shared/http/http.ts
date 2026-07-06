@@ -125,7 +125,9 @@ const handleResponse = async <T>(response: Response): Promise<T> => {
   const errorBody = await handleBody(response);
   const message = typeof errorBody === 'string' ? errorBody : (errorBody?.message ?? response.statusText);
   const correlationId =
-    typeof errorBody === 'string' ? undefined : (errorBody?.correlationId ?? errorBody?.correlation_id);
+    typeof errorBody === 'string'
+      ? (response.headers.get('x-correlation-id') ?? undefined)
+      : (errorBody?.correlationId ?? response.headers.get('x-correlation-id') ?? undefined);
   const error = new ResponseError(getErrorCodeFromStatus(response.status), message, correlationId);
 
   logger.warn(`Http request to ${response.url} failed with status ${response.status}`, {
@@ -134,7 +136,6 @@ const handleResponse = async <T>(response: Response): Promise<T> => {
 
   throw error;
 };
-
 const isAuthenticationError = (error: unknown): error is ResponseError =>
   error instanceof ResponseError &&
   (error.errorCode === 'UNAUTHORIZED' || error.errorCode === 'FORBIDDEN' || error.errorCode === 'LOGIN_TIMEOUT');
