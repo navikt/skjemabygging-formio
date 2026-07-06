@@ -10,7 +10,6 @@ import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
 import makeStyles from '../../util/styles/jss/jss';
 import urlUtils from '../../util/url/url';
-import { shouldShowApplicationInsight } from './shouldShowApplicationInsight';
 
 const useStyles = makeStyles({
   downloadLink: {
@@ -25,7 +24,7 @@ const useStyles = makeStyles({
 });
 
 export function ReceiptPage() {
-  const { setFormProgressVisible, setTitle, form, submission } = useForm();
+  const { setFormProgressVisible, setTitle, form } = useForm();
   const { logEvent, submissionMethod } = useAppConfig();
   const styles = useStyles();
   const { currentLanguage, translate } = useLanguages();
@@ -61,11 +60,6 @@ export function ReceiptPage() {
   const skalSendesAvAndre = receipt?.attachmentsToBeSentByOthers ?? [];
 
   const allRequiredDocumentsSubmitted = skalEttersendes.length === 0 && skalSendesAvAndre.length === 0;
-  const showApplicationInsight = shouldShowApplicationInsight({
-    form,
-    submissionData: submission?.data,
-    submissionMethod,
-  });
 
   return (
     <VStack gap="space-32">
@@ -133,10 +127,6 @@ export function ReceiptPage() {
               </List>
             </Box>
           </section>
-
-          {showApplicationInsight && (
-            <Alert variant="info">{translate(TEXTS.statiske.sender.applicationInsight)}</Alert>
-          )}
 
           {receipt.attachmentsToSendLater.length > 0 && (
             <section>
