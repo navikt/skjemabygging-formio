@@ -20,5 +20,14 @@ export default defineConfig({
     viewportWidth: 1280,
     viewportHeight: 1000,
     testIsolation: false,
+    setupNodeEvents(on) {
+      on('before:browser:launch', (browser, launchOptions) => {
+        if (browser.family === 'chromium') {
+          launchOptions.args.push('--no-sandbox');
+          launchOptions.args.push('--disable-gpu');
+        }
+        return launchOptions;
+      });
+    },
   },
 });

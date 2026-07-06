@@ -22,6 +22,9 @@ const useStyles = makeStyles({
     position: 'relative',
     left: 0,
     top: 0,
+    '@media print': {
+      display: 'none',
+    },
   },
   titleIconHidden: {
     '@media screen and (max-width: 1280px)': {

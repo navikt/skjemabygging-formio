@@ -1,6 +1,8 @@
 import { coverPageMapper } from './cover-page/mapper';
 export { createApplicationPdfService } from './application-pdf/applicationPdfService';
 export type { ApplicationPdfService } from './application-pdf/applicationPdfService';
+export { createCommonCodesService } from './common-codes';
+export type { CommonCodesService } from './common-codes';
 export type { ForstesideRequestBody } from './cover-page/coverPageRequestTypes';
 export { createCoverPageService } from './cover-page/coverPageService';
 export type { CoverPageService } from './cover-page/coverPageService';
@@ -17,10 +19,14 @@ export type {
   MetricServiceConfig,
 } from './metrics/metricService';
 export type { PrometheusMetricsConfig } from './metrics/prometheusMetrics';
+export { createNavUnitService } from './nav-unit/navUnitService';
+export type { NavUnitService } from './nav-unit/navUnitService';
 export { createPrefillService } from './prefill';
 export type { PrefillService } from './prefill';
 export { createRecipientService } from './recipient/recipientService';
 export type { RecipientService } from './recipient/recipientService';
+export { createRegisterDataService } from './register-data/registerDataService';
+export type { RegisterDataService } from './register-data/registerDataService';
 export { createStaticPdfService } from './static-pdf/staticPdfService';
 export type { StaticPdfService } from './static-pdf/staticPdfService';
 export { createTranslationService } from './translation/translationService';
