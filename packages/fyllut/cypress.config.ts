@@ -3,12 +3,14 @@ import { existsSync, readFileSync } from 'fs';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 
+const configDir = dirname(fileURLToPath(import.meta.url));
+
 type RuntimeConfig = {
   baseUrl?: string;
   env?: Record<string, string | number | boolean>;
 };
 
-const runtimeConfigPath = resolve(dirname(fileURLToPath(import.meta.url)), '.runtime', 'cypress.mocks.json');
+const runtimeConfigPath = resolve(configDir, '.runtime', 'cypress.mocks.json');
 
 const runtimeConfig: RuntimeConfig = existsSync(runtimeConfigPath)
   ? JSON.parse(readFileSync(runtimeConfigPath, 'utf-8'))
@@ -25,6 +27,17 @@ export default defineConfig({
     viewportWidth: 1280,
     viewportHeight: 1000,
     testIsolation: false,
+    setupNodeEvents(on, config) {
+      config.env.BASE_URL = config.baseUrl;
+      on('before:browser:launch', (browser, launchOptions) => {
+        if (browser.family === 'chromium') {
+          launchOptions.args.push('--no-sandbox');
+          launchOptions.args.push('--disable-gpu');
+        }
+        return launchOptions;
+      });
+      return config;
+    },
     env: {
       SKJEMABYGGING_PROXY_URL: `${mockBaseUrl}/skjemabygging-proxy`,
       AZURE_OPENID_CONFIG_TOKEN_ENDPOINT: `${mockBaseUrl}/azure-openid/oauth2/v2.0/token`,

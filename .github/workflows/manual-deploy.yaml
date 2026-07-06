@@ -23,7 +23,7 @@ jobs:
       id-token: 'write'
       packages: 'read'
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
         with:
           version: 10.32.1
@@ -64,7 +64,7 @@ jobs:
       id-token: 'write'
       packages: 'read'
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
         with:
           version: 10.32.1
@@ -107,7 +107,7 @@ jobs:
     permissions:
       id-token: 'write'
     steps:
-      - uses: 'actions/checkout@v6'
+      - uses: 'actions/checkout@v7'
       - name: 'Deploy to preprod'
         uses: 'nais/deploy/actions/deploy@v2'
         env:
@@ -124,7 +124,7 @@ jobs:
     permissions:
       id-token: 'write'
     steps:
-      - uses: 'actions/checkout@v6'
+      - uses: 'actions/checkout@v7'
       - name: 'Deploy to preprod'
         uses: 'nais/deploy/actions/deploy@v2'
         env:

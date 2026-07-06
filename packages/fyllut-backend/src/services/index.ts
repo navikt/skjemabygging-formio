@@ -1,10 +1,14 @@
 import {
   createActiveTaskService,
   createApplicationPdfService,
+  createCommonCodesService,
   createCoverPageService,
   createFormService,
   createMergeFileService,
+  createNavUnitService,
+  createPrefillService,
   createRecipientService,
+  createRegisterDataService,
   createStaticPdfService,
   createTeamLogger,
   createTranslationService,
@@ -26,7 +30,11 @@ const {
   translationDir,
   resourcesDir,
   mocksEnabled,
+  kodeverk,
+  clientId,
   teamLogsConfig,
+  norg2,
+  tilleggsstonaderConfig,
 } = config;
 
 const teamLogger = createTeamLogger(teamLogsConfig);
@@ -48,6 +56,11 @@ const coverPageService = createCoverPageService({
   baseUrl: skjemabyggingProxyUrl,
 });
 
+const commonCodesService = createCommonCodesService({
+  baseUrl: kodeverk.url,
+  consumerId: clientId,
+});
+
 const formService = createFormService({
   baseUrl: formsApiUrl,
   formsApiStaging: useFormsApiStaging,
@@ -57,6 +70,19 @@ const formService = createFormService({
 
 const mergeFileService = createMergeFileService({
   baseUrl: `${sendInnConfig.host}${sendInnConfig.paths.mergeFiles}`,
+});
+
+const prefillService = createPrefillService({
+  baseUrl: `${sendInnConfig.host}${sendInnConfig.paths.prefillData}`,
+});
+
+const registerDataService = createRegisterDataService({
+  tilleggsstonaderBaseUrl: tilleggsstonaderConfig.host,
+});
+
+const navUnitService = createNavUnitService({
+  baseUrl: norg2.url,
+  consumerId: clientId,
 });
 
 const recipientService = createRecipientService({
@@ -86,11 +112,15 @@ export {
   applicationPdfService,
   applicationService,
   appMetrics,
+  commonCodesService,
   coverPageService,
   formService,
   mergeFileService,
+  navUnitService,
   nologinTokenService,
+  prefillService,
   recipientService,
+  registerDataService,
   staticPdfService,
   translationService,
   translationsService,

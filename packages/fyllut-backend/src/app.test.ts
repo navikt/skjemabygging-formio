@@ -1,3 +1,4 @@
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { readFileSync } from 'fs';
 import nock from 'nock';
 import path from 'path';
@@ -11,7 +12,7 @@ vi.mock('./dekorator', () => ({
   createRedirectUrl: () => '',
 }));
 
-const { sendInnConfig, tokenx: tokenxConfig, formsApiUrl } = config;
+const { sendInnConfig, tokenx: tokenxConfig, formsApiUrl, norg2 } = config;
 const filePathSoknad = path.join(process.cwd(), '/src/test/testdata/documents/test-skjema.pdf');
 const soknadPdf = readFileSync(filePathSoknad);
 
@@ -137,6 +138,22 @@ describe('app', () => {
 
     azureOpenidScope.done();
     skjemabyggingproxyScope.done();
+  });
+
+  it('Returns the new enhetsliste error response contract', async () => {
+    const norg2Scope = nock(norg2.url).get('/norg2/api/v1/enhet').query({ enhetStatusListe: 'AKTIV' }).reply(503, {
+      message: 'upstream unavailable',
+    });
+
+    const res = await request(createApp()).get('/fyllut/api/enhetsliste').expect('Content-Type', /json/).expect(503);
+
+    expect(res.body.errorCode).toBe('SERVICE_UNAVAILABLE');
+    expect(res.body.correlationId).not.toBeNull();
+    expect(res.body.message).toBe('upstream unavailable');
+    expect(res.body.userMessage).toBe(TEXTS.statiske.error.serverErrorTitle);
+    expect(res.headers['x-correlation-id']).toBe(res.body.correlationId);
+
+    norg2Scope.done();
   });
 
   it('Performs TokenX exchange and retrieves pdf from pdf generator before calling SendInn', async () => {
