@@ -67,7 +67,7 @@ const mergeFileService = createMergeFileService({
 });
 
 const registerDataService = createRegisterDataService({
-  baseUrl: tilleggsstonaderConfig.host,
+  tilleggsstonaderBaseUrl: tilleggsstonaderConfig.host,
 });
 
 const navUnitService = createNavUnitService({

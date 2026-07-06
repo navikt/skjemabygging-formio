@@ -2,11 +2,11 @@ import type { MockInstance } from 'vitest';
 import { createRegisterDataService } from './registerDataService';
 
 describe('createRegisterDataService', () => {
-  const baseUrl = 'http://tilleggsstonader';
+  const tilleggsstonaderBaseUrl = 'http://tilleggsstonader';
 
   const createService = () =>
     createRegisterDataService({
-      baseUrl,
+      tilleggsstonaderBaseUrl,
     });
 
   const mockFetchResponse = (body: BodyInit, status: number, contentType: string) =>

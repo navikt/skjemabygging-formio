@@ -1,9 +1,9 @@
 import { Activity } from '@navikt/skjemadigitalisering-shared-domain';
 import { logger } from '../../shared/logger/logger';
-import registerDataClient from './registerDataClient';
+import tilleggsstonaderClient from './tilleggsstonaderClient';
 import { RegisterDataQuery, UpstreamActivity } from './types';
 
-type RegisterDataClient = Pick<typeof registerDataClient, 'getActivities'>;
+type TilleggsstonaderClient = Pick<typeof tilleggsstonaderClient, 'getActivities'>;
 
 interface GetActivitiesProps {
   accessToken: string;
@@ -15,19 +15,19 @@ type RegisterDataService = {
 };
 
 interface CreateRegisterDataServiceProps {
-  baseUrl: string;
-  client?: RegisterDataClient;
+  tilleggsstonaderBaseUrl: string;
+  client?: TilleggsstonaderClient;
 }
 
 const mapActivities = (response: UpstreamActivity): Activity[] =>
   response.map(({ id, tekst, type }) => ({ value: id, label: tekst, type }));
 
 const createRegisterDataService = ({
-  baseUrl,
-  client = registerDataClient,
+  tilleggsstonaderBaseUrl,
+  client = tilleggsstonaderClient,
 }: CreateRegisterDataServiceProps): RegisterDataService => {
   const getActivities = async ({ accessToken, query }: GetActivitiesProps): Promise<Activity[]> => {
-    const activities = await client.getActivities({ baseUrl, accessToken, query });
+    const activities = await client.getActivities({ tilleggsstonaderBaseUrl, accessToken, query });
     logger.info(`Fetched ${activities.length} activities from Tilleggsstonader`);
 
     return mapActivities(activities);

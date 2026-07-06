@@ -5,7 +5,7 @@ import { RegisterDataQuery, UpstreamActivity } from './types';
 const activitiesUrl = '/api/ekstern/aktivitet';
 
 interface GetActivitiesProps {
-  baseUrl: string;
+  tilleggsstonaderBaseUrl: string;
   accessToken: string;
   query?: RegisterDataQuery;
 }
@@ -33,16 +33,16 @@ const buildQueryString = (query?: RegisterDataQuery) => {
 };
 
 const getActivities = async (props: GetActivitiesProps) => {
-  const { baseUrl, accessToken, query } = props;
+  const { tilleggsstonaderBaseUrl, accessToken, query } = props;
   logger.info('Get register data activities');
 
-  return await http.get<UpstreamActivity>(`${baseUrl}${activitiesUrl}${buildQueryString(query)}`, {
+  return await http.get<UpstreamActivity>(`${tilleggsstonaderBaseUrl}${activitiesUrl}${buildQueryString(query)}`, {
     accessToken,
   });
 };
 
-const registerDataClient = {
+const tilleggsstonaderClient = {
   getActivities,
 };
 
-export default registerDataClient;
+export default tilleggsstonaderClient;
