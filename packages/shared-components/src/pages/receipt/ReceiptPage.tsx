@@ -28,25 +28,32 @@ const useStyles = makeStyles({
   },
   hideOnPrint: {
     '@media print': {
-      display: 'none !important',
+      display: 'none',
     },
   },
   printAlert: {
     '@media print': {
       display: 'block',
-      padding: '0 !important',
-      border: '0 !important',
+      padding: 0,
+      border: 0,
       borderRadius: 0,
-      background: 'none !important',
-      boxShadow: 'none !important',
-      color: '#000 !important',
-      '& .aksel-alert__icon': {
-        display: 'none !important',
+      background: 'none',
+      boxShadow: 'none',
+      color: '#000',
+      '&.aksel-alert': {
+        padding: 0,
+        border: 0,
+        background: 'none',
+        boxShadow: 'none',
+        color: '#000',
       },
-      '& .aksel-alert__wrapper': {
+      '& .aksel-alert__icon, &.aksel-alert .aksel-alert__icon': {
+        display: 'none',
+      },
+      '& .aksel-alert__wrapper, &.aksel-alert .aksel-alert__wrapper': {
         maxWidth: 'none',
       },
-      '& .aksel-heading': {
+      '& .aksel-heading, &.aksel-alert .aksel-heading': {
         margin: 0,
       },
     },
@@ -54,10 +61,10 @@ const useStyles = makeStyles({
   printList: {
     '@media print': {
       '& .aksel-list__item-marker': {
-        color: '#000 !important',
+        color: '#000',
       },
       '& svg': {
-        color: '#000 !important',
+        color: '#000',
       },
     },
   },
