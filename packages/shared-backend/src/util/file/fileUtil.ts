@@ -43,7 +43,9 @@ const loadAllJsonFilesFromDirectory = async (dir?: string) => {
   return [];
 };
 
-const createBlobFromUploadedFile = async (file: Pick<Express.Multer.File, 'buffer' | 'mimetype' | 'path'>) => {
+const createBlobFromUploadedFile = async (
+  file: Pick<Express.Multer.File, 'buffer' | 'mimetype'> & { path?: Express.Multer.File['path'] },
+) => {
   if (file.path) {
     const resolvedUploadTempDirectory = await realpath(uploadTempDirectory);
     const resolvedFilePath = await realpath(path.resolve(file.path));
