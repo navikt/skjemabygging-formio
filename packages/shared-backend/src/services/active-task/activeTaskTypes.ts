@@ -1,5 +1,3 @@
-import { SendInnAktivitet } from '@navikt/skjemadigitalisering-shared-domain';
-
 // Upstream field names from innsending-api
 type UpstreamActiveTask = {
   skjemanr: string;
@@ -15,4 +13,4 @@ type ActiveTask = {
   soknadstype: 'soknad' | 'ettersendelse';
 };
 
-export type { ActiveTask, SendInnAktivitet, UpstreamActiveTask };
+export type { ActiveTask, UpstreamActiveTask };

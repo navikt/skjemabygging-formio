@@ -1,5 +1,6 @@
 import {
   createActiveTaskService,
+  createApplicationActivitiesService,
   createApplicationPdfService,
   createCommonCodesService,
   createCoverPageService,
@@ -80,6 +81,10 @@ const registerDataService = createRegisterDataService({
   tilleggsstonaderBaseUrl: tilleggsstonaderConfig.host,
 });
 
+const applicationActivitiesService = createApplicationActivitiesService({
+  baseUrl: sendInnConfig.host,
+});
+
 const navUnitService = createNavUnitService({
   baseUrl: norg2.url,
   consumerId: clientId,
@@ -109,6 +114,7 @@ const nologinTokenService = NologinTokenService(config);
 
 export {
   activeTaskService,
+  applicationActivitiesService,
   applicationPdfService,
   applicationService,
   appMetrics,

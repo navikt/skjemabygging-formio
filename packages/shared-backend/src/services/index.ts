@@ -1,6 +1,8 @@
 import { coverPageMapper } from './cover-page/mapper';
 export { createActiveTaskService } from './active-task';
 export type { ActiveTask, ActiveTaskService } from './active-task';
+export { createApplicationActivitiesService } from './application-activities/applicationActivitiesService';
+export type { ApplicationActivitiesService } from './application-activities/applicationActivitiesService';
 export { createApplicationPdfService } from './application-pdf/applicationPdfService';
 export type { ApplicationPdfService } from './application-pdf/applicationPdfService';
 export { createCommonCodesService } from './common-codes';
