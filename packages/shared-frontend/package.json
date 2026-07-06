@@ -27,7 +27,7 @@
     "@navikt/aksel-icons": "^8.2.0",
     "@navikt/ds-react": "^8.2.2",
     "@navikt/skjemadigitalisering-shared-domain": "workspace:*",
-    "dompurify": "^3.3.1",
+    "dompurify": "^3.4.11",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-jss": "^10.10.0",
