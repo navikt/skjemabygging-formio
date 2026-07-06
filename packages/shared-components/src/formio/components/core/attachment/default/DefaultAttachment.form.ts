@@ -45,7 +45,7 @@ const defaultAttachmentForm = () => {
         key: 'vedleggskjema',
         required: false,
         description:
-          'Hvis vedleggskjema er oppgitt vises lenke til utfylling av skjemaet, på opplastningssiden for digital innsending. Eksempel på format "nav100750"',
+          'Hvis vedleggskjema er oppgitt vises lenke til utfylling av skjemaet, på opplastningssiden for digital innsending. Eksempel på format "nav100750". Vedleggsskjemaet må ha innsendingsvalget "Ingen innsending til Nav / Vedleggsskjema".',
         customConditional: 'show = data.attachmentType === "default"',
         }),
     ]),

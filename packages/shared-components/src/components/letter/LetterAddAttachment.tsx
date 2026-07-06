@@ -31,7 +31,7 @@ const LetterAddAttachment = ({ index, attachments }: Props) => {
             {vedlegg.attachmentType === 'default' && vedlegg.properties?.vedleggskjema ? (
               <>
                 <a
-                  href={`${fyllutBaseURL}/${vedlegg.properties.vedleggskjema}`}
+                  href={`${fyllutBaseURL}/${vedlegg.properties.vedleggskjema}?sub=papernocoverpage`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >

@@ -12,6 +12,11 @@ import makeStyles from '../../util/styles/jss/jss';
 import urlUtils from '../../util/url/url';
 
 const useStyles = makeStyles({
+  root: {
+    '@media print': {
+      color: '#000',
+    },
+  },
   downloadLink: {
     display: 'inline-flex',
     alignItems: 'center',
@@ -20,6 +25,48 @@ const useStyles = makeStyles({
   },
   downloadLinkIcon: {
     fontSize: 'var(--ax-font-size-xlarge)',
+  },
+  hideOnPrint: {
+    '@media print': {
+      display: 'none',
+    },
+  },
+  printAlert: {
+    '@media print': {
+      display: 'block',
+      padding: 0,
+      border: 0,
+      borderRadius: 0,
+      background: 'none',
+      boxShadow: 'none',
+      color: '#000',
+      '&.aksel-alert': {
+        padding: 0,
+        border: 0,
+        background: 'none',
+        boxShadow: 'none',
+        color: '#000',
+      },
+      '& .aksel-alert__icon, &.aksel-alert .aksel-alert__icon': {
+        display: 'none',
+      },
+      '& .aksel-alert__wrapper, &.aksel-alert .aksel-alert__wrapper': {
+        maxWidth: 'none',
+      },
+      '& .aksel-heading, &.aksel-alert .aksel-heading': {
+        margin: 0,
+      },
+    },
+  },
+  printList: {
+    '@media print': {
+      '& .aksel-list__item-marker': {
+        color: '#000',
+      },
+      '& svg': {
+        color: '#000',
+      },
+    },
   },
 });
 
@@ -62,11 +109,11 @@ export function ReceiptPage() {
   const allRequiredDocumentsSubmitted = skalEttersendes.length === 0 && skalSendesAvAndre.length === 0;
 
   return (
-    <VStack gap="space-32">
+    <VStack gap="space-32" className={styles.root}>
       {receipt ? (
         <>
           {allRequiredDocumentsSubmitted && (
-            <Alert size="medium" variant="success">
+            <Alert size="medium" variant="success" className={styles.printAlert}>
               <Heading level="2" spacing size="xsmall">
                 {translate(TEXTS.statiske.receipt.alertSuccessHeading)}
               </Heading>
@@ -83,7 +130,7 @@ export function ReceiptPage() {
               </b>
             </BodyShort>
             <Box marginBlock="space-16" asChild>
-              <List data-aksel-migrated-v8>
+              <List data-aksel-migrated-v8 className={styles.printList}>
                 <List.Item
                   icon={
                     <CheckmarkCircleFillIcon
@@ -97,7 +144,7 @@ export function ReceiptPage() {
                   <HStack gap="space-8">
                     {receipt.title}
                     <Link
-                      className={styles.downloadLink}
+                      className={`${styles.downloadLink} ${styles.hideOnPrint}`}
                       href={soknadPdfUrl}
                       underline={false}
                       target="_blank"
@@ -167,7 +214,7 @@ export function ReceiptPage() {
           )}
 
           {!allRequiredDocumentsSubmitted && (
-            <Alert size="medium" variant="warning">
+            <Alert size="medium" variant="warning" className={styles.printAlert}>
               <Heading level="2" spacing size="xsmall">
                 <b>
                   {translate(TEXTS.statiske.receipt.deadlineWarningHeading, {
@@ -178,9 +225,8 @@ export function ReceiptPage() {
               <InnerHtml content={translate(TEXTS.statiske.receipt.deadlineWarningBody)} />
             </Alert>
           )}
-
-          {submissionMethod === 'digital' && (
-            <div>
+          <HStack gap="space-16" className={styles.hideOnPrint}>
+            {submissionMethod === 'digital' && (
               <Button
                 role="link"
                 as={ReactRouterLink}
@@ -189,8 +235,11 @@ export function ReceiptPage() {
               >
                 {stringUtils.capitalize(translate(TEXTS.statiske.error.goToMyPage))}
               </Button>
-            </div>
-          )}
+            )}
+            <Button type="button" onClick={() => window.print()} variant="tertiary">
+              {translate(TEXTS.statiske.receipt.printFriendlyVersion)}
+            </Button>
+          </HStack>
         </>
       ) : (
         <div>{translate(TEXTS.statiske.error.alreadySubmitted)}</div>
