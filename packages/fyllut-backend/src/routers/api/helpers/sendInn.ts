@@ -143,7 +143,7 @@ const assembleSendInnSoknadBody = (
       beskrivelse: translate(attachment.beskrivelse),
       tittel: translate(attachment.tittel),
       ...(attachment.vedleggskjema && {
-        vedleggsurl: `${fyllutUrl}/${attachment.vedleggskjema}?sub=paper`,
+        vedleggsurl: `${fyllutUrl}/${attachment.vedleggskjema}?sub=papernocoverpage`,
       }),
     }));
   }

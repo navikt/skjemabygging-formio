@@ -1,11 +1,14 @@
 import {
   createApplicationPdfService,
+  createCommonCodesService,
   createCoverPageService,
   createFormService,
   createMergeFileService,
+  createNavUnitService,
   createRecipientService,
   createRegisterDataService,
   createStaticPdfService,
+  createTeamLogger,
   createTranslationService,
 } from '@navikt/skjemadigitalisering-shared-backend';
 import { config } from '../config/config';
@@ -25,8 +28,14 @@ const {
   translationDir,
   resourcesDir,
   mocksEnabled,
+  kodeverk,
+  clientId,
+  teamLogsConfig,
+  norg2,
   tilleggsstonaderConfig,
 } = config;
+
+const teamLogger = createTeamLogger(teamLogsConfig);
 
 const applicationPdfService = createApplicationPdfService({
   baseUrl: familiePdfGeneratorUrl,
@@ -34,10 +43,16 @@ const applicationPdfService = createApplicationPdfService({
     appName: 'fyllut',
     registry: appMetrics.register,
   },
+  teamLogger,
 });
 
 const coverPageService = createCoverPageService({
   baseUrl: skjemabyggingProxyUrl,
+});
+
+const commonCodesService = createCommonCodesService({
+  baseUrl: kodeverk.url,
+  consumerId: clientId,
 });
 
 const formService = createFormService({
@@ -53,6 +68,11 @@ const mergeFileService = createMergeFileService({
 
 const registerDataService = createRegisterDataService({
   baseUrl: tilleggsstonaderConfig.host,
+});
+
+const navUnitService = createNavUnitService({
+  baseUrl: norg2.url,
+  consumerId: clientId,
 });
 
 const recipientService = createRecipientService({
@@ -81,9 +101,11 @@ export {
   applicationPdfService,
   applicationService,
   appMetrics,
+  commonCodesService,
   coverPageService,
   formService,
   mergeFileService,
+  navUnitService,
   nologinTokenService,
   recipientService,
   registerDataService,

@@ -1,4 +1,6 @@
-import { PdfFormData, ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
+import { PdfFormData, ResponseError, getStatusFromErrorCode } from '@navikt/skjemadigitalisering-shared-domain';
+import type { TeamLogger } from '../../shared';
+import { isAuthenticationError } from '../../shared';
 import { logger } from '../../shared/logger/logger';
 import { MetricServiceConfig } from '../metrics/metricService';
 import applicationPdfClient from './applicationPdfClient';
@@ -20,6 +22,7 @@ interface CreateApplicationPdfServiceProps {
   baseUrl: string;
   metrics?: MetricServiceConfig;
   client?: ApplicationPdfClient;
+  teamLogger?: Pick<TeamLogger, 'error'>;
 }
 
 const requirePdfFormData = (pdfFormData?: PdfFormData): PdfFormData => {
@@ -32,16 +35,21 @@ const requirePdfFormData = (pdfFormData?: PdfFormData): PdfFormData => {
   throw error;
 };
 
+const getHttpResponseStatus = (error: unknown) =>
+  error instanceof ResponseError ? getStatusFromErrorCode(error.errorCode) : undefined;
+
 const createApplicationPdfService = ({
   baseUrl,
   metrics,
   client = applicationPdfClient,
+  teamLogger,
 }: CreateApplicationPdfServiceProps): ApplicationPdfService => {
   const applicationPdfMetrics = createApplicationPdfMetrics(metrics);
 
   const createPdf = async (props: CreatePdfProps) => {
     const { accessToken, pdfFormData } = props;
     const validatedPdfFormData = requirePdfFormData(pdfFormData);
+    const sanitizedPdfFormData = sanitizePdfFormData(validatedPdfFormData);
 
     applicationPdfMetrics.requests.increment();
     const timer = applicationPdfMetrics.duration.start();
@@ -50,7 +58,7 @@ const createApplicationPdfService = ({
       const pdf = await client.createPdf({
         baseUrl,
         accessToken,
-        body: sanitizePdfFormData(validatedPdfFormData),
+        body: sanitizedPdfFormData,
       });
 
       timer.success();
@@ -58,6 +66,13 @@ const createApplicationPdfService = ({
     } catch (error) {
       applicationPdfMetrics.failures.increment();
       timer.failure();
+      if (!isAuthenticationError(error) && teamLogger) {
+        teamLogger.error('Could not create pdf', {
+          skjemanummer: validatedPdfFormData.skjemanummer ?? undefined,
+          httpResponseStatus: getHttpResponseStatus(error),
+          pdfRequestBody: JSON.stringify(sanitizedPdfFormData),
+        });
+      }
       logger.warn('Could not create pdf', { error });
       throw error;
     }

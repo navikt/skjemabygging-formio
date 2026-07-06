@@ -149,6 +149,7 @@ export const statiske = {
       'Vi har mottatt det vi trenger for å starte saksbehandlingen. Vi tar kontakt hvis vi trenger flere opplysninger.',
     documentsReceivedHeading: 'Vi har mottatt følgende dokumenter {{date}}:',
     downloadLinkLabel: 'Last ned kopi',
+    printFriendlyVersion: 'Utskriftsvennlig versjon',
     mustSendLaterHeading: 'Dette må du ettersende:',
     sentByOthersHeading: 'Dette har du svart at noen andre skal sende inn:',
     deadlineWarningHeading: 'Dokumentene må ettersendes innen {{deadline}}',
@@ -308,6 +309,10 @@ export const statiske = {
   },
   dataFetcher: {
     other: 'Annet',
+  },
+  sender: {
+    applicationInsight:
+      'Når du har sendt inn skjemaet, vil det ikke være tilgjengelig på Min side for deg. Det vil være tilgjengelig for personen du sender inn på vegne av.',
   },
   error: {
     notFoundTitle: 'Beklager, fant ikke siden',
