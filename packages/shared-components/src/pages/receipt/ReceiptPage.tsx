@@ -218,7 +218,7 @@ export function ReceiptPage() {
               <InnerHtml content={translate(TEXTS.statiske.receipt.deadlineWarningBody)} />
             </Alert>
           )}
-          <div className={styles.hideOnPrint}>
+          <HStack gap="space-16" className={styles.hideOnPrint}>
             {submissionMethod === 'digital' && (
               <Button
                 role="link"
@@ -232,7 +232,7 @@ export function ReceiptPage() {
             <Button type="button" onClick={() => window.print()} variant="tertiary">
               {translate(TEXTS.statiske.receipt.printFriendlyVersion)}
             </Button>
-          </div>
+          </HStack>
         </>
       ) : (
         <div>{translate(TEXTS.statiske.error.alreadySubmitted)}</div>
