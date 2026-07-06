@@ -310,6 +310,10 @@ export const statiske = {
   dataFetcher: {
     other: 'Annet',
   },
+  sender: {
+    applicationInsight:
+      'Når du har sendt inn skjemaet, vil det ikke være tilgjengelig på Min side for deg. Det vil være tilgjengelig for personen du sender inn på vegne av.',
+  },
   error: {
     notFoundTitle: 'Beklager, fant ikke siden',
     serverErrorTitle: 'Beklager, det oppsto en feil',
