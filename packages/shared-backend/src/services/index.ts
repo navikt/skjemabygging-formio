@@ -17,6 +17,8 @@ export type {
   MetricServiceConfig,
 } from './metrics/metricService';
 export type { PrometheusMetricsConfig } from './metrics/prometheusMetrics';
+export { createNavUnitService } from './nav-unit/navUnitService';
+export type { NavUnitService } from './nav-unit/navUnitService';
 export { createRecipientService } from './recipient/recipientService';
 export type { RecipientService } from './recipient/recipientService';
 export { createStaticPdfService } from './static-pdf/staticPdfService';

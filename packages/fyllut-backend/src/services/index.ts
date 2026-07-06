@@ -3,6 +3,7 @@ import {
   createCoverPageService,
   createFormService,
   createMergeFileService,
+  createNavUnitService,
   createRecipientService,
   createStaticPdfService,
   createTeamLogger,
@@ -26,6 +27,8 @@ const {
   resourcesDir,
   mocksEnabled,
   teamLogsConfig,
+  norg2,
+  clientId,
 } = config;
 
 const teamLogger = createTeamLogger(teamLogsConfig);
@@ -52,6 +55,11 @@ const formService = createFormService({
 
 const mergeFileService = createMergeFileService({
   baseUrl: `${sendInnConfig.host}${sendInnConfig.paths.mergeFiles}`,
+});
+
+const navUnitService = createNavUnitService({
+  baseUrl: norg2.url,
+  consumerId: clientId,
 });
 
 const recipientService = createRecipientService({
@@ -83,6 +91,7 @@ export {
   coverPageService,
   formService,
   mergeFileService,
+  navUnitService,
   nologinTokenService,
   recipientService,
   staticPdfService,
