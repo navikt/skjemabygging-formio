@@ -23,6 +23,8 @@ export { createNavUnitService } from './nav-unit/navUnitService';
 export type { NavUnitService } from './nav-unit/navUnitService';
 export { createRecipientService } from './recipient/recipientService';
 export type { RecipientService } from './recipient/recipientService';
+export { createRegisterDataService } from './register-data/registerDataService';
+export type { RegisterDataService } from './register-data/registerDataService';
 export { createStaticPdfService } from './static-pdf/staticPdfService';
 export type { StaticPdfService } from './static-pdf/staticPdfService';
 export { createTranslationService } from './translation/translationService';

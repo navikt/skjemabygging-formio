@@ -6,6 +6,7 @@ import {
   createMergeFileService,
   createNavUnitService,
   createRecipientService,
+  createRegisterDataService,
   createStaticPdfService,
   createTeamLogger,
   createTranslationService,
@@ -31,7 +32,7 @@ const {
   clientId,
   teamLogsConfig,
   norg2,
-  clientId,
+  tilleggsstonaderConfig,
 } = config;
 
 const teamLogger = createTeamLogger(teamLogsConfig);
@@ -63,6 +64,10 @@ const formService = createFormService({
 
 const mergeFileService = createMergeFileService({
   baseUrl: `${sendInnConfig.host}${sendInnConfig.paths.mergeFiles}`,
+});
+
+const registerDataService = createRegisterDataService({
+  tilleggsstonaderBaseUrl: tilleggsstonaderConfig.host,
 });
 
 const navUnitService = createNavUnitService({
@@ -103,6 +108,7 @@ export {
   navUnitService,
   nologinTokenService,
   recipientService,
+  registerDataService,
   staticPdfService,
   translationService,
   translationsService,
