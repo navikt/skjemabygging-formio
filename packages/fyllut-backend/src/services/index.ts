@@ -1,4 +1,6 @@
 import {
+  createActiveTaskService,
+  createApplicationActivitiesService,
   createApplicationPdfService,
   createCommonCodesService,
   createCoverPageService,
@@ -47,6 +49,10 @@ const applicationPdfService = createApplicationPdfService({
   teamLogger,
 });
 
+const activeTaskService = createActiveTaskService({
+  baseUrl: sendInnConfig.host,
+});
+
 const coverPageService = createCoverPageService({
   baseUrl: skjemabyggingProxyUrl,
 });
@@ -73,6 +79,10 @@ const prefillService = createPrefillService({
 
 const registerDataService = createRegisterDataService({
   tilleggsstonaderBaseUrl: tilleggsstonaderConfig.host,
+});
+
+const applicationActivitiesService = createApplicationActivitiesService({
+  baseUrl: sendInnConfig.host,
 });
 
 const navUnitService = createNavUnitService({
@@ -103,6 +113,8 @@ const applicationService = new ApplicationService(config, applicationPdfService)
 const nologinTokenService = NologinTokenService(config);
 
 export {
+  activeTaskService,
+  applicationActivitiesService,
   applicationPdfService,
   applicationService,
   appMetrics,
