@@ -37,6 +37,19 @@ const getBodyValue: GetBodyValue = <T = unknown>(req: Request, name: string, opt
   throw new ResponseError('BAD_REQUEST', `Missing body value "${name}"`);
 };
 
+const getStringQuery = (req: Request, name: string, optional?: boolean) => {
+  const value = req.query?.[name];
+  if (typeof value === 'string') {
+    return value;
+  }
+
+  if (optional) {
+    return undefined;
+  }
+
+  throw new ResponseError('BAD_REQUEST', `Missing query param "${name}"`);
+};
+
 const getFile = (req: Request): Express.Multer.File => {
   const file = req.file;
   if (!file?.buffer) {
@@ -74,6 +87,7 @@ const requestUtil = {
   getFile,
   getPdfAccessToken,
   getStringParam,
+  getStringQuery,
 };
 
 export default requestUtil;

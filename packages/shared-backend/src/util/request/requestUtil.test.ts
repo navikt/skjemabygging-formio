@@ -6,15 +6,18 @@ const mockRequest = ({
   params = {},
   headers = {},
   body = {},
+  query = {},
 }: {
   params?: Record<string, string | string[] | undefined>;
   headers?: Record<string, string | string[] | undefined>;
   body?: Record<string, unknown>;
+  query?: Record<string, string | string[] | undefined>;
 }) =>
   ({
     params,
     headers,
     body,
+    query,
   }) as unknown as Request;
 
 describe('requestUtil', () => {
@@ -83,6 +86,34 @@ describe('requestUtil', () => {
       expect(() => requestUtil.getPdfAccessToken(mockRequest({ headers: {} }))).toThrow(
         'Could not find PdfAccessToken in request headers',
       );
+    });
+  });
+
+  describe('getStringQuery', () => {
+    it('returns the value for a single string query param', () => {
+      expect(requestUtil.getStringQuery(mockRequest({ query: { properties: 'sokerFornavn' } }), 'properties')).toBe(
+        'sokerFornavn',
+      );
+    });
+
+    it('throws when the query param is missing', () => {
+      expect(() => requestUtil.getStringQuery(mockRequest({ query: {} }), 'properties')).toThrow(
+        'Missing query param "properties"',
+      );
+    });
+
+    it('returns undefined when the optional query param is missing', () => {
+      expect(requestUtil.getStringQuery(mockRequest({ query: {} }), 'properties', true)).toBeUndefined();
+    });
+
+    it('returns undefined when the optional query param is not a string', () => {
+      expect(
+        requestUtil.getStringQuery(
+          mockRequest({ query: { properties: ['sokerFornavn', 'sokerEtternavn'] } }),
+          'properties',
+          true,
+        ),
+      ).toBeUndefined();
     });
   });
 });
