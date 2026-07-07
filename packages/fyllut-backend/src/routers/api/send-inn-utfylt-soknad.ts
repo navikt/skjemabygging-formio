@@ -66,7 +66,7 @@ const sendInnUtfyltSoknad = {
       const pdfByteArray = Array.from(applicationPdf) ?? [];
 
       const body = assembleSendInnSoknadBody({ ...req.body, form, translations }, idportenPid, fyllutUrl, pdfByteArray);
-      const response = await applicationService.submitUtfyltSoknad({
+      const response = await applicationService.submitCompletedApplication({
         accessToken: tokenxAccessToken,
         body,
         envQualifier,

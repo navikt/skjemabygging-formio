@@ -29,7 +29,7 @@ const sendInnSoknad = {
         return res.sendStatus(404);
       }
 
-      const json = await applicationService.getSoknad<SendInnSoknadBody>({
+      const json = await applicationService.getApplication<SendInnSoknadBody>({
         accessToken: tokenxAccessToken,
         innsendingsId: sanitizedInnsendingsId,
       });
@@ -65,20 +65,20 @@ const sendInnSoknad = {
 
       const body = assembleSendInnSoknadBody({ ...req.body, form, translations }, idportenPid, fyllutUrl, null);
       const envQualifier = req.getEnvQualifier();
-      const response = await applicationService.createSoknad<SendInnSoknadBody>({
+      const response = await applicationService.createApplication<SendInnSoknadBody>({
         accessToken: tokenxAccessToken,
         body,
         envQualifier,
         force: Boolean(forceMellomlagring),
         innsendingsId: req.body.innsendingsId ?? '',
       });
-      const { status, body: soknad } = response;
+      const { status, body: application } = response;
 
       logger.debug(status === 200 ? 'User has active tasks' : 'Successfylly posted data to SendInn');
       res.status(status);
       res.json({
-        ...soknad,
-        ...shouldUploadAttachmentsInFyllut(soknad),
+        ...shouldUploadAttachmentsInFyllut(application),
+        ...application,
       });
     } catch (error) {
       next(error);
@@ -108,7 +108,7 @@ const sendInnSoknad = {
 
       const body = assembleSendInnSoknadBody({ ...req.body, form, translations }, idportenPid, fyllutUrl, null);
 
-      const response = await applicationService.updateSoknad<SendInnSoknadBody>({
+      const response = await applicationService.updateApplication<SendInnSoknadBody>({
         accessToken: tokenxAccessToken,
         body,
         innsendingsId: sanitizedInnsendingsId,
@@ -132,7 +132,7 @@ const sendInnSoknad = {
         return;
       }
 
-      const response = await applicationService.deleteSoknad({
+      const response = await applicationService.deleteApplication({
         accessToken: tokenxAccessToken,
         innsendingsId: sanitizedInnsendingsId,
       });
