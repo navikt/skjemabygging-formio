@@ -1,4 +1,5 @@
 import type { UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
+import type { LogMetadata } from '../../shared';
 import applicationClient from './applicationClient';
 import type {
   ApplicationMetrics,
@@ -32,6 +33,7 @@ interface ApplicationBaseProps {
   accessToken: string;
   innsendingsId: string;
   correlationId?: string;
+  logMeta?: LogMetadata;
 }
 
 interface CreateSoknadProps extends ApplicationBaseProps {

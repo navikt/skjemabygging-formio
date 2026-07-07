@@ -8,6 +8,7 @@ import {
 import { config } from '../../../../config/config';
 import { applicationPdfService, applicationService, formService, translationService } from '../../../../services';
 import { mapToReceiptSummary } from '../../../../services/nologin/receiptMapper';
+import { LogMetadata } from '../../../../types/log';
 import { requireBase64Decode } from '../../../../utils/base64';
 import { assembleSubmitApplicationRequest } from '../../helpers/applicationUtils';
 
@@ -33,6 +34,12 @@ export const generatePdfAndSubmit = async (
     languageCodes: [language],
   });
   const pdfAccessToken = req.headers.PdfAccessToken as string;
+  const logMeta: LogMetadata = {
+    innsendingsId,
+    skjemanummer: form?.properties?.skjemanummer,
+    language,
+    fyllutRequestPath: req.path,
+  };
   const pdfFormData = renderApplicationPdf({
     form,
     submission,
@@ -60,6 +67,7 @@ export const generatePdfAndSubmit = async (
     accessToken,
     body: submitRequest,
     innsendingsId,
+    logMeta,
     type: applicationType,
   });
 

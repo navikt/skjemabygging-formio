@@ -34,6 +34,7 @@ const post = async (req: Request, res: Response, next: NextFunction) => {
       fileBlob,
       fileName: Buffer.from(file.originalname, 'latin1').toString('utf8'),
       innsendingsId,
+      logMeta,
       type: 'nologin',
     });
     logger.info(`${innsendingsId}: Upload request completed for nologin application`, {
@@ -58,8 +59,21 @@ const deleteAttachment = async (req: Request, res: Response, next: NextFunction)
     const attachmentId = req.params.attachmentId as string | undefined;
     const fileId = req.params.fileId as string | undefined;
     const accessToken = req.headers.AzureAccessToken as string;
+    const logMeta = {
+      attachmentId,
+      fileId,
+      innsendingsId,
+      route: req.originalUrl,
+    };
 
-    await applicationService.deleteAttachment({ accessToken, attachmentId, fileId, innsendingsId, type: 'nologin' });
+    await applicationService.deleteAttachment({
+      accessToken,
+      attachmentId,
+      fileId,
+      innsendingsId,
+      logMeta,
+      type: 'nologin',
+    });
     res.sendStatus(204);
   } catch (error) {
     next(error);

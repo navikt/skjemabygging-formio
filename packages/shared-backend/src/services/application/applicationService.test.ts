@@ -1,5 +1,6 @@
 import { ResponseError, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { logger } from '../../shared/logger/logger';
 import { createApplicationService } from './applicationService';
 import type { SubmitApplicationRequest, SubmitApplicationResponse } from './applicationTypes';
 
@@ -12,6 +13,12 @@ describe('createApplicationService', () => {
   const fileId = '12345678-1234-1234-1234-123456789abc';
   const draftPath = '/fyllUt/v1/soknad';
   const submittedDraftPath = '/fyllUt/v1/utfyltSoknad';
+  const submitLogMeta = {
+    fyllutRequestPath: '/api/send-inn/digital-application/12345678-1234-1234-1234-12345678abcd',
+    innsendingsId,
+    language: 'nb',
+    skjemanummer: 'NAV 12.34-56',
+  };
 
   afterEach(() => {
     vi.restoreAllMocks();
@@ -360,6 +367,7 @@ describe('createApplicationService', () => {
   });
 
   it('submits application json through the real service and client path', async () => {
+    const infoSpy = vi.spyOn(logger, 'info');
     const responseBody: SubmitApplicationResponse = {
       innsendingsId,
       submittedAt: '2024-01-01T00:00:00.000Z',
@@ -390,9 +398,17 @@ describe('createApplicationService', () => {
         correlationId,
         body: requestBody,
         innsendingsId,
+        logMeta: submitLogMeta,
         type: 'digital',
       }),
     ).resolves.toEqual(responseBody);
+
+    expect(infoSpy).toHaveBeenCalledWith(`${innsendingsId}: Submitting digital application`, {
+      ...submitLogMeta,
+      correlationId,
+      targetUrl: `${baseUrl}/v1/application-digital/${innsendingsId}`,
+    });
+    expect(infoSpy).toHaveBeenCalledWith(`${innsendingsId}: Successfully submitted digital application`, submitLogMeta);
   });
 
   it('guards invalid attachment file ids before calling fetch', async () => {
@@ -423,6 +439,7 @@ describe('createApplicationService', () => {
   });
 
   it('normalizes temporarily unavailable application submit errors', async () => {
+    const warnSpy = vi.spyOn(logger, 'warn');
     vi.spyOn(global, 'fetch').mockResolvedValue(
       new Response(JSON.stringify({ errorCode: 'temporarilyUnavailable', message: 'NOLOGIN is not available' }), {
         status: 503,
@@ -447,6 +464,7 @@ describe('createApplicationService', () => {
           title: 'Title',
         },
         innsendingsId,
+        logMeta: submitLogMeta,
         type: 'nologin',
       }),
     ).rejects.toEqual(
@@ -457,6 +475,15 @@ describe('createApplicationService', () => {
         TEXTS.statiske.nologin.temporarilyUnavailable,
       ),
     );
+
+    expect(warnSpy).toHaveBeenCalledWith(`${innsendingsId}: Failed to submit nologin application`, {
+      ...submitLogMeta,
+      correlationId,
+      errorCode: 'SERVICE_UNAVAILABLE',
+      errorMessage: 'NOLOGIN is not available',
+      httpResponseStatus: 503,
+      targetUrl: `${baseUrl}/v1/application-nologin/${innsendingsId}`,
+    });
   });
 
   it('normalizes sent-or-deleted draft errors through the real service and client path', async () => {

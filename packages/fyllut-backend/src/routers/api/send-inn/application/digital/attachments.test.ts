@@ -50,6 +50,12 @@ describe('[endpoint] send-inn/application/digital/attachments', () => {
         attachmentId,
         fileId,
         innsendingsId,
+        logMeta: {
+          attachmentId,
+          fileId,
+          innsendingsId,
+          route: undefined,
+        },
         type: 'digital',
       });
       expect(res.contentType).toHaveBeenCalledWith('application/octet-stream');

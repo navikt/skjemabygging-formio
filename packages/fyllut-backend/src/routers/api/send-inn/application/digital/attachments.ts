@@ -35,6 +35,7 @@ const post = async (req: Request, res: Response, next: NextFunction) => {
       fileBlob,
       fileName: Buffer.from(file.originalname, 'latin1').toString('utf8'),
       innsendingsId,
+      logMeta,
       type: 'digital',
     });
     logger.info(`${innsendingsId}: Upload request completed for digital application`, {
@@ -56,8 +57,21 @@ const deleteFile = async (req: Request, res: Response, next: NextFunction) => {
     const attachmentId = requestUtil.getStringParam(req, 'attachmentId')!;
     const fileId = requestUtil.getStringParam(req, 'fileId', true);
     const accessToken = req.getTokenxAccessToken();
+    const logMeta = {
+      attachmentId,
+      fileId,
+      innsendingsId,
+      route: req.originalUrl,
+    };
 
-    await applicationService.deleteAttachment({ accessToken, attachmentId, fileId, innsendingsId, type: 'digital' });
+    await applicationService.deleteAttachment({
+      accessToken,
+      attachmentId,
+      fileId,
+      innsendingsId,
+      logMeta,
+      type: 'digital',
+    });
     res.sendStatus(204);
   } catch (error) {
     next(error);
@@ -70,6 +84,12 @@ const get = async (req: Request, res: Response, next: NextFunction) => {
     const attachmentId = requestUtil.getStringParam(req, 'attachmentId')!;
     const fileId = requestUtil.getStringParam(req, 'fileId')!;
     const accessToken = req.getTokenxAccessToken();
+    const logMeta = {
+      attachmentId,
+      fileId,
+      innsendingsId,
+      route: req.originalUrl,
+    };
     const {
       body: fileStream,
       contentType,
@@ -80,6 +100,7 @@ const get = async (req: Request, res: Response, next: NextFunction) => {
       attachmentId,
       fileId,
       innsendingsId,
+      logMeta,
       type: 'digital',
     });
 
