@@ -49,6 +49,15 @@ const createProperties = ({
     };
   }
 
+  if (signatureMode === 'default-empty') {
+    return {
+      ...properties,
+      signatures: [{ key: 'e037eeae-cf54-4ece-94df-b9bc963396f1', label: '', description: '' }],
+      ...(innsendingForklaring ? { innsendingForklaring } : undefined),
+      ...(ettersendelsesfrist ? { ettersendelsesfrist } : undefined),
+    };
+  }
+
   return {
     ...properties,
     ...(innsendingForklaring ? { innsendingForklaring } : undefined),
@@ -111,6 +120,7 @@ const createSubmissionTypeForm = ({
     path,
     components: [
       panel({
+        key: 'dineOpplysninger',
         title: 'Dine opplysninger',
         components: [
           ...(shouldAddDigitalIdentityPrefill(submissionTypes)

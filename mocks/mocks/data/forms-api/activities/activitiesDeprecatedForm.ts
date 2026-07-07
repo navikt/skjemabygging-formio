@@ -70,6 +70,8 @@ const activitiesDeprecatedForm = () =>
         components: [
           attachment({
             attachmentType: 'other',
+            id: 'ehcih08',
+            navId: 'efcvrf',
             attachmentValues: {
               nei: {
                 enabled: true,

@@ -1,5 +1,6 @@
 import { attachment, htmlElement, navSelect, panel, radio, textField } from '../../../form-builder/components';
 import form from '../../../form-builder/form/form';
+import { formIntroPageWithoutSelfDeclaration } from '../../../form-builder/form/formIntroPage';
 import formProperties from '../../../form-builder/form/formProperties';
 
 const submissionMethodForm = () =>
@@ -82,6 +83,7 @@ const submissionMethodForm = () =>
         ],
       }),
     ],
+    introPage: formIntroPageWithoutSelfDeclaration(),
     properties: formProperties({
       formNumber: 'BUG 10.10-10',
       submissionTypes: ['PAPER', 'DIGITAL'],

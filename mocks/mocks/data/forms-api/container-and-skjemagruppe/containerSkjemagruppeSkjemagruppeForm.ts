@@ -1,5 +1,6 @@
 import { attachment, container, formGroup, panel, textField } from '../../../form-builder/components';
 import form from '../../../form-builder/form/form';
+import { formIntroPageWithoutSelfDeclaration } from '../../../form-builder/form/formIntroPage';
 import formProperties from '../../../form-builder/form/formProperties';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
 
@@ -95,6 +96,7 @@ const containerSkjemagruppeSkjemagruppeForm = () =>
         ],
       }),
     ],
+    introPage: formIntroPageWithoutSelfDeclaration(),
     properties: formProperties({ formNumber: 'test-skjemagruppe', submissionTypes: ['PAPER', 'DIGITAL'] }),
   });
 

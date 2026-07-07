@@ -1,5 +1,6 @@
 import { attachment, panel, selectBoxes } from '../../../form-builder/components';
 import form from '../../../form-builder/form/form';
+import { formIntroPageWithoutSelfDeclaration } from '../../../form-builder/form/formIntroPage';
 import formProperties from '../../../form-builder/form/formProperties';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
 
@@ -84,6 +85,7 @@ const selectBoxesDeprecatedForm = () =>
         ],
       }),
     ],
+    introPage: formIntroPageWithoutSelfDeclaration(),
     properties: formProperties({ formNumber: 'selectboxestest', submissionTypes: ['PAPER', 'DIGITAL'] }),
   });
 

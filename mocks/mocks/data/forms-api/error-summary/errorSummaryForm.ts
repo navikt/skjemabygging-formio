@@ -16,6 +16,7 @@ import {
   textField,
 } from '../../../form-builder/components';
 import form from '../../../form-builder/form/form';
+import { formIntroPageWithoutSelfDeclaration } from '../../../form-builder/form/formIntroPage';
 import formProperties from '../../../form-builder/form/formProperties';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
 
@@ -49,6 +50,7 @@ const errorSummaryForm = () =>
             hideLabel: true,
             key: 'dineOpplysninger',
             label: 'Dine opplysninger',
+            validate: { required: false },
             components: [
               firstName({
                 key: 'fornavn',
@@ -79,7 +81,7 @@ const errorSummaryForm = () =>
                   prefillKey: 'sokerAdresser',
                   protectedApiKey: true,
                 }),
-                addressType: null,
+                addressType: 'NORWEGIAN_ADDRESS',
               },
               addressValidity({
                 customConditional:
@@ -142,6 +144,7 @@ const errorSummaryForm = () =>
             key: 'skjermbruk',
             label: 'Skjemagruppe',
             legend: 'Skjermbruk',
+            validate: { required: false },
             components: [
               number({
                 key: 'hvorMangeTimerPerDognBrukerDuPaSkjerm',
@@ -228,6 +231,7 @@ const errorSummaryForm = () =>
         ],
       }),
     ],
+    introPage: formIntroPageWithoutSelfDeclaration(),
     properties: formProperties({ formNumber: 'TST 01-04.25', submissionTypes: ['PAPER', 'DIGITAL'] }),
   });
 

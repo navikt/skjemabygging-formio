@@ -59,7 +59,7 @@ const yourInformationDeprecatedForm = () =>
                   protectedApiKey: true,
                   validate: { required: true },
                 }),
-                addressType: null,
+                addressType: 'NORWEGIAN_ADDRESS',
               },
               addressValidity({
                 customConditional:

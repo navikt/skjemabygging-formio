@@ -1,15 +1,18 @@
 import {
-  address,
-  addressValidity,
   alert,
   attachment,
+  container,
+  datePicker,
   firstName,
+  formGroup,
   htmlElement,
-  identity,
   monthPicker,
+  nationalIdentityNumber,
   navSelect,
   panel,
+  radio,
   surname,
+  textField,
 } from '../../../form-builder/components';
 import form from '../../../form-builder/form/form';
 import { formIntroPageWithoutSelfDeclaration } from '../../../form-builder/form/formIntroPage';
@@ -19,16 +22,7 @@ interface CreateCypress101FormOptions {
   path: string;
 }
 
-const createIdentityWithCapitalD = () => {
-  const identityComponent = identity({ prefill: true });
-  return {
-    ...identityComponent,
-    customLabels: {
-      ...identityComponent.customLabels,
-      doYouHaveIdentityNumber: 'Har du norsk fødselsnummer eller D-nummer?',
-    },
-  };
-};
+const identityChoiceKey = 'harDuNorskFodselsnummerEllerDNummer';
 
 const createCypress101Form = ({ path }: CreateCypress101FormOptions) =>
   form({
@@ -59,18 +53,79 @@ const createCypress101Form = ({ path }: CreateCypress101FormOptions) =>
           }),
           firstName({ key: 'fornavn', prefill: true, prefillKey: 'sokerFornavn', protectedApiKey: true }),
           surname({ key: 'etternavn', prefill: true, prefillKey: 'sokerEtternavn', protectedApiKey: true }),
-          createIdentityWithCapitalD(),
-          address({
-            prefill: true,
-            prefillKey: 'sokerAdresser',
-            protectedApiKey: true,
-            customConditional:
-              'show = data.identitet.harDuFodselsnummer === "nei" || (data.identitet.identitetsnummer && !data.identitet.harDuFodselsnummer)',
+          radio({
+            key: identityChoiceKey,
+            label: 'Har du norsk fødselsnummer eller D-nummer?',
+            validate: { required: true },
+            values: [
+              { label: 'Ja', value: 'ja' },
+              { label: 'Nei', value: 'nei' },
+            ],
           }),
-          addressValidity({
+          nationalIdentityNumber({
+            key: 'fodselsnummerDNummerSoker',
+            label: 'Fødselsnummer eller d-nummer',
+            customConditional: `show = data.${identityChoiceKey} === "ja" || (data.fodselsnummerDNummerSoker && !data.${identityChoiceKey})`,
+            prefill: true,
+            prefillKey: 'sokerIdentifikasjonsnummer',
             protectedApiKey: true,
-            customConditional:
-              'show = data.adresse.borDuINorge === "nei" || (data.adresse.borDuINorge === "ja" && data.adresse.vegadresseEllerPostboksadresse)',
+            mask: false,
+            inputFormat: 'plain',
+            inputMask: '',
+            displayMask: '',
+            truncateMultipleSpaces: false,
+            validate: { required: true },
+          }),
+          datePicker({
+            conditional: { show: true, when: identityChoiceKey, eq: 'nei' },
+            key: 'fodselsdatoDdMmAaaaSoker',
+            label: 'Fødselsdato (dd.mm.åååå)',
+            validate: {
+              custom: 'valid = instance.validateDatePickerV2(input, data, component, row);',
+            },
+          }),
+          radio({
+            conditional: { show: true, when: identityChoiceKey, eq: 'nei' },
+            key: 'borDuINorge',
+            label: 'Bor du i Norge?',
+            values: [
+              { label: 'Ja', value: 'ja' },
+              { label: 'Nei', value: 'nei' },
+            ],
+          }),
+          radio({
+            conditional: { show: true, when: 'borDuINorge', eq: 'ja' },
+            key: 'vegadresseEllerPostboksadresse',
+            label: 'Er kontaktadressen en vegadresse eller postboksadresse?',
+            values: [
+              { label: 'Vegadresse', value: 'vegadresse' },
+              { label: 'Postboksadresse', value: 'postboksadresse' },
+            ],
+          }),
+          formGroup({
+            conditional: { show: true, when: 'vegadresseEllerPostboksadresse', eq: 'vegadresse' },
+            key: 'navSkjemagruppeVegadresse',
+            label: 'Kontaktadresse',
+            legend: 'Kontaktadresse',
+            components: [
+              container({
+                hideLabel: true,
+                key: 'norskVegadresse',
+                label: 'Kontaktadresse',
+                components: [
+                  textField({ key: 'vegadresseSoker', label: 'Vegadresse' }),
+                  textField({ key: 'postnrSoker', label: 'Postnummer' }),
+                  textField({ key: 'poststedSoker', label: 'Poststed' }),
+                ],
+              }),
+              datePicker({
+                key: 'gyldigFraDatoDdMmAaaa1',
+                label: 'Gyldig fra (dd.mm.åååå)',
+                validate: {
+                  custom: 'valid = instance.validateDatePickerV2(input, data, component, row);',
+                },
+              }),
+            ],
           }),
           monthPicker({ key: 'velgMaaned', label: 'Velg måned' }),
           alert({

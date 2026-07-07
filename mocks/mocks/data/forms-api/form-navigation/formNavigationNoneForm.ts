@@ -2,8 +2,8 @@ import { createSubmissionTypeForm, createSubmissionTypeTranslations } from '../s
 
 const formNavigationNoneForm = () =>
   createSubmissionTypeForm({
-    title: 'Form navigation none form',
-    formNumber: 'FORM-NAV-NONE',
+    title: 'Submission Type: None',
+    formNumber: 'stnone',
     path: 'formnavigationnone',
     submissionTypes: [],
     includeSelfDeclaration: false,
@@ -13,8 +13,8 @@ const formNavigationNoneForm = () =>
 
 const formNavigationNoneTranslations = () =>
   createSubmissionTypeTranslations({
-    title: 'Form navigation none form',
-    formNumber: 'FORM-NAV-NONE',
+    title: 'Submission Type: None',
+    formNumber: 'stnone',
     path: 'formnavigationnone',
     submissionTypes: [],
     includeSelfDeclaration: false,

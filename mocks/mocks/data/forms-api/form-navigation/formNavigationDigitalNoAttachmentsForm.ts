@@ -7,6 +7,7 @@ const formNavigationDigitalNoAttachmentsForm = () =>
     path: 'formnavigationdigitalnoattachments',
     submissionTypes: ['DIGITAL'],
     includeAttachmentPanel: false,
+    includeSelfDeclaration: false,
   });
 
 const formNavigationDigitalNoAttachmentsTranslations = () =>
@@ -16,6 +17,7 @@ const formNavigationDigitalNoAttachmentsTranslations = () =>
     path: 'formnavigationdigitalnoattachments',
     submissionTypes: ['DIGITAL'],
     includeAttachmentPanel: false,
+    includeSelfDeclaration: false,
   });
 
 export { formNavigationDigitalNoAttachmentsForm, formNavigationDigitalNoAttachmentsTranslations };
