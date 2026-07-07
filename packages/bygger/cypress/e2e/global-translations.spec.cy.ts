@@ -10,6 +10,14 @@ describe('Global translations', () => {
     cy.wait('@getGlobalTranslations');
   });
 
+  describe('Introside', () => {
+    it('shows data treatment description as global intro page translation', () => {
+      cy.findByRole('link', { name: 'Introside' }).click();
+      cy.findByRole('heading', { name: 'Introside' }).should('be.visible');
+      cy.findByText('Vi behandler personopplysninger i forbindelse med saksbehandlingen.').should('be.visible');
+    });
+  });
+
   describe('Skjematekster', () => {
     it('filters on rows with missing translations', () => {
       cy.findByText('Ny').should('be.visible');

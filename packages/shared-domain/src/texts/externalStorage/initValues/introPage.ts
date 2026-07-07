@@ -140,6 +140,12 @@ const introPage: KeyBasedFormsApiTranslation[] = [
     en: 'How we process personal data',
   },
   {
+    key: 'introPage.dataTreatment.description',
+    nb: 'Vi behandler personopplysninger i forbindelse med saksbehandlingen.',
+    nn: 'Me behandlar personopplysningar i samband med saksbehandlinga.',
+    en: 'We process personal data in connection with case processing.',
+  },
+  {
     key: 'introPage.dataStorage.title.digital',
     nb: 'Vi lagrer svar underveis',
     nn: 'Me lagrar svar undervegs',

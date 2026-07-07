@@ -428,6 +428,19 @@
     "publishedBy": "Mock"
   },
   {
+    "key": "introPage.dataTreatment.description",
+    "nb": "Vi behandler personopplysninger i forbindelse med saksbehandlingen.",
+    "nn": "Me behandlar personopplysningar i samband med saksbehandlinga.",
+    "en": "We process personal data in connection with case processing.",
+    "id": 439,
+    "tag": "introPage",
+    "changedAt": "2025-06-24T12:29:38.690+02",
+    "changedBy": "Mock",
+    "revision": 3,
+    "publishedAt": "2025-06-23T12:14:00.274+02",
+    "publishedBy": "Mock"
+  },
+  {
     "key": "introPage.dataTreatment.readMore",
     "nb": "Du kan lese mer om <a href=\"https://www.nav.no/personvernerklaering\" target=\"_blank\" rel=\"noopener noreferrer\">hvordan Nav behandler personopplysninger på nav.no (åpnes i ny fane).</a>",
     "nn": "Du kan lesa meir om <a href=\"https://www.nav.no/personvernerklaering\" target=\"_blank\" rel=\"noopener noreferrer\">korleis Nav behandlar personopplysningar på nav.no (blir opna i ny fane).</a>",

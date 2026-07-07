@@ -22,6 +22,7 @@ const introPage = [
   'introPage.dataDisclosure.ingress',
   'introPage.dataDisclosure.nationalPopulationRegister',
   'introPage.dataTreatment.title',
+  'introPage.dataTreatment.description',
   'introPage.dataTreatment.readMore',
   'introPage.dataStorage.title.digital',
   'introPage.dataStorage.ingress.digital',
