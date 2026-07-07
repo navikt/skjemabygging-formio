@@ -56,6 +56,7 @@ const createCypress101Form = ({ path }: CreateCypress101FormOptions) =>
           radio({
             key: identityChoiceKey,
             label: 'Har du norsk fødselsnummer eller D-nummer?',
+            customConditional: `show = !data.fodselsnummerDNummerSoker || data.${identityChoiceKey}`,
             validate: { required: true },
             values: [
               { label: 'Ja', value: 'ja' },
