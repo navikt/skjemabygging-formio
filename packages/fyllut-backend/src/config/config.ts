@@ -39,14 +39,6 @@ const idporten: IdportenConfig = {
 const sendInnConfig: SendInnConfig = {
   host: process.env.SEND_INN_HOST!,
   tokenxClientId: process.env.SEND_INN_TOKEN_X_CLIENT_ID!,
-  paths: {
-    soknad: '/fyllUt/v1/soknad',
-    utfyltSoknad: '/fyllUt/v1/utfyltSoknad',
-    prefillData: '/fyllUt/v1/prefill-data',
-    mergeFiles: '/fyllUt/v1/merge-filer',
-    nologinFile: '/v1/nologin-fillager',
-    nologinSubmit: '/v1/nologin-soknad',
-  },
 };
 
 const tilleggsstonaderConfig: TilleggsstonaderConfig = {

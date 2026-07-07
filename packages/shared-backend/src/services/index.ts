@@ -1,10 +1,24 @@
 import { coverPageMapper } from './cover-page/mapper';
 export { createActiveTaskService } from './active-task';
 export type { ActiveTask, ActiveTaskService } from './active-task';
+export type {
+  ApplicationMetrics,
+  ApplicationService,
+  ApplicationType,
+  Attachment,
+  AvsenderId,
+  BrukerDto,
+  DownloadedAttachment,
+  OpplastingsStatus,
+  SubmitApplicationRequest,
+  SubmitApplicationResponse,
+  UploadedFile,
+} from './application';
 export { createApplicationActivitiesService } from './application-activities/applicationActivitiesService';
 export type { ApplicationActivitiesService } from './application-activities/applicationActivitiesService';
 export { createApplicationPdfService } from './application-pdf/applicationPdfService';
 export type { ApplicationPdfService } from './application-pdf/applicationPdfService';
+export { createApplicationService } from './application/applicationService';
 export { createCommonCodesService } from './common-codes';
 export type { CommonCodesService } from './common-codes';
 export type { ForstesideRequestBody } from './cover-page/coverPageRequestTypes';

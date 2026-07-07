@@ -157,6 +157,7 @@ describe('app', () => {
   });
 
   it('Performs TokenX exchange and retrieves pdf from pdf generator before calling SendInn', async () => {
+    const submittedDraftPath = '/fyllUt/v1/utfyltSoknad';
     const key = await generateJwk();
     nock('https://testoidc.unittest.no')
       .get('/idporten-oidc-provider/jwk')
@@ -201,7 +202,7 @@ describe('app', () => {
       .post(extractPath(tokenxEndpoint))
       .reply(200, { access_token: '123456' }, { 'Content-Type': 'application/json' });
     const sendInnNockScope = nock(sendInnConfig?.host)
-      .put(`${sendInnConfig?.paths.utfyltSoknad}/${innsendingsId}`)
+      .put(`${submittedDraftPath}/${innsendingsId}`)
       .reply(302, 'FOUND', { Location: sendInnLocation });
 
     const res = await request(createApp())

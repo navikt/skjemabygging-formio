@@ -1,18 +1,13 @@
 import { renderApplicationPdf } from '@navikt/skjemadigitalisering-shared-backend';
 import { NextFunction, Request, Response } from 'express';
-import fetch from 'node-fetch';
+import { config } from '../../config/config';
 import { logger } from '../../logger';
 import { getIdportenPid, getTokenxAccessToken } from '../../security/tokenHelper';
-import { applicationPdfService, formService, translationService } from '../../services';
+import { applicationPdfService, applicationService, formService, translationService } from '../../services';
 import { LogMetadata } from '../../types/log';
-import { base64Decode } from '../../utils/base64';
-import { responseToError } from '../../utils/errorHandling';
+import { requireBase64Decode } from '../../utils/base64';
 import { getFyllutUrl } from '../../utils/url';
-import { assembleSendInnSoknadBody, isNotFound, sanitizeInnsendingsId, validateInnsendingsId } from './helpers/sendInn';
-
-import { config } from '../../config/config';
-
-const { sendInnConfig } = config;
+import { assembleSendInnSoknadBody, sanitizeInnsendingsId, validateInnsendingsId } from './helpers/sendInn';
 
 const sendInnUtfyltSoknad = {
   put: async (req: Request, res: Response, next: NextFunction) => {
@@ -67,48 +62,32 @@ const sendInnUtfyltSoknad = {
         accessToken: req.headers.PdfAccessToken as string,
         pdfFormData,
       });
-      const applicationPdf = base64Decode(applicationPdfBase64);
-      if (!applicationPdf) {
-        throw new Error('Generering av søknads PDF feilet');
-      }
+      const applicationPdf = requireBase64Decode(applicationPdfBase64, 'Failed to decode generated application PDF');
       const pdfByteArray = Array.from(applicationPdf) ?? [];
 
       const body = assembleSendInnSoknadBody({ ...req.body, form, translations }, idportenPid, fyllutUrl, pdfByteArray);
+      const response = await applicationService.submitUtfyltSoknad({
+        accessToken: tokenxAccessToken,
+        body,
+        envQualifier,
+        innsendingsId: sanitizedInnsendingsId,
+      });
 
-      const sendInnResponse = await fetch(
-        `${sendInnConfig.host}${sendInnConfig.paths.utfyltSoknad}/${sanitizedInnsendingsId}`,
-        {
-          method: 'PUT',
-          redirect: 'manual',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${tokenxAccessToken}`,
-            ...(envQualifier && { 'Nav-Env-Qualifier': envQualifier }),
-          },
-          body: JSON.stringify(body),
-        },
-      );
-
-      if (sendInnResponse.ok || sendInnResponse.status === 302) {
-        const location = sendInnResponse.headers.get('location');
+      if (response.status === 302 || (response.status >= 200 && response.status < 300)) {
+        const { location } = response;
         logger.debug(`Successfylly posted data to SendInn (location: ${location})`);
-        res.header({
-          'Access-Control-Expose-Headers': 'Location',
-          Location: location,
-        });
+        if (location) {
+          res.header({
+            'Access-Control-Expose-Headers': 'Location',
+            Location: location,
+          });
+        }
         res.sendStatus(201);
       } else {
-        const responseError = await responseToError(sendInnResponse, 'Feil ved kall til SendInn', true);
-        if (isNotFound(sendInnResponse, responseError)) {
-          logger.info(`${sanitizedInnsendingsId}: Not found. Failed to submit`, responseError);
-          return res.sendStatus(404);
-        }
-
-        logger.debug('Failed to post data to SendInn');
-        next(responseError);
+        next(new Error('Unexpected response from SendInn while submitting utfylt soknad'));
       }
-    } catch (err) {
-      next(err);
+    } catch (error) {
+      next(error);
     }
   },
 };

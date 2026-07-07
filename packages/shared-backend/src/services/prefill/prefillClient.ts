@@ -2,6 +2,8 @@ import { PrefillData } from '@navikt/skjemadigitalisering-shared-domain';
 import http from '../../shared/http/http';
 import { logger } from '../../shared/logger/logger';
 
+const prefillDataPath = '/fyllUt/v1/prefill-data';
+
 interface GetPrefillDataProps {
   accessToken: string;
   baseUrl: string;
@@ -11,7 +13,9 @@ interface GetPrefillDataProps {
 const getPrefillData = async ({ accessToken, baseUrl, properties }: GetPrefillDataProps): Promise<PrefillData> => {
   logger.info('Get prefill data');
 
-  const url = properties ? `${baseUrl}?properties=${encodeURIComponent(properties)}` : baseUrl;
+  const url = properties
+    ? `${baseUrl}${prefillDataPath}?properties=${encodeURIComponent(properties)}`
+    : `${baseUrl}${prefillDataPath}`;
 
   return await http.get<PrefillData>(url, {
     accessToken,
