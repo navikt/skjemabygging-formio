@@ -2,6 +2,8 @@ import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import http from '../../shared/http/http';
 import { logger } from '../../shared/logger/logger';
 
+const mergeFilesPath = '/fyllUt/v1/merge-filer';
+
 interface MergeFilesProps {
   baseUrl: string;
   accessToken: string;
@@ -16,7 +18,7 @@ const mergeFiles = async (props: MergeFilesProps): Promise<any> => {
 
   logger.info(`Merge files with title ${body.tittel} and language ${body.spraak}`);
 
-  const pdf = await http.post(baseUrl, body, { accessToken });
+  const pdf = await http.post(`${baseUrl}${mergeFilesPath}`, body, { accessToken });
 
   if (!pdf) {
     throw new ResponseError('NOT_FOUND', 'Could not find merged file');

@@ -6,6 +6,7 @@ import { mockRequest, MockRequestParams, mockResponse } from '../../test/testHel
 import sendInnUtfyltSoknad from './send-inn-utfylt-soknad';
 
 const SEND_LOCATION = 'http://www.unittest.nav.no/sendInn/123';
+const submittedDraftPath = '/fyllUt/v1/utfyltSoknad';
 
 const { formsApiUrl, sendInnConfig } = config;
 
@@ -53,7 +54,7 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
       .reply(200, { content: encodedSoknadPdf }, { 'Content-Type': 'application/json' });
     const { formScope, globalTranslationsScope, formTranslationsScope } = mockFormServiceAndTranslations();
     const sendInnNockScope = nock(sendInnConfig.host)
-      .put(`${sendInnConfig.paths.utfyltSoknad}/${innsendingsId}`)
+      .put(`${submittedDraftPath}/${innsendingsId}`)
       .reply(302, 'FOUND', { Location: SEND_LOCATION });
     const req = mockRequestWithPidAndTokenX({ headers: { AzureAccessToken: 'azure-access-token' }, body: defaultBody });
     const res = mockResponse();
@@ -79,7 +80,7 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
       .reply(200, { content: encodedSoknadPdf }, { 'Content-Type': 'application/json' });
     const { formScope, globalTranslationsScope, formTranslationsScope } = mockFormServiceAndTranslations();
     const sendInnNockScope = nock(sendInnConfig.host)
-      .put(`${sendInnConfig.paths.utfyltSoknad}/${innsendingsId}`)
+      .put(`${submittedDraftPath}/${innsendingsId}`)
       .reply(500, 'error body');
     const req = mockRequestWithPidAndTokenX({ body: defaultBody });
     const res = mockResponse();
@@ -106,7 +107,7 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
       .reply(200, { content: encodedSoknadPdf }, { 'Content-Type': 'application/json' });
     const { formScope, globalTranslationsScope, formTranslationsScope } = mockFormServiceAndTranslations();
     const sendInnNockScope = nock(sendInnConfig.host)
-      .put(`${sendInnConfig.paths.utfyltSoknad}/${innsendingsId}`)
+      .put(`${submittedDraftPath}/${innsendingsId}`)
       .reply(404, 'error body');
     const req = mockRequestWithPidAndTokenX({ body: defaultBody });
     const res = mockResponse();
@@ -151,7 +152,7 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
 
   it('calls next with error if idporten pid is missing', async () => {
     const sendInnNockScope = nock(sendInnConfig.host)
-      .put(`${sendInnConfig.paths.utfyltSoknad}/${innsendingsId}`)
+      .put(`${submittedDraftPath}/${innsendingsId}`)
       .reply(302, 'FOUND', { Location: SEND_LOCATION });
     const req = mockRequest({ body: defaultBody });
     req.getTokenxAccessToken = () => 'tokenx-access-token-for-unittest';
@@ -170,7 +171,7 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
 
   it('calls next with error if tokenx access token is missing', async () => {
     const sendInnNockScope = nock(sendInnConfig.host)
-      .put(`${sendInnConfig.paths.utfyltSoknad}/${innsendingsId}`)
+      .put(`${submittedDraftPath}/${innsendingsId}`)
       .reply(302, 'FOUND', { Location: SEND_LOCATION });
     const req = mockRequest({ headers: {}, body: defaultBody });
     req.getIdportenPid = () => '12345678911';

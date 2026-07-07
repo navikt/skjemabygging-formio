@@ -78,11 +78,11 @@ const formService = createFormService({
 });
 
 const mergeFileService = createMergeFileService({
-  baseUrl: `${sendInnConfig.host}${sendInnConfig.paths.mergeFiles}`,
+  baseUrl: sendInnConfig.host,
 });
 
 const prefillService = createPrefillService({
-  baseUrl: `${sendInnConfig.host}${sendInnConfig.paths.prefillData}`,
+  baseUrl: sendInnConfig.host,
 });
 
 const registerDataService = createRegisterDataService({

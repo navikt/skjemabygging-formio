@@ -11,14 +11,6 @@ export type SendInnConfig = {
   tokenxClientId: string;
   devM2MToken?: string;
   devOBOToken?: string;
-  paths: {
-    soknad: string;
-    utfyltSoknad: string;
-    prefillData: string;
-    mergeFiles: string;
-    nologinFile: string;
-    nologinSubmit: string;
-  };
 };
 
 export type TilleggsstonaderConfig = {

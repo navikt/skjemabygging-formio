@@ -3,7 +3,8 @@ import { createPrefillService } from './prefillService';
 
 describe('createPrefillService', () => {
   const accessToken = 'tokenx-access-token';
-  const baseUrl = 'https://send-inn.test/fyllUt/v1/prefill-data';
+  const baseUrl = 'https://send-inn.test';
+  const prefillDataPath = '/fyllUt/v1/prefill-data';
 
   afterEach(() => {
     vi.restoreAllMocks();
@@ -26,7 +27,7 @@ describe('createPrefillService', () => {
 
     expect(response).toEqual({ sokerFornavn: 'Ada' });
     expect(global.fetch).toHaveBeenCalledWith(
-      `${baseUrl}?properties=sokerFornavn%2CsokerEtternavn`,
+      `${baseUrl}${prefillDataPath}?properties=sokerFornavn%2CsokerEtternavn`,
       expect.objectContaining({
         method: 'GET',
         headers: expect.objectContaining({
@@ -52,7 +53,7 @@ describe('createPrefillService', () => {
     });
 
     expect(global.fetch).toHaveBeenCalledWith(
-      baseUrl,
+      `${baseUrl}${prefillDataPath}`,
       expect.objectContaining({
         method: 'GET',
       }),
