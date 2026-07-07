@@ -1,4 +1,4 @@
-import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
+import { ResponseError, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createApplicationService } from './applicationService';
 import type { SubmitApplicationRequest, SubmitApplicationResponse } from './applicationTypes';
@@ -259,7 +259,9 @@ describe('createApplicationService', () => {
         innsendingsId,
         type: 'nologin',
       }),
-    ).rejects.toBeInstanceOf(ResponseError);
+    ).rejects.toEqual(
+      new ResponseError('SERVICE_UNAVAILABLE', 'upload failed', undefined, TEXTS.statiske.uploadFile.uploadFileError),
+    );
 
     expect(fetchSpy).toHaveBeenNthCalledWith(
       1,
@@ -290,6 +292,66 @@ describe('createApplicationService', () => {
     expect(observe).toHaveBeenNthCalledWith(2, { type: 'nologin', error: 'true' }, 4);
     expect(stopTimer).toHaveBeenNthCalledWith(1, { error: 'false' });
     expect(stopTimer).toHaveBeenNthCalledWith(2, { error: 'true' });
+  });
+
+  it('normalizes upload attachment too-many-pages errors in shared-backend', async () => {
+    vi.spyOn(global, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ errorCode: 'illegalAction.fileWithTooManyPages' }), {
+        status: 400,
+        statusText: 'Bad Request',
+        headers: { 'Content-Type': 'application/json', 'x-correlation-id': correlationId },
+      }),
+    );
+    const service = createApplicationService({ baseUrl, paths });
+
+    await expect(
+      service.uploadAttachment({
+        accessToken,
+        attachmentId,
+        correlationId,
+        fileBlob: new Blob(['test']),
+        fileName: 'test.txt',
+        innsendingsId,
+        type: 'digital',
+      }),
+    ).rejects.toEqual(
+      new ResponseError(
+        'FILE_TOO_MANY_PAGES',
+        'Upload failed because file has too many pages',
+        correlationId,
+        TEXTS.statiske.uploadFile.uploadFileToManyPagesError,
+      ),
+    );
+  });
+
+  it('normalizes upload attachment temporarily unavailable errors in shared-backend', async () => {
+    vi.spyOn(global, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ errorCode: 'temporarilyUnavailable', message: 'NOLOGIN is not available' }), {
+        status: 503,
+        statusText: 'Service Unavailable',
+        headers: { 'Content-Type': 'application/json', 'x-correlation-id': correlationId },
+      }),
+    );
+    const service = createApplicationService({ baseUrl, paths });
+
+    await expect(
+      service.uploadAttachment({
+        accessToken,
+        attachmentId,
+        correlationId,
+        fileBlob: new Blob(['test']),
+        fileName: 'test.txt',
+        innsendingsId,
+        type: 'nologin',
+      }),
+    ).rejects.toEqual(
+      new ResponseError(
+        'SERVICE_UNAVAILABLE',
+        'NOLOGIN is not available',
+        correlationId,
+        TEXTS.statiske.nologin.temporarilyUnavailable,
+      ),
+    );
   });
 
   it('submits application json through the real service and client path', async () => {
@@ -353,6 +415,43 @@ describe('createApplicationService', () => {
     ).rejects.toThrow('Invalid fileId provided for download');
 
     expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  it('normalizes temporarily unavailable application submit errors', async () => {
+    vi.spyOn(global, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ errorCode: 'temporarilyUnavailable', message: 'NOLOGIN is not available' }), {
+        status: 503,
+        statusText: 'Service Unavailable',
+        headers: { 'Content-Type': 'application/json', 'x-correlation-id': correlationId },
+      }),
+    );
+    const service = createApplicationService({ baseUrl, paths });
+
+    await expect(
+      service.submitApplication({
+        accessToken,
+        correlationId,
+        body: {
+          attachments: [],
+          formNumber: 'NAV 12.34-56',
+          language: 'nb',
+          mainDocument: 'a',
+          mainDocumentAlt: 'b',
+          otherUploadAvailable: false,
+          tema: 'BIL',
+          title: 'Title',
+        },
+        innsendingsId,
+        type: 'nologin',
+      }),
+    ).rejects.toEqual(
+      new ResponseError(
+        'SERVICE_UNAVAILABLE',
+        'NOLOGIN is not available',
+        correlationId,
+        TEXTS.statiske.nologin.temporarilyUnavailable,
+      ),
+    );
   });
 
   it('normalizes sent-or-deleted draft errors through the real service and client path', async () => {

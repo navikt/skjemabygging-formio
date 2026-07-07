@@ -2,7 +2,7 @@ import { fileUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import { NextFunction, Request, Response } from 'express';
 import { logger } from '../../../../../logger';
 import { applicationService } from '../../../../../services';
-import { createUploadResponseError, removeUploadedTempFile } from '../../../helpers/upload';
+import { removeUploadedTempFile } from '../../../helpers/upload';
 import { validateNologinContext } from './context';
 
 const post = async (req: Request, res: Response, next: NextFunction) => {
@@ -44,11 +44,6 @@ const post = async (req: Request, res: Response, next: NextFunction) => {
   } catch (error) {
     const innsendingsId = req.getNologinContext()?.innsendingsId;
     const logMeta = { ...baseLogMeta, innsendingsId };
-    const uploadError = createUploadResponseError(error);
-    if (uploadError) {
-      logger.warn(`${innsendingsId}: Upload failed for nologin application`, { ...logMeta, error: uploadError });
-      return next(uploadError);
-    }
     logger.warn(`${innsendingsId}: Upload request failed for nologin application`, { ...logMeta, error });
     next(error);
   } finally {

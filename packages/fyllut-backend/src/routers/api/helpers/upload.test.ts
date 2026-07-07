@@ -1,9 +1,8 @@
 import { errorHandler } from '@navikt/skjemadigitalisering-shared-backend';
-import { ResponseError, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import express from 'express';
 import request from 'supertest';
-import { HttpError } from '../../../utils/errors/HttpError';
-import { createUploadResponseError, removeUploadedTempFile, uploadSingleFile } from './upload';
+import { removeUploadedTempFile, uploadSingleFile } from './upload';
 
 const createUploadApp = (maxFileSizeBytes?: number) => {
   const app = express();
@@ -52,56 +51,5 @@ describe('uploadSingleFile', () => {
       errorCode: 'BAD_REQUEST',
       userMessage: TEXTS.statiske.uploadFile.fileTooLargeError,
     });
-  });
-});
-
-describe('createUploadResponseError', () => {
-  it('maps response errors from shared-backend upload services', () => {
-    const error = new ResponseError(
-      'FILE_TOO_MANY_PAGES',
-      'Upstream rejected attachment',
-      'corr-id',
-      TEXTS.statiske.uploadFile.uploadFileToManyPagesError,
-    );
-
-    expect(createUploadResponseError(error)).toEqual(
-      new ResponseError(
-        'BAD_REQUEST',
-        'Upload failed because file has too many pages',
-        'corr-id',
-        TEXTS.statiske.uploadFile.uploadFileToManyPagesError,
-      ),
-    );
-  });
-
-  it('maps too many pages to ResponseError with userMessage', () => {
-    const error = new HttpError('Upload failed');
-    error.http_status = 400;
-    error.http_response_body = { errorCode: 'illegalAction.fileWithTooManyPages' };
-    error.correlation_id = 'corr-id';
-
-    expect(createUploadResponseError(error)).toEqual(
-      new ResponseError(
-        'BAD_REQUEST',
-        'Upload failed because file has too many pages',
-        'corr-id',
-        TEXTS.statiske.uploadFile.uploadFileToManyPagesError,
-      ),
-    );
-  });
-
-  it('maps temporarily unavailable to ResponseError with userMessage', () => {
-    const error = new HttpError('Upload failed');
-    error.http_status = 503;
-    error.http_response_body = { errorCode: 'temporarilyUnavailable' };
-
-    expect(createUploadResponseError(error)).toEqual(
-      new ResponseError(
-        'SERVICE_UNAVAILABLE',
-        'Upload temporarily unavailable',
-        undefined,
-        TEXTS.statiske.nologin.temporarilyUnavailable,
-      ),
-    );
   });
 });

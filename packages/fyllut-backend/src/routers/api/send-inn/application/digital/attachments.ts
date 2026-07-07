@@ -5,7 +5,7 @@ import { pipeline } from 'node:stream/promises';
 import { ReadableStream as NodeReadableStream } from 'node:stream/web';
 import { logger } from '../../../../../logger';
 import { applicationService } from '../../../../../services';
-import { createUploadResponseError, removeUploadedTempFile } from '../../../helpers/upload';
+import { removeUploadedTempFile } from '../../../helpers/upload';
 
 const post = async (req: Request, res: Response, next: NextFunction) => {
   const file = req.file;
@@ -43,11 +43,6 @@ const post = async (req: Request, res: Response, next: NextFunction) => {
     });
     res.status(201).json(result);
   } catch (error) {
-    const uploadError = createUploadResponseError(error);
-    if (uploadError) {
-      logger.warn(`${innsendingsId}: Upload failed for digital application`, { ...logMeta, error: uploadError });
-      return next(uploadError);
-    }
     logger.warn(`${innsendingsId}: Upload request failed for digital application`, { ...logMeta, error });
     next(error);
   } finally {

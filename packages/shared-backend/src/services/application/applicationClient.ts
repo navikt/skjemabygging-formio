@@ -1,11 +1,16 @@
-import {
-  HttpResponseError,
-  ResponseError,
-  UploadedFile,
-  validatorUtils,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { UploadedFile, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import http from '../../shared/http/http';
 import { logger } from '../../shared/logger/logger';
+import {
+  createHeaders,
+  createSubmitApplicationError,
+  createUploadAttachmentError,
+  createUploadedFile,
+  getApplicationUrl,
+  getAttachmentsUrl,
+  getDraftUrl,
+  normalizeApplicationError,
+} from './applicationClientUtils';
 import type {
   ApplicationPaths,
   ApplicationType,
@@ -65,74 +70,6 @@ interface SubmitApplicationProps extends ApplicationBaseProps {
   type: ApplicationType;
 }
 
-const createHeaders = ({
-  correlationId,
-  envQualifier,
-  innsendingsId,
-}: {
-  correlationId?: string;
-  envQualifier?: string;
-  innsendingsId?: string;
-}) => ({
-  ...(correlationId && { 'x-correlation-id': correlationId }),
-  ...(envQualifier && { 'Nav-Env-Qualifier': envQualifier }),
-  ...(innsendingsId && { 'x-innsendingsid': innsendingsId }),
-});
-
-const getDraftUrl = (baseUrl: string, path: string, innsendingsId?: string) =>
-  innsendingsId ? `${baseUrl}${path}/${innsendingsId}` : `${baseUrl}${path}`;
-
-const getApplicationUrl = (baseUrl: string, type: ApplicationType, innsendingsId: string) =>
-  `${baseUrl}/v1/application-${type}/${innsendingsId}`;
-
-const getAttachmentsUrl = ({
-  baseUrl,
-  innsendingsId,
-  attachmentId,
-  type,
-  fileId,
-}: {
-  baseUrl: string;
-  innsendingsId: string;
-  attachmentId?: string;
-  type: ApplicationType;
-  fileId?: string;
-}) => `${getApplicationUrl(baseUrl, type, innsendingsId)}/attachments/${attachmentId}${fileId ? `/${fileId}` : ''}`;
-
-const createUploadedFile = (
-  response: UploadAttachmentResponse,
-  innsendingsId: string,
-  attachmentId: string,
-): UploadedFile => ({
-  fileId: response.id,
-  attachmentId,
-  innsendingId: innsendingsId,
-  fileName: response.name,
-  size: response.size,
-});
-
-const getUpstreamErrorCode = (error: unknown): string | undefined => {
-  if (!(error instanceof HttpResponseError)) {
-    return undefined;
-  }
-
-  const errorCode = error.body?.errorCode;
-  return typeof errorCode === 'string' ? errorCode : undefined;
-};
-
-const rethrowNormalizedApplicationError = (error: unknown): never => {
-  switch (getUpstreamErrorCode(error)) {
-    case 'illegalAction.applicationSentInOrDeleted':
-      throw new ResponseError('NOT_FOUND', error instanceof Error ? error.message : 'Not Found');
-    case 'illegalAction.fileWithTooManyPages':
-      throw new ResponseError('FILE_TOO_MANY_PAGES', error instanceof Error ? error.message : 'Bad Request');
-    case 'temporarilyUnavailable':
-      throw new ResponseError('SERVICE_UNAVAILABLE', error instanceof Error ? error.message : 'Service Unavailable');
-    default:
-      throw error;
-  }
-};
-
 const getSoknad = async <T>(props: DraftBaseProps): Promise<T> => {
   const { baseUrl, paths, accessToken, innsendingsId, correlationId } = props;
   logger.info(`Getting soknad ${innsendingsId}`);
@@ -144,7 +81,7 @@ const getSoknad = async <T>(props: DraftBaseProps): Promise<T> => {
       headers: createHeaders({ correlationId, innsendingsId }),
     });
   } catch (error) {
-    return rethrowNormalizedApplicationError(error);
+    throw normalizeApplicationError(error);
   }
 };
 
@@ -175,7 +112,7 @@ const updateSoknad = async <T>(props: DraftMutationProps): Promise<T> => {
       headers: createHeaders({ correlationId, innsendingsId }),
     });
   } catch (error) {
-    return rethrowNormalizedApplicationError(error);
+    throw normalizeApplicationError(error);
   }
 };
 
@@ -189,10 +126,13 @@ const deleteSoknad = async <T>(props: DraftBaseProps): Promise<T> => {
       headers: createHeaders({ correlationId, innsendingsId }),
     });
   } catch (error) {
-    return rethrowNormalizedApplicationError(error);
+    throw normalizeApplicationError(error);
   }
 };
 
+/**
+ * @deprecated Use submitApplication instead. This function is kept for backward compatibility with older versions of the API.
+ */
 const submitUtfyltSoknad = async (props: SubmitUtfyltSoknadProps) => {
   const { baseUrl, paths, accessToken, body, innsendingsId, envQualifier, correlationId } = props;
   logger.info(`Submitting utfylt soknad ${innsendingsId}`);
@@ -206,7 +146,7 @@ const submitUtfyltSoknad = async (props: SubmitUtfyltSoknadProps) => {
       headers: createHeaders({ correlationId, envQualifier, innsendingsId }),
     });
   } catch (error) {
-    return rethrowNormalizedApplicationError(error);
+    throw normalizeApplicationError(error);
   }
 
   return {
@@ -233,7 +173,7 @@ const uploadAttachment = async (props: UploadAttachmentProps): Promise<UploadedF
       },
     );
   } catch (error) {
-    return rethrowNormalizedApplicationError(error);
+    throw createUploadAttachmentError(normalizeApplicationError(error));
   }
 
   return createUploadedFile(response, innsendingsId, attachmentId);
@@ -281,10 +221,14 @@ const submitApplication = async (props: SubmitApplicationProps): Promise<SubmitA
   const { baseUrl, accessToken, innsendingsId, type, body, correlationId } = props;
   logger.info(`${innsendingsId}: Submitting ${type} application`);
 
-  return await http.post<SubmitApplicationResponse>(getApplicationUrl(baseUrl, type, innsendingsId), body, {
-    accessToken,
-    headers: createHeaders({ correlationId, innsendingsId }),
-  });
+  try {
+    return await http.post<SubmitApplicationResponse>(getApplicationUrl(baseUrl, type, innsendingsId), body, {
+      accessToken,
+      headers: createHeaders({ correlationId, innsendingsId }),
+    });
+  } catch (error) {
+    throw createSubmitApplicationError(normalizeApplicationError(error), type);
+  }
 };
 
 const applicationClient = {
