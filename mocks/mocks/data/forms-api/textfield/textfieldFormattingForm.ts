@@ -45,7 +45,6 @@ const textfieldFormattingForm = () =>
           currency({
             key: 'belop',
             label: 'Beløp heltall',
-            inputType: 'numeric',
           }),
           currency({
             key: 'belopDesimaltall1',
