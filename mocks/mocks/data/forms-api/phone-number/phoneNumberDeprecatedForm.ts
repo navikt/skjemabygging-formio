@@ -16,14 +16,20 @@ const phoneNumberDeprecatedForm = () =>
           phoneNumber({
             key: 'telefonnummer1',
             label: 'Telefonnummer med landskode',
+            showAreaCode: true,
+            validate: { required: true },
           }),
           phoneNumber({
             key: 'telefonnummer2',
             label: 'Telefonnummer',
+            showAreaCode: false,
+            validate: { required: true },
           }),
           phoneNumber({
             key: 'telefonnummer3',
             label: 'Telefonnummer ikke påkrevd',
+            showAreaCode: false,
+            validate: { required: false },
           }),
         ],
       }),
@@ -34,14 +40,18 @@ const phoneNumberDeprecatedForm = () =>
           phoneNumber({
             key: 'telefonnummerUtenforDatagrid',
             label: 'Telefonnummer utenfor datagrid',
+            showAreaCode: true,
+            validate: { required: false },
           }),
           dataGrid({
             key: 'datagrid',
             label: 'Repeterende data',
+            validate: { required: true },
             components: [
               phoneNumber({
                 key: 'telefonnummerInniDatagrid',
                 label: 'Telefonnummer inni datagrid',
+                showAreaCode: true,
               }),
             ],
           }),
@@ -59,11 +69,13 @@ const phoneNumberDeprecatedForm = () =>
             },
             key: 'telefonnummer4',
             label: 'Telefonnummer',
+            validate: { required: true, minLength: 8 },
           }),
           checkbox({
             defaultValue: false,
             key: 'harIkkeTelefonnummer',
             label: 'Har ikke telefonnummer',
+            validate: { required: false },
           }),
         ],
       }),

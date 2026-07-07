@@ -27,6 +27,7 @@ const containerSkjemagruppeContainerForm = () =>
           radio({
             key: 'visYtreContainer',
             label: 'Vis ytre container',
+            validate: { required: true },
             values: [
               { label: 'Ja', value: 'ja' },
               { label: 'Nei', value: 'nei' },
@@ -35,6 +36,7 @@ const containerSkjemagruppeContainerForm = () =>
           radio({
             key: 'visIndreContainer',
             label: 'Vis indre container',
+            validate: { required: true },
             values: [
               { label: 'Ja', value: 'ja' },
               { label: 'Nei', value: 'nei' },
@@ -53,6 +55,7 @@ const containerSkjemagruppeContainerForm = () =>
               textField({
                 key: 'ytreTekstfelt',
                 label: 'Ytre tekstfelt',
+                validate: { required: false },
               }),
               container({
                 conditional: {
@@ -67,6 +70,7 @@ const containerSkjemagruppeContainerForm = () =>
                   textField({
                     key: 'indreTekstfelt',
                     label: 'Indre tekstfelt',
+                    validate: { required: false },
                   }),
                 ],
               }),

@@ -26,21 +26,25 @@ const datagridReactForm = () =>
           dataGrid({
             key: 'datagrid',
             label: 'Repeterende data',
+            validate: { required: true },
             components: [
               checkbox({
                 key: 'avkryssingsboksInniDatagrid',
                 label: 'Avkryssingsboks inni datagrid',
+                validate: { required: false },
               }),
               datePicker({
                 key: 'datoInniDatagrid',
                 label: 'Dato inni datagrid',
                 validate: {
+                  required: true,
                   custom: 'valid = instance.validateDatePickerV2(input, data, component, row);',
                 },
               }),
               navSelect({
                 key: 'nedtrekksmenyInniDatagrid',
                 label: 'Nedtrekksmeny inni datagrid',
+                validate: { required: true, onlyAvailableItems: true },
                 values: [
                   { label: 'Buss', value: 'buss' },
                   { label: 'Bil', value: 'bil' },
@@ -50,6 +54,7 @@ const datagridReactForm = () =>
               radio({
                 key: 'radiopanelInniDatagrid',
                 label: 'Radiopanel inni datagrid',
+                validate: { required: true },
                 values: [
                   { label: 'Ja', value: 'ja' },
                   { label: 'Nei', value: 'nei' },
@@ -58,14 +63,17 @@ const datagridReactForm = () =>
               textArea({
                 key: 'tekstomradeInniDatagrid',
                 label: 'Tekstområde inni datagrid',
+                validate: { required: true },
               }),
               textField({
                 key: 'tekstfelt-inni-datagrd',
                 label: 'Tekstfelt inni datagrid',
+                validate: { required: true },
               }),
               iban({
                 key: 'iban',
                 label: 'IBAN',
+                validate: { required: true },
               }),
             ],
           }),

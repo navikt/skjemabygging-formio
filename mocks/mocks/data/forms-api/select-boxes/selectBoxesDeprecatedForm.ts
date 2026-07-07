@@ -25,6 +25,11 @@ const selectBoxesDeprecatedForm = () =>
           selectBoxes({
             key: 'selectBoxesWithDefaultValue',
             label: 'Select boxes with defaultValue',
+            defaultValue: {
+              choice1: true,
+              choice2: true,
+              choice3: false,
+            },
             values: [
               { label: 'Choice 1', value: 'choice1' },
               { label: 'Choice 2', value: 'choice2' },
@@ -33,6 +38,15 @@ const selectBoxesDeprecatedForm = () =>
           }),
           selectBoxes({
             description: '<p>Normal description</p>',
+            additionalDescriptionLabel: 'Extended description',
+            additionalDescriptionText: '<p>Extended description text</p>',
+            defaultValue: {
+              choice1: false,
+              choice2: false,
+              choice3: false,
+              choice4: false,
+              choice5: false,
+            },
             key: 'selectBoxesWithDescription',
             label: 'Select boxes with description',
             values: [

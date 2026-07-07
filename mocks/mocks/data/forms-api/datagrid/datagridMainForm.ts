@@ -24,10 +24,12 @@ const datagridMainForm = () =>
           dataGrid({
             key: 'valgfrieFelter1',
             label: 'Valgfrie felter',
+            validate: { required: false },
             components: [
               textField({
                 key: 'tekstfelt',
                 label: 'Tekstfelt',
+                validate: { required: false },
               }),
               nationalIdentityNumber({
                 key: 'fodselsnummerDNummer',

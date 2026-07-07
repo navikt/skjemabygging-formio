@@ -46,7 +46,7 @@ const submissionMethodForm = () =>
           navSelect({
             key: 'hvaSokerDuStotteTil',
             label: 'Hva søker du støtte til?',
-            validate: { required: true },
+            validate: { required: true, onlyAvailableItems: false },
             values: [
               { label: 'Briller', value: 'briller' },
               { label: 'Sykkel', value: 'sykkel' },
@@ -67,12 +67,13 @@ const submissionMethodForm = () =>
             attachmentType: 'other',
             label: 'Annen dokumentasjon',
             description: 'Har du noen annen dokumentasjon du ønsker å legge ved?',
+            validate: { required: true },
           }),
           attachment({
             key: 'bekreftelseFraOptiker',
             label: 'Bekreftelse fra optiker',
             validate: { required: true },
-            conditional: { show: true, when: 'hvaSokerDuStotteTil', eq: 'briller' },
+            customConditional: 'show = data.hvaSokerDuStotteTil.value === "briller"',
             properties: {
               vedleggskode: 'O5',
               vedleggstittel: 'Bekreftelse fra optiker',

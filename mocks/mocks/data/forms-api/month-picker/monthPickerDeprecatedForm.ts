@@ -16,22 +16,27 @@ const monthPickerDeprecatedForm = () =>
           monthPicker({
             key: 'requiredMonthPicker',
             label: 'Required monthPicker',
+            validate: { required: true },
           }),
           monthPicker({
             key: 'minMaxMonthPicker',
             label: 'Min/max monthPicker',
+            validate: { required: false, minYear: 2020, maxYear: 2024 },
           }),
           monthPicker({
             key: 'relativeMonthPicker',
             label: 'Relative monthPicker',
+            validate: { required: false },
           }),
           monthPicker({
             key: 'relativeMonthPickerWithTodayAsBase',
             label: 'Relative monthPicker (with today as base)',
+            validate: { required: false },
           }),
           monthPicker({
             key: 'monthpickerWithRangeInThePast',
             label: 'MonthPicker with range in the past',
+            validate: { required: false, minYear: 1995, maxYear: 2003 },
           }),
         ],
       }),

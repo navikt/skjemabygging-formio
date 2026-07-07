@@ -38,6 +38,7 @@ const generalCustomCompsForm = () =>
           navSelect({
             key: 'velgInstrument',
             label: 'Velg instrument',
+            validate: { required: false },
             values: [
               { label: 'Piano', value: 'piano' },
               { label: 'Gitar', value: 'gitar' },

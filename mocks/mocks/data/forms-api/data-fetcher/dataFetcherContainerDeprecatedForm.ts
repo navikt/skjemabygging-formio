@@ -56,6 +56,7 @@ const dataFetcherContainerDeprecatedForm = () =>
               dataFetcher({
                 key: 'aktiviteter',
                 label: 'Aktivitetsvelger',
+                validate: { required: true },
               }),
             ],
           }),
@@ -92,6 +93,7 @@ const dataFetcherContainerDeprecatedForm = () =>
             description: 'Har du noen annen dokumentasjon du ønsker å legge ved?',
             key: 'annenDokumentasjon',
             label: 'Annen dokumentasjon',
+            validate: { required: true },
           }),
         ],
       }),

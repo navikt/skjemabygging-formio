@@ -34,6 +34,7 @@ const datagridContainerForm = () =>
           radio({
             key: 'visBeholderMedRepeterendeData',
             label: 'Vis beholder med repeterende data',
+            validate: { required: true },
             values: [
               { label: 'Ja', value: 'ja' },
               { label: 'Nei', value: 'nei' },
@@ -52,15 +53,18 @@ const datagridContainerForm = () =>
               dataGrid({
                 key: 'repeterendeFelter',
                 label: 'Repeterende felter',
+                validate: { required: true },
                 components: [
                   textField({
                     key: 'tekstfeltIDatagrid1',
                     label: 'Tekstfelt i datagrid',
+                    validate: { required: true },
                   }),
                   datePicker({
                     key: 'datoIDatagrid',
                     label: 'Dato i datagrid',
                     validate: {
+                      required: true,
                       custom: 'valid = instance.validateDatePickerV2(input, data, component, row);',
                     },
                   }),

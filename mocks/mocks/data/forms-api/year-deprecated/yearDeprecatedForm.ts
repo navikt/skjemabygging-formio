@@ -16,10 +16,12 @@ const yearDeprecatedForm = () =>
           year({
             key: 'pakrevdArstall',
             label: 'Påkrevd årstall',
+            validate: { required: true },
           }),
           year({
             key: 'minMaxArstall',
             label: 'MinMax årstall',
+            validate: { required: true, minYear: 1992, maxYear: 1998 },
           }),
         ],
       }),

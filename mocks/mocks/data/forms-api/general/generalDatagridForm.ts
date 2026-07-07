@@ -29,6 +29,7 @@ const generalDatagridForm = () =>
               navSelect({
                 key: 'nedtrekksmeny',
                 label: 'Nedtrekksmeny',
+                validate: { required: true, onlyAvailableItems: false },
                 values: [
                   { label: 'a', value: 'a' },
                   { label: 'b', value: 'b' },
@@ -38,12 +39,14 @@ const generalDatagridForm = () =>
                 key: 'datoDdMmAaaa',
                 label: 'Dato (dd.mm.åååå)',
                 validate: {
+                  required: true,
                   custom: 'valid = instance.validateDatePickerV2(input, data, component, row);',
                 },
               }),
               radio({
                 key: 'borDuINorge',
                 label: 'Bor du i Norge?',
+                validate: { required: true, onlyAvailableItems: false },
                 values: [
                   { label: 'Ja', value: 'ja' },
                   { label: 'Nei', value: 'nei' },

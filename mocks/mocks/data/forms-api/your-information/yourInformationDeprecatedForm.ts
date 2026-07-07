@@ -33,6 +33,7 @@ const yourInformationDeprecatedForm = () =>
                 prefill: true,
                 prefillKey: 'sokerFornavn',
                 protectedApiKey: true,
+                validate: { required: true },
               }),
               surname({
                 key: 'etternavn',
@@ -40,27 +41,33 @@ const yourInformationDeprecatedForm = () =>
                 prefill: true,
                 prefillKey: 'sokerEtternavn',
                 protectedApiKey: true,
+                validate: { required: true },
               }),
               identity({
                 key: 'identitet',
                 label: 'Identitet',
                 prefill: true,
               }),
-              address({
-                customConditional:
-                  'show = row.identitet.harDuFodselsnummer === "nei" || (row.identitet.identitetsnummer && !row.identitet.harDuFodselsnummer)',
-                key: 'adresse',
-                label: 'Adresse',
-                prefill: true,
-                prefillKey: 'sokerAdresser',
-                protectedApiKey: true,
-              }),
+              {
+                ...address({
+                  customConditional:
+                    'show = row.identitet.harDuFodselsnummer === "nei" || (row.identitet.identitetsnummer && !row.identitet.harDuFodselsnummer)',
+                  key: 'adresse',
+                  label: 'Adresse',
+                  prefill: true,
+                  prefillKey: 'sokerAdresser',
+                  protectedApiKey: true,
+                  validate: { required: true },
+                }),
+                addressType: null,
+              },
               addressValidity({
                 customConditional:
                   'show = row.adresse.borDuINorge === "nei" || (row.adresse.borDuINorge === "ja" && row.adresse.vegadresseEllerPostboksadresse)',
                 key: 'adresseVarighet',
                 label: 'Adresse varighet',
                 protectedApiKey: true,
+                validate: { required: true },
               }),
               alert({
                 content:
@@ -87,12 +94,14 @@ const yourInformationDeprecatedForm = () =>
             key: 'fornavn1',
             label: 'Fornavn',
             prefillKey: 'sokerFornavn',
+            validate: { required: true },
           }),
           textField({
             autocomplete: 'family-name',
             key: 'etternavn1',
             label: 'Etternavn',
             prefillKey: 'sokerEtternavn',
+            validate: { required: true },
           }),
         ],
       }),

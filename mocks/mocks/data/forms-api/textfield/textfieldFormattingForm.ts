@@ -23,32 +23,39 @@ const textfieldFormattingForm = () =>
           iban({
             key: 'iban',
             label: 'IBAN',
+            validate: { required: true },
           }),
           accountNumber({
             key: 'kontoNummer',
             label: 'Kontonummer',
             validate: {
+              required: true,
               custom: 'valid = instance.validateAccountNumber(input)',
             },
           }),
           nationalIdentityNumber({
             key: 'fodselsnummerDNummer',
             label: 'Fødselsnummer eller d-nummer',
+            validate: { required: true },
           }),
           organizationNumber({
             key: 'orgNr',
             label: 'Organisasjonsnummer',
             validate: {
+              required: true,
               custom: 'valid = instance.validateOrganizationNumber(input)',
             },
           }),
           currency({
             key: 'belop',
             label: 'Beløp heltall',
+            inputType: 'numeric',
+            validate: { required: true },
           }),
           currency({
             key: 'belopDesimaltall1',
             label: 'Beløp desimaltall',
+            validate: { required: true },
           }),
         ],
       }),
