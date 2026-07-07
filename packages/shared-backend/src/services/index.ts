@@ -1,7 +1,6 @@
 import { coverPageMapper } from './cover-page/mapper';
 export type {
   ApplicationMetrics,
-  ApplicationPaths,
   ApplicationService,
   ApplicationType,
   Attachment,

@@ -13,11 +13,6 @@ export interface DownloadedAttachment {
   contentLength?: string;
 }
 
-export interface ApplicationPaths {
-  soknad: string;
-  utfyltSoknad: string;
-}
-
 export interface ApplicationMetrics {
   uploadDuration: Histogram<ApplicationMetricLabel>;
   uploadFileSize: Histogram<ApplicationMetricLabel>;

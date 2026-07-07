@@ -10,7 +10,8 @@ describe('createApplicationService', () => {
   const innsendingsId = '12345678-1234-1234-1234-12345678abcd';
   const attachmentId = 'attachment-1';
   const fileId = '12345678-1234-1234-1234-123456789abc';
-  const paths = { soknad: '/fyllUt/v1/soknad', utfyltSoknad: '/fyllUt/v1/utfyltSoknad' };
+  const draftPath = '/fyllUt/v1/soknad';
+  const submittedDraftPath = '/fyllUt/v1/utfyltSoknad';
 
   afterEach(() => {
     vi.restoreAllMocks();
@@ -43,7 +44,7 @@ describe('createApplicationService', () => {
           headers: { 'Content-Type': 'application/json' },
         }),
       );
-    const service = createApplicationService({ baseUrl, paths });
+    const service = createApplicationService({ baseUrl });
 
     await expect(
       service.getSoknad<{ innsendingsId: string }>({ accessToken, correlationId, innsendingsId }),
@@ -78,7 +79,7 @@ describe('createApplicationService', () => {
 
     expect(fetchSpy).toHaveBeenNthCalledWith(
       1,
-      `${baseUrl}${paths.soknad}/${innsendingsId}`,
+      `${baseUrl}${draftPath}/${innsendingsId}`,
       expect.objectContaining({
         method: 'GET',
         headers: expect.objectContaining({
@@ -91,7 +92,7 @@ describe('createApplicationService', () => {
     );
     expect(fetchSpy).toHaveBeenNthCalledWith(
       2,
-      `${baseUrl}${paths.soknad}`,
+      `${baseUrl}${draftPath}`,
       expect.objectContaining({
         method: 'POST',
         headers: expect.objectContaining({
@@ -104,7 +105,7 @@ describe('createApplicationService', () => {
     );
     expect(fetchSpy).toHaveBeenNthCalledWith(
       3,
-      `${baseUrl}${paths.soknad}/${innsendingsId}`,
+      `${baseUrl}${draftPath}/${innsendingsId}`,
       expect.objectContaining({
         method: 'PUT',
         headers: expect.objectContaining({
@@ -116,7 +117,7 @@ describe('createApplicationService', () => {
     );
     expect(fetchSpy).toHaveBeenNthCalledWith(
       4,
-      `${baseUrl}${paths.soknad}/${innsendingsId}`,
+      `${baseUrl}${draftPath}/${innsendingsId}`,
       expect.objectContaining({
         method: 'DELETE',
         headers: expect.objectContaining({
@@ -135,7 +136,7 @@ describe('createApplicationService', () => {
         headers: { Location: 'https://nav.no/location' },
       }),
     );
-    const service = createApplicationService({ baseUrl, paths });
+    const service = createApplicationService({ baseUrl });
 
     await expect(
       service.submitUtfyltSoknad({
@@ -151,7 +152,7 @@ describe('createApplicationService', () => {
     });
 
     expect(global.fetch).toHaveBeenCalledWith(
-      `${baseUrl}${paths.utfyltSoknad}/${innsendingsId}`,
+      `${baseUrl}${submittedDraftPath}/${innsendingsId}`,
       expect.objectContaining({
         method: 'PUT',
         redirect: 'manual',
@@ -208,7 +209,6 @@ describe('createApplicationService', () => {
       );
     const service = createApplicationService({
       baseUrl,
-      paths,
       metrics: {
         uploadDuration: { startTimer } as any,
         uploadFileSize: { observe } as any,
@@ -307,7 +307,7 @@ describe('createApplicationService', () => {
         headers: { 'Content-Type': 'application/json', 'x-correlation-id': correlationId },
       }),
     );
-    const service = createApplicationService({ baseUrl, paths });
+    const service = createApplicationService({ baseUrl });
 
     await expect(
       service.uploadAttachment({
@@ -337,7 +337,7 @@ describe('createApplicationService', () => {
         headers: { 'Content-Type': 'application/json', 'x-correlation-id': correlationId },
       }),
     );
-    const service = createApplicationService({ baseUrl, paths });
+    const service = createApplicationService({ baseUrl });
 
     await expect(
       service.uploadAttachment({
@@ -382,7 +382,7 @@ describe('createApplicationService', () => {
         headers: { 'Content-Type': 'application/json' },
       }),
     );
-    const service = createApplicationService({ baseUrl, paths });
+    const service = createApplicationService({ baseUrl });
 
     await expect(
       service.submitApplication({
@@ -397,7 +397,7 @@ describe('createApplicationService', () => {
 
   it('guards invalid attachment file ids before calling fetch', async () => {
     const fetchSpy = vi.spyOn(global, 'fetch');
-    const service = createApplicationService({ baseUrl, paths });
+    const service = createApplicationService({ baseUrl });
 
     await expect(
       service.deleteAttachment({
@@ -430,7 +430,7 @@ describe('createApplicationService', () => {
         headers: { 'Content-Type': 'application/json', 'x-correlation-id': correlationId },
       }),
     );
-    const service = createApplicationService({ baseUrl, paths });
+    const service = createApplicationService({ baseUrl });
 
     await expect(
       service.submitApplication({
@@ -467,7 +467,7 @@ describe('createApplicationService', () => {
         headers: { 'Content-Type': 'application/json' },
       }),
     );
-    const service = createApplicationService({ baseUrl, paths });
+    const service = createApplicationService({ baseUrl });
 
     await expect(
       service.getSoknad({

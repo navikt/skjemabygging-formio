@@ -1,6 +1,9 @@
 import { HttpResponseError, ResponseError, TEXTS, UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
 import type { ApplicationType, UploadAttachmentResponse } from './applicationTypes';
 
+const draftPath = '/fyllUt/v1/soknad';
+const submittedDraftPath = '/fyllUt/v1/utfyltSoknad';
+
 const createHeaders = ({
   correlationId,
   envQualifier,
@@ -15,8 +18,11 @@ const createHeaders = ({
   ...(innsendingsId && { 'x-innsendingsid': innsendingsId }),
 });
 
-const getDraftUrl = (baseUrl: string, path: string, innsendingsId?: string) =>
-  innsendingsId ? `${baseUrl}${path}/${innsendingsId}` : `${baseUrl}${path}`;
+const getDraftUrl = (baseUrl: string, innsendingsId?: string) =>
+  innsendingsId ? `${baseUrl}${draftPath}/${innsendingsId}` : `${baseUrl}${draftPath}`;
+
+const getSubmittedDraftUrl = (baseUrl: string, innsendingsId: string) =>
+  `${baseUrl}${submittedDraftPath}/${innsendingsId}`;
 
 const getApplicationUrl = (baseUrl: string, type: ApplicationType, innsendingsId: string) =>
   `${baseUrl}/v1/application-${type}/${innsendingsId}`;
@@ -140,5 +146,6 @@ export {
   getApplicationUrl,
   getAttachmentsUrl,
   getDraftUrl,
+  getSubmittedDraftUrl,
   normalizeApplicationError,
 };

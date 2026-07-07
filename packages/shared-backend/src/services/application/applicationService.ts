@@ -2,7 +2,6 @@ import type { UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
 import applicationClient from './applicationClient';
 import type {
   ApplicationMetrics,
-  ApplicationPaths,
   ApplicationType,
   DownloadedAttachment,
   DraftResponse,
@@ -25,7 +24,6 @@ type ApplicationClient = Pick<
 
 interface CreateApplicationServiceProps {
   baseUrl: string;
-  paths: ApplicationPaths;
   metrics?: ApplicationMetrics;
   client?: ApplicationClient;
 }
@@ -89,23 +87,19 @@ type ApplicationService = {
 
 const createApplicationService = ({
   baseUrl,
-  paths,
   metrics,
   client = applicationClient,
 }: CreateApplicationServiceProps): ApplicationService => {
-  const getSoknad = async <T>(props: ApplicationBaseProps) => await client.getSoknad<T>({ ...props, baseUrl, paths });
+  const getSoknad = async <T>(props: ApplicationBaseProps) => await client.getSoknad<T>({ ...props, baseUrl });
 
-  const createSoknad = async <T>(props: CreateSoknadProps) =>
-    await client.createSoknad<T>({ ...props, baseUrl, paths });
+  const createSoknad = async <T>(props: CreateSoknadProps) => await client.createSoknad<T>({ ...props, baseUrl });
 
-  const updateSoknad = async <T>(props: UpdateSoknadProps) =>
-    await client.updateSoknad<T>({ ...props, baseUrl, paths });
+  const updateSoknad = async <T>(props: UpdateSoknadProps) => await client.updateSoknad<T>({ ...props, baseUrl });
 
-  const deleteSoknad = async <T>(props: ApplicationBaseProps) =>
-    await client.deleteSoknad<T>({ ...props, baseUrl, paths });
+  const deleteSoknad = async <T>(props: ApplicationBaseProps) => await client.deleteSoknad<T>({ ...props, baseUrl });
 
   const submitUtfyltSoknad = async (props: SubmitUtfyltSoknadProps) =>
-    await client.submitUtfyltSoknad({ ...props, baseUrl, paths });
+    await client.submitUtfyltSoknad({ ...props, baseUrl });
 
   const uploadAttachment = async (props: UploadAttachmentProps) => {
     const stopTimer = metrics?.uploadDuration.startTimer({ type: props.type });

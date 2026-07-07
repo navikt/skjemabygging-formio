@@ -49,10 +49,6 @@ const applicationPdfService = createApplicationPdfService({
 
 const applicationService = createApplicationService({
   baseUrl: sendInnConfig.host,
-  paths: {
-    soknad: sendInnConfig.paths.soknad,
-    utfyltSoknad: sendInnConfig.paths.utfyltSoknad,
-  },
   metrics: {
     uploadDuration: appMetrics.innsendingApiUploadDuration,
     uploadFileSize: appMetrics.innsendingApiUploadFileSize,
