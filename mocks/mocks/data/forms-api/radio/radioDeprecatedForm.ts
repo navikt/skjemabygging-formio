@@ -23,6 +23,8 @@ const radioDeprecatedForm = () =>
           }),
           radio({
             description: '<p>Normal description</p>',
+            additionalDescriptionLabel: 'Extended description header',
+            additionalDescriptionText: '<p>Extended description</p>',
             key: 'withDescription',
             label: 'With description',
             values: [

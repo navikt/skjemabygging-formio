@@ -16,6 +16,9 @@ const checkboxDeprecatedForm = () =>
           checkbox({
             key: 'normalCheckbox',
             label: 'Normal checkbox',
+            validate: {
+              required: false,
+            },
           }),
           checkbox({
             key: 'requiredCheckbox',
@@ -25,6 +28,9 @@ const checkboxDeprecatedForm = () =>
             ...checkbox({
               key: 'readOnlyCheckbox',
               label: 'ReadOnly checkbox',
+              validate: {
+                required: false,
+              },
             }),
             readOnly: true,
           },
@@ -32,6 +38,9 @@ const checkboxDeprecatedForm = () =>
             ...checkbox({
               key: 'readOnlyCheckboxChecked',
               label: 'ReadOnly checkbox checked',
+              validate: {
+                required: false,
+              },
             }),
             readOnly: true,
             defaultValue: true,
@@ -42,6 +51,9 @@ const checkboxDeprecatedForm = () =>
             description: '<p>Normal description text</p>',
             key: 'checkboxDescription',
             label: 'Checkbox description',
+            validate: {
+              required: false,
+            },
           }),
         ],
       }),
