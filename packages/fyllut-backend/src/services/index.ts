@@ -1,4 +1,6 @@
 import {
+  createActiveTaskService,
+  createApplicationActivitiesService,
   createApplicationPdfService,
   createApplicationService,
   createCommonCodesService,
@@ -47,6 +49,10 @@ const applicationPdfService = createApplicationPdfService({
   teamLogger,
 });
 
+const activeTaskService = createActiveTaskService({
+  baseUrl: sendInnConfig.host,
+});
+
 const applicationService = createApplicationService({
   baseUrl: sendInnConfig.host,
   metrics: {
@@ -83,6 +89,10 @@ const registerDataService = createRegisterDataService({
   tilleggsstonaderBaseUrl: tilleggsstonaderConfig.host,
 });
 
+const applicationActivitiesService = createApplicationActivitiesService({
+  baseUrl: sendInnConfig.host,
+});
+
 const navUnitService = createNavUnitService({
   baseUrl: norg2.url,
   consumerId: clientId,
@@ -109,6 +119,8 @@ const translationsService = new TranslationsService(config);
 const nologinTokenService = NologinTokenService(config);
 
 export {
+  activeTaskService,
+  applicationActivitiesService,
   applicationPdfService,
   applicationService,
   appMetrics,
