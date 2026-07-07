@@ -260,7 +260,12 @@ describe('createApplicationService', () => {
         type: 'nologin',
       }),
     ).rejects.toEqual(
-      new ResponseError('SERVICE_UNAVAILABLE', 'upload failed', undefined, TEXTS.statiske.uploadFile.uploadFileError),
+      new ResponseError(
+        'SERVICE_UNAVAILABLE',
+        'upload failed',
+        undefined,
+        TEXTS.statiske.nologin.temporarilyUnavailable,
+      ),
     );
 
     expect(fetchSpy).toHaveBeenNthCalledWith(
