@@ -475,7 +475,7 @@ describe('Your information', () => {
           () => cy.findByLabelText('No').check(),
         );
 
-        cy.findByRole('button', { name: /Lagre og fortsett|Save and continue/ }).click();
+        cy.clickNextStep();
         cy.get('[data-cy=error-summary]')
           .should('exist')
           .within(() => {
@@ -493,7 +493,7 @@ describe('Your information', () => {
           () => cy.findByLabelText('Yes').check(),
         );
 
-        cy.findByRole('button', { name: /Lagre og fortsett|Save and continue/ }).click();
+        cy.clickNextStep();
         cy.get('[data-cy=error-summary]')
           .should('exist')
           .within(() => {

@@ -65,7 +65,7 @@ const createCypress101Form = ({ path }: CreateCypress101FormOptions) =>
           }),
           nationalIdentityNumber({
             key: 'fodselsnummerDNummerSoker',
-            label: 'Fødselsnummer eller d-nummer',
+            label: 'Fødselsnummer / D-nummer',
             customConditional: `show = data.${identityChoiceKey} === "ja" || (data.fodselsnummerDNummerSoker && !data.${identityChoiceKey})`,
             prefill: true,
             prefillKey: 'sokerIdentifikasjonsnummer',

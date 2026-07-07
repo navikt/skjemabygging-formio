@@ -22,6 +22,11 @@ const yourInformationDeprecatedForm = () =>
       panel({
         key: 'dineOpplysninger',
         title: 'Dine opplysninger',
+        buttonSettings: {
+          previous: true,
+          cancel: true,
+          next: true,
+        },
         components: [
           container({
             key: 'dineOpplysninger',
@@ -88,6 +93,11 @@ const yourInformationDeprecatedForm = () =>
       panel({
         key: 'navn',
         title: 'Navn',
+        buttonSettings: {
+          previous: true,
+          cancel: true,
+          next: true,
+        },
         components: [
           textField({
             autocomplete: 'given-name',
