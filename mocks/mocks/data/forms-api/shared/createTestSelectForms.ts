@@ -50,7 +50,7 @@ const createInstrumentPageV1 = () =>
         label: 'Velg land du vil reise til',
         id: 'eupbhut',
         navId: 'e9ly9xe',
-        validate: { required: true },
+        validate: { required: true, onlyAvailableItems: false },
       }),
       currencySelect({
         key: 'velgValutaDuVilBetaleMed',
@@ -97,7 +97,7 @@ const createInstrumentPageV2 = () =>
         label: 'Velg land du vil reise til',
         id: 'eupbhut',
         navId: 'e9ly9xe',
-        validate: { required: true },
+        validate: { required: true, onlyAvailableItems: false },
       }),
       currencySelect({
         key: 'velgValutaDuVilBetaleMed',

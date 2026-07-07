@@ -60,7 +60,7 @@ describe('Basic form', () => {
       cy.findByRole('textbox', { name: 'Etternavn' }).should('have.value', 'Nordmann');
       cy.findByRole('textbox', { name: 'Fornavn' }).should('have.attr', 'readonly');
       cy.findByRole('textbox', { name: 'Etternavn' }).should('have.attr', 'readonly');
-      cy.findByRole('textbox', { name: /Fødselsnummer.*d-nummer/ })
+      cy.findByRole('textbox', { name: /Fødselsnummer.*[dD]-nummer/ })
         .invoke('val')
         .then((value) => expect(String(value).replace(/\s/g, '')).to.equal('08842748500'));
     }
