@@ -11,6 +11,7 @@ interface FormFrameworkProviderProps {
   children: ReactNode;
   form: Form;
   initialSubmission?: Submission;
+  initialPagesWithErrors?: string[];
   translate: TranslateFunction;
   currentLanguage: string;
   submissionMethod?: SubmissionMethod;
@@ -23,6 +24,7 @@ const FormFrameworkProvider = ({
   children,
   form,
   initialSubmission,
+  initialPagesWithErrors,
   translate,
   currentLanguage,
   submissionMethod,
@@ -35,7 +37,7 @@ const FormFrameworkProvider = ({
       <LanguageProvider translate={translate} currentLanguage={currentLanguage}>
         <SubmissionProvider initialSubmission={initialSubmission}>
           <FormDefinitionProvider form={form}>
-            <ValidationProvider>
+            <ValidationProvider initialPagesWithErrors={initialPagesWithErrors}>
               <FormPersistenceProvider saveDraft={persistence?.saveDraft} submitForm={persistence?.submitForm}>
                 {children}
               </FormPersistenceProvider>

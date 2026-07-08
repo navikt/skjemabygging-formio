@@ -3,13 +3,15 @@ import RenderInputComponent from './RenderInputComponent';
 import { InputComponentRegistry } from './inputComponentRegistry';
 
 interface Props {
+  pageKey: string;
+  pageComponents: Component[];
   components: Component[];
   componentRegistry?: InputComponentRegistry;
 }
 
 // Renders editable inputs for a set of (already active) components. Panels/containers recurse into
 // their children; leaf inputs are looked up in the registry.
-const RenderInputForm = ({ components, componentRegistry }: Props) => {
+const RenderInputForm = ({ pageKey, pageComponents, components, componentRegistry }: Props) => {
   return (
     <>
       {components.map((component) => {
@@ -17,12 +19,22 @@ const RenderInputForm = ({ components, componentRegistry }: Props) => {
           return (
             <RenderInputForm
               key={component.key}
+              pageKey={pageKey}
+              pageComponents={pageComponents}
               components={(component as Panel).components ?? []}
               componentRegistry={componentRegistry}
             />
           );
         }
-        return <RenderInputComponent key={component.key} component={component} componentRegistry={componentRegistry} />;
+        return (
+          <RenderInputComponent
+            key={component.key}
+            component={component}
+            pageKey={pageKey}
+            pageComponents={pageComponents}
+            componentRegistry={componentRegistry}
+          />
+        );
       })}
     </>
   );

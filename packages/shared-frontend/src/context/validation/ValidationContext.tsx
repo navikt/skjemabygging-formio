@@ -1,4 +1,4 @@
-import { Component, submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, Submission, submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 import { deriveValidations } from '../../validation/deriveValidations';
 import { validateValue } from '../../validation/validators';
@@ -6,115 +6,187 @@ import { useLanguage } from '../language/LanguageContext';
 import { useSubmission } from '../submission/SubmissionContext';
 
 interface FieldError {
+  pageKey: string;
   submissionPath: string;
   field: string;
   message: string;
 }
 
+type ValidationPage = { pageKey: string; components: Component[] };
+type SummaryScope = { type: 'page'; pageKey: string } | { type: 'summary' } | undefined;
+
 interface ValidationContextType {
-  errors: FieldError[];
   pagesWithErrors: Set<string>;
   summaryVisible: boolean;
   validatePage: (pageKey: string, components: Component[]) => boolean;
-  validatePages: (pages: { pageKey: string; components: Component[] }[]) => boolean;
-  getError: (submissionPath: string) => string | undefined;
-  clearFieldError: (submissionPath: string) => void;
+  validatePages: (pages: ValidationPage[]) => boolean;
+  getError: (submissionPath: string, pageKey: string, components: Component[]) => string | undefined;
+  getErrorsForPage: (pageKey: string, components: Component[]) => FieldError[];
+  getErrorsForPages: (pages: ValidationPage[]) => FieldError[];
+  handleFieldChange: (pageKey: string, components: Component[], nextSubmission: Submission | undefined) => void;
   hasErrorState: (pageKey: string) => boolean;
   hideSummary: () => void;
+  shouldShowSummaryForPage: (pageKey: string) => boolean;
+  shouldShowSummaryForSummaryPage: () => boolean;
+  syncPageValidationState: (pageKey: string, components: Component[]) => void;
 }
 
 interface Props {
   children: ReactNode;
+  initialPagesWithErrors?: string[];
 }
 
 const ValidationContext = createContext<ValidationContextType>({} as ValidationContextType);
 
-const ValidationProvider = ({ children }: Props) => {
+const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
   const { translate } = useLanguage();
   const { submission } = useSubmission();
-  const [errors, setErrors] = useState<FieldError[]>([]);
-  const [pagesWithErrors, setPagesWithErrors] = useState<Set<string>>(new Set());
-  const [summaryVisible, setSummaryVisible] = useState(false);
+  const [pagesWithErrors, setPagesWithErrors] = useState<Set<string>>(() => new Set(initialPagesWithErrors ?? []));
+  const [summaryScope, setSummaryScope] = useState<SummaryScope>(undefined);
 
   const computeErrors = useCallback(
-    (components: Component[]): FieldError[] =>
+    (pageKey: string, components: Component[], activeSubmission: Submission | undefined): FieldError[] =>
       deriveValidations(components).reduce<FieldError[]>((acc, { submissionPath, field, rules }) => {
-        const violation = validateValue(submissionUtils.getSubmissionValue(submissionPath, submission), field, rules);
+        const violation = validateValue(
+          submissionUtils.getSubmissionValue(submissionPath, activeSubmission),
+          field,
+          rules,
+        );
         if (violation) {
-          acc.push({ submissionPath, field, message: translate(violation.textKey, violation.params) });
+          acc.push({ pageKey, submissionPath, field, message: translate(violation.textKey, violation.params) });
         }
         return acc;
       }, []),
-    [submission, translate],
+    [translate],
+  );
+
+  const getErrorsForPage = useCallback(
+    (pageKey: string, components: Component[]) => computeErrors(pageKey, components, submission),
+    [computeErrors, submission],
+  );
+
+  const getErrorsForPages = useCallback(
+    (pages: ValidationPage[]) =>
+      pages.flatMap(({ pageKey, components }) => computeErrors(pageKey, components, submission)),
+    [computeErrors, submission],
   );
 
   const validatePage = useCallback(
     (pageKey: string, components: Component[]) => {
-      const pageErrors = computeErrors(components);
-      const pagePaths = new Set(deriveValidations(components).map((descriptor) => descriptor.submissionPath));
-      setErrors((prev) => [...prev.filter((e) => !pagePaths.has(e.submissionPath)), ...pageErrors]);
+      const pageErrors = computeErrors(pageKey, components, submission);
       setPagesWithErrors((prev) => {
         const next = new Set(prev);
         if (pageErrors.length > 0) next.add(pageKey);
         else next.delete(pageKey);
         return next;
       });
-      setSummaryVisible(pageErrors.length > 0);
+      setSummaryScope(pageErrors.length > 0 ? { type: 'page', pageKey } : undefined);
       return pageErrors.length === 0;
     },
-    [computeErrors],
+    [computeErrors, submission],
   );
 
   const validatePages = useCallback(
-    (pages: { pageKey: string; components: Component[] }[]) => {
-      const allErrors: FieldError[] = [];
+    (pages: ValidationPage[]) => {
       const failedPages = new Set<string>();
       pages.forEach(({ pageKey, components }) => {
-        const pageErrors = computeErrors(components);
+        const pageErrors = computeErrors(pageKey, components, submission);
         if (pageErrors.length > 0) failedPages.add(pageKey);
-        allErrors.push(...pageErrors);
       });
-      setErrors(allErrors);
       setPagesWithErrors(failedPages);
-      return allErrors.length === 0;
+      setSummaryScope(failedPages.size > 0 ? { type: 'summary' } : undefined);
+      return failedPages.size === 0;
+    },
+    [computeErrors, submission],
+  );
+
+  const getError = useCallback(
+    (submissionPath: string, pageKey: string, components: Component[]) => {
+      if (!pagesWithErrors.has(pageKey)) {
+        return undefined;
+      }
+      return getErrorsForPage(pageKey, components).find((error) => error.submissionPath === submissionPath)?.message;
+    },
+    [getErrorsForPage, pagesWithErrors],
+  );
+
+  const hasErrorState = useCallback((pageKey: string) => pagesWithErrors.has(pageKey), [pagesWithErrors]);
+  const hideSummary = useCallback(() => setSummaryScope(undefined), []);
+  const shouldShowSummaryForPage = useCallback(
+    (pageKey: string) => summaryScope?.type === 'page' && summaryScope.pageKey === pageKey,
+    [summaryScope],
+  );
+  const shouldShowSummaryForSummaryPage = useCallback(() => summaryScope?.type === 'summary', [summaryScope]);
+
+  const updatePageValidationState = useCallback(
+    (pageKey: string, components: Component[], activeSubmission: Submission | undefined) => {
+      const pageErrors = computeErrors(pageKey, components, activeSubmission);
+      setPagesWithErrors((prev) => {
+        const next = new Set(prev);
+        if (pageErrors.length > 0) next.add(pageKey);
+        else next.delete(pageKey);
+        return next;
+      });
+      setSummaryScope((prev) => {
+        if (prev?.type === 'page' && prev.pageKey === pageKey) {
+          return pageErrors.length > 0 ? prev : undefined;
+        }
+        return prev;
+      });
     },
     [computeErrors],
   );
 
-  const clearFieldError = useCallback((submissionPath: string) => {
-    setErrors((prev) => prev.filter((e) => e.submissionPath !== submissionPath));
-  }, []);
-
-  const getError = useCallback(
-    (submissionPath: string) => errors.find((e) => e.submissionPath === submissionPath)?.message,
-    [errors],
+  const handleFieldChange = useCallback(
+    (pageKey: string, components: Component[], nextSubmission: Submission | undefined) => {
+      if (!pagesWithErrors.has(pageKey) && !(summaryScope?.type === 'page' && summaryScope.pageKey === pageKey)) {
+        return;
+      }
+      updatePageValidationState(pageKey, components, nextSubmission);
+    },
+    [pagesWithErrors, summaryScope, updatePageValidationState],
   );
 
-  const hasErrorState = useCallback((pageKey: string) => pagesWithErrors.has(pageKey), [pagesWithErrors]);
-  const hideSummary = useCallback(() => setSummaryVisible(false), []);
+  const syncPageValidationState = useCallback(
+    (pageKey: string, components: Component[]) => {
+      if (!pagesWithErrors.has(pageKey) && !(summaryScope?.type === 'page' && summaryScope.pageKey === pageKey)) {
+        return;
+      }
+      updatePageValidationState(pageKey, components, submission);
+    },
+    [pagesWithErrors, submission, summaryScope, updatePageValidationState],
+  );
 
   const value = useMemo(
     () => ({
-      errors,
       pagesWithErrors,
-      summaryVisible,
+      summaryVisible: summaryScope !== undefined,
       validatePage,
       validatePages,
       getError,
-      clearFieldError,
+      getErrorsForPage,
+      getErrorsForPages,
+      handleFieldChange,
       hasErrorState,
       hideSummary,
+      shouldShowSummaryForPage,
+      shouldShowSummaryForSummaryPage,
+      syncPageValidationState,
     }),
     [
-      errors,
       pagesWithErrors,
-      summaryVisible,
+      summaryScope,
       validatePage,
       validatePages,
       getError,
-      clearFieldError,
+      getErrorsForPage,
+      getErrorsForPages,
+      handleFieldChange,
       hasErrorState,
       hideSummary,
+      shouldShowSummaryForPage,
+      shouldShowSummaryForSummaryPage,
+      syncPageValidationState,
     ],
   );
 

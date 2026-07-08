@@ -8,6 +8,8 @@ import InputTextField from './components/text-field/InputTextField';
 
 interface InputComponentProps {
   component: Component;
+  pageKey: string;
+  pageComponents: Component[];
 }
 
 type InputComponentRegistry = Record<string, ComponentType<InputComponentProps>>;
@@ -15,8 +17,10 @@ type InputComponentRegistry = Record<string, ComponentType<InputComponentProps>>
 const getValues = (component: Component) => component.values ?? component.data?.values ?? [];
 const isRequired = (component: Component) => component.validate?.required ?? false;
 
-const TextFieldEntry = ({ component }: InputComponentProps) => (
+const TextFieldEntry = ({ component, pageKey, pageComponents }: InputComponentProps) => (
   <InputTextField
+    pageKey={pageKey}
+    pageComponents={pageComponents}
     submissionPath={component.key}
     label={component.label}
     description={component.description}
@@ -25,8 +29,10 @@ const TextFieldEntry = ({ component }: InputComponentProps) => (
   />
 );
 
-const TextAreaEntry = ({ component }: InputComponentProps) => (
+const TextAreaEntry = ({ component, pageKey, pageComponents }: InputComponentProps) => (
   <InputTextArea
+    pageKey={pageKey}
+    pageComponents={pageComponents}
     submissionPath={component.key}
     label={component.label}
     description={component.description}
@@ -35,8 +41,10 @@ const TextAreaEntry = ({ component }: InputComponentProps) => (
   />
 );
 
-const SelectEntry = ({ component }: InputComponentProps) => (
+const SelectEntry = ({ component, pageKey, pageComponents }: InputComponentProps) => (
   <InputSelect
+    pageKey={pageKey}
+    pageComponents={pageComponents}
     submissionPath={component.key}
     label={component.label}
     description={component.description}
@@ -45,8 +53,10 @@ const SelectEntry = ({ component }: InputComponentProps) => (
   />
 );
 
-const RadioEntry = ({ component }: InputComponentProps) => (
+const RadioEntry = ({ component, pageKey, pageComponents }: InputComponentProps) => (
   <InputRadio
+    pageKey={pageKey}
+    pageComponents={pageComponents}
     submissionPath={component.key}
     legend={component.label}
     description={component.description}
@@ -55,8 +65,10 @@ const RadioEntry = ({ component }: InputComponentProps) => (
   />
 );
 
-const CheckboxEntry = ({ component }: InputComponentProps) => (
+const CheckboxEntry = ({ component, pageKey, pageComponents }: InputComponentProps) => (
   <InputCheckbox
+    pageKey={pageKey}
+    pageComponents={pageComponents}
     submissionPath={component.key}
     legend={component.label}
     description={component.description}

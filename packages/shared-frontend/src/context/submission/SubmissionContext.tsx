@@ -24,6 +24,15 @@ const setDeepValue = (target: SubmissionData, path: string[], value: unknown): S
   };
 };
 
+const createUpdatedSubmission = (
+  submission: Submission | undefined,
+  submissionPath: string,
+  value: unknown,
+): Submission => ({
+  ...(submission ?? { data: {} }),
+  data: setDeepValue(submission?.data ?? {}, submissionPath.split('.'), value),
+});
+
 const removeDeepValue = (target: SubmissionData, path: string[]): SubmissionData => {
   const [key, ...rest] = path;
   if (target?.[key] === undefined) {
@@ -45,10 +54,7 @@ const SubmissionProvider = ({ children, initialSubmission }: Props) => {
   const [submission, setSubmission] = useState<Submission | undefined>(initialSubmission ?? { data: {} });
 
   const updateSubmission = useCallback((submissionPath: string, value: unknown) => {
-    setSubmission((prev) => ({
-      ...prev,
-      data: setDeepValue(prev?.data ?? {}, submissionPath.split('.'), value),
-    }));
+    setSubmission((prev) => createUpdatedSubmission(prev, submissionPath, value));
   }, []);
 
   const clearSubmissionPaths = useCallback((submissionPaths: string[]) => {
@@ -70,5 +76,5 @@ const SubmissionProvider = ({ children, initialSubmission }: Props) => {
 
 const useSubmission = () => useContext(SubmissionContext);
 
-export { removeDeepValue, setDeepValue, SubmissionProvider, useSubmission };
+export { createUpdatedSubmission, removeDeepValue, setDeepValue, SubmissionProvider, useSubmission };
 export type { SubmissionContextType };

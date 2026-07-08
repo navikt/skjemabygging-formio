@@ -1,4 +1,5 @@
 import { TextField } from '@navikt/ds-react';
+import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import InputBox, { Spacing } from '../../input/InputBox';
 import TranslatedDescription from '../../input/TranslatedDescription';
 import TranslatedLabel from '../../input/TranslatedLabel';
@@ -6,6 +7,8 @@ import { inputId } from '../../input/inputId';
 import { useTextInput } from '../../input/useTextInput';
 
 interface InputTextFieldProps {
+  pageKey: string;
+  pageComponents: Component[];
   submissionPath: string;
   label: string;
   description?: string;
@@ -17,6 +20,8 @@ interface InputTextFieldProps {
 }
 
 const InputTextField = ({
+  pageKey,
+  pageComponents,
   submissionPath,
   label,
   description,
@@ -26,7 +31,7 @@ const InputTextField = ({
   formatKey,
   bottom,
 }: InputTextFieldProps) => {
-  const { value, onChange, onBlur, error } = useTextInput({ submissionPath, formatKey });
+  const { value, onChange, onBlur, error } = useTextInput({ pageKey, pageComponents, submissionPath, formatKey });
 
   return (
     <InputBox bottom={bottom}>

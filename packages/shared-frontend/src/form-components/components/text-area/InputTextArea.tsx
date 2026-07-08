@@ -1,4 +1,5 @@
 import { Textarea } from '@navikt/ds-react';
+import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import InputBox, { Spacing } from '../../input/InputBox';
 import TranslatedDescription from '../../input/TranslatedDescription';
 import TranslatedLabel from '../../input/TranslatedLabel';
@@ -6,6 +7,8 @@ import { inputId } from '../../input/inputId';
 import { useTextInput } from '../../input/useTextInput';
 
 interface InputTextAreaProps {
+  pageKey: string;
+  pageComponents: Component[];
   submissionPath: string;
   label: string;
   description?: string;
@@ -16,6 +19,8 @@ interface InputTextAreaProps {
 }
 
 const InputTextArea = ({
+  pageKey,
+  pageComponents,
   submissionPath,
   label,
   description,
@@ -24,7 +29,7 @@ const InputTextArea = ({
   maxLength,
   bottom,
 }: InputTextAreaProps) => {
-  const { value, onChange, onBlur, error } = useTextInput({ submissionPath });
+  const { value, onChange, onBlur, error } = useTextInput({ pageKey, pageComponents, submissionPath });
 
   return (
     <InputBox bottom={bottom}>

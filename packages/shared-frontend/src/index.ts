@@ -27,6 +27,7 @@ export type {
   FormPersistenceHandlers,
   PersistenceStatus,
 } from './context/persistence/PersistenceContext';
+export type { FieldError, ValidationContextType } from './context/validation/ValidationContext';
 export type { InputComponentProps, InputComponentRegistry } from './form-components/inputComponentRegistry';
 export type { RenderSummaryFormProps } from './form-components/RenderSummaryForm';
 export type {

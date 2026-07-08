@@ -10,6 +10,7 @@ const values: ComponentValue[] = [
   { value: 'no', label: 'Norway' },
   { value: 'se', label: 'Sweden' },
 ];
+const pageKey = 'page1';
 
 const renderWithProviders = (children: ReactNode, initialValue?: string) => {
   return render(
@@ -28,7 +29,10 @@ const SubmissionValue = () => {
 
 describe('InputSelect', () => {
   it('renders an Aksel combobox with the selected label', () => {
-    renderWithProviders(<InputSelect submissionPath="country" label="Country" values={values} />, 'no');
+    renderWithProviders(
+      <InputSelect submissionPath="country" label="Country" values={values} pageKey={pageKey} pageComponents={[]} />,
+      'no',
+    );
 
     expect(screen.getByRole('combobox', { name: 'Country' })).toBeDefined();
     expect(screen.getAllByText('Norway').length).toBe(2);
@@ -37,7 +41,7 @@ describe('InputSelect', () => {
   it('updates submission when a value is selected', () => {
     renderWithProviders(
       <>
-        <InputSelect submissionPath="country" label="Country" values={values} />
+        <InputSelect submissionPath="country" label="Country" values={values} pageKey={pageKey} pageComponents={[]} />
         <SubmissionValue />
       </>,
     );

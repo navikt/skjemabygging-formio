@@ -5,12 +5,19 @@ import { inputComponentRegistry, InputComponentRegistry } from './inputComponent
 
 interface Props {
   component: Component;
+  pageKey: string;
+  pageComponents: Component[];
   componentRegistry?: InputComponentRegistry;
 }
 
 // Unsupported types are logged to the backend always; shown as a visible warning outside prod, and
 // silently skipped in prod. Mirrors the summary RenderComponent behavior.
-const RenderInputComponent = ({ component, componentRegistry = inputComponentRegistry }: Props) => {
+const RenderInputComponent = ({
+  component,
+  pageKey,
+  pageComponents,
+  componentRegistry = inputComponentRegistry,
+}: Props) => {
   const { logger, config } = useAppConfig();
   const RegistryComponent = componentRegistry[component.type];
 
@@ -22,7 +29,7 @@ const RenderInputComponent = ({ component, componentRegistry = inputComponentReg
     return null;
   }
 
-  return <RegistryComponent component={component} />;
+  return <RegistryComponent component={component} pageKey={pageKey} pageComponents={pageComponents} />;
 };
 
 export default RenderInputComponent;

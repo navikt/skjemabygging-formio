@@ -78,6 +78,61 @@ describe('New renderer path', () => {
     cy.findByRole('heading', { name: 'Page one' }).should('exist');
   });
 
+  it('keeps page error state when leaving and returning via the step menu', () => {
+    cy.visit('/fyllut/newrender?sub=paper');
+
+    cy.findByRole('button', { name: 'Neste steg', timeout: 20000 }).click();
+    cy.findByRole('heading', { name: 'Page one' }).should('exist');
+
+    cy.findByRole('button', { name: 'Neste steg' }).click();
+    cy.get('[data-cy="error-summary"]').should('exist');
+    cy.findAllByText('Du må fylle ut: First name').should('have.length', 2);
+
+    cy.clickShowAllSteps();
+    cy.findByRole('link', { name: 'Page two' }).click();
+    cy.findByRole('heading', { name: 'Page two' }).should('exist');
+    cy.get('[data-cy="error-summary"]').should('not.exist');
+
+    cy.clickShowAllSteps();
+    cy.findByRole('link', { name: 'Page one' }).click();
+    cy.findByRole('heading', { name: 'Page one' }).should('exist');
+    cy.get('[data-cy="error-summary"]').should('not.exist');
+    cy.findAllByText('Du må fylle ut: First name').should('have.length', 1);
+  });
+
+  it('does not clear existing page data when fixing multiple errors on an errored page', () => {
+    cy.visit('/fyllut/newrender?sub=paper');
+
+    cy.findByRole('button', { name: 'Neste steg', timeout: 20000 }).click();
+    cy.findByRole('textbox', { name: /First name/ }).type('Kari');
+    cy.findByRole('button', { name: 'Neste steg' }).click();
+
+    cy.findByRole('heading', { name: 'Page two' }).should('exist');
+    cy.findByRole('button', { name: 'Neste steg' }).click();
+    cy.get('[data-cy="error-summary"]').should('exist');
+
+    cy.findByRole('combobox', { name: /Country/ }).click();
+    cy.findByRole('option', { name: 'Norway' }).click();
+    cy.findByRole('radio', { name: /Email/ }).check({ force: true });
+
+    cy.get('[data-cy="error-summary"]').should('not.exist');
+    cy.findByRole('button', { name: 'Neste steg' }).click();
+    cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
+  });
+
+  it('navigates from summary errors to the correct page and input', () => {
+    cy.visit('/fyllut/newrender/oppsummering?sub=paper');
+
+    cy.findByRole('heading', { name: 'Oppsummering', timeout: 20000 }).should('exist');
+    cy.findByRole('button', { name: 'Send inn' }).click();
+
+    cy.get('[data-cy="error-summary"]').should('exist');
+    cy.get('[data-cy="error-summary"]').find('a').first().click();
+
+    cy.location('pathname').should('eq', '/fyllut/newrender/pageOne');
+    cy.focused().should('have.attr', 'id', 'input-firstName');
+  });
+
   it('saves a draft on next and submits from the summary (digital)', () => {
     cy.intercept('POST', '/fyllut/api/send-inn/soknad*', {
       statusCode: 201,

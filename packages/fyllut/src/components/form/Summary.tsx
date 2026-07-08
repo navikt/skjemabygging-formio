@@ -14,9 +14,10 @@ import {
 
 interface Props {
   onBack: () => void;
+  onNavigateToError: (pageKey: string, id: string) => void;
 }
 
-const Summary = ({ onBack }: Props) => {
+const Summary = ({ onBack, onNavigateToError }: Props) => {
   const appConfig = useAppConfig();
   const { translate, currentLanguage } = useLanguages();
   const { form, activeComponents, panels } = useFormDefinition();
@@ -43,7 +44,12 @@ const Summary = ({ onBack }: Props) => {
         translate={translate}
         appConfig={appConfig}
       />
-      <FormErrorSummary />
+      <FormErrorSummary
+        pages={panels.map((panel: Panel) => ({ pageKey: panel.key, components: panel.components ?? [] }))}
+        onNavigateToField={(error, id) => {
+          onNavigateToError(error.pageKey, id);
+        }}
+      />
       <FormButtonRow
         previousButton={<FormPrevButton label={translate(TEXTS.grensesnitt.navigation.previous)} onClick={onBack} />}
         nextButton={

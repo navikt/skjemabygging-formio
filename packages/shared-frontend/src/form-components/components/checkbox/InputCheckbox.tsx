@@ -1,14 +1,15 @@
 import { Checkbox, CheckboxGroup } from '@navikt/ds-react';
-import { ComponentValue, submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
 import { useLanguage } from '../../../context/language/LanguageContext';
-import { useSubmission } from '../../../context/submission/SubmissionContext';
-import { useValidation } from '../../../context/validation/ValidationContext';
 import InputBox, { Spacing } from '../../input/InputBox';
 import TranslatedDescription from '../../input/TranslatedDescription';
 import TranslatedLabel from '../../input/TranslatedLabel';
 import { inputId } from '../../input/inputId';
+import { useSubmissionField } from '../../input/useSubmissionField';
 
 interface InputCheckboxProps {
+  pageKey: string;
+  pageComponents: Component[];
   submissionPath: string;
   legend: string;
   values: ComponentValue[];
@@ -19,6 +20,8 @@ interface InputCheckboxProps {
 }
 
 const InputCheckbox = ({
+  pageKey,
+  pageComponents,
   submissionPath,
   legend,
   values,
@@ -27,14 +30,16 @@ const InputCheckbox = ({
   readOnly,
   bottom,
 }: InputCheckboxProps) => {
-  const { submission, updateSubmission } = useSubmission();
-  const { getError, clearFieldError } = useValidation();
   const { translate } = useLanguage();
-  const current = submissionUtils.getSubmissionValue(submissionPath, submission) ?? [];
+  const { submissionValue, error, setSubmissionValue } = useSubmissionField({
+    pageKey,
+    pageComponents,
+    submissionPath,
+  });
+  const current = submissionValue ?? [];
 
   const onChange = (value: string[]) => {
-    updateSubmission(submissionPath, value);
-    clearFieldError(submissionPath);
+    setSubmissionValue(value);
   };
 
   return (
@@ -49,7 +54,7 @@ const InputCheckbox = ({
         description={<TranslatedDescription>{description}</TranslatedDescription>}
         value={current}
         onChange={onChange}
-        error={getError(submissionPath)}
+        error={error}
         readOnly={readOnly}
       >
         {values.map(({ value, label }) => (
