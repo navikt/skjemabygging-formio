@@ -267,7 +267,7 @@ const form = {
           disabled: false,
           tableView: false,
           modalEdit: false,
-          data: { resource: '', url: 'https://www.nav.no/fyllut/api/common-codes/currencies?lang=nb' },
+          data: { resource: '', url: '/fyllut/api/common-codes/currencies?lang=nb' },
           valueProperty: '',
           clearOnHide: true,
           customDefaultValue: '',

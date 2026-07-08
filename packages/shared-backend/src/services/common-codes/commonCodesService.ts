@@ -19,7 +19,7 @@ interface CommonCodeOption {
 
 type CommonCodesService = {
   getArchiveSubjects: (props: LanguageAwareCommonCodeRequest) => Promise<Record<string, string>>;
-  getCurrencies: (props?: CommonCodeRequest) => Promise<CommonCodeOption[]>;
+  getCurrencies: (props?: Partial<LanguageAwareCommonCodeRequest>) => Promise<CommonCodeOption[]>;
   getNavUnitTypes: (props: LanguageAwareCommonCodeRequest) => Promise<EnhetstypeNorg[]>;
   getAreaCodes: (props?: CommonCodeRequest) => Promise<CommonCodeOption[]>;
 };
@@ -64,8 +64,10 @@ const createCommonCodesService = ({
     );
   };
 
-  const getCurrencies = async ({ accessToken }: CommonCodeRequest = {}): Promise<CommonCodeOption[]> => {
-    const languageCode = 'nb';
+  const getCurrencies = async ({
+    languageCode = 'nb',
+    accessToken,
+  }: Partial<LanguageAwareCommonCodeRequest> = {}): Promise<CommonCodeOption[]> => {
     const response = await client.getCodeDescriptions({
       baseUrl,
       commonCode: 'ValutaBetaling',

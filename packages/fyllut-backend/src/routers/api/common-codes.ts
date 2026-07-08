@@ -3,6 +3,8 @@ import { commonCodesService } from '../../services';
 
 const getAccessToken = (req: Request) => req.headers.AzureAccessToken as string | undefined;
 const getLanguageCode = (req: Request) => req.header('accept-language') || 'nb';
+const getQueryLanguageCode = (req: Request) =>
+  typeof req.query.lang === 'string' ? req.query.lang.split('-')[0] : undefined;
 
 const commonCodes = {
   getArchiveSubjects: async (req: Request, res: Response) => {
@@ -16,6 +18,7 @@ const commonCodes = {
 
   getCurrencies: async (req: Request, res: Response) => {
     const currencies = await commonCodesService.getCurrencies({
+      languageCode: getQueryLanguageCode(req) ?? getLanguageCode(req),
       accessToken: getAccessToken(req),
     });
 
