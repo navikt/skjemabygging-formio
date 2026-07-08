@@ -1,4 +1,4 @@
-import { fileUtil } from '@navikt/skjemadigitalisering-shared-backend';
+import { fileUtil, requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import { NextFunction, Request, Response } from 'express';
 import { logger } from '../../../../../logger';
 import { applicationService } from '../../../../../services';
@@ -6,25 +6,20 @@ import { removeUploadedTempFile } from '../../../helpers/upload';
 import { validateNologinContext } from './context';
 
 const post = async (req: Request, res: Response, next: NextFunction) => {
-  const file = req.file;
-  const attachmentId = req.params.attachmentId as string;
-  const baseLogMeta = {
-    attachmentId,
-    route: req.originalUrl,
-    hasTempFile: Boolean(file?.path),
-    fileSize: file?.size,
-    fileType: file?.mimetype,
-  };
+  const attachmentId = requestUtil.getStringParam(req, 'attachmentId')!;
   try {
     const noLoginContext = validateNologinContext(req.getNologinContext());
     const innsendingsId = noLoginContext.innsendingsId;
-    const accessToken = req.headers.AzureAccessToken as string;
-    const logMeta = { ...baseLogMeta, innsendingsId };
-
-    if (!file) {
-      logger.warn(`${innsendingsId}: Upload request received without file for nologin application`, logMeta);
-      return res.status(400).json({ message: 'Error: Ingen fil sendt med forespørselen' });
-    }
+    const accessToken = requestUtil.getAzureAccessToken(req);
+    const file = requestUtil.getFile(req);
+    const logMeta = {
+      attachmentId,
+      innsendingsId,
+      route: req.originalUrl,
+      hasTempFile: Boolean(file.path),
+      fileSize: file.size,
+      fileType: file.mimetype,
+    };
     logger.info(`${innsendingsId}: Received file upload request for nologin application`, logMeta);
 
     const fileBlob = await fileUtil.createBlobFromUploadedFile(file);
@@ -44,11 +39,19 @@ const post = async (req: Request, res: Response, next: NextFunction) => {
     res.status(201).json(result);
   } catch (error) {
     const innsendingsId = req.getNologinContext()?.innsendingsId;
-    const logMeta = { ...baseLogMeta, innsendingsId };
+    const file = req.file;
+    const logMeta = {
+      attachmentId,
+      innsendingsId,
+      route: req.originalUrl,
+      hasTempFile: Boolean(file?.path),
+      fileSize: file?.size,
+      fileType: file?.mimetype,
+    };
     logger.warn(`${innsendingsId}: Upload request failed for nologin application`, { ...logMeta, error });
     next(error);
   } finally {
-    await removeUploadedTempFile(file);
+    await removeUploadedTempFile(req.file);
   }
 };
 
@@ -56,9 +59,9 @@ const deleteAttachment = async (req: Request, res: Response, next: NextFunction)
   try {
     const nologinContext = validateNologinContext(req.getNologinContext());
     const innsendingsId = nologinContext.innsendingsId;
-    const attachmentId = req.params.attachmentId as string | undefined;
-    const fileId = req.params.fileId as string | undefined;
-    const accessToken = req.headers.AzureAccessToken as string;
+    const attachmentId = requestUtil.getStringParam(req, 'attachmentId', true);
+    const fileId = requestUtil.getStringParam(req, 'fileId', true);
+    const accessToken = requestUtil.getAzureAccessToken(req);
     const logMeta = {
       attachmentId,
       fileId,

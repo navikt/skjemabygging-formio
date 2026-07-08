@@ -54,23 +54,23 @@ const sendInnSoknad = {
       const idportenPid = getIdportenPid(req);
       const tokenxAccessToken = getTokenxAccessToken(req);
       const fyllutUrl = getFyllutUrl(req);
-      const forceMellomlagring = req.query.forceMellomlagring as string | undefined;
-
-      const { formPath } = req.body;
+      const forceMellomlagring = requestUtil.getStringQuery(req, 'forceMellomlagring', true);
+      const requestBody = req.body;
+      const formPath = requestUtil.getBodyValue<string>(req, 'formPath');
       const form = await formService.getForm({
         formPath,
         select: ['skjemanummer', 'title', 'path', 'properties', 'components'],
       });
       const translations = await translationService.getTranslations({ formPath });
 
-      const body = assembleSendInnSoknadBody({ ...req.body, form, translations }, idportenPid, fyllutUrl, null);
+      const body = assembleSendInnSoknadBody({ ...requestBody, form, translations }, idportenPid, fyllutUrl, null);
       const envQualifier = req.getEnvQualifier();
       const response = await applicationService.createApplication<SendInnSoknadBody>({
         accessToken: tokenxAccessToken,
         body,
         envQualifier,
         force: Boolean(forceMellomlagring),
-        innsendingsId: req.body.innsendingsId ?? '',
+        innsendingsId: requestBody.innsendingsId ?? '',
       });
       const { status, body: application } = response;
 
@@ -90,8 +90,9 @@ const sendInnSoknad = {
       const idportenPid = getIdportenPid(req);
       const tokenxAccessToken = getTokenxAccessToken(req);
       const fyllutUrl = getFyllutUrl(req);
-
-      const { innsendingsId, formPath } = req.body;
+      const requestBody = req.body;
+      const innsendingsId = requestUtil.getBodyValue<string>(req, 'innsendingsId');
+      const formPath = requestUtil.getBodyValue<string>(req, 'formPath');
 
       const sanitizedInnsendingsId = sanitizeInnsendingsId(innsendingsId);
       const errorMessage = validateInnsendingsId(sanitizedInnsendingsId, putErrorMessage);
@@ -106,7 +107,7 @@ const sendInnSoknad = {
       });
       const translations = await translationService.getTranslations({ formPath });
 
-      const body = assembleSendInnSoknadBody({ ...req.body, form, translations }, idportenPid, fyllutUrl, null);
+      const body = assembleSendInnSoknadBody({ ...requestBody, form, translations }, idportenPid, fyllutUrl, null);
 
       const response = await applicationService.updateApplication<SendInnSoknadBody>({
         accessToken: tokenxAccessToken,
