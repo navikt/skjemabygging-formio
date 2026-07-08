@@ -1,4 +1,4 @@
-import { renderApplicationPdf } from '@navikt/skjemadigitalisering-shared-backend';
+import { renderApplicationPdf, requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import { NextFunction, Request, Response } from 'express';
 import { config } from '../../config/config';
 import { logger } from '../../logger';
@@ -16,11 +16,9 @@ const sendInnUtfyltSoknad = {
       const tokenxAccessToken = getTokenxAccessToken(req);
       const fyllutUrl = getFyllutUrl(req);
       const envQualifier = req.getEnvQualifier();
-
-      const { formPath, submission, language, innsendingsId, submissionMethod } = req.body;
-      if (!req.headers.PdfAccessToken) {
-        logger.warn('Azure access token is missing. Will be unable to generate pdf');
-      }
+      const requestBody = req.body;
+      const { formPath, submission, language, innsendingsId, submissionMethod } = requestBody;
+      const pdfAccessToken = requestUtil.getPdfAccessToken(req);
 
       const sanitizedInnsendingsId = sanitizeInnsendingsId(innsendingsId);
       const errorMessage = validateInnsendingsId(
@@ -59,13 +57,18 @@ const sendInnUtfyltSoknad = {
       });
 
       const applicationPdfBase64 = await applicationPdfService.createPdf({
-        accessToken: req.headers.PdfAccessToken as string,
+        accessToken: pdfAccessToken,
         pdfFormData,
       });
       const applicationPdf = requireBase64Decode(applicationPdfBase64, 'Failed to decode generated application PDF');
       const pdfByteArray = Array.from(applicationPdf) ?? [];
 
-      const body = assembleSendInnSoknadBody({ ...req.body, form, translations }, idportenPid, fyllutUrl, pdfByteArray);
+      const body = assembleSendInnSoknadBody(
+        { ...requestBody, form, translations },
+        idportenPid,
+        fyllutUrl,
+        pdfByteArray,
+      );
       const response = await applicationService.submitCompletedApplication({
         accessToken: tokenxAccessToken,
         body,
