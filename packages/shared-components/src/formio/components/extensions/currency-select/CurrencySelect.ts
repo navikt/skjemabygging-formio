@@ -1,12 +1,6 @@
 import NavSelect from '../../core/select/Select';
 import currencySelectBuilder from './CurrencySelect.builder';
 
-const getCurrencyLanguageCode = () => {
-  const search = typeof window === 'undefined' ? '' : window.location.search;
-  const languageCode = new URLSearchParams(search).get('lang') ?? 'nb';
-  return languageCode.split('-')[0];
-};
-
 class CurrencySelect extends NavSelect {
   static schema() {
     return {
@@ -16,7 +10,7 @@ class CurrencySelect extends NavSelect {
       key: 'valutavelger',
       fieldSize: 'input--m',
       data: {
-        url: '/fyllut/api/common-codes/currencies?lang=nb',
+        url: 'https://www.nav.no/fyllut/api/common-codes/currencies?lang=nb',
       },
       dataSrc: 'url',
       disableLimit: true,
@@ -28,11 +22,6 @@ class CurrencySelect extends NavSelect {
   }
 
   init() {
-    const component = this.component!;
-    component.data = {
-      ...component.data,
-      url: `/fyllut/api/common-codes/currencies?lang=${getCurrencyLanguageCode()}`,
-    };
     super.init({ skipOnlyAvailableItems: true });
   }
 

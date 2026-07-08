@@ -34,10 +34,9 @@ describe('commonCodes', () => {
     expect(res.send).toHaveBeenCalledWith(archiveSubjects);
   });
 
-  it('forwards currency params to commonCodesService with query language', async () => {
+  it('forwards currencies params to commonCodesService', async () => {
     const req = mockRequest({
       headers: { AzureAccessToken: 'azure-token' },
-      query: { lang: 'en' },
     });
     const res = mockResponse();
     const currencies = [{ label: 'Euro (EUR)', value: 'EUR' }];
@@ -46,24 +45,6 @@ describe('commonCodes', () => {
     await commonCodes.getCurrencies(req, res);
 
     expect(commonCodesService.getCurrencies).toHaveBeenCalledWith({
-      languageCode: 'en',
-      accessToken: 'azure-token',
-    });
-    expect(res.send).toHaveBeenCalledWith(currencies);
-  });
-
-  it('falls back to accept-language for currencies', async () => {
-    const req = mockRequest({
-      headers: { AzureAccessToken: 'azure-token', 'accept-language': 'nb' },
-    });
-    const res = mockResponse();
-    const currencies = [{ label: 'Norsk krone (NOK)', value: 'NOK' }];
-    vi.mocked(commonCodesService.getCurrencies).mockResolvedValueOnce(currencies);
-
-    await commonCodes.getCurrencies(req, res);
-
-    expect(commonCodesService.getCurrencies).toHaveBeenCalledWith({
-      languageCode: 'nb',
       accessToken: 'azure-token',
     });
     expect(res.send).toHaveBeenCalledWith(currencies);

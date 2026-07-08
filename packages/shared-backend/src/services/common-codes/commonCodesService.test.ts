@@ -73,15 +73,15 @@ describe('createCommonCodesService', () => {
     expectGetRequest(fetchSpy, 'TemaIFyllUt', 'nb', 'azure-token');
   });
 
-  it('sorts currencies with NOK EUR and SEK first using requested language', async () => {
+  it('sorts currencies with NOK EUR and SEK first', async () => {
     vi.mocked(correlator.getId).mockReturnValue('corr-id');
     const fetchSpy = mockFetchResponse(
       JSON.stringify({
         betydninger: {
-          USD: [{ beskrivelser: { en: { term: 'Dollar' } } }],
-          NOK: [{ beskrivelser: { en: { term: 'Norwegian krone' } } }],
-          SEK: [{ beskrivelser: { en: { term: 'Swedish krona' } } }],
-          EUR: [{ beskrivelser: { en: { term: 'Euro' } } }],
+          USD: [{ beskrivelser: { nb: { term: 'Amerikansk dollar' } } }],
+          NOK: [{ beskrivelser: { nb: { term: 'Norsk krone' } } }],
+          SEK: [{ beskrivelser: { nb: { term: 'Svensk krone' } } }],
+          EUR: [{ beskrivelser: { nb: { term: 'Euro' } } }],
         },
       }),
       200,
@@ -89,13 +89,13 @@ describe('createCommonCodesService', () => {
     );
     const service = createService();
 
-    await expect(service.getCurrencies({ languageCode: 'en' })).resolves.toEqual([
+    await expect(service.getCurrencies()).resolves.toEqual([
       { label: 'Euro (EUR)', value: 'EUR' },
-      { label: 'Norwegian krone (NOK)', value: 'NOK' },
-      { label: 'Swedish krona (SEK)', value: 'SEK' },
-      { label: 'Dollar (USD)', value: 'USD' },
+      { label: 'Norsk krone (NOK)', value: 'NOK' },
+      { label: 'Svensk krone (SEK)', value: 'SEK' },
+      { label: 'Amerikansk dollar (USD)', value: 'USD' },
     ]);
-    expectGetRequest(fetchSpy, 'ValutaBetaling', 'en');
+    expectGetRequest(fetchSpy, 'ValutaBetaling', 'nb');
   });
 
   it('maps nav unit types using provided language', async () => {
