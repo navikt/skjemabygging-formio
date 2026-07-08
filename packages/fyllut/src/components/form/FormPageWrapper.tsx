@@ -8,15 +8,17 @@ import { NotFoundPage } from '../errors/NotFoundPage';
 import SubmissionMethodNotAllowed from '../SubmissionMethodNotAllowed';
 import FillInForm from './FillInForm';
 import FormPageSkeleton from './FormPageSkeleton';
+import NewRendererSubmissionMethodSelection from './NewRendererSubmissionMethodSelection';
 
 const FormPageWrapper = () => {
-  const { formPath } = useParams();
+  const { formPath, '*': routePath } = useParams();
   const [translations, setTranslations] = useState<I18nTranslations>();
   const [loading, setLoading] = useState<boolean>(true);
   const [form, setForm] = useState<Form>();
   const { get } = useFormsApiForms();
   const { submissionMethod, config } = useAppConfig();
   const useNewRenderer = !!formPath && (config?.newRenderForms ?? []).includes(formPath);
+  const useLegacyPageForNewRenderer = routePath === 'legitimasjon';
 
   const loadTranslations = useCallback(async () => {
     if (!formPath) {
@@ -88,6 +90,14 @@ const FormPageWrapper = () => {
     return <NotFoundPage />;
   }
 
+  if (useNewRenderer && !submissionMethod) {
+    return (
+      <LanguagesProvider translations={translations}>
+        <NewRendererSubmissionMethodSelection form={form} />
+      </LanguagesProvider>
+    );
+  }
+
   if (
     submissionMethod &&
     !navFormUtils.isSubmissionMethodAllowed(submissionMethod, formioFormsApiUtils.mapFormToNavForm(form))
@@ -97,7 +107,11 @@ const FormPageWrapper = () => {
 
   return (
     <LanguagesProvider translations={translations}>
-      {useNewRenderer ? <FillInForm form={form} /> : <FyllUtRouter form={formioFormsApiUtils.mapFormToNavForm(form)} />}
+      {useNewRenderer && !useLegacyPageForNewRenderer ? (
+        <FillInForm form={form} />
+      ) : (
+        <FyllUtRouter form={formioFormsApiUtils.mapFormToNavForm(form)} />
+      )}
     </LanguagesProvider>
   );
 };

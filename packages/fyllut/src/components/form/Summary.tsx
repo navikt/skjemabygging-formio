@@ -1,5 +1,5 @@
 import { useAppConfig, useLanguages } from '@navikt/skjemadigitalisering-shared-components';
-import { Panel } from '@navikt/skjemadigitalisering-shared-domain';
+import { Panel, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import {
   FormButtonRow,
   FormErrorSummary,
@@ -45,7 +45,7 @@ const Summary = ({ onBack }: Props) => {
       />
       <FormErrorSummary />
       <FormButtonRow
-        previousButton={<FormPrevButton label={translate('Forrige')} onClick={onBack} />}
+        previousButton={<FormPrevButton label={translate(TEXTS.grensesnitt.navigation.previous)} onClick={onBack} />}
         nextButton={
           <FormNextButton label={translate('Send inn')} onClick={handleSubmit} loading={status === 'submitting'} />
         }

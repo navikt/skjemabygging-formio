@@ -36,7 +36,7 @@ describe('New renderer path', () => {
 
     // Clicking a summary item focuses the field without navigating away from the form page
     cy.get('[data-cy="error-summary"]').find('a').first().click();
-    cy.location('pathname').should('eq', '/fyllut/newrender');
+    cy.location('pathname').should('eq', '/fyllut/newrender/pageOne');
     cy.focused().should('have.attr', 'id', 'input-firstName');
 
     // Fix the error and advance
@@ -48,6 +48,33 @@ describe('New renderer path', () => {
     cy.findByRole('group', { name: /Contact method/ }).should('exist');
 
     cy.findByRole('button', { name: 'Forrige steg' }).click();
+    cy.location('pathname').should('eq', '/fyllut/newrender/pageOne');
+    cy.findByRole('heading', { name: 'Page one' }).should('exist');
+  });
+
+  it('shows a native submission-method selection when sub is missing', () => {
+    cy.visit('/fyllut/newrender');
+
+    cy.findByRole('link', { name: 'Kan ikke logge inn', timeout: 20000 }).click();
+    cy.findByRole('link', { name: 'Send i posten' }).click();
+
+    cy.location('pathname').should('eq', '/fyllut/newrender');
+    cy.location('search').should('include', 'sub=paper');
+    cy.findByRole('heading', {
+      name: 'Vær oppmerksom på dette før du begynner å fylle ut skjemaet',
+      timeout: 20000,
+    }).should('exist');
+  });
+
+  it('supports direct panel slug routing in the new renderer', () => {
+    cy.visit('/fyllut/newrender/pageTwo?sub=paper');
+
+    cy.findByRole('heading', { name: 'Page two', timeout: 20000 }).should('exist');
+    cy.findByRole('combobox', { name: /Country/ }).should('exist');
+    cy.findByRole('group', { name: /Contact method/ }).should('exist');
+
+    cy.findByRole('button', { name: 'Forrige steg' }).click();
+    cy.location('pathname').should('eq', '/fyllut/newrender/pageOne');
     cy.findByRole('heading', { name: 'Page one' }).should('exist');
   });
 
@@ -81,13 +108,12 @@ describe('New renderer path', () => {
     cy.wait('@createSoknad');
 
     cy.findByRole('heading', { name: 'Page two' }).should('exist');
-    cy.findByRole('combobox', { name: /Country/ }).select('Norway');
+    cy.findByRole('combobox', { name: /Country/ }).click();
+    cy.findByRole('option', { name: 'Norway' }).click();
     cy.findByRole('radio', { name: /Email/ }).check({ force: true });
 
     cy.findByRole('button', { name: 'Neste steg' }).click();
-
-    // Summary step shows entered answers
-    cy.findByText('Kari').should('exist');
+    cy.findByRole('heading', { name: 'Oppsummering' }).should('exist');
 
     cy.findByRole('button', { name: 'Send inn' }).click();
     cy.wait('@submitSoknad')

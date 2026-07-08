@@ -4,7 +4,7 @@ description: >-
     Build and consume editable form input components in shared-frontend (the
     non-Formio render path). Use this when adding input components, working with
     the form contexts/validation/wizard, or allowlisting a fyllut form path for
-    the native render soft-launch.
+    the new render soft-launch.
 ---
 
 # shared-frontend form framework
@@ -41,7 +41,7 @@ There is no upfront form-support gate — the allowlist is the only switch.
 
 ## Allowlisting a fyllut form (soft-launch)
 
-Set env `FEATURE_NATIVE_RENDER_FORMS` (comma-separated form paths) in
-fyllut-backend. It is parsed in `config.ts` → served as `nativeRenderForms` on
-`/fyllut/api/config`. `FormPageWrapper` renders `NativeFillInForm` when the path
+Set env `FEATURE_NEW_RENDER_FORMS` (comma-separated form paths) in
+fyllut-backend. It is parsed in `config.ts` → served as `newRenderForms` on
+`/fyllut/api/config`. `FormPageWrapper` renders `FillInForm` when the path
 is listed, else the untouched Formio path. Purely additive.

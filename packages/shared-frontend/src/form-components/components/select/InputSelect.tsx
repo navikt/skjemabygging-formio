@@ -1,6 +1,5 @@
-import { Select } from '@navikt/ds-react';
+import { UNSAFE_Combobox as Combobox } from '@navikt/ds-react';
 import { ComponentValue, submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import { ChangeEvent } from 'react';
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { useSubmission } from '../../../context/submission/SubmissionContext';
 import { useValidation } from '../../../context/validation/ValidationContext';
@@ -34,15 +33,20 @@ const InputSelect = ({
   const { getError, clearFieldError } = useValidation();
   const { translate } = useLanguage();
   const current = submissionUtils.getSubmissionValue(submissionPath, submission) ?? '';
+  const options = values.map(({ value, label: optionLabel }) => ({
+    value,
+    label: translate(optionLabel),
+  }));
+  const selectedOption = options.find((option) => option.value === current);
 
-  const onChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    updateSubmission(submissionPath, event.target.value);
+  const onToggleSelected = (value: string, selected: boolean) => {
+    updateSubmission(submissionPath, selected ? value : '');
     clearFieldError(submissionPath);
   };
 
   return (
     <InputBox bottom={bottom}>
-      <Select
+      <Combobox
         id={inputId(submissionPath)}
         label={
           <TranslatedLabel required={required} readOnly={readOnly}>
@@ -50,18 +54,15 @@ const InputSelect = ({
           </TranslatedLabel>
         }
         description={<TranslatedDescription>{description}</TranslatedDescription>}
-        value={current}
-        onChange={onChange}
+        options={options}
+        selectedOptions={selectedOption ? [selectedOption] : []}
+        onToggleSelected={onToggleSelected}
         error={getError(submissionPath)}
         readOnly={readOnly}
-      >
-        <option value="">{selectText ? translate(selectText) : ''}</option>
-        {values.map(({ value, label: optionLabel }) => (
-          <option key={value} value={value}>
-            {translate(optionLabel)}
-          </option>
-        ))}
-      </Select>
+        isMultiSelect={false}
+        shouldAutocomplete
+        placeholder={selectText ? translate(selectText) : undefined}
+      />
     </InputBox>
   );
 };
