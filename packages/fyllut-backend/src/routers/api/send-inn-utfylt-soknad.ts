@@ -1,5 +1,4 @@
 import { renderApplicationPdf, requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
-import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import { config } from '../../config/config';
 import { logger } from '../../logger';
@@ -19,11 +18,7 @@ const sendInnUtfyltSoknad = {
       const envQualifier = req.getEnvQualifier();
       const requestBody = req.body;
       const { formPath, submission, language, innsendingsId, submissionMethod } = requestBody;
-      const pdfAccessToken = requestUtil.getHeader(req, 'PdfAccessToken', true);
-      if (!pdfAccessToken) {
-        logger.warn('Azure access token is missing. Will be unable to generate pdf');
-        throw new ResponseError('BAD_REQUEST', 'Could not find PdfAccessToken in request headers');
-      }
+      const pdfAccessToken = requestUtil.getPdfAccessToken(req);
 
       const sanitizedInnsendingsId = sanitizeInnsendingsId(innsendingsId);
       const errorMessage = validateInnsendingsId(
