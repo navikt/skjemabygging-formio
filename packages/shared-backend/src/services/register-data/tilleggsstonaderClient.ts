@@ -34,9 +34,10 @@ const buildQueryString = (query?: RegisterDataQuery) => {
 
 const getActivities = async (props: GetActivitiesProps) => {
   const { tilleggsstonaderBaseUrl, accessToken, query } = props;
-  logger.info('Get register data activities');
+  const targetUrl = `${tilleggsstonaderBaseUrl}${activitiesUrl}${buildQueryString(query)}`;
+  logger.info('Getting register data activities', { targetUrl });
 
-  return await http.get<UpstreamActivity>(`${tilleggsstonaderBaseUrl}${activitiesUrl}${buildQueryString(query)}`, {
+  return await http.get<UpstreamActivity>(targetUrl, {
     accessToken,
   });
 };

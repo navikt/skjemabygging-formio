@@ -11,11 +11,10 @@ interface GetPrefillDataProps {
 }
 
 const getPrefillData = async ({ accessToken, baseUrl, properties }: GetPrefillDataProps): Promise<PrefillData> => {
-  logger.info('Get prefill data');
-
   const url = properties
     ? `${baseUrl}${prefillDataPath}?properties=${encodeURIComponent(properties)}`
     : `${baseUrl}${prefillDataPath}`;
+  logger.info('Getting prefill data', { targetUrl: url });
 
   return await http.get<PrefillData>(url, {
     accessToken,

@@ -15,10 +15,15 @@ interface MergeFilesProps {
 }
 const mergeFiles = async (props: MergeFilesProps): Promise<any> => {
   const { baseUrl, body, accessToken } = props;
+  const targetUrl = `${baseUrl}${mergeFilesPath}`;
 
-  logger.info(`Merge files with title ${body.tittel} and language ${body.spraak}`);
+  logger.info('Merging files', {
+    languageCode: body.spraak,
+    fileCount: body.filer.length,
+    targetUrl,
+  });
 
-  const pdf = await http.post(`${baseUrl}${mergeFilesPath}`, body, { accessToken });
+  const pdf = await http.post(targetUrl, body, { accessToken });
 
   if (!pdf) {
     throw new ResponseError('NOT_FOUND', 'Could not find merged file');
