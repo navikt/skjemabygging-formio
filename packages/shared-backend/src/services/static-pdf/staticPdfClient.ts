@@ -11,9 +11,10 @@ interface GetAllProps {
 }
 const getAll = async (props: GetAllProps) => {
   const { baseUrl, formPath } = props;
-  logger.debug(`Get all static pdfs ${formPath}`);
+  const targetUrl = `${baseUrl}/${formsUrl}/${formPath}/static-pdfs`;
+  logger.debug('Getting static pdfs', { formPath, targetUrl });
 
-  return await http.get<StaticPdf[]>(`${baseUrl}/${formsUrl}/${formPath}/static-pdfs`);
+  return await http.get<StaticPdf[]>(targetUrl);
 };
 
 interface DownloadPdfProps {
@@ -23,9 +24,10 @@ interface DownloadPdfProps {
 }
 const downloadPdf = async (props: DownloadPdfProps) => {
   const { baseUrl, formPath, languageCode } = props;
-  logger.info(`Download new static pdf ${formPath} for ${languageCode}`);
+  const targetUrl = `${baseUrl}/${formsUrl}/${formPath}/static-pdfs/${languageCode}`;
+  logger.info('Downloading static pdf', { formPath, languageCode, targetUrl });
 
-  const pdf = await http.get<string>(`${baseUrl}/${formsUrl}/${formPath}/static-pdfs/${languageCode}`);
+  const pdf = await http.get<string>(targetUrl);
 
   if (!pdf) {
     throw new ResponseError('NOT_FOUND', 'PDF not found');
@@ -43,9 +45,10 @@ interface UploadPdfProps {
 }
 const uploadPdf = async (props: UploadPdfProps) => {
   const { baseUrl, formPath, languageCode, accessToken, body } = props;
-  logger.info(`Upload new static pdf ${formPath} for ${languageCode}`);
+  const targetUrl = `${baseUrl}/${formsUrl}/${formPath}/static-pdfs/${languageCode}`;
+  logger.info('Uploading static pdf', { formPath, languageCode, targetUrl });
 
-  return await http.post<StaticPdf>(`${baseUrl}/${formsUrl}/${formPath}/static-pdfs/${languageCode}`, body, {
+  return await http.post<StaticPdf>(targetUrl, body, {
     accessToken,
     contentType: undefined,
   });
@@ -59,9 +62,10 @@ interface DeletePdfProps {
 }
 const deletePdf = async (props: DeletePdfProps) => {
   const { baseUrl, formPath, languageCode, accessToken } = props;
-  logger.info(`Delete static pdf ${formPath} for ${languageCode}`);
+  const targetUrl = `${baseUrl}/${formsUrl}/${formPath}/static-pdfs/${languageCode}`;
+  logger.info('Deleting static pdf', { formPath, languageCode, targetUrl });
 
-  await http.delete(`${baseUrl}/${formsUrl}/${formPath}/static-pdfs/${languageCode}`, undefined, { accessToken });
+  await http.delete(targetUrl, undefined, { accessToken });
 };
 
 const staticPdfClient = {

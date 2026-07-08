@@ -16,11 +16,10 @@ interface GetFormTranslationsProps {
 }
 const getFormTranslations = async (props: GetFormTranslationsProps) => {
   const { baseUrl, formPath, languageCodes } = props;
-  logger.info(`Get form translations for ${formPath}`);
+  const targetUrl = `${baseUrl}/${formsUrl}/${formPath}/translations${buildLanguageCodesParam(languageCodes)}`;
+  logger.info('Getting form translations', { formPath, languageCodes, targetUrl });
 
-  return await http.get<FormsApiTranslation[]>(
-    `${baseUrl}/${formsUrl}/${formPath}/translations${buildLanguageCodesParam(languageCodes)}`,
-  );
+  return await http.get<FormsApiTranslation[]>(targetUrl);
 };
 
 interface GetGlobalTranslationsProps {
@@ -29,11 +28,10 @@ interface GetGlobalTranslationsProps {
 }
 const getGlobalTranslations = async (props: GetGlobalTranslationsProps) => {
   const { baseUrl, languageCodes } = props;
-  logger.info('Get global translations');
+  const targetUrl = `${baseUrl}/${globalTranslationUrl}${buildLanguageCodesParam(languageCodes)}`;
+  logger.info('Getting global translations', { languageCodes, targetUrl });
 
-  return await http.get<FormsApiTranslation[]>(
-    `${baseUrl}/${globalTranslationUrl}${buildLanguageCodesParam(languageCodes)}`,
-  );
+  return await http.get<FormsApiTranslation[]>(targetUrl);
 };
 
 const translationClient = {

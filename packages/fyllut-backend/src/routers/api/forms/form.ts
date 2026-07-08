@@ -17,9 +17,9 @@ type TranslateFunction = (text: string, textReplacements?: I18nTranslationReplac
 const form = {
   get: async (req: Request, res: Response) => {
     const formPath = requestUtil.getStringParam(req, 'formPath')!;
-    const type = req.query.type as string | undefined;
-    const lang = req.query.lang as string | undefined;
-    const select = req.query.select as string | undefined;
+    const type = requestUtil.getStringQuery(req, 'type', true);
+    const lang = requestUtil.getStringQuery(req, 'lang', true);
+    const select = requestUtil.getStringQuery(req, 'select', true);
     const form = select
       ? await formService.getForm({ formPath, select: select.split(',') as Array<keyof Form> })
       : await formService.getForm({ formPath });

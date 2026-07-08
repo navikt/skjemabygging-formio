@@ -1,12 +1,16 @@
+import { renderApplicationPdf, requestUtil, translationUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import {
   FormsApiTranslationMap,
-  ReceiptSummary,
   Submission,
   SubmissionMethod,
   TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { applicationService, formService, translationService } from '../../../../services';
+import { config } from '../../../../config/config';
+import { applicationPdfService, applicationService, formService, translationService } from '../../../../services';
+import { mapToReceiptSummary } from '../../../../services/nologin/receiptMapper';
 import { LogMetadata } from '../../../../types/log';
+import { requireBase64Decode } from '../../../../utils/base64';
+import { assembleSubmitApplicationRequest } from '../../helpers/applicationUtils';
 
 export const generatePdfAndSubmit = async (
   applicationType: 'nologin' | 'digital',
@@ -29,26 +33,46 @@ export const generatePdfAndSubmit = async (
     formPath,
     languageCodes: [language],
   });
-  const pdfAccessToken = req.headers.PdfAccessToken as string;
+  const pdfAccessToken = requestUtil.getPdfAccessToken(req);
   const logMeta: LogMetadata = {
     innsendingsId,
     skjemanummer: form?.properties?.skjemanummer,
     language,
     fyllutRequestPath: req.path,
   };
+  const pdfFormData = renderApplicationPdf({
+    form,
+    submission,
+    language,
+    translations,
+    submissionMethod,
+    appConfig: { config: { gitVersion: config.gitVersion } },
+  });
+  const applicationPdfBase64 = await applicationPdfService.createPdf({
+    accessToken: pdfAccessToken,
+    pdfFormData,
+  });
+  const applicationPdf = requireBase64Decode(applicationPdfBase64, 'Failed to decode generated application PDF');
 
-  const { pdf, receipt }: { pdf: Uint8Array; receipt: ReceiptSummary } = await applicationService.submit(
-    pdfAccessToken,
-    accessToken,
+  const translate = translationUtil.createTranslate(translations, language);
+  const submitRequest = assembleSubmitApplicationRequest(
     innsendingsId,
     form,
     submission,
-    translations,
     language,
-    submissionMethod,
-    logMeta,
-    applicationType,
+    Array.from(applicationPdf),
+    translate,
   );
-  const pdfBase64 = Buffer.from(pdf).toString('base64');
-  return { pdfBase64, receipt };
+  const submitResponse = await applicationService.submitApplication({
+    accessToken,
+    body: submitRequest,
+    innsendingsId,
+    logMeta,
+    type: applicationType,
+  });
+
+  return {
+    pdfBase64: Buffer.from(applicationPdf).toString('base64'),
+    receipt: mapToReceiptSummary(submitResponse),
+  };
 };

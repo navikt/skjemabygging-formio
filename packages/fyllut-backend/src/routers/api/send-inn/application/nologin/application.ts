@@ -1,6 +1,5 @@
-import { ResponseError, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import { NextFunction, Request, Response } from 'express';
-import { HttpError } from '../../../../../utils/errors/HttpError';
 import { generatePdfAndSubmit } from '../common';
 import { validateNologinContext } from './context';
 
@@ -8,21 +7,11 @@ const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const noLoginContext = validateNologinContext(req.getNologinContext());
     const innsendingsId = noLoginContext.innsendingsId;
-    const accessToken = req.headers.AzureAccessToken as string;
+    const accessToken = requestUtil.getAzureAccessToken(req);
 
     const receiptAndPdf = await generatePdfAndSubmit('nologin', req, innsendingsId, accessToken);
     res.json(receiptAndPdf);
   } catch (error) {
-    if (error instanceof HttpError && error.http_response_body.errorCode === 'temporarilyUnavailable') {
-      return next(
-        new ResponseError(
-          'SERVICE_UNAVAILABLE',
-          'Nologin submit temporarily unavailable',
-          error.correlation_id,
-          TEXTS.statiske.nologin.temporarilyUnavailable,
-        ),
-      );
-    }
     next(error);
   }
 };
