@@ -7,11 +7,11 @@ import { validateNologinContext } from './context';
 
 const post = async (req: Request, res: Response, next: NextFunction) => {
   const attachmentId = requestUtil.getStringParam(req, 'attachmentId')!;
+  const file = requestUtil.getFile(req);
   try {
     const noLoginContext = validateNologinContext(req.getNologinContext());
     const innsendingsId = noLoginContext.innsendingsId;
     const accessToken = requestUtil.getAzureAccessToken(req);
-    const file = requestUtil.getFile(req);
     const logMeta = {
       attachmentId,
       innsendingsId,
@@ -39,19 +39,18 @@ const post = async (req: Request, res: Response, next: NextFunction) => {
     res.status(201).json(result);
   } catch (error) {
     const innsendingsId = req.getNologinContext()?.innsendingsId;
-    const file = req.file;
     const logMeta = {
       attachmentId,
       innsendingsId,
       route: req.originalUrl,
-      hasTempFile: Boolean(file?.path),
-      fileSize: file?.size,
-      fileType: file?.mimetype,
+      hasTempFile: Boolean(file.path),
+      fileSize: file.size,
+      fileType: file.mimetype,
     };
     logger.warn(`${innsendingsId}: Upload request failed for nologin application`, { ...logMeta, error });
     next(error);
   } finally {
-    await removeUploadedTempFile(req.file);
+    await removeUploadedTempFile(file);
   }
 };
 

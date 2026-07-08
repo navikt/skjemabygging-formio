@@ -10,9 +10,9 @@ import { removeUploadedTempFile } from '../../../helpers/upload';
 const post = async (req: Request, res: Response, next: NextFunction) => {
   const innsendingsId = requestUtil.getStringParam(req, 'innsendingsId')!;
   const attachmentId = requestUtil.getStringParam(req, 'attachmentId')!;
+  const file = requestUtil.getFile(req);
   try {
     const accessToken = req.getTokenxAccessToken();
-    const file = requestUtil.getFile(req);
     const logMeta = {
       innsendingsId,
       attachmentId,
@@ -39,19 +39,18 @@ const post = async (req: Request, res: Response, next: NextFunction) => {
     });
     res.status(201).json(result);
   } catch (error) {
-    const file = req.file;
     const logMeta = {
       innsendingsId,
       attachmentId,
       route: req.originalUrl,
-      hasTempFile: Boolean(file?.path),
-      fileSize: file?.size,
-      fileType: file?.mimetype,
+      hasTempFile: Boolean(file.path),
+      fileSize: file.size,
+      fileType: file.mimetype,
     };
     logger.warn(`${innsendingsId}: Upload request failed for digital application`, { ...logMeta, error });
     next(error);
   } finally {
-    await removeUploadedTempFile(req.file);
+    await removeUploadedTempFile(file);
   }
 };
 
