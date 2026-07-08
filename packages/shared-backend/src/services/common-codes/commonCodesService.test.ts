@@ -78,9 +78,9 @@ describe('createCommonCodesService', () => {
     const fetchSpy = mockFetchResponse(
       JSON.stringify({
         betydninger: {
-          USD: [{ beskrivelser: { nb: { term: 'Amerikansk dollar' } } }],
-          NOK: [{ beskrivelser: { nb: { term: 'Norsk krone' } } }],
-          SEK: [{ beskrivelser: { nb: { term: 'Svensk krone' } } }],
+          USD: [{ beskrivelser: { nb: { term: 'Dollar' } } }],
+          NOK: [{ beskrivelser: { nb: { term: 'Norske kroner' } } }],
+          SEK: [{ beskrivelser: { nb: { term: 'Svenske kroner' } } }],
           EUR: [{ beskrivelser: { nb: { term: 'Euro' } } }],
         },
       }),
@@ -91,9 +91,9 @@ describe('createCommonCodesService', () => {
 
     await expect(service.getCurrencies()).resolves.toEqual([
       { label: 'Euro (EUR)', value: 'EUR' },
-      { label: 'Norsk krone (NOK)', value: 'NOK' },
-      { label: 'Svensk krone (SEK)', value: 'SEK' },
-      { label: 'Amerikansk dollar (USD)', value: 'USD' },
+      { label: 'Norske kroner (NOK)', value: 'NOK' },
+      { label: 'Svenske kroner (SEK)', value: 'SEK' },
+      { label: 'Dollar (USD)', value: 'USD' },
     ]);
     expectGetRequest(fetchSpy, 'ValutaBetaling', 'nb');
   });
