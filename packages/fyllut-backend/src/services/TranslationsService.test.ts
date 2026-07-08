@@ -1,6 +1,21 @@
+import { translationClient } from '@navikt/skjemadigitalisering-shared-backend';
+import { FormsApiTranslation } from '@navikt/skjemadigitalisering-shared-domain';
 import path from 'path';
 import { FyllutBackendConfig } from '../config/types';
 import TranslationsService from './TranslationsService';
+
+vi.mock('@navikt/skjemadigitalisering-shared-backend', async () => {
+  const actual = await vi.importActual<typeof import('@navikt/skjemadigitalisering-shared-backend')>(
+    '@navikt/skjemadigitalisering-shared-backend',
+  );
+
+  return {
+    ...actual,
+    translationClient: {
+      getFormTranslations: vi.fn(),
+    },
+  };
+});
 
 const testConfig: FyllutBackendConfig = {
   translationDir: path.join(__dirname + '/testdata/translations'),
@@ -55,6 +70,30 @@ describe('TranslationService', () => {
       await expect(translationsService.getTranslationsForLanguage('&$%', 'nn')).rejects.toThrow(
         'Invalid formPath: &$%',
       );
+    });
+
+    describe('useFormsApiStaging branch', () => {
+      const stagingConfig = {
+        ...testConfig,
+        useFormsApiStaging: true,
+        formsApiUrl: 'http://forms-api',
+      } as FyllutBackendConfig;
+
+      it('maps FormsApiTranslation[] to I18nTranslations and skips globalTranslationId rows', async () => {
+        vi.mocked(translationClient.getFormTranslations).mockResolvedValueOnce([
+          { key: 'hello', nb: 'hei', nn: 'hei', en: 'hello' },
+          { key: 'global-only', nb: 'globalt', globalTranslationId: 42 } as FormsApiTranslation,
+        ]);
+
+        const service = new TranslationsService(stagingConfig);
+        const result = await service.loadTranslation('nav123456');
+
+        expect(result).toEqual({
+          'nb-NO': { hello: 'hei' },
+          'nn-NO': { hello: 'hei' },
+          en: { hello: 'hello' },
+        });
+      });
     });
   });
 });

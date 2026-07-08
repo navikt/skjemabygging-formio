@@ -155,7 +155,7 @@ import {
 } from '../data/forms-api/summary-page/summaryPageAttachmentDownloadForm';
 
 const allForms = [
-  { form: formCypress101, translations: translationsCypress101 },
+  { form: formCypress101, translations: [translationsCypress101, introPageTranslations] },
   { form: introPage, translations: introPageTranslations },
   { form: formCypressaxe, translations: undefined },
   { form: formPengerOgKonto, translations: undefined },
@@ -355,7 +355,7 @@ export default [
               if (testdata?.translations) {
                 res.status(200);
                 res.contentType('application/json; charset=UTF-8');
-                res.send([testdata.translations]);
+                res.send(Array.isArray(testdata.translations) ? testdata.translations : [testdata.translations]);
               } else {
                 res.status(404);
                 res.send();

@@ -47,6 +47,7 @@ export { createRegisterDataService } from './register-data/registerDataService';
 export type { RegisterDataService } from './register-data/registerDataService';
 export { createStaticPdfService } from './static-pdf/staticPdfService';
 export type { StaticPdfService } from './static-pdf/staticPdfService';
+export { default as translationClient } from './translation/translationClient';
 export { createTranslationService } from './translation/translationService';
 export type { TranslationService } from './translation/translationService';
 
