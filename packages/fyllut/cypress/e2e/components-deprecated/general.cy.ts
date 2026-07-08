@@ -33,7 +33,7 @@ describe('React components', () => {
 
         cy.findAllByText('Du må fylle ut: Velg valuta').should('have.length', 2);
         cy.findAllByText('Du må fylle ut: Velg valuta').first().click();
-        cy.findByRole('combobox', { name: 'Velg valuta' }).type('{upArrow}{enter}');
+        cy.findByRole('combobox', { name: 'Velg valuta' }).type('Australsk{enter}');
         cy.clickNextStep();
 
         cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
@@ -60,7 +60,7 @@ describe('React components', () => {
             cy.get('dt').eq(1).should('contain.text', 'I hvilket land bor du?');
             cy.get('dd').eq(1).should('contain.text', 'Norge');
             cy.get('dt').eq(2).should('contain.text', 'Velg valuta');
-            cy.get('dd').eq(2).should('contain.text', 'Australske dollar (AUD)');
+            cy.get('dd').eq(2).should('contain.text', 'Australsk dollar (AUD)');
             cy.get('dt').eq(3).should('contain.text', 'Velg instrument');
             cy.get('dd').eq(3).should('contain.text', 'Gitar');
             cy.get('dt').eq(4).should('contain.text', 'Gyldig fra dato');
@@ -80,7 +80,7 @@ describe('React components', () => {
         cy.findByRole('textbox', { name: 'Fornavn' }).should('have.value', 'Storm');
         cy.findByRole('textbox', { name: 'Fornavn' }).type('zy');
         cy.findByRole('combobox', { name: 'Velg valuta' }).click();
-        cy.findByRole('combobox', { name: 'Velg valuta' }).should('have.focus').type('Norske{enter}');
+        cy.findByRole('combobox', { name: 'Velg valuta' }).should('have.focus').type('Norsk{enter}');
         cy.findByRole('combobox', { name: 'Velg instrument (valgfritt)' }).type('{backspace}');
         cy.findByRole('textbox', { name: 'Gyldig fra dato' })
           .should('exist')
@@ -99,7 +99,7 @@ describe('React components', () => {
             cy.get('dt').eq(1).should('contain.text', 'I hvilket land bor du?');
             cy.get('dd').eq(1).should('contain.text', 'Norge');
             cy.get('dt').eq(2).should('contain.text', 'Velg valuta');
-            cy.get('dd').eq(2).should('contain.text', 'Norske kroner (NOK)');
+            cy.get('dd').eq(2).should('contain.text', 'Norsk krone (NOK)');
             cy.get('dt').eq(3).should('contain.text', 'Gyldig fra dato');
             cy.get('dd').eq(3).should('contain.text', '02.01.2023');
           });
@@ -124,7 +124,7 @@ describe('React components', () => {
         cy.findByRole('combobox', { name: 'I hvilket land bor du?' })
           .should('be.visible')
           .type('Norge{downArrow}{enter}');
-        cy.findByRole('combobox', { name: 'Velg valuta' }).should('be.visible').type('{upArrow}{enter}');
+        cy.findByRole('combobox', { name: 'Velg valuta' }).should('be.visible').type('Australsk{enter}');
         cy.findByRole('combobox', { name: 'Velg instrument (valgfritt)' }).type('Gitar{enter}');
         cy.findByRole('textbox', { name: 'Gyldig fra dato' }).type('01.01.2023{esc}');
         cy.clickSaveAndContinue();
@@ -141,7 +141,7 @@ describe('React components', () => {
             cy.get('dt').eq(1).should('contain.text', 'I hvilket land bor du?');
             cy.get('dd').eq(1).should('contain.text', 'Norge');
             cy.get('dt').eq(2).should('contain.text', 'Velg valuta');
-            cy.get('dd').eq(2).should('contain.text', 'Australske dollar (AUD)');
+            cy.get('dd').eq(2).should('contain.text', 'Australsk dollar (AUD)');
             cy.get('dt').eq(3).should('contain.text', 'Velg instrument');
             cy.get('dd').eq(3).should('contain.text', 'Gitar');
             cy.get('dt').eq(4).should('contain.text', 'Gyldig fra dato');
@@ -160,7 +160,7 @@ describe('React components', () => {
         cy.findByRole('textbox', { name: 'Fornavn' }).should('have.value', 'Storm');
         // TODO: Not the nicest way to check values from react-select. But not worth the time to debug since it will be replaced by Aksel select.
         cy.get('.formio-component-landvelger').contains('Norge');
-        cy.get('.formio-component-valutavelger').contains('Australske dollar (AUD)');
+        cy.get('.formio-component-valutavelger').contains('Australsk dollar (AUD)');
         cy.get('.formio-component-velgInstrument').contains('Gitar');
         cy.findByRole('textbox', { name: 'Gyldig fra dato' }).should('have.value', '01.01.2023');
         cy.findByLabelText('Velg frukt')
