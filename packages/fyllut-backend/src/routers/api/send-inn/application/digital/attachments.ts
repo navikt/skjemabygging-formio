@@ -58,7 +58,7 @@ const deleteFile = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const innsendingsId = requestUtil.getStringParam(req, 'innsendingsId')!;
     const attachmentId = requestUtil.getStringParam(req, 'attachmentId')!;
-    const fileId = requestUtil.getStringParam(req, 'fileId', true);
+    const fileId = Array.isArray(req.params.fileId) ? req.params.fileId.join('/') : req.params.fileId;
     const accessToken = req.getTokenxAccessToken();
     const logMeta = {
       attachmentId,
