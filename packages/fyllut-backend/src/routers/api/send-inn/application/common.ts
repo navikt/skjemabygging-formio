@@ -1,4 +1,4 @@
-import { renderApplicationPdf, translationUtil } from '@navikt/skjemadigitalisering-shared-backend';
+import { renderApplicationPdf, requestUtil, translationUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import {
   FormsApiTranslationMap,
   Submission,
@@ -33,7 +33,7 @@ export const generatePdfAndSubmit = async (
     formPath,
     languageCodes: [language],
   });
-  const pdfAccessToken = req.headers.PdfAccessToken as string;
+  const pdfAccessToken = requestUtil.getPdfAccessToken(req);
   const logMeta: LogMetadata = {
     innsendingsId,
     skjemanummer: form?.properties?.skjemanummer,

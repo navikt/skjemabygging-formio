@@ -56,7 +56,7 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
     const sendInnNockScope = nock(sendInnConfig.host)
       .put(`${submittedDraftPath}/${innsendingsId}`)
       .reply(302, 'FOUND', { Location: SEND_LOCATION });
-    const req = mockRequestWithPidAndTokenX({ headers: { AzureAccessToken: 'azure-access-token' }, body: defaultBody });
+    const req = mockRequestWithPidAndTokenX({ headers: { PdfAccessToken: 'pdf-access-token' }, body: defaultBody });
     const res = mockResponse();
     const next = vi.fn();
     await sendInnUtfyltSoknad.put(req, res, next);
@@ -82,7 +82,7 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
     const sendInnNockScope = nock(sendInnConfig.host)
       .put(`${submittedDraftPath}/${innsendingsId}`)
       .reply(500, 'error body');
-    const req = mockRequestWithPidAndTokenX({ body: defaultBody });
+    const req = mockRequestWithPidAndTokenX({ headers: { PdfAccessToken: 'pdf-access-token' }, body: defaultBody });
     const res = mockResponse();
     const next = vi.fn();
     await sendInnUtfyltSoknad.put(req, res, next);
@@ -109,7 +109,7 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
     const sendInnNockScope = nock(sendInnConfig.host)
       .put(`${submittedDraftPath}/${innsendingsId}`)
       .reply(404, 'error body');
-    const req = mockRequestWithPidAndTokenX({ body: defaultBody });
+    const req = mockRequestWithPidAndTokenX({ headers: { PdfAccessToken: 'pdf-access-token' }, body: defaultBody });
     const res = mockResponse();
     const next = vi.fn();
     await sendInnUtfyltSoknad.put(req, res, next);
@@ -132,7 +132,7 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
       .post('/api/pdf/v3/opprett-pdf')
       .reply(500, 'error body');
     const { formScope, globalTranslationsScope, formTranslationsScope } = mockFormServiceAndTranslations();
-    const req = mockRequestWithPidAndTokenX({ body: defaultBody });
+    const req = mockRequestWithPidAndTokenX({ headers: { PdfAccessToken: 'pdf-access-token' }, body: defaultBody });
     const res = mockResponse();
     const next = vi.fn();
     await sendInnUtfyltSoknad.put(req, res, next);
@@ -191,6 +191,7 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
   it('calls next with error if pdfFormData generation fails', async () => {
     nock(formsApiUrl).get('/v1/forms/default-form').query(true).reply(404, { message: 'Not found' });
     const req = mockRequestWithPidAndTokenX({
+      headers: { PdfAccessToken: 'pdf-access-token' },
       body: defaultBody,
     });
     const res = mockResponse();

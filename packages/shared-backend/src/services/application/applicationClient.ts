@@ -34,12 +34,12 @@ interface DraftMutationProps extends ApplicationBaseProps {
   body: object;
 }
 
-interface CreateSoknadProps extends DraftMutationProps {
+interface CreateApplicationProps extends DraftMutationProps {
   force?: boolean;
   envQualifier?: string;
 }
 
-interface SubmitUtfyltSoknadProps extends DraftMutationProps {
+interface SubmitCompletedApplicationProps extends DraftMutationProps {
   envQualifier?: string;
 }
 
@@ -68,7 +68,7 @@ interface SubmitApplicationProps extends ApplicationBaseProps {
   type: ApplicationType;
 }
 
-const getSoknad = async <T>(props: ApplicationBaseProps): Promise<T> => {
+const getApplication = async <T>(props: ApplicationBaseProps): Promise<T> => {
   const { baseUrl, accessToken, innsendingsId, correlationId } = props;
   logger.info(`Getting soknad ${innsendingsId}`);
 
@@ -83,7 +83,7 @@ const getSoknad = async <T>(props: ApplicationBaseProps): Promise<T> => {
   }
 };
 
-const createSoknad = async <T>(props: CreateSoknadProps): Promise<DraftResponse<T>> => {
+const createApplication = async <T>(props: CreateApplicationProps): Promise<DraftResponse<T>> => {
   const { baseUrl, accessToken, body, force, envQualifier, correlationId, innsendingsId } = props;
   const forceParam = force ? '?force=true' : '';
   logger.info('Creating soknad');
@@ -100,7 +100,7 @@ const createSoknad = async <T>(props: CreateSoknadProps): Promise<DraftResponse<
   };
 };
 
-const updateSoknad = async <T>(props: DraftMutationProps): Promise<T> => {
+const updateApplication = async <T>(props: DraftMutationProps): Promise<T> => {
   const { baseUrl, accessToken, body, innsendingsId, correlationId } = props;
   logger.info(`Updating soknad ${innsendingsId}`);
 
@@ -114,7 +114,7 @@ const updateSoknad = async <T>(props: DraftMutationProps): Promise<T> => {
   }
 };
 
-const deleteSoknad = async <T>(props: ApplicationBaseProps): Promise<T> => {
+const deleteApplication = async <T>(props: ApplicationBaseProps): Promise<T> => {
   const { baseUrl, accessToken, innsendingsId, correlationId } = props;
   logger.info(`Deleting soknad ${innsendingsId}`);
 
@@ -131,7 +131,7 @@ const deleteSoknad = async <T>(props: ApplicationBaseProps): Promise<T> => {
 /**
  * @deprecated Use submitApplication instead. This function is kept for backward compatibility with older versions of the API.
  */
-const submitUtfyltSoknad = async (props: SubmitUtfyltSoknadProps) => {
+const submitCompletedApplication = async (props: SubmitCompletedApplicationProps) => {
   const { baseUrl, accessToken, body, innsendingsId, envQualifier, correlationId } = props;
   logger.info(`Submitting utfylt soknad ${innsendingsId}`);
 
@@ -345,14 +345,14 @@ const submitApplication = async (props: SubmitApplicationProps): Promise<SubmitA
 };
 
 const applicationClient = {
-  createSoknad,
+  createApplication,
+  deleteApplication,
   deleteAttachment,
-  deleteSoknad,
   downloadAttachment,
-  getSoknad,
+  getApplication,
+  submitCompletedApplication,
   submitApplication,
-  submitUtfyltSoknad,
-  updateSoknad,
+  updateApplication,
   uploadAttachment,
 };
 

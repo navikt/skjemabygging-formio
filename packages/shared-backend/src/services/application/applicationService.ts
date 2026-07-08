@@ -12,11 +12,11 @@ import type {
 
 type ApplicationClient = Pick<
   typeof applicationClient,
-  | 'getSoknad'
-  | 'createSoknad'
-  | 'updateSoknad'
-  | 'deleteSoknad'
-  | 'submitUtfyltSoknad'
+  | 'getApplication'
+  | 'createApplication'
+  | 'updateApplication'
+  | 'deleteApplication'
+  | 'submitCompletedApplication'
   | 'uploadAttachment'
   | 'deleteAttachment'
   | 'downloadAttachment'
@@ -36,17 +36,17 @@ interface ApplicationBaseProps {
   logMeta?: LogMetadata;
 }
 
-interface CreateSoknadProps extends ApplicationBaseProps {
+interface CreateApplicationProps extends ApplicationBaseProps {
   body: object;
   force?: boolean;
   envQualifier?: string;
 }
 
-interface UpdateSoknadProps extends ApplicationBaseProps {
+interface UpdateApplicationProps extends ApplicationBaseProps {
   body: object;
 }
 
-interface SubmitUtfyltSoknadProps extends UpdateSoknadProps {
+interface SubmitCompletedApplicationProps extends UpdateApplicationProps {
   envQualifier?: string;
 }
 
@@ -76,11 +76,13 @@ interface SubmitApplicationProps extends ApplicationBaseProps {
 }
 
 type ApplicationService = {
-  getSoknad: <T>(props: ApplicationBaseProps) => Promise<T>;
-  createSoknad: <T>(props: CreateSoknadProps) => Promise<DraftResponse<T>>;
-  updateSoknad: <T>(props: UpdateSoknadProps) => Promise<T>;
-  deleteSoknad: <T>(props: ApplicationBaseProps) => Promise<T>;
-  submitUtfyltSoknad: (props: SubmitUtfyltSoknadProps) => Promise<{ status: number; location?: string }>;
+  getApplication: <T>(props: ApplicationBaseProps) => Promise<T>;
+  createApplication: <T>(props: CreateApplicationProps) => Promise<DraftResponse<T>>;
+  updateApplication: <T>(props: UpdateApplicationProps) => Promise<T>;
+  deleteApplication: <T>(props: ApplicationBaseProps) => Promise<T>;
+  submitCompletedApplication: (
+    props: SubmitCompletedApplicationProps,
+  ) => Promise<{ status: number; location?: string }>;
   uploadAttachment: (props: UploadAttachmentProps) => Promise<UploadedFile>;
   deleteAttachment: (props: DeleteAttachmentProps) => Promise<void>;
   downloadAttachment: (props: DownloadAttachmentProps) => Promise<DownloadedAttachment>;
@@ -92,16 +94,20 @@ const createApplicationService = ({
   metrics,
   client = applicationClient,
 }: CreateApplicationServiceProps): ApplicationService => {
-  const getSoknad = async <T>(props: ApplicationBaseProps) => await client.getSoknad<T>({ ...props, baseUrl });
+  const getApplication = async <T>(props: ApplicationBaseProps) =>
+    await client.getApplication<T>({ ...props, baseUrl });
 
-  const createSoknad = async <T>(props: CreateSoknadProps) => await client.createSoknad<T>({ ...props, baseUrl });
+  const createApplication = async <T>(props: CreateApplicationProps) =>
+    await client.createApplication<T>({ ...props, baseUrl });
 
-  const updateSoknad = async <T>(props: UpdateSoknadProps) => await client.updateSoknad<T>({ ...props, baseUrl });
+  const updateApplication = async <T>(props: UpdateApplicationProps) =>
+    await client.updateApplication<T>({ ...props, baseUrl });
 
-  const deleteSoknad = async <T>(props: ApplicationBaseProps) => await client.deleteSoknad<T>({ ...props, baseUrl });
+  const deleteApplication = async <T>(props: ApplicationBaseProps) =>
+    await client.deleteApplication<T>({ ...props, baseUrl });
 
-  const submitUtfyltSoknad = async (props: SubmitUtfyltSoknadProps) =>
-    await client.submitUtfyltSoknad({ ...props, baseUrl });
+  const submitCompletedApplication = async (props: SubmitCompletedApplicationProps) =>
+    await client.submitCompletedApplication({ ...props, baseUrl });
 
   const uploadAttachment = async (props: UploadAttachmentProps) => {
     const stopTimer = metrics?.uploadDuration.startTimer({ type: props.type });
@@ -127,14 +133,14 @@ const createApplicationService = ({
     await client.submitApplication({ ...props, baseUrl });
 
   return {
-    createSoknad,
+    createApplication,
+    deleteApplication,
     deleteAttachment,
-    deleteSoknad,
     downloadAttachment,
-    getSoknad,
+    getApplication,
+    submitCompletedApplication,
     submitApplication,
-    submitUtfyltSoknad,
-    updateSoknad,
+    updateApplication,
     uploadAttachment,
   };
 };

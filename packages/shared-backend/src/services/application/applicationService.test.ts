@@ -54,12 +54,12 @@ describe('createApplicationService', () => {
     const service = createApplicationService({ baseUrl });
 
     await expect(
-      service.getSoknad<{ innsendingsId: string }>({ accessToken, correlationId, innsendingsId }),
+      service.getApplication<{ innsendingsId: string }>({ accessToken, correlationId, innsendingsId }),
     ).resolves.toEqual({
       innsendingsId,
     });
     await expect(
-      service.createSoknad<{ innsendingsId: string }>({
+      service.createApplication<{ innsendingsId: string }>({
         accessToken,
         correlationId,
         envQualifier: 'q2',
@@ -71,7 +71,7 @@ describe('createApplicationService', () => {
       body: { innsendingsId },
     });
     await expect(
-      service.updateSoknad<{ updated: boolean }>({
+      service.updateApplication<{ updated: boolean }>({
         accessToken,
         correlationId,
         innsendingsId,
@@ -79,7 +79,7 @@ describe('createApplicationService', () => {
       }),
     ).resolves.toEqual({ updated: true });
     await expect(
-      service.deleteSoknad<{ status: string }>({ accessToken, correlationId, innsendingsId }),
+      service.deleteApplication<{ status: string }>({ accessToken, correlationId, innsendingsId }),
     ).resolves.toEqual({
       status: 'OK',
     });
@@ -146,7 +146,7 @@ describe('createApplicationService', () => {
     const service = createApplicationService({ baseUrl });
 
     await expect(
-      service.submitUtfyltSoknad({
+      service.submitCompletedApplication({
         accessToken,
         correlationId,
         envQualifier: 'q2',
@@ -497,7 +497,7 @@ describe('createApplicationService', () => {
     const service = createApplicationService({ baseUrl });
 
     await expect(
-      service.getSoknad({
+      service.getApplication({
         accessToken,
         innsendingsId,
       }),

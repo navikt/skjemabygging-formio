@@ -29,7 +29,7 @@ const sendInnSoknad = {
         return res.sendStatus(404);
       }
 
-      const json = await applicationService.getSoknad<SendInnSoknadBody>({
+      const json = await applicationService.getApplication<SendInnSoknadBody>({
         accessToken: tokenxAccessToken,
         innsendingsId: sanitizedInnsendingsId,
       });
@@ -54,31 +54,31 @@ const sendInnSoknad = {
       const idportenPid = getIdportenPid(req);
       const tokenxAccessToken = getTokenxAccessToken(req);
       const fyllutUrl = getFyllutUrl(req);
-      const forceMellomlagring = req.query.forceMellomlagring as string | undefined;
-
-      const { formPath } = req.body;
+      const forceMellomlagring = requestUtil.getStringQuery(req, 'forceMellomlagring', true);
+      const requestBody = req.body;
+      const formPath = requestUtil.getBodyValue<string>(req, 'formPath');
       const form = await formService.getForm({
         formPath,
         select: ['skjemanummer', 'title', 'path', 'properties', 'components'],
       });
       const translations = await translationService.getTranslations({ formPath });
 
-      const body = assembleSendInnSoknadBody({ ...req.body, form, translations }, idportenPid, fyllutUrl, null);
+      const body = assembleSendInnSoknadBody({ ...requestBody, form, translations }, idportenPid, fyllutUrl, null);
       const envQualifier = req.getEnvQualifier();
-      const response = await applicationService.createSoknad<SendInnSoknadBody>({
+      const response = await applicationService.createApplication<SendInnSoknadBody>({
         accessToken: tokenxAccessToken,
         body,
         envQualifier,
         force: Boolean(forceMellomlagring),
-        innsendingsId: req.body.innsendingsId ?? '',
+        innsendingsId: requestBody.innsendingsId ?? '',
       });
-      const { status, body: soknad } = response;
+      const { status, body: application } = response;
 
       logger.debug(status === 200 ? 'User has active tasks' : 'Successfylly posted data to SendInn');
       res.status(status);
       res.json({
-        ...soknad,
-        ...shouldUploadAttachmentsInFyllut(soknad),
+        ...shouldUploadAttachmentsInFyllut(application),
+        ...application,
       });
     } catch (error) {
       next(error);
@@ -90,8 +90,9 @@ const sendInnSoknad = {
       const idportenPid = getIdportenPid(req);
       const tokenxAccessToken = getTokenxAccessToken(req);
       const fyllutUrl = getFyllutUrl(req);
-
-      const { innsendingsId, formPath } = req.body;
+      const requestBody = req.body;
+      const innsendingsId = requestUtil.getBodyValue<string>(req, 'innsendingsId');
+      const formPath = requestUtil.getBodyValue<string>(req, 'formPath');
 
       const sanitizedInnsendingsId = sanitizeInnsendingsId(innsendingsId);
       const errorMessage = validateInnsendingsId(sanitizedInnsendingsId, putErrorMessage);
@@ -106,9 +107,9 @@ const sendInnSoknad = {
       });
       const translations = await translationService.getTranslations({ formPath });
 
-      const body = assembleSendInnSoknadBody({ ...req.body, form, translations }, idportenPid, fyllutUrl, null);
+      const body = assembleSendInnSoknadBody({ ...requestBody, form, translations }, idportenPid, fyllutUrl, null);
 
-      const response = await applicationService.updateSoknad<SendInnSoknadBody>({
+      const response = await applicationService.updateApplication<SendInnSoknadBody>({
         accessToken: tokenxAccessToken,
         body,
         innsendingsId: sanitizedInnsendingsId,
@@ -132,7 +133,7 @@ const sendInnSoknad = {
         return;
       }
 
-      const response = await applicationService.deleteSoknad({
+      const response = await applicationService.deleteApplication({
         accessToken: tokenxAccessToken,
         innsendingsId: sanitizedInnsendingsId,
       });

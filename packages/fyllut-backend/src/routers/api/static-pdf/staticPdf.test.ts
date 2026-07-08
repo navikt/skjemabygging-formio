@@ -13,6 +13,8 @@ vi.mock('@navikt/skjemadigitalisering-shared-backend', () => ({
     getId: vi.fn(),
   },
   requestUtil: {
+    getAzureAccessToken: vi.fn((req) => req.headers?.AzureAccessToken),
+    getMergePdfToken: vi.fn((req) => req.headers?.MergePdfToken),
     getStringParam: vi.fn((req, key) => req.params?.[key]),
   },
 }));
