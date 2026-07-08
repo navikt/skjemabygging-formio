@@ -15,9 +15,10 @@ const getActivities = async ({
   dagligreise = false,
   innsendingsId,
 }: GetActivitiesProps): Promise<SendInnAktivitet[]> => {
-  logger.info('Get submission activities');
+  const targetUrl = `${baseUrl}/fyllUt/v1/aktiviteter?dagligreise=${dagligreise}`;
+  logger.info('Getting submission activities', { dagligreise, targetUrl });
 
-  return await http.get<SendInnAktivitet[]>(`${baseUrl}/fyllUt/v1/aktiviteter?dagligreise=${dagligreise}`, {
+  return await http.get<SendInnAktivitet[]>(targetUrl, {
     accessToken,
     headers: innsendingsId ? { 'x-innsendingsid': innsendingsId } : undefined,
   });

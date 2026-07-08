@@ -18,9 +18,10 @@ interface GetFormsProps {
 }
 const getForms = async <T = Form>(props: GetFormsProps): Promise<T[]> => {
   const { baseUrl, select } = props;
-  logger.info(`Get all forms`);
+  const targetUrl = withSelect(`${baseUrl}/${formsUrl}`, select);
+  logger.info('Getting forms', { select, targetUrl });
 
-  return await http.get<T[]>(withSelect(`${baseUrl}/${formsUrl}`, select));
+  return await http.get<T[]>(targetUrl);
 };
 
 interface GetFormProps {
@@ -30,9 +31,10 @@ interface GetFormProps {
 }
 const getForm = async <T = Form>(props: GetFormProps): Promise<T> => {
   const { baseUrl, formPath, select } = props;
-  logger.info(`Get form ${formPath}`);
+  const targetUrl = withSelect(`${baseUrl}/${formsUrl}/${formPath}`, select);
+  logger.info('Getting form', { formPath, select, targetUrl });
 
-  return await http.get<T>(withSelect(`${baseUrl}/${formsUrl}/${formPath}`, select));
+  return await http.get<T>(targetUrl);
 };
 
 const formClient = {

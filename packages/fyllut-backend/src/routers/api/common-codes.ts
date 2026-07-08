@@ -1,8 +1,9 @@
+import { requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import { Request, Response } from 'express';
 import { commonCodesService } from '../../services';
 
-const getAccessToken = (req: Request) => req.headers.AzureAccessToken as string | undefined;
-const getLanguageCode = (req: Request) => req.header('accept-language') || 'nb';
+const getAccessToken = (req: Request) => requestUtil.getHeader(req, 'AzureAccessToken', true);
+const getLanguageCode = (req: Request) => requestUtil.getHeader(req, 'accept-language', true) || 'nb';
 
 const commonCodes = {
   getArchiveSubjects: async (req: Request, res: Response) => {

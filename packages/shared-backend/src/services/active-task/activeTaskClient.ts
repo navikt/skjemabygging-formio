@@ -18,15 +18,13 @@ const getActiveTasks = async ({
   skjemanummer,
   soknadsTyper,
 }: GetActiveTasksProps): Promise<UpstreamActiveTask[]> => {
-  logger.info(`Get active tasks for ${skjemanummer}`);
+  const targetUrl = `${baseUrl}/frontend/v1/skjema/${skjemanummer}/soknader?soknadstyper=${soknadsTyper.join(',')}`;
+  logger.info('Getting active tasks', { skjemanummer, soknadsTyper, targetUrl });
 
-  return await http.get<UpstreamActiveTask[]>(
-    `${baseUrl}/frontend/v1/skjema/${skjemanummer}/soknader?soknadstyper=${soknadsTyper.join(',')}`,
-    {
-      accessToken,
-      accept: 'application/json',
-    },
-  );
+  return await http.get<UpstreamActiveTask[]>(targetUrl, {
+    accessToken,
+    accept: 'application/json',
+  });
 };
 
 const activeTaskClient = {

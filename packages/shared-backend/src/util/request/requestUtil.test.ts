@@ -87,6 +87,10 @@ describe('requestUtil', () => {
         'Could not find PdfAccessToken in request headers',
       );
     });
+
+    it('returns undefined for an optional missing header', () => {
+      expect(requestUtil.getHeader(mockRequest({ headers: {} }), 'AzureAccessToken', true)).toBeUndefined();
+    });
   });
 
   describe('getStringQuery', () => {
@@ -114,6 +118,26 @@ describe('requestUtil', () => {
           true,
         ),
       ).toBeUndefined();
+    });
+  });
+
+  describe('getQueryObject', () => {
+    it('returns the query object', () => {
+      expect(requestUtil.getQueryObject(mockRequest({ query: { properties: 'sokerFornavn' } }))).toEqual({
+        properties: 'sokerFornavn',
+      });
+    });
+  });
+
+  describe('getFile', () => {
+    it('returns the uploaded file when buffer is present', () => {
+      const req = { file: { buffer: Buffer.from('x'), mimetype: 'text/plain' } } as unknown as Request;
+      expect(requestUtil.getFile(req)).toMatchObject({ mimetype: 'text/plain' });
+    });
+
+    it('returns the uploaded file when temp file path is present', () => {
+      const req = { file: { path: '/tmp/file', mimetype: 'text/plain' } } as unknown as Request;
+      expect(requestUtil.getFile(req)).toMatchObject({ path: '/tmp/file' });
     });
   });
 });

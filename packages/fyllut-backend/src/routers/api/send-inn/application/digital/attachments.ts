@@ -8,24 +8,19 @@ import { applicationService } from '../../../../../services';
 import { removeUploadedTempFile } from '../../../helpers/upload';
 
 const post = async (req: Request, res: Response, next: NextFunction) => {
-  const file = req.file;
   const innsendingsId = requestUtil.getStringParam(req, 'innsendingsId')!;
   const attachmentId = requestUtil.getStringParam(req, 'attachmentId')!;
-  const logMeta = {
-    innsendingsId,
-    attachmentId,
-    route: req.originalUrl,
-    hasTempFile: Boolean(file?.path),
-    fileSize: file?.size,
-    fileType: file?.mimetype,
-  };
+  const file = requestUtil.getFile(req);
   try {
     const accessToken = req.getTokenxAccessToken();
-
-    if (!file) {
-      logger.warn(`${innsendingsId}: Upload request received without file for digital application`, logMeta);
-      return res.status(400).json({ message: 'Error: Ingen fil sendt med forespørselen' });
-    }
+    const logMeta = {
+      innsendingsId,
+      attachmentId,
+      route: req.originalUrl,
+      hasTempFile: Boolean(file.path),
+      fileSize: file.size,
+      fileType: file.mimetype,
+    };
     logger.info(`${innsendingsId}: Received file upload request for digital application`, logMeta);
 
     const fileBlob = await fileUtil.createBlobFromUploadedFile(file);
@@ -44,6 +39,14 @@ const post = async (req: Request, res: Response, next: NextFunction) => {
     });
     res.status(201).json(result);
   } catch (error) {
+    const logMeta = {
+      innsendingsId,
+      attachmentId,
+      route: req.originalUrl,
+      hasTempFile: Boolean(file.path),
+      fileSize: file.size,
+      fileType: file.mimetype,
+    };
     logger.warn(`${innsendingsId}: Upload request failed for digital application`, { ...logMeta, error });
     next(error);
   } finally {
@@ -55,7 +58,7 @@ const deleteFile = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const innsendingsId = requestUtil.getStringParam(req, 'innsendingsId')!;
     const attachmentId = requestUtil.getStringParam(req, 'attachmentId')!;
-    const fileId = requestUtil.getStringParam(req, 'fileId', true);
+    const fileId = Array.isArray(req.params.fileId) ? req.params.fileId.join('/') : req.params.fileId;
     const accessToken = req.getTokenxAccessToken();
     const logMeta = {
       attachmentId,

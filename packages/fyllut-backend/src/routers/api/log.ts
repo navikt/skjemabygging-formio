@@ -1,9 +1,10 @@
+import { requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import { Request, Response } from 'express';
 import { logger } from '../../logger';
 
 const log = {
   post: async (req: Request, res: Response) => {
-    const { level } = req.params;
+    const level = requestUtil.getStringParam(req, 'level')!;
     const logEntry = {
       ...req.body,
       source: 'frontend',

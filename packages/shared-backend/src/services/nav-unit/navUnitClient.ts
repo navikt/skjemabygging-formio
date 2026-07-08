@@ -10,9 +10,10 @@ interface GetNavUnitsProps {
 }
 
 const getNavUnits = async ({ baseUrl, consumerId }: GetNavUnitsProps): Promise<Enhet[]> => {
-  logger.info('Get nav units from norg2');
+  const targetUrl = `${baseUrl}/${navUnitsPath}?enhetStatusListe=AKTIV`;
+  logger.info('Getting nav units', { targetUrl });
 
-  return await http.get<Enhet[]>(`${baseUrl}/${navUnitsPath}?enhetStatusListe=AKTIV`, {
+  return await http.get<Enhet[]>(targetUrl, {
     headers: { consumerId },
   });
 };
