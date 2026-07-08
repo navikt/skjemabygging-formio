@@ -1,49 +1,47 @@
 {
   "betydninger": {
-    "EUR": [
-      {
-        "beskrivelser": {
-          "nb": {
-            "term": "Euro"
-          }
-        }
-      }
-    ],
-    "NOK": [
-      {
-        "beskrivelser": {
-          "nb": {
-            "term": "Norske kroner"
-          }
-        }
-      }
-    ],
-    "SEK": [
-      {
-        "beskrivelser": {
-          "nb": {
-            "term": "Svenske kroner"
-          }
-        }
-      }
-    ],
-    "USD": [
-      {
-        "beskrivelser": {
-          "nb": {
-            "term": "Amerikanske dollar"
-          }
-        }
-      }
-    ],
-    "AUD": [
-      {
-        "beskrivelser": {
-          "nb": {
-            "term": "Australske dollar"
-          }
-        }
-      }
-    ]
+    "EUR": [{ "beskrivelser": { "nb": { "term": "Euro" }, "en": { "term": "Euro" } } }],
+    "NOK": [{ "beskrivelser": { "nb": { "term": "Norsk krone" }, "en": { "term": "Norsk krone" } } }],
+    "SEK": [{ "beskrivelser": { "nb": { "term": "Svensk krone" }, "en": { "term": "Svensk krone" } } }],
+    "USD": [{ "beskrivelser": { "nb": { "term": "Amerikansk dollar" }, "en": { "term": "Amerikansk dollar" } } }],
+    "AUD": [{ "beskrivelser": { "nb": { "term": "Australsk dollar" }, "en": { "term": "Australsk dollar" } } }],
+    "BHD": [{ "beskrivelser": { "nb": { "term": "Bahrainsk dinar" }, "en": { "term": "Bahrainsk dinar" } } }],
+    "GBP": [{ "beskrivelser": { "nb": { "term": "Britisk pund" }, "en": { "term": "Britisk pund" } } }],
+    "BGN": [{ "beskrivelser": { "nb": { "term": "Bulgarsk lev" }, "en": { "term": "Bulgarsk lev" } } }],
+    "DKK": [{ "beskrivelser": { "nb": { "term": "Dansk krone" }, "en": { "term": "Dansk krone" } } }],
+    "AED": [{ "beskrivelser": { "nb": { "term": "Emiratarabisk dirham" }, "en": { "term": "Emiratarabisk dirham" } } }],
+    "PHP": [{ "beskrivelser": { "nb": { "term": "Filippinsk peso" }, "en": { "term": "Filippinsk peso" } } }],
+    "HKD": [{ "beskrivelser": { "nb": { "term": "Hongkongdollar" }, "en": { "term": "Hongkongdollar" } } }],
+    "INR": [{ "beskrivelser": { "nb": { "term": "Indisk rupi" }, "en": { "term": "Indisk rupi" } } }],
+    "IDR": [{ "beskrivelser": { "nb": { "term": "Indonesisk rupiah" }, "en": { "term": "Indonesisk rupiah" } } }],
+    "ISK": [{ "beskrivelser": { "nb": { "term": "Islandsk krone" }, "en": { "term": "Islandsk krone" } } }],
+    "JPY": [{ "beskrivelser": { "nb": { "term": "Japansk yen" }, "en": { "term": "Japansk yen" } } }],
+    "CAD": [{ "beskrivelser": { "nb": { "term": "Kanadisk dollar" }, "en": { "term": "Kanadisk dollar" } } }],
+    "KES": [{ "beskrivelser": { "nb": { "term": "Kenyansk shilling" }, "en": { "term": "Kenyansk shilling" } } }],
+    "CNH": [{ "beskrivelser": { "nb": { "term": "Kinesisk renminbi" }, "en": { "term": "Kinesisk renminbi" } } }],
+    "CNY": [{ "beskrivelser": { "nb": { "term": "Kinesisk renminbi" }, "en": { "term": "Kinesisk renminbi" } } }],
+    "HRK": [{ "beskrivelser": { "nb": { "term": "Kroatisk kuna" }, "en": { "term": "Kroatisk kuna" } } }],
+    "KWD": [{ "beskrivelser": { "nb": { "term": "Kuwaitisk dinar" }, "en": { "term": "Kuwaitisk dinar" } } }],
+    "MAD": [{ "beskrivelser": { "nb": { "term": "Marokkansk dirham" }, "en": { "term": "Marokkansk dirham" } } }],
+    "MXN": [{ "beskrivelser": { "nb": { "term": "Meksikansk peso" }, "en": { "term": "Meksikansk peso" } } }],
+    "ILS": [{ "beskrivelser": { "nb": { "term": "Ny israelsk shekl" }, "en": { "term": "Ny israelsk shekl" } } }],
+    "NZD": [{ "beskrivelser": { "nb": { "term": "Nyzealandsk dollar" }, "en": { "term": "Nyzealandsk dollar" } } }],
+    "PKR": [{ "beskrivelser": { "nb": { "term": "Pakistanisk rupi" }, "en": { "term": "Pakistanisk rupi" } } }],
+    "PLN": [{ "beskrivelser": { "nb": { "term": "Polsk zloty" }, "en": { "term": "Polsk zloty" } } }],
+    "QAR": [{ "beskrivelser": { "nb": { "term": "Qatarsk rijal" }, "en": { "term": "Qatarsk rijal" } } }],
+    "RON": [{ "beskrivelser": { "nb": { "term": "Rumensk leu" }, "en": { "term": "Rumensk leu" } } }],
+    "RUB": [{ "beskrivelser": { "nb": { "term": "Russisk rubler" }, "en": { "term": "Russisk rubler" } } }],
+    "SAR": [{ "beskrivelser": { "nb": { "term": "Saudiarabisk rijal" }, "en": { "term": "Saudiarabisk rijal" } } }],
+    "SGD": [{ "beskrivelser": { "nb": { "term": "Singaporsk dollar" }, "en": { "term": "Singaporsk dollar" } } }],
+    "LKR": [{ "beskrivelser": { "nb": { "term": "Srilankisk rupi" }, "en": { "term": "Srilankisk rupi" } } }],
+    "CHF": [{ "beskrivelser": { "nb": { "term": "Sveitsisk franc" }, "en": { "term": "Sveitsisk franc" } } }],
+    "ZAR": [{ "beskrivelser": { "nb": { "term": "Sørafrikansk rand" }, "en": { "term": "Sørafrikansk rand" } } }],
+    "KRW": [{ "beskrivelser": { "nb": { "term": "Sørkoreansk won" }, "en": { "term": "Sørkoreansk won" } } }],
+    "TZS": [{ "beskrivelser": { "nb": { "term": "Tanzaniansk shilling" }, "en": { "term": "Tanzaniansk shilling" } } }],
+    "THB": [{ "beskrivelser": { "nb": { "term": "Thailandsk baht" }, "en": { "term": "Thailandsk baht" } } }],
+    "CZK": [{ "beskrivelser": { "nb": { "term": "Tsjekkisk koruna" }, "en": { "term": "Tsjekkisk koruna" } } }],
+    "TND": [{ "beskrivelser": { "nb": { "term": "Tunisisk dinar" }, "en": { "term": "Tunisisk dinar" } } }],
+    "TRY": [{ "beskrivelser": { "nb": { "term": "Tyrkisk lira" }, "en": { "term": "Tyrkisk lira" } } }],
+    "HUF": [{ "beskrivelser": { "nb": { "term": "Ungarsk forint" }, "en": { "term": "Ungarsk forint" } } }]
   }
 }
