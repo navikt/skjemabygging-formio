@@ -128,6 +128,9 @@ const deleteApplication = async <T>(props: ApplicationBaseProps): Promise<T> => 
   }
 };
 
+/**
+ * @deprecated Use submitApplication instead. This function is kept for backward compatibility with older versions of the API.
+ */
 const submitCompletedApplication = async (props: SubmitCompletedApplicationProps) => {
   const { baseUrl, accessToken, body, innsendingsId, envQualifier, correlationId } = props;
   logger.info(`Submitting utfylt soknad ${innsendingsId}`);
