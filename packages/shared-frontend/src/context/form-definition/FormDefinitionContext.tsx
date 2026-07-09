@@ -1,6 +1,11 @@
-import { Component, Form, navFormUtils, Panel, submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, Form, navFormUtils, Panel } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useContext, useEffect, useMemo } from 'react';
 import { useSubmissionState } from '../state/SubmissionStateContext';
+import {
+  enrichFormWithBaseSubmissionPath,
+  flattenComponentsWithBaseSubmissionPath,
+  getResolvedSubmissionPath,
+} from './formDefinitionUtils';
 
 interface FormDefinitionContextType {
   form: Form;
@@ -17,10 +22,11 @@ const FormDefinitionContext = createContext<FormDefinitionContextType>({} as For
 
 const FormDefinitionProvider = ({ children, form }: Props) => {
   const { submission, clearSubmissionPaths } = useSubmissionState();
+  const formWithBaseSubmissionPath = useMemo(() => enrichFormWithBaseSubmissionPath(form), [form]);
 
   const activeComponents = useMemo(
-    () => navFormUtils.getActiveComponentsFromForm(form, submission),
-    [form, submission],
+    () => navFormUtils.getActiveComponentsFromForm(formWithBaseSubmissionPath, submission),
+    [formWithBaseSubmissionPath, submission],
   );
 
   const panels = useMemo(
@@ -29,18 +35,24 @@ const FormDefinitionProvider = ({ children, form }: Props) => {
   );
 
   useEffect(() => {
-    const activeKeys = new Set(navFormUtils.flattenComponents(activeComponents).map((component) => component.key));
-    const hiddenPathsToClear = navFormUtils
-      .flattenComponents(form.components)
-      .filter((component) => component.input && component.clearOnHide !== false && !activeKeys.has(component.key))
-      .map((component) => component.key)
-      .filter((key) => submissionUtils.getSubmissionValue(key, submission) !== undefined);
+    const activeSubmissionPaths = new Set(
+      flattenComponentsWithBaseSubmissionPath(activeComponents)
+        .filter((component) => component.input)
+        .map((component) => getResolvedSubmissionPath(component)),
+    );
+    const hiddenPathsToClear = flattenComponentsWithBaseSubmissionPath(formWithBaseSubmissionPath.components)
+      .filter((component) => component.input && component.clearOnHide !== false)
+      .map((component) => getResolvedSubmissionPath(component))
+      .filter((submissionPath) => !activeSubmissionPaths.has(submissionPath));
     if (hiddenPathsToClear.length > 0) {
       clearSubmissionPaths(hiddenPathsToClear);
     }
-  }, [activeComponents, form.components, submission, clearSubmissionPaths]);
+  }, [activeComponents, clearSubmissionPaths, formWithBaseSubmissionPath.components]);
 
-  const value = useMemo(() => ({ form, activeComponents, panels }), [form, activeComponents, panels]);
+  const value = useMemo(
+    () => ({ form: formWithBaseSubmissionPath, activeComponents, panels }),
+    [formWithBaseSubmissionPath, activeComponents, panels],
+  );
 
   return <FormDefinitionContext.Provider value={value}>{children}</FormDefinitionContext.Provider>;
 };

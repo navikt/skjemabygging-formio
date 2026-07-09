@@ -39,4 +39,24 @@ describe('deriveValidations', () => {
     ] as unknown as Component[];
     expect(deriveValidations(components)[0].field).toBe('email');
   });
+
+  it('uses nested submission paths for tree parents', () => {
+    const components = [
+      {
+        key: 'container',
+        type: 'container',
+        input: true,
+        tree: true,
+        components: [{ key: 'name', label: 'Name', input: true, type: 'textfield', validate: { required: true } }],
+      },
+    ] as unknown as Component[];
+
+    expect(deriveValidations(components)).toEqual([
+      {
+        submissionPath: 'container.name',
+        field: 'Name',
+        rules: { required: true, minLength: undefined, maxLength: undefined },
+      },
+    ]);
+  });
 });

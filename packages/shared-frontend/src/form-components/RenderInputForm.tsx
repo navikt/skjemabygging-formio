@@ -1,6 +1,6 @@
-import { Component, Panel } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import RenderInputComponent from './RenderInputComponent';
-import { InputComponentRegistry } from './inputComponentRegistry';
+import { inputComponentRegistry, InputComponentRegistry } from './inputComponentRegistry';
 
 interface Props {
   pageKey: string;
@@ -9,19 +9,24 @@ interface Props {
   componentRegistry?: InputComponentRegistry;
 }
 
-// Renders editable inputs for a set of (already active) components. Panels/containers recurse into
-// their children; leaf inputs are looked up in the registry.
-const RenderInputForm = ({ pageKey, pageComponents, components, componentRegistry }: Props) => {
+// Renders editable inputs for a set of enriched active components. Path resolution happens in the
+// input registry so dynamic contexts can later override submissionPath when needed.
+const RenderInputForm = ({
+  pageKey,
+  pageComponents,
+  components,
+  componentRegistry = inputComponentRegistry,
+}: Props) => {
   return (
     <>
       {components.map((component) => {
-        if ((component as Panel).components?.length) {
+        if (!componentRegistry[component.type] && component.components?.length) {
           return (
             <RenderInputForm
               key={component.key}
               pageKey={pageKey}
               pageComponents={pageComponents}
-              components={(component as Panel).components ?? []}
+              components={component.components ?? []}
               componentRegistry={componentRegistry}
             />
           );

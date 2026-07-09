@@ -35,6 +35,7 @@ export type RecipientRole = 'person' | 'organization';
 export interface Component {
   id?: string;
   navId?: string;
+  baseSubmissionPath?: string;
   key: string;
   label: string;
   customLabels?: CustomLabels;

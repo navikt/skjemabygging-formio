@@ -5,6 +5,7 @@ import { inputComponentRegistry, InputComponentRegistry } from './inputComponent
 
 interface Props {
   component: Component;
+  submissionPath?: string;
   pageKey: string;
   pageComponents: Component[];
   componentRegistry?: InputComponentRegistry;
@@ -14,6 +15,7 @@ interface Props {
 // silently skipped in prod. Mirrors the summary RenderComponent behavior.
 const RenderInputComponent = ({
   component,
+  submissionPath,
   pageKey,
   pageComponents,
   componentRegistry = inputComponentRegistry,
@@ -29,7 +31,15 @@ const RenderInputComponent = ({
     return null;
   }
 
-  return <RegistryComponent component={component} pageKey={pageKey} pageComponents={pageComponents} />;
+  return (
+    <RegistryComponent
+      component={component}
+      submissionPath={submissionPath}
+      pageKey={pageKey}
+      pageComponents={pageComponents}
+      componentRegistry={componentRegistry}
+    />
+  );
 };
 
 export default RenderInputComponent;
