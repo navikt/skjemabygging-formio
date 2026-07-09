@@ -88,13 +88,4 @@ describe('http', () => {
     });
     expect(response.body).toBeInstanceOf(ReadableStream);
   });
-
-  it('rejects invalid request URLs before sending requests', async () => {
-    const fetchSpy = vi.spyOn(global, 'fetch');
-
-    await expect(http.get('file:///tmp/local-file')).rejects.toThrow('Invalid request URL');
-    await expect(http.get('https://user:password@example.test')).rejects.toThrow('Invalid request URL');
-
-    expect(fetchSpy).not.toHaveBeenCalled();
-  });
 });

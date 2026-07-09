@@ -4,8 +4,6 @@ import type { ApplicationType, UploadAttachmentResponse } from './applicationTyp
 const draftPath = '/fyllUt/v1/soknad';
 const submittedDraftPath = '/fyllUt/v1/utfyltSoknad';
 
-const pathSegment = (value: string) => encodeURIComponent(value);
-
 const createHeaders = ({
   correlationId,
   envQualifier,
@@ -21,13 +19,13 @@ const createHeaders = ({
 });
 
 const getDraftUrl = (baseUrl: string, innsendingsId?: string) =>
-  innsendingsId ? `${baseUrl}${draftPath}/${pathSegment(innsendingsId)}` : `${baseUrl}${draftPath}`;
+  innsendingsId ? `${baseUrl}${draftPath}/${innsendingsId}` : `${baseUrl}${draftPath}`;
 
 const getSubmittedDraftUrl = (baseUrl: string, innsendingsId: string) =>
-  `${baseUrl}${submittedDraftPath}/${pathSegment(innsendingsId)}`;
+  `${baseUrl}${submittedDraftPath}/${innsendingsId}`;
 
 const getApplicationUrl = (baseUrl: string, type: ApplicationType, innsendingsId: string) =>
-  `${baseUrl}/v1/application-${type}/${pathSegment(innsendingsId)}`;
+  `${baseUrl}/v1/application-${type}/${innsendingsId}`;
 
 const getAttachmentsUrl = ({
   baseUrl,
@@ -41,10 +39,7 @@ const getAttachmentsUrl = ({
   attachmentId?: string;
   type: ApplicationType;
   fileId?: string;
-}) =>
-  `${getApplicationUrl(baseUrl, type, innsendingsId)}/attachments/${attachmentId ? pathSegment(attachmentId) : ''}${
-    fileId ? `/${pathSegment(fileId)}` : ''
-  }`;
+}) => `${getApplicationUrl(baseUrl, type, innsendingsId)}/attachments/${attachmentId}${fileId ? `/${fileId}` : ''}`;
 
 const createUploadedFile = (
   response: UploadAttachmentResponse,

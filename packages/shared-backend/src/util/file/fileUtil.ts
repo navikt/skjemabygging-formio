@@ -7,18 +7,6 @@ import { logger } from '../../shared/logger/logger';
 
 const uploadTempDirectory = path.resolve(tmpdir());
 
-const isNodeError = (error: unknown): error is NodeJS.ErrnoException => error instanceof Error && 'code' in error;
-
-const isSafeUploadTempFilename = (filename: string) => {
-  if (!filename || filename === '.' || filename === '..') {
-    return false;
-  }
-  if (filename.includes('/') || filename.includes('\\')) {
-    return false;
-  }
-  return /^[a-zA-Z0-9._-]+$/.test(filename);
-};
-
 const readFile = async (filepath: string) => {
   const fileHandle = await fs.promises.open(filepath, 'r');
   const fileContents = await fileHandle.readFile({ encoding: 'utf-8' });
@@ -55,36 +43,17 @@ const loadAllJsonFilesFromDirectory = async (dir?: string) => {
   return [];
 };
 
-const resolveUploadedTempFilePath = async (filePath: string) => {
-  const uploadFileName = path.basename(filePath);
-  if (!isSafeUploadTempFilename(uploadFileName)) {
-    throw new ResponseError('BAD_REQUEST', 'Invalid temporary upload path');
-  }
-
-  const resolvedUploadTempDirectory = await realpath(uploadTempDirectory);
-  let resolvedFilePath: string;
-  try {
-    resolvedFilePath = await realpath(path.join(resolvedUploadTempDirectory, uploadFileName));
-  } catch (error) {
-    if (isNodeError(error) && error.code === 'ENOENT') {
-      throw new ResponseError('BAD_REQUEST', 'Invalid temporary upload path');
-    }
-    throw error;
-  }
-
-  const relativeFilePath = path.relative(resolvedUploadTempDirectory, resolvedFilePath);
-  if (relativeFilePath.startsWith('..') || path.isAbsolute(relativeFilePath)) {
-    throw new ResponseError('BAD_REQUEST', 'Invalid temporary upload path');
-  }
-
-  return resolvedFilePath;
-};
-
 const createBlobFromUploadedFile = async (
   file: Pick<Express.Multer.File, 'buffer' | 'mimetype'> & { path?: Express.Multer.File['path'] },
 ) => {
   if (file.path) {
-    const resolvedFilePath = await resolveUploadedTempFilePath(file.path);
+    const resolvedUploadTempDirectory = await realpath(uploadTempDirectory);
+    const resolvedFilePath = await realpath(path.resolve(file.path));
+    const relativeFilePath = path.relative(resolvedUploadTempDirectory, resolvedFilePath);
+    if (relativeFilePath.startsWith('..') || path.isAbsolute(relativeFilePath)) {
+      throw new ResponseError('BAD_REQUEST', 'Invalid temporary upload path');
+    }
+
     return await openAsBlob(resolvedFilePath, { type: file.mimetype });
   }
 

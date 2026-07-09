@@ -11,7 +11,7 @@ interface GetAllProps {
 }
 const getAll = async (props: GetAllProps) => {
   const { baseUrl, formPath } = props;
-  const targetUrl = `${baseUrl}/${formsUrl}/${encodeURIComponent(formPath)}/static-pdfs`;
+  const targetUrl = `${baseUrl}/${formsUrl}/${formPath}/static-pdfs`;
   logger.debug('Getting static pdfs', { formPath, targetUrl });
 
   return await http.get<StaticPdf[]>(targetUrl);
@@ -24,7 +24,7 @@ interface DownloadPdfProps {
 }
 const downloadPdf = async (props: DownloadPdfProps) => {
   const { baseUrl, formPath, languageCode } = props;
-  const targetUrl = `${baseUrl}/${formsUrl}/${encodeURIComponent(formPath)}/static-pdfs/${encodeURIComponent(languageCode)}`;
+  const targetUrl = `${baseUrl}/${formsUrl}/${formPath}/static-pdfs/${languageCode}`;
   logger.info('Downloading static pdf', { formPath, languageCode, targetUrl });
 
   const pdf = await http.get<string>(targetUrl);
@@ -45,7 +45,7 @@ interface UploadPdfProps {
 }
 const uploadPdf = async (props: UploadPdfProps) => {
   const { baseUrl, formPath, languageCode, accessToken, body } = props;
-  const targetUrl = `${baseUrl}/${formsUrl}/${encodeURIComponent(formPath)}/static-pdfs/${encodeURIComponent(languageCode)}`;
+  const targetUrl = `${baseUrl}/${formsUrl}/${formPath}/static-pdfs/${languageCode}`;
   logger.info('Uploading static pdf', { formPath, languageCode, targetUrl });
 
   return await http.post<StaticPdf>(targetUrl, body, {
@@ -62,7 +62,7 @@ interface DeletePdfProps {
 }
 const deletePdf = async (props: DeletePdfProps) => {
   const { baseUrl, formPath, languageCode, accessToken } = props;
-  const targetUrl = `${baseUrl}/${formsUrl}/${encodeURIComponent(formPath)}/static-pdfs/${encodeURIComponent(languageCode)}`;
+  const targetUrl = `${baseUrl}/${formsUrl}/${formPath}/static-pdfs/${languageCode}`;
   logger.info('Deleting static pdf', { formPath, languageCode, targetUrl });
 
   await http.delete(targetUrl, undefined, { accessToken });

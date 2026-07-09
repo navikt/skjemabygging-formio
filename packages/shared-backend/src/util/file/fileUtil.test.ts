@@ -6,7 +6,6 @@ import fileUtil from './fileUtil';
 describe('fileUtil', () => {
   let spyOpen;
   const createdPaths: string[] = [];
-  const createdFiles: string[] = [];
 
   const createTempDirectory = (rootDir: string, prefix: string) => {
     const directory = fs.mkdtempSync(path.join(rootDir, prefix));
@@ -34,9 +33,6 @@ describe('fileUtil', () => {
       .forEach((createdPath) => {
         fs.rmSync(createdPath, { force: true, recursive: true });
       });
-    createdFiles.splice(0).forEach((createdFile) => {
-      fs.rmSync(createdFile, { force: true });
-    });
   });
 
   describe('loadJsonFileFromDirectory', () => {
@@ -65,8 +61,8 @@ describe('fileUtil', () => {
 
   describe('createBlobFromUploadedFile', () => {
     it('creates a blob from an uploaded temp file in the OS temp directory', async () => {
-      const filePath = path.join(os.tmpdir(), `file-util-test-${Date.now()}.txt`);
-      createdFiles.push(filePath);
+      const tempDirectory = createTempDirectory(os.tmpdir(), 'file-util-test-');
+      const filePath = path.join(tempDirectory, 'upload.txt');
       fs.writeFileSync(filePath, 'temporary file');
 
       const blob = await fileUtil.createBlobFromUploadedFile({
