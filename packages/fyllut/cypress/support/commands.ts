@@ -33,6 +33,7 @@ Cypress.Commands.add('findByRoleWhenAttached', (role, options, wait: number = 10
   return cy
     .waitUntil(
       () =>
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
         cy
           .findByRole(role, options)
           .as('elementWhenAttached')
