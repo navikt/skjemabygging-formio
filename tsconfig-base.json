@@ -13,6 +13,7 @@
     "skipLibCheck": true,
     "types": ["vite/client", "vitest/globals"],
     "moduleResolution": "bundler",
+    "rootDir": ".",
     "isolatedModules": true,
     "noEmit": true,
     "noFallthroughCasesInSwitch": true
