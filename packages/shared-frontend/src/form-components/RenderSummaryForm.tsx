@@ -31,7 +31,6 @@ import SummaryFormGroup from './components/form-group/SummaryFormGroup';
 import SummaryHtmlElement from './components/html-element/SummaryHtmlElement';
 import SummaryIban from './components/iban/SummaryIban';
 import SummaryIdentity from './components/identity/SummaryIdentity';
-import SummaryImage from './components/image/SummaryImage';
 import SummaryIntroPage from './components/intro-page/SummaryIntroPage';
 import SummaryMaalgruppe from './components/maalgruppe/SummaryMaalgruppe';
 import SummaryMonthPicker from './components/month-picker/SummaryMonthPicker';
@@ -39,7 +38,6 @@ import SummaryNationalIdentityNumber from './components/national-identity-number
 import SummaryNumber from './components/number/SummaryNumber';
 import SummaryOrganizationNumber from './components/organization-number/SummaryOrganizationNumber';
 import SummaryPanel from './components/panel/SummaryPanel';
-import SummaryPassword from './components/password/SummaryPassword';
 import SummaryPhoneNumber from './components/phone-number/SummaryPhoneNumber';
 import SummaryRadio from './components/radio/SummaryRadio';
 import SummaryRow from './components/row/SummaryRow';
@@ -52,6 +50,8 @@ import SummaryTextArea from './components/text-area/SummaryTextArea';
 import SummaryTextField from './components/text-field/SummaryTextField';
 import SummaryYear from './components/year/SummaryYear';
 import { FormComponentRegistry, HandleAttachmentDownloadFile, SummaryRendererAppConfig } from './types';
+
+type SupportedSummaryComponentType = Exclude<FormComponentType, 'image' | 'password'>;
 
 interface Props {
   activeComponents: Component[];
@@ -86,7 +86,6 @@ const RenderSummaryForm = ({
     alertstripe: SummaryAlert,
     navCheckbox: SummaryCheckbox,
     htmlelement: SummaryHtmlElement,
-    image: SummaryImage,
     number: SummaryNumber,
     radiopanel: SummaryRadio,
     select: SummarySelect,
@@ -110,7 +109,6 @@ const RenderSummaryForm = ({
     identity: SummaryIdentity,
     fnrfield: SummaryNationalIdentityNumber,
     orgNr: SummaryOrganizationNumber,
-    password: SummaryPassword,
     phoneNumber: SummaryPhoneNumber,
     sender: SummarySender,
     surname: SummarySurname,
@@ -133,7 +131,7 @@ const RenderSummaryForm = ({
     dataFetcher: SummaryDataFetcher,
     drivinglist: SummaryDrivingList,
     maalgruppe: SummaryMaalgruppe,
-  } satisfies Record<FormComponentType, FormComponentRegistry[string]>;
+  } satisfies Record<SupportedSummaryComponentType, FormComponentRegistry[string]>;
 
   const attachmentUploadsComponentRegistry = {
     ...componentRegistry,

@@ -84,4 +84,48 @@ describe('deriveValidations', () => {
       },
     ]);
   });
+
+  it('adds simple email and number validation rules from component type', () => {
+    const components = [
+      { key: 'email', label: 'Email', input: true, type: 'email', validate: { required: true } },
+      { key: 'amount', label: 'Amount', input: true, type: 'number', inputType: 'numeric', validate: { min: 1 } },
+    ] as unknown as Component[];
+
+    expect(deriveValidations(components)).toEqual([
+      {
+        submissionPath: 'email',
+        field: 'Email',
+        rules: {
+          required: true,
+          minLength: undefined,
+          maxLength: undefined,
+          email: true,
+          coverPageValue: undefined,
+          numberType: undefined,
+          min: undefined,
+          max: undefined,
+          year: undefined,
+          minYear: undefined,
+          maxYear: undefined,
+        },
+      },
+      {
+        submissionPath: 'amount',
+        field: 'Amount',
+        rules: {
+          required: undefined,
+          minLength: undefined,
+          maxLength: undefined,
+          email: undefined,
+          coverPageValue: undefined,
+          numberType: 'integer',
+          min: 1,
+          max: undefined,
+          year: undefined,
+          minYear: undefined,
+          maxYear: undefined,
+        },
+      },
+    ]);
+  });
 });

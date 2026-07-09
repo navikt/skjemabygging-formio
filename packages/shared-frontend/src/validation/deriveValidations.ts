@@ -15,6 +15,19 @@ const toRules = (component: Component): ValidationRules => ({
   required: component.validate?.required,
   minLength: typeof component.validate?.minLength === 'number' ? component.validate.minLength : undefined,
   maxLength: typeof component.validate?.maxLength === 'number' ? component.validate.maxLength : undefined,
+  email: component.type === 'email' ? true : undefined,
+  coverPageValue: component.type === 'firstName' || component.type === 'surname' ? true : undefined,
+  numberType:
+    component.type === 'number' || component.type === 'currency'
+      ? component.inputType === 'numeric'
+        ? 'integer'
+        : 'decimal'
+      : undefined,
+  min: typeof component.validate?.min === 'number' ? component.validate.min : undefined,
+  max: typeof component.validate?.max === 'number' ? component.validate.max : undefined,
+  year: component.type === 'year' ? true : undefined,
+  minYear: typeof component.validate?.minYear === 'number' ? component.validate.minYear : undefined,
+  maxYear: typeof component.validate?.maxYear === 'number' ? component.validate.maxYear : undefined,
 });
 
 const hasRules = (rules: ValidationRules) => Object.values(rules).some((rule) => rule !== undefined && rule !== false);
