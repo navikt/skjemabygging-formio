@@ -8,7 +8,7 @@ import {
   RenderSummaryForm,
   useFormDefinition,
   useFormPersistence,
-  useSubmission,
+  useSubmissionState,
   useValidation,
 } from '@navikt/skjemadigitalisering-shared-frontend';
 
@@ -21,7 +21,7 @@ const Summary = ({ onBack, onNavigateToError }: Props) => {
   const appConfig = useAppConfig();
   const { translate, currentLanguage } = useLanguages();
   const { form, activeComponents, panels } = useFormDefinition();
-  const { submission } = useSubmission();
+  const { submission } = useSubmissionState();
   const { validatePages } = useValidation();
   const { submit, status, canSubmit } = useFormPersistence();
 

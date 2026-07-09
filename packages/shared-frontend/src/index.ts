@@ -10,8 +10,8 @@ import { useFormDefinition } from './context/form-definition/FormDefinitionConte
 import { FormFrameworkProvider } from './context/FormFrameworkProvider';
 import { useLanguage } from './context/language/LanguageContext';
 import { useFormPersistence } from './context/persistence/PersistenceContext';
-import { initializeSubmission } from './context/submission-init/initializeSubmission';
-import { useSubmission } from './context/submission/SubmissionContext';
+import { initializeSubmission } from './context/state/initializeSubmission';
+import { useSubmissionState } from './context/state/SubmissionStateContext';
 import { useValidation } from './context/validation/ValidationContext';
 import { inputComponentRegistry } from './form-components/inputComponentRegistry';
 import RenderInputForm from './form-components/RenderInputForm';
@@ -58,7 +58,7 @@ export {
   useFormDefinition,
   useFormPersistence,
   useLanguage,
-  useSubmission,
+  useSubmissionState,
   useValidation,
   useWizardController,
   ValidationExclamationIcon,

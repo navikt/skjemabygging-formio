@@ -9,8 +9,6 @@ interface Props {
   form: Form;
 }
 
-// New, non-Formio fill-in path. Soft-launched per form path via the backend allowlist
-// (config.newRenderForms). Purely additive: never reached for forms not on the allowlist.
 const FillInForm = ({ form }: Props) => {
   const { submissionMethod, logger, config } = useAppConfig();
   const { translate, currentLanguage } = useLanguages();

@@ -1,6 +1,6 @@
 import { Component, Form, navFormUtils, Panel, submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useContext, useEffect, useMemo } from 'react';
-import { useSubmission } from '../submission/SubmissionContext';
+import { useSubmissionState } from '../state/SubmissionStateContext';
 
 interface FormDefinitionContextType {
   form: Form;
@@ -16,7 +16,7 @@ interface Props {
 const FormDefinitionContext = createContext<FormDefinitionContextType>({} as FormDefinitionContextType);
 
 const FormDefinitionProvider = ({ children, form }: Props) => {
-  const { submission, clearSubmissionPaths } = useSubmission();
+  const { submission, clearSubmissionPaths } = useSubmissionState();
 
   const activeComponents = useMemo(
     () => navFormUtils.getActiveComponentsFromForm(form, submission),

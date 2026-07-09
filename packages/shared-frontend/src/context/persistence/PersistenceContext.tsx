@@ -1,6 +1,6 @@
 import { Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
-import { useSubmission } from '../submission/SubmissionContext';
+import { useSubmissionState } from '../state/SubmissionStateContext';
 
 type PersistenceStatus = 'idle' | 'saving' | 'submitting' | 'submitted';
 
@@ -30,7 +30,7 @@ interface Props extends FormPersistenceHandlers {
 const FormPersistenceContext = createContext<FormPersistenceContextType>({} as FormPersistenceContextType);
 
 const FormPersistenceProvider = ({ children, saveDraft: saveDraftHandler, submitForm }: Props) => {
-  const { submission } = useSubmission();
+  const { submission } = useSubmissionState();
   const [status, setStatus] = useState<PersistenceStatus>('idle');
   const [error, setError] = useState<unknown>();
 

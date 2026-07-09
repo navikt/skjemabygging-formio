@@ -3,7 +3,7 @@ import { createContext, ReactNode, useCallback, useContext, useMemo, useState } 
 import { deriveValidations } from '../../validation/deriveValidations';
 import { validateValue } from '../../validation/validators';
 import { useLanguage } from '../language/LanguageContext';
-import { useSubmission } from '../submission/SubmissionContext';
+import { useSubmissionState } from '../state/SubmissionStateContext';
 
 interface FieldError {
   pageKey: string;
@@ -40,7 +40,7 @@ const ValidationContext = createContext<ValidationContextType>({} as ValidationC
 
 const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
   const { translate } = useLanguage();
-  const { submission } = useSubmission();
+  const { submission } = useSubmissionState();
   const [pagesWithErrors, setPagesWithErrors] = useState<Set<string>>(() => new Set(initialPagesWithErrors ?? []));
   const [summaryScope, setSummaryScope] = useState<SummaryScope>(undefined);
 

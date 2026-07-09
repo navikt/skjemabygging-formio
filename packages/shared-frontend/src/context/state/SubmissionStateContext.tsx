@@ -1,7 +1,9 @@
-import { Submission, SubmissionData } from '@navikt/skjemadigitalisering-shared-domain';
+import { Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, Dispatch, ReactNode, SetStateAction, useCallback, useContext, useMemo, useState } from 'react';
 
-interface SubmissionContextType {
+import { removeDeepValue, setDeepValue } from './stateHelpers';
+
+interface SubmissionStateContextType {
   submission?: Submission;
   setSubmission: Dispatch<SetStateAction<Submission | undefined>>;
   updateSubmission: (submissionPath: string, value: unknown) => void;
@@ -13,17 +15,6 @@ interface Props {
   initialSubmission?: Submission;
 }
 
-const setDeepValue = (target: SubmissionData, path: string[], value: unknown): SubmissionData => {
-  const [key, ...rest] = path;
-  if (rest.length === 0) {
-    return { ...target, [key]: value as SubmissionData[string] };
-  }
-  return {
-    ...target,
-    [key]: setDeepValue((target?.[key] as SubmissionData) ?? {}, rest, value),
-  };
-};
-
 const createUpdatedSubmission = (
   submission: Submission | undefined,
   submissionPath: string,
@@ -33,24 +24,9 @@ const createUpdatedSubmission = (
   data: setDeepValue(submission?.data ?? {}, submissionPath.split('.'), value),
 });
 
-const removeDeepValue = (target: SubmissionData, path: string[]): SubmissionData => {
-  const [key, ...rest] = path;
-  if (target?.[key] === undefined) {
-    return target;
-  }
-  if (rest.length === 0) {
-    const { [key]: _removed, ...remaining } = target;
-    return remaining;
-  }
-  return {
-    ...target,
-    [key]: removeDeepValue((target[key] as SubmissionData) ?? {}, rest),
-  };
-};
+const SubmissionStateContext = createContext<SubmissionStateContextType>({} as SubmissionStateContextType);
 
-const SubmissionContext = createContext<SubmissionContextType>({} as SubmissionContextType);
-
-const SubmissionProvider = ({ children, initialSubmission }: Props) => {
+const SubmissionStateProvider = ({ children, initialSubmission }: Props) => {
   const [submission, setSubmission] = useState<Submission | undefined>(initialSubmission ?? { data: {} });
 
   const updateSubmission = useCallback((submissionPath: string, value: unknown) => {
@@ -71,10 +47,10 @@ const SubmissionProvider = ({ children, initialSubmission }: Props) => {
     [submission, updateSubmission, clearSubmissionPaths],
   );
 
-  return <SubmissionContext.Provider value={value}>{children}</SubmissionContext.Provider>;
+  return <SubmissionStateContext.Provider value={value}>{children}</SubmissionStateContext.Provider>;
 };
 
-const useSubmission = () => useContext(SubmissionContext);
+const useSubmissionState = () => useContext(SubmissionStateContext);
 
-export { createUpdatedSubmission, removeDeepValue, setDeepValue, SubmissionProvider, useSubmission };
-export type { SubmissionContextType };
+export { createUpdatedSubmission, SubmissionStateProvider, useSubmissionState };
+export type { SubmissionStateContextType };

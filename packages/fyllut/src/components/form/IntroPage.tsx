@@ -5,7 +5,7 @@ import {
   FormButtonRow,
   FormNextButton,
   useFormDefinition,
-  useSubmission,
+  useSubmissionState,
 } from '@navikt/skjemadigitalisering-shared-frontend';
 import { useState } from 'react';
 
@@ -17,7 +17,7 @@ const IntroPage = ({ onStart }: Props) => {
   const { translate } = useLanguages();
   const { submissionMethod } = useAppConfig();
   const { form } = useFormDefinition();
-  const { submission, setSubmission } = useSubmission();
+  const { submission, setSubmission } = useSubmissionState();
   const [selfDeclarationError, setSelfDeclarationError] = useState<string | undefined>();
 
   const introPage = form.introPage;

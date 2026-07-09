@@ -4,7 +4,7 @@ import { AppConfigProvider, FrameworkLogger } from './app-config/AppConfigContex
 import { FormDefinitionProvider } from './form-definition/FormDefinitionContext';
 import { LanguageProvider } from './language/LanguageContext';
 import { FormPersistenceHandlers, FormPersistenceProvider } from './persistence/PersistenceContext';
-import { SubmissionProvider } from './submission/SubmissionContext';
+import { SubmissionStateProvider } from './state/SubmissionStateContext';
 import { ValidationProvider } from './validation/ValidationContext';
 
 interface FormFrameworkProviderProps {
@@ -35,7 +35,7 @@ const FormFrameworkProvider = ({
   return (
     <AppConfigProvider submissionMethod={submissionMethod} logger={logger} config={config}>
       <LanguageProvider translate={translate} currentLanguage={currentLanguage}>
-        <SubmissionProvider initialSubmission={initialSubmission}>
+        <SubmissionStateProvider initialSubmission={initialSubmission}>
           <FormDefinitionProvider form={form}>
             <ValidationProvider initialPagesWithErrors={initialPagesWithErrors}>
               <FormPersistenceProvider saveDraft={persistence?.saveDraft} submitForm={persistence?.submitForm}>
@@ -43,7 +43,7 @@ const FormFrameworkProvider = ({
               </FormPersistenceProvider>
             </ValidationProvider>
           </FormDefinitionProvider>
-        </SubmissionProvider>
+        </SubmissionStateProvider>
       </LanguageProvider>
     </AppConfigProvider>
   );

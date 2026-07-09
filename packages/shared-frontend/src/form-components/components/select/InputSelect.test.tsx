@@ -2,7 +2,7 @@ import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { ReactNode } from 'react';
 import { LanguageProvider } from '../../../context/language/LanguageContext';
-import { SubmissionProvider, useSubmission } from '../../../context/submission/SubmissionContext';
+import { SubmissionStateProvider, useSubmissionState } from '../../../context/state/SubmissionStateContext';
 import { ValidationProvider } from '../../../context/validation/ValidationContext';
 import InputSelect from './InputSelect';
 
@@ -15,15 +15,15 @@ const pageKey = 'page1';
 const renderWithProviders = (children: ReactNode, initialValue?: string) => {
   return render(
     <LanguageProvider translate={(text) => text ?? ''} currentLanguage="nb">
-      <SubmissionProvider initialSubmission={{ data: initialValue ? { country: initialValue } : {} }}>
+      <SubmissionStateProvider initialSubmission={{ data: initialValue ? { country: initialValue } : {} }}>
         <ValidationProvider>{children}</ValidationProvider>
-      </SubmissionProvider>
+      </SubmissionStateProvider>
     </LanguageProvider>,
   );
 };
 
 const SubmissionValue = () => {
-  const { submission } = useSubmission();
+  const { submission } = useSubmissionState();
   return <span>{String(submission?.data.country ?? '')}</span>;
 };
 

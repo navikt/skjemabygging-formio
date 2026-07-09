@@ -1,6 +1,6 @@
 import { Component, Submission, submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback } from 'react';
-import { createUpdatedSubmission, useSubmission } from '../../context/submission/SubmissionContext';
+import { createUpdatedSubmission, useSubmissionState } from '../../context/state/SubmissionStateContext';
 import { useValidation } from '../../context/validation/ValidationContext';
 
 interface UseSubmissionFieldArgs {
@@ -10,7 +10,7 @@ interface UseSubmissionFieldArgs {
 }
 
 const useSubmissionField = ({ pageKey, pageComponents, submissionPath }: UseSubmissionFieldArgs) => {
-  const { submission, updateSubmission } = useSubmission();
+  const { submission, updateSubmission } = useSubmissionState();
   const { getError, handleFieldChange } = useValidation();
 
   const setSubmissionValue = useCallback(
