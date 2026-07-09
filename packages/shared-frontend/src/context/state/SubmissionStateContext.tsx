@@ -1,7 +1,7 @@
 import { Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, Dispatch, ReactNode, SetStateAction, useCallback, useContext, useMemo, useState } from 'react';
 
-import { removeDeepValue, setDeepValue } from './stateHelpers';
+import { parseSubmissionPath, removeDeepValue, setDeepValue } from './stateHelpers';
 
 interface SubmissionStateContextType {
   submission?: Submission;
@@ -21,7 +21,7 @@ const createUpdatedSubmission = (
   value: unknown,
 ): Submission => ({
   ...(submission ?? { data: {} }),
-  data: setDeepValue(submission?.data ?? {}, submissionPath.split('.'), value),
+  data: setDeepValue(submission?.data ?? {}, parseSubmissionPath(submissionPath), value),
 });
 
 const SubmissionStateContext = createContext<SubmissionStateContextType>({} as SubmissionStateContextType);
@@ -37,7 +37,7 @@ const SubmissionStateProvider = ({ children, initialSubmission }: Props) => {
     if (submissionPaths.length === 0) return;
     setSubmission((prev) => {
       if (!prev?.data) return prev;
-      const data = submissionPaths.reduce((acc, path) => removeDeepValue(acc, path.split('.')), prev.data);
+      const data = submissionPaths.reduce((acc, path) => removeDeepValue(acc, parseSubmissionPath(path)), prev.data);
       return { ...prev, data };
     });
   }, []);

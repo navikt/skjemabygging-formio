@@ -69,6 +69,7 @@ export interface Component {
   title?: string;
   html?: string;
   legend?: string;
+  backgroundColor?: boolean;
   additionalDescriptionLabel?: string;
   additionalDescriptionText?: string;
   contentForPdf?: string;
@@ -76,6 +77,7 @@ export interface Component {
   buttonText?: string;
   addAnother?: string;
   removeAnother?: string;
+  rowTitle?: string;
   input?: boolean;
   readOnly?: boolean;
   weight?: number;

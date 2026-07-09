@@ -59,4 +59,29 @@ describe('deriveValidations', () => {
       },
     ]);
   });
+
+  it('expands datagrid child validations per row', () => {
+    const components = [
+      {
+        key: 'grid',
+        type: 'datagrid',
+        input: true,
+        tree: true,
+        components: [{ key: 'name', label: 'Name', input: true, type: 'textfield', validate: { required: true } }],
+      },
+    ] as unknown as Component[];
+
+    expect(deriveValidations(components, { data: { grid: [{ name: '' }, { name: 'Ada' }] } })).toEqual([
+      {
+        submissionPath: 'grid[0].name',
+        field: 'Name',
+        rules: { required: true, minLength: undefined, maxLength: undefined },
+      },
+      {
+        submissionPath: 'grid[1].name',
+        field: 'Name',
+        rules: { required: true, minLength: undefined, maxLength: undefined },
+      },
+    ]);
+  });
 });

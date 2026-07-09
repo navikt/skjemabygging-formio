@@ -1,0 +1,18 @@
+.fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ax-space-24);
+}
+
+.field {
+  flex: 1 1 100%;
+  min-width: 0;
+}
+
+.label {
+  margin-bottom: var(--ax-space-8);
+}
+
+.description {
+  margin-bottom: var(--ax-space-16);
+}

@@ -46,7 +46,7 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
 
   const computeErrors = useCallback(
     (pageKey: string, components: Component[], activeSubmission: Submission | undefined): FieldError[] =>
-      deriveValidations(components).reduce<FieldError[]>((acc, { submissionPath, field, rules }) => {
+      deriveValidations(components, activeSubmission).reduce<FieldError[]>((acc, { submissionPath, field, rules }) => {
         const violation = validateValue(
           submissionUtils.getSubmissionValue(submissionPath, activeSubmission),
           field,

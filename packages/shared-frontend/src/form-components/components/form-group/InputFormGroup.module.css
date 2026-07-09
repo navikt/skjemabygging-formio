@@ -1,0 +1,12 @@
+.content {
+  border-radius: var(--ax-radius-12);
+}
+
+.background {
+  background-color: var(--ax-brand-blue-100);
+  padding: var(--ax-space-16) var(--ax-space-16) 0;
+}
+
+.backgroundNavGroup {
+  background-color: var(--ax-brand-blue-200);
+}

@@ -3,7 +3,10 @@ import { ComponentType } from 'react';
 import { getResolvedSubmissionPath } from '../context/form-definition/formDefinitionUtils';
 import InputCheckbox from './components/checkbox/InputCheckbox';
 import InputContainer from './components/container/InputContainer';
+import InputDataGrid from './components/data-grid/InputDataGrid';
+import InputFormGroup from './components/form-group/InputFormGroup';
 import InputRadio from './components/radio/InputRadio';
+import InputRow from './components/row/InputRow';
 import InputSelect from './components/select/InputSelect';
 import InputTextArea from './components/text-area/InputTextArea';
 import InputTextField from './components/text-field/InputTextField';
@@ -92,8 +95,39 @@ const ContainerEntry = ({ component, pageKey, pageComponents, componentRegistry 
   />
 );
 
+const DataGridEntry = ({ component, pageKey, pageComponents, componentRegistry }: InputComponentProps) => (
+  <InputDataGrid
+    component={component}
+    pageKey={pageKey}
+    pageComponents={pageComponents}
+    componentRegistry={componentRegistry}
+  />
+);
+
+const FormGroupEntry = ({ component, pageKey, pageComponents, componentRegistry }: InputComponentProps) => (
+  <InputFormGroup
+    component={component}
+    pageKey={pageKey}
+    pageComponents={pageComponents}
+    componentRegistry={componentRegistry}
+  />
+);
+
+const RowEntry = ({ component, pageKey, pageComponents, componentRegistry }: InputComponentProps) => (
+  <InputRow
+    component={component}
+    pageKey={pageKey}
+    pageComponents={pageComponents}
+    componentRegistry={componentRegistry}
+  />
+);
+
 const inputComponentRegistry: InputComponentRegistry = {
   container: ContainerEntry,
+  datagrid: DataGridEntry,
+  navSkjemagruppe: FormGroupEntry,
+  fieldset: FormGroupEntry,
+  row: RowEntry,
   textfield: TextFieldEntry,
   textarea: TextAreaEntry,
   formioTextArea: TextAreaEntry,

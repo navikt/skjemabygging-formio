@@ -1,7 +1,6 @@
-import { Component } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, Submission, submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import {
   enrichComponentsWithBaseSubmissionPath,
-  flattenComponentsWithBaseSubmissionPath,
   getResolvedSubmissionPath,
 } from '../context/form-definition/formDefinitionUtils';
 import { ValidationRules } from './validators';
@@ -18,20 +17,40 @@ const toRules = (component: Component): ValidationRules => ({
   maxLength: typeof component.validate?.maxLength === 'number' ? component.validate.maxLength : undefined,
 });
 
+const hasRules = (rules: ValidationRules) => Object.values(rules).some((rule) => rule !== undefined && rule !== false);
+
+const collectValidationDescriptors = (components: Component[], submission?: Submission): ValidationDescriptor[] =>
+  components.flatMap((component) => {
+    const rules = toRules(component);
+    const submissionPath = getResolvedSubmissionPath(component);
+
+    if (component.type === 'datagrid') {
+      const rows = submissionUtils.getSubmissionValue(submissionPath, submission);
+      if (!Array.isArray(rows) || !component.components?.length) {
+        return [];
+      }
+
+      return rows.flatMap((_, index) =>
+        collectValidationDescriptors(
+          enrichComponentsWithBaseSubmissionPath(component.components ?? [], `${submissionPath}[${index}]`),
+          submission,
+        ),
+      );
+    }
+
+    return [
+      ...(hasRules(rules) ? [{ submissionPath, field: component.label ?? component.key, rules }] : []),
+      ...collectValidationDescriptors(component.components ?? [], submission),
+    ];
+  });
+
 /** Builds validation descriptors for the currently visible input components. */
-const deriveValidations = (activeComponents: Component[]): ValidationDescriptor[] => {
+const deriveValidations = (activeComponents: Component[], submission?: Submission): ValidationDescriptor[] => {
   const pathAwareComponents = activeComponents.some((component) => 'baseSubmissionPath' in component)
     ? activeComponents
     : enrichComponentsWithBaseSubmissionPath(activeComponents);
 
-  return flattenComponentsWithBaseSubmissionPath(pathAwareComponents)
-    .filter((component) => component.input)
-    .map((component) => ({
-      submissionPath: getResolvedSubmissionPath(component),
-      field: component.label ?? component.key,
-      rules: toRules(component),
-    }))
-    .filter(({ rules }) => Object.values(rules).some((rule) => rule !== undefined && rule !== false));
+  return collectValidationDescriptors(pathAwareComponents, submission);
 };
 
 export { deriveValidations };
