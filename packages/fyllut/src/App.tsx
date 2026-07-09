@@ -1,4 +1,4 @@
-import '@navikt/ds-css';
+import '@navikt/ds-css/dist/index.css';
 import { Theme } from '@navikt/ds-react';
 import { makeStyles, Styles } from '@navikt/skjemadigitalisering-shared-components';
 import { Route, Routes } from 'react-router';
