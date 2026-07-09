@@ -16,7 +16,9 @@ interface GetFormTranslationsProps {
 }
 const getFormTranslations = async (props: GetFormTranslationsProps) => {
   const { baseUrl, formPath, languageCodes } = props;
-  const targetUrl = `${baseUrl}/${formsUrl}/${formPath}/translations${buildLanguageCodesParam(languageCodes)}`;
+  const targetUrl = `${baseUrl}/${formsUrl}/${encodeURIComponent(formPath ?? '')}/translations${buildLanguageCodesParam(
+    languageCodes,
+  )}`;
   logger.info('Getting form translations', { formPath, languageCodes, targetUrl });
 
   return await http.get<FormsApiTranslation[]>(targetUrl);

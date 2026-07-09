@@ -31,7 +31,7 @@ interface GetFormProps {
 }
 const getForm = async <T = Form>(props: GetFormProps): Promise<T> => {
   const { baseUrl, formPath, select } = props;
-  const targetUrl = withSelect(`${baseUrl}/${formsUrl}/${formPath}`, select);
+  const targetUrl = withSelect(`${baseUrl}/${formsUrl}/${encodeURIComponent(formPath)}`, select);
   logger.info('Getting form', { formPath, select, targetUrl });
 
   return await http.get<T>(targetUrl);

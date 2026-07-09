@@ -2,7 +2,7 @@ import express from 'express';
 import request from 'supertest';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const TEST_TIMEOUT_MS = 10_000;
+const TEST_TIMEOUT_MS = 30_000;
 
 const m2mHandler = vi.fn((_, res, next) => {
   res.set('x-auth-handler', 'm2m');

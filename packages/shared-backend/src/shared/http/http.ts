@@ -37,8 +37,9 @@ function get(url: string, options: HttpOptions & { responseType: 'stream' }): Pr
 function get<T>(url: string, options: HttpOptions & { responseType: 'metadata' }): Promise<HttpMetadataResponse<T>>;
 function get<T>(url: string, options?: HttpOptions): Promise<T>;
 async function get<T>(url: string, options?: HttpOptions): Promise<T | HttpMetadataResponse<T> | HttpStreamResponse> {
-  logger.debug(`GET request to ${url}`);
-  const response = await fetch(url, {
+  const requestUrl = createRequestUrl(url);
+  logger.debug(`GET request to ${requestUrl}`);
+  const response = await fetch(requestUrl, {
     method: 'GET',
     headers: createHeaders(defaultOptions(options)),
     redirect: options?.redirect,
@@ -54,8 +55,9 @@ function post<T>(
 ): Promise<HttpMetadataResponse<T>>;
 function post<T>(url: string, body?: object, options?: HttpOptions): Promise<T>;
 async function post<T>(url: string, body?: object, options?: HttpOptions): Promise<T | HttpMetadataResponse<T>> {
-  logger.debug(`POST request to ${url}`);
-  const response = await fetch(url, {
+  const requestUrl = createRequestUrl(url);
+  logger.debug(`POST request to ${requestUrl}`);
+  const response = await fetch(requestUrl, {
     method: 'POST',
     headers: createHeaders(defaultOptions(options)),
     body: createBody(body, defaultOptions(options)),
@@ -72,8 +74,9 @@ function put<T>(
 ): Promise<HttpMetadataResponse<T>>;
 function put<T>(url: string, body?: object, options?: HttpOptions): Promise<T>;
 async function put<T>(url: string, body?: object, options?: HttpOptions): Promise<T | HttpMetadataResponse<T>> {
-  logger.debug(`PUT request to ${url}`);
-  const response = await fetch(url, {
+  const requestUrl = createRequestUrl(url);
+  logger.debug(`PUT request to ${requestUrl}`);
+  const response = await fetch(requestUrl, {
     method: 'PUT',
     headers: createHeaders(defaultOptions(options)),
     body: createBody(body, defaultOptions(options)),
@@ -90,8 +93,9 @@ function httpDelete<T>(
 ): Promise<HttpMetadataResponse<T>>;
 function httpDelete<T>(url: string, body?: object, options?: HttpOptions): Promise<T>;
 async function httpDelete<T>(url: string, body?: object, options?: HttpOptions): Promise<T | HttpMetadataResponse<T>> {
-  logger.debug(`DELETE request to ${url}`);
-  const response = await fetch(url, {
+  const requestUrl = createRequestUrl(url);
+  logger.debug(`DELETE request to ${requestUrl}`);
+  const response = await fetch(requestUrl, {
     method: 'DELETE',
     headers: createHeaders(defaultOptions(options)),
     body: createBody(body, defaultOptions(options)),
@@ -112,10 +116,11 @@ async function postMultipart<T>(
   body: FormData,
   options?: HttpOptions,
 ): Promise<T | HttpMetadataResponse<T>> {
-  logger.debug(`POST multipart request to ${url}`);
+  const requestUrl = createRequestUrl(url);
+  logger.debug(`POST multipart request to ${requestUrl}`);
   const multipartOptions = defaultOptions(options);
   const { contentType: _contentType, ...optionsWithoutContentType } = multipartOptions;
-  const response = await fetch(url, {
+  const response = await fetch(requestUrl, {
     method: 'POST',
     headers: createHeaders(optionsWithoutContentType),
     body,
@@ -124,6 +129,23 @@ async function postMultipart<T>(
 
   return (await handleResponse<T>(response, options)) as T | HttpMetadataResponse<T>;
 }
+
+const allowedRequestProtocols = new Set(['http:', 'https:']);
+
+const createRequestUrl = (url: string) => {
+  let requestUrl: URL;
+  try {
+    requestUrl = new URL(url);
+  } catch {
+    throw new ResponseError('BAD_REQUEST', 'Invalid request URL');
+  }
+
+  if (!allowedRequestProtocols.has(requestUrl.protocol) || requestUrl.username || requestUrl.password) {
+    throw new ResponseError('BAD_REQUEST', 'Invalid request URL');
+  }
+
+  return requestUrl.href;
+};
 
 const createHeaders = (options?: HttpOptions): HeadersInit => {
   const { accessToken, contentType, accept, formRevisionId, headers } = options ?? {};
