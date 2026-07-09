@@ -1,3 +1,4 @@
+import '@navikt/ds-tokens/dist/tokens.css';
 import FormErrorSummary from './components/error-summary/FormErrorSummary';
 import ValidationExclamationIcon from './components/icons/ValidationExclamationIcon';
 import { FormButtonRow, FormNextButton, FormPrevButton } from './components/layout/FormButtonRow';
