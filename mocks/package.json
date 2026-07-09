@@ -7,7 +7,7 @@
   "devDependencies": {
     "@mocks-server/main": "^4.1.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.3"
   },
   "scripts": {
     "mocks:fyllut": "pnpm exec ts-node mocks/server.ts",
