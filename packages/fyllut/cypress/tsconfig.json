@@ -5,7 +5,7 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
-    "types": ["cypress", "@testing-library/cypress", "cypress-wait-until"],
+    "types": ["cypress", "@testing-library/cypress"],
     "paths": {
       "@navikt/skjemadigitalisering-shared-frontend": ["../../shared-frontend/src"],
       "@navikt/skjemadigitalisering-shared-components": ["../../shared-components/src"],
