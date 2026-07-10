@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { FlattenedJWSInput, JWSHeaderParameters, createRemoteJWKSet, jwtVerify } from 'jose';
-import { GetKeyFunction } from 'jose/dist/types/types';
+import { createRemoteJWKSet, jwtVerify } from 'jose';
 import { config } from '../config/config';
 import { logger } from '../logger';
 import { appMetrics } from '../services';
@@ -8,9 +7,7 @@ import { IdportenTokenPayload } from '../types/custom';
 
 const { isDevelopment, mockIdportenJwt, mockIdportenPid } = config;
 
-const getIdportenRemoteJWKSet: GetKeyFunction<JWSHeaderParameters, FlattenedJWSInput> = createRemoteJWKSet(
-  new URL(config.idporten!.idportenJwksUri),
-);
+const getIdportenRemoteJWKSet = createRemoteJWKSet(new URL(config.idporten!.idportenJwksUri));
 
 const verifyToken = async (token: string): Promise<IdportenTokenPayload> => {
   const verified = await jwtVerify(token, getIdportenRemoteJWKSet, {
