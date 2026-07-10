@@ -2,7 +2,7 @@ import { Textarea } from '@navikt/ds-react';
 import { ChangeEvent } from 'react';
 import { useStateField } from '../../context/state/useStateField';
 import { inputId } from '../../utils/inputId';
-import InputBox from '../input/InputBox';
+import FormElementBox from '../form-element-box/FormElementBox';
 import TranslatedDescription from '../input/TranslatedDescription';
 import TranslatedLabel from '../input/TranslatedLabel';
 import { BaseFieldProps } from '../types';
@@ -29,7 +29,7 @@ const TextArea = ({
   };
 
   return (
-    <InputBox marginBottom={marginBottom}>
+    <FormElementBox marginBottom={marginBottom}>
       <Textarea
         id={inputId(statePath)}
         label={
@@ -44,7 +44,7 @@ const TextArea = ({
         readOnly={readOnly}
         maxLength={maxLength}
       />
-    </InputBox>
+    </FormElementBox>
   );
 };
 

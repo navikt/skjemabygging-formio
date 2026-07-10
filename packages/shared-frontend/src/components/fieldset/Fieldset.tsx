@@ -1,6 +1,7 @@
-import { Fieldset as AkselFieldset, Box } from '@navikt/ds-react';
+import { Fieldset as AkselFieldset } from '@navikt/ds-react';
 import { ReactNode } from 'react';
 import { useLanguage } from '../../context/language/LanguageContext';
+import FormElementBox from '../form-element-box/FormElementBox';
 import TranslatedDescription from '../input/TranslatedDescription';
 
 interface FieldsetProps {
@@ -14,7 +15,7 @@ const Fieldset = ({ legend, description, hideLegend, children }: FieldsetProps) 
   const { translate } = useLanguage();
 
   return (
-    <Box marginBlock="space-0 space-40">
+    <FormElementBox marginBottom="space-40">
       <AkselFieldset
         legend={translate(legend)}
         description={<TranslatedDescription>{description}</TranslatedDescription>}
@@ -22,7 +23,7 @@ const Fieldset = ({ legend, description, hideLegend, children }: FieldsetProps) 
       >
         {children}
       </AkselFieldset>
-    </Box>
+    </FormElementBox>
   );
 };
 

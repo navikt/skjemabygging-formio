@@ -1,4 +1,4 @@
-import { Spacing } from './input/InputBox';
+import { Spacing } from './form-element-box/FormElementBox';
 
 interface BaseFieldProps {
   statePath: string;

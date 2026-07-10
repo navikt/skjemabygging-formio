@@ -1,6 +1,6 @@
 import { Alert as AkselAlert } from '@navikt/ds-react';
 import { ReactNode } from 'react';
-import InputBox, { Spacing } from '../input/InputBox';
+import FormElementBox, { Spacing } from '../form-element-box/FormElementBox';
 
 type AlertVariant = 'info' | 'success' | 'warning' | 'error';
 
@@ -13,11 +13,11 @@ interface AlertProps {
 }
 
 const Alert = ({ variant, inline, size = 'medium', marginBottom, children }: AlertProps) => (
-  <InputBox marginBottom={marginBottom}>
+  <FormElementBox marginBottom={marginBottom}>
     <AkselAlert variant={variant} inline={inline} fullWidth={false} size={size}>
       {children}
     </AkselAlert>
-  </InputBox>
+  </FormElementBox>
 );
 
 export default Alert;

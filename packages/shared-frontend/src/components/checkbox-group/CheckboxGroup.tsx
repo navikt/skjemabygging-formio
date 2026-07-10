@@ -3,7 +3,7 @@ import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useStateField } from '../../context/state/useStateField';
 import { inputId } from '../../utils/inputId';
-import InputBox from '../input/InputBox';
+import FormElementBox from '../form-element-box/FormElementBox';
 import TranslatedDescription from '../input/TranslatedDescription';
 import TranslatedLabel from '../input/TranslatedLabel';
 import { BaseFieldProps } from '../types';
@@ -27,7 +27,7 @@ const CheckboxGroup = ({
   const current = Array.isArray(stateValue) ? stateValue : [];
 
   return (
-    <InputBox marginBottom={marginBottom}>
+    <FormElementBox marginBottom={marginBottom}>
       <AkselCheckboxGroup
         id={inputId(statePath)}
         legend={
@@ -47,7 +47,7 @@ const CheckboxGroup = ({
           </Checkbox>
         ))}
       </AkselCheckboxGroup>
-    </InputBox>
+    </FormElementBox>
   );
 };
 

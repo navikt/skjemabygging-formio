@@ -3,14 +3,14 @@ import { ReactNode } from 'react';
 
 type Spacing = 'space-16' | 'space-32' | 'space-40' | 'space-56';
 
-interface InputBoxProps {
+interface FormElementBoxProps {
   marginBottom?: Spacing;
   children?: ReactNode;
 }
 
-const InputBox = ({ marginBottom = 'space-32', children }: InputBoxProps) => (
+const FormElementBox = ({ marginBottom = 'space-32', children }: FormElementBoxProps) => (
   <Box marginBlock={`space-0 ${marginBottom}`}>{children}</Box>
 );
 
-export default InputBox;
-export type { InputBoxProps, Spacing };
+export default FormElementBox;
+export type { FormElementBoxProps, Spacing };
