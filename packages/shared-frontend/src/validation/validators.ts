@@ -18,6 +18,8 @@ interface ValidationRules {
   month?: boolean;
   monthMinYear?: number;
   monthMaxYear?: number;
+  organizationNumber?: boolean;
+  nationalIdentityNumber?: boolean;
 }
 
 interface RuleViolation {
@@ -59,6 +61,10 @@ const toSubmissionMonth = (value: string, locale: string) => {
   return monthIndex >= 0 ? `${year}-${String(monthIndex + 1).padStart(2, '0')}` : '';
 };
 
+interface ValidationOptions {
+  allowTestTypes?: boolean;
+}
+
 /**
  * Pure validation: returns the first violation (message key + params) for a value, or undefined.
  * Translation happens at the boundary (ValidationContext), so these stay framework-decoupled.
@@ -68,6 +74,7 @@ const validateValue = (
   field: string,
   rules: ValidationRules,
   currentLanguage: string = 'nb',
+  options: ValidationOptions = {},
 ): RuleViolation | undefined => {
   if (rules.required && validatorUtils.isEmpty(value)) {
     return { textKey: TEXTS.validering.required, params: { field } };
@@ -86,6 +93,16 @@ const validateValue = (
   }
   if (rules.coverPageValue && typeof value === 'string' && !validatorUtils.isValidCoverPageValue(value)) {
     return { textKey: TEXTS.validering.containsInvalidCharacters, params: { field } };
+  }
+  if (rules.organizationNumber && typeof value === 'string' && !validatorUtils.isOrganizationNumber(value)) {
+    return { textKey: TEXTS.validering.orgNrCustomError, params: { field } };
+  }
+  if (
+    rules.nationalIdentityNumber &&
+    typeof value === 'string' &&
+    !validatorUtils.isNationalIdentityNumber(value, { allowTestTypes: options.allowTestTypes })
+  ) {
+    return { textKey: TEXTS.validering.fodselsnummerDNummer, params: { field } };
   }
   if (rules.date && typeof value === 'string') {
     const normalizedDate = dateUtils.isValid(value, 'submission') ? value : dateUtils.toSubmissionDate(value);
@@ -169,4 +186,4 @@ const validateValue = (
 };
 
 export { validateValue };
-export type { RuleViolation, ValidationRules };
+export type { RuleViolation, ValidationOptions, ValidationRules };

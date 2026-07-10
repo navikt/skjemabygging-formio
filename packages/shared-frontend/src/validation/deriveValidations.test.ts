@@ -198,4 +198,78 @@ describe('deriveValidations', () => {
       },
     ]);
   });
+
+  it('adds organization number validation rule from component type', () => {
+    const components = [{ key: 'orgnr', label: 'Organization number', input: true, type: 'orgNr' }] as Component[];
+
+    expect(deriveValidations(components)).toEqual([
+      {
+        submissionPath: 'orgnr',
+        field: 'Organization number',
+        rules: {
+          required: undefined,
+          minLength: undefined,
+          maxLength: undefined,
+          email: undefined,
+          coverPageValue: undefined,
+          numberType: undefined,
+          min: undefined,
+          max: undefined,
+          year: undefined,
+          minYear: undefined,
+          maxYear: undefined,
+          date: undefined,
+          fromDate: undefined,
+          toDate: undefined,
+          month: undefined,
+          monthMinYear: undefined,
+          monthMaxYear: undefined,
+          organizationNumber: true,
+        },
+      },
+    ]);
+  });
+
+  it('expands identity into radio + national-identity-number when identity number is chosen', () => {
+    const components = [
+      { key: 'identity', type: 'identity', input: true, validate: { required: true } },
+    ] as unknown as Component[];
+
+    const result = deriveValidations(components, { data: { identity: { harDuFodselsnummer: 'ja' } } });
+
+    expect(result).toEqual([
+      { submissionPath: 'identity.harDuFodselsnummer', field: expect.any(String), rules: { required: true } },
+      {
+        submissionPath: 'identity.identitetsnummer',
+        field: expect.any(String),
+        rules: { required: true, nationalIdentityNumber: true },
+      },
+    ]);
+  });
+
+  it('expands identity into radio + birthdate when no identity number is chosen', () => {
+    const components = [
+      { key: 'identity', type: 'identity', input: true, validate: { required: true } },
+    ] as unknown as Component[];
+
+    const result = deriveValidations(components, { data: { identity: { harDuFodselsnummer: 'nei' } } });
+
+    expect(result).toHaveLength(2);
+    expect(result[1]).toMatchObject({
+      submissionPath: 'identity.fodselsdato',
+      rules: { required: true, date: true, fromDate: '1900-01-01' },
+    });
+  });
+
+  it('only validates the identity radio until an option is chosen', () => {
+    const components = [
+      { key: 'identity', type: 'identity', input: true, validate: { required: true } },
+    ] as unknown as Component[];
+
+    const result = deriveValidations(components, { data: { identity: {} } });
+
+    expect(result).toEqual([
+      { submissionPath: 'identity.harDuFodselsnummer', field: expect.any(String), rules: { required: true } },
+    ]);
+  });
 });

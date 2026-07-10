@@ -1,14 +1,13 @@
 import { FyllUtRouter, LanguagesProvider, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { Form, formioFormsApiUtils, I18nTranslations, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import useFormsApiForms from '../../api/useFormsApiForms';
 import { loadAllTranslations } from '../../api/useTranslations';
 import { NotFoundPage } from '../errors/NotFoundPage';
 import SubmissionMethodNotAllowed from '../SubmissionMethodNotAllowed';
-import FillInForm from './FillInForm';
 import FormPageSkeleton from './FormPageSkeleton';
-import NewRendererSubmissionMethodSelection from './NewRendererSubmissionMethodSelection';
+import RenderForm from './RenderForm';
 
 const FormPageWrapper = () => {
   const { formPath, '*': routePath } = useParams();
@@ -19,6 +18,7 @@ const FormPageWrapper = () => {
   const { submissionMethod, config } = useAppConfig();
   const useNewRenderer = !!formPath && (config?.newRenderForms ?? []).includes(formPath);
   const useLegacyPageForNewRenderer = routePath === 'legitimasjon';
+  const navForm = useMemo(() => (form ? formioFormsApiUtils.mapFormToNavForm(form) : undefined), [form]);
 
   const loadTranslations = useCallback(async () => {
     if (!formPath) {
@@ -86,32 +86,17 @@ const FormPageWrapper = () => {
     return <FormPageSkeleton />;
   }
 
-  if (!translations || !form) {
+  if (!translations || !form || !navForm) {
     return <NotFoundPage />;
   }
 
-  if (useNewRenderer && !submissionMethod) {
-    return (
-      <LanguagesProvider translations={translations}>
-        <NewRendererSubmissionMethodSelection form={form} />
-      </LanguagesProvider>
-    );
-  }
-
-  if (
-    submissionMethod &&
-    !navFormUtils.isSubmissionMethodAllowed(submissionMethod, formioFormsApiUtils.mapFormToNavForm(form))
-  ) {
+  if (submissionMethod && !navFormUtils.isSubmissionMethodAllowed(submissionMethod, navForm)) {
     return <SubmissionMethodNotAllowed submissionMethod={submissionMethod} />;
   }
 
   return (
     <LanguagesProvider translations={translations}>
-      {useNewRenderer && !useLegacyPageForNewRenderer ? (
-        <FillInForm form={form} />
-      ) : (
-        <FyllUtRouter form={formioFormsApiUtils.mapFormToNavForm(form)} />
-      )}
+      {useNewRenderer && !useLegacyPageForNewRenderer ? <RenderForm form={form} /> : <FyllUtRouter form={navForm} />}
     </LanguagesProvider>
   );
 };

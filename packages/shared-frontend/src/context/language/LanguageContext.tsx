@@ -10,7 +10,10 @@ interface Props extends FrameworkLanguage {
   children: ReactNode;
 }
 
-const LanguageContext = createContext<FrameworkLanguage>({} as FrameworkLanguage);
+const LanguageContext = createContext<FrameworkLanguage>({
+  translate: (text) => text ?? '',
+  currentLanguage: '',
+});
 
 const LanguageProvider = ({ children, translate, currentLanguage }: Props) => {
   return <LanguageContext.Provider value={{ translate, currentLanguage }}>{children}</LanguageContext.Provider>;

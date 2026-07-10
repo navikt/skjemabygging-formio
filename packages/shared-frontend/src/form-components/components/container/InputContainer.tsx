@@ -5,24 +5,17 @@ import RenderInputForm from '../../RenderInputForm';
 
 interface InputContainerProps {
   component: Component;
-  pageKey: string;
-  pageComponents: Component[];
   componentRegistry?: InputComponentRegistry;
 }
 
-const InputContainer = ({ component, pageKey, pageComponents, componentRegistry }: InputContainerProps) => {
+const InputContainer = ({ component, componentRegistry }: InputContainerProps) => {
   if (!component.components?.length) {
     return null;
   }
 
   return (
     <Box data-cy="input-container">
-      <RenderInputForm
-        pageKey={pageKey}
-        pageComponents={pageComponents}
-        components={component.components}
-        componentRegistry={componentRegistry}
-      />
+      <RenderInputForm components={component.components} componentRegistry={componentRegistry} />
     </Box>
   );
 };

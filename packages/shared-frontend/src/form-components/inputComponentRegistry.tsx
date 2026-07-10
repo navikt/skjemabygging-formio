@@ -1,217 +1,60 @@
-import { Component } from '@navikt/skjemadigitalisering-shared-domain';
-import { ComponentType } from 'react';
-import { getResolvedSubmissionPath } from '../context/form-definition/formDefinitionUtils';
 import InputAlert from './components/alert/InputAlert';
 import InputCheckbox from './components/checkbox/InputCheckbox';
 import InputContainer from './components/container/InputContainer';
+import InputCountrySelect from './components/country-select/InputCountrySelect';
+import InputCurrencySelect from './components/currency-select/InputCurrencySelect';
+import InputCurrency from './components/currency/InputCurrency';
 import InputDataGrid from './components/data-grid/InputDataGrid';
 import InputDatePicker from './components/date-picker/InputDatePicker';
+import InputEmail from './components/email/InputEmail';
+import InputFirstName from './components/first-name/InputFirstName';
 import InputFormGroup from './components/form-group/InputFormGroup';
 import InputHtmlElement from './components/html-element/InputHtmlElement';
+import InputIdentity from './components/identity/InputIdentity';
 import InputMonthPicker from './components/month-picker/InputMonthPicker';
+import InputNationalIdentityNumber from './components/national-identity-number/InputNationalIdentityNumber';
+import InputNumber from './components/number/InputNumber';
+import InputOrganizationNumber from './components/organization-number/InputOrganizationNumber';
 import InputRadio from './components/radio/InputRadio';
 import InputRow from './components/row/InputRow';
+import InputSelectBoxes from './components/select-boxes/InputSelectBoxes';
+import InputNavSelect from './components/select/InputNavSelect';
 import InputSelect from './components/select/InputSelect';
+import InputSurname from './components/surname/InputSurname';
 import InputTextArea from './components/text-area/InputTextArea';
 import InputTextField from './components/text-field/InputTextField';
-
-interface InputComponentProps {
-  component: Component;
-  submissionPath?: string;
-  pageKey: string;
-  pageComponents: Component[];
-  componentRegistry?: InputComponentRegistry;
-}
-
-type InputComponentRegistry = Record<string, ComponentType<InputComponentProps>>;
-
-const getValues = (component: Component) => component.values ?? component.data?.values ?? [];
-const isRequired = (component: Component) => component.validate?.required ?? false;
-const resolveSubmissionPath = (component: Component, submissionPath?: string) =>
-  submissionPath ?? getResolvedSubmissionPath(component);
-const resolveNumberFormatKey = (component: Component) => (component.inputType === 'numeric' ? 'number' : 'decimal');
-const resolveInputType = (component: Component) => {
-  if (component.inputType === 'email' || component.inputType === 'url' || component.inputType === 'tel') {
-    return component.inputType;
-  }
-};
-
-const TextFieldEntry = ({ component, submissionPath, pageKey, pageComponents }: InputComponentProps) => (
-  <InputTextField
-    pageKey={pageKey}
-    pageComponents={pageComponents}
-    submissionPath={resolveSubmissionPath(component, submissionPath)}
-    label={component.label}
-    description={component.description}
-    required={isRequired(component)}
-    autoComplete={component.autocomplete}
-    inputMode={component.inputType}
-    type={resolveInputType(component)}
-    spellCheck={component.spellCheck}
-  />
-);
-
-const NumberEntry = ({ component, submissionPath, pageKey, pageComponents }: InputComponentProps) => (
-  <InputTextField
-    pageKey={pageKey}
-    pageComponents={pageComponents}
-    submissionPath={resolveSubmissionPath(component, submissionPath)}
-    label={component.label}
-    description={component.description}
-    required={isRequired(component)}
-    autoComplete={component.autocomplete}
-    inputMode={component.inputType}
-    spellCheck={component.spellCheck}
-    formatKey={resolveNumberFormatKey(component)}
-  />
-);
-
-const YearEntry = ({ component, submissionPath, pageKey, pageComponents }: InputComponentProps) => (
-  <InputTextField
-    pageKey={pageKey}
-    pageComponents={pageComponents}
-    submissionPath={resolveSubmissionPath(component, submissionPath)}
-    label={component.label}
-    description={component.description}
-    required={isRequired(component)}
-    autoComplete={component.autocomplete}
-    inputMode={component.inputType}
-    spellCheck={component.spellCheck}
-  />
-);
-
-const DatePickerEntry = ({ component, submissionPath, pageKey, pageComponents }: InputComponentProps) => (
-  <InputDatePicker
-    component={component}
-    pageKey={pageKey}
-    pageComponents={pageComponents}
-    submissionPath={resolveSubmissionPath(component, submissionPath)}
-  />
-);
-
-const MonthPickerEntry = ({ component, submissionPath, pageKey, pageComponents }: InputComponentProps) => (
-  <InputMonthPicker
-    component={component}
-    pageKey={pageKey}
-    pageComponents={pageComponents}
-    submissionPath={resolveSubmissionPath(component, submissionPath)}
-  />
-);
-
-const TextAreaEntry = ({ component, submissionPath, pageKey, pageComponents }: InputComponentProps) => (
-  <InputTextArea
-    pageKey={pageKey}
-    pageComponents={pageComponents}
-    submissionPath={resolveSubmissionPath(component, submissionPath)}
-    label={component.label}
-    description={component.description}
-    required={isRequired(component)}
-    maxLength={component.validate?.maxLength}
-  />
-);
-
-const SelectEntry = ({ component, submissionPath, pageKey, pageComponents }: InputComponentProps) => (
-  <InputSelect
-    pageKey={pageKey}
-    pageComponents={pageComponents}
-    submissionPath={resolveSubmissionPath(component, submissionPath)}
-    label={component.label}
-    description={component.description}
-    values={getValues(component)}
-    required={isRequired(component)}
-  />
-);
-
-const RadioEntry = ({ component, submissionPath, pageKey, pageComponents }: InputComponentProps) => (
-  <InputRadio
-    pageKey={pageKey}
-    pageComponents={pageComponents}
-    submissionPath={resolveSubmissionPath(component, submissionPath)}
-    legend={component.label}
-    description={component.description}
-    values={getValues(component)}
-    required={isRequired(component)}
-  />
-);
-
-const CheckboxEntry = ({ component, submissionPath, pageKey, pageComponents }: InputComponentProps) => (
-  <InputCheckbox
-    pageKey={pageKey}
-    pageComponents={pageComponents}
-    submissionPath={resolveSubmissionPath(component, submissionPath)}
-    legend={component.label}
-    description={component.description}
-    values={getValues(component)}
-    required={isRequired(component)}
-  />
-);
-
-const HtmlElementEntry = ({ component }: InputComponentProps) => <InputHtmlElement component={component} />;
-
-const AlertEntry = ({ component }: InputComponentProps) => <InputAlert component={component} />;
-
-const ContainerEntry = ({ component, pageKey, pageComponents, componentRegistry }: InputComponentProps) => (
-  <InputContainer
-    component={component}
-    pageKey={pageKey}
-    pageComponents={pageComponents}
-    componentRegistry={componentRegistry}
-  />
-);
-
-const DataGridEntry = ({ component, pageKey, pageComponents, componentRegistry }: InputComponentProps) => (
-  <InputDataGrid
-    component={component}
-    pageKey={pageKey}
-    pageComponents={pageComponents}
-    componentRegistry={componentRegistry}
-  />
-);
-
-const FormGroupEntry = ({ component, pageKey, pageComponents, componentRegistry }: InputComponentProps) => (
-  <InputFormGroup
-    component={component}
-    pageKey={pageKey}
-    pageComponents={pageComponents}
-    componentRegistry={componentRegistry}
-  />
-);
-
-const RowEntry = ({ component, pageKey, pageComponents, componentRegistry }: InputComponentProps) => (
-  <InputRow
-    component={component}
-    pageKey={pageKey}
-    pageComponents={pageComponents}
-    componentRegistry={componentRegistry}
-  />
-);
+import InputYear from './components/year/InputYear';
+import { InputComponentProps, InputComponentRegistry } from './inputComponentRegistryUtils';
 
 const inputComponentRegistry: InputComponentRegistry = {
-  alertstripe: AlertEntry,
-  container: ContainerEntry,
-  datagrid: DataGridEntry,
-  htmlelement: HtmlElementEntry,
-  navSkjemagruppe: FormGroupEntry,
-  fieldset: FormGroupEntry,
-  row: RowEntry,
-  number: NumberEntry,
-  textfield: TextFieldEntry,
-  textarea: TextAreaEntry,
-  formioTextArea: TextAreaEntry,
-  select: SelectEntry,
-  navSelect: SelectEntry,
-  landvelger: SelectEntry,
-  valutavelger: SelectEntry,
-  radiopanel: RadioEntry,
-  navCheckbox: CheckboxEntry,
-  selectboxes: CheckboxEntry,
-  email: TextFieldEntry,
-  firstName: TextFieldEntry,
-  surname: TextFieldEntry,
-  currency: NumberEntry,
-  year: YearEntry,
-  navDatepicker: DatePickerEntry,
-  monthPicker: MonthPickerEntry,
+  alertstripe: InputAlert,
+  container: InputContainer,
+  datagrid: InputDataGrid,
+  htmlelement: InputHtmlElement,
+  navSkjemagruppe: InputFormGroup,
+  fieldset: InputFormGroup,
+  row: InputRow,
+  number: InputNumber,
+  textfield: InputTextField,
+  textarea: InputTextArea,
+  formioTextArea: InputTextArea,
+  select: InputSelect,
+  navSelect: InputNavSelect,
+  landvelger: InputCountrySelect,
+  valutavelger: InputCurrencySelect,
+  radiopanel: InputRadio,
+  navCheckbox: InputCheckbox,
+  selectboxes: InputSelectBoxes,
+  email: InputEmail,
+  firstName: InputFirstName,
+  surname: InputSurname,
+  currency: InputCurrency,
+  year: InputYear,
+  navDatepicker: InputDatePicker,
+  monthPicker: InputMonthPicker,
+  orgNr: InputOrganizationNumber,
+  fnrfield: InputNationalIdentityNumber,
+  identity: InputIdentity,
 };
 
 export { inputComponentRegistry };

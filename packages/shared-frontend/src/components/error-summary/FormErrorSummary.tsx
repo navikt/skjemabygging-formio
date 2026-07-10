@@ -3,7 +3,7 @@ import { Component, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { MouseEvent, useEffect, useRef } from 'react';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { FieldError, useValidation } from '../../context/validation/ValidationContext';
-import { inputId } from '../../form-components/input/inputId';
+import { inputId } from '../../utils/inputId';
 
 interface Props {
   pageKey?: string;
@@ -12,10 +12,6 @@ interface Props {
   onNavigateToField?: (error: FieldError, id: string) => void;
 }
 
-/**
- * Shown only after a next/submit/instructions trigger sets it visible. Sits above the bottom
- * navigation; focuses itself when it appears. Clears when errors are fixed or page left.
- */
 const FormErrorSummary = ({ pageKey, components, pages, onNavigateToField }: Props) => {
   const { getErrorsForPage, getErrorsForPages, shouldShowSummaryForPage, shouldShowSummaryForSummaryPage } =
     useValidation();

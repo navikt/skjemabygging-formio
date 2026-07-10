@@ -1,5 +1,6 @@
 import { Box, Button, Heading, Label } from '@navikt/ds-react';
 import { Component, submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import TranslatedDescription from '../../../components/input/TranslatedDescription';
 import {
   enrichComponentsWithBaseSubmissionPath,
   getResolvedSubmissionPath,
@@ -7,22 +8,21 @@ import {
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { createUpdatedSubmission, useSubmissionState } from '../../../context/state/SubmissionStateContext';
 import { useValidation } from '../../../context/validation/ValidationContext';
-import RenderInputForm from '../../RenderInputForm';
-import TranslatedDescription from '../../input/TranslatedDescription';
+import { useValidationScope } from '../../../context/validation/ValidationScopeContext';
 import { InputComponentRegistry } from '../../inputComponentRegistry';
+import RenderInputForm from '../../RenderInputForm';
 import styles from './InputDataGrid.module.css';
 
 interface InputDataGridProps {
   component: Component;
-  pageKey: string;
-  pageComponents: Component[];
   componentRegistry?: InputComponentRegistry;
 }
 
-const InputDataGrid = ({ component, pageKey, pageComponents, componentRegistry }: InputDataGridProps) => {
+const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => {
   const { translate } = useLanguage();
   const { submission, updateSubmission } = useSubmissionState();
   const { handleFieldChange } = useValidation();
+  const { pageKey, components: pageComponents } = useValidationScope();
   const { components, label, description, addAnother, removeAnother, disableAddingRemovingRows, rowTitle } = component;
   const submissionPath = getResolvedSubmissionPath(component);
   const rows = submissionUtils.getSubmissionValue(submissionPath, submission);
@@ -70,12 +70,7 @@ const InputDataGrid = ({ component, pageKey, pageComponents, componentRegistry }
                   </Button>
                 )}
               </div>
-              <RenderInputForm
-                pageKey={pageKey}
-                pageComponents={pageComponents}
-                components={rowComponents}
-                componentRegistry={componentRegistry}
-              />
+              <RenderInputForm components={rowComponents} componentRegistry={componentRegistry} />
             </div>
           );
         })}

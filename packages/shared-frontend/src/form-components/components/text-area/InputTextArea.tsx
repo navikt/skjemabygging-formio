@@ -1,56 +1,15 @@
-import { Textarea } from '@navikt/ds-react';
-import { Component } from '@navikt/skjemadigitalisering-shared-domain';
-import InputBox, { Spacing } from '../../input/InputBox';
-import TranslatedDescription from '../../input/TranslatedDescription';
-import TranslatedLabel from '../../input/TranslatedLabel';
-import { inputId } from '../../input/inputId';
-import { useTextInput } from '../../input/useTextInput';
+import TextArea from '../../../components/text-area/TextArea';
+import { InputComponentProps, isRequired, resolveSubmissionPath } from '../../inputComponentRegistryUtils';
 
-interface InputTextAreaProps {
-  pageKey: string;
-  pageComponents: Component[];
-  submissionPath: string;
-  label: string;
-  description?: string;
-  required?: boolean;
-  readOnly?: boolean;
-  maxLength?: number;
-  bottom?: Spacing;
-}
-
-const InputTextArea = ({
-  pageKey,
-  pageComponents,
-  submissionPath,
-  label,
-  description,
-  required = true,
-  readOnly,
-  maxLength,
-  bottom,
-}: InputTextAreaProps) => {
-  const { value, onChange, onBlur, error } = useTextInput({ pageKey, pageComponents, submissionPath });
-
-  return (
-    <InputBox bottom={bottom}>
-      <Textarea
-        id={inputId(submissionPath)}
-        label={
-          <TranslatedLabel required={required} readOnly={readOnly}>
-            {label}
-          </TranslatedLabel>
-        }
-        description={<TranslatedDescription>{description}</TranslatedDescription>}
-        value={value}
-        onChange={onChange}
-        onBlur={onBlur}
-        error={error}
-        readOnly={readOnly}
-        maxLength={maxLength}
-      />
-    </InputBox>
-  );
-};
+const InputTextArea = ({ component, submissionPath }: InputComponentProps) => (
+  <TextArea
+    statePath={resolveSubmissionPath(component, submissionPath)}
+    label={component.label}
+    description={component.description}
+    required={isRequired(component)}
+    readOnly={component.readOnly}
+    maxLength={component.validate?.maxLength}
+  />
+);
 
 export default InputTextArea;
-export type { InputTextAreaProps };

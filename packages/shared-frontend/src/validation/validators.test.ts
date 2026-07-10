@@ -73,4 +73,32 @@ describe('validateValue', () => {
       params: { field: 'Month', maxYear: 2025 },
     });
   });
+
+  it('validates organization number values', () => {
+    expect(validateValue('889640782', 'Organization number', { organizationNumber: true })).toBeUndefined();
+    expect(validateValue('889 640 782', 'Organization number', { organizationNumber: true })).toBeUndefined();
+    expect(validateValue('123456789', 'Organization number', { organizationNumber: true })).toEqual({
+      textKey: TEXTS.validering.orgNrCustomError,
+      params: { field: 'Organization number' },
+    });
+  });
+
+  it('validates national identity number values (fnr/dnr)', () => {
+    expect(validateValue('13097248022', 'Fnr', { nationalIdentityNumber: true })).toBeUndefined();
+    expect(validateValue('130972 48022', 'Fnr', { nationalIdentityNumber: true })).toBeUndefined();
+    expect(validateValue('53097248016', 'Fnr', { nationalIdentityNumber: true })).toBeUndefined();
+    expect(validateValue('13097248023', 'Fnr', { nationalIdentityNumber: true })).toEqual({
+      textKey: TEXTS.validering.fodselsnummerDNummer,
+      params: { field: 'Fnr' },
+    });
+  });
+
+  it('rejects test-type identity numbers unless allowTestTypes is set', () => {
+    const hnr = '13527248013';
+    expect(validateValue(hnr, 'Fnr', { nationalIdentityNumber: true }, 'nb', { allowTestTypes: false })).toEqual({
+      textKey: TEXTS.validering.fodselsnummerDNummer,
+      params: { field: 'Fnr' },
+    });
+    expect(validateValue(hnr, 'Fnr', { nationalIdentityNumber: true }, 'nb', { allowTestTypes: true })).toBeUndefined();
+  });
 });

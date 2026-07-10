@@ -16,11 +16,15 @@ across fyllut, the static-PDF page, and bygger. It is decoupled: no
 
 ## Structure
 
-- `context/` — four split contexts to limit re-renders: `submission`,
-  `form-definition`, `validation`, `language`, plus `app-config` and
-  `FormFrameworkProvider` (composes them). `submission-init/initializeSubmission`
-  resolves the start state: resumed answers win, prefill/defaults fill only empty
-  fields.
+- `context/` — split contexts to limit re-renders: `submission`,
+  `form-definition`, `validation`, `language`, `app-config`, `persistence`, and
+  the generic pluggable `state` store. Each is exported as its own Provider; the
+  host app (fyllut `FillInForm`, bygger preview) composes them inline so each
+  surface controls language source, state store, and provider order. The Aksel
+  `Provider` (locale) and shared-frontend `LanguageProvider` are fed by the
+  caller's language context, so bygger's live editor translations work.
+  `submission-init/initializeSubmission` resolves the start state: resumed
+  answers win, prefill/defaults fill only empty fields.
 - `validation/` — pure `validators` + `deriveValidations` (visible components →
   descriptors). Non-numeric `min/maxLength` (form-builder `''`) are ignored.
 - `formatting/` — on-blur formatters; never reformat onChange, reformat onBlur.
@@ -28,6 +32,10 @@ across fyllut, the static-PDF page, and bygger. It is decoupled: no
   `RenderInputComponent`. `wizard/useWizardController` drives panels/next/prev.
 
 ## Adding an input component
+
+See the `create-shared-frontend-component` skill for the full recipe and
+conventions (two-layer architecture, validation/error rules, formatting
+contract). In short:
 
 1. Add `Input<Component>.tsx` under `form-components/components/<kebab>/`.
 2. Register its form type(s) in `inputComponentRegistry.tsx`.

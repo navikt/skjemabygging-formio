@@ -1,16 +1,14 @@
 import { Box, Label } from '@navikt/ds-react';
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import { CSSProperties } from 'react';
+import TranslatedDescription from '../../../components/input/TranslatedDescription';
 import { useLanguage } from '../../../context/language/LanguageContext';
-import RenderInputForm from '../../RenderInputForm';
-import TranslatedDescription from '../../input/TranslatedDescription';
 import { InputComponentRegistry } from '../../inputComponentRegistry';
+import RenderInputForm from '../../RenderInputForm';
 import styles from './InputRow.module.css';
 
 interface InputRowProps {
   component: Component;
-  pageKey: string;
-  pageComponents: Component[];
   componentRegistry?: InputComponentRegistry;
 }
 
@@ -26,7 +24,7 @@ const getChildStyle = (component: Component): CSSProperties | undefined => {
   };
 };
 
-const InputRow = ({ component, pageKey, pageComponents, componentRegistry }: InputRowProps) => {
+const InputRow = ({ component, componentRegistry }: InputRowProps) => {
   const { translate } = useLanguage();
   const { components, label, hideLabel, description } = component;
 
@@ -53,12 +51,7 @@ const InputRow = ({ component, pageKey, pageComponents, componentRegistry }: Inp
             className={styles.field}
             style={getChildStyle(childComponent)}
           >
-            <RenderInputForm
-              pageKey={pageKey}
-              pageComponents={pageComponents}
-              components={[childComponent]}
-              componentRegistry={componentRegistry}
-            />
+            <RenderInputForm components={[childComponent]} componentRegistry={componentRegistry} />
           </div>
         ))}
       </div>

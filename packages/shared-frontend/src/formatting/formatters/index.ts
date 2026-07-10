@@ -1,3 +1,5 @@
+import { formatUtils } from '@navikt/skjemadigitalisering-shared-domain';
+
 /**
  * On-blur formatters. Each takes the raw user string and returns the component's default display
  * format. They are forgiving on input (accept several spacings) but normalize the output.
@@ -12,6 +14,8 @@ const identityNumber: Formatter = (value) => {
 };
 
 const phoneNumber: Formatter = (value) => digitsOnly(value);
+
+const organizationNumber: Formatter = (value) => formatUtils.formatOrganizationNumber(digitsOnly(value));
 
 const number: Formatter = (value) => {
   const cleaned = digitsOnly(value);
@@ -29,9 +33,10 @@ const decimal: Formatter = (value) => {
 const formatters: Record<string, Formatter> = {
   identityNumber,
   phoneNumber,
+  organizationNumber,
   number,
   decimal,
 };
 
-export { decimal, formatters, identityNumber, number, phoneNumber };
+export { decimal, formatters, identityNumber, number, organizationNumber, phoneNumber };
 export type { Formatter };

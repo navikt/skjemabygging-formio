@@ -1,10 +1,14 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
+import { ReactNode } from 'react';
+import { ValidationScopeProvider } from '../context/validation/ValidationScopeContext';
 import RenderInputComponent from './RenderInputComponent';
 import { inputComponentRegistry, InputComponentRegistry } from './inputComponentRegistry';
 
 interface Props {
-  pageKey: string;
-  pageComponents: Component[];
+  // Scope props are only supplied by the top-level (page) render. Nested renders (container, row,
+  // datagrid, ...) omit them and inherit the validation scope from context.
+  pageKey?: string;
+  pageComponents?: Component[];
   components: Component[];
   componentRegistry?: InputComponentRegistry;
 }
@@ -17,32 +21,35 @@ const RenderInputForm = ({
   components,
   componentRegistry = inputComponentRegistry,
 }: Props) => {
-  return (
+  const content = (
     <>
       {components.map((component) => {
         if (!componentRegistry[component.type] && component.components?.length) {
           return (
             <RenderInputForm
               key={component.key}
-              pageKey={pageKey}
-              pageComponents={pageComponents}
               components={component.components ?? []}
               componentRegistry={componentRegistry}
             />
           );
         }
-        return (
-          <RenderInputComponent
-            key={component.key}
-            component={component}
-            pageKey={pageKey}
-            pageComponents={pageComponents}
-            componentRegistry={componentRegistry}
-          />
-        );
+        return <RenderInputComponent key={component.key} component={component} componentRegistry={componentRegistry} />;
       })}
     </>
   );
+
+  return withScope(pageKey, pageComponents, content);
+};
+
+const withScope = (pageKey: string | undefined, pageComponents: Component[] | undefined, content: ReactNode) => {
+  if (pageKey !== undefined && pageComponents !== undefined) {
+    return (
+      <ValidationScopeProvider pageKey={pageKey} components={pageComponents}>
+        {content}
+      </ValidationScopeProvider>
+    );
+  }
+  return content;
 };
 
 export default RenderInputForm;

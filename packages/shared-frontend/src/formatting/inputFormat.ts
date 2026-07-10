@@ -2,8 +2,11 @@ import { Formatter, formatters } from './formatters';
 
 /**
  * input <-> submission formatting contract:
- *  - never reformat while typing (onChange keeps the user's raw value),
- *  - reformat to the component default on blur,
+ *  - never reformat the *displayed* value while typing (the input keeps the user's raw keystrokes),
+ *  - the value stored in state is normalized to submission format on every change, so consumers
+ *    (validation, conditionals, autosave) always see canonical data. Formatters are forgiving, so a
+ *    partial/invalid value passes through ~unchanged until it becomes valid,
+ *  - reformat the displayed value to the component default on blur,
  *  - convert submission value to input format when a field first shows on a page.
  *
  * Input and submission format are the same default string today, so a missing formatter is

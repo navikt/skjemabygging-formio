@@ -1,7 +1,7 @@
 import { Box } from '@navikt/ds-react';
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import { useLanguage } from '../../../context/language/LanguageContext';
-import { sanitizeHtml } from '../../shared/sanitizeHtml';
+import { sanitizeHtml } from '../../../utils/sanitizeHtml';
 
 interface InputHtmlElementProps {
   component: Component;

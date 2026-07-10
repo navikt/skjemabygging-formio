@@ -1,14 +1,13 @@
-import { Alert } from '@navikt/ds-react';
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
+import Alert, { AlertVariant } from '../../../components/alert/Alert';
 import { useLanguage } from '../../../context/language/LanguageContext';
-import InputBox from '../../input/InputBox';
-import { sanitizeHtml } from '../../shared/sanitizeHtml';
+import { sanitizeHtml } from '../../../utils/sanitizeHtml';
 
 interface InputAlertProps {
   component: Component;
 }
 
-const getVariant = (alertType?: string) => {
+const getVariant = (alertType?: string): AlertVariant => {
   switch (alertType) {
     case 'suksess':
       return 'success';
@@ -29,11 +28,9 @@ const InputAlert = ({ component }: InputAlertProps) => {
   }
 
   return (
-    <InputBox>
-      <Alert variant={getVariant(component.alerttype)} inline={component.isInline} fullWidth={false} size="medium">
-        <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(translate(component.content)) }} />
-      </Alert>
-    </InputBox>
+    <Alert variant={getVariant(component.alerttype)} inline={component.isInline}>
+      <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(translate(component.content)) }} />
+    </Alert>
   );
 };
 

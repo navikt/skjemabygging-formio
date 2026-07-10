@@ -1,6 +1,7 @@
-import { Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import { Submission, submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, Dispatch, ReactNode, SetStateAction, useCallback, useContext, useMemo, useState } from 'react';
 
+import { StateStoreProvider } from './StateContext';
 import { parseSubmissionPath, removeDeepValue, setDeepValue } from './stateHelpers';
 
 interface SubmissionStateContextType {
@@ -47,7 +48,24 @@ const SubmissionStateProvider = ({ children, initialSubmission }: Props) => {
     [submission, updateSubmission, clearSubmissionPaths],
   );
 
-  return <SubmissionStateContext.Provider value={value}>{children}</SubmissionStateContext.Provider>;
+  // Fyllut's implementation of the generic field state store. setValue updates the submission and
+  // returns the next submission snapshot so scope-aware validation can revalidate synchronously.
+  const store = useMemo(
+    () => ({
+      getValue: (statePath: string) => submissionUtils.getSubmissionValue(statePath, submission),
+      setValue: (statePath: string, fieldValue: unknown): Submission => {
+        updateSubmission(statePath, fieldValue);
+        return createUpdatedSubmission(submission, statePath, fieldValue);
+      },
+    }),
+    [submission, updateSubmission],
+  );
+
+  return (
+    <SubmissionStateContext.Provider value={value}>
+      <StateStoreProvider store={store}>{children}</StateStoreProvider>
+    </SubmissionStateContext.Provider>
+  );
 };
 
 const useSubmissionState = () => useContext(SubmissionStateContext);

@@ -2,6 +2,7 @@ import { Component, Submission, submissionUtils } from '@navikt/skjemadigitalise
 import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 import { deriveValidations } from '../../validation/deriveValidations';
 import { validateValue } from '../../validation/validators';
+import { useAppConfig } from '../app-config/AppConfigContext';
 import { useLanguage } from '../language/LanguageContext';
 import { useSubmissionState } from '../state/SubmissionStateContext';
 
@@ -14,6 +15,26 @@ interface FieldError {
 
 type ValidationPage = { pageKey: string; components: Component[] };
 type SummaryScope = { type: 'page'; pageKey: string } | { type: 'summary' } | undefined;
+
+const togglePageInSet = (pages: Set<string>, pageKey: string, shouldContain: boolean): Set<string> => {
+  if (pages.has(pageKey) === shouldContain) {
+    return pages;
+  }
+  const next = new Set(pages);
+  if (shouldContain) {
+    next.add(pageKey);
+  } else {
+    next.delete(pageKey);
+  }
+  return next;
+};
+
+const replacePageSet = (pages: Set<string>, nextPages: Set<string>): Set<string> => {
+  if (pages.size === nextPages.size && [...nextPages].every((pageKey) => pages.has(pageKey))) {
+    return pages;
+  }
+  return nextPages;
+};
 
 interface ValidationContextType {
   pagesWithErrors: Set<string>;
@@ -41,6 +62,8 @@ const ValidationContext = createContext<ValidationContextType>({} as ValidationC
 const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
   const { currentLanguage, translate } = useLanguage();
   const { submission } = useSubmissionState();
+  const { config } = useAppConfig();
+  const allowTestTypes = config?.NAIS_CLUSTER_NAME !== 'prod-gcp';
   const [pagesWithErrors, setPagesWithErrors] = useState<Set<string>>(() => new Set(initialPagesWithErrors ?? []));
   const [summaryScope, setSummaryScope] = useState<SummaryScope>(undefined);
 
@@ -52,13 +75,14 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
           field,
           rules,
           currentLanguage,
+          { allowTestTypes },
         );
         if (violation) {
           acc.push({ pageKey, submissionPath, field, message: translate(violation.textKey, violation.params) });
         }
         return acc;
       }, []),
-    [currentLanguage, translate],
+    [allowTestTypes, currentLanguage, translate],
   );
 
   const getErrorsForPage = useCallback(
@@ -75,12 +99,7 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
   const validatePage = useCallback(
     (pageKey: string, components: Component[]) => {
       const pageErrors = computeErrors(pageKey, components, submission);
-      setPagesWithErrors((prev) => {
-        const next = new Set(prev);
-        if (pageErrors.length > 0) next.add(pageKey);
-        else next.delete(pageKey);
-        return next;
-      });
+      setPagesWithErrors((prev) => togglePageInSet(prev, pageKey, pageErrors.length > 0));
       setSummaryScope(pageErrors.length > 0 ? { type: 'page', pageKey } : undefined);
       return pageErrors.length === 0;
     },
@@ -94,7 +113,7 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
         const pageErrors = computeErrors(pageKey, components, submission);
         if (pageErrors.length > 0) failedPages.add(pageKey);
       });
-      setPagesWithErrors(failedPages);
+      setPagesWithErrors((prev) => replacePageSet(prev, failedPages));
       setSummaryScope(failedPages.size > 0 ? { type: 'summary' } : undefined);
       return failedPages.size === 0;
     },
@@ -122,12 +141,7 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
   const updatePageValidationState = useCallback(
     (pageKey: string, components: Component[], activeSubmission: Submission | undefined) => {
       const pageErrors = computeErrors(pageKey, components, activeSubmission);
-      setPagesWithErrors((prev) => {
-        const next = new Set(prev);
-        if (pageErrors.length > 0) next.add(pageKey);
-        else next.delete(pageKey);
-        return next;
-      });
+      setPagesWithErrors((prev) => togglePageInSet(prev, pageKey, pageErrors.length > 0));
       setSummaryScope((prev) => {
         if (prev?.type === 'page' && prev.pageKey === pageKey) {
           return pageErrors.length > 0 ? prev : undefined;

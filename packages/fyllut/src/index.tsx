@@ -52,7 +52,7 @@ const ConfiguredApp = ({ dokumentinnsendingBaseURL, config }: ConfiguredAppProps
       fyllutBaseURL={'/fyllut'}
       submissionMethod={submissionMethod ?? subissionMethod}
       app="fyllut"
-      config={{ ...config }}
+      config={config}
       http={httpFyllut}
     >
       {config.isDelingslenke && <ConfirmDelingslenkeModal />}
