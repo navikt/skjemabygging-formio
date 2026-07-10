@@ -1,6 +1,6 @@
 import { Box, Button, Heading, Label } from '@navikt/ds-react';
 import { Component, submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import TranslatedDescription from '../../../components/input/TranslatedDescription';
+import TranslatedDescription from '../../../components/shared/TranslatedDescription';
 import {
   enrichComponentsWithBaseSubmissionPath,
   getResolvedSubmissionPath,

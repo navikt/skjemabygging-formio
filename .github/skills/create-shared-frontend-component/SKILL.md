@@ -174,10 +174,10 @@ not in this skill.
    `statePath`, `label?`, `description?`, `required?`, `readOnly?`,
    `marginBottom?`) and
    add input-specific props on top (narrow `label` to required where needed);
-   bind with `useStateField`; use `FormElementBox`
-   (in `src/components/form-element-box/` — the shared bottom-spacing wrapper for
-   all form elements, inputs and Fieldset alike), `TranslatedLabel`,
-   `TranslatedDescription` (both in `src/components/input/`), and
+   bind with `useStateField`; use `FormElementBox`,
+   `TranslatedLabel`, and `TranslatedDescription` from
+   `src/components/shared/` (internal helper UI; `FormElementBox` is the shared
+   bottom-spacing wrapper for all form elements, inputs and Fieldset alike), and
    `inputId(statePath)` (from `src/utils/`) for the field id.
 3. **Adapter** `form-components/components/<kebab>/Input<Name>.tsx`: map
    `component` → props with the helpers in `inputComponentRegistryUtils.ts`

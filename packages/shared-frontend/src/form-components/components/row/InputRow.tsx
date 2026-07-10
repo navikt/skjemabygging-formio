@@ -1,7 +1,7 @@
 import { Box, Label } from '@navikt/ds-react';
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import { CSSProperties } from 'react';
-import TranslatedDescription from '../../../components/input/TranslatedDescription';
+import TranslatedDescription from '../../../components/shared/TranslatedDescription';
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { InputComponentRegistry } from '../../inputComponentRegistry';
 import RenderInputForm from '../../RenderInputForm';

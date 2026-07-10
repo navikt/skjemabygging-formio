@@ -3,9 +3,9 @@ import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useStateField } from '../../context/state/useStateField';
 import { inputId } from '../../utils/inputId';
-import FormElementBox from '../form-element-box/FormElementBox';
-import TranslatedDescription from '../input/TranslatedDescription';
-import TranslatedLabel from '../input/TranslatedLabel';
+import FormElementBox from '../shared/FormElementBox';
+import TranslatedDescription from '../shared/TranslatedDescription';
+import TranslatedLabel from '../shared/TranslatedLabel';
 import { BaseFieldProps } from '../types';
 
 interface RadioGroupProps extends Omit<BaseFieldProps, 'label'> {

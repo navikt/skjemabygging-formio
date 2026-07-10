@@ -7,8 +7,12 @@ describe('New renderer path', () => {
   beforeEach(() => {
     cy.intercept('GET', '/fyllut/api/config*', (req) => {
       req.headers['accept-encoding'] = 'identity';
+      delete req.headers['if-none-match'];
+      delete req.headers['if-modified-since'];
       req.continue((res) => {
-        res.body.newRenderForms = ['newrender'];
+        if (typeof res.body === 'object' && res.body !== null) {
+          res.body.newRenderForms = ['newrender'];
+        }
       });
     });
     cy.intercept('POST', '/fyllut/api/log*', { body: 'ok' });

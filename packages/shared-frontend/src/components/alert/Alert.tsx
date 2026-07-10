@@ -1,6 +1,6 @@
 import { Alert as AkselAlert } from '@navikt/ds-react';
 import { ReactNode } from 'react';
-import FormElementBox, { Spacing } from '../form-element-box/FormElementBox';
+import FormElementBox, { Spacing } from '../shared/FormElementBox';
 
 type AlertVariant = 'info' | 'success' | 'warning' | 'error';
 

@@ -1,8 +1,8 @@
 import { Fieldset as AkselFieldset } from '@navikt/ds-react';
 import { ReactNode } from 'react';
 import { useLanguage } from '../../context/language/LanguageContext';
-import FormElementBox from '../form-element-box/FormElementBox';
-import TranslatedDescription from '../input/TranslatedDescription';
+import FormElementBox from '../shared/FormElementBox';
+import TranslatedDescription from '../shared/TranslatedDescription';
 
 interface FieldsetProps {
   legend: string;
