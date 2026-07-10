@@ -128,4 +128,74 @@ describe('deriveValidations', () => {
       },
     ]);
   });
+
+  it('adds datepicker and month picker rules from component settings', () => {
+    const components = [
+      {
+        key: 'fromDate',
+        label: 'From date',
+        input: true,
+        type: 'navDatepicker',
+        validate: { required: true },
+        specificEarliestAllowedDate: '2024-01-01',
+        specificLatestAllowedDate: '2024-12-31',
+      },
+      {
+        key: 'month',
+        label: 'Month',
+        input: true,
+        type: 'monthPicker',
+        validate: { minYear: 2020, maxYear: 2025 },
+      },
+    ] as unknown as Component[];
+
+    expect(deriveValidations(components)).toEqual([
+      {
+        submissionPath: 'fromDate',
+        field: 'From date',
+        rules: {
+          required: true,
+          minLength: undefined,
+          maxLength: undefined,
+          email: undefined,
+          coverPageValue: undefined,
+          numberType: undefined,
+          min: undefined,
+          max: undefined,
+          year: undefined,
+          minYear: undefined,
+          maxYear: undefined,
+          date: true,
+          fromDate: '2024-01-01',
+          toDate: '2024-12-31',
+          month: undefined,
+          monthMinYear: undefined,
+          monthMaxYear: undefined,
+        },
+      },
+      {
+        submissionPath: 'month',
+        field: 'Month',
+        rules: {
+          required: undefined,
+          minLength: undefined,
+          maxLength: undefined,
+          email: undefined,
+          coverPageValue: undefined,
+          numberType: undefined,
+          min: undefined,
+          max: undefined,
+          year: undefined,
+          minYear: 2020,
+          maxYear: 2025,
+          date: undefined,
+          fromDate: undefined,
+          toDate: undefined,
+          month: true,
+          monthMinYear: 2020,
+          monthMaxYear: 2025,
+        },
+      },
+    ]);
+  });
 });

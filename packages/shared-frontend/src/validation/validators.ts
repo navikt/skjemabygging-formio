@@ -1,4 +1,4 @@
-import { formatUtils, numberUtils, TEXTS, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { dateUtils, formatUtils, numberUtils, TEXTS, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
 
 interface ValidationRules {
   required?: boolean;
@@ -12,6 +12,12 @@ interface ValidationRules {
   year?: boolean;
   minYear?: number;
   maxYear?: number;
+  date?: boolean;
+  fromDate?: string;
+  toDate?: string;
+  month?: boolean;
+  monthMinYear?: number;
+  monthMaxYear?: number;
 }
 
 interface RuleViolation {
@@ -19,11 +25,50 @@ interface RuleViolation {
   params: Record<string, string | number>;
 }
 
+const normalizeMonthName = (value: string) => value.toLowerCase().replace(/\.$/, '').trim();
+
+const toSubmissionMonth = (value: string, locale: string) => {
+  if (dateUtils.isValidMonthSubmission(value)) {
+    return value;
+  }
+
+  const trimmedValue = value.trim();
+  const numericMonthMatch = /^(\d{2})[./\- ](\d{4})$/.exec(trimmedValue);
+  if (numericMonthMatch) {
+    const [, month, year] = numericMonthMatch;
+    return Number(month) >= 1 && Number(month) <= 12 ? `${year}-${month}` : '';
+  }
+
+  const monthNameMatch = /^(.+)\s+(\d{4})$/.exec(trimmedValue);
+  if (!monthNameMatch) {
+    return '';
+  }
+
+  const [, monthName, year] = monthNameMatch;
+  const normalizedMonthName = normalizeMonthName(monthName);
+  const monthIndex = Array.from({ length: 12 }, (_, index) => index).findIndex((index) => {
+    const date = new Date(Date.UTC(2024, index, 1));
+    return [
+      new Intl.DateTimeFormat(locale, { month: 'long' }).format(date),
+      new Intl.DateTimeFormat(locale, { month: 'short' }).format(date),
+    ]
+      .map(normalizeMonthName)
+      .includes(normalizedMonthName);
+  });
+
+  return monthIndex >= 0 ? `${year}-${String(monthIndex + 1).padStart(2, '0')}` : '';
+};
+
 /**
  * Pure validation: returns the first violation (message key + params) for a value, or undefined.
  * Translation happens at the boundary (ValidationContext), so these stay framework-decoupled.
  */
-const validateValue = (value: unknown, field: string, rules: ValidationRules): RuleViolation | undefined => {
+const validateValue = (
+  value: unknown,
+  field: string,
+  rules: ValidationRules,
+  currentLanguage: string = 'nb',
+): RuleViolation | undefined => {
   if (rules.required && validatorUtils.isEmpty(value)) {
     return { textKey: TEXTS.validering.required, params: { field } };
   }
@@ -41,6 +86,49 @@ const validateValue = (value: unknown, field: string, rules: ValidationRules): R
   }
   if (rules.coverPageValue && typeof value === 'string' && !validatorUtils.isValidCoverPageValue(value)) {
     return { textKey: TEXTS.validering.containsInvalidCharacters, params: { field } };
+  }
+  if (rules.date && typeof value === 'string') {
+    const normalizedDate = dateUtils.isValid(value, 'submission') ? value : dateUtils.toSubmissionDate(value);
+    if (!dateUtils.isValid(normalizedDate, 'submission')) {
+      return { textKey: 'invalid_date', params: { field } };
+    }
+    if (rules.fromDate && dateUtils.isBeforeDate(normalizedDate, rules.fromDate)) {
+      return {
+        textKey: 'minDate',
+        params: { field, minDate: dateUtils.toLocaleDate(rules.fromDate) },
+      };
+    }
+    if (rules.toDate && dateUtils.isBeforeDate(rules.toDate, normalizedDate)) {
+      return {
+        textKey: 'maxDate',
+        params: { field, maxDate: dateUtils.toLocaleDate(rules.toDate) },
+      };
+    }
+  }
+  if (rules.month && typeof value === 'string') {
+    const locale = currentLanguage === 'en' ? 'en-US' : currentLanguage === 'nn' ? 'nn-NO' : 'nb-NO';
+    const normalizedMonth = toSubmissionMonth(value, locale);
+    if (!dateUtils.isValidMonthSubmission(normalizedMonth)) {
+      return { textKey: 'invalid_date', params: { field } };
+    }
+    if (
+      rules.monthMinYear !== undefined &&
+      dateUtils.isBeforeDate(normalizedMonth, dateUtils.startOfYear(String(rules.monthMinYear)).toISODate() ?? '')
+    ) {
+      return {
+        textKey: TEXTS.validering.minYear,
+        params: { field, minYear: rules.monthMinYear },
+      };
+    }
+    if (
+      rules.monthMaxYear !== undefined &&
+      dateUtils.isAfterDate(normalizedMonth, dateUtils.endOfYear(String(rules.monthMaxYear)).toISODate() ?? '')
+    ) {
+      return {
+        textKey: TEXTS.validering.maxYear,
+        params: { field, maxYear: rules.monthMaxYear },
+      };
+    }
   }
   if (rules.year && value !== undefined) {
     const normalizedYear = String(value).replace(/\s+/g, '');

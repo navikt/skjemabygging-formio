@@ -3,6 +3,12 @@ import {
   enrichComponentsWithBaseSubmissionPath,
   getResolvedSubmissionPath,
 } from '../context/form-definition/formDefinitionUtils';
+import {
+  getDatePickerFromDate,
+  getDatePickerToDate,
+  getMonthPickerMaxYear,
+  getMonthPickerMinYear,
+} from '../form-components/components/date/dateFieldUtils';
 import { ValidationRules } from './validators';
 
 interface ValidationDescriptor {
@@ -11,7 +17,7 @@ interface ValidationDescriptor {
   rules: ValidationRules;
 }
 
-const toRules = (component: Component): ValidationRules => ({
+const toRules = (component: Component, pageComponents: Component[], submission?: Submission): ValidationRules => ({
   required: component.validate?.required,
   minLength: typeof component.validate?.minLength === 'number' ? component.validate.minLength : undefined,
   maxLength: typeof component.validate?.maxLength === 'number' ? component.validate.maxLength : undefined,
@@ -28,13 +34,24 @@ const toRules = (component: Component): ValidationRules => ({
   year: component.type === 'year' ? true : undefined,
   minYear: typeof component.validate?.minYear === 'number' ? component.validate.minYear : undefined,
   maxYear: typeof component.validate?.maxYear === 'number' ? component.validate.maxYear : undefined,
+  date: component.type === 'navDatepicker' ? true : undefined,
+  fromDate:
+    component.type === 'navDatepicker' ? getDatePickerFromDate(component, pageComponents, submission) : undefined,
+  toDate: component.type === 'navDatepicker' ? getDatePickerToDate(component) : undefined,
+  month: component.type === 'monthPicker' ? true : undefined,
+  monthMinYear: component.type === 'monthPicker' ? getMonthPickerMinYear(component) : undefined,
+  monthMaxYear: component.type === 'monthPicker' ? getMonthPickerMaxYear(component) : undefined,
 });
 
 const hasRules = (rules: ValidationRules) => Object.values(rules).some((rule) => rule !== undefined && rule !== false);
 
-const collectValidationDescriptors = (components: Component[], submission?: Submission): ValidationDescriptor[] =>
+const collectValidationDescriptors = (
+  components: Component[],
+  submission?: Submission,
+  pageComponents: Component[] = components,
+): ValidationDescriptor[] =>
   components.flatMap((component) => {
-    const rules = toRules(component);
+    const rules = toRules(component, pageComponents, submission);
     const submissionPath = getResolvedSubmissionPath(component);
 
     if (component.type === 'datagrid') {
@@ -47,13 +64,14 @@ const collectValidationDescriptors = (components: Component[], submission?: Subm
         collectValidationDescriptors(
           enrichComponentsWithBaseSubmissionPath(component.components ?? [], `${submissionPath}[${index}]`),
           submission,
+          pageComponents,
         ),
       );
     }
 
     return [
       ...(hasRules(rules) ? [{ submissionPath, field: component.label ?? component.key, rules }] : []),
-      ...collectValidationDescriptors(component.components ?? [], submission),
+      ...collectValidationDescriptors(component.components ?? [], submission, pageComponents),
     ];
   });
 

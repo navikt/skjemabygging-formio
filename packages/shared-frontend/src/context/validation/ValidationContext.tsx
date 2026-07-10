@@ -39,7 +39,7 @@ interface Props {
 const ValidationContext = createContext<ValidationContextType>({} as ValidationContextType);
 
 const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
-  const { translate } = useLanguage();
+  const { currentLanguage, translate } = useLanguage();
   const { submission } = useSubmissionState();
   const [pagesWithErrors, setPagesWithErrors] = useState<Set<string>>(() => new Set(initialPagesWithErrors ?? []));
   const [summaryScope, setSummaryScope] = useState<SummaryScope>(undefined);
@@ -51,13 +51,14 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
           submissionUtils.getSubmissionValue(submissionPath, activeSubmission),
           field,
           rules,
+          currentLanguage,
         );
         if (violation) {
           acc.push({ pageKey, submissionPath, field, message: translate(violation.textKey, violation.params) });
         }
         return acc;
       }, []),
-    [translate],
+    [currentLanguage, translate],
   );
 
   const getErrorsForPage = useCallback(

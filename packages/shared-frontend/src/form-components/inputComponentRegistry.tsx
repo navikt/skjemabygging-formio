@@ -5,8 +5,10 @@ import InputAlert from './components/alert/InputAlert';
 import InputCheckbox from './components/checkbox/InputCheckbox';
 import InputContainer from './components/container/InputContainer';
 import InputDataGrid from './components/data-grid/InputDataGrid';
+import InputDatePicker from './components/date-picker/InputDatePicker';
 import InputFormGroup from './components/form-group/InputFormGroup';
 import InputHtmlElement from './components/html-element/InputHtmlElement';
+import InputMonthPicker from './components/month-picker/InputMonthPicker';
 import InputRadio from './components/radio/InputRadio';
 import InputRow from './components/row/InputRow';
 import InputSelect from './components/select/InputSelect';
@@ -75,6 +77,24 @@ const YearEntry = ({ component, submissionPath, pageKey, pageComponents }: Input
     autoComplete={component.autocomplete}
     inputMode={component.inputType}
     spellCheck={component.spellCheck}
+  />
+);
+
+const DatePickerEntry = ({ component, submissionPath, pageKey, pageComponents }: InputComponentProps) => (
+  <InputDatePicker
+    component={component}
+    pageKey={pageKey}
+    pageComponents={pageComponents}
+    submissionPath={resolveSubmissionPath(component, submissionPath)}
+  />
+);
+
+const MonthPickerEntry = ({ component, submissionPath, pageKey, pageComponents }: InputComponentProps) => (
+  <InputMonthPicker
+    component={component}
+    pageKey={pageKey}
+    pageComponents={pageComponents}
+    submissionPath={resolveSubmissionPath(component, submissionPath)}
   />
 );
 
@@ -190,6 +210,8 @@ const inputComponentRegistry: InputComponentRegistry = {
   surname: TextFieldEntry,
   currency: NumberEntry,
   year: YearEntry,
+  navDatepicker: DatePickerEntry,
+  monthPicker: MonthPickerEntry,
 };
 
 export { inputComponentRegistry };
