@@ -10,12 +10,16 @@ interface DownloadCoverPageProps {
 }
 const downloadCoverPage = async (props: DownloadCoverPageProps) => {
   const { baseUrl, accessToken, body } = props;
-  logger.info(`Download cover page for ${body.navSkjemaId}`);
+  const targetUrl = `${baseUrl}/foersteside`;
+  logger.info('Downloading cover page', {
+    navSkjemaId: body.navSkjemaId,
+    targetUrl,
+  });
 
   const pdf = await http.post<{
     foersteside: string;
     loepenummer: string;
-  }>(`${baseUrl}/foersteside`, body, { accessToken });
+  }>(targetUrl, body, { accessToken });
 
   if (!pdf) {
     throw new ResponseError('NOT_FOUND', 'Cover page not found');

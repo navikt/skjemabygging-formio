@@ -18,9 +18,13 @@ const getPdfContent = (response: string | CreatePdfResponse) => {
 
 const createPdf = async (props: CreatePdfProps) => {
   const { baseUrl, accessToken, body } = props;
-  logger.info(`Create application pdf for ${body.skjemanummer ?? 'unknown form'}`);
+  const targetUrl = `${baseUrl}/api/pdf/v3/opprett-pdf`;
+  logger.info('Creating application pdf', {
+    skjemanummer: body.skjemanummer ?? 'unknown form',
+    targetUrl,
+  });
 
-  const response = await http.post<string | CreatePdfResponse>(`${baseUrl}/api/pdf/v3/opprett-pdf`, body, {
+  const response = await http.post<string | CreatePdfResponse>(targetUrl, body, {
     accessToken,
     accept: 'application/pdf',
   });

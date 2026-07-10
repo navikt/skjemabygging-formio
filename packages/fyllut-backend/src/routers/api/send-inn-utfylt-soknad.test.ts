@@ -6,6 +6,7 @@ import { mockRequest, MockRequestParams, mockResponse } from '../../test/testHel
 import sendInnUtfyltSoknad from './send-inn-utfylt-soknad';
 
 const SEND_LOCATION = 'http://www.unittest.nav.no/sendInn/123';
+const submittedDraftPath = '/fyllUt/v1/utfyltSoknad';
 
 const { formsApiUrl, sendInnConfig } = config;
 
@@ -53,9 +54,9 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
       .reply(200, { content: encodedSoknadPdf }, { 'Content-Type': 'application/json' });
     const { formScope, globalTranslationsScope, formTranslationsScope } = mockFormServiceAndTranslations();
     const sendInnNockScope = nock(sendInnConfig.host)
-      .put(`${sendInnConfig.paths.utfyltSoknad}/${innsendingsId}`)
+      .put(`${submittedDraftPath}/${innsendingsId}`)
       .reply(302, 'FOUND', { Location: SEND_LOCATION });
-    const req = mockRequestWithPidAndTokenX({ headers: { AzureAccessToken: 'azure-access-token' }, body: defaultBody });
+    const req = mockRequestWithPidAndTokenX({ headers: { PdfAccessToken: 'pdf-access-token' }, body: defaultBody });
     const res = mockResponse();
     const next = vi.fn();
     await sendInnUtfyltSoknad.put(req, res, next);
@@ -79,17 +80,44 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
       .reply(200, { content: encodedSoknadPdf }, { 'Content-Type': 'application/json' });
     const { formScope, globalTranslationsScope, formTranslationsScope } = mockFormServiceAndTranslations();
     const sendInnNockScope = nock(sendInnConfig.host)
-      .put(`${sendInnConfig.paths.utfyltSoknad}/${innsendingsId}`)
+      .put(`${submittedDraftPath}/${innsendingsId}`)
       .reply(500, 'error body');
-    const req = mockRequestWithPidAndTokenX({ body: defaultBody });
+    const req = mockRequestWithPidAndTokenX({ headers: { PdfAccessToken: 'pdf-access-token' }, body: defaultBody });
     const res = mockResponse();
     const next = vi.fn();
     await sendInnUtfyltSoknad.put(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
     const error: any = next.mock.calls[0][0];
-    expect(error.functional).toBe(true);
-    expect(error.message).toBe('Feil ved kall til SendInn');
+    expect(error.errorCode).toBe('INTERNAL_SERVER_ERROR');
+    expect(error.message).toBe('Internal Server Error');
+    expect(error.userMessage).toBeUndefined();
+    expect(res.sendStatus).not.toHaveBeenCalled();
+    expect(res.header).not.toHaveBeenCalled();
+    expect(formScope.isDone()).toBe(true);
+    expect(globalTranslationsScope.isDone()).toBe(true);
+    expect(formTranslationsScope.isDone()).toBe(true);
+    expect(skjemabyggingproxyScope.isDone()).toBe(true);
+    expect(sendInnNockScope.isDone()).toBe(true);
+  });
+
+  it('calls next with not found if SendInn returns status 404', async () => {
+    const skjemabyggingproxyScope = nock(process.env.FAMILIE_PDF_GENERATOR_URL!)
+      .post('/api/pdf/v3/opprett-pdf')
+      .reply(200, { content: encodedSoknadPdf }, { 'Content-Type': 'application/json' });
+    const { formScope, globalTranslationsScope, formTranslationsScope } = mockFormServiceAndTranslations();
+    const sendInnNockScope = nock(sendInnConfig.host)
+      .put(`${submittedDraftPath}/${innsendingsId}`)
+      .reply(404, 'error body');
+    const req = mockRequestWithPidAndTokenX({ headers: { PdfAccessToken: 'pdf-access-token' }, body: defaultBody });
+    const res = mockResponse();
+    const next = vi.fn();
+    await sendInnUtfyltSoknad.put(req, res, next);
+
+    expect(next).toHaveBeenCalledTimes(1);
+    const error: any = next.mock.calls[0][0];
+    expect(error.errorCode).toBe('NOT_FOUND');
+    expect(error.message).toBe('Not Found');
     expect(res.sendStatus).not.toHaveBeenCalled();
     expect(res.header).not.toHaveBeenCalled();
     expect(formScope.isDone()).toBe(true);
@@ -104,7 +132,7 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
       .post('/api/pdf/v3/opprett-pdf')
       .reply(500, 'error body');
     const { formScope, globalTranslationsScope, formTranslationsScope } = mockFormServiceAndTranslations();
-    const req = mockRequestWithPidAndTokenX({ body: defaultBody });
+    const req = mockRequestWithPidAndTokenX({ headers: { PdfAccessToken: 'pdf-access-token' }, body: defaultBody });
     const res = mockResponse();
     const next = vi.fn();
     await sendInnUtfyltSoknad.put(req, res, next);
@@ -113,6 +141,7 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
     const error: any = next.mock.calls[0][0];
     expect(error.errorCode).toBe('INTERNAL_SERVER_ERROR');
     expect(error.message).toBe('Internal Server Error');
+    expect(error.userMessage).toBeUndefined();
     expect(res.sendStatus).not.toHaveBeenCalled();
     expect(res.header).not.toHaveBeenCalled();
     expect(formScope.isDone()).toBe(true);
@@ -123,7 +152,7 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
 
   it('calls next with error if idporten pid is missing', async () => {
     const sendInnNockScope = nock(sendInnConfig.host)
-      .put(`${sendInnConfig.paths.utfyltSoknad}/${innsendingsId}`)
+      .put(`${submittedDraftPath}/${innsendingsId}`)
       .reply(302, 'FOUND', { Location: SEND_LOCATION });
     const req = mockRequest({ body: defaultBody });
     req.getTokenxAccessToken = () => 'tokenx-access-token-for-unittest';
@@ -142,7 +171,7 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
 
   it('calls next with error if tokenx access token is missing', async () => {
     const sendInnNockScope = nock(sendInnConfig.host)
-      .put(`${sendInnConfig.paths.utfyltSoknad}/${innsendingsId}`)
+      .put(`${submittedDraftPath}/${innsendingsId}`)
       .reply(302, 'FOUND', { Location: SEND_LOCATION });
     const req = mockRequest({ headers: {}, body: defaultBody });
     req.getIdportenPid = () => '12345678911';
@@ -162,6 +191,7 @@ describe('[endpoint] send-inn/utfyltsoknad', () => {
   it('calls next with error if pdfFormData generation fails', async () => {
     nock(formsApiUrl).get('/v1/forms/default-form').query(true).reply(404, { message: 'Not found' });
     const req = mockRequestWithPidAndTokenX({
+      headers: { PdfAccessToken: 'pdf-access-token' },
       body: defaultBody,
     });
     const res = mockResponse();

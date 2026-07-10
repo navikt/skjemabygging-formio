@@ -12,6 +12,7 @@ import {
 } from './testdata/mellomlagring';
 
 const { formsApiUrl, sendInnConfig } = config;
+const draftPath = '/fyllUt/v1/soknad';
 
 type MockSendInnRequestParams = MockRequestParams & { envQualifier?: EnvQualifierType };
 const mockRequestWithSendInnData = ({ headers = {}, body, params = {}, envQualifier }: MockSendInnRequestParams) => {
@@ -31,7 +32,7 @@ describe('[endpoint] send-inn/soknad', () => {
   describe('GET', () => {
     it('returns with data in response body if success', async () => {
       const sendInnNockScope = nock(sendInnConfig.host)
-        .get(`${sendInnConfig.paths.soknad}/${innsendingsId}`)
+        .get(`${draftPath}/${innsendingsId}`)
         .reply(200, sendInnResponseBody);
       const req = mockRequestWithSendInnData({
         headers: { AzureAccessToken: 'azure-access-token' },
@@ -60,9 +61,7 @@ describe('[endpoint] send-inn/soknad', () => {
     });
 
     it('calls next if SendInn returns error', async () => {
-      const sendInnNockScope = nock(sendInnConfig.host)
-        .get(`${sendInnConfig.paths.soknad}/${innsendingsId}`)
-        .reply(500, 'error body');
+      const sendInnNockScope = nock(sendInnConfig.host).get(`${draftPath}/${innsendingsId}`).reply(500, 'error body');
       const req = mockRequestWithSendInnData({
         body: requestBody,
         params: { innsendingsId },
@@ -73,16 +72,15 @@ describe('[endpoint] send-inn/soknad', () => {
 
       expect(next).toHaveBeenCalledTimes(1);
       const error: any = next.mock.calls[0][0];
-      expect(error.functional).toBe(true);
-      expect(error.message).toBe('Feil ved kall til SendInn. Kan ikke hente mellomlagret søknad.');
+      expect(error.errorCode).toBe('INTERNAL_SERVER_ERROR');
+      expect(error.message).toBe('Internal Server Error');
+      expect(error.userMessage).toBeUndefined();
       expect(res.json).not.toHaveBeenCalled();
       expect(sendInnNockScope.isDone()).toBe(true);
     });
 
-    it('responsds with status 404 if SendInn returns status 404', async () => {
-      const sendInnNockScope = nock(sendInnConfig.host)
-        .get(`${sendInnConfig.paths.soknad}/${innsendingsId}`)
-        .reply(404, 'error body');
+    it('calls next with not found if SendInn returns status 404', async () => {
+      const sendInnNockScope = nock(sendInnConfig.host).get(`${draftPath}/${innsendingsId}`).reply(404, 'error body');
       const req = mockRequestWithSendInnData({
         body: requestBody,
         params: { innsendingsId },
@@ -91,9 +89,12 @@ describe('[endpoint] send-inn/soknad', () => {
       const next = vi.fn();
       await sendInnSoknad.get(req, res, next);
 
-      expect(next).not.toHaveBeenCalled();
-      expect(res.sendStatus).toHaveBeenCalledWith(404);
+      expect(next).toHaveBeenCalledTimes(1);
+      const error: any = next.mock.calls[0][0];
+      expect(error.errorCode).toBe('NOT_FOUND');
+      expect(error.message).toBe('Not Found');
       expect(res.json).not.toHaveBeenCalled();
+      expect(res.sendStatus).not.toHaveBeenCalled();
       expect(sendInnNockScope.isDone()).toBe(true);
     });
 
@@ -118,9 +119,7 @@ describe('[endpoint] send-inn/soknad', () => {
       const formScope = nock(formsApiUrl).get('/v1/forms/nav999999').query(true).reply(200, mockFormData);
       const globalTranslationsScope = nock(formsApiUrl).get('/v1/global-translations').reply(200, []);
       const formTranslationsScope = nock(formsApiUrl).get('/v1/forms/nav999999/translations').reply(200, []);
-      const sendInnNockScope = nock(sendInnConfig.host)
-        .post(sendInnConfig.paths.soknad)
-        .reply(201, sendInnResponseBody);
+      const sendInnNockScope = nock(sendInnConfig.host).post(draftPath).reply(201, sendInnResponseBody);
       const req = mockRequestWithSendInnData({
         headers: { AzureAccessToken: 'azure-access-token' },
         body: requestBody,
@@ -142,7 +141,7 @@ describe('[endpoint] send-inn/soknad', () => {
       const globalTranslationsScope = nock(formsApiUrl).get('/v1/global-translations').reply(200, []);
       const formTranslationsScope = nock(formsApiUrl).get('/v1/forms/nav999999/translations').reply(200, []);
       const sendInnNockScope = nock(sendInnConfig.host)
-        .post(sendInnConfig.paths.soknad)
+        .post(draftPath)
         .matchHeader('Nav-Env-Qualifier', EnvQualifier.preprodAltAnsatt)
         .reply(201, sendInnResponseBody);
       const req = mockRequestWithSendInnData({
@@ -166,7 +165,7 @@ describe('[endpoint] send-inn/soknad', () => {
       nock(formsApiUrl).get('/v1/forms/nav999999').query(true).reply(200, mockFormData);
       const globalTranslationsScope = nock(formsApiUrl).get('/v1/global-translations').reply(200, []);
       const formTranslationsScope = nock(formsApiUrl).get('/v1/forms/nav999999/translations').reply(200, []);
-      const sendInnNockScope = nock(sendInnConfig.host).post(sendInnConfig.paths.soknad).reply(500, 'error body');
+      const sendInnNockScope = nock(sendInnConfig.host).post(draftPath).reply(500, 'error body');
       const req = mockRequestWithSendInnData({ body: requestBody });
       const res = mockResponse();
       const next = vi.fn();
@@ -174,8 +173,29 @@ describe('[endpoint] send-inn/soknad', () => {
 
       expect(next).toHaveBeenCalledTimes(1);
       const error: any = next.mock.calls[0][0];
-      expect(error.functional).toBe(true);
-      expect(error.message).toBe('Feil ved kall til SendInn. Kan ikke starte mellomlagring av søknaden.');
+      expect(error.errorCode).toBe('INTERNAL_SERVER_ERROR');
+      expect(error.message).toBe('Internal Server Error');
+      expect(error.userMessage).toBeUndefined();
+      expect(res.json).not.toHaveBeenCalled();
+      expect(globalTranslationsScope.isDone()).toBe(true);
+      expect(formTranslationsScope.isDone()).toBe(true);
+      expect(sendInnNockScope.isDone()).toBe(true);
+    });
+
+    it('calls next with not found if SendInn returns status 404', async () => {
+      nock(formsApiUrl).get('/v1/forms/nav999999').query(true).reply(200, mockFormData);
+      const globalTranslationsScope = nock(formsApiUrl).get('/v1/global-translations').reply(200, []);
+      const formTranslationsScope = nock(formsApiUrl).get('/v1/forms/nav999999/translations').reply(200, []);
+      const sendInnNockScope = nock(sendInnConfig.host).put(`${draftPath}/${innsendingsId}`).reply(404, 'error body');
+      const req = mockRequestWithSendInnData({ body: requestBodyWithInnsendingsId });
+      const res = mockResponse();
+      const next = vi.fn();
+      await sendInnSoknad.put(req, res, next);
+
+      expect(next).toHaveBeenCalledTimes(1);
+      const error: any = next.mock.calls[0][0];
+      expect(error.errorCode).toBe('NOT_FOUND');
+      expect(error.message).toBe('Not Found');
       expect(res.json).not.toHaveBeenCalled();
       expect(globalTranslationsScope.isDone()).toBe(true);
       expect(formTranslationsScope.isDone()).toBe(true);
@@ -219,7 +239,7 @@ describe('[endpoint] send-inn/soknad', () => {
       const globalTranslationsScope = nock(formsApiUrl).get('/v1/global-translations').reply(200, []);
       const formTranslationsScope = nock(formsApiUrl).get('/v1/forms/nav999999/translations').reply(200, []);
       const sendInnNockScope = nock(sendInnConfig.host)
-        .put(`${sendInnConfig.paths.soknad}/${innsendingsId}`)
+        .put(`${draftPath}/${innsendingsId}`)
         .reply(200, requestBodyWithInnsendingsId);
       const req = mockRequestWithSendInnData({
         headers: { AzureAccessToken: 'azure-access-token' },
@@ -240,9 +260,7 @@ describe('[endpoint] send-inn/soknad', () => {
       nock(formsApiUrl).get('/v1/forms/nav999999').query(true).reply(200, mockFormData);
       const globalTranslationsScope = nock(formsApiUrl).get('/v1/global-translations').reply(200, []);
       const formTranslationsScope = nock(formsApiUrl).get('/v1/forms/nav999999/translations').reply(200, []);
-      const sendInnNockScope = nock(sendInnConfig.host)
-        .put(`${sendInnConfig.paths.soknad}/${innsendingsId}`)
-        .reply(500, 'error body');
+      const sendInnNockScope = nock(sendInnConfig.host).put(`${draftPath}/${innsendingsId}`).reply(500, 'error body');
       const req = mockRequestWithSendInnData({ body: requestBodyWithInnsendingsId });
       const res = mockResponse();
       const next = vi.fn();
@@ -250,8 +268,9 @@ describe('[endpoint] send-inn/soknad', () => {
 
       expect(next).toHaveBeenCalledTimes(1);
       const error: any = next.mock.calls[0][0];
-      expect(error.functional).toBe(true);
-      expect(error.message).toBe('Feil ved kall til SendInn. Kan ikke oppdatere mellomlagret søknad.');
+      expect(error.errorCode).toBe('INTERNAL_SERVER_ERROR');
+      expect(error.message).toBe('Internal Server Error');
+      expect(error.userMessage).toBeUndefined();
       expect(res.json).not.toHaveBeenCalled();
       expect(globalTranslationsScope.isDone()).toBe(true);
       expect(formTranslationsScope.isDone()).toBe(true);
@@ -292,7 +311,7 @@ describe('[endpoint] send-inn/soknad', () => {
   describe('DELETE', () => {
     it('returns with confirmation in response body if success', async () => {
       const sendInnNockScope = nock(sendInnConfig.host)
-        .delete(`${sendInnConfig.paths.soknad}/${innsendingsId}`)
+        .delete(`${draftPath}/${innsendingsId}`)
         .reply(200, { status: 'OK' });
       const req = mockRequestWithSendInnData({
         headers: { AzureAccessToken: 'azure-access-token' },
@@ -327,7 +346,7 @@ describe('[endpoint] send-inn/soknad', () => {
 
     it('calls next if SendInn returns error', async () => {
       const sendInnNockScope = nock(sendInnConfig.host)
-        .delete(`${sendInnConfig.paths.soknad}/${innsendingsId}`)
+        .delete(`${draftPath}/${innsendingsId}`)
         .reply(500, 'error body');
       const req = mockRequestWithSendInnData({
         body: requestBody,
@@ -339,8 +358,29 @@ describe('[endpoint] send-inn/soknad', () => {
 
       expect(next).toHaveBeenCalledTimes(1);
       const error: any = next.mock.calls[0][0];
-      expect(error.functional).toBe(true);
-      expect(error.message).toBe('Feil ved kall til SendInn. Kan ikke slette mellomlagret søknad.');
+      expect(error.errorCode).toBe('INTERNAL_SERVER_ERROR');
+      expect(error.message).toBe('Internal Server Error');
+      expect(error.userMessage).toBeUndefined();
+      expect(res.json).not.toHaveBeenCalled();
+      expect(sendInnNockScope.isDone()).toBe(true);
+    });
+
+    it('calls next with not found if SendInn returns status 404', async () => {
+      const sendInnNockScope = nock(sendInnConfig.host)
+        .delete(`${draftPath}/${innsendingsId}`)
+        .reply(404, 'error body');
+      const req = mockRequestWithSendInnData({
+        body: requestBody,
+        params: { innsendingsId },
+      });
+      const res = mockResponse();
+      const next = vi.fn();
+      await sendInnSoknad.delete(req, res, next);
+
+      expect(next).toHaveBeenCalledTimes(1);
+      const error: any = next.mock.calls[0][0];
+      expect(error.errorCode).toBe('NOT_FOUND');
+      expect(error.message).toBe('Not Found');
       expect(res.json).not.toHaveBeenCalled();
       expect(sendInnNockScope.isDone()).toBe(true);
     });

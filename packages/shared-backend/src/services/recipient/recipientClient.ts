@@ -10,9 +10,10 @@ interface GetRecipientsProps {
 
 const getRecipients = async (props: GetRecipientsProps) => {
   const { baseUrl } = props;
-  logger.info('Get recipients');
+  const targetUrl = `${baseUrl}/${recipientsUrl}`;
+  logger.info('Getting recipients', { targetUrl });
 
-  return await http.get<Recipient[]>(`${baseUrl}/${recipientsUrl}`);
+  return await http.get<Recipient[]>(targetUrl);
 };
 
 interface GetRecipientProps {
@@ -22,9 +23,10 @@ interface GetRecipientProps {
 
 const getRecipient = async (props: GetRecipientProps) => {
   const { baseUrl, recipientId } = props;
-  logger.info(`Get recipient ${recipientId}`);
+  const targetUrl = `${baseUrl}/${recipientsUrl}/${recipientId}`;
+  logger.info('Getting recipient', { recipientId, targetUrl });
 
-  return await http.get<Recipient>(`${baseUrl}/${recipientsUrl}/${recipientId}`);
+  return await http.get<Recipient>(targetUrl);
 };
 
 const recipientClient = {

@@ -8,16 +8,36 @@ import { useForm } from '../context/form/FormContext';
 import { LanguageSelector, useLanguages } from '../context/languages';
 import { useSendInn } from '../context/sendInn/sendInnContext';
 import { scrollToAndSetFocus } from '../util/focus-management/focus-management';
+import makeStyles from '../util/styles/jss/jss';
 
 interface Props {
   allowSubmittedApplication?: boolean;
 }
+
+const useStyles = makeStyles({
+  '@global': {
+    '@media print': {
+      '#decorator-footer, #decorator-header skip-link, #decorator-header user-menu': {
+        display: 'none !important',
+      },
+      '#decorator-header a::after': {
+        content: '"" !important',
+      },
+    },
+  },
+  hideOnPrint: {
+    '@media print': {
+      display: 'none !important',
+    },
+  },
+});
 
 const FormLayout = ({ allowSubmittedApplication = false }: Props) => {
   const { form, formProgressVisible, title } = useForm();
   const { submitted } = useSendInn();
   const { translate } = useLanguages();
   const location = useLocation();
+  const styles = useStyles();
 
   const initialPageLoad = useRef(true);
 
@@ -31,13 +51,19 @@ const FormLayout = ({ allowSubmittedApplication = false }: Props) => {
 
   return (
     <FormContainer>
-      <LanguageSelector />
+      <div className={styles.hideOnPrint}>
+        <LanguageSelector />
+      </div>
       <FormTitle form={form} hideIconOnMobile={true} title={title} />
       {!allowSubmittedApplication && submitted ? (
         <div>{translate(TEXTS.statiske.error.alreadySubmitted)}</div>
       ) : (
         <>
-          {formProgressVisible && <FormProgress />}
+          {formProgressVisible && (
+            <div className={styles.hideOnPrint}>
+              <FormProgress />
+            </div>
+          )}
 
           <Outlet />
         </>
