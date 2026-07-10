@@ -38,7 +38,6 @@
     "chai": "^6.2.2",
     "cypress": "^15.16.0",
     "cypress-axe": "^1.7.0",
-    "cypress-wait-until": "^3.0.2",
     "lodash": "^4.18.1",
     "lodash.template": "^4.18.1",
     "moment": "^2.30.1",
