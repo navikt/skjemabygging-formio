@@ -29,7 +29,7 @@
     "express": "^5.2.1",
     "express-rate-limit": "^8.5.2",
     "http-proxy": "^1.18.1",
-    "jsdom": "^28.1.0",
+    "jsdom": "^29.1.1",
     "jose": "^6.2.3",
     "luxon": "^3.7.2",
     "multer": "^2.2.0",

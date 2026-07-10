@@ -33,7 +33,7 @@
     "glob": "^13.0.6",
     "html-react-parser": "^5.2.15",
     "jose": "^6.2.3",
-    "jsdom": "^28.1.0",
+    "jsdom": "^29.1.1",
     "jsonwebtoken": "^9.0.3",
     "luxon": "^3.7.2",
     "morgan": "^1.11.0",
