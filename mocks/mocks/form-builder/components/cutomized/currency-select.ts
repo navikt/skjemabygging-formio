@@ -65,7 +65,7 @@ const staticDefaultValues = {
   fieldSize: 'input--m',
   dataSrc: 'url',
   data: {
-    url: 'https://www.nav.no/fyllut/api/common-codes/currencies?lang=nb',
+    url: '/fyllut/api/common-codes/currencies?lang=nb',
   },
   disableLimit: true,
   keyModified: true,
