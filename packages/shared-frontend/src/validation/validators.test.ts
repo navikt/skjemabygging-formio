@@ -151,6 +151,32 @@ describe('validateValue', () => {
     ).toBeUndefined();
   });
 
+  it('validates driving list parking expenses', () => {
+    expect(
+      validateValue('abc', 'Parkeringsutgifter', {
+        drivingListParkingExpense: { date: '2024-01-12' },
+      }),
+    ).toEqual({
+      textKey: TEXTS.validering.validParkingExpenses,
+      params: { dato: '12.01.2024' },
+    });
+
+    expect(
+      validateValue('101', 'Parkeringsutgifter', {
+        drivingListParkingExpense: { date: '2024-01-12', enforceMaxHundred: true },
+      }),
+    ).toEqual({
+      textKey: TEXTS.validering.parkingExpensesAboveHundred,
+      params: {},
+    });
+
+    expect(
+      validateValue('100', 'Parkeringsutgifter', {
+        drivingListParkingExpense: { date: '2024-01-12', enforceMaxHundred: true },
+      }),
+    ).toBeUndefined();
+  });
+
   it('validates norwegian phone numbers with area code', () => {
     expect(
       validateValue('12345678', 'Telefonnummer', {

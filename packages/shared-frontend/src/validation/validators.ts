@@ -26,6 +26,10 @@ interface ValidationRules {
   accountNumber?: boolean;
   iban?: boolean;
   dataFetcherSelection?: boolean;
+  drivingListParkingExpense?: {
+    date: string;
+    enforceMaxHundred?: boolean;
+  };
   phoneNumber?: {
     showAreaCode?: boolean;
     areaCode?: string;
@@ -105,6 +109,22 @@ const validateValue = (
   currentLanguage: string = 'nb',
   options: ValidationOptions = {},
 ): RuleViolation | undefined => {
+  if (rules.drivingListParkingExpense && typeof value === 'string') {
+    if (value.trim() === '') {
+      return undefined;
+    }
+
+    if (!/^\d+$/.test(value.trim())) {
+      return {
+        textKey: TEXTS.validering.validParkingExpenses,
+        params: { dato: dateUtils.toLocaleDate(rules.drivingListParkingExpense.date) },
+      };
+    }
+
+    if (rules.drivingListParkingExpense.enforceMaxHundred && Number(value) > 100) {
+      return { textKey: TEXTS.validering.parkingExpensesAboveHundred, params: {} };
+    }
+  }
   if (rules.required && rules.dataFetcherSelection && !hasSelectedValue(value)) {
     return { textKey: TEXTS.validering.required, params: { field } };
   }

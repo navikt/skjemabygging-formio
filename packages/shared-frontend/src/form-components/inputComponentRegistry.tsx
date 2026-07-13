@@ -12,6 +12,7 @@ import InputCurrency from './components/currency/InputCurrency';
 import InputDataFetcher from './components/data-fetcher/InputDataFetcher';
 import InputDataGrid from './components/data-grid/InputDataGrid';
 import InputDatePicker from './components/date-picker/InputDatePicker';
+import InputDrivingList from './components/driving-list/InputDrivingList';
 import InputEmail from './components/email/InputEmail';
 import InputFirstName from './components/first-name/InputFirstName';
 import InputFormGroup from './components/form-group/InputFormGroup';
@@ -45,6 +46,7 @@ const inputComponentRegistry: InputComponentRegistry = {
   container: InputContainer,
   dataFetcher: InputDataFetcher,
   datagrid: InputDataGrid,
+  drivinglist: InputDrivingList,
   htmlelement: InputHtmlElement,
   iban: InputIban,
   navSkjemagruppe: InputFormGroup,

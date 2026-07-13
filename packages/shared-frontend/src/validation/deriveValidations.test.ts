@@ -1,4 +1,4 @@
-import { Component, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { deriveValidations } from './deriveValidations';
 
 describe('deriveValidations', () => {
@@ -578,5 +578,77 @@ describe('deriveValidations', () => {
         'paper',
       ),
     ).toEqual([]);
+  });
+
+  it('adds paper drivinglist descriptors for date, parking, dates and parking inputs', () => {
+    const components = [
+      { key: 'drivinglist', type: 'drivinglist', input: true, label: 'Kjoreliste' },
+    ] as unknown as Component[];
+
+    expect(
+      deriveValidations(
+        components,
+        {
+          data: {
+            drivinglist: {
+              selectedDate: '2024-01-12',
+              parking: true,
+              dates: [{ date: '2024-01-12', parking: '50' }],
+            },
+          },
+        } as unknown as Submission,
+        'paper',
+      ),
+    ).toEqual([
+      expect.objectContaining({
+        submissionPath: 'drivinglist.selectedDate',
+        field: TEXTS.statiske.drivingList.datePicker,
+      }),
+      expect.objectContaining({ submissionPath: 'drivinglist.parking', field: TEXTS.statiske.drivingList.parking }),
+      expect.objectContaining({ submissionPath: 'drivinglist.dates', field: TEXTS.statiske.drivingList.dateSelect }),
+      expect.objectContaining({
+        submissionPath: 'drivinglist.dates[0].parking',
+        field: TEXTS.statiske.drivingList.parkingExpenses,
+        rules: expect.objectContaining({
+          drivingListParkingExpense: { date: '2024-01-12', enforceMaxHundred: false },
+        }),
+      }),
+    ]);
+  });
+
+  it('adds digital drivinglist descriptors for activity, dates and parking max validation', () => {
+    const components = [
+      { key: 'drivinglist', type: 'drivinglist', input: true, label: 'Kjoreliste' },
+    ] as unknown as Component[];
+
+    expect(
+      deriveValidations(
+        components,
+        {
+          data: {
+            drivinglist: {
+              selectedVedtaksId: 'vedtak-1',
+              dates: [{ date: '2024-01-12', parking: '150', betalingsplanId: 'p1' }],
+            },
+          },
+        } as unknown as Submission,
+        'digital',
+      ),
+    ).toEqual([
+      expect.objectContaining({
+        submissionPath: 'drivinglist.selectedVedtaksId',
+        field: TEXTS.statiske.activities.label,
+      }),
+      expect.objectContaining({
+        submissionPath: 'drivinglist.dates',
+        field: TEXTS.statiske.drivingList.dateSelect,
+      }),
+      expect.objectContaining({
+        submissionPath: 'drivinglist.dates[0].parking',
+        rules: expect.objectContaining({
+          drivingListParkingExpense: { date: '2024-01-12', enforceMaxHundred: true },
+        }),
+      }),
+    ]);
   });
 });

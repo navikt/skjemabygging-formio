@@ -2,6 +2,7 @@ import {
   Component,
   dataFetcherUtils,
   dateUtils,
+  DrivingListSubmission,
   Submission,
   SubmissionAddress,
   SubmissionIdentity,
@@ -317,6 +318,67 @@ const collectSenderDescriptors = (component: Component): ValidationDescriptor[] 
   ];
 };
 
+const collectDrivingListDescriptors = (
+  component: Component,
+  submission?: Submission,
+  submissionMethod?: SubmissionMethod,
+): ValidationDescriptor[] => {
+  const submissionPath = getResolvedSubmissionPath(component);
+  const value = submissionUtils.getSubmissionValue(submissionPath, submission) as DrivingListSubmission | undefined;
+  const descriptors: ValidationDescriptor[] = [];
+
+  if (submissionMethod === 'paper') {
+    descriptors.push({
+      submissionPath: `${submissionPath}.selectedDate`,
+      field: TEXTS.statiske.drivingList.datePicker,
+      rules: { required: true, date: true, toDate: dateUtils.toSubmissionDate() },
+    });
+
+    descriptors.push({
+      submissionPath: `${submissionPath}.parking`,
+      field: TEXTS.statiske.drivingList.parking,
+      rules: { required: true },
+    });
+
+    if (value?.selectedDate && value?.parking !== undefined && value?.parking !== null) {
+      descriptors.push({
+        submissionPath: `${submissionPath}.dates`,
+        field: TEXTS.statiske.drivingList.dateSelect,
+        rules: { required: true },
+      });
+    }
+  } else if (submissionMethod === 'digital') {
+    descriptors.push({
+      submissionPath: `${submissionPath}.selectedVedtaksId`,
+      field: TEXTS.statiske.activities.label,
+      rules: { required: true },
+    });
+
+    if (value?.selectedVedtaksId) {
+      descriptors.push({
+        submissionPath: `${submissionPath}.dates`,
+        field: TEXTS.statiske.drivingList.dateSelect,
+        rules: { required: true },
+      });
+    }
+  }
+
+  value?.dates?.forEach((dateEntry, index) => {
+    descriptors.push({
+      submissionPath: `${submissionPath}.dates[${index}].parking`,
+      field: TEXTS.statiske.drivingList.parkingExpenses,
+      rules: {
+        drivingListParkingExpense: {
+          date: dateEntry.date,
+          enforceMaxHundred: submissionMethod === 'digital',
+        },
+      },
+    });
+  });
+
+  return descriptors;
+};
+
 const collectValidationDescriptors = (
   components: Component[],
   submission?: Submission,
@@ -345,6 +407,10 @@ const collectValidationDescriptors = (
 
     if (component.type === 'sender') {
       return collectSenderDescriptors(component);
+    }
+
+    if (component.type === 'drivinglist') {
+      return collectDrivingListDescriptors(component, submission, submissionMethod);
     }
 
     if (component.type === 'dataFetcher') {
