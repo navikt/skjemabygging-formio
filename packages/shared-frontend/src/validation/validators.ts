@@ -1,5 +1,6 @@
 import { dateUtils, formatUtils, numberUtils, TEXTS, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import * as ibantools from 'ibantools';
+import { hasSelectedValue } from '../components/data-fetcher/dataFetcherUtils';
 
 interface ValidationRules {
   required?: boolean;
@@ -24,6 +25,7 @@ interface ValidationRules {
   nationalIdentityNumber?: boolean;
   accountNumber?: boolean;
   iban?: boolean;
+  dataFetcherSelection?: boolean;
   phoneNumber?: {
     showAreaCode?: boolean;
     areaCode?: string;
@@ -103,6 +105,9 @@ const validateValue = (
   currentLanguage: string = 'nb',
   options: ValidationOptions = {},
 ): RuleViolation | undefined => {
+  if (rules.required && rules.dataFetcherSelection && !hasSelectedValue(value)) {
+    return { textKey: TEXTS.validering.required, params: { field } };
+  }
   if (rules.required && validatorUtils.isEmpty(value)) {
     return { textKey: TEXTS.validering.required, params: { field } };
   }

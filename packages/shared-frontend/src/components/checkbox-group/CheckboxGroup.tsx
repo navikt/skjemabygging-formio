@@ -12,6 +12,9 @@ import { BaseFieldProps } from '../types';
 interface CheckboxGroupProps extends Omit<BaseFieldProps, 'label'> {
   legend: string;
   values: ComponentValue[];
+  value?: string[];
+  onChange?: (value: string[]) => unknown;
+  error?: string;
 }
 
 const CheckboxGroup = ({
@@ -23,10 +26,14 @@ const CheckboxGroup = ({
   readOnly,
   readMore,
   marginBottom,
+  value,
+  onChange,
+  error: controlledError,
 }: CheckboxGroupProps) => {
   const { translate } = useLanguage();
   const { stateValue, error, setStateValue } = useStateField({ statePath });
-  const current = Array.isArray(stateValue) ? stateValue : [];
+  const current = value ?? (Array.isArray(stateValue) ? stateValue : []);
+  const currentError = controlledError ?? error;
 
   return (
     <FormElementBox marginBottom={marginBottom}>
@@ -39,8 +46,8 @@ const CheckboxGroup = ({
         }
         description={<TranslatedDescription>{description}</TranslatedDescription>}
         value={current}
-        onChange={(value: string[]) => setStateValue(value)}
-        error={error}
+        onChange={(nextValue: string[]) => (onChange ? onChange(nextValue) : setStateValue(nextValue))}
+        error={currentError}
         readOnly={readOnly}
       >
         {values.map(({ value, label }) => (

@@ -235,9 +235,10 @@ Registered in `inputComponentRegistry.tsx` (keep this list current):
 - **Date**: `navDatepicker`, `monthPicker`.
 - **Layout/containers**: `container`, `datagrid`, `navSkjemagruppe`/`fieldset`,
   `row`, `alertstripe`, `htmlelement`, `accordion`.
-- **Composite**: `identity`.
+- **Composite**: `identity`, `activities`.
 - **Structured/composite**: `navAddress`, `sender`.
 - **Structured/date**: `addressValidity`.
+- **System/derived**: `dataFetcher`.
 
 Not yet implemented — **the "old format" backlog**. These already have a
 `Summary<Name>.tsx` and a summary-registry entry (`RenderSummaryForm.tsx`) but
@@ -247,22 +248,22 @@ so the Aksel input lives only there) plus its input adapter, register the
 `type`(s), and add validators. Summary parity already exists, so keep the input
 and summary in the same folder aligned.
 
-- **Real input backlog**: `attachment`, `activities`,
-  `data-fetcher` (`dataFetcher`), `driving-list` (`drivinglist`), `maalgruppe`.
+- **Real input backlog**: `attachment`, `driving-list` (`drivinglist`), `maalgruppe`.
 - **Special cases, not normal `Input<Name>.tsx` backlog**:
   `attachment-uploads` is only rendered through
   `attachmentUploadsComponentRegistry`; `panel` and `intro-page` are summary-only
   structural/render helpers, not regular input components.
 
+Current attachment note: the legacy choice-only attachment component is no
+longer the migration target; only the newer attachment/file-upload flow matters.
+Do not treat the old attachment selector alone as a completed migration.
+
 Recommended implementation order (smallest risk / best leverage first):
 
-1. `attachment`
-2. `activities`
-3. `dataFetcher`
-4. `drivinglist`
-5. `maalgruppe`
+1. `drivinglist`
+2. `maalgruppe`
 
-Treat the last three as "confirm scope first" items: they are system/derived
+Treat the remaining items as "confirm scope first" items: they are system/derived
 components and may need a shared-frontend strategy decision before a normal
 editable adapter makes sense.
 

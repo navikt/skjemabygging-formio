@@ -1,4 +1,4 @@
-import { Component } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { deriveValidations } from './deriveValidations';
 
 describe('deriveValidations', () => {
@@ -500,5 +500,83 @@ describe('deriveValidations', () => {
         rules: { required: true, coverPageValue: true },
       },
     ]);
+  });
+
+  it('marks activities as required', () => {
+    const components = [
+      { key: 'aktivitet', type: 'activities', input: true, label: 'Aktivitet' },
+    ] as unknown as Component[];
+
+    expect(deriveValidations(components, undefined, 'digital')).toEqual([
+      {
+        submissionPath: 'aktivitet',
+        field: 'Aktivitet',
+        rules: expect.objectContaining({ required: true }),
+      },
+    ]);
+  });
+
+  it('validates required dataFetcher only when fetch metadata succeeded', () => {
+    const components = [
+      {
+        key: 'aktivitetsvelger',
+        type: 'dataFetcher',
+        input: true,
+        label: 'Aktivitetsvelger',
+        validate: { required: true },
+      },
+    ] as unknown as Component[];
+    const submission = {
+      data: {},
+      metadata: {
+        dataFetcher: {
+          aktivitetsvelger: {
+            data: [{ value: 'a1', label: 'Aktivitet 1' }],
+          },
+        },
+      },
+    } as unknown as Submission;
+
+    expect(deriveValidations(components, submission, 'digital')).toEqual([
+      {
+        submissionPath: 'aktivitetsvelger',
+        field: 'Aktivitetsvelger',
+        rules: expect.objectContaining({ required: true, dataFetcherSelection: true }),
+      },
+    ]);
+  });
+
+  it('skips required dataFetcher validation when fetch failed or was disabled', () => {
+    const components = [
+      {
+        key: 'aktivitetsvelger',
+        type: 'dataFetcher',
+        input: true,
+        label: 'Aktivitetsvelger',
+        validate: { required: true },
+      },
+    ] as unknown as Component[];
+
+    expect(
+      deriveValidations(
+        components,
+        {
+          data: {},
+          metadata: { dataFetcher: { aktivitetsvelger: { fetchError: true } } },
+        } as unknown as Submission,
+        'digital',
+      ),
+    ).toEqual([]);
+
+    expect(
+      deriveValidations(
+        components,
+        {
+          data: {},
+          metadata: { dataFetcher: { aktivitetsvelger: { fetchDisabled: true } } },
+        } as unknown as Submission,
+        'paper',
+      ),
+    ).toEqual([]);
   });
 });

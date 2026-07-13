@@ -132,6 +132,25 @@ describe('validateValue', () => {
     });
   });
 
+  it('requires at least one selected dataFetcher option', () => {
+    expect(
+      validateValue({ aktivitet1: false, aktivitet2: false }, 'Aktivitetsvelger', {
+        required: true,
+        dataFetcherSelection: true,
+      }),
+    ).toEqual({
+      textKey: TEXTS.validering.required,
+      params: { field: 'Aktivitetsvelger' },
+    });
+
+    expect(
+      validateValue({ aktivitet1: true, aktivitet2: false }, 'Aktivitetsvelger', {
+        required: true,
+        dataFetcherSelection: true,
+      }),
+    ).toBeUndefined();
+  });
+
   it('validates norwegian phone numbers with area code', () => {
     expect(
       validateValue('12345678', 'Telefonnummer', {

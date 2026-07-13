@@ -1,5 +1,6 @@
 import {
   Component,
+  dataFetcherUtils,
   dateUtils,
   Submission,
   SubmissionAddress,
@@ -27,7 +28,12 @@ interface ValidationDescriptor {
   rules: ValidationRules;
 }
 
-const toRules = (component: Component, pageComponents: Component[], submission?: Submission): ValidationRules => ({
+const toRules = (
+  component: Component,
+  pageComponents: Component[],
+  submission?: Submission,
+  submissionMethod?: SubmissionMethod,
+): ValidationRules => ({
   required: component.validate?.required,
   minLength: typeof component.validate?.minLength === 'number' ? component.validate.minLength : undefined,
   maxLength: typeof component.validate?.maxLength === 'number' ? component.validate.maxLength : undefined,
@@ -55,6 +61,7 @@ const toRules = (component: Component, pageComponents: Component[], submission?:
   nationalIdentityNumber: component.type === 'fnrfield' ? true : undefined,
   ...(component.type === 'bankAccount' ? { accountNumber: true } : {}),
   ...(component.type === 'iban' ? { iban: true } : {}),
+  ...(component.type === 'activities' && submissionMethod === 'digital' ? { required: true } : {}),
 });
 
 const hasRules = (rules: ValidationRules) => Object.values(rules).some((rule) => rule !== undefined && rule !== false);
@@ -317,7 +324,7 @@ const collectValidationDescriptors = (
   pageComponents: Component[] = components,
 ): ValidationDescriptor[] =>
   components.flatMap((component) => {
-    const rules = toRules(component, pageComponents, submission);
+    const rules = toRules(component, pageComponents, submission, submissionMethod);
     const submissionPath = getResolvedSubmissionPath(component);
 
     if (component.type === 'identity') {
@@ -338,6 +345,22 @@ const collectValidationDescriptors = (
 
     if (component.type === 'sender') {
       return collectSenderDescriptors(component);
+    }
+
+    if (component.type === 'dataFetcher') {
+      const submissionPath = getResolvedSubmissionPath(component);
+      const fetcher = submission ? dataFetcherUtils.dataFetcher(submissionPath, submission) : undefined;
+      const shouldValidate = submissionMethod === 'digital' && component.validate?.required && fetcher?.success;
+
+      return shouldValidate
+        ? [
+            {
+              submissionPath,
+              field: component.label ?? component.key,
+              rules: { required: true, dataFetcherSelection: true },
+            },
+          ]
+        : [];
     }
 
     if (component.type === 'datagrid') {

@@ -12,6 +12,9 @@ import { BaseFieldProps } from '../types';
 interface RadioGroupProps extends Omit<BaseFieldProps, 'label'> {
   legend: string;
   values: ComponentValue[];
+  value?: string;
+  onChange?: (value: string) => void;
+  error?: string;
 }
 
 const RadioGroup = ({
@@ -23,10 +26,14 @@ const RadioGroup = ({
   readOnly,
   readMore,
   marginBottom,
+  value,
+  onChange,
+  error: controlledError,
 }: RadioGroupProps) => {
   const { translate } = useLanguage();
   const { stateValue, error, setStateValue } = useStateField({ statePath });
-  const current = stateValue ?? '';
+  const current = value ?? (typeof stateValue === 'string' ? stateValue : '');
+  const currentError = controlledError ?? error;
 
   return (
     <FormElementBox marginBottom={marginBottom}>
@@ -39,8 +46,8 @@ const RadioGroup = ({
         }
         description={<TranslatedDescription>{description}</TranslatedDescription>}
         value={current}
-        onChange={(value: string) => setStateValue(value)}
-        error={error}
+        onChange={(nextValue: string) => (onChange ? onChange(nextValue) : setStateValue(nextValue))}
+        error={currentError}
         readOnly={readOnly}
       >
         {values.map(({ value, label, description: optionDescription }) => (

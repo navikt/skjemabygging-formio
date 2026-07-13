@@ -1,5 +1,6 @@
 import InputAccordion from './components/accordion/InputAccordion';
 import InputAccountNumber from './components/account-number/InputAccountNumber';
+import InputActivities from './components/activities/InputActivities';
 import InputAddressValidity from './components/address-validity/InputAddressValidity';
 import InputAddress from './components/address/InputAddress';
 import InputAlert from './components/alert/InputAlert';
@@ -8,6 +9,7 @@ import InputContainer from './components/container/InputContainer';
 import InputCountrySelect from './components/country-select/InputCountrySelect';
 import InputCurrencySelect from './components/currency-select/InputCurrencySelect';
 import InputCurrency from './components/currency/InputCurrency';
+import InputDataFetcher from './components/data-fetcher/InputDataFetcher';
 import InputDataGrid from './components/data-grid/InputDataGrid';
 import InputDatePicker from './components/date-picker/InputDatePicker';
 import InputEmail from './components/email/InputEmail';
@@ -36,10 +38,12 @@ import { InputComponentProps, InputComponentRegistry } from './inputComponentReg
 const inputComponentRegistry: InputComponentRegistry = {
   accordion: InputAccordion,
   alertstripe: InputAlert,
+  activities: InputActivities,
   navAddress: InputAddress,
   addressValidity: InputAddressValidity,
   bankAccount: InputAccountNumber,
   container: InputContainer,
+  dataFetcher: InputDataFetcher,
   datagrid: InputDataGrid,
   htmlelement: InputHtmlElement,
   iban: InputIban,
