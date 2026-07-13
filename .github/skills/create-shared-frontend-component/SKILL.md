@@ -4,16 +4,15 @@ description: >-
     Step-by-step recipe and accumulated conventions for adding a new input
     component to the shared-frontend form framework. Use this whenever you
     implement or extend a form component (text-like, choice, date, composite, or
-    layout). Keep this file updated as new patterns emerge while building the
-    remaining components.
+    layout). Keep this file updated as new patterns and conventions emerge.
 ---
 
 # Creating a shared-frontend form component
 
 The editable form framework lives in `packages/shared-frontend/src`. See the
 `shared-frontend-form-framework` skill for the big picture (contexts, wizard,
-allowlisting). This skill is the hands-on recipe for adding a component and the
-conventions we've settled on.
+allowlisting). This skill is the hands-on recipe for creating or extending a
+component and the conventions we've settled on.
 
 ## Two layers — know which one you are writing
 
@@ -207,6 +206,28 @@ not in this skill.
 7. **Tests (vitest)**: cover the isolated logic — validators, formatters,
    derive-validations. UI behaviour goes to Cypress.
 
+## System/derived and hidden components
+
+Some form types are not ordinary visible inputs. They may:
+
+- render nothing and only keep a value in sync
+- fetch system data and write a derived submission shape
+- coordinate several nested values behind one feature
+
+For those cases:
+
+1. Keep the same overall seams: reusable behavior in `src/components/` when it
+   is genuinely reusable, form-definition mapping in
+   `form-components/components/<kebab>/`.
+2. Prefer a small generic helper for cross-cutting behavior (for example a
+   hidden computed field), with feature-specific logic colocated near the
+   feature adapter.
+3. Preserve the submission contract that validation, conditionals, summary, and
+   backend integrations already depend on.
+4. Do not force every special case into the prop shape of a normal text/choice
+   input just for consistency — use the shared architecture, but let the
+   implementation match the feature's real responsibility.
+
 ## Conventions
 
 - English names; per-feature colocation; kebab folders; one central registry.
@@ -223,48 +244,12 @@ From `packages/shared-frontend`:
 After editing shared-domain, rebuild it **and** run `pnpm install` from the repo
 root so vitest picks up the refreshed `file:` copy.
 
-## Status: implemented components
+## Notes for maintaining this skill
 
-Registered in `inputComponentRegistry.tsx` (keep this list current):
-
-- **Text-like**: `textfield`, `textarea`/`formioTextArea`, `email`, `firstName`,
-  `surname`, `number`, `currency`, `orgNr`, `year`, `fnrfield`, `bankAccount`,
-  `iban`, `phoneNumber`.
-- **Choice**: `select`, `navSelect`, `landvelger`, `valutavelger`, `radiopanel`,
-  `navCheckbox`, `selectboxes`.
-- **Date**: `navDatepicker`, `monthPicker`.
-- **Layout/containers**: `container`, `datagrid`, `navSkjemagruppe`/`fieldset`,
-  `row`, `alertstripe`, `htmlelement`, `accordion`.
-- **Composite**: `identity`, `activities`.
-- **Structured/composite**: `navAddress`, `sender`.
-- **Structured/date**: `addressValidity`.
-- **System/derived**: `dataFetcher`, `drivinglist`, `maalgruppe`.
-
-Not yet implemented — **the "old format" backlog**. These already have a
-`Summary<Name>.tsx` and a summary-registry entry (`RenderSummaryForm.tsx`) but
-**no `Input<Name>.tsx`** and are **absent from `inputComponentRegistry.tsx`**.
-Migrating one = add a reusable component under `src/components/<kebab>/` (always,
-so the Aksel input lives only there) plus its input adapter, register the
-`type`(s), and add validators. Summary parity already exists, so keep the input
-and summary in the same folder aligned.
-
-- **Real input backlog**: `attachment`.
-- **Special cases, not normal `Input<Name>.tsx` backlog**:
-  `attachment-uploads` is only rendered through
-  `attachmentUploadsComponentRegistry`; `panel` and `intro-page` are summary-only
-  structural/render helpers, not regular input components.
-
-Current attachment note: the legacy choice-only attachment component is no
-longer the migration target; only the newer attachment/file-upload flow matters.
-Do not treat the old attachment selector alone as a completed migration.
-
-Recommended implementation order (smallest risk / best leverage first):
-
-Treat the remaining items as "confirm scope first" items: they are system/derived
-components and may need a shared-frontend strategy decision before a normal
-editable adapter makes sense.
-
-Quick way to see what's left: every `type` in `RenderSummaryForm.tsx`'s
-`componentRegistry` that is missing from `inputComponentRegistry.tsx` (or any
-`components/<kebab>/` folder with a `Summary*.tsx` but no `Input*.tsx`). Update
-both lists above as components land.
+- Keep this document **generic and evergreen**. Do not track per-component
+  backlog, migration status, or "what is left" here.
+- Add new examples or rules only when they describe a reusable pattern that
+  should guide future component work.
+- If you need current repository coverage, inspect
+  `inputComponentRegistry.tsx`, `RenderSummaryForm.tsx`, and the feature folders
+  directly instead of turning temporary status into skill content.
