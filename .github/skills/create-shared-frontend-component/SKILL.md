@@ -34,6 +34,10 @@ conventions we've settled on.
       components by nesting a child `statePath` (e.g. `Identity` renders
       `NationalIdentityNumber` at `${statePath}.identitetsnummer`) so formatting
       and validation are identical to the standalone field.
+    - Put non-trivial component-specific logic in a colocated util file when it
+      improves readability (for example `address/addressUtils.ts`,
+      `select/selectUtils.ts`) instead of leaving dense helper logic inline in
+      the component file.
     - **Complex/composite components must compose existing shared-frontend
       wrappers, not import Aksel form components directly.** If a composite
       needs text, choice, date, or helper UI, it should use `TextField`,

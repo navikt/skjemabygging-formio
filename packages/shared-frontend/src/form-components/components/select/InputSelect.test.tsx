@@ -13,7 +13,7 @@ const values: ComponentValue[] = [
 ];
 const pageKey = 'page1';
 
-const renderWithProviders = (children: ReactNode, initialValue?: string) => {
+const renderWithProviders = (children: ReactNode, initialValue?: string | ComponentValue) => {
   return render(
     <LanguageProvider translate={(text) => text ?? ''} currentLanguage="nb">
       <SubmissionStateProvider initialSubmission={{ data: initialValue ? { country: initialValue } : {} }}>
@@ -29,18 +29,17 @@ const renderWithProviders = (children: ReactNode, initialValue?: string) => {
 
 const SubmissionValue = () => {
   const { submission } = useSubmissionState();
-  return <span>{String(submission?.data.country ?? '')}</span>;
+  return <span>{JSON.stringify(submission?.data.country ?? '')}</span>;
 };
 
 describe('InputSelect', () => {
-  it('renders an Aksel combobox with the selected label', () => {
+  it('renders a native select with the selected value below the combobox threshold', () => {
     renderWithProviders(<Select statePath="country" label="Country" values={values} />, 'no');
 
-    expect(screen.getByRole('combobox', { name: 'Country' })).toBeDefined();
-    expect(screen.getAllByText('Norway').length).toBe(2);
+    expect((screen.getByRole('combobox', { name: 'Country' }) as HTMLSelectElement).value).toBe('no');
   });
 
-  it('updates submission when a value is selected', () => {
+  it('updates submission with the selected string value by default', () => {
     renderWithProviders(
       <>
         <Select statePath="country" label="Country" values={values} />
@@ -48,8 +47,22 @@ describe('InputSelect', () => {
       </>,
     );
 
-    fireEvent.pointerUp(screen.getByRole('option', { name: 'Sweden' }));
+    fireEvent.change(screen.getByRole('combobox', { name: 'Country' }), { target: { value: 'se' } });
 
-    expect(screen.getByText('se')).toBeDefined();
+    expect(screen.getByText('"se"')).toBeDefined();
+  });
+
+  it('stores the selected ComponentValue when valueType is option', () => {
+    renderWithProviders(
+      <>
+        <Select statePath="country" label="Country" values={values} valueType="option" />
+        <SubmissionValue />
+      </>,
+      { value: 'no', label: 'Norway' },
+    );
+
+    fireEvent.change(screen.getByRole('combobox', { name: 'Country' }), { target: { value: 'se' } });
+
+    expect(screen.getByText('{"value":"se","label":"Sweden"}')).toBeDefined();
   });
 });

@@ -9,13 +9,14 @@ import FormElementBox from '../shared/FormElementBox';
 import TranslatedDescription from '../shared/TranslatedDescription';
 import TranslatedLabel from '../shared/TranslatedLabel';
 import { BaseFieldProps } from '../types';
-import { resolveRenderedSelectType, SelectType } from './selectUtils';
+import { getCurrentValue, getStateValue, resolveRenderedSelectType, SelectType, SelectValueType } from './selectUtils';
 
 interface SelectProps extends BaseFieldProps {
   label: string;
   values: ComponentValue[];
   selectText?: string;
   selectType?: SelectType;
+  valueType?: SelectValueType;
 }
 
 const Select = ({
@@ -29,10 +30,11 @@ const Select = ({
   readMore,
   marginBottom,
   selectType = 'auto',
+  valueType = 'value',
 }: SelectProps) => {
   const { translate } = useLanguage();
   const { stateValue, error, setStateValue } = useStateField({ statePath });
-  const current = typeof stateValue === 'string' ? stateValue : '';
+  const current = getCurrentValue(stateValue, valueType);
   const options = values.map(({ value, label: optionLabel }) => ({
     value,
     label: translate(optionLabel),
@@ -41,11 +43,11 @@ const Select = ({
   const renderedSelectType = resolveRenderedSelectType(selectType, options.length);
 
   const onToggleSelected = (value: string, selected: boolean) => {
-    setStateValue(selected ? value : '');
+    setStateValue(getStateValue(selected ? value : '', valueType, options));
   };
 
   const onChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    setStateValue(event.target.value);
+    setStateValue(getStateValue(event.target.value, valueType, options));
   };
 
   return (
