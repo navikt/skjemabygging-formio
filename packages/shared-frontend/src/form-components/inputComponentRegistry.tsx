@@ -19,6 +19,7 @@ import InputFormGroup from './components/form-group/InputFormGroup';
 import InputHtmlElement from './components/html-element/InputHtmlElement';
 import InputIban from './components/iban/InputIban';
 import InputIdentity from './components/identity/InputIdentity';
+import InputTargetGroup from './components/maalgruppe/InputTargetGroup';
 import InputMonthPicker from './components/month-picker/InputMonthPicker';
 import InputNationalIdentityNumber from './components/national-identity-number/InputNationalIdentityNumber';
 import InputNumber from './components/number/InputNumber';
@@ -72,6 +73,7 @@ const inputComponentRegistry: InputComponentRegistry = {
   year: InputYear,
   navDatepicker: InputDatePicker,
   monthPicker: InputMonthPicker,
+  maalgruppe: InputTargetGroup,
   orgNr: InputOrganizationNumber,
   fnrfield: InputNationalIdentityNumber,
   identity: InputIdentity,
