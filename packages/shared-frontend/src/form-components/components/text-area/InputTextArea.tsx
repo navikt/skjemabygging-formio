@@ -1,5 +1,10 @@
 import TextArea from '../../../components/text-area/TextArea';
-import { InputComponentProps, isRequired, resolveSubmissionPath } from '../../inputComponentRegistryUtils';
+import {
+  InputComponentProps,
+  isRequired,
+  resolveReadMore,
+  resolveSubmissionPath,
+} from '../../inputComponentRegistryUtils';
 
 const InputTextArea = ({ component, submissionPath }: InputComponentProps) => (
   <TextArea
@@ -9,6 +14,7 @@ const InputTextArea = ({ component, submissionPath }: InputComponentProps) => (
     required={isRequired(component)}
     readOnly={component.readOnly}
     maxLength={component.validate?.maxLength}
+    readMore={resolveReadMore(component)}
   />
 );
 

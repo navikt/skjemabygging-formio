@@ -1,5 +1,11 @@
 import RadioGroup from '../../../components/radio-group/RadioGroup';
-import { getValues, InputComponentProps, isRequired, resolveSubmissionPath } from '../../inputComponentRegistryUtils';
+import {
+  getValues,
+  InputComponentProps,
+  isRequired,
+  resolveReadMore,
+  resolveSubmissionPath,
+} from '../../inputComponentRegistryUtils';
 
 const InputRadio = ({ component, submissionPath }: InputComponentProps) => (
   <RadioGroup
@@ -9,6 +15,7 @@ const InputRadio = ({ component, submissionPath }: InputComponentProps) => (
     values={getValues(component)}
     required={isRequired(component)}
     readOnly={component.readOnly}
+    readMore={resolveReadMore(component)}
   />
 );
 

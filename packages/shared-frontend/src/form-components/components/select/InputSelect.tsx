@@ -1,5 +1,11 @@
 import Select from '../../../components/select/Select';
-import { getValues, InputComponentProps, isRequired, resolveSubmissionPath } from '../../inputComponentRegistryUtils';
+import {
+  getValues,
+  InputComponentProps,
+  isRequired,
+  resolveReadMore,
+  resolveSubmissionPath,
+} from '../../inputComponentRegistryUtils';
 
 const InputSelect = ({ component, submissionPath }: InputComponentProps) => (
   <Select
@@ -9,6 +15,7 @@ const InputSelect = ({ component, submissionPath }: InputComponentProps) => (
     values={getValues(component)}
     required={isRequired(component)}
     readOnly={component.readOnly}
+    readMore={resolveReadMore(component)}
   />
 );
 

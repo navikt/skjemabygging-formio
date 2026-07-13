@@ -1,3 +1,4 @@
+import type { ReadMoreProps } from './read-more/ReadMore';
 import { Spacing } from './shared/FormElementBox';
 
 interface BaseFieldProps {
@@ -7,6 +8,7 @@ interface BaseFieldProps {
   required?: boolean;
   readOnly?: boolean;
   marginBottom?: Spacing;
+  readMore?: ReadMoreProps;
 }
 
 export type { BaseFieldProps };

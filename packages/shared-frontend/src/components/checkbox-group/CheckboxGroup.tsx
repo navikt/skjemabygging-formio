@@ -3,6 +3,7 @@ import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useStateField } from '../../context/state/useStateField';
 import { inputId } from '../../utils/inputId';
+import ReadMore from '../read-more/ReadMore';
 import FormElementBox from '../shared/FormElementBox';
 import TranslatedDescription from '../shared/TranslatedDescription';
 import TranslatedLabel from '../shared/TranslatedLabel';
@@ -20,6 +21,7 @@ const CheckboxGroup = ({
   description,
   required = true,
   readOnly,
+  readMore,
   marginBottom,
 }: CheckboxGroupProps) => {
   const { translate } = useLanguage();
@@ -47,6 +49,7 @@ const CheckboxGroup = ({
           </Checkbox>
         ))}
       </AkselCheckboxGroup>
+      {readMore && <ReadMore {...readMore} />}
     </FormElementBox>
   );
 };

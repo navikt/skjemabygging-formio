@@ -4,7 +4,12 @@
  */
 
 describe('New renderer path', () => {
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.intercept('GET', '/fyllut/api/config*', (req) => {
       req.headers['accept-encoding'] = 'identity';
       delete req.headers['if-none-match'];
@@ -18,6 +23,10 @@ describe('New renderer path', () => {
     cy.intercept('POST', '/fyllut/api/log*', { body: 'ok' });
     cy.intercept('GET', '/fyllut/api/forms/*');
     cy.intercept('GET', '/fyllut/api/translations/*');
+  });
+
+  after(() => {
+    cy.mocksRestoreRouteVariants();
   });
 
   it('renders inputs, validates per page, and navigates', () => {

@@ -235,7 +235,7 @@ importers:
         version: 4.18.1
       vitest-fetch-mock:
         specifier: ^0.4.5
-        version: 0.4.5(vitest@3.2.6(@types/node@24.12.0)(@vitest/browser@2.1.9)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(msw@2.12.14(@types/node@24.12.0)(typescript@6.0.3))(terser@5.46.1)(yaml@2.9.0))
+        version: 0.4.5(vitest@3.2.6(@types/node@24.12.0)(@vitest/browser@2.1.9(@types/node@25.7.0)(typescript@6.0.3)(vite@7.3.6(@types/node@25.7.0)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.9.0))(vitest@3.2.6))(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(msw@2.12.14(@types/node@24.12.0)(typescript@6.0.3))(terser@5.46.1)(yaml@2.9.0))
 
   packages/bygger-backend:
     dependencies:
@@ -347,7 +347,7 @@ importers:
         version: 7.0.0(vite@7.3.6(@types/node@24.12.0)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.9.0))
       vitest-mock-extended:
         specifier: ^3.1.0
-        version: 3.1.0(typescript@6.0.3)(vitest@3.2.6(@types/node@24.12.0)(@vitest/browser@2.1.9)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(msw@2.12.14(@types/node@24.12.0)(typescript@6.0.3))(terser@5.46.1)(yaml@2.9.0))
+        version: 3.1.0(typescript@6.0.3)(vitest@3.2.6(@types/node@24.12.0)(@vitest/browser@2.1.9(@types/node@25.7.0)(typescript@6.0.3)(vite@7.3.6(@types/node@25.7.0)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.9.0))(vitest@3.2.6))(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(msw@2.12.14(@types/node@24.12.0)(typescript@6.0.3))(terser@5.46.1)(yaml@2.9.0))
 
   packages/form-spec-api:
     dependencies:
@@ -478,7 +478,7 @@ importers:
         version: 15.8.1
       vitest-fetch-mock:
         specifier: ^0.4.5
-        version: 0.4.5(vitest@3.2.6(@types/node@24.12.0)(@vitest/browser@2.1.9)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(msw@2.12.14(@types/node@24.12.0)(typescript@6.0.3))(terser@5.46.1)(yaml@2.9.0))
+        version: 0.4.5(vitest@3.2.6(@types/node@24.12.0)(@vitest/browser@2.1.9(@types/node@25.7.0)(typescript@6.0.3)(vite@7.3.6(@types/node@25.7.0)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.9.0))(vitest@3.2.6))(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(msw@2.12.14(@types/node@24.12.0)(typescript@6.0.3))(terser@5.46.1)(yaml@2.9.0))
 
   packages/fyllut-backend:
     dependencies:
@@ -763,7 +763,7 @@ importers:
         version: 1.6.1
       vitest-fetch-mock:
         specifier: ^0.4.5
-        version: 0.4.5(vitest@3.2.6(@types/node@24.12.0)(@vitest/browser@2.1.9)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(msw@2.12.14(@types/node@24.12.0)(typescript@6.0.3))(terser@5.46.1)(yaml@2.9.0))
+        version: 0.4.5(vitest@3.2.6(@types/node@24.12.0)(@vitest/browser@2.1.9(@types/node@25.7.0)(typescript@6.0.3)(vite@7.3.6(@types/node@25.7.0)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.9.0))(vitest@3.2.6))(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(msw@2.12.14(@types/node@24.12.0)(typescript@6.0.3))(terser@5.46.1)(yaml@2.9.0))
 
   packages/shared-domain:
     dependencies:
@@ -807,6 +807,9 @@ importers:
       dompurify:
         specifier: ^3.4.11
         version: 3.4.11
+      i18n-iso-countries:
+        specifier: ^7.14.0
+        version: 7.14.0
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -13838,17 +13841,17 @@ snapshots:
       terser: 5.46.1
       yaml: 2.9.0
 
-  vitest-fetch-mock@0.4.5(vitest@3.2.6(@types/node@24.12.0)(@vitest/browser@2.1.9)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(msw@2.12.14(@types/node@24.12.0)(typescript@6.0.3))(terser@5.46.1)(yaml@2.9.0)):
+  vitest-fetch-mock@0.4.5(vitest@3.2.6(@types/node@24.12.0)(@vitest/browser@2.1.9(@types/node@25.7.0)(typescript@6.0.3)(vite@7.3.6(@types/node@25.7.0)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.9.0))(vitest@3.2.6))(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(msw@2.12.14(@types/node@24.12.0)(typescript@6.0.3))(terser@5.46.1)(yaml@2.9.0)):
     dependencies:
-      vitest: 3.2.6(@types/node@24.12.0)(@vitest/browser@2.1.9)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(msw@2.12.14(@types/node@24.12.0)(typescript@6.0.3))(terser@5.46.1)(yaml@2.9.0)
+      vitest: 3.2.6(@types/node@24.12.0)(@vitest/browser@2.1.9(@types/node@25.7.0)(typescript@6.0.3)(vite@7.3.6(@types/node@25.7.0)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.9.0))(vitest@3.2.6))(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(msw@2.12.14(@types/node@24.12.0)(typescript@6.0.3))(terser@5.46.1)(yaml@2.9.0)
 
-  vitest-mock-extended@3.1.0(typescript@6.0.3)(vitest@3.2.6(@types/node@24.12.0)(@vitest/browser@2.1.9)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(msw@2.12.14(@types/node@24.12.0)(typescript@6.0.3))(terser@5.46.1)(yaml@2.9.0)):
+  vitest-mock-extended@3.1.0(typescript@6.0.3)(vitest@3.2.6(@types/node@24.12.0)(@vitest/browser@2.1.9(@types/node@25.7.0)(typescript@6.0.3)(vite@7.3.6(@types/node@25.7.0)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.9.0))(vitest@3.2.6))(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(msw@2.12.14(@types/node@24.12.0)(typescript@6.0.3))(terser@5.46.1)(yaml@2.9.0)):
     dependencies:
       ts-essentials: 10.1.1(typescript@6.0.3)
       typescript: 6.0.3
-      vitest: 3.2.6(@types/node@24.12.0)(@vitest/browser@2.1.9)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(msw@2.12.14(@types/node@24.12.0)(typescript@6.0.3))(terser@5.46.1)(yaml@2.9.0)
+      vitest: 3.2.6(@types/node@24.12.0)(@vitest/browser@2.1.9(@types/node@25.7.0)(typescript@6.0.3)(vite@7.3.6(@types/node@25.7.0)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.9.0))(vitest@3.2.6))(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(msw@2.12.14(@types/node@24.12.0)(typescript@6.0.3))(terser@5.46.1)(yaml@2.9.0)
 
-  vitest@3.2.6(@types/node@24.12.0)(@vitest/browser@2.1.9)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(msw@2.12.14(@types/node@24.12.0)(typescript@6.0.3))(terser@5.46.1)(yaml@2.9.0):
+  vitest@3.2.6(@types/node@24.12.0)(@vitest/browser@2.1.9(@types/node@25.7.0)(typescript@6.0.3)(vite@7.3.6(@types/node@25.7.0)(lightningcss@1.32.0)(terser@5.46.1)(yaml@2.9.0))(vitest@3.2.6))(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(msw@2.12.14(@types/node@24.12.0)(typescript@6.0.3))(terser@5.46.1)(yaml@2.9.0):
     dependencies:
       '@types/chai': 5.2.3
       '@vitest/expect': 3.2.6

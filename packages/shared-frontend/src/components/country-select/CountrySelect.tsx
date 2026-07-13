@@ -1,7 +1,9 @@
 import { UNSAFE_Combobox as Combobox } from '@navikt/ds-react';
-import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
+import { ComponentValue, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { useMemo } from 'react';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useStateField } from '../../context/state/useStateField';
+import { getCountries } from '../../utils/countries';
 import { inputId } from '../../utils/inputId';
 import ReadMore from '../read-more/ReadMore';
 import FormElementBox from '../shared/FormElementBox';
@@ -9,34 +11,34 @@ import TranslatedDescription from '../shared/TranslatedDescription';
 import TranslatedLabel from '../shared/TranslatedLabel';
 import { BaseFieldProps } from '../types';
 
-interface SelectProps extends BaseFieldProps {
-  label: string;
-  values: ComponentValue[];
+interface CountrySelectProps extends BaseFieldProps {
+  label?: string;
+  ignoreOptions?: string[];
   selectText?: string;
 }
 
-const Select = ({
+const CountrySelect = ({
   statePath,
-  label,
-  values,
+  label = TEXTS.statiske.address.country,
   description,
-  selectText,
+  selectText = TEXTS.statiske.address.selectCountry,
+  ignoreOptions,
   required = true,
   readOnly,
   readMore,
   marginBottom,
-}: SelectProps) => {
-  const { translate } = useLanguage();
+}: CountrySelectProps) => {
+  const { currentLanguage, translate } = useLanguage();
   const { stateValue, error, setStateValue } = useStateField({ statePath });
-  const current = stateValue ?? '';
-  const options = values.map(({ value, label: optionLabel }) => ({
-    value,
-    label: translate(optionLabel),
-  }));
-  const selectedOption = options.find((option) => option.value === current);
+  const current = stateValue as ComponentValue | undefined;
+  const options = useMemo(
+    () => getCountries(currentLanguage).filter((option) => !ignoreOptions?.includes(option.value)),
+    [currentLanguage, ignoreOptions],
+  );
+  const selectedOption = options.find((option) => option.value === current?.value);
 
-  const onToggleSelected = (value: string, selected: boolean) => {
-    setStateValue(selected ? value : '');
+  const handleToggleSelected = (value: string, selected: boolean) => {
+    setStateValue(selected ? options.find((option) => option.value === value) : undefined);
   };
 
   return (
@@ -51,17 +53,17 @@ const Select = ({
         description={<TranslatedDescription>{description}</TranslatedDescription>}
         options={options}
         selectedOptions={selectedOption ? [selectedOption] : []}
-        onToggleSelected={onToggleSelected}
+        onToggleSelected={handleToggleSelected}
         error={error}
         readOnly={readOnly}
         isMultiSelect={false}
         shouldAutocomplete
-        placeholder={selectText ? translate(selectText) : undefined}
+        placeholder={translate(selectText)}
       />
       {readMore && <ReadMore {...readMore} />}
     </FormElementBox>
   );
 };
 
-export default Select;
-export type { SelectProps };
+export default CountrySelect;
+export type { CountrySelectProps };

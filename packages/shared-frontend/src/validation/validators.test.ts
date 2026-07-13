@@ -101,4 +101,16 @@ describe('validateValue', () => {
     });
     expect(validateValue(hnr, 'Fnr', { nationalIdentityNumber: true }, 'nb', { allowTestTypes: true })).toBeUndefined();
   });
+
+  it('validates norwegian postal code values', () => {
+    expect(validateValue('0001', 'Postnummer', { postalCode: true })).toBeUndefined();
+    expect(validateValue('001', 'Postnummer', { postalCode: true })).toEqual({
+      textKey: TEXTS.validering.invalidPostalCode,
+      params: { field: 'Postnummer' },
+    });
+    expect(validateValue('ABCD', 'Postnummer', { postalCode: true })).toEqual({
+      textKey: TEXTS.validering.invalidPostalCode,
+      params: { field: 'Postnummer' },
+    });
+  });
 });

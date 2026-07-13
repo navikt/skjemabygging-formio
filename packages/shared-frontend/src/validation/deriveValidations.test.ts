@@ -272,4 +272,104 @@ describe('deriveValidations', () => {
       { submissionPath: 'identity.harDuFodselsnummer', field: expect.any(String), rules: { required: true } },
     ]);
   });
+
+  it('expands address into its visible nested fields for wizard choice and norwegian inputs', () => {
+    const components = [
+      {
+        key: 'address',
+        type: 'navAddress',
+        input: true,
+        validate: { required: true },
+        addressTypeWizard: 'user',
+      },
+    ] as unknown as Component[];
+
+    const result = deriveValidations(
+      components,
+      { data: { address: { borDuINorge: 'ja', vegadresseEllerPostboksadresse: 'vegadresse' } } },
+      'paper',
+    );
+
+    expect(result).toEqual([
+      { submissionPath: 'address.borDuINorge', field: expect.any(String), rules: { required: true } },
+      {
+        submissionPath: 'address.vegadresseEllerPostboksadresse',
+        field: expect.any(String),
+        rules: { required: true },
+      },
+      {
+        submissionPath: 'address.co',
+        field: expect.any(String),
+        rules: { coverPageValue: true },
+      },
+      {
+        submissionPath: 'address.adresse',
+        field: expect.any(String),
+        rules: { required: true, coverPageValue: true },
+      },
+      {
+        submissionPath: 'address.postnummer',
+        field: expect.any(String),
+        rules: { required: true, postalCode: true },
+      },
+      {
+        submissionPath: 'address.bySted',
+        field: expect.any(String),
+        rules: { required: true, coverPageValue: true },
+      },
+    ]);
+  });
+
+  it('expands address into foreign-address fields for paper address choice', () => {
+    const components = [
+      {
+        key: 'address',
+        type: 'navAddress',
+        input: true,
+        validate: { required: true },
+        prefillKey: 'sokerAdresser',
+      },
+    ] as unknown as Component[];
+
+    const result = deriveValidations(components, { data: { address: { borDuINorge: 'nei' } } }, 'paper');
+
+    expect(result).toEqual([
+      { submissionPath: 'address.borDuINorge', field: expect.any(String), rules: { required: true } },
+      {
+        submissionPath: 'address.co',
+        field: expect.any(String),
+        rules: { coverPageValue: true },
+      },
+      {
+        submissionPath: 'address.adresse',
+        field: expect.any(String),
+        rules: { required: true, coverPageValue: true },
+      },
+      {
+        submissionPath: 'address.bygning',
+        field: expect.any(String),
+        rules: { coverPageValue: true },
+      },
+      {
+        submissionPath: 'address.postnummer',
+        field: expect.any(String),
+        rules: { coverPageValue: true },
+      },
+      {
+        submissionPath: 'address.bySted',
+        field: expect.any(String),
+        rules: { coverPageValue: true },
+      },
+      {
+        submissionPath: 'address.region',
+        field: expect.any(String),
+        rules: { coverPageValue: true },
+      },
+      {
+        submissionPath: 'address.land',
+        field: expect.any(String),
+        rules: { required: true },
+      },
+    ]);
+  });
 });

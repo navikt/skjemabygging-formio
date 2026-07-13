@@ -1,5 +1,10 @@
 import TextField from '../../../components/text-field/TextField';
-import { InputComponentProps, isRequired, resolveSubmissionPath } from '../../inputComponentRegistryUtils';
+import {
+  InputComponentProps,
+  isRequired,
+  resolveReadMore,
+  resolveSubmissionPath,
+} from '../../inputComponentRegistryUtils';
 
 const InputYear = ({ component, submissionPath }: InputComponentProps) => (
   <TextField
@@ -10,6 +15,7 @@ const InputYear = ({ component, submissionPath }: InputComponentProps) => (
     autoComplete={component.autocomplete}
     inputMode={component.inputType}
     spellCheck={component.spellCheck}
+    readMore={resolveReadMore(component)}
   />
 );
 

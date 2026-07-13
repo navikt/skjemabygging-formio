@@ -3,6 +3,7 @@ import { ChangeEvent, FocusEvent, HTMLAttributes, useState } from 'react';
 import { useStateField } from '../../context/state/useStateField';
 import { toInputFormat, toSubmissionFormat } from '../../formatting/inputFormat';
 import { inputId } from '../../utils/inputId';
+import ReadMore from '../read-more/ReadMore';
 import FormElementBox from '../shared/FormElementBox';
 import TranslatedDescription from '../shared/TranslatedDescription';
 import TranslatedLabel from '../shared/TranslatedLabel';
@@ -30,6 +31,7 @@ const TextField = ({
   type,
   spellCheck,
   formatKey,
+  readMore,
   marginBottom,
 }: TextFieldProps) => {
   const { stateValue, error, setStateValue } = useStateField({ statePath });
@@ -66,6 +68,7 @@ const TextField = ({
         type={type}
         spellCheck={spellCheck}
       />
+      {readMore && <ReadMore {...readMore} />}
     </FormElementBox>
   );
 };

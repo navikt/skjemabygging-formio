@@ -3,6 +3,7 @@ import { ChangeEvent, useEffect } from 'react';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useStateField } from '../../context/state/useStateField';
 import { inputId } from '../../utils/inputId';
+import ReadMore from '../read-more/ReadMore';
 import FormElementBox from '../shared/FormElementBox';
 import TranslatedDescription from '../shared/TranslatedDescription';
 import TranslatedLabel from '../shared/TranslatedLabel';
@@ -23,6 +24,7 @@ const MonthPicker = ({
   readOnly,
   minYear,
   maxYear,
+  readMore,
   marginBottom,
 }: MonthPickerProps) => {
   const { currentLanguage } = useLanguage();
@@ -66,6 +68,7 @@ const MonthPicker = ({
           onChange={handleChange}
         />
       </AkselMonthPicker>
+      {readMore && <ReadMore {...readMore} />}
     </FormElementBox>
   );
 };

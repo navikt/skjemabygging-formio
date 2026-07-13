@@ -1,5 +1,6 @@
 import { Box } from '@navikt/ds-react';
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
+import ReadMore from '../../../components/read-more/ReadMore';
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { sanitizeHtml } from '../../../utils/sanitizeHtml';
 
@@ -17,6 +18,9 @@ const InputHtmlElement = ({ component }: InputHtmlElementProps) => {
   return (
     <Box marginBlock="space-0 space-32">
       <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(translate(component.content)) }} />
+      {component.additionalDescriptionLabel && component.additionalDescriptionText && (
+        <ReadMore label={component.additionalDescriptionLabel} text={component.additionalDescriptionText} />
+      )}
     </Box>
   );
 };

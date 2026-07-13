@@ -1,3 +1,4 @@
+import InputAddress from './components/address/InputAddress';
 import InputAlert from './components/alert/InputAlert';
 import InputCheckbox from './components/checkbox/InputCheckbox';
 import InputContainer from './components/container/InputContainer';
@@ -28,6 +29,7 @@ import { InputComponentProps, InputComponentRegistry } from './inputComponentReg
 
 const inputComponentRegistry: InputComponentRegistry = {
   alertstripe: InputAlert,
+  navAddress: InputAddress,
   container: InputContainer,
   datagrid: InputDataGrid,
   htmlelement: InputHtmlElement,

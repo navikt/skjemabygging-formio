@@ -6,6 +6,7 @@ interface ValidationRules {
   maxLength?: number;
   email?: boolean;
   coverPageValue?: boolean;
+  postalCode?: boolean;
   numberType?: 'integer' | 'decimal';
   min?: number;
   max?: number;
@@ -93,6 +94,9 @@ const validateValue = (
   }
   if (rules.coverPageValue && typeof value === 'string' && !validatorUtils.isValidCoverPageValue(value)) {
     return { textKey: TEXTS.validering.containsInvalidCharacters, params: { field } };
+  }
+  if (rules.postalCode && typeof value === 'string' && (value.length !== 4 || !numberUtils.isValidInteger(value))) {
+    return { textKey: TEXTS.validering.invalidPostalCode, params: { field } };
   }
   if (rules.organizationNumber && typeof value === 'string' && !validatorUtils.isOrganizationNumber(value)) {
     return { textKey: TEXTS.validering.orgNrCustomError, params: { field } };

@@ -3,6 +3,7 @@ import {
   InputComponentProps,
   isRequired,
   resolveInputType,
+  resolveReadMore,
   resolveSubmissionPath,
 } from '../../inputComponentRegistryUtils';
 
@@ -16,6 +17,7 @@ const InputEmail = ({ component, submissionPath }: InputComponentProps) => (
     inputMode={component.inputType}
     type={resolveInputType(component)}
     spellCheck={component.spellCheck}
+    readMore={resolveReadMore(component)}
   />
 );
 

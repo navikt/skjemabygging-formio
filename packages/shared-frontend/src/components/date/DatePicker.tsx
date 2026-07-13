@@ -4,6 +4,7 @@ import { ChangeEvent, useEffect } from 'react';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useStateField } from '../../context/state/useStateField';
 import { inputId } from '../../utils/inputId';
+import ReadMore from '../read-more/ReadMore';
 import FormElementBox from '../shared/FormElementBox';
 import TranslatedDescription from '../shared/TranslatedDescription';
 import TranslatedLabel from '../shared/TranslatedLabel';
@@ -24,6 +25,7 @@ const DatePicker = ({
   readOnly,
   fromDate,
   toDate,
+  readMore,
   marginBottom,
 }: DatePickerProps) => {
   const { currentLanguage } = useLanguage();
@@ -72,6 +74,7 @@ const DatePicker = ({
           onChange={handleChange}
         />
       </AkselDatePicker>
+      {readMore && <ReadMore {...readMore} />}
     </FormElementBox>
   );
 };

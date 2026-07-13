@@ -1,5 +1,6 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import { ComponentType } from 'react';
+import { ReadMoreProps } from '../components/read-more/ReadMore';
 import { getResolvedSubmissionPath } from '../context/form-definition/formDefinitionUtils';
 
 interface InputComponentProps {
@@ -25,11 +26,30 @@ const resolveTextFormatKey = (component: Component) => {
   }
 };
 
+const resolveReadMore = (component: Component): ReadMoreProps | undefined => {
+  if (!component.additionalDescriptionLabel || !component.additionalDescriptionText) {
+    return undefined;
+  }
+
+  return {
+    label: component.additionalDescriptionLabel,
+    text: component.additionalDescriptionText,
+  };
+};
+
 const resolveInputType = (component: Component) => {
   if (component.inputType === 'email' || component.inputType === 'url' || component.inputType === 'tel') {
     return component.inputType;
   }
 };
 
-export { getValues, isRequired, resolveInputType, resolveNumberFormatKey, resolveSubmissionPath, resolveTextFormatKey };
+export {
+  getValues,
+  isRequired,
+  resolveInputType,
+  resolveNumberFormatKey,
+  resolveReadMore,
+  resolveSubmissionPath,
+  resolveTextFormatKey,
+};
 export type { InputComponentProps, InputComponentRegistry };

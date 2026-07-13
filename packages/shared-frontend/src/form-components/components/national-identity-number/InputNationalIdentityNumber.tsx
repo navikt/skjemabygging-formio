@@ -1,5 +1,10 @@
 import NationalIdentityNumber from '../../../components/national-identity-number/NationalIdentityNumber';
-import { InputComponentProps, isRequired, resolveSubmissionPath } from '../../inputComponentRegistryUtils';
+import {
+  InputComponentProps,
+  isRequired,
+  resolveReadMore,
+  resolveSubmissionPath,
+} from '../../inputComponentRegistryUtils';
 
 const InputNationalIdentityNumber = ({ component, submissionPath }: InputComponentProps) => (
   <NationalIdentityNumber
@@ -8,6 +13,7 @@ const InputNationalIdentityNumber = ({ component, submissionPath }: InputCompone
     description={component.description}
     required={isRequired(component)}
     readOnly={component.readOnly}
+    readMore={resolveReadMore(component)}
   />
 );
 

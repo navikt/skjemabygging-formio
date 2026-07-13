@@ -2,6 +2,7 @@ import { Textarea } from '@navikt/ds-react';
 import { ChangeEvent } from 'react';
 import { useStateField } from '../../context/state/useStateField';
 import { inputId } from '../../utils/inputId';
+import ReadMore from '../read-more/ReadMore';
 import FormElementBox from '../shared/FormElementBox';
 import TranslatedDescription from '../shared/TranslatedDescription';
 import TranslatedLabel from '../shared/TranslatedLabel';
@@ -19,6 +20,7 @@ const TextArea = ({
   required = true,
   readOnly,
   maxLength,
+  readMore,
   marginBottom,
 }: TextAreaProps) => {
   const { stateValue, error, setStateValue } = useStateField({ statePath });
@@ -44,6 +46,7 @@ const TextArea = ({
         readOnly={readOnly}
         maxLength={maxLength}
       />
+      {readMore && <ReadMore {...readMore} />}
     </FormElementBox>
   );
 };

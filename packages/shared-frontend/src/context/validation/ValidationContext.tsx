@@ -62,27 +62,30 @@ const ValidationContext = createContext<ValidationContextType>({} as ValidationC
 const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
   const { currentLanguage, translate } = useLanguage();
   const { submission } = useSubmissionState();
-  const { config } = useAppConfig();
+  const { config, submissionMethod } = useAppConfig();
   const allowTestTypes = config?.NAIS_CLUSTER_NAME !== 'prod-gcp';
   const [pagesWithErrors, setPagesWithErrors] = useState<Set<string>>(() => new Set(initialPagesWithErrors ?? []));
   const [summaryScope, setSummaryScope] = useState<SummaryScope>(undefined);
 
   const computeErrors = useCallback(
     (pageKey: string, components: Component[], activeSubmission: Submission | undefined): FieldError[] =>
-      deriveValidations(components, activeSubmission).reduce<FieldError[]>((acc, { submissionPath, field, rules }) => {
-        const violation = validateValue(
-          submissionUtils.getSubmissionValue(submissionPath, activeSubmission),
-          field,
-          rules,
-          currentLanguage,
-          { allowTestTypes },
-        );
-        if (violation) {
-          acc.push({ pageKey, submissionPath, field, message: translate(violation.textKey, violation.params) });
-        }
-        return acc;
-      }, []),
-    [allowTestTypes, currentLanguage, translate],
+      deriveValidations(components, activeSubmission, submissionMethod).reduce<FieldError[]>(
+        (acc, { submissionPath, field, rules }) => {
+          const violation = validateValue(
+            submissionUtils.getSubmissionValue(submissionPath, activeSubmission),
+            field,
+            rules,
+            currentLanguage,
+            { allowTestTypes },
+          );
+          if (violation) {
+            acc.push({ pageKey, submissionPath, field, message: translate(violation.textKey, violation.params) });
+          }
+          return acc;
+        },
+        [],
+      ),
+    [allowTestTypes, currentLanguage, submissionMethod, translate],
   );
 
   const getErrorsForPage = useCallback(

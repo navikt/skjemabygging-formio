@@ -3,6 +3,7 @@ import {
   InputComponentProps,
   isRequired,
   resolveNumberFormatKey,
+  resolveReadMore,
   resolveSubmissionPath,
 } from '../../inputComponentRegistryUtils';
 
@@ -16,6 +17,7 @@ const InputNumber = ({ component, submissionPath }: InputComponentProps) => (
     inputMode={component.inputType}
     spellCheck={component.spellCheck}
     formatKey={resolveNumberFormatKey(component)}
+    readMore={resolveReadMore(component)}
   />
 );
 

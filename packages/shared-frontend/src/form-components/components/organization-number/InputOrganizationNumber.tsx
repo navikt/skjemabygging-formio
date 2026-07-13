@@ -3,6 +3,7 @@ import {
   InputComponentProps,
   isRequired,
   resolveInputType,
+  resolveReadMore,
   resolveSubmissionPath,
   resolveTextFormatKey,
 } from '../../inputComponentRegistryUtils';
@@ -18,6 +19,7 @@ const InputOrganizationNumber = ({ component, submissionPath }: InputComponentPr
     type={resolveInputType(component)}
     spellCheck={component.spellCheck}
     formatKey={resolveTextFormatKey(component)}
+    readMore={resolveReadMore(component)}
   />
 );
 

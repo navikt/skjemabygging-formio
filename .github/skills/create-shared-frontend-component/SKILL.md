@@ -34,6 +34,11 @@ conventions we've settled on.
       components by nesting a child `statePath` (e.g. `Identity` renders
       `NationalIdentityNumber` at `${statePath}.identitetsnummer`) so formatting
       and validation are identical to the standalone field.
+    - **Complex/composite components must compose existing shared-frontend
+      wrappers, not import Aksel form components directly.** If a composite
+      needs text, choice, date, or helper UI, it should use `TextField`,
+      `RadioGroup`, `CheckboxGroup`, `Select`, `DatePicker`, `MonthPicker`,
+      `ReadMore`, etc.
 
 2. **Form-definition adapters** — `form-components/components/<kebab>/Input<Name>.tsx`
     - Thin JSON→props adapters. Take `InputComponentProps`
@@ -172,17 +177,19 @@ not in this skill.
 2. **Reusable component** (always): only `statePath` + presentational props;
    extend the shared `BaseFieldProps` (`src/components/types.ts` —
    `statePath`, `label?`, `description?`, `required?`, `readOnly?`,
-   `marginBottom?`) and
+   `marginBottom?`, `readMore?`) and
    add input-specific props on top (narrow `label` to required where needed);
-   bind with `useStateField`; use `FormElementBox`,
-   `TranslatedLabel`, and `TranslatedDescription` from
-   `src/components/shared/` (internal helper UI; `FormElementBox` is the shared
-   bottom-spacing wrapper for all form elements, inputs and Fieldset alike), and
-   `inputId(statePath)` (from `src/utils/`) for the field id.
+   bind with `useStateField`; use `FormElementBox` and the translated helper UI
+   from `src/components/shared/`, plus the reusable `ReadMore` wrapper from
+   `src/components/read-more/`, and `inputId(statePath)` (from `src/utils/`) for
+   the field id.
+   By default, editable components should support Formio's
+   `additionalDescriptionLabel` + `additionalDescriptionText` through the shared
+   `ReadMore` wrapper; only special cases should opt out.
 3. **Adapter** `form-components/components/<kebab>/Input<Name>.tsx`: map
    `component` → props with the helpers in `inputComponentRegistryUtils.ts`
    (`resolveSubmissionPath`, `isRequired`, `getValues`, `resolveInputType`,
-   `resolveNumberFormatKey`, `resolveTextFormatKey`).
+   `resolveNumberFormatKey`, `resolveTextFormatKey`, `resolveReadMore`).
 4. **Register** the form `type`(s) in `inputComponentRegistry.tsx`.
 5. **Validation**: add the rule to `toRules` in
    `validation/deriveValidations.ts` (keyed off `component.type`) and implement
@@ -234,7 +241,7 @@ so the Aksel input lives only there) plus its input adapter, register the
 and summary in the same folder aligned.
 
 - **Input pending (summary done)**: `account-number` (`bankAccount`), `iban`,
-  `phone-number`, `address` (`navAddress`), `address-validity`
+  `phone-number`, `address-validity`
   (`addressValidity`), `attachment`, `attachment-uploads`, `activities`,
   `driving-list`, `data-fetcher`, `maalgruppe`, `sender`, `accordion`.
   Some are display/derived and may not need an editable input — confirm per

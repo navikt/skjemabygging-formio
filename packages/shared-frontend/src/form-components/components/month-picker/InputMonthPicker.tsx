@@ -1,6 +1,11 @@
 import { getMonthPickerMaxYear, getMonthPickerMinYear } from '../../../components/date/dateFieldUtils';
 import MonthPicker from '../../../components/date/MonthPicker';
-import { InputComponentProps, isRequired, resolveSubmissionPath } from '../../inputComponentRegistryUtils';
+import {
+  InputComponentProps,
+  isRequired,
+  resolveReadMore,
+  resolveSubmissionPath,
+} from '../../inputComponentRegistryUtils';
 
 const InputMonthPicker = ({ component, submissionPath }: InputComponentProps) => (
   <MonthPicker
@@ -11,6 +16,7 @@ const InputMonthPicker = ({ component, submissionPath }: InputComponentProps) =>
     readOnly={component.readOnly}
     minYear={getMonthPickerMinYear(component)}
     maxYear={getMonthPickerMaxYear(component)}
+    readMore={resolveReadMore(component)}
   />
 );
 

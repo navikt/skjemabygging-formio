@@ -1,5 +1,11 @@
 import CheckboxGroup from '../../../components/checkbox-group/CheckboxGroup';
-import { getValues, InputComponentProps, isRequired, resolveSubmissionPath } from '../../inputComponentRegistryUtils';
+import {
+  getValues,
+  InputComponentProps,
+  isRequired,
+  resolveReadMore,
+  resolveSubmissionPath,
+} from '../../inputComponentRegistryUtils';
 
 const InputSelectBoxes = ({ component, submissionPath }: InputComponentProps) => (
   <CheckboxGroup
@@ -8,6 +14,7 @@ const InputSelectBoxes = ({ component, submissionPath }: InputComponentProps) =>
     description={component.description}
     values={getValues(component)}
     required={isRequired(component)}
+    readMore={resolveReadMore(component)}
   />
 );
 
