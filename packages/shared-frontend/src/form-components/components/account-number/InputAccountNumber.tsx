@@ -1,4 +1,4 @@
-import AccountNumber from '../../../components/account-number/AccountNumber';
+import TextField from '../../../components/text-field/TextField';
 import {
   InputComponentProps,
   isRequired,
@@ -7,13 +7,16 @@ import {
 } from '../../inputComponentRegistryUtils';
 
 const InputAccountNumber = ({ component, submissionPath }: InputComponentProps) => (
-  <AccountNumber
+  <TextField
     statePath={resolveSubmissionPath(component, submissionPath)}
     label={component.label}
     description={component.description}
     required={isRequired(component)}
     readOnly={component.readOnly}
     readMore={resolveReadMore(component)}
+    inputMode="numeric"
+    spellCheck={false}
+    formatKey="accountNumber"
   />
 );
 

@@ -1,8 +1,8 @@
 import { dateUtils, SubmissionIdentity, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useStateField } from '../../context/state/useStateField';
 import DatePicker from '../date/DatePicker';
-import NationalIdentityNumber from '../national-identity-number/NationalIdentityNumber';
 import RadioGroup from '../radio-group/RadioGroup';
+import TextField from '../text-field/TextField';
 import { BaseFieldProps } from '../types';
 
 type IdentityProps = Pick<BaseFieldProps, 'statePath' | 'label' | 'required' | 'readOnly'>;
@@ -12,7 +12,16 @@ const Identity = ({ statePath, label, required, readOnly }: IdentityProps) => {
   const identity = stateValue as SubmissionIdentity | undefined;
 
   if (readOnly) {
-    return <NationalIdentityNumber statePath={`${statePath}.identitetsnummer`} required={required} readOnly />;
+    return (
+      <TextField
+        statePath={`${statePath}.identitetsnummer`}
+        label={TEXTS.statiske.identity.identityNumber}
+        required={required}
+        readOnly
+        inputMode="numeric"
+        formatKey="identityNumber"
+      />
+    );
   }
 
   return (
@@ -27,7 +36,13 @@ const Identity = ({ statePath, label, required, readOnly }: IdentityProps) => {
         required={required}
       />
       {identity?.harDuFodselsnummer === 'ja' && (
-        <NationalIdentityNumber statePath={`${statePath}.identitetsnummer`} required={required} />
+        <TextField
+          statePath={`${statePath}.identitetsnummer`}
+          label={TEXTS.statiske.identity.identityNumber}
+          required={required}
+          inputMode="numeric"
+          formatKey="identityNumber"
+        />
       )}
       {identity?.harDuFodselsnummer === 'nei' && (
         <DatePicker

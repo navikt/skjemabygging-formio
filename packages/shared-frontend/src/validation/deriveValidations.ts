@@ -272,6 +272,44 @@ const collectPhoneNumberDescriptors = (component: Component, submission?: Submis
   ];
 };
 
+const collectSenderDescriptors = (component: Component): ValidationDescriptor[] => {
+  const submissionPath = getResolvedSubmissionPath(component);
+  const required = component.validate?.required ?? false;
+
+  if (component.senderRole === 'organization') {
+    return [
+      {
+        submissionPath: `${submissionPath}.organization.number`,
+        field: component.customLabels?.organizationNumber ?? 'Organisasjonsnummer',
+        rules: { required, organizationNumber: true },
+      },
+      {
+        submissionPath: `${submissionPath}.organization.name`,
+        field: component.customLabels?.organizationName ?? 'Virksomhetsnavn',
+        rules: { required, coverPageValue: true },
+      },
+    ];
+  }
+
+  return [
+    {
+      submissionPath: `${submissionPath}.person.nationalIdentityNumber`,
+      field: component.customLabels?.nationalIdentityNumber ?? TEXTS.statiske.identity.identityNumber,
+      rules: { required, nationalIdentityNumber: true },
+    },
+    {
+      submissionPath: `${submissionPath}.person.firstName`,
+      field: component.customLabels?.firstName ?? TEXTS.statiske.identity.firstName,
+      rules: { required, coverPageValue: true },
+    },
+    {
+      submissionPath: `${submissionPath}.person.surname`,
+      field: component.customLabels?.surname ?? TEXTS.statiske.identity.surname,
+      rules: { required, coverPageValue: true },
+    },
+  ];
+};
+
 const collectValidationDescriptors = (
   components: Component[],
   submission?: Submission,
@@ -296,6 +334,10 @@ const collectValidationDescriptors = (
 
     if (component.type === 'phoneNumber') {
       return collectPhoneNumberDescriptors(component, submission);
+    }
+
+    if (component.type === 'sender') {
+      return collectSenderDescriptors(component);
     }
 
     if (component.type === 'datagrid') {

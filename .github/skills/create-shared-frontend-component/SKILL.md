@@ -236,7 +236,7 @@ Registered in `inputComponentRegistry.tsx` (keep this list current):
 - **Layout/containers**: `container`, `datagrid`, `navSkjemagruppe`/`fieldset`,
   `row`, `alertstripe`, `htmlelement`.
 - **Composite**: `identity`.
-- **Structured/composite**: `navAddress`.
+- **Structured/composite**: `navAddress`, `sender`.
 - **Structured/date**: `addressValidity`.
 
 Not yet implemented — **the "old format" backlog**. These already have a
@@ -247,7 +247,7 @@ so the Aksel input lives only there) plus its input adapter, register the
 `type`(s), and add validators. Summary parity already exists, so keep the input
 and summary in the same folder aligned.
 
-- **Real input backlog**: `sender`, `attachment`, `accordion`, `activities`,
+- **Real input backlog**: `attachment`, `accordion`, `activities`,
   `data-fetcher` (`dataFetcher`), `driving-list` (`drivinglist`), `maalgruppe`.
 - **Special cases, not normal `Input<Name>.tsx` backlog**:
   `attachment-uploads` is only rendered through
@@ -256,13 +256,12 @@ and summary in the same folder aligned.
 
 Recommended implementation order (smallest risk / best leverage first):
 
-1. `sender`
-2. `accordion`
-3. `attachment`
-4. `activities`
-5. `dataFetcher`
-6. `drivinglist`
-7. `maalgruppe`
+1. `accordion`
+2. `attachment`
+3. `activities`
+4. `dataFetcher`
+5. `drivinglist`
+6. `maalgruppe`
 
 Treat the last three as "confirm scope first" items: they are system/derived
 components and may need a shared-frontend strategy decision before a normal

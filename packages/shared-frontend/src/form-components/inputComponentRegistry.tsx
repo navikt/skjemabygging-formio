@@ -25,6 +25,7 @@ import InputRow from './components/row/InputRow';
 import InputSelectBoxes from './components/select-boxes/InputSelectBoxes';
 import InputNavSelect from './components/select/InputNavSelect';
 import InputSelect from './components/select/InputSelect';
+import InputSender from './components/sender/InputSender';
 import InputSurname from './components/surname/InputSurname';
 import InputTextArea from './components/text-area/InputTextArea';
 import InputTextField from './components/text-field/InputTextField';
@@ -45,6 +46,7 @@ const inputComponentRegistry: InputComponentRegistry = {
   row: InputRow,
   number: InputNumber,
   phoneNumber: InputPhoneNumber,
+  sender: InputSender,
   textfield: InputTextField,
   textarea: InputTextArea,
   formioTextArea: InputTextArea,

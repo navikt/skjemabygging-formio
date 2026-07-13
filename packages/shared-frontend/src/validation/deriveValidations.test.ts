@@ -458,4 +458,47 @@ describe('deriveValidations', () => {
       },
     ]);
   });
+
+  it('expands sender person fields into nested descriptors', () => {
+    const components = [
+      { key: 'sender', type: 'sender', input: true, validate: { required: true } },
+    ] as unknown as Component[];
+
+    expect(deriveValidations(components)).toEqual([
+      {
+        submissionPath: 'sender.person.nationalIdentityNumber',
+        field: expect.any(String),
+        rules: { required: true, nationalIdentityNumber: true },
+      },
+      {
+        submissionPath: 'sender.person.firstName',
+        field: expect.any(String),
+        rules: { required: true, coverPageValue: true },
+      },
+      {
+        submissionPath: 'sender.person.surname',
+        field: expect.any(String),
+        rules: { required: true, coverPageValue: true },
+      },
+    ]);
+  });
+
+  it('expands sender organization fields into nested descriptors', () => {
+    const components = [
+      { key: 'sender', type: 'sender', input: true, senderRole: 'organization', validate: { required: true } },
+    ] as unknown as Component[];
+
+    expect(deriveValidations(components)).toEqual([
+      {
+        submissionPath: 'sender.organization.number',
+        field: expect.any(String),
+        rules: { required: true, organizationNumber: true },
+      },
+      {
+        submissionPath: 'sender.organization.name',
+        field: expect.any(String),
+        rules: { required: true, coverPageValue: true },
+      },
+    ]);
+  });
 });
