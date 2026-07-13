@@ -13,6 +13,7 @@ import { getCurrentValue, getStateValue, resolveRenderedSelectType, SelectType, 
 
 interface SelectProps extends BaseFieldProps {
   label: string;
+  // values can be provided statically or resolved by a caller-side loader such as useRemoteOptions
   values: ComponentValue[];
   selectText?: string;
   selectType?: SelectType;
