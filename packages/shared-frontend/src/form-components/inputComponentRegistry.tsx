@@ -1,3 +1,4 @@
+import InputAccordion from './components/accordion/InputAccordion';
 import InputAccountNumber from './components/account-number/InputAccountNumber';
 import InputAddressValidity from './components/address-validity/InputAddressValidity';
 import InputAddress from './components/address/InputAddress';
@@ -33,6 +34,7 @@ import InputYear from './components/year/InputYear';
 import { InputComponentProps, InputComponentRegistry } from './inputComponentRegistryUtils';
 
 const inputComponentRegistry: InputComponentRegistry = {
+  accordion: InputAccordion,
   alertstripe: InputAlert,
   navAddress: InputAddress,
   addressValidity: InputAddressValidity,
