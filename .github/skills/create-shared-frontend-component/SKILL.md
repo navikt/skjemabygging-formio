@@ -228,13 +228,16 @@ root so vitest picks up the refreshed `file:` copy.
 Registered in `inputComponentRegistry.tsx` (keep this list current):
 
 - **Text-like**: `textfield`, `textarea`/`formioTextArea`, `email`, `firstName`,
-  `surname`, `number`, `currency`, `orgNr`, `year`, `fnrfield`.
+  `surname`, `number`, `currency`, `orgNr`, `year`, `fnrfield`, `bankAccount`,
+  `iban`, `phoneNumber`.
 - **Choice**: `select`, `navSelect`, `landvelger`, `valutavelger`, `radiopanel`,
   `navCheckbox`, `selectboxes`.
 - **Date**: `navDatepicker`, `monthPicker`.
 - **Layout/containers**: `container`, `datagrid`, `navSkjemagruppe`/`fieldset`,
   `row`, `alertstripe`, `htmlelement`.
 - **Composite**: `identity`.
+- **Structured/composite**: `navAddress`.
+- **Structured/date**: `addressValidity`.
 
 Not yet implemented — **the "old format" backlog**. These already have a
 `Summary<Name>.tsx` and a summary-registry entry (`RenderSummaryForm.tsx`) but
@@ -244,12 +247,26 @@ so the Aksel input lives only there) plus its input adapter, register the
 `type`(s), and add validators. Summary parity already exists, so keep the input
 and summary in the same folder aligned.
 
-- **Input pending (summary done)**: `account-number` (`bankAccount`), `iban`,
-  `phone-number`, `address-validity`
-  (`addressValidity`), `attachment`, `attachment-uploads`, `activities`,
-  `driving-list`, `data-fetcher`, `maalgruppe`, `sender`, `accordion`.
-  Some are display/derived and may not need an editable input — confirm per
-  component before adding an adapter.
+- **Real input backlog**: `sender`, `attachment`, `accordion`, `activities`,
+  `data-fetcher` (`dataFetcher`), `driving-list` (`drivinglist`), `maalgruppe`.
+- **Special cases, not normal `Input<Name>.tsx` backlog**:
+  `attachment-uploads` is only rendered through
+  `attachmentUploadsComponentRegistry`; `panel` and `intro-page` are summary-only
+  structural/render helpers, not regular input components.
+
+Recommended implementation order (smallest risk / best leverage first):
+
+1. `sender`
+2. `accordion`
+3. `attachment`
+4. `activities`
+5. `dataFetcher`
+6. `drivinglist`
+7. `maalgruppe`
+
+Treat the last three as "confirm scope first" items: they are system/derived
+components and may need a shared-frontend strategy decision before a normal
+editable adapter makes sense.
 
 Quick way to see what's left: every `type` in `RenderSummaryForm.tsx`'s
 `componentRegistry` that is missing from `inputComponentRegistry.tsx` (or any

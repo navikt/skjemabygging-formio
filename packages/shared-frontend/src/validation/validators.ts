@@ -1,4 +1,5 @@
 import { dateUtils, formatUtils, numberUtils, TEXTS, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import * as ibantools from 'ibantools';
 
 interface ValidationRules {
   required?: boolean;
@@ -21,6 +22,12 @@ interface ValidationRules {
   monthMaxYear?: number;
   organizationNumber?: boolean;
   nationalIdentityNumber?: boolean;
+  accountNumber?: boolean;
+  iban?: boolean;
+  phoneNumber?: {
+    showAreaCode?: boolean;
+    areaCode?: string;
+  };
 }
 
 interface RuleViolation {
@@ -66,6 +73,25 @@ interface ValidationOptions {
   allowTestTypes?: boolean;
 }
 
+const toIbanViolation = (value: string, field: string): RuleViolation | undefined => {
+  const { ValidationErrorsIBAN, validateIBAN } = ibantools;
+  const { valid, errorCodes } = validateIBAN(formatUtils.removeAllSpaces(value));
+
+  if (valid) {
+    return undefined;
+  }
+
+  if (errorCodes.includes(ValidationErrorsIBAN.WrongBBANLength)) {
+    return { textKey: TEXTS.validering.wrongBBANLength, params: { field } };
+  }
+
+  if (errorCodes.includes(ValidationErrorsIBAN.NoIBANCountry)) {
+    return { textKey: TEXTS.validering.noIBANCountry, params: { field } };
+  }
+
+  return { textKey: TEXTS.validering.invalidIBAN, params: { field } };
+};
+
 /**
  * Pure validation: returns the first violation (message key + params) for a value, or undefined.
  * Translation happens at the boundary (ValidationContext), so these stay framework-decoupled.
@@ -101,12 +127,34 @@ const validateValue = (
   if (rules.organizationNumber && typeof value === 'string' && !validatorUtils.isOrganizationNumber(value)) {
     return { textKey: TEXTS.validering.orgNrCustomError, params: { field } };
   }
+  if (rules.accountNumber && typeof value === 'string' && !validatorUtils.isAccountNumber(value)) {
+    return { textKey: TEXTS.validering.accountNumberCustomError, params: { field } };
+  }
+  if (rules.iban && typeof value === 'string') {
+    return toIbanViolation(value, field);
+  }
   if (
     rules.nationalIdentityNumber &&
     typeof value === 'string' &&
     !validatorUtils.isNationalIdentityNumber(value, { allowTestTypes: options.allowTestTypes })
   ) {
     return { textKey: TEXTS.validering.fodselsnummerDNummer, params: { field } };
+  }
+  if (rules.phoneNumber && typeof value === 'string') {
+    const { showAreaCode, areaCode } = rules.phoneNumber;
+
+    if (showAreaCode && areaCode === '+47') {
+      if (!/^\d+$/.test(value)) {
+        return { textKey: TEXTS.validering.digitsOnly, params: { field } };
+      }
+      if (value.length !== 8) {
+        return { textKey: TEXTS.validering.phoneNumberLength, params: { field } };
+      }
+    }
+
+    if (!showAreaCode && (!/^[\d\-()+\s]+$/.test(value) || /[a-zA-Z]/.test(value))) {
+      return { textKey: TEXTS.validering.digitsOnly, params: { field } };
+    }
   }
   if (rules.date && typeof value === 'string') {
     const normalizedDate = dateUtils.isValid(value, 'submission') ? value : dateUtils.toSubmissionDate(value);

@@ -8,12 +8,18 @@ type Formatter = (value: string) => string;
 
 const digitsOnly = (value: string) => value.replace(/\s/g, '');
 
+const iban: Formatter = (value) => formatUtils.formatIBAN(digitsOnly(value));
+
+const accountNumber: Formatter = (value) => formatUtils.formatAccountNumber(digitsOnly(value));
+
 const identityNumber: Formatter = (value) => {
   const digits = digitsOnly(value);
   return digits.length > 6 ? `${digits.slice(0, 6)} ${digits.slice(6)}` : digits;
 };
 
 const phoneNumber: Formatter = (value) => digitsOnly(value);
+
+const norwegianPhoneNumber: Formatter = (value) => formatUtils.formatPhoneNumber(digitsOnly(value), '+47');
 
 const organizationNumber: Formatter = (value) => formatUtils.formatOrganizationNumber(digitsOnly(value));
 
@@ -31,12 +37,33 @@ const decimal: Formatter = (value) => {
 };
 
 const formatters: Record<string, Formatter> = {
+  accountNumber,
+  iban,
   identityNumber,
+  norwegianPhoneNumber,
   phoneNumber,
   organizationNumber,
   number,
   decimal,
 };
 
-export { decimal, formatters, identityNumber, number, organizationNumber, phoneNumber };
+const submissionFormatters: Record<string, Formatter> = {
+  accountNumber: digitsOnly,
+  iban: digitsOnly,
+  norwegianPhoneNumber: digitsOnly,
+  phoneNumber: digitsOnly,
+};
+
+export {
+  accountNumber,
+  decimal,
+  formatters,
+  iban,
+  identityNumber,
+  norwegianPhoneNumber,
+  number,
+  organizationNumber,
+  phoneNumber,
+  submissionFormatters,
+};
 export type { Formatter };

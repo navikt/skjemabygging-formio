@@ -1,4 +1,13 @@
-import { decimal, identityNumber, number, organizationNumber, phoneNumber } from './index';
+import {
+  accountNumber,
+  decimal,
+  iban,
+  identityNumber,
+  norwegianPhoneNumber,
+  number,
+  organizationNumber,
+  phoneNumber,
+} from './index';
 
 describe('formatters', () => {
   it('formats identity number with a space after 6 digits', () => {
@@ -9,6 +18,22 @@ describe('formatters', () => {
 
   it('strips spaces from phone numbers', () => {
     expect(phoneNumber('12 34 56 78')).toBe('12345678');
+  });
+
+  it('formats norwegian phone numbers in pairs on blur', () => {
+    expect(norwegianPhoneNumber('12345678')).toBe('12 34 56 78');
+    expect(norwegianPhoneNumber('12 34 56 78')).toBe('12 34 56 78');
+    expect(norwegianPhoneNumber('1234')).toBe('1234');
+  });
+
+  it('formats account numbers with bank grouping', () => {
+    expect(accountNumber('12345678901')).toBe('1234 56 78901');
+    expect(accountNumber('1234 56 78901')).toBe('1234 56 78901');
+  });
+
+  it('formats IBAN with groups of four characters', () => {
+    expect(iban('NO9386011117947')).toBe('NO93 8601 1117 947');
+    expect(iban('NO93 8601 1117 947')).toBe('NO93 8601 1117 947');
   });
 
   it('formats organization number with grouped spaces', () => {
@@ -35,6 +60,8 @@ describe('formatters', () => {
     expect(decimal('1,')).toBe('1,');
     expect(decimal('abc')).toBe('abc');
     expect(organizationNumber('12')).toBe('12');
+    expect(accountNumber('12')).toBe('12');
+    expect(iban('NO93')).toBe('NO93 ');
   });
 
   it('is idempotent (formatting an already-formatted value is a no-op)', () => {
@@ -42,5 +69,7 @@ describe('formatters', () => {
     expect(number(number('1234567'))).toBe('1 234 567');
     expect(decimal(decimal('1234.5'))).toBe('1 234,5');
     expect(organizationNumber(organizationNumber('889640782'))).toBe('889 640 782');
+    expect(accountNumber(accountNumber('12345678901'))).toBe('1234 56 78901');
+    expect(iban(iban('NO9386011117947'))).toBe('NO93 8601 1117 947');
   });
 });

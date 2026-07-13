@@ -230,6 +230,69 @@ describe('deriveValidations', () => {
     ]);
   });
 
+  it('adds account number and iban validation rules from component type', () => {
+    const components = [
+      { key: 'account', label: 'Account number', input: true, type: 'bankAccount' },
+      { key: 'iban', label: 'IBAN', input: true, type: 'iban' },
+    ] as Component[];
+
+    expect(deriveValidations(components)).toEqual([
+      {
+        submissionPath: 'account',
+        field: 'Account number',
+        rules: expect.objectContaining({ accountNumber: true }),
+      },
+      {
+        submissionPath: 'iban',
+        field: 'IBAN',
+        rules: expect.objectContaining({ iban: true }),
+      },
+    ]);
+  });
+
+  it('expands phoneNumber with area code into the nested number field', () => {
+    const components = [
+      {
+        key: 'phone',
+        label: 'Phone',
+        input: true,
+        type: 'phoneNumber',
+        showAreaCode: true,
+        validate: { required: true },
+      },
+    ] as unknown as Component[];
+
+    expect(deriveValidations(components, { data: { phone: { areaCode: '+47', number: '12345678' } } })).toEqual([
+      {
+        submissionPath: 'phone.number',
+        field: 'Phone',
+        rules: {
+          required: true,
+          minLength: undefined,
+          maxLength: undefined,
+          phoneNumber: { showAreaCode: true, areaCode: '+47' },
+        },
+      },
+    ]);
+  });
+
+  it('keeps phoneNumber without area code on the root submission path', () => {
+    const components = [{ key: 'phone', label: 'Phone', input: true, type: 'phoneNumber' }] as unknown as Component[];
+
+    expect(deriveValidations(components)).toEqual([
+      {
+        submissionPath: 'phone',
+        field: 'Phone',
+        rules: {
+          required: undefined,
+          minLength: undefined,
+          maxLength: undefined,
+          phoneNumber: { showAreaCode: false },
+        },
+      },
+    ]);
+  });
+
   it('expands identity into radio + national-identity-number when identity number is chosen', () => {
     const components = [
       { key: 'identity', type: 'identity', input: true, validate: { required: true } },
@@ -369,6 +432,29 @@ describe('deriveValidations', () => {
         submissionPath: 'address.land',
         field: expect.any(String),
         rules: { required: true },
+      },
+    ]);
+  });
+
+  it('expands address validity into nested from/to date fields', () => {
+    const components = [
+      { key: 'addressValidity', type: 'addressValidity', input: true, validate: { required: true } },
+    ] as unknown as Component[];
+
+    expect(
+      deriveValidations(components, {
+        data: { addressValidity: { gyldigFraOgMed: '2024-01-10' } },
+      }),
+    ).toEqual([
+      {
+        submissionPath: 'addressValidity.gyldigFraOgMed',
+        field: expect.any(String),
+        rules: expect.objectContaining({ required: true, date: true }),
+      },
+      {
+        submissionPath: 'addressValidity.gyldigTilOgMed',
+        field: expect.any(String),
+        rules: expect.objectContaining({ date: true, fromDate: '2024-01-10' }),
       },
     ]);
   });

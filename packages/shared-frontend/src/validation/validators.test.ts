@@ -113,4 +113,54 @@ describe('validateValue', () => {
       params: { field: 'Postnummer' },
     });
   });
+
+  it('validates account number values', () => {
+    expect(validateValue('12345678903', 'Kontonummer', { accountNumber: true })).toBeUndefined();
+    expect(validateValue('1234 56 78903', 'Kontonummer', { accountNumber: true })).toBeUndefined();
+    expect(validateValue('12345678901', 'Kontonummer', { accountNumber: true })).toEqual({
+      textKey: TEXTS.validering.accountNumberCustomError,
+      params: { field: 'Kontonummer' },
+    });
+  });
+
+  it('validates iban values', () => {
+    expect(validateValue('NO9386011117947', 'IBAN', { iban: true })).toBeUndefined();
+    expect(validateValue('NO93 8601 1117 947', 'IBAN', { iban: true })).toBeUndefined();
+    expect(validateValue('NO938601111794', 'IBAN', { iban: true })).toEqual({
+      textKey: TEXTS.validering.wrongBBANLength,
+      params: { field: 'IBAN' },
+    });
+  });
+
+  it('validates norwegian phone numbers with area code', () => {
+    expect(
+      validateValue('12345678', 'Telefonnummer', {
+        phoneNumber: { showAreaCode: true, areaCode: '+47' },
+      }),
+    ).toBeUndefined();
+    expect(
+      validateValue('12ab5678', 'Telefonnummer', {
+        phoneNumber: { showAreaCode: true, areaCode: '+47' },
+      }),
+    ).toEqual({
+      textKey: TEXTS.validering.digitsOnly,
+      params: { field: 'Telefonnummer' },
+    });
+    expect(
+      validateValue('1234567', 'Telefonnummer', {
+        phoneNumber: { showAreaCode: true, areaCode: '+47' },
+      }),
+    ).toEqual({
+      textKey: TEXTS.validering.phoneNumberLength,
+      params: { field: 'Telefonnummer' },
+    });
+  });
+
+  it('validates free-form phone numbers without area code', () => {
+    expect(validateValue('+49 1234-5678', 'Telefonnummer', { phoneNumber: { showAreaCode: false } })).toBeUndefined();
+    expect(validateValue('abc', 'Telefonnummer', { phoneNumber: { showAreaCode: false } })).toEqual({
+      textKey: TEXTS.validering.digitsOnly,
+      params: { field: 'Telefonnummer' },
+    });
+  });
 });

@@ -1,4 +1,4 @@
-import { Formatter, formatters } from './formatters';
+import { Formatter, formatters, submissionFormatters } from './formatters';
 
 /**
  * input <-> submission formatting contract:
@@ -20,7 +20,9 @@ const toInputFormat = (value: unknown, formatKey?: string): string => {
 };
 
 const toSubmissionFormat = (value: string, formatKey?: string): string => {
-  const formatter: Formatter | undefined = formatKey ? formatters[formatKey] : undefined;
+  const formatter: Formatter | undefined = formatKey
+    ? (submissionFormatters[formatKey] ?? formatters[formatKey])
+    : undefined;
   return formatter ? formatter(value) : value;
 };
 

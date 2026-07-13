@@ -53,6 +53,8 @@ const toRules = (component: Component, pageComponents: Component[], submission?:
   monthMaxYear: component.type === 'monthPicker' ? getMonthPickerMaxYear(component) : undefined,
   organizationNumber: component.type === 'orgNr' ? true : undefined,
   nationalIdentityNumber: component.type === 'fnrfield' ? true : undefined,
+  ...(component.type === 'bankAccount' ? { accountNumber: true } : {}),
+  ...(component.type === 'iban' ? { iban: true } : {}),
 });
 
 const hasRules = (rules: ValidationRules) => Object.values(rules).some((rule) => rule !== undefined && rule !== false);
@@ -213,6 +215,63 @@ const collectAddressDescriptors = (
   return descriptors;
 };
 
+const collectAddressValidityDescriptors = (component: Component, submission?: Submission): ValidationDescriptor[] => {
+  const submissionPath = getResolvedSubmissionPath(component);
+  const required = component.validate?.required ?? false;
+  const value = submissionUtils.getSubmissionValue(submissionPath, submission) as
+    { gyldigFraOgMed?: string; gyldigTilOgMed?: string } | undefined;
+  const minDate = dateUtils.addDays(-365);
+  const maxDate = dateUtils.addDays(365);
+
+  return [
+    {
+      submissionPath: `${submissionPath}.gyldigFraOgMed`,
+      field: TEXTS.statiske.address.validFrom,
+      rules: { required, date: true, fromDate: minDate, toDate: maxDate },
+    },
+    {
+      submissionPath: `${submissionPath}.gyldigTilOgMed`,
+      field: TEXTS.statiske.address.validTo,
+      rules: { date: true, fromDate: value?.gyldigFraOgMed || minDate, toDate: maxDate },
+    },
+  ];
+};
+
+const collectPhoneNumberDescriptors = (component: Component, submission?: Submission): ValidationDescriptor[] => {
+  const submissionPath = getResolvedSubmissionPath(component);
+  const field = component.label ?? component.key;
+
+  if (!component.showAreaCode) {
+    return [
+      {
+        submissionPath,
+        field,
+        rules: {
+          required: component.validate?.required,
+          minLength: typeof component.validate?.minLength === 'number' ? component.validate.minLength : undefined,
+          maxLength: typeof component.validate?.maxLength === 'number' ? component.validate.maxLength : undefined,
+          phoneNumber: { showAreaCode: false },
+        },
+      },
+    ];
+  }
+
+  const value = submissionUtils.getSubmissionValue(submissionPath, submission) as { areaCode?: string } | undefined;
+
+  return [
+    {
+      submissionPath: `${submissionPath}.number`,
+      field,
+      rules: {
+        required: component.validate?.required,
+        minLength: typeof component.validate?.minLength === 'number' ? component.validate.minLength : undefined,
+        maxLength: typeof component.validate?.maxLength === 'number' ? component.validate.maxLength : undefined,
+        phoneNumber: { showAreaCode: true, areaCode: value?.areaCode },
+      },
+    },
+  ];
+};
+
 const collectValidationDescriptors = (
   components: Component[],
   submission?: Submission,
@@ -229,6 +288,14 @@ const collectValidationDescriptors = (
 
     if (component.type === 'navAddress') {
       return collectAddressDescriptors(component, submission, submissionMethod);
+    }
+
+    if (component.type === 'addressValidity') {
+      return collectAddressValidityDescriptors(component, submission);
+    }
+
+    if (component.type === 'phoneNumber') {
+      return collectPhoneNumberDescriptors(component, submission);
     }
 
     if (component.type === 'datagrid') {
