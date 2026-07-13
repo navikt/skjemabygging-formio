@@ -1,6 +1,7 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import { ComponentType } from 'react';
 import { ReadMoreProps } from '../components/read-more/ReadMore';
+import { SelectType } from '../components/select/selectUtils';
 import { getResolvedSubmissionPath } from '../context/form-definition/formDefinitionUtils';
 
 interface InputComponentProps {
@@ -37,6 +38,22 @@ const resolveReadMore = (component: Component): ReadMoreProps | undefined => {
   };
 };
 
+const resolveSelectType = (component: Component): SelectType => {
+  if (component.selectType) {
+    return component.selectType;
+  }
+
+  if (component.type === 'select') {
+    return 'select';
+  }
+
+  if (component.type === 'navSelect') {
+    return 'combobox';
+  }
+
+  return 'auto';
+};
+
 const resolveInputType = (component: Component) => {
   if (component.inputType === 'email' || component.inputType === 'url' || component.inputType === 'tel') {
     return component.inputType;
@@ -49,6 +66,7 @@ export {
   resolveInputType,
   resolveNumberFormatKey,
   resolveReadMore,
+  resolveSelectType,
   resolveSubmissionPath,
   resolveTextFormatKey,
 };

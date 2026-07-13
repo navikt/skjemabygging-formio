@@ -4,6 +4,7 @@ import {
   InputComponentProps,
   isRequired,
   resolveReadMore,
+  resolveSelectType,
   resolveSubmissionPath,
 } from '../../inputComponentRegistryUtils';
 
@@ -16,6 +17,7 @@ const InputSelect = ({ component, submissionPath }: InputComponentProps) => (
     required={isRequired(component)}
     readOnly={component.readOnly}
     readMore={resolveReadMore(component)}
+    selectType={resolveSelectType(component)}
   />
 );
 

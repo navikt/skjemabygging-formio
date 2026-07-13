@@ -124,8 +124,7 @@ describe('New renderer path', () => {
     cy.findByRole('button', { name: 'Neste steg' }).click();
     cy.get('[data-cy="error-summary"]').should('exist');
 
-    cy.findByRole('combobox', { name: /Country/ }).click();
-    cy.findByRole('option', { name: 'Norway' }).click();
+    cy.findByRole('combobox', { name: /Country/ }).select('Norway');
     cy.findByRole('radio', { name: /Email/ }).check({ force: true });
 
     cy.get('[data-cy="error-summary"]').should('not.exist');
@@ -176,8 +175,7 @@ describe('New renderer path', () => {
     cy.wait('@createSoknad');
 
     cy.findByRole('heading', { name: 'Page two' }).should('exist');
-    cy.findByRole('combobox', { name: /Country/ }).click();
-    cy.findByRole('option', { name: 'Norway' }).click();
+    cy.findByRole('combobox', { name: /Country/ }).select('Norway');
     cy.findByRole('radio', { name: /Email/ }).check({ force: true });
 
     cy.findByRole('button', { name: 'Neste steg' }).click();

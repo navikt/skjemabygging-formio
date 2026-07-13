@@ -89,6 +89,7 @@ export interface Component {
   autocomplete?: string;
   spellCheck?: boolean;
   rows?: number;
+  selectType?: 'auto' | 'select' | 'combobox';
   editor?: string;
   wysiwyg?: object | boolean;
   as?: string;

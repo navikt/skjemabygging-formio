@@ -4,6 +4,7 @@ import {
   InputComponentProps,
   isRequired,
   resolveReadMore,
+  resolveSelectType,
   resolveSubmissionPath,
 } from '../../inputComponentRegistryUtils';
 
@@ -15,6 +16,7 @@ const InputNavSelect = ({ component, submissionPath }: InputComponentProps) => (
     values={getValues(component)}
     required={isRequired(component)}
     readMore={resolveReadMore(component)}
+    selectType={resolveSelectType(component)}
   />
 );
 
