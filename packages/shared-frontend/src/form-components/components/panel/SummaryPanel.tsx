@@ -12,7 +12,8 @@ const SummaryPanel = (props: FormComponentProps) => {
   const { title, components, navId, key } = component;
   const { search } = useLocation();
   const { isOpen: isStepperOpen } = useStepperState();
-  const isAttachmentPanel = (components ?? []).some((child) => child.type === 'attachment');
+  const childComponents = components ?? [];
+  const isAttachmentPanel = childComponents.some((child) => child.type === 'attachment');
 
   const panelValidation = panelValidationList?.find((panel) => panel.key === key);
 
@@ -27,7 +28,7 @@ const SummaryPanel = (props: FormComponentProps) => {
         </FormSummary.Heading>
       </FormSummary.Header>
       <FormSummary.Answers>
-        {components.map((component) => {
+        {childComponents.map((component) => {
           const componentSubmissionPath = formComponentUtils.getComponentSubmissionPath(component, submissionPath);
           return (
             <RenderComponent
