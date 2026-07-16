@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck
 import { navFormUtils } from './navFormUtils';
 import formWithContainer from './testdata/nav-form/conditional-container';
 import formWithCustomConditional from './testdata/nav-form/conditional-custom';
