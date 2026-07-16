@@ -1,9 +1,7 @@
 import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 
-const remoteOptionsCache = new Map<string, Promise<ComponentValue[]>>();
-
-const fetchRemoteOptions = async (url: string): Promise<ComponentValue[]> => {
+const loadRemoteOptions = async (url: string): Promise<ComponentValue[]> => {
   const response = await fetch(url);
 
   if (!response.ok) {
@@ -11,26 +9,6 @@ const fetchRemoteOptions = async (url: string): Promise<ComponentValue[]> => {
   }
 
   return response.json() as Promise<ComponentValue[]>;
-};
-
-const loadRemoteOptions = (url: string): Promise<ComponentValue[]> => {
-  const cached = remoteOptionsCache.get(url);
-
-  if (cached) {
-    return cached;
-  }
-
-  const request = fetchRemoteOptions(url).catch((error) => {
-    remoteOptionsCache.delete(url);
-    throw error;
-  });
-
-  remoteOptionsCache.set(url, request);
-  return request;
-};
-
-const clearRemoteOptionsCache = () => {
-  remoteOptionsCache.clear();
 };
 
 const useRemoteOptions = (url?: string) => {
@@ -66,4 +44,4 @@ const useRemoteOptions = (url?: string) => {
   return { values, error };
 };
 
-export { clearRemoteOptionsCache, loadRemoteOptions, useRemoteOptions };
+export { loadRemoteOptions, useRemoteOptions };

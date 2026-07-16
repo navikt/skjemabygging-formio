@@ -1,15 +1,22 @@
 import { Component, Form, navFormUtils, submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
 
-const getResolvedSubmissionPath = (component: Component) =>
-  submissionUtils.getComponentSubmissionPath(component, component.baseSubmissionPath ?? '');
+const getResolvedSubmissionPath = (component: Component) => {
+  if (component.type === 'attachment') {
+    return component.baseSubmissionPath ? `${component.baseSubmissionPath}.${component.key}` : component.key;
+  }
+
+  return submissionUtils.getComponentSubmissionPath(component, component.baseSubmissionPath ?? '');
+};
 
 const enrichComponentsWithBaseSubmissionPath = (components: Component[] = [], baseSubmissionPath = ''): Component[] =>
   components.map((component) => {
     const { components: childComponents, ...rest } = component;
-    const nextBaseSubmissionPath = getResolvedSubmissionPath({
-      ...rest,
-      baseSubmissionPath,
-    });
+    const nextBaseSubmissionPath = rest.yourInformation
+      ? [baseSubmissionPath, rest.key].filter(Boolean).join('.')
+      : getResolvedSubmissionPath({
+          ...rest,
+          baseSubmissionPath,
+        });
 
     return {
       ...rest,

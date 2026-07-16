@@ -49,7 +49,11 @@ const removeDeepValue = (target: SubmissionData | unknown[], path: SubmissionPat
       arrayTarget.splice(key, 1);
       return arrayTarget as unknown as SubmissionData;
     }
-    arrayTarget[key] = removeDeepValue((arrayTarget[key] as SubmissionData | unknown[]) ?? {}, rest);
+    const updatedChild = removeDeepValue((arrayTarget[key] as SubmissionData | unknown[]) ?? {}, rest);
+    if (updatedChild === arrayTarget[key]) {
+      return target as unknown as SubmissionData;
+    }
+    arrayTarget[key] = updatedChild;
     return arrayTarget as unknown as SubmissionData;
   }
 
@@ -60,9 +64,13 @@ const removeDeepValue = (target: SubmissionData | unknown[], path: SubmissionPat
     const { [key]: _removed, ...remaining } = target;
     return remaining;
   }
+  const updatedChild = removeDeepValue((target[key] as SubmissionData | unknown[]) ?? {}, rest);
+  if (updatedChild === target[key]) {
+    return target;
+  }
   return {
     ...target,
-    [key]: removeDeepValue((target[key] as SubmissionData | unknown[]) ?? {}, rest),
+    [key]: updatedChild,
   };
 };
 

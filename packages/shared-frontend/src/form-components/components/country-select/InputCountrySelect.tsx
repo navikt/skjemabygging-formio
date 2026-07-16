@@ -11,6 +11,7 @@ const InputCountrySelect = ({ component, submissionPath }: InputComponentProps) 
     statePath={resolveSubmissionPath(component, submissionPath)}
     label={component.label}
     description={component.description}
+    ignoreOptions={component.ignoreNorway ? ['NO'] : undefined}
     required={isRequired(component)}
     readOnly={component.readOnly}
     readMore={resolveReadMore(component)}

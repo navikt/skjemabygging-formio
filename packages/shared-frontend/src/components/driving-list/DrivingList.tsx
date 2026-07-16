@@ -10,6 +10,7 @@ import Alert from '../alert/Alert';
 import DatePicker from '../date/DatePicker';
 import RadioGroup from '../radio-group/RadioGroup';
 import ReadMore, { ReadMoreProps } from '../read-more/ReadMore';
+import TranslatedDescription from '../shared/TranslatedDescription';
 import DrivingListPeriod from './DrivingListPeriod';
 import {
   allPaperFieldsForPeriodsAreSet,
@@ -26,6 +27,7 @@ import {
 
 interface DrivingListProps {
   statePath: string;
+  description?: string;
   readMore?: ReadMoreProps;
 }
 
@@ -47,7 +49,7 @@ const normalizeSubmissionDate = (value?: string) => {
   return undefined;
 };
 
-const DrivingList = ({ statePath, readMore }: DrivingListProps) => {
+const DrivingList = ({ statePath, description, readMore }: DrivingListProps) => {
   const { submissionMethod, logger } = useAppConfig();
   const { translate, currentLanguage } = useLanguage();
   const { stateValue, setStateValue } = useStateField({ statePath });
@@ -402,6 +404,11 @@ const DrivingList = ({ statePath, readMore }: DrivingListProps) => {
 
   return (
     <>
+      {description && (
+        <Box marginBlock="space-0 space-16">
+          <TranslatedDescription>{description}</TranslatedDescription>
+        </Box>
+      )}
       {submissionMethod === 'digital' ? renderDigitalDrivingList() : renderPaperDrivingList()}
       {readMore && <ReadMore {...readMore} />}
     </>

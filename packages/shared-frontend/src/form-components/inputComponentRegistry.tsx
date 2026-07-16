@@ -4,6 +4,7 @@ import InputActivities from './components/activities/InputActivities';
 import InputAddressValidity from './components/address-validity/InputAddressValidity';
 import InputAddress from './components/address/InputAddress';
 import InputAlert from './components/alert/InputAlert';
+import InputAttachment from './components/attachment/InputAttachment';
 import InputCheckbox from './components/checkbox/InputCheckbox';
 import InputContainer from './components/container/InputContainer';
 import InputCountrySelect from './components/country-select/InputCountrySelect';
@@ -19,13 +20,14 @@ import InputFormGroup from './components/form-group/InputFormGroup';
 import InputHtmlElement from './components/html-element/InputHtmlElement';
 import InputIban from './components/iban/InputIban';
 import InputIdentity from './components/identity/InputIdentity';
+import InputImage from './components/image/InputImage';
 import InputTargetGroup from './components/maalgruppe/InputTargetGroup';
 import InputMonthPicker from './components/month-picker/InputMonthPicker';
 import InputNationalIdentityNumber from './components/national-identity-number/InputNationalIdentityNumber';
 import InputNumber from './components/number/InputNumber';
 import InputOrganizationNumber from './components/organization-number/InputOrganizationNumber';
 import InputPhoneNumber from './components/phone-number/InputPhoneNumber';
-import InputRadio from './components/radio/InputRadio';
+import InputRadioPanel from './components/radio/InputRadioPanel';
 import InputRow from './components/row/InputRow';
 import InputSelectBoxes from './components/select-boxes/InputSelectBoxes';
 import InputNavSelect from './components/select/InputNavSelect';
@@ -40,6 +42,7 @@ import { InputComponentProps, InputComponentRegistry } from './inputComponentReg
 const inputComponentRegistry: InputComponentRegistry = {
   accordion: InputAccordion,
   alertstripe: InputAlert,
+  attachment: InputAttachment,
   activities: InputActivities,
   navAddress: InputAddress,
   addressValidity: InputAddressValidity,
@@ -49,6 +52,7 @@ const inputComponentRegistry: InputComponentRegistry = {
   datagrid: InputDataGrid,
   drivinglist: InputDrivingList,
   htmlelement: InputHtmlElement,
+  image: InputImage,
   iban: InputIban,
   navSkjemagruppe: InputFormGroup,
   fieldset: InputFormGroup,
@@ -63,7 +67,7 @@ const inputComponentRegistry: InputComponentRegistry = {
   navSelect: InputNavSelect,
   landvelger: InputCountrySelect,
   valutavelger: InputCurrencySelect,
-  radiopanel: InputRadio,
+  radiopanel: InputRadioPanel,
   navCheckbox: InputCheckbox,
   selectboxes: InputSelectBoxes,
   email: InputEmail,

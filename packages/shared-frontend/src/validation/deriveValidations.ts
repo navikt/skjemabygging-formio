@@ -27,7 +27,13 @@ interface ValidationDescriptor {
   submissionPath: string;
   field: string;
   rules: ValidationRules;
+  component?: Component;
 }
+
+const isRedundantLegacyCustomValidation = (component: Component) =>
+  (component.type === 'bankAccount' &&
+    component.validate?.custom === 'valid = instance.validateAccountNumber(input)') ||
+  (component.type === 'orgNr' && component.validate?.custom === 'valid = instance.validateOrganizationNumber(input)');
 
 const toRules = (
   component: Component,
@@ -63,6 +69,9 @@ const toRules = (
   ...(component.type === 'bankAccount' ? { accountNumber: true } : {}),
   ...(component.type === 'iban' ? { iban: true } : {}),
   ...(component.type === 'activities' && submissionMethod === 'digital' ? { required: true } : {}),
+  customValidation:
+    component.validate?.custom && !isRedundantLegacyCustomValidation(component) ? { component } : undefined,
+  ...(component.validate?.customMessage ? { customMessage: component.validate.customMessage } : {}),
 });
 
 const hasRules = (rules: ValidationRules) => Object.values(rules).some((rule) => rule !== undefined && rule !== false);
@@ -76,16 +85,19 @@ const collectIdentityDescriptors = (component: Component, submission?: Submissio
   const submissionPath = getResolvedSubmissionPath(component);
   const required = component.validate?.required ?? true;
   const value = submissionUtils.getSubmissionValue(submissionPath, submission) as SubmissionIdentity | undefined;
+  const showsPrefilledIdentityNumber = !!value?.identitetsnummer && !value?.harDuFodselsnummer;
 
-  const descriptors: ValidationDescriptor[] = [
-    {
-      submissionPath: `${submissionPath}.harDuFodselsnummer`,
-      field: component.label ?? TEXTS.statiske.identity.doYouHaveIdentityNumber,
-      rules: { required },
-    },
-  ];
+  const descriptors: ValidationDescriptor[] = showsPrefilledIdentityNumber
+    ? []
+    : [
+        {
+          submissionPath: `${submissionPath}.harDuFodselsnummer`,
+          field: component.customLabels?.doYouHaveIdentityNumber ?? TEXTS.statiske.identity.doYouHaveIdentityNumber,
+          rules: { required },
+        },
+      ];
 
-  if (value?.harDuFodselsnummer === 'ja') {
+  if (value?.harDuFodselsnummer === 'ja' || showsPrefilledIdentityNumber) {
     descriptors.push({
       submissionPath: `${submissionPath}.identitetsnummer`,
       field: TEXTS.statiske.identity.identityNumber,
@@ -416,7 +428,8 @@ const collectValidationDescriptors = (
     if (component.type === 'dataFetcher') {
       const submissionPath = getResolvedSubmissionPath(component);
       const fetcher = submission ? dataFetcherUtils.dataFetcher(submissionPath, submission) : undefined;
-      const shouldValidate = submissionMethod === 'digital' && component.validate?.required && fetcher?.success;
+      const shouldValidate =
+        submissionMethod === 'digital' && component.validate?.required && fetcher?.success && !fetcher.empty;
 
       return shouldValidate
         ? [
@@ -424,6 +437,7 @@ const collectValidationDescriptors = (
               submissionPath,
               field: component.label ?? component.key,
               rules: { required: true, dataFetcherSelection: true },
+              component,
             },
           ]
         : [];
@@ -446,7 +460,7 @@ const collectValidationDescriptors = (
     }
 
     return [
-      ...(hasRules(rules) ? [{ submissionPath, field: component.label ?? component.key, rules }] : []),
+      ...(hasRules(rules) ? [{ submissionPath, field: component.label ?? component.key, rules, component }] : []),
       ...collectValidationDescriptors(component.components ?? [], submission, submissionMethod, pageComponents),
     ];
   });

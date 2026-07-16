@@ -2,6 +2,7 @@ import FormErrorSummary from './components/error-summary/FormErrorSummary';
 import ValidationExclamationIcon from './components/icons/ValidationExclamationIcon';
 import { AppConfigProvider, useAppConfig } from './context/app-config/AppConfigContext';
 import { FormDefinitionProvider, useFormDefinition } from './context/form-definition/FormDefinitionContext';
+import { applyPrefilledValuesToSubmission } from './context/form-definition/prefillSubmission';
 import { LanguageProvider, useLanguage } from './context/language/LanguageContext';
 import { FormPersistenceProvider, useFormPersistence } from './context/persistence/PersistenceContext';
 import { initializeSubmission } from './context/state/initializeSubmission';
@@ -15,6 +16,7 @@ import FormHeader from './layout/FormHeader';
 import FormIcon from './layout/FormIcon';
 import FormLayout from './layout/FormLayout';
 import FormStepper from './layout/FormStepper';
+import { StepperProvider } from './layout/StepperContext';
 import SharedFrontendBoundary from './SharedFrontendBoundary';
 import './styles/tokens.css';
 import { useWizardController } from './wizard/useWizardController';
@@ -39,6 +41,7 @@ export type { SharedFrontendBoundaryProps } from './SharedFrontendBoundary';
 export type { WizardController } from './wizard/useWizardController';
 export {
   AppConfigProvider,
+  applyPrefilledValuesToSubmission,
   FormButtonRow,
   FormDefinitionProvider,
   FormErrorSummary,
@@ -56,6 +59,7 @@ export {
   RenderSummaryForm,
   SharedFrontendBoundary,
   sharedFrontendPackageName,
+  StepperProvider,
   SubmissionStateProvider,
   useAppConfig,
   useFormDefinition,

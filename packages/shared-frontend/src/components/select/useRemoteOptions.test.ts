@@ -1,11 +1,10 @@
 import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { clearRemoteOptionsCache, loadRemoteOptions } from './useRemoteOptions';
+import { loadRemoteOptions } from './useRemoteOptions';
 
 describe('loadRemoteOptions', () => {
   afterEach(() => {
     vi.restoreAllMocks();
-    clearRemoteOptionsCache();
   });
 
   it('returns options from the endpoint', async () => {
@@ -20,19 +19,20 @@ describe('loadRemoteOptions', () => {
     await expect(loadRemoteOptions('/fyllut/api/common-codes/currencies')).resolves.toEqual(options);
   });
 
-  it('caches requests per url', async () => {
+  it('fetches again for repeated calls to the same url', async () => {
     const options: ComponentValue[] = [{ label: 'Euro (EUR)', value: 'EUR' }];
-    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-      new Response(JSON.stringify(options), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-      }),
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockImplementation(
+      async () =>
+        new Response(JSON.stringify(options), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        }),
     );
 
     await loadRemoteOptions('/fyllut/api/common-codes/currencies');
     await loadRemoteOptions('/fyllut/api/common-codes/currencies');
 
-    expect(fetchSpy).toHaveBeenCalledTimes(1);
+    expect(fetchSpy).toHaveBeenCalledTimes(2);
   });
 
   it('throws when the endpoint fails', async () => {

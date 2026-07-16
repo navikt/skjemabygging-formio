@@ -1,6 +1,5 @@
-import CheckboxGroup from '../../../components/checkbox-group/CheckboxGroup';
+import Checkbox from '../../../components/checkbox/Checkbox';
 import {
-  getValues,
   InputComponentProps,
   isRequired,
   resolveReadMore,
@@ -8,14 +7,15 @@ import {
 } from '../../inputComponentRegistryUtils';
 
 const InputCheckbox = ({ component, submissionPath }: InputComponentProps) => (
-  <CheckboxGroup
+  <Checkbox
     statePath={resolveSubmissionPath(component, submissionPath)}
-    legend={component.label}
+    label={component.label}
     description={component.description}
-    values={getValues(component)}
+    defaultValue={typeof component.defaultValue === 'boolean' ? component.defaultValue : undefined}
     required={isRequired(component)}
     readOnly={component.readOnly}
     readMore={resolveReadMore(component)}
+    showInlineError={!component.validate?.custom}
   />
 );
 

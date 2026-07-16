@@ -1,4 +1,5 @@
 import { TextField as AkselTextField } from '@navikt/ds-react';
+import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import { ChangeEvent, FocusEvent, HTMLAttributes, useState } from 'react';
 import { useStateField } from '../../context/state/useStateField';
 import { toInputFormat, toSubmissionFormat } from '../../formatting/inputFormat';
@@ -13,16 +14,22 @@ type SupportedTextFieldType = 'text' | 'tel' | 'url' | 'email' | 'number' | 'tim
 
 interface TextFieldProps extends BaseFieldProps {
   label: string;
+  hideLabel?: boolean;
+  showOptionalText?: boolean;
   autoComplete?: string;
   inputMode?: HTMLAttributes<HTMLInputElement>['inputMode'];
   type?: SupportedTextFieldType;
   spellCheck?: boolean;
   formatKey?: string;
+  prefillValue?: Component['prefillValue'];
+  toStateValue?: (value: string) => unknown;
 }
 
 const TextField = ({
   statePath,
   label,
+  hideLabel,
+  showOptionalText = true,
   description,
   required = true,
   readOnly,
@@ -31,21 +38,28 @@ const TextField = ({
   type,
   spellCheck,
   formatKey,
+  prefillValue,
+  toStateValue,
   readMore,
   marginBottom,
 }: TextFieldProps) => {
   const { stateValue, error, setStateValue } = useStateField({ statePath });
-  const [displayValue, setDisplayValue] = useState(() => toInputFormat(stateValue, formatKey));
+  const [displayValue, setDisplayValue] = useState(() =>
+    toInputFormat(
+      stateValue ?? (typeof prefillValue === 'string' && prefillValue.trim() !== '' ? prefillValue : undefined),
+      formatKey,
+    ),
+  );
 
   const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setDisplayValue(event.target.value);
-    setStateValue(toSubmissionFormat(event.target.value, formatKey));
+    setStateValue(toStateValue ? toStateValue(event.target.value) : toSubmissionFormat(event.target.value, formatKey));
   };
 
   const handleBlur = (_event: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const formatted = toInputFormat(displayValue, formatKey);
     setDisplayValue(formatted);
-    setStateValue(toSubmissionFormat(displayValue, formatKey));
+    setStateValue(toStateValue ? toStateValue(displayValue) : toSubmissionFormat(displayValue, formatKey));
   };
 
   return (
@@ -53,12 +67,13 @@ const TextField = ({
       <AkselTextField
         id={inputId(statePath)}
         label={
-          <TranslatedLabel required={required} readOnly={readOnly}>
+          <TranslatedLabel required={required} readOnly={readOnly} showOptionalText={!hideLabel && showOptionalText}>
             {label}
           </TranslatedLabel>
         }
         description={<TranslatedDescription>{description}</TranslatedDescription>}
-        value={displayValue}
+        hideLabel={hideLabel}
+        value={readOnly ? toInputFormat(stateValue, formatKey) : displayValue}
         onChange={handleChange}
         onBlur={handleBlur}
         error={error}

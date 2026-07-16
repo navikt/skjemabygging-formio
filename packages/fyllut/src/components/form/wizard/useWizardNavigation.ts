@@ -3,12 +3,12 @@ import { useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { INTRO_KEY, SUMMARY_KEY } from './constants';
 
-type StepKind = 'intro' | 'panel' | 'summary';
-
 interface WizardNavigationState {
   focusId?: string;
   validationErrorPages?: string[];
 }
+
+type StepKind = 'intro' | 'panel' | 'attachment' | 'summary';
 
 const useWizardNavigation = (from: StepKind) => {
   const navigate = useNavigate();

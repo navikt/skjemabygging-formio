@@ -1,6 +1,5 @@
 import { Box, FormProgress } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useState } from 'react';
 import { useFormDefinition } from '../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../context/language/LanguageContext';
 
@@ -14,12 +13,20 @@ interface Props {
   leadingSteps?: Step[];
   trailingSteps?: Step[];
   onStepClick?: (key: string, index: number) => void;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
-const FormStepper = ({ activeIndex, leadingSteps = [], trailingSteps = [], onStepClick }: Props) => {
+const FormStepper = ({
+  activeIndex,
+  leadingSteps = [],
+  trailingSteps = [],
+  onStepClick,
+  open,
+  onOpenChange,
+}: Props) => {
   const { translate } = useLanguage();
   const { panels } = useFormDefinition();
-  const [open, setOpen] = useState(false);
 
   const steps: Step[] = [
     ...leadingSteps,
@@ -33,7 +40,7 @@ const FormStepper = ({ activeIndex, leadingSteps = [], trailingSteps = [], onSte
         totalSteps={steps.length}
         activeStep={activeIndex + 1}
         open={open}
-        onOpenChange={setOpen}
+        onOpenChange={onOpenChange}
         translations={{
           step: translate(TEXTS.grensesnitt.stepper.step),
           showAllSteps: translate(TEXTS.grensesnitt.stepper.showAllSteps),
@@ -49,7 +56,6 @@ const FormStepper = ({ activeIndex, leadingSteps = [], trailingSteps = [], onSte
                     event.preventDefault();
                     if (activeIndex !== index) {
                       onStepClick(step.key, index);
-                      setOpen(false);
                     }
                   }
                 : undefined

@@ -1,26 +1,32 @@
-import { useLanguages } from '@navikt/skjemadigitalisering-shared-components';
-import { Form, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { useAppConfig, useLanguages } from '@navikt/skjemadigitalisering-shared-components';
+import { Form, navFormUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import {
   FormButtonRow,
   FormErrorSummary,
   FormNextButton,
   FormPrevButton,
   RenderInputForm,
+  useFormPersistence,
   useValidation,
   useWizardController,
 } from '@navikt/skjemadigitalisering-shared-frontend';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useLocation, useParams } from 'react-router';
+import FormSecondaryButtons from '../FormSecondaryButtons';
 import WizardStep from './WizardStep';
+import { ATTACHMENTS_KEY } from './constants';
 import { useWizardNavigation } from './useWizardNavigation';
 
 const PanelStep = ({ form }: { form: Form }) => {
   const { translate } = useLanguages();
+  const { submissionMethod } = useAppConfig();
   const { panelSlug } = useParams<{ panelSlug?: string }>();
-  const { hash, state } = useLocation();
+  const { hash, search, state } = useLocation();
+  const { saveDraft, canSaveDraft } = useFormPersistence();
   const { getErrorsForPages, syncPageValidationState, validatePages } = useValidation();
   const { currentPanel, components, isFirst, isLast, goToNext, panels, currentIndex } = useWizardController(panelSlug);
   const { goToIntro, goToPanel, goToSummary, goToError, onStepClick } = useWizardNavigation('panel');
+  const hasInitializedDraft = useRef(false);
 
   useEffect(() => {
     if (panels.length > 0 && panelSlug && !panels.some((panel) => panel.key === panelSlug)) {
@@ -33,6 +39,27 @@ const PanelStep = ({ form }: { form: Form }) => {
       syncPageValidationState(currentPanel.key, components);
     }
   }, [components, currentPanel, syncPageValidationState]);
+
+  useEffect(() => {
+    if (hasInitializedDraft.current) {
+      return;
+    }
+
+    const searchParams = new URLSearchParams(search);
+    const needsEarlyDraft = navFormUtils.hasAttachment(form);
+    if (
+      submissionMethod !== 'digital' ||
+      !canSaveDraft ||
+      currentIndex !== 0 ||
+      searchParams.has('innsendingsId') ||
+      !needsEarlyDraft
+    ) {
+      return;
+    }
+
+    hasInitializedDraft.current = true;
+    void saveDraft();
+  }, [canSaveDraft, currentIndex, form, saveDraft, search, submissionMethod]);
 
   useEffect(() => {
     const locationStateFocusId = typeof state === 'object' && state && 'focusId' in state ? state.focusId : undefined;
@@ -62,15 +89,22 @@ const PanelStep = ({ form }: { form: Form }) => {
     focusHashTarget();
   }, [components, hash, state]);
 
-  const handleNext = () => {
+  const handleNext = async () => {
     const valid = goToNext();
     if (!valid) {
       return;
+    }
+    if (canSaveDraft) {
+      await saveDraft();
     }
     if (isLast) {
       const validationPages = panels.map((panel) => ({ pageKey: panel.key, components: panel.components ?? [] }));
       const failedPageKeys = Array.from(new Set(getErrorsForPages(validationPages).map((error) => error.pageKey)));
       validatePages(validationPages);
+      if (failedPageKeys.length === 0 && navFormUtils.hasAttachment(form)) {
+        goToPanel(ATTACHMENTS_KEY);
+        return;
+      }
       goToSummary({ validationErrorPages: failedPageKeys });
       return;
     }
@@ -102,11 +136,21 @@ const PanelStep = ({ form }: { form: Form }) => {
           }
         }}
       />
+      <FormSecondaryButtons />
       <FormButtonRow
         previousButton={
           <FormPrevButton label={translate(TEXTS.grensesnitt.navigation.previous)} onClick={handlePrevious} />
         }
-        nextButton={<FormNextButton label={translate(TEXTS.grensesnitt.navigation.next)} onClick={handleNext} />}
+        nextButton={
+          <FormNextButton
+            label={translate(
+              submissionMethod === 'digital'
+                ? TEXTS.grensesnitt.navigation.saveAndContinue
+                : TEXTS.grensesnitt.navigation.next,
+            )}
+            onClick={handleNext}
+          />
+        }
       />
     </WizardStep>
   );

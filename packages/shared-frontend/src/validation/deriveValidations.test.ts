@@ -336,6 +336,29 @@ describe('deriveValidations', () => {
     ]);
   });
 
+  it('uses customLabels.doYouHaveIdentityNumber for the identity radio descriptor', () => {
+    const components = [
+      {
+        key: 'identity',
+        label: 'Identitet',
+        type: 'identity',
+        input: true,
+        validate: { required: true },
+        customLabels: { doYouHaveIdentityNumber: 'Har du et gyldig identitetsdokument?' },
+      },
+    ] as unknown as Component[];
+
+    const result = deriveValidations(components, { data: { identity: {} } });
+
+    expect(result).toEqual([
+      {
+        submissionPath: 'identity.harDuFodselsnummer',
+        field: 'Har du et gyldig identitetsdokument?',
+        rules: { required: true },
+      },
+    ]);
+  });
+
   it('expands address into its visible nested fields for wizard choice and norwegian inputs', () => {
     const components = [
       {
@@ -556,6 +579,17 @@ describe('deriveValidations', () => {
         validate: { required: true },
       },
     ] as unknown as Component[];
+
+    expect(
+      deriveValidations(
+        components,
+        {
+          data: {},
+          metadata: { dataFetcher: { aktivitetsvelger: { data: [] } } },
+        } as unknown as Submission,
+        'digital',
+      ),
+    ).toEqual([]);
 
     expect(
       deriveValidations(

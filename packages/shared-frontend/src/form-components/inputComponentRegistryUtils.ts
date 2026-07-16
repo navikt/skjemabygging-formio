@@ -1,8 +1,9 @@
-import { Component } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, numberUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { ComponentType } from 'react';
 import { ReadMoreProps } from '../components/read-more/ReadMore';
 import { SelectType } from '../components/select/selectUtils';
 import { getResolvedSubmissionPath } from '../context/form-definition/formDefinitionUtils';
+import { toSubmissionFormat } from '../formatting/inputFormat';
 
 interface InputComponentProps {
   component: Component;
@@ -20,6 +21,23 @@ const resolveSubmissionPath = (component: Component, submissionPath?: string) =>
   submissionPath ?? getResolvedSubmissionPath(component);
 
 const resolveNumberFormatKey = (component: Component) => (component.inputType === 'numeric' ? 'number' : 'decimal');
+
+const resolveNumericStateValue = (component: Component, value: string) => {
+  const formatted = toSubmissionFormat(value, resolveNumberFormatKey(component));
+  const normalizedValue =
+    component.inputType === 'numeric' ? formatted.replace(/\s/g, '') : formatted.replace(/\s/g, '').replace(',', '.');
+
+  if (normalizedValue === '') {
+    return undefined;
+  }
+
+  const isValidNumber =
+    component.inputType === 'numeric'
+      ? numberUtils.isValidInteger(normalizedValue)
+      : numberUtils.isValidDecimal(normalizedValue);
+
+  return isValidNumber ? Number(normalizedValue) : formatted;
+};
 
 const resolveTextFormatKey = (component: Component) => {
   if (component.type === 'orgNr') {
@@ -65,6 +83,7 @@ export {
   isRequired,
   resolveInputType,
   resolveNumberFormatKey,
+  resolveNumericStateValue,
   resolveReadMore,
   resolveSelectType,
   resolveSubmissionPath,

@@ -3,10 +3,13 @@ import {
   decimal,
   iban,
   identityNumber,
+  identityNumberRaw,
   norwegianPhoneNumber,
   number,
   organizationNumber,
+  organizationNumberRaw,
   phoneNumber,
+  submissionFormatters,
 } from './index';
 
 describe('formatters', () => {
@@ -16,8 +19,18 @@ describe('formatters', () => {
     expect(identityNumber('12345')).toBe('12345');
   });
 
+  it('keeps sender identity and organization numbers unformatted in the visible input', () => {
+    expect(identityNumberRaw('123456 78901')).toBe('12345678901');
+    expect(organizationNumberRaw('889 640 782')).toBe('889640782');
+  });
+
   it('strips spaces from phone numbers', () => {
     expect(phoneNumber('12 34 56 78')).toBe('12345678');
+  });
+
+  it('normalizes identity and organization numbers for submission', () => {
+    expect(submissionFormatters.identityNumber('123456 78901')).toBe('12345678901');
+    expect(submissionFormatters.organizationNumber('889 640 782')).toBe('889640782');
   });
 
   it('formats norwegian phone numbers in pairs on blur', () => {

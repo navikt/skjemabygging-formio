@@ -1,7 +1,7 @@
-import { Form, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { FormHeader, FormStepper } from '@navikt/skjemadigitalisering-shared-frontend';
-import { ReactNode } from 'react';
-import { INTRO_KEY, SUMMARY_KEY } from './constants';
+import { Form, navFormUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormHeader, FormStepper, StepperProvider } from '@navikt/skjemadigitalisering-shared-frontend';
+import { ReactNode, useState } from 'react';
+import { ATTACHMENTS_KEY, INTRO_KEY, SUMMARY_KEY } from './constants';
 
 interface Props {
   form: Form;
@@ -12,16 +12,37 @@ interface Props {
 }
 
 const WizardStep = ({ form, activeIndex, pageTitle, onStepClick, children }: Props) => (
-  <>
-    <FormHeader form={form} pageTitle={pageTitle} />
-    <FormStepper
-      activeIndex={activeIndex}
-      leadingSteps={[{ key: INTRO_KEY, label: TEXTS.grensesnitt.introPage.title }]}
-      trailingSteps={[{ key: SUMMARY_KEY, label: TEXTS.statiske.summaryPage.title }]}
-      onStepClick={onStepClick}
-    />
+  <WizardStepContent form={form} activeIndex={activeIndex} pageTitle={pageTitle} onStepClick={onStepClick}>
     {children}
-  </>
+  </WizardStepContent>
 );
+
+const WizardStepContent = ({ form, activeIndex, pageTitle, onStepClick, children }: Props) => {
+  const trailingSteps = [
+    ...(navFormUtils.hasAttachment(form) ? [{ key: ATTACHMENTS_KEY, label: TEXTS.statiske.attachment.title }] : []),
+    { key: SUMMARY_KEY, label: TEXTS.statiske.summaryPage.title },
+  ];
+  const [isStepperOpen, setIsStepperOpen] = useState(persistedOpenState);
+
+  return (
+    <StepperProvider isOpen={isStepperOpen}>
+      <FormHeader form={form} pageTitle={pageTitle} />
+      <FormStepper
+        activeIndex={activeIndex}
+        leadingSteps={[{ key: INTRO_KEY, label: TEXTS.grensesnitt.introPage.title }]}
+        trailingSteps={trailingSteps}
+        onStepClick={onStepClick}
+        open={isStepperOpen}
+        onOpenChange={(nextOpen) => {
+          persistedOpenState = nextOpen;
+          setIsStepperOpen(nextOpen);
+        }}
+      />
+      {children}
+    </StepperProvider>
+  );
+};
+
+let persistedOpenState = false;
 
 export default WizardStep;

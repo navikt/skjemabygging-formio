@@ -1,7 +1,20 @@
-import { FyllUtRouter, LanguagesProvider, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
-import { Form, formioFormsApiUtils, I18nTranslations, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useParams } from 'react-router';
+import {
+  FyllUtRouter,
+  LanguagesProvider,
+  sendInnSoknadApi,
+  useAppConfig,
+} from '@navikt/skjemadigitalisering-shared-components';
+import {
+  Component,
+  Form,
+  formioFormsApiUtils,
+  I18nTranslations,
+  navFormUtils,
+  Submission,
+  SubmissionData,
+} from '@navikt/skjemadigitalisering-shared-domain';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useLocation, useParams } from 'react-router';
 import useFormsApiForms from '../../api/useFormsApiForms';
 import { loadAllTranslations } from '../../api/useTranslations';
 import { NotFoundPage } from '../errors/NotFoundPage';
@@ -9,15 +22,64 @@ import SubmissionMethodNotAllowed from '../SubmissionMethodNotAllowed';
 import FormPageSkeleton from './FormPageSkeleton';
 import RenderForm from './RenderForm';
 
+const DELETED_DRAFT_STORAGE_KEY = 'fyllut:new-render:deleted-draft-id';
+const DELETED_DRAFT_QUERY_PARAM = 'deletedDraft';
+
+const collectPrefillKeys = (components: Component[] = []): string[] =>
+  components.flatMap((component) => [
+    ...(Array.isArray(component.prefillKey)
+      ? component.prefillKey
+      : typeof component.prefillKey === 'string'
+        ? [component.prefillKey]
+        : []),
+    ...(component.components ? collectPrefillKeys(component.components) : []),
+  ]);
+
+const toComponentPrefillValue = (value: unknown): string | object | undefined =>
+  typeof value === 'string' || (typeof value === 'object' && value !== null) ? value : undefined;
+
+const enrichComponentsWithPrefillValues = (components: Component[] = [], prefillData?: SubmissionData): Component[] =>
+  components.map((component) => {
+    const prefillValue = Array.isArray(component.prefillKey)
+      ? component.prefillKey.reduce<Record<string, unknown>>((acc, key) => {
+          if (prefillData?.[key] !== undefined) {
+            acc[key] = prefillData[key];
+          }
+          return acc;
+        }, {})
+      : typeof component.prefillKey === 'string'
+        ? toComponentPrefillValue(prefillData?.[component.prefillKey])
+        : undefined;
+
+    return {
+      ...component,
+      ...(component.components
+        ? { components: enrichComponentsWithPrefillValues(component.components, prefillData) }
+        : {}),
+      ...((
+        Array.isArray(component.prefillKey)
+          ? typeof prefillValue === 'object' && prefillValue !== null && Object.keys(prefillValue).length > 0
+          : prefillValue !== undefined
+      )
+        ? { prefillValue }
+        : {}),
+    };
+  });
+
 const FormPageWrapper = () => {
   const { formPath, '*': routePath } = useParams();
+  const { search } = useLocation();
   const [translations, setTranslations] = useState<I18nTranslations>();
   const [loading, setLoading] = useState<boolean>(true);
   const [form, setForm] = useState<Form>();
+  const [initialSubmission, setInitialSubmission] = useState<Submission | undefined>();
+  const deletedDraftIdRef = useRef<string | undefined>(undefined);
   const { get } = useFormsApiForms();
-  const { submissionMethod, config } = useAppConfig();
-  const useNewRenderer = !!formPath && (config?.newRenderForms ?? []).includes(formPath);
-  const useLegacyPageForNewRenderer = routePath === 'legitimasjon';
+  const appConfig = useAppConfig();
+  const { submissionMethod, config, http, baseUrl, attachmentPageEnabled, setAttachmentPageEnabled } = appConfig;
+  const useNewRenderer =
+    !!formPath && ((config?.newRenderForms ?? []).includes('*') || (config?.newRenderForms ?? []).includes(formPath));
+  const useLegacyPageForNewRenderer = routePath === 'legitimasjon' || routePath === 'pdf';
   const navForm = useMemo(() => (form ? formioFormsApiUtils.mapFormToNavForm(form) : undefined), [form]);
 
   const loadTranslations = useCallback(async () => {
@@ -41,15 +103,60 @@ const FormPageWrapper = () => {
       'title,skjemanummer,path,revision,introPage,components,properties,firstPanelSlug',
     );
     if (formData) {
-      setForm(formData);
+      const prefillKeys =
+        submissionMethod === 'digital' ? Array.from(new Set(collectPrefillKeys(formData.components))) : [];
+      const prefillData =
+        submissionMethod === 'digital' && prefillKeys.length > 0
+          ? await http?.get<SubmissionData>(`${baseUrl}/api/send-inn/prefill-data?properties=${prefillKeys.join(',')}`)
+          : undefined;
+      setForm({
+        ...formData,
+        components: enrichComponentsWithPrefillValues(formData.components, prefillData),
+      });
     }
-  }, [formPath, get]);
+  }, [baseUrl, formPath, get, http, submissionMethod]);
+
+  const loadInitialSubmission = useCallback(async () => {
+    const searchParams = new URLSearchParams(search);
+    const innsendingsId = searchParams.get('innsendingsId');
+    const hasDeletedDraftFlag = searchParams.get(DELETED_DRAFT_QUERY_PARAM) === '1';
+    if (submissionMethod !== 'digital' || !innsendingsId) {
+      setInitialSubmission(undefined);
+      return;
+    }
+
+    if (hasDeletedDraftFlag) {
+      deletedDraftIdRef.current = innsendingsId;
+      setInitialSubmission(undefined);
+      return;
+    }
+
+    if (sessionStorage.getItem(DELETED_DRAFT_STORAGE_KEY) === innsendingsId) {
+      deletedDraftIdRef.current = innsendingsId;
+      setInitialSubmission(undefined);
+      return;
+    }
+
+    if (deletedDraftIdRef.current === innsendingsId) {
+      setInitialSubmission(undefined);
+      return;
+    }
+
+    const response = await sendInnSoknadApi.getSoknad(innsendingsId, appConfig);
+    setInitialSubmission(response?.hoveddokumentVariant?.document?.data);
+  }, [appConfig, search, submissionMethod]);
+
+  useEffect(() => {
+    if (attachmentPageEnabled === false) {
+      setAttachmentPageEnabled?.(true);
+    }
+  }, [attachmentPageEnabled, setAttachmentPageEnabled]);
 
   useEffect(() => {
     (async () => {
       try {
         setLoading(true);
-        await Promise.all([loadForm(), loadTranslations()]);
+        await Promise.all([loadForm(), loadTranslations(), loadInitialSubmission()]);
       } catch (_e) {
         setTranslations(undefined);
         setForm(undefined);
@@ -57,7 +164,7 @@ const FormPageWrapper = () => {
         setLoading(false);
       }
     })();
-  }, [loadForm, loadTranslations]);
+  }, [loadForm, loadInitialSubmission, loadTranslations]);
 
   useEffect(() => {
     const metaPropOgTitle = document.querySelector('meta[property="og:title"]');
@@ -96,7 +203,11 @@ const FormPageWrapper = () => {
 
   return (
     <LanguagesProvider translations={translations}>
-      {useNewRenderer && !useLegacyPageForNewRenderer ? <RenderForm form={form} /> : <FyllUtRouter form={navForm} />}
+      {useNewRenderer && !useLegacyPageForNewRenderer ? (
+        <RenderForm form={form} initialSubmission={initialSubmission} />
+      ) : (
+        <FyllUtRouter form={navForm} />
+      )}
     </LanguagesProvider>
   );
 };

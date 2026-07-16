@@ -1,4 +1,4 @@
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { validateValue } from './validators';
 
 describe('validateValue', () => {
@@ -64,12 +64,12 @@ describe('validateValue', () => {
 
   it('validates month year boundaries', () => {
     expect(validateValue('2019-12', 'Month', { month: true, monthMinYear: 2020 })).toEqual({
-      textKey: TEXTS.validering.minYear,
+      textKey: 'minYear',
       params: { field: 'Month', minYear: 2020 },
     });
 
     expect(validateValue('2026-01', 'Month', { month: true, monthMaxYear: 2025 })).toEqual({
-      textKey: TEXTS.validering.maxYear,
+      textKey: 'maxYear',
       params: { field: 'Month', maxYear: 2025 },
     });
   });
@@ -88,7 +88,7 @@ describe('validateValue', () => {
     expect(validateValue('130972 48022', 'Fnr', { nationalIdentityNumber: true })).toBeUndefined();
     expect(validateValue('53097248016', 'Fnr', { nationalIdentityNumber: true })).toBeUndefined();
     expect(validateValue('13097248023', 'Fnr', { nationalIdentityNumber: true })).toEqual({
-      textKey: TEXTS.validering.fodselsnummerDNummer,
+      textKey: 'fodselsnummerDNummer',
       params: { field: 'Fnr' },
     });
   });
@@ -96,7 +96,7 @@ describe('validateValue', () => {
   it('rejects test-type identity numbers unless allowTestTypes is set', () => {
     const hnr = '13527248013';
     expect(validateValue(hnr, 'Fnr', { nationalIdentityNumber: true }, 'nb', { allowTestTypes: false })).toEqual({
-      textKey: TEXTS.validering.fodselsnummerDNummer,
+      textKey: 'fodselsnummerDNummer',
       params: { field: 'Fnr' },
     });
     expect(validateValue(hnr, 'Fnr', { nationalIdentityNumber: true }, 'nb', { allowTestTypes: true })).toBeUndefined();
@@ -206,6 +206,62 @@ describe('validateValue', () => {
     expect(validateValue('abc', 'Telefonnummer', { phoneNumber: { showAreaCode: false } })).toEqual({
       textKey: TEXTS.validering.digitsOnly,
       params: { field: 'Telefonnummer' },
+    });
+  });
+
+  it('supports Formio custom validation expressions', () => {
+    expect(
+      validateValue(
+        '50',
+        'Beløp',
+        {
+          customValidation: {
+            component: {
+              key: 'belop',
+              type: 'currency',
+              input: true,
+              label: 'Beløp',
+              validate: { custom: 'valid = input == 100 ? true : "Kun 100 er tillatt"' },
+            } as Component,
+          },
+        },
+        'nb',
+        {
+          submission: { data: { belop: '50' } },
+          submissionPath: 'belop',
+        },
+      ),
+    ).toEqual({
+      textKey: 'Kun 100 er tillatt',
+      params: { field: 'Beløp' },
+    });
+  });
+
+  it('supports Formio custom validation expressions for unchecked checkboxes', () => {
+    expect(
+      validateValue(
+        undefined,
+        'Godkjenning',
+        {
+          customValidation: {
+            component: {
+              key: 'godkjenning',
+              type: 'navCheckbox',
+              input: true,
+              label: 'Godkjenning',
+              validate: { custom: 'valid = input === true ? true : "Du må godta vilkårene"' },
+            } as Component,
+          },
+        },
+        'nb',
+        {
+          submission: { data: {} },
+          submissionPath: 'godkjenning',
+        },
+      ),
+    ).toEqual({
+      textKey: 'Du må godta vilkårene',
+      params: { field: 'Godkjenning' },
     });
   });
 });

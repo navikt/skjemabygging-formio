@@ -80,7 +80,7 @@ const Sender = ({
             required={required}
             readOnly={effectiveReadOnly}
             inputMode="numeric"
-            formatKey="organizationNumber"
+            formatKey="organizationNumberRaw"
           />
           <TextField
             statePath={`${statePath}.organization.name`}
@@ -98,7 +98,7 @@ const Sender = ({
             required={required}
             readOnly={effectiveReadOnly}
             inputMode="numeric"
-            formatKey="identityNumber"
+            formatKey="identityNumberRaw"
           />
           <TextField
             statePath={`${statePath}.person.firstName`}

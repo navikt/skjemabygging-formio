@@ -14,6 +14,11 @@ interface Props {
 const RenderInputComponent = ({ component, submissionPath, componentRegistry = inputComponentRegistry }: Props) => {
   const { logger, config } = useAppConfig();
   const RegistryComponent = componentRegistry[component.type];
+  const shouldRenderHiddenComponent = component.type === 'maalgruppe';
+
+  if (component.hidden && !shouldRenderHiddenComponent) {
+    return null;
+  }
 
   if (!RegistryComponent) {
     logger?.error?.(`Unsupported component type in input form: ${component.type}`);
@@ -24,7 +29,9 @@ const RenderInputComponent = ({ component, submissionPath, componentRegistry = i
   }
 
   return (
-    <RegistryComponent component={component} submissionPath={submissionPath} componentRegistry={componentRegistry} />
+    <div className={`formio-component-${component.key}`}>
+      <RegistryComponent component={component} submissionPath={submissionPath} componentRegistry={componentRegistry} />
+    </div>
   );
 };
 

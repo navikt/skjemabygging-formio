@@ -16,6 +16,7 @@ const AddressValidity = ({ statePath, required, readOnly, readMore }: AddressVal
       <DatePicker
         statePath={`${statePath}.gyldigFraOgMed`}
         label={TEXTS.statiske.address.validFrom}
+        description={TEXTS.statiske.address.validFromDescription}
         required={required}
         readOnly={readOnly}
         fromDate={minDate}
@@ -24,6 +25,7 @@ const AddressValidity = ({ statePath, required, readOnly, readMore }: AddressVal
       <DatePicker
         statePath={`${statePath}.gyldigTilOgMed`}
         label={TEXTS.statiske.address.validTo}
+        description={TEXTS.statiske.address.validToDescription}
         readOnly={readOnly}
         fromDate={address.gyldigFraOgMed || minDate}
         toDate={maxDate}

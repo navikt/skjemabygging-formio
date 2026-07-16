@@ -4,14 +4,15 @@ interface Props {
   children: string;
   required?: boolean;
   readOnly?: boolean;
+  showOptionalText?: boolean;
 }
 
-const TranslatedLabel = ({ children, required = false, readOnly = false }: Props) => {
+const TranslatedLabel = ({ children, required = false, readOnly = false, showOptionalText = true }: Props) => {
   const { translate } = useLanguage();
   return (
     <>
       {translate(children)}
-      {required || readOnly ? '' : ` (${translate('valgfritt')})`}
+      {required || readOnly || !showOptionalText ? '' : ` (${translate('valgfritt')})`}
     </>
   );
 };

@@ -3,6 +3,18 @@ import { submissionUtils as formComponentUtils } from '@navikt/skjemadigitaliser
 import DefaultLabel from '../../shared/SummaryDefaultLabel';
 import { FormComponentProps } from '../../types';
 
+const isSelected = (value: unknown, optionValue: string) => {
+  if (Array.isArray(value)) {
+    return value.includes(optionValue);
+  }
+
+  if (value && typeof value === 'object') {
+    return value[optionValue] === true;
+  }
+
+  return false;
+};
+
 const SummarySelectBoxes = (props: FormComponentProps) => {
   const { component, submissionPath, submission, translate } = props;
   const { values, key, navId } = component;
@@ -13,7 +25,7 @@ const SummarySelectBoxes = (props: FormComponentProps) => {
   }
 
   const valueObjects = values
-    .filter((checkbox) => value[checkbox.value] === true)
+    .filter((checkbox) => isSelected(value, checkbox.value))
     .map((checkbox) => translate(checkbox.label));
 
   if (!valueObjects || valueObjects.length === 0) {

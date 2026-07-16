@@ -177,7 +177,16 @@ const interceptExternalNavRedirects = () => {
 Cypress.Commands.add('defaultIntercepts', () => {
   interceptExternalNavRedirects();
   cy.intercept('POST', '/fyllut/api/log*', { body: 'ok' }).as('logger');
-  cy.intercept('GET', '/fyllut/api/config*').as('getConfig');
+  cy.intercept('GET', '/fyllut/api/config*', (req) => {
+    req.headers['accept-encoding'] = 'identity';
+    delete req.headers['if-none-match'];
+    delete req.headers['if-modified-since'];
+    req.continue((res) => {
+      if (typeof res.body === 'object' && res.body !== null) {
+        res.body.newRenderForms = ['*'];
+      }
+    });
+  }).as('getConfig');
   cy.intercept('GET', '/fyllut/api/global-translations/*').as('getGlobalTranslations');
   cy.intercept('GET', '/fyllut/api/common-codes/currencies*').as('getCurrencies');
   cy.intercept('GET', '/fyllut/api/common-codes/area-codes').as('getAreaCodes');

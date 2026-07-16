@@ -132,6 +132,7 @@ export interface Component {
   path?: string;
   protected?: boolean;
   disableAddingRemovingRows?: boolean;
+  initEmpty?: boolean;
   addressPriority?: 'bostedsadresse' | 'oppholdsadresse' | 'kontaktadresse';
   addressType?: AddressType;
   addressTypeWizard?: 'predefined' | 'user';
@@ -173,6 +174,7 @@ export interface Panel extends Component {
 
 export interface ComponentValidate {
   custom?: string;
+  customMessage?: string;
   json?: string;
   required?: boolean;
   pattern?: string;

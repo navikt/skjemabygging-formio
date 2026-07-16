@@ -1,7 +1,6 @@
 import { Component, Panel } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useMemo, useState } from 'react';
 import { useFormDefinition } from '../context/form-definition/FormDefinitionContext';
-import { useFormPersistence } from '../context/persistence/PersistenceContext';
 import { useValidation } from '../context/validation/ValidationContext';
 
 interface WizardController {
@@ -23,7 +22,6 @@ interface WizardController {
 const useWizardController = (requestedPanelKey?: string): WizardController => {
   const { panels } = useFormDefinition();
   const { validatePage, hideSummary } = useValidation();
-  const { saveDraft, canSaveDraft } = useFormPersistence();
   const [localCurrentIndex, setLocalCurrentIndex] = useState(0);
   const requestedIndex = requestedPanelKey ? panels.findIndex((panel) => panel.key === requestedPanelKey) : -1;
   const currentIndex = requestedIndex >= 0 ? requestedIndex : localCurrentIndex;
@@ -38,12 +36,9 @@ const useWizardController = (requestedPanelKey?: string): WizardController => {
       if (!requestedPanelKey) {
         setLocalCurrentIndex((index) => index + 1);
       }
-      if (canSaveDraft) {
-        void saveDraft();
-      }
     }
     return valid;
-  }, [currentPanel, validatePage, components, currentIndex, panels.length, canSaveDraft, saveDraft, requestedPanelKey]);
+  }, [currentPanel, validatePage, components, currentIndex, panels.length, requestedPanelKey]);
 
   const goToPrevious = useCallback(() => {
     hideSummary();

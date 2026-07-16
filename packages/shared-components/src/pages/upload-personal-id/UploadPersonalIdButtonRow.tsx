@@ -13,7 +13,7 @@ const UploadPersonalIdButtonRow = () => {
   const navigate = useNavigate();
   const { baseUrl } = useAppConfig();
   const { translate } = useLanguages();
-  const { form } = useForm();
+  const { form, submission } = useForm();
   const [searchParams] = useSearchParams();
   const { submissionAttachments, errors, addError } = useAttachmentUpload();
 
@@ -27,7 +27,11 @@ const UploadPersonalIdButtonRow = () => {
     } else if (!personalIdAttachment?.files?.length) {
       addError('personal-id', translate(TEXTS.statiske.uploadId.missingUploadError), 'FILE');
     } else {
-      navigate(`..?${searchParams.toString()}`);
+      navigate(`..?${searchParams.toString()}`, {
+        state: {
+          initialSubmission: submission,
+        },
+      });
     }
   };
 

@@ -4,7 +4,8 @@ import { InputComponentProps, isRequired, resolveSubmissionPath } from '../../in
 const InputIdentity = ({ component, submissionPath }: InputComponentProps) => (
   <Identity
     statePath={resolveSubmissionPath(component, submissionPath)}
-    label={component.label}
+    customLabels={component.customLabels}
+    prefillValue={component.prefillValue}
     required={isRequired(component)}
     readOnly={component.readOnly}
   />

@@ -1,6 +1,15 @@
-import { dateUtils, formatUtils, numberUtils, TEXTS, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  Component,
+  dateUtils,
+  formatUtils,
+  numberUtils,
+  Submission,
+  TEXTS,
+  validatorUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import * as ibantools from 'ibantools';
 import { hasSelectedValue } from '../components/data-fetcher/dataFetcherUtils';
+import { evaluateFormioCustomValidation } from '../utils/formioEvaluation';
 
 interface ValidationRules {
   required?: boolean;
@@ -34,12 +43,41 @@ interface ValidationRules {
     showAreaCode?: boolean;
     areaCode?: string;
   };
+  customValidation?: {
+    component: Component;
+  };
+  customMessage?: string;
 }
 
 interface RuleViolation {
   textKey: string;
   params: Record<string, string | number>;
 }
+
+const getCustomValidationViolation = (
+  value: unknown,
+  field: string,
+  rules: ValidationRules,
+  options: ValidationOptions,
+): RuleViolation | undefined => {
+  if (!rules.customValidation || !options.submissionPath) {
+    return undefined;
+  }
+
+  const customValidationResult = evaluateFormioCustomValidation({
+    component: rules.customValidation.component,
+    submission: options.submission,
+    submissionPath: options.submissionPath,
+    input: value,
+    allowTestTypes: options.allowTestTypes,
+  });
+
+  if (customValidationResult !== true && customValidationResult !== undefined && customValidationResult !== null) {
+    return { textKey: String(customValidationResult), params: { field } };
+  }
+
+  return undefined;
+};
 
 const normalizeMonthName = (value: string) => value.toLowerCase().replace(/\.$/, '').trim();
 
@@ -77,6 +115,8 @@ const toSubmissionMonth = (value: string, locale: string) => {
 
 interface ValidationOptions {
   allowTestTypes?: boolean;
+  submission?: Submission;
+  submissionPath?: string;
 }
 
 const toIbanViolation = (value: string, field: string): RuleViolation | undefined => {
@@ -125,6 +165,12 @@ const validateValue = (
       return { textKey: TEXTS.validering.parkingExpensesAboveHundred, params: {} };
     }
   }
+  if (rules.customValidation?.component.type === 'navCheckbox') {
+    const customViolation = getCustomValidationViolation(value, field, rules, options);
+    if (customViolation) {
+      return customViolation;
+    }
+  }
   if (rules.required && rules.dataFetcherSelection && !hasSelectedValue(value)) {
     return { textKey: TEXTS.validering.required, params: { field } };
   }
@@ -150,10 +196,10 @@ const validateValue = (
     return { textKey: TEXTS.validering.invalidPostalCode, params: { field } };
   }
   if (rules.organizationNumber && typeof value === 'string' && !validatorUtils.isOrganizationNumber(value)) {
-    return { textKey: TEXTS.validering.orgNrCustomError, params: { field } };
+    return { textKey: rules.customMessage ?? TEXTS.validering.orgNrCustomError, params: { field } };
   }
   if (rules.accountNumber && typeof value === 'string' && !validatorUtils.isAccountNumber(value)) {
-    return { textKey: TEXTS.validering.accountNumberCustomError, params: { field } };
+    return { textKey: rules.customMessage ?? TEXTS.validering.accountNumberCustomError, params: { field } };
   }
   if (rules.iban && typeof value === 'string') {
     return toIbanViolation(value, field);
@@ -163,7 +209,7 @@ const validateValue = (
     typeof value === 'string' &&
     !validatorUtils.isNationalIdentityNumber(value, { allowTestTypes: options.allowTestTypes })
   ) {
-    return { textKey: TEXTS.validering.fodselsnummerDNummer, params: { field } };
+    return { textKey: 'fodselsnummerDNummer', params: { field } };
   }
   if (rules.phoneNumber && typeof value === 'string') {
     const { showAreaCode, areaCode } = rules.phoneNumber;
@@ -210,7 +256,7 @@ const validateValue = (
       dateUtils.isBeforeDate(normalizedMonth, dateUtils.startOfYear(String(rules.monthMinYear)).toISODate() ?? '')
     ) {
       return {
-        textKey: TEXTS.validering.minYear,
+        textKey: 'minYear',
         params: { field, minYear: rules.monthMinYear },
       };
     }
@@ -219,7 +265,7 @@ const validateValue = (
       dateUtils.isAfterDate(normalizedMonth, dateUtils.endOfYear(String(rules.monthMaxYear)).toISODate() ?? '')
     ) {
       return {
-        textKey: TEXTS.validering.maxYear,
+        textKey: 'maxYear',
         params: { field, maxYear: rules.monthMaxYear },
       };
     }
@@ -233,10 +279,10 @@ const validateValue = (
       return { textKey: TEXTS.validering.yearLength, params: { field } };
     }
     if (!numberUtils.isBiggerOrEqualMin(normalizedYear, rules.minYear)) {
-      return { textKey: TEXTS.validering.minYear, params: { field, minYear: rules.minYear ?? '' } };
+      return { textKey: 'minYear', params: { field, minYear: rules.minYear ?? '' } };
     }
     if (!numberUtils.isSmallerOrEqualMax(normalizedYear, rules.maxYear)) {
-      return { textKey: TEXTS.validering.maxYear, params: { field, maxYear: rules.maxYear ?? '' } };
+      return { textKey: 'maxYear', params: { field, maxYear: rules.maxYear ?? '' } };
     }
   }
   if (rules.numberType && typeof value === 'string') {
@@ -258,6 +304,10 @@ const validateValue = (
     if (!numberUtils.isSmallerOrEqualMax(normalizedNumber, rules.max)) {
       return { textKey: TEXTS.validering.max, params: { field, max: rules.max ?? '' } };
     }
+  }
+  const customViolation = getCustomValidationViolation(value, field, rules, options);
+  if (customViolation) {
+    return customViolation;
   }
   return undefined;
 };

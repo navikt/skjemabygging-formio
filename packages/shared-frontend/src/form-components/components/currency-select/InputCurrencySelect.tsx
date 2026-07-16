@@ -44,6 +44,7 @@ const InputCurrencySelect = ({ component, submissionPath }: InputComponentProps)
       required={isRequired(component)}
       readMore={resolveReadMore(component)}
       selectType="combobox"
+      valueType="option"
     />
   );
 };

@@ -39,6 +39,7 @@ const CheckboxGroup = ({
     <FormElementBox marginBottom={marginBottom}>
       <AkselCheckboxGroup
         id={inputId(statePath)}
+        tabIndex={-1}
         legend={
           <TranslatedLabel required={required} readOnly={readOnly}>
             {legend}

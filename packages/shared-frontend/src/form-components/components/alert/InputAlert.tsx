@@ -10,10 +10,13 @@ interface InputAlertProps {
 const getVariant = (alertType?: string): AlertVariant => {
   switch (alertType) {
     case 'suksess':
+    case 'success':
       return 'success';
     case 'advarsel':
+    case 'warning':
       return 'warning';
     case 'feil':
+    case 'error':
       return 'error';
     default:
       return 'info';

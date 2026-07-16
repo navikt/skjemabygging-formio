@@ -39,6 +39,7 @@ const SubmissionStateProvider = ({ children, initialSubmission }: Props) => {
     setSubmission((prev) => {
       if (!prev?.data) return prev;
       const data = submissionPaths.reduce((acc, path) => removeDeepValue(acc, parseSubmissionPath(path)), prev.data);
+      if (data === prev.data) return prev;
       return { ...prev, data };
     });
   }, []);

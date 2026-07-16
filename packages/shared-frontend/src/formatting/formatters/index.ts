@@ -17,11 +17,15 @@ const identityNumber: Formatter = (value) => {
   return digits.length > 6 ? `${digits.slice(0, 6)} ${digits.slice(6)}` : digits;
 };
 
+const identityNumberRaw: Formatter = (value) => digitsOnly(value);
+
 const phoneNumber: Formatter = (value) => digitsOnly(value);
 
 const norwegianPhoneNumber: Formatter = (value) => formatUtils.formatPhoneNumber(digitsOnly(value), '+47');
 
 const organizationNumber: Formatter = (value) => formatUtils.formatOrganizationNumber(digitsOnly(value));
+
+const organizationNumberRaw: Formatter = (value) => digitsOnly(value);
 
 const number: Formatter = (value) => {
   const cleaned = digitsOnly(value);
@@ -40,17 +44,23 @@ const formatters: Record<string, Formatter> = {
   accountNumber,
   iban,
   identityNumber,
+  identityNumberRaw,
   norwegianPhoneNumber,
   phoneNumber,
   organizationNumber,
+  organizationNumberRaw,
   number,
   decimal,
 };
 
 const submissionFormatters: Record<string, Formatter> = {
   accountNumber: digitsOnly,
+  identityNumber: digitsOnly,
+  identityNumberRaw: digitsOnly,
   iban: digitsOnly,
   norwegianPhoneNumber: digitsOnly,
+  organizationNumber: digitsOnly,
+  organizationNumberRaw: digitsOnly,
   phoneNumber: digitsOnly,
 };
 
@@ -60,9 +70,11 @@ export {
   formatters,
   iban,
   identityNumber,
+  identityNumberRaw,
   norwegianPhoneNumber,
   number,
   organizationNumber,
+  organizationNumberRaw,
   phoneNumber,
   submissionFormatters,
 };

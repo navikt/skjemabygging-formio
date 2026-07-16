@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { navFormUtils } from './navFormUtils';
 import formWithContainer from './testdata/nav-form/conditional-container';
 import formWithCustomConditional from './testdata/nav-form/conditional-custom';
@@ -681,6 +680,89 @@ describe('navFormUtils', () => {
           })
           .map((panel) => panel.key),
       ).toEqual(['panel1', 'panel2']);
+    });
+
+    it('evaluates dataFetcher-based attachment conditionals from metadata and selected values', () => {
+      const form = {
+        components: [
+          {
+            id: 'panel-1',
+            key: 'panel1',
+            title: 'Panel 1',
+            type: 'panel',
+            components: [],
+          },
+          {
+            id: 'attachment-panel',
+            key: 'vedlegg',
+            title: 'Vedlegg',
+            type: 'panel',
+            isAttachmentPanel: true,
+            components: [
+              {
+                id: 'attachment-1',
+                key: 'uttalelseFraLege',
+                label: 'Uttalelse fra lege',
+                type: 'attachment',
+                input: true,
+                customConditional:
+                  "show = utils.dataFetcher('aktivitetsvelger', submission).selected({type: 'HELSE'});",
+              },
+              {
+                id: 'attachment-2',
+                key: 'annenDokumentasjon',
+                label: 'Annen dokumentasjon',
+                type: 'attachment',
+                input: true,
+              },
+            ],
+          },
+        ],
+      };
+
+      expect(
+        navFormUtils
+          .getActiveAttachmentPanelFromForm(form, {
+            data: {
+              aktivitetsvelger: {
+                a2: true,
+              },
+            },
+            metadata: {
+              dataFetcher: {
+                aktivitetsvelger: {
+                  data: [
+                    { value: 'a1', label: 'Utdanning', type: 'UTDANNING' },
+                    { value: 'a2', label: 'Helsefremmende tiltak', type: 'HELSE' },
+                  ],
+                },
+              },
+            },
+          })
+          ?.components?.map((component) => component.key),
+      ).toEqual(['uttalelseFraLege', 'annenDokumentasjon']);
+
+      expect(
+        navFormUtils
+          .getActiveAttachmentPanelFromForm(form, {
+            data: {
+              aktivitetsvelger: {
+                a1: true,
+              },
+            },
+            metadata: {
+              dataFetcher: {
+                aktivitetsvelger: {
+                  data: [
+                    { value: 'a1', label: 'Utdanning', type: 'UTDANNING' },
+                    { value: 'a2', label: 'Helsefremmende tiltak', type: 'HELSE' },
+                  ],
+                },
+              },
+            },
+          })
+          ?.components?.map((component) => component.key),
+      ).toEqual(['annenDokumentasjon']);
     });
   });
 

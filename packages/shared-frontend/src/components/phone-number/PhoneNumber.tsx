@@ -1,10 +1,16 @@
+import { Label } from '@navikt/ds-react';
 import { ComponentValue, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect } from 'react';
 import { useAppConfig } from '../../context/app-config/AppConfigContext';
+import { useLanguage } from '../../context/language/LanguageContext';
 import { useStateField } from '../../context/state/useStateField';
+import { inputId } from '../../utils/inputId';
 import Alert from '../alert/Alert';
 import Select from '../select/Select';
 import { useRemoteOptions } from '../select/useRemoteOptions';
+import FormElementBox from '../shared/FormElementBox';
+import TranslatedDescription from '../shared/TranslatedDescription';
+import TranslatedLabel from '../shared/TranslatedLabel';
 import TextField from '../text-field/TextField';
 import { BaseFieldProps } from '../types';
 
@@ -32,6 +38,7 @@ const PhoneNumber = ({
   showAreaCode = false,
 }: PhoneNumberProps) => {
   const { logger } = useAppConfig();
+  const { translate } = useLanguage();
   const { stateValue, setStateValue } = useStateField({ statePath });
   const phoneNumberValue =
     typeof stateValue === 'object' && stateValue !== null ? (stateValue as PhoneNumberValue) : undefined;
@@ -80,10 +87,17 @@ const PhoneNumber = ({
   const areaCodeOptions = loadedAreaCodes ?? fallbackAreaCodeOptions;
 
   return (
-    <>
+    <FormElementBox>
+      <Label as="label" htmlFor={inputId(`${statePath}.number`)}>
+        <TranslatedLabel required={required} readOnly={readOnly}>
+          {label}
+        </TranslatedLabel>
+      </Label>
+      <TranslatedDescription>{description}</TranslatedDescription>
       <Select
         statePath={`${statePath}.areaCode`}
         label={TEXTS.statiske.phoneNumber.areaCodeLabel}
+        hideLabel
         values={areaCodeOptions}
         required={false}
         readOnly={readOnly}
@@ -92,8 +106,8 @@ const PhoneNumber = ({
       <TextField
         key={areaCode}
         statePath={`${statePath}.number`}
-        label={label}
-        description={description}
+        label={translate(TEXTS.statiske.phoneNumber.phoneNumberLabel)}
+        hideLabel
         required={required}
         readOnly={readOnly}
         readMore={readMore}
@@ -102,7 +116,7 @@ const PhoneNumber = ({
         formatKey={areaCode === DEFAULT_AREA_CODE ? 'norwegianPhoneNumber' : 'phoneNumber'}
       />
       {error && <Alert variant="warning">{TEXTS.statiske.phoneNumber.fetchError}</Alert>}
-    </>
+    </FormElementBox>
   );
 };
 

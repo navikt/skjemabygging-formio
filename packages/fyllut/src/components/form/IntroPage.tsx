@@ -1,13 +1,16 @@
 import { Accordion, GuidePanel, Heading } from '@navikt/ds-react';
 import { Intro, useAppConfig, useLanguages } from '@navikt/skjemadigitalisering-shared-components';
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { TEXTS, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import {
   FormButtonRow,
   FormNextButton,
   useFormDefinition,
+  useFormPersistence,
   useSubmissionState,
 } from '@navikt/skjemadigitalisering-shared-frontend';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import FormSecondaryButtons from './FormSecondaryButtons';
+import { useNologinToken } from './nologin-token/NologinTokenContext';
 
 interface Props {
   onStart: () => void;
@@ -17,8 +20,11 @@ const IntroPage = ({ onStart }: Props) => {
   const { translate } = useLanguages();
   const { submissionMethod } = useAppConfig();
   const { form } = useFormDefinition();
+  const { saveDraft, canSaveDraft, status } = useFormPersistence();
   const { submission, setSubmission } = useSubmissionState();
   const [selfDeclarationError, setSelfDeclarationError] = useState<string | undefined>();
+  const { tokenExpiration, getNologinToken } = useNologinToken();
+  const hasInitializedDraft = useRef(false);
 
   const introPage = form.introPage;
   const isDynamic = introPage?.enabled;
@@ -28,11 +34,43 @@ const IntroPage = ({ onStart }: Props) => {
     if (value) setSelfDeclarationError(undefined);
   };
 
-  const handleStart = () => {
+  useEffect(() => {
+    if (submissionMethod === 'digital') {
+      setSubmission((prev) => prev ?? { data: {} });
+    }
+  }, [setSubmission, submissionMethod]);
+
+  useEffect(() => {
+    if (submissionMethod === 'digitalnologin' && !tokenExpiration) {
+      void getNologinToken();
+    }
+  }, [getNologinToken, submissionMethod, tokenExpiration]);
+
+  useEffect(() => {
+    if (
+      hasInitializedDraft.current ||
+      submissionMethod !== 'digital' ||
+      !canSaveDraft ||
+      !submission ||
+      new URLSearchParams(window.location.search).has('innsendingsId')
+    ) {
+      return;
+    }
+
+    hasInitializedDraft.current = true;
+    void saveDraft();
+  }, [canSaveDraft, saveDraft, submission, submissionMethod]);
+
+  const handleStart = async () => {
     if (isDynamic && !submission?.selfDeclaration) {
       setSelfDeclarationError(translate('introPage.selfDeclaration.validationError'));
       return;
     }
+
+    if (canSaveDraft) {
+      await saveDraft();
+    }
+
     onStart();
   };
 
@@ -50,10 +88,15 @@ const IntroPage = ({ onStart }: Props) => {
           <Intro.Scope properties={introPage.sections?.scope} translate={translate} className="mb" />
           <Intro.OutOfScope properties={introPage.sections?.outOfScope} translate={translate} className="mb" />
           <Intro.Prerequisites properties={introPage.sections?.prerequisites} translate={translate} className="mb" />
-          <Intro.BeAwareOf translate={translate} submissionMethod={submissionMethod} className="mb" />
+          <Intro.BeAwareOf
+            translate={translate}
+            submissionMethod={submissionMethod}
+            tokenExp={tokenExpiration}
+            className="mb"
+          />
           <Accordion className="mb">
             <Intro.DataDisclosure properties={introPage.sections?.dataDisclosure} translate={translate} />
-            <Intro.DataStorage translate={translate} />
+            {submissionMethod === 'digital' && <Intro.DataStorage translate={translate} />}
             <Intro.AutomaticProcessing properties={introPage.sections?.automaticProcessing} translate={translate} />
             <Intro.Optional properties={introPage.sections?.optional} translate={translate} />
           </Accordion>
@@ -76,6 +119,18 @@ const IntroPage = ({ onStart }: Props) => {
               <li>
                 <b>{translate(TEXTS.statiske.introPage.paperDescriptionBold)} </b>
                 {translate(TEXTS.statiske.introPage.paperDescription)}
+              </li>
+            )}
+            {submissionMethod === 'digitalnologin' && (
+              <li>
+                <b>
+                  {translate(TEXTS.statiske.introPage.nologinTimeLimitBold, {
+                    tokenExpirationTime: tokenExpiration
+                      ? dateUtils.formatUnixEpochSecondsToLocalTime(tokenExpiration)
+                      : 'XX.XX',
+                  })}{' '}
+                </b>
+                {translate(TEXTS.statiske.introPage.nologinTimeLimit)}
               </li>
             )}
             <li>
@@ -101,9 +156,20 @@ const IntroPage = ({ onStart }: Props) => {
           </ul>
         </GuidePanel>
       )}
+      <FormSecondaryButtons introUploadIdLink />
 
       <FormButtonRow
-        nextButton={<FormNextButton label={translate(TEXTS.grensesnitt.navigation.next)} onClick={handleStart} />}
+        nextButton={
+          <FormNextButton
+            label={translate(
+              submissionMethod === 'digital'
+                ? TEXTS.grensesnitt.navigation.saveAndContinue
+                : TEXTS.grensesnitt.navigation.next,
+            )}
+            loading={status === 'saving'}
+            onClick={handleStart}
+          />
+        }
       />
     </>
   );

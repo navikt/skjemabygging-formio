@@ -1,6 +1,6 @@
 import { Select as AkselSelect, UNSAFE_Combobox as Combobox } from '@navikt/ds-react';
 import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
-import type { ChangeEvent } from 'react';
+import { useEffect, type ChangeEvent } from 'react';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useStateField } from '../../context/state/useStateField';
 import { inputId } from '../../utils/inputId';
@@ -13,16 +13,19 @@ import { getCurrentValue, getStateValue, resolveRenderedSelectType, SelectType, 
 
 interface SelectProps extends BaseFieldProps {
   label: string;
+  hideLabel?: boolean;
   // values can be provided statically or resolved by a caller-side loader such as useRemoteOptions
   values: ComponentValue[];
   selectText?: string;
   selectType?: SelectType;
   valueType?: SelectValueType;
+  defaultValue?: string | ComponentValue;
 }
 
 const Select = ({
   statePath,
   label,
+  hideLabel,
   values,
   description,
   selectText,
@@ -32,6 +35,7 @@ const Select = ({
   marginBottom,
   selectType = 'auto',
   valueType = 'value',
+  defaultValue,
 }: SelectProps) => {
   const { translate } = useLanguage();
   const { stateValue, error, setStateValue } = useStateField({ statePath });
@@ -41,7 +45,32 @@ const Select = ({
     label: translate(optionLabel),
   }));
   const selectedOption = options.find((option) => option.value === current);
+  const selectedOptions =
+    valueType === 'option'
+      ? current
+        ? [((stateValue as ComponentValue | undefined) ?? selectedOption)!]
+        : []
+      : selectedOption
+        ? [selectedOption]
+        : [];
   const renderedSelectType = resolveRenderedSelectType(selectType, options.length);
+
+  useEffect(() => {
+    if (stateValue !== undefined || !defaultValue) {
+      return;
+    }
+
+    const defaultValueKey =
+      typeof defaultValue === 'string'
+        ? defaultValue
+        : typeof defaultValue === 'object'
+          ? defaultValue.value
+          : undefined;
+    const defaultOption = options.find((option) => option.value === defaultValueKey);
+    if (defaultOption) {
+      setStateValue(getStateValue(defaultOption.value, valueType, options));
+    }
+  }, [defaultValue, options, setStateValue, stateValue, valueType]);
 
   const onToggleSelected = (value: string, selected: boolean) => {
     setStateValue(getStateValue(selected ? value : '', valueType, options));
@@ -57,11 +86,12 @@ const Select = ({
         <AkselSelect
           id={inputId(statePath)}
           label={
-            <TranslatedLabel required={required} readOnly={readOnly}>
+            <TranslatedLabel required={required} readOnly={readOnly} showOptionalText={!hideLabel}>
               {label}
             </TranslatedLabel>
           }
           description={<TranslatedDescription>{description}</TranslatedDescription>}
+          hideLabel={hideLabel}
           value={current}
           onChange={onChange}
           error={error}
@@ -78,13 +108,14 @@ const Select = ({
         <Combobox
           id={inputId(statePath)}
           label={
-            <TranslatedLabel required={required} readOnly={readOnly}>
+            <TranslatedLabel required={required} readOnly={readOnly} showOptionalText={!hideLabel}>
               {label}
             </TranslatedLabel>
           }
           description={<TranslatedDescription>{description}</TranslatedDescription>}
+          hideLabel={hideLabel}
           options={options}
-          selectedOptions={selectedOption ? [selectedOption] : []}
+          selectedOptions={selectedOptions}
           onToggleSelected={onToggleSelected}
           error={error}
           readOnly={readOnly}

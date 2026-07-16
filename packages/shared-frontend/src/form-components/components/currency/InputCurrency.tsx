@@ -3,6 +3,7 @@ import {
   InputComponentProps,
   isRequired,
   resolveNumberFormatKey,
+  resolveNumericStateValue,
   resolveReadMore,
   resolveSubmissionPath,
 } from '../../inputComponentRegistryUtils';
@@ -17,6 +18,8 @@ const InputCurrency = ({ component, submissionPath }: InputComponentProps) => (
     inputMode={component.inputType}
     spellCheck={component.spellCheck}
     formatKey={resolveNumberFormatKey(component)}
+    toStateValue={(value) => resolveNumericStateValue(component, value)}
+    readOnly={component.readOnly}
     readMore={resolveReadMore(component)}
   />
 );

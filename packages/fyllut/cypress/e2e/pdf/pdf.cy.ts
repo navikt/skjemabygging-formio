@@ -1,6 +1,12 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { expect } from 'chai';
 
+const setTextFieldValue = (name: string | RegExp, value: string) => {
+  cy.findByRole('textbox', { name }).invoke('val', value);
+  cy.findByRole('textbox', { name }).trigger('input');
+  cy.findByRole('textbox', { name }).trigger('change');
+};
+
 const downloadPdf = (submissionType: 'digital' | 'paper' | 'digitalnologin' = 'paper') => {
   cy.findByRole('link', { name: /Oppsummering|Summary/ }).click();
   cy.findByRole('heading', { name: /Oppsummering|Summary/ }).shouldBeVisible();
@@ -88,9 +94,9 @@ describe('Pdf', () => {
       cy.clickStart();
 
       cy.findByRole('heading', { name: 'Page 1' }).shouldBeVisible();
-      cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(($radio) =>
-        cy.findByLabelText('Ja').check(),
-      );
+      cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() => {
+        cy.findByLabelText('Ja').check();
+      });
       cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).type('08842748500');
       cy.findByRole('checkbox', { name: /Avkryssingsboks/ }).click();
       cy.clickNextStep();
@@ -155,15 +161,8 @@ describe('Pdf', () => {
         cy.findByRole('group', { name: /Flervalg/ }).within(() => {
           cy.findByRole('checkbox', { name: 'Ja' }).check();
         });
-        // Select react
-        cy.findByRole('combobox', { name: /Nedtrekksmeny \(navSelect\)/ }).type('{downArrow}{enter}');
-        // Select formio (ChoiceJS)
-        cy.findAllByRole('combobox').eq(1).click();
-        cy.findAllByRole('combobox')
-          .eq(1)
-          .within(() => {
-            cy.findByRole('option', { name: 'Ja' }).click();
-          });
+        cy.findByRole('combobox', { name: /Nedtrekksmeny \(navSelect\)/ }).type('Nei{downArrow}{enter}');
+        cy.findAllByRole('combobox').eq(1).select('Ja');
         // Select formio (HTML5)
         cy.findAllByRole('combobox').eq(2).select('0,50');
         cy.findByRole('group', { name: /Radiopanel/ }).within(() => {
@@ -206,13 +205,13 @@ describe('Pdf', () => {
         cy.findAllByRole('textbox', { name: /Beløp/ }).eq(0).type('1000');
         cy.findAllByRole('combobox', { name: /Velg valuta/ })
           .eq(0)
-          .type('{downArrow}{enter}');
+          .type('Norsk krone{downArrow}{enter}');
         cy.findAllByRole('textbox', { name: /Beløp/ }).eq(1).type('2000');
-        cy.findByRole('textbox', { name: /Kontonummer/ }).type('76586005479');
+        setTextFieldValue(/Kontonummer/, '76586005479');
         cy.findByRole('textbox', { name: /IBAN/ }).type('NO8330001234567');
         cy.findAllByRole('combobox', { name: /Velg valuta/ })
           .eq(1)
-          .type('{downArrow}{downArrow}{enter}');
+          .type('Svensk krone{downArrow}{enter}');
 
         cy.findByRole('link', { name: 'Bedrift / organisasjon' }).click();
         cy.findByRole('heading', { name: 'Bedrift / organisasjon' }).shouldBeVisible();
@@ -299,15 +298,8 @@ describe('Pdf', () => {
         cy.findByRole('group', { name: /Flervalg/ }).within(() => {
           cy.findByRole('checkbox', { name: 'Ja' }).check();
         });
-        // Select React
-        cy.findByRole('combobox', { name: /Nedtrekksmeny \(navSelect\)/ }).type('{downArrow}{enter}');
-        // Select formio (ChoiceJS)
-        cy.findAllByRole('combobox').eq(1).click();
-        cy.findAllByRole('combobox')
-          .eq(1)
-          .within(() => {
-            cy.findByRole('option', { name: 'Ja' }).click();
-          });
+        cy.findByRole('combobox', { name: /Nedtrekksmeny \(navSelect\)/ }).type('Nei{downArrow}{enter}');
+        cy.findAllByRole('combobox').eq(1).select('Ja');
         // Select formio (HTML5)
         cy.findAllByRole('combobox').eq(2).select('-0,50');
         cy.findByRole('group', { name: /Radiopanel/ }).within(() => {
@@ -350,13 +342,13 @@ describe('Pdf', () => {
         cy.findAllByRole('textbox', { name: /Beløp/ }).eq(0).type('1000');
         cy.findAllByRole('combobox', { name: /Velg valuta/ })
           .eq(0)
-          .type('{downArrow}{enter}');
+          .type('Norsk krone{downArrow}{enter}');
         cy.findAllByRole('textbox', { name: /Beløp/ }).eq(1).type('2000');
-        cy.findByRole('textbox', { name: /Kontonummer/ }).type('76586005479');
+        setTextFieldValue(/Kontonummer/, '76586005479');
         cy.findByRole('textbox', { name: /IBAN/ }).type('NO8330001234567');
         cy.findAllByRole('combobox', { name: /Velg valuta/ })
           .eq(1)
-          .type('{downArrow}{downArrow}{enter}');
+          .type('Svensk krone{downArrow}{enter}');
 
         cy.findByRole('link', { name: 'Bedrift / organisasjon' }).click();
         cy.findByRole('heading', { name: 'Bedrift / organisasjon' }).shouldBeVisible();

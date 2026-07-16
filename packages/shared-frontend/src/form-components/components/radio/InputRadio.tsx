@@ -13,6 +13,7 @@ const InputRadio = ({ component, submissionPath }: InputComponentProps) => (
     legend={component.label}
     description={component.description}
     values={getValues(component)}
+    defaultValue={typeof component.defaultValue === 'string' ? component.defaultValue : undefined}
     required={isRequired(component)}
     readOnly={component.readOnly}
     readMore={resolveReadMore(component)}

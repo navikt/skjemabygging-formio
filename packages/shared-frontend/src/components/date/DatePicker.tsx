@@ -30,12 +30,12 @@ const DatePicker = ({
 }: DatePickerProps) => {
   const { currentLanguage } = useLanguage();
   const { stateValue, error, setStateValue } = useStateField({ statePath });
-  const selectedDate = toSelectedDate(stateValue);
+  const displayValue = toDatePickerInputValue(stateValue);
 
-  const { datepickerProps, inputProps, setSelected } = useDatepicker({
+  const { datepickerProps, inputProps, setSelected, reset } = useDatepicker({
     locale: getAkselLocale(currentLanguage),
     inputFormat: dateUtils.inputFormat,
-    defaultSelected: selectedDate,
+    defaultSelected: toSelectedDate(stateValue),
     fromDate: fromDate ? dateUtils.toJSDate(fromDate) : undefined,
     toDate: toDate ? dateUtils.toJSDate(toDate) : undefined,
     onDateChange: (date) => {
@@ -48,12 +48,19 @@ const DatePicker = ({
   });
 
   useEffect(() => {
-    setSelected(selectedDate);
-  }, [selectedDate, setSelected]);
+    if (inputProps.value !== displayValue) {
+      if (typeof stateValue === 'string' && stateValue !== '' && dateUtils.isValid(stateValue, 'submission')) {
+        setSelected(dateUtils.toJSDate(stateValue));
+      } else if (stateValue === '') {
+        reset();
+      }
+    }
+  }, [displayValue, inputProps.value, reset, setSelected, stateValue]);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     inputProps.onChange?.(event);
-    setStateValue(event.target.value);
+    const nextValue = event.target.value;
+    setStateValue(dateUtils.isValid(nextValue, 'input') ? dateUtils.toSubmissionDate(nextValue) : nextValue);
   };
 
   return (
@@ -70,8 +77,15 @@ const DatePicker = ({
           description={<TranslatedDescription>{description}</TranslatedDescription>}
           error={error}
           readOnly={readOnly}
-          value={toDatePickerInputValue(stateValue)}
+          value={displayValue}
           onChange={handleChange}
+          onBlur={(event) => {
+            if (event.target.value === '') {
+              setStateValue('');
+            } else if (dateUtils.isValid(event.target.value, 'input')) {
+              setStateValue(dateUtils.toSubmissionDate(event.target.value));
+            }
+          }}
         />
       </AkselDatePicker>
       {readMore && <ReadMore {...readMore} />}

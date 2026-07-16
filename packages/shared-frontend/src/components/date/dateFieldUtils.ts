@@ -11,6 +11,11 @@ import {
 } from '../../context/form-definition/formDefinitionUtils';
 
 const DATE_INPUT_LOCALE = 'nb-NO';
+const DATE_INPUT_FORMAT: Intl.DateTimeFormatOptions = {
+  day: '2-digit',
+  month: '2-digit',
+  year: 'numeric',
+};
 
 const getAkselLocale = (currentLanguage: string) => {
   switch (currentLanguage) {
@@ -127,7 +132,7 @@ const toDatePickerInputValue = (value: unknown) => {
   }
 
   if (dateUtils.isValid(value, 'submission')) {
-    return dateUtils.toJSDate(value).toLocaleDateString(DATE_INPUT_LOCALE);
+    return new Intl.DateTimeFormat(DATE_INPUT_LOCALE, DATE_INPUT_FORMAT).format(dateUtils.toJSDate(value));
   }
 
   return value;

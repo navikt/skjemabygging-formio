@@ -25,12 +25,18 @@ interface NextButtonProps {
   label: string;
   onClick: () => void;
   loading?: boolean;
+  role?: 'link' | 'button';
 }
 
-const FormNextButton = ({ label, onClick, loading }: NextButtonProps) => (
+const FormNextButton = ({ label, onClick, loading, role = 'link' }: NextButtonProps) => (
   <Button
-    type="button"
-    onClick={onClick}
+    as="a"
+    href="#"
+    role={role}
+    onClick={(event) => {
+      event.preventDefault();
+      onClick();
+    }}
     icon={<ArrowRightIcon aria-hidden />}
     iconPosition="right"
     loading={loading}
@@ -43,13 +49,19 @@ const FormNextButton = ({ label, onClick, loading }: NextButtonProps) => (
 interface PrevButtonProps {
   label: string;
   onClick: () => void;
+  role?: 'link' | 'button';
 }
 
-const FormPrevButton = ({ label, onClick }: PrevButtonProps) => (
+const FormPrevButton = ({ label, onClick, role = 'link' }: PrevButtonProps) => (
   <Button
-    type="button"
+    as="a"
+    href="#"
     variant="secondary"
-    onClick={onClick}
+    role={role}
+    onClick={(event) => {
+      event.preventDefault();
+      onClick();
+    }}
     icon={<ArrowLeftIcon aria-hidden />}
     iconPosition="left"
     className={styles.button}

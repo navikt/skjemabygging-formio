@@ -9,7 +9,13 @@ interface FormElementBoxProps {
 }
 
 const FormElementBox = ({ marginBottom = 'space-32', children }: FormElementBoxProps) => (
-  <Box marginBlock={`space-0 ${marginBottom}`}>{children}</Box>
+  <Box
+    marginBlock={`space-0 ${marginBottom}`}
+    // Temporary Cypress/legacy compatibility. Remove when shared-frontend no longer needs `.form-group`.
+    className="form-group"
+  >
+    {children}
+  </Box>
 );
 
 export default FormElementBox;

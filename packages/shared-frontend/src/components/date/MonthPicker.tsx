@@ -1,5 +1,6 @@
 import { MonthPicker as AkselMonthPicker, useMonthpicker } from '@navikt/ds-react';
-import { ChangeEvent, useEffect } from 'react';
+import { dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { ChangeEvent } from 'react';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useStateField } from '../../context/state/useStateField';
 import { inputId } from '../../utils/inputId';
@@ -8,7 +9,7 @@ import FormElementBox from '../shared/FormElementBox';
 import TranslatedDescription from '../shared/TranslatedDescription';
 import TranslatedLabel from '../shared/TranslatedLabel';
 import { BaseFieldProps } from '../types';
-import { getAkselLocale, toMonthPickerInputValue, toSelectedMonth } from './dateFieldUtils';
+import { getAkselLocale, getMonthLocale } from './dateFieldUtils';
 
 interface MonthPickerProps extends BaseFieldProps {
   label: string;
@@ -29,30 +30,34 @@ const MonthPicker = ({
 }: MonthPickerProps) => {
   const { currentLanguage } = useLanguage();
   const { stateValue, error, setStateValue } = useStateField({ statePath });
-  const selectedMonth = toSelectedMonth(stateValue);
+  const locale = getMonthLocale(currentLanguage);
 
-  const { monthpickerProps, inputProps, setSelected } = useMonthpicker({
+  const { monthpickerProps, inputProps } = useMonthpicker({
     locale: getAkselLocale(currentLanguage),
-    defaultSelected: selectedMonth,
-    fromDate: minYear ? new Date(minYear, 0, 1) : undefined,
-    toDate: maxYear ? new Date(maxYear, 11, 31) : undefined,
+    fromDate: dateUtils.startOfYear(`${minYear ?? '1900'}`)?.toJSDate(),
+    toDate: dateUtils.endOfYear(`${maxYear ?? '2100'}`)?.toJSDate(),
+    allowTwoDigitYear: false,
+    defaultYear:
+      typeof stateValue === 'string' && dateUtils.isValidMonthSubmission(stateValue)
+        ? dateUtils.toJSDateFromMonthSubmission(stateValue)
+        : dateUtils.getDefaultDateFromRange(minYear?.toString(), maxYear?.toString()),
     onMonthChange: (date) => {
-      setStateValue(date ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}` : '');
+      setStateValue(dateUtils.toSubmissionDateMonth(date?.toISOString()));
     },
   });
 
-  useEffect(() => {
-    setSelected(selectedMonth);
-  }, [selectedMonth, setSelected]);
-
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    inputProps.onChange?.(event);
-    setStateValue(event.target.value);
+    const inputValue = event.target.value;
+    if (dateUtils.isValidInputMonth(inputValue, locale)) {
+      setStateValue(dateUtils.toSubmissionDateMonth(inputValue, locale));
+    } else {
+      setStateValue(inputValue);
+    }
   };
 
   return (
     <FormElementBox marginBottom={marginBottom}>
-      <AkselMonthPicker {...monthpickerProps}>
+      <AkselMonthPicker {...monthpickerProps} dropdownCaption={!!(minYear && maxYear)}>
         <AkselMonthPicker.Input
           {...inputProps}
           id={inputId(statePath)}
@@ -64,7 +69,13 @@ const MonthPicker = ({
           description={<TranslatedDescription>{description}</TranslatedDescription>}
           error={error}
           readOnly={readOnly}
-          value={toMonthPickerInputValue(stateValue, currentLanguage)}
+          value={
+            typeof stateValue === 'string' && dateUtils.isValidMonthSubmission(stateValue)
+              ? dateUtils.toLongMonthFormat(stateValue, locale)
+              : typeof stateValue === 'string'
+                ? stateValue
+                : ''
+          }
           onChange={handleChange}
         />
       </AkselMonthPicker>

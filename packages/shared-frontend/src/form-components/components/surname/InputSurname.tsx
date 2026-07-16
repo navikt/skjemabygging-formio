@@ -17,6 +17,7 @@ const InputSurname = ({ component, submissionPath }: InputComponentProps) => (
     inputMode={component.inputType}
     type={resolveInputType(component)}
     spellCheck={component.spellCheck}
+    prefillValue={component.prefillValue}
     readMore={resolveReadMore(component)}
   />
 );

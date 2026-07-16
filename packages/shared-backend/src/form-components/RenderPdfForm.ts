@@ -143,6 +143,10 @@ const renderPdfForm = ({
     ...componentRegistry,
     attachment: PdfAttachmentUpload,
   };
+  const attachmentPanelComponentRegistry =
+    submissionMethod === 'paper' || submissionMethod === 'papernocoverpage'
+      ? componentRegistry
+      : attachmentUploadsComponentRegistry;
 
   const languageCode: string =
     currentLanguage === 'nn-NO' || currentLanguage == 'nn' ? 'nn' : currentLanguage === 'en' ? 'en' : 'nb';
@@ -169,7 +173,7 @@ const renderPdfForm = ({
             renderPdfComponent({
               component: activeAttachmentUploadsPanel,
               submissionPath: '',
-              componentRegistry: attachmentUploadsComponentRegistry,
+              componentRegistry: attachmentPanelComponentRegistry,
               submission,
               translate,
               currentLanguage,

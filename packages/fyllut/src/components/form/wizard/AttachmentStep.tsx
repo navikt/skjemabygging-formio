@@ -1,0 +1,101 @@
+import { useAppConfig, useLanguages } from '@navikt/skjemadigitalisering-shared-components';
+import { Form, navFormUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  FormButtonRow,
+  FormErrorSummary,
+  FormNextButton,
+  FormPrevButton,
+  RenderInputForm,
+  useFormDefinition,
+  useSubmissionState,
+  useValidation,
+} from '@navikt/skjemadigitalisering-shared-frontend';
+import { useEffect, useMemo } from 'react';
+import AttachmentUploadPage from '../attachment-upload/AttachmentUploadPage';
+import FormSecondaryButtons from '../FormSecondaryButtons';
+import { ATTACHMENTS_KEY } from './constants';
+import { useWizardNavigation } from './useWizardNavigation';
+import WizardStep from './WizardStep';
+
+const AttachmentStep = ({ form }: { form: Form }) => {
+  const { translate } = useLanguages();
+  const { submissionMethod } = useAppConfig();
+  const { form: formDefinition, panels } = useFormDefinition();
+  const { submission } = useSubmissionState();
+  const { syncPageValidationState, validatePage } = useValidation();
+  const { goToPanel, goToSummary, goToError, onStepClick } = useWizardNavigation('attachment');
+  const attachmentPanel = navFormUtils.getActiveAttachmentPanelFromForm(formDefinition, submission);
+  const components = useMemo(() => attachmentPanel?.components ?? [], [attachmentPanel]);
+  const attachmentPageKey = attachmentPanel?.key ?? ATTACHMENTS_KEY;
+  const hasUploadComponents = useMemo(
+    () => navFormUtils.flattenComponents(components).some((component) => component.type === 'attachment'),
+    [components],
+  );
+  const usesUploadPage =
+    (submissionMethod === 'digital' || submissionMethod === 'digitalnologin') && hasUploadComponents;
+
+  useEffect(() => {
+    if (attachmentPanel && !usesUploadPage) {
+      syncPageValidationState(attachmentPageKey, components);
+    }
+  }, [attachmentPageKey, attachmentPanel, components, syncPageValidationState, usesUploadPage]);
+
+  const handleNext = () => {
+    const valid = validatePage(attachmentPageKey, components);
+    if (!valid) {
+      return;
+    }
+    goToSummary();
+  };
+
+  return (
+    <WizardStep
+      form={form}
+      activeIndex={1 + panels.length}
+      pageTitle={translate(attachmentPanel?.title ?? TEXTS.statiske.attachment.title)}
+      onStepClick={onStepClick}
+    >
+      {usesUploadPage && attachmentPanel ? (
+        <AttachmentUploadPage
+          attachmentPanel={attachmentPanel}
+          onPrevious={() => goToPanel(panels[panels.length - 1]?.key)}
+          onNext={goToSummary}
+        />
+      ) : (
+        <>
+          <RenderInputForm pageKey={attachmentPageKey} pageComponents={components} components={components} />
+          <FormErrorSummary
+            pageKey={attachmentPageKey}
+            components={components}
+            onNavigateToField={(error, id) => {
+              if (error.pageKey !== attachmentPageKey) {
+                goToError(error.pageKey, id);
+              }
+            }}
+          />
+          <FormSecondaryButtons />
+          <FormButtonRow
+            previousButton={
+              <FormPrevButton
+                label={translate(TEXTS.grensesnitt.navigation.previous)}
+                onClick={() => goToPanel(panels[panels.length - 1]?.key)}
+              />
+            }
+            nextButton={
+              <FormNextButton
+                label={translate(
+                  submissionMethod === 'digital'
+                    ? TEXTS.grensesnitt.navigation.saveAndContinue
+                    : TEXTS.grensesnitt.navigation.next,
+                )}
+                onClick={handleNext}
+              />
+            }
+          />
+        </>
+      )}
+    </WizardStep>
+  );
+};
+
+export default AttachmentStep;

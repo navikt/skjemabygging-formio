@@ -1,9 +1,10 @@
 import { Provider as AkselProvider } from '@navikt/ds-react';
 import { en, nb, nn } from '@navikt/ds-react/locales';
 import { useAppConfig, useLanguages } from '@navikt/skjemadigitalisering-shared-components';
-import { Form } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, Submission, submissionTypesUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import {
   AppConfigProvider,
+  applyPrefilledValuesToSubmission,
   FormDefinitionProvider,
   FormHeader,
   FormLayout,
@@ -13,50 +14,91 @@ import {
   ValidationProvider,
 } from '@navikt/skjemadigitalisering-shared-frontend';
 import { useLocation } from 'react-router';
+import { AttachmentUploadProvider } from './attachment-upload/AttachmentUploadContext';
+import { NologinTokenProvider } from './nologin-token/NologinTokenContext';
 import SubmissionMethodSelection from './SubmissionMethodSelection';
 import useSubmitters from './useSubmitters';
 import Wizard from './wizard/Wizard';
 
 interface Props {
   form: Form;
+  initialSubmission?: Submission;
 }
 
-const RenderForm = ({ form }: Props) => {
+const RenderFormContent = ({
+  form,
+  initialSubmission,
+  initialPagesWithErrors,
+  currentLanguage,
+}: Props & { initialPagesWithErrors?: string[]; currentLanguage: string }) => {
   const { submissionMethod, logger, config } = useAppConfig();
+  const persistence = useSubmitters(form);
+  const hydratedInitialSubmission = applyPrefilledValuesToSubmission(form, initialSubmission, currentLanguage);
+  const effectiveSubmissionMethod =
+    submissionMethod ??
+    (submissionTypesUtils.isPaperSubmissionOnly(form.properties.submissionTypes)
+      ? 'paper'
+      : submissionTypesUtils.isDigitalSubmissionOnly(form.properties.submissionTypes)
+        ? 'digital'
+        : submissionTypesUtils.isDigitalNoLoginSubmissionOnly(form.properties.submissionTypes)
+          ? 'digitalnologin'
+          : submissionTypesUtils.isPaperNoCoverPageSubmissionOnly(form.properties.submissionTypes) &&
+              (form.properties.submissionTypes?.length ?? 0) > 0
+            ? 'papernocoverpage'
+            : undefined);
+  const shouldRenderWizard =
+    effectiveSubmissionMethod !== undefined || (form.properties.submissionTypes?.length ?? 0) === 0;
+
+  return (
+    <AppConfigProvider submissionMethod={effectiveSubmissionMethod} logger={logger} config={config}>
+      <SubmissionStateProvider initialSubmission={hydratedInitialSubmission}>
+        <FormDefinitionProvider form={form}>
+          <ValidationProvider initialPagesWithErrors={initialPagesWithErrors}>
+            <FormPersistenceProvider saveDraft={persistence.saveDraft} submitForm={persistence.submitForm}>
+              <AttachmentUploadProvider>
+                <FormLayout>
+                  {shouldRenderWizard ? (
+                    <Wizard form={form} />
+                  ) : (
+                    <>
+                      <FormHeader form={form} />
+                      <SubmissionMethodSelection form={form} />
+                    </>
+                  )}
+                </FormLayout>
+              </AttachmentUploadProvider>
+            </FormPersistenceProvider>
+          </ValidationProvider>
+        </FormDefinitionProvider>
+      </SubmissionStateProvider>
+    </AppConfigProvider>
+  );
+};
+
+const RenderForm = ({ form, initialSubmission: initialSubmissionProp }: Props) => {
   const { translate, currentLanguage } = useLanguages();
   const { state } = useLocation();
-  const persistence = useSubmitters(form);
   const initialPagesWithErrors =
     typeof state === 'object' && state && 'validationErrorPages' in state && Array.isArray(state.validationErrorPages)
       ? state.validationErrorPages
       : undefined;
+  const initialSubmission =
+    typeof state === 'object' && state && 'initialSubmission' in state ? state.initialSubmission : undefined;
   const akselLocale = currentLanguage === 'en' ? en : currentLanguage === 'nn' ? nn : nb;
 
   return (
-    <AppConfigProvider submissionMethod={submissionMethod} logger={logger} config={config}>
-      <LanguageProvider translate={translate} currentLanguage={currentLanguage}>
-        <AkselProvider locale={akselLocale}>
-          <SubmissionStateProvider>
-            <FormDefinitionProvider form={form}>
-              <ValidationProvider initialPagesWithErrors={initialPagesWithErrors}>
-                <FormPersistenceProvider saveDraft={persistence.saveDraft} submitForm={persistence.submitForm}>
-                  <FormLayout>
-                    {submissionMethod ? (
-                      <Wizard form={form} />
-                    ) : (
-                      <>
-                        <FormHeader form={form} />
-                        <SubmissionMethodSelection form={form} />
-                      </>
-                    )}
-                  </FormLayout>
-                </FormPersistenceProvider>
-              </ValidationProvider>
-            </FormDefinitionProvider>
-          </SubmissionStateProvider>
-        </AkselProvider>
-      </LanguageProvider>
-    </AppConfigProvider>
+    <LanguageProvider translate={translate} currentLanguage={currentLanguage}>
+      <AkselProvider locale={akselLocale}>
+        <NologinTokenProvider>
+          <RenderFormContent
+            form={form}
+            initialSubmission={initialSubmission ?? initialSubmissionProp}
+            initialPagesWithErrors={initialPagesWithErrors}
+            currentLanguage={currentLanguage}
+          />
+        </NologinTokenProvider>
+      </AkselProvider>
+    </LanguageProvider>
   );
 };
 

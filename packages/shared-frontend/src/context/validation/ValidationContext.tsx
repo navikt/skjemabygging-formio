@@ -1,4 +1,10 @@
-import { Component, Submission, submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  Component,
+  navFormUtils,
+  Submission,
+  submissionUtils,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 import { deriveValidations } from '../../validation/deriveValidations';
 import { validateValue } from '../../validation/validators';
@@ -12,6 +18,45 @@ interface FieldError {
   field: string;
   message: string;
 }
+
+interface RuleViolation {
+  textKey: string;
+  params: Record<string, string | number>;
+}
+
+const validateAttachmentComponent = (
+  component: Component,
+  field: string,
+  activeSubmission: Submission | undefined,
+  submissionMethod?: string,
+): RuleViolation | undefined => {
+  if (submissionMethod === 'paper' || submissionMethod === 'papernocoverpage' || submissionMethod === undefined) {
+    return undefined;
+  }
+
+  const attachmentId = navFormUtils.getNavId(component);
+  if (!attachmentId) {
+    return undefined;
+  }
+
+  const attachment = activeSubmission?.attachments?.find(
+    (currentAttachment) => currentAttachment.navId === attachmentId,
+  );
+  if (component.validate?.required && !attachment?.value) {
+    return { textKey: TEXTS.validering.required, params: { field } };
+  }
+  if (attachment?.value === 'leggerVedNaa' && (attachment.files ?? []).length === 0) {
+    return { textKey: 'fileMissing', params: { field } };
+  }
+  if (component.attachmentType === 'other' && attachment?.value === 'leggerVedNaa' && !attachment.title) {
+    return {
+      textKey: TEXTS.validering.required,
+      params: { field: TEXTS.statiske.attachment.attachmentTitle },
+    };
+  }
+
+  return undefined;
+};
 
 type ValidationPage = { pageKey: string; components: Component[] };
 type SummaryScope = { type: 'page'; pageKey: string } | { type: 'summary' } | undefined;
@@ -70,14 +115,24 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
   const computeErrors = useCallback(
     (pageKey: string, components: Component[], activeSubmission: Submission | undefined): FieldError[] =>
       deriveValidations(components, activeSubmission, submissionMethod).reduce<FieldError[]>(
-        (acc, { submissionPath, field, rules }) => {
-          const violation = validateValue(
-            submissionUtils.getSubmissionValue(submissionPath, activeSubmission),
-            field,
-            rules,
-            currentLanguage,
-            { allowTestTypes },
-          );
+        (acc, { submissionPath, field, rules, component }) => {
+          const violation =
+            component?.type === 'attachment' &&
+            submissionMethod !== 'paper' &&
+            submissionMethod !== 'papernocoverpage' &&
+            submissionMethod !== undefined
+              ? validateAttachmentComponent(component, field, activeSubmission, submissionMethod)
+              : validateValue(
+                  submissionUtils.getSubmissionValue(submissionPath, activeSubmission),
+                  field,
+                  rules,
+                  currentLanguage,
+                  {
+                    allowTestTypes,
+                    submission: activeSubmission,
+                    submissionPath,
+                  },
+                );
           if (violation) {
             acc.push({ pageKey, submissionPath, field, message: translate(violation.textKey, violation.params) });
           }

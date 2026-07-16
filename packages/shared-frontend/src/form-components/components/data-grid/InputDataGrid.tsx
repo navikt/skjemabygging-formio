@@ -1,6 +1,13 @@
 import { Box, Button, Heading, Label } from '@navikt/ds-react';
-import { Component, submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  checkCondition,
+  Component,
+  Form,
+  SubmissionData,
+  submissionUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import TranslatedDescription from '../../../components/shared/TranslatedDescription';
+import { useFormDefinition } from '../../../context/form-definition/FormDefinitionContext';
 import {
   enrichComponentsWithBaseSubmissionPath,
   getResolvedSubmissionPath,
@@ -21,12 +28,14 @@ interface InputDataGridProps {
 const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => {
   const { translate } = useLanguage();
   const { submission, updateSubmission } = useSubmissionState();
+  const { form } = useFormDefinition();
   const { handleFieldChange } = useValidation();
   const { pageKey, components: pageComponents } = useValidationScope();
   const { components, label, description, addAnother, removeAnother, disableAddingRemovingRows, rowTitle } = component;
   const submissionPath = getResolvedSubmissionPath(component);
   const rows = submissionUtils.getSubmissionValue(submissionPath, submission);
   const dataGridRows = Array.isArray(rows) ? rows : [];
+  const renderedRows = getRenderedDataGridRows(dataGridRows, component.initEmpty);
 
   const updateRows = (nextRows: object[]) => {
     const nextSubmission = createUpdatedSubmission(submission, submissionPath, nextRows);
@@ -55,8 +64,13 @@ const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => 
       )}
 
       <div className={styles.rows}>
-        {dataGridRows.map((_, index) => {
-          const rowComponents = enrichComponentsWithBaseSubmissionPath(components, `${submissionPath}[${index}]`);
+        {renderedRows.map((row, index) => {
+          const rowComponents = getActiveRowComponents(
+            enrichComponentsWithBaseSubmissionPath(components, `${submissionPath}[${index}]`),
+            row,
+            submission?.data,
+            form,
+          );
 
           return (
             <div key={index} className={styles.row}>
@@ -87,4 +101,23 @@ const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => 
   );
 };
 
+const getRenderedDataGridRows = (rows: object[], initEmpty?: boolean) => (rows.length > 0 || initEmpty ? rows : [{}]);
+
+const getActiveRowComponents = (
+  components: Component[],
+  row: object | undefined,
+  data: SubmissionData | undefined,
+  form: Form,
+) =>
+  components
+    .filter((component) => checkCondition(component, row, data, form))
+    .map((component) =>
+      component.components?.length
+        ? {
+            ...component,
+            components: getActiveRowComponents(component.components, row, data, form),
+          }
+        : component,
+    );
 export default InputDataGrid;
+export { getActiveRowComponents, getRenderedDataGridRows };
