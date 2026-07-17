@@ -17,6 +17,7 @@ interface RadioGroupProps extends Omit<BaseFieldProps, 'label'> {
   value?: string;
   onChange?: (value: string) => void;
   error?: string;
+  showOptionalText?: boolean;
 }
 
 const RadioGroup = ({
@@ -32,6 +33,7 @@ const RadioGroup = ({
   value,
   onChange,
   error: controlledError,
+  showOptionalText = true,
 }: RadioGroupProps) => {
   const { translate } = useLanguage();
   const { stateValue, error, setStateValue } = useStateField({ statePath });
@@ -52,7 +54,7 @@ const RadioGroup = ({
         id={inputId(statePath)}
         tabIndex={-1}
         legend={
-          <TranslatedLabel required={required} readOnly={readOnly}>
+          <TranslatedLabel required={required} readOnly={readOnly} showOptionalText={showOptionalText}>
             {legend}
           </TranslatedLabel>
         }

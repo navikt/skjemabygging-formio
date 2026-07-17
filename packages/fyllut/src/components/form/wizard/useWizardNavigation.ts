@@ -12,16 +12,17 @@ type StepKind = 'intro' | 'panel' | 'attachment' | 'summary';
 
 const useWizardNavigation = (from: StepKind) => {
   const navigate = useNavigate();
-  const { search } = useLocation();
+  const { search, state } = useLocation();
   const { pagesWithErrors, hideSummary } = useValidation();
   const prefix = from === 'intro' ? '' : '../';
 
   const buildState = useCallback(
     (extra?: WizardNavigationState): WizardNavigationState => ({
+      ...(typeof state === 'object' && state ? state : {}),
       validationErrorPages: Array.from(pagesWithErrors),
       ...extra,
     }),
-    [pagesWithErrors],
+    [pagesWithErrors, state],
   );
 
   const goToIntro = useCallback(() => {

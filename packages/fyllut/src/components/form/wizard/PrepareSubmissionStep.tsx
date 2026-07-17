@@ -1,6 +1,12 @@
 import { Alert, BodyShort, Heading, Link, List, VStack } from '@navikt/ds-react';
 import { DownloadPdfButton, useAppConfig, useLanguages } from '@navikt/skjemadigitalisering-shared-components';
-import { attachmentUtils, dateUtils, localizationUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  attachmentUtils,
+  dateUtils,
+  formioFormsApiUtils,
+  localizationUtils,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import {
   FormButtonRow,
   FormHeader,
@@ -25,11 +31,12 @@ const PrepareSubmissionStep = ({ type }: Props) => {
   const { search } = useLocation();
   const navigate = useNavigate();
   const [downloadState, setDownloadState] = useState<'success' | 'error'>();
+  const navForm = useMemo(() => formioFormsApiUtils.mapFormToNavForm(form), [form]);
 
   const fileName = useMemo(() => `${form.path}-${dateUtils.toLocaleDate().replace(/\./g, '')}.pdf`, [form.path]);
   const attachments = useMemo(
-    () => (submission ? attachmentUtils.getAttachmentsForCoverPage(submission, form) : []),
-    [form, submission],
+    () => (submission ? attachmentUtils.getAttachmentsForCoverPage(submission, navForm) : []),
+    [navForm, submission],
   );
   const showNoSubmissionContent =
     type === 'application' && (!submissionMethod || submissionMethod === 'papernocoverpage');

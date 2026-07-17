@@ -1,6 +1,18 @@
 import { submissionUtils as formComponentUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { PdfComponentProps } from '../../types';
 
+const isSelected = (value: unknown, optionValue: string) => {
+  if (Array.isArray(value)) {
+    return value.includes(optionValue);
+  }
+
+  if (value && typeof value === 'object') {
+    return value[optionValue] === true;
+  }
+
+  return false;
+};
+
 const PdfSelectBoxes = (props: PdfComponentProps) => {
   const { component, submissionPath, submission, translate } = props;
   const { values, label } = component;
@@ -11,7 +23,7 @@ const PdfSelectBoxes = (props: PdfComponentProps) => {
   }
 
   const valueObjects = values
-    .filter((checkbox) => value[checkbox.value] === true)
+    .filter((checkbox) => isSelected(value, checkbox.value))
     .map((checkbox) => translate(checkbox.label));
 
   if (!valueObjects || valueObjects.length === 0) {

@@ -1,6 +1,6 @@
 import { TextField as AkselTextField } from '@navikt/ds-react';
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
-import { ChangeEvent, FocusEvent, HTMLAttributes, useState } from 'react';
+import { ChangeEvent, FocusEvent, FormEvent, HTMLAttributes, useCallback, useEffect, useRef, useState } from 'react';
 import { useStateField } from '../../context/state/useStateField';
 import { toInputFormat, toSubmissionFormat } from '../../formatting/inputFormat';
 import { inputId } from '../../utils/inputId';
@@ -44,6 +44,7 @@ const TextField = ({
   marginBottom,
 }: TextFieldProps) => {
   const { stateValue, error, setStateValue } = useStateField({ statePath });
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const [displayValue, setDisplayValue] = useState(() =>
     toInputFormat(
       stateValue ?? (typeof prefillValue === 'string' && prefillValue.trim() !== '' ? prefillValue : undefined),
@@ -51,20 +52,58 @@ const TextField = ({
     ),
   );
 
+  const updateValue = useCallback(
+    (value: string) => {
+      const nextStateValue = toStateValue ? toStateValue(value) : toSubmissionFormat(value, formatKey);
+      setDisplayValue((previousValue) => (previousValue === value ? previousValue : value));
+      if (!Object.is(stateValue, nextStateValue)) {
+        setStateValue(nextStateValue);
+      }
+    },
+    [formatKey, setStateValue, stateValue, toStateValue],
+  );
+
   const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setDisplayValue(event.target.value);
-    setStateValue(toStateValue ? toStateValue(event.target.value) : toSubmissionFormat(event.target.value, formatKey));
+    updateValue(event.target.value);
   };
 
-  const handleBlur = (_event: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const formatted = toInputFormat(displayValue, formatKey);
-    setDisplayValue(formatted);
-    setStateValue(toStateValue ? toStateValue(displayValue) : toSubmissionFormat(displayValue, formatKey));
+  const handleInput = (event: FormEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    updateValue(event.currentTarget.value);
   };
+
+  const handleBlur = (event: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const rawValue = event.currentTarget.value;
+    const formatted = toInputFormat(rawValue, formatKey);
+    setDisplayValue(formatted);
+    const nextStateValue = toStateValue ? toStateValue(rawValue) : toSubmissionFormat(rawValue, formatKey);
+    if (!Object.is(stateValue, nextStateValue)) {
+      setStateValue(nextStateValue);
+    }
+  };
+
+  useEffect(() => {
+    const inputElement = inputRef.current;
+    if (!inputElement || readOnly) {
+      return;
+    }
+
+    const handleNativeValueChange = (event: Event) => {
+      updateValue((event.currentTarget as HTMLInputElement).value);
+    };
+
+    inputElement.addEventListener('input', handleNativeValueChange);
+    inputElement.addEventListener('change', handleNativeValueChange);
+
+    return () => {
+      inputElement.removeEventListener('input', handleNativeValueChange);
+      inputElement.removeEventListener('change', handleNativeValueChange);
+    };
+  }, [readOnly, updateValue]);
 
   return (
     <FormElementBox marginBottom={marginBottom}>
       <AkselTextField
+        ref={inputRef}
         id={inputId(statePath)}
         label={
           <TranslatedLabel required={required} readOnly={readOnly} showOptionalText={!hideLabel && showOptionalText}>
@@ -74,6 +113,9 @@ const TextField = ({
         description={<TranslatedDescription>{description}</TranslatedDescription>}
         hideLabel={hideLabel}
         value={readOnly ? toInputFormat(stateValue, formatKey) : displayValue}
+        onInput={handleInput}
+        onInputCapture={handleInput}
+        onChangeCapture={handleInput}
         onChange={handleChange}
         onBlur={handleBlur}
         error={error}

@@ -45,6 +45,7 @@ const Identity = ({ statePath, required, readOnly, customLabels, prefillValue }:
         readOnly
         inputMode="numeric"
         formatKey="identityNumber"
+        showOptionalText={false}
       />
     );
   }
@@ -59,6 +60,7 @@ const Identity = ({ statePath, required, readOnly, customLabels, prefillValue }:
           { value: 'nei', label: TEXTS.common.no },
         ]}
         required={required}
+        showOptionalText={false}
       />
       {(identity?.harDuFodselsnummer === 'ja' || showsPrefilledIdentityNumber) && (
         <TextField
@@ -67,6 +69,7 @@ const Identity = ({ statePath, required, readOnly, customLabels, prefillValue }:
           required={required}
           inputMode="numeric"
           formatKey="identityNumber"
+          showOptionalText={false}
         />
       )}
       {identity?.harDuFodselsnummer === 'nei' && (

@@ -31,6 +31,7 @@ import SummaryFormGroup from './components/form-group/SummaryFormGroup';
 import SummaryHtmlElement from './components/html-element/SummaryHtmlElement';
 import SummaryIban from './components/iban/SummaryIban';
 import SummaryIdentity from './components/identity/SummaryIdentity';
+import SummaryImage from './components/image/SummaryImage';
 import SummaryIntroPage from './components/intro-page/SummaryIntroPage';
 import SummaryMaalgruppe from './components/maalgruppe/SummaryMaalgruppe';
 import SummaryMonthPicker from './components/month-picker/SummaryMonthPicker';
@@ -51,7 +52,7 @@ import SummaryTextField from './components/text-field/SummaryTextField';
 import SummaryYear from './components/year/SummaryYear';
 import { FormComponentRegistry, HandleAttachmentDownloadFile, SummaryRendererAppConfig } from './types';
 
-type SupportedSummaryComponentType = Exclude<FormComponentType, 'image' | 'password'>;
+type SupportedSummaryComponentType = Exclude<FormComponentType, 'password'>;
 
 interface Props {
   activeComponents: Component[];
@@ -86,6 +87,7 @@ const RenderSummaryForm = ({
     alertstripe: SummaryAlert,
     navCheckbox: SummaryCheckbox,
     htmlelement: SummaryHtmlElement,
+    image: SummaryImage,
     number: SummaryNumber,
     radiopanel: SummaryRadio,
     select: SummarySelect,

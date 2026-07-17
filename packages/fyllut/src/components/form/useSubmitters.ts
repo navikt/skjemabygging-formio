@@ -118,21 +118,19 @@ const useSubmitters = (form: Form): FormPersistenceHandlers => {
       switch (submissionMethod) {
         case 'digital': {
           const innsendingsId = await ensureInnsendingsId(submission);
-          let redirectLocation: string | undefined = undefined;
-          const setRedirectLocation = (location: string) => (redirectLocation = location);
-
-          await sendInnSoknadApi.updateUtfyltSoknad(
+          const response = await sendInnSoknadApi.postNologinSoknad(
             appConfig,
+            '',
             navForm,
             submission,
             currentLanguage as Language,
+            submissionMethod,
             innsendingsId,
-            setRedirectLocation,
           );
-
-          if (redirectLocation) {
-            window.location.href = redirectLocation;
-          }
+          navigate(
+            { pathname: `/${form.path}/${RECEIPT_KEY}`, search },
+            { state: { receipt: response.receipt, pdfBase64: response.pdfBase64 } },
+          );
           break;
         }
         case 'digitalnologin': {
