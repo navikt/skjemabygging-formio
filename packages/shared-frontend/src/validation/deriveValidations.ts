@@ -76,6 +76,18 @@ const toRules = (
 
 const hasRules = (rules: ValidationRules) => Object.values(rules).some((rule) => rule !== undefined && rule !== false);
 
+const createDescriptor = (
+  component: Component,
+  submissionPath: string,
+  field: string,
+  rules: ValidationRules,
+): ValidationDescriptor => ({
+  submissionPath,
+  field,
+  rules,
+  ...(component.type === 'attachment' ? { component } : {}),
+});
+
 /**
  * The identity component stores a nested object and shows a "do you have an identity number" radio,
  * then either a national-identity-number field or a birthdate field. It emits its own descriptors so
@@ -433,12 +445,10 @@ const collectValidationDescriptors = (
 
       return shouldValidate
         ? [
-            {
-              submissionPath,
-              field: component.label ?? component.key,
-              rules: { required: true, dataFetcherSelection: true },
-              component,
-            },
+            createDescriptor(component, submissionPath, component.label ?? component.key, {
+              required: true,
+              dataFetcherSelection: true,
+            }),
           ]
         : [];
     }
@@ -460,7 +470,9 @@ const collectValidationDescriptors = (
     }
 
     return [
-      ...(hasRules(rules) ? [{ submissionPath, field: component.label ?? component.key, rules, component }] : []),
+      ...(hasRules(rules)
+        ? [createDescriptor(component, submissionPath, component.label ?? component.key, rules)]
+        : []),
       ...collectValidationDescriptors(component.components ?? [], submission, submissionMethod, pageComponents),
     ];
   });
