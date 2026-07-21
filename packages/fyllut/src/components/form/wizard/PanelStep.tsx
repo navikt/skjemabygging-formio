@@ -27,6 +27,11 @@ const PanelStep = ({ form }: { form: Form }) => {
   const { currentPanel, components, isFirst, isLast, goToNext, panels, currentIndex } = useWizardController(panelSlug);
   const { goToIntro, goToPanel, goToSummary, goToError, onStepClick } = useWizardNavigation('panel');
   const hasInitializedDraft = useRef(false);
+  const navigationRole = form.path === 'newrender' ? 'button' : 'link';
+  const nextLabel =
+    submissionMethod === 'digital' && form.path !== 'newrender'
+      ? TEXTS.grensesnitt.navigation.saveAndContinue
+      : TEXTS.grensesnitt.navigation.next;
 
   useEffect(() => {
     if (panels.length > 0 && panelSlug && !panels.some((panel) => panel.key === panelSlug)) {
@@ -138,18 +143,13 @@ const PanelStep = ({ form }: { form: Form }) => {
       <FormSecondaryButtons />
       <FormButtonRow
         previousButton={
-          <FormPrevButton label={translate(TEXTS.grensesnitt.navigation.previous)} onClick={handlePrevious} />
-        }
-        nextButton={
-          <FormNextButton
-            label={translate(
-              submissionMethod === 'digital'
-                ? TEXTS.grensesnitt.navigation.saveAndContinue
-                : TEXTS.grensesnitt.navigation.next,
-            )}
-            onClick={handleNext}
+          <FormPrevButton
+            label={translate(TEXTS.grensesnitt.navigation.previous)}
+            onClick={handlePrevious}
+            role={navigationRole}
           />
         }
+        nextButton={<FormNextButton label={translate(nextLabel)} onClick={handleNext} role={navigationRole} />}
       />
     </WizardStep>
   );

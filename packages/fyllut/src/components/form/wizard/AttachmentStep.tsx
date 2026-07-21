@@ -27,6 +27,11 @@ const AttachmentStep = ({ form }: { form: Form }) => {
   const attachmentPanel = navFormUtils.getActiveAttachmentPanelFromForm(formDefinition, submission);
   const components = useMemo(() => attachmentPanel?.components ?? [], [attachmentPanel]);
   const attachmentPageKey = attachmentPanel?.key ?? ATTACHMENTS_KEY;
+  const navigationRole = form.path === 'newrender' ? 'button' : 'link';
+  const nextLabel =
+    submissionMethod === 'digital' && form.path !== 'newrender'
+      ? TEXTS.grensesnitt.navigation.saveAndContinue
+      : TEXTS.grensesnitt.navigation.next;
   const hasUploadComponents = useMemo(
     () => navFormUtils.flattenComponents(components).some((component) => component.type === 'attachment'),
     [components],
@@ -79,18 +84,10 @@ const AttachmentStep = ({ form }: { form: Form }) => {
               <FormPrevButton
                 label={translate(TEXTS.grensesnitt.navigation.previous)}
                 onClick={() => goToPanel(panels[panels.length - 1]?.key)}
+                role={navigationRole}
               />
             }
-            nextButton={
-              <FormNextButton
-                label={translate(
-                  submissionMethod === 'digital'
-                    ? TEXTS.grensesnitt.navigation.saveAndContinue
-                    : TEXTS.grensesnitt.navigation.next,
-                )}
-                onClick={handleNext}
-              />
-            }
+            nextButton={<FormNextButton label={translate(nextLabel)} onClick={handleNext} role={navigationRole} />}
           />
         </>
       )}

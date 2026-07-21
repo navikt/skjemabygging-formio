@@ -25,6 +25,11 @@ const IntroPage = ({ onStart }: Props) => {
   const [selfDeclarationError, setSelfDeclarationError] = useState<string | undefined>();
   const { tokenExpiration, getNologinToken } = useNologinToken();
   const hasInitializedDraft = useRef(false);
+  const navigationRole = form.path === 'newrender' ? 'button' : 'link';
+  const nextLabel =
+    submissionMethod === 'digital' && form.path !== 'newrender'
+      ? TEXTS.grensesnitt.navigation.saveAndContinue
+      : TEXTS.grensesnitt.navigation.next;
 
   const introPage = form.introPage;
   const isDynamic = introPage?.enabled;
@@ -161,13 +166,10 @@ const IntroPage = ({ onStart }: Props) => {
       <FormButtonRow
         nextButton={
           <FormNextButton
-            label={translate(
-              submissionMethod === 'digital'
-                ? TEXTS.grensesnitt.navigation.saveAndContinue
-                : TEXTS.grensesnitt.navigation.next,
-            )}
+            label={translate(nextLabel)}
             loading={status === 'saving'}
             onClick={handleStart}
+            role={navigationRole}
           />
         }
       />

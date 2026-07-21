@@ -9,6 +9,16 @@ const languagesInOriginalLanguage: Record<string, string> = {
   pl: 'Polskie',
 };
 const FYLLUT_BASE_PATH = '/fyllut';
+const STEPPER_OPEN_STATE_STORAGE_KEY = 'fyllut:new-render:stepper-open';
+
+const persistStepperOpenStateForReload = () => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  const isStepperOpen = document.querySelector('.aksel-form-progress__button[data-state="open"]') !== null;
+  window.sessionStorage.setItem(STEPPER_OPEN_STATE_STORAGE_KEY, String(isStepperOpen));
+};
 
 const FormLanguageSelector = () => {
   const { currentLanguage, availableLanguages } = useLanguages();
@@ -67,7 +77,7 @@ const FormLanguageSelector = () => {
             }}
           >
             {options.map((option) => (
-              <a key={option.href} href={option.href}>
+              <a key={option.href} href={option.href} onClick={persistStepperOpenStateForReload}>
                 {option.label}
               </a>
             ))}

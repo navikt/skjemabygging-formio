@@ -7,19 +7,12 @@ const STEPPER_OPEN_STATE_STORAGE_KEY = 'fyllut:new-render:stepper-open';
 
 const readPersistedOpenState = () => {
   if (typeof window === 'undefined') {
-    return persistedOpenState;
+    return false;
   }
 
   const storedValue = window.sessionStorage.getItem(STEPPER_OPEN_STATE_STORAGE_KEY);
-  return storedValue === null ? persistedOpenState : storedValue === 'true';
-};
-
-const persistOpenState = (nextOpen: boolean) => {
-  persistedOpenState = nextOpen;
-
-  if (typeof window !== 'undefined') {
-    window.sessionStorage.setItem(STEPPER_OPEN_STATE_STORAGE_KEY, String(nextOpen));
-  }
+  window.sessionStorage.removeItem(STEPPER_OPEN_STATE_STORAGE_KEY);
+  return storedValue === 'true';
 };
 
 interface Props {
@@ -42,6 +35,10 @@ const WizardStepContent = ({ form, activeIndex, pageTitle, onStepClick, children
     { key: SUMMARY_KEY, label: TEXTS.statiske.summaryPage.title },
   ];
   const [isStepperOpen, setIsStepperOpen] = useState(readPersistedOpenState);
+  const handleStepClick = (key: string) => {
+    setIsStepperOpen(false);
+    onStepClick(key);
+  };
 
   return (
     <StepperProvider isOpen={isStepperOpen}>
@@ -50,18 +47,13 @@ const WizardStepContent = ({ form, activeIndex, pageTitle, onStepClick, children
         activeIndex={activeIndex}
         leadingSteps={[{ key: INTRO_KEY, label: TEXTS.grensesnitt.introPage.title }]}
         trailingSteps={trailingSteps}
-        onStepClick={onStepClick}
+        onStepClick={handleStepClick}
         open={isStepperOpen}
-        onOpenChange={(nextOpen) => {
-          persistOpenState(nextOpen);
-          setIsStepperOpen(nextOpen);
-        }}
+        onOpenChange={setIsStepperOpen}
       />
       {children}
     </StepperProvider>
   );
 };
-
-let persistedOpenState = false;
 
 export default WizardStep;

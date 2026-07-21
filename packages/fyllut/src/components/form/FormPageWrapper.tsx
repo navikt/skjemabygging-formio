@@ -76,13 +76,14 @@ const enrichComponentsWithPrefillValues = (components: Component[] = [], prefill
 
 const FormPageWrapper = () => {
   const { formPath, '*': routePath } = useParams();
-  const { search } = useLocation();
+  const { search, state } = useLocation();
   const navigate = useNavigate();
   const [translations, setTranslations] = useState<I18nTranslations>();
   const [loading, setLoading] = useState<boolean>(true);
   const [form, setForm] = useState<Form>();
   const [initialSubmission, setInitialSubmission] = useState<Submission | undefined>();
   const [initialInnsendingsId, setInitialInnsendingsId] = useState<string | undefined>();
+  const [loadedLocationKey, setLoadedLocationKey] = useState<string | undefined>();
   const deletedDraftIdRef = useRef<string | undefined>(undefined);
   const { get } = useFormsApiForms();
   const appConfig = useAppConfig();
@@ -91,6 +92,7 @@ const FormPageWrapper = () => {
     !!formPath && ((config?.newRenderForms ?? []).includes('*') || (config?.newRenderForms ?? []).includes(formPath));
   const useLegacyPageForNewRenderer = shouldUseLegacyPageForNewRenderer(routePath);
   const navForm = useMemo(() => (form ? formioFormsApiUtils.mapFormToNavForm(form) : undefined), [form]);
+  const locationKey = `${formPath ?? ''}|${routePath ?? ''}|${search}`;
   const missingSubmissionMethodOnDirectRoute =
     useNewRenderer && !useLegacyPageForNewRenderer && !!routePath && !new URLSearchParams(search).has('sub');
 
@@ -147,6 +149,10 @@ const FormPageWrapper = () => {
     const searchParams = new URLSearchParams(search);
     const innsendingsId = searchParams.get('innsendingsId') ?? undefined;
     const hasDeletedDraftFlag = searchParams.get(DELETED_DRAFT_QUERY_PARAM) === '1';
+    const stateInitialSubmission =
+      typeof state === 'object' && state && state.preserveInitialSubmission === true && 'initialSubmission' in state
+        ? state.initialSubmission
+        : undefined;
 
     if (submissionMethod !== 'digital' || !innsendingsId) {
       setInitialInnsendingsId(undefined);
@@ -174,10 +180,16 @@ const FormPageWrapper = () => {
       return;
     }
 
+    if (stateInitialSubmission) {
+      setInitialInnsendingsId(innsendingsId);
+      setInitialSubmission(stateInitialSubmission as Submission);
+      return;
+    }
+
     const response = await sendInnSoknadApi.getSoknad(innsendingsId, appConfig);
     setInitialInnsendingsId(innsendingsId);
     setInitialSubmission(response?.hoveddokumentVariant?.document?.data);
-  }, [appConfig, search, submissionMethod]);
+  }, [appConfig, search, state, submissionMethod]);
 
   useEffect(() => {
     if (attachmentPageEnabled === false) {
@@ -193,16 +205,20 @@ const FormPageWrapper = () => {
     (async () => {
       try {
         setLoading(true);
+        setLoadedLocationKey(undefined);
+        setInitialSubmission(undefined);
+        setInitialInnsendingsId(undefined);
         await loadForm();
         await Promise.all([loadTranslations(), loadInitialSubmission()]);
       } catch (_e) {
         setTranslations(undefined);
         setForm(undefined);
       } finally {
+        setLoadedLocationKey(locationKey);
         setLoading(false);
       }
     })();
-  }, [loadForm, loadInitialSubmission, loadTranslations, missingSubmissionMethodOnDirectRoute]);
+  }, [loadForm, loadInitialSubmission, loadTranslations, locationKey, missingSubmissionMethodOnDirectRoute]);
 
   useEffect(() => {
     const metaPropOgTitle = document.querySelector('meta[property="og:title"]');
@@ -227,7 +243,7 @@ const FormPageWrapper = () => {
     };
   }, [form]);
 
-  if (loading) {
+  if (loading || loadedLocationKey !== locationKey) {
     return <FormPageSkeleton />;
   }
 

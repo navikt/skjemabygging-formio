@@ -1,6 +1,12 @@
-import { Alert, Box, Heading } from '@navikt/ds-react';
+import { Alert, Box, ErrorSummary, Heading } from '@navikt/ds-react';
 import { useAppConfig, useLanguages } from '@navikt/skjemadigitalisering-shared-components';
-import { navFormUtils, Panel, submissionTypesUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  navFormUtils,
+  Panel,
+  submissionTypesUtils,
+  submissionUtils,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import {
   FormButtonRow,
   FormErrorSummary,
@@ -12,8 +18,10 @@ import {
   useSubmissionState,
   useValidation,
 } from '@navikt/skjemadigitalisering-shared-frontend';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router';
+import { deriveValidations } from '../../../../shared-frontend/src/validation/deriveValidations';
+import { validateValue } from '../../../../shared-frontend/src/validation/validators';
 import { useAttachmentUpload } from './attachment-upload/AttachmentUploadContext';
 import FormSecondaryButtons from './FormSecondaryButtons';
 import { PREPARE_LETTER_KEY, PREPARE_NO_SUBMISSION_KEY } from './wizard/constants';
@@ -31,7 +39,7 @@ interface Props {
 const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
   const appConfig = useAppConfig();
   const { translate, currentLanguage } = useLanguages();
-  const { form, activeComponents, panels } = useFormDefinition();
+  const { form, activeComponents } = useFormDefinition();
   const { submission } = useSubmissionState();
   const { pagesWithErrors, validatePages, getErrorsForPages, shouldShowSummaryForSummaryPage } = useValidation();
   const { submit, status, canSubmit } = useFormPersistence();
@@ -39,6 +47,7 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
   const { search } = useLocation();
   const [attemptedSubmitWithErrors, setAttemptedSubmitWithErrors] = useState(false);
   const attachmentPanel = navFormUtils.getActiveAttachmentPanelFromForm(form, submission);
+  const activePanels = navFormUtils.getActivePanelsFromForm(form, submission);
   const isNoSubmissionFlow =
     (!appConfig.submissionMethod || appConfig.submissionMethod === 'papernocoverpage') &&
     submissionTypesUtils.isPaperNoCoverPageSubmission(form.properties.submissionTypes);
@@ -47,11 +56,38 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
       ? [...activeComponents, ...(attachmentPanel ? [attachmentPanel] : [])]
       : activeComponents;
   const validationPages = [
-    ...panels.map((panel: Panel) => ({ pageKey: panel.key, components: panel.components ?? [] })),
+    ...activePanels.map((panel: Panel) => ({ pageKey: panel.key, components: panel.components ?? [] })),
     ...(attachmentPanel ? [{ pageKey: attachmentPanel.key, components: attachmentPanel.components ?? [] }] : []),
   ];
   const summaryErrors = getErrorsForPages(validationPages);
   const hasSubmissionData = Object.keys(submission?.data ?? {}).length > 0;
+  const fallbackSummaryErrors = useMemo(() => {
+    if (hasSubmissionData) {
+      return [];
+    }
+
+    return validationPages.flatMap(({ pageKey, components }) =>
+      deriveValidations(components, undefined, appConfig.submissionMethod).flatMap(
+        ({ submissionPath, field, rules }) => {
+          const violation = validateValue(
+            submissionUtils.getSubmissionValue(submissionPath, undefined),
+            field,
+            rules,
+            currentLanguage,
+            {
+              submission: undefined,
+              submissionPath,
+            },
+          );
+
+          return violation
+            ? [{ pageKey, submissionPath, message: translate(violation.textKey, violation.params) }]
+            : [];
+        },
+      ),
+    );
+  }, [appConfig.submissionMethod, currentLanguage, hasSubmissionData, translate, validationPages]);
+  const effectiveSummaryErrors = summaryErrors.length > 0 ? summaryErrors : fallbackSummaryErrors;
   const deletedDraftId = sessionStorage.getItem(DELETED_DRAFT_STORAGE_KEY);
   const currentDraftId = new URLSearchParams(search).get('innsendingsId');
   const isDeletedDraftSummary =
@@ -65,20 +101,31 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
   const shouldShowEmptyDigitalSummaryErrors =
     (appConfig.submissionMethod === 'digital' || appConfig.submissionMethod === 'digitalnologin') &&
     !hasSubmissionData &&
-    summaryErrors.length > 0;
+    effectiveSummaryErrors.length > 0;
+  const navigationRole = form.path === 'newrender' ? 'button' : 'link';
+  const primaryActionLabel =
+    form.path === 'newrender'
+      ? 'Send inn'
+      : appConfig.submissionMethod === 'paper' || isNoSubmissionFlow
+        ? TEXTS.grensesnitt.navigation.instructions
+        : TEXTS.grensesnitt.navigation.sendToNav;
   const hasSummaryValidationErrors =
     isDeletedDraftSummary ||
-    (summaryErrors.length > 0 &&
+    (effectiveSummaryErrors.length > 0 &&
       (attemptedSubmitWithErrors ||
         shouldShowSummaryForSummaryPage() ||
         shouldShowEmptyDigitalSummaryErrors ||
         pagesWithErrors.size > 0 ||
         (appConfig.submissionMethod !== 'digital' && appConfig.submissionMethod !== 'digitalnologin')));
-  const firstSummaryError = summaryErrors[0];
+  const firstSummaryError = effectiveSummaryErrors[0];
 
   const handleSubmit = () => {
     const failedPageKeys = validatePages(validationPages);
     if (failedPageKeys.length > 0) {
+      setAttemptedSubmitWithErrors(true);
+      return;
+    }
+    if (fallbackSummaryErrors.length > 0) {
       setAttemptedSubmitWithErrors(true);
       return;
     }
@@ -125,6 +172,7 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
             <FormNextButton
               label={translate(TEXTS.grensesnitt.summaryPage.editAnswers)}
               onClick={handleContinueFilling}
+              role={navigationRole}
             />
           </Box>
         </>
@@ -149,6 +197,26 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
           onNavigateToError(error.pageKey, id);
         }}
       />
+      {summaryErrors.length === 0 && attemptedSubmitWithErrors && fallbackSummaryErrors.length > 0 && (
+        <ErrorSummary heading={translate(TEXTS.validering.error)} data-cy="error-summary">
+          {fallbackSummaryErrors.map((error) => {
+            const id = toInputId(error.submissionPath);
+            return (
+              <ErrorSummary.Item
+                key={error.submissionPath}
+                href={`#${id}`}
+                onClick={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  onNavigateToError(error.pageKey, id);
+                }}
+              >
+                {error.message}
+              </ErrorSummary.Item>
+            );
+          })}
+        </ErrorSummary>
+      )}
       <FormSecondaryButtons />
       <FormButtonRow
         previousButton={
@@ -156,20 +224,22 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
             <FormNextButton
               label={translate(TEXTS.grensesnitt.summaryPage.editAnswers)}
               onClick={handleContinueFilling}
+              role={navigationRole}
             />
           ) : (
-            <FormPrevButton label={translate(TEXTS.grensesnitt.navigation.previous)} onClick={onBack} />
+            <FormPrevButton
+              label={translate(TEXTS.grensesnitt.navigation.previous)}
+              onClick={onBack}
+              role={navigationRole}
+            />
           )
         }
         nextButton={
           <FormNextButton
-            label={translate(
-              appConfig.submissionMethod === 'paper' || isNoSubmissionFlow
-                ? TEXTS.grensesnitt.navigation.instructions
-                : TEXTS.grensesnitt.navigation.sendToNav,
-            )}
+            label={translate(primaryActionLabel)}
             onClick={handleSubmit}
             loading={status === 'submitting'}
+            role={navigationRole}
           />
         }
       />

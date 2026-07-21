@@ -78,6 +78,7 @@ const useSubmitters = (form: Form, initialInnsendingsId?: string): FormPersisten
               : {
                   ...(typeof state === 'object' && state ? state : {}),
                   initialSubmission: submission,
+                  preserveInitialSubmission: true,
                 },
         },
       );
@@ -156,6 +157,21 @@ const useSubmitters = (form: Form, initialInnsendingsId?: string): FormPersisten
           const innsendingsId = await ensureInnsendingsId(submission);
           if (!innsendingsId) {
             return;
+          }
+          if (form.path === 'newrender') {
+            let redirectLocation: string | undefined = undefined;
+            await sendInnSoknadApi.updateUtfyltSoknad(
+              appConfig,
+              navForm,
+              submission,
+              currentLanguage as Language,
+              innsendingsId,
+              (location) => (redirectLocation = location),
+            );
+            if (redirectLocation) {
+              window.location.href = redirectLocation;
+            }
+            break;
           }
           const response = await sendInnSoknadApi.postNologinSoknad(
             appConfig,

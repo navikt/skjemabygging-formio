@@ -90,7 +90,9 @@ const RenderForm = ({ form, initialSubmission: initialSubmissionProp, initialInn
       ? state.validationErrorPages
       : undefined;
   const initialSubmission =
-    typeof state === 'object' && state && 'initialSubmission' in state ? state.initialSubmission : undefined;
+    typeof state === 'object' && state && state.preserveInitialSubmission === true && 'initialSubmission' in state
+      ? state.initialSubmission
+      : undefined;
   const akselLocale = currentLanguage === 'en' ? en : currentLanguage === 'nn' ? nn : nb;
 
   return (

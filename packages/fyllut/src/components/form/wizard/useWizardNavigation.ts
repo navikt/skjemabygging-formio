@@ -8,6 +8,7 @@ interface WizardNavigationState {
   focusId?: string;
   validationErrorPages?: string[];
   initialSubmission?: Submission;
+  preserveInitialSubmission?: true;
 }
 
 type StepKind = 'intro' | 'panel' | 'attachment' | 'summary';
@@ -23,6 +24,7 @@ const useWizardNavigation = (from: StepKind) => {
     (extra?: WizardNavigationState): WizardNavigationState => ({
       ...(typeof state === 'object' && state ? state : {}),
       initialSubmission: submission,
+      preserveInitialSubmission: true,
       validationErrorPages: Array.from(pagesWithErrors),
       ...extra,
     }),
