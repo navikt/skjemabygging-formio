@@ -193,8 +193,8 @@ const FormPageWrapper = () => {
     (async () => {
       try {
         setLoading(true);
-        const loadedForm = await loadForm();
-        await Promise.all([loadTranslations(), loadInitialSubmission(loadedForm)]);
+        await loadForm();
+        await Promise.all([loadTranslations(), loadInitialSubmission()]);
       } catch (_e) {
         setTranslations(undefined);
         setForm(undefined);

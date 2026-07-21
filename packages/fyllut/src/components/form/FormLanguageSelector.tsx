@@ -8,6 +8,7 @@ const languagesInOriginalLanguage: Record<string, string> = {
   en: 'English',
   pl: 'Polskie',
 };
+const FYLLUT_BASE_PATH = '/fyllut';
 
 const FormLanguageSelector = () => {
   const { currentLanguage, availableLanguages } = useLanguages();
@@ -32,7 +33,7 @@ const FormLanguageSelector = () => {
         params.set('lang', languageCode);
 
         return {
-          href: `${pathname}?${params.toString()}`,
+          href: `${FYLLUT_BASE_PATH}${pathname}?${params.toString()}`,
           label: languagesInOriginalLanguage[languageCode] ?? languageCode,
         };
       });

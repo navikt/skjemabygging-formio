@@ -3,6 +3,25 @@ import { FormHeader, FormStepper, StepperProvider } from '@navikt/skjemadigitali
 import { ReactNode, useState } from 'react';
 import { ATTACHMENTS_KEY, INTRO_KEY, SUMMARY_KEY } from './constants';
 
+const STEPPER_OPEN_STATE_STORAGE_KEY = 'fyllut:new-render:stepper-open';
+
+const readPersistedOpenState = () => {
+  if (typeof window === 'undefined') {
+    return persistedOpenState;
+  }
+
+  const storedValue = window.sessionStorage.getItem(STEPPER_OPEN_STATE_STORAGE_KEY);
+  return storedValue === null ? persistedOpenState : storedValue === 'true';
+};
+
+const persistOpenState = (nextOpen: boolean) => {
+  persistedOpenState = nextOpen;
+
+  if (typeof window !== 'undefined') {
+    window.sessionStorage.setItem(STEPPER_OPEN_STATE_STORAGE_KEY, String(nextOpen));
+  }
+};
+
 interface Props {
   form: Form;
   activeIndex: number;
@@ -22,7 +41,7 @@ const WizardStepContent = ({ form, activeIndex, pageTitle, onStepClick, children
     ...(navFormUtils.hasAttachment(form) ? [{ key: ATTACHMENTS_KEY, label: TEXTS.statiske.attachment.title }] : []),
     { key: SUMMARY_KEY, label: TEXTS.statiske.summaryPage.title },
   ];
-  const [isStepperOpen, setIsStepperOpen] = useState(persistedOpenState);
+  const [isStepperOpen, setIsStepperOpen] = useState(readPersistedOpenState);
 
   return (
     <StepperProvider isOpen={isStepperOpen}>
@@ -34,7 +53,7 @@ const WizardStepContent = ({ form, activeIndex, pageTitle, onStepClick, children
         onStepClick={onStepClick}
         open={isStepperOpen}
         onOpenChange={(nextOpen) => {
-          persistedOpenState = nextOpen;
+          persistOpenState(nextOpen);
           setIsStepperOpen(nextOpen);
         }}
       />
