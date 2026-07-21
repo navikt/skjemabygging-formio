@@ -2,12 +2,22 @@ import { SubmissionData } from '@navikt/skjemadigitalisering-shared-domain';
 
 type SubmissionPathPart = string | number;
 
-const parseSubmissionPath = (path: string): SubmissionPathPart[] =>
-  path
-    .replace(/\[(\d+)]/g, '.$1')
-    .split('.')
-    .filter(Boolean)
-    .map((part) => (/^\d+$/.test(part) ? Number(part) : part));
+const parseSubmissionPath = (path: string): SubmissionPathPart[] => {
+  const parts: SubmissionPathPart[] = [];
+
+  for (const segment of path.split('.').filter(Boolean)) {
+    const matches = segment.matchAll(/([^[\]]+)|\[(\d+)\]/g);
+    for (const match of matches) {
+      if (match[1]) {
+        parts.push(match[1]);
+      } else if (match[2]) {
+        parts.push(Number(match[2]));
+      }
+    }
+  }
+
+  return parts;
+};
 
 const isObjectLike = (value: unknown): value is SubmissionData =>
   typeof value === 'object' && value !== null && !Array.isArray(value);

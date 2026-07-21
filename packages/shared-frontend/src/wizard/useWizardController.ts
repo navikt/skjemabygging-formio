@@ -1,5 +1,5 @@
 import { Component, Panel } from '@navikt/skjemadigitalisering-shared-domain';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useFormDefinition } from '../context/form-definition/FormDefinitionContext';
 import { useValidation } from '../context/validation/ValidationContext';
 
@@ -22,40 +22,28 @@ interface WizardController {
 const useWizardController = (requestedPanelKey?: string): WizardController => {
   const { panels } = useFormDefinition();
   const { validatePage, hideSummary } = useValidation();
-  const [localCurrentIndex, setLocalCurrentIndex] = useState(0);
   const requestedIndex = requestedPanelKey ? panels.findIndex((panel) => panel.key === requestedPanelKey) : -1;
-  const currentIndex = requestedIndex >= 0 ? requestedIndex : localCurrentIndex;
+  const currentIndex = requestedIndex >= 0 ? requestedIndex : 0;
 
   const currentPanel = panels[currentIndex];
   const components = useMemo(() => currentPanel?.components ?? [], [currentPanel]);
 
   const goToNext = useCallback(() => {
     if (!currentPanel) return false;
-    const valid = validatePage(currentPanel.key, components);
-    if (valid && currentIndex < panels.length - 1) {
-      if (!requestedPanelKey) {
-        setLocalCurrentIndex((index) => index + 1);
-      }
-    }
-    return valid;
-  }, [currentPanel, validatePage, components, currentIndex, panels.length, requestedPanelKey]);
+    return validatePage(currentPanel.key, components);
+  }, [currentPanel, validatePage, components]);
 
   const goToPrevious = useCallback(() => {
     hideSummary();
-    if (!requestedPanelKey) {
-      setLocalCurrentIndex((index) => Math.max(0, index - 1));
-    }
-  }, [hideSummary, requestedPanelKey]);
+  }, [hideSummary]);
 
   const goTo = useCallback(
     (panelKey: string) => {
-      const index = panels.findIndex((panel) => panel.key === panelKey);
-      if (index >= 0 && !requestedPanelKey) {
+      if (panels.some((panel) => panel.key === panelKey)) {
         hideSummary();
-        setLocalCurrentIndex(index);
       }
     },
-    [panels, hideSummary, requestedPanelKey],
+    [panels, hideSummary],
   );
 
   return {
