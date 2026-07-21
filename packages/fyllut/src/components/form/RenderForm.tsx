@@ -15,6 +15,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-frontend';
 import { useLocation } from 'react-router';
 import { AttachmentUploadProvider } from './attachment-upload/AttachmentUploadContext';
+import FormLanguageSelector from './FormLanguageSelector';
 import { NologinTokenProvider } from './nologin-token/NologinTokenContext';
 import SubmissionMethodSelection from './SubmissionMethodSelection';
 import useSubmitters from './useSubmitters';
@@ -34,10 +35,13 @@ const RenderFormContent = ({
   currentLanguage,
 }: Props & { initialPagesWithErrors?: string[]; currentLanguage: string }) => {
   const { submissionMethod, logger, config } = useAppConfig();
+  const { pathname } = useLocation();
   const persistence = useSubmitters(form, initialInnsendingsId);
   const hydratedInitialSubmission = applyPrefilledValuesToSubmission(form, initialSubmission, currentLanguage);
+  const defaultSubmissionMethod = submissionMethod === undefined && pathname !== `/${form.path}` ? 'paper' : undefined;
   const effectiveSubmissionMethod =
     submissionMethod ??
+    defaultSubmissionMethod ??
     (submissionTypesUtils.isPaperSubmissionOnly(form.properties.submissionTypes)
       ? 'paper'
       : submissionTypesUtils.isDigitalSubmissionOnly(form.properties.submissionTypes)
@@ -59,6 +63,7 @@ const RenderFormContent = ({
             <FormPersistenceProvider saveDraft={persistence.saveDraft} submitForm={persistence.submitForm}>
               <AttachmentUploadProvider>
                 <FormLayout>
+                  <FormLanguageSelector />
                   {shouldRenderWizard ? (
                     <Wizard form={form} />
                   ) : (

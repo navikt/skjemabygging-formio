@@ -19,17 +19,13 @@ import useFormsApiForms from '../../api/useFormsApiForms';
 import { loadAllTranslations } from '../../api/useTranslations';
 import { NotFoundPage } from '../errors/NotFoundPage';
 import SubmissionMethodNotAllowed from '../SubmissionMethodNotAllowed';
-import {
-  ActiveTask,
-  buildDigitalFormSearch,
-  resolveDigitalDraftResume,
-  shouldUseLegacyPageForNewRenderer,
-} from './digitalDraftUtils';
+import { shouldUseLegacyPageForNewRenderer } from './digitalDraftUtils';
 import FormPageSkeleton from './FormPageSkeleton';
 import RenderForm from './RenderForm';
 
 const DELETED_DRAFT_STORAGE_KEY = 'fyllut:new-render:deleted-draft-id';
 const DELETED_DRAFT_QUERY_PARAM = 'deletedDraft';
+const DEFAULT_SUBMISSION_METHOD = 'paper';
 
 const collectPrefillKeys = (components: Component[] = []): string[] =>
   components.flatMap((component) => [
@@ -43,6 +39,12 @@ const collectPrefillKeys = (components: Component[] = []): string[] =>
 
 const toComponentPrefillValue = (value: unknown): string | object | undefined =>
   typeof value === 'string' || (typeof value === 'object' && value !== null) ? value : undefined;
+
+const buildSearchWithSubmissionMethod = (search: string, submissionMethod: string) => {
+  const searchParams = new URLSearchParams(search);
+  searchParams.set('sub', submissionMethod);
+  return `?${searchParams.toString()}`;
+};
 
 const enrichComponentsWithPrefillValues = (components: Component[] = [], prefillData?: SubmissionData): Component[] =>
   components.map((component) => {
@@ -89,6 +91,21 @@ const FormPageWrapper = () => {
     !!formPath && ((config?.newRenderForms ?? []).includes('*') || (config?.newRenderForms ?? []).includes(formPath));
   const useLegacyPageForNewRenderer = shouldUseLegacyPageForNewRenderer(routePath);
   const navForm = useMemo(() => (form ? formioFormsApiUtils.mapFormToNavForm(form) : undefined), [form]);
+  const missingSubmissionMethodOnDirectRoute =
+    useNewRenderer && !useLegacyPageForNewRenderer && !!routePath && !new URLSearchParams(search).has('sub');
+
+  useEffect(() => {
+    if (!missingSubmissionMethodOnDirectRoute) {
+      return;
+    }
+
+    navigate(
+      {
+        search: buildSearchWithSubmissionMethod(search, DEFAULT_SUBMISSION_METHOD),
+      },
+      { replace: true },
+    );
+  }, [missingSubmissionMethodOnDirectRoute, navigate, search]);
 
   const loadTranslations = useCallback(async () => {
     if (!formPath) {
@@ -100,19 +117,6 @@ const FormPageWrapper = () => {
       setTranslations(translationsData);
     }
   }, [formPath]);
-
-  const getActiveTasks = useCallback(
-    async (skjemanummer?: string): Promise<ActiveTask[]> => {
-      if (!skjemanummer) {
-        return [];
-      }
-
-      return (
-        (await http?.get<ActiveTask[]>(`${baseUrl}/api/send-inn/aktive-opprettede-soknader/${skjemanummer}`)) ?? []
-      );
-    },
-    [baseUrl, http],
-  );
 
   const loadForm = useCallback(async () => {
     if (!formPath) {
@@ -139,74 +143,41 @@ const FormPageWrapper = () => {
     }
   }, [baseUrl, formPath, get, http, submissionMethod]);
 
-  const loadInitialSubmission = useCallback(
-    async (loadedForm?: Form) => {
-      const searchParams = new URLSearchParams(search);
-      let innsendingsId = searchParams.get('innsendingsId') ?? undefined;
-      const hasDeletedDraftFlag = searchParams.get(DELETED_DRAFT_QUERY_PARAM) === '1';
+  const loadInitialSubmission = useCallback(async () => {
+    const searchParams = new URLSearchParams(search);
+    const innsendingsId = searchParams.get('innsendingsId') ?? undefined;
+    const hasDeletedDraftFlag = searchParams.get(DELETED_DRAFT_QUERY_PARAM) === '1';
 
-      if (submissionMethod !== 'digital' || !innsendingsId) {
-        const draftResumeAction =
-          submissionMethod === 'digital' && loadedForm && useNewRenderer && !useLegacyPageForNewRenderer
-            ? resolveDigitalDraftResume(search, await getActiveTasks(loadedForm.properties.skjemanummer))
-            : { type: 'none' as const };
+    if (submissionMethod !== 'digital' || !innsendingsId) {
+      setInitialInnsendingsId(undefined);
+      setInitialSubmission(undefined);
+      return;
+    }
 
-        if (draftResumeAction.type === 'resume') {
-          innsendingsId = draftResumeAction.innsendingsId;
-          navigate(
-            {
-              search: buildDigitalFormSearch(search, {
-                innsendingsId: draftResumeAction.innsendingsId,
-              }),
-            },
-            { replace: true },
-          );
-        } else if (draftResumeAction.type === 'active-tasks' && loadedForm) {
-          setInitialInnsendingsId(undefined);
-          setInitialSubmission(undefined);
-          navigate(
-            {
-              pathname: `/${loadedForm.path}/paabegynt`,
-              search: buildDigitalFormSearch(search),
-            },
-            { replace: true },
-          );
-        } else {
-          setInitialInnsendingsId(undefined);
-          setInitialSubmission(undefined);
-        }
+    if (hasDeletedDraftFlag) {
+      deletedDraftIdRef.current = innsendingsId;
+      setInitialInnsendingsId(undefined);
+      setInitialSubmission(undefined);
+      return;
+    }
 
-        if (!innsendingsId) {
-          return;
-        }
-      }
+    if (sessionStorage.getItem(DELETED_DRAFT_STORAGE_KEY) === innsendingsId) {
+      deletedDraftIdRef.current = innsendingsId;
+      setInitialInnsendingsId(undefined);
+      setInitialSubmission(undefined);
+      return;
+    }
 
-      if (hasDeletedDraftFlag) {
-        deletedDraftIdRef.current = innsendingsId;
-        setInitialInnsendingsId(undefined);
-        setInitialSubmission(undefined);
-        return;
-      }
+    if (deletedDraftIdRef.current === innsendingsId) {
+      setInitialInnsendingsId(undefined);
+      setInitialSubmission(undefined);
+      return;
+    }
 
-      if (sessionStorage.getItem(DELETED_DRAFT_STORAGE_KEY) === innsendingsId) {
-        deletedDraftIdRef.current = innsendingsId;
-        setInitialInnsendingsId(undefined);
-        setInitialSubmission(undefined);
-        return;
-      }
-
-      if (deletedDraftIdRef.current === innsendingsId) {
-        setInitialInnsendingsId(undefined);
-        setInitialSubmission(undefined);
-        return;
-      }
-
-      const response = await sendInnSoknadApi.getSoknad(innsendingsId, appConfig);
-      setInitialInnsendingsId(innsendingsId);
-      setInitialSubmission(response?.hoveddokumentVariant?.document?.data);
-    },
-    [appConfig, getActiveTasks, navigate, search, submissionMethod, useLegacyPageForNewRenderer, useNewRenderer],
-  );
+    const response = await sendInnSoknadApi.getSoknad(innsendingsId, appConfig);
+    setInitialInnsendingsId(innsendingsId);
+    setInitialSubmission(response?.hoveddokumentVariant?.document?.data);
+  }, [appConfig, search, submissionMethod]);
 
   useEffect(() => {
     if (attachmentPageEnabled === false) {
@@ -215,6 +186,10 @@ const FormPageWrapper = () => {
   }, [attachmentPageEnabled, setAttachmentPageEnabled]);
 
   useEffect(() => {
+    if (missingSubmissionMethodOnDirectRoute) {
+      return;
+    }
+
     (async () => {
       try {
         setLoading(true);
@@ -227,7 +202,7 @@ const FormPageWrapper = () => {
         setLoading(false);
       }
     })();
-  }, [loadForm, loadInitialSubmission, loadTranslations]);
+  }, [loadForm, loadInitialSubmission, loadTranslations, missingSubmissionMethodOnDirectRoute]);
 
   useEffect(() => {
     const metaPropOgTitle = document.querySelector('meta[property="og:title"]');

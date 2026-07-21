@@ -27,6 +27,11 @@ const SubmissionMethodSelection = ({ form }: Props) => {
     (submissionMethod: SubmissionMethod) => {
       const searchParams = new URLSearchParams(location.search);
       searchParams.set('sub', submissionMethod);
+      if (submissionMethod === 'digital') {
+        searchParams.set('forceMellomlagring', 'true');
+      } else {
+        searchParams.delete('forceMellomlagring');
+      }
       return `?${searchParams.toString()}`;
     },
     [location.search],

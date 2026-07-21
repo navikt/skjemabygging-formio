@@ -97,16 +97,11 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
             logger.debug('Static pdf', { formPath });
           } else if (submissionTypesUtils.containsMultipleStandardSubmissionTypes(submissionTypes)) {
             const targetUrl = `${config.fyllutPath}/${formPath}`;
-            if (req.baseUrl !== targetUrl) {
-              const logMeta = { formPath, targetUrl, baseUrl: req.baseUrl };
-              logger.info('Redirecting to intro page since submission query param is missing', logMeta);
-              return res.redirect(
-                url.format({
-                  pathname: targetUrl,
-                  query: req.query as ParsedUrlQueryInput,
-                }),
-              );
-            }
+            logger.debug('Allowing direct route without submission query param', {
+              formPath,
+              targetUrl,
+              baseUrl: req.baseUrl,
+            });
           } else if (submissionTypesUtils.isDigitalSubmissionOnly(submissionTypes)) {
             return redirectToSubmissionType(req, res, 'digital');
           } else if (submissionTypesUtils.isPaperSubmissionOnly(submissionTypes)) {
