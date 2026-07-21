@@ -28,7 +28,7 @@ const PrepareSubmissionStep = ({ type }: Props) => {
   const { fyllutBaseURL, submissionMethod, logEvent, http } = useAppConfig();
   const { form } = useFormDefinition();
   const { submission } = useSubmissionState();
-  const { search } = useLocation();
+  const { search, state } = useLocation();
   const navigate = useNavigate();
   const [downloadState, setDownloadState] = useState<'success' | 'error'>();
   const navForm = useMemo(() => formioFormsApiUtils.mapFormToNavForm(form), [form]);
@@ -40,6 +40,15 @@ const PrepareSubmissionStep = ({ type }: Props) => {
   );
   const showNoSubmissionContent =
     type === 'application' && (!submissionMethod || submissionMethod === 'papernocoverpage');
+  const navigationState =
+    typeof state === 'object' && state
+      ? {
+          ...state,
+          initialSubmission: submission,
+        }
+      : {
+          initialSubmission: submission,
+        };
 
   const getPdfContent = async () => {
     if (!submission) {
@@ -141,7 +150,7 @@ const PrepareSubmissionStep = ({ type }: Props) => {
         previousButton={
           <FormPrevButton
             label={translate(TEXTS.grensesnitt.navigation.previous)}
-            onClick={() => navigate({ pathname: `../${SUMMARY_KEY}`, search })}
+            onClick={() => navigate({ pathname: `../${SUMMARY_KEY}`, search }, { state: navigationState })}
           />
         }
       />

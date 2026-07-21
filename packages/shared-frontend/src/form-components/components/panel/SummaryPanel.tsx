@@ -1,6 +1,6 @@
 import { FormSummary } from '@navikt/ds-react';
 import { TEXTS, submissionUtils as formComponentUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import { Link, useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import ValidationExclamationIcon from '../../../components/icons/ValidationExclamationIcon';
 import { useStepperState } from '../../../layout/StepperContext';
 import RenderComponent from '../../RenderComponent';
@@ -8,12 +8,22 @@ import { FormComponentProps } from '../../types';
 import styles from './SummaryPanel.module.css';
 
 const SummaryPanel = (props: FormComponentProps) => {
-  const { submissionPath, translate, component, panelValidationList } = props;
+  const { submissionPath, translate, component, panelValidationList, submission } = props;
   const { title, components, navId, key } = component;
-  const { search } = useLocation();
+  const { search, state } = useLocation();
+  const navigate = useNavigate();
   const { isOpen: isStepperOpen } = useStepperState();
   const childComponents = components ?? [];
   const isAttachmentPanel = childComponents.some((child) => child.type === 'attachment');
+  const navigationState =
+    typeof state === 'object' && state
+      ? {
+          ...state,
+          initialSubmission: submission,
+        }
+      : {
+          initialSubmission: submission,
+        };
 
   const panelValidation = panelValidationList?.find((panel) => panel.key === key);
 
@@ -43,8 +53,11 @@ const SummaryPanel = (props: FormComponentProps) => {
 
       <FormSummary.Footer>
         <FormSummary.EditLink
-          as={Link}
-          to={{ pathname: `../${key}`, search }}
+          href={search ? `../${key}${search}` : `../${key}`}
+          onClick={(event) => {
+            event.preventDefault();
+            navigate({ pathname: `../${key}`, search }, { state: navigationState });
+          }}
           aria-label={isAttachmentPanel && !isStepperOpen ? translate(title) : undefined}
         >
           {translate(TEXTS.grensesnitt.summaryPage.edit)}

@@ -85,6 +85,7 @@ const FormPageWrapper = () => {
   const [initialInnsendingsId, setInitialInnsendingsId] = useState<string | undefined>();
   const [loadedLocationKey, setLoadedLocationKey] = useState<string | undefined>();
   const deletedDraftIdRef = useRef<string | undefined>(undefined);
+  const stateInitialSubmissionRef = useRef<Submission | undefined>(undefined);
   const { get } = useFormsApiForms();
   const appConfig = useAppConfig();
   const { submissionMethod, config, http, baseUrl, attachmentPageEnabled, setAttachmentPageEnabled } = appConfig;
@@ -92,7 +93,7 @@ const FormPageWrapper = () => {
     !!formPath && ((config?.newRenderForms ?? []).includes('*') || (config?.newRenderForms ?? []).includes(formPath));
   const useLegacyPageForNewRenderer = shouldUseLegacyPageForNewRenderer(routePath);
   const navForm = useMemo(() => (form ? formioFormsApiUtils.mapFormToNavForm(form) : undefined), [form]);
-  const locationKey = `${formPath ?? ''}|${routePath ?? ''}|${search}`;
+  const locationKey = `${formPath ?? ''}|${search}`;
   const missingSubmissionMethodOnDirectRoute =
     useNewRenderer && !useLegacyPageForNewRenderer && !!routePath && !new URLSearchParams(search).has('sub');
 
@@ -108,6 +109,13 @@ const FormPageWrapper = () => {
       { replace: true },
     );
   }, [missingSubmissionMethodOnDirectRoute, navigate, search]);
+
+  useEffect(() => {
+    stateInitialSubmissionRef.current =
+      typeof state === 'object' && state && state.preserveInitialSubmission === true && 'initialSubmission' in state
+        ? (state.initialSubmission as Submission | undefined)
+        : undefined;
+  }, [state]);
 
   const loadTranslations = useCallback(async () => {
     if (!formPath) {
@@ -149,10 +157,7 @@ const FormPageWrapper = () => {
     const searchParams = new URLSearchParams(search);
     const innsendingsId = searchParams.get('innsendingsId') ?? undefined;
     const hasDeletedDraftFlag = searchParams.get(DELETED_DRAFT_QUERY_PARAM) === '1';
-    const stateInitialSubmission =
-      typeof state === 'object' && state && state.preserveInitialSubmission === true && 'initialSubmission' in state
-        ? state.initialSubmission
-        : undefined;
+    const stateInitialSubmission = stateInitialSubmissionRef.current;
 
     if (submissionMethod !== 'digital' || !innsendingsId) {
       setInitialInnsendingsId(undefined);
@@ -189,7 +194,7 @@ const FormPageWrapper = () => {
     const response = await sendInnSoknadApi.getSoknad(innsendingsId, appConfig);
     setInitialInnsendingsId(innsendingsId);
     setInitialSubmission(response?.hoveddokumentVariant?.document?.data);
-  }, [appConfig, search, state, submissionMethod]);
+  }, [appConfig, search, submissionMethod]);
 
   useEffect(() => {
     if (attachmentPageEnabled === false) {
