@@ -1,4 +1,5 @@
-import { useValidation } from '@navikt/skjemadigitalisering-shared-frontend';
+import { Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import { useSubmissionState, useValidation } from '@navikt/skjemadigitalisering-shared-frontend';
 import { useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { INTRO_KEY, SUMMARY_KEY } from './constants';
@@ -6,6 +7,7 @@ import { INTRO_KEY, SUMMARY_KEY } from './constants';
 interface WizardNavigationState {
   focusId?: string;
   validationErrorPages?: string[];
+  initialSubmission?: Submission;
 }
 
 type StepKind = 'intro' | 'panel' | 'attachment' | 'summary';
@@ -14,15 +16,17 @@ const useWizardNavigation = (from: StepKind) => {
   const navigate = useNavigate();
   const { search, state } = useLocation();
   const { pagesWithErrors, hideSummary } = useValidation();
+  const { submission } = useSubmissionState();
   const prefix = from === 'intro' ? '' : '../';
 
   const buildState = useCallback(
     (extra?: WizardNavigationState): WizardNavigationState => ({
       ...(typeof state === 'object' && state ? state : {}),
+      initialSubmission: submission,
       validationErrorPages: Array.from(pagesWithErrors),
       ...extra,
     }),
-    [pagesWithErrors, state],
+    [pagesWithErrors, state, submission],
   );
 
   const goToIntro = useCallback(() => {
