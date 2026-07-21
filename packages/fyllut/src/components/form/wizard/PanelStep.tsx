@@ -23,7 +23,7 @@ const PanelStep = ({ form }: { form: Form }) => {
   const { panelSlug } = useParams<{ panelSlug?: string }>();
   const { hash, search, state } = useLocation();
   const { saveDraft, canSaveDraft } = useFormPersistence();
-  const { getErrorsForPages, syncPageValidationState, validatePages } = useValidation();
+  const { syncPageValidationState, validatePages } = useValidation();
   const { currentPanel, components, isFirst, isLast, goToNext, panels, currentIndex } = useWizardController(panelSlug);
   const { goToIntro, goToPanel, goToSummary, goToError, onStepClick } = useWizardNavigation('panel');
   const hasInitializedDraft = useRef(false);
@@ -99,8 +99,7 @@ const PanelStep = ({ form }: { form: Form }) => {
     }
     if (isLast) {
       const validationPages = panels.map((panel) => ({ pageKey: panel.key, components: panel.components ?? [] }));
-      const failedPageKeys = Array.from(new Set(getErrorsForPages(validationPages).map((error) => error.pageKey)));
-      validatePages(validationPages);
+      const failedPageKeys = validatePages(validationPages);
       if (failedPageKeys.length === 0 && navFormUtils.hasAttachment(form)) {
         goToPanel(ATTACHMENTS_KEY);
         return;

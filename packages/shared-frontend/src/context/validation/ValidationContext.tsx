@@ -60,6 +60,7 @@ const validateAttachmentComponent = (
 
 type ValidationPage = { pageKey: string; components: Component[] };
 type SummaryScope = { type: 'page'; pageKey: string } | { type: 'summary' } | undefined;
+type PageErrorsByKey = Record<string, FieldError[]>;
 
 const togglePageInSet = (pages: Set<string>, pageKey: string, shouldContain: boolean): Set<string> => {
   if (pages.has(pageKey) === shouldContain) {
@@ -81,11 +82,43 @@ const replacePageSet = (pages: Set<string>, nextPages: Set<string>): Set<string>
   return nextPages;
 };
 
+const areFieldErrorsEqual = (errors: FieldError[] | undefined, nextErrors: FieldError[]): boolean =>
+  (errors ?? []).length === nextErrors.length &&
+  nextErrors.every((error, index) => {
+    const existingError = errors?.[index];
+    return (
+      existingError?.pageKey === error.pageKey &&
+      existingError.submissionPath === error.submissionPath &&
+      existingError.field === error.field &&
+      existingError.message === error.message
+    );
+  });
+
+const setPageErrors = (pageErrorsByKey: PageErrorsByKey, pageKey: string, errors: FieldError[]): PageErrorsByKey => {
+  if (errors.length === 0) {
+    if (!(pageKey in pageErrorsByKey)) {
+      return pageErrorsByKey;
+    }
+
+    const { [pageKey]: _removedPageErrors, ...remainingPageErrors } = pageErrorsByKey;
+    return remainingPageErrors;
+  }
+
+  if (areFieldErrorsEqual(pageErrorsByKey[pageKey], errors)) {
+    return pageErrorsByKey;
+  }
+
+  return {
+    ...pageErrorsByKey,
+    [pageKey]: errors,
+  };
+};
+
 interface ValidationContextType {
   pagesWithErrors: Set<string>;
   summaryVisible: boolean;
   validatePage: (pageKey: string, components: Component[]) => boolean;
-  validatePages: (pages: ValidationPage[]) => boolean;
+  validatePages: (pages: ValidationPage[]) => string[];
   getError: (submissionPath: string, pageKey: string, components: Component[]) => string | undefined;
   getErrorsForPage: (pageKey: string, components: Component[]) => FieldError[];
   getErrorsForPages: (pages: ValidationPage[]) => FieldError[];
@@ -110,6 +143,7 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
   const { config, submissionMethod } = useAppConfig();
   const allowTestTypes = config?.NAIS_CLUSTER_NAME !== 'prod-gcp';
   const [pagesWithErrors, setPagesWithErrors] = useState<Set<string>>(() => new Set(initialPagesWithErrors ?? []));
+  const [pageErrorsByKey, setPageErrorsByKey] = useState<PageErrorsByKey>({});
   const [summaryScope, setSummaryScope] = useState<SummaryScope>(undefined);
 
   const computeErrors = useCallback(
@@ -144,20 +178,24 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
   );
 
   const getErrorsForPage = useCallback(
-    (pageKey: string, components: Component[]) => computeErrors(pageKey, components, submission),
-    [computeErrors, submission],
+    (pageKey: string, components: Component[]) =>
+      pageErrorsByKey[pageKey] ?? computeErrors(pageKey, components, submission),
+    [computeErrors, pageErrorsByKey, submission],
   );
 
   const getErrorsForPages = useCallback(
     (pages: ValidationPage[]) =>
-      pages.flatMap(({ pageKey, components }) => computeErrors(pageKey, components, submission)),
-    [computeErrors, submission],
+      pages.flatMap(
+        ({ pageKey, components }) => pageErrorsByKey[pageKey] ?? computeErrors(pageKey, components, submission),
+      ),
+    [computeErrors, pageErrorsByKey, submission],
   );
 
   const validatePage = useCallback(
     (pageKey: string, components: Component[]) => {
       const pageErrors = computeErrors(pageKey, components, submission);
       setPagesWithErrors((prev) => togglePageInSet(prev, pageKey, pageErrors.length > 0));
+      setPageErrorsByKey((prev) => setPageErrors(prev, pageKey, pageErrors));
       setSummaryScope(pageErrors.length > 0 ? { type: 'page', pageKey } : undefined);
       return pageErrors.length === 0;
     },
@@ -167,13 +205,22 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
   const validatePages = useCallback(
     (pages: ValidationPage[]) => {
       const failedPages = new Set<string>();
+      const pageErrors = new Map<string, FieldError[]>();
       pages.forEach(({ pageKey, components }) => {
-        const pageErrors = computeErrors(pageKey, components, submission);
-        if (pageErrors.length > 0) failedPages.add(pageKey);
+        const errors = computeErrors(pageKey, components, submission);
+        pageErrors.set(pageKey, errors);
+        if (errors.length > 0) failedPages.add(pageKey);
       });
       setPagesWithErrors((prev) => replacePageSet(prev, failedPages));
+      setPageErrorsByKey((prev) => {
+        const next = pages.reduce(
+          (acc, { pageKey }) => setPageErrors(acc, pageKey, pageErrors.get(pageKey) ?? []),
+          prev,
+        );
+        return next;
+      });
       setSummaryScope(failedPages.size > 0 ? { type: 'summary' } : undefined);
-      return failedPages.size === 0;
+      return Array.from(failedPages);
     },
     [computeErrors, submission],
   );
@@ -183,9 +230,11 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
       if (!pagesWithErrors.has(pageKey)) {
         return undefined;
       }
-      return getErrorsForPage(pageKey, components).find((error) => error.submissionPath === submissionPath)?.message;
+      return (pageErrorsByKey[pageKey] ?? getErrorsForPage(pageKey, components)).find(
+        (error) => error.submissionPath === submissionPath,
+      )?.message;
     },
-    [getErrorsForPage, pagesWithErrors],
+    [getErrorsForPage, pageErrorsByKey, pagesWithErrors],
   );
 
   const hasErrorState = useCallback((pageKey: string) => pagesWithErrors.has(pageKey), [pagesWithErrors]);
@@ -200,6 +249,7 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
     (pageKey: string, components: Component[], activeSubmission: Submission | undefined) => {
       const pageErrors = computeErrors(pageKey, components, activeSubmission);
       setPagesWithErrors((prev) => togglePageInSet(prev, pageKey, pageErrors.length > 0));
+      setPageErrorsByKey((prev) => setPageErrors(prev, pageKey, pageErrors));
       setSummaryScope((prev) => {
         if (prev?.type === 'page' && prev.pageKey === pageKey) {
           return pageErrors.length > 0 ? prev : undefined;
@@ -248,6 +298,7 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
     }),
     [
       pagesWithErrors,
+      pageErrorsByKey,
       summaryScope,
       validatePage,
       validatePages,

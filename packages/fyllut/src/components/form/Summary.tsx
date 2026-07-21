@@ -77,8 +77,8 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
   const firstSummaryError = summaryErrors[0];
 
   const handleSubmit = () => {
-    const valid = validatePages(validationPages);
-    if (!valid) {
+    const failedPageKeys = validatePages(validationPages);
+    if (failedPageKeys.length > 0) {
       setAttemptedSubmitWithErrors(true);
       return;
     }
