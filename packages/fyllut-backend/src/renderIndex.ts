@@ -84,6 +84,8 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
       });
       if (form && form.properties) {
         const { submissionTypes } = form.properties;
+        const isAllowlistedNewRenderForm =
+          config.newRenderForms.includes('*') || config.newRenderForms.includes(formPath);
         const staticPdfRoute = isStaticPdfRoute(req);
         if (submissionTypesUtils.isStaticPdfOnly(submissionTypes) && !staticPdfRoute) {
           logger.info('Tried to access fill-in form, but only static pdf is enabled for this form', { formPath });
@@ -96,12 +98,22 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
             }
             logger.debug('Static pdf', { formPath });
           } else if (submissionTypesUtils.containsMultipleStandardSubmissionTypes(submissionTypes)) {
-            const targetUrl = `${config.fyllutPath}/${formPath}`;
-            logger.debug('Allowing direct route without submission query param', {
-              formPath,
-              targetUrl,
-              baseUrl: req.baseUrl,
-            });
+            if (isAllowlistedNewRenderForm) {
+              logger.debug('Allowing direct route without submission query param for allowlisted new-render form', {
+                formPath,
+                baseUrl: req.baseUrl,
+              });
+            } else if (
+              req.originalUrl.match(new RegExp(`/(oppsummering|ingen-innsending|send-i-posten|legitimasjon)`))
+            ) {
+              const targetUrl = `${config.fyllutPath}/${formPath}`;
+              return res.redirect(
+                url.format({
+                  pathname: targetUrl,
+                  query: redirectParams,
+                }),
+              );
+            }
           } else if (submissionTypesUtils.isDigitalSubmissionOnly(submissionTypes)) {
             return redirectToSubmissionType(req, res, 'digital');
           } else if (submissionTypesUtils.isPaperSubmissionOnly(submissionTypes)) {
