@@ -6,7 +6,7 @@ import {
   SubmissionData,
   submissionUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import TranslatedDescription from '../../../components/shared/TranslatedDescription';
 import { useFormDefinition } from '../../../context/form-definition/FormDefinitionContext';
 import {
@@ -39,6 +39,11 @@ const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => 
   const dataGridRows = Array.isArray(rows) ? rows : [];
   const renderedRows = getRenderedDataGridRows(dataGridRows, component.initEmpty);
   const [rowIds, setRowIds] = useState(() => syncDataGridRowIds([], renderedRows.length));
+  const rowComponentTemplates = useMemo(
+    () =>
+      renderedRows.map((_, index) => enrichComponentsWithBaseSubmissionPath(components, `${submissionPath}[${index}]`)),
+    [components, renderedRows.length, submissionPath],
+  );
 
   const updateRows = (nextRows: object[]) => {
     const nextSubmission = createUpdatedSubmission(submission, submissionPath, nextRows);
@@ -74,12 +79,7 @@ const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => 
 
       <div className={styles.rows}>
         {renderedRows.map((row, index) => {
-          const rowComponents = getActiveRowComponents(
-            enrichComponentsWithBaseSubmissionPath(components, `${submissionPath}[${index}]`),
-            row,
-            submission?.data,
-            form,
-          );
+          const rowComponents = getActiveRowComponents(rowComponentTemplates[index] ?? [], row, submission?.data, form);
 
           return (
             <div key={rowIds[index] ?? `${component.key}-${index}`} className={styles.row}>

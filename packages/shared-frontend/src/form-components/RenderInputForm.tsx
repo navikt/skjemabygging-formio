@@ -24,16 +24,19 @@ const RenderInputForm = ({
   const content = (
     <>
       {components.map((component) => {
+        const componentReactKey = component.navId ?? component.key;
         if (!componentRegistry[component.type] && component.components?.length) {
           return (
             <RenderInputForm
-              key={component.key}
+              key={componentReactKey}
               components={component.components ?? []}
               componentRegistry={componentRegistry}
             />
           );
         }
-        return <RenderInputComponent key={component.key} component={component} componentRegistry={componentRegistry} />;
+        return (
+          <RenderInputComponent key={componentReactKey} component={component} componentRegistry={componentRegistry} />
+        );
       })}
     </>
   );
