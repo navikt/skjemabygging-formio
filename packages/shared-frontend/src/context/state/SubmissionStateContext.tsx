@@ -1,5 +1,16 @@
 import { Submission, submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import { createContext, Dispatch, ReactNode, SetStateAction, useCallback, useContext, useMemo, useState } from 'react';
+import {
+  createContext,
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { StateStoreProvider } from './StateContext';
 import { parseSubmissionPath, removeDeepValue, setDeepValue } from './stateHelpers';
@@ -29,9 +40,18 @@ const SubmissionStateContext = createContext<SubmissionStateContextType>({} as S
 
 const SubmissionStateProvider = ({ children, initialSubmission }: Props) => {
   const [submission, setSubmission] = useState<Submission | undefined>(initialSubmission ?? { data: {} });
+  const submissionRef = useRef<Submission | undefined>(initialSubmission ?? { data: {} });
+
+  useEffect(() => {
+    submissionRef.current = submission;
+  }, [submission]);
 
   const updateSubmission = useCallback((submissionPath: string, value: unknown) => {
-    setSubmission((prev) => createUpdatedSubmission(prev, submissionPath, value));
+    setSubmission((prev) => {
+      const nextSubmission = createUpdatedSubmission(prev, submissionPath, value);
+      submissionRef.current = nextSubmission;
+      return nextSubmission;
+    });
   }, []);
 
   const clearSubmissionPaths = useCallback((submissionPaths: string[]) => {
@@ -55,11 +75,13 @@ const SubmissionStateProvider = ({ children, initialSubmission }: Props) => {
     () => ({
       getValue: (statePath: string) => submissionUtils.getSubmissionValue(statePath, submission),
       setValue: (statePath: string, fieldValue: unknown): Submission => {
-        updateSubmission(statePath, fieldValue);
-        return createUpdatedSubmission(submission, statePath, fieldValue);
+        const nextSubmission = createUpdatedSubmission(submissionRef.current, statePath, fieldValue);
+        submissionRef.current = nextSubmission;
+        setSubmission(nextSubmission);
+        return nextSubmission;
       },
     }),
-    [submission, updateSubmission],
+    [submission],
   );
 
   return (
