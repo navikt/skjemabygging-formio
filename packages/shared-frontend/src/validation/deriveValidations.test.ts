@@ -85,6 +85,26 @@ describe('deriveValidations', () => {
     ]);
   });
 
+  it('derives validation for the default rendered datagrid row when submission is untouched', () => {
+    const components = [
+      {
+        key: 'grid',
+        type: 'datagrid',
+        input: true,
+        tree: true,
+        components: [{ key: 'name', label: 'Name', input: true, type: 'textfield', validate: { required: true } }],
+      },
+    ] as unknown as Component[];
+
+    expect(deriveValidations(components)).toEqual([
+      {
+        submissionPath: 'grid[0].name',
+        field: 'Name',
+        rules: { required: true, minLength: undefined, maxLength: undefined },
+      },
+    ]);
+  });
+
   it('adds simple email and number validation rules from component type', () => {
     const components = [
       { key: 'email', label: 'Email', input: true, type: 'email', validate: { required: true } },

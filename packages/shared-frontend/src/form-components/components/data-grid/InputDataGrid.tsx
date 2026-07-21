@@ -18,6 +18,7 @@ import { useValidation } from '../../../context/validation/ValidationContext';
 import { useValidationScope } from '../../../context/validation/ValidationScopeContext';
 import { InputComponentRegistry } from '../../inputComponentRegistry';
 import RenderInputForm from '../../RenderInputForm';
+import { getRenderedDataGridRows } from './dataGridRows';
 import styles from './InputDataGrid.module.css';
 
 interface InputDataGridProps {
@@ -100,8 +101,6 @@ const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => 
     </Box>
   );
 };
-
-const getRenderedDataGridRows = (rows: object[], initEmpty?: boolean) => (rows.length > 0 || initEmpty ? rows : [{}]);
 
 const getActiveRowComponents = (
   components: Component[],

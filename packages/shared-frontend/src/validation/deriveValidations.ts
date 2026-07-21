@@ -21,6 +21,7 @@ import {
   enrichComponentsWithBaseSubmissionPath,
   getResolvedSubmissionPath,
 } from '../context/form-definition/formDefinitionUtils';
+import { getRenderedDataGridRows } from '../form-components/components/data-grid/dataGridRows';
 import { ValidationRules } from './validators';
 
 interface ValidationDescriptor {
@@ -455,11 +456,12 @@ const collectValidationDescriptors = (
 
     if (component.type === 'datagrid') {
       const rows = submissionUtils.getSubmissionValue(submissionPath, submission);
-      if (!Array.isArray(rows) || !component.components?.length) {
+      if (!component.components?.length) {
         return [];
       }
+      const renderedRows = getRenderedDataGridRows(Array.isArray(rows) ? rows : [], component.initEmpty);
 
-      return rows.flatMap((_, index) =>
+      return renderedRows.flatMap((_, index) =>
         collectValidationDescriptors(
           enrichComponentsWithBaseSubmissionPath(component.components ?? [], `${submissionPath}[${index}]`),
           submission,
