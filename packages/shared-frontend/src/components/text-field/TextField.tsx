@@ -45,11 +45,16 @@ const TextField = ({
 }: TextFieldProps) => {
   const { stateValue, error, setStateValue } = useStateField({ statePath });
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const isFocusedRef = useRef(false);
   const [displayValue, setDisplayValue] = useState(() =>
     toInputFormat(
       stateValue ?? (typeof prefillValue === 'string' && prefillValue.trim() !== '' ? prefillValue : undefined),
       formatKey,
     ),
+  );
+  const syncedDisplayValue = toInputFormat(
+    stateValue ?? (typeof prefillValue === 'string' && prefillValue.trim() !== '' ? prefillValue : undefined),
+    formatKey,
   );
 
   const updateValue = useCallback(
@@ -72,6 +77,7 @@ const TextField = ({
   };
 
   const handleBlur = (event: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    isFocusedRef.current = false;
     const rawValue = event.currentTarget.value;
     const formatted = toInputFormat(rawValue, formatKey);
     setDisplayValue(formatted);
@@ -80,6 +86,14 @@ const TextField = ({
       setStateValue(nextStateValue);
     }
   };
+
+  useEffect(() => {
+    if (readOnly || isFocusedRef.current) {
+      return;
+    }
+
+    setDisplayValue((previousValue) => (previousValue === syncedDisplayValue ? previousValue : syncedDisplayValue));
+  }, [readOnly, syncedDisplayValue]);
 
   useEffect(() => {
     const inputElement = inputRef.current;
@@ -113,6 +127,9 @@ const TextField = ({
         description={<TranslatedDescription>{description}</TranslatedDescription>}
         hideLabel={hideLabel}
         value={readOnly ? toInputFormat(stateValue, formatKey) : displayValue}
+        onFocus={() => {
+          isFocusedRef.current = true;
+        }}
         onInput={handleInput}
         onInputCapture={handleInput}
         onChangeCapture={handleInput}

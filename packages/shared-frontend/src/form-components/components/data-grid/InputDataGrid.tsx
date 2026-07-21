@@ -6,6 +6,7 @@ import {
   SubmissionData,
   submissionUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import { useState } from 'react';
 import TranslatedDescription from '../../../components/shared/TranslatedDescription';
 import { useFormDefinition } from '../../../context/form-definition/FormDefinitionContext';
 import {
@@ -18,7 +19,7 @@ import { useValidation } from '../../../context/validation/ValidationContext';
 import { useValidationScope } from '../../../context/validation/ValidationScopeContext';
 import { InputComponentRegistry } from '../../inputComponentRegistry';
 import RenderInputForm from '../../RenderInputForm';
-import { getRenderedDataGridRows } from './dataGridRows';
+import { addDataGridRowId, getRenderedDataGridRows, removeDataGridRowId, syncDataGridRowIds } from './dataGridRows';
 import styles from './InputDataGrid.module.css';
 
 interface InputDataGridProps {
@@ -37,6 +38,7 @@ const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => 
   const rows = submissionUtils.getSubmissionValue(submissionPath, submission);
   const dataGridRows = Array.isArray(rows) ? rows : [];
   const renderedRows = getRenderedDataGridRows(dataGridRows, component.initEmpty);
+  const [rowIds, setRowIds] = useState(() => syncDataGridRowIds([], renderedRows.length));
 
   const updateRows = (nextRows: object[]) => {
     const nextSubmission = createUpdatedSubmission(submission, submissionPath, nextRows);
@@ -44,8 +46,14 @@ const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => 
     handleFieldChange(pageKey, pageComponents, nextSubmission);
   };
 
-  const addRow = () => updateRows([...dataGridRows, {}]);
-  const removeRow = (index: number) => updateRows(dataGridRows.filter((_, rowIndex) => rowIndex !== index));
+  const addRow = () => {
+    setRowIds((previousRowIds) => addDataGridRowId(previousRowIds));
+    updateRows([...dataGridRows, {}]);
+  };
+  const removeRow = (index: number) => {
+    setRowIds((previousRowIds) => removeDataGridRowId(previousRowIds, index));
+    updateRows(dataGridRows.filter((_, rowIndex) => rowIndex !== index));
+  };
 
   if (!components?.length) {
     return null;
@@ -74,7 +82,7 @@ const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => 
           );
 
           return (
-            <div key={index} className={styles.row}>
+            <div key={rowIds[index] ?? `${component.key}-${index}`} className={styles.row}>
               <div className={styles.rowHeader}>
                 <Heading level="3" size="small">
                   {translate(rowTitle || label || component.key)} {index + 1}

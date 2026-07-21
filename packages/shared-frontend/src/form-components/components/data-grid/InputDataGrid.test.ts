@@ -1,7 +1,8 @@
 import { Component, Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { describe, expect, it } from 'vitest';
 import { enrichComponentsWithBaseSubmissionPath } from '../../../context/form-definition/formDefinitionUtils';
-import { getActiveRowComponents, getRenderedDataGridRows } from './InputDataGrid';
+import { getActiveRowComponents } from './InputDataGrid';
+import { addDataGridRowId, getRenderedDataGridRows, removeDataGridRowId, syncDataGridRowIds } from './dataGridRows';
 
 const createForm = (components: Component[]): Form =>
   ({
@@ -17,6 +18,24 @@ describe('InputDataGrid helpers', () => {
   it('renders one empty row by default when the datagrid has no saved rows', () => {
     expect(getRenderedDataGridRows([], undefined)).toEqual([{}]);
     expect(getRenderedDataGridRows([], true)).toEqual([]);
+  });
+
+  it('keeps remaining row ids stable when removing a row', () => {
+    const initialRowIds = syncDataGridRowIds([], 2);
+    const nextRowIds = removeDataGridRowId(initialRowIds, 0);
+
+    expect(nextRowIds).toHaveLength(1);
+    expect(nextRowIds[0]).toBe(initialRowIds[1]);
+  });
+
+  it('adds row ids without replacing existing rows', () => {
+    const initialRowIds = syncDataGridRowIds([], 1);
+    const nextRowIds = addDataGridRowId(initialRowIds);
+
+    expect(nextRowIds).toHaveLength(2);
+    expect(nextRowIds[0]).toBe(initialRowIds[0]);
+    expect(nextRowIds[1]).toBeDefined();
+    expect(nextRowIds[1]).not.toBe(initialRowIds[0]);
   });
 
   it('filters simple conditionals against row data', () => {
