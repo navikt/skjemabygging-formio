@@ -3,6 +3,7 @@ import { dateUtils, Form, formioFormsApiUtils, Language, Submission } from '@nav
 import { FormPersistenceHandlers, useSubmissionState } from '@navikt/skjemadigitalisering-shared-frontend';
 import { useMemo, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router';
+import { buildDigitalFormSearch, isSoknadAlreadyExistsResponse } from './digitalDraftUtils';
 import { useNologinToken } from './nologin-token/NologinTokenContext';
 import { RECEIPT_KEY } from './wizard/constants';
 
@@ -15,7 +16,7 @@ import { RECEIPT_KEY } from './wizard/constants';
  * - digitalnologin: single nologin-application submit (wired, not yet e2e-verified).
  * - paper: finalization is handled by the legacy letter/PDF flow (wired, not yet e2e-verified).
  */
-const useSubmitters = (form: Form): FormPersistenceHandlers => {
+const useSubmitters = (form: Form, initialInnsendingsId?: string): FormPersistenceHandlers => {
   const appConfig = useAppConfig();
   const { currentLanguage } = useLanguages();
   const { submissionMethod, logger } = appConfig;
@@ -23,7 +24,10 @@ const useSubmitters = (form: Form): FormPersistenceHandlers => {
   const { search, state } = useLocation();
   const navigate = useNavigate();
   const { setSubmission } = useSubmissionState();
-  const innsendingsIdRef = useRef<string | undefined>(new URLSearchParams(search).get('innsendingsId') ?? undefined);
+  const forceMellomlagring = new URLSearchParams(search).get('forceMellomlagring') === 'true';
+  const innsendingsIdRef = useRef<string | undefined>(
+    new URLSearchParams(search).get('innsendingsId') ?? initialInnsendingsId,
+  );
 
   return useMemo<FormPersistenceHandlers>(() => {
     // Convert at the legacy sendInnSoknadApi boundary (shared-components still uses NavFormType)
@@ -56,14 +60,16 @@ const useSubmitters = (form: Form): FormPersistenceHandlers => {
         return;
       }
 
-      const searchParams = new URLSearchParams(window.location.search);
-      if (searchParams.get('innsendingsId') === innsendingsId) {
+      const nextSearch = buildDigitalFormSearch(search, {
+        forceMellomlagring: undefined,
+        innsendingsId,
+      });
+      if (nextSearch === search) {
         return;
       }
 
-      searchParams.set('innsendingsId', innsendingsId);
       navigate(
-        { search: `?${searchParams.toString()}` },
+        { search: nextSearch },
         {
           replace: true,
           state:
@@ -77,10 +83,30 @@ const useSubmitters = (form: Form): FormPersistenceHandlers => {
       );
     };
 
+    const goToActiveTasks = () => {
+      navigate(
+        {
+          pathname: `/${form.path}/paabegynt`,
+          search: buildDigitalFormSearch(search, { forceMellomlagring: undefined }),
+        },
+        { replace: true },
+      );
+    };
+
     const saveDraft = isDigital
       ? async (submission: Submission) => {
           if (!innsendingsIdRef.current) {
-            const response = await sendInnSoknadApi.createSoknad(appConfig, navForm, submission, currentLanguage);
+            const response = await sendInnSoknadApi.createSoknad(
+              appConfig,
+              navForm,
+              submission,
+              currentLanguage,
+              forceMellomlagring,
+            );
+            if (isSoknadAlreadyExistsResponse(response)) {
+              goToActiveTasks();
+              return;
+            }
             if (response && 'innsendingsId' in response) {
               innsendingsIdRef.current = response.innsendingsId;
               syncInnsendingsIdToUrl(response.innsendingsId, submission);
@@ -104,7 +130,17 @@ const useSubmitters = (form: Form): FormPersistenceHandlers => {
         return innsendingsIdRef.current;
       }
 
-      const response = await sendInnSoknadApi.createSoknad(appConfig, navForm, submission, currentLanguage);
+      const response = await sendInnSoknadApi.createSoknad(
+        appConfig,
+        navForm,
+        submission,
+        currentLanguage,
+        forceMellomlagring,
+      );
+      if (isSoknadAlreadyExistsResponse(response)) {
+        goToActiveTasks();
+        return undefined;
+      }
       if (response && 'innsendingsId' in response) {
         innsendingsIdRef.current = response.innsendingsId;
         syncInnsendingsIdToUrl(response.innsendingsId, submission);
@@ -118,6 +154,9 @@ const useSubmitters = (form: Form): FormPersistenceHandlers => {
       switch (submissionMethod) {
         case 'digital': {
           const innsendingsId = await ensureInnsendingsId(submission);
+          if (!innsendingsId) {
+            return;
+          }
           const response = await sendInnSoknadApi.postNologinSoknad(
             appConfig,
             '',
@@ -173,6 +212,7 @@ const useSubmitters = (form: Form): FormPersistenceHandlers => {
     navigate,
     search,
     state,
+    forceMellomlagring,
   ]);
 };
 

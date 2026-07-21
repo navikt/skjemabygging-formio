@@ -14,11 +14,17 @@ import {
   SubmissionData,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useLocation, useParams } from 'react-router';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import useFormsApiForms from '../../api/useFormsApiForms';
 import { loadAllTranslations } from '../../api/useTranslations';
 import { NotFoundPage } from '../errors/NotFoundPage';
 import SubmissionMethodNotAllowed from '../SubmissionMethodNotAllowed';
+import {
+  ActiveTask,
+  buildDigitalFormSearch,
+  resolveDigitalDraftResume,
+  shouldUseLegacyPageForNewRenderer,
+} from './digitalDraftUtils';
 import FormPageSkeleton from './FormPageSkeleton';
 import RenderForm from './RenderForm';
 
@@ -69,17 +75,19 @@ const enrichComponentsWithPrefillValues = (components: Component[] = [], prefill
 const FormPageWrapper = () => {
   const { formPath, '*': routePath } = useParams();
   const { search } = useLocation();
+  const navigate = useNavigate();
   const [translations, setTranslations] = useState<I18nTranslations>();
   const [loading, setLoading] = useState<boolean>(true);
   const [form, setForm] = useState<Form>();
   const [initialSubmission, setInitialSubmission] = useState<Submission | undefined>();
+  const [initialInnsendingsId, setInitialInnsendingsId] = useState<string | undefined>();
   const deletedDraftIdRef = useRef<string | undefined>(undefined);
   const { get } = useFormsApiForms();
   const appConfig = useAppConfig();
   const { submissionMethod, config, http, baseUrl, attachmentPageEnabled, setAttachmentPageEnabled } = appConfig;
   const useNewRenderer =
     !!formPath && ((config?.newRenderForms ?? []).includes('*') || (config?.newRenderForms ?? []).includes(formPath));
-  const useLegacyPageForNewRenderer = routePath === 'legitimasjon' || routePath === 'pdf';
+  const useLegacyPageForNewRenderer = shouldUseLegacyPageForNewRenderer(routePath);
   const navForm = useMemo(() => (form ? formioFormsApiUtils.mapFormToNavForm(form) : undefined), [form]);
 
   const loadTranslations = useCallback(async () => {
@@ -92,6 +100,19 @@ const FormPageWrapper = () => {
       setTranslations(translationsData);
     }
   }, [formPath]);
+
+  const getActiveTasks = useCallback(
+    async (skjemanummer?: string): Promise<ActiveTask[]> => {
+      if (!skjemanummer) {
+        return [];
+      }
+
+      return (
+        (await http?.get<ActiveTask[]>(`${baseUrl}/api/send-inn/aktive-opprettede-soknader/${skjemanummer}`)) ?? []
+      );
+    },
+    [baseUrl, http],
+  );
 
   const loadForm = useCallback(async () => {
     if (!formPath) {
@@ -109,42 +130,83 @@ const FormPageWrapper = () => {
         submissionMethod === 'digital' && prefillKeys.length > 0
           ? await http?.get<SubmissionData>(`${baseUrl}/api/send-inn/prefill-data?properties=${prefillKeys.join(',')}`)
           : undefined;
-      setForm({
+      const nextForm = {
         ...formData,
         components: enrichComponentsWithPrefillValues(formData.components, prefillData),
-      });
+      };
+      setForm(nextForm);
+      return nextForm;
     }
   }, [baseUrl, formPath, get, http, submissionMethod]);
 
-  const loadInitialSubmission = useCallback(async () => {
-    const searchParams = new URLSearchParams(search);
-    const innsendingsId = searchParams.get('innsendingsId');
-    const hasDeletedDraftFlag = searchParams.get(DELETED_DRAFT_QUERY_PARAM) === '1';
-    if (submissionMethod !== 'digital' || !innsendingsId) {
-      setInitialSubmission(undefined);
-      return;
-    }
+  const loadInitialSubmission = useCallback(
+    async (loadedForm?: Form) => {
+      const searchParams = new URLSearchParams(search);
+      let innsendingsId = searchParams.get('innsendingsId') ?? undefined;
+      const hasDeletedDraftFlag = searchParams.get(DELETED_DRAFT_QUERY_PARAM) === '1';
 
-    if (hasDeletedDraftFlag) {
-      deletedDraftIdRef.current = innsendingsId;
-      setInitialSubmission(undefined);
-      return;
-    }
+      if (submissionMethod !== 'digital' || !innsendingsId) {
+        const draftResumeAction =
+          submissionMethod === 'digital' && loadedForm && useNewRenderer && !useLegacyPageForNewRenderer
+            ? resolveDigitalDraftResume(search, await getActiveTasks(loadedForm.properties.skjemanummer))
+            : { type: 'none' as const };
 
-    if (sessionStorage.getItem(DELETED_DRAFT_STORAGE_KEY) === innsendingsId) {
-      deletedDraftIdRef.current = innsendingsId;
-      setInitialSubmission(undefined);
-      return;
-    }
+        if (draftResumeAction.type === 'resume') {
+          innsendingsId = draftResumeAction.innsendingsId;
+          navigate(
+            {
+              search: buildDigitalFormSearch(search, {
+                innsendingsId: draftResumeAction.innsendingsId,
+              }),
+            },
+            { replace: true },
+          );
+        } else if (draftResumeAction.type === 'active-tasks' && loadedForm) {
+          setInitialInnsendingsId(undefined);
+          setInitialSubmission(undefined);
+          navigate(
+            {
+              pathname: `/${loadedForm.path}/paabegynt`,
+              search: buildDigitalFormSearch(search),
+            },
+            { replace: true },
+          );
+        } else {
+          setInitialInnsendingsId(undefined);
+          setInitialSubmission(undefined);
+        }
 
-    if (deletedDraftIdRef.current === innsendingsId) {
-      setInitialSubmission(undefined);
-      return;
-    }
+        if (!innsendingsId) {
+          return;
+        }
+      }
 
-    const response = await sendInnSoknadApi.getSoknad(innsendingsId, appConfig);
-    setInitialSubmission(response?.hoveddokumentVariant?.document?.data);
-  }, [appConfig, search, submissionMethod]);
+      if (hasDeletedDraftFlag) {
+        deletedDraftIdRef.current = innsendingsId;
+        setInitialInnsendingsId(undefined);
+        setInitialSubmission(undefined);
+        return;
+      }
+
+      if (sessionStorage.getItem(DELETED_DRAFT_STORAGE_KEY) === innsendingsId) {
+        deletedDraftIdRef.current = innsendingsId;
+        setInitialInnsendingsId(undefined);
+        setInitialSubmission(undefined);
+        return;
+      }
+
+      if (deletedDraftIdRef.current === innsendingsId) {
+        setInitialInnsendingsId(undefined);
+        setInitialSubmission(undefined);
+        return;
+      }
+
+      const response = await sendInnSoknadApi.getSoknad(innsendingsId, appConfig);
+      setInitialInnsendingsId(innsendingsId);
+      setInitialSubmission(response?.hoveddokumentVariant?.document?.data);
+    },
+    [appConfig, getActiveTasks, navigate, search, submissionMethod, useLegacyPageForNewRenderer, useNewRenderer],
+  );
 
   useEffect(() => {
     if (attachmentPageEnabled === false) {
@@ -156,7 +218,8 @@ const FormPageWrapper = () => {
     (async () => {
       try {
         setLoading(true);
-        await Promise.all([loadForm(), loadTranslations(), loadInitialSubmission()]);
+        const loadedForm = await loadForm();
+        await Promise.all([loadTranslations(), loadInitialSubmission(loadedForm)]);
       } catch (_e) {
         setTranslations(undefined);
         setForm(undefined);
@@ -204,7 +267,7 @@ const FormPageWrapper = () => {
   return (
     <LanguagesProvider translations={translations}>
       {useNewRenderer && !useLegacyPageForNewRenderer ? (
-        <RenderForm form={form} initialSubmission={initialSubmission} />
+        <RenderForm form={form} initialSubmission={initialSubmission} initialInnsendingsId={initialInnsendingsId} />
       ) : (
         <FyllUtRouter form={navForm} />
       )}

@@ -23,16 +23,18 @@ import Wizard from './wizard/Wizard';
 interface Props {
   form: Form;
   initialSubmission?: Submission;
+  initialInnsendingsId?: string;
 }
 
 const RenderFormContent = ({
   form,
   initialSubmission,
+  initialInnsendingsId,
   initialPagesWithErrors,
   currentLanguage,
 }: Props & { initialPagesWithErrors?: string[]; currentLanguage: string }) => {
   const { submissionMethod, logger, config } = useAppConfig();
-  const persistence = useSubmitters(form);
+  const persistence = useSubmitters(form, initialInnsendingsId);
   const hydratedInitialSubmission = applyPrefilledValuesToSubmission(form, initialSubmission, currentLanguage);
   const effectiveSubmissionMethod =
     submissionMethod ??
@@ -75,7 +77,7 @@ const RenderFormContent = ({
   );
 };
 
-const RenderForm = ({ form, initialSubmission: initialSubmissionProp }: Props) => {
+const RenderForm = ({ form, initialSubmission: initialSubmissionProp, initialInnsendingsId }: Props) => {
   const { translate, currentLanguage } = useLanguages();
   const { state } = useLocation();
   const initialPagesWithErrors =
@@ -93,6 +95,7 @@ const RenderForm = ({ form, initialSubmission: initialSubmissionProp }: Props) =
           <RenderFormContent
             form={form}
             initialSubmission={initialSubmission ?? initialSubmissionProp}
+            initialInnsendingsId={initialInnsendingsId}
             initialPagesWithErrors={initialPagesWithErrors}
             currentLanguage={currentLanguage}
           />
