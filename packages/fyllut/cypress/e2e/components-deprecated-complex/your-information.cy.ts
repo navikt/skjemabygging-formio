@@ -104,7 +104,7 @@ describe('Your information', () => {
           );
           cy.findByRole('textbox', { name: 'Postnummer' }).should('have.value', '94105');
           cy.findByRole('textbox', { name: 'By / stedsnavn' }).should('have.value', 'San Francisco');
-          cy.findByRole('combobox', { name: /Land/ }).get('p').contains('USA');
+          cy.assertCombobox('Land', 'USA');
 
           cy.clickSaveAndContinue();
           cy.clickSaveAndContinue();

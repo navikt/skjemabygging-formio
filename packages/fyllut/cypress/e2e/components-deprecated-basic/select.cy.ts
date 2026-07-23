@@ -19,15 +19,11 @@ describe('Select', () => {
       }).click();
       cy.findAllByRole('option').should('have.length', 3);
       cy.findByRole('combobox', { name: 'Nedtrekksmeny' }).type('App{downarrow}{enter}');
-      cy.withinComponent('Nedtrekksmeny', () => {
-        cy.contains('Appelsin').should('exist');
-      });
+      cy.assertCombobox('Nedtrekksmeny', 'Appelsin');
 
       //Nedtrekksmeny med standard-verdi
       cy.findByRole('combobox', { name: 'Nedtrekksmeny med standardverdi' }).type('B{downArrow}{enter}');
-      cy.withinComponent('Nedtrekksmeny med standardverdi', () => {
-        cy.contains('Blå').should('exist');
-      });
+      cy.assertCombobox('Nedtrekksmeny med standardverdi', 'Blå');
 
       cy.clickNextStep();
 
@@ -71,12 +67,8 @@ describe('Select', () => {
       cy.clickPreviousStep();
 
       // Verify that values are populated when navigating back to the select page
-      cy.withinComponent('Nedtrekksmeny', () => {
-        cy.contains('Appelsin').should('exist');
-      });
-      cy.withinComponent('Nedtrekksmeny med standardverdi', () => {
-        cy.contains('Blå').should('exist');
-      });
+      cy.assertCombobox('Nedtrekksmeny', 'Appelsin');
+      cy.assertCombobox('Nedtrekksmeny med standardverdi', 'Blå');
       cy.clickNextStep();
       cy.findAllByRole('combobox').eq(0).should('have.value', 'løve');
       cy.findAllByRole('combobox').eq(1).should('have.value', 'tyskland');

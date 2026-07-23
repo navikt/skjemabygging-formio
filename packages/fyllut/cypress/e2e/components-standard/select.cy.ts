@@ -19,9 +19,7 @@ describe('Select', () => {
     it('should be able to select an option', () => {
       const label = 'Velg alternativ';
       cy.findByRole('combobox', { name: label }).type('Alternativ 1{downArrow}{enter}');
-      cy.withinComponent(label, () => {
-        cy.contains('Alternativ 1').should('exist');
-      });
+      cy.assertCombobox(label, 'Alternativ 1');
     });
 
     it('should have description', () => {
