@@ -73,4 +73,21 @@ describe('TextField', () => {
 
     expect((container.querySelector('input') as HTMLInputElement).value).toBe('Katt');
   });
+
+  it('maps boolean false autocomplete to a valid DOM value', () => {
+    act(() => {
+      root.render(
+        <StateStoreProvider
+          store={{
+            getValue: () => undefined,
+            setValue: () => ({ data: {} }),
+          }}
+        >
+          <TextField statePath="name" label="Name" autoComplete={false} />
+        </StateStoreProvider>,
+      );
+    });
+
+    expect((container.querySelector('input') as HTMLInputElement).getAttribute('autocomplete')).toBe('off');
+  });
 });

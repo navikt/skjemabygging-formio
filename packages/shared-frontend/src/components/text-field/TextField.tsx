@@ -16,7 +16,7 @@ interface TextFieldProps extends BaseFieldProps {
   label: string;
   hideLabel?: boolean;
   showOptionalText?: boolean;
-  autoComplete?: string;
+  autoComplete?: string | boolean;
   inputMode?: HTMLAttributes<HTMLInputElement>['inputMode'];
   type?: SupportedTextFieldType;
   spellCheck?: boolean;
@@ -24,6 +24,14 @@ interface TextFieldProps extends BaseFieldProps {
   prefillValue?: Component['prefillValue'];
   toStateValue?: (value: string) => unknown;
 }
+
+const resolveAutoComplete = (autoComplete?: string | boolean) => {
+  if (autoComplete === false || autoComplete === undefined || autoComplete === '') {
+    return 'off';
+  }
+
+  return autoComplete === true ? 'on' : autoComplete;
+};
 
 const TextField = ({
   statePath,
@@ -56,6 +64,7 @@ const TextField = ({
     stateValue ?? (typeof prefillValue === 'string' && prefillValue.trim() !== '' ? prefillValue : undefined),
     formatKey,
   );
+  const resolvedAutoComplete = resolveAutoComplete(autoComplete);
 
   const updateValue = useCallback(
     (value: string) => {
@@ -137,7 +146,7 @@ const TextField = ({
         onBlur={handleBlur}
         error={error}
         readOnly={readOnly}
-        autoComplete={autoComplete}
+        autoComplete={resolvedAutoComplete}
         inputMode={inputMode}
         type={type}
         spellCheck={spellCheck}
