@@ -6,7 +6,11 @@ import {
   Submission,
 } from '@navikt/skjemadigitalisering-shared-domain';
 
-const getSelectedValuesMap = (dataValues: DataFetcherElement[], selectedValues: string[]): Record<string, boolean> =>
+interface SelectableValue {
+  value: string;
+}
+
+const getSelectedValuesMap = (dataValues: SelectableValue[], selectedValues: string[]): Record<string, boolean> =>
   dataValues.reduce<Record<string, boolean>>(
     (acc, { value }) => ({ ...acc, [value]: selectedValues.includes(value) }),
     {},

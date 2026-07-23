@@ -125,4 +125,51 @@ describe('InputDataGrid helpers', () => {
       ),
     ).toEqual(['showField', 'field']);
   });
+
+  it('filters selectboxes-based custom conditionals against row data', () => {
+    const datagrid: Component = {
+      key: 'maltider',
+      label: 'Maltider',
+      type: 'datagrid',
+      navId: 'grid',
+      components: [
+        {
+          key: 'ingredienser',
+          label: 'Ingredienser',
+          type: 'selectboxes',
+          navId: 'ingredienser',
+          values: [
+            { label: 'Melk', value: 'melk' },
+            { label: 'Kefir', value: 'kefir' },
+          ],
+        },
+        {
+          key: 'kjopteDuVareneRettFraBonden',
+          label: 'Kjopte du varene rett fra bonden?',
+          type: 'radiopanel',
+          navId: 'bonden',
+          customConditional: 'show = row.ingredienser.melk || row.ingredienser.kefir;',
+        },
+      ],
+    };
+    const form = createForm([datagrid]);
+    const rowComponents = enrichComponentsWithBaseSubmissionPath(datagrid.components ?? [], 'maltider[0]');
+
+    expect(
+      getActiveRowComponents(
+        rowComponents,
+        { ingredienser: { melk: false, kefir: false } },
+        { maltider: [{ ingredienser: { melk: false, kefir: false } }] },
+        form,
+      ).map((component) => component.key),
+    ).toEqual(['ingredienser']);
+    expect(
+      getActiveRowComponents(
+        rowComponents,
+        { ingredienser: { melk: true, kefir: false } },
+        { maltider: [{ ingredienser: { melk: true, kefir: false } }] },
+        form,
+      ).map((component) => component.key),
+    ).toEqual(['ingredienser', 'kjopteDuVareneRettFraBonden']);
+  });
 });
