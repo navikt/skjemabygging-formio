@@ -90,6 +90,8 @@ declare global {
 
       withinSummaryGroup(heading: string | RegExp, fn: () => void): Chainable<JQuery<HTMLElement>>;
 
+      assertCombobox(label: string, optionLabel: string): Chainable<JQuery<HTMLElement>>;
+
       findByLabelOptional(label: string): Chainable<JQuery<HTMLElement>>;
 
       findAllByErrorMessageRequired(label: string): Chainable<JQuery<HTMLElement>>;

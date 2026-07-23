@@ -37,8 +37,7 @@ describe('Datagrid', () => {
       // check original values
       cy.findByRole('checkbox', { name: 'Avkryssingsboks inni datagrid (valgfritt)' }).should('be.checked');
       cy.findByRole('textbox', { name: 'Dato inni datagrid' }).should('have.value', '15.01.2022');
-      cy.findByText('Ferge').should('be.visible');
-      cy.findByText('Buss').should('not.exist');
+      cy.assertCombobox('Nedtrekksmeny inni datagrid', 'Ferge');
       cy.findByRole('radio', { name: 'Nei' }).should('be.checked');
       cy.findByRole('textbox', { name: 'Tekstområde inni datagrid' }).should('have.value', 'Lorem Ipsum');
       cy.findByRole('textbox', { name: 'Tekstfelt inni datagrid' }).should('have.value', 'Hund');
@@ -59,8 +58,7 @@ describe('Datagrid', () => {
       // check that no values were reset to original
       cy.findByRole('checkbox', { name: 'Avkryssingsboks inni datagrid (valgfritt)' }).should('not.be.checked');
       cy.findByRole('textbox', { name: 'Dato inni datagrid' }).should('have.value', '24.12.1999');
-      cy.findByText('Ferge').should('not.exist');
-      cy.findByText('Buss').should('be.visible');
+      cy.assertCombobox('Nedtrekksmeny inni datagrid', 'Buss');
       cy.findByRole('radio', { name: 'Ja' }).should('be.checked');
       cy.findByRole('textbox', { name: 'Tekstområde inni datagrid' }).should('have.value', 'En vegg av tekst');
       cy.findByRole('textbox', { name: 'Tekstfelt inni datagrid' }).should('have.value', 'Katt');
