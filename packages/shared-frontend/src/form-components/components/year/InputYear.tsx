@@ -17,6 +17,7 @@ const InputYear = ({ component, submissionPath }: InputComponentProps) => (
       autoComplete={component.autocomplete}
       inputMode={component.inputType}
       spellCheck={component.spellCheck}
+      formatKey="year"
       readMore={resolveReadMore(component)}
     />
   </FormGroup>

@@ -27,6 +27,8 @@ const organizationNumber: Formatter = (value) => formatUtils.formatOrganizationN
 
 const organizationNumberRaw: Formatter = (value) => digitsOnly(value);
 
+const year: Formatter = (value) => digitsOnly(value);
+
 const number: Formatter = (value) => {
   const cleaned = digitsOnly(value);
   if (cleaned === '' || Number.isNaN(Number(cleaned))) return cleaned;
@@ -49,6 +51,7 @@ const formatters: Record<string, Formatter> = {
   phoneNumber,
   organizationNumber,
   organizationNumberRaw,
+  year,
   number,
   decimal,
 };
@@ -62,6 +65,7 @@ const submissionFormatters: Record<string, Formatter> = {
   organizationNumber: digitsOnly,
   organizationNumberRaw: digitsOnly,
   phoneNumber: digitsOnly,
+  year: digitsOnly,
 };
 
 export {
@@ -77,5 +81,6 @@ export {
   organizationNumberRaw,
   phoneNumber,
   submissionFormatters,
+  year,
 };
 export type { Formatter };

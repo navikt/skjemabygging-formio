@@ -10,6 +10,7 @@ import {
   organizationNumberRaw,
   phoneNumber,
   submissionFormatters,
+  year,
 } from './index';
 
 describe('formatters', () => {
@@ -26,6 +27,11 @@ describe('formatters', () => {
 
   it('strips spaces from phone numbers', () => {
     expect(phoneNumber('12 34 56 78')).toBe('12345678');
+  });
+
+  it('strips spaces from year values', () => {
+    expect(year('1 9 9 5')).toBe('1995');
+    expect(submissionFormatters.year('1 9 9 5')).toBe('1995');
   });
 
   it('normalizes identity and organization numbers for submission', () => {
