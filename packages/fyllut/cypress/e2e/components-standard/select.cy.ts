@@ -19,7 +19,9 @@ describe('Select', () => {
     it('should be able to select an option', () => {
       const label = 'Velg alternativ';
       cy.findByRole('combobox', { name: label }).type('Alternativ 1{downArrow}{enter}');
-      cy.assertCombobox(label, 'Alternativ 1');
+      cy.withinComponent(label, () => {
+        cy.assertCombobox('Alternativ 1');
+      });
     });
 
     it('should have description', () => {

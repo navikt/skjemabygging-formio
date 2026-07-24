@@ -19,7 +19,9 @@ describe('CountrySelect', () => {
     it('should be able to select an option', () => {
       const label = 'Velg land';
       cy.findByRole('combobox', { name: label }).type('Norg{downArrow}{enter}');
-      cy.assertCombobox(label, 'Norge');
+      cy.withinComponent(label, () => {
+        cy.assertCombobox('Norge');
+      });
     });
 
     it('should have description', () => {

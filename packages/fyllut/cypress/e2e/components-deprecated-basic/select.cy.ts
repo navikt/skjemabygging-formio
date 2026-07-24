@@ -19,11 +19,15 @@ describe('Select', () => {
       }).click();
       cy.findAllByRole('option').should('have.length', 3);
       cy.findByRole('combobox', { name: 'Nedtrekksmeny' }).type('App{downarrow}{enter}');
-      cy.assertCombobox('Nedtrekksmeny', 'Appelsin');
+      cy.withinComponent('Nedtrekksmeny', () => {
+        cy.assertCombobox('Appelsin');
+      });
 
       //Nedtrekksmeny med standard-verdi
       cy.findByRole('combobox', { name: 'Nedtrekksmeny med standardverdi' }).type('B{downArrow}{enter}');
-      cy.assertCombobox('Nedtrekksmeny med standardverdi', 'Blå');
+      cy.withinComponent('Nedtrekksmeny med standardverdi', () => {
+        cy.assertCombobox('Blå');
+      });
 
       cy.clickNextStep();
 
@@ -67,8 +71,12 @@ describe('Select', () => {
       cy.clickPreviousStep();
 
       // Verify that values are populated when navigating back to the select page
-      cy.assertCombobox('Nedtrekksmeny', 'Appelsin');
-      cy.assertCombobox('Nedtrekksmeny med standardverdi', 'Blå');
+      cy.withinComponent('Nedtrekksmeny', () => {
+        cy.assertCombobox('Appelsin');
+      });
+      cy.withinComponent('Nedtrekksmeny med standardverdi', () => {
+        cy.assertCombobox('Blå');
+      });
       cy.clickNextStep();
       cy.findAllByRole('combobox').eq(0).should('have.value', 'løve');
       cy.findAllByRole('combobox').eq(1).should('have.value', 'tyskland');
