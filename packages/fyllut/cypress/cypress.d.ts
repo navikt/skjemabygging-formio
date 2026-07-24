@@ -92,6 +92,8 @@ declare global {
 
       assertCombobox(optionLabel: string | RegExp): Chainable<JQuery<HTMLElement>>;
 
+      selectCombobox(label: string | RegExp, value: string | RegExp): Chainable<JQuery<HTMLElement>>;
+
       findByLabelOptional(label: string): Chainable<JQuery<HTMLElement>>;
 
       findAllByErrorMessageRequired(label: string): Chainable<JQuery<HTMLElement>>;

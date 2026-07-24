@@ -11,16 +11,16 @@ describe('Phone number with area code', () => {
 
     const fillForm = (phoneNumber: string, areaCode?: string | RegExp) => {
       if (areaCode) {
-        cy.withinComponent(/Telefonnummer med landskode/, () => {
-          cy.assertCombobox(areaCode);
+        const areaCodeSearch = typeof areaCode === 'string' ? areaCode : areaCode.source;
+
+        cy.withinComponent('Telefonnummer med landskode', () => {
+          cy.selectCombobox(areaCodeLabel, areaCodeSearch);
           cy.findByRole('textbox').clear();
           cy.findByRole('textbox').type(phoneNumber);
         });
       } else {
-        cy.withinComponent(/Telefonnummer ikke påkrevd/, () => {
-          cy.findByRole('textbox').clear();
-          cy.findByRole('textbox').type(phoneNumber);
-        });
+        cy.findByRole('textbox', { name: 'Telefonnummer' }).clear();
+        cy.findByRole('textbox', { name: 'Telefonnummer' }).type(phoneNumber);
       }
     };
 
@@ -33,7 +33,7 @@ describe('Phone number with area code', () => {
           cy.findByRole('link', { name: 'Du må fylle ut: Telefonnummer' }).should('exist');
         });
       fillForm('sdfd', '+47');
-      fillForm('sdfd');
+      fillForm('sdfd2');
       cy.get('[data-cy=error-summary]')
         .should('exist')
         .within(() => {
@@ -56,7 +56,9 @@ describe('Phone number with area code', () => {
 
     it('should format phone number when area code is +47 and phone numer length is 8', () => {
       fillForm('12345678', '+47');
-      cy.assertCombobox(areaCodeLabel, '+47');
+      cy.withinComponent(areaCodeLabel, () => {
+        cy.assertCombobox('+47');
+      });
       fillForm('12345678');
       cy.clickShowAllSteps();
       cy.findByRole('link', { name: 'Oppsummering' }).click();
@@ -67,7 +69,9 @@ describe('Phone number with area code', () => {
 
     it('should not format phone number when area code is +48 and phone number length is 8', () => {
       fillForm('12345678', '+48');
-      cy.assertCombobox(areaCodeLabel, '+48');
+      cy.withinComponent(areaCodeLabel, () => {
+        cy.assertCombobox('+48');
+      });
       fillForm('12345678');
       cy.clickShowAllSteps();
       cy.findByRole('link', { name: 'Oppsummering' }).click();
