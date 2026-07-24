@@ -1,10 +1,10 @@
 import { Checkbox as AkselCheckbox, ErrorMessage } from '@navikt/ds-react';
 import { useEffect } from 'react';
-import { useLanguage } from '../../context/language/LanguageContext';
 import { useStateField } from '../../context/state/useStateField';
 import { inputId } from '../../utils/inputId';
 import ReadMore from '../read-more/ReadMore';
 import FormElementBox from '../shared/FormElementBox';
+import TranslatedDescription from '../shared/TranslatedDescription';
 import TranslatedLabel from '../shared/TranslatedLabel';
 import { BaseFieldProps } from '../types';
 
@@ -29,32 +29,42 @@ const Checkbox = ({
   onChange,
   showInlineError = true,
 }: CheckboxProps) => {
-  const { translate } = useLanguage();
   const { stateValue, error, setStateValue } = useStateField({ statePath });
   const current = checked ?? stateValue === true;
 
   useEffect(() => {
-    if (checked !== undefined || typeof stateValue === 'boolean' || defaultValue === undefined) {
+    if (checked !== undefined || typeof stateValue === 'boolean') {
       return;
     }
 
-    setStateValue(defaultValue);
-  }, [checked, defaultValue, setStateValue, stateValue]);
+    if (defaultValue !== undefined) {
+      setStateValue(defaultValue);
+      return;
+    }
+
+    if (readOnly) {
+      setStateValue(false);
+    }
+  }, [checked, defaultValue, readOnly, setStateValue, stateValue]);
 
   return (
     <FormElementBox marginBottom={marginBottom}>
       <AkselCheckbox
         id={inputId(statePath)}
         checked={current}
-        onChange={(event) => (onChange ? onChange(event.target.checked) : setStateValue(event.target.checked))}
+        onChange={(event) => {
+          if (readOnly) {
+            return;
+          }
+          return onChange ? onChange(event.target.checked) : setStateValue(event.target.checked);
+        }}
         error={!!error}
-        readOnly={readOnly}
-        description={description ? translate(description) : undefined}
       >
         <TranslatedLabel required={required} readOnly={readOnly}>
           {label}
         </TranslatedLabel>
       </AkselCheckbox>
+      {description && <TranslatedDescription>{description}</TranslatedDescription>}
       {showInlineError && error && <ErrorMessage>{error}</ErrorMessage>}
       {readMore && <ReadMore {...readMore} />}
     </FormElementBox>

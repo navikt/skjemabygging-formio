@@ -65,8 +65,11 @@ const RadioGroup = ({
         readOnly={readOnly}
       >
         {values.map(({ value, label, description: optionDescription }) => (
-          <Radio key={value} value={value} description={optionDescription && translate(optionDescription)}>
-            {translate(label)}
+          <Radio key={value} value={value}>
+            <>
+              {translate(label)}
+              {optionDescription && <TranslatedDescription>{optionDescription}</TranslatedDescription>}
+            </>
           </Radio>
         ))}
       </AkselRadioGroup>
