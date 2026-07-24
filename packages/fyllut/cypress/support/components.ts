@@ -10,10 +10,13 @@ Cypress.Commands.add('withinSummaryGroup', (heading, fn) => {
   cy.findByRole('heading', { level: 3, name: heading }).closest('.aksel-form-summary').within(fn);
 });
 
+/*
 Cypress.Commands.add('assertCombobox', (label, optionLabel) => {
-  return cy.withinComponent(label, () => {
-    cy.findByRole('option', { name: optionLabel, hidden: true }).should('have.attr', 'aria-selected', 'true');
-  });
+  return cy.findByRole('combobox', { name: label }).should('have.value', optionLabel);
+});*/
+
+Cypress.Commands.add('assertCombobox', (optionLabel) => {
+  return cy.get('.aksel-combobox__selected-options').contains(optionLabel);
 });
 
 Cypress.Commands.add('findByLabelOptional', (label) => {

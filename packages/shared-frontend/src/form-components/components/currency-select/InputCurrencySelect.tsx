@@ -9,6 +9,7 @@ import {
   resolveReadMore,
   resolveSubmissionPath,
 } from '../../inputComponentRegistryUtils';
+import FormGroup from '../../shared/FormGroup';
 
 const CURRENCY_OPTIONS_URL = '/fyllut/api/common-codes/currencies';
 
@@ -36,16 +37,18 @@ const InputCurrencySelect = ({ component, submissionPath }: InputComponentProps)
   }
 
   return (
-    <Select
-      statePath={resolveSubmissionPath(component, submissionPath)}
-      label={component.label}
-      description={component.description}
-      values={values}
-      required={isRequired(component)}
-      readMore={resolveReadMore(component)}
-      selectType="combobox"
-      valueType="option"
-    />
+    <FormGroup>
+      <Select
+        statePath={resolveSubmissionPath(component, submissionPath)}
+        label={component.label}
+        description={component.description}
+        values={values}
+        required={isRequired(component)}
+        readMore={resolveReadMore(component)}
+        selectType="combobox"
+        valueType="option"
+      />
+    </FormGroup>
   );
 };
 

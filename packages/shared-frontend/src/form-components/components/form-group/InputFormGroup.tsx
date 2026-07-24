@@ -2,6 +2,7 @@ import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import Fieldset from '../../../components/fieldset/Fieldset';
 import RenderInputForm from '../../RenderInputForm';
 import { InputComponentRegistry } from '../../inputComponentRegistry';
+import FormGroup from '../../shared/FormGroup';
 import styles from './InputFormGroup.module.css';
 
 interface InputFormGroupProps {
@@ -25,11 +26,13 @@ const InputFormGroup = ({ component, componentRegistry }: InputFormGroupProps) =
     .join(' ');
 
   return (
-    <Fieldset legend={legend ?? label ?? key} description={description} hideLegend={hideLabel}>
-      <div className={contentClassName}>
-        <RenderInputForm components={components} componentRegistry={componentRegistry} />
-      </div>
-    </Fieldset>
+    <FormGroup>
+      <Fieldset legend={legend ?? label ?? key} description={description} hideLegend={hideLabel}>
+        <div className={contentClassName}>
+          <RenderInputForm components={components} componentRegistry={componentRegistry} />
+        </div>
+      </Fieldset>
+    </FormGroup>
   );
 };
 

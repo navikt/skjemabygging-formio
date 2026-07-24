@@ -19,6 +19,7 @@ import { useValidation } from '../../../context/validation/ValidationContext';
 import { useValidationScope } from '../../../context/validation/ValidationScopeContext';
 import { InputComponentRegistry } from '../../inputComponentRegistry';
 import RenderInputForm from '../../RenderInputForm';
+import FormGroup from '../../shared/FormGroup';
 import { addDataGridRowId, getRenderedDataGridRows, removeDataGridRowId, syncDataGridRowIds } from './dataGridRows';
 import styles from './InputDataGrid.module.css';
 
@@ -53,7 +54,7 @@ const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => 
 
   const addRow = () => {
     setRowIds((previousRowIds) => addDataGridRowId(previousRowIds));
-    updateRows([...dataGridRows, {}]);
+    updateRows([...dataGridRows, ...(dataGridRows.length === 0 && renderedRows.length > 0 ? [{}] : []), {}]);
   };
   const removeRow = (index: number) => {
     setRowIds((previousRowIds) => removeDataGridRowId(previousRowIds, index));
@@ -65,48 +66,55 @@ const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => 
   }
 
   return (
-    <Box marginBlock="space-0 space-40" data-cy="input-datagrid">
-      {(label || description) && (
-        <div className={styles.header}>
-          {label && <Label as="div">{translate(label)}</Label>}
-          {description && (
-            <div className={styles.description}>
-              <TranslatedDescription>{description}</TranslatedDescription>
-            </div>
-          )}
-        </div>
-      )}
-
-      <div className={styles.rows}>
-        {renderedRows.map((row, index) => {
-          const rowComponents = getActiveRowComponents(rowComponentTemplates[index] ?? [], row, submission?.data, form);
-
-          return (
-            <div key={rowIds[index] ?? `${component.key}-${index}`} className={styles.row}>
-              <div className={styles.rowHeader}>
-                <Heading level="3" size="small">
-                  {translate(rowTitle || label || component.key)} {index + 1}
-                </Heading>
-                {!disableAddingRemovingRows && (
-                  <Button type="button" variant="secondary" size="small" onClick={() => removeRow(index)}>
-                    {translate(removeAnother || 'Fjern')}
-                  </Button>
-                )}
+    <FormGroup>
+      <Box marginBlock="space-0 space-40" data-cy="input-datagrid">
+        {(label || description) && (
+          <div className={styles.header}>
+            {label && <Label as="div">{translate(label)}</Label>}
+            {description && (
+              <div className={styles.description}>
+                <TranslatedDescription>{description}</TranslatedDescription>
               </div>
-              <RenderInputForm components={rowComponents} componentRegistry={componentRegistry} />
-            </div>
-          );
-        })}
-      </div>
+            )}
+          </div>
+        )}
 
-      {!disableAddingRemovingRows && (
-        <Box marginBlock="space-16 space-0">
-          <Button type="button" variant="secondary" onClick={addRow}>
-            {translate(addAnother || 'Legg til')}
-          </Button>
-        </Box>
-      )}
-    </Box>
+        <div className={styles.rows}>
+          {renderedRows.map((row, index) => {
+            const rowComponents = getActiveRowComponents(
+              rowComponentTemplates[index] ?? [],
+              row,
+              submission?.data,
+              form,
+            );
+
+            return (
+              <div key={rowIds[index] ?? `${component.key}-${index}`} className={styles.row}>
+                <div className={styles.rowHeader}>
+                  <Heading level="3" size="small">
+                    {translate(rowTitle || label || component.key)} {index + 1}
+                  </Heading>
+                  {!disableAddingRemovingRows && (
+                    <Button type="button" variant="secondary" size="small" onClick={() => removeRow(index)}>
+                      {translate(removeAnother || 'Fjern')}
+                    </Button>
+                  )}
+                </div>
+                <RenderInputForm components={rowComponents} componentRegistry={componentRegistry} />
+              </div>
+            );
+          })}
+        </div>
+
+        {!disableAddingRemovingRows && (
+          <Box marginBlock="space-16 space-0">
+            <Button type="button" variant="secondary" onClick={addRow}>
+              {translate(addAnother || 'Legg til')}
+            </Button>
+          </Box>
+        )}
+      </Box>
+    </FormGroup>
   );
 };
 

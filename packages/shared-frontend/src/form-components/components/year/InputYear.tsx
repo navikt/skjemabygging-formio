@@ -5,18 +5,21 @@ import {
   resolveReadMore,
   resolveSubmissionPath,
 } from '../../inputComponentRegistryUtils';
+import FormGroup from '../../shared/FormGroup';
 
 const InputYear = ({ component, submissionPath }: InputComponentProps) => (
-  <TextField
-    statePath={resolveSubmissionPath(component, submissionPath)}
-    label={component.label}
-    description={component.description}
-    required={isRequired(component)}
-    autoComplete={component.autocomplete}
-    inputMode={component.inputType}
-    spellCheck={component.spellCheck}
-    readMore={resolveReadMore(component)}
-  />
+  <FormGroup>
+    <TextField
+      statePath={resolveSubmissionPath(component, submissionPath)}
+      label={component.label}
+      description={component.description}
+      required={isRequired(component)}
+      autoComplete={component.autocomplete}
+      inputMode={component.inputType}
+      spellCheck={component.spellCheck}
+      readMore={resolveReadMore(component)}
+    />
+  </FormGroup>
 );
 
 export default InputYear;

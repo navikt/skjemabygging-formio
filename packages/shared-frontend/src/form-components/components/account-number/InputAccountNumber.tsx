@@ -5,19 +5,22 @@ import {
   resolveReadMore,
   resolveSubmissionPath,
 } from '../../inputComponentRegistryUtils';
+import FormGroup from '../../shared/FormGroup';
 
 const InputAccountNumber = ({ component, submissionPath }: InputComponentProps) => (
-  <TextField
-    statePath={resolveSubmissionPath(component, submissionPath)}
-    label={component.label}
-    description={component.description}
-    required={isRequired(component)}
-    readOnly={component.readOnly}
-    readMore={resolveReadMore(component)}
-    inputMode="numeric"
-    spellCheck={false}
-    formatKey="accountNumber"
-  />
+  <FormGroup>
+    <TextField
+      statePath={resolveSubmissionPath(component, submissionPath)}
+      label={component.label}
+      description={component.description}
+      required={isRequired(component)}
+      readOnly={component.readOnly}
+      readMore={resolveReadMore(component)}
+      inputMode="numeric"
+      spellCheck={false}
+      formatKey="accountNumber"
+    />
+  </FormGroup>
 );
 
 export default InputAccountNumber;

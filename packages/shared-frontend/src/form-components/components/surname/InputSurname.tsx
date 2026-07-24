@@ -6,20 +6,23 @@ import {
   resolveReadMore,
   resolveSubmissionPath,
 } from '../../inputComponentRegistryUtils';
+import FormGroup from '../../shared/FormGroup';
 
 const InputSurname = ({ component, submissionPath }: InputComponentProps) => (
-  <TextField
-    statePath={resolveSubmissionPath(component, submissionPath)}
-    label={component.label}
-    description={component.description}
-    required={isRequired(component)}
-    autoComplete={component.autocomplete}
-    inputMode={component.inputType}
-    type={resolveInputType(component)}
-    spellCheck={component.spellCheck}
-    prefillValue={component.prefillValue}
-    readMore={resolveReadMore(component)}
-  />
+  <FormGroup>
+    <TextField
+      statePath={resolveSubmissionPath(component, submissionPath)}
+      label={component.label}
+      description={component.description}
+      required={isRequired(component)}
+      autoComplete={component.autocomplete}
+      inputMode={component.inputType}
+      type={resolveInputType(component)}
+      spellCheck={component.spellCheck}
+      prefillValue={component.prefillValue}
+      readMore={resolveReadMore(component)}
+    />
+  </FormGroup>
 );
 
 export default InputSurname;

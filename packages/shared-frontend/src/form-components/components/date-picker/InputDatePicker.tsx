@@ -8,6 +8,7 @@ import {
   resolveReadMore,
   resolveSubmissionPath,
 } from '../../inputComponentRegistryUtils';
+import FormGroup from '../../shared/FormGroup';
 
 const InputDatePicker = ({ component, submissionPath }: InputComponentProps) => {
   const { submission } = useSubmissionState();
@@ -15,16 +16,18 @@ const InputDatePicker = ({ component, submissionPath }: InputComponentProps) => 
   const statePath = resolveSubmissionPath(component, submissionPath);
 
   return (
-    <DatePicker
-      statePath={statePath}
-      label={component.label}
-      description={component.description}
-      required={isRequired(component)}
-      readOnly={component.readOnly}
-      fromDate={getDatePickerFromDate(component, pageComponents, submission)}
-      toDate={getDatePickerToDate(component)}
-      readMore={resolveReadMore(component)}
-    />
+    <FormGroup>
+      <DatePicker
+        statePath={statePath}
+        label={component.label}
+        description={component.description}
+        required={isRequired(component)}
+        readOnly={component.readOnly}
+        fromDate={getDatePickerFromDate(component, pageComponents, submission)}
+        toDate={getDatePickerToDate(component)}
+        readMore={resolveReadMore(component)}
+      />
+    </FormGroup>
   );
 };
 

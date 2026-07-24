@@ -2,6 +2,7 @@ import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import Alert, { AlertVariant } from '../../../components/alert/Alert';
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { sanitizeHtml } from '../../../utils/sanitizeHtml';
+import FormGroup from '../../shared/FormGroup';
 
 interface InputAlertProps {
   component: Component;
@@ -31,9 +32,11 @@ const InputAlert = ({ component }: InputAlertProps) => {
   }
 
   return (
-    <Alert variant={getVariant(component.alerttype)} inline={component.isInline}>
-      <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(translate(component.content)) }} />
-    </Alert>
+    <FormGroup>
+      <Alert variant={getVariant(component.alerttype)} inline={component.isInline}>
+        <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(translate(component.content)) }} />
+      </Alert>
+    </FormGroup>
   );
 };
 

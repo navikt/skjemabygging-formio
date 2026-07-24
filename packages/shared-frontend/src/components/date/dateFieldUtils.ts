@@ -50,6 +50,16 @@ const getBeforeDateInputSubmissionPath = (component: Component, pageComponents: 
 
   const currentPath = getResolvedSubmissionPath(component);
   const currentRowPrefix = getCurrentRowPrefix(currentPath);
+  const normalizedRowPrefix = currentRowPrefix ? normalizeArrayIndexes(currentRowPrefix) : undefined;
+
+  if (
+    currentRowPrefix &&
+    normalizedRowPrefix &&
+    (component.beforeDateInputKey === normalizedRowPrefix ||
+      component.beforeDateInputKey.startsWith(`${normalizedRowPrefix}.`))
+  ) {
+    return `${currentRowPrefix}${component.beforeDateInputKey.slice(normalizedRowPrefix.length)}`;
+  }
 
   return flattenComponentsWithBaseSubmissionPath(pageComponents)
     .map((pageComponent) => getResolvedSubmissionPath(pageComponent))

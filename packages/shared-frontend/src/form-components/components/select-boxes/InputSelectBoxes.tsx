@@ -8,6 +8,7 @@ import {
   resolveReadMore,
   resolveSubmissionPath,
 } from '../../inputComponentRegistryUtils';
+import FormGroup from '../../shared/FormGroup';
 
 const InputSelectBoxes = ({ component, submissionPath }: InputComponentProps) => {
   const statePath = resolveSubmissionPath(component, submissionPath);
@@ -15,17 +16,19 @@ const InputSelectBoxes = ({ component, submissionPath }: InputComponentProps) =>
   const { stateValue, error, setStateValue } = useStateField({ statePath });
 
   return (
-    <CheckboxGroup
-      statePath={statePath}
-      legend={component.label}
-      description={component.description}
-      values={values}
-      value={getSelectedValuesAsList(stateValue as Record<string, boolean> | undefined)}
-      onChange={(selectedValues) => setStateValue(getSelectedValuesMap(values, selectedValues))}
-      error={error}
-      required={isRequired(component)}
-      readMore={resolveReadMore(component)}
-    />
+    <FormGroup>
+      <CheckboxGroup
+        statePath={statePath}
+        legend={component.label}
+        description={component.description}
+        values={values}
+        value={getSelectedValuesAsList(stateValue as Record<string, boolean> | undefined)}
+        onChange={(selectedValues) => setStateValue(getSelectedValuesMap(values, selectedValues))}
+        error={error}
+        required={isRequired(component)}
+        readMore={resolveReadMore(component)}
+      />
+    </FormGroup>
   );
 };
 

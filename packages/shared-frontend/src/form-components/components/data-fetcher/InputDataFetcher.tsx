@@ -6,6 +6,7 @@ import { useAppConfig } from '../../../context/app-config/AppConfigContext';
 import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
 import { parseSubmissionPath, setDeepValue } from '../../../context/state/stateHelpers';
 import { InputComponentProps, resolveReadMore, resolveSubmissionPath } from '../../inputComponentRegistryUtils';
+import FormGroup from '../../shared/FormGroup';
 
 const InputDataFetcher = ({ component, submissionPath }: InputComponentProps) => {
   type SubmissionMetadata = NonNullable<Submission['metadata']>;
@@ -101,14 +102,16 @@ const InputDataFetcher = ({ component, submissionPath }: InputComponentProps) =>
   }
 
   return (
-    <DataFetcher
-      statePath={statePath}
-      label={component.label ?? 'Datahenter'}
-      description={component.description}
-      readMore={readMore}
-      values={values}
-      required={component.validate?.required ?? false}
-    />
+    <FormGroup>
+      <DataFetcher
+        statePath={statePath}
+        label={component.label ?? 'Datahenter'}
+        description={component.description}
+        readMore={readMore}
+        values={values}
+        required={component.validate?.required ?? false}
+      />
+    </FormGroup>
   );
 };
 

@@ -2,6 +2,7 @@ import { Box } from '@navikt/ds-react';
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import { InputComponentRegistry } from '../../inputComponentRegistry';
 import RenderInputForm from '../../RenderInputForm';
+import FormGroup from '../../shared/FormGroup';
 
 interface InputContainerProps {
   component: Component;
@@ -14,9 +15,11 @@ const InputContainer = ({ component, componentRegistry }: InputContainerProps) =
   }
 
   return (
-    <Box data-cy="input-container">
-      <RenderInputForm components={component.components} componentRegistry={componentRegistry} />
-    </Box>
+    <FormGroup>
+      <Box data-cy="input-container">
+        <RenderInputForm components={component.components} componentRegistry={componentRegistry} />
+      </Box>
+    </FormGroup>
   );
 };
 
