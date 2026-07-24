@@ -24,7 +24,7 @@ describe('Phone number with area code', () => {
       }
     };
 
-    it.only('triggers errors', () => {
+    it('triggers errors', () => {
       cy.clickSaveAndContinue();
 
       cy.get('[data-cy=error-summary]')
