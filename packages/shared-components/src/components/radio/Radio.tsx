@@ -1,6 +1,6 @@
 import { Radio as AkselRadio, RadioGroup as AkselRadioGroup } from '@navikt/ds-react';
 import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
-import { forwardRef, ReactNode } from 'react';
+import { forwardRef, Fragment, ReactNode } from 'react';
 import { useComponentUtils } from '../../context/component/componentUtilsContext';
 
 interface Props {
@@ -32,23 +32,37 @@ const Radio = forwardRef<HTMLFieldSetElement, Props>(
         error={error}
         tabIndex={-1}
       >
-        {values.map((obj, index, arr) => (
-          <AkselRadio
-            key={obj.value}
-            value={obj.value}
-            description={translate(obj.description)}
-            onFocus={focusHandler(obj.value)}
-            onBlur={blurHandler(obj.value)}
-            ref={(r) => {
-              addRef(obj.value, r);
-              if (r && reactResolve && index === arr.length - 1) {
-                reactResolve();
-              }
-            }}
-          >
-            {translate(obj.label)}
-          </AkselRadio>
-        ))}
+        {values.map((obj, index, arr) => {
+          const label = translate(obj.label);
+          const optionDescription = translate(obj.description);
+          const descriptionId = optionDescription ? `${id}-${index}-description` : undefined;
+
+          return (
+            <Fragment key={obj.value}>
+              <AkselRadio
+                value={obj.value}
+                aria-label={label}
+                aria-describedby={descriptionId}
+                description={optionDescription}
+                onFocus={focusHandler(obj.value)}
+                onBlur={blurHandler(obj.value)}
+                ref={(r) => {
+                  addRef(obj.value, r);
+                  if (r && reactResolve && index === arr.length - 1) {
+                    reactResolve();
+                  }
+                }}
+              >
+                {label}
+              </AkselRadio>
+              {optionDescription && (
+                <span id={descriptionId} hidden>
+                  {optionDescription}
+                </span>
+              )}
+            </Fragment>
+          );
+        })}
       </AkselRadioGroup>
     );
   },

@@ -1,6 +1,6 @@
 import { RadioGroup as AkselRadioGroup, Radio } from '@navikt/ds-react';
 import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect } from 'react';
+import { Fragment, useEffect } from 'react';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useStateField } from '../../context/state/useStateField';
 import { inputId } from '../../utils/inputId';
@@ -64,14 +64,27 @@ const RadioGroup = ({
         error={currentError}
         readOnly={readOnly}
       >
-        {values.map(({ value, label, description: optionDescription }) => (
-          <Radio key={value} value={value}>
-            <>
-              {translate(label)}
-              {optionDescription && <TranslatedDescription>{optionDescription}</TranslatedDescription>}
-            </>
-          </Radio>
-        ))}
+        {values.map(({ value: optionValue, label, description: optionDescription }) => {
+          const translatedLabel = translate(label);
+          const translatedDescription = optionDescription ? translate(optionDescription) : undefined;
+          const descriptionId = translatedDescription ? `${inputId(statePath)}-${optionValue}-description` : undefined;
+
+          return (
+            <Fragment key={optionValue}>
+              <Radio value={optionValue} aria-label={translatedLabel} aria-describedby={descriptionId}>
+                <>
+                  {translatedLabel}
+                  {optionDescription && <TranslatedDescription>{optionDescription}</TranslatedDescription>}
+                </>
+              </Radio>
+              {translatedDescription && (
+                <span id={descriptionId} hidden>
+                  {translatedDescription}
+                </span>
+              )}
+            </Fragment>
+          );
+        })}
       </AkselRadioGroup>
       {readMore && <ReadMore {...readMore} />}
     </FormElementBox>
