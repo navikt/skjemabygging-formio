@@ -51,8 +51,8 @@ const CheckboxGroup = ({
         error={currentError}
         readOnly={readOnly}
       >
-        {values.map(({ value, label }) => (
-          <Checkbox key={value} value={value}>
+        {values.map(({ value, label, description }) => (
+          <Checkbox key={value} value={value} description={description ? translate(description) : undefined}>
             {translate(label)}
           </Checkbox>
         ))}
