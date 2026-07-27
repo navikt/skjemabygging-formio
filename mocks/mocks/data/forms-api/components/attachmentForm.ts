@@ -56,5 +56,18 @@ const attachmentTestForm = () => {
   });
 };
 
-const attachmentTranslations = () => getMockTranslationsFromForm(attachmentTestForm());
+const attachmentTranslations = () => {
+  const translations = getMockTranslationsFromForm(attachmentTestForm());
+
+  return {
+    ...translations,
+    data: {
+      ...translations.data,
+      i18n: {
+        ...translations.data.i18n,
+        Vedlegg: 'Vedlegg (en)',
+      },
+    },
+  };
+};
 export { attachmentTestForm, attachmentTranslations };

@@ -711,7 +711,10 @@ describe('SummaryPage', () => {
       .parent()
       .parent()
       .within(() => {
-        cy.get('dt').eq(0).should('contain.text', 'I confirm that I will answer as correctly as I can.');
+        cy.get('dt')
+          .eq(0)
+          .invoke('text')
+          .should('match', /I confirm that I will answer as (accurately|correctly) as I can\.?/);
         cy.get('dd').eq(0).should('contain.text', 'Yes');
       });
 

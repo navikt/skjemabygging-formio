@@ -66,6 +66,20 @@ const radioPanelForm = () => {
   });
 };
 
-const radioPanelTranslations = () => getMockTranslationsFromForm(radioPanelForm());
+const radioPanelTranslations = () => {
+  const translations = getMockTranslationsFromForm(radioPanelForm());
+
+  return {
+    ...translations,
+    data: {
+      ...translations.data,
+      i18n: {
+        ...translations.data.i18n,
+        Ja: 'Ja (en)',
+        Nei: 'Nei (en)',
+      },
+    },
+  };
+};
 
 export { radioPanelForm, radioPanelTranslations };

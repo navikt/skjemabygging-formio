@@ -444,7 +444,7 @@ describe('Pdf', () => {
     describe('Default signature', () => {
       it('Check the default empty signature', () => {
         cy.mocksUseRouteVariant('post-familie-pdf:success-tc16');
-        cy.intercept('GET', 'fyllut/api/forms/stpaper*', (req) => {
+        cy.intercept('GET', 'fyllut/api/forms/pdfpaperdigital*', (req) => {
           req.continue((res) => {
             if (res.body) {
               expect(res.body.properties?.signatures[0]).to.be.not.undefined;
@@ -456,7 +456,7 @@ describe('Pdf', () => {
           });
         }).as('getFormDefaultSignature');
 
-        cy.visit('/fyllut/stpaperdigital?sub=paper');
+        cy.visit('/fyllut/pdfpaperdigital?sub=paper');
 
         cy.wait('@getConfig');
         cy.wait('@getFormDefaultSignature');
@@ -479,7 +479,7 @@ describe('Pdf', () => {
 
       it('Check the old default signature (undefined)', () => {
         cy.mocksUseRouteVariant('post-familie-pdf:success-tc17');
-        cy.intercept('GET', 'fyllut/api/forms/stpaper*', (req) => {
+        cy.intercept('GET', 'fyllut/api/forms/pdfpaper*', (req) => {
           req.continue((res) => {
             if (res.body) {
               expect(res.body.properties?.signatures).to.be.undefined;
@@ -487,7 +487,7 @@ describe('Pdf', () => {
           });
         }).as('getFormOldSignature');
 
-        cy.visit('/fyllut/stpaper?sub=paper');
+        cy.visit('/fyllut/pdfpaper?sub=paper');
 
         cy.wait('@getConfig');
         cy.wait('@getFormOldSignature');

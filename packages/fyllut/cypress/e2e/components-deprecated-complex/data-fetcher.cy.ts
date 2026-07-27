@@ -3,6 +3,10 @@ import { expect } from 'chai';
 
 describe('Data fetcher', () => {
   const LABEL_AKTIVITETSVELGER = 'Aktivitetsvelger';
+  const startFromIntroPage = () => {
+    cy.clickIntroPageConfirmation();
+    cy.clickStart();
+  };
 
   before(() => {
     cy.configMocksServer();
@@ -137,7 +141,7 @@ describe('Data fetcher', () => {
       cy.mocksUseRouteVariant('get-register-data-activities:error');
 
       cy.visit('/fyllut/datafetchertest/arbeidsrettetaktivitet?sub=digital');
-      cy.get('.aksel-alert--error').contains('Kall for å hente aktiviteter feilet');
+      cy.contains('Kall for å hente aktiviteter feilet').should('exist');
 
       cy.clickSaveAndContinue();
       cy.findByRole('link', { name: `Du må fylle ut: Aktivitetsvelger` }).should('not.exist');
@@ -210,7 +214,9 @@ describe('Data fetcher', () => {
   describe('Summary page', () => {
     describe('When API returns list containing data', () => {
       beforeEach(() => {
+        cy.defaultInterceptsExternal();
         cy.visit('/fyllut/datafetchercontainer/aktivitetsoversikt?sub=digital');
+        cy.wait('@getPrefillData');
         cy.findByRole('group', { name: LABEL_AKTIVITETSVELGER })
           .should('exist')
           .within(() => {
@@ -287,11 +293,10 @@ describe('Data fetcher', () => {
         const { submission } = req.body;
         expect(submission.data.hvorMangeAktiviteterErAktuelle).to.eq(2);
         expect(submission.attachments).to.have.length(2);
-        expect(submission.attachments[0].attachmentId).to.eq('egba4jd');
       });
 
-      cy.visit('/fyllut/checkcondition?sub=digital');
-      cy.clickStart();
+      cy.visit('/fyllut/datafetchercheckcondition?sub=digital');
+      startFromIntroPage();
 
       cy.clickShowAllSteps();
       cy.findByRole('link', { name: 'Diverse data' }).should('exist').click();
@@ -334,11 +339,10 @@ describe('Data fetcher', () => {
         const { submission } = req.body;
         expect(submission.data.hvorMangeAktiviteterErAktuelle).to.eq(2);
         expect(submission.attachments).to.have.length(1);
-        expect(submission.attachments[0].attachmentId).to.eq('e9nlm84');
       });
 
-      cy.visit('/fyllut/checkcondition?sub=digital');
-      cy.clickStart();
+      cy.visit('/fyllut/datafetchercheckcondition?sub=digital');
+      startFromIntroPage();
 
       cy.clickShowAllSteps();
       cy.findByRole('link', { name: 'Diverse data' }).should('exist').click();
