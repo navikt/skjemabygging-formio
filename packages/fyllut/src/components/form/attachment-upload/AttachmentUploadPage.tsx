@@ -169,7 +169,7 @@ const AttachmentUploadPage = ({ attachmentPanel, onPrevious, onNext }: Props) =>
   return (
     <>
       {errorItems.length > 0 && (
-        <ErrorSummary heading={translate(TEXTS.validering.error)} size="small">
+        <ErrorSummary heading={translate(TEXTS.validering.error)} size="small" data-cy="error-summary">
           {errorItems.map((errorItem) => (
             <ErrorSummary.Item
               key={errorItem.key}

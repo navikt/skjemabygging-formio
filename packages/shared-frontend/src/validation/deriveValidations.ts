@@ -1,4 +1,5 @@
 import {
+  checkCondition,
   Component,
   dataFetcherUtils,
   dateUtils,
@@ -88,6 +89,11 @@ const createDescriptor = (
   rules,
   ...(component.type === 'attachment' ? { component } : {}),
 });
+
+const getConditionRow = (component: Component, submission?: Submission) =>
+  component.baseSubmissionPath
+    ? submissionUtils.getSubmissionValue(component.baseSubmissionPath, submission)
+    : undefined;
 
 /**
  * The identity component stores a nested object and shows a "do you have an identity number" radio,
@@ -417,6 +423,21 @@ const collectValidationDescriptors = (
 
     const rules = toRules(component, pageComponents, submission, submissionMethod);
     const submissionPath = getResolvedSubmissionPath(component);
+    const isVisible =
+      !component.hidden &&
+      checkCondition(
+        component,
+        getConditionRow(component, submission),
+        submission?.data,
+        undefined,
+        undefined,
+        submission,
+        { submissionMethod },
+      );
+
+    if (!isVisible) {
+      return [];
+    }
 
     if (component.type === 'identity') {
       return collectIdentityDescriptors(component, submission);

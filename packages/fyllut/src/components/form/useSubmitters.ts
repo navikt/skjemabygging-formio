@@ -12,7 +12,7 @@ import { RECEIPT_KEY } from './wizard/constants';
  * method. shared-frontend stays decoupled: it only orchestrates when to call these, while fyllut
  * owns the concrete send-inn / mellomlagring IO and the innsendingsId lifecycle.
  *
- * - digital: mellomlagring (create then update draft) + final submit via legacy application-submit/receipt flow.
+ * - digital: mellomlagring (create then update draft) + final submit via shared receipt flow.
  * - digitalnologin: single nologin-application submit (wired, not yet e2e-verified).
  * - paper: finalization is handled by the legacy letter/PDF flow (wired, not yet e2e-verified).
  */
@@ -163,21 +163,6 @@ const useSubmitters = (form: Form, initialInnsendingsId?: string): FormPersisten
           const innsendingsId = await ensureInnsendingsId(submission);
           if (!innsendingsId) {
             return;
-          }
-          if (form.path === 'newrender') {
-            let redirectLocation: string | undefined = undefined;
-            await sendInnSoknadApi.updateUtfyltSoknad(
-              appConfig,
-              navForm,
-              submission,
-              currentLanguage as Language,
-              innsendingsId,
-              (location) => (redirectLocation = location),
-            );
-            if (redirectLocation) {
-              window.location.href = redirectLocation;
-            }
-            break;
           }
           const response = await sendInnSoknadApi.postNologinSoknad(
             appConfig,

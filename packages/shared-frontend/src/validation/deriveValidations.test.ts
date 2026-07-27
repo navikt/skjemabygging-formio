@@ -502,6 +502,41 @@ describe('deriveValidations', () => {
     ]);
   });
 
+  it('skips hidden conditional nested fields in your information', () => {
+    const components = [
+      {
+        key: 'dineOpplysninger',
+        type: 'container',
+        yourInformation: true,
+        components: [
+          {
+            key: 'addressValidity',
+            type: 'addressValidity',
+            input: true,
+            validate: { required: true },
+            customConditional:
+              'show = row.adresse.borDuINorge === "nei" || (row.adresse.borDuINorge === "ja" && row.adresse.vegadresseEllerPostboksadresse)',
+          },
+        ],
+      },
+    ] as unknown as Component[];
+
+    expect(
+      deriveValidations(components, {
+        data: {
+          dineOpplysninger: {
+            adresse: {
+              adresse: 'Testveien 1C',
+              postnummer: '1234',
+              bySted: 'Plassen',
+              landkode: 'NOR',
+            },
+          },
+        },
+      } as Submission),
+    ).toEqual([]);
+  });
+
   it('expands sender person fields into nested descriptors', () => {
     const components = [
       { key: 'sender', type: 'sender', input: true, validate: { required: true } },
