@@ -11,6 +11,15 @@ import selectBoxesBuilder from './SelectBoxes.builder';
 import selectBoxesForm from './SelectBoxes.form';
 
 class SelectBoxes extends BaseComponent {
+  init() {
+    super.init();
+
+    const defaultValue = this.getDefaultValue();
+    if (this.dataValue === undefined && defaultValue) {
+      this.setValue(defaultValue, { fromSubmission: true });
+    }
+  }
+
   static schema() {
     return FormioSelectBoxes.schema({
       label: 'Flervalg',
@@ -49,10 +58,19 @@ class SelectBoxes extends BaseComponent {
     return !Object.values(value).some(Boolean);
   }
 
+  getDefaultValue(): Record<string, boolean> | undefined {
+    const defaultValue = this.component?.defaultValue;
+    if (!defaultValue || typeof defaultValue !== 'object' || Array.isArray(defaultValue)) {
+      return undefined;
+    }
+
+    return defaultValue as Record<string, boolean>;
+  }
+
   renderReact(element) {
     const values = this.component!.values ?? [];
-
-    const componentValue = this.convertToArray(this.getValue());
+    const currentValue = (this.getValue() ?? this.getDefaultValue()) as Record<string, boolean> | undefined;
+    const componentValue = this.convertToArray(currentValue ?? {});
 
     return element.render(
       <ComponentUtilsProvider component={this}>
