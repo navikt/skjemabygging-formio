@@ -30,10 +30,10 @@ const staticPdf = {
   },
   downloadPdf: async (req: Request, res: Response, next: NextFunction) => {
     const formPath = requestUtil.getStringParam(req, 'formPath')!;
-    const languageCode = req.params.languageCode as TranslationLang;
+    const languageCode = requestUtil.getStringParam(req, 'languageCode') as TranslationLang;
     const coverPageData = req.body as CoverPageDownloadType;
-    const coverPageToken = req.headers.AzureAccessToken as string;
-    const mergePdfToken = req.headers.MergePdfToken as string;
+    const coverPageToken = requestUtil.getAzureAccessToken(req);
+    const mergePdfToken = requestUtil.getMergePdfToken(req);
 
     if (!coverPageData || typeof coverPageData !== 'object' || Array.isArray(coverPageData)) {
       throw new ResponseError('BAD_REQUEST', 'Missing cover page data in request body');

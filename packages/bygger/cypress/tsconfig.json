@@ -1,9 +1,8 @@
 {
   "compilerOptions": {
-    "baseUrl": "./",
     "target": "ES2022",
     "lib": ["ES2022", "dom"],
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "types": ["cypress", "@testing-library/cypress"],
     "resolveJsonModule": true,
     "paths": {

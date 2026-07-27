@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { FlattenedJWSInput, JWSHeaderParameters, createRemoteJWKSet, jwtVerify } from 'jose';
-import { GetKeyFunction } from 'jose/dist/types/types';
+import { createRemoteJWKSet, jwtVerify } from 'jose';
 import config from '../config';
 import { logger } from '../logging/logger';
 import { AzureAdTokenPayload, User } from '../types/custom';
@@ -15,9 +14,7 @@ function toExpiredDateString(exp?: number) {
   return undefined;
 }
 
-const getAzureRemoteJWKSet: GetKeyFunction<JWSHeaderParameters, FlattenedJWSInput> = createRemoteJWKSet(
-  new URL(config.azure.openidConfigJwksUri),
-);
+const getAzureRemoteJWKSet = createRemoteJWKSet(new URL(config.azure.openidConfigJwksUri));
 
 const verifyToken = async (token: string): Promise<AzureAdTokenPayload> => {
   const verified = await jwtVerify(token, getAzureRemoteJWKSet, {

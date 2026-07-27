@@ -1,5 +1,5 @@
+import { Attachment, SubmitApplicationResponse } from '@navikt/skjemadigitalisering-shared-backend';
 import { ReceiptSummary } from '@navikt/skjemadigitalisering-shared-domain';
-import { Attachment, SubmitApplicationResponse } from '../../types/sendinn/sendinn';
 
 const mapAttachment = (attachment: Attachment) => ({
   id: attachment.attachmentCode,

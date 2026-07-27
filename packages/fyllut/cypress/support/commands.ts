@@ -10,7 +10,6 @@
 
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import '@testing-library/cypress/add-commands';
-import 'cypress-wait-until';
 import { CyHttpMessages } from 'cypress/types/net-stubbing';
 
 // -- This is a parent command --
@@ -30,17 +29,26 @@ import { CyHttpMessages } from 'cypress/types/net-stubbing';
 
 // Based on https://github.com/cypress-io/cypress/issues/7306#issuecomment-636009167
 Cypress.Commands.add('findByRoleWhenAttached', (role, options, wait: number = 100) => {
-  return cy
-    .waitUntil(
-      () =>
-        cy
-          .findByRole(role, options)
-          .as('elementWhenAttached')
-          .wait(wait) // for some reason this is needed, otherwise isAttached returns `true` regardless
-          .then(($el) => Cypress.dom.isAttached($el)),
-      { timeout: 10000, interval: 10 },
-    )
-    .get('@elementWhenAttached');
+  const timeout = 10000;
+  const start = Date.now();
+
+  const findAttached = (): Cypress.Chainable<JQuery<HTMLElement>> => {
+    return cy.findByRole(role, { timeout, ...options }).then(($el) => {
+      return Cypress.Promise.delay(wait).then(() => {
+        if (Cypress.dom.isAttached($el)) {
+          return $el;
+        }
+
+        if (Date.now() - start > timeout) {
+          throw new Error('Element was not attached to the DOM before timeout');
+        }
+
+        return findAttached();
+      });
+    });
+  };
+
+  return findAttached();
 });
 
 Cypress.Commands.add('shouldBeVisible', { prevSubject: true }, (subject) => {
@@ -162,13 +170,6 @@ Cypress.Commands.add('verifyNavRedirect', () => {
 
 const interceptExternalNavRedirects = () => {
   cy.intercept('GET', /^https:\/\/(?:[\w-]+\.)*nav\.no(?:\/.*)?$/, (req) => {
-    // TODO: Replace this exception by routing currencies away from production in a separate PR.
-    if (req.url.includes('/fyllut/api/common-codes/currencies')) {
-      req.alias = 'getCurrencies';
-      req.continue();
-      return;
-    }
-
     req.reply({
       statusCode: 200,
       headers: { 'content-type': 'text/html; charset=utf-8' },

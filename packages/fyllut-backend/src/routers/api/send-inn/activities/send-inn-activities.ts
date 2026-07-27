@@ -1,39 +1,18 @@
-import { SendInnAktivitet } from '@navikt/skjemadigitalisering-shared-domain';
+import { requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import { NextFunction, Request, Response } from 'express';
-import fetch from 'node-fetch';
-import { config } from '../../../../config/config';
-import { logger } from '../../../../logger';
 import { getTokenxAccessToken } from '../../../../security/tokenHelper';
-import { responseToError } from '../../../../utils/errorHandling';
-
-const { sendInnConfig } = config;
+import { applicationActivitiesService } from '../../../../services';
 
 const sendInnActivities = {
   get: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const tokenxAccessToken = getTokenxAccessToken(req);
-
-      const activitiesResponse = await fetch(
-        `${sendInnConfig.host}${sendInnConfig.paths.activities}?dagligreise=${req.query.dagligreise ?? false}`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${tokenxAccessToken}`,
-            'x-innsendingsid': req.headers['x-innsendingsid'] as string,
-          },
-        },
-      );
-
-      if (activitiesResponse.ok) {
-        res.status(activitiesResponse.status);
-        res.json((await activitiesResponse.json()) as SendInnAktivitet[]);
-      } else {
-        logger.debug('Failed to get activities from SendInn');
-        next(await responseToError(activitiesResponse, 'Feil ved kall til SendInn for aktiviteter', true));
-      }
-    } catch (err) {
-      next(err);
+      const accessToken = getTokenxAccessToken(req);
+      const innsendingsId = requestUtil.getHeader(req, 'x-innsendingsid', true);
+      const dagligreise = requestUtil.getStringQuery(req, 'dagligreise', true) === 'true';
+      const activities = await applicationActivitiesService.getActivities({ accessToken, innsendingsId, dagligreise });
+      res.json(activities);
+    } catch (error) {
+      next(error);
     }
   },
 };

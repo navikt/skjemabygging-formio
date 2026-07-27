@@ -1,45 +1,52 @@
-import { requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
+import { fileUtil, requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import { NextFunction, Request, Response } from 'express';
 import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import { ReadableStream as NodeReadableStream } from 'node:stream/web';
 import { logger } from '../../../../../logger';
 import { applicationService } from '../../../../../services';
-import { createUploadResponseError, removeUploadedTempFile } from '../../../helpers/upload';
+import { removeUploadedTempFile } from '../../../helpers/upload';
 
 const post = async (req: Request, res: Response, next: NextFunction) => {
-  const file = req.file;
   const innsendingsId = requestUtil.getStringParam(req, 'innsendingsId')!;
   const attachmentId = requestUtil.getStringParam(req, 'attachmentId')!;
-  const logMeta = {
-    innsendingsId,
-    attachmentId,
-    route: req.originalUrl,
-    hasTempFile: Boolean(file?.path),
-    fileSize: file?.size,
-    fileType: file?.mimetype,
-  };
+  const file = requestUtil.getFile(req);
   try {
     const accessToken = req.getTokenxAccessToken();
-
-    if (!file) {
-      logger.warn(`${innsendingsId}: Upload request received without file for digital application`, logMeta);
-      return res.status(400).json({ message: 'Error: Ingen fil sendt med forespørselen' });
-    }
+    const logMeta = {
+      innsendingsId,
+      attachmentId,
+      route: req.originalUrl,
+      hasTempFile: Boolean(file.path),
+      fileSize: file.size,
+      fileType: file.mimetype,
+    };
     logger.info(`${innsendingsId}: Received file upload request for digital application`, logMeta);
 
-    const result = await applicationService.uploadFile(file, accessToken, attachmentId, innsendingsId, 'digital');
+    const fileBlob = await fileUtil.createBlobFromUploadedFile(file);
+    const result = await applicationService.uploadAttachment({
+      accessToken,
+      attachmentId,
+      fileBlob,
+      fileName: Buffer.from(file.originalname, 'latin1').toString('utf8'),
+      innsendingsId,
+      logMeta,
+      type: 'digital',
+    });
     logger.info(`${innsendingsId}: Upload request completed for digital application`, {
       ...logMeta,
       uploadedFileId: result.fileId,
     });
     res.status(201).json(result);
   } catch (error) {
-    const uploadError = createUploadResponseError(error);
-    if (uploadError) {
-      logger.warn(`${innsendingsId}: Upload failed for digital application`, { ...logMeta, error: uploadError });
-      return next(uploadError);
-    }
+    const logMeta = {
+      innsendingsId,
+      attachmentId,
+      route: req.originalUrl,
+      hasTempFile: Boolean(file.path),
+      fileSize: file.size,
+      fileType: file.mimetype,
+    };
     logger.warn(`${innsendingsId}: Upload request failed for digital application`, { ...logMeta, error });
     next(error);
   } finally {
@@ -51,10 +58,23 @@ const deleteFile = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const innsendingsId = requestUtil.getStringParam(req, 'innsendingsId')!;
     const attachmentId = requestUtil.getStringParam(req, 'attachmentId')!;
-    const fileId = requestUtil.getStringParam(req, 'fileId', true);
+    const fileId = Array.isArray(req.params.fileId) ? req.params.fileId.join('/') : req.params.fileId;
     const accessToken = req.getTokenxAccessToken();
+    const logMeta = {
+      attachmentId,
+      fileId,
+      innsendingsId,
+      route: req.originalUrl,
+    };
 
-    await applicationService.deleteFile(accessToken, innsendingsId, attachmentId, fileId, 'digital');
+    await applicationService.deleteAttachment({
+      accessToken,
+      attachmentId,
+      fileId,
+      innsendingsId,
+      logMeta,
+      type: 'digital',
+    });
     res.sendStatus(204);
   } catch (error) {
     next(error);
@@ -67,13 +87,25 @@ const get = async (req: Request, res: Response, next: NextFunction) => {
     const attachmentId = requestUtil.getStringParam(req, 'attachmentId')!;
     const fileId = requestUtil.getStringParam(req, 'fileId')!;
     const accessToken = req.getTokenxAccessToken();
-    const { fileStream, contentType, contentDisposition, contentLength } = await applicationService.downloadFile(
-      accessToken,
-      innsendingsId,
+    const logMeta = {
       attachmentId,
       fileId,
-      'digital',
-    );
+      innsendingsId,
+      route: req.originalUrl,
+    };
+    const {
+      body: fileStream,
+      contentType,
+      contentDisposition,
+      contentLength,
+    } = await applicationService.downloadAttachment({
+      accessToken,
+      attachmentId,
+      fileId,
+      innsendingsId,
+      logMeta,
+      type: 'digital',
+    });
 
     res.contentType(contentType);
     if (contentLength) {

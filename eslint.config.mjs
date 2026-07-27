@@ -4,7 +4,7 @@ import tsParser from '@typescript-eslint/parser';
 import vitest from '@vitest/eslint-plugin';
 import prettierConfig from 'eslint-config-prettier';
 import pluginChaiFriendly from 'eslint-plugin-chai-friendly';
-import pluginCypress from 'eslint-plugin-cypress/flat';
+import pluginCypress from 'eslint-plugin-cypress';
 import _import from 'eslint-plugin-import';
 import pluginMocha from 'eslint-plugin-mocha';
 import react from 'eslint-plugin-react';

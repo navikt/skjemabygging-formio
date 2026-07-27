@@ -1,4 +1,11 @@
 import {
+  Attachment,
+  AvsenderId,
+  BrukerDto,
+  OpplastingsStatus,
+  SubmitApplicationRequest,
+} from '@navikt/skjemadigitalisering-shared-backend';
+import {
   AttachmentSettingValues,
   Component,
   Form,
@@ -10,13 +17,6 @@ import {
   TranslationLang,
   yourInformationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import {
-  Attachment,
-  AvsenderId,
-  BrukerDto,
-  OpplastingsStatus,
-  SubmitApplicationRequest,
-} from '../../../types/sendinn/sendinn';
 import { base64EncodeByteArray } from '../../../utils/base64';
 import { objectToByteArray } from './sendInn';
 
