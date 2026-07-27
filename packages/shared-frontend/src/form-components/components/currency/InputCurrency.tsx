@@ -2,6 +2,7 @@ import TextField from '../../../components/text-field/TextField';
 import {
   InputComponentProps,
   isRequired,
+  resolveNumberDisplayValue,
   resolveNumberFormatKey,
   resolveNumericStateValue,
   resolveReadMore,
@@ -20,6 +21,7 @@ const InputCurrency = ({ component, submissionPath }: InputComponentProps) => (
       inputMode={component.inputType}
       spellCheck={component.spellCheck}
       formatKey={resolveNumberFormatKey(component)}
+      toDisplayValue={(value) => resolveNumberDisplayValue(component, value)}
       toStateValue={(value) => resolveNumericStateValue(component, value)}
       readOnly={component.readOnly}
       readMore={resolveReadMore(component)}
