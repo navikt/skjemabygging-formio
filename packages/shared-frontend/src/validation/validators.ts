@@ -285,9 +285,12 @@ const validateValue = (
       return { textKey: 'maxYear', params: { field, maxYear: rules.maxYear ?? '' } };
     }
   }
-  if (rules.numberType && typeof value === 'string') {
+  if (rules.numberType && (typeof value === 'string' || typeof value === 'number')) {
+    const normalizedValue = String(value);
     const normalizedNumber =
-      rules.numberType === 'decimal' ? value.replace(/\s/g, '').replace(',', '.') : formatUtils.removeAllSpaces(value);
+      rules.numberType === 'decimal'
+        ? normalizedValue.replace(/\s/g, '').replace(',', '.')
+        : formatUtils.removeAllSpaces(normalizedValue);
     const valid =
       rules.numberType === 'decimal'
         ? numberUtils.isValidDecimal(normalizedNumber)

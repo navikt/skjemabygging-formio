@@ -411,6 +411,10 @@ const collectValidationDescriptors = (
   pageComponents: Component[] = components,
 ): ValidationDescriptor[] =>
   components.flatMap((component) => {
+    if (component.calculateValue) {
+      return collectValidationDescriptors(component.components ?? [], submission, submissionMethod, pageComponents);
+    }
+
     const rules = toRules(component, pageComponents, submission, submissionMethod);
     const submissionPath = getResolvedSubmissionPath(component);
 

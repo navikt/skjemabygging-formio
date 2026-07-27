@@ -22,6 +22,7 @@ interface TextFieldProps extends BaseFieldProps {
   spellCheck?: boolean;
   formatKey?: string;
   prefillValue?: Component['prefillValue'];
+  toDisplayValue?: (value: unknown) => string;
   toStateValue?: (value: string) => unknown;
 }
 
@@ -47,6 +48,7 @@ const TextField = ({
   spellCheck,
   formatKey,
   prefillValue,
+  toDisplayValue,
   toStateValue,
   readMore,
   marginBottom,
@@ -54,15 +56,17 @@ const TextField = ({
   const { stateValue, error, setStateValue } = useStateField({ statePath });
   const inputRef = useRef<HTMLInputElement | null>(null);
   const isFocusedRef = useRef(false);
+  const formatDisplayValue = useCallback(
+    (value: unknown) => (toDisplayValue ? toDisplayValue(value) : toInputFormat(value, formatKey)),
+    [formatKey, toDisplayValue],
+  );
   const [displayValue, setDisplayValue] = useState(() =>
-    toInputFormat(
+    formatDisplayValue(
       stateValue ?? (typeof prefillValue === 'string' && prefillValue.trim() !== '' ? prefillValue : undefined),
-      formatKey,
     ),
   );
-  const syncedDisplayValue = toInputFormat(
+  const syncedDisplayValue = formatDisplayValue(
     stateValue ?? (typeof prefillValue === 'string' && prefillValue.trim() !== '' ? prefillValue : undefined),
-    formatKey,
   );
   const resolvedAutoComplete = resolveAutoComplete(autoComplete);
 
@@ -88,7 +92,7 @@ const TextField = ({
   const handleBlur = (event: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     isFocusedRef.current = false;
     const rawValue = event.currentTarget.value;
-    const formatted = toInputFormat(rawValue, formatKey);
+    const formatted = formatDisplayValue(rawValue);
     setDisplayValue(formatted);
     const nextStateValue = toStateValue ? toStateValue(rawValue) : toSubmissionFormat(rawValue, formatKey);
     if (!Object.is(stateValue, nextStateValue)) {
@@ -135,7 +139,7 @@ const TextField = ({
         }
         description={<TranslatedDescription>{description}</TranslatedDescription>}
         hideLabel={hideLabel}
-        value={readOnly ? toInputFormat(stateValue, formatKey) : displayValue}
+        value={readOnly ? formatDisplayValue(stateValue) : displayValue}
         onFocus={() => {
           isFocusedRef.current = true;
         }}

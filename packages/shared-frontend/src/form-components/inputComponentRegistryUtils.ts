@@ -1,4 +1,4 @@
-import { Component, numberUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, formatUtils, numberUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { ComponentType } from 'react';
 import { ReadMoreProps } from '../components/read-more/ReadMore';
 import { SelectType } from '../components/select/selectUtils';
@@ -21,6 +21,20 @@ const resolveSubmissionPath = (component: Component, submissionPath?: string) =>
   submissionPath ?? getResolvedSubmissionPath(component);
 
 const resolveNumberFormatKey = (component: Component) => (component.inputType === 'numeric' ? 'number' : 'decimal');
+
+const resolveNumberDisplayValue = (component: Component, value: unknown) => {
+  if (value === undefined || value === null || value === '') {
+    return '';
+  }
+
+  if (component.readOnly && component.calculateValue) {
+    return numberUtils.toLocaleString(typeof value === 'number' || typeof value === 'string' ? value : String(value), {
+      maximumFractionDigits: 2,
+    });
+  }
+
+  return formatUtils.formatNumber(String(value), component.inputType === 'numeric');
+};
 
 const resolveNumericStateValue = (component: Component, value: string) => {
   const formatted = toSubmissionFormat(value, resolveNumberFormatKey(component));
@@ -82,6 +96,7 @@ export {
   getValues,
   isRequired,
   resolveInputType,
+  resolveNumberDisplayValue,
   resolveNumberFormatKey,
   resolveNumericStateValue,
   resolveReadMore,
