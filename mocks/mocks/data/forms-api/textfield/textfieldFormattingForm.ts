@@ -7,6 +7,7 @@ import {
   panel,
 } from '../../../form-builder/components';
 import form from '../../../form-builder/form/form';
+import { formIntroPageWithoutSelfDeclaration } from '../../../form-builder/form/formIntroPage';
 import formProperties from '../../../form-builder/form/formProperties';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
 
@@ -23,32 +24,39 @@ const textfieldFormattingForm = () =>
           iban({
             key: 'iban',
             label: 'IBAN',
+            validate: { required: true },
           }),
           accountNumber({
             key: 'kontoNummer',
             label: 'Kontonummer',
             validate: {
+              required: true,
               custom: 'valid = instance.validateAccountNumber(input)',
             },
           }),
           nationalIdentityNumber({
             key: 'fodselsnummerDNummer',
             label: 'Fødselsnummer eller d-nummer',
+            validate: { required: true },
           }),
           organizationNumber({
             key: 'orgNr',
             label: 'Organisasjonsnummer',
             validate: {
+              required: true,
               custom: 'valid = instance.validateOrganizationNumber(input)',
             },
           }),
           currency({
             key: 'belop',
             label: 'Beløp heltall',
+            inputType: 'numeric',
+            validate: { required: true },
           }),
           currency({
             key: 'belopDesimaltall1',
             label: 'Beløp desimaltall',
+            validate: { required: true },
           }),
         ],
       }),
@@ -64,6 +72,7 @@ const textfieldFormattingForm = () =>
         components: [],
       }),
     ],
+    introPage: formIntroPageWithoutSelfDeclaration(),
     properties: formProperties({ formNumber: 'Kort skjema', submissionTypes: ['PAPER', 'DIGITAL'] }),
   });
 

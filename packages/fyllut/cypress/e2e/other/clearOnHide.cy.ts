@@ -61,6 +61,7 @@ describe('clearOnHide', () => {
     it('does not add extra rerenders when clearOnHide emits submissionChanged', () => {
       cy.findByRole('checkbox', { name: 'Show TextField' }).check();
       cy.findByRole('textbox', { name: 'TextField' }).type('Hello world');
+      cy.findByRole('textbox', { name: 'TextField' }).should('have.value', 'Hello world');
       cy.findByRole('textbox', { name: 'TextField' }).then(($input) => {
         const componentElement = $input
           .parents()

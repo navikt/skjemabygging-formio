@@ -9,6 +9,7 @@ import {
   yourInformation,
 } from '../../../form-builder/components';
 import form from '../../../form-builder/form/form';
+import { formIntroPageWithoutSelfDeclaration } from '../../../form-builder/form/formIntroPage';
 import formProperties from '../../../form-builder/form/formProperties';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
 
@@ -56,6 +57,7 @@ const dataFetcherContainerDeprecatedForm = () =>
               dataFetcher({
                 key: 'aktiviteter',
                 label: 'Aktivitetsvelger',
+                validate: { required: true },
               }),
             ],
           }),
@@ -92,10 +94,12 @@ const dataFetcherContainerDeprecatedForm = () =>
             description: 'Har du noen annen dokumentasjon du ønsker å legge ved?',
             key: 'annenDokumentasjon',
             label: 'Annen dokumentasjon',
+            validate: { required: true },
           }),
         ],
       }),
     ],
+    introPage: formIntroPageWithoutSelfDeclaration(),
     properties: formProperties({ formNumber: 'datafetchercontainer', submissionTypes: ['PAPER', 'DIGITAL'] }),
   });
 

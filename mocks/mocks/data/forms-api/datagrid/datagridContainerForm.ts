@@ -8,6 +8,7 @@ import {
   textField,
 } from '../../../form-builder/components';
 import form from '../../../form-builder/form/form';
+import { formIntroPageWithoutSelfDeclaration } from '../../../form-builder/form/formIntroPage';
 import formProperties from '../../../form-builder/form/formProperties';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
 
@@ -34,6 +35,7 @@ const datagridContainerForm = () =>
           radio({
             key: 'visBeholderMedRepeterendeData',
             label: 'Vis beholder med repeterende data',
+            validate: { required: true },
             values: [
               { label: 'Ja', value: 'ja' },
               { label: 'Nei', value: 'nei' },
@@ -52,15 +54,18 @@ const datagridContainerForm = () =>
               dataGrid({
                 key: 'repeterendeFelter',
                 label: 'Repeterende felter',
+                validate: { required: true },
                 components: [
                   textField({
                     key: 'tekstfeltIDatagrid1',
                     label: 'Tekstfelt i datagrid',
+                    validate: { required: true },
                   }),
                   datePicker({
                     key: 'datoIDatagrid',
                     label: 'Dato i datagrid',
                     validate: {
+                      required: true,
                       custom: 'valid = instance.validateDatePickerV2(input, data, component, row);',
                     },
                   }),
@@ -71,6 +76,7 @@ const datagridContainerForm = () =>
         ],
       }),
     ],
+    introPage: formIntroPageWithoutSelfDeclaration(),
     properties: formProperties({ formNumber: 'containerdatagrid123', submissionTypes: ['PAPER', 'DIGITAL'] }),
   });
 

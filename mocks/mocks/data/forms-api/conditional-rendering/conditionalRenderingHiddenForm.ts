@@ -16,6 +16,7 @@ const conditionalRenderingHiddenForm = () =>
           checkbox({
             key: 'conditional1',
             label: 'Show components',
+            validate: { required: false },
           }),
           htmlElement({
             conditional: {
@@ -44,6 +45,7 @@ const conditionalRenderingHiddenForm = () =>
               eq: 'true',
             },
             content: '<p>This text should only be visible in PDF</p>',
+            hidden: true,
             key: 'htmlelement',
             textDisplay: 'pdf',
           }),
@@ -54,6 +56,7 @@ const conditionalRenderingHiddenForm = () =>
               eq: 'true',
             },
             content: '<p>This alert should only be visible in PDF</p>',
+            hidden: true,
             key: 'alertstripe1',
             textDisplay: 'pdf',
           }),

@@ -9,6 +9,7 @@ import {
   textField,
 } from '../../../form-builder/components';
 import form from '../../../form-builder/form/form';
+import { formIntroPageWithoutSelfDeclaration } from '../../../form-builder/form/formIntroPage';
 import formProperties from '../../../form-builder/form/formProperties';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
 
@@ -31,13 +32,21 @@ const generalCustomCompsForm = () =>
             key: 'landvelger',
             label: 'I hvilket land bor du?',
           }),
-          currencySelect({
-            key: 'valutavelger',
-            label: 'Velg valuta',
-          }),
+          {
+            ...currencySelect({
+              key: 'valutavelger',
+              label: 'Velg valuta',
+            }),
+            data: {
+              url: '/fyllut/api/common-codes/currencies?lang=nb',
+            },
+            defaultValue: null,
+            valueProperty: '',
+          },
           navSelect({
             key: 'velgInstrument',
             label: 'Velg instrument',
+            validate: { required: false },
             values: [
               { label: 'Piano', value: 'piano' },
               { label: 'Gitar', value: 'gitar' },
@@ -71,17 +80,41 @@ const generalCustomCompsForm = () =>
         title: 'Vedlegg',
         components: [
           attachment({
+            attachmentValues: [
+              { value: 'leggerVedNaa', label: 'Ja, jeg legger det ved denne søknaden.' },
+              { value: 'ettersender', label: 'Jeg ettersender dokumentasjonen senere.' },
+            ],
             description: 'Har du noen annen dokumentasjon du ønsker å legge ved?',
             key: 'annenDokumentasjon1',
             label: 'Annen dokumentasjon',
+            properties: {
+              vedleggstittel: 'Annet',
+              vedleggskode: 'N6',
+              vedleggErValgfritt: 'ja',
+            },
           }),
           attachment({
+            attachmentValues: [
+              { value: 'leggerVedNaa', label: 'Jeg legger det ved denne søknaden (anbefalt)' },
+              {
+                value: 'ettersender',
+                label:
+                  'Jeg ettersender dokumentasjonen senere (jeg er klar over at Nav ikke kan behandle søknaden før jeg har levert dokumentasjonen)',
+              },
+              { value: 'levertTidligere', label: 'Jeg har levert denne dokumentasjonen tidligere' },
+            ],
             key: 'bekreftelsePaSkoleplass1',
             label: 'Bekreftelse på skoleplass',
+            properties: {
+              vedleggstittel: 'Bekreftelse fra skole',
+              vedleggskode: 'O9',
+              vedleggErValgfritt: 'ja',
+            },
           }),
         ],
       }),
     ],
+    introPage: formIntroPageWithoutSelfDeclaration(),
     properties: formProperties({ formNumber: 'customcomps', submissionTypes: ['PAPER', 'DIGITAL'] }),
   });
 

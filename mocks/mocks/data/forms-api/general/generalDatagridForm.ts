@@ -1,5 +1,6 @@
 import { checkbox, dataGrid, datePicker, navSelect, panel, radio } from '../../../form-builder/components';
 import form from '../../../form-builder/form/form';
+import { formIntroPageWithoutSelfDeclaration } from '../../../form-builder/form/formIntroPage';
 import formProperties from '../../../form-builder/form/formProperties';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
 
@@ -29,6 +30,7 @@ const generalDatagridForm = () =>
               navSelect({
                 key: 'nedtrekksmeny',
                 label: 'Nedtrekksmeny',
+                validate: { required: true, onlyAvailableItems: false },
                 values: [
                   { label: 'a', value: 'a' },
                   { label: 'b', value: 'b' },
@@ -38,12 +40,14 @@ const generalDatagridForm = () =>
                 key: 'datoDdMmAaaa',
                 label: 'Dato (dd.mm.åååå)',
                 validate: {
+                  required: true,
                   custom: 'valid = instance.validateDatePickerV2(input, data, component, row);',
                 },
               }),
               radio({
                 key: 'borDuINorge',
                 label: 'Bor du i Norge?',
+                validate: { required: true, onlyAvailableItems: false },
                 values: [
                   { label: 'Ja', value: 'ja' },
                   { label: 'Nei', value: 'nei' },
@@ -54,6 +58,7 @@ const generalDatagridForm = () =>
         ],
       }),
     ],
+    introPage: formIntroPageWithoutSelfDeclaration(),
     properties: formProperties({ formNumber: 'customcompsdatagrid', submissionTypes: ['PAPER', 'DIGITAL'] }),
   });
 

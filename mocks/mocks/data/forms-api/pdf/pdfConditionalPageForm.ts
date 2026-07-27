@@ -16,6 +16,7 @@ const pdfConditionalPageForm = () =>
           container({
             key: 'dineOpplysninger',
             label: 'Dine opplysninger',
+            yourInformation: true,
             components: [
               identity({
                 key: 'identitet',
@@ -27,34 +28,49 @@ const pdfConditionalPageForm = () =>
           checkbox({
             key: 'Avkryssingsboks',
             label: 'Avkryssingsboks',
+            validate: { required: false },
           }),
           textField({
             key: 'tekstfelt',
             label: 'Tekstfelt',
+            validate: { required: false },
           }),
         ],
       }),
       panel({
+        conditional: {
+          show: true,
+          when: 'Avkryssingsboks',
+          eq: 'true',
+        },
         key: 'page2',
         title: 'Page 2',
         components: [
           checkbox({
             key: 'Avkryssingsboks1',
             label: ' Avkryssingsboks 1',
+            validate: { required: false },
           }),
           textField({
             key: 'tekstfelt',
             label: 'Tekstfelt',
+            validate: { required: false },
           }),
         ],
       }),
       panel({
+        conditional: {
+          show: true,
+          when: 'Avkryssingsboks1',
+          eq: 'true',
+        },
         key: 'page3',
         title: 'Page 3',
         components: [
           checkbox({
             key: 'Avkryssingsboks2',
             label: 'Avkryssingsboks 2',
+            validate: { required: false },
           }),
           checkbox({
             conditional: {
@@ -64,10 +80,12 @@ const pdfConditionalPageForm = () =>
             },
             key: 'Avkryssingsboks3',
             label: 'Avkryssingsboks 3',
+            validate: { required: false },
           }),
           textField({
             key: 'tekstfelt',
             label: 'Tekstfelt',
+            validate: { required: false },
           }),
           alert({
             conditional: {

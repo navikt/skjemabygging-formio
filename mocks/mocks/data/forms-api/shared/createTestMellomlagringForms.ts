@@ -202,6 +202,13 @@ const createDeliveryPageV2 = () =>
     title: 'Levering',
     key: 'levering',
     components: [
+      textField({
+        key: 'hemmeligKode',
+        label: 'Hemmelig kode',
+        id: 'ehemmeligkode',
+        navId: 'ehemmeligkode',
+        validate: { required: false },
+      }),
       navSelect({
         key: 'hvordanOnskerDuAMottaPakken',
         label: 'Hvordan ønsker du å motta pakken?',
@@ -243,6 +250,21 @@ const createExtraPage = () =>
         navId: 'ehemmeligkode',
         validate: { required: false },
       }),
+      checkbox({
+        key: 'kryssAvHvisDuOnskerDagligReklamePaEPost',
+        label: 'Kryss av hvis du ønsker daglig reklame på e-post',
+        id: 'ereklame',
+        navId: 'ereklame',
+        validate: { required: false },
+      }),
+    ],
+  });
+
+const createNewsletterPage = () =>
+  panel({
+    title: 'Reklame og nyhetsbrev',
+    key: 'reklameOgNyhetsbrev',
+    components: [
       checkbox({
         key: 'kryssAvHvisDuOnskerDagligReklamePaEPost',
         label: 'Kryss av hvis du ønsker daglig reklame på e-post',
@@ -320,7 +342,11 @@ const createAttachmentPage = () =>
     ],
   });
 
-const createTestMellomlagringForm = (formPath: string, deliveryPage: ReturnType<typeof createDeliveryPageV1>) =>
+const createTestMellomlagringForm = (
+  formPath: string,
+  deliveryPage: ReturnType<typeof createDeliveryPageV1>,
+  extraPage: ReturnType<typeof createExtraPage>,
+) =>
   form({
     title: FORM_TITLE,
     formNumber: FORM_NUMBER,
@@ -330,7 +356,7 @@ const createTestMellomlagringForm = (formPath: string, deliveryPage: ReturnType<
       createGiftPage(),
       deliveryPage,
       createPostInStorePage(),
-      createExtraPage(),
+      extraPage,
       createAttachmentPage(),
     ],
     properties: {
@@ -349,8 +375,8 @@ const createTestMellomlagringForm = (formPath: string, deliveryPage: ReturnType<
   });
 
 const createTestMellomlagringForms = (formPath: string) => ({
-  form: createTestMellomlagringForm(formPath, createDeliveryPageV1()),
-  formV2: createTestMellomlagringForm(formPath, createDeliveryPageV2()),
+  form: createTestMellomlagringForm(formPath, createDeliveryPageV1(), createExtraPage()),
+  formV2: createTestMellomlagringForm(formPath, createDeliveryPageV2(), createNewsletterPage()),
 });
 
 export { createTestMellomlagringForms };

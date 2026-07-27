@@ -1,5 +1,6 @@
 import { alert, attachment, dataFetcher, htmlElement, panel } from '../../../form-builder/components';
 import form from '../../../form-builder/form/form';
+import { formIntroPageWithoutSelfDeclaration } from '../../../form-builder/form/formIntroPage';
 import formProperties from '../../../form-builder/form/formProperties';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
 
@@ -27,6 +28,7 @@ const dataFetcherDeprecatedForm = () =>
           dataFetcher({
             key: 'aktivitetsvelger',
             label: 'Aktivitetsvelger',
+            validate: { required: true },
           }),
           alert({
             alerttype: 'error',
@@ -95,6 +97,7 @@ show = dataFetcher.fetchDisabled || dataFetcher.empty;`,
             description: '<p><span>Hvis du har like utgifter hver måned, holder det å legge ved én faktura.</span></p>',
             key: 'fakturaFraSfo',
             label: 'Faktura fra SFO',
+            validate: { required: true },
           }),
           attachment({
             attachmentType: 'other',
@@ -109,10 +112,12 @@ show = dataFetcher.fetchDisabled || dataFetcher.empty;`,
             description: 'Har du noen annen dokumentasjon du ønsker å legge ved?',
             key: 'annenDokumentasjon',
             label: 'Annen dokumentasjon',
+            validate: { required: true },
           }),
         ],
       }),
     ],
+    introPage: formIntroPageWithoutSelfDeclaration(),
     properties: formProperties({ formNumber: 'TS 12-34.56', submissionTypes: ['DIGITAL', 'PAPER'] }),
   });
 

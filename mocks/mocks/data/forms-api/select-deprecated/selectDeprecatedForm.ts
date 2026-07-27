@@ -1,5 +1,6 @@
 import { navSelect, panel, select, textField } from '../../../form-builder/components';
 import form from '../../../form-builder/form/form';
+import { formIntroPageWithoutSelfDeclaration } from '../../../form-builder/form/formIntroPage';
 import formProperties from '../../../form-builder/form/formProperties';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
 
@@ -26,6 +27,7 @@ const selectDeprecatedForm = () =>
           navSelect({
             key: 'nedtrekksmenyMedStandardverdi',
             label: 'Nedtrekksmeny med standardverdi',
+            defaultValue: { label: 'Rød', value: 'rod' },
             values: [
               { label: 'Blå', value: 'blaa' },
               { label: 'Rød', value: 'rod' },
@@ -35,6 +37,9 @@ const selectDeprecatedForm = () =>
           navSelect({
             key: 'valgfriNedtrekksmeny',
             label: 'Valgfri nedtrekksmeny',
+            validate: {
+              required: false,
+            },
             values: [
               { label: 'Spøkelse', value: 'spokelse' },
               { label: 'Vampyr', value: 'vampyr' },
@@ -96,6 +101,7 @@ const selectDeprecatedForm = () =>
           select({
             key: 'sphH',
             label: 'Sfære (HTML5)',
+            defaultValue: '0.00',
             values: [
               { label: '20,00', value: '20.00' },
               { label: '19,75', value: '19.75' },
@@ -264,10 +270,12 @@ const selectDeprecatedForm = () =>
           textField({
             key: 'tekstfelt',
             label: 'Tekstfelt',
+            validate: { required: false },
           }),
         ],
       }),
     ],
+    introPage: formIntroPageWithoutSelfDeclaration(),
     properties: formProperties({ formNumber: 'select-test', submissionTypes: ['PAPER', 'DIGITAL'] }),
   });
 

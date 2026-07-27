@@ -202,7 +202,7 @@ describe('Conditional rendering', () => {
       cy.defaultWaits();
       startFromIntroPage();
 
-      cy.findByRole('checkbox', { name: 'Show components' }).click();
+      cy.findByRole('checkbox', { name: /Show components/ }).click();
 
       cy.findByText('This text should only be visible in form').should('exist');
       cy.findByText('This alert should only be visible in form').should('exist');

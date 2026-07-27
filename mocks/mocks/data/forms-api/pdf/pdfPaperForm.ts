@@ -2,22 +2,24 @@ import { createSubmissionTypeForm, createSubmissionTypeTranslations } from '../s
 
 const pdfPaperForm = () =>
   createSubmissionTypeForm({
-    title: 'PDF paper form',
-    formNumber: 'PDF-PAPER',
+    title: 'Submission Type: Paper',
+    formNumber: 'stpaper',
     path: 'pdfpaper',
     submissionTypes: ['PAPER'],
     includeAttachmentLink: true,
+    includeSelfDeclaration: false,
     innsendingForklaring: 'Her er litt forklaring',
     signatureMode: 'omit',
   });
 
 const pdfPaperTranslations = () =>
   createSubmissionTypeTranslations({
-    title: 'PDF paper form',
-    formNumber: 'PDF-PAPER',
+    title: 'Submission Type: Paper',
+    formNumber: 'stpaper',
     path: 'pdfpaper',
     submissionTypes: ['PAPER'],
     includeAttachmentLink: true,
+    includeSelfDeclaration: false,
     innsendingForklaring: 'Her er litt forklaring',
     signatureMode: 'omit',
   });

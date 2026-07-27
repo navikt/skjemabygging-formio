@@ -22,6 +22,11 @@ const yourInformationDeprecatedForm = () =>
       panel({
         key: 'dineOpplysninger',
         title: 'Dine opplysninger',
+        buttonSettings: {
+          previous: true,
+          cancel: true,
+          next: true,
+        },
         components: [
           container({
             key: 'dineOpplysninger',
@@ -33,6 +38,7 @@ const yourInformationDeprecatedForm = () =>
                 prefill: true,
                 prefillKey: 'sokerFornavn',
                 protectedApiKey: true,
+                validate: { required: true },
               }),
               surname({
                 key: 'etternavn',
@@ -40,27 +46,33 @@ const yourInformationDeprecatedForm = () =>
                 prefill: true,
                 prefillKey: 'sokerEtternavn',
                 protectedApiKey: true,
+                validate: { required: true },
               }),
               identity({
                 key: 'identitet',
                 label: 'Identitet',
                 prefill: true,
               }),
-              address({
-                customConditional:
-                  'show = row.identitet.harDuFodselsnummer === "nei" || (row.identitet.identitetsnummer && !row.identitet.harDuFodselsnummer)',
-                key: 'adresse',
-                label: 'Adresse',
-                prefill: true,
-                prefillKey: 'sokerAdresser',
-                protectedApiKey: true,
-              }),
+              {
+                ...address({
+                  customConditional:
+                    'show = row.identitet.harDuFodselsnummer === "nei" || (row.identitet.identitetsnummer && !row.identitet.harDuFodselsnummer)',
+                  key: 'adresse',
+                  label: 'Adresse',
+                  prefill: true,
+                  prefillKey: 'sokerAdresser',
+                  protectedApiKey: true,
+                  validate: { required: true },
+                }),
+                addressType: 'NORWEGIAN_ADDRESS',
+              },
               addressValidity({
                 customConditional:
                   'show = row.adresse.borDuINorge === "nei" || (row.adresse.borDuINorge === "ja" && row.adresse.vegadresseEllerPostboksadresse)',
                 key: 'adresseVarighet',
                 label: 'Adresse varighet',
                 protectedApiKey: true,
+                validate: { required: true },
               }),
               alert({
                 content:
@@ -81,18 +93,25 @@ const yourInformationDeprecatedForm = () =>
       panel({
         key: 'navn',
         title: 'Navn',
+        buttonSettings: {
+          previous: true,
+          cancel: true,
+          next: true,
+        },
         components: [
           textField({
             autocomplete: 'given-name',
             key: 'fornavn1',
             label: 'Fornavn',
             prefillKey: 'sokerFornavn',
+            validate: { required: true },
           }),
           textField({
             autocomplete: 'family-name',
             key: 'etternavn1',
             label: 'Etternavn',
             prefillKey: 'sokerEtternavn',
+            validate: { required: true },
           }),
         ],
       }),

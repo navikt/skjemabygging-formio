@@ -60,7 +60,9 @@ describe('Basic form', () => {
       cy.findByRole('textbox', { name: 'Etternavn' }).should('have.value', 'Nordmann');
       cy.findByRole('textbox', { name: 'Fornavn' }).should('have.attr', 'readonly');
       cy.findByRole('textbox', { name: 'Etternavn' }).should('have.attr', 'readonly');
-      cy.findByRole('textbox', { name: /Fødselsnummer.*d-nummer/ }).should('have.value', '08842748500');
+      cy.findByRole('textbox', { name: /Fødselsnummer.*[dD]-nummer/ })
+        .invoke('val')
+        .then((value) => expect(String(value).replace(/\s/g, '')).to.equal('08842748500'));
     }
 
     cy.findByRole('textbox', { name: 'Velg måned' }).should('exist').type(`01.${thisYear}`);

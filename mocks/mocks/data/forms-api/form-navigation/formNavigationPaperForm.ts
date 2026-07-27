@@ -7,6 +7,7 @@ const formNavigationPaperForm = () =>
     path: 'formnavigationpaper',
     submissionTypes: ['PAPER'],
     includeAttachmentLink: true,
+    includeSelfDeclaration: false,
     innsendingForklaring: 'Her er litt forklaring',
   });
 
@@ -17,6 +18,7 @@ const formNavigationPaperTranslations = () =>
     path: 'formnavigationpaper',
     submissionTypes: ['PAPER'],
     includeAttachmentLink: true,
+    includeSelfDeclaration: false,
     innsendingForklaring: 'Her er litt forklaring',
   });
 

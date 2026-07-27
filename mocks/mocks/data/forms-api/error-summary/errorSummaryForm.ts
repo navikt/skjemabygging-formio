@@ -16,6 +16,7 @@ import {
   textField,
 } from '../../../form-builder/components';
 import form from '../../../form-builder/form/form';
+import { formIntroPageWithoutSelfDeclaration } from '../../../form-builder/form/formIntroPage';
 import formProperties from '../../../form-builder/form/formProperties';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
 
@@ -49,6 +50,7 @@ const errorSummaryForm = () =>
             hideLabel: true,
             key: 'dineOpplysninger',
             label: 'Dine opplysninger',
+            validate: { required: false },
             components: [
               firstName({
                 key: 'fornavn',
@@ -69,15 +71,18 @@ const errorSummaryForm = () =>
                 label: 'Identitet',
                 prefill: true,
               }),
-              address({
-                customConditional:
-                  'show = row.identitet.harDuFodselsnummer === "nei" || (row.identitet.identitetsnummer && !row.identitet.harDuFodselsnummer)',
-                key: 'adresse',
-                label: 'Adresse',
-                prefill: true,
-                prefillKey: 'sokerAdresser',
-                protectedApiKey: true,
-              }),
+              {
+                ...address({
+                  customConditional:
+                    'show = row.identitet.harDuFodselsnummer === "nei" || (row.identitet.identitetsnummer && !row.identitet.harDuFodselsnummer)',
+                  key: 'adresse',
+                  label: 'Adresse',
+                  prefill: true,
+                  prefillKey: 'sokerAdresser',
+                  protectedApiKey: true,
+                }),
+                addressType: 'NORWEGIAN_ADDRESS',
+              },
               addressValidity({
                 customConditional:
                   'show = row.adresse.borDuINorge === "nei" || (row.adresse.borDuINorge === "ja" && row.adresse.vegadresseEllerPostboksadresse)',
@@ -108,14 +113,17 @@ const errorSummaryForm = () =>
           dataGrid({
             key: 'serierJegHarSett',
             label: 'Serier jeg har sett',
+            validate: { required: false },
             components: [
               textField({
                 key: 'serietittel',
                 label: 'Serietittel',
+                validate: { required: true },
               }),
               radio({
                 key: 'antallStjerner',
                 label: 'Antall stjerner',
+                validate: { required: true },
                 values: [
                   { label: '*', value: 'en' },
                   { label: '**', value: 'to' },
@@ -136,16 +144,19 @@ const errorSummaryForm = () =>
             key: 'skjermbruk',
             label: 'Skjemagruppe',
             legend: 'Skjermbruk',
+            validate: { required: false },
             components: [
               number({
                 key: 'hvorMangeTimerPerDognBrukerDuPaSkjerm',
                 label: 'Hvor mange timer per døgn bruker du på skjerm?',
+                validate: { required: true, min: 0, max: 24 },
               }),
               radio({
                 customConditional:
                   'show = data.hvorMangeTimerPerDognBrukerDuPaSkjerm && data.hvorMangeTimerPerDognBrukerDuPaSkjerm !== 0',
                 key: 'onskerDuABrukeMindreTidPaSkjerm',
                 label: 'Ønsker du å bruke mindre tid på skjerm?',
+                validate: { required: true },
                 values: [
                   { label: 'Ja', value: 'ja' },
                   { label: 'Nei', value: 'nei' },
@@ -200,6 +211,7 @@ const errorSummaryForm = () =>
             },
             key: 'forerkort',
             label: 'Førerkort',
+            validate: { required: true },
           }),
           attachment({
             attachmentType: 'other',
@@ -214,10 +226,12 @@ const errorSummaryForm = () =>
             description: 'Har du noen annen dokumentasjon du ønsker å legge ved?',
             key: 'annenDokumentasjon',
             label: 'Annen dokumentasjon',
+            validate: { required: true },
           }),
         ],
       }),
     ],
+    introPage: formIntroPageWithoutSelfDeclaration(),
     properties: formProperties({ formNumber: 'TST 01-04.25', submissionTypes: ['PAPER', 'DIGITAL'] }),
   });
 

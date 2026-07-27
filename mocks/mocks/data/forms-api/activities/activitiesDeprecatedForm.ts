@@ -45,10 +45,12 @@ const activitiesDeprecatedForm = () =>
               activites({
                 key: 'aktivitet',
                 label: 'Hvilken aktivitet søker du om støtte i forbindelse med?',
+                validate: { required: true },
               }),
               maalgruppe({
                 key: 'maalgruppe',
                 label: 'Målgruppe',
+                validate: { required: false },
               }),
             ],
           }),
@@ -68,6 +70,8 @@ const activitiesDeprecatedForm = () =>
         components: [
           attachment({
             attachmentType: 'other',
+            id: 'ehcih08',
+            navId: 'efcvrf',
             attachmentValues: {
               nei: {
                 enabled: true,
@@ -86,6 +90,7 @@ const activitiesDeprecatedForm = () =>
             description: 'Har du noen annen dokumentasjon du ønsker å legge ved?',
             key: 'annenDokumentasjon',
             label: 'Annen dokumentasjon',
+            validate: { required: true },
           }),
         ],
       }),

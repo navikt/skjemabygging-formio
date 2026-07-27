@@ -6,6 +6,7 @@ const formNavigationDigitalForm = () =>
     formNumber: 'FORM-NAV-DIGITAL',
     path: 'formnavigationdigital',
     submissionTypes: ['DIGITAL'],
+    includeSelfDeclaration: false,
   });
 
 const formNavigationDigitalTranslations = () =>
@@ -14,6 +15,7 @@ const formNavigationDigitalTranslations = () =>
     formNumber: 'FORM-NAV-DIGITAL',
     path: 'formnavigationdigital',
     submissionTypes: ['DIGITAL'],
+    includeSelfDeclaration: false,
   });
 
 export { formNavigationDigitalForm, formNavigationDigitalTranslations };

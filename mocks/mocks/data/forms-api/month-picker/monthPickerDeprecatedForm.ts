@@ -1,5 +1,6 @@
 import { attachment, monthPicker, panel } from '../../../form-builder/components';
 import form from '../../../form-builder/form/form';
+import { formIntroPageWithoutSelfDeclaration } from '../../../form-builder/form/formIntroPage';
 import formProperties from '../../../form-builder/form/formProperties';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
 
@@ -16,22 +17,31 @@ const monthPickerDeprecatedForm = () =>
           monthPicker({
             key: 'requiredMonthPicker',
             label: 'Required monthPicker',
+            validate: { required: true },
           }),
           monthPicker({
             key: 'minMaxMonthPicker',
             label: 'Min/max monthPicker',
+            validate: { required: false, minYear: 2020, maxYear: 2024 },
           }),
           monthPicker({
             key: 'relativeMonthPicker',
             label: 'Relative monthPicker',
+            earliestAllowedDate: -5,
+            latestAllowedDate: 3,
+            validate: { required: false },
           }),
           monthPicker({
             key: 'relativeMonthPickerWithTodayAsBase',
             label: 'Relative monthPicker (with today as base)',
+            earliestAllowedDate: -9,
+            latestAllowedDate: 0,
+            validate: { required: false },
           }),
           monthPicker({
             key: 'monthpickerWithRangeInThePast',
             label: 'MonthPicker with range in the past',
+            validate: { required: false, minYear: 1995, maxYear: 2003 },
           }),
         ],
       }),
@@ -60,6 +70,7 @@ const monthPickerDeprecatedForm = () =>
         ],
       }),
     ],
+    introPage: formIntroPageWithoutSelfDeclaration(),
     properties: formProperties({ formNumber: 'monthpickertest', submissionTypes: ['PAPER', 'DIGITAL'] }),
   });
 

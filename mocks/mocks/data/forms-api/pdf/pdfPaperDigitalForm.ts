@@ -2,19 +2,21 @@ import { createSubmissionTypeForm, createSubmissionTypeTranslations } from '../s
 
 const pdfPaperDigitalForm = () =>
   createSubmissionTypeForm({
-    title: 'PDF paper digital form',
-    formNumber: 'PDF-PAPER-DIGITAL',
+    title: 'Submission Type: Paper & Digital',
+    formNumber: 'st-paper-digital',
     path: 'pdfpaperdigital',
     submissionTypes: ['PAPER', 'DIGITAL'],
+    includeSelfDeclaration: false,
     signatureMode: 'default-empty',
   });
 
 const pdfPaperDigitalTranslations = () =>
   createSubmissionTypeTranslations({
-    title: 'PDF paper digital form',
-    formNumber: 'PDF-PAPER-DIGITAL',
+    title: 'Submission Type: Paper & Digital',
+    formNumber: 'st-paper-digital',
     path: 'pdfpaperdigital',
     submissionTypes: ['PAPER', 'DIGITAL'],
+    includeSelfDeclaration: false,
     signatureMode: 'default-empty',
   });
 
