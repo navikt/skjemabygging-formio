@@ -35,18 +35,24 @@ const useSubmitters = (form: Form, initialInnsendingsId?: string): FormPersisten
     const isDigital = submissionMethod === 'digital';
     const syncSubmissionState = (
       submission: Submission,
-      response?: { endretDato: string; skalSlettesDato: string },
+      response?: {
+        endretDato: string;
+        skalSlettesDato: string;
+        hoveddokumentVariant?: { document?: { data?: Submission } };
+      },
     ) => {
       if (!response) {
         return;
       }
 
+      const persistedSubmission = response.hoveddokumentVariant?.document?.data ?? submission;
+
       setSubmission({
-        ...submission,
+        ...persistedSubmission,
         fyllutState: {
-          ...submission.fyllutState,
+          ...persistedSubmission.fyllutState,
           mellomlagring: {
-            ...submission.fyllutState?.mellomlagring,
+            ...persistedSubmission.fyllutState?.mellomlagring,
             isActive: true,
             savedDate: dateUtils.toLocaleDateAndTime(response.endretDato),
             deletionDate: dateUtils.toLocaleDate(response.skalSlettesDato),

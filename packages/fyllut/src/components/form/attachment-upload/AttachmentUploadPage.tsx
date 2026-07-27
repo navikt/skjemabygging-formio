@@ -190,7 +190,6 @@ const AttachmentUploadPage = ({ attachmentPanel, onPrevious, onNext }: Props) =>
             <InnerHtml content={translate(attachment.description)} />
           ) : undefined;
           const fieldProps = {
-            key: attachment.navId,
             label: translate(attachment.label),
             description,
             attachmentValues: attachment.attachmentValues ?? attachment.values,

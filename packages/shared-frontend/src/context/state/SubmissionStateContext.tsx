@@ -18,6 +18,7 @@ import { parseSubmissionPath, removeDeepValue, setDeepValue } from './stateHelpe
 interface SubmissionStateContextType {
   submission?: Submission;
   setSubmission: Dispatch<SetStateAction<Submission | undefined>>;
+  getLatestSubmission: () => Submission | undefined;
   updateSubmission: (submissionPath: string, value: unknown) => void;
   clearSubmissionPaths: (submissionPaths: string[]) => void;
 }
@@ -46,6 +47,8 @@ const SubmissionStateProvider = ({ children, initialSubmission }: Props) => {
     submissionRef.current = submission;
   }, [submission]);
 
+  const getLatestSubmission = useCallback(() => submissionRef.current, []);
+
   const updateSubmission = useCallback((submissionPath: string, value: unknown) => {
     setSubmission((prev) => {
       const nextSubmission = createUpdatedSubmission(prev, submissionPath, value);
@@ -65,8 +68,8 @@ const SubmissionStateProvider = ({ children, initialSubmission }: Props) => {
   }, []);
 
   const value = useMemo(
-    () => ({ submission, setSubmission, updateSubmission, clearSubmissionPaths }),
-    [submission, updateSubmission, clearSubmissionPaths],
+    () => ({ submission, setSubmission, getLatestSubmission, updateSubmission, clearSubmissionPaths }),
+    [submission, getLatestSubmission, updateSubmission, clearSubmissionPaths],
   );
 
   // Fyllut's implementation of the generic field state store. setValue updates the submission and

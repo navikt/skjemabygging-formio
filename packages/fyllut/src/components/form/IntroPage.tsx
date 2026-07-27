@@ -8,7 +8,7 @@ import {
   useFormPersistence,
   useSubmissionState,
 } from '@navikt/skjemadigitalisering-shared-frontend';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import FormSecondaryButtons from './FormSecondaryButtons';
 import { useNologinToken } from './nologin-token/NologinTokenContext';
 
@@ -24,7 +24,6 @@ const IntroPage = ({ onStart }: Props) => {
   const { submission, setSubmission } = useSubmissionState();
   const [selfDeclarationError, setSelfDeclarationError] = useState<string | undefined>();
   const { tokenExpiration, getNologinToken } = useNologinToken();
-  const hasInitializedDraft = useRef(false);
   const navigationRole = form.path === 'newrender' ? 'button' : 'link';
   const nextLabel =
     submissionMethod === 'digital' && form.path !== 'newrender'
@@ -50,21 +49,6 @@ const IntroPage = ({ onStart }: Props) => {
       void getNologinToken();
     }
   }, [getNologinToken, submissionMethod, tokenExpiration]);
-
-  useEffect(() => {
-    if (
-      hasInitializedDraft.current ||
-      submissionMethod !== 'digital' ||
-      !canSaveDraft ||
-      !submission ||
-      new URLSearchParams(window.location.search).has('innsendingsId')
-    ) {
-      return;
-    }
-
-    hasInitializedDraft.current = true;
-    void saveDraft();
-  }, [canSaveDraft, saveDraft, submission, submissionMethod]);
 
   const handleStart = async () => {
     if (isDynamic && !submission?.selfDeclaration) {

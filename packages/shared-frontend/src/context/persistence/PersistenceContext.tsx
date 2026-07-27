@@ -1,5 +1,5 @@
 import { Submission } from '@navikt/skjemadigitalisering-shared-domain';
-import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
+import { createContext, ReactNode, useCallback, useContext, useMemo, useRef, useState } from 'react';
 import { useSubmissionState } from '../state/SubmissionStateContext';
 
 type PersistenceStatus = 'idle' | 'saving' | 'submitting' | 'submitted';
@@ -30,35 +30,61 @@ interface Props extends FormPersistenceHandlers {
 const FormPersistenceContext = createContext<FormPersistenceContextType>({} as FormPersistenceContextType);
 
 const FormPersistenceProvider = ({ children, saveDraft: saveDraftHandler, submitForm }: Props) => {
-  const { submission } = useSubmissionState();
+  const { getLatestSubmission } = useSubmissionState();
   const [status, setStatus] = useState<PersistenceStatus>('idle');
   const [error, setError] = useState<unknown>();
+  const saveLoopRef = useRef<Promise<void> | null>(null);
+  const hasQueuedSaveRef = useRef(false);
 
   const saveDraft = useCallback(async () => {
-    if (!saveDraftHandler || !submission) return;
-    setStatus('saving');
-    setError(undefined);
-    try {
-      await saveDraftHandler(submission);
-      setStatus('idle');
-    } catch (e) {
-      setError(e);
-      setStatus('idle');
+    if (!saveDraftHandler) return;
+
+    hasQueuedSaveRef.current = true;
+    if (!saveLoopRef.current) {
+      saveLoopRef.current = (async () => {
+        setStatus('saving');
+        setError(undefined);
+
+        try {
+          while (hasQueuedSaveRef.current) {
+            hasQueuedSaveRef.current = false;
+            const latestSubmission = getLatestSubmission();
+            if (!latestSubmission) {
+              return;
+            }
+
+            await saveDraftHandler(latestSubmission);
+          }
+        } catch (e) {
+          setError(e);
+        } finally {
+          saveLoopRef.current = null;
+          setStatus('idle');
+        }
+      })();
     }
-  }, [saveDraftHandler, submission]);
+
+    await saveLoopRef.current;
+  }, [getLatestSubmission, saveDraftHandler]);
 
   const submit = useCallback(async () => {
-    if (!submitForm || !submission) return;
+    if (!submitForm) return;
+
+    await saveLoopRef.current;
+
+    const latestSubmission = getLatestSubmission();
+    if (!latestSubmission) return;
+
     setStatus('submitting');
     setError(undefined);
     try {
-      await submitForm(submission);
+      await submitForm(latestSubmission);
       setStatus('submitted');
     } catch (e) {
       setError(e);
       setStatus('idle');
     }
-  }, [submitForm, submission]);
+  }, [getLatestSubmission, submitForm]);
 
   const value = useMemo(
     () => ({

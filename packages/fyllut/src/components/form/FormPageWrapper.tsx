@@ -6,6 +6,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-components';
 import {
   Component,
+  dateUtils,
   Form,
   formioFormsApiUtils,
   I18nTranslations,
@@ -13,13 +14,18 @@ import {
   Submission,
   SubmissionData,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import { applyPrefilledValuesToSubmission } from '@navikt/skjemadigitalisering-shared-frontend';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import useFormsApiForms from '../../api/useFormsApiForms';
 import { loadAllTranslations } from '../../api/useTranslations';
 import { NotFoundPage } from '../errors/NotFoundPage';
 import SubmissionMethodNotAllowed from '../SubmissionMethodNotAllowed';
-import { shouldUseLegacyPageForNewRenderer } from './digitalDraftUtils';
+import {
+  buildDigitalFormSearch,
+  isSoknadAlreadyExistsResponse,
+  shouldUseLegacyPageForNewRenderer,
+} from './digitalDraftUtils';
 import FormPageSkeleton from './FormPageSkeleton';
 import RenderForm from './RenderForm';
 
@@ -44,6 +50,35 @@ const buildSearchWithSubmissionMethod = (search: string, submissionMethod: strin
   const searchParams = new URLSearchParams(search);
   searchParams.set('sub', submissionMethod);
   return `?${searchParams.toString()}`;
+};
+
+const getDraftBootstrapLanguage = (search: string) => {
+  const language = new URLSearchParams(search).get('lang');
+  return language === 'en' || language === 'nn' || language === 'nn-NO' || language === 'nb' || language === 'nb-NO'
+    ? language
+    : 'nb-NO';
+};
+
+const withDraftMetadata = (
+  submission: Submission | undefined,
+  response?: { endretDato: string; skalSlettesDato: string },
+): Submission | undefined => {
+  if (!submission || !response) {
+    return submission;
+  }
+
+  return {
+    ...submission,
+    fyllutState: {
+      ...submission.fyllutState,
+      mellomlagring: {
+        ...submission.fyllutState?.mellomlagring,
+        isActive: true,
+        savedDate: dateUtils.toLocaleDateAndTime(response.endretDato),
+        deletionDate: dateUtils.toLocaleDate(response.skalSlettesDato),
+      },
+    },
+  };
 };
 
 const enrichComponentsWithPrefillValues = (components: Component[] = [], prefillData?: SubmissionData): Component[] =>
@@ -153,48 +188,122 @@ const FormPageWrapper = () => {
     }
   }, [baseUrl, formPath, get, http, submissionMethod]);
 
-  const loadInitialSubmission = useCallback(async () => {
-    const searchParams = new URLSearchParams(search);
-    const innsendingsId = searchParams.get('innsendingsId') ?? undefined;
-    const hasDeletedDraftFlag = searchParams.get(DELETED_DRAFT_QUERY_PARAM) === '1';
-    const stateInitialSubmission = stateInitialSubmissionRef.current;
+  const loadInitialSubmission = useCallback(
+    async (loadedForm?: Form): Promise<{ navigated: boolean }> => {
+      const searchParams = new URLSearchParams(search);
+      const innsendingsId = searchParams.get('innsendingsId') ?? undefined;
+      const hasDeletedDraftFlag = searchParams.get(DELETED_DRAFT_QUERY_PARAM) === '1';
+      const stateInitialSubmission = stateInitialSubmissionRef.current;
 
-    if (submissionMethod !== 'digital' || !innsendingsId) {
+      if (submissionMethod !== 'digital') {
+        setInitialInnsendingsId(undefined);
+        setInitialSubmission(undefined);
+        return { navigated: false };
+      }
+
+      if (!loadedForm) {
+        setInitialInnsendingsId(undefined);
+        setInitialSubmission(undefined);
+        return { navigated: false };
+      }
+
+      if (innsendingsId) {
+        if (hasDeletedDraftFlag) {
+          deletedDraftIdRef.current = innsendingsId;
+          setInitialInnsendingsId(undefined);
+          setInitialSubmission(undefined);
+          return { navigated: false };
+        }
+
+        if (sessionStorage.getItem(DELETED_DRAFT_STORAGE_KEY) === innsendingsId) {
+          deletedDraftIdRef.current = innsendingsId;
+          setInitialInnsendingsId(undefined);
+          setInitialSubmission(undefined);
+          return { navigated: false };
+        }
+
+        if (deletedDraftIdRef.current === innsendingsId) {
+          setInitialInnsendingsId(undefined);
+          setInitialSubmission(undefined);
+          return { navigated: false };
+        }
+
+        if (stateInitialSubmission) {
+          setInitialInnsendingsId(innsendingsId);
+          setInitialSubmission(stateInitialSubmission as Submission);
+          return { navigated: false };
+        }
+
+        const response = await sendInnSoknadApi.getSoknad(innsendingsId, appConfig);
+        setInitialInnsendingsId(innsendingsId);
+        setInitialSubmission(response?.hoveddokumentVariant?.document?.data);
+        return { navigated: false };
+      }
+
+      if (!useNewRenderer || useLegacyPageForNewRenderer) {
+        setInitialInnsendingsId(undefined);
+        setInitialSubmission(undefined);
+        return { navigated: false };
+      }
+
+      const currentLanguage = getDraftBootstrapLanguage(search);
+      const bootstrapSubmission = applyPrefilledValuesToSubmission(
+        loadedForm,
+        stateInitialSubmission,
+        currentLanguage,
+      ) ??
+        stateInitialSubmission ?? { data: {} };
+      const response = await sendInnSoknadApi.createSoknad(
+        appConfig,
+        formioFormsApiUtils.mapFormToNavForm(loadedForm),
+        bootstrapSubmission,
+        currentLanguage,
+        searchParams.get('forceMellomlagring') === 'true',
+      );
+
+      if (isSoknadAlreadyExistsResponse(response)) {
+        navigate(
+          {
+            pathname: `/${loadedForm.path}/paabegynt`,
+            search: buildDigitalFormSearch(search, { forceMellomlagring: undefined }),
+          },
+          { replace: true },
+        );
+        return { navigated: true };
+      }
+
+      if (response && 'innsendingsId' in response) {
+        const bootstrappedSubmission = withDraftMetadata(
+          response.hoveddokumentVariant?.document?.data ?? bootstrapSubmission,
+          response,
+        );
+        setInitialInnsendingsId(response.innsendingsId);
+        setInitialSubmission(bootstrappedSubmission);
+        navigate(
+          {
+            search: buildDigitalFormSearch(search, {
+              forceMellomlagring: undefined,
+              innsendingsId: response.innsendingsId,
+            }),
+          },
+          {
+            replace: true,
+            state: {
+              ...(typeof state === 'object' && state ? state : {}),
+              initialSubmission: bootstrappedSubmission,
+              preserveInitialSubmission: true,
+            },
+          },
+        );
+        return { navigated: true };
+      }
+
       setInitialInnsendingsId(undefined);
       setInitialSubmission(undefined);
-      return;
-    }
-
-    if (hasDeletedDraftFlag) {
-      deletedDraftIdRef.current = innsendingsId;
-      setInitialInnsendingsId(undefined);
-      setInitialSubmission(undefined);
-      return;
-    }
-
-    if (sessionStorage.getItem(DELETED_DRAFT_STORAGE_KEY) === innsendingsId) {
-      deletedDraftIdRef.current = innsendingsId;
-      setInitialInnsendingsId(undefined);
-      setInitialSubmission(undefined);
-      return;
-    }
-
-    if (deletedDraftIdRef.current === innsendingsId) {
-      setInitialInnsendingsId(undefined);
-      setInitialSubmission(undefined);
-      return;
-    }
-
-    if (stateInitialSubmission) {
-      setInitialInnsendingsId(innsendingsId);
-      setInitialSubmission(stateInitialSubmission as Submission);
-      return;
-    }
-
-    const response = await sendInnSoknadApi.getSoknad(innsendingsId, appConfig);
-    setInitialInnsendingsId(innsendingsId);
-    setInitialSubmission(response?.hoveddokumentVariant?.document?.data);
-  }, [appConfig, search, submissionMethod]);
+      return { navigated: false };
+    },
+    [appConfig, navigate, search, state, submissionMethod, useLegacyPageForNewRenderer, useNewRenderer],
+  );
 
   useEffect(() => {
     if (attachmentPageEnabled === false) {
@@ -208,19 +317,23 @@ const FormPageWrapper = () => {
     }
 
     (async () => {
+      let navigated = false;
       try {
         setLoading(true);
         setLoadedLocationKey(undefined);
         setInitialSubmission(undefined);
         setInitialInnsendingsId(undefined);
-        await loadForm();
-        await Promise.all([loadTranslations(), loadInitialSubmission()]);
+        const loadedForm = await loadForm();
+        const [, initialSubmissionResult] = await Promise.all([loadTranslations(), loadInitialSubmission(loadedForm)]);
+        navigated = initialSubmissionResult.navigated;
       } catch (_e) {
         setTranslations(undefined);
         setForm(undefined);
       } finally {
-        setLoadedLocationKey(locationKey);
-        setLoading(false);
+        if (!navigated) {
+          setLoadedLocationKey(locationKey);
+          setLoading(false);
+        }
       }
     })();
   }, [loadForm, loadInitialSubmission, loadTranslations, locationKey, missingSubmissionMethodOnDirectRoute]);

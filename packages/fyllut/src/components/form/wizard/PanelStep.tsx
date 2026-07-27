@@ -10,7 +10,7 @@ import {
   useValidation,
   useWizardController,
 } from '@navikt/skjemadigitalisering-shared-frontend';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { useLocation, useParams } from 'react-router';
 import FormSecondaryButtons from '../FormSecondaryButtons';
 import WizardStep from './WizardStep';
@@ -21,12 +21,11 @@ const PanelStep = ({ form }: { form: Form }) => {
   const { translate } = useLanguages();
   const { submissionMethod } = useAppConfig();
   const { panelSlug } = useParams<{ panelSlug?: string }>();
-  const { hash, search, state } = useLocation();
+  const { hash, state } = useLocation();
   const { saveDraft, canSaveDraft } = useFormPersistence();
   const { syncPageValidationState, validatePages } = useValidation();
   const { currentPanel, components, isFirst, isLast, goToNext, panels, currentIndex } = useWizardController(panelSlug);
   const { goToIntro, goToPanel, goToSummary, goToError, onStepClick } = useWizardNavigation('panel');
-  const hasInitializedDraft = useRef(false);
   const navigationRole = form.path === 'newrender' ? 'button' : 'link';
   const nextLabel =
     submissionMethod === 'digital' && form.path !== 'newrender'
@@ -44,27 +43,6 @@ const PanelStep = ({ form }: { form: Form }) => {
       syncPageValidationState(currentPanel.key, components);
     }
   }, [components, currentPanel, syncPageValidationState]);
-
-  useEffect(() => {
-    if (hasInitializedDraft.current) {
-      return;
-    }
-
-    const searchParams = new URLSearchParams(search);
-    const needsEarlyDraft = navFormUtils.hasAttachment(form);
-    if (
-      submissionMethod !== 'digital' ||
-      !canSaveDraft ||
-      currentIndex !== 0 ||
-      searchParams.has('innsendingsId') ||
-      !needsEarlyDraft
-    ) {
-      return;
-    }
-
-    hasInitializedDraft.current = true;
-    void saveDraft();
-  }, [canSaveDraft, currentIndex, form, saveDraft, search, submissionMethod]);
 
   useEffect(() => {
     const locationStateFocusId = typeof state === 'object' && state && 'focusId' in state ? state.focusId : undefined;
