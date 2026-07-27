@@ -1,5 +1,7 @@
-import { Box } from '@navikt/ds-react';
+import { Box, Label } from '@navikt/ds-react';
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
+import TranslatedDescription from '../../../components/shared/TranslatedDescription';
+import { useLanguage } from '../../../context/language/LanguageContext';
 import { InputComponentRegistry } from '../../inputComponentRegistry';
 import RenderInputForm from '../../RenderInputForm';
 import FormGroup from '../../shared/FormGroup';
@@ -10,14 +12,20 @@ interface InputContainerProps {
 }
 
 const InputContainer = ({ component, componentRegistry }: InputContainerProps) => {
+  const { translate } = useLanguage();
+
   if (!component.components?.length) {
     return null;
   }
 
+  const { label, hideLabel, description, components } = component;
+
   return (
     <FormGroup>
-      <Box data-cy="input-container">
-        <RenderInputForm components={component.components} componentRegistry={componentRegistry} />
+      <Box marginBlock="space-0 space-40" data-cy="input-container">
+        {!hideLabel && label && <Label as="div">{translate(label)}</Label>}
+        {description && <TranslatedDescription>{description}</TranslatedDescription>}
+        <RenderInputForm components={components} componentRegistry={componentRegistry} />
       </Box>
     </FormGroup>
   );
