@@ -1,5 +1,12 @@
-.header {
-  margin-bottom: var(--ax-space-16);
+.fieldset {
+  border: 0;
+  margin: 0;
+  min-inline-size: 0;
+  padding: 0;
+}
+
+.content {
+  margin-top: var(--ax-space-16);
 }
 
 .description {

@@ -1,4 +1,4 @@
-import { Box, Button, Heading, Label } from '@navikt/ds-react';
+import { Box, Button, Heading } from '@navikt/ds-react';
 import {
   checkCondition,
   Component,
@@ -34,7 +34,8 @@ const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => 
   const { form } = useFormDefinition();
   const { handleFieldChange } = useValidation();
   const { pageKey, components: pageComponents } = useValidationScope();
-  const { components, label, description, addAnother, removeAnother, disableAddingRemovingRows, rowTitle } = component;
+  const { components, label, description, hideLabel, addAnother, removeAnother, disableAddingRemovingRows, rowTitle } =
+    component;
   const submissionPath = getResolvedSubmissionPath(component);
   const rows = submissionUtils.getSubmissionValue(submissionPath, submission);
   const dataGridRows = Array.isArray(rows) ? rows : [];
@@ -65,53 +66,57 @@ const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => 
     return null;
   }
 
+  const content = (
+    <>
+      <div className={styles.rows}>
+        {renderedRows.map((row, index) => {
+          const rowComponents = getActiveRowComponents(rowComponentTemplates[index] ?? [], row, submission?.data, form);
+
+          return (
+            <div key={rowIds[index] ?? `${component.key}-${index}`} className={styles.row}>
+              <div className={styles.rowHeader}>
+                <Heading level="3" size="small" className="aksel-fieldset__legend-formio-template">
+                  {translate(rowTitle || label || component.key)} {index + 1}
+                </Heading>
+                {!disableAddingRemovingRows && (
+                  <Button type="button" variant="secondary" size="small" onClick={() => removeRow(index)}>
+                    {translate(removeAnother || 'Fjern')}
+                  </Button>
+                )}
+              </div>
+              <RenderInputForm components={rowComponents} componentRegistry={componentRegistry} />
+            </div>
+          );
+        })}
+      </div>
+
+      {!disableAddingRemovingRows && (
+        <Box marginBlock="space-16 space-0">
+          <Button type="button" variant="secondary" onClick={addRow}>
+            {translate(addAnother || 'Legg til')}
+          </Button>
+        </Box>
+      )}
+    </>
+  );
+
   return (
     <FormGroup>
       <Box marginBlock="space-0 space-40" data-cy="input-datagrid">
-        {(label || description) && (
-          <div className={styles.header}>
-            {label && <Label as="div">{translate(label)}</Label>}
+        {label || description ? (
+          <fieldset className={styles.fieldset}>
+            {!hideLabel && label && (
+              <legend className="aksel-fieldset__legend-formio-template">{translate(label)}</legend>
+            )}
             {description && (
-              <div className={styles.description}>
+              <div className={`description ${styles.description}`}>
                 <TranslatedDescription>{description}</TranslatedDescription>
               </div>
             )}
-          </div>
-        )}
-
-        <div className={styles.rows}>
-          {renderedRows.map((row, index) => {
-            const rowComponents = getActiveRowComponents(
-              rowComponentTemplates[index] ?? [],
-              row,
-              submission?.data,
-              form,
-            );
-
-            return (
-              <div key={rowIds[index] ?? `${component.key}-${index}`} className={styles.row}>
-                <div className={styles.rowHeader}>
-                  <Heading level="3" size="small">
-                    {translate(rowTitle || label || component.key)} {index + 1}
-                  </Heading>
-                  {!disableAddingRemovingRows && (
-                    <Button type="button" variant="secondary" size="small" onClick={() => removeRow(index)}>
-                      {translate(removeAnother || 'Fjern')}
-                    </Button>
-                  )}
-                </div>
-                <RenderInputForm components={rowComponents} componentRegistry={componentRegistry} />
-              </div>
-            );
-          })}
-        </div>
-
-        {!disableAddingRemovingRows && (
-          <Box marginBlock="space-16 space-0">
-            <Button type="button" variant="secondary" onClick={addRow}>
-              {translate(addAnother || 'Legg til')}
-            </Button>
-          </Box>
+            <div className={`aksel-fieldset__content ${styles.content}`}>{content}</div>
+          </fieldset>
+        ) : (
+          content
         )}
       </Box>
     </FormGroup>
