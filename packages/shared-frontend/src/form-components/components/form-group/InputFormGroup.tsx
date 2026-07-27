@@ -19,6 +19,7 @@ const InputFormGroup = ({ component, componentRegistry }: InputFormGroupProps) =
 
   const contentClassName = [
     styles.content,
+    backgroundColor ? 'aksel-fieldset__content--background-color' : undefined,
     backgroundColor ? styles.background : undefined,
     backgroundColor && type === 'navSkjemagruppe' ? styles.backgroundNavGroup : undefined,
   ]
@@ -27,10 +28,13 @@ const InputFormGroup = ({ component, componentRegistry }: InputFormGroupProps) =
 
   return (
     <FormGroup>
-      <Fieldset legend={legend ?? label ?? key} description={description} hideLegend={hideLabel}>
-        <div className={contentClassName}>
-          <RenderInputForm components={components} componentRegistry={componentRegistry} />
-        </div>
+      <Fieldset
+        legend={legend ?? label ?? key}
+        description={description}
+        hideLegend={hideLabel}
+        contentClassName={contentClassName}
+      >
+        <RenderInputForm components={components} componentRegistry={componentRegistry} />
       </Fieldset>
     </FormGroup>
   );

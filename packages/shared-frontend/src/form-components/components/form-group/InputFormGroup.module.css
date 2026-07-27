@@ -2,9 +2,18 @@
   border-radius: var(--ax-radius-12);
 }
 
+.content:global(.aksel-fieldset__content) {
+  margin-bottom: 0;
+  overflow: auto;
+}
+
 .background {
   background-color: var(--ax-brand-blue-100);
   padding: var(--ax-space-16) var(--ax-space-16) 0;
+}
+
+.background:global(.aksel-fieldset__content--background-color) {
+  background-color: var(--ax-brand-blue-100);
 }
 
 .backgroundNavGroup {
