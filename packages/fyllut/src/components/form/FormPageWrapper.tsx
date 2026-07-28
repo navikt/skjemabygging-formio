@@ -118,7 +118,7 @@ const FormPageWrapper = () => {
   const [form, setForm] = useState<Form>();
   const [initialSubmission, setInitialSubmission] = useState<Submission | undefined>();
   const [initialInnsendingsId, setInitialInnsendingsId] = useState<string | undefined>();
-  const [loadedLocationKey, setLoadedLocationKey] = useState<string | undefined>();
+  const [loadedDataKey, setLoadedDataKey] = useState<string | undefined>();
   const deletedDraftIdRef = useRef<string | undefined>(undefined);
   const stateInitialSubmissionRef = useRef<Submission | undefined>(undefined);
   const { get } = useFormsApiForms();
@@ -128,7 +128,7 @@ const FormPageWrapper = () => {
     !!formPath && ((config?.newRenderForms ?? []).includes('*') || (config?.newRenderForms ?? []).includes(formPath));
   const useLegacyPageForNewRenderer = shouldUseLegacyPageForNewRenderer(routePath);
   const navForm = useMemo(() => (form ? formioFormsApiUtils.mapFormToNavForm(form) : undefined), [form]);
-  const locationKey = `${formPath ?? ''}|${search}`;
+  const dataKey = `${formPath ?? ''}|${getDraftBootstrapLanguage(search)}|${submissionMethod ?? ''}`;
   const missingSubmissionMethodOnDirectRoute =
     useNewRenderer && !useLegacyPageForNewRenderer && !!routePath && !new URLSearchParams(search).has('sub');
 
@@ -319,10 +319,12 @@ const FormPageWrapper = () => {
     (async () => {
       let navigated = false;
       try {
-        setLoading(true);
-        setLoadedLocationKey(undefined);
-        setInitialSubmission(undefined);
-        setInitialInnsendingsId(undefined);
+        if (loadedDataKey !== dataKey) {
+          setLoading(true);
+          setLoadedDataKey(undefined);
+          setInitialSubmission(undefined);
+          setInitialInnsendingsId(undefined);
+        }
         const loadedForm = await loadForm();
         const [, initialSubmissionResult] = await Promise.all([loadTranslations(), loadInitialSubmission(loadedForm)]);
         navigated = initialSubmissionResult.navigated;
@@ -331,12 +333,12 @@ const FormPageWrapper = () => {
         setForm(undefined);
       } finally {
         if (!navigated) {
-          setLoadedLocationKey(locationKey);
+          setLoadedDataKey(dataKey);
           setLoading(false);
         }
       }
     })();
-  }, [loadForm, loadInitialSubmission, loadTranslations, locationKey, missingSubmissionMethodOnDirectRoute]);
+  }, [dataKey, loadForm, loadInitialSubmission, loadTranslations, loadedDataKey, missingSubmissionMethodOnDirectRoute]);
 
   useEffect(() => {
     const metaPropOgTitle = document.querySelector('meta[property="og:title"]');
@@ -361,7 +363,7 @@ const FormPageWrapper = () => {
     };
   }, [form]);
 
-  if (loading || loadedLocationKey !== locationKey) {
+  if (loading || loadedDataKey !== dataKey) {
     return <FormPageSkeleton />;
   }
 

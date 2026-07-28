@@ -3,18 +3,6 @@ import { FormHeader, FormStepper, StepperProvider } from '@navikt/skjemadigitali
 import { ReactNode, useState } from 'react';
 import { ATTACHMENTS_KEY, INTRO_KEY, SUMMARY_KEY } from './constants';
 
-const STEPPER_OPEN_STATE_STORAGE_KEY = 'fyllut:new-render:stepper-open';
-
-const readPersistedOpenState = () => {
-  if (typeof window === 'undefined') {
-    return false;
-  }
-
-  const storedValue = window.sessionStorage.getItem(STEPPER_OPEN_STATE_STORAGE_KEY);
-  window.sessionStorage.removeItem(STEPPER_OPEN_STATE_STORAGE_KEY);
-  return storedValue === 'true';
-};
-
 interface Props {
   form: Form;
   activeIndex: number;
@@ -34,9 +22,11 @@ const WizardStepContent = ({ form, activeIndex, pageTitle, onStepClick, children
     ...(navFormUtils.hasAttachment(form) ? [{ key: ATTACHMENTS_KEY, label: TEXTS.statiske.attachment.title }] : []),
     { key: SUMMARY_KEY, label: TEXTS.statiske.summaryPage.title },
   ];
-  const [isStepperOpen, setIsStepperOpen] = useState(readPersistedOpenState);
+  const [isStepperOpen, setIsStepperOpen] = useState(false);
   const handleStepClick = (key: string) => {
-    setIsStepperOpen(false);
+    if (window.innerWidth < 768) {
+      setIsStepperOpen(false);
+    }
     onStepClick(key);
   };
 

@@ -13,7 +13,6 @@ import {
 import { useEffect } from 'react';
 import { useLocation, useParams } from 'react-router';
 import FormSecondaryButtons from '../FormSecondaryButtons';
-import WizardStep from './WizardStep';
 import { ATTACHMENTS_KEY } from './constants';
 import { useWizardNavigation } from './useWizardNavigation';
 
@@ -25,7 +24,7 @@ const PanelStep = ({ form }: { form: Form }) => {
   const { saveDraft, canSaveDraft } = useFormPersistence();
   const { syncPageValidationState, validatePages } = useValidation();
   const { currentPanel, components, isFirst, isLast, goToNext, panels, currentIndex } = useWizardController(panelSlug);
-  const { goToIntro, goToPanel, goToSummary, goToError, onStepClick } = useWizardNavigation('panel');
+  const { goToIntro, goToPanel, goToSummary, goToError } = useWizardNavigation('panel');
   const navigationRole = form.path === 'newrender' ? 'button' : 'link';
   const nextLabel =
     submissionMethod === 'digital' && form.path !== 'newrender'
@@ -102,12 +101,7 @@ const PanelStep = ({ form }: { form: Form }) => {
   };
 
   return (
-    <WizardStep
-      form={form}
-      activeIndex={1 + currentIndex}
-      pageTitle={translate(currentPanel?.title ?? '')}
-      onStepClick={onStepClick}
-    >
+    <>
       <RenderInputForm pageKey={currentPanel?.key ?? ''} pageComponents={components} components={components} />
       <FormErrorSummary
         pageKey={currentPanel?.key}
@@ -129,7 +123,7 @@ const PanelStep = ({ form }: { form: Form }) => {
         }
         nextButton={<FormNextButton label={translate(nextLabel)} onClick={handleNext} role={navigationRole} />}
       />
-    </WizardStep>
+    </>
   );
 };
 

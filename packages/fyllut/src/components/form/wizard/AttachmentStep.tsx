@@ -15,7 +15,6 @@ import AttachmentUploadPage from '../attachment-upload/AttachmentUploadPage';
 import FormSecondaryButtons from '../FormSecondaryButtons';
 import { ATTACHMENTS_KEY } from './constants';
 import { useWizardNavigation } from './useWizardNavigation';
-import WizardStep from './WizardStep';
 
 const AttachmentStep = ({ form }: { form: Form }) => {
   const { translate } = useLanguages();
@@ -23,7 +22,7 @@ const AttachmentStep = ({ form }: { form: Form }) => {
   const { form: formDefinition, panels } = useFormDefinition();
   const { submission } = useSubmissionState();
   const { syncPageValidationState, validatePage } = useValidation();
-  const { goToPanel, goToSummary, goToError, onStepClick } = useWizardNavigation('attachment');
+  const { goToPanel, goToSummary, goToError } = useWizardNavigation('attachment');
   const attachmentPanel = navFormUtils.getActiveAttachmentPanelFromForm(formDefinition, submission);
   const components = useMemo(() => attachmentPanel?.components ?? [], [attachmentPanel]);
   const attachmentPageKey = attachmentPanel?.key ?? ATTACHMENTS_KEY;
@@ -53,45 +52,36 @@ const AttachmentStep = ({ form }: { form: Form }) => {
     goToSummary();
   };
 
-  return (
-    <WizardStep
-      form={form}
-      activeIndex={1 + panels.length}
-      pageTitle={translate(attachmentPanel?.title ?? TEXTS.statiske.attachment.title)}
-      onStepClick={onStepClick}
-    >
-      {usesUploadPage && attachmentPanel ? (
-        <AttachmentUploadPage
-          attachmentPanel={attachmentPanel}
-          onPrevious={() => goToPanel(panels[panels.length - 1]?.key)}
-          onNext={goToSummary}
-        />
-      ) : (
-        <>
-          <RenderInputForm pageKey={attachmentPageKey} pageComponents={components} components={components} />
-          <FormErrorSummary
-            pageKey={attachmentPageKey}
-            components={components}
-            onNavigateToField={(error, id) => {
-              if (error.pageKey !== attachmentPageKey) {
-                goToError(error.pageKey, id);
-              }
-            }}
+  return usesUploadPage && attachmentPanel ? (
+    <AttachmentUploadPage
+      attachmentPanel={attachmentPanel}
+      onPrevious={() => goToPanel(panels[panels.length - 1]?.key)}
+      onNext={goToSummary}
+    />
+  ) : (
+    <>
+      <RenderInputForm pageKey={attachmentPageKey} pageComponents={components} components={components} />
+      <FormErrorSummary
+        pageKey={attachmentPageKey}
+        components={components}
+        onNavigateToField={(error, id) => {
+          if (error.pageKey !== attachmentPageKey) {
+            goToError(error.pageKey, id);
+          }
+        }}
+      />
+      <FormSecondaryButtons />
+      <FormButtonRow
+        previousButton={
+          <FormPrevButton
+            label={translate(TEXTS.grensesnitt.navigation.previous)}
+            onClick={() => goToPanel(panels[panels.length - 1]?.key)}
+            role={navigationRole}
           />
-          <FormSecondaryButtons />
-          <FormButtonRow
-            previousButton={
-              <FormPrevButton
-                label={translate(TEXTS.grensesnitt.navigation.previous)}
-                onClick={() => goToPanel(panels[panels.length - 1]?.key)}
-                role={navigationRole}
-              />
-            }
-            nextButton={<FormNextButton label={translate(nextLabel)} onClick={handleNext} role={navigationRole} />}
-          />
-        </>
-      )}
-    </WizardStep>
+        }
+        nextButton={<FormNextButton label={translate(nextLabel)} onClick={handleNext} role={navigationRole} />}
+      />
+    </>
   );
 };
 
