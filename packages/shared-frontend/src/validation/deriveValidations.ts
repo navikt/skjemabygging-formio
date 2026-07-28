@@ -59,6 +59,7 @@ const toRules = (
   year: component.type === 'year' ? true : undefined,
   minYear: typeof component.validate?.minYear === 'number' ? component.validate.minYear : undefined,
   maxYear: typeof component.validate?.maxYear === 'number' ? component.validate.maxYear : undefined,
+  digitsOnly: component.validate?.digitsOnly,
   date: component.type === 'navDatepicker' ? true : undefined,
   fromDate:
     component.type === 'navDatepicker' ? getDatePickerFromDate(component, pageComponents, submission) : undefined,

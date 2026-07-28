@@ -34,6 +34,7 @@ interface ValidationRules {
   nationalIdentityNumber?: boolean;
   accountNumber?: boolean;
   iban?: boolean;
+  digitsOnly?: boolean;
   dataFetcherSelection?: boolean;
   drivingListParkingExpense?: {
     date: string;
@@ -204,6 +205,9 @@ const validateValue = (
   if (rules.iban && typeof value === 'string') {
     return toIbanViolation(value, field);
   }
+  if (rules.digitsOnly && typeof value === 'string' && !numberUtils.isValidInteger(value)) {
+    return { textKey: TEXTS.validering.digitsOnly, params: { field } };
+  }
   if (
     rules.nationalIdentityNumber &&
     typeof value === 'string' &&
@@ -215,7 +219,7 @@ const validateValue = (
     const { showAreaCode, areaCode } = rules.phoneNumber;
 
     if (showAreaCode && areaCode === '+47') {
-      if (!/^\d+$/.test(value)) {
+      if (!numberUtils.isValidInteger(value)) {
         return { textKey: TEXTS.validering.digitsOnly, params: { field } };
       }
       if (value.length !== 8) {
