@@ -17,8 +17,11 @@ import FormIcon from './layout/FormIcon';
 import FormLayout from './layout/FormLayout';
 import FormStepper from './layout/FormStepper';
 import { StepperProvider } from './layout/StepperContext';
+import SharedFormRenderer from './render-form/SharedFormRenderer';
 import SharedFrontendBoundary from './SharedFrontendBoundary';
 import './styles/tokens.css';
+import { deriveValidations } from './validation/deriveValidations';
+import { validateValue } from './validation/validators';
 import { useWizardController } from './wizard/useWizardController';
 
 const sharedFrontendPackageName = '@navikt/skjemadigitalisering-shared-frontend';
@@ -37,11 +40,24 @@ export type {
   HandleAttachmentDownloadFile,
   SummaryRendererAppConfig,
 } from './form-components/types';
+export type {
+  FormRendererAttachmentAdapter,
+  FormRendererHostAdapter,
+  FormRendererNavigation,
+  FormRendererNavigationRequest,
+  FormRendererNoLoginAdapter,
+  FormRendererPdfAdapter,
+  FormRendererReceiptAdapter,
+  FormRendererRoute,
+  FormRendererSecondaryActions,
+  SharedFormRendererProps,
+} from './render-form/types';
 export type { SharedFrontendBoundaryProps } from './SharedFrontendBoundary';
 export type { WizardController } from './wizard/useWizardController';
 export {
   AppConfigProvider,
   applyPrefilledValuesToSubmission,
+  deriveValidations,
   FormButtonRow,
   FormDefinitionProvider,
   FormErrorSummary,
@@ -57,6 +73,7 @@ export {
   LanguageProvider,
   RenderInputForm,
   RenderSummaryForm,
+  SharedFormRenderer,
   SharedFrontendBoundary,
   sharedFrontendPackageName,
   StepperProvider,
@@ -68,6 +85,7 @@ export {
   useSubmissionState,
   useValidation,
   useWizardController,
+  validateValue,
   ValidationExclamationIcon,
   ValidationProvider,
 };

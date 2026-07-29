@@ -10,7 +10,7 @@ type PersistenceStatus = 'idle' | 'saving' | 'submitting' | 'submitted';
  * are injected, keeping the framework decoupled and reusable.
  */
 interface FormPersistenceHandlers {
-  saveDraft?: (submission: Submission) => Promise<void>;
+  saveDraft?: (submission: Submission) => Promise<Submission | void>;
   submitForm?: (submission: Submission) => Promise<void>;
 }
 
@@ -30,7 +30,7 @@ interface Props extends FormPersistenceHandlers {
 const FormPersistenceContext = createContext<FormPersistenceContextType>({} as FormPersistenceContextType);
 
 const FormPersistenceProvider = ({ children, saveDraft: saveDraftHandler, submitForm }: Props) => {
-  const { getLatestSubmission } = useSubmissionState();
+  const { getLatestSubmission, setSubmission } = useSubmissionState();
   const [status, setStatus] = useState<PersistenceStatus>('idle');
   const [error, setError] = useState<unknown>();
   const saveLoopRef = useRef<Promise<void> | null>(null);
@@ -53,7 +53,10 @@ const FormPersistenceProvider = ({ children, saveDraft: saveDraftHandler, submit
               return;
             }
 
-            await saveDraftHandler(latestSubmission);
+            const persistedSubmission = await saveDraftHandler(latestSubmission);
+            if (persistedSubmission) {
+              setSubmission(persistedSubmission);
+            }
           }
         } catch (e) {
           setError(e);
@@ -65,7 +68,7 @@ const FormPersistenceProvider = ({ children, saveDraft: saveDraftHandler, submit
     }
 
     await saveLoopRef.current;
-  }, [getLatestSubmission, saveDraftHandler]);
+  }, [getLatestSubmission, saveDraftHandler, setSubmission]);
 
   const submit = useCallback(async () => {
     if (!submitForm) return;

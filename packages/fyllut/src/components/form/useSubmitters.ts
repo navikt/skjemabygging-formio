@@ -1,53 +1,47 @@
 import { sendInnSoknadApi, useAppConfig, useLanguages } from '@navikt/skjemadigitalisering-shared-components';
 import { dateUtils, Form, formioFormsApiUtils, Language, Submission } from '@navikt/skjemadigitalisering-shared-domain';
-import { FormPersistenceHandlers, useSubmissionState } from '@navikt/skjemadigitalisering-shared-frontend';
+import { FormPersistenceHandlers } from '@navikt/skjemadigitalisering-shared-frontend';
 import { useMemo, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { buildDigitalFormSearch, isSoknadAlreadyExistsResponse } from './digitalDraftUtils';
-import { useNologinToken } from './nologin-token/NologinTokenContext';
-import { RECEIPT_KEY } from './wizard/constants';
 
-/**
- * Builds the injected persistence handlers for the new renderer path, branching per submission
- * method. shared-frontend stays decoupled: it only orchestrates when to call these, while fyllut
- * owns the concrete send-inn / mellomlagring IO and the innsendingsId lifecycle.
- *
- * - digital: mellomlagring (create then update draft) + final submit via shared receipt flow.
- * - digitalnologin: single nologin-application submit (wired, not yet e2e-verified).
- * - paper: finalization is handled by the legacy letter/PDF flow (wired, not yet e2e-verified).
- */
-const useSubmitters = (form: Form, initialInnsendingsId?: string): FormPersistenceHandlers => {
+interface NoLoginTokenAdapter {
+  getToken: () => Promise<string | undefined>;
+  clearToken: () => void;
+}
+
+const RECEIPT_PATH = 'kvittering';
+
+const useSubmitters = (
+  form: Form,
+  initialInnsendingsId: string | undefined,
+  noLoginToken: NoLoginTokenAdapter,
+): FormPersistenceHandlers => {
   const appConfig = useAppConfig();
   const { currentLanguage } = useLanguages();
   const { submissionMethod, logger } = appConfig;
-  const { getNologinToken, clearNologinToken } = useNologinToken();
   const { search, state } = useLocation();
   const navigate = useNavigate();
-  const { setSubmission } = useSubmissionState();
   const forceMellomlagring = new URLSearchParams(search).get('forceMellomlagring') === 'true';
   const innsendingsIdRef = useRef<string | undefined>(
     new URLSearchParams(search).get('innsendingsId') ?? initialInnsendingsId,
   );
 
   return useMemo<FormPersistenceHandlers>(() => {
-    // Convert at the legacy sendInnSoknadApi boundary (shared-components still uses NavFormType)
     const navForm = formioFormsApiUtils.mapFormToNavForm(form);
-    const isDigital = submissionMethod === 'digital';
-    const syncSubmissionState = (
+    const syncPersistedSubmission = (
       submission: Submission,
       response?: {
         endretDato: string;
         skalSlettesDato: string;
         hoveddokumentVariant?: { document?: { data?: Submission } };
       },
-    ) => {
+    ): Submission | undefined => {
       if (!response) {
-        return;
+        return undefined;
       }
-
       const persistedSubmission = response.hoveddokumentVariant?.document?.data ?? submission;
-
-      setSubmission({
+      return {
         ...persistedSubmission,
         fyllutState: {
           ...persistedSubmission.fyllutState,
@@ -58,14 +52,10 @@ const useSubmitters = (form: Form, initialInnsendingsId?: string): FormPersisten
             deletionDate: dateUtils.toLocaleDate(response.skalSlettesDato),
           },
         },
-      });
+      };
     };
 
-    const syncInnsendingsIdToUrl = (innsendingsId: string | undefined, submission?: Submission) => {
-      if (!innsendingsId) {
-        return;
-      }
-
+    const syncInnsendingsIdToUrl = (innsendingsId: string, submission?: Submission) => {
       const nextSearch = buildDigitalFormSearch(search, {
         forceMellomlagring: undefined,
         innsendingsId,
@@ -73,7 +63,6 @@ const useSubmitters = (form: Form, initialInnsendingsId?: string): FormPersisten
       if (nextSearch === search) {
         return;
       }
-
       navigate(
         { search: nextSearch },
         {
@@ -90,7 +79,7 @@ const useSubmitters = (form: Form, initialInnsendingsId?: string): FormPersisten
       );
     };
 
-    const goToActiveTasks = () => {
+    const goToActiveTasks = () =>
       navigate(
         {
           pathname: `/${form.path}/paabegynt`,
@@ -98,45 +87,8 @@ const useSubmitters = (form: Form, initialInnsendingsId?: string): FormPersisten
         },
         { replace: true },
       );
-    };
 
-    const saveDraft = isDigital
-      ? async (submission: Submission) => {
-          if (!innsendingsIdRef.current) {
-            const response = await sendInnSoknadApi.createSoknad(
-              appConfig,
-              navForm,
-              submission,
-              currentLanguage,
-              forceMellomlagring,
-            );
-            if (isSoknadAlreadyExistsResponse(response)) {
-              goToActiveTasks();
-              return;
-            }
-            if (response && 'innsendingsId' in response) {
-              innsendingsIdRef.current = response.innsendingsId;
-              syncInnsendingsIdToUrl(response.innsendingsId, submission);
-              syncSubmissionState(submission, response);
-            }
-          } else {
-            const response = await sendInnSoknadApi.updateSoknad(
-              appConfig,
-              navForm,
-              submission,
-              currentLanguage,
-              innsendingsIdRef.current,
-            );
-            syncSubmissionState(submission, response);
-          }
-        }
-      : undefined;
-
-    const ensureInnsendingsId = async (submission: Submission) => {
-      if (innsendingsIdRef.current) {
-        return innsendingsIdRef.current;
-      }
-
+    const createDraft = async (submission: Submission) => {
       const response = await sendInnSoknadApi.createSoknad(
         appConfig,
         navForm,
@@ -150,76 +102,90 @@ const useSubmitters = (form: Form, initialInnsendingsId?: string): FormPersisten
       }
       if (response && 'innsendingsId' in response) {
         innsendingsIdRef.current = response.innsendingsId;
-        syncInnsendingsIdToUrl(response.innsendingsId, submission);
-        syncSubmissionState(submission, response);
+        const persistedSubmission = syncPersistedSubmission(submission, response);
+        syncInnsendingsIdToUrl(response.innsendingsId, persistedSubmission ?? submission);
+        return persistedSubmission;
       }
-
-      return innsendingsIdRef.current;
+      return undefined;
     };
 
-    const submitForm = async (submission: Submission) => {
-      switch (submissionMethod) {
-        case 'digital': {
-          const innsendingsId = await ensureInnsendingsId(submission);
-          if (!innsendingsId) {
-            return;
+    const saveDraft =
+      submissionMethod === 'digital'
+        ? async (submission: Submission) => {
+            if (!innsendingsIdRef.current) {
+              return await createDraft(submission);
+            }
+            const response = await sendInnSoknadApi.updateSoknad(
+              appConfig,
+              navForm,
+              submission,
+              currentLanguage,
+              innsendingsIdRef.current,
+            );
+            return syncPersistedSubmission(submission, response);
           }
-          const response = await sendInnSoknadApi.postNologinSoknad(
-            appConfig,
-            '',
-            navForm,
-            submission,
-            currentLanguage as Language,
-            submissionMethod,
-            innsendingsId,
-          );
-          navigate(
-            { pathname: `/${form.path}/${RECEIPT_KEY}`, search },
-            { state: { receipt: response.receipt, pdfBase64: response.pdfBase64 } },
-          );
-          break;
+        : undefined;
+
+    const submitForm = async (submission: Submission) => {
+      if (submissionMethod === 'digital') {
+        const persistedSubmission = innsendingsIdRef.current ? undefined : await createDraft(submission);
+        const innsendingsId = innsendingsIdRef.current;
+        if (!innsendingsId) {
+          return;
         }
-        case 'digitalnologin': {
-          const nologinToken = await getNologinToken();
-          const response = await sendInnSoknadApi.postNologinSoknad(
-            appConfig,
-            nologinToken ?? '',
-            navForm,
-            submission,
-            currentLanguage as Language,
-            submissionMethod,
-            innsendingsIdRef.current,
-          );
-          clearNologinToken();
-          navigate(
-            { pathname: `/${form.path}/${RECEIPT_KEY}`, search },
-            { state: { receipt: response.receipt, pdfBase64: response.pdfBase64 } },
-          );
-          break;
-        }
-        default: {
-          logger?.info?.('paper submission finalization is not yet implemented', {
-            formPath: form.path,
-            submissionMethod,
-          });
-        }
+        const response = await sendInnSoknadApi.postNologinSoknad(
+          appConfig,
+          '',
+          navForm,
+          persistedSubmission ?? submission,
+          currentLanguage as Language,
+          submissionMethod,
+          innsendingsId,
+        );
+        navigate(
+          { pathname: `/${form.path}/${RECEIPT_PATH}`, search },
+          { state: { receipt: response.receipt, pdfBase64: response.pdfBase64 } },
+        );
+        return;
       }
+
+      if (submissionMethod === 'digitalnologin') {
+        const token = await noLoginToken.getToken();
+        const response = await sendInnSoknadApi.postNologinSoknad(
+          appConfig,
+          token ?? '',
+          navForm,
+          submission,
+          currentLanguage as Language,
+          submissionMethod,
+          innsendingsIdRef.current,
+        );
+        noLoginToken.clearToken();
+        navigate(
+          { pathname: `/${form.path}/${RECEIPT_PATH}`, search },
+          { state: { receipt: response.receipt, pdfBase64: response.pdfBase64 } },
+        );
+        return;
+      }
+
+      logger?.info?.('paper submission finalization is not yet implemented', {
+        formPath: form.path,
+        submissionMethod,
+      });
     };
 
     return { saveDraft, submitForm };
   }, [
     appConfig,
-    form,
     currentLanguage,
-    submissionMethod,
+    forceMellomlagring,
+    form,
     logger,
-    getNologinToken,
-    clearNologinToken,
-    setSubmission,
     navigate,
+    noLoginToken,
     search,
     state,
-    forceMellomlagring,
+    submissionMethod,
   ]);
 };
 
