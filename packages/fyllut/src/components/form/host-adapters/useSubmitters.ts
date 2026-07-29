@@ -3,7 +3,7 @@ import { dateUtils, Form, formioFormsApiUtils, Language, Submission } from '@nav
 import { FormPersistenceHandlers } from '@navikt/skjemadigitalisering-shared-frontend';
 import { useMemo, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router';
-import { buildDigitalFormSearch, isSoknadAlreadyExistsResponse } from './digitalDraftUtils';
+import { buildDigitalFormSearch, isSoknadAlreadyExistsResponse } from '../digitalDraftUtils';
 
 interface NoLoginTokenAdapter {
   getToken: () => Promise<string | undefined>;
@@ -189,4 +189,4 @@ const useSubmitters = (
   ]);
 };
 
-export default useSubmitters;
+export { useSubmitters };

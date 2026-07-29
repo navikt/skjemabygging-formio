@@ -100,4 +100,4 @@ const useAttachmentAdapter = (
   }, [form, getNoLoginToken, http, innsendingsId, logEvent, submissionMethod, translate]);
 };
 
-export default useAttachmentAdapter;
+export { useAttachmentAdapter };

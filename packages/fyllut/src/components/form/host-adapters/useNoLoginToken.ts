@@ -40,4 +40,4 @@ const useNoLoginToken = () => {
   return { getToken, clearToken, tokenExpiration };
 };
 
-export default useNoLoginToken;
+export { useNoLoginToken };
