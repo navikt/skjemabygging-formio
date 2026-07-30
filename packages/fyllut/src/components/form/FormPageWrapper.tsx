@@ -14,20 +14,20 @@ import {
   Submission,
   SubmissionData,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { applyPrefilledValuesToSubmission } from '@navikt/skjemadigitalisering-shared-frontend';
+import {
+  applyPrefilledValuesToSubmission,
+  buildDigitalFormSearch,
+  isSoknadAlreadyExistsResponse,
+  shouldUseLegacyPageForNewRenderer,
+} from '@navikt/skjemadigitalisering-shared-frontend';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import useFormsApiForms from '../../api/useFormsApiForms';
 import { loadAllTranslations } from '../../api/useTranslations';
 import { NotFoundPage } from '../errors/NotFoundPage';
 import SubmissionMethodNotAllowed from '../SubmissionMethodNotAllowed';
-import {
-  buildDigitalFormSearch,
-  isSoknadAlreadyExistsResponse,
-  shouldUseLegacyPageForNewRenderer,
-} from './digitalDraftUtils';
 import FormPageSkeleton from './FormPageSkeleton';
-import RenderForm from './RenderForm';
+import RenderFormAdapter from './RenderFormAdapter';
 
 const DELETED_DRAFT_STORAGE_KEY = 'fyllut:new-render:deleted-draft-id';
 const DELETED_DRAFT_QUERY_PARAM = 'deletedDraft';
@@ -378,7 +378,11 @@ const FormPageWrapper = () => {
   return (
     <LanguagesProvider translations={translations}>
       {useNewRenderer && !useLegacyPageForNewRenderer ? (
-        <RenderForm form={form} initialSubmission={initialSubmission} initialInnsendingsId={initialInnsendingsId} />
+        <RenderFormAdapter
+          form={form}
+          initialSubmission={initialSubmission}
+          initialInnsendingsId={initialInnsendingsId}
+        />
       ) : (
         <FyllUtRouter form={navForm} />
       )}
