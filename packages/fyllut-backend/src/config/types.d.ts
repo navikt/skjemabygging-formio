@@ -26,6 +26,13 @@ export type NologinConfig = {
   tokenLifetimeHours: number;
 };
 
+export type CaptchaConfig = {
+  hmacSecret: string;
+  powDifficulty: number;
+  powEnabled: boolean;
+  challengeTtlSeconds: number;
+};
+
 export type TeamLogsConfig = {
   enabled: boolean;
   url: string;
@@ -74,6 +81,7 @@ export type DefaultConfig = {
   frontendLoggerConfig: FrontendLoggerConfigType;
   formsApiUrl: string;
   nologin: NologinConfig;
+  captcha: CaptchaConfig;
   teamLogsConfig: TeamLogsConfig;
   tempAttachmentUploadForms: string[];
 };

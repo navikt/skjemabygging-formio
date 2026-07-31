@@ -5,3 +5,14 @@ export class CaptchaError extends Error {
     this.reqBody = reqBody;
   }
 }
+
+export interface CaptchaChallenge {
+  nonce: string;
+  difficulty: number;
+  expiresAt: number;
+  signature: string;
+}
+
+export interface CaptchaSolution extends CaptchaChallenge {
+  solution: string;
+}

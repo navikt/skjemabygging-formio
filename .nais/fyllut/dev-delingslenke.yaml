@@ -22,6 +22,9 @@ kodeverk:
 forms-source: "formsapi-staging"
 nologin:
   token-lifetime-hours: 6
+captcha:
+  use-pow: false
+  pow-difficulty: 16
 azure:
   application:
     tenant: trygdeetaten.no

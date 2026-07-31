@@ -21,6 +21,9 @@ kodeverk:
 forms-source: "static"
 nologin:
   token-lifetime-hours: 6
+captcha:
+  use-pow: true
+  pow-difficulty: 16
 environmentVars: []
 azure:
   application:

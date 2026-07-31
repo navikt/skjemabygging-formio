@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import { logger } from '../logger';
 import { NaisCluster } from './nais-cluster';
 import {
+  CaptchaConfig,
   DefaultConfig,
   FyllutBackendConfig,
   IdportenConfig,
@@ -62,6 +63,29 @@ const kodeverk: ServiceConfig = {
 
 const norg2: ServiceConfig = {
   url: process.env.NORG2_URL!,
+};
+
+// Proof of work difficulty in leading zero bits. 16 bits is ~65k hashes (~200ms in a browser web worker).
+// Note that a GPU solves this in negligible time, so the difficulty is a cost multiplier for scripted bots,
+// not a defence against dedicated attackers.
+const DEFAULT_POW_DIFFICULTY = 16;
+const MIN_POW_DIFFICULTY = 8;
+const MAX_POW_DIFFICULTY = 24;
+
+const loadPowDifficulty = () => {
+  const difficulty = parseInt(process.env.CAPTCHA_POW_DIFFICULTY!);
+  if (isNaN(difficulty)) {
+    return DEFAULT_POW_DIFFICULTY;
+  }
+  return Math.min(Math.max(difficulty, MIN_POW_DIFFICULTY), MAX_POW_DIFFICULTY);
+};
+
+const captcha: CaptchaConfig = {
+  // Dedicated secret, deliberately not shared with NOLOGIN_JWT_SECRET
+  hmacSecret: process.env.CAPTCHA_HMAC_SECRET!,
+  powDifficulty: loadPowDifficulty(),
+  powEnabled: process.env.CAPTCHA_USE_POW === 'true',
+  challengeTtlSeconds: 60,
 };
 
 function loadFormioApiServiceUrl() {
@@ -131,6 +155,11 @@ const localDevelopmentConfig: DefaultConfig = {
     jwtSecret: 'verysecret',
     tokenLifetimeHours: 1,
   },
+  captcha: {
+    ...captcha,
+    hmacSecret: captcha.hmacSecret || 'verysecret-captcha',
+    powEnabled: process.env.CAPTCHA_USE_POW === 'true',
+  },
   skjemaDir: process.env.SKJEMA_DIR,
   teamLogsConfig,
   tempAttachmentUploadForms: [
@@ -173,6 +202,7 @@ const defaultConfig: DefaultConfig = {
     jwtSecret: process.env.NOLOGIN_JWT_SECRET!,
     tokenLifetimeHours: parseInt(process.env.NOLOGIN_TOKEN_LIFETIME_HOURS!),
   },
+  captcha,
   teamLogsConfig: {
     ...teamLogsConfig,
     mandatoryFields: {
@@ -204,7 +234,7 @@ const config: FyllutBackendConfig = {
 };
 
 const checkConfigConsistency = (config: FyllutBackendConfig, logError = logger.error, exit = process.exit) => {
-  const { mocksEnabled, useFormsApiStaging, naisClusterName, formioApiServiceUrl, formsApiUrl } = config;
+  const { mocksEnabled, useFormsApiStaging, naisClusterName, formioApiServiceUrl, formsApiUrl, captcha } = config;
   if (mocksEnabled) {
     if (naisClusterName === NaisCluster.PROD || naisClusterName === NaisCluster.DEV) {
       logError(`Invalid configuration: Mocks is not allowed in ${naisClusterName}`);
@@ -224,6 +254,10 @@ const checkConfigConsistency = (config: FyllutBackendConfig, logError = logger.e
       logError('Invalid configuration: Forms api url is required when using FormsApi staging');
       exit(1);
     }
+  }
+  if (captcha?.powEnabled && !captcha.hmacSecret) {
+    logError('Invalid configuration: CAPTCHA_HMAC_SECRET is required when CAPTCHA_USE_POW is enabled');
+    exit(1);
   }
 };
 

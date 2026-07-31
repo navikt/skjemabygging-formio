@@ -22,6 +22,9 @@ kodeverk:
 forms-source: "formsapi-staging"
 nologin:
   token-lifetime-hours: 1
+captcha:
+  use-pow: true
+  pow-difficulty: 16
 environmentVars:
   - name: FORMIO_API_SERVICE
     value: http://formio-api
