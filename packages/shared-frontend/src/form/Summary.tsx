@@ -30,6 +30,7 @@ import { PREPARE_LETTER_KEY, PREPARE_NO_SUBMISSION_KEY } from './wizard/constant
 const toInputId = (submissionPath: string) => `input-${submissionPath.replace(/[.[\]]/g, '-')}`;
 const DELETED_DRAFT_STORAGE_KEY = 'fyllut:new-render:deleted-draft-id';
 const DELETED_DRAFT_QUERY_PARAM = 'deletedDraft';
+const DISCARDED_SUBMISSION_STORAGE_KEY = 'fyllut:new-render:discarded-submission';
 
 interface Props {
   onBack: () => void;
@@ -41,12 +42,13 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
   const appConfig = useFyllutAppConfig();
   const { translate, currentLanguage } = useFyllutLanguage();
   const { form, activeComponents } = useFormDefinition();
-  const { submission } = useSubmissionState();
+  const { submission, setSubmission } = useSubmissionState();
   const { pagesWithErrors, validatePages, getErrorsForPages, shouldShowSummaryForSummaryPage } = useValidation();
   const { submit, status, canSubmit } = useFormPersistence();
   const { handleDownloadFile } = useAttachmentUpload();
   const { search } = useLocation();
   const [attemptedSubmitWithErrors, setAttemptedSubmitWithErrors] = useState(false);
+  const [hasDiscardedSubmission] = useState(() => sessionStorage.getItem(DISCARDED_SUBMISSION_STORAGE_KEY) === '1');
   const attachmentPanel = navFormUtils.getActiveAttachmentPanelFromForm(form, submission);
   const activePanels = navFormUtils.getActivePanelsFromForm(form, submission);
   const isNoSubmissionFlow =
@@ -99,6 +101,12 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
       sessionStorage.removeItem(DELETED_DRAFT_STORAGE_KEY);
     }
   }, [isDeletedDraftSummary]);
+  useEffect(() => {
+    if (hasDiscardedSubmission) {
+      sessionStorage.removeItem(DISCARDED_SUBMISSION_STORAGE_KEY);
+      setSubmission(undefined);
+    }
+  }, [hasDiscardedSubmission, setSubmission]);
   const shouldShowEmptyDigitalSummaryErrors =
     (appConfig.submissionMethod === 'digital' || appConfig.submissionMethod === 'digitalnologin') &&
     !hasSubmissionData &&
@@ -112,6 +120,7 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
         : TEXTS.grensesnitt.navigation.sendToNav;
   const hasSummaryValidationErrors =
     isDeletedDraftSummary ||
+    hasDiscardedSubmission ||
     (effectiveSummaryErrors.length > 0 &&
       (attemptedSubmitWithErrors ||
         shouldShowSummaryForSummaryPage() ||

@@ -17,6 +17,7 @@ interface Props {
 
 const DELETED_DRAFT_STORAGE_KEY = 'fyllut:new-render:deleted-draft-id';
 const DELETED_DRAFT_QUERY_PARAM = 'deletedDraft';
+const DISCARDED_SUBMISSION_STORAGE_KEY = 'fyllut:new-render:discarded-submission';
 
 const FormSecondaryButtons = ({ introUploadIdLink = false, exitOnly = false }: Props) => {
   const appConfig = useFyllutAppConfig();
@@ -57,6 +58,11 @@ const FormSecondaryButtons = ({ introUploadIdLink = false, exitOnly = false }: P
     setCancelModalOpen(false);
   };
 
+  const handleExit = () => {
+    sessionStorage.setItem(DISCARDED_SUBMISSION_STORAGE_KEY, '1');
+    setSubmission(undefined);
+  };
+
   return (
     <>
       <Box marginBlock="space-16 space-0">
@@ -93,7 +99,7 @@ const FormSecondaryButtons = ({ introUploadIdLink = false, exitOnly = false }: P
       <ConfirmationModal
         open={cancelModalOpen}
         onClose={() => setCancelModalOpen(false)}
-        onConfirm={exitOnly ? undefined : handleCancel}
+        onConfirm={exitOnly ? handleExit : handleCancel}
         confirmType="danger"
         texts={
           exitOnly

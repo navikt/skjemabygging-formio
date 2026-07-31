@@ -19,6 +19,7 @@ import {
   shouldUseLegacyPageForNewRenderer,
 } from './form/digitalDraftUtils';
 import RenderForm from './form/RenderForm';
+import { resolveDefaultSubmissionMethod } from './form/submissionMethodResolution';
 import { FormButtonRow, FormNextButton, FormPrevButton } from './layout/FormButtonRow';
 import FormHeader from './layout/FormHeader';
 import FormIcon from './layout/FormIcon';
@@ -78,6 +79,7 @@ export {
   RenderForm,
   RenderInputForm,
   RenderSummaryForm,
+  resolveDefaultSubmissionMethod,
   SharedFrontendBoundary,
   sharedFrontendPackageName,
   shouldUseLegacyPageForNewRenderer,

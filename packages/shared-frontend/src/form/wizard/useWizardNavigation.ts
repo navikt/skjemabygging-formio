@@ -9,6 +9,7 @@ interface WizardNavigationState {
   validationErrorPages?: string[];
   initialSubmission?: Submission;
   preserveInitialSubmission?: true;
+  redirect?: true;
 }
 
 type StepKind = 'intro' | 'panel' | 'attachment' | 'summary';
@@ -21,13 +22,18 @@ const useWizardNavigation = (from: StepKind) => {
   const prefix = from === 'intro' ? '' : '../';
 
   const buildState = useCallback(
-    (extra?: WizardNavigationState): WizardNavigationState => ({
-      ...(typeof state === 'object' && state ? state : {}),
-      initialSubmission: submission,
-      preserveInitialSubmission: true,
-      validationErrorPages: Array.from(pagesWithErrors),
-      ...extra,
-    }),
+    (extra?: WizardNavigationState): WizardNavigationState => {
+      const { redirect: _inheritedRedirect, ...inheritedState } =
+        typeof state === 'object' && state ? (state as WizardNavigationState) : ({} as WizardNavigationState);
+
+      return {
+        ...inheritedState,
+        initialSubmission: submission,
+        preserveInitialSubmission: true,
+        validationErrorPages: Array.from(pagesWithErrors),
+        ...extra,
+      };
+    },
     [pagesWithErrors, state, submission],
   );
 
@@ -42,7 +48,10 @@ const useWizardNavigation = (from: StepKind) => {
         return;
       }
       hideSummary();
-      navigate({ pathname: `${prefix}${panelKey}`, search }, { state: buildState(extra) });
+      navigate(
+        { pathname: `${prefix}${panelKey}`, search },
+        { state: buildState(extra), replace: extra?.redirect === true },
+      );
     },
     [buildState, hideSummary, navigate, prefix, search],
   );

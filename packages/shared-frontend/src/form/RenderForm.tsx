@@ -1,6 +1,6 @@
 import { Provider as AkselProvider } from '@navikt/ds-react';
 import { en, nb, nn } from '@navikt/ds-react/locales';
-import { Form, Submission, submissionTypesUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { useLocation } from 'react-router';
 import { FyllutAppConfig, FyllutAppConfigProvider, useFyllutAppConfig } from '../context/fyllut/FyllutAppConfigContext';
 import { FyllutLanguage, FyllutLanguageProvider } from '../context/fyllut/FyllutLanguageContext';
@@ -18,6 +18,7 @@ import {
   ValidationProvider,
 } from './framework';
 import { NologinTokenProvider } from './nologin-token/NologinTokenContext';
+import { resolveDefaultSubmissionMethod } from './submissionMethodResolution';
 import SubmissionMethodSelection from './SubmissionMethodSelection';
 import useSubmitters from './useSubmitters';
 import Wizard from './wizard/Wizard';
@@ -41,23 +42,10 @@ const RenderFormContent = ({
   currentLanguage: string;
 }) => {
   const { submissionMethod, logger, config } = useFyllutAppConfig();
-  const { pathname } = useLocation();
   const persistence = useSubmitters(form, initialInnsendingsId);
   const hydratedInitialSubmission = applyPrefilledValuesToSubmission(form, initialSubmission, currentLanguage);
-  const defaultSubmissionMethod = submissionMethod === undefined && pathname !== `/${form.path}` ? 'paper' : undefined;
-  const effectiveSubmissionMethod =
-    submissionMethod ??
-    defaultSubmissionMethod ??
-    (submissionTypesUtils.isPaperSubmissionOnly(form.properties.submissionTypes)
-      ? 'paper'
-      : submissionTypesUtils.isDigitalSubmissionOnly(form.properties.submissionTypes)
-        ? 'digital'
-        : submissionTypesUtils.isDigitalNoLoginSubmissionOnly(form.properties.submissionTypes)
-          ? 'digitalnologin'
-          : submissionTypesUtils.isPaperNoCoverPageSubmissionOnly(form.properties.submissionTypes) &&
-              (form.properties.submissionTypes?.length ?? 0) > 0
-            ? 'papernocoverpage'
-            : undefined);
+  const defaultSubmissionMethod = resolveDefaultSubmissionMethod(form.properties.submissionTypes);
+  const effectiveSubmissionMethod = submissionMethod ?? defaultSubmissionMethod;
   const shouldRenderWizard =
     effectiveSubmissionMethod !== undefined || (form.properties.submissionTypes?.length ?? 0) === 0;
 

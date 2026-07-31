@@ -126,6 +126,57 @@ describe('InputDataGrid helpers', () => {
     ).toEqual(['showField', 'field']);
   });
 
+  it('filters nested custom conditionals against the nearest container row data', () => {
+    const datagrid: Component = {
+      key: 'kjaeledyr',
+      label: 'Kjaeledyr',
+      type: 'datagrid',
+      navId: 'grid',
+      components: [
+        {
+          key: 'egenskaper',
+          label: 'Egenskaper',
+          type: 'container',
+          input: true,
+          tree: true,
+          navId: 'container',
+          components: [
+            { key: 'alder', label: 'Alder', type: 'textfield', navId: 'alder' },
+            {
+              key: 'brukerDyretMedisiner',
+              label: 'Bruker dyret medisiner?',
+              type: 'radiopanel',
+              navId: 'medisiner',
+              customConditional: 'show = row.alder ? parseInt(row.alder) >= 10 : false;',
+            },
+          ],
+        },
+      ],
+    };
+    const form = createForm([datagrid]);
+    const rowComponents = enrichComponentsWithBaseSubmissionPath(datagrid.components ?? [], 'kjaeledyr[0]');
+
+    const hidden = getActiveRowComponents(
+      rowComponents,
+      { egenskaper: { alder: '9' } },
+      { kjaeledyr: [{ egenskaper: { alder: '9' } }] },
+      form,
+    );
+    expect(
+      hidden.find((component) => component.key === 'egenskaper')?.components?.map((component) => component.key),
+    ).toEqual(['alder']);
+
+    const visible = getActiveRowComponents(
+      rowComponents,
+      { egenskaper: { alder: '10' } },
+      { kjaeledyr: [{ egenskaper: { alder: '10' } }] },
+      form,
+    );
+    expect(
+      visible.find((component) => component.key === 'egenskaper')?.components?.map((component) => component.key),
+    ).toEqual(['alder', 'brukerDyretMedisiner']);
+  });
+
   it('filters selectboxes-based custom conditionals against row data', () => {
     const datagrid: Component = {
       key: 'maltider',

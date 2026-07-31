@@ -28,8 +28,12 @@ const RenderInputComponent = ({ component, submissionPath, componentRegistry = i
     return null;
   }
 
+  const formioClasses = [`formio-component-${component.key}`, `formio-component-${component.type}`]
+    .filter(Boolean)
+    .join(' ');
+
   return (
-    <div className={`formio-component-${component.key}`}>
+    <div className={formioClasses}>
       <RegistryComponent component={component} submissionPath={submissionPath} componentRegistry={componentRegistry} />
     </div>
   );

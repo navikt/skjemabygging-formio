@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
-import { useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { useFyllutLanguage } from '../context/fyllut/FyllutLanguageContext';
+import { useSubmissionState } from '../context/state/SubmissionStateContext';
 
 const languagesInOriginalLanguage: Record<string, string> = {
   'nb-NO': 'Norsk bokmål',
@@ -22,7 +23,9 @@ const persistStepperOpenStateForReload = () => {
 
 const FormLanguageSelector = () => {
   const { currentLanguage, availableLanguages } = useFyllutLanguage();
-  const { pathname, search } = useLocation();
+  const { submission } = useSubmissionState();
+  const { pathname, search, state } = useLocation();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
   const supportedLanguages = useMemo(() => {
@@ -54,6 +57,17 @@ const FormLanguageSelector = () => {
   }
 
   const label = languagesInOriginalLanguage[currentLanguage] ?? 'Norsk bokmål';
+  const navigationState =
+    typeof state === 'object' && state
+      ? {
+          ...state,
+          initialSubmission: submission,
+          preserveInitialSubmission: true as const,
+        }
+      : {
+          initialSubmission: submission,
+          preserveInitialSubmission: true as const,
+        };
 
   return (
     <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem', position: 'relative' }}>
@@ -77,7 +91,21 @@ const FormLanguageSelector = () => {
             }}
           >
             {options.map((option) => (
-              <a key={option.href} href={option.href} onClick={persistStepperOpenStateForReload}>
+              <a
+                key={option.href}
+                href={option.href}
+                onClick={(event) => {
+                  event.preventDefault();
+                  persistStepperOpenStateForReload();
+                  navigate(
+                    {
+                      pathname,
+                      search: new URL(option.href, window.location.origin).search,
+                    },
+                    { state: navigationState },
+                  );
+                }}
+              >
                 {option.label}
               </a>
             ))}

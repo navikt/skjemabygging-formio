@@ -18,6 +18,7 @@ import {
   applyPrefilledValuesToSubmission,
   buildDigitalFormSearch,
   isSoknadAlreadyExistsResponse,
+  resolveDefaultSubmissionMethod,
   shouldUseLegacyPageForNewRenderer,
 } from '@navikt/skjemadigitalisering-shared-frontend';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -31,8 +32,6 @@ import RenderFormAdapter from './RenderFormAdapter';
 
 const DELETED_DRAFT_STORAGE_KEY = 'fyllut:new-render:deleted-draft-id';
 const DELETED_DRAFT_QUERY_PARAM = 'deletedDraft';
-const DEFAULT_SUBMISSION_METHOD = 'paper';
-
 const collectPrefillKeys = (components: Component[] = []): string[] =>
   components.flatMap((component) => [
     ...(Array.isArray(component.prefillKey)
@@ -128,22 +127,30 @@ const FormPageWrapper = () => {
     !!formPath && ((config?.newRenderForms ?? []).includes('*') || (config?.newRenderForms ?? []).includes(formPath));
   const useLegacyPageForNewRenderer = shouldUseLegacyPageForNewRenderer(routePath);
   const navForm = useMemo(() => (form ? formioFormsApiUtils.mapFormToNavForm(form) : undefined), [form]);
+  const defaultRouteSubmissionMethod = useMemo(
+    () => (form ? resolveDefaultSubmissionMethod(form.properties.submissionTypes) : undefined),
+    [form],
+  );
   const dataKey = `${formPath ?? ''}|${getDraftBootstrapLanguage(search)}|${submissionMethod ?? ''}`;
   const missingSubmissionMethodOnDirectRoute =
-    useNewRenderer && !useLegacyPageForNewRenderer && !!routePath && !new URLSearchParams(search).has('sub');
+    useNewRenderer &&
+    !useLegacyPageForNewRenderer &&
+    !!routePath &&
+    !new URLSearchParams(search).has('sub') &&
+    defaultRouteSubmissionMethod === 'paper';
 
   useEffect(() => {
-    if (!missingSubmissionMethodOnDirectRoute) {
+    if (!missingSubmissionMethodOnDirectRoute || !defaultRouteSubmissionMethod) {
       return;
     }
 
     navigate(
       {
-        search: buildSearchWithSubmissionMethod(search, DEFAULT_SUBMISSION_METHOD),
+        search: buildSearchWithSubmissionMethod(search, defaultRouteSubmissionMethod),
       },
       { replace: true },
     );
-  }, [missingSubmissionMethodOnDirectRoute, navigate, search]);
+  }, [defaultRouteSubmissionMethod, missingSubmissionMethodOnDirectRoute, navigate, search]);
 
   useEffect(() => {
     stateInitialSubmissionRef.current =

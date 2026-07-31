@@ -135,9 +135,24 @@ const getActiveRowComponents = (
       component.components?.length
         ? {
             ...component,
-            components: getActiveRowComponents(component.components, row, data, form),
+            components: getActiveRowComponents(component.components, getChildRow(component, row), data, form),
           }
         : component,
     );
+
+const isObjectRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null && !Array.isArray(value);
+
+const shouldScopeChildRow = (component: Component) => Boolean(component.key && (component.tree || component.input));
+
+const getChildRow = (component: Component, row: object | undefined) => {
+  if (!shouldScopeChildRow(component) || !isObjectRecord(row)) {
+    return row;
+  }
+
+  const childRow = row[component.key];
+  return isObjectRecord(childRow) ? childRow : row;
+};
+
 export default InputDataGrid;
 export { getActiveRowComponents, getRenderedDataGridRows };

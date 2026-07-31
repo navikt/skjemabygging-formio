@@ -34,7 +34,7 @@ const PanelStep = ({ form }: { form: Form }) => {
 
   useEffect(() => {
     if (panels.length > 0 && panelSlug && !panels.some((panel) => panel.key === panelSlug)) {
-      goToPanel(panels[0].key);
+      goToPanel(panels[0].key, { redirect: true });
     }
   }, [goToPanel, panelSlug, panels]);
 
