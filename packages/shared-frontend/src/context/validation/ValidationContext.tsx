@@ -150,7 +150,6 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
     (pageKey: string, components: Component[], activeSubmission: Submission | undefined): FieldError[] =>
       deriveValidations(components, activeSubmission, submissionMethod).reduce<FieldError[]>(
         (acc, { submissionPath, field, rules, component }) => {
-          console.log(submissionUtils.getSubmissionValue(submissionPath, activeSubmission), rules);
           const violation =
             component?.type === 'attachment' &&
             submissionMethod !== 'paper' &&
