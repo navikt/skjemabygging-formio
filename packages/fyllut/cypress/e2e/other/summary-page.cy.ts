@@ -1,6 +1,6 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 
-describe('SummaryPage', { testIsolation: true }, () => {
+describe('SummaryPage', () => {
   before(() => {
     cy.configMocksServer();
   });
@@ -9,12 +9,6 @@ describe('SummaryPage', { testIsolation: true }, () => {
     cy.defaultIntercepts();
     cy.mocksRestoreRouteVariants();
   });
-
-  const setTextFieldValue = (name: string | RegExp, value: string) => {
-    cy.findByRole('textbox', { name }).invoke('val', value);
-    cy.findByRole('textbox', { name }).trigger('input');
-    cy.findByRole('textbox', { name }).trigger('change');
-  };
 
   describe('Submission type digital', () => {
     const SUMMARY_DOWNLOAD_URL = '/fyllut/summarypagedownload/visning?sub=digital';
@@ -153,12 +147,13 @@ describe('SummaryPage', { testIsolation: true }, () => {
     cy.findByRole('group', { name: /Flervalg/ }).within(() => {
       cy.findByRole('checkbox', { name: 'Ja' }).check();
     });
-    // navSelect now uses Aksel combobox behavior in new render
-    cy.findByRole('combobox', { name: /Nedtrekksmeny \(navSelect\)/ }).type('Nei{downArrow}{enter}');
-    // Legacy select now uses native/Aksel select behavior in new render
-    cy.findAllByRole('combobox').eq(1).select('Ja');
+    // Select combobox
+    cy.selectCombobox(/Nedtrekksmeny \(navSelect\)/, 'Nei');
+    // Select select
+    cy.findAllByRole('combobox', { name: /Nedtrekksmeny \(select\)/ }).select('Ja');
     // Select formio (HTML5)
-    cy.findAllByRole('combobox').eq(2).select('0,50');
+    cy.findAllByRole('combobox', { name: /Nedtrekksmeny \(select HTML5\)/ }).select('0,50');
+
     cy.findByRole('group', { name: /Radiopanel/ }).within(() => {
       cy.findByRole('radio', { name: 'Ja' }).check();
     });
@@ -199,13 +194,20 @@ describe('SummaryPage', { testIsolation: true }, () => {
     cy.findAllByRole('textbox', { name: /Beløp/ }).eq(0).type('1000');
     cy.findAllByRole('combobox', { name: /Velg valuta/ })
       .eq(0)
-      .type('Norsk krone{downArrow}{enter}');
+      .click();
+    cy.findAllByRole('combobox', { name: /Velg valuta/ })
+      .eq(0)
+      .type('Norsk{downArrow}{enter}{esc}');
+
     cy.findAllByRole('textbox', { name: /Beløp/ }).eq(1).type('2000');
-    setTextFieldValue(/Kontonummer/, '76586005479');
+    cy.findByRole('textbox', { name: /Kontonummer/ }).type('76586005479');
     cy.findByRole('textbox', { name: /IBAN/ }).type('NO8330001234567');
     cy.findAllByRole('combobox', { name: /Velg valuta/ })
       .eq(1)
-      .type('Svensk krone{downArrow}{enter}');
+      .click();
+    cy.findAllByRole('combobox', { name: /Velg valuta/ })
+      .eq(1)
+      .type('Svensk{downArrow}{enter}{esc}');
 
     cy.findByRole('link', { name: 'Bedrift / organisasjon' }).click();
     cy.findByRole('heading', { name: 'Bedrift / organisasjon' }).shouldBeVisible();
@@ -341,10 +343,12 @@ describe('SummaryPage', { testIsolation: true }, () => {
         cy.get('dd').eq(1).should('contain.text', 'Norsk krone (NOK)');
         cy.get('dt').eq(2).should('contain.text', 'Beløp');
         cy.get('dd').eq(2).should('contain.text', '2\u00a0000');
-        cy.get('dt').eq(3).should('contain.text', 'IBAN');
-        cy.get('dd').eq(3).should('contain.text', 'NO83 3000 1234 567');
-        cy.get('dt').eq(4).should('contain.text', 'Velg valuta');
-        cy.get('dd').eq(4).should('contain.text', 'Svensk krone (SEK)');
+        cy.get('dt').eq(3).should('contain.text', 'Kontonummer');
+        cy.get('dd').eq(3).should('contain.text', '7658 60 05479');
+        cy.get('dt').eq(4).should('contain.text', 'IBAN');
+        cy.get('dd').eq(4).should('contain.text', 'NO83 3000 1234 567');
+        cy.get('dt').eq(5).should('contain.text', 'Velg valuta');
+        cy.get('dd').eq(5).should('contain.text', 'Svensk krone (SEK)');
       });
 
     cy.findByRole('heading', { level: 3, name: 'Bedrift / organisasjon' })
@@ -448,12 +452,13 @@ describe('SummaryPage', { testIsolation: true }, () => {
     cy.findByRole('group', { name: /Multiple choice/ }).within(() => {
       cy.findByRole('checkbox', { name: 'Yes' }).check();
     });
-    // Select react
-    cy.findByRole('combobox', { name: /Dropdown \(navSelect\)/ }).type('No{downArrow}{enter}');
-    // Legacy select now uses native/Aksel select behavior in new render
-    cy.findAllByRole('combobox').eq(1).select('Yes');
+    // Select combobox
+    cy.selectCombobox(/Dropdown \(navSelect\)/, 'No');
+    // Select select
+    cy.findAllByRole('combobox', { name: /Dropdown \(select\)/ }).select('Yes');
     // Select formio (HTML5)
-    cy.findAllByRole('combobox').eq(2).select('0.50');
+    cy.findAllByRole('combobox', { name: /Dropdown \(select HTML5\)/ }).select('0,50');
+
     cy.findByRole('group', { name: /Radio panel/ }).within(() => {
       cy.findByRole('radio', { name: 'Yes' }).check();
     });
@@ -492,15 +497,21 @@ describe('SummaryPage', { testIsolation: true }, () => {
       .type('1000');
     cy.findAllByRole('combobox', { name: /Select currency/ })
       .eq(0)
-      .type('Norwegian krone{downArrow}{enter}');
+      .click();
+    cy.findAllByRole('combobox', { name: /Select currency/ })
+      .eq(0)
+      .type('Nor{downArrow}{enter}{esc}');
     cy.findAllByRole('textbox', { name: /Amount/ })
       .eq(1)
       .type('2000');
-    setTextFieldValue(/Account number/, '76586005479');
+    cy.findByRole('textbox', { name: /Account number/ }).type('76586005479');
     cy.findByRole('textbox', { name: /IBAN/ }).type('NO8330001234567');
     cy.findAllByRole('combobox', { name: /Select currency/ })
       .eq(1)
-      .type('Swedish krona{downArrow}{enter}');
+      .click();
+    cy.findAllByRole('combobox', { name: /Select currency/ })
+      .eq(1)
+      .type('Swe{downArrow}{enter}{esc}');
 
     cy.findByRole('link', { name: 'Company / organization' }).click();
     cy.findByRole('heading', { name: 'Company / organization' }).shouldBeVisible();
@@ -636,10 +647,12 @@ describe('SummaryPage', { testIsolation: true }, () => {
         cy.get('dd').eq(1).should('contain.text', 'Norwegian krone (NOK)');
         cy.get('dt').eq(2).should('contain.text', 'Amount');
         cy.get('dd').eq(2).should('contain.text', '2\u00a0000');
-        cy.get('dt').eq(3).should('contain.text', 'IBAN');
-        cy.get('dd').eq(3).should('contain.text', 'NO83 3000 1234 567');
-        cy.get('dt').eq(4).should('contain.text', 'Select currency');
-        cy.get('dd').eq(4).should('contain.text', 'Swedish krona (SEK)');
+        cy.get('dt').eq(3).should('contain.text', 'Account number');
+        cy.get('dd').eq(3).should('contain.text', '7658 60 05479');
+        cy.get('dt').eq(4).should('contain.text', 'IBAN');
+        cy.get('dd').eq(4).should('contain.text', 'NO83 3000 1234 567');
+        cy.get('dt').eq(5).should('contain.text', 'Select currency');
+        cy.get('dd').eq(5).should('contain.text', 'Swedish krona (SEK)');
       });
 
     cy.findByRole('heading', { level: 3, name: 'Company / organization' })
