@@ -12,7 +12,7 @@
  * NB! This function is stringified and executed inside a web worker, so it must be
  * self contained and cannot reference anything outside its own scope.
  */
-const powSolver = (nonce: string, difficulty: number): string => {
+const powSolver = (nonce: string, difficulty: number, initialAttempt = 0): string => {
   const K = new Uint32Array([
     0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5, 0xd807aa98,
     0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174, 0xe49b69c1, 0xefbe4786,
@@ -92,8 +92,7 @@ const powSolver = (nonce: string, difficulty: number): string => {
     return h0 >>> 0;
   };
 
-  const maxIterations = 16777216;
-  for (let attempt = 0; attempt < maxIterations; attempt++) {
+  for (let attempt = initialAttempt; Number.isSafeInteger(attempt); attempt++) {
     const solution = attempt.toString(36);
     let length = prefix.length;
     for (let i = 0; i < solution.length; i++) {

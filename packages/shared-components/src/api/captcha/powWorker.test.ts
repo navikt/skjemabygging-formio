@@ -41,4 +41,12 @@ describe('powWorker', () => {
     powSolver(crypto.randomBytes(16).toString('hex'), 16);
     expect(Date.now() - start).toBeLessThan(3000);
   });
+
+  it('continues searching beyond the previous attempt limit', () => {
+    const previousAttemptLimit = 2 ** 24;
+    const solution = powSolver('beyond-limit', 8, previousAttemptLimit);
+
+    expect(parseInt(solution, 36)).toBeGreaterThanOrEqual(previousAttemptLimit);
+    expect(leadingZeroBits(`beyond-limit:${solution}`)).toBeGreaterThanOrEqual(8);
+  });
 });
