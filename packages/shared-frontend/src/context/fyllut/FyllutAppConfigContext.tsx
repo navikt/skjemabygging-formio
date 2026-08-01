@@ -28,7 +28,18 @@ interface FyllutEventData {
   [key: string]: string | number | boolean | undefined;
 }
 
-type FyllutEvent = { name: 'last ned'; data: FyllutEventData } | { name: 'last opp'; data: FyllutEventData };
+type FyllutEvent =
+  | { name: 'last ned'; data: FyllutEventData }
+  | { name: 'last opp'; data: FyllutEventData }
+  | {
+      name: 'sesjon utløpt';
+      data: {
+        skjemaId: string;
+        skjemanavn: string;
+        tema: string;
+        submissionMethod?: string;
+      };
+    };
 
 interface FyllutAppConfig {
   baseUrl?: string;

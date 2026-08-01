@@ -8,6 +8,7 @@ import { NextButton } from '../../components/navigation/NextButton';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
+import { useSendInn } from '../../context/sendInn/sendInnContext';
 
 const UploadPersonalIdButtonRow = () => {
   const navigate = useNavigate();
@@ -16,20 +17,23 @@ const UploadPersonalIdButtonRow = () => {
   const { form, submission } = useForm();
   const [searchParams] = useSearchParams();
   const { submissionAttachments, errors, addError } = useAttachmentUpload();
+  const { getUploadToken } = useSendInn();
 
   const startUrl = `${baseUrl}${form.path}`;
   const error = errors['allFiles']?.find((err) => err.type === 'FILE');
 
-  const navigateToFormPage = () => {
+  const navigateToFormPage = async () => {
     const personalIdAttachment = submissionAttachments.find((attachment) => attachment.attachmentId === 'personal-id');
     if (!personalIdAttachment?.value) {
       addError('personal-id', translate('required', { field: translate(TEXTS.statiske.uploadId.label) }), 'VALUE');
     } else if (!personalIdAttachment?.files?.length) {
       addError('personal-id', translate(TEXTS.statiske.uploadId.missingUploadError), 'FILE');
     } else {
+      const nologinToken = await getUploadToken();
       navigate(`..?${searchParams.toString()}`, {
         state: {
           initialSubmission: submission,
+          nologinToken,
         },
       });
     }

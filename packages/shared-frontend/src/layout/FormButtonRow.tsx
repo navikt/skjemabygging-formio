@@ -24,21 +24,26 @@ const FormButtonRow = ({ previousButton, nextButton }: FormButtonRowProps) => (
 interface NextButtonProps {
   label: string;
   onClick: () => void;
+  disabled?: boolean;
   loading?: boolean;
   role?: 'link' | 'button';
 }
 
-const FormNextButton = ({ label, onClick, loading, role = 'link' }: NextButtonProps) => (
+const FormNextButton = ({ label, onClick, disabled, loading, role = 'link' }: NextButtonProps) => (
   <Button
     as="a"
     href="#"
     role={role}
     onClick={(event) => {
       event.preventDefault();
+      if (disabled) {
+        return;
+      }
       onClick();
     }}
     icon={<ArrowRightIcon aria-hidden />}
     iconPosition="right"
+    disabled={disabled}
     loading={loading}
     className={styles.button}
   >

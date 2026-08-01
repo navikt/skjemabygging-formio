@@ -132,6 +132,10 @@ const FormPageWrapper = () => {
     [form],
   );
   const dataKey = `${formPath ?? ''}|${getDraftBootstrapLanguage(search)}|${submissionMethod ?? ''}`;
+  const noLoginInitialSubmission =
+    submissionMethod === 'digitalnologin' && typeof state === 'object' && state && 'initialSubmission' in state
+      ? (state.initialSubmission as Submission | undefined)
+      : undefined;
   const missingSubmissionMethodOnDirectRoute =
     useNewRenderer &&
     !useLegacyPageForNewRenderer &&
@@ -387,7 +391,7 @@ const FormPageWrapper = () => {
       {useNewRenderer && !useLegacyPageForNewRenderer ? (
         <RenderFormAdapter
           form={form}
-          initialSubmission={initialSubmission}
+          initialSubmission={initialSubmission ?? noLoginInitialSubmission}
           initialInnsendingsId={initialInnsendingsId}
         />
       ) : (

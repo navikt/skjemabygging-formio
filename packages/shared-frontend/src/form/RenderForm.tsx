@@ -42,10 +42,12 @@ const RenderFormContent = ({
   currentLanguage: string;
 }) => {
   const { submissionMethod, logger, config } = useFyllutAppConfig();
+  const { search } = useLocation();
   const persistence = useSubmitters(form, initialInnsendingsId);
   const hydratedInitialSubmission = applyPrefilledValuesToSubmission(form, initialSubmission, currentLanguage);
   const defaultSubmissionMethod = resolveDefaultSubmissionMethod(form.properties.submissionTypes);
-  const effectiveSubmissionMethod = submissionMethod ?? defaultSubmissionMethod;
+  const submissionMethodFromUrl = new URLSearchParams(search).has('sub') ? submissionMethod : undefined;
+  const effectiveSubmissionMethod = submissionMethodFromUrl ?? defaultSubmissionMethod;
   const shouldRenderWizard =
     effectiveSubmissionMethod !== undefined || (form.properties.submissionTypes?.length ?? 0) === 0;
 
@@ -92,6 +94,10 @@ const RenderForm = ({
     typeof state === 'object' && state && state.preserveInitialSubmission === true && 'initialSubmission' in state
       ? state.initialSubmission
       : undefined;
+  const initialNologinToken =
+    typeof state === 'object' && state && 'nologinToken' in state && typeof state.nologinToken === 'string'
+      ? state.nologinToken
+      : undefined;
   const akselLocale = fyllutLanguage.currentLanguage === 'en' ? en : fyllutLanguage.currentLanguage === 'nn' ? nn : nb;
 
   return (
@@ -99,7 +105,7 @@ const RenderForm = ({
       <FyllutLanguageProvider value={fyllutLanguage}>
         <LanguageProvider translate={fyllutLanguage.translate} currentLanguage={fyllutLanguage.currentLanguage}>
           <AkselProvider locale={akselLocale}>
-            <NologinTokenProvider>
+            <NologinTokenProvider form={form} initialToken={initialNologinToken}>
               <RenderFormContent
                 form={form}
                 initialSubmission={initialSubmission ?? initialSubmissionProp}

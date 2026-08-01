@@ -19,7 +19,6 @@ import {
   useFormPersistence,
   useSubmissionState,
 } from '../framework';
-import { InnerHtml } from '../fyllut-components/Html';
 import AttachmentCancelButton from './AttachmentCancelButton';
 import { AttachmentErrorType, useAttachmentUpload } from './AttachmentUploadContext';
 import SharedAttachmentUploadField from './AttachmentUploadField';
@@ -92,7 +91,7 @@ const AttachmentUploadPage = ({ attachmentPanel, onPrevious, onNext }: Props) =>
       }
 
       const nextAttachments = currentAttachments
-        .filter((attachment) => visibleAttachmentIds.has(attachment.navId))
+        .filter((attachment) => attachment.attachmentId === 'personal-id' || visibleAttachmentIds.has(attachment.navId))
         .filter(hasAttachmentContent)
         .filter(
           (attachment, index, list) =>
@@ -188,9 +187,12 @@ const AttachmentUploadPage = ({ attachmentPanel, onPrevious, onNext }: Props) =>
       )}
       <VStack gap="space-32">
         {attachments.map((attachment, index) => {
-          const description = attachment.description ? (
-            <InnerHtml content={translate(attachment.description)} />
-          ) : undefined;
+          const description = attachment.description
+            ? translate(attachment.description)
+                .replace(/<br\s*\/?>/gi, '\n')
+                .replace(/<[^>]*>/g, '')
+                .trim()
+            : undefined;
           const fieldProps = {
             label: translate(attachment.label),
             description,

@@ -2,9 +2,10 @@ import { CheckmarkCircleFillIcon, DownloadIcon } from '@navikt/aksel-icons';
 import { Alert, BodyShort, Box, Button, Heading, HStack, Link, List, VStack } from '@navikt/ds-react';
 import { dateUtils, Form, ReceiptSummary, stringUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo } from 'react';
+import { useNavigationType } from 'react-router';
 import { useFyllutAppConfig } from '../../context/fyllut/FyllutAppConfigContext';
 import { useFyllutLanguage } from '../../context/fyllut/FyllutLanguageContext';
-import { FormHeader } from '../framework';
+import { FormHeader, useFormPersistence } from '../framework';
 import { b64toBlob } from '../fyllut-utils/blob';
 
 const getMyPageUrl = (url: string) => {
@@ -24,6 +25,8 @@ interface Props {
 const ReceiptStep = ({ form, receipt, pdfBase64 }: Props) => {
   const { logEvent, submissionMethod } = useFyllutAppConfig();
   const { currentLanguage, translate } = useFyllutLanguage();
+  const { status } = useFormPersistence();
+  const navigationType = useNavigationType();
 
   const soknadPdfUrl = useMemo(() => {
     if (!pdfBase64) {
@@ -55,7 +58,7 @@ const ReceiptStep = ({ form, receipt, pdfBase64 }: Props) => {
     });
   };
 
-  if (!receipt) {
+  if (!receipt || (status === 'submitted' && navigationType === 'POP')) {
     return (
       <>
         <FormHeader form={form} pageTitle={TEXTS.statiske.receipt.title} />
@@ -116,9 +119,9 @@ const ReceiptStep = ({ form, receipt, pdfBase64 }: Props) => {
                   )}
                 </HStack>
               </List.Item>
-              {receipt.receivedAttachments.map((attachment) => (
+              {receipt.receivedAttachments.map((attachment, index) => (
                 <List.Item
-                  key={attachment.id}
+                  key={`${attachment.id}-${index}`}
                   icon={
                     <CheckmarkCircleFillIcon
                       color="currentColor"
@@ -142,8 +145,8 @@ const ReceiptStep = ({ form, receipt, pdfBase64 }: Props) => {
             </BodyShort>
             <Box marginBlock="space-16" asChild>
               <List data-aksel-migrated-v8>
-                {receipt.attachmentsToSendLater.map((attachment) => (
-                  <List.Item key={attachment.id}>{attachment.title}</List.Item>
+                {receipt.attachmentsToSendLater.map((attachment, index) => (
+                  <List.Item key={`${attachment.id}-${index}`}>{attachment.title}</List.Item>
                 ))}
               </List>
             </Box>
@@ -157,8 +160,8 @@ const ReceiptStep = ({ form, receipt, pdfBase64 }: Props) => {
             </BodyShort>
             <Box marginBlock="space-16" asChild>
               <List data-aksel-migrated-v8>
-                {receipt.attachmentsToBeSentByOthers.map((attachment) => (
-                  <List.Item key={attachment.id}>{attachment.title}</List.Item>
+                {receipt.attachmentsToBeSentByOthers.map((attachment, index) => (
+                  <List.Item key={`${attachment.id}-${index}`}>{attachment.title}</List.Item>
                 ))}
               </List>
             </Box>

@@ -23,7 +23,7 @@ const useSubmitters = (form: Form, initialInnsendingsId?: string): FormPersisten
   const appConfig = useFyllutAppConfig();
   const { currentLanguage } = useFyllutLanguage();
   const { submissionMethod, logger } = appConfig;
-  const { getNologinToken, clearNologinToken } = useNologinToken();
+  const { getNologinToken, clearNologinToken, handleSessionExpired } = useNologinToken();
   const { search, state } = useLocation();
   const navigate = useNavigate();
   const { setSubmission } = useSubmissionState();
@@ -172,15 +172,23 @@ const useSubmitters = (form: Form, initialInnsendingsId?: string): FormPersisten
         }
         case 'digitalnologin': {
           const nologinToken = await getNologinToken();
-          const response = await postNologinSoknad(
-            appConfig,
-            nologinToken ?? '',
-            navForm,
-            submission,
-            currentLanguage as Language,
-            submissionMethod,
-            innsendingsIdRef.current,
-          );
+          let response;
+          try {
+            response = await postNologinSoknad(
+              appConfig,
+              nologinToken ?? '',
+              navForm,
+              submission,
+              currentLanguage as Language,
+              submissionMethod,
+              innsendingsIdRef.current,
+            );
+          } catch (error) {
+            if (appConfig.http?.isAuthenticationError(error)) {
+              handleSessionExpired();
+            }
+            throw error;
+          }
           clearNologinToken();
           navigate(
             { pathname: `/${form.path}/${RECEIPT_KEY}`, search },
@@ -206,6 +214,7 @@ const useSubmitters = (form: Form, initialInnsendingsId?: string): FormPersisten
     logger,
     getNologinToken,
     clearNologinToken,
+    handleSessionExpired,
     setSubmission,
     navigate,
     search,

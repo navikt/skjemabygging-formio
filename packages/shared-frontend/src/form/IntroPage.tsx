@@ -19,7 +19,7 @@ const IntroPage = ({ onStart }: Props) => {
   const { saveDraft, canSaveDraft, status } = useFormPersistence();
   const { submission, setSubmission } = useSubmissionState();
   const [selfDeclarationError, setSelfDeclarationError] = useState<string | undefined>();
-  const { tokenExpiration, getNologinToken } = useNologinToken();
+  const { tokenExpiration } = useNologinToken();
   const navigationRole = form.path === 'newrender' ? 'button' : 'link';
   const nextLabel =
     submissionMethod === 'digital' && form.path !== 'newrender'
@@ -39,12 +39,6 @@ const IntroPage = ({ onStart }: Props) => {
       setSubmission((prev) => prev ?? { data: {} });
     }
   }, [setSubmission, submissionMethod]);
-
-  useEffect(() => {
-    if (submissionMethod === 'digitalnologin' && !tokenExpiration) {
-      void getNologinToken();
-    }
-  }, [getNologinToken, submissionMethod, tokenExpiration]);
 
   const handleStart = async () => {
     if (isDynamic && !submission?.selfDeclaration) {

@@ -58,7 +58,7 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
   const { submissionMethod, http } = useFyllutAppConfig();
   const { translate } = useFyllutLanguage();
   const { submission, setSubmission } = useSubmissionState();
-  const { getNologinToken } = useNologinToken();
+  const { getNologinToken, handleSessionExpired } = useNologinToken();
   const { search } = useLocation();
   const [uploadsInProgress, setUploadsInProgress] = useState<Record<string, Record<string, FileObject>>>({});
   const [errors, setErrors] = useState<Record<string, Array<AttachmentError>>>({});
@@ -127,6 +127,7 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
       return Promise.resolve({ status: 'unknown' });
     } catch (error: unknown) {
       if (isAuthenticationError(error, http)) {
+        handleSessionExpired();
         return Promise.resolve({ status: 'auth-error' });
       }
 
@@ -147,7 +148,9 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
       await uploadApi.deleteFile(attachmentId, fileId, token);
       submissionActions.removeFileFromSubmission(attachmentId, fileId);
     } catch (error) {
-      if (!isAuthenticationError(error, http)) {
+      if (isAuthenticationError(error, http)) {
+        handleSessionExpired();
+      } else {
         addError(fileId, translate(TEXTS.statiske.uploadFile.deleteFileError), 'FILE');
       }
     }
@@ -160,7 +163,9 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
       const downloadedFile = await uploadApi.downloadFile(attachmentId, fileId, token);
       downloadBlob(downloadedFile, normalizeAttachmentDownloadFileName(fileName));
     } catch (error) {
-      if (!isAuthenticationError(error, http)) {
+      if (isAuthenticationError(error, http)) {
+        handleSessionExpired();
+      } else {
         addError(attachmentId, translate(TEXTS.statiske.uploadFile.downloadFileError), 'FILE');
       }
     }
@@ -173,7 +178,9 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
       await uploadApi.deleteAllFilesForAttachment(attachmentId, token);
       submissionActions.removeFilesFromSubmission(attachmentId);
     } catch (error) {
-      if (!isAuthenticationError(error, http)) {
+      if (isAuthenticationError(error, http)) {
+        handleSessionExpired();
+      } else {
         addError(attachmentId, translate(TEXTS.statiske.uploadFile.deleteAttachmentError), 'FILE');
       }
     }
@@ -186,7 +193,9 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
       await uploadApi.deleteAllFilesForAttachment(attachmentId, token);
       submissionActions.removeAttachmentFromSubmission(attachmentId);
     } catch (error) {
-      if (!isAuthenticationError(error, http)) {
+      if (isAuthenticationError(error, http)) {
+        handleSessionExpired();
+      } else {
         addError(attachmentId, translate(TEXTS.statiske.uploadFile.deleteAttachmentError), 'FILE');
       }
       throw error;
@@ -206,7 +215,9 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
           }) as Submission,
       );
     } catch (error) {
-      if (!isAuthenticationError(error, http)) {
+      if (isAuthenticationError(error, http)) {
+        handleSessionExpired();
+      } else {
         addError('allFiles', translate(TEXTS.statiske.uploadFile.deleteAllFilesError), 'FILE');
       }
       throw error;
