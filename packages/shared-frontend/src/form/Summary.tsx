@@ -3,7 +3,6 @@ import {
   navFormUtils,
   Panel,
   PanelValidation,
-  ResponseError,
   submissionTypesUtils,
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
@@ -29,6 +28,9 @@ import { PREPARE_LETTER_KEY, PREPARE_NO_SUBMISSION_KEY } from './wizard/constant
 const DELETED_DRAFT_STORAGE_KEY = 'fyllut:new-render:deleted-draft-id';
 const DELETED_DRAFT_QUERY_PARAM = 'deletedDraft';
 const DISCARDED_SUBMISSION_STORAGE_KEY = 'fyllut:new-render:discarded-submission';
+
+const hasUserMessage = (error: unknown): error is { userMessage: string } =>
+  typeof error === 'object' && error !== null && 'userMessage' in error && typeof error.userMessage === 'string';
 
 interface Props {
   onBack: () => void;
@@ -108,12 +110,11 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
       : appConfig.submissionMethod === 'paper' || isNoSubmissionFlow
         ? TEXTS.grensesnitt.navigation.instructions
         : TEXTS.grensesnitt.navigation.sendToNav;
-  const submitErrorMessage =
-    error instanceof ResponseError
-      ? (error.userMessage ?? TEXTS.statiske.error.serverErrorTitle)
-      : error
-        ? TEXTS.statiske.error.serverErrorTitle
-        : undefined;
+  const submitErrorMessage = hasUserMessage(error)
+    ? error.userMessage
+    : error
+      ? TEXTS.statiske.error.serverErrorTitle
+      : undefined;
 
   const handleSubmit = () => {
     if (hasValidationErrors) {
