@@ -1,5 +1,6 @@
 import { CheckboxGroup as AkselCheckboxGroup, Checkbox } from '@navikt/ds-react';
 import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
+import { ReactNode } from 'react';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useStateField } from '../../context/state/useStateField';
 import { inputId } from '../../utils/inputId';
@@ -15,6 +16,7 @@ interface CheckboxGroupProps extends Omit<BaseFieldProps, 'label'> {
   value?: string[];
   onChange?: (value: string[]) => unknown;
   error?: string;
+  children?: ReactNode;
 }
 
 const CheckboxGroup = ({
@@ -29,6 +31,7 @@ const CheckboxGroup = ({
   value,
   onChange,
   error: controlledError,
+  children,
 }: CheckboxGroupProps) => {
   const { translate } = useLanguage();
   const { stateValue, error, setStateValue } = useStateField({ statePath });
@@ -56,6 +59,7 @@ const CheckboxGroup = ({
             {translate(label)}
           </Checkbox>
         ))}
+        {children}
       </AkselCheckboxGroup>
       {readMore && <ReadMore {...readMore} />}
     </FormElementBox>

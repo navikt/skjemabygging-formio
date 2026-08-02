@@ -74,18 +74,18 @@ const DrivingListPeriod = ({
           value={selectedDates}
           onChange={updateDates}
           required
-        />
-
-        {hasParking &&
-          selectedDates.map((date) => (
-            <TextField
-              key={date}
-              statePath={getParkingFieldPath(statePath, dates, date)}
-              label={translate(TEXTS.statiske.drivingList.parkingExpenses)}
-              type="text"
-              inputMode="numeric"
-            />
-          ))}
+        >
+          {hasParking &&
+            selectedDates.map((date) => (
+              <TextField
+                key={date}
+                statePath={getParkingFieldPath(statePath, dates, date)}
+                label={TEXTS.statiske.drivingList.parkingExpenses}
+                type="text"
+                inputMode="numeric"
+              />
+            ))}
+        </CheckboxGroup>
 
         {shouldShowExpenseWarning(selectedDateEntries, dailyRate, betalingsplan?.beloep) && (
           <Alert variant="warning">
