@@ -97,14 +97,14 @@ describe('Your information', () => {
           cy.findByRole('group', { name: 'Bor du i Norge?' }).should('not.exist');
           cy.findByRole('textbox', { name: 'Fornavn' }).should('have.value', 'John');
           cy.findByRole('textbox', { name: 'Etternavn' }).should('have.value', 'Doe');
-          cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).should('have.value', '06882549354');
+          cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).should('have.value', '068825 49354');
           cy.findByRole('textbox', { name: 'Vegnavn og husnummer, eller postboks' }).should(
             'have.value',
             'The Landmark Building, 1 Market St',
           );
           cy.findByRole('textbox', { name: 'Postnummer' }).should('have.value', '94105');
           cy.findByRole('textbox', { name: 'By / stedsnavn' }).should('have.value', 'San Francisco');
-          cy.withinComponent('Land', () => {
+          cy.withinComponent(/Land/, () => {
             cy.assertCombobox('USA');
           });
 
@@ -276,7 +276,16 @@ describe('Your information', () => {
             .should('exist')
             .invoke('attr', 'aria-describedby')
             .then((describedById) => {
-              cy.get(`#${describedById}`).should('have.text', 'Du må fylle ut: Fødselsdato (dd.mm.åååå)');
+              if (!describedById) {
+                throw new Error('Expected birth date input to describe its validation message');
+              }
+
+              cy.get(
+                describedById
+                  .split(' ')
+                  .map((id) => `#${id}`)
+                  .join(', '),
+              ).should('contain.text', 'Du må fylle ut: Fødselsdato (dd.mm.åååå)');
             });
 
           cy.findByRole('group', { name: 'Bor du i Norge?' })

@@ -6,10 +6,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { getCountryObject } from '../../utils/countries';
 
-type RawPrefilledAddress = Partial<SubmissionAddress> & {
-  coAdressenavn?: string;
-  regionDistriktOmraade?: string;
-};
+type RawPrefilledAddress = Partial<SubmissionAddress>;
 
 type RawPrefilledAddresses = {
   bostedsadresse?: RawPrefilledAddress;
@@ -42,8 +39,6 @@ const normalizePrefilledAddress = (
 
   return {
     ...address,
-    co: address.co ?? address.coAdressenavn,
-    region: address.region ?? address.regionDistriktOmraade,
     land: address.land ?? (address.landkode ? getCountryObject(address.landkode, language) : undefined),
   } as SubmissionAddress;
 };

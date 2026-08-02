@@ -24,6 +24,9 @@ interface RuleViolation {
   params: Record<string, string | number>;
 }
 
+const getTranslationKey = (textKey: string) =>
+  Object.entries(TEXTS.validering).find(([, text]) => text === textKey)?.[0] ?? textKey;
+
 const validateAttachmentComponent = (
   component: Component,
   field: string,
@@ -168,7 +171,15 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
                   },
                 );
           if (violation) {
-            acc.push({ pageKey, submissionPath, field, message: translate(violation.textKey, violation.params) });
+            acc.push({
+              pageKey,
+              submissionPath,
+              field,
+              message: translate(getTranslationKey(violation.textKey), {
+                ...violation.params,
+                ...(typeof violation.params.field === 'string' && { field: translate(violation.params.field) }),
+              }),
+            });
           }
           return acc;
         },
@@ -213,11 +224,7 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
       });
       setPagesWithErrors((prev) => replacePageSet(prev, failedPages));
       setPageErrorsByKey((prev) => {
-        const next = pages.reduce(
-          (acc, { pageKey }) => setPageErrors(acc, pageKey, pageErrors.get(pageKey) ?? []),
-          prev,
-        );
-        return next;
+        return pages.reduce((acc, { pageKey }) => setPageErrors(acc, pageKey, pageErrors.get(pageKey) ?? []), prev);
       });
       setSummaryScope(failedPages.size > 0 ? { type: 'summary' } : undefined);
       return Array.from(failedPages);

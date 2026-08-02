@@ -43,7 +43,6 @@ const RenderFormContent = ({
 }) => {
   const { submissionMethod, logger, config } = useFyllutAppConfig();
   const { search } = useLocation();
-  const persistence = useSubmitters(form, initialInnsendingsId);
   const hydratedInitialSubmission = applyPrefilledValuesToSubmission(form, initialSubmission, currentLanguage);
   const defaultSubmissionMethod = resolveDefaultSubmissionMethod(form.properties.submissionTypes);
   const submissionMethodFromUrl = new URLSearchParams(search).has('sub') ? submissionMethod : undefined;
@@ -54,27 +53,50 @@ const RenderFormContent = ({
   return (
     <AppConfigProvider submissionMethod={effectiveSubmissionMethod} logger={logger} config={config}>
       <SubmissionStateProvider initialSubmission={hydratedInitialSubmission}>
-        <FormDefinitionProvider form={form}>
-          <ValidationProvider initialPagesWithErrors={initialPagesWithErrors}>
-            <FormPersistenceProvider saveDraft={persistence.saveDraft} submitForm={persistence.submitForm}>
-              <AttachmentUploadProvider>
-                <FormLayout>
-                  <FormLanguageSelector />
-                  {shouldRenderWizard ? (
-                    <Wizard form={form} />
-                  ) : (
-                    <>
-                      <FormHeader form={form} />
-                      <SubmissionMethodSelection form={form} />
-                    </>
-                  )}
-                </FormLayout>
-              </AttachmentUploadProvider>
-            </FormPersistenceProvider>
-          </ValidationProvider>
-        </FormDefinitionProvider>
+        <FormContent
+          form={form}
+          initialInnsendingsId={initialInnsendingsId}
+          initialPagesWithErrors={initialPagesWithErrors}
+          shouldRenderWizard={shouldRenderWizard}
+        />
       </SubmissionStateProvider>
     </AppConfigProvider>
+  );
+};
+
+const FormContent = ({
+  form,
+  initialInnsendingsId,
+  initialPagesWithErrors,
+  shouldRenderWizard,
+}: {
+  form: Form;
+  initialInnsendingsId?: string;
+  initialPagesWithErrors?: string[];
+  shouldRenderWizard: boolean;
+}) => {
+  const persistence = useSubmitters(form, initialInnsendingsId);
+
+  return (
+    <FormDefinitionProvider form={form}>
+      <ValidationProvider initialPagesWithErrors={initialPagesWithErrors}>
+        <FormPersistenceProvider saveDraft={persistence.saveDraft} submitForm={persistence.submitForm}>
+          <AttachmentUploadProvider>
+            <FormLayout>
+              <FormLanguageSelector />
+              {shouldRenderWizard ? (
+                <Wizard form={form} />
+              ) : (
+                <>
+                  <FormHeader form={form} />
+                  <SubmissionMethodSelection form={form} />
+                </>
+              )}
+            </FormLayout>
+          </AttachmentUploadProvider>
+        </FormPersistenceProvider>
+      </ValidationProvider>
+    </FormDefinitionProvider>
   );
 };
 

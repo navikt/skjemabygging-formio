@@ -98,6 +98,7 @@ const Address = ({
             <TextField
               statePath={`${statePath}.co`}
               label={TEXTS.statiske.address.co.label}
+              required={false}
               readOnly={effectiveReadOnly}
               readMore={coReadMore}
             />
@@ -138,6 +139,7 @@ const Address = ({
             <TextField
               statePath={`${statePath}.co`}
               label={TEXTS.statiske.address.co.label}
+              required={false}
               readOnly={effectiveReadOnly}
               readMore={coReadMore}
             />
@@ -177,6 +179,7 @@ const Address = ({
             <TextField
               statePath={`${statePath}.co`}
               label={TEXTS.statiske.address.co.label}
+              required={false}
               readOnly={effectiveReadOnly}
               readMore={coReadMore}
             />
@@ -194,6 +197,7 @@ const Address = ({
             <TextField
               statePath={`${statePath}.bygning`}
               label={TEXTS.statiske.address.building}
+              required={false}
               readOnly={effectiveReadOnly}
             />
           )}
@@ -201,6 +205,7 @@ const Address = ({
             <TextField
               statePath={`${statePath}.postnummer`}
               label={TEXTS.statiske.address.postalCode}
+              required={false}
               readOnly={effectiveReadOnly}
               autoComplete="postal-code"
             />
@@ -209,6 +214,7 @@ const Address = ({
             <TextField
               statePath={`${statePath}.bySted`}
               label={TEXTS.statiske.address.location}
+              required={false}
               readOnly={effectiveReadOnly}
               autoComplete="address-level2"
             />
@@ -217,6 +223,7 @@ const Address = ({
             <TextField
               statePath={`${statePath}.region`}
               label={TEXTS.statiske.address.region}
+              required={false}
               readOnly={effectiveReadOnly}
               autoComplete="address-level1"
             />
