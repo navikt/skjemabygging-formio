@@ -10,6 +10,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router';
 import { useFyllutAppConfig } from '../context/fyllut/FyllutAppConfigContext';
 import { useFyllutLanguage } from '../context/fyllut/FyllutLanguageContext';
+import { inputId } from '../utils/inputId';
 import { useAttachmentUpload } from './attachment-upload/AttachmentUploadContext';
 import {
   CancelAndDeleteButton,
@@ -44,7 +45,7 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
   const { translate, currentLanguage } = useFyllutLanguage();
   const { form, activeComponents } = useFormDefinition();
   const { submission, setSubmission } = useSubmissionState();
-  const { getErrorsForPages, validatePages } = useValidation();
+  const { getErrorsForPages, shouldShowSummaryForSummaryPage, validatePages } = useValidation();
   const { submit, status, error, canSubmit, canSaveDraft } = useFormPersistence();
   const { handleDownloadFile } = useAttachmentUpload();
   const { search } = useLocation();
@@ -76,7 +77,6 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
       })),
     [validationErrors, validationPages],
   );
-  const hasValidationErrors = validationErrors.length > 0;
   const deletedDraftId = sessionStorage.getItem(DELETED_DRAFT_STORAGE_KEY);
   const currentDraftId = new URLSearchParams(search).get('innsendingsId');
   const isDeletedDraftSummary =
@@ -115,7 +115,7 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
       : undefined;
 
   const handleSubmit = () => {
-    if (hasValidationErrors) {
+    if (validatePages(validationPages).length > 0) {
       return;
     }
 
@@ -134,6 +134,13 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
 
     if (canSubmit) {
       void submit();
+    }
+  };
+  const showEditAnswers = shouldShowSummaryForSummaryPage() && validationErrors.length > 0;
+  const navigateToFirstError = () => {
+    const firstError = validationErrors[0];
+    if (firstError) {
+      onNavigateToError(firstError.pageKey, inputId(firstError.submissionPath));
     }
   };
 
@@ -170,12 +177,20 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
       {submitErrorMessage && <Alert variant="error">{translate(submitErrorMessage)}</Alert>}
       <FormButtonRow
         cancelButton={<CancelAndDeleteButton />}
-        previousButton={<FormPrevButton label={translate(TEXTS.grensesnitt.navigation.previous)} onClick={onBack} />}
+        previousButton={
+          showEditAnswers ? (
+            <FormPrevButton
+              label={translate(TEXTS.grensesnitt.summaryPage.editAnswers)}
+              onClick={navigateToFirstError}
+            />
+          ) : (
+            <FormPrevButton label={translate(TEXTS.grensesnitt.navigation.previous)} onClick={onBack} />
+          )
+        }
         nextButton={
           <FormNextButton
             label={translate(primaryActionLabel)}
             onClick={handleSubmit}
-            disabled={hasValidationErrors}
             loading={status === 'submitting'}
           />
         }

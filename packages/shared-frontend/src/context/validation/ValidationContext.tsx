@@ -24,6 +24,9 @@ interface RuleViolation {
   params: Record<string, string | number>;
 }
 
+const getTranslationKey = (textKey: string) =>
+  Object.entries(TEXTS.validering).find(([, text]) => text === textKey)?.[0] ?? textKey;
+
 const validateAttachmentComponent = (
   component: Component,
   field: string,
@@ -172,7 +175,7 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
               pageKey,
               submissionPath,
               field,
-              message: translate(violation.textKey, {
+              message: translate(getTranslationKey(violation.textKey), {
                 ...violation.params,
                 ...(typeof violation.params.field === 'string' && { field: translate(violation.params.field) }),
               }),

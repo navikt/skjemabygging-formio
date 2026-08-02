@@ -29,7 +29,8 @@ const openSummaryInStepper = () => {
 };
 
 const withinOpenDialog = (callback: () => void) => {
-  cy.get('dialog[open]').should('be.visible').within(callback);
+  cy.get('dialog[open]').should('be.visible');
+  cy.get('dialog[open]').within(callback);
 };
 
 const testConfirmationModal = (
@@ -74,7 +75,7 @@ const confirmSaveDraftAfterCancellingOnce = () => {
 
 const expectSummaryValidationToBlockSubmission = () => {
   cy.clickSendNav();
-  cy.contains(TEXTS.statiske.summaryPage.validationMessage).shouldBeVisible();
+  cy.get('[data-cy=error-summary]').shouldBeVisible();
   expectSummaryPage();
   cy.url().should('not.include', '/kvittering');
 };
