@@ -1,4 +1,4 @@
-import { Alert } from '@navikt/ds-react';
+import { Alert, Heading } from '@navikt/ds-react';
 import {
   navFormUtils,
   Panel,
@@ -6,7 +6,7 @@ import {
   submissionTypesUtils,
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router';
 import { useFyllutAppConfig } from '../context/fyllut/FyllutAppConfigContext';
 import { useFyllutLanguage } from '../context/fyllut/FyllutLanguageContext';
@@ -45,7 +45,7 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
   const { translate, currentLanguage } = useFyllutLanguage();
   const { form, activeComponents } = useFormDefinition();
   const { submission, setSubmission } = useSubmissionState();
-  const { getErrorsForPages, shouldShowSummaryForSummaryPage, validatePages } = useValidation();
+  const { getErrorsForPages, validatePages } = useValidation();
   const { submit, status, error, canSubmit, canSaveDraft } = useFormPersistence();
   const { handleDownloadFile } = useAttachmentUpload();
   const { search } = useLocation();
@@ -66,8 +66,6 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
     ],
     [activePanels, attachmentPanel],
   );
-  const validationPageKeys = validationPages.map(({ pageKey }) => pageKey).join(',');
-  const validatedSummaryRef = useRef<{ pageKeys: string; submission: typeof submission }>();
   const validationErrors = getErrorsForPages(validationPages);
   const panelValidationList = useMemo<PanelValidation[]>(
     () =>
@@ -93,17 +91,6 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
       setSubmission(undefined);
     }
   }, [hasDiscardedSubmission, setSubmission]);
-  useEffect(() => {
-    if (
-      validatedSummaryRef.current?.pageKeys === validationPageKeys &&
-      validatedSummaryRef.current.submission === submission
-    ) {
-      return;
-    }
-
-    validatedSummaryRef.current = { pageKeys: validationPageKeys, submission };
-    validatePages(validationPages);
-  }, [submission, validatePages, validationPageKeys, validationPages]);
   const primaryActionLabel =
     appConfig.submissionMethod === 'paper' || isNoSubmissionFlow
       ? TEXTS.grensesnitt.navigation.instructions
@@ -136,7 +123,7 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
       void submit();
     }
   };
-  const showEditAnswers = shouldShowSummaryForSummaryPage() && validationErrors.length > 0;
+  const hasValidationErrors = validationErrors.length > 0;
   const navigateToFirstError = () => {
     const firstError = validationErrors[0];
     if (firstError) {
@@ -150,6 +137,17 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
 
   return (
     <>
+      {hasValidationErrors && (
+        <>
+          <Alert variant="warning">
+            <Heading spacing size="small" level="3">
+              {translate(TEXTS.statiske.summaryPage.validationTitle)}
+            </Heading>
+            {translate(TEXTS.statiske.summaryPage.validationMessage)}
+          </Alert>
+          <FormPrevButton label={translate(TEXTS.grensesnitt.summaryPage.editAnswers)} onClick={navigateToFirstError} />
+        </>
+      )}
       <RenderSummaryForm
         activeComponents={summaryComponents}
         activeAttachmentUploadsPanel={
@@ -178,14 +176,12 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
       <FormButtonRow
         cancelButton={<CancelAndDeleteButton />}
         previousButton={
-          showEditAnswers ? (
-            <FormPrevButton
-              label={translate(TEXTS.grensesnitt.summaryPage.editAnswers)}
-              onClick={navigateToFirstError}
-            />
-          ) : (
-            <FormPrevButton label={translate(TEXTS.grensesnitt.navigation.previous)} onClick={onBack} />
-          )
+          <FormPrevButton
+            label={translate(
+              hasValidationErrors ? TEXTS.grensesnitt.summaryPage.editAnswers : TEXTS.grensesnitt.navigation.previous,
+            )}
+            onClick={hasValidationErrors ? navigateToFirstError : onBack}
+          />
         }
         nextButton={
           <FormNextButton
