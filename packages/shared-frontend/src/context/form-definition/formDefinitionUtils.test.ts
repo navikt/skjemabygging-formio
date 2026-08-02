@@ -52,4 +52,31 @@ describe('formDefinitionUtils', () => {
       flattenComponentsWithBaseSubmissionPath(components).map((component) => component.baseSubmissionPath),
     ).toEqual(['', 'container']);
   });
+
+  it('does not duplicate the submission path for a your-information panel containing a same-key container', () => {
+    const components = enrichComponentsWithBaseSubmissionPath([
+      {
+        key: 'dineOpplysninger',
+        type: 'panel',
+        input: false,
+        yourInformation: true,
+        components: [
+          {
+            key: 'dineOpplysninger',
+            type: 'container',
+            input: true,
+            components: [{ key: 'fornavn', type: 'firstName', input: true }],
+          },
+        ],
+      } as Component,
+    ]);
+
+    const [panel] = components;
+    const [container] = panel.components ?? [];
+    const [firstName] = container?.components ?? [];
+
+    expect(container.baseSubmissionPath).toBe('');
+    expect(firstName.baseSubmissionPath).toBe('dineOpplysninger');
+    expect(getResolvedSubmissionPath(firstName)).toBe('dineOpplysninger.fornavn');
+  });
 });

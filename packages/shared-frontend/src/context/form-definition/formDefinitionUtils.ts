@@ -11,12 +11,13 @@ const getResolvedSubmissionPath = (component: Component) => {
 const enrichComponentsWithBaseSubmissionPath = (components: Component[] = [], baseSubmissionPath = ''): Component[] =>
   components.map((component) => {
     const { components: childComponents, ...rest } = component;
-    const nextBaseSubmissionPath = rest.yourInformation
-      ? [baseSubmissionPath, rest.key].filter(Boolean).join('.')
-      : getResolvedSubmissionPath({
-          ...rest,
-          baseSubmissionPath,
-        });
+    const nextBaseSubmissionPath =
+      rest.yourInformation && rest.type === 'container'
+        ? [baseSubmissionPath, rest.key].filter(Boolean).join('.')
+        : getResolvedSubmissionPath({
+            ...rest,
+            baseSubmissionPath,
+          });
 
     return {
       ...rest,
