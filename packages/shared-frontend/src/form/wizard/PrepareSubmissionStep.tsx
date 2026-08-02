@@ -10,8 +10,14 @@ import { useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useFyllutAppConfig } from '../../context/fyllut/FyllutAppConfigContext';
 import { useFyllutLanguage } from '../../context/fyllut/FyllutLanguageContext';
-import FormSecondaryButtons from '../FormSecondaryButtons';
-import { FormButtonRow, FormHeader, FormPrevButton, useFormDefinition, useSubmissionState } from '../framework';
+import {
+  CancelAndDeleteButton,
+  FormButtonRow,
+  FormHeader,
+  FormPrevButton,
+  useFormDefinition,
+  useSubmissionState,
+} from '../framework';
 import DownloadPdfButton from '../fyllut-components/DownloadPdfButton';
 import { SUMMARY_KEY } from './constants';
 
@@ -138,8 +144,8 @@ const PrepareSubmissionStep = ({ type }: Props) => {
           <Alert variant="error">{translate(TEXTS.statiske.prepareLetterPage.downloadError)}</Alert>
         )}
       </VStack>
-      <FormSecondaryButtons exitOnly />
       <FormButtonRow
+        cancelButton={<CancelAndDeleteButton exitOnly />}
         previousButton={
           <FormPrevButton
             label={translate(TEXTS.grensesnitt.navigation.previous)}

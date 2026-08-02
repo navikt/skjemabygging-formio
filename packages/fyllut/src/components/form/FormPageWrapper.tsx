@@ -11,6 +11,7 @@ import {
   formioFormsApiUtils,
   I18nTranslations,
   navFormUtils,
+  ResponseError,
   Submission,
   SubmissionData,
 } from '@navikt/skjemadigitalisering-shared-domain';
@@ -245,7 +246,17 @@ const FormPageWrapper = () => {
           return { navigated: false };
         }
 
-        const response = await sendInnSoknadApi.getSoknad(innsendingsId, appConfig);
+        let response;
+        try {
+          response = await sendInnSoknadApi.getSoknad(innsendingsId, appConfig);
+        } catch (error) {
+          if (error instanceof ResponseError && error.errorCode === 'NOT_FOUND') {
+            navigate('/soknad-ikke-funnet', { replace: true });
+            return { navigated: true };
+          }
+
+          throw error;
+        }
         setInitialInnsendingsId(innsendingsId);
         setInitialSubmission(response?.hoveddokumentVariant?.document?.data);
         return { navigated: false };

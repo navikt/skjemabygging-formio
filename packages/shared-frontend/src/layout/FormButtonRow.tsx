@@ -1,25 +1,32 @@
 import { ArrowLeftIcon, ArrowRightIcon } from '@navikt/aksel-icons';
-import { Box, Button } from '@navikt/ds-react';
+import { Button } from '@navikt/ds-react';
 import { ReactNode } from 'react';
 import styles from './FormButtonRow.module.css';
 
 interface FormButtonRowProps {
-  previousButton?: ReactNode;
   nextButton?: ReactNode;
+  previousButton?: ReactNode;
+  saveButton?: ReactNode;
+  cancelButton?: ReactNode;
 }
 
-/**
- * Navigation button row: row-reverse layout so Next appears on the left (primary action) and
- * Previous on the right.
- */
-const FormButtonRow = ({ previousButton, nextButton }: FormButtonRowProps) => (
-  <nav>
-    <Box marginBlock="space-40 space-20" className={styles.row}>
-      {nextButton}
-      {previousButton}
-    </Box>
-  </nav>
-);
+const FormButtonRow = ({ nextButton, previousButton, saveButton, cancelButton }: FormButtonRowProps) => {
+  const twoElementsFirstRow = !!nextButton && !!previousButton;
+  const twoElementsSecondRow = !!cancelButton && !!saveButton;
+
+  return (
+    <nav>
+      <div className={styles.row}>
+        {nextButton}
+        {previousButton}
+      </div>
+      <div className={`${styles.row} ${twoElementsFirstRow && !twoElementsSecondRow ? styles.center : ''}`}>
+        {cancelButton}
+        {saveButton}
+      </div>
+    </nav>
+  );
+};
 
 interface NextButtonProps {
   label: string;
@@ -31,21 +38,12 @@ interface NextButtonProps {
 
 const FormNextButton = ({ label, onClick, disabled, loading, role = 'link' }: NextButtonProps) => (
   <Button
-    as="a"
-    href="#"
     role={role}
-    onClick={(event) => {
-      event.preventDefault();
-      if (disabled) {
-        return;
-      }
-      onClick();
-    }}
+    onClick={onClick}
     icon={<ArrowRightIcon aria-hidden />}
     iconPosition="right"
     disabled={disabled}
     loading={loading}
-    className={styles.button}
   >
     {label}
   </Button>
@@ -58,19 +56,7 @@ interface PrevButtonProps {
 }
 
 const FormPrevButton = ({ label, onClick, role = 'link' }: PrevButtonProps) => (
-  <Button
-    as="a"
-    href="#"
-    variant="secondary"
-    role={role}
-    onClick={(event) => {
-      event.preventDefault();
-      onClick();
-    }}
-    icon={<ArrowLeftIcon aria-hidden />}
-    iconPosition="left"
-    className={styles.button}
-  >
+  <Button variant="secondary" role={role} onClick={onClick} icon={<ArrowLeftIcon aria-hidden />} iconPosition="left">
     {label}
   </Button>
 );

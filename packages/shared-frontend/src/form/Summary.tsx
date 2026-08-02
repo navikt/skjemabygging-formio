@@ -11,13 +11,14 @@ import { useLocation } from 'react-router';
 import { useFyllutAppConfig } from '../context/fyllut/FyllutAppConfigContext';
 import { useFyllutLanguage } from '../context/fyllut/FyllutLanguageContext';
 import { useAttachmentUpload } from './attachment-upload/AttachmentUploadContext';
-import FormSecondaryButtons from './FormSecondaryButtons';
 import {
+  CancelAndDeleteButton,
   FormButtonRow,
   FormErrorSummary,
   FormNextButton,
   FormPrevButton,
   RenderSummaryForm,
+  SaveButton,
   useFormDefinition,
   useFormPersistence,
   useSubmissionState,
@@ -44,7 +45,7 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
   const { form, activeComponents } = useFormDefinition();
   const { submission, setSubmission } = useSubmissionState();
   const { getErrorsForPages, validatePages } = useValidation();
-  const { submit, status, error, canSubmit } = useFormPersistence();
+  const { submit, status, error, canSubmit, canSaveDraft } = useFormPersistence();
   const { handleDownloadFile } = useAttachmentUpload();
   const { search } = useLocation();
   const [hasDiscardedSubmission] = useState(() => sessionStorage.getItem(DISCARDED_SUBMISSION_STORAGE_KEY) === '1');
@@ -103,13 +104,10 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
     validatedSummaryRef.current = { pageKeys: validationPageKeys, submission };
     validatePages(validationPages);
   }, [submission, validatePages, validationPageKeys, validationPages]);
-  const navigationRole = form.path === 'newrender' ? 'button' : 'link';
   const primaryActionLabel =
-    form.path === 'newrender'
-      ? 'Send inn'
-      : appConfig.submissionMethod === 'paper' || isNoSubmissionFlow
-        ? TEXTS.grensesnitt.navigation.instructions
-        : TEXTS.grensesnitt.navigation.sendToNav;
+    appConfig.submissionMethod === 'paper' || isNoSubmissionFlow
+      ? TEXTS.grensesnitt.navigation.instructions
+      : TEXTS.grensesnitt.navigation.sendToNav;
   const submitErrorMessage = hasUserMessage(error)
     ? error.userMessage
     : error
@@ -170,24 +168,18 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
         <Alert variant="warning">{translate(TEXTS.grensesnitt.navigation.summaryPageError)}</Alert>
       )}
       {submitErrorMessage && <Alert variant="error">{translate(submitErrorMessage)}</Alert>}
-      <FormSecondaryButtons />
       <FormButtonRow
-        previousButton={
-          <FormPrevButton
-            label={translate(TEXTS.grensesnitt.navigation.previous)}
-            onClick={onBack}
-            role={navigationRole}
-          />
-        }
+        cancelButton={<CancelAndDeleteButton />}
+        previousButton={<FormPrevButton label={translate(TEXTS.grensesnitt.navigation.previous)} onClick={onBack} />}
         nextButton={
           <FormNextButton
             label={translate(primaryActionLabel)}
             onClick={handleSubmit}
             disabled={hasValidationErrors}
             loading={status === 'submitting'}
-            role={navigationRole}
           />
         }
+        saveButton={canSaveDraft && <SaveButton />}
       />
     </>
   );

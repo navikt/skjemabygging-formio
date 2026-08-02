@@ -1,10 +1,19 @@
 import { Accordion, GuidePanel, Heading } from '@navikt/ds-react';
 import { TEXTS, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router';
 import { useFyllutAppConfig } from '../context/fyllut/FyllutAppConfigContext';
 import { useFyllutLanguage } from '../context/fyllut/FyllutLanguageContext';
-import FormSecondaryButtons from './FormSecondaryButtons';
-import { FormButtonRow, FormNextButton, useFormDefinition, useFormPersistence, useSubmissionState } from './framework';
+import {
+  CancelAndDeleteButton,
+  FormButtonRow,
+  FormNextButton,
+  FormPrevButton,
+  SaveButton,
+  useFormDefinition,
+  useFormPersistence,
+  useSubmissionState,
+} from './framework';
 import Intro from './fyllut-components/Intro';
 import { useNologinToken } from './nologin-token/NologinTokenContext';
 
@@ -18,13 +27,12 @@ const IntroPage = ({ onStart }: Props) => {
   const { form } = useFormDefinition();
   const { saveDraft, canSaveDraft, status } = useFormPersistence();
   const { submission, setSubmission } = useSubmissionState();
+  const { search } = useLocation();
+  const navigate = useNavigate();
   const [selfDeclarationError, setSelfDeclarationError] = useState<string | undefined>();
   const { tokenExpiration } = useNologinToken();
-  const navigationRole = form.path === 'newrender' ? 'button' : 'link';
   const nextLabel =
-    submissionMethod === 'digital' && form.path !== 'newrender'
-      ? TEXTS.grensesnitt.navigation.saveAndContinue
-      : TEXTS.grensesnitt.navigation.next;
+    submissionMethod === 'digital' ? TEXTS.grensesnitt.navigation.saveAndContinue : TEXTS.grensesnitt.navigation.next;
 
   const introPage = form.introPage;
   const isDynamic = introPage?.enabled;
@@ -135,17 +143,18 @@ const IntroPage = ({ onStart }: Props) => {
           </ul>
         </GuidePanel>
       )}
-      <FormSecondaryButtons introUploadIdLink />
-
       <FormButtonRow
-        nextButton={
-          <FormNextButton
-            label={translate(nextLabel)}
-            loading={status === 'saving'}
-            onClick={handleStart}
-            role={navigationRole}
-          />
+        cancelButton={<CancelAndDeleteButton />}
+        previousButton={
+          submissionMethod === 'digitalnologin' ? (
+            <FormPrevButton
+              label={translate(TEXTS.grensesnitt.navigation.uploadID)}
+              onClick={() => navigate({ pathname: 'legitimasjon', search })}
+            />
+          ) : undefined
         }
+        nextButton={<FormNextButton label={translate(nextLabel)} loading={status === 'saving'} onClick={handleStart} />}
+        saveButton={canSaveDraft && <SaveButton />}
       />
     </>
   );

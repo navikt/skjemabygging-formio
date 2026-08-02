@@ -3,13 +3,14 @@ import { useEffect } from 'react';
 import { useLocation, useParams } from 'react-router';
 import { useFyllutAppConfig } from '../../context/fyllut/FyllutAppConfigContext';
 import { useFyllutLanguage } from '../../context/fyllut/FyllutLanguageContext';
-import FormSecondaryButtons from '../FormSecondaryButtons';
 import {
+  CancelAndDeleteButton,
   FormButtonRow,
   FormErrorSummary,
   FormNextButton,
   FormPrevButton,
   RenderInputForm,
+  SaveButton,
   useFormPersistence,
   useValidation,
   useWizardController,
@@ -26,11 +27,8 @@ const PanelStep = ({ form }: { form: Form }) => {
   const { syncPageValidationState, validatePages } = useValidation();
   const { currentPanel, components, isFirst, isLast, goToNext, panels, currentIndex } = useWizardController(panelSlug);
   const { goToIntro, goToPanel, goToSummary, goToError } = useWizardNavigation('panel');
-  const navigationRole = form.path === 'newrender' ? 'button' : 'link';
   const nextLabel =
-    submissionMethod === 'digital' && form.path !== 'newrender'
-      ? TEXTS.grensesnitt.navigation.saveAndContinue
-      : TEXTS.grensesnitt.navigation.next;
+    submissionMethod === 'digital' ? TEXTS.grensesnitt.navigation.saveAndContinue : TEXTS.grensesnitt.navigation.next;
 
   useEffect(() => {
     if (panels.length > 0 && panelSlug && !panels.some((panel) => panel.key === panelSlug)) {
@@ -113,16 +111,13 @@ const PanelStep = ({ form }: { form: Form }) => {
           }
         }}
       />
-      <FormSecondaryButtons />
       <FormButtonRow
+        cancelButton={<CancelAndDeleteButton />}
         previousButton={
-          <FormPrevButton
-            label={translate(TEXTS.grensesnitt.navigation.previous)}
-            onClick={handlePrevious}
-            role={navigationRole}
-          />
+          <FormPrevButton label={translate(TEXTS.grensesnitt.navigation.previous)} onClick={handlePrevious} />
         }
-        nextButton={<FormNextButton label={translate(nextLabel)} onClick={handleNext} role={navigationRole} />}
+        nextButton={<FormNextButton label={translate(nextLabel)} onClick={handleNext} />}
+        saveButton={canSaveDraft && <SaveButton />}
       />
     </>
   );

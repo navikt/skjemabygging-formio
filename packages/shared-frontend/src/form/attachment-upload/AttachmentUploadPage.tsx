@@ -1,4 +1,4 @@
-import { Box, ErrorSummary, VStack } from '@navikt/ds-react';
+import { ErrorSummary, VStack } from '@navikt/ds-react';
 import {
   AttachmentType,
   checkCondition,
@@ -12,14 +12,15 @@ import { MutableRefObject, useEffect, useMemo, useRef } from 'react';
 import { useFyllutAppConfig } from '../../context/fyllut/FyllutAppConfigContext';
 import { useFyllutLanguage } from '../../context/fyllut/FyllutLanguageContext';
 import {
+  CancelAndDeleteButton,
   FormButtonRow,
   FormNextButton,
   FormPrevButton,
+  SaveButton,
   useFormDefinition,
   useFormPersistence,
   useSubmissionState,
 } from '../framework';
-import AttachmentCancelButton from './AttachmentCancelButton';
 import { AttachmentErrorType, useAttachmentUpload } from './AttachmentUploadContext';
 import SharedAttachmentUploadField from './AttachmentUploadField';
 import { attachmentValidator } from './attachmentValidation';
@@ -225,6 +226,7 @@ const AttachmentUploadPage = ({ attachmentPanel, onPrevious, onNext }: Props) =>
         })}
       </VStack>
       <FormButtonRow
+        cancelButton={<CancelAndDeleteButton />}
         previousButton={
           <FormPrevButton label={translate(TEXTS.grensesnitt.navigation.previous)} onClick={onPrevious} />
         }
@@ -241,10 +243,8 @@ const AttachmentUploadPage = ({ attachmentPanel, onPrevious, onNext }: Props) =>
             loading={status === 'saving'}
           />
         }
+        saveButton={canSaveDraft && <SaveButton />}
       />
-      <Box marginBlock="space-0 space-20">
-        <AttachmentCancelButton />
-      </Box>
     </>
   );
 };

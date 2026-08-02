@@ -4,10 +4,32 @@
   justify-content: flex-end;
   gap: var(--ax-space-16);
   flex-wrap: wrap;
+  margin-bottom: var(--ax-space-20);
 }
 
-.button {
+.row > button,
+.row > a {
   min-width: 12rem;
   flex-grow: 1;
   max-width: 19.5rem;
+}
+
+.center {
+  justify-content: center;
+}
+
+@media (max-width: var(--ax-breakpoint-md-down)) {
+  .row {
+    flex-direction: column;
+  }
+
+  .center {
+    justify-content: flex-end;
+  }
+
+  .row > button,
+  .row > a {
+    min-width: 100%;
+    max-width: 100%;
+  }
 }
