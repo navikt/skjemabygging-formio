@@ -10,9 +10,9 @@ import {
   Form,
   formioFormsApiUtils,
   formSummaryUtils,
+  hasErrorCode,
   I18nTranslations,
   navFormUtils,
-  ResponseError,
   Submission,
   SubmissionData,
 } from '@navikt/skjemadigitalisering-shared-domain';
@@ -211,7 +211,7 @@ const FormPageWrapper = () => {
         try {
           response = await sendInnSoknadApi.getSoknad(innsendingsId, appConfig);
         } catch (error) {
-          if (error instanceof ResponseError && error.errorCode === 'NOT_FOUND') {
+          if (hasErrorCode(error, 'NOT_FOUND')) {
             navigate('/soknad-ikke-funnet', { replace: true });
             return { navigated: true };
           }
