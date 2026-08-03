@@ -2,7 +2,7 @@ import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { applyPrefilledValuesToSubmission } from './prefillSubmission';
 
 describe('applyPrefilledValuesToSubmission', () => {
-  it('keeps a resumed identity instead of replacing it with prefilled data', () => {
+  it('replaces a resumed identity with prefilled data', () => {
     const form = {
       components: [
         {
@@ -29,7 +29,7 @@ describe('applyPrefilledValuesToSubmission', () => {
     );
 
     expect(result?.data).toEqual({
-      dineOpplysninger: { identitet: { identitetsnummer: '03876399856' } },
+      dineOpplysninger: { identitet: { identitetsnummer: '08842748500' } },
     });
   });
 });
