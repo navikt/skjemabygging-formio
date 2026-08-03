@@ -118,10 +118,10 @@ describe('SummaryPage', () => {
     cy.submitMellomlagring(() => {});
     cy.visit('/fyllut/components/oppsummering?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3');
     cy.defaultWaits();
+    cy.get('[data-cy=error-summary]').should('not.exist');
     cy.clickSendNav();
-
     cy.get('@submitMellomlagring.all').should('have.length', 0);
-    cy.contains('Du må fullføre utfyllingen før du kan fortsette').should('exist');
+    cy.get('[data-cy=error-summary]').should('exist');
   });
 
   it('All values', () => {
