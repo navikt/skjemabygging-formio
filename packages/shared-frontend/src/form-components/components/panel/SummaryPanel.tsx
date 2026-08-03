@@ -23,12 +23,10 @@ const SummaryPanel = (props: FormComponentProps) => {
   return (
     <FormSummary data-cy="form-summary-panel" className={styles.panel}>
       <FormSummary.Header>
-        <FormSummary.Heading level="3">
-          {translate(title)}
-          {panelValidation?.hasValidationErrors && (
-            <ValidationExclamationIcon title={translate(TEXTS.statiske.summaryPage.validationIcon)} />
-          )}
-        </FormSummary.Heading>
+        <FormSummary.Heading level="3">{translate(title)}</FormSummary.Heading>
+        {panelValidation?.hasValidationErrors && (
+          <ValidationExclamationIcon title={translate(TEXTS.statiske.summaryPage.validationIcon)} />
+        )}
       </FormSummary.Header>
       <FormSummary.Answers>
         {childComponents.map((component) => {
