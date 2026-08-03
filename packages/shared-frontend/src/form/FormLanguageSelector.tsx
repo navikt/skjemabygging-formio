@@ -76,6 +76,7 @@ const FormLanguageSelector = () => {
                 href={option.href}
                 onClick={(event) => {
                   event.preventDefault();
+                  setOpen(false);
                   const stepperOpen = persistStepperOpenStateForLanguageChange();
                   navigate(
                     {
