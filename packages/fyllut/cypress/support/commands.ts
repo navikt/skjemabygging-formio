@@ -104,7 +104,12 @@ Cypress.Commands.add('clickIntroPageConfirmation', () => {
 });
 
 Cypress.Commands.add('clickShowAllSteps', () => {
-  return cy.findByRoleWhenAttached('button', { name: /Vis alle steg|Show all steps/ }, 1000).click();
+  cy.findByRoleWhenAttached('button', { name: /Vis alle steg|Show all steps/ }, 1000).click();
+
+  return cy
+    .get('.aksel-form-progress__collapsible')
+    .should('have.attr', 'data-state', 'open')
+    .and('have.css', 'opacity', '1');
 });
 
 Cypress.Commands.add('clickSendDigital', () => {
