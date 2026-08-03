@@ -7,7 +7,7 @@ import { useSubmissionState } from '../../context/state/SubmissionStateContext';
 import ConfirmationModal from '../fyllut-components/ConfirmationModal';
 import { getExitUrl } from '../fyllut-utils/url';
 
-const SaveButton = () => {
+const SaveButton = ({ showError = true }: { showError?: boolean }) => {
   const { translate } = useFyllutLanguage();
   const { submission } = useSubmissionState();
   const { saveDraft } = useFormPersistence();
@@ -21,7 +21,11 @@ const SaveButton = () => {
     }
 
     if (!(await saveDraft())) {
-      setSaveError(TEXTS.statiske.mellomlagringError.update.message);
+      if (showError) {
+        setSaveError(TEXTS.statiske.mellomlagringError.update.message);
+      } else {
+        setSaveModalOpen(false);
+      }
       return false;
     }
 

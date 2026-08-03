@@ -164,7 +164,7 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
             loading={status === 'submitting'}
           />
         }
-        saveButton={canSaveDraft && <SaveButton />}
+        saveButton={canSaveDraft && <SaveButton showError={false} />}
       />
     </>
   );

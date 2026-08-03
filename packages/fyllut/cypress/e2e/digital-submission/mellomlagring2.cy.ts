@@ -253,7 +253,7 @@ describe('Mellomlagring v2', () => {
       cy.findByRole('group', { name: 'Ønsker du å få gaven innpakket' }).shouldBeVisible();
       confirmSaveDraftAfterCancellingOnce();
       cy.wait('@updateMellomlagring');
-      cy.get('main').findByRole('alert').should('contain.text', TEXTS.statiske.mellomlagringError.update.message);
+      cy.findByText(TEXTS.statiske.mellomlagringError.update.message).shouldBeVisible();
     });
 
     describe('When partially filling out a form', () => {
@@ -297,6 +297,7 @@ describe('Mellomlagring v2', () => {
         cy.findByRole('textbox', { name: 'Tall 1' }).type('123');
 
         cy.clickSaveAndContinue();
+        cy.findByRole('heading', { name: 'p 2', timeout: 10000 }).shouldBeVisible();
         cy.findByRole('checkbox', { name: 'Avkryssingsboks 2' }).shouldBeVisible().click();
 
         openSummaryInStepper();
