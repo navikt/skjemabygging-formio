@@ -32,6 +32,16 @@ type FyllutEvent =
   | { name: 'last ned'; data: FyllutEventData }
   | { name: 'last opp'; data: FyllutEventData }
   | {
+      name: 'skjema fullført';
+      data: {
+        skjemaId: string;
+        skjemanavn: string;
+        tema: string;
+        language?: string;
+        submissionMethod?: string;
+      };
+    }
+  | {
       name: 'sesjon utløpt';
       data: {
         skjemaId: string;

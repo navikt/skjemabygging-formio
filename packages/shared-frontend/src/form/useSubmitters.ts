@@ -21,8 +21,8 @@ import { RECEIPT_KEY } from './wizard/constants';
  */
 const useSubmitters = (form: Form, initialInnsendingsId?: string): FormPersistenceHandlers => {
   const appConfig = useFyllutAppConfig();
-  const { currentLanguage } = useFyllutLanguage();
-  const { submissionMethod, logger } = appConfig;
+  const { currentLanguage, translate } = useFyllutLanguage();
+  const { submissionMethod, logger, logEvent } = appConfig;
   const { getNologinToken, clearNologinToken, handleSessionExpired } = useNologinToken();
   const { search } = useLocation();
   const navigate = useNavigate();
@@ -135,6 +135,19 @@ const useSubmitters = (form: Form, initialInnsendingsId?: string): FormPersisten
       return innsendingsIdRef.current;
     };
 
+    const logSubmissionCompleted = () => {
+      void logEvent?.({
+        name: 'skjema fullført',
+        data: {
+          skjemaId: form.properties.skjemanummer,
+          skjemanavn: translate(form.title),
+          tema: form.properties.tema,
+          language: currentLanguage,
+          submissionMethod,
+        },
+      });
+    };
+
     const submitForm = async (submission: Submission) => {
       switch (submissionMethod) {
         case 'digital': {
@@ -151,6 +164,7 @@ const useSubmitters = (form: Form, initialInnsendingsId?: string): FormPersisten
             submissionMethod,
             innsendingsId,
           );
+          logSubmissionCompleted();
           navigate(
             { pathname: `/${form.path}/${RECEIPT_KEY}`, search },
             { state: { receipt: response.receipt, pdfBase64: response.pdfBase64 } },
@@ -176,6 +190,7 @@ const useSubmitters = (form: Form, initialInnsendingsId?: string): FormPersisten
             }
             throw error;
           }
+          logSubmissionCompleted();
           clearNologinToken();
           navigate(
             { pathname: `/${form.path}/${RECEIPT_KEY}`, search },
@@ -197,8 +212,10 @@ const useSubmitters = (form: Form, initialInnsendingsId?: string): FormPersisten
     appConfig,
     form,
     currentLanguage,
+    translate,
     submissionMethod,
     logger,
+    logEvent,
     getNologinToken,
     clearNologinToken,
     handleSessionExpired,
