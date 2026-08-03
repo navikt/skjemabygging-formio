@@ -346,10 +346,7 @@ describe('Mellomlagring v2', () => {
           cy.findByRole('link', { name: 'Levering' }).click();
           cy.findByRole('heading', { name: 'Levering' }).shouldBeVisible();
 
-          cy.findByRole('combobox', { name: 'Hvordan ønsker du å motta pakken?' })
-            .get('svg')
-            .eq(2)
-            .click({ force: true });
+          cy.findByRole('combobox', { name: 'Hvordan ønsker du å motta pakken?' }).type('{backspace}');
 
           cy.findByRole('link', { name: TEXTS.statiske.summaryPage.title }).click();
           expectSummaryValidationToBlockSubmission();

@@ -8,7 +8,8 @@ import testformCustomConditional from './testdata/form-alertstripe-cusom-conditi
 import testformContainerConditional from './testdata/form-container-conditional';
 import testImgFormCustomConditional from './testdata/form-image-custom-conditional';
 
-const { createFormSummaryObject, handleComponent, mapAndEvaluateConditionals } = formSummaryUtils;
+const { createFormSummaryObject, filterSubmissionDataToSummary, handleComponent, mapAndEvaluateConditionals } =
+  formSummaryUtils;
 
 const {
   createDummyContainerElement,
@@ -59,6 +60,20 @@ const dummySubmission = {
 };
 
 describe('form summary', () => {
+  describe('filterSubmissionDataToSummary', () => {
+    it('removes persisted values that are not included in the summary', () => {
+      const form = createFormObject([
+        createPanelObject('Panel', [createDummyTextfield('Included'), createDummyTextfield('Empty')]),
+      ]);
+
+      expect(
+        filterSubmissionDataToSummary(form, {
+          data: { included: 'Saved answer', empty: '' },
+        }),
+      ).toEqual({ data: { included: 'Saved answer' } });
+    });
+  });
+
   describe('Map and evaluate conditionals', () => {
     it('evaluates conditional and returns a map', () => {
       const formObject = createFormObject([

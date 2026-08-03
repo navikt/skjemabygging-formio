@@ -1,4 +1,4 @@
-import { Component, Form, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, Form, Submission, submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { getPrefilledAddress } from '../../components/address/addressUtils';
 import { createUpdatedSubmission } from '../state/SubmissionStateContext';
 import {
@@ -43,6 +43,10 @@ const applyPrefilledValuesToSubmission = (
     const submissionPath = getResolvedSubmissionPath(component);
     const prefillValue = getComponentPrefillValue(component, currentLanguage);
     if (prefillValue === undefined) {
+      return;
+    }
+
+    if (submissionUtils.getSubmissionValue(submissionPath, nextSubmission) !== undefined) {
       return;
     }
 

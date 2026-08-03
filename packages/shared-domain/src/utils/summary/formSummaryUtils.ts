@@ -836,6 +836,55 @@ function createFormSummaryPanels(form, submission, translate?, excludeEmptyPanel
   );
 }
 
+function filterSubmissionDataToSummary(form, submission) {
+  if (!submission?.data) {
+    return submission;
+  }
+
+  const findComponent = (formSummaryComponents, key) => {
+    let result = [];
+    formSummaryComponents.forEach((summaryComponent) => {
+      if (summaryComponent.type === 'navSkjemagruppe') {
+        result = [...result, ...findComponent(summaryComponent.components, key)];
+      } else if (summaryComponent.key.split('.')[0] === key) {
+        result = [...result, summaryComponent];
+      }
+    });
+    return result;
+  };
+
+  const filterData = (originalData, formSummaryComponents) =>
+    Object.fromEntries(
+      Object.entries(originalData).flatMap(([key, value]) => {
+        const matchingComponents = findComponent(formSummaryComponents, key);
+        if (matchingComponents.length === 0) {
+          return [];
+        }
+
+        if (matchingComponents[0].key.split('.').length > 1) {
+          const nestedComponents = matchingComponents.map((component) => {
+            const [_containerKey, ...nestedKey] = component.key.split('.');
+            return { ...component, key: nestedKey.join('.') };
+          });
+          const nestedData = filterData(value, nestedComponents);
+          return nestedData ? [[key, nestedData]] : [];
+        }
+
+        if (matchingComponents[0].type === 'datagrid') {
+          const nestedData = matchingComponents[0].components.map((row, index) =>
+            filterData(value[index], row.components),
+          );
+          return [[key, nestedData]];
+        }
+
+        return [[key, value]];
+      }),
+    );
+
+  const summaryComponents = createFormSummaryPanels(form, submission).flatMap((panel) => panel.components);
+  return { ...submission, data: filterData(submission.data, summaryComponents) };
+}
+
 const findFirstInput = (component) => {
   if (component?.input) {
     return component;
@@ -853,6 +902,7 @@ const findFirstInput = (component) => {
 const formSummaryUtils = {
   createFormSummaryObject,
   createFormSummaryPanels,
+  filterSubmissionDataToSummary,
   handleComponent,
   mapAndEvaluateConditionals,
   createComponentKeyWithNavId,

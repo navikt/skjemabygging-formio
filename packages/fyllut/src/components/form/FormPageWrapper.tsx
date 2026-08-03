@@ -9,6 +9,7 @@ import {
   dateUtils,
   Form,
   formioFormsApiUtils,
+  formSummaryUtils,
   I18nTranslations,
   navFormUtils,
   ResponseError,
@@ -218,7 +219,12 @@ const FormPageWrapper = () => {
           throw error;
         }
         setInitialInnsendingsId(innsendingsId);
-        setInitialSubmission(withDraftMetadata(response?.hoveddokumentVariant?.document?.data, response));
+        setInitialSubmission(
+          withDraftMetadata(
+            formSummaryUtils.filterSubmissionDataToSummary(loadedForm, response?.hoveddokumentVariant?.document?.data),
+            response,
+          ),
+        );
         return { navigated: false };
       }
 
