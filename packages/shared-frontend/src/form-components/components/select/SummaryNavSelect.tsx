@@ -13,6 +13,8 @@ const SummaryNavSelect = (props: FormComponentProps) => {
       : typeof value === 'object' && value && 'value' in value
         ? value.value
         : undefined;
+  const savedLabel =
+    typeof value === 'object' && value && 'label' in value && typeof value.label === 'string' ? value.label : undefined;
   const selectedLabel = component.data?.values?.find((option) => option.value === selectedValue)?.label;
 
   if (!selectedValue) {
@@ -22,7 +24,7 @@ const SummaryNavSelect = (props: FormComponentProps) => {
   return (
     <FormSummary.Answer>
       <DefaultLabel {...props} />
-      <FormSummary.Value>{translate(selectedLabel ?? selectedValue)}</FormSummary.Value>
+      <FormSummary.Value>{translate(savedLabel ?? selectedLabel ?? selectedValue)}</FormSummary.Value>
     </FormSummary.Answer>
   );
 };
