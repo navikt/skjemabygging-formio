@@ -18,6 +18,7 @@
           "key": "tekstfelt",
           "input": true,
           "type": "textfield",
+          "label": "Tekstfelt",
           "validate": {
             "required": true
           }

@@ -120,7 +120,7 @@ describe('Submission Type', () => {
 
         cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
         cy.clickSendNav();
-        cy.contains('Du må fullføre utfyllingen før du kan fortsette').should('exist');
+        cy.get('[data-cy=error-summary]').should('exist');
         cy.clickEditAnswers();
 
         cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
