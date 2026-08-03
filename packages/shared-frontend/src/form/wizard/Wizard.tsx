@@ -45,8 +45,11 @@ const WizardLayout = ({ form }: { form: Form }) => {
 
   const onStepClick = (key: string) => {
     hideSummary();
-    const { redirect: _inheritedRedirect, stepperOpen: _stepperOpen, ...inheritedState } =
-      typeof state === 'object' && state ? (state as Record<string, unknown>) : {};
+    const {
+      redirect: _inheritedRedirect,
+      stepperOpen: _stepperOpen,
+      ...inheritedState
+    } = typeof state === 'object' && state ? (state as Record<string, unknown>) : {};
     navigate(
       {
         pathname: key === '' ? `/${form.path}` : `/${form.path}/${key}`,
