@@ -79,13 +79,12 @@ const PanelStep = ({ form }: { form: Form }) => {
       await saveDraft();
     }
     if (isLast) {
-      const validationPages = panels.map((panel) => ({ pageKey: panel.key, components: panel.components ?? [] }));
-      const failedPageKeys = validatePages(validationPages);
-      if (failedPageKeys.length === 0 && navFormUtils.hasAttachment(form)) {
+      if (navFormUtils.hasAttachment(form)) {
         goToPanel(ATTACHMENTS_KEY);
         return;
       }
-      goToSummary({ validationErrorPages: failedPageKeys });
+      const validationPages = panels.map((panel) => ({ pageKey: panel.key, components: panel.components ?? [] }));
+      goToSummary({ validationErrorPages: validatePages(validationPages) });
       return;
     }
     goToPanel(panels[currentIndex + 1]?.key);
