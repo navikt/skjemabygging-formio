@@ -82,7 +82,7 @@ describe('Translations', () => {
       cy.findByRole('heading', { name: 'Summary' }).should('exist');
     });
 
-    it.only('stays on current panel when changing language', () => {
+    it('stays on current panel when changing language', () => {
       cy.clickShowAllSteps();
 
       cy.findByRole('link', { name: 'Dine opplysninger' }).click();
