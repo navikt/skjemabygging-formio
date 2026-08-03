@@ -28,7 +28,10 @@ describe('Submission Type', () => {
         cy.findByRole('link', { name: TEXTS.statiske.summaryPage.title }).click();
 
         cy.findByRole('heading', { name: TEXTS.statiske.summaryPage.title }).should('exist');
-        cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.next }).should('not.exist');
+        cy.get('[data-cy=error-summary]').should('not.exist');
+        cy.clickDownloadInstructions();
+        cy.get('[data-cy=error-summary]').should('exist');
+
         cy.clickEditAnswers();
 
         cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
@@ -42,7 +45,7 @@ describe('Submission Type', () => {
         });
         cy.clickNextStep();
 
-        cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions }).click();
+        cy.clickDownloadInstructions();
 
         cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).should('exist');
       });
