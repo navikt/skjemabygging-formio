@@ -14,10 +14,6 @@ interface Props {
   exitOnly?: boolean;
 }
 
-const DELETED_DRAFT_STORAGE_KEY = 'fyllut:new-render:deleted-draft-id';
-const DELETED_DRAFT_QUERY_PARAM = 'deletedDraft';
-const DISCARDED_SUBMISSION_STORAGE_KEY = 'fyllut:new-render:discarded-submission';
-
 const CancelAndDeleteButton = ({ exitOnly = false }: Props) => {
   const appConfig = useFyllutAppConfig();
   const { submissionMethod } = appConfig;
@@ -32,10 +28,6 @@ const CancelAndDeleteButton = ({ exitOnly = false }: Props) => {
   const handleCancel = async () => {
     if (submissionMethod === 'digital' && innsendingsId) {
       await deleteSoknad(appConfig, innsendingsId);
-      sessionStorage.setItem(DELETED_DRAFT_STORAGE_KEY, innsendingsId);
-      const deletedDraftUrl = new URL(window.location.href);
-      deletedDraftUrl.searchParams.set(DELETED_DRAFT_QUERY_PARAM, '1');
-      window.history.replaceState(window.history.state, '', deletedDraftUrl.toString());
     } else if (submissionMethod === 'digitalnologin') {
       await handleDeleteAllFiles();
     }
@@ -45,7 +37,6 @@ const CancelAndDeleteButton = ({ exitOnly = false }: Props) => {
   };
 
   const handleExit = () => {
-    sessionStorage.setItem(DISCARDED_SUBMISSION_STORAGE_KEY, '1');
     setSubmission(undefined);
   };
 

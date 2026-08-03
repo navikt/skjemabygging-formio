@@ -112,10 +112,6 @@ const RenderForm = ({
     typeof state === 'object' && state && 'validationErrorPages' in state && Array.isArray(state.validationErrorPages)
       ? state.validationErrorPages
       : undefined;
-  const initialSubmission =
-    typeof state === 'object' && state && state.preserveInitialSubmission === true && 'initialSubmission' in state
-      ? state.initialSubmission
-      : undefined;
   const initialNologinToken =
     typeof state === 'object' && state && 'nologinToken' in state && typeof state.nologinToken === 'string'
       ? state.nologinToken
@@ -130,7 +126,7 @@ const RenderForm = ({
             <NologinTokenProvider form={form} initialToken={initialNologinToken}>
               <RenderFormContent
                 form={form}
-                initialSubmission={initialSubmission ?? initialSubmissionProp}
+                initialSubmission={initialSubmissionProp}
                 initialInnsendingsId={initialInnsendingsId}
                 initialPagesWithErrors={initialPagesWithErrors}
                 currentLanguage={fyllutLanguage.currentLanguage}

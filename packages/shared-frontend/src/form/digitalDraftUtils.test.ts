@@ -51,15 +51,6 @@ describe('digitalDraftUtils', () => {
           },
         ]),
       ).toEqual({ type: 'none' });
-
-      expect(
-        resolveDigitalDraftResume('?deletedDraft=1', [
-          {
-            innsendingsId: 'draft-1',
-            soknadstype: 'soknad',
-          },
-        ]),
-      ).toEqual({ type: 'none' });
     });
   });
 

@@ -24,7 +24,7 @@ const useSubmitters = (form: Form, initialInnsendingsId?: string): FormPersisten
   const { currentLanguage } = useFyllutLanguage();
   const { submissionMethod, logger } = appConfig;
   const { getNologinToken, clearNologinToken, handleSessionExpired } = useNologinToken();
-  const { search, state } = useLocation();
+  const { search } = useLocation();
   const navigate = useNavigate();
   const { setSubmission } = useSubmissionState();
   const forceMellomlagring = new URLSearchParams(search).get('forceMellomlagring') === 'true';
@@ -64,7 +64,7 @@ const useSubmitters = (form: Form, initialInnsendingsId?: string): FormPersisten
       });
     };
 
-    const syncInnsendingsIdToUrl = (innsendingsId: string | undefined, submission?: Submission) => {
+    const syncInnsendingsIdToUrl = (innsendingsId: string | undefined) => {
       if (!innsendingsId) {
         return;
       }
@@ -77,20 +77,7 @@ const useSubmitters = (form: Form, initialInnsendingsId?: string): FormPersisten
         return;
       }
 
-      navigate(
-        { search: nextSearch },
-        {
-          replace: true,
-          state:
-            submission === undefined
-              ? state
-              : {
-                  ...(typeof state === 'object' && state ? state : {}),
-                  initialSubmission: submission,
-                  preserveInitialSubmission: true,
-                },
-        },
-      );
+      navigate({ search: nextSearch }, { replace: true });
     };
 
     const goToActiveTasks = () => {
@@ -113,7 +100,7 @@ const useSubmitters = (form: Form, initialInnsendingsId?: string): FormPersisten
             }
             if (response && 'innsendingsId' in response) {
               innsendingsIdRef.current = response.innsendingsId;
-              syncInnsendingsIdToUrl(response.innsendingsId, submission);
+              syncInnsendingsIdToUrl(response.innsendingsId);
               syncSubmissionState(submission, response);
             }
           } else {
@@ -141,7 +128,7 @@ const useSubmitters = (form: Form, initialInnsendingsId?: string): FormPersisten
       }
       if (response && 'innsendingsId' in response) {
         innsendingsIdRef.current = response.innsendingsId;
-        syncInnsendingsIdToUrl(response.innsendingsId, submission);
+        syncInnsendingsIdToUrl(response.innsendingsId);
         syncSubmissionState(submission, response);
       }
 
@@ -218,7 +205,6 @@ const useSubmitters = (form: Form, initialInnsendingsId?: string): FormPersisten
     setSubmission,
     navigate,
     search,
-    state,
     forceMellomlagring,
   ]);
 };

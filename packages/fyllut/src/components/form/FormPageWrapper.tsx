@@ -22,7 +22,7 @@ import {
   resolveDefaultSubmissionMethod,
   shouldUseLegacyPageForNewRenderer,
 } from '@navikt/skjemadigitalisering-shared-frontend';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import useFormsApiForms from '../../api/useFormsApiForms';
 import { loadAllTranslations } from '../../api/useTranslations';
@@ -31,8 +31,6 @@ import SubmissionMethodNotAllowed from '../SubmissionMethodNotAllowed';
 import FormPageSkeleton from './FormPageSkeleton';
 import RenderFormAdapter from './RenderFormAdapter';
 
-const DELETED_DRAFT_STORAGE_KEY = 'fyllut:new-render:deleted-draft-id';
-const DELETED_DRAFT_QUERY_PARAM = 'deletedDraft';
 const collectPrefillKeys = (components: Component[] = []): string[] =>
   components.flatMap((component) => [
     ...(Array.isArray(component.prefillKey)
@@ -111,7 +109,7 @@ const enrichComponentsWithPrefillValues = (components: Component[] = [], prefill
 
 const FormPageWrapper = () => {
   const { formPath, '*': routePath } = useParams();
-  const { search, state } = useLocation();
+  const { search } = useLocation();
   const navigate = useNavigate();
   const [translations, setTranslations] = useState<I18nTranslations>();
   const [loading, setLoading] = useState<boolean>(true);
@@ -119,8 +117,6 @@ const FormPageWrapper = () => {
   const [initialSubmission, setInitialSubmission] = useState<Submission | undefined>();
   const [initialInnsendingsId, setInitialInnsendingsId] = useState<string | undefined>();
   const [loadedDataKey, setLoadedDataKey] = useState<string | undefined>();
-  const deletedDraftIdRef = useRef<string | undefined>(undefined);
-  const stateInitialSubmissionRef = useRef<Submission | undefined>(undefined);
   const { get } = useFormsApiForms();
   const appConfig = useAppConfig();
   const { submissionMethod, config, http, baseUrl, attachmentPageEnabled, setAttachmentPageEnabled } = appConfig;
@@ -133,10 +129,6 @@ const FormPageWrapper = () => {
     [form],
   );
   const dataKey = `${formPath ?? ''}|${getDraftBootstrapLanguage(search)}|${submissionMethod ?? ''}`;
-  const noLoginInitialSubmission =
-    submissionMethod === 'digitalnologin' && typeof state === 'object' && state && 'initialSubmission' in state
-      ? (state.initialSubmission as Submission | undefined)
-      : undefined;
   const missingSubmissionMethodOnDirectRoute =
     useNewRenderer &&
     !useLegacyPageForNewRenderer &&
@@ -156,13 +148,6 @@ const FormPageWrapper = () => {
       { replace: true },
     );
   }, [defaultRouteSubmissionMethod, missingSubmissionMethodOnDirectRoute, navigate, search]);
-
-  useEffect(() => {
-    stateInitialSubmissionRef.current =
-      typeof state === 'object' && state && state.preserveInitialSubmission === true && 'initialSubmission' in state
-        ? (state.initialSubmission as Submission | undefined)
-        : undefined;
-  }, [state]);
 
   const loadTranslations = useCallback(async () => {
     if (!formPath) {
@@ -204,9 +189,6 @@ const FormPageWrapper = () => {
     async (loadedForm?: Form): Promise<{ navigated: boolean }> => {
       const searchParams = new URLSearchParams(search);
       const innsendingsId = searchParams.get('innsendingsId') ?? undefined;
-      const hasDeletedDraftFlag = searchParams.get(DELETED_DRAFT_QUERY_PARAM) === '1';
-      const stateInitialSubmission = stateInitialSubmissionRef.current;
-
       if (submissionMethod !== 'digital') {
         setInitialInnsendingsId(undefined);
         setInitialSubmission(undefined);
@@ -220,32 +202,6 @@ const FormPageWrapper = () => {
       }
 
       if (innsendingsId) {
-        if (hasDeletedDraftFlag) {
-          deletedDraftIdRef.current = innsendingsId;
-          setInitialInnsendingsId(undefined);
-          setInitialSubmission(undefined);
-          return { navigated: false };
-        }
-
-        if (sessionStorage.getItem(DELETED_DRAFT_STORAGE_KEY) === innsendingsId) {
-          deletedDraftIdRef.current = innsendingsId;
-          setInitialInnsendingsId(undefined);
-          setInitialSubmission(undefined);
-          return { navigated: false };
-        }
-
-        if (deletedDraftIdRef.current === innsendingsId) {
-          setInitialInnsendingsId(undefined);
-          setInitialSubmission(undefined);
-          return { navigated: false };
-        }
-
-        if (stateInitialSubmission) {
-          setInitialInnsendingsId(innsendingsId);
-          setInitialSubmission(stateInitialSubmission as Submission);
-          return { navigated: false };
-        }
-
         let response;
         try {
           response = await sendInnSoknadApi.getSoknad(innsendingsId, appConfig);
@@ -269,12 +225,9 @@ const FormPageWrapper = () => {
       }
 
       const currentLanguage = getDraftBootstrapLanguage(search);
-      const bootstrapSubmission = applyPrefilledValuesToSubmission(
-        loadedForm,
-        stateInitialSubmission,
-        currentLanguage,
-      ) ??
-        stateInitialSubmission ?? { data: {} };
+      const bootstrapSubmission = applyPrefilledValuesToSubmission(loadedForm, undefined, currentLanguage) ?? {
+        data: {},
+      };
       const response = await sendInnSoknadApi.createSoknad(
         appConfig,
         formioFormsApiUtils.mapFormToNavForm(loadedForm),
@@ -308,14 +261,7 @@ const FormPageWrapper = () => {
               innsendingsId: response.innsendingsId,
             }),
           },
-          {
-            replace: true,
-            state: {
-              ...(typeof state === 'object' && state ? state : {}),
-              initialSubmission: bootstrappedSubmission,
-              preserveInitialSubmission: true,
-            },
-          },
+          { replace: true },
         );
         return { navigated: true };
       }
@@ -324,7 +270,7 @@ const FormPageWrapper = () => {
       setInitialSubmission(undefined);
       return { navigated: false };
     },
-    [appConfig, navigate, search, state, submissionMethod, useLegacyPageForNewRenderer, useNewRenderer],
+    [appConfig, navigate, search, submissionMethod, useLegacyPageForNewRenderer, useNewRenderer],
   );
 
   useEffect(() => {
@@ -402,7 +348,7 @@ const FormPageWrapper = () => {
       {useNewRenderer && !useLegacyPageForNewRenderer ? (
         <RenderFormAdapter
           form={form}
-          initialSubmission={initialSubmission ?? noLoginInitialSubmission}
+          initialSubmission={initialSubmission}
           initialInnsendingsId={initialInnsendingsId}
         />
       ) : (

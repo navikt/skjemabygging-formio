@@ -19,6 +19,7 @@ import {
   useSubmissionState,
 } from '../framework';
 import DownloadPdfButton from '../fyllut-components/DownloadPdfButton';
+import { withoutSubmissionNavigationState } from '../navigationState';
 import { SUMMARY_KEY } from './constants';
 
 interface Props {
@@ -42,15 +43,7 @@ const PrepareSubmissionStep = ({ type }: Props) => {
   );
   const showNoSubmissionContent =
     type === 'application' && (!submissionMethod || submissionMethod === 'papernocoverpage');
-  const navigationState =
-    typeof state === 'object' && state
-      ? {
-          ...state,
-          initialSubmission: submission,
-        }
-      : {
-          initialSubmission: submission,
-        };
+  const navigationState = withoutSubmissionNavigationState(state);
 
   const getPdfContent = async () => {
     if (!submission) {

@@ -6,8 +6,7 @@ import {
   submissionTypesUtils,
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect, useMemo, useState } from 'react';
-import { useLocation } from 'react-router';
+import { useMemo } from 'react';
 import { useFyllutAppConfig } from '../context/fyllut/FyllutAppConfigContext';
 import { useFyllutLanguage } from '../context/fyllut/FyllutLanguageContext';
 import { inputId } from '../utils/inputId';
@@ -27,10 +26,6 @@ import {
 } from './framework';
 import { PREPARE_LETTER_KEY, PREPARE_NO_SUBMISSION_KEY } from './wizard/constants';
 
-const DELETED_DRAFT_STORAGE_KEY = 'fyllut:new-render:deleted-draft-id';
-const DELETED_DRAFT_QUERY_PARAM = 'deletedDraft';
-const DISCARDED_SUBMISSION_STORAGE_KEY = 'fyllut:new-render:discarded-submission';
-
 const hasUserMessage = (error: unknown): error is { userMessage: string } =>
   typeof error === 'object' && error !== null && 'userMessage' in error && typeof error.userMessage === 'string';
 
@@ -44,12 +39,10 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
   const appConfig = useFyllutAppConfig();
   const { translate, currentLanguage } = useFyllutLanguage();
   const { form, activeComponents } = useFormDefinition();
-  const { submission, setSubmission } = useSubmissionState();
+  const { submission } = useSubmissionState();
   const { getErrorsForPages, validatePages } = useValidation();
   const { submit, status, error, canSubmit, canSaveDraft } = useFormPersistence();
   const { handleDownloadFile } = useAttachmentUpload();
-  const { search } = useLocation();
-  const [hasDiscardedSubmission] = useState(() => sessionStorage.getItem(DISCARDED_SUBMISSION_STORAGE_KEY) === '1');
   const attachmentPanel = navFormUtils.getActiveAttachmentPanelFromForm(form, submission);
   const activePanels = navFormUtils.getActivePanelsFromForm(form, submission);
   const isNoSubmissionFlow =
@@ -75,22 +68,6 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
       })),
     [validationErrors, validationPages],
   );
-  const deletedDraftId = sessionStorage.getItem(DELETED_DRAFT_STORAGE_KEY);
-  const currentDraftId = new URLSearchParams(search).get('innsendingsId');
-  const isDeletedDraftSummary =
-    new URLSearchParams(search).get(DELETED_DRAFT_QUERY_PARAM) === '1' ||
-    (!!deletedDraftId && deletedDraftId === currentDraftId);
-  useEffect(() => {
-    if (isDeletedDraftSummary) {
-      sessionStorage.removeItem(DELETED_DRAFT_STORAGE_KEY);
-    }
-  }, [isDeletedDraftSummary]);
-  useEffect(() => {
-    if (hasDiscardedSubmission) {
-      sessionStorage.removeItem(DISCARDED_SUBMISSION_STORAGE_KEY);
-      setSubmission(undefined);
-    }
-  }, [hasDiscardedSubmission, setSubmission]);
   const primaryActionLabel =
     appConfig.submissionMethod === 'paper' || isNoSubmissionFlow
       ? TEXTS.grensesnitt.navigation.instructions
@@ -169,9 +146,6 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
           onNavigateToError(error.pageKey, id);
         }}
       />
-      {(isDeletedDraftSummary || hasDiscardedSubmission) && (
-        <Alert variant="warning">{translate(TEXTS.grensesnitt.navigation.summaryPageError)}</Alert>
-      )}
       {submitErrorMessage && <Alert variant="error">{translate(submitErrorMessage)}</Alert>}
       <FormButtonRow
         cancelButton={<CancelAndDeleteButton />}

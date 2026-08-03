@@ -1,4 +1,3 @@
-const DELETED_DRAFT_QUERY_PARAM = 'deletedDraft';
 const FORCE_MELLOMLAGRING_QUERY_PARAM = 'forceMellomlagring';
 
 type ActiveTask = {
@@ -27,11 +26,7 @@ const buildDigitalFormSearch = (search: string, updates: Record<string, string |
 const resolveDigitalDraftResume = (search: string, activeTasks: ActiveTask[]): DigitalDraftResumeAction => {
   const searchParams = new URLSearchParams(search);
 
-  if (
-    searchParams.has('innsendingsId') ||
-    searchParams.get(DELETED_DRAFT_QUERY_PARAM) === '1' ||
-    searchParams.get(FORCE_MELLOMLAGRING_QUERY_PARAM) === 'true'
-  ) {
+  if (searchParams.has('innsendingsId') || searchParams.get(FORCE_MELLOMLAGRING_QUERY_PARAM) === 'true') {
     return { type: 'none' };
   }
 

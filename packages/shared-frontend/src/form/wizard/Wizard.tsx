@@ -2,6 +2,7 @@ import { Form, navFormUtils, ReceiptSummary, TEXTS } from '@navikt/skjemadigital
 import { Outlet, Route, Routes, useLocation, useNavigate } from 'react-router';
 import { useFyllutLanguage } from '../../context/fyllut/FyllutLanguageContext';
 import { useFormDefinition, useSubmissionState, useValidation } from '../framework';
+import { withoutSubmissionNavigationState } from '../navigationState';
 import ReceiptStep from '../receipt/ReceiptStep';
 import AttachmentStep from './AttachmentStep';
 import { ATTACHMENTS_KEY, PREPARE_LETTER_KEY, PREPARE_NO_SUBMISSION_KEY, RECEIPT_KEY, SUMMARY_KEY } from './constants';
@@ -49,7 +50,7 @@ const WizardLayout = ({ form }: { form: Form }) => {
       redirect: _inheritedRedirect,
       stepperOpen: _stepperOpen,
       ...inheritedState
-    } = typeof state === 'object' && state ? (state as Record<string, unknown>) : {};
+    } = withoutSubmissionNavigationState(state);
     navigate(
       {
         pathname: key === '' ? `/${form.path}` : `/${form.path}/${key}`,

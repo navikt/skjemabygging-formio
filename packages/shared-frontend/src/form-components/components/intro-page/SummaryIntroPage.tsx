@@ -2,6 +2,7 @@ import { FormSummary } from '@navikt/ds-react';
 import { Form, Submission, TEXTS, Tkey, TranslateFunction } from '@navikt/skjemadigitalisering-shared-domain';
 import { useLocation, useNavigate } from 'react-router';
 import ValidationExclamationIcon from '../../../components/icons/ValidationExclamationIcon';
+import { withoutSubmissionNavigationState } from '../../../form/navigationState';
 import styles from './SummaryIntroPage.module.css';
 
 interface Props {
@@ -19,15 +20,7 @@ const SummaryIntroPage = (props: Props) => {
   const { submission, form, translate } = props;
   const { search, state } = useLocation();
   const navigate = useNavigate();
-  const navigationState =
-    typeof state === 'object' && state
-      ? {
-          ...state,
-          initialSubmission: submission,
-        }
-      : {
-          initialSubmission: submission,
-        };
+  const navigationState = withoutSubmissionNavigationState(state);
 
   if (!form.introPage?.enabled) {
     return null;

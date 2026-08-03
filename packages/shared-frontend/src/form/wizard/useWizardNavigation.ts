@@ -1,14 +1,12 @@
-import { Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router';
-import { useSubmissionState, useValidation } from '../framework';
+import { useValidation } from '../framework';
+import { withoutSubmissionNavigationState } from '../navigationState';
 import { INTRO_KEY, SUMMARY_KEY } from './constants';
 
 interface WizardNavigationState {
   focusId?: string;
   validationErrorPages?: string[];
-  initialSubmission?: Submission;
-  preserveInitialSubmission?: true;
   redirect?: true;
 }
 
@@ -18,23 +16,19 @@ const useWizardNavigation = (from: StepKind) => {
   const navigate = useNavigate();
   const { search, state } = useLocation();
   const { pagesWithErrors, hideSummary } = useValidation();
-  const { submission } = useSubmissionState();
   const prefix = from === 'intro' ? '' : '../';
 
   const buildState = useCallback(
     (extra?: WizardNavigationState): WizardNavigationState => {
-      const { redirect: _inheritedRedirect, ...inheritedState } =
-        typeof state === 'object' && state ? (state as WizardNavigationState) : ({} as WizardNavigationState);
+      const { redirect: _inheritedRedirect, ...inheritedState } = withoutSubmissionNavigationState(state);
 
       return {
         ...inheritedState,
-        initialSubmission: submission,
-        preserveInitialSubmission: true,
         validationErrorPages: Array.from(pagesWithErrors),
         ...extra,
       };
     },
-    [pagesWithErrors, state, submission],
+    [pagesWithErrors, state],
   );
 
   const goToIntro = useCallback(() => {

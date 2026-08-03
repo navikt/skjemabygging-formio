@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useFyllutLanguage } from '../context/fyllut/FyllutLanguageContext';
-import { useSubmissionState } from '../context/state/SubmissionStateContext';
+import { withoutSubmissionNavigationState } from './navigationState';
 import { persistStepperOpenStateForLanguageChange } from './wizard/stepperOpenState';
 
 const languagesInOriginalLanguage: Record<string, string> = {
@@ -14,7 +14,6 @@ const FYLLUT_BASE_PATH = '/fyllut';
 
 const FormLanguageSelector = () => {
   const { currentLanguage, availableLanguages } = useFyllutLanguage();
-  const { submission } = useSubmissionState();
   const { pathname, search, state } = useLocation();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -48,17 +47,7 @@ const FormLanguageSelector = () => {
   }
 
   const label = languagesInOriginalLanguage[currentLanguage] ?? 'Norsk bokmål';
-  const navigationState =
-    typeof state === 'object' && state
-      ? {
-          ...state,
-          initialSubmission: submission,
-          preserveInitialSubmission: true as const,
-        }
-      : {
-          initialSubmission: submission,
-          preserveInitialSubmission: true as const,
-        };
+  const navigationState = withoutSubmissionNavigationState(state);
 
   return (
     <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem', position: 'relative' }}>

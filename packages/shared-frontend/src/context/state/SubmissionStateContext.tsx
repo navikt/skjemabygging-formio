@@ -6,7 +6,6 @@ import {
   SetStateAction,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useRef,
   useState,
@@ -40,36 +39,47 @@ const createUpdatedSubmission = (
 const SubmissionStateContext = createContext<SubmissionStateContextType>({} as SubmissionStateContextType);
 
 const SubmissionStateProvider = ({ children, initialSubmission }: Props) => {
-  const [submission, setSubmission] = useState<Submission | undefined>(initialSubmission ?? { data: {} });
+  const [submission, setSubmissionState] = useState<Submission | undefined>(initialSubmission ?? { data: {} });
   const submissionRef = useRef<Submission | undefined>(initialSubmission ?? { data: {} });
 
-  useEffect(() => {
-    submissionRef.current = submission;
-  }, [submission]);
+  const setSubmission = useCallback<Dispatch<SetStateAction<Submission | undefined>>>((nextSubmission) => {
+    setSubmissionState((previousSubmission) => {
+      const resolvedSubmission =
+        typeof nextSubmission === 'function' ? nextSubmission(previousSubmission) : nextSubmission;
+      submissionRef.current = resolvedSubmission;
+      return resolvedSubmission;
+    });
+  }, []);
 
   const getLatestSubmission = useCallback(() => submissionRef.current, []);
 
-  const updateSubmission = useCallback((submissionPath: string, value: unknown) => {
-    setSubmission((prev) => {
-      const nextSubmission = createUpdatedSubmission(prev, submissionPath, value);
-      submissionRef.current = nextSubmission;
-      return nextSubmission;
-    });
-  }, []);
+  const updateSubmission = useCallback(
+    (submissionPath: string, value: unknown) => {
+      setSubmission((prev) => {
+        const nextSubmission = createUpdatedSubmission(prev, submissionPath, value);
+        submissionRef.current = nextSubmission;
+        return nextSubmission;
+      });
+    },
+    [setSubmission],
+  );
 
-  const clearSubmissionPaths = useCallback((submissionPaths: string[]) => {
-    if (submissionPaths.length === 0) return;
-    setSubmission((prev) => {
-      if (!prev?.data) return prev;
-      const data = submissionPaths.reduce((acc, path) => removeDeepValue(acc, parseSubmissionPath(path)), prev.data);
-      if (data === prev.data) return prev;
-      return { ...prev, data };
-    });
-  }, []);
+  const clearSubmissionPaths = useCallback(
+    (submissionPaths: string[]) => {
+      if (submissionPaths.length === 0) return;
+      setSubmission((prev) => {
+        if (!prev?.data) return prev;
+        const data = submissionPaths.reduce((acc, path) => removeDeepValue(acc, parseSubmissionPath(path)), prev.data);
+        if (data === prev.data) return prev;
+        return { ...prev, data };
+      });
+    },
+    [setSubmission],
+  );
 
   const value = useMemo(
     () => ({ submission, setSubmission, getLatestSubmission, updateSubmission, clearSubmissionPaths }),
-    [submission, getLatestSubmission, updateSubmission, clearSubmissionPaths],
+    [submission, setSubmission, getLatestSubmission, updateSubmission, clearSubmissionPaths],
   );
 
   // Fyllut's implementation of the generic field state store. setValue updates the submission and
@@ -84,7 +94,7 @@ const SubmissionStateProvider = ({ children, initialSubmission }: Props) => {
         return nextSubmission;
       },
     }),
-    [submission],
+    [submission, setSubmission],
   );
 
   return (
