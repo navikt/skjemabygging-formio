@@ -120,7 +120,7 @@ const FormPageWrapper = () => {
   const [loadedDataKey, setLoadedDataKey] = useState<string | undefined>();
   const { get } = useFormsApiForms();
   const appConfig = useAppConfig();
-  const { submissionMethod, config, http, baseUrl, attachmentPageEnabled, setAttachmentPageEnabled } = appConfig;
+  const { submissionMethod, config, http, baseUrl } = appConfig;
   const useNewRenderer =
     !!formPath && ((config?.newRenderForms ?? []).includes('*') || (config?.newRenderForms ?? []).includes(formPath));
   const useLegacyPageForNewRenderer = shouldUseLegacyPageForNewRenderer(routePath);
@@ -282,12 +282,6 @@ const FormPageWrapper = () => {
     },
     [appConfig, navigate, search, submissionMethod, useLegacyPageForNewRenderer, useNewRenderer],
   );
-
-  useEffect(() => {
-    if (attachmentPageEnabled === false) {
-      setAttachmentPageEnabled?.(true);
-    }
-  }, [attachmentPageEnabled, setAttachmentPageEnabled]);
 
   useEffect(() => {
     if (missingSubmissionMethodOnDirectRoute) {

@@ -177,6 +177,7 @@ export interface ComponentValidate {
   customMessage?: string;
   json?: string;
   required?: boolean;
+  onlyAvailableItems?: boolean;
   pattern?: string;
   patternMessage?: string;
   min?: number;

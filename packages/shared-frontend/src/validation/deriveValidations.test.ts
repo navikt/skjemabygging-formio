@@ -33,6 +33,27 @@ describe('deriveValidations', () => {
     });
   });
 
+  it('derives available values for only-available select validation', () => {
+    const components = [
+      {
+        key: 'delivery',
+        label: 'Delivery',
+        input: true,
+        type: 'navSelect',
+        data: { values: [{ value: 'current', label: 'Current option' }] },
+        validate: { onlyAvailableItems: true },
+      },
+    ] as Component[];
+
+    expect(deriveValidations(components)).toEqual([
+      {
+        submissionPath: 'delivery',
+        field: 'Delivery',
+        rules: { onlyAvailableItems: ['current'], required: undefined, minLength: undefined, maxLength: undefined },
+      },
+    ]);
+  });
+
   it('falls back to key when label is missing', () => {
     const components = [
       { key: 'email', input: true, type: 'textfield', validate: { maxLength: 5 } },

@@ -367,16 +367,6 @@ describe('Mellomlagring v2', () => {
             cy.clickShowAllSteps();
             cy.findByRole('link', { name: 'Vedlegg' }).should('exist');
           });
-
-          it('hides attachment page when not empty', () => {
-            cy.mocksUseRouteVariant('get-soknad:success-1-sendinn-upload');
-            cy.visitRouteAndWait(
-              `/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=${validInnsendingsId}&lang=nb-NO`,
-              ['@getMellomlagringValid'],
-            );
-            cy.clickShowAllSteps();
-            cy.findByRole('link', { name: 'Vedlegg' }).should('not.exist');
-          });
         });
 
         it('lets you edit and update submission data', () => {

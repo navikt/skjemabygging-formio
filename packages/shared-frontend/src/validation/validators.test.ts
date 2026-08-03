@@ -13,6 +13,22 @@ describe('validateValue', () => {
     expect(validateValue('John', 'Name', { required: true })).toBeUndefined();
   });
 
+  it('requires a select value that is still available', () => {
+    expect(
+      validateValue({ value: 'removed', label: 'Removed option' }, 'Delivery', {
+        onlyAvailableItems: ['current'],
+      }),
+    ).toEqual({
+      textKey: TEXTS.validering.required,
+      params: { field: 'Delivery' },
+    });
+    expect(
+      validateValue({ value: 'current', label: 'Current option' }, 'Delivery', {
+        onlyAvailableItems: ['current'],
+      }),
+    ).toBeUndefined();
+  });
+
   it('flags too short values', () => {
     expect(validateValue('ab', 'Name', { minLength: 3 })).toEqual({
       textKey: TEXTS.validering.minLength,

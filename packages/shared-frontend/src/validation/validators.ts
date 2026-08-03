@@ -13,6 +13,7 @@ import { evaluateFormioCustomValidation } from '../utils/formioEvaluation';
 
 interface ValidationRules {
   required?: boolean;
+  onlyAvailableItems?: string[];
   minLength?: number;
   maxLength?: number;
   email?: boolean;
@@ -114,6 +115,13 @@ const toSubmissionMonth = (value: string, locale: string) => {
   return monthIndex >= 0 ? `${year}-${String(monthIndex + 1).padStart(2, '0')}` : '';
 };
 
+const getSelectValue = (value: unknown) =>
+  typeof value === 'object' && value !== null && 'value' in value && typeof value.value === 'string'
+    ? value.value
+    : typeof value === 'string'
+      ? value
+      : undefined;
+
 interface ValidationOptions {
   allowTestTypes?: boolean;
   submission?: Submission;
@@ -180,6 +188,12 @@ const validateValue = (
   }
   if (validatorUtils.isEmpty(value)) {
     return undefined;
+  }
+  if (rules.onlyAvailableItems) {
+    const selectValue = getSelectValue(value);
+    if (!selectValue || !rules.onlyAvailableItems.includes(selectValue)) {
+      return { textKey: TEXTS.validering.required, params: { field } };
+    }
   }
   if (rules.minLength !== undefined && typeof value === 'string' && value.length < rules.minLength) {
     return { textKey: TEXTS.validering.minLength, params: { field, length: rules.minLength } };

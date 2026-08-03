@@ -44,6 +44,9 @@ const toRules = (
   submissionMethod?: SubmissionMethod,
 ): ValidationRules => ({
   required: component.validate?.required,
+  ...(component.validate?.onlyAvailableItems
+    ? { onlyAvailableItems: (component.values ?? component.data?.values ?? []).map(({ value }) => value) }
+    : {}),
   minLength: typeof component.validate?.minLength === 'number' ? component.validate.minLength : undefined,
   maxLength: typeof component.validate?.maxLength === 'number' ? component.validate.maxLength : undefined,
   email: component.type === 'email' ? true : undefined,
