@@ -330,7 +330,7 @@ describe('DrivingList', () => {
       cy.visit(`/fyllut/testdrivinglist/oppsummering?sub=digital&innsendingsId=a66e8932-ce2a-41c1-932b-716fc487813b`);
       cy.defaultWaits();
       cy.wait('@getMellomlagring');
-
+      cy.clickSendNav();
       cy.get('[data-cy=error-summary]').should('exist');
     });
   });
