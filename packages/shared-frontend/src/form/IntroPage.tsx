@@ -54,8 +54,8 @@ const IntroPage = ({ onStart }: Props) => {
       return;
     }
 
-    if (canSaveDraft) {
-      await saveDraft();
+    if (canSaveDraft && !(await saveDraft())) {
+      return;
     }
 
     onStart();

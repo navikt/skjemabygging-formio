@@ -1,14 +1,16 @@
-import { BodyShort, Button, Modal } from '@navikt/ds-react';
+import { Alert, BodyShort, Button, Modal } from '@navikt/ds-react';
 import { ReactNode, useState } from 'react';
 import { useFyllutLanguage } from '../../context/fyllut/FyllutLanguageContext';
 
 interface Props {
   open: boolean;
   onClose: () => void;
-  onConfirm?: () => Promise<void> | void;
+  onConfirm?: () => Promise<void | boolean> | void | boolean;
+  onConfirmError?: (error: unknown) => void;
   width?: 'small' | 'medium';
   exitUrl?: string;
   confirmType?: 'primary' | 'danger';
+  error?: string;
   texts: {
     title: string;
     body?: string;
@@ -22,9 +24,11 @@ const ConfirmationModal = ({
   open,
   onClose,
   onConfirm,
+  onConfirmError,
   width = 'medium',
   exitUrl,
   confirmType = 'primary',
+  error,
   texts,
   children,
 }: Props) => {
@@ -43,11 +47,19 @@ const ConfirmationModal = ({
 
     setIsLoading(true);
     try {
-      await onConfirm();
+      const confirmed = await onConfirm();
+      if (confirmed === false) {
+        return;
+      }
       onClose();
       if (exitUrl) {
         window.location.assign(exitUrl);
       }
+    } catch (error) {
+      if (!onConfirmError) {
+        throw error;
+      }
+      onConfirmError(error);
     } finally {
       setIsLoading(false);
     }
@@ -61,7 +73,10 @@ const ConfirmationModal = ({
       header={{ heading: translateIfAvailable(texts.title) }}
       style={{ maxWidth: width === 'small' ? '30rem' : '50rem' }}
     >
-      <Modal.Body>{children ?? (texts.body && <BodyShort>{translateIfAvailable(texts.body)}</BodyShort>)}</Modal.Body>
+      <Modal.Body>
+        {children ?? (texts.body && <BodyShort>{translateIfAvailable(texts.body)}</BodyShort>)}
+        {error && <Alert variant="error">{translateIfAvailable(error)}</Alert>}
+      </Modal.Body>
       <Modal.Footer>
         <Button variant={confirmType} onClick={handleConfirm} loading={isLoading}>
           {translateIfAvailable(texts.confirm)}

@@ -61,14 +61,14 @@ const confirmSaveDraftAfterCancellingOnce = () => {
 
   cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveDraft }).click();
   withinOpenDialog(() => {
-    cy.findByText((_, element) => element?.textContent?.trim() === body).shouldBeVisible();
+    cy.findByText((content, element) => element?.tagName === 'P' && content.trim() === body).shouldBeVisible();
     cy.findByRole('button', { name: TEXTS.grensesnitt.confirmSavePrompt.cancel }).click();
   });
   cy.get('dialog[open]').should('not.exist');
 
   cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveDraft }).click();
   withinOpenDialog(() => {
-    cy.findByText((_, element) => element?.textContent?.trim() === body).shouldBeVisible();
+    cy.findByText((content, element) => element?.tagName === 'P' && content.trim() === body).shouldBeVisible();
     cy.findByRole('button', { name: TEXTS.grensesnitt.confirmSavePrompt.confirm }).click();
   });
 };

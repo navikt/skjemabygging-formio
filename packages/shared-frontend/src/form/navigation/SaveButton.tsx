@@ -12,6 +12,7 @@ const SaveButton = () => {
   const { submission } = useSubmissionState();
   const { saveDraft } = useFormPersistence();
   const [saveModalOpen, setSaveModalOpen] = useState(false);
+  const [saveError, setSaveError] = useState<string>();
   const deletionDate = submission?.fyllutState?.mellomlagring?.deletionDate ?? '';
 
   const handleSaveDraft = async () => {
@@ -19,20 +20,34 @@ const SaveButton = () => {
       throw new Error('Kunne ikke lagre. Innsendingen er tom.');
     }
 
-    await saveDraft();
+    if (!(await saveDraft())) {
+      setSaveError(TEXTS.statiske.mellomlagringError.update.message);
+      return false;
+    }
+
     setSaveModalOpen(false);
   };
 
   return (
     <>
-      <Button variant="tertiary" onClick={() => setSaveModalOpen(true)}>
+      <Button
+        variant="tertiary"
+        onClick={() => {
+          setSaveError(undefined);
+          setSaveModalOpen(true);
+        }}
+      >
         {translate(TEXTS.grensesnitt.navigation.saveDraft)}
       </Button>
       <ConfirmationModal
         open={saveModalOpen}
-        onClose={() => setSaveModalOpen(false)}
+        onClose={() => {
+          setSaveError(undefined);
+          setSaveModalOpen(false);
+        }}
         onConfirm={handleSaveDraft}
         confirmType="primary"
+        error={saveError}
         texts={{
           ...TEXTS.grensesnitt.confirmSavePrompt,
           body: translate(TEXTS.grensesnitt.confirmSavePrompt.body, { date: deletionDate }),

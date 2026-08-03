@@ -161,8 +161,8 @@ const AttachmentUploadPage = ({ attachmentPanel, onPrevious, onNext }: Props) =>
       return;
     }
 
-    if (submissionMethod === 'digital' && canSaveDraft) {
-      await saveDraft();
+    if (submissionMethod === 'digital' && canSaveDraft && !(await saveDraft())) {
+      return;
     }
 
     onNext();

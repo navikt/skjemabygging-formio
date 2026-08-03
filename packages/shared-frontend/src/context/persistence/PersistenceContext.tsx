@@ -15,7 +15,7 @@ interface FormPersistenceHandlers {
 }
 
 interface FormPersistenceContextType {
-  saveDraft: () => Promise<void>;
+  saveDraft: () => Promise<boolean>;
   submit: () => Promise<void>;
   status: PersistenceStatus;
   error?: unknown;
@@ -33,11 +33,11 @@ const FormPersistenceProvider = ({ children, saveDraft: saveDraftHandler, submit
   const { getLatestSubmission } = useSubmissionState();
   const [status, setStatus] = useState<PersistenceStatus>('idle');
   const [error, setError] = useState<unknown>();
-  const saveLoopRef = useRef<Promise<void> | null>(null);
+  const saveLoopRef = useRef<Promise<boolean> | null>(null);
   const hasQueuedSaveRef = useRef(false);
 
   const saveDraft = useCallback(async () => {
-    if (!saveDraftHandler) return;
+    if (!saveDraftHandler) return false;
 
     hasQueuedSaveRef.current = true;
     if (!saveLoopRef.current) {
@@ -50,13 +50,15 @@ const FormPersistenceProvider = ({ children, saveDraft: saveDraftHandler, submit
             hasQueuedSaveRef.current = false;
             const latestSubmission = getLatestSubmission();
             if (!latestSubmission) {
-              return;
+              return false;
             }
 
             await saveDraftHandler(latestSubmission);
           }
+          return true;
         } catch (e) {
           setError(e);
+          return false;
         } finally {
           saveLoopRef.current = null;
           setStatus('idle');
@@ -64,13 +66,16 @@ const FormPersistenceProvider = ({ children, saveDraft: saveDraftHandler, submit
       })();
     }
 
-    await saveLoopRef.current;
+    const saveLoop = saveLoopRef.current;
+    return saveLoop ? await saveLoop : false;
   }, [getLatestSubmission, saveDraftHandler]);
 
   const submit = useCallback(async () => {
     if (!submitForm) return;
 
-    await saveLoopRef.current;
+    if (saveLoopRef.current && !(await saveLoopRef.current)) {
+      return;
+    }
 
     const latestSubmission = getLatestSubmission();
     if (!latestSubmission) return;

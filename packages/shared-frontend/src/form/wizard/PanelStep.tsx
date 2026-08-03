@@ -75,8 +75,8 @@ const PanelStep = ({ form }: { form: Form }) => {
     if (!valid) {
       return;
     }
-    if (canSaveDraft) {
-      await saveDraft();
+    if (canSaveDraft && !(await saveDraft())) {
+      return;
     }
     if (isLast) {
       if (navFormUtils.hasAttachment(form)) {

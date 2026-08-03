@@ -218,7 +218,7 @@ const FormPageWrapper = () => {
           throw error;
         }
         setInitialInnsendingsId(innsendingsId);
-        setInitialSubmission(response?.hoveddokumentVariant?.document?.data);
+        setInitialSubmission(withDraftMetadata(response?.hoveddokumentVariant?.document?.data, response));
         return { navigated: false };
       }
 
