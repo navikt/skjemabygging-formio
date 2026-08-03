@@ -1,4 +1,11 @@
-import { dateUtils, Form, formioFormsApiUtils, Language, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  dateUtils,
+  Form,
+  formioFormsApiUtils,
+  Language,
+  Submission,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useFyllutAppConfig } from '../context/fyllut/FyllutAppConfigContext';
@@ -9,6 +16,8 @@ import { buildDigitalFormSearch } from './digitalDraftUtils';
 import { FormPersistenceHandlers, useSubmissionState } from './framework';
 import { useNologinToken } from './nologin-token/NologinTokenContext';
 import { RECEIPT_KEY } from './wizard/constants';
+
+const createSaveDraftError = (cause: unknown, userMessage: string) => ({ cause, userMessage });
 
 /**
  * Builds the injected persistence handlers for the new renderer path, branching per submission
@@ -93,7 +102,15 @@ const useSubmitters = (form: Form, initialInnsendingsId?: string): FormPersisten
     const saveDraft = isDigital
       ? async (submission: Submission) => {
           if (!innsendingsIdRef.current) {
-            const response = await createSoknad(appConfig, navForm, submission, currentLanguage, forceMellomlagring);
+            const response = await createSoknad(
+              appConfig,
+              navForm,
+              submission,
+              currentLanguage,
+              forceMellomlagring,
+            ).catch((error: unknown) => {
+              throw createSaveDraftError(error, TEXTS.statiske.mellomlagringError.create.message);
+            });
             if (soknadAlreadyExists(response)) {
               goToActiveTasks();
               return;
@@ -110,7 +127,9 @@ const useSubmitters = (form: Form, initialInnsendingsId?: string): FormPersisten
               submission,
               currentLanguage,
               innsendingsIdRef.current,
-            );
+            ).catch((error: unknown) => {
+              throw createSaveDraftError(error, TEXTS.statiske.mellomlagringError.update.message);
+            });
             syncSubmissionState(submission, response);
           }
         }
