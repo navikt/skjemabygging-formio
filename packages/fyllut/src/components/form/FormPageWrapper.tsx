@@ -109,7 +109,7 @@ const enrichComponentsWithPrefillValues = (components: Component[] = [], prefill
 
 const FormPageWrapper = () => {
   const { formPath, '*': routePath } = useParams();
-  const { search } = useLocation();
+  const { search, state } = useLocation();
   const navigate = useNavigate();
   const [translations, setTranslations] = useState<I18nTranslations>();
   const [loading, setLoading] = useState<boolean>(true);
@@ -129,6 +129,10 @@ const FormPageWrapper = () => {
     [form],
   );
   const dataKey = `${formPath ?? ''}|${getDraftBootstrapLanguage(search)}|${submissionMethod ?? ''}`;
+  const noLoginInitialSubmission =
+    submissionMethod === 'digitalnologin' && typeof state === 'object' && state && 'initialSubmission' in state
+      ? (state.initialSubmission as Submission | undefined)
+      : undefined;
   const missingSubmissionMethodOnDirectRoute =
     useNewRenderer &&
     !useLegacyPageForNewRenderer &&
@@ -348,7 +352,7 @@ const FormPageWrapper = () => {
       {useNewRenderer && !useLegacyPageForNewRenderer ? (
         <RenderFormAdapter
           form={form}
-          initialSubmission={initialSubmission}
+          initialSubmission={initialSubmission ?? noLoginInitialSubmission}
           initialInnsendingsId={initialInnsendingsId}
         />
       ) : (
