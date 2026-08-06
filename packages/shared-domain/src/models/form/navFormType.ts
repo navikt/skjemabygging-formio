@@ -22,6 +22,7 @@ export interface NavFormType {
   project?: string;
   id?: number;
   revision?: number;
+  publicationId?: string;
   createdAt?: string;
   createdBy?: string;
   changedAt?: string;

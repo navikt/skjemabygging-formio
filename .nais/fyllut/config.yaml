@@ -93,6 +93,8 @@ spec:
       value: {{dekorator-url}}
     - name: FORMS_SOURCE
       value: {{forms-source}}
+    - name: PDF_FOOTER_ENV_SLUG
+      value: "{{pdf-footer-env-slug}}"
     - name: NOLOGIN_TOKEN_LIFETIME_HOURS
       value: "{{nologin.token-lifetime-hours}}"
     - name: SKJEMABYGGING_PROXY_URL

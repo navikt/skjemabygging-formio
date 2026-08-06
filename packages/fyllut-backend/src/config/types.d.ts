@@ -46,6 +46,9 @@ export type IdportenConfig = {
 export type DefaultConfig = {
   applicationName: string;
   gitVersion: string;
+  gitSha: string;
+  monorepoGitSha: string;
+  pdfFooterEnvSlug?: string;
   sentryDsn?: string;
   mocksEnabled: boolean;
   useFormsApiStaging: boolean;

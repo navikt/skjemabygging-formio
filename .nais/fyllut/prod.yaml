@@ -19,6 +19,7 @@ kodeverk:
   url: http://kodeverk-api.team-rocket
   scope: prod-gcp.team-rocket.kodeverk-api
 forms-source: "static"
+pdf-footer-env-slug: ""
 nologin:
   token-lifetime-hours: 6
 environmentVars: []

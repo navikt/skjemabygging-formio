@@ -11,6 +11,7 @@ type FormLock = {
 type Form = {
   id?: number;
   revision?: number;
+  publicationId?: string;
   skjemanummer: string;
   path: string;
   title: string;
