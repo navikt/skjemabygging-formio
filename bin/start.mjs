@@ -152,7 +152,7 @@ const configs = {
               fyllutCypressRuntimePath,
               JSON.stringify(
                 {
-                  baseUrl: `http://127.0.0.1:${frontendPort}`,
+                  baseUrl: `http://localhost:${frontendPort}`,
                   env: {
                     SKJEMABYGGING_PROXY_URL: `${mockUrl}/skjemabygging-proxy`,
                     AZURE_OPENID_CONFIG_TOKEN_ENDPOINT: `${mockUrl}/azure-openid/oauth2/v2.0/token`,
@@ -161,7 +161,7 @@ const configs = {
                     SEND_INN_HOST: `${mockUrl}/send-inn`,
                     SEND_INN_FRONTEND: `${mockUrl}/send-inn-frontend`,
                     TOKEN_X_WELL_KNOWN_URL: `${mockUrl}/tokenx/.well-known`,
-                    BASE_URL: `http://127.0.0.1:${frontendPort}`,
+                    BASE_URL: `http://localhost:${frontendPort}`,
                     FAMILIE_PDF_GENERATOR_URL: mockUrl,
                   },
                 },
@@ -177,7 +177,7 @@ const configs = {
   bygger: async () => {
     const [backendPort, frontendPort] = await getFreePorts(2);
     const backendUrl = `http://127.0.0.1:${backendPort}`;
-    const frontendUrl = `http://127.0.0.1:${frontendPort}`;
+    const frontendUrl = `http://localhost:${frontendPort}`;
     return {
       commands: [
         [
