@@ -96,7 +96,7 @@ const configs = {
     const [mockPort, mockAdminPort, backendPort, frontendPort] = await getFreePorts(4);
     const mockUrl = `http://127.0.0.1:${mockPort}`;
     const backendUrl = `http://127.0.0.1:${backendPort}`;
-    const frontendUrl = `http://127.0.0.1:${frontendPort}/fyllut`;
+    const frontendUrl = `http://localhost:${frontendPort}`;
     const fyllutBackendEnv = {
       NODE_ENV: 'development',
       MOCKS_ENABLED: 'true',
@@ -143,7 +143,7 @@ const configs = {
         `FYLLUT_MOCK_URL=${mockUrl}`,
         `FYLLUT_MOCK_ADMIN_PORT=${mockAdminPort}`,
         `FYLLUT_BACKEND_URL=${backendUrl}`,
-        `FYLLUT_FRONTEND_URL=${frontendUrl}`,
+        `FYLLUT_FRONTEND_URL=${frontendUrl}/fyllut`,
       ],
       onReady: shouldWriteRuntimeConfig
         ? () => {
@@ -152,7 +152,7 @@ const configs = {
               fyllutCypressRuntimePath,
               JSON.stringify(
                 {
-                  baseUrl: `http://localhost:${frontendPort}`,
+                  baseUrl: frontendUrl,
                   env: {
                     SKJEMABYGGING_PROXY_URL: `${mockUrl}/skjemabygging-proxy`,
                     AZURE_OPENID_CONFIG_TOKEN_ENDPOINT: `${mockUrl}/azure-openid/oauth2/v2.0/token`,
@@ -161,7 +161,7 @@ const configs = {
                     SEND_INN_HOST: `${mockUrl}/send-inn`,
                     SEND_INN_FRONTEND: `${mockUrl}/send-inn-frontend`,
                     TOKEN_X_WELL_KNOWN_URL: `${mockUrl}/tokenx/.well-known`,
-                    BASE_URL: `http://localhost:${frontendPort}`,
+                    BASE_URL: frontendUrl,
                     FAMILIE_PDF_GENERATOR_URL: mockUrl,
                   },
                 },
