@@ -10,32 +10,32 @@ describe('createPdfFooterVersion', () => {
       'uses a publication id for a published form',
       { status: 'published', publicationId: 'publication-123', revision: 7 },
       { envSlug: 'dev' },
-      'dev/publication-123 (abcdef1)',
+      'dev/abcdef1/publication-123',
     ],
     [
       'falls back directly to the forms commit when a published form lacks a publication id',
       { status: 'published', revision: 7 },
       { envSlug: 'preprod' },
-      'preprod/forms@1234567 (abcdef1)',
+      'preprod/abcdef1/forms@1234567',
     ],
     [
       'uses the revision instead of a stale publication id for a pending form',
       { status: 'pending', publicationId: 'stale-publication', revision: 42 },
       { envSlug: 'preprod-alt' },
-      'preprod-alt/rev42 (abcdef1)',
+      'preprod-alt/abcdef1/rev42',
     ],
     [
       'uses the revision for an unpublished form',
       { status: 'unpublished', revision: 3 },
       { envSlug: 'delingslenke' },
-      'delingslenke/rev3 (abcdef1)',
+      'delingslenke/abcdef1/rev3',
     ],
-    ['uses local when the environment slug is unset', { status: 'draft' }, {}, 'local/forms@1234567 (abcdef1)'],
+    ['uses local when the environment slug is unset', { status: 'draft' }, {}, 'local/abcdef1/forms@1234567'],
     [
       'omits the environment prefix when the production slug is empty',
       { status: 'published', publicationId: 'publication-456' },
       { envSlug: '' },
-      'publication-456 (abcdef1)',
+      'abcdef1/publication-456',
     ],
   ] as const)('%s', (_description, form, options, expectedFooterVersion) => {
     expect(

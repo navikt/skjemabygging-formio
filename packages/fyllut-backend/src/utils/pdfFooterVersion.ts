@@ -17,7 +17,7 @@ const createPdfFooterVersion = (
         ? `rev${form.revision}`
         : `forms@${gitSha.slice(0, 7)}`;
 
-  return `${envSlug ? `${envSlug}/` : ''}${formId} (${monorepoGitSha.slice(0, 7)})`;
+  return `${envSlug ? `${envSlug}/` : ''}${monorepoGitSha.slice(0, 7)}/${formId}`;
 };
 
 export { createPdfFooterVersion };
