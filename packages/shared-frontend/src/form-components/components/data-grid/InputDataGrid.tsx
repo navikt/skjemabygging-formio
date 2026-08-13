@@ -6,7 +6,7 @@ import {
   SubmissionData,
   submissionUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import TranslatedDescription from '../../../components/shared/TranslatedDescription';
 import { useFormDefinition } from '../../../context/form-definition/FormDefinitionContext';
 import {
@@ -42,10 +42,8 @@ const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => 
   const renderedRows = getRenderedDataGridRows(dataGridRows, component.initEmpty);
   const [rowIds, setRowIds] = useState(() => syncDataGridRowIds([], renderedRows.length));
   const synchronizedRowIds = syncDataGridRowIds(rowIds, renderedRows.length);
-  const rowComponentTemplates = useMemo(
-    () =>
-      renderedRows.map((_, index) => enrichComponentsWithBaseSubmissionPath(components, `${submissionPath}[${index}]`)),
-    [components, renderedRows.length, submissionPath],
+  const rowComponentTemplates = renderedRows.map((_, index) =>
+    enrichComponentsWithBaseSubmissionPath(components, `${submissionPath}[${index}]`),
   );
 
   const updateRows = (nextRows: object[]) => {
