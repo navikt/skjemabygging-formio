@@ -38,6 +38,15 @@ describe('InputDataGrid helpers', () => {
     expect(nextRowIds[1]).not.toBe(initialRowIds[0]);
   });
 
+  it('creates ids for rows added outside the datagrid controls', () => {
+    const initialRowIds = syncDataGridRowIds([], 1);
+    const synchronizedRowIds = syncDataGridRowIds(initialRowIds, 2);
+
+    expect(synchronizedRowIds).toHaveLength(2);
+    expect(synchronizedRowIds[0]).toBe(initialRowIds[0]);
+    expect(synchronizedRowIds[1]).toBeDefined();
+  });
+
   it('filters simple conditionals against row data', () => {
     const datagrid: Component = {
       key: 'repeterende',

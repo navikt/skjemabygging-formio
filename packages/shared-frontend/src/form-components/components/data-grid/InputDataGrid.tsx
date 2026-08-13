@@ -41,6 +41,7 @@ const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => 
   const dataGridRows = Array.isArray(rows) ? rows : [];
   const renderedRows = getRenderedDataGridRows(dataGridRows, component.initEmpty);
   const [rowIds, setRowIds] = useState(() => syncDataGridRowIds([], renderedRows.length));
+  const synchronizedRowIds = syncDataGridRowIds(rowIds, renderedRows.length);
   const rowComponentTemplates = useMemo(
     () =>
       renderedRows.map((_, index) => enrichComponentsWithBaseSubmissionPath(components, `${submissionPath}[${index}]`)),
@@ -54,11 +55,11 @@ const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => 
   };
 
   const addRow = () => {
-    setRowIds((previousRowIds) => addDataGridRowId(previousRowIds));
+    setRowIds(addDataGridRowId(synchronizedRowIds));
     updateRows([...dataGridRows, ...(dataGridRows.length === 0 && renderedRows.length > 0 ? [{}] : []), {}]);
   };
   const removeRow = (index: number) => {
-    setRowIds((previousRowIds) => removeDataGridRowId(previousRowIds, index));
+    setRowIds(removeDataGridRowId(synchronizedRowIds, index));
     updateRows(dataGridRows.filter((_, rowIndex) => rowIndex !== index));
   };
 
@@ -73,7 +74,7 @@ const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => 
           const rowComponents = getActiveRowComponents(rowComponentTemplates[index] ?? [], row, submission?.data, form);
 
           return (
-            <div key={rowIds[index] ?? `${component.key}-${index}`} className={styles.row}>
+            <div key={synchronizedRowIds[index]} className={styles.row}>
               <div className={styles.rowHeader}>
                 <Heading level="3" size="small" className="aksel-fieldset__legend-formio-template">
                   {translate(rowTitle || label || component.key)} {index + 1}
