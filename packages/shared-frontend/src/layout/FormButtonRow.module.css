@@ -18,7 +18,7 @@
   justify-content: center;
 }
 
-@media (max-width: var(--ax-breakpoint-md-down)) {
+@media (max-width: 767px) {
   .row {
     flex-direction: column;
   }
