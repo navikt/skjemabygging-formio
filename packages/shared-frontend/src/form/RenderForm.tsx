@@ -1,6 +1,7 @@
 import { Provider as AkselProvider } from '@navikt/ds-react';
 import { en, nb, nn } from '@navikt/ds-react/locales';
 import { Form, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import { useState } from 'react';
 import { useLocation } from 'react-router';
 import { FyllutAppConfig, FyllutAppConfigProvider, useFyllutAppConfig } from '../context/fyllut/FyllutAppConfigContext';
 import { FyllutLanguage, FyllutLanguageProvider } from '../context/fyllut/FyllutLanguageContext';
@@ -75,7 +76,8 @@ const FormContent = ({
   initialPagesWithErrors?: string[];
   shouldRenderWizard: boolean;
 }) => {
-  const persistence = useSubmitters(form, initialInnsendingsId);
+  const [receiptPdf, setReceiptPdf] = useState<Blob>();
+  const persistence = useSubmitters(form, initialInnsendingsId, setReceiptPdf);
 
   return (
     <FormDefinitionProvider form={form}>
@@ -85,7 +87,7 @@ const FormContent = ({
             <FormLayout>
               <FormLanguageSelector />
               {shouldRenderWizard ? (
-                <Wizard form={form} />
+                <Wizard form={form} receiptPdf={receiptPdf} />
               ) : (
                 <>
                   <FormHeader form={form} />

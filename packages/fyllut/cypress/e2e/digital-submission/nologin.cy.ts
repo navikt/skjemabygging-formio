@@ -1,4 +1,5 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { expect } from 'chai';
 
 describe('Digital submission without user login', () => {
   before(() => {
@@ -76,6 +77,9 @@ describe('Digital submission without user login', () => {
       cy.findByRole('heading', { name: TEXTS.statiske.receipt.title }).should('exist');
       cy.findByRole('button', { name: 'Vis alle steg' }).should('not.exist');
       cy.findByRole('button', { name: 'Skjul alle steg' }).should('not.exist');
+      cy.window().then((window) => {
+        expect(window.history.state.usr).not.to.have.property('pdfBase64');
+      });
     });
 
     it('prevents further editing when navigating back after submission', () => {

@@ -72,10 +72,9 @@ const WizardLayout = ({ form }: { form: Form }) => {
   );
 };
 
-const Wizard = ({ form }: { form: Form }) => {
+const Wizard = ({ form, receiptPdf }: { form: Form; receiptPdf?: Blob }) => {
   const { state } = useLocation();
   const receipt = (state as { receipt?: ReceiptSummary } | null)?.receipt;
-  const pdfBase64 = (state as { pdfBase64?: string } | null)?.pdfBase64;
 
   return (
     <Routes>
@@ -85,7 +84,7 @@ const Wizard = ({ form }: { form: Form }) => {
         <Route path={SUMMARY_KEY} element={<SummaryStep form={form} />} />
         <Route path=":panelSlug" element={<PanelStep form={form} />} />
       </Route>
-      <Route path={RECEIPT_KEY} element={<ReceiptStep form={form} receipt={receipt} pdfBase64={pdfBase64} />} />
+      <Route path={RECEIPT_KEY} element={<ReceiptStep form={form} receipt={receipt} pdf={receiptPdf} />} />
       <Route path={PREPARE_LETTER_KEY} element={<PrepareSubmissionStep type="cover-page-and-application" />} />
       <Route path={PREPARE_NO_SUBMISSION_KEY} element={<PrepareSubmissionStep type="application" />} />
     </Routes>

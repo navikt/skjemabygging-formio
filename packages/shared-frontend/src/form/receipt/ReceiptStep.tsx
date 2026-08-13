@@ -6,7 +6,6 @@ import { useNavigationType } from 'react-router';
 import { useFyllutAppConfig } from '../../context/fyllut/FyllutAppConfigContext';
 import { useFyllutLanguage } from '../../context/fyllut/FyllutLanguageContext';
 import { FormHeader, useFormPersistence } from '../framework';
-import { b64toBlob } from '../fyllut-utils/blob';
 
 const getMyPageUrl = (url: string) => {
   if (url.includes('.dev.nav.')) {
@@ -19,22 +18,22 @@ const getMyPageUrl = (url: string) => {
 interface Props {
   form: Pick<Form, 'title' | 'skjemanummer' | 'properties'>;
   receipt?: ReceiptSummary;
-  pdfBase64?: string;
+  pdf?: Blob;
 }
 
-const ReceiptStep = ({ form, receipt, pdfBase64 }: Props) => {
+const ReceiptStep = ({ form, receipt, pdf }: Props) => {
   const { logEvent, submissionMethod } = useFyllutAppConfig();
   const { currentLanguage, translate } = useFyllutLanguage();
   const { status } = useFormPersistence();
   const navigationType = useNavigationType();
 
   const soknadPdfUrl = useMemo(() => {
-    if (!pdfBase64) {
+    if (!pdf) {
       return undefined;
     }
 
-    return URL.createObjectURL(b64toBlob(pdfBase64, 'application/pdf'));
-  }, [pdfBase64]);
+    return URL.createObjectURL(pdf);
+  }, [pdf]);
 
   useEffect(() => {
     return () => {

@@ -14,6 +14,7 @@ import { postNologinSoknad } from './api/nologinSoknad';
 import { createSoknad, soknadAlreadyExists, updateSoknad } from './api/sendInnSoknad';
 import { buildDigitalFormSearch } from './digitalDraftUtils';
 import { FormPersistenceHandlers, useSubmissionState } from './framework';
+import { b64toBlob } from './fyllut-utils/blob';
 import { useNologinToken } from './nologin-token/NologinTokenContext';
 import { RECEIPT_KEY } from './wizard/constants';
 
@@ -28,7 +29,11 @@ const createSaveDraftError = (cause: unknown, userMessage: string) => ({ cause, 
  * - digitalnologin: single nologin-application submit (wired, not yet e2e-verified).
  * - paper: finalization is handled by the legacy letter/PDF flow (wired, not yet e2e-verified).
  */
-const useSubmitters = (form: Form, initialInnsendingsId?: string): FormPersistenceHandlers => {
+const useSubmitters = (
+  form: Form,
+  initialInnsendingsId?: string,
+  setReceiptPdf?: (pdf: Blob) => void,
+): FormPersistenceHandlers => {
   const appConfig = useFyllutAppConfig();
   const { currentLanguage, translate } = useFyllutLanguage();
   const { submissionMethod, logger, logEvent } = appConfig;
@@ -184,10 +189,8 @@ const useSubmitters = (form: Form, initialInnsendingsId?: string): FormPersisten
             innsendingsId,
           );
           logSubmissionCompleted();
-          navigate(
-            { pathname: `/${form.path}/${RECEIPT_KEY}`, search },
-            { state: { receipt: response.receipt, pdfBase64: response.pdfBase64 } },
-          );
+          setReceiptPdf?.(b64toBlob(response.pdfBase64, 'application/pdf'));
+          navigate({ pathname: `/${form.path}/${RECEIPT_KEY}`, search }, { state: { receipt: response.receipt } });
           break;
         }
         case 'digitalnologin': {
@@ -211,10 +214,8 @@ const useSubmitters = (form: Form, initialInnsendingsId?: string): FormPersisten
           }
           logSubmissionCompleted();
           clearNologinToken();
-          navigate(
-            { pathname: `/${form.path}/${RECEIPT_KEY}`, search },
-            { state: { receipt: response.receipt, pdfBase64: response.pdfBase64 } },
-          );
+          setReceiptPdf?.(b64toBlob(response.pdfBase64, 'application/pdf'));
+          navigate({ pathname: `/${form.path}/${RECEIPT_KEY}`, search }, { state: { receipt: response.receipt } });
           break;
         }
         default: {
@@ -238,6 +239,7 @@ const useSubmitters = (form: Form, initialInnsendingsId?: string): FormPersisten
     getNologinToken,
     clearNologinToken,
     handleSessionExpired,
+    setReceiptPdf,
     setSubmission,
     navigate,
     search,
