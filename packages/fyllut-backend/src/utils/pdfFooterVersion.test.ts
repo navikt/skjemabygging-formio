@@ -30,7 +30,7 @@ describe('createPdfFooterVersion', () => {
       { envSlug: 'delingslenke' },
       'delingslenke/abcdef1/rev3',
     ],
-    ['uses local when the environment slug is unset', { status: 'draft' }, {}, 'local/abcdef1/forms@1234567'],
+    ['uses local when the environment slug is unset', { status: 'draft' }, {}, 'dev-local/abcdef1/forms@1234567'],
     [
       'omits the environment prefix when the production slug is empty',
       { status: 'published', publicationId: 'publication-456' },
