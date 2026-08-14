@@ -76,8 +76,8 @@ function loadFormioApiServiceUrl() {
 const localDevelopmentConfig: DefaultConfig = {
   applicationName: 'skjemautfylling-local',
   gitVersion: 'local',
-  gitSha: process.env.GIT_SHA || 'local',
-  monorepoGitSha: process.env.MONOREPO_GIT_SHA || 'local',
+  gitSha: process.env.GIT_SHA || 'git-sha',
+  monorepoGitSha: process.env.MONOREPO_GIT_SHA || 'mr-sha',
   pdfFooterEnvSlug: process.env.PDF_FOOTER_ENV_SLUG,
   mocksEnabled: process.env.MOCKS_ENABLED === 'true',
   useFormsApiStaging: !process.env.FORMS_SOURCE || process.env.FORMS_SOURCE === 'formsapi-staging',

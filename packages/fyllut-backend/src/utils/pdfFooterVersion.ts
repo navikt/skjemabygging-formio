@@ -8,7 +8,7 @@ type PdfFooterVersionOptions = {
 
 const createPdfFooterVersion = (
   form: Pick<Form, 'publicationId' | 'revision' | 'status'>,
-  { envSlug = 'local', gitSha, monorepoGitSha }: PdfFooterVersionOptions,
+  { envSlug = 'dev-local', gitSha, monorepoGitSha }: PdfFooterVersionOptions,
 ) => {
   const formId =
     form.status === 'published'

@@ -32,6 +32,6 @@
     "lowerleft": "Skjemanummer: Attach 001",
     "upperRight": null,
     "upperMiddle": "<WILL BE IGNORED>",
-    "lowerMiddle": "Versjon: local/local/forms@local"
+    "lowerMiddle": "Versjon: dev-local/mr-sha/forms@git-sha"
   }
 }
