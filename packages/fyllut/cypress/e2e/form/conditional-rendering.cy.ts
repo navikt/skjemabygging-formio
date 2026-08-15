@@ -268,6 +268,22 @@ describe('Conditional rendering', () => {
       });
     });
 
+    describe('component with simple conditional on a radio, across multiple datagrid rows', () => {
+      beforeEach(() => {
+        cy.findByRole('button', { name: /Legg til/i }).click();
+        cy.findByRole('button', { name: /Legg til/i }).click();
+        cy.findAllByRole('radio', { name: 'Ja' }).should('have.length', 3);
+      });
+
+      it('only shows the conditional textfield in the row where the radio was answered, not in earlier untouched rows', () => {
+        cy.findAllByRole('textbox', { name: 'Tilleggsinfo' }).should('not.exist');
+
+        cy.findAllByRole('radio', { name: 'Ja' }).eq(2).check();
+
+        cy.findAllByRole('textbox', { name: 'Tilleggsinfo' }).should('have.length', 1);
+      });
+    });
+
     describe('component with custom conditional outside container', () => {
       beforeEach(() => {
         cy.get('.formio-component-alertstripe').should('not.exist');
