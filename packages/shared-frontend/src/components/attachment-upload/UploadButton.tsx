@@ -1,11 +1,12 @@
 import { UploadIcon } from '@navikt/aksel-icons';
-import { Button, FileObject, FileUpload, VStack } from '@navikt/ds-react';
+import { Alert, Button, FileObject, FileUpload, VStack } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { MutableRefObject, ReactNode, useState } from 'react';
-import { useFyllutLanguage } from '../../context/fyllut/FyllutLanguageContext';
-import StandaloneValidationError from '../fyllut-components/StandaloneValidationError';
-import { useAttachmentUpload } from './AttachmentUploadContext';
-import { FILE_ACCEPT, MAX_SIZE_ATTACHMENT_FILE_BYTES } from './fileUploadConfig';
+import { useAttachmentUpload } from '../../context/attachment-upload/AttachmentUploadContext';
+import { FILE_ACCEPT, MAX_SIZE_ATTACHMENT_FILE_BYTES } from '../../context/attachment-upload/fileUploadConfig';
+import { useLanguage } from '../../context/language/LanguageContext';
+import { inputId } from '../../utils/inputId';
+import useAttachmentValidation from './useAttachmentValidation';
 
 const setUploadRef = (
   refs: Props['refs'],
@@ -19,6 +20,7 @@ const setUploadRef = (
 
 interface Props {
   attachmentId: string;
+  statePath: string;
   variant: 'primary' | 'secondary';
   allowUpload?: boolean;
   refs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | HTMLButtonElement | null>>;
@@ -31,6 +33,7 @@ interface Props {
 
 const UploadButton = ({
   attachmentId,
+  statePath,
   variant,
   allowUpload,
   refs,
@@ -40,10 +43,12 @@ const UploadButton = ({
   maxFileSizeInBytes = MAX_SIZE_ATTACHMENT_FILE_BYTES,
   onSuccess,
 }: Props) => {
-  const { translate } = useFyllutLanguage();
-  const { handleUploadFile, errors, addError } = useAttachmentUpload();
+  const { translate } = useLanguage();
+  const { handleUploadFile, addError, submissionAttachments } = useAttachmentUpload();
+  const { getAttachmentError, getAttachmentExternalError } = useAttachmentValidation(submissionAttachments);
   const [loading, setLoading] = useState(false);
-  const uploadErrorMessage = errors[attachmentId]?.find((error) => error.type === 'FILE')?.message;
+  const uploadErrorMessage =
+    getAttachmentError(attachmentId, 'files') ?? getAttachmentExternalError(attachmentId, 'files');
 
   const onSelect = async (files: FileObject[]) => {
     setLoading(true);
@@ -68,6 +73,7 @@ const UploadButton = ({
       {allowUpload ? (
         <FileUpload.Trigger onSelect={onSelect} accept={accept} maxSizeInBytes={maxFileSizeInBytes} multiple={false}>
           <Button
+            id={inputId(statePath)}
             variant={variant}
             loading={loading}
             icon={<UploadIcon aria-hidden fontSize="1.5rem" />}
@@ -78,6 +84,7 @@ const UploadButton = ({
         </FileUpload.Trigger>
       ) : (
         <Button
+          id={inputId(statePath)}
           variant={variant}
           icon={<UploadIcon aria-hidden fontSize="1.5rem" />}
           ref={(ref) => setUploadRef(refs, `${attachmentId}-FILE`, ref)}
@@ -93,7 +100,9 @@ const UploadButton = ({
         </Button>
       )}
       {uploadErrorMessage && (
-        <StandaloneValidationError>{translate(uploadErrorMessage, translationParams)}</StandaloneValidationError>
+        <Alert variant="error" inline>
+          {translate(uploadErrorMessage, translationParams)}
+        </Alert>
       )}
       {readMore}
     </VStack>

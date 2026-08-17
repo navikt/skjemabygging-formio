@@ -1,5 +1,5 @@
-import { FileObject } from '@navikt/ds-react';
-import { Dispatch, SetStateAction } from 'react';
+import type { FileObject } from '@navikt/ds-react';
+import type { Dispatch, SetStateAction } from 'react';
 
 type UploadsInProgress = Record<string, Record<string, FileObject>>;
 

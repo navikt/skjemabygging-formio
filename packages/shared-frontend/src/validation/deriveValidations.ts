@@ -467,6 +467,10 @@ const collectValidationDescriptors = (
       return collectDrivingListDescriptors(component, submission, submissionMethod);
     }
 
+    if (component.type === 'attachment') {
+      return [createDescriptor(component, submissionPath, component.label ?? component.key, rules)];
+    }
+
     if (component.type === 'dataFetcher') {
       const submissionPath = getResolvedSubmissionPath(component);
       const fetcher = submission ? dataFetcherUtils.dataFetcher(submissionPath, submission) : undefined;

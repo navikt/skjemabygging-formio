@@ -66,12 +66,7 @@ const FormDefinitionProvider = ({ children, form }: Props) => {
   );
 
   const panels = useMemo(
-    () => activeComponents.filter((component): component is Panel => component.type === 'panel'),
-    [activeComponents],
-  );
-
-  const activeAttachmentPanel = useMemo(
-    () => navFormUtils.getActiveAttachmentPanelFromForm(formWithBaseSubmissionPath, submission),
+    () => navFormUtils.getAllActivePanelsFromForm(formWithBaseSubmissionPath, submission),
     [formWithBaseSubmissionPath, submission],
   );
 
@@ -134,10 +129,7 @@ const FormDefinitionProvider = ({ children, form }: Props) => {
 
   useEffect(() => {
     const activeSubmissionPaths = new Set(
-      flattenComponentsWithBaseSubmissionPath([
-        ...activeComponents,
-        ...(activeAttachmentPanel ? [activeAttachmentPanel] : []),
-      ])
+      flattenComponentsWithBaseSubmissionPath([...activeComponents, ...panels])
         .filter((component) => component.input)
         .map((component) => getResolvedSubmissionPath(component)),
     );
@@ -148,7 +140,34 @@ const FormDefinitionProvider = ({ children, form }: Props) => {
     if (hiddenPathsToClear.length > 0) {
       clearSubmissionPaths(hiddenPathsToClear);
     }
-  }, [activeAttachmentPanel, activeComponents, clearSubmissionPaths, formWithBaseSubmissionPath.components]);
+
+    const activeAttachmentIds = new Set(
+      flattenComponentsWithBaseSubmissionPath([...activeComponents, ...panels])
+        .filter((component) => component.type === 'attachment')
+        .map((component) => navFormUtils.getNavId(component))
+        .filter((attachmentId): attachmentId is string => !!attachmentId),
+    );
+    const hiddenAttachmentIds = new Set(
+      flattenComponentsWithBaseSubmissionPath(formWithBaseSubmissionPath.components)
+        .filter((component) => component.type === 'attachment' && component.clearOnHide !== false)
+        .map((component) => navFormUtils.getNavId(component))
+        .filter((attachmentId): attachmentId is string => !!attachmentId)
+        .filter((attachmentId) => !activeAttachmentIds.has(attachmentId)),
+    );
+    if (hiddenAttachmentIds.size > 0) {
+      setSubmission((current) => {
+        const attachments = current?.attachments;
+        if (!attachments) {
+          return current;
+        }
+
+        const visibleAttachments = attachments.filter((attachment) => !hiddenAttachmentIds.has(attachment.navId));
+        return visibleAttachments.length === attachments.length
+          ? current
+          : { ...current, attachments: visibleAttachments };
+      });
+    }
+  }, [activeComponents, panels, clearSubmissionPaths, formWithBaseSubmissionPath.components, setSubmission]);
 
   const value = useMemo(
     () => ({ form: formWithBaseSubmissionPath, activeComponents, panels }),

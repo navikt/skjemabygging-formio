@@ -2,10 +2,11 @@ import { FileItem, FileObject } from '@navikt/ds-react';
 import { ResponseError, Submission, SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, useContext, useMemo, useState } from 'react';
 import { useLocation } from 'react-router';
-import { useFyllutAppConfig } from '../../context/fyllut/FyllutAppConfigContext';
-import { useFyllutLanguage } from '../../context/fyllut/FyllutLanguageContext';
-import { useSubmissionState } from '../framework';
-import { useNologinToken } from '../nologin-token/NologinTokenContext';
+import { useNologinToken } from '../../form/nologin-token/NologinTokenContext';
+import { useFyllutAppConfig } from '../fyllut/FyllutAppConfigContext';
+import { useFyllutLanguage } from '../fyllut/FyllutLanguageContext';
+import { useSubmissionState } from '../state/SubmissionStateContext';
+import { useValidation } from '../validation/ValidationContext';
 import { createAttachmentSubmissionActions } from './attachmentSubmission';
 import { normalizeAttachmentDownloadFileName } from './attachmentUploadUtils';
 import { getFileValidationError, validateFileUpload } from './attachmentValidation';
@@ -13,7 +14,6 @@ import { downloadBlob, getFileUploadApi } from './fileUploadApi';
 import { createUploadProgressActions } from './uploadProgress';
 
 type AttachmentErrorType = 'FILE' | 'VALUE' | 'TITLE';
-type AttachmentError = { message: string; type: AttachmentErrorType };
 type ActionStatus = 'ok' | 'error' | 'auth-error' | 'invalid' | 'unknown';
 
 interface AttachmentUploadContextType {
@@ -25,13 +25,10 @@ interface AttachmentUploadContextType {
   handleDeleteAllFiles: () => Promise<void>;
   addError: (attachmentId: string, error: string, type: AttachmentErrorType) => void;
   removeError: (attachmentId: string) => void;
-  removeAllErrors: () => void;
   changeAttachmentValue: (
     attachment: SubmissionAttachment,
     values?: Pick<SubmissionAttachment, 'value' | 'title' | 'additionalDocumentation'>,
-    validator?: { validate: (label: string, attachment: SubmissionAttachment) => string | undefined },
   ) => void;
-  errors: Record<string, Array<AttachmentError>>;
   uploadsInProgress: Record<string, Record<string, FileObject>>;
   submissionAttachments: SubmissionAttachment[];
 }
@@ -45,9 +42,7 @@ const initialContext: AttachmentUploadContextType = {
   handleDeleteAllFiles: async () => {},
   addError: () => {},
   removeError: () => {},
-  removeAllErrors: () => {},
   changeAttachmentValue: () => {},
-  errors: {},
   uploadsInProgress: {},
   submissionAttachments: [],
 };
@@ -58,10 +53,10 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
   const { submissionMethod, http } = useFyllutAppConfig();
   const { translate } = useFyllutLanguage();
   const { submission, setSubmission } = useSubmissionState();
+  const { setAttachmentExternalError } = useValidation();
   const { getNologinToken, handleSessionExpired } = useNologinToken();
   const { search } = useLocation();
   const [uploadsInProgress, setUploadsInProgress] = useState<Record<string, Record<string, FileObject>>>({});
-  const [errors, setErrors] = useState<Record<string, Array<AttachmentError>>>({});
   const innsendingsId = new URLSearchParams(search).get('innsendingsId') ?? undefined;
   const uploadApi = useMemo(
     () => getFileUploadApi(http, submissionMethod === 'digitalnologin' ? 'nologin' : 'digital', innsendingsId),
@@ -71,32 +66,14 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
   const uploadProgressActions = createUploadProgressActions(setUploadsInProgress);
 
   const addError = (attachmentId: string, message: string, type: AttachmentErrorType) => {
-    setErrors((prev) => {
-      const existingErrorIndex = prev[attachmentId]?.findIndex((error) => error.type === type);
-      if (existingErrorIndex !== undefined && existingErrorIndex >= 0) {
-        const updatedErrors = [...(prev[attachmentId] ?? [])];
-        updatedErrors[existingErrorIndex] = { message, type };
-        return {
-          ...prev,
-          [attachmentId]: updatedErrors,
-        };
-      }
-      return {
-        ...prev,
-        [attachmentId]: [...(prev[attachmentId] ?? []), { message, type }],
-      };
-    });
+    const field = type === 'VALUE' ? 'value' : type === 'TITLE' ? 'title' : 'files';
+    setAttachmentExternalError(attachmentId, field, translate(message));
   };
 
   const removeError = (attachmentId: string) => {
-    setErrors((prev) => {
-      const { [attachmentId]: _, ...rest } = prev;
-      return rest;
-    });
-  };
-
-  const removeAllErrors = () => {
-    setErrors({});
+    setAttachmentExternalError(attachmentId, 'value');
+    setAttachmentExternalError(attachmentId, 'files');
+    setAttachmentExternalError(attachmentId, 'title');
   };
 
   const handleUploadFile = async (attachmentId: string, file: FileObject): Promise<{ status: ActionStatus }> => {
@@ -151,7 +128,7 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
       if (isAuthenticationError(error, http)) {
         handleSessionExpired();
       } else {
-        addError(fileId, translate(TEXTS.statiske.uploadFile.deleteFileError), 'FILE');
+        addError(attachmentId, translate(TEXTS.statiske.uploadFile.deleteFileError), 'FILE');
       }
     }
   };
@@ -204,7 +181,7 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
 
   const handleDeleteAllFiles = async () => {
     try {
-      setErrors({});
+      submission?.attachments?.forEach((attachment) => removeError(attachment.attachmentId));
       const token = await getNologinToken();
       await uploadApi.deleteAllFiles(token);
       setSubmission(
@@ -227,13 +204,9 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
   const changeAttachmentValue = (
     attachment: SubmissionAttachment,
     values?: Pick<SubmissionAttachment, 'value' | 'title' | 'additionalDocumentation'>,
-    validator?: { validate: (label: string, attachment: SubmissionAttachment) => string | undefined },
   ) => {
-    if (validator) {
-      const error = validator.validate('', { ...attachment, ...values });
-      if (!error) {
-        removeError(attachment.attachmentId);
-      }
+    if (values?.value) {
+      removeError(attachment.attachmentId);
     }
 
     submissionActions.changeAttachmentValue(attachment, values);
@@ -248,10 +221,8 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
     handleDeleteAllFiles,
     addError,
     removeError,
-    removeAllErrors,
     changeAttachmentValue,
     submissionAttachments: submission?.attachments ?? [],
-    errors,
     uploadsInProgress,
   };
 
@@ -266,4 +237,4 @@ const isAuthenticationError = (
 ): boolean => http?.isAuthenticationError(error) ?? false;
 
 export { AttachmentUploadProvider, getFileValidationError, useAttachmentUpload };
-export type { AttachmentError, AttachmentErrorType };
+export type { AttachmentErrorType };

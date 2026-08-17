@@ -1,30 +1,19 @@
-import { Button, FileItem, HStack, TextField, VStack } from '@navikt/ds-react';
+import { Button, FileItem, HStack, VStack } from '@navikt/ds-react';
 import {
   AttachmentSettingValues,
   enableAttachmentDownload,
-  navFormUtils,
   SubmissionAttachment,
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { ChangeEvent, MutableRefObject, ReactNode, useCallback } from 'react';
-import { useFyllutAppConfig } from '../../context/fyllut/FyllutAppConfigContext';
-import { useFyllutLanguage } from '../../context/fyllut/FyllutLanguageContext';
-import { useFormDefinition } from '../framework';
-import { useAttachmentUpload } from './AttachmentUploadContext';
-import { attachmentValidator } from './attachmentValidation';
+import { MutableRefObject, ReactNode } from 'react';
+import { useAppConfig } from '../../context/app-config/AppConfigContext';
+import { useAttachmentUpload } from '../../context/attachment-upload/AttachmentUploadContext';
+import { fileUploadErrorParams } from '../../context/attachment-upload/fileUploadConfig';
+import { useLanguage } from '../../context/language/LanguageContext';
+import TextField from '../text-field/TextField';
 import FilesPreview from './FilesPreview';
-import { fileUploadErrorParams } from './fileUploadConfig';
 import UploadButton from './UploadButton';
-
-const setFileUploaderRef = (
-  refs: Props['refs'],
-  key: string,
-  value: HTMLInputElement | HTMLFieldSetElement | HTMLButtonElement | null,
-) => {
-  if (refs?.current) {
-    Reflect.set(refs.current, key, value);
-  }
-};
+import useAttachmentValidation from './useAttachmentValidation';
 
 interface Props {
   initialAttachment: SubmissionAttachment;
@@ -37,6 +26,7 @@ interface Props {
   readMore?: ReactNode;
   accept?: string;
   maxFileSizeInBytes?: number;
+  onUpload?: (attachment: SubmissionAttachment) => void;
 }
 
 const FileUploader = ({
@@ -50,39 +40,15 @@ const FileUploader = ({
   readMore,
   accept,
   maxFileSizeInBytes,
+  onUpload,
 }: Props) => {
-  const { translate } = useFyllutLanguage();
-  const { logEvent, submissionMethod } = useFyllutAppConfig();
-  const { form } = useFormDefinition();
-  const {
-    changeAttachmentValue,
-    handleDeleteFile,
-    handleDownloadFile,
-    submissionAttachments,
-    errors,
-    uploadsInProgress,
-  } = useAttachmentUpload();
+  const { submissionMethod } = useAppConfig();
+  const { translate } = useLanguage();
+  const { changeAttachmentValue, handleDeleteFile, handleDownloadFile, submissionAttachments, uploadsInProgress } =
+    useAttachmentUpload();
   const { attachmentId } = initialAttachment;
+  const { getAttachmentError, getAttachmentExternalError } = useAttachmentValidation(submissionAttachments);
   const attachment = submissionAttachments.find((currentAttachment) => currentAttachment.attachmentId === attachmentId);
-
-  const logUploadEvent = useCallback(() => {
-    const formAttachment = navFormUtils
-      .flattenComponents(form.components)
-      .find(
-        (component) => component.type === 'attachment' && navFormUtils.getNavId(component) === initialAttachment.navId,
-      );
-    logEvent?.({
-      name: 'last opp',
-      data: {
-        type: 'vedlegg',
-        skjemaId: form.properties.skjemanummer,
-        tema: form.properties.tema,
-        tittel: translate(formAttachment?.label) ?? '',
-        attachmentId,
-        submissionMethod,
-      },
-    });
-  }, [attachmentId, form, initialAttachment.navId, logEvent, submissionMethod, translate]);
 
   const label = requireAttachmentTitle
     ? translate(attachment?.title)
@@ -94,18 +60,13 @@ const FileUploader = ({
   const inProgress = Object.values(uploadsInProgress[attachmentId] ?? {});
   const fileItems = [...uploadedFiles, ...inProgress];
 
-  const attachmentTitleErrorMessage = errors[attachmentId]?.find((error) => error.type === 'TITLE')?.message;
-  const attachmentTitleValidator = attachmentValidator(translate, ['otherDocumentationTitle']);
-
-  const handleTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    changeAttachmentValue(
-      initialAttachment,
-      {
-        value: attachmentValue,
-        title: event.target.value,
-      },
-      attachmentTitleValidator,
-    );
+  const attachmentTitleErrorMessage =
+    getAttachmentError(attachmentId, 'title') ?? getAttachmentExternalError(attachmentId, 'title');
+  const handleTitleChange = (title: string) => {
+    changeAttachmentValue(initialAttachment, {
+      value: attachmentValue,
+      title,
+    });
   };
 
   const handleDeleteFileItem = (fileId: string, file: FileItem) => {
@@ -135,17 +96,18 @@ const FileUploader = ({
         <VStack gap="space-32">
           {requireAttachmentTitle && (
             <TextField
+              statePath={`attachments.${attachmentId}.title`}
               label={translate(TEXTS.statiske.attachment.attachmentTitle)}
               maxLength={50}
-              defaultValue={attachment?.title}
+              value={attachment?.title ?? ''}
               error={attachmentTitleErrorMessage}
-              ref={(ref) => setFileUploaderRef(refs, `${attachmentId}-TITLE`, ref)}
               onChange={handleTitleChange}
             />
           )}
           <HStack gap="space-16">
             <UploadButton
               attachmentId={attachmentId}
+              statePath={`attachments.${attachmentId}.files`}
               variant={initialUpload ? 'primary' : 'secondary'}
               allowUpload={!requireAttachmentTitle || !!attachment?.title?.trim()}
               refs={refs}
@@ -153,7 +115,7 @@ const FileUploader = ({
               accept={accept}
               readMore={readMore}
               maxFileSizeInBytes={maxFileSizeInBytes}
-              onSuccess={logUploadEvent}
+              onSuccess={() => onUpload?.(initialAttachment)}
             />
             {showDeleteAttachmentButton && onDeleteAttachment && (
               <Button variant="tertiary" onClick={() => onDeleteAttachment(attachmentId)}>

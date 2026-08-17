@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { AppConfigProvider } from '../app-config/AppConfigContext';
 import { LanguageProvider } from '../language/LanguageContext';
 import { SubmissionStateProvider } from '../state/SubmissionStateContext';
-import { useValidation, ValidationProvider } from './ValidationContext';
+import { attachmentValidationPath, useValidation, ValidationProvider } from './ValidationContext';
 
 const components = [
   {
@@ -94,6 +94,83 @@ describe('ValidationContext', () => {
     expect(container.querySelector('[data-testid="field-error"]')?.textContent).toBe('Du må fylle ut: First name');
     expect(container.querySelector('[data-testid="identity-number-error"]')?.textContent).toBe(
       TEXTS.validering.fodselsnummerDNummer,
+    );
+  });
+
+  it('assigns attachment choice, file, and title errors to their upload controls', () => {
+    const attachmentComponents = [
+      {
+        key: 'documentation',
+        navId: 'documentation',
+        label: 'Documentation',
+        input: true,
+        type: 'attachment',
+        attachmentType: 'other',
+        validate: { required: true },
+      },
+    ] as unknown as Component[];
+
+    const AttachmentValidationHarness = () => {
+      const { getError, validatePages } = useValidation();
+
+      return (
+        <>
+          <button
+            type="button"
+            onClick={() => validatePages([{ pageKey: 'attachments', components: attachmentComponents }])}
+          >
+            Validate attachments
+          </button>
+          <span data-testid="attachment-value-error">
+            {getError(attachmentValidationPath('documentation', 'value'), 'attachments', attachmentComponents) ?? ''}
+          </span>
+          <span data-testid="attachment-file-error">
+            {getError(attachmentValidationPath('documentation', 'files'), 'attachments', attachmentComponents) ?? ''}
+          </span>
+          <span data-testid="attachment-title-error">
+            {getError(attachmentValidationPath('documentation', 'title'), 'attachments', attachmentComponents) ?? ''}
+          </span>
+        </>
+      );
+    };
+
+    act(() => {
+      root.render(
+        <AppConfigProvider submissionMethod="digital">
+          <LanguageProvider translate={translate} currentLanguage="nb">
+            <SubmissionStateProvider
+              initialSubmission={{
+                data: {},
+                attachments: [
+                  {
+                    attachmentId: 'documentation',
+                    navId: 'documentation',
+                    type: 'other',
+                    value: 'leggerVedNaa',
+                    files: [],
+                  },
+                ],
+              }}
+            >
+              <ValidationProvider>
+                <AttachmentValidationHarness />
+              </ValidationProvider>
+            </SubmissionStateProvider>
+          </LanguageProvider>
+        </AppConfigProvider>,
+      );
+    });
+
+    act(() => {
+      (container.querySelector('button') as HTMLButtonElement).click();
+    });
+
+    expect(container.querySelector('[data-testid="attachment-value-error"]')?.textContent).toBe('');
+    expect(container.querySelector('[data-testid="attachment-file-error"]')?.textContent).toBe(
+      'Du må laste opp fil: Documentation',
+    );
+    expect(container.querySelector('[data-testid="attachment-title-error"]')?.textContent).toBe(
+      'Du må fylle ut: Gi vedlegget et beskrivende navn',
     );
   });
 });

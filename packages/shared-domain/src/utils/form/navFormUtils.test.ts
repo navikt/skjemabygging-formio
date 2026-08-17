@@ -768,6 +768,98 @@ describe('navFormUtils', () => {
     });
   });
 
+  describe('getAllActivePanelsFromForm', () => {
+    it('keeps attachment panels in authored order while the legacy helper excludes them', () => {
+      const form = {
+        components: [
+          {
+            key: 'beforeAttachments',
+            type: 'panel',
+            components: [],
+          },
+          {
+            key: 'attachments',
+            type: 'panel',
+            isAttachmentPanel: true,
+            components: [
+              {
+                key: 'attachment',
+                type: 'attachment',
+                input: true,
+              },
+            ],
+          },
+          {
+            key: 'afterAttachments',
+            type: 'panel',
+            components: [],
+          },
+        ],
+      };
+
+      expect(navFormUtils.getAllActivePanelsFromForm(form, { data: {} }).map((panel) => panel.key)).toEqual([
+        'beforeAttachments',
+        'attachments',
+        'afterAttachments',
+      ]);
+      expect(navFormUtils.getActivePanelsFromForm(form, { data: {} }).map((panel) => panel.key)).toEqual([
+        'beforeAttachments',
+        'afterAttachments',
+      ]);
+    });
+
+    it('filters inactive attachment panels and their inactive child components', () => {
+      const form = {
+        components: [
+          {
+            key: 'beforeAttachments',
+            type: 'panel',
+            components: [],
+          },
+          {
+            key: 'attachments',
+            type: 'panel',
+            isAttachmentPanel: true,
+            conditional: { show: true, when: 'showAttachments', eq: true },
+            components: [
+              {
+                key: 'visibleAttachment',
+                type: 'attachment',
+                input: true,
+              },
+              {
+                key: 'hiddenAttachment',
+                type: 'attachment',
+                input: true,
+                conditional: { show: true, when: 'showSecondAttachment', eq: true },
+              },
+            ],
+          },
+          {
+            key: 'afterAttachments',
+            type: 'panel',
+            components: [],
+          },
+        ],
+      };
+
+      expect(navFormUtils.getAllActivePanelsFromForm(form, { data: {} }).map((panel) => panel.key)).toEqual([
+        'beforeAttachments',
+        'afterAttachments',
+      ]);
+
+      const [beforeAttachments, attachments, afterAttachments] = navFormUtils.getAllActivePanelsFromForm(form, {
+        data: { showAttachments: true },
+      });
+      expect([beforeAttachments?.key, attachments?.key, afterAttachments?.key]).toEqual([
+        'beforeAttachments',
+        'attachments',
+        'afterAttachments',
+      ]);
+      expect(attachments?.components?.map((component) => component.key)).toEqual(['visibleAttachment']);
+    });
+  });
+
   describe('isSubmissionMethodAllowed', () => {
     const createTestForm = (submissionTypes) => ({ properties: { submissionTypes } });
 

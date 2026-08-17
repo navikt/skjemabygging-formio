@@ -1,6 +1,16 @@
 import { TextField as AkselTextField } from '@navikt/ds-react';
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
-import { ChangeEvent, FocusEvent, FormEvent, HTMLAttributes, useCallback, useEffect, useRef, useState } from 'react';
+import {
+  ChangeEvent,
+  FocusEvent,
+  FormEvent,
+  HTMLAttributes,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useStateField } from '../../context/state/useStateField';
 import { toInputFormat, toSubmissionFormat } from '../../formatting/inputFormat';
 import { inputId } from '../../utils/inputId';
@@ -24,6 +34,10 @@ interface TextFieldProps extends BaseFieldProps {
   prefillValue?: Component['prefillValue'];
   toDisplayValue?: (value: unknown) => string;
   toStateValue?: (value: string) => unknown;
+  value?: string;
+  onChange?: (value: string) => void;
+  error?: ReactNode;
+  maxLength?: number;
 }
 
 const resolveAutoComplete = (autoComplete?: string | boolean) => {
@@ -50,6 +64,10 @@ const TextField = ({
   prefillValue,
   toDisplayValue,
   toStateValue,
+  value: controlledValue,
+  onChange: controlledOnChange,
+  error: controlledError,
+  maxLength,
   readMore,
   marginBottom,
 }: TextFieldProps) => {
@@ -62,11 +80,15 @@ const TextField = ({
   );
   const [displayValue, setDisplayValue] = useState(() =>
     formatDisplayValue(
-      stateValue ?? (typeof prefillValue === 'string' && prefillValue.trim() !== '' ? prefillValue : undefined),
+      controlledOnChange
+        ? controlledValue
+        : (stateValue ?? (typeof prefillValue === 'string' && prefillValue.trim() !== '' ? prefillValue : undefined)),
     ),
   );
   const syncedDisplayValue = formatDisplayValue(
-    stateValue ?? (typeof prefillValue === 'string' && prefillValue.trim() !== '' ? prefillValue : undefined),
+    controlledOnChange
+      ? controlledValue
+      : (stateValue ?? (typeof prefillValue === 'string' && prefillValue.trim() !== '' ? prefillValue : undefined)),
   );
   const resolvedAutoComplete = resolveAutoComplete(autoComplete);
 
@@ -74,11 +96,13 @@ const TextField = ({
     (value: string) => {
       const nextStateValue = toStateValue ? toStateValue(value) : toSubmissionFormat(value, formatKey);
       setDisplayValue((previousValue) => (previousValue === value ? previousValue : value));
-      if (!Object.is(stateValue, nextStateValue)) {
+      if (controlledOnChange) {
+        controlledOnChange(value);
+      } else if (!Object.is(stateValue, nextStateValue)) {
         setStateValue(nextStateValue);
       }
     },
-    [formatKey, setStateValue, stateValue, toStateValue],
+    [controlledOnChange, formatKey, setStateValue, stateValue, toStateValue],
   );
 
   const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -95,7 +119,7 @@ const TextField = ({
     const formatted = formatDisplayValue(rawValue);
     setDisplayValue(formatted);
     const nextStateValue = toStateValue ? toStateValue(rawValue) : toSubmissionFormat(rawValue, formatKey);
-    if (!Object.is(stateValue, nextStateValue)) {
+    if (!controlledOnChange && !Object.is(stateValue, nextStateValue)) {
       setStateValue(nextStateValue);
     }
   };
@@ -148,12 +172,13 @@ const TextField = ({
         onChangeCapture={handleInput}
         onChange={handleChange}
         onBlur={handleBlur}
-        error={error}
+        error={controlledError ?? error}
         readOnly={readOnly}
         autoComplete={resolvedAutoComplete}
         inputMode={inputMode}
         type={type}
         spellCheck={spellCheck}
+        maxLength={maxLength}
       />
       {readMore && <ReadMore {...readMore} />}
     </FormElementBox>

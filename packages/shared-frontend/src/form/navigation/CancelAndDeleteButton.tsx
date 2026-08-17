@@ -2,11 +2,11 @@ import { Button } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import { useLocation } from 'react-router';
+import { useAttachmentUpload } from '../../context/attachment-upload/AttachmentUploadContext';
 import { useFyllutAppConfig } from '../../context/fyllut/FyllutAppConfigContext';
 import { useFyllutLanguage } from '../../context/fyllut/FyllutLanguageContext';
 import { useSubmissionState } from '../../context/state/SubmissionStateContext';
 import { deleteSoknad } from '../api/sendInnSoknad';
-import { useAttachmentUpload } from '../attachment-upload/AttachmentUploadContext';
 import ConfirmationModal from '../fyllut-components/ConfirmationModal';
 import { getExitUrl } from '../fyllut-utils/url';
 

@@ -24,6 +24,13 @@ interface RuleViolation {
   params: Record<string, string | number>;
 }
 
+type AttachmentField = 'value' | 'files' | 'title';
+type AttachmentViolation = { submissionPath: string; violation: RuleViolation };
+type ExternalAttachmentError = { attachmentId: string; field: AttachmentField; message: string };
+
+const attachmentValidationPath = (attachmentId: string, field: AttachmentField) =>
+  `attachments.${attachmentId}.${field}`;
+
 const getTranslationKey = (textKey: string) =>
   Object.entries(TEXTS.validering).find(([, text]) => text === textKey)?.[0] ?? textKey;
 
@@ -32,33 +39,49 @@ const validateAttachmentComponent = (
   field: string,
   activeSubmission: Submission | undefined,
   submissionMethod?: string,
-): RuleViolation | undefined => {
+): AttachmentViolation[] => {
   if (submissionMethod === 'paper' || submissionMethod === 'papernocoverpage' || submissionMethod === undefined) {
-    return undefined;
+    return [];
   }
 
   const attachmentId = navFormUtils.getNavId(component);
   if (!attachmentId) {
-    return undefined;
+    return [];
   }
 
-  const attachment = activeSubmission?.attachments?.find(
-    (currentAttachment) => currentAttachment.navId === attachmentId,
-  );
-  if (component.validate?.required && !attachment?.value) {
-    return { textKey: TEXTS.validering.required, params: { field } };
-  }
-  if (attachment?.value === 'leggerVedNaa' && (attachment.files ?? []).length === 0) {
-    return { textKey: 'fileMissing', params: { field } };
-  }
-  if (component.attachmentType === 'other' && attachment?.value === 'leggerVedNaa' && !attachment.title) {
-    return {
-      textKey: TEXTS.validering.required,
-      params: { field: TEXTS.statiske.attachment.attachmentTitle },
-    };
+  const attachments =
+    activeSubmission?.attachments?.filter((currentAttachment) => currentAttachment.navId === attachmentId) ?? [];
+  const primaryAttachment = attachments[0];
+  const violations: AttachmentViolation[] = [];
+
+  if (component.validate?.required && !primaryAttachment?.value) {
+    violations.push({
+      submissionPath: attachmentValidationPath(attachmentId, 'value'),
+      violation: { textKey: TEXTS.validering.required, params: { field } },
+    });
   }
 
-  return undefined;
+  attachments
+    .filter((attachment) => attachment.value === 'leggerVedNaa')
+    .forEach((attachment) => {
+      if ((attachment.files ?? []).length === 0) {
+        violations.push({
+          submissionPath: attachmentValidationPath(attachment.attachmentId, 'files'),
+          violation: { textKey: 'fileMissing', params: { field } },
+        });
+      }
+      if (component.attachmentType === 'other' && !attachment.title?.trim()) {
+        violations.push({
+          submissionPath: attachmentValidationPath(attachment.attachmentId, 'title'),
+          violation: {
+            textKey: TEXTS.validering.required,
+            params: { field: TEXTS.statiske.attachment.attachmentTitle },
+          },
+        });
+      }
+    });
+
+  return violations;
 };
 
 type ValidationPage = { pageKey: string; components: Component[] };
@@ -131,6 +154,8 @@ interface ValidationContextType {
   shouldShowSummaryForPage: (pageKey: string) => boolean;
   shouldShowSummaryForSummaryPage: () => boolean;
   syncPageValidationState: (pageKey: string, components: Component[]) => void;
+  setAttachmentExternalError: (attachmentId: string, field: AttachmentField, message?: string) => void;
+  getAttachmentExternalError: (attachmentId: string, field: AttachmentField) => string | undefined;
 }
 
 interface Props {
@@ -148,28 +173,40 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
   const [pagesWithErrors, setPagesWithErrors] = useState<Set<string>>(() => new Set(initialPagesWithErrors ?? []));
   const [pageErrorsByKey, setPageErrorsByKey] = useState<PageErrorsByKey>({});
   const [summaryScope, setSummaryScope] = useState<SummaryScope>(undefined);
+  const [externalAttachmentErrors, setExternalAttachmentErrors] = useState<Record<string, ExternalAttachmentError>>({});
 
   const computeErrors = useCallback(
-    (pageKey: string, components: Component[], activeSubmission: Submission | undefined): FieldError[] =>
-      deriveValidations(components, activeSubmission, submissionMethod).reduce<FieldError[]>(
+    (pageKey: string, components: Component[], activeSubmission: Submission | undefined): FieldError[] => {
+      const derivedErrors = deriveValidations(components, activeSubmission, submissionMethod).reduce<FieldError[]>(
         (acc, { submissionPath, field, rules, component }) => {
-          const violation =
-            component?.type === 'attachment' &&
-            submissionMethod !== 'paper' &&
-            submissionMethod !== 'papernocoverpage' &&
-            submissionMethod !== undefined
-              ? validateAttachmentComponent(component, field, activeSubmission, submissionMethod)
-              : validateValue(
-                  submissionUtils.getSubmissionValue(submissionPath, activeSubmission),
+          if (component?.type === 'attachment') {
+            validateAttachmentComponent(component, field, activeSubmission, submissionMethod).forEach(
+              ({ submissionPath: attachmentSubmissionPath, violation }) => {
+                acc.push({
+                  pageKey,
+                  submissionPath: attachmentSubmissionPath,
                   field,
-                  rules,
-                  currentLanguage,
-                  {
-                    allowTestTypes,
-                    submission: activeSubmission,
-                    submissionPath,
-                  },
-                );
+                  message: translate(getTranslationKey(violation.textKey), {
+                    ...violation.params,
+                    ...(typeof violation.params.field === 'string' && { field: translate(violation.params.field) }),
+                  }),
+                });
+              },
+            );
+            return acc;
+          }
+
+          const violation = validateValue(
+            submissionUtils.getSubmissionValue(submissionPath, activeSubmission),
+            field,
+            rules,
+            currentLanguage,
+            {
+              allowTestTypes,
+              submission: activeSubmission,
+              submissionPath,
+            },
+          );
           if (violation) {
             acc.push({
               pageKey,
@@ -184,8 +221,53 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
           return acc;
         },
         [],
-      ),
-    [allowTestTypes, currentLanguage, submissionMethod, translate],
+      );
+      const attachmentIds = new Set(
+        navFormUtils
+          .flattenComponents(components)
+          .filter((component) => component.type === 'attachment')
+          .map((component) => navFormUtils.getNavId(component))
+          .filter((attachmentId): attachmentId is string => !!attachmentId),
+      );
+      const uploadErrors = Object.values(externalAttachmentErrors)
+        .filter((error) =>
+          [...attachmentIds].some(
+            (attachmentId) => error.attachmentId === attachmentId || error.attachmentId.startsWith(`${attachmentId}-`),
+          ),
+        )
+        .map(({ attachmentId, field, message }) => ({
+          pageKey,
+          submissionPath: attachmentValidationPath(attachmentId, field),
+          field: '',
+          message,
+        }));
+
+      return [...derivedErrors, ...uploadErrors];
+    },
+    [allowTestTypes, currentLanguage, externalAttachmentErrors, submissionMethod, translate],
+  );
+
+  const setAttachmentExternalError = useCallback((attachmentId: string, field: AttachmentField, message?: string) => {
+    const key = attachmentValidationPath(attachmentId, field);
+    setExternalAttachmentErrors((previous) => {
+      if (!message) {
+        if (!(key in previous)) {
+          return previous;
+        }
+        const { [key]: _removedError, ...remainingErrors } = previous;
+        return remainingErrors;
+      }
+
+      const nextError = { attachmentId, field, message };
+      const currentError = previous[key];
+      return currentError?.message === message ? previous : { ...previous, [key]: nextError };
+    });
+  }, []);
+
+  const getAttachmentExternalError = useCallback(
+    (attachmentId: string, field: AttachmentField) =>
+      externalAttachmentErrors[attachmentValidationPath(attachmentId, field)]?.message,
+    [externalAttachmentErrors],
   );
 
   const getErrorsForPage = useCallback(
@@ -302,6 +384,8 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
       shouldShowSummaryForPage,
       shouldShowSummaryForSummaryPage,
       syncPageValidationState,
+      setAttachmentExternalError,
+      getAttachmentExternalError,
     }),
     [
       pagesWithErrors,
@@ -317,6 +401,8 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
       shouldShowSummaryForPage,
       shouldShowSummaryForSummaryPage,
       syncPageValidationState,
+      setAttachmentExternalError,
+      getAttachmentExternalError,
     ],
   );
 
@@ -325,5 +411,5 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
 
 const useValidation = () => useContext(ValidationContext);
 
-export { useValidation, ValidationProvider };
-export type { FieldError, ValidationContextType };
+export { attachmentValidationPath, useValidation, ValidationProvider };
+export type { AttachmentField, FieldError, ValidationContextType };

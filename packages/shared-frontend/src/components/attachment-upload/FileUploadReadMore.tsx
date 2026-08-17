@@ -1,13 +1,13 @@
 import { BodyShort, HStack, ReadMore } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useFyllutLanguage } from '../../context/fyllut/FyllutLanguageContext';
+import { useLanguage } from '../../context/language/LanguageContext';
 
 interface Props {
   maxTotalAttachmentSizeText?: string;
 }
 
 const FileUploadReadMore = ({ maxTotalAttachmentSizeText = '150 MB' }: Props) => {
-  const { translate } = useFyllutLanguage();
+  const { translate } = useLanguage();
 
   return (
     <ReadMore header={translate(TEXTS.statiske.attachment.sizeAndFormatHeader)}>

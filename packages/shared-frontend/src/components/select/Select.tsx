@@ -1,6 +1,13 @@
-import { Select as AkselSelect, UNSAFE_Combobox as Combobox } from '@navikt/ds-react';
+import {
+  Select as AkselSelect,
+  Checkbox,
+  CheckboxGroup,
+  UNSAFE_Combobox as Combobox,
+  Radio,
+  RadioGroup,
+} from '@navikt/ds-react';
 import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect, type ChangeEvent } from 'react';
+import { useEffect, type ChangeEvent, type ReactNode, type Ref } from 'react';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useStateField } from '../../context/state/useStateField';
 import { inputId } from '../../utils/inputId';
@@ -20,6 +27,11 @@ interface SelectProps extends BaseFieldProps {
   selectType?: SelectType;
   valueType?: SelectValueType;
   defaultValue?: string | ComponentValue;
+  presentation?: 'select' | 'radio' | 'checkbox';
+  value?: string;
+  onChange?: (value: string) => void;
+  error?: ReactNode;
+  inputRef?: Ref<HTMLFieldSetElement>;
 }
 
 const Select = ({
@@ -36,10 +48,16 @@ const Select = ({
   selectType = 'auto',
   valueType = 'value',
   defaultValue,
+  presentation = 'select',
+  value,
+  onChange,
+  error: controlledError,
+  inputRef,
 }: SelectProps) => {
   const { translate } = useLanguage();
   const { stateValue, error, setStateValue } = useStateField({ statePath });
-  const current = getCurrentValue(stateValue, valueType);
+  const current = value ?? getCurrentValue(stateValue, valueType);
+  const currentError = controlledError ?? error;
   const options = values.map(({ value, label: optionLabel }) => ({
     value,
     label: translate(optionLabel),
@@ -56,7 +74,7 @@ const Select = ({
   const renderedSelectType = resolveRenderedSelectType(selectType, options.length);
 
   useEffect(() => {
-    if (stateValue !== undefined || !defaultValue) {
+    if (value !== undefined || stateValue !== undefined || !defaultValue) {
       return;
     }
 
@@ -70,19 +88,66 @@ const Select = ({
     if (defaultOption) {
       setStateValue(getStateValue(defaultOption.value, valueType, options));
     }
-  }, [defaultValue, options, setStateValue, stateValue, valueType]);
+  }, [defaultValue, options, setStateValue, stateValue, value, valueType]);
 
-  const onToggleSelected = (value: string, selected: boolean) => {
-    setStateValue(getStateValue(selected ? value : '', valueType, options));
+  const setValue = (nextValue: string) => {
+    if (onChange) {
+      onChange(nextValue);
+      return;
+    }
+    setStateValue(getStateValue(nextValue, valueType, options));
   };
 
-  const onChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    setStateValue(getStateValue(event.target.value, valueType, options));
+  const onToggleSelected = (nextValue: string, selected: boolean) => {
+    setValue(selected ? nextValue : '');
+  };
+
+  const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    setValue(event.target.value);
   };
 
   return (
     <FormElementBox marginBottom={marginBottom}>
-      {renderedSelectType === 'select' ? (
+      {presentation === 'checkbox' && options.length === 1 ? (
+        <CheckboxGroup
+          id={inputId(statePath)}
+          legend={
+            <TranslatedLabel required={required} readOnly={readOnly} showOptionalText={!hideLabel}>
+              {label}
+            </TranslatedLabel>
+          }
+          description={<TranslatedDescription>{description}</TranslatedDescription>}
+          value={current === options[0]?.value ? [current] : []}
+          onChange={(selectedValues) => setValue(selectedValues[0] ?? '')}
+          error={currentError}
+          readOnly={readOnly}
+          ref={inputRef}
+        >
+          <Checkbox value={options[0]?.value ?? ''}>{options[0]?.label}</Checkbox>
+        </CheckboxGroup>
+      ) : presentation === 'radio' ? (
+        <RadioGroup
+          id={inputId(statePath)}
+          tabIndex={-1}
+          legend={
+            <TranslatedLabel required={required} readOnly={readOnly} showOptionalText={!hideLabel}>
+              {label}
+            </TranslatedLabel>
+          }
+          description={<TranslatedDescription>{description}</TranslatedDescription>}
+          value={current}
+          onChange={setValue}
+          error={currentError}
+          readOnly={readOnly}
+          ref={inputRef}
+        >
+          {options.map((option) => (
+            <Radio key={option.value} value={option.value}>
+              {option.label}
+            </Radio>
+          ))}
+        </RadioGroup>
+      ) : renderedSelectType === 'select' ? (
         <AkselSelect
           id={inputId(statePath)}
           label={
@@ -93,8 +158,8 @@ const Select = ({
           description={<TranslatedDescription>{description}</TranslatedDescription>}
           hideLabel={hideLabel}
           value={current}
-          onChange={onChange}
-          error={error}
+          onChange={handleSelectChange}
+          error={currentError}
           disabled={readOnly}
         >
           <option value="">{selectText ? translate(selectText) : ''}</option>
@@ -117,7 +182,7 @@ const Select = ({
           options={options}
           selectedOptions={selectedOptions}
           onToggleSelected={onToggleSelected}
-          error={error}
+          error={currentError}
           readOnly={readOnly}
           isMultiSelect={false}
           shouldAutocomplete

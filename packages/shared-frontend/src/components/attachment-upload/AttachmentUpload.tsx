@@ -9,17 +9,17 @@ import {
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { MutableRefObject, ReactNode } from 'react';
-import { useFyllutAppConfig } from '../../context/fyllut/FyllutAppConfigContext';
-import { useFyllutLanguage } from '../../context/fyllut/FyllutLanguageContext';
-import { useFormDefinition } from '../framework';
-import AttachmentOptionSelect from '../fyllut-components/AttachmentOptionSelect';
-import { AttachmentError, useAttachmentUpload } from './AttachmentUploadContext';
-import { attachmentValidator } from './attachmentValidation';
+import { useAppConfig } from '../../context/app-config/AppConfigContext';
+import { useAttachmentUpload } from '../../context/attachment-upload/AttachmentUploadContext';
+import { useFormDefinition } from '../../context/form-definition/FormDefinitionContext';
+import { useLanguage } from '../../context/language/LanguageContext';
+import AttachmentOptionSelect from './AttachmentOptionSelect';
 import FileUploader from './FileUploader';
 import FileUploadReadMore from './FileUploadReadMore';
+import useAttachmentValidation from './useAttachmentValidation';
 
 const setAttachmentRef = (
-  refs: Props['refs'] | SharedAttachmentUploadFieldProps['refs'],
+  refs: AttachmentUploadFieldProps['refs'] | AttachmentUploadProps['refs'],
   key: string,
   value: HTMLInputElement | HTMLFieldSetElement | HTMLButtonElement | null,
 ) => {
@@ -28,31 +28,35 @@ const setAttachmentRef = (
   }
 };
 
-interface Props {
+interface AttachmentUploadFieldProps {
   label: string;
+  required: boolean;
   attachmentValues?: AttachmentSettingValues | ComponentValue[];
-  componentId: string;
+  attachmentNavId: string;
   type?: Exclude<AttachmentType, 'other'>;
   description?: ReactNode;
   submissionAttachment?: SubmissionAttachment;
   onValueChange: (value?: Partial<SubmissionAttachmentValue>) => void;
-  error?: AttachmentError;
+  error?: string;
   refs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | HTMLButtonElement | null>>;
+  onUpload?: (attachment: SubmissionAttachment) => void;
 }
 
 const AttachmentUploadField = ({
   label,
+  required,
   attachmentValues,
-  componentId,
+  attachmentNavId,
   type = 'default',
   description,
   submissionAttachment,
   onValueChange,
   error,
   refs,
-}: Props) => {
-  const { submissionMethod } = useFyllutAppConfig();
-  const { translate } = useFyllutLanguage();
+  onUpload,
+}: AttachmentUploadFieldProps) => {
+  const { submissionMethod } = useAppConfig();
+  const { translate } = useLanguage();
   const { handleDeleteAllFilesForAttachment } = useAttachmentUpload();
   const { form } = useFormDefinition();
 
@@ -72,8 +76,9 @@ const AttachmentUploadField = ({
       ) : (
         <AttachmentOptionSelect
           title={label}
+          required={required}
           description={description}
-          error={error?.message}
+          error={error}
           value={
             submissionAttachment?.value
               ? {
@@ -83,11 +88,12 @@ const AttachmentUploadField = ({
               : undefined
           }
           attachmentValues={attachmentValues}
+          attachmentNavId={attachmentNavId}
           onChange={onValueChange}
           translate={translate}
           deadline={form.properties?.ettersendelsesfrist}
           submissionMethod={submissionMethod}
-          ref={(ref) => setAttachmentRef(refs, `${componentId}-VALUE`, ref)}
+          ref={(ref) => setAttachmentRef(refs, `${attachmentNavId}-VALUE`, ref)}
         />
       )}
       {uploadSelected && (
@@ -96,17 +102,18 @@ const AttachmentUploadField = ({
             <div>
               <Label>{translate(TEXTS.statiske.attachment.filesUploadedNotSent)}</Label>
               {uploadedAttachmentFiles.length > 1 && (
-                <Button variant="tertiary" onClick={() => handleDeleteAllFilesForAttachment(componentId)}>
+                <Button variant="tertiary" onClick={() => handleDeleteAllFilesForAttachment(attachmentNavId)}>
                   {translate(TEXTS.statiske.attachment.deleteAllFiles)}
                 </Button>
               )}
             </div>
           )}
           <FileUploader
-            initialAttachment={{ attachmentId: componentId, navId: componentId, type }}
+            initialAttachment={{ attachmentId: attachmentNavId, navId: attachmentNavId, type }}
             refs={refs}
             multiple
             readMore={<FileUploadReadMore />}
+            onUpload={onUpload}
           />
         </VStack>
       )}
@@ -114,53 +121,56 @@ const AttachmentUploadField = ({
   );
 };
 
-interface SharedAttachmentUploadFieldProps {
+interface AttachmentUploadProps {
   label: string;
+  required: boolean;
   attachmentValues?: AttachmentSettingValues | ComponentValue[];
-  componentId: string;
+  attachmentNavId: string;
   description?: ReactNode;
   type?: AttachmentType;
   refs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | HTMLButtonElement | null>>;
+  onUpload?: (attachment: SubmissionAttachment) => void;
 }
 
-const SharedAttachmentUploadField = ({
+const AttachmentUpload = ({
   label,
+  required,
   attachmentValues,
-  componentId,
+  attachmentNavId,
   description,
   type = 'default',
   refs,
-}: SharedAttachmentUploadFieldProps) => {
-  const { submissionAttachments, errors, changeAttachmentValue } = useAttachmentUpload();
-  const { translate } = useFyllutLanguage();
+  onUpload,
+}: AttachmentUploadProps) => {
+  const { submissionAttachments, changeAttachmentValue } = useAttachmentUpload();
+  const { getAttachmentError } = useAttachmentValidation(submissionAttachments);
 
-  const submissionAttachment = submissionAttachments.find((attachment) =>
-    attachment.attachmentId.startsWith(componentId),
-  );
-  const validator = attachmentValidator(translate, ['value']);
-  const attachmentError = errors[componentId]?.find((currentError) => currentError.type === 'VALUE');
+  const submissionAttachment = submissionAttachments.find((attachment) => attachment.navId === attachmentNavId);
+  const attachmentError = getAttachmentError(attachmentNavId, 'value');
 
   const handleValueChange = (value: Partial<SubmissionAttachmentValue> | undefined) => {
     changeAttachmentValue(
-      submissionAttachment ?? { attachmentId: componentId, navId: componentId, type },
+      submissionAttachment ?? { attachmentId: attachmentNavId, navId: attachmentNavId, type },
       value ? { value: value.key, additionalDocumentation: value.additionalDocumentation } : {},
-      validator,
     );
   };
 
   return (
     <AttachmentUploadField
       label={label}
+      required={required}
       description={description}
       attachmentValues={attachmentValues}
-      componentId={componentId}
+      attachmentNavId={attachmentNavId}
       type={type as Exclude<AttachmentType, 'other'>}
       submissionAttachment={submissionAttachment}
       onValueChange={handleValueChange}
       error={attachmentError}
       refs={refs}
+      onUpload={onUpload}
     />
   );
 };
 
-export default SharedAttachmentUploadField;
+export default AttachmentUpload;
+export type { AttachmentUploadProps };

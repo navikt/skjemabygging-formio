@@ -3,9 +3,9 @@ import { en, nb, nn } from '@navikt/ds-react/locales';
 import { Form, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import { useLocation } from 'react-router';
+import { AttachmentUploadProvider } from '../context/attachment-upload/AttachmentUploadContext';
 import { FyllutAppConfig, FyllutAppConfigProvider, useFyllutAppConfig } from '../context/fyllut/FyllutAppConfigContext';
 import { FyllutLanguage, FyllutLanguageProvider } from '../context/fyllut/FyllutLanguageContext';
-import { AttachmentUploadProvider } from './attachment-upload/AttachmentUploadContext';
 import FormLanguageSelector from './FormLanguageSelector';
 import {
   AppConfigProvider,

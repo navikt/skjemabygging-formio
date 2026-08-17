@@ -1,4 +1,4 @@
-import { Alert, BodyShort, Label, Textarea } from '@navikt/ds-react';
+import { Alert, BodyShort, Label } from '@navikt/ds-react';
 import {
   AttachmentSettingValues,
   attachmentUtils,
@@ -7,11 +7,13 @@ import {
   SubmissionMethod,
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { ChangeEvent, forwardRef, ReactNode, useEffect } from 'react';
-import SingleSelect from './SingleSelect';
+import { forwardRef, ReactNode, useEffect } from 'react';
+import Select from '../select/Select';
+import TextArea from '../text-area/TextArea';
 
 interface Props {
   title: ReactNode;
+  required: boolean;
   description: ReactNode;
   error?: ReactNode;
   value?: Partial<SubmissionAttachmentValue>;
@@ -21,11 +23,25 @@ interface Props {
   deadline?: string;
   className?: string;
   submissionMethod?: SubmissionMethod;
+  attachmentNavId: string;
 }
 
 const AttachmentOptionSelect = forwardRef<HTMLFieldSetElement, Props>(
   (
-    { attachmentValues, value, title, description, error, onChange, translate, deadline, className, submissionMethod },
+    {
+      attachmentValues,
+      value,
+      title,
+      required,
+      description,
+      error,
+      onChange,
+      translate,
+      deadline,
+      className,
+      submissionMethod,
+      attachmentNavId,
+    },
     ref,
   ) => {
     const values = attachmentUtils.mapKeysToOptions(attachmentValues, translate, submissionMethod);
@@ -62,12 +78,12 @@ const AttachmentOptionSelect = forwardRef<HTMLFieldSetElement, Props>(
       );
     };
 
-    const handleAdditionalDocumentationChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-      if (!selectedValueKey || event.currentTarget.value.length > 200) {
+    const handleAdditionalDocumentationChange = (additionalDocumentationValue: string) => {
+      if (!selectedValueKey || additionalDocumentationValue.length > 200) {
         return;
       }
 
-      onChange({ key: selectedValueKey, additionalDocumentation: event.currentTarget.value });
+      onChange({ key: selectedValueKey, additionalDocumentation: additionalDocumentationValue });
     };
 
     return (
@@ -78,20 +94,22 @@ const AttachmentOptionSelect = forwardRef<HTMLFieldSetElement, Props>(
             <BodyShort>{description}</BodyShort>
           </div>
         ) : (
-          <SingleSelect
+          <Select
+            statePath={`attachments.${attachmentNavId}.value`}
+            label={typeof title === 'string' ? title : ''}
+            required={required}
+            description={typeof description === 'string' ? description : undefined}
             values={values}
             value={selectedValueKey ?? ''}
-            title={title}
-            description={description}
             error={error}
             onChange={handleAttachmentChange}
-            ref={ref}
-            className="mb-4"
+            presentation={values.length === 1 ? 'checkbox' : 'radio'}
+            inputRef={ref}
           />
         )}
         {additionalDocumentation?.enabled && (
-          <Textarea
-            className="mb-4"
+          <TextArea
+            statePath={`attachments.${attachmentNavId}.additionalDocumentation`}
             label={translate(additionalDocumentation.label)}
             value={selectedValueKey === value?.key ? (value?.additionalDocumentation ?? '') : ''}
             description={translate(additionalDocumentation.description)}

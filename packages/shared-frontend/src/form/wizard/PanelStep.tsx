@@ -1,5 +1,5 @@
-import { Form, navFormUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect } from 'react';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { useEffect, useRef } from 'react';
 import { useLocation, useParams } from 'react-router';
 import { useFyllutAppConfig } from '../../context/fyllut/FyllutAppConfigContext';
 import { useFyllutLanguage } from '../../context/fyllut/FyllutLanguageContext';
@@ -15,10 +15,9 @@ import {
   useValidation,
   useWizardController,
 } from '../framework';
-import { ATTACHMENTS_KEY } from './constants';
 import { useWizardNavigation } from './useWizardNavigation';
 
-const PanelStep = ({ form }: { form: Form }) => {
+const PanelStep = () => {
   const { translate } = useFyllutLanguage();
   const { submissionMethod } = useFyllutAppConfig();
   const { panelSlug } = useParams<{ panelSlug?: string }>();
@@ -27,14 +26,23 @@ const PanelStep = ({ form }: { form: Form }) => {
   const { syncPageValidationState, validatePages } = useValidation();
   const { currentPanel, components, isFirst, isLast, goToNext, panels, currentIndex } = useWizardController(panelSlug);
   const { goToIntro, goToPanel, goToSummary, goToError } = useWizardNavigation('panel');
+  const previousPanelKeys = useRef<string[]>(panels.map((panel) => panel.key));
   const nextLabel =
     submissionMethod === 'digital' ? TEXTS.grensesnitt.navigation.saveAndContinue : TEXTS.grensesnitt.navigation.next;
 
   useEffect(() => {
     if (panels.length > 0 && panelSlug && !panels.some((panel) => panel.key === panelSlug)) {
-      goToPanel(panels[0].key, { redirect: true });
+      const previousIndex = previousPanelKeys.current.indexOf(panelSlug);
+      const fallbackIndex = previousIndex >= 0 ? Math.min(previousIndex, panels.length - 1) : 0;
+      goToPanel(panels[fallbackIndex]?.key, { redirect: true });
+    } else if (panels.length === 0 && panelSlug) {
+      goToSummary({ redirect: true });
     }
-  }, [goToPanel, panelSlug, panels]);
+  }, [goToPanel, goToSummary, panelSlug, panels]);
+
+  useEffect(() => {
+    previousPanelKeys.current = panels.map((panel) => panel.key);
+  }, [panels]);
 
   useEffect(() => {
     if (currentPanel) {
@@ -79,10 +87,6 @@ const PanelStep = ({ form }: { form: Form }) => {
       return;
     }
     if (isLast) {
-      if (navFormUtils.hasAttachment(form)) {
-        goToPanel(ATTACHMENTS_KEY);
-        return;
-      }
       const validationPages = panels.map((panel) => ({ pageKey: panel.key, components: panel.components ?? [] }));
       goToSummary({ validationErrorPages: validatePages(validationPages) });
       return;

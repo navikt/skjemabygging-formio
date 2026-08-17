@@ -337,6 +337,15 @@ const getActiveComponentsFromForm = (form: Form, submission?: Submission): Compo
   return getActiveComponents(panels, conditionals);
 };
 
+// Includes every active top-level panel in authored order. Unlike the legacy helpers above,
+// attachment panels are not treated as a separate navigation/rendering concern.
+const getAllActivePanelsFromForm = (form: Form, submission?: Submission): Panel[] => {
+  const conditionals = formSummaryUtils.mapAndEvaluateConditionals(form, submission ?? { data: {} });
+  const panels = form.components.filter((component): component is Panel => component.type === 'panel');
+
+  return getActiveComponents(panels, conditionals) as Panel[];
+};
+
 const getActiveComponents = (components: Component[], conditionals?: any): Component[] => {
   return components
     .filter((component) => conditionals[formSummaryUtils.createComponentKeyWithNavId(component)] !== false)
@@ -418,6 +427,7 @@ const navFormUtils = {
   enrichComponentsWithNavIds,
   getActivePanelsFromForm,
   getActiveComponentsFromForm,
+  getAllActivePanelsFromForm,
   getActiveAttachmentPanelFromForm,
   getAttachmentPanel,
   hasAttachment,

@@ -1,7 +1,7 @@
 import { FileItem, FileObject, FileUpload, Label, VStack } from '@navikt/ds-react';
 import { TEXTS, UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
-import { useFyllutLanguage } from '../../context/fyllut/FyllutLanguageContext';
-import { getFileValidationError, useAttachmentUpload } from './AttachmentUploadContext';
+import { getFileValidationError } from '../../context/attachment-upload/AttachmentUploadContext';
+import { useLanguage } from '../../context/language/LanguageContext';
 
 interface Props {
   label?: string;
@@ -20,8 +20,7 @@ const FilesPreview = ({
   onDownloadFileItem,
   translationParams,
 }: Props) => {
-  const { translate } = useFyllutLanguage();
-  const { errors } = useAttachmentUpload();
+  const { translate } = useLanguage();
   const fileItems = [...uploaded, ...inProgress];
 
   return (
@@ -48,7 +47,6 @@ const FilesPreview = ({
                   action: 'delete',
                   onClick: () => onDeleteFileItem(fileId, { name: fileName, size }),
                 }}
-                error={errors[fileId]?.[0]?.message ? translate(errors[fileId][0].message) : undefined}
               />
             ))}
             {inProgress.map((file) => (

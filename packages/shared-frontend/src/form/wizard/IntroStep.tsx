@@ -1,9 +1,8 @@
-import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { useFormDefinition } from '../framework';
 import IntroPage from '../IntroPage';
 import { useWizardNavigation } from './useWizardNavigation';
 
-const IntroStep = ({ form: _form }: { form: Form }) => {
+const IntroStep = () => {
   const { panels } = useFormDefinition();
   const { goToPanel } = useWizardNavigation('intro');
 

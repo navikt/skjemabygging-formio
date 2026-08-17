@@ -1,8 +1,8 @@
-import { Form, navFormUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router';
 import { FormHeader, FormStepper, StepperProvider } from '../framework';
-import { ATTACHMENTS_KEY, INTRO_KEY, SUMMARY_KEY } from './constants';
+import { INTRO_KEY, SUMMARY_KEY } from './constants';
 import { consumeStepperOpenState } from './stepperOpenState';
 
 interface Props {
@@ -51,10 +51,7 @@ const WizardStepContent = ({ form, activeIndex, pageTitle, onStepClick, children
   const { pathname, hash, state } = useLocation();
   const previousPathname = useRef<string | undefined>(undefined);
   const locationState = typeof state === 'object' && state ? (state as Record<string, unknown>) : undefined;
-  const trailingSteps = [
-    ...(navFormUtils.hasAttachment(form) ? [{ key: ATTACHMENTS_KEY, label: TEXTS.statiske.attachment.title }] : []),
-    { key: SUMMARY_KEY, label: TEXTS.statiske.summaryPage.title },
-  ];
+  const trailingSteps = [{ key: SUMMARY_KEY, label: TEXTS.statiske.summaryPage.title }];
   const [isStepperOpen, setIsStepperOpen] = useState(() => {
     const persistedStepperOpen = consumeStepperOpenState();
     return locationState?.stepperOpen === true || persistedStepperOpen;

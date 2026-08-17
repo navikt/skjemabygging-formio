@@ -1,16 +1,10 @@
 import { Alert, Heading } from '@navikt/ds-react';
-import {
-  navFormUtils,
-  Panel,
-  PanelValidation,
-  submissionTypesUtils,
-  TEXTS,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { navFormUtils, PanelValidation, submissionTypesUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo } from 'react';
+import { useAttachmentUpload } from '../context/attachment-upload/AttachmentUploadContext';
 import { useFyllutAppConfig } from '../context/fyllut/FyllutAppConfigContext';
 import { useFyllutLanguage } from '../context/fyllut/FyllutLanguageContext';
 import { inputId } from '../utils/inputId';
-import { useAttachmentUpload } from './attachment-upload/AttachmentUploadContext';
 import {
   CancelAndDeleteButton,
   FormButtonRow,
@@ -38,13 +32,12 @@ interface Props {
 const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
   const appConfig = useFyllutAppConfig();
   const { translate, currentLanguage } = useFyllutLanguage();
-  const { form, activeComponents } = useFormDefinition();
+  const { form, activeComponents, panels } = useFormDefinition();
   const { submission } = useSubmissionState();
   const { getErrorsForPages, validatePages } = useValidation();
   const { submit, status, error, canSubmit, canSaveDraft } = useFormPersistence();
   const { handleDownloadFile } = useAttachmentUpload();
-  const attachmentPanel = navFormUtils.getActiveAttachmentPanelFromForm(form, submission);
-  const activePanels = navFormUtils.getActivePanelsFromForm(form, submission);
+  const attachmentPanel = panels.find(navFormUtils.isVedleggspanel);
   const isNoSubmissionFlow =
     (!appConfig.submissionMethod || appConfig.submissionMethod === 'papernocoverpage') &&
     submissionTypesUtils.isPaperNoCoverPageSubmission(form.properties.submissionTypes);
@@ -53,11 +46,8 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
       ? [...activeComponents, ...(attachmentPanel ? [attachmentPanel] : [])]
       : activeComponents;
   const validationPages = useMemo(
-    () => [
-      ...activePanels.map((panel: Panel) => ({ pageKey: panel.key, components: panel.components ?? [] })),
-      ...(attachmentPanel ? [{ pageKey: attachmentPanel.key, components: attachmentPanel.components ?? [] }] : []),
-    ],
-    [activePanels, attachmentPanel],
+    () => panels.map((panel) => ({ pageKey: panel.key, components: panel.components ?? [] })),
+    [panels],
   );
   const validationErrors = getErrorsForPages(validationPages);
   const panelValidationList = useMemo<PanelValidation[]>(

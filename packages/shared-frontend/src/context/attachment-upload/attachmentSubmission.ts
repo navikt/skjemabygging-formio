@@ -1,6 +1,6 @@
 import { FileObject } from '@navikt/ds-react';
 import { Submission, SubmissionAttachment, UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
-import { Dispatch, SetStateAction } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
 import { validateTotalFilesSize } from './attachmentValidation';
 import { MAX_TOTAL_SIZE_ATTACHMENT_FILES_BYTES } from './fileUploadConfig';
 

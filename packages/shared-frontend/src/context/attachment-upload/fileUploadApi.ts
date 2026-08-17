@@ -1,5 +1,5 @@
-import { UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
-import { FyllutHttp } from '../../context/fyllut/FyllutAppConfigContext';
+import type { UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
+import type { FyllutHttp } from '../fyllut/FyllutAppConfigContext';
 import { normalizeAttachmentDownloadBlob } from './attachmentUploadUtils';
 
 type ApplicationType = 'nologin' | 'digital';

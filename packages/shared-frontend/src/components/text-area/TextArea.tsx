@@ -11,6 +11,8 @@ import { BaseFieldProps } from '../types';
 interface TextAreaProps extends BaseFieldProps {
   label: string;
   maxLength?: number;
+  value?: string;
+  onChange?: (value: string) => void;
 }
 
 const TextArea = ({
@@ -20,14 +22,20 @@ const TextArea = ({
   required = true,
   readOnly,
   maxLength,
+  value: controlledValue,
+  onChange: controlledOnChange,
   readMore,
   marginBottom,
 }: TextAreaProps) => {
   const { stateValue, error, setStateValue } = useStateField({ statePath });
-  const value = typeof stateValue === 'string' ? stateValue : '';
+  const value = controlledOnChange ? (controlledValue ?? '') : typeof stateValue === 'string' ? stateValue : '';
 
   const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    setStateValue(event.target.value);
+    if (controlledOnChange) {
+      controlledOnChange(event.target.value);
+    } else {
+      setStateValue(event.target.value);
+    }
   };
 
   return (
