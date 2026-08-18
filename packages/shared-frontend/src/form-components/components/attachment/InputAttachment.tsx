@@ -1,4 +1,4 @@
-import { attachmentUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { attachmentUtils, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import AttachmentUpload from '../../../components/attachment-upload/AttachmentUpload';
 import OtherAttachmentUpload from '../../../components/attachment-upload/OtherAttachmentUpload';
 import Attachment from '../../../components/attachment/Attachment';
@@ -27,7 +27,7 @@ const InputAttachment = ({ component, submissionPath }: InputComponentProps) => 
       required: isRequired(component),
       description: component.description ? translate(component.description) : undefined,
       attachmentValues: component.attachmentValues ?? component.values,
-      attachmentNavId: component.navId ?? component.key,
+      attachmentNavId: navFormUtils.getNavId(component) ?? component.key,
       onUpload: (attachment) => {
         void logEvent?.({
           name: 'last opp',

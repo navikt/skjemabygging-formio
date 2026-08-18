@@ -147,26 +147,31 @@ const FormDefinitionProvider = ({ children, form }: Props) => {
         .map((component) => navFormUtils.getNavId(component))
         .filter((attachmentId): attachmentId is string => !!attachmentId),
     );
-    const hiddenAttachmentIds = new Set(
-      flattenComponentsWithBaseSubmissionPath(formWithBaseSubmissionPath.components)
-        .filter((component) => component.type === 'attachment' && component.clearOnHide !== false)
-        .map((component) => navFormUtils.getNavId(component))
-        .filter((attachmentId): attachmentId is string => !!attachmentId)
-        .filter((attachmentId) => !activeAttachmentIds.has(attachmentId)),
-    );
-    if (hiddenAttachmentIds.size > 0) {
-      setSubmission((current) => {
-        const attachments = current?.attachments;
-        if (!attachments) {
-          return current;
-        }
+    setSubmission((current) => {
+      const attachments = current?.attachments;
+      if (!attachments) {
+        return current;
+      }
 
-        const visibleAttachments = attachments.filter((attachment) => !hiddenAttachmentIds.has(attachment.navId));
-        return visibleAttachments.length === attachments.length
-          ? current
-          : { ...current, attachments: visibleAttachments };
-      });
-    }
+      const visibleAttachments = attachments
+        .filter((attachment) => attachment.attachmentId === 'personal-id' || activeAttachmentIds.has(attachment.navId))
+        .filter(
+          (attachment) =>
+            attachment.value !== undefined ||
+            !!attachment.title?.trim() ||
+            !!attachment.additionalDocumentation?.trim() ||
+            (attachment.files?.length ?? 0) > 0,
+        )
+        .filter(
+          (attachment, index, list) =>
+            index === list.findIndex((candidate) => candidate.attachmentId === attachment.attachmentId),
+        );
+
+      return visibleAttachments.length === attachments.length &&
+        visibleAttachments.every((attachment, index) => attachment === attachments[index])
+        ? current
+        : { ...current, attachments: visibleAttachments };
+    });
   }, [activeComponents, panels, clearSubmissionPaths, formWithBaseSubmissionPath.components, setSubmission]);
 
   const value = useMemo(
