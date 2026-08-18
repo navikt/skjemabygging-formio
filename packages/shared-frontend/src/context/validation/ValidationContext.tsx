@@ -70,15 +70,6 @@ const validateAttachmentComponent = (
           violation: { textKey: 'fileMissing', params: { field } },
         });
       }
-      if (component.attachmentType === 'other' && !attachment.title?.trim()) {
-        violations.push({
-          submissionPath: attachmentValidationPath(attachment.attachmentId, 'title'),
-          violation: {
-            textKey: TEXTS.validering.required,
-            params: { field: TEXTS.statiske.attachment.attachmentTitle },
-          },
-        });
-      }
     });
 
   return violations;

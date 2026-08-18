@@ -466,7 +466,10 @@ describe('Digital submission without user login', () => {
           cy.findByRole('link', { name: 'Du må fylle ut: Gi vedlegget et beskrivende navn' }).should('exist');
         });
         cy.findByRole('textbox', { name: 'Gi vedlegget et beskrivende navn' }).type('Vitnemål');
-        cy.get('[data-cy=error-summary]').should('not.exist');
+        cy.get('[data-cy=error-summary]').within(() => {
+          cy.findAllByRole('link').should('have.length', 1);
+          cy.findByRole('link', { name: 'Du må laste opp fil: Annen dokumentasjon' }).should('exist');
+        });
         cy.findByRole('button', { name: 'Velg fil' }).click();
         cy.uploadFile('small-file.txt', { id: 'en5h1c' });
         cy.findByRole('button', { name: 'Legg til nytt vedlegg' }).click();

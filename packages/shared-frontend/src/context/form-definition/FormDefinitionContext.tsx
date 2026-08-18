@@ -141,8 +141,8 @@ const FormDefinitionProvider = ({ children, form }: Props) => {
       clearSubmissionPaths(hiddenPathsToClear);
     }
 
-    const activeAttachmentIds = new Set(
-      flattenComponentsWithBaseSubmissionPath([...activeComponents, ...panels])
+    const attachmentIds = new Set(
+      flattenComponentsWithBaseSubmissionPath(formWithBaseSubmissionPath.components)
         .filter((component) => component.type === 'attachment')
         .map((component) => navFormUtils.getNavId(component))
         .filter((attachmentId): attachmentId is string => !!attachmentId),
@@ -154,7 +154,7 @@ const FormDefinitionProvider = ({ children, form }: Props) => {
       }
 
       const visibleAttachments = attachments
-        .filter((attachment) => attachment.attachmentId === 'personal-id' || activeAttachmentIds.has(attachment.navId))
+        .filter((attachment) => attachment.attachmentId === 'personal-id' || attachmentIds.has(attachment.navId))
         .filter(
           (attachment) =>
             attachment.value !== undefined ||

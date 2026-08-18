@@ -97,7 +97,7 @@ describe('ValidationContext', () => {
     );
   });
 
-  it('assigns attachment choice, file, and title errors to their upload controls', () => {
+  it('assigns attachment choice and file errors to their upload controls', () => {
     const attachmentComponents = [
       {
         key: 'documentation',
@@ -169,9 +169,7 @@ describe('ValidationContext', () => {
     expect(container.querySelector('[data-testid="attachment-file-error"]')?.textContent).toBe(
       'Du må laste opp fil: Documentation',
     );
-    expect(container.querySelector('[data-testid="attachment-title-error"]')?.textContent).toBe(
-      'Du må fylle ut: Gi vedlegget et beskrivende navn',
-    );
+    expect(container.querySelector('[data-testid="attachment-title-error"]')?.textContent).toBe('');
   });
 
   it('validates required paper attachments through their submission path', () => {

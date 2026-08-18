@@ -473,7 +473,7 @@ describe('Mellomlagring v2', () => {
             expect(submission.data['datagrid']).to.deep.eq([{ tekstfelt: 'Hoppeslott' }, { tekstfelt: 'Hund' }]);
             expect(submission.data['datagrid1']).to.be.undefined;
             expect(submission.data['hvaSyntesDuOmFrokosten']).to.be.undefined;
-            req.reply(201);
+            req.continue();
           });
         });
 
