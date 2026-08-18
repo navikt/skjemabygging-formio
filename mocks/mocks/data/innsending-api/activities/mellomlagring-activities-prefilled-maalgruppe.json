@@ -21,6 +21,11 @@
       "language": "nb-NO",
       "data": {
         "data": {
+          "dineOpplysninger": {
+            "identitet": {
+              "identitetsnummer": "08842748500"
+            }
+          },
           "container": {
             "maalgruppe": {
               "calculated": {
@@ -52,8 +57,19 @@
           "onLine": true
         },
         "state": "submitted",
-        "_vnote": ""
-      }
+        "_vnote": "",
+        "selfDeclaration": true
+      },
+      "attachments": [
+        {
+          "attachmentId": "efcvrf",
+          "navId": "efcvrf",
+          "type": "other",
+          "value": "ettersender",
+          "title": "Annet",
+          "files": []
+        }
+      ]
     }
   },
   "innsendingsId": "fb47c474-66c1-46ba-8124-723447a79e83",

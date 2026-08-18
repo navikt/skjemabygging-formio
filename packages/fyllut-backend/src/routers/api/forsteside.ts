@@ -22,7 +22,7 @@ const forsteside = {
       }
       const forsteside = await validateForstesideRequest(requestBody);
       const response = await forstesideRequest(req, JSON.stringify(forsteside));
-      logForsteside(req.body, response, {
+      logForsteside(requestBody, response, {
         fyllutRequestPath: req.path,
       });
       appMetrics.paperSubmissionsCounter.inc({ source: resolveSource(requestBody.foerstesidetype) });

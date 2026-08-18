@@ -1,10 +1,11 @@
+import { SubmitApplicationRequest, SubmitApplicationResponse } from '@navikt/skjemadigitalisering-shared-backend';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import nock from 'nock';
 import request from 'supertest';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createApp } from './app';
 import { config } from './config/config';
 import { createNologinToken, setupAzureTokenMocks, setupTokenMocks } from './test/integrationTestHelpers';
-import { SubmitApplicationRequest, SubmitApplicationResponse } from './types/sendinn/sendinn';
 import { base64Decode } from './utils/base64';
 
 vi.mock('./dekorator', () => ({
@@ -106,6 +107,40 @@ describe('Fyllut backend :: submit application', () => {
       sendInnScope.done();
     },
   );
+
+  it('returns nologin temporarily unavailable userMessage when upstream submit is unavailable', async () => {
+    const innsendingsId = '21ed0008-ec72-4c90-8b44-165d3c265da9';
+    const applicationData = createApplicationData();
+    const mockFormData = createMockFormData(38);
+    const tokenSetup = await submitApplicationTestCases[1].setupTokens(innsendingsId);
+
+    const formScope = nock(formsApiUrl).get('/v1/forms/nav123456').query(true).reply(200, mockFormData);
+    const pdfGeneratorScope = nock(familiePdfGeneratorUrl).post('/api/pdf/v3/opprett-pdf').reply(200, {
+      content: encodedSoknadPdf,
+    });
+    const globalTranslationsScope = nock(formsApiUrl).get('/v1/global-translations').query(true).reply(200, []);
+    const formTranslationsScope = nock(formsApiUrl).get('/v1/forms/nav123456/translations').query(true).reply(200, []);
+    const sendInnScope = nock(sendInnConfig.host)
+      .post('/v1/application-nologin/21ed0008-ec72-4c90-8b44-165d3c265da9')
+      .reply(503, { message: 'NOLOGIN is not available', errorCode: 'temporarilyUnavailable' });
+
+    const res = await request(createApp())
+      .post('/fyllut/api/send-inn/nologin-application')
+      .send(applicationData)
+      .set(tokenSetup.headers);
+
+    expect(res.status).toBe(503);
+    expect(res.body.errorCode).toBe('SERVICE_UNAVAILABLE');
+    expect(res.body.message).toBe('NOLOGIN is not available');
+    expect(res.body.userMessage).toBe(TEXTS.statiske.nologin.temporarilyUnavailable);
+
+    tokenSetup.assertDone();
+    formScope.done();
+    globalTranslationsScope.done();
+    formTranslationsScope.done();
+    pdfGeneratorScope.done();
+    sendInnScope.done();
+  });
 });
 
 const createMockFormData = (revision: number) => ({

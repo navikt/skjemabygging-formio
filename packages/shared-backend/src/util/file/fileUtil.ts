@@ -1,5 +1,11 @@
-import fs from 'node:fs';
+import { ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
+import fs, { openAsBlob } from 'node:fs';
+import { realpath } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
 import { logger } from '../../shared/logger/logger';
+
+const uploadTempDirectory = path.resolve(tmpdir());
 
 const readFile = async (filepath: string) => {
   const fileHandle = await fs.promises.open(filepath, 'r');
@@ -37,7 +43,35 @@ const loadAllJsonFilesFromDirectory = async (dir?: string) => {
   return [];
 };
 
+const createBlobFromUploadedFile = async (
+  file: Pick<Express.Multer.File, 'buffer' | 'mimetype'> & { path?: Express.Multer.File['path'] },
+) => {
+  if (file.path) {
+    const resolvedUploadTempDirectory = await realpath(uploadTempDirectory);
+    const candidateFilePath = path.resolve(resolvedUploadTempDirectory, file.path);
+    const candidateRelativeFilePath = path.relative(resolvedUploadTempDirectory, candidateFilePath);
+    if (candidateRelativeFilePath.startsWith('..') || path.isAbsolute(candidateRelativeFilePath)) {
+      throw new ResponseError('BAD_REQUEST', 'Invalid temporary upload path');
+    }
+
+    const resolvedFilePath = await realpath(candidateFilePath);
+    const relativeFilePath = path.relative(resolvedUploadTempDirectory, resolvedFilePath);
+    if (relativeFilePath.startsWith('..') || path.isAbsolute(relativeFilePath)) {
+      throw new ResponseError('BAD_REQUEST', 'Invalid temporary upload path');
+    }
+
+    return await openAsBlob(resolvedFilePath, { type: file.mimetype });
+  }
+
+  if (!file.buffer) {
+    throw new ResponseError('BAD_REQUEST', 'No file in request');
+  }
+
+  return new Blob([Uint8Array.from(file.buffer)], { type: file.mimetype });
+};
+
 const fileUtil = {
+  createBlobFromUploadedFile,
   loadAllJsonFilesFromDirectory,
   loadJsonFileFromDirectory,
 };

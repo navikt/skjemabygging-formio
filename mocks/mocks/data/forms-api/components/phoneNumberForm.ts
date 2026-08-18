@@ -47,6 +47,19 @@ const phoneNumberForm = () => {
   });
 };
 
-const phoneNumberTranslations = () => getMockTranslationsFromForm(phoneNumberForm());
+const phoneNumberTranslations = () => {
+  const translations = getMockTranslationsFromForm(phoneNumberForm());
+
+  return {
+    ...translations,
+    data: {
+      ...translations.data,
+      i18n: {
+        ...translations.data.i18n,
+        Telefonnummer: 'Telefonnummer (en)',
+      },
+    },
+  };
+};
 
 export { phoneNumberForm, phoneNumberTranslations };
