@@ -173,4 +173,56 @@ describe('ValidationContext', () => {
       'Du må fylle ut: Gi vedlegget et beskrivende navn',
     );
   });
+
+  it('validates required paper attachments through their submission path', () => {
+    const attachmentComponents = [
+      {
+        key: 'documentation',
+        label: 'Documentation',
+        input: true,
+        type: 'attachment',
+        validate: { required: true },
+      },
+    ] as unknown as Component[];
+
+    const AttachmentValidationHarness = () => {
+      const { getError, validatePages } = useValidation();
+
+      return (
+        <>
+          <button
+            type="button"
+            onClick={() => validatePages([{ pageKey: 'attachments', components: attachmentComponents }])}
+          >
+            Validate attachments
+          </button>
+          <span data-testid="attachment-value-error">
+            {getError('documentation', 'attachments', attachmentComponents) ?? ''}
+          </span>
+        </>
+      );
+    };
+
+    act(() => {
+      root.render(
+        <AppConfigProvider submissionMethod="paper">
+          <LanguageProvider translate={translate} currentLanguage="nb">
+            <SubmissionStateProvider initialSubmission={{ data: {} }}>
+              <ValidationProvider>
+                <AttachmentValidationHarness />
+              </ValidationProvider>
+            </SubmissionStateProvider>
+          </LanguageProvider>
+        </AppConfigProvider>,
+      );
+    });
+
+    act(() => {
+      (container.querySelector('button') as HTMLButtonElement).click();
+    });
+
+    expect(container.querySelector('[data-testid="attachment-value-error"]')?.textContent).toBe(
+      'Du må fylle ut: Documentation',
+    );
+  });
 });

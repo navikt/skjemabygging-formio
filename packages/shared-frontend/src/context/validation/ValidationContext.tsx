@@ -179,7 +179,10 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
     (pageKey: string, components: Component[], activeSubmission: Submission | undefined): FieldError[] => {
       const derivedErrors = deriveValidations(components, activeSubmission, submissionMethod).reduce<FieldError[]>(
         (acc, { submissionPath, field, rules, component }) => {
-          if (component?.type === 'attachment') {
+          if (
+            component?.type === 'attachment' &&
+            (submissionMethod === 'digital' || submissionMethod === 'digitalnologin')
+          ) {
             validateAttachmentComponent(component, field, activeSubmission, submissionMethod).forEach(
               ({ submissionPath: attachmentSubmissionPath, violation }) => {
                 acc.push({
