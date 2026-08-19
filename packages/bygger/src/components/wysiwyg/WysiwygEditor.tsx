@@ -1,6 +1,6 @@
 import { FieldsetErrorMessage, htmlUtils, makeStyles } from '@navikt/skjemadigitalisering-shared-components';
 import clsx from 'clsx';
-import { forwardRef, useState } from 'react';
+import { forwardRef, useRef, useState } from 'react';
 import {
   BtnBold,
   BtnBulletList,
@@ -31,16 +31,14 @@ const useStyles = makeStyles({
 
 interface Props {
   defaultValue?: string;
-  onBlur: (value: string) => void;
+  onValueCommit: (value: string) => void;
   defaultTag?: 'p' | 'div';
   error?: string | boolean;
   autoFocus?: boolean;
 }
 
 const WysiwygEditor = forwardRef<HTMLDivElement, Props>(
-  ({ defaultValue, onBlur, defaultTag = 'p', error, autoFocus }, ref) => {
-    const [htmlValue, setHtmlValue] = useState(defaultValue ?? '');
-
+  ({ defaultValue, onValueCommit, defaultTag = 'p', error, autoFocus }, ref) => {
     const styles = useStyles();
 
     const { isHtmlString, groupLonelySiblings, sanitizeHtmlString, removeEmptyTags, removeTags, extractTextContent } =
@@ -63,6 +61,16 @@ const WysiwygEditor = forwardRef<HTMLDivElement, Props>(
     ].filter((tag) => tag !== defaultTag);
     const removeUnwantedTags = (html: string) => removeTags(html, unwantedTags);
     const removeDivs = (html: string) => removeTags(html, ['div']);
+    const normalizeHtml = (html: string) => {
+      const sanitizedHtml = removeEmptyTags(sanitizeHtmlString(html, { FORBID_ATTR: ['style'] }));
+      // Apply removeUnwantedTags, then wrap top level text nodes (+ a, b and strong tags) in <p>
+      // Then, remove divs in case they were not removed by removeUnwantedTags
+      const reorganizedHtml = removeDivs(groupLonelySiblings(removeUnwantedTags(sanitizedHtml)));
+      return extractTextContent(reorganizedHtml).trim() === '' ? '' : reorganizedHtml;
+    };
+
+    const [htmlValue, setHtmlValue] = useState(defaultValue ?? '');
+    const lastCommittedValue = useRef(normalizeHtml(defaultValue ?? ''));
 
     const handleChange = (event) => {
       const value = event.target.value;
@@ -75,13 +83,12 @@ const WysiwygEditor = forwardRef<HTMLDivElement, Props>(
     };
 
     const handleBlur = () => {
-      const sanitizedHtml = removeEmptyTags(sanitizeHtmlString(htmlValue, { FORBID_ATTR: ['style'] }));
-      // Apply removeUnwantedTags, then wrap top level text nodes (+ a, b and strong tags) in <p>
-      // Then, remove divs in case they were not removed by removeUnwantedTags
-      const reorganizedHtml = removeDivs(groupLonelySiblings(removeUnwantedTags(sanitizedHtml)));
-      const trimmed = extractTextContent(reorganizedHtml).trim() === '' ? '' : reorganizedHtml;
-      setHtmlValue(trimmed);
-      onBlur(trimmed);
+      const normalizedHtml = normalizeHtml(htmlValue);
+      setHtmlValue(normalizedHtml);
+      if (normalizedHtml !== lastCommittedValue.current) {
+        lastCommittedValue.current = normalizedHtml;
+        onValueCommit(normalizedHtml);
+      }
     };
 
     return (

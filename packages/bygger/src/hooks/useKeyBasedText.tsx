@@ -18,6 +18,8 @@ const useKeyBasedText = () => {
   };
 
   const setKeyBasedText = (value: string, existingKey?: string) => {
+    console.log('setKeyBasedText', existingKey, value);
+
     if (!existingKey || storedTranslations[existingKey] || globalTranslations[existingKey]) {
       return addKeyBasedText(value);
     }
