@@ -18,11 +18,11 @@ const useKeyBasedText = () => {
   };
 
   const setKeyBasedText = (value: string, existingKey?: string) => {
-    if (existingKey) {
-      return updateKeyBasedText(value, existingKey);
+    if (!existingKey || storedTranslations[existingKey] || globalTranslations[existingKey]) {
+      return addKeyBasedText(value);
     }
 
-    return addKeyBasedText(value);
+    return updateKeyBasedText(value, existingKey);
   };
 
   return { setKeyBasedText, getKeyBasedText };

@@ -237,9 +237,11 @@ describe('FormSettingsPage', () => {
       cy.get('[aria-live="polite"]').should('contain.text', `Lagret skjema ${submitData.title}`);
     });
 
-    it('deletes the selected saved bullet point instead of the last one', () => {
+    it('creates new translations when editing saved intro-page text and deletes the selected bullet point', () => {
       let initialBulletPointKeys: string[] = [];
-      const savedTranslations: Array<{ key: string; nb: string; [key: string]: unknown }> = [];
+      let initialIntroductionKey = '';
+      let updatedFirstBulletPointKey = '';
+      const savedTranslations: Array<{ id: number; key: string; nb: string; [key: string]: unknown }> = [];
       let saveCount = 0;
 
       cy.intercept('GET', '/api/forms/cypresssettings/translations', (req) => {
@@ -250,13 +252,24 @@ describe('FormSettingsPage', () => {
         const existingTranslationIndex = savedTranslations.findIndex(({ key }) => key === req.body.key);
 
         if (existingTranslationIndex === -1) {
-          savedTranslations.push(req.body);
+          savedTranslations.push({ ...req.body, id: savedTranslations.length + 1, revision: 1 });
         } else {
-          savedTranslations[existingTranslationIndex] = req.body;
+          savedTranslations[existingTranslationIndex] = {
+            ...req.body,
+            id: savedTranslations[existingTranslationIndex].id,
+            revision: 1,
+          };
         }
 
-        req.reply(201, req.body);
+        req.reply(
+          201,
+          savedTranslations.find(({ key }) => key === req.body.key),
+        );
       }).as('saveTranslation');
+
+      cy.intercept('PUT', '/api/forms/cypresssettings/translations/*', (req) => {
+        expect.fail(`Saved intro-page translation was unexpectedly updated: ${req.url}`);
+      }).as('updateTranslation');
 
       cy.intercept('PUT', '/api/forms/cypresssettings', (req) => {
         saveCount += 1;
@@ -264,11 +277,19 @@ describe('FormSettingsPage', () => {
 
         if (saveCount === 1) {
           expect(bulletPoints).to.have.length(3);
+          initialIntroductionKey = req.body.introPage.introduction;
           initialBulletPointKeys = [...bulletPoints];
         }
 
         if (saveCount === 2) {
-          expect(bulletPoints).to.deep.equal([initialBulletPointKeys[0], initialBulletPointKeys[2]]);
+          expect(req.body.introPage.introduction).to.not.equal(initialIntroductionKey);
+          expect(bulletPoints[0]).to.not.equal(initialBulletPointKeys[0]);
+          expect(bulletPoints.slice(1)).to.deep.equal(initialBulletPointKeys.slice(1));
+          updatedFirstBulletPointKey = bulletPoints[0];
+        }
+
+        if (saveCount === 3) {
+          expect(bulletPoints).to.deep.equal([updatedFirstBulletPointKey, initialBulletPointKeys[2]]);
         }
 
         req.reply(req.body);
@@ -308,19 +329,44 @@ describe('FormSettingsPage', () => {
         });
 
       cy.contains('Lagre').click();
-      cy.wait('@saveForm');
+      cy.wait(Array(4).fill('@saveTranslation'));
       cy.wait('@getSavedFormTranslations');
+      cy.wait('@saveForm');
+
+      cy.contains('Velkomstmelding')
+        .parent()
+        .within(() => {
+          cy.get('.rsw-editor [contenteditable="true"]').type(' oppdatert');
+          cy.get('.rsw-editor [contenteditable="true"]').blur();
+        });
 
       cy.get('[data-testid="prerequisites"]').within(() => {
         cy.get('.rsw-editor [contenteditable="true"]').should('have.length', 3);
         cy.get('.rsw-editor [contenteditable="true"]').eq(0).should('contain.text', 'Kulepunkt 1');
         cy.get('.rsw-editor [contenteditable="true"]').eq(1).should('contain.text', 'Kulepunkt 2');
         cy.get('.rsw-editor [contenteditable="true"]').eq(2).should('contain.text', 'Kulepunkt 3');
+        cy.get('.rsw-editor [contenteditable="true"]').eq(0).type(' oppdatert');
+        cy.get('.rsw-editor [contenteditable="true"]').eq(0).blur();
+      });
 
+      cy.contains('Lagre').click();
+      cy.wait(['@saveTranslation', '@saveTranslation']).spread((introduction, bulletPoint) => {
+        const translations = [introduction.request.body, bulletPoint.request.body];
+        translations.forEach(({ key, tag }) => {
+          expect(key).to.match(uuidRegex);
+          expect(tag).to.equal('introPage');
+        });
+        expect(translations.some(({ nb }) => nb.includes('Velkommen oppdatert'))).to.be.true;
+        expect(translations.some(({ nb }) => nb.includes('Kulepunkt 1 oppdatert'))).to.be.true;
+      });
+      cy.wait('@getSavedFormTranslations');
+      cy.wait('@saveForm');
+
+      cy.get('[data-testid="prerequisites"]').within(() => {
         cy.findAllByRole('button', { name: 'Slett' }).eq(1).click();
 
         cy.get('.rsw-editor [contenteditable="true"]').should('have.length', 2);
-        cy.get('.rsw-editor [contenteditable="true"]').eq(0).should('contain.text', 'Kulepunkt 1');
+        cy.get('.rsw-editor [contenteditable="true"]').eq(0).should('contain.text', 'Kulepunkt 1 oppdatert');
         cy.get('.rsw-editor [contenteditable="true"]').eq(1).should('contain.text', 'Kulepunkt 3');
         cy.contains('Kulepunkt 2').should('not.exist');
       });
