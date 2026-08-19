@@ -5,6 +5,7 @@ import { MutableRefObject, ReactNode, useState } from 'react';
 import { useAttachmentUpload } from '../../context/attachment-upload/AttachmentUploadContext';
 import { FILE_ACCEPT, MAX_SIZE_ATTACHMENT_FILE_BYTES } from '../../context/attachment-upload/fileUploadConfig';
 import { useLanguage } from '../../context/language/LanguageContext';
+import { useOptionalValidationScope } from '../../context/validation/ValidationScopeContext';
 import { inputId } from '../../utils/inputId';
 import useAttachmentValidation from './useAttachmentValidation';
 
@@ -45,6 +46,7 @@ const UploadButton = ({
 }: Props) => {
   const { translate } = useLanguage();
   const { handleUploadFile, addError, submissionAttachments } = useAttachmentUpload();
+  const scope = useOptionalValidationScope();
   const { getAttachmentError, getAttachmentExternalError } = useAttachmentValidation(submissionAttachments);
   const [loading, setLoading] = useState(false);
   const uploadErrorMessage =
@@ -93,6 +95,7 @@ const UploadButton = ({
               attachmentId,
               translate('required', { field: translate(TEXTS.statiske.attachment.attachmentTitle) }),
               'TITLE',
+              scope?.pageKey,
             )
           }
         >

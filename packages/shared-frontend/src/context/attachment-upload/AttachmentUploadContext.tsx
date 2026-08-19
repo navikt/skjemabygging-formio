@@ -23,7 +23,7 @@ interface AttachmentUploadContextType {
   handleDeleteAllFilesForAttachment: (attachmentId: string) => Promise<void>;
   handleDeleteAttachment: (attachmentId: string) => Promise<void>;
   handleDeleteAllFiles: () => Promise<void>;
-  addError: (attachmentId: string, error: string, type: AttachmentErrorType) => void;
+  addError: (attachmentId: string, error: string, type: AttachmentErrorType, pageKey?: string) => void;
   removeError: (attachmentId: string) => void;
   changeAttachmentValue: (
     attachment: SubmissionAttachment,
@@ -65,9 +65,9 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
   const submissionActions = createAttachmentSubmissionActions(submission, setSubmission);
   const uploadProgressActions = createUploadProgressActions(setUploadsInProgress);
 
-  const addError = (attachmentId: string, message: string, type: AttachmentErrorType) => {
+  const addError = (attachmentId: string, message: string, type: AttachmentErrorType, pageKey?: string) => {
     const field = type === 'VALUE' ? 'value' : type === 'TITLE' ? 'title' : 'files';
-    setAttachmentExternalError(attachmentId, field, translate(message));
+    setAttachmentExternalError(attachmentId, field, translate(message), pageKey);
   };
 
   const removeError = (attachmentId: string) => {

@@ -145,7 +145,12 @@ interface ValidationContextType {
   shouldShowSummaryForPage: (pageKey: string) => boolean;
   shouldShowSummaryForSummaryPage: () => boolean;
   syncPageValidationState: (pageKey: string, components: Component[]) => void;
-  setAttachmentExternalError: (attachmentId: string, field: AttachmentField, message?: string) => void;
+  setAttachmentExternalError: (
+    attachmentId: string,
+    field: AttachmentField,
+    message?: string,
+    pageKey?: string,
+  ) => void;
   getAttachmentExternalError: (attachmentId: string, field: AttachmentField) => string | undefined;
 }
 
@@ -241,22 +246,28 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
     [allowTestTypes, currentLanguage, externalAttachmentErrors, submissionMethod, translate],
   );
 
-  const setAttachmentExternalError = useCallback((attachmentId: string, field: AttachmentField, message?: string) => {
-    const key = attachmentValidationPath(attachmentId, field);
-    setExternalAttachmentErrors((previous) => {
-      if (!message) {
-        if (!(key in previous)) {
-          return previous;
+  const setAttachmentExternalError = useCallback(
+    (attachmentId: string, field: AttachmentField, message?: string, pageKey?: string) => {
+      const key = attachmentValidationPath(attachmentId, field);
+      setExternalAttachmentErrors((previous) => {
+        if (!message) {
+          if (!(key in previous)) {
+            return previous;
+          }
+          const { [key]: _removedError, ...remainingErrors } = previous;
+          return remainingErrors;
         }
-        const { [key]: _removedError, ...remainingErrors } = previous;
-        return remainingErrors;
-      }
 
-      const nextError = { attachmentId, field, message };
-      const currentError = previous[key];
-      return currentError?.message === message ? previous : { ...previous, [key]: nextError };
-    });
-  }, []);
+        const nextError = { attachmentId, field, message };
+        const currentError = previous[key];
+        return currentError?.message === message ? previous : { ...previous, [key]: nextError };
+      });
+      if (message && pageKey) {
+        setSummaryScope({ type: 'page', pageKey });
+      }
+    },
+    [],
+  );
 
   const getAttachmentExternalError = useCallback(
     (attachmentId: string, field: AttachmentField) =>
