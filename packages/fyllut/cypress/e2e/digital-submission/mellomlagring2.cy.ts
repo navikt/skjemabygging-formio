@@ -59,6 +59,7 @@ const testConfirmationModal = (
 const confirmSaveDraftAfterCancellingOnce = () => {
   const body = TEXTS.grensesnitt.confirmSavePrompt.body.replace('{{date}}', '10.01.2024').trim();
 
+  expectSummaryPage();
   cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveDraft }).click();
   withinOpenDialog(() => {
     cy.findByText((content, element) => element?.tagName === 'P' && content.trim() === body).shouldBeVisible();
@@ -66,6 +67,7 @@ const confirmSaveDraftAfterCancellingOnce = () => {
   });
   cy.get('dialog[open]').should('not.exist');
 
+  expectSummaryPage();
   cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveDraft }).click();
   withinOpenDialog(() => {
     cy.findByText((content, element) => element?.tagName === 'P' && content.trim() === body).shouldBeVisible();
@@ -302,8 +304,8 @@ describe('Mellomlagring v2', () => {
 
         openSummaryInStepper();
         cy.clickEditAnswers();
-        cy.url().should('include', '/p2');
         cy.findByRole('textbox', { name: 'Tekstfelt 2a' }).shouldBeVisible().should('have.focus');
+        cy.url().should('include', '/p2');
       });
     });
 
