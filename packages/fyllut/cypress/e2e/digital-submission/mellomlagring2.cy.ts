@@ -240,8 +240,8 @@ describe('Mellomlagring v2', () => {
       cy.findByRole('group', { name: 'Ønsker du å få gaven innpakket' }).shouldBeVisible();
       testConfirmationModal(TEXTS.grensesnitt.navigation.cancelAndDelete, TEXTS.grensesnitt.confirmDeletePrompt);
       cy.wait('@deleteMellomlagring');
-      cy.findByRoleWhenAttached('alert')
-        .shouldBeVisible()
+      cy.findByRole('dialog', { name: TEXTS.grensesnitt.confirmDeletePrompt.title })
+        .should('be.visible')
         .and('contain.text', TEXTS.statiske.mellomlagringError.delete.message);
     });
 
