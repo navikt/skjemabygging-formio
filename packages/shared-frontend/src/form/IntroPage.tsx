@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useFyllutAppConfig } from '../context/fyllut/FyllutAppConfigContext';
+import { useAppConfig } from '../context/app-config/AppConfigContext';
 import { useFyllutLanguage } from '../context/fyllut/FyllutLanguageContext';
 import { useFormDefinition, useFormPersistence, useSubmissionState } from './framework';
 import IntroPageButtonRow from './intro-page/IntroPageButtonRow';
@@ -13,7 +13,7 @@ interface Props {
 
 const IntroPage = ({ onStart }: Props) => {
   const { translate } = useFyllutLanguage();
-  const { submissionMethod } = useFyllutAppConfig();
+  const { submissionMethod } = useAppConfig();
   const { form } = useFormDefinition();
   const { saveDraft, canSaveDraft, status } = useFormPersistence();
   const { submission, setSubmission } = useSubmissionState();
