@@ -1,7 +1,7 @@
 import { Component, CustomLabels, SubmissionSender, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo } from 'react';
-import { useAppConfig } from '../../context/app-config/AppConfigContext';
 import { useStateField } from '../../context/state/useStateField';
+import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
 import Alert from '../alert/Alert';
 import ReadMore from '../read-more/ReadMore';
 import TextField from '../text-field/TextField';
@@ -36,7 +36,7 @@ const Sender = ({
   descriptions,
   prefillValue,
 }: SenderProps) => {
-  const { submissionMethod } = useAppConfig();
+  const { submissionMethod } = useSubmissionMethod();
   const { stateValue, setStateValue } = useStateField({ statePath });
   const prefilledSender = useMemo<SubmissionSender | undefined>(() => {
     if (senderRole !== 'person' || !isSenderPrefillValue(prefillValue)) {

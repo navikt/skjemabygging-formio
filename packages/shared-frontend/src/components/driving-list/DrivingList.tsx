@@ -1,9 +1,10 @@
 import { Accordion, BodyShort, Box, Button, Heading, HStack, VStack } from '@navikt/ds-react';
 import { dateUtils, DrivingListSubmission, SendInnAktivitet, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useAppConfig } from '../../context/app-config/AppConfigContext';
+import { useApplication } from '../../context/application/ApplicationContext';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useStateField } from '../../context/state/useStateField';
+import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
 import { sanitizeHtml } from '../../utils/sanitizeHtml';
 import { fetchActivities } from '../activities/activitiesUtils';
 import Alert from '../alert/Alert';
@@ -50,7 +51,8 @@ const normalizeSubmissionDate = (value?: string) => {
 };
 
 const DrivingList = ({ statePath, description, readMore }: DrivingListProps) => {
-  const { submissionMethod, logger } = useAppConfig();
+  const { logger } = useApplication();
+  const { submissionMethod } = useSubmissionMethod();
   const { translate, currentLanguage } = useLanguage();
   const { stateValue, setStateValue } = useStateField({ statePath });
   const [status, setStatus] = useState<DrivingListStatus>('loading');

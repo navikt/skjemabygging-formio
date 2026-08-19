@@ -1,25 +1,42 @@
 import { useAppConfig, useLanguages } from '@navikt/skjemadigitalisering-shared-components';
-import { FyllutAppConfig, RenderForm, RenderFormProps } from '@navikt/skjemadigitalisering-shared-frontend';
+import {
+  ApplicationProvider,
+  FyllutContextValue,
+  RenderForm,
+  RenderFormProps,
+} from '@navikt/skjemadigitalisering-shared-frontend';
 
-type Props = Omit<RenderFormProps, 'fyllutAppConfig' | 'fyllutLanguage'>;
+type Props = Omit<RenderFormProps, 'fyllut' | 'language' | 'submissionMethod'>;
 
 const RenderFormAdapter = (props: Props) => {
   const appConfig = useAppConfig();
   const { availableLanguages, currentLanguage, translate } = useLanguages();
-  const downloadPdf = appConfig.http
+  const http = appConfig.http;
+  const downloadPdf = http
     ? (url: string, body: object) =>
-        appConfig.http!.post<Blob>(url, body, {
-          Accept: appConfig.http!.MimeType.PDF,
+        http.post<Blob>(url, body, {
+          Accept: http.MimeType.PDF,
         })
     : undefined;
-  const fyllutAppConfig: FyllutAppConfig = { ...appConfig, downloadPdf };
+  const fyllut: FyllutContextValue = {
+    baseUrl: appConfig.baseUrl,
+    fyllutBaseUrl: appConfig.fyllutBaseURL,
+    isLoggedIn: appConfig.config?.isLoggedIn,
+    http,
+    logEvent: appConfig.logEvent,
+    downloadPdf,
+  };
+  const environment = appConfig.config?.NAIS_CLUSTER_NAME === 'prod-gcp' ? 'production' : 'development';
 
   return (
-    <RenderForm
-      {...props}
-      fyllutAppConfig={fyllutAppConfig}
-      fyllutLanguage={{ availableLanguages, currentLanguage, translate }}
-    />
+    <ApplicationProvider environment={environment} logger={appConfig.logger}>
+      <RenderForm
+        {...props}
+        submissionMethod={appConfig.submissionMethod}
+        fyllut={fyllut}
+        language={{ availableLanguages, currentLanguage, translate }}
+      />
+    </ApplicationProvider>
   );
 };
 

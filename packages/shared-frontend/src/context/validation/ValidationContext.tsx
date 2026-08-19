@@ -8,9 +8,10 @@ import {
 import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 import { deriveValidations } from '../../validation/deriveValidations';
 import { validateValue } from '../../validation/validators';
-import { useAppConfig } from '../app-config/AppConfigContext';
+import { useApplication } from '../application/ApplicationContext';
 import { useLanguage } from '../language/LanguageContext';
 import { useSubmissionState } from '../state/SubmissionStateContext';
+import { useSubmissionMethod } from '../submission-method/SubmissionMethodContext';
 
 interface FieldError {
   pageKey: string;
@@ -164,8 +165,9 @@ const ValidationContext = createContext<ValidationContextType>({} as ValidationC
 const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
   const { currentLanguage, translate } = useLanguage();
   const { submission } = useSubmissionState();
-  const { config, submissionMethod } = useAppConfig();
-  const allowTestTypes = config?.NAIS_CLUSTER_NAME !== 'prod-gcp';
+  const { environment } = useApplication();
+  const { submissionMethod } = useSubmissionMethod();
+  const allowTestTypes = environment !== 'production';
   const [pagesWithErrors, setPagesWithErrors] = useState<Set<string>>(() => new Set(initialPagesWithErrors ?? []));
   const [pageErrorsByKey, setPageErrorsByKey] = useState<PageErrorsByKey>({});
   const [summaryScope, setSummaryScope] = useState<SummaryScope>(undefined);

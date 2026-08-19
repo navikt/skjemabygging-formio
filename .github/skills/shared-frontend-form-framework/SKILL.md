@@ -10,26 +10,27 @@ description: >-
 # shared-frontend form framework
 
 The editable form framework lives in `packages/shared-frontend/src`. It renders
-forms with our own React + Aksel components instead of Formiojs, and is shared
-across fyllut, the static-PDF page, and bygger. It is decoupled: no
+forms with our own React + Aksel components instead of Formiojs. Reusable
+components and summary rendering are shared across fyllut, the static-PDF page,
+and bygger, while the editable form flow is explicitly owned by fyllut. It has no
 `shared-components` dependency, no env reads, all config injected.
 
 ## Structure
 
-- `context/` — split contexts to limit re-renders: `submission`,
-  `form-definition`, `validation`, `language`, `app-config`, `persistence`, and
-  the generic pluggable `state` store. Each is exported as its own Provider; the
-  host app (fyllut `FillInForm`, bygger preview) composes them inline so each
-  surface controls language source, state store, and provider order. The Aksel
-  `Provider` (locale) and shared-frontend `LanguageProvider` are fed by the
-  caller's language context, so bygger's live editor translations work.
-  `submission-init/initializeSubmission` resolves the start state: resumed
-  answers win, prefill/defaults fill only empty fields.
+- `context/` — reusable application, language, state, form-definition,
+  validation, submission-method, and form-action contexts. Application config is
+  limited to the logger and normalized environment; the dynamic submission
+  method has its own context.
+- `components/` — reusable Aksel-based controls. These may depend on the common
+  application, language, state, and submission-method contracts, but never on
+  fyllut APIs.
+- `fyllut/` — the editable form application: provider composition, wizard,
+  routing, input adapters, SendInn actions, no-login handling, and attachments.
+- `form-summary/` — summary adapters shared by the new fyllut flow and the
+  legacy summary renderer.
 - `validation/` — pure `validators` + `deriveValidations` (visible components →
   descriptors). Non-numeric `min/maxLength` (form-builder `''`) are ignored.
 - `formatting/` — on-blur formatters; never reformat onChange, reformat onBlur.
-- `form-components/` — Aksel inputs, `inputComponentRegistry`, `RenderInputForm`,
-  `RenderInputComponent`. `wizard/useWizardController` drives panels/next/prev.
 
 ## Adding an input component
 
@@ -37,14 +38,18 @@ See the `create-shared-frontend-component` skill for the full recipe and
 conventions (two-layer architecture, validation/error rules, formatting
 contract). In short:
 
-1. Add `Input<Component>.tsx` under `form-components/components/<kebab>/`.
-2. Register its form type(s) in `inputComponentRegistry.tsx`.
-3. Cover logic with vitest (`validators`, `formatters`, etc. are isolated).
+1. Add the reusable control under `components/<kebab>/`.
+2. Add its form-definition adapter under
+   `fyllut/form-components/components/<kebab>/`.
+3. Register its form type(s) in
+   `fyllut/form-components/inputComponentRegistry.tsx`.
+4. Cover logic with vitest (`validators`, `formatters`, etc. are isolated).
 
 ## Unsupported components
 
 `RenderInputComponent` mirrors the summary renderer: always `logger.error`, show
-an Aksel `Alert` only when `config.NAIS_CLUSTER_NAME !== 'prod-gcp'`, skip in prod.
+an Aksel `Alert` when the normalized application environment is not
+`production`, and skip it in production.
 There is no upfront form-support gate — the allowlist is the only switch.
 
 ## Allowlisting a fyllut form (soft-launch)

@@ -2,9 +2,10 @@ import { Component, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { act, useState } from 'react';
 import { createRoot, Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { AppConfigProvider } from '../app-config/AppConfigContext';
+import { ApplicationProvider } from '../application/ApplicationContext';
 import { LanguageProvider } from '../language/LanguageContext';
 import { SubmissionStateProvider } from '../state/SubmissionStateContext';
+import { SubmissionMethodProvider } from '../submission-method/SubmissionMethodContext';
 import { attachmentValidationPath, useValidation, ValidationProvider } from './ValidationContext';
 
 const components = [
@@ -74,15 +75,15 @@ describe('ValidationContext', () => {
   it('returns failed page keys and exposes cached page errors through getError', () => {
     act(() => {
       root.render(
-        <AppConfigProvider>
-          <LanguageProvider translate={translate} currentLanguage="nb">
+        <ApplicationProvider environment="test">
+          <LanguageProvider translate={translate} currentLanguage="nb" availableLanguages={['nb']}>
             <SubmissionStateProvider initialSubmission={{ data: { identityNumber: '123' } }}>
               <ValidationProvider>
                 <ValidationHarness />
               </ValidationProvider>
             </SubmissionStateProvider>
           </LanguageProvider>
-        </AppConfigProvider>,
+        </ApplicationProvider>,
       );
     });
 
@@ -136,28 +137,30 @@ describe('ValidationContext', () => {
 
     act(() => {
       root.render(
-        <AppConfigProvider submissionMethod="digital">
-          <LanguageProvider translate={translate} currentLanguage="nb">
-            <SubmissionStateProvider
-              initialSubmission={{
-                data: {},
-                attachments: [
-                  {
-                    attachmentId: 'documentation',
-                    navId: 'documentation',
-                    type: 'other',
-                    value: 'leggerVedNaa',
-                    files: [],
-                  },
-                ],
-              }}
-            >
-              <ValidationProvider>
-                <AttachmentValidationHarness />
-              </ValidationProvider>
-            </SubmissionStateProvider>
+        <ApplicationProvider environment="test">
+          <LanguageProvider translate={translate} currentLanguage="nb" availableLanguages={['nb']}>
+            <SubmissionMethodProvider submissionMethod="digital">
+              <SubmissionStateProvider
+                initialSubmission={{
+                  data: {},
+                  attachments: [
+                    {
+                      attachmentId: 'documentation',
+                      navId: 'documentation',
+                      type: 'other',
+                      value: 'leggerVedNaa',
+                      files: [],
+                    },
+                  ],
+                }}
+              >
+                <ValidationProvider>
+                  <AttachmentValidationHarness />
+                </ValidationProvider>
+              </SubmissionStateProvider>
+            </SubmissionMethodProvider>
           </LanguageProvider>
-        </AppConfigProvider>,
+        </ApplicationProvider>,
       );
     });
 
@@ -203,15 +206,17 @@ describe('ValidationContext', () => {
 
     act(() => {
       root.render(
-        <AppConfigProvider submissionMethod="paper">
-          <LanguageProvider translate={translate} currentLanguage="nb">
-            <SubmissionStateProvider initialSubmission={{ data: {} }}>
-              <ValidationProvider>
-                <AttachmentValidationHarness />
-              </ValidationProvider>
-            </SubmissionStateProvider>
+        <ApplicationProvider environment="test">
+          <LanguageProvider translate={translate} currentLanguage="nb" availableLanguages={['nb']}>
+            <SubmissionMethodProvider submissionMethod="paper">
+              <SubmissionStateProvider initialSubmission={{ data: {} }}>
+                <ValidationProvider>
+                  <AttachmentValidationHarness />
+                </ValidationProvider>
+              </SubmissionStateProvider>
+            </SubmissionMethodProvider>
           </LanguageProvider>
-        </AppConfigProvider>,
+        </ApplicationProvider>,
       );
     });
 

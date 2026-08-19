@@ -1,8 +1,9 @@
 import { ComponentValue, SubmissionActivity, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo, useState } from 'react';
-import { useAppConfig } from '../../context/app-config/AppConfigContext';
+import { useApplication } from '../../context/application/ApplicationContext';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useStateField } from '../../context/state/useStateField';
+import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
 import Alert from '../alert/Alert';
 import CheckboxGroup from '../checkbox-group/CheckboxGroup';
 import RadioGroup from '../radio-group/RadioGroup';
@@ -14,7 +15,8 @@ type ActivitiesProps = Pick<BaseFieldProps, 'statePath' | 'label' | 'description
 type ActivitiesStatus = 'loading' | 'ready' | 'error';
 
 const Activities = ({ statePath, label, description, readMore }: ActivitiesProps) => {
-  const { submissionMethod, logger } = useAppConfig();
+  const { logger } = useApplication();
+  const { submissionMethod } = useSubmissionMethod();
   const { translate, currentLanguage } = useLanguage();
   const { stateValue, error, setStateValue } = useStateField({ statePath });
   const [status, setStatus] = useState<ActivitiesStatus>('loading');

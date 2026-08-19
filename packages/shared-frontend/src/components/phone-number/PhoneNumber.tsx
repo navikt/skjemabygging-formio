@@ -1,7 +1,7 @@
 import { Label } from '@navikt/ds-react';
 import { ComponentValue, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect } from 'react';
-import { useAppConfig } from '../../context/app-config/AppConfigContext';
+import { useApplication } from '../../context/application/ApplicationContext';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useStateField } from '../../context/state/useStateField';
 import { inputId } from '../../utils/inputId';
@@ -37,7 +37,7 @@ const PhoneNumber = ({
   readMore,
   showAreaCode = false,
 }: PhoneNumberProps) => {
-  const { logger } = useAppConfig();
+  const { logger } = useApplication();
   const { translate } = useLanguage();
   const { stateValue, setStateValue } = useStateField({ statePath });
   const phoneNumberValue =

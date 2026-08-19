@@ -1,25 +1,25 @@
 import FormErrorSummary from './components/error-summary/FormErrorSummary';
 import ValidationExclamationIcon from './components/icons/ValidationExclamationIcon';
-import { AppConfigProvider, useAppConfig } from './context/app-config/AppConfigContext';
+import { ApplicationProvider, useApplication } from './context/application/ApplicationContext';
+import { FormActionsProvider, useFormActions } from './context/form-actions/FormActionsContext';
 import { FormDefinitionProvider, useFormDefinition } from './context/form-definition/FormDefinitionContext';
 import { applyPrefilledValuesToSubmission } from './context/form-definition/prefillSubmission';
-import { FyllutAppConfigProvider, useFyllutAppConfig } from './context/fyllut/FyllutAppConfigContext';
-import { FyllutLanguageProvider, useFyllutLanguage } from './context/fyllut/FyllutLanguageContext';
 import { LanguageProvider, useLanguage } from './context/language/LanguageContext';
-import { FormPersistenceProvider, useFormPersistence } from './context/persistence/PersistenceContext';
 import { initializeSubmission } from './context/state/initializeSubmission';
 import { SubmissionStateProvider, useSubmissionState } from './context/state/SubmissionStateContext';
+import { SubmissionMethodProvider, useSubmissionMethod } from './context/submission-method/SubmissionMethodContext';
 import { useValidation, ValidationProvider } from './context/validation/ValidationContext';
-import { inputComponentRegistry } from './form-components/inputComponentRegistry';
-import RenderInputForm from './form-components/RenderInputForm';
-import RenderSummaryForm from './form-components/RenderSummaryForm';
+import RenderSummaryForm from './form-summary/RenderSummaryForm';
 import {
   buildDigitalFormSearch,
   isSoknadAlreadyExistsResponse,
   shouldUseLegacyPageForNewRenderer,
-} from './form/digitalDraftUtils';
-import RenderForm from './form/RenderForm';
-import { resolveDefaultSubmissionMethod } from './form/submissionMethodResolution';
+} from './fyllut/digitalDraftUtils';
+import { inputComponentRegistry } from './fyllut/form-components/inputComponentRegistry';
+import RenderInputForm from './fyllut/form-components/RenderInputForm';
+import { FyllutProvider, useFyllut } from './fyllut/FyllutContext';
+import RenderForm from './fyllut/RenderForm';
+import { resolveDefaultSubmissionMethod } from './fyllut/submissionMethodResolution';
 import { FormButtonRow, FormNextButton, FormPrevButton } from './layout/FormButtonRow';
 import FormHeader from './layout/FormHeader';
 import FormIcon from './layout/FormIcon';
@@ -33,33 +33,35 @@ import { useWizardController } from './wizard/useWizardController';
 const sharedFrontendPackageName = '@navikt/skjemadigitalisering-shared-frontend';
 
 export type {
-  FyllutAppConfig,
-  FyllutEvent,
-  FyllutHttp,
-  FyllutHttpHeaders,
-} from './context/fyllut/FyllutAppConfigContext';
-export type { FyllutLanguage } from './context/fyllut/FyllutLanguageContext';
+  ApplicationContextValue,
+  ApplicationEnvironment,
+  ApplicationLogger,
+} from './context/application/ApplicationContext';
 export type {
-  FormPersistenceContextType,
-  FormPersistenceHandlers,
-  PersistenceStatus,
-} from './context/persistence/PersistenceContext';
+  FormActionHandlers,
+  FormActionsContextValue,
+  FormActionStatus,
+} from './context/form-actions/FormActionsContext';
+export type { LanguageContextValue } from './context/language/LanguageContext';
 export type { FieldError, ValidationContextType } from './context/validation/ValidationContext';
-export type { InputComponentProps, InputComponentRegistry } from './form-components/inputComponentRegistry';
-export type { RenderSummaryFormProps } from './form-components/RenderSummaryForm';
+export type { RenderSummaryFormProps } from './form-summary/RenderSummaryForm';
 export type {
   FormComponentProps,
   FormComponentRegistry,
   HandleAttachmentDownloadFile,
   SummaryRendererAppConfig,
-} from './form-components/types';
-export type { RenderFormProps } from './form/RenderForm';
+  SummaryRendererConfig,
+} from './form-summary/types';
+export type { InputComponentProps, InputComponentRegistry } from './fyllut/form-components/inputComponentRegistryUtils';
+export type { FyllutContextValue, FyllutEvent, FyllutHttp, FyllutHttpHeaders } from './fyllut/FyllutContext';
+export type { RenderFormProps } from './fyllut/RenderForm';
 export type { SharedFrontendBoundaryProps } from './SharedFrontendBoundary';
 export type { WizardController } from './wizard/useWizardController';
 export {
-  AppConfigProvider,
+  ApplicationProvider,
   applyPrefilledValuesToSubmission,
   buildDigitalFormSearch,
+  FormActionsProvider,
   FormButtonRow,
   FormDefinitionProvider,
   FormErrorSummary,
@@ -67,11 +69,9 @@ export {
   FormIcon,
   FormLayout,
   FormNextButton,
-  FormPersistenceProvider,
   FormPrevButton,
   FormStepper,
-  FyllutAppConfigProvider,
-  FyllutLanguageProvider,
+  FyllutProvider,
   initializeSubmission,
   inputComponentRegistry,
   isSoknadAlreadyExistsResponse,
@@ -84,13 +84,14 @@ export {
   sharedFrontendPackageName,
   shouldUseLegacyPageForNewRenderer,
   StepperProvider,
+  SubmissionMethodProvider,
   SubmissionStateProvider,
-  useAppConfig,
+  useApplication,
+  useFormActions,
   useFormDefinition,
-  useFormPersistence,
-  useFyllutAppConfig,
-  useFyllutLanguage,
+  useFyllut,
   useLanguage,
+  useSubmissionMethod,
   useSubmissionState,
   useValidation,
   useWizardController,
