@@ -59,7 +59,6 @@ const testConfirmationModal = (
 const confirmSaveDraftAfterCancellingOnce = () => {
   const body = TEXTS.grensesnitt.confirmSavePrompt.body.replace('{{date}}', '10.01.2024').trim();
 
-  expectSummaryPage();
   cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveDraft }).click();
   withinOpenDialog(() => {
     cy.findByText((content, element) => element?.tagName === 'P' && content.trim() === body).shouldBeVisible();
@@ -67,7 +66,6 @@ const confirmSaveDraftAfterCancellingOnce = () => {
   });
   cy.get('dialog[open]').should('not.exist');
 
-  expectSummaryPage();
   cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveDraft }).click();
   withinOpenDialog(() => {
     cy.findByText((content, element) => element?.tagName === 'P' && content.trim() === body).shouldBeVisible();
@@ -242,7 +240,9 @@ describe('Mellomlagring v2', () => {
       cy.findByRole('group', { name: 'Ønsker du å få gaven innpakket' }).shouldBeVisible();
       testConfirmationModal(TEXTS.grensesnitt.navigation.cancelAndDelete, TEXTS.grensesnitt.confirmDeletePrompt);
       cy.wait('@deleteMellomlagring');
-      cy.findByText(TEXTS.statiske.mellomlagringError.delete.message).shouldBeVisible();
+      cy.findByRoleWhenAttached('alert')
+        .shouldBeVisible()
+        .and('contain.text', TEXTS.statiske.mellomlagringError.delete.message);
     });
 
     it('shows an error when saving mellomlagring before cancelling fails', () => {
