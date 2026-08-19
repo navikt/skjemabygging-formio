@@ -176,7 +176,10 @@ const getComponentActualValue = (
     }
   }
 
-  if (!isNil(data)) {
+  // Avoid the unscoped whole-submission fallback when it could resolve through
+  // another datagrid row's value instead of this row's own (possibly unanswered) one.
+  const canLeakAcrossRows = hasDatagridAncestor(instance) && rowSources.length > 0;
+  if (!canLeakAcrossRows && !isNil(data)) {
     candidates.push({ source: data, path: componentPath });
   }
 

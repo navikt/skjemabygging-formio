@@ -362,4 +362,74 @@ describe('checkCondition simple conditionals', () => {
     expect(checkCondition(component, undefined, { person: { alder: '5' } }, form)).toBe(true);
     expect(checkCondition(component, undefined, { person: { alder: '4' } }, form)).toBe(false);
   });
+
+  describe('datagrid row leak regression', () => {
+    it('does not leak a matching value from another row into an untouched row (radiopanel, no default value)', () => {
+      const radio = createComponent({ key: 'visTeksfelt1', type: 'radiopanel' });
+      const textfield = createComponent({
+        key: 'tekstfelt',
+        conditional: { show: true, when: 'datagrid.visTeksfelt1', eq: 'ja' },
+      });
+      const form = createForm([createComponent({ key: 'datagrid', type: 'datagrid', components: [radio, textfield] })]);
+
+      const data = { datagrid: [{}, {}, { visTeksfelt1: 'ja' }] };
+
+      expect(checkCondition(textfield, {}, data, form)).toBe(false);
+      expect(checkCondition(textfield, { visTeksfelt1: 'ja' }, data, form)).toBe(true);
+    });
+
+    it('does not leak when only instance.data carries the (empty) row context, with no separate row argument', () => {
+      const radio = createComponent({ key: 'visTeksfelt1', type: 'radiopanel' });
+      const textfield = createComponent({
+        key: 'tekstfelt',
+        conditional: { show: true, when: 'datagrid.visTeksfelt1', eq: 'ja' },
+      });
+      const form = createForm([createComponent({ key: 'datagrid', type: 'datagrid', components: [radio, textfield] })]);
+      const datagridParent = createParentInstance({ key: 'datagrid', type: 'datagrid' });
+      const data = { datagrid: [{}, { visTeksfelt1: 'ja' }] };
+
+      expect(
+        checkCondition(textfield, undefined, data, form, createConditionInstance(textfield, {}, datagridParent)),
+      ).toBe(false);
+    });
+
+    it('still resolves via the whole-submission fallback when there is no row context at all', () => {
+      const component = createComponent({
+        key: 'tekstfelt3MedNiva',
+        conditional: {
+          show: true,
+          when: 'repeterende.checkbox3repeterende',
+          eq: 'true',
+        },
+      });
+      const form = createForm([
+        createComponent({
+          key: 'repeterende',
+          type: 'datagrid',
+          components: [createComponent({ key: 'checkbox3repeterende', type: 'checkbox' }), component],
+        }),
+      ]);
+
+      expect(checkCondition(component, undefined, { repeterende: [{ checkbox3repeterende: true }] }, form)).toBe(true);
+      expect(checkCondition(component, undefined, { repeterende: [{ checkbox3repeterende: false }] }, form)).toBe(
+        false,
+      );
+    });
+
+    it('checkbox default value (false) resolves correctly per row and never leaks (control case)', () => {
+      const checkbox = createComponent({ key: 'visTeksfelt1', type: 'checkbox' });
+      const textfield = createComponent({
+        key: 'tekstfelt',
+        conditional: { show: true, when: 'datagrid.visTeksfelt1', eq: 'true' },
+      });
+      const form = createForm([
+        createComponent({ key: 'datagrid', type: 'datagrid', components: [checkbox, textfield] }),
+      ]);
+
+      const data = { datagrid: [{ visTeksfelt1: false }, { visTeksfelt1: false }, { visTeksfelt1: true }] };
+
+      expect(checkCondition(textfield, { visTeksfelt1: false }, data, form)).toBe(false);
+      expect(checkCondition(textfield, { visTeksfelt1: true }, data, form)).toBe(true);
+    });
+  });
 });
