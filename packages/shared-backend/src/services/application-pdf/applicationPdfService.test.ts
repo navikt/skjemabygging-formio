@@ -1,7 +1,7 @@
 import { Registry } from 'prom-client';
 import type { MockInstance } from 'vitest';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { sanitizeValue } from './applicationPdfSerializer';
+import { sanitizePdfFormData, sanitizeValue } from './applicationPdfSerializer';
 import { createApplicationPdfService } from './applicationPdfService';
 
 describe('Sanitize values before sending to PDF generation', () => {
@@ -20,6 +20,52 @@ describe('Sanitize values before sending to PDF generation', () => {
       expect(sanitizeValue(null)).toBeUndefined();
       expect(sanitizeValue(123)).toBeUndefined();
       expect(sanitizeValue('')).toBe('');
+    });
+  });
+
+  it('normalizes em dashes throughout the PDF payload', () => {
+    expect(
+      sanitizePdfFormData({
+        label: 'Application — title',
+        skjemanummer: 'NAV 00-00.00',
+        vannmerke: 'Test - do not submit',
+        pdfConfig: { harInnholdsfortegnelse: false, språk: 'nb-NO' },
+        bunntekst: {
+          upperleft: 'Employer — confirmation',
+          lowerleft: null,
+          upperMiddle: null,
+          lowerMiddle: null,
+          upperRight: null,
+        },
+        verdiliste: [
+          {
+            label: 'Section — label',
+            verdi: '<b>Answer — text</b>',
+            visningsVariant: 'HTML',
+            verdiliste: [{ label: 'Nested — label', verdi: 'Nested — answer' }],
+          },
+        ],
+      }),
+    ).toEqual({
+      label: 'Application - title',
+      skjemanummer: 'NAV 00-00.00',
+      vannmerke: 'Test - do not submit',
+      pdfConfig: { harInnholdsfortegnelse: false, språk: 'nb-NO' },
+      bunntekst: {
+        upperleft: 'Employer - confirmation',
+        lowerleft: null,
+        upperMiddle: null,
+        lowerMiddle: null,
+        upperRight: null,
+      },
+      verdiliste: [
+        {
+          label: 'Section - label',
+          verdi: 'Answer - text',
+          visningsVariant: 'HTML',
+          verdiliste: [{ label: 'Nested - label', verdi: 'Nested - answer' }],
+        },
+      ],
     });
   });
 });
@@ -99,10 +145,11 @@ describe('createApplicationPdfService', () => {
     const service = createService(registry);
     const pdfFormData = {
       ...createPdfFormData(),
+      label: 'Application — title',
       verdiliste: [
         {
-          label: 'Field label',
-          verdi: '<script>alert(1)</script>Test',
+          label: 'Field — label',
+          verdi: '<script>alert(1)</script>Test — answer',
         },
       ],
     };
@@ -115,10 +162,11 @@ describe('createApplicationPdfService', () => {
     expect(result).toBe('pdf-base64');
     expectCreatePdfRequest(fetchSpy, {
       ...pdfFormData,
+      label: 'Application - title',
       verdiliste: [
         {
-          label: 'Field label',
-          verdi: 'Test',
+          label: 'Field - label',
+          verdi: 'Test - answer',
         },
       ],
     });
