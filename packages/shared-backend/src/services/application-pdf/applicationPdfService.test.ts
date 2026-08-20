@@ -52,7 +52,7 @@ describe('Sanitize values before sending to PDF generation', () => {
       vannmerke: 'Test - do not submit',
       pdfConfig: { harInnholdsfortegnelse: false, språk: 'nb-NO' },
       bunntekst: {
-        upperleft: 'Employer - confirmation',
+        upperleft: 'Employer — confirmation',
         lowerleft: null,
         upperMiddle: null,
         lowerMiddle: null,
