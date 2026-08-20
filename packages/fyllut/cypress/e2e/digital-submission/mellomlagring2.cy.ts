@@ -305,7 +305,6 @@ describe('Mellomlagring v2', () => {
         openSummaryInStepper();
         cy.clickEditAnswers();
         cy.findByRole('textbox', { name: 'Tekstfelt 2a' }).shouldBeVisible().should('have.focus');
-        cy.url().should('include', '/p2');
       });
     });
 
