@@ -7,7 +7,7 @@ import {
   Submission,
   tokenUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import React, { createContext, useCallback, useContext, useEffect, useReducer, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useReducer, useRef, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router';
 import { submitCaptchaValue } from '../../api/captcha/captcha';
 import { postNologinSoknad } from '../../api/sendinn/nologin';
@@ -68,6 +68,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const [isMellomlagringReady, setIsMellomlagringReady] = useState(!isMellomlagringAvailable);
   // Make sure that we only create once
   const [isCreateStarted, setIsCreateStarted] = useState(false);
+  const retrieveStartedForRef = useRef<string | undefined>(undefined);
   const [innsendingsId, setInnsendingsId] = useState<string>();
   const [nologinToken, setNologinToken] = useState<string | undefined>();
   const [captchaValue, setCaptchaValue] = useState<Record<string, string>>({});
@@ -121,7 +122,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   }, [fyllutMellomlagringState, setSubmission]);
 
   const retrieveMellomlagring = useCallback(
-    async (innsendingsId: string) => {
+    async (innsendingsId: string): Promise<boolean> => {
       const response = await getSoknad(innsendingsId, appConfig);
       if (!response?.shouldUploadAttachmentsInFyllut && setAttachmentPageEnabled) {
         setAttachmentPageEnabled(false);
@@ -130,7 +131,9 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         addSearchParamToUrl('lang', response.hoveddokumentVariant.document.language);
         setSubmission(getSubmissionWithFyllutState(response, form));
         dispatchFyllutMellomlagring({ type: 'init', response });
+        return true;
       }
+      return false;
     },
     [addSearchParamToUrl, appConfig, form, setSubmission, setAttachmentPageEnabled],
   );
@@ -418,10 +421,20 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
       if (!innsendingsId || innsendingsIdFromParams !== innsendingsId) {
         try {
           if (innsendingsIdFromParams) {
+            if (retrieveStartedForRef.current === innsendingsIdFromParams) {
+              return;
+            }
+            retrieveStartedForRef.current = innsendingsIdFromParams;
             setInnsendingsId(innsendingsIdFromParams);
-            await retrieveMellomlagring(innsendingsIdFromParams);
-            setIsMellomlagringReady(true);
-            logger?.info(`${innsendingsIdFromParams}: Mellomlagring was retrieved`);
+            const retrieved = await retrieveMellomlagring(innsendingsIdFromParams);
+            if (retrieved) {
+              setIsMellomlagringReady(true);
+              logger?.info(`${innsendingsIdFromParams}: Mellomlagring was retrieved`);
+            } else {
+              logger?.error(`${innsendingsIdFromParams}: Mellomlagring was retrieved but contained no submission data`);
+              dispatchFyllutMellomlagring({ type: 'error', error: 'GET_FAILED' });
+              retrieveStartedForRef.current = undefined;
+            }
           } else if (isMellomlagringAvailable) {
             const response = await startMellomlagring(submission!);
             if (response) {
@@ -430,6 +443,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
             }
           }
         } catch (error: any) {
+          retrieveStartedForRef.current = undefined;
           if (isNotFoundError(error)) {
             logger?.info(
               `${innsendingsIdFromParams}: Mellomlagring does not exist. Redirects to ${soknadNotFoundUrl}`,
