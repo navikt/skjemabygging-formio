@@ -152,6 +152,23 @@ const conditionalRenderingDatagridForm = () =>
                   { label: 'Nei', value: 'nei' },
                 ],
               }),
+              radio({
+                key: 'visTilleggsinfo',
+                label: 'Vis tilleggsinfo?',
+                values: [
+                  { label: 'Ja', value: 'ja' },
+                  { label: 'Nei', value: 'nei' },
+                ],
+              }),
+              textField({
+                conditional: {
+                  show: true,
+                  when: 'kjaeledyr.visTilleggsinfo',
+                  eq: 'ja',
+                },
+                key: 'tilleggsinfo',
+                label: 'Tilleggsinfo',
+              }),
               alert({
                 alerttype: 'warning',
                 content: '<p>Et dyr som er eldre enn 20 år kan ikke forsikres</p>',
