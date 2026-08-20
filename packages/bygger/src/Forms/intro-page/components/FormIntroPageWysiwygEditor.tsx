@@ -53,10 +53,7 @@ export const FormIntroPageWysiwygEditor = forwardRef<HTMLDivElement, TexareaFiel
             key={defaultValue ?? ''}
             defaultTag={defaultTag}
             defaultValue={defaultValue}
-            onValueCommit={(value) => {
-              console.log(value);
-              onChange(value);
-            }}
+            onValueCommit={onChange}
             ref={ref}
             error={error}
           />

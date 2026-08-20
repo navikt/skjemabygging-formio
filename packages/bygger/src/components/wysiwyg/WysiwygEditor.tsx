@@ -70,7 +70,8 @@ const WysiwygEditor = forwardRef<HTMLDivElement, Props>(
     };
 
     const [htmlValue, setHtmlValue] = useState(defaultValue ?? '');
-    const lastCommittedValue = useRef(normalizeHtml(defaultValue ?? ''));
+    const [initialCommittedValue] = useState(() => normalizeHtml(defaultValue ?? ''));
+    const lastCommittedValue = useRef(initialCommittedValue);
 
     const handleChange = (event) => {
       const value = event.target.value;

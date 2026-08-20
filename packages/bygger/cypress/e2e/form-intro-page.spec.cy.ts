@@ -66,6 +66,7 @@ const setupSavedIntroPage = () => {
   const state = {
     savedForms: [] as Array<{ introPage: typeof savedIntroPage }>,
     translationPosts: [] as Array<{ key: string; nb: string; tag: string }>,
+    translationPuts: [] as Array<{ id: number; key: string; nb: string }>,
     translations: structuredClone(initialSavedTranslations),
   };
 
@@ -82,8 +83,9 @@ const setupSavedIntroPage = () => {
       req.reply(201, savedTranslation);
     }).as('saveTranslation');
     cy.intercept('PUT', '/api/forms/cypresssettings/translations/*', (req) => {
-      expect.fail(`Saved intro-page translation was unexpectedly updated: ${req.url}`);
-    });
+      state.translationPuts.push(req.body);
+      req.reply(200, { ...req.body, revision: (req.body.revision ?? 1) + 1 });
+    }).as('updateTranslation');
     cy.intercept('PUT', '/api/forms/cypresssettings', (req) => {
       state.savedForms.push(req.body);
       req.reply(req.body);
@@ -336,6 +338,7 @@ describe('FormSettingsPage', () => {
       cy.wait('@saveForm');
       cy.then(() => {
         expect(state.translationPosts).to.be.empty;
+        expect(state.translationPuts, 'saved translations should never be updated from intro page').to.be.empty;
         expect(state.savedForms.at(-1)?.introPage.introduction).to.equal(savedIntroPageKeys.introduction);
         expect(state.savedForms.at(-1)?.introPage.sections.prerequisites.bulletPoints).to.deep.equal(
           savedIntroPageKeys.bulletPoints,
@@ -361,6 +364,7 @@ describe('FormSettingsPage', () => {
       cy.contains('Lagre').click();
       cy.wait(['@saveTranslation', '@saveTranslation', '@saveForm']);
       cy.then(() => {
+        expect(state.translationPuts, 'saved translations should never be updated from intro page').to.be.empty;
         state.translationPosts.forEach(({ key, tag }) => {
           expect(key).to.match(uuidRegex);
           expect(tag).to.equal('introPage');
@@ -424,6 +428,7 @@ describe('FormSettingsPage', () => {
       cy.wait('@saveForm');
       cy.then(() => {
         expect(state.translationPosts).to.be.empty;
+        expect(state.translationPuts, 'saved translations should never be updated from intro page').to.be.empty;
         expect(state.savedForms.at(-1)?.introPage.sections.prerequisites.bulletPoints).to.deep.equal([
           savedIntroPageKeys.bulletPoints[0],
           savedIntroPageKeys.bulletPoints[2],
