@@ -391,7 +391,7 @@ describe('FormSettingsPage', () => {
         .within(() => {
           cy.get('.rsw-editor [contenteditable="true"]').type(' oppdatert');
           cy.get('.rsw-editor [contenteditable="true"]').blur();
-          cy.getByTestId('inactive-translation-warning').should('be.visible');
+          cy.findByTestId('inactive-translation-warning').should('be.visible');
         });
 
       cy.get('[data-testid="prerequisites"]').within(() => {
@@ -400,16 +400,18 @@ describe('FormSettingsPage', () => {
         cy.get('.rsw-editor [contenteditable="true"]').eq(1).type(' oppdatert');
         cy.get('.rsw-editor [contenteditable="true"]').eq(1).blur();
 
-        cy.getByTestId('inactive-translation-warning').should('have.length', 1).and('be.visible');
+        cy.findByTestId('inactive-translation-warning').should('have.length', 1).and('be.visible');
       });
 
       cy.findAllByTestId('inactive-translation-warning')
         .should('have.length', 2)
         .each(($warning) => {
-          cy.wrap($warning).should(
-            'contain.text',
-            'Teksten har en oversettelse som vil bli inaktiv med denne endringen. Vurder å endre under oversettelser.',
-          );
+          cy.wrap($warning)
+            .invoke('text')
+            .should(
+              'match',
+              /Teksten har en oversettelse som vil bli inaktiv med denne endringen\. Vurder å endre under\s+oversettelser/,
+            );
         });
     });
 
