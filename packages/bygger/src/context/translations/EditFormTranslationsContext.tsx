@@ -1,6 +1,6 @@
 import { htmlUtils } from '@navikt/skjemadigitalisering-shared-components';
 import { FormsApiTranslation, stringUtils, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
-import { createContext, ReactNode, useContext, useEffect, useReducer, useRef } from 'react';
+import { createContext, ReactNode, useContext, useEffect, useReducer } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useFeedbackEmit } from '../notifications/FeedbackContext';
 import { editFormTranslationsReducer } from './editTranslationsReducer';
@@ -44,8 +44,8 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
     errors: [],
     status: 'INIT',
     changes: {},
+    inactiveTranslationWarningKeys: new Set<string>(),
   });
-  const inactiveTranslationWarningKeys = useRef(new Set<string>());
   const { storedTranslations, saveTranslation, loadTranslations } = useFormTranslations();
   const feedbackEmit = useFeedbackEmit();
 
@@ -75,10 +75,11 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
   const addKeyBasedText = (value: string, replacedKey?: string) => {
     const translationKey = uuidv4();
     const replacedTranslation = replacedKey ? storedTranslations[replacedKey] : undefined;
-    if (replacedTranslation?.nn?.trim() || replacedTranslation?.en?.trim()) {
-      inactiveTranslationWarningKeys.current.add(translationKey);
-    }
-    dispatch({ type: 'ADD', payload: { key: translationKey, nb: value, tag: 'introPage' } });
+    const warnAboutInactiveTranslation = !!(replacedTranslation?.nn?.trim() || replacedTranslation?.en?.trim());
+    dispatch({
+      type: 'ADD',
+      payload: { key: translationKey, nb: value, tag: 'introPage', warnAboutInactiveTranslation },
+    });
     return translationKey;
   };
 
@@ -139,7 +140,7 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
   };
 
   const shouldWarnAboutInactiveTranslation = (key?: string) =>
-    !!key && inactiveTranslationWarningKeys.current.has(key) && !storedTranslations[key];
+    !!key && state.inactiveTranslationWarningKeys.has(key) && !storedTranslations[key];
 
   const value = {
     storedTranslations,
