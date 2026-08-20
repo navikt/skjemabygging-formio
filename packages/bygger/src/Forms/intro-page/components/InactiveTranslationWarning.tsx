@@ -12,14 +12,9 @@ const InactiveTranslationWarning = () => {
       <Alert variant="warning" size="small" data-testid="inactive-translation-warning">
         Teksten har en oversettelse som vil bli inaktiv med denne endringen. Vurder å endre under{' '}
         {formPath ? (
-          <Link
-            as={ReactRouterLink}
-            to={`/forms/${formPath}/oversettelser`}
-            target="_blank"
-            rel="noreferrer"
-            aria-label="Oversettelser (åpnes i ny fane)"
-          >
+          <Link as={ReactRouterLink} to={`/forms/${formPath}/oversettelser`} target="_blank" rel="noreferrer">
             oversettelser <ExternalLinkIcon aria-hidden fontSize="1em" />
+            <span className="sr-only"> (åpnes i ny fane)</span>
           </Link>
         ) : (
           'oversettelser'
