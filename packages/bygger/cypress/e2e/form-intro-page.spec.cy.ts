@@ -44,12 +44,20 @@ const savedIntroPage = {
 };
 
 const initialSavedTranslations = [
-  { id: 101, revision: 1, key: savedIntroPageKeys.introduction, nb: '<p>Velkommen</p>', tag: 'introPage' },
+  {
+    id: 101,
+    revision: 1,
+    key: savedIntroPageKeys.introduction,
+    nb: '<p>Velkommen</p>',
+    nn: '<p>Velkomen</p>',
+    tag: 'introPage',
+  },
   ...savedIntroPageKeys.bulletPoints.map((key, index) => ({
     id: 102 + index,
     revision: 1,
     key,
     nb: `Kulepunkt ${index + 1}`,
+    en: index === 0 ? 'Bullet point 1' : '',
     tag: 'introPage',
   })),
 ];
@@ -369,6 +377,36 @@ describe('FormSettingsPage', () => {
           savedIntroPageKeys.bulletPoints.slice(1),
         );
       });
+    });
+
+    it('warns when editing text with stored Nynorsk or English translations', () => {
+      setupSavedIntroPage();
+
+      cy.contains('Velkomstmelding')
+        .parent()
+        .within(() => {
+          cy.get('.rsw-editor [contenteditable="true"]').type(' oppdatert');
+          cy.get('.rsw-editor [contenteditable="true"]').blur();
+          cy.getByTestId('inactive-translation-warning').should('be.visible');
+        });
+
+      cy.get('[data-testid="prerequisites"]').within(() => {
+        cy.get('.rsw-editor [contenteditable="true"]').eq(0).type(' oppdatert');
+        cy.get('.rsw-editor [contenteditable="true"]').eq(0).blur();
+        cy.get('.rsw-editor [contenteditable="true"]').eq(1).type(' oppdatert');
+        cy.get('.rsw-editor [contenteditable="true"]').eq(1).blur();
+
+        cy.getByTestId('inactive-translation-warning').should('have.length', 1).and('be.visible');
+      });
+
+      cy.findAllByTestId('inactive-translation-warning')
+        .should('have.length', 2)
+        .each(($warning) => {
+          cy.wrap($warning).should(
+            'contain.text',
+            'Teksten har en oversettelse som vil bli inaktiv med denne endringen. Vurder å endre under oversettelser.',
+          );
+        });
     });
 
     it('deletes the selected saved bullet point instead of the last one', () => {

@@ -5,7 +5,8 @@ import { useGlobalTranslations } from '../context/translations/GlobalTranslation
 const useKeyBasedText = () => {
   const { storedTranslations: globalTranslations } = useGlobalTranslations();
   const { storedTranslations } = useFormTranslations();
-  const { addKeyBasedText, updateKeyBasedText, getTextFromCurrentChanges } = useEditFormTranslations();
+  const { addKeyBasedText, updateKeyBasedText, getTextFromCurrentChanges, shouldWarnAboutInactiveTranslation } =
+    useEditFormTranslations();
 
   const getKeyBasedText = (key?: string): string => {
     if (!key) {
@@ -18,16 +19,14 @@ const useKeyBasedText = () => {
   };
 
   const setKeyBasedText = (value: string, existingKey?: string) => {
-    console.log('setKeyBasedText', existingKey, value);
-
     if (!existingKey || storedTranslations[existingKey] || globalTranslations[existingKey]) {
-      return addKeyBasedText(value);
+      return addKeyBasedText(value, existingKey);
     }
 
     return updateKeyBasedText(value, existingKey);
   };
 
-  return { setKeyBasedText, getKeyBasedText };
+  return { setKeyBasedText, getKeyBasedText, shouldWarnAboutInactiveTranslation };
 };
 
 export default useKeyBasedText;
