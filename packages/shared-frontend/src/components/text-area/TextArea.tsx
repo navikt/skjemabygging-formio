@@ -1,5 +1,5 @@
 import { Textarea } from '@navikt/ds-react';
-import { ChangeEvent } from 'react';
+import { ChangeEvent, FocusEvent } from 'react';
 import { useStateField } from '../../context/state/useStateField';
 import { inputId } from '../../utils/inputId';
 import ReadMore from '../read-more/ReadMore';
@@ -38,6 +38,15 @@ const TextArea = ({
     }
   };
 
+  const handleBlur = (event: FocusEvent<HTMLTextAreaElement>) => {
+    const trimmedValue = event.target.value.trim();
+    if (controlledOnChange) {
+      controlledOnChange(trimmedValue);
+    } else {
+      setStateValue(trimmedValue);
+    }
+  };
+
   return (
     <FormElementBox marginBottom={marginBottom}>
       <Textarea
@@ -50,6 +59,7 @@ const TextArea = ({
         description={<TranslatedDescription>{description}</TranslatedDescription>}
         value={value}
         onChange={handleChange}
+        onBlur={handleBlur}
         error={error}
         readOnly={readOnly}
         maxLength={maxLength}

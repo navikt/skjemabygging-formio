@@ -119,7 +119,9 @@ const TextField = ({
     const formatted = formatDisplayValue(rawValue);
     setDisplayValue(formatted);
     const nextStateValue = toStateValue ? toStateValue(rawValue) : toSubmissionFormat(rawValue, formatKey);
-    if (!controlledOnChange && !Object.is(stateValue, nextStateValue)) {
+    if (controlledOnChange) {
+      controlledOnChange(formatted);
+    } else if (!Object.is(stateValue, nextStateValue)) {
       setStateValue(nextStateValue);
     }
   };
