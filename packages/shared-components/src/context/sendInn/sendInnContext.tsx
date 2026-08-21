@@ -122,7 +122,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   }, [fyllutMellomlagringState, setSubmission]);
 
   const retrieveMellomlagring = useCallback(
-    async (innsendingsId: string): Promise<boolean> => {
+    async (innsendingsId: string) => {
       const response = await getSoknad(innsendingsId, appConfig);
       if (!response?.shouldUploadAttachmentsInFyllut && setAttachmentPageEnabled) {
         setAttachmentPageEnabled(false);
@@ -131,9 +131,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         addSearchParamToUrl('lang', response.hoveddokumentVariant.document.language);
         setSubmission(getSubmissionWithFyllutState(response, form));
         dispatchFyllutMellomlagring({ type: 'init', response });
-        return true;
       }
-      return false;
     },
     [addSearchParamToUrl, appConfig, form, setSubmission, setAttachmentPageEnabled],
   );
@@ -426,15 +424,9 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
             }
             retrieveStartedForRef.current = innsendingsIdFromParams;
             setInnsendingsId(innsendingsIdFromParams);
-            const retrieved = await retrieveMellomlagring(innsendingsIdFromParams);
-            if (retrieved) {
-              setIsMellomlagringReady(true);
-              logger?.info(`${innsendingsIdFromParams}: Mellomlagring was retrieved`);
-            } else {
-              logger?.error(`${innsendingsIdFromParams}: Mellomlagring was retrieved but contained no submission data`);
-              dispatchFyllutMellomlagring({ type: 'error', error: 'GET_FAILED' });
-              retrieveStartedForRef.current = undefined;
-            }
+            await retrieveMellomlagring(innsendingsIdFromParams);
+            setIsMellomlagringReady(true);
+            logger?.info(`${innsendingsIdFromParams}: Mellomlagring was retrieved`);
           } else if (isMellomlagringAvailable) {
             const response = await startMellomlagring(submission!);
             if (response) {
