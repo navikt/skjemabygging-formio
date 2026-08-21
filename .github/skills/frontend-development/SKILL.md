@@ -2,134 +2,102 @@
 name: frontend-development
 description: >-
   Mandatory repository guidance for every frontend change or review. Always use
-  for TSX/JSX, browser-facing TypeScript or JavaScript, styles, UI components,
-  hooks, state, forms, validation, focus, accessibility, and Cypress UI tests in
-  fyllut, bygger, or shared frontend packages.
+  for browser code, styles, UI components, hooks, state, forms, validation,
+  focus, accessibility, and Cypress UI tests in fyllut, bygger, or shared
+  frontend packages.
 ---
 
 # Frontend development
 
 Use this skill before investigating, planning, editing, or reviewing frontend
-behavior. It contains repository defaults that are not user decisions. Do not
-ask the user how to solve something already defined here.
+behavior. Its rules are repository defaults, not questions for the user.
 
-## Scope
-
-This skill applies to:
-
-- `.tsx` and `.jsx`;
-- browser-facing `.ts` and `.js`;
-- CSS and other styling;
-- components, hooks, contexts, and client state;
-- form rendering, validation, errors, and focus;
-- frontend logging;
-- Cypress tests of UI behavior.
-
-It does not apply to a backend-only TypeScript change merely because the file
-extension is `.ts`.
+This applies to browser-facing TypeScript and JavaScript, TSX/JSX, styles, UI
+state, and Cypress tests. A `.ts` extension alone does not make backend code
+frontend work.
 
 ## Package direction
 
-- Put new shared UI, hooks, frontend services, and form behavior in
-  `packages/shared-frontend` when more than one surface needs them.
-- Keep `packages/shared-frontend/src/components` generic. Components there may
-  be used across packages and must not depend on fyllut-specific form flow,
-  submission, routing, or application code.
-- Keep `packages/shared-frontend/src/fyllut` for fyllut-specific orchestration,
-  form-definition adapters, submission flows, wizard behavior, and host
-  integration. It must expose the fyllut experience so both the fyllut and
-  bygger frontends can host it without duplicating the flow.
-- Dependencies point from `fyllut` to generic `components`, never the reverse.
-- Keep app-specific behavior in `packages/fyllut` or `packages/bygger`.
-- Treat `packages/shared-components` as legacy. Extend it only when changing an
-  existing legacy flow and moving the behavior first is not practical.
-- Reuse an existing shared component or helper before creating another path.
-- Keep form-definition adapters thin. Shared behavior belongs in the reusable
-  component or domain layer, not repeated in each renderer.
+- Put reusable UI, hooks, frontend services, and form behavior in
+  `packages/shared-frontend`.
+- Keep `packages/shared-frontend/src/components` generic. It must not depend on
+  fyllut-specific flow, submission, routing, or application code.
+- Keep `packages/shared-frontend/src/fyllut` for the fyllut flow, form-definition
+  adapters, submission, wizard behavior, and host integration. Keep this flow
+  hostable by both fyllut and bygger.
+- Dependencies may point from `fyllut` to generic `components`, never the
+  reverse. Keep application-specific behavior in `packages/fyllut` or
+  `packages/bygger`.
+- Treat `packages/shared-components` as legacy. Extend it only when changing a
+  legacy flow that cannot reasonably be moved first.
+- Reuse shared behavior before adding another path. Keep form-definition
+  adapters thin.
 
 ## Aksel and accessibility
 
-Use Aksel components and patterns for user-facing UI. Before choosing or
-configuring an Aksel component, token, layout, or interaction, consult
-`aksel-agent`. It must fetch current Aksel documentation; do not rely on model
-memory or copy Aksel API details into this skill.
+Use Aksel for user-facing UI. Consult `aksel-agent` before choosing or changing
+an Aksel component, token, layout, or interaction. It must use current Aksel
+documentation; do not rely on remembered APIs.
 
-Apply these stable rules to every UI change:
-
-- Use semantic elements and meaningful accessible names.
-- Support keyboard operation for every action.
-- Keep labels and necessary guidance visible. Do not use placeholder text as a
-  label or instruction.
+- Use semantic elements, meaningful accessible names, visible labels, and
+  keyboard-operable actions.
+- Do not use placeholders as labels or instructions.
 - Do not communicate state, errors, or results through color alone.
-- Preserve useful focus. Do not steal focus during ordinary typing or updates.
-- Move focus when navigation or error recovery requires it.
-- Keep content usable with zoom, reflow, and assistive technology.
-- Use clear text for icons whose meaning is not otherwise available.
-- Do not override Aksel internals or claim WCAG compliance.
+- Preserve focus during ordinary updates. Move it only for navigation, dialogs,
+  or error recovery.
+- Keep the UI usable with zoom, reflow, keyboard navigation, and assistive
+  technology.
+- Do not override Aksel internals.
 
-When a change affects UI behavior, validate the applicable WCAG 2.2 AA outcome
-through observable acceptance criteria and Cypress coverage.
+Describe affected accessibility behavior as observable acceptance criteria.
+Automate stable UI behavior in Cypress, but use manual checks where a browser
+test cannot verify the outcome, such as screen-reader announcements or reflow.
 
-## Form interaction and validation
+## Forms
 
 Read
 [the form interaction rules](references/form-interaction-and-validation.md)
-for any input, form, validation, error, conditional visibility, navigation, or
-focus change. These are repository defaults. Ask the user only when the product
-requirement intentionally needs different behavior.
+for changes to inputs, formatting, validation, errors, conditional visibility,
+navigation, or focus. Apply those defaults without asking unless the requirement
+intentionally changes them.
 
-## State and data
+## Host services, content, and logging
 
-- Keep the displayed value, client state, summary, submission, and PDF
-  representation consistent.
-- Treat display, state/submission, summary, and PDF formats as separate
-  contracts for the same value. Do not assume their strings are identical.
-- Preserve user input after failed validation or navigation.
-- Do not silently normalize, clear, or discard input unless established
-  product behavior requires it.
-- Respect existing conditional visibility and `clearOnHide` behavior. A change
-  to those semantics needs an explicit product decision and end-to-end tests.
+- Give shared components HTTP and other host dependencies through adapters,
+  context, or props. Do not add direct `fetch`, `window`, or hard-coded
+  `/fyllut` dependencies. Existing cases are migration debt; do not extend them.
+- Route user-facing form text through the shared language and translation
+  context. Do not hard-code display text in reusable components.
+- Sanitize form-authored or translated HTML with the existing helper before
+  passing it to `dangerouslySetInnerHTML`. Do not add another sanitizer.
+- Preserve entered values after failed validation or navigation.
 - Do not log form answers, personal data, tokens, or other sensitive values.
 - Use the existing frontend logger for reportable failures instead of adding
-  ad hoc console logging.
+  console logging.
 
-## Frontend testing
+## Testing
 
-- Use Cypress for UI behavior, interactions, focus, accessibility-visible
-  outcomes, and end-to-end flows.
+- Use Cypress for UI behavior, interactions, focus, and end-to-end flows.
 - Use Vitest only for isolated non-UI logic such as mappers, formatters,
   validators, and reducers.
-- Do not add or expand `@testing-library` tests. When changing behavior covered
-  only there, prefer replacing that coverage with Cypress.
-- Cover the normal journey and any changed failure or recovery behavior.
+- Do not add or expand `@testing-library` tests. Prefer replacing affected
+  legacy coverage with Cypress.
+- Cover changed failure and recovery behavior as well as the normal journey.
 
-Use `cypress-write-test` as the source of truth for Cypress authoring,
-`start-dev-servers` for local startup, and `cypress-repo-workflow` for running
-or debugging the test.
+Use `cypress-write-test` for test authoring, `start-dev-servers` for startup,
+and `cypress-repo-workflow` for execution and debugging.
 
-## Before asking the user
+## Asking and exceptions
 
-Check this skill, the relevant reference, nearby behavior, and current Aksel
-documentation first. Treat established rules as facts. Ask only about product
-behavior or a deliberate exception.
+Check this skill, its reference, nearby behavior, and current Aksel
+documentation before asking the user. Ask only about product behavior or a
+deliberate exception.
 
-If a requested exception conflicts with a rule here:
-
-1. explain the existing default and why it applies;
-2. confirm that the user intends to change it;
-3. record the scope of the exception;
-4. add tests that distinguish the exception from the default.
+For an exception, explain the default, confirm the intended change, record its
+scope, and add tests that distinguish it from the default.
 
 ## Maintaining this skill
 
-This skill may be updated from an approved specification only when the decision
-is:
-
-- cross-cutting across frontend features or surfaces;
-- stable enough to guide future work;
-- verified through repository evidence, an approved specification, or a
-  prototype;
-- not a one-off feature requirement or temporary implementation detail.
-
-Never update the skill silently. Show the proposed rule and ask for explicit
-approval. Keep one rule in one place and remove or replace outdated guidance.
+Add a rule only when it is approved, cross-cutting, stable, and supported by
+repository evidence or a validated prototype. Do not add feature-specific or
+temporary decisions. Show the exact wording and require explicit approval.
