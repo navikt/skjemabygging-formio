@@ -17,7 +17,7 @@ describe('Submission Type', () => {
     describe('Go to intro page', () => {
       beforeEach(() => {
         // sub=paper gets automatically added when running on build code
-        cy.visit('/fyllut/stpaper?sub=paper');
+        cy.visit('/fyllut/submissiontypespaper?sub=paper');
         cy.defaultWaits();
       });
 
@@ -83,7 +83,7 @@ describe('Submission Type', () => {
     });
 
     it('Use digital submission type on paper only', () => {
-      cy.visit('/fyllut/stpaper?sub=digital');
+      cy.visit('/fyllut/submissiontypespaper?sub=digital');
       cy.defaultWaits();
       cy.findByRole('heading', { name: 'Ugyldig innsendingsvalg' }).should('exist');
     });
@@ -91,7 +91,7 @@ describe('Submission Type', () => {
     it('Add sub if missing (INCLUDE_DIST_TESTS)', () => {
       cy.skipIfNoIncludeDistTests();
 
-      cy.visit('/fyllut/stpaper');
+      cy.visit('/fyllut/submissiontypespaper');
       cy.defaultWaits();
       cy.url().should('include', 'sub=paper');
     });
@@ -101,7 +101,7 @@ describe('Submission Type', () => {
     describe('Go to intro page', () => {
       beforeEach(() => {
         // sub=digital gets automatically added when running on build code
-        cy.visit('/fyllut/stdigital?sub=digital');
+        cy.visit('/fyllut/submissiontypesdigital?sub=digital');
         cy.defaultWaits();
       });
 
@@ -125,7 +125,11 @@ describe('Submission Type', () => {
 
         cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
         cy.clickSaveAndContinue();
-        cy.findByRole('link', { name: 'Oppsummering' }).click();
+        cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
+        cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+          cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
+        });
+        cy.clickSaveAndContinue();
 
         cy.clickSendNav();
         cy.findByRole('heading', { name: 'Kvittering' }).should('exist');
@@ -140,14 +144,14 @@ describe('Submission Type', () => {
     });
 
     it('Use paper submission type on digital only', () => {
-      cy.visit('/fyllut/stdigital?sub=paper');
+      cy.visit('/fyllut/submissiontypesdigital?sub=paper');
       cy.defaultWaits();
       cy.findByRole('heading', { name: 'Ugyldig innsendingsvalg' }).should('exist');
     });
 
     it('Add sub if missing (INCLUDE_DIST_TESTS)', () => {
       cy.skipIfNoIncludeDistTests();
-      cy.visit('/fyllut/stdigital');
+      cy.visit('/fyllut/submissiontypesdigital');
       cy.defaultWaits();
       cy.url().should('include', 'sub=digital');
     });
@@ -156,20 +160,20 @@ describe('Submission Type', () => {
   describe('Type: Digital No Login', () => {
     it('goes to upload page', () => {
       cy.skipIfNoIncludeDistTests();
-      cy.visit('/fyllut/stnologin?sub=digitalnologin');
+      cy.visit('/fyllut/submissiontypesdigitalnologin?sub=digitalnologin');
       cy.defaultWaits();
       cy.findByRole('heading', { name: TEXTS.statiske.uploadId.title }).should('exist');
     });
 
     it('Use paper submission type on digital no login only', () => {
-      cy.visit('/fyllut/stnologin?sub=paper');
+      cy.visit('/fyllut/submissiontypesdigitalnologin?sub=paper');
       cy.defaultWaits();
       cy.findByRole('heading', { name: 'Ugyldig innsendingsvalg' }).should('exist');
     });
 
     it('Add sub if missing (INCLUDE_DIST_TESTS)', () => {
       cy.skipIfNoIncludeDistTests();
-      cy.visit('/fyllut/stnologin');
+      cy.visit('/fyllut/submissiontypesdigitalnologin');
       cy.defaultWaits();
       cy.url().should('include', 'sub=digitalnologin');
     });
@@ -178,7 +182,7 @@ describe('Submission Type', () => {
   describe('Type: Digital and Paper', () => {
     describe('Go to intro page', () => {
       beforeEach(() => {
-        cy.visit('/fyllut/stpaperdigital');
+        cy.visit('/fyllut/submissiontypespaperdigital');
         cy.defaultWaits();
       });
 
@@ -204,7 +208,9 @@ describe('Submission Type', () => {
         cy.findByRole('textbox', { name: 'Tekstfelt' }).type('asdf');
         cy.clickNextStep();
 
-        cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
+        cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+          cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
+        });
         cy.clickNextStep();
 
         cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions }).click();
@@ -228,7 +234,7 @@ describe('Submission Type', () => {
     it('Missing sub paper or digital (INCLUDE_DIST_TESTS)', () => {
       cy.skipIfNoIncludeDistTests();
 
-      cy.visit('/fyllut/stpaperdigital/dineOpplysninger');
+      cy.visit('/fyllut/submissiontypespaperdigital/dineOpplysninger');
       cy.defaultWaits();
 
       cy.findByRole('heading', { name: 'Dine opplysninger' }).should('not.exist');
@@ -240,7 +246,7 @@ describe('Submission Type', () => {
   describe('Type: Digital and Digital No Login', () => {
     describe('Go to intro page', () => {
       beforeEach(() => {
-        cy.visit('/fyllut/stdigitalnologin');
+        cy.visit('/fyllut/submissiontypesdigitaldigitalnologin');
         cy.defaultWaits();
       });
 
@@ -270,7 +276,7 @@ describe('Submission Type', () => {
   describe('Type: Paper and Digital No Login', () => {
     describe('Go to intro page', () => {
       beforeEach(() => {
-        cy.visit('/fyllut/stpapernologin');
+        cy.visit('/fyllut/submissiontypespapernologin');
         cy.defaultWaits();
       });
 
@@ -300,7 +306,7 @@ describe('Submission Type', () => {
   describe('Type: Digital, Digital No Login and Paper', () => {
     describe('Go to intro page', () => {
       beforeEach(() => {
-        cy.visit('/fyllut/stpaperdigitalnologin');
+        cy.visit('/fyllut/submissiontypespaperdigitalnologin');
         cy.defaultWaits();
       });
 
@@ -322,7 +328,7 @@ describe('Submission Type', () => {
 
   describe('Type: None', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/stnone');
+      cy.visit('/fyllut/submissiontypesnone');
       cy.defaultWaits();
     });
 
@@ -394,7 +400,7 @@ describe('Submission Type', () => {
     it('redirects when non-supported sub is manually set in url', () => {
       cy.skipIfNoIncludeDistTests();
 
-      cy.visit('/fyllut/stnone?sub=digital');
+      cy.visit('/fyllut/submissiontypesnone?sub=digital');
       cy.defaultWaits();
       cy.findByRole('heading', { name: 'Introduksjon' }).should('exist');
       cy.url().should('not.include', 'sub=');
@@ -403,7 +409,7 @@ describe('Submission Type', () => {
     it('does not add sub if missing (INCLUDE_DIST_TESTS)', () => {
       cy.skipIfNoIncludeDistTests();
 
-      cy.visit('/fyllut/stnone');
+      cy.visit('/fyllut/submissiontypesnone');
       cy.defaultWaits();
       cy.url().should('not.include', 'sub=');
     });
@@ -459,11 +465,11 @@ describe('Submission Type', () => {
 
   describe('Other', () => {
     it('Make sure the url is correct when you already have search params.', () => {
-      cy.visit('/fyllut/stpaperdigital?lang=en');
+      cy.visit('/fyllut/submissiontypespaperdigital?lang=en');
       cy.defaultWaits();
-      cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendOnPaper }).click();
+      cy.findByRole('link', { name: /Send i posten|Send by post/ }).click();
 
-      cy.url().should('include', 'fyllut/stpaperdigital?lang=en&sub=paper');
+      cy.url().should('include', 'fyllut/submissiontypespaperdigital?lang=en&sub=paper');
     });
   });
 });

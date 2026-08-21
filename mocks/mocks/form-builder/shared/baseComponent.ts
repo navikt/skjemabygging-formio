@@ -15,6 +15,7 @@ export interface BaseComponentType {
   validate?: ValidateComponentType;
   customConditional?: string;
   conditional?: ConditionalComponentType;
+  [key: string]: any;
 }
 
 const baseComponent = (props?: BaseComponentType) => {

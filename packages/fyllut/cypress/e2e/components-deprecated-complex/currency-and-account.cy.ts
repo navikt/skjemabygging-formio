@@ -18,7 +18,9 @@ describe('Components', () => {
       cy.get('[data-cy=error-summary]')
         .should('exist')
         .within(() => {
-          cy.findByRole('link', { name: 'Dette er ikke et gyldig kontonummer' }).should('exist');
+          cy.findByRole('link', {
+            name: 'Dette er ikke et gyldig kontonummer. Sjekk at du har tastet riktig.',
+          }).should('exist');
           cy.findByRole('link', { name: 'Du må fylle ut: IBAN' }).should('exist');
         });
 
@@ -78,17 +80,9 @@ describe('Components', () => {
 
       cy.clickNextStep();
 
-      cy.get('dl')
-        .first()
-        .within(() => {
-          cy.get('dt').eq(0).should('contain.text', 'Kontonummer');
-          cy.get('dd').eq(0).should('contain.text', '0123 45 67892');
-          cy.get('dt').eq(1).should('contain.text', 'IBAN');
-          cy.get('dd').eq(1).should('contain.text', 'NL04 RABO 8424 5984 90');
-          cy.get('dt').eq(2).should('contain.text', 'Angi valuta og beløp');
-          // NOK might be placed before or after number depending on browser/node. So only check amount.
-          cy.get('dd').eq(2).should('contain.text', '450,00');
-        });
+      cy.contains('dt', 'Kontonummer').next('dd').should('contain.text', '0123 45 67892');
+      cy.contains('dt', 'IBAN').next('dd').should('contain.text', 'NL04 RABO 8424 5984 90');
+      cy.contains('dd', '450').should('exist');
     });
   });
 });

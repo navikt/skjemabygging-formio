@@ -17,7 +17,7 @@ describe('Digital submission without user login', () => {
 
   describe('Submission of application', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nologinform');
+      cy.visit('/fyllut/nologinsubmission');
       cy.defaultWaits();
       cy.findByRole('link', { name: 'Kan ikke logge inn' }).click();
       cy.findByRole('link', { name: 'Send digitalt uten å logge inn' }).click();
@@ -74,7 +74,8 @@ describe('Digital submission without user login', () => {
       cy.clickNextStep();
 
       cy.clickSendNav();
-      cy.findByRole('heading', { name: TEXTS.statiske.receipt.title }).should('exist');
+      cy.url({ timeout: 20000 }).should('include', '/kvittering');
+      cy.findByRole('link', { name: TEXTS.statiske.receipt.downloadLinkLabel, timeout: 20000 }).should('exist');
       cy.findByRole('button', { name: 'Vis alle steg' }).should('not.exist');
       cy.findByRole('button', { name: 'Skjul alle steg' }).should('not.exist');
       cy.window().then((window) => {
@@ -204,7 +205,7 @@ describe('Digital submission without user login', () => {
   });
 
   it('should clear id when navigating back from id upload page', () => {
-    cy.visit('/fyllut/nologinform');
+    cy.visit('/fyllut/nologinsubmission');
     cy.defaultWaits();
     cy.findByRole('link', { name: 'Kan ikke logge inn' }).click();
     cy.findByRole('link', { name: 'Send digitalt uten å logge inn' }).click();
@@ -232,15 +233,15 @@ describe('Digital submission without user login', () => {
   it('should redirect to id upload page on initial render of page', () => {
     cy.skipIfNoIncludeDistTests();
 
-    cy.visit('/fyllut/nologinform/utdanning?sub=digitalnologin'); // <-- Directly visiting a later step in the form
+    cy.visit('/fyllut/nologinsubmission/utdanning?sub=digitalnologin'); // <-- Directly visiting a later step in the form
     cy.defaultWaits();
-    cy.url().should('include', '/fyllut/nologinform/legitimasjon?sub=digitalnologin');
+    cy.url().should('include', '/fyllut/nologinsubmission/legitimasjon?sub=digitalnologin');
     cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).should('exist');
   });
 
   describe('Nologin service unavailable', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nologinform/legitimasjon?sub=digitalnologin');
+      cy.visit('/fyllut/nologinsubmission/legitimasjon?sub=digitalnologin');
       cy.defaultWaits();
       cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
         cy.findByLabelText('Norsk pass').check(),
@@ -296,7 +297,7 @@ describe('Digital submission without user login', () => {
 
   describe('Attachments', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nologinform/legitimasjon?sub=digitalnologin');
+      cy.visit('/fyllut/nologinsubmission/legitimasjon?sub=digitalnologin');
       cy.defaultWaits();
       cy.findByRole('group', { name: 'Hvilken legitimasjon ønsker du å bruke?' }).within(() =>
         cy.findByLabelText('Norsk pass').check(),
@@ -486,7 +487,7 @@ describe('Digital submission without user login', () => {
 
   describe('Attachment in PDF', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/nologinform/legitimasjon?sub=digitalnologin');
+      cy.visit('/fyllut/nologinsubmission/legitimasjon?sub=digitalnologin');
       cy.defaultWaits();
     });
 
@@ -535,8 +536,8 @@ describe('Digital submission without user login', () => {
       );
       cy.clickNextStep();
       cy.clickSendNav();
-      cy.findByText(TEXTS.statiske.receipt.title).should('exist');
-      cy.findByRole('link', { name: TEXTS.statiske.receipt.downloadLinkLabel }).should('exist');
+      cy.url({ timeout: 20000 }).should('include', '/kvittering');
+      cy.findByRole('link', { name: TEXTS.statiske.receipt.downloadLinkLabel, timeout: 20000 }).should('exist');
       cy.contains('b', 'Vi har mottatt følgende dokumenter')
         .parents('section')
         .within(() => {
@@ -604,8 +605,8 @@ describe('Digital submission without user login', () => {
 
       cy.clickNextStep();
       cy.clickSendNav();
-      cy.findByText(TEXTS.statiske.receipt.title).should('exist');
-      cy.findByRole('link', { name: TEXTS.statiske.receipt.downloadLinkLabel }).should('exist');
+      cy.url({ timeout: 20000 }).should('include', '/kvittering');
+      cy.findByRole('link', { name: TEXTS.statiske.receipt.downloadLinkLabel, timeout: 20000 }).should('exist');
       cy.contains('b', 'Vi har mottatt følgende dokumenter')
         .parents('section')
         .within(() => {
@@ -621,7 +622,7 @@ describe('Digital submission without user login', () => {
 
   describe('Session expired flow', () => {
     it('should redirect user to session expired page', () => {
-      cy.visit('/fyllut/nologinform/legitimasjon?sub=digitalnologin');
+      cy.visit('/fyllut/nologinsubmission/legitimasjon?sub=digitalnologin');
       cy.defaultWaits();
       cy.findByRole('heading', { name: 'Legitimasjon' }).should('exist');
 
@@ -636,7 +637,7 @@ describe('Digital submission without user login', () => {
       cy.findByRole('heading', { name: TEXTS.statiske.error.sessionExpired.title }).should('exist');
       cy.findByRole('link', { name: TEXTS.statiske.error.sessionExpired.buttonText }).click(); // start over
 
-      cy.url().should('match', /.*\/fyllut\/nologinform$/);
+      cy.url().should('match', /.*\/fyllut\/nologinsubmission$/);
       cy.findByRole('link', { name: 'Send digitalt' }).should('exist');
       cy.findByRole('link', { name: 'Kan ikke logge inn' }).should('exist');
     });

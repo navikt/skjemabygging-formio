@@ -51,6 +51,43 @@ describe('clearOnHide', () => {
     });
   });
 
+  describe('Basic rerender regression', () => {
+    beforeEach(() => {
+      visitClearOnHideForm();
+      cy.findByRole('heading', { name: 'Basic' }).shouldBeVisible();
+      cy.clickShowAllSteps();
+    });
+
+    it('does not add extra rerenders when clearOnHide emits submissionChanged', () => {
+      cy.findByRole('checkbox', { name: 'Show TextField' }).check();
+      cy.findByRole('textbox', { name: 'TextField' }).type('Hello world');
+      cy.findByRole('textbox', { name: 'TextField' }).should('have.value', 'Hello world');
+      cy.findByRole('textbox', { name: 'TextField' }).then(($input) => {
+        const componentElement = $input
+          .parents()
+          .toArray()
+          .find(
+            (element) =>
+              'component' in element &&
+              typeof (element as HTMLElement & { component?: { rerender?: () => void } }).component?.rerender ===
+                'function',
+          );
+
+        if (!componentElement) {
+          throw new Error('Expected to find the TextField Form.io component element');
+        }
+        cy.spy((componentElement as HTMLElement & { component: { rerender: () => void } }).component, 'rerender').as(
+          'textFieldRerender',
+        );
+      });
+      cy.get('@textFieldRerender').invoke('resetHistory');
+
+      cy.findByRole('checkbox', { name: 'Show TextField' }).uncheck();
+      cy.findByRole('textbox', { name: 'TextField' }).should('not.exist');
+      cy.get('@textFieldRerender').should('have.callCount', 1);
+    });
+  });
+
   describe('Within Container', () => {
     beforeEach(() => {
       visitClearOnHideForm();

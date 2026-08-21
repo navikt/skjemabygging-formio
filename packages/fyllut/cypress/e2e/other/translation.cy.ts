@@ -9,29 +9,29 @@ describe('Translations', () => {
 
   describe('Change translations based on url params', () => {
     it('get default bokmål', () => {
-      cy.visit('/fyllut/cypress101/veiledning');
+      cy.visit('/fyllut/translationcypress101/veiledning');
       cy.findByRole('button', { name: 'Norsk bokmål' }).should('exist');
     });
 
     it('get bokmål with lang param', () => {
-      cy.visit('/fyllut/cypress101/veiledning?lang=nb-NO');
+      cy.visit('/fyllut/translationcypress101/veiledning?lang=nb-NO');
       cy.findByRole('button', { name: 'Norsk bokmål' }).should('exist');
     });
 
     it('get nynorsk with lang param', () => {
-      cy.visit('/fyllut/cypress101/veiledning?lang=nn-NO');
+      cy.visit('/fyllut/translationcypress101/veiledning?lang=nn-NO');
       cy.findByRole('button', { name: 'Norsk nynorsk' }).should('exist');
     });
 
     it('get english with lang param', () => {
-      cy.visit('/fyllut/cypress101/skjema?lang=en');
+      cy.visit('/fyllut/translationcypress101/skjema?lang=en');
       cy.findByRole('button', { name: 'English' }).should('exist');
     });
   });
 
   describe('Change translation language', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/cypress101/skjema?sub=paper');
+      cy.visit('/fyllut/translationcypress101/skjema?sub=paper');
     });
 
     it('change to english and back to norwegian', () => {
@@ -74,7 +74,7 @@ describe('Translations', () => {
         .first()
         .should('exist')
         .within(($radio) =>
-          cy.findByLabelText('No, I have no other documentation.').should('exist').check({ force: true }),
+          cy.findByLabelText('No, I have no additional documentation to attach').should('exist').check({ force: true }),
         );
       cy.clickNextStep();
 
@@ -102,7 +102,7 @@ describe('Translations', () => {
 
   describe('Special cases', () => {
     beforeEach(() => {
-      cy.visit('/fyllut/cypress101/skjema?sub=paper');
+      cy.visit('/fyllut/translationcypress101/skjema?sub=paper');
     });
 
     it('Check that translateHTMLTemplate override work', () => {

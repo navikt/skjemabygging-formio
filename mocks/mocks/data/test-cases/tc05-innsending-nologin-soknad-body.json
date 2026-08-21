@@ -3,7 +3,7 @@
   "bruker": "08842748500",
   "formNumber": "TST 19-81.07",
   "title": "Uinnlogget søknad",
-  "tema": "BIL",
+  "tema": "HJE",
   "language": "nb",
   "mainDocument": "eyJjb250ZW50IjoicGRmIn0=",
   "mainDocumentAlt": "<IGNORED>",
@@ -22,7 +22,7 @@
       "title": "Vanlig vedlegg",
       "uploadStatus": "LevertDokumentasjonTidligere",
       "fileIds": [],
-      "description": "<p>Beskrivelse til vedlegget</p>"
+      "description": "Beskrivelse til vedlegget"
     },
     {
       "attachmentCode": "N6",
