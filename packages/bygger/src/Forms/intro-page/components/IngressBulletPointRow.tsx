@@ -28,7 +28,7 @@ export function IngressBulletPointRow({
   showAddBulletList,
   showField,
 }: IngressBulletPointRowProps) {
-  const { setKeyBasedText, getKeyBasedText } = useKeyBasedText();
+  const { setKeyBasedText, getKeyBasedText, shouldWarnAboutInactiveTranslation } = useKeyBasedText();
   const sectionField = form.introPage?.sections?.[field];
   const isAnExceptionField = ['dataDisclosure'].includes(field);
   const sectionRefPrefix = `sections.${field}`;
@@ -65,6 +65,7 @@ export function IngressBulletPointRow({
           onDelete={() => updateSection(form, field, 'description', undefined, handleChange)}
           error={errors?.sections?.[field]?.description}
           ref={refMap[`${sectionRefPrefix}.description`]}
+          showInactiveTranslationWarning={shouldWarnAboutInactiveTranslation(sectionField?.description)}
         />
       )}
 
@@ -81,6 +82,7 @@ export function IngressBulletPointRow({
               onDelete={() => removeBulletPoint(form, field, index, handleChange)}
               error={errors?.sections?.[field]?.bulletPoints?.[index]}
               ref={refMap[`${sectionRefPrefix}.bulletPoints`]?.[index]}
+              showInactiveTranslationWarning={shouldWarnAboutInactiveTranslation(value)}
             />
           ))}
           <AddButton
