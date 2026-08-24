@@ -505,7 +505,7 @@ const collectValidationDescriptors = (
     }
 
     return [
-      ...(hasRules(rules)
+      ...(component.input !== false && hasRules(rules)
         ? [createDescriptor(component, submissionPath, component.label ?? component.key, rules)]
         : []),
       ...collectValidationDescriptors(component.components ?? [], submission, submissionMethod, pageComponents),

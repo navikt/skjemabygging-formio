@@ -20,6 +20,7 @@ const InputSurname = ({ component, submissionPath }: InputComponentProps) => (
       type={resolveInputType(component)}
       spellCheck={component.spellCheck}
       prefillValue={component.prefillValue}
+      readOnly={component.readOnly}
       readMore={resolveReadMore(component)}
     />
   </FormGroup>

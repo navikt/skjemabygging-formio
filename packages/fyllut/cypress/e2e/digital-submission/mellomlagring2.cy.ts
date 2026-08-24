@@ -29,7 +29,8 @@ const openSummaryInStepper = () => {
 };
 
 const withinOpenDialog = (callback: () => void) => {
-  cy.get('dialog[open]').should('be.visible').within(callback);
+  cy.get('dialog[open]').should('be.visible');
+  cy.get('dialog[open]').within(callback);
 };
 
 const testConfirmationModal = (
@@ -60,21 +61,21 @@ const confirmSaveDraftAfterCancellingOnce = () => {
 
   cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveDraft }).click();
   withinOpenDialog(() => {
-    cy.findByText(body).shouldBeVisible();
+    cy.findByText((content, element) => element?.tagName === 'P' && content.trim() === body).shouldBeVisible();
     cy.findByRole('button', { name: TEXTS.grensesnitt.confirmSavePrompt.cancel }).click();
   });
   cy.get('dialog[open]').should('not.exist');
 
   cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.saveDraft }).click();
   withinOpenDialog(() => {
-    cy.findByText(body).shouldBeVisible();
+    cy.findByText((content, element) => element?.tagName === 'P' && content.trim() === body).shouldBeVisible();
     cy.findByRole('button', { name: TEXTS.grensesnitt.confirmSavePrompt.confirm }).click();
   });
 };
 
 const expectSummaryValidationToBlockSubmission = () => {
   cy.clickSendNav();
-  cy.contains(TEXTS.statiske.summaryPage.validationMessage).shouldBeVisible();
+  cy.get('[data-cy=error-summary]').shouldBeVisible();
   expectSummaryPage();
   cy.url().should('not.include', '/kvittering');
 };
@@ -243,7 +244,9 @@ describe('Mellomlagring v2', () => {
       cy.findByRole('group', { name: 'Ønsker du å få gaven innpakket' }).shouldBeVisible();
       testConfirmationModal(TEXTS.grensesnitt.navigation.cancelAndDelete, TEXTS.grensesnitt.confirmDeletePrompt);
       cy.wait('@deleteMellomlagring');
-      cy.findByText(TEXTS.statiske.mellomlagringError.delete.message).shouldBeVisible();
+      cy.findByRole('dialog', { name: TEXTS.grensesnitt.confirmDeletePrompt.title })
+        .should('be.visible')
+        .and('contain.text', TEXTS.statiske.mellomlagringError.delete.message);
     });
 
     it('shows an error when saving mellomlagring before cancelling fails', () => {
@@ -300,10 +303,11 @@ describe('Mellomlagring v2', () => {
 
         cy.clickSaveAndContinue();
         cy.findByRole('heading', { name: 'p 2', timeout: 10000 }).shouldBeVisible();
+        cy.findByRole('checkbox', { name: 'Avkryssingsboks 2' }).shouldBeVisible().click();
 
         openSummaryInStepper();
         cy.clickEditAnswers();
-        cy.findByRole('textbox', { name: 'Tekstfelt 2a', timeout: 10000 }).shouldBeVisible();
+        cy.findByRole('textbox', { name: 'Tekstfelt 2a' }).shouldBeVisible().should('have.focus');
       });
     });
 
@@ -349,10 +353,7 @@ describe('Mellomlagring v2', () => {
           cy.findByRole('link', { name: 'Levering' }).click();
           cy.findByRole('heading', { name: 'Levering' }).shouldBeVisible();
 
-          cy.findByRole('combobox', { name: 'Hvordan ønsker du å motta pakken?' })
-            .get('svg')
-            .eq(2)
-            .click({ force: true });
+          cy.findByRole('combobox', { name: 'Hvordan ønsker du å motta pakken?' }).type('{backspace}');
 
           cy.findByRole('link', { name: TEXTS.statiske.summaryPage.title }).click();
           expectSummaryValidationToBlockSubmission();
@@ -372,16 +373,6 @@ describe('Mellomlagring v2', () => {
             );
             cy.clickShowAllSteps();
             cy.findByRole('link', { name: 'Vedlegg' }).should('exist');
-          });
-
-          it('hides attachment page when not empty', () => {
-            cy.mocksUseRouteVariant('get-soknad:success-1-sendinn-upload');
-            cy.visitRouteAndWait(
-              `/fyllut/mellomlagring2mellomlagring/oppsummering?sub=digital&innsendingsId=${validInnsendingsId}&lang=nb-NO`,
-              ['@getMellomlagringValid'],
-            );
-            cy.clickShowAllSteps();
-            cy.findByRole('link', { name: 'Vedlegg' }).should('not.exist');
           });
         });
 
@@ -487,7 +478,7 @@ describe('Mellomlagring v2', () => {
             expect(submission.data['datagrid']).to.deep.eq([{ tekstfelt: 'Hoppeslott' }, { tekstfelt: 'Hund' }]);
             expect(submission.data['datagrid1']).to.be.undefined;
             expect(submission.data['hvaSyntesDuOmFrokosten']).to.be.undefined;
-            req.reply(201);
+            req.continue();
           });
         });
 

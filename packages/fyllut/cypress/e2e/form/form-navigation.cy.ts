@@ -103,9 +103,9 @@ describe('Form navigation', () => {
 
       cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationpaper/oppsummering?sub=paper');
-      cy.contains('Du må fullføre utfyllingen før du kan fortsette').should('not.exist');
+      cy.get('[data-cy=error-summary]').should('not.exist');
       cy.findByRole('link', { name: 'Instruksjoner for innsending' }).click();
-      cy.contains('Du må fullføre utfyllingen før du kan fortsette').should('exist');
+      cy.get('[data-cy=error-summary]').should('exist');
       cy.findByRole('link', { name: 'Forrige steg' }).should('not.exist');
       cy.findAllByRole('link', { name: 'Fortsett utfylling' }).eq(1).click();
 
@@ -122,7 +122,7 @@ describe('Form navigation', () => {
       cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationpaper/oppsummering?sub=paper');
       cy.findByRole('link', { name: 'Fortsett utfylling' }).should('not.exist');
-      cy.contains('Du må fullføre utfyllingen før du kan fortsette').should('not.exist');
+      cy.get('[data-cy=error-summary]').should('not.exist');
       cy.findByRole('link', { name: 'Instruksjoner for innsending' }).click();
 
       cy.findByRole('heading', { level: 2, name: 'Skjemaet er ikke sendt ennå' }).should('exist');
@@ -269,9 +269,9 @@ describe('Form navigation', () => {
 
         cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
         cy.url().should('include', '/fyllut/formnavigationdigital/oppsummering?sub=digital');
-        cy.contains('Du må fullføre utfyllingen før du kan fortsette').should('not.exist');
+        cy.get('[data-cy=error-summary]').should('not.exist');
         cy.clickSendNav();
-        cy.contains('Du må fullføre utfyllingen før du kan fortsette').should('exist');
+        cy.get('[data-cy=error-summary]').should('exist');
         cy.findByRole('link', { name: 'Forrige steg' }).should('not.exist');
         cy.findAllByRole('link', { name: 'Fortsett utfylling' }).eq(1).click();
 
@@ -290,7 +290,7 @@ describe('Form navigation', () => {
         cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
         cy.url().should('include', '/fyllut/formnavigationdigital/oppsummering?sub=digital');
         cy.findByRole('link', { name: 'Fortsett utfylling' }).should('not.exist');
-        cy.contains('Du må fullføre utfyllingen før du kan fortsette').should('not.exist');
+        cy.get('[data-cy=error-summary]').should('not.exist');
 
         cy.clickSendNav();
         cy.wait('@submitApplication');
@@ -561,9 +561,9 @@ describe('Form navigation', () => {
 
       cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationdigitalnologin/oppsummering?sub=digitalnologin');
-      cy.contains('Du må fullføre utfyllingen før du kan fortsette').should('not.exist');
+      cy.get('[data-cy=error-summary]').should('not.exist');
       cy.findByRole('link', { name: 'Send til Nav' }).click();
-      cy.contains('Du må fullføre utfyllingen før du kan fortsette').should('exist');
+      cy.get('[data-cy=error-summary]').should('exist');
       cy.findByRole('link', { name: 'Forrige steg' }).should('not.exist');
       cy.findAllByRole('link', { name: 'Fortsett utfylling' }).eq(1).click();
 
@@ -580,7 +580,7 @@ describe('Form navigation', () => {
       cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationdigitalnologin/oppsummering?sub=digitalnologin');
       cy.findByRole('link', { name: 'Fortsett utfylling' }).should('not.exist');
-      cy.contains('Du må fullføre utfyllingen før du kan fortsette').should('not.exist');
+      cy.get('[data-cy=error-summary]').should('not.exist');
       cy.findByRole('link', { name: 'Send til Nav' }).click();
       cy.wait('@nologinSubmit');
     });

@@ -98,6 +98,7 @@ const enrichComponentsWithPrefillValues = (components: Component[] = [], prefill
       ...(component.components
         ? { components: enrichComponentsWithPrefillValues(component.components, prefillData) }
         : {}),
+      ...(component.protectedApiKey && prefillValue !== undefined ? { readOnly: true } : {}),
       ...((
         Array.isArray(component.prefillKey)
           ? typeof prefillValue === 'object' && prefillValue !== null && Object.keys(prefillValue).length > 0
