@@ -457,7 +457,7 @@ describe('SummaryPage', () => {
     // Select select
     cy.findAllByRole('combobox', { name: /Dropdown \(select\)/ }).select('Yes');
     // Select formio (HTML5)
-    cy.findAllByRole('combobox', { name: /Dropdown \(select HTML5\)/ }).select('0,50');
+    cy.findAllByRole('combobox', { name: /Dropdown \(select HTML5\)/ }).select('0.50');
 
     cy.findByRole('group', { name: /Radio panel/ }).within(() => {
       cy.findByRole('radio', { name: 'Yes' }).check();
