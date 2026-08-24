@@ -338,6 +338,27 @@ describe('Mellomlagring v2', () => {
           cy.findByRole('heading', { name: 'Kvittering' }).shouldBeVisible();
         });
 
+        it('retrieves mellomlagring exactly once and still submits full data when the retrieval is slow', () => {
+          cy.intercept('GET', `/fyllut/api/send-inn/soknad/${validInnsendingsId}`, (req) => {
+            req.on('response', (res) => {
+              res.setDelay(500);
+            });
+          }).as('getMellomlagringValidSlow');
+
+          cy.visitRouteAndWait(
+            `/fyllut/mellomlagring2mellomlagring?sub=digital&innsendingsId=${validInnsendingsId}&lang=nb-NO`,
+            ['@getMellomlagringValidSlow'],
+          );
+
+          openSummaryInStepper();
+          cy.findByText('Ønsker du å få gaven innpakket').should('exist');
+          cy.clickSendNav();
+          cy.wait('@submitApplication');
+          cy.findByRole('heading', { name: 'Kvittering' }).shouldBeVisible();
+
+          cy.get('@getMellomlagringValidSlow.all').should('have.length', 1);
+        });
+
         it('retrieves mellomlagring and lets you navigate to first panel with error', () => {
           failOnSubmitApplicationAttempt();
           cy.visitRouteAndWait(

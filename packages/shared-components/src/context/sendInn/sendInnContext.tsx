@@ -7,7 +7,7 @@ import {
   Submission,
   tokenUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import React, { createContext, useCallback, useContext, useEffect, useReducer, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useReducer, useRef, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router';
 import { submitCaptchaValue } from '../../api/captcha/captcha';
 import { postNologinSoknad } from '../../api/sendinn/nologin';
@@ -68,6 +68,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const [isMellomlagringReady, setIsMellomlagringReady] = useState(!isMellomlagringAvailable);
   // Make sure that we only create once
   const [isCreateStarted, setIsCreateStarted] = useState(false);
+  const retrieveStartedForRef = useRef<string | undefined>(undefined);
   const [innsendingsId, setInnsendingsId] = useState<string>();
   const [nologinToken, setNologinToken] = useState<string | undefined>();
   const [captchaValue, setCaptchaValue] = useState<Record<string, string>>({});
@@ -418,6 +419,10 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
       if (!innsendingsId || innsendingsIdFromParams !== innsendingsId) {
         try {
           if (innsendingsIdFromParams) {
+            if (retrieveStartedForRef.current === innsendingsIdFromParams) {
+              return;
+            }
+            retrieveStartedForRef.current = innsendingsIdFromParams;
             setInnsendingsId(innsendingsIdFromParams);
             await retrieveMellomlagring(innsendingsIdFromParams);
             setIsMellomlagringReady(true);
@@ -430,6 +435,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
             }
           }
         } catch (error: any) {
+          retrieveStartedForRef.current = undefined;
           if (isNotFoundError(error)) {
             logger?.info(
               `${innsendingsIdFromParams}: Mellomlagring does not exist. Redirects to ${soknadNotFoundUrl}`,
