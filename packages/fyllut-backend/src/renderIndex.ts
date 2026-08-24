@@ -98,19 +98,14 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
             }
             logger.debug('Static pdf', { formPath });
           } else if (submissionTypesUtils.containsMultipleStandardSubmissionTypes(submissionTypes)) {
-            if (isAllowlistedNewRenderForm) {
-              logger.debug('Allowing direct route without submission query param for allowlisted new-render form', {
-                formPath,
-                baseUrl: req.baseUrl,
-              });
-            } else if (
-              req.originalUrl.match(new RegExp(`/(oppsummering|ingen-innsending|send-i-posten|legitimasjon)`))
-            ) {
-              const targetUrl = `${config.fyllutPath}/${formPath}`;
+            const targetUrl = `${config.fyllutPath}/${formPath}`;
+            if (!isAllowlistedNewRenderForm && req.baseUrl !== targetUrl) {
+              const logMeta = { formPath, targetUrl, baseUrl: req.baseUrl };
+              logger.info('Redirecting to intro page since submission query param is missing', logMeta);
               return res.redirect(
                 url.format({
                   pathname: targetUrl,
-                  query: redirectParams,
+                  query: req.query as ParsedUrlQueryInput,
                 }),
               );
             }
