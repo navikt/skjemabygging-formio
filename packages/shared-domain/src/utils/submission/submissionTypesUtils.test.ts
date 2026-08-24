@@ -1,3 +1,4 @@
+import { SubmissionType } from '../../models';
 import { submissionTypesUtils } from './submissionTypesUtils';
 
 describe('Submission type utils', () => {
@@ -92,6 +93,23 @@ describe('Submission type utils', () => {
 
     it('should return false when submissionTypes is an empty list', () => {
       expect(submissionTypesUtils.isPaperSubmission([])).toBeFalsy();
+    });
+  });
+
+  describe('submissionTypesUtils.isSubmissionByMail', () => {
+    const cases: [SubmissionType[] | undefined, boolean][] = [
+      [['PAPER'], true],
+      [['STATIC_PDF'], true],
+      [['DIGITAL', 'PAPER'], true],
+      [['DIGITAL', 'STATIC_PDF'], true],
+      [['DIGITAL'], false],
+      [['PAPER_NO_COVER_PAGE'], false],
+      [[], false],
+      [undefined, false],
+    ];
+
+    it.each(cases)('returns %s for submission types %j', (submissionTypes, expected) => {
+      expect(submissionTypesUtils.isSubmissionByMail(submissionTypes)).toBe(expected);
     });
   });
 

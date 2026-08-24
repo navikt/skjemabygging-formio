@@ -21,7 +21,7 @@ const AddressFields = ({ onChange, diff, form }: AddressFieldsProps) => {
   };
   return (
     <>
-      {submissionTypesUtils.isPaperSubmission(submissionTypes) && (
+      {submissionTypesUtils.isSubmissionByMail(submissionTypes) && (
         <div>
           <Select
             className="mb-4"

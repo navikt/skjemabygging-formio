@@ -33,7 +33,7 @@ const EnhetFields = ({ onChange, form, errors }: EnhetFieldsProps) => {
 
   return (
     <>
-      {submissionTypesUtils.isPaperSubmission(submissionTypes) && !mottaksadresseId && (
+      {submissionTypesUtils.isSubmissionByMail(submissionTypes) && !mottaksadresseId && (
         <div className="mb">
           <EnhetSettings
             enhetstyperNorg={enhetstyperNorg}
