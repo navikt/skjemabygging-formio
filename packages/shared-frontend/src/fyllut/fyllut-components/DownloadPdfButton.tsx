@@ -4,6 +4,7 @@ import { downloadBlob } from '../fyllut-utils/blob';
 
 interface Props {
   fileName: string;
+  isValid?: () => boolean;
   onClick?: () => void;
   onSuccess?: () => void;
   onError?: () => void;
@@ -11,7 +12,7 @@ interface Props {
   pdfContent: () => Promise<Blob | undefined>;
 }
 
-const DownloadPdfButton = ({ fileName, onClick, onSuccess, onError, children, pdfContent }: Props) => {
+const DownloadPdfButton = ({ fileName, isValid, onClick, onSuccess, onError, children, pdfContent }: Props) => {
   const [downloading, setDownloading] = useState(false);
 
   const download = async () => {
@@ -20,6 +21,10 @@ const DownloadPdfButton = ({ fileName, onClick, onSuccess, onError, children, pd
     }
 
     onClick?.();
+    if (isValid && !isValid()) {
+      return;
+    }
+
     setDownloading(true);
     try {
       const content = await pdfContent();

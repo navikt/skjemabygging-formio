@@ -1,5 +1,6 @@
 import FormErrorSummary from './components/error-summary/FormErrorSummary';
 import ValidationExclamationIcon from './components/icons/ValidationExclamationIcon';
+import NavUnitSelect from './components/nav-unit-select/NavUnitSelect';
 import { ApplicationProvider, useApplication } from './context/application/ApplicationContext';
 import { FormActionsProvider, useFormActions } from './context/form-actions/FormActionsContext';
 import { FormDefinitionProvider, useFormDefinition } from './context/form-definition/FormDefinitionContext';
@@ -32,6 +33,7 @@ import { useWizardController } from './wizard/useWizardController';
 
 const sharedFrontendPackageName = '@navikt/skjemadigitalisering-shared-frontend';
 
+export type { NavUnitSelectProps } from './components/nav-unit-select/NavUnitSelect';
 export type {
   ApplicationContextValue,
   ApplicationEnvironment,
@@ -76,6 +78,7 @@ export {
   inputComponentRegistry,
   isSoknadAlreadyExistsResponse,
   LanguageProvider,
+  NavUnitSelect,
   RenderForm,
   RenderInputForm,
   RenderSummaryForm,

@@ -2,12 +2,16 @@ import { Alert, BodyShort, Heading, Link, List, VStack } from '@navikt/ds-react'
 import {
   attachmentUtils,
   dateUtils,
+  Enhet,
   formioFormsApiUtils,
   localizationUtils,
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
+import NavUnitSelect from '../../components/nav-unit-select/NavUnitSelect';
+import { filterNavUnits, sortNavUnits } from '../../components/nav-unit-select/navUnitUtils';
+import { useApplication } from '../../context/application/ApplicationContext';
 import { useFormDefinition } from '../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useSubmissionState } from '../../context/state/SubmissionStateContext';
@@ -26,14 +30,21 @@ interface Props {
 
 const PrepareSubmissionStep = ({ type }: Props) => {
   const { translate, currentLanguage } = useLanguage();
-  const { fyllutBaseUrl, logEvent, downloadPdf } = useFyllut();
+  const { fyllutBaseUrl, http, logEvent, downloadPdf } = useFyllut();
+  const { logger } = useApplication();
   const { submissionMethod } = useSubmissionMethod();
   const { form } = useFormDefinition();
   const { submission } = useSubmissionState();
   const { search, state } = useLocation();
   const navigate = useNavigate();
   const [downloadState, setDownloadState] = useState<'success' | 'error'>();
+  const [navUnits, setNavUnits] = useState<Enhet[]>();
+  const [navUnitFetchError, setNavUnitFetchError] = useState(false);
+  const [selectedNavUnit, setSelectedNavUnit] = useState('');
+  const [navUnitSelectionError, setNavUnitSelectionError] = useState(false);
   const navForm = useMemo(() => formioFormsApiUtils.mapFormToNavForm(form), [form]);
+  const requiresNavUnit =
+    type === 'cover-page-and-application' && form.properties.enhetMaVelgesVedPapirInnsending === true;
 
   const fileName = useMemo(() => `${form.path}-${dateUtils.toLocaleDate().replace(/\./g, '')}.pdf`, [form.path]);
   const attachments = useMemo(
@@ -43,6 +54,39 @@ const PrepareSubmissionStep = ({ type }: Props) => {
   const showNoSubmissionContent =
     type === 'application' && (!submissionMethod || submissionMethod === 'papernocoverpage');
   const navigationState = withoutSubmissionNavigationState(state);
+
+  useEffect(() => {
+    if (!requiresNavUnit) {
+      return;
+    }
+
+    const loadNavUnits = async () => {
+      setNavUnitFetchError(false);
+      setNavUnits(undefined);
+      try {
+        const units = await http?.get<Enhet[]>(`${fyllutBaseUrl}/api/enhetsliste`);
+        if (!units) {
+          throw new Error('NAV unit HTTP client is unavailable.');
+        }
+
+        const filteredUnits = filterNavUnits(units, form.properties.enhetstyper);
+        if (filteredUnits.length === 0) {
+          logger?.error?.('No relevant NAV units found', {
+            skjemanummer: form.properties.skjemanummer,
+            enhetstyper: form.properties.enhetstyper,
+          });
+          setNavUnits(sortNavUnits(units));
+          return;
+        }
+
+        setNavUnits(filteredUnits);
+      } catch {
+        setNavUnitFetchError(true);
+      }
+    };
+
+    loadNavUnits();
+  }, [form.properties.enhetstyper, form.properties.skjemanummer, fyllutBaseUrl, http, logger, requiresNavUnit]);
 
   const getPdfContent = async () => {
     if (!submission) {
@@ -56,6 +100,7 @@ const PrepareSubmissionStep = ({ type }: Props) => {
         formPath: form.path,
         submission: JSON.stringify(submission),
         submissionMethod,
+        enhetNummer: selectedNavUnit || undefined,
       },
     );
   };
@@ -102,8 +147,38 @@ const PrepareSubmissionStep = ({ type }: Props) => {
             )}
           </>
         )}
+        {requiresNavUnit && navUnitFetchError && (
+          <Alert variant="error">{translate(TEXTS.statiske.navUnit.fetchError)}</Alert>
+        )}
+        {requiresNavUnit && navUnits && !navUnitFetchError && (
+          <NavUnitSelect
+            statePath="nav-unit"
+            units={navUnits}
+            description={form.properties.navUnitDescription}
+            value={selectedNavUnit}
+            onChange={(unitNumber) => {
+              setSelectedNavUnit(unitNumber);
+              setNavUnitSelectionError(false);
+            }}
+            error={
+              navUnitSelectionError ? translate(TEXTS.statiske.prepareLetterPage.entityNotSelectedError) : undefined
+            }
+          />
+        )}
         <DownloadPdfButton
           fileName={fileName}
+          isValid={() => {
+            if (requiresNavUnit && (navUnitFetchError || !navUnits)) {
+              return false;
+            }
+
+            if (requiresNavUnit && !selectedNavUnit) {
+              setNavUnitSelectionError(true);
+              return false;
+            }
+
+            return true;
+          }}
           onClick={() => setDownloadState(undefined)}
           onSuccess={() => {
             setDownloadState('success');

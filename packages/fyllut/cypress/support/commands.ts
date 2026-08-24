@@ -12,16 +12,6 @@ import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import '@testing-library/cypress/add-commands';
 import { CyHttpMessages } from 'cypress/types/net-stubbing';
 
-const clearPersistedRouterUserState = (win: Cypress.AUTWindow) => {
-  const historyState = win.history.state;
-  if (!historyState || typeof historyState !== 'object' || !('usr' in historyState)) {
-    return;
-  }
-
-  const { usr: _routerUserState, ...nextHistoryState } = historyState as Record<string, unknown>;
-  win.history.replaceState(nextHistoryState, '', win.location.href);
-};
-
 // -- This is a parent command --
 // Cypress.Commands.add('login', (email, password) => { ... })
 //
@@ -36,18 +26,6 @@ const clearPersistedRouterUserState = (win: Cypress.AUTWindow) => {
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
-
-Cypress.Commands.overwrite('visit', (originalFn, url, options: Partial<Cypress.VisitOptions> = {}) => {
-  const { onBeforeLoad, ...restOptions } = options;
-
-  return originalFn(url, {
-    ...restOptions,
-    onBeforeLoad: (win) => {
-      clearPersistedRouterUserState(win);
-      onBeforeLoad?.(win);
-    },
-  });
-});
 
 // Based on https://github.com/cypress-io/cypress/issues/7306#issuecomment-636009167
 Cypress.Commands.add('findByRoleWhenAttached', (role, options, wait: number = 100) => {
