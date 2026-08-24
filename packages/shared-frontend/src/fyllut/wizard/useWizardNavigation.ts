@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router';
+import { useValidation } from '../../context/validation/ValidationContext';
 import { withoutSubmissionNavigationState } from '../../utils/navigationState';
-import { useValidation } from '../framework';
 import { INTRO_KEY, SUMMARY_KEY } from './constants';
 
 interface WizardNavigationState {

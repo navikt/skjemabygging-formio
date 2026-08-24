@@ -1,8 +1,9 @@
 import { Form, ReceiptSummary, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { Outlet, Route, Routes, useLocation, useNavigate } from 'react-router';
+import { useFormDefinition } from '../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../context/language/LanguageContext';
+import { useValidation } from '../../context/validation/ValidationContext';
 import { withoutSubmissionNavigationState } from '../../utils/navigationState';
-import { useFormDefinition, useValidation } from '../framework';
 import ReceiptStep from '../receipt/ReceiptStep';
 import { PREPARE_LETTER_KEY, PREPARE_NO_SUBMISSION_KEY, RECEIPT_KEY, SUMMARY_KEY } from './constants';
 import IntroStep from './IntroStep';

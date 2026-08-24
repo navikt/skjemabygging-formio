@@ -3,9 +3,10 @@ import { Alert, BodyShort, Box, Button, Heading, HStack, Link, List, VStack } fr
 import { dateUtils, Form, ReceiptSummary, stringUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo } from 'react';
 import { useNavigationType } from 'react-router';
+import { useFormActions } from '../../context/form-actions/FormActionsContext';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
-import { FormHeader, useFormActions } from '../framework';
+import FormHeader from '../../layout/FormHeader';
 import { useFyllut } from '../FyllutContext';
 
 const getMyPageUrl = (url: string) => {

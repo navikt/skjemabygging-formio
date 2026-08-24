@@ -8,19 +8,16 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
+import { useFormDefinition } from '../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../context/language/LanguageContext';
+import { useSubmissionState } from '../../context/state/SubmissionStateContext';
 import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
+import { FormButtonRow, FormPrevButton } from '../../layout/FormButtonRow';
+import FormHeader from '../../layout/FormHeader';
 import { withoutSubmissionNavigationState } from '../../utils/navigationState';
-import {
-  CancelAndDeleteButton,
-  FormButtonRow,
-  FormHeader,
-  FormPrevButton,
-  useFormDefinition,
-  useSubmissionState,
-} from '../framework';
 import DownloadPdfButton from '../fyllut-components/DownloadPdfButton';
 import { useFyllut } from '../FyllutContext';
+import CancelAndDeleteButton from '../navigation/CancelAndDeleteButton';
 import { SUMMARY_KEY } from './constants';
 
 interface Props {

@@ -1,4 +1,4 @@
-import { useFormDefinition } from '../framework';
+import { useFormDefinition } from '../../context/form-definition/FormDefinitionContext';
 import Summary from '../Summary';
 import { useWizardNavigation } from './useWizardNavigation';
 

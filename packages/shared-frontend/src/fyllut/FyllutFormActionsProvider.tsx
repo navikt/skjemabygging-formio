@@ -9,12 +9,13 @@ import {
 import { ReactNode, useMemo, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useApplication } from '../context/application/ApplicationContext';
+import { FormActionHandlers, FormActionsProvider } from '../context/form-actions/FormActionsContext';
 import { useLanguage } from '../context/language/LanguageContext';
+import { useSubmissionState } from '../context/state/SubmissionStateContext';
 import { useSubmissionMethod } from '../context/submission-method/SubmissionMethodContext';
 import { postNologinSoknad } from './api/nologinSoknad';
 import { createSoknad, soknadAlreadyExists, updateSoknad } from './api/sendInnSoknad';
 import { buildDigitalFormSearch } from './digitalDraftUtils';
-import { FormActionHandlers, FormActionsProvider, useSubmissionState } from './framework';
 import { b64toBlob } from './fyllut-utils/blob';
 import { useFyllut } from './FyllutContext';
 import { useNologinToken } from './nologin-token/NologinTokenContext';

@@ -1,7 +1,9 @@
 import { Form, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router';
-import { FormHeader, FormStepper, StepperProvider } from '../framework';
+import FormHeader from '../../layout/FormHeader';
+import FormStepper from '../../layout/FormStepper';
+import { StepperProvider } from '../../layout/StepperContext';
 import { INTRO_KEY, SUMMARY_KEY } from './constants';
 import { consumeStepperOpenState } from './stepperOpenState';
 

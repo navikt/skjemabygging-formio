@@ -1,24 +1,20 @@
 import { Alert, Heading } from '@navikt/ds-react';
 import { navFormUtils, PanelValidation, submissionTypesUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo } from 'react';
+import FormErrorSummary from '../components/error-summary/FormErrorSummary';
 import { useApplication } from '../context/application/ApplicationContext';
+import { useFormActions } from '../context/form-actions/FormActionsContext';
+import { useFormDefinition } from '../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../context/language/LanguageContext';
+import { useSubmissionState } from '../context/state/SubmissionStateContext';
 import { useSubmissionMethod } from '../context/submission-method/SubmissionMethodContext';
+import { useValidation } from '../context/validation/ValidationContext';
+import RenderSummaryForm from '../form-summary/RenderSummaryForm';
+import { FormButtonRow, FormNextButton, FormPrevButton } from '../layout/FormButtonRow';
 import { inputId } from '../utils/inputId';
 import { useAttachmentUpload } from './attachments/context/AttachmentUploadContext';
-import {
-  CancelAndDeleteButton,
-  FormButtonRow,
-  FormErrorSummary,
-  FormNextButton,
-  FormPrevButton,
-  RenderSummaryForm,
-  SaveButton,
-  useFormActions,
-  useFormDefinition,
-  useSubmissionState,
-  useValidation,
-} from './framework';
+import CancelAndDeleteButton from './navigation/CancelAndDeleteButton';
+import SaveButton from './navigation/SaveButton';
 import { PREPARE_LETTER_KEY, PREPARE_NO_SUBMISSION_KEY } from './wizard/constants';
 
 const hasUserMessage = (error: unknown): error is { userMessage: string } =>

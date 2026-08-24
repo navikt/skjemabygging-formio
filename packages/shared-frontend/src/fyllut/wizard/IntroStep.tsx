@@ -1,4 +1,4 @@
-import { useFormDefinition } from '../framework';
+import { useFormDefinition } from '../../context/form-definition/FormDefinitionContext';
 import IntroPage from '../IntroPage';
 import { useWizardNavigation } from './useWizardNavigation';
 

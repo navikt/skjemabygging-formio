@@ -1,17 +1,15 @@
 import { Form, Submission, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import { useLocation } from 'react-router';
+import { FormDefinitionProvider } from '../context/form-definition/FormDefinitionContext';
+import { applyPrefilledValuesToSubmission } from '../context/form-definition/prefillSubmission';
+import { SubmissionStateProvider } from '../context/state/SubmissionStateContext';
 import { SubmissionMethodProvider } from '../context/submission-method/SubmissionMethodContext';
+import { ValidationProvider } from '../context/validation/ValidationContext';
+import FormHeader from '../layout/FormHeader';
+import FormLayout from '../layout/FormLayout';
 import { AttachmentUploadProvider } from './attachments/context/AttachmentUploadContext';
 import FormLanguageSelector from './FormLanguageSelector';
-import {
-  applyPrefilledValuesToSubmission,
-  FormDefinitionProvider,
-  FormHeader,
-  FormLayout,
-  SubmissionStateProvider,
-  ValidationProvider,
-} from './framework';
 import FyllutFormActionsProvider from './FyllutFormActionsProvider';
 import { NologinTokenProvider } from './nologin-token/NologinTokenContext';
 import { resolveDefaultSubmissionMethod } from './submissionMethodResolution';

@@ -1,20 +1,16 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useRef } from 'react';
 import { useLocation, useParams } from 'react-router';
+import FormErrorSummary from '../../components/error-summary/FormErrorSummary';
+import { useFormActions } from '../../context/form-actions/FormActionsContext';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
-import {
-  CancelAndDeleteButton,
-  FormButtonRow,
-  FormErrorSummary,
-  FormNextButton,
-  FormPrevButton,
-  RenderInputForm,
-  SaveButton,
-  useFormActions,
-  useValidation,
-  useWizardController,
-} from '../framework';
+import { useValidation } from '../../context/validation/ValidationContext';
+import { FormButtonRow, FormNextButton, FormPrevButton } from '../../layout/FormButtonRow';
+import { useWizardController } from '../../wizard/useWizardController';
+import RenderInputForm from '../form-components/RenderInputForm';
+import CancelAndDeleteButton from '../navigation/CancelAndDeleteButton';
+import SaveButton from '../navigation/SaveButton';
 import { useWizardNavigation } from './useWizardNavigation';
 
 const PanelStep = () => {
