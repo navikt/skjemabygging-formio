@@ -207,13 +207,16 @@ describe('Mellomlagring v2', () => {
     });
 
     it('fetches mellomlagring and starts from the intro page when url contains "innsendingsId"', () => {
-      cy.visitRouteAndWait(
-        `/fyllut/mellomlagring2mellomlagring?sub=digital&innsendingsId=${validInnsendingsId}&lang=nb-NO`,
-        ['@getMellomlagringValid'],
-      );
+      cy.visitRouteAndWait(`/fyllut/mellomlagring2mellomlagring?sub=digital&innsendingsId=${validInnsendingsId}`, [
+        '@getMellomlagringValid',
+      ]);
 
       cy.url().should('include', `innsendingsId=${validInnsendingsId}`);
+      cy.location('search').then((search) => {
+        expect(new URLSearchParams(search).get('lang')).to.equal('nb-NO');
+      });
       cy.findByRole('heading', { name: TEXTS.statiske.introPage.title }).shouldBeVisible();
+      cy.findByRole('button', { name: 'Vi lagrer svar underveis' }).shouldBeVisible();
       cy.clickStart();
       cy.url().should('include', `innsendingsId=${validInnsendingsId}`);
       cy.url().should('include', '/valgfrieOpplysninger');
