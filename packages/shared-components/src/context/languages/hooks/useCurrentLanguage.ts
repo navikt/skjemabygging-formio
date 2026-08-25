@@ -1,20 +1,18 @@
+import { I18nTranslations } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo } from 'react';
+import { resolveLanguageCode } from '../languageUtils';
 
-const defaultLanguage = 'nb-NO';
-
-const useCurrentLanguage = (languageCodeFromUrl, translations) => {
-  const initialLanguage = useMemo(
-    () => (Object.keys(translations).indexOf(languageCodeFromUrl) !== -1 ? languageCodeFromUrl : defaultLanguage),
+const useCurrentLanguage = (languageCodeFromUrl: string | undefined, translations: I18nTranslations) => {
+  const currentLanguage = useMemo(
+    () => resolveLanguageCode(languageCodeFromUrl, translations),
     [languageCodeFromUrl, translations],
   );
-
-  const currentLanguage = languageCodeFromUrl || initialLanguage;
 
   useEffect(() => {
     document.documentElement.lang = currentLanguage;
   }, [currentLanguage]);
 
-  return { currentLanguage, initialLanguage };
+  return { currentLanguage, initialLanguage: currentLanguage };
 };
 
 export default useCurrentLanguage;

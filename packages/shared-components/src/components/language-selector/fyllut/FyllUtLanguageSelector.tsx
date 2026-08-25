@@ -3,10 +3,9 @@ import { useLanguages } from '../../../context/languages/index';
 import LanguageSelector from '../LanguageSelector';
 
 export const languagesInOriginalLanguage: Record<string, string> = {
-  'nb-NO': 'Norsk bokmål',
-  'nn-NO': 'Norsk nynorsk',
+  nb: 'Norsk bokmål',
+  nn: 'Norsk nynorsk',
   en: 'English',
-  pl: 'Polskie',
 };
 
 const FyllUtLanguageSelector = () => {
@@ -15,11 +14,10 @@ const FyllUtLanguageSelector = () => {
     return null;
   }
 
-  if (currentLanguage !== 'nb-NO' && availableLanguages.indexOf('nb-NO') < 0) {
-    availableLanguages.push('nb-NO');
-  }
+  const languages =
+    currentLanguage !== 'nb' && !availableLanguages.includes('nb') ? [...availableLanguages, 'nb'] : availableLanguages;
 
-  const options = availableLanguages
+  const options = languages
     .filter((languageCode) => languageCode !== currentLanguage)
     .map((languageCode) => {
       const params = new URLSearchParams(window.location.search);

@@ -73,7 +73,7 @@ describe('Test FyllUtLanguageSelector in FyllUtRouter', () => {
     const languageSelector = screen.getByRole('button', { name: 'Norsk nynorsk' });
     await userEvent.click(languageSelector); // <-- open language selector
     const bokmalLink = screen.getByRole('link', { name: 'Norsk bokmål' });
-    expect(bokmalLink).toHaveAttribute('href', '/nav123456?sub=digital&lang=nb-NO&foo=bar');
+    expect(bokmalLink).toHaveAttribute('href', '/nav123456?sub=digital&lang=nb&foo=bar');
 
     window.history.pushState({}, '', originalPath || '/');
   });

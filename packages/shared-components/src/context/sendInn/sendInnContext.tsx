@@ -1,11 +1,11 @@
 import {
-  Language,
   MellomlagringError,
   NologinToken,
   ReceiptSummary,
   ResponseError,
   Submission,
   tokenUtils,
+  TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import React, { createContext, useCallback, useContext, useEffect, useReducer, useRef, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router';
@@ -24,6 +24,7 @@ import { b64toBlob } from '../../util/blob/blob';
 import { useAppConfig } from '../config/configContext';
 import { useForm } from '../form/FormContext';
 import { useLanguages } from '../languages';
+import { normalizeLanguageCode } from '../languages/languageUtils';
 import { mellomlagringReducer } from './reducer/mellomlagringReducer';
 import { getSubmissionWithFyllutState, transformSubmissionBeforeSubmitting } from './utils/utils';
 
@@ -136,11 +137,8 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
     [addSearchParamToUrl, appConfig, form, setSubmission, setAttachmentPageEnabled],
   );
 
-  const nbNO: Language = 'nb-NO';
-
-  const getLanguageFromSearchParams = (): Language => {
-    return (new URL(window.location.href).searchParams.get('lang') as Language) || nbNO;
-  };
+  const getLanguageFromSearchParams = (): TranslationLang =>
+    normalizeLanguageCode(new URL(window.location.href).searchParams.get('lang') ?? undefined);
 
   const startMellomlagring = useCallback(
     async (submission: Submission) => {
@@ -252,7 +250,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   };
 
   const submitDigitalFyllut = useCallback(
-    async (language: Language, submission: Submission) => {
+    async (language: TranslationLang, submission: Submission) => {
       try {
         const response = await postNologinSoknad(
           appConfig,
@@ -312,7 +310,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   );
 
   const submitDigital = useCallback(
-    async (language: Language, submission: Submission) => {
+    async (language: TranslationLang, submission: Submission) => {
       if (!isMellomlagringReady) {
         return;
       }

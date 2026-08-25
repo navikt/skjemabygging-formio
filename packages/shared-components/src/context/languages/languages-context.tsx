@@ -4,9 +4,10 @@ import {
   Tkey,
   translationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 import useCurrentLanguage from './hooks/useCurrentLanguage';
 import useLanguageCodeFromURL from './hooks/useLanguageCodeFromURL';
+import { normalizeTranslations } from './languageUtils';
 
 interface LanguageContextType {
   availableLanguages: string[];
@@ -21,38 +22,31 @@ interface Props {
   children: ReactNode;
 }
 
-type CurrentLanguageType = {
-  currentLanguage: string;
-  initialLanguage: string;
-};
-
 const LanguagesContext = createContext<LanguageContextType>({} as LanguageContextType);
 
 export const LanguagesProvider = ({ children, translations }: Props) => {
   const [availableLanguages, setAvailableLanguages] = useState<string[]>([]);
   const [translationsForNavForm, setTranslationsForNavForm] = useState<object>({});
+  const normalizedTranslations = useMemo(() => normalizeTranslations(translations), [translations]);
 
-  const languageCodeFromUrl: string = useLanguageCodeFromURL() ?? 'nb-NO';
-  const { currentLanguage, initialLanguage } = useCurrentLanguage(
-    languageCodeFromUrl,
-    translations,
-  ) as unknown as CurrentLanguageType;
+  const languageCodeFromUrl: string = useLanguageCodeFromURL() ?? 'nb';
+  const { currentLanguage, initialLanguage } = useCurrentLanguage(languageCodeFromUrl, normalizedTranslations);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- keep derived language list in sync with loaded translations.
-    setAvailableLanguages(Object.keys(translations));
-  }, [translations]);
+    setAvailableLanguages(Object.keys(normalizedTranslations));
+  }, [normalizedTranslations]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- provide latest translations to NavForm integration state.
-    setTranslationsForNavForm(translations);
-  }, [translations]);
+    setTranslationsForNavForm(normalizedTranslations);
+  }, [normalizedTranslations]);
 
   const translate = (textOrKey: string | Tkey = '', params?: I18nTranslationReplacements): string => {
     return translationUtils.translateWithTextReplacements({
       textOrKey,
       params,
-      translations,
+      translations: normalizedTranslations,
       currentLanguage,
     });
   };

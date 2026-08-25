@@ -1,10 +1,10 @@
 import {
-  Language,
   localizationUtils,
   NavFormType,
   ReceiptSummary,
   Submission,
   SubmissionMethod,
+  TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { AppConfigContextType } from '../../context/config/configContext';
 
@@ -13,7 +13,7 @@ export const postNologinSoknad = async (
   nologinToken: string,
   form: NavFormType,
   submission: Submission,
-  language: Language,
+  language: TranslationLang,
   submissionMethod: SubmissionMethod | undefined,
   innsendingsId?: string,
 ): Promise<{ pdfBase64: string; receipt: ReceiptSummary }> => {
