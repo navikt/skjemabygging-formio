@@ -6,8 +6,9 @@ import {
   ResponseError,
   Submission,
   tokenUtils,
+  TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import React, { createContext, useCallback, useContext, useEffect, useReducer, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useReducer, useRef, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router';
 import { submitCaptchaValue } from '../../api/captcha/captcha';
 import { postNologinSoknad } from '../../api/sendinn/nologin';
@@ -51,6 +52,19 @@ interface SendInnProviderProps {
 
 const SendInnContext = createContext<SendInnContextType>({} as SendInnContextType);
 
+const toLegacyLanguageCode = (language: Language | TranslationLang): Language => {
+  switch (language) {
+    case 'nn':
+    case 'nn-NO':
+      return 'nn-NO';
+    case 'en':
+      return 'en';
+    case 'nb':
+    case 'nb-NO':
+      return 'nb-NO';
+  }
+};
+
 const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const appConfig = useAppConfig();
   const { app, submissionMethod, logger, baseUrl, logEvent, attachmentPageEnabled, setAttachmentPageEnabled } =
@@ -68,6 +82,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const [isMellomlagringReady, setIsMellomlagringReady] = useState(!isMellomlagringAvailable);
   // Make sure that we only create once
   const [isCreateStarted, setIsCreateStarted] = useState(false);
+  const retrieveStartedForRef = useRef<string | undefined>(undefined);
   const [innsendingsId, setInnsendingsId] = useState<string>();
   const [nologinToken, setNologinToken] = useState<string | undefined>();
   const [captchaValue, setCaptchaValue] = useState<Record<string, string>>({});
@@ -127,7 +142,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         setAttachmentPageEnabled(false);
       }
       if (response?.hoveddokumentVariant.document) {
-        addSearchParamToUrl('lang', response.hoveddokumentVariant.document.language);
+        addSearchParamToUrl('lang', toLegacyLanguageCode(response.hoveddokumentVariant.document.language));
         setSubmission(getSubmissionWithFyllutState(response, form));
         dispatchFyllutMellomlagring({ type: 'init', response });
       }
@@ -418,6 +433,10 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
       if (!innsendingsId || innsendingsIdFromParams !== innsendingsId) {
         try {
           if (innsendingsIdFromParams) {
+            if (retrieveStartedForRef.current === innsendingsIdFromParams) {
+              return;
+            }
+            retrieveStartedForRef.current = innsendingsIdFromParams;
             setInnsendingsId(innsendingsIdFromParams);
             await retrieveMellomlagring(innsendingsIdFromParams);
             setIsMellomlagringReady(true);
@@ -430,6 +449,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
             }
           }
         } catch (error: any) {
+          retrieveStartedForRef.current = undefined;
           if (isNotFoundError(error)) {
             logger?.info(
               `${innsendingsIdFromParams}: Mellomlagring does not exist. Redirects to ${soknadNotFoundUrl}`,

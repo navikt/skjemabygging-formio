@@ -19,7 +19,7 @@ type Props = {
 };
 
 export function Optional({ handleChange, form, errors, refMap }: Props) {
-  const { setKeyBasedText, getKeyBasedText } = useKeyBasedText();
+  const { setKeyBasedText, getKeyBasedText, shouldWarnAboutInactiveTranslation } = useKeyBasedText();
   const previewStyles = usePreviewStyles();
 
   const bulletPoints = form?.introPage?.sections?.optional?.bulletPoints || [];
@@ -45,6 +45,9 @@ export function Optional({ handleChange, form, errors, refMap }: Props) {
             ref={refMap['sections.optional.title']}
             onChange={onTitleChange}
             error={errors?.sections?.optional?.title}
+            showInactiveTranslationWarning={shouldWarnAboutInactiveTranslation(
+              form.introPage?.sections?.optional?.title,
+            )}
           />
           <IngressBulletPointRow
             field="optional"

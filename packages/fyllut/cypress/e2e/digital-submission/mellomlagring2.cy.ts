@@ -220,6 +220,18 @@ describe('Mellomlagring v2', () => {
       cy.url().should('include', '/valgfrieOpplysninger');
     });
 
+    it('renders translated intro page texts when opening a draft', () => {
+      cy.visitRouteAndWait(`/fyllut/mellomlagring2intropagedraft?sub=digital&innsendingsId=${validInnsendingsId}`, [
+        '@getMellomlagringValid',
+      ]);
+
+      cy.location('search').then((search) => {
+        expect(new URLSearchParams(search).get('lang')).to.equal('nb-NO');
+      });
+      cy.findByRole('checkbox', { name: 'Jeg bekrefter at jeg vil svare så riktig som jeg kan.' }).shouldBeVisible();
+      cy.findByText('introPage.selfDeclaration.inputLabel').should('not.exist');
+    });
+
     it('redirects to form not found page when not found', () => {
       cy.mocksUseRouteVariant('get-soknad:not-found');
 
@@ -340,6 +352,27 @@ describe('Mellomlagring v2', () => {
           cy.clickSendNav();
           cy.wait('@submitApplication');
           cy.findByRole('heading', { name: 'Kvittering' }).shouldBeVisible();
+        });
+
+        it('retrieves mellomlagring exactly once and still submits full data when the retrieval is slow', () => {
+          cy.intercept('GET', `/fyllut/api/send-inn/soknad/${validInnsendingsId}`, (req) => {
+            req.on('response', (res) => {
+              res.setDelay(500);
+            });
+          }).as('getMellomlagringValidSlow');
+
+          cy.visitRouteAndWait(
+            `/fyllut/mellomlagring2mellomlagring?sub=digital&innsendingsId=${validInnsendingsId}&lang=nb-NO`,
+            ['@getMellomlagringValidSlow'],
+          );
+
+          openSummaryInStepper();
+          cy.findByText('Ønsker du å få gaven innpakket').should('exist');
+          cy.clickSendNav();
+          cy.wait('@submitApplication');
+          cy.findByRole('heading', { name: 'Kvittering' }).shouldBeVisible();
+
+          cy.get('@getMellomlagringValidSlow.all').should('have.length', 1);
         });
 
         it('retrieves mellomlagring and lets you navigate to first panel with error', () => {
