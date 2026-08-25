@@ -18,16 +18,18 @@ and bygger, while the editable form flow is explicitly owned by fyllut. It has n
 ## Structure
 
 - `context/` — reusable application, language, state, form-definition,
-  validation, submission-method, and form-action contexts. Application config is
+  validation, submission-method, and stepper contexts. Application config is
   limited to the logger and normalized environment; the dynamic submission
   method has its own context.
 - `components/` — reusable Aksel-based controls. These may depend on the common
   application, language, state, and submission-method contracts, but never on
   fyllut APIs.
-- `fyllut/` — the editable form application: provider composition, wizard,
-  routing, input adapters, SendInn actions, no-login handling, and attachments.
-- `form-summary/` — summary adapters shared by the new fyllut flow and the
-  legacy summary renderer.
+- `form-components/` — form-definition adapters for editable inputs and summary
+  rendering, co-located by component type. Summary rendering is shared by the
+  new fyllut flow and the legacy summary renderer.
+- `fyllut/` — the editable form application. `RenderForm.tsx` is its public
+  entry point; feature folders own routing/form-flow, intro, form pages,
+  summary, paper submission, receipt, attachments, and fyllut-only contexts.
 - `validation/` — pure `validators` + `deriveValidations` (visible components →
   descriptors). Non-numeric `min/maxLength` (form-builder `''`) are ignored.
 - `formatting/` — on-blur formatters; never reformat onChange, reformat onBlur.
@@ -40,9 +42,9 @@ contract). In short:
 
 1. Add the reusable control under `components/<kebab>/`.
 2. Add its form-definition adapter under
-   `fyllut/form-components/components/<kebab>/`.
+   `form-components/components/<kebab>/`.
 3. Register its form type(s) in
-   `fyllut/form-components/inputComponentRegistry.tsx`.
+   `form-components/inputComponentRegistry.tsx`.
 4. Cover logic with vitest (`validators`, `formatters`, etc. are isolated).
 
 ## Unsupported components

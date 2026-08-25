@@ -1,11 +1,11 @@
 import { Button } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
-import { useFormActions } from '../../context/form-actions/FormActionsContext';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useSubmissionState } from '../../context/state/SubmissionStateContext';
-import ConfirmationModal from '../fyllut-components/ConfirmationModal';
-import { getExitUrl } from '../fyllut-utils/url';
+import { useFormActions } from '../context/form-actions/FormActionsContext';
+import ConfirmationModal from './ConfirmationModal';
+import { getExitUrl } from './navUrls';
 
 const SaveButton = ({ showError = true }: { showError?: boolean }) => {
   const { translate } = useLanguage();

@@ -6,7 +6,7 @@ import {
   Submission,
   SubmissionMethod,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { FyllutContextValue } from '../FyllutContext';
+import { FyllutContextValue } from '../context/fyllut/FyllutContext';
 
 const postNologinSoknad = async (
   appConfig: FyllutContextValue,

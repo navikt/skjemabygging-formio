@@ -1,9 +1,9 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useLocation, useNavigate } from 'react-router';
-import { useFormActions } from '../../context/form-actions/FormActionsContext';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
-import { FormButtonRow, FormNextButton, FormPrevButton } from '../../layout/FormButtonRow';
+import { useFormActions } from '../context/form-actions/FormActionsContext';
+import { FormButtonRow, FormNextButton, FormPrevButton } from '../layout/FormButtonRow';
 import CancelAndDeleteButton from '../navigation/CancelAndDeleteButton';
 import SaveButton from '../navigation/SaveButton';
 

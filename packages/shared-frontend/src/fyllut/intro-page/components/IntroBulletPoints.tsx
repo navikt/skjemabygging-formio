@@ -1,6 +1,6 @@
 import { Box, List } from '@navikt/ds-react';
-import { InnerHtml } from '../../fyllut-components/Html';
 import styles from './IntroBulletPoints.module.css';
+import { InnerHtml } from './SanitizedHtml';
 
 interface Props {
   values?: string[];

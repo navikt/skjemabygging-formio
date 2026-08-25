@@ -1,9 +1,9 @@
 import { Form, Submission, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
 import { useLocation } from 'react-router';
 import { LanguageContextValue } from '../context/language/LanguageContext';
-import { FyllutContextValue } from './FyllutContext';
-import FyllutFormFlow from './FyllutFormFlow';
-import FyllutFormProviders from './FyllutFormProviders';
+import { FyllutContextValue } from './context/fyllut/FyllutContext';
+import FyllutFormFlow from './form-flow/FyllutFormFlow';
+import FyllutFormProviders from './providers/FyllutFormProviders';
 
 interface Props {
   form: Form;

@@ -1,6 +1,6 @@
 import { IntroPageSection, TranslateFunction } from '@navikt/skjemadigitalisering-shared-domain';
-import { InnerHtmlLong } from '../../fyllut-components/Html';
 import IntroAccordion from './IntroAccordion';
+import { InnerHtmlLong } from './SanitizedHtml';
 
 interface Props {
   properties?: IntroPageSection;

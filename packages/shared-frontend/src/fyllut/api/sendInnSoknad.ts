@@ -1,5 +1,5 @@
 import { Language, localizationUtils, NavFormType, Submission } from '@navikt/skjemadigitalisering-shared-domain';
-import { FyllutApiConfig } from '../FyllutContext';
+import { FyllutApiConfig } from '../context/fyllut/FyllutContext';
 
 interface SendInnSoknadResponse {
   innsendingsId: string;

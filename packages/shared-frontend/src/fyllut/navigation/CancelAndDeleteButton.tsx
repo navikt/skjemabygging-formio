@@ -8,9 +8,9 @@ import { useSubmissionState } from '../../context/state/SubmissionStateContext';
 import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
 import { deleteSoknad } from '../api/sendInnSoknad';
 import { useAttachmentUpload } from '../attachments/context/AttachmentUploadContext';
-import ConfirmationModal from '../fyllut-components/ConfirmationModal';
-import { getExitUrl } from '../fyllut-utils/url';
-import { useFyllut } from '../FyllutContext';
+import { useFyllut } from '../context/fyllut/FyllutContext';
+import ConfirmationModal from './ConfirmationModal';
+import { getExitUrl } from './navUrls';
 
 interface Props {
   exitOnly?: boolean;

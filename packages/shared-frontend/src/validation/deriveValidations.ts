@@ -22,7 +22,7 @@ import {
   enrichComponentsWithBaseSubmissionPath,
   getResolvedSubmissionPath,
 } from '../context/form-definition/formDefinitionUtils';
-import { getRenderedDataGridRows } from '../fyllut/form-components/components/data-grid/dataGridRows';
+import { getRenderedDataGridRows } from '../form-components/components/data-grid/dataGridRows';
 import { ValidationRules } from './validators';
 
 interface ValidationDescriptor {

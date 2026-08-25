@@ -1,4 +1,4 @@
-import { InnerHtmlLong } from '../../fyllut-components/Html';
+import { InnerHtmlLong } from './SanitizedHtml';
 
 interface Props {
   description?: string;

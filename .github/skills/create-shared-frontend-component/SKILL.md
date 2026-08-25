@@ -43,7 +43,7 @@ component and the conventions we've settled on.
       `RadioGroup`, `CheckboxGroup`, `Select`, `DatePicker`, `MonthPicker`,
       `ReadMore`, etc.
 
-2. **Fyllut form-definition adapters** — `fyllut/form-components/components/<kebab>/Input<Name>.tsx`
+2. **Form-definition adapters** — `form-components/components/<kebab>/Input<Name>.tsx`
     - Thin JSON→props adapters. Take `InputComponentProps`
       (`{ component, submissionPath?, componentRegistry? }`) and map a
       form-definition `Component` to the reusable component's props.
@@ -83,7 +83,7 @@ automatically:
 
 ## Validation scope comes from context, never props
 
-`RenderInputForm` (`fyllut/form-components/RenderInputForm.tsx`, the shared-frontend
+`RenderInputForm` (`form-components/RenderInputForm.tsx`, the shared-frontend
 render entry used by fyllut's `PanelStep`) wraps output in `ValidationScopeProvider`
 (`context/validation/ValidationScopeContext.tsx`) with `{ pageKey, components }`.
 Nested renders (container/row/form-group/data-grid) omit the scope props and
@@ -189,7 +189,7 @@ not in this skill.
    By default, editable components should support Formio's
    `additionalDescriptionLabel` + `additionalDescriptionText` through the shared
    `ReadMore` wrapper; only special cases should opt out.
-3. **Adapter** `fyllut/form-components/components/<kebab>/Input<Name>.tsx`: map
+3. **Adapter** `form-components/components/<kebab>/Input<Name>.tsx`: map
    `component` → props with the helpers in `inputComponentRegistryUtils.ts`
    (`resolveSubmissionPath`, `isRequired`, `getValues`, `resolveInputType`,
    `resolveNumberFormatKey`, `resolveTextFormatKey`, `resolveReadMore`).
@@ -218,7 +218,7 @@ For those cases:
 
 1. Keep the same overall seams: reusable behavior in `src/components/` when it
    is genuinely reusable, form-definition mapping in
-   `fyllut/form-components/components/<kebab>/`.
+   `form-components/components/<kebab>/`.
 2. Prefer a small generic helper for cross-cutting behavior (for example a
    hidden computed field), with feature-specific logic colocated near the
    feature adapter.

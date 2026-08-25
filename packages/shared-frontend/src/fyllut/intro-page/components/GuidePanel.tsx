@@ -1,6 +1,6 @@
 import { GuidePanel as AkselGuidePanel, Heading } from '@navikt/ds-react';
 import { TranslateFunction } from '@navikt/skjemadigitalisering-shared-domain';
-import { InnerHtmlLong } from '../../fyllut-components/Html';
+import { InnerHtmlLong } from './SanitizedHtml';
 
 interface Props {
   description?: string;

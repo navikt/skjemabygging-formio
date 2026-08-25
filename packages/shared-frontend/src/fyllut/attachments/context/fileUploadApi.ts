@@ -1,5 +1,6 @@
 import type { UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
-import type { FyllutHttp } from '../../FyllutContext';
+import { downloadBlob } from '../../../utils/blob';
+import type { FyllutHttp } from '../../context/fyllut/FyllutContext';
 import { normalizeAttachmentDownloadBlob } from './attachmentUploadUtils';
 
 type ApplicationType = 'nologin' | 'digital';
@@ -36,19 +37,6 @@ const getFileUploadApi = (http: FyllutHttp | undefined, type: ApplicationType = 
       http.delete(`${url}/attachments/${attachmentId}`, undefined, getHeaders(token)),
     deleteAllFiles: (token?: string) => http.delete(url, undefined, getHeaders(token)),
   };
-};
-
-const downloadBlob = (content: Blob, fileName: string) => {
-  const objectUrl = URL.createObjectURL(content);
-  const link = document.createElement('a');
-  link.href = objectUrl;
-  link.download = fileName;
-
-  try {
-    link.click();
-  } finally {
-    setTimeout(() => URL.revokeObjectURL(objectUrl), 0);
-  }
 };
 
 export { downloadBlob, getFileUploadApi };
