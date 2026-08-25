@@ -11,6 +11,9 @@ disable-model-invocation: true
 
 Invoke `fyllut-sendinn-specification` immediately and use it as the source of
 truth for discovery, drafting, approval, prototype validation, and handoff.
+If that skill is unavailable or cannot be invoked, stop this workflow and
+report that the `specification@fyllut-sendinn-plugins` plugin must be installed
+and enabled. Do not continue with a local or improvised specification workflow.
 
 Apply this repository's development guidance as additional constraints:
 
