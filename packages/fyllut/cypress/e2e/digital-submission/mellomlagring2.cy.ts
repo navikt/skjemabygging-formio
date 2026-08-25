@@ -207,19 +207,28 @@ describe('Mellomlagring v2', () => {
     });
 
     it('fetches mellomlagring and starts from the intro page when url contains "innsendingsId"', () => {
-      cy.visitRouteAndWait(`/fyllut/mellomlagring2mellomlagring?sub=digital&innsendingsId=${validInnsendingsId}`, [
-        '@getMellomlagringValid',
-      ]);
+      cy.visitRouteAndWait(
+        `/fyllut/mellomlagring2mellomlagring?sub=digital&innsendingsId=${validInnsendingsId}&lang=nb-NO`,
+        ['@getMellomlagringValid'],
+      );
 
       cy.url().should('include', `innsendingsId=${validInnsendingsId}`);
-      cy.location('search').then((search) => {
-        expect(new URLSearchParams(search).get('lang')).to.equal('nb-NO');
-      });
       cy.findByRole('heading', { name: TEXTS.statiske.introPage.title }).shouldBeVisible();
-      cy.findByRole('button', { name: 'Vi lagrer svar underveis' }).shouldBeVisible();
       cy.clickStart();
       cy.url().should('include', `innsendingsId=${validInnsendingsId}`);
       cy.url().should('include', '/valgfrieOpplysninger');
+    });
+
+    it('renders translated intro page texts when opening a draft', () => {
+      cy.visitRouteAndWait(`/fyllut/mellomlagring2intropagedraft?sub=digital&innsendingsId=${validInnsendingsId}`, [
+        '@getMellomlagringValid',
+      ]);
+
+      cy.location('search').then((search) => {
+        expect(new URLSearchParams(search).get('lang')).to.equal('nb-NO');
+      });
+      cy.findByRole('checkbox', { name: 'Jeg bekrefter at jeg vil svare så riktig som jeg kan.' }).shouldBeVisible();
+      cy.findByText('introPage.selfDeclaration.inputLabel').should('not.exist');
     });
 
     it('redirects to form not found page when not found', () => {
