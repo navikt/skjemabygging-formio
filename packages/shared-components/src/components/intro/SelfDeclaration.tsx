@@ -21,7 +21,7 @@ const SelfDeclaration = ({ description, className, translate, error, setSelfDecl
   return (
     <div className={className}>
       <InnerHtmlLong content={translate(description)} />
-      <CheckboxGroup legend={inputLabel} hideLegend error={error} value={value ? ['selfDeclaration'] : []}>
+      <CheckboxGroup legend={translate(inputLabel)} hideLegend error={error} value={value ? ['selfDeclaration'] : []}>
         <Checkbox
           value="selfDeclaration"
           onChange={(event) => (setSelfDeclaration ? setSelfDeclaration(event.target.checked) : undefined)}
