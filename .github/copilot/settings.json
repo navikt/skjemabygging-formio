@@ -1,0 +1,13 @@
+{
+  "extraKnownMarketplaces": {
+    "fyllut-sendinn-plugins": {
+      "source": {
+        "source": "github",
+        "repo": "navikt/fyllut-sendinn-local-dev-env"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "specification@fyllut-sendinn-plugins": true
+  }
+}
