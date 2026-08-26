@@ -1,10 +1,9 @@
 import {
-  Language,
-  localizationUtils,
   NavFormType,
   ReceiptSummary,
   Submission,
   SubmissionMethod,
+  TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { FyllutContextValue } from '../context/fyllut/FyllutContext';
 
@@ -13,7 +12,7 @@ const postNologinSoknad = async (
   nologinToken: string,
   form: NavFormType,
   submission: Submission,
-  language: Language,
+  language: TranslationLang,
   submissionMethod: SubmissionMethod | undefined,
   innsendingsId?: string,
 ): Promise<{ pdfBase64: string; receipt: ReceiptSummary }> => {
@@ -29,7 +28,7 @@ const postNologinSoknad = async (
     {
       formPath: form.path,
       submission,
-      language: localizationUtils.getLanguageCodeAsIso639_1(language),
+      language,
       submissionMethod,
     },
     { NologinToken: nologinToken },

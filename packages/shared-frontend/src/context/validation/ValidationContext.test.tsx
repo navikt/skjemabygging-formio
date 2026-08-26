@@ -24,14 +24,7 @@ const components = [
   },
 ] as unknown as Component[];
 
-const translate = (text?: string, params?: Record<string, string | number>) => {
-  const translatedText = TEXTS.validering[text as keyof typeof TEXTS.validering] ?? text ?? '';
-
-  return Object.entries(params ?? {}).reduce(
-    (textWithReplacements, [key, value]) => textWithReplacements.replace(`{{${key}}}`, String(value)),
-    translatedText,
-  );
-};
+const translations = Object.fromEntries(Object.entries(TEXTS.validering).map(([key, value]) => [key, { nb: value }]));
 
 const ValidationHarness = () => {
   const { getError, validatePages } = useValidation();
@@ -76,7 +69,7 @@ describe('ValidationContext', () => {
     act(() => {
       root.render(
         <ApplicationProvider environment="test">
-          <LanguageProvider translate={translate} currentLanguage="nb" availableLanguages={['nb']}>
+          <LanguageProvider translations={translations} currentLanguage="nb" availableLanguages={['nb']}>
             <SubmissionStateProvider initialSubmission={{ data: { identityNumber: '123' } }}>
               <ValidationProvider>
                 <ValidationHarness />
@@ -138,7 +131,7 @@ describe('ValidationContext', () => {
     act(() => {
       root.render(
         <ApplicationProvider environment="test">
-          <LanguageProvider translate={translate} currentLanguage="nb" availableLanguages={['nb']}>
+          <LanguageProvider translations={translations} currentLanguage="nb" availableLanguages={['nb']}>
             <SubmissionMethodProvider submissionMethod="digital">
               <SubmissionStateProvider
                 initialSubmission={{
@@ -207,7 +200,7 @@ describe('ValidationContext', () => {
     act(() => {
       root.render(
         <ApplicationProvider environment="test">
-          <LanguageProvider translate={translate} currentLanguage="nb" availableLanguages={['nb']}>
+          <LanguageProvider translations={translations} currentLanguage="nb" availableLanguages={['nb']}>
             <SubmissionMethodProvider submissionMethod="paper">
               <SubmissionStateProvider initialSubmission={{ data: {} }}>
                 <ValidationProvider>

@@ -4,8 +4,8 @@ import { useLanguage } from '../../context/language/LanguageContext';
 import { withoutSubmissionNavigationState } from '../../utils/navigationState';
 
 const languagesInOriginalLanguage: Record<string, string> = {
-  'nb-NO': 'Norsk bokmål',
-  'nn-NO': 'Norsk nynorsk',
+  nb: 'Norsk bokmål',
+  nn: 'Norsk nynorsk',
   en: 'English',
   pl: 'Polskie',
 };
@@ -20,8 +20,8 @@ const FormLanguageSelector = () => {
   const supportedLanguages = useMemo(() => {
     const languages = [...availableLanguages];
 
-    if (currentLanguage !== 'nb-NO' && !languages.includes('nb-NO')) {
-      languages.push('nb-NO');
+    if (currentLanguage !== 'nb' && !languages.includes('nb')) {
+      languages.push('nb');
     }
 
     return languages;

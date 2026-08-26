@@ -1,11 +1,4 @@
-import {
-  dateUtils,
-  Form,
-  formioFormsApiUtils,
-  Language,
-  Submission,
-  TEXTS,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { dateUtils, Form, formioFormsApiUtils, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { ReactNode, useMemo, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useApplication } from '../../../context/application/ApplicationContext';
@@ -190,7 +183,7 @@ const useFyllutFormActions = (
             '',
             navForm,
             submission,
-            currentLanguage as Language,
+            currentLanguage,
             submissionMethod,
             innsendingsId,
           );
@@ -208,7 +201,7 @@ const useFyllutFormActions = (
               nologinToken ?? '',
               navForm,
               submission,
-              currentLanguage as Language,
+              currentLanguage,
               submissionMethod,
               innsendingsIdRef.current,
             );

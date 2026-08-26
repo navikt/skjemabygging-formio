@@ -596,3 +596,5 @@ export default [
     ],
   },
 ];
+
+export { findTestdata };

@@ -1,5 +1,10 @@
 import { getCountries, i18nUtils } from '@navikt/skjemadigitalisering-shared-components';
-import { externalStorageTexts, I18nTranslations, localizationUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  externalStorageTexts,
+  FormsApiTranslationMap,
+  I18nTranslations,
+  localizationUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import httpFyllut from '../util/httpFyllut';
 
 const { zipCountryNames } = localizationUtils;
@@ -14,6 +19,10 @@ const loadGlobalTranslations = async (languageCode) => {
 
 const loadFormTranslations = async (formPath) => {
   return httpFyllut.get(`/fyllut/api/translations/${formPath}`);
+};
+
+const loadNewRendererTranslations = async (formPath: string): Promise<FormsApiTranslationMap> => {
+  return httpFyllut.get(`/fyllut/api/forms/${formPath}/translations`);
 };
 
 const loadCountryNamesForLanguages = async (languages) => {
@@ -83,4 +92,4 @@ const loadAllTranslations = async (formPath): Promise<I18nTranslations | undefin
   }
 };
 
-export { loadAllTranslations, loadGlobalTranslationsForLanguages };
+export { loadAllTranslations, loadGlobalTranslationsForLanguages, loadNewRendererTranslations };

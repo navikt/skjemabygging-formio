@@ -15,7 +15,7 @@ const pageKey = 'page1';
 
 const renderWithProviders = (children: ReactNode, initialValue?: string | ComponentValue) => {
   return render(
-    <LanguageProvider translate={(text) => text ?? ''} currentLanguage="nb" availableLanguages={['nb']}>
+    <LanguageProvider translations={{}} currentLanguage="nb" availableLanguages={['nb']}>
       <SubmissionStateProvider initialSubmission={{ data: initialValue ? { country: initialValue } : {} }}>
         <ValidationProvider>
           <ValidationScopeProvider pageKey={pageKey} components={[]}>

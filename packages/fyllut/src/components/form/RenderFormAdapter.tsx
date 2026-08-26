@@ -1,16 +1,23 @@
-import { useAppConfig, useLanguages } from '@navikt/skjemadigitalisering-shared-components';
+import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
+import { FormsApiTranslationMap } from '@navikt/skjemadigitalisering-shared-domain';
 import {
   ApplicationProvider,
   FyllutContextValue,
   RenderForm,
   RenderFormProps,
 } from '@navikt/skjemadigitalisering-shared-frontend';
+import { useLocation } from 'react-router';
+import { getAvailableLanguages, getCurrentLanguage } from './newRendererLanguageUtils';
 
-type Props = Omit<RenderFormProps, 'fyllut' | 'language' | 'submissionMethod'>;
+type Props = Omit<RenderFormProps, 'fyllut' | 'language' | 'submissionMethod'> & {
+  translations: FormsApiTranslationMap;
+};
 
-const RenderFormAdapter = (props: Props) => {
+const RenderFormAdapter = ({ form, translations, ...props }: Props) => {
   const appConfig = useAppConfig();
-  const { availableLanguages, currentLanguage, translate } = useLanguages();
+  const { search } = useLocation();
+  const availableLanguages = getAvailableLanguages(form, translations);
+  const currentLanguage = getCurrentLanguage(search, availableLanguages);
   const http = appConfig.http;
   const downloadPdf = http
     ? (url: string, body: object) =>
@@ -32,9 +39,10 @@ const RenderFormAdapter = (props: Props) => {
     <ApplicationProvider environment={environment} logger={appConfig.logger}>
       <RenderForm
         {...props}
+        form={form}
         submissionMethod={appConfig.submissionMethod}
         fyllut={fyllut}
-        language={{ availableLanguages, currentLanguage, translate }}
+        language={{ availableLanguages, currentLanguage, translations }}
       />
     </ApplicationProvider>
   );

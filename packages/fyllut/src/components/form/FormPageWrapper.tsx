@@ -9,6 +9,7 @@ import {
   dateUtils,
   Form,
   formioFormsApiUtils,
+  FormsApiTranslationMap,
   formSummaryUtils,
   hasErrorCode,
   I18nTranslations,
@@ -26,7 +27,7 @@ import {
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import useFormsApiForms from '../../api/useFormsApiForms';
-import { loadAllTranslations } from '../../api/useTranslations';
+import { loadAllTranslations, loadNewRendererTranslations } from '../../api/useTranslations';
 import { NotFoundPage } from '../errors/NotFoundPage';
 import SubmissionMethodNotAllowed from '../SubmissionMethodNotAllowed';
 import FormPageSkeleton from './FormPageSkeleton';
@@ -113,7 +114,8 @@ const FormPageWrapper = () => {
   const { formPath, '*': routePath } = useParams();
   const { search, state } = useLocation();
   const navigate = useNavigate();
-  const [translations, setTranslations] = useState<I18nTranslations>();
+  const [legacyTranslations, setLegacyTranslations] = useState<I18nTranslations>();
+  const [newRendererTranslations, setNewRendererTranslations] = useState<FormsApiTranslationMap>();
   const [loading, setLoading] = useState<boolean>(true);
   const [form, setForm] = useState<Form>();
   const [initialSubmission, setInitialSubmission] = useState<Submission | undefined>();
@@ -125,6 +127,7 @@ const FormPageWrapper = () => {
   const useNewRenderer =
     !!formPath && ((config?.newRenderForms ?? []).includes('*') || (config?.newRenderForms ?? []).includes(formPath));
   const useLegacyPageForNewRenderer = shouldUseLegacyPageForNewRenderer(routePath);
+  const shouldUseNewRenderer = useNewRenderer && !useLegacyPageForNewRenderer;
   const navForm = useMemo(() => (form ? formioFormsApiUtils.mapFormToNavForm(form) : undefined), [form]);
   const defaultRouteSubmissionMethod = useMemo(
     () => (form ? resolveDefaultSubmissionMethod(form.properties.submissionTypes) : undefined),
@@ -160,11 +163,16 @@ const FormPageWrapper = () => {
       return;
     }
 
+    if (shouldUseNewRenderer) {
+      setNewRendererTranslations(await loadNewRendererTranslations(formPath));
+      return;
+    }
+
     const translationsData = await loadAllTranslations(formPath);
     if (translationsData) {
-      setTranslations(translationsData);
+      setLegacyTranslations(translationsData);
     }
-  }, [formPath]);
+  }, [formPath, shouldUseNewRenderer]);
 
   const loadForm = useCallback(async () => {
     if (!formPath) {
@@ -173,7 +181,7 @@ const FormPageWrapper = () => {
 
     const formData = await get(
       formPath,
-      'title,skjemanummer,path,revision,introPage,components,properties,firstPanelSlug',
+      'title,skjemanummer,path,revision,introPage,components,properties,publishedLanguages,firstPanelSlug',
     );
     if (formData) {
       const prefillKeys =
@@ -302,7 +310,8 @@ const FormPageWrapper = () => {
         const [, initialSubmissionResult] = await Promise.all([loadTranslations(), loadInitialSubmission(loadedForm)]);
         navigated = initialSubmissionResult.navigated;
       } catch (_e) {
-        setTranslations(undefined);
+        setLegacyTranslations(undefined);
+        setNewRendererTranslations(undefined);
         setForm(undefined);
       } finally {
         if (!navigated) {
@@ -340,7 +349,7 @@ const FormPageWrapper = () => {
     return <FormPageSkeleton />;
   }
 
-  if (!translations || !form || !navForm) {
+  if (!form || !navForm) {
     return <NotFoundPage />;
   }
 
@@ -348,17 +357,28 @@ const FormPageWrapper = () => {
     return <SubmissionMethodNotAllowed submissionMethod={submissionMethod} />;
   }
 
+  if (shouldUseNewRenderer) {
+    if (!newRendererTranslations) {
+      return <NotFoundPage />;
+    }
+
+    return (
+      <RenderFormAdapter
+        form={form}
+        translations={newRendererTranslations}
+        initialSubmission={initialSubmission ?? noLoginInitialSubmission}
+        initialInnsendingsId={initialInnsendingsId}
+      />
+    );
+  }
+
+  if (!legacyTranslations) {
+    return <NotFoundPage />;
+  }
+
   return (
-    <LanguagesProvider translations={translations}>
-      {useNewRenderer && !useLegacyPageForNewRenderer ? (
-        <RenderFormAdapter
-          form={form}
-          initialSubmission={initialSubmission ?? noLoginInitialSubmission}
-          initialInnsendingsId={initialInnsendingsId}
-        />
-      ) : (
-        <FyllUtRouter form={navForm} />
-      )}
+    <LanguagesProvider translations={legacyTranslations}>
+      <FyllUtRouter form={navForm} />
     </LanguagesProvider>
   );
 };

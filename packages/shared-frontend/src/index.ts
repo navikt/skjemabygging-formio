@@ -28,7 +28,7 @@ export type {
   ApplicationEnvironment,
   ApplicationLogger,
 } from './context/application/ApplicationContext';
-export type { LanguageContextValue } from './context/language/LanguageContext';
+export type { LanguageConfig, LanguageContextValue } from './context/language/LanguageContext';
 export type { FieldError, ValidationContextType } from './context/validation/ValidationContext';
 export type {
   FormComponentProps,

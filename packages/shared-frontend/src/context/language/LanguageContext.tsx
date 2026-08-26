@@ -1,24 +1,41 @@
-import { TranslateFunction } from '@navikt/skjemadigitalisering-shared-domain';
-import { createContext, ReactNode, useContext } from 'react';
+import {
+  FormsApiTranslationMap,
+  formsApiTranslationUtils,
+  TranslateFunction,
+  TranslationLang,
+} from '@navikt/skjemadigitalisering-shared-domain';
+import { createContext, ReactNode, useContext, useEffect, useMemo } from 'react';
 
 interface LanguageContextValue {
   translate: TranslateFunction;
-  currentLanguage: string;
-  availableLanguages: string[];
+  currentLanguage: TranslationLang;
+  availableLanguages: TranslationLang[];
 }
 
-interface Props extends Omit<LanguageContextValue, 'availableLanguages'> {
+interface LanguageConfig extends Omit<LanguageContextValue, 'translate'> {
+  translations: FormsApiTranslationMap;
+}
+
+interface Props extends LanguageConfig {
   children: ReactNode;
-  availableLanguages?: string[];
 }
 
 const LanguageContext = createContext<LanguageContextValue>({
   translate: (text) => text ?? '',
-  currentLanguage: '',
+  currentLanguage: 'nb',
   availableLanguages: [],
 });
 
-const LanguageProvider = ({ children, translate, currentLanguage, availableLanguages = [] }: Props) => {
+const LanguageProvider = ({ children, translations, currentLanguage, availableLanguages }: Props) => {
+  const translate = useMemo(
+    () => formsApiTranslationUtils.createTranslate(translations, currentLanguage),
+    [currentLanguage, translations],
+  );
+
+  useEffect(() => {
+    document.documentElement.lang = currentLanguage;
+  }, [currentLanguage]);
+
   return (
     <LanguageContext.Provider value={{ translate, currentLanguage, availableLanguages }}>
       {children}
@@ -29,4 +46,4 @@ const LanguageProvider = ({ children, translate, currentLanguage, availableLangu
 const useLanguage = () => useContext(LanguageContext);
 
 export { LanguageProvider, useLanguage };
-export type { LanguageContextValue };
+export type { LanguageConfig, LanguageContextValue };
