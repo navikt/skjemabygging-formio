@@ -9,9 +9,10 @@ interface Props {
   index: number;
   enhetsListe: Enhet[];
   navUnitDescription?: string;
+  downloadButtonText: string;
 }
 
-const LetterDownload = ({ index, enhetsListe, navUnitDescription }: Props) => {
+const LetterDownload = ({ index, enhetsListe, navUnitDescription, downloadButtonText }: Props) => {
   const { translate } = useLanguages();
   const [selectedEnhetNummer, setSelectedEnhetNummer] = useState<string | null>(null);
   const [isRequiredEnhetMissing, setIsRequiredEnhetMissing] = useState(false);
@@ -42,7 +43,7 @@ const LetterDownload = ({ index, enhetsListe, navUnitDescription }: Props) => {
           return true;
         }}
       >
-        {translate(TEXTS.grensesnitt.downloadApplication)}
+        {downloadButtonText}
       </DownloadCoverPageAndApplicationButton>
     </section>
   );
