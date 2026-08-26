@@ -14,6 +14,31 @@ describe('Submission Type', () => {
   });
 
   describe('Type: Paper', () => {
+    it('shows custom text on the PDF download button', () => {
+      const customDownloadButtonText = 'Last ned fullmaktsskjema';
+      cy.intercept('GET', '/fyllut/api/forms/submissiontypespaper*', (req) => {
+        req.continue((res) => {
+          res.body.properties.downloadPdfButtonText = customDownloadButtonText;
+        });
+      });
+      cy.visit('/fyllut/submissiontypespaper?sub=paper');
+      cy.defaultWaits();
+
+      cy.clickStart();
+      cy.findByRole('textbox', { name: 'Tekstfelt' }).type('test');
+      cy.clickNextStep();
+      cy.findByRole('group', { name: 'Nav skjema test' }).within(() => {
+        cy.findByLabelText(TEXTS.statiske.attachment.leggerVedNaa).click();
+      });
+      cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
+        cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
+      });
+      cy.clickNextStep();
+      cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions }).click();
+
+      cy.findByRole('button', { name: customDownloadButtonText }).should('exist');
+    });
+
     describe('Go to intro page', () => {
       beforeEach(() => {
         // sub=paper gets automatically added when running on build code
