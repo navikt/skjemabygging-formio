@@ -6,6 +6,7 @@ import {
   ResponseError,
   Submission,
   tokenUtils,
+  TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import React, { createContext, useCallback, useContext, useEffect, useReducer, useRef, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router';
@@ -50,6 +51,19 @@ interface SendInnProviderProps {
 }
 
 const SendInnContext = createContext<SendInnContextType>({} as SendInnContextType);
+
+const toLegacyLanguageCode = (language: Language | TranslationLang): Language => {
+  switch (language) {
+    case 'nn':
+    case 'nn-NO':
+      return 'nn-NO';
+    case 'en':
+      return 'en';
+    case 'nb':
+    case 'nb-NO':
+      return 'nb-NO';
+  }
+};
 
 const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const appConfig = useAppConfig();
@@ -128,7 +142,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
         setAttachmentPageEnabled(false);
       }
       if (response?.hoveddokumentVariant.document) {
-        addSearchParamToUrl('lang', response.hoveddokumentVariant.document.language);
+        addSearchParamToUrl('lang', toLegacyLanguageCode(response.hoveddokumentVariant.document.language));
         setSubmission(getSubmissionWithFyllutState(response, form));
         dispatchFyllutMellomlagring({ type: 'init', response });
       }
