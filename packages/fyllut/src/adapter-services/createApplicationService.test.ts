@@ -21,6 +21,13 @@ const draftResponse = {
   skalSlettesDato: '2026-09-27T08:00:00Z',
 };
 
+const encodedDraftResponse = {
+  ...draftResponse,
+  hoveddokumentVariant: {
+    document: 'encoded-document',
+  },
+};
+
 const createHttp = (responses: unknown[], requests: Request[]): FyllutHttp => {
   const nextResponse = <T>() => responses.shift() as T;
 
@@ -51,14 +58,14 @@ describe('createApplicationService', () => {
   it('maps backend draft responses to the neutral application contract', async () => {
     const requests: Request[] = [];
     const service = createApplicationService({
-      http: createHttp([draftResponse, draftResponse, draftResponse, undefined], requests),
+      http: createHttp([draftResponse, encodedDraftResponse, encodedDraftResponse, undefined], requests),
       backendBaseUrl: '/fyllut',
     });
     const submission = { data: { name: 'Ola' } };
     const request = {
       formPath: 'test-form',
       submission,
-      language: 'nb' as const,
+      language: 'en' as const,
       submissionMethod: 'digital' as const,
     };
 
@@ -73,9 +80,17 @@ describe('createApplicationService', () => {
     await expect(service.getDraft('draft-123')).resolves.toEqual(expectedDraft);
     await expect(service.createDraft({ ...request, force: true })).resolves.toEqual({
       status: 'created',
-      draft: expectedDraft,
+      draft: {
+        ...expectedDraft,
+        language: 'en',
+        submission,
+      },
     });
-    await service.updateDraft({ ...request, id: 'draft-123' });
+    await expect(service.updateDraft({ ...request, id: 'draft-123' })).resolves.toEqual({
+      ...expectedDraft,
+      language: 'en',
+      submission,
+    });
     await service.deleteDraft('draft-123');
 
     expect(requests).toEqual([

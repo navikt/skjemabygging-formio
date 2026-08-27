@@ -9,7 +9,7 @@ interface Props {
 interface DraftResponse {
   innsendingsId: string;
   hoveddokumentVariant: {
-    document: { data: Submission; language: Language };
+    document: { data: Submission; language: Language } | string;
   };
   endretDato: string;
   skalSlettesDato: string;
@@ -22,13 +22,31 @@ interface StatusResponse {
 const draftAlreadyExists = (response: DraftResponse | StatusResponse): response is StatusResponse =>
   'status' in response && response.status === 'soknadAlreadyExists';
 
-const mapDraft = (response: DraftResponse): Draft => ({
-  id: response.innsendingsId,
-  language: localizationUtils.getLanguageCodeAsIso639_1(response.hoveddokumentVariant.document.language),
-  submission: response.hoveddokumentVariant.document.data,
-  modifiedAt: response.endretDato,
-  deleteAt: response.skalSlettesDato,
-});
+const mapDraft = (response: DraftResponse, fallback?: Pick<Draft, 'language' | 'submission'>): Draft => {
+  const document = response.hoveddokumentVariant.document;
+  const decodedDocument = typeof document === 'object' ? document : undefined;
+
+  if (!decodedDocument && !fallback) {
+    throw new Error('Draft response document must be decoded.');
+  }
+
+  const language = decodedDocument
+    ? localizationUtils.getLanguageCodeAsIso639_1(decodedDocument.language)
+    : fallback?.language;
+  const submission = decodedDocument?.data ?? fallback?.submission;
+
+  if (!language || !submission) {
+    throw new Error('Draft response is missing language or submission data.');
+  }
+
+  return {
+    id: response.innsendingsId,
+    language,
+    submission,
+    modifiedAt: response.endretDato,
+    deleteAt: response.skalSlettesDato,
+  };
+};
 
 const createApplicationService = ({ http, backendBaseUrl }: Props): ApplicationService => {
   const draftsUrl = `${backendBaseUrl}/api/send-inn/soknad`;
@@ -48,7 +66,7 @@ const createApplicationService = ({ http, backendBaseUrl }: Props): ApplicationS
 
       return draftAlreadyExists(response)
         ? { status: 'alreadyExists' }
-        : ({ status: 'created', draft: mapDraft(response) } satisfies CreateDraftResult);
+        : ({ status: 'created', draft: mapDraft(response, { language, submission }) } satisfies CreateDraftResult);
     },
     updateDraft: async ({ id, formPath, submission, language, submissionMethod }) => {
       const response = await http.put<DraftResponse>(draftsUrl, {
@@ -58,7 +76,7 @@ const createApplicationService = ({ http, backendBaseUrl }: Props): ApplicationS
         language,
         submissionMethod,
       });
-      return mapDraft(response);
+      return mapDraft(response, { language, submission });
     },
     deleteDraft: async (id) => {
       await http.delete(`${draftsUrl}/${id}`);
