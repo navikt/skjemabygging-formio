@@ -1,17 +1,17 @@
 import { FileItem, FileObject } from '@navikt/ds-react';
 import { ResponseError, Submission, SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { createContext, useContext, useMemo, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 import { useLocation } from 'react-router';
 import { useLanguage } from '../../../context/language/LanguageContext';
+import { AttachmentApplication, useRuntimeServices } from '../../../context/runtime-services/RuntimeServicesContext';
 import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
 import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
 import { useValidation } from '../../../context/validation/ValidationContext';
-import { useFyllut } from '../../context/fyllut/FyllutContext';
+import { downloadBlob } from '../../../utils/blob';
 import { useNologinToken } from '../../context/nologin-token/NologinTokenContext';
 import { createAttachmentSubmissionActions } from './attachmentSubmission';
-import { normalizeAttachmentDownloadFileName } from './attachmentUploadUtils';
+import { normalizeAttachmentDownloadBlob, normalizeAttachmentDownloadFileName } from './attachmentUploadUtils';
 import { getFileValidationError, validateFileUpload } from './attachmentValidation';
-import { downloadBlob, getFileUploadApi } from './fileUploadApi';
 import { createUploadProgressActions } from './uploadProgress';
 
 type AttachmentErrorType = 'FILE' | 'VALUE' | 'TITLE';
@@ -51,7 +51,7 @@ const initialContext: AttachmentUploadContextType = {
 const AttachmentUploadContext = createContext<AttachmentUploadContextType>(initialContext);
 
 const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) => {
-  const { http } = useFyllut();
+  const { attachments, sessions } = useRuntimeServices();
   const { submissionMethod } = useSubmissionMethod();
   const { translate } = useLanguage();
   const { submission, setSubmission } = useSubmissionState();
@@ -60,10 +60,6 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
   const { search } = useLocation();
   const [uploadsInProgress, setUploadsInProgress] = useState<Record<string, Record<string, FileObject>>>({});
   const innsendingsId = new URLSearchParams(search).get('innsendingsId') ?? undefined;
-  const uploadApi = useMemo(
-    () => getFileUploadApi(http, submissionMethod === 'digitalnologin' ? 'nologin' : 'digital', innsendingsId),
-    [http, submissionMethod, innsendingsId],
-  );
   const submissionActions = createAttachmentSubmissionActions(submission, setSubmission);
   const uploadProgressActions = createUploadProgressActions(setUploadsInProgress);
 
@@ -95,7 +91,8 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
       }
 
       const token = await getNologinToken();
-      const result = await uploadApi.uploadFile(file.file, attachmentId, token);
+      const application = getAttachmentApplication(submissionMethod, innsendingsId, token);
+      const result = await attachments.uploadFile({ application, attachmentId, file: file.file });
       if (result) {
         uploadProgressActions.removeAllFilesInProgress(attachmentId, (inProgress) => inProgress.error);
         uploadProgressActions.removeFileInProgress(attachmentId, uploadProgressActions.fileIdentifier(file));
@@ -105,7 +102,7 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
 
       return Promise.resolve({ status: 'unknown' });
     } catch (error: unknown) {
-      if (isAuthenticationError(error, http)) {
+      if (sessions.isAuthenticationError(error)) {
         handleSessionExpired();
         return Promise.resolve({ status: 'auth-error' });
       }
@@ -124,10 +121,11 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
     try {
       removeError(attachmentId);
       const token = await getNologinToken();
-      await uploadApi.deleteFile(attachmentId, fileId, token);
+      const application = getAttachmentApplication(submissionMethod, innsendingsId, token);
+      await attachments.deleteFile({ application, attachmentId, fileId });
       submissionActions.removeFileFromSubmission(attachmentId, fileId);
     } catch (error) {
-      if (isAuthenticationError(error, http)) {
+      if (sessions.isAuthenticationError(error)) {
         handleSessionExpired();
       } else {
         addError(attachmentId, translate(TEXTS.statiske.uploadFile.deleteFileError), 'FILE');
@@ -139,10 +137,11 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
     try {
       removeError(attachmentId);
       const token = await getNologinToken();
-      const downloadedFile = await uploadApi.downloadFile(attachmentId, fileId, token);
-      downloadBlob(downloadedFile, normalizeAttachmentDownloadFileName(fileName));
+      const application = getAttachmentApplication(submissionMethod, innsendingsId, token);
+      const downloadedFile = await attachments.downloadFile({ application, attachmentId, fileId });
+      downloadBlob(normalizeAttachmentDownloadBlob(downloadedFile), normalizeAttachmentDownloadFileName(fileName));
     } catch (error) {
-      if (isAuthenticationError(error, http)) {
+      if (sessions.isAuthenticationError(error)) {
         handleSessionExpired();
       } else {
         addError(attachmentId, translate(TEXTS.statiske.uploadFile.downloadFileError), 'FILE');
@@ -154,10 +153,11 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
     try {
       removeError(attachmentId);
       const token = await getNologinToken();
-      await uploadApi.deleteAllFilesForAttachment(attachmentId, token);
+      const application = getAttachmentApplication(submissionMethod, innsendingsId, token);
+      await attachments.deleteAllFilesForAttachment({ application, attachmentId });
       submissionActions.removeFilesFromSubmission(attachmentId);
     } catch (error) {
-      if (isAuthenticationError(error, http)) {
+      if (sessions.isAuthenticationError(error)) {
         handleSessionExpired();
       } else {
         addError(attachmentId, translate(TEXTS.statiske.uploadFile.deleteAttachmentError), 'FILE');
@@ -169,10 +169,11 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
     try {
       removeError(attachmentId);
       const token = await getNologinToken();
-      await uploadApi.deleteAllFilesForAttachment(attachmentId, token);
+      const application = getAttachmentApplication(submissionMethod, innsendingsId, token);
+      await attachments.deleteAllFilesForAttachment({ application, attachmentId });
       submissionActions.removeAttachmentFromSubmission(attachmentId);
     } catch (error) {
-      if (isAuthenticationError(error, http)) {
+      if (sessions.isAuthenticationError(error)) {
         handleSessionExpired();
       } else {
         addError(attachmentId, translate(TEXTS.statiske.uploadFile.deleteAttachmentError), 'FILE');
@@ -185,7 +186,8 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
     try {
       submission?.attachments?.forEach((attachment) => removeError(attachment.attachmentId));
       const token = await getNologinToken();
-      await uploadApi.deleteAllFiles(token);
+      const application = getAttachmentApplication(submissionMethod, innsendingsId, token);
+      await attachments.deleteAllFiles(application);
       setSubmission(
         (current) =>
           ({
@@ -194,7 +196,7 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
           }) as Submission,
       );
     } catch (error) {
-      if (isAuthenticationError(error, http)) {
+      if (sessions.isAuthenticationError(error)) {
         handleSessionExpired();
       } else {
         addError('allFiles', translate(TEXTS.statiske.uploadFile.deleteAllFilesError), 'FILE');
@@ -233,10 +235,12 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
 
 const useAttachmentUpload = () => useContext(AttachmentUploadContext);
 
-const isAuthenticationError = (
-  error: unknown,
-  http?: { isAuthenticationError: (error: unknown) => boolean },
-): boolean => http?.isAuthenticationError(error) ?? false;
+const getAttachmentApplication = (
+  submissionMethod: string | undefined,
+  id: string | undefined,
+  token: string | undefined,
+): AttachmentApplication =>
+  submissionMethod === 'digitalnologin' ? { type: 'noLogin', token } : { type: 'draft', id };
 
 export { AttachmentUploadProvider, getFileValidationError, useAttachmentUpload };
 export type { AttachmentErrorType };

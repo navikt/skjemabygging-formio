@@ -1,6 +1,4 @@
-import { SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useContext } from 'react';
-import { ApplicationLogger } from '../../../context/application/ApplicationContext';
 
 interface FyllutHttpHeaders {
   NologinToken?: string;
@@ -53,17 +51,9 @@ type FyllutEvent =
     };
 
 interface FyllutContextValue {
-  baseUrl?: string;
   fyllutBaseUrl?: string;
   isLoggedIn?: boolean;
-  http?: FyllutHttp;
   logEvent?: (event: FyllutEvent) => Promise<void>;
-  downloadPdf?: (url: string, body: object) => Promise<Blob | undefined>;
-}
-
-interface FyllutApiConfig extends FyllutContextValue {
-  logger?: ApplicationLogger;
-  submissionMethod?: SubmissionMethod;
 }
 
 interface Props {
@@ -80,4 +70,4 @@ const FyllutProvider = ({ children, value }: Props) => (
 const useFyllut = () => useContext(FyllutContext);
 
 export { FyllutProvider, useFyllut };
-export type { FyllutApiConfig, FyllutContextValue, FyllutEvent, FyllutHttp, FyllutHttpHeaders };
+export type { FyllutContextValue, FyllutEvent, FyllutHttp, FyllutHttpHeaders };

@@ -4,11 +4,10 @@ import { useState } from 'react';
 import { useLocation } from 'react-router';
 import { useApplication } from '../../context/application/ApplicationContext';
 import { useLanguage } from '../../context/language/LanguageContext';
+import { useRuntimeServices } from '../../context/runtime-services/RuntimeServicesContext';
 import { useSubmissionState } from '../../context/state/SubmissionStateContext';
 import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
-import { deleteSoknad } from '../api/sendInnSoknad';
 import { useAttachmentUpload } from '../attachments/context/AttachmentUploadContext';
-import { useFyllut } from '../context/fyllut/FyllutContext';
 import ConfirmationModal from './ConfirmationModal';
 import { getExitUrl } from './navUrls';
 
@@ -17,7 +16,7 @@ interface Props {
 }
 
 const CancelAndDeleteButton = ({ exitOnly = false }: Props) => {
-  const fyllut = useFyllut();
+  const { applications } = useRuntimeServices();
   const { logger } = useApplication();
   const { submissionMethod } = useSubmissionMethod();
   const { translate } = useLanguage();
@@ -31,7 +30,7 @@ const CancelAndDeleteButton = ({ exitOnly = false }: Props) => {
 
   const handleCancel = async () => {
     if (submissionMethod === 'digital' && innsendingsId) {
-      await deleteSoknad({ ...fyllut, logger, submissionMethod }, innsendingsId);
+      await applications.deleteDraft(innsendingsId);
     } else if (submissionMethod === 'digitalnologin') {
       await handleDeleteAllFiles();
     }

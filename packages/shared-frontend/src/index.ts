@@ -30,7 +30,20 @@ export type {
   ApplicationLogger,
 } from './context/application/ApplicationContext';
 export type { LanguageConfig, LanguageContextValue } from './context/language/LanguageContext';
-export type { FormCodeList, FormDataService, RuntimeServices } from './context/runtime-services/RuntimeServicesContext';
+export type {
+  ApplicationService,
+  AttachmentApplication,
+  AttachmentService,
+  CreateDraftResult,
+  Draft,
+  DraftRequest,
+  FormCodeList,
+  FormDataService,
+  RuntimeServices,
+  SessionService,
+  SubmissionApplication,
+  SubmissionService,
+} from './context/runtime-services/RuntimeServicesContext';
 export type { FieldError, ValidationContextType } from './context/validation/ValidationContext';
 export type {
   FormComponentProps,

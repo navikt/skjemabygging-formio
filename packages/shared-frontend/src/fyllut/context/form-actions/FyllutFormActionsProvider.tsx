@@ -1,13 +1,12 @@
-import { dateUtils, Form, formioFormsApiUtils, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { dateUtils, Form, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { ReactNode, useMemo, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useApplication } from '../../../context/application/ApplicationContext';
 import { useLanguage } from '../../../context/language/LanguageContext';
+import { Draft, useRuntimeServices } from '../../../context/runtime-services/RuntimeServicesContext';
 import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
 import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
 import { b64toBlob } from '../../../utils/blob';
-import { postNologinSoknad } from '../../api/nologinSoknad';
-import { createSoknad, soknadAlreadyExists, updateSoknad } from '../../api/sendInnSoknad';
 import { buildDigitalFormSearch } from '../../draft/digitalDraftUtils';
 import { RECEIPT_KEY } from '../../form-flow/constants';
 import { useFyllut } from '../fyllut/FyllutContext';
@@ -31,11 +30,11 @@ const useFyllutFormActions = (
   setReceiptPdf?: (pdf: Blob) => void,
 ): FormActionHandlers => {
   const fyllut = useFyllut();
+  const { applications, sessions, submissions } = useRuntimeServices();
   const { logger } = useApplication();
   const { submissionMethod } = useSubmissionMethod();
   const { currentLanguage, translate } = useLanguage();
   const { logEvent } = fyllut;
-  const appConfig = useMemo(() => ({ ...fyllut, logger, submissionMethod }), [fyllut, logger, submissionMethod]);
   const { getNologinToken, clearNologinToken, handleSessionExpired } = useNologinToken();
   const { search } = useLocation();
   const navigate = useNavigate();
@@ -46,22 +45,13 @@ const useFyllutFormActions = (
   );
 
   return useMemo<FormActionHandlers>(() => {
-    // Convert at the legacy sendInnSoknadApi boundary (shared-components still uses NavFormType)
-    const navForm = formioFormsApiUtils.mapFormToNavForm(form);
     const isDigital = submissionMethod === 'digital';
-    const syncSubmissionState = (
-      submission: Submission,
-      response?: {
-        endretDato: string;
-        skalSlettesDato: string;
-        hoveddokumentVariant?: { document?: { data?: Submission } };
-      },
-    ) => {
-      if (!response) {
+    const syncSubmissionState = (submission: Submission, draft?: Draft) => {
+      if (!draft) {
         return;
       }
 
-      const persistedSubmission = response.hoveddokumentVariant?.document?.data ?? submission;
+      const persistedSubmission = draft.submission ?? submission;
 
       setSubmission({
         ...persistedSubmission,
@@ -70,8 +60,8 @@ const useFyllutFormActions = (
           mellomlagring: {
             ...persistedSubmission.fyllutState?.mellomlagring,
             isActive: true,
-            savedDate: dateUtils.toLocaleDateAndTime(response.endretDato),
-            deletionDate: dateUtils.toLocaleDate(response.skalSlettesDato),
+            savedDate: dateUtils.toLocaleDateAndTime(draft.modifiedAt),
+            deletionDate: dateUtils.toLocaleDate(draft.deleteAt),
           },
         },
       });
@@ -106,35 +96,37 @@ const useFyllutFormActions = (
     const saveDraft = isDigital
       ? async (submission: Submission) => {
           if (!innsendingsIdRef.current) {
-            const response = await createSoknad(
-              appConfig,
-              navForm,
-              submission,
-              currentLanguage,
-              forceMellomlagring,
-            ).catch((error: unknown) => {
-              throw createSaveDraftError(error, TEXTS.statiske.mellomlagringError.create.message);
-            });
-            if (soknadAlreadyExists(response)) {
+            const result = await applications
+              .createDraft({
+                formPath: form.path,
+                submission,
+                language: currentLanguage,
+                submissionMethod,
+                force: forceMellomlagring,
+              })
+              .catch((error: unknown) => {
+                throw createSaveDraftError(error, TEXTS.statiske.mellomlagringError.create.message);
+              });
+            if (result.status === 'alreadyExists') {
               goToActiveTasks();
               return;
             }
-            if (response && 'innsendingsId' in response) {
-              innsendingsIdRef.current = response.innsendingsId;
-              syncInnsendingsIdToUrl(response.innsendingsId);
-              syncSubmissionState(submission, response);
-            }
+            innsendingsIdRef.current = result.draft.id;
+            syncInnsendingsIdToUrl(result.draft.id);
+            syncSubmissionState(submission, result.draft);
           } else {
-            const response = await updateSoknad(
-              appConfig,
-              navForm,
-              submission,
-              currentLanguage,
-              innsendingsIdRef.current,
-            ).catch((error: unknown) => {
-              throw createSaveDraftError(error, TEXTS.statiske.mellomlagringError.update.message);
-            });
-            syncSubmissionState(submission, response);
+            const draft = await applications
+              .updateDraft({
+                id: innsendingsIdRef.current,
+                formPath: form.path,
+                submission,
+                language: currentLanguage,
+                submissionMethod,
+              })
+              .catch((error: unknown) => {
+                throw createSaveDraftError(error, TEXTS.statiske.mellomlagringError.update.message);
+              });
+            syncSubmissionState(submission, draft);
           }
         }
       : undefined;
@@ -144,16 +136,20 @@ const useFyllutFormActions = (
         return innsendingsIdRef.current;
       }
 
-      const response = await createSoknad(appConfig, navForm, submission, currentLanguage, forceMellomlagring);
-      if (soknadAlreadyExists(response)) {
+      const result = await applications.createDraft({
+        formPath: form.path,
+        submission,
+        language: currentLanguage,
+        submissionMethod,
+        force: forceMellomlagring,
+      });
+      if (result.status === 'alreadyExists') {
         goToActiveTasks();
         return undefined;
       }
-      if (response && 'innsendingsId' in response) {
-        innsendingsIdRef.current = response.innsendingsId;
-        syncInnsendingsIdToUrl(response.innsendingsId);
-        syncSubmissionState(submission, response);
-      }
+      innsendingsIdRef.current = result.draft.id;
+      syncInnsendingsIdToUrl(result.draft.id);
+      syncSubmissionState(submission, result.draft);
 
       return innsendingsIdRef.current;
     };
@@ -178,15 +174,13 @@ const useFyllutFormActions = (
           if (!innsendingsId) {
             return;
           }
-          const response = await postNologinSoknad(
-            appConfig,
-            '',
-            navForm,
+          const response = await submissions.submit({
+            application: { type: 'draft', id: innsendingsId },
+            formPath: form.path,
             submission,
-            currentLanguage,
+            language: currentLanguage,
             submissionMethod,
-            innsendingsId,
-          );
+          });
           logSubmissionCompleted();
           setReceiptPdf?.(b64toBlob(response.pdfBase64, 'application/pdf'));
           navigate({ pathname: `/${form.path}/${RECEIPT_KEY}`, search }, { state: { receipt: response.receipt } });
@@ -196,17 +190,15 @@ const useFyllutFormActions = (
           const nologinToken = await getNologinToken();
           let response;
           try {
-            response = await postNologinSoknad(
-              appConfig,
-              nologinToken ?? '',
-              navForm,
+            response = await submissions.submit({
+              application: { type: 'noLogin', token: nologinToken ?? '' },
+              formPath: form.path,
               submission,
-              currentLanguage,
+              language: currentLanguage,
               submissionMethod,
-              innsendingsIdRef.current,
-            );
+            });
           } catch (error) {
-            if (appConfig.http?.isAuthenticationError(error)) {
+            if (sessions.isAuthenticationError(error)) {
               handleSessionExpired();
             }
             throw error;
@@ -228,7 +220,7 @@ const useFyllutFormActions = (
 
     return { save: saveDraft, submit: submitForm };
   }, [
-    appConfig,
+    applications,
     form,
     currentLanguage,
     translate,
@@ -240,9 +232,11 @@ const useFyllutFormActions = (
     handleSessionExpired,
     setReceiptPdf,
     setSubmission,
+    sessions,
     navigate,
     search,
     forceMellomlagring,
+    submissions,
   ]);
 };
 

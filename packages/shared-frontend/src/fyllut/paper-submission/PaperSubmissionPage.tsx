@@ -4,7 +4,6 @@ import {
   dateUtils,
   Enhet,
   formioFormsApiUtils,
-  localizationUtils,
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo, useState } from 'react';
@@ -31,8 +30,8 @@ interface Props {
 
 const PaperSubmissionPage = ({ documentType }: Props) => {
   const { translate, currentLanguage } = useLanguage();
-  const { formData } = useRuntimeServices();
-  const { fyllutBaseUrl, logEvent, downloadPdf } = useFyllut();
+  const { formData, submissions } = useRuntimeServices();
+  const { fyllutBaseUrl, logEvent } = useFyllut();
   const { logger } = useApplication();
   const { submissionMethod } = useSubmissionMethod();
   const { form } = useFormDefinition();
@@ -92,18 +91,14 @@ const PaperSubmissionPage = ({ documentType }: Props) => {
       return undefined;
     }
 
-    return await downloadPdf?.(
-      `${fyllutBaseUrl}/api/documents${
-        documentType === 'application' ? '/application' : '/cover-page-and-application'
-      }`,
-      {
-        language: localizationUtils.getLanguageCodeAsIso639_1(currentLanguage),
-        formPath: form.path,
-        submission: JSON.stringify(submission),
-        submissionMethod,
-        enhetNummer: selectedNavUnit || undefined,
-      },
-    );
+    return submissions.createDocument({
+      documentType,
+      language: currentLanguage,
+      formPath: form.path,
+      submission,
+      submissionMethod,
+      navUnitNumber: selectedNavUnit || undefined,
+    });
   };
 
   return (

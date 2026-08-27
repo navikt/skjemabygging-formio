@@ -9,7 +9,11 @@ import {
 } from '@navikt/skjemadigitalisering-shared-frontend';
 import { useMemo } from 'react';
 import { useLocation } from 'react-router';
+import createApplicationService from '../../services/createApplicationService';
+import createAttachmentService from '../../services/createAttachmentService';
 import createFormDataService from '../../services/createFormDataService';
+import createSessionService from '../../services/createSessionService';
+import createSubmissionService from '../../services/createSubmissionService';
 import { getAvailableLanguages, getCurrentLanguage } from './newRendererLanguageUtils';
 
 type Props = Omit<RenderFormProps, 'fyllut' | 'language' | 'services' | 'submissionMethod'> & {
@@ -28,25 +32,38 @@ const RenderFormAdapter = ({ form, translations, ...props }: Props) => {
   const innsendingsId = new URLSearchParams(search).get('innsendingsId') ?? undefined;
   const services = useMemo<RuntimeServices>(
     () => ({
+      applications: createApplicationService({
+        http,
+        backendBaseUrl: appConfig.baseUrl ?? '/fyllut',
+      }),
+      attachments: createAttachmentService({
+        http,
+        backendBaseUrl: appConfig.baseUrl ?? '/fyllut',
+      }),
       formData: createFormDataService({
         http,
         backendBaseUrl: appConfig.baseUrl ?? '/fyllut',
         innsendingsId,
       }),
+      sessions: createSessionService({
+        http,
+        backendBaseUrl: appConfig.baseUrl ?? '/fyllut',
+      }),
+      submissions: createSubmissionService({
+        http,
+        backendBaseUrl: appConfig.baseUrl ?? '/fyllut',
+        createPdf: (url, body) =>
+          http.post<Blob>(url, body, {
+            Accept: http.MimeType.PDF,
+          }),
+      }),
     }),
     [appConfig.baseUrl, http, innsendingsId],
   );
-  const downloadPdf = (url: string, body: object) =>
-    http.post<Blob>(url, body, {
-      Accept: http.MimeType.PDF,
-    });
   const fyllut: FyllutContextValue = {
-    baseUrl: appConfig.baseUrl,
     fyllutBaseUrl: appConfig.fyllutBaseURL,
     isLoggedIn: appConfig.config?.isLoggedIn,
-    http,
     logEvent: appConfig.logEvent,
-    downloadPdf,
   };
   const environment = appConfig.config?.NAIS_CLUSTER_NAME === 'prod-gcp' ? 'production' : 'development';
 

@@ -2,6 +2,7 @@ import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useApplication } from '../../../context/application/ApplicationContext';
+import { useRuntimeServices } from '../../../context/runtime-services/RuntimeServicesContext';
 import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
 import { useFyllut } from '../fyllut/FyllutContext';
 
@@ -41,7 +42,8 @@ const getTokenExpiration = (token: string) => {
 
 const NologinTokenProvider = ({ children, form, initialToken }: Props) => {
   const { logger } = useApplication();
-  const { http, logEvent } = useFyllut();
+  const { sessions } = useRuntimeServices();
+  const { logEvent } = useFyllut();
   const { submissionMethod } = useSubmissionMethod();
   const navigate = useNavigate();
   const [nologinToken, setNologinToken] = useState<string | undefined>(initialToken);
@@ -64,13 +66,13 @@ const NologinTokenProvider = ({ children, form, initialToken }: Props) => {
     }
 
     const tokenRequest = (async () => {
-      const response = await http?.post<{ access_token?: string }>('/fyllut/api/captcha', { data_33: 'ja' });
-      if (response?.access_token) {
-        setNologinToken(response.access_token);
-        setTokenExpiration(getTokenExpiration(response.access_token));
+      const token = await sessions.createNoLoginToken();
+      if (token) {
+        setNologinToken(token);
+        setTokenExpiration(getTokenExpiration(token));
       }
 
-      return response?.access_token;
+      return token;
     })();
     tokenRequestRef.current = tokenRequest;
 
@@ -81,7 +83,7 @@ const NologinTokenProvider = ({ children, form, initialToken }: Props) => {
         tokenRequestRef.current = undefined;
       }
     }
-  }, [http, nologinToken, submissionMethod]);
+  }, [nologinToken, sessions, submissionMethod]);
 
   const clearNologinToken = useCallback(() => {
     setNologinToken(undefined);
