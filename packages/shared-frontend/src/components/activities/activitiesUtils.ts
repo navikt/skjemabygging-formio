@@ -34,18 +34,4 @@ const mapActivities = (activities: SendInnAktivitet[], language: string): Submis
 
 const getSelectedActivityId = (value?: SubmissionActivity) => value?.vedtaksId ?? value?.aktivitetId ?? '';
 
-const fetchActivities = async (dagligreise = false): Promise<SendInnAktivitet[]> => {
-  const params = new URLSearchParams(window.location.search);
-  const innsendingsId = params.get('innsendingsId');
-  const response = await fetch(`/fyllut/api/send-inn/activities?dagligreise=${dagligreise}`, {
-    headers: innsendingsId ? { 'x-innsendingsid': innsendingsId } : undefined,
-  });
-
-  if (!response.ok) {
-    throw new Error(`Failed to load activities: ${response.status}`);
-  }
-
-  return response.json() as Promise<SendInnAktivitet[]>;
-};
-
-export { fetchActivities, getSelectedActivityId, mapActivities, mapActivityText, toActivitiesLocale };
+export { getSelectedActivityId, mapActivities, mapActivityText, toActivitiesLocale };

@@ -1,7 +1,8 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import Select from '../../../components/select/Select';
 import { useRemoteOptions } from '../../../components/select/useRemoteOptions';
 import { useApplication } from '../../../context/application/ApplicationContext';
+import { useRuntimeServices } from '../../../context/runtime-services/RuntimeServicesContext';
 import {
   getValues,
   InputComponentProps,
@@ -11,12 +12,12 @@ import {
 } from '../../inputComponentRegistryUtils';
 import FormGroup from '../../shared/FormGroup';
 
-const CURRENCY_OPTIONS_URL = '/fyllut/api/common-codes/currencies';
-
 const InputCurrencySelect = ({ component, submissionPath }: InputComponentProps) => {
   const { logger } = useApplication();
+  const { formData } = useRuntimeServices();
   const fallbackValues = getValues(component);
-  const { values: loadedValues, error } = useRemoteOptions(CURRENCY_OPTIONS_URL);
+  const loadCurrencies = useCallback(() => formData.getCodeList('currencies'), [formData]);
+  const { values: loadedValues, error } = useRemoteOptions(loadCurrencies);
 
   useEffect(() => {
     if (!error) {
@@ -25,7 +26,6 @@ const InputCurrencySelect = ({ component, submissionPath }: InputComponentProps)
 
     logger?.error?.('Failed to load currency select options', {
       componentKey: component.key,
-      url: CURRENCY_OPTIONS_URL,
       error: error.message,
     });
   }, [component.key, error, logger]);

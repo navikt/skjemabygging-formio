@@ -4,6 +4,7 @@ import { ApplicationLogger } from '../../../context/application/ApplicationConte
 
 interface FyllutHttpHeaders {
   NologinToken?: string;
+  'x-innsendingsid'?: string;
 }
 
 interface FyllutHttp {

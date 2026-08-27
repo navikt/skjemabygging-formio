@@ -1,28 +1,18 @@
 import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useState } from 'react';
 
-const loadRemoteOptions = async (url: string): Promise<ComponentValue[]> => {
-  const response = await fetch(url);
-
-  if (!response.ok) {
-    throw new Error(`Failed to load remote options: ${response.status}`);
-  }
-
-  return response.json() as Promise<ComponentValue[]>;
-};
-
-const useRemoteOptions = (url?: string) => {
+const useRemoteOptions = (loadOptions?: () => Promise<ComponentValue[]>) => {
   const [values, setValues] = useState<ComponentValue[] | undefined>();
   const [error, setError] = useState<Error | undefined>();
 
   useEffect(() => {
-    if (!url) {
+    if (!loadOptions) {
       return;
     }
 
     let cancelled = false;
 
-    void loadRemoteOptions(url)
+    void loadOptions()
       .then((options) => {
         if (!cancelled) {
           setValues(options);
@@ -39,9 +29,9 @@ const useRemoteOptions = (url?: string) => {
     return () => {
       cancelled = true;
     };
-  }, [url]);
+  }, [loadOptions]);
 
   return { values, error };
 };
 
-export { loadRemoteOptions, useRemoteOptions };
+export { useRemoteOptions };

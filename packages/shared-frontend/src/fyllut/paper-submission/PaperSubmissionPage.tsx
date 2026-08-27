@@ -14,6 +14,7 @@ import { filterNavUnits, sortNavUnits } from '../../components/nav-unit-select/n
 import { useApplication } from '../../context/application/ApplicationContext';
 import { useFormDefinition } from '../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../context/language/LanguageContext';
+import { useRuntimeServices } from '../../context/runtime-services/RuntimeServicesContext';
 import { useSubmissionState } from '../../context/state/SubmissionStateContext';
 import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
 import { withoutSubmissionNavigationState } from '../../utils/navigationState';
@@ -30,7 +31,8 @@ interface Props {
 
 const PaperSubmissionPage = ({ documentType }: Props) => {
   const { translate, currentLanguage } = useLanguage();
-  const { fyllutBaseUrl, http, logEvent, downloadPdf } = useFyllut();
+  const { formData } = useRuntimeServices();
+  const { fyllutBaseUrl, logEvent, downloadPdf } = useFyllut();
   const { logger } = useApplication();
   const { submissionMethod } = useSubmissionMethod();
   const { form } = useFormDefinition();
@@ -64,10 +66,7 @@ const PaperSubmissionPage = ({ documentType }: Props) => {
       setNavUnitFetchError(false);
       setNavUnits(undefined);
       try {
-        const units = await http?.get<Enhet[]>(`${fyllutBaseUrl}/api/enhetsliste`);
-        if (!units) {
-          throw new Error('NAV unit HTTP client is unavailable.');
-        }
+        const units = await formData.getNavUnits();
 
         const filteredUnits = filterNavUnits(units, form.properties.enhetstyper);
         if (filteredUnits.length === 0) {
@@ -86,7 +85,7 @@ const PaperSubmissionPage = ({ documentType }: Props) => {
     };
 
     loadNavUnits();
-  }, [form.properties.enhetstyper, form.properties.skjemanummer, fyllutBaseUrl, http, logger, requiresNavUnit]);
+  }, [form.properties.enhetstyper, form.properties.skjemanummer, formData, logger, requiresNavUnit]);
 
   const getPdfContent = async () => {
     if (!submission) {

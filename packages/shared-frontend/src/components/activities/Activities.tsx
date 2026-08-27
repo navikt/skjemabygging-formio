@@ -1,7 +1,13 @@
-import { ComponentValue, SubmissionActivity, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  ComponentValue,
+  SendInnAktivitet,
+  SubmissionActivity,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo, useState } from 'react';
 import { useApplication } from '../../context/application/ApplicationContext';
 import { useLanguage } from '../../context/language/LanguageContext';
+import { useRuntimeServices } from '../../context/runtime-services/RuntimeServicesContext';
 import { useStateField } from '../../context/state/useStateField';
 import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
 import Alert from '../alert/Alert';
@@ -9,18 +15,20 @@ import CheckboxGroup from '../checkbox-group/CheckboxGroup';
 import RadioGroup from '../radio-group/RadioGroup';
 import ReadMore from '../read-more/ReadMore';
 import { BaseFieldProps } from '../types';
-import { fetchActivities, getSelectedActivityId, mapActivities } from './activitiesUtils';
+import { getSelectedActivityId, mapActivities } from './activitiesUtils';
 
 type ActivitiesProps = Pick<BaseFieldProps, 'statePath' | 'label' | 'description' | 'readMore'>;
 type ActivitiesStatus = 'loading' | 'ready' | 'error';
 
 const Activities = ({ statePath, label, description, readMore }: ActivitiesProps) => {
   const { logger } = useApplication();
+  const { formData } = useRuntimeServices();
   const { submissionMethod } = useSubmissionMethod();
   const { translate, currentLanguage } = useLanguage();
   const { stateValue, error, setStateValue } = useStateField({ statePath });
   const [status, setStatus] = useState<ActivitiesStatus>('loading');
-  const [activitySelections, setActivitySelections] = useState<SubmissionActivity[]>([]);
+  const [activities, setActivities] = useState<SendInnAktivitet[]>([]);
+  const activitySelections = useMemo(() => mapActivities(activities, currentLanguage), [activities, currentLanguage]);
   const currentValue = stateValue as SubmissionActivity | undefined;
   const defaultActivity = useMemo<SubmissionActivity>(
     () => ({
@@ -59,13 +67,14 @@ const Activities = ({ statePath, label, description, readMore }: ActivitiesProps
 
     let cancelled = false;
 
-    void fetchActivities()
-      .then((activities) => {
+    void formData
+      .getActivities()
+      .then((result) => {
         if (cancelled) {
           return;
         }
 
-        setActivitySelections(mapActivities(activities, currentLanguage));
+        setActivities(result);
         setStatus('ready');
       })
       .catch((fetchError) => {
@@ -77,14 +86,14 @@ const Activities = ({ statePath, label, description, readMore }: ActivitiesProps
           statePath,
           error: fetchError instanceof Error ? fetchError.message : String(fetchError),
         });
-        setActivitySelections([]);
+        setActivities([]);
         setStatus('error');
       });
 
     return () => {
       cancelled = true;
     };
-  }, [currentLanguage, logger, statePath, submissionMethod]);
+  }, [formData, logger, statePath, submissionMethod]);
 
   if (submissionMethod !== 'digital') {
     return null;

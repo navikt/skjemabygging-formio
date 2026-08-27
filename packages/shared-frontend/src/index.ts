@@ -5,6 +5,7 @@ import { ApplicationProvider, useApplication } from './context/application/Appli
 import { FormDefinitionProvider, useFormDefinition } from './context/form-definition/FormDefinitionContext';
 import { applyPrefilledValuesToSubmission } from './context/form-definition/prefillSubmission';
 import { LanguageProvider, useLanguage } from './context/language/LanguageContext';
+import { RuntimeServicesProvider, useRuntimeServices } from './context/runtime-services/RuntimeServicesContext';
 import { initializeSubmission } from './context/state/initializeSubmission';
 import { SubmissionStateProvider, useSubmissionState } from './context/state/SubmissionStateContext';
 import { SubmissionMethodProvider, useSubmissionMethod } from './context/submission-method/SubmissionMethodContext';
@@ -29,6 +30,7 @@ export type {
   ApplicationLogger,
 } from './context/application/ApplicationContext';
 export type { LanguageConfig, LanguageContextValue } from './context/language/LanguageContext';
+export type { FormCodeList, FormDataService, RuntimeServices } from './context/runtime-services/RuntimeServicesContext';
 export type { FieldError, ValidationContextType } from './context/validation/ValidationContext';
 export type {
   FormComponentProps,
@@ -53,6 +55,7 @@ export {
   RenderForm,
   RenderSummaryForm,
   resolveDefaultSubmissionMethod,
+  RuntimeServicesProvider,
   SharedFrontendBoundary,
   sharedFrontendPackageName,
   shouldUseLegacyPageForNewRenderer,
@@ -61,6 +64,7 @@ export {
   useApplication,
   useFormDefinition,
   useLanguage,
+  useRuntimeServices,
   useSubmissionMethod,
   useSubmissionState,
   useValidation,

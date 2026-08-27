@@ -221,7 +221,7 @@ Cypress.Commands.add('defaultIntercepts', () => {
   cy.intercept('GET', '/fyllut/api/global-translations/*').as('getGlobalTranslations');
   cy.intercept('GET', '/fyllut/api/common-codes/currencies*').as('getCurrencies');
   cy.intercept('GET', '/fyllut/api/common-codes/area-codes').as('getAreaCodes');
-  cy.intercept('GET', '/fyllut/api/translations/*').as('getTranslations');
+  cy.intercept('GET', /\/fyllut\/api\/(?:translations\/[^/]+|forms\/[^/]+\/translations)$/).as('getTranslations');
   cy.intercept('GET', '/fyllut/api/forms/*').as('getForm');
   return cy;
 });

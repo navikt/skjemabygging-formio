@@ -1,8 +1,9 @@
 import { Label } from '@navikt/ds-react';
 import { ComponentValue, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useApplication } from '../../context/application/ApplicationContext';
 import { useLanguage } from '../../context/language/LanguageContext';
+import { useRuntimeServices } from '../../context/runtime-services/RuntimeServicesContext';
 import { useStateField } from '../../context/state/useStateField';
 import { inputId } from '../../utils/inputId';
 import Alert from '../alert/Alert';
@@ -15,7 +16,6 @@ import TextField from '../text-field/TextField';
 import { BaseFieldProps } from '../types';
 
 const DEFAULT_AREA_CODE = '+47';
-const AREA_CODE_OPTIONS_URL = '/fyllut/api/common-codes/area-codes';
 const fallbackAreaCodeOptions: ComponentValue[] = [{ value: DEFAULT_AREA_CODE, label: DEFAULT_AREA_CODE }];
 
 interface PhoneNumberValue {
@@ -38,12 +38,14 @@ const PhoneNumber = ({
   showAreaCode = false,
 }: PhoneNumberProps) => {
   const { logger } = useApplication();
+  const { formData } = useRuntimeServices();
   const { translate } = useLanguage();
   const { stateValue, setStateValue } = useStateField({ statePath });
   const phoneNumberValue =
     typeof stateValue === 'object' && stateValue !== null ? (stateValue as PhoneNumberValue) : undefined;
   const areaCode = phoneNumberValue?.areaCode ?? DEFAULT_AREA_CODE;
-  const { values: loadedAreaCodes, error } = useRemoteOptions(showAreaCode ? AREA_CODE_OPTIONS_URL : undefined);
+  const loadAreaCodes = useCallback(() => formData.getCodeList('areaCodes'), [formData]);
+  const { values: loadedAreaCodes, error } = useRemoteOptions(showAreaCode ? loadAreaCodes : undefined);
 
   useEffect(() => {
     if (!showAreaCode || phoneNumberValue?.areaCode) {
@@ -63,7 +65,6 @@ const PhoneNumber = ({
 
     logger?.error?.('Failed to load phone number area codes', {
       statePath,
-      url: AREA_CODE_OPTIONS_URL,
       error: error.message,
     });
   }, [error, logger, statePath]);

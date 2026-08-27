@@ -1,8 +1,9 @@
 import { DataFetcherComponent, DataFetcherData, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useMemo } from 'react';
 import DataFetcher from '../../../components/data-fetcher/DataFetcher';
-import { fetchRegisterData, getDataFetcherData } from '../../../components/data-fetcher/dataFetcherUtils';
+import { getDataFetcherData } from '../../../components/data-fetcher/dataFetcherUtils';
 import { useApplication } from '../../../context/application/ApplicationContext';
+import { useRuntimeServices } from '../../../context/runtime-services/RuntimeServicesContext';
 import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
 import { parseSubmissionPath, setDeepValue } from '../../../context/state/stateHelpers';
 import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
@@ -13,6 +14,7 @@ const InputDataFetcher = ({ component, submissionPath }: InputComponentProps) =>
   type SubmissionMetadata = NonNullable<Submission['metadata']>;
   const dataFetcherComponent = component as DataFetcherComponent;
   const { logger } = useApplication();
+  const { formData } = useRuntimeServices();
   const { submissionMethod } = useSubmissionMethod();
   const { submission, setSubmission } = useSubmissionState();
   const statePath = resolveSubmissionPath(component, submissionPath);
@@ -62,7 +64,11 @@ const InputDataFetcher = ({ component, submissionPath }: InputComponentProps) =>
 
     let cancelled = false;
 
-    void fetchRegisterData(dataFetcherComponent.dataFetcherSourceId || 'activities', dataFetcherComponent.queryParams)
+    void formData
+      .getRegisterData({
+        sourceId: dataFetcherComponent.dataFetcherSourceId || 'activities',
+        queryParams: dataFetcherComponent.queryParams,
+      })
       .then((result) => {
         if (cancelled) {
           return;
@@ -92,6 +98,7 @@ const InputDataFetcher = ({ component, submissionPath }: InputComponentProps) =>
     dataFetcherComponent.queryParams,
     dataFetcherComponent.showOther,
     dataFetcherData,
+    formData,
     logger,
     otherOption,
     statePath,

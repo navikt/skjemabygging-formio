@@ -3,10 +3,10 @@ import { dateUtils, DrivingListSubmission, SendInnAktivitet, TEXTS } from '@navi
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useApplication } from '../../context/application/ApplicationContext';
 import { useLanguage } from '../../context/language/LanguageContext';
+import { useRuntimeServices } from '../../context/runtime-services/RuntimeServicesContext';
 import { useStateField } from '../../context/state/useStateField';
 import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
 import { sanitizeHtml } from '../../utils/sanitizeHtml';
-import { fetchActivities } from '../activities/activitiesUtils';
 import Alert from '../alert/Alert';
 import DatePicker from '../date/DatePicker';
 import RadioGroup from '../radio-group/RadioGroup';
@@ -52,6 +52,7 @@ const normalizeSubmissionDate = (value?: string) => {
 
 const DrivingList = ({ statePath, description, readMore }: DrivingListProps) => {
   const { logger } = useApplication();
+  const { formData } = useRuntimeServices();
   const { submissionMethod } = useSubmissionMethod();
   const { translate, currentLanguage } = useLanguage();
   const { stateValue, setStateValue } = useStateField({ statePath });
@@ -75,7 +76,8 @@ const DrivingList = ({ statePath, description, readMore }: DrivingListProps) => 
 
     let cancelled = false;
 
-    void fetchActivities(true)
+    void formData
+      .getActivities({ dailyTravel: true })
       .then((result) => {
         if (cancelled) {
           return;
@@ -100,7 +102,7 @@ const DrivingList = ({ statePath, description, readMore }: DrivingListProps) => 
     return () => {
       cancelled = true;
     };
-  }, [logger, statePath, submissionMethod]);
+  }, [formData, logger, statePath, submissionMethod]);
 
   useEffect(() => {
     if (submissionMethod !== 'digital' || vedtakOptions.length !== 1 || value.selectedVedtaksId) {

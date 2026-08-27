@@ -5,11 +5,14 @@ import {
   FyllutContextValue,
   RenderForm,
   RenderFormProps,
+  RuntimeServices,
 } from '@navikt/skjemadigitalisering-shared-frontend';
+import { useMemo } from 'react';
 import { useLocation } from 'react-router';
+import createFormDataService from '../../services/createFormDataService';
 import { getAvailableLanguages, getCurrentLanguage } from './newRendererLanguageUtils';
 
-type Props = Omit<RenderFormProps, 'fyllut' | 'language' | 'submissionMethod'> & {
+type Props = Omit<RenderFormProps, 'fyllut' | 'language' | 'services' | 'submissionMethod'> & {
   translations: FormsApiTranslationMap;
 };
 
@@ -19,12 +22,24 @@ const RenderFormAdapter = ({ form, translations, ...props }: Props) => {
   const availableLanguages = getAvailableLanguages(form, translations);
   const currentLanguage = getCurrentLanguage(search, availableLanguages);
   const http = appConfig.http;
-  const downloadPdf = http
-    ? (url: string, body: object) =>
-        http.post<Blob>(url, body, {
-          Accept: http.MimeType.PDF,
-        })
-    : undefined;
+  if (!http) {
+    throw new Error('Fyllut HTTP client is required to render the form.');
+  }
+  const innsendingsId = new URLSearchParams(search).get('innsendingsId') ?? undefined;
+  const services = useMemo<RuntimeServices>(
+    () => ({
+      formData: createFormDataService({
+        http,
+        backendBaseUrl: appConfig.baseUrl ?? '/fyllut',
+        innsendingsId,
+      }),
+    }),
+    [appConfig.baseUrl, http, innsendingsId],
+  );
+  const downloadPdf = (url: string, body: object) =>
+    http.post<Blob>(url, body, {
+      Accept: http.MimeType.PDF,
+    });
   const fyllut: FyllutContextValue = {
     baseUrl: appConfig.baseUrl,
     fyllutBaseUrl: appConfig.fyllutBaseURL,
@@ -43,6 +58,7 @@ const RenderFormAdapter = ({ form, translations, ...props }: Props) => {
         submissionMethod={appConfig.submissionMethod}
         fyllut={fyllut}
         language={{ availableLanguages, currentLanguage, translations }}
+        services={services}
       />
     </ApplicationProvider>
   );
