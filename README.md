@@ -6,7 +6,7 @@ og disse dataene vil så deployes sammen med fyllut.
 
 ## 📖 Terminologi
 
-Se [Norwegian-to-English terminology](TERMINOLOGY.md) for foretrukne engelske navn på norske fagtermer i kode.
+Se [Norwegian-to-English terminology](docs/TERMINOLOGY.md) for foretrukne engelske navn på norske fagtermer i kode.
 
 ## 🚀 Utvikling
 
