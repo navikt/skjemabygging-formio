@@ -134,7 +134,7 @@ const FormPageWrapper = () => {
     () => (form ? resolveDefaultSubmissionMethod(form.properties.submissionTypes) : undefined),
     [form],
   );
-  const dataKey = `${formPath ?? ''}|${submissionMethod ?? ''}`;
+  const dataKey = `${formPath ?? ''}|${submissionMethod ?? ''}|${shouldUseNewRenderer ? 'new' : 'legacy'}`;
   const noLoginInitialSubmission =
     submissionMethod === 'digitalnologin' && typeof state === 'object' && state && 'initialSubmission' in state
       ? (state.initialSubmission as Submission | undefined)

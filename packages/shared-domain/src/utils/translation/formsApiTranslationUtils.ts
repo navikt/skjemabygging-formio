@@ -36,7 +36,8 @@ const translate = (
   }
 
   return translatedText.replace(/{{2}([^{}]+)}{2}/g, (match, paramKey: string) => {
-    const replacement = params[paramKey];
+    const normalizedParamKey = paramKey.replace(/^\s*-\s*/, '').trim();
+    const replacement = params[normalizedParamKey];
     if (replacement === undefined || replacement === null) {
       return match;
     }
