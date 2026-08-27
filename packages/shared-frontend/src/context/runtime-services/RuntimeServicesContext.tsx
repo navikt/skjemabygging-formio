@@ -33,6 +33,7 @@ interface DraftRequest {
 
 interface Draft {
   id: string;
+  language: TranslationLang;
   submission: Submission;
   modifiedAt: string;
   deleteAt: string;
@@ -41,6 +42,7 @@ interface Draft {
 type CreateDraftResult = { status: 'created'; draft: Draft } | { status: 'alreadyExists' };
 
 interface ApplicationService {
+  getDraft: (id: string) => Promise<Draft>;
   createDraft: (request: DraftRequest & { force?: boolean }) => Promise<CreateDraftResult>;
   updateDraft: (request: DraftRequest & { id: string }) => Promise<Draft>;
   deleteDraft: (id: string) => Promise<void>;

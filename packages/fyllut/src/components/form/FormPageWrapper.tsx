@@ -1,9 +1,4 @@
-import {
-  FyllUtRouter,
-  LanguagesProvider,
-  sendInnSoknadApi,
-  useAppConfig,
-} from '@navikt/skjemadigitalisering-shared-components';
+import { FyllUtRouter, LanguagesProvider, useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import {
   Component,
   dateUtils,
@@ -22,12 +17,12 @@ import {
 import {
   applyPrefilledValuesToSubmission,
   buildDigitalFormSearch,
-  isSoknadAlreadyExistsResponse,
   resolveDefaultSubmissionMethod,
   shouldUseLegacyPageForNewRenderer,
 } from '@navikt/skjemadigitalisering-shared-frontend';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
+import createApplicationService from '../../adapter-services/createApplicationService';
 import useFormsApiForms from '../../api/useFormsApiForms';
 import { loadAllTranslations, loadNewRendererTranslations } from '../../api/useTranslations';
 import { NotFoundPage } from '../errors/NotFoundPage';
@@ -54,18 +49,16 @@ const buildSearchWithSubmissionMethod = (search: string, submissionMethod: strin
   return `?${searchParams.toString()}`;
 };
 
-const getDraftBootstrapLanguage = (search: string) => {
+const getDraftBootstrapLanguage = (search: string): TranslationLang => {
   const language = new URLSearchParams(search).get('lang');
-  return language === 'en' || language === 'nn' || language === 'nn-NO' || language === 'nb' || language === 'nb-NO'
-    ? language
-    : 'nb-NO';
+  return language ? localizationUtils.getLanguageCodeAsIso639_1(language) : 'nb';
 };
 
 const withDraftMetadata = (
   submission: Submission | undefined,
-  response?: { endretDato: string; skalSlettesDato: string },
+  draft?: { modifiedAt: string; deleteAt: string },
 ): Submission | undefined => {
-  if (!submission || !response) {
+  if (!submission || !draft) {
     return submission;
   }
 
@@ -76,8 +69,8 @@ const withDraftMetadata = (
       mellomlagring: {
         ...submission.fyllutState?.mellomlagring,
         isActive: true,
-        savedDate: dateUtils.toLocaleDateAndTime(response.endretDato),
-        deletionDate: dateUtils.toLocaleDate(response.skalSlettesDato),
+        savedDate: dateUtils.toLocaleDateAndTime(draft.modifiedAt),
+        deletionDate: dateUtils.toLocaleDate(draft.deleteAt),
       },
     },
   };
@@ -124,9 +117,14 @@ const FormPageWrapper = () => {
   const [initialInnsendingsId, setInitialInnsendingsId] = useState<string | undefined>();
   const [initialLanguage, setInitialLanguage] = useState<TranslationLang | undefined>();
   const [loadedDataKey, setLoadedDataKey] = useState<string | undefined>();
+  const loadingDataKeyRef = useRef<string>();
   const { get } = useFormsApiForms();
   const appConfig = useAppConfig();
   const { submissionMethod, config, http, baseUrl } = appConfig;
+  const applicationService = useMemo(
+    () => (http ? createApplicationService({ http, backendBaseUrl: baseUrl ?? '/fyllut' }) : undefined),
+    [baseUrl, http],
+  );
   const useNewRenderer =
     !!formPath && ((config?.newRenderForms ?? []).includes('*') || (config?.newRenderForms ?? []).includes(formPath));
   const useLegacyPageForNewRenderer = shouldUseLegacyPageForNewRenderer(routePath);
@@ -220,10 +218,21 @@ const FormPageWrapper = () => {
         return { navigated: false };
       }
 
+      if (!shouldUseNewRenderer) {
+        setInitialInnsendingsId(undefined);
+        setInitialLanguage(undefined);
+        setInitialSubmission(undefined);
+        return { navigated: false };
+      }
+
+      if (!applicationService) {
+        throw new Error('Application service is required to load a new-render draft.');
+      }
+
       if (innsendingsId) {
-        let response;
+        let draft;
         try {
-          response = await sendInnSoknadApi.getSoknad(innsendingsId, appConfig);
+          draft = await applicationService.getDraft(innsendingsId);
         } catch (error) {
           if (hasErrorCode(error, 'NOT_FOUND')) {
             navigate('/soknad-ikke-funnet', { replace: true });
@@ -233,24 +242,10 @@ const FormPageWrapper = () => {
           throw error;
         }
         setInitialInnsendingsId(innsendingsId);
-        setInitialLanguage(
-          response?.hoveddokumentVariant?.document?.language
-            ? localizationUtils.getLanguageCodeAsIso639_1(response.hoveddokumentVariant.document.language)
-            : undefined,
-        );
+        setInitialLanguage(draft.language);
         setInitialSubmission(
-          withDraftMetadata(
-            formSummaryUtils.filterSubmissionDataToSummary(loadedForm, response?.hoveddokumentVariant?.document?.data),
-            response,
-          ),
+          withDraftMetadata(formSummaryUtils.filterSubmissionDataToSummary(loadedForm, draft.submission), draft),
         );
-        return { navigated: false };
-      }
-
-      if (!useNewRenderer || useLegacyPageForNewRenderer) {
-        setInitialInnsendingsId(undefined);
-        setInitialLanguage(undefined);
-        setInitialSubmission(undefined);
         return { navigated: false };
       }
 
@@ -258,15 +253,15 @@ const FormPageWrapper = () => {
       const bootstrapSubmission = applyPrefilledValuesToSubmission(loadedForm, undefined, currentLanguage) ?? {
         data: {},
       };
-      const response = await sendInnSoknadApi.createSoknad(
-        appConfig,
-        formioFormsApiUtils.mapFormToNavForm(loadedForm),
-        bootstrapSubmission,
-        currentLanguage,
-        searchParams.get('forceMellomlagring') === 'true',
-      );
+      const result = await applicationService.createDraft({
+        formPath: loadedForm.path,
+        submission: bootstrapSubmission,
+        language: currentLanguage,
+        submissionMethod,
+        force: searchParams.get('forceMellomlagring') === 'true',
+      });
 
-      if (isSoknadAlreadyExistsResponse(response)) {
+      if (result.status === 'alreadyExists') {
         navigate(
           {
             pathname: `/${loadedForm.path}/paabegynt`,
@@ -277,23 +272,16 @@ const FormPageWrapper = () => {
         return { navigated: true };
       }
 
-      if (response && 'innsendingsId' in response) {
-        const bootstrappedSubmission = withDraftMetadata(
-          response.hoveddokumentVariant?.document?.data ?? bootstrapSubmission,
-          response,
-        );
-        setInitialInnsendingsId(response.innsendingsId);
-        setInitialLanguage(
-          localizationUtils.getLanguageCodeAsIso639_1(
-            response.hoveddokumentVariant?.document?.language ?? currentLanguage,
-          ),
-        );
+      if (result.status === 'created') {
+        const bootstrappedSubmission = withDraftMetadata(result.draft.submission ?? bootstrapSubmission, result.draft);
+        setInitialInnsendingsId(result.draft.id);
+        setInitialLanguage(result.draft.language);
         setInitialSubmission(bootstrappedSubmission);
         navigate(
           {
             search: buildDigitalFormSearch(search, {
               forceMellomlagring: undefined,
-              innsendingsId: response.innsendingsId,
+              innsendingsId: result.draft.id,
             }),
           },
           { replace: true },
@@ -306,24 +294,23 @@ const FormPageWrapper = () => {
       setInitialSubmission(undefined);
       return { navigated: false };
     },
-    [appConfig, navigate, search, submissionMethod, useLegacyPageForNewRenderer, useNewRenderer],
+    [applicationService, navigate, search, shouldUseNewRenderer, submissionMethod],
   );
 
   useEffect(() => {
-    if (missingSubmissionMethodOnDirectRoute) {
+    if (missingSubmissionMethodOnDirectRoute || loadedDataKey === dataKey || loadingDataKeyRef.current === dataKey) {
       return;
     }
+    loadingDataKeyRef.current = dataKey;
 
     (async () => {
       let navigated = false;
       try {
-        if (loadedDataKey !== dataKey) {
-          setLoading(true);
-          setLoadedDataKey(undefined);
-          setInitialSubmission(undefined);
-          setInitialInnsendingsId(undefined);
-          setInitialLanguage(undefined);
-        }
+        setLoading(true);
+        setLoadedDataKey(undefined);
+        setInitialSubmission(undefined);
+        setInitialInnsendingsId(undefined);
+        setInitialLanguage(undefined);
         const loadedForm = await loadForm();
         const [, initialSubmissionResult] = await Promise.all([loadTranslations(), loadInitialSubmission(loadedForm)]);
         navigated = initialSubmissionResult.navigated;
@@ -332,6 +319,9 @@ const FormPageWrapper = () => {
         setNewRendererTranslations(undefined);
         setForm(undefined);
       } finally {
+        if (loadingDataKeyRef.current === dataKey) {
+          loadingDataKeyRef.current = undefined;
+        }
         if (!navigated) {
           setLoadedDataKey(dataKey);
           setLoading(false);

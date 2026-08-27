@@ -9,11 +9,11 @@ import {
 } from '@navikt/skjemadigitalisering-shared-frontend';
 import { useMemo } from 'react';
 import { useLocation } from 'react-router';
-import createApplicationService from '../../services/createApplicationService';
-import createAttachmentService from '../../services/createAttachmentService';
-import createFormDataService from '../../services/createFormDataService';
-import createSessionService from '../../services/createSessionService';
-import createSubmissionService from '../../services/createSubmissionService';
+import createApplicationService from '../../adapter-services/createApplicationService';
+import createAttachmentService from '../../adapter-services/createAttachmentService';
+import createFormDataService from '../../adapter-services/createFormDataService';
+import createSessionService from '../../adapter-services/createSessionService';
+import createSubmissionService from '../../adapter-services/createSubmissionService';
 import { getAvailableLanguages, getCurrentLanguage } from './newRendererLanguageUtils';
 
 type Props = Omit<RenderFormProps, 'fyllut' | 'language' | 'services' | 'submissionMethod'> & {

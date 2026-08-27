@@ -20,7 +20,7 @@ const SelfDeclaration = ({ description, className, translate, error, setSelfDecl
     <div className={className}>
       <InnerHtmlLong content={translate(description)} />
       <CheckboxGroup
-        legend="introPage.selfDeclaration.inputLabel"
+        legend={translate('introPage.selfDeclaration.inputLabel')}
         hideLegend
         error={error}
         value={value ? ['selfDeclaration'] : []}

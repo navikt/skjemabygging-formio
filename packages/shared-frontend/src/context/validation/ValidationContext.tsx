@@ -32,9 +32,6 @@ type ExternalAttachmentError = { attachmentId: string; field: AttachmentField; m
 const attachmentValidationPath = (attachmentId: string, field: AttachmentField) =>
   `attachments.${attachmentId}.${field}`;
 
-const getTranslationKey = (textKey: string) =>
-  Object.entries(TEXTS.validering).find(([, text]) => text === textKey)?.[0] ?? textKey;
-
 const validateAttachmentComponent = (
   component: Component,
   field: string,
@@ -68,7 +65,7 @@ const validateAttachmentComponent = (
       if ((attachment.files ?? []).length === 0) {
         violations.push({
           submissionPath: attachmentValidationPath(attachment.attachmentId, 'files'),
-          violation: { textKey: 'fileMissing', params: { field } },
+          violation: { textKey: TEXTS.validering.fileMissing, params: { field } },
         });
       }
     });
@@ -187,7 +184,7 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
                   pageKey,
                   submissionPath: attachmentSubmissionPath,
                   field,
-                  message: translate(getTranslationKey(violation.textKey), {
+                  message: translate(violation.textKey, {
                     ...violation.params,
                     ...(typeof violation.params.field === 'string' && { field: translate(violation.params.field) }),
                   }),
@@ -213,7 +210,7 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
               pageKey,
               submissionPath,
               field,
-              message: translate(getTranslationKey(violation.textKey), {
+              message: translate(violation.textKey, {
                 ...violation.params,
                 ...(typeof violation.params.field === 'string' && { field: translate(violation.params.field) }),
               }),
