@@ -7,21 +7,16 @@ import {
   RenderFormProps,
   RuntimeServices,
 } from '@navikt/skjemadigitalisering-shared-frontend';
-import { useMemo } from 'react';
 import { useLocation } from 'react-router';
-import createApplicationService from '../../adapter-services/createApplicationService';
-import createAttachmentService from '../../adapter-services/createAttachmentService';
-import createFormDataService from '../../adapter-services/createFormDataService';
-import createSessionService from '../../adapter-services/createSessionService';
-import createSubmissionService from '../../adapter-services/createSubmissionService';
 import { getAvailableLanguages, getCurrentLanguage } from './newRendererLanguageUtils';
 
 type Props = Omit<RenderFormProps, 'fyllut' | 'language' | 'services' | 'submissionMethod'> & {
   initialLanguage?: TranslationLang;
+  services: RuntimeServices;
   translations: FormsApiTranslationMap;
 };
 
-const RenderFormAdapter = ({ form, initialLanguage, translations, ...props }: Props) => {
+const RenderFormAdapter = ({ form, initialLanguage, services, translations, ...props }: Props) => {
   const appConfig = useAppConfig();
   const { search } = useLocation();
   const availableLanguages = getAvailableLanguages(form, translations);
@@ -29,41 +24,6 @@ const RenderFormAdapter = ({ form, initialLanguage, translations, ...props }: Pr
     initialLanguage && availableLanguages.includes(initialLanguage)
       ? initialLanguage
       : getCurrentLanguage(search, availableLanguages);
-  const http = appConfig.http;
-  if (!http) {
-    throw new Error('Fyllut HTTP client is required to render the form.');
-  }
-  const innsendingsId = new URLSearchParams(search).get('innsendingsId') ?? undefined;
-  const services = useMemo<RuntimeServices>(
-    () => ({
-      applications: createApplicationService({
-        http,
-        backendBaseUrl: appConfig.baseUrl ?? '/fyllut',
-      }),
-      attachments: createAttachmentService({
-        http,
-        backendBaseUrl: appConfig.baseUrl ?? '/fyllut',
-      }),
-      formData: createFormDataService({
-        http,
-        backendBaseUrl: appConfig.baseUrl ?? '/fyllut',
-        innsendingsId,
-      }),
-      sessions: createSessionService({
-        http,
-        backendBaseUrl: appConfig.baseUrl ?? '/fyllut',
-      }),
-      submissions: createSubmissionService({
-        http,
-        backendBaseUrl: appConfig.baseUrl ?? '/fyllut',
-        createPdf: (url, body) =>
-          http.post<Blob>(url, body, {
-            Accept: http.MimeType.PDF,
-          }),
-      }),
-    }),
-    [appConfig.baseUrl, http, innsendingsId],
-  );
   const fyllut: FyllutContextValue = {
     fyllutBaseUrl: appConfig.fyllutBaseURL,
     isLoggedIn: appConfig.config?.isLoggedIn,

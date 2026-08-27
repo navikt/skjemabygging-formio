@@ -11,7 +11,7 @@ import { SubmissionStateProvider, useSubmissionState } from './context/state/Sub
 import { SubmissionMethodProvider, useSubmissionMethod } from './context/submission-method/SubmissionMethodContext';
 import { useValidation, ValidationProvider } from './context/validation/ValidationContext';
 import { RenderSummaryForm } from './form-components';
-import { RenderForm } from './fyllut';
+import { applyPrefillDataToForm, getFormPrefillKeys, initializeDigitalDraft, RenderForm } from './fyllut';
 import {
   buildDigitalFormSearch,
   isSoknadAlreadyExistsResponse,
@@ -53,14 +53,24 @@ export type {
   SummaryRendererAppConfig,
   SummaryRendererConfig,
 } from './form-components';
-export type { FyllutContextValue, FyllutEvent, FyllutHttp, FyllutHttpHeaders, RenderFormProps } from './fyllut';
+export type {
+  DigitalDraftInitialization,
+  FyllutContextValue,
+  FyllutEvent,
+  FyllutHttp,
+  FyllutHttpHeaders,
+  RenderFormProps,
+} from './fyllut';
 export type { SharedFrontendBoundaryProps } from './SharedFrontendBoundary';
 export {
   ApplicationProvider,
+  applyPrefillDataToForm,
   applyPrefilledValuesToSubmission,
   buildDigitalFormSearch,
   FormDefinitionProvider,
   FormErrorSummary,
+  getFormPrefillKeys,
+  initializeDigitalDraft,
   initializeSubmission,
   isSoknadAlreadyExistsResponse,
   LanguageProvider,
