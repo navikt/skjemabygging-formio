@@ -225,9 +225,7 @@ describe('Mellomlagring v2', () => {
         '@getMellomlagringValid',
       ]);
 
-      cy.location('search').then((search) => {
-        expect(new URLSearchParams(search).get('lang')).to.equal('nb-NO');
-      });
+      cy.get('html').should('have.attr', 'lang', 'nb');
       cy.findByRole('checkbox', { name: 'Jeg bekrefter at jeg vil svare så riktig som jeg kan.' }).shouldBeVisible();
       cy.findByText('introPage.selfDeclaration.inputLabel').should('not.exist');
     });

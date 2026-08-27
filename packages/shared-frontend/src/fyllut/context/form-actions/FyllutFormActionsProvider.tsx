@@ -9,6 +9,7 @@ import { useSubmissionMethod } from '../../../context/submission-method/Submissi
 import { b64toBlob } from '../../../utils/blob';
 import { buildDigitalFormSearch } from '../../draft/digitalDraftUtils';
 import { RECEIPT_KEY } from '../../form-flow/constants';
+import prepareSubmissionForTransport from '../../submission/prepareSubmissionForTransport';
 import { useFyllut } from '../fyllut/FyllutContext';
 import { useNologinToken } from '../nologin-token/NologinTokenContext';
 import { FormActionHandlers, FormActionsProvider } from './FormActionsContext';
@@ -95,11 +96,12 @@ const useFyllutFormActions = (
 
     const saveDraft = isDigital
       ? async (submission: Submission) => {
+          const transportSubmission = prepareSubmissionForTransport(submission);
           if (!innsendingsIdRef.current) {
             const result = await applications
               .createDraft({
                 formPath: form.path,
-                submission,
+                submission: transportSubmission,
                 language: currentLanguage,
                 submissionMethod,
                 force: forceMellomlagring,
@@ -113,20 +115,20 @@ const useFyllutFormActions = (
             }
             innsendingsIdRef.current = result.draft.id;
             syncInnsendingsIdToUrl(result.draft.id);
-            syncSubmissionState(submission, result.draft);
+            syncSubmissionState(transportSubmission, result.draft);
           } else {
             const draft = await applications
               .updateDraft({
                 id: innsendingsIdRef.current,
                 formPath: form.path,
-                submission,
+                submission: transportSubmission,
                 language: currentLanguage,
                 submissionMethod,
               })
               .catch((error: unknown) => {
                 throw createSaveDraftError(error, TEXTS.statiske.mellomlagringError.update.message);
               });
-            syncSubmissionState(submission, draft);
+            syncSubmissionState(transportSubmission, draft);
           }
         }
       : undefined;
@@ -136,9 +138,10 @@ const useFyllutFormActions = (
         return innsendingsIdRef.current;
       }
 
+      const transportSubmission = prepareSubmissionForTransport(submission);
       const result = await applications.createDraft({
         formPath: form.path,
-        submission,
+        submission: transportSubmission,
         language: currentLanguage,
         submissionMethod,
         force: forceMellomlagring,
@@ -149,7 +152,7 @@ const useFyllutFormActions = (
       }
       innsendingsIdRef.current = result.draft.id;
       syncInnsendingsIdToUrl(result.draft.id);
-      syncSubmissionState(submission, result.draft);
+      syncSubmissionState(transportSubmission, result.draft);
 
       return innsendingsIdRef.current;
     };
@@ -168,16 +171,17 @@ const useFyllutFormActions = (
     };
 
     const submitForm = async (submission: Submission) => {
+      const transportSubmission = prepareSubmissionForTransport(submission);
       switch (submissionMethod) {
         case 'digital': {
-          const innsendingsId = await ensureInnsendingsId(submission);
+          const innsendingsId = await ensureInnsendingsId(transportSubmission);
           if (!innsendingsId) {
             return;
           }
           const response = await submissions.submit({
             application: { type: 'draft', id: innsendingsId },
             formPath: form.path,
-            submission,
+            submission: transportSubmission,
             language: currentLanguage,
             submissionMethod,
           });
@@ -193,7 +197,7 @@ const useFyllutFormActions = (
             response = await submissions.submit({
               application: { type: 'noLogin', token: nologinToken ?? '' },
               formPath: form.path,
-              submission,
+              submission: transportSubmission,
               language: currentLanguage,
               submissionMethod,
             });

@@ -1,5 +1,5 @@
 import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
-import { FormsApiTranslationMap } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormsApiTranslationMap, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import {
   ApplicationProvider,
   FyllutContextValue,
@@ -17,14 +17,18 @@ import createSubmissionService from '../../services/createSubmissionService';
 import { getAvailableLanguages, getCurrentLanguage } from './newRendererLanguageUtils';
 
 type Props = Omit<RenderFormProps, 'fyllut' | 'language' | 'services' | 'submissionMethod'> & {
+  initialLanguage?: TranslationLang;
   translations: FormsApiTranslationMap;
 };
 
-const RenderFormAdapter = ({ form, translations, ...props }: Props) => {
+const RenderFormAdapter = ({ form, initialLanguage, translations, ...props }: Props) => {
   const appConfig = useAppConfig();
   const { search } = useLocation();
   const availableLanguages = getAvailableLanguages(form, translations);
-  const currentLanguage = getCurrentLanguage(search, availableLanguages);
+  const currentLanguage =
+    initialLanguage && availableLanguages.includes(initialLanguage)
+      ? initialLanguage
+      : getCurrentLanguage(search, availableLanguages);
   const http = appConfig.http;
   if (!http) {
     throw new Error('Fyllut HTTP client is required to render the form.');

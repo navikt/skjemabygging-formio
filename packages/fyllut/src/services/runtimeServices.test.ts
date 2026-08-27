@@ -116,6 +116,7 @@ describe('fyllut runtime services', () => {
         headers: undefined,
       },
     ]);
+    expect(requests[0]?.body).toEqual({ firstName: '', data_33: 'ja' });
     expect(requests[1]?.body).toBeInstanceOf(FormData);
   });
 });

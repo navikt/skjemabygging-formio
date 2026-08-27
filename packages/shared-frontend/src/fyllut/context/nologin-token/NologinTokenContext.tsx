@@ -5,6 +5,7 @@ import { useApplication } from '../../../context/application/ApplicationContext'
 import { useRuntimeServices } from '../../../context/runtime-services/RuntimeServicesContext';
 import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
 import { useFyllut } from '../fyllut/FyllutContext';
+import styles from './NologinTokenContext.module.css';
 
 interface NologinTokenContextType {
   getNologinToken: () => Promise<string | undefined>;
@@ -47,6 +48,7 @@ const NologinTokenProvider = ({ children, form, initialToken }: Props) => {
   const { submissionMethod } = useSubmissionMethod();
   const navigate = useNavigate();
   const [nologinToken, setNologinToken] = useState<string | undefined>(initialToken);
+  const [honeypot, setHoneypot] = useState('');
   const [tokenExpiration, setTokenExpiration] = useState<number | undefined>(() =>
     initialToken ? getTokenExpiration(initialToken) : undefined,
   );
@@ -66,7 +68,7 @@ const NologinTokenProvider = ({ children, form, initialToken }: Props) => {
     }
 
     const tokenRequest = (async () => {
-      const token = await sessions.createNoLoginToken();
+      const token = await sessions.createNoLoginToken({ honeypot });
       if (token) {
         setNologinToken(token);
         setTokenExpiration(getTokenExpiration(token));
@@ -83,7 +85,7 @@ const NologinTokenProvider = ({ children, form, initialToken }: Props) => {
         tokenRequestRef.current = undefined;
       }
     }
-  }, [nologinToken, sessions, submissionMethod]);
+  }, [honeypot, nologinToken, sessions, submissionMethod]);
 
   const clearNologinToken = useCallback(() => {
     setNologinToken(undefined);
@@ -131,7 +133,24 @@ const NologinTokenProvider = ({ children, form, initialToken }: Props) => {
     [clearNologinToken, getNologinToken, handleSessionExpired, tokenExpiration],
   );
 
-  return <NologinTokenContext.Provider value={value}>{children}</NologinTokenContext.Provider>;
+  return (
+    <NologinTokenContext.Provider value={value}>
+      {submissionMethod === 'digitalnologin' && (
+        <input
+          type="text"
+          name="firstName"
+          data-cy="firstName"
+          tabIndex={-1}
+          autoComplete="off"
+          aria-hidden
+          className={styles.honeypot}
+          value={honeypot}
+          onChange={(event) => setHoneypot(event.target.value)}
+        />
+      )}
+      {children}
+    </NologinTokenContext.Provider>
+  );
 };
 
 const useNologinToken = () => useContext(NologinTokenContext);

@@ -13,9 +13,11 @@ import {
   formSummaryUtils,
   hasErrorCode,
   I18nTranslations,
+  localizationUtils,
   navFormUtils,
   Submission,
   SubmissionData,
+  TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import {
   applyPrefilledValuesToSubmission,
@@ -120,6 +122,7 @@ const FormPageWrapper = () => {
   const [form, setForm] = useState<Form>();
   const [initialSubmission, setInitialSubmission] = useState<Submission | undefined>();
   const [initialInnsendingsId, setInitialInnsendingsId] = useState<string | undefined>();
+  const [initialLanguage, setInitialLanguage] = useState<TranslationLang | undefined>();
   const [loadedDataKey, setLoadedDataKey] = useState<string | undefined>();
   const { get } = useFormsApiForms();
   const appConfig = useAppConfig();
@@ -205,12 +208,14 @@ const FormPageWrapper = () => {
       const innsendingsId = searchParams.get('innsendingsId') ?? undefined;
       if (submissionMethod !== 'digital') {
         setInitialInnsendingsId(undefined);
+        setInitialLanguage(undefined);
         setInitialSubmission(undefined);
         return { navigated: false };
       }
 
       if (!loadedForm) {
         setInitialInnsendingsId(undefined);
+        setInitialLanguage(undefined);
         setInitialSubmission(undefined);
         return { navigated: false };
       }
@@ -228,6 +233,11 @@ const FormPageWrapper = () => {
           throw error;
         }
         setInitialInnsendingsId(innsendingsId);
+        setInitialLanguage(
+          response?.hoveddokumentVariant?.document?.language
+            ? localizationUtils.getLanguageCodeAsIso639_1(response.hoveddokumentVariant.document.language)
+            : undefined,
+        );
         setInitialSubmission(
           withDraftMetadata(
             formSummaryUtils.filterSubmissionDataToSummary(loadedForm, response?.hoveddokumentVariant?.document?.data),
@@ -239,6 +249,7 @@ const FormPageWrapper = () => {
 
       if (!useNewRenderer || useLegacyPageForNewRenderer) {
         setInitialInnsendingsId(undefined);
+        setInitialLanguage(undefined);
         setInitialSubmission(undefined);
         return { navigated: false };
       }
@@ -272,6 +283,11 @@ const FormPageWrapper = () => {
           response,
         );
         setInitialInnsendingsId(response.innsendingsId);
+        setInitialLanguage(
+          localizationUtils.getLanguageCodeAsIso639_1(
+            response.hoveddokumentVariant?.document?.language ?? currentLanguage,
+          ),
+        );
         setInitialSubmission(bootstrappedSubmission);
         navigate(
           {
@@ -286,6 +302,7 @@ const FormPageWrapper = () => {
       }
 
       setInitialInnsendingsId(undefined);
+      setInitialLanguage(undefined);
       setInitialSubmission(undefined);
       return { navigated: false };
     },
@@ -305,6 +322,7 @@ const FormPageWrapper = () => {
           setLoadedDataKey(undefined);
           setInitialSubmission(undefined);
           setInitialInnsendingsId(undefined);
+          setInitialLanguage(undefined);
         }
         const loadedForm = await loadForm();
         const [, initialSubmissionResult] = await Promise.all([loadTranslations(), loadInitialSubmission(loadedForm)]);
@@ -368,6 +386,7 @@ const FormPageWrapper = () => {
         translations={newRendererTranslations}
         initialSubmission={initialSubmission ?? noLoginInitialSubmission}
         initialInnsendingsId={initialInnsendingsId}
+        initialLanguage={initialLanguage}
       />
     );
   }

@@ -47,7 +47,7 @@ interface ApplicationService {
 }
 
 interface SessionService {
-  createNoLoginToken: () => Promise<string | undefined>;
+  createNoLoginToken: (request?: { honeypot?: string }) => Promise<string | undefined>;
   isAuthenticationError: (error: unknown) => boolean;
 }
 
