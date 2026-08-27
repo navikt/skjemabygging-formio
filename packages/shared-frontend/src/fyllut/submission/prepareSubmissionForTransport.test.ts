@@ -1,3 +1,4 @@
+import { SubmissionAttachment } from '@navikt/skjemadigitalisering-shared-domain';
 import { describe, expect, it } from 'vitest';
 import prepareSubmissionForTransport from './prepareSubmissionForTransport';
 
@@ -23,7 +24,32 @@ describe('prepareSubmissionForTransport', () => {
     });
   });
 
-  it('normalizes submissions without data', () => {
-    expect(prepareSubmissionForTransport({ data: {} })).toEqual({ data: {} });
+  it('preserves attachments when form data is empty', () => {
+    const attachments: SubmissionAttachment[] = [
+      {
+        attachmentId: 'attachment-1',
+        navId: 'attachment-1',
+        type: 'other',
+        value: 'leggerVedNaa',
+        title: 'Documentation',
+        files: [
+          {
+            attachmentId: 'attachment-1',
+            innsendingId: 'draft-1',
+            fileId: 'file-1',
+            fileName: 'small-file.txt',
+            size: 10,
+          },
+        ],
+      },
+    ];
+
+    expect(
+      prepareSubmissionForTransport({
+        data: {},
+        attachments,
+        fyllutState: { mellomlagring: { isActive: true } },
+      }),
+    ).toEqual({ data: {}, attachments });
   });
 });

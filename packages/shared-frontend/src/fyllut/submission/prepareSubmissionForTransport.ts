@@ -8,12 +8,9 @@ const removeEmptyStructures = (_key: string, value: unknown) => {
 };
 
 const prepareSubmissionForTransport = (submission: Submission): Submission => {
-  if (!submission.data || Object.keys(submission.data).length === 0) {
-    return { data: {} };
-  }
-
-  const { data, fyllutState: _fyllutState, ...rest } = submission;
-  const sanitizedData = JSON.parse(JSON.stringify(data, removeEmptyStructures)) as Submission['data'];
+  const { data = {}, fyllutState: _fyllutState, ...rest } = submission;
+  const sanitizedData =
+    Object.keys(data).length > 0 ? (JSON.parse(JSON.stringify(data, removeEmptyStructures)) as Submission['data']) : {};
 
   return { data: sanitizedData ?? {}, ...rest };
 };
