@@ -18,7 +18,6 @@ describe('React components', () => {
         cy.visit('/fyllut/customcomps/dineopplysninger?sub=paper');
         cy.defaultWaits();
         cy.wait('@getCurrencies');
-        cy.wait('@getGlobalTranslations');
       });
 
       it('reflects changes on summary page when editing data', () => {

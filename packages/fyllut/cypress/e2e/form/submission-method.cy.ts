@@ -15,7 +15,6 @@ describe('Submission method', () => {
     beforeEach(() => {
       cy.visit('/fyllut/submissionmethod/veiledning?sub=digital');
       cy.defaultWaits();
-      cy.wait('@getGlobalTranslations');
     });
 
     it('Renders stepper with links to all panels', () => {
@@ -100,7 +99,6 @@ describe('Submission method', () => {
     beforeEach(() => {
       cy.visit('/fyllut/submissionmethod/veiledning?sub=paper');
       cy.defaultWaits();
-      cy.wait('@getGlobalTranslations');
     });
 
     it('Renders stepper with links to all panels', () => {
