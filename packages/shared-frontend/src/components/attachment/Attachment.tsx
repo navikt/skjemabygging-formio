@@ -1,11 +1,4 @@
 import {
-  CheckboxGroup as AkselCheckboxGroup,
-  RadioGroup as AkselRadioGroup,
-  Alert,
-  Checkbox,
-  Radio,
-} from '@navikt/ds-react';
-import {
   AttachmentOption,
   AttachmentSettingValues,
   SubmissionAttachmentValue,
@@ -14,11 +7,11 @@ import {
 import { useMemo } from 'react';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useStateField } from '../../context/state/useStateField';
-import { inputId } from '../../utils/inputId';
+import Alert from '../alert/Alert';
+import CheckboxGroup from '../checkbox-group/CheckboxGroup';
+import RadioGroup from '../radio-group/RadioGroup';
 import ReadMore, { ReadMoreProps } from '../read-more/ReadMore';
 import FormElementBox, { Spacing } from '../shared/FormElementBox';
-import TranslatedDescription from '../shared/TranslatedDescription';
-import TranslatedLabel from '../shared/TranslatedLabel';
 import TextField from '../text-field/TextField';
 
 interface AttachmentProps {
@@ -67,14 +60,11 @@ const Attachment = ({
   return (
     <FormElementBox marginBottom={marginBottom}>
       {singleOption ? (
-        <AkselCheckboxGroup
-          id={inputId(statePath)}
-          legend={
-            <TranslatedLabel required={required} readOnly={readOnly}>
-              {label}
-            </TranslatedLabel>
-          }
-          description={<TranslatedDescription>{description}</TranslatedDescription>}
+        <CheckboxGroup
+          statePath={statePath}
+          legend={label}
+          description={description}
+          values={[singleOption]}
           value={checkedValues}
           onChange={(nextValue) =>
             setStateValue(
@@ -89,20 +79,17 @@ const Attachment = ({
             )
           }
           error={error}
+          required={required}
           readOnly={readOnly}
-        >
-          <Checkbox value={singleOption.value}>{singleOption.label}</Checkbox>
-        </AkselCheckboxGroup>
+          marginBottom="space-0"
+          translateValues={false}
+        />
       ) : (
-        <AkselRadioGroup
-          id={inputId(statePath)}
-          tabIndex={-1}
-          legend={
-            <TranslatedLabel required={required} readOnly={readOnly}>
-              {label}
-            </TranslatedLabel>
-          }
-          description={<TranslatedDescription>{description}</TranslatedDescription>}
+        <RadioGroup
+          statePath={statePath}
+          legend={label}
+          description={description}
+          values={values}
           value={selectedValue ?? ''}
           onChange={(nextValue) =>
             setStateValue({
@@ -114,14 +101,11 @@ const Attachment = ({
             })
           }
           error={error}
+          required={required}
           readOnly={readOnly}
-        >
-          {values.map(({ value, label: optionLabel }) => (
-            <Radio key={value} value={value}>
-              {optionLabel}
-            </Radio>
-          ))}
-        </AkselRadioGroup>
+          marginBottom="space-0"
+          translateValues={false}
+        />
       )}
 
       {additionalDocumentation?.label && (
@@ -137,7 +121,7 @@ const Attachment = ({
       )}
 
       {shouldShowDeadline && (
-        <Alert variant="warning" inline>
+        <Alert variant="warning" inline marginBottom="space-0">
           {translate(TEXTS.statiske.attachment.deadline, { deadline: deadlineDays })}
         </Alert>
       )}

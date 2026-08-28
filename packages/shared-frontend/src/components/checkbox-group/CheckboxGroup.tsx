@@ -17,6 +17,7 @@ interface CheckboxGroupProps extends Omit<BaseFieldProps, 'label'> {
   onChange?: (value: string[]) => unknown;
   error?: string;
   children?: ReactNode;
+  translateValues?: boolean;
 }
 
 const CheckboxGroup = ({
@@ -32,6 +33,7 @@ const CheckboxGroup = ({
   onChange,
   error: controlledError,
   children,
+  translateValues = true,
 }: CheckboxGroupProps) => {
   const { translate } = useLanguage();
   const { stateValue, error, setStateValue } = useStateField({ statePath });
@@ -56,7 +58,7 @@ const CheckboxGroup = ({
       >
         {values.map(({ value, label, description }) => (
           <Checkbox key={value} value={value} description={description ? translate(description) : undefined}>
-            {translate(label)}
+            {translateValues ? translate(label) : label}
           </Checkbox>
         ))}
         {children}

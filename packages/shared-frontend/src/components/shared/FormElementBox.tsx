@@ -1,7 +1,7 @@
 import { Box } from '@navikt/ds-react';
 import { ReactNode } from 'react';
 
-type Spacing = 'space-16' | 'space-32' | 'space-40' | 'space-56';
+type Spacing = 'space-0' | 'space-16' | 'space-32' | 'space-40' | 'space-56';
 
 interface FormElementBoxProps {
   marginBottom?: Spacing;
