@@ -1,5 +1,11 @@
 import { FileItem, FileObject } from '@navikt/ds-react';
-import { ResponseError, Submission, SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  hasErrorCode,
+  ResponseError,
+  Submission,
+  SubmissionAttachment,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import { useLocation } from 'react-router';
 import { useLanguage } from '../../../context/language/LanguageContext';
@@ -84,7 +90,11 @@ const useAttachmentOperations = (): AttachmentUploadContextType => {
         return { status: 'auth-error' as const };
       }
 
-      const userMessage = error instanceof ResponseError ? error.userMessage : undefined;
+      const userMessage = hasErrorCode(error, 'SERVICE_UNAVAILABLE')
+        ? TEXTS.statiske.nologin.temporarilyUnavailable
+        : error instanceof ResponseError
+          ? error.userMessage
+          : undefined;
       uploadProgressActions.addFileInProgress(attachmentId, {
         ...file,
         error: true,

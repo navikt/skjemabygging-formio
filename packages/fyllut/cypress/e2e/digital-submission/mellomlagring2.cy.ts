@@ -94,7 +94,7 @@ const expectMigratedAttachments = (
 };
 
 const expectSelectFormAttachments = (submissionData: Record<string, unknown>) => {
-  expect(submissionData.kursbevis).to.deep.include({
+  expect(submissionData.kursbevisPaFullfortPianoopplaering).to.deep.include({
     attachmentId: 'e772p7',
     navId: 'e772p7',
     type: 'default',
