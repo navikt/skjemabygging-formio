@@ -1,5 +1,4 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
-import { logger } from '../logger';
 import { inferValueSchema } from './inferValueSchema';
 import {
   createsArrayScope,
@@ -97,42 +96,6 @@ const personalIdAttachmentItemSchema: JsonSchemaObject = {
   additionalProperties: false,
 };
 
-const warnIgnoredAttachmentPanelComponent = (
-  component: Component,
-  attachmentPanel: Component,
-  context: SchemaGenerationContext,
-) => {
-  logger.warn('Ignoring non-attachment component inside attachment panel during schema generation', {
-    attachmentPanelKey: attachmentPanel.key,
-    componentKey: component.key,
-    componentType: component.type,
-    formPath: context.formPath,
-    revision: context.revision,
-  });
-};
-
-const collectAttachmentPanelItemSchemas = (
-  components: Component[],
-  attachmentPanel: Component,
-  context: SchemaGenerationContext,
-): JsonSchemaObject[] => {
-  const attachmentItemSchemas: JsonSchemaObject[] = [];
-
-  for (const component of components) {
-    if (component.type === 'attachment') {
-      attachmentItemSchemas.push(buildAttachmentItemSchema(component, context));
-      continue;
-    }
-
-    warnIgnoredAttachmentPanelComponent(component, attachmentPanel, context);
-    attachmentItemSchemas.push(
-      ...collectAttachmentPanelItemSchemas(getNestedComponents(component), attachmentPanel, context),
-    );
-  }
-
-  return attachmentItemSchemas;
-};
-
 const buildAttachmentsSchema = (attachmentItemSchemas: JsonSchemaObject[]): JsonSchema | undefined => {
   if (!attachmentItemSchemas.length) {
     return undefined;
@@ -154,6 +117,7 @@ const buildObjectSchemaFromComponentsInternal = (
   components: Component[] = [],
   context: SchemaGenerationContext,
   ancestorHasConditionalLogic = false,
+  insideAttachmentPanel = false,
 ): SchemaBuildResult => {
   const properties: JsonSchemaObject['properties'] = {};
   const required = new Set<string>();
@@ -161,11 +125,10 @@ const buildObjectSchemaFromComponentsInternal = (
 
   for (const component of components) {
     const descendantHasConditionalLogic = ancestorHasConditionalLogic || hasConditionalLogic(component);
+    const descendantIsInsideAttachmentPanel = insideAttachmentPanel || isAttachmentPanel(component);
 
-    if (isAttachmentPanel(component)) {
-      attachmentItemSchemas.push(
-        ...collectAttachmentPanelItemSchemas(getNestedComponents(component), component, context),
-      );
+    if (component.type === 'attachment' && insideAttachmentPanel) {
+      attachmentItemSchemas.push(buildAttachmentItemSchema(component, context));
       continue;
     }
 
@@ -174,6 +137,7 @@ const buildObjectSchemaFromComponentsInternal = (
         getNestedComponents(component),
         context,
         descendantHasConditionalLogic,
+        descendantIsInsideAttachmentPanel,
       );
       Object.assign(properties, nestedResult.schema.properties);
       nestedResult.schema.required?.forEach((key) => required.add(key));
@@ -190,6 +154,7 @@ const buildObjectSchemaFromComponentsInternal = (
         getNestedComponents(component),
         context,
         descendantHasConditionalLogic,
+        descendantIsInsideAttachmentPanel,
       );
       properties[component.key] = {
         title: component.label,
@@ -201,6 +166,7 @@ const buildObjectSchemaFromComponentsInternal = (
         getNestedComponents(component),
         context,
         descendantHasConditionalLogic,
+        descendantIsInsideAttachmentPanel,
       );
       properties[component.key] = {
         type: 'array',

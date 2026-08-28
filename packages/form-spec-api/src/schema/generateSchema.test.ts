@@ -342,9 +342,7 @@ describe('generateSchema', () => {
     });
   });
 
-  it('collects attachment panel attachments into top-level attachments and warns for ignored components', () => {
-    const warnSpy = vi.spyOn(logger, 'warn').mockImplementation(() => logger);
-
+  it('collects attachments and maps ordinary fields inside attachment panels', () => {
     const schema = generateSchema(
       createForm([
         {
@@ -407,6 +405,10 @@ describe('generateSchema', () => {
       title: 'First name',
       type: 'string',
     });
+    expect(getFormDataSchema(schema).properties?.ignoredField).toEqual({
+      title: 'Ignored field',
+      type: 'string',
+    });
     expect(getSubmissionPayloadSchema(schema).properties?.attachments).toMatchObject({
       type: 'array',
       title: 'Attachments',
@@ -444,28 +446,6 @@ describe('generateSchema', () => {
       },
     });
     expect(getFormDataSchema(schema).properties).not.toHaveProperty('attachmentsPanel');
-    expect(warnSpy).toHaveBeenCalledWith(
-      'Ignoring non-attachment component inside attachment panel during schema generation',
-      {
-        attachmentPanelKey: 'attachmentsPanel',
-        componentKey: 'attachmentWrapper',
-        componentType: 'navSkjemagruppe',
-        formPath: 'test-form',
-        revision: undefined,
-      },
-    );
-    expect(warnSpy).toHaveBeenCalledWith(
-      'Ignoring non-attachment component inside attachment panel during schema generation',
-      {
-        attachmentPanelKey: 'attachmentsPanel',
-        componentKey: 'ignoredField',
-        componentType: 'textfield',
-        formPath: 'test-form',
-        revision: undefined,
-      },
-    );
-
-    warnSpy.mockRestore();
   });
 
   it('does not mark conditional fields as required', () => {

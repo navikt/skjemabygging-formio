@@ -25,7 +25,6 @@ const shouldSkipComponent = (component: Component) =>
 const isAttachmentPanel = (component: Component) => component.type === 'panel' && component.isAttachmentPanel === true;
 
 const shouldFlattenComponent = (component: Component) =>
-  !isAttachmentPanel(component) &&
   getNestedComponents(component).length > 0 &&
   (!component.key ||
     component.input === false ||
