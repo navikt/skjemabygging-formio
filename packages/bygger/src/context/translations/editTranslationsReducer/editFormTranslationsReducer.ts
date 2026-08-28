@@ -17,15 +17,11 @@ type FormTranslationState = {
   changes: Record<string, FormsApiTranslation>;
   errors: TranslationError[];
   status: Status;
+  inactiveTranslationWarningKeys: Set<string>;
 };
 
 type FormTranslationAction =
-  | InitializeAction
-  | UpdateAction
-  | AddAction
-  | ValidationErrorAction
-  | SaveStartedAction
-  | SaveFinishedAction;
+  InitializeAction | UpdateAction | AddAction | ValidationErrorAction | SaveStartedAction | SaveFinishedAction;
 
 const getUpdatedFormTranslationChanges = (
   state: FormTranslationState,
@@ -47,8 +43,18 @@ const editFormTranslationsReducer = (
         : state;
     case 'UPDATE':
       return { ...state, changes: getUpdatedFormTranslationChanges(state, action.payload), status: 'EDITING' };
-    case 'ADD':
-      return { ...state, changes: { ...state.changes, [action.payload.key]: action.payload } };
+    case 'ADD': {
+      const { warnAboutInactiveTranslation, ...translation } = action.payload;
+      const inactiveTranslationWarningKeys = new Set(state.inactiveTranslationWarningKeys);
+      if (warnAboutInactiveTranslation) {
+        inactiveTranslationWarningKeys.add(translation.key);
+      }
+      return {
+        ...state,
+        changes: { ...state.changes, [translation.key]: translation },
+        inactiveTranslationWarningKeys,
+      };
+    }
     case 'VALIDATION_ERROR':
       return { ...state, errors: action.payload.errors };
     case 'SAVE_STARTED':
@@ -59,6 +65,9 @@ const editFormTranslationsReducer = (
         changes: getResetChanges(state, action.payload),
         errors: getErrors(state, action.payload),
         status: 'SAVED',
+        inactiveTranslationWarningKeys: new Set(
+          action.payload.errors.map(({ key }) => key).filter((key) => state.inactiveTranslationWarningKeys.has(key)),
+        ),
       };
     default:
       throw new Error();

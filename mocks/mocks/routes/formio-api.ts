@@ -226,6 +226,10 @@ import {
   mellomlagringNestedValuesTranslations,
 } from '../data/forms-api/mellomlagring-nested-values/mellomlagringNestedValuesForm';
 import {
+  mellomlagring2IntroPageDraftForm,
+  mellomlagring2IntroPageDraftTranslations,
+} from '../data/forms-api/mellomlagring2/mellomlagring2IntroPageDraftForm';
+import {
   mellomlagring2MellomlagringForm,
   mellomlagring2MellomlagringFormV2,
 } from '../data/forms-api/mellomlagring2/mellomlagring2MellomlagringForm';
@@ -430,6 +434,10 @@ const allForms = [
   { form: introPagePaperForm(), translations: introPagePaperTranslations() },
   { form: largeForm(), translations: undefined },
   { form: mellomlagringNestedValuesForm(), translations: mellomlagringNestedValuesTranslations() },
+  {
+    form: mellomlagring2IntroPageDraftForm(),
+    translations: mellomlagring2IntroPageDraftTranslations(),
+  },
   {
     form: mellomlagring2MellomlagringForm(),
     formV2: mellomlagring2MellomlagringFormV2(),

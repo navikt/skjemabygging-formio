@@ -48,7 +48,7 @@ const application: RequestHandler = async (req, res, next) => {
       language,
       translations,
       submissionMethod: submissionMethod as SubmissionMethod | undefined,
-      appConfig: { config: { gitVersion: config.gitVersion } },
+      appConfig: { config: { gitVersion: config.gitVersion, isDelingslenke: config.isDelingslenke } },
     });
 
     const applicationPdfBase64 = await applicationPdfService.createPdf({
@@ -86,7 +86,7 @@ const coverPageAndApplication: RequestHandler = async (req, res, next) => {
       language,
       translations,
       submissionMethod: submissionMethod as SubmissionMethod | undefined,
-      appConfig: { config: { gitVersion: config.gitVersion } },
+      appConfig: { config: { gitVersion: config.gitVersion, isDelingslenke: config.isDelingslenke } },
     });
 
     const recipient = await recipientService.getRecipient({
