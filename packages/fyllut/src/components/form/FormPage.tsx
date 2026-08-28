@@ -1,5 +1,4 @@
 import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
-import { shouldUseLegacyPageForNewRenderer } from '@navikt/skjemadigitalisering-shared-frontend';
 import { useParams } from 'react-router';
 import FormPageWrapper from './FormPageWrapper';
 import RenderFormPage from './RenderFormPage';
@@ -10,7 +9,7 @@ const FormPage = () => {
   const newRenderForms = config?.newRenderForms ?? [];
   const useNewRenderer = !!formPath && (newRenderForms.includes('*') || newRenderForms.includes(formPath));
 
-  if (!useNewRenderer || shouldUseLegacyPageForNewRenderer(routePath)) {
+  if (!useNewRenderer || routePath === 'pdf') {
     return <FormPageWrapper />;
   }
 

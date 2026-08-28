@@ -42,19 +42,11 @@ const resolveDigitalDraftResume = (search: string, activeTasks: ActiveTask[]): D
   return { type: 'none' };
 };
 
-const shouldUseLegacyPageForNewRenderer = (routePath?: string): boolean =>
-  routePath === 'legitimasjon' || routePath === 'pdf';
-
 const isSoknadAlreadyExistsResponse = (response: unknown): response is { status: 'soknadAlreadyExists' } =>
   typeof response === 'object' &&
   response !== null &&
   'status' in response &&
   response.status === 'soknadAlreadyExists';
 
-export {
-  buildDigitalFormSearch,
-  isSoknadAlreadyExistsResponse,
-  resolveDigitalDraftResume,
-  shouldUseLegacyPageForNewRenderer,
-};
+export { buildDigitalFormSearch, isSoknadAlreadyExistsResponse, resolveDigitalDraftResume };
 export type { ActiveTask, DigitalDraftResumeAction };

@@ -1,5 +1,5 @@
 import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
-import { navFormUtils, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import { navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { RuntimeServices } from '@navikt/skjemadigitalisering-shared-frontend';
 import { useMemo } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
@@ -14,14 +14,15 @@ import useInitializeRenderForm from './useInitializeRenderForm';
 
 const RenderFormPage = () => {
   const { formPath, '*': routePath } = useParams();
-  const { search, state: locationState } = useLocation();
+  const { search } = useLocation();
   const navigate = useNavigate();
   const appConfig = useAppConfig();
   const { submissionMethod, http, baseUrl } = appConfig;
   const backendBaseUrl = baseUrl ?? '/fyllut';
   const innsendingsId = new URLSearchParams(search).get('innsendingsId') ?? undefined;
   const forceMellomlagring = new URLSearchParams(search).get('forceMellomlagring') === 'true';
-  const loadKey = `${formPath ?? ''}|${routePath ?? ''}|${submissionMethod ?? ''}|${innsendingsId ?? ''}|${forceMellomlagring}`;
+  const isActiveTasksRoute = routePath === 'paabegynt';
+  const loadKey = `${formPath ?? ''}|${submissionMethod ?? ''}|${innsendingsId ?? ''}|${forceMellomlagring}|${isActiveTasksRoute}`;
   const services = useMemo<RuntimeServices>(() => {
     if (!http) {
       throw new Error('Fyllut HTTP client is required to render the form.');
@@ -63,20 +64,12 @@ const RenderFormPage = () => {
     return <SubmissionMethodNotAllowed submissionMethod={submissionMethod} />;
   }
 
-  const noLoginInitialSubmission =
-    submissionMethod === 'digitalnologin' &&
-    typeof locationState === 'object' &&
-    locationState &&
-    'initialSubmission' in locationState
-      ? (locationState.initialSubmission as Submission | undefined)
-      : undefined;
-
   return (
     <RenderFormAdapter
       form={initializedForm.form}
       translations={initializedForm.translations}
       services={services}
-      initialSubmission={initializedForm.initialSubmission ?? noLoginInitialSubmission}
+      initialSubmission={initializedForm.initialSubmission}
       initialInnsendingsId={initializedForm.initialInnsendingsId}
       initialLanguage={initializedForm.initialLanguage}
     />

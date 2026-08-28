@@ -1,9 +1,4 @@
-import {
-  buildDigitalFormSearch,
-  isSoknadAlreadyExistsResponse,
-  resolveDigitalDraftResume,
-  shouldUseLegacyPageForNewRenderer,
-} from './digitalDraftUtils';
+import { buildDigitalFormSearch, isSoknadAlreadyExistsResponse, resolveDigitalDraftResume } from './digitalDraftUtils';
 
 describe('digitalDraftUtils', () => {
   describe('resolveDigitalDraftResume', () => {
@@ -59,15 +54,6 @@ describe('digitalDraftUtils', () => {
       expect(
         buildDigitalFormSearch('?forceMellomlagring=true', { forceMellomlagring: undefined, innsendingsId: '123' }),
       ).toBe('?sub=digital&innsendingsId=123');
-    });
-  });
-
-  describe('shouldUseLegacyPageForNewRenderer', () => {
-    it('keeps active tasks on the legacy router', () => {
-      expect(shouldUseLegacyPageForNewRenderer('paabegynt')).toBe(true);
-      expect(shouldUseLegacyPageForNewRenderer('legitimasjon')).toBe(true);
-      expect(shouldUseLegacyPageForNewRenderer('pdf')).toBe(true);
-      expect(shouldUseLegacyPageForNewRenderer('oppsummering')).toBe(false);
     });
   });
 

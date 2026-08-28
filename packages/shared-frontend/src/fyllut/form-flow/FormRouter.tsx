@@ -8,6 +8,7 @@ import ActiveTasksPage from '../active-tasks/ActiveTasksPage';
 import FormPage from '../form-page/FormPage';
 import IntroPage from '../intro-page/IntroPage';
 import PaperSubmissionPage from '../paper-submission/PaperSubmissionPage';
+import PersonalIdUploadPage from '../personal-id/PersonalIdUploadPage';
 import ReceiptPage from '../receipt/ReceiptPage';
 import SummaryPage from '../summary/SummaryPage';
 import { APPLICATION_DOWNLOAD_KEY, PAPER_SUBMISSION_KEY, RECEIPT_KEY, SUMMARY_KEY } from './constants';
@@ -67,6 +68,7 @@ const FormRouter = ({ form, receiptPdf }: { form: Form; receiptPdf?: Blob }) => 
   return (
     <Routes>
       <Route path="paabegynt" element={<ActiveTasksPage form={form} />} />
+      <Route path="legitimasjon" element={<PersonalIdUploadPage />} />
       <Route element={<RoutedFormFlowLayout form={form} />}>
         <Route path="" element={<IntroPage />} />
         <Route path={SUMMARY_KEY} element={<SummaryPage />} />

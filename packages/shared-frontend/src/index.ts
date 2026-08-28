@@ -12,11 +12,7 @@ import { SubmissionMethodProvider, useSubmissionMethod } from './context/submiss
 import { useValidation, ValidationProvider } from './context/validation/ValidationContext';
 import { RenderSummaryForm } from './form-components';
 import { applyPrefillDataToForm, getFormPrefillKeys, initializeDigitalDraft, RenderForm } from './fyllut';
-import {
-  buildDigitalFormSearch,
-  isSoknadAlreadyExistsResponse,
-  shouldUseLegacyPageForNewRenderer,
-} from './fyllut/draft/digitalDraftUtils';
+import { buildDigitalFormSearch, isSoknadAlreadyExistsResponse } from './fyllut/draft/digitalDraftUtils';
 import { resolveDefaultSubmissionMethod } from './fyllut/submission-method/submissionMethodResolution';
 import SharedFrontendBoundary from './SharedFrontendBoundary';
 import './styles/tokens.css';
@@ -82,7 +78,6 @@ export {
   RuntimeServicesProvider,
   SharedFrontendBoundary,
   sharedFrontendPackageName,
-  shouldUseLegacyPageForNewRenderer,
   SubmissionMethodProvider,
   SubmissionStateProvider,
   useApplication,
