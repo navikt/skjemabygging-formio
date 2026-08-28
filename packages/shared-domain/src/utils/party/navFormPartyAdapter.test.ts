@@ -153,6 +153,30 @@ describe('navFormPartyAdapter', () => {
     });
   });
 
+  it('maps name-and-address-only data to the unidentified-person combination', () => {
+    expect(
+      navFormPartyAdapter.getPartyInput(form([{ key: 'yourInformation', type: 'container', yourInformation: true }]), {
+        yourInformation: {
+          fornavn: 'Ada',
+          etternavn: 'Lovelace',
+          adresse: {
+            adresse: 'Testveien 1',
+            postnummer: '0123',
+            bySted: 'Oslo',
+          },
+        },
+      }),
+    ).toMatchObject({
+      relationship: 'anotherPerson',
+      responsibleSender: { type: 'person', firstName: 'Ada', surname: 'Lovelace' },
+      concernedUser: {
+        type: 'unidentified',
+        firstName: 'Ada',
+        surname: 'Lovelace',
+      },
+    });
+  });
+
   it('uses legacy sender names when no sender component has a value', () => {
     expect(
       navFormPartyAdapter.getPartyInput(form([]), {

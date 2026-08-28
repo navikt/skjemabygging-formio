@@ -228,6 +228,14 @@ const getPartyInput = (
     yourInformation?.etternavn ?? legacySubmission.etternavnSoker,
     selfIdentityNumber,
   );
+  if (concernedUser.type === 'unidentified') {
+    return {
+      relationship: 'anotherPerson',
+      personFillingIn: self,
+      responsibleSender: self,
+      concernedUser,
+    };
+  }
   return {
     relationship: 'self',
     personFillingIn: self,
