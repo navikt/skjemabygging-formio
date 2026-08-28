@@ -96,6 +96,15 @@ describe('partyUtils', () => {
       });
     });
 
+    it('accepts identity-only and name-only people filling in', () => {
+      const identityOnly = partyUtils.validateParty({
+        ...validInputs[1],
+        personFillingIn: { type: 'person', nationalIdentityNumber: '010101 01006' },
+        responsibleSender: { type: 'person', firstName: 'Ada', surname: 'Lovelace' },
+      });
+      expect(identityOnly.success).toBe(true);
+    });
+
     it('returns all field-addressable errors for incomplete data', () => {
       expect(
         partyUtils.validateParty({

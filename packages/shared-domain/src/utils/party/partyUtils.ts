@@ -65,19 +65,26 @@ const validatePerson = (
     return undefined;
   }
 
-  const firstName = requiredText(input.firstName, `${path}.firstName`, errors);
-  const surname = requiredText(input.surname, `${path}.surname`, errors);
   const nationalIdentityNumber = validateIdentityNumber(
     input.nationalIdentityNumber,
     `${path}.nationalIdentityNumber`,
     errors,
     identityRequired,
   );
+  const hasName = Boolean(input.firstName?.trim() || input.surname?.trim());
+  const nameRequired = hasName || !withoutWhitespace(input.nationalIdentityNumber);
+  const firstName = nameRequired ? requiredText(input.firstName, `${path}.firstName`, errors) : undefined;
+  const surname = nameRequired ? requiredText(input.surname, `${path}.surname`, errors) : undefined;
 
-  if (!firstName || !surname || (identityRequired && !nationalIdentityNumber)) {
+  if ((nameRequired && (!firstName || !surname)) || (identityRequired && !nationalIdentityNumber)) {
     return undefined;
   }
-  return { type: 'person', firstName, surname, ...(nationalIdentityNumber && { nationalIdentityNumber }) };
+  return {
+    type: 'person',
+    ...(firstName && { firstName }),
+    ...(surname && { surname }),
+    ...(nationalIdentityNumber && { nationalIdentityNumber }),
+  };
 };
 
 const validateOrganization = (

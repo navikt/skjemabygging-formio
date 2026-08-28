@@ -82,8 +82,8 @@ interface PartyInput {
 
 interface Person {
   type: 'person';
-  firstName: string;
-  surname: string;
+  firstName?: string;
+  surname?: string;
   nationalIdentityNumber?: string;
 }
 

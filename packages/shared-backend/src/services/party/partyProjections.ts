@@ -27,12 +27,13 @@ const toSender = (party: PartyData): AvsenderId => {
       navn: responsibleSender.name,
     };
   }
+  const name = [responsibleSender.firstName, responsibleSender.surname].filter(Boolean).join(' ') || undefined;
   return {
     ...(responsibleSender.nationalIdentityNumber && {
       idType: 'FNR' as const,
       id: responsibleSender.nationalIdentityNumber,
     }),
-    navn: `${responsibleSender.firstName} ${responsibleSender.surname}`,
+    ...(name && { navn: name }),
   };
 };
 
