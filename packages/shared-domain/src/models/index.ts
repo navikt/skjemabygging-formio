@@ -15,6 +15,7 @@ export * from './logging';
 export * from './migration';
 export * from './mottaksadresse';
 export * from './pdf';
+export * from './party';
 export * from './prefill';
 export * from './recipient';
 export * from './reports';
