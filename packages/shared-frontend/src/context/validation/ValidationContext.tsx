@@ -1,80 +1,11 @@
-import {
-  Component,
-  navFormUtils,
-  Submission,
-  submissionUtils,
-  TEXTS,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
-import { deriveValidations } from '../../validation/deriveValidations';
-import { validateValue } from '../../validation/validators';
 import { useApplication } from '../application/ApplicationContext';
-import { getAttachmentsAtPath } from '../attachment/attachmentData';
 import { useLanguage } from '../language/LanguageContext';
 import { useSubmissionState } from '../state/SubmissionStateContext';
 import { useSubmissionMethod } from '../submission-method/SubmissionMethodContext';
-
-interface FieldError {
-  pageKey: string;
-  submissionPath: string;
-  field: string;
-  message: string;
-}
-
-interface RuleViolation {
-  textKey: string;
-  params: Record<string, string | number>;
-}
-
-type AttachmentField = 'value' | 'files' | 'title';
-type AttachmentViolation = { submissionPath: string; violation: RuleViolation };
-type ExternalAttachmentError = { attachmentId: string; field: AttachmentField; message: string };
-
-const attachmentValidationPath = (attachmentId: string, field: AttachmentField) =>
-  `attachments.${attachmentId}.${field}`;
-
-const validateAttachmentComponent = (
-  component: Component,
-  submissionPath: string,
-  field: string,
-  activeSubmission: Submission | undefined,
-  submissionMethod?: string,
-): AttachmentViolation[] => {
-  if (submissionMethod === 'paper' || submissionMethod === 'papernocoverpage' || submissionMethod === undefined) {
-    return [];
-  }
-
-  const attachmentId = navFormUtils.getNavId(component);
-  if (!attachmentId) {
-    return [];
-  }
-
-  const attachments = getAttachmentsAtPath(activeSubmission, submissionPath).filter(
-    (currentAttachment) => currentAttachment.navId === attachmentId,
-  );
-  const primaryAttachment = attachments[0];
-  const violations: AttachmentViolation[] = [];
-
-  if (component.validate?.required && !primaryAttachment?.value) {
-    violations.push({
-      submissionPath: attachmentValidationPath(attachmentId, 'value'),
-      violation: { textKey: TEXTS.validering.required, params: { field } },
-    });
-  }
-
-  attachments
-    .filter((attachment) => attachment.value === 'leggerVedNaa')
-    .forEach((attachment) => {
-      if ((attachment.files ?? []).length === 0) {
-        violations.push({
-          submissionPath: attachmentValidationPath(attachment.attachmentId, 'files'),
-          violation: { textKey: TEXTS.validering.fileMissing, params: { field } },
-        });
-      }
-    });
-
-  return violations;
-};
+import { attachmentValidationPath, createPageErrorCalculator } from './validationErrors';
+import { AttachmentField, ExternalAttachmentError, FieldError } from './validationTypes';
 
 type ValidationPage = { pageKey: string; components: Component[] };
 type SummaryScope = { type: 'page'; pageKey: string } | { type: 'summary' } | undefined;
@@ -173,78 +104,15 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
   const [summaryScope, setSummaryScope] = useState<SummaryScope>(undefined);
   const [externalAttachmentErrors, setExternalAttachmentErrors] = useState<Record<string, ExternalAttachmentError>>({});
 
-  const computeErrors = useCallback(
-    (pageKey: string, components: Component[], activeSubmission: Submission | undefined): FieldError[] => {
-      const derivedErrors = deriveValidations(components, activeSubmission, submissionMethod).reduce<FieldError[]>(
-        (acc, { submissionPath, field, rules, component }) => {
-          if (
-            component?.type === 'attachment' &&
-            (submissionMethod === 'digital' || submissionMethod === 'digitalnologin')
-          ) {
-            validateAttachmentComponent(component, submissionPath, field, activeSubmission, submissionMethod).forEach(
-              ({ submissionPath: attachmentSubmissionPath, violation }) => {
-                acc.push({
-                  pageKey,
-                  submissionPath: attachmentSubmissionPath,
-                  field,
-                  message: translate(violation.textKey, {
-                    ...violation.params,
-                    ...(typeof violation.params.field === 'string' && { field: translate(violation.params.field) }),
-                  }),
-                });
-              },
-            );
-            return acc;
-          }
-
-          const violation = validateValue(
-            submissionUtils.getSubmissionValue(submissionPath, activeSubmission),
-            field,
-            rules,
-            currentLanguage,
-            {
-              allowTestTypes,
-              submission: activeSubmission,
-              submissionPath,
-            },
-          );
-          if (violation) {
-            acc.push({
-              pageKey,
-              submissionPath,
-              field,
-              message: translate(violation.textKey, {
-                ...violation.params,
-                ...(typeof violation.params.field === 'string' && { field: translate(violation.params.field) }),
-              }),
-            });
-          }
-          return acc;
-        },
-        [],
-      );
-      const attachmentIds = new Set(
-        navFormUtils
-          .flattenComponents(components)
-          .filter((component) => component.type === 'attachment')
-          .map((component) => navFormUtils.getNavId(component))
-          .filter((attachmentId): attachmentId is string => !!attachmentId),
-      );
-      const uploadErrors = Object.values(externalAttachmentErrors)
-        .filter((error) =>
-          [...attachmentIds].some(
-            (attachmentId) => error.attachmentId === attachmentId || error.attachmentId.startsWith(`${attachmentId}-`),
-          ),
-        )
-        .map(({ attachmentId, field, message }) => ({
-          pageKey,
-          submissionPath: attachmentValidationPath(attachmentId, field),
-          field: '',
-          message,
-        }));
-
-      return [...derivedErrors, ...uploadErrors];
-    },
+  const computeErrors = useMemo(
+    () =>
+      createPageErrorCalculator({
+        allowTestTypes,
+        currentLanguage,
+        externalAttachmentErrors,
+        submissionMethod,
+        translate,
+      }),
     [allowTestTypes, currentLanguage, externalAttachmentErrors, submissionMethod, translate],
   );
 

@@ -32,6 +32,9 @@ frontend work.
   legacy flow that cannot reasonably be moved first.
 - Reuse shared behavior before adding another path. Keep form-definition
   adapters thin.
+- When composing shared-frontend UI, use the package's own
+  `src/components` abstractions rather than importing Aksel components
+  directly. Add or extend a generic shared component first when needed.
 
 ## Aksel and accessibility
 
