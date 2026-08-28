@@ -20,18 +20,17 @@ frontend work.
 
 - Put reusable UI, hooks, frontend services, and form behavior in
   `packages/shared-frontend`.
-- Keep `packages/shared-frontend/src/components` generic. It must not depend on
-  fyllut-specific flow, submission, routing, or application code.
-- Keep reusable components independent of form-definition `Component`
-  configuration. They may use shared domain value types, state, language,
-  validation, and runtime-service contexts, while `src/form-components` maps
-  legacy form definitions to explicit component props.
-- Keep separate input, summary, and PDF form-definition adapters when that
-  parallel structure makes the mapping easier to follow, even when an adapter
-  is only a thin delegation.
-- Keep `packages/shared-frontend/src/fyllut` for the fyllut flow, submission,
-  wizard behavior, and host integration. Keep this flow hostable by both fyllut
-  and bygger.
+- Keep `packages/shared-frontend/src/components` generic and independent of
+  form-definition configuration and fyllut-specific flow, submission, routing,
+  or application code. Bind reusable controls through generic state paths and
+  presentational props.
+- Keep `packages/shared-frontend/src/form-components` for thin form-definition
+  adapters. Keep separate input, summary, and PDF adapters when that parallel
+  structure clarifies the mapping. Co-locate adapters by component type and
+  keep their registries aligned.
+- Keep `packages/shared-frontend/src/fyllut` for fyllut-specific orchestration,
+  routing, submission, wizard behavior, attachments, and host integration. Keep
+  this flow hostable by both fyllut and bygger.
 - Dependencies may point from `fyllut` to generic `components`, never the
   reverse. Keep application-specific behavior in `packages/fyllut` or
   `packages/bygger`.
@@ -43,12 +42,22 @@ frontend work.
   `src/components` abstractions rather than importing Aksel components
   directly. Add or extend a generic shared component first when needed.
 
+## Styling
+
+- Use CSS Modules for all new frontend styling and in new frontend packages.
+  Treat JSS (`react-jss`, `makeStyles`, and `createUseStyles`) as legacy; do not
+  introduce it in new code. When changing existing JSS-based styling, migrate
+  the affected styles to CSS Modules when reasonably scoped.
+
 ## Aksel and accessibility
 
 Use Aksel for user-facing UI. Consult `aksel-agent` before choosing or changing
 an Aksel component, token, layout, or interaction. It must use current Aksel
 documentation; do not rely on remembered APIs.
 
+- Target the latest finalized WCAG Recommendation at level AA, currently WCAG
+  2.2 AA. Do not treat working drafts, including WCAG 3.0, as required unless
+  explicitly adopted.
 - Use semantic elements, meaningful accessible names, visible labels, and
   keyboard-operable actions.
 - Do not use placeholders as labels or instructions.
@@ -70,6 +79,9 @@ Read
 for changes to inputs, formatting, validation, errors, conditional visibility,
 navigation, or focus. Apply those defaults without asking unless the requirement
 intentionally changes them.
+
+- When adding or changing a form component, preserve parity across editable
+  input, validation, summary, PDF, autosave, and submission behavior.
 
 ## Host services, content, and logging
 

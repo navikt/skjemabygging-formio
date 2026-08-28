@@ -102,7 +102,7 @@ Consult:
 
 - `auth-agent` for Azure AD, TokenX, ID-porten, Maskinporten, JWT validation,
   identities, and token exchange;
-- `nais-agent` for Nais, GCP, Kafka, deployment, and platform configuration;
+- `nais-agent` for Nais, GCP, deployment, and platform configuration;
 - `observability-agent` for metrics, tracing, Grafana, and alerts;
 - `security-champion-agent` for threat modelling, security architecture,
   compliance, and privacy.
@@ -113,7 +113,6 @@ vulnerabilities.
 ## Testing
 
 - Use Vitest for isolated backend, service, mapper, validator, and domain logic.
-- Use existing Supertest patterns when the Express contract matters.
 - Test external clients at their boundary, including request and response
   mapping and representative dependency failures.
 - Use `request-body-verification` when a Cypress journey must prove the payload
