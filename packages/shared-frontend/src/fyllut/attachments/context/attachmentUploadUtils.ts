@@ -9,7 +9,13 @@ const filterAttachmentsByNavId = (submissionAttachments: SubmissionAttachment[],
   submissionAttachments.filter((attachment) => attachment.navId === attachmentNavId);
 
 const getLargestAttachmentIdCounter = (attachments: SubmissionAttachment[]): number =>
-  Math.max(0, ...attachments.map((attachment) => parseInt(attachment.attachmentId.split('-')[1] ?? '0', 10)));
+  Math.max(
+    0,
+    ...attachments.map((attachment) => {
+      const suffix = attachment.attachmentId.match(/-(\d+)$/)?.[1];
+      return suffix ? Number.parseInt(suffix, 10) : 0;
+    }),
+  );
 
 const getDefaultOtherAttachment = (
   attachmentNavId: string,

@@ -9,13 +9,12 @@ import { FormComponentProps } from '../../types';
 import styles from './SummaryPanel.module.css';
 
 const SummaryPanel = (props: FormComponentProps) => {
-  const { submissionPath, translate, component, panelValidationList } = props;
+  const { submissionPath, translate, component, panelValidationList, legacyAttachmentPanelMode } = props;
   const { title, components, navId, key } = component;
   const { search, state } = useLocation();
   const navigate = useNavigate();
   const { isOpen: isStepperOpen } = useStepperState();
   const childComponents = components ?? [];
-  const isAttachmentPanel = childComponents.some((child) => child.type === 'attachment');
   const navigationState = withoutSubmissionNavigationState(state);
 
   const panelValidation = panelValidationList?.find((panel) => panel.key === key);
@@ -49,7 +48,7 @@ const SummaryPanel = (props: FormComponentProps) => {
             event.preventDefault();
             navigate({ pathname: `../${key}`, search }, { state: navigationState });
           }}
-          aria-label={isAttachmentPanel && !isStepperOpen ? translate(title) : undefined}
+          aria-label={legacyAttachmentPanelMode && !isStepperOpen ? translate(title) : undefined}
         >
           {translate(TEXTS.grensesnitt.summaryPage.edit)}
         </FormSummary.EditLink>

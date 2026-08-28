@@ -35,6 +35,7 @@ interface FormComponentProps {
   formProperties: FormPropertiesType;
   rendererConfig: SummaryRendererConfig;
   handleDownloadFile?: HandleAttachmentDownloadFile;
+  legacyAttachmentPanelMode?: boolean;
 }
 
 interface FormComponentRegistry {

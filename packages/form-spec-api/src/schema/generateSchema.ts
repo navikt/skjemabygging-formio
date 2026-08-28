@@ -29,7 +29,9 @@ const generateSchema = (form: Form): JsonSchemaObject => {
     },
     required: [
       'data',
-      ...(attachments ? ['attachments'] : []),
+      ...(attachments && submissionTypesUtils.isDigitalNoLoginSubmission(form.properties?.submissionTypes)
+        ? ['attachments']
+        : []),
       ...(form.introPage?.enabled ? ['selfDeclaration'] : []),
     ],
     additionalProperties: false,

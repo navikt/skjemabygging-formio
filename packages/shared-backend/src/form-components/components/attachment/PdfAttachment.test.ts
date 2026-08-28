@@ -1,6 +1,6 @@
 import { Component, Submission, SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { PdfComponentProps } from '../../types';
-import PdfAttachmentUpload from './PdfAttachmentUpload';
+import PdfAttachment from './PdfAttachment';
 import { component as attachmentOtherOld } from './testdata/attachment-old-other';
 import { component as attachmentOld } from './testdata/attachment-type-and-attachmentValues-missing';
 import { component as attachmentOther } from './testdata/attachment-type-other';
@@ -9,7 +9,7 @@ import { component as attachment } from './testdata/attachment-with-the-lot';
 const createProps = (
   component: Component,
   submission: Partial<Submission> = { data: {} },
-  submissionMethod: PdfComponentProps['submissionMethod'] = undefined,
+  submissionMethod: PdfComponentProps['submissionMethod'] = 'digital',
 ): PdfComponentProps => ({
   submission: submission as Submission,
   translate: (textOrKey?: string) => textOrKey!,
@@ -20,7 +20,7 @@ const createProps = (
   submissionMethod,
 });
 
-describe('PdfAttachmentUpload', () => {
+describe('PdfAttachment', () => {
   it('should include comment when additional documentation is present', () => {
     const testComponent = attachment;
     const navId = testComponent.navId!;
@@ -35,7 +35,7 @@ describe('PdfAttachmentUpload', () => {
       },
     ];
     const props = createProps(testComponent, { attachments: submissionAttachments });
-    const pdfFormData = PdfAttachmentUpload(props);
+    const pdfFormData = PdfAttachment(props);
     expect(pdfFormData).toEqual([
       { label: 'Uttalelse fra lege', verdi: TEXTS.statiske.attachment.levertTidligere },
       {
@@ -59,7 +59,7 @@ describe('PdfAttachmentUpload', () => {
       },
     ];
     const props = createProps(testComponent, { attachments: submissionAttachments });
-    const pdfFormData = PdfAttachmentUpload(props);
+    const pdfFormData = PdfAttachment(props);
     expect(pdfFormData).toEqual([
       {
         label: 'Uttalelse fra lege',
@@ -81,7 +81,7 @@ describe('PdfAttachmentUpload', () => {
       },
     ];
     const props = createProps(testComponent, { attachments: submissionAttachments }, 'digital');
-    const pdfFormData = PdfAttachmentUpload(props);
+    const pdfFormData = PdfAttachment(props);
     expect(pdfFormData).toEqual([
       {
         label: 'Uttalelse fra lege',
@@ -103,7 +103,7 @@ describe('PdfAttachmentUpload', () => {
       },
     ];
     const props = createProps(testComponent, { attachments: submissionAttachments }, 'paper');
-    const pdfFormData = PdfAttachmentUpload(props);
+    const pdfFormData = PdfAttachment(props);
     expect(pdfFormData).toEqual([
       {
         label: 'Uttalelse fra lege',
@@ -125,7 +125,7 @@ describe('PdfAttachmentUpload', () => {
       },
     ];
     const props = createProps(testComponent, { attachments: submissionAttachments });
-    const pdfFormData = PdfAttachmentUpload(props);
+    const pdfFormData = PdfAttachment(props);
     expect(pdfFormData).toEqual([
       {
         label: 'Faktura fra utdanningsinstitusjon',
@@ -137,12 +137,12 @@ describe('PdfAttachmentUpload', () => {
   it('should return null if navId is missing', () => {
     const incompleteComponent = { ...attachment, navId: undefined };
     const props = createProps(incompleteComponent, { attachments: [] });
-    expect(() => PdfAttachmentUpload(props)).toThrow('PdfAttachmentUpload: navId is required on component');
+    expect(() => PdfAttachment(props)).toThrow('PdfAttachment: navId is required on digital attachment');
   });
 
   it('should return null if no attachments match navId', () => {
     const props = createProps(attachment, { attachments: [] });
-    const pdfFormData = PdfAttachmentUpload(props);
+    const pdfFormData = PdfAttachment(props);
     expect(pdfFormData).toBeNull();
   });
 
@@ -168,7 +168,7 @@ describe('PdfAttachmentUpload', () => {
       },
     ];
     const props = createProps(testComponent, { attachments: submissionAttachments });
-    const pdfFormData = PdfAttachmentUpload(props);
+    const pdfFormData = PdfAttachment(props);
     expect(pdfFormData).toEqual([
       {
         label: 'Annen dokumentasjon - Førerkort',
@@ -195,7 +195,7 @@ describe('PdfAttachmentUpload', () => {
       },
     ];
     const props = createProps(testComponent, { attachments: submissionAttachments });
-    const pdfFormData = PdfAttachmentUpload(props);
+    const pdfFormData = PdfAttachment(props);
     expect(pdfFormData).toEqual([
       {
         label: 'Annen dokumentasjon - Førerkort',
@@ -217,7 +217,7 @@ describe('PdfAttachmentUpload', () => {
       },
     ];
     const props = createProps(testComponent, { attachments: submissionAttachments });
-    const pdfFormData = PdfAttachmentUpload(props);
+    const pdfFormData = PdfAttachment(props);
     expect(pdfFormData).toBeNull();
   });
 
@@ -235,13 +235,48 @@ describe('PdfAttachmentUpload', () => {
       },
     ];
     const props = createProps(testComponent, { attachments: submissionAttachments });
-    const pdfFormData = PdfAttachmentUpload(props);
+    const pdfFormData = PdfAttachment(props);
     expect(pdfFormData).toBeNull();
   });
 
   it('should return null when submission has no attachments property', () => {
     const props = createProps(attachment, {});
-    const pdfFormData = PdfAttachmentUpload(props);
+    const pdfFormData = PdfAttachment(props);
     expect(pdfFormData).toBeNull();
+  });
+
+  it('should resolve the attachment from the current datagrid row', () => {
+    const testComponent = attachment;
+    const navId = testComponent.navId!;
+    const firstRowAttachment: SubmissionAttachment = {
+      attachmentId: `${navId}-rows-0-documentation`,
+      navId,
+      type: 'default',
+      value: 'leggerVedNaa',
+      files: [],
+    };
+    const secondRowAttachment: SubmissionAttachment = {
+      attachmentId: `${navId}-rows-1-documentation`,
+      navId,
+      type: 'default',
+      value: 'ettersender',
+      files: [],
+    };
+    const props = {
+      ...createProps(testComponent, {
+        data: {
+          rows: [{ documentation: firstRowAttachment }, { documentation: secondRowAttachment }],
+        },
+        attachments: [firstRowAttachment, secondRowAttachment],
+      }),
+      submissionPath: 'rows[1].documentation',
+    };
+
+    expect(PdfAttachment(props)).toEqual([
+      {
+        label: 'Uttalelse fra lege',
+        verdi: TEXTS.statiske.attachment.ettersender,
+      },
+    ]);
   });
 });

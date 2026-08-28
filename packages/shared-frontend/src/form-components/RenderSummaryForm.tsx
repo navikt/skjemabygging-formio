@@ -14,7 +14,6 @@ import SummaryActivities from './components/activities/SummaryActivities';
 import SummaryAddressValidity from './components/address-validity/SummaryAddressValidity';
 import SummaryAddress from './components/address/SummaryAddress';
 import SummaryAlert from './components/alert/SummaryAlert';
-import SummaryAttachmentUpload from './components/attachment-uploads/SummaryAttachmentUpload';
 import SummaryAttachment from './components/attachment/SummaryAttachment';
 import SummaryCheckbox from './components/checkbox/SummaryCheckbox';
 import SummaryContainer from './components/container/SummaryContainer';
@@ -146,11 +145,6 @@ const RenderSummaryForm = ({
     maalgruppe: SummaryMaalgruppe,
   } satisfies Record<SupportedSummaryComponentType, FormComponentRegistry[string]>;
 
-  const attachmentUploadsComponentRegistry = {
-    ...componentRegistry,
-    attachment: SummaryAttachmentUpload,
-    radiopanel: SummaryAttachmentUpload,
-  };
   const resolvedRendererConfig = rendererConfig ?? {
     submissionMethod: appConfig.submissionMethod,
     logger: appConfig.logger,
@@ -179,7 +173,7 @@ const RenderSummaryForm = ({
         <RenderComponent
           component={activeAttachmentUploadsPanel}
           submissionPath=""
-          componentRegistry={attachmentUploadsComponentRegistry}
+          componentRegistry={componentRegistry}
           submission={submission}
           translate={translate}
           currentLanguage={currentLanguage}
@@ -187,6 +181,7 @@ const RenderSummaryForm = ({
           panelValidationList={panelValidationList}
           rendererConfig={resolvedRendererConfig}
           handleDownloadFile={handleDownloadFile}
+          legacyAttachmentPanelMode
         />
       )}
     </>

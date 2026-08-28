@@ -7,7 +7,9 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { MutableRefObject, ReactNode } from 'react';
 import TextField from '../../../components/text-field/TextField';
+import { getAttachmentsAtPath } from '../../../context/attachment/attachmentData';
 import { useLanguage } from '../../../context/language/LanguageContext';
+import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
 import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
 import { useAttachmentUpload } from '../context/AttachmentUploadContext';
 import { fileUploadErrorParams } from '../context/fileUploadConfig';
@@ -17,6 +19,8 @@ import useAttachmentValidation from './useAttachmentValidation';
 
 interface Props {
   initialAttachment: SubmissionAttachment;
+  submissionPath?: string;
+  multipleAttachments?: boolean;
   attachmentValue?: keyof AttachmentSettingValues;
   requireAttachmentTitle?: boolean;
   showDeleteAttachmentButton?: boolean;
@@ -31,6 +35,8 @@ interface Props {
 
 const FileUploader = ({
   initialAttachment,
+  submissionPath,
+  multipleAttachments = false,
   attachmentValue,
   requireAttachmentTitle,
   showDeleteAttachmentButton,
@@ -44,8 +50,15 @@ const FileUploader = ({
 }: Props) => {
   const { submissionMethod } = useSubmissionMethod();
   const { translate } = useLanguage();
-  const { changeAttachmentValue, handleDeleteFile, handleDownloadFile, submissionAttachments, uploadsInProgress } =
-    useAttachmentUpload();
+  const { submission } = useSubmissionState();
+  const {
+    changeAttachmentValue,
+    handleDeleteFile,
+    handleDownloadFile,
+    submissionAttachments: legacyAttachments,
+    uploadsInProgress,
+  } = useAttachmentUpload();
+  const submissionAttachments = submissionPath ? getAttachmentsAtPath(submission, submissionPath) : legacyAttachments;
   const { attachmentId } = initialAttachment;
   const { getAttachmentError, getAttachmentExternalError } = useAttachmentValidation(submissionAttachments);
   const attachment = submissionAttachments.find((currentAttachment) => currentAttachment.attachmentId === attachmentId);
@@ -63,17 +76,22 @@ const FileUploader = ({
   const attachmentTitleErrorMessage =
     getAttachmentError(attachmentId, 'title') ?? getAttachmentExternalError(attachmentId, 'title');
   const handleTitleChange = (title: string) => {
-    changeAttachmentValue(initialAttachment, {
-      value: attachmentValue,
-      title,
-    });
+    changeAttachmentValue(
+      initialAttachment,
+      {
+        value: attachmentValue,
+        title,
+      },
+      submissionPath,
+      multipleAttachments,
+    );
   };
 
   const handleDeleteFileItem = (fileId: string, file: FileItem) => {
     if (attachment?.type === 'other' && onDeleteAttachment) {
       return onDeleteAttachment(attachmentId);
     }
-    return handleDeleteFile(attachmentId, fileId, file);
+    return handleDeleteFile(attachmentId, fileId, file, submissionPath, multipleAttachments);
   };
 
   const handleDownloadFileItem = (fileId: string, fileName: string) => {
@@ -96,7 +114,9 @@ const FileUploader = ({
         <VStack gap="space-32">
           {requireAttachmentTitle && (
             <TextField
-              statePath={`attachments.${attachmentId}.title`}
+              statePath={
+                submissionPath ? `${submissionPath}.${attachmentId}.title` : `attachments.${attachmentId}.title`
+              }
               label={translate(TEXTS.statiske.attachment.attachmentTitle)}
               maxLength={50}
               value={attachment?.title ?? ''}
@@ -107,7 +127,11 @@ const FileUploader = ({
           <HStack gap="space-16">
             <UploadButton
               attachmentId={attachmentId}
-              statePath={`attachments.${attachmentId}.files`}
+              statePath={
+                submissionPath ? `${submissionPath}.${attachmentId}.files` : `attachments.${attachmentId}.files`
+              }
+              submissionPath={submissionPath}
+              multipleAttachments={multipleAttachments}
               variant={initialUpload ? 'primary' : 'secondary'}
               allowUpload={!requireAttachmentTitle || !!attachment?.title?.trim()}
               refs={refs}

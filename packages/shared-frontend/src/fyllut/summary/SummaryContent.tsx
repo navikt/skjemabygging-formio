@@ -1,5 +1,5 @@
 import { Alert, Heading } from '@navikt/ds-react';
-import { navFormUtils, PanelValidation, submissionTypesUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { PanelValidation, submissionTypesUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo } from 'react';
 import FormErrorSummary from '../../components/error-summary/FormErrorSummary';
 import { useApplication } from '../../context/application/ApplicationContext';
@@ -30,19 +30,14 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
   const { logger, environment } = useApplication();
   const { submissionMethod } = useSubmissionMethod();
   const { translate, currentLanguage } = useLanguage();
-  const { form, activeComponents, panels } = useFormDefinition();
+  const { form, panels } = useFormDefinition();
   const { submission } = useSubmissionState();
   const { getErrorsForPages, validatePages } = useValidation();
   const { submit, status, error, canSubmit, canSaveDraft } = useFormActions();
   const { handleDownloadFile } = useAttachmentUpload();
-  const attachmentPanel = panels.find(navFormUtils.isVedleggspanel);
   const isNoSubmissionFlow =
     (!submissionMethod || submissionMethod === 'papernocoverpage') &&
     submissionTypesUtils.isPaperNoCoverPageSubmission(form.properties.submissionTypes);
-  const summaryComponents =
-    submissionMethod === 'paper' || isNoSubmissionFlow
-      ? [...activeComponents, ...(attachmentPanel ? [attachmentPanel] : [])]
-      : activeComponents;
   const validationPages = useMemo(
     () => panels.map((panel) => ({ pageKey: panel.key, components: panel.components ?? [] })),
     [panels],
@@ -111,10 +106,7 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
         </>
       )}
       <RenderSummaryForm
-        activeComponents={summaryComponents}
-        activeAttachmentUploadsPanel={
-          submissionMethod === 'digital' || submissionMethod === 'digitalnologin' ? attachmentPanel : undefined
-        }
+        activeComponents={panels}
         submission={submission}
         form={form}
         currentLanguage={currentLanguage}

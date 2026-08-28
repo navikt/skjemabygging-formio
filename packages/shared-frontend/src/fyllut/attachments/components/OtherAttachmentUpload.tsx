@@ -9,8 +9,14 @@ import {
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { MutableRefObject, ReactNode, useState } from 'react';
+import {
+  createAttachmentId,
+  getAttachmentsAtPath,
+  setAttachmentsAtPath,
+} from '../../../context/attachment/attachmentData';
 import { useFormDefinition } from '../../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../../context/language/LanguageContext';
+import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
 import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
 import { useAttachmentUpload } from '../context/AttachmentUploadContext';
 import {
@@ -38,6 +44,7 @@ interface OtherAttachmentUploadFieldProps {
   required: boolean;
   attachmentValues?: AttachmentSettingValues | ComponentValue[];
   attachmentNavId: string;
+  submissionPath: string;
   description?: ReactNode;
   submissionAttachment?: SubmissionAttachment;
   onValueChange: (value?: Partial<SubmissionAttachmentValue>) => void;
@@ -51,6 +58,7 @@ const OtherAttachmentUploadField = ({
   required,
   attachmentValues,
   attachmentNavId,
+  submissionPath,
   description,
   submissionAttachment,
   onValueChange,
@@ -60,16 +68,19 @@ const OtherAttachmentUploadField = ({
 }: OtherAttachmentUploadFieldProps) => {
   const { submissionMethod } = useSubmissionMethod();
   const { translate } = useLanguage();
-  const { submissionAttachments, handleDeleteAttachment } = useAttachmentUpload();
+  const { submission, setSubmission } = useSubmissionState();
+  const { handleDeleteAttachment } = useAttachmentUpload();
+  const submissionAttachments = getAttachmentsAtPath(submission, submissionPath);
   const { form } = useFormDefinition();
   const defaultAttachmentValues: Pick<SubmissionAttachment, 'navId' | 'type'> = {
     navId: attachmentNavId,
     type: 'other',
   };
+  const baseAttachmentId = createAttachmentId(attachmentNavId, submissionPath);
   const [attachments, setAttachments] = useState(
     submissionAttachment
       ? filterAttachmentsByNavId(submissionAttachments, attachmentNavId)
-      : [getDefaultOtherAttachment(attachmentNavId)],
+      : [{ ...getDefaultOtherAttachment(attachmentNavId), attachmentId: baseAttachmentId }],
   );
   const [attachmentCounter, setAttachmentCounter] = useState(getLargestAttachmentIdCounter(attachments));
 
@@ -83,12 +94,23 @@ const OtherAttachmentUploadField = ({
     try {
       const currentAttachment = submissionAttachments.find((attachment) => attachment.attachmentId === attachmentId);
       if ((currentAttachment?.files ?? []).length > 0) {
-        await handleDeleteAttachment(attachmentId);
+        await handleDeleteAttachment(attachmentId, submissionPath, true);
+      } else {
+        setSubmission((current) =>
+          setAttachmentsAtPath(
+            current,
+            submissionPath,
+            getAttachmentsAtPath(current, submissionPath).filter(
+              (attachment) => attachment.attachmentId !== attachmentId,
+            ),
+            true,
+          ),
+        );
       }
       setAttachments((current) => {
         if (current.length === 1) {
           const [{ value }] = current;
-          return [getDefaultOtherAttachment(attachmentNavId, value)];
+          return [{ ...getDefaultOtherAttachment(attachmentNavId, value), attachmentId: baseAttachmentId }];
         }
         return current.filter((attachment) => attachment.attachmentId !== attachmentId);
       });
@@ -100,7 +122,7 @@ const OtherAttachmentUploadField = ({
   const handleUploadAnotherAttachment = () => {
     setAttachments((current) => [
       ...current,
-      { attachmentId: `${attachmentNavId}-${attachmentCounter + 1}`, ...defaultAttachmentValues },
+      { attachmentId: `${baseAttachmentId}-${attachmentCounter + 1}`, ...defaultAttachmentValues },
     ]);
     setAttachmentCounter((value) => value + 1);
   };
@@ -148,6 +170,8 @@ const OtherAttachmentUploadField = ({
               <FileUploader
                 key={attachment.attachmentId}
                 initialAttachment={attachment}
+                submissionPath={submissionPath}
+                multipleAttachments
                 requireAttachmentTitle
                 attachmentValue={submissionAttachment?.value}
                 showDeleteAttachmentButton={attachments.length > 1}
@@ -178,6 +202,7 @@ interface OtherAttachmentUploadProps {
   required: boolean;
   attachmentValues?: AttachmentSettingValues | ComponentValue[];
   attachmentNavId: string;
+  submissionPath: string;
   description?: ReactNode;
   refs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | HTMLButtonElement | null>>;
   onUpload?: (attachment: SubmissionAttachment) => void;
@@ -188,19 +213,25 @@ const OtherAttachmentUpload = ({
   required,
   attachmentValues,
   attachmentNavId,
+  submissionPath,
   description,
   refs,
   onUpload,
 }: OtherAttachmentUploadProps) => {
-  const { submissionAttachments, changeAttachmentValue } = useAttachmentUpload();
+  const { submission } = useSubmissionState();
+  const { changeAttachmentValue } = useAttachmentUpload();
+  const submissionAttachments = getAttachmentsAtPath(submission, submissionPath);
   const { getAttachmentError } = useAttachmentValidation(submissionAttachments);
   const submissionAttachment = submissionAttachments.find((attachment) => attachment.navId === attachmentNavId);
+  const attachmentId = createAttachmentId(attachmentNavId, submissionPath);
   const attachmentError = getAttachmentError(attachmentNavId, 'value');
 
   const handleValueChange = (value: Partial<SubmissionAttachmentValue> | undefined) => {
     changeAttachmentValue(
-      submissionAttachment ?? { attachmentId: attachmentNavId, navId: attachmentNavId, type: 'other' },
+      submissionAttachment ?? { attachmentId, navId: attachmentNavId, type: 'other' },
       value ? { value: value.key, additionalDocumentation: value.additionalDocumentation } : {},
+      submissionPath,
+      true,
     );
   };
 
@@ -211,6 +242,7 @@ const OtherAttachmentUpload = ({
       description={description}
       attachmentValues={attachmentValues}
       attachmentNavId={attachmentNavId}
+      submissionPath={submissionPath}
       submissionAttachment={submissionAttachment}
       onValueChange={handleValueChange}
       error={attachmentError}

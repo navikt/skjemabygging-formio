@@ -1,4 +1,4 @@
-import { attachmentUtils, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { attachmentUtils, navFormUtils, SubmissionAttachment } from '@navikt/skjemadigitalisering-shared-domain';
 import Attachment from '../../../components/attachment/Attachment';
 import { useFormDefinition } from '../../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../../context/language/LanguageContext';
@@ -19,16 +19,17 @@ const InputAttachment = ({ component, submissionPath }: InputComponentProps) => 
   const { logEvent } = useFyllut();
   const { form } = useFormDefinition();
   const { translate } = useLanguage();
-  const isUploadEnabled = submissionMethod === 'digital' || submissionMethod === 'digitalnologin';
+  const resolvedSubmissionPath = resolveSubmissionPath(component, submissionPath);
 
-  if (isUploadEnabled) {
+  if (attachmentUtils.enableAttachmentUpload(submissionMethod)) {
     const uploadProps = {
       label: translate(component.label),
       required: isRequired(component),
       description: component.description ? translate(component.description) : undefined,
       attachmentValues: component.attachmentValues ?? component.values,
       attachmentNavId: navFormUtils.getNavId(component) ?? component.key,
-      onUpload: (attachment) => {
+      submissionPath: resolvedSubmissionPath,
+      onUpload: (attachment: SubmissionAttachment) => {
         void logEvent?.({
           name: 'last opp',
           data: {
@@ -43,7 +44,7 @@ const InputAttachment = ({ component, submissionPath }: InputComponentProps) => 
       },
     };
 
-    return component.attachmentType === 'other' ? (
+    return component.attachmentType === 'other' || component.otherDocumentation ? (
       <OtherAttachmentUpload {...uploadProps} />
     ) : (
       <AttachmentUpload {...uploadProps} type={component.attachmentType} />
@@ -53,7 +54,7 @@ const InputAttachment = ({ component, submissionPath }: InputComponentProps) => 
   return (
     <FormGroup>
       <Attachment
-        statePath={resolveSubmissionPath(component, submissionPath)}
+        statePath={resolvedSubmissionPath}
         label={component.label}
         description={component.description}
         values={attachmentUtils.mapKeysToOptions(

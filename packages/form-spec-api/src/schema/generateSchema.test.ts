@@ -409,6 +409,14 @@ describe('generateSchema', () => {
       title: 'Ignored field',
       type: 'string',
     });
+    expect(getFormDataSchema(schema).properties?.medicalCertificate).toMatchObject({
+      title: 'Medical certificate',
+      anyOf: expect.any(Array),
+    });
+    expect(getFormDataSchema(schema).properties?.otherDocumentation).toMatchObject({
+      title: 'Other documentation',
+      anyOf: expect.any(Array),
+    });
     expect(getSubmissionPayloadSchema(schema).properties?.attachments).toMatchObject({
       type: 'array',
       title: 'Attachments',

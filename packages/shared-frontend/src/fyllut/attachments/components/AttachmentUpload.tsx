@@ -9,8 +9,10 @@ import {
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { MutableRefObject, ReactNode } from 'react';
+import { createAttachmentId, getAttachmentsAtPath } from '../../../context/attachment/attachmentData';
 import { useFormDefinition } from '../../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../../context/language/LanguageContext';
+import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
 import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
 import { useAttachmentUpload } from '../context/AttachmentUploadContext';
 import AttachmentOptionSelect from './AttachmentOptionSelect';
@@ -33,6 +35,7 @@ interface AttachmentUploadFieldProps {
   required: boolean;
   attachmentValues?: AttachmentSettingValues | ComponentValue[];
   attachmentNavId: string;
+  submissionPath: string;
   type?: Exclude<AttachmentType, 'other'>;
   description?: ReactNode;
   submissionAttachment?: SubmissionAttachment;
@@ -47,6 +50,7 @@ const AttachmentUploadField = ({
   required,
   attachmentValues,
   attachmentNavId,
+  submissionPath,
   type = 'default',
   description,
   submissionAttachment,
@@ -102,14 +106,27 @@ const AttachmentUploadField = ({
             <div>
               <Label>{translate(TEXTS.statiske.attachment.filesUploadedNotSent)}</Label>
               {uploadedAttachmentFiles.length > 1 && (
-                <Button variant="tertiary" onClick={() => handleDeleteAllFilesForAttachment(attachmentNavId)}>
+                <Button
+                  variant="tertiary"
+                  onClick={() =>
+                    handleDeleteAllFilesForAttachment(
+                      submissionAttachment?.attachmentId ?? attachmentNavId,
+                      submissionPath,
+                    )
+                  }
+                >
                   {translate(TEXTS.statiske.attachment.deleteAllFiles)}
                 </Button>
               )}
             </div>
           )}
           <FileUploader
-            initialAttachment={{ attachmentId: attachmentNavId, navId: attachmentNavId, type }}
+            initialAttachment={{
+              attachmentId: createAttachmentId(attachmentNavId, submissionPath),
+              navId: attachmentNavId,
+              type,
+            }}
+            submissionPath={submissionPath}
             refs={refs}
             multiple
             readMore={<FileUploadReadMore />}
@@ -126,6 +143,7 @@ interface AttachmentUploadProps {
   required: boolean;
   attachmentValues?: AttachmentSettingValues | ComponentValue[];
   attachmentNavId: string;
+  submissionPath: string;
   description?: ReactNode;
   type?: AttachmentType;
   refs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | HTMLButtonElement | null>>;
@@ -137,21 +155,26 @@ const AttachmentUpload = ({
   required,
   attachmentValues,
   attachmentNavId,
+  submissionPath,
   description,
   type = 'default',
   refs,
   onUpload,
 }: AttachmentUploadProps) => {
-  const { submissionAttachments, changeAttachmentValue } = useAttachmentUpload();
+  const { submission } = useSubmissionState();
+  const { changeAttachmentValue } = useAttachmentUpload();
+  const submissionAttachments = getAttachmentsAtPath(submission, submissionPath);
   const { getAttachmentError } = useAttachmentValidation(submissionAttachments);
 
   const submissionAttachment = submissionAttachments.find((attachment) => attachment.navId === attachmentNavId);
+  const attachmentId = createAttachmentId(attachmentNavId, submissionPath);
   const attachmentError = getAttachmentError(attachmentNavId, 'value');
 
   const handleValueChange = (value: Partial<SubmissionAttachmentValue> | undefined) => {
     changeAttachmentValue(
-      submissionAttachment ?? { attachmentId: attachmentNavId, navId: attachmentNavId, type },
+      submissionAttachment ?? { attachmentId, navId: attachmentNavId, type },
       value ? { value: value.key, additionalDocumentation: value.additionalDocumentation } : {},
+      submissionPath,
     );
   };
 
@@ -162,6 +185,7 @@ const AttachmentUpload = ({
       description={description}
       attachmentValues={attachmentValues}
       attachmentNavId={attachmentNavId}
+      submissionPath={submissionPath}
       type={type as Exclude<AttachmentType, 'other'>}
       submissionAttachment={submissionAttachment}
       onValueChange={handleValueChange}

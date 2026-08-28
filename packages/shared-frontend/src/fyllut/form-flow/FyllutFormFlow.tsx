@@ -1,6 +1,7 @@
 import { Form, Submission, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import { useLocation } from 'react-router';
+import { hydrateLegacyAttachments } from '../../context/attachment/attachmentData';
 import { FormDefinitionProvider } from '../../context/form-definition/FormDefinitionContext';
 import { applyPrefilledValuesToSubmission } from '../../context/form-definition/prefillSubmission';
 import { SubmissionStateProvider } from '../../context/state/SubmissionStateContext';
@@ -35,7 +36,11 @@ const FyllutFormFlow = ({
 }: Props) => {
   const { search } = useLocation();
   const [receiptPdf, setReceiptPdf] = useState<Blob>();
-  const hydratedInitialSubmission = applyPrefilledValuesToSubmission(form, initialSubmission, currentLanguage);
+  const hydratedInitialSubmission = applyPrefilledValuesToSubmission(
+    form,
+    hydrateLegacyAttachments(form, initialSubmission),
+    currentLanguage,
+  );
   const defaultSubmissionMethod = resolveDefaultSubmissionMethod(form.properties.submissionTypes);
   const submissionMethodFromUrl = new URLSearchParams(search).has('sub') ? requestedSubmissionMethod : undefined;
   const submissionMethod = submissionMethodFromUrl ?? defaultSubmissionMethod;

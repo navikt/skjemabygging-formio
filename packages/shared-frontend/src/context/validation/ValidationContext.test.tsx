@@ -135,16 +135,17 @@ describe('ValidationContext', () => {
             <SubmissionMethodProvider submissionMethod="digital">
               <SubmissionStateProvider
                 initialSubmission={{
-                  data: {},
-                  attachments: [
-                    {
-                      attachmentId: 'documentation',
-                      navId: 'documentation',
-                      type: 'other',
-                      value: 'leggerVedNaa',
-                      files: [],
-                    },
-                  ],
+                  data: {
+                    documentation: [
+                      {
+                        attachmentId: 'documentation',
+                        navId: 'documentation',
+                        type: 'other',
+                        value: 'leggerVedNaa',
+                        files: [],
+                      },
+                    ],
+                  },
                 }}
               >
                 <ValidationProvider>

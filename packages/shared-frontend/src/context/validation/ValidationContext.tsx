@@ -9,6 +9,7 @@ import { createContext, ReactNode, useCallback, useContext, useMemo, useState } 
 import { deriveValidations } from '../../validation/deriveValidations';
 import { validateValue } from '../../validation/validators';
 import { useApplication } from '../application/ApplicationContext';
+import { getAttachmentsAtPath } from '../attachment/attachmentData';
 import { useLanguage } from '../language/LanguageContext';
 import { useSubmissionState } from '../state/SubmissionStateContext';
 import { useSubmissionMethod } from '../submission-method/SubmissionMethodContext';
@@ -34,6 +35,7 @@ const attachmentValidationPath = (attachmentId: string, field: AttachmentField) 
 
 const validateAttachmentComponent = (
   component: Component,
+  submissionPath: string,
   field: string,
   activeSubmission: Submission | undefined,
   submissionMethod?: string,
@@ -47,8 +49,9 @@ const validateAttachmentComponent = (
     return [];
   }
 
-  const attachments =
-    activeSubmission?.attachments?.filter((currentAttachment) => currentAttachment.navId === attachmentId) ?? [];
+  const attachments = getAttachmentsAtPath(activeSubmission, submissionPath).filter(
+    (currentAttachment) => currentAttachment.navId === attachmentId,
+  );
   const primaryAttachment = attachments[0];
   const violations: AttachmentViolation[] = [];
 
@@ -178,7 +181,7 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
             component?.type === 'attachment' &&
             (submissionMethod === 'digital' || submissionMethod === 'digitalnologin')
           ) {
-            validateAttachmentComponent(component, field, activeSubmission, submissionMethod).forEach(
+            validateAttachmentComponent(component, submissionPath, field, activeSubmission, submissionMethod).forEach(
               ({ submissionPath: attachmentSubmissionPath, violation }) => {
                 acc.push({
                   pageKey,

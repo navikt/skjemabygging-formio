@@ -57,6 +57,35 @@ const buildAttachmentItemSchema = (component: Component, context: SchemaGenerati
   additionalProperties: false,
 });
 
+const buildLegacyAttachmentValueSchema = (
+  component: Component,
+  context: SchemaGenerationContext,
+): JsonSchemaObject => ({
+  type: 'object',
+  title: component.label,
+  properties: {
+    key: inferValueSchema(component, context),
+    additionalDocumentation: { type: 'string' },
+  },
+  required: ['key'],
+  additionalProperties: false,
+});
+
+const buildAttachmentDataSchema = (component: Component, context: SchemaGenerationContext): JsonSchema => {
+  const attachmentItemSchema = buildAttachmentItemSchema(component, context);
+  const legacyValueSchema = buildLegacyAttachmentValueSchema(component, context);
+
+  return component.attachmentType === 'other' || component.otherDocumentation
+    ? {
+        title: component.label,
+        anyOf: [{ type: 'array', items: attachmentItemSchema }, legacyValueSchema],
+      }
+    : {
+        title: component.label,
+        anyOf: [attachmentItemSchema, legacyValueSchema],
+      };
+};
+
 const personalIdAttachmentValues = [
   'norwegianPassport',
   'foreignPassport',
@@ -129,6 +158,9 @@ const buildObjectSchemaFromComponentsInternal = (
 
     if (component.type === 'attachment' && insideAttachmentPanel) {
       attachmentItemSchemas.push(buildAttachmentItemSchema(component, context));
+      if (component.key) {
+        properties[component.key] = buildAttachmentDataSchema(component, context);
+      }
       continue;
     }
 

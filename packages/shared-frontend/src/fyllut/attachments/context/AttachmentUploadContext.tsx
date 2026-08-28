@@ -18,17 +18,34 @@ type AttachmentErrorType = 'FILE' | 'VALUE' | 'TITLE';
 type ActionStatus = 'ok' | 'error' | 'auth-error' | 'invalid' | 'unknown';
 
 interface AttachmentUploadContextType {
-  handleUploadFile: (attachmentId: string, file: FileObject) => Promise<{ status: ActionStatus }>;
+  handleUploadFile: (
+    attachmentId: string,
+    file: FileObject,
+    submissionPath?: string,
+    multiple?: boolean,
+  ) => Promise<{ status: ActionStatus }>;
   handleDownloadFile: (attachmentId: string, fileId: string, fileName: string) => Promise<void>;
-  handleDeleteFile: (attachmentId: string, fileId: string, file: FileItem) => Promise<void>;
-  handleDeleteAllFilesForAttachment: (attachmentId: string) => Promise<void>;
-  handleDeleteAttachment: (attachmentId: string) => Promise<void>;
+  handleDeleteFile: (
+    attachmentId: string,
+    fileId: string,
+    file: FileItem,
+    submissionPath?: string,
+    multiple?: boolean,
+  ) => Promise<void>;
+  handleDeleteAllFilesForAttachment: (
+    attachmentId: string,
+    submissionPath?: string,
+    multiple?: boolean,
+  ) => Promise<void>;
+  handleDeleteAttachment: (attachmentId: string, submissionPath?: string, multiple?: boolean) => Promise<void>;
   handleDeleteAllFiles: () => Promise<void>;
   addError: (attachmentId: string, error: string, type: AttachmentErrorType, pageKey?: string) => void;
   removeError: (attachmentId: string) => void;
   changeAttachmentValue: (
     attachment: SubmissionAttachment,
     values?: Pick<SubmissionAttachment, 'value' | 'title' | 'additionalDocumentation'>,
+    submissionPath?: string,
+    multiple?: boolean,
   ) => void;
   uploadsInProgress: Record<string, Record<string, FileObject>>;
   submissionAttachments: SubmissionAttachment[];
@@ -74,7 +91,12 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
     setAttachmentExternalError(attachmentId, 'title');
   };
 
-  const handleUploadFile = async (attachmentId: string, file: FileObject): Promise<{ status: ActionStatus }> => {
+  const handleUploadFile = async (
+    attachmentId: string,
+    file: FileObject,
+    submissionPath?: string,
+    multiple = false,
+  ): Promise<{ status: ActionStatus }> => {
     try {
       uploadProgressActions.addFileInProgress(attachmentId, file);
       removeError(attachmentId);
@@ -83,7 +105,7 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
         return Promise.resolve({ status: 'invalid' });
       }
 
-      const invalidAttachmentSize = submissionActions.validateTotalAttachmentSize(attachmentId, file);
+      const invalidAttachmentSize = submissionActions.validateTotalAttachmentSize(attachmentId, file, submissionPath);
       if (invalidAttachmentSize) {
         uploadProgressActions.removeFileInProgress(attachmentId, uploadProgressActions.fileIdentifier(file));
         addError(attachmentId, invalidAttachmentSize, 'FILE');
@@ -96,7 +118,7 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
       if (result) {
         uploadProgressActions.removeAllFilesInProgress(attachmentId, (inProgress) => inProgress.error);
         uploadProgressActions.removeFileInProgress(attachmentId, uploadProgressActions.fileIdentifier(file));
-        submissionActions.addFileToSubmission(result);
+        submissionActions.addFileToSubmission(result, submissionPath, multiple);
         return Promise.resolve({ status: 'ok' });
       }
 
@@ -117,13 +139,19 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
     }
   };
 
-  const handleDeleteFile = async (attachmentId: string, fileId: string) => {
+  const handleDeleteFile = async (
+    attachmentId: string,
+    fileId: string,
+    _file?: FileItem,
+    submissionPath?: string,
+    multiple = false,
+  ) => {
     try {
       removeError(attachmentId);
       const token = await getNologinToken();
       const application = getAttachmentApplication(submissionMethod, innsendingsId, token);
       await attachments.deleteFile({ application, attachmentId, fileId });
-      submissionActions.removeFileFromSubmission(attachmentId, fileId);
+      submissionActions.removeFileFromSubmission(attachmentId, fileId, submissionPath, multiple);
     } catch (error) {
       if (sessions.isAuthenticationError(error)) {
         handleSessionExpired();
@@ -149,13 +177,13 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
     }
   };
 
-  const handleDeleteAllFilesForAttachment = async (attachmentId: string) => {
+  const handleDeleteAllFilesForAttachment = async (attachmentId: string, submissionPath?: string, multiple = false) => {
     try {
       removeError(attachmentId);
       const token = await getNologinToken();
       const application = getAttachmentApplication(submissionMethod, innsendingsId, token);
       await attachments.deleteAllFilesForAttachment({ application, attachmentId });
-      submissionActions.removeFilesFromSubmission(attachmentId);
+      submissionActions.removeFilesFromSubmission(attachmentId, submissionPath, multiple);
     } catch (error) {
       if (sessions.isAuthenticationError(error)) {
         handleSessionExpired();
@@ -165,13 +193,13 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
     }
   };
 
-  const handleDeleteAttachment = async (attachmentId: string) => {
+  const handleDeleteAttachment = async (attachmentId: string, submissionPath?: string, multiple = false) => {
     try {
       removeError(attachmentId);
       const token = await getNologinToken();
       const application = getAttachmentApplication(submissionMethod, innsendingsId, token);
       await attachments.deleteAllFilesForAttachment({ application, attachmentId });
-      submissionActions.removeAttachmentFromSubmission(attachmentId);
+      submissionActions.removeAttachmentFromSubmission(attachmentId, submissionPath, multiple);
     } catch (error) {
       if (sessions.isAuthenticationError(error)) {
         handleSessionExpired();
@@ -208,12 +236,14 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
   const changeAttachmentValue = (
     attachment: SubmissionAttachment,
     values?: Pick<SubmissionAttachment, 'value' | 'title' | 'additionalDocumentation'>,
+    submissionPath?: string,
+    multiple = false,
   ) => {
     if (values?.value) {
       removeError(attachment.attachmentId);
     }
 
-    submissionActions.changeAttachmentValue(attachment, values);
+    submissionActions.changeAttachmentValue(attachment, values, submissionPath, multiple);
   };
 
   const value = {

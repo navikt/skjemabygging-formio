@@ -3,6 +3,7 @@ import {
   AvsenderId,
   BrukerDto,
   OpplastingsStatus,
+  resolveSubmissionAttachments,
   SubmitApplicationRequest,
 } from '@navikt/skjemadigitalisering-shared-backend';
 import {
@@ -28,8 +29,10 @@ const assembleSubmitApplicationRequest = (
   submissionPdfAsByteArray: number[],
   translate: (text: string, textReplacements?: I18nTranslationMap) => string,
 ): SubmitApplicationRequest => {
-  const activeAttachments: Component[] =
-    navFormUtils.getActiveAttachmentPanelFromForm(form, submission)?.components ?? [];
+  const activeAttachments = navFormUtils
+    .flattenComponents(navFormUtils.getAllActivePanelsFromForm(form, submission) as Component[])
+    .filter((component) => component.type === 'attachment');
+  const submissionAttachments = resolveSubmissionAttachments(form, submission);
   const bruker = extractBruker(form, submission);
   const avsender =
     extractAvsender(form, submission) ?? (bruker ? undefined : extractAvsenderFromYourInformation(form, submission));
@@ -54,7 +57,7 @@ const assembleSubmitApplicationRequest = (
       }),
     ),
     attachments:
-      submission.attachments
+      submissionAttachments
         ?.filter(
           (attachment) =>
             attachment.type === 'personal-id' || activeAttachments.some((c) => c.navId == attachment.navId),

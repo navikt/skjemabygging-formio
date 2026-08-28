@@ -2,7 +2,9 @@ import { UploadIcon } from '@navikt/aksel-icons';
 import { Alert, Button, FileObject, FileUpload, VStack } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { MutableRefObject, ReactNode, useState } from 'react';
+import { getAttachmentsAtPath } from '../../../context/attachment/attachmentData';
 import { useLanguage } from '../../../context/language/LanguageContext';
+import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
 import { useOptionalValidationScope } from '../../../context/validation/ValidationScopeContext';
 import { inputId } from '../../../utils/inputId';
 import { useAttachmentUpload } from '../context/AttachmentUploadContext';
@@ -22,6 +24,8 @@ const setUploadRef = (
 interface Props {
   attachmentId: string;
   statePath: string;
+  submissionPath?: string;
+  multipleAttachments?: boolean;
   variant: 'primary' | 'secondary';
   allowUpload?: boolean;
   refs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | HTMLButtonElement | null>>;
@@ -35,6 +39,8 @@ interface Props {
 const UploadButton = ({
   attachmentId,
   statePath,
+  submissionPath,
+  multipleAttachments = false,
   variant,
   allowUpload,
   refs,
@@ -45,7 +51,9 @@ const UploadButton = ({
   onSuccess,
 }: Props) => {
   const { translate } = useLanguage();
-  const { handleUploadFile, addError, submissionAttachments } = useAttachmentUpload();
+  const { submission } = useSubmissionState();
+  const { handleUploadFile, addError, submissionAttachments: legacyAttachments } = useAttachmentUpload();
+  const submissionAttachments = submissionPath ? getAttachmentsAtPath(submission, submissionPath) : legacyAttachments;
   const scope = useOptionalValidationScope();
   const { getAttachmentError, getAttachmentExternalError } = useAttachmentValidation(submissionAttachments);
   const [loading, setLoading] = useState(false);
@@ -59,7 +67,7 @@ const UploadButton = ({
       setLoading(false);
       return;
     }
-    const response = await handleUploadFile(attachmentId, file);
+    const response = await handleUploadFile(attachmentId, file, submissionPath, multipleAttachments);
     if (response.status === 'ok') {
       onSuccess?.();
     }

@@ -10,7 +10,7 @@ interface FormNavigationState {
   redirect?: true;
 }
 
-type StepKind = 'intro' | 'panel' | 'attachment' | 'summary';
+type StepKind = 'intro' | 'panel' | 'summary';
 
 const useFormNavigation = (from: StepKind) => {
   const navigate = useNavigate();
