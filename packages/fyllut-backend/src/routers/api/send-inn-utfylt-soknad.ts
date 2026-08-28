@@ -61,6 +61,7 @@ const sendInnUtfyltSoknad = {
               gitSha: config.gitSha,
               monorepoGitSha: config.monorepoGitSha,
             }),
+            isDelingslenke: config.isDelingslenke,
           },
         },
       });

@@ -54,6 +54,7 @@ export const generatePdfAndSubmit = async (
           gitSha: config.gitSha,
           monorepoGitSha: config.monorepoGitSha,
         }),
+        isDelingslenke: config.isDelingslenke,
       },
     },
   });

@@ -31,7 +31,7 @@ const TranslationInput = ({
     return (
       <WysiwygEditor
         autoFocus={autoFocus}
-        onBlur={onChange}
+        onValueCommit={onChange}
         defaultTag={defaultHtmlTag}
         defaultValue={defaultValue}
         error={error}

@@ -56,6 +56,7 @@ const application: RequestHandler = async (req, res, next) => {
             gitSha: config.gitSha,
             monorepoGitSha: config.monorepoGitSha,
           }),
+          isDelingslenke: config.isDelingslenke,
         },
       },
     });
@@ -102,6 +103,7 @@ const coverPageAndApplication: RequestHandler = async (req, res, next) => {
             gitSha: config.gitSha,
             monorepoGitSha: config.monorepoGitSha,
           }),
+          isDelingslenke: config.isDelingslenke,
         },
       },
     });
