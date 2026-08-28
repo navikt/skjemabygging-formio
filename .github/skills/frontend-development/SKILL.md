@@ -22,9 +22,16 @@ frontend work.
   `packages/shared-frontend`.
 - Keep `packages/shared-frontend/src/components` generic. It must not depend on
   fyllut-specific flow, submission, routing, or application code.
-- Keep `packages/shared-frontend/src/fyllut` for the fyllut flow, form-definition
-  adapters, submission, wizard behavior, and host integration. Keep this flow
-  hostable by both fyllut and bygger.
+- Keep reusable components independent of form-definition `Component`
+  configuration. They may use shared domain value types, state, language,
+  validation, and runtime-service contexts, while `src/form-components` maps
+  legacy form definitions to explicit component props.
+- Keep separate input, summary, and PDF form-definition adapters when that
+  parallel structure makes the mapping easier to follow, even when an adapter
+  is only a thin delegation.
+- Keep `packages/shared-frontend/src/fyllut` for the fyllut flow, submission,
+  wizard behavior, and host integration. Keep this flow hostable by both fyllut
+  and bygger.
 - Dependencies may point from `fyllut` to generic `components`, never the
   reverse. Keep application-specific behavior in `packages/fyllut` or
   `packages/bygger`.
@@ -69,6 +76,9 @@ intentionally changes them.
 - Give shared components HTTP and other host dependencies through adapters,
   context, or props. Do not add direct `fetch`, `window`, or hard-coded
   `/fyllut` dependencies. Existing cases are migration debt; do not extend them.
+- Load data intrinsic to a reusable component through `RuntimeServices`.
+  Keep form-definition-specific request parameters and submission metadata in
+  the corresponding `form-components` adapter.
 - Route user-facing form text through the shared language and translation
   context. Do not hard-code display text in reusable components.
 - Sanitize form-authored or translated HTML with the existing helper before

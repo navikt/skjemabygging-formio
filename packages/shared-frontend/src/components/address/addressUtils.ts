@@ -1,10 +1,21 @@
 import {
   AddressType,
-  Component,
+  PrefillKey,
   SubmissionAddress,
   SubmissionMethod,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { getCountryObject } from '../../utils/countries';
+
+type AddressPriority = 'bostedsadresse' | 'oppholdsadresse' | 'kontaktadresse';
+type AddressTypeWizard = 'predefined' | 'user';
+
+interface AddressConfig {
+  addressPriority?: AddressPriority;
+  addressType?: AddressType;
+  addressTypeWizard?: AddressTypeWizard;
+  prefillKey?: PrefillKey | PrefillKey[];
+  prefillValue?: string | object;
+}
 
 type RawPrefilledAddress = Partial<SubmissionAddress>;
 
@@ -44,7 +55,7 @@ const normalizePrefilledAddress = (
 };
 
 const getPrefilledAddress = (
-  config: Pick<Component, 'addressPriority' | 'prefillValue'>,
+  config: Pick<AddressConfig, 'addressPriority' | 'prefillValue'>,
   language: string,
 ): SubmissionAddress | undefined => {
   const addresses = toRawPrefilledAddresses(config.prefillValue);
@@ -72,7 +83,7 @@ const getCountryCode = (address?: SubmissionAddress) => {
 };
 
 const resolveAddressType = (
-  config: Pick<Component, 'addressType' | 'prefillKey'>,
+  config: Pick<AddressConfig, 'addressType' | 'prefillKey'>,
   address?: SubmissionAddress,
   submissionMethod?: SubmissionMethod,
 ): AddressType | undefined => {
@@ -111,10 +122,11 @@ const resolveAddressType = (
 };
 
 const shouldShowAddressTypeChoice = (
-  config: Pick<Component, 'prefillKey' | 'addressTypeWizard'>,
+  config: Pick<AddressConfig, 'prefillKey' | 'addressTypeWizard'>,
   submissionMethod?: SubmissionMethod,
 ) =>
   (!!config.prefillKey && isPaperLikeSubmissionMethod(submissionMethod)) ||
   (!config.prefillKey && config.addressTypeWizard === 'user');
 
 export { getPrefilledAddress, resolveAddressType, shouldShowAddressTypeChoice };
+export type { AddressConfig, AddressPriority, AddressTypeWizard };

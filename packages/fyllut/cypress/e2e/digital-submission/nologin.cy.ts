@@ -250,7 +250,9 @@ describe('Digital submission without user login', () => {
 
     it('shows service unavailable error when upload fails due to service unavailability', () => {
       cy.mocksUseRouteVariant('upload-file:service-unavailable');
+      cy.intercept('POST', '/fyllut/api/send-inn/nologin-application/attachments/personal-id').as('uploadId');
       cy.uploadFile('id-billy-bruker.jpg');
+      cy.wait('@uploadId');
       cy.findByText(TEXTS.statiske.nologin.temporarilyUnavailable).shouldBeVisible();
       cy.clickNextStep();
       cy.findByText(TEXTS.statiske.uploadId.missingUploadError).shouldBeVisible();

@@ -4,7 +4,7 @@ import {
   getDatePickerToDate,
   getMonthPickerMaxYear,
   getMonthPickerMinYear,
-} from '../components/date/dateFieldUtils';
+} from '../form-components/dateDefinitionUtils';
 import { ValidationRules } from './validators';
 
 const isRedundantLegacyCustomValidation = (component: Component) =>

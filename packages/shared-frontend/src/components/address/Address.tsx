@@ -1,7 +1,7 @@
 import {
   AddressType,
-  Component,
   CustomLabels,
+  PrefillKey,
   SubmissionAddress,
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
@@ -13,14 +13,20 @@ import CountrySelect from '../country-select/CountrySelect';
 import RadioGroup from '../radio-group/RadioGroup';
 import TextField from '../text-field/TextField';
 import { BaseFieldProps } from '../types';
-import { getPrefilledAddress, resolveAddressType, shouldShowAddressTypeChoice } from './addressUtils';
+import {
+  AddressPriority,
+  AddressTypeWizard,
+  getPrefilledAddress,
+  resolveAddressType,
+  shouldShowAddressTypeChoice,
+} from './addressUtils';
 
 interface AddressProps extends Pick<BaseFieldProps, 'statePath' | 'required' | 'readOnly'> {
-  addressPriority?: Component['addressPriority'];
+  addressPriority?: AddressPriority;
   addressType?: AddressType;
-  addressTypeWizard?: Component['addressTypeWizard'];
-  prefillKey?: Component['prefillKey'];
-  prefillValue?: Component['prefillValue'];
+  addressTypeWizard?: AddressTypeWizard;
+  prefillKey?: PrefillKey | PrefillKey[];
+  prefillValue?: string | object;
   customLabels?: CustomLabels;
 }
 

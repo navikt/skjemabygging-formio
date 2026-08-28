@@ -1,15 +1,9 @@
 import { Alert, BodyShort, Heading, Link, List, VStack } from '@navikt/ds-react';
-import {
-  attachmentUtils,
-  dateUtils,
-  Enhet,
-  formioFormsApiUtils,
-  TEXTS,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { attachmentUtils, dateUtils, formioFormsApiUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import NavUnitSelect from '../../components/nav-unit-select/NavUnitSelect';
-import { filterNavUnits, sortNavUnits } from '../../components/nav-unit-select/navUnitUtils';
+import { useNavUnits } from '../../components/nav-unit-select/useNavUnits';
 import { useApplication } from '../../context/application/ApplicationContext';
 import { useFormDefinition } from '../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../context/language/LanguageContext';
@@ -30,7 +24,7 @@ interface Props {
 
 const PaperSubmissionPage = ({ documentType }: Props) => {
   const { translate, currentLanguage } = useLanguage();
-  const { formData, submissions } = useRuntimeServices();
+  const { submissions } = useRuntimeServices();
   const { fyllutBaseUrl, logEvent } = useFyllut();
   const { logger } = useApplication();
   const { submissionMethod } = useSubmissionMethod();
@@ -39,13 +33,21 @@ const PaperSubmissionPage = ({ documentType }: Props) => {
   const { search, state } = useLocation();
   const navigate = useNavigate();
   const [downloadState, setDownloadState] = useState<'success' | 'error'>();
-  const [navUnits, setNavUnits] = useState<Enhet[]>();
-  const [navUnitFetchError, setNavUnitFetchError] = useState(false);
   const [selectedNavUnit, setSelectedNavUnit] = useState('');
   const [navUnitSelectionError, setNavUnitSelectionError] = useState(false);
   const navForm = useMemo(() => formioFormsApiUtils.mapFormToNavForm(form), [form]);
   const requiresNavUnit =
     documentType === 'application-with-cover-page' && form.properties.enhetMaVelgesVedPapirInnsending === true;
+  const {
+    allUnits,
+    units: filteredNavUnits,
+    error: navUnitFetchError,
+    loading: navUnitsLoading,
+  } = useNavUnits({
+    enabled: requiresNavUnit,
+    unitTypes: form.properties.enhetstyper,
+  });
+  const navUnits = filteredNavUnits?.length ? filteredNavUnits : allUnits;
 
   const fileName = useMemo(() => `${form.path}-${dateUtils.toLocaleDate().replace(/\./g, '')}.pdf`, [form.path]);
   const attachments = useMemo(
@@ -57,34 +59,21 @@ const PaperSubmissionPage = ({ documentType }: Props) => {
   const navigationState = withoutSubmissionNavigationState(state);
 
   useEffect(() => {
-    if (!requiresNavUnit) {
-      return;
+    if (requiresNavUnit && !navUnitsLoading && !navUnitFetchError && filteredNavUnits?.length === 0) {
+      logger?.error?.('No relevant NAV units found', {
+        skjemanummer: form.properties.skjemanummer,
+        enhetstyper: form.properties.enhetstyper,
+      });
     }
-
-    const loadNavUnits = async () => {
-      setNavUnitFetchError(false);
-      setNavUnits(undefined);
-      try {
-        const units = await formData.getNavUnits();
-
-        const filteredUnits = filterNavUnits(units, form.properties.enhetstyper);
-        if (filteredUnits.length === 0) {
-          logger?.error?.('No relevant NAV units found', {
-            skjemanummer: form.properties.skjemanummer,
-            enhetstyper: form.properties.enhetstyper,
-          });
-          setNavUnits(sortNavUnits(units));
-          return;
-        }
-
-        setNavUnits(filteredUnits);
-      } catch {
-        setNavUnitFetchError(true);
-      }
-    };
-
-    loadNavUnits();
-  }, [form.properties.enhetstyper, form.properties.skjemanummer, formData, logger, requiresNavUnit]);
+  }, [
+    filteredNavUnits,
+    form.properties.enhetstyper,
+    form.properties.skjemanummer,
+    logger,
+    navUnitFetchError,
+    navUnitsLoading,
+    requiresNavUnit,
+  ]);
 
   const getPdfContent = async () => {
     if (!submission) {

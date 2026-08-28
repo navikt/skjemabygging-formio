@@ -20,7 +20,7 @@ const InputTextField = ({ component, submissionPath }: InputComponentProps) => (
       inputMode={component.inputType}
       type={resolveInputType(component)}
       spellCheck={component.spellCheck}
-      prefillValue={component.prefillValue}
+      prefillValue={typeof component.prefillValue === 'string' ? component.prefillValue : undefined}
       readMore={resolveReadMore(component)}
     />
   </FormGroup>

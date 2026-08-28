@@ -1,7 +1,7 @@
-import { getDatePickerFromDate, getDatePickerToDate } from '../../../components/date/dateFieldUtils';
 import DatePicker from '../../../components/date/DatePicker';
 import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
 import { useValidationScope } from '../../../context/validation/ValidationScopeContext';
+import { getDatePickerFromDate, getDatePickerToDate } from '../../dateDefinitionUtils';
 import {
   InputComponentProps,
   isRequired,

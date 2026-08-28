@@ -80,6 +80,36 @@ const expectSummaryValidationToBlockSubmission = () => {
   cy.url().should('not.include', '/kvittering');
 };
 
+const expectMigratedAttachments = (
+  submissionData: Record<string, unknown>,
+  attachments: Array<Record<string, unknown>>,
+) => {
+  const migratedAttachmentValues = Object.values(submissionData).flatMap((value) =>
+    Array.isArray(value) ? value : [value],
+  );
+
+  attachments.forEach(({ files: _files, ...attachment }) => {
+    expect(migratedAttachmentValues).to.deep.include(attachment);
+  });
+};
+
+const expectSelectFormAttachments = (submissionData: Record<string, unknown>) => {
+  expect(submissionData.kursbevis).to.deep.include({
+    attachmentId: 'e772p7',
+    navId: 'e772p7',
+    type: 'default',
+    value: 'ettersender',
+    title: 'Kursbevis',
+  });
+  expect(submissionData.annenDokumentasjon).to.deep.include({
+    attachmentId: 'e9er54e',
+    navId: 'e9er54e',
+    type: 'other',
+    value: 'nei',
+    title: 'Annet',
+  });
+};
+
 describe('Mellomlagring v2', () => {
   before(() => {
     cy.configMocksServer();
@@ -334,7 +364,9 @@ describe('Mellomlagring v2', () => {
             cy.submitApplication((req) => {
               const { submission: bodySubmission } = req.body;
               const { submission: fixtureSubmission } = fixture;
-              expect(bodySubmission.data).to.deep.eq(fixtureSubmission.data);
+              expect(bodySubmission.data).to.deep.include(fixtureSubmission.data);
+              expectMigratedAttachments(bodySubmission.data, fixtureSubmission.attachments);
+              expect(bodySubmission.attachments).to.be.empty;
             });
           });
         });
@@ -601,8 +633,8 @@ describe('Mellomlagring v2', () => {
               expect(submission.data.velgInstrument).to.deep.eq({ label: 'Piano', value: 'piano' });
               expect(submission.data.velgLand).to.deep.eq({ label: 'Italia', value: 'IT' });
               expect(submission.data.velgValutaDuVilBetaleMed).to.deep.eq({ label: 'Euro (EUR)', value: 'EUR' });
-              expect(submission.attachments).to.have.length(2);
-              expect(submission.attachments[0].title).to.eq('Kursbevis');
+              expectSelectFormAttachments(submission.data);
+              expect(submission.attachments).to.be.empty;
             });
 
             cy.visitRouteAndWait(
@@ -636,7 +668,8 @@ describe('Mellomlagring v2', () => {
               expect(submission.data.velgInstrument).to.deep.eq({ label: 'Piano', value: 'piano' });
               expect(submission.data.velgLand).to.deep.eq({ label: 'Invalid country', value: 'INVALID' });
               expect(submission.data.velgValutaDuVilBetaleMed).to.deep.eq({ label: 'Euro (EUR)', value: 'EUR' });
-              expect(submission.attachments).to.have.length(2);
+              expectSelectFormAttachments(submission.data);
+              expect(submission.attachments).to.be.empty;
             });
 
             cy.visitRouteAndWait(

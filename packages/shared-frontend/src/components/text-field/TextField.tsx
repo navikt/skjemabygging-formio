@@ -1,5 +1,4 @@
 import { TextField as AkselTextField } from '@navikt/ds-react';
-import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import {
   ChangeEvent,
   FocusEvent,
@@ -31,7 +30,7 @@ interface TextFieldProps extends BaseFieldProps {
   type?: SupportedTextFieldType;
   spellCheck?: boolean;
   formatKey?: string;
-  prefillValue?: Component['prefillValue'];
+  prefillValue?: string;
   toDisplayValue?: (value: unknown) => string;
   toStateValue?: (value: string) => unknown;
   value?: string;

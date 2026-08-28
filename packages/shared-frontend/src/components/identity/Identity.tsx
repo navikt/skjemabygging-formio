@@ -1,10 +1,4 @@
-import {
-  Component,
-  CustomLabels,
-  dateUtils,
-  SubmissionIdentity,
-  TEXTS,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { CustomLabels, dateUtils, SubmissionIdentity, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect } from 'react';
 import { useStateField } from '../../context/state/useStateField';
 import DatePicker from '../date/DatePicker';
@@ -14,7 +8,7 @@ import { BaseFieldProps } from '../types';
 
 interface IdentityProps extends Pick<BaseFieldProps, 'statePath' | 'required' | 'readOnly'> {
   customLabels?: CustomLabels;
-  prefillValue?: Component['prefillValue'];
+  prefillValue?: string;
 }
 
 const Identity = ({ statePath, required, readOnly, customLabels, prefillValue }: IdentityProps) => {

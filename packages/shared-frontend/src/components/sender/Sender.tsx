@@ -1,4 +1,4 @@
-import { Component, CustomLabels, SubmissionSender, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { CustomLabels, SubmissionSender, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo } from 'react';
 import { useStateField } from '../../context/state/useStateField';
 import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
@@ -20,11 +20,8 @@ interface SenderProps extends Pick<BaseFieldProps, 'statePath' | 'required' | 'r
   senderRole?: 'person' | 'organization';
   customLabels?: CustomLabels;
   descriptions?: Record<string, string>;
-  prefillValue?: Component['prefillValue'];
+  prefillValue?: SenderPrefillValue;
 }
-
-const isSenderPrefillValue = (value: Component['prefillValue']): value is SenderPrefillValue =>
-  typeof value === 'object' && value !== null;
 
 const Sender = ({
   statePath,
@@ -39,7 +36,7 @@ const Sender = ({
   const { submissionMethod } = useSubmissionMethod();
   const { stateValue, setStateValue } = useStateField({ statePath });
   const prefilledSender = useMemo<SubmissionSender | undefined>(() => {
-    if (senderRole !== 'person' || !isSenderPrefillValue(prefillValue)) {
+    if (senderRole !== 'person' || !prefillValue) {
       return undefined;
     }
 
@@ -121,4 +118,4 @@ const Sender = ({
 };
 
 export default Sender;
-export type { SenderProps };
+export type { SenderPrefillValue, SenderProps };

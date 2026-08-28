@@ -1,5 +1,7 @@
 import { SendInnMaalgruppe, SubmissionData, SubmissionMaalgruppe } from '@navikt/skjemadigitalisering-shared-domain';
-import HiddenComputedField from '../../../components/hidden-computed-field/HiddenComputedField';
+import { useEffect, useMemo } from 'react';
+import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
+import { useStateField } from '../../../context/state/useStateField';
 import { InputComponentProps, resolveSubmissionPath } from '../../inputComponentRegistryUtils';
 
 type TargetGroupMapValue = { priority: number; code: string };
@@ -49,15 +51,28 @@ const calculateTargetGroupValue = (
 const targetGroupValuesEqual = (left?: SubmissionMaalgruppe, right?: SubmissionMaalgruppe) =>
   JSON.stringify(left) === JSON.stringify(right);
 
-const InputTargetGroup = ({ component, submissionPath }: InputComponentProps) => (
-  <HiddenComputedField<SubmissionMaalgruppe>
-    statePath={resolveSubmissionPath(component, submissionPath)}
-    computeValue={({ submissionData, currentValue }) =>
-      calculateTargetGroupValue(submissionData, currentValue, component.prefillValue as SendInnMaalgruppe | undefined)
+const isSendInnTargetGroup = (value: unknown): value is SendInnMaalgruppe =>
+  typeof value === 'object' && value !== null && 'maalgruppetype' in value;
+
+const InputTargetGroup = ({ component, submissionPath }: InputComponentProps) => {
+  const statePath = resolveSubmissionPath(component, submissionPath);
+  const { submission } = useSubmissionState();
+  const { stateValue, setStateValue } = useStateField({ statePath });
+  const currentValue = stateValue as SubmissionMaalgruppe | undefined;
+  const prefilledValue = isSendInnTargetGroup(component.prefillValue) ? component.prefillValue : undefined;
+  const nextValue = useMemo(
+    () => calculateTargetGroupValue(submission?.data ?? {}, currentValue, prefilledValue),
+    [currentValue, prefilledValue, submission?.data],
+  );
+
+  useEffect(() => {
+    if (!targetGroupValuesEqual(currentValue, nextValue)) {
+      setStateValue(nextValue);
     }
-    equals={targetGroupValuesEqual}
-  />
-);
+  }, [currentValue, nextValue, setStateValue]);
+
+  return null;
+};
 
 export default InputTargetGroup;
 export { calculateTargetGroupValue, findSelectedTargetGroup, targetGroupValuesEqual };

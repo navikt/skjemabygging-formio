@@ -7,7 +7,7 @@ const InputIdentity = ({ component, submissionPath }: InputComponentProps) => (
     <Identity
       statePath={resolveSubmissionPath(component, submissionPath)}
       customLabels={component.customLabels}
-      prefillValue={component.prefillValue}
+      prefillValue={typeof component.prefillValue === 'string' ? component.prefillValue : undefined}
       required={isRequired(component)}
       readOnly={component.readOnly}
     />

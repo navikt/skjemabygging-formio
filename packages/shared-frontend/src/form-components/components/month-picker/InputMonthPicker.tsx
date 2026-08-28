@@ -1,5 +1,5 @@
-import { getMonthPickerMaxYear, getMonthPickerMinYear } from '../../../components/date/dateFieldUtils';
 import MonthPicker from '../../../components/date/MonthPicker';
+import { getMonthPickerMaxYear, getMonthPickerMinYear } from '../../dateDefinitionUtils';
 import {
   InputComponentProps,
   isRequired,

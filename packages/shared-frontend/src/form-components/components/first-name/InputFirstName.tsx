@@ -19,7 +19,7 @@ const InputFirstName = ({ component, submissionPath }: InputComponentProps) => (
       inputMode={component.inputType}
       type={resolveInputType(component)}
       spellCheck={component.spellCheck}
-      prefillValue={component.prefillValue}
+      prefillValue={typeof component.prefillValue === 'string' ? component.prefillValue : undefined}
       readOnly={component.readOnly}
       readMore={resolveReadMore(component)}
     />
