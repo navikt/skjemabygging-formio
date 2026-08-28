@@ -26,7 +26,7 @@ const downloadBlob = (content: Blob, fileName: string) => {
   try {
     link.click();
   } finally {
-    setTimeout(() => URL.revokeObjectURL(objectUrl), 0);
+    URL.revokeObjectURL(objectUrl);
   }
 };
 

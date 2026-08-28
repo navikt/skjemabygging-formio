@@ -60,41 +60,28 @@ function AppConfigProvider({
 
   const [internalDiffOn, setDiffOn] = useState<boolean>(diffOn!);
   const [attachmentPageEnabled, setAttachmentPageEnabled] = useState<boolean>(true);
-
-  const value = useMemo(
-    () => ({
-      dokumentinnsendingBaseURL,
-      baseUrl,
-      fyllutBaseURL,
-      featureToggles,
-      submissionMethod,
-      app,
-      config,
-      http,
-      logger,
-      logEvent,
-      diffOn: internalDiffOn,
-      setDiffOn,
-      attachmentPageEnabled,
-      setAttachmentPageEnabled,
-    }),
-    [
-      dokumentinnsendingBaseURL,
-      baseUrl,
-      fyllutBaseURL,
-      featureToggles,
-      submissionMethod,
-      app,
-      config,
-      http,
-      logger,
-      logEvent,
-      internalDiffOn,
-      attachmentPageEnabled,
-    ],
+  return (
+    <AppConfigContext.Provider
+      value={{
+        dokumentinnsendingBaseURL,
+        baseUrl,
+        fyllutBaseURL,
+        featureToggles,
+        submissionMethod,
+        app,
+        config,
+        http,
+        logger,
+        logEvent,
+        diffOn: internalDiffOn,
+        setDiffOn,
+        attachmentPageEnabled,
+        setAttachmentPageEnabled,
+      }}
+    >
+      {children}
+    </AppConfigContext.Provider>
   );
-
-  return <AppConfigContext.Provider value={value}>{children}</AppConfigContext.Provider>;
 }
 
 const useAppConfig = () => useContext(AppConfigContext);

@@ -58,9 +58,7 @@ const deleteAttachment = async (req: Request, res: Response, next: NextFunction)
   try {
     const nologinContext = validateNologinContext(req.getNologinContext());
     const innsendingsId = nologinContext.innsendingsId;
-    const attachmentId = Array.isArray(req.params.attachmentId)
-      ? req.params.attachmentId.join('/')
-      : req.params.attachmentId;
+    const attachmentId = requestUtil.getStringParam(req, 'attachmentId')!;
     const fileId = Array.isArray(req.params.fileId) ? req.params.fileId.join('/') : req.params.fileId;
     const accessToken = requestUtil.getAzureAccessToken(req);
     const logMeta = {

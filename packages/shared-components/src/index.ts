@@ -2,16 +2,12 @@ import { guid } from '@navikt/skjemadigitalisering-shared-domain';
 import { RenderSummaryForm, ValidationExclamationIcon } from '@navikt/skjemadigitalisering-shared-frontend';
 import jss from 'jss';
 import preset from 'jss-preset-default';
-import { postNologinSoknad } from './api/sendinn/nologin';
-import { createSoknad, deleteSoknad, getSoknad, updateSoknad, updateUtfyltSoknad } from './api/sendinn/sendInnSoknad';
 import type { FetchHeader, FetchOptions } from './api/util/http/http';
 import http from './api/util/http/http';
-import AttachmentOptionSelect from './components/attachment/AttachmentOptionSelect';
 import ButtonWithSpinner from './components/button/ButtonWithSpinner';
 import DownloadPdfButton from './components/button/DownloadPdfButton';
 import { FieldsetErrorMessage } from './components/error/FieldsetErrorMessage';
 import ErrorPage from './components/error/page/ErrorPage';
-import StandaloneValidationError from './components/error/standalone-validation-error/StandaloneValidationError';
 import { FormContainer } from './components/form/container/FormContainer';
 import { FormTitle } from './components/form/form-title/FormTitle';
 import InnerHtml from './components/inner-html/InnerHtml';
@@ -46,19 +42,9 @@ import url from './util/url/url';
 
 jss.setup(preset());
 
-const sendInnSoknadApi = {
-  createSoknad,
-  updateSoknad,
-  updateUtfyltSoknad,
-  getSoknad,
-  deleteSoknad,
-  postNologinSoknad,
-};
-
 export type { FrontendConfig } from './context/config/configContext';
 export {
   AppConfigProvider,
-  AttachmentOptionSelect,
   b64toBlob,
   ButtonWithSpinner,
   ConfirmationModal,
@@ -89,9 +75,7 @@ export {
   NavForm,
   NavFormioJs,
   RenderSummaryForm,
-  sendInnSoknadApi,
   SkeletonList,
-  StandaloneValidationError,
   StaticPdfProvider,
   Styles,
   url,

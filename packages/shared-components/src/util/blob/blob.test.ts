@@ -21,7 +21,6 @@ describe('blob', () => {
   });
 
   it('downloads blob content through an object url and cleans it up afterwards', () => {
-    vi.useFakeTimers();
     const blob = new Blob(['pdf-content'], { type: 'application/pdf' });
     const originalCreateElement = document.createElement.bind(document);
     const link = originalCreateElement('a');
@@ -48,7 +47,6 @@ describe('blob', () => {
     }) as typeof document.createElement);
 
     downloadBlob(blob, 'application.pdf');
-    vi.runAllTimers();
 
     expect(createObjectURLMock).toHaveBeenCalledWith(blob);
     expect(createElementSpy).toHaveBeenCalledWith('a');
