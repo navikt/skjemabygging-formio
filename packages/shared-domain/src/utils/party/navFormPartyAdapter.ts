@@ -114,10 +114,11 @@ const getLegacyAddressInput = (submission: LegacySubmission): PartyAddressInput 
     };
   }
   if (norskPostboksadresse) {
+    const postOfficeBox = norskPostboksadresse.postboksNrSoker;
     return {
       type: 'norwegianPostOfficeBox',
       co: norskPostboksadresse.coSoker || submission.coSoker,
-      postOfficeBox: norskPostboksadresse.postboksNrSoker,
+      postOfficeBox: postOfficeBox ? `Postboks ${postOfficeBox}` : undefined,
       postalCode: norskPostboksadresse.postnrSoker || submission.postnrSoker || submission.postnummerSoker,
       postalName: norskPostboksadresse.poststedSoker || submission.poststedSoker,
     };

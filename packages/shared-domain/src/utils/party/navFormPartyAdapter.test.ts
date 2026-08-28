@@ -198,6 +198,27 @@ describe('navFormPartyAdapter', () => {
     });
   });
 
+  it('preserves the legacy post-office-box prefix', () => {
+    expect(
+      navFormPartyAdapter.getPartyInput(form([]), {
+        fornavnSoker: 'Ada',
+        etternavnSoker: 'Lovelace',
+        norskPostboksadresse: {
+          postboksNrSoker: '123',
+          postnrSoker: '0123',
+          poststedSoker: 'Oslo',
+        },
+      }),
+    ).toMatchObject({
+      concernedUser: {
+        address: {
+          type: 'norwegianPostOfficeBox',
+          postOfficeBox: 'Postboks 123',
+        },
+      },
+    });
+  });
+
   it('keeps organization coverPageUser as an explicit legacy branch after Dine opplysninger precedence', () => {
     const organizationComponent = { key: 'organizationNumber', type: 'orgNr', coverPageUser: true };
     expect(
