@@ -30,10 +30,6 @@ const RenderForm = ({
     typeof state === 'object' && state && 'validationErrorPages' in state && Array.isArray(state.validationErrorPages)
       ? state.validationErrorPages
       : undefined;
-  const initialNologinToken =
-    typeof state === 'object' && state && 'nologinToken' in state && typeof state.nologinToken === 'string'
-      ? state.nologinToken
-      : undefined;
 
   return (
     <FyllutFormProviders fyllut={fyllut} language={language} services={services}>
@@ -41,7 +37,6 @@ const RenderForm = ({
         form={form}
         initialSubmission={initialSubmission}
         initialInnsendingsId={initialInnsendingsId}
-        initialNologinToken={initialNologinToken}
         initialPagesWithErrors={initialPagesWithErrors}
         requestedSubmissionMethod={submissionMethod}
         currentLanguage={language.currentLanguage}

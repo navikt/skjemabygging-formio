@@ -517,6 +517,7 @@ describe('Form navigation', () => {
 
   describe('Type: Digital, no login', () => {
     beforeEach(() => {
+      cy.intercept('POST', '/fyllut/api/captcha').as('createNoLoginToken');
       cy.intercept('POST', '/fyllut/api/send-inn/nologin-application').as('nologinSubmit');
       cy.visit('/fyllut/formnavigationdigitalnologin/legitimasjon?sub=digitalnologin');
       cy.defaultWaits();
@@ -528,7 +529,9 @@ describe('Form navigation', () => {
       );
       cy.intercept('POST', '/fyllut/api/send-inn/nologin-application/attachments/personal-id').as('uploadIdFile');
       cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
+      cy.wait('@createNoLoginToken');
       cy.wait('@uploadIdFile');
+      cy.get('@createNoLoginToken.all').should('have.length', 1);
       cy.findByRole('link', { name: 'Neste steg' }).click();
     });
 
@@ -551,6 +554,7 @@ describe('Form navigation', () => {
       cy.url().should('include', '/fyllut/formnavigationdigitalnologin/oppsummering?sub=digitalnologin');
       cy.findByRole('link', { name: 'Send til Nav' }).click();
       cy.wait('@nologinSubmit');
+      cy.get('@createNoLoginToken.all').should('have.length', 1);
     });
 
     it('Invalid data on summary page', () => {

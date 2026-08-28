@@ -24,7 +24,6 @@ const NologinTokenContext = createContext<NologinTokenContextType>({
 interface Props {
   children: ReactNode;
   form: Pick<Form, 'path' | 'properties' | 'title'>;
-  initialToken?: string;
 }
 
 const getTokenExpiration = (token: string) => {
@@ -41,17 +40,15 @@ const getTokenExpiration = (token: string) => {
   }
 };
 
-const NologinTokenProvider = ({ children, form, initialToken }: Props) => {
+const NologinTokenProvider = ({ children, form }: Props) => {
   const { logger } = useApplication();
   const { sessions } = useRuntimeServices();
   const { logEvent } = useFyllut();
   const { submissionMethod } = useSubmissionMethod();
   const navigate = useNavigate();
-  const [nologinToken, setNologinToken] = useState<string | undefined>(initialToken);
+  const [nologinToken, setNologinToken] = useState<string>();
   const [honeypot, setHoneypot] = useState('');
-  const [tokenExpiration, setTokenExpiration] = useState<number | undefined>(() =>
-    initialToken ? getTokenExpiration(initialToken) : undefined,
-  );
+  const [tokenExpiration, setTokenExpiration] = useState<number>();
   const tokenRequestRef = useRef<Promise<string | undefined>>();
 
   const getNologinToken = useCallback(async () => {

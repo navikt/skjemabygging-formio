@@ -20,7 +20,6 @@ interface Props {
   form: Form;
   initialSubmission?: Submission;
   initialInnsendingsId?: string;
-  initialNologinToken?: string;
   initialPagesWithErrors?: string[];
   requestedSubmissionMethod?: SubmissionMethod;
   currentLanguage: string;
@@ -30,7 +29,6 @@ const FyllutFormFlow = ({
   form,
   initialSubmission,
   initialInnsendingsId,
-  initialNologinToken,
   initialPagesWithErrors,
   requestedSubmissionMethod,
   currentLanguage,
@@ -45,7 +43,7 @@ const FyllutFormFlow = ({
 
   return (
     <SubmissionMethodProvider submissionMethod={submissionMethod}>
-      <NologinTokenProvider form={form} initialToken={initialNologinToken}>
+      <NologinTokenProvider form={form}>
         <SubmissionStateProvider initialSubmission={hydratedInitialSubmission}>
           <FormDefinitionProvider form={form}>
             <ValidationProvider initialPagesWithErrors={initialPagesWithErrors}>
