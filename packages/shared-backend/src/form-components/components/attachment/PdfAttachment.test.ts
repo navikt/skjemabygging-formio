@@ -63,7 +63,7 @@ describe('PdfAttachment', () => {
     expect(pdfFormData).toEqual([
       {
         label: 'Uttalelse fra lege',
-        verdi: TEXTS.statiske.attachment.leggerVedNaa,
+        verdi: TEXTS.statiske.attachment.uploadNow,
       },
     ]);
   });
@@ -129,7 +129,7 @@ describe('PdfAttachment', () => {
     expect(pdfFormData).toEqual([
       {
         label: 'Faktura fra utdanningsinstitusjon',
-        verdi: TEXTS.statiske.attachment.leggerVedNaa,
+        verdi: TEXTS.statiske.attachment.uploadNow,
       },
     ]);
   });
@@ -172,11 +172,11 @@ describe('PdfAttachment', () => {
     expect(pdfFormData).toEqual([
       {
         label: 'Annen dokumentasjon - Førerkort',
-        verdi: TEXTS.statiske.attachment.leggerVedNaa,
+        verdi: TEXTS.statiske.attachment.uploadNow,
       },
       {
         label: 'Annen dokumentasjon - Kursbevis',
-        verdi: TEXTS.statiske.attachment.leggerVedNaa,
+        verdi: TEXTS.statiske.attachment.uploadNow,
       },
     ]);
   });
@@ -199,7 +199,7 @@ describe('PdfAttachment', () => {
     expect(pdfFormData).toEqual([
       {
         label: 'Annen dokumentasjon - Førerkort',
-        verdi: TEXTS.statiske.attachment.leggerVedNaa,
+        verdi: TEXTS.statiske.attachment.uploadNow,
       },
     ]);
   });
@@ -275,7 +275,7 @@ describe('PdfAttachment', () => {
     expect(PdfAttachment(props)).toEqual([
       {
         label: 'Uttalelse fra lege',
-        verdi: TEXTS.statiske.attachment.ettersender,
+        verdi: TEXTS.statiske.attachment.uploadLater,
       },
     ]);
   });
