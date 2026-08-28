@@ -13,8 +13,10 @@ interface SubmissionPartyProjection {
   avsender?: AvsenderId;
 }
 
+type CoverPageUser = NonNullable<CoverPageDownloadType['user']>;
+
 interface CoverPagePartyProjection {
-  user?: CoverPageDownloadType['user'];
+  user?: CoverPageUser;
   recipient?: Extract<CoverPageDownloadType['recipient'], { navUnit: string }>;
 }
 
@@ -83,7 +85,7 @@ const toCoverPageAddress = (address: PartyAddress) => {
   };
 };
 
-const validateCoverPageUser = (user: CoverPageDownloadType['user']) => {
+const validateCoverPageUser = (user: CoverPageUser) => {
   if ('nationalIdentityNumber' in user) {
     assertValidCoverPageValue(user.nationalIdentityNumber);
     return;
@@ -110,7 +112,7 @@ const toCoverPageParties = (party: PartyData): CoverPagePartyProjection => {
     return { recipient: { navUnit: navUnit!.number } };
   }
 
-  const user: CoverPageDownloadType['user'] =
+  const user: CoverPageUser =
     concernedUser.type === 'identified'
       ? { nationalIdentityNumber: concernedUser.nationalIdentityNumber }
       : {

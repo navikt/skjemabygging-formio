@@ -17,9 +17,22 @@ describe('[endpoint] documents', () => {
     skjemanummer: 'NAV 12.34-56',
     title: formTitle,
     path: 'testskjema',
-    components: [],
+    components: [{ key: 'yourInformation', type: 'container', yourInformation: true }],
     properties: { mottaksadresseId: 'mottaksadresseId', skjemanummer: 'NAV 12.34-56' },
   };
+  const submission = JSON.stringify({
+    data: {
+      yourInformation: {
+        fornavn: 'Test',
+        etternavn: 'Testesen',
+        adresse: {
+          adresse: 'Testveien 1',
+          postnummer: '0123',
+          bySted: 'Oslo',
+        },
+      },
+    },
+  });
 
   it('Create front page and application', async () => {
     const forstesidePdf = readFileSync(filePathForsteside);
@@ -60,7 +73,7 @@ describe('[endpoint] documents', () => {
         formPath: 'testskjema',
         submissionMethod: 'paper',
         language: 'nb',
-        submission: JSON.stringify({ data: {} }),
+        submission,
       },
     });
 
@@ -114,7 +127,7 @@ describe('[endpoint] documents', () => {
         formPath: 'testskjema',
         submissionMethod: 'paper',
         language: 'en',
-        submission: JSON.stringify({ data: {} }),
+        submission,
       },
     });
 
