@@ -35,6 +35,8 @@ export type {
   MetricServiceConfig,
   PrometheusMetricsConfig,
 } from './metrics';
+export { partyProjections } from './party';
+export type { CoverPagePartyProjection, SubmissionPartyProjection } from './party';
 export { createNavUnitService } from './nav-unit';
 export type { NavUnitService } from './nav-unit';
 export { createPrefillService } from './prefill';

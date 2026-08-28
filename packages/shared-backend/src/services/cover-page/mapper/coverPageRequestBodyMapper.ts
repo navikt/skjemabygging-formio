@@ -14,7 +14,7 @@ const addressLine = (text?: string, prefix: string = ', ') => {
   }
 
   if (!validatorUtils.isValidCoverPageValue(text)) {
-    throw new ResponseError('BAD_REQUEST', `Invalid value for cover page: ${text}`);
+    throw new ResponseError('BAD_REQUEST', 'Invalid value for cover page');
   }
 
   return `${prefix}${text}`;
