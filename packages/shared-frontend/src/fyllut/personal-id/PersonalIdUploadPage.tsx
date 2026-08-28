@@ -8,6 +8,7 @@ import { useValidation } from '../../context/validation/ValidationContext';
 import AttachmentOptionSelect from '../attachments/components/AttachmentOptionSelect';
 import FileUploader from '../attachments/components/FileUploader';
 import { useAttachmentUpload } from '../attachments/context/AttachmentUploadContext';
+import { useFyllut } from '../context/fyllut/FyllutContext';
 import { FormButtonRow, FormNextButton } from '../layout/FormButtonRow';
 import FormHeader from '../layout/FormHeader';
 import CancelAndDeleteButton from '../navigation/CancelAndDeleteButton';
@@ -31,6 +32,7 @@ const PersonalIdUploadPage = () => {
   const navigate = useNavigate();
   const { addError, changeAttachmentValue, submissionAttachments } = useAttachmentUpload();
   const { getAttachmentExternalError } = useValidation();
+  const { logEvent } = useFyllut();
   const attachment = submissionAttachments.find((item) => item.attachmentId === PERSONAL_ID_ATTACHMENT_ID);
   const attachmentValueError = getAttachmentExternalError(PERSONAL_ID_ATTACHMENT_ID, 'value');
 
@@ -88,6 +90,19 @@ const PersonalIdUploadPage = () => {
                   type: PERSONAL_ID_ATTACHMENT_ID,
                 }}
                 multiple={false}
+                onUpload={(uploadedAttachment) => {
+                  void logEvent?.({
+                    name: 'last opp',
+                    data: {
+                      type: 'vedlegg',
+                      skjemaId: form.properties.skjemanummer,
+                      tema: form.properties.tema,
+                      tittel: translate(TEXTS.statiske.uploadId.label),
+                      attachmentId: uploadedAttachment.attachmentId,
+                      submissionMethod,
+                    },
+                  });
+                }}
                 readMore={<PersonalIdUploadReadMore />}
               />
             </VStack>

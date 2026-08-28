@@ -204,8 +204,9 @@ const useFyllutFormActions = (
           } catch (error) {
             if (sessions.isAuthenticationError(error)) {
               handleSessionExpired();
+              throw error;
             }
-            throw error;
+            throw createSaveDraftError(error, TEXTS.statiske.nologin.temporarilyUnavailable);
           }
           logSubmissionCompleted();
           clearNologinToken();
