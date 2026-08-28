@@ -28,6 +28,19 @@ const encodedDraftResponse = {
   },
 };
 
+const activeTasksResponse = [
+  {
+    innsendingsId: 'draft-456',
+    endretDato: '2026-08-28T08:00:00Z',
+    soknadstype: 'soknad' as const,
+  },
+  {
+    innsendingsId: 'attachment-789',
+    endretDato: '2026-08-28T07:00:00Z',
+    soknadstype: 'ettersendelse' as const,
+  },
+];
+
 const createHttp = (responses: unknown[], requests: Request[]): FyllutHttp => {
   const nextResponse = <T>() => responses.shift() as T;
 
@@ -55,6 +68,25 @@ const createHttp = (responses: unknown[], requests: Request[]): FyllutHttp => {
 };
 
 describe('createApplicationService', () => {
+  it('maps active tasks to the neutral application contract', async () => {
+    const requests: Request[] = [];
+    const service = createApplicationService({
+      http: createHttp([activeTasksResponse], requests),
+      backendBaseUrl: '/fyllut',
+    });
+
+    await expect(service.getActiveTasks('NAV 01-02.03')).resolves.toEqual([
+      { id: 'draft-456', modifiedAt: '2026-08-28T08:00:00Z', type: 'draft' },
+      { id: 'attachment-789', modifiedAt: '2026-08-28T07:00:00Z', type: 'attachment' },
+    ]);
+    expect(requests).toEqual([
+      {
+        method: 'GET',
+        url: '/fyllut/api/send-inn/aktive-opprettede-soknader/NAV 01-02.03',
+      },
+    ]);
+  });
+
   it('maps backend draft responses to the neutral application contract', async () => {
     const requests: Request[] = [];
     const service = createApplicationService({

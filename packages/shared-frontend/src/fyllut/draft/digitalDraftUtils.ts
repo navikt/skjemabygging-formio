@@ -43,7 +43,7 @@ const resolveDigitalDraftResume = (search: string, activeTasks: ActiveTask[]): D
 };
 
 const shouldUseLegacyPageForNewRenderer = (routePath?: string): boolean =>
-  routePath === 'legitimasjon' || routePath === 'pdf' || routePath === 'paabegynt';
+  routePath === 'legitimasjon' || routePath === 'pdf';
 
 const isSoknadAlreadyExistsResponse = (response: unknown): response is { status: 'soknadAlreadyExists' } =>
   typeof response === 'object' &&

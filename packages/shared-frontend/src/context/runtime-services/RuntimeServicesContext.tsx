@@ -39,9 +39,16 @@ interface Draft {
   deleteAt: string;
 }
 
+interface ActiveTask {
+  id: string;
+  modifiedAt: string;
+  type: 'draft' | 'attachment';
+}
+
 type CreateDraftResult = { status: 'created'; draft: Draft } | { status: 'alreadyExists' };
 
 interface ApplicationService {
+  getActiveTasks: (formNumber: string) => Promise<ActiveTask[]>;
   getDraft: (id: string) => Promise<Draft>;
   createDraft: (request: DraftRequest & { force?: boolean }) => Promise<CreateDraftResult>;
   updateDraft: (request: DraftRequest & { id: string }) => Promise<Draft>;
@@ -120,6 +127,7 @@ const useRuntimeServices = (): RuntimeServices => {
 
 export { RuntimeServicesProvider, useRuntimeServices };
 export type {
+  ActiveTask,
   ApplicationService,
   AttachmentApplication,
   AttachmentService,

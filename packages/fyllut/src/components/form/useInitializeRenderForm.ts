@@ -85,19 +85,24 @@ const useInitializeRenderForm = ({
         const prefillKeys = submissionMethod === 'digital' ? getFormPrefillKeys(bootstrap.form) : [];
         const prefillData = prefillKeys.length > 0 ? await bootstrapService.getPrefillData(prefillKeys) : undefined;
         const form = applyPrefillDataToForm(bootstrap.form, prefillData);
-        const draft = await initializeDigitalDraft({
-          applications,
-          form,
-          search,
-          submissionMethod,
-        });
+        const draftInitialization =
+          routePath === 'paabegynt'
+            ? undefined
+            : await initializeDigitalDraft({
+                applications,
+                form,
+                search,
+                submissionMethod,
+              });
 
-        if (draft.type === 'notFound') {
+        if (draftInitialization?.type === 'notFound') {
           return { type: 'draftNotFound' };
         }
-        if (draft.type === 'redirect') {
-          return draft;
+        if (draftInitialization?.type === 'redirect') {
+          return draftInitialization;
         }
+
+        const initializedDraft = draftInitialization?.type === 'ready' ? draftInitialization : undefined;
 
         return {
           type: 'ready',
@@ -105,9 +110,9 @@ const useInitializeRenderForm = ({
             loadKey,
             form,
             translations: bootstrap.translations,
-            initialSubmission: draft.initialSubmission,
-            initialInnsendingsId: draft.initialInnsendingsId,
-            initialLanguage: draft.initialLanguage,
+            initialSubmission: initializedDraft?.initialSubmission,
+            initialInnsendingsId: initializedDraft?.initialInnsendingsId,
+            initialLanguage: initializedDraft?.initialLanguage,
           },
         };
       };

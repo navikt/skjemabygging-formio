@@ -1,5 +1,11 @@
 import { Language, localizationUtils, Submission } from '@navikt/skjemadigitalisering-shared-domain';
-import { ApplicationService, CreateDraftResult, Draft, FyllutHttp } from '@navikt/skjemadigitalisering-shared-frontend';
+import {
+  ActiveTask,
+  ApplicationService,
+  CreateDraftResult,
+  Draft,
+  FyllutHttp,
+} from '@navikt/skjemadigitalisering-shared-frontend';
 
 interface Props {
   http: FyllutHttp;
@@ -19,8 +25,20 @@ interface StatusResponse {
   status: string;
 }
 
+interface ActiveTaskResponse {
+  innsendingsId: string;
+  endretDato: string;
+  soknadstype: 'soknad' | 'ettersendelse';
+}
+
 const draftAlreadyExists = (response: DraftResponse | StatusResponse): response is StatusResponse =>
   'status' in response && response.status === 'soknadAlreadyExists';
+
+const mapActiveTask = ({ innsendingsId, endretDato, soknadstype }: ActiveTaskResponse): ActiveTask => ({
+  id: innsendingsId,
+  modifiedAt: endretDato,
+  type: soknadstype === 'soknad' ? 'draft' : 'attachment',
+});
 
 const mapDraft = (response: DraftResponse, fallback?: Pick<Draft, 'language' | 'submission'>): Draft => {
   const document = response.hoveddokumentVariant.document;
@@ -52,6 +70,10 @@ const createApplicationService = ({ http, backendBaseUrl }: Props): ApplicationS
   const draftsUrl = `${backendBaseUrl}/api/send-inn/soknad`;
 
   return {
+    getActiveTasks: async (formNumber) =>
+      (
+        await http.get<ActiveTaskResponse[]>(`${backendBaseUrl}/api/send-inn/aktive-opprettede-soknader/${formNumber}`)
+      ).map(mapActiveTask),
     getDraft: async (id) => mapDraft(await http.get<DraftResponse>(`${draftsUrl}/${id}`)),
     createDraft: async ({ formPath, submission, language, submissionMethod, force }) => {
       const response = await http.post<DraftResponse | StatusResponse>(

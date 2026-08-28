@@ -31,6 +31,7 @@ export type {
 } from './context/application/ApplicationContext';
 export type { LanguageConfig, LanguageContextValue } from './context/language/LanguageContext';
 export type {
+  ActiveTask,
   ApplicationService,
   AttachmentApplication,
   AttachmentService,

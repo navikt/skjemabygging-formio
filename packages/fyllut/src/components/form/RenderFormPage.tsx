@@ -21,7 +21,7 @@ const RenderFormPage = () => {
   const backendBaseUrl = baseUrl ?? '/fyllut';
   const innsendingsId = new URLSearchParams(search).get('innsendingsId') ?? undefined;
   const forceMellomlagring = new URLSearchParams(search).get('forceMellomlagring') === 'true';
-  const loadKey = `${formPath ?? ''}|${submissionMethod ?? ''}|${innsendingsId ?? ''}|${forceMellomlagring}`;
+  const loadKey = `${formPath ?? ''}|${routePath ?? ''}|${submissionMethod ?? ''}|${innsendingsId ?? ''}|${forceMellomlagring}`;
   const services = useMemo<RuntimeServices>(() => {
     if (!http) {
       throw new Error('Fyllut HTTP client is required to render the form.');

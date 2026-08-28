@@ -4,6 +4,7 @@ import { useFormDefinition } from '../../context/form-definition/FormDefinitionC
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useValidation } from '../../context/validation/ValidationContext';
 import { withoutSubmissionNavigationState } from '../../utils/navigationState';
+import ActiveTasksPage from '../active-tasks/ActiveTasksPage';
 import FormPage from '../form-page/FormPage';
 import IntroPage from '../intro-page/IntroPage';
 import PaperSubmissionPage from '../paper-submission/PaperSubmissionPage';
@@ -65,6 +66,7 @@ const FormRouter = ({ form, receiptPdf }: { form: Form; receiptPdf?: Blob }) => 
 
   return (
     <Routes>
+      <Route path="paabegynt" element={<ActiveTasksPage form={form} />} />
       <Route element={<RoutedFormFlowLayout form={form} />}>
         <Route path="" element={<IntroPage />} />
         <Route path={SUMMARY_KEY} element={<SummaryPage />} />

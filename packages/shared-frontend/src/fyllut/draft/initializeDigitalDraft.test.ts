@@ -17,6 +17,7 @@ const form: Form = {
 };
 
 const createApplicationService = (): ApplicationService => ({
+  getActiveTasks: vi.fn(),
   getDraft: vi.fn(),
   createDraft: vi.fn(),
   updateDraft: vi.fn(),
