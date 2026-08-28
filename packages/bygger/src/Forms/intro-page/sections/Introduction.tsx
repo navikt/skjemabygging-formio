@@ -15,7 +15,7 @@ type Props = {
 };
 
 export const Introduction = forwardRef<HTMLDivElement, Props>(({ handleChange, form, errors }, ref) => {
-  const { setKeyBasedText, getKeyBasedText } = useKeyBasedText();
+  const { setKeyBasedText, getKeyBasedText, shouldWarnAboutInactiveTranslation } = useKeyBasedText();
 
   const onChange = (value: string) => {
     const key = setKeyBasedText(value, form.introPage?.introduction);
@@ -48,6 +48,7 @@ export const Introduction = forwardRef<HTMLDivElement, Props>(({ handleChange, f
                 nav.no. Avslutt med en lenke til produktsiden, med selvforklarende lenketekst (lenken åpner i ny fane)."
             error={errors?.introduction}
             onChange={onChange}
+            showInactiveTranslationWarning={shouldWarnAboutInactiveTranslation(form.introPage?.introduction)}
           />
         </Box>
       }

@@ -17,8 +17,9 @@ interface Props {
 
 type EditFormTranslationsContextValue = {
   updateTranslation: (original: FormsApiTranslation, lang: TranslationLang, value: string) => void;
-  addKeyBasedText: (value: string) => string;
+  addKeyBasedText: (value: string, replacedKey?: string) => string;
   updateKeyBasedText: (value: string, key: string) => string;
+  shouldWarnAboutInactiveTranslation: (key?: string) => boolean;
   errors: TranslationError[];
   editState: string;
   saveChanges: () => Promise<void>;
@@ -32,6 +33,7 @@ const defaultValue: EditFormTranslationsContextValue = {
   saveChanges: () => Promise.resolve(),
   addKeyBasedText: () => '',
   updateKeyBasedText: () => '',
+  shouldWarnAboutInactiveTranslation: () => false,
   getTextFromCurrentChanges: () => '',
 };
 
@@ -42,6 +44,7 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
     errors: [],
     status: 'INIT',
     changes: {},
+    inactiveTranslationWarningKeys: new Set<string>(),
   });
   const { storedTranslations, saveTranslation, loadTranslations } = useFormTranslations();
   const feedbackEmit = useFeedbackEmit();
@@ -69,9 +72,14 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
     }
   };
 
-  const addKeyBasedText = (value: string) => {
+  const addKeyBasedText = (value: string, replacedKey?: string) => {
     const translationKey = uuidv4();
-    dispatch({ type: 'ADD', payload: { key: translationKey, nb: value, tag: 'introPage' } });
+    const replacedTranslation = replacedKey ? storedTranslations[replacedKey] : undefined;
+    const warnAboutInactiveTranslation = !!(replacedTranslation?.nn?.trim() || replacedTranslation?.en?.trim());
+    dispatch({
+      type: 'ADD',
+      payload: { key: translationKey, nb: value, tag: 'introPage', warnAboutInactiveTranslation },
+    });
     return translationKey;
   };
 
@@ -131,6 +139,9 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
     return key ? (state.changes[key]?.[lang] ?? '') : '';
   };
 
+  const shouldWarnAboutInactiveTranslation = (key?: string) =>
+    !!key && state.inactiveTranslationWarningKeys.has(key) && !storedTranslations[key];
+
   const value = {
     storedTranslations,
     updateTranslation,
@@ -139,6 +150,7 @@ const EditFormTranslationsProvider = ({ initialChanges, children }: Props) => {
     saveChanges,
     addKeyBasedText,
     updateKeyBasedText,
+    shouldWarnAboutInactiveTranslation,
     getTextFromCurrentChanges,
   };
 

@@ -59,6 +59,22 @@ For local server startup and runtime-config handling, use `start-dev-servers`.
 - Prefer existing flow helpers for repeated navigation, for example `cy.clickNextStep()`, `cy.clickPreviousStep()`, and `cy.clickSaveAndContinue()`
 - Avoid overusing `{ force: true }`; only use it when the UI genuinely requires it
 
+## Repeated elements (e.g. datagrid rows)
+
+- When a page has multiple structurally-identical elements (datagrid rows, repeated
+  groups) and a test needs to target one specific occurrence, prefer
+  `findAllByRole(...).eq(index)` over scoping with a container class selector
+  and `.within(...)`
+- Example: to check the "Ja" radio in the third row of a datagrid, use
+  `cy.findAllByRole('radio', { name: 'Ja' }).eq(2).check()` rather than
+  `cy.get('.formio-component-<key>').find('.aksel-fieldset__content').eq(2).within(...)`
+- To assert no leakage/duplication across rows, prefer asserting the overall count,
+  for example `cy.findAllByRole('textbox', { name: '<label>' }).should('have.length', 1)`
+  instead of asserting per-row existence with class-scoped selectors
+- Only fall back to class/container selectors when rows are not otherwise
+  distinguishable via accessible queries (e.g. identical labels with no way to
+  disambiguate by role, text, or position)
+
 ## Keep it maintainable
 
 - Follow nearby test patterns in the same folder

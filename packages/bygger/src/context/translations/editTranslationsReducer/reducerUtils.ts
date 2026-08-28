@@ -14,7 +14,7 @@ type UpdateAction = {
 };
 type AddAction = {
   type: 'ADD';
-  payload: { key: string; nb: string; tag: TranslationTag };
+  payload: { key: string; nb: string; tag: TranslationTag; warnAboutInactiveTranslation?: boolean };
 };
 type ValidationErrorAction = { type: 'VALIDATION_ERROR'; payload: { errors: TranslationError[] } };
 type SaveStartedAction = { type: 'SAVE_STARTED' };

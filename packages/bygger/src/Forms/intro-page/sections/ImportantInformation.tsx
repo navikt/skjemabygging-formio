@@ -22,7 +22,7 @@ type Props = {
 };
 
 export function ImportantInformation({ form, handleChange, errors, refMap }: Props) {
-  const { setKeyBasedText, getKeyBasedText } = useKeyBasedText();
+  const { setKeyBasedText, getKeyBasedText, shouldWarnAboutInactiveTranslation } = useKeyBasedText();
   const { introPage } = form;
   const hasTitle = introPage?.importantInformation?.title !== undefined;
 
@@ -54,6 +54,9 @@ export function ImportantInformation({ form, handleChange, errors, refMap }: Pro
               onDelete={() => deleteImportantInformationKey(form, 'title', handleChange)}
               error={errors?.importantInformation?.title}
               ref={refMap['importantInformation.title']}
+              showInactiveTranslationWarning={shouldWarnAboutInactiveTranslation(
+                form.introPage?.importantInformation?.title,
+              )}
             />
           )}
           <FormIntroPageWysiwygEditor
@@ -63,6 +66,9 @@ export function ImportantInformation({ form, handleChange, errors, refMap }: Pro
             onChange={(value) => onChange(value, 'description')}
             error={errors?.importantInformation?.description}
             ref={refMap['importantInformation.description']}
+            showInactiveTranslationWarning={shouldWarnAboutInactiveTranslation(
+              form.introPage?.importantInformation?.description,
+            )}
           />
         </Box>
       }

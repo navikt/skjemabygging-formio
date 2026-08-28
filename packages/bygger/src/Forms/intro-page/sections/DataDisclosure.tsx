@@ -19,7 +19,7 @@ type Props = {
 };
 
 export function DataDisclosure({ form, handleChange, refMap, errors }: Props) {
-  const { setKeyBasedText, getKeyBasedText } = useKeyBasedText();
+  const { setKeyBasedText, getKeyBasedText, shouldWarnAboutInactiveTranslation } = useKeyBasedText();
   const previewStyles = usePreviewStyles();
   const bulletPoints = form.introPage?.sections?.dataDisclosure?.bulletPoints || [];
 
@@ -58,6 +58,7 @@ export function DataDisclosure({ form, handleChange, refMap, errors }: Props) {
               onDelete={() => removeBulletPoint(form, 'dataDisclosure', index, handleChange)}
               error={errors?.sections?.dataDisclosure?.bulletPoints?.[index]}
               ref={refMap['sections.dataDisclosure.bulletPoints'][index]}
+              showInactiveTranslationWarning={shouldWarnAboutInactiveTranslation(bullet)}
             />
           ))}
           <AddButton

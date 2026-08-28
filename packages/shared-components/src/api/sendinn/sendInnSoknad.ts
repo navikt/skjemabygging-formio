@@ -1,11 +1,17 @@
-import { Language, localizationUtils, NavFormType, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  Language,
+  localizationUtils,
+  NavFormType,
+  Submission,
+  TranslationLang,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { AppConfigContextType } from '../../context/config/configContext';
 import { getRelevantAttachments, hasOtherDocumentation } from '../../util/attachment/attachmentsUtil';
 
 export interface SendInnSoknadResponse {
   innsendingsId: string;
   hoveddokumentVariant: {
-    document: { data: Submission; language: Language };
+    document: { data: Submission; language: Language | TranslationLang };
   };
   shouldUploadAttachmentsInFyllut: boolean;
   endretDato: string;

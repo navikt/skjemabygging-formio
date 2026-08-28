@@ -3,12 +3,6 @@
 Keep only repo-wide guidance here that helps avoid confusion across the codebase.
 More specific, advanced, or workflow/package-specific guidance belongs in skills under `.github/skills/`.
 
-## Package direction
-
-- Put shared backend utilities and external service integrations in `packages/shared-backend`. New external services in `bygger-backend` and `fyllut-backend` are deprecated.
-- Prefer shared frontend code in the shared frontend package when adding new shared UI or frontend services.
-- Treat `packages/shared-components` as legacy/deprecated unless there is a clear reason to extend it.
-
 ## Language and naming
 
 - Use English in all new code.
@@ -21,13 +15,28 @@ More specific, advanced, or workflow/package-specific guidance belongs in skills
 - Prefer arrow functions over `function` declarations in new code.
 - Prefer exports at end of file
 
-## Testing
+## Backend
 
-- Use `vitest` only for isolated non-UI logic (for example shared utilities, mappers, validation, and domain/backend logic).
-- Use Cypress for UI behavior and end-to-end flows.
-- Never import or use `@testing-library` in this repository, that library are considered legacy/outdated.
-- Do not add new `@testing-library` tests, and do not expand existing ones.
-- When touching UI behavior currently covered by legacy `@testing-library` tests, prefer replacing/migrating them to Cypress instead of extending them.
+ALWAYS invoke the `backend-development` skill before changing or reviewing
+backend code. This includes server-side TypeScript, API routes, middleware,
+services, external clients, authentication, backend configuration, logging,
+metrics, and backend tests in `shared-backend`, `fyllut-backend`,
+`bygger-backend`, `form-spec-api`, or another server package. Do not use the
+file extension as the only signal.
+
+The skill is the source of truth for backend package direction, API and error
+handling defaults, specialist routing, observability, security, and backend
+test choice.
+
+## Frontend
+
+ALWAYS invoke the `frontend-development` skill before changing or reviewing
+frontend code. This includes `.tsx` and `.jsx` files, browser-facing `.ts` and
+`.js`, styles, UI components, hooks, state, form behavior, validation, focus,
+and Cypress UI tests. Do not use the file extension as the only signal.
+
+The skill is the source of truth for frontend package direction, Aksel and
+accessibility routing, form interaction defaults, and frontend test choice.
 
 ## Starting dev servers (sub-agents)
 
