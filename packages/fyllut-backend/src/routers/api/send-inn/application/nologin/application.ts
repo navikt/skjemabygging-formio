@@ -9,7 +9,7 @@ const post = async (req: Request, res: Response, next: NextFunction) => {
     const innsendingsId = noLoginContext.innsendingsId;
     const accessToken = requestUtil.getAzureAccessToken(req);
 
-    const receiptAndPdf = await generatePdfAndSubmit('nologin', req, innsendingsId, accessToken);
+    const receiptAndPdf = await generatePdfAndSubmit({ applicationType: 'nologin' }, req, innsendingsId, accessToken);
     res.json(receiptAndPdf);
   } catch (error) {
     next(error);

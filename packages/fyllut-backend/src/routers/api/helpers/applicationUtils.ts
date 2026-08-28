@@ -1,21 +1,17 @@
 import {
   Attachment,
-  AvsenderId,
-  BrukerDto,
   OpplastingsStatus,
+  SubmissionPartyProjection,
   SubmitApplicationRequest,
 } from '@navikt/skjemadigitalisering-shared-backend';
 import {
   AttachmentSettingValues,
   Component,
   Form,
-  formatUtils,
   I18nTranslationMap,
   navFormUtils,
-  senderUtils,
   Submission,
   TranslationLang,
-  yourInformationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { base64EncodeByteArray } from '../../../utils/base64';
 import { objectToByteArray } from './sendInn';
@@ -27,19 +23,18 @@ const assembleSubmitApplicationRequest = (
   language: TranslationLang,
   submissionPdfAsByteArray: number[],
   translate: (text: string, textReplacements?: I18nTranslationMap) => string,
+  parties: SubmissionPartyProjection,
 ): SubmitApplicationRequest => {
   const activeAttachments: Component[] =
     navFormUtils.getActiveAttachmentPanelFromForm(form, submission)?.components ?? [];
-  const bruker = extractBruker(form, submission);
-  const avsender =
-    extractAvsender(form, submission) ?? (bruker ? undefined : extractAvsenderFromYourInformation(form, submission));
+  const { bruker, avsender } = parties;
 
   if (!bruker && !avsender) {
-    throw new Error(`${innsendingsId}: Could not find user nor sender from nologin submission (formPath=${form.path})`);
+    throw new Error(`${innsendingsId}: Party projection contains neither user nor sender (formPath=${form.path})`);
   }
 
   return {
-    ...(bruker && { bruker: bruker.id?.replace(/\s/g, '') }),
+    ...(bruker && { bruker }),
     ...(avsender && { avsender }),
     formNumber: form.properties.skjemanummer,
     title: translate(form.title),
@@ -89,55 +84,6 @@ const validateAttachment = (attachment: Attachment, validationId: string): Attac
     throw new Error(`Attachment is missing title - ${validationId}`);
   }
   return attachment;
-};
-
-const removeSpaces = (value?: string): string | undefined => (value ? formatUtils.removeAllSpaces(value) : value);
-
-const extractBruker = (form: Form, submission: Submission): BrukerDto | undefined => {
-  const identityNumber = yourInformationUtils.getIdentityNumber(form, submission);
-  if (identityNumber) {
-    return { id: removeSpaces(identityNumber)!, idType: 'FNR' };
-  }
-  return undefined;
-};
-
-const extractAvsender = (form: Form, submission: Submission): AvsenderId | undefined => {
-  const sender = senderUtils.getSender(form, submission.data);
-  if (sender) {
-    if (sender.person) {
-      return {
-        idType: 'FNR',
-        id: removeSpaces(sender.person?.nationalIdentityNumber),
-        navn: `${sender.person?.firstName} ${sender.person?.surname}`,
-      };
-    } else if (sender.organization) {
-      return {
-        idType: 'ORGNR',
-        id: removeSpaces(sender.organization?.number),
-        navn: sender.organization?.name,
-      };
-    }
-  }
-
-  // TODO: Fjern kode når de få skjemaene som har denne er fjernet.
-  const avsenderFornavn = submission.data.fornavnAvsender;
-  const avsenderEtternavn = submission.data.etternavnAvsender;
-  if (avsenderFornavn && avsenderEtternavn) {
-    return { navn: `${avsenderFornavn} ${avsenderEtternavn}` };
-  }
-  return undefined;
-};
-
-const extractAvsenderFromYourInformation = (form: Form, submission: Submission): AvsenderId | undefined => {
-  const yourInformation = yourInformationUtils.getYourInformation(form, submission.data);
-  if (yourInformation?.fornavn && yourInformation?.etternavn) {
-    const navn = `${yourInformation.fornavn} ${yourInformation.etternavn}`;
-    if (yourInformation.identitet?.identitetsnummer) {
-      return { id: removeSpaces(yourInformation.identitet.identitetsnummer), idType: 'FNR', navn };
-    }
-    return { navn };
-  }
-  return undefined;
 };
 
 function mapToStatus(value?: keyof AttachmentSettingValues): OpplastingsStatus {
