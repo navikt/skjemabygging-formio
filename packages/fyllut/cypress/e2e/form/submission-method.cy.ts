@@ -58,10 +58,9 @@ describe('Submission method', () => {
 
       it('includes zero attachments, but has flag otherDocumentation', () => {
         cy.submitApplication((req) => {
-          console.log(`req.body: ${JSON.stringify(req.body)}`);
           const { submission } = req.body;
-          expect(submission.attachments).to.have.length(1);
-          expect(submission.attachments[0].type).to.equal('other');
+          expect(submission.data.annenDokumentasjon).to.have.length(1);
+          expect(submission.data.annenDokumentasjon[0].type).to.equal('other');
         });
 
         // submit application
@@ -72,9 +71,9 @@ describe('Submission method', () => {
       it('includes one attachment, and has flag otherDocumentation', () => {
         cy.clickShowAllSteps();
         cy.submitApplication((req) => {
-          console.log(`req.body: ${JSON.stringify(req.body)}`);
           const { submission } = req.body;
-          expect(submission.attachments).to.have.length(2);
+          expect(submission.data.annenDokumentasjon).to.have.length(1);
+          expect(submission.data.bekreftelseFraOptiker.type).to.equal('default');
         });
 
         // edit data so that conditional attachment is triggered
