@@ -30,6 +30,29 @@ Treat established rules from the development skills as verified constraints,
 not questions for the user. Keep feature-specific behavior, contracts, and
 trade-offs in the specification.
 
+## Concurrent work
+
+- Identify every in-flight branch and specification that touches the same
+  packages or contracts before detailed drafting, and name them in the
+  specification.
+- State which existing and in-flight contracts the design must reuse, and which
+  taxonomies, validators, and error models it must not duplicate.
+- Describe how the design merges with that work, so the same concept does not
+  get a second definition in each branch.
+
+## Compatibility and acceptance
+
+- Enumerate the existing behavior that must not change at field level. A claim
+  that current payloads stay compatible is not an acceptance criterion on its
+  own.
+- Make "existing tests pass unmodified" an acceptance criterion whenever the
+  change replaces behavior that already has coverage.
+- Name every behavior change explicitly, including validating an existing field
+  for the first time, and record its effect on data already in production.
+- Prefer a design that makes an invalid combination unrepresentable over one
+  that enumerates valid combinations and checks them at runtime.
+- Leave a contract, projection, or model out of scope until it has a consumer.
+
 ## Capture reusable learning
 
 After the specification is approved and before its handoff, check whether the

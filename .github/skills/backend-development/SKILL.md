@@ -72,6 +72,39 @@ Place an integration under `packages/shared-backend/src/services/<area>`.
   of the change. Keep endpoint-specific contracts in the specification, API
   documentation, and tests.
 
+## Domain models and validation
+
+- Encode a fixed set of valid combinations in the type instead of checking it
+  at runtime. Prefer a discriminated union, and nest a field under the variant
+  that allows it, so an invalid combination cannot be constructed.
+- Keep one definition per rule. Reuse the existing shared validators,
+  normalizers, and type taxonomies for identity numbers, organization numbers,
+  addresses, and cover-page characters. Do not add a second definition of a
+  rule that already exists in `shared-domain` or `shared-frontend`.
+- Keep one validation error contract per audience. Field-addressable, user
+  facing errors belong in the frontend layer that renders and translates them.
+  A backend domain model that only ever produces a single rejection must guard
+  and fail, not return a parallel error model with no consumer.
+- Keep projections and mappers pure. They accept validated data and return
+  target data. Do not validate, normalize, or throw inside a projection.
+- Do not add a contract, projection, or error shape before a consumer exists.
+
+### Legacy adapters
+
+- An adapter over existing production data must not be stricter than the code
+  it replaces. Compare against the previous behavior field by field, including
+  optional fields, fallback chains, and values that were previously passed
+  through unchecked.
+- Validating an existing field for the first time is a behavior change. It
+  requires explicit approval and a check of live data, because the rejected
+  submissions already exist.
+- Keep the source of trusted identity separate from collected answers. A
+  verified identity may replace who is acting, never who or what the submission
+  is about.
+- Widening an existing contract, such as making a required field optional, for
+  a case no current caller can produce is out of scope. Add it with its
+  consumer.
+
 ## Errors
 
 - Use `ResponseError` from `shared-domain` for expected failures.
@@ -118,6 +151,9 @@ vulnerabilities.
 - Use `request-body-verification` when a Cypress journey must prove the payload
   sent from a backend to an external service.
 - Use Cypress only when browser-to-backend behavior is part of the outcome.
+- Treat an existing test as the record of current behavior. When a change makes
+  one fail, fix the change. Editing its input or expectation is a behavior
+  change that needs the same approval and compatibility note as any other.
 
 ## Asking and exceptions
 

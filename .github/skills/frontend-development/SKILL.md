@@ -77,6 +77,12 @@ intentionally changes them.
 
 - When adding or changing a form component, preserve parity across editable
   input, validation, summary, PDF, autosave, and submission behavior.
+- Keep one validation layer. Extend the shared validation rules and error text
+  resolution instead of adding a parallel validator, error shape, or address
+  and identity taxonomy for a new host or package.
+- Reuse the `shared-domain` validators and normalizers for identity numbers,
+  organization numbers, postal codes, and cover-page characters. Do not restate
+  a rule that already has a definition.
 
 ## Host services, content, and logging
 
@@ -100,6 +106,9 @@ intentionally changes them.
 - Do not add or expand `@testing-library` tests. Prefer replacing affected
   legacy coverage with Cypress.
 - Cover changed failure and recovery behavior as well as the normal journey.
+- Treat an existing test as the record of current behavior. When a change makes
+  one fail, fix the change. Editing its input or expectation is a behavior
+  change that needs the same approval and scope note as any other.
 
 Use `cypress-write-test` for test authoring, `start-dev-servers` for startup,
 and `cypress-repo-workflow` for execution and debugging.
