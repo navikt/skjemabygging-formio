@@ -2,242 +2,213 @@ import { describe, expect, it } from 'vitest';
 import { Component, Form, SubmissionData } from '../../models';
 import { navFormPartyAdapter } from './navFormPartyAdapter';
 
-const form = (components: Partial<Component>[]): Form =>
-  ({
-    components,
-  }) as Form;
+const FNR = '01010101006';
+
+const form = (components: Partial<Component>[]): Form => ({ components }) as Form;
+
+const yourInformationForm = form([{ key: 'yourInformation', type: 'container', yourInformation: true }]);
+
+const senderForm = form([
+  { key: 'yourInformation', type: 'container', yourInformation: true },
+  { key: 'sender', type: 'sender', input: true },
+]);
+
+const norwegianAddress = {
+  borDuINorge: 'ja',
+  vegadresseEllerPostboksadresse: 'vegadresse',
+  adresse: 'Testveien 1',
+  postnummer: '0123',
+  bySted: 'Oslo',
+};
+
+const getParty = (navForm: Form, data: SubmissionData) => navFormPartyAdapter.getNavFormParty(navForm, data);
 
 describe('navFormPartyAdapter', () => {
-  it('maps Dine opplysninger to a self relationship', () => {
-    const navForm = form([{ key: 'yourInformation', type: 'container', yourInformation: true }]);
-    expect(
-      navFormPartyAdapter.getPartyInput(navForm, {
-        yourInformation: {
-          fornavn: 'Ada',
-          etternavn: 'Lovelace',
-          identitet: { identitetsnummer: '010101 01006' },
-        },
-      }),
-    ).toEqual({
-      relationship: 'self',
-      personFillingIn: {
-        type: 'person',
-        firstName: 'Ada',
-        surname: 'Lovelace',
-        nationalIdentityNumber: '010101 01006',
-      },
-      responsibleSender: {
-        type: 'person',
-        firstName: 'Ada',
-        surname: 'Lovelace',
-        nationalIdentityNumber: '010101 01006',
-      },
-      concernedUser: {
-        type: 'identified',
-        firstName: 'Ada',
-        surname: 'Lovelace',
-        nationalIdentityNumber: '010101 01006',
-      },
+  describe('parties the model can express', () => {
+    it('reads an identified applicant as sending about themselves', () => {
+      expect(getParty(yourInformationForm, { yourInformation: { identitet: { identitetsnummer: FNR } } })).toEqual({
+        type: 'party',
+        party: { on: 'ownBehalf', person: { type: 'identified', nationalIdentityNumber: FNR } },
+      });
     });
-  });
 
-  it('maps a person sender before legacy sender fields', () => {
-    const navForm = form([
-      { key: 'yourInformation', type: 'container', yourInformation: true },
-      { key: 'sender', type: 'sender', input: true },
-    ]);
-    const submission = {
-      yourInformation: {
-        fornavn: 'Ola',
-        etternavn: 'Nordmann',
-        adresse: {
-          borDuINorge: 'ja',
-          vegadresseEllerPostboksadresse: 'vegadresse',
-          adresse: 'Testveien 1',
-          postnummer: '0123',
-          bySted: 'Oslo',
+    it('keeps the applicant name when the form collected it', () => {
+      const result = getParty(yourInformationForm, {
+        yourInformation: { fornavn: 'Ada', etternavn: 'Lovelace', identitet: { identitetsnummer: FNR } },
+      });
+      expect(result).toEqual({
+        type: 'party',
+        party: {
+          on: 'ownBehalf',
+          person: { type: 'identified', nationalIdentityNumber: FNR, name: { firstName: 'Ada', surname: 'Lovelace' } },
         },
-      },
-      sender: {
-        person: {
-          firstName: 'Ada',
-          surname: 'Lovelace',
-          nationalIdentityNumber: '010101 01006',
-        },
-      },
-      fornavnAvsender: 'Legacy',
-      etternavnAvsender: 'Sender',
-    } as SubmissionData;
-
-    expect(navFormPartyAdapter.getPartyInput(navForm, submission)).toEqual({
-      relationship: 'anotherPerson',
-      personFillingIn: {
-        type: 'person',
-        firstName: 'Ada',
-        surname: 'Lovelace',
-        nationalIdentityNumber: '010101 01006',
-      },
-      responsibleSender: {
-        type: 'person',
-        firstName: 'Ada',
-        surname: 'Lovelace',
-        nationalIdentityNumber: '010101 01006',
-      },
-      concernedUser: {
-        type: 'unidentified',
-        firstName: 'Ola',
-        surname: 'Nordmann',
-        address: {
-          type: 'norwegianStreet',
-          co: undefined,
-          street: 'Testveien 1',
-          postalCode: '0123',
-          postalName: 'Oslo',
-        },
-      },
+      });
     });
-  });
 
-  it('maps an organization sender and uses the authenticated identity only for the filler', () => {
-    const navForm = form([
-      { key: 'yourInformation', type: 'container', yourInformation: true },
-      { key: 'sender', type: 'sender', input: true },
-    ]);
-    const input = navFormPartyAdapter.getPartyInput(
-      navForm,
-      {
-        yourInformation: {
-          identitet: { identitetsnummer: '020202 01056' },
-        },
-        sender: { organization: { name: 'Example AS', number: '889 640 782' } },
-      },
-      { authenticatedIdentityNumber: '010101 01006' },
-    );
-
-    expect(input).toMatchObject({
-      relationship: 'organization',
-      personFillingIn: { nationalIdentityNumber: '010101 01006' },
-      responsibleSender: { type: 'organization', organizationNumber: '889 640 782' },
-      concernedUser: { type: 'identified', nationalIdentityNumber: '020202 01056' },
-    });
-  });
-
-  it('uses the verified identity instead of a client-provided identity for self', () => {
-    const navForm = form([{ key: 'yourInformation', type: 'container', yourInformation: true }]);
-    const input = navFormPartyAdapter.getPartyInput(
-      navForm,
-      { yourInformation: { identitet: { identitetsnummer: '020202 01056' } } },
-      { authenticatedIdentityNumber: '010101 01006' },
-    );
-
-    expect(input.personFillingIn?.nationalIdentityNumber).toBe('010101 01006');
-    expect(input.concernedUser).toMatchObject({ nationalIdentityNumber: '010101 01006' });
-  });
-
-  it('preserves legacy person and address fields', () => {
-    expect(
-      navFormPartyAdapter.getPartyInput(form([]), {
-        fodselsnummerDNummerSoker: '010101 01006',
-        fornavnSoker: 'Ada',
-        etternavnSoker: 'Lovelace',
-        gateadresseSoker: 'Testveien 1',
-        postnummerSoker: '0123',
-        poststedSoker: 'Oslo',
-      }),
-    ).toMatchObject({
-      relationship: 'self',
-      concernedUser: {
-        type: 'identified',
-        nationalIdentityNumber: '010101 01006',
-      },
-    });
-  });
-
-  it('maps name-and-address-only data to the unidentified-person combination', () => {
-    expect(
-      navFormPartyAdapter.getPartyInput(form([{ key: 'yourInformation', type: 'container', yourInformation: true }]), {
-        yourInformation: {
-          fornavn: 'Ada',
-          etternavn: 'Lovelace',
-          adresse: {
-            adresse: 'Testveien 1',
-            postnummer: '0123',
-            bySted: 'Oslo',
+    it('reads an unidentified applicant as their own sender', () => {
+      expect(
+        getParty(yourInformationForm, {
+          yourInformation: { fornavn: 'Ola', etternavn: 'Nordmann', adresse: norwegianAddress },
+        }),
+      ).toEqual({
+        type: 'party',
+        party: {
+          on: 'behalfOfOther',
+          sender: { type: 'named', name: { firstName: 'Ola', surname: 'Nordmann' } },
+          user: {
+            type: 'unidentified',
+            name: { firstName: 'Ola', surname: 'Nordmann' },
+            address: {
+              type: 'NORWEGIAN_ADDRESS',
+              co: undefined,
+              street: 'Testveien 1',
+              postalCode: '0123',
+              postalName: 'Oslo',
+            },
           },
         },
-      }),
-    ).toMatchObject({
-      relationship: 'anotherPerson',
-      responsibleSender: { type: 'person', firstName: 'Ada', surname: 'Lovelace' },
-      concernedUser: {
+      });
+    });
+
+    it('reads a person sender as sending on behalf of another', () => {
+      const result = getParty(senderForm, {
+        yourInformation: { identitet: { identitetsnummer: FNR } },
+        sender: { person: { firstName: 'Ada', surname: 'Lovelace', nationalIdentityNumber: '27054986853' } },
+      });
+      expect(result).toEqual({
+        type: 'party',
+        party: {
+          on: 'behalfOfOther',
+          sender: {
+            type: 'identified',
+            nationalIdentityNumber: '27054986853',
+            name: { firstName: 'Ada', surname: 'Lovelace' },
+          },
+          user: { type: 'identified', nationalIdentityNumber: FNR },
+        },
+      });
+    });
+
+    it('reads an organization sender as sending on behalf of an organization', () => {
+      const result = getParty(senderForm, {
+        yourInformation: { identitet: { identitetsnummer: FNR } },
+        sender: { organization: { name: 'Nav', number: '889640782' } },
+      });
+      expect(result).toEqual({
+        type: 'party',
+        party: {
+          on: 'behalfOfOrg',
+          organization: { type: 'organization', name: 'Nav', organizationNumber: '889640782' },
+          user: { type: 'identified', nationalIdentityNumber: FNR },
+        },
+      });
+    });
+
+    it('reads a foreign address', () => {
+      const result = getParty(yourInformationForm, {
+        yourInformation: {
+          fornavn: 'Ola',
+          etternavn: 'Nordmann',
+          adresse: {
+            borDuINorge: 'nei',
+            adresse: 'Main street 1',
+            bygning: 'B',
+            postnummer: 'SW1',
+            bySted: 'London',
+            region: 'Greater London',
+            land: { value: 'GB', label: 'Storbritannia' },
+          },
+        },
+      });
+      expect(result.type === 'party' && result.party.on === 'behalfOfOther' && result.party.user).toEqual({
         type: 'unidentified',
-        firstName: 'Ada',
-        surname: 'Lovelace',
-      },
-    });
-  });
-
-  it('uses legacy sender names when no sender component has a value', () => {
-    expect(
-      navFormPartyAdapter.getPartyInput(form([]), {
-        fodselsnummerDNummerSoker: '020202 01056',
-        fornavnAvsender: 'Ada',
-        etternavnAvsender: 'Lovelace',
-      }),
-    ).toMatchObject({
-      relationship: 'anotherPerson',
-      responsibleSender: {
-        type: 'person',
-        firstName: 'Ada',
-        surname: 'Lovelace',
-      },
-      concernedUser: {
-        type: 'identified',
-        nationalIdentityNumber: '020202 01056',
-      },
-    });
-  });
-
-  it('preserves the legacy post-office-box prefix', () => {
-    expect(
-      navFormPartyAdapter.getPartyInput(form([]), {
-        fornavnSoker: 'Ada',
-        etternavnSoker: 'Lovelace',
-        norskPostboksadresse: {
-          postboksNrSoker: '123',
-          postnrSoker: '0123',
-          poststedSoker: 'Oslo',
-        },
-      }),
-    ).toMatchObject({
-      concernedUser: {
+        name: { firstName: 'Ola', surname: 'Nordmann' },
         address: {
-          type: 'norwegianPostOfficeBox',
-          postOfficeBox: 'Postboks 123',
+          type: 'FOREIGN_ADDRESS',
+          co: undefined,
+          street: 'Main street 1',
+          building: 'B',
+          postalCode: 'SW1',
+          location: 'London',
+          region: 'Greater London',
+          country: { code: 'GB', name: 'Storbritannia' },
         },
-      },
+      });
     });
   });
 
-  it('keeps organization coverPageUser as an explicit legacy branch after Dine opplysninger precedence', () => {
-    const organizationComponent = { key: 'organizationNumber', type: 'orgNr', coverPageUser: true };
-    expect(
-      navFormPartyAdapter.getCoverPagePartyInput(form([organizationComponent]), {
-        organizationNumber: '889 640 782',
-      }),
-    ).toEqual({
-      type: 'legacyOrganization',
-      organizationNumber: '889640782',
+  describe('shapes that keep using the legacy mappers', () => {
+    it('routes flat applicant fields to the legacy path', () => {
+      expect(
+        getParty(form([]), { fornavnSoker: 'Ola', etternavnSoker: 'Nordmann', gateadresseSoker: 'Testveien 1' }),
+      ).toEqual({
+        type: 'legacy',
+        reason: 'legacyFields',
+      });
     });
 
-    expect(
-      navFormPartyAdapter.getCoverPagePartyInput(
-        form([{ key: 'yourInformation', type: 'container', yourInformation: true }, organizationComponent]),
-        {
-          yourInformation: { identitet: { identitetsnummer: '010101 01006' } },
-          organizationNumber: '889 640 782',
-        },
-      ),
-    ).toMatchObject({ type: 'party', input: { relationship: 'self' } });
+    it('routes legacy sender fields to the legacy path', () => {
+      expect(
+        getParty(yourInformationForm, {
+          yourInformation: { identitet: { identitetsnummer: FNR } },
+          fornavnAvsender: 'Ada',
+          etternavnAvsender: 'Lovelace',
+        }),
+      ).toEqual({ type: 'legacy', reason: 'legacyFields' });
+    });
+
+    it('routes an address holding both a street address and a post office box to the legacy path', () => {
+      expect(
+        getParty(yourInformationForm, {
+          yourInformation: {
+            fornavn: 'Ola',
+            etternavn: 'Nordmann',
+            adresse: { ...norwegianAddress, postboks: 'Postboks 1' },
+          },
+        }),
+      ).toEqual({ type: 'legacy', reason: 'unsupportedAddress' });
+    });
+
+    it('routes a foreign post office box to the legacy path', () => {
+      expect(
+        getParty(yourInformationForm, {
+          yourInformation: {
+            fornavn: 'Ola',
+            etternavn: 'Nordmann',
+            adresse: { borDuINorge: 'nei', postboks: '12', land: { value: 'SE', label: 'Sverige' } },
+          },
+        }),
+      ).toEqual({ type: 'legacy', reason: 'unsupportedAddress' });
+    });
+
+    it('routes an applicant with neither identification nor address to the legacy path', () => {
+      expect(getParty(yourInformationForm, { yourInformation: { fornavn: 'Ola', etternavn: 'Nordmann' } })).toEqual({
+        type: 'legacy',
+        reason: 'incompleteParty',
+      });
+    });
+
+    it('routes an unusable identity number to the legacy path', () => {
+      expect(
+        getParty(yourInformationForm, { yourInformation: { identitet: { identitetsnummer: '12345678911' } } }),
+      ).toEqual({ type: 'legacy', reason: 'incompleteParty' });
+    });
+
+    it('routes a foreign address without a street to the legacy path', () => {
+      expect(
+        getParty(yourInformationForm, {
+          yourInformation: {
+            fornavn: 'Ola',
+            etternavn: 'Nordmann',
+            adresse: { borDuINorge: 'nei', bySted: 'London', land: { value: 'GB', label: 'Storbritannia' } },
+          },
+        }),
+      ).toEqual({ type: 'legacy', reason: 'incompleteParty' });
+    });
+
+    it('routes a cover page organization number to the legacy path', () => {
+      const navForm = form([{ key: 'orgNr', type: 'orgNr', coverPageUser: true }]);
+      expect(getParty(navForm, { orgNr: '889640782' })).toEqual({ type: 'legacy', reason: 'incompleteParty' });
+    });
   });
 });

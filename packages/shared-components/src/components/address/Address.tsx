@@ -4,6 +4,7 @@ import {
   CustomLabels,
   FieldSize,
   SubmissionAddress,
+  addressUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { AddressProvider } from './addressContext';
 import AddressTypeChoice from './AddressTypeChoice';
@@ -37,18 +38,13 @@ const Address = ({
   fieldSize,
 }: Props) => {
   const getAddress = () => {
-    if (
-      addressType === 'NORWEGIAN_ADDRESS' ||
-      (address?.borDuINorge === 'ja' && address?.vegadresseEllerPostboksadresse === 'vegadresse')
-    ) {
-      return <NorwegianAddress />;
-    } else if (
-      addressType === 'POST_OFFICE_BOX' ||
-      (address?.borDuINorge === 'ja' && address?.vegadresseEllerPostboksadresse === 'postboksadresse')
-    ) {
-      return <PostOfficeBox />;
-    } else if (addressType === 'FOREIGN_ADDRESS' || address?.borDuINorge === 'nei') {
-      return <ForeignAddress />;
+    switch (addressUtils.resolveAddressType(address, addressType)) {
+      case 'NORWEGIAN_ADDRESS':
+        return <NorwegianAddress />;
+      case 'POST_OFFICE_BOX':
+        return <PostOfficeBox />;
+      case 'FOREIGN_ADDRESS':
+        return <ForeignAddress />;
     }
   };
 

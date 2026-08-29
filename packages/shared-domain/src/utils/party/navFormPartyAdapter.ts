@@ -1,285 +1,180 @@
 import {
-  ConcernedUserInput,
+  ConcernedUser,
+  Draft,
   Form,
   NavFormType,
-  PartyAddressInput,
-  PartyInput,
-  PersonInput,
+  Party,
+  PartyAddress,
+  PartyDraft,
+  Sender,
   SubmissionAddress,
   SubmissionData,
+  SubmissionSender,
   SubmissionYourInformation,
 } from '../../models';
-import { formatUtils } from '../format';
-import { navFormUtils } from '../form';
+import { addressUtils } from '../address';
 import { senderUtils, yourInformationUtils } from '../submission';
+import { ParseOptions, partyUtils } from './partyUtils';
 
-type LegacySubmission = {
-  fornavnSoker?: string;
-  etternavnSoker?: string;
-  coSoker?: string;
-  postnummerSoker?: string;
-  postnrSoker?: string;
-  utenlandskPostkodeSoker?: string;
-  poststedSoker?: string;
-  landSoker?: string;
-  gateadresseSoker?: string;
-  norskVegadresse?: {
-    coSoker?: string;
-    vegadresseSoker?: string;
-    postnrSoker?: string;
-    poststedSoker?: string;
-  };
-  norskPostboksadresse?: {
-    coSoker?: string;
-    postboksNrSoker?: string;
-    postnrSoker?: string;
-    poststedSoker?: string;
-  };
-  utenlandskAdresse?: {
-    coSoker?: string;
-    postboksNrSoker?: string;
-    bygningSoker?: string;
-    postkodeSoker?: string;
-    poststedSoker?: string;
-    landSoker?: string;
-    regionSoker?: string;
-  };
-  fodselsnummerDNummerSoker?: string;
-  fornavnAvsender?: string;
-  etternavnAvsender?: string;
+/**
+ * Why a submission cannot be expressed as a {@link Party} and has to keep using the mappers that
+ * predate the party model. Every reason is registered in
+ * https://github.com/navikt/skjemabygging-formio/issues/2180, which tracks what has to be decided
+ * before the legacy path can be removed.
+ */
+type LegacyPartyReason =
+  /** L3: the submission carries flat applicant fields instead of a yourInformation container. */
+  | 'legacyFields'
+  /** L4, L7: the address holds a combination the party model deliberately cannot express. */
+  | 'unsupportedAddress'
+  /** L1, L2, L5, L6: the submission is missing or malforms something a party requires. */
+  | 'incompleteParty';
+
+type NavFormParty =
+  { readonly type: 'party'; readonly party: Party } | { readonly type: 'legacy'; readonly reason: LegacyPartyReason };
+
+/** Flat applicant fields from forms built before the yourInformation container existed. */
+const LEGACY_FIELD_KEYS = [
+  'fornavnSoker',
+  'etternavnSoker',
+  'coSoker',
+  'postnummerSoker',
+  'postnrSoker',
+  'utenlandskPostkodeSoker',
+  'poststedSoker',
+  'landSoker',
+  'gateadresseSoker',
+  'norskVegadresse',
+  'norskPostboksadresse',
+  'utenlandskAdresse',
+  'fodselsnummerDNummerSoker',
+  'fornavnAvsender',
+  'etternavnAvsender',
+] as const;
+
+const hasLegacyFields = (submissionData: SubmissionData) =>
+  LEGACY_FIELD_KEYS.some((key) => submissionData[key] !== undefined && submissionData[key] !== '');
+
+/** An address the party model would silently narrow, so the legacy mappers keep it whole. */
+const isUnsupportedAddress = (address: SubmissionAddress | undefined) => {
+  if (!address) {
+    return false;
+  }
+  const bothAddressKinds = !!address.adresse && !!address.postboks;
+  const foreignPostOfficeBox = addressUtils.resolveAddressType(address) === 'FOREIGN_ADDRESS' && !!address.postboks;
+  return bothAddressKinds || foreignPostOfficeBox;
 };
 
-interface NavFormPartyAdapterOptions {
-  authenticatedIdentityNumber?: string;
-}
-
-type NavFormCoverPagePartyInput =
-  | { type: 'party'; input: PartyInput }
-  | { type: 'legacyOrganization'; organizationNumber: string };
-
-const toAddressInput = (address: SubmissionAddress): PartyAddressInput => {
-  const countryName = address.land?.label;
-  const countryCode = address.land?.value || address.landkode;
-  const isForeign =
-    address.borDuINorge === 'nei' ||
-    (countryCode && !['no', 'nor', 'norge'].includes(countryCode.toLowerCase())) ||
-    Boolean(address.bygning || address.region);
-
-  if (isForeign) {
-    return {
-      type: 'foreign',
-      co: address.co,
-      street: address.adresse,
-      building: address.bygning,
-      postalCode: address.postnummer,
-      location: address.bySted,
-      region: address.region,
-      country: {
-        code: countryCode,
-        name: countryName,
-      },
-    };
+const toAddressDraft = (address: SubmissionAddress | undefined): Draft<PartyAddress> | undefined => {
+  const type = addressUtils.resolveAddressType(address);
+  if (!address || !type) {
+    return undefined;
   }
-  if (address.vegadresseEllerPostboksadresse === 'postboksadresse' || address.postboks) {
-    return {
-      type: 'norwegianPostOfficeBox',
-      co: address.co,
-      postOfficeBox: address.postboks,
-      postalCode: address.postnummer,
-      postalName: address.bySted,
-    };
+  switch (type) {
+    case 'FOREIGN_ADDRESS':
+      return {
+        type,
+        co: address.co,
+        street: address.adresse,
+        building: address.bygning,
+        postalCode: address.postnummer,
+        location: address.bySted,
+        region: address.region,
+        country: { code: address.land?.value ?? address.landkode, name: address.land?.label },
+      };
+    case 'POST_OFFICE_BOX':
+      return {
+        type,
+        co: address.co,
+        postOfficeBox: address.postboks,
+        postalCode: address.postnummer,
+        postalName: address.bySted,
+      };
+    case 'NORWEGIAN_ADDRESS':
+      return {
+        type,
+        co: address.co,
+        street: address.adresse,
+        postalCode: address.postnummer,
+        postalName: address.bySted,
+      };
   }
-  return {
-    type: 'norwegianStreet',
-    co: address.co,
-    street: address.adresse,
-    postalCode: address.postnummer,
-    postalName: address.bySted,
-  };
 };
 
-const getLegacyAddressInput = (submission: LegacySubmission): PartyAddressInput => {
-  const { norskVegadresse, norskPostboksadresse, utenlandskAdresse } = submission;
-  if (utenlandskAdresse || submission.utenlandskPostkodeSoker || submission.landSoker) {
-    const country = utenlandskAdresse?.landSoker || submission.landSoker;
-    return {
-      type: 'foreign',
-      co: utenlandskAdresse?.coSoker || submission.coSoker,
-      street: submission.gateadresseSoker,
-      building: utenlandskAdresse?.bygningSoker,
-      postalCode: utenlandskAdresse?.postkodeSoker || submission.utenlandskPostkodeSoker,
-      location: utenlandskAdresse?.poststedSoker || submission.poststedSoker,
-      region: utenlandskAdresse?.regionSoker,
-      country: { name: country },
-    };
+const toNameDraft = (firstName?: string, surname?: string) =>
+  firstName || surname ? { firstName, surname } : undefined;
+
+const toUserDraft = (yourInformation: SubmissionYourInformation | undefined): Draft<ConcernedUser> | undefined => {
+  const name = toNameDraft(yourInformation?.fornavn, yourInformation?.etternavn);
+  const nationalIdentityNumber = yourInformation?.identitet?.identitetsnummer;
+  if (nationalIdentityNumber) {
+    return { type: 'identified', nationalIdentityNumber, name };
   }
-  if (norskPostboksadresse) {
-    const postOfficeBox = norskPostboksadresse.postboksNrSoker;
-    return {
-      type: 'norwegianPostOfficeBox',
-      co: norskPostboksadresse.coSoker || submission.coSoker,
-      postOfficeBox: postOfficeBox ? `Postboks ${postOfficeBox}` : undefined,
-      postalCode: norskPostboksadresse.postnrSoker || submission.postnrSoker || submission.postnummerSoker,
-      postalName: norskPostboksadresse.poststedSoker || submission.poststedSoker,
-    };
-  }
-  return {
-    type: 'norwegianStreet',
-    co: norskVegadresse?.coSoker || submission.coSoker,
-    street: norskVegadresse?.vegadresseSoker || submission.gateadresseSoker,
-    postalCode: norskVegadresse?.postnrSoker || submission.postnrSoker || submission.postnummerSoker,
-    postalName: norskVegadresse?.poststedSoker || submission.poststedSoker,
-  };
+  return { type: 'unidentified', name, address: toAddressDraft(yourInformation?.adresse) };
 };
 
-const toConcernedUser = (
-  yourInformation: SubmissionYourInformation | undefined,
-  submission: LegacySubmission,
-): ConcernedUserInput => {
-  const identityNumber = yourInformation?.identitet?.identitetsnummer || submission.fodselsnummerDNummerSoker;
-  if (identityNumber) {
-    return {
-      type: 'identified',
-      nationalIdentityNumber: identityNumber,
-      firstName: yourInformation?.fornavn || submission.fornavnSoker,
-      surname: yourInformation?.etternavn || submission.etternavnSoker,
-    };
+const toSenderDraft = (sender: SubmissionSender | undefined): Draft<Sender> | undefined => {
+  const person = sender?.person;
+  if (!person) {
+    return undefined;
   }
-  return {
-    type: 'unidentified',
-    firstName: yourInformation?.fornavn || submission.fornavnSoker,
-    surname: yourInformation?.etternavn || submission.etternavnSoker,
-    address: yourInformation?.adresse ? toAddressInput(yourInformation.adresse) : getLegacyAddressInput(submission),
-  };
+  const name = toNameDraft(person.firstName, person.surname);
+  return person.nationalIdentityNumber
+    ? { type: 'identified', nationalIdentityNumber: person.nationalIdentityNumber, name }
+    : { type: 'named', name };
 };
 
-const toPersonInput = (
-  firstName: string | undefined,
-  surname: string | undefined,
-  nationalIdentityNumber: string | undefined,
-): PersonInput => ({
-  type: 'person',
-  firstName,
-  surname,
-  nationalIdentityNumber,
-});
-
-const getPartyInput = (
-  form: NavFormType | Form,
-  submissionData: SubmissionData,
-  options: NavFormPartyAdapterOptions = {},
-): PartyInput => {
-  const legacySubmission = submissionData as LegacySubmission;
+const toPartyDraft = (form: NavFormType | Form, submissionData: SubmissionData): PartyDraft => {
   const yourInformation = yourInformationUtils.getYourInformation(form, submissionData);
   const sender = senderUtils.getSender(form, submissionData);
-  const concernedUser = toConcernedUser(yourInformation, legacySubmission);
-  const authenticatedIdentityNumber = options.authenticatedIdentityNumber;
-
-  const senderPerson = sender?.person;
-  const fallbackNames =
-    !sender && concernedUser.type !== 'severalPeople'
-      ? { firstName: concernedUser.firstName, surname: concernedUser.surname }
-      : {};
-  const personFillingIn = toPersonInput(
-    senderPerson?.firstName ?? fallbackNames.firstName,
-    senderPerson?.surname ?? fallbackNames.surname,
-    authenticatedIdentityNumber ?? senderPerson?.nationalIdentityNumber,
-  );
+  const user = toUserDraft(yourInformation);
 
   if (sender?.organization) {
     return {
-      relationship: 'organization',
-      personFillingIn,
-      responsibleSender: {
-        type: 'organization',
-        name: sender.organization.name,
-        organizationNumber: sender.organization.number,
-      },
-      concernedUser,
+      on: 'behalfOfOrg',
+      sender: toSenderDraft(sender),
+      organization: { name: sender.organization.name, organizationNumber: sender.organization.number },
+      user,
     };
   }
-  if (senderPerson) {
-    return {
-      relationship: 'anotherPerson',
-      personFillingIn,
-      responsibleSender: personFillingIn,
-      concernedUser,
-    };
+  const senderDraft = toSenderDraft(sender);
+  if (senderDraft) {
+    return { on: 'behalfOfOther', sender: senderDraft, user };
   }
-  if (legacySubmission.fornavnAvsender && legacySubmission.etternavnAvsender) {
-    const legacySender = toPersonInput(
-      legacySubmission.fornavnAvsender,
-      legacySubmission.etternavnAvsender,
-      authenticatedIdentityNumber,
-    );
-    return {
-      relationship: 'anotherPerson',
-      personFillingIn: legacySender,
-      responsibleSender: legacySender,
-      concernedUser,
-    };
+  if (user?.type === 'identified') {
+    return { on: 'ownBehalf', person: user };
   }
-
-  const selfIdentityNumber =
-    authenticatedIdentityNumber ??
-    yourInformation?.identitet?.identitetsnummer ??
-    legacySubmission.fodselsnummerDNummerSoker;
-  const self = toPersonInput(
-    yourInformation?.fornavn ?? legacySubmission.fornavnSoker,
-    yourInformation?.etternavn ?? legacySubmission.etternavnSoker,
-    selfIdentityNumber,
-  );
-  if (concernedUser.type === 'unidentified') {
-    return {
-      relationship: 'anotherPerson',
-      personFillingIn: self,
-      responsibleSender: self,
-      concernedUser,
-    };
-  }
-  return {
-    relationship: 'self',
-    personFillingIn: self,
-    responsibleSender: self,
-    concernedUser:
-      selfIdentityNumber && concernedUser.type === 'identified'
-        ? { ...concernedUser, nationalIdentityNumber: selfIdentityNumber }
-        : concernedUser,
-  };
+  // Filling in for yourself without identifying yourself makes you your own sender, which is how the
+  // submission has always been forwarded.
+  return { on: 'behalfOfOther', sender: { type: 'named', name: user?.name }, user };
 };
 
-const getLegacyCoverPageOrganization = (
+/**
+ * Reads a NavForm submission as a party, or reports that it has to keep using the legacy mappers.
+ *
+ * Anything the party model cannot hold without losing or inventing data is routed to the legacy
+ * path, so adopting the model never changes what an existing form sends.
+ */
+const getNavFormParty = (
   form: NavFormType | Form,
   submissionData: SubmissionData,
-): { organizationNumber: string } | undefined => {
-  const component = navFormUtils
-    .flattenComponents(form.components)
-    .find((candidate) => candidate.type === 'orgNr' && candidate.coverPageUser && submissionData[candidate.key]);
-  const value = component && submissionData[component.key];
-  const organizationNumber = value ? formatUtils.removeAllSpaces(`${value}`) : undefined;
-  return organizationNumber ? { organizationNumber } : undefined;
-};
-
-const getCoverPagePartyInput = (
-  form: NavFormType | Form,
-  submissionData: SubmissionData,
-  options: NavFormPartyAdapterOptions = {},
-): NavFormCoverPagePartyInput => {
+  options: ParseOptions = {},
+): NavFormParty => {
+  if (hasLegacyFields(submissionData)) {
+    return { type: 'legacy', reason: 'legacyFields' };
+  }
   const yourInformation = yourInformationUtils.getYourInformation(form, submissionData);
-  if (!yourInformation) {
-    const legacyOrganization = getLegacyCoverPageOrganization(form, submissionData);
-    if (legacyOrganization) {
-      return { type: 'legacyOrganization', ...legacyOrganization };
-    }
+  if (isUnsupportedAddress(yourInformation?.adresse)) {
+    return { type: 'legacy', reason: 'unsupportedAddress' };
   }
-  return { type: 'party', input: getPartyInput(form, submissionData, options) };
+  const parsed = partyUtils.parseParty(toPartyDraft(form, submissionData), options);
+  return parsed.ok ? { type: 'party', party: parsed.value } : { type: 'legacy', reason: 'incompleteParty' };
 };
 
 const navFormPartyAdapter = {
-  getCoverPagePartyInput,
-  getLegacyCoverPageOrganization,
-  getPartyInput,
+  getNavFormParty,
+  toPartyDraft,
 };
 
 export { navFormPartyAdapter };
-export type { NavFormCoverPagePartyInput, NavFormPartyAdapterOptions };
+export type { LegacyPartyReason, NavFormParty };

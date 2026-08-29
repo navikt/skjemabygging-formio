@@ -1,223 +1,160 @@
-type PartyRelationship = 'self' | 'anotherPerson' | 'organization';
+import { ComponentValue } from '../form';
 
-interface PersonInput {
-  type: 'person';
-  firstName?: string;
-  surname?: string;
-  nationalIdentityNumber?: string;
-}
-
-interface OrganizationInput {
-  type: 'organization';
-  name?: string;
-  organizationNumber?: string;
-}
-
-interface CountryInput {
-  code?: string;
-  name?: string;
-}
-
-interface NorwegianStreetAddressInput {
-  type: 'norwegianStreet';
-  co?: string;
-  street?: string;
-  postalCode?: string;
-  postalName?: string;
-}
-
-interface NorwegianPostOfficeBoxAddressInput {
-  type: 'norwegianPostOfficeBox';
-  co?: string;
-  postOfficeBox?: string;
-  postalCode?: string;
-  postalName?: string;
-}
-
-interface ForeignAddressInput {
-  type: 'foreign';
-  co?: string;
-  street?: string;
-  building?: string;
-  postalCode?: string;
-  location?: string;
-  region?: string;
-  country?: CountryInput;
-}
-
-type PartyAddressInput = NorwegianStreetAddressInput | NorwegianPostOfficeBoxAddressInput | ForeignAddressInput;
-
-interface IdentifiedPersonInput {
-  type: 'identified';
-  nationalIdentityNumber?: string;
-  firstName?: string;
-  surname?: string;
-}
-
-interface UnidentifiedPersonInput {
-  type: 'unidentified';
-  firstName?: string;
-  surname?: string;
-  address?: PartyAddressInput;
-}
-
-interface SeveralPeopleInput {
-  type: 'severalPeople';
-}
-
-type ConcernedUserInput = IdentifiedPersonInput | UnidentifiedPersonInput | SeveralPeopleInput;
-
-interface NavUnitInput {
-  number?: string;
-  name?: string;
-}
-
-interface PartyInput {
-  relationship?: PartyRelationship;
-  personFillingIn?: PersonInput;
-  responsibleSender?: PersonInput | OrganizationInput;
-  concernedUser?: ConcernedUserInput;
-  navUnit?: NavUnitInput;
-}
-
-interface Person {
-  type: 'person';
-  firstName?: string;
-  surname?: string;
-  nationalIdentityNumber?: string;
-}
-
-interface Organization {
-  type: 'organization';
-  name: string;
-  organizationNumber: string;
+interface PersonName {
+  readonly firstName: string;
+  readonly surname: string;
 }
 
 interface Country {
-  code?: string;
-  name: string;
+  readonly code?: string;
+  readonly name: string;
 }
 
 interface NorwegianStreetAddress {
-  type: 'norwegianStreet';
-  co?: string;
-  street: string;
-  postalCode: string;
-  postalName: string;
+  readonly type: 'NORWEGIAN_ADDRESS';
+  readonly co?: string;
+  readonly street: string;
+  readonly postalCode: string;
+  readonly postalName: string;
 }
 
-interface NorwegianPostOfficeBoxAddress {
-  type: 'norwegianPostOfficeBox';
-  co?: string;
-  postOfficeBox: string;
-  postalCode: string;
-  postalName: string;
+interface PostOfficeBoxAddress {
+  readonly type: 'POST_OFFICE_BOX';
+  readonly co?: string;
+  readonly postOfficeBox: string;
+  readonly postalCode: string;
+  readonly postalName: string;
 }
 
 interface ForeignAddress {
-  type: 'foreign';
-  co?: string;
-  street: string;
-  building?: string;
-  postalCode?: string;
-  location?: string;
-  region?: string;
-  country: Country;
+  readonly type: 'FOREIGN_ADDRESS';
+  readonly co?: string;
+  readonly street: string;
+  readonly building?: string;
+  readonly postalCode?: string;
+  readonly location?: string;
+  readonly region?: string;
+  readonly country: Country;
 }
 
-type PartyAddress = NorwegianStreetAddress | NorwegianPostOfficeBoxAddress | ForeignAddress;
+type PartyAddress = NorwegianStreetAddress | PostOfficeBoxAddress | ForeignAddress;
 
+/** A person Nav can look up. The name is only known when the journey collected it. */
 interface IdentifiedPerson {
-  type: 'identified';
-  nationalIdentityNumber: string;
-  firstName?: string;
-  surname?: string;
+  readonly type: 'identified';
+  readonly nationalIdentityNumber: string;
+  readonly name?: PersonName;
 }
 
+/** A person Nav cannot look up, so the name is the only thing we know about them. */
+interface NamedPerson {
+  readonly type: 'named';
+  readonly name: PersonName;
+}
+
+/** A person Nav cannot look up, identified for case handling by name and address. */
 interface UnidentifiedPerson {
-  type: 'unidentified';
-  firstName: string;
-  surname: string;
-  address: PartyAddress;
+  readonly type: 'unidentified';
+  readonly name: PersonName;
+  readonly address: PartyAddress;
 }
 
+interface Organization {
+  readonly type: 'organization';
+  readonly name: string;
+  readonly organizationNumber: string;
+}
+
+/** A group of people the submission concerns, handled by a Nav unit rather than per person. */
 interface SeveralPeople {
-  type: 'severalPeople';
+  readonly type: 'severalPeople';
+  readonly navUnit: NavUnit;
 }
-
-type ConcernedUser = IdentifiedPerson | UnidentifiedPerson | SeveralPeople;
 
 interface NavUnit {
-  number: string;
-  name?: string;
+  readonly number: string;
+  readonly name?: string;
 }
 
-interface PartyData {
-  relationship: PartyRelationship;
-  personFillingIn: Person;
-  responsibleSender: Person | Organization;
-  concernedUser: ConcernedUser;
-  navUnit?: NavUnit;
+/** The person filling in and sending the submission. */
+type Sender = IdentifiedPerson | NamedPerson;
+
+/** The person the submission is about. */
+type ConcernedUser = IdentifiedPerson | UnidentifiedPerson;
+
+/**
+ * Who is sending a submission, and who it is about.
+ *
+ * Every combination Nav accepts is a variant, so no combination of the fields below can express a
+ * party we would have to reject. Anything that cannot be expressed here is not valid input.
+ */
+type Party =
+  | {
+      /** Sending about yourself. Requires identification, since nobody else vouches for who you are. */
+      readonly on: 'ownBehalf';
+      readonly person: IdentifiedPerson;
+    }
+  | {
+      /** Sending about another person. */
+      readonly on: 'behalfOfOther';
+      readonly sender: Sender;
+      readonly user: ConcernedUser;
+    }
+  | {
+      /**
+       * Sending on behalf of an organization, which may be about a group rather than one person.
+       * The organization is the responsible sender, so naming the person filling in is optional.
+       */
+      readonly on: 'behalfOfOrg';
+      readonly sender?: Sender;
+      readonly organization: Organization;
+      readonly user: ConcernedUser | SeveralPeople;
+    };
+
+type PartyOn = Party['on'];
+
+/**
+ * A party under construction. Mirrors {@link Party} with every field optional, so a form can hold a
+ * half-filled party without a second set of hand-written types drifting from the real model.
+ */
+type Draft<T> = T extends ComponentValue | string | number | boolean
+  ? T
+  : T extends object
+    ? { readonly [K in keyof T]?: Draft<T[K]> }
+    : T;
+
+type PartyDraft = Draft<Party>;
+
+type PartyErrorCode = 'required' | 'invalid' | 'notAllowed';
+
+interface PartyError {
+  readonly code: PartyErrorCode;
+  readonly path: string;
 }
 
-type PartyValidationErrorCode = 'required' | 'invalid' | 'notAllowed' | 'mismatch';
-
-interface PartyValidationError {
-  code: PartyValidationErrorCode;
-  path: string;
-}
-
-type PartyValidationResult =
-  | { success: true; data: PartyData }
-  | { success: false; errors: PartyValidationError[] };
-
-interface ResolvedPartyRoles {
-  relationship: PartyRelationship;
-  personFillingIn: Person;
-  responsibleSender: Person | Organization;
-  concernedUser: ConcernedUser;
-  navUnit?: NavUnit;
-}
-
-interface PartyDisplayData {
-  relationship: PartyRelationship;
-  personFillingIn: Person;
-  responsibleOrganization?: Organization;
-  concernedUser: ConcernedUser;
-  navUnit?: NavUnit;
-}
+type Parsed<T> =
+  { readonly ok: true; readonly value: T } | { readonly ok: false; readonly errors: readonly PartyError[] };
 
 export type {
   ConcernedUser,
-  ConcernedUserInput,
   Country,
-  CountryInput,
+  Draft,
   ForeignAddress,
-  ForeignAddressInput,
   IdentifiedPerson,
-  IdentifiedPersonInput,
+  NamedPerson,
   NavUnit,
-  NavUnitInput,
-  NorwegianPostOfficeBoxAddress,
-  NorwegianPostOfficeBoxAddressInput,
   NorwegianStreetAddress,
-  NorwegianStreetAddressInput,
   Organization,
-  OrganizationInput,
+  Parsed,
+  Party,
   PartyAddress,
-  PartyAddressInput,
-  PartyData,
-  PartyDisplayData,
-  PartyInput,
-  PartyRelationship,
-  PartyValidationError,
-  PartyValidationErrorCode,
-  PartyValidationResult,
-  Person,
-  PersonInput,
-  ResolvedPartyRoles,
+  PartyDraft,
+  PartyError,
+  PartyErrorCode,
+  PartyOn,
+  PersonName,
+  PostOfficeBoxAddress,
+  Sender,
   SeveralPeople,
-  SeveralPeopleInput,
   UnidentifiedPerson,
-  UnidentifiedPersonInput,
 };

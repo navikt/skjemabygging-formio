@@ -1,14 +1,6 @@
-import {
-  partyProjections,
-  renderApplicationPdf,
-  requestUtil,
-  translationUtil,
-} from '@navikt/skjemadigitalisering-shared-backend';
+import { renderApplicationPdf, requestUtil, translationUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import {
   FormsApiTranslationMap,
-  navFormPartyAdapter,
-  partyUtils,
-  ResponseError,
   Submission,
   SubmissionMethod,
   TranslationLang,
@@ -20,12 +12,8 @@ import { LogMetadata } from '../../../../types/log';
 import { requireBase64Decode } from '../../../../utils/base64';
 import { assembleSubmitApplicationRequest } from '../../helpers/applicationUtils';
 
-type SubmissionContext =
-  | { applicationType: 'digital'; authenticatedIdentityNumber: string }
-  | { applicationType: 'nologin' };
-
 export const generatePdfAndSubmit = async (
-  context: SubmissionContext,
+  applicationType: 'nologin' | 'digital',
   req: any,
   innsendingsId: string,
   accessToken: string,
@@ -41,18 +29,6 @@ export const generatePdfAndSubmit = async (
     formPath,
     select: ['skjemanummer', 'title', 'path', 'properties', 'components', 'revision'],
   });
-  const partyInput = navFormPartyAdapter.getPartyInput(
-    form,
-    submission.data,
-    context.applicationType === 'digital'
-      ? { authenticatedIdentityNumber: context.authenticatedIdentityNumber }
-      : {},
-  );
-  const partyResult = partyUtils.validateParty(partyInput);
-  if (!partyResult.success) {
-    throw new ResponseError('BAD_REQUEST', 'Invalid party data');
-  }
-  const parties = partyProjections.toSubmissionParties(partyResult.data);
   const translations: FormsApiTranslationMap = await translationService.getTranslations({
     formPath,
     languageCodes: [language],
@@ -86,14 +62,13 @@ export const generatePdfAndSubmit = async (
     language,
     Array.from(applicationPdf),
     translate,
-    parties,
   );
   const submitResponse = await applicationService.submitApplication({
     accessToken,
     body: submitRequest,
     innsendingsId,
     logMeta,
-    type: context.applicationType,
+    type: applicationType,
   });
 
   return {

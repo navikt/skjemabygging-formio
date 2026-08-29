@@ -1,192 +1,128 @@
-import { PartyData } from '@navikt/skjemadigitalisering-shared-domain';
+import { Party } from '@navikt/skjemadigitalisering-shared-domain';
 import { describe, expect, it } from 'vitest';
 import { partyProjections } from './partyProjections';
 
-const person = {
-  type: 'person' as const,
-  firstName: 'Ada',
-  surname: 'Lovelace',
-  nationalIdentityNumber: '01010101006',
-};
-const identified = { type: 'identified' as const, nationalIdentityNumber: '02020201056' };
-const organization = {
-  type: 'organization' as const,
-  name: 'Example AS',
-  organizationNumber: '889640782',
-};
-const party = (overrides: Partial<PartyData> = {}): PartyData => ({
-  relationship: 'anotherPerson',
-  personFillingIn: person,
-  responsibleSender: person,
-  concernedUser: identified,
-  ...overrides,
-});
+const FNR = '01010101006';
 
 describe('partyProjections', () => {
   describe('toSubmissionParties', () => {
-    it.each([
-      [
-        party({
-          relationship: 'self',
-          concernedUser: { type: 'identified', nationalIdentityNumber: person.nationalIdentityNumber },
-        }),
-        { bruker: person.nationalIdentityNumber },
-      ],
-      [
-        party(),
-        {
-          bruker: identified.nationalIdentityNumber,
-          avsender: {
-            idType: 'FNR',
-            id: person.nationalIdentityNumber,
-            navn: 'Ada Lovelace',
-          },
+    it('sends only the user when someone sends about themselves', () => {
+      const party: Party = { on: 'ownBehalf', person: { type: 'identified', nationalIdentityNumber: FNR } };
+      expect(partyProjections.toSubmissionParties(party)).toEqual({ bruker: FNR });
+    });
+
+    it('sends the person filling in as sender', () => {
+      const party: Party = {
+        on: 'behalfOfOther',
+        sender: {
+          type: 'identified',
+          nationalIdentityNumber: '27054986853',
+          name: { firstName: 'Ada', surname: 'Lovelace' },
         },
-      ],
-      [
-        party({
-          concernedUser: {
-            type: 'unidentified',
-            firstName: 'Ola',
-            surname: 'Nordmann',
-            address: {
-              type: 'norwegianStreet',
-              street: 'Testveien 1',
-              postalCode: '0123',
-              postalName: 'Oslo',
-            },
-          },
-        }),
-        {
-          avsender: {
-            idType: 'FNR',
-            id: person.nationalIdentityNumber,
-            navn: 'Ada Lovelace',
-          },
+        user: { type: 'identified', nationalIdentityNumber: FNR },
+      };
+      expect(partyProjections.toSubmissionParties(party)).toEqual({
+        bruker: FNR,
+        avsender: { idType: 'FNR', id: '27054986853', navn: 'Ada Lovelace' },
+      });
+    });
+
+    it('sends a named sender without an identity number', () => {
+      const party: Party = {
+        on: 'behalfOfOther',
+        sender: { type: 'named', name: { firstName: 'Ola', surname: 'Nordmann' } },
+        user: {
+          type: 'unidentified',
+          name: { firstName: 'Ola', surname: 'Nordmann' },
+          address: { type: 'NORWEGIAN_ADDRESS', street: 'Testveien 1', postalCode: '0123', postalName: 'Oslo' },
         },
-      ],
-      [
-        party({ relationship: 'organization', responsibleSender: organization }),
-        {
-          bruker: identified.nationalIdentityNumber,
-          avsender: {
-            idType: 'ORGNR',
-            id: organization.organizationNumber,
-            navn: organization.name,
-          },
-        },
-      ],
-      [
-        party({
-          relationship: 'organization',
-          responsibleSender: organization,
-          concernedUser: {
-            type: 'unidentified',
-            firstName: 'Ola',
-            surname: 'Nordmann',
-            address: {
-              type: 'foreign',
-              street: 'Main Street 1',
-              country: { code: 'SE', name: 'Sverige' },
-            },
-          },
-        }),
-        {
-          avsender: {
-            idType: 'ORGNR',
-            id: organization.organizationNumber,
-            navn: organization.name,
-          },
-        },
-      ],
-      [
-        party({
-          relationship: 'organization',
-          responsibleSender: organization,
-          concernedUser: { type: 'severalPeople' },
-          navUnit: { number: '1234' },
-        }),
-        {
-          avsender: {
-            idType: 'ORGNR',
-            id: organization.organizationNumber,
-            navn: organization.name,
-          },
-        },
-      ],
-    ] as const)('maps an approved combination', (input, expected) => {
-      expect(partyProjections.toSubmissionParties(input)).toEqual(expected);
+      };
+      expect(partyProjections.toSubmissionParties(party)).toEqual({ avsender: { navn: 'Ola Nordmann' } });
+    });
+
+    it('sends the organization as sender', () => {
+      const party: Party = {
+        on: 'behalfOfOrg',
+        organization: { type: 'organization', name: 'Nav', organizationNumber: '889640782' },
+        user: { type: 'identified', nationalIdentityNumber: FNR },
+      };
+      expect(partyProjections.toSubmissionParties(party)).toEqual({
+        bruker: FNR,
+        avsender: { idType: 'ORGNR', id: '889640782', navn: 'Nav' },
+      });
     });
   });
 
   describe('toCoverPageParties', () => {
-    it('maps an identified concerned user', () => {
-      expect(partyProjections.toCoverPageParties(party())).toEqual({
-        user: { nationalIdentityNumber: identified.nationalIdentityNumber },
-      });
+    it('identifies the user by identity number', () => {
+      const party: Party = { on: 'ownBehalf', person: { type: 'identified', nationalIdentityNumber: FNR } };
+      expect(partyProjections.toCoverPageParties(party)).toEqual({ user: { nationalIdentityNumber: FNR } });
     });
 
-    it('maps an unidentified concerned user and address', () => {
-      expect(
-        partyProjections.toCoverPageParties(
-          party({
-            concernedUser: {
-              type: 'unidentified',
-              firstName: 'Ola',
-              surname: 'Nordmann',
-              address: {
-                type: 'norwegianPostOfficeBox',
-                co: 'Kari Nordmann',
-                postOfficeBox: '123',
-                postalCode: '0123',
-                postalName: 'Oslo',
-              },
-            },
-          }),
-        ),
-      ).toEqual({
+    it('describes an unidentified user by name and post office box', () => {
+      const party: Party = {
+        on: 'behalfOfOther',
+        sender: { type: 'named', name: { firstName: 'Ola', surname: 'Nordmann' } },
         user: {
-          firstName: 'Ola',
-          surname: 'Nordmann',
+          type: 'unidentified',
+          name: { firstName: 'Ola', surname: 'Nordmann' },
           address: {
-            co: 'Kari Nordmann',
-            postOfficeBox: '123',
+            type: 'POST_OFFICE_BOX',
+            co: 'Kari',
+            postOfficeBox: 'Postboks 1',
             postalCode: '0123',
             postalName: 'Oslo',
           },
         },
+      };
+      expect(partyProjections.toCoverPageParties(party)).toEqual({
+        user: {
+          firstName: 'Ola',
+          surname: 'Nordmann',
+          address: { co: 'Kari', postOfficeBox: 'Postboks 1', postalCode: '0123', postalName: 'Oslo' },
+        },
       });
     });
 
-    it('maps several people to NAV-unit routing without a user', () => {
-      expect(
-        partyProjections.toCoverPageParties(
-          party({
-            relationship: 'organization',
-            responsibleSender: organization,
-            concernedUser: { type: 'severalPeople' },
-            navUnit: { number: '1234' },
-          }),
-        ),
-      ).toEqual({ recipient: { navUnit: '1234' } });
-    });
-
-    it('rejects unsafe cover-page text without including the value in the error', () => {
-      const invalidParty = party({
-        concernedUser: {
+    it('describes a foreign address with its country', () => {
+      const party: Party = {
+        on: 'behalfOfOther',
+        sender: { type: 'named', name: { firstName: 'Ola', surname: 'Nordmann' } },
+        user: {
           type: 'unidentified',
-          firstName: 'Ola=',
+          name: { firstName: 'Ola', surname: 'Nordmann' },
+          address: {
+            type: 'FOREIGN_ADDRESS',
+            street: 'Main street 1',
+            location: 'London',
+            country: { code: 'GB', name: 'Storbritannia' },
+          },
+        },
+      };
+      expect(partyProjections.toCoverPageParties(party)).toEqual({
+        user: {
+          firstName: 'Ola',
           surname: 'Nordmann',
           address: {
-            type: 'foreign',
-            street: 'Main Street 1',
-            country: { name: 'Sverige' },
+            co: undefined,
+            streetAddress: 'Main street 1',
+            building: undefined,
+            postalCode: undefined,
+            postalName: 'London',
+            region: undefined,
+            country: { value: 'GB', label: 'Storbritannia' },
           },
         },
       });
-      expect(() => partyProjections.toCoverPageParties(invalidParty)).toThrowError(
-        'Invalid party value for cover page',
-      );
+    });
+
+    it('addresses the nav unit when the submission concerns several people', () => {
+      const party: Party = {
+        on: 'behalfOfOrg',
+        organization: { type: 'organization', name: 'Nav', organizationNumber: '889640782' },
+        user: { type: 'severalPeople', navUnit: { number: '0301' } },
+      };
+      expect(partyProjections.toCoverPageParties(party)).toEqual({ recipient: { navUnit: '0301' } });
     });
   });
 });

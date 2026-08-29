@@ -16,7 +16,6 @@ vi.mock('./dekorator', () => ({
 const { sendInnConfig, familiePdfGeneratorUrl, formsApiUrl } = config;
 const soknadPdf = Buffer.from('fake-pdf-content-for-tests');
 const encodedSoknadPdf = soknadPdf.toString('base64');
-const testIdentityNumber = '01010101006';
 
 const submitApplicationTestCases: SubmitApplicationTestCase[] = [
   {
@@ -26,7 +25,7 @@ const submitApplicationTestCases: SubmitApplicationTestCase[] = [
     route: '/fyllut/api/send-inn/digital-application/65ed0008-ec72-4c90-8b44-165d3c265da0',
     sendInnPath: '/v1/application-digital/65ed0008-ec72-4c90-8b44-165d3c265da0',
     setupTokens: async () => {
-      const tokenSetup = await setupTokenMocks({ pid: testIdentityNumber });
+      const tokenSetup = await setupTokenMocks();
       return {
         azureAccessToken: tokenSetup.azureAccessToken,
         sendInnAccessToken: tokenSetup.tokenxAccessToken,
@@ -61,8 +60,8 @@ describe('Fyllut backend :: submit application', () => {
 
   it.each(submitApplicationTestCases)(
     'creates and submits the $name application request with formRevision in mainDocumentAlt',
-    async ({ name, innsendingsId, formRevision, route, sendInnPath, setupTokens }) => {
-      const applicationData = createApplicationData(name === 'digital' ? '02020201056' : testIdentityNumber);
+    async ({ innsendingsId, formRevision, route, sendInnPath, setupTokens }) => {
+      const applicationData = createApplicationData();
       const mockFormData = createMockFormData(formRevision);
       const submitResponse = createSubmitResponse(innsendingsId, mockFormData.title);
       const tokenSetup = await setupTokens(innsendingsId);
@@ -94,9 +93,6 @@ describe('Fyllut backend :: submit application', () => {
 
       expect(capturedRequestBody).toBeDefined();
       expectSubmitRequest(capturedRequestBody!);
-      if (name === 'digital') {
-        expect(capturedRequestBody!.bruker).not.toBe(applicationData.submission.data.fodselsnummerDNummerSoker);
-      }
       expect(decodeMainDocumentAlt(capturedRequestBody!.mainDocumentAlt)).toEqual({
         language: 'nb',
         formRevision,
@@ -156,9 +152,9 @@ const createMockFormData = (revision: number) => ({
   components: [],
 });
 
-const createApplicationData = (identityNumber = testIdentityNumber) => ({
+const createApplicationData = () => ({
   formPath: 'nav123456',
-  submission: { data: { fodselsnummerDNummerSoker: identityNumber, field: 'value' } },
+  submission: { data: { fodselsnummerDNummerSoker: '12345678911', field: 'value' } },
   attachments: [],
   language: 'nb',
 });
@@ -210,7 +206,7 @@ const expectSuccessfulSubmitResponse = (responseBody: unknown, submitResponse: S
 
 const expectSubmitRequest = (requestBody: SubmitApplicationRequest) => {
   expect(requestBody).toMatchObject({
-    bruker: testIdentityNumber,
+    bruker: '12345678911',
     formNumber: 'NAV 12.34-56',
     title: 'Application title',
     tema: 'BIL',

@@ -1,327 +1,258 @@
-import { idnr } from '@navikt/fnrvalidator';
 import {
   ConcernedUser,
-  ConcernedUserInput,
-  Country,
+  Draft,
+  IdentifiedPerson,
+  NamedPerson,
   NavUnit,
   Organization,
-  OrganizationInput,
+  Parsed,
+  Party,
   PartyAddress,
-  PartyAddressInput,
-  PartyData,
-  PartyDisplayData,
-  PartyInput,
-  PartyValidationError,
-  PartyValidationResult,
-  Person,
-  PersonInput,
-  ResolvedPartyRoles,
+  PartyDraft,
+  PartyError,
+  PartyErrorCode,
+  PersonName,
+  Sender,
+  SeveralPeople,
+  UnidentifiedPerson,
 } from '../../models';
-import { validatorUtils } from '../form';
+import { validatorUtils } from '../form/validatorUtils';
+import { formatUtils } from '../format';
 
-const withoutWhitespace = (value?: string): string | undefined => {
-  const normalized = value?.replace(/\s/g, '');
-  return normalized || undefined;
+interface ParseOptions {
+  /** Synthetic identity numbers only exist outside production, so the caller decides. */
+  readonly allowSyntheticIdentityNumbers?: boolean;
+}
+
+const failure = (code: PartyErrorCode, path: string): Parsed<never> => ({ ok: false, errors: [{ code, path }] });
+
+const success = <T>(value: T): Parsed<T> => ({ ok: true, value });
+
+const errorsOf = (parts: readonly Parsed<unknown>[]): readonly PartyError[] =>
+  parts.flatMap((part) => (part.ok ? [] : part.errors));
+
+/**
+ * Builds a value from parsed parts, or collects every error the parts reported. Keeps parsing free
+ * of an accumulator that each step has to push into.
+ */
+const combine = <T>(parts: readonly Parsed<unknown>[], build: () => T): Parsed<T> => {
+  const errors = errorsOf(parts);
+  return errors.length ? { ok: false, errors } : success(build());
 };
 
-const optionalText = (value?: string): string | undefined => (value?.trim() ? value : undefined);
+const valueOf = <T>(parsed: Parsed<T>): T => (parsed as { value: T }).value;
 
-const requiredText = (value: string | undefined, path: string, errors: PartyValidationError[]) => {
-  if (!value?.trim()) {
-    errors.push({ code: 'required', path });
-    return undefined;
-  }
-  return value;
+const parseRequired = (value: string | undefined, path: string): Parsed<string> => {
+  const trimmed = value?.trim();
+  return trimmed ? success(trimmed) : failure('required', path);
 };
 
-const validateIdentityNumber = (
+const parseOptional = (value: string | undefined): string | undefined => value?.trim() || undefined;
+
+const parseNationalIdentityNumber = (
   value: string | undefined,
   path: string,
-  errors: PartyValidationError[],
-  required: boolean,
-) => {
-  const normalized = withoutWhitespace(value);
-  if (!normalized) {
-    if (required) {
-      errors.push({ code: 'required', path });
+  options: ParseOptions,
+): Parsed<string> => {
+  const required = parseRequired(value, path);
+  if (!required.ok) {
+    return required;
+  }
+  const digits = formatUtils.removeAllSpaces(valueOf(required));
+  return validatorUtils.isNationalIdentityNumber(digits, { allowTestTypes: options.allowSyntheticIdentityNumbers })
+    ? success(digits)
+    : failure('invalid', path);
+};
+
+const parseName = (draft: Draft<PersonName> | undefined, path: string): Parsed<PersonName> => {
+  const firstName = parseRequired(draft?.firstName, `${path}.firstName`);
+  const surname = parseRequired(draft?.surname, `${path}.surname`);
+  return combine([firstName, surname], () => ({
+    firstName: valueOf(firstName),
+    surname: valueOf(surname),
+  }));
+};
+
+const parseAddress = (draft: Draft<PartyAddress> | undefined, path: string): Parsed<PartyAddress> => {
+  if (!draft?.type) {
+    return failure('required', `${path}.type`);
+  }
+  const co = parseOptional(draft.co);
+  switch (draft.type) {
+    case 'NORWEGIAN_ADDRESS': {
+      const street = parseRequired(draft.street, `${path}.street`);
+      const postalCode = parseRequired(draft.postalCode, `${path}.postalCode`);
+      const postalName = parseRequired(draft.postalName, `${path}.postalName`);
+      return combine([street, postalCode, postalName], () => ({
+        type: 'NORWEGIAN_ADDRESS',
+        co,
+        street: valueOf(street),
+        postalCode: valueOf(postalCode),
+        postalName: valueOf(postalName),
+      }));
     }
-    return undefined;
+    case 'POST_OFFICE_BOX': {
+      const postOfficeBox = parseRequired(draft.postOfficeBox, `${path}.postOfficeBox`);
+      const postalCode = parseRequired(draft.postalCode, `${path}.postalCode`);
+      const postalName = parseRequired(draft.postalName, `${path}.postalName`);
+      return combine([postOfficeBox, postalCode, postalName], () => ({
+        type: 'POST_OFFICE_BOX',
+        co,
+        postOfficeBox: valueOf(postOfficeBox),
+        postalCode: valueOf(postalCode),
+        postalName: valueOf(postalName),
+      }));
+    }
+    case 'FOREIGN_ADDRESS': {
+      const street = parseRequired(draft.street, `${path}.street`);
+      const countryName = parseRequired(draft.country?.name, `${path}.country.name`);
+      return combine([street, countryName], () => ({
+        type: 'FOREIGN_ADDRESS',
+        co,
+        street: valueOf(street),
+        building: parseOptional(draft.building),
+        postalCode: parseOptional(draft.postalCode),
+        location: parseOptional(draft.location),
+        region: parseOptional(draft.region),
+        country: { code: parseOptional(draft.country?.code), name: valueOf(countryName) },
+      }));
+    }
   }
-  if (idnr(normalized).status !== 'valid') {
-    errors.push({ code: 'invalid', path });
-    return undefined;
-  }
-  return normalized;
 };
 
-const validatePerson = (
-  input: PersonInput | undefined,
+const parseIdentifiedPerson = (
+  draft: Draft<IdentifiedPerson>,
   path: string,
-  errors: PartyValidationError[],
-  identityRequired = false,
-): Person | undefined => {
-  if (!input) {
-    errors.push({ code: 'required', path });
-    return undefined;
-  }
-
-  const nationalIdentityNumber = validateIdentityNumber(
-    input.nationalIdentityNumber,
+  options: ParseOptions,
+): Parsed<IdentifiedPerson> => {
+  const nationalIdentityNumber = parseNationalIdentityNumber(
+    draft.nationalIdentityNumber,
     `${path}.nationalIdentityNumber`,
-    errors,
-    identityRequired,
+    options,
   );
-  const hasName = Boolean(input.firstName?.trim() || input.surname?.trim());
-  const nameRequired = hasName || !withoutWhitespace(input.nationalIdentityNumber);
-  const firstName = nameRequired ? requiredText(input.firstName, `${path}.firstName`, errors) : undefined;
-  const surname = nameRequired ? requiredText(input.surname, `${path}.surname`, errors) : undefined;
-
-  if ((nameRequired && (!firstName || !surname)) || (identityRequired && !nationalIdentityNumber)) {
-    return undefined;
-  }
-  return {
-    type: 'person',
-    ...(firstName && { firstName }),
-    ...(surname && { surname }),
-    ...(nationalIdentityNumber && { nationalIdentityNumber }),
-  };
+  const name = draft.name ? parseName(draft.name, `${path}.name`) : undefined;
+  return combine([nationalIdentityNumber, ...(name ? [name] : [])], () => ({
+    type: 'identified',
+    nationalIdentityNumber: valueOf(nationalIdentityNumber),
+    ...(name ? { name: valueOf(name) } : {}),
+  }));
 };
 
-const validateOrganization = (
-  input: OrganizationInput | undefined,
+const parseNamedPerson = (draft: Draft<NamedPerson>, path: string): Parsed<NamedPerson> => {
+  const name = parseName(draft.name, `${path}.name`);
+  return combine([name], () => ({ type: 'named', name: valueOf(name) }));
+};
+
+const parseUnidentifiedPerson = (draft: Draft<UnidentifiedPerson>, path: string): Parsed<UnidentifiedPerson> => {
+  const name = parseName(draft.name, `${path}.name`);
+  const address = parseAddress(draft.address, `${path}.address`);
+  return combine([name, address], () => ({
+    type: 'unidentified',
+    name: valueOf(name),
+    address: valueOf(address),
+  }));
+};
+
+const parseNavUnit = (draft: Draft<NavUnit> | undefined, path: string): Parsed<NavUnit> => {
+  const number = parseRequired(draft?.number, `${path}.number`);
+  return combine([number], () => ({ number: valueOf(number), name: parseOptional(draft?.name) }));
+};
+
+const parseSeveralPeople = (draft: Draft<SeveralPeople>, path: string): Parsed<SeveralPeople> => {
+  const navUnit = parseNavUnit(draft.navUnit, `${path}.navUnit`);
+  return combine([navUnit], () => ({ type: 'severalPeople', navUnit: valueOf(navUnit) }));
+};
+
+const parseOrganization = (draft: Draft<Organization> | undefined, path: string): Parsed<Organization> => {
+  const name = parseRequired(draft?.name, `${path}.name`);
+  const number = parseRequired(draft?.organizationNumber, `${path}.organizationNumber`);
+  const digits = number.ok ? formatUtils.removeAllSpaces(valueOf(number)) : undefined;
+  const validNumber =
+    digits === undefined || validatorUtils.isOrganizationNumber(digits)
+      ? number
+      : failure('invalid', `${path}.organizationNumber`);
+  return combine([name, validNumber], () => ({
+    type: 'organization',
+    name: valueOf(name),
+    organizationNumber: digits!,
+  }));
+};
+
+const parseSender = (draft: Draft<Sender> | undefined, path: string, options: ParseOptions): Parsed<Sender> => {
+  switch (draft?.type) {
+    case 'identified':
+      return parseIdentifiedPerson(draft, path, options);
+    case 'named':
+      return parseNamedPerson(draft, path);
+    default:
+      return failure('required', `${path}.type`);
+  }
+};
+
+const parseConcernedUser = (
+  draft: Draft<ConcernedUser> | undefined,
   path: string,
-  errors: PartyValidationError[],
-): Organization | undefined => {
-  if (!input) {
-    errors.push({ code: 'required', path });
-    return undefined;
+  options: ParseOptions,
+): Parsed<ConcernedUser> => {
+  switch (draft?.type) {
+    case 'identified':
+      return parseIdentifiedPerson(draft, path, options);
+    case 'unidentified':
+      return parseUnidentifiedPerson(draft, path);
+    default:
+      return failure('required', `${path}.type`);
   }
-
-  const name = requiredText(input.name, `${path}.name`, errors);
-  const organizationNumber = withoutWhitespace(input.organizationNumber);
-  if (!organizationNumber) {
-    errors.push({ code: 'required', path: `${path}.organizationNumber` });
-  } else if (!validatorUtils.isOrganizationNumber(organizationNumber)) {
-    errors.push({ code: 'invalid', path: `${path}.organizationNumber` });
-  }
-
-  if (!name || !organizationNumber || !validatorUtils.isOrganizationNumber(organizationNumber)) {
-    return undefined;
-  }
-  return { type: 'organization', name, organizationNumber };
 };
 
-const validateCountry = (
-  input: { code?: string; name?: string } | undefined,
+const parseConcernedUserOrSeveralPeople = (
+  draft: Draft<ConcernedUser | SeveralPeople> | undefined,
   path: string,
-  errors: PartyValidationError[],
-): Country | undefined => {
-  const name = requiredText(input?.name, `${path}.name`, errors);
-  return name ? { name, ...(optionalText(input?.code) && { code: input?.code }) } : undefined;
-};
+  options: ParseOptions,
+): Parsed<ConcernedUser | SeveralPeople> =>
+  draft?.type === 'severalPeople'
+    ? parseSeveralPeople(draft, path)
+    : parseConcernedUser(draft as Draft<ConcernedUser> | undefined, path, options);
 
-const validateAddress = (
-  input: PartyAddressInput | undefined,
-  path: string,
-  errors: PartyValidationError[],
-): PartyAddress | undefined => {
-  if (!input) {
-    errors.push({ code: 'required', path });
-    return undefined;
+/**
+ * Turns a half-filled party into a party, or reports every field that stops it from being one.
+ *
+ * Only the combinations Nav accepts are representable, so a successful parse needs no further check
+ * of who may send on whose behalf.
+ */
+const parseParty = (draft: PartyDraft | undefined, options: ParseOptions = {}): Parsed<Party> => {
+  switch (draft?.on) {
+    case 'ownBehalf': {
+      const person = parseIdentifiedPerson(draft.person ?? {}, 'person', options);
+      return combine([person], () => ({ on: 'ownBehalf' as const, person: valueOf(person) }));
+    }
+    case 'behalfOfOther': {
+      const sender = parseSender(draft.sender, 'sender', options);
+      const user = parseConcernedUser(draft.user, 'user', options);
+      return combine([sender, user], () => ({
+        on: 'behalfOfOther' as const,
+        sender: valueOf(sender),
+        user: valueOf(user),
+      }));
+    }
+    case 'behalfOfOrg': {
+      const sender = draft.sender ? parseSender(draft.sender, 'sender', options) : undefined;
+      const organization = parseOrganization(draft.organization, 'organization');
+      const user = parseConcernedUserOrSeveralPeople(draft.user, 'user', options);
+      return combine([...(sender ? [sender] : []), organization, user], () => ({
+        on: 'behalfOfOrg' as const,
+        ...(sender ? { sender: valueOf(sender) } : {}),
+        organization: valueOf(organization),
+        user: valueOf(user),
+      }));
+    }
+    default:
+      return failure('required', 'on');
   }
-
-  if (input.type === 'norwegianStreet') {
-    const street = requiredText(input.street, `${path}.street`, errors);
-    const postalCode = requiredText(input.postalCode, `${path}.postalCode`, errors);
-    const postalName = requiredText(input.postalName, `${path}.postalName`, errors);
-    return street && postalCode && postalName
-      ? { type: input.type, street, postalCode, postalName, ...(optionalText(input.co) && { co: input.co }) }
-      : undefined;
-  }
-
-  if (input.type === 'norwegianPostOfficeBox') {
-    const postOfficeBox = requiredText(input.postOfficeBox, `${path}.postOfficeBox`, errors);
-    const postalCode = requiredText(input.postalCode, `${path}.postalCode`, errors);
-    const postalName = requiredText(input.postalName, `${path}.postalName`, errors);
-    return postOfficeBox && postalCode && postalName
-      ? {
-          type: input.type,
-          postOfficeBox,
-          postalCode,
-          postalName,
-          ...(optionalText(input.co) && { co: input.co }),
-        }
-      : undefined;
-  }
-
-  const street = requiredText(input.street, `${path}.street`, errors);
-  const country = validateCountry(input.country, `${path}.country`, errors);
-  return street && country
-    ? {
-        type: input.type,
-        street,
-        country,
-        ...(optionalText(input.co) && { co: input.co }),
-        ...(optionalText(input.building) && { building: input.building }),
-        ...(optionalText(input.postalCode) && { postalCode: input.postalCode }),
-        ...(optionalText(input.location) && { location: input.location }),
-        ...(optionalText(input.region) && { region: input.region }),
-      }
-    : undefined;
-};
-
-const validateConcernedUser = (
-  input: ConcernedUserInput | undefined,
-  path: string,
-  errors: PartyValidationError[],
-): ConcernedUser | undefined => {
-  if (!input) {
-    errors.push({ code: 'required', path });
-    return undefined;
-  }
-  if (input.type === 'severalPeople') {
-    return input;
-  }
-  if (input.type === 'identified') {
-    const nationalIdentityNumber = validateIdentityNumber(
-      input.nationalIdentityNumber,
-      `${path}.nationalIdentityNumber`,
-      errors,
-      true,
-    );
-    return nationalIdentityNumber
-      ? {
-          type: input.type,
-          nationalIdentityNumber,
-          ...(optionalText(input.firstName) && { firstName: input.firstName }),
-          ...(optionalText(input.surname) && { surname: input.surname }),
-        }
-      : undefined;
-  }
-
-  const firstName = requiredText(input.firstName, `${path}.firstName`, errors);
-  const surname = requiredText(input.surname, `${path}.surname`, errors);
-  const address = validateAddress(input.address, `${path}.address`, errors);
-  return firstName && surname && address ? { type: input.type, firstName, surname, address } : undefined;
-};
-
-const validateNavUnit = (
-  input: PartyInput['navUnit'],
-  path: string,
-  errors: PartyValidationError[],
-): NavUnit | undefined => {
-  if (!input) {
-    errors.push({ code: 'required', path });
-    return undefined;
-  }
-  const number = requiredText(input.number, `${path}.number`, errors);
-  return number ? { number, ...(optionalText(input.name) && { name: input.name }) } : undefined;
-};
-
-const addCombinationErrors = (input: PartyInput, errors: PartyValidationError[]) => {
-  const { relationship, responsibleSender, concernedUser, navUnit } = input;
-  if (!relationship) {
-    errors.push({ code: 'required', path: 'relationship' });
-    return;
-  }
-
-  const expectsOrganization = relationship === 'organization';
-  if (responsibleSender && (responsibleSender.type === 'organization') !== expectsOrganization) {
-    errors.push({ code: 'invalid', path: 'responsibleSender' });
-  }
-
-  if (relationship === 'self' && concernedUser?.type !== 'identified') {
-    errors.push({ code: 'invalid', path: 'concernedUser' });
-  }
-  if (relationship === 'anotherPerson' && concernedUser?.type === 'severalPeople') {
-    errors.push({ code: 'invalid', path: 'concernedUser' });
-  }
-
-  const severalPeople = relationship === 'organization' && concernedUser?.type === 'severalPeople';
-  if (!severalPeople && navUnit) {
-    errors.push({ code: 'notAllowed', path: 'navUnit' });
-  }
-};
-
-const validateParty = (input: PartyInput): PartyValidationResult => {
-  const errors: PartyValidationError[] = [];
-  addCombinationErrors(input, errors);
-
-  const personFillingIn = validatePerson(input.personFillingIn, 'personFillingIn', errors, input.relationship === 'self');
-  const responsibleSender =
-    input.relationship === 'organization'
-      ? validateOrganization(
-          input.responsibleSender?.type === 'organization' ? input.responsibleSender : undefined,
-          'responsibleSender',
-          errors,
-        )
-      : validatePerson(
-          input.responsibleSender?.type === 'person' ? input.responsibleSender : undefined,
-          'responsibleSender',
-          errors,
-        );
-  const concernedUser = validateConcernedUser(input.concernedUser, 'concernedUser', errors);
-  const navUnit =
-    input.relationship === 'organization' && input.concernedUser?.type === 'severalPeople'
-      ? validateNavUnit(input.navUnit, 'navUnit', errors)
-      : undefined;
-
-  if (
-    input.relationship === 'self' &&
-    personFillingIn?.nationalIdentityNumber &&
-    concernedUser?.type === 'identified' &&
-    personFillingIn.nationalIdentityNumber !== concernedUser.nationalIdentityNumber
-  ) {
-    errors.push({ code: 'mismatch', path: 'concernedUser.nationalIdentityNumber' });
-  }
-
-  if (errors.length || !input.relationship || !personFillingIn || !responsibleSender || !concernedUser) {
-    return { success: false, errors };
-  }
-  return {
-    success: true,
-    data: {
-      relationship: input.relationship,
-      personFillingIn,
-      responsibleSender,
-      concernedUser,
-      ...(navUnit && { navUnit }),
-    },
-  };
-};
-
-const resolvePartyRoles = (party: PartyData): ResolvedPartyRoles => {
-  switch (party.relationship) {
-    case 'self':
-    case 'anotherPerson':
-    case 'organization':
-      return {
-        relationship: party.relationship,
-        personFillingIn: party.personFillingIn,
-        responsibleSender: party.responsibleSender,
-        concernedUser: party.concernedUser,
-        ...(party.navUnit && { navUnit: party.navUnit }),
-      };
-  }
-};
-
-const toPartyDisplayData = (party: PartyData): PartyDisplayData => {
-  const resolved = resolvePartyRoles(party);
-  return {
-    relationship: resolved.relationship,
-    personFillingIn: resolved.personFillingIn,
-    ...(resolved.responsibleSender.type === 'organization' && {
-      responsibleOrganization: resolved.responsibleSender,
-    }),
-    concernedUser: resolved.concernedUser,
-    ...(resolved.navUnit && { navUnit: resolved.navUnit }),
-  };
 };
 
 const partyUtils = {
-  resolvePartyRoles,
-  toPartyDisplayData,
-  validateParty,
+  parseParty,
 };
 
 export { partyUtils };
+export type { ParseOptions };
