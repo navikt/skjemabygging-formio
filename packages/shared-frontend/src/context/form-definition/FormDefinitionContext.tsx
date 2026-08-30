@@ -1,46 +1,13 @@
-import {
-  Component,
-  Form,
-  navFormUtils,
-  numberUtils,
-  Panel,
-  submissionUtils,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, Form, navFormUtils, Panel } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useContext, useEffect, useLayoutEffect, useMemo } from 'react';
-import { evaluateFormioCalculatedValue } from '../../utils/formioEvaluation';
+import { collectDataGridRowScopes } from '../../form-components/components/data-grid/dataGridRows';
 import { useLanguage } from '../language/LanguageContext';
-import { createUpdatedSubmission, useSubmissionState } from '../state/SubmissionStateContext';
-import {
-  enrichFormWithBaseSubmissionPath,
-  flattenComponentsWithBaseSubmissionPath,
-  getResolvedSubmissionPath,
-} from './formDefinitionUtils';
+import { useSubmissionState } from '../state/SubmissionStateContext';
+import { useSubmissionMethod } from '../submission-method/SubmissionMethodContext';
+import { applyCalculatedValues } from './calculatedValues';
+import { enrichFormWithBaseSubmissionPath, flattenComponentsWithBaseSubmissionPath } from './formDefinitionUtils';
+import { collectHiddenSubmissionPaths } from './hiddenSubmissionPaths';
 import { applyPrefilledValuesToSubmission } from './prefillSubmission';
-
-const isNumericComponent = (component: Component) =>
-  component.type === 'number' || component.type === 'currency' || component.type === 'year';
-
-const toEvaluationNumber = (component: Component, value: unknown) => {
-  if (typeof value !== 'string') {
-    return value;
-  }
-
-  const normalizedValue =
-    component.inputType === 'numeric' || component.type === 'year'
-      ? value.replace(/\s/g, '')
-      : value.replace(/\s/g, '').replace(',', '.');
-
-  if (normalizedValue === '') {
-    return value;
-  }
-
-  const isValidNumber =
-    component.inputType === 'numeric' || component.type === 'year'
-      ? numberUtils.isValidInteger(normalizedValue)
-      : numberUtils.isValidDecimal(normalizedValue);
-
-  return isValidNumber ? Number(normalizedValue) : value;
-};
 
 interface FormDefinitionContextType {
   form: Form;
@@ -57,33 +24,29 @@ const FormDefinitionContext = createContext<FormDefinitionContextType>({} as For
 
 const FormDefinitionProvider = ({ children, form }: Props) => {
   const { currentLanguage } = useLanguage();
+  const { submissionMethod } = useSubmissionMethod();
   const { submission, setSubmission, clearSubmissionPaths } = useSubmissionState();
   const formWithBaseSubmissionPath = useMemo(() => enrichFormWithBaseSubmissionPath(form), [form]);
 
   const activeComponents = useMemo(
-    () => navFormUtils.getActiveComponentsFromForm(formWithBaseSubmissionPath, submission),
-    [formWithBaseSubmissionPath, submission],
+    () => navFormUtils.getActiveComponentsFromForm(formWithBaseSubmissionPath, submission, { submissionMethod }),
+    [formWithBaseSubmissionPath, submission, submissionMethod],
   );
 
   const panels = useMemo(
-    () => navFormUtils.getAllActivePanelsFromForm(formWithBaseSubmissionPath, submission),
-    [formWithBaseSubmissionPath, submission],
+    () => navFormUtils.getAllActivePanelsFromForm(formWithBaseSubmissionPath, submission, { submissionMethod }),
+    [formWithBaseSubmissionPath, submission, submissionMethod],
   );
 
-  const calculatedComponents = useMemo(
+  const dataGridRowScopes = useMemo(
     () =>
-      flattenComponentsWithBaseSubmissionPath(formWithBaseSubmissionPath.components).filter(
-        (component) => component.input && !!component.calculateValue && component.type !== 'maalgruppe',
-      ),
-    [formWithBaseSubmissionPath.components],
-  );
-
-  const numericComponents = useMemo(
-    () =>
-      flattenComponentsWithBaseSubmissionPath(formWithBaseSubmissionPath.components).filter(
-        (component) => component.input && isNumericComponent(component),
-      ),
-    [formWithBaseSubmissionPath.components],
+      collectDataGridRowScopes({
+        components: [...activeComponents, ...panels],
+        submission,
+        form: formWithBaseSubmissionPath,
+        submissionMethod,
+      }),
+    [activeComponents, panels, formWithBaseSubmissionPath, submission, submissionMethod],
   );
 
   useLayoutEffect(() => {
@@ -91,52 +54,23 @@ const FormDefinitionProvider = ({ children, form }: Props) => {
   }, [currentLanguage, formWithBaseSubmissionPath, setSubmission]);
 
   useEffect(() => {
-    if (calculatedComponents.length === 0) {
-      return;
-    }
-
-    setSubmission((prev) => {
-      const initialSubmission = prev ?? { data: {} };
-      let nextSubmission = initialSubmission;
-
-      calculatedComponents.forEach((component) => {
-        const submissionPath = getResolvedSubmissionPath(component);
-        const evaluationSubmission = numericComponents.reduce((acc, numericComponent) => {
-          const numericSubmissionPath = getResolvedSubmissionPath(numericComponent);
-          const rawValue = submissionUtils.getSubmissionValue(numericSubmissionPath, acc);
-          const evaluationValue = toEvaluationNumber(numericComponent, rawValue);
-
-          return rawValue === evaluationValue
-            ? acc
-            : createUpdatedSubmission(acc, numericSubmissionPath, evaluationValue);
-        }, nextSubmission);
-        const calculatedValue = evaluateFormioCalculatedValue({
-          component,
-          submission: evaluationSubmission,
-          submissionPath,
-        });
-        const normalizedCalculatedValue = calculatedValue === '' ? undefined : calculatedValue;
-        const currentValue = submissionUtils.getSubmissionValue(submissionPath, nextSubmission);
-
-        if (currentValue !== normalizedCalculatedValue) {
-          nextSubmission = createUpdatedSubmission(nextSubmission, submissionPath, normalizedCalculatedValue);
-        }
-      });
-
-      return nextSubmission === initialSubmission ? prev : nextSubmission;
-    });
-  }, [calculatedComponents, numericComponents, setSubmission, submission]);
+    setSubmission((prev) =>
+      applyCalculatedValues({
+        submission: prev,
+        formComponents: formWithBaseSubmissionPath.components,
+        dataGridRowScopes,
+      }),
+    );
+  }, [dataGridRowScopes, formWithBaseSubmissionPath.components, setSubmission]);
 
   useEffect(() => {
-    const activeSubmissionPaths = new Set(
-      flattenComponentsWithBaseSubmissionPath([...activeComponents, ...panels])
-        .filter((component) => component.input)
-        .map((component) => getResolvedSubmissionPath(component)),
-    );
-    const hiddenPathsToClear = flattenComponentsWithBaseSubmissionPath(formWithBaseSubmissionPath.components)
-      .filter((component) => component.input && component.clearOnHide !== false)
-      .map((component) => getResolvedSubmissionPath(component))
-      .filter((submissionPath) => !activeSubmissionPaths.has(submissionPath));
+    const hiddenPathsToClear = collectHiddenSubmissionPaths({
+      form: formWithBaseSubmissionPath,
+      activeComponents,
+      panels,
+      submission,
+      submissionMethod,
+    });
     if (hiddenPathsToClear.length > 0) {
       clearSubmissionPaths(hiddenPathsToClear);
     }
@@ -172,7 +106,15 @@ const FormDefinitionProvider = ({ children, form }: Props) => {
         ? current
         : { ...current, attachments: visibleAttachments };
     });
-  }, [activeComponents, panels, clearSubmissionPaths, formWithBaseSubmissionPath.components, setSubmission]);
+  }, [
+    activeComponents,
+    panels,
+    clearSubmissionPaths,
+    formWithBaseSubmissionPath,
+    setSubmission,
+    submission,
+    submissionMethod,
+  ]);
 
   const value = useMemo(
     () => ({ form: formWithBaseSubmissionPath, activeComponents, panels }),

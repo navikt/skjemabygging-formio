@@ -63,6 +63,96 @@ describe('initializeDigitalDraft', () => {
     });
   });
 
+  it('keeps every populated data grid row when an earlier row was saved empty', async () => {
+    const applications = createApplicationService();
+    const formWithDataGrid: Form = {
+      ...form,
+      components: [
+        {
+          key: 'panel',
+          title: 'Panel',
+          type: 'panel',
+          navId: 'panel',
+          components: [
+            {
+              key: 'kjoreliste',
+              label: 'Kjøreliste',
+              type: 'datagrid',
+              input: true,
+              tree: true,
+              navId: 'grid',
+              components: [{ key: 'dato', label: 'Dato', type: 'textfield', input: true, navId: 'dato' }],
+            },
+          ],
+        },
+      ],
+    } as unknown as Form;
+    vi.mocked(applications.getDraft).mockResolvedValue({
+      id: 'draft-123',
+      language: 'nb',
+      submission: { data: { kjoreliste: [null, { dato: '01.01.2026' }] } },
+      modifiedAt: '2026-08-27T10:00:00Z',
+      deleteAt: '2026-09-24T10:00:00Z',
+    });
+
+    const result = await initializeDigitalDraft({
+      applications,
+      form: formWithDataGrid,
+      search: '?sub=digital&innsendingsId=draft-123',
+      submissionMethod: 'digital',
+    });
+
+    expect(result).toMatchObject({
+      type: 'ready',
+      initialSubmission: { data: { kjoreliste: [{}, { dato: '01.01.2026' }] } },
+    });
+  });
+
+  it('keeps answers for digital-only components when loading a draft', async () => {
+    const applications = createApplicationService();
+    const formWithDigitalOnlyComponent: Form = {
+      ...form,
+      properties: { ...form.properties, submissionTypes: ['PAPER', 'DIGITAL'] },
+      components: [
+        {
+          key: 'panel',
+          title: 'Panel',
+          type: 'panel',
+          navId: 'panel',
+          components: [
+            {
+              key: 'jegSokerPaVegneAvMegSelv',
+              label: 'Jeg søker på vegne av meg selv',
+              type: 'navCheckbox',
+              input: true,
+              navId: 'digitalOnly',
+              customConditional: 'show = instance.isSubmissionDigital();',
+            },
+          ],
+        },
+      ],
+    } as unknown as Form;
+    vi.mocked(applications.getDraft).mockResolvedValue({
+      id: 'draft-123',
+      language: 'nb',
+      submission: { data: { jegSokerPaVegneAvMegSelv: true } },
+      modifiedAt: '2026-08-27T10:00:00Z',
+      deleteAt: '2026-09-24T10:00:00Z',
+    });
+
+    const result = await initializeDigitalDraft({
+      applications,
+      form: formWithDigitalOnlyComponent,
+      search: '?sub=digital&innsendingsId=draft-123',
+      submissionMethod: 'digital',
+    });
+
+    expect(result).toMatchObject({
+      type: 'ready',
+      initialSubmission: { data: { jegSokerPaVegneAvMegSelv: true } },
+    });
+  });
+
   it('returns notFound when the requested draft does not exist', async () => {
     const applications = createApplicationService();
     vi.mocked(applications.getDraft).mockRejectedValue(new ResponseError('NOT_FOUND', 'Draft not found'));

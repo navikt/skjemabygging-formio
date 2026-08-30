@@ -35,6 +35,7 @@ interface AttachmentUploadFieldProps {
   required: boolean;
   attachmentValues?: AttachmentSettingValues | ComponentValue[];
   attachmentNavId: string;
+  attachmentId: string;
   submissionPath: string;
   type?: Exclude<AttachmentType, 'other'>;
   description?: ReactNode;
@@ -50,6 +51,7 @@ const AttachmentUploadField = ({
   required,
   attachmentValues,
   attachmentNavId,
+  attachmentId,
   submissionPath,
   type = 'default',
   description,
@@ -92,7 +94,7 @@ const AttachmentUploadField = ({
               : undefined
           }
           attachmentValues={attachmentValues}
-          attachmentNavId={attachmentNavId}
+          attachmentId={attachmentId}
           onChange={onValueChange}
           translate={translate}
           deadline={form.properties?.ettersendelsesfrist}
@@ -122,7 +124,7 @@ const AttachmentUploadField = ({
           )}
           <FileUploader
             initialAttachment={{
-              attachmentId: createAttachmentId(attachmentNavId, submissionPath),
+              attachmentId,
               navId: attachmentNavId,
               type,
             }}
@@ -168,7 +170,7 @@ const AttachmentUpload = ({
 
   const submissionAttachment = submissionAttachments.find((attachment) => attachment.navId === attachmentNavId);
   const attachmentId = createAttachmentId(attachmentNavId, submissionPath);
-  const attachmentError = getAttachmentError(attachmentNavId, 'value');
+  const attachmentError = getAttachmentError(attachmentId, 'value');
 
   const handleValueChange = (value: Partial<SubmissionAttachmentValue> | undefined) => {
     changeAttachmentValue(
@@ -185,6 +187,7 @@ const AttachmentUpload = ({
       description={description}
       attachmentValues={attachmentValues}
       attachmentNavId={attachmentNavId}
+      attachmentId={attachmentId}
       submissionPath={submissionPath}
       type={type as Exclude<AttachmentType, 'other'>}
       submissionAttachment={submissionAttachment}

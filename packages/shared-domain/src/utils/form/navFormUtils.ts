@@ -9,6 +9,7 @@ import {
   Submission,
   SubmissionMethod,
 } from '../../models';
+import type { CheckConditionOptions } from '../formio';
 import { checkCondition, navFormioUtils } from '../formio';
 import { stringUtils } from '../string';
 import { submissionTypesUtils } from '../submission';
@@ -325,8 +326,12 @@ const getActivePanelsFromForm = (form: Form, submission?: Submission): Panel[] =
     .filter((panel) => !isVedleggspanel(panel));
 };
 
-const getActiveComponentsFromForm = (form: Form, submission?: Submission): Component[] => {
-  const conditionals = formSummaryUtils.mapAndEvaluateConditionals(form, submission ?? { data: {} });
+const getActiveComponentsFromForm = (
+  form: Form,
+  submission?: Submission,
+  options?: CheckConditionOptions,
+): Component[] => {
+  const conditionals = formSummaryUtils.mapAndEvaluateConditionals(form, submission ?? { data: {} }, options);
 
   const panels = form.components.filter((component) => component.type === 'panel' && !isVedleggspanel(component));
 
@@ -339,8 +344,8 @@ const getActiveComponentsFromForm = (form: Form, submission?: Submission): Compo
 
 // Includes every active top-level panel in authored order. Unlike the legacy helpers above,
 // attachment panels are not treated as a separate navigation/rendering concern.
-const getAllActivePanelsFromForm = (form: Form, submission?: Submission): Panel[] => {
-  const conditionals = formSummaryUtils.mapAndEvaluateConditionals(form, submission ?? { data: {} });
+const getAllActivePanelsFromForm = (form: Form, submission?: Submission, options?: CheckConditionOptions): Panel[] => {
+  const conditionals = formSummaryUtils.mapAndEvaluateConditionals(form, submission ?? { data: {} }, options);
   const panels = form.components.filter((component): component is Panel => component.type === 'panel');
 
   return getActiveComponents(panels, conditionals) as Panel[];

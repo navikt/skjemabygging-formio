@@ -13,6 +13,7 @@ import {
 } from '../../models';
 import { TEXTS } from '../../texts';
 import { navFormUtils } from '../form';
+import { submissionUtils } from '../submission/submissionUtils';
 
 const enableAttachmentUpload = (submissionMethod?: string) =>
   submissionMethod === 'digital' || submissionMethod === 'digitalnologin';
@@ -189,20 +190,55 @@ const mapToAttachmentSummary = ({
   };
 };
 
+/**
+ * Collects attachment answers stored in submission data, regardless of where the attachment
+ * component sits in the form: directly in submission data, nested inside containers, or inside
+ * data grid rows.
+ */
+const collectAttachmentsFromSubmissionData = (
+  components: Component[],
+  submission: Submission,
+  parentSubmissionPath = '',
+): SubmissionAttachment[] =>
+  components.flatMap((component) => {
+    const submissionPath =
+      component.type === 'attachment'
+        ? [parentSubmissionPath, component.key].filter(Boolean).join('.')
+        : submissionUtils.getComponentSubmissionPath(component, parentSubmissionPath);
+
+    if (component.type === 'attachment') {
+      return toSubmissionAttachments(submissionUtils.getSubmissionValue(submissionPath, submission), component);
+    }
+
+    if (!component.components?.length) {
+      return [];
+    }
+
+    if (component.type === 'datagrid') {
+      const rows = submissionUtils.getSubmissionValue(submissionPath, submission);
+      return Array.isArray(rows)
+        ? rows.flatMap((_row, index) =>
+            collectAttachmentsFromSubmissionData(component.components ?? [], submission, `${submissionPath}[${index}]`),
+          )
+        : [];
+    }
+
+    return collectAttachmentsFromSubmissionData(component.components, submission, submissionPath);
+  });
+
 const getAttachmentsForCoverPage = (submission: Submission, form: NavFormType): Component[] => {
+  const attachments = [
+    ...(submission.attachments ?? []),
+    ...collectAttachmentsFromSubmissionData(form.components as Component[], submission),
+  ];
+
   return navFormUtils
     .flattenComponents(form.components)
     .filter((component) => component.properties && !!component.properties.vedleggskode)
     .filter((component) => {
-      const submissionData = { ...submission.data };
-      const submissionAttachment =
-        submission.attachments?.find((attachment) => navFormUtils.getNavId(component) === attachment.navId)?.value ??
-        submissionData[component.key];
+      const attachmentId = navFormUtils.getNavId(component) ?? component.key;
 
-      return (
-        submissionAttachment === 'leggerVedNaa' ||
-        (submissionAttachment as SubmissionAttachmentValue)?.key === 'leggerVedNaa'
-      );
+      return attachments.some((attachment) => attachment.navId === attachmentId && attachment.value === 'leggerVedNaa');
     });
 };
 

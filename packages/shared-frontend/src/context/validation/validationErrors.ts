@@ -9,8 +9,9 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { deriveValidations } from '../../validation/deriveValidations';
 import { validateValue } from '../../validation/validators';
-import { getAttachmentsAtPath } from '../attachment/attachmentData';
-import { AttachmentField, ExternalAttachmentError, FieldError } from './validationTypes';
+import { createAttachmentId, getAttachmentsAtPath } from '../attachment/attachmentData';
+import { attachmentValidationPath } from './attachmentValidationPath';
+import { ExternalAttachmentError, FieldError } from './validationTypes';
 
 interface RuleViolation {
   textKey: string;
@@ -18,9 +19,6 @@ interface RuleViolation {
 }
 
 type AttachmentViolation = { submissionPath: string; violation: RuleViolation };
-
-const attachmentValidationPath = (attachmentId: string, field: AttachmentField) =>
-  `attachments.${attachmentId}.${field}`;
 
 const validateAttachmentComponent = (
   component: Component,
@@ -33,13 +31,15 @@ const validateAttachmentComponent = (
     return [];
   }
 
-  const attachmentId = navFormUtils.getNavId(component);
-  if (!attachmentId) {
+  const navId = navFormUtils.getNavId(component);
+  if (!navId) {
     return [];
   }
 
+  // The same attachment id the upload controls use, so a data grid row gets its own error path.
+  const attachmentId = createAttachmentId(navId, submissionPath);
   const attachments = getAttachmentsAtPath(activeSubmission, submissionPath).filter(
-    (attachment) => attachment.navId === attachmentId,
+    (attachment) => attachment.navId === navId,
   );
   const primaryAttachment = attachments[0];
   const violations: AttachmentViolation[] = [];

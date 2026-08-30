@@ -1,20 +1,30 @@
 import { Component, Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { describe, expect, it } from 'vitest';
-import { enrichComponentsWithBaseSubmissionPath } from '../../../context/form-definition/formDefinitionUtils';
-import { getActiveRowComponents } from './InputDataGrid';
-import { addDataGridRowId, getRenderedDataGridRows, removeDataGridRowId, syncDataGridRowIds } from './dataGridRows';
+import {
+  enrichComponentsWithBaseSubmissionPath,
+  enrichFormWithBaseSubmissionPath,
+} from '../../../context/form-definition/formDefinitionUtils';
+import {
+  addDataGridRowId,
+  collectDataGridRowScopes,
+  collectInputSubmissionPaths,
+  getActiveRowComponents,
+  getRenderedDataGridRows,
+  removeDataGridRowId,
+  syncDataGridRowIds,
+} from './dataGridRows';
 
 const createForm = (components: Component[]): Form =>
-  ({
+  enrichFormWithBaseSubmissionPath({
     title: 'Test',
     path: 'test',
     components,
     properties: {
       submissionTypes: ['PAPER'],
     },
-  }) as Form;
+  } as Form);
 
-describe('InputDataGrid helpers', () => {
+describe('dataGridRows', () => {
   it('renders one empty row by default when the datagrid has no saved rows', () => {
     expect(getRenderedDataGridRows([], undefined)).toEqual([{}]);
     expect(getRenderedDataGridRows([], true)).toEqual([]);
@@ -45,6 +55,63 @@ describe('InputDataGrid helpers', () => {
     expect(synchronizedRowIds).toHaveLength(2);
     expect(synchronizedRowIds[0]).toBe(initialRowIds[0]);
     expect(synchronizedRowIds[1]).toBeDefined();
+  });
+
+  it('collects one scope per stored row, with indexed submission paths and row visibility', () => {
+    const datagrid: Component = {
+      key: 'kjoreliste',
+      label: 'Kjøreliste',
+      type: 'datagrid',
+      input: true,
+      tree: true,
+      navId: 'grid',
+      components: [
+        { key: 'harParkering', label: 'Har parkering', type: 'navCheckbox', input: true, navId: 'harParkering' },
+        {
+          key: 'parkeringsutgift',
+          label: 'Parkeringsutgift',
+          type: 'currency',
+          input: true,
+          navId: 'parkering',
+          customConditional: 'show = row.harParkering === true;',
+        },
+      ],
+    };
+    const form = createForm([datagrid]);
+    const submission = {
+      data: { kjoreliste: [{ harParkering: true }, { harParkering: false }, null] },
+    } as never;
+
+    const scopes = collectDataGridRowScopes({ components: form.components, submission, form });
+
+    expect(scopes).toHaveLength(2);
+    expect(collectInputSubmissionPaths(scopes[0].components).map(({ submissionPath }) => submissionPath)).toEqual([
+      'kjoreliste[0].harParkering',
+      'kjoreliste[0].parkeringsutgift',
+    ]);
+    expect(collectInputSubmissionPaths(scopes[0].activeComponents).map(({ submissionPath }) => submissionPath)).toEqual(
+      ['kjoreliste[0].harParkering', 'kjoreliste[0].parkeringsutgift'],
+    );
+    expect(collectInputSubmissionPaths(scopes[1].activeComponents).map(({ submissionPath }) => submissionPath)).toEqual(
+      ['kjoreliste[1].harParkering'],
+    );
+  });
+
+  it('keeps the data grid itself, but not its children, in the shared submission paths', () => {
+    const datagrid: Component = {
+      key: 'kjoreliste',
+      label: 'Kjøreliste',
+      type: 'datagrid',
+      input: true,
+      tree: true,
+      navId: 'grid',
+      components: [{ key: 'dato', label: 'Dato', type: 'textfield', input: true, navId: 'dato' }],
+    };
+    const form = createForm([datagrid]);
+
+    expect(collectInputSubmissionPaths(form.components).map(({ submissionPath }) => submissionPath)).toEqual([
+      'kjoreliste',
+    ]);
   });
 
   it('filters simple conditionals against row data', () => {

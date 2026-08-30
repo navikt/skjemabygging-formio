@@ -2,6 +2,7 @@ import { Form, Submission, SubmissionMethod } from '@navikt/skjemadigitalisering
 import { useState } from 'react';
 import { useLocation } from 'react-router';
 import { hydrateLegacyAttachments } from '../../context/attachment/attachmentData';
+import { applyDefaultValuesToSubmission } from '../../context/form-definition/defaultValues';
 import { FormDefinitionProvider } from '../../context/form-definition/FormDefinitionContext';
 import { applyPrefilledValuesToSubmission } from '../../context/form-definition/prefillSubmission';
 import { SubmissionStateProvider } from '../../context/state/SubmissionStateContext';
@@ -13,8 +14,8 @@ import { NologinTokenProvider } from '../context/nologin-token/NologinTokenConte
 import FormLanguageSelector from '../language/FormLanguageSelector';
 import FormHeader from '../layout/FormHeader';
 import FormLayout from '../layout/FormLayout';
-import SubmissionMethodSelection from '../submission-method/SubmissionMethodSelection';
 import { resolveDefaultSubmissionMethod } from '../submission-method/submissionMethodResolution';
+import SubmissionMethodSelection from '../submission-method/SubmissionMethodSelection';
 import FormRouter from './FormRouter';
 
 interface Props {
@@ -36,10 +37,9 @@ const FyllutFormFlow = ({
 }: Props) => {
   const { search } = useLocation();
   const [receiptPdf, setReceiptPdf] = useState<Blob>();
-  const hydratedInitialSubmission = applyPrefilledValuesToSubmission(
+  const hydratedInitialSubmission = applyDefaultValuesToSubmission(
     form,
-    hydrateLegacyAttachments(form, initialSubmission),
-    currentLanguage,
+    applyPrefilledValuesToSubmission(form, hydrateLegacyAttachments(form, initialSubmission), currentLanguage),
   );
   const defaultSubmissionMethod = resolveDefaultSubmissionMethod(form.properties.submissionTypes);
   const submissionMethodFromUrl = new URLSearchParams(search).has('sub') ? requestedSubmissionMethod : undefined;

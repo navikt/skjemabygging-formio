@@ -860,6 +860,86 @@ describe('navFormUtils', () => {
     });
   });
 
+  describe('submission method in conditional evaluation', () => {
+    // Shaped like the production form nav100727, which shows/hides components with
+    // customConditional expressions calling instance.isSubmissionDigital().
+    const createSubmissionMethodForm = () => ({
+      title: 'Søknad om stønad til pass av barn',
+      type: 'form',
+      properties: {
+        skjemanummer: 'NAV 10-07.27',
+        submissionTypes: ['PAPER', 'DIGITAL'],
+      },
+      components: [
+        {
+          key: 'soknadenGjelder',
+          title: 'Søknaden gjelder',
+          type: 'panel',
+          navId: 'panel1',
+          components: [
+            {
+              key: 'jegSokerPaVegneAvMegSelv',
+              label: 'Jeg søker på vegne av meg selv',
+              type: 'navCheckbox',
+              input: true,
+              navId: 'eb6r9bo',
+              customConditional: 'show = instance.isSubmissionDigital();',
+            },
+            {
+              key: 'hvemFyllerUtSoknaden',
+              label: 'Hvem fyller ut søknaden?',
+              type: 'radiopanel',
+              input: true,
+              navId: 'e6if8f6',
+              customConditional: 'show = !instance.isSubmissionDigital();',
+            },
+          ],
+        },
+        {
+          key: 'digitalPanel',
+          title: 'Kun digital',
+          type: 'panel',
+          navId: 'panel2',
+          customConditional: 'show = instance.isSubmissionDigital();',
+          components: [],
+        },
+      ],
+    });
+
+    it('evaluates instance.isSubmissionDigital() as true for digital submissions', () => {
+      const form = createSubmissionMethodForm();
+      const submission = { data: {} };
+
+      const [panel] = navFormUtils.getActiveComponentsFromForm(form, submission, { submissionMethod: 'digital' });
+      expect(panel.components.map((component) => component.key)).toEqual(['jegSokerPaVegneAvMegSelv']);
+      expect(
+        navFormUtils
+          .getAllActivePanelsFromForm(form, submission, { submissionMethod: 'digital' })
+          .map((activePanel) => activePanel.key),
+      ).toEqual(['soknadenGjelder', 'digitalPanel']);
+    });
+
+    it('evaluates instance.isSubmissionDigital() as false for paper submissions', () => {
+      const form = createSubmissionMethodForm();
+      const submission = { data: {} };
+
+      const [panel] = navFormUtils.getActiveComponentsFromForm(form, submission, { submissionMethod: 'paper' });
+      expect(panel.components.map((component) => component.key)).toEqual(['hvemFyllerUtSoknaden']);
+      expect(
+        navFormUtils
+          .getAllActivePanelsFromForm(form, submission, { submissionMethod: 'paper' })
+          .map((activePanel) => activePanel.key),
+      ).toEqual(['soknadenGjelder']);
+    });
+
+    it('falls back to paper behavior when no submission method is given', () => {
+      const form = createSubmissionMethodForm();
+
+      const [panel] = navFormUtils.getActiveComponentsFromForm(form, { data: {} });
+      expect(panel.components.map((component) => component.key)).toEqual(['hvemFyllerUtSoknaden']);
+    });
+  });
+
   describe('isSubmissionMethodAllowed', () => {
     const createTestForm = (submissionTypes) => ({ properties: { submissionTypes } });
 

@@ -1,11 +1,5 @@
 import { Box, Button, Heading } from '@navikt/ds-react';
-import {
-  checkCondition,
-  Component,
-  Form,
-  SubmissionData,
-  submissionUtils,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import TranslatedDescription from '../../../components/shared/TranslatedDescription';
 import { useFormDefinition } from '../../../context/form-definition/FormDefinitionContext';
@@ -15,12 +9,19 @@ import {
 } from '../../../context/form-definition/formDefinitionUtils';
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { createUpdatedSubmission, useSubmissionState } from '../../../context/state/SubmissionStateContext';
+import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
 import { useValidation } from '../../../context/validation/ValidationContext';
 import { useValidationScope } from '../../../context/validation/ValidationScopeContext';
 import { InputComponentRegistry } from '../../inputComponentRegistry';
 import RenderInputForm from '../../RenderInputForm';
 import FormGroup from '../../shared/FormGroup';
-import { addDataGridRowId, getRenderedDataGridRows, removeDataGridRowId, syncDataGridRowIds } from './dataGridRows';
+import {
+  addDataGridRowId,
+  getActiveRowComponents,
+  getRenderedDataGridRows,
+  removeDataGridRowId,
+  syncDataGridRowIds,
+} from './dataGridRows';
 import styles from './InputDataGrid.module.css';
 
 interface InputDataGridProps {
@@ -32,6 +33,7 @@ const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => 
   const { translate } = useLanguage();
   const { submission, updateSubmission } = useSubmissionState();
   const { form } = useFormDefinition();
+  const { submissionMethod } = useSubmissionMethod();
   const { handleFieldChange } = useValidation();
   const { pageKey, components: pageComponents } = useValidationScope();
   const { components, label, description, hideLabel, addAnother, removeAnother, disableAddingRemovingRows, rowTitle } =
@@ -69,7 +71,13 @@ const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => 
     <>
       <div className={styles.rows}>
         {renderedRows.map((row, index) => {
-          const rowComponents = getActiveRowComponents(rowComponentTemplates[index] ?? [], row, submission?.data, form);
+          const rowComponents = getActiveRowComponents(
+            rowComponentTemplates[index] ?? [],
+            row,
+            submission?.data,
+            form,
+            submissionMethod,
+          );
 
           return (
             <div key={synchronizedRowIds[index]} className={styles.row}>
@@ -122,36 +130,4 @@ const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => 
   );
 };
 
-const getActiveRowComponents = (
-  components: Component[],
-  row: object | undefined,
-  data: SubmissionData | undefined,
-  form: Form,
-) =>
-  components
-    .filter((component) => checkCondition(component, row, data, form))
-    .map((component) =>
-      component.components?.length
-        ? {
-            ...component,
-            components: getActiveRowComponents(component.components, getChildRow(component, row), data, form),
-          }
-        : component,
-    );
-
-const isObjectRecord = (value: unknown): value is Record<string, unknown> =>
-  typeof value === 'object' && value !== null && !Array.isArray(value);
-
-const shouldScopeChildRow = (component: Component) => Boolean(component.key && (component.tree || component.input));
-
-const getChildRow = (component: Component, row: object | undefined) => {
-  if (!shouldScopeChildRow(component) || !isObjectRecord(row)) {
-    return row;
-  }
-
-  const childRow = row[component.key];
-  return isObjectRecord(childRow) ? childRow : row;
-};
-
 export default InputDataGrid;
-export { getActiveRowComponents, getRenderedDataGridRows };

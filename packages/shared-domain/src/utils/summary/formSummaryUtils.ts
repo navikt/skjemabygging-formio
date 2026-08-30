@@ -24,6 +24,12 @@ function createComponentKeyWithNavId(component) {
   return `${component.key}-${component.navId}`;
 }
 
+// Summary rows are only created for data grid rows with values, so the row key keeps the original
+// row index and is the only link back to the matching row in submission data.
+function createDataGridRowKey(dataGridKey, rowIndex) {
+  return `${dataGridKey}-row-${rowIndex}`;
+}
+
 function formatPostnummerOgBySted(address) {
   if (address?.postnummer) {
     return address.bySted ? `${address?.postnummer} ${address?.bySted}` : address.postnummer;
@@ -303,7 +309,7 @@ function handleDataGridRows(component, submission, translate, form, language, op
         return {
           type: 'datagrid-row',
           label: translate(rowTitle),
-          key: `${key}-row-${index}`,
+          key: createDataGridRowKey(key, index),
           components: dataGridRowComponents,
         };
       }
@@ -766,7 +772,8 @@ const shouldShowInSummary = (componentKey, evaluatedConditionals) => {
   return evaluatedConditionals[componentKey] === undefined || evaluatedConditionals[componentKey];
 };
 
-function evaluateConditionals(components = [], form, submission, row = []) {
+function evaluateConditionals(components = [], form, submission, row = [], opts = {}) {
+  const conditionOptions = { submissionMethod: opts?.submissionMethod };
   return components
     .map((component) => {
       const clone = JSON.parse(JSON.stringify(component));
@@ -775,16 +782,16 @@ function evaluateConditionals(components = [], form, submission, row = []) {
     })
     .flatMap((component) => {
       const data = submission?.data || {};
-      if (!checkCondition(component, row, data, form, undefined, submission)) {
+      if (!checkCondition(component, row, data, form, undefined, submission, conditionOptions)) {
         return [{ key: createComponentKeyWithNavId(component), value: false }];
       }
       switch (component.type) {
         case 'container':
-          return evaluateConditionals(component.components, form, submission, data[component.key]);
+          return evaluateConditionals(component.components, form, submission, data[component.key], opts);
         case 'panel':
         case 'fieldset':
         case 'navSkjemagruppe':
-          return evaluateConditionals(component.components, form, submission);
+          return evaluateConditionals(component.components, form, submission, [], opts);
         case 'htmlelement':
         case 'image':
         case 'alertstripe':
@@ -799,8 +806,8 @@ function evaluateConditionals(components = [], form, submission, row = []) {
 }
 
 // A map of components (key-navId) with their conditional evaluation (used to determine if a component should be shown in the summary/PDF or not in shouldShowInSummary())
-function mapAndEvaluateConditionals(form, submission = { data: {} }) {
-  return evaluateConditionals(form.components, form, submission).reduce(objectUtils.addToMap, {});
+function mapAndEvaluateConditionals(form, submission = { data: {} }, opts = {}) {
+  return evaluateConditionals(form.components, form, submission, [], opts).reduce(objectUtils.addToMap, {});
 }
 
 function createFormSummaryObject(
@@ -811,7 +818,7 @@ function createFormSummaryObject(
   language,
   opts = {},
 ) {
-  const evaluatedConditionalsMap = mapAndEvaluateConditionals(form, submission);
+  const evaluatedConditionalsMap = mapAndEvaluateConditionals(form, submission, opts);
   return form.components.reduce(
     (formSummaryObject, component) =>
       handleComponent(
@@ -836,7 +843,7 @@ function createFormSummaryPanels(form, submission, translate?, excludeEmptyPanel
   );
 }
 
-function filterSubmissionDataToSummary(form, submission) {
+function filterSubmissionDataToSummary(form, submission, opts = {}) {
   if (!submission?.data) {
     return submission;
   }
@@ -871,9 +878,15 @@ function filterSubmissionDataToSummary(form, submission) {
         }
 
         if (matchingComponents[0].type === 'datagrid') {
-          const nestedData = matchingComponents[0].components.map((row, index) =>
-            filterData(value[index], row.components),
-          );
+          // Summary rows only exist for rows with values, and each summary row keeps a reference to
+          // its original row index (see handleDataGridRows). Data rows must therefore be matched by
+          // that index, otherwise a preceding empty row shifts populated rows out of the submission.
+          const dataGridRows = Array.isArray(value) ? value : [];
+          const summaryRows = matchingComponents[0].components ?? [];
+          const nestedData = dataGridRows.map((rowData, index) => {
+            const summaryRow = summaryRows.find((row) => row.key === createDataGridRowKey(key, index));
+            return summaryRow ? filterData(rowData ?? {}, summaryRow.components) : {};
+          });
           return [[key, nestedData]];
         }
 
@@ -881,7 +894,9 @@ function filterSubmissionDataToSummary(form, submission) {
       }),
     );
 
-  const summaryComponents = createFormSummaryPanels(form, submission).flatMap((panel) => panel.components);
+  const summaryComponents = createFormSummaryPanels(form, submission, undefined, undefined, undefined, opts).flatMap(
+    (panel) => panel.components,
+  );
   return { ...submission, data: filterData(submission.data, summaryComponents) };
 }
 

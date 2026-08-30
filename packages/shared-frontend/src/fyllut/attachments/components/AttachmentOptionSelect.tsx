@@ -10,6 +10,7 @@ import {
 import { forwardRef, ReactNode, useEffect } from 'react';
 import Select from '../../../components/select/Select';
 import TextArea from '../../../components/text-area/TextArea';
+import { attachmentValidationPath } from '../../../context/validation/attachmentValidationPath';
 
 interface Props {
   title: ReactNode;
@@ -23,7 +24,7 @@ interface Props {
   deadline?: string;
   className?: string;
   submissionMethod?: SubmissionMethod;
-  attachmentNavId: string;
+  attachmentId: string;
 }
 
 const AttachmentOptionSelect = forwardRef<HTMLFieldSetElement, Props>(
@@ -40,7 +41,7 @@ const AttachmentOptionSelect = forwardRef<HTMLFieldSetElement, Props>(
       deadline,
       className,
       submissionMethod,
-      attachmentNavId,
+      attachmentId,
     },
     ref,
   ) => {
@@ -95,7 +96,7 @@ const AttachmentOptionSelect = forwardRef<HTMLFieldSetElement, Props>(
           </div>
         ) : (
           <Select
-            statePath={`attachments.${attachmentNavId}.value`}
+            statePath={attachmentValidationPath(attachmentId, 'value')}
             label={typeof title === 'string' ? title : ''}
             required={required}
             description={typeof description === 'string' ? description : undefined}
@@ -109,7 +110,7 @@ const AttachmentOptionSelect = forwardRef<HTMLFieldSetElement, Props>(
         )}
         {additionalDocumentation?.enabled && (
           <TextArea
-            statePath={`attachments.${attachmentNavId}.additionalDocumentation`}
+            statePath={`attachments.${attachmentId}.additionalDocumentation`}
             label={translate(additionalDocumentation.label)}
             value={selectedValueKey === value?.key ? (value?.additionalDocumentation ?? '') : ''}
             description={translate(additionalDocumentation.description)}

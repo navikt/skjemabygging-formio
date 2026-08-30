@@ -68,7 +68,7 @@ const PersonalIdUploadPage = () => {
         <VStack gap="space-24">
           {!attachment?.files?.length && (
             <AttachmentOptionSelect
-              attachmentNavId={PERSONAL_ID_ATTACHMENT_ID}
+              attachmentId={PERSONAL_ID_ATTACHMENT_ID}
               attachmentValues={identityDocumentOptions}
               description=""
               error={attachmentValueError}

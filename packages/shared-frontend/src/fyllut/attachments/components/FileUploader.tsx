@@ -11,6 +11,7 @@ import { getAttachmentsAtPath } from '../../../context/attachment/attachmentData
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
 import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
+import { attachmentValidationPath } from '../../../context/validation/attachmentValidationPath';
 import { useAttachmentUpload } from '../context/AttachmentUploadContext';
 import { fileUploadErrorParams } from '../context/fileUploadConfig';
 import FilesPreview from './FilesPreview';
@@ -114,9 +115,7 @@ const FileUploader = ({
         <VStack gap="space-32">
           {requireAttachmentTitle && (
             <TextField
-              statePath={
-                submissionPath ? `${submissionPath}.${attachmentId}.title` : `attachments.${attachmentId}.title`
-              }
+              statePath={attachmentValidationPath(attachmentId, 'title')}
               label={translate(TEXTS.statiske.attachment.attachmentTitle)}
               maxLength={50}
               value={attachment?.title ?? ''}
@@ -127,9 +126,7 @@ const FileUploader = ({
           <HStack gap="space-16">
             <UploadButton
               attachmentId={attachmentId}
-              statePath={
-                submissionPath ? `${submissionPath}.${attachmentId}.files` : `attachments.${attachmentId}.files`
-              }
+              statePath={attachmentValidationPath(attachmentId, 'files')}
               submissionPath={submissionPath}
               multipleAttachments={multipleAttachments}
               variant={initialUpload ? 'primary' : 'secondary'}

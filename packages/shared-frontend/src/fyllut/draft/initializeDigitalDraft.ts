@@ -82,7 +82,7 @@ const initializeDigitalDraft = async ({
       initialInnsendingsId: innsendingsId,
       initialLanguage: draft.language,
       initialSubmission: withDraftMetadata(
-        formSummaryUtils.filterSubmissionDataToSummary(form, draft.submission),
+        formSummaryUtils.filterSubmissionDataToSummary(form, draft.submission, { submissionMethod }),
         draft,
       ),
     };

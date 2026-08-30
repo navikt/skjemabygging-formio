@@ -150,7 +150,7 @@ const OtherAttachmentUploadField = ({
           error={error}
           value={submissionAttachment?.value ? { key: submissionAttachment.value } : undefined}
           attachmentValues={attachmentValues}
-          attachmentNavId={attachmentNavId}
+          attachmentId={baseAttachmentId}
           onChange={onValueChange}
           translate={translate}
           deadline={form.properties?.ettersendelsesfrist}
@@ -224,7 +224,7 @@ const OtherAttachmentUpload = ({
   const { getAttachmentError } = useAttachmentValidation(submissionAttachments);
   const submissionAttachment = submissionAttachments.find((attachment) => attachment.navId === attachmentNavId);
   const attachmentId = createAttachmentId(attachmentNavId, submissionPath);
-  const attachmentError = getAttachmentError(attachmentNavId, 'value');
+  const attachmentError = getAttachmentError(attachmentId, 'value');
 
   const handleValueChange = (value: Partial<SubmissionAttachmentValue> | undefined) => {
     changeAttachmentValue(
