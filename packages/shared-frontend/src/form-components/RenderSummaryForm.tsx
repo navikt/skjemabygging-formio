@@ -56,7 +56,7 @@ import {
   SummaryRendererConfig,
 } from './types';
 
-type SupportedSummaryComponentType = Exclude<FormComponentType, 'password'>;
+type SupportedSummaryComponentType = Exclude<FormComponentType, 'formioTextArea' | 'password'>;
 
 interface CommonProps {
   activeComponents: Component[];
@@ -104,7 +104,6 @@ const RenderSummaryForm = ({
     navSelect: SummaryNavSelect,
     selectboxes: SummarySelectBoxes,
     textarea: SummaryTextArea,
-    formioTextArea: SummaryTextArea,
     textfield: SummaryTextField,
 
     /* Customized */

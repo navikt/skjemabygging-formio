@@ -62,7 +62,6 @@ const inputComponentRegistry: InputComponentRegistry = {
   sender: InputSender,
   textfield: InputTextField,
   textarea: InputTextArea,
-  formioTextArea: InputTextArea,
   select: InputSelect,
   navSelect: InputNavSelect,
   landvelger: InputCountrySelect,
