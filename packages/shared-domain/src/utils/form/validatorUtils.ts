@@ -1,5 +1,19 @@
 import { idnr } from '@navikt/fnrvalidator';
 
+const NATIONAL_IDENTITY_PROD_TYPES = ['fnr', 'dnr'];
+const NATIONAL_IDENTITY_TEST_TYPES = ['fnr', 'dnr', 'hnr', 'tnr', 'dnr-and-hnr'];
+
+const isNationalIdentityNumber = (value: string, options: { allowTestTypes?: boolean } = {}) => {
+  const result = idnr(removeSpaces(value ?? ''));
+  if (result.status !== 'valid') {
+    return false;
+  }
+  if (NATIONAL_IDENTITY_PROD_TYPES.includes(result.type)) {
+    return true;
+  }
+  return !!options.allowTestTypes && NATIONAL_IDENTITY_TEST_TYPES.includes(result.type);
+};
+
 const isValidCoverPageValue = (value: string) => {
   // Regex is from "foerstesidegenerator" and checks that a string only contains characters that are defined as valid.
   // https://github.com/navikt/foerstesidegenerator/blob/20170afdb8e8efbfa7ced1940290ff40cdc7bb95/app/src/main/java/no/nav/foerstesidegenerator/service/support/PostFoerstesideRequestValidator.java#L42C70-L42C124
@@ -9,24 +23,6 @@ const isValidCoverPageValue = (value: string) => {
   // p{Zs} matches a whitespace character that is invisible, but does take up space
   const validCharactersRegex = /^[\p{L}\p{N}\p{Zs}\n\t\-./;()":,–_'?&+’%#•@»«§]*$/gu;
   return validCharactersRegex.test(value);
-};
-
-const NATIONAL_IDENTITY_NUMBER_TYPES = ['fnr', 'dnr'];
-const NATIONAL_IDENTITY_NUMBER_TEST_TYPES = ['fnr', 'dnr', 'hnr', 'tnr', 'dnr-and-hnr'];
-
-/**
- * Single definition of which national identity numbers Nav accepts. Synthetic numbers only exist in
- * test environments, so the caller decides whether they are allowed.
- */
-const isNationalIdentityNumber = (value: string, options?: { allowTestTypes?: boolean }) => {
-  const result = idnr(removeSpaces(value));
-  if (result.status === 'invalid') {
-    return false;
-  }
-  if (NATIONAL_IDENTITY_NUMBER_TYPES.includes(result.type)) {
-    return true;
-  }
-  return !!options?.allowTestTypes && NATIONAL_IDENTITY_NUMBER_TEST_TYPES.includes(result.type);
 };
 
 const isOrganizationNumber = (organizationNumber: string) => {
@@ -82,9 +78,9 @@ const isValidAttachmentId = (value: string): boolean => {
 };
 
 const validatorUtils = {
-  isNationalIdentityNumber,
   isOrganizationNumber,
   isAccountNumber,
+  isNationalIdentityNumber,
   isValidCoverPageValue,
   isValidUuid,
   isValidAttachmentId,
