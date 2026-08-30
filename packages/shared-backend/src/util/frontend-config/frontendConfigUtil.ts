@@ -3,6 +3,7 @@ import {
   FrontendLoggerConfigType,
   SharedFrontendConfig,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import { naisClusterUtil } from '../nais/naisClusterUtil';
 
 type CreateSharedFrontendConfigProps = {
   naisClusterName?: string;
@@ -25,7 +26,7 @@ const createSharedFrontendConfig = ({
     FEATURE_TOGGLES: featureToggles,
     featureToggles,
     isDevelopment,
-    isProdGcp: normalizedNaisClusterName === 'prod-gcp',
+    isProdGcp: naisClusterUtil.isProdGcp(normalizedNaisClusterName),
     loggerConfig,
   };
 };

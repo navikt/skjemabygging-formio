@@ -2,6 +2,7 @@ import {
   Attachment,
   AvsenderId,
   BrukerDto,
+  naisClusterUtil,
   OpplastingsStatus,
   partyProjections,
   SubmissionPartyProjection,
@@ -20,6 +21,7 @@ import {
   TranslationLang,
   yourInformationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import { config } from '../../../config/config';
 import { base64EncodeByteArray } from '../../../utils/base64';
 import { objectToByteArray } from './sendInn';
 
@@ -96,12 +98,11 @@ const removeSpaces = (value?: string): string | undefined => (value ? formatUtil
 
 /**
  * Reads the submission as a party, falling back to the mappers that predate the party model for the
- * shapes a party cannot express. Synthetic identity numbers are accepted because submission has
- * never rejected an identity number the form itself allowed.
+ * shapes a party cannot express.
  */
 const extractParties = (form: Form, submission: Submission): SubmissionPartyProjection => {
   const navFormParty = navFormPartyAdapter.getNavFormParty(form, submission.data, {
-    allowSyntheticIdentityNumbers: true,
+    allowSyntheticIdentityNumbers: naisClusterUtil.allowSyntheticIdentityNumbers(config.naisClusterName),
   });
   if (navFormParty.type === 'party') {
     return partyProjections.toSubmissionParties(navFormParty.party);

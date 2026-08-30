@@ -15,6 +15,7 @@ import {
   navFormUtils,
   yourInformationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import { naisClusterUtil } from '../../../util/nais/naisClusterUtil';
 import { CoverPagePartyProjection, partyProjections } from '../../party';
 
 type CoverPageUser = CoverPageDownloadType['user'];
@@ -170,12 +171,11 @@ const getSubmissionUserData = (form: Form, submission: SubmissionData): CoverPag
 
 /**
  * Reads the submission as a party, falling back to the mappers that predate the party model for the
- * shapes a party cannot express. Synthetic identity numbers are accepted because the cover page has
- * never rejected an identity number the form itself allowed.
+ * shapes a party cannot express.
  */
 const getCoverPageParties = (form: Form, submission: SubmissionData): CoverPagePartyProjection => {
   const navFormParty = navFormPartyAdapter.getNavFormParty(form, submission, {
-    allowSyntheticIdentityNumbers: true,
+    allowSyntheticIdentityNumbers: naisClusterUtil.allowSyntheticIdentityNumbers(),
   });
   return navFormParty.type === 'party'
     ? partyProjections.toCoverPageParties(navFormParty.party)
