@@ -26,6 +26,7 @@ const DatePicker = ({
   fromDate,
   toDate,
   readMore,
+  fieldSize,
   marginBottom,
 }: DatePickerProps) => {
   const { currentLanguage } = useLanguage();
@@ -64,7 +65,7 @@ const DatePicker = ({
   };
 
   return (
-    <FormElementBox marginBottom={marginBottom}>
+    <FormElementBox fieldSize={fieldSize} marginBottom={marginBottom}>
       <AkselDatePicker {...datepickerProps}>
         <AkselDatePicker.Input
           {...inputProps}

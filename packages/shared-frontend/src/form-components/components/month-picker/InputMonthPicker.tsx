@@ -3,6 +3,7 @@ import { getMonthPickerMaxYear, getMonthPickerMinYear } from '../../dateDefiniti
 import {
   InputComponentProps,
   isRequired,
+  resolveFieldSize,
   resolveReadMore,
   resolveSubmissionPath,
 } from '../../inputComponentRegistryUtils';
@@ -15,6 +16,7 @@ const InputMonthPicker = ({ component, submissionPath }: InputComponentProps) =>
       label={component.label}
       description={component.description}
       required={isRequired(component)}
+      fieldSize={resolveFieldSize(component)}
       readOnly={component.readOnly}
       minYear={getMonthPickerMinYear(component)}
       maxYear={getMonthPickerMaxYear(component)}

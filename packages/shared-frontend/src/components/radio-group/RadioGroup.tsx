@@ -30,6 +30,7 @@ const RadioGroup = ({
   required = true,
   readOnly,
   readMore,
+  fieldSize,
   marginBottom,
   value,
   onChange,
@@ -51,7 +52,7 @@ const RadioGroup = ({
   }, [defaultValue, setStateValue, stateValue, value]);
 
   return (
-    <FormElementBox marginBottom={marginBottom}>
+    <FormElementBox fieldSize={fieldSize} marginBottom={marginBottom}>
       <AkselRadioGroup
         id={inputId(statePath)}
         tabIndex={-1}

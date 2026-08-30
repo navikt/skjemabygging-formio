@@ -16,6 +16,7 @@ const CurrencySelect = ({
   required,
   readOnly,
   readMore,
+  fieldSize,
   marginBottom,
 }: CurrencySelectProps) => {
   const { logger } = useApplication();
@@ -38,6 +39,7 @@ const CurrencySelect = ({
       required={required}
       readOnly={readOnly}
       readMore={readMore}
+      fieldSize={fieldSize}
       marginBottom={marginBottom}
       selectType="combobox"
       valueType="option"

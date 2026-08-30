@@ -68,6 +68,7 @@ const TextField = ({
   error: controlledError,
   maxLength,
   readMore,
+  fieldSize,
   marginBottom,
 }: TextFieldProps) => {
   const { stateValue, error, setStateValue } = useStateField({ statePath });
@@ -153,7 +154,7 @@ const TextField = ({
   }, [readOnly, updateValue]);
 
   return (
-    <FormElementBox marginBottom={marginBottom}>
+    <FormElementBox fieldSize={fieldSize} marginBottom={marginBottom}>
       <AkselTextField
         ref={inputRef}
         id={inputId(statePath)}

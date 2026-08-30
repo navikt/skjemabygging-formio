@@ -5,6 +5,7 @@ import { getDatePickerFromDate, getDatePickerToDate } from '../../dateDefinition
 import {
   InputComponentProps,
   isRequired,
+  resolveFieldSize,
   resolveReadMore,
   resolveSubmissionPath,
 } from '../../inputComponentRegistryUtils';
@@ -22,6 +23,7 @@ const InputDatePicker = ({ component, submissionPath }: InputComponentProps) => 
         label={component.label}
         description={component.description}
         required={isRequired(component)}
+        fieldSize={resolveFieldSize(component)}
         readOnly={component.readOnly}
         fromDate={getDatePickerFromDate(component, pageComponents, submission)}
         toDate={getDatePickerToDate(component)}

@@ -3,6 +3,7 @@ import {
   getValues,
   InputComponentProps,
   isRequired,
+  resolveFieldSize,
   resolveReadMore,
   resolveSubmissionPath,
 } from '../../inputComponentRegistryUtils';
@@ -17,6 +18,7 @@ const InputRadio = ({ component, submissionPath }: InputComponentProps) => (
       values={getValues(component)}
       defaultValue={typeof component.defaultValue === 'string' ? component.defaultValue : undefined}
       required={isRequired(component)}
+      fieldSize={resolveFieldSize(component)}
       readOnly={component.readOnly}
       readMore={resolveReadMore(component)}
     />

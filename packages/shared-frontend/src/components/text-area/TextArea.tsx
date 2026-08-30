@@ -1,6 +1,7 @@
 import { Textarea } from '@navikt/ds-react';
-import { ChangeEvent, FocusEvent } from 'react';
+import { ChangeEvent, FocusEvent, useEffect, useRef, useState } from 'react';
 import { useStateField } from '../../context/state/useStateField';
+import { toInputFormat, toSubmissionFormat } from '../../formatting/inputFormat';
 import { inputId } from '../../utils/inputId';
 import ReadMore from '../read-more/ReadMore';
 import FormElementBox from '../shared/FormElementBox';
@@ -25,30 +26,44 @@ const TextArea = ({
   value: controlledValue,
   onChange: controlledOnChange,
   readMore,
+  fieldSize,
   marginBottom,
 }: TextAreaProps) => {
   const { stateValue, error, setStateValue } = useStateField({ statePath });
-  const value = controlledOnChange ? (controlledValue ?? '') : typeof stateValue === 'string' ? stateValue : '';
+  const isFocusedRef = useRef(false);
+  const sourceValue = controlledOnChange ? controlledValue : stateValue;
+  const syncedDisplayValue = toInputFormat(sourceValue);
+  const [displayValue, setDisplayValue] = useState(syncedDisplayValue);
 
   const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    const rawValue = event.target.value;
+    setDisplayValue(rawValue);
     if (controlledOnChange) {
-      controlledOnChange(event.target.value);
+      controlledOnChange(toSubmissionFormat(rawValue));
     } else {
-      setStateValue(event.target.value);
+      setStateValue(toSubmissionFormat(rawValue));
     }
   };
 
   const handleBlur = (event: FocusEvent<HTMLTextAreaElement>) => {
-    const trimmedValue = event.target.value.trim();
+    isFocusedRef.current = false;
+    const trimmedValue = toInputFormat(event.target.value);
+    setDisplayValue(trimmedValue);
     if (controlledOnChange) {
       controlledOnChange(trimmedValue);
     } else {
-      setStateValue(trimmedValue);
+      setStateValue(toSubmissionFormat(event.target.value));
     }
   };
 
+  useEffect(() => {
+    if (!isFocusedRef.current) {
+      setDisplayValue((previousValue) => (previousValue === syncedDisplayValue ? previousValue : syncedDisplayValue));
+    }
+  }, [syncedDisplayValue]);
+
   return (
-    <FormElementBox marginBottom={marginBottom}>
+    <FormElementBox fieldSize={fieldSize} marginBottom={marginBottom}>
       <Textarea
         id={inputId(statePath)}
         label={
@@ -57,7 +72,10 @@ const TextArea = ({
           </TranslatedLabel>
         }
         description={<TranslatedDescription>{description}</TranslatedDescription>}
-        value={value}
+        value={displayValue}
+        onFocus={() => {
+          isFocusedRef.current = true;
+        }}
         onChange={handleChange}
         onBlur={handleBlur}
         error={error}

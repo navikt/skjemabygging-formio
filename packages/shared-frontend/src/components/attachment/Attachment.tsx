@@ -10,18 +10,13 @@ import { useStateField } from '../../context/state/useStateField';
 import Alert from '../alert/Alert';
 import CheckboxGroup from '../checkbox-group/CheckboxGroup';
 import RadioGroup from '../radio-group/RadioGroup';
-import ReadMore, { ReadMoreProps } from '../read-more/ReadMore';
-import FormElementBox, { Spacing } from '../shared/FormElementBox';
+import ReadMore from '../read-more/ReadMore';
+import FormElementBox from '../shared/FormElementBox';
 import TextField from '../text-field/TextField';
+import { BaseFieldProps } from '../types';
 
-interface AttachmentProps {
-  statePath: string;
+interface AttachmentProps extends BaseFieldProps {
   label: string;
-  description?: string;
-  required?: boolean;
-  readOnly?: boolean;
-  marginBottom?: Spacing;
-  readMore?: ReadMoreProps;
   values: AttachmentOption[];
   attachmentValues?: AttachmentSettingValues;
   deadlineDays?: string;
@@ -35,6 +30,7 @@ const Attachment = ({
   description,
   required = true,
   readOnly,
+  fieldSize,
   marginBottom,
   readMore,
   values,
@@ -58,7 +54,7 @@ const Attachment = ({
   const shouldShowDeadline = !!(selectedValue && attachmentValues?.[selectedValue]?.showDeadline && deadlineDays);
 
   return (
-    <FormElementBox marginBottom={marginBottom}>
+    <FormElementBox fieldSize={fieldSize} marginBottom={marginBottom}>
       {singleOption ? (
         <CheckboxGroup
           statePath={statePath}

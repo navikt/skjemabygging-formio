@@ -9,6 +9,7 @@ import { useFyllut } from '../../../fyllut/context/fyllut/FyllutContext';
 import {
   InputComponentProps,
   isRequired,
+  resolveFieldSize,
   resolveReadMore,
   resolveSubmissionPath,
 } from '../../inputComponentRegistryUtils';
@@ -65,6 +66,7 @@ const InputAttachment = ({ component, submissionPath }: InputComponentProps) => 
         attachmentValues={component.attachmentValues}
         deadlineDays={form.properties?.ettersendelsesfrist}
         required={isRequired(component)}
+        fieldSize={resolveFieldSize(component)}
         readOnly={component.readOnly}
         readMore={resolveReadMore(component)}
       />

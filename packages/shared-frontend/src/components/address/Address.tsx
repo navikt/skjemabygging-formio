@@ -11,6 +11,7 @@ import { useStateField } from '../../context/state/useStateField';
 import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
 import CountrySelect from '../country-select/CountrySelect';
 import RadioGroup from '../radio-group/RadioGroup';
+import FormElementBox from '../shared/FormElementBox';
 import TextField from '../text-field/TextField';
 import { BaseFieldProps } from '../types';
 import {
@@ -21,7 +22,7 @@ import {
   shouldShowAddressTypeChoice,
 } from './addressUtils';
 
-interface AddressProps extends Pick<BaseFieldProps, 'statePath' | 'required' | 'readOnly'> {
+interface AddressProps extends Pick<BaseFieldProps, 'statePath' | 'required' | 'readOnly' | 'fieldSize'> {
   addressPriority?: AddressPriority;
   addressType?: AddressType;
   addressTypeWizard?: AddressTypeWizard;
@@ -40,6 +41,7 @@ const Address = ({
   customLabels,
   required = false,
   readOnly,
+  fieldSize,
 }: AddressProps) => {
   const { submissionMethod } = useSubmissionMethod();
   const { currentLanguage } = useLanguage();
@@ -71,7 +73,7 @@ const Address = ({
   }
 
   return (
-    <>
+    <FormElementBox fieldSize={fieldSize} marginBottom="space-0">
       {showAddressChoice && (
         <RadioGroup
           statePath={`${statePath}.borDuINorge`}
@@ -246,7 +248,7 @@ const Address = ({
           )}
         </>
       )}
-    </>
+    </FormElementBox>
   );
 };
 

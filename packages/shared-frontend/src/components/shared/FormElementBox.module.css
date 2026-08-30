@@ -1,0 +1,46 @@
+:global(:root) {
+  --shared-frontend-field-width-xxsmall: 2.1875rem;
+  --shared-frontend-field-width-xsmall: 4.375rem;
+  --shared-frontend-field-width-small: 8.75rem;
+  --shared-frontend-field-width-medium: 13.125rem;
+  --shared-frontend-field-width-large: 17.5rem;
+  --shared-frontend-field-width-xlarge: 21.875rem;
+  --shared-frontend-field-width-xxlarge: 26.25rem;
+}
+
+.field {
+  min-inline-size: 0;
+}
+
+.sized {
+  inline-size: 100%;
+  max-inline-size: var(--field-max-inline-size, none);
+}
+
+.xxsmall {
+  --field-max-inline-size: var(--shared-frontend-field-width-xxsmall);
+}
+
+.xsmall {
+  --field-max-inline-size: var(--shared-frontend-field-width-xsmall);
+}
+
+.small {
+  --field-max-inline-size: var(--shared-frontend-field-width-small);
+}
+
+.medium {
+  --field-max-inline-size: var(--shared-frontend-field-width-medium);
+}
+
+.large {
+  --field-max-inline-size: var(--shared-frontend-field-width-large);
+}
+
+.xlarge {
+  --field-max-inline-size: var(--shared-frontend-field-width-xlarge);
+}
+
+.xxlarge {
+  --field-max-inline-size: var(--shared-frontend-field-width-xxlarge);
+}

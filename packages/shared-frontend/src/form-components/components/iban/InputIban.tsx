@@ -2,6 +2,7 @@ import TextField from '../../../components/text-field/TextField';
 import {
   InputComponentProps,
   isRequired,
+  resolveFieldSize,
   resolveReadMore,
   resolveSubmissionPath,
 } from '../../inputComponentRegistryUtils';
@@ -14,6 +15,7 @@ const InputIban = ({ component, submissionPath }: InputComponentProps) => (
       label={component.label}
       description={component.description}
       required={isRequired(component)}
+      fieldSize={resolveFieldSize(component)}
       readOnly={component.readOnly}
       readMore={resolveReadMore(component)}
       spellCheck={false}

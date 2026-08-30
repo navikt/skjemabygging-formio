@@ -2,6 +2,7 @@ import Checkbox from '../../../components/checkbox/Checkbox';
 import {
   InputComponentProps,
   isRequired,
+  resolveFieldSize,
   resolveReadMore,
   resolveSubmissionPath,
 } from '../../inputComponentRegistryUtils';
@@ -15,6 +16,7 @@ const InputCheckbox = ({ component, submissionPath }: InputComponentProps) => (
       description={component.description}
       defaultValue={typeof component.defaultValue === 'boolean' ? component.defaultValue : undefined}
       required={isRequired(component)}
+      fieldSize={resolveFieldSize(component)}
       readOnly={component.readOnly}
       readMore={resolveReadMore(component)}
       showInlineError={!component.validate?.custom}

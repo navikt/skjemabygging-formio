@@ -35,6 +35,8 @@ const PhoneNumber = ({
   required = false,
   readOnly,
   readMore,
+  fieldSize,
+  marginBottom,
   showAreaCode = false,
 }: PhoneNumberProps) => {
   const { logger } = useApplication();
@@ -78,6 +80,8 @@ const PhoneNumber = ({
         required={required}
         readOnly={readOnly}
         readMore={readMore}
+        fieldSize={fieldSize}
+        marginBottom={marginBottom}
         type="tel"
         inputMode="tel"
         formatKey="phoneNumber"
@@ -88,7 +92,7 @@ const PhoneNumber = ({
   const areaCodeOptions = loadedAreaCodes ?? fallbackAreaCodeOptions;
 
   return (
-    <FormElementBox>
+    <FormElementBox fieldSize={fieldSize} marginBottom={marginBottom}>
       <Label as="label" htmlFor={inputId(`${statePath}.number`)}>
         <TranslatedLabel required={required} readOnly={readOnly}>
           {label}

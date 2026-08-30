@@ -2,6 +2,7 @@ import TextField from '../../../components/text-field/TextField';
 import {
   InputComponentProps,
   isRequired,
+  resolveFieldSize,
   resolveInputType,
   resolveReadMore,
   resolveSubmissionPath,
@@ -15,6 +16,7 @@ const InputTextField = ({ component, submissionPath }: InputComponentProps) => (
       label={component.label}
       description={component.description}
       required={isRequired(component)}
+      fieldSize={resolveFieldSize(component)}
       readOnly={component.readOnly}
       autoComplete={component.autocomplete}
       inputMode={component.inputType}

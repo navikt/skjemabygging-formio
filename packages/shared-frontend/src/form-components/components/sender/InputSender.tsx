@@ -2,6 +2,7 @@ import Sender, { SenderPrefillValue } from '../../../components/sender/Sender';
 import {
   InputComponentProps,
   isRequired,
+  resolveFieldSize,
   resolveReadMore,
   resolveSubmissionPath,
 } from '../../inputComponentRegistryUtils';
@@ -18,6 +19,7 @@ const InputSender = ({ component, submissionPath }: InputComponentProps) => {
       <Sender
         statePath={resolveSubmissionPath(component, submissionPath)}
         required={isRequired(component)}
+        fieldSize={resolveFieldSize(component)}
         readOnly={component.readOnly}
         readMore={resolveReadMore(component)}
         senderRole={component.senderRole}

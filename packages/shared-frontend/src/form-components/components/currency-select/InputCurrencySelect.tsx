@@ -2,6 +2,7 @@ import CurrencySelect from '../../../components/currency-select/CurrencySelect';
 import {
   InputComponentProps,
   isRequired,
+  resolveFieldSize,
   resolveReadMore,
   resolveSubmissionPath,
 } from '../../inputComponentRegistryUtils';
@@ -14,6 +15,7 @@ const InputCurrencySelect = ({ component, submissionPath }: InputComponentProps)
       label={component.label}
       description={component.description}
       required={isRequired(component)}
+      fieldSize={resolveFieldSize(component)}
       readMore={resolveReadMore(component)}
     />
   </FormGroup>

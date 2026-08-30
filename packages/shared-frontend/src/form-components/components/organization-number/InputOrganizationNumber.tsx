@@ -2,6 +2,7 @@ import TextField from '../../../components/text-field/TextField';
 import {
   InputComponentProps,
   isRequired,
+  resolveFieldSize,
   resolveInputType,
   resolveReadMore,
   resolveSubmissionPath,
@@ -16,6 +17,7 @@ const InputOrganizationNumber = ({ component, submissionPath }: InputComponentPr
       label={component.label}
       description={component.description}
       required={isRequired(component)}
+      fieldSize={resolveFieldSize(component)}
       autoComplete={component.autocomplete}
       inputMode={component.inputType}
       type={resolveInputType(component)}

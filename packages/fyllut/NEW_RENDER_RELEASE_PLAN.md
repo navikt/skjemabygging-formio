@@ -37,11 +37,21 @@ All validation and release work below must run after this merge.
 For each difference, either preserve Formio 4.20 behavior or record and test an
 approved new-render exception.
 
-- [ ] Text input trimming and submission normalization.
-- [ ] `validateOn` timing.
-- [ ] `descriptionPosition`.
-- [ ] Legacy field sizing.
-- [ ] Placeholder handling.
+- [x] Text inputs preserve raw display text while typing, normalize the
+      submission value on every change, and trim/format the display on blur.
+- [x] Ignore per-component `validateOn`; validation timing follows the global
+      shared-frontend interaction rules.
+- [x] Ignore `descriptionPosition`; descriptions consistently render between
+      the label and control. The legacy renderer only honored the setting for
+      some template-rendered components and already ignored it for React-based
+      text fields and text areas.
+- [x] Preserve per-component legacy field sizing through the shared semantic
+      `FieldSize` API. Formio adapters map `input--*` values at the boundary,
+      while shared components apply responsive owned-wrapper widths without
+      targeting Aksel internals.
+- [x] Ignore form-definition placeholders. Labels and descriptions provide
+      persistent guidance; current production forms only contain three
+      currency placeholders.
 
 ## 3. Accessibility
 

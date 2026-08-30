@@ -20,6 +20,7 @@ const CountrySelect = ({
   required = true,
   readOnly,
   readMore,
+  fieldSize,
   marginBottom,
 }: CountrySelectProps) => {
   const { currentLanguage } = useLanguage();
@@ -38,6 +39,7 @@ const CountrySelect = ({
       required={required}
       readOnly={readOnly}
       readMore={readMore}
+      fieldSize={fieldSize}
       marginBottom={marginBottom}
       valueType="option"
     />

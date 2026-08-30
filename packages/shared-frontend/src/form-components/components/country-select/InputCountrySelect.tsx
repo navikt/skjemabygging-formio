@@ -2,6 +2,7 @@ import CountrySelect from '../../../components/country-select/CountrySelect';
 import {
   InputComponentProps,
   isRequired,
+  resolveFieldSize,
   resolveReadMore,
   resolveSubmissionPath,
 } from '../../inputComponentRegistryUtils';
@@ -15,6 +16,7 @@ const InputCountrySelect = ({ component, submissionPath }: InputComponentProps) 
       description={component.description}
       ignoreOptions={component.ignoreNorway ? ['NO'] : undefined}
       required={isRequired(component)}
+      fieldSize={resolveFieldSize(component)}
       readOnly={component.readOnly}
       readMore={resolveReadMore(component)}
     />

@@ -24,6 +24,7 @@ const Checkbox = ({
   required = true,
   readOnly,
   readMore,
+  fieldSize,
   marginBottom,
   checked,
   onChange,
@@ -48,7 +49,7 @@ const Checkbox = ({
   }, [checked, defaultValue, readOnly, setStateValue, stateValue]);
 
   return (
-    <FormElementBox marginBottom={marginBottom}>
+    <FormElementBox fieldSize={fieldSize} marginBottom={marginBottom}>
       <AkselCheckbox
         id={inputId(statePath)}
         checked={current}

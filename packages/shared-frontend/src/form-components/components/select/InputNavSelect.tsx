@@ -4,6 +4,7 @@ import {
   getValues,
   InputComponentProps,
   isRequired,
+  resolveFieldSize,
   resolveReadMore,
   resolveSelectType,
   resolveSubmissionPath,
@@ -20,6 +21,7 @@ const InputNavSelect = ({ component, submissionPath }: InputComponentProps) => (
       label={component.label}
       description={component.description}
       values={getValues(component)}
+      fieldSize={resolveFieldSize(component)}
       defaultValue={
         typeof component.defaultValue === 'string' || isComponentValue(component.defaultValue)
           ? component.defaultValue

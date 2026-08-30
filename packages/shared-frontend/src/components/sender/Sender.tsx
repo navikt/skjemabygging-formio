@@ -4,6 +4,7 @@ import { useStateField } from '../../context/state/useStateField';
 import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
 import Alert from '../alert/Alert';
 import ReadMore from '../read-more/ReadMore';
+import FormElementBox from '../shared/FormElementBox';
 import TextField from '../text-field/TextField';
 import { BaseFieldProps } from '../types';
 
@@ -16,7 +17,7 @@ interface SenderPrefillValue {
   sokerEtternavn?: string;
 }
 
-interface SenderProps extends Pick<BaseFieldProps, 'statePath' | 'required' | 'readOnly' | 'readMore'> {
+interface SenderProps extends Pick<BaseFieldProps, 'statePath' | 'required' | 'readOnly' | 'readMore' | 'fieldSize'> {
   senderRole?: 'person' | 'organization';
   customLabels?: CustomLabels;
   descriptions?: Record<string, string>;
@@ -28,6 +29,7 @@ const Sender = ({
   required = false,
   readOnly,
   readMore,
+  fieldSize,
   senderRole = 'person',
   customLabels,
   descriptions,
@@ -67,7 +69,7 @@ const Sender = ({
   const showApplicationInsight = submissionMethod === 'digital' || submissionMethod === 'digitalnologin';
 
   return (
-    <>
+    <FormElementBox fieldSize={fieldSize} marginBottom="space-0">
       {senderRole === 'organization' ? (
         <>
           <TextField
@@ -113,7 +115,7 @@ const Sender = ({
       )}
       {showApplicationInsight && <Alert variant="info">{TEXTS.statiske.sender.applicationInsight}</Alert>}
       {readMore && <ReadMore {...readMore} />}
-    </>
+    </FormElementBox>
   );
 };
 

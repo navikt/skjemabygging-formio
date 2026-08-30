@@ -28,6 +28,7 @@ const CheckboxGroup = ({
   required = true,
   readOnly,
   readMore,
+  fieldSize,
   marginBottom,
   value,
   onChange,
@@ -41,7 +42,7 @@ const CheckboxGroup = ({
   const currentError = controlledError ?? error;
 
   return (
-    <FormElementBox marginBottom={marginBottom}>
+    <FormElementBox fieldSize={fieldSize} marginBottom={marginBottom}>
       <AkselCheckboxGroup
         id={inputId(statePath)}
         tabIndex={-1}

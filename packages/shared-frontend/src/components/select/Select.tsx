@@ -44,6 +44,7 @@ const Select = ({
   required = true,
   readOnly,
   readMore,
+  fieldSize,
   marginBottom,
   selectType = 'auto',
   valueType = 'value',
@@ -107,7 +108,7 @@ const Select = ({
   };
 
   return (
-    <FormElementBox marginBottom={marginBottom}>
+    <FormElementBox fieldSize={fieldSize} marginBottom={marginBottom}>
       {presentation === 'checkbox' && options.length === 1 ? (
         <CheckboxGroup
           id={inputId(statePath)}

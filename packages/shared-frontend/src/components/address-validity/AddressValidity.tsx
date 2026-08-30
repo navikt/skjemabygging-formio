@@ -1,18 +1,19 @@
 import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useStateField } from '../../context/state/useStateField';
 import DatePicker from '../date/DatePicker';
+import FormElementBox from '../shared/FormElementBox';
 import { BaseFieldProps } from '../types';
 
-type AddressValidityProps = Pick<BaseFieldProps, 'statePath' | 'required' | 'readOnly' | 'readMore'>;
+type AddressValidityProps = Pick<BaseFieldProps, 'statePath' | 'required' | 'readOnly' | 'readMore' | 'fieldSize'>;
 
-const AddressValidity = ({ statePath, required, readOnly, readMore }: AddressValidityProps) => {
+const AddressValidity = ({ statePath, required, readOnly, readMore, fieldSize }: AddressValidityProps) => {
   const { stateValue } = useStateField({ statePath });
   const address = (stateValue ?? {}) as { gyldigFraOgMed?: string };
   const minDate = dateUtils.addDays(-365);
   const maxDate = dateUtils.addDays(365);
 
   return (
-    <>
+    <FormElementBox fieldSize={fieldSize} marginBottom="space-0">
       <DatePicker
         statePath={`${statePath}.gyldigFraOgMed`}
         label={TEXTS.statiske.address.validFrom}
@@ -31,7 +32,7 @@ const AddressValidity = ({ statePath, required, readOnly, readMore }: AddressVal
         toDate={maxDate}
         readMore={readMore}
       />
-    </>
+    </FormElementBox>
   );
 };
 

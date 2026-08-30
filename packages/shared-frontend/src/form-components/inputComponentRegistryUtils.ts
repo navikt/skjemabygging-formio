@@ -1,4 +1,4 @@
-import { Component, formatUtils, numberUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, FieldSize, formatUtils, numberUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { ComponentType } from 'react';
 import { ReadMoreProps } from '../components/read-more/ReadMore';
 import { SelectType } from '../components/select/selectUtils';
@@ -16,6 +16,19 @@ type InputComponentRegistry = Record<string, ComponentType<InputComponentProps>>
 const getValues = (component: Component) => component.values ?? component.data?.values ?? [];
 
 const isRequired = (component: Component) => component.validate?.required ?? false;
+
+const legacyFieldSizeMap: Record<string, FieldSize> = {
+  'input--xxs': 'xxsmall',
+  'input--xs': 'xsmall',
+  'input--s': 'small',
+  'input--m': 'medium',
+  'input--l': 'large',
+  'input--xl': 'xlarge',
+  'input--xxl': 'xxlarge',
+};
+
+const resolveFieldSize = (component: Component): FieldSize | undefined =>
+  component.fieldSize ? legacyFieldSizeMap[component.fieldSize] : undefined;
 
 const resolveSubmissionPath = (component: Component, submissionPath?: string) =>
   submissionPath ?? getResolvedSubmissionPath(component);
@@ -95,6 +108,7 @@ const resolveInputType = (component: Component) => {
 export {
   getValues,
   isRequired,
+  resolveFieldSize,
   resolveInputType,
   resolveNumberDisplayValue,
   resolveNumberFormatKey,

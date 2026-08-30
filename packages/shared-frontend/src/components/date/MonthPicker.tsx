@@ -26,6 +26,7 @@ const MonthPicker = ({
   minYear,
   maxYear,
   readMore,
+  fieldSize,
   marginBottom,
 }: MonthPickerProps) => {
   const { currentLanguage } = useLanguage();
@@ -56,7 +57,7 @@ const MonthPicker = ({
   };
 
   return (
-    <FormElementBox marginBottom={marginBottom}>
+    <FormElementBox fieldSize={fieldSize} marginBottom={marginBottom}>
       <AkselMonthPicker {...monthpickerProps} dropdownCaption={!!(minYear && maxYear)}>
         <AkselMonthPicker.Input
           {...inputProps}

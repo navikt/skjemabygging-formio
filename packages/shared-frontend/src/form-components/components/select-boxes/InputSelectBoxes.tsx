@@ -6,6 +6,7 @@ import {
   getValues,
   InputComponentProps,
   isRequired,
+  resolveFieldSize,
   resolveReadMore,
   resolveSubmissionPath,
 } from '../../inputComponentRegistryUtils';
@@ -39,6 +40,7 @@ const InputSelectBoxes = ({ component, submissionPath }: InputComponentProps) =>
         onChange={(selectedValues) => setStateValue(getSelectedValuesMap(values, selectedValues))}
         error={error}
         required={isRequired(component)}
+        fieldSize={resolveFieldSize(component)}
         readMore={resolveReadMore(component)}
       />
     </FormGroup>

@@ -1,5 +1,10 @@
 import Address from '../../../components/address/Address';
-import { InputComponentProps, isRequired, resolveSubmissionPath } from '../../inputComponentRegistryUtils';
+import {
+  InputComponentProps,
+  isRequired,
+  resolveFieldSize,
+  resolveSubmissionPath,
+} from '../../inputComponentRegistryUtils';
 import FormGroup from '../../shared/FormGroup';
 
 const InputAddress = ({ component, submissionPath }: InputComponentProps) => (
@@ -13,6 +18,7 @@ const InputAddress = ({ component, submissionPath }: InputComponentProps) => (
       prefillValue={component.prefillValue}
       customLabels={component.customLabels}
       required={isRequired(component)}
+      fieldSize={resolveFieldSize(component)}
       readOnly={component.readOnly}
     />
   </FormGroup>
