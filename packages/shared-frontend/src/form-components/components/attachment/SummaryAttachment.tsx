@@ -7,9 +7,10 @@ import {
   submissionUtils,
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import { AttachmentDefinition } from '../../component-types';
 import { FormComponentProps } from '../../types';
 
-const SummaryAttachment = (props: FormComponentProps) => {
+const SummaryAttachment = (props: FormComponentProps<AttachmentDefinition>) => {
   const { component, submissionPath, submission, translate, formProperties, rendererConfig, handleDownloadFile } =
     props;
   const { submissionMethod } = rendererConfig;

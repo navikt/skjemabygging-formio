@@ -1,7 +1,8 @@
+import { SelectDefinition } from '../../component-types';
 import { DefaultAnswer } from '../../shared';
 import { FormComponentProps } from '../../types';
 
-const SummaryNavSelect = (props: FormComponentProps) => {
+const SummaryNavSelect = (props: FormComponentProps<SelectDefinition>) => {
   const { translate, component } = props;
 
   const getLabelFromValue = (value?: string | { value?: string; label?: string }) => {

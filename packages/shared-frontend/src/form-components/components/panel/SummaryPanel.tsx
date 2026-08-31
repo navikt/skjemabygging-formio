@@ -4,11 +4,12 @@ import { useLocation, useNavigate } from 'react-router';
 import ValidationExclamationIcon from '../../../components/icons/ValidationExclamationIcon';
 import { useStepperState } from '../../../context/stepper/StepperContext';
 import { withoutSubmissionNavigationState } from '../../../utils/navigationState';
+import { PanelDefinition } from '../../component-types';
 import RenderComponent from '../../RenderComponent';
 import { FormComponentProps } from '../../types';
 import styles from './SummaryPanel.module.css';
 
-const SummaryPanel = (props: FormComponentProps) => {
+const SummaryPanel = (props: FormComponentProps<PanelDefinition>) => {
   const { submissionPath, translate, component, panelValidationList, legacyAttachmentPanelMode } = props;
   const { title, components, navId, key } = component;
   const { search, state } = useLocation();

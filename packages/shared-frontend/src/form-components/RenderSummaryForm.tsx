@@ -1,7 +1,6 @@
 import {
   Component,
   Form,
-  FormComponentType,
   Panel,
   PanelValidation,
   Submission,
@@ -55,8 +54,6 @@ import {
   SummaryRendererAppConfig,
   SummaryRendererConfig,
 } from './types';
-
-type SupportedSummaryComponentType = Exclude<FormComponentType, 'formioTextArea' | 'password'>;
 
 interface CommonProps {
   activeComponents: Component[];
@@ -142,7 +139,7 @@ const RenderSummaryForm = ({
     dataFetcher: SummaryDataFetcher,
     drivinglist: SummaryDrivingList,
     maalgruppe: SummaryMaalgruppe,
-  } satisfies Record<SupportedSummaryComponentType, FormComponentRegistry[string]>;
+  } satisfies FormComponentRegistry;
 
   const resolvedRendererConfig = {
     ...(rendererConfig ?? {

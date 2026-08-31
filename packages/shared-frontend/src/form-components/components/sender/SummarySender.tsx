@@ -1,8 +1,9 @@
 import { FormSummary } from '@navikt/ds-react';
 import { submissionUtils as formComponentUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { SenderDefinition } from '../../component-types';
 import { FormComponentProps } from '../../types';
 
-const SummarySender = (props: FormComponentProps) => {
+const SummarySender = (props: FormComponentProps<SenderDefinition>) => {
   const { component, submissionPath, submission, translate } = props;
   const { senderRole, customLabels = {} } = component;
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);

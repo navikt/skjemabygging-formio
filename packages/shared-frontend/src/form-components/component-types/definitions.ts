@@ -31,7 +31,7 @@ type AddressDefinition = BaseComponentDefinition &
 type AddressValidityDefinition = BaseComponentDefinition & { type: 'addressValidity' };
 type AttachmentDefinition = BaseComponentDefinition & Pick<Component, 'attachmentValues'> & { type: 'attachment' };
 type CountrySelectDefinition = BaseComponentDefinition & Pick<Component, 'ignoreNorway'> & { type: 'landvelger' };
-type CurrencyDefinition = BaseComponentDefinition & { type: 'currency' };
+type CurrencyDefinition = BaseComponentDefinition & Pick<Component, 'currency'> & { type: 'currency' };
 type CurrencySelectDefinition = BaseComponentDefinition & { type: 'valutavelger' };
 type EmailDefinition = BaseComponentDefinition & { type: 'email' };
 type FirstNameDefinition = BaseComponentDefinition & { type: 'firstName' };
@@ -57,7 +57,8 @@ type DataGridDefinition = BaseComponentDefinition &
 type FormGroupDefinition = BaseComponentDefinition &
   Pick<Component, 'legend' | 'backgroundColor'> & { type: 'navSkjemagruppe' | 'fieldset' };
 type PanelDefinition = BaseComponentDefinition & Pick<Component, 'title'> & { type: 'panel' };
-type RowDefinition = BaseComponentDefinition & Pick<Component, 'widthPercent'> & { type: 'row' };
+type RowDefinition = BaseComponentDefinition &
+  Pick<Component, 'widthPercent' | 'isAmountWithCurrencySelector'> & { type: 'row' };
 
 /* System */
 type ActivitiesDefinition = BaseComponentDefinition & { type: 'activities' };
