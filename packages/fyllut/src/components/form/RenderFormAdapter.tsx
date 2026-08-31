@@ -18,6 +18,11 @@ type Props = Omit<RenderFormProps, 'fyllut' | 'language' | 'services' | 'submiss
 
 const RenderFormAdapter = ({ form, initialLanguage, services, translations, ...props }: Props) => {
   const appConfig = useAppConfig();
+  const fyllutBaseUrl = appConfig.fyllutBaseURL;
+  if (!fyllutBaseUrl) {
+    throw new Error('fyllutBaseURL is required to render the new fyllut form flow.');
+  }
+
   const { search } = useLocation();
   const availableLanguages = getAvailableLanguages(form, translations);
   const currentLanguage =
@@ -25,7 +30,7 @@ const RenderFormAdapter = ({ form, initialLanguage, services, translations, ...p
       ? initialLanguage
       : getCurrentLanguage(search, availableLanguages);
   const fyllut: FyllutContextValue = {
-    fyllutBaseUrl: appConfig.fyllutBaseURL,
+    fyllutBaseUrl,
     isLoggedIn: appConfig.config?.isLoggedIn,
     logEvent: appConfig.logEvent,
   };
