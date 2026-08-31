@@ -29,6 +29,7 @@ const InputNavSelect = ({ component, submissionPath }: InputComponentProps) => (
       }
       valueType="option"
       required={isRequired(component)}
+      readOnly={component.readOnly}
       readMore={resolveReadMore(component)}
       selectType={resolveSelectType(component)}
     />
