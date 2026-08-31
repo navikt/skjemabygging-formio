@@ -104,6 +104,10 @@ const Select = ({
   };
 
   const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    if (readOnly) {
+      event.currentTarget.value = current;
+      return;
+    }
     setValue(event.target.value);
   };
 
@@ -161,7 +165,7 @@ const Select = ({
           value={current}
           onChange={handleSelectChange}
           error={currentError}
-          disabled={readOnly}
+          readOnly={readOnly}
         >
           <option value="">{selectText ? translate(selectText) : ''}</option>
           {options.map((option) => (

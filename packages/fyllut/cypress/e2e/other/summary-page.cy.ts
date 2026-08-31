@@ -17,7 +17,7 @@ describe('SummaryPage', () => {
 
     const navigateToSummary = () => {
       cy.findByRoleWhenAttached(
-        'link',
+        'button',
         { name: /Lagre og fortsett|Save and continue|Neste steg|Next step/ },
         500,
       ).click();
@@ -31,10 +31,10 @@ describe('SummaryPage', () => {
       );
       cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
       cy.wait('@uploadPersonalId').its('response.statusCode').should('eq', 201);
-      cy.findByRole('link', { name: 'Neste steg' }).click();
+      cy.findByRole('button', { name: 'Neste steg' }).click();
       cy.url().then((currentUrl) => {
         if (currentUrl.includes('/legitimasjon')) {
-          cy.findByRole('link', { name: 'Neste steg' }).click();
+          cy.findByRole('button', { name: 'Neste steg' }).click();
         }
       });
       cy.url().should('not.include', '/legitimasjon');
@@ -121,7 +121,17 @@ describe('SummaryPage', () => {
     cy.get('[data-cy=error-summary]').should('not.exist');
     cy.clickSendNav();
     cy.get('@submitMellomlagring.all').should('have.length', 0);
-    cy.get('[data-cy=error-summary]').should('exist');
+    cy.get('[data-cy=error-summary]')
+      .should('exist')
+      .within(() => {
+        cy.findByRole('heading', { name: TEXTS.validering.error }).should('have.focus');
+      });
+
+    cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.sendToNav }).focus();
+    cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.sendToNav }).click();
+    cy.get('[data-cy=error-summary]').within(() => {
+      cy.findByRole('heading', { name: TEXTS.validering.error }).should('have.focus');
+    });
   });
 
   it('All values', () => {

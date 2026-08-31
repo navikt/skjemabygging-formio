@@ -6,7 +6,15 @@
 
 .field {
   flex: 1 1 100%;
+  max-width: 100%;
   min-width: 0;
+}
+
+@media (min-width: 30rem) {
+  .field {
+    flex-basis: var(--field-width, 100%);
+    max-width: var(--field-width, 100%);
+  }
 }
 
 .label {

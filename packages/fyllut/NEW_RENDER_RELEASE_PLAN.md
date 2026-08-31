@@ -55,11 +55,11 @@ approved new-render exception.
 
 ## 3. Accessibility
 
-- [ ] Use button semantics for navigation and submission actions.
-- [ ] Focus the error summary after every failed navigation or submission
+- [x] Use button semantics for navigation and submission actions.
+- [x] Focus the error summary after every failed navigation or submission
       attempt, including repeated attempts.
-- [ ] Use read-only rather than disabled behavior for read-only selects.
-- [ ] Make row fields stack at narrow viewport widths and browser zoom.
+- [x] Use read-only rather than disabled behavior for read-only selects.
+- [x] Make row fields stack at narrow viewport widths and browser zoom.
 - [ ] Verify keyboard operation, focus behavior, reflow and screen-reader
       announcements manually.
 

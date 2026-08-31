@@ -15,7 +15,7 @@ const FormButtonRow = ({ nextButton, previousButton, saveButton, cancelButton }:
   const twoElementsSecondRow = !!cancelButton && !!saveButton;
 
   return (
-    <nav>
+    <div>
       <div className={styles.row}>
         {nextButton}
         {previousButton}
@@ -24,7 +24,7 @@ const FormButtonRow = ({ nextButton, previousButton, saveButton, cancelButton }:
         {cancelButton}
         {saveButton}
       </div>
-    </nav>
+    </div>
   );
 };
 
@@ -33,12 +33,11 @@ interface NextButtonProps {
   onClick: () => void;
   disabled?: boolean;
   loading?: boolean;
-  role?: 'link' | 'button';
 }
 
-const FormNextButton = ({ label, onClick, disabled, loading, role = 'link' }: NextButtonProps) => (
+const FormNextButton = ({ label, onClick, disabled, loading }: NextButtonProps) => (
   <Button
-    role={role}
+    type="button"
     onClick={onClick}
     icon={<ArrowRightIcon aria-hidden />}
     iconPosition="right"
@@ -52,11 +51,10 @@ const FormNextButton = ({ label, onClick, disabled, loading, role = 'link' }: Ne
 interface PrevButtonProps {
   label: string;
   onClick: () => void;
-  role?: 'link' | 'button';
 }
 
-const FormPrevButton = ({ label, onClick, role = 'link' }: PrevButtonProps) => (
-  <Button variant="secondary" role={role} onClick={onClick} icon={<ArrowLeftIcon aria-hidden />} iconPosition="left">
+const FormPrevButton = ({ label, onClick }: PrevButtonProps) => (
+  <Button type="button" variant="secondary" onClick={onClick} icon={<ArrowLeftIcon aria-hidden />} iconPosition="left">
     {label}
   </Button>
 );

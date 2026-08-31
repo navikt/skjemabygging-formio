@@ -66,11 +66,11 @@ describe('React components', () => {
             cy.get('dd').eq(4).should('contain.text', '01.01.2023');
           });
 
-        cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions }).click();
+        cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.instructions }).click();
 
         cy.findByRole('heading', { name: TEXTS.statiske.prepareLetterPage.subTitle }).should('exist');
 
-        cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.previous }).click();
+        cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.previous }).click();
 
         cy.clickEditAnswer('Dine opplysninger');
 
@@ -116,7 +116,7 @@ describe('React components', () => {
 
       it('make sure components keep their values after going to summary page', () => {
         cy.findByRole('heading', { name: 'Dine opplysninger' }).should('be.visible');
-        cy.findByRole('link', { name: 'Lagre og fortsett' }).should('be.visible');
+        cy.findByRole('button', { name: 'Lagre og fortsett' }).should('be.visible');
 
         cy.findByRole('textbox', { name: 'Fornavn' }).should('be.visible');
         cy.findByRoleWhenAttached('textbox', { name: 'Fornavn' }).type('Storm');
@@ -154,7 +154,7 @@ describe('React components', () => {
         // Expect requests since we navigate back from summary page
         cy.wait('@getCurrencies');
         cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
-        cy.findByRole('link', { name: 'Lagre og fortsett' }).should('be.visible');
+        cy.findByRole('button', { name: 'Lagre og fortsett' }).should('be.visible');
 
         cy.findByRole('textbox', { name: 'Fornavn' }).should('have.value', 'Storm');
         // TODO: Not the nicest way to check values from react-select. But not worth the time to debug since it will be replaced by Aksel select.

@@ -13,15 +13,17 @@ interface InputRowProps {
   componentRegistry?: InputComponentRegistry;
 }
 
-const getChildStyle = (component: Component): CSSProperties | undefined => {
+type FieldStyle = CSSProperties & {
+  '--field-width'?: string;
+};
+
+const getChildStyle = (component: Component): FieldStyle | undefined => {
   if (!component.widthPercent || component.widthPercent <= 0 || component.widthPercent >= 100) {
     return undefined;
   }
 
-  const width = `calc(${component.widthPercent}% - var(--ax-space-24))`;
   return {
-    flexBasis: width,
-    maxWidth: width,
+    '--field-width': `calc(${component.widthPercent}% - var(--ax-space-24))`,
   };
 };
 

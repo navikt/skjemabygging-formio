@@ -105,7 +105,7 @@ describe('Pdf', () => {
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: 'Oppsummering' }).shouldBeVisible();
-      cy.findByRole('link', { name: 'Instruksjoner for innsending' }).click();
+      cy.findByRole('button', { name: 'Instruksjoner for innsending' }).click();
 
       cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application').as('downloadPdf');
 

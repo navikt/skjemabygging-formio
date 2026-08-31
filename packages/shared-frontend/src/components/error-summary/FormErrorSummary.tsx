@@ -13,8 +13,13 @@ interface Props {
 }
 
 const FormErrorSummary = ({ pageKey, components, pages, onNavigateToField }: Props) => {
-  const { getErrorsForPage, getErrorsForPages, shouldShowSummaryForPage, shouldShowSummaryForSummaryPage } =
-    useValidation();
+  const {
+    getErrorsForPage,
+    getErrorsForPages,
+    shouldShowSummaryForPage,
+    shouldShowSummaryForSummaryPage,
+    summaryFocusRequest,
+  } = useValidation();
   const { translate } = useLanguage();
   const ref = useRef<HTMLDivElement>(null);
   const errors = pages ? getErrorsForPages(pages) : pageKey && components ? getErrorsForPage(pageKey, components) : [];
@@ -27,7 +32,7 @@ const FormErrorSummary = ({ pageKey, components, pages, onNavigateToField }: Pro
     if (visible) {
       ref.current?.focus();
     }
-  }, [visible]);
+  }, [summaryFocusRequest, visible]);
 
   if (!visible) {
     return null;

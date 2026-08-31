@@ -709,7 +709,7 @@ describe('Mellomlagring v2', () => {
 
         cy.contains(TEXTS.statiske.summaryPage.validationMessage).should('exist');
         expectSummaryPage();
-        cy.findAllByRole('link', { name: /Fortsett utfylling|Continue filling in/ })
+        cy.findAllByRole('button', { name: /Fortsett utfylling|Continue filling in/ })
           .should('have.length.at.least', 1)
           .first()
           .should('be.visible');

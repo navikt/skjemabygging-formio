@@ -493,7 +493,7 @@ describe('Your information', () => {
         cy.visit('/fyllut/yourinformation?sub=paper&lang=en');
         cy.defaultWaits();
         cy.findByRole('checkbox', { name: 'I confirm that I will answer as accurately as I can.' }).check();
-        cy.findByRole('link', { name: 'Next step' }).click();
+        cy.findByRole('button', { name: 'Next step' }).click();
         cy.findByRole('heading', { name: 'Your personal information' }).should('exist');
         cy.findByRole('textbox', { name: 'First name' }).type('Ola');
         cy.findByRole('textbox', { name: 'Last name' }).type('Nordmann');

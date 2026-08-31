@@ -30,6 +30,18 @@ describe('Select', () => {
         cy.contains('Dette er en beskrivelse').should('exist');
       });
     });
+
+    it('keeps a read-only select focusable without allowing changes', () => {
+      cy.findByRole('combobox', { name: /Låst alternativ/ })
+        .should('not.be.disabled')
+        .and('have.value', 'alt1')
+        .focus();
+      cy.findByRole('combobox', { name: /Låst alternativ/ }).should('have.focus');
+      cy.findByRole('combobox', { name: /Låst alternativ/ }).trigger('keydown', { key: 'ArrowDown' });
+      cy.findByRole('combobox', { name: /Låst alternativ/ }).should('have.value', 'alt1');
+      cy.findByRole('combobox', { name: /Låst alternativ/ }).select('alt2');
+      cy.findByRole('combobox', { name: /Låst alternativ/ }).should('have.value', 'alt1');
+    });
   });
 
   describe('Validation', () => {

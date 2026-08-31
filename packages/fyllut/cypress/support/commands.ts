@@ -73,20 +73,42 @@ Cypress.Commands.add('findByRoleWhenAttached', (role, options, wait: number = 10
   return findAttached();
 });
 
+const findNavigationActionWhenAttached = (name: string | RegExp, wait: number = 100) => {
+  const timeout = 10000;
+  const start = Date.now();
+
+  const findAttached = (): Cypress.Chainable<JQuery<HTMLElement>> =>
+    cy.contains('button, a', name, { timeout }).then(($element) =>
+      Cypress.Promise.delay(wait).then(() => {
+        if (Cypress.dom.isAttached($element)) {
+          return $element;
+        }
+
+        if (Date.now() - start > timeout) {
+          throw new Error('Navigation action was not attached to the DOM before timeout');
+        }
+
+        return findAttached();
+      }),
+    );
+
+  return findAttached();
+};
+
 Cypress.Commands.add('shouldBeVisible', { prevSubject: true }, (subject) => {
   return cy.wrap(subject).should('be.visible').should('not.have.class', 'aksel-sr-only');
 });
 
 Cypress.Commands.add('clickNextStep', () => {
-  return cy.findByRoleWhenAttached('link', { name: /Neste steg|Next step/ }, 1000).click();
+  return findNavigationActionWhenAttached(/^(Neste steg|Next step)$/, 1000).click();
 });
 
 Cypress.Commands.add('clickPreviousStep', () => {
-  return cy.findByRoleWhenAttached('link', { name: /Forrige steg|Previous step/ }, 1000).click();
+  return findNavigationActionWhenAttached(/^(Forrige steg|Previous step)$/, 1000).click();
 });
 
 Cypress.Commands.add('clickSaveAndContinue', () => {
-  return cy.findByRoleWhenAttached('link', { name: /Lagre og fortsett|Save and continue/ }, 1000).click();
+  return findNavigationActionWhenAttached(/^(Lagre og fortsett|Save and continue)$/, 1000).click();
 });
 
 Cypress.Commands.add('clickStart', () => {
@@ -135,9 +157,7 @@ Cypress.Commands.add('clickEditAnswer', (title, linkText) => {
 });
 
 Cypress.Commands.add('clickEditAnswers', (linkText) => {
-  cy.findAllByRole('link', { name: linkText ?? /Fortsett utfylling|Continue filling in/ })
-    .first()
-    .click();
+  findNavigationActionWhenAttached(linkText ?? /^(Fortsett utfylling|Continue filling in)$/).click();
 });
 
 Cypress.Commands.add('visitRouteAndWait', (route: string, waitAliases?: string[]) => {
@@ -155,12 +175,12 @@ Cypress.Commands.add('visitRouteAndWait', (route: string, waitAliases?: string[]
 
 Cypress.Commands.add('clickSendNav', () => {
   // This render first after validation is done, so we need to wait for it.
-  cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.sendToNav, timeout: 10000 }).click();
+  return findNavigationActionWhenAttached(TEXTS.grensesnitt.navigation.sendToNav).click();
 });
 
 Cypress.Commands.add('clickDownloadInstructions', () => {
   // This render first after validation is done, so we need to wait for it.
-  cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions, timeout: 10000 }).click();
+  return findNavigationActionWhenAttached(TEXTS.grensesnitt.navigation.instructions).click();
 });
 
 Cypress.Commands.add('clickDownloadApplication', () => {

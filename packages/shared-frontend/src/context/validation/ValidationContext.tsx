@@ -66,6 +66,7 @@ const setPageErrors = (pageErrorsByKey: PageErrorsByKey, pageKey: string, errors
 interface ValidationContextType {
   pagesWithErrors: Set<string>;
   summaryVisible: boolean;
+  summaryFocusRequest: number;
   validatePage: (pageKey: string, components: Component[]) => boolean;
   validatePages: (pages: ValidationPage[]) => string[];
   getError: (submissionPath: string, pageKey: string, components: Component[]) => string | undefined;
@@ -102,6 +103,7 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
   const [pagesWithErrors, setPagesWithErrors] = useState<Set<string>>(() => new Set(initialPagesWithErrors ?? []));
   const [pageErrorsByKey, setPageErrorsByKey] = useState<PageErrorsByKey>({});
   const [summaryScope, setSummaryScope] = useState<SummaryScope>(undefined);
+  const [summaryFocusRequest, setSummaryFocusRequest] = useState(0);
   const [externalAttachmentErrors, setExternalAttachmentErrors] = useState<Record<string, ExternalAttachmentError>>({});
 
   const computeErrors = useMemo(
@@ -165,6 +167,9 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
       setPagesWithErrors((prev) => togglePageInSet(prev, pageKey, pageErrors.length > 0));
       setPageErrorsByKey((prev) => setPageErrors(prev, pageKey, pageErrors));
       setSummaryScope(pageErrors.length > 0 ? { type: 'page', pageKey } : undefined);
+      if (pageErrors.length > 0) {
+        setSummaryFocusRequest((previous) => previous + 1);
+      }
       return pageErrors.length === 0;
     },
     [computeErrors, submission],
@@ -184,6 +189,9 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
         return pages.reduce((acc, { pageKey }) => setPageErrors(acc, pageKey, pageErrors.get(pageKey) ?? []), prev);
       });
       setSummaryScope(failedPages.size > 0 ? { type: 'summary' } : undefined);
+      if (failedPages.size > 0) {
+        setSummaryFocusRequest((previous) => previous + 1);
+      }
       return Array.from(failedPages);
     },
     [computeErrors, submission],
@@ -248,6 +256,7 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
     () => ({
       pagesWithErrors,
       summaryVisible: summaryScope !== undefined,
+      summaryFocusRequest,
       validatePage,
       validatePages,
       getError,
@@ -265,6 +274,7 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
     [
       pagesWithErrors,
       summaryScope,
+      summaryFocusRequest,
       validatePage,
       validatePages,
       getError,
