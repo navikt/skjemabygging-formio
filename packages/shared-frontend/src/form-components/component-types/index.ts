@@ -1,47 +1,41 @@
-import { Component } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormComponentType } from '@navikt/skjemadigitalisering-shared-domain';
+import { GenericComponent } from './generic';
 import { TextFieldComponent } from './textfield';
 
 /**
  * Discriminated union of the form components that have been migrated to
- * type-safe variants, keyed on the `type` literal.
+ * type-safe variants, keyed on the `type` literal discriminant.
  *
- * Extend this union one entry at a time as each component type is migrated:
+ * Grow this union one entry at a time as each component type is migrated:
  *
  *   type FormComponent = TextFieldComponent | RadioPanelComponent | ...;
- *
- * Everything not yet listed here still flows through the render as the legacy
- * `Component` god-interface, so migration is fully incremental and legacy code
- * stays untouched.
  */
 type FormComponent = TextFieldComponent;
 
-/** The set of `type` literals that currently have a typed variant. */
+/** The set of `type` literals that already have a dedicated typed variant. */
 type MigratedComponentType = FormComponent['type'];
 
 /**
- * Narrow a legacy `Component` to its typed variant at the render boundary.
+ * Total union over every `FormComponentType`: the migrated variants plus the
+ * `GenericComponent` fallback for everything not yet migrated.
  *
- * This is the single, documented bridge between the untyped legacy `Component`
- * and the typed `FormComponent` union. Callers must already have keyed on
- * `component.type` (the registries do), so the throw is a defensive guard for
- * misrouting rather than expected control flow.
- *
- * The eventual end state (see the plan doc) types the registries themselves so
- * each adapter receives its narrowed variant directly and this helper is no
- * longer needed. Until then it lets us migrate one adapter at a time without
- * touching the shared registry plumbing.
+ * This is the type the render registries and the shared-frontend tree-walkers
+ * should consume. Because it is total and distributive,
+ * `Extract<AnyFormComponent, { type: K }>` resolves to the exact variant for any
+ * component type `K` - `TextFieldComponent` for migrated types, and the
+ * legacy-shaped fallback member otherwise. Legacy `Component` therefore only
+ * needs to appear at the single ingestion boundary that converts incoming form
+ * JSON into `AnyFormComponent`.
  */
-const narrowComponent = <T extends MigratedComponentType>(
-  component: Component,
-  type: T,
-): Extract<FormComponent, { type: T }> => {
-  if (component.type !== type) {
-    throw new Error(`Expected component of type "${type}" but received "${component.type}"`);
-  }
-  return component as unknown as Extract<FormComponent, { type: T }>;
-};
+type AnyFormComponent = FormComponent | GenericComponent;
+
+/**
+ * The typed variant for a given component `type` literal. Resolves to the
+ * migrated variant when one exists, otherwise to the generic fallback member.
+ */
+type ComponentOfType<K extends FormComponentType> = Extract<AnyFormComponent, { type: K }>;
 
 export type { BaseComponent } from './base';
+export type { GenericComponent } from './generic';
 export type { TextFieldComponent } from './textfield';
-export { narrowComponent };
-export type { FormComponent, MigratedComponentType };
+export type { AnyFormComponent, ComponentOfType, FormComponent, MigratedComponentType };

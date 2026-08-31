@@ -1,17 +1,45 @@
-import { Component, FieldSize, formatUtils, numberUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  Component,
+  FieldSize,
+  FormComponentType,
+  formatUtils,
+  numberUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { ComponentType } from 'react';
 import { ReadMoreProps } from '../components/read-more/ReadMore';
 import { SelectType } from '../components/select/selectUtils';
 import { getResolvedSubmissionPath } from '../context/form-definition/formDefinitionUtils';
 import { toSubmissionFormat } from '../formatting/inputFormat';
+import { ComponentOfType } from './component-types';
 
-interface InputComponentProps {
-  component: Component;
+/**
+ * Component `type` literals handled by the input registry. This is every
+ * `FormComponentType` except the ones the new render never mounts as an input:
+ * `formioTextArea` and `password` (legacy Formio-only) and `panel` (handled by
+ * page/navigation, not the input registry).
+ */
+type InputComponentType = Exclude<FormComponentType, 'formioTextArea' | 'password' | 'panel'>;
+
+/**
+ * Props for an input adapter. Parameterized by the adapter's component variant:
+ * a migrated adapter declares e.g. `InputComponentProps<TextFieldComponent>` and
+ * receives the exact type; un-migrated adapters use the default `Component`.
+ */
+interface InputComponentProps<T extends Component = Component> {
+  component: T;
   submissionPath?: string;
   componentRegistry?: InputComponentRegistry;
 }
 
-type InputComponentRegistry = Record<string, ComponentType<InputComponentProps>>;
+/**
+ * Registry mapping each supported component `type` to its input adapter. The
+ * mapped type ties every key to an adapter expecting that type's variant
+ * (`ComponentOfType<K>`), so an adapter cannot be registered under the wrong
+ * key, and a missing key is a compile error (exhaustiveness).
+ */
+type InputComponentRegistry = {
+  [K in InputComponentType]: ComponentType<InputComponentProps<ComponentOfType<K>>>;
+};
 
 const getValues = (component: Component) => component.values ?? component.data?.values ?? [];
 
@@ -118,4 +146,4 @@ export {
   resolveSubmissionPath,
   resolveTextFormatKey,
 };
-export type { InputComponentProps, InputComponentRegistry };
+export type { InputComponentProps, InputComponentRegistry, InputComponentType };

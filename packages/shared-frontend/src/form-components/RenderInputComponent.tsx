@@ -1,9 +1,10 @@
 import { Alert } from '@navikt/ds-react';
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect } from 'react';
+import { ComponentType, useEffect } from 'react';
 import { useApplication } from '../context/application/ApplicationContext';
 import { useFormDefinition } from '../context/form-definition/FormDefinitionContext';
 import { inputComponentRegistry, InputComponentRegistry } from './inputComponentRegistry';
+import { InputComponentProps, InputComponentType } from './inputComponentRegistryUtils';
 import { reportUnsupportedComponent } from './unsupportedComponentLogger';
 
 interface Props {
@@ -17,7 +18,11 @@ interface Props {
 const RenderInputComponent = ({ component, submissionPath, componentRegistry = inputComponentRegistry }: Props) => {
   const { logger, environment } = useApplication();
   const { form } = useFormDefinition();
-  const RegistryComponent = componentRegistry[component.type];
+  // Single boundary cast: indexing the mapped registry by the runtime `type`
+  // yields a union of adapters with incompatible props that JSX cannot spread,
+  // so we erase to the generic adapter shape here. Adapters remain fully typed.
+  const RegistryComponent = componentRegistry[component.type as InputComponentType] as
+    ComponentType<InputComponentProps> | undefined;
   const shouldRenderHiddenComponent = component.type === 'maalgruppe';
   const shouldReportUnsupportedComponent = !RegistryComponent && (!component.hidden || shouldRenderHiddenComponent);
 
