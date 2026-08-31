@@ -183,7 +183,7 @@ const PaperSubmissionPage = ({ documentType }: Props) => {
           onError={() => setDownloadState('error')}
           pdfContent={getPdfContent}
         >
-          {translate(TEXTS.grensesnitt.downloadApplication)}
+          {translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
         </DownloadPdfButton>
         {downloadState === 'success' && (
           <Alert variant="info">

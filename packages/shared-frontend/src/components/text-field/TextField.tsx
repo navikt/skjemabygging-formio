@@ -1,15 +1,5 @@
 import { TextField as AkselTextField } from '@navikt/ds-react';
-import {
-  ChangeEvent,
-  FocusEvent,
-  FormEvent,
-  HTMLAttributes,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { ChangeEvent, FocusEvent, HTMLAttributes, ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { useStateField } from '../../context/state/useStateField';
 import { toInputFormat, toSubmissionFormat } from '../../formatting/inputFormat';
 import { inputId } from '../../utils/inputId';
@@ -72,7 +62,6 @@ const TextField = ({
   marginBottom,
 }: TextFieldProps) => {
   const { stateValue, error, setStateValue } = useStateField({ statePath });
-  const inputRef = useRef<HTMLInputElement | null>(null);
   const isFocusedRef = useRef(false);
   const formatDisplayValue = useCallback(
     (value: unknown) => (toDisplayValue ? toDisplayValue(value) : toInputFormat(value, formatKey)),
@@ -109,10 +98,6 @@ const TextField = ({
     updateValue(event.target.value);
   };
 
-  const handleInput = (event: FormEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    updateValue(event.currentTarget.value);
-  };
-
   const handleBlur = (event: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     isFocusedRef.current = false;
     const rawValue = event.currentTarget.value;
@@ -134,29 +119,9 @@ const TextField = ({
     setDisplayValue((previousValue) => (previousValue === syncedDisplayValue ? previousValue : syncedDisplayValue));
   }, [readOnly, syncedDisplayValue]);
 
-  useEffect(() => {
-    const inputElement = inputRef.current;
-    if (!inputElement || readOnly) {
-      return;
-    }
-
-    const handleNativeValueChange = (event: Event) => {
-      updateValue((event.currentTarget as HTMLInputElement).value);
-    };
-
-    inputElement.addEventListener('input', handleNativeValueChange);
-    inputElement.addEventListener('change', handleNativeValueChange);
-
-    return () => {
-      inputElement.removeEventListener('input', handleNativeValueChange);
-      inputElement.removeEventListener('change', handleNativeValueChange);
-    };
-  }, [readOnly, updateValue]);
-
   return (
     <FormElementBox fieldSize={fieldSize} marginBottom={marginBottom}>
       <AkselTextField
-        ref={inputRef}
         id={inputId(statePath)}
         label={
           <TranslatedLabel required={required} readOnly={readOnly} showOptionalText={!hideLabel && showOptionalText}>
@@ -169,9 +134,6 @@ const TextField = ({
         onFocus={() => {
           isFocusedRef.current = true;
         }}
-        onInput={handleInput}
-        onInputCapture={handleInput}
-        onChangeCapture={handleInput}
         onChange={handleChange}
         onBlur={handleBlur}
         error={controlledError ?? error}

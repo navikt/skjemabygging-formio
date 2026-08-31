@@ -1,12 +1,6 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { expect } from 'chai';
 
-const setTextFieldValue = (name: string | RegExp, value: string) => {
-  cy.findByRole('textbox', { name }).invoke('val', value);
-  cy.findByRole('textbox', { name }).trigger('input');
-  cy.findByRole('textbox', { name }).trigger('change');
-};
-
 const downloadPdf = (submissionType: 'digital' | 'paper' | 'digitalnologin' = 'paper') => {
   cy.findByRole('link', { name: /Oppsummering|Summary/ }).click();
   cy.findByRole('heading', { name: /Oppsummering|Summary/ }).shouldBeVisible();
@@ -207,7 +201,7 @@ describe('Pdf', () => {
           .eq(0)
           .type('Norsk krone{downArrow}{enter}');
         cy.findAllByRole('textbox', { name: /Beløp/ }).eq(1).type('2000');
-        setTextFieldValue(/Kontonummer/, '76586005479');
+        cy.findByRole('textbox', { name: /Kontonummer/ }).type('76586005479');
         cy.findByRole('textbox', { name: /IBAN/ }).type('NO8330001234567');
         cy.findAllByRole('combobox', { name: /Velg valuta/ })
           .eq(1)
@@ -344,7 +338,7 @@ describe('Pdf', () => {
           .eq(0)
           .type('Norsk krone{downArrow}{enter}');
         cy.findAllByRole('textbox', { name: /Beløp/ }).eq(1).type('2000');
-        setTextFieldValue(/Kontonummer/, '76586005479');
+        cy.findByRole('textbox', { name: /Kontonummer/ }).type('76586005479');
         cy.findByRole('textbox', { name: /IBAN/ }).type('NO8330001234567');
         cy.findAllByRole('combobox', { name: /Velg valuta/ })
           .eq(1)
