@@ -42,6 +42,7 @@ export function PrepareLetterPage() {
     uxSignalsId,
     uxSignalsSubmissionTypes,
     navUnitDescription,
+    downloadPdfButtonText,
   } = form.properties;
   const includeUxSignals = !!uxSignalsId && submissionTypeIncludesPaperOrIsNoSubmission(uxSignalsSubmissionTypes);
 
@@ -86,7 +87,12 @@ export function PrepareLetterPage() {
   return (
     <>
       <FormMainContent>
-        <LetterDownload index={1} enhetsListe={enhetsListe} navUnitDescription={navUnitDescription} />
+        <LetterDownload
+          index={1}
+          enhetsListe={enhetsListe}
+          navUnitDescription={navUnitDescription}
+          downloadButtonText={translate(downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
+        />
         <LetterPrint index={2} />
         {hasAttachments && <LetterAddAttachment index={3} attachments={attachments} />}
         <LetterInTheMail index={hasAttachments ? 4 : 3} attachments={attachments} />

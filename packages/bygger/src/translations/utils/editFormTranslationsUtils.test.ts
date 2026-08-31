@@ -120,5 +120,43 @@ describe('editFormTranslationsUtils', () => {
         },
       ]);
     });
+
+    it('should return a matching global translation for an existing blank form translation', () => {
+      const blankStoredTranslation: FormsApiTranslation = {
+        id: 3,
+        key: 'Fødselsattest',
+        revision: 4,
+        nb: 'Fødselsattest',
+        nn: '',
+        en: '',
+      };
+      const matchingGlobalTranslation: FormsApiTranslation = {
+        id: 531,
+        key: 'Fødselsattest',
+        nb: 'Fødselsattest',
+        nn: 'Fødselsattest',
+        en: 'Birth certificate',
+        tag: 'skjematekster',
+      };
+      const formWithBlankStoredTranslation = createFormsApiFormObject(
+        [createDummyTextfield('Fødselsattest')],
+        'Form title',
+      );
+
+      expect(
+        generateUnsavedGlobalTranslations(
+          formWithBlankStoredTranslation,
+          { Fødselsattest: blankStoredTranslation },
+          { Fødselsattest: matchingGlobalTranslation },
+        ),
+      ).toEqual([
+        {
+          ...blankStoredTranslation,
+          globalTranslationId: 531,
+          nn: 'Fødselsattest',
+          en: 'Birth certificate',
+        },
+      ]);
+    });
   });
 });

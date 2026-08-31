@@ -278,6 +278,10 @@ import {
   submissionMethodTranslations,
 } from '../data/forms-api/submission-method/submissionMethodForm';
 import {
+  customDownloadButtonTextForm,
+  customDownloadButtonTextTranslations,
+} from '../data/forms-api/submission-types/customDownloadButtonTextForm';
+import {
   paperNoCoverPageStaticPdfForm,
   staticPdfPaperNoCoverPageTranslations,
 } from '../data/forms-api/submission-types/paperNoCoverPageStaticPdfForm';
@@ -473,6 +477,7 @@ const allForms = [
   { form: selectBoxesDeprecatedForm(), translations: selectBoxesDeprecatedTranslations() },
   { form: selectDeprecatedForm(), translations: selectDeprecatedTranslations() },
   { form: submissionMethodForm(), translations: submissionMethodTranslations() },
+  { form: customDownloadButtonTextForm(), translations: customDownloadButtonTextTranslations() },
   { form: submissionTypesDigitalForm(), translations: submissionTypesDigitalTranslations() },
   {
     form: submissionTypesDigitalDigitalNoLoginForm(),
