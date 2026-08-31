@@ -21,7 +21,7 @@ describe('Submission Type', () => {
       cy.clickStart();
       cy.findByRole('textbox', { name: 'Tekstfelt' }).type('test');
       cy.clickNextStep();
-      cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions }).click();
+      cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.instructions }).click();
 
       cy.findByRole('button', { name: 'Last ned fullmaktsskjema' }).should('exist');
     });

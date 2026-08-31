@@ -151,8 +151,6 @@ describe('React components', () => {
 
         cy.clickEditAnswer('Dine opplysninger');
 
-        // Expect requests since we navigate back from summary page
-        cy.wait('@getCurrencies');
         cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
         cy.findByRole('button', { name: 'Lagre og fortsett' }).should('be.visible');
 
