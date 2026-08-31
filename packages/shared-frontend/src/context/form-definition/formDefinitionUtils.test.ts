@@ -79,4 +79,33 @@ describe('formDefinitionUtils', () => {
     expect(firstName.baseSubmissionPath).toBe('dineOpplysninger');
     expect(getResolvedSubmissionPath(firstName)).toBe('dineOpplysninger.fornavn');
   });
+
+  it('keeps omitted-input your-information containers as submission objects', () => {
+    const [container] = enrichComponentsWithBaseSubmissionPath([
+      {
+        key: 'dineOpplysninger',
+        type: 'container',
+        yourInformation: true,
+        components: [{ key: 'fornavn', type: 'firstName', input: true }],
+      } as Component,
+    ]);
+    const [firstName] = container.components ?? [];
+
+    expect(firstName.baseSubmissionPath).toBe('dineOpplysninger');
+    expect(getResolvedSubmissionPath(firstName)).toBe('dineOpplysninger.fornavn');
+  });
+
+  it.each([undefined, null])('keeps the key in attachment paths when input is %s', (input) => {
+    const [panel] = enrichComponentsWithBaseSubmissionPath([
+      {
+        key: 'vedlegg',
+        type: 'panel',
+        input: false,
+        components: [{ key: 'dokumentasjon', type: 'attachment', input }],
+      } as Component,
+    ]);
+    const [attachment] = panel.components ?? [];
+
+    expect(getResolvedSubmissionPath(attachment)).toBe('dokumentasjon');
+  });
 });

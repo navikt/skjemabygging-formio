@@ -1,11 +1,4 @@
-import {
-  Component,
-  navFormioUtils,
-  Submission,
-  submissionUtils,
-  TEXTS,
-  validatorUtils,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, navFormioUtils, Submission, submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
 
 interface BaseEvaluationArgs {
   component: Component;
@@ -24,20 +17,6 @@ const resolveRowData = (submissionPath: string, submission?: Submission) => {
 };
 
 const createEvaluationInstance = ({ allowTestTypes = false }: Pick<BaseEvaluationArgs, 'allowTestTypes'>) => ({
-  validateAccountNumber: (input: unknown) => {
-    if (input === '' || input === null || input === undefined) {
-      return true;
-    }
-
-    return validatorUtils.isAccountNumber(String(input)) ? true : TEXTS.validering.accountNumberCustomError;
-  },
-  validateOrganizationNumber: (input: unknown) => {
-    if (input === '' || input === null || input === undefined) {
-      return true;
-    }
-
-    return validatorUtils.isOrganizationNumber(String(input)) ? true : TEXTS.validering.orgNrCustomError;
-  },
   validateFnrNew: (_input: unknown) => true,
   validateDatePicker: () => true,
   validateDatePickerV2: () => true,

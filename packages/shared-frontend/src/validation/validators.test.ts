@@ -97,6 +97,15 @@ describe('validateValue', () => {
       textKey: TEXTS.validering.orgNrCustomError,
       params: { field: 'Organization number' },
     });
+    expect(
+      validateValue('123456789', 'Organization number', {
+        organizationNumber: true,
+        customMessage: 'Invalid organization number',
+      }),
+    ).toEqual({
+      textKey: 'Invalid organization number',
+      params: { field: 'Organization number' },
+    });
   });
 
   it('validates national identity number values (fnr/dnr)', () => {
@@ -135,6 +144,15 @@ describe('validateValue', () => {
     expect(validateValue('1234 56 78903', 'Kontonummer', { accountNumber: true })).toBeUndefined();
     expect(validateValue('12345678901', 'Kontonummer', { accountNumber: true })).toEqual({
       textKey: TEXTS.validering.accountNumberCustomError,
+      params: { field: 'Kontonummer' },
+    });
+    expect(
+      validateValue('12345678901', 'Kontonummer', {
+        accountNumber: true,
+        customMessage: 'Ugyldig kontonummer',
+      }),
+    ).toEqual({
+      textKey: 'Ugyldig kontonummer',
       params: { field: 'Kontonummer' },
     });
   });

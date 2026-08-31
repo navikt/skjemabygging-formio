@@ -1,4 +1,4 @@
-import { Form, SubmissionAttachment } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, formSummaryUtils, SubmissionAttachment } from '@navikt/skjemadigitalisering-shared-domain';
 import { describe, expect, it } from 'vitest';
 import {
   createAttachmentId,
@@ -89,6 +89,65 @@ describe('attachmentData', () => {
         rows: [{ name: 'First', documentation: attachment }, { name: 'Second' }],
       },
       attachments: [],
+    });
+  });
+
+  it('preserves uploaded files when a filtered legacy draft is hydrated', () => {
+    const uploadedAttachment: SubmissionAttachment = {
+      ...attachment,
+      files: [
+        {
+          fileId: 'file-123',
+          attachmentId: attachment.attachmentId,
+          innsendingId: 'draft-123',
+          fileName: 'documentation.pdf',
+          size: 1234,
+        },
+      ],
+    };
+    const personalId: SubmissionAttachment = {
+      attachmentId: 'personal-id',
+      navId: 'personal-id',
+      type: 'personal-id',
+      files: [
+        {
+          fileId: 'file-456',
+          attachmentId: 'personal-id',
+          innsendingId: 'draft-123',
+          fileName: 'identity.pdf',
+          size: 456,
+        },
+      ],
+    };
+    const form = {
+      path: 'test',
+      title: 'Test',
+      properties: { submissionTypes: ['DIGITAL'] },
+      components: [
+        {
+          key: 'attachments',
+          label: 'Attachments',
+          type: 'panel',
+          components: [
+            {
+              key: 'documentation',
+              label: 'Documentation',
+              navId: 'documentation-nav-id',
+              type: 'attachment',
+            },
+          ],
+        },
+      ],
+    } as Form;
+    const filteredSubmission = formSummaryUtils.filterSubmissionDataToSummary(
+      form,
+      { data: {}, attachments: [uploadedAttachment, personalId] },
+      { submissionMethod: 'digital' },
+    );
+
+    expect(hydrateLegacyAttachments(form, filteredSubmission)).toEqual({
+      data: { documentation: uploadedAttachment },
+      attachments: [personalId],
     });
   });
 });

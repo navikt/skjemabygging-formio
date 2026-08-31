@@ -52,6 +52,10 @@ approved new-render exception.
 - [x] Ignore form-definition placeholders. Labels and descriptions provide
       persistent guidance; current production forms only contain three
       currency placeholders.
+- [x] Use `customLabels.doYouHaveIdentityNumber` in identity required-error
+      text. The legacy renderer used the generic question even when the visible
+      question named another person; the new renderer keeps the label and error
+      text consistent.
 
 ## 3. Accessibility
 
@@ -105,19 +109,40 @@ approved new-render exception.
 
 ## 6. Compatibility audit
 
-Verify these production-used compatibility rules against current published
-forms and representative tests:
+Verified against Formio 4.20.0, the 246 published forms at
+`skjemautfylling-formio@1150a93`, and focused regression tests:
 
-- [ ] `attachmentValues`.
-- [ ] Attachment components with `input: null`.
-- [ ] Legacy attachment `values` arrays.
-- [ ] `yourInformation` containers.
-- [ ] Identity question labels from `customLabels`.
-- [ ] Bank-account and organization-number custom validation.
-- [ ] Country selection with `ignoreNorway`.
-- [ ] Country defaults.
-- [ ] Hidden `maalgruppe`.
-- [ ] Loading old drafts that store files in `submission.attachments`.
+- [x] `attachmentValues`. The corpus contains 937 components in 197 forms;
+      option mapping, additional documentation, deadlines and paper/digital
+      behavior are covered.
+- [x] Attachment components with `input: null`. No current published component
+      uses `input: null`; eight omit `input`. Both shapes retain the attachment
+      key in the new-render submission path.
+- [x] Legacy attachment `values` arrays. The two current occurrences are in
+      `nav100715`; a `values`-only component is covered through selection and
+      summary.
+- [x] `yourInformation` containers. The corpus contains 149 components,
+      including seven that omit `input` and `tree`; nested submission paths are
+      covered for both current shapes.
+- [x] Identity question labels from `customLabels`. The visible question uses
+      the custom label in 148 components across 144 forms, including required
+      validation and error-summary text.
+- [x] Bank-account and organization-number custom validation. The corpus
+      contains 42 expressions on `bankAccount` and 82 on `orgNr`; built-in
+      validation, custom messages and the trailing-semicolon variant are
+      covered without renderer-side `instance` helpers. The single expression
+      on a plain text field in `nav761389` is excluded and will be corrected in
+      the published form definition.
+- [x] Country selection with `ignoreNorway`. The corpus contains 32 enabled
+      occurrences across 10 forms; Norway exclusion is covered in Cypress.
+- [x] Country defaults. All eight non-empty published defaults use the
+      `{ label: "Norge", value: "NO" }` shape; populated and empty defaults are
+      covered.
+- [x] Hidden `maalgruppe`. All seven published components are hidden; prefilled
+      and calculated submission behavior is covered.
+- [x] Loading old drafts that store files in `submission.attachments`. Legacy
+      attachments, including uploaded files, are hydrated into component paths
+      after draft filtering without losing separately stored personal-ID files.
 
 Completed cleanup:
 

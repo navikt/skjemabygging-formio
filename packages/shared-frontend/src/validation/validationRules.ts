@@ -7,10 +7,16 @@ import {
 } from '../form-components/dateDefinitionUtils';
 import { ValidationRules } from './validators';
 
-const isRedundantLegacyCustomValidation = (component: Component) =>
-  (component.type === 'bankAccount' &&
-    component.validate?.custom === 'valid = instance.validateAccountNumber(input)') ||
-  (component.type === 'orgNr' && component.validate?.custom === 'valid = instance.validateOrganizationNumber(input)');
+const normalizeCustomValidation = (customValidation?: string) => customValidation?.trim().replace(/;$/, '');
+
+const isRedundantLegacyCustomValidation = (component: Component) => {
+  const customValidation = normalizeCustomValidation(component.validate?.custom);
+
+  return (
+    (component.type === 'bankAccount' && customValidation === 'valid = instance.validateAccountNumber(input)') ||
+    (component.type === 'orgNr' && customValidation === 'valid = instance.validateOrganizationNumber(input)')
+  );
+};
 
 const toValidationRules = (
   component: Component,

@@ -121,6 +121,28 @@ describe('attachmentUtils', () => {
         { value: 'nav', label: TEXTS.statiske.attachment.nav, upload: false },
       ]);
     });
+
+    it('preserves production-shaped legacy values arrays', () => {
+      const options = attachmentUtils.mapKeysToOptions(
+        [
+          { value: 'leggerVedNaa', label: 'Jeg legger det ved denne søknaden (anbefalt)' },
+          { value: 'ettersender', label: 'Jeg ettersender dokumentasjonen senere' },
+        ],
+        (text) => `${text} (translated)`,
+        'paper',
+      );
+
+      expect(options).toEqual([
+        {
+          value: 'leggerVedNaa',
+          label: 'Jeg legger det ved denne søknaden (anbefalt) (translated)',
+        },
+        {
+          value: 'ettersender',
+          label: 'Jeg ettersender dokumentasjonen senere (translated)',
+        },
+      ]);
+    });
   });
 
   describe('isSingleUploadOnlyOption', () => {

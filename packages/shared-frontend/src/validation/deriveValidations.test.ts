@@ -400,6 +400,27 @@ describe('deriveValidations', () => {
     ]);
   });
 
+  it('treats the production organization-number validation with a trailing semicolon as redundant', () => {
+    const components = [
+      {
+        key: 'orgnr',
+        label: 'Organization number',
+        input: true,
+        type: 'orgNr',
+        validate: {
+          custom: 'valid = instance.validateOrganizationNumber(input);',
+          customMessage: 'Invalid organization number',
+        },
+      },
+    ] as Component[];
+
+    expect(deriveValidations(components)[0].rules).toMatchObject({
+      organizationNumber: true,
+      customMessage: 'Invalid organization number',
+    });
+    expect(deriveValidations(components)[0].rules.customValidation).toBeUndefined();
+  });
+
   it('expands address into its visible nested fields for wizard choice and norwegian inputs', () => {
     const components = [
       {
