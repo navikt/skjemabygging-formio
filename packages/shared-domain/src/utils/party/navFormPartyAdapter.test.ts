@@ -58,13 +58,7 @@ describe('navFormPartyAdapter', () => {
           user: {
             type: 'unidentified',
             name: { firstName: 'Ola', surname: 'Nordmann' },
-            address: {
-              type: 'NORWEGIAN_ADDRESS',
-              co: undefined,
-              street: 'Testveien 1',
-              postalCode: '0123',
-              postalName: 'Oslo',
-            },
+            address: norwegianAddress,
           },
         },
       });
@@ -104,36 +98,49 @@ describe('navFormPartyAdapter', () => {
       });
     });
 
-    it('reads a foreign address', () => {
+    it('passes a foreign address through as submitted', () => {
+      const adresse = {
+        borDuINorge: 'nei',
+        adresse: 'Main street 1',
+        bygning: 'B',
+        postnummer: 'SW1',
+        bySted: 'London',
+        region: 'Greater London',
+        land: { value: 'GB', label: 'Storbritannia' },
+      };
       const result = getParty(yourInformationForm, {
-        yourInformation: {
-          fornavn: 'Ola',
-          etternavn: 'Nordmann',
-          adresse: {
-            borDuINorge: 'nei',
-            adresse: 'Main street 1',
-            bygning: 'B',
-            postnummer: 'SW1',
-            bySted: 'London',
-            region: 'Greater London',
-            land: { value: 'GB', label: 'Storbritannia' },
-          },
-        },
+        yourInformation: { fornavn: 'Ola', etternavn: 'Nordmann', adresse },
       });
       expect(result.type === 'party' && result.party.on === 'behalfOfOther' && result.party.user).toEqual({
         type: 'unidentified',
         name: { firstName: 'Ola', surname: 'Nordmann' },
-        address: {
-          type: 'FOREIGN_ADDRESS',
-          co: undefined,
-          street: 'Main street 1',
-          building: 'B',
-          postalCode: 'SW1',
-          location: 'London',
-          region: 'Greater London',
-          country: { code: 'GB', name: 'Storbritannia' },
-        },
+        address: adresse,
       });
+    });
+  });
+
+  describe('address combinations the model no longer rejects', () => {
+    const expectAddress = (adresse: Record<string, unknown>) => {
+      const result = getParty(yourInformationForm, {
+        yourInformation: { fornavn: 'Ola', etternavn: 'Nordmann', adresse },
+      });
+      const user = result.type === 'party' && result.party.on === 'behalfOfOther' ? result.party.user : undefined;
+      return expect(user?.type === 'unidentified' ? user.address : undefined);
+    };
+
+    it('keeps both a street address and a post office box', () => {
+      const adresse = { ...norwegianAddress, postboks: 'Postboks 1' };
+      expectAddress(adresse).toEqual(adresse);
+    });
+
+    it('keeps a foreign post office box', () => {
+      const adresse = { borDuINorge: 'nei', postboks: '12', land: { value: 'SE', label: 'Sverige' } };
+      expectAddress(adresse).toEqual(adresse);
+    });
+
+    it('keeps a foreign address without a street', () => {
+      const adresse = { borDuINorge: 'nei', bySted: 'London', land: { value: 'GB', label: 'Storbritannia' } };
+      expectAddress(adresse).toEqual(adresse);
     });
   });
 
@@ -157,30 +164,6 @@ describe('navFormPartyAdapter', () => {
       ).toEqual({ type: 'legacy', reason: 'legacyFields' });
     });
 
-    it('routes an address holding both a street address and a post office box to the legacy path', () => {
-      expect(
-        getParty(yourInformationForm, {
-          yourInformation: {
-            fornavn: 'Ola',
-            etternavn: 'Nordmann',
-            adresse: { ...norwegianAddress, postboks: 'Postboks 1' },
-          },
-        }),
-      ).toEqual({ type: 'legacy', reason: 'unsupportedAddress' });
-    });
-
-    it('routes a foreign post office box to the legacy path', () => {
-      expect(
-        getParty(yourInformationForm, {
-          yourInformation: {
-            fornavn: 'Ola',
-            etternavn: 'Nordmann',
-            adresse: { borDuINorge: 'nei', postboks: '12', land: { value: 'SE', label: 'Sverige' } },
-          },
-        }),
-      ).toEqual({ type: 'legacy', reason: 'unsupportedAddress' });
-    });
-
     it('routes an applicant with neither identification nor address to the legacy path', () => {
       expect(getParty(yourInformationForm, { yourInformation: { fornavn: 'Ola', etternavn: 'Nordmann' } })).toEqual({
         type: 'legacy',
@@ -191,18 +174,6 @@ describe('navFormPartyAdapter', () => {
     it('routes an unusable identity number to the legacy path', () => {
       expect(
         getParty(yourInformationForm, { yourInformation: { identitet: { identitetsnummer: '12345678911' } } }),
-      ).toEqual({ type: 'legacy', reason: 'incompleteParty' });
-    });
-
-    it('routes a foreign address without a street to the legacy path', () => {
-      expect(
-        getParty(yourInformationForm, {
-          yourInformation: {
-            fornavn: 'Ola',
-            etternavn: 'Nordmann',
-            adresse: { borDuINorge: 'nei', bySted: 'London', land: { value: 'GB', label: 'Storbritannia' } },
-          },
-        }),
       ).toEqual({ type: 'legacy', reason: 'incompleteParty' });
     });
 

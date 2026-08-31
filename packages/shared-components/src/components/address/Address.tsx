@@ -4,7 +4,7 @@ import {
   CustomLabels,
   FieldSize,
   SubmissionAddress,
-  addressUtils,
+  resolveAddressType,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { AddressProvider } from './addressContext';
 import AddressTypeChoice from './AddressTypeChoice';
@@ -38,7 +38,7 @@ const Address = ({
   fieldSize,
 }: Props) => {
   const getAddress = () => {
-    switch (addressUtils.resolveAddressType(address, addressType)) {
+    switch (resolveAddressType(address, addressType)) {
       case 'NORWEGIAN_ADDRESS':
         return <NorwegianAddress />;
       case 'POST_OFFICE_BOX':

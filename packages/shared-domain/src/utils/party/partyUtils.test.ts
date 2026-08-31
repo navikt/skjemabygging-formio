@@ -52,16 +52,13 @@ describe('partyUtils', () => {
         errorPaths({
           on: 'behalfOfOther',
           sender: { type: 'named', name: {} },
-          user: { type: 'unidentified', name: {}, address: { type: 'NORWEGIAN_ADDRESS' } },
+          user: { type: 'unidentified', name: {}, address: { adresse: 'Gata 1' } },
         }),
       ).toEqual([
         'required:sender.name.firstName',
         'required:sender.name.surname',
         'required:user.name.firstName',
         'required:user.name.surname',
-        'required:user.address.street',
-        'required:user.address.postalCode',
-        'required:user.address.postalName',
       ]);
     });
 
@@ -72,24 +69,33 @@ describe('partyUtils', () => {
         user: {
           type: 'unidentified',
           name: { firstName: 'Ola', surname: 'Nordmann' },
-          address: { type: 'POST_OFFICE_BOX', postOfficeBox: 'Postboks 1', postalCode: '0123', postalName: 'Oslo' },
+          address: { postboks: 'Postboks 1', postnummer: '0123', bySted: 'Oslo' },
         },
       });
       expect(result.ok).toBe(true);
     });
 
-    it('requires a country for a foreign address', () => {
-      expect(
-        errorPaths({
-          on: 'behalfOfOther',
-          sender: { type: 'named', name: { firstName: 'Ada', surname: 'Lovelace' } },
-          user: {
-            type: 'unidentified',
-            name: { firstName: 'Ola', surname: 'Nordmann' },
-            address: { type: 'FOREIGN_ADDRESS', street: 'Main street 1' },
-          },
-        }),
-      ).toEqual(['required:user.address.country.name']);
+    it('requires an unidentified user to have an address, but not any field within it', () => {
+      const withoutAddress = {
+        on: 'behalfOfOther' as const,
+        sender: { type: 'named' as const, name: { firstName: 'Ada', surname: 'Lovelace' } },
+        user: { type: 'unidentified' as const, name: { firstName: 'Ola', surname: 'Nordmann' } },
+      };
+      expect(errorPaths(withoutAddress)).toEqual(['required:user.address']);
+      expect(partyUtils.parseParty({ ...withoutAddress, user: { ...withoutAddress.user, address: {} } }).ok).toBe(true);
+    });
+
+    it('accepts address combinations the address component decides on, including both kinds at once', () => {
+      const parsed = partyUtils.parseParty({
+        on: 'behalfOfOther',
+        sender: { type: 'named', name: { firstName: 'Ada', surname: 'Lovelace' } },
+        user: {
+          type: 'unidentified',
+          name: { firstName: 'Ola', surname: 'Nordmann' },
+          address: { adresse: 'Gata 1', postboks: 'Postboks 1', bygning: 'B', land: { value: 'SE', label: 'Sverige' } },
+        },
+      });
+      expect(parsed.ok).toBe(true);
     });
 
     it('validates the organization number', () => {

@@ -1,43 +1,10 @@
+import { Address } from '../address';
 import { ComponentValue } from '../form';
 
 interface PersonName {
   readonly firstName: string;
   readonly surname: string;
 }
-
-interface Country {
-  readonly code?: string;
-  readonly name: string;
-}
-
-interface NorwegianStreetAddress {
-  readonly type: 'NORWEGIAN_ADDRESS';
-  readonly co?: string;
-  readonly street: string;
-  readonly postalCode: string;
-  readonly postalName: string;
-}
-
-interface PostOfficeBoxAddress {
-  readonly type: 'POST_OFFICE_BOX';
-  readonly co?: string;
-  readonly postOfficeBox: string;
-  readonly postalCode: string;
-  readonly postalName: string;
-}
-
-interface ForeignAddress {
-  readonly type: 'FOREIGN_ADDRESS';
-  readonly co?: string;
-  readonly street: string;
-  readonly building?: string;
-  readonly postalCode?: string;
-  readonly location?: string;
-  readonly region?: string;
-  readonly country: Country;
-}
-
-type PartyAddress = NorwegianStreetAddress | PostOfficeBoxAddress | ForeignAddress;
 
 /** A person Nav can look up. The name is only known when the journey collected it. */
 interface IdentifiedPerson {
@@ -52,11 +19,17 @@ interface NamedPerson {
   readonly name: PersonName;
 }
 
-/** A person Nav cannot look up, identified for case handling by name and address. */
+/**
+ * A person Nav cannot look up, identified for case handling by name and address.
+ *
+ * The address is the submitted {@link Address}. Which fields an address type requires is enforced by
+ * the address component when the address is collected, so the model requires the address to be
+ * present without restating those rules.
+ */
 interface UnidentifiedPerson {
   readonly type: 'unidentified';
   readonly name: PersonName;
-  readonly address: PartyAddress;
+  readonly address: Address;
 }
 
 interface Organization {
@@ -137,23 +110,18 @@ type Parsed<T> =
 
 export type {
   ConcernedUser,
-  Country,
   Draft,
-  ForeignAddress,
   IdentifiedPerson,
   NamedPerson,
   NavUnit,
-  NorwegianStreetAddress,
   Organization,
   Parsed,
   Party,
-  PartyAddress,
   PartyDraft,
   PartyError,
   PartyErrorCode,
   PartyOn,
   PersonName,
-  PostOfficeBoxAddress,
   Sender,
   SeveralPeople,
   UnidentifiedPerson,

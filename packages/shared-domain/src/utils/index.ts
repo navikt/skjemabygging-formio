@@ -1,4 +1,3 @@
-export * from './address';
 export * from './attachment';
 export * from './config';
 export * from './currency';

@@ -1,4 +1,5 @@
 import {
+  Address,
   ConcernedUser,
   Draft,
   IdentifiedPerson,
@@ -7,7 +8,6 @@ import {
   Organization,
   Parsed,
   Party,
-  PartyAddress,
   PartyDraft,
   PartyError,
   PartyErrorCode,
@@ -73,52 +73,13 @@ const parseName = (draft: Draft<PersonName> | undefined, path: string): Parsed<P
   }));
 };
 
-const parseAddress = (draft: Draft<PartyAddress> | undefined, path: string): Parsed<PartyAddress> => {
-  if (!draft?.type) {
-    return failure('required', `${path}.type`);
-  }
-  const co = parseOptional(draft.co);
-  switch (draft.type) {
-    case 'NORWEGIAN_ADDRESS': {
-      const street = parseRequired(draft.street, `${path}.street`);
-      const postalCode = parseRequired(draft.postalCode, `${path}.postalCode`);
-      const postalName = parseRequired(draft.postalName, `${path}.postalName`);
-      return combine([street, postalCode, postalName], () => ({
-        type: 'NORWEGIAN_ADDRESS',
-        co,
-        street: valueOf(street),
-        postalCode: valueOf(postalCode),
-        postalName: valueOf(postalName),
-      }));
-    }
-    case 'POST_OFFICE_BOX': {
-      const postOfficeBox = parseRequired(draft.postOfficeBox, `${path}.postOfficeBox`);
-      const postalCode = parseRequired(draft.postalCode, `${path}.postalCode`);
-      const postalName = parseRequired(draft.postalName, `${path}.postalName`);
-      return combine([postOfficeBox, postalCode, postalName], () => ({
-        type: 'POST_OFFICE_BOX',
-        co,
-        postOfficeBox: valueOf(postOfficeBox),
-        postalCode: valueOf(postalCode),
-        postalName: valueOf(postalName),
-      }));
-    }
-    case 'FOREIGN_ADDRESS': {
-      const street = parseRequired(draft.street, `${path}.street`);
-      const countryName = parseRequired(draft.country?.name, `${path}.country.name`);
-      return combine([street, countryName], () => ({
-        type: 'FOREIGN_ADDRESS',
-        co,
-        street: valueOf(street),
-        building: parseOptional(draft.building),
-        postalCode: parseOptional(draft.postalCode),
-        location: parseOptional(draft.location),
-        region: parseOptional(draft.region),
-        country: { code: parseOptional(draft.country?.code), name: valueOf(countryName) },
-      }));
-    }
-  }
-};
+/**
+ * An unidentified person must have an address, because a name and address is how they are
+ * identifiable for case handling. Which fields the address holds is decided by the address
+ * component when it is collected, so the address passes through as submitted.
+ */
+const parseAddress = (draft: Draft<Address> | undefined, path: string): Parsed<Address> =>
+  draft ? success(draft) : failure('required', path);
 
 const parseIdentifiedPerson = (
   draft: Draft<IdentifiedPerson>,

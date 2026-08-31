@@ -4,15 +4,12 @@ import {
   Form,
   NavFormType,
   Party,
-  PartyAddress,
   PartyDraft,
   Sender,
-  SubmissionAddress,
   SubmissionData,
   SubmissionSender,
   SubmissionYourInformation,
 } from '../../models';
-import { addressUtils } from '../address';
 import { senderUtils, yourInformationUtils } from '../submission';
 import { ParseOptions, partyUtils } from './partyUtils';
 
@@ -25,9 +22,7 @@ import { ParseOptions, partyUtils } from './partyUtils';
 type LegacyPartyReason =
   /** L3: the submission carries flat applicant fields instead of a yourInformation container. */
   | 'legacyFields'
-  /** L4, L7: the address holds a combination the party model deliberately cannot express. */
-  | 'unsupportedAddress'
-  /** L1, L2, L5, L6: the submission is missing or malforms something a party requires. */
+  /** L1, L2, L6: the submission is missing or malforms something a party requires. */
   | 'incompleteParty';
 
 type NavFormParty =
@@ -55,52 +50,6 @@ const LEGACY_FIELD_KEYS = [
 const hasLegacyFields = (submissionData: SubmissionData) =>
   LEGACY_FIELD_KEYS.some((key) => submissionData[key] !== undefined && submissionData[key] !== '');
 
-/** An address the party model would silently narrow, so the legacy mappers keep it whole. */
-const isUnsupportedAddress = (address: SubmissionAddress | undefined) => {
-  if (!address) {
-    return false;
-  }
-  const bothAddressKinds = !!address.adresse && !!address.postboks;
-  const foreignPostOfficeBox = addressUtils.resolveAddressType(address) === 'FOREIGN_ADDRESS' && !!address.postboks;
-  return bothAddressKinds || foreignPostOfficeBox;
-};
-
-const toAddressDraft = (address: SubmissionAddress | undefined): Draft<PartyAddress> | undefined => {
-  const type = addressUtils.resolveAddressType(address);
-  if (!address || !type) {
-    return undefined;
-  }
-  switch (type) {
-    case 'FOREIGN_ADDRESS':
-      return {
-        type,
-        co: address.co,
-        street: address.adresse,
-        building: address.bygning,
-        postalCode: address.postnummer,
-        location: address.bySted,
-        region: address.region,
-        country: { code: address.land?.value ?? address.landkode, name: address.land?.label },
-      };
-    case 'POST_OFFICE_BOX':
-      return {
-        type,
-        co: address.co,
-        postOfficeBox: address.postboks,
-        postalCode: address.postnummer,
-        postalName: address.bySted,
-      };
-    case 'NORWEGIAN_ADDRESS':
-      return {
-        type,
-        co: address.co,
-        street: address.adresse,
-        postalCode: address.postnummer,
-        postalName: address.bySted,
-      };
-  }
-};
-
 const toNameDraft = (firstName?: string, surname?: string) =>
   firstName || surname ? { firstName, surname } : undefined;
 
@@ -110,7 +59,7 @@ const toUserDraft = (yourInformation: SubmissionYourInformation | undefined): Dr
   if (nationalIdentityNumber) {
     return { type: 'identified', nationalIdentityNumber, name };
   }
-  return { type: 'unidentified', name, address: toAddressDraft(yourInformation?.adresse) };
+  return { type: 'unidentified', name, address: yourInformation?.adresse };
 };
 
 const toSenderDraft = (sender: SubmissionSender | undefined): Draft<Sender> | undefined => {
@@ -162,10 +111,6 @@ const getNavFormParty = (
 ): NavFormParty => {
   if (hasLegacyFields(submissionData)) {
     return { type: 'legacy', reason: 'legacyFields' };
-  }
-  const yourInformation = yourInformationUtils.getYourInformation(form, submissionData);
-  if (isUnsupportedAddress(yourInformation?.adresse)) {
-    return { type: 'legacy', reason: 'unsupportedAddress' };
   }
   const parsed = partyUtils.parseParty(toPartyDraft(form, submissionData), options);
   return parsed.ok ? { type: 'party', party: parsed.value } : { type: 'legacy', reason: 'incompleteParty' };

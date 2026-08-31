@@ -34,7 +34,7 @@ describe('partyProjections', () => {
         user: {
           type: 'unidentified',
           name: { firstName: 'Ola', surname: 'Nordmann' },
-          address: { type: 'NORWEGIAN_ADDRESS', street: 'Testveien 1', postalCode: '0123', postalName: 'Oslo' },
+          address: { adresse: 'Testveien 1', postnummer: '0123', bySted: 'Oslo' },
         },
       };
       expect(partyProjections.toSubmissionParties(party)).toEqual({ avsender: { navn: 'Ola Nordmann' } });
@@ -66,20 +66,23 @@ describe('partyProjections', () => {
         user: {
           type: 'unidentified',
           name: { firstName: 'Ola', surname: 'Nordmann' },
-          address: {
-            type: 'POST_OFFICE_BOX',
-            co: 'Kari',
-            postOfficeBox: 'Postboks 1',
-            postalCode: '0123',
-            postalName: 'Oslo',
-          },
+          address: { co: 'Kari', postboks: 'Postboks 1', postnummer: '0123', bySted: 'Oslo' },
         },
       };
       expect(partyProjections.toCoverPageParties(party)).toEqual({
         user: {
           firstName: 'Ola',
           surname: 'Nordmann',
-          address: { co: 'Kari', postOfficeBox: 'Postboks 1', postalCode: '0123', postalName: 'Oslo' },
+          address: {
+            co: 'Kari',
+            streetAddress: undefined,
+            postOfficeBox: 'Postboks 1',
+            building: undefined,
+            postalCode: '0123',
+            postalName: 'Oslo',
+            region: undefined,
+            country: undefined,
+          },
         },
       });
     });
@@ -91,12 +94,7 @@ describe('partyProjections', () => {
         user: {
           type: 'unidentified',
           name: { firstName: 'Ola', surname: 'Nordmann' },
-          address: {
-            type: 'FOREIGN_ADDRESS',
-            street: 'Main street 1',
-            location: 'London',
-            country: { code: 'GB', name: 'Storbritannia' },
-          },
+          address: { adresse: 'Main street 1', bySted: 'London', land: { value: 'GB', label: 'Storbritannia' } },
         },
       };
       expect(partyProjections.toCoverPageParties(party)).toEqual({
@@ -106,6 +104,7 @@ describe('partyProjections', () => {
           address: {
             co: undefined,
             streetAddress: 'Main street 1',
+            postOfficeBox: undefined,
             building: undefined,
             postalCode: undefined,
             postalName: 'London',

@@ -7,8 +7,8 @@ interface Address {
   adresse?: string;
   postnummer?: string;
   bySted?: string; // poststed for norske adresser
-  landkode: string;
-  land: ComponentValue;
+  landkode?: string;
+  land?: ComponentValue;
   co?: string;
   postboks?: string;
 

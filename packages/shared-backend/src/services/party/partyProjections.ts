@@ -1,4 +1,4 @@
-import { CoverPageDownloadType, Party, PartyAddress, Sender } from '@navikt/skjemadigitalisering-shared-domain';
+import { Address, CoverPageDownloadType, Party, Sender } from '@navikt/skjemadigitalisering-shared-domain';
 import { AvsenderId } from '../application';
 
 interface SubmissionPartyProjection {
@@ -47,38 +47,17 @@ const toSubmissionParties = (party: Party): SubmissionPartyProjection => {
   };
 };
 
-const toCoverPageAddress = (address: PartyAddress) => {
-  const common = { co: address.co };
-  switch (address.type) {
-    case 'NORWEGIAN_ADDRESS':
-      return {
-        ...common,
-        streetAddress: address.street,
-        postalCode: address.postalCode,
-        postalName: address.postalName,
-      };
-    case 'POST_OFFICE_BOX':
-      return {
-        ...common,
-        postOfficeBox: address.postOfficeBox,
-        postalCode: address.postalCode,
-        postalName: address.postalName,
-      };
-    case 'FOREIGN_ADDRESS':
-      return {
-        ...common,
-        streetAddress: address.street,
-        building: address.building,
-        postalCode: address.postalCode,
-        postalName: address.location,
-        region: address.region,
-        country: {
-          value: address.country.code ?? address.country.name,
-          label: address.country.name,
-        },
-      };
-  }
-};
+/** Renames the submitted address to the cover-page field names. Every field stays optional. */
+const toCoverPageAddress = (address: Address) => ({
+  co: address.co,
+  streetAddress: address.adresse,
+  postOfficeBox: address.postboks,
+  building: address.bygning,
+  postalCode: address.postnummer,
+  postalName: address.bySted,
+  region: address.region,
+  country: address.land,
+});
 
 const toCoverPageParties = (party: Party): CoverPagePartyProjection => {
   const user = getUser(party);
