@@ -79,4 +79,47 @@ describe('FormActionError', () => {
 
     expect(container.textContent).toContain(TEXTS.statiske.error.serverErrorTitle);
   });
+
+  it('stops rendering the error once it is cleared', async () => {
+    const ClearHarness = () => {
+      const { saveDraft, clearError } = useFormActions();
+      return (
+        <>
+          <button type="button" onClick={() => void saveDraft()}>
+            Save
+          </button>
+          <button type="button" onClick={() => clearError()}>
+            Clear
+          </button>
+          <FormActionError />
+        </>
+      );
+    };
+
+    act(() => {
+      root.render(
+        <LanguageProvider translations={{}} currentLanguage="nb" availableLanguages={['nb']}>
+          <SubmissionStateProvider initialSubmission={{ data: {} }}>
+            <FormActionsProvider
+              save={async () => {
+                throw { cause: new Error('network'), userMessage: 'Kunne ikke lagre utkastet.' };
+              }}
+            >
+              <ClearHarness />
+            </FormActionsProvider>
+          </SubmissionStateProvider>
+        </LanguageProvider>,
+      );
+    });
+
+    await act(async () => {
+      (container.querySelectorAll('button')[0] as HTMLButtonElement).click();
+    });
+    expect(container.textContent).toContain('Kunne ikke lagre utkastet.');
+
+    act(() => {
+      (container.querySelectorAll('button')[1] as HTMLButtonElement).click();
+    });
+    expect(container.querySelector('.navds-alert')).toBeNull();
+  });
 });
