@@ -4,7 +4,7 @@ const otherAttachmentBuilder = () => {
     title: label,
     schema: {
       label,
-      description: 'Har du noen annen dokumentasjon du ønsker å legge ved?',
+      description: '<p>Har du noen annen dokumentasjon du ønsker å legge ved?</p>',
       type: 'attachment',
       key: 'annenDokumentasjon',
       dataSrc: 'values',
