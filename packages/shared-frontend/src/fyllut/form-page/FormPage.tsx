@@ -6,12 +6,19 @@ import { useLanguage } from '../../context/language/LanguageContext';
 import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
 import { useValidation } from '../../context/validation/ValidationContext';
 import RenderInputForm from '../../form-components/RenderInputForm';
+import { inputComponentRegistry } from '../../form-components/inputComponentRegistry';
+import FyllutInputAttachment from '../attachments/components/FyllutInputAttachment';
 import { useFormActions } from '../context/form-actions/FormActionsContext';
 import { useFormNavigation } from '../form-flow/useFormNavigation';
 import { FormButtonRow, FormNextButton, FormPrevButton } from '../layout/FormButtonRow';
 import CancelAndDeleteButton from '../navigation/CancelAndDeleteButton';
 import SaveButton from '../navigation/SaveButton';
 import { useFormPageController } from './useFormPageController';
+
+const fyllutInputComponentRegistry = {
+  ...inputComponentRegistry,
+  attachment: FyllutInputAttachment,
+};
 
 const FormPage = () => {
   const { translate } = useLanguage();
@@ -101,7 +108,12 @@ const FormPage = () => {
 
   return (
     <>
-      <RenderInputForm pageKey={currentPanel?.key ?? ''} pageComponents={components} components={components} />
+      <RenderInputForm
+        pageKey={currentPanel?.key ?? ''}
+        pageComponents={components}
+        components={components}
+        componentRegistry={fyllutInputComponentRegistry}
+      />
       <FormErrorSummary
         pageKey={currentPanel?.key}
         components={components}

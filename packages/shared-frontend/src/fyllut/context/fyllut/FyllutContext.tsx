@@ -51,7 +51,7 @@ type FyllutEvent =
     };
 
 interface FyllutContextValue {
-  fyllutBaseUrl?: string;
+  fyllutBaseUrl: string;
   isLoggedIn?: boolean;
   logEvent?: (event: FyllutEvent) => Promise<void>;
 }
@@ -61,13 +61,19 @@ interface Props {
   value: FyllutContextValue;
 }
 
-const FyllutContext = createContext<FyllutContextValue>({});
+const FyllutContext = createContext<FyllutContextValue | undefined>(undefined);
 
 const FyllutProvider = ({ children, value }: Props) => (
   <FyllutContext.Provider value={value}>{children}</FyllutContext.Provider>
 );
 
-const useFyllut = () => useContext(FyllutContext);
+const useFyllut = () => {
+  const context = useContext(FyllutContext);
+  if (!context) {
+    throw new Error('Fyllut context is required to render the fyllut form flow.');
+  }
+  return context;
+};
 
 export { FyllutProvider, useFyllut };
 export type { FyllutContextValue, FyllutEvent, FyllutHttp, FyllutHttpHeaders };

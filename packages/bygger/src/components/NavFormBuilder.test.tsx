@@ -40,11 +40,7 @@ describe('NavFormBuilder', () => {
     fetchMock.resetMocks();
     vi.restoreAllMocks();
     cleanup();
-    await waitFor(() => {
-      if (Object.keys((NavFormioJs.Formio as any).forms).length !== 0) {
-        throw new Error('Expected Formio forms to be destroyed during cleanup');
-      }
-    });
+    await waitFor(() => Object.keys((NavFormioJs.Formio as any).forms).length === 0);
   });
 
   describe('mounting', () => {
@@ -53,9 +49,9 @@ describe('NavFormBuilder', () => {
       const { unmount } = render(
         <NavFormBuilder form={testform} onChange={onChangeMock} formBuilderOptions={DEFAULT_FORM_BUILDER_OPTIONS} />,
       );
-      await waitFor(() => expect(Object.keys((NavFormioJs.Formio as any).forms).length).toBeGreaterThan(0));
+      await waitFor(() => Object.keys((NavFormioJs.Formio as any).forms).length > 0);
       unmount();
-      await waitFor(() => expect(Object.keys((NavFormioJs.Formio as any).forms)).toHaveLength(0));
+      await waitFor(() => Object.keys((NavFormioJs.Formio as any).forms).length === 0);
     });
   });
 

@@ -28,7 +28,7 @@ const ActiveTasksPage = ({ form }: Props) => {
   const hasAttachmentTask = activeTasks.some((task) => task.type === 'attachment');
   const hasDraftTask = draftTasks.length > 0;
   const hasActiveTask = hasDraftTask || hasAttachmentTask;
-  const { fyllutBaseUrl = '/fyllut' } = useFyllut();
+  const { fyllutBaseUrl } = useFyllut();
   const { translate } = useLanguage();
 
   useEffect(() => {

@@ -65,19 +65,27 @@ approved new-render exception.
 
 ## 4. Package boundaries and change scope
 
-- [ ] Remove the dependency from generic `form-components` adapters to fyllut
+- [x] Remove the dependency from generic `form-components` adapters to fyllut
       attachment implementations. Provide fyllut behavior through the intended
-      adapter or runtime-service boundary.
-- [ ] Replace inappropriate hard-coded `/fyllut` paths with host-provided
+      adapter or runtime-service boundary. The fyllut form flow now overrides
+      the generic attachment renderer through `InputComponentRegistry`.
+- [x] Replace inappropriate hard-coded `/fyllut` paths with host-provided
       configuration.
-- [ ] Revert branch-only bygger changes unless a concrete dependency requires
-      them.
-- [ ] Remove shared-frontend from `build:bygger` unless bygger consumes the
-      package.
-- [ ] Review shared-backend application-PDF, translation, attachment and file
-      handling changes. Retain only changes required by the new renderer.
-- [ ] Review form-spec-api schema changes and prove backward compatibility with
-      focused contract tests.
+- [x] Revert branch-only bygger changes unless a concrete dependency requires
+      them. The unrelated builder-test changes were reverted; the error utility
+      cleanup remains because it reuses the shared-domain response-error guards
+      instead of duplicating runtime type checks.
+- [x] Keep shared-frontend in `build:bygger`: bygger consumes it indirectly
+      through shared-components, which imports the shared summary renderer.
+- [x] Review shared-backend application-PDF, translation, attachment and file
+      handling changes. The retained changes support nested attachment
+      normalization, new-render select value shapes, validation and intro-page
+      translations, and temporary upload paths. Existing attachment and file
+      tests cover the critical normalization and upload-path behavior.
+- [x] Review form-spec-api schema changes and prove backward compatibility with
+      focused contract tests. Attachment-panel schemas accept legacy Formio and
+      new-render attachment values, while top-level attachments remain optional
+      except for digital no-login submissions.
 
 ## 5. Security and observability
 

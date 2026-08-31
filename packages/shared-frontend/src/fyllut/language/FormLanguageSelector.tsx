@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { withoutSubmissionNavigationState } from '../../utils/navigationState';
+import { useFyllut } from '../context/fyllut/FyllutContext';
 
 const languagesInOriginalLanguage: Record<string, string> = {
   nb: 'Norsk bokmål',
@@ -9,10 +10,9 @@ const languagesInOriginalLanguage: Record<string, string> = {
   en: 'English',
   pl: 'Polskie',
 };
-const FYLLUT_BASE_PATH = '/fyllut';
-
 const FormLanguageSelector = () => {
   const { currentLanguage, availableLanguages } = useLanguage();
+  const { fyllutBaseUrl } = useFyllut();
   const { pathname, search, state } = useLocation();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -35,11 +35,11 @@ const FormLanguageSelector = () => {
         params.set('lang', languageCode);
 
         return {
-          href: `${FYLLUT_BASE_PATH}${pathname}?${params.toString()}`,
+          href: `${fyllutBaseUrl}${pathname}?${params.toString()}`,
           label: languagesInOriginalLanguage[languageCode] ?? languageCode,
         };
       });
-  }, [currentLanguage, pathname, search, supportedLanguages]);
+  }, [currentLanguage, fyllutBaseUrl, pathname, search, supportedLanguages]);
 
   if (options.length === 0) {
     return null;

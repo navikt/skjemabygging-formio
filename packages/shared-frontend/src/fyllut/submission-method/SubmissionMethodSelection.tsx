@@ -18,7 +18,7 @@ interface Props {
 const SubmissionMethodSelection = ({ form }: Props) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { isLoggedIn } = useFyllut();
+  const { fyllutBaseUrl, isLoggedIn } = useFyllut();
   const { translate } = useLanguage();
   const [state, setState] = useState<SelectionState>(SelectionState.DEFAULT);
   const submissionTypes = form.properties.submissionTypes;
@@ -42,7 +42,7 @@ const SubmissionMethodSelection = ({ form }: Props) => {
       const search = searchWithSub(submissionMethod);
 
       if (submissionMethod === 'digital' && !isLoggedIn) {
-        window.location.href = `${window.location.origin}/fyllut/${form.path}${search}`;
+        window.location.href = `${window.location.origin}${fyllutBaseUrl}/${form.path}${search}`;
         return;
       }
 
@@ -53,7 +53,7 @@ const SubmissionMethodSelection = ({ form }: Props) => {
 
       navigate({ pathname: `/${form.path}`, search });
     },
-    [form.path, isLoggedIn, navigate, searchWithSub],
+    [form.path, fyllutBaseUrl, isLoggedIn, navigate, searchWithSub],
   );
 
   const preventDefault = (event: MouseEvent<HTMLAnchorElement>) => {
@@ -98,7 +98,7 @@ const SubmissionMethodSelection = ({ form }: Props) => {
         <LinkCard>
           <LinkCard.Title>
             <LinkCard.Anchor
-              href={`/fyllut/${form.path}${searchWithSub('digital')}`}
+              href={`${fyllutBaseUrl}/${form.path}${searchWithSub('digital')}`}
               onClick={(event) => {
                 preventDefault(event);
                 startFlow('digital');
@@ -116,7 +116,7 @@ const SubmissionMethodSelection = ({ form }: Props) => {
         <LinkCard>
           <LinkCard.Title>
             <LinkCard.Anchor
-              href={`/fyllut/${form.path}`}
+              href={`${fyllutBaseUrl}/${form.path}`}
               onClick={(event) => {
                 preventDefault(event);
                 setState(SelectionState.NO_LOGIN);
@@ -132,7 +132,7 @@ const SubmissionMethodSelection = ({ form }: Props) => {
         <LinkCard>
           <LinkCard.Title>
             <LinkCard.Anchor
-              href={`/fyllut/${form.path}/legitimasjon${searchWithSub('digitalnologin')}`}
+              href={`${fyllutBaseUrl}/${form.path}/legitimasjon${searchWithSub('digitalnologin')}`}
               onClick={(event) => {
                 preventDefault(event);
                 startFlow('digitalnologin');
@@ -150,7 +150,7 @@ const SubmissionMethodSelection = ({ form }: Props) => {
         <LinkCard>
           <LinkCard.Title>
             <LinkCard.Anchor
-              href={`/fyllut/${form.path}${searchWithSub('paper')}`}
+              href={`${fyllutBaseUrl}/${form.path}${searchWithSub('paper')}`}
               onClick={(event) => {
                 preventDefault(event);
                 startFlow('paper');

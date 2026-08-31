@@ -456,6 +456,94 @@ describe('generateSchema', () => {
     expect(getFormDataSchema(schema).properties).not.toHaveProperty('attachmentsPanel');
   });
 
+  it('keeps legacy and new-render attachment values compatible inside attachment panels', () => {
+    const component: Component = {
+      attachmentType: 'default',
+      attachmentValues: {
+        ettersender: { enabled: true },
+        leggerVedNaa: { enabled: true },
+      },
+      input: true,
+      key: 'medicalCertificate',
+      label: 'Medical certificate',
+      navId: 'medical-certificate-navid',
+      type: 'attachment',
+    };
+    const schema = generateSchema(
+      createForm([
+        {
+          components: [component],
+          input: false,
+          isAttachmentPanel: true,
+          key: 'attachmentsPanel',
+          label: 'Attachments panel',
+          type: 'panel',
+        },
+      ]),
+    );
+
+    const attachmentDataSchema = getFormDataSchema(schema).properties?.medicalCertificate as JsonSchemaObject;
+
+    expect(attachmentDataSchema.anyOf).toEqual([
+      expect.objectContaining({
+        additionalProperties: false,
+        required: ['attachmentId', 'navId', 'type'],
+        type: 'object',
+      }),
+      {
+        additionalProperties: false,
+        properties: {
+          additionalDocumentation: { type: 'string' },
+          key: {
+            enum: ['ettersender', 'leggerVedNaa'],
+            title: 'Medical certificate',
+            type: 'string',
+          },
+        },
+        required: ['key'],
+        title: 'Medical certificate',
+        type: 'object',
+      },
+    ]);
+  });
+
+  it.each([
+    { submissionTypes: ['PAPER'] as SubmissionType[], attachmentsRequired: false },
+    { submissionTypes: ['DIGITAL'] as SubmissionType[], attachmentsRequired: false },
+    { submissionTypes: ['DIGITAL_NO_LOGIN'] as SubmissionType[], attachmentsRequired: true },
+  ])(
+    'keeps top-level attachments optional unless required by the submission contract',
+    ({ submissionTypes, attachmentsRequired }) => {
+      const schema = generateSchema(
+        createForm(
+          [
+            {
+              components: [
+                {
+                  attachmentType: 'default',
+                  input: true,
+                  key: 'documentation',
+                  label: 'Documentation',
+                  navId: 'documentation-navid',
+                  type: 'attachment',
+                },
+              ],
+              input: false,
+              isAttachmentPanel: true,
+              key: 'attachmentsPanel',
+              label: 'Attachments panel',
+              type: 'panel',
+            },
+          ],
+          false,
+          submissionTypes,
+        ),
+      );
+
+      expect(getSubmissionPayloadSchema(schema).required?.includes('attachments')).toBe(attachmentsRequired);
+    },
+  );
+
   it('does not mark conditional fields as required', () => {
     const schema = generateSchema(
       createForm([
