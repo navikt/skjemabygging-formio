@@ -1,5 +1,5 @@
 import { Component, Submission } from '@navikt/skjemadigitalisering-shared-domain';
-import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
+import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useApplication } from '../application/ApplicationContext';
 import { useLanguage } from '../language/LanguageContext';
 import { useSubmissionState } from '../state/SubmissionStateContext';
@@ -105,6 +105,12 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
   const [summaryScope, setSummaryScope] = useState<SummaryScope>(undefined);
   const [summaryFocusRequest, setSummaryFocusRequest] = useState(0);
   const [externalAttachmentErrors, setExternalAttachmentErrors] = useState<Record<string, ExternalAttachmentError>>({});
+  const submissionRef = useRef(submission);
+  const cachedPageComponentsRef = useRef<Record<string, Component[]>>({});
+
+  useEffect(() => {
+    submissionRef.current = submission;
+  }, [submission]);
 
   const computeErrors = useMemo(
     () =>
@@ -116,6 +122,16 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
         translate,
       }),
     [allowTestTypes, currentLanguage, externalAttachmentErrors, submissionMethod, translate],
+  );
+
+  // Compute page errors and remember the components that produced them, so cached (translated)
+  // messages can be recomputed when `computeErrors` changes (e.g. the user switches language).
+  const computeAndRememberErrors = useCallback(
+    (pageKey: string, components: Component[], activeSubmission: Submission | undefined) => {
+      cachedPageComponentsRef.current[pageKey] = components;
+      return computeErrors(pageKey, components, activeSubmission);
+    },
+    [computeErrors],
   );
 
   const setAttachmentExternalError = useCallback(
@@ -163,7 +179,7 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
 
   const validatePage = useCallback(
     (pageKey: string, components: Component[]) => {
-      const pageErrors = computeErrors(pageKey, components, submission);
+      const pageErrors = computeAndRememberErrors(pageKey, components, submission);
       setPagesWithErrors((prev) => togglePageInSet(prev, pageKey, pageErrors.length > 0));
       setPageErrorsByKey((prev) => setPageErrors(prev, pageKey, pageErrors));
       setSummaryScope(pageErrors.length > 0 ? { type: 'page', pageKey } : undefined);
@@ -172,7 +188,7 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
       }
       return pageErrors.length === 0;
     },
-    [computeErrors, submission],
+    [computeAndRememberErrors, submission],
   );
 
   const validatePages = useCallback(
@@ -180,7 +196,7 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
       const failedPages = new Set<string>();
       const pageErrors = new Map<string, FieldError[]>();
       pages.forEach(({ pageKey, components }) => {
-        const errors = computeErrors(pageKey, components, submission);
+        const errors = computeAndRememberErrors(pageKey, components, submission);
         pageErrors.set(pageKey, errors);
         if (errors.length > 0) failedPages.add(pageKey);
       });
@@ -194,7 +210,7 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
       }
       return Array.from(failedPages);
     },
-    [computeErrors, submission],
+    [computeAndRememberErrors, submission],
   );
 
   const getError = useCallback(
@@ -219,7 +235,7 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
 
   const updatePageValidationState = useCallback(
     (pageKey: string, components: Component[], activeSubmission: Submission | undefined) => {
-      const pageErrors = computeErrors(pageKey, components, activeSubmission);
+      const pageErrors = computeAndRememberErrors(pageKey, components, activeSubmission);
       setPagesWithErrors((prev) => togglePageInSet(prev, pageKey, pageErrors.length > 0));
       setPageErrorsByKey((prev) => setPageErrors(prev, pageKey, pageErrors));
       setSummaryScope((prev) => {
@@ -229,7 +245,7 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
         return prev;
       });
     },
-    [computeErrors],
+    [computeAndRememberErrors],
   );
 
   const handleFieldChange = useCallback(
@@ -251,6 +267,23 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
     },
     [pagesWithErrors, submission, summaryScope, updatePageValidationState],
   );
+
+  // Cached page errors hold messages translated with the previous `computeErrors` (language,
+  // attachment errors, submission method). Recompute them whenever `computeErrors` changes so a
+  // language switch on the summary page (or a form page) doesn't leave stale, wrong-language errors.
+  useEffect(() => {
+    setPageErrorsByKey((prev) => {
+      let next = prev;
+      for (const pageKey of Object.keys(prev)) {
+        const components = cachedPageComponentsRef.current[pageKey];
+        if (!components) {
+          continue;
+        }
+        next = setPageErrors(next, pageKey, computeErrors(pageKey, components, submissionRef.current));
+      }
+      return next;
+    });
+  }, [computeErrors]);
 
   const value = useMemo(
     () => ({

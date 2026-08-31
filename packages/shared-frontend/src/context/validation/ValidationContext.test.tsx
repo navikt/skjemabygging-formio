@@ -24,7 +24,12 @@ const components = [
   },
 ] as unknown as Component[];
 
-const translations = Object.fromEntries(Object.entries(TEXTS.validering).map(([key, value]) => [key, { nb: value }]));
+const translations = Object.fromEntries(
+  Object.entries(TEXTS.validering).flatMap(([key, value]) => [
+    [key, { nb: value, en: `EN:${value}` }],
+    [value, { nb: value, en: `EN:${value}` }],
+  ]),
+);
 
 const ValidationHarness = () => {
   const { getError, validatePages } = useValidation();
@@ -88,6 +93,43 @@ describe('ValidationContext', () => {
     expect(container.querySelector('[data-testid="field-error"]')?.textContent).toBe('Du må fylle ut: First name');
     expect(container.querySelector('[data-testid="identity-number-error"]')?.textContent).toBe(
       TEXTS.validering.fodselsnummerDNummer,
+    );
+  });
+
+  it('recomputes cached page errors in the new language when the language changes', () => {
+    const renderWithLanguage = (currentLanguage: 'nb' | 'en') => {
+      act(() => {
+        root.render(
+          <ApplicationProvider environment="test">
+            <LanguageProvider
+              translations={translations}
+              currentLanguage={currentLanguage}
+              availableLanguages={['nb', 'en']}
+            >
+              <SubmissionStateProvider initialSubmission={{ data: { identityNumber: '123' } }}>
+                <ValidationProvider>
+                  <ValidationHarness />
+                </ValidationProvider>
+              </SubmissionStateProvider>
+            </LanguageProvider>
+          </ApplicationProvider>,
+        );
+      });
+    };
+
+    renderWithLanguage('nb');
+
+    act(() => {
+      (container.querySelector('button') as HTMLButtonElement).click();
+    });
+
+    expect(container.querySelector('[data-testid="field-error"]')?.textContent).toBe('Du må fylle ut: First name');
+
+    renderWithLanguage('en');
+
+    expect(container.querySelector('[data-testid="field-error"]')?.textContent).toBe('EN:Du må fylle ut: First name');
+    expect(container.querySelector('[data-testid="identity-number-error"]')?.textContent).toBe(
+      `EN:${TEXTS.validering.fodselsnummerDNummer}`,
     );
   });
 
