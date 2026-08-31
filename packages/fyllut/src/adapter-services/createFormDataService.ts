@@ -1,3 +1,4 @@
+import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
 import { FormCodeList, FormDataService, FyllutHttp } from '@navikt/skjemadigitalisering-shared-frontend';
 
 interface Props {
@@ -14,6 +15,25 @@ const codeListPaths: Record<FormCodeList, string> = {
 const createFormDataService = ({ http, backendBaseUrl, innsendingsId }: Props): FormDataService => {
   const backendUrl = `${backendBaseUrl}/api`;
   const applicationHeaders = innsendingsId ? { 'x-innsendingsid': innsendingsId } : undefined;
+  const codeListRequests = new Map<FormCodeList, ReturnType<FormDataService['getCodeList']>>();
+
+  const getCodeList = (codeList: FormCodeList) => {
+    const cachedRequest = codeListRequests.get(codeList);
+    if (cachedRequest) {
+      return cachedRequest;
+    }
+
+    const request: ReturnType<FormDataService['getCodeList']> = http
+      .get<ComponentValue[]>(`${backendUrl}/common-codes/${codeListPaths[codeList]}`)
+      .catch((error) => {
+        if (codeListRequests.get(codeList) === request) {
+          codeListRequests.delete(codeList);
+        }
+        throw error;
+      });
+    codeListRequests.set(codeList, request);
+    return request;
+  };
 
   return {
     getActivities: ({ dailyTravel = false } = {}) =>
@@ -25,7 +45,7 @@ const createFormDataService = ({ http, backendBaseUrl, innsendingsId }: Props): 
       const params = new URLSearchParams(queryParams).toString();
       return http.get(`${backendUrl}/register-data/${sourceId}${params ? `?${params}` : ''}`);
     },
-    getCodeList: (codeList) => http.get(`${backendUrl}/common-codes/${codeListPaths[codeList]}`),
+    getCodeList,
     getNavUnits: () => http.get(`${backendUrl}/enhetsliste`),
   };
 };

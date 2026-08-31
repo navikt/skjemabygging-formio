@@ -60,6 +60,9 @@ approved new-render exception.
       text. The legacy renderer used the generic question even when the visible
       question named another person; the new renderer keeps the label and error
       text consistent.
+- [x] Use the shared new-render warning content after an invalid summary submit
+      instead of also rendering the legacy sentence `Du må fullføre utfyllingen
+    før du kan fortsette`.
 
 ## 3. Accessibility
 
@@ -153,8 +156,6 @@ Completed cleanup:
 - [x] Remove `formioTextArea` support from shared-frontend. It remains in
       bygger, legacy Formio and backend PDF code where it is still used.
 - [x] Verify that shared-frontend has no radiopanel attachment adapter.
-- [x] Remove the stale radiopanel attachment claim from
-      `NEW_RENDER_COMPATIBILITY.md`.
 
 ## 7. Test matrix
 
@@ -212,14 +213,17 @@ and the current deployment template must be verified to quote it safely.
 
 Delete `packages/fyllut/NEW_RENDER_COMPATIBILITY.md` only when:
 
-- [ ] Every entry has been checked against the current implementation.
-- [ ] Every unresolved behavior has been fixed or explicitly accepted.
-- [ ] Every behavior claim is covered by a suitable automated or manual test.
-- [ ] Durable engineering guidance has moved to the appropriate repository
+- [x] Every entry has been checked against the current implementation.
+- [x] Every unresolved behavior has been fixed or explicitly accepted.
+- [x] Every behavior claim is covered by a suitable automated or manual test.
+- [x] Durable engineering guidance has moved to the appropriate repository
       skill.
-- [ ] Temporary release decisions and accepted exceptions are tracked in the
-      pull request or a release issue.
-- [ ] No unique rationale remains only in the compatibility file.
+- [x] Temporary release decisions and accepted exceptions are tracked in pull
+      request #2129 and this release plan.
+- [x] No unique rationale remains only in the compatibility file.
+
+The compatibility note was deleted after its remaining implementation claims
+were resolved or accepted and recorded here.
 
 ## 10. Final release gate
 
