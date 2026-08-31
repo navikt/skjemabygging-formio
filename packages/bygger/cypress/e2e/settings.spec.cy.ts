@@ -184,6 +184,17 @@ describe('FormSettingsPage', () => {
           .should('not.be.checked');
       });
 
+      it('should show mail submission settings when only static PDF submission is allowed', () => {
+        cy.findByRole('group', { name: 'Innsending' }).within(() => {
+          cy.findByRole('checkbox', { name: 'Statisk PDF' }).check();
+          cy.findByRole('checkbox', { name: /Send i posten/ }).uncheck();
+          cy.findByRole('checkbox', { name: 'Digital' }).uncheck();
+        });
+
+        cy.findByRole('combobox', { name: 'Mottaksadresse' }).should('exist');
+        cy.findByRole('checkbox', { name: CHECKBOX_LABEL_USER_MUST_CHOOSE_ENHET }).should('exist');
+      });
+
       it('should show all enheter when checked', () => {
         cy.findByRole('checkbox', { name: CHECKBOX_LABEL_USER_MUST_CHOOSE_ENHET }).check({ force: true });
         cy.findByRole('checkbox', { name: CHECKBOX_LABEL_USER_MUST_CHOOSE_ENHET }).should('be.checked');
