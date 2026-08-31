@@ -1,20 +1,15 @@
-import {
-  Component,
-  Submission,
-  dateUtils,
-  numberUtils,
-  submissionUtils,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { Submission, dateUtils, numberUtils, submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import {
   flattenComponentsWithBaseSubmissionPath,
   getResolvedSubmissionPath,
 } from '../context/form-definition/formDefinitionUtils';
+import { ComponentDefinition } from './component-types';
 
 const normalizeArrayIndexes = (submissionPath: string) => submissionPath.replace(/\[\d+]/g, '');
 
 const getCurrentRowPrefix = (submissionPath: string) => submissionPath.match(/^(.*\[\d+])(?:\.|$)/)?.[1];
 
-const getBeforeDateInputSubmissionPath = (component: Component, pageComponents: Component[]) => {
+const getBeforeDateInputSubmissionPath = (component: ComponentDefinition, pageComponents: ComponentDefinition[]) => {
   if (!component.beforeDateInputKey) {
     return undefined;
   }
@@ -42,7 +37,11 @@ const getBeforeDateInputSubmissionPath = (component: Component, pageComponents: 
     );
 };
 
-const getDatePickerFromDate = (component: Component, pageComponents: Component[], submission?: Submission) => {
+const getDatePickerFromDate = (
+  component: ComponentDefinition,
+  pageComponents: ComponentDefinition[],
+  submission?: Submission,
+) => {
   if (component.beforeDateInputKey) {
     const beforeDateInputPath = getBeforeDateInputSubmissionPath(component, pageComponents);
     const beforeDateInputValue =
@@ -65,7 +64,7 @@ const getDatePickerFromDate = (component: Component, pageComponents: Component[]
   return component.specificEarliestAllowedDate;
 };
 
-const getDatePickerToDate = (component: Component) => {
+const getDatePickerToDate = (component: ComponentDefinition) => {
   if (component.latestAllowedDate !== undefined && numberUtils.isValidInteger(String(component.latestAllowedDate))) {
     return dateUtils.addDays(Number(component.latestAllowedDate));
   }
@@ -73,7 +72,7 @@ const getDatePickerToDate = (component: Component) => {
   return component.specificLatestAllowedDate;
 };
 
-const getMonthPickerMinYear = (component: Component) => {
+const getMonthPickerMinYear = (component: ComponentDefinition) => {
   const minYear = component.validate?.minYear;
   if (minYear && String(minYear).length === 4 && numberUtils.isValidInteger(String(minYear))) {
     return minYear;
@@ -90,7 +89,7 @@ const getMonthPickerMinYear = (component: Component) => {
   return undefined;
 };
 
-const getMonthPickerMaxYear = (component: Component) => {
+const getMonthPickerMaxYear = (component: ComponentDefinition) => {
   const maxYear = component.validate?.maxYear;
   if (maxYear && String(maxYear).length === 4 && numberUtils.isValidInteger(String(maxYear))) {
     return maxYear;

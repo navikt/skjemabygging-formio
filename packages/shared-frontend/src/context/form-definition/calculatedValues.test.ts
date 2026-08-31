@@ -1,8 +1,9 @@
-import { Component, Form, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { describe, expect, it } from 'vitest';
+import { ComponentDefinition } from '../../form-components/component-types';
 import { collectDataGridRowScopes } from '../../form-components/components/data-grid/dataGridRows';
 import { applyCalculatedValues, collectCalculationTargets } from './calculatedValues';
-import { enrichFormWithBaseSubmissionPath } from './formDefinitionUtils';
+import { enrichFormWithBaseSubmissionPath, toComponentDefinitions } from './formDefinitionUtils';
 
 // Shaped like the data grid "transportmiddelTur" in the production form nav100716, where a currency
 // field sums the other amounts in the same row.
@@ -10,7 +11,7 @@ const rowSumExpression =
   'value = getFieldValue(row.belopForTog) + getFieldValue(row.belopForFly);\n' +
   'function getFieldValue(fieldValue) {\n  return parseFloat(fieldValue) || 0;\n}';
 
-const createForm = (dataGridComponents: Component[], extraComponents: Component[] = []): Form =>
+const createForm = (dataGridComponents: ComponentDefinition[], extraComponents: ComponentDefinition[] = []): Form =>
   enrichFormWithBaseSubmissionPath({
     title: 'Test',
     path: 'test',
@@ -37,7 +38,7 @@ const createForm = (dataGridComponents: Component[], extraComponents: Component[
     ],
   } as unknown as Form);
 
-const dataGridComponents: Component[] = [
+const dataGridComponents: ComponentDefinition[] = [
   { key: 'belopForTog', label: 'Beløp for tog', type: 'currency', input: true, navId: 'tog' },
   { key: 'belopForFly', label: 'Beløp for fly', type: 'currency', input: true, navId: 'fly' },
   {
@@ -48,13 +49,17 @@ const dataGridComponents: Component[] = [
     navId: 'total',
     calculateValue: rowSumExpression,
   },
-] as Component[];
+] as ComponentDefinition[];
 
 const calculate = (form: Form, submission: Submission) =>
   applyCalculatedValues({
     submission,
-    formComponents: form.components,
-    dataGridRowScopes: collectDataGridRowScopes({ components: form.components, submission, form }),
+    formComponents: toComponentDefinitions(form.components),
+    dataGridRowScopes: collectDataGridRowScopes({
+      components: toComponentDefinitions(form.components),
+      submission,
+      form,
+    }),
   });
 
 describe('calculatedValues', () => {
@@ -84,9 +89,9 @@ describe('calculatedValues', () => {
     expect(Array.isArray(result?.data.transportmiddelTur)).toBe(true);
     expect(
       collectCalculationTargets({
-        formComponents: form.components,
+        formComponents: toComponentDefinitions(form.components),
         dataGridRowScopes: collectDataGridRowScopes({
-          components: form.components,
+          components: toComponentDefinitions(form.components),
           submission: { data: { transportmiddelTur: [{}, {}] } },
           form,
         }),
@@ -111,7 +116,7 @@ describe('calculatedValues', () => {
         ...dataGridComponents[2],
         customConditional: 'show = row.belopForTog > 0;',
       },
-    ] as Component[]);
+    ] as ComponentDefinition[]);
 
     expect(calculate(form, { data: { transportmiddelTur: [{ belopForTog: 0, belopForFly: 5 }] } })?.data).toEqual({
       transportmiddelTur: [{ belopForTog: 0, belopForFly: 5 }],
@@ -135,7 +140,7 @@ describe('calculatedValues', () => {
         navId: 'dobbelt',
         calculateValue: 'value = (parseFloat(data.antallReiser) || 0) * 2;',
       },
-    ] as Component[]);
+    ] as ComponentDefinition[]);
 
     expect(calculate(form, { data: { antallReiser: '3' } })?.data).toEqual({
       antallReiser: '3',
@@ -228,7 +233,7 @@ function getFieldValue(fieldValue) {
  return parseFloat(Math.round(fieldValue) || 0);
 }`,
       },
-    ] as Component[]);
+    ] as ComponentDefinition[]);
 
     expect(
       calculate(form, {

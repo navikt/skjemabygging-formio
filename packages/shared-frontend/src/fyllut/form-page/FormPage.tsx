@@ -2,6 +2,7 @@ import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useRef } from 'react';
 import { useLocation, useParams } from 'react-router';
 import FormErrorSummary from '../../components/error-summary/FormErrorSummary';
+import { toComponentDefinitions } from '../../context/form-definition/formDefinitionUtils';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
 import { useValidation } from '../../context/validation/ValidationContext';
@@ -91,7 +92,10 @@ const FormPage = () => {
       return;
     }
     if (isLast) {
-      const validationPages = panels.map((panel) => ({ pageKey: panel.key, components: panel.components ?? [] }));
+      const validationPages = panels.map((panel) => ({
+        pageKey: panel.key,
+        components: toComponentDefinitions(panel.components ?? []),
+      }));
       goToSummary({ validationErrorPages: validatePages(validationPages) });
       return;
     }

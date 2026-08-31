@@ -1,6 +1,5 @@
 import {
   checkCondition,
-  Component,
   Form,
   guid,
   Submission,
@@ -11,22 +10,24 @@ import {
 import {
   enrichComponentsWithBaseSubmissionPath,
   getResolvedSubmissionPath,
+  toComponentDefinitions,
 } from '../../../context/form-definition/formDefinitionUtils';
+import { ComponentDefinition } from '../../component-types';
 
 /**
  * A single stored data grid row: the row data, the row components with indexed submission paths,
  * and the subset of those components that is visible for this row.
  */
 interface DataGridRowScope {
-  dataGridComponent: Component;
+  dataGridComponent: ComponentDefinition;
   index: number;
   row: object;
-  components: Component[];
-  activeComponents: Component[];
+  components: ComponentDefinition[];
+  activeComponents: ComponentDefinition[];
 }
 
 interface DataGridScopeArgs {
-  components: Component[];
+  components: ComponentDefinition[];
   submission?: Submission;
   form: Form;
   submissionMethod?: SubmissionMethod;
@@ -61,9 +62,10 @@ const removeDataGridRowId = (rowIds: string[], index: number): string[] => {
 const isObjectRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
-const shouldScopeChildRow = (component: Component) => Boolean(component.key && (component.tree || component.input));
+const shouldScopeChildRow = (component: ComponentDefinition) =>
+  Boolean(component.key && (component.tree || component.input));
 
-const getChildRow = (component: Component, row: object | undefined) => {
+const getChildRow = (component: ComponentDefinition, row: object | undefined) => {
   if (!shouldScopeChildRow(component) || !isObjectRecord(row)) {
     return row;
   }
@@ -77,12 +79,12 @@ const getChildRow = (component: Component, row: object | undefined) => {
  * repeated rows show and hide fields independently.
  */
 const getActiveRowComponents = (
-  components: Component[],
+  components: ComponentDefinition[],
   row: object | undefined,
   data: SubmissionData | undefined,
   form: Form,
   submissionMethod?: SubmissionMethod,
-): Component[] =>
+): ComponentDefinition[] =>
   components
     .filter((component) => checkCondition(component, row, data, form, undefined, undefined, { submissionMethod }))
     .map((component) =>
@@ -100,7 +102,7 @@ const getActiveRowComponents = (
         : component,
     );
 
-const getDataGridRows = (component: Component, submission?: Submission): object[] => {
+const getDataGridRows = (component: ComponentDefinition, submission?: Submission): object[] => {
   const rows = submissionUtils.getSubmissionValue(getResolvedSubmissionPath(component), submission);
   return Array.isArray(rows) ? rows : [];
 };
@@ -125,9 +127,8 @@ const collectDataGridRowScopes = ({
           return [];
         }
 
-        const rowComponents = enrichComponentsWithBaseSubmissionPath(
-          component.components ?? [],
-          `${submissionPath}[${index}]`,
+        const rowComponents = toComponentDefinitions(
+          enrichComponentsWithBaseSubmissionPath(component.components ?? [], `${submissionPath}[${index}]`),
         );
         const activeComponents = getActiveRowComponents(rowComponents, row, submission?.data, form, submissionMethod);
 
@@ -150,7 +151,9 @@ const collectDataGridRowScopes = ({
  * Input components with their resolved submission paths. Nested data grids are excluded, because
  * their rows have their own indexed paths (see {@link collectDataGridRowScopes}).
  */
-const collectInputSubmissionPaths = (components: Component[]): { component: Component; submissionPath: string }[] =>
+const collectInputSubmissionPaths = (
+  components: ComponentDefinition[],
+): { component: ComponentDefinition; submissionPath: string }[] =>
   components.flatMap((component) => {
     if (component.type === 'datagrid') {
       return component.input ? [{ component, submissionPath: getResolvedSubmissionPath(component) }] : [];

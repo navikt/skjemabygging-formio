@@ -6,6 +6,7 @@ import { useFormDefinition } from '../../../context/form-definition/FormDefiniti
 import {
   enrichComponentsWithBaseSubmissionPath,
   getResolvedSubmissionPath,
+  toComponentDefinitions,
 } from '../../../context/form-definition/formDefinitionUtils';
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { createUpdatedSubmission, useSubmissionState } from '../../../context/state/SubmissionStateContext';
@@ -46,7 +47,7 @@ const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => 
   const [rowIds, setRowIds] = useState(() => syncDataGridRowIds([], renderedRows.length));
   const synchronizedRowIds = syncDataGridRowIds(rowIds, renderedRows.length);
   const rowComponentTemplates = renderedRows.map((_, index) =>
-    enrichComponentsWithBaseSubmissionPath(components, `${submissionPath}[${index}]`),
+    toComponentDefinitions(enrichComponentsWithBaseSubmissionPath(components, `${submissionPath}[${index}]`)),
   );
 
   const updateRows = (nextRows: object[]) => {

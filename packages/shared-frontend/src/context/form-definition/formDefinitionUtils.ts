@@ -1,4 +1,16 @@
 import { Component, Form, navFormUtils, submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { ComponentDefinition } from './../../form-components/component-types';
+
+/**
+ * The single ingestion boundary between the legacy shared-domain `Component`
+ * tree (`Form.components`, `navFormUtils` output) and the typed
+ * `ComponentDefinition` tree the shared-frontend render path and tree-walkers
+ * consume. Every `ComponentDefinition` is structurally a `Component`, so this is
+ * a safe widening-in-reverse: the runtime `type` string is treated as the
+ * discriminant. Do the conversion here rather than sprinkling casts.
+ */
+const toComponentDefinitions = (components: Component[] = []): ComponentDefinition[] =>
+  components as ComponentDefinition[];
 
 const getResolvedSubmissionPath = (component: Component) => {
   if (component.type === 'attachment') {
@@ -33,11 +45,13 @@ const enrichFormWithBaseSubmissionPath = (form: Form): Form => ({
   components: enrichComponentsWithBaseSubmissionPath(form.components),
 });
 
-const flattenComponentsWithBaseSubmissionPath = (components: Component[]) => navFormUtils.flattenComponents(components);
+const flattenComponentsWithBaseSubmissionPath = (components: Component[]): ComponentDefinition[] =>
+  toComponentDefinitions(navFormUtils.flattenComponents(components));
 
 export {
   enrichComponentsWithBaseSubmissionPath,
   enrichFormWithBaseSubmissionPath,
   flattenComponentsWithBaseSubmissionPath,
   getResolvedSubmissionPath,
+  toComponentDefinitions,
 };

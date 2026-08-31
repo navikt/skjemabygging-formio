@@ -1,15 +1,16 @@
-import { Component } from '@navikt/skjemadigitalisering-shared-domain';
+import {} from '@navikt/skjemadigitalisering-shared-domain';
+import { ComponentDefinition } from '../form-components/component-types';
 import { ValidationRules } from './validators';
 
 interface ValidationDescriptor {
   submissionPath: string;
   field: string;
   rules: ValidationRules;
-  component?: Component;
+  component?: ComponentDefinition;
 }
 
 const createValidationDescriptor = (
-  component: Component,
+  component: ComponentDefinition,
   submissionPath: string,
   field: string,
   rules: ValidationRules,

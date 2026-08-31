@@ -1,4 +1,5 @@
-import { Component, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { ComponentDefinition } from '../form-components/component-types';
 import { validateValue } from './validators';
 
 describe('validateValue', () => {
@@ -256,7 +257,7 @@ describe('validateValue', () => {
               input: true,
               label: 'Beløp',
               validate: { custom: 'valid = input == 100 ? true : "Kun 100 er tillatt"' },
-            } as Component,
+            } as ComponentDefinition,
           },
         },
         'nb',
@@ -284,7 +285,7 @@ describe('validateValue', () => {
               input: true,
               label: 'Godkjenning',
               validate: { custom: 'valid = input === true ? true : "Du må godta vilkårene"' },
-            } as Component,
+            } as ComponentDefinition,
           },
         },
         'nb',

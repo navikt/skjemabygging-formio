@@ -1,14 +1,15 @@
 import { ErrorSummary } from '@navikt/ds-react';
-import { Component, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { MouseEvent, useEffect, useRef } from 'react';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { FieldError, useValidation } from '../../context/validation/ValidationContext';
+import { ComponentDefinition } from '../../form-components/component-types';
 import { inputId } from '../../utils/inputId';
 
 interface Props {
   pageKey?: string;
-  components?: Component[];
-  pages?: { pageKey: string; components: Component[] }[];
+  components?: ComponentDefinition[];
+  pages?: { pageKey: string; components: ComponentDefinition[] }[];
   onNavigateToField?: (error: FieldError, id: string) => void;
 }
 

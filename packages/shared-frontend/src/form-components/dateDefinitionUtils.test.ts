@@ -1,6 +1,10 @@
-import { Component, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import { Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { describe, expect, it } from 'vitest';
-import { enrichComponentsWithBaseSubmissionPath } from '../context/form-definition/formDefinitionUtils';
+import {
+  enrichComponentsWithBaseSubmissionPath,
+  toComponentDefinitions,
+} from '../context/form-definition/formDefinitionUtils';
+import { ComponentDefinition } from './component-types';
 import { getDatePickerFromDate } from './dateDefinitionUtils';
 
 describe('dateDefinitionUtils', () => {
@@ -21,16 +25,16 @@ describe('dateDefinitionUtils', () => {
           },
         ],
       },
-    ] as Component[]);
+    ] as ComponentDefinition[]);
 
     const rowComponents = enrichComponentsWithBaseSubmissionPath(pageComponents[0].components ?? [], 'datagridDato[0]');
-    const gridTo = rowComponents[1] as Component;
+    const gridTo = rowComponents[1] as ComponentDefinition;
     const submission = {
       data: {
         datagridDato: [{ gridFrom: '2023-02-02' }],
       },
     } as Submission;
 
-    expect(getDatePickerFromDate(gridTo, pageComponents, submission)).toBe('2023-02-03');
+    expect(getDatePickerFromDate(gridTo, toComponentDefinitions(pageComponents), submission)).toBe('2023-02-03');
   });
 });

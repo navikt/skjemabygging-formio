@@ -1,15 +1,16 @@
-import { Component } from '@navikt/skjemadigitalisering-shared-domain';
+import {} from '@navikt/skjemadigitalisering-shared-domain';
 import { ReactNode } from 'react';
 import { ValidationScopeProvider } from '../context/validation/ValidationScopeContext';
 import RenderInputComponent from './RenderInputComponent';
+import { ComponentDefinition } from './component-types';
 import { inputComponentRegistry, InputComponentRegistry } from './inputComponentRegistry';
 
 interface Props {
   // Scope props are only supplied by the top-level (page) render. Nested renders (container, row,
   // datagrid, ...) omit them and inherit the validation scope from context.
   pageKey?: string;
-  pageComponents?: Component[];
-  components: Component[];
+  pageComponents?: ComponentDefinition[];
+  components: ComponentDefinition[];
   componentRegistry?: InputComponentRegistry;
 }
 
@@ -44,7 +45,11 @@ const RenderInputForm = ({
   return withScope(pageKey, pageComponents, content);
 };
 
-const withScope = (pageKey: string | undefined, pageComponents: Component[] | undefined, content: ReactNode) => {
+const withScope = (
+  pageKey: string | undefined,
+  pageComponents: ComponentDefinition[] | undefined,
+  content: ReactNode,
+) => {
   if (pageKey !== undefined && pageComponents !== undefined) {
     return (
       <ValidationScopeProvider pageKey={pageKey} components={pageComponents}>

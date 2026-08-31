@@ -1,4 +1,5 @@
-import { Component, Submission, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
+import { Submission, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
+import { ComponentDefinition } from '../form-components/component-types';
 import {
   getDatePickerFromDate,
   getDatePickerToDate,
@@ -9,7 +10,7 @@ import { ValidationRules } from './validators';
 
 const normalizeCustomValidation = (customValidation?: string) => customValidation?.trim().replace(/;$/, '');
 
-const isRedundantLegacyCustomValidation = (component: Component) => {
+const isRedundantLegacyCustomValidation = (component: ComponentDefinition) => {
   const customValidation = normalizeCustomValidation(component.validate?.custom);
 
   return (
@@ -19,8 +20,8 @@ const isRedundantLegacyCustomValidation = (component: Component) => {
 };
 
 const toValidationRules = (
-  component: Component,
-  pageComponents: Component[],
+  component: ComponentDefinition,
+  pageComponents: ComponentDefinition[],
   submission?: Submission,
   submissionMethod?: SubmissionMethod,
 ): ValidationRules => ({

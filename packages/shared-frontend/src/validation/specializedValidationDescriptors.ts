@@ -1,5 +1,4 @@
 import {
-  Component,
   dataFetcherUtils,
   dateUtils,
   DrivingListSubmission,
@@ -10,9 +9,13 @@ import {
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { getResolvedSubmissionPath } from '../context/form-definition/formDefinitionUtils';
+import { ComponentDefinition, PhoneNumberDefinition, SenderDefinition } from '../form-components/component-types';
 import { ValidationDescriptor } from './validationDescriptorTypes';
 
-const collectIdentityDescriptors = (component: Component, submission?: Submission): ValidationDescriptor[] => {
+const collectIdentityDescriptors = (
+  component: ComponentDefinition,
+  submission?: Submission,
+): ValidationDescriptor[] => {
   const submissionPath = getResolvedSubmissionPath(component);
   const required = component.validate?.required ?? true;
   const value = submissionUtils.getSubmissionValue(submissionPath, submission) as SubmissionIdentity | undefined;
@@ -45,7 +48,10 @@ const collectIdentityDescriptors = (component: Component, submission?: Submissio
   return descriptors;
 };
 
-const collectPhoneNumberDescriptors = (component: Component, submission?: Submission): ValidationDescriptor[] => {
+const collectPhoneNumberDescriptors = (
+  component: PhoneNumberDefinition,
+  submission?: Submission,
+): ValidationDescriptor[] => {
   const submissionPath = getResolvedSubmissionPath(component);
   const field = component.label ?? component.key;
   const phoneNumberRules = {
@@ -68,7 +74,7 @@ const collectPhoneNumberDescriptors = (component: Component, submission?: Submis
   ];
 };
 
-const collectSenderDescriptors = (component: Component): ValidationDescriptor[] => {
+const collectSenderDescriptors = (component: SenderDefinition): ValidationDescriptor[] => {
   const submissionPath = getResolvedSubmissionPath(component);
   const required = component.validate?.required ?? false;
 
@@ -107,7 +113,7 @@ const collectSenderDescriptors = (component: Component): ValidationDescriptor[] 
 };
 
 const collectDrivingListDescriptors = (
-  component: Component,
+  component: ComponentDefinition,
   submission?: Submission,
   submissionMethod?: SubmissionMethod,
 ): ValidationDescriptor[] => {
@@ -169,7 +175,7 @@ const collectDrivingListDescriptors = (
 };
 
 const shouldValidateDataFetcher = (
-  component: Component,
+  component: ComponentDefinition,
   submissionPath: string,
   submission: Submission | undefined,
   submissionMethod: SubmissionMethod | undefined,

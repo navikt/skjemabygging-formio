@@ -1,6 +1,5 @@
 import {
   checkCondition,
-  Component,
   Submission,
   SubmissionMethod,
   submissionUtils,
@@ -8,7 +7,9 @@ import {
 import {
   enrichComponentsWithBaseSubmissionPath,
   getResolvedSubmissionPath,
+  toComponentDefinitions,
 } from '../context/form-definition/formDefinitionUtils';
+import { ComponentDefinition } from '../form-components/component-types';
 import { getRenderedDataGridRows } from '../form-components/components/data-grid/dataGridRows';
 import { collectAddressDescriptors, collectAddressValidityDescriptors } from './addressValidationDescriptors';
 import {
@@ -21,16 +22,16 @@ import {
 import { createValidationDescriptor, ValidationDescriptor } from './validationDescriptorTypes';
 import { hasValidationRules, toValidationRules } from './validationRules';
 
-const getConditionRow = (component: Component, submission?: Submission) =>
+const getConditionRow = (component: ComponentDefinition, submission?: Submission) =>
   component.baseSubmissionPath
     ? submissionUtils.getSubmissionValue(component.baseSubmissionPath, submission)
     : undefined;
 
 const collectValidationDescriptors = (
-  components: Component[],
+  components: ComponentDefinition[],
   submission?: Submission,
   submissionMethod?: SubmissionMethod,
-  pageComponents: Component[] = components,
+  pageComponents: ComponentDefinition[] = components,
 ): ValidationDescriptor[] =>
   components.flatMap((component) => {
     if (component.calculateValue) {
@@ -92,7 +93,9 @@ const collectValidationDescriptors = (
         const rows = submissionUtils.getSubmissionValue(submissionPath, submission);
         return getRenderedDataGridRows(Array.isArray(rows) ? rows : [], component.initEmpty).flatMap((_, index) =>
           collectValidationDescriptors(
-            enrichComponentsWithBaseSubmissionPath(component.components ?? [], `${submissionPath}[${index}]`),
+            toComponentDefinitions(
+              enrichComponentsWithBaseSubmissionPath(component.components ?? [], `${submissionPath}[${index}]`),
+            ),
             submission,
             submissionMethod,
             pageComponents,
@@ -112,13 +115,13 @@ const collectValidationDescriptors = (
   });
 
 const deriveValidations = (
-  activeComponents: Component[],
+  activeComponents: ComponentDefinition[],
   submission?: Submission,
   submissionMethod?: SubmissionMethod,
 ): ValidationDescriptor[] => {
   const pathAwareComponents = activeComponents.some((component) => 'baseSubmissionPath' in component)
     ? activeComponents
-    : enrichComponentsWithBaseSubmissionPath(activeComponents);
+    : toComponentDefinitions(enrichComponentsWithBaseSubmissionPath(activeComponents));
 
   return collectValidationDescriptors(pathAwareComponents, submission, submissionMethod);
 };

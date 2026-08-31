@@ -1,5 +1,6 @@
-import { Component, Form, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { getPrefilledAddress } from '../../components/address/addressUtils';
+import { ComponentDefinition } from '../../form-components/component-types';
 import { createUpdatedSubmission } from '../state/SubmissionStateContext';
 import {
   enrichFormWithBaseSubmissionPath,
@@ -7,7 +8,7 @@ import {
   getResolvedSubmissionPath,
 } from './formDefinitionUtils';
 
-const getComponentPrefillValue = (component: Component, currentLanguage: string) => {
+const getComponentPrefillValue = (component: ComponentDefinition, currentLanguage: string) => {
   if (typeof component.prefillValue === 'string' && component.prefillValue.trim() !== '') {
     if (component.type === 'identity') {
       return { identitetsnummer: component.prefillValue };

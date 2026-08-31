@@ -1,5 +1,6 @@
-import { Component, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import { Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { describe, expect, it } from 'vitest';
+import { ComponentDefinition } from '../../form-components/component-types';
 import { inputId } from '../../utils/inputId';
 import { createAttachmentId } from '../attachment/attachmentData';
 import { attachmentValidationPath } from './attachmentValidationPath';
@@ -24,7 +25,7 @@ const attachmentComponent = {
   type: 'attachment',
   attachmentType: 'other',
   validate: { required: true },
-} as unknown as Component;
+} as unknown as ComponentDefinition;
 
 const dataGridWithAttachment = {
   key: 'reiser',
@@ -34,7 +35,7 @@ const dataGridWithAttachment = {
   tree: true,
   navId: 'grid',
   components: [attachmentComponent],
-} as unknown as Component;
+} as unknown as ComponentDefinition;
 
 describe('attachment validation paths', () => {
   it('uses the same path for the attachment choice error and the choice control', () => {

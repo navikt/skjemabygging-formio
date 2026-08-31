@@ -1,9 +1,10 @@
-import { Component, Form, Panel, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, Panel, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { describe, expect, it } from 'vitest';
+import { ComponentDefinition } from '../../form-components/component-types';
 import { enrichFormWithBaseSubmissionPath } from './formDefinitionUtils';
 import { collectHiddenSubmissionPaths } from './hiddenSubmissionPaths';
 
-const createForm = (components: Component[]): Form =>
+const createForm = (components: ComponentDefinition[]): Form =>
   enrichFormWithBaseSubmissionPath({
     title: 'Test',
     path: 'test',
@@ -46,10 +47,10 @@ const dataGrid = {
       customConditional: 'show = row.harParkering === true;',
     },
   ],
-} as unknown as Component;
+} as unknown as ComponentDefinition;
 
 const collect = (form: Form, submission: Submission) => {
-  const activeComponents = form.components as Component[];
+  const activeComponents = form.components as ComponentDefinition[];
 
   return collectHiddenSubmissionPaths({
     form,
@@ -99,9 +100,9 @@ describe('collectHiddenSubmissionPaths', () => {
     const form = createForm([
       { key: 'synlig', label: 'Synlig', type: 'textfield', input: true, navId: 'synlig' },
       { key: 'skjult', label: 'Skjult', type: 'textfield', input: true, navId: 'skjult' },
-    ] as Component[]);
+    ] as ComponentDefinition[]);
     const [panel] = form.components;
-    const activePanel = { ...panel, components: panel.components?.slice(0, 1) } as Component;
+    const activePanel = { ...panel, components: panel.components?.slice(0, 1) } as ComponentDefinition;
 
     expect(
       collectHiddenSubmissionPaths({
@@ -145,9 +146,9 @@ describe('collectHiddenSubmissionPaths', () => {
           },
         ],
       },
-    ] as Component[]);
+    ] as ComponentDefinition[]);
     const [panel] = form.components;
-    const activePanel = { ...panel, components: panel.components?.slice(0, 1) } as Component;
+    const activePanel = { ...panel, components: panel.components?.slice(0, 1) } as ComponentDefinition;
 
     expect(
       collectHiddenSubmissionPaths({

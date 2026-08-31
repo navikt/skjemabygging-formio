@@ -1,5 +1,6 @@
-import { Component } from '@navikt/skjemadigitalisering-shared-domain';
+import {} from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useContext } from 'react';
+import { ComponentDefinition } from '../../form-components/component-types';
 
 /**
  * The set of components that form the current validation unit (a wizard page in fyllut). Field
@@ -8,7 +9,7 @@ import { createContext, ReactNode, useContext } from 'react';
  */
 interface ValidationScope {
   pageKey: string;
-  components: Component[];
+  components: ComponentDefinition[];
 }
 
 const ValidationScopeContext = createContext<ValidationScope | undefined>(undefined);

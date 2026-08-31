@@ -1,7 +1,8 @@
-import { Component, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { act, useState } from 'react';
 import { createRoot, Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { ComponentDefinition } from '../../form-components/component-types';
 import { ApplicationProvider } from '../application/ApplicationContext';
 import { LanguageProvider } from '../language/LanguageContext';
 import { SubmissionStateProvider } from '../state/SubmissionStateContext';
@@ -22,7 +23,7 @@ const components = [
     input: true,
     type: 'fnrfield',
   },
-] as unknown as Component[];
+] as unknown as ComponentDefinition[];
 
 const translations = Object.fromEntries(Object.entries(TEXTS.validering).map(([key, value]) => [key, { nb: value }]));
 
@@ -102,7 +103,7 @@ describe('ValidationContext', () => {
         attachmentType: 'other',
         validate: { required: true },
       },
-    ] as unknown as Component[];
+    ] as unknown as ComponentDefinition[];
 
     const AttachmentValidationHarness = () => {
       const { getError, validatePages } = useValidation();
@@ -178,7 +179,7 @@ describe('ValidationContext', () => {
         type: 'attachment',
         validate: { required: true },
       },
-    ] as unknown as Component[];
+    ] as unknown as ComponentDefinition[];
 
     const AttachmentValidationHarness = () => {
       const { getError, validatePages } = useValidation();

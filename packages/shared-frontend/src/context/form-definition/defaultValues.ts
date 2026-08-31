@@ -1,10 +1,11 @@
-import { Component, Form, Submission, submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, Submission, submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { ComponentDefinition } from '../../form-components/component-types';
 import { collectInputSubmissionPaths } from '../../form-components/components/data-grid/dataGridRows';
 import { createUpdatedSubmission } from '../state/SubmissionStateContext';
-import { enrichFormWithBaseSubmissionPath } from './formDefinitionUtils';
+import { enrichFormWithBaseSubmissionPath, toComponentDefinitions } from './formDefinitionUtils';
 
 /**
- * Component types where the input control does not apply `defaultValue` itself. Checkbox, radio,
+ * ComponentDefinition types where the input control does not apply `defaultValue` itself. Checkbox, radio,
  * select and selectboxes controls set their own default when they are rendered, the same way
  * Formio did, so seeding them here would apply the value twice.
  *
@@ -17,7 +18,7 @@ const DEFAULT_VALUE_TYPES = ['number', 'currency', 'landvelger', 'valutavelger',
  * Mirrors Formio, which only applies a default when `component.defaultValue` is truthy, with an
  * explicit exception for the number 0 in number/currency components.
  */
-const hasDefaultValue = (component: Component): boolean => {
+const hasDefaultValue = (component: ComponentDefinition): boolean => {
   const defaultValue = component.defaultValue;
 
   if (defaultValue === 0) {
@@ -41,9 +42,9 @@ const hasDefaultValue = (component: Component): boolean => {
  * option are part of the submission from the start. Existing answers are never overwritten.
  */
 const applyDefaultValuesToSubmission = (form: Form, submission: Submission | undefined): Submission | undefined => {
-  const componentsWithDefault = collectInputSubmissionPaths(enrichFormWithBaseSubmissionPath(form).components).filter(
-    ({ component }) => DEFAULT_VALUE_TYPES.includes(component.type) && hasDefaultValue(component),
-  );
+  const componentsWithDefault = collectInputSubmissionPaths(
+    toComponentDefinitions(enrichFormWithBaseSubmissionPath(form).components),
+  ).filter(({ component }) => DEFAULT_VALUE_TYPES.includes(component.type) && hasDefaultValue(component));
 
   if (componentsWithDefault.length === 0) {
     return submission;

@@ -1,4 +1,5 @@
-import { Component, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { ComponentDefinition } from '../form-components/component-types';
 import { deriveValidations } from './deriveValidations';
 
 describe('deriveValidations', () => {
@@ -7,7 +8,7 @@ describe('deriveValidations', () => {
       { key: 'name', label: 'Name', input: true, type: 'textfield', validate: { required: true } },
       { key: 'noRules', label: 'NoRules', input: true, type: 'textfield', validate: {} },
       { key: 'panel', input: false, type: 'panel' },
-    ] as unknown as Component[];
+    ] as unknown as ComponentDefinition[];
 
     const result = deriveValidations(components);
 
@@ -25,7 +26,7 @@ describe('deriveValidations', () => {
         type: 'textfield',
         validate: { required: true, maxLength: '', minLength: '' },
       },
-    ] as unknown as Component[];
+    ] as unknown as ComponentDefinition[];
     expect(deriveValidations(components)[0].rules).toEqual({
       required: true,
       minLength: undefined,
@@ -43,7 +44,7 @@ describe('deriveValidations', () => {
         data: { values: [{ value: 'current', label: 'Current option' }] },
         validate: { onlyAvailableItems: true },
       },
-    ] as Component[];
+    ] as ComponentDefinition[];
 
     expect(deriveValidations(components)).toEqual([
       {
@@ -57,7 +58,7 @@ describe('deriveValidations', () => {
   it('falls back to key when label is missing', () => {
     const components = [
       { key: 'email', input: true, type: 'textfield', validate: { maxLength: 5 } },
-    ] as unknown as Component[];
+    ] as unknown as ComponentDefinition[];
     expect(deriveValidations(components)[0].field).toBe('email');
   });
 
@@ -70,7 +71,7 @@ describe('deriveValidations', () => {
         tree: true,
         components: [{ key: 'name', label: 'Name', input: true, type: 'textfield', validate: { required: true } }],
       },
-    ] as unknown as Component[];
+    ] as unknown as ComponentDefinition[];
 
     expect(deriveValidations(components)).toEqual([
       {
@@ -90,7 +91,7 @@ describe('deriveValidations', () => {
         tree: true,
         components: [{ key: 'name', label: 'Name', input: true, type: 'textfield', validate: { required: true } }],
       },
-    ] as unknown as Component[];
+    ] as unknown as ComponentDefinition[];
 
     expect(deriveValidations(components, { data: { grid: [{ name: '' }, { name: 'Ada' }] } })).toEqual([
       {
@@ -115,7 +116,7 @@ describe('deriveValidations', () => {
         tree: true,
         components: [{ key: 'name', label: 'Name', input: true, type: 'textfield', validate: { required: true } }],
       },
-    ] as unknown as Component[];
+    ] as unknown as ComponentDefinition[];
 
     expect(deriveValidations(components)).toEqual([
       {
@@ -130,7 +131,7 @@ describe('deriveValidations', () => {
     const components = [
       { key: 'email', label: 'Email', input: true, type: 'email', validate: { required: true } },
       { key: 'amount', label: 'Amount', input: true, type: 'number', inputType: 'numeric', validate: { min: 1 } },
-    ] as unknown as Component[];
+    ] as unknown as ComponentDefinition[];
 
     expect(deriveValidations(components)).toEqual([
       {
@@ -188,7 +189,7 @@ describe('deriveValidations', () => {
         type: 'monthPicker',
         validate: { minYear: 2020, maxYear: 2025 },
       },
-    ] as unknown as Component[];
+    ] as unknown as ComponentDefinition[];
 
     expect(deriveValidations(components)).toEqual([
       {
@@ -241,7 +242,9 @@ describe('deriveValidations', () => {
   });
 
   it('adds organization number validation rule from component type', () => {
-    const components = [{ key: 'orgnr', label: 'Organization number', input: true, type: 'orgNr' }] as Component[];
+    const components = [
+      { key: 'orgnr', label: 'Organization number', input: true, type: 'orgNr' },
+    ] as ComponentDefinition[];
 
     expect(deriveValidations(components)).toEqual([
       {
@@ -275,7 +278,7 @@ describe('deriveValidations', () => {
     const components = [
       { key: 'account', label: 'Account number', input: true, type: 'bankAccount' },
       { key: 'iban', label: 'IBAN', input: true, type: 'iban' },
-    ] as Component[];
+    ] as ComponentDefinition[];
 
     expect(deriveValidations(components)).toEqual([
       {
@@ -301,7 +304,7 @@ describe('deriveValidations', () => {
         showAreaCode: true,
         validate: { required: true },
       },
-    ] as unknown as Component[];
+    ] as unknown as ComponentDefinition[];
 
     expect(deriveValidations(components, { data: { phone: { areaCode: '+47', number: '12345678' } } })).toEqual([
       {
@@ -318,7 +321,9 @@ describe('deriveValidations', () => {
   });
 
   it('keeps phoneNumber without area code on the root submission path', () => {
-    const components = [{ key: 'phone', label: 'Phone', input: true, type: 'phoneNumber' }] as unknown as Component[];
+    const components = [
+      { key: 'phone', label: 'Phone', input: true, type: 'phoneNumber' },
+    ] as unknown as ComponentDefinition[];
 
     expect(deriveValidations(components)).toEqual([
       {
@@ -337,7 +342,7 @@ describe('deriveValidations', () => {
   it('expands identity into radio + national-identity-number when identity number is chosen', () => {
     const components = [
       { key: 'identity', type: 'identity', input: true, validate: { required: true } },
-    ] as unknown as Component[];
+    ] as unknown as ComponentDefinition[];
 
     const result = deriveValidations(components, { data: { identity: { harDuFodselsnummer: 'ja' } } });
 
@@ -354,7 +359,7 @@ describe('deriveValidations', () => {
   it('expands identity into radio + birthdate when no identity number is chosen', () => {
     const components = [
       { key: 'identity', type: 'identity', input: true, validate: { required: true } },
-    ] as unknown as Component[];
+    ] as unknown as ComponentDefinition[];
 
     const result = deriveValidations(components, { data: { identity: { harDuFodselsnummer: 'nei' } } });
 
@@ -368,7 +373,7 @@ describe('deriveValidations', () => {
   it('only validates the identity radio until an option is chosen', () => {
     const components = [
       { key: 'identity', type: 'identity', input: true, validate: { required: true } },
-    ] as unknown as Component[];
+    ] as unknown as ComponentDefinition[];
 
     const result = deriveValidations(components, { data: { identity: {} } });
 
@@ -387,7 +392,7 @@ describe('deriveValidations', () => {
         validate: { required: true },
         customLabels: { doYouHaveIdentityNumber: 'Har du et gyldig identitetsdokument?' },
       },
-    ] as unknown as Component[];
+    ] as unknown as ComponentDefinition[];
 
     const result = deriveValidations(components, { data: { identity: {} } });
 
@@ -412,7 +417,7 @@ describe('deriveValidations', () => {
           customMessage: 'Invalid organization number',
         },
       },
-    ] as Component[];
+    ] as ComponentDefinition[];
 
     expect(deriveValidations(components)[0].rules).toMatchObject({
       organizationNumber: true,
@@ -430,7 +435,7 @@ describe('deriveValidations', () => {
         validate: { required: true },
         addressTypeWizard: 'user',
       },
-    ] as unknown as Component[];
+    ] as unknown as ComponentDefinition[];
 
     const result = deriveValidations(
       components,
@@ -477,7 +482,7 @@ describe('deriveValidations', () => {
         validate: { required: true },
         prefillKey: 'sokerAdresser',
       },
-    ] as unknown as Component[];
+    ] as unknown as ComponentDefinition[];
 
     const result = deriveValidations(components, { data: { address: { borDuINorge: 'nei' } } }, 'paper');
 
@@ -524,7 +529,7 @@ describe('deriveValidations', () => {
   it('expands address validity into nested from/to date fields', () => {
     const components = [
       { key: 'addressValidity', type: 'addressValidity', input: true, validate: { required: true } },
-    ] as unknown as Component[];
+    ] as unknown as ComponentDefinition[];
 
     expect(
       deriveValidations(components, {
@@ -561,7 +566,7 @@ describe('deriveValidations', () => {
           },
         ],
       },
-    ] as unknown as Component[];
+    ] as unknown as ComponentDefinition[];
 
     expect(
       deriveValidations(components, {
@@ -582,7 +587,7 @@ describe('deriveValidations', () => {
   it('expands sender person fields into nested descriptors', () => {
     const components = [
       { key: 'sender', type: 'sender', input: true, validate: { required: true } },
-    ] as unknown as Component[];
+    ] as unknown as ComponentDefinition[];
 
     expect(deriveValidations(components)).toEqual([
       {
@@ -606,7 +611,7 @@ describe('deriveValidations', () => {
   it('expands sender organization fields into nested descriptors', () => {
     const components = [
       { key: 'sender', type: 'sender', input: true, senderRole: 'organization', validate: { required: true } },
-    ] as unknown as Component[];
+    ] as unknown as ComponentDefinition[];
 
     expect(deriveValidations(components)).toEqual([
       {
@@ -625,7 +630,7 @@ describe('deriveValidations', () => {
   it('marks activities as required', () => {
     const components = [
       { key: 'aktivitet', type: 'activities', input: true, label: 'Aktivitet' },
-    ] as unknown as Component[];
+    ] as unknown as ComponentDefinition[];
 
     expect(deriveValidations(components, undefined, 'digital')).toEqual([
       {
@@ -645,7 +650,7 @@ describe('deriveValidations', () => {
         label: 'Aktivitetsvelger',
         validate: { required: true },
       },
-    ] as unknown as Component[];
+    ] as unknown as ComponentDefinition[];
     const submission = {
       data: {},
       metadata: {
@@ -675,7 +680,7 @@ describe('deriveValidations', () => {
         label: 'Aktivitetsvelger',
         validate: { required: true },
       },
-    ] as unknown as Component[];
+    ] as unknown as ComponentDefinition[];
 
     expect(
       deriveValidations(
@@ -714,7 +719,7 @@ describe('deriveValidations', () => {
   it('adds paper drivinglist descriptors for date, parking, dates and parking inputs', () => {
     const components = [
       { key: 'drivinglist', type: 'drivinglist', input: true, label: 'Kjoreliste' },
-    ] as unknown as Component[];
+    ] as unknown as ComponentDefinition[];
 
     expect(
       deriveValidations(
@@ -750,7 +755,7 @@ describe('deriveValidations', () => {
   it('adds digital drivinglist descriptors for activity, dates and parking max validation', () => {
     const components = [
       { key: 'drivinglist', type: 'drivinglist', input: true, label: 'Kjoreliste' },
-    ] as unknown as Component[];
+    ] as unknown as ComponentDefinition[];
 
     expect(
       deriveValidations(

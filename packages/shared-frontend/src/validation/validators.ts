@@ -1,5 +1,4 @@
 import {
-  Component,
   dateUtils,
   formatUtils,
   numberUtils,
@@ -9,6 +8,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import * as ibantools from 'ibantools';
 import { hasSelectedValue } from '../components/data-fetcher/dataFetcherUtils';
+import { ComponentDefinition } from '../form-components/component-types';
 import { evaluateFormioCustomValidation } from '../utils/formioEvaluation';
 
 interface ValidationRules {
@@ -46,7 +46,7 @@ interface ValidationRules {
     areaCode?: string;
   };
   customValidation?: {
-    component: Component;
+    component: ComponentDefinition;
   };
   customMessage?: string;
 }

@@ -1,7 +1,9 @@
-import { Component, Panel } from '@navikt/skjemadigitalisering-shared-domain';
+import { Panel } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useMemo } from 'react';
 import { useFormDefinition } from '../../context/form-definition/FormDefinitionContext';
+import { toComponentDefinitions } from '../../context/form-definition/formDefinitionUtils';
 import { useValidation } from '../../context/validation/ValidationContext';
+import { ComponentDefinition } from '../../form-components/component-types';
 
 interface FormPageController {
   panels: Panel[];
@@ -9,7 +11,7 @@ interface FormPageController {
   currentIndex: number;
   isFirst: boolean;
   isLast: boolean;
-  components: Component[];
+  components: ComponentDefinition[];
   goToNext: () => boolean;
   goToPrevious: () => void;
   goTo: (panelKey: string) => void;
@@ -26,7 +28,7 @@ const useFormPageController = (requestedPanelKey?: string): FormPageController =
   const currentIndex = requestedIndex >= 0 ? requestedIndex : 0;
 
   const currentPanel = panels[currentIndex];
-  const components = useMemo(() => currentPanel?.components ?? [], [currentPanel]);
+  const components = useMemo(() => toComponentDefinitions(currentPanel?.components ?? []), [currentPanel]);
 
   const goToNext = useCallback(() => {
     if (!currentPanel) return false;

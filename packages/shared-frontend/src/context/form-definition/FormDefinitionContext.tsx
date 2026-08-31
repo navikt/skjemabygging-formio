@@ -1,17 +1,22 @@
-import { Component, Form, navFormUtils, Panel } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, navFormUtils, Panel } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useContext, useEffect, useLayoutEffect, useMemo } from 'react';
+import { ComponentDefinition } from '../../form-components/component-types';
 import { collectDataGridRowScopes } from '../../form-components/components/data-grid/dataGridRows';
 import { useLanguage } from '../language/LanguageContext';
 import { useSubmissionState } from '../state/SubmissionStateContext';
 import { useSubmissionMethod } from '../submission-method/SubmissionMethodContext';
 import { applyCalculatedValues } from './calculatedValues';
-import { enrichFormWithBaseSubmissionPath, flattenComponentsWithBaseSubmissionPath } from './formDefinitionUtils';
+import {
+  enrichFormWithBaseSubmissionPath,
+  flattenComponentsWithBaseSubmissionPath,
+  toComponentDefinitions,
+} from './formDefinitionUtils';
 import { collectHiddenSubmissionPaths } from './hiddenSubmissionPaths';
 import { applyPrefilledValuesToSubmission } from './prefillSubmission';
 
 interface FormDefinitionContextType {
   form: Form;
-  activeComponents: Component[];
+  activeComponents: ComponentDefinition[];
   panels: Panel[];
 }
 
@@ -29,7 +34,10 @@ const FormDefinitionProvider = ({ children, form }: Props) => {
   const formWithBaseSubmissionPath = useMemo(() => enrichFormWithBaseSubmissionPath(form), [form]);
 
   const activeComponents = useMemo(
-    () => navFormUtils.getActiveComponentsFromForm(formWithBaseSubmissionPath, submission, { submissionMethod }),
+    () =>
+      toComponentDefinitions(
+        navFormUtils.getActiveComponentsFromForm(formWithBaseSubmissionPath, submission, { submissionMethod }),
+      ),
     [formWithBaseSubmissionPath, submission, submissionMethod],
   );
 
@@ -41,7 +49,7 @@ const FormDefinitionProvider = ({ children, form }: Props) => {
   const dataGridRowScopes = useMemo(
     () =>
       collectDataGridRowScopes({
-        components: [...activeComponents, ...panels],
+        components: toComponentDefinitions([...activeComponents, ...panels]),
         submission,
         form: formWithBaseSubmissionPath,
         submissionMethod,
@@ -57,7 +65,7 @@ const FormDefinitionProvider = ({ children, form }: Props) => {
     setSubmission((prev) =>
       applyCalculatedValues({
         submission: prev,
-        formComponents: formWithBaseSubmissionPath.components,
+        formComponents: toComponentDefinitions(formWithBaseSubmissionPath.components),
         dataGridRowScopes,
       }),
     );

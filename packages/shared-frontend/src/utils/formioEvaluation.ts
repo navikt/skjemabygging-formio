@@ -1,7 +1,8 @@
-import { Component, navFormioUtils, Submission, submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { navFormioUtils, Submission, submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { ComponentDefinition } from '../form-components/component-types';
 
 interface BaseEvaluationArgs {
-  component: Component;
+  component: ComponentDefinition;
   submission?: Submission;
   submissionPath: string;
   allowTestTypes?: boolean;

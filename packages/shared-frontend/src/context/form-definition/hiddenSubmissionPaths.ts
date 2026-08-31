@@ -1,12 +1,14 @@
-import { Component, Form, Panel, Submission, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, Panel, Submission, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
+import { ComponentDefinition } from '../../form-components/component-types';
 import {
   collectDataGridRowScopes,
   collectInputSubmissionPaths,
 } from '../../form-components/components/data-grid/dataGridRows';
+import { toComponentDefinitions } from './formDefinitionUtils';
 
 interface HiddenSubmissionPathArgs {
   form: Form;
-  activeComponents: Component[];
+  activeComponents: ComponentDefinition[];
   panels: Panel[];
   submission?: Submission;
   submissionMethod?: SubmissionMethod;
@@ -27,12 +29,12 @@ const collectHiddenSubmissionPaths = ({
   submission,
   submissionMethod,
 }: HiddenSubmissionPathArgs): string[] => {
-  const visibleComponents = [...activeComponents, ...panels];
+  const visibleComponents = toComponentDefinitions([...activeComponents, ...panels]);
   const visiblePaths = new Set(
     collectInputSubmissionPaths(visibleComponents).map(({ submissionPath }) => submissionPath),
   );
 
-  const hiddenPaths = collectInputSubmissionPaths(form.components)
+  const hiddenPaths = collectInputSubmissionPaths(toComponentDefinitions(form.components))
     .filter(({ component, submissionPath }) => component.clearOnHide !== false && !visiblePaths.has(submissionPath))
     .map(({ submissionPath }) => submissionPath);
 

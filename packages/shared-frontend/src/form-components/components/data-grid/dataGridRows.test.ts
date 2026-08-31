@@ -1,9 +1,11 @@
-import { Component, Form } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { describe, expect, it } from 'vitest';
 import {
   enrichComponentsWithBaseSubmissionPath,
   enrichFormWithBaseSubmissionPath,
+  toComponentDefinitions,
 } from '../../../context/form-definition/formDefinitionUtils';
+import { ComponentDefinition } from '../../component-types';
 import {
   addDataGridRowId,
   collectDataGridRowScopes,
@@ -14,7 +16,7 @@ import {
   syncDataGridRowIds,
 } from './dataGridRows';
 
-const createForm = (components: Component[]): Form =>
+const createForm = (components: ComponentDefinition[]): Form =>
   enrichFormWithBaseSubmissionPath({
     title: 'Test',
     path: 'test',
@@ -58,7 +60,7 @@ describe('dataGridRows', () => {
   });
 
   it('collects one scope per stored row, with indexed submission paths and row visibility', () => {
-    const datagrid: Component = {
+    const datagrid: ComponentDefinition = {
       key: 'kjoreliste',
       label: 'Kjøreliste',
       type: 'datagrid',
@@ -82,7 +84,7 @@ describe('dataGridRows', () => {
       data: { kjoreliste: [{ harParkering: true }, { harParkering: false }, null] },
     } as never;
 
-    const scopes = collectDataGridRowScopes({ components: form.components, submission, form });
+    const scopes = collectDataGridRowScopes({ components: toComponentDefinitions(form.components), submission, form });
 
     expect(scopes).toHaveLength(2);
     expect(collectInputSubmissionPaths(scopes[0].components).map(({ submissionPath }) => submissionPath)).toEqual([
@@ -98,7 +100,7 @@ describe('dataGridRows', () => {
   });
 
   it('keeps the data grid itself, but not its children, in the shared submission paths', () => {
-    const datagrid: Component = {
+    const datagrid: ComponentDefinition = {
       key: 'kjoreliste',
       label: 'Kjøreliste',
       type: 'datagrid',
@@ -109,13 +111,13 @@ describe('dataGridRows', () => {
     };
     const form = createForm([datagrid]);
 
-    expect(collectInputSubmissionPaths(form.components).map(({ submissionPath }) => submissionPath)).toEqual([
-      'kjoreliste',
-    ]);
+    expect(
+      collectInputSubmissionPaths(toComponentDefinitions(form.components)).map(({ submissionPath }) => submissionPath),
+    ).toEqual(['kjoreliste']);
   });
 
   it('filters simple conditionals against row data', () => {
-    const datagrid: Component = {
+    const datagrid: ComponentDefinition = {
       key: 'repeterende',
       label: 'Repeterende',
       type: 'datagrid',
@@ -147,7 +149,9 @@ describe('dataGridRows', () => {
       ],
     };
     const form = createForm([datagrid]);
-    const rowComponents = enrichComponentsWithBaseSubmissionPath(datagrid.components ?? [], 'repeterende[0]');
+    const rowComponents = toComponentDefinitions(
+      enrichComponentsWithBaseSubmissionPath(datagrid.components ?? [], 'repeterende[0]'),
+    );
 
     const hidden = getActiveRowComponents(
       rowComponents,
@@ -171,7 +175,7 @@ describe('dataGridRows', () => {
   });
 
   it('switches between the production nav540009 identity-number and birth-date fields per row', () => {
-    const datagrid: Component = {
+    const datagrid: ComponentDefinition = {
       key: 'opplysningerOmBarn',
       label: 'Opplysninger om barn',
       type: 'datagrid',
@@ -189,7 +193,7 @@ describe('dataGridRows', () => {
             eq: true,
             show: false,
             when: 'opplysningerOmBarn.barnetHarIkkeNorskFodselsnummerEllerDNummer',
-          } as unknown as Component['conditional'],
+          } as unknown as ComponentDefinition['conditional'],
         },
         {
           key: 'barnetHarIkkeNorskFodselsnummerEllerDNummer',
@@ -208,12 +212,14 @@ describe('dataGridRows', () => {
             eq: true,
             show: true,
             when: 'opplysningerOmBarn.barnetHarIkkeNorskFodselsnummerEllerDNummer',
-          } as unknown as Component['conditional'],
+          } as unknown as ComponentDefinition['conditional'],
         },
       ],
     };
     const form = createForm([datagrid]);
-    const rowComponents = enrichComponentsWithBaseSubmissionPath(datagrid.components ?? [], 'opplysningerOmBarn[0]');
+    const rowComponents = toComponentDefinitions(
+      enrichComponentsWithBaseSubmissionPath(datagrid.components ?? [], 'opplysningerOmBarn[0]'),
+    );
 
     expect(
       getActiveRowComponents(
@@ -235,7 +241,7 @@ describe('dataGridRows', () => {
   });
 
   it('filters row-based custom conditionals against row data', () => {
-    const datagrid: Component = {
+    const datagrid: ComponentDefinition = {
       key: 'repeterende',
       label: 'Repeterende',
       type: 'datagrid',
@@ -252,7 +258,9 @@ describe('dataGridRows', () => {
       ],
     };
     const form = createForm([datagrid]);
-    const rowComponents = enrichComponentsWithBaseSubmissionPath(datagrid.components ?? [], 'repeterende[0]');
+    const rowComponents = toComponentDefinitions(
+      enrichComponentsWithBaseSubmissionPath(datagrid.components ?? [], 'repeterende[0]'),
+    );
 
     expect(
       getActiveRowComponents(rowComponents, { showField: false }, { repeterende: [{ showField: false }] }, form).map(
@@ -267,7 +275,7 @@ describe('dataGridRows', () => {
   });
 
   it('filters nested custom conditionals against the nearest container row data', () => {
-    const datagrid: Component = {
+    const datagrid: ComponentDefinition = {
       key: 'kjaeledyr',
       label: 'Kjaeledyr',
       type: 'datagrid',
@@ -294,7 +302,9 @@ describe('dataGridRows', () => {
       ],
     };
     const form = createForm([datagrid]);
-    const rowComponents = enrichComponentsWithBaseSubmissionPath(datagrid.components ?? [], 'kjaeledyr[0]');
+    const rowComponents = toComponentDefinitions(
+      enrichComponentsWithBaseSubmissionPath(datagrid.components ?? [], 'kjaeledyr[0]'),
+    );
 
     const hidden = getActiveRowComponents(
       rowComponents,
@@ -318,7 +328,7 @@ describe('dataGridRows', () => {
   });
 
   it('filters selectboxes-based custom conditionals against row data', () => {
-    const datagrid: Component = {
+    const datagrid: ComponentDefinition = {
       key: 'maltider',
       label: 'Maltider',
       type: 'datagrid',
@@ -344,7 +354,9 @@ describe('dataGridRows', () => {
       ],
     };
     const form = createForm([datagrid]);
-    const rowComponents = enrichComponentsWithBaseSubmissionPath(datagrid.components ?? [], 'maltider[0]');
+    const rowComponents = toComponentDefinitions(
+      enrichComponentsWithBaseSubmissionPath(datagrid.components ?? [], 'maltider[0]'),
+    );
 
     expect(
       getActiveRowComponents(

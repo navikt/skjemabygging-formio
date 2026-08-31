@@ -1,5 +1,4 @@
 import {
-  Component,
   navFormUtils,
   Submission,
   SubmissionMethod,
@@ -7,6 +6,7 @@ import {
   TEXTS,
   TranslateFunction,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import { ComponentDefinition } from '../../form-components/component-types';
 import { deriveValidations } from '../../validation/deriveValidations';
 import { validateValue } from '../../validation/validators';
 import { createAttachmentId, getAttachmentsAtPath } from '../attachment/attachmentData';
@@ -21,7 +21,7 @@ interface RuleViolation {
 type AttachmentViolation = { submissionPath: string; violation: RuleViolation };
 
 const validateAttachmentComponent = (
-  component: Component,
+  component: ComponentDefinition,
   submissionPath: string,
   field: string,
   activeSubmission: Submission | undefined,
@@ -87,7 +87,7 @@ const createPageErrorCalculator =
     submissionMethod,
     translate,
   }: PageErrorCalculatorOptions) =>
-  (pageKey: string, components: Component[], activeSubmission: Submission | undefined): FieldError[] => {
+  (pageKey: string, components: ComponentDefinition[], activeSubmission: Submission | undefined): FieldError[] => {
     const derivedErrors = deriveValidations(components, activeSubmission, submissionMethod).flatMap(
       ({ submissionPath, field, rules, component }) => {
         if (

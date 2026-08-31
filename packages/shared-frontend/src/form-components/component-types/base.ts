@@ -1,4 +1,5 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
+import type { ComponentDefinition } from './index';
 
 /**
  * Cross-cutting fields shared by (essentially) every form component, independent
@@ -24,7 +25,6 @@ type BaseComponentDefinition = Pick<
   | 'key'
   | 'label'
   | 'description'
-  | 'components'
   | 'input'
   | 'baseSubmissionPath'
   // Visibility / logic
@@ -70,6 +70,13 @@ type BaseComponentDefinition = Pick<
   | 'mayBeEqual'
   | 'specificEarliestAllowedDate'
   | 'specificLatestAllowedDate'
->;
+> & {
+  /**
+   * Child components. Narrowed from the legacy `Component[]` to
+   * `ComponentDefinition[]` so the definition tree is self-referential and
+   * recursing into children keeps full per-type typing.
+   */
+  components?: ComponentDefinition[];
+};
 
 export type { BaseComponentDefinition };

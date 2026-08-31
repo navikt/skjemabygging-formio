@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import FormErrorSummary from '../../components/error-summary/FormErrorSummary';
 import { useApplication } from '../../context/application/ApplicationContext';
 import { useFormDefinition } from '../../context/form-definition/FormDefinitionContext';
+import { toComponentDefinitions } from '../../context/form-definition/formDefinitionUtils';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useSubmissionState } from '../../context/state/SubmissionStateContext';
 import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
@@ -39,7 +40,7 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
     (!submissionMethod || submissionMethod === 'papernocoverpage') &&
     submissionTypesUtils.isPaperNoCoverPageSubmission(form.properties.submissionTypes);
   const validationPages = useMemo(
-    () => panels.map((panel) => ({ pageKey: panel.key, components: panel.components ?? [] })),
+    () => panels.map((panel) => ({ pageKey: panel.key, components: toComponentDefinitions(panel.components ?? []) })),
     [panels],
   );
   const validationErrors = getErrorsForPages(validationPages);

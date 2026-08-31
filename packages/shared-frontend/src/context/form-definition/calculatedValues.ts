@@ -1,29 +1,31 @@
-import { Component, numberUtils, Submission, submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { numberUtils, Submission, submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { ComponentDefinition } from '../../form-components/component-types';
 import { collectInputSubmissionPaths, DataGridRowScope } from '../../form-components/components/data-grid/dataGridRows';
 import { evaluateFormioCalculatedValue } from '../../utils/formioEvaluation';
 import { createUpdatedSubmission } from '../state/SubmissionStateContext';
 
 interface CalculationTarget {
-  component: Component;
+  component: ComponentDefinition;
   submissionPath: string;
 }
 
 interface CalculationArgs {
   submission: Submission | undefined;
-  formComponents: Component[];
+  formComponents: ComponentDefinition[];
   dataGridRowScopes: DataGridRowScope[];
 }
 
-const isNumericComponent = (component: Component) =>
+const isNumericComponent = (component: ComponentDefinition) =>
   component.type === 'number' || component.type === 'currency' || component.type === 'year';
 
-const isCalculatedComponent = (component: Component) => !!component.calculateValue && component.type !== 'maalgruppe';
+const isCalculatedComponent = (component: ComponentDefinition) =>
+  !!component.calculateValue && component.type !== 'maalgruppe';
 
 /**
  * Numeric answers are kept as raw text while the user is typing, so they must be converted back to
  * numbers before a calculation expression reads them.
  */
-const toEvaluationNumber = (component: Component, value: unknown) => {
+const toEvaluationNumber = (component: ComponentDefinition, value: unknown) => {
   if (typeof value !== 'string') {
     return value;
   }
@@ -45,8 +47,10 @@ const toEvaluationNumber = (component: Component, value: unknown) => {
   return isValidNumber ? Number(normalizedValue) : value;
 };
 
-const collectTargets = (components: Component[], predicate: (component: Component) => boolean): CalculationTarget[] =>
-  collectInputSubmissionPaths(components).filter(({ component }) => predicate(component));
+const collectTargets = (
+  components: ComponentDefinition[],
+  predicate: (component: ComponentDefinition) => boolean,
+): CalculationTarget[] => collectInputSubmissionPaths(components).filter(({ component }) => predicate(component));
 
 /**
  * Calculated components, expanded per data grid row so every row is calculated with its own indexed

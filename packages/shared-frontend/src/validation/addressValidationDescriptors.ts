@@ -1,5 +1,4 @@
 import {
-  Component,
   dateUtils,
   Submission,
   SubmissionAddress,
@@ -9,10 +8,11 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { resolveAddressType, shouldShowAddressTypeChoice } from '../components/address/addressUtils';
 import { getResolvedSubmissionPath } from '../context/form-definition/formDefinitionUtils';
+import { ComponentDefinition } from '../form-components/component-types';
 import { ValidationDescriptor } from './validationDescriptorTypes';
 
 const collectAddressDescriptors = (
-  component: Component,
+  component: ComponentDefinition,
   submission?: Submission,
   submissionMethod?: SubmissionMethod,
 ): ValidationDescriptor[] => {
@@ -106,7 +106,10 @@ const collectAddressDescriptors = (
   return descriptors;
 };
 
-const collectAddressValidityDescriptors = (component: Component, submission?: Submission): ValidationDescriptor[] => {
+const collectAddressValidityDescriptors = (
+  component: ComponentDefinition,
+  submission?: Submission,
+): ValidationDescriptor[] => {
   const submissionPath = getResolvedSubmissionPath(component);
   const required = component.validate?.required ?? false;
   const value = submissionUtils.getSubmissionValue(submissionPath, submission) as

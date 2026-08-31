@@ -1,5 +1,6 @@
-import { Component, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import { Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
+import { ComponentDefinition } from '../../form-components/component-types';
 import { useApplication } from '../application/ApplicationContext';
 import { useLanguage } from '../language/LanguageContext';
 import { useSubmissionState } from '../state/SubmissionStateContext';
@@ -7,7 +8,7 @@ import { useSubmissionMethod } from '../submission-method/SubmissionMethodContex
 import { attachmentValidationPath, createPageErrorCalculator } from './validationErrors';
 import { AttachmentField, ExternalAttachmentError, FieldError } from './validationTypes';
 
-type ValidationPage = { pageKey: string; components: Component[] };
+type ValidationPage = { pageKey: string; components: ComponentDefinition[] };
 type SummaryScope = { type: 'page'; pageKey: string } | { type: 'summary' } | undefined;
 type PageErrorsByKey = Record<string, FieldError[]>;
 
@@ -67,17 +68,21 @@ interface ValidationContextType {
   pagesWithErrors: Set<string>;
   summaryVisible: boolean;
   summaryFocusRequest: number;
-  validatePage: (pageKey: string, components: Component[]) => boolean;
+  validatePage: (pageKey: string, components: ComponentDefinition[]) => boolean;
   validatePages: (pages: ValidationPage[]) => string[];
-  getError: (submissionPath: string, pageKey: string, components: Component[]) => string | undefined;
-  getErrorsForPage: (pageKey: string, components: Component[]) => FieldError[];
+  getError: (submissionPath: string, pageKey: string, components: ComponentDefinition[]) => string | undefined;
+  getErrorsForPage: (pageKey: string, components: ComponentDefinition[]) => FieldError[];
   getErrorsForPages: (pages: ValidationPage[]) => FieldError[];
-  handleFieldChange: (pageKey: string, components: Component[], nextSubmission: Submission | undefined) => void;
+  handleFieldChange: (
+    pageKey: string,
+    components: ComponentDefinition[],
+    nextSubmission: Submission | undefined,
+  ) => void;
   hasErrorState: (pageKey: string) => boolean;
   hideSummary: () => void;
   shouldShowSummaryForPage: (pageKey: string) => boolean;
   shouldShowSummaryForSummaryPage: () => boolean;
-  syncPageValidationState: (pageKey: string, components: Component[]) => void;
+  syncPageValidationState: (pageKey: string, components: ComponentDefinition[]) => void;
   setAttachmentExternalError: (
     attachmentId: string,
     field: AttachmentField,
@@ -148,7 +153,7 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
   );
 
   const getErrorsForPage = useCallback(
-    (pageKey: string, components: Component[]) =>
+    (pageKey: string, components: ComponentDefinition[]) =>
       pageErrorsByKey[pageKey] ?? computeErrors(pageKey, components, submission),
     [computeErrors, pageErrorsByKey, submission],
   );
@@ -162,7 +167,7 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
   );
 
   const validatePage = useCallback(
-    (pageKey: string, components: Component[]) => {
+    (pageKey: string, components: ComponentDefinition[]) => {
       const pageErrors = computeErrors(pageKey, components, submission);
       setPagesWithErrors((prev) => togglePageInSet(prev, pageKey, pageErrors.length > 0));
       setPageErrorsByKey((prev) => setPageErrors(prev, pageKey, pageErrors));
@@ -198,7 +203,7 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
   );
 
   const getError = useCallback(
-    (submissionPath: string, pageKey: string, components: Component[]) => {
+    (submissionPath: string, pageKey: string, components: ComponentDefinition[]) => {
       if (!pagesWithErrors.has(pageKey)) {
         return undefined;
       }
@@ -218,7 +223,7 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
   const shouldShowSummaryForSummaryPage = useCallback(() => summaryScope?.type === 'summary', [summaryScope]);
 
   const updatePageValidationState = useCallback(
-    (pageKey: string, components: Component[], activeSubmission: Submission | undefined) => {
+    (pageKey: string, components: ComponentDefinition[], activeSubmission: Submission | undefined) => {
       const pageErrors = computeErrors(pageKey, components, activeSubmission);
       setPagesWithErrors((prev) => togglePageInSet(prev, pageKey, pageErrors.length > 0));
       setPageErrorsByKey((prev) => setPageErrors(prev, pageKey, pageErrors));
@@ -233,7 +238,7 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
   );
 
   const handleFieldChange = useCallback(
-    (pageKey: string, components: Component[], nextSubmission: Submission | undefined) => {
+    (pageKey: string, components: ComponentDefinition[], nextSubmission: Submission | undefined) => {
       if (!pagesWithErrors.has(pageKey) && !(summaryScope?.type === 'page' && summaryScope.pageKey === pageKey)) {
         return;
       }
@@ -243,7 +248,7 @@ const ValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
   );
 
   const syncPageValidationState = useCallback(
-    (pageKey: string, components: Component[]) => {
+    (pageKey: string, components: ComponentDefinition[]) => {
       if (!pagesWithErrors.has(pageKey) && !(summaryScope?.type === 'page' && summaryScope.pageKey === pageKey)) {
         return;
       }
