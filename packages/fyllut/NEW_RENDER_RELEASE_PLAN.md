@@ -89,12 +89,19 @@ approved new-render exception.
 
 ## 5. Security and observability
 
-- [ ] Resolve the CodeQL regular-expression finding in
+- [x] Resolve the CodeQL regular-expression finding in
       `attachmentUploadUtils.ts`.
-- [ ] Record which renderer handles a request without logging form answers or
-      personal data.
-- [ ] Make unsupported-component failures observable.
-- [ ] Define monitoring queries and rollback signals before preprod rollout.
+- [x] Do not add renderer-selection telemetry. Existing rollout configuration
+      and comparison checks are sufficient, and per-request renderer metrics or
+      logs are not required for this release.
+- [x] Make unsupported-component failures observable through a stable,
+      privacy-safe frontend error event with form path, component type and
+      renderer surface, deduplicated per browser logger session.
+- [x] Use existing logs, metrics and Nais dashboards during the side-by-side
+      preprod comparison. Roll back on unsupported components, incorrect or
+      missing form data, privacy leakage, failed submission flows, or
+      renderer-specific operational failures. No additional monitoring code or
+      configuration is required for this release.
 
 ## 6. Compatibility audit
 

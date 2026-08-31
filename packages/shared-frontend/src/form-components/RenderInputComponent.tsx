@@ -1,7 +1,10 @@
 import { Alert } from '@navikt/ds-react';
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
+import { useEffect } from 'react';
 import { useApplication } from '../context/application/ApplicationContext';
+import { useFormDefinition } from '../context/form-definition/FormDefinitionContext';
 import { inputComponentRegistry, InputComponentRegistry } from './inputComponentRegistry';
+import { reportUnsupportedComponent } from './unsupportedComponentLogger';
 
 interface Props {
   component: Component;
@@ -13,15 +16,26 @@ interface Props {
 // silently skipped in prod. Mirrors the summary RenderComponent behavior.
 const RenderInputComponent = ({ component, submissionPath, componentRegistry = inputComponentRegistry }: Props) => {
   const { logger, environment } = useApplication();
+  const { form } = useFormDefinition();
   const RegistryComponent = componentRegistry[component.type];
   const shouldRenderHiddenComponent = component.type === 'maalgruppe';
+  const shouldReportUnsupportedComponent = !RegistryComponent && (!component.hidden || shouldRenderHiddenComponent);
+
+  useEffect(() => {
+    if (shouldReportUnsupportedComponent) {
+      reportUnsupportedComponent(logger, {
+        componentType: component.type,
+        formPath: form.path,
+        surface: 'input',
+      });
+    }
+  }, [component.type, form.path, logger, shouldReportUnsupportedComponent]);
 
   if (component.hidden && !shouldRenderHiddenComponent) {
     return null;
   }
 
   if (!RegistryComponent) {
-    logger?.error?.(`Unsupported component type in input form: ${component.type}`);
     if (environment !== 'production') {
       return <Alert variant="error">Unsupported component type: {component.type}</Alert>;
     }

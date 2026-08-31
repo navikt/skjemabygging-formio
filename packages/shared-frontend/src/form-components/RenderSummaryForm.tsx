@@ -144,10 +144,13 @@ const RenderSummaryForm = ({
     maalgruppe: SummaryMaalgruppe,
   } satisfies Record<SupportedSummaryComponentType, FormComponentRegistry[string]>;
 
-  const resolvedRendererConfig = rendererConfig ?? {
-    submissionMethod: appConfig.submissionMethod,
-    logger: appConfig.logger,
-    environment: appConfig.config?.NAIS_CLUSTER_NAME === 'prod-gcp' ? 'production' : 'development',
+  const resolvedRendererConfig = {
+    ...(rendererConfig ?? {
+      submissionMethod: appConfig.submissionMethod,
+      logger: appConfig.logger,
+      environment: appConfig.config?.NAIS_CLUSTER_NAME === 'prod-gcp' ? 'production' : 'development',
+    }),
+    formPath: form.path,
   };
 
   return (

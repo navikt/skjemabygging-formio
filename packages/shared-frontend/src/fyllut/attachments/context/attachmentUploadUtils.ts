@@ -29,7 +29,16 @@ const getDefaultOtherAttachment = (
 
 const normalizeAttachmentDownloadFileName = (fileName: string): string => {
   const trimmedFileName = fileName.trim();
-  const fileNameWithoutExtension = trimmedFileName.replace(/\.[^./\\]+$/u, '').replace(/\.+$/u, '');
+  const lastSeparatorIndex = Math.max(trimmedFileName.lastIndexOf('/'), trimmedFileName.lastIndexOf('\\'));
+  const lastDotIndex = trimmedFileName.lastIndexOf('.');
+  const hasExtension = lastDotIndex > lastSeparatorIndex && lastDotIndex < trimmedFileName.length - 1;
+  let baseNameEnd = hasExtension ? lastDotIndex : trimmedFileName.length;
+
+  while (baseNameEnd > 0 && trimmedFileName[baseNameEnd - 1] === '.') {
+    baseNameEnd -= 1;
+  }
+
+  const fileNameWithoutExtension = trimmedFileName.slice(0, baseNameEnd);
   const normalizedFileName = fileNameWithoutExtension || DEFAULT_DOWNLOAD_FILE_NAME;
   return `${normalizedFileName}${PDF_FILE_EXTENSION}`;
 };

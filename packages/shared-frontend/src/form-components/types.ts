@@ -16,6 +16,10 @@ interface SummaryRendererConfig {
   environment: ApplicationEnvironment;
 }
 
+interface ResolvedSummaryRendererConfig extends SummaryRendererConfig {
+  formPath: string;
+}
+
 interface SummaryRendererAppConfig {
   submissionMethod?: SubmissionMethod;
   logger?: ApplicationLogger;
@@ -33,7 +37,7 @@ interface FormComponentProps {
   translate: TranslateFunction;
   currentLanguage: string;
   formProperties: FormPropertiesType;
-  rendererConfig: SummaryRendererConfig;
+  rendererConfig: ResolvedSummaryRendererConfig;
   handleDownloadFile?: HandleAttachmentDownloadFile;
   legacyAttachmentPanelMode?: boolean;
 }
@@ -46,6 +50,7 @@ export type {
   FormComponentProps,
   FormComponentRegistry,
   HandleAttachmentDownloadFile,
+  ResolvedSummaryRendererConfig,
   SummaryRendererAppConfig,
   SummaryRendererConfig,
 };
