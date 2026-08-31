@@ -11,7 +11,7 @@ import PaperSubmissionPage from '../paper-submission/PaperSubmissionPage';
 import PersonalIdUploadPage from '../personal-id/PersonalIdUploadPage';
 import ReceiptPage from '../receipt/ReceiptPage';
 import SummaryPage from '../summary/SummaryPage';
-import { APPLICATION_DOWNLOAD_KEY, PAPER_SUBMISSION_KEY, RECEIPT_KEY, SUMMARY_KEY } from './constants';
+import { APPLICATION_DOWNLOAD_KEY, INTRO_KEY, PAPER_SUBMISSION_KEY, RECEIPT_KEY, SUMMARY_KEY } from './constants';
 import FormFlowLayout from './FormFlowLayout';
 
 const RoutedFormFlowLayout = ({ form }: { form: Form }) => {
@@ -42,7 +42,7 @@ const RoutedFormFlowLayout = ({ form }: { form: Form }) => {
     } = withoutSubmissionNavigationState(state);
     navigate(
       {
-        pathname: key === '' ? `/${form.path}` : `/${form.path}/${key}`,
+        pathname: key === INTRO_KEY ? `/${form.path}` : `/${form.path}/${key}`,
         search,
       },
       {
