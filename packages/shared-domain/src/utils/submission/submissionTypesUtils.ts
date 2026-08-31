@@ -30,9 +30,6 @@ function isPaperSubmission(submissionTypes?: SubmissionType[]): boolean {
   return !!submissionTypes?.includes('PAPER');
 }
 
-const isSubmissionByMail = (submissionTypes?: SubmissionType[]): boolean =>
-  !!submissionTypes?.some((type) => type === 'PAPER' || type === 'STATIC_PDF');
-
 function isPaperSubmissionOnly(submissionTypes?: SubmissionType[]): boolean {
   return getStandardSingleSubmissionType(submissionTypes) === 'PAPER';
 }
@@ -82,7 +79,6 @@ const submissionTypesUtils = {
   isDigitalNoLoginSubmissionOnly,
   isPaperNoCoverPageSubmission,
   isPaperNoCoverPageSubmissionOnly,
-  isSubmissionByMail,
   isPaperSubmission,
   isPaperSubmissionOnly,
   isStaticPdf,

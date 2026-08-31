@@ -33,35 +33,36 @@ const EnhetFields = ({ onChange, form, errors }: EnhetFieldsProps) => {
 
   return (
     <>
-      {submissionTypesUtils.isSubmissionByMail(submissionTypes) && !mottaksadresseId && (
-        <div className="mb">
-          <EnhetSettings
-            enhetstyperNorg={enhetstyperNorg}
-            enhetMaVelges={!!enhetMaVelgesVedPapirInnsending}
-            selectedEnhetstyper={enhetstyper}
-            navUnitDescription={navUnitDescription}
-            error={errors?.navUnitDescription}
-            readOnly={isLockedForm}
-            onChangeEnhetMaVelges={(selected) =>
-              onChange({
-                ...form,
-                properties: {
-                  ...form.properties,
-                  enhetMaVelgesVedPapirInnsending: selected,
-                  enhetstyper: selected ? form.properties.enhetstyper : undefined,
-                  navUnitDescription: selected ? form.properties.navUnitDescription : undefined,
-                },
-              })
-            }
-            onChangeEnhetstyper={(enhetstyper) =>
-              onChange({ ...form, properties: { ...form.properties, enhetstyper } })
-            }
-            onChangeNavUnitDescription={(description) =>
-              onChange({ ...form, properties: { ...form.properties, navUnitDescription: description } })
-            }
-          />
-        </div>
-      )}
+      {(submissionTypesUtils.isPaperSubmission(submissionTypes) || submissionTypesUtils.isStaticPdf(submissionTypes)) &&
+        !mottaksadresseId && (
+          <div className="mb">
+            <EnhetSettings
+              enhetstyperNorg={enhetstyperNorg}
+              enhetMaVelges={!!enhetMaVelgesVedPapirInnsending}
+              selectedEnhetstyper={enhetstyper}
+              navUnitDescription={navUnitDescription}
+              error={errors?.navUnitDescription}
+              readOnly={isLockedForm}
+              onChangeEnhetMaVelges={(selected) =>
+                onChange({
+                  ...form,
+                  properties: {
+                    ...form.properties,
+                    enhetMaVelgesVedPapirInnsending: selected,
+                    enhetstyper: selected ? form.properties.enhetstyper : undefined,
+                    navUnitDescription: selected ? form.properties.navUnitDescription : undefined,
+                  },
+                })
+              }
+              onChangeEnhetstyper={(enhetstyper) =>
+                onChange({ ...form, properties: { ...form.properties, enhetstyper } })
+              }
+              onChangeNavUnitDescription={(description) =>
+                onChange({ ...form, properties: { ...form.properties, navUnitDescription: description } })
+              }
+            />
+          </div>
+        )}
     </>
   );
 };
