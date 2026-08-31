@@ -170,6 +170,70 @@ describe('dataGridRows', () => {
     ).toEqual(['nestedField']);
   });
 
+  it('switches between the production nav540009 identity-number and birth-date fields per row', () => {
+    const datagrid: Component = {
+      key: 'opplysningerOmBarn',
+      label: 'Opplysninger om barn',
+      type: 'datagrid',
+      input: true,
+      tree: true,
+      navId: 'grid',
+      components: [
+        {
+          key: 'barnetsFodselsnummerEllerDNummer',
+          label: 'Barnets fødselsnummer eller d-nummer',
+          type: 'fnrfield',
+          input: true,
+          navId: 'identityNumber',
+          conditional: {
+            eq: true,
+            show: false,
+            when: 'opplysningerOmBarn.barnetHarIkkeNorskFodselsnummerEllerDNummer',
+          } as unknown as Component['conditional'],
+        },
+        {
+          key: 'barnetHarIkkeNorskFodselsnummerEllerDNummer',
+          label: 'Barnet har ikke norsk fødselsnummer eller d-nummer',
+          type: 'navCheckbox',
+          input: true,
+          navId: 'missingIdentityNumber',
+        },
+        {
+          key: 'barnetsFodselsdatoDdMmAaaa',
+          label: 'Barnets fødselsdato (dd.mm.åååå)',
+          type: 'navDatepicker',
+          input: true,
+          navId: 'birthDate',
+          conditional: {
+            eq: true,
+            show: true,
+            when: 'opplysningerOmBarn.barnetHarIkkeNorskFodselsnummerEllerDNummer',
+          } as unknown as Component['conditional'],
+        },
+      ],
+    };
+    const form = createForm([datagrid]);
+    const rowComponents = enrichComponentsWithBaseSubmissionPath(datagrid.components ?? [], 'opplysningerOmBarn[0]');
+
+    expect(
+      getActiveRowComponents(
+        rowComponents,
+        { barnetHarIkkeNorskFodselsnummerEllerDNummer: false },
+        { opplysningerOmBarn: [{ barnetHarIkkeNorskFodselsnummerEllerDNummer: false }] },
+        form,
+      ).map((component) => component.key),
+    ).toEqual(['barnetsFodselsnummerEllerDNummer', 'barnetHarIkkeNorskFodselsnummerEllerDNummer']);
+
+    expect(
+      getActiveRowComponents(
+        rowComponents,
+        { barnetHarIkkeNorskFodselsnummerEllerDNummer: true },
+        { opplysningerOmBarn: [{ barnetHarIkkeNorskFodselsnummerEllerDNummer: true }] },
+        form,
+      ).map((component) => component.key),
+    ).toEqual(['barnetHarIkkeNorskFodselsnummerEllerDNummer', 'barnetsFodselsdatoDdMmAaaa']);
+  });
+
   it('filters row-based custom conditionals against row data', () => {
     const datagrid: Component = {
       key: 'repeterende',

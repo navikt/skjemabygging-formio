@@ -143,6 +143,110 @@ describe('calculatedValues', () => {
     });
   });
 
+  it('calculates the production nav761385 mentor-cost cascade in component order', () => {
+    const getFieldValue = `
+function getFieldValue(fieldValue) {
+ return parseFloat(fieldValue || 0);
+}`;
+    const form = createForm([], [
+      {
+        key: 'lonnTilMentoroppgaverIPerioden',
+        label: 'Lønn til mentoroppgaver i perioden',
+        type: 'currency',
+        input: true,
+        inputType: 'decimal',
+        navId: 'salary',
+      },
+      {
+        key: 'prosentFeriepenger',
+        label: 'Prosent feriepenger',
+        type: 'number',
+        input: true,
+        inputType: 'decimal',
+        navId: 'holidayRate',
+      },
+      {
+        key: 'feriepenger',
+        label: 'Feriepenger',
+        type: 'currency',
+        input: true,
+        readOnly: true,
+        navId: 'holidayPay',
+        calculateValue: `value = (getFieldValue(data.lonnTilMentoroppgaverIPerioden) * getFieldValue(data.prosentFeriepenger)) /100;${getFieldValue}`,
+      },
+      {
+        key: 'prosentObligatoriskTjenestepensjon',
+        label: 'Prosent obligatorisk tjenestepensjon',
+        type: 'number',
+        input: true,
+        inputType: 'decimal',
+        navId: 'pensionRate',
+      },
+      {
+        key: 'innskuddTilObligatoriskTjenestepensjon',
+        label: 'Innskudd til obligatorisk tjenestepensjon',
+        type: 'currency',
+        input: true,
+        readOnly: true,
+        navId: 'pension',
+        calculateValue: `value = ((getFieldValue(data.lonnTilMentoroppgaverIPerioden) + getFieldValue(data.feriepenger)) * getFieldValue(data.prosentObligatoriskTjenestepensjon)) /100;${getFieldValue}`,
+      },
+      {
+        key: 'prosentArbeidsgiveravgift',
+        label: 'Prosent arbeidsgiveravgift',
+        type: 'number',
+        input: true,
+        inputType: 'decimal',
+        navId: 'taxRate',
+      },
+      {
+        key: 'arbeidsgiveravgift',
+        label: 'Arbeidsgiveravgift',
+        type: 'currency',
+        input: true,
+        readOnly: true,
+        navId: 'tax',
+        calculateValue: `value = (getFieldValue(data.lonnTilMentoroppgaverIPerioden)
+        + getFieldValue(data.feriepenger)
+        + getFieldValue(data.innskuddTilObligatoriskTjenestepensjon))
+* getFieldValue(data.prosentArbeidsgiveravgift)
+/ 100;${getFieldValue}`,
+      },
+      {
+        key: 'sumBruttoLonnsutgifter',
+        label: 'Sum brutto lønnsutgifter',
+        type: 'currency',
+        input: true,
+        readOnly: true,
+        navId: 'total',
+        calculateValue: `value = getFieldValue(data.lonnTilMentoroppgaverIPerioden)
++ getFieldValue(data.feriepenger)
++ getFieldValue(data.innskuddTilObligatoriskTjenestepensjon)
++ getFieldValue(data.arbeidsgiveravgift);
+
+function getFieldValue(fieldValue) {
+ return parseFloat(Math.round(fieldValue) || 0);
+}`,
+      },
+    ] as Component[]);
+
+    expect(
+      calculate(form, {
+        data: {
+          lonnTilMentoroppgaverIPerioden: 1000,
+          prosentFeriepenger: 10,
+          prosentObligatoriskTjenestepensjon: 2,
+          prosentArbeidsgiveravgift: 14.1,
+        },
+      })?.data,
+    ).toMatchObject({
+      feriepenger: 100,
+      innskuddTilObligatoriskTjenestepensjon: 22,
+      arbeidsgiveravgift: 158.202,
+      sumBruttoLonnsutgifter: 1280,
+    });
+  });
+
   it('returns the same submission when nothing changes', () => {
     const form = createForm(dataGridComponents);
     const submission = {

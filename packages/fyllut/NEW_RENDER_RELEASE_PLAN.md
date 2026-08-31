@@ -27,6 +27,10 @@ All validation and release work below must run after this merge.
 - [ ] Fetch the current production form definitions and verify that
       `nav020807` no longer contains `navCheckbox.defaultValue: "ja"`.
       No special renderer handling should be added for this malformed value.
+      The value is still present at `skjemautfylling-formio@6d57dcc` under the
+      `oppgiAlleVirksomheterDuArbeiderForINorge` data grid, on component
+      `jegVetIkkeHvaOrganisasjonsnummeretEr`. The published form must be
+      corrected before release.
 - [x] Resolve nested paper attachment values correctly for instructions and
       cover-page data.
 - [x] Use one attachment validation-path and control-ID contract so error
@@ -110,7 +114,7 @@ approved new-render exception.
 ## 6. Compatibility audit
 
 Verified against Formio 4.20.0, the 246 published forms at
-`skjemautfylling-formio@1150a93`, and focused regression tests:
+`skjemautfylling-formio@6d57dcc`, and focused regression tests:
 
 - [x] `attachmentValues`. The corpus contains 937 components in 197 forms;
       option mapping, additional documentation, deadlines and paper/digital
@@ -154,27 +158,37 @@ Completed cleanup:
 
 ## 7. Test matrix
 
-- [ ] Run unit tests, type checks, builds and lint after merging `main`.
+- [x] Run unit tests, type checks, builds and lint after merging `main`.
 - [ ] Run the complete branch Cypress suite with the new renderer forced.
+      The pushed pre-merge SHA passed in GitHub; the post-merge local run was
+      skipped because of its runtime.
 - [ ] Run the Cypress specifications from `main` against branch code while
       retaining the branch allowlist harness. Using the unmodified main support
       setup may select the legacy renderer instead.
-- [ ] Run a focused empty-allowlist legacy fallback test.
-- [ ] Run bygger, shared-components, shared-domain, shared-backend,
+      This is a manual compatibility run; branch Cypress tests always force the
+      new renderer.
+- [ ] Verify the empty-allowlist legacy fallback manually.
+- [x] Run bygger, shared-components, shared-domain, shared-backend,
       form-spec-api and application-PDF regression tests.
 - [ ] Add production-form coverage for:
-    - `nav100754`;
-    - `nav540009`;
-    - `nav100716`;
-    - `nav761385`;
-    - `nav100727`;
-    - `nav020807`.
-- [ ] Rescan the current production form corpus for:
+    - [x] `nav100754`;
+    - [x] `nav540009`;
+    - [x] `nav100716`;
+    - [x] `nav761385`;
+    - [x] `nav100727`;
+    - [ ] `nav020807`; blocked until the malformed published checkbox default
+          is corrected.
+- [x] Rescan the current production form corpus for:
     - component types missing from the new renderer;
     - unsupported legacy aliases;
     - non-standard defaults;
     - attachment path and value shapes;
     - custom conditionals, validations and calculations.
+      The current corpus has 246 forms, 17,551 components and 42 component
+      types. The only unmatched type is one top-level wizard `button` that both
+      renderers omit. No unsupported aliases or attachment shapes were found.
+      Existing compatibility handling covers current custom expressions. The
+      remaining non-standard default is the `nav020807` value documented above.
 
 ## 8. Preprod comparison
 

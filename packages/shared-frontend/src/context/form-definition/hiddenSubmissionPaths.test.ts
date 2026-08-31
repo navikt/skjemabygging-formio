@@ -112,4 +112,55 @@ describe('collectHiddenSubmissionPaths', () => {
       }),
     ).toEqual(['skjult']);
   });
+
+  it('clears the hidden production nav100754 service-dog experience answer', () => {
+    const form = createForm([
+      {
+        key: 'harDuHattServicehundTidligere',
+        label: 'Har du hatt servicehund tidligere?',
+        type: 'radiopanel',
+        input: true,
+        navId: 'hasHadServiceDog',
+      },
+      {
+        key: 'erfaringMedServicehund',
+        label: 'Erfaring med servicehund',
+        type: 'navSkjemagruppe',
+        input: false,
+        clearOnHide: true,
+        navId: 'serviceDogExperience',
+        conditional: {
+          show: true,
+          when: 'harDuHattServicehundTidligere',
+          eq: 'ja',
+        },
+        components: [
+          {
+            key: 'narHaddeDuServicehund2',
+            label: 'Når hadde du servicehund?',
+            type: 'textarea',
+            input: true,
+            clearOnHide: true,
+            navId: 'whenServiceDog',
+          },
+        ],
+      },
+    ] as Component[]);
+    const [panel] = form.components;
+    const activePanel = { ...panel, components: panel.components?.slice(0, 1) } as Component;
+
+    expect(
+      collectHiddenSubmissionPaths({
+        form,
+        activeComponents: [activePanel],
+        panels: [activePanel] as Panel[],
+        submission: {
+          data: {
+            harDuHattServicehundTidligere: 'nei',
+            narHaddeDuServicehund2: 'Tidligere svar',
+          },
+        },
+      }),
+    ).toEqual(['narHaddeDuServicehund2']);
+  });
 });
