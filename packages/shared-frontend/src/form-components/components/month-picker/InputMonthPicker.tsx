@@ -1,4 +1,5 @@
 import MonthPicker from '../../../components/date/MonthPicker';
+import { MonthPickerDefinition } from '../../component-types';
 import { getMonthPickerMaxYear, getMonthPickerMinYear } from '../../dateDefinitionUtils';
 import {
   InputComponentProps,
@@ -9,7 +10,7 @@ import {
 } from '../../inputComponentRegistryUtils';
 import FormGroup from '../../shared/FormGroup';
 
-const InputMonthPicker = ({ component, submissionPath }: InputComponentProps) => (
+const InputMonthPicker = ({ component, submissionPath }: InputComponentProps<MonthPickerDefinition>) => (
   <FormGroup>
     <MonthPicker
       statePath={resolveSubmissionPath(component, submissionPath)}

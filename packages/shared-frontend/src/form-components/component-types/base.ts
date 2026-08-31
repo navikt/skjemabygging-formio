@@ -54,6 +54,7 @@ type BaseComponentDefinition = Pick<
   | 'selectType'
   | 'autocomplete'
   | 'spellCheck'
+  | 'hideLabel'
   | 'additionalDescriptionLabel'
   | 'additionalDescriptionText'
   | 'content'

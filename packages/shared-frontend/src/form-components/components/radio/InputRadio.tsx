@@ -1,4 +1,5 @@
 import RadioGroup from '../../../components/radio-group/RadioGroup';
+import { RadioPanelDefinition } from '../../component-types';
 import {
   getValues,
   InputComponentProps,
@@ -9,7 +10,7 @@ import {
 } from '../../inputComponentRegistryUtils';
 import FormGroup from '../../shared/FormGroup';
 
-const InputRadio = ({ component, submissionPath }: InputComponentProps) => (
+const InputRadio = ({ component, submissionPath }: InputComponentProps<RadioPanelDefinition>) => (
   <FormGroup>
     <RadioGroup
       statePath={resolveSubmissionPath(component, submissionPath)}

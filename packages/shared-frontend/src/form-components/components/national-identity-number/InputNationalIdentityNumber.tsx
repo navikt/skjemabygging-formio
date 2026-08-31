@@ -1,5 +1,6 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import TextField from '../../../components/text-field/TextField';
+import { NationalIdentityNumberDefinition } from '../../component-types';
 import {
   InputComponentProps,
   isRequired,
@@ -9,7 +10,10 @@ import {
 } from '../../inputComponentRegistryUtils';
 import FormGroup from '../../shared/FormGroup';
 
-const InputNationalIdentityNumber = ({ component, submissionPath }: InputComponentProps) => (
+const InputNationalIdentityNumber = ({
+  component,
+  submissionPath,
+}: InputComponentProps<NationalIdentityNumberDefinition>) => (
   <FormGroup>
     <TextField
       statePath={resolveSubmissionPath(component, submissionPath)}

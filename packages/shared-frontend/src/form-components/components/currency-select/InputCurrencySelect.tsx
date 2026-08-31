@@ -1,4 +1,5 @@
 import CurrencySelect from '../../../components/currency-select/CurrencySelect';
+import { CurrencySelectDefinition } from '../../component-types';
 import {
   InputComponentProps,
   isRequired,
@@ -8,7 +9,7 @@ import {
 } from '../../inputComponentRegistryUtils';
 import FormGroup from '../../shared/FormGroup';
 
-const InputCurrencySelect = ({ component, submissionPath }: InputComponentProps) => (
+const InputCurrencySelect = ({ component, submissionPath }: InputComponentProps<CurrencySelectDefinition>) => (
   <FormGroup>
     <CurrencySelect
       statePath={resolveSubmissionPath(component, submissionPath)}

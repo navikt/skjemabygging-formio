@@ -1,4 +1,5 @@
 import PhoneNumber from '../../../components/phone-number/PhoneNumber';
+import { PhoneNumberDefinition } from '../../component-types';
 import {
   InputComponentProps,
   isRequired,
@@ -8,7 +9,7 @@ import {
 } from '../../inputComponentRegistryUtils';
 import FormGroup from '../../shared/FormGroup';
 
-const InputPhoneNumber = ({ component, submissionPath }: InputComponentProps) => (
+const InputPhoneNumber = ({ component, submissionPath }: InputComponentProps<PhoneNumberDefinition>) => (
   <FormGroup>
     <PhoneNumber
       statePath={resolveSubmissionPath(component, submissionPath)}

@@ -1,11 +1,11 @@
-import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import Alert, { AlertVariant } from '../../../components/alert/Alert';
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { sanitizeHtml } from '../../../utils/sanitizeHtml';
+import { AlertDefinition } from '../../component-types';
 import FormGroup from '../../shared/FormGroup';
 
 interface InputAlertProps {
-  component: Component;
+  component: AlertDefinition;
 }
 
 const getVariant = (alertType?: string): AlertVariant => {

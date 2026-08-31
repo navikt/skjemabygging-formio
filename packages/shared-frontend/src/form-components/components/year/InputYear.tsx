@@ -1,4 +1,5 @@
 import TextField from '../../../components/text-field/TextField';
+import { YearDefinition } from '../../component-types';
 import {
   InputComponentProps,
   isRequired,
@@ -8,7 +9,7 @@ import {
 } from '../../inputComponentRegistryUtils';
 import FormGroup from '../../shared/FormGroup';
 
-const InputYear = ({ component, submissionPath }: InputComponentProps) => (
+const InputYear = ({ component, submissionPath }: InputComponentProps<YearDefinition>) => (
   <FormGroup>
     <TextField
       statePath={resolveSubmissionPath(component, submissionPath)}

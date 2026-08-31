@@ -1,4 +1,5 @@
 import AddressValidity from '../../../components/address-validity/AddressValidity';
+import { AddressValidityDefinition } from '../../component-types';
 import {
   InputComponentProps,
   isRequired,
@@ -8,7 +9,7 @@ import {
 } from '../../inputComponentRegistryUtils';
 import FormGroup from '../../shared/FormGroup';
 
-const InputAddressValidity = ({ component, submissionPath }: InputComponentProps) => (
+const InputAddressValidity = ({ component, submissionPath }: InputComponentProps<AddressValidityDefinition>) => (
   <FormGroup>
     <AddressValidity
       statePath={resolveSubmissionPath(component, submissionPath)}

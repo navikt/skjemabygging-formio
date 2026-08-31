@@ -1,5 +1,5 @@
 import { Box, Button, Heading } from '@navikt/ds-react';
-import { Component, submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import TranslatedDescription from '../../../components/shared/TranslatedDescription';
 import { useFormDefinition } from '../../../context/form-definition/FormDefinitionContext';
@@ -12,6 +12,7 @@ import { createUpdatedSubmission, useSubmissionState } from '../../../context/st
 import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
 import { useValidation } from '../../../context/validation/ValidationContext';
 import { useValidationScope } from '../../../context/validation/ValidationScopeContext';
+import { DataGridDefinition } from '../../component-types';
 import { InputComponentRegistry } from '../../inputComponentRegistry';
 import RenderInputForm from '../../RenderInputForm';
 import FormGroup from '../../shared/FormGroup';
@@ -25,7 +26,7 @@ import {
 import styles from './InputDataGrid.module.css';
 
 interface InputDataGridProps {
-  component: Component;
+  component: DataGridDefinition;
   componentRegistry?: InputComponentRegistry;
 }
 

@@ -3,13 +3,14 @@ import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import { CSSProperties } from 'react';
 import TranslatedDescription from '../../../components/shared/TranslatedDescription';
 import { useLanguage } from '../../../context/language/LanguageContext';
+import { RowDefinition } from '../../component-types';
 import { InputComponentRegistry } from '../../inputComponentRegistry';
 import RenderInputForm from '../../RenderInputForm';
 import FormGroup from '../../shared/FormGroup';
 import styles from './InputRow.module.css';
 
 interface InputRowProps {
-  component: Component;
+  component: RowDefinition;
   componentRegistry?: InputComponentRegistry;
 }
 

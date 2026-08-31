@@ -2,6 +2,7 @@ import { attachmentUtils, navFormUtils, SubmissionAttachment } from '@navikt/skj
 import { useFormDefinition } from '../../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
+import { AttachmentDefinition } from '../../../form-components/component-types';
 import InputAttachment from '../../../form-components/components/attachment/InputAttachment';
 import {
   InputComponentProps,
@@ -12,7 +13,7 @@ import { useFyllut } from '../../context/fyllut/FyllutContext';
 import AttachmentUpload from './AttachmentUpload';
 import OtherAttachmentUpload from './OtherAttachmentUpload';
 
-const FyllutInputAttachment = ({ component, submissionPath }: InputComponentProps) => {
+const FyllutInputAttachment = ({ component, submissionPath }: InputComponentProps<AttachmentDefinition>) => {
   const { submissionMethod } = useSubmissionMethod();
   const { logEvent } = useFyllut();
   const { form } = useFormDefinition();

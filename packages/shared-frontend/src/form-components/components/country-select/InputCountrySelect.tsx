@@ -1,4 +1,5 @@
 import CountrySelect from '../../../components/country-select/CountrySelect';
+import { CountrySelectDefinition } from '../../component-types';
 import {
   InputComponentProps,
   isRequired,
@@ -8,7 +9,7 @@ import {
 } from '../../inputComponentRegistryUtils';
 import FormGroup from '../../shared/FormGroup';
 
-const InputCountrySelect = ({ component, submissionPath }: InputComponentProps) => (
+const InputCountrySelect = ({ component, submissionPath }: InputComponentProps<CountrySelectDefinition>) => (
   <FormGroup>
     <CountrySelect
       statePath={resolveSubmissionPath(component, submissionPath)}

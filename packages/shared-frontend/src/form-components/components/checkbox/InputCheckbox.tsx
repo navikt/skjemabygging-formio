@@ -1,4 +1,5 @@
 import Checkbox from '../../../components/checkbox/Checkbox';
+import { CheckboxDefinition } from '../../component-types';
 import {
   InputComponentProps,
   isRequired,
@@ -8,7 +9,7 @@ import {
 } from '../../inputComponentRegistryUtils';
 import FormGroup from '../../shared/FormGroup';
 
-const InputCheckbox = ({ component, submissionPath }: InputComponentProps) => (
+const InputCheckbox = ({ component, submissionPath }: InputComponentProps<CheckboxDefinition>) => (
   <FormGroup>
     <Checkbox
       statePath={resolveSubmissionPath(component, submissionPath)}

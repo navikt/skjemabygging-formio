@@ -1,4 +1,5 @@
 import TextArea from '../../../components/text-area/TextArea';
+import { TextAreaDefinition } from '../../component-types';
 import {
   InputComponentProps,
   isRequired,
@@ -8,7 +9,7 @@ import {
 } from '../../inputComponentRegistryUtils';
 import FormGroup from '../../shared/FormGroup';
 
-const InputTextArea = ({ component, submissionPath }: InputComponentProps) => (
+const InputTextArea = ({ component, submissionPath }: InputComponentProps<TextAreaDefinition>) => (
   <FormGroup>
     <TextArea
       statePath={resolveSubmissionPath(component, submissionPath)}

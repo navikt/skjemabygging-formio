@@ -1,4 +1,5 @@
 import TextField from '../../../components/text-field/TextField';
+import { IbanDefinition } from '../../component-types';
 import {
   InputComponentProps,
   isRequired,
@@ -8,7 +9,7 @@ import {
 } from '../../inputComponentRegistryUtils';
 import FormGroup from '../../shared/FormGroup';
 
-const InputIban = ({ component, submissionPath }: InputComponentProps) => (
+const InputIban = ({ component, submissionPath }: InputComponentProps<IbanDefinition>) => (
   <FormGroup>
     <TextField
       statePath={resolveSubmissionPath(component, submissionPath)}

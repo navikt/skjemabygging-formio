@@ -1,8 +1,9 @@
 import Identity from '../../../components/identity/Identity';
+import { IdentityDefinition } from '../../component-types';
 import { InputComponentProps, isRequired, resolveSubmissionPath } from '../../inputComponentRegistryUtils';
 import FormGroup from '../../shared/FormGroup';
 
-const InputIdentity = ({ component, submissionPath }: InputComponentProps) => (
+const InputIdentity = ({ component, submissionPath }: InputComponentProps<IdentityDefinition>) => (
   <FormGroup>
     <Identity
       statePath={resolveSubmissionPath(component, submissionPath)}

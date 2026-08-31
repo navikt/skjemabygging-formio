@@ -1,4 +1,5 @@
 import Sender, { SenderPrefillValue } from '../../../components/sender/Sender';
+import { SenderDefinition } from '../../component-types';
 import {
   InputComponentProps,
   isRequired,
@@ -11,7 +12,7 @@ import FormGroup from '../../shared/FormGroup';
 const isSenderPrefillValue = (value: unknown): value is SenderPrefillValue =>
   typeof value === 'object' && value !== null;
 
-const InputSender = ({ component, submissionPath }: InputComponentProps) => {
+const InputSender = ({ component, submissionPath }: InputComponentProps<SenderDefinition>) => {
   const prefillValue = isSenderPrefillValue(component.prefillValue) ? component.prefillValue : undefined;
 
   return (

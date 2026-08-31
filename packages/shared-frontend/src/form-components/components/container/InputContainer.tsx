@@ -1,13 +1,13 @@
 import { Box, Label } from '@navikt/ds-react';
-import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import TranslatedDescription from '../../../components/shared/TranslatedDescription';
 import { useLanguage } from '../../../context/language/LanguageContext';
+import { ContainerDefinition } from '../../component-types';
 import { InputComponentRegistry } from '../../inputComponentRegistry';
 import RenderInputForm from '../../RenderInputForm';
 import FormGroup from '../../shared/FormGroup';
 
 interface InputContainerProps {
-  component: Component;
+  component: ContainerDefinition;
   componentRegistry?: InputComponentRegistry;
 }
 

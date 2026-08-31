@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import CheckboxGroup from '../../../components/checkbox-group/CheckboxGroup';
 import { getSelectedValuesAsList, getSelectedValuesMap } from '../../../components/data-fetcher/dataFetcherUtils';
 import { useStateField } from '../../../context/state/useStateField';
+import { SelectBoxesDefinition } from '../../component-types';
 import {
   getValues,
   InputComponentProps,
@@ -15,7 +16,7 @@ import FormGroup from '../../shared/FormGroup';
 const isSelectBoxesValue = (value: unknown): value is Record<string, boolean> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
-const InputSelectBoxes = ({ component, submissionPath }: InputComponentProps) => {
+const InputSelectBoxes = ({ component, submissionPath }: InputComponentProps<SelectBoxesDefinition>) => {
   const statePath = resolveSubmissionPath(component, submissionPath);
   const values = getValues(component);
   const { stateValue, error, setStateValue } = useStateField({ statePath });

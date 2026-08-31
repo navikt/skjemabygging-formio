@@ -1,4 +1,5 @@
 import TextField from '../../../components/text-field/TextField';
+import { FirstNameDefinition } from '../../component-types';
 import {
   InputComponentProps,
   isRequired,
@@ -9,7 +10,7 @@ import {
 } from '../../inputComponentRegistryUtils';
 import FormGroup from '../../shared/FormGroup';
 
-const InputFirstName = ({ component, submissionPath }: InputComponentProps) => (
+const InputFirstName = ({ component, submissionPath }: InputComponentProps<FirstNameDefinition>) => (
   <FormGroup>
     <TextField
       statePath={resolveSubmissionPath(component, submissionPath)}

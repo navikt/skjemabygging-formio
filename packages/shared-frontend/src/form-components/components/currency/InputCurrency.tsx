@@ -1,4 +1,5 @@
 import TextField from '../../../components/text-field/TextField';
+import { CurrencyDefinition } from '../../component-types';
 import {
   InputComponentProps,
   isRequired,
@@ -11,7 +12,7 @@ import {
 } from '../../inputComponentRegistryUtils';
 import FormGroup from '../../shared/FormGroup';
 
-const InputCurrency = ({ component, submissionPath }: InputComponentProps) => (
+const InputCurrency = ({ component, submissionPath }: InputComponentProps<CurrencyDefinition>) => (
   <FormGroup>
     <TextField
       statePath={resolveSubmissionPath(component, submissionPath)}

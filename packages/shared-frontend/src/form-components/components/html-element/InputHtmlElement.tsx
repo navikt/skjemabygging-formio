@@ -1,12 +1,12 @@
 import { Box } from '@navikt/ds-react';
-import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import ReadMore from '../../../components/read-more/ReadMore';
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { sanitizeHtml } from '../../../utils/sanitizeHtml';
+import { HtmlElementDefinition } from '../../component-types';
 import FormGroup from '../../shared/FormGroup';
 
 interface InputHtmlElementProps {
-  component: Component;
+  component: HtmlElementDefinition;
 }
 
 const InputHtmlElement = ({ component }: InputHtmlElementProps) => {

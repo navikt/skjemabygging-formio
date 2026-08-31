@@ -1,4 +1,5 @@
 import TextField from '../../../components/text-field/TextField';
+import { EmailDefinition } from '../../component-types';
 import {
   InputComponentProps,
   isRequired,
@@ -9,7 +10,7 @@ import {
 } from '../../inputComponentRegistryUtils';
 import FormGroup from '../../shared/FormGroup';
 
-const InputEmail = ({ component, submissionPath }: InputComponentProps) => (
+const InputEmail = ({ component, submissionPath }: InputComponentProps<EmailDefinition>) => (
   <FormGroup>
     <TextField
       statePath={resolveSubmissionPath(component, submissionPath)}

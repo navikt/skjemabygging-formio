@@ -1,5 +1,6 @@
 import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
 import Select from '../../../components/select/Select';
+import { NavSelectDefinition } from '../../component-types';
 import {
   getValues,
   InputComponentProps,
@@ -14,7 +15,7 @@ import FormGroup from '../../shared/FormGroup';
 const isComponentValue = (value: unknown): value is ComponentValue =>
   typeof value === 'object' && value !== null && 'value' in value && 'label' in value;
 
-const InputNavSelect = ({ component, submissionPath }: InputComponentProps) => (
+const InputNavSelect = ({ component, submissionPath }: InputComponentProps<NavSelectDefinition>) => (
   <FormGroup>
     <Select
       statePath={resolveSubmissionPath(component, submissionPath)}

@@ -2,6 +2,7 @@ import { SendInnMaalgruppe, SubmissionData, SubmissionMaalgruppe } from '@navikt
 import { useEffect, useMemo } from 'react';
 import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
 import { useStateField } from '../../../context/state/useStateField';
+import { TargetGroupDefinition } from '../../component-types';
 import { InputComponentProps, resolveSubmissionPath } from '../../inputComponentRegistryUtils';
 
 type TargetGroupMapValue = { priority: number; code: string };
@@ -54,7 +55,7 @@ const targetGroupValuesEqual = (left?: SubmissionMaalgruppe, right?: SubmissionM
 const isSendInnTargetGroup = (value: unknown): value is SendInnMaalgruppe =>
   typeof value === 'object' && value !== null && 'maalgruppetype' in value;
 
-const InputTargetGroup = ({ component, submissionPath }: InputComponentProps) => {
+const InputTargetGroup = ({ component, submissionPath }: InputComponentProps<TargetGroupDefinition>) => {
   const statePath = resolveSubmissionPath(component, submissionPath);
   const { submission } = useSubmissionState();
   const { stateValue, setStateValue } = useStateField({ statePath });

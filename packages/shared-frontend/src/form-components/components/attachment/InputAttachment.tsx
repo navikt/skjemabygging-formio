@@ -3,6 +3,7 @@ import Attachment from '../../../components/attachment/Attachment';
 import { useFormDefinition } from '../../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
+import { AttachmentDefinition } from '../../component-types';
 import {
   InputComponentProps,
   isRequired,
@@ -12,7 +13,7 @@ import {
 } from '../../inputComponentRegistryUtils';
 import FormGroup from '../../shared/FormGroup';
 
-const InputAttachment = ({ component, submissionPath }: InputComponentProps) => {
+const InputAttachment = ({ component, submissionPath }: InputComponentProps<AttachmentDefinition>) => {
   const { submissionMethod } = useSubmissionMethod();
   const { form } = useFormDefinition();
   const { translate } = useLanguage();

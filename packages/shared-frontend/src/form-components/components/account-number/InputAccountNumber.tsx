@@ -1,4 +1,5 @@
 import TextField from '../../../components/text-field/TextField';
+import { AccountNumberDefinition } from '../../component-types';
 import {
   InputComponentProps,
   isRequired,
@@ -8,7 +9,7 @@ import {
 } from '../../inputComponentRegistryUtils';
 import FormGroup from '../../shared/FormGroup';
 
-const InputAccountNumber = ({ component, submissionPath }: InputComponentProps) => (
+const InputAccountNumber = ({ component, submissionPath }: InputComponentProps<AccountNumberDefinition>) => (
   <FormGroup>
     <TextField
       statePath={resolveSubmissionPath(component, submissionPath)}

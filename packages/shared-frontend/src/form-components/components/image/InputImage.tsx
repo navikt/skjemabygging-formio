@@ -1,6 +1,7 @@
 import { Box } from '@navikt/ds-react';
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { sanitizeHtml } from '../../../utils/sanitizeHtml';
+import { ImageDefinition } from '../../component-types';
 import { InputComponentProps } from '../../inputComponentRegistryUtils';
 import FormGroup from '../../shared/FormGroup';
 
@@ -12,7 +13,7 @@ const getWidth = (widthPercent?: number) => {
   return `${widthPercent}%`;
 };
 
-const InputImage = ({ component }: InputComponentProps) => {
+const InputImage = ({ component }: InputComponentProps<ImageDefinition>) => {
   const { translate } = useLanguage();
   const imageUrl = component.image?.[0]?.url;
 

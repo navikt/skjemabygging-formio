@@ -50,8 +50,12 @@ type YearDefinition = BaseComponentDefinition & { type: 'year' };
 
 /* Group */
 type ContainerDefinition = BaseComponentDefinition & { type: 'container' };
-type DataGridDefinition = BaseComponentDefinition & Pick<Component, 'initEmpty'> & { type: 'datagrid' };
-type FormGroupDefinition = BaseComponentDefinition & { type: 'navSkjemagruppe' | 'fieldset' };
+type DataGridDefinition = BaseComponentDefinition &
+  Pick<Component, 'initEmpty' | 'addAnother' | 'removeAnother' | 'disableAddingRemovingRows' | 'rowTitle'> & {
+    type: 'datagrid';
+  };
+type FormGroupDefinition = BaseComponentDefinition &
+  Pick<Component, 'legend' | 'backgroundColor'> & { type: 'navSkjemagruppe' | 'fieldset' };
 type PanelDefinition = BaseComponentDefinition & Pick<Component, 'title'> & { type: 'panel' };
 type RowDefinition = BaseComponentDefinition & Pick<Component, 'widthPercent'> & { type: 'row' };
 

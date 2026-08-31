@@ -1,6 +1,7 @@
 import DatePicker from '../../../components/date/DatePicker';
 import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
 import { useValidationScope } from '../../../context/validation/ValidationScopeContext';
+import { DatePickerDefinition } from '../../component-types';
 import { getDatePickerFromDate, getDatePickerToDate } from '../../dateDefinitionUtils';
 import {
   InputComponentProps,
@@ -11,7 +12,7 @@ import {
 } from '../../inputComponentRegistryUtils';
 import FormGroup from '../../shared/FormGroup';
 
-const InputDatePicker = ({ component, submissionPath }: InputComponentProps) => {
+const InputDatePicker = ({ component, submissionPath }: InputComponentProps<DatePickerDefinition>) => {
   const { submission } = useSubmissionState();
   const { components: pageComponents } = useValidationScope();
   const statePath = resolveSubmissionPath(component, submissionPath);

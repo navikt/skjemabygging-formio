@@ -7,10 +7,11 @@ import { useRuntimeServices } from '../../../context/runtime-services/RuntimeSer
 import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
 import { parseSubmissionPath, setDeepValue } from '../../../context/state/stateHelpers';
 import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
+import { DataFetcherDefinition } from '../../component-types';
 import { InputComponentProps, resolveReadMore, resolveSubmissionPath } from '../../inputComponentRegistryUtils';
 import FormGroup from '../../shared/FormGroup';
 
-const InputDataFetcher = ({ component, submissionPath }: InputComponentProps) => {
+const InputDataFetcher = ({ component, submissionPath }: InputComponentProps<DataFetcherDefinition>) => {
   type SubmissionMetadata = NonNullable<Submission['metadata']>;
   const dataFetcherComponent = component as DataFetcherComponent;
   const { logger } = useApplication();

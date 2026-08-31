@@ -1,4 +1,5 @@
 import TextField from '../../../components/text-field/TextField';
+import { NumberDefinition } from '../../component-types';
 import {
   InputComponentProps,
   isRequired,
@@ -11,7 +12,7 @@ import {
 } from '../../inputComponentRegistryUtils';
 import FormGroup from '../../shared/FormGroup';
 
-const InputNumber = ({ component, submissionPath }: InputComponentProps) => (
+const InputNumber = ({ component, submissionPath }: InputComponentProps<NumberDefinition>) => (
   <FormGroup>
     <TextField
       statePath={resolveSubmissionPath(component, submissionPath)}

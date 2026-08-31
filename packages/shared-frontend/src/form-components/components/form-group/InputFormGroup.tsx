@@ -1,12 +1,12 @@
-import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import Fieldset from '../../../components/fieldset/Fieldset';
-import RenderInputForm from '../../RenderInputForm';
+import { FormGroupDefinition } from '../../component-types';
 import { InputComponentRegistry } from '../../inputComponentRegistry';
+import RenderInputForm from '../../RenderInputForm';
 import FormGroup from '../../shared/FormGroup';
 import styles from './InputFormGroup.module.css';
 
 interface InputFormGroupProps {
-  component: Component;
+  component: FormGroupDefinition;
   componentRegistry?: InputComponentRegistry;
 }
 
