@@ -53,7 +53,7 @@ const sendInnUtfyltSoknad = {
         language,
         translations,
         submissionMethod,
-        appConfig: { config: { gitVersion: config.gitVersion } },
+        appConfig: { config: { gitVersion: config.gitVersion, isDelingslenke: config.isDelingslenke } },
       });
 
       const applicationPdfBase64 = await applicationPdfService.createPdf({
