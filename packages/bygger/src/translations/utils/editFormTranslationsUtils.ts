@@ -46,8 +46,10 @@ const generateUnsavedGlobalTranslations = (
   storedTranslations: Record<string, FormsApiTranslation>,
   globalTranslations: Record<string, FormsApiTranslation>,
 ) => {
-  return generateAndPopulateTranslationsForForm(form, {}, globalTranslations).filter(
-    (translation) => translation.globalTranslationId && !storedTranslations[translation.nb ?? translation.key],
+  return generateAndPopulateTranslationsForForm(form, storedTranslations, globalTranslations).filter(
+    (translation) =>
+      translation.globalTranslationId &&
+      storedTranslations[translation.key]?.globalTranslationId !== translation.globalTranslationId,
   );
 };
 
