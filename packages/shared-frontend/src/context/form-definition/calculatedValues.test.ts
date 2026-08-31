@@ -1,4 +1,4 @@
-import { Component, Form, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, Form, navFormUtils, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { describe, expect, it } from 'vitest';
 import { collectDataGridRowScopes } from '../../form-components/components/data-grid/dataGridRows';
 import { applyCalculatedValues, collectCalculationTargets } from './calculatedValues';
@@ -141,6 +141,36 @@ describe('calculatedValues', () => {
       antallReiser: '3',
       dobbeltAntallReiser: 6,
     });
+  });
+
+  it('does not calculate a conditionally-hidden top-level component (avoids clear-on-hide loop)', () => {
+    const form = createForm(dataGridComponents, [
+      { key: 'antallReiser', label: 'Antall reiser', type: 'number', input: true, navId: 'antall' },
+      {
+        key: 'dobbeltAntallReiser',
+        label: 'Dobbelt antall reiser',
+        type: 'number',
+        input: true,
+        navId: 'dobbelt',
+        customConditional: 'show = data.antallReiser > 0;',
+        calculateValue: 'value = (parseFloat(data.antallReiser) || 0) * 2;',
+      },
+    ] as Component[]);
+    const submission = { data: { antallReiser: 0 } };
+
+    // The caller (FormDefinitionContext) passes only active components; the hidden calculated field
+    // must not be a target, otherwise it fights the clear-on-hide effect and never settles.
+    const activeComponents = navFormUtils.getActiveComponentsFromForm(form, submission);
+    const result = applyCalculatedValues({
+      submission,
+      formComponents: activeComponents,
+      dataGridRowScopes: collectDataGridRowScopes({ components: activeComponents, submission, form }),
+    });
+
+    expect(result?.data).toEqual({ antallReiser: 0 });
+
+    // Sanity check: passing the whole form (the previous behavior) would incorrectly calculate it.
+    expect(calculate(form, submission)?.data).toEqual({ antallReiser: 0, dobbeltAntallReiser: 0 });
   });
 
   it('calculates the production nav761385 mentor-cost cascade in component order', () => {

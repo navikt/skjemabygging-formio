@@ -57,11 +57,11 @@ const FormDefinitionProvider = ({ children, form }: Props) => {
     setSubmission((prev) =>
       applyCalculatedValues({
         submission: prev,
-        formComponents: formWithBaseSubmissionPath.components,
+        formComponents: [...activeComponents, ...panels],
         dataGridRowScopes,
       }),
     );
-  }, [dataGridRowScopes, formWithBaseSubmissionPath.components, setSubmission]);
+  }, [activeComponents, dataGridRowScopes, panels, setSubmission]);
 
   useEffect(() => {
     const hiddenPathsToClear = collectHiddenSubmissionPaths({
