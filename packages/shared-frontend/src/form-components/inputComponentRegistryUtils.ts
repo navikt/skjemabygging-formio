@@ -10,7 +10,7 @@ import { ReadMoreProps } from '../components/read-more/ReadMore';
 import { SelectType } from '../components/select/selectUtils';
 import { getResolvedSubmissionPath } from '../context/form-definition/formDefinitionUtils';
 import { toSubmissionFormat } from '../formatting/inputFormat';
-import { ComponentOfType } from './component-types';
+import { ComponentDefinitionByType } from './component-types';
 
 /**
  * Component `type` literals handled by the input registry. This is every
@@ -21,9 +21,9 @@ import { ComponentOfType } from './component-types';
 type InputComponentType = Exclude<FormComponentType, 'formioTextArea' | 'password' | 'panel'>;
 
 /**
- * Props for an input adapter. Parameterized by the adapter's component variant:
- * a migrated adapter declares e.g. `InputComponentProps<TextFieldComponent>` and
- * receives the exact type; un-migrated adapters use the default `Component`.
+ * Props for an input adapter. Parameterized by the adapter's component
+ * definition: a migrated adapter declares e.g. `InputComponentProps<TextFieldDefinition>`
+ * and receives the exact type.
  */
 interface InputComponentProps<T extends Component = Component> {
   component: T;
@@ -33,12 +33,12 @@ interface InputComponentProps<T extends Component = Component> {
 
 /**
  * Registry mapping each supported component `type` to its input adapter. The
- * mapped type ties every key to an adapter expecting that type's variant
- * (`ComponentOfType<K>`), so an adapter cannot be registered under the wrong
- * key, and a missing key is a compile error (exhaustiveness).
+ * mapped type ties every key to an adapter expecting that type's definition
+ * (`ComponentDefinitionByType<K>`), so an adapter cannot be registered under the
+ * wrong key, and a missing key is a compile error (exhaustiveness).
  */
 type InputComponentRegistry = {
-  [K in InputComponentType]: ComponentType<InputComponentProps<ComponentOfType<K>>>;
+  [K in InputComponentType]: ComponentType<InputComponentProps<ComponentDefinitionByType<K>>>;
 };
 
 const getValues = (component: Component) => component.values ?? component.data?.values ?? [];

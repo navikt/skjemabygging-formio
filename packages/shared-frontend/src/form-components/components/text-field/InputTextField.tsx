@@ -1,5 +1,5 @@
 import TextField from '../../../components/text-field/TextField';
-import { TextFieldComponent } from '../../component-types';
+import { TextFieldDefinition } from '../../component-types';
 import {
   InputComponentProps,
   isRequired,
@@ -10,10 +10,10 @@ import {
 } from '../../inputComponentRegistryUtils';
 import FormGroup from '../../shared/FormGroup';
 
-// `component` is typed as `TextFieldComponent` via the registry, so only valid
+// `component` is typed as `TextFieldDefinition` via the registry, so only valid
 // textfield properties are accessible - reading e.g. `component.values` is a
 // compile-time error.
-const InputTextField = ({ component, submissionPath }: InputComponentProps<TextFieldComponent>) => (
+const InputTextField = ({ component, submissionPath }: InputComponentProps<TextFieldDefinition>) => (
   <FormGroup>
     <TextField
       statePath={resolveSubmissionPath(component, submissionPath)}

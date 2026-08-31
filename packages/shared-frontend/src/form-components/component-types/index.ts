@@ -1,41 +1,69 @@
 import { FormComponentType } from '@navikt/skjemadigitalisering-shared-domain';
-import { GenericComponent } from './generic';
-import { TextFieldComponent } from './textfield';
+import { TypedComponentDefinition } from './definitions';
+import { GenericComponentDefinition } from './generic';
 
 /**
- * Discriminated union of the form components that have been migrated to
- * type-safe variants, keyed on the `type` literal discriminant.
+ * Total, discriminated union of every form component definition: the migrated
+ * typed variants plus the `GenericComponentDefinition` fallback for anything not
+ * yet migrated. This is the type the render registries and the shared-frontend
+ * tree-walkers consume instead of the legacy `Component` god-interface.
  *
- * Grow this union one entry at a time as each component type is migrated:
- *
- *   type FormComponent = TextFieldComponent | RadioPanelComponent | ...;
+ * Because it is total and distributive, `ComponentDefinitionByType<K>` resolves
+ * to the exact variant for any component type `K`. Every member is structurally
+ * assignable to `Component`, so a `ComponentDefinition` still flows into
+ * shared-domain utilities (typed as `Component`) without a cast; only the
+ * reverse direction - the single ingestion boundary that converts incoming form
+ * JSON into `ComponentDefinition` - needs an explicit conversion.
  */
-type FormComponent = TextFieldComponent;
+type ComponentDefinition = TypedComponentDefinition | GenericComponentDefinition;
 
-/** The set of `type` literals that already have a dedicated typed variant. */
-type MigratedComponentType = FormComponent['type'];
+/** The typed definition for a given component `type` literal. */
+type ComponentDefinitionByType<K extends FormComponentType> = Extract<ComponentDefinition, { type: K }>;
 
-/**
- * Total union over every `FormComponentType`: the migrated variants plus the
- * `GenericComponent` fallback for everything not yet migrated.
- *
- * This is the type the render registries and the shared-frontend tree-walkers
- * should consume. Because it is total and distributive,
- * `Extract<AnyFormComponent, { type: K }>` resolves to the exact variant for any
- * component type `K` - `TextFieldComponent` for migrated types, and the
- * legacy-shaped fallback member otherwise. Legacy `Component` therefore only
- * needs to appear at the single ingestion boundary that converts incoming form
- * JSON into `AnyFormComponent`.
- */
-type AnyFormComponent = FormComponent | GenericComponent;
-
-/**
- * The typed variant for a given component `type` literal. Resolves to the
- * migrated variant when one exists, otherwise to the generic fallback member.
- */
-type ComponentOfType<K extends FormComponentType> = Extract<AnyFormComponent, { type: K }>;
-
-export type { BaseComponent } from './base';
-export type { GenericComponent } from './generic';
-export type { TextFieldComponent } from './textfield';
-export type { AnyFormComponent, ComponentOfType, FormComponent, MigratedComponentType };
+export type { BaseComponentDefinition } from './base';
+export type {
+  AccordionDefinition,
+  AccountNumberDefinition,
+  ActivitiesDefinition,
+  AddressDefinition,
+  AddressValidityDefinition,
+  AlertDefinition,
+  AttachmentDefinition,
+  CheckboxDefinition,
+  ContainerDefinition,
+  CountrySelectDefinition,
+  CurrencyDefinition,
+  CurrencySelectDefinition,
+  DataFetcherDefinition,
+  DataGridDefinition,
+  DatePickerDefinition,
+  DrivingListDefinition,
+  EmailDefinition,
+  FirstNameDefinition,
+  FormGroupDefinition,
+  HtmlElementDefinition,
+  IbanDefinition,
+  IdentityDefinition,
+  ImageDefinition,
+  MonthPickerDefinition,
+  NationalIdentityNumberDefinition,
+  NavSelectDefinition,
+  NumberDefinition,
+  OrganizationNumberDefinition,
+  PanelDefinition,
+  PhoneNumberDefinition,
+  RadioPanelDefinition,
+  RowDefinition,
+  SelectBoxesDefinition,
+  SelectDefinition,
+  SenderDefinition,
+  SurnameDefinition,
+  TargetGroupDefinition,
+  TextAreaDefinition,
+  TextFieldDefinition,
+  TypedComponentDefinition,
+  TypedComponentType,
+  YearDefinition,
+} from './definitions';
+export type { GenericComponentDefinition } from './generic';
+export type { ComponentDefinition, ComponentDefinitionByType };

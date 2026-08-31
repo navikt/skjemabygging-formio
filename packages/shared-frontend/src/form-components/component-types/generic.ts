@@ -1,22 +1,14 @@
 import { Component, FormComponentType } from '@navikt/skjemadigitalisering-shared-domain';
-import type { MigratedComponentType } from './index';
+import type { TypedComponentType } from './definitions';
 
 /**
- * Fallback variant for component types that have NOT yet been migrated to a
- * dedicated typed variant.
- *
- * It is a distributive union with one member per not-yet-migrated `type`
- * literal, each member being the legacy `Component` shape pinned to that single
- * literal. This keeps `AnyFormComponent` total over `FormComponentType` (so the
- * registries and tree-walkers can be typed exhaustively) while migration is
- * still in progress.
- *
- * As component types gain real variants and join `FormComponent`, they drop out
- * of `GenericComponent` automatically, so this escape hatch shrinks to `never`
- * once every type is migrated.
+ * Fallback definition for component types that do not (yet) have a dedicated
+ * typed variant. A distributive union with one legacy-`Component`-shaped member
+ * per not-yet-typed `type` literal, keeping `ComponentDefinition` total over
+ * `FormComponentType`. Shrinks to `never` once every type has a variant.
  */
-type GenericComponent = {
-  [K in Exclude<FormComponentType, MigratedComponentType>]: Omit<Component, 'type'> & { type: K };
-}[Exclude<FormComponentType, MigratedComponentType>];
+type GenericComponentDefinition = {
+  [K in Exclude<FormComponentType, TypedComponentType>]: Omit<Component, 'type'> & { type: K };
+}[Exclude<FormComponentType, TypedComponentType>];
 
-export type { GenericComponent };
+export type { GenericComponentDefinition };

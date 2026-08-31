@@ -1,33 +1,74 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 
 /**
- * Fields shared by (nearly) every rendered form component, independent of `type`.
+ * Cross-cutting fields shared by (essentially) every form component, independent
+ * of `type`. Derived from the legacy `Component` interface via `Pick` so the
+ * field types stay in sync with shared-domain and every definition variant is
+ * structurally assignable to `Component`.
  *
- * Derived from the legacy `Component` "god interface" via `Pick` so we reuse the
- * existing sub-type definitions (`ComponentValidate`, `ComponentConditional`,
- * `ComponentProperties`, ...) instead of forking them. This keeps the typed
- * variants DRY and automatically in sync with the shared-domain sub-types.
+ * The set intentionally covers the fields that shared-frontend reads
+ * *generically* - i.e. off a component whose concrete type is not (yet) known:
+ * the tree-walkers (validation, conditional eval, prefill, calculated/default
+ * values) and the shared input/date utilities. Fields that only a single
+ * component's renderer reads live on that component's own `*Definition` variant
+ * instead, which is where the per-type strictness pays off.
  *
- * `type` is intentionally NOT included here: each variant must declare its own
- * `type` literal so it can act as the discriminant of the `FormComponent` union.
- *
- * Add a field here only when it is meaningful for essentially all component
- * types. Anything type-specific belongs on the individual variant instead.
+ * `type` is intentionally excluded: each variant declares its own `type`
+ * literal, which is the discriminant of the `ComponentDefinition` union.
  */
-type BaseComponent = Pick<
+type BaseComponentDefinition = Pick<
   Component,
+  // Identity / structure
   | 'id'
   | 'navId'
   | 'key'
   | 'label'
   | 'description'
+  | 'components'
+  | 'input'
+  | 'baseSubmissionPath'
+  // Visibility / logic
   | 'hidden'
   | 'clearOnHide'
   | 'conditional'
   | 'customConditional'
   | 'validate'
   | 'properties'
-  | 'baseSubmissionPath'
+  | 'calculateValue'
+  | 'allowCalculateOverride'
+  // Values / data source
+  | 'values'
+  | 'data'
+  | 'dataSrc'
+  | 'valueProperty'
+  | 'labelProperty'
+  | 'defaultValue'
+  // Prefill
+  | 'prefillKey'
+  | 'prefillValue'
+  | 'customLabels'
+  // Shared input presentation
+  | 'inputType'
+  | 'fieldSize'
+  | 'readOnly'
+  | 'selectType'
+  | 'autocomplete'
+  | 'spellCheck'
+  | 'additionalDescriptionLabel'
+  | 'additionalDescriptionText'
+  | 'content'
+  | 'tree'
+  // Attachment / prefill metadata read generically by walkers
+  | 'attachmentType'
+  | 'otherDocumentation'
+  | 'protectedApiKey'
+  // Date constraints (read by the shared date utilities)
+  | 'beforeDateInputKey'
+  | 'earliestAllowedDate'
+  | 'latestAllowedDate'
+  | 'mayBeEqual'
+  | 'specificEarliestAllowedDate'
+  | 'specificLatestAllowedDate'
 >;
 
-export type { BaseComponent };
+export type { BaseComponentDefinition };
