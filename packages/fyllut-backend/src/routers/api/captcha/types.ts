@@ -1,8 +1,6 @@
 export class CaptchaError extends Error {
-  reqBody: string;
-  constructor(message: string, reqBody: any) {
-    super(message);
-    this.reqBody = reqBody;
+  constructor(readonly reason: string) {
+    super(`Captcha validation failed: ${reason}`);
   }
 }
 

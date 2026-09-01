@@ -18,17 +18,17 @@ const post: RequestHandler = async (req, res, next) => {
     const { firstName, data_33 } = req.body;
 
     if (firstName) {
-      return next(new CaptchaError('Captcha validation failed, honeypot was filled in', req.body));
+      return next(new CaptchaError('Honeypot was filled in'));
     }
 
     if (config.captcha.powEnabled) {
       const result = verifySolution(req.body);
       if (!result.valid) {
-        return next(new CaptchaError(`Captcha validation failed, ${result.reason}`, req.body));
+        return next(new CaptchaError(result.reason));
       }
     } else if (data_33 !== 'ja') {
       // TODO: remove old data_33 flow after PoW confirmed stable in production
-      return next(new CaptchaError('Captcha validation failed due to unexpected body', req.body));
+      return next(new CaptchaError('Unexpected legacy captcha body'));
     }
 
     const token = nologinTokenService.generateToken();
