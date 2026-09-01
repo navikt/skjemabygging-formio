@@ -41,7 +41,6 @@ import PdfNationalIdentityNumber from './components/national-identity-number/Pdf
 import PdfNumber from './components/number/PdfNumber';
 import PdfOrganizationNumber from './components/organization-number/PdfOrganizationNumber';
 import PdfPanel from './components/panel/PdfPanel';
-import PdfPassword from './components/password/PdfPassword';
 import PdfPhoneNumber from './components/phone-number/PdfPhoneNumber';
 import PdfRadio from './components/radio/PdfRadio';
 import PdfRow from './components/row/PdfRow';
@@ -93,7 +92,6 @@ const renderPdfForm = ({
     navSelect: PdfNavSelect,
     selectboxes: PdfSelectBoxes,
     textarea: PdfTextArea,
-    formioTextArea: PdfTextArea,
     textfield: PdfTextField,
 
     /* Customized */
@@ -110,7 +108,6 @@ const renderPdfForm = ({
     identity: PdfIdentity,
     fnrfield: PdfNationalIdentityNumber,
     orgNr: PdfOrganizationNumber,
-    password: PdfPassword,
     phoneNumber: PdfPhoneNumber,
     sender: PdfSender,
     surname: PdfSurname,

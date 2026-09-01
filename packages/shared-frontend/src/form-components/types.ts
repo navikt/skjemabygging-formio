@@ -14,10 +14,10 @@ type HandleAttachmentDownloadFile = (attachmentId: string, fileId: string, fileN
 
 /**
  * Component `type` literals handled by the summary registry: every
- * `FormComponentType` except the legacy Formio-only `formioTextArea` and
- * `password`. Unlike the input registry, this INCLUDES `panel` (SummaryPanel).
+ * `FormComponentType`. Unlike the input registry, this INCLUDES `panel`
+ * (SummaryPanel).
  */
-type SummaryComponentType = Exclude<FormComponentType, 'formioTextArea' | 'password'>;
+type SummaryComponentType = FormComponentType;
 
 interface SummaryRendererConfig {
   submissionMethod?: SubmissionMethod;

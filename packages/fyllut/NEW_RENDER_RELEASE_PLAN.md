@@ -62,7 +62,7 @@ approved new-render exception.
       text consistent.
 - [x] Use the shared new-render warning content after an invalid summary submit
       instead of also rendering the legacy sentence `Du må fullføre utfyllingen
-    før du kan fortsette`.
+  før du kan fortsette`.
 
 ## 3. Accessibility
 
@@ -153,8 +153,12 @@ Verified against Formio 4.20.0, the 246 published forms at
 
 Completed cleanup:
 
-- [x] Remove `formioTextArea` support from shared-frontend. It remains in
-      bygger, legacy Formio and backend PDF code where it is still used.
+- [x] Remove `formioTextArea` support from shared-frontend, shared-backend PDF
+      and `FormComponentType`. It remains in bygger and legacy Formio, where it
+      is used as an internal editor field, never as a NavForm component.
+- [x] Remove the unused `password` component (Formio component, PDF renderer and
+      `FormComponentType` entry). It was absent from the builder palette and from
+      every published form.
 - [x] Verify that shared-frontend has no radiopanel attachment adapter.
 
 ## 7. Test matrix

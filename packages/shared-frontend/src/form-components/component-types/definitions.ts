@@ -68,8 +68,8 @@ type DrivingListDefinition = BaseComponentDefinition & { type: 'drivinglist' };
 type TargetGroupDefinition = BaseComponentDefinition & { type: 'maalgruppe' };
 
 /**
- * Union of every component type that has a dedicated typed variant. Grows as
- * components are migrated; shrinks `GenericComponentDefinition` accordingly.
+ * Union of every component type. Must stay total over `FormComponentType`:
+ * adding a type there without a variant here is a compile error.
  */
 type TypedComponentDefinition =
   | AccordionDefinition

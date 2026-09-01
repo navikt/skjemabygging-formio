@@ -14,11 +14,10 @@ import { ComponentDefinitionByType } from './component-types';
 
 /**
  * Component `type` literals handled by the input registry. This is every
- * `FormComponentType` except the ones the new render never mounts as an input:
- * `formioTextArea` and `password` (legacy Formio-only) and `panel` (handled by
- * page/navigation, not the input registry).
+ * `FormComponentType` except `panel`, which is handled by page/navigation
+ * rather than the input registry.
  */
-type InputComponentType = Exclude<FormComponentType, 'formioTextArea' | 'password' | 'panel'>;
+type InputComponentType = Exclude<FormComponentType, 'panel'>;
 
 /**
  * Props for an input adapter. Parameterized by the adapter's component

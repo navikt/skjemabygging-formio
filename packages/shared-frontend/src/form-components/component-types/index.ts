@@ -1,12 +1,10 @@
 import { FormComponentType } from '@navikt/skjemadigitalisering-shared-domain';
 import { TypedComponentDefinition } from './definitions';
-import { GenericComponentDefinition } from './generic';
 
 /**
- * Total, discriminated union of every form component definition: the migrated
- * typed variants plus the `GenericComponentDefinition` fallback for anything not
- * yet migrated. This is the type the render registries and the shared-frontend
- * tree-walkers consume instead of the legacy `Component` god-interface.
+ * Total, discriminated union of every form component definition. This is the
+ * type the render registries and the shared-frontend tree-walkers consume
+ * instead of the legacy `Component` god-interface.
  *
  * Because it is total and distributive, `ComponentDefinitionByType<K>` resolves
  * to the exact variant for any component type `K`. Every member is structurally
@@ -15,10 +13,18 @@ import { GenericComponentDefinition } from './generic';
  * reverse direction - the single ingestion boundary that converts incoming form
  * JSON into `ComponentDefinition` - needs an explicit conversion.
  */
-type ComponentDefinition = TypedComponentDefinition | GenericComponentDefinition;
+type ComponentDefinition = TypedComponentDefinition;
 
 /** The typed definition for a given component `type` literal. */
 type ComponentDefinitionByType<K extends FormComponentType> = Extract<ComponentDefinition, { type: K }>;
+
+/**
+ * Compile-time guarantee that `ComponentDefinition` stays total over
+ * `FormComponentType`. Adding a type to `FORM_COMPONENT_TYPES` without a
+ * matching definition variant makes this fail to compile.
+ */
+type AssertNever<T extends never> = T;
+type NoUncoveredComponentTypes = AssertNever<Exclude<FormComponentType, ComponentDefinition['type']>>;
 
 export type { BaseComponentDefinition } from './base';
 export type {
@@ -65,5 +71,4 @@ export type {
   TypedComponentType,
   YearDefinition,
 } from './definitions';
-export type { GenericComponentDefinition } from './generic';
-export type { ComponentDefinition, ComponentDefinitionByType };
+export type { ComponentDefinition, ComponentDefinitionByType, NoUncoveredComponentTypes };
