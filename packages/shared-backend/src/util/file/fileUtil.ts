@@ -47,13 +47,13 @@ const createBlobFromUploadedFile = async (
   file: Pick<Express.Multer.File, 'buffer' | 'mimetype'> & { path?: Express.Multer.File['path'] },
 ) => {
   if (file.path) {
-    const resolvedUploadTempDirectory = await realpath(uploadTempDirectory);
-    const candidateFilePath = path.resolve(resolvedUploadTempDirectory, file.path);
-    const candidateRelativeFilePath = path.relative(resolvedUploadTempDirectory, candidateFilePath);
+    const candidateFilePath = path.resolve(uploadTempDirectory, file.path);
+    const candidateRelativeFilePath = path.relative(uploadTempDirectory, candidateFilePath);
     if (candidateRelativeFilePath.startsWith('..') || path.isAbsolute(candidateRelativeFilePath)) {
       throw new ResponseError('BAD_REQUEST', 'Invalid temporary upload path');
     }
 
+    const resolvedUploadTempDirectory = await realpath(uploadTempDirectory);
     const resolvedFilePath = await realpath(candidateFilePath);
     const relativeFilePath = path.relative(resolvedUploadTempDirectory, resolvedFilePath);
     if (relativeFilePath.startsWith('..') || path.isAbsolute(relativeFilePath)) {
