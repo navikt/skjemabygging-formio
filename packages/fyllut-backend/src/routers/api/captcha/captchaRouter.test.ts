@@ -41,6 +41,18 @@ const findInvalidSolution = (challenge: CaptchaChallenge): string => {
   }
 };
 
+// The address supertest connects from, after the IPv4-mapped IPv6 prefix is normalized away
+const CLIENT_ADDRESS = '127.0.0.1';
+
+const signChallenge = (
+  { nonce, difficulty, expiresAt }: Omit<CaptchaChallenge, 'signature'>,
+  clientAddress = CLIENT_ADDRESS,
+): string =>
+  crypto
+    .createHmac('sha256', config.captcha.hmacSecret)
+    .update(`${nonce}.${difficulty}.${expiresAt}.${clientAddress}`)
+    .digest('hex');
+
 describe('Captcha Handler Tests', () => {
   let app: Express;
   const defaultPowEnabled = config.captcha.powEnabled;
@@ -119,10 +131,7 @@ describe('Captcha Handler Tests', () => {
 
     it('fails when the challenge has expired', async () => {
       const expiresAt = Date.now() - 1000;
-      const signature = crypto
-        .createHmac('sha256', config.captcha.hmacSecret)
-        .update(`${challenge.nonce}.${challenge.difficulty}.${expiresAt}`)
-        .digest('hex');
+      const signature = signChallenge({ ...challenge, expiresAt });
       const expired = solveChallenge({ ...challenge, expiresAt, signature });
       await request(app)
         .post('/fyllut/api/captcha')
@@ -130,6 +139,30 @@ describe('Captcha Handler Tests', () => {
         .send({ firstName: '', ...expired })
         .expect('Content-Type', /json/)
         .expect(400);
+    });
+
+    it('binds the challenge to the client address, so a solution minted for another address is rejected', async () => {
+      const foreignChallenge = { ...challenge, signature: signChallenge(challenge, '203.0.113.10') };
+
+      await request(app)
+        .post('/fyllut/api/captcha')
+        .set('Origin', 'https://www.nav.no')
+        .send({ firstName: '', ...solveChallenge(foreignChallenge) })
+        .expect('Content-Type', /json/)
+        .expect(400);
+    });
+
+    it('accepts a challenge signed for the requesting client address', async () => {
+      const expiresAt = Date.now() + 60_000;
+      const nonce = crypto.randomBytes(16).toString('hex');
+      const selfSigned = { nonce, difficulty: challenge.difficulty, expiresAt };
+
+      await request(app)
+        .post('/fyllut/api/captcha')
+        .set('Origin', 'https://www.nav.no')
+        .send({ firstName: '', ...solveChallenge({ ...selfSigned, signature: signChallenge(selfSigned) }) })
+        .expect('Content-Type', /json/)
+        .expect(200);
     });
 
     it('fails if body is empty', async () => {

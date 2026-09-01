@@ -4,9 +4,9 @@ import { appMetrics, nologinTokenService } from '../../../services';
 import { createChallenge, verifySolution } from './challengeService';
 import { CaptchaError } from './types';
 
-const getChallenge: RequestHandler = async (_req, res, next) => {
+const getChallenge: RequestHandler = async (req, res, next) => {
   try {
-    res.json(createChallenge());
+    res.json(createChallenge(req.ip));
   } catch (err) {
     next(err);
   }
@@ -22,7 +22,7 @@ const post: RequestHandler = async (req, res, next) => {
     }
 
     if (config.captcha.powEnabled) {
-      const result = verifySolution(req.body);
+      const result = verifySolution(req.body, req.ip);
       if (!result.valid) {
         return next(new CaptchaError(result.reason));
       }
