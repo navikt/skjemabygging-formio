@@ -21,7 +21,8 @@ const AddressFields = ({ onChange, diff, form }: AddressFieldsProps) => {
   };
   return (
     <>
-      {submissionTypesUtils.isPaperSubmission(submissionTypes) && (
+      {(submissionTypesUtils.isPaperSubmission(submissionTypes) ||
+        submissionTypesUtils.isStaticPdf(submissionTypes)) && (
         <div>
           <Select
             className="mb-4"

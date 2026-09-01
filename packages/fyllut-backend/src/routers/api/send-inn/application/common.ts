@@ -10,6 +10,7 @@ import { applicationPdfService, applicationService, formService, translationServ
 import { mapToReceiptSummary } from '../../../../services/nologin/receiptMapper';
 import { LogMetadata } from '../../../../types/log';
 import { requireBase64Decode } from '../../../../utils/base64';
+import { createPdfFooterVersion } from '../../../../utils/pdfFooterVersion';
 import { assembleSubmitApplicationRequest } from '../../helpers/applicationUtils';
 
 export const generatePdfAndSubmit = async (
@@ -27,7 +28,7 @@ export const generatePdfAndSubmit = async (
 
   const form = await formService.getForm({
     formPath,
-    select: ['skjemanummer', 'title', 'path', 'properties', 'components', 'revision'],
+    select: ['skjemanummer', 'title', 'path', 'properties', 'components', 'publicationId', 'revision', 'status'],
   });
   const translations: FormsApiTranslationMap = await translationService.getTranslations({
     formPath,
@@ -46,7 +47,16 @@ export const generatePdfAndSubmit = async (
     language,
     translations,
     submissionMethod,
-    appConfig: { config: { gitVersion: config.gitVersion, isDelingslenke: config.isDelingslenke } },
+    appConfig: {
+      config: {
+        gitVersion: createPdfFooterVersion(form, {
+          envSlug: config.pdfFooterEnvSlug,
+          gitSha: config.gitSha,
+          monorepoGitSha: config.monorepoGitSha,
+        }),
+        isDelingslenke: config.isDelingslenke,
+      },
+    },
   });
   const applicationPdfBase64 = await applicationPdfService.createPdf({
     accessToken: pdfAccessToken,

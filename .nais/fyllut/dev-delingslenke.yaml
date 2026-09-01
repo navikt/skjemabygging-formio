@@ -20,6 +20,7 @@ kodeverk:
   url: https://kodeverk-api.nav.no
   scope: dev-gcp.team-rocket.kodeverk-api
 forms-source: "formsapi-staging"
+pdf-footer-env-slug: "delingslenke"
 nologin:
   token-lifetime-hours: 6
 captcha:
