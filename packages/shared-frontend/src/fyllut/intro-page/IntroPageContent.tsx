@@ -5,6 +5,7 @@ import { useSubmissionState } from '../../context/state/SubmissionStateContext';
 import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
 import { useFormActions } from '../context/form-actions/FormActionsContext';
 import { useNologinToken } from '../context/nologin-token/NologinTokenContext';
+import FormActionError from '../layout/FormActionError';
 import IntroPageButtonRow from './IntroPageButtonRow';
 import IntroPageDynamic from './IntroPageDynamic';
 import IntroPageStatic from './IntroPageStatic';
@@ -63,6 +64,7 @@ const IntroPage = ({ onStart }: Props) => {
       ) : (
         <IntroPageStatic submissionMethod={submissionMethod} tokenExpiration={tokenExpiration} translate={translate} />
       )}
+      <FormActionError />
       <IntroPageButtonRow onStart={handleStart} loading={status === 'saving'} />
     </>
   );

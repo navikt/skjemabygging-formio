@@ -14,12 +14,10 @@ import { inputId } from '../../utils/inputId';
 import { useAttachmentUpload } from '../attachments/context/AttachmentUploadContext';
 import { useFormActions } from '../context/form-actions/FormActionsContext';
 import { APPLICATION_DOWNLOAD_KEY, PAPER_SUBMISSION_KEY } from '../form-flow/constants';
+import FormActionError from '../layout/FormActionError';
 import { FormButtonRow, FormNextButton, FormPrevButton } from '../layout/FormButtonRow';
 import CancelAndDeleteButton from '../navigation/CancelAndDeleteButton';
 import SaveButton from '../navigation/SaveButton';
-
-const hasUserMessage = (error: unknown): error is { userMessage: string } =>
-  typeof error === 'object' && error !== null && 'userMessage' in error && typeof error.userMessage === 'string';
 
 interface Props {
   onBack: () => void;
@@ -34,7 +32,7 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
   const { form, panels } = useFormDefinition();
   const { submission } = useSubmissionState();
   const { getErrorsForPages, validatePages } = useValidation();
-  const { submit, status, error, canSubmit, canSaveDraft } = useFormActions();
+  const { submit, status, canSubmit, canSaveDraft } = useFormActions();
   const { handleDownloadFile } = useAttachmentUpload();
   const isNoSubmissionFlow =
     (!submissionMethod || submissionMethod === 'papernocoverpage') &&
@@ -56,11 +54,6 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
     submissionMethod === 'paper' || isNoSubmissionFlow
       ? TEXTS.grensesnitt.navigation.instructions
       : TEXTS.grensesnitt.navigation.sendToNav;
-  const submitErrorMessage = hasUserMessage(error)
-    ? error.userMessage
-    : error
-      ? TEXTS.statiske.error.serverErrorTitle
-      : undefined;
 
   const handleSubmit = () => {
     if (validatePages(validationPages).length > 0) {
@@ -122,7 +115,7 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
           onNavigateToError(error.pageKey, id);
         }}
       />
-      {submitErrorMessage && <Alert variant="error">{translate(submitErrorMessage)}</Alert>}
+      <FormActionError />
       <FormButtonRow
         cancelButton={<CancelAndDeleteButton />}
         previousButton={

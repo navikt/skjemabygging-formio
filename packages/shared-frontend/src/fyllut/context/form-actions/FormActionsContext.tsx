@@ -15,6 +15,7 @@ interface FormActionsContextValue {
   submit: () => Promise<void>;
   status: FormActionStatus;
   error?: unknown;
+  clearError: () => void;
   canSaveDraft: boolean;
   canSubmit: boolean;
 }
@@ -87,16 +88,19 @@ const FormActionsProvider = ({ children, save: saveHandler, submit: submitHandle
     }
   }, [getLatestSubmission, submitHandler]);
 
+  const clearError = useCallback(() => setError(undefined), []);
+
   const value = useMemo(
     () => ({
       saveDraft,
       submit,
       status,
       error,
+      clearError,
       canSaveDraft: !!saveHandler,
       canSubmit: !!submitHandler,
     }),
-    [saveDraft, submit, status, error, saveHandler, submitHandler],
+    [saveDraft, submit, status, error, clearError, saveHandler, submitHandler],
   );
 
   return <FormActionsContext.Provider value={value}>{children}</FormActionsContext.Provider>;

@@ -10,7 +10,7 @@ import { getExitUrl } from './navUrls';
 const SaveButton = ({ showError = true }: { showError?: boolean }) => {
   const { translate } = useLanguage();
   const { submission } = useSubmissionState();
-  const { saveDraft } = useFormActions();
+  const { saveDraft, clearError } = useFormActions();
   const [saveModalOpen, setSaveModalOpen] = useState(false);
   const [saveError, setSaveError] = useState<string>();
   const deletionDate = submission?.fyllutState?.mellomlagring?.deletionDate ?? '';
@@ -22,6 +22,9 @@ const SaveButton = ({ showError = true }: { showError?: boolean }) => {
 
     if (!(await saveDraft())) {
       if (showError) {
+        // This button surfaces the failure in its own modal, so clear the shared action error to
+        // avoid rendering the same message twice (e.g. alongside FormActionError on a form page).
+        clearError();
         setSaveError(TEXTS.statiske.mellomlagringError.update.message);
       } else {
         setSaveModalOpen(false);

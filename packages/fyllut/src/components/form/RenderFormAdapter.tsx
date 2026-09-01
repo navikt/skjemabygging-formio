@@ -7,8 +7,9 @@ import {
   RenderFormProps,
   RuntimeServices,
 } from '@navikt/skjemadigitalisering-shared-frontend';
-import { useLocation } from 'react-router';
-import { getAvailableLanguages, getCurrentLanguage } from './newRendererLanguageUtils';
+import { useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router';
+import { getAvailableLanguages, resolveActiveLanguage } from './newRendererLanguageUtils';
 
 type Props = Omit<RenderFormProps, 'fyllut' | 'language' | 'services' | 'submissionMethod'> & {
   initialLanguage?: TranslationLang;
@@ -23,12 +24,23 @@ const RenderFormAdapter = ({ form, initialLanguage, services, translations, ...p
     throw new Error('fyllutBaseURL is required to render the new fyllut form flow.');
   }
 
-  const { search } = useLocation();
+  const { pathname, search } = useLocation();
+  const navigate = useNavigate();
   const availableLanguages = getAvailableLanguages(form, translations);
-  const currentLanguage =
-    initialLanguage && availableLanguages.includes(initialLanguage)
-      ? initialLanguage
-      : getCurrentLanguage(search, availableLanguages);
+  const hasLanguageParam = new URLSearchParams(search).has('lang');
+  const seedLanguage = initialLanguage && availableLanguages.includes(initialLanguage) ? initialLanguage : undefined;
+  const currentLanguage = resolveActiveLanguage(search, availableLanguages, initialLanguage);
+
+  // Seed the URL with the draft language on first load so it stays authoritative across refreshes.
+  useEffect(() => {
+    if (hasLanguageParam || !seedLanguage) {
+      return;
+    }
+    const nextParams = new URLSearchParams(search);
+    nextParams.set('lang', seedLanguage);
+    navigate({ pathname, search: `?${nextParams.toString()}` }, { replace: true });
+  }, [hasLanguageParam, navigate, pathname, search, seedLanguage]);
+
   const fyllut: FyllutContextValue = {
     fyllutBaseUrl,
     isLoggedIn: appConfig.config?.isLoggedIn,

@@ -31,4 +31,21 @@ const getCurrentLanguage = (search: string, availableLanguages: TranslationLang[
   return availableLanguages.includes(normalizedLanguage) ? normalizedLanguage : 'nb';
 };
 
-export { getAvailableLanguages, getCurrentLanguage };
+/**
+ * The URL is the single source of truth for the active language so the language selector and
+ * `?lang` deep links always take effect. A draft language (`initialLanguage`) only seeds the
+ * language on first load, when no `lang` param is present yet.
+ */
+const resolveActiveLanguage = (
+  search: string,
+  availableLanguages: TranslationLang[],
+  initialLanguage?: TranslationLang,
+): TranslationLang => {
+  if (new URLSearchParams(search).has('lang')) {
+    return getCurrentLanguage(search, availableLanguages);
+  }
+
+  return initialLanguage && availableLanguages.includes(initialLanguage) ? initialLanguage : 'nb';
+};
+
+export { getAvailableLanguages, getCurrentLanguage, resolveActiveLanguage };

@@ -54,8 +54,9 @@ const collectTargets = (
 
 /**
  * Calculated components, expanded per data grid row so every row is calculated with its own indexed
- * submission path. Only visible row components are included, because hidden values are removed
- * again by the clear-on-hide handling.
+ * submission path. `formComponents` and `scope.activeComponents` must both be the *active* (visible)
+ * components only: hidden values are removed again by the clear-on-hide handling, so calculating
+ * them here would ping-pong against that effect and never settle.
  */
 const collectCalculationTargets = ({
   formComponents,

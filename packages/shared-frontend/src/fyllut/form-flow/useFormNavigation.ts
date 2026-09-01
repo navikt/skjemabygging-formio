@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useValidation } from '../../context/validation/ValidationContext';
 import { withoutSubmissionNavigationState } from '../../utils/navigationState';
-import { INTRO_KEY, SUMMARY_KEY } from './constants';
+import { SUMMARY_KEY } from './constants';
 
 interface FormNavigationState {
   focusId?: string;
@@ -66,20 +66,7 @@ const useFormNavigation = (from: StepKind) => {
     [buildState, hideSummary, navigate, prefix, search],
   );
 
-  const onStepClick = useCallback(
-    (key: string) => {
-      if (key === INTRO_KEY) {
-        goToIntro();
-      } else if (key === SUMMARY_KEY) {
-        goToSummary();
-      } else {
-        goToPanel(key);
-      }
-    },
-    [goToIntro, goToPanel, goToSummary],
-  );
-
-  return { goToIntro, goToPanel, goToSummary, goToError, onStepClick };
+  return { goToIntro, goToPanel, goToSummary, goToError };
 };
 
 export { useFormNavigation };

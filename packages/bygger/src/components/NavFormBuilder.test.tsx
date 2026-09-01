@@ -1,5 +1,5 @@
 import { NavFormioJs } from '@navikt/skjemadigitalisering-shared-components';
-import { cleanup, render, screen, waitFor, within } from '@testing-library/react';
+import { act, cleanup, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import createMockImplementation, { DEFAULT_PROJECT_URL } from '../../test/backendMockImplementation';
 import NavFormBuilder from './NavFormBuilder';
@@ -37,10 +37,15 @@ describe('NavFormBuilder', () => {
   });
 
   afterEach(async () => {
-    fetchMock.resetMocks();
-    vi.restoreAllMocks();
     cleanup();
     await waitFor(() => Object.keys((NavFormioJs.Formio as any).forms).length === 0);
+    // Formio select components schedule item loading with a 100ms debounce. Drain it here,
+    // otherwise it can resolve after the test environment is torn down and crash the test run.
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 250));
+    });
+    fetchMock.resetMocks();
+    vi.restoreAllMocks();
   });
 
   describe('mounting', () => {

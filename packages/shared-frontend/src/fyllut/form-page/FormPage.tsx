@@ -11,6 +11,7 @@ import { inputComponentRegistry } from '../../form-components/inputComponentRegi
 import FyllutInputAttachment from '../attachments/components/FyllutInputAttachment';
 import { useFormActions } from '../context/form-actions/FormActionsContext';
 import { useFormNavigation } from '../form-flow/useFormNavigation';
+import FormActionError from '../layout/FormActionError';
 import { FormButtonRow, FormNextButton, FormPrevButton } from '../layout/FormButtonRow';
 import CancelAndDeleteButton from '../navigation/CancelAndDeleteButton';
 import SaveButton from '../navigation/SaveButton';
@@ -127,6 +128,7 @@ const FormPage = () => {
           }
         }}
       />
+      <FormActionError />
       <FormButtonRow
         cancelButton={<CancelAndDeleteButton />}
         previousButton={
