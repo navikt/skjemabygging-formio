@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { Component, Form, SubmissionData } from '../../models';
-import { navFormPartyAdapter } from './navFormPartyAdapter';
+import { formPartyAdapter } from './formPartyAdapter';
 
 const FNR = '01010101006';
 
@@ -21,9 +21,9 @@ const norwegianAddress = {
   bySted: 'Oslo',
 };
 
-const getParty = (navForm: Form, data: SubmissionData) => navFormPartyAdapter.getNavFormParty(navForm, data);
+const getParty = (formDef: Form, data: SubmissionData) => formPartyAdapter.getFormParty(formDef, data);
 
-describe('navFormPartyAdapter', () => {
+describe('formPartyAdapter', () => {
   describe('parties the model can express', () => {
     it('reads an identified applicant as sending about themselves', () => {
       expect(getParty(yourInformationForm, { yourInformation: { identitet: { identitetsnummer: FNR } } })).toEqual({
@@ -178,8 +178,8 @@ describe('navFormPartyAdapter', () => {
     });
 
     it('routes a cover page organization number to the legacy path', () => {
-      const navForm = form([{ key: 'orgNr', type: 'orgNr', coverPageUser: true }]);
-      expect(getParty(navForm, { orgNr: '889640782' })).toEqual({ type: 'legacy', reason: 'incompleteParty' });
+      const formDef = form([{ key: 'orgNr', type: 'orgNr', coverPageUser: true }]);
+      expect(getParty(formDef, { orgNr: '889640782' })).toEqual({ type: 'legacy', reason: 'incompleteParty' });
     });
   });
 });

@@ -14,7 +14,7 @@ import {
   Form,
   formatUtils,
   I18nTranslationMap,
-  navFormPartyAdapter,
+  formPartyAdapter,
   navFormUtils,
   senderUtils,
   Submission,
@@ -101,11 +101,11 @@ const removeSpaces = (value?: string): string | undefined => (value ? formatUtil
  * shapes a party cannot express.
  */
 const extractParties = (form: Form, submission: Submission): SubmissionPartyProjection => {
-  const navFormParty = navFormPartyAdapter.getNavFormParty(form, submission.data, {
+  const formParty = formPartyAdapter.getFormParty(form, submission.data, {
     allowSyntheticIdentityNumbers: naisClusterUtil.allowSyntheticIdentityNumbers(config.naisClusterName),
   });
-  if (navFormParty.type === 'party') {
-    return partyProjections.toSubmissionParties(navFormParty.party);
+  if (formParty.type === 'party') {
+    return partyProjections.toSubmissionParties(formParty.party);
   }
   const bruker = extractBruker(form, submission);
   const avsender =

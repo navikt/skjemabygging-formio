@@ -1,5 +1,4 @@
 import { Address } from '../address';
-import { ComponentValue } from '../form';
 
 interface PersonName {
   readonly firstName: string;
@@ -86,18 +85,6 @@ type Party =
 
 type PartyOn = Party['on'];
 
-/**
- * A party under construction. Mirrors {@link Party} with every field optional, so a form can hold a
- * half-filled party without a second set of hand-written types drifting from the real model.
- */
-type Draft<T> = T extends ComponentValue | string | number | boolean
-  ? T
-  : T extends object
-    ? { readonly [K in keyof T]?: Draft<T[K]> }
-    : T;
-
-type PartyDraft = Draft<Party>;
-
 type PartyErrorCode = 'required' | 'invalid' | 'notAllowed';
 
 interface PartyError {
@@ -110,14 +97,12 @@ type Parsed<T> =
 
 export type {
   ConcernedUser,
-  Draft,
   IdentifiedPerson,
   NamedPerson,
   NavUnit,
   Organization,
   Parsed,
   Party,
-  PartyDraft,
   PartyError,
   PartyErrorCode,
   PartyOn,

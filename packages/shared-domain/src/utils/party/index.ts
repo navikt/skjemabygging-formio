@@ -1,2 +1,2 @@
-export * from './navFormPartyAdapter';
+export * from './formPartyAdapter';
 export * from './partyUtils';

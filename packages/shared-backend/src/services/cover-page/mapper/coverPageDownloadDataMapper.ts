@@ -11,7 +11,7 @@ import {
   SubmissionType,
   TranslationLang,
   formatUtils,
-  navFormPartyAdapter,
+  formPartyAdapter,
   navFormUtils,
   yourInformationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
@@ -174,11 +174,11 @@ const getSubmissionUserData = (form: Form, submission: SubmissionData): CoverPag
  * shapes a party cannot express.
  */
 const getCoverPageParties = (form: Form, submission: SubmissionData): CoverPagePartyProjection => {
-  const navFormParty = navFormPartyAdapter.getNavFormParty(form, submission, {
+  const formParty = formPartyAdapter.getFormParty(form, submission, {
     allowSyntheticIdentityNumbers: naisClusterUtil.allowSyntheticIdentityNumbers(),
   });
-  return navFormParty.type === 'party'
-    ? partyProjections.toCoverPageParties(navFormParty.party)
+  return formParty.type === 'party'
+    ? partyProjections.toCoverPageParties(formParty.party)
     : { user: getSubmissionUserData(form, submission) };
 };
 
