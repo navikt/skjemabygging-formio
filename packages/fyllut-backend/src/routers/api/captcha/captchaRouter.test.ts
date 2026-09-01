@@ -196,6 +196,52 @@ describe('Captcha Handler Tests', () => {
     });
   });
 
+  describe('Client address binding through the ingress', () => {
+    const CLIENT_IP = '203.0.113.5';
+    const OTHER_IP = '198.51.100.7';
+
+    beforeEach(() => {
+      config.captcha.powEnabled = true;
+      config.captcha.powDifficulty = 8;
+    });
+
+    const fetchChallengeAs = async (forwardedFor: string): Promise<CaptchaChallenge> => {
+      const response = await request(app)
+        .get('/fyllut/api/captcha/challenge')
+        .set('X-Forwarded-For', forwardedFor)
+        .expect(200);
+      return response.body;
+    };
+
+    const submitAs = (forwardedFor: string, solution: CaptchaSolution) =>
+      request(app)
+        .post('/fyllut/api/captcha')
+        .set('Origin', 'https://www.nav.no')
+        .set('X-Forwarded-For', forwardedFor)
+        .send({ firstName: '', ...solution });
+
+    it('accepts a solution submitted from the address the challenge was issued to', async () => {
+      const solved = solveChallenge(await fetchChallengeAs(CLIENT_IP));
+      await submitAs(CLIENT_IP, solved).expect(200);
+    });
+
+    it('rejects a solution replayed from another address', async () => {
+      const solved = solveChallenge(await fetchChallengeAs(CLIENT_IP));
+      await submitAs(OTHER_IP, solved).expect(400);
+    });
+
+    it('uses the address added by the ingress, ignoring an existing X-Forwarded-For prefix', async () => {
+      const solved = solveChallenge(await fetchChallengeAs(CLIENT_IP));
+      await submitAs(`${OTHER_IP}, ${CLIENT_IP}`, solved).expect(200);
+    });
+
+    it('does not let a prepended X-Forwarded-For entry impersonate another address', async () => {
+      const solved = solveChallenge(await fetchChallengeAs(CLIENT_IP));
+      // The challenge belongs to CLIENT_IP, but the request arrives from OTHER_IP through the ingress
+      await submitAs(`${CLIENT_IP}, ${OTHER_IP}`, solved).expect(400);
+    });
+  });
+
   // TODO: remove old data_33 flow after PoW confirmed stable in production
   describe('Legacy flow (CAPTCHA_USE_POW disabled)', () => {
     const validCaptchaData = { firstName: '', data_33: 'ja' };
