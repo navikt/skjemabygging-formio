@@ -20,6 +20,7 @@ kodeverk:
   url: https://kodeverk-api.nav.no
   scope: dev-gcp.team-rocket.kodeverk-api
 forms-source: "static"
+pdf-footer-env-slug: "dev"
 nologin:
   token-lifetime-hours: 6
 azure:
