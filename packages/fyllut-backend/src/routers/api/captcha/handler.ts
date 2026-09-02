@@ -2,7 +2,7 @@ import { RequestHandler } from 'express';
 import { config } from '../../../config/config';
 import { appMetrics, nologinTokenService } from '../../../services';
 import { createChallenge, verifySolution } from './challengeService';
-import { CaptchaError } from './types';
+import { CAPTCHA_FAILURE_REASON, CaptchaError } from './types';
 
 const getChallenge: RequestHandler = async (req, res, next) => {
   try {
@@ -18,7 +18,7 @@ const post: RequestHandler = async (req, res, next) => {
     const { firstName, data_33 } = req.body;
 
     if (firstName) {
-      return next(new CaptchaError('Honeypot was filled in'));
+      return next(new CaptchaError(CAPTCHA_FAILURE_REASON.HONEYPOT_FILLED));
     }
 
     if (config.captcha.powEnabled) {
@@ -28,7 +28,7 @@ const post: RequestHandler = async (req, res, next) => {
       }
     } else if (data_33 !== 'ja') {
       // TODO: remove old data_33 flow after PoW confirmed stable in production
-      return next(new CaptchaError('Unexpected legacy captcha body'));
+      return next(new CaptchaError(CAPTCHA_FAILURE_REASON.UNEXPECTED_LEGACY_BODY));
     }
 
     const token = nologinTokenService.generateToken();

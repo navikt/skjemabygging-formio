@@ -5,7 +5,8 @@ import request from 'supertest';
 import { createApp } from '../../../app';
 import { config } from '../../../config/config';
 import { logger } from '../../../logger';
-import { CaptchaChallenge, CaptchaSolution } from './types';
+import { appMetrics } from '../../../services';
+import { CAPTCHA_FAILURE_REASON, CaptchaChallenge, CaptchaSolution } from './types';
 
 const solutionIsValid = (challenge: CaptchaChallenge, solution: string): boolean => {
   const digest = crypto.createHash('sha256').update(`${challenge.nonce}:${solution}`).digest();
@@ -115,6 +116,7 @@ describe('Captcha Handler Tests', () => {
 
     it('fails when the signature has been tampered with', async () => {
       const logInfo = vi.spyOn(logger, 'info');
+      const captchaFailuresCounterInc = vi.spyOn(appMetrics.nologinCaptchaFailuresCounter, 'inc');
       const tampered = solveChallenge({ ...challenge, difficulty: 1 });
       await request(app)
         .post('/fyllut/api/captcha')
@@ -124,12 +126,16 @@ describe('Captcha Handler Tests', () => {
         .expect(400);
 
       expect(logInfo).toHaveBeenCalledWith('Captcha validation failed', { reason: 'Invalid challenge signature' });
+      expect(captchaFailuresCounterInc).toHaveBeenCalledWith({
+        reason: CAPTCHA_FAILURE_REASON.INVALID_CHALLENGE_SIGNATURE,
+      });
       expect(JSON.stringify(logInfo.mock.calls)).not.toContain(tampered.nonce);
       expect(JSON.stringify(logInfo.mock.calls)).not.toContain(tampered.signature);
       expect(JSON.stringify(logInfo.mock.calls)).not.toContain(tampered.solution);
     });
 
     it('fails when the challenge has expired', async () => {
+      const captchaFailuresCounterInc = vi.spyOn(appMetrics.nologinCaptchaFailuresCounter, 'inc');
       const expiresAt = Date.now() - 1000;
       const signature = signChallenge({ ...challenge, expiresAt });
       const expired = solveChallenge({ ...challenge, expiresAt, signature });
@@ -139,6 +145,10 @@ describe('Captcha Handler Tests', () => {
         .send({ firstName: '', ...expired })
         .expect('Content-Type', /json/)
         .expect(400);
+
+      expect(captchaFailuresCounterInc).toHaveBeenCalledWith({
+        reason: CAPTCHA_FAILURE_REASON.CHALLENGE_EXPIRED,
+      });
     });
 
     it('binds the challenge to the client address, so a solution minted for another address is rejected', async () => {

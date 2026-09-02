@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import { config } from '../../../config/config';
-import { CaptchaChallenge, CaptchaSolution } from './types';
+import { CAPTCHA_FAILURE_REASON, CaptchaChallenge, CaptchaFailureReason, CaptchaSolution } from './types';
 
 const MAX_SOLUTION_LENGTH = 64;
 
@@ -86,19 +86,22 @@ const isCaptchaSolution = (body: any): body is CaptchaSolution =>
  * on multiple pods without shared memory. Replay is instead constrained by the short challenge ttl,
  * the rate limiter, the client address bound into the signature and the cost of solving the proof of work.
  */
-const verifySolution = (body: any, clientAddress?: string): { valid: true } | { valid: false; reason: string } => {
+const verifySolution = (
+  body: any,
+  clientAddress?: string,
+): { valid: true } | { valid: false; reason: CaptchaFailureReason } => {
   if (!isCaptchaSolution(body)) {
-    return { valid: false, reason: 'Missing or invalid challenge fields' };
+    return { valid: false, reason: CAPTCHA_FAILURE_REASON.INVALID_CHALLENGE_FIELDS };
   }
   if (!signatureIsValid(body, clientAddress)) {
     // Also covers a challenge solved for a different client address
-    return { valid: false, reason: 'Invalid challenge signature' };
+    return { valid: false, reason: CAPTCHA_FAILURE_REASON.INVALID_CHALLENGE_SIGNATURE };
   }
   if (body.expiresAt < Date.now()) {
-    return { valid: false, reason: 'Challenge has expired' };
+    return { valid: false, reason: CAPTCHA_FAILURE_REASON.CHALLENGE_EXPIRED };
   }
   if (!solutionIsValid(body.nonce, body.difficulty, body.solution)) {
-    return { valid: false, reason: 'Invalid proof of work solution' };
+    return { valid: false, reason: CAPTCHA_FAILURE_REASON.INVALID_PROOF_OF_WORK };
   }
   return { valid: true };
 };
