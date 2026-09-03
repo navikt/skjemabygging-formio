@@ -39,11 +39,14 @@ const truncate = (text, boundary) => {
 
 const capitalize = (str) => str[0].toUpperCase() + str.slice(1);
 
+const normalizeUnicode = (str: string) => str.normalize('NFC');
+
 const stringUtils = {
   camelCase,
   toPascalCase,
   addPrefixOrPostfix,
   truncate,
   capitalize,
+  normalizeUnicode,
 };
 export { stringUtils };
