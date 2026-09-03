@@ -126,4 +126,94 @@ describe('coverPageDownloadDataMapper', () => {
       navUnit: '9999',
     });
   });
+
+  it('prefers your information over an organization-number cover-page user', () => {
+    const actual = coverPageDownloadDataMapper.createDownloadDataFromSubmission(
+      {
+        ...formWithAttachments,
+        components: [
+          ...formWithAttachments.components,
+          {
+            type: 'orgNr',
+            key: 'organizationNumber',
+            coverPageUser: true,
+          },
+        ],
+      },
+      {
+        data: {
+          yourInformation: {
+            identitet: { identitetsnummer: '123 456 789 11' },
+          },
+          organizationNumber: '889 640 782',
+        },
+      } as Submission,
+    );
+
+    expect(actual.user).toEqual({ nationalIdentityNumber: '123 456 789 11' });
+  });
+
+  it('preserves flat legacy person fields and address precedence', () => {
+    const actual = coverPageDownloadDataMapper.createDownloadDataFromSubmission(
+      {
+        ...formWithAttachments,
+        components: [],
+      },
+      {
+        data: {
+          fornavnSoker: 'Legacy',
+          etternavnSoker: 'User',
+          gateadresseSoker: 'Flat street',
+          postnrSoker: '1111',
+          poststedSoker: 'Flat town',
+          norskVegadresse: {
+            vegadresseSoker: 'Nested street',
+            postnrSoker: '2222',
+            poststedSoker: 'Nested town',
+          },
+        },
+      } as Submission,
+    );
+
+    expect(actual.user).toEqual({
+      firstName: 'Legacy',
+      surname: 'User',
+      address: expect.objectContaining({
+        streetAddress: 'Nested street',
+        postalCode: '2222',
+        postalName: 'Nested town',
+      }),
+    });
+  });
+
+  it('rejects a name-only user without an address', () => {
+    expect(() =>
+      coverPageDownloadDataMapper.createDownloadDataFromSubmission(
+        formWithAttachments,
+        {
+          data: {
+            yourInformation: {
+              fornavn: 'Name',
+              etternavn: 'Only',
+            },
+          },
+        } as Submission,
+      ),
+    ).toThrow('User needs to submit either identification number or address');
+  });
+
+  it('forwards an identity value without stricter validation or normalization', () => {
+    const actual = coverPageDownloadDataMapper.createDownloadDataFromSubmission(
+      formWithAttachments,
+      {
+        data: {
+          yourInformation: {
+            identitet: { identitetsnummer: 'not valid' },
+          },
+        },
+      } as Submission,
+    );
+
+    expect(actual.user).toEqual({ nationalIdentityNumber: 'not valid' });
+  });
 });
