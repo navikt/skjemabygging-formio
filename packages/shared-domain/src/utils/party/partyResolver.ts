@@ -40,6 +40,7 @@ interface PartyRuntimeContext {
 }
 
 type PartyResolutionErrorCode =
+  | 'invalid-relationship'
   | 'missing-relationship'
   | 'missing-user'
   | 'missing-user-address'
@@ -65,6 +66,9 @@ type PartyResolution =
     };
 
 const normalizeIdentifier = (value: string) => value.replace(/\s/g, '');
+const isText = (value: unknown): value is string => typeof value === 'string' && value.length > 0;
+const isPartyAddress = (value: unknown): value is PartyAddress =>
+  typeof value === 'object' && value !== null && !Array.isArray(value);
 
 const resolveConcernedPerson = (
   value: UserValue | undefined,
@@ -77,7 +81,9 @@ const resolveConcernedPerson = (
     return { success: false, error: 'unsupported-user' };
   }
 
-  const nationalIdentityNumber = normalizeIdentifier(value.nationalIdentityNumber ?? '');
+  const nationalIdentityNumber = normalizeIdentifier(
+    typeof value.nationalIdentityNumber === 'string' ? value.nationalIdentityNumber : '',
+  );
   if (nationalIdentityNumber) {
     return {
       success: true,
@@ -88,11 +94,11 @@ const resolveConcernedPerson = (
     };
   }
 
-  if (!value.firstName || !value.surname) {
+  if (!isText(value.firstName) || !isText(value.surname)) {
     return { success: false, error: 'missing-user-name' };
   }
 
-  if (!value.address) {
+  if (!isPartyAddress(value.address)) {
     return { success: false, error: 'missing-user-address' };
   }
 
@@ -115,12 +121,13 @@ const resolveResponsiblePerson = (
     return { success: false, error: 'missing-sender' };
   }
 
-  if (!value.firstName || !value.surname) {
+  if (!isText(value.firstName) || !isText(value.surname)) {
     return { success: false, error: 'missing-sender-name' };
   }
 
   const nationalIdentityNumber = normalizeIdentifier(
-    context.verifiedActor?.nationalIdentityNumber ?? value.nationalIdentityNumber ?? '',
+    context.verifiedActor?.nationalIdentityNumber ??
+      (typeof value.nationalIdentityNumber === 'string' ? value.nationalIdentityNumber : ''),
   );
   if (!nationalIdentityNumber) {
     return { success: false, error: 'missing-sender-identity' };
@@ -143,11 +150,13 @@ const resolveOrganization = (
     return { success: false, error: 'missing-organization' };
   }
 
-  if (!value.name) {
+  if (!isText(value.name)) {
     return { success: false, error: 'missing-organization-name' };
   }
 
-  const organizationNumber = normalizeIdentifier(value.organizationNumber ?? '');
+  const organizationNumber = normalizeIdentifier(
+    typeof value.organizationNumber === 'string' ? value.organizationNumber : '',
+  );
   if (!organizationNumber) {
     return { success: false, error: 'missing-organization-number' };
   }
@@ -201,6 +210,9 @@ const resolveParty = (
   const relationship = lookup.relationship(submission);
   if (!relationship) {
     return { success: false, error: 'missing-relationship' };
+  }
+  if (!['self', 'other-person', 'organization'].includes(relationship)) {
+    return { success: false, error: 'invalid-relationship' };
   }
 
   const userValue = lookup.user(submission);

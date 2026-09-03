@@ -1,8 +1,9 @@
 export { createActiveTaskService } from './active-task';
 export type { ActiveTask, ActiveTaskService } from './active-task';
-export { createApplicationService } from './application';
+export { createApplicationService, mapPartyToApplication } from './application';
 export type {
   ApplicationMetrics,
+  ApplicationPartyData,
   ApplicationService,
   ApplicationType,
   Attachment,

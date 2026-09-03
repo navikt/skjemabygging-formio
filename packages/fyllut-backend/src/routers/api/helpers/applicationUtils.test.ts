@@ -26,14 +26,7 @@ const form = {
 } as unknown as Form;
 
 const assemble = (data: Submission['data']) =>
-  assembleSubmitApplicationRequest(
-    '21ed0008-ec72-4c90-8b44-165d3c265da9',
-    form,
-    { data },
-    'nb',
-    [],
-    (text) => text,
-  );
+  assembleSubmitApplicationRequest('21ed0008-ec72-4c90-8b44-165d3c265da9', form, { data }, 'nb', [], (text) => text);
 
 describe('assembleSubmitApplicationRequest party compatibility', () => {
   it('maps an identified person acting on their own behalf', () => {
@@ -143,5 +136,68 @@ describe('assembleSubmitApplicationRequest party compatibility', () => {
 
     expect(request.bruker).toBe('notvalid');
     expect(request.avsender).toBeUndefined();
+  });
+
+  it('preserves the flat identity fallback when your-information also contains an address', () => {
+    const request = assemble({
+      yourInformation: {
+        fornavn: 'Legacy',
+        etternavn: 'User',
+        adresse: { adresse: 'Testveien 1' },
+      },
+      fodselsnummerDNummerSoker: '123 456 789 11',
+    });
+
+    expect(request.bruker).toBe('12345678911');
+    expect(request.avsender).toBeUndefined();
+  });
+
+  it('preserves a complete sender when the concerned user is missing', () => {
+    const request = assemble({
+      sender: {
+        person: {
+          firstName: 'Sender',
+          surname: 'Sendersen',
+          nationalIdentityNumber: '109 876 543 21',
+        },
+      },
+    });
+
+    expect(request.bruker).toBeUndefined();
+    expect(request.avsender).toEqual({
+      id: '10987654321',
+      idType: 'FNR',
+      navn: 'Sender Sendersen',
+    });
+  });
+
+  it('preserves an incomplete organization sender', () => {
+    const request = assemble({
+      yourInformation: {
+        identitet: { identitetsnummer: '12345678911' },
+      },
+      sender: {
+        organization: {
+          name: 'Organization without number',
+        },
+      },
+    });
+
+    expect(request.bruker).toBe('12345678911');
+    expect(request.avsender).toEqual({
+      id: undefined,
+      idType: 'ORGNR',
+      navn: 'Organization without number',
+    });
+  });
+
+  it('does not introduce application support for flat unidentified user fields', () => {
+    expect(() =>
+      assemble({
+        fornavnSoker: 'Legacy',
+        etternavnSoker: 'User',
+        gateadresseSoker: 'Testveien 1',
+      }),
+    ).toThrow('Could not find user nor sender');
   });
 });

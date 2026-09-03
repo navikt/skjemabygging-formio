@@ -118,6 +118,8 @@ const getLegacyAddress = (submission: LegacySubmission) => {
 };
 
 const getSubmissionUserData = (form: Form, submission: SubmissionData): CoverPageUser => {
+  // This remains the fyllut compatibility mapper until #2186 and #2187 are complete and historical identity
+  // formatting can be normalized without changing existing cover-page requests.
   const yourInformation = yourInformationUtils.getYourInformation(form, submission);
 
   if (!yourInformation) {

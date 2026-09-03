@@ -1,17 +1,21 @@
 import {
+  ApplicationPartyData,
   Attachment,
   AvsenderId,
   BrukerDto,
+  mapPartyToApplication,
   OpplastingsStatus,
   SubmitApplicationRequest,
 } from '@navikt/skjemadigitalisering-shared-backend';
 import {
   AttachmentSettingValues,
   Component,
+  createFyllutPartyLookup,
   Form,
   formatUtils,
   I18nTranslationMap,
   navFormUtils,
+  resolveParty,
   senderUtils,
   Submission,
   TranslationLang,
@@ -30,16 +34,14 @@ const assembleSubmitApplicationRequest = (
 ): SubmitApplicationRequest => {
   const activeAttachments: Component[] =
     navFormUtils.getActiveAttachmentPanelFromForm(form, submission)?.components ?? [];
-  const bruker = extractBruker(form, submission);
-  const avsender =
-    extractAvsender(form, submission) ?? (bruker ? undefined : extractAvsenderFromYourInformation(form, submission));
+  const { bruker, avsender } = extractApplicationParty(form, submission);
 
   if (!bruker && !avsender) {
     throw new Error(`${innsendingsId}: Could not find user nor sender from nologin submission (formPath=${form.path})`);
   }
 
   return {
-    ...(bruker && { bruker: bruker.id?.replace(/\s/g, '') }),
+    ...(bruker && { bruker: bruker.replace(/\s/g, '') }),
     ...(avsender && { avsender }),
     formNumber: form.properties.skjemanummer,
     title: translate(form.title),
@@ -76,6 +78,64 @@ const assembleSubmitApplicationRequest = (
         }) ?? [],
     otherUploadAvailable: activeAttachments.some((a) => a.attachmentType === 'other'),
   };
+};
+
+const extractApplicationParty = (form: Form, submission: Submission): ApplicationPartyData => {
+  const resolution = resolveParty(submission, createFyllutPartyLookup(form, { legacyIdentityFallback: true }));
+  if (resolution.success && isEquivalentFyllutApplicationSource(form, submission)) {
+    return mapPartyToApplication(resolution.party);
+  }
+
+  const bruker = extractBruker(form, submission);
+  const avsender =
+    extractAvsender(form, submission) ?? (bruker ? undefined : extractAvsenderFromYourInformation(form, submission));
+
+  if (resolution.success) {
+    // Retire with #2186. Flat legacy concerned-user fields are not read by the existing application target mapping.
+    return { bruker: bruker?.id, avsender };
+  }
+
+  if (isFyllutApplicationCompatibilityCase(form, submission, resolution.error)) {
+    return { bruker: bruker?.id, avsender };
+  }
+
+  return {};
+};
+
+const isEquivalentFyllutApplicationSource = (form: Form, submission: Submission): boolean =>
+  !!yourInformationUtils.getYourInformation(form, submission.data) || !!submission.data.fodselsnummerDNummerSoker;
+
+const isFyllutApplicationCompatibilityCase = (form: Form, submission: Submission, resolutionError: string): boolean => {
+  const sender = senderUtils.getSender(form, submission.data);
+  const yourInformation = yourInformationUtils.getYourInformation(form, submission.data);
+
+  // Retire with #2186 once flat sender fields are absent from production and resumable submissions.
+  if (submission.data.fornavnAvsender || submission.data.etternavnAvsender) {
+    return true;
+  }
+
+  // Remove when name-only historical values are gone or become part of the supported product model.
+  if (
+    resolutionError === 'missing-user-address' &&
+    yourInformation?.fornavn &&
+    yourInformation.etternavn &&
+    !yourInformation.identitet?.identitetsnummer
+  ) {
+    return true;
+  }
+
+  // Remove when production and resumable submissions cannot contain incomplete legacy sender/user components.
+  return (
+    !!sender &&
+    [
+      'missing-user',
+      'missing-user-name',
+      'missing-sender-identity',
+      'missing-sender-name',
+      'missing-organization-name',
+      'missing-organization-number',
+    ].includes(resolutionError)
+  );
 };
 
 const validateAttachment = (attachment: Attachment, validationId: string): Attachment => {
