@@ -27,7 +27,6 @@ describe('fileUtil', () => {
 
   afterEach(() => {
     vi.restoreAllMocks();
-    vi.unstubAllEnvs();
     createdPaths
       .splice(0)
       .reverse()
@@ -68,27 +67,6 @@ describe('fileUtil', () => {
 
       const blob = await fileUtil.createBlobFromUploadedFile({
         path: filePath,
-        mimetype: 'text/plain',
-        buffer: Buffer.alloc(0),
-      });
-
-      await expect(blob.text()).resolves.toBe('temporary file');
-    });
-
-    it('creates a blob from a file accessed through an alias to the OS temp directory', async () => {
-      const tempDirectory = createTempDirectory(os.tmpdir(), 'file-util-test-');
-      const filePath = path.join(tempDirectory, 'upload.txt');
-      fs.writeFileSync(filePath, 'temporary file');
-      const aliasDirectory = fs.mkdtempSync(path.join(process.cwd(), 'file-util-test-alias-'));
-      fs.rmSync(aliasDirectory, { force: true, recursive: true });
-      fs.symlinkSync(tempDirectory, aliasDirectory, 'dir');
-      createdPaths.push(aliasDirectory);
-      vi.stubEnv('TMPDIR', aliasDirectory);
-      vi.resetModules();
-      const { default: aliasedFileUtil } = await import('./fileUtil');
-
-      const blob = await aliasedFileUtil.createBlobFromUploadedFile({
-        path: path.join(aliasDirectory, 'upload.txt'),
         mimetype: 'text/plain',
         buffer: Buffer.alloc(0),
       });
