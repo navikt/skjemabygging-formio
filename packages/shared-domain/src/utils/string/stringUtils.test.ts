@@ -51,4 +51,15 @@ describe('stringUtils', () => {
       expect(actual).toBe('prefixOriginalTextPostfix');
     });
   });
+
+  describe('normalizeUnicode', () => {
+    it.each([
+      ['Ma\u030Al', 'Mål'],
+      ['MA\u030AL', 'MÅL'],
+      ['Mål', 'Mål'],
+      ['', ''],
+    ])('normalizes %s to NFC', (input, expected) => {
+      expect(stringUtils.normalizeUnicode(input)).toBe(expected);
+    });
+  });
 });

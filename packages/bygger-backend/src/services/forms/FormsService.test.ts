@@ -56,20 +56,21 @@ describe('FormsService', () => {
   });
 
   it('should post a new form', async () => {
-    (fetchWithErrorHandling as Mock).mockResolvedValue({ data: form });
+    const formWithDecomposedTitle = { ...form, title: 'NFD-Ma\u030Al' };
+    (fetchWithErrorHandling as Mock).mockResolvedValue({ data: formWithDecomposedTitle });
 
-    const result = await formsService.post(form, accessToken);
+    const result = await formsService.post(formWithDecomposedTitle, accessToken);
 
     expect(fetchWithErrorHandling).toHaveBeenCalledWith(`${formsApiUrl}/v1/forms`, {
       method: 'POST',
       headers: createHeaders(accessToken),
-      body: JSON.stringify(form),
+      body: JSON.stringify({ ...formWithDecomposedTitle, title: 'NFD-Mål' }),
     });
-    expect(result).toEqual(form);
+    expect(result).toEqual(formWithDecomposedTitle);
   });
 
   it('should update a form', async () => {
-    const updatedForm = { ...form, title: 'Updated Test Form' };
+    const updatedForm = { ...form, title: 'NFD-MA\u030AL' };
     (fetchWithErrorHandling as Mock).mockResolvedValue({ data: updatedForm });
 
     const result = await formsService.put(form.path, updatedForm, 1, accessToken);
@@ -77,7 +78,7 @@ describe('FormsService', () => {
     expect(fetchWithErrorHandling).toHaveBeenCalledWith(`${formsApiUrl}/v1/forms/${form.path}`, {
       method: 'PUT',
       headers: createHeaders(accessToken, 1),
-      body: JSON.stringify(updatedForm),
+      body: JSON.stringify({ ...updatedForm, title: 'NFD-MÅL' }),
     });
     expect(result).toEqual(updatedForm);
   });
