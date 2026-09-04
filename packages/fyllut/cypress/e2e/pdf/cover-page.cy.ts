@@ -63,4 +63,36 @@ describe('Cover page', () => {
 
     cy.findByText(/Nedlastingen er ferdig/).shouldBeVisible();
   });
+
+  it('should create cover page with name and address for an unknown user', () => {
+    cy.mocksUseRouteVariant('foersteside:success-tc08c');
+
+    cy.visit('/fyllut/coverpageunknownperson?sub=paper');
+    cy.defaultWaits();
+
+    cy.clickIntroPageConfirmation();
+    cy.clickStart();
+    cy.findByRole('group', { name: /Har du norsk fødselsnummer eller d-nummer/ }).within(() => {
+      cy.findByRole('radio', { name: 'Nei' }).check();
+    });
+    cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola');
+    cy.findByRole('textbox', { name: 'Etternavn' }).type('Nordmann');
+    cy.findByRole('textbox', { name: /Fødselsdato/ }).type('01.01.1980');
+    cy.findByRole('group', { name: 'Bor du i Norge?' }).within(() => cy.findByLabelText('Ja').check());
+    cy.findByRole('group', { name: 'Er kontaktadressen en vegadresse eller postboksadresse?' }).within(() =>
+      cy.findByLabelText('Vegadresse').check(),
+    );
+    cy.findByRole('textbox', { name: 'Vegadresse' }).type('Testveien 1');
+    cy.findByRole('textbox', { name: 'Postnummer' }).type('1234');
+    cy.findByRole('textbox', { name: 'Poststed' }).type('Plassen');
+    cy.findByRole('textbox', { name: /^Gyldig fra/ }).type('18.02.2026');
+    cy.clickNextStep();
+
+    cy.intercept('POST', '/fyllut/api/documents/cover-page-and-application').as('downloadPdf');
+    cy.findByRole('link', { name: 'Instruksjoner for innsending' }).click();
+    cy.findByRole('button', { name: /Last ned skjema|Download form/ }).click();
+    cy.wait('@downloadPdf').its('response.statusCode').should('equal', 200);
+
+    cy.findByText(/Nedlastingen er ferdig/).shouldBeVisible();
+  });
 });
