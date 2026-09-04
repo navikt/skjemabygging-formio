@@ -1,12 +1,12 @@
 {
   "ukjentBrukerPersoninfo": "Ola Nordmann, Testveien 1, 1234 Plassen, Norge",
   "foerstesidetype": "SKJEMA",
-  "navSkjemaId": "coverpageperson",
+  "navSkjemaId": "coverpageunknownperson",
   "spraakkode": "NB",
-  "overskriftstittel": "coverpageperson Cover page person test form",
-  "arkivtittel": "coverpageperson Cover page person test form",
+  "overskriftstittel": "coverpageunknownperson Cover page unknown person test form",
+  "arkivtittel": "coverpageunknownperson Cover page unknown person test form",
   "tema": "HJE",
   "vedleggsliste": [],
-  "dokumentlisteFoersteside": ["coverpageperson Cover page person test form"],
+  "dokumentlisteFoersteside": ["coverpageunknownperson Cover page unknown person test form"],
   "netsPostboks": "1400"
 }

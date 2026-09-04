@@ -1,4 +1,5 @@
 import { panel } from '../../../form-builder/components';
+import identity from '../../../form-builder/components/cutomized/identity';
 import yourInformation from '../../../form-builder/components/cutomized/yourInformation';
 import form from '../../../form-builder/form/form';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
@@ -14,7 +15,11 @@ const personCoverPageForm = () => {
       panel({
         title: 'Dine opplysninger',
         key: 'personopplysninger',
-        components: [yourInformation()],
+        components: [
+          yourInformation({
+            components: [identity({ prefill: true })],
+          }),
+        ],
       }),
     ],
   });

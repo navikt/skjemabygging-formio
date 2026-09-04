@@ -120,6 +120,10 @@ import {
 } from '../data/forms-api/cover-page/organizationNumberCoverPageForm';
 import { personCoverPageForm, personCoverPageTranslations } from '../data/forms-api/cover-page/personCoverPageForm';
 import {
+  unknownPersonCoverPageForm,
+  unknownPersonCoverPageTranslations,
+} from '../data/forms-api/cover-page/unknownPersonCoverPageForm';
+import {
   currencyAndAccountForm,
   currencyAndAccountTranslations,
 } from '../data/forms-api/currency-and-account/currencyAndAccountForm';
@@ -416,6 +420,7 @@ const allForms = [
   { form: containerSkjemagruppeSkjemagruppeForm(), translations: containerSkjemagruppeSkjemagruppeTranslations() },
   { form: organizationNumberCoverPageForm(), translations: organizationNumberCoverPageTranslations() },
   { form: personCoverPageForm(), translations: personCoverPageTranslations() },
+  { form: unknownPersonCoverPageForm(), translations: unknownPersonCoverPageTranslations() },
   { form: organizationSenderPartyForm(), translations: organizationSenderPartyTranslations() },
   { form: personSenderPartyForm(), translations: personSenderPartyTranslations() },
   { form: currencyAndAccountForm(), translations: currencyAndAccountTranslations() },
