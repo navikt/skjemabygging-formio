@@ -27,6 +27,7 @@ describe('fileUtil', () => {
 
   afterEach(() => {
     vi.restoreAllMocks();
+    vi.unstubAllEnvs();
     createdPaths
       .splice(0)
       .reverse()
@@ -82,8 +83,11 @@ describe('fileUtil', () => {
       fs.rmSync(aliasDirectory, { force: true, recursive: true });
       fs.symlinkSync(tempDirectory, aliasDirectory, 'dir');
       createdPaths.push(aliasDirectory);
+      vi.stubEnv('TMPDIR', aliasDirectory);
+      vi.resetModules();
+      const { default: aliasedFileUtil } = await import('./fileUtil');
 
-      const blob = await fileUtil.createBlobFromUploadedFile({
+      const blob = await aliasedFileUtil.createBlobFromUploadedFile({
         path: path.join(aliasDirectory, 'upload.txt'),
         mimetype: 'text/plain',
         buffer: Buffer.alloc(0),
