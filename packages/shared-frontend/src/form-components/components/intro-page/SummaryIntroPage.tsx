@@ -1,7 +1,9 @@
 import { FormSummary } from '@navikt/ds-react';
 import { Form, Submission, TEXTS, Tkey, TranslateFunction } from '@navikt/skjemadigitalisering-shared-domain';
-import { Link, useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import ValidationExclamationIcon from '../../../components/icons/ValidationExclamationIcon';
+import { withoutSubmissionNavigationState } from '../../../utils/navigationState';
+import styles from './SummaryIntroPage.module.css';
 
 interface Props {
   submission: Submission;
@@ -16,7 +18,9 @@ interface Props {
  */
 const SummaryIntroPage = (props: Props) => {
   const { submission, form, translate } = props;
-  const { search } = useLocation();
+  const { search, state } = useLocation();
+  const navigate = useNavigate();
+  const navigationState = withoutSubmissionNavigationState(state);
 
   if (!form.introPage?.enabled) {
     return null;
@@ -25,7 +29,7 @@ const SummaryIntroPage = (props: Props) => {
   const inputLabel: Tkey = 'introPage.selfDeclaration.inputLabel';
 
   return (
-    <FormSummary>
+    <FormSummary className={styles.panel}>
       <FormSummary.Header>
         <FormSummary.Heading level="3">
           {translate(TEXTS.grensesnitt.introPage.title)}
@@ -42,7 +46,13 @@ const SummaryIntroPage = (props: Props) => {
       </FormSummary.Answers>
 
       <FormSummary.Footer>
-        <FormSummary.EditLink as={Link} to={{ pathname: '../', search }}>
+        <FormSummary.EditLink
+          href={search ? `../${search}` : '../'}
+          onClick={(event) => {
+            event.preventDefault();
+            navigate({ pathname: '../', search }, { state: navigationState });
+          }}
+        >
           {translate(TEXTS.grensesnitt.summaryPage.edit)}
         </FormSummary.EditLink>
       </FormSummary.Footer>

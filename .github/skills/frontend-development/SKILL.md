@@ -21,11 +21,13 @@ frontend work.
 - Put reusable UI, hooks, frontend services, and form behavior in
   `packages/shared-frontend`.
 - Keep `packages/shared-frontend/src/components` generic and independent of
-  form-definition and fyllut types. Bind reusable controls through generic state
-  paths and presentational props.
+  form-definition configuration and fyllut-specific flow, submission, routing,
+  or application code. Bind reusable controls through generic state paths and
+  presentational props.
 - Keep `packages/shared-frontend/src/form-components` for thin form-definition
-  adapters. Co-locate editable and summary adapters by component type and keep
-  their registries aligned.
+  adapters. Keep separate input, summary, and PDF adapters when that parallel
+  structure clarifies the mapping. Co-locate adapters by component type and
+  keep their registries aligned.
 - Keep `packages/shared-frontend/src/fyllut` for fyllut-specific orchestration,
   routing, submission, wizard behavior, attachments, and host integration. Keep
   this flow hostable by both fyllut and bygger.
@@ -36,6 +38,9 @@ frontend work.
   legacy flow that cannot reasonably be moved first.
 - Reuse shared behavior before adding another path. Keep form-definition
   adapters thin.
+- When composing shared-frontend UI, use the package's own
+  `src/components` abstractions rather than importing Aksel components
+  directly. Add or extend a generic shared component first when needed.
 
 ## Styling
 
@@ -83,6 +88,9 @@ intentionally changes them.
 - Give shared components HTTP and other host dependencies through adapters,
   context, or props. Do not add direct `fetch`, `window`, or hard-coded
   `/fyllut` dependencies. Existing cases are migration debt; do not extend them.
+- Load data intrinsic to a reusable component through `RuntimeServices`.
+  Keep form-definition-specific request parameters and submission metadata in
+  the corresponding `form-components` adapter.
 - Route user-facing form text through the shared language and translation
   context. Do not hard-code display text in reusable components.
 - Sanitize form-authored or translated HTML with the existing helper before

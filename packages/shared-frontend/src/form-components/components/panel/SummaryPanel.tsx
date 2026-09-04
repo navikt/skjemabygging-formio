@@ -1,29 +1,35 @@
 import { FormSummary } from '@navikt/ds-react';
 import { TEXTS, submissionUtils as formComponentUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import { Link, useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import ValidationExclamationIcon from '../../../components/icons/ValidationExclamationIcon';
+import { useStepperState } from '../../../context/stepper/StepperContext';
+import { withoutSubmissionNavigationState } from '../../../utils/navigationState';
+import { PanelDefinition } from '../../component-types';
 import RenderComponent from '../../RenderComponent';
 import { FormComponentProps } from '../../types';
+import styles from './SummaryPanel.module.css';
 
-const SummaryPanel = (props: FormComponentProps) => {
-  const { submissionPath, translate, component, panelValidationList } = props;
+const SummaryPanel = (props: FormComponentProps<PanelDefinition>) => {
+  const { submissionPath, translate, component, panelValidationList, legacyAttachmentPanelMode } = props;
   const { title, components, navId, key } = component;
-  const { search } = useLocation();
+  const { search, state } = useLocation();
+  const navigate = useNavigate();
+  const { isOpen: isStepperOpen } = useStepperState();
+  const childComponents = components ?? [];
+  const navigationState = withoutSubmissionNavigationState(state);
 
   const panelValidation = panelValidationList?.find((panel) => panel.key === key);
 
   return (
-    <FormSummary data-cy="form-summary-panel">
+    <FormSummary data-cy="form-summary-panel" className={styles.panel}>
       <FormSummary.Header>
-        <FormSummary.Heading level="3">
-          {translate(title)}
-          {panelValidation?.hasValidationErrors && (
-            <ValidationExclamationIcon title={translate(TEXTS.statiske.summaryPage.validationIcon)} />
-          )}
-        </FormSummary.Heading>
+        <FormSummary.Heading level="3">{translate(title)}</FormSummary.Heading>
+        {panelValidation?.hasValidationErrors && (
+          <ValidationExclamationIcon title={translate(TEXTS.statiske.summaryPage.validationIcon)} />
+        )}
       </FormSummary.Header>
       <FormSummary.Answers>
-        {components?.map((component) => {
+        {childComponents.map((component) => {
           const componentSubmissionPath = formComponentUtils.getComponentSubmissionPath(component, submissionPath);
           return (
             <RenderComponent
@@ -37,7 +43,14 @@ const SummaryPanel = (props: FormComponentProps) => {
       </FormSummary.Answers>
 
       <FormSummary.Footer>
-        <FormSummary.EditLink as={Link} to={{ pathname: `../${key}`, search }}>
+        <FormSummary.EditLink
+          href={search ? `../${key}${search}` : `../${key}`}
+          onClick={(event) => {
+            event.preventDefault();
+            navigate({ pathname: `../${key}`, search }, { state: navigationState });
+          }}
+          aria-label={legacyAttachmentPanelMode && !isStepperOpen ? translate(title) : undefined}
+        >
           {translate(TEXTS.grensesnitt.summaryPage.edit)}
         </FormSummary.EditLink>
       </FormSummary.Footer>

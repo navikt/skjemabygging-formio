@@ -1,9 +1,10 @@
 import {
+  externalStorageTexts,
   FormsApiTranslationMap,
   I18nTranslations,
+  languageUtils,
   ResponseError,
   TranslationLang,
-  languageUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { fileUtil, translationUtil } from '../../util';
 import translationClient from './translationClient';
@@ -132,7 +133,19 @@ const createTranslationService = ({
       }),
     ]);
 
-    return { ...translations[0], ...translations[1] };
+    const introPageTranslations = externalStorageTexts.initValues.introPage.reduce<FormsApiTranslationMap>(
+      (accumulator, translation) => {
+        accumulator[translation.key] = {
+          nb: translation.nb,
+          nn: translation.nn,
+          en: translation.en,
+        };
+        return accumulator;
+      },
+      {},
+    );
+
+    return { ...introPageTranslations, ...translations[0], ...translations[1] };
   };
 
   const createTranslate = async (props: CreateTranslationsProps) => {

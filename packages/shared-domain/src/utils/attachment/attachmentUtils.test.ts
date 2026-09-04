@@ -1,3 +1,4 @@
+import { Component, NavFormType } from '../../models';
 import { TEXTS } from '../../texts';
 import { attachmentUtils } from './attachmentUtils';
 
@@ -120,6 +121,28 @@ describe('attachmentUtils', () => {
         { value: 'nav', label: TEXTS.statiske.attachment.nav, upload: false },
       ]);
     });
+
+    it('preserves production-shaped legacy values arrays', () => {
+      const options = attachmentUtils.mapKeysToOptions(
+        [
+          { value: 'leggerVedNaa', label: 'Jeg legger det ved denne søknaden (anbefalt)' },
+          { value: 'ettersender', label: 'Jeg ettersender dokumentasjonen senere' },
+        ],
+        (text) => `${text} (translated)`,
+        'paper',
+      );
+
+      expect(options).toEqual([
+        {
+          value: 'leggerVedNaa',
+          label: 'Jeg legger det ved denne søknaden (anbefalt) (translated)',
+        },
+        {
+          value: 'ettersender',
+          label: 'Jeg ettersender dokumentasjonen senere (translated)',
+        },
+      ]);
+    });
   });
 
   describe('isSingleUploadOnlyOption', () => {
@@ -234,6 +257,113 @@ describe('attachmentUtils', () => {
 
     it('returns false when submission method is undefined', () => {
       expect(attachmentUtils.enableAttachmentDownload()).toBe(false);
+    });
+  });
+
+  describe('getAttachmentsForCoverPage', () => {
+    const createForm = (components) =>
+      ({
+        title: 'Test form',
+        components,
+        properties: {},
+      }) as unknown as NavFormType;
+
+    const createAttachmentComponent = (key, navId) =>
+      ({
+        key,
+        navId,
+        label: key,
+        type: 'attachment',
+        properties: { vedleggskode: 'N6', vedleggstittel: key },
+      }) as unknown as Component;
+
+    it('finds attachment answers stored directly in submission data', () => {
+      const form = createForm([
+        {
+          key: 'panel',
+          type: 'panel',
+          components: [createAttachmentComponent('dokumentasjon', 'nav1')],
+        },
+      ]);
+
+      expect(
+        attachmentUtils
+          .getAttachmentsForCoverPage({ data: { dokumentasjon: { key: 'leggerVedNaa' } } }, form)
+          .map((component) => component.key),
+      ).toEqual(['dokumentasjon']);
+      expect(
+        attachmentUtils
+          .getAttachmentsForCoverPage({ data: { dokumentasjon: 'leggerVedNaa' } }, form)
+          .map((component) => component.key),
+      ).toEqual(['dokumentasjon']);
+      expect(
+        attachmentUtils
+          .getAttachmentsForCoverPage({ data: { dokumentasjon: { key: 'ettersender' } } }, form)
+          .map((component) => component.key),
+      ).toEqual([]);
+    });
+
+    it('finds attachment answers nested in containers and data grid rows', () => {
+      const form = createForm([
+        {
+          key: 'panel',
+          type: 'panel',
+          components: [
+            {
+              key: 'vedleggContainer',
+              type: 'container',
+              input: true,
+              tree: true,
+              components: [createAttachmentComponent('nestedDokumentasjon', 'nav2')],
+            },
+            {
+              key: 'repeterende',
+              type: 'datagrid',
+              input: true,
+              components: [createAttachmentComponent('radDokumentasjon', 'nav3')],
+            },
+          ],
+        },
+      ]);
+
+      expect(
+        attachmentUtils
+          .getAttachmentsForCoverPage(
+            {
+              data: {
+                vedleggContainer: { nestedDokumentasjon: { key: 'leggerVedNaa' } },
+                repeterende: [
+                  { radDokumentasjon: { key: 'ettersender' } },
+                  { radDokumentasjon: { key: 'leggerVedNaa' } },
+                ],
+              },
+            },
+            form,
+          )
+          .map((component) => component.key),
+      ).toEqual(['nestedDokumentasjon', 'radDokumentasjon']);
+    });
+
+    it('still finds uploaded attachments stored in submission.attachments', () => {
+      const form = createForm([
+        {
+          key: 'panel',
+          type: 'panel',
+          components: [createAttachmentComponent('dokumentasjon', 'nav1')],
+        },
+      ]);
+
+      expect(
+        attachmentUtils
+          .getAttachmentsForCoverPage(
+            {
+              data: {},
+              attachments: [{ attachmentId: 'nav1', navId: 'nav1', type: 'default', value: 'leggerVedNaa', files: [] }],
+            },
+            form,
+          )
+          .map((component) => component.key),
+      ).toEqual(['dokumentasjon']);
     });
   });
 });

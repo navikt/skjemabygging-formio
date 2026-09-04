@@ -1,9 +1,10 @@
 import { Box, FormSummary, List } from '@navikt/ds-react';
 import { getSelectedValues } from '@navikt/skjemadigitalisering-shared-domain';
+import { DataFetcherDefinition } from '../../component-types';
 import { DefaultLabel } from '../../shared';
 import { FormComponentProps } from '../../types';
 
-const SummaryDataFetcher = (props: FormComponentProps) => {
+const SummaryDataFetcher = (props: FormComponentProps<DataFetcherDefinition>) => {
   const { component, submissionPath, submission } = props;
   const { key, navId } = component;
 

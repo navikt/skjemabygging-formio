@@ -1,0 +1,212 @@
+import { Alert, BodyShort, Heading, Link, List, VStack } from '@navikt/ds-react';
+import { attachmentUtils, dateUtils, formioFormsApiUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { useEffect, useMemo, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router';
+import NavUnitSelect from '../../components/nav-unit-select/NavUnitSelect';
+import { useNavUnits } from '../../components/nav-unit-select/useNavUnits';
+import { useApplication } from '../../context/application/ApplicationContext';
+import { useFormDefinition } from '../../context/form-definition/FormDefinitionContext';
+import { useLanguage } from '../../context/language/LanguageContext';
+import { useRuntimeServices } from '../../context/runtime-services/RuntimeServicesContext';
+import { useSubmissionState } from '../../context/state/SubmissionStateContext';
+import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
+import { withoutSubmissionNavigationState } from '../../utils/navigationState';
+import { useFyllut } from '../context/fyllut/FyllutContext';
+import { SUMMARY_KEY } from '../form-flow/constants';
+import { FormButtonRow, FormPrevButton } from '../layout/FormButtonRow';
+import FormHeader from '../layout/FormHeader';
+import CancelAndDeleteButton from '../navigation/CancelAndDeleteButton';
+import DownloadPdfButton from './DownloadPdfButton';
+
+interface Props {
+  documentType: 'application' | 'application-with-cover-page';
+}
+
+const PaperSubmissionPage = ({ documentType }: Props) => {
+  const { translate, currentLanguage } = useLanguage();
+  const { submissions } = useRuntimeServices();
+  const { fyllutBaseUrl, logEvent } = useFyllut();
+  const { logger } = useApplication();
+  const { submissionMethod } = useSubmissionMethod();
+  const { form } = useFormDefinition();
+  const { submission } = useSubmissionState();
+  const { search, state } = useLocation();
+  const navigate = useNavigate();
+  const [downloadState, setDownloadState] = useState<'success' | 'error'>();
+  const [selectedNavUnit, setSelectedNavUnit] = useState('');
+  const [navUnitSelectionError, setNavUnitSelectionError] = useState(false);
+  const navForm = useMemo(() => formioFormsApiUtils.mapFormToNavForm(form), [form]);
+  const requiresNavUnit =
+    documentType === 'application-with-cover-page' && form.properties.enhetMaVelgesVedPapirInnsending === true;
+  const {
+    allUnits,
+    units: filteredNavUnits,
+    error: navUnitFetchError,
+    loading: navUnitsLoading,
+  } = useNavUnits({
+    enabled: requiresNavUnit,
+    unitTypes: form.properties.enhetstyper,
+  });
+  const navUnits = filteredNavUnits?.length ? filteredNavUnits : allUnits;
+
+  const fileName = useMemo(() => `${form.path}-${dateUtils.toLocaleDate().replace(/\./g, '')}.pdf`, [form.path]);
+  const attachments = useMemo(
+    () => (submission ? attachmentUtils.getAttachmentsForCoverPage(submission, navForm) : []),
+    [navForm, submission],
+  );
+  const showNoSubmissionContent =
+    documentType === 'application' && (!submissionMethod || submissionMethod === 'papernocoverpage');
+  const navigationState = withoutSubmissionNavigationState(state);
+
+  useEffect(() => {
+    if (requiresNavUnit && !navUnitsLoading && !navUnitFetchError && filteredNavUnits?.length === 0) {
+      logger?.error?.('No relevant NAV units found', {
+        skjemanummer: form.properties.skjemanummer,
+        enhetstyper: form.properties.enhetstyper,
+      });
+    }
+  }, [
+    filteredNavUnits,
+    form.properties.enhetstyper,
+    form.properties.skjemanummer,
+    logger,
+    navUnitFetchError,
+    navUnitsLoading,
+    requiresNavUnit,
+  ]);
+
+  const getPdfContent = async () => {
+    if (!submission) {
+      return undefined;
+    }
+
+    return submissions.createDocument({
+      documentType,
+      language: currentLanguage,
+      formPath: form.path,
+      submission,
+      submissionMethod,
+      navUnitNumber: selectedNavUnit || undefined,
+    });
+  };
+
+  return (
+    <>
+      <FormHeader
+        form={form}
+        pageTitle={
+          showNoSubmissionContent
+            ? translate(form.properties.innsendingOverskrift ?? TEXTS.statiske.prepareLetterPage.subTitle)
+            : translate(TEXTS.statiske.prepareLetterPage.subTitle)
+        }
+      />
+      <VStack gap="space-24">
+        {showNoSubmissionContent ? (
+          <BodyShort>{translate(form.properties.innsendingForklaring)}</BodyShort>
+        ) : (
+          <>
+            <BodyShort>{translate(TEXTS.statiske.prepareLetterPage.firstDescription)}</BodyShort>
+            {attachments.length > 0 && (
+              <section aria-label={translate(TEXTS.statiske.prepareLetterPage.attachmentSectionTitleAttachTo)}>
+                <Heading level="2" size="small" spacing>
+                  {translate(TEXTS.statiske.prepareLetterPage.attachmentSectionTitleAttachTo)}
+                </Heading>
+                <List>
+                  {attachments.map((attachment) => (
+                    <List.Item key={attachment.key}>
+                      {attachment.attachmentType === 'default' && attachment.properties?.vedleggskjema ? (
+                        <Link
+                          href={`${fyllutBaseUrl}/${attachment.properties.vedleggskjema}?sub=papernocoverpage`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {translate(attachment.label)}
+                        </Link>
+                      ) : (
+                        translate(attachment.label)
+                      )}
+                    </List.Item>
+                  ))}
+                </List>
+              </section>
+            )}
+          </>
+        )}
+        {requiresNavUnit && navUnitFetchError && (
+          <Alert variant="error">{translate(TEXTS.statiske.navUnit.fetchError)}</Alert>
+        )}
+        {requiresNavUnit && navUnits && !navUnitFetchError && (
+          <NavUnitSelect
+            statePath="nav-unit"
+            units={navUnits}
+            description={form.properties.navUnitDescription}
+            value={selectedNavUnit}
+            onChange={(unitNumber) => {
+              setSelectedNavUnit(unitNumber);
+              setNavUnitSelectionError(false);
+            }}
+            error={
+              navUnitSelectionError ? translate(TEXTS.statiske.prepareLetterPage.entityNotSelectedError) : undefined
+            }
+          />
+        )}
+        <DownloadPdfButton
+          fileName={fileName}
+          isValid={() => {
+            if (requiresNavUnit && (navUnitFetchError || !navUnits)) {
+              return false;
+            }
+
+            if (requiresNavUnit && !selectedNavUnit) {
+              setNavUnitSelectionError(true);
+              return false;
+            }
+
+            return true;
+          }}
+          onClick={() => setDownloadState(undefined)}
+          onSuccess={() => {
+            setDownloadState('success');
+            logEvent?.({
+              name: 'last ned',
+              data: {
+                type: 'soknad',
+                tema: form.properties.tema,
+                tittel: translate(form.title),
+                skjemaId: form.properties.skjemanummer,
+                withCoverPage: documentType === 'application-with-cover-page',
+                submissionMethod,
+                language: currentLanguage,
+              },
+            });
+          }}
+          onError={() => setDownloadState('error')}
+          pdfContent={getPdfContent}
+        >
+          {translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
+        </DownloadPdfButton>
+        {downloadState === 'success' && (
+          <Alert variant="info">
+            {translate(TEXTS.statiske.prepareLetterPage.downloadSuccess, {
+              fileName,
+            })}
+          </Alert>
+        )}
+        {downloadState === 'error' && (
+          <Alert variant="error">{translate(TEXTS.statiske.prepareLetterPage.downloadError)}</Alert>
+        )}
+      </VStack>
+      <FormButtonRow
+        cancelButton={<CancelAndDeleteButton exitOnly />}
+        previousButton={
+          <FormPrevButton
+            label={translate(TEXTS.grensesnitt.navigation.previous)}
+            onClick={() => navigate({ pathname: `../${SUMMARY_KEY}`, search }, { state: navigationState })}
+          />
+        }
+      />
+    </>
+  );
+};
+
+export default PaperSubmissionPage;

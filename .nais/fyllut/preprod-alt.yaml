@@ -28,6 +28,8 @@ environmentVars:
     value: http://formio-api
   - name: FORMIO_PROJECT_NAME
     value: jvcemxwcpghcqjn
+  - name: FEATURE_NEW_RENDER_FORMS
+    value: '"*"'
 azure:
   application:
     tenant: trygdeetaten.no

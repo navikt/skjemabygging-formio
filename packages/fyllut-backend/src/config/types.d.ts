@@ -85,6 +85,7 @@ export type FyllutBackendConfig = DefaultConfig & {
   fyllutPath: string;
   clientSecret: string;
   featureToggles: FeatureTogglesMap;
+  newRenderForms: string[];
   naisClusterName: string;
   isDevelopment: boolean;
   isTest: boolean;

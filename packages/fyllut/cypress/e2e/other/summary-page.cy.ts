@@ -17,7 +17,7 @@ describe('SummaryPage', () => {
 
     const navigateToSummary = () => {
       cy.findByRoleWhenAttached(
-        'link',
+        'button',
         { name: /Lagre og fortsett|Save and continue|Neste steg|Next step/ },
         500,
       ).click();
@@ -31,10 +31,10 @@ describe('SummaryPage', () => {
       );
       cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
       cy.wait('@uploadPersonalId').its('response.statusCode').should('eq', 201);
-      cy.findByRole('link', { name: 'Neste steg' }).click();
+      cy.findByRole('button', { name: 'Neste steg' }).click();
       cy.url().then((currentUrl) => {
         if (currentUrl.includes('/legitimasjon')) {
-          cy.findByRole('link', { name: 'Neste steg' }).click();
+          cy.findByRole('button', { name: 'Neste steg' }).click();
         }
       });
       cy.url().should('not.include', '/legitimasjon');
@@ -118,10 +118,20 @@ describe('SummaryPage', () => {
     cy.submitMellomlagring(() => {});
     cy.visit('/fyllut/components/oppsummering?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3');
     cy.defaultWaits();
+    cy.get('[data-cy=error-summary]').should('not.exist');
     cy.clickSendNav();
-
     cy.get('@submitMellomlagring.all').should('have.length', 0);
-    cy.contains('Du må fullføre utfyllingen før du kan fortsette').should('exist');
+    cy.get('[data-cy=error-summary]')
+      .should('exist')
+      .within(() => {
+        cy.findByRole('heading', { name: TEXTS.validering.error }).should('have.focus');
+      });
+
+    cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.sendToNav }).focus();
+    cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.sendToNav }).click();
+    cy.get('[data-cy=error-summary]').within(() => {
+      cy.findByRole('heading', { name: TEXTS.validering.error }).should('have.focus');
+    });
   });
 
   it('All values', () => {
@@ -147,17 +157,13 @@ describe('SummaryPage', () => {
     cy.findByRole('group', { name: /Flervalg/ }).within(() => {
       cy.findByRole('checkbox', { name: 'Ja' }).check();
     });
-    // Select react
-    cy.findByRole('combobox', { name: /Nedtrekksmeny \(navSelect\)/ }).type('{downArrow}{enter}');
-    // Select formio (ChoiceJS)
-    cy.findAllByRole('combobox').eq(1).click();
-    cy.findAllByRole('combobox')
-      .eq(1)
-      .within(() => {
-        cy.findByRole('option', { name: 'Ja' }).click();
-      });
+    // Select combobox
+    cy.selectCombobox(/Nedtrekksmeny \(navSelect\)/, 'Nei');
+    // Select select
+    cy.findAllByRole('combobox', { name: /Nedtrekksmeny \(select\)/ }).select('Ja');
     // Select formio (HTML5)
-    cy.findAllByRole('combobox').eq(2).select('0,50');
+    cy.findAllByRole('combobox', { name: /Nedtrekksmeny \(select HTML5\)/ }).select('0,50');
+
     cy.findByRole('group', { name: /Radiopanel/ }).within(() => {
       cy.findByRole('radio', { name: 'Ja' }).check();
     });
@@ -198,13 +204,20 @@ describe('SummaryPage', () => {
     cy.findAllByRole('textbox', { name: /Beløp/ }).eq(0).type('1000');
     cy.findAllByRole('combobox', { name: /Velg valuta/ })
       .eq(0)
-      .type('{downArrow}{enter}');
+      .click();
+    cy.findAllByRole('combobox', { name: /Velg valuta/ })
+      .eq(0)
+      .type('Norsk{downArrow}{enter}{esc}');
+
     cy.findAllByRole('textbox', { name: /Beløp/ }).eq(1).type('2000');
     cy.findByRole('textbox', { name: /Kontonummer/ }).type('76586005479');
     cy.findByRole('textbox', { name: /IBAN/ }).type('NO8330001234567');
     cy.findAllByRole('combobox', { name: /Velg valuta/ })
       .eq(1)
-      .type('{downArrow}{downArrow}{enter}');
+      .click();
+    cy.findAllByRole('combobox', { name: /Velg valuta/ })
+      .eq(1)
+      .type('Svensk{downArrow}{enter}{esc}');
 
     cy.findByRole('link', { name: 'Bedrift / organisasjon' }).click();
     cy.findByRole('heading', { name: 'Bedrift / organisasjon' }).shouldBeVisible();
@@ -449,17 +462,13 @@ describe('SummaryPage', () => {
     cy.findByRole('group', { name: /Multiple choice/ }).within(() => {
       cy.findByRole('checkbox', { name: 'Yes' }).check();
     });
-    // Select react
-    cy.findByRole('combobox', { name: /Dropdown \(navSelect\)/ }).type('{downArrow}{enter}');
-    // Select formio (ChoiceJS)
-    cy.findAllByRole('combobox').eq(1).click();
-    cy.findAllByRole('combobox')
-      .eq(1)
-      .within(() => {
-        cy.findByRole('option', { name: 'Yes' }).click();
-      });
+    // Select combobox
+    cy.selectCombobox(/Dropdown \(navSelect\)/, 'No');
+    // Select select
+    cy.findAllByRole('combobox', { name: /Dropdown \(select\)/ }).select('Yes');
     // Select formio (HTML5)
-    cy.findAllByRole('combobox').eq(2).select('0.50');
+    cy.findAllByRole('combobox', { name: /Dropdown \(select HTML5\)/ }).select('0.50');
+
     cy.findByRole('group', { name: /Radio panel/ }).within(() => {
       cy.findByRole('radio', { name: 'Yes' }).check();
     });
@@ -498,7 +507,10 @@ describe('SummaryPage', () => {
       .type('1000');
     cy.findAllByRole('combobox', { name: /Select currency/ })
       .eq(0)
-      .type('{downArrow}{enter}');
+      .click();
+    cy.findAllByRole('combobox', { name: /Select currency/ })
+      .eq(0)
+      .type('Nor{downArrow}{enter}{esc}');
     cy.findAllByRole('textbox', { name: /Amount/ })
       .eq(1)
       .type('2000');
@@ -506,7 +518,10 @@ describe('SummaryPage', () => {
     cy.findByRole('textbox', { name: /IBAN/ }).type('NO8330001234567');
     cy.findAllByRole('combobox', { name: /Select currency/ })
       .eq(1)
-      .type('{downArrow}{downArrow}{enter}');
+      .click();
+    cy.findAllByRole('combobox', { name: /Select currency/ })
+      .eq(1)
+      .type('Swe{downArrow}{enter}{esc}');
 
     cy.findByRole('link', { name: 'Company / organization' }).click();
     cy.findByRole('heading', { name: 'Company / organization' }).shouldBeVisible();

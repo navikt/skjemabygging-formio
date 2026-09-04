@@ -99,7 +99,7 @@ describe('TextField', () => {
       cy.findByLabelText(label).should('have.focus');
       cy.focused().clear();
       cy.focused().type('abcde');
-      cy.clickErrorMessageMinLength(label).should('have.length', 0);
+      cy.findAllByErrorMessageMinLength(label).should('have.length', 0);
     });
 
     it('should validate the max length', () => {
@@ -111,7 +111,7 @@ describe('TextField', () => {
       cy.findByLabelText(label).should('have.focus');
       cy.focused().clear();
       cy.focused().type('abcd');
-      cy.clickErrorMessageMaxLength(label).should('have.length', 0);
+      cy.findAllByErrorMessageMaxLength(label).should('have.length', 0);
     });
 
     it('should support custom validation', () => {

@@ -1,5 +1,8 @@
 import { expect } from 'chai';
 
+const normalizeFormattedNumber = (value: string | number | string[] | undefined | null) =>
+  value?.toString().replace(/\s+/g, ' ').trim();
+
 /**
  * @deprecated
  * This is deprecated, please delete when this is covered in the correct component test suite.
@@ -48,11 +51,8 @@ describe('textfield', () => {
     cy.focused().blur();
     cy.findByRole('textbox', { name: 'Beløp heltall' })
       .should('exist')
-      .then(($input) => {
-        const normalizedValue = $input
-          .val()
-          ?.toString()
-          .replace(/\u00A0/g, ' ');
+      .should(($input) => {
+        const normalizedValue = normalizeFormattedNumber($input.val());
         expect(normalizedValue).to.equal('1 234 567 847');
       });
 
@@ -62,11 +62,8 @@ describe('textfield', () => {
     cy.focused().blur();
     cy.findByRole('textbox', { name: 'Beløp desimaltall' })
       .should('exist')
-      .then(($input) => {
-        const normalizedValue = $input
-          .val()
-          ?.toString()
-          .replace(/\u00A0/g, ' ');
+      .should(($input) => {
+        const normalizedValue = normalizeFormattedNumber($input.val());
         expect(normalizedValue).to.equal('1 234 567 847,98');
       });
   });

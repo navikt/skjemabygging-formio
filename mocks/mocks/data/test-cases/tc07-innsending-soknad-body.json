@@ -8,14 +8,6 @@
   "mainDocumentAlt": "<IGNORED>",
   "attachments": [
     {
-      "attachmentCode": "V9",
-      "label": "Vedlegg upload-only",
-      "title": "Vedlegg upload-only",
-      "uploadStatus": "LastetOpp",
-      "fileIds": ["<IGNORED>"],
-      "description": null
-    },
-    {
       "attachmentCode": "V1",
       "label": "Vedlegg 1",
       "title": "Vedleggstittel 1",
@@ -27,6 +19,14 @@
       "attachmentCode": "V2",
       "label": "Vedlegg 2",
       "title": "Vedleggstittel 2",
+      "uploadStatus": "LastetOpp",
+      "fileIds": ["<IGNORED>"],
+      "description": null
+    },
+    {
+      "attachmentCode": "V9",
+      "label": "Vedlegg upload-only",
+      "title": "Vedlegg upload-only",
       "uploadStatus": "LastetOpp",
       "fileIds": ["<IGNORED>"],
       "description": null

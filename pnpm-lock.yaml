@@ -418,6 +418,9 @@ importers:
       '@navikt/skjemadigitalisering-shared-domain':
         specifier: workspace:*
         version: file:packages/shared-domain(typescript@6.0.3)
+      '@navikt/skjemadigitalisering-shared-frontend':
+        specifier: workspace:*
+        version: link:../shared-frontend
       axe-core:
         specifier: ^4.12.1
         version: 4.12.1
@@ -804,6 +807,12 @@ importers:
       dompurify:
         specifier: ^3.4.11
         version: 3.4.11
+      i18n-iso-countries:
+        specifier: ^7.14.0
+        version: 7.14.0
+      ibantools:
+        specifier: ^4.5.4
+        version: 4.5.4
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -817,6 +826,9 @@ importers:
         specifier: ^7.12.0
         version: 7.15.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
+      '@navikt/ds-tokens':
+        specifier: ^8.14.0
+        version: 8.15.0
       '@testing-library/react':
         specifier: ^16.3.2
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@18.3.7(@types/react@18.3.11))(@types/react@18.3.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -1647,6 +1659,9 @@ packages:
     peerDependenciesMeta:
       '@types/react':
         optional: true
+
+  '@navikt/ds-tokens@8.15.0':
+    resolution: {integrity: sha512-i76uLUIONOWc/G7kzPHQwNCR65bKBVulYbua6tyVmtlAhJyEPjC2vNyeeOq1bE4QcccPNQz9rBKydmXOVvJYtw==, tarball: https://npm.pkg.github.com/download/@navikt/ds-tokens/8.15.0/96c20d8f453f8be770e5e1a9e9ce4888e50e4348}
 
   '@navikt/ds-tokens@8.8.0':
     resolution: {integrity: sha512-xrX+4l4EOOSdLXy4NdIft87052I95m3tLDNPjTuyOBMyZZdEivLskc8KbemLhTGJJZ2TfiDe6jpkYwP0iFFLGA==, tarball: https://npm.pkg.github.com/download/@navikt/ds-tokens/8.8.0/1b64643ec409921069ede0fc5eab1850afa23393}
@@ -7958,7 +7973,7 @@ snapshots:
   '@navikt/aksel@8.1.0':
     dependencies:
       '@navikt/ds-css': 8.8.0
-      '@navikt/ds-tokens': 8.8.0
+      '@navikt/ds-tokens': 8.15.0
       chalk: 5.6.2
       cli-progress: 3.12.0
       clipboardy: 5.0.1
@@ -7988,6 +8003,8 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
     optionalDependencies:
       '@types/react': 18.3.11
+
+  '@navikt/ds-tokens@8.15.0': {}
 
   '@navikt/ds-tokens@8.8.0': {}
 
@@ -8062,6 +8079,8 @@ snapshots:
       '@navikt/ds-react': 8.8.0(@types/react@18.3.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@navikt/skjemadigitalisering-shared-domain': file:packages/shared-domain(typescript@6.0.3)
       dompurify: 3.4.11
+      i18n-iso-countries: 7.14.0
+      ibantools: 4.5.4
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
       react-jss: 10.10.0(react@18.3.1)

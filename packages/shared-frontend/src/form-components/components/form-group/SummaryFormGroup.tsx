@@ -1,10 +1,11 @@
 import { FormSummary } from '@navikt/ds-react';
 import { submissionUtils as formComponentUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormGroupDefinition } from '../../component-types';
 import RenderComponent from '../../RenderComponent';
 import FormSummaryAnswersNested from '../../shared/FormSummaryAnswersNested';
 import { FormComponentProps } from '../../types';
 
-const SummaryFormGroup = (props: FormComponentProps) => {
+const SummaryFormGroup = (props: FormComponentProps<FormGroupDefinition>) => {
   const { submission, submissionPath, translate, component } = props;
   const { components, navId, legend } = component;
 

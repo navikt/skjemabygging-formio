@@ -12,6 +12,7 @@ import { loadAllTranslations } from '../../api/useTranslations';
 import { NotFoundPage } from '../errors/NotFoundPage';
 import SubmissionMethodNotAllowed from '../SubmissionMethodNotAllowed';
 import FormPageSkeleton from './FormPageSkeleton';
+import useFormDocumentMetadata from './useFormDocumentMetadata';
 
 const FormPageWrapper = () => {
   const { formPath } = useParams();
@@ -60,28 +61,7 @@ const FormPageWrapper = () => {
     })();
   }, [loadForm, loadTranslations]);
 
-  useEffect(() => {
-    const metaPropOgTitle = document.querySelector('meta[property="og:title"]');
-    const metaNameDescr = document.querySelector('meta[name="description"]');
-    const metaNameOgDescr = document.querySelector('meta[property="og:description"]');
-    const setHeaderProp = function (headerObj, metaPropValue) {
-      headerObj?.setAttribute('content', metaPropValue);
-    };
-
-    if (form) {
-      if (form.title) {
-        document.title = `${form.title} | www.nav.no`;
-        setHeaderProp(metaPropOgTitle, `${form.title} | www.nav.no`);
-      }
-    }
-
-    return function cleanup() {
-      document.title = 'Fyll ut skjema - www.nav.no';
-      setHeaderProp(metaPropOgTitle, 'Fyll ut skjema - www.nav.no');
-      setHeaderProp(metaNameDescr, 'Nav søknadsskjema');
-      setHeaderProp(metaNameOgDescr, 'Nav søknadsskjema');
-    };
-  }, [form]);
+  useFormDocumentMetadata(form);
 
   if (loading) {
     return <FormPageSkeleton />;

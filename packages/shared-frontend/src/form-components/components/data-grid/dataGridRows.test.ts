@@ -1,0 +1,378 @@
+import { Form } from '@navikt/skjemadigitalisering-shared-domain';
+import { describe, expect, it } from 'vitest';
+import {
+  enrichComponentsWithBaseSubmissionPath,
+  enrichFormWithBaseSubmissionPath,
+  toComponentDefinitions,
+} from '../../../context/form-definition/formDefinitionUtils';
+import { ComponentDefinition } from '../../component-types';
+import {
+  addDataGridRowId,
+  collectDataGridRowScopes,
+  collectInputSubmissionPaths,
+  getActiveRowComponents,
+  getRenderedDataGridRows,
+  removeDataGridRowId,
+  syncDataGridRowIds,
+} from './dataGridRows';
+
+const createForm = (components: ComponentDefinition[]): Form =>
+  enrichFormWithBaseSubmissionPath({
+    title: 'Test',
+    path: 'test',
+    components,
+    properties: {
+      submissionTypes: ['PAPER'],
+    },
+  } as Form);
+
+describe('dataGridRows', () => {
+  it('renders one empty row by default when the datagrid has no saved rows', () => {
+    expect(getRenderedDataGridRows([], undefined)).toEqual([{}]);
+    expect(getRenderedDataGridRows([], true)).toEqual([]);
+  });
+
+  it('keeps remaining row ids stable when removing a row', () => {
+    const initialRowIds = syncDataGridRowIds([], 2);
+    const nextRowIds = removeDataGridRowId(initialRowIds, 0);
+
+    expect(nextRowIds).toHaveLength(1);
+    expect(nextRowIds[0]).toBe(initialRowIds[1]);
+  });
+
+  it('adds row ids without replacing existing rows', () => {
+    const initialRowIds = syncDataGridRowIds([], 1);
+    const nextRowIds = addDataGridRowId(initialRowIds);
+
+    expect(nextRowIds).toHaveLength(2);
+    expect(nextRowIds[0]).toBe(initialRowIds[0]);
+    expect(nextRowIds[1]).toBeDefined();
+    expect(nextRowIds[1]).not.toBe(initialRowIds[0]);
+  });
+
+  it('creates ids for rows added outside the datagrid controls', () => {
+    const initialRowIds = syncDataGridRowIds([], 1);
+    const synchronizedRowIds = syncDataGridRowIds(initialRowIds, 2);
+
+    expect(synchronizedRowIds).toHaveLength(2);
+    expect(synchronizedRowIds[0]).toBe(initialRowIds[0]);
+    expect(synchronizedRowIds[1]).toBeDefined();
+  });
+
+  it('collects one scope per stored row, with indexed submission paths and row visibility', () => {
+    const datagrid: ComponentDefinition = {
+      key: 'kjoreliste',
+      label: 'Kjøreliste',
+      type: 'datagrid',
+      input: true,
+      tree: true,
+      navId: 'grid',
+      components: [
+        { key: 'harParkering', label: 'Har parkering', type: 'navCheckbox', input: true, navId: 'harParkering' },
+        {
+          key: 'parkeringsutgift',
+          label: 'Parkeringsutgift',
+          type: 'currency',
+          input: true,
+          navId: 'parkering',
+          customConditional: 'show = row.harParkering === true;',
+        },
+      ],
+    };
+    const form = createForm([datagrid]);
+    const submission = {
+      data: { kjoreliste: [{ harParkering: true }, { harParkering: false }, null] },
+    } as never;
+
+    const scopes = collectDataGridRowScopes({ components: toComponentDefinitions(form.components), submission, form });
+
+    expect(scopes).toHaveLength(2);
+    expect(collectInputSubmissionPaths(scopes[0].components).map(({ submissionPath }) => submissionPath)).toEqual([
+      'kjoreliste[0].harParkering',
+      'kjoreliste[0].parkeringsutgift',
+    ]);
+    expect(collectInputSubmissionPaths(scopes[0].activeComponents).map(({ submissionPath }) => submissionPath)).toEqual(
+      ['kjoreliste[0].harParkering', 'kjoreliste[0].parkeringsutgift'],
+    );
+    expect(collectInputSubmissionPaths(scopes[1].activeComponents).map(({ submissionPath }) => submissionPath)).toEqual(
+      ['kjoreliste[1].harParkering'],
+    );
+  });
+
+  it('keeps the data grid itself, but not its children, in the shared submission paths', () => {
+    const datagrid: ComponentDefinition = {
+      key: 'kjoreliste',
+      label: 'Kjøreliste',
+      type: 'datagrid',
+      input: true,
+      tree: true,
+      navId: 'grid',
+      components: [{ key: 'dato', label: 'Dato', type: 'textfield', input: true, navId: 'dato' }],
+    };
+    const form = createForm([datagrid]);
+
+    expect(
+      collectInputSubmissionPaths(toComponentDefinitions(form.components)).map(({ submissionPath }) => submissionPath),
+    ).toEqual(['kjoreliste']);
+  });
+
+  it('filters simple conditionals against row data', () => {
+    const datagrid: ComponentDefinition = {
+      key: 'repeterende',
+      label: 'Repeterende',
+      type: 'datagrid',
+      navId: 'grid',
+      components: [
+        { key: 'showField', label: 'Show field', type: 'navCheckbox', navId: 'showField' },
+        {
+          key: 'field',
+          label: 'Field',
+          type: 'textfield',
+          navId: 'field',
+          conditional: { when: 'showField', eq: 'true', show: true },
+        },
+        {
+          key: 'container',
+          label: 'Container',
+          type: 'container',
+          navId: 'container',
+          components: [
+            {
+              key: 'nestedField',
+              label: 'Nested field',
+              type: 'textfield',
+              navId: 'nestedField',
+              conditional: { when: 'showField', eq: 'true', show: true },
+            },
+          ],
+        },
+      ],
+    };
+    const form = createForm([datagrid]);
+    const rowComponents = toComponentDefinitions(
+      enrichComponentsWithBaseSubmissionPath(datagrid.components ?? [], 'repeterende[0]'),
+    );
+
+    const hidden = getActiveRowComponents(
+      rowComponents,
+      { showField: false },
+      { repeterende: [{ showField: false }] },
+      form,
+    );
+    expect(hidden.map((component) => component.key)).toEqual(['showField', 'container']);
+    expect(hidden.find((component) => component.key === 'container')?.components).toEqual([]);
+
+    const visible = getActiveRowComponents(
+      rowComponents,
+      { showField: true },
+      { repeterende: [{ showField: true }] },
+      form,
+    );
+    expect(visible.map((component) => component.key)).toEqual(['showField', 'field', 'container']);
+    expect(
+      visible.find((component) => component.key === 'container')?.components?.map((component) => component.key),
+    ).toEqual(['nestedField']);
+  });
+
+  it('switches between the production nav540009 identity-number and birth-date fields per row', () => {
+    const datagrid: ComponentDefinition = {
+      key: 'opplysningerOmBarn',
+      label: 'Opplysninger om barn',
+      type: 'datagrid',
+      input: true,
+      tree: true,
+      navId: 'grid',
+      components: [
+        {
+          key: 'barnetsFodselsnummerEllerDNummer',
+          label: 'Barnets fødselsnummer eller d-nummer',
+          type: 'fnrfield',
+          input: true,
+          navId: 'identityNumber',
+          conditional: {
+            eq: true,
+            show: false,
+            when: 'opplysningerOmBarn.barnetHarIkkeNorskFodselsnummerEllerDNummer',
+          } as unknown as ComponentDefinition['conditional'],
+        },
+        {
+          key: 'barnetHarIkkeNorskFodselsnummerEllerDNummer',
+          label: 'Barnet har ikke norsk fødselsnummer eller d-nummer',
+          type: 'navCheckbox',
+          input: true,
+          navId: 'missingIdentityNumber',
+        },
+        {
+          key: 'barnetsFodselsdatoDdMmAaaa',
+          label: 'Barnets fødselsdato (dd.mm.åååå)',
+          type: 'navDatepicker',
+          input: true,
+          navId: 'birthDate',
+          conditional: {
+            eq: true,
+            show: true,
+            when: 'opplysningerOmBarn.barnetHarIkkeNorskFodselsnummerEllerDNummer',
+          } as unknown as ComponentDefinition['conditional'],
+        },
+      ],
+    };
+    const form = createForm([datagrid]);
+    const rowComponents = toComponentDefinitions(
+      enrichComponentsWithBaseSubmissionPath(datagrid.components ?? [], 'opplysningerOmBarn[0]'),
+    );
+
+    expect(
+      getActiveRowComponents(
+        rowComponents,
+        { barnetHarIkkeNorskFodselsnummerEllerDNummer: false },
+        { opplysningerOmBarn: [{ barnetHarIkkeNorskFodselsnummerEllerDNummer: false }] },
+        form,
+      ).map((component) => component.key),
+    ).toEqual(['barnetsFodselsnummerEllerDNummer', 'barnetHarIkkeNorskFodselsnummerEllerDNummer']);
+
+    expect(
+      getActiveRowComponents(
+        rowComponents,
+        { barnetHarIkkeNorskFodselsnummerEllerDNummer: true },
+        { opplysningerOmBarn: [{ barnetHarIkkeNorskFodselsnummerEllerDNummer: true }] },
+        form,
+      ).map((component) => component.key),
+    ).toEqual(['barnetHarIkkeNorskFodselsnummerEllerDNummer', 'barnetsFodselsdatoDdMmAaaa']);
+  });
+
+  it('filters row-based custom conditionals against row data', () => {
+    const datagrid: ComponentDefinition = {
+      key: 'repeterende',
+      label: 'Repeterende',
+      type: 'datagrid',
+      navId: 'grid',
+      components: [
+        { key: 'showField', label: 'Show field', type: 'navCheckbox', navId: 'showField' },
+        {
+          key: 'field',
+          label: 'Field',
+          type: 'textfield',
+          navId: 'field',
+          customConditional: 'show = row.showField === true',
+        },
+      ],
+    };
+    const form = createForm([datagrid]);
+    const rowComponents = toComponentDefinitions(
+      enrichComponentsWithBaseSubmissionPath(datagrid.components ?? [], 'repeterende[0]'),
+    );
+
+    expect(
+      getActiveRowComponents(rowComponents, { showField: false }, { repeterende: [{ showField: false }] }, form).map(
+        (component) => component.key,
+      ),
+    ).toEqual(['showField']);
+    expect(
+      getActiveRowComponents(rowComponents, { showField: true }, { repeterende: [{ showField: true }] }, form).map(
+        (component) => component.key,
+      ),
+    ).toEqual(['showField', 'field']);
+  });
+
+  it('filters nested custom conditionals against the nearest container row data', () => {
+    const datagrid: ComponentDefinition = {
+      key: 'kjaeledyr',
+      label: 'Kjaeledyr',
+      type: 'datagrid',
+      navId: 'grid',
+      components: [
+        {
+          key: 'egenskaper',
+          label: 'Egenskaper',
+          type: 'container',
+          input: true,
+          tree: true,
+          navId: 'container',
+          components: [
+            { key: 'alder', label: 'Alder', type: 'textfield', navId: 'alder' },
+            {
+              key: 'brukerDyretMedisiner',
+              label: 'Bruker dyret medisiner?',
+              type: 'radiopanel',
+              navId: 'medisiner',
+              customConditional: 'show = row.alder ? parseInt(row.alder) >= 10 : false;',
+            },
+          ],
+        },
+      ],
+    };
+    const form = createForm([datagrid]);
+    const rowComponents = toComponentDefinitions(
+      enrichComponentsWithBaseSubmissionPath(datagrid.components ?? [], 'kjaeledyr[0]'),
+    );
+
+    const hidden = getActiveRowComponents(
+      rowComponents,
+      { egenskaper: { alder: '9' } },
+      { kjaeledyr: [{ egenskaper: { alder: '9' } }] },
+      form,
+    );
+    expect(
+      hidden.find((component) => component.key === 'egenskaper')?.components?.map((component) => component.key),
+    ).toEqual(['alder']);
+
+    const visible = getActiveRowComponents(
+      rowComponents,
+      { egenskaper: { alder: '10' } },
+      { kjaeledyr: [{ egenskaper: { alder: '10' } }] },
+      form,
+    );
+    expect(
+      visible.find((component) => component.key === 'egenskaper')?.components?.map((component) => component.key),
+    ).toEqual(['alder', 'brukerDyretMedisiner']);
+  });
+
+  it('filters selectboxes-based custom conditionals against row data', () => {
+    const datagrid: ComponentDefinition = {
+      key: 'maltider',
+      label: 'Maltider',
+      type: 'datagrid',
+      navId: 'grid',
+      components: [
+        {
+          key: 'ingredienser',
+          label: 'Ingredienser',
+          type: 'selectboxes',
+          navId: 'ingredienser',
+          values: [
+            { label: 'Melk', value: 'melk' },
+            { label: 'Kefir', value: 'kefir' },
+          ],
+        },
+        {
+          key: 'kjopteDuVareneRettFraBonden',
+          label: 'Kjopte du varene rett fra bonden?',
+          type: 'radiopanel',
+          navId: 'bonden',
+          customConditional: 'show = row.ingredienser.melk || row.ingredienser.kefir;',
+        },
+      ],
+    };
+    const form = createForm([datagrid]);
+    const rowComponents = toComponentDefinitions(
+      enrichComponentsWithBaseSubmissionPath(datagrid.components ?? [], 'maltider[0]'),
+    );
+
+    expect(
+      getActiveRowComponents(
+        rowComponents,
+        { ingredienser: { melk: false, kefir: false } },
+        { maltider: [{ ingredienser: { melk: false, kefir: false } }] },
+        form,
+      ).map((component) => component.key),
+    ).toEqual(['ingredienser']);
+    expect(
+      getActiveRowComponents(
+        rowComponents,
+        { ingredienser: { melk: true, kefir: false } },
+        { maltider: [{ ingredienser: { melk: true, kefir: false } }] },
+        form,
+      ).map((component) => component.key),
+    ).toEqual(['ingredienser', 'kjopteDuVareneRettFraBonden']);
+  });
+});

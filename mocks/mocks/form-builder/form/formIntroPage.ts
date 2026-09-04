@@ -14,7 +14,7 @@ const formIntroPage = (props?: FormIntroPageType) => {
 
   return {
     ...staticDefaultValues,
-    enabled: enabled ?? 'true',
+    enabled: enabled ?? true,
   };
 };
 

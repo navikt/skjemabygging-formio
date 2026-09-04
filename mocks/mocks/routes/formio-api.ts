@@ -249,6 +249,11 @@ import {
   nationalIdentityNumberCypress101Form,
   nationalIdentityNumberCypress101Translations,
 } from '../data/forms-api/national-identity-number/nationalIdentityNumberCypress101Form';
+import {
+  navUnitSelectionForm,
+  navUnitSelectionTranslations,
+} from '../data/forms-api/nav-unit-selection/navUnitSelectionForm';
+import { newRenderForm, newRenderTranslations } from '../data/forms-api/new-render/newRenderForm';
 import { nologinSubmissionForm, nologinSubmissionTranslations } from '../data/forms-api/nologin/nologinSubmissionForm';
 import { nologinForm, nologinTranslations } from '../data/forms-api/nologinForm';
 import { numberDeprecatedForm, numberDeprecatedTranslations } from '../data/forms-api/number/numberDeprecatedForm';
@@ -437,6 +442,7 @@ const allForms = [
   { form: introPageDigitalNoLoginDeadlineForm(), translations: introPageDigitalNoLoginDeadlineTranslations() },
   { form: introPagePaperForm(), translations: introPagePaperTranslations() },
   { form: largeForm(), translations: undefined },
+  { form: newRenderForm(), translations: newRenderTranslations() },
   { form: mellomlagringNestedValuesForm(), translations: mellomlagringNestedValuesTranslations() },
   {
     form: mellomlagring2IntroPageDraftForm(),
@@ -484,6 +490,7 @@ const allForms = [
     form: submissionTypesPaperDigitalNoLoginForm(),
     translations: submissionTypesPaperDigitalNoLoginTranslations(),
   },
+  { form: navUnitSelectionForm(), translations: navUnitSelectionTranslations() },
   { form: submissionTypesPaperForm(), translations: submissionTypesPaperTranslations() },
   { form: submissionTypesPaperNoLoginForm(), translations: submissionTypesPaperNoLoginTranslations() },
   { form: summaryPageAttachmentDownloadForm(), translations: summaryPageAttachmentDownloadTranslations() },
@@ -594,3 +601,5 @@ export default [
     ],
   },
 ];
+
+export { findTestdata };

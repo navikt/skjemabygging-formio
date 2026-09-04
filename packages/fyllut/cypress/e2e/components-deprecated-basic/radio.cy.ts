@@ -25,7 +25,7 @@ describe('Radio', () => {
       });
     });
 
-    it('should render radio with decriptions correctly', () => {
+    it('should render radio with descriptions correctly', () => {
       // Description for each radio option
       cy.findByLabelText('With description').within(() => {
         cy.findAllByRole('radio', { name: 'First', description: 'This is the first option' }).should('exist');

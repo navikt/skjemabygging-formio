@@ -63,6 +63,19 @@ describe('Digital submission with attachments uploaded in Fyllut', () => {
         });
     });
 
+    it('renders regular components on the attachment panel and summary', () => {
+      cy.findByRole('textbox', { name: /Kommentar til vedlegg/ }).type('Relevant kommentar');
+      cy.clickShowAllSteps();
+      cy.findByRole('link', { name: 'Oppsummering' }).click();
+
+      cy.findByRole('heading', { level: 3, name: 'Vedlegg' })
+        .closest('[data-cy=form-summary-panel]')
+        .within(() => {
+          cy.findByText('Kommentar til vedlegg').should('exist');
+          cy.findByText('Relevant kommentar').should('exist');
+        });
+    });
+
     describe('uploading files', () => {
       beforeEach(() => {
         cy.findAttachment(/Vedlegg 1/).within(() => {

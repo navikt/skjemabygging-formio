@@ -3,7 +3,7 @@ import { FyllutFrontendConfig, SubmissionMethod } from '@navikt/skjemadigitalise
 import { Settings } from 'luxon';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter } from 'react-router';
+import { BrowserRouter, useLocation } from 'react-router';
 import App from './App';
 import ConfirmDelingslenkeModal from './components/ConfirmDelingslenkeModal';
 import getDokumentinnsendingBaseURL from './util/getDokumentinnsendingBaseURL';
@@ -13,6 +13,11 @@ let featureToggles = {};
 
 const subissionMethod = url.getUrlParam(window.location.search, 'sub') as SubmissionMethod;
 Settings.defaultZone = 'Europe/Oslo';
+
+interface ConfiguredAppProps {
+  dokumentinnsendingBaseURL: string;
+  config: FyllutFrontendConfig;
+}
 
 httpFyllut
   .get<FyllutFrontendConfig>('/fyllut/api/config')
@@ -24,25 +29,34 @@ httpFyllut
     console.error(`Could not fetch config from server: ${error}`);
   });
 
-const renderReact = (dokumentInnsendingBaseURL, config) => {
+const renderReact = (dokumentinnsendingBaseURL: string, config: FyllutFrontendConfig) => {
   const root = createRoot(document.getElementById('root')!);
   root.render(
     <StrictMode>
       <BrowserRouter basename="/fyllut">
-        <AppConfigProvider
-          dokumentinnsendingBaseURL={dokumentInnsendingBaseURL}
-          featureToggles={featureToggles}
-          baseUrl={'/fyllut'}
-          fyllutBaseURL={'/fyllut'}
-          submissionMethod={subissionMethod}
-          app="fyllut"
-          config={{ ...config }}
-          http={httpFyllut}
-        >
-          {config.isDelingslenke && <ConfirmDelingslenkeModal />}
-          <App />
-        </AppConfigProvider>
+        <ConfiguredApp dokumentinnsendingBaseURL={dokumentinnsendingBaseURL} config={config} />
       </BrowserRouter>
     </StrictMode>,
+  );
+};
+
+const ConfiguredApp = ({ dokumentinnsendingBaseURL, config }: ConfiguredAppProps) => {
+  const location = useLocation();
+  const submissionMethod = url.getUrlParam(location.search, 'sub') as SubmissionMethod;
+
+  return (
+    <AppConfigProvider
+      dokumentinnsendingBaseURL={dokumentinnsendingBaseURL}
+      featureToggles={featureToggles}
+      baseUrl={'/fyllut'}
+      fyllutBaseURL={'/fyllut'}
+      submissionMethod={submissionMethod ?? subissionMethod}
+      app="fyllut"
+      config={config}
+      http={httpFyllut}
+    >
+      {config.isDelingslenke && <ConfirmDelingslenkeModal />}
+      <App />
+    </AppConfigProvider>
   );
 };

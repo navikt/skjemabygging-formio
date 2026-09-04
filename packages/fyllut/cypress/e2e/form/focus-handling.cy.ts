@@ -116,11 +116,17 @@ describe('Focus handling', () => {
       cy.visit('/fyllut/datagridconditional/levering?sub=paper');
       cy.defaultWaits();
       cy.clickNextStep();
-      cy.get('[data-cy=error-summary]')
-        .should('exist')
-        .within(() => {
-          cy.findByRole('heading', { name: TEXTS.validering.error }).should('have.focus');
-        });
+      cy.get('[data-cy=error-summary]').should('exist');
+      cy.get('[data-cy=error-summary]').should('not.have.attr', 'aria-live');
+      cy.get('[data-cy=error-summary]').within(() => {
+        cy.findByRole('heading', { name: TEXTS.validering.error }).should('have.focus');
+      });
+
+      cy.findByRole('button', { name: 'Neste steg' }).focus();
+      cy.findByRole('button', { name: 'Neste steg' }).click();
+      cy.get('[data-cy=error-summary]').within(() => {
+        cy.findByRole('heading', { name: TEXTS.validering.error }).should('have.focus');
+      });
     });
 
     it('puts focus on correct component when clicking in error summary', () => {

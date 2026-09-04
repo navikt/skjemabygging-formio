@@ -9,6 +9,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import translationUtil from '../util/translation/translationUtil';
 import renderPdfForm from './RenderPdfForm';
+import { withResolvedSubmissionAttachments } from './resolveSubmissionAttachments';
 import { PdfRendererAppConfig } from './types';
 
 interface RenderApplicationPdfProps {
@@ -30,13 +31,12 @@ const renderApplicationPdf = ({
 }: RenderApplicationPdfProps): PdfFormData | undefined => {
   const translate = translationUtil.createTranslate(translations, language);
 
-  const activeComponents = navFormUtils.getActiveComponentsFromForm(form, submission);
-  const activeAttachmentUploadsPanel = navFormUtils.getActiveAttachmentPanelFromForm(form, submission);
+  const normalizedSubmission = withResolvedSubmissionAttachments(form, submission);
+  const activeComponents = navFormUtils.getAllActivePanelsFromForm(form, normalizedSubmission);
 
   return renderPdfForm({
     activeComponents,
-    activeAttachmentUploadsPanel,
-    submission,
+    submission: normalizedSubmission,
     form,
     currentLanguage: language,
     translate,
