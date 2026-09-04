@@ -23,6 +23,9 @@ forms-source: "formsapi-staging"
 pdf-footer-env-slug: "preprod"
 nologin:
   token-lifetime-hours: 6
+captcha:
+  use-pow: true
+  pow-difficulty: 16
 environmentVars:
   - name: FORMIO_API_SERVICE
     value: http://formio-api

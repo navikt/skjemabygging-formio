@@ -12,6 +12,7 @@ const {
   frontendLoggerConfig,
   gitVersion,
   mocksEnabled,
+  captcha,
 } = configObject;
 
 const config = {
@@ -27,6 +28,7 @@ const config = {
     const payload = {
       ...sharedConfig,
       isDelingslenke,
+      useCaptchaPow: captcha.powEnabled,
       mocksEnabled,
       isLoggedIn,
       gitVersion,

@@ -22,6 +22,9 @@ forms-source: "static"
 pdf-footer-env-slug: ""
 nologin:
   token-lifetime-hours: 6
+captcha:
+  use-pow: true
+  pow-difficulty: 16
 environmentVars: []
 azure:
   application:

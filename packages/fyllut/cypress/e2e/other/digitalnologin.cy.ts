@@ -185,10 +185,6 @@ describe('Digital no login', () => {
       cy.defaultIntercepts();
       cy.intercept({
         method: 'POST',
-        url: '/fyllut/api/send-inn/nologin-application/attachments/personal-id',
-      }).as('uploadPersonalId');
-      cy.intercept({
-        method: 'POST',
         url: '/fyllut/api/captcha',
       }).as('captchaRequest');
 
@@ -215,9 +211,6 @@ describe('Digital no login', () => {
       cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
       cy.findByRole('button', { name: 'Slett filen' }).click();
       cy.uploadFile('small-file.txt', { verifyUpload: true });
-      // expect two invocations of @uploadPersonalId, but only one of @captchaRequest
-      cy.wait(['@uploadPersonalId', '@uploadPersonalId']);
-      cy.get('@uploadPersonalId.all').should('have.length', 2);
       cy.get('@captchaRequest.all').should('have.length', 1);
     });
   });

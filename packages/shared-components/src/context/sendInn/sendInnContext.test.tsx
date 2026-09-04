@@ -60,6 +60,7 @@ describe('sendInnContext', () => {
     isProdGcp: false,
     isDevelopment: true,
     isDelingslenke: false,
+    useCaptchaPow: false,
     isLoggedIn: false,
     mocksEnabled: true,
     gitVersion: 'test',
