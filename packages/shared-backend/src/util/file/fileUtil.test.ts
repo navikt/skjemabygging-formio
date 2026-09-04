@@ -74,6 +74,24 @@ describe('fileUtil', () => {
       await expect(blob.text()).resolves.toBe('temporary file');
     });
 
+    it('creates a blob from a file accessed through an alias to the OS temp directory', async () => {
+      const tempDirectory = createTempDirectory(os.tmpdir(), 'file-util-test-');
+      const filePath = path.join(tempDirectory, 'upload.txt');
+      fs.writeFileSync(filePath, 'temporary file');
+      const aliasDirectory = fs.mkdtempSync(path.join(process.cwd(), 'file-util-test-alias-'));
+      fs.rmSync(aliasDirectory, { force: true, recursive: true });
+      fs.symlinkSync(tempDirectory, aliasDirectory, 'dir');
+      createdPaths.push(aliasDirectory);
+
+      const blob = await fileUtil.createBlobFromUploadedFile({
+        path: path.join(aliasDirectory, 'upload.txt'),
+        mimetype: 'text/plain',
+        buffer: Buffer.alloc(0),
+      });
+
+      await expect(blob.text()).resolves.toBe('temporary file');
+    });
+
     it('creates a blob from the in-memory file buffer when no temp file path exists', async () => {
       const blob = await fileUtil.createBlobFromUploadedFile({
         mimetype: 'text/plain',
