@@ -45,6 +45,8 @@ import tc21c from '../data/test-cases/tc21c-innsending-nologin-soknad-body.json'
 import tc21d from '../data/test-cases/tc21d-innsending-nologin-soknad-body.json';
 import tc21e from '../data/test-cases/tc21e-innsending-soknad-body.json';
 import tc21f from '../data/test-cases/tc21f-innsending-soknad-body.json';
+import tc22a from '../data/test-cases/tc22a-innsending-nologin-soknad-body.json';
+import tc22b from '../data/test-cases/tc22b-innsending-nologin-soknad-body.json';
 import { compareBodyMiddleware } from '../utils/testCaseUtils';
 
 const upload = multer();
@@ -867,6 +869,28 @@ export default [
         options: {
           middleware: compareBodyMiddleware(
             tc21d,
+            ['innsendingsId', 'mainDocument', 'mainDocumentAlt', 'attachments.fileIds'],
+            okResponseHandlerNologinSubmission,
+          ),
+        },
+      },
+      {
+        id: 'success-tc22a',
+        type: 'middleware',
+        options: {
+          middleware: compareBodyMiddleware(
+            tc22a,
+            ['innsendingsId', 'mainDocument', 'mainDocumentAlt', 'attachments.fileIds'],
+            okResponseHandlerNologinSubmission,
+          ),
+        },
+      },
+      {
+        id: 'success-tc22b',
+        type: 'middleware',
+        options: {
+          middleware: compareBodyMiddleware(
+            tc22b,
             ['innsendingsId', 'mainDocument', 'mainDocumentAlt', 'attachments.fileIds'],
             okResponseHandlerNologinSubmission,
           ),

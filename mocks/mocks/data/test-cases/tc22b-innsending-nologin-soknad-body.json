@@ -1,0 +1,21 @@
+{
+  "avsender": {
+    "idType": "ORGNR",
+    "id": "889640782",
+    "navn": "Test organization"
+  },
+  "formNumber": "Party mapping 002",
+  "title": "Party mapping organization sender test form",
+  "tema": "HJE",
+  "language": "nb",
+  "attachments": [
+    {
+      "attachmentCode": "K2",
+      "label": "Norsk pass",
+      "title": "Norsk pass",
+      "uploadStatus": "LastetOpp",
+      "description": null
+    }
+  ],
+  "otherUploadAvailable": false
+}
