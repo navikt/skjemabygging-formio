@@ -7,12 +7,14 @@ import {
   OpplastingsStatus,
   SubmitApplicationRequest,
 } from '@navikt/skjemadigitalisering-shared-backend';
+import type { FyllutLegacySubmission, PartyResolutionErrorCode } from '@navikt/skjemadigitalisering-shared-domain';
 import {
   AttachmentSettingValues,
   Component,
   createFyllutPartyLookup,
   Form,
   formatUtils,
+  hasLegacyPersonSender,
   I18nTranslationMap,
   navFormUtils,
   resolveParty,
@@ -41,7 +43,7 @@ const assembleSubmitApplicationRequest = (
   }
 
   return {
-    ...(bruker && { bruker: bruker.replace(/\s/g, '') }),
+    ...(bruker && { bruker }),
     ...(avsender && { avsender }),
     formNumber: form.properties.skjemanummer,
     title: translate(form.title),
@@ -105,12 +107,16 @@ const extractApplicationParty = (form: Form, submission: Submission): Applicatio
 const isEquivalentFyllutApplicationSource = (form: Form, submission: Submission): boolean =>
   !!yourInformationUtils.getYourInformation(form, submission.data) || !!submission.data.fodselsnummerDNummerSoker;
 
-const isFyllutApplicationCompatibilityCase = (form: Form, submission: Submission, resolutionError: string): boolean => {
+const isFyllutApplicationCompatibilityCase = (
+  form: Form,
+  submission: Submission,
+  resolutionError: PartyResolutionErrorCode,
+): boolean => {
   const sender = senderUtils.getSender(form, submission.data);
   const yourInformation = yourInformationUtils.getYourInformation(form, submission.data);
 
   // Retire with #2186 once flat sender fields are absent from production and resumable submissions.
-  if (submission.data.fornavnAvsender || submission.data.etternavnAvsender) {
+  if (hasLegacyPersonSender(submission.data as FyllutLegacySubmission)) {
     return true;
   }
 

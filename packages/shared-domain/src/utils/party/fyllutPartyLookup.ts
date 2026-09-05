@@ -1,106 +1,12 @@
-import {
-  Form,
-  PartyAddress,
-  SubmissionAddress,
-  SubmissionData,
-  SubmissionSender,
-  SubmissionYourInformation,
-} from '../../models';
+import { Form, SubmissionData, SubmissionSender, SubmissionYourInformation } from '../../models';
 import { senderUtils, yourInformationUtils } from '../submission';
+import { FyllutLegacySubmission, hasLegacyPersonSender, mapFyllutLegacyPartyAddress } from './fyllutLegacyPartyAdapter';
+import { mapSubmissionAddress } from './partyAddress';
 import { PartyValueLookup, PersonValue } from './partyResolver';
 
 interface FyllutPartyLookupOptions {
   legacyIdentityFallback?: boolean;
 }
-
-type LegacySubmission = {
-  fornavnSoker?: string;
-  etternavnSoker?: string;
-  coSoker?: string;
-  postnummerSoker?: string;
-  postnrSoker?: string;
-  utenlandskPostkodeSoker?: string;
-  poststedSoker?: string;
-  landSoker?: string;
-  gateadresseSoker?: string;
-  norskVegadresse?: {
-    coSoker?: string;
-    vegadresseSoker?: string;
-    postnrSoker?: string;
-    poststedSoker?: string;
-  };
-  norskPostboksadresse?: {
-    coSoker?: string;
-    postboksNrSoker?: string;
-    postnrSoker?: string;
-    poststedSoker?: string;
-  };
-  utenlandskAdresse?: {
-    coSoker?: string;
-    postboksNrSoker?: string;
-    bygningSoker?: string;
-    postkodeSoker?: string;
-    poststedSoker?: string;
-    landSoker?: string;
-    regionSoker?: string;
-  };
-  fodselsnummerDNummerSoker?: string;
-  fornavnAvsender?: string;
-  etternavnAvsender?: string;
-};
-
-const mapAddress = (address: SubmissionAddress): PartyAddress => ({
-  co: address.co,
-  postOfficeBox: address.postboks,
-  streetAddress: address.adresse,
-  building: address.bygning,
-  postalCode: address.postnummer,
-  postalName: address.bySted,
-  region: address.region,
-  country: address.land,
-});
-
-const mapLegacyAddress = (submission: LegacySubmission): PartyAddress => {
-  const {
-    coSoker,
-    gateadresseSoker,
-    poststedSoker,
-    postnummerSoker,
-    postnrSoker,
-    landSoker,
-    utenlandskPostkodeSoker,
-    norskVegadresse,
-    norskPostboksadresse,
-    utenlandskAdresse,
-  } = submission;
-  const country = landSoker || utenlandskAdresse?.landSoker || (norskVegadresse || norskPostboksadresse ? 'Norge' : '');
-
-  return {
-    co: norskVegadresse?.coSoker || utenlandskAdresse?.coSoker || coSoker,
-    postOfficeBox:
-      (norskPostboksadresse?.postboksNrSoker && `Postboks ${norskPostboksadresse.postboksNrSoker}`) ||
-      utenlandskAdresse?.postboksNrSoker,
-    streetAddress: norskVegadresse?.vegadresseSoker || gateadresseSoker,
-    building: utenlandskAdresse?.bygningSoker,
-    postalCode:
-      norskVegadresse?.postnrSoker ||
-      norskPostboksadresse?.postnrSoker ||
-      utenlandskAdresse?.postkodeSoker ||
-      postnrSoker ||
-      utenlandskPostkodeSoker ||
-      postnummerSoker,
-    postalName:
-      norskVegadresse?.poststedSoker ||
-      norskPostboksadresse?.poststedSoker ||
-      utenlandskAdresse?.poststedSoker ||
-      poststedSoker,
-    region: utenlandskAdresse?.regionSoker,
-    country: {
-      value: country,
-      label: country,
-    },
-  };
-};
 
 const readYourInformation = (form: Form, submission: SubmissionData): SubmissionYourInformation | undefined =>
   yourInformationUtils.getYourInformation(form, submission);
@@ -118,16 +24,16 @@ const readUser = (form: Form, submission: SubmissionData, options: FyllutPartyLo
       nationalIdentityNumber:
         yourInformation.identitet?.identitetsnummer ||
         (options.legacyIdentityFallback && typeof legacyIdentity === 'string' ? legacyIdentity : undefined),
-      address: yourInformation.adresse ? mapAddress(yourInformation.adresse) : undefined,
+      address: yourInformation.adresse ? mapSubmissionAddress(yourInformation.adresse) : undefined,
     };
   }
 
-  const legacy = submission as LegacySubmission;
+  const legacy = submission as FyllutLegacySubmission;
   return {
     firstName: legacy.fornavnSoker,
     surname: legacy.etternavnSoker,
     nationalIdentityNumber: legacy.fodselsnummerDNummerSoker,
-    address: legacy.fodselsnummerDNummerSoker ? undefined : mapLegacyAddress(legacy),
+    address: legacy.fodselsnummerDNummerSoker ? undefined : mapFyllutLegacyPartyAddress(legacy),
   };
 };
 
@@ -137,7 +43,7 @@ const createFyllutPartyLookup = (form: Form, options: FyllutPartyLookupOptions =
     if (sender?.organization) {
       return 'organization';
     }
-    if (sender?.person || (submission.data.fornavnAvsender && submission.data.etternavnAvsender)) {
+    if (sender?.person || hasLegacyPersonSender(submission.data as FyllutLegacySubmission)) {
       return 'other-person';
     }
     return 'self';
@@ -153,8 +59,8 @@ const createFyllutPartyLookup = (form: Form, options: FyllutPartyLookupOptions =
       };
     }
 
-    const legacy = submission.data as LegacySubmission;
-    if (legacy.fornavnAvsender || legacy.etternavnAvsender) {
+    const legacy = submission.data as FyllutLegacySubmission;
+    if (hasLegacyPersonSender(legacy)) {
       return {
         firstName: legacy.fornavnAvsender,
         surname: legacy.etternavnAvsender,

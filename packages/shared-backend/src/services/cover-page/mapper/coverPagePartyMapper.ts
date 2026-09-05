@@ -1,6 +1,14 @@
 import { CoverPageDownloadType, Party } from '@navikt/skjemadigitalisering-shared-domain';
 
-type CoverPagePartyData = Pick<CoverPageDownloadType, 'user' | 'recipient'>;
+type CoverPagePartyData =
+  | {
+      user: CoverPageDownloadType['user'];
+      recipient?: never;
+    }
+  | {
+      user?: never;
+      recipient: NonNullable<CoverPageDownloadType['recipient']>;
+    };
 
 const mapPartyToCoverPage = (party: Party): CoverPagePartyData => {
   if (party.user.kind === 'identified-person') {

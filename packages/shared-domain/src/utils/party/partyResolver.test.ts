@@ -1,12 +1,10 @@
 import { Submission } from '../../models';
-import {
-  PartyResolutionErrorCode,
-  PartyRuntimeContext,
-  PartyValueLookup,
-  resolveParty,
-} from './partyResolver';
+import { PartyResolutionErrorCode, PartyRuntimeContext, PartyValueLookup, resolveParty } from './partyResolver';
 
-const dataAt = <T>(key: string) => (submission: Submission) => submission.data[key] as T | undefined;
+const dataAt =
+  <T>(key: string) =>
+  (submission: Submission) =>
+    submission.data[key] as T | undefined;
 
 const lookup: PartyValueLookup = {
   relationship: dataAt('relationship'),
@@ -204,6 +202,26 @@ describe('resolveParty', () => {
     error: PartyResolutionErrorCode;
   }[] = [
     {
+      name: 'a missing relationship',
+      data: { user: { nationalIdentityNumber: '12345678911' } },
+      error: 'missing-relationship',
+    },
+    {
+      name: 'an invalid relationship',
+      data: { relationship: 'invalid', user: { nationalIdentityNumber: '12345678911' } },
+      error: 'invalid-relationship',
+    },
+    {
+      name: 'a missing user',
+      data: { relationship: 'self' },
+      error: 'missing-user',
+    },
+    {
+      name: 'a user without a name or identity number',
+      data: { relationship: 'self', user: {} },
+      error: 'missing-user-name',
+    },
+    {
       name: 'a name-only user',
       data: { relationship: 'self', user: { firstName: 'Name', surname: 'Only' } },
       error: 'missing-user-address',
@@ -232,7 +250,21 @@ describe('resolveParty', () => {
         user: { kind: 'several-people' },
         navUnit: '9999',
       },
-      error: 'nav-unit-not-allowed',
+      error: 'missing-allowed-nav-units',
+    },
+    {
+      name: 'a missing person sender',
+      data: { relationship: 'other-person', user: { nationalIdentityNumber: '12345678911' } },
+      error: 'missing-sender',
+    },
+    {
+      name: 'a person sender without a name',
+      data: {
+        relationship: 'other-person',
+        sender: { nationalIdentityNumber: '10987654321' },
+        user: { nationalIdentityNumber: '12345678911' },
+      },
+      error: 'missing-sender-name',
     },
     {
       name: 'a whitespace-only sender identity',
@@ -244,6 +276,20 @@ describe('resolveParty', () => {
       error: 'missing-sender-identity',
     },
     {
+      name: 'a missing organization sender',
+      data: { relationship: 'organization', user: { nationalIdentityNumber: '12345678911' } },
+      error: 'missing-organization',
+    },
+    {
+      name: 'an organization sender without a name',
+      data: {
+        relationship: 'organization',
+        organization: { organizationNumber: '889640782' },
+        user: { nationalIdentityNumber: '12345678911' },
+      },
+      error: 'missing-organization-name',
+    },
+    {
       name: 'a whitespace-only organization number',
       data: {
         relationship: 'organization',
@@ -251,6 +297,46 @@ describe('resolveParty', () => {
         user: { nationalIdentityNumber: '12345678911' },
       },
       error: 'missing-organization-number',
+    },
+    {
+      name: 'several people without a NAV unit',
+      data: {
+        relationship: 'organization',
+        organization: { name: 'Organization', organizationNumber: '889640782' },
+        user: { kind: 'several-people' },
+      },
+      context: { allowedNavUnits: ['9999'] },
+      error: 'missing-nav-unit',
+    },
+    {
+      name: 'several people missing both a NAV unit and an organization',
+      data: {
+        relationship: 'organization',
+        user: { kind: 'several-people' },
+      },
+      context: { allowedNavUnits: ['9999'] },
+      error: 'missing-nav-unit',
+    },
+    {
+      name: 'an address object without any populated value',
+      data: { relationship: 'self', user: { firstName: 'Name', surname: 'Only', address: {} } },
+      error: 'missing-user-address',
+    },
+    {
+      name: 'an address carrying only empty values',
+      data: {
+        relationship: 'self',
+        user: { firstName: 'Name', surname: 'Only', address: { streetAddress: '', country: { value: '', label: '' } } },
+      },
+      error: 'missing-user-address',
+    },
+    {
+      name: 'an address whose nested value is not a country object',
+      data: {
+        relationship: 'self',
+        user: { firstName: 'Name', surname: 'Only', address: { unexpected: {} } },
+      },
+      error: 'missing-user-address',
     },
   ];
 

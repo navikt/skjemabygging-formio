@@ -69,6 +69,20 @@ describe('createFyllutPartyLookup', () => {
     });
   });
 
+  it('keeps a flat legacy name-only user as an explicit unsupported compatibility shape', () => {
+    const submission: Submission = {
+      data: {
+        fornavnSoker: 'Name',
+        etternavnSoker: 'Only',
+      },
+    };
+
+    expect(resolveParty(submission, createFyllutPartyLookup({ ...form, components: [] }))).toEqual({
+      success: false,
+      error: 'missing-user-address',
+    });
+  });
+
   it('can preserve the application mapping legacy identity fallback', () => {
     const submission: Submission = {
       data: {

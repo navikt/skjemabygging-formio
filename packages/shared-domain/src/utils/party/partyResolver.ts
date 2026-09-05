@@ -6,6 +6,8 @@ import {
   ResponsiblePerson,
   Submission,
 } from '../../models';
+import { formatUtils } from '../format';
+import { hasAddressValue, isText } from './partyAddress';
 
 type PartyRelationship = Party['relationship'];
 
@@ -21,7 +23,11 @@ interface OrganizationValue {
   organizationNumber?: string;
 }
 
-type UserValue = PersonValue | { kind: 'several-people' };
+interface SeveralPeopleValue {
+  kind: 'several-people';
+}
+
+type UserValue = PersonValue | SeveralPeopleValue;
 type PartyValueReader<T> = (submission: Submission) => T | undefined;
 
 interface PartyValueLookup {
@@ -52,6 +58,7 @@ type PartyResolutionErrorCode =
   | 'missing-organization-name'
   | 'missing-organization-number'
   | 'missing-nav-unit'
+  | 'missing-allowed-nav-units'
   | 'nav-unit-not-allowed'
   | 'unsupported-user';
 
@@ -65,10 +72,12 @@ type PartyResolution =
       error: PartyResolutionErrorCode;
     };
 
-const normalizeIdentifier = (value: string) => value.replace(/\s/g, '');
-const isText = (value: unknown): value is string => typeof value === 'string' && value.length > 0;
 const isPartyAddress = (value: unknown): value is PartyAddress =>
-  typeof value === 'object' && value !== null && !Array.isArray(value);
+  typeof value === 'object' && value !== null && !Array.isArray(value) && hasAddressValue(value as PartyAddress);
+const isPartyRelationship = (value: unknown): value is PartyRelationship =>
+  value === 'self' || value === 'other-person' || value === 'organization';
+const isSeveralPeople = (value: UserValue): value is SeveralPeopleValue =>
+  'kind' in value && value.kind === 'several-people';
 
 const resolveConcernedPerson = (
   value: UserValue | undefined,
@@ -77,11 +86,11 @@ const resolveConcernedPerson = (
     return { success: false, error: 'missing-user' };
   }
 
-  if ('kind' in value) {
+  if (isSeveralPeople(value)) {
     return { success: false, error: 'unsupported-user' };
   }
 
-  const nationalIdentityNumber = normalizeIdentifier(
+  const nationalIdentityNumber = formatUtils.removeAllSpaces(
     typeof value.nationalIdentityNumber === 'string' ? value.nationalIdentityNumber : '',
   );
   if (nationalIdentityNumber) {
@@ -125,7 +134,7 @@ const resolveResponsiblePerson = (
     return { success: false, error: 'missing-sender-name' };
   }
 
-  const nationalIdentityNumber = normalizeIdentifier(
+  const nationalIdentityNumber = formatUtils.removeAllSpaces(
     context.verifiedActor?.nationalIdentityNumber ??
       (typeof value.nationalIdentityNumber === 'string' ? value.nationalIdentityNumber : ''),
   );
@@ -154,7 +163,7 @@ const resolveOrganization = (
     return { success: false, error: 'missing-organization-name' };
   }
 
-  const organizationNumber = normalizeIdentifier(
+  const organizationNumber = formatUtils.removeAllSpaces(
     typeof value.organizationNumber === 'string' ? value.organizationNumber : '',
   );
   if (!organizationNumber) {
@@ -175,12 +184,18 @@ const resolveSeveralPeople = (
   submission: Submission,
   context: PartyRuntimeContext,
 ): PartyResolution => {
+  // The NAV unit is the concerned-user value for this variant, so it is resolved before the sender,
+  // matching the user-then-sender precedence used for every other relationship.
   const navUnit = lookup.navUnit?.(submission);
   if (!navUnit) {
     return { success: false, error: 'missing-nav-unit' };
   }
 
-  if (!context.allowedNavUnits?.includes(navUnit)) {
+  if (!context.allowedNavUnits) {
+    return { success: false, error: 'missing-allowed-nav-units' };
+  }
+
+  if (!context.allowedNavUnits.includes(navUnit)) {
     return { success: false, error: 'nav-unit-not-allowed' };
   }
 
@@ -211,12 +226,12 @@ const resolveParty = (
   if (!relationship) {
     return { success: false, error: 'missing-relationship' };
   }
-  if (!['self', 'other-person', 'organization'].includes(relationship)) {
+  if (!isPartyRelationship(relationship)) {
     return { success: false, error: 'invalid-relationship' };
   }
 
   const userValue = lookup.user(submission);
-  if (relationship === 'organization' && userValue && 'kind' in userValue && userValue.kind === 'several-people') {
+  if (relationship === 'organization' && userValue && isSeveralPeople(userValue)) {
     return resolveSeveralPeople(lookup, submission, context);
   }
 
@@ -266,7 +281,7 @@ const resolveParty = (
   };
 };
 
-export { resolveParty };
+export { isPartyRelationship, resolveParty };
 export type {
   OrganizationValue,
   PartyRelationship,
@@ -275,5 +290,6 @@ export type {
   PartyRuntimeContext,
   PartyValueLookup,
   PersonValue,
+  SeveralPeopleValue,
   UserValue,
 };
