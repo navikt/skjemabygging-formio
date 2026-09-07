@@ -156,17 +156,10 @@ const resolveSelectType = (component: Component): SelectType => {
   return 'auto';
 };
 
-const resolveInputType = (component: Component) => {
-  if (component.inputType === 'email' || component.inputType === 'url' || component.inputType === 'tel') {
-    return component.inputType;
-  }
-};
-
 export {
   getValues,
   isRequired,
   resolveFieldSize,
-  resolveInputType,
   resolveNumberDisplayValue,
   resolveNumberFormatKey,
   resolveNumericStateValue,

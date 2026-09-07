@@ -7,7 +7,6 @@ import {
   InputComponentProps,
   isRequired,
   resolveFieldSize,
-  resolveInputType,
   resolveReadMore,
   resolveSubmissionPath,
 } from '../../inputComponentRegistryUtils';
@@ -32,7 +31,6 @@ const InputSurname = ({ component, submissionPath }: InputComponentProps<Surname
         fieldSize={resolveFieldSize(component)}
         autoComplete={component.autocomplete}
         inputMode={component.inputType}
-        type={resolveInputType(component)}
         spellCheck={component.spellCheck}
         prefillValue={typeof component.prefillValue === 'string' ? component.prefillValue : undefined}
         readOnly={component.readOnly}

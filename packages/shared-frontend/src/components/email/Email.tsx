@@ -13,7 +13,6 @@ const Email = ({ validation, required = true, ...props }: EmailProps) => (
   <InternalTextField
     {...props}
     required={required}
-    type="email"
     validation={toEmailValidation({ ...props, required, validation }).rules}
   />
 );

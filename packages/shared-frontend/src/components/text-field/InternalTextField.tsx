@@ -10,7 +10,7 @@ import TranslatedDescription from '../shared/TranslatedDescription';
 import TranslatedLabel from '../shared/TranslatedLabel';
 import { BaseFieldProps, FieldValidationProp } from '../types';
 
-type SupportedTextFieldType = 'text' | 'tel' | 'url' | 'email' | 'number' | 'time';
+type SupportedTextFieldType = 'text' | 'tel';
 
 /**
  * Internal composition seam for semantic text fields that supply resolved intrinsic rules.

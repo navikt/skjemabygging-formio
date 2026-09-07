@@ -5,7 +5,6 @@ import {
   InputComponentProps,
   isRequired,
   resolveFieldSize,
-  resolveInputType,
   resolveReadMore,
   resolveSubmissionPath,
 } from '../../inputComponentRegistryUtils';
@@ -28,7 +27,6 @@ const InputTextField = ({ component, submissionPath }: InputComponentProps<TextF
         readOnly={component.readOnly}
         autoComplete={component.autocomplete}
         inputMode={component.inputType}
-        type={resolveInputType(component)}
         spellCheck={component.spellCheck}
         prefillValue={typeof component.prefillValue === 'string' ? component.prefillValue : undefined}
         readMore={resolveReadMore(component)}
