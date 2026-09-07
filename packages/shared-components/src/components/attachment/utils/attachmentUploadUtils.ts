@@ -17,6 +17,8 @@ const filterAttachmentsByComponentId = (submissionAttachments: SubmissionAttachm
 const getLargestAttachmentIdCounter = (attachments: SubmissionAttachment[]): number =>
   Math.max(0, ...attachments.map((attachment) => parseInt(attachment.attachmentId.split('-')[1] ?? 0)));
 
+const hasActiveUpload = (uploads: Array<{ error?: boolean }>): boolean => uploads.some((upload) => !upload.error);
+
 const removeAttachmentById = (attachments: SubmissionAttachment[], attachmentId: string): SubmissionAttachment[] =>
   attachments.filter((attachment) => attachment.attachmentId !== attachmentId);
 
@@ -56,6 +58,7 @@ export {
   findAttachmentByComponentId,
   getDefaultOtherAttachment,
   getLargestAttachmentIdCounter,
+  hasActiveUpload,
   normalizeAttachmentDownloadBlob,
   normalizeAttachmentDownloadFileName,
   removeAttachmentById,

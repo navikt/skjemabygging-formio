@@ -5,6 +5,7 @@ import {
   findAttachmentByComponentId,
   getDefaultOtherAttachment,
   getLargestAttachmentIdCounter,
+  hasActiveUpload,
   normalizeAttachmentDownloadBlob,
   normalizeAttachmentDownloadFileName,
   removeAttachmentById,
@@ -157,6 +158,17 @@ describe('attachmentUploadUtils', () => {
         { attachmentId: 'comp1', navId: 'comp1', type: 'other' },
         { attachmentId: 'comp2', navId: 'comp2', type: 'default' },
       ]);
+    });
+  });
+
+  describe('hasActiveUpload', () => {
+    it('returns true while an upload is in progress', () => {
+      expect(hasActiveUpload([{}])).toBe(true);
+    });
+
+    it('returns false when no uploads are in progress', () => {
+      expect(hasActiveUpload([])).toBe(false);
+      expect(hasActiveUpload([{ error: true }])).toBe(false);
     });
   });
 

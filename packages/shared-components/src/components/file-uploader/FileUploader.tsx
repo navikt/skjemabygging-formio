@@ -14,6 +14,7 @@ import { getAttachment } from '../../util/attachment/attachmentsUtil';
 import makeStyles from '../../util/styles/jss/jss';
 import { useAttachmentUpload } from '../attachment/AttachmentUploadContext';
 import { attachmentValidator } from '../attachment/attachmentValidator';
+import { hasActiveUpload } from '../attachment/utils/attachmentUploadUtils';
 import FilesPreview from './FilesPreview';
 import UploadButton from './UploadButton';
 
@@ -87,6 +88,7 @@ const FileUploader = ({
   const showButton = multiple || initialUpload;
   const inProgress = Object.values(uploadsInProgress[attachmentId] ?? {});
   const fileItems = [...uploadedFiles, ...inProgress];
+  const deleteAttachmentDisabled = hasActiveUpload(inProgress);
 
   const attachmentTitleErrorMessage = errors[attachmentId]?.find((error) => error.type === 'TITLE')?.message;
   const attachmentTitleValidator = attachmentValidator(translate, ['otherDocumentationTitle']);
@@ -158,6 +160,7 @@ const FileUploader = ({
               <Button
                 className={styles.deleteButton}
                 variant="tertiary"
+                disabled={deleteAttachmentDisabled}
                 onClick={() => onDeleteAttachment(attachmentId)}
               >
                 {translate(TEXTS.statiske.attachment.deleteAttachment)}

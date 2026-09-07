@@ -172,6 +172,28 @@ describe('Attachments page', () => {
       cy.findAllByText('test.txt').should('have.length', 2);
     });
 
+    it('disables repeated attachment deletion while an upload is in progress', () => {
+      cy.findByRole('group', {
+        name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
+      }).within(() => {
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).click();
+      });
+      getOtherAttachment().within(() => {
+        cy.findByLabelText(TEXTS.statiske.attachment.attachmentTitle).type('Vedleggstittel 1');
+        uploadFileInCurrentScope('test.txt');
+        cy.findByRole('button', { name: TEXTS.statiske.attachment.addNewAttachment }).click();
+        cy.findAllByLabelText(TEXTS.statiske.attachment.attachmentTitle).last().type('Vedleggstittel 2');
+        cy.intercept('POST', '/fyllut/api/send-inn/nologin-application/attachments/ez0ub3y-1', (req) => {
+          req.continue((res) => {
+            res.setDelay(1500);
+          });
+        }).as('uploadRepeatedAttachment');
+        uploadFileInCurrentScope('test.txt');
+        cy.findByRole('button', { name: TEXTS.statiske.attachment.deleteAttachment }).should('be.disabled');
+      });
+      cy.wait('@uploadRepeatedAttachment');
+    });
+
     it('lets you add more attachments after visiting summary page', () => {
       cy.findByRole('group', { name: 'Informasjon om din næringsinntekt fra Norge eller utlandet' }).within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadLater }).click();
@@ -237,7 +259,9 @@ describe('Attachments page', () => {
         uploadFileInCurrentScope('test.txt');
         cy.findByRole('button', { name: TEXTS.statiske.attachment.addNewAttachment }).click();
         cy.findAllByLabelText(TEXTS.statiske.attachment.attachmentTitle).last().type('Vedleggstittel 2');
-        cy.intercept('POST', '/fyllut/api/send-inn/nologin-application/attachments/*').as('deleteUnuploadedAttachment');
+        cy.intercept('DELETE', '/fyllut/api/send-inn/nologin-application/attachments/*').as(
+          'deleteUnuploadedAttachment',
+        );
         cy.findByRole('button', { name: TEXTS.statiske.attachment.deleteAttachment }).click();
       });
       cy.findByText('Vedleggstittel 1').should('exist');
