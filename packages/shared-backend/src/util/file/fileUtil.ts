@@ -48,8 +48,8 @@ const createBlobFromUploadedFile = async (
 ) => {
   if (file.path) {
     const resolvedUploadTempDirectory = await realpath(uploadTempDirectory);
-    const candidateFilePath = path.resolve(resolvedUploadTempDirectory, file.path);
-    const candidateRelativeFilePath = path.relative(resolvedUploadTempDirectory, candidateFilePath);
+    const candidateFilePath = path.resolve(uploadTempDirectory, file.path);
+    const candidateRelativeFilePath = path.relative(uploadTempDirectory, candidateFilePath);
     if (candidateRelativeFilePath.startsWith('..') || path.isAbsolute(candidateRelativeFilePath)) {
       throw new ResponseError('BAD_REQUEST', 'Invalid temporary upload path');
     }
