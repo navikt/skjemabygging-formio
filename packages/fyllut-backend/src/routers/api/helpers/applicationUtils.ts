@@ -84,28 +84,31 @@ const assembleSubmitApplicationRequest = (
 
 const extractApplicationParty = (form: Form, submission: Submission): ApplicationPartyData => {
   const resolution = resolveParty(submission, createFyllutPartyLookup(form, { legacyIdentityFallback: true }));
-  if (resolution.success && isEquivalentFyllutApplicationSource(form, submission)) {
-    return mapPartyToApplication(resolution.party);
+
+  if (resolution.success) {
+    if (canUseCanonicalApplicationMapping(form, submission)) {
+      return mapPartyToApplication(resolution.party);
+    }
+
+    // Flat legacy concerned-user fields resolve canonically, but the existing Fyllut target mapping ignores them.
+    return extractLegacyApplicationParty(form, submission);
   }
 
+  return isFyllutApplicationCompatibilityCase(form, submission, resolution.error)
+    ? extractLegacyApplicationParty(form, submission)
+    : {};
+};
+
+const canUseCanonicalApplicationMapping = (form: Form, submission: Submission): boolean =>
+  !!yourInformationUtils.getYourInformation(form, submission.data) || !!submission.data.fodselsnummerDNummerSoker;
+
+const extractLegacyApplicationParty = (form: Form, submission: Submission): ApplicationPartyData => {
   const bruker = extractBruker(form, submission);
   const avsender =
     extractAvsender(form, submission) ?? (bruker ? undefined : extractAvsenderFromYourInformation(form, submission));
 
-  if (resolution.success) {
-    // Retire with #2186. Flat legacy concerned-user fields are not read by the existing application target mapping.
-    return { bruker: bruker?.id, avsender };
-  }
-
-  if (isFyllutApplicationCompatibilityCase(form, submission, resolution.error)) {
-    return { bruker: bruker?.id, avsender };
-  }
-
-  return {};
+  return { bruker: bruker?.id, avsender };
 };
-
-const isEquivalentFyllutApplicationSource = (form: Form, submission: Submission): boolean =>
-  !!yourInformationUtils.getYourInformation(form, submission.data) || !!submission.data.fodselsnummerDNummerSoker;
 
 const isFyllutApplicationCompatibilityCase = (
   form: Form,
