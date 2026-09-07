@@ -25,9 +25,10 @@ const Activities = ({ statePath, label, description, readMore }: ActivitiesProps
   const { formData } = useRuntimeServices();
   const { submissionMethod } = useSubmissionMethod();
   const { translate, currentLanguage } = useLanguage();
-  const { stateValue, error, setStateValue } = useStateField({ statePath });
   const [status, setStatus] = useState<ActivitiesStatus>('loading');
   const [activities, setActivities] = useState<SendInnAktivitet[]>([]);
+  const { stateValue, error, setStateValue } = useStateField({ statePath });
+
   const activitySelections = useMemo(() => mapActivities(activities, currentLanguage), [activities, currentLanguage]);
   const currentValue = stateValue as SubmissionActivity | undefined;
   const defaultActivity = useMemo<SubmissionActivity>(

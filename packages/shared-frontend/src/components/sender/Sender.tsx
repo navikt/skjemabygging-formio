@@ -3,19 +3,18 @@ import { useEffect, useMemo } from 'react';
 import { useStateField } from '../../context/state/useStateField';
 import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
 import Alert from '../alert/Alert';
+import NationalIdentityNumber from '../national-identity-number/NationalIdentityNumber';
+import OrganizationNumber from '../organization-number/OrganizationNumber';
 import ReadMore from '../read-more/ReadMore';
 import FormElementBox from '../shared/FormElementBox';
 import TextField from '../text-field/TextField';
 import { BaseFieldProps } from '../types';
-
-const ORGANIZATION_NUMBER_LABEL = 'Organisasjonsnummer';
-const ORGANIZATION_NAME_LABEL = 'Virksomhetsnavn';
-
-interface SenderPrefillValue {
-  sokerIdentifikasjonsnummer?: string;
-  sokerFornavn?: string;
-  sokerEtternavn?: string;
-}
+import {
+  getPrefilledSender,
+  ORGANIZATION_NAME_LABEL,
+  ORGANIZATION_NUMBER_LABEL,
+  SenderPrefillValue,
+} from './senderValidation';
 
 interface SenderProps extends Pick<BaseFieldProps, 'statePath' | 'required' | 'readOnly' | 'readMore' | 'fieldSize'> {
   senderRole?: 'person' | 'organization';
@@ -37,23 +36,10 @@ const Sender = ({
 }: SenderProps) => {
   const { submissionMethod } = useSubmissionMethod();
   const { stateValue, setStateValue } = useStateField({ statePath });
-  const prefilledSender = useMemo<SubmissionSender | undefined>(() => {
-    if (senderRole !== 'person' || !prefillValue) {
-      return undefined;
-    }
-
-    if (!prefillValue.sokerIdentifikasjonsnummer && !prefillValue.sokerFornavn && !prefillValue.sokerEtternavn) {
-      return undefined;
-    }
-
-    return {
-      person: {
-        nationalIdentityNumber: prefillValue.sokerIdentifikasjonsnummer ?? '',
-        firstName: prefillValue.sokerFornavn ?? '',
-        surname: prefillValue.sokerEtternavn ?? '',
-      },
-    };
-  }, [prefillValue, senderRole]);
+  const prefilledSender = useMemo<SubmissionSender | undefined>(
+    () => getPrefilledSender(senderRole, prefillValue),
+    [prefillValue, senderRole],
+  );
 
   useEffect(() => {
     if (prefilledSender && stateValue === undefined) {
@@ -72,44 +58,45 @@ const Sender = ({
     <FormElementBox fieldSize={fieldSize} marginBottom="space-0">
       {senderRole === 'organization' ? (
         <>
-          <TextField
+          <OrganizationNumber
             statePath={`${statePath}.organization.number`}
             label={customLabels?.organizationNumber ?? ORGANIZATION_NUMBER_LABEL}
             description={descriptions?.organizationNumber}
             required={required}
             readOnly={effectiveReadOnly}
-            inputMode="numeric"
-            formatKey="organizationNumberRaw"
+            rawFormat
           />
           <TextField
             statePath={`${statePath}.organization.name`}
             label={customLabels?.organizationName ?? ORGANIZATION_NAME_LABEL}
             required={required}
             readOnly={effectiveReadOnly}
+            validation={{ coverPageValue: true }}
           />
         </>
       ) : (
         <>
-          <TextField
+          <NationalIdentityNumber
             statePath={`${statePath}.person.nationalIdentityNumber`}
             label={customLabels?.nationalIdentityNumber ?? TEXTS.statiske.identity.identityNumber}
             description={descriptions?.nationalIdentityNumber}
             required={required}
             readOnly={effectiveReadOnly}
-            inputMode="numeric"
-            formatKey="identityNumberRaw"
+            rawFormat
           />
           <TextField
             statePath={`${statePath}.person.firstName`}
             label={customLabels?.firstName ?? TEXTS.statiske.identity.firstName}
             required={required}
             readOnly={effectiveReadOnly}
+            validation={{ coverPageValue: true }}
           />
           <TextField
             statePath={`${statePath}.person.surname`}
             label={customLabels?.surname ?? TEXTS.statiske.identity.surname}
             required={required}
             readOnly={effectiveReadOnly}
+            validation={{ coverPageValue: true }}
           />
         </>
       )}

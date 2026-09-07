@@ -3,12 +3,13 @@ import { useMemo } from 'react';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { getCountries } from '../../utils/countries';
 import Select from '../select/Select';
-import { BaseFieldProps } from '../types';
+import { BaseFieldProps, ChoiceValidation } from '../types';
 
 interface CountrySelectProps extends BaseFieldProps {
   label?: string;
   ignoreOptions?: string[];
   selectText?: string;
+  validation?: ChoiceValidation;
 }
 
 const CountrySelect = ({
@@ -22,6 +23,7 @@ const CountrySelect = ({
   readMore,
   fieldSize,
   marginBottom,
+  validation,
 }: CountrySelectProps) => {
   const { currentLanguage } = useLanguage();
   const options = useMemo(
@@ -42,6 +44,7 @@ const CountrySelect = ({
       fieldSize={fieldSize}
       marginBottom={marginBottom}
       valueType="option"
+      validation={validation}
     />
   );
 };

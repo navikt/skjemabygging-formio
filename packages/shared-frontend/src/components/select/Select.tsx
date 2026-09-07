@@ -12,10 +12,11 @@ import { useLanguage } from '../../context/language/LanguageContext';
 import { useStateField } from '../../context/state/useStateField';
 import { inputId } from '../../utils/inputId';
 import ReadMore from '../read-more/ReadMore';
+import { toChoiceFieldValidation } from '../shared/fieldValidation';
 import FormElementBox from '../shared/FormElementBox';
 import TranslatedDescription from '../shared/TranslatedDescription';
 import TranslatedLabel from '../shared/TranslatedLabel';
-import { BaseFieldProps } from '../types';
+import { BaseFieldProps, ChoiceValidation } from '../types';
 import { getCurrentValue, getStateValue, resolveRenderedSelectType, SelectType, SelectValueType } from './selectUtils';
 
 interface SelectProps extends BaseFieldProps {
@@ -32,6 +33,9 @@ interface SelectProps extends BaseFieldProps {
   onChange?: (value: string) => void;
   error?: ReactNode;
   inputRef?: Ref<HTMLFieldSetElement>;
+  /** Require the selected value to still be one of the available options. */
+  onlyAvailableOptions?: boolean;
+  validation?: ChoiceValidation;
 }
 
 const Select = ({
@@ -54,9 +58,20 @@ const Select = ({
   onChange,
   error: controlledError,
   inputRef,
+  onlyAvailableOptions,
+  validation,
 }: SelectProps) => {
   const { translate } = useLanguage();
-  const { stateValue, error, setStateValue } = useStateField({ statePath });
+  const fieldValidation = toChoiceFieldValidation(
+    { statePath, label, required, validation },
+    values,
+    onlyAvailableOptions,
+  );
+  const { stateValue, error, setStateValue } = useStateField({
+    statePath,
+    // A controlled select validates the value its owner passes, which is the one it renders.
+    validation: value !== undefined ? { ...fieldValidation, value } : fieldValidation,
+  });
   const current = value ?? getCurrentValue(stateValue, valueType);
   const currentError = controlledError ?? error;
   const options = values.map(({ value, label: optionLabel }) => ({

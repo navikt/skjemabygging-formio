@@ -1,5 +1,8 @@
+import { findUnsupportedCustomValidation } from './custom-validation/unsupportedCustomValidation';
 import RenderSummaryForm from './RenderSummaryForm';
+import { reportUnsupportedCustomValidation } from './unsupportedComponentLogger';
 
+export type { UnsupportedCustomValidation } from './custom-validation/unsupportedCustomValidation';
 export type { RenderSummaryFormProps } from './RenderSummaryForm';
 export type {
   FormComponentProps,
@@ -8,4 +11,4 @@ export type {
   SummaryRendererAppConfig,
   SummaryRendererConfig,
 } from './types';
-export { RenderSummaryForm };
+export { findUnsupportedCustomValidation, RenderSummaryForm, reportUnsupportedCustomValidation };

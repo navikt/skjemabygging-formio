@@ -23,6 +23,23 @@ type ActivityAlertData = {
 
 const DRIVING_LIST_MAX_PARKING_EXPENSE = 100;
 
+/** A stored driving list date may be in input format from an older draft. */
+const normalizeSubmissionDate = (value?: string) => {
+  if (!value) {
+    return undefined;
+  }
+
+  if (dateUtils.isValid(value, 'submission')) {
+    return value;
+  }
+
+  if (dateUtils.isValid(value, 'input')) {
+    return dateUtils.toSubmissionDate(value);
+  }
+
+  return undefined;
+};
+
 const mapVedtakText = (activity: SendInnAktivitet, vedtak: AktivitetVedtaksinformasjon, language: string) => {
   if (!vedtak.periode.fom) {
     return activity.aktivitetsnavn;
@@ -105,15 +122,19 @@ const mergePeriodDates = (
   betalingsplanId?: string,
 ): DrivingListDate[] => {
   const datesOutsidePeriod = existingDates.filter((item) => !periodDates.includes(item.date));
-  const nextPeriodDates = selectedDates.map((date) => {
-    const existing = existingDates.find((item) => item.date === date);
+  // The group renders every picked day but only offers the ones inside this period, so only those
+  // are merged back here.
+  const nextPeriodDates = selectedDates
+    .filter((date) => periodDates.includes(date))
+    .map((date) => {
+      const existing = existingDates.find((item) => item.date === date);
 
-    return {
-      date,
-      parking: existing?.parking ?? '',
-      betalingsplanId: existing?.betalingsplanId ?? betalingsplanId,
-    };
-  });
+      return {
+        date,
+        parking: existing?.parking ?? '',
+        betalingsplanId: existing?.betalingsplanId ?? betalingsplanId,
+      };
+    });
 
   return [...datesOutsidePeriod, ...nextPeriodDates].sort((a, b) => a.date.localeCompare(b.date));
 };
@@ -183,6 +204,7 @@ export {
   mapToVedtakList,
   mapVedtakActivities,
   mergePeriodDates,
+  normalizeSubmissionDate,
   shouldShowExpenseWarning,
   showAddPeriodButton,
   showRemovePeriodButton,

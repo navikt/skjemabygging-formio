@@ -8,10 +8,6 @@ interface BaseEvaluationArgs {
   allowTestTypes?: boolean;
 }
 
-interface CustomValidationArgs extends BaseEvaluationArgs {
-  input: unknown;
-}
-
 const resolveRowData = (submissionPath: string, submission?: Submission) => {
   const parentPath = submissionPath.includes('.') ? submissionPath.slice(0, submissionPath.lastIndexOf('.')) : '';
   return parentPath ? (submissionUtils.getSubmissionValue(parentPath, submission) ?? {}) : (submission?.data ?? {});
@@ -81,28 +77,4 @@ const evaluateFormioCalculatedValue = ({
   });
 };
 
-const evaluateFormioCustomValidation = ({
-  component,
-  submission,
-  submissionPath,
-  input,
-  allowTestTypes,
-}: CustomValidationArgs) => {
-  if (!component.validate?.custom) {
-    return true;
-  }
-
-  return navFormioUtils.evaluate(`var valid = true; ${component.validate.custom}; return valid;`, {
-    value: undefined,
-    input,
-    data: submission?.data ?? {},
-    row: resolveRowData(submissionPath, submission),
-    util: navFormioUtils,
-    utils: navFormioUtils,
-    component,
-    instance: createEvaluationInstance({ allowTestTypes }),
-    submission,
-  });
-};
-
-export { evaluateFormioCalculatedValue, evaluateFormioCustomValidation };
+export { evaluateFormioCalculatedValue };

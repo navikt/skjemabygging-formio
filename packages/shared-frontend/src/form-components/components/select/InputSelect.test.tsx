@@ -18,9 +18,7 @@ const renderWithProviders = (children: ReactNode, initialValue?: string | Compon
     <LanguageProvider translations={{}} currentLanguage="nb" availableLanguages={['nb']}>
       <SubmissionStateProvider initialSubmission={{ data: initialValue ? { country: initialValue } : {} }}>
         <ValidationProvider>
-          <ValidationScopeProvider pageKey={pageKey} components={[]}>
-            {children}
-          </ValidationScopeProvider>
+          <ValidationScopeProvider pageKey={pageKey}>{children}</ValidationScopeProvider>
         </ValidationProvider>
       </SubmissionStateProvider>
     </LanguageProvider>,

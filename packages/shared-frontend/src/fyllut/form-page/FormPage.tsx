@@ -2,7 +2,6 @@ import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useRef } from 'react';
 import { useLocation, useParams } from 'react-router';
 import FormErrorSummary from '../../components/error-summary/FormErrorSummary';
-import { toComponentDefinitions } from '../../context/form-definition/formDefinitionUtils';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
 import { useValidation } from '../../context/validation/ValidationContext';
@@ -52,7 +51,7 @@ const FormPage = () => {
 
   useEffect(() => {
     if (currentPanel) {
-      syncPageValidationState(currentPanel.key, components);
+      syncPageValidationState(currentPanel.key);
     }
   }, [components, currentPanel, syncPageValidationState]);
 
@@ -93,11 +92,7 @@ const FormPage = () => {
       return;
     }
     if (isLast) {
-      const validationPages = panels.map((panel) => ({
-        pageKey: panel.key,
-        components: toComponentDefinitions(panel.components ?? []),
-      }));
-      goToSummary({ validationErrorPages: validatePages(validationPages) });
+      goToSummary({ validationErrorPages: validatePages(panels.map((panel) => panel.key)) });
       return;
     }
     goToPanel(panels[currentIndex + 1]?.key);
@@ -115,13 +110,11 @@ const FormPage = () => {
     <>
       <RenderInputForm
         pageKey={currentPanel?.key ?? ''}
-        pageComponents={components}
         components={components}
         componentRegistry={fyllutInputComponentRegistry}
       />
       <FormErrorSummary
         pageKey={currentPanel?.key}
-        components={components}
         onNavigateToField={(error, id) => {
           if (error.pageKey !== currentPanel?.key) {
             goToError(error.pageKey, id);

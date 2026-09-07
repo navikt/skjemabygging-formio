@@ -4,7 +4,6 @@ import { useMemo } from 'react';
 import FormErrorSummary from '../../components/error-summary/FormErrorSummary';
 import { useApplication } from '../../context/application/ApplicationContext';
 import { useFormDefinition } from '../../context/form-definition/FormDefinitionContext';
-import { toComponentDefinitions } from '../../context/form-definition/formDefinitionUtils';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useSubmissionState } from '../../context/state/SubmissionStateContext';
 import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
@@ -37,18 +36,15 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
   const isNoSubmissionFlow =
     (!submissionMethod || submissionMethod === 'papernocoverpage') &&
     submissionTypesUtils.isPaperNoCoverPageSubmission(form.properties.submissionTypes);
-  const validationPages = useMemo(
-    () => panels.map((panel) => ({ pageKey: panel.key, components: toComponentDefinitions(panel.components ?? []) })),
-    [panels],
-  );
-  const validationErrors = getErrorsForPages(validationPages);
+  const validationPageKeys = useMemo(() => panels.map((panel) => panel.key), [panels]);
+  const validationErrors = getErrorsForPages(validationPageKeys);
   const panelValidationList = useMemo<PanelValidation[]>(
     () =>
-      validationPages.map(({ pageKey }) => ({
+      validationPageKeys.map((pageKey) => ({
         key: pageKey,
         hasValidationErrors: validationErrors.some((validationError) => validationError.pageKey === pageKey),
       })),
-    [validationErrors, validationPages],
+    [validationErrors, validationPageKeys],
   );
   const primaryActionLabel =
     submissionMethod === 'paper' || isNoSubmissionFlow
@@ -56,7 +52,9 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
       : TEXTS.grensesnitt.navigation.sendToNav;
 
   const handleSubmit = () => {
-    if (validatePages(validationPages).length > 0) {
+    // Every page is validated from the current submission, so a page the user never opened reports
+    // its missing answers here instead of silently passing.
+    if (validatePages(validationPageKeys).length > 0) {
       return;
     }
 
@@ -110,7 +108,7 @@ const Summary = ({ onBack, onNavigateToError, onNavigateToStep }: Props) => {
         handleDownloadFile={handleDownloadFile}
       />
       <FormErrorSummary
-        pages={validationPages}
+        pageKeys={validationPageKeys}
         onNavigateToField={(error, id) => {
           onNavigateToError(error.pageKey, id);
         }}

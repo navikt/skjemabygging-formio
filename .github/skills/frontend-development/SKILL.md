@@ -82,6 +82,21 @@ intentionally changes them.
 
 - When adding or changing a form component, preserve parity across editable
   input, validation, summary, PDF, autosave, and submission behavior.
+- Every component exposes only its own narrow validation type; never inherit or
+  accept a broad `ValidationRules`/`FieldValidationProp`. `required` is always
+  a direct public prop, never a member of a validation object. Semantic
+  components own their intrinsic rules and formatting, while generic
+  components expose only their approved contextual/authored constraints.
+  `TextField` remains the established generic text component and supports only
+  approved text constraints, including `coverPageValue`, never unrelated rules
+  such as `postalCode`.
+- Keep intrinsic rule builders pure and colocated with their components. Both
+  the rendered input and `page-validation/validationFieldsRegistry.ts` must
+  call the same builder; adapters must not duplicate intrinsic rules.
+- Semantic components select a centralized `formatKey` for generic text inputs
+  when they own a non-default input/submission format. `TextField` applies the
+  selected formatter while typing, on blur, and when synchronizing state; it
+  must not infer formatting from validation rules.
 
 ## Host services, content, and logging
 

@@ -8,8 +8,10 @@ import {
 import { ComponentType } from 'react';
 import { ReadMoreProps } from '../components/read-more/ReadMore';
 import { SelectType } from '../components/select/selectUtils';
+import { FieldValidationProp } from '../components/types';
 import { getResolvedSubmissionPath } from '../context/form-definition/formDefinitionUtils';
 import { toSubmissionFormat } from '../formatting/inputFormat';
+import { PatternRule } from '../validation/validators';
 import { ComponentDefinitionByType } from './component-types';
 
 /**
@@ -43,6 +45,34 @@ type InputComponentRegistry = {
 const getValues = (component: Component) => component.values ?? component.data?.values ?? [];
 
 const isRequired = (component: Component) => component.validate?.required ?? false;
+
+/**
+ * The authored regular expression, with the message the author wrote for it. The two legacy
+ * properties are normalized here so nothing below the form definition has to know about them.
+ */
+const resolvePattern = (component: Component): PatternRule | undefined =>
+  component.validate?.pattern
+    ? {
+        expression: component.validate.pattern,
+        message: component.validate.customMessage ?? component.validate.patternMessage,
+      }
+    : undefined;
+
+/**
+ * The generic constraints authored on a component. Everything that follows from the component type
+ * itself (a valid email, a valid account number, ...) is owned by the rendered component, so this
+ * only maps what the form author declared. `validate.custom` is not evaluated at all.
+ */
+const resolveValidation = (component: Component): FieldValidationProp => ({
+  minLength: typeof component.validate?.minLength === 'number' ? component.validate.minLength : undefined,
+  maxLength: typeof component.validate?.maxLength === 'number' ? component.validate.maxLength : undefined,
+  min: typeof component.validate?.min === 'number' ? component.validate.min : undefined,
+  max: typeof component.validate?.max === 'number' ? component.validate.max : undefined,
+  minYear: typeof component.validate?.minYear === 'number' ? component.validate.minYear : undefined,
+  maxYear: typeof component.validate?.maxYear === 'number' ? component.validate.maxYear : undefined,
+  digitsOnly: component.validate?.digitsOnly,
+  pattern: resolvePattern(component),
+});
 
 const legacyFieldSizeMap: Record<string, FieldSize> = {
   'input--xxs': 'xxsmall',
@@ -140,9 +170,11 @@ export {
   resolveNumberDisplayValue,
   resolveNumberFormatKey,
   resolveNumericStateValue,
+  resolvePattern,
   resolveReadMore,
   resolveSelectType,
   resolveSubmissionPath,
   resolveTextFormatKey,
+  resolveValidation,
 };
 export type { InputComponentProps, InputComponentRegistry, InputComponentType };

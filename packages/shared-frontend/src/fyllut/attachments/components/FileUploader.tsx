@@ -4,6 +4,7 @@ import {
   enableAttachmentDownload,
   SubmissionAttachment,
   TEXTS,
+  UploadedFile,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { MutableRefObject, ReactNode } from 'react';
 import TextField from '../../../components/text-field/TextField';
@@ -12,14 +13,21 @@ import { useLanguage } from '../../../context/language/LanguageContext';
 import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
 import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
 import { attachmentValidationPath } from '../../../context/validation/attachmentValidationPath';
+import ValidationRegistration from '../../../context/validation/ValidationRegistration';
+import { UnvalidatedFields } from '../../../context/validation/ValidationScopeContext';
+import { attachmentFilesRules, requiresUploadedFiles } from '../attachmentUploadValidation';
 import { useAttachmentUpload } from '../context/AttachmentUploadContext';
 import { fileUploadErrorParams } from '../context/fileUploadConfig';
 import FilesPreview from './FilesPreview';
 import UploadButton from './UploadButton';
 import useAttachmentValidation from './useAttachmentValidation';
 
+const noFiles: UploadedFile[] = [];
+
 interface Props {
   initialAttachment: SubmissionAttachment;
+  /** Name of the attachment, used in validation messages. */
+  attachmentLabel?: string;
   submissionPath?: string;
   multipleAttachments?: boolean;
   attachmentValue?: keyof AttachmentSettingValues;
@@ -36,6 +44,7 @@ interface Props {
 
 const FileUploader = ({
   initialAttachment,
+  attachmentLabel,
   submissionPath,
   multipleAttachments = false,
   attachmentValue,
@@ -68,7 +77,7 @@ const FileUploader = ({
     ? translate(attachment?.title)
     : translate(TEXTS.statiske.uploadFile.singleFileUploadedLabel);
 
-  const uploadedFiles = attachment?.files ?? [];
+  const uploadedFiles = attachment?.files ?? noFiles;
   const initialUpload = uploadedFiles.length === 0;
   const showButton = multiple || initialUpload;
   const inProgress = Object.values(uploadsInProgress[attachmentId] ?? {});
@@ -101,6 +110,15 @@ const FileUploader = ({
 
   return (
     <VStack gap="space-24" data-cy={`upload-button-${attachmentId}`}>
+      {/* The uploaded files have no input of their own, so the uploader declares them. */}
+      {requiresUploadedFiles(attachment) && (
+        <ValidationRegistration
+          label={attachmentLabel ?? label}
+          statePath={attachmentValidationPath(attachmentId, 'files')}
+          value={attachment?.files ?? []}
+          rules={attachmentFilesRules}
+        />
+      )}
       {(!showButton || fileItems.length > 0) && (
         <FilesPreview
           label={!showButton ? label : undefined}
@@ -114,14 +132,18 @@ const FileUploader = ({
       {showButton && (
         <VStack gap="space-32">
           {requireAttachmentTitle && (
-            <TextField
-              statePath={attachmentValidationPath(attachmentId, 'title')}
-              label={translate(TEXTS.statiske.attachment.attachmentTitle)}
-              maxLength={50}
-              value={attachment?.title ?? ''}
-              error={attachmentTitleErrorMessage}
-              onChange={handleTitleChange}
-            />
+            // The title lives on the attachment rather than in the submission state, and the error
+            // it shows comes from the upload itself.
+            <UnvalidatedFields>
+              <TextField
+                statePath={attachmentValidationPath(attachmentId, 'title')}
+                label={translate(TEXTS.statiske.attachment.attachmentTitle)}
+                maxLength={50}
+                value={attachment?.title ?? ''}
+                error={attachmentTitleErrorMessage}
+                onChange={handleTitleChange}
+              />
+            </UnvalidatedFields>
           )}
           <HStack gap="space-16">
             <UploadButton

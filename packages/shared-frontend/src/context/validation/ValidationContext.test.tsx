@@ -1,29 +1,15 @@
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { act, useState } from 'react';
+import { SubmissionData, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { act, ReactNode, useState } from 'react';
 import { createRoot, Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { ComponentDefinition } from '../../form-components/component-types';
+import { ValidationRules } from '../../validation/validators';
 import { ApplicationProvider } from '../application/ApplicationContext';
 import { LanguageProvider } from '../language/LanguageContext';
 import { SubmissionStateProvider } from '../state/SubmissionStateContext';
-import { SubmissionMethodProvider } from '../submission-method/SubmissionMethodContext';
+import { useStateField } from '../state/useStateField';
 import { attachmentValidationPath, useValidation, ValidationProvider } from './ValidationContext';
-
-const components = [
-  {
-    key: 'firstName',
-    label: 'First name',
-    input: true,
-    type: 'textfield',
-    validate: { required: true },
-  },
-  {
-    key: 'identityNumber',
-    label: 'National identity number',
-    input: true,
-    type: 'fnrfield',
-  },
-] as unknown as ComponentDefinition[];
+import ValidationRegistration from './ValidationRegistration';
+import { ValidationScopeProvider } from './ValidationScopeContext';
 
 const translations = Object.fromEntries(
   Object.entries(TEXTS.validering).flatMap(([key, value]) => [
@@ -32,26 +18,68 @@ const translations = Object.fromEntries(
   ]),
 );
 
-const ValidationHarness = () => {
-  const { getError, validatePages } = useValidation();
-  const [failedPageKeys, setFailedPageKeys] = useState<string[]>([]);
+interface FieldProps {
+  statePath: string;
+  label: string;
+  rules: ValidationRules;
+}
+
+const Field = ({ statePath, label, rules }: FieldProps) => {
+  const { stateValue, error, setStateValue } = useStateField({ statePath, validation: { field: label, rules } });
 
   return (
     <>
-      <button
-        type="button"
-        onClick={() => {
-          setFailedPageKeys(validatePages([{ pageKey: 'page1', components }]));
-        }}
-      >
-        Validate pages
-      </button>
-      <span data-testid="failed-pages">{JSON.stringify(failedPageKeys)}</span>
-      <span data-testid="field-error">{getError('firstName', 'page1', components) ?? ''}</span>
-      <span data-testid="identity-number-error">{getError('identityNumber', 'page1', components) ?? ''}</span>
+      <input
+        aria-label={statePath}
+        value={typeof stateValue === 'string' ? stateValue : ''}
+        onChange={(event) => setStateValue(event.target.value)}
+      />
+      <span data-testid={`error-${statePath}`}>{error ?? ''}</span>
     </>
   );
 };
+
+const renderApp = (
+  root: Root,
+  children: ReactNode,
+  currentLanguage: 'nb' | 'en' = 'nb',
+  initialData: SubmissionData = {},
+) => {
+  act(() => {
+    root.render(
+      <ApplicationProvider environment="test">
+        <LanguageProvider
+          translations={translations}
+          currentLanguage={currentLanguage}
+          availableLanguages={['nb', 'en']}
+        >
+          <SubmissionStateProvider initialSubmission={{ data: initialData }}>
+            <ValidationProvider>{children}</ValidationProvider>
+          </SubmissionStateProvider>
+        </LanguageProvider>
+      </ApplicationProvider>,
+    );
+  });
+};
+
+const click = (container: HTMLElement, name: string) => {
+  const button = [...container.querySelectorAll('button')].find((element) => element.textContent === name);
+  act(() => {
+    (button as HTMLButtonElement).click();
+  });
+};
+
+const type = (container: HTMLElement, statePath: string, value: string) => {
+  const input = container.querySelector<HTMLInputElement>(`input[aria-label="${statePath}"]`) as HTMLInputElement;
+  const valueSetter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')?.set;
+  act(() => {
+    valueSetter?.call(input, value);
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+  });
+};
+
+const textOf = (container: HTMLElement, testId: string) =>
+  container.querySelector(`[data-testid="${testId}"]`)?.textContent;
 
 describe('ValidationContext', () => {
   let container: HTMLDivElement;
@@ -71,198 +99,305 @@ describe('ValidationContext', () => {
     container.remove();
   });
 
-  it('returns failed page keys and exposes cached page errors through getError', () => {
-    act(() => {
-      root.render(
-        <ApplicationProvider environment="test">
-          <LanguageProvider translations={translations} currentLanguage="nb" availableLanguages={['nb']}>
-            <SubmissionStateProvider initialSubmission={{ data: { identityNumber: '123' } }}>
-              <ValidationProvider>
-                <ValidationHarness />
-              </ValidationProvider>
-            </SubmissionStateProvider>
-          </LanguageProvider>
-        </ApplicationProvider>,
-      );
-    });
-
-    act(() => {
-      (container.querySelector('button') as HTMLButtonElement).click();
-    });
-
-    expect(container.querySelector('[data-testid="failed-pages"]')?.textContent).toBe('["page1"]');
-    expect(container.querySelector('[data-testid="field-error"]')?.textContent).toBe('Du må fylle ut: First name');
-    expect(container.querySelector('[data-testid="identity-number-error"]')?.textContent).toBe(
-      TEXTS.validering.fodselsnummerDNummer,
-    );
-  });
-
-  it('recomputes cached page errors in the new language when the language changes', () => {
-    const renderWithLanguage = (currentLanguage: 'nb' | 'en') => {
-      act(() => {
-        root.render(
-          <ApplicationProvider environment="test">
-            <LanguageProvider
-              translations={translations}
-              currentLanguage={currentLanguage}
-              availableLanguages={['nb', 'en']}
-            >
-              <SubmissionStateProvider initialSubmission={{ data: { identityNumber: '123' } }}>
-                <ValidationProvider>
-                  <ValidationHarness />
-                </ValidationProvider>
-              </SubmissionStateProvider>
-            </LanguageProvider>
-          </ApplicationProvider>,
-        );
-      });
-    };
-
-    renderWithLanguage('nb');
-
-    act(() => {
-      (container.querySelector('button') as HTMLButtonElement).click();
-    });
-
-    expect(container.querySelector('[data-testid="field-error"]')?.textContent).toBe('Du må fylle ut: First name');
-
-    renderWithLanguage('en');
-
-    expect(container.querySelector('[data-testid="field-error"]')?.textContent).toBe('EN:Du må fylle ut: First name');
-    expect(container.querySelector('[data-testid="identity-number-error"]')?.textContent).toBe(
-      `EN:${TEXTS.validering.fodselsnummerDNummer}`,
-    );
-  });
-
-  it('assigns attachment choice and file errors to their upload controls', () => {
-    const attachmentComponents = [
-      {
-        key: 'documentation',
-        navId: 'documentation',
-        label: 'Documentation',
-        input: true,
-        type: 'attachment',
-        attachmentType: 'other',
-        validate: { required: true },
-      },
-    ] as unknown as ComponentDefinition[];
-
-    const AttachmentValidationHarness = () => {
-      const { getError, validatePages } = useValidation();
+  it('validates the fields registered by the rendered components', () => {
+    const Harness = () => {
+      const { validatePages } = useValidation();
+      const [failedPageKeys, setFailedPageKeys] = useState<string[]>([]);
 
       return (
         <>
-          <button
-            type="button"
-            onClick={() => validatePages([{ pageKey: 'attachments', components: attachmentComponents }])}
-          >
-            Validate attachments
+          <button type="button" onClick={() => setFailedPageKeys(validatePages(['page1']))}>
+            Validate
           </button>
-          <span data-testid="attachment-value-error">
-            {getError(attachmentValidationPath('documentation', 'value'), 'attachments', attachmentComponents) ?? ''}
-          </span>
-          <span data-testid="attachment-file-error">
-            {getError(attachmentValidationPath('documentation', 'files'), 'attachments', attachmentComponents) ?? ''}
-          </span>
-          <span data-testid="attachment-title-error">
-            {getError(attachmentValidationPath('documentation', 'title'), 'attachments', attachmentComponents) ?? ''}
-          </span>
+          <span data-testid="failed-pages">{JSON.stringify(failedPageKeys)}</span>
+          <ValidationScopeProvider pageKey="page1">
+            <Field statePath="firstName" label="First name" rules={{ required: true }} />
+            <Field
+              statePath="identityNumber"
+              label="National identity number"
+              rules={{ nationalIdentityNumber: true }}
+            />
+          </ValidationScopeProvider>
         </>
       );
     };
 
-    act(() => {
-      root.render(
-        <ApplicationProvider environment="test">
-          <LanguageProvider translations={translations} currentLanguage="nb" availableLanguages={['nb']}>
-            <SubmissionMethodProvider submissionMethod="digital">
-              <SubmissionStateProvider
-                initialSubmission={{
-                  data: {
-                    documentation: [
-                      {
-                        attachmentId: 'documentation',
-                        navId: 'documentation',
-                        type: 'other',
-                        value: 'leggerVedNaa',
-                        files: [],
-                      },
-                    ],
-                  },
-                }}
-              >
-                <ValidationProvider>
-                  <AttachmentValidationHarness />
-                </ValidationProvider>
-              </SubmissionStateProvider>
-            </SubmissionMethodProvider>
-          </LanguageProvider>
-        </ApplicationProvider>,
-      );
-    });
+    renderApp(root, <Harness />, 'nb', { identityNumber: '123' });
+    click(container, 'Validate');
 
-    act(() => {
-      (container.querySelector('button') as HTMLButtonElement).click();
-    });
-
-    expect(container.querySelector('[data-testid="attachment-value-error"]')?.textContent).toBe('');
-    expect(container.querySelector('[data-testid="attachment-file-error"]')?.textContent).toBe(
-      'Du må laste opp fil: Documentation',
-    );
-    expect(container.querySelector('[data-testid="attachment-title-error"]')?.textContent).toBe('');
+    expect(textOf(container, 'failed-pages')).toBe('["page1"]');
+    expect(textOf(container, 'error-firstName')).toBe('Du må fylle ut: First name');
+    expect(textOf(container, 'error-identityNumber')).toBe(TEXTS.validering.fodselsnummerDNummer);
   });
 
-  it('validates required paper attachments through their submission path', () => {
-    const attachmentComponents = [
-      {
-        key: 'documentation',
-        label: 'Documentation',
-        input: true,
-        type: 'attachment',
-        validate: { required: true },
-      },
-    ] as unknown as ComponentDefinition[];
-
-    const AttachmentValidationHarness = () => {
-      const { getError, validatePages } = useValidation();
+  it('validates the value the user just entered', () => {
+    const Harness = () => {
+      const { validatePage } = useValidation();
 
       return (
         <>
-          <button
-            type="button"
-            onClick={() => validatePages([{ pageKey: 'attachments', components: attachmentComponents }])}
-          >
-            Validate attachments
+          <button type="button" onClick={() => validatePage('page1')}>
+            Next
           </button>
-          <span data-testid="attachment-value-error">
-            {getError('documentation', 'attachments', attachmentComponents) ?? ''}
-          </span>
+          <ValidationScopeProvider pageKey="page1">
+            <Field statePath="firstName" label="First name" rules={{ required: true }} />
+          </ValidationScopeProvider>
         </>
       );
     };
 
-    act(() => {
-      root.render(
-        <ApplicationProvider environment="test">
-          <LanguageProvider translations={translations} currentLanguage="nb" availableLanguages={['nb']}>
-            <SubmissionMethodProvider submissionMethod="paper">
-              <SubmissionStateProvider initialSubmission={{ data: {} }}>
-                <ValidationProvider>
-                  <AttachmentValidationHarness />
-                </ValidationProvider>
-              </SubmissionStateProvider>
-            </SubmissionMethodProvider>
-          </LanguageProvider>
-        </ApplicationProvider>,
+    renderApp(root, <Harness />);
+    click(container, 'Next');
+    expect(textOf(container, 'error-firstName')).toBe('Du må fylle ut: First name');
+
+    type(container, 'firstName', 'Ada');
+    click(container, 'Next');
+    expect(textOf(container, 'error-firstName')).toBe('');
+  });
+
+  it('recomputes cached errors in the new language', () => {
+    const Harness = () => {
+      const { validatePages } = useValidation();
+
+      return (
+        <>
+          <button type="button" onClick={() => validatePages(['page1'])}>
+            Validate
+          </button>
+          <ValidationScopeProvider pageKey="page1">
+            <Field statePath="firstName" label="First name" rules={{ required: true }} />
+          </ValidationScopeProvider>
+        </>
       );
-    });
+    };
 
-    act(() => {
-      (container.querySelector('button') as HTMLButtonElement).click();
-    });
+    renderApp(root, <Harness />);
+    click(container, 'Validate');
+    expect(textOf(container, 'error-firstName')).toBe('Du må fylle ut: First name');
 
-    expect(container.querySelector('[data-testid="attachment-value-error"]')?.textContent).toBe(
-      'Du må fylle ut: Documentation',
+    renderApp(root, <Harness />, 'en');
+    expect(textOf(container, 'error-firstName')).toBe('EN:Du må fylle ut: First name');
+  });
+
+  it('keeps the registrations of a page that unmounted, so the summary can validate it', () => {
+    const Harness = () => {
+      const { validatePages } = useValidation();
+      const [failedPageKeys, setFailedPageKeys] = useState<string[]>([]);
+      const [showPage, setShowPage] = useState(true);
+
+      return (
+        <>
+          <button type="button" onClick={() => setFailedPageKeys(validatePages(['page1']))}>
+            Validate
+          </button>
+          <button type="button" onClick={() => setShowPage(false)}>
+            Leave page
+          </button>
+          <span data-testid="failed-pages">{JSON.stringify(failedPageKeys)}</span>
+          {showPage && (
+            <ValidationScopeProvider pageKey="page1">
+              <Field statePath="firstName" label="First name" rules={{ required: true }} />
+            </ValidationScopeProvider>
+          )}
+        </>
+      );
+    };
+
+    renderApp(root, <Harness />);
+    click(container, 'Leave page');
+    click(container, 'Validate');
+
+    expect(textOf(container, 'failed-pages')).toBe('["page1"]');
+  });
+
+  it('validates every visited page from the summary page', () => {
+    const Harness = () => {
+      const { validatePages } = useValidation();
+      const [failedPageKeys, setFailedPageKeys] = useState<string[]>([]);
+      const [pageKey, setPageKey] = useState('page1');
+
+      return (
+        <>
+          <button type="button" onClick={() => setFailedPageKeys(validatePages(['page1', 'page2']))}>
+            Validate
+          </button>
+          <button type="button" onClick={() => setPageKey('page2')}>
+            Next page
+          </button>
+          <span data-testid="failed-pages">{JSON.stringify(failedPageKeys)}</span>
+          {/* One scope instance per page, the way the form page renders it. */}
+          <ValidationScopeProvider key={pageKey} pageKey={pageKey}>
+            {pageKey === 'page1' ? (
+              <Field statePath="firstName" label="First name" rules={{ required: true }} />
+            ) : (
+              <Field statePath="surname" label="Surname" rules={{ required: true }} />
+            )}
+          </ValidationScopeProvider>
+        </>
+      );
+    };
+
+    renderApp(root, <Harness />, 'nb', { surname: 'Lovelace' });
+    click(container, 'Next page');
+    click(container, 'Validate');
+
+    expect(textOf(container, 'failed-pages')).toBe('["page1"]');
+    expect(textOf(container, 'error-surname')).toBe('');
+  });
+
+  it('drops the registration of a field that stops rendering inside the page', () => {
+    const Harness = () => {
+      const { validatePages } = useValidation();
+      const [failedPageKeys, setFailedPageKeys] = useState<string[]>([]);
+      const [showConditionalField, setShowConditionalField] = useState(true);
+
+      return (
+        <>
+          <button type="button" onClick={() => setFailedPageKeys(validatePages(['page1']))}>
+            Validate
+          </button>
+          <button type="button" onClick={() => setShowConditionalField(false)}>
+            Hide field
+          </button>
+          <span data-testid="failed-pages">{JSON.stringify(failedPageKeys)}</span>
+          <ValidationScopeProvider pageKey="page1">
+            <Field statePath="firstName" label="First name" rules={{ required: false }} />
+            {showConditionalField && <Field statePath="surname" label="Surname" rules={{ required: true }} />}
+          </ValidationScopeProvider>
+        </>
+      );
+    };
+
+    renderApp(root, <Harness />);
+    click(container, 'Validate');
+
+    expect(textOf(container, 'failed-pages')).toBe('["page1"]');
+    expect(textOf(container, 'error-surname')).toBe('Du må fylle ut: Surname');
+
+    click(container, 'Hide field');
+    click(container, 'Validate');
+
+    expect(textOf(container, 'failed-pages')).toBe('[]');
+  });
+
+  it('revalidates a page while it shows errors', () => {
+    const Harness = () => {
+      const { validatePage, hasErrorState } = useValidation();
+
+      return (
+        <>
+          <button type="button" onClick={() => validatePage('page1')}>
+            Next
+          </button>
+          <span data-testid="page-state">{hasErrorState('page1') ? 'invalid' : 'valid'}</span>
+          <ValidationScopeProvider pageKey="page1">
+            <Field statePath="firstName" label="First name" rules={{ required: true }} />
+          </ValidationScopeProvider>
+        </>
+      );
+    };
+
+    renderApp(root, <Harness />);
+    click(container, 'Next');
+    expect(textOf(container, 'page-state')).toBe('invalid');
+
+    type(container, 'firstName', 'Ada');
+    expect(textOf(container, 'page-state')).toBe('valid');
+  });
+
+  it('validates rows of a data grid through their indexed state paths', () => {
+    const Harness = () => {
+      const { validatePages } = useValidation();
+      const [rows, setRows] = useState([0, 1]);
+
+      return (
+        <>
+          <button type="button" onClick={() => validatePages(['page1'])}>
+            Validate
+          </button>
+          <button type="button" onClick={() => setRows([0])}>
+            Remove row
+          </button>
+          <ValidationScopeProvider pageKey="page1">
+            {rows.map((index) => (
+              <Field key={index} statePath={`grid[${index}].name`} label="Name" rules={{ required: true }} />
+            ))}
+          </ValidationScopeProvider>
+        </>
+      );
+    };
+
+    renderApp(root, <Harness />, 'nb', { grid: [{ name: 'Ada' }, {}] });
+    click(container, 'Validate');
+
+    expect(textOf(container, 'error-grid[1].name')).toBe('Du må fylle ut: Name');
+
+    click(container, 'Remove row');
+    click(container, 'Validate');
+
+    expect(textOf(container, 'error-grid[0].name')).toBe('');
+    expect(container.querySelector('[data-testid="error-grid[1].name"]')).toBeNull();
+  });
+
+  it('validates attachment paths that are not bound to the state store', () => {
+    const Harness = () => {
+      const { getError, getErrorsForPage, validatePages, setAttachmentExternalError } = useValidation();
+      const valuePath = attachmentValidationPath('documentation', 'value');
+      const filesPath = attachmentValidationPath('documentation', 'files');
+
+      return (
+        <>
+          <button type="button" onClick={() => validatePages(['attachments'])}>
+            Validate
+          </button>
+          <button
+            type="button"
+            onClick={() => setAttachmentExternalError('documentation', 'files', 'Opplasting feilet')}
+          >
+            Fail upload
+          </button>
+          <span data-testid="value-error">{getError(valuePath, 'attachments') ?? ''}</span>
+          <span data-testid="files-error">{getError(filesPath, 'attachments') ?? ''}</span>
+          <span data-testid="all-errors">
+            {JSON.stringify(getErrorsForPage('attachments').map((error) => error.message))}
+          </span>
+          <ValidationScopeProvider pageKey="attachments">
+            <AttachmentFields />
+          </ValidationScopeProvider>
+        </>
+      );
+    };
+
+    // Attachment paths have no state-bound input, so they are declared the way the upload controls
+    // declare them.
+    const AttachmentFields = () => (
+      <>
+        <ValidationRegistration
+          label="Documentation"
+          statePath={attachmentValidationPath('documentation', 'value')}
+          value="leggerVedNaa"
+          rules={{ required: true }}
+        />
+        <ValidationRegistration
+          label="Documentation"
+          statePath={attachmentValidationPath('documentation', 'files')}
+          value={[]}
+          rules={{ requiredFiles: true }}
+        />
+      </>
+    );
+
+    renderApp(root, <Harness />);
+    click(container, 'Validate');
+
+    expect(textOf(container, 'value-error')).toBe('');
+    expect(textOf(container, 'files-error')).toBe('Du må laste opp fil: Documentation');
+
+    click(container, 'Fail upload');
+    click(container, 'Validate');
+
+    expect(textOf(container, 'all-errors')).toBe(
+      JSON.stringify(['Du må laste opp fil: Documentation', 'Opplasting feilet']),
     );
   });
 });

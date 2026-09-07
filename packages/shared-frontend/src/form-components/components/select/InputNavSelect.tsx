@@ -1,9 +1,10 @@
 import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
 import Select from '../../../components/select/Select';
 import { NavSelectDefinition } from '../../component-types';
+import { useResolvedValidation } from '../../custom-validation/useResolvedValidation';
 import {
-  getValues,
   InputComponentProps,
+  getValues,
   isRequired,
   resolveFieldSize,
   resolveReadMore,
@@ -15,26 +16,31 @@ import FormGroup from '../../shared/FormGroup';
 const isComponentValue = (value: unknown): value is ComponentValue =>
   typeof value === 'object' && value !== null && 'value' in value && 'label' in value;
 
-const InputNavSelect = ({ component, submissionPath }: InputComponentProps<NavSelectDefinition>) => (
-  <FormGroup>
-    <Select
-      statePath={resolveSubmissionPath(component, submissionPath)}
-      label={component.label}
-      description={component.description}
-      values={getValues(component)}
-      fieldSize={resolveFieldSize(component)}
-      defaultValue={
-        typeof component.defaultValue === 'string' || isComponentValue(component.defaultValue)
-          ? component.defaultValue
-          : undefined
-      }
-      valueType="option"
-      required={isRequired(component)}
-      readOnly={component.readOnly}
-      readMore={resolveReadMore(component)}
-      selectType={resolveSelectType(component)}
-    />
-  </FormGroup>
-);
+const InputNavSelect = ({ component, submissionPath }: InputComponentProps<NavSelectDefinition>) => {
+  const validation = useResolvedValidation(component);
+  return (
+    <FormGroup>
+      <Select
+        statePath={resolveSubmissionPath(component, submissionPath)}
+        label={component.label}
+        description={component.description}
+        values={getValues(component)}
+        fieldSize={resolveFieldSize(component)}
+        defaultValue={
+          typeof component.defaultValue === 'string' || isComponentValue(component.defaultValue)
+            ? component.defaultValue
+            : undefined
+        }
+        valueType="option"
+        required={isRequired(component)}
+        readOnly={component.readOnly}
+        readMore={resolveReadMore(component)}
+        selectType={resolveSelectType(component)}
+        onlyAvailableOptions={component.validate?.onlyAvailableItems}
+        validation={validation}
+      />
+    </FormGroup>
+  );
+};
 
 export default InputNavSelect;

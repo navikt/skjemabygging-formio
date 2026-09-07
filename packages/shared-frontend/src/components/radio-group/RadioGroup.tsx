@@ -5,10 +5,11 @@ import { useLanguage } from '../../context/language/LanguageContext';
 import { useStateField } from '../../context/state/useStateField';
 import { inputId } from '../../utils/inputId';
 import ReadMore from '../read-more/ReadMore';
+import { toChoiceFieldValidation } from '../shared/fieldValidation';
 import FormElementBox from '../shared/FormElementBox';
 import TranslatedDescription from '../shared/TranslatedDescription';
 import TranslatedLabel from '../shared/TranslatedLabel';
-import { BaseFieldProps } from '../types';
+import { BaseFieldProps, ChoiceValidation } from '../types';
 
 interface RadioGroupProps extends Omit<BaseFieldProps, 'label'> {
   legend: string;
@@ -19,6 +20,9 @@ interface RadioGroupProps extends Omit<BaseFieldProps, 'label'> {
   error?: string;
   showOptionalText?: boolean;
   translateValues?: boolean;
+  /** Require the selected value to still be one of the available options. */
+  onlyAvailableOptions?: boolean;
+  validation?: ChoiceValidation;
 }
 
 const RadioGroup = ({
@@ -37,9 +41,20 @@ const RadioGroup = ({
   error: controlledError,
   showOptionalText = true,
   translateValues = true,
+  onlyAvailableOptions,
+  validation,
 }: RadioGroupProps) => {
   const { translate } = useLanguage();
-  const { stateValue, error, setStateValue } = useStateField({ statePath });
+  const fieldValidation = toChoiceFieldValidation(
+    { statePath, label: legend, required, validation },
+    values,
+    onlyAvailableOptions,
+  );
+  const { stateValue, error, setStateValue } = useStateField({
+    statePath,
+    // A controlled group validates the value its owner passes, which is the one it renders.
+    validation: value !== undefined ? { ...fieldValidation, value } : fieldValidation,
+  });
   const current = value ?? (typeof stateValue === 'string' ? stateValue : '');
   const currentError = controlledError ?? error;
 

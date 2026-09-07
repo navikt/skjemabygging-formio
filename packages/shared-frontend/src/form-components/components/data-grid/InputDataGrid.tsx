@@ -9,7 +9,7 @@ import {
   toComponentDefinitions,
 } from '../../../context/form-definition/formDefinitionUtils';
 import { useLanguage } from '../../../context/language/LanguageContext';
-import { createUpdatedSubmission, useSubmissionState } from '../../../context/state/SubmissionStateContext';
+import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
 import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
 import { useValidation } from '../../../context/validation/ValidationContext';
 import { useValidationScope } from '../../../context/validation/ValidationScopeContext';
@@ -37,7 +37,7 @@ const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => 
   const { form } = useFormDefinition();
   const { submissionMethod } = useSubmissionMethod();
   const { handleFieldChange } = useValidation();
-  const { pageKey, components: pageComponents } = useValidationScope();
+  const { pageKey } = useValidationScope();
   const { components, label, description, hideLabel, addAnother, removeAnother, disableAddingRemovingRows, rowTitle } =
     component;
   const submissionPath = getResolvedSubmissionPath(component);
@@ -51,9 +51,8 @@ const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => 
   );
 
   const updateRows = (nextRows: object[]) => {
-    const nextSubmission = createUpdatedSubmission(submission, submissionPath, nextRows);
     updateSubmission(submissionPath, nextRows);
-    handleFieldChange(pageKey, pageComponents, nextSubmission);
+    handleFieldChange(pageKey);
   };
 
   const addRow = () => {

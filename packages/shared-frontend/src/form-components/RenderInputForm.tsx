@@ -1,27 +1,21 @@
-import {} from '@navikt/skjemadigitalisering-shared-domain';
 import { ReactNode } from 'react';
 import { ValidationScopeProvider } from '../context/validation/ValidationScopeContext';
-import RenderInputComponent from './RenderInputComponent';
 import { ComponentDefinition } from './component-types';
 import { inputComponentRegistry, InputComponentRegistry } from './inputComponentRegistry';
+import { PageComponentsProvider } from './PageComponentsContext';
+import RenderInputComponent from './RenderInputComponent';
 
 interface Props {
-  // Scope props are only supplied by the top-level (page) render. Nested renders (container, row,
-  // datagrid, ...) omit them and inherit the validation scope from context.
+  // The page key is only supplied by the top-level (page) render. Nested renders (container, row,
+  // datagrid, ...) omit it and inherit the validation scope and the page components from context.
   pageKey?: string;
-  pageComponents?: ComponentDefinition[];
   components: ComponentDefinition[];
   componentRegistry?: InputComponentRegistry;
 }
 
 // Renders editable inputs for a set of enriched active components. Path resolution happens in the
 // input registry so dynamic contexts can later override submissionPath when needed.
-const RenderInputForm = ({
-  pageKey,
-  pageComponents,
-  components,
-  componentRegistry = inputComponentRegistry,
-}: Props) => {
+const RenderInputForm = ({ pageKey, components, componentRegistry = inputComponentRegistry }: Props) => {
   const content = (
     <>
       {components.map((component) => {
@@ -42,22 +36,21 @@ const RenderInputForm = ({
     </>
   );
 
-  return withScope(pageKey, pageComponents, content);
+  return withPageScope(pageKey, components, content);
 };
 
-const withScope = (
-  pageKey: string | undefined,
-  pageComponents: ComponentDefinition[] | undefined,
-  content: ReactNode,
-) => {
-  if (pageKey !== undefined && pageComponents !== undefined) {
-    return (
-      <ValidationScopeProvider pageKey={pageKey} components={pageComponents}>
-        {content}
-      </ValidationScopeProvider>
-    );
+// A new scope instance per page: leaving a page keeps its registered fields (the summary page
+// validates every page), while fields that disappear within the page unregister themselves.
+const withPageScope = (pageKey: string | undefined, components: ComponentDefinition[], content: ReactNode) => {
+  if (pageKey === undefined) {
+    return content;
   }
-  return content;
+
+  return (
+    <ValidationScopeProvider key={pageKey} pageKey={pageKey}>
+      <PageComponentsProvider components={components}>{content}</PageComponentsProvider>
+    </ValidationScopeProvider>
+  );
 };
 
 export default RenderInputForm;

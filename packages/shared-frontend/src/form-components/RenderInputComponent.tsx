@@ -3,6 +3,7 @@ import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import { ComponentType, useEffect } from 'react';
 import { useApplication } from '../context/application/ApplicationContext';
 import { useFormDefinition } from '../context/form-definition/FormDefinitionContext';
+import { UnvalidatedFields } from '../context/validation/ValidationScopeContext';
 import { inputComponentRegistry, InputComponentRegistry } from './inputComponentRegistry';
 import { InputComponentProps, InputComponentType } from './inputComponentRegistryUtils';
 import { reportUnsupportedComponent } from './unsupportedComponentLogger';
@@ -50,10 +51,14 @@ const RenderInputComponent = ({ component, submissionPath, componentRegistry = i
   const formioClasses = [`formio-component-${component.key}`, `formio-component-${component.type}`]
     .filter(Boolean)
     .join(' ');
+  const input = (
+    <RegistryComponent component={component} submissionPath={submissionPath} componentRegistry={componentRegistry} />
+  );
 
   return (
     <div className={formioClasses}>
-      <RegistryComponent component={component} submissionPath={submissionPath} componentRegistry={componentRegistry} />
+      {/* A value the form calculates is not something the user can fix, so it is not validated. */}
+      {component.calculateValue ? <UnvalidatedFields>{input}</UnvalidatedFields> : input}
     </div>
   );
 };

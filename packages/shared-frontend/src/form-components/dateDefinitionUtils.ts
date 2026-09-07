@@ -1,4 +1,10 @@
-import { Submission, dateUtils, numberUtils, submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  Component,
+  Submission,
+  dateUtils,
+  numberUtils,
+  submissionUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import {
   flattenComponentsWithBaseSubmissionPath,
   getResolvedSubmissionPath,
@@ -9,7 +15,7 @@ const normalizeArrayIndexes = (submissionPath: string) => submissionPath.replace
 
 const getCurrentRowPrefix = (submissionPath: string) => submissionPath.match(/^(.*\[\d+])(?:\.|$)/)?.[1];
 
-const getBeforeDateInputSubmissionPath = (component: ComponentDefinition, pageComponents: ComponentDefinition[]) => {
+const getBeforeDateInputSubmissionPath = (component: Component, pageComponents: ComponentDefinition[]) => {
   if (!component.beforeDateInputKey) {
     return undefined;
   }
@@ -38,7 +44,7 @@ const getBeforeDateInputSubmissionPath = (component: ComponentDefinition, pageCo
 };
 
 const getDatePickerFromDate = (
-  component: ComponentDefinition,
+  component: Component,
   pageComponents: ComponentDefinition[],
   submission?: Submission,
 ) => {
@@ -64,7 +70,7 @@ const getDatePickerFromDate = (
   return component.specificEarliestAllowedDate;
 };
 
-const getDatePickerToDate = (component: ComponentDefinition) => {
+const getDatePickerToDate = (component: Component) => {
   if (component.latestAllowedDate !== undefined && numberUtils.isValidInteger(String(component.latestAllowedDate))) {
     return dateUtils.addDays(Number(component.latestAllowedDate));
   }
@@ -106,4 +112,10 @@ const getMonthPickerMaxYear = (component: ComponentDefinition) => {
   return undefined;
 };
 
-export { getDatePickerFromDate, getDatePickerToDate, getMonthPickerMaxYear, getMonthPickerMinYear };
+export {
+  getBeforeDateInputSubmissionPath,
+  getDatePickerFromDate,
+  getDatePickerToDate,
+  getMonthPickerMaxYear,
+  getMonthPickerMinYear,
+};

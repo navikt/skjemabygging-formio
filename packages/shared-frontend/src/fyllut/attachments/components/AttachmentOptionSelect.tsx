@@ -11,6 +11,7 @@ import { forwardRef, ReactNode, useEffect } from 'react';
 import Select from '../../../components/select/Select';
 import TextArea from '../../../components/text-area/TextArea';
 import { attachmentValidationPath } from '../../../context/validation/attachmentValidationPath';
+import { UnvalidatedFields } from '../../../context/validation/ValidationScopeContext';
 
 interface Props {
   title: ReactNode;
@@ -88,42 +89,46 @@ const AttachmentOptionSelect = forwardRef<HTMLFieldSetElement, Props>(
     };
 
     return (
-      <div className={className}>
-        {implicitValueKey ? (
-          <div className="mb-4">
-            <Label>{title}</Label>
-            <BodyShort>{description}</BodyShort>
-          </div>
-        ) : (
-          <Select
-            statePath={attachmentValidationPath(attachmentId, 'value')}
-            label={typeof title === 'string' ? title : ''}
-            required={required}
-            description={typeof description === 'string' ? description : undefined}
-            values={values}
-            value={selectedValueKey ?? ''}
-            error={error}
-            onChange={handleAttachmentChange}
-            presentation={values.length === 1 ? 'checkbox' : 'radio'}
-            inputRef={ref}
-          />
-        )}
-        {additionalDocumentation?.enabled && (
-          <TextArea
-            statePath={`attachments.${attachmentId}.additionalDocumentation`}
-            label={translate(additionalDocumentation.label)}
-            value={selectedValueKey === value?.key ? (value?.additionalDocumentation ?? '') : ''}
-            description={translate(additionalDocumentation.description)}
-            onChange={handleAdditionalDocumentationChange}
-            maxLength={200}
-          />
-        )}
-        {showDeadline && deadline && (
-          <Alert variant="warning" inline>
-            {translate(TEXTS.statiske.attachment.deadline, { deadline })}
-          </Alert>
-        )}
-      </div>
+      // The choice and its additional documentation are kept on the attachment rather than in the
+      // submission state: the attachment declares them, and these controls only render the result.
+      <UnvalidatedFields>
+        <div className={className}>
+          {implicitValueKey ? (
+            <div className="mb-4">
+              <Label>{title}</Label>
+              <BodyShort>{description}</BodyShort>
+            </div>
+          ) : (
+            <Select
+              statePath={attachmentValidationPath(attachmentId, 'value')}
+              label={typeof title === 'string' ? title : ''}
+              required={required}
+              description={typeof description === 'string' ? description : undefined}
+              values={values}
+              value={selectedValueKey ?? ''}
+              error={error}
+              onChange={handleAttachmentChange}
+              presentation={values.length === 1 ? 'checkbox' : 'radio'}
+              inputRef={ref}
+            />
+          )}
+          {additionalDocumentation?.enabled && (
+            <TextArea
+              statePath={`attachments.${attachmentId}.additionalDocumentation`}
+              label={translate(additionalDocumentation.label)}
+              value={selectedValueKey === value?.key ? (value?.additionalDocumentation ?? '') : ''}
+              description={translate(additionalDocumentation.description)}
+              onChange={handleAdditionalDocumentationChange}
+              maxLength={200}
+            />
+          )}
+          {showDeadline && deadline && (
+            <Alert variant="warning" inline>
+              {translate(TEXTS.statiske.attachment.deadline, { deadline })}
+            </Alert>
+          )}
+        </div>
+      </UnvalidatedFields>
     );
   },
 );

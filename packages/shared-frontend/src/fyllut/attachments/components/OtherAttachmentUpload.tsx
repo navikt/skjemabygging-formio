@@ -18,6 +18,9 @@ import { useFormDefinition } from '../../../context/form-definition/FormDefiniti
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
 import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
+import { attachmentValidationPath } from '../../../context/validation/attachmentValidationPath';
+import ValidationRegistration from '../../../context/validation/ValidationRegistration';
+import { attachmentValueRules } from '../attachmentUploadValidation';
 import { useAttachmentUpload } from '../context/AttachmentUploadContext';
 import {
   filterAttachmentsByNavId,
@@ -169,6 +172,7 @@ const OtherAttachmentUploadField = ({
             {attachments.map((attachment) => (
               <FileUploader
                 key={attachment.attachmentId}
+                attachmentLabel={label}
                 initialAttachment={attachment}
                 submissionPath={submissionPath}
                 multipleAttachments
@@ -236,19 +240,28 @@ const OtherAttachmentUpload = ({
   };
 
   return (
-    <OtherAttachmentUploadField
-      label={label}
-      required={required}
-      description={description}
-      attachmentValues={attachmentValues}
-      attachmentNavId={attachmentNavId}
-      submissionPath={submissionPath}
-      submissionAttachment={submissionAttachment}
-      onValueChange={handleValueChange}
-      error={attachmentError}
-      refs={refs}
-      onUpload={onUpload}
-    />
+    <>
+      {/* The choice is not bound to the submission by state path, so the attachment declares it. */}
+      <ValidationRegistration
+        label={label}
+        statePath={attachmentValidationPath(attachmentId, 'value')}
+        value={submissionAttachment?.value}
+        rules={attachmentValueRules(required)}
+      />
+      <OtherAttachmentUploadField
+        label={label}
+        required={required}
+        description={description}
+        attachmentValues={attachmentValues}
+        attachmentNavId={attachmentNavId}
+        submissionPath={submissionPath}
+        submissionAttachment={submissionAttachment}
+        onValueChange={handleValueChange}
+        error={attachmentError}
+        refs={refs}
+        onUpload={onUpload}
+      />
+    </>
   );
 };
 

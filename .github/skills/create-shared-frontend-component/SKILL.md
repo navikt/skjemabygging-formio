@@ -81,18 +81,85 @@ automatically:
   component. Text-like fields inline their onChange/onBlur formatting on top of
   it (raw value while typing, reformat on blur via `toInputFormat`).
 
-## Validation scope comes from context, never props
+## Components own what they validate
 
-`RenderInputForm` (`form-components/RenderInputForm.tsx`, the shared-frontend
-render entry used by fyllut's `PanelStep`) wraps output in `ValidationScopeProvider`
-(`context/validation/ValidationScopeContext.tsx`) with `{ pageKey, components }`.
-Nested renders (container/row/form-group/data-grid) omit the scope props and
-inherit it. `useStateField` reads the scope with `useOptionalValidationScope()`
-(never throws) to resolve the error message and revalidate on change.
+A component's rules live in **one pure builder colocated with the reusable
+component** (`components/<kebab>/<name>Validation.ts`, e.g. `textFieldValidation`,
+`addressValidation`, `drivingListValidation`). Everything that validates goes
+through it, so a rule is never written twice:
+
+- **The visible input registers exactly one field** for its state path, through
+  `useStateField`. There is one owner per concrete path: a composite never
+  registers on behalf of the inputs it renders, it only passes the label, the
+  `required` flag and any contextual rules down to them (`PhoneNumber` hands the
+  selected calling code to its number field, the driving list hands each day to
+  its expense field).
+- **Paths with no input of their own** (the attachment choice and its uploaded
+  files) are declared with `ValidationRegistration`
+  (`context/validation/ValidationRegistration.tsx`), which takes nothing but a
+  visible label, a state path, a value and rules. The controls that display such
+  a value render inside `UnvalidatedFields`
+  (`context/validation/ValidationScopeContext.tsx`) and get their error as a
+  prop, so the path keeps a single owner.
+- **The headless page rebuild** (`form-components/page-validation/`) calls the
+  same builders. `validationFieldsRegistry` mirrors `inputComponentRegistry`
+  (one entry per component `type`, exhaustive), maps a component definition to
+  the props its adapter would pass, and hands them to the component's builder.
+  `collectPageValidationFields` walks a page's active components exactly the way
+  `RenderInputForm` does - unsupported types fall through to their children,
+  hidden components contribute nothing, data grids expand into indexed rows with
+  their own row conditions.
+
+Only the headless rebuild knows about form definitions. Generic components,
+`src/validation` and `src/context/validation` never import
+`ComponentDefinition`, and no Formio expression is evaluated beyond the domain
+`checkCondition` used to find the active components.
+
+- `RenderInputForm` wraps the page output in `ValidationScopeProvider`
+  (`context/validation/ValidationScopeContext.tsx`) with `{ pageKey, active }`,
+  keyed on `pageKey` so every page gets its own scope instance. Nested renders
+  (container/row/form-group/data-grid) inherit it.
+- `ValidationProvider` takes an optional `resolvePageFields(pageKey)` callback.
+  Fyllut injects it (`fyllut/validation/FyllutValidationProvider.tsx`) and it is
+  then the source of truth: every `validatePage`/`validatePages` and every error
+  lookup rebuilds the page from the **latest** submission. That is what makes a
+  page the user never opened report its missing answers, and what keeps an
+  earlier page correct when a later page's condition shows or hides one of its
+  fields. Without a resolver (other surfaces, isolated tests) the registrations
+  are used instead.
+- Leaving a page keeps its registrations, so a registration-only surface can
+  still validate every visited page. A field that stops rendering **inside** a
+  mounted page (hidden conditional, removed data grid row) unregisters itself.
+- **Reusable components own their intrinsic rules** (a valid email, account
+  number, date, phone number, ...). Each component exposes a narrow
+  component-specific `validation` type for only legitimate authored or
+  contextual constraints; never expose broad `ValidationRules` or
+  `FieldValidationProp`. `required` stays a direct prop and is never part of
+  that object. Semantic components own both their intrinsic rules and
+  formatting. `TextField` remains the generic text component and accepts only
+  approved text constraints, including `coverPageValue`, not unrelated rules
+  such as `postalCode`. There is no way to opt a rendered field out of
+  validation.
+- **The message names the field after its visible label** (or legend). There is
+  no separate validation label - if a message should read differently, change
+  what the user sees. `PhoneNumber` therefore gives its number input the
+  component's own label, visually hidden behind the calling code selector.
+- `validate.pattern` is normalized by the adapter into
+  `pattern: { expression, message }`, resolving the legacy `customMessage` /
+  `patternMessage` properties. `validate.custom` (Formio expressions) is never
+  executed: `form-components/custom-validation/` recognizes the published
+  scripts declaratively and either drops them (the component already validates
+  the same thing) or replaces them with plain value rules. Anything it does not
+  recognize keeps the whole form on the old renderer, so never add a rule that
+  interprets a script anywhere else.
+- A value the form calculates is not something the user can fix, so
+  `RenderInputComponent` renders it inside `UnvalidatedFields` and the headless
+  rebuild skips it.
 
 If a component genuinely needs the page component list (e.g. a date picker's
-sibling `beforeDateInputKey` lookup, or datagrid's `handleFieldChange`), read it
-with `useValidationScope()` inside the **adapter** — do not thread it as a prop.
+sibling `beforeDateInputKey` lookup), read it with `usePageComponents()`
+(`form-components/PageComponentsContext.tsx`) inside the **adapter** — do not
+thread it as a prop, and do not put form definitions on the validation scope.
 
 ## Validation & error behaviour (framework rules)
 
@@ -102,13 +169,14 @@ by `components/error-summary/FormErrorSummary.tsx`, and driven from
 implements its own error visibility.
 
 > **Invariant — no re-render loops.** The validation state setters
-> (`pagesWithErrors`, `summaryScope`) **must return the same reference when
-> nothing actually changes** (`togglePageInSet`/`replacePageSet` in
-> `ValidationContext.tsx`). `syncPageValidationState` runs from an effect on the
-> live component list, so a setter that always allocates a new `Set` churns the
-> context identity and starves react-router transitions. When adding validators
-> or components that feed this path, preserve the bail-out; never allocate a new
-> Set/object unconditionally in a validation setter.
+> (`pagesWithErrors`, `violationsByPage`, `summaryScope`) **must return the same
+> reference when nothing actually changes** (`togglePageInSet`/`replacePageSet`/
+> `setPageViolations` in `ValidationContext.tsx`). Registrations and value
+> updates run from effects, so a setter that always allocates churns the context
+> identity and starves react-router transitions. For the same reason,
+> registration callbacks are stable and the rules a component builds inline are
+> compared by their serialization, not by identity — never register a value that
+> is a new object on every render.
 
 ### Per-page error state ("hasErrors")
 
@@ -125,7 +193,10 @@ implements its own error visibility.
   it from `pagesWithErrors` once empty.
 - While a page is in the error state, newly surfaced errors also get the error
   state — including components that were previously hidden and are now visible —
-  because errors are recomputed from the live visible components each time.
+  because the page is recomputed whenever its registered fields or their values
+  change.
+- Error messages are stored untranslated (message key + params) and worded when
+  they are read, so they follow the current language.
 
 ### ErrorSummary
 
@@ -180,7 +251,10 @@ not in this skill.
 2. **Reusable component** (always): only `statePath` + presentational props;
    extend the shared `BaseFieldProps` (`src/components/types.ts` —
    `statePath`, `label?`, `description?`, `required?`, `readOnly?`,
-   `marginBottom?`, `readMore?`) and
+   `marginBottom?`, `readMore?`). Declare a narrow component-specific
+   `validation` prop only when the component has legitimate caller-supplied
+   constraints; do not reuse a broad validation type, and keep `required`
+   separate. Then
    add input-specific props on top (narrow `label` to required where needed);
    bind with `useStateField`; use `FormElementBox` and the translated helper UI
    from `src/components/shared/`, plus the reusable `ReadMore` wrapper from
@@ -194,17 +268,26 @@ not in this skill.
    (`resolveSubmissionPath`, `isRequired`, `getValues`, `resolveInputType`,
    `resolveNumberFormatKey`, `resolveTextFormatKey`, `resolveReadMore`).
 4. **Register** the form `type`(s) in `inputComponentRegistry.tsx`.
-5. **Validation**: add the rule to `toRules` in
-   `validation/deriveValidations.ts` (keyed off `component.type`) and implement
-   it in `validation/validators.ts` returning the right `TEXTS.*` message.
-   Composites that store nested objects emit their own descriptors (see
-   `collectIdentityDescriptors`) so each nested value validates and focuses from
-   the error summary. Non-numeric `min/max/Length` (form-builder `''`) are
-   ignored.
+5. **Validation**: implement the rule in `validation/validators.ts` (value +
+   rules → `TEXTS.*` message key), then write the component's pure builder in
+   `components/<kebab>/<name>Validation.ts`: merge its intrinsic rules with the
+   caller's through `toFieldValidation` (`components/shared/fieldValidation.ts`)
+   and pass the result to `useStateField`. A composite's builder describes the
+   fields **its inputs** register, with `toValidationFields` (see `Identity`,
+   `Address`, `PhoneNumber`, the driving list), and the composite itself renders
+   those inputs with the same labels and rules. Finally add the component's entry
+   to `form-components/page-validation/validationFieldsRegistry.ts` so the
+   headless page rebuild uses the same builder. Non-numeric `min/max/Length`
+   (form-builder `''`) are ignored.
 6. **Summary parity**: add/verify `Summary<Name>.tsx` in the same folder and its
    registry entry so input and summary stay aligned.
 7. **Tests (vitest)**: cover the isolated logic — validators, formatters,
-   derive-validations. UI behaviour goes to Cypress.
+   registration behaviour (`context/validation/ValidationContext.test.tsx`,
+   `form-components/RenderInputForm.test.tsx`), the headless rebuild
+   (`form-components/page-validation/collectPageValidationFields.test.ts`) and,
+   for anything with nested paths, the parity between the two sources
+   (`form-components/page-validation/registrationParity.test.tsx`). UI behaviour
+   goes to Cypress.
 
 ## System/derived and hidden components
 

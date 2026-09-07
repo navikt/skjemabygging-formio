@@ -13,13 +13,14 @@ import RadioGroup from '../radio-group/RadioGroup';
 import ReadMore from '../read-more/ReadMore';
 import FormElementBox from '../shared/FormElementBox';
 import TextField from '../text-field/TextField';
-import { BaseFieldProps } from '../types';
+import { BaseFieldProps, ChoiceValidation } from '../types';
 
 interface AttachmentProps extends BaseFieldProps {
   label: string;
   values: AttachmentOption[];
   attachmentValues?: AttachmentSettingValues;
   deadlineDays?: string;
+  validation?: ChoiceValidation;
 }
 
 type AttachmentStateValue = SubmissionAttachmentValue & { showDeadline?: boolean };
@@ -36,9 +37,11 @@ const Attachment = ({
   values,
   attachmentValues,
   deadlineDays,
+  validation,
 }: AttachmentProps) => {
   const { translate } = useLanguage();
-  const { stateValue, error, setStateValue } = useStateField({ statePath });
+  // The choice control below owns the registration for `statePath`; this only reads and writes it.
+  const { stateValue, setStateValue } = useStateField({ statePath });
   const currentValue = (stateValue ?? {}) as AttachmentStateValue;
   const selectedValue = currentValue?.key;
   const selectedOption = useMemo(
@@ -74,11 +77,11 @@ const Attachment = ({
                 : undefined,
             )
           }
-          error={error}
           required={required}
           readOnly={readOnly}
           marginBottom="space-0"
           translateValues={false}
+          validation={validation}
         />
       ) : (
         <RadioGroup
@@ -96,11 +99,11 @@ const Attachment = ({
                 : {}),
             })
           }
-          error={error}
           required={required}
           readOnly={readOnly}
           marginBottom="space-0"
           translateValues={false}
+          validation={validation}
         />
       )}
 

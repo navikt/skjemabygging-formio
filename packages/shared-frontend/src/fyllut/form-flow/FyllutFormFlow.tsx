@@ -7,7 +7,6 @@ import { FormDefinitionProvider } from '../../context/form-definition/FormDefini
 import { applyPrefilledValuesToSubmission } from '../../context/form-definition/prefillSubmission';
 import { SubmissionStateProvider } from '../../context/state/SubmissionStateContext';
 import { SubmissionMethodProvider } from '../../context/submission-method/SubmissionMethodContext';
-import { ValidationProvider } from '../../context/validation/ValidationContext';
 import { AttachmentUploadProvider } from '../attachments/context/AttachmentUploadContext';
 import FyllutFormActionsProvider from '../context/form-actions/FyllutFormActionsProvider';
 import { NologinTokenProvider } from '../context/nologin-token/NologinTokenContext';
@@ -16,6 +15,7 @@ import FormHeader from '../layout/FormHeader';
 import FormLayout from '../layout/FormLayout';
 import { resolveDefaultSubmissionMethod } from '../submission-method/submissionMethodResolution';
 import SubmissionMethodSelection from '../submission-method/SubmissionMethodSelection';
+import FyllutValidationProvider from '../validation/FyllutValidationProvider';
 import FormRouter from './FormRouter';
 
 interface Props {
@@ -51,7 +51,7 @@ const FyllutFormFlow = ({
       <NologinTokenProvider form={form}>
         <SubmissionStateProvider initialSubmission={hydratedInitialSubmission}>
           <FormDefinitionProvider form={form}>
-            <ValidationProvider initialPagesWithErrors={initialPagesWithErrors}>
+            <FyllutValidationProvider initialPagesWithErrors={initialPagesWithErrors}>
               <FyllutFormActionsProvider
                 form={form}
                 initialInnsendingsId={initialInnsendingsId}
@@ -71,7 +71,7 @@ const FyllutFormFlow = ({
                   </FormLayout>
                 </AttachmentUploadProvider>
               </FyllutFormActionsProvider>
-            </ValidationProvider>
+            </FyllutValidationProvider>
           </FormDefinitionProvider>
         </SubmissionStateProvider>
       </NologinTokenProvider>

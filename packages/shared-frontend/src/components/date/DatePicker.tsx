@@ -8,13 +8,15 @@ import ReadMore from '../read-more/ReadMore';
 import FormElementBox from '../shared/FormElementBox';
 import TranslatedDescription from '../shared/TranslatedDescription';
 import TranslatedLabel from '../shared/TranslatedLabel';
-import { BaseFieldProps } from '../types';
+import { BaseFieldProps, DatePickerValidation } from '../types';
 import { getAkselLocale, toDatePickerInputValue, toSelectedDate } from './dateFieldUtils';
+import { toDatePickerValidation } from './dateValidation';
 
 interface DatePickerProps extends BaseFieldProps {
   label: string;
   fromDate?: string;
   toDate?: string;
+  validation?: DatePickerValidation;
 }
 
 const DatePicker = ({
@@ -28,9 +30,13 @@ const DatePicker = ({
   readMore,
   fieldSize,
   marginBottom,
+  validation,
 }: DatePickerProps) => {
   const { currentLanguage } = useLanguage();
-  const { stateValue, error, setStateValue } = useStateField({ statePath });
+  const { stateValue, error, setStateValue } = useStateField({
+    statePath,
+    validation: toDatePickerValidation({ statePath, label, required, validation, fromDate, toDate }),
+  });
   const displayValue = toDatePickerInputValue(stateValue);
 
   const { datepickerProps, inputProps, setSelected, reset } = useDatepicker({

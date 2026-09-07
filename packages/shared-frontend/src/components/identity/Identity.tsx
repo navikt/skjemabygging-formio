@@ -2,19 +2,20 @@ import { CustomLabels, dateUtils, SubmissionIdentity, TEXTS } from '@navikt/skje
 import { useEffect } from 'react';
 import { useStateField } from '../../context/state/useStateField';
 import DatePicker from '../date/DatePicker';
+import NationalIdentityNumber from '../national-identity-number/NationalIdentityNumber';
 import RadioGroup from '../radio-group/RadioGroup';
-import TextField from '../text-field/TextField';
 import { BaseFieldProps } from '../types';
+import { showsPrefilledIdentityNumber } from './identityValidation';
 
 interface IdentityProps extends Pick<BaseFieldProps, 'statePath' | 'required' | 'readOnly'> {
   customLabels?: CustomLabels;
   prefillValue?: string;
 }
 
-const Identity = ({ statePath, required, readOnly, customLabels, prefillValue }: IdentityProps) => {
+const Identity = ({ statePath, required = true, readOnly, customLabels, prefillValue }: IdentityProps) => {
   const { stateValue, setStateValue } = useStateField({ statePath });
   const identity = stateValue as SubmissionIdentity | undefined;
-  const showsPrefilledIdentityNumber = !!identity?.identitetsnummer && !identity?.harDuFodselsnummer;
+  const isPrefilled = showsPrefilledIdentityNumber(identity);
 
   useEffect(() => {
     if (
@@ -32,13 +33,11 @@ const Identity = ({ statePath, required, readOnly, customLabels, prefillValue }:
 
   if (readOnly) {
     return (
-      <TextField
+      <NationalIdentityNumber
         statePath={`${statePath}.identitetsnummer`}
         label={TEXTS.statiske.identity.identityNumber}
         required={required}
         readOnly
-        inputMode="numeric"
-        formatKey="identityNumber"
         showOptionalText={false}
       />
     );
@@ -53,16 +52,15 @@ const Identity = ({ statePath, required, readOnly, customLabels, prefillValue }:
           { value: 'ja', label: TEXTS.common.yes },
           { value: 'nei', label: TEXTS.common.no },
         ]}
-        required={required}
+        // A prefilled identity number answers the question, so it is not asked again.
+        required={required && !isPrefilled}
         showOptionalText={false}
       />
-      {(identity?.harDuFodselsnummer === 'ja' || showsPrefilledIdentityNumber) && (
-        <TextField
+      {(identity?.harDuFodselsnummer === 'ja' || isPrefilled) && (
+        <NationalIdentityNumber
           statePath={`${statePath}.identitetsnummer`}
           label={TEXTS.statiske.identity.identityNumber}
           required={required}
-          inputMode="numeric"
-          formatKey="identityNumber"
           showOptionalText={false}
         />
       )}

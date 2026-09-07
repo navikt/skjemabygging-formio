@@ -14,8 +14,9 @@ interface DataFetcherProps {
 }
 
 const DataFetcher = ({ statePath, label, description, readMore, values, required = false }: DataFetcherProps) => {
-  const { stateValue, error, setStateValue } = useStateField({ statePath });
+  const { stateValue, setStateValue } = useStateField({ statePath });
 
+  // Nothing can be selected before the register data has loaded, so there is nothing to validate.
   if (values.length === 0) {
     return null;
   }
@@ -28,7 +29,6 @@ const DataFetcher = ({ statePath, label, description, readMore, values, required
       values={values}
       value={getSelectedValuesAsList(stateValue as Record<string, boolean> | undefined)}
       onChange={(selectedValues) => setStateValue(getSelectedValuesMap(values, selectedValues))}
-      error={error}
       readMore={readMore}
       required={required}
     />

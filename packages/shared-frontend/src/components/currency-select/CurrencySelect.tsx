@@ -3,10 +3,11 @@ import { useApplication } from '../../context/application/ApplicationContext';
 import { useRuntimeServices } from '../../context/runtime-services/RuntimeServicesContext';
 import Select from '../select/Select';
 import { useRemoteOptions } from '../select/useRemoteOptions';
-import { BaseFieldProps } from '../types';
+import { BaseFieldProps, ChoiceValidation } from '../types';
 
 interface CurrencySelectProps extends BaseFieldProps {
   label: string;
+  validation?: ChoiceValidation;
 }
 
 const CurrencySelect = ({
@@ -18,6 +19,7 @@ const CurrencySelect = ({
   readMore,
   fieldSize,
   marginBottom,
+  validation,
 }: CurrencySelectProps) => {
   const { logger } = useApplication();
   const { formData } = useRuntimeServices();
@@ -43,6 +45,7 @@ const CurrencySelect = ({
       marginBottom={marginBottom}
       selectType="combobox"
       valueType="option"
+      validation={validation}
     />
   );
 };

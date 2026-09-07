@@ -1,11 +1,25 @@
-import { Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback } from 'react';
+import { ValidationRules } from '../../validation/validators';
+import { useFieldValidation } from '../validation/useFieldValidation';
 import { useValidation } from '../validation/ValidationContext';
 import { useOptionalValidationScope } from '../validation/ValidationScopeContext';
 import { useOptionalFieldStateStore } from './StateContext';
 
+interface FieldValidation {
+  /** Field name used in validation messages (a label or a translation key). */
+  field: string;
+  rules: ValidationRules;
+  /** Value to validate, when it differs from the value in the state store (controlled inputs). */
+  value?: unknown;
+}
+
 interface UseStateFieldArgs {
   statePath: string;
+  /**
+   * The single field this input registers. Omit it only when the component renders no input of its
+   * own for `statePath` (a composite reading the answer it distributes to the inputs below).
+   */
+  validation?: FieldValidation;
 }
 
 /**
@@ -16,27 +30,41 @@ interface UseStateFieldArgs {
  * With none of them present the field is inert (value undefined, no error, no-op setter), which lets
  * the same component be driven purely by props (see the controlled overrides on the components).
  */
-const useStateField = ({ statePath }: UseStateFieldArgs) => {
+const useStateField = ({ statePath, validation }: UseStateFieldArgs) => {
   const store = useOptionalFieldStateStore();
-  const { getError, handleFieldChange } = useValidation();
+  const { handleFieldChange, updateFieldValue } = useValidation();
   const scope = useOptionalValidationScope();
+  const stateValue = store?.getValue(statePath);
+  const hasValueOverride = !!validation && 'value' in validation;
+  const validationValue = hasValueOverride ? validation.value : stateValue;
+  const { error } = useFieldValidation({
+    statePath,
+    field: validation?.field ?? statePath,
+    value: validationValue,
+    rules: validation?.rules,
+  });
 
   const setStateValue = useCallback(
     (value: unknown): void => {
-      const nextState = store?.setValue(statePath, value);
-      if (scope && handleFieldChange) {
-        handleFieldChange(scope.pageKey, scope.components, nextState as Submission | undefined);
+      store?.setValue(statePath, value);
+      if (scope) {
+        if (!hasValueOverride) {
+          // Keep the registered value in sync before revalidating, so clicking next right after a
+          // change validates the value the user just entered.
+          updateFieldValue(scope.pageKey, statePath, value);
+        }
+        handleFieldChange(scope.pageKey);
       }
     },
-    [store, statePath, scope, handleFieldChange],
+    [handleFieldChange, hasValueOverride, scope, statePath, store, updateFieldValue],
   );
 
   return {
-    stateValue: store?.getValue(statePath),
-    error: scope && getError ? getError(statePath, scope.pageKey, scope.components) : undefined,
+    stateValue,
+    error,
     setStateValue,
   };
 };
 
 export { useStateField };
-export type { UseStateFieldArgs };
+export type { FieldValidation, UseStateFieldArgs };

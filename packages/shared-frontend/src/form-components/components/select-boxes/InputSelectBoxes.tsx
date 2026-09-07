@@ -3,9 +3,10 @@ import CheckboxGroup from '../../../components/checkbox-group/CheckboxGroup';
 import { getSelectedValuesAsList, getSelectedValuesMap } from '../../../components/data-fetcher/dataFetcherUtils';
 import { useStateField } from '../../../context/state/useStateField';
 import { SelectBoxesDefinition } from '../../component-types';
+import { useResolvedValidation } from '../../custom-validation/useResolvedValidation';
 import {
-  getValues,
   InputComponentProps,
+  getValues,
   isRequired,
   resolveFieldSize,
   resolveReadMore,
@@ -19,7 +20,8 @@ const isSelectBoxesValue = (value: unknown): value is Record<string, boolean> =>
 const InputSelectBoxes = ({ component, submissionPath }: InputComponentProps<SelectBoxesDefinition>) => {
   const statePath = resolveSubmissionPath(component, submissionPath);
   const values = getValues(component);
-  const { stateValue, error, setStateValue } = useStateField({ statePath });
+  const validation = useResolvedValidation(component);
+  const { stateValue, setStateValue } = useStateField({ statePath });
   const defaultValue = isSelectBoxesValue(component.defaultValue) ? component.defaultValue : undefined;
 
   useEffect(() => {
@@ -39,10 +41,10 @@ const InputSelectBoxes = ({ component, submissionPath }: InputComponentProps<Sel
         values={values}
         value={getSelectedValuesAsList((stateValue as Record<string, boolean> | undefined) ?? defaultValue)}
         onChange={(selectedValues) => setStateValue(getSelectedValuesMap(values, selectedValues))}
-        error={error}
         required={isRequired(component)}
         fieldSize={resolveFieldSize(component)}
         readMore={resolveReadMore(component)}
+        validation={validation}
       />
     </FormGroup>
   );

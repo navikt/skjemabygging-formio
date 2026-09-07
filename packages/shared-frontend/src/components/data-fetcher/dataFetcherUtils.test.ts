@@ -1,6 +1,6 @@
 import { DataFetcherElement } from '@navikt/skjemadigitalisering-shared-domain';
 import { describe, expect, it } from 'vitest';
-import { getSelectedValuesAsList, getSelectedValuesMap, hasSelectedValue } from './dataFetcherUtils';
+import { getSelectedValuesAsList, getSelectedValuesMap, toSelectedValuesList } from './dataFetcherUtils';
 
 describe('dataFetcherUtils', () => {
   const values: DataFetcherElement[] = [
@@ -19,9 +19,10 @@ describe('dataFetcherUtils', () => {
     expect(getSelectedValuesAsList({ a1: true, a2: false })).toEqual(['a1']);
   });
 
-  it('detects whether a data fetcher value has any checked option', () => {
-    expect(hasSelectedValue(undefined)).toBe(false);
-    expect(hasSelectedValue({ a1: false, a2: false })).toBe(false);
-    expect(hasSelectedValue({ a1: true, a2: false })).toBe(true);
+  it('lists the checked options of a stored value map', () => {
+    expect(toSelectedValuesList(undefined)).toEqual([]);
+    expect(toSelectedValuesList('ikke et kart')).toEqual([]);
+    expect(toSelectedValuesList({ a1: false, a2: false })).toEqual([]);
+    expect(toSelectedValuesList({ a1: true, a2: false })).toEqual(['a1']);
   });
 });

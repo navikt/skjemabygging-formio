@@ -4,8 +4,12 @@ import { useLanguage } from '../../context/language/LanguageContext';
 import DatePicker from '../date/DatePicker';
 import RadioGroup from '../radio-group/RadioGroup';
 import DrivingListPeriod from './DrivingListPeriod';
-import { allPaperFieldsForPeriodsAreSet, showAddPeriodButton, showRemovePeriodButton } from './drivingListUtils';
-import { normalizeSubmissionDate } from './useDrivingListState';
+import {
+  allPaperFieldsForPeriodsAreSet,
+  normalizeSubmissionDate,
+  showAddPeriodButton,
+  showRemovePeriodButton,
+} from './drivingListUtils';
 
 interface PaperDrivingListProps {
   addPeriod: () => void;
@@ -17,6 +21,7 @@ interface PaperDrivingListProps {
 
 const PaperDrivingList = ({ addPeriod, onParkingChange, removePeriod, statePath, value }: PaperDrivingListProps) => {
   const { translate } = useLanguage();
+  const showPeriods = allPaperFieldsForPeriodsAreSet(normalizeSubmissionDate(value.selectedDate), value.parking);
 
   return (
     <>
@@ -38,7 +43,7 @@ const PaperDrivingList = ({ addPeriod, onParkingChange, removePeriod, statePath,
         onChange={onParkingChange}
         required
       />
-      {allPaperFieldsForPeriodsAreSet(normalizeSubmissionDate(value.selectedDate), value.parking) && (
+      {showPeriods && (
         <>
           <Heading size="xsmall" level="3" spacing>
             {translate(TEXTS.statiske.drivingList.accordionHeader)}

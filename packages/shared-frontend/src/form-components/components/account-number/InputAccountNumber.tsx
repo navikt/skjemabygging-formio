@@ -1,5 +1,6 @@
-import TextField from '../../../components/text-field/TextField';
+import AccountNumber from '../../../components/account-number/AccountNumber';
 import { AccountNumberDefinition } from '../../component-types';
+import { useResolvedValidation } from '../../custom-validation/useResolvedValidation';
 import {
   InputComponentProps,
   isRequired,
@@ -9,21 +10,22 @@ import {
 } from '../../inputComponentRegistryUtils';
 import FormGroup from '../../shared/FormGroup';
 
-const InputAccountNumber = ({ component, submissionPath }: InputComponentProps<AccountNumberDefinition>) => (
-  <FormGroup>
-    <TextField
-      statePath={resolveSubmissionPath(component, submissionPath)}
-      label={component.label}
-      description={component.description}
-      required={isRequired(component)}
-      fieldSize={resolveFieldSize(component)}
-      readOnly={component.readOnly}
-      readMore={resolveReadMore(component)}
-      inputMode="numeric"
-      spellCheck={false}
-      formatKey="accountNumber"
-    />
-  </FormGroup>
-);
+const InputAccountNumber = ({ component, submissionPath }: InputComponentProps<AccountNumberDefinition>) => {
+  const validation = useResolvedValidation(component);
+  return (
+    <FormGroup>
+      <AccountNumber
+        statePath={resolveSubmissionPath(component, submissionPath)}
+        label={component.label}
+        description={component.description}
+        required={isRequired(component)}
+        fieldSize={resolveFieldSize(component)}
+        readOnly={component.readOnly}
+        readMore={resolveReadMore(component)}
+        validation={validation}
+      />
+    </FormGroup>
+  );
+};
 
 export default InputAccountNumber;

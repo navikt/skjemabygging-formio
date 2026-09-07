@@ -3,12 +3,13 @@ import { useStateField } from '../../context/state/useStateField';
 import DatePicker from '../date/DatePicker';
 import FormElementBox from '../shared/FormElementBox';
 import { BaseFieldProps } from '../types';
+import { AddressValidityValue } from './addressValidityValidation';
 
 type AddressValidityProps = Pick<BaseFieldProps, 'statePath' | 'required' | 'readOnly' | 'readMore' | 'fieldSize'>;
 
 const AddressValidity = ({ statePath, required, readOnly, readMore, fieldSize }: AddressValidityProps) => {
   const { stateValue } = useStateField({ statePath });
-  const address = (stateValue ?? {}) as { gyldigFraOgMed?: string };
+  const address = (stateValue ?? {}) as AddressValidityValue;
   const minDate = dateUtils.addDays(-365);
   const maxDate = dateUtils.addDays(365);
 
@@ -27,6 +28,7 @@ const AddressValidity = ({ statePath, required, readOnly, readMore, fieldSize }:
         statePath={`${statePath}.gyldigTilOgMed`}
         label={TEXTS.statiske.address.validTo}
         description={TEXTS.statiske.address.validToDescription}
+        required={false}
         readOnly={readOnly}
         fromDate={address.gyldigFraOgMed || minDate}
         toDate={maxDate}

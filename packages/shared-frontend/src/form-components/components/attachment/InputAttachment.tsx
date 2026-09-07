@@ -4,6 +4,7 @@ import { useFormDefinition } from '../../../context/form-definition/FormDefiniti
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
 import { AttachmentDefinition } from '../../component-types';
+import { useResolvedValidation } from '../../custom-validation/useResolvedValidation';
 import {
   InputComponentProps,
   isRequired,
@@ -17,6 +18,7 @@ const InputAttachment = ({ component, submissionPath }: InputComponentProps<Atta
   const { submissionMethod } = useSubmissionMethod();
   const { form } = useFormDefinition();
   const { translate } = useLanguage();
+  const validation = useResolvedValidation(component);
   const resolvedSubmissionPath = resolveSubmissionPath(component, submissionPath);
 
   return (
@@ -36,6 +38,7 @@ const InputAttachment = ({ component, submissionPath }: InputComponentProps<Atta
         fieldSize={resolveFieldSize(component)}
         readOnly={component.readOnly}
         readMore={resolveReadMore(component)}
+        validation={validation}
       />
     </FormGroup>
   );

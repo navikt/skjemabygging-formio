@@ -19,6 +19,7 @@ import {
   getAvailablePeriods,
   getFuturePeriodEnd,
   mapVedtakActivities,
+  normalizeSubmissionDate,
 } from './drivingListUtils';
 
 type DrivingListStatus = 'loading' | 'ready' | 'error';
@@ -37,22 +38,6 @@ interface DrivingListState {
   vedtakOptions: SubmissionActivity[];
   nextFuturePeriodEnd?: string;
 }
-
-const normalizeSubmissionDate = (value?: string) => {
-  if (!value) {
-    return undefined;
-  }
-
-  if (dateUtils.isValid(value, 'submission')) {
-    return value;
-  }
-
-  if (dateUtils.isValid(value, 'input')) {
-    return dateUtils.toSubmissionDate(value);
-  }
-
-  return undefined;
-};
 
 const useDrivingListState = (statePath: string): DrivingListState => {
   const { logger } = useApplication();
@@ -182,5 +167,5 @@ const useDrivingListState = (statePath: string): DrivingListState => {
   };
 };
 
-export { normalizeSubmissionDate, useDrivingListState };
+export { useDrivingListState };
 export type { DrivingListState, DrivingListStatus };

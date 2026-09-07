@@ -1,5 +1,6 @@
-import TextField from '../../../components/text-field/TextField';
+import Year from '../../../components/year/Year';
 import { YearDefinition } from '../../component-types';
+import { useResolvedValidation } from '../../custom-validation/useResolvedValidation';
 import {
   InputComponentProps,
   isRequired,
@@ -9,21 +10,24 @@ import {
 } from '../../inputComponentRegistryUtils';
 import FormGroup from '../../shared/FormGroup';
 
-const InputYear = ({ component, submissionPath }: InputComponentProps<YearDefinition>) => (
-  <FormGroup>
-    <TextField
-      statePath={resolveSubmissionPath(component, submissionPath)}
-      label={component.label}
-      description={component.description}
-      required={isRequired(component)}
-      fieldSize={resolveFieldSize(component)}
-      autoComplete={component.autocomplete}
-      inputMode={component.inputType}
-      spellCheck={component.spellCheck}
-      formatKey="year"
-      readMore={resolveReadMore(component)}
-    />
-  </FormGroup>
-);
+const InputYear = ({ component, submissionPath }: InputComponentProps<YearDefinition>) => {
+  const validation = useResolvedValidation(component);
+  return (
+    <FormGroup>
+      <Year
+        statePath={resolveSubmissionPath(component, submissionPath)}
+        label={component.label}
+        description={component.description}
+        required={isRequired(component)}
+        fieldSize={resolveFieldSize(component)}
+        autoComplete={component.autocomplete}
+        inputMode={component.inputType}
+        spellCheck={component.spellCheck}
+        readMore={resolveReadMore(component)}
+        validation={validation}
+      />
+    </FormGroup>
+  );
+};
 
 export default InputYear;

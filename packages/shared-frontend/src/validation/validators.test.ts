@@ -1,5 +1,4 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { ComponentDefinition } from '../form-components/component-types';
 import { validateValue } from './validators';
 
 describe('validateValue', () => {
@@ -7,6 +6,13 @@ describe('validateValue', () => {
     expect(validateValue('', 'Name', { required: true })).toEqual({
       textKey: TEXTS.validering.required,
       params: { field: 'Name' },
+    });
+  });
+
+  it('returns required violation for an unchecked boolean', () => {
+    expect(validateValue(false, 'Declaration', { required: true })).toEqual({
+      textKey: TEXTS.validering.required,
+      params: { field: 'Declaration' },
     });
   });
 
@@ -98,15 +104,6 @@ describe('validateValue', () => {
       textKey: TEXTS.validering.orgNrCustomError,
       params: { field: 'Organization number' },
     });
-    expect(
-      validateValue('123456789', 'Organization number', {
-        organizationNumber: true,
-        customMessage: 'Invalid organization number',
-      }),
-    ).toEqual({
-      textKey: 'Invalid organization number',
-      params: { field: 'Organization number' },
-    });
   });
 
   it('validates national identity number values (fnr/dnr)', () => {
@@ -147,15 +144,6 @@ describe('validateValue', () => {
       textKey: TEXTS.validering.accountNumberCustomError,
       params: { field: 'Kontonummer' },
     });
-    expect(
-      validateValue('12345678901', 'Kontonummer', {
-        accountNumber: true,
-        customMessage: 'Ugyldig kontonummer',
-      }),
-    ).toEqual({
-      textKey: 'Ugyldig kontonummer',
-      params: { field: 'Kontonummer' },
-    });
   });
 
   it('validates iban values', () => {
@@ -165,25 +153,6 @@ describe('validateValue', () => {
       textKey: TEXTS.validering.wrongBBANLength,
       params: { field: 'IBAN' },
     });
-  });
-
-  it('requires at least one selected dataFetcher option', () => {
-    expect(
-      validateValue({ aktivitet1: false, aktivitet2: false }, 'Aktivitetsvelger', {
-        required: true,
-        dataFetcherSelection: true,
-      }),
-    ).toEqual({
-      textKey: TEXTS.validering.required,
-      params: { field: 'Aktivitetsvelger' },
-    });
-
-    expect(
-      validateValue({ aktivitet1: true, aktivitet2: false }, 'Aktivitetsvelger', {
-        required: true,
-        dataFetcherSelection: true,
-      }),
-    ).toBeUndefined();
   });
 
   it('validates driving list parking expenses', () => {
@@ -212,15 +181,15 @@ describe('validateValue', () => {
     ).toBeUndefined();
   });
 
-  it('validates norwegian phone numbers with area code', () => {
+  it('validates norwegian phone numbers on the selected calling code', () => {
     expect(
       validateValue('12345678', 'Telefonnummer', {
-        phoneNumber: { showAreaCode: true, areaCode: '+47' },
+        phoneNumber: { showAreaCode: true, countryCallingCode: '+47' },
       }),
     ).toBeUndefined();
     expect(
       validateValue('12ab5678', 'Telefonnummer', {
-        phoneNumber: { showAreaCode: true, areaCode: '+47' },
+        phoneNumber: { showAreaCode: true, countryCallingCode: '+47' },
       }),
     ).toEqual({
       textKey: TEXTS.validering.digitsOnly,
@@ -228,12 +197,22 @@ describe('validateValue', () => {
     });
     expect(
       validateValue('1234567', 'Telefonnummer', {
-        phoneNumber: { showAreaCode: true, areaCode: '+47' },
+        phoneNumber: { showAreaCode: true, countryCallingCode: '+47' },
       }),
     ).toEqual({
       textKey: TEXTS.validering.phoneNumberLength,
       params: { field: 'Telefonnummer' },
     });
+  });
+
+  it('only holds a number to eight digits when the selected calling code is norwegian', () => {
+    expect(
+      validateValue('1234567', 'Telefonnummer', {
+        phoneNumber: { showAreaCode: true, countryCallingCode: '+46' },
+      }),
+    ).toBeUndefined();
+    // No calling code has been selected yet, so nothing but the free-form rules apply.
+    expect(validateValue('1234567', 'Telefonnummer', { phoneNumber: { showAreaCode: true } })).toBeUndefined();
   });
 
   it('validates free-form phone numbers without area code', () => {
@@ -244,59 +223,143 @@ describe('validateValue', () => {
     });
   });
 
-  it('supports Formio custom validation expressions', () => {
+  it('validates an authored pattern with the message that belongs to it', () => {
+    const expression = '([01]\\d|2[0-3]):[0-5]\\d';
+
+    expect(validateValue('12:30', 'Klokkeslett', { pattern: { expression } })).toBeUndefined();
     expect(
-      validateValue(
-        '50',
-        'Beløp',
-        {
-          customValidation: {
-            component: {
-              key: 'belop',
-              type: 'currency',
-              input: true,
-              label: 'Beløp',
-              validate: { custom: 'valid = input == 100 ? true : "Kun 100 er tillatt"' },
-            } as ComponentDefinition,
-          },
-        },
-        'nb',
-        {
-          submission: { data: { belop: '50' } },
-          submissionPath: 'belop',
-        },
-      ),
+      validateValue('kl 7', 'Klokkeslett', { pattern: { expression, message: 'Skriv klokkeslett som HH:mm' } }),
     ).toEqual({
-      textKey: 'Kun 100 er tillatt',
-      params: { field: 'Beløp' },
+      textKey: 'Skriv klokkeslett som HH:mm',
+      params: { field: 'Klokkeslett', pattern: expression },
     });
   });
 
-  it('supports Formio custom validation expressions for unchecked checkboxes', () => {
-    expect(
-      validateValue(
-        undefined,
-        'Godkjenning',
-        {
-          customValidation: {
-            component: {
-              key: 'godkjenning',
-              type: 'navCheckbox',
-              input: true,
-              label: 'Godkjenning',
-              validate: { custom: 'valid = input === true ? true : "Du må godta vilkårene"' },
-            } as ComponentDefinition,
-          },
-        },
-        'nb',
-        {
-          submission: { data: {} },
-          submissionPath: 'godkjenning',
-        },
-      ),
-    ).toEqual({
-      textKey: 'Du må godta vilkårene',
-      params: { field: 'Godkjenning' },
+  it('falls back to the generic pattern message', () => {
+    expect(validateValue('kl 7', 'Klokkeslett', { pattern: { expression: '\\d{2}:\\d{2}' } })).toEqual({
+      textKey: TEXTS.validering.pattern,
+      params: { field: 'Klokkeslett', pattern: '\\d{2}:\\d{2}' },
+    });
+  });
+
+  it('anchors the pattern, so a partial match is not enough', () => {
+    expect(validateValue('kl 12:30', 'Klokkeslett', { pattern: { expression: '([01]\\d|2[0-3]):[0-5]\\d' } })).toEqual({
+      textKey: TEXTS.validering.pattern,
+      params: { field: 'Klokkeslett', pattern: '([01]\\d|2[0-3]):[0-5]\\d' },
+    });
+  });
+
+  it('requires at least one uploaded file', () => {
+    expect(validateValue([], 'Dokumentasjon', { requiredFiles: true })).toEqual({
+      textKey: TEXTS.validering.fileMissing,
+      params: { field: 'Dokumentasjon' },
+    });
+    expect(validateValue([{ id: '1' }], 'Dokumentasjon', { requiredFiles: true })).toBeUndefined();
+  });
+
+  describe('a value the field must differ from', () => {
+    const message = 'Underenhet kan ikke være det samme som organisasjonsnummer.';
+
+    it('reports the authored message when the values are equal', () => {
+      expect(
+        validateValue('974652269', 'Underenhet', {
+          notEqual: { value: '974652269', message, comparison: 'strict' },
+        }),
+      ).toEqual({ textKey: message, params: { field: 'Underenhet' } });
+    });
+
+    it('passes when the values differ', () => {
+      expect(
+        validateValue('974652269', 'Underenhet', {
+          notEqual: { value: '910753751', message, comparison: 'strict' },
+        }),
+      ).toBeUndefined();
+    });
+
+    it('compares strictly, so a number never equals the text that was typed', () => {
+      expect(
+        validateValue('974652269', 'Underenhet', {
+          notEqual: { value: 974652269, message, comparison: 'strict' },
+        }),
+      ).toBeUndefined();
+    });
+
+    it('coerces only the entered value in a string comparison, the way the expression did', () => {
+      expect(
+        validateValue(974652269, 'Underenhet', {
+          notEqual: { value: '974652269', message, comparison: 'string' },
+        }),
+      ).toEqual({ textKey: message, params: { field: 'Underenhet' } });
+      expect(
+        validateValue('974652269', 'Underenhet', {
+          notEqual: { value: 974652269, message, comparison: 'string' },
+        }),
+      ).toBeUndefined();
+    });
+
+    it('passes when the other field is unanswered', () => {
+      expect(
+        validateValue('974652269', 'Underenhet', {
+          notEqual: { value: undefined, message, comparison: 'string' },
+        }),
+      ).toBeUndefined();
+      expect(
+        validateValue('974652269', 'Underenhet', {
+          notEqual: { value: undefined, message, comparison: 'strict' },
+        }),
+      ).toBeUndefined();
+    });
+
+    it('is not reached for an empty value, which the required rule answers for', () => {
+      expect(
+        validateValue('', 'Underenhet', {
+          required: true,
+          notEqual: { value: '', message, comparison: 'strict' },
+        }),
+      ).toEqual({ textKey: TEXTS.validering.required, params: { field: 'Underenhet' } });
+    });
+
+    it('reports the format of the value before comparing it to another field', () => {
+      expect(
+        validateValue('123', 'Underenhet', {
+          organizationNumber: true,
+          notEqual: { value: '123', message, comparison: 'string' },
+        }),
+      ).toEqual({ textKey: TEXTS.validering.orgNrCustomError, params: { field: 'Underenhet' } });
+    });
+  });
+
+  describe('authored messages for date bounds', () => {
+    const dateMessages = {
+      fromDate: 'Til dato må være større enn Fra dato',
+      toDate: 'Perioden kan være maksimalt ett år',
+    };
+    const rules = { date: true, fromDate: '2024-01-11', toDate: '2025-01-09', dateMessages };
+
+    it('replaces the standard minimum date message', () => {
+      expect(validateValue('2024-01-10', 'Til dato', rules)).toEqual({
+        textKey: dateMessages.fromDate,
+        params: { field: 'Til dato', minDate: '11.01.2024' },
+      });
+    });
+
+    it('replaces the standard maximum date message', () => {
+      expect(validateValue('2025-01-10', 'Til dato', rules)).toEqual({
+        textKey: dateMessages.toDate,
+        params: { field: 'Til dato', maxDate: '09.01.2025' },
+      });
+    });
+
+    it('accepts both ends of the allowed period', () => {
+      expect(validateValue('2024-01-11', 'Til dato', rules)).toBeUndefined();
+      expect(validateValue('2025-01-09', 'Til dato', rules)).toBeUndefined();
+    });
+
+    it('keeps the standard messages when none were authored', () => {
+      expect(validateValue('2024-01-10', 'Til dato', { date: true, fromDate: '2024-01-11' })).toEqual({
+        textKey: 'minDate',
+        params: { field: 'Til dato', minDate: '11.01.2024' },
+      });
     });
   });
 });

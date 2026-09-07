@@ -1,6 +1,6 @@
 import Identity from '../../../components/identity/Identity';
 import { IdentityDefinition } from '../../component-types';
-import { InputComponentProps, isRequired, resolveSubmissionPath } from '../../inputComponentRegistryUtils';
+import { InputComponentProps, resolveSubmissionPath } from '../../inputComponentRegistryUtils';
 import FormGroup from '../../shared/FormGroup';
 
 const InputIdentity = ({ component, submissionPath }: InputComponentProps<IdentityDefinition>) => (
@@ -9,7 +9,7 @@ const InputIdentity = ({ component, submissionPath }: InputComponentProps<Identi
       statePath={resolveSubmissionPath(component, submissionPath)}
       customLabels={component.customLabels}
       prefillValue={typeof component.prefillValue === 'string' ? component.prefillValue : undefined}
-      required={isRequired(component)}
+      required={component.validate?.required ?? true}
       readOnly={component.readOnly}
     />
   </FormGroup>

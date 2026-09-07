@@ -3,9 +3,10 @@ import { TEXTS, VedtakBetalingsplan, dateUtils } from '@navikt/skjemadigitaliser
 import { useMemo } from 'react';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useStateField } from '../../context/state/useStateField';
+import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
 import Alert from '../alert/Alert';
 import CheckboxGroup from '../checkbox-group/CheckboxGroup';
-import TextField from '../text-field/TextField';
+import DrivingListParkingExpense from './DrivingListParkingExpense';
 import {
   getParkingFieldPath,
   getSelectedDatesForPeriod,
@@ -39,11 +40,15 @@ const DrivingListPeriod = ({
   betalingsplan,
 }: DrivingListPeriodProps) => {
   const { translate, currentLanguage } = useLanguage();
+  const { submissionMethod } = useSubmissionMethod();
   const { stateValue, setStateValue } = useStateField({ statePath });
   const value = (stateValue as DrivingListValue | undefined) ?? {};
   const dates = value.dates ?? [];
   const periodDates = useMemo(() => dateUtils.getDatesInRange(periodFrom, periodTo), [periodFrom, periodTo]);
   const selectedDates = getSelectedDatesForPeriod(dates, periodDates);
+  // The days are one answer split across the period accordions, so the group is given every picked
+  // day - it only offers the ones inside its own period - and validates the whole answer.
+  const allSelectedDates = dates.map((item) => item.date);
   const selectedDateEntries = dates.filter((item) => periodDates.includes(item.date));
   const header = `${dateUtils.toLocaleDateLongMonth(periodFrom, currentLanguage)} - ${dateUtils.toLocaleDateLongMonth(
     periodTo,
@@ -71,18 +76,17 @@ const DrivingListPeriod = ({
             value: date,
             label: dateUtils.toWeekdayAndDate(date, currentLanguage),
           }))}
-          value={selectedDates}
+          value={allSelectedDates}
           onChange={updateDates}
           required
         >
           {hasParking &&
             selectedDates.map((date) => (
-              <TextField
+              <DrivingListParkingExpense
                 key={date}
                 statePath={getParkingFieldPath(statePath, dates, date)}
-                label={TEXTS.statiske.drivingList.parkingExpenses}
-                type="text"
-                inputMode="numeric"
+                date={date}
+                enforceMaxHundred={submissionMethod === 'digital'}
               />
             ))}
         </CheckboxGroup>

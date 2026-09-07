@@ -1,6 +1,11 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import { describe, expect, it } from 'vitest';
-import { resolveFieldSize, resolveNumberDisplayValue, resolveSelectType } from './inputComponentRegistryUtils';
+import {
+  resolveFieldSize,
+  resolveNumberDisplayValue,
+  resolveSelectType,
+  resolveValidation,
+} from './inputComponentRegistryUtils';
 
 const createComponent = (overrides: Partial<Component>): Component =>
   ({
@@ -51,5 +56,46 @@ describe('resolveNumberDisplayValue', () => {
 
   it('formats integer numbers without decimals for numeric fields', () => {
     expect(resolveNumberDisplayValue(createComponent({ type: 'currency', inputType: 'numeric' }), 900)).toBe('900');
+  });
+});
+
+describe('resolveValidation', () => {
+  it('normalizes an authored pattern into an expression and the message written for it', () => {
+    expect(
+      resolveValidation(
+        createComponent({ validate: { pattern: '\\d{2}:\\d{2}', customMessage: 'Skriv klokkeslett som HH:mm' } }),
+      ).pattern,
+    ).toEqual({ expression: '\\d{2}:\\d{2}', message: 'Skriv klokkeslett som HH:mm' });
+  });
+
+  it('falls back to the legacy pattern message', () => {
+    expect(
+      resolveValidation(createComponent({ validate: { pattern: '\\d{2}', patternMessage: 'Bruk to siffer' } })).pattern,
+    ).toEqual({ expression: '\\d{2}', message: 'Bruk to siffer' });
+  });
+
+  it('keeps a pattern without a message, and has none when nothing was authored', () => {
+    expect(resolveValidation(createComponent({ validate: { pattern: '\\d{2}' } })).pattern).toEqual({
+      expression: '\\d{2}',
+      message: undefined,
+    });
+    expect(resolveValidation(createComponent({ validate: { customMessage: 'Ugyldig' } })).pattern).toBeUndefined();
+    expect(resolveValidation(createComponent({})).pattern).toBeUndefined();
+  });
+
+  it('maps only the numeric constraints the form builder actually authored', () => {
+    // The form builder stores an unset numeric constraint as an empty string.
+    const validate = { minLength: '', maxLength: 10, min: 1 } as unknown as Component['validate'];
+
+    expect(resolveValidation(createComponent({ validate }))).toEqual({
+      minLength: undefined,
+      maxLength: 10,
+      min: 1,
+      max: undefined,
+      minYear: undefined,
+      maxYear: undefined,
+      digitsOnly: undefined,
+      pattern: undefined,
+    });
   });
 });

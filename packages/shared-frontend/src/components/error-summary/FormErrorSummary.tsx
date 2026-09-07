@@ -3,17 +3,15 @@ import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { MouseEvent, useEffect, useRef } from 'react';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { FieldError, useValidation } from '../../context/validation/ValidationContext';
-import { ComponentDefinition } from '../../form-components/component-types';
 import { inputId } from '../../utils/inputId';
 
 interface Props {
   pageKey?: string;
-  components?: ComponentDefinition[];
-  pages?: { pageKey: string; components: ComponentDefinition[] }[];
+  pageKeys?: string[];
   onNavigateToField?: (error: FieldError, id: string) => void;
 }
 
-const FormErrorSummary = ({ pageKey, components, pages, onNavigateToField }: Props) => {
+const FormErrorSummary = ({ pageKey, pageKeys, onNavigateToField }: Props) => {
   const {
     getErrorsForPage,
     getErrorsForPages,
@@ -23,9 +21,9 @@ const FormErrorSummary = ({ pageKey, components, pages, onNavigateToField }: Pro
   } = useValidation();
   const { translate } = useLanguage();
   const ref = useRef<HTMLDivElement>(null);
-  const errors = pages ? getErrorsForPages(pages) : pageKey && components ? getErrorsForPage(pageKey, components) : [];
+  const errors = pageKeys ? getErrorsForPages(pageKeys) : pageKey ? getErrorsForPage(pageKey) : [];
 
-  const visible = pages
+  const visible = pageKeys
     ? shouldShowSummaryForSummaryPage() && errors.length > 0
     : !!pageKey && shouldShowSummaryForPage(pageKey) && errors.length > 0;
 

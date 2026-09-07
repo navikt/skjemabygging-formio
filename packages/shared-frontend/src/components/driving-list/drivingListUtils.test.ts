@@ -19,6 +19,21 @@ describe('drivingListUtils', () => {
     ]);
   });
 
+  it('only merges the days that belong to the period the group offers', () => {
+    expect(
+      mergePeriodDates(
+        [{ date: '2024-01-19', parking: '20', betalingsplanId: 'p2' }],
+        // The group is given every picked day, but only offers the ones inside its own period.
+        ['2024-01-09', '2024-01-19'],
+        ['2024-01-08', '2024-01-09', '2024-01-10'],
+        'p1',
+      ),
+    ).toEqual([
+      { date: '2024-01-09', parking: '', betalingsplanId: 'p1' },
+      { date: '2024-01-19', parking: '20', betalingsplanId: 'p2' },
+    ]);
+  });
+
   it('shows refund warning when parking plus daily rates exceed refund limit', () => {
     expect(
       shouldShowExpenseWarning(

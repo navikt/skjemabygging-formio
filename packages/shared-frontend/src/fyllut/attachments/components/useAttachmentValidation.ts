@@ -9,13 +9,13 @@ const useAttachmentValidation = (submissionAttachments: SubmissionAttachment[]) 
 
   useEffect(() => {
     if (scope) {
-      syncPageValidationState(scope.pageKey, scope.components);
+      syncPageValidationState(scope.pageKey);
     }
   }, [scope, submissionAttachments, syncPageValidationState]);
 
   const getAttachmentError = useCallback(
     (attachmentId: string, field: 'value' | 'files' | 'title') =>
-      scope ? getError(attachmentValidationPath(attachmentId, field), scope.pageKey, scope.components) : undefined,
+      scope ? getError(attachmentValidationPath(attachmentId, field), scope.pageKey) : undefined,
     [getError, scope],
   );
 

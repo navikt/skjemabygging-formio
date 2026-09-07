@@ -2,30 +2,24 @@ import { Label } from '@navikt/ds-react';
 import { ComponentValue, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect } from 'react';
 import { useApplication } from '../../context/application/ApplicationContext';
-import { useLanguage } from '../../context/language/LanguageContext';
 import { useRuntimeServices } from '../../context/runtime-services/RuntimeServicesContext';
 import { useStateField } from '../../context/state/useStateField';
-import { inputId } from '../../utils/inputId';
 import Alert from '../alert/Alert';
 import Select from '../select/Select';
 import { useRemoteOptions } from '../select/useRemoteOptions';
 import FormElementBox from '../shared/FormElementBox';
 import TranslatedDescription from '../shared/TranslatedDescription';
 import TranslatedLabel from '../shared/TranslatedLabel';
-import TextField from '../text-field/TextField';
-import { BaseFieldProps } from '../types';
+import InternalTextField from '../text-field/InternalTextField';
+import { BaseFieldProps, PhoneNumberValidation } from '../types';
+import { DEFAULT_AREA_CODE, PhoneNumberValue, toPhoneNumberRules } from './phoneNumberValidation';
 
-const DEFAULT_AREA_CODE = '+47';
 const fallbackAreaCodeOptions: ComponentValue[] = [{ value: DEFAULT_AREA_CODE, label: DEFAULT_AREA_CODE }];
-
-interface PhoneNumberValue {
-  areaCode?: string;
-  number?: string;
-}
 
 interface PhoneNumberProps extends BaseFieldProps {
   label: string;
   showAreaCode?: boolean;
+  validation?: PhoneNumberValidation;
 }
 
 const PhoneNumber = ({
@@ -38,14 +32,14 @@ const PhoneNumber = ({
   fieldSize,
   marginBottom,
   showAreaCode = false,
+  validation,
 }: PhoneNumberProps) => {
   const { logger } = useApplication();
   const { formData } = useRuntimeServices();
-  const { translate } = useLanguage();
   const { stateValue, setStateValue } = useStateField({ statePath });
   const phoneNumberValue =
     typeof stateValue === 'object' && stateValue !== null ? (stateValue as PhoneNumberValue) : undefined;
-  const areaCode = phoneNumberValue?.areaCode ?? DEFAULT_AREA_CODE;
+  const selectedAreaCode = phoneNumberValue?.areaCode;
   const loadAreaCodes = useCallback(() => formData.getCodeList('areaCodes'), [formData]);
   const { values: loadedAreaCodes, error } = useRemoteOptions(showAreaCode ? loadAreaCodes : undefined);
 
@@ -73,7 +67,7 @@ const PhoneNumber = ({
 
   if (!showAreaCode) {
     return (
-      <TextField
+      <InternalTextField
         statePath={statePath}
         label={label}
         description={description}
@@ -85,6 +79,7 @@ const PhoneNumber = ({
         type="tel"
         inputMode="tel"
         formatKey="phoneNumber"
+        validation={toPhoneNumberRules(false, undefined, validation)}
       />
     );
   }
@@ -93,7 +88,7 @@ const PhoneNumber = ({
 
   return (
     <FormElementBox fieldSize={fieldSize} marginBottom={marginBottom}>
-      <Label as="label" htmlFor={inputId(`${statePath}.number`)}>
+      <Label as="p" aria-hidden>
         <TranslatedLabel required={required} readOnly={readOnly}>
           {label}
         </TranslatedLabel>
@@ -108,17 +103,20 @@ const PhoneNumber = ({
         readOnly={readOnly}
         selectType="combobox"
       />
-      <TextField
-        key={areaCode}
+      <InternalTextField
+        key={selectedAreaCode}
         statePath={`${statePath}.number`}
-        label={translate(TEXTS.statiske.phoneNumber.phoneNumberLabel)}
+        label={label}
         hideLabel
         required={required}
         readOnly={readOnly}
         readMore={readMore}
         type="tel"
         inputMode="tel"
-        formatKey={areaCode === DEFAULT_AREA_CODE ? 'norwegianPhoneNumber' : 'phoneNumber'}
+        formatKey={
+          (selectedAreaCode ?? DEFAULT_AREA_CODE) === DEFAULT_AREA_CODE ? 'norwegianPhoneNumber' : 'phoneNumber'
+        }
+        validation={toPhoneNumberRules(true, selectedAreaCode, validation)}
       />
       {error && <Alert variant="warning">{TEXTS.statiske.phoneNumber.fetchError}</Alert>}
     </FormElementBox>

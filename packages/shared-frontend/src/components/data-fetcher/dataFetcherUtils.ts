@@ -20,10 +20,14 @@ const getSelectedValuesAsList = (values?: Record<string, boolean>): string[] => 
     .map(([key]) => key);
 };
 
-const hasSelectedValue = (value: unknown) =>
-  typeof value === 'object' && value !== null && !Array.isArray(value) && Object.values(value).some(Boolean);
+const isSelectedValuesMap = (value: unknown): value is Record<string, boolean> =>
+  typeof value === 'object' && value !== null && !Array.isArray(value);
+
+/** The chosen options of a stored `{ option: boolean }` map, the way a checkbox group renders them. */
+const toSelectedValuesList = (value: unknown): string[] =>
+  getSelectedValuesAsList(isSelectedValuesMap(value) ? value : undefined);
 
 const getDataFetcherData = (submissionPath: string, submission?: Submission): DataFetcherData | undefined =>
   submission ? dataFetcherUtils.dataFetcher(submissionPath, submission).apiResult : undefined;
 
-export { getDataFetcherData, getSelectedValuesAsList, getSelectedValuesMap, hasSelectedValue };
+export { getDataFetcherData, getSelectedValuesAsList, getSelectedValuesMap, isSelectedValuesMap, toSelectedValuesList };

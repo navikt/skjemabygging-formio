@@ -4,16 +4,18 @@ import { useStateField } from '../../context/state/useStateField';
 import { toInputFormat, toSubmissionFormat } from '../../formatting/inputFormat';
 import { inputId } from '../../utils/inputId';
 import ReadMore from '../read-more/ReadMore';
+import { toFieldValidation } from '../shared/fieldValidation';
 import FormElementBox from '../shared/FormElementBox';
 import TranslatedDescription from '../shared/TranslatedDescription';
 import TranslatedLabel from '../shared/TranslatedLabel';
-import { BaseFieldProps } from '../types';
+import { BaseFieldProps, TextAreaValidation } from '../types';
 
 interface TextAreaProps extends BaseFieldProps {
   label: string;
   maxLength?: number;
   value?: string;
   onChange?: (value: string) => void;
+  validation?: TextAreaValidation;
 }
 
 const TextArea = ({
@@ -28,8 +30,12 @@ const TextArea = ({
   readMore,
   fieldSize,
   marginBottom,
+  validation,
 }: TextAreaProps) => {
-  const { stateValue, error, setStateValue } = useStateField({ statePath });
+  const { stateValue, error, setStateValue } = useStateField({
+    statePath,
+    validation: toFieldValidation({ statePath, label, required, validation }),
+  });
   const isFocusedRef = useRef(false);
   const sourceValue = controlledOnChange ? controlledValue : stateValue;
   const syncedDisplayValue = toInputFormat(sourceValue);

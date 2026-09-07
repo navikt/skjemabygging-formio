@@ -8,13 +8,15 @@ import ReadMore from '../read-more/ReadMore';
 import FormElementBox from '../shared/FormElementBox';
 import TranslatedDescription from '../shared/TranslatedDescription';
 import TranslatedLabel from '../shared/TranslatedLabel';
-import { BaseFieldProps } from '../types';
+import { BaseFieldProps, MonthPickerValidation } from '../types';
 import { getAkselLocale, getMonthLocale } from './dateFieldUtils';
+import { toMonthPickerValidation } from './dateValidation';
 
 interface MonthPickerProps extends BaseFieldProps {
   label: string;
   minYear?: number;
   maxYear?: number;
+  validation?: MonthPickerValidation;
 }
 
 const MonthPicker = ({
@@ -28,9 +30,13 @@ const MonthPicker = ({
   readMore,
   fieldSize,
   marginBottom,
+  validation,
 }: MonthPickerProps) => {
   const { currentLanguage } = useLanguage();
-  const { stateValue, error, setStateValue } = useStateField({ statePath });
+  const { stateValue, error, setStateValue } = useStateField({
+    statePath,
+    validation: toMonthPickerValidation({ statePath, label, required, validation, minYear, maxYear }),
+  });
   const locale = getMonthLocale(currentLanguage);
 
   const { monthpickerProps, inputProps } = useMonthpicker({

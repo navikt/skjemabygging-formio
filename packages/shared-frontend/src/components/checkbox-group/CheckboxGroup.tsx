@@ -5,10 +5,11 @@ import { useLanguage } from '../../context/language/LanguageContext';
 import { useStateField } from '../../context/state/useStateField';
 import { inputId } from '../../utils/inputId';
 import ReadMore from '../read-more/ReadMore';
+import { toFieldValidation } from '../shared/fieldValidation';
 import FormElementBox from '../shared/FormElementBox';
 import TranslatedDescription from '../shared/TranslatedDescription';
 import TranslatedLabel from '../shared/TranslatedLabel';
-import { BaseFieldProps } from '../types';
+import { BaseFieldProps, ChoiceValidation } from '../types';
 
 interface CheckboxGroupProps extends Omit<BaseFieldProps, 'label'> {
   legend: string;
@@ -18,6 +19,7 @@ interface CheckboxGroupProps extends Omit<BaseFieldProps, 'label'> {
   error?: string;
   children?: ReactNode;
   translateValues?: boolean;
+  validation?: ChoiceValidation;
 }
 
 const CheckboxGroup = ({
@@ -35,9 +37,15 @@ const CheckboxGroup = ({
   error: controlledError,
   children,
   translateValues = true,
+  validation,
 }: CheckboxGroupProps) => {
   const { translate } = useLanguage();
-  const { stateValue, error, setStateValue } = useStateField({ statePath });
+  const fieldValidation = toFieldValidation({ statePath, label: legend, required, validation });
+  const { stateValue, error, setStateValue } = useStateField({
+    statePath,
+    // A controlled group validates the value its owner passes, which is the one it renders.
+    validation: value !== undefined ? { ...fieldValidation, value } : fieldValidation,
+  });
   const current = value ?? (Array.isArray(stateValue) ? stateValue : []);
   const currentError = controlledError ?? error;
 

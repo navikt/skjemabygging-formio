@@ -32,8 +32,8 @@ const useFormPageController = (requestedPanelKey?: string): FormPageController =
 
   const goToNext = useCallback(() => {
     if (!currentPanel) return false;
-    return validatePage(currentPanel.key, components);
-  }, [currentPanel, validatePage, components]);
+    return validatePage(currentPanel.key);
+  }, [currentPanel, validatePage]);
 
   const goToPrevious = useCallback(() => {
     hideSummary();

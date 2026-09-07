@@ -10,6 +10,7 @@ import { useLanguage } from '../../context/language/LanguageContext';
 import { useStateField } from '../../context/state/useStateField';
 import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
 import CountrySelect from '../country-select/CountrySelect';
+import PostalCode from '../postal-code/PostalCode';
 import RadioGroup from '../radio-group/RadioGroup';
 import FormElementBox from '../shared/FormElementBox';
 import TextField from '../text-field/TextField';
@@ -109,6 +110,7 @@ const Address = ({
               required={false}
               readOnly={effectiveReadOnly}
               readMore={coReadMore}
+              validation={{ coverPageValue: true }}
             />
           )}
           {(!effectiveReadOnly || address?.adresse) && (
@@ -118,10 +120,11 @@ const Address = ({
               required={required}
               readOnly={effectiveReadOnly}
               autoComplete="street-address"
+              validation={{ coverPageValue: true }}
             />
           )}
           {(!effectiveReadOnly || address?.postnummer) && (
-            <TextField
+            <PostalCode
               statePath={`${statePath}.postnummer`}
               label={TEXTS.statiske.address.postalCode}
               required={required}
@@ -136,6 +139,7 @@ const Address = ({
               required={required}
               readOnly={effectiveReadOnly}
               autoComplete="address-level2"
+              validation={{ coverPageValue: true }}
             />
           )}
         </>
@@ -150,6 +154,7 @@ const Address = ({
               required={false}
               readOnly={effectiveReadOnly}
               readMore={coReadMore}
+              validation={{ coverPageValue: true }}
             />
           )}
           {(!effectiveReadOnly || address?.postboks) && (
@@ -158,10 +163,11 @@ const Address = ({
               label={TEXTS.statiske.address.poBox}
               required={required}
               readOnly={effectiveReadOnly}
+              validation={{ coverPageValue: true }}
             />
           )}
           {(!effectiveReadOnly || address?.postnummer) && (
-            <TextField
+            <PostalCode
               statePath={`${statePath}.postnummer`}
               label={TEXTS.statiske.address.postalCode}
               required={required}
@@ -176,6 +182,7 @@ const Address = ({
               required={required}
               readOnly={effectiveReadOnly}
               autoComplete="address-level2"
+              validation={{ coverPageValue: true }}
             />
           )}
         </>
@@ -190,6 +197,7 @@ const Address = ({
               required={false}
               readOnly={effectiveReadOnly}
               readMore={coReadMore}
+              validation={{ coverPageValue: true }}
             />
           )}
           {(!effectiveReadOnly || address?.adresse) && (
@@ -199,6 +207,7 @@ const Address = ({
               required={required}
               readOnly={effectiveReadOnly}
               autoComplete="street-address"
+              validation={{ coverPageValue: true }}
             />
           )}
           {(!effectiveReadOnly || address?.bygning) && (
@@ -207,6 +216,7 @@ const Address = ({
               label={TEXTS.statiske.address.building}
               required={false}
               readOnly={effectiveReadOnly}
+              validation={{ coverPageValue: true }}
             />
           )}
           {(!effectiveReadOnly || address?.postnummer) && (
@@ -216,6 +226,7 @@ const Address = ({
               required={false}
               readOnly={effectiveReadOnly}
               autoComplete="postal-code"
+              validation={{ coverPageValue: true }}
             />
           )}
           {(!effectiveReadOnly || address?.bySted) && (
@@ -225,6 +236,7 @@ const Address = ({
               required={false}
               readOnly={effectiveReadOnly}
               autoComplete="address-level2"
+              validation={{ coverPageValue: true }}
             />
           )}
           {(!effectiveReadOnly || address?.region) && (
@@ -234,6 +246,7 @@ const Address = ({
               required={false}
               readOnly={effectiveReadOnly}
               autoComplete="address-level1"
+              validation={{ coverPageValue: true }}
             />
           )}
           {(!effectiveReadOnly || address?.land) && (

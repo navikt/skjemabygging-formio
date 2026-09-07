@@ -1,15 +1,38 @@
-import {
-  dateUtils,
-  formatUtils,
-  numberUtils,
-  Submission,
-  TEXTS,
-  validatorUtils,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { dateUtils, formatUtils, numberUtils, TEXTS, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import * as ibantools from 'ibantools';
-import { hasSelectedValue } from '../components/data-fetcher/dataFetcherUtils';
-import { ComponentDefinition } from '../form-components/component-types';
-import { evaluateFormioCustomValidation } from '../utils/formioEvaluation';
+
+/**
+ * An authored regular expression the value must match, with the message the author wrote for it.
+ * Form-definition adapters normalize the legacy `validate.pattern`/`customMessage`/`patternMessage`
+ * properties into this shape, so validation itself never has to know they existed.
+ */
+interface PatternRule {
+  expression: string;
+  message?: string;
+}
+
+/**
+ * A value the field must not be equal to, already resolved by whoever built the rules, together
+ * with the message authored for it. Validation never looks a value up itself.
+ *
+ * `comparison` keeps the distinction the legacy expressions made: `string` mirrors
+ * `String(input) !== other` (only the entered value is coerced, so a number reference never
+ * matches), `strict` mirrors `input !== other`.
+ */
+interface NotEqualRule {
+  value: unknown;
+  message: string;
+  comparison: 'strict' | 'string';
+}
+
+/**
+ * Messages that replace the standard `minDate`/`maxDate` wording for the bounds in the same rule
+ * set, for the few authored constraints that came with their own wording.
+ */
+interface DateMessages {
+  fromDate?: string;
+  toDate?: string;
+}
 
 interface ValidationRules {
   required?: boolean;
@@ -28,6 +51,7 @@ interface ValidationRules {
   date?: boolean;
   fromDate?: string;
   toDate?: string;
+  dateMessages?: DateMessages;
   month?: boolean;
   monthMinYear?: number;
   monthMaxYear?: number;
@@ -36,50 +60,25 @@ interface ValidationRules {
   accountNumber?: boolean;
   iban?: boolean;
   digitsOnly?: boolean;
-  dataFetcherSelection?: boolean;
   drivingListParkingExpense?: {
     date: string;
     enforceMaxHundred?: boolean;
   };
   phoneNumber?: {
     showAreaCode?: boolean;
-    areaCode?: string;
+    /** The calling code the user selected, e.g. `+47`. Only a Norwegian number has a fixed length. */
+    countryCallingCode?: string;
   };
-  customValidation?: {
-    component: ComponentDefinition;
-  };
-  customMessage?: string;
+  pattern?: PatternRule;
+  notEqual?: NotEqualRule;
+  /** At least one uploaded file is required (attachment upload controls). */
+  requiredFiles?: boolean;
 }
 
 interface RuleViolation {
   textKey: string;
   params: Record<string, string | number>;
 }
-
-const getCustomValidationViolation = (
-  value: unknown,
-  field: string,
-  rules: ValidationRules,
-  options: ValidationOptions,
-): RuleViolation | undefined => {
-  if (!rules.customValidation || !options.submissionPath) {
-    return undefined;
-  }
-
-  const customValidationResult = evaluateFormioCustomValidation({
-    component: rules.customValidation.component,
-    submission: options.submission,
-    submissionPath: options.submissionPath,
-    input: value,
-    allowTestTypes: options.allowTestTypes,
-  });
-
-  if (customValidationResult !== true && customValidationResult !== undefined && customValidationResult !== null) {
-    return { textKey: String(customValidationResult), params: { field } };
-  }
-
-  return undefined;
-};
 
 const normalizeMonthName = (value: string) => value.toLowerCase().replace(/\.$/, '').trim();
 
@@ -124,9 +123,12 @@ const getSelectValue = (value: unknown) =>
 
 interface ValidationOptions {
   allowTestTypes?: boolean;
-  submission?: Submission;
-  submissionPath?: string;
 }
+
+const isEqualToRuleValue = (value: unknown, rule: NotEqualRule): boolean => {
+  const other: unknown = rule.value;
+  return rule.comparison === 'string' ? (String(value) as unknown) === other : value === other;
+};
 
 const toIbanViolation = (value: string, field: string): RuleViolation | undefined => {
   const { ValidationErrorsIBAN, validateIBAN } = ibantools;
@@ -174,16 +176,10 @@ const validateValue = (
       return { textKey: TEXTS.validering.parkingExpensesAboveHundred, params: {} };
     }
   }
-  if (rules.customValidation?.component.type === 'navCheckbox') {
-    const customViolation = getCustomValidationViolation(value, field, rules, options);
-    if (customViolation) {
-      return customViolation;
-    }
+  if (rules.requiredFiles && (!Array.isArray(value) || value.length === 0)) {
+    return { textKey: TEXTS.validering.fileMissing, params: { field } };
   }
-  if (rules.required && rules.dataFetcherSelection && !hasSelectedValue(value)) {
-    return { textKey: TEXTS.validering.required, params: { field } };
-  }
-  if (rules.required && validatorUtils.isEmpty(value)) {
+  if (rules.required && (value === false || validatorUtils.isEmpty(value))) {
     return { textKey: TEXTS.validering.required, params: { field } };
   }
   if (validatorUtils.isEmpty(value)) {
@@ -201,6 +197,12 @@ const validateValue = (
   if (rules.maxLength !== undefined && typeof value === 'string' && value.length > rules.maxLength) {
     return { textKey: TEXTS.validering.maxLength, params: { field, length: rules.maxLength } };
   }
+  if (rules.pattern && typeof value === 'string' && !new RegExp(`^(?:${rules.pattern.expression})$`).test(value)) {
+    return {
+      textKey: rules.pattern.message ?? TEXTS.validering.pattern,
+      params: { field, pattern: rules.pattern.expression },
+    };
+  }
   if (rules.email && typeof value === 'string' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())) {
     return { textKey: TEXTS.validering.invalid_email, params: { field } };
   }
@@ -211,10 +213,10 @@ const validateValue = (
     return { textKey: TEXTS.validering.invalidPostalCode, params: { field } };
   }
   if (rules.organizationNumber && typeof value === 'string' && !validatorUtils.isOrganizationNumber(value)) {
-    return { textKey: rules.customMessage ?? TEXTS.validering.orgNrCustomError, params: { field } };
+    return { textKey: TEXTS.validering.orgNrCustomError, params: { field } };
   }
   if (rules.accountNumber && typeof value === 'string' && !validatorUtils.isAccountNumber(value)) {
-    return { textKey: rules.customMessage ?? TEXTS.validering.accountNumberCustomError, params: { field } };
+    return { textKey: TEXTS.validering.accountNumberCustomError, params: { field } };
   }
   if (rules.iban && typeof value === 'string') {
     return toIbanViolation(value, field);
@@ -229,10 +231,13 @@ const validateValue = (
   ) {
     return { textKey: 'fodselsnummerDNummer', params: { field } };
   }
+  if (rules.notEqual && isEqualToRuleValue(value, rules.notEqual)) {
+    return { textKey: rules.notEqual.message, params: { field } };
+  }
   if (rules.phoneNumber && typeof value === 'string') {
-    const { showAreaCode, areaCode } = rules.phoneNumber;
+    const { showAreaCode, countryCallingCode } = rules.phoneNumber;
 
-    if (showAreaCode && areaCode === '+47') {
+    if (showAreaCode && countryCallingCode === '+47') {
       if (!numberUtils.isValidInteger(value)) {
         return { textKey: TEXTS.validering.digitsOnly, params: { field } };
       }
@@ -252,13 +257,13 @@ const validateValue = (
     }
     if (rules.fromDate && dateUtils.isBeforeDate(normalizedDate, rules.fromDate)) {
       return {
-        textKey: 'minDate',
+        textKey: rules.dateMessages?.fromDate ?? 'minDate',
         params: { field, minDate: dateUtils.toLocaleDate(rules.fromDate) },
       };
     }
     if (rules.toDate && dateUtils.isBeforeDate(rules.toDate, normalizedDate)) {
       return {
-        textKey: 'maxDate',
+        textKey: rules.dateMessages?.toDate ?? 'maxDate',
         params: { field, maxDate: dateUtils.toLocaleDate(rules.toDate) },
       };
     }
@@ -326,12 +331,8 @@ const validateValue = (
       return { textKey: TEXTS.validering.max, params: { field, max: rules.max ?? '' } };
     }
   }
-  const customViolation = getCustomValidationViolation(value, field, rules, options);
-  if (customViolation) {
-    return customViolation;
-  }
   return undefined;
 };
 
 export { validateValue };
-export type { RuleViolation, ValidationOptions, ValidationRules };
+export type { DateMessages, NotEqualRule, PatternRule, RuleViolation, ValidationOptions, ValidationRules };

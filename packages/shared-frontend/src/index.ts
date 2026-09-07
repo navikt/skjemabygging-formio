@@ -14,7 +14,11 @@ import { StateStoreProvider } from './context/state/StateContext';
 import { SubmissionStateProvider, useSubmissionState } from './context/state/SubmissionStateContext';
 import { SubmissionMethodProvider, useSubmissionMethod } from './context/submission-method/SubmissionMethodContext';
 import { useValidation, ValidationProvider } from './context/validation/ValidationContext';
-import { RenderSummaryForm } from './form-components';
+import {
+  findUnsupportedCustomValidation,
+  RenderSummaryForm,
+  reportUnsupportedCustomValidation,
+} from './form-components';
 import { applyPrefillDataToForm, getFormPrefillKeys, initializeDigitalDraft, RenderForm } from './fyllut';
 import { buildDigitalFormSearch, isSoknadAlreadyExistsResponse } from './fyllut/draft/digitalDraftUtils';
 import { resolveDefaultSubmissionMethod } from './fyllut/submission-method/submissionMethodResolution';
@@ -57,6 +61,7 @@ export type {
   RenderSummaryFormProps,
   SummaryRendererAppConfig,
   SummaryRendererConfig,
+  UnsupportedCustomValidation,
 } from './form-components';
 export type {
   DigitalDraftInitialization,
@@ -74,6 +79,7 @@ export {
   buildDigitalFormSearch,
   CountrySelect,
   CurrencySelect,
+  findUnsupportedCustomValidation,
   FormDefinitionProvider,
   FormErrorSummary,
   getFormPrefillKeys,
@@ -84,6 +90,7 @@ export {
   NavUnitSelect,
   RenderForm,
   RenderSummaryForm,
+  reportUnsupportedCustomValidation,
   resolveDefaultSubmissionMethod,
   RuntimeServicesProvider,
   SharedFrontendBoundary,
