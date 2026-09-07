@@ -49,7 +49,12 @@ describe('Attachments page', () => {
     cy.get('input[type=file]').last().selectFile(`cypress/fixtures/files/${fileName}`, { force: true });
   };
 
+  before(() => {
+    cy.configMocksServer();
+  });
+
   beforeEach(() => {
+    cy.mocksRestoreRouteVariants();
     cy.defaultIntercepts();
     cy.visit('/fyllut/attachmentspagedigitalnologinattachmentpanel');
     cy.defaultWaits();
@@ -65,6 +70,10 @@ describe('Attachments page', () => {
     cy.clickStart();
     cy.clickShowAllSteps();
     cy.findByText('Vedlegg').click();
+  });
+
+  after(() => {
+    cy.mocksRestoreRouteVariants();
   });
 
   describe('Validation', () => {
@@ -202,7 +211,22 @@ describe('Attachments page', () => {
       cy.findAllByText('test.txt').should('have.length', 4);
     });
 
-    it('lets you delete a started attachment', () => {
+    it('does not submit a deleted attachment without uploaded files', () => {
+      cy.mocksUseRouteVariant('post-nologin-soknad:success-tc22');
+      cy.findByRole('link', { name: 'Dine opplysninger' }).click();
+      cy.findByRole('textbox', { name: 'Fornavn' }).type('Ola');
+      cy.findByRole('textbox', { name: 'Etternavn' }).type('Nordmann');
+      cy.findByRole('group', { name: 'Har du norsk fødselsnummer eller d-nummer?' }).within(() =>
+        cy.findByLabelText('Ja').check(),
+      );
+      cy.findByRole('textbox', { name: 'Fødselsnummer eller d-nummer' }).type('08842748500');
+      cy.clickNextStep();
+      getMainAttachment().within(() => {
+        cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadLater }).click();
+      });
+      getUploadOnlyAttachment().within(() => {
+        uploadFileInCurrentScope('test.txt');
+      });
       cy.findByRole('group', {
         name: 'Annen dokumentasjon Har du noen annen dokumentasjon du ønsker å legge ved?',
       }).within(() => {
@@ -213,11 +237,20 @@ describe('Attachments page', () => {
         uploadFileInCurrentScope('test.txt');
         cy.findByRole('button', { name: TEXTS.statiske.attachment.addNewAttachment }).click();
         cy.findAllByLabelText(TEXTS.statiske.attachment.attachmentTitle).last().type('Vedleggstittel 2');
+        cy.intercept('POST', '/fyllut/api/send-inn/nologin-application/attachments/*').as('deleteUnuploadedAttachment');
         cy.findByRole('button', { name: TEXTS.statiske.attachment.deleteAttachment }).click();
       });
       cy.findByText('Vedleggstittel 1').should('exist');
       cy.findByText('Vedleggstittel 2').should('not.exist');
       cy.findByText(TEXTS.statiske.attachment.attachmentTitle).should('not.exist');
+      cy.get('@deleteUnuploadedAttachment.all').should('have.length', 0);
+
+      cy.clickNextStep();
+      cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
+      cy.intercept('POST', '/fyllut/api/send-inn/nologin-application').as('submitApplication');
+      cy.clickSendNav();
+      cy.wait('@submitApplication').its('response.statusCode').should('equal', 200);
+      cy.findByRole('heading', { level: 2, name: 'Kvittering' }).should('exist');
     });
 
     it('lets you delete an uploaded attachment', () => {

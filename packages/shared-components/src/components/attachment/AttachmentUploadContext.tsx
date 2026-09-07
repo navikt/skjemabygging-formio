@@ -16,7 +16,7 @@ import { useLanguages } from '../../context/languages';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
 import { downloadBlob } from '../../util/blob/blob';
 import { validateFileUpload, validateTotalFilesSize } from '../../util/form/attachment-validation/attachmentValidation';
-import { normalizeAttachmentDownloadFileName } from './utils/attachmentUploadUtils';
+import { normalizeAttachmentDownloadFileName, removeAttachmentById } from './utils/attachmentUploadUtils';
 
 type AttachmentErrorType = 'FILE' | 'VALUE' | 'TITLE';
 type AttachmentError = { message: string; type: AttachmentErrorType };
@@ -129,7 +129,7 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
       (current) =>
         ({
           ...current,
-          attachments: (current?.attachments ?? []).filter((att) => att.attachmentId !== attachmentId),
+          attachments: removeAttachmentById(current?.attachments ?? [], attachmentId),
         }) as Submission,
     );
   };
@@ -290,8 +290,14 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
   };
 
   const handleDeleteAttachment = async (attachmentId: string) => {
+    removeError(attachmentId);
+    const attachment = submission?.attachments?.find((attachment) => attachment.attachmentId === attachmentId);
+    if ((attachment?.files ?? []).length === 0) {
+      removeAttachmentFromSubmission(attachmentId);
+      return;
+    }
+
     try {
-      removeError(attachmentId);
       const token = await getUploadToken();
       await deleteAllFilesForAttachment(attachmentId, token);
       removeAttachmentFromSubmission(attachmentId);

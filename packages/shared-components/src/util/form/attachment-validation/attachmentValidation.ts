@@ -11,8 +11,11 @@ const validateAttachment = (
 ): Record<string, string> => {
   const errors: Record<string, string> = {};
   formAttachments.forEach(({ label, navId }) => {
-    const submissionAttachment = submissionAttachments.find((att) => att.attachmentId.startsWith(navId!));
-    const error = validator.validate(label, submissionAttachment);
+    const matchingAttachments = submissionAttachments.filter((att) => att.attachmentId.startsWith(navId!));
+    const error =
+      matchingAttachments.length > 0
+        ? matchingAttachments.map((attachment) => validator.validate(label, attachment)).find(Boolean)
+        : validator.validate(label);
     if (error) {
       errors[navId!] = error;
     }

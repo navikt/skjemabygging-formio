@@ -7,6 +7,7 @@ import {
   getLargestAttachmentIdCounter,
   normalizeAttachmentDownloadBlob,
   normalizeAttachmentDownloadFileName,
+  removeAttachmentById,
 } from './attachmentUploadUtils';
 
 describe('attachmentUploadUtils', () => {
@@ -141,6 +142,21 @@ describe('attachmentUploadUtils', () => {
         type: 'other',
         value: value,
       });
+    });
+  });
+
+  describe('removeAttachmentById', () => {
+    it('removes only the repeated attachment with the matching id', () => {
+      const attachments: SubmissionAttachment[] = [
+        { attachmentId: 'comp1', navId: 'comp1', type: 'other' },
+        { attachmentId: 'comp1-1', navId: 'comp1', type: 'other', title: 'Deleted row', files: [] },
+        { attachmentId: 'comp2', navId: 'comp2', type: 'default' },
+      ];
+
+      expect(removeAttachmentById(attachments, 'comp1-1')).toEqual([
+        { attachmentId: 'comp1', navId: 'comp1', type: 'other' },
+        { attachmentId: 'comp2', navId: 'comp2', type: 'default' },
+      ]);
     });
   });
 
