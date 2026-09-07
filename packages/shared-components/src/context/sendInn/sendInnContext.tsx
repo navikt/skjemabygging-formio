@@ -8,7 +8,18 @@ import {
   tokenUtils,
   TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import React, { createContext, useCallback, useContext, useEffect, useReducer, useRef, useState } from 'react';
+import {
+  createContext,
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useCallback,
+  useContext,
+  useEffect,
+  useReducer,
+  useRef,
+  useState,
+} from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router';
 import { CaptchaValue, submitCaptchaValue } from '../../api/captcha/captcha';
 import { postNologinSoknad } from '../../api/sendinn/nologin';
@@ -37,7 +48,7 @@ interface SendInnContextType {
   isMellomlagringReady: boolean;
   innsendingsId?: string;
   soknadPdfBlob?: Blob;
-  setCaptchaValue: React.Dispatch<React.SetStateAction<CaptchaValue>>;
+  setCaptchaValue: Dispatch<SetStateAction<CaptchaValue>>;
   mellomlagringError: MellomlagringError | undefined;
   submitted?: boolean;
   receipt?: ReceiptSummary;
@@ -47,7 +58,7 @@ interface SendInnContextType {
 }
 
 interface SendInnProviderProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 const SendInnContext = createContext<SendInnContextType>({} as SendInnContextType);
