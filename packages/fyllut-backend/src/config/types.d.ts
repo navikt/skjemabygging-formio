@@ -29,7 +29,6 @@ export type NologinConfig = {
 export type CaptchaConfig = {
   hmacSecret: string;
   powDifficulty: number;
-  powEnabled: boolean;
   challengeTtlSeconds: number;
 };
 

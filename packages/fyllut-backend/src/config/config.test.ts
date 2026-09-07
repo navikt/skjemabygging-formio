@@ -73,15 +73,13 @@ describe('config', () => {
     expect(exit).toBeCalledWith(1);
   });
 
-  test('Captcha hmac secret er påkrevd når proof of work er aktivert', () => {
+  test('Captcha hmac secret er påkrevd', () => {
     const config = {
       naisClusterName: NaisCluster.DEV,
-      captcha: { powEnabled: true, hmacSecret: '', powDifficulty: 16, challengeTtlSeconds: 60 },
+      captcha: { hmacSecret: '', powDifficulty: 16, challengeTtlSeconds: 60 },
     } as FyllutBackendConfig;
     checkConfigConsistency(config, logError, exit as any);
-    expect(logError).toBeCalledWith(
-      'Invalid configuration: CAPTCHA_HMAC_SECRET is required when CAPTCHA_USE_POW is enabled',
-    );
+    expect(logError).toBeCalledWith('Invalid configuration: CAPTCHA_HMAC_SECRET is required');
     expect(exit).toBeCalledWith(1);
   });
 });

@@ -56,11 +56,9 @@ const signChallenge = (
 
 describe('Captcha Handler Tests', () => {
   let app: Express;
-  const defaultPowEnabled = config.captcha.powEnabled;
   const defaultPowDifficulty = config.captcha.powDifficulty;
 
   afterEach(() => {
-    config.captcha.powEnabled = defaultPowEnabled;
     config.captcha.powDifficulty = defaultPowDifficulty;
     vi.restoreAllMocks();
   });
@@ -78,7 +76,6 @@ describe('Captcha Handler Tests', () => {
     };
 
     beforeEach(async () => {
-      config.captcha.powEnabled = true;
       // Keeps solving fast and deterministic in tests
       config.captcha.powDifficulty = 8;
       challenge = await fetchChallenge();
@@ -211,7 +208,6 @@ describe('Captcha Handler Tests', () => {
     const OTHER_IP = '198.51.100.7';
 
     beforeEach(() => {
-      config.captcha.powEnabled = true;
       config.captcha.powDifficulty = 8;
     });
 
@@ -252,13 +248,9 @@ describe('Captcha Handler Tests', () => {
     });
   });
 
-  // TODO: remove old data_33 flow after PoW confirmed stable in production
-  describe('Legacy flow (CAPTCHA_USE_POW disabled)', () => {
+  // TODO: remove after already-loaded frontends using data_33 have aged out.
+  describe('Legacy flow', () => {
     const validCaptchaData = { firstName: '', data_33: 'ja' };
-
-    beforeEach(() => {
-      config.captcha.powEnabled = false;
-    });
 
     it('returns 200 with access_token if valid data is provided', async () => {
       await request(app)
@@ -277,6 +269,18 @@ describe('Captcha Handler Tests', () => {
         .post('/fyllut/api/captcha')
         .set('Origin', 'https://www.nav.no')
         .send({ ...validCaptchaData, data_33: 'Test' })
+        .expect('Content-Type', /json/)
+        .expect(400);
+    });
+
+    it('does not use the legacy answer to bypass an invalid proof of work solution', async () => {
+      config.captcha.powDifficulty = 8;
+      const challenge = (await request(app).get('/fyllut/api/captcha/challenge').expect(200)).body;
+
+      await request(app)
+        .post('/fyllut/api/captcha')
+        .set('Origin', 'https://www.nav.no')
+        .send({ ...validCaptchaData, ...challenge, solution: findInvalidSolution(challenge) })
         .expect('Content-Type', /json/)
         .expect(400);
     });

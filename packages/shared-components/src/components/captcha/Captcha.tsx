@@ -1,4 +1,3 @@
-import { FyllutFrontendConfig } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect } from 'react';
 import { createSolvedChallenge } from '../../api/captcha/captcha';
 import { useAppConfig } from '../../context/config/configContext';
@@ -21,15 +20,10 @@ const useStyles = makeStyles({
 
 const Captcha = () => {
   const { setCaptchaValue } = useSendInn();
-  const { config, http, logger } = useAppConfig();
+  const { http, logger } = useAppConfig();
   const styles = useStyles();
 
-  const useCaptchaPow = (config as FyllutFrontendConfig | undefined)?.useCaptchaPow;
-
   useEffect(() => {
-    if (!useCaptchaPow) {
-      return;
-    }
     // Solve the proof of work challenge up front, so it is ready when the user submits.
     // If it has expired by then, a new challenge is fetched and solved on submit.
     const pendingChallenge = createSolvedChallenge(http).catch((error) => {
@@ -37,7 +31,7 @@ const Captcha = () => {
       return undefined;
     });
     setCaptchaValue((value) => ({ ...value, pendingChallenge }));
-  }, [useCaptchaPow, http, logger, setCaptchaValue]);
+  }, [http, logger, setCaptchaValue]);
 
   return (
     <input

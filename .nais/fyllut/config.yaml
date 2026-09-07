@@ -98,8 +98,6 @@ spec:
       value: "{{pdf-footer-env-slug}}"
     - name: NOLOGIN_TOKEN_LIFETIME_HOURS
       value: "{{nologin.token-lifetime-hours}}"
-    - name: CAPTCHA_USE_POW
-      value: "{{captcha.use-pow}}"
     - name: CAPTCHA_POW_DIFFICULTY
       value: "{{captcha.pow-difficulty}}"
     - name: SKJEMABYGGING_PROXY_URL

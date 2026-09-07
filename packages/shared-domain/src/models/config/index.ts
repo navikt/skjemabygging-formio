@@ -12,7 +12,6 @@ export interface SharedFrontendConfig {
 
 export interface FyllutFrontendConfig extends SharedFrontendConfig {
   isDelingslenke: boolean;
-  useCaptchaPow: boolean;
   isLoggedIn: boolean;
   mocksEnabled: boolean;
   gitVersion: string;

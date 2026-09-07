@@ -4,7 +4,6 @@ const CAPTCHA_FAILURE_REASON = {
   INVALID_CHALLENGE_SIGNATURE: 'invalid_challenge_signature',
   CHALLENGE_EXPIRED: 'challenge_expired',
   INVALID_PROOF_OF_WORK: 'invalid_proof_of_work',
-  UNEXPECTED_LEGACY_BODY: 'unexpected_legacy_body',
 } as const;
 
 type CaptchaFailureReason = (typeof CAPTCHA_FAILURE_REASON)[keyof typeof CAPTCHA_FAILURE_REASON];
@@ -15,7 +14,6 @@ const CAPTCHA_FAILURE_REASON_TEXT: Record<CaptchaFailureReason, string> = {
   [CAPTCHA_FAILURE_REASON.INVALID_CHALLENGE_SIGNATURE]: 'Invalid challenge signature',
   [CAPTCHA_FAILURE_REASON.CHALLENGE_EXPIRED]: 'Challenge has expired',
   [CAPTCHA_FAILURE_REASON.INVALID_PROOF_OF_WORK]: 'Invalid proof of work solution',
-  [CAPTCHA_FAILURE_REASON.UNEXPECTED_LEGACY_BODY]: 'Unexpected legacy captcha body',
 };
 
 class CaptchaError extends Error {

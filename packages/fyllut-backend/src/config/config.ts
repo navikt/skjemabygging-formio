@@ -84,7 +84,6 @@ const captcha: CaptchaConfig = {
   // Dedicated secret, deliberately not shared with NOLOGIN_JWT_SECRET
   hmacSecret: process.env.CAPTCHA_HMAC_SECRET!,
   powDifficulty: loadPowDifficulty(),
-  powEnabled: process.env.CAPTCHA_USE_POW === 'true',
   challengeTtlSeconds: 60,
 };
 
@@ -161,7 +160,6 @@ const localDevelopmentConfig: DefaultConfig = {
   captcha: {
     ...captcha,
     hmacSecret: captcha.hmacSecret || 'verysecret-captcha',
-    powEnabled: process.env.CAPTCHA_USE_POW === 'true',
   },
   skjemaDir: process.env.SKJEMA_DIR,
   teamLogsConfig,
@@ -261,8 +259,8 @@ const checkConfigConsistency = (config: FyllutBackendConfig, logError = logger.e
       exit(1);
     }
   }
-  if (captcha?.powEnabled && !captcha.hmacSecret) {
-    logError('Invalid configuration: CAPTCHA_HMAC_SECRET is required when CAPTCHA_USE_POW is enabled');
+  if (captcha && !captcha.hmacSecret) {
+    logError('Invalid configuration: CAPTCHA_HMAC_SECRET is required');
     exit(1);
   }
 };

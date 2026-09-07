@@ -23,9 +23,6 @@ interface CaptchaValue {
   pendingChallenge?: Promise<SolvedCaptchaChallenge | undefined>;
 }
 
-// TODO: remove old data_33 flow after PoW confirmed stable in production
-const LEGACY_ANSWER = 'ja';
-
 // Re-solve when the challenge is about to expire, to avoid submitting an expired solution
 const EXPIRY_MARGIN_MS = 5000;
 
@@ -50,14 +47,12 @@ const submitCaptchaValue = async (
   if (!http) {
     return undefined;
   }
-  // No pending challenge means proof of work is disabled, and the backend accepts a submission without a solution
   let solvedChallenge = await value.pendingChallenge;
-  if (value.pendingChallenge && !isUsable(solvedChallenge)) {
+  if (!isUsable(solvedChallenge)) {
     solvedChallenge = await createSolvedChallenge(http).catch(() => undefined);
   }
   return http.post('/fyllut/api/captcha', {
     firstName: value.firstName ?? '',
-    data_33: LEGACY_ANSWER,
     ...solvedChallenge,
   });
 };
