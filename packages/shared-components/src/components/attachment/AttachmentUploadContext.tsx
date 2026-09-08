@@ -292,14 +292,12 @@ const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) =
   const handleDeleteAttachment = async (attachmentId: string) => {
     removeError(attachmentId);
     const attachment = submission?.attachments?.find((attachment) => attachment.attachmentId === attachmentId);
-    if ((attachment?.files ?? []).length === 0) {
-      removeAttachmentFromSubmission(attachmentId);
-      return;
-    }
 
     try {
-      const token = await getUploadToken();
-      await deleteAllFilesForAttachment(attachmentId, token);
+      if ((attachment?.files ?? []).length > 0) {
+        const token = await getUploadToken();
+        await deleteAllFilesForAttachment(attachmentId, token);
+      }
       removeAttachmentFromSubmission(attachmentId);
     } catch (error: any) {
       if (isAuthenticationError(error)) {
