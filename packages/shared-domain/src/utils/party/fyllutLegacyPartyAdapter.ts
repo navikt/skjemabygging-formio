@@ -1,4 +1,4 @@
-import { PartyAddress } from '../../models';
+import { PartyAddress, SubmissionData } from '../../models';
 import { hasAddressValue } from './partyAddress';
 
 type FyllutLegacySubmission = {
@@ -36,6 +36,30 @@ type FyllutLegacySubmission = {
   fornavnAvsender?: string;
   etternavnAvsender?: string;
 };
+
+const legacyInputKeys = [
+  'fornavnSoker',
+  'etternavnSoker',
+  'coSoker',
+  'postnummerSoker',
+  'postnrSoker',
+  'utenlandskPostkodeSoker',
+  'poststedSoker',
+  'landSoker',
+  'gateadresseSoker',
+  'norskVegadresse',
+  'norskPostboksadresse',
+  'utenlandskAdresse',
+  'fodselsnummerDNummerSoker',
+  'fornavnAvsender',
+  'etternavnAvsender',
+] as const;
+
+const hasFyllutLegacyInput = (submission: SubmissionData): boolean =>
+  legacyInputKeys.some((key) => {
+    const value = submission[key];
+    return value !== undefined && value !== '';
+  });
 
 const mapFyllutLegacyAddress = (submission: FyllutLegacySubmission): PartyAddress => {
   const {
@@ -91,5 +115,5 @@ const mapFyllutLegacyPartyAddress = (submission: FyllutLegacySubmission): PartyA
   return hasAddressValue(address) ? address : undefined;
 };
 
-export { hasLegacyPersonSender, mapFyllutLegacyAddress, mapFyllutLegacyPartyAddress };
+export { hasFyllutLegacyInput, hasLegacyPersonSender, mapFyllutLegacyAddress, mapFyllutLegacyPartyAddress };
 export type { FyllutLegacySubmission };

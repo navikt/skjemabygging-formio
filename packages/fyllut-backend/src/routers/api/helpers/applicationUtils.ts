@@ -14,6 +14,7 @@ import {
   createFyllutPartyLookup,
   Form,
   formatUtils,
+  hasFyllutLegacyInput,
   hasLegacyPersonSender,
   I18nTranslationMap,
   navFormUtils,
@@ -83,24 +84,21 @@ const assembleSubmitApplicationRequest = (
 };
 
 const extractApplicationParty = (form: Form, submission: Submission): ApplicationPartyData => {
+  if (hasFyllutLegacyInput(submission.data)) {
+    // The legacy application mapper remains the compatibility boundary for flat submission fields.
+    return extractLegacyApplicationParty(form, submission);
+  }
+
   const resolution = resolveParty(submission, createFyllutPartyLookup(form, { legacyIdentityFallback: true }));
 
   if (resolution.success) {
-    if (canUseCanonicalApplicationMapping(form, submission)) {
-      return mapPartyToApplication(resolution.party);
-    }
-
-    // Flat legacy concerned-user fields resolve canonically, but the existing Fyllut target mapping ignores them.
-    return extractLegacyApplicationParty(form, submission);
+    return mapPartyToApplication(resolution.party);
   }
 
   return isFyllutApplicationCompatibilityCase(form, submission, resolution.error)
     ? extractLegacyApplicationParty(form, submission)
     : {};
 };
-
-const canUseCanonicalApplicationMapping = (form: Form, submission: Submission): boolean =>
-  !!yourInformationUtils.getYourInformation(form, submission.data) || !!submission.data.fodselsnummerDNummerSoker;
 
 const extractLegacyApplicationParty = (form: Form, submission: Submission): ApplicationPartyData => {
   const bruker = extractBruker(form, submission);

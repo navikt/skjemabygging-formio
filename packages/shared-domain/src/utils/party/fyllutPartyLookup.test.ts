@@ -1,4 +1,5 @@
 import { Component, Form, Submission } from '../../models';
+import { hasFyllutLegacyInput } from './fyllutLegacyPartyAdapter';
 import { createFyllutPartyLookup } from './fyllutPartyLookup';
 import { resolveParty } from './partyResolver';
 
@@ -10,6 +11,13 @@ const form = {
 } as Form;
 
 describe('createFyllutPartyLookup', () => {
+  it('recognizes populated flat legacy submission fields', () => {
+    expect(hasFyllutLegacyInput({ fodselsnummerDNummerSoker: '12345678911' })).toBe(true);
+    expect(hasFyllutLegacyInput({ gateadresseSoker: 'Testveien 1' })).toBe(true);
+    expect(hasFyllutLegacyInput({ fornavnAvsender: 'Sender', etternavnAvsender: 'Person' })).toBe(true);
+    expect(hasFyllutLegacyInput({ fornavnSoker: '', etternavnAvsender: '' })).toBe(false);
+  });
+
   it('derives canonical party values from a production form definition', () => {
     const submission: Submission = {
       data: {
