@@ -1,6 +1,6 @@
 import { Submission } from '../../models';
 import { submissionUtils } from '../submission';
-import { OrganizationValue, PartyValueLookup, PersonValue, UserValue, isPartyRelationship } from './partyResolver';
+import { OrganizationValue, PartyRelationship, PartyValueLookup, PersonValue, UserValue } from './partyResolver';
 
 interface PartyValuePaths {
   relationship: string;
@@ -17,6 +17,9 @@ const getObjectValue = <T>(path: string | undefined, submission: Submission): T 
   const value = getValue(path, submission);
   return typeof value === 'object' && value !== null && !Array.isArray(value) ? (value as T) : undefined;
 };
+
+const isPartyRelationship = (value: unknown): value is PartyRelationship =>
+  value === 'self' || value === 'other-person' || value === 'organization';
 
 const createPartyPathLookup = (paths: PartyValuePaths): PartyValueLookup => ({
   relationship: (submission) => {

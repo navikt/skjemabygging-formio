@@ -7,15 +7,11 @@ import {
   OpplastingsStatus,
   SubmitApplicationRequest,
 } from '@navikt/skjemadigitalisering-shared-backend';
-import type { FyllutLegacySubmission, PartyResolutionErrorCode } from '@navikt/skjemadigitalisering-shared-domain';
 import {
   AttachmentSettingValues,
   Component,
-  createFyllutPartyLookup,
   Form,
   formatUtils,
-  hasFyllutLegacyInput,
-  hasLegacyPersonSender,
   I18nTranslationMap,
   navFormUtils,
   resolveParty,
@@ -25,6 +21,8 @@ import {
   yourInformationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { base64EncodeByteArray } from '../../../utils/base64';
+import { hasFyllutLegacyInput } from './fyllutLegacySubmission';
+import { createFyllutPartyLookup } from './fyllutPartyLookup';
 import { objectToByteArray } from './sendInn';
 
 const assembleSubmitApplicationRequest = (
@@ -89,15 +87,8 @@ const extractApplicationParty = (form: Form, submission: Submission): Applicatio
     return extractLegacyApplicationParty(form, submission);
   }
 
-  const resolution = resolveParty(submission, createFyllutPartyLookup(form, { legacyIdentityFallback: true }));
-
-  if (resolution.success) {
-    return mapPartyToApplication(resolution.party);
-  }
-
-  return isFyllutApplicationCompatibilityCase(form, submission, resolution.error)
-    ? extractLegacyApplicationParty(form, submission)
-    : {};
+  const party = resolveParty(submission, createFyllutPartyLookup(form));
+  return party ? mapPartyToApplication(party) : {};
 };
 
 const extractLegacyApplicationParty = (form: Form, submission: Submission): ApplicationPartyData => {
@@ -106,43 +97,6 @@ const extractLegacyApplicationParty = (form: Form, submission: Submission): Appl
     extractAvsender(form, submission) ?? (bruker ? undefined : extractAvsenderFromYourInformation(form, submission));
 
   return { bruker: bruker?.id, avsender };
-};
-
-const isFyllutApplicationCompatibilityCase = (
-  form: Form,
-  submission: Submission,
-  resolutionError: PartyResolutionErrorCode,
-): boolean => {
-  const sender = senderUtils.getSender(form, submission.data);
-  const yourInformation = yourInformationUtils.getYourInformation(form, submission.data);
-
-  // Retire with #2186 once flat sender fields are absent from production and resumable submissions.
-  if (hasLegacyPersonSender(submission.data as FyllutLegacySubmission)) {
-    return true;
-  }
-
-  // Remove when name-only historical values are gone or become part of the supported product model.
-  if (
-    resolutionError === 'missing-user-address' &&
-    yourInformation?.fornavn &&
-    yourInformation.etternavn &&
-    !yourInformation.identitet?.identitetsnummer
-  ) {
-    return true;
-  }
-
-  // Remove when production and resumable submissions cannot contain incomplete legacy sender/user components.
-  return (
-    !!sender &&
-    [
-      'missing-user',
-      'missing-user-name',
-      'missing-sender-identity',
-      'missing-sender-name',
-      'missing-organization-name',
-      'missing-organization-number',
-    ].includes(resolutionError)
-  );
 };
 
 const validateAttachment = (attachment: Attachment, validationId: string): Attachment => {

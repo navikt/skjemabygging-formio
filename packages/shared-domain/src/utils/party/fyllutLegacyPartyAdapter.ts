@@ -1,5 +1,4 @@
-import { PartyAddress, SubmissionData } from '../../models';
-import { hasAddressValue } from './partyAddress';
+import { PartyAddress } from '../../models';
 
 type FyllutLegacySubmission = {
   fornavnSoker?: string;
@@ -36,30 +35,6 @@ type FyllutLegacySubmission = {
   fornavnAvsender?: string;
   etternavnAvsender?: string;
 };
-
-const legacyInputKeys = [
-  'fornavnSoker',
-  'etternavnSoker',
-  'coSoker',
-  'postnummerSoker',
-  'postnrSoker',
-  'utenlandskPostkodeSoker',
-  'poststedSoker',
-  'landSoker',
-  'gateadresseSoker',
-  'norskVegadresse',
-  'norskPostboksadresse',
-  'utenlandskAdresse',
-  'fodselsnummerDNummerSoker',
-  'fornavnAvsender',
-  'etternavnAvsender',
-] as const;
-
-const hasFyllutLegacyInput = (submission: SubmissionData): boolean =>
-  legacyInputKeys.some((key) => {
-    const value = submission[key];
-    return value !== undefined && value !== '';
-  });
 
 const mapFyllutLegacyAddress = (submission: FyllutLegacySubmission): PartyAddress => {
   const {
@@ -103,17 +78,5 @@ const mapFyllutLegacyAddress = (submission: FyllutLegacySubmission): PartyAddres
   };
 };
 
-const hasLegacyPersonSender = (submission: FyllutLegacySubmission): boolean =>
-  !!submission.fornavnAvsender && !!submission.etternavnAvsender;
-
-/**
- * Legacy submissions always produce an address object, so an address is only a usable party value
- * when it carries populated values.
- */
-const mapFyllutLegacyPartyAddress = (submission: FyllutLegacySubmission): PartyAddress | undefined => {
-  const address = mapFyllutLegacyAddress(submission);
-  return hasAddressValue(address) ? address : undefined;
-};
-
-export { hasFyllutLegacyInput, hasLegacyPersonSender, mapFyllutLegacyAddress, mapFyllutLegacyPartyAddress };
+export { mapFyllutLegacyAddress };
 export type { FyllutLegacySubmission };

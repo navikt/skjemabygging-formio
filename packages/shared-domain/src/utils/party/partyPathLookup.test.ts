@@ -23,16 +23,13 @@ describe('createPartyPathLookup', () => {
     });
 
     expect(resolveParty(submission, lookup)).toEqual({
-      success: true,
-      party: {
-        relationship: 'other-person',
-        sender: {
-          firstName: 'Sender',
-          surname: 'Sendersen',
-          nationalIdentityNumber: '10987654321',
-        },
-        user: { kind: 'identified-person', nationalIdentityNumber: '12345678911' },
+      relationship: 'other-person',
+      sender: {
+        firstName: 'Sender',
+        surname: 'Sendersen',
+        nationalIdentityNumber: '10987654321',
       },
+      user: { kind: 'identified-person', nationalIdentityNumber: '12345678911' },
     });
   });
 
@@ -57,12 +54,9 @@ describe('createPartyPathLookup', () => {
     });
 
     expect(resolveParty(submission, lookup, { allowedNavUnits: ['9999'] })).toEqual({
-      success: true,
-      party: {
-        relationship: 'organization',
-        sender: { name: 'Organization', organizationNumber: '889640782' },
-        user: { kind: 'several-people', navUnit: '9999' },
-      },
+      relationship: 'organization',
+      sender: { name: 'Organization', organizationNumber: '889640782' },
+      user: { kind: 'several-people', navUnit: '9999' },
     });
   });
 });
