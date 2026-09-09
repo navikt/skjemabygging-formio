@@ -8,9 +8,20 @@ import {
   tokenUtils,
   TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import React, { createContext, useCallback, useContext, useEffect, useReducer, useRef, useState } from 'react';
+import {
+  createContext,
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useCallback,
+  useContext,
+  useEffect,
+  useReducer,
+  useRef,
+  useState,
+} from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router';
-import { submitCaptchaValue } from '../../api/captcha/captcha';
+import { CaptchaValue, submitCaptchaValue } from '../../api/captcha/captcha';
 import { postNologinSoknad } from '../../api/sendinn/nologin';
 import {
   createSoknad,
@@ -37,7 +48,7 @@ interface SendInnContextType {
   isMellomlagringReady: boolean;
   innsendingsId?: string;
   soknadPdfBlob?: Blob;
-  setCaptchaValue: (value: Record<string, string>) => void;
+  setCaptchaValue: Dispatch<SetStateAction<CaptchaValue>>;
   mellomlagringError: MellomlagringError | undefined;
   submitted?: boolean;
   receipt?: ReceiptSummary;
@@ -47,7 +58,7 @@ interface SendInnContextType {
 }
 
 interface SendInnProviderProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 const SendInnContext = createContext<SendInnContextType>({} as SendInnContextType);
@@ -85,7 +96,7 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
   const retrieveStartedForRef = useRef<string | undefined>(undefined);
   const [innsendingsId, setInnsendingsId] = useState<string>();
   const [nologinToken, setNologinToken] = useState<string | undefined>();
-  const [captchaValue, setCaptchaValue] = useState<Record<string, string>>({});
+  const [captchaValue, setCaptchaValue] = useState<CaptchaValue>({});
   const [tokenDetails, setTokenDetails] = useState<NologinToken | undefined>();
   const [fyllutMellomlagringState, dispatchFyllutMellomlagring] = useReducer(mellomlagringReducer, undefined);
   const [soknadPdfBlob, setSoknadPdfBlob] = useState<Blob | undefined>(undefined);

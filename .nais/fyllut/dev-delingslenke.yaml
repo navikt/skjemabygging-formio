@@ -23,6 +23,8 @@ forms-source: "formsapi-staging"
 pdf-footer-env-slug: "delingslenke"
 nologin:
   token-lifetime-hours: 6
+captcha:
+  pow-difficulty: 16
 azure:
   application:
     tenant: trygdeetaten.no

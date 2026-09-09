@@ -6,9 +6,9 @@ const { isDevelopment } = config;
 
 const isNavOrigin = /nav\.no$/;
 
-const options = (originRegex: RegExp): CorsOptions => ({
+const options = (originRegex: RegExp, allowMissingOrigin = false): CorsOptions => ({
   origin: (origin, callback) => {
-    if (isDevelopment || (origin && originRegex.test(origin))) {
+    if (isDevelopment || (allowMissingOrigin && !origin) || (origin && originRegex.test(origin))) {
       callback(null, true);
     } else {
       callback(new CorsError(origin));
@@ -17,3 +17,6 @@ const options = (originRegex: RegExp): CorsOptions => ({
 });
 
 export const corsAllowNavOrigin = () => cors(options(isNavOrigin));
+
+// Same origin requests from the browser (e.g. GET) do not include an Origin header
+export const corsAllowNavOrSameOrigin = () => cors(options(isNavOrigin, true));
