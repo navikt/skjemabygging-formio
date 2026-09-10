@@ -1,13 +1,17 @@
 import {
   ConcernedPerson,
+  Form,
   Party,
   PartyAddress,
   ResponsibleOrganization,
   ResponsiblePerson,
   Submission,
+  SubmissionData,
+  SubmissionSender,
+  SubmissionYourInformation,
 } from '../../models';
-
-type PartyRelationship = Party['relationship'];
+import { senderUtils } from '../submission/senderUtils';
+import { yourInformationUtils } from '../submission/yourInformationUtils';
 
 interface PersonValue {
   firstName?: string;
@@ -21,34 +25,56 @@ interface OrganizationValue {
   organizationNumber?: string;
 }
 
-interface SeveralPeopleValue {
-  kind: 'several-people';
+interface PartyInputValue {
+  relationship: Party['relationship'];
+  user?: PersonValue;
+  sender?: PersonValue;
+  organization?: OrganizationValue;
 }
 
-type UserValue = PersonValue | SeveralPeopleValue;
-type PartyValueReader<T> = (submission: Submission) => T | undefined;
+const mapSubmissionAddress = (address: NonNullable<SubmissionYourInformation['adresse']>): PartyAddress => ({
+  co: address.co,
+  postOfficeBox: address.postboks,
+  streetAddress: address.adresse,
+  building: address.bygning,
+  postalCode: address.postnummer,
+  postalName: address.bySted,
+  region: address.region,
+  country: address.land,
+});
 
-interface PartyValueLookup {
-  relationship: PartyValueReader<PartyRelationship>;
-  user: PartyValueReader<UserValue>;
-  sender?: PartyValueReader<PersonValue>;
-  organization?: PartyValueReader<OrganizationValue>;
-  navUnit?: PartyValueReader<string>;
-}
+const getPartyValue = (form: Form, submission: SubmissionData): PartyInputValue => {
+  const sender: SubmissionSender | undefined = senderUtils.getSender(form, submission);
+  const yourInformation = yourInformationUtils.getYourInformation(form, submission);
 
-interface PartyRuntimeContext {
-  verifiedActor?: {
-    nationalIdentityNumber: string;
+  return {
+    relationship: sender?.organization ? 'organization' : sender?.person ? 'other-person' : 'self',
+    user: yourInformation
+      ? {
+          firstName: yourInformation.fornavn,
+          surname: yourInformation.etternavn,
+          nationalIdentityNumber: yourInformation.identitet?.identitetsnummer,
+          address: yourInformation.adresse ? mapSubmissionAddress(yourInformation.adresse) : undefined,
+        }
+      : undefined,
+    sender: sender?.person
+      ? {
+          firstName: sender.person.firstName,
+          surname: sender.person.surname,
+          nationalIdentityNumber: sender.person.nationalIdentityNumber,
+        }
+      : undefined,
+    organization: sender?.organization
+      ? {
+          name: sender.organization.name,
+          organizationNumber: sender.organization.number,
+        }
+      : undefined,
   };
-  allowedNavUnits?: readonly string[];
-}
+};
 
-const resolveConcernedPerson = (value: UserValue | undefined): ConcernedPerson | undefined => {
+const resolveConcernedPerson = (value: PersonValue | undefined): ConcernedPerson | undefined => {
   if (!value) {
-    return undefined;
-  }
-
-  if ('kind' in value) {
     return undefined;
   }
 
@@ -75,23 +101,19 @@ const resolveConcernedPerson = (value: UserValue | undefined): ConcernedPerson |
   };
 };
 
-const resolveResponsiblePerson = (
-  value: PersonValue | undefined,
-  context: PartyRuntimeContext,
-): ResponsiblePerson | undefined => {
+const resolveResponsiblePerson = (value: PersonValue | undefined): ResponsiblePerson | undefined => {
   if (!value?.firstName || !value.surname) {
     return undefined;
   }
 
-  const nationalIdentityNumber = context.verifiedActor?.nationalIdentityNumber ?? value.nationalIdentityNumber;
-  if (!nationalIdentityNumber) {
+  if (!value.nationalIdentityNumber) {
     return undefined;
   }
 
   return {
     firstName: value.firstName,
     surname: value.surname,
-    nationalIdentityNumber,
+    nationalIdentityNumber: value.nationalIdentityNumber,
   };
 };
 
@@ -109,51 +131,10 @@ const resolveOrganization = (value: OrganizationValue | undefined): ResponsibleO
   };
 };
 
-const resolveSeveralPeople = (
-  lookup: PartyValueLookup,
-  submission: Submission,
-  context: PartyRuntimeContext,
-): Extract<Party, { relationship: 'organization' }>['user'] | undefined => {
-  const navUnit = lookup.navUnit?.(submission);
-  if (!navUnit) {
-    return undefined;
-  }
-  if (!context.allowedNavUnits?.includes(navUnit)) {
-    return undefined;
-  }
-
-  return {
-    kind: 'several-people',
-    navUnit,
-  };
-};
-
-const resolveParty = (
-  submission: Submission,
-  lookup: PartyValueLookup,
-  context: PartyRuntimeContext = {},
-): Party | undefined => {
-  const relationship = lookup.relationship(submission);
-  if (!relationship) {
-    return undefined;
-  }
-
-  const userValue = lookup.user(submission);
-  if (relationship === 'organization' && userValue && 'kind' in userValue) {
-    const sender = resolveOrganization(lookup.organization?.(submission));
-    const user = resolveSeveralPeople(lookup, submission, context);
-    if (!sender || !user) {
-      return undefined;
-    }
-
-    return {
-      relationship,
-      sender,
-      user,
-    };
-  }
-
-  const user = resolveConcernedPerson(userValue);
+const resolveParty = (form: Form, submission: Submission): Party | undefined => {
+  const value = getPartyValue(form, submission.data);
+  const relationship = value.relationship;
+  const user = resolveConcernedPerson(value.user);
   if (!user) {
     return undefined;
   }
@@ -162,7 +143,7 @@ const resolveParty = (
     return { relationship, user };
   }
   if (relationship === 'other-person') {
-    const sender = resolveResponsiblePerson(lookup.sender?.(submission), context);
+    const sender = resolveResponsiblePerson(value.sender);
     if (!sender) {
       return undefined;
     }
@@ -173,7 +154,7 @@ const resolveParty = (
       user,
     };
   }
-  const sender = resolveOrganization(lookup.organization?.(submission));
+  const sender = resolveOrganization(value.organization);
   if (!sender) {
     return undefined;
   }
@@ -186,12 +167,3 @@ const resolveParty = (
 };
 
 export { resolveParty };
-export type {
-  OrganizationValue,
-  PartyRelationship,
-  PartyRuntimeContext,
-  PartyValueLookup,
-  PersonValue,
-  SeveralPeopleValue,
-  UserValue,
-};

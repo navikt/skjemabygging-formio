@@ -22,7 +22,6 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { base64EncodeByteArray } from '../../../utils/base64';
 import { hasFyllutLegacyInput } from './fyllutLegacySubmission';
-import { createFyllutPartyLookup } from './fyllutPartyLookup';
 import { objectToByteArray } from './sendInn';
 
 const assembleSubmitApplicationRequest = (
@@ -87,7 +86,7 @@ const extractApplicationParty = (form: Form, submission: Submission): Applicatio
     return extractLegacyApplicationParty(form, submission);
   }
 
-  const party = resolveParty(submission, createFyllutPartyLookup(form));
+  const party = resolveParty(form, submission);
   return party ? mapPartyToApplication(party) : extractLegacyApplicationParty(form, submission);
 };
 
