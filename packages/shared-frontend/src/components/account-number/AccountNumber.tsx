@@ -17,7 +17,6 @@ const AccountNumber = ({ validation, required = true, ...props }: AccountNumberP
     {...props}
     required={required}
     inputMode="numeric"
-    spellCheck={false}
     formatKey="accountNumber"
     validation={toAccountNumberValidation({ ...props, required, validation }).rules}
   />

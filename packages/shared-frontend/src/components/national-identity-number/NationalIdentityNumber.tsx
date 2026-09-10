@@ -24,7 +24,6 @@ const NationalIdentityNumber = ({
     {...props}
     required={required}
     inputMode="numeric"
-    spellCheck={false}
     formatKey={rawFormat ? 'identityNumberRaw' : 'identityNumber'}
     validation={toNationalIdentityNumberValidation({ ...props, required, validation }).rules}
   />

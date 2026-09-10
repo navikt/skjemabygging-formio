@@ -36,7 +36,7 @@ const toAttachmentValueValidationFields = ({
   return toValidationFields(
     statePath,
     attachment?.value,
-    toFieldValidation({ statePath, label, validation: attachmentValueRules(required) }),
+    toFieldValidation({ statePath, label, required, validation: attachmentValueRules(required) }),
   );
 };
 

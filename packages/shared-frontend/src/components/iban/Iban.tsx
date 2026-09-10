@@ -13,7 +13,6 @@ const Iban = ({ validation, required = true, ...props }: IbanProps) => (
   <InternalTextField
     {...props}
     required={required}
-    spellCheck={false}
     formatKey="iban"
     validation={toIbanValidation({ ...props, required, validation }).rules}
   />

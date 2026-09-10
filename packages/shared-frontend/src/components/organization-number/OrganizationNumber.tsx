@@ -19,7 +19,6 @@ const OrganizationNumber = ({ rawFormat = false, validation, required = true, ..
     {...props}
     required={required}
     inputMode="numeric"
-    spellCheck={false}
     formatKey={rawFormat ? 'organizationNumberRaw' : 'organizationNumber'}
     validation={toOrganizationNumberValidation({ ...props, required, validation }).rules}
   />
