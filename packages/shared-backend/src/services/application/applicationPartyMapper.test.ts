@@ -2,6 +2,19 @@ import { Party } from '@navikt/skjemadigitalisering-shared-domain';
 import { mapPartyToApplication } from './applicationPartyMapper';
 
 describe('mapPartyToApplication', () => {
+  it('normalizes identifiers for the innsending-api contract', () => {
+    const party: Party = {
+      relationship: 'other-person',
+      sender: { firstName: 'Sender', surname: 'Sendersen', nationalIdentityNumber: '109 876 543 21' },
+      user: { kind: 'identified-person', nationalIdentityNumber: '123 456 789 11' },
+    };
+
+    expect(mapPartyToApplication(party)).toEqual({
+      bruker: '12345678911',
+      avsender: { id: '10987654321', idType: 'FNR', navn: 'Sender Sendersen' },
+    });
+  });
+
   it.each([
     {
       name: 'own behalf, identified',

@@ -88,7 +88,7 @@ const extractApplicationParty = (form: Form, submission: Submission): Applicatio
   }
 
   const party = resolveParty(submission, createFyllutPartyLookup(form));
-  return party ? mapPartyToApplication(party) : {};
+  return party ? mapPartyToApplication(party) : extractLegacyApplicationParty(form, submission);
 };
 
 const extractLegacyApplicationParty = (form: Form, submission: Submission): ApplicationPartyData => {

@@ -1,4 +1,4 @@
-import { ResponseError, Submission } from '../../models';
+import { Submission } from '../../models';
 import { PartyRuntimeContext, PartyValueLookup, resolveParty } from './partyResolver';
 
 const dataAt =
@@ -124,43 +124,30 @@ describe('resolveParty', () => {
     });
   });
 
-  it.each([
-    [{ relationship: 'self' }, 'Missing concerned user'],
-    [{ relationship: 'self', user: {} }, 'Missing concerned user name'],
-    [{ relationship: 'self', user: { firstName: 'Name', surname: 'Only' } }, 'Missing concerned user address'],
-    [
-      { relationship: 'other-person', user: { nationalIdentityNumber: '12345678911' } },
-      'Missing responsible sender name',
-    ],
-    [
-      {
-        relationship: 'other-person',
-        sender: { firstName: 'Sender', surname: 'Sendersen' },
-        user: { nationalIdentityNumber: '12345678911' },
-      },
-      'Missing responsible sender identity number',
-    ],
-    [
-      { relationship: 'organization', user: { nationalIdentityNumber: '12345678911' } },
-      'Missing responsible organization name',
-    ],
-    [
-      {
-        relationship: 'organization',
-        organization: { name: 'Organization' },
-        user: { nationalIdentityNumber: '12345678911' },
-      },
-      'Missing responsible organization number',
-    ],
-    [
-      {
-        relationship: 'organization',
-        organization: { name: 'Organization', organizationNumber: '889640782' },
-        user: { kind: 'several-people' },
-      },
-      'Missing NAV unit',
-    ],
-  ])('throws a bad request for invalid party data', (data, message) => {
-    expect(() => resolve(data)).toThrow(new ResponseError('BAD_REQUEST', message));
+  const incompletePartyData: Submission['data'][] = [
+    { relationship: 'self' },
+    { relationship: 'self', user: {} },
+    { relationship: 'self', user: { firstName: 'Name', surname: 'Only' } },
+    { relationship: 'other-person', user: { nationalIdentityNumber: '12345678911' } },
+    {
+      relationship: 'other-person',
+      sender: { firstName: 'Sender', surname: 'Sendersen' },
+      user: { nationalIdentityNumber: '12345678911' },
+    },
+    { relationship: 'organization', user: { nationalIdentityNumber: '12345678911' } },
+    {
+      relationship: 'organization',
+      organization: { name: 'Organization' },
+      user: { nationalIdentityNumber: '12345678911' },
+    },
+    {
+      relationship: 'organization',
+      organization: { name: 'Organization', organizationNumber: '889640782' },
+      user: { kind: 'several-people' },
+    },
+  ];
+
+  it.each(incompletePartyData)('returns undefined for incomplete party data', (data) => {
+    expect(resolve(data)).toBeUndefined();
   });
 });

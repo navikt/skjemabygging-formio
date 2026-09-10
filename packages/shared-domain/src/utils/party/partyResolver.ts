@@ -2,7 +2,6 @@ import {
   ConcernedPerson,
   Party,
   PartyAddress,
-  ResponseError,
   ResponsibleOrganization,
   ResponsiblePerson,
   Submission,
@@ -44,13 +43,13 @@ interface PartyRuntimeContext {
   allowedNavUnits?: readonly string[];
 }
 
-const resolveConcernedPerson = (value: UserValue | undefined): ConcernedPerson => {
+const resolveConcernedPerson = (value: UserValue | undefined): ConcernedPerson | undefined => {
   if (!value) {
-    throw new ResponseError('BAD_REQUEST', 'Missing concerned user');
+    return undefined;
   }
 
   if ('kind' in value) {
-    throw new ResponseError('BAD_REQUEST', 'Several people requires an organization sender');
+    return undefined;
   }
 
   if (value.nationalIdentityNumber) {
@@ -61,11 +60,11 @@ const resolveConcernedPerson = (value: UserValue | undefined): ConcernedPerson =
   }
 
   if (!value.firstName || !value.surname) {
-    throw new ResponseError('BAD_REQUEST', 'Missing concerned user name');
+    return undefined;
   }
 
   if (!value.address) {
-    throw new ResponseError('BAD_REQUEST', 'Missing concerned user address');
+    return undefined;
   }
 
   return {
@@ -76,14 +75,17 @@ const resolveConcernedPerson = (value: UserValue | undefined): ConcernedPerson =
   };
 };
 
-const resolveResponsiblePerson = (value: PersonValue | undefined, context: PartyRuntimeContext): ResponsiblePerson => {
+const resolveResponsiblePerson = (
+  value: PersonValue | undefined,
+  context: PartyRuntimeContext,
+): ResponsiblePerson | undefined => {
   if (!value?.firstName || !value.surname) {
-    throw new ResponseError('BAD_REQUEST', 'Missing responsible sender name');
+    return undefined;
   }
 
   const nationalIdentityNumber = context.verifiedActor?.nationalIdentityNumber ?? value.nationalIdentityNumber;
   if (!nationalIdentityNumber) {
-    throw new ResponseError('BAD_REQUEST', 'Missing responsible sender identity number');
+    return undefined;
   }
 
   return {
@@ -93,12 +95,12 @@ const resolveResponsiblePerson = (value: PersonValue | undefined, context: Party
   };
 };
 
-const resolveOrganization = (value: OrganizationValue | undefined): ResponsibleOrganization => {
+const resolveOrganization = (value: OrganizationValue | undefined): ResponsibleOrganization | undefined => {
   if (!value?.name) {
-    throw new ResponseError('BAD_REQUEST', 'Missing responsible organization name');
+    return undefined;
   }
   if (!value.organizationNumber) {
-    throw new ResponseError('BAD_REQUEST', 'Missing responsible organization number');
+    return undefined;
   }
 
   return {
@@ -111,13 +113,13 @@ const resolveSeveralPeople = (
   lookup: PartyValueLookup,
   submission: Submission,
   context: PartyRuntimeContext,
-): Extract<Party, { relationship: 'organization' }>['user'] => {
+): Extract<Party, { relationship: 'organization' }>['user'] | undefined => {
   const navUnit = lookup.navUnit?.(submission);
   if (!navUnit) {
-    throw new ResponseError('BAD_REQUEST', 'Missing NAV unit');
+    return undefined;
   }
   if (!context.allowedNavUnits?.includes(navUnit)) {
-    throw new ResponseError('BAD_REQUEST', 'NAV unit is not allowed');
+    return undefined;
   }
 
   return {
@@ -138,27 +140,47 @@ const resolveParty = (
 
   const userValue = lookup.user(submission);
   if (relationship === 'organization' && userValue && 'kind' in userValue) {
+    const sender = resolveOrganization(lookup.organization?.(submission));
+    const user = resolveSeveralPeople(lookup, submission, context);
+    if (!sender || !user) {
+      return undefined;
+    }
+
     return {
       relationship,
-      sender: resolveOrganization(lookup.organization?.(submission)),
-      user: resolveSeveralPeople(lookup, submission, context),
+      sender,
+      user,
     };
   }
 
   const user = resolveConcernedPerson(userValue);
+  if (!user) {
+    return undefined;
+  }
+
   if (relationship === 'self') {
     return { relationship, user };
   }
   if (relationship === 'other-person') {
+    const sender = resolveResponsiblePerson(lookup.sender?.(submission), context);
+    if (!sender) {
+      return undefined;
+    }
+
     return {
       relationship,
-      sender: resolveResponsiblePerson(lookup.sender?.(submission), context),
+      sender,
       user,
     };
   }
+  const sender = resolveOrganization(lookup.organization?.(submission));
+  if (!sender) {
+    return undefined;
+  }
+
   return {
     relationship,
-    sender: resolveOrganization(lookup.organization?.(submission)),
+    sender,
     user,
   };
 };
