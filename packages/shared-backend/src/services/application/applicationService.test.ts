@@ -306,6 +306,30 @@ describe('createApplicationService', () => {
     expect(stopTimer).toHaveBeenNthCalledWith(2, { error: 'true' });
   });
 
+  it('uses the digital attachment resource for ettersending', async () => {
+    vi.spyOn(global, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ id: fileId, name: 'test.txt', size: 4 }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    );
+    const service = createApplicationService({ baseUrl });
+
+    await service.uploadAttachment({
+      accessToken,
+      attachmentId,
+      fileBlob: new Blob(['test']),
+      fileName: 'test.txt',
+      innsendingsId,
+      type: 'ettersendelse',
+    });
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      `${baseUrl}/v1/application-digital/${innsendingsId}/attachments/${attachmentId}`,
+      expect.objectContaining({ method: 'POST' }),
+    );
+  });
+
   it('normalizes upload attachment too-many-pages errors in shared-backend', async () => {
     vi.spyOn(global, 'fetch').mockResolvedValue(
       new Response(JSON.stringify({ errorCode: 'illegalAction.fileWithTooManyPages' }), {

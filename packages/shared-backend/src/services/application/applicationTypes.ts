@@ -3,7 +3,7 @@ import type { Histogram } from 'prom-client';
 
 export type BrukerDto = { id: string; idType: 'FNR' };
 export type AvsenderId = { navn?: string; id?: string; idType?: 'FNR' | 'ORGNR' };
-export type ApplicationType = 'nologin' | 'digital';
+export type ApplicationType = 'nologin' | 'digital' | 'ettersendelse';
 export type ApplicationMetricLabel = 'type' | 'error';
 
 export interface DownloadedAttachment {
