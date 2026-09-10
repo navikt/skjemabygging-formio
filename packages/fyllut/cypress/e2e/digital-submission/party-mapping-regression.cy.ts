@@ -43,7 +43,7 @@ describe('Party mapping regression', () => {
     cy.findByRole('textbox', { name: 'Representantens etternavn' }).type('Sender');
     cy.clickNextStep();
 
-    cy.mocksUseRouteVariant('post-nologin-soknad:success-tc22a');
+    cy.mocksUseRouteVariant('post-nologin-soknad:success-tc23a');
     cy.mocksUseRouteVariant('post-familie-pdf:success');
     cy.clickSendNav();
 
@@ -75,7 +75,7 @@ describe('Party mapping regression', () => {
     cy.findByRole('textbox', { name: 'Virksomhetens navn' }).type('Test organization');
     cy.clickNextStep();
 
-    cy.mocksUseRouteVariant('post-nologin-soknad:success-tc22b');
+    cy.mocksUseRouteVariant('post-nologin-soknad:success-tc23b');
     cy.mocksUseRouteVariant('post-familie-pdf:success');
     cy.clickSendNav();
 
