@@ -21,7 +21,7 @@ import {
   yourInformationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { base64EncodeByteArray } from '../../../utils/base64';
-import { hasFyllutLegacyInput } from './fyllutLegacySubmission';
+import { hasLegacyPersonalInformationLayout } from './fyllutLegacyPersonalInformationLayout';
 import { objectToByteArray } from './sendInn';
 
 const assembleSubmitApplicationRequest = (
@@ -81,7 +81,7 @@ const assembleSubmitApplicationRequest = (
 };
 
 const extractApplicationParty = (form: Form, submission: Submission): ApplicationPartyData => {
-  if (hasFyllutLegacyInput(submission.data)) {
+  if (hasLegacyPersonalInformationLayout(form)) {
     // The legacy application mapper remains the compatibility boundary for flat submission fields.
     return extractLegacyApplicationParty(form, submission);
   }

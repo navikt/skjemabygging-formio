@@ -139,14 +139,29 @@ describe('assembleSubmitApplicationRequest party compatibility', () => {
   });
 
   it('preserves the flat identity fallback when your-information also contains an address', () => {
-    const request = assemble({
-      yourInformation: {
-        fornavn: 'Legacy',
-        etternavn: 'User',
-        adresse: { adresse: 'Testveien 1' },
+    const request = assembleSubmitApplicationRequest(
+      '21ed0008-ec72-4c90-8b44-165d3c265da9',
+      {
+        ...form,
+        components: [
+          ...form.components,
+          { type: 'textfield', key: 'fodselsnummerDNummerSoker', label: 'Identity number' },
+        ],
       },
-      fodselsnummerDNummerSoker: '123 456 789 11',
-    });
+      {
+        data: {
+          yourInformation: {
+            fornavn: 'Legacy',
+            etternavn: 'User',
+            adresse: { adresse: 'Testveien 1' },
+          },
+          fodselsnummerDNummerSoker: '123 456 789 11',
+        },
+      },
+      'nb',
+      [],
+      (text) => text,
+    );
 
     expect(request.bruker).toBe('12345678911');
     expect(request.avsender).toBeUndefined();
