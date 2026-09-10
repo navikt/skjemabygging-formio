@@ -1,4 +1,4 @@
-import { Form, navFormUtils, Panel } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, getNavId, Panel } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useContext, useEffect, useLayoutEffect, useMemo } from 'react';
 import { ComponentDefinition } from '../../form-components/component-types';
 import { collectDataGridRowScopes } from '../../form-components/components/data-grid/dataGridRows';
@@ -9,6 +9,7 @@ import { applyCalculatedValues } from './calculatedValues';
 import {
   enrichFormWithBaseSubmissionPath,
   flattenComponentsWithBaseSubmissionPath,
+  getActivePanels,
   toComponentDefinitions,
 } from './formDefinitionUtils';
 import { collectHiddenSubmissionPaths } from './hiddenSubmissionPaths';
@@ -33,28 +34,22 @@ const FormDefinitionProvider = ({ children, form }: Props) => {
   const { submission, setSubmission, clearSubmissionPaths } = useSubmissionState();
   const formWithBaseSubmissionPath = useMemo(() => enrichFormWithBaseSubmissionPath(form), [form]);
 
-  const activeComponents = useMemo(
-    () =>
-      toComponentDefinitions(
-        navFormUtils.getActiveComponentsFromForm(formWithBaseSubmissionPath, submission, { submissionMethod }),
-      ),
+  const panels = useMemo(
+    () => getActivePanels(formWithBaseSubmissionPath, submission, { submissionMethod }),
     [formWithBaseSubmissionPath, submission, submissionMethod],
   );
 
-  const panels = useMemo(
-    () => navFormUtils.getAllActivePanelsFromForm(formWithBaseSubmissionPath, submission, { submissionMethod }),
-    [formWithBaseSubmissionPath, submission, submissionMethod],
-  );
+  const activeComponents = useMemo(() => toComponentDefinitions(panels), [panels]);
 
   const dataGridRowScopes = useMemo(
     () =>
       collectDataGridRowScopes({
-        components: toComponentDefinitions([...activeComponents, ...panels]),
+        components: activeComponents,
         submission,
         form: formWithBaseSubmissionPath,
         submissionMethod,
       }),
-    [activeComponents, panels, formWithBaseSubmissionPath, submission, submissionMethod],
+    [activeComponents, formWithBaseSubmissionPath, submission, submissionMethod],
   );
 
   useLayoutEffect(() => {
@@ -65,17 +60,16 @@ const FormDefinitionProvider = ({ children, form }: Props) => {
     setSubmission((prev) =>
       applyCalculatedValues({
         submission: prev,
-        formComponents: toComponentDefinitions([...activeComponents, ...panels]),
+        formComponents: activeComponents,
         dataGridRowScopes,
       }),
     );
-  }, [activeComponents, dataGridRowScopes, panels, setSubmission]);
+  }, [activeComponents, dataGridRowScopes, setSubmission]);
 
   useEffect(() => {
     const hiddenPathsToClear = collectHiddenSubmissionPaths({
       form: formWithBaseSubmissionPath,
       activeComponents,
-      panels,
       submission,
       submissionMethod,
     });
@@ -86,7 +80,7 @@ const FormDefinitionProvider = ({ children, form }: Props) => {
     const attachmentIds = new Set(
       flattenComponentsWithBaseSubmissionPath(formWithBaseSubmissionPath.components)
         .filter((component) => component.type === 'attachment')
-        .map((component) => navFormUtils.getNavId(component))
+        .map((component) => getNavId(component))
         .filter((attachmentId): attachmentId is string => !!attachmentId),
     );
     setSubmission((current) => {
@@ -114,15 +108,7 @@ const FormDefinitionProvider = ({ children, form }: Props) => {
         ? current
         : { ...current, attachments: visibleAttachments };
     });
-  }, [
-    activeComponents,
-    panels,
-    clearSubmissionPaths,
-    formWithBaseSubmissionPath,
-    setSubmission,
-    submission,
-    submissionMethod,
-  ]);
+  }, [activeComponents, clearSubmissionPaths, formWithBaseSubmissionPath, setSubmission, submission, submissionMethod]);
 
   const value = useMemo(
     () => ({ form: formWithBaseSubmissionPath, activeComponents, panels }),

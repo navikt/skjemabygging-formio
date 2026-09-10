@@ -2,7 +2,7 @@ import { Alert, FileUpload, FormSummary, Label, VStack } from '@navikt/ds-react'
 import {
   attachmentUtils,
   enableAttachmentDownload,
-  navFormUtils,
+  getNavId,
   SubmissionAttachment,
   submissionUtils,
   TEXTS,
@@ -18,7 +18,7 @@ const SummaryAttachment = (props: FormComponentProps<AttachmentDefinition>) => {
   const canDownloadAttachment = enableAttachmentDownload(submissionMethod) && !!handleDownloadFile;
   const pathValue = submissionUtils.getSubmissionValue(submissionPath, submission);
   const dataAttachments = attachmentUtils.toSubmissionAttachments(pathValue, component);
-  const navId = navFormUtils.getNavId(component) ?? component.key;
+  const navId = getNavId(component) ?? component.key;
   const attachments = (dataAttachments.length > 0 ? dataAttachments : (submission?.attachments ?? [])).filter(
     (attachment) => attachment.navId === navId,
   );

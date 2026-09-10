@@ -1,4 +1,4 @@
-import { Form, Panel, Submission, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, Submission, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
 import { ComponentDefinition } from '../../form-components/component-types';
 import {
   collectDataGridRowScopes,
@@ -9,7 +9,6 @@ import { toComponentDefinitions } from './formDefinitionUtils';
 interface HiddenSubmissionPathArgs {
   form: Form;
   activeComponents: ComponentDefinition[];
-  panels: Panel[];
   submission?: Submission;
   submissionMethod?: SubmissionMethod;
 }
@@ -25,13 +24,11 @@ interface HiddenSubmissionPathArgs {
 const collectHiddenSubmissionPaths = ({
   form,
   activeComponents,
-  panels,
   submission,
   submissionMethod,
 }: HiddenSubmissionPathArgs): string[] => {
-  const visibleComponents = toComponentDefinitions([...activeComponents, ...panels]);
   const visiblePaths = new Set(
-    collectInputSubmissionPaths(visibleComponents).map(({ submissionPath }) => submissionPath),
+    collectInputSubmissionPaths(activeComponents).map(({ submissionPath }) => submissionPath),
   );
 
   const hiddenPaths = collectInputSubmissionPaths(toComponentDefinitions(form.components))
@@ -39,7 +36,7 @@ const collectHiddenSubmissionPaths = ({
     .map(({ submissionPath }) => submissionPath);
 
   const hiddenRowPaths = collectDataGridRowScopes({
-    components: visibleComponents,
+    components: activeComponents,
     submission,
     form,
     submissionMethod,

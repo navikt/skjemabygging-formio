@@ -1,4 +1,4 @@
-import { attachmentUtils, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { attachmentUtils, getNavId } from '@navikt/skjemadigitalisering-shared-domain';
 import { createAttachmentId, getAttachmentsAtPath } from '../../context/attachment/attachmentData';
 import { ValidationField } from '../../context/validation/validationTypes';
 import { AttachmentDefinition } from '../../form-components/component-types';
@@ -24,7 +24,7 @@ const attachmentUploadValidationFields: ValidationFieldsBuilder<AttachmentDefini
 
   const label = component.label ?? component.key;
   const required = component.validate?.required ?? false;
-  const attachmentNavId = navFormUtils.getNavId(component) ?? component.key;
+  const attachmentNavId = getNavId(component) ?? component.key;
   const baseAttachmentId = createAttachmentId(attachmentNavId, submissionPath);
   const attachments = getAttachmentsAtPath(submission, submissionPath).filter(
     (attachment) => attachment.navId === attachmentNavId,

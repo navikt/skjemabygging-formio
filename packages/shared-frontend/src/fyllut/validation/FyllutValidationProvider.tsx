@@ -1,7 +1,7 @@
-import { Form, navFormUtils, Panel, Submission, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, Panel, Submission, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
 import { ReactNode, useCallback, useRef } from 'react';
 import { useFormDefinition } from '../../context/form-definition/FormDefinitionContext';
-import { toComponentDefinitions } from '../../context/form-definition/formDefinitionUtils';
+import { getActivePanels, toComponentDefinitions } from '../../context/form-definition/formDefinitionUtils';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useSubmissionState } from '../../context/state/SubmissionStateContext';
 import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
@@ -61,7 +61,7 @@ const FyllutValidationProvider = ({ children, initialPagesWithErrors }: Props) =
         return cachedFields;
       }
 
-      const panels: Panel[] = navFormUtils.getAllActivePanelsFromForm(form, submission, { submissionMethod });
+      const panels: Panel[] = getActivePanels(form, submission, { submissionMethod });
       const panel = panels.find((currentPanel) => currentPanel.key === pageKey);
       const fields = panel
         ? collectPageValidationFields({

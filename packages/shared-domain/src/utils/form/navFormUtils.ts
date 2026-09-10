@@ -14,6 +14,9 @@ import { checkCondition, navFormioUtils } from '../formio';
 import { stringUtils } from '../string';
 import { submissionTypesUtils } from '../submission';
 import { formSummaryUtils } from '../summary';
+import { flattenComponents, getNavId } from './componentUtil';
+
+export { flattenComponents, getNavId };
 
 export const toFormPath = (text: string) => stringUtils.camelCase(text).toLowerCase();
 
@@ -24,18 +27,6 @@ export const formMatcherPredicate = (pathFromUrl: string) => (form: NavFormType)
     toFormPath(form.properties.skjemanummer) === pathFromUrl
   );
 };
-
-export function flattenComponents<ComponentLike extends { components?: ComponentLike[] }>(
-  components: ComponentLike[],
-): ComponentLike[] {
-  return components.reduce((flattenedComponents: ComponentLike[], currentComponent: ComponentLike) => {
-    return [
-      ...flattenedComponents,
-      currentComponent,
-      ...(currentComponent.components ? flattenComponents(currentComponent.components) : []),
-    ];
-  }, []);
-}
 
 const deepSortByKeys = (obj?: object) => {
   if (!obj) return obj;
@@ -113,8 +104,6 @@ const findComponent = (isMatch: ComponentMatcherFunction, components: Component[
   }
   return undefined;
 };
-
-const getNavId = (component: Component): string | undefined => component.navId ?? component.id;
 
 const findById = (id: string, components: Component[]): Component | undefined =>
   findComponent((c) => c.id === id, components);

@@ -1,9 +1,9 @@
-import { Form, navFormUtils, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { describe, expect, it } from 'vitest';
 import { ComponentDefinition } from '../../form-components/component-types';
 import { collectDataGridRowScopes } from '../../form-components/components/data-grid/dataGridRows';
 import { applyCalculatedValues, collectCalculationTargets } from './calculatedValues';
-import { enrichFormWithBaseSubmissionPath, toComponentDefinitions } from './formDefinitionUtils';
+import { enrichFormWithBaseSubmissionPath, getActivePanels, toComponentDefinitions } from './formDefinitionUtils';
 
 // Shaped like the data grid "transportmiddelTur" in the production form nav100716, where a currency
 // field sums the other amounts in the same row.
@@ -165,7 +165,7 @@ describe('calculatedValues', () => {
 
     // The caller (FormDefinitionContext) passes only active components; the hidden calculated field
     // must not be a target, otherwise it fights the clear-on-hide effect and never settles.
-    const activeComponents = toComponentDefinitions(navFormUtils.getActiveComponentsFromForm(form, submission));
+    const activeComponents = toComponentDefinitions(getActivePanels(form, submission));
     const result = applyCalculatedValues({
       submission,
       formComponents: activeComponents,

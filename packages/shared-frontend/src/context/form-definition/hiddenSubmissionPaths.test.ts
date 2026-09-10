@@ -1,4 +1,4 @@
-import { Form, Panel, Submission } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { describe, expect, it } from 'vitest';
 import { ComponentDefinition } from '../../form-components/component-types';
 import { enrichFormWithBaseSubmissionPath } from './formDefinitionUtils';
@@ -55,7 +55,6 @@ const collect = (form: Form, submission: Submission) => {
   return collectHiddenSubmissionPaths({
     form,
     activeComponents,
-    panels: activeComponents as Panel[],
     submission,
   });
 };
@@ -108,7 +107,6 @@ describe('collectHiddenSubmissionPaths', () => {
       collectHiddenSubmissionPaths({
         form,
         activeComponents: [activePanel],
-        panels: [activePanel] as Panel[],
         submission: { data: { synlig: 'ja', skjult: 'nei' } },
       }),
     ).toEqual(['skjult']);
@@ -154,7 +152,6 @@ describe('collectHiddenSubmissionPaths', () => {
       collectHiddenSubmissionPaths({
         form,
         activeComponents: [activePanel],
-        panels: [activePanel] as Panel[],
         submission: {
           data: {
             harDuHattServicehundTidligere: 'nei',

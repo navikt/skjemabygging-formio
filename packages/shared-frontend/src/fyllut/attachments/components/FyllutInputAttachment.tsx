@@ -1,4 +1,4 @@
-import { attachmentUtils, navFormUtils, SubmissionAttachment } from '@navikt/skjemadigitalisering-shared-domain';
+import { attachmentUtils, getNavId, SubmissionAttachment } from '@navikt/skjemadigitalisering-shared-domain';
 import { useFormDefinition } from '../../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
@@ -28,7 +28,7 @@ const FyllutInputAttachment = ({ component, submissionPath }: InputComponentProp
     required: isRequired(component),
     description: component.description ? translate(component.description) : undefined,
     attachmentValues: component.attachmentValues ?? component.values,
-    attachmentNavId: navFormUtils.getNavId(component) ?? component.key,
+    attachmentNavId: getNavId(component) ?? component.key,
     submissionPath: resolveSubmissionPath(component, submissionPath),
     onUpload: (attachment: SubmissionAttachment) => {
       void logEvent?.({

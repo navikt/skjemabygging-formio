@@ -1,4 +1,4 @@
-import { Component, Form, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, flattenComponents, Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { recognizeCustomValidation } from './customValidationScripts';
 
 /** A `validate.custom` the new renderer neither reproduces nor can prove redundant. */
@@ -24,8 +24,7 @@ const toUnsupportedCustomValidation = (component: Component): UnsupportedCustomV
  * `valid`, and the expressions mapped to value rules) are not reported.
  */
 const findUnsupportedCustomValidation = (form: Form): UnsupportedCustomValidation[] =>
-  navFormUtils
-    .flattenComponents(form.components ?? [])
+  flattenComponents(form.components ?? [])
     .filter((component) => recognizeCustomValidation(component).kind === 'unsupported')
     .map(toUnsupportedCustomValidation);
 

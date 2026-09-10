@@ -1,6 +1,6 @@
 import {
   Form,
-  navFormUtils,
+  getNavId,
   Submission,
   SubmissionAttachment,
   submissionUtils,
@@ -64,7 +64,7 @@ const hydrateLegacyAttachments = (form: Form, submission: Submission | undefined
           : submissionUtils.getComponentSubmissionPath(component, parentSubmissionPath);
 
       if (component.type === 'attachment') {
-        const navId = navFormUtils.getNavId(component);
+        const navId = getNavId(component);
         if (!submissionPath || !navId || hydratedNavIds.has(navId)) {
           return;
         }
