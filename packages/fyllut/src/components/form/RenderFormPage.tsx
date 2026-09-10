@@ -25,18 +25,14 @@ const RenderFormPage = () => {
   const forceMellomlagring = new URLSearchParams(search).get('forceMellomlagring') === 'true';
   const isActiveTasksRoute = routePath === 'paabegynt';
   const loadKey = `${formPath ?? ''}|${submissionMethod ?? ''}|${innsendingsId ?? ''}|${forceMellomlagring}|${isActiveTasksRoute}`;
-  const services = useMemo<RuntimeServices>(() => {
-    if (!http) {
-      throw new Error('Fyllut HTTP client is required to render the form.');
-    }
-    return createRuntimeServices({ http: createIntegrationHttp(http), backendBaseUrl, innsendingsId });
-  }, [backendBaseUrl, http, innsendingsId]);
-  const bootstrapService = useMemo(() => {
-    if (!http) {
-      throw new Error('Fyllut HTTP client is required to render the form.');
-    }
-    return createRenderFormBootstrapService({ http: createIntegrationHttp(http), backendBaseUrl });
-  }, [backendBaseUrl, http]);
+  const services = useMemo<RuntimeServices>(
+    () => createRuntimeServices({ http: createIntegrationHttp(http!), backendBaseUrl, innsendingsId }),
+    [backendBaseUrl, http, innsendingsId],
+  );
+  const bootstrapService = useMemo(
+    () => createRenderFormBootstrapService({ http: createIntegrationHttp(http!), backendBaseUrl }),
+    [backendBaseUrl, http],
+  );
   const { initializedForm, unsupportedCustomValidation, isLoading } = useInitializeRenderForm({
     formPath,
     routePath,
