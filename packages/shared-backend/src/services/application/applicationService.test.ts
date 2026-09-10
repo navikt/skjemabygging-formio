@@ -311,7 +311,7 @@ describe('createApplicationService', () => {
     expect(stopTimer).toHaveBeenNthCalledWith(2, { error: 'true' });
   });
 
-  it('uses the digital attachment resource for ettersending', async () => {
+  it('uses the digital attachment resource for subsequent submissions', async () => {
     vi.spyOn(global, 'fetch').mockResolvedValue(
       new Response(JSON.stringify({ id: fileId, name: 'test.txt', size: 4 }), {
         status: 200,
@@ -326,7 +326,7 @@ describe('createApplicationService', () => {
       fileBlob: new Blob(['test']),
       fileName: 'test.txt',
       innsendingsId,
-      type: 'ettersendelse',
+      type: 'digital',
     });
 
     expect(global.fetch).toHaveBeenCalledWith(
@@ -535,7 +535,7 @@ describe('createApplicationService', () => {
     });
   });
 
-  it('gets an existing ettersending task through the digital application resource', async () => {
+  it('gets an existing subsequent submission task through the digital application resource', async () => {
     const task: SubsequentSubmissionTask = {
       innsendingsId,
       revision: 'revision-1',
@@ -554,9 +554,9 @@ describe('createApplicationService', () => {
     );
     const service = createApplicationService({ baseUrl });
 
-    await expect(service.getSubsequentSubmissionTask({ accessToken, correlationId, innsendingsId })).resolves.toEqual(
-      task,
-    );
+    await expect(
+      service.getSubsequentSubmissionTask({ accessToken, correlationId, innsendingsId, type: 'digital' }),
+    ).resolves.toEqual(task);
     expect(global.fetch).toHaveBeenCalledWith(
       `${baseUrl}/v1/application-digital/${innsendingsId}`,
       expect.objectContaining({
@@ -571,7 +571,36 @@ describe('createApplicationService', () => {
     );
   });
 
-  it('submits an existing ettersending task through the digital application resource', async () => {
+  it('supports no-login subsequent submission tasks', async () => {
+    vi.spyOn(global, 'fetch').mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          innsendingsId,
+          revision: 'revision-1',
+          formNumber: 'NAV 12.34-56',
+          title: 'Additional documentation',
+          tema: 'BIL',
+          language: 'nb',
+          otherUploadAvailable: true,
+          attachments: [],
+        }),
+        {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        },
+      ),
+    );
+    const service = createApplicationService({ baseUrl });
+
+    await service.getSubsequentSubmissionTask({ accessToken, innsendingsId, type: 'nologin' });
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      `${baseUrl}/v1/application-nologin/${innsendingsId}`,
+      expect.objectContaining({ method: 'GET' }),
+    );
+  });
+
+  it('submits an existing subsequent submission task through the digital application resource', async () => {
     const receipt: SubsequentSubmissionReceipt = {
       innsendingsId,
       submittedAt: '2026-09-10T10:00:00Z',
@@ -595,7 +624,7 @@ describe('createApplicationService', () => {
     const service = createApplicationService({ baseUrl });
 
     await expect(
-      service.submitApplication({ accessToken, correlationId, innsendingsId, body, type: 'ettersendelse' }),
+      service.submitApplication({ accessToken, correlationId, innsendingsId, body, type: 'digital' }),
     ).resolves.toEqual(receipt);
     expect(global.fetch).toHaveBeenCalledWith(
       `${baseUrl}/v1/application-digital/${innsendingsId}`,

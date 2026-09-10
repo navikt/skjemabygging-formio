@@ -12,8 +12,6 @@ import mellomlagringActivities from '../data/innsending-api/activities/mellomlag
 import mellomlagringCheckbox from '../data/innsending-api/checkbox/mellomlagring-checkbox.json';
 import mellomlagringDrivingListNoDates from '../data/innsending-api/driving-list/mellomlagring-driving-list-no-dates.json';
 import mellomlagringDrivingList from '../data/innsending-api/driving-list/mellomlagring-driving-list.json';
-import ettersendingReceipt from '../data/innsending-api/ettersending-receipt.json';
-import ettersendingTask from '../data/innsending-api/ettersending-task.json';
 import container123Complete from '../data/innsending-api/mellomlagring/container123/complete.json';
 import containerDatagrid123Complete from '../data/innsending-api/mellomlagring/containerDatagrid123/complete.json';
 import formSelectSoknadCompleteV1 from '../data/innsending-api/mellomlagring/form-select/saved-complete-v1.json';
@@ -35,6 +33,8 @@ import prefillDataUsa from '../data/innsending-api/prefill-data/prefill-data-usa
 import prefillData from '../data/innsending-api/prefill-data/prefill-data.json';
 import mellomlagringRadio from '../data/innsending-api/radio/mellomlagring-radio.json';
 import mellomlagringSelectBoxes from '../data/innsending-api/select-boxes/mellomlagring-select-boxes.json';
+import subsequentSubmissionReceipt from '../data/innsending-api/subsequent-submission-receipt.json';
+import subsequentSubmissionTask from '../data/innsending-api/subsequent-submission-task.json';
 import tc01 from '../data/test-cases/tc01-innsending-nologin-soknad-body.json';
 import tc02 from '../data/test-cases/tc02-innsending-nologin-soknad-body.json';
 import tc05 from '../data/test-cases/tc05-innsending-nologin-soknad-body.json';
@@ -698,7 +698,7 @@ export default [
     ],
   },
   {
-    id: 'get-digital-ettersending-task',
+    id: 'get-digital-subsequent-submission-task',
     url: '/send-inn/v1/application-digital/:innsendingsId',
     method: 'GET',
     variants: [
@@ -707,7 +707,7 @@ export default [
         type: 'json',
         options: {
           status: 200,
-          body: ettersendingTask,
+          body: subsequentSubmissionTask,
         },
       },
       {
@@ -726,15 +726,15 @@ export default [
     method: 'POST',
     variants: [
       {
-        id: 'ettersending-success',
+        id: 'subsequent-submission-success',
         type: 'json',
         options: {
           status: 200,
-          body: ettersendingReceipt,
+          body: subsequentSubmissionReceipt,
         },
       },
       {
-        id: 'ettersending-stale-revision',
+        id: 'subsequent-submission-stale-revision',
         type: 'json',
         options: {
           status: 409,

@@ -25,7 +25,7 @@ const getSubmittedDraftUrl = (baseUrl: string, innsendingsId: string) =>
   `${baseUrl}${submittedDraftPath}/${innsendingsId}`;
 
 const getApplicationUrl = (baseUrl: string, type: ApplicationType, innsendingsId: string) =>
-  `${baseUrl}/v1/application-${type === 'ettersendelse' ? 'digital' : type}/${innsendingsId}`;
+  `${baseUrl}/v1/application-${type}/${innsendingsId}`;
 
 const getAttachmentsUrl = ({
   baseUrl,

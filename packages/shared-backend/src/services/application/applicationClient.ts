@@ -82,12 +82,12 @@ const getApplication = async <T>(props: ApplicationBaseProps): Promise<T> => {
   }
 };
 
-const getDigitalApplication = async <T>(props: ApplicationBaseProps): Promise<T> => {
-  const { baseUrl, accessToken, innsendingsId, correlationId } = props;
-  logger.info(`Getting digital application ${innsendingsId}`);
+const getApplicationForSubmission = async <T>(props: ApplicationBaseProps & { type: ApplicationType }): Promise<T> => {
+  const { baseUrl, accessToken, innsendingsId, correlationId, type } = props;
+  logger.info(`Getting ${type} application ${innsendingsId}`);
 
   try {
-    return await http.get<T>(getApplicationUrl(baseUrl, 'digital', innsendingsId), {
+    return await http.get<T>(getApplicationUrl(baseUrl, type, innsendingsId), {
       accessToken,
       accept: 'application/json',
       headers: createHeaders({ correlationId, innsendingsId }),
@@ -366,7 +366,7 @@ const applicationClient = {
   deleteAttachment,
   downloadAttachment,
   getApplication,
-  getDigitalApplication,
+  getApplicationForSubmission,
   submitCompletedApplication,
   submitApplication,
   updateApplication,
