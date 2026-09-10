@@ -17,7 +17,6 @@ import type {
   ApplicationType,
   DownloadedAttachment,
   DraftResponse,
-  SubmitApplicationRequest,
   SubmitApplicationResponse,
   UploadAttachmentResponse,
 } from './applicationTypes';
@@ -63,8 +62,8 @@ interface DownloadAttachmentProps extends AttachmentBaseProps {
   fileId: string;
 }
 
-interface SubmitApplicationProps extends ApplicationBaseProps {
-  body: SubmitApplicationRequest;
+interface SubmitApplicationProps<TBody extends object> extends ApplicationBaseProps {
+  body: TBody;
   type: ApplicationType;
 }
 
@@ -74,6 +73,21 @@ const getApplication = async <T>(props: ApplicationBaseProps): Promise<T> => {
 
   try {
     return await http.get<T>(getDraftUrl(baseUrl, innsendingsId), {
+      accessToken,
+      accept: 'application/json',
+      headers: createHeaders({ correlationId, innsendingsId }),
+    });
+  } catch (error) {
+    throw normalizeApplicationError(error);
+  }
+};
+
+const getDigitalApplication = async <T>(props: ApplicationBaseProps): Promise<T> => {
+  const { baseUrl, accessToken, innsendingsId, correlationId } = props;
+  logger.info(`Getting digital application ${innsendingsId}`);
+
+  try {
+    return await http.get<T>(getApplicationUrl(baseUrl, 'digital', innsendingsId), {
       accessToken,
       accept: 'application/json',
       headers: createHeaders({ correlationId, innsendingsId }),
@@ -314,7 +328,9 @@ const downloadAttachment = async (props: DownloadAttachmentProps): Promise<Downl
   };
 };
 
-const submitApplication = async (props: SubmitApplicationProps): Promise<SubmitApplicationResponse> => {
+const submitApplication = async <TBody extends object, TResponse = SubmitApplicationResponse>(
+  props: SubmitApplicationProps<TBody>,
+): Promise<TResponse> => {
   const { baseUrl, accessToken, innsendingsId, type, body, correlationId, logMeta = {} } = props;
   const targetUrl = getApplicationUrl(baseUrl, type, innsendingsId);
   logger.info(`${innsendingsId}: Submitting ${type} application`, {
@@ -324,7 +340,7 @@ const submitApplication = async (props: SubmitApplicationProps): Promise<SubmitA
   });
 
   try {
-    const response = await http.post<SubmitApplicationResponse>(targetUrl, body, {
+    const response = await http.post<TResponse>(targetUrl, body, {
       accessToken,
       headers: createHeaders({ correlationId, innsendingsId }),
     });
@@ -350,6 +366,7 @@ const applicationClient = {
   deleteAttachment,
   downloadAttachment,
   getApplication,
+  getDigitalApplication,
   submitCompletedApplication,
   submitApplication,
   updateApplication,

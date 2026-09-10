@@ -2,7 +2,12 @@ import { ResponseError, TEXTS } from '@navikt/skjemadigitalisering-shared-domain
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { logger } from '../../shared/logger/logger';
 import { createApplicationService } from './applicationService';
-import type { SubmitApplicationRequest, SubmitApplicationResponse } from './applicationTypes';
+import type {
+  SubmitApplicationRequest,
+  SubmitApplicationResponse,
+  SubsequentSubmissionReceipt,
+  SubsequentSubmissionTask,
+} from './applicationTypes';
 
 describe('createApplicationService', () => {
   const accessToken = 'tokenx-access-token';
@@ -528,5 +533,73 @@ describe('createApplicationService', () => {
     ).rejects.toMatchObject({
       errorCode: 'NOT_FOUND',
     });
+  });
+
+  it('gets an existing ettersending task through the digital application resource', async () => {
+    const task: SubsequentSubmissionTask = {
+      innsendingsId,
+      revision: 'revision-1',
+      formNumber: 'NAV 12.34-56',
+      title: 'Additional documentation',
+      tema: 'BIL',
+      language: 'nb',
+      otherUploadAvailable: true,
+      attachments: [],
+    };
+    vi.spyOn(global, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify(task), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    );
+    const service = createApplicationService({ baseUrl });
+
+    await expect(service.getSubsequentSubmissionTask({ accessToken, correlationId, innsendingsId })).resolves.toEqual(
+      task,
+    );
+    expect(global.fetch).toHaveBeenCalledWith(
+      `${baseUrl}/v1/application-digital/${innsendingsId}`,
+      expect.objectContaining({
+        method: 'GET',
+        headers: expect.objectContaining({
+          Authorization: `Bearer ${accessToken}`,
+          Accept: 'application/json',
+          'x-correlation-id': correlationId,
+          'x-innsendingsid': innsendingsId,
+        }),
+      }),
+    );
+  });
+
+  it('submits an existing ettersending task through the digital application resource', async () => {
+    const receipt: SubsequentSubmissionReceipt = {
+      innsendingsId,
+      submittedAt: '2026-09-10T10:00:00Z',
+      title: 'Additional documentation',
+      submittedNow: [{ attachmentId, title: 'Documentation' }],
+      submittedEarlier: [],
+      outstanding: [],
+    };
+    const body = {
+      revision: 'revision-1',
+      mainDocument: 'main-document',
+      mainDocumentAlt: 'main-document-alt',
+      attachments: [],
+    };
+    vi.spyOn(global, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify(receipt), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    );
+    const service = createApplicationService({ baseUrl });
+
+    await expect(
+      service.submitApplication({ accessToken, correlationId, innsendingsId, body, type: 'ettersendelse' }),
+    ).resolves.toEqual(receipt);
+    expect(global.fetch).toHaveBeenCalledWith(
+      `${baseUrl}/v1/application-digital/${innsendingsId}`,
+      expect.objectContaining({ method: 'POST', body: JSON.stringify(body) }),
+    );
   });
 });
