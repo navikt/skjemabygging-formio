@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useRuntimeServices } from '../../context/runtime-services/RuntimeServicesContext';
-import { useFyllut } from '../context/fyllut/FyllutContext';
+import { useIntegration } from '../context/integration/IntegrationContext';
 import { buildDigitalFormSearch } from '../draft/digitalDraftUtils';
 import FormHeader from '../layout/FormHeader';
 import { getExitUrl, getMyPageUrl } from '../navigation/navUrls';
@@ -28,7 +28,7 @@ const ActiveTasksPage = ({ form }: Props) => {
   const hasAttachmentTask = activeTasks.some((task) => task.type === 'attachment');
   const hasDraftTask = draftTasks.length > 0;
   const hasActiveTask = hasDraftTask || hasAttachmentTask;
-  const { fyllutBaseUrl } = useFyllut();
+  const { fyllutBaseUrl } = useIntegration();
   const { translate } = useLanguage();
 
   useEffect(() => {

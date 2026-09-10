@@ -6,7 +6,7 @@ import { useNavigationType } from 'react-router';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
 import { useFormActions } from '../context/form-actions/FormActionsContext';
-import { useFyllut } from '../context/fyllut/FyllutContext';
+import { useIntegration } from '../context/integration/IntegrationContext';
 import FormHeader from '../layout/FormHeader';
 import { getMyPageUrl } from '../navigation/navUrls';
 
@@ -17,7 +17,7 @@ interface Props {
 }
 
 const ReceiptPage = ({ form, receipt, pdf }: Props) => {
-  const { logEvent } = useFyllut();
+  const { logEvent } = useIntegration();
   const { submissionMethod } = useSubmissionMethod();
   const { currentLanguage, translate } = useLanguage();
   const { status } = useFormActions();

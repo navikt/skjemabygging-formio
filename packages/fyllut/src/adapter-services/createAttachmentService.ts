@@ -2,12 +2,12 @@ import { UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
 import {
   AttachmentApplication,
   AttachmentService,
-  FyllutHttp,
-  FyllutHttpHeaders,
+  IntegrationHttp,
+  IntegrationHttpHeaders,
 } from '@navikt/skjemadigitalisering-shared-frontend';
 
 interface Props {
-  http: FyllutHttp;
+  http: IntegrationHttp;
   backendBaseUrl: string;
 }
 
@@ -16,7 +16,7 @@ const getApplicationUrl = (backendBaseUrl: string, application: AttachmentApplic
     ? `${backendBaseUrl}/api/send-inn/digital-application/${application.id ?? ''}`
     : `${backendBaseUrl}/api/send-inn/nologin-application`;
 
-const getHeaders = (application: AttachmentApplication): FyllutHttpHeaders | undefined =>
+const getHeaders = (application: AttachmentApplication): IntegrationHttpHeaders | undefined =>
   application.type === 'noLogin' && application.token ? { NologinToken: application.token } : undefined;
 
 const createAttachmentService = ({ http, backendBaseUrl }: Props): AttachmentService => ({

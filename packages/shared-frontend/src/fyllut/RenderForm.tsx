@@ -2,7 +2,7 @@ import { Form, Submission, SubmissionMethod } from '@navikt/skjemadigitalisering
 import { useLocation } from 'react-router';
 import { LanguageConfig } from '../context/language/LanguageContext';
 import { RuntimeServices } from '../context/runtime-services/RuntimeServicesContext';
-import { FyllutContextValue } from './context/fyllut/FyllutContext';
+import { IntegrationContextValue } from './context/integration/IntegrationContext';
 import FyllutFormFlow from './form-flow/FyllutFormFlow';
 import FyllutFormProviders from './providers/FyllutFormProviders';
 
@@ -11,7 +11,7 @@ interface Props {
   initialSubmission?: Submission;
   initialInnsendingsId?: string;
   submissionMethod?: SubmissionMethod;
-  fyllut: FyllutContextValue;
+  integration: IntegrationContextValue;
   language: LanguageConfig;
   services: RuntimeServices;
 }
@@ -21,7 +21,7 @@ const RenderForm = ({
   initialSubmission,
   initialInnsendingsId,
   submissionMethod,
-  fyllut,
+  integration,
   language,
   services,
 }: Props) => {
@@ -32,7 +32,7 @@ const RenderForm = ({
       : undefined;
 
   return (
-    <FyllutFormProviders fyllut={fyllut} language={language} services={services}>
+    <FyllutFormProviders integration={integration} language={language} services={services}>
       <FyllutFormFlow
         form={form}
         initialSubmission={initialSubmission}

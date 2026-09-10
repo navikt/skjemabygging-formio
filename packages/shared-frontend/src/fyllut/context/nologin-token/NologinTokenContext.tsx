@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router';
 import { useApplication } from '../../../context/application/ApplicationContext';
 import { useRuntimeServices } from '../../../context/runtime-services/RuntimeServicesContext';
 import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
-import { useFyllut } from '../fyllut/FyllutContext';
+import { useIntegration } from '../integration/IntegrationContext';
 import styles from './NologinTokenContext.module.css';
 
 interface NologinTokenContextType {
@@ -43,7 +43,7 @@ const getTokenExpiration = (token: string) => {
 const NologinTokenProvider = ({ children, form }: Props) => {
   const { logger } = useApplication();
   const { sessions } = useRuntimeServices();
-  const { logEvent } = useFyllut();
+  const { logEvent } = useIntegration();
   const { submissionMethod } = useSubmissionMethod();
   const navigate = useNavigate();
   const [nologinToken, setNologinToken] = useState<string>();

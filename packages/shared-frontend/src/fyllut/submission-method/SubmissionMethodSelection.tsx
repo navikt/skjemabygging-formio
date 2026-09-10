@@ -4,7 +4,7 @@ import { Form, SubmissionMethod, submissionTypesUtils, TEXTS } from '@navikt/skj
 import { MouseEvent, useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useLanguage } from '../../context/language/LanguageContext';
-import { useFyllut } from '../context/fyllut/FyllutContext';
+import { useIntegration } from '../context/integration/IntegrationContext';
 
 enum SelectionState {
   DEFAULT = 'default',
@@ -18,7 +18,7 @@ interface Props {
 const SubmissionMethodSelection = ({ form }: Props) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { fyllutBaseUrl, isLoggedIn } = useFyllut();
+  const { fyllutBaseUrl, isLoggedIn } = useIntegration();
   const { translate } = useLanguage();
   const [state, setState] = useState<SelectionState>(SelectionState.DEFAULT);
   const submissionTypes = form.properties.submissionTypes;

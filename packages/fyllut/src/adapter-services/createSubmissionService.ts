@@ -1,8 +1,8 @@
 import { ReceiptSummary } from '@navikt/skjemadigitalisering-shared-domain';
-import { FyllutHttp, SubmissionService } from '@navikt/skjemadigitalisering-shared-frontend';
+import { IntegrationHttp, SubmissionService } from '@navikt/skjemadigitalisering-shared-frontend';
 
 interface Props {
-  http: FyllutHttp;
+  http: IntegrationHttp;
   backendBaseUrl: string;
 }
 

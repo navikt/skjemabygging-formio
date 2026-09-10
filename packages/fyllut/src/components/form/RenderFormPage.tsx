@@ -3,6 +3,7 @@ import { navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { reportUnsupportedCustomValidation, RuntimeServices } from '@navikt/skjemadigitalisering-shared-frontend';
 import { useEffect, useMemo } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
+import createIntegrationHttp from '../../adapter-services/createIntegrationHttp';
 import createRenderFormBootstrapService from '../../adapter-services/createRenderFormBootstrapService';
 import createRuntimeServices from '../../adapter-services/createRuntimeServices';
 import { NotFoundPage } from '../errors/NotFoundPage';
@@ -28,13 +29,13 @@ const RenderFormPage = () => {
     if (!http) {
       throw new Error('Fyllut HTTP client is required to render the form.');
     }
-    return createRuntimeServices({ http, backendBaseUrl, innsendingsId });
+    return createRuntimeServices({ http: createIntegrationHttp(http), backendBaseUrl, innsendingsId });
   }, [backendBaseUrl, http, innsendingsId]);
   const bootstrapService = useMemo(() => {
     if (!http) {
       throw new Error('Fyllut HTTP client is required to render the form.');
     }
-    return createRenderFormBootstrapService({ http, backendBaseUrl });
+    return createRenderFormBootstrapService({ http: createIntegrationHttp(http), backendBaseUrl });
   }, [backendBaseUrl, http]);
   const { initializedForm, unsupportedCustomValidation, isLoading } = useInitializeRenderForm({
     formPath,

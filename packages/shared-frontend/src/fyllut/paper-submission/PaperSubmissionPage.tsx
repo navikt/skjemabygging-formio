@@ -11,7 +11,7 @@ import { useRuntimeServices } from '../../context/runtime-services/RuntimeServic
 import { useSubmissionState } from '../../context/state/SubmissionStateContext';
 import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
 import { withoutSubmissionNavigationState } from '../../utils/navigationState';
-import { useFyllut } from '../context/fyllut/FyllutContext';
+import { useIntegration } from '../context/integration/IntegrationContext';
 import { SUMMARY_KEY } from '../form-flow/constants';
 import { FormButtonRow, FormPrevButton } from '../layout/FormButtonRow';
 import FormHeader from '../layout/FormHeader';
@@ -25,7 +25,7 @@ interface Props {
 const PaperSubmissionPage = ({ documentType }: Props) => {
   const { translate, currentLanguage } = useLanguage();
   const { submissions } = useRuntimeServices();
-  const { fyllutBaseUrl, logEvent } = useFyllut();
+  const { fyllutBaseUrl, logEvent } = useIntegration();
   const { logger } = useApplication();
   const { submissionMethod } = useSubmissionMethod();
   const { form } = useFormDefinition();

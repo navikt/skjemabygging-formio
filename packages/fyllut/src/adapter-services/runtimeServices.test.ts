@@ -1,4 +1,4 @@
-import { FyllutHttp, FyllutHttpHeaders } from '@navikt/skjemadigitalisering-shared-frontend';
+import { IntegrationHttp, IntegrationHttpHeaders } from '@navikt/skjemadigitalisering-shared-frontend';
 import { describe, expect, it } from 'vitest';
 import createAttachmentService from './createAttachmentService';
 import createSessionService from './createSessionService';
@@ -8,19 +8,19 @@ interface Request {
   method: string;
   url: string;
   body?: object;
-  headers?: FyllutHttpHeaders;
+  headers?: IntegrationHttpHeaders;
 }
 
 describe('fyllut runtime services', () => {
   it('wires session, attachment, and submission requests through the shared http client', async () => {
     const requests: Request[] = [];
     const downloadedFile = new Blob(['content']);
-    const http: FyllutHttp = {
-      get: async <T>(url: string, headers?: FyllutHttpHeaders) => {
+    const http: IntegrationHttp = {
+      get: async <T>(url: string, headers?: IntegrationHttpHeaders) => {
         requests.push({ method: 'GET', url, headers });
         return downloadedFile as T;
       },
-      post: async <T>(url: string, body: object, headers?: FyllutHttpHeaders) => {
+      post: async <T>(url: string, body: object, headers?: IntegrationHttpHeaders) => {
         requests.push({ method: 'POST', url, body, headers });
         return (
           url.endsWith('/captcha')
@@ -31,11 +31,11 @@ describe('fyllut runtime services', () => {
         ) as T;
       },
       put: async <T>() => undefined as T,
-      delete: async <T>(url: string, body?: object, headers?: FyllutHttpHeaders) => {
+      delete: async <T>(url: string, body?: object, headers?: IntegrationHttpHeaders) => {
         requests.push({ method: 'DELETE', url, body, headers });
         return undefined as T;
       },
-      postFile: async <T>(url: string, body: FormData, headers?: FyllutHttpHeaders) => {
+      postFile: async <T>(url: string, body: FormData, headers?: IntegrationHttpHeaders) => {
         requests.push({ method: 'POST_FILE', url, body, headers });
         return { attachmentId: 'attachment-1', fileId: 'file-1' } as T;
       },

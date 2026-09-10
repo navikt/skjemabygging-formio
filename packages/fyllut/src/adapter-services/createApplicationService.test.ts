@@ -1,5 +1,5 @@
 import { Submission } from '@navikt/skjemadigitalisering-shared-domain';
-import { FyllutHttp, FyllutHttpHeaders } from '@navikt/skjemadigitalisering-shared-frontend';
+import { IntegrationHttp, IntegrationHttpHeaders } from '@navikt/skjemadigitalisering-shared-frontend';
 import { describe, expect, it } from 'vitest';
 import createApplicationService from './createApplicationService';
 
@@ -41,7 +41,7 @@ const activeTasksResponse = [
   },
 ];
 
-const createHttp = (responses: unknown[], requests: Request[]): FyllutHttp => {
+const createHttp = (responses: unknown[], requests: Request[]): IntegrationHttp => {
   const nextResponse = <T>() => responses.shift() as T;
 
   return {
@@ -61,7 +61,7 @@ const createHttp = (responses: unknown[], requests: Request[]): FyllutHttp => {
       requests.push({ method: 'DELETE', url });
       return nextResponse<T>();
     },
-    postFile: async <T>(_url: string, _body: FormData, _headers?: FyllutHttpHeaders) => nextResponse<T>(),
+    postFile: async <T>(_url: string, _body: FormData, _headers?: IntegrationHttpHeaders) => nextResponse<T>(),
     MimeType: { PDF: 'application/pdf' },
     isAuthenticationError: () => false,
   };

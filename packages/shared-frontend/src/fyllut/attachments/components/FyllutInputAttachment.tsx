@@ -9,13 +9,13 @@ import {
   isRequired,
   resolveSubmissionPath,
 } from '../../../form-components/inputComponentRegistryUtils';
-import { useFyllut } from '../../context/fyllut/FyllutContext';
+import { useIntegration } from '../../context/integration/IntegrationContext';
 import AttachmentUpload from './AttachmentUpload';
 import OtherAttachmentUpload from './OtherAttachmentUpload';
 
 const FyllutInputAttachment = ({ component, submissionPath }: InputComponentProps<AttachmentDefinition>) => {
   const { submissionMethod } = useSubmissionMethod();
-  const { logEvent } = useFyllut();
+  const { logEvent } = useIntegration();
   const { form } = useFormDefinition();
   const { translate } = useLanguage();
 

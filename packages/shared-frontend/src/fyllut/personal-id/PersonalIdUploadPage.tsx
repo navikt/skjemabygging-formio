@@ -8,7 +8,7 @@ import { useValidation } from '../../context/validation/ValidationContext';
 import AttachmentOptionSelect from '../attachments/components/AttachmentOptionSelect';
 import FileUploader from '../attachments/components/FileUploader';
 import { useAttachmentUpload } from '../attachments/context/AttachmentUploadContext';
-import { useFyllut } from '../context/fyllut/FyllutContext';
+import { useIntegration } from '../context/integration/IntegrationContext';
 import { FormButtonRow, FormNextButton } from '../layout/FormButtonRow';
 import FormHeader from '../layout/FormHeader';
 import CancelAndDeleteButton from '../navigation/CancelAndDeleteButton';
@@ -32,7 +32,7 @@ const PersonalIdUploadPage = () => {
   const navigate = useNavigate();
   const { addError, changeAttachmentValue, submissionAttachments } = useAttachmentUpload();
   const { getAttachmentExternalError } = useValidation();
-  const { logEvent } = useFyllut();
+  const { logEvent } = useIntegration();
   const attachment = submissionAttachments.find((item) => item.attachmentId === PERSONAL_ID_ATTACHMENT_ID);
   const attachmentValueError = getAttachmentExternalError(PERSONAL_ID_ATTACHMENT_ID, 'value');
 

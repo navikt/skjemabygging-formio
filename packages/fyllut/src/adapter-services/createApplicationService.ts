@@ -4,11 +4,11 @@ import {
   ApplicationService,
   CreateDraftResult,
   Draft,
-  FyllutHttp,
+  IntegrationHttp,
 } from '@navikt/skjemadigitalisering-shared-frontend';
 
 interface Props {
-  http: FyllutHttp;
+  http: IntegrationHttp;
   backendBaseUrl: string;
 }
 

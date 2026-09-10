@@ -1,11 +1,11 @@
-import { FyllutHttp, FyllutHttpHeaders } from '@navikt/skjemadigitalisering-shared-frontend';
+import { IntegrationHttp, IntegrationHttpHeaders } from '@navikt/skjemadigitalisering-shared-frontend';
 import { describe, expect, it } from 'vitest';
 import createFormDataService from './createFormDataService';
 
 describe('createFormDataService', () => {
   it('builds fyllut endpoints and keeps application context at the host boundary', async () => {
-    const requests: Array<{ url: string; headers?: FyllutHttpHeaders }> = [];
-    const get: FyllutHttp['get'] = async <T>(url: string, headers?: FyllutHttpHeaders) => {
+    const requests: Array<{ url: string; headers?: IntegrationHttpHeaders }> = [];
+    const get: IntegrationHttp['get'] = async <T>(url: string, headers?: IntegrationHttpHeaders) => {
       requests.push({ url, headers });
       return [] as T;
     };
@@ -59,7 +59,7 @@ describe('createFormDataService', () => {
 
   it('reuses code list requests for the lifetime of the service', async () => {
     const requests: string[] = [];
-    const get: FyllutHttp['get'] = async <T>(url: string) => {
+    const get: IntegrationHttp['get'] = async <T>(url: string) => {
       requests.push(url);
       return [] as T;
     };
@@ -88,7 +88,7 @@ describe('createFormDataService', () => {
 
   it('retries a code list request after failure', async () => {
     let requestCount = 0;
-    const get: FyllutHttp['get'] = async <T>() => {
+    const get: IntegrationHttp['get'] = async <T>() => {
       requestCount += 1;
       if (requestCount === 1) {
         throw new Error('Unavailable');

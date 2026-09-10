@@ -65,10 +65,10 @@ export type {
 } from './form-components';
 export type {
   DigitalDraftInitialization,
-  FyllutContextValue,
-  FyllutEvent,
-  FyllutHttp,
-  FyllutHttpHeaders,
+  IntegrationContextValue,
+  IntegrationEvent,
+  IntegrationHttp,
+  IntegrationHttpHeaders,
   RenderFormProps,
 } from './fyllut';
 export type { SharedFrontendBoundaryProps } from './SharedFrontendBoundary';

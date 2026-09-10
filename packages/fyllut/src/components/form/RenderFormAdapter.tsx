@@ -2,7 +2,7 @@ import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { FormsApiTranslationMap, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import {
   ApplicationProvider,
-  FyllutContextValue,
+  IntegrationContextValue,
   RenderForm,
   RenderFormProps,
   RuntimeServices,
@@ -11,7 +11,7 @@ import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { getAvailableLanguages, resolveActiveLanguage } from './newRendererLanguageUtils';
 
-type Props = Omit<RenderFormProps, 'fyllut' | 'language' | 'services' | 'submissionMethod'> & {
+type Props = Omit<RenderFormProps, 'integration' | 'language' | 'services' | 'submissionMethod'> & {
   initialLanguage?: TranslationLang;
   services: RuntimeServices;
   translations: FormsApiTranslationMap;
@@ -41,7 +41,7 @@ const RenderFormAdapter = ({ form, initialLanguage, services, translations, ...p
     navigate({ pathname, search: `?${nextParams.toString()}` }, { replace: true });
   }, [hasLanguageParam, navigate, pathname, search, seedLanguage]);
 
-  const fyllut: FyllutContextValue = {
+  const integration: IntegrationContextValue = {
     fyllutBaseUrl,
     isLoggedIn: appConfig.config?.isLoggedIn,
     logEvent: appConfig.logEvent,
@@ -54,7 +54,7 @@ const RenderFormAdapter = ({ form, initialLanguage, services, translations, ...p
         {...props}
         form={form}
         submissionMethod={appConfig.submissionMethod}
-        fyllut={fyllut}
+        integration={integration}
         language={{ availableLanguages, currentLanguage, translations }}
         services={services}
       />

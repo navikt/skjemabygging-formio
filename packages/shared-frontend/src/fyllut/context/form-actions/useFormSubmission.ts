@@ -8,7 +8,7 @@ import { useSubmissionMethod } from '../../../context/submission-method/Submissi
 import { b64toBlob } from '../../../utils/blob';
 import { RECEIPT_KEY } from '../../form-flow/constants';
 import prepareSubmissionForTransport from '../../submission/prepareSubmissionForTransport';
-import { useFyllut } from '../fyllut/FyllutContext';
+import { useIntegration } from '../integration/IntegrationContext';
 import { useNologinToken } from '../nologin-token/NologinTokenContext';
 
 const createSubmissionError = (cause: unknown, userMessage: string) => ({ cause, userMessage });
@@ -22,7 +22,7 @@ const useFormSubmission = (
   const { logger } = useApplication();
   const { submissionMethod } = useSubmissionMethod();
   const { currentLanguage, translate } = useLanguage();
-  const { logEvent } = useFyllut();
+  const { logEvent } = useIntegration();
   const { getNologinToken, clearNologinToken, handleSessionExpired } = useNologinToken();
   const { search } = useLocation();
   const navigate = useNavigate();

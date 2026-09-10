@@ -1,7 +1,7 @@
-import { FyllutHttp, SessionService } from '@navikt/skjemadigitalisering-shared-frontend';
+import { IntegrationHttp, SessionService } from '@navikt/skjemadigitalisering-shared-frontend';
 
 interface Props {
-  http: FyllutHttp;
+  http: IntegrationHttp;
   backendBaseUrl: string;
 }
 

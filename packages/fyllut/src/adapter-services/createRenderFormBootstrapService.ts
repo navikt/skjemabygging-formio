@@ -1,6 +1,6 @@
 import { formUtils } from '@navikt/skjemadigitalisering-shared-components';
 import { Form, FormsApiTranslationMap, SubmissionData } from '@navikt/skjemadigitalisering-shared-domain';
-import { FyllutHttp } from '@navikt/skjemadigitalisering-shared-frontend';
+import { IntegrationHttp } from '@navikt/skjemadigitalisering-shared-frontend';
 
 interface RenderFormBootstrap {
   form: Form;
@@ -13,7 +13,7 @@ interface RenderFormBootstrapService {
 }
 
 interface Props {
-  http: Pick<FyllutHttp, 'get'>;
+  http: Pick<IntegrationHttp, 'get'>;
   backendBaseUrl: string;
 }
 

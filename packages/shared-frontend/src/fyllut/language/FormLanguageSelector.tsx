@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { withoutSubmissionNavigationState } from '../../utils/navigationState';
-import { useFyllut } from '../context/fyllut/FyllutContext';
+import { useIntegration } from '../context/integration/IntegrationContext';
 
 const languagesInOriginalLanguage: Record<string, string> = {
   nb: 'Norsk bokmål',
@@ -12,7 +12,7 @@ const languagesInOriginalLanguage: Record<string, string> = {
 };
 const FormLanguageSelector = () => {
   const { currentLanguage, availableLanguages } = useLanguage();
-  const { fyllutBaseUrl } = useFyllut();
+  const { fyllutBaseUrl } = useIntegration();
   const { pathname, search, state } = useLocation();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);

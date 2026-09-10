@@ -1,8 +1,8 @@
 import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
-import { FormCodeList, FormDataService, FyllutHttp } from '@navikt/skjemadigitalisering-shared-frontend';
+import { FormCodeList, FormDataService, IntegrationHttp } from '@navikt/skjemadigitalisering-shared-frontend';
 
 interface Props {
-  http: FyllutHttp;
+  http: IntegrationHttp;
   backendBaseUrl: string;
   innsendingsId?: string;
 }
