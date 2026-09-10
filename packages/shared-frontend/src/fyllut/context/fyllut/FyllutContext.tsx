@@ -3,6 +3,7 @@ import { createContext, ReactNode, useContext } from 'react';
 interface FyllutHttpHeaders {
   NologinToken?: string;
   'x-innsendingsid'?: string;
+  Accept?: string;
 }
 
 interface FyllutHttp {

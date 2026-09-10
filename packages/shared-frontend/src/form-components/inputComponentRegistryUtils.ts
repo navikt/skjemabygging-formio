@@ -1,16 +1,9 @@
-import {
-  Component,
-  FieldSize,
-  FormComponentType,
-  formatUtils,
-  numberUtils,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, FieldSize, FormComponentType } from '@navikt/skjemadigitalisering-shared-domain';
 import { ComponentType } from 'react';
 import { ReadMoreProps } from '../components/read-more/ReadMore';
 import { SelectType } from '../components/select/selectUtils';
 import { FieldValidationProp } from '../components/types';
 import { getResolvedSubmissionPath } from '../context/form-definition/formDefinitionUtils';
-import { toSubmissionFormat } from '../formatting/inputFormat';
 import { PatternRule } from '../validation/validators';
 import { ComponentDefinitionByType } from './component-types';
 
@@ -90,45 +83,6 @@ const resolveFieldSize = (component: Component): FieldSize | undefined =>
 const resolveSubmissionPath = (component: Component, submissionPath?: string) =>
   submissionPath ?? getResolvedSubmissionPath(component);
 
-const resolveNumberFormatKey = (component: Component) => (component.inputType === 'numeric' ? 'number' : 'decimal');
-
-const resolveNumberDisplayValue = (component: Component, value: unknown) => {
-  if (value === undefined || value === null || value === '') {
-    return '';
-  }
-
-  if (component.readOnly && component.calculateValue) {
-    return numberUtils.toLocaleString(typeof value === 'number' || typeof value === 'string' ? value : String(value), {
-      maximumFractionDigits: 2,
-    });
-  }
-
-  return formatUtils.formatNumber(String(value), component.inputType === 'numeric');
-};
-
-const resolveNumericStateValue = (component: Component, value: string) => {
-  const formatted = toSubmissionFormat(value, resolveNumberFormatKey(component));
-  const normalizedValue =
-    component.inputType === 'numeric' ? formatted.replace(/\s/g, '') : formatted.replace(/\s/g, '').replace(',', '.');
-
-  if (normalizedValue === '') {
-    return undefined;
-  }
-
-  const isValidNumber =
-    component.inputType === 'numeric'
-      ? numberUtils.isValidInteger(normalizedValue)
-      : numberUtils.isValidDecimal(normalizedValue);
-
-  return isValidNumber ? Number(normalizedValue) : formatted;
-};
-
-const resolveTextFormatKey = (component: Component) => {
-  if (component.type === 'orgNr') {
-    return 'organizationNumber';
-  }
-};
-
 const resolveReadMore = (component: Component): ReadMoreProps | undefined => {
   if (!component.additionalDescriptionLabel || !component.additionalDescriptionText) {
     return undefined;
@@ -160,14 +114,10 @@ export {
   getValues,
   isRequired,
   resolveFieldSize,
-  resolveNumberDisplayValue,
-  resolveNumberFormatKey,
-  resolveNumericStateValue,
   resolvePattern,
   resolveReadMore,
   resolveSelectType,
   resolveSubmissionPath,
-  resolveTextFormatKey,
   resolveValidation,
 };
 export type { InputComponentProps, InputComponentRegistry, InputComponentType };

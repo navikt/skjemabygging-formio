@@ -21,8 +21,6 @@ type ActivityAlertData = {
   vedtaksId: string;
 };
 
-const DRIVING_LIST_MAX_PARKING_EXPENSE = 100;
-
 /** A stored driving list date may be in input format from an older draft. */
 const normalizeSubmissionDate = (value?: string) => {
   if (!value) {
@@ -192,7 +190,6 @@ const showRemovePeriodButton = (periods?: unknown[]) => (periods?.length ?? 0) >
 const getActivityFieldId = (statePath: string) => inputId(`${statePath}.selectedVedtaksId`);
 
 export {
-  DRIVING_LIST_MAX_PARKING_EXPENSE,
   allPaperFieldsForPeriodsAreSet,
   findSelectedVedtak,
   getActivityFieldId,

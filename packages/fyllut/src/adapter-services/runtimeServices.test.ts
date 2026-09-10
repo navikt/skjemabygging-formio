@@ -12,7 +12,7 @@ interface Request {
 }
 
 describe('fyllut runtime services', () => {
-  it('keeps session, attachment, and submission transport details in the host', async () => {
+  it('wires session, attachment, and submission requests through the shared http client', async () => {
     const requests: Request[] = [];
     const downloadedFile = new Blob(['content']);
     const http: FyllutHttp = {
@@ -44,14 +44,7 @@ describe('fyllut runtime services', () => {
     };
     const sessionService = createSessionService({ http, backendBaseUrl: '/fyllut' });
     const attachmentService = createAttachmentService({ http, backendBaseUrl: '/fyllut' });
-    const submissionService = createSubmissionService({
-      http,
-      backendBaseUrl: '/fyllut',
-      createPdf: async (url, body) => {
-        requests.push({ method: 'POST_PDF', url, body });
-        return downloadedFile;
-      },
-    });
+    const submissionService = createSubmissionService({ http, backendBaseUrl: '/fyllut' });
     const application = { type: 'noLogin' as const, token: 'token-123' };
     const file = new File(['content'], 'document.txt');
 
@@ -111,9 +104,9 @@ describe('fyllut runtime services', () => {
         headers: { NologinToken: 'token-123' },
       },
       {
-        method: 'POST_PDF',
+        method: 'POST',
         url: '/fyllut/api/documents/cover-page-and-application',
-        headers: undefined,
+        headers: { Accept: 'application/pdf' },
       },
     ]);
     expect(requests[0]?.body).toEqual({ firstName: '', data_33: 'ja' });

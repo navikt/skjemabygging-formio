@@ -4,10 +4,9 @@ import { FyllutHttp, SubmissionService } from '@navikt/skjemadigitalisering-shar
 interface Props {
   http: FyllutHttp;
   backendBaseUrl: string;
-  createPdf: (url: string, body: object) => Promise<Blob>;
 }
 
-const createSubmissionService = ({ http, backendBaseUrl, createPdf }: Props): SubmissionService => ({
+const createSubmissionService = ({ http, backendBaseUrl }: Props): SubmissionService => ({
   submit: ({ application, formPath, submission, language, submissionMethod }) => {
     const applicationPath =
       application.type === 'draft' ? `digital-application/${application.id}` : 'nologin-application';
@@ -25,7 +24,7 @@ const createSubmissionService = ({ http, backendBaseUrl, createPdf }: Props): Su
     );
   },
   createDocument: ({ documentType, formPath, submission, language, submissionMethod, navUnitNumber }) =>
-    createPdf(
+    http.post<Blob>(
       `${backendBaseUrl}/api/documents${
         documentType === 'application' ? '/application' : '/cover-page-and-application'
       }`,
@@ -36,6 +35,7 @@ const createSubmissionService = ({ http, backendBaseUrl, createPdf }: Props): Su
         submissionMethod,
         enhetNummer: navUnitNumber,
       },
+      { Accept: http.MimeType.PDF },
     ),
 });
 

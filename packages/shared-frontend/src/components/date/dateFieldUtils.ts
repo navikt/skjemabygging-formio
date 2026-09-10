@@ -41,18 +41,6 @@ const toDatePickerInputValue = (value: unknown) => {
   return value;
 };
 
-const toMonthPickerInputValue = (value: unknown, currentLanguage: string) => {
-  if (typeof value !== 'string' || value === '') {
-    return '';
-  }
-
-  if (dateUtils.isValidMonthSubmission(value)) {
-    return dateUtils.toLongMonthFormat(value, getMonthLocale(currentLanguage)) ?? '';
-  }
-
-  return value;
-};
-
 const toSelectedDate = (value: unknown) => {
   if (typeof value === 'string' && dateUtils.isValid(value, 'submission')) {
     return dateUtils.toJSDate(value);
@@ -61,19 +49,4 @@ const toSelectedDate = (value: unknown) => {
   return undefined;
 };
 
-const toSelectedMonth = (value: unknown) => {
-  if (typeof value === 'string' && dateUtils.isValidMonthSubmission(value)) {
-    return dateUtils.toJSDateFromMonthSubmission(value);
-  }
-
-  return undefined;
-};
-
-export {
-  getAkselLocale,
-  getMonthLocale,
-  toDatePickerInputValue,
-  toMonthPickerInputValue,
-  toSelectedDate,
-  toSelectedMonth,
-};
+export { getAkselLocale, getMonthLocale, toDatePickerInputValue, toSelectedDate };
