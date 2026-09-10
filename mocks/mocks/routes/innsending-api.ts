@@ -12,6 +12,8 @@ import mellomlagringActivities from '../data/innsending-api/activities/mellomlag
 import mellomlagringCheckbox from '../data/innsending-api/checkbox/mellomlagring-checkbox.json';
 import mellomlagringDrivingListNoDates from '../data/innsending-api/driving-list/mellomlagring-driving-list-no-dates.json';
 import mellomlagringDrivingList from '../data/innsending-api/driving-list/mellomlagring-driving-list.json';
+import ettersendingReceipt from '../data/innsending-api/ettersending-receipt.json';
+import ettersendingTask from '../data/innsending-api/ettersending-task.json';
 import container123Complete from '../data/innsending-api/mellomlagring/container123/complete.json';
 import containerDatagrid123Complete from '../data/innsending-api/mellomlagring/containerDatagrid123/complete.json';
 import formSelectSoknadCompleteV1 from '../data/innsending-api/mellomlagring/form-select/saved-complete-v1.json';
@@ -696,10 +698,49 @@ export default [
     ],
   },
   {
+    id: 'get-digital-ettersending-task',
+    url: '/send-inn/v1/application-digital/:innsendingsId',
+    method: 'GET',
+    variants: [
+      {
+        id: 'success',
+        type: 'json',
+        options: {
+          status: 200,
+          body: ettersendingTask,
+        },
+      },
+      {
+        id: 'not-found',
+        type: 'json',
+        options: {
+          status: 404,
+          body: { message: 'Task not found' },
+        },
+      },
+    ],
+  },
+  {
     id: 'post-digital-soknad',
     url: '/send-inn/v1/application-digital/:innsendingsId',
     method: 'POST',
     variants: [
+      {
+        id: 'ettersending-success',
+        type: 'json',
+        options: {
+          status: 200,
+          body: ettersendingReceipt,
+        },
+      },
+      {
+        id: 'ettersending-stale-revision',
+        type: 'json',
+        options: {
+          status: 409,
+          body: { message: 'Task revision is stale' },
+        },
+      },
       {
         id: 'success',
         type: 'middleware',
