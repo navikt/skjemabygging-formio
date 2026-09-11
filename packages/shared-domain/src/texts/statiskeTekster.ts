@@ -1,4 +1,7 @@
 export const statiske = {
+  generic: {
+    fetchError: 'En feil oppsto under uthenting av data. Vennligst forsøk igjen senere.',
+  },
   external: {
     minSide: {
       linkText: 'Min side',

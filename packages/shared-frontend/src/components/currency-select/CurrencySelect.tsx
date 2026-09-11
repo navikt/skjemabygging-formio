@@ -1,3 +1,4 @@
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect } from 'react';
 import { useApplication } from '../../context/application/ApplicationContext';
 import { useRuntimeServices } from '../../context/runtime-services/RuntimeServicesContext';
@@ -46,6 +47,7 @@ const CurrencySelect = ({
       selectType="combobox"
       valueType="option"
       validation={validation}
+      error={error ? TEXTS.statiske.generic.fetchError : undefined}
     />
   );
 };
