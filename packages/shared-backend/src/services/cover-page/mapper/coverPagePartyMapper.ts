@@ -3,14 +3,16 @@ import { CoverPageDownloadType, Party } from '@navikt/skjemadigitalisering-share
 type CoverPagePartyData =
   | {
       user: CoverPageDownloadType['user'];
-      recipient?: never;
     }
   | {
       user?: never;
-      recipient: NonNullable<CoverPageDownloadType['recipient']>;
     };
 
 const mapPartyToCoverPage = (party: Party): CoverPagePartyData => {
+  if (party.onBehalfOf === 'multiple-people') {
+    return {};
+  }
+
   if (party.user.kind === 'identified-person') {
     return {
       user: {
@@ -19,19 +21,11 @@ const mapPartyToCoverPage = (party: Party): CoverPagePartyData => {
     };
   }
 
-  if (party.user.kind === 'unidentified-person') {
-    return {
-      user: {
-        firstName: party.user.firstName,
-        surname: party.user.surname,
-        address: party.user.address,
-      },
-    };
-  }
-
   return {
-    recipient: {
-      navUnit: party.user.navUnit,
+    user: {
+      firstName: party.user.firstName,
+      surname: party.user.surname,
+      address: party.user.address,
     },
   };
 };

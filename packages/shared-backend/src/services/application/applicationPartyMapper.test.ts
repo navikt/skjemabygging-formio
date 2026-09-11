@@ -4,7 +4,7 @@ import { mapPartyToApplication } from './applicationPartyMapper';
 describe('mapPartyToApplication', () => {
   it('normalizes identifiers for the innsending-api contract', () => {
     const party: Party = {
-      relationship: 'other-person',
+      onBehalfOf: 'other-person',
       sender: { firstName: 'Sender', surname: 'Sendersen', nationalIdentityNumber: '109 876 543 21' },
       user: { kind: 'identified-person', nationalIdentityNumber: '123 456 789 11' },
     };
@@ -19,7 +19,7 @@ describe('mapPartyToApplication', () => {
     {
       name: 'own behalf, identified',
       party: {
-        relationship: 'self',
+        onBehalfOf: 'self',
         user: { kind: 'identified-person', nationalIdentityNumber: '12345678911' },
       },
       expected: { bruker: '12345678911' },
@@ -27,7 +27,7 @@ describe('mapPartyToApplication', () => {
     {
       name: 'own behalf, unidentified',
       party: {
-        relationship: 'self',
+        onBehalfOf: 'self',
         user: {
           kind: 'unidentified-person',
           firstName: 'Test',
@@ -40,7 +40,7 @@ describe('mapPartyToApplication', () => {
     {
       name: 'another person, identified user',
       party: {
-        relationship: 'other-person',
+        onBehalfOf: 'other-person',
         sender: { firstName: 'Sender', surname: 'Sendersen', nationalIdentityNumber: '10987654321' },
         user: { kind: 'identified-person', nationalIdentityNumber: '12345678911' },
       },
@@ -52,7 +52,7 @@ describe('mapPartyToApplication', () => {
     {
       name: 'another person, unidentified user',
       party: {
-        relationship: 'other-person',
+        onBehalfOf: 'other-person',
         sender: { firstName: 'Sender', surname: 'Sendersen', nationalIdentityNumber: '10987654321' },
         user: {
           kind: 'unidentified-person',
@@ -68,7 +68,7 @@ describe('mapPartyToApplication', () => {
     {
       name: 'organization, identified user',
       party: {
-        relationship: 'organization',
+        onBehalfOf: 'other-person',
         sender: { name: 'Organization', organizationNumber: '889640782' },
         user: { kind: 'identified-person', nationalIdentityNumber: '12345678911' },
       },
@@ -80,7 +80,7 @@ describe('mapPartyToApplication', () => {
     {
       name: 'organization, unidentified user',
       party: {
-        relationship: 'organization',
+        onBehalfOf: 'other-person',
         sender: { name: 'Organization', organizationNumber: '889640782' },
         user: {
           kind: 'unidentified-person',
@@ -96,9 +96,9 @@ describe('mapPartyToApplication', () => {
     {
       name: 'organization, several people',
       party: {
-        relationship: 'organization',
+        onBehalfOf: 'multiple-people',
         sender: { name: 'Organization', organizationNumber: '889640782' },
-        user: { kind: 'several-people', navUnit: '9999' },
+        user: { kind: 'multiple-people' },
       },
       expected: {
         avsender: { id: '889640782', idType: 'ORGNR', navn: 'Organization' },

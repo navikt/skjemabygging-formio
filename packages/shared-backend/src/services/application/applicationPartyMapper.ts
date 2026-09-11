@@ -3,25 +3,31 @@ import { AvsenderId, SubmitApplicationRequest } from './applicationTypes';
 
 type ApplicationPartyData = Pick<SubmitApplicationRequest, 'bruker' | 'avsender'>;
 
-const mapPersonSender = (party: Extract<Party, { relationship: 'other-person' }>): AvsenderId => ({
-  id: formatUtils.removeAllSpaces(party.sender.nationalIdentityNumber),
-  idType: 'FNR',
-  navn: `${party.sender.firstName} ${party.sender.surname}`,
+type ResponsibleSender = Extract<Party, { onBehalfOf: 'other-person' }>['sender'];
+
+const mapSender = (sender: ResponsibleSender): AvsenderId => ({
+  id: formatUtils.removeAllSpaces(
+    'organizationNumber' in sender ? sender.organizationNumber : sender.nationalIdentityNumber,
+  ),
+  idType: 'organizationNumber' in sender ? 'ORGNR' : 'FNR',
+  navn: 'organizationNumber' in sender ? sender.name : `${sender.firstName} ${sender.surname}`,
 });
 
-const mapOrganizationSender = (party: Extract<Party, { relationship: 'organization' }>): AvsenderId => ({
+const mapOrganizationSender = (party: Extract<Party, { onBehalfOf: 'multiple-people' }>): AvsenderId => ({
   id: formatUtils.removeAllSpaces(party.sender.organizationNumber),
   idType: 'ORGNR',
   navn: party.sender.name,
 });
 
-const mapUser = (party: Party): Pick<ApplicationPartyData, 'bruker'> =>
+const mapUser = (
+  party: Extract<Party, { onBehalfOf: 'self' | 'other-person' }>,
+): Pick<ApplicationPartyData, 'bruker'> =>
   party.user.kind === 'identified-person'
     ? { bruker: formatUtils.removeAllSpaces(party.user.nationalIdentityNumber) }
     : {};
 
 const mapPartyToApplication = (party: Party): ApplicationPartyData => {
-  if (party.relationship === 'self') {
+  if (party.onBehalfOf === 'self') {
     if (party.user.kind === 'identified-person') {
       return mapUser(party);
     }
@@ -33,15 +39,14 @@ const mapPartyToApplication = (party: Party): ApplicationPartyData => {
     };
   }
 
-  if (party.relationship === 'other-person') {
+  if (party.onBehalfOf === 'other-person') {
     return {
       ...mapUser(party),
-      avsender: mapPersonSender(party),
+      avsender: mapSender(party.sender),
     };
   }
 
   return {
-    ...mapUser(party),
     avsender: mapOrganizationSender(party),
   };
 };

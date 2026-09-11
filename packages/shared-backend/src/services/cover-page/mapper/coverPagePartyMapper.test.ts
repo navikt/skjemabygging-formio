@@ -4,7 +4,7 @@ import { mapPartyToCoverPage } from './coverPagePartyMapper';
 describe('mapPartyToCoverPage', () => {
   it('maps an identified concerned user', () => {
     const party: Party = {
-      relationship: 'organization',
+      onBehalfOf: 'other-person',
       sender: { name: 'Organization', organizationNumber: '889640782' },
       user: { kind: 'identified-person', nationalIdentityNumber: '12345678911' },
     };
@@ -22,7 +22,7 @@ describe('mapPartyToCoverPage', () => {
       country: { value: 'NO', label: 'Norge' },
     };
     const party: Party = {
-      relationship: 'other-person',
+      onBehalfOf: 'other-person',
       sender: { firstName: 'Sender', surname: 'Sendersen', nationalIdentityNumber: '10987654321' },
       user: {
         kind: 'unidentified-person',
@@ -41,15 +41,13 @@ describe('mapPartyToCoverPage', () => {
     });
   });
 
-  it('maps several people to NAV-unit routing without a cover-page user', () => {
+  it('omits the cover-page user for multiple people', () => {
     const party: Party = {
-      relationship: 'organization',
+      onBehalfOf: 'multiple-people',
       sender: { name: 'Organization', organizationNumber: '889640782' },
-      user: { kind: 'several-people', navUnit: '9999' },
+      user: { kind: 'multiple-people' },
     };
 
-    expect(mapPartyToCoverPage(party)).toEqual({
-      recipient: { navUnit: '9999' },
-    });
+    expect(mapPartyToCoverPage(party)).toEqual({});
   });
 });

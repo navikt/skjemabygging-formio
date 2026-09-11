@@ -3,36 +3,14 @@ import {
   Form,
   Party,
   PartyAddress,
-  ResponsibleOrganization,
-  ResponsiblePerson,
   Submission,
-  SubmissionData,
-  SubmissionSender,
+  SubmissionAddress,
   SubmissionYourInformation,
 } from '../../models';
 import { senderUtils } from '../submission/senderUtils';
 import { yourInformationUtils } from '../submission/yourInformationUtils';
 
-interface PersonValue {
-  firstName?: string;
-  surname?: string;
-  nationalIdentityNumber?: string;
-  address?: PartyAddress;
-}
-
-interface OrganizationValue {
-  name?: string;
-  organizationNumber?: string;
-}
-
-interface PartyInputValue {
-  relationship: Party['relationship'];
-  user?: PersonValue;
-  sender?: PersonValue;
-  organization?: OrganizationValue;
-}
-
-const mapSubmissionAddress = (address: NonNullable<SubmissionYourInformation['adresse']>): PartyAddress => ({
+const toPartyAddress = (address: SubmissionAddress): PartyAddress => ({
   co: address.co,
   postOfficeBox: address.postboks,
   streetAddress: address.adresse,
@@ -43,127 +21,58 @@ const mapSubmissionAddress = (address: NonNullable<SubmissionYourInformation['ad
   country: address.land,
 });
 
-const getPartyValue = (form: Form, submission: SubmissionData): PartyInputValue => {
-  const sender: SubmissionSender | undefined = senderUtils.getSender(form, submission);
-  const yourInformation = yourInformationUtils.getYourInformation(form, submission);
-
-  return {
-    relationship: sender?.organization ? 'organization' : sender?.person ? 'other-person' : 'self',
-    user: yourInformation
-      ? {
-          firstName: yourInformation.fornavn,
-          surname: yourInformation.etternavn,
-          nationalIdentityNumber: yourInformation.identitet?.identitetsnummer,
-          address: yourInformation.adresse ? mapSubmissionAddress(yourInformation.adresse) : undefined,
-        }
-      : undefined,
-    sender: sender?.person
-      ? {
-          firstName: sender.person.firstName,
-          surname: sender.person.surname,
-          nationalIdentityNumber: sender.person.nationalIdentityNumber,
-        }
-      : undefined,
-    organization: sender?.organization
-      ? {
-          name: sender.organization.name,
-          organizationNumber: sender.organization.number,
-        }
-      : undefined,
-  };
-};
-
-const resolveConcernedPerson = (value: PersonValue | undefined): ConcernedPerson | undefined => {
-  if (!value) {
+const toConcernedPerson = (yourInformation?: SubmissionYourInformation): ConcernedPerson | undefined => {
+  if (!yourInformation) {
     return undefined;
   }
 
-  if (value.nationalIdentityNumber) {
-    return {
-      kind: 'identified-person',
-      nationalIdentityNumber: value.nationalIdentityNumber,
-    };
+  const { fornavn, etternavn, identitet, adresse } = yourInformation;
+
+  if (identitet?.identitetsnummer) {
+    return { kind: 'identified-person', nationalIdentityNumber: identitet.identitetsnummer };
   }
 
-  if (!value.firstName || !value.surname) {
-    return undefined;
-  }
-
-  if (!value.address) {
+  if (!fornavn || !etternavn || !adresse) {
     return undefined;
   }
 
   return {
     kind: 'unidentified-person',
-    firstName: value.firstName,
-    surname: value.surname,
-    address: value.address,
+    firstName: fornavn,
+    surname: etternavn,
+    address: toPartyAddress(adresse),
   };
 };
 
-const resolveResponsiblePerson = (value: PersonValue | undefined): ResponsiblePerson | undefined => {
-  if (!value?.firstName || !value.surname) {
-    return undefined;
-  }
-
-  if (!value.nationalIdentityNumber) {
-    return undefined;
-  }
-
-  return {
-    firstName: value.firstName,
-    surname: value.surname,
-    nationalIdentityNumber: value.nationalIdentityNumber,
-  };
-};
-
-const resolveOrganization = (value: OrganizationValue | undefined): ResponsibleOrganization | undefined => {
-  if (!value?.name) {
-    return undefined;
-  }
-  if (!value.organizationNumber) {
-    return undefined;
-  }
-
-  return {
-    name: value.name,
-    organizationNumber: value.organizationNumber,
-  };
-};
-
+/**
+ * Resolves who is responsible for a submission and who it concerns.
+ * Returns undefined when the submitted user values are incomplete.
+ */
 const resolveParty = (form: Form, submission: Submission): Party | undefined => {
-  const value = getPartyValue(form, submission.data);
-  const relationship = value.relationship;
-  const user = resolveConcernedPerson(value.user);
-  if (!user) {
+  const submittedSender = senderUtils.getSender(form, submission.data);
+  const submittedUser = yourInformationUtils.getYourInformation(form, submission.data);
+  const user = toConcernedPerson(submittedUser);
+
+  if (submittedUser && !user) {
     return undefined;
   }
 
-  if (relationship === 'self') {
-    return { relationship, user };
+  if (submittedSender?.person) {
+    return user ? { onBehalfOf: 'other-person', sender: submittedSender.person, user } : undefined;
   }
-  if (relationship === 'other-person') {
-    const sender = resolveResponsiblePerson(value.sender);
-    if (!sender) {
-      return undefined;
-    }
 
-    return {
-      relationship,
-      sender,
-      user,
+  if (submittedSender?.organization) {
+    const sender = {
+      name: submittedSender.organization.name,
+      organizationNumber: submittedSender.organization.number,
     };
-  }
-  const sender = resolveOrganization(value.organization);
-  if (!sender) {
-    return undefined;
+
+    return user
+      ? { onBehalfOf: 'other-person', sender, user }
+      : { onBehalfOf: 'multiple-people', sender, user: { kind: 'multiple-people' } };
   }
 
-  return {
-    relationship,
-    sender,
-    user,
-  };
+  return user ? { onBehalfOf: 'self', user } : undefined;
 };
 
 export { resolveParty };

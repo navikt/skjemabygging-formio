@@ -35,36 +35,35 @@ interface ResponsibleOrganization {
   organizationNumber: string;
 }
 
-interface SeveralPeople {
-  kind: 'several-people';
-  navUnit: string;
+interface MultiplePeople {
+  kind: 'multiple-people';
 }
 
 type ConcernedPerson = IdentifiedConcernedPerson | UnidentifiedConcernedPerson;
 
 type Party =
   | {
-      relationship: 'self';
+      onBehalfOf: 'self';
       user: ConcernedPerson;
     }
   | {
-      relationship: 'other-person';
-      sender: ResponsiblePerson;
+      onBehalfOf: 'other-person';
+      sender: ResponsiblePerson | ResponsibleOrganization;
       user: ConcernedPerson;
     }
   | {
-      relationship: 'organization';
+      onBehalfOf: 'multiple-people';
       sender: ResponsibleOrganization;
-      user: ConcernedPerson | SeveralPeople;
+      user: MultiplePeople;
     };
 
 export type {
   ConcernedPerson,
   IdentifiedConcernedPerson,
+  MultiplePeople,
   Party,
   PartyAddress,
   ResponsibleOrganization,
   ResponsiblePerson,
-  SeveralPeople,
   UnidentifiedConcernedPerson,
 };

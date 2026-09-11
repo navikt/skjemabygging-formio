@@ -25,7 +25,7 @@ describe('resolveParty', () => {
         },
       }),
     ).toEqual({
-      relationship: 'self',
+      onBehalfOf: 'self',
       user: { kind: 'identified-person', nationalIdentityNumber: '123 456 789 11' },
     });
   });
@@ -47,7 +47,7 @@ describe('resolveParty', () => {
         },
       }),
     ).toEqual({
-      relationship: 'self',
+      onBehalfOf: 'self',
       user: {
         kind: 'unidentified-person',
         firstName: 'Test',
@@ -79,7 +79,7 @@ describe('resolveParty', () => {
         },
       }),
     ).toEqual({
-      relationship: 'other-person',
+      onBehalfOf: 'other-person',
       sender: {
         firstName: 'Sender',
         surname: 'Sendersen',
@@ -105,7 +105,7 @@ describe('resolveParty', () => {
         },
       }),
     ).toEqual({
-      relationship: 'organization',
+      onBehalfOf: 'other-person',
       sender: { name: 'Organization', organizationNumber: '889 640 782' },
       user: {
         kind: 'unidentified-person',
@@ -116,26 +116,33 @@ describe('resolveParty', () => {
     });
   });
 
+  it('resolves an organization acting for multiple people without requiring a NAV unit', () => {
+    expect(
+      resolve({
+        sender: {
+          organization: {
+            name: 'Organization',
+            number: '889 640 782',
+          },
+        },
+      }),
+    ).toEqual({
+      onBehalfOf: 'multiple-people',
+      sender: { name: 'Organization', organizationNumber: '889 640 782' },
+      user: { kind: 'multiple-people' },
+    });
+  });
+
   const incompletePartyData: Submission['data'][] = [
     {},
     { yourInformation: {} },
     { yourInformation: { fornavn: 'Name', etternavn: 'Only' } },
     {
-      yourInformation: { identitet: { identitetsnummer: '12345678911' } },
-      sender: {
-        person: {
-          firstName: 'Sender',
-          surname: 'Sendersen',
-          nationalIdentityNumber: '',
-        },
-      },
-    },
-    {
-      yourInformation: { identitet: { identitetsnummer: '12345678911' } },
+      yourInformation: { fornavn: 'Incomplete' },
       sender: {
         organization: {
           name: 'Organization',
-          number: '',
+          number: '889640782',
         },
       },
     },
