@@ -57,6 +57,45 @@ export interface SubmitApplicationResponse {
   ettersendingsId?: string | null;
 }
 
+export type SubsequentSubmissionAttachment = Attachment & {
+  attachmentId: string;
+  pendingFiles: UploadedFile[];
+  receivedAt?: string;
+  documentArchiveUrl?: string;
+};
+
+export type SubsequentSubmissionTask = Pick<
+  SubmitApplicationRequest,
+  'formNumber' | 'title' | 'tema' | 'language' | 'otherUploadAvailable'
+> & {
+  innsendingsId: string;
+  revision: string;
+  deadline?: string;
+  attachments: SubsequentSubmissionAttachment[];
+};
+
+export type SubmitSubsequentSubmissionRequest = Pick<
+  SubmitApplicationRequest,
+  'mainDocument' | 'mainDocumentAlt' | 'attachments'
+> & {
+  revision: string;
+};
+
+export type SubsequentSubmissionReceiptAttachment = Pick<
+  SubsequentSubmissionAttachment,
+  'attachmentId' | 'title' | 'receivedAt' | 'documentArchiveUrl'
+>;
+
+export type SubsequentSubmissionReceipt = Omit<
+  SubmitApplicationResponse,
+  'attachments' | 'subsequentSubmissionDeadline' | 'ettersendingsId'
+> & {
+  submittedNow: SubsequentSubmissionReceiptAttachment[];
+  submittedEarlier: SubsequentSubmissionReceiptAttachment[];
+  outstanding: SubsequentSubmissionReceiptAttachment[];
+  deadline?: string;
+};
+
 export type OpplastingsStatus =
   | 'IkkeValgt'
   | 'LastetOpp'

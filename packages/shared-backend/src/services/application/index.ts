@@ -10,5 +10,10 @@ export type {
   OpplastingsStatus,
   SubmitApplicationRequest,
   SubmitApplicationResponse,
+  SubmitSubsequentSubmissionRequest,
+  SubsequentSubmissionAttachment,
+  SubsequentSubmissionReceipt,
+  SubsequentSubmissionReceiptAttachment,
+  SubsequentSubmissionTask,
   UploadedFile,
 } from './applicationTypes';

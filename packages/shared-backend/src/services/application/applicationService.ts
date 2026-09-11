@@ -8,6 +8,9 @@ import type {
   DraftResponse,
   SubmitApplicationRequest,
   SubmitApplicationResponse,
+  SubmitSubsequentSubmissionRequest,
+  SubsequentSubmissionReceipt,
+  SubsequentSubmissionTask,
 } from './applicationTypes';
 
 type ApplicationClient = Pick<
@@ -20,6 +23,7 @@ type ApplicationClient = Pick<
   | 'uploadAttachment'
   | 'deleteAttachment'
   | 'downloadAttachment'
+  | 'getApplicationForSubmission'
   | 'submitApplication'
 >;
 
@@ -75,6 +79,15 @@ interface SubmitApplicationProps extends ApplicationBaseProps {
   type: ApplicationType;
 }
 
+interface SubmitSubsequentSubmissionProps extends ApplicationBaseProps {
+  body: SubmitSubsequentSubmissionRequest;
+  type: ApplicationType;
+}
+
+const isSubmitSubsequentSubmission = (
+  props: SubmitApplicationProps | SubmitSubsequentSubmissionProps,
+): props is SubmitSubsequentSubmissionProps => 'revision' in props.body;
+
 type ApplicationService = {
   getApplication: <T>(props: ApplicationBaseProps) => Promise<T>;
   createApplication: <T>(props: CreateApplicationProps) => Promise<DraftResponse<T>>;
@@ -86,7 +99,13 @@ type ApplicationService = {
   uploadAttachment: (props: UploadAttachmentProps) => Promise<UploadedFile>;
   deleteAttachment: (props: DeleteAttachmentProps) => Promise<void>;
   downloadAttachment: (props: DownloadAttachmentProps) => Promise<DownloadedAttachment>;
-  submitApplication: (props: SubmitApplicationProps) => Promise<SubmitApplicationResponse>;
+  getSubsequentSubmissionTask: (
+    props: ApplicationBaseProps & { type: ApplicationType },
+  ) => Promise<SubsequentSubmissionTask>;
+  submitApplication: {
+    (props: SubmitApplicationProps): Promise<SubmitApplicationResponse>;
+    (props: SubmitSubsequentSubmissionProps): Promise<SubsequentSubmissionReceipt>;
+  };
 };
 
 const createApplicationService = ({
@@ -129,8 +148,23 @@ const createApplicationService = ({
   const downloadAttachment = async (props: DownloadAttachmentProps) =>
     await client.downloadAttachment({ ...props, baseUrl });
 
-  const submitApplication = async (props: SubmitApplicationProps) =>
-    await client.submitApplication({ ...props, baseUrl });
+  const getSubsequentSubmissionTask = async (props: ApplicationBaseProps & { type: ApplicationType }) =>
+    await client.getApplicationForSubmission<SubsequentSubmissionTask>({ ...props, baseUrl });
+
+  function submitApplication(props: SubmitApplicationProps): Promise<SubmitApplicationResponse>;
+  function submitApplication(props: SubmitSubsequentSubmissionProps): Promise<SubsequentSubmissionReceipt>;
+  function submitApplication(
+    props: SubmitApplicationProps | SubmitSubsequentSubmissionProps,
+  ): Promise<SubmitApplicationResponse | SubsequentSubmissionReceipt> {
+    if (isSubmitSubsequentSubmission(props)) {
+      return client.submitApplication<SubmitSubsequentSubmissionRequest, SubsequentSubmissionReceipt>({
+        ...props,
+        baseUrl,
+      });
+    }
+
+    return client.submitApplication({ ...props, baseUrl });
+  }
 
   return {
     createApplication,
@@ -138,6 +172,7 @@ const createApplicationService = ({
     deleteAttachment,
     downloadAttachment,
     getApplication,
+    getSubsequentSubmissionTask,
     submitCompletedApplication,
     submitApplication,
     updateApplication,

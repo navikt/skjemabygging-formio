@@ -33,6 +33,8 @@ import prefillDataUsa from '../data/innsending-api/prefill-data/prefill-data-usa
 import prefillData from '../data/innsending-api/prefill-data/prefill-data.json';
 import mellomlagringRadio from '../data/innsending-api/radio/mellomlagring-radio.json';
 import mellomlagringSelectBoxes from '../data/innsending-api/select-boxes/mellomlagring-select-boxes.json';
+import subsequentSubmissionReceipt from '../data/innsending-api/subsequent-submission-receipt.json';
+import subsequentSubmissionTask from '../data/innsending-api/subsequent-submission-task.json';
 import tc01 from '../data/test-cases/tc01-innsending-nologin-soknad-body.json';
 import tc02 from '../data/test-cases/tc02-innsending-nologin-soknad-body.json';
 import tc05 from '../data/test-cases/tc05-innsending-nologin-soknad-body.json';
@@ -696,10 +698,49 @@ export default [
     ],
   },
   {
+    id: 'get-digital-subsequent-submission-task',
+    url: '/send-inn/v1/application-digital/:innsendingsId',
+    method: 'GET',
+    variants: [
+      {
+        id: 'success',
+        type: 'json',
+        options: {
+          status: 200,
+          body: subsequentSubmissionTask,
+        },
+      },
+      {
+        id: 'not-found',
+        type: 'json',
+        options: {
+          status: 404,
+          body: { message: 'Task not found' },
+        },
+      },
+    ],
+  },
+  {
     id: 'post-digital-soknad',
     url: '/send-inn/v1/application-digital/:innsendingsId',
     method: 'POST',
     variants: [
+      {
+        id: 'subsequent-submission-success',
+        type: 'json',
+        options: {
+          status: 200,
+          body: subsequentSubmissionReceipt,
+        },
+      },
+      {
+        id: 'subsequent-submission-stale-revision',
+        type: 'json',
+        options: {
+          status: 409,
+          body: { message: 'Task revision is stale' },
+        },
+      },
       {
         id: 'success',
         type: 'middleware',
