@@ -42,16 +42,10 @@ const findInvalidSolution = (challenge: CaptchaChallenge): string => {
   }
 };
 
-// The address supertest connects from, after the IPv4-mapped IPv6 prefix is normalized away
-const CLIENT_ADDRESS = '127.0.0.1';
-
-const signChallenge = (
-  { nonce, difficulty, expiresAt }: Omit<CaptchaChallenge, 'signature'>,
-  clientAddress = CLIENT_ADDRESS,
-): string =>
+const signChallenge = ({ nonce, difficulty, expiresAt }: Omit<CaptchaChallenge, 'signature'>): string =>
   crypto
     .createHmac('sha256', config.captcha.hmacSecret)
-    .update(`${nonce}.${difficulty}.${expiresAt}.${clientAddress}`)
+    .update(`${nonce}.${difficulty}.${expiresAt}`)
     .digest('hex');
 
 describe('Captcha Handler Tests', () => {
@@ -148,18 +142,7 @@ describe('Captcha Handler Tests', () => {
       });
     });
 
-    it('binds the challenge to the client address, so a solution minted for another address is rejected', async () => {
-      const foreignChallenge = { ...challenge, signature: signChallenge(challenge, '203.0.113.10') };
-
-      await request(app)
-        .post('/fyllut/api/captcha')
-        .set('Origin', 'https://www.nav.no')
-        .send({ firstName: '', ...solveChallenge(foreignChallenge) })
-        .expect('Content-Type', /json/)
-        .expect(400);
-    });
-
-    it('accepts a challenge signed for the requesting client address', async () => {
+    it('accepts a challenge with a valid signature', async () => {
       const expiresAt = Date.now() + 60_000;
       const nonce = crypto.randomBytes(16).toString('hex');
       const selfSigned = { nonce, difficulty: challenge.difficulty, expiresAt };
@@ -203,48 +186,20 @@ describe('Captcha Handler Tests', () => {
     });
   });
 
-  describe('Client address binding through the ingress', () => {
-    const CLIENT_IP = '203.0.113.5';
-    const OTHER_IP = '198.51.100.7';
-
-    beforeEach(() => {
+  describe('Client address changes', () => {
+    it('accepts a solution submitted from a different address than the challenge request', async () => {
       config.captcha.powDifficulty = 8;
-    });
-
-    const fetchChallengeAs = async (forwardedFor: string): Promise<CaptchaChallenge> => {
-      const response = await request(app)
+      const challengeResponse = await request(app)
         .get('/fyllut/api/captcha/challenge')
-        .set('X-Forwarded-For', forwardedFor)
+        .set('X-Forwarded-For', '203.0.113.5')
         .expect(200);
-      return response.body;
-    };
 
-    const submitAs = (forwardedFor: string, solution: CaptchaSolution) =>
-      request(app)
+      await request(app)
         .post('/fyllut/api/captcha')
         .set('Origin', 'https://www.nav.no')
-        .set('X-Forwarded-For', forwardedFor)
-        .send({ firstName: '', ...solution });
-
-    it('accepts a solution submitted from the address the challenge was issued to', async () => {
-      const solved = solveChallenge(await fetchChallengeAs(CLIENT_IP));
-      await submitAs(CLIENT_IP, solved).expect(200);
-    });
-
-    it('rejects a solution replayed from another address', async () => {
-      const solved = solveChallenge(await fetchChallengeAs(CLIENT_IP));
-      await submitAs(OTHER_IP, solved).expect(400);
-    });
-
-    it('uses the address added by the ingress, ignoring an existing X-Forwarded-For prefix', async () => {
-      const solved = solveChallenge(await fetchChallengeAs(CLIENT_IP));
-      await submitAs(`${OTHER_IP}, ${CLIENT_IP}`, solved).expect(200);
-    });
-
-    it('does not let a prepended X-Forwarded-For entry impersonate another address', async () => {
-      const solved = solveChallenge(await fetchChallengeAs(CLIENT_IP));
-      // The challenge belongs to CLIENT_IP, but the request arrives from OTHER_IP through the ingress
-      await submitAs(`${CLIENT_IP}, ${OTHER_IP}`, solved).expect(400);
+        .set('X-Forwarded-For', '198.51.100.7')
+        .send({ firstName: '', ...solveChallenge(challengeResponse.body) })
+        .expect(200);
     });
   });
 
