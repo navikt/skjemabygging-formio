@@ -1,3 +1,4 @@
+import type { FyllutLegacySubmission } from '@navikt/skjemadigitalisering-shared-domain';
 import {
   CoverPageDownloadType,
   Form,
@@ -11,6 +12,7 @@ import {
   SubmissionType,
   TranslationLang,
   formatUtils,
+  mapFyllutLegacyAddress,
   navFormUtils,
   yourInformationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
@@ -42,82 +44,9 @@ const getOrganizationNumberUser = (form: Form, submission: SubmissionData): Orga
   };
 };
 
-type LegacySubmission = {
-  fornavnSoker?: string;
-  etternavnSoker?: string;
-  coSoker?: string;
-  postnummerSoker?: string;
-  postnrSoker?: string;
-  utenlandskPostkodeSoker?: string;
-  poststedSoker?: string;
-  landSoker?: string;
-  gateadresseSoker?: string;
-  norskVegadresse?: {
-    coSoker?: string;
-    vegadresseSoker?: string;
-    postnrSoker?: string;
-    poststedSoker?: string;
-  };
-  norskPostboksadresse?: {
-    coSoker?: string;
-    postboksNrSoker?: string;
-    postnrSoker?: string;
-    poststedSoker?: string;
-  };
-  utenlandskAdresse?: {
-    coSoker?: string;
-    postboksNrSoker?: string;
-    bygningSoker?: string;
-    postkodeSoker?: string;
-    poststedSoker?: string;
-    landSoker?: string;
-    regionSoker?: string;
-  };
-  fodselsnummerDNummerSoker?: string;
-};
-
-const getLegacyAddress = (submission: LegacySubmission) => {
-  const {
-    coSoker,
-    gateadresseSoker,
-    poststedSoker,
-    postnummerSoker,
-    postnrSoker,
-    landSoker,
-    utenlandskPostkodeSoker,
-    norskVegadresse,
-    norskPostboksadresse,
-    utenlandskAdresse,
-  } = submission;
-
-  return {
-    co: norskVegadresse?.coSoker || utenlandskAdresse?.coSoker || coSoker,
-    postOfficeBox:
-      (norskPostboksadresse?.postboksNrSoker && `Postboks ${norskPostboksadresse.postboksNrSoker}`) ||
-      utenlandskAdresse?.postboksNrSoker,
-    streetAddress: norskVegadresse?.vegadresseSoker || gateadresseSoker,
-    building: utenlandskAdresse?.bygningSoker,
-    postalCode:
-      norskVegadresse?.postnrSoker ||
-      norskPostboksadresse?.postnrSoker ||
-      utenlandskAdresse?.postkodeSoker ||
-      postnrSoker ||
-      utenlandskPostkodeSoker ||
-      postnummerSoker,
-    postalName:
-      norskVegadresse?.poststedSoker ||
-      norskPostboksadresse?.poststedSoker ||
-      utenlandskAdresse?.poststedSoker ||
-      poststedSoker,
-    region: utenlandskAdresse?.regionSoker,
-    country: {
-      value: landSoker || utenlandskAdresse?.landSoker || (norskVegadresse || norskPostboksadresse ? 'Norge' : ''),
-      label: landSoker || utenlandskAdresse?.landSoker || (norskVegadresse || norskPostboksadresse ? 'Norge' : ''),
-    },
-  };
-};
-
 const getSubmissionUserData = (form: Form, submission: SubmissionData): CoverPageUser => {
+  // This remains the fyllut compatibility mapper until #2186 and #2187 are complete and historical identity
+  // formatting can be normalized without changing existing cover-page requests.
   const yourInformation = yourInformationUtils.getYourInformation(form, submission);
 
   if (!yourInformation) {
@@ -126,7 +55,7 @@ const getSubmissionUserData = (form: Form, submission: SubmissionData): CoverPag
       return organizationNumberUser;
     }
 
-    const legacySubmission = submission as LegacySubmission;
+    const legacySubmission = submission as FyllutLegacySubmission;
     if (legacySubmission.fodselsnummerDNummerSoker) {
       return {
         nationalIdentityNumber: legacySubmission.fodselsnummerDNummerSoker,
@@ -136,7 +65,7 @@ const getSubmissionUserData = (form: Form, submission: SubmissionData): CoverPag
     return {
       firstName: legacySubmission.fornavnSoker ?? '',
       surname: legacySubmission.etternavnSoker ?? '',
-      address: getLegacyAddress(legacySubmission),
+      address: mapFyllutLegacyAddress(legacySubmission),
     };
   }
 

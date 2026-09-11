@@ -1,7 +1,9 @@
 import {
+  ApplicationPartyData,
   Attachment,
   AvsenderId,
   BrukerDto,
+  mapPartyToApplication,
   OpplastingsStatus,
   SubmitApplicationRequest,
 } from '@navikt/skjemadigitalisering-shared-backend';
@@ -12,12 +14,14 @@ import {
   formatUtils,
   I18nTranslationMap,
   navFormUtils,
+  resolveParty,
   senderUtils,
   Submission,
   TranslationLang,
   yourInformationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { base64EncodeByteArray } from '../../../utils/base64';
+import { hasLegacyPersonalInformationLayout } from './fyllutLegacyPersonalInformationLayout';
 import { objectToByteArray } from './sendInn';
 
 const assembleSubmitApplicationRequest = (
@@ -30,16 +34,14 @@ const assembleSubmitApplicationRequest = (
 ): SubmitApplicationRequest => {
   const activeAttachments: Component[] =
     navFormUtils.getActiveAttachmentPanelFromForm(form, submission)?.components ?? [];
-  const bruker = extractBruker(form, submission);
-  const avsender =
-    extractAvsender(form, submission) ?? (bruker ? undefined : extractAvsenderFromYourInformation(form, submission));
+  const { bruker, avsender } = extractApplicationParty(form, submission);
 
   if (!bruker && !avsender) {
     throw new Error(`${innsendingsId}: Could not find user nor sender from nologin submission (formPath=${form.path})`);
   }
 
   return {
-    ...(bruker && { bruker: bruker.id?.replace(/\s/g, '') }),
+    ...(bruker && { bruker }),
     ...(avsender && { avsender }),
     formNumber: form.properties.skjemanummer,
     title: translate(form.title),
@@ -76,6 +78,24 @@ const assembleSubmitApplicationRequest = (
         }) ?? [],
     otherUploadAvailable: activeAttachments.some((a) => a.attachmentType === 'other'),
   };
+};
+
+const extractApplicationParty = (form: Form, submission: Submission): ApplicationPartyData => {
+  if (hasLegacyPersonalInformationLayout(form)) {
+    // The legacy application mapper remains the compatibility boundary for flat submission fields.
+    return extractLegacyApplicationParty(form, submission);
+  }
+
+  const party = resolveParty(form, submission);
+  return party ? mapPartyToApplication(party) : extractLegacyApplicationParty(form, submission);
+};
+
+const extractLegacyApplicationParty = (form: Form, submission: Submission): ApplicationPartyData => {
+  const bruker = extractBruker(form, submission);
+  const avsender =
+    extractAvsender(form, submission) ?? (bruker ? undefined : extractAvsenderFromYourInformation(form, submission));
+
+  return { bruker: bruker?.id, avsender };
 };
 
 const validateAttachment = (attachment: Attachment, validationId: string): Attachment => {

@@ -1,8 +1,9 @@
 export { createActiveTaskService } from './active-task';
 export type { ActiveTask, ActiveTaskService } from './active-task';
-export { createApplicationService } from './application';
+export { createApplicationService, mapPartyToApplication } from './application';
 export type {
   ApplicationMetrics,
+  ApplicationPartyData,
   ApplicationService,
   ApplicationType,
   Attachment,
@@ -21,7 +22,7 @@ export type { ApplicationPdfService } from './application-pdf';
 export { createCommonCodesService } from './common-codes';
 export type { CommonCodesService } from './common-codes';
 export { coverPageMapper, createCoverPageService } from './cover-page';
-export type { CoverPageService, ForstesideRequestBody } from './cover-page';
+export type { CoverPagePartyData, CoverPageService, ForstesideRequestBody } from './cover-page';
 export { createFormService } from './form';
 export type { FormService } from './form';
 export { createMergeFileService } from './merge-file';
