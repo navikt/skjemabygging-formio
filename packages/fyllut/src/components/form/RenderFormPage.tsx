@@ -11,7 +11,6 @@ import SubmissionMethodNotAllowed from '../SubmissionMethodNotAllowed';
 import FormPageSkeleton from './FormPageSkeleton';
 import FormPageWrapper from './FormPageWrapper';
 import RenderFormAdapter from './RenderFormAdapter';
-import resolveSubmissionMethod from './resolveSubmissionMethod';
 import useFormDocumentMetadata from './useFormDocumentMetadata';
 import useInitializeRenderForm from './useInitializeRenderForm';
 
@@ -20,8 +19,7 @@ const RenderFormPage = () => {
   const { search } = useLocation();
   const navigate = useNavigate();
   const appConfig = useAppConfig();
-  const { http, baseUrl } = appConfig;
-  const submissionMethod = resolveSubmissionMethod(search, appConfig.submissionMethod);
+  const { submissionMethod, http, baseUrl } = appConfig;
   const backendBaseUrl = baseUrl ?? '/fyllut';
   const innsendingsId = new URLSearchParams(search).get('innsendingsId') ?? undefined;
   const forceMellomlagring = new URLSearchParams(search).get('forceMellomlagring') === 'true';
