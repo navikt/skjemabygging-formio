@@ -1,5 +1,5 @@
 import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
-import { FormsApiTranslationMap, SubmissionMethod, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
+import { FormsApiTranslationMap, TranslationLang } from '@navikt/skjemadigitalisering-shared-domain';
 import {
   ApplicationProvider,
   IntegrationContextValue,
@@ -10,6 +10,7 @@ import {
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { getAvailableLanguages, resolveActiveLanguage } from './newRendererLanguageUtils';
+import resolveSubmissionMethod from './resolveSubmissionMethod';
 
 type Props = Omit<RenderFormProps, 'integration' | 'language' | 'services' | 'submissionMethod'> & {
   initialLanguage?: TranslationLang;
@@ -34,8 +35,7 @@ const RenderFormAdapter = ({ form, initialLanguage, services, translations, ...p
   // The 'sub' query param can change via client-side navigation (e.g. choosing a submission method),
   // so it must be re-read from the reactive location on every render rather than relying solely on
   // the app config value, which is only resolved once at initial page load.
-  const submissionMethod =
-    (new URLSearchParams(search).get('sub') as SubmissionMethod | null) ?? appConfig.submissionMethod;
+  const submissionMethod = resolveSubmissionMethod(search, appConfig.submissionMethod);
 
   // Seed the URL with the draft language on first load so it stays authoritative across refreshes.
   useEffect(() => {
