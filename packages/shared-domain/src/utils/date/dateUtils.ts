@@ -110,9 +110,9 @@ const toSubmissionDateMonth = (date?: string, locale: string = 'nb-NO') => {
   // ISO from onMonthChange
   if (DateTime.fromISO(date).isValid) {
     return DateTime.fromISO(date).toFormat(submissionFormatMonth);
-  } else if (isValidInputMonth(date)) {
+  } else if (isValidInputMonth(date, locale)) {
     // Month input from input field
-    const usedInputFormat = findUsedInputFormat(date);
+    const usedInputFormat = findUsedInputFormat(date, locale);
     if (!usedInputFormat) return '';
     return DateTime.fromFormat(date, usedInputFormat, { locale }).toFormat(submissionFormatMonth);
   } else {

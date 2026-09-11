@@ -1,5 +1,6 @@
 import { dateUtils, formatUtils, numberUtils, TEXTS, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import * as ibantools from 'ibantools';
+import { getMonthLocale } from '../components/date/dateFieldUtils';
 
 /**
  * An authored regular expression the value must match, with the message the author wrote for it.
@@ -79,40 +80,6 @@ interface RuleViolation {
   textKey: string;
   params: Record<string, string | number>;
 }
-
-const normalizeMonthName = (value: string) => value.toLowerCase().replace(/\.$/, '').trim();
-
-const toSubmissionMonth = (value: string, locale: string) => {
-  if (dateUtils.isValidMonthSubmission(value)) {
-    return value;
-  }
-
-  const trimmedValue = value.trim();
-  const numericMonthMatch = /^(\d{2})[./\- ](\d{4})$/.exec(trimmedValue);
-  if (numericMonthMatch) {
-    const [, month, year] = numericMonthMatch;
-    return Number(month) >= 1 && Number(month) <= 12 ? `${year}-${month}` : '';
-  }
-
-  const monthNameMatch = /^(.+)\s+(\d{4})$/.exec(trimmedValue);
-  if (!monthNameMatch) {
-    return '';
-  }
-
-  const [, monthName, year] = monthNameMatch;
-  const normalizedMonthName = normalizeMonthName(monthName);
-  const monthIndex = Array.from({ length: 12 }, (_, index) => index).findIndex((index) => {
-    const date = new Date(Date.UTC(2024, index, 1));
-    return [
-      new Intl.DateTimeFormat(locale, { month: 'long' }).format(date),
-      new Intl.DateTimeFormat(locale, { month: 'short' }).format(date),
-    ]
-      .map(normalizeMonthName)
-      .includes(normalizedMonthName);
-  });
-
-  return monthIndex >= 0 ? `${year}-${String(monthIndex + 1).padStart(2, '0')}` : '';
-};
 
 const getSelectValue = (value: unknown) =>
   typeof value === 'object' && value !== null && 'value' in value && typeof value.value === 'string'
@@ -269,8 +236,8 @@ const validateValue = (
     }
   }
   if (rules.month && typeof value === 'string') {
-    const locale = currentLanguage === 'en' ? 'en-US' : currentLanguage === 'nn' ? 'nn-NO' : 'nb-NO';
-    const normalizedMonth = toSubmissionMonth(value, locale);
+    const locale = getMonthLocale(currentLanguage);
+    const normalizedMonth = dateUtils.toSubmissionDateMonth(value, locale);
     if (!dateUtils.isValidMonthSubmission(normalizedMonth)) {
       return { textKey: 'invalid_date', params: { field } };
     }
