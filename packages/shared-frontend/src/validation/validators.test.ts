@@ -83,6 +83,12 @@ describe('validateValue', () => {
       textKey: 'invalid_date',
       params: { field: 'Month' },
     });
+    // Regression: Luxon's fromISO reads a two-digit-year fragment like this as a valid ISO
+    // time-of-day offset from today, not an invalid date, so it must never reach that branch.
+    expect(validateValue('24-02', 'Month', { month: true }, 'nb')).toEqual({
+      textKey: 'invalid_date',
+      params: { field: 'Month' },
+    });
   });
 
   it('validates month year boundaries', () => {

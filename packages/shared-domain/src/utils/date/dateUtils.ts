@@ -104,11 +104,18 @@ const endOfYear = (year: string) => {
   return DateTime.fromFormat(year, 'yyyy').endOf('year');
 };
 
+// Luxon's `fromISO` also accepts partial ISO fragments never meant to reach here (e.g. it reads
+// the keyboard input "24-02" as a time-of-day offset from today, not an invalid date). Restricting
+// the ISO branch to actual `yyyy-MM` submission values and full `yyyy-MM-dd...` dates - the only
+// shapes `onMonthChange` and an already-valid submission value ever produce - keeps free-typed
+// text that merely looks ISO-ish from slipping past validation.
+const isoDateOrSubmissionMonth = /^\d{4}-\d{2}(-\d{2}.*)?$/;
+
 const toSubmissionDateMonth = (date?: string, locale: string = 'nb-NO') => {
   if (!date) return '';
 
   // ISO from onMonthChange
-  if (DateTime.fromISO(date).isValid) {
+  if (isoDateOrSubmissionMonth.test(date) && DateTime.fromISO(date).isValid) {
     return DateTime.fromISO(date).toFormat(submissionFormatMonth);
   } else if (isValidInputMonth(date, locale)) {
     // Month input from input field
