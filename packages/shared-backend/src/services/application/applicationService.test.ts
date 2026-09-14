@@ -306,6 +306,36 @@ describe('createApplicationService', () => {
     expect(stopTimer).toHaveBeenNthCalledWith(2, { error: 'true' });
   });
 
+  it('deletes all attachments through the nologin application attachments endpoint', async () => {
+    const fetchSpy = vi.spyOn(global, 'fetch').mockResolvedValue(
+      new Response(null, {
+        status: 204,
+      }),
+    );
+    const service = createApplicationService({ baseUrl });
+
+    await expect(
+      service.deleteAllAttachments({
+        accessToken,
+        correlationId,
+        innsendingsId,
+        type: 'nologin',
+      }),
+    ).resolves.toBeUndefined();
+
+    expect(fetchSpy).toHaveBeenCalledWith(
+      `${baseUrl}/v1/application-nologin/${innsendingsId}/attachments`,
+      expect.objectContaining({
+        method: 'DELETE',
+        headers: expect.objectContaining({
+          Authorization: `Bearer ${accessToken}`,
+          'x-correlation-id': correlationId,
+          'x-innsendingsid': innsendingsId,
+        }),
+      }),
+    );
+  });
+
   it('normalizes upload attachment too-many-pages errors in shared-backend', async () => {
     vi.spyOn(global, 'fetch').mockResolvedValue(
       new Response(JSON.stringify({ errorCode: 'illegalAction.fileWithTooManyPages' }), {

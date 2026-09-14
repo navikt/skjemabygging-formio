@@ -1,15 +1,25 @@
 import { vi } from 'vitest';
 import useFileUpload from './fileUpload';
 
+const deleteFiles = vi.fn();
 const getFile = vi.fn();
 
 vi.mock('./fileUploader', () => ({
   postFile: vi.fn(),
-  deleteFiles: vi.fn(),
+  deleteFiles: (...args: any[]) => deleteFiles(...args),
   getFile: (...args: any[]) => getFile(...args),
 }));
 
 describe('fileUpload', () => {
+  it('deletes all files through the nologin attachments endpoint', async () => {
+    const token = 'nologin-token';
+    const { deleteAllFiles } = useFileUpload('nologin');
+
+    await deleteAllFiles(token);
+
+    expect(deleteFiles).toHaveBeenCalledWith('/fyllut/api/send-inn/nologin-application/attachments', token);
+  });
+
   it('downloads file from digital application endpoint and forwards nologin token header', async () => {
     const innsendingsId = '12345678-1234-1234-1234-12345678abcd';
     const attachmentId = 'eiajfi8';

@@ -566,6 +566,20 @@ export default [
     ],
   },
   {
+    id: 'delete-all-files',
+    url: '/send-inn/v1/application-nologin/:innsendingsId/attachments',
+    method: 'DELETE',
+    variants: [
+      {
+        id: 'success',
+        type: 'status',
+        options: {
+          status: 204,
+        },
+      },
+    ],
+  },
+  {
     id: 'delete-files',
     url: '/send-inn/v1/application-nologin/:innsendingsId/attachments/:attachmentId',
     method: 'DELETE',

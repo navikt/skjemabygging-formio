@@ -169,13 +169,13 @@ describe('Digital no login', () => {
       });
 
       it('deletes files when clicking the cancel button', () => {
-        cy.intercept('DELETE', '/fyllut/api/send-inn/nologin-application').as('deleteAllFiles');
+        cy.intercept('DELETE', '/fyllut/api/send-inn/nologin-application/attachments').as('deleteAllFiles');
         cy.findByText(TEXTS.statiske.uploadId.label).should('not.exist');
         cy.findByRole('button', { name: TEXTS.statiske.uploadId.selectFileButton }).should('not.exist');
         cy.findByText('test.txt').should('exist');
         cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.cancelAndDelete }).click();
         cy.findByRole('button', { name: TEXTS.grensesnitt.confirmDiscardPrompt.confirm }).click();
-        cy.wait('@deleteAllFiles');
+        cy.wait('@deleteAllFiles').its('response.statusCode').should('eq', 204);
       });
     });
   });

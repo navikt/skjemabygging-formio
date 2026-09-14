@@ -16,6 +16,7 @@ type ApplicationClient = Pick<
   | 'createApplication'
   | 'updateApplication'
   | 'deleteApplication'
+  | 'deleteAllAttachments'
   | 'submitCompletedApplication'
   | 'uploadAttachment'
   | 'deleteAttachment'
@@ -61,8 +62,12 @@ interface UploadAttachmentProps extends AttachmentBaseProps {
 }
 
 interface DeleteAttachmentProps extends ApplicationBaseProps {
-  attachmentId?: string;
+  attachmentId: string;
   fileId?: string;
+  type: ApplicationType;
+}
+
+interface DeleteAllAttachmentsProps extends ApplicationBaseProps {
   type: ApplicationType;
 }
 
@@ -85,6 +90,7 @@ type ApplicationService = {
   ) => Promise<{ status: number; location?: string }>;
   uploadAttachment: (props: UploadAttachmentProps) => Promise<UploadedFile>;
   deleteAttachment: (props: DeleteAttachmentProps) => Promise<void>;
+  deleteAllAttachments: (props: DeleteAllAttachmentsProps) => Promise<void>;
   downloadAttachment: (props: DownloadAttachmentProps) => Promise<DownloadedAttachment>;
   submitApplication: (props: SubmitApplicationProps) => Promise<SubmitApplicationResponse>;
 };
@@ -126,6 +132,9 @@ const createApplicationService = ({
 
   const deleteAttachment = async (props: DeleteAttachmentProps) => await client.deleteAttachment({ ...props, baseUrl });
 
+  const deleteAllAttachments = async (props: DeleteAllAttachmentsProps) =>
+    await client.deleteAllAttachments({ ...props, baseUrl });
+
   const downloadAttachment = async (props: DownloadAttachmentProps) =>
     await client.downloadAttachment({ ...props, baseUrl });
 
@@ -134,6 +143,7 @@ const createApplicationService = ({
 
   return {
     createApplication,
+    deleteAllAttachments,
     deleteApplication,
     deleteAttachment,
     downloadAttachment,

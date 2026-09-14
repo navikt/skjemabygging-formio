@@ -54,8 +54,12 @@ interface UploadAttachmentProps extends AttachmentBaseProps {
 }
 
 interface DeleteAttachmentProps extends ApplicationBaseProps {
-  attachmentId?: string;
+  attachmentId: string;
   fileId?: string;
+  type: ApplicationType;
+}
+
+interface DeleteAllAttachmentsProps extends ApplicationBaseProps {
   type: ApplicationType;
 }
 
@@ -250,6 +254,40 @@ const deleteAttachment = async (props: DeleteAttachmentProps): Promise<void> => 
   });
 };
 
+const deleteAllAttachments = async (props: DeleteAllAttachmentsProps): Promise<void> => {
+  const { baseUrl, accessToken, innsendingsId, type, correlationId, logMeta = {} } = props;
+  const targetUrl = getAttachmentsUrl({ baseUrl, innsendingsId, type });
+  logger.info(`${innsendingsId}: Deleting all attachments for ${type} application`, {
+    ...logMeta,
+    correlationId,
+    targetUrl,
+  });
+
+  try {
+    await http.delete(targetUrl, undefined, {
+      accessToken,
+      headers: createHeaders({ correlationId, innsendingsId }),
+    });
+  } catch (error) {
+    const normalizedError = normalizeApplicationError(error);
+    logger.warn(`${innsendingsId}: Failed to delete all attachments for ${type} application`, {
+      ...logMeta,
+      correlationId: normalizedError.correlationId ?? correlationId,
+      errorCode: normalizedError.errorCode,
+      errorMessage: normalizedError.message,
+      httpResponseStatus: getStatusFromErrorCode(normalizedError.errorCode),
+      targetUrl,
+    });
+    throw normalizedError;
+  }
+
+  logger.info(`${innsendingsId}: Successfully deleted all attachments for ${type} application`, {
+    ...logMeta,
+    correlationId,
+    targetUrl,
+  });
+};
+
 const downloadAttachment = async (props: DownloadAttachmentProps): Promise<DownloadedAttachment> => {
   const { baseUrl, accessToken, innsendingsId, attachmentId, type, fileId, correlationId, logMeta = {} } = props;
   if (!validatorUtils.isValidUuid(fileId)) {
@@ -346,6 +384,7 @@ const submitApplication = async (props: SubmitApplicationProps): Promise<SubmitA
 
 const applicationClient = {
   createApplication,
+  deleteAllAttachments,
   deleteApplication,
   deleteAttachment,
   downloadAttachment,

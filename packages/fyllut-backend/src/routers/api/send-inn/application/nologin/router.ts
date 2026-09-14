@@ -12,9 +12,9 @@ router.param('attachmentId', paramValidation.attachmentId);
 router.param('fileId', paramValidation.fileId);
 
 router.post('/attachments/:attachmentId', uploadSingleFile('filinnhold'), attachmentsEndpoints.post);
+router.delete('/attachments', attachmentsEndpoints.deleteAll);
 router.delete('/attachments/:attachmentId', attachmentsEndpoints.delete);
 router.delete('/attachments/:attachmentId/*fileId', attachmentsEndpoints.delete);
-router.delete('/', attachmentsEndpoints.delete);
 router.post('/', azurePdfGeneratorToken, applicationEndpoints.post);
 
 export default router;
