@@ -1,9 +1,5 @@
-import { Form, ReceiptSummary, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { Outlet, Route, Routes, useLocation, useNavigate } from 'react-router';
-import { useFormDefinition } from '../../context/form-definition/FormDefinitionContext';
-import { useLanguage } from '../../context/language/LanguageContext';
-import { useValidation } from '../../context/validation/ValidationContext';
-import { withoutSubmissionNavigationState } from '../../utils/navigationState';
+import { Form, ReceiptSummary } from '@navikt/skjemadigitalisering-shared-domain';
+import { Route, Routes, useLocation } from 'react-router';
 import ActiveTasksPage from '../active-tasks/ActiveTasksPage';
 import FormPage from '../form-page/FormPage';
 import IntroPage from '../intro-page/IntroPage';
@@ -11,55 +7,8 @@ import PaperSubmissionPage from '../paper-submission/PaperSubmissionPage';
 import PersonalIdUploadPage from '../personal-id/PersonalIdUploadPage';
 import ReceiptPage from '../receipt/ReceiptPage';
 import SummaryPage from '../summary/SummaryPage';
-import { APPLICATION_DOWNLOAD_KEY, INTRO_KEY, PAPER_SUBMISSION_KEY, RECEIPT_KEY, SUMMARY_KEY } from './constants';
-import FormFlowLayout from './FormFlowLayout';
-
-const RoutedFormFlowLayout = ({ form }: { form: Form }) => {
-  const { translate } = useLanguage();
-  const { panels } = useFormDefinition();
-  const { pathname, search, state } = useLocation();
-  const navigate = useNavigate();
-  const { pagesWithErrors, hideSummary } = useValidation();
-  const routeKey = pathname.slice(`/${form.path}`.length).replace(/^\//, '');
-  const panelIndex = panels.findIndex((panel) => panel.key === routeKey);
-
-  const activeIndex =
-    routeKey === '' ? 0 : routeKey === SUMMARY_KEY ? 1 + panels.length : panelIndex >= 0 ? 1 + panelIndex : 0;
-
-  const pageTitle =
-    routeKey === ''
-      ? translate(TEXTS.grensesnitt.introPage.title)
-      : routeKey === SUMMARY_KEY
-        ? translate(TEXTS.statiske.summaryPage.title)
-        : translate(panels[panelIndex]?.title ?? '');
-
-  const onStepClick = (key: string) => {
-    hideSummary();
-    const {
-      redirect: _inheritedRedirect,
-      stepperOpen: _stepperOpen,
-      ...inheritedState
-    } = withoutSubmissionNavigationState(state);
-    navigate(
-      {
-        pathname: key === INTRO_KEY ? `/${form.path}` : `/${form.path}/${key}`,
-        search,
-      },
-      {
-        state: {
-          ...inheritedState,
-          validationErrorPages: Array.from(pagesWithErrors),
-        },
-      },
-    );
-  };
-
-  return (
-    <FormFlowLayout form={form} activeIndex={activeIndex} pageTitle={pageTitle} onStepClick={onStepClick}>
-      <Outlet />
-    </FormFlowLayout>
-  );
-};
+import { APPLICATION_DOWNLOAD_KEY, PAPER_SUBMISSION_KEY, RECEIPT_KEY, SUMMARY_KEY } from './constants';
+import RoutedFormFlowLayout from './RoutedFormFlowLayout';
 
 const FormRouter = ({ form, receiptPdf }: { form: Form; receiptPdf?: Blob }) => {
   const { state } = useLocation();
