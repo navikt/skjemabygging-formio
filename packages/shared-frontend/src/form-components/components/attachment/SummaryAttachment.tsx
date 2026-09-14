@@ -1,4 +1,4 @@
-import { Alert, FileUpload, FormSummary, Label, VStack } from '@navikt/ds-react';
+import { FileUpload, FormSummary, Label, VStack } from '@navikt/ds-react';
 import {
   attachmentUtils,
   enableAttachmentDownload,
@@ -7,6 +7,7 @@ import {
   submissionUtils,
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import Alert from '../../../components/alert/Alert';
 import { AttachmentDefinition } from '../../component-types';
 import { FormComponentProps } from '../../types';
 

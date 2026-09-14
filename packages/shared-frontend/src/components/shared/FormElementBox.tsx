@@ -8,16 +8,22 @@ type Spacing = 'space-0' | 'space-16' | 'space-32' | 'space-40' | 'space-56';
 interface FormElementBoxProps {
   marginBottom?: Spacing;
   fieldSize?: FieldSize;
+  className?: string;
   children?: ReactNode;
 }
 
-const FormElementBox = ({ marginBottom = 'space-32', fieldSize, children }: FormElementBoxProps) => {
-  const className = [styles.field, fieldSize ? styles.sized : undefined, fieldSize ? styles[fieldSize] : undefined]
+const FormElementBox = ({ marginBottom = 'space-32', fieldSize, className, children }: FormElementBoxProps) => {
+  const boxClassName = [
+    styles.field,
+    fieldSize ? styles.sized : undefined,
+    fieldSize ? styles[fieldSize] : undefined,
+    className,
+  ]
     .filter(Boolean)
     .join(' ');
 
   return (
-    <Box className={className} marginBlock={`space-0 ${marginBottom}`}>
+    <Box className={boxClassName} marginBlock={`space-0 ${marginBottom}`}>
       {children}
     </Box>
   );

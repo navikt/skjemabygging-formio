@@ -1,5 +1,6 @@
-import { Alert, Heading } from '@navikt/ds-react';
+import { Heading } from '@navikt/ds-react';
 import { TranslateFunction } from '@navikt/skjemadigitalisering-shared-domain';
+import Alert from '../../../components/alert/Alert';
 import { InnerHtmlLong } from './SanitizedHtml';
 
 interface Props {

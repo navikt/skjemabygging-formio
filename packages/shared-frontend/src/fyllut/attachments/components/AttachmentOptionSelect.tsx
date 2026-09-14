@@ -1,4 +1,4 @@
-import { Alert, BodyShort, Label } from '@navikt/ds-react';
+import { BodyShort, Label } from '@navikt/ds-react';
 import {
   AttachmentSettingValues,
   attachmentUtils,
@@ -8,6 +8,7 @@ import {
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { forwardRef, ReactNode, useEffect } from 'react';
+import Alert from '../../../components/alert/Alert';
 import Select from '../../../components/select/Select';
 import TextArea from '../../../components/text-area/TextArea';
 import { attachmentValidationPath } from '../../../context/validation/attachmentValidationPath';

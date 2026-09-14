@@ -1,5 +1,6 @@
-import { Alert, BodyShort, Button, Modal } from '@navikt/ds-react';
+import { BodyShort, Button, Modal } from '@navikt/ds-react';
 import { ReactNode, useState } from 'react';
+import Alert from '../../components/alert/Alert';
 import { useLanguage } from '../../context/language/LanguageContext';
 
 interface Props {

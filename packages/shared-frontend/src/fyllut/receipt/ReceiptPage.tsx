@@ -1,8 +1,9 @@
 import { CheckmarkCircleFillIcon, DownloadIcon } from '@navikt/aksel-icons';
-import { Alert, BodyShort, Box, Button, Heading, HStack, Link, List, VStack } from '@navikt/ds-react';
+import { BodyShort, Box, Button, Heading, HStack, Link, List, VStack } from '@navikt/ds-react';
 import { dateUtils, Form, ReceiptSummary, stringUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo } from 'react';
 import { useNavigationType } from 'react-router';
+import Alert from '../../components/alert/Alert';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
 import { useFormActions } from '../context/form-actions/FormActionsContext';

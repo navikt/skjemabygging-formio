@@ -1,5 +1,5 @@
-import { Alert } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import Alert from '../../components/alert/Alert';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useFormActions } from '../context/form-actions/FormActionsContext';
 

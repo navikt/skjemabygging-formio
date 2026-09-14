@@ -1,5 +1,5 @@
-import { Alert } from '@navikt/ds-react';
 import { ComponentType, useEffect } from 'react';
+import Alert from '../components/alert/Alert';
 import { FormComponentProps, SummaryComponentType } from './types';
 import { reportUnsupportedComponent } from './unsupportedComponentLogger';
 

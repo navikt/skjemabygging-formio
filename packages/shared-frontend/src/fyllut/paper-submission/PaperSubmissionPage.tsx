@@ -1,7 +1,8 @@
-import { Alert, BodyShort, Heading, Link, List, VStack } from '@navikt/ds-react';
+import { BodyShort, Heading, Link, List, VStack } from '@navikt/ds-react';
 import { attachmentUtils, dateUtils, formioFormsApiUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
+import Alert from '../../components/alert/Alert';
 import NavUnitSelect from '../../components/nav-unit-select/NavUnitSelect';
 import { useNavUnits } from '../../components/nav-unit-select/useNavUnits';
 import { useApplication } from '../../context/application/ApplicationContext';

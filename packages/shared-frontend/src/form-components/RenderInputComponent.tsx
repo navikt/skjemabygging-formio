@@ -1,6 +1,6 @@
-import { Alert } from '@navikt/ds-react';
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import { ComponentType, useEffect } from 'react';
+import Alert from '../components/alert/Alert';
 import { useApplication } from '../context/application/ApplicationContext';
 import { useFormDefinition } from '../context/form-definition/FormDefinitionContext';
 import { UnvalidatedFields } from '../context/validation/ValidationScopeContext';

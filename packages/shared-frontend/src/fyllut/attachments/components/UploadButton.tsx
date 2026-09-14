@@ -1,7 +1,8 @@
 import { UploadIcon } from '@navikt/aksel-icons';
-import { Alert, Button, FileObject, FileUpload, VStack } from '@navikt/ds-react';
+import { Button, FileObject, FileUpload, VStack } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { MutableRefObject, ReactNode, useState } from 'react';
+import Alert from '../../../components/alert/Alert';
 import { getAttachmentsAtPath } from '../../../context/attachment/attachmentData';
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
