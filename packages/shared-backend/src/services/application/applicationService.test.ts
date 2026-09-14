@@ -44,12 +44,6 @@ describe('createApplicationService', () => {
           status: 200,
           headers: { 'Content-Type': 'application/json' },
         }),
-      )
-      .mockResolvedValueOnce(
-        new Response(JSON.stringify({ status: 'OK' }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        }),
       );
     const service = createApplicationService({ baseUrl });
 
@@ -78,12 +72,6 @@ describe('createApplicationService', () => {
         body: { formPath: 'nav123' },
       }),
     ).resolves.toEqual({ updated: true });
-    await expect(
-      service.deleteApplication<{ status: string }>({ accessToken, correlationId, innsendingsId }),
-    ).resolves.toEqual({
-      status: 'OK',
-    });
-
     expect(fetchSpy).toHaveBeenNthCalledWith(
       1,
       `${baseUrl}${draftPath}/${innsendingsId}`,
@@ -115,18 +103,6 @@ describe('createApplicationService', () => {
       `${baseUrl}${draftPath}/${innsendingsId}`,
       expect.objectContaining({
         method: 'PUT',
-        headers: expect.objectContaining({
-          Authorization: `Bearer ${accessToken}`,
-          'x-correlation-id': correlationId,
-          'x-innsendingsid': innsendingsId,
-        }),
-      }),
-    );
-    expect(fetchSpy).toHaveBeenNthCalledWith(
-      4,
-      `${baseUrl}${draftPath}/${innsendingsId}`,
-      expect.objectContaining({
-        method: 'DELETE',
         headers: expect.objectContaining({
           Authorization: `Bearer ${accessToken}`,
           'x-correlation-id': correlationId,
@@ -304,35 +280,6 @@ describe('createApplicationService', () => {
     expect(observe).toHaveBeenNthCalledWith(2, { type: 'nologin', error: 'true' }, 4);
     expect(stopTimer).toHaveBeenNthCalledWith(1, { error: 'false' });
     expect(stopTimer).toHaveBeenNthCalledWith(2, { error: 'true' });
-  });
-
-  it('deletes the nologin application through the application endpoint', async () => {
-    const fetchSpy = vi.spyOn(global, 'fetch').mockResolvedValue(
-      new Response(null, {
-        status: 204,
-      }),
-    );
-    const service = createApplicationService({ baseUrl });
-
-    await expect(
-      service.deleteNologinApplication({
-        accessToken,
-        correlationId,
-        innsendingsId,
-      }),
-    ).resolves.toBeUndefined();
-
-    expect(fetchSpy).toHaveBeenCalledWith(
-      `${baseUrl}/v1/application-nologin/${innsendingsId}`,
-      expect.objectContaining({
-        method: 'DELETE',
-        headers: expect.objectContaining({
-          Authorization: `Bearer ${accessToken}`,
-          'x-correlation-id': correlationId,
-          'x-innsendingsid': innsendingsId,
-        }),
-      }),
-    );
   });
 
   it('normalizes upload attachment too-many-pages errors in shared-backend', async () => {

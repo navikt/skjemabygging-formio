@@ -42,7 +42,7 @@ import { getSubmissionWithFyllutState, transformSubmissionBeforeSubmitting } fro
 interface SendInnContextType {
   updateMellomlagring: (submission?: Submission) => Promise<SendInnSoknadResponse | undefined>;
   submitSoknad: (submission: Submission) => Promise<void>;
-  deleteMellomlagring: () => Promise<{ status: string; info: string } | undefined>;
+  deleteMellomlagring: () => Promise<void>;
   isMellomlagringActive: boolean;
   isMellomlagringAvailable: boolean;
   isMellomlagringReady: boolean;
@@ -255,15 +255,14 @@ const SendInnProvider = ({ children }: SendInnProviderProps) => {
     }
   };
 
-  const deleteMellomlagring = async (): Promise<{ status: string; info: string } | undefined> => {
+  const deleteMellomlagring = async (): Promise<void> => {
     if (!isMellomlagringAvailable || !innsendingsId) {
       return;
     }
 
     try {
-      const response = await deleteSoknad(appConfig, innsendingsId);
+      await deleteSoknad(appConfig, innsendingsId);
       logger?.info(`${innsendingsId}: Mellomlagring was deleted`);
-      return response;
     } catch (error: any) {
       if (isNotFoundError(error)) {
         dispatchFyllutMellomlagring({ type: 'error', error: 'DELETE_FAILED_NOT_FOUND' });

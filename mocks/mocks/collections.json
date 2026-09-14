@@ -16,7 +16,7 @@
       "get-active-tasks:success",
       "put-soknad:success",
       "get-soknad:success-1",
-      "delete-soknad:success",
+      "delete-digital-application:success",
       "put-utfylt-soknad:success",
       "send-inn-frontend:available",
       "upload-file:success",

@@ -68,6 +68,10 @@ interface SubmitApplicationProps extends ApplicationBaseProps {
   type: ApplicationType;
 }
 
+interface DeleteApplicationProps extends ApplicationBaseProps {
+  type: ApplicationType;
+}
+
 const getApplication = async <T>(props: ApplicationBaseProps): Promise<T> => {
   const { baseUrl, accessToken, innsendingsId, correlationId } = props;
   logger.info(`Getting soknad ${innsendingsId}`);
@@ -106,20 +110,6 @@ const updateApplication = async <T>(props: DraftMutationProps): Promise<T> => {
 
   try {
     return await http.put<T>(getDraftUrl(baseUrl, innsendingsId), body, {
-      accessToken,
-      headers: createHeaders({ correlationId, innsendingsId }),
-    });
-  } catch (error) {
-    throw normalizeApplicationError(error);
-  }
-};
-
-const deleteApplication = async <T>(props: ApplicationBaseProps): Promise<T> => {
-  const { baseUrl, accessToken, innsendingsId, correlationId } = props;
-  logger.info(`Deleting soknad ${innsendingsId}`);
-
-  try {
-    return await http.delete<T>(getDraftUrl(baseUrl, innsendingsId), undefined, {
       accessToken,
       headers: createHeaders({ correlationId, innsendingsId }),
     });
@@ -250,10 +240,10 @@ const deleteAttachment = async (props: DeleteAttachmentProps): Promise<void> => 
   });
 };
 
-const deleteNologinApplication = async (props: ApplicationBaseProps): Promise<void> => {
-  const { baseUrl, accessToken, innsendingsId, correlationId, logMeta = {} } = props;
-  const targetUrl = getApplicationUrl(baseUrl, 'nologin', innsendingsId);
-  logger.info(`${innsendingsId}: Deleting nologin application`, {
+const deleteApplication = async (props: DeleteApplicationProps): Promise<void> => {
+  const { baseUrl, accessToken, innsendingsId, type, correlationId, logMeta = {} } = props;
+  const targetUrl = getApplicationUrl(baseUrl, type, innsendingsId);
+  logger.info(`${innsendingsId}: Deleting ${type} application`, {
     ...logMeta,
     correlationId,
     targetUrl,
@@ -266,7 +256,7 @@ const deleteNologinApplication = async (props: ApplicationBaseProps): Promise<vo
     });
   } catch (error) {
     const normalizedError = normalizeApplicationError(error);
-    logger.warn(`${innsendingsId}: Failed to delete nologin application`, {
+    logger.warn(`${innsendingsId}: Failed to delete ${type} application`, {
       ...logMeta,
       correlationId: normalizedError.correlationId ?? correlationId,
       errorCode: normalizedError.errorCode,
@@ -277,7 +267,7 @@ const deleteNologinApplication = async (props: ApplicationBaseProps): Promise<vo
     throw normalizedError;
   }
 
-  logger.info(`${innsendingsId}: Successfully deleted nologin application`, {
+  logger.info(`${innsendingsId}: Successfully deleted ${type} application`, {
     ...logMeta,
     correlationId,
     targetUrl,
@@ -382,7 +372,6 @@ const applicationClient = {
   createApplication,
   deleteApplication,
   deleteAttachment,
-  deleteNologinApplication,
   downloadAttachment,
   getApplication,
   submitCompletedApplication,

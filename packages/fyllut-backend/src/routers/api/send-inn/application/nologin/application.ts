@@ -17,19 +17,20 @@ const post = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const deleteNologinApplication = async (req: Request, res: Response, next: NextFunction) => {
+const deleteApplication = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const nologinContext = validateNologinContext(req.getNologinContext());
     const innsendingsId = nologinContext.innsendingsId;
     const accessToken = requestUtil.getAzureAccessToken(req);
 
-    await applicationService.deleteNologinApplication({
+    await applicationService.deleteApplication({
       accessToken,
       innsendingsId,
       logMeta: {
         innsendingsId,
         route: req.originalUrl,
       },
+      type: 'nologin',
     });
     res.sendStatus(204);
   } catch (error) {
@@ -38,6 +39,6 @@ const deleteNologinApplication = async (req: Request, res: Response, next: NextF
 };
 
 export default {
-  delete: deleteNologinApplication,
+  delete: deleteApplication,
   post,
 };

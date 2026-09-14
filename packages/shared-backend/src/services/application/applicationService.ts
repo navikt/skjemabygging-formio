@@ -16,7 +16,6 @@ type ApplicationClient = Pick<
   | 'createApplication'
   | 'updateApplication'
   | 'deleteApplication'
-  | 'deleteNologinApplication'
   | 'submitCompletedApplication'
   | 'uploadAttachment'
   | 'deleteAttachment'
@@ -76,17 +75,20 @@ interface SubmitApplicationProps extends ApplicationBaseProps {
   type: ApplicationType;
 }
 
+interface DeleteApplicationProps extends ApplicationBaseProps {
+  type: ApplicationType;
+}
+
 type ApplicationService = {
   getApplication: <T>(props: ApplicationBaseProps) => Promise<T>;
   createApplication: <T>(props: CreateApplicationProps) => Promise<DraftResponse<T>>;
   updateApplication: <T>(props: UpdateApplicationProps) => Promise<T>;
-  deleteApplication: <T>(props: ApplicationBaseProps) => Promise<T>;
+  deleteApplication: (props: DeleteApplicationProps) => Promise<void>;
   submitCompletedApplication: (
     props: SubmitCompletedApplicationProps,
   ) => Promise<{ status: number; location?: string }>;
   uploadAttachment: (props: UploadAttachmentProps) => Promise<UploadedFile>;
   deleteAttachment: (props: DeleteAttachmentProps) => Promise<void>;
-  deleteNologinApplication: (props: ApplicationBaseProps) => Promise<void>;
   downloadAttachment: (props: DownloadAttachmentProps) => Promise<DownloadedAttachment>;
   submitApplication: (props: SubmitApplicationProps) => Promise<SubmitApplicationResponse>;
 };
@@ -105,8 +107,8 @@ const createApplicationService = ({
   const updateApplication = async <T>(props: UpdateApplicationProps) =>
     await client.updateApplication<T>({ ...props, baseUrl });
 
-  const deleteApplication = async <T>(props: ApplicationBaseProps) =>
-    await client.deleteApplication<T>({ ...props, baseUrl });
+  const deleteApplication = async (props: DeleteApplicationProps) =>
+    await client.deleteApplication({ ...props, baseUrl });
 
   const submitCompletedApplication = async (props: SubmitCompletedApplicationProps) =>
     await client.submitCompletedApplication({ ...props, baseUrl });
@@ -128,9 +130,6 @@ const createApplicationService = ({
 
   const deleteAttachment = async (props: DeleteAttachmentProps) => await client.deleteAttachment({ ...props, baseUrl });
 
-  const deleteNologinApplication = async (props: ApplicationBaseProps) =>
-    await client.deleteNologinApplication({ ...props, baseUrl });
-
   const downloadAttachment = async (props: DownloadAttachmentProps) =>
     await client.downloadAttachment({ ...props, baseUrl });
 
@@ -141,7 +140,6 @@ const createApplicationService = ({
     createApplication,
     deleteApplication,
     deleteAttachment,
-    deleteNologinApplication,
     downloadAttachment,
     getApplication,
     submitCompletedApplication,

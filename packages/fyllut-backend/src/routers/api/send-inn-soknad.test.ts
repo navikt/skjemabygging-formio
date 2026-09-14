@@ -309,10 +309,8 @@ describe('[endpoint] send-inn/soknad', () => {
   });
 
   describe('DELETE', () => {
-    it('returns with confirmation in response body if success', async () => {
-      const sendInnNockScope = nock(sendInnConfig.host)
-        .delete(`${draftPath}/${innsendingsId}`)
-        .reply(200, { status: 'OK' });
+    it('preserves the legacy confirmation response if success', async () => {
+      const sendInnNockScope = nock(sendInnConfig.host).delete(`/v1/application-digital/${innsendingsId}`).reply(204);
       const req = mockRequestWithSendInnData({
         headers: { AzureAccessToken: 'azure-access-token' },
         body: requestBody,
@@ -346,7 +344,7 @@ describe('[endpoint] send-inn/soknad', () => {
 
     it('calls next if SendInn returns error', async () => {
       const sendInnNockScope = nock(sendInnConfig.host)
-        .delete(`${draftPath}/${innsendingsId}`)
+        .delete(`/v1/application-digital/${innsendingsId}`)
         .reply(500, 'error body');
       const req = mockRequestWithSendInnData({
         body: requestBody,
@@ -367,7 +365,7 @@ describe('[endpoint] send-inn/soknad', () => {
 
     it('calls next with not found if SendInn returns status 404', async () => {
       const sendInnNockScope = nock(sendInnConfig.host)
-        .delete(`${draftPath}/${innsendingsId}`)
+        .delete(`/v1/application-digital/${innsendingsId}`)
         .reply(404, 'error body');
       const req = mockRequestWithSendInnData({
         body: requestBody,
