@@ -9,39 +9,35 @@ import {
 } from '../../models';
 import { senderUtils } from '../submission/senderUtils';
 import { yourInformationUtils } from '../submission/yourInformationUtils';
+import { legacyFlatPersonalInfoUtils } from './legacyFlatPersonalInfoUtils';
 
-const toPartyAddress = (address: SubmissionAddress): PartyAddress => ({
-  co: address.co,
-  postOfficeBox: address.postboks,
-  streetAddress: address.adresse,
-  building: address.bygning,
-  postalCode: address.postnummer,
-  postalName: address.bySted,
-  region: address.region,
-  country: address.land,
-});
+const toPartyAddress = (address?: SubmissionAddress): PartyAddress | undefined =>
+  address
+    ? {
+        co: address.co,
+        postOfficeBox: address.postboks,
+        streetAddress: address.adresse,
+        building: address.bygning,
+        postalCode: address.postnummer,
+        postalName: address.bySted,
+        region: address.region,
+        country: address.land,
+      }
+    : undefined;
 
 const toConcernedPerson = (yourInformation?: SubmissionYourInformation): ConcernedPerson | undefined => {
-  if (!yourInformation) {
-    return undefined;
+  if (yourInformation?.identitet?.identitetsnummer) {
+    return { kind: 'identified-person', nationalIdentityNumber: yourInformation.identitet.identitetsnummer };
   }
 
-  const { fornavn, etternavn, identitet, adresse } = yourInformation;
-
-  if (identitet?.identitetsnummer) {
-    return { kind: 'identified-person', nationalIdentityNumber: identitet.identitetsnummer };
-  }
-
-  if (!fornavn || !etternavn || !adresse) {
-    return undefined;
-  }
-
-  return {
-    kind: 'unidentified-person',
-    firstName: fornavn,
-    surname: etternavn,
-    address: toPartyAddress(adresse),
-  };
+  return yourInformation
+    ? {
+        kind: 'unidentified-person',
+        firstName: yourInformation.fornavn,
+        surname: yourInformation.etternavn,
+        address: toPartyAddress(yourInformation.adresse),
+      }
+    : undefined;
 };
 
 /**
@@ -49,11 +45,25 @@ const toConcernedPerson = (yourInformation?: SubmissionYourInformation): Concern
  * Returns undefined when the submitted user values are incomplete.
  */
 const resolveParty = (form: Form, submission: Submission): Party | undefined => {
+  const hasSenderComponent = senderUtils.hasSenderComponent(form);
+  const hasLegacyFlatPersonalInfoComponents = legacyFlatPersonalInfoUtils.hasComponents(form);
+
+  // Flat fields are only unambiguous user data when the form uses Sender for the responsible party (formPath: olj000001).
+  if (hasLegacyFlatPersonalInfoComponents && !hasSenderComponent) {
+    return undefined;
+  }
+
   const submittedSender = senderUtils.getSender(form, submission.data);
   const submittedUser = yourInformationUtils.getYourInformation(form, submission.data);
-  const user = toConcernedPerson(submittedUser);
+  const canonicalUser = toConcernedPerson(submittedUser);
+  const legacyFlatUser =
+    !submittedUser && hasLegacyFlatPersonalInfoComponents
+      ? legacyFlatPersonalInfoUtils.mapUser(submission.data)
+      : undefined;
+  const user = canonicalUser ?? legacyFlatUser;
 
-  if (submittedUser && !user) {
+  // Incomplete flat user data must not make an organization appear to represent multiple people.
+  if (hasLegacyFlatPersonalInfoComponents && !submittedUser && !legacyFlatUser) {
     return undefined;
   }
 
@@ -70,6 +80,11 @@ const resolveParty = (form: Form, submission: Submission): Party | undefined => 
     return user
       ? { onBehalfOf: 'other-person', sender, user }
       : { onBehalfOf: 'multiple-people', sender, user: { kind: 'multiple-people' } };
+  }
+
+  // Preserve legacy behavior for unidentified flat users acting on their own behalf (formPath: nav020807).
+  if (legacyFlatUser?.kind === 'unidentified-person') {
+    return undefined;
   }
 
   return user ? { onBehalfOf: 'self', user } : undefined;

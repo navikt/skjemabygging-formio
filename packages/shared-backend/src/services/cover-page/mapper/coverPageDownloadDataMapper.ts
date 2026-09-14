@@ -1,4 +1,4 @@
-import type { FyllutLegacySubmission } from '@navikt/skjemadigitalisering-shared-domain';
+import type { LegacyFlatPersonalInfoSubmission } from '@navikt/skjemadigitalisering-shared-domain';
 import {
   CoverPageDownloadType,
   Form,
@@ -12,7 +12,7 @@ import {
   SubmissionType,
   TranslationLang,
   formatUtils,
-  mapFyllutLegacyAddress,
+  legacyFlatPersonalInfoUtils,
   navFormUtils,
   yourInformationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
@@ -55,7 +55,7 @@ const getSubmissionUserData = (form: Form, submission: SubmissionData): CoverPag
       return organizationNumberUser;
     }
 
-    const legacySubmission = submission as FyllutLegacySubmission;
+    const legacySubmission = submission as LegacyFlatPersonalInfoSubmission;
     if (legacySubmission.fodselsnummerDNummerSoker) {
       return {
         nationalIdentityNumber: legacySubmission.fodselsnummerDNummerSoker,
@@ -65,7 +65,7 @@ const getSubmissionUserData = (form: Form, submission: SubmissionData): CoverPag
     return {
       firstName: legacySubmission.fornavnSoker ?? '',
       surname: legacySubmission.etternavnSoker ?? '',
-      address: mapFyllutLegacyAddress(legacySubmission),
+      address: legacyFlatPersonalInfoUtils.mapAddress(legacySubmission),
     };
   }
 

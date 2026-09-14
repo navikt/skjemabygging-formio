@@ -138,7 +138,7 @@ describe('assembleSubmitApplicationRequest party compatibility', () => {
     expect(request.avsender).toBeUndefined();
   });
 
-  it('preserves the flat identity fallback when your-information also contains an address', () => {
+  it('prefers canonical user data when flat identity data is also submitted', () => {
     const request = assembleSubmitApplicationRequest(
       '21ed0008-ec72-4c90-8b44-165d3c265da9',
       {
@@ -163,8 +163,71 @@ describe('assembleSubmitApplicationRequest party compatibility', () => {
       (text) => text,
     );
 
+    expect(request.bruker).toBeUndefined();
+    expect(request.avsender).toEqual({ navn: 'Legacy User' });
+  });
+
+  it('maps the nav020807 organization case as sender and concerned user', () => {
+    const request = assembleSubmitApplicationRequest(
+      '21ed0008-ec72-4c90-8b44-165d3c265da9',
+      {
+        ...form,
+        components: [
+          { type: 'fnrfield', key: 'fodselsnummerDNummerSoker', label: 'Identity number' },
+          { type: 'firstName', key: 'fornavnSoker', label: 'First name' },
+          { type: 'surname', key: 'etternavnSoker', label: 'Surname' },
+          { type: 'sender', key: 'sender', label: 'Sender', input: true },
+        ],
+      },
+      {
+        data: {
+          fodselsnummerDNummerSoker: '123 456 789 11',
+          sender: {
+            organization: {
+              number: '889 640 782',
+              name: 'Test organization',
+            },
+          },
+        },
+      },
+      'nb',
+      [],
+      (text) => text,
+    );
+
     expect(request.bruker).toBe('12345678911');
-    expect(request.avsender).toBeUndefined();
+    expect(request.avsender).toEqual({
+      id: '889640782',
+      idType: 'ORGNR',
+      navn: 'Test organization',
+    });
+  });
+
+  it('preserves legacy failure for an unidentified flat user acting on their own behalf', () => {
+    expect(() =>
+      assembleSubmitApplicationRequest(
+        '21ed0008-ec72-4c90-8b44-165d3c265da9',
+        {
+          ...form,
+          components: [
+            { type: 'firstName', key: 'fornavnSoker', label: 'First name' },
+            { type: 'surname', key: 'etternavnSoker', label: 'Surname' },
+            { type: 'textfield', key: 'gateadresseSoker', label: 'Street address' },
+            { type: 'sender', key: 'sender', label: 'Sender', input: true },
+          ],
+        },
+        {
+          data: {
+            fornavnSoker: 'Legacy',
+            etternavnSoker: 'User',
+            gateadresseSoker: 'Testveien 1',
+          },
+        },
+        'nb',
+        [],
+        (text) => text,
+      ),
+    ).toThrow('Could not find user nor sender');
   });
 
   it('preserves a complete sender when the concerned user is missing', () => {
@@ -183,26 +246,6 @@ describe('assembleSubmitApplicationRequest party compatibility', () => {
       id: '10987654321',
       idType: 'FNR',
       navn: 'Sender Sendersen',
-    });
-  });
-
-  it('preserves an incomplete organization sender', () => {
-    const request = assemble({
-      yourInformation: {
-        identitet: { identitetsnummer: '12345678911' },
-      },
-      sender: {
-        organization: {
-          name: 'Organization without number',
-        },
-      },
-    });
-
-    expect(request.bruker).toBe('12345678911');
-    expect(request.avsender).toEqual({
-      id: undefined,
-      idType: 'ORGNR',
-      navn: 'Organization without number',
     });
   });
 

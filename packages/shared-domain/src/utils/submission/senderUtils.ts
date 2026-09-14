@@ -14,8 +14,12 @@ const getSender = (form: NavFormType | Form, submissionData: SubmissionData): Su
   }
 };
 
+const hasSenderComponent = (form: NavFormType | Form): boolean =>
+  submissionUtils.flattenComponentsWithPath(form.components).some(({ component }) => component.type === 'sender');
+
 const senderUtils = {
   getSender,
+  hasSenderComponent,
 };
 
 export { senderUtils };

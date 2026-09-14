@@ -23,9 +23,9 @@ const mapPartyToCoverPage = (party: Party): CoverPagePartyData => {
 
   return {
     user: {
-      firstName: party.user.firstName,
-      surname: party.user.surname,
-      address: party.user.address,
+      firstName: party.user.firstName ?? '',
+      surname: party.user.surname ?? '',
+      address: party.user.address ?? {},
     },
   };
 };

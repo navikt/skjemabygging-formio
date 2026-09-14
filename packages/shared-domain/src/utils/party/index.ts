@@ -1,2 +1,2 @@
-export * from './fyllutLegacyPartyAdapter';
+export * from './legacyFlatPersonalInfoUtils';
 export * from './partyResolver';

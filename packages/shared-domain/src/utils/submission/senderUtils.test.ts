@@ -3,6 +3,30 @@ import { NavFormType, SubmissionData } from '../../models';
 import { senderUtils } from './senderUtils';
 
 describe('senderUtils', () => {
+  describe('hasSenderComponent', () => {
+    it('returns true when a nested sender component exists without a submitted value', () => {
+      const form = {
+        components: [
+          {
+            key: 'panel',
+            type: 'panel',
+            components: [{ key: 'sender', type: 'sender' }],
+          },
+        ],
+      } as unknown as NavFormType;
+
+      expect(senderUtils.hasSenderComponent(form)).toBe(true);
+    });
+
+    it('returns false when the form has no sender component', () => {
+      const form = {
+        components: [{ key: 'someText', type: 'textfield' }],
+      } as unknown as NavFormType;
+
+      expect(senderUtils.hasSenderComponent(form)).toBe(false);
+    });
+  });
+
   describe('getSender', () => {
     it('returns the sender object when it is at the top level', () => {
       const form = {

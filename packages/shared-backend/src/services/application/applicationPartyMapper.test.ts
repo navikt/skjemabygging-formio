@@ -38,6 +38,16 @@ describe('mapPartyToApplication', () => {
       expected: { avsender: { navn: 'Test Testesen' } },
     },
     {
+      name: 'own behalf, unidentified without names',
+      party: {
+        onBehalfOf: 'self',
+        user: {
+          kind: 'unidentified-person',
+        },
+      },
+      expected: {},
+    },
+    {
       name: 'another person, identified user',
       party: {
         onBehalfOf: 'other-person',

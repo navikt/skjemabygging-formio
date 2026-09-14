@@ -19,9 +19,9 @@ interface IdentifiedConcernedPerson {
 
 interface UnidentifiedConcernedPerson {
   kind: 'unidentified-person';
-  firstName: string;
-  surname: string;
-  address: PartyAddress;
+  firstName?: string;
+  surname?: string;
+  address?: PartyAddress;
 }
 
 interface ResponsiblePerson {

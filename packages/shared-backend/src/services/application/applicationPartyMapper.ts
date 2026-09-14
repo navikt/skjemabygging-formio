@@ -32,11 +32,13 @@ const mapPartyToApplication = (party: Party): ApplicationPartyData => {
       return mapUser(party);
     }
 
-    return {
-      avsender: {
-        navn: `${party.user.firstName} ${party.user.surname}`,
-      },
-    };
+    return party.user.firstName && party.user.surname
+      ? {
+          avsender: {
+            navn: `${party.user.firstName} ${party.user.surname}`,
+          },
+        }
+      : {};
   }
 
   if (party.onBehalfOf === 'other-person') {
