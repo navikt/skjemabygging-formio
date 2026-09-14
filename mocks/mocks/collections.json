@@ -21,6 +21,7 @@
       "send-inn-frontend:available",
       "upload-file:success",
       "download-file-digital:success",
+      "delete-all-files:success",
       "delete-file:success",
       "delete-files:success",
       "get-prefill-data:success",
