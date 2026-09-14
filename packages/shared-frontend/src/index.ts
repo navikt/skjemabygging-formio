@@ -51,7 +51,7 @@ export type {
   SessionService,
   SubmissionApplication,
   SubmissionService,
-} from './context/runtime-services/RuntimeServicesContext';
+} from './context/runtime-services/RuntimeServices';
 export type { FieldStateStore } from './context/state/StateContext';
 export type { FieldError, ValidationContextType } from './context/validation/ValidationContext';
 export type {
