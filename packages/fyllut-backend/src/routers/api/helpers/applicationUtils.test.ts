@@ -138,7 +138,7 @@ describe('assembleSubmitApplicationRequest party compatibility', () => {
     expect(request.avsender).toBeUndefined();
   });
 
-  it('prefers canonical user data when flat identity data is also submitted', () => {
+  it('preserves legacy identity precedence when canonical and flat data are submitted', () => {
     const request = assembleSubmitApplicationRequest(
       '21ed0008-ec72-4c90-8b44-165d3c265da9',
       {
@@ -163,8 +163,8 @@ describe('assembleSubmitApplicationRequest party compatibility', () => {
       (text) => text,
     );
 
-    expect(request.bruker).toBeUndefined();
-    expect(request.avsender).toEqual({ navn: 'Legacy User' });
+    expect(request.bruker).toBe('12345678911');
+    expect(request.avsender).toBeUndefined();
   });
 
   it('maps the nav020807 organization case as sender and concerned user', () => {

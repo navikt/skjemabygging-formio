@@ -19,12 +19,6 @@ const legacyFlatUserComponents: Component[] = [
   { type: 'textfield', key: 'poststedSoker', label: 'Postal name' },
 ];
 
-const mixedLegacyForm = {
-  components: [...legacyFlatUserComponents, { type: 'sender', key: 'sender', input: true }],
-} as Form;
-
-const resolveMixedLegacy = (data: Submission['data']) => resolveParty(mixedLegacyForm, { data });
-
 describe('resolveParty', () => {
   it('returns undefined when the form does not locate user information', () => {
     expect(resolveParty({ components: [] } as unknown as Form, { data: {} })).toBeUndefined();
@@ -163,7 +157,6 @@ describe('resolveParty', () => {
     ).toEqual({
       onBehalfOf: 'multiple-people',
       sender: { name: 'Organization', organizationNumber: '889 640 782' },
-      user: { kind: 'multiple-people' },
     });
   });
 
@@ -171,125 +164,12 @@ describe('resolveParty', () => {
     expect(resolve({})).toBeUndefined();
   });
 
-  describe('flat legacy user fields in forms with Sender', () => {
-    it('resolves an identified person acting on their own behalf', () => {
-      expect(resolveMixedLegacy({ fodselsnummerDNummerSoker: '123 456 789 11' })).toEqual({
-        onBehalfOf: 'self',
-        user: { kind: 'identified-person', nationalIdentityNumber: '123 456 789 11' },
-      });
-    });
-
-    it('resolves a person Sender acting for an unidentified user', () => {
-      expect(
-        resolveMixedLegacy({
-          fornavnSoker: 'Legacy',
-          etternavnSoker: 'User',
-          gateadresseSoker: 'Testveien 1',
-          postnrSoker: '0101',
-          poststedSoker: 'Oslo',
-          sender: {
-            person: {
-              firstName: 'Sender',
-              surname: 'Sendersen',
-              nationalIdentityNumber: '109 876 543 21',
-            },
-          },
-        }),
-      ).toEqual({
-        onBehalfOf: 'other-person',
-        sender: {
-          firstName: 'Sender',
-          surname: 'Sendersen',
-          nationalIdentityNumber: '109 876 543 21',
-        },
-        user: {
-          kind: 'unidentified-person',
-          firstName: 'Legacy',
-          surname: 'User',
-          address: {
-            streetAddress: 'Testveien 1',
-            postalCode: '0101',
-            postalName: 'Oslo',
-            country: { value: '', label: '' },
-          },
-        },
-      });
-    });
-
-    it('resolves the nav020807 organization case as other-person', () => {
-      expect(
-        resolveMixedLegacy({
-          fodselsnummerDNummerSoker: '123 456 789 11',
-          sender: {
-            organization: {
-              name: 'Organization',
-              number: '889 640 782',
-            },
-          },
-        }),
-      ).toEqual({
-        onBehalfOf: 'other-person',
-        sender: { name: 'Organization', organizationNumber: '889 640 782' },
-        user: { kind: 'identified-person', nationalIdentityNumber: '123 456 789 11' },
-      });
-    });
-
-    it('preserves the legacy fallback for an unidentified person acting on their own behalf', () => {
-      expect(
-        resolveMixedLegacy({
-          fornavnSoker: 'Legacy',
-          etternavnSoker: 'User',
-          gateadresseSoker: 'Testveien 1',
-          postnrSoker: '0101',
-          poststedSoker: 'Oslo',
-        }),
-      ).toBeUndefined();
-    });
-
-    it('returns undefined for incomplete flat user data rather than resolving multiple people', () => {
-      expect(
-        resolveMixedLegacy({
-          fornavnSoker: 'Incomplete',
-          sender: {
-            organization: {
-              name: 'Organization',
-              number: '889 640 782',
-            },
-          },
-        }),
-      ).toBeUndefined();
-    });
-
-    it('prefers canonical user data when both layouts have submitted values', () => {
-      const mixedCanonicalForm = {
-        components: [
-          { type: 'container', key: 'yourInformation', yourInformation: true, input: true },
-          ...mixedLegacyForm.components,
-        ],
-      } as Form;
-
-      expect(
-        resolveParty(mixedCanonicalForm, {
-          data: {
-            yourInformation: {
-              identitet: { identitetsnummer: '111 111 111 11' },
-            },
-            fodselsnummerDNummerSoker: '222 222 222 22',
-          },
-        }),
-      ).toEqual({
-        onBehalfOf: 'self',
-        user: { kind: 'identified-person', nationalIdentityNumber: '111 111 111 11' },
-      });
-    });
-  });
-
-  it('leaves forms with flat user components but no Sender component to legacy mapping', () => {
+  it.each([
+    ['with Sender', [{ type: 'sender', key: 'sender', input: true }]],
+    ['with canonical user information', [{ type: 'container', key: 'yourInformation', yourInformation: true }]],
+  ])('leaves a legacy flat personal-information form %s to legacy mapping', (_, additionalComponents) => {
     const legacyForm = {
-      components: [
-        { type: 'container', key: 'yourInformation', yourInformation: true, input: true },
-        ...legacyFlatUserComponents,
-      ],
+      components: [...additionalComponents, ...legacyFlatUserComponents],
     } as Form;
 
     expect(
@@ -299,6 +179,12 @@ describe('resolveParty', () => {
             identitet: { identitetsnummer: '111 111 111 11' },
           },
           fodselsnummerDNummerSoker: '222 222 222 22',
+          sender: {
+            organization: {
+              name: 'Organization',
+              number: '889 640 782',
+            },
+          },
         },
       }),
     ).toBeUndefined();

@@ -108,7 +108,6 @@ describe('mapPartyToApplication', () => {
       party: {
         onBehalfOf: 'multiple-people',
         sender: { name: 'Organization', organizationNumber: '889640782' },
-        user: { kind: 'multiple-people' },
       },
       expected: {
         avsender: { id: '889640782', idType: 'ORGNR', navn: 'Organization' },

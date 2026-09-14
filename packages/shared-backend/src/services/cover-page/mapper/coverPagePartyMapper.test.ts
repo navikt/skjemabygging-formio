@@ -61,7 +61,6 @@ describe('mapPartyToCoverPage', () => {
     const party: Party = {
       onBehalfOf: 'multiple-people',
       sender: { name: 'Organization', organizationNumber: '889640782' },
-      user: { kind: 'multiple-people' },
     };
 
     expect(mapPartyToCoverPage(party)).toEqual({});

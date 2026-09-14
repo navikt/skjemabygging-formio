@@ -35,10 +35,6 @@ interface ResponsibleOrganization {
   organizationNumber: string;
 }
 
-interface MultiplePeople {
-  kind: 'multiple-people';
-}
-
 type ConcernedPerson = IdentifiedConcernedPerson | UnidentifiedConcernedPerson;
 
 type Party =
@@ -54,13 +50,11 @@ type Party =
   | {
       onBehalfOf: 'multiple-people';
       sender: ResponsibleOrganization;
-      user: MultiplePeople;
     };
 
 export type {
   ConcernedPerson,
   IdentifiedConcernedPerson,
-  MultiplePeople,
   Party,
   PartyAddress,
   ResponsibleOrganization,

@@ -45,27 +45,14 @@ const toConcernedPerson = (yourInformation?: SubmissionYourInformation): Concern
  * Returns undefined when the submitted user values are incomplete.
  */
 const resolveParty = (form: Form, submission: Submission): Party | undefined => {
-  const hasSenderComponent = senderUtils.hasSenderComponent(form);
-  const hasLegacyFlatPersonalInfoComponents = legacyFlatPersonalInfoUtils.hasComponents(form);
-
-  // Flat fields are only unambiguous user data when the form uses Sender for the responsible party (formPath: olj000001).
-  if (hasLegacyFlatPersonalInfoComponents && !hasSenderComponent) {
+  // Preserve legacy mapping for forms with flat personal information (formPath: olj000001, nav020807).
+  if (legacyFlatPersonalInfoUtils.hasComponents(form)) {
     return undefined;
   }
 
   const submittedSender = senderUtils.getSender(form, submission.data);
   const submittedUser = yourInformationUtils.getYourInformation(form, submission.data);
-  const canonicalUser = toConcernedPerson(submittedUser);
-  const legacyFlatUser =
-    !submittedUser && hasLegacyFlatPersonalInfoComponents
-      ? legacyFlatPersonalInfoUtils.mapUser(submission.data)
-      : undefined;
-  const user = canonicalUser ?? legacyFlatUser;
-
-  // Incomplete flat user data must not make an organization appear to represent multiple people.
-  if (hasLegacyFlatPersonalInfoComponents && !submittedUser && !legacyFlatUser) {
-    return undefined;
-  }
+  const user = toConcernedPerson(submittedUser);
 
   if (submittedSender?.person) {
     return user ? { onBehalfOf: 'other-person', sender: submittedSender.person, user } : undefined;
@@ -77,14 +64,7 @@ const resolveParty = (form: Form, submission: Submission): Party | undefined => 
       organizationNumber: submittedSender.organization.number,
     };
 
-    return user
-      ? { onBehalfOf: 'other-person', sender, user }
-      : { onBehalfOf: 'multiple-people', sender, user: { kind: 'multiple-people' } };
-  }
-
-  // Preserve legacy behavior for unidentified flat users acting on their own behalf (formPath: nav020807).
-  if (legacyFlatUser?.kind === 'unidentified-person') {
-    return undefined;
+    return user ? { onBehalfOf: 'other-person', sender, user } : { onBehalfOf: 'multiple-people', sender };
   }
 
   return user ? { onBehalfOf: 'self', user } : undefined;

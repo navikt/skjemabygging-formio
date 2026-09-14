@@ -1,4 +1,4 @@
-import { ConcernedPerson, Form, PartyAddress, SubmissionData } from '../../models';
+import { Form, PartyAddress } from '../../models';
 import { navFormUtils } from '../form';
 
 type LegacyFlatPersonalInfoSubmission = {
@@ -93,44 +93,6 @@ const mapLegacyFlatAddress = (submission: LegacyFlatPersonalInfoSubmission): Par
   };
 };
 
-const hasAddress = (address: PartyAddress): boolean =>
-  !!(
-    address.streetAddress ||
-    address.postOfficeBox ||
-    address.building ||
-    address.postalCode ||
-    address.postalName ||
-    address.region ||
-    address.country?.value
-  );
-
-const mapLegacyFlatUser = (submissionData: SubmissionData): ConcernedPerson | undefined => {
-  const submission = submissionData as LegacyFlatPersonalInfoSubmission;
-
-  if (submission.fodselsnummerDNummerSoker) {
-    return {
-      kind: 'identified-person',
-      nationalIdentityNumber: submission.fodselsnummerDNummerSoker,
-    };
-  }
-
-  if (!submission.fornavnSoker || !submission.etternavnSoker) {
-    return undefined;
-  }
-
-  const address = mapLegacyFlatAddress(submission);
-  if (!hasAddress(address)) {
-    return undefined;
-  }
-
-  return {
-    kind: 'unidentified-person',
-    firstName: submission.fornavnSoker,
-    surname: submission.etternavnSoker,
-    address,
-  };
-};
-
 const hasLegacyFlatPersonalInfoComponents = (form: Form): boolean =>
   navFormUtils
     .flattenComponents(form.components)
@@ -142,7 +104,6 @@ const hasLegacyFlatPersonalInfoComponents = (form: Form): boolean =>
 
 const legacyFlatPersonalInfoUtils = {
   hasComponents: hasLegacyFlatPersonalInfoComponents,
-  mapUser: mapLegacyFlatUser,
   mapAddress: mapLegacyFlatAddress,
 };
 
