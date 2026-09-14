@@ -370,7 +370,7 @@ describe('Attachments page', () => {
     });
 
     it('should remove all attachments on cancel', () => {
-      cy.intercept('DELETE', '/fyllut/api/send-inn/nologin-application/attachments').as('deleteAllFiles');
+      cy.intercept('DELETE', '/fyllut/api/send-inn/nologin-application').as('deleteAllFiles');
       getMainAttachment().within(() => {
         cy.findByRole('radio', { name: TEXTS.statiske.attachment.uploadNow }).click();
         uploadFileInCurrentScope('test.txt');

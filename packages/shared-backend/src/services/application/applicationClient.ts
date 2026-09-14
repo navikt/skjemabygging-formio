@@ -59,10 +59,6 @@ interface DeleteAttachmentProps extends ApplicationBaseProps {
   type: ApplicationType;
 }
 
-interface DeleteAllAttachmentsProps extends ApplicationBaseProps {
-  type: ApplicationType;
-}
-
 interface DownloadAttachmentProps extends AttachmentBaseProps {
   fileId: string;
 }
@@ -254,10 +250,10 @@ const deleteAttachment = async (props: DeleteAttachmentProps): Promise<void> => 
   });
 };
 
-const deleteAllAttachments = async (props: DeleteAllAttachmentsProps): Promise<void> => {
-  const { baseUrl, accessToken, innsendingsId, type, correlationId, logMeta = {} } = props;
-  const targetUrl = getAttachmentsUrl({ baseUrl, innsendingsId, type });
-  logger.info(`${innsendingsId}: Deleting all attachments for ${type} application`, {
+const deleteNologinApplication = async (props: ApplicationBaseProps): Promise<void> => {
+  const { baseUrl, accessToken, innsendingsId, correlationId, logMeta = {} } = props;
+  const targetUrl = getApplicationUrl(baseUrl, 'nologin', innsendingsId);
+  logger.info(`${innsendingsId}: Deleting nologin application`, {
     ...logMeta,
     correlationId,
     targetUrl,
@@ -270,7 +266,7 @@ const deleteAllAttachments = async (props: DeleteAllAttachmentsProps): Promise<v
     });
   } catch (error) {
     const normalizedError = normalizeApplicationError(error);
-    logger.warn(`${innsendingsId}: Failed to delete all attachments for ${type} application`, {
+    logger.warn(`${innsendingsId}: Failed to delete nologin application`, {
       ...logMeta,
       correlationId: normalizedError.correlationId ?? correlationId,
       errorCode: normalizedError.errorCode,
@@ -281,7 +277,7 @@ const deleteAllAttachments = async (props: DeleteAllAttachmentsProps): Promise<v
     throw normalizedError;
   }
 
-  logger.info(`${innsendingsId}: Successfully deleted all attachments for ${type} application`, {
+  logger.info(`${innsendingsId}: Successfully deleted nologin application`, {
     ...logMeta,
     correlationId,
     targetUrl,
@@ -384,9 +380,9 @@ const submitApplication = async (props: SubmitApplicationProps): Promise<SubmitA
 
 const applicationClient = {
   createApplication,
-  deleteAllAttachments,
   deleteApplication,
   deleteAttachment,
+  deleteNologinApplication,
   downloadAttachment,
   getApplication,
   submitCompletedApplication,

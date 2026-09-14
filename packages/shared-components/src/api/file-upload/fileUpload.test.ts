@@ -11,13 +11,13 @@ vi.mock('./fileUploader', () => ({
 }));
 
 describe('fileUpload', () => {
-  it('deletes all files through the nologin attachments endpoint', async () => {
+  it('deletes the nologin application through the root endpoint', async () => {
     const token = 'nologin-token';
     const { deleteAllFiles } = useFileUpload('nologin');
 
     await deleteAllFiles(token);
 
-    expect(deleteFiles).toHaveBeenCalledWith('/fyllut/api/send-inn/nologin-application/attachments', token);
+    expect(deleteFiles).toHaveBeenCalledWith('/fyllut/api/send-inn/nologin-application', token);
   });
 
   it('downloads file from digital application endpoint and forwards nologin token header', async () => {

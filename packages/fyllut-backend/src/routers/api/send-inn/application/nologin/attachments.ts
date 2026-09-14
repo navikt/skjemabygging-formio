@@ -82,30 +82,7 @@ const deleteAttachment = async (req: Request, res: Response, next: NextFunction)
   }
 };
 
-const deleteAllAttachments = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const nologinContext = validateNologinContext(req.getNologinContext());
-    const innsendingsId = nologinContext.innsendingsId;
-    const accessToken = requestUtil.getAzureAccessToken(req);
-    const logMeta = {
-      innsendingsId,
-      route: req.originalUrl,
-    };
-
-    await applicationService.deleteAllAttachments({
-      accessToken,
-      innsendingsId,
-      logMeta,
-      type: 'nologin',
-    });
-    res.sendStatus(204);
-  } catch (error) {
-    next(error);
-  }
-};
-
 export default {
   post,
   delete: deleteAttachment,
-  deleteAll: deleteAllAttachments,
 };

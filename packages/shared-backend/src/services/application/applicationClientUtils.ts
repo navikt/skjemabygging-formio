@@ -36,11 +36,10 @@ const getAttachmentsUrl = ({
 }: {
   baseUrl: string;
   innsendingsId: string;
-  attachmentId?: string;
+  attachmentId: string;
   type: ApplicationType;
   fileId?: string;
-}) =>
-  `${getApplicationUrl(baseUrl, type, innsendingsId)}/attachments${attachmentId ? `/${attachmentId}` : ''}${fileId ? `/${fileId}` : ''}`;
+}) => `${getApplicationUrl(baseUrl, type, innsendingsId)}/attachments/${attachmentId}${fileId ? `/${fileId}` : ''}`;
 
 const createUploadedFile = (
   response: UploadAttachmentResponse,

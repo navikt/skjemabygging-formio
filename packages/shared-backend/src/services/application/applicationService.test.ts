@@ -306,7 +306,7 @@ describe('createApplicationService', () => {
     expect(stopTimer).toHaveBeenNthCalledWith(2, { error: 'true' });
   });
 
-  it('deletes all attachments through the nologin application attachments endpoint', async () => {
+  it('deletes the nologin application through the application endpoint', async () => {
     const fetchSpy = vi.spyOn(global, 'fetch').mockResolvedValue(
       new Response(null, {
         status: 204,
@@ -315,16 +315,15 @@ describe('createApplicationService', () => {
     const service = createApplicationService({ baseUrl });
 
     await expect(
-      service.deleteAllAttachments({
+      service.deleteNologinApplication({
         accessToken,
         correlationId,
         innsendingsId,
-        type: 'nologin',
       }),
     ).resolves.toBeUndefined();
 
     expect(fetchSpy).toHaveBeenCalledWith(
-      `${baseUrl}/v1/application-nologin/${innsendingsId}/attachments`,
+      `${baseUrl}/v1/application-nologin/${innsendingsId}`,
       expect.objectContaining({
         method: 'DELETE',
         headers: expect.objectContaining({

@@ -28,7 +28,7 @@ const useFileUpload = (type: ApplicationType = 'nologin', innsendingsId?: string
   };
 
   const deleteAllFiles = async (token?: string): Promise<void> => {
-    return deleteFiles(`${url}/attachments`, token);
+    return deleteFiles(url, token);
   };
 
   return { uploadFile, downloadFile, deleteFile, deleteAllFilesForAttachment, deleteAllFiles };

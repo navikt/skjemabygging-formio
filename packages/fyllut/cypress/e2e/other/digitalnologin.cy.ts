@@ -169,7 +169,7 @@ describe('Digital no login', () => {
       });
 
       it('deletes files when clicking the cancel button', () => {
-        cy.intercept('DELETE', '/fyllut/api/send-inn/nologin-application/attachments').as('deleteAllFiles');
+        cy.intercept('DELETE', '/fyllut/api/send-inn/nologin-application').as('deleteAllFiles');
         cy.findByText(TEXTS.statiske.uploadId.label).should('not.exist');
         cy.findByRole('button', { name: TEXTS.statiske.uploadId.selectFileButton }).should('not.exist');
         cy.findByText('test.txt').should('exist');
