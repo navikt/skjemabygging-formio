@@ -1,8 +1,8 @@
 import { DataFetcherElement } from '@navikt/skjemadigitalisering-shared-domain';
 import { describe, expect, it } from 'vitest';
-import { getSelectedValuesAsList, getSelectedValuesMap, toSelectedValuesList } from './dataFetcherUtils';
+import { getSelectedValuesAsList, getSelectedValuesMap, toSelectedValuesList } from './selectedValuesUtils';
 
-describe('dataFetcherUtils', () => {
+describe('selectedValuesUtils', () => {
   const values: DataFetcherElement[] = [
     { value: 'a1', label: 'Aktivitet 1' },
     { value: 'a2', label: 'Aktivitet 2' },

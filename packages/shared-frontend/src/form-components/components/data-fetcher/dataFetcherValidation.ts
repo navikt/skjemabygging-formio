@@ -1,7 +1,7 @@
 import { DataFetcherElement } from '@navikt/skjemadigitalisering-shared-domain';
-import { ValidationField } from '../../context/validation/validationTypes';
-import { toFieldValidation, toValidationFields } from '../shared/fieldValidation';
-import { toSelectedValuesList } from './dataFetcherUtils';
+import { toFieldValidation, toValidationFields } from '../../../components/shared/fieldValidation';
+import { ValidationField } from '../../../context/validation/validationTypes';
+import { toSelectedValuesList } from '../../shared/selectedValuesUtils';
 
 interface DataFetcherValidationInput {
   statePath: string;
@@ -11,10 +11,6 @@ interface DataFetcherValidationInput {
   value?: unknown;
 }
 
-/**
- * The checkbox group a data fetcher renders once the register data has loaded. It stores a map of
- * every element, but is validated on the list of chosen ones, the way the group renders them.
- */
 const toDataFetcherValidationFields = ({
   statePath,
   label,

@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import CheckboxGroup from '../../../components/checkbox-group/CheckboxGroup';
-import { getSelectedValuesAsList, getSelectedValuesMap } from '../../../components/data-fetcher/dataFetcherUtils';
 import { useStateField } from '../../../context/state/useStateField';
 import { SelectBoxesDefinition } from '../../component-types';
 import { useResolvedValidation } from '../../custom-validation/useResolvedValidation';
@@ -13,6 +12,7 @@ import {
   resolveSubmissionPath,
 } from '../../inputComponentRegistryUtils';
 import FormGroup from '../../shared/FormGroup';
+import { getSelectedValuesAsList, getSelectedValuesMap } from '../../shared/selectedValuesUtils';
 
 const isSelectBoxesValue = (value: unknown): value is Record<string, boolean> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);

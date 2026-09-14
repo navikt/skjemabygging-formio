@@ -3,8 +3,6 @@ import { toAccountNumberValidation } from '../../components/account-number/Accou
 import { toActivitiesValidationFields } from '../../components/activities/activitiesValidation';
 import { toAddressValidityValidationFields } from '../../components/address-validity/addressValidityValidation';
 import { toAddressValidationFields } from '../../components/address/addressValidation';
-import { getDataFetcherData, toSelectedValuesList } from '../../components/data-fetcher/dataFetcherUtils';
-import { toDataFetcherValidationFields } from '../../components/data-fetcher/dataFetcherValidation';
 import { toDatePickerValidation, toMonthPickerValidation } from '../../components/date/dateValidation';
 import { toDrivingListValidationFields } from '../../components/driving-list/drivingListValidation';
 import { toEmailValidation } from '../../components/email/Email';
@@ -27,6 +25,8 @@ import {
   enrichComponentsWithBaseSubmissionPath,
   toComponentDefinitions,
 } from '../../context/form-definition/formDefinitionUtils';
+import { getDataFetcherData } from '../components/data-fetcher/dataFetcherUtils';
+import { toDataFetcherValidationFields } from '../components/data-fetcher/dataFetcherValidation';
 import { getActiveRowComponents, getDataGridRows, getRenderedDataGridRows } from '../components/data-grid/dataGridRows';
 import { resolveCustomValidationRules } from '../custom-validation/customValidationRules';
 import {
@@ -36,6 +36,7 @@ import {
   getMonthPickerMinYear,
 } from '../dateDefinitionUtils';
 import { getValues, isRequired, resolveValidation } from '../inputComponentRegistryUtils';
+import { toSelectedValuesList } from '../shared/selectedValuesUtils';
 import { ValidationFieldsBuilder, ValidationFieldsContext, ValidationFieldsRegistry } from './validationFieldsTypes';
 
 /**

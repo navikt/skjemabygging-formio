@@ -1,15 +1,17 @@
 import { DataFetcherComponent, DataFetcherData, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect, useMemo } from 'react';
-import DataFetcher from '../../../components/data-fetcher/DataFetcher';
-import { getDataFetcherData } from '../../../components/data-fetcher/dataFetcherUtils';
+import CheckboxGroup from '../../../components/checkbox-group/CheckboxGroup';
 import { useApplication } from '../../../context/application/ApplicationContext';
 import { useRuntimeServices } from '../../../context/runtime-services/RuntimeServicesContext';
 import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
 import { parseSubmissionPath, setDeepValue } from '../../../context/state/stateHelpers';
+import { useStateField } from '../../../context/state/useStateField';
 import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
 import { DataFetcherDefinition } from '../../component-types';
 import { InputComponentProps, resolveReadMore, resolveSubmissionPath } from '../../inputComponentRegistryUtils';
 import FormGroup from '../../shared/FormGroup';
+import { getSelectedValuesAsList, getSelectedValuesMap } from '../../shared/selectedValuesUtils';
+import { getDataFetcherData } from './dataFetcherUtils';
 
 const InputDataFetcher = ({ component, submissionPath }: InputComponentProps<DataFetcherDefinition>) => {
   type SubmissionMetadata = NonNullable<Submission['metadata']>;
@@ -19,6 +21,7 @@ const InputDataFetcher = ({ component, submissionPath }: InputComponentProps<Dat
   const { submissionMethod } = useSubmissionMethod();
   const { submission, setSubmission } = useSubmissionState();
   const statePath = resolveSubmissionPath(component, submissionPath);
+  const { stateValue, setStateValue } = useStateField({ statePath });
   const dataFetcherData = getDataFetcherData(statePath, submission);
   const values = dataFetcherData?.data ?? [];
   const readMore = resolveReadMore(component);
@@ -113,12 +116,14 @@ const InputDataFetcher = ({ component, submissionPath }: InputComponentProps<Dat
 
   return (
     <FormGroup>
-      <DataFetcher
+      <CheckboxGroup
         statePath={statePath}
-        label={component.label ?? 'Datahenter'}
+        legend={component.label ?? 'Datahenter'}
         description={component.description}
-        readMore={readMore}
         values={values}
+        value={getSelectedValuesAsList(stateValue as Record<string, boolean> | undefined)}
+        onChange={(selectedValues) => setStateValue(getSelectedValuesMap(values, selectedValues))}
+        readMore={readMore}
         required={component.validate?.required ?? false}
       />
     </FormGroup>
