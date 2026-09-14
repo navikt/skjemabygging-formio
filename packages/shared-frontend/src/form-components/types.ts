@@ -14,10 +14,10 @@ type HandleAttachmentDownloadFile = (attachmentId: string, fileId: string, fileN
 
 /**
  * Component `type` literals handled by the summary registry: every
- * `FormComponentType`. Unlike the input registry, this INCLUDES `panel`
- * (SummaryPanel).
+ * `FormComponentType` except the unsupported `image`. Unlike the input
+ * registry, this includes `panel` (SummaryPanel).
  */
-type SummaryComponentType = FormComponentType;
+type SummaryComponentType = Exclude<FormComponentType, 'image'>;
 
 interface SummaryRendererConfig {
   submissionMethod?: SubmissionMethod;
@@ -58,9 +58,9 @@ interface FormComponentProps<T extends Component = Component> {
 
 /**
  * Registry mapping each supported component `type` to its summary adapter. The
- * mapped type ties every key to an adapter expecting that type's definition
- * (`ComponentDefinitionByType<K>`), enforcing correct-key and exhaustiveness the
- * same way the input registry does.
+ * mapped type ties every key to an adapter expecting that type's definition,
+ * enforcing correct-key and exhaustiveness the same way the input registry
+ * does.
  */
 type FormComponentRegistry = {
   [K in SummaryComponentType]: React.ComponentType<FormComponentProps<ComponentDefinitionByType<K>>>;

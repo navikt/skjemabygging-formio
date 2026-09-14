@@ -32,8 +32,8 @@ type ValidationFieldsBuilder<T extends Component = Component> = (
 
 /**
  * Registry mapping each supported component `type` to its validation-fields builder. The mapped
- * type ties every key to the definition of that type and makes a missing key a compile error, the
- * same way `InputComponentRegistry` does for rendering.
+ * type ties every key to the definition of that type and makes a missing key a compile error,
+ * the same way `InputComponentRegistry` does for rendering.
  */
 type ValidationFieldsRegistry = {
   [K in InputComponentType]: ValidationFieldsBuilder<ComponentDefinitionByType<K>>;

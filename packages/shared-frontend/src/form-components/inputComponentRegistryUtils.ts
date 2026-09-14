@@ -8,11 +8,10 @@ import { PatternRule } from '../validation/validators';
 import { ComponentDefinitionByType } from './component-types';
 
 /**
- * Component `type` literals handled by the input registry. This is every
- * `FormComponentType` except `panel`, which is handled by page/navigation
- * rather than the input registry.
+ * Component `type` literals handled by the input registry. `panel` is handled
+ * by page/navigation, and `image` is no longer supported.
  */
-type InputComponentType = Exclude<FormComponentType, 'panel'>;
+type InputComponentType = Exclude<FormComponentType, 'image' | 'panel'>;
 
 /**
  * Props for an input adapter. Parameterized by the adapter's component
@@ -27,9 +26,9 @@ interface InputComponentProps<T extends Component = Component> {
 
 /**
  * Registry mapping each supported component `type` to its input adapter. The
- * mapped type ties every key to an adapter expecting that type's definition
- * (`ComponentDefinitionByType<K>`), so an adapter cannot be registered under the
- * wrong key, and a missing key is a compile error (exhaustiveness).
+ * mapped type ties every key to an adapter expecting that type's definition,
+ * so an adapter cannot be registered under the wrong key, and a missing key is
+ * a compile error.
  */
 type InputComponentRegistry = {
   [K in InputComponentType]: ComponentType<InputComponentProps<ComponentDefinitionByType<K>>>;
