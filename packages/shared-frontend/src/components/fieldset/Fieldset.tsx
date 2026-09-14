@@ -27,7 +27,7 @@ const Fieldset = ({ legend, description, hideLegend, contentClassName, children 
         </legend>
         {description && (
           <div className={`description ${styles.description}`}>
-            <TranslatedDescription>{description}</TranslatedDescription>
+            <TranslatedDescription translationKey={description} />
           </div>
         )}
         <div className={['aksel-fieldset__content', contentClassName].filter(Boolean).join(' ')}>{children}</div>

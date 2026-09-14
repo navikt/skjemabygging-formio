@@ -138,7 +138,7 @@ const InternalTextField = ({
             {label}
           </TranslatedLabel>
         }
-        description={<TranslatedDescription>{description}</TranslatedDescription>}
+        description={<TranslatedDescription translationKey={description} />}
         hideLabel={hideLabel}
         value={readOnly ? formatDisplayValue(stateValue) : displayValue}
         onFocus={() => {

@@ -24,7 +24,7 @@ const DrivingList = ({ statePath, description, readMore }: DrivingListProps) => 
     <>
       {description && (
         <Box marginBlock="space-0 space-16">
-          <TranslatedDescription>{description}</TranslatedDescription>
+          <TranslatedDescription translationKey={description} />
         </Box>
       )}
       {submissionMethod === 'digital' ? (

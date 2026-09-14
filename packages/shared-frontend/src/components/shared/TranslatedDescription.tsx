@@ -2,13 +2,13 @@ import { useLanguage } from '../../context/language/LanguageContext';
 import { sanitizeHtml } from '../../utils/sanitizeHtml';
 
 interface Props {
-  children?: string;
+  translationKey?: string;
 }
 
-const TranslatedDescription = ({ children }: Props) => {
+const TranslatedDescription = ({ translationKey }: Props) => {
   const { translate } = useLanguage();
-  if (!children) return null;
-  return <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(translate(children)) }} />;
+  if (!translationKey) return null;
+  return <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(translate(translationKey)) }} />;
 };
 
 export default TranslatedDescription;

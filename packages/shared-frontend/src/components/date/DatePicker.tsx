@@ -81,7 +81,7 @@ const DatePicker = ({
               {label}
             </TranslatedLabel>
           }
-          description={<TranslatedDescription>{description}</TranslatedDescription>}
+          description={<TranslatedDescription translationKey={description} />}
           error={error}
           readOnly={readOnly}
           value={displayValue}

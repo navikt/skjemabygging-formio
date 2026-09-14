@@ -76,7 +76,7 @@ const RadioGroup = ({
             {legend}
           </TranslatedLabel>
         }
-        description={<TranslatedDescription>{description}</TranslatedDescription>}
+        description={<TranslatedDescription translationKey={description} />}
         value={current}
         onChange={(nextValue: string) => (onChange ? onChange(nextValue) : setStateValue(nextValue))}
         error={currentError}
@@ -92,7 +92,7 @@ const RadioGroup = ({
               <Radio value={optionValue} aria-label={translatedLabel} aria-describedby={descriptionId}>
                 <>
                   {translatedLabel}
-                  {optionDescription && <TranslatedDescription>{optionDescription}</TranslatedDescription>}
+                  {optionDescription && <TranslatedDescription translationKey={optionDescription} />}
                 </>
               </Radio>
               {translatedDescription && (

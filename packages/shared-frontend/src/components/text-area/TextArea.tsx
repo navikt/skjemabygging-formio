@@ -77,7 +77,7 @@ const TextArea = ({
             {label}
           </TranslatedLabel>
         }
-        description={<TranslatedDescription>{description}</TranslatedDescription>}
+        description={<TranslatedDescription translationKey={description} />}
         value={displayValue}
         onFocus={() => {
           isFocusedRef.current = true;

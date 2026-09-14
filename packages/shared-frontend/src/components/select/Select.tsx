@@ -136,7 +136,7 @@ const Select = ({
               {label}
             </TranslatedLabel>
           }
-          description={<TranslatedDescription>{description}</TranslatedDescription>}
+          description={<TranslatedDescription translationKey={description} />}
           value={current === options[0]?.value ? [current] : []}
           onChange={(selectedValues) => setValue(selectedValues[0] ?? '')}
           error={currentError}
@@ -154,7 +154,7 @@ const Select = ({
               {label}
             </TranslatedLabel>
           }
-          description={<TranslatedDescription>{description}</TranslatedDescription>}
+          description={<TranslatedDescription translationKey={description} />}
           value={current}
           onChange={setValue}
           error={currentError}
@@ -175,7 +175,7 @@ const Select = ({
               {label}
             </TranslatedLabel>
           }
-          description={<TranslatedDescription>{description}</TranslatedDescription>}
+          description={<TranslatedDescription translationKey={description} />}
           hideLabel={hideLabel}
           value={current}
           onChange={handleSelectChange}
@@ -197,7 +197,7 @@ const Select = ({
               {label}
             </TranslatedLabel>
           }
-          description={<TranslatedDescription>{description}</TranslatedDescription>}
+          description={<TranslatedDescription translationKey={description} />}
           hideLabel={hideLabel}
           options={options}
           selectedOptions={selectedOptions}

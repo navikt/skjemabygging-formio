@@ -93,7 +93,7 @@ const PhoneNumber = ({
           {label}
         </TranslatedLabel>
       </Label>
-      <TranslatedDescription>{description}</TranslatedDescription>
+      <TranslatedDescription translationKey={description} />
       <Select
         statePath={`${statePath}.areaCode`}
         label={TEXTS.statiske.phoneNumber.areaCodeLabel}

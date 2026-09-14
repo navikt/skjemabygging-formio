@@ -46,7 +46,7 @@ const InputRow = ({ component, componentRegistry }: InputRowProps) => {
         )}
         {description && (
           <div className={styles.description}>
-            <TranslatedDescription>{description}</TranslatedDescription>
+            <TranslatedDescription translationKey={description} />
           </div>
         )}
         <div className={styles.fields}>

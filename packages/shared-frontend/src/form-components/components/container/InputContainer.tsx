@@ -24,7 +24,7 @@ const InputContainer = ({ component, componentRegistry }: InputContainerProps) =
     <FormGroup>
       <Box marginBlock="space-0 space-40" data-cy="input-container">
         {!hideLabel && label && <Label as="div">{translate(label)}</Label>}
-        {description && <TranslatedDescription>{description}</TranslatedDescription>}
+        {description && <TranslatedDescription translationKey={description} />}
         <RenderInputForm components={components} componentRegistry={componentRegistry} />
       </Box>
     </FormGroup>

@@ -118,7 +118,7 @@ const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => 
             )}
             {description && (
               <div className={`description ${styles.description}`}>
-                <TranslatedDescription>{description}</TranslatedDescription>
+                <TranslatedDescription translationKey={description} />
               </div>
             )}
             <div className={`aksel-fieldset__content ${styles.content}`}>{content}</div>

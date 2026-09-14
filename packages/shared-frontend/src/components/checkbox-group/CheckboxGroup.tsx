@@ -59,7 +59,7 @@ const CheckboxGroup = ({
             {legend}
           </TranslatedLabel>
         }
-        description={<TranslatedDescription>{description}</TranslatedDescription>}
+        description={<TranslatedDescription translationKey={description} />}
         value={current}
         onChange={(nextValue: string[]) => (onChange ? onChange(nextValue) : setStateValue(nextValue))}
         error={currentError}

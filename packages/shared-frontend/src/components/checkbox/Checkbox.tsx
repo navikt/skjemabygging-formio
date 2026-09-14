@@ -71,7 +71,7 @@ const Checkbox = ({
           {label}
         </TranslatedLabel>
       </AkselCheckbox>
-      {description && <TranslatedDescription>{description}</TranslatedDescription>}
+      {description && <TranslatedDescription translationKey={description} />}
       {showInlineError && error && <ErrorMessage>{error}</ErrorMessage>}
       {readMore && <ReadMore {...readMore} />}
     </FormElementBox>
