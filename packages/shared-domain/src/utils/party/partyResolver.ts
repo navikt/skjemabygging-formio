@@ -25,7 +25,7 @@ const toPartyAddress = (address?: SubmissionAddress): PartyAddress | undefined =
       }
     : undefined;
 
-const toConcernedPerson = (yourInformation?: SubmissionYourInformation): ConcernedPerson | undefined => {
+const toConcernedUser = (yourInformation?: SubmissionYourInformation): ConcernedPerson | undefined => {
   if (yourInformation?.identitet?.identitetsnummer) {
     return { kind: 'identified-person', nationalIdentityNumber: yourInformation.identitet.identitetsnummer };
   }
@@ -52,7 +52,7 @@ const resolveParty = (form: Form, submission: Submission): Party | undefined => 
 
   const submittedSender = senderUtils.getSender(form, submission.data);
   const submittedUser = yourInformationUtils.getYourInformation(form, submission.data);
-  const user = toConcernedPerson(submittedUser);
+  const user = toConcernedUser(submittedUser);
 
   if (submittedSender?.person) {
     return user ? { onBehalfOf: 'other-person', sender: submittedSender.person, user } : undefined;
