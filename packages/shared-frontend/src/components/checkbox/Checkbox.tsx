@@ -67,9 +67,7 @@ const Checkbox = ({
         }}
         error={!!error}
       >
-        <TranslatedLabel required={required} readOnly={readOnly}>
-          {label}
-        </TranslatedLabel>
+        <TranslatedLabel required={required} readOnly={readOnly} translationKey={label} />
       </AkselCheckbox>
       {description && <TranslatedDescription translationKey={description} />}
       {showInlineError && error && <ErrorMessage>{error}</ErrorMessage>}

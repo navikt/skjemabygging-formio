@@ -72,11 +72,7 @@ const TextArea = ({
     <FormElementBox fieldSize={fieldSize} marginBottom={marginBottom}>
       <Textarea
         id={inputId(statePath)}
-        label={
-          <TranslatedLabel required={required} readOnly={readOnly}>
-            {label}
-          </TranslatedLabel>
-        }
+        label={<TranslatedLabel required={required} readOnly={readOnly} translationKey={label} />}
         description={<TranslatedDescription translationKey={description} />}
         value={displayValue}
         onFocus={() => {

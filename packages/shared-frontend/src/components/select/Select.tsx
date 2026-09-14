@@ -132,9 +132,12 @@ const Select = ({
         <CheckboxGroup
           id={inputId(statePath)}
           legend={
-            <TranslatedLabel required={required} readOnly={readOnly} showOptionalText={!hideLabel}>
-              {label}
-            </TranslatedLabel>
+            <TranslatedLabel
+              required={required}
+              readOnly={readOnly}
+              showOptionalText={!hideLabel}
+              translationKey={label}
+            />
           }
           description={<TranslatedDescription translationKey={description} />}
           value={current === options[0]?.value ? [current] : []}
@@ -150,9 +153,12 @@ const Select = ({
           id={inputId(statePath)}
           tabIndex={-1}
           legend={
-            <TranslatedLabel required={required} readOnly={readOnly} showOptionalText={!hideLabel}>
-              {label}
-            </TranslatedLabel>
+            <TranslatedLabel
+              required={required}
+              readOnly={readOnly}
+              showOptionalText={!hideLabel}
+              translationKey={label}
+            />
           }
           description={<TranslatedDescription translationKey={description} />}
           value={current}
@@ -171,9 +177,12 @@ const Select = ({
         <AkselSelect
           id={inputId(statePath)}
           label={
-            <TranslatedLabel required={required} readOnly={readOnly} showOptionalText={!hideLabel}>
-              {label}
-            </TranslatedLabel>
+            <TranslatedLabel
+              required={required}
+              readOnly={readOnly}
+              showOptionalText={!hideLabel}
+              translationKey={label}
+            />
           }
           description={<TranslatedDescription translationKey={description} />}
           hideLabel={hideLabel}
@@ -193,9 +202,12 @@ const Select = ({
         <Combobox
           id={inputId(statePath)}
           label={
-            <TranslatedLabel required={required} readOnly={readOnly} showOptionalText={!hideLabel}>
-              {label}
-            </TranslatedLabel>
+            <TranslatedLabel
+              required={required}
+              readOnly={readOnly}
+              showOptionalText={!hideLabel}
+              translationKey={label}
+            />
           }
           description={<TranslatedDescription translationKey={description} />}
           hideLabel={hideLabel}

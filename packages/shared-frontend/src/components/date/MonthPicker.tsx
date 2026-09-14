@@ -68,11 +68,7 @@ const MonthPicker = ({
         <AkselMonthPicker.Input
           {...inputProps}
           id={inputId(statePath)}
-          label={
-            <TranslatedLabel required={required} readOnly={readOnly}>
-              {label}
-            </TranslatedLabel>
-          }
+          label={<TranslatedLabel required={required} readOnly={readOnly} translationKey={label} />}
           description={<TranslatedDescription translationKey={description} />}
           error={error}
           readOnly={readOnly}

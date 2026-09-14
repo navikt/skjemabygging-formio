@@ -54,11 +54,7 @@ const CheckboxGroup = ({
       <AkselCheckboxGroup
         id={inputId(statePath)}
         tabIndex={-1}
-        legend={
-          <TranslatedLabel required={required} readOnly={readOnly}>
-            {legend}
-          </TranslatedLabel>
-        }
+        legend={<TranslatedLabel required={required} readOnly={readOnly} translationKey={legend} />}
         description={<TranslatedDescription translationKey={description} />}
         value={current}
         onChange={(nextValue: string[]) => (onChange ? onChange(nextValue) : setStateValue(nextValue))}

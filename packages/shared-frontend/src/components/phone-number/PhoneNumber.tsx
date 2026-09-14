@@ -89,9 +89,7 @@ const PhoneNumber = ({
   return (
     <FormElementBox fieldSize={fieldSize} marginBottom={marginBottom}>
       <Label as="p" aria-hidden>
-        <TranslatedLabel required={required} readOnly={readOnly}>
-          {label}
-        </TranslatedLabel>
+        <TranslatedLabel required={required} readOnly={readOnly} translationKey={label} />
       </Label>
       <TranslatedDescription translationKey={description} />
       <Select

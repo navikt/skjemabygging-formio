@@ -72,9 +72,12 @@ const RadioGroup = ({
         id={inputId(statePath)}
         tabIndex={-1}
         legend={
-          <TranslatedLabel required={required} readOnly={readOnly} showOptionalText={showOptionalText}>
-            {legend}
-          </TranslatedLabel>
+          <TranslatedLabel
+            required={required}
+            readOnly={readOnly}
+            showOptionalText={showOptionalText}
+            translationKey={legend}
+          />
         }
         description={<TranslatedDescription translationKey={description} />}
         value={current}

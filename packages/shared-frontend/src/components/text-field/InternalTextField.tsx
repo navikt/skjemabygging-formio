@@ -134,9 +134,12 @@ const InternalTextField = ({
       <AkselTextField
         id={inputId(statePath)}
         label={
-          <TranslatedLabel required={required} readOnly={readOnly} showOptionalText={!hideLabel && showOptionalText}>
-            {label}
-          </TranslatedLabel>
+          <TranslatedLabel
+            required={required}
+            readOnly={readOnly}
+            showOptionalText={!hideLabel && showOptionalText}
+            translationKey={label}
+          />
         }
         description={<TranslatedDescription translationKey={description} />}
         hideLabel={hideLabel}

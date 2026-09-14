@@ -1,17 +1,17 @@
 import { useLanguage } from '../../context/language/LanguageContext';
 
 interface Props {
-  children: string;
+  translationKey: string;
   required?: boolean;
   readOnly?: boolean;
   showOptionalText?: boolean;
 }
 
-const TranslatedLabel = ({ children, required = false, readOnly = false, showOptionalText = true }: Props) => {
+const TranslatedLabel = ({ translationKey, required = false, readOnly = false, showOptionalText = true }: Props) => {
   const { translate } = useLanguage();
   return (
     <>
-      {translate(children)}
+      {translate(translationKey)}
       {required || readOnly || !showOptionalText ? '' : ` (${translate('valgfritt')})`}
     </>
   );
