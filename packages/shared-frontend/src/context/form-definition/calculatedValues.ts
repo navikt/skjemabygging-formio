@@ -1,7 +1,7 @@
 import { numberUtils, Submission, submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { ComponentDefinition } from '../../form-components/component-types';
 import { collectInputSubmissionPaths, DataGridRowScope } from '../../form-components/components/data-grid/dataGridRows';
-import { evaluateFormioCalculatedValue } from '../../utils/formioEvaluation';
+import { evaluateCalculatedValue } from '../../utils/expressionEvaluation';
 import { createUpdatedSubmission } from '../state/SubmissionStateContext';
 
 interface CalculationTarget {
@@ -103,7 +103,7 @@ const applyCalculatedValues = ({
         : createUpdatedSubmission(acc, numericTarget.submissionPath, evaluationValue);
     }, nextSubmission);
 
-    const calculatedValue = evaluateFormioCalculatedValue({
+    const calculatedValue = evaluateCalculatedValue({
       component,
       submission: evaluationSubmission,
       submissionPath,

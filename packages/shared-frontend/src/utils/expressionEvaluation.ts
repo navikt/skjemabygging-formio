@@ -28,7 +28,7 @@ const createEvaluationInstance = ({ allowTestTypes = false }: Pick<BaseEvaluatio
   },
 });
 
-const evaluateFormioExpression = ({
+const evaluateExpression = ({
   component,
   submission,
   submissionPath,
@@ -57,17 +57,12 @@ const evaluateFormioExpression = ({
     returnKey,
   );
 
-const evaluateFormioCalculatedValue = ({
-  component,
-  submission,
-  submissionPath,
-  allowTestTypes,
-}: BaseEvaluationArgs) => {
+const evaluateCalculatedValue = ({ component, submission, submissionPath, allowTestTypes }: BaseEvaluationArgs) => {
   if (!component.calculateValue) {
     return undefined;
   }
 
-  return evaluateFormioExpression({
+  return evaluateExpression({
     component,
     submission,
     submissionPath,
@@ -77,4 +72,4 @@ const evaluateFormioCalculatedValue = ({
   });
 };
 
-export { evaluateFormioCalculatedValue };
+export { evaluateCalculatedValue };
