@@ -19,7 +19,6 @@ import type { ComponentDefinition } from './index';
  */
 type BaseComponentDefinition = Pick<
   Component,
-  // Identity / structure
   | 'id'
   | 'navId'
   | 'key'
@@ -27,7 +26,6 @@ type BaseComponentDefinition = Pick<
   | 'description'
   | 'input'
   | 'baseSubmissionPath'
-  // Visibility / logic
   | 'hidden'
   | 'clearOnHide'
   | 'conditional'
@@ -36,18 +34,15 @@ type BaseComponentDefinition = Pick<
   | 'properties'
   | 'calculateValue'
   | 'allowCalculateOverride'
-  // Values / data source
   | 'values'
   | 'data'
   | 'dataSrc'
   | 'valueProperty'
   | 'labelProperty'
   | 'defaultValue'
-  // Prefill
   | 'prefillKey'
   | 'prefillValue'
   | 'customLabels'
-  // Shared input presentation
   | 'inputType'
   | 'fieldSize'
   | 'readOnly'
@@ -59,11 +54,9 @@ type BaseComponentDefinition = Pick<
   | 'additionalDescriptionText'
   | 'content'
   | 'tree'
-  // Attachment / prefill metadata read generically by walkers
   | 'attachmentType'
   | 'otherDocumentation'
   | 'protectedApiKey'
-  // Date constraints (read by the shared date utilities)
   | 'beforeDateInputKey'
   | 'earliestAllowedDate'
   | 'latestAllowedDate'

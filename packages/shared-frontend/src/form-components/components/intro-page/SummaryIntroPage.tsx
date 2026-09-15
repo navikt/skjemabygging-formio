@@ -10,11 +10,6 @@ interface Props {
   translate: TranslateFunction;
 }
 
-/**
- * This component renders a summary for the intro page.
- * This is not inside the form definition so it works differently then the other summary components
- * @constructor
- */
 const SummaryIntroPage = (props: Props) => {
   const { submission, form, translate } = props;
   const { search, state } = useLocation();

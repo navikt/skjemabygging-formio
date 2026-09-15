@@ -118,7 +118,7 @@ const OtherAttachmentUploadField = ({
         return current.filter((attachment) => attachment.attachmentId !== attachmentId);
       });
     } catch (_error) {
-      // handled by upload context
+      // The upload context displays the failure.
     }
   };
 

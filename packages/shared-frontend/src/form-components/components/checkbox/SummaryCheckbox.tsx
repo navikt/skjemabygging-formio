@@ -8,7 +8,6 @@ const SummaryCheckbox = (props: FormComponentProps<CheckboxDefinition>) => {
   const { submissionPath, submission, translate } = props;
   const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
 
-  // Do not show anything if the checkbox is not checked
   if (!value) {
     return null;
   }

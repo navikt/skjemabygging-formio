@@ -26,7 +26,6 @@ const noFiles: UploadedFile[] = [];
 
 interface Props {
   initialAttachment: SubmissionAttachment;
-  /** Name of the attachment, used in validation messages. */
   attachmentLabel?: string;
   submissionPath?: string;
   multipleAttachments?: boolean;

@@ -88,7 +88,6 @@ const RenderSummaryForm = ({
   }
 
   const componentRegistry = {
-    /* Standard */
     accordion: SummaryAccordion,
     alertstripe: SummaryAlert,
     navCheckbox: SummaryCheckbox,
@@ -101,7 +100,6 @@ const RenderSummaryForm = ({
     textarea: SummaryTextArea,
     textfield: SummaryTextField,
 
-    /* Customized */
     bankAccount: SummaryAccountNumber,
     navAddress: SummaryAddress,
     addressValidity: SummaryAddressValidity,
@@ -119,12 +117,10 @@ const RenderSummaryForm = ({
     sender: SummarySender,
     surname: SummarySurname,
 
-    /* Date */
     navDatepicker: SummaryDatePicker,
     monthPicker: SummaryMonthPicker,
     year: SummaryYear,
 
-    /* Group */
     container: SummaryContainer,
     datagrid: SummaryDataGrid,
     navSkjemagruppe: SummaryFormGroup,
@@ -132,7 +128,6 @@ const RenderSummaryForm = ({
     panel: SummaryPanel,
     row: SummaryRow,
 
-    /* System */
     activities: SummaryActivities,
     dataFetcher: SummaryDataFetcher,
     drivinglist: SummaryDrivingList,

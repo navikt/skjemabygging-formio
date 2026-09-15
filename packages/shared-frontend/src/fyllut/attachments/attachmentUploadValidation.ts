@@ -6,13 +6,11 @@ import { ValidationRules } from '../../validation/validators';
 
 interface AttachmentUploadValidationInput {
   attachmentId: string;
-  /** Name of the attachment, used in validation messages. */
   label: string;
   required?: boolean;
   attachment?: SubmissionAttachment;
 }
 
-/** The choice the user made for an attachment. */
 const attachmentValueRules = (required = false): ValidationRules => ({ required });
 
 /** Choosing to attach the documentation now is only fulfilled once a file has been uploaded. */

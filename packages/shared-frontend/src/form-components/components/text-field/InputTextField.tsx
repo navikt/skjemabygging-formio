@@ -10,9 +10,6 @@ import {
 } from '../../inputComponentUtils';
 import FormGroup from '../../shared/FormGroup';
 
-// `component` is typed as `TextFieldDefinition` via the registry, so only valid
-// textfield properties are accessible - reading e.g. `component.values` is a
-// compile-time error.
 const InputTextField = ({ component, submissionPath }: InputComponentProps<TextFieldDefinition>) => {
   const validation = useResolvedValidation(component);
 

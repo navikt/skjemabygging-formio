@@ -9,7 +9,6 @@ import { BaseComponentDefinition } from './base';
  * plus their `type` literal.
  */
 
-/* Standard */
 type AccordionDefinition = BaseComponentDefinition & Pick<Component, 'accordionValues'> & { type: 'accordion' };
 type AlertDefinition = BaseComponentDefinition & Pick<Component, 'alerttype' | 'isInline'> & { type: 'alertstripe' };
 type CheckboxDefinition = BaseComponentDefinition & { type: 'navCheckbox' };
@@ -24,7 +23,6 @@ type SelectBoxesDefinition = BaseComponentDefinition & { type: 'selectboxes' };
 type TextAreaDefinition = BaseComponentDefinition & { type: 'textarea' };
 type TextFieldDefinition = BaseComponentDefinition & { type: 'textfield' };
 
-/* Customized */
 type AccountNumberDefinition = BaseComponentDefinition & { type: 'bankAccount' };
 type AddressDefinition = BaseComponentDefinition &
   Pick<Component, 'addressPriority' | 'addressType' | 'addressTypeWizard'> & { type: 'navAddress' };
@@ -43,12 +41,10 @@ type PhoneNumberDefinition = BaseComponentDefinition & Pick<Component, 'showArea
 type SenderDefinition = BaseComponentDefinition & Pick<Component, 'senderRole' | 'descriptions'> & { type: 'sender' };
 type SurnameDefinition = BaseComponentDefinition & { type: 'surname' };
 
-/* Date */
 type DatePickerDefinition = BaseComponentDefinition & { type: 'navDatepicker' };
 type MonthPickerDefinition = BaseComponentDefinition & { type: 'monthPicker' };
 type YearDefinition = BaseComponentDefinition & { type: 'year' };
 
-/* Group */
 type ContainerDefinition = BaseComponentDefinition & { type: 'container' };
 type DataGridDefinition = BaseComponentDefinition &
   Pick<Component, 'initEmpty' | 'addAnother' | 'removeAnother' | 'disableAddingRemovingRows' | 'rowTitle'> & {
@@ -60,7 +56,6 @@ type PanelDefinition = BaseComponentDefinition & Pick<Component, 'title'> & { ty
 type RowDefinition = BaseComponentDefinition &
   Pick<Component, 'widthPercent' | 'isAmountWithCurrencySelector'> & { type: 'row' };
 
-/* System */
 type ActivitiesDefinition = BaseComponentDefinition & { type: 'activities' };
 type DataFetcherDefinition = BaseComponentDefinition &
   Partial<Pick<DataFetcherComponent, 'dataFetcherSourceId' | 'queryParams' | 'showOther'>> & { type: 'dataFetcher' };

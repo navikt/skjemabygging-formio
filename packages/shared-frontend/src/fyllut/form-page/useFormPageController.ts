@@ -17,10 +17,6 @@ interface FormPageController {
   goTo: (panelKey: string) => void;
 }
 
-/**
- * Controls form-page navigation: current panel, prev/next, and validating only the current panel
- * before advancing. Validation sets the page error state (and shows the summary on failure).
- */
 const useFormPageController = (requestedPanelKey?: string): FormPageController => {
   const { panels } = useFormDefinition();
   const { validatePage, hideSummary } = useValidation();

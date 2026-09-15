@@ -22,7 +22,6 @@ import { getCurrentValue, getStateValue, resolveRenderedSelectType, SelectType, 
 interface SelectProps extends BaseFieldProps {
   label: string;
   hideLabel?: boolean;
-  // values can be provided statically or resolved by a caller-side loader such as useRemoteOptions
   values: ComponentValue[];
   selectText?: string;
   selectType?: SelectType;
@@ -33,7 +32,6 @@ interface SelectProps extends BaseFieldProps {
   onChange?: (value: string) => void;
   error?: ReactNode;
   inputRef?: Ref<HTMLFieldSetElement>;
-  /** Require the selected value to still be one of the available options. */
   onlyAvailableOptions?: boolean;
   validation?: ChoiceValidation;
 }

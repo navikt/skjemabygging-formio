@@ -49,7 +49,6 @@ const attachmentUploadValidationFields: ValidationFieldsBuilder<AttachmentDefini
   ];
 };
 
-/** The validation-fields registry used by the fyllut form flow. */
 const fyllutValidationFieldsRegistry: ValidationFieldsRegistry = {
   ...validationFieldsRegistry,
   attachment: attachmentUploadValidationFields,

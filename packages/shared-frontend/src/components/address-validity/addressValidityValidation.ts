@@ -14,7 +14,6 @@ interface AddressValidityValidationInput {
   value?: AddressValidityValue;
 }
 
-/** The two date pickers an address validity renders, with the window they accept. */
 const toAddressValidityValidationFields = ({
   statePath,
   required,

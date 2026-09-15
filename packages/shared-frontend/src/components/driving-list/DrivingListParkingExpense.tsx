@@ -9,7 +9,6 @@ interface DrivingListParkingExpenseProps {
   enforceMaxHundred: boolean;
 }
 
-/** Parking expense for a single day in the driving list. */
 const DrivingListParkingExpense = ({ statePath, date, enforceMaxHundred }: DrivingListParkingExpenseProps) => (
   <InternalTextField
     statePath={statePath}

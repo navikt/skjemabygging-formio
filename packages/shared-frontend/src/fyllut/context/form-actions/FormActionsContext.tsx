@@ -4,7 +4,6 @@ import { useSubmissionState } from '../../../context/state/SubmissionStateContex
 
 type FormActionStatus = 'idle' | 'saving' | 'submitting' | 'submitted';
 
-// Coordinates action state around handlers supplied by the owning form flow.
 interface FormActionHandlers {
   save?: (submission: Submission) => Promise<void>;
   submit?: (submission: Submission) => Promise<void>;

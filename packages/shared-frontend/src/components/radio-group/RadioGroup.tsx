@@ -20,7 +20,6 @@ interface RadioGroupProps extends Omit<BaseFieldProps, 'label'> {
   error?: string;
   showOptionalText?: boolean;
   translateValues?: boolean;
-  /** Require the selected value to still be one of the available options. */
   onlyAvailableOptions?: boolean;
   validation?: ChoiceValidation;
 }
