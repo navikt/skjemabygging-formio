@@ -23,7 +23,7 @@ describe('drivingListUtils', () => {
     expect(
       mergePeriodDates(
         [{ date: '2024-01-19', parking: '20', betalingsplanId: 'p2' }],
-        // The group is given every picked day, but only offers the ones inside its own period.
+        // Each group receives every picked day, but only offers the ones inside its own period.
         ['2024-01-09', '2024-01-19'],
         ['2024-01-08', '2024-01-09', '2024-01-10'],
         'p1',

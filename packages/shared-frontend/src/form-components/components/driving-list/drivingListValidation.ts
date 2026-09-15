@@ -1,8 +1,8 @@
 import { DrivingListSubmission, SubmissionMethod, TEXTS, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import { ValidationField } from '../../context/validation/validationTypes';
-import { toDatePickerValidation } from '../date/dateValidation';
-import { toFieldValidation, toValidationFields } from '../shared/fieldValidation';
-import { FieldValidationProp } from '../types';
+import { toDatePickerValidation } from '../../../components/date/dateValidation';
+import { toFieldValidation, toValidationFields } from '../../../components/shared/fieldValidation';
+import { FieldValidationProp } from '../../../components/types';
+import { ValidationField } from '../../../context/validation/validationTypes';
 import { allPaperFieldsForPeriodsAreSet, normalizeSubmissionDate } from './drivingListUtils';
 
 interface DrivingListValidationInput {

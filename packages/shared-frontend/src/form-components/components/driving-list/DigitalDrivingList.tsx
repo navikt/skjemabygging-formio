@@ -1,9 +1,9 @@
 import { Accordion, BodyShort, Box, Heading, VStack } from '@navikt/ds-react';
 import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useLanguage } from '../../context/language/LanguageContext';
-import { sanitizeHtml } from '../../utils/sanitizeHtml';
-import Alert from '../alert/Alert';
-import RadioGroup from '../radio-group/RadioGroup';
+import Alert from '../../../components/alert/Alert';
+import RadioGroup from '../../../components/radio-group/RadioGroup';
+import { useLanguage } from '../../../context/language/LanguageContext';
+import { sanitizeHtml } from '../../../utils/sanitizeHtml';
 import DrivingListPeriod from './DrivingListPeriod';
 import { getActivityFieldId, mapToVedtakList } from './drivingListUtils';
 import { DrivingListState } from './useDrivingListState';

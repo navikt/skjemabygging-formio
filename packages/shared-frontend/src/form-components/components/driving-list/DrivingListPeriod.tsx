@@ -1,11 +1,11 @@
 import { Accordion, BodyShort, Heading } from '@navikt/ds-react';
 import { TEXTS, VedtakBetalingsplan, dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo } from 'react';
-import { useLanguage } from '../../context/language/LanguageContext';
-import { useStateField } from '../../context/state/useStateField';
-import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
-import Alert from '../alert/Alert';
-import CheckboxGroup from '../checkbox-group/CheckboxGroup';
+import Alert from '../../../components/alert/Alert';
+import CheckboxGroup from '../../../components/checkbox-group/CheckboxGroup';
+import { useLanguage } from '../../../context/language/LanguageContext';
+import { useStateField } from '../../../context/state/useStateField';
+import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
 import DrivingListParkingExpense from './DrivingListParkingExpense';
 import {
   getParkingFieldPath,

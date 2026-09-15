@@ -1,8 +1,8 @@
 import { Accordion, Box, Button, Heading, HStack } from '@navikt/ds-react';
 import { dateUtils, DrivingListSubmission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useLanguage } from '../../context/language/LanguageContext';
-import DatePicker from '../date/DatePicker';
-import RadioGroup from '../radio-group/RadioGroup';
+import DatePicker from '../../../components/date/DatePicker';
+import RadioGroup from '../../../components/radio-group/RadioGroup';
+import { useLanguage } from '../../../context/language/LanguageContext';
 import DrivingListPeriod from './DrivingListPeriod';
 import {
   allPaperFieldsForPeriodsAreSet,

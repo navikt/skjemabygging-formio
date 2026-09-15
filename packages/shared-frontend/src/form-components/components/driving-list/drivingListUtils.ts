@@ -5,8 +5,8 @@ import {
   VedtakBetalingsplan,
   dateUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { inputId } from '../../utils/inputId';
-import { toActivitiesLocale } from '../activities/activitiesUtils';
+import { toActivitiesLocale } from '../../../components/activities/activitiesUtils';
+import { inputId } from '../../../utils/inputId';
 
 type DrivingListDate = {
   date: string;

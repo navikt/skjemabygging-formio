@@ -1,5 +1,5 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import InternalTextField from '../text-field/InternalTextField';
+import InternalTextField from '../../../components/text-field/InternalTextField';
 import { toParkingExpenseRules } from './drivingListValidation';
 
 interface DrivingListParkingExpenseProps {

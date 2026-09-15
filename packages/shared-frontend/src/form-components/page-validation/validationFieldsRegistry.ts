@@ -4,7 +4,6 @@ import { toActivitiesValidationFields } from '../../components/activities/activi
 import { toAddressValidityValidationFields } from '../../components/address-validity/addressValidityValidation';
 import { toAddressValidationFields } from '../../components/address/addressValidation';
 import { toDatePickerValidation, toMonthPickerValidation } from '../../components/date/dateValidation';
-import { toDrivingListValidationFields } from '../../components/driving-list/drivingListValidation';
 import { toEmailValidation } from '../../components/email/Email';
 import { toIbanValidation } from '../../components/iban/Iban';
 import { toIdentityValidationFields } from '../../components/identity/identityValidation';
@@ -28,6 +27,7 @@ import {
 import { getDataFetcherData } from '../components/data-fetcher/dataFetcherUtils';
 import { toDataFetcherValidationFields } from '../components/data-fetcher/dataFetcherValidation';
 import { getActiveRowComponents, getDataGridRows, getRenderedDataGridRows } from '../components/data-grid/dataGridRows';
+import { toDrivingListValidationFields } from '../components/driving-list/drivingListValidation';
 import { resolveCustomValidationRules } from '../custom-validation/customValidationRules';
 import {
   getDatePickerFromDate,

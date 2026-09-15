@@ -7,11 +7,11 @@ import {
   dateUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useApplication } from '../../context/application/ApplicationContext';
-import { useLanguage } from '../../context/language/LanguageContext';
-import { useRuntimeServices } from '../../context/runtime-services/RuntimeServicesContext';
-import { useStateField } from '../../context/state/useStateField';
-import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
+import { useApplication } from '../../../context/application/ApplicationContext';
+import { useLanguage } from '../../../context/language/LanguageContext';
+import { useRuntimeServices } from '../../../context/runtime-services/RuntimeServicesContext';
+import { useStateField } from '../../../context/state/useStateField';
+import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
 import {
   allPaperFieldsForPeriodsAreSet,
   findSelectedVedtak,
