@@ -107,7 +107,7 @@ describe('Conditional rendering', () => {
 
       it("navigates back to the added panel on clicking 'rediger' after changing language", () => {
         cy.findByRole('button', { name: 'Norsk bokmål' }).click();
-        cy.findByRole('link', { name: 'English' }).click();
+        cy.findByRole('radio', { name: 'English' }).click();
         cy.clickEditAnswer('Lamb ribs');
         cy.url().should('include', '/pinnekjott');
         cy.url().should('include', 'lang=en');
