@@ -1,6 +1,6 @@
 import Identity from '../../../components/identity/Identity';
 import { IdentityDefinition } from '../../component-types';
-import { InputComponentProps, resolveSubmissionPath } from '../../inputComponentRegistryUtils';
+import { InputComponentProps, resolveSubmissionPath } from '../../inputComponentUtils';
 import FormGroup from '../../shared/FormGroup';
 
 const InputIdentity = ({ component, submissionPath }: InputComponentProps<IdentityDefinition>) => (

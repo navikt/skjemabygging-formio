@@ -5,7 +5,7 @@ import { useApplication } from '../context/application/ApplicationContext';
 import { useFormDefinition } from '../context/form-definition/FormDefinitionContext';
 import { UnvalidatedFields } from '../context/validation/ValidationScopeContext';
 import { inputComponentRegistry, InputComponentRegistry } from './inputComponentRegistry';
-import { InputComponentProps, InputComponentType } from './inputComponentRegistryUtils';
+import { InputComponentProps, InputComponentType } from './inputComponentUtils';
 import { reportUnsupportedComponent } from './unsupportedComponentLogger';
 
 interface Props {

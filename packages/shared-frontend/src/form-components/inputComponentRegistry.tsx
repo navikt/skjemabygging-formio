@@ -36,7 +36,7 @@ import InputSurname from './components/surname/InputSurname';
 import InputTextArea from './components/text-area/InputTextArea';
 import InputTextField from './components/text-field/InputTextField';
 import InputYear from './components/year/InputYear';
-import { InputComponentProps, InputComponentRegistry } from './inputComponentRegistryUtils';
+import { InputComponentProps, InputComponentRegistry } from './inputComponentUtils';
 
 const inputComponentRegistry: InputComponentRegistry = {
   accordion: InputAccordion,

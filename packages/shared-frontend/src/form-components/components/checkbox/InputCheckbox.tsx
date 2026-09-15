@@ -7,7 +7,7 @@ import {
   resolveFieldSize,
   resolveReadMore,
   resolveSubmissionPath,
-} from '../../inputComponentRegistryUtils';
+} from '../../inputComponentUtils';
 import FormGroup from '../../shared/FormGroup';
 
 const InputCheckbox = ({ component, submissionPath }: InputComponentProps<CheckboxDefinition>) => {

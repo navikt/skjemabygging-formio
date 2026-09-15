@@ -1,6 +1,6 @@
 import DrivingList from '../../../components/driving-list/DrivingList';
 import { DrivingListDefinition } from '../../component-types';
-import { InputComponentProps, resolveReadMore, resolveSubmissionPath } from '../../inputComponentRegistryUtils';
+import { InputComponentProps, resolveReadMore, resolveSubmissionPath } from '../../inputComponentUtils';
 import FormGroup from '../../shared/FormGroup';
 
 const InputDrivingList = ({ component, submissionPath }: InputComponentProps<DrivingListDefinition>) => (

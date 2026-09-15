@@ -1,6 +1,6 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import { describe, expect, it } from 'vitest';
-import { resolveFieldSize, resolveSelectType, resolveValidation } from './inputComponentRegistryUtils';
+import { resolveFieldSize, resolveSelectType, resolveValidation } from './inputComponentUtils';
 
 const createComponent = (overrides: Partial<Component>): Component =>
   ({

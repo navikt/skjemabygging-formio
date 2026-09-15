@@ -35,7 +35,7 @@ import {
   getMonthPickerMaxYear,
   getMonthPickerMinYear,
 } from '../dateDefinitionUtils';
-import { getValues, isRequired, resolveValidation } from '../inputComponentRegistryUtils';
+import { getValues, isRequired, resolveValidation } from '../inputComponentUtils';
 import { toSelectedValuesList } from '../shared/selectedValuesUtils';
 import { ValidationFieldsBuilder, ValidationFieldsContext, ValidationFieldsRegistry } from './validationFieldsTypes';
 

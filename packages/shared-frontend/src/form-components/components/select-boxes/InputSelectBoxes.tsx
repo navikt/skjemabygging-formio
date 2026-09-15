@@ -10,7 +10,7 @@ import {
   resolveFieldSize,
   resolveReadMore,
   resolveSubmissionPath,
-} from '../../inputComponentRegistryUtils';
+} from '../../inputComponentUtils';
 import FormGroup from '../../shared/FormGroup';
 import { getSelectedValuesAsList, getSelectedValuesMap } from '../../shared/selectedValuesUtils';
 

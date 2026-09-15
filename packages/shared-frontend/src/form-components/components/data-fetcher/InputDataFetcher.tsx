@@ -8,7 +8,7 @@ import { parseSubmissionPath, setDeepValue } from '../../../context/state/stateH
 import { useStateField } from '../../../context/state/useStateField';
 import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
 import { DataFetcherDefinition } from '../../component-types';
-import { InputComponentProps, resolveReadMore, resolveSubmissionPath } from '../../inputComponentRegistryUtils';
+import { InputComponentProps, resolveReadMore, resolveSubmissionPath } from '../../inputComponentUtils';
 import FormGroup from '../../shared/FormGroup';
 import { getSelectedValuesAsList, getSelectedValuesMap } from '../../shared/selectedValuesUtils';
 import { getDataFetcherData } from './dataFetcherUtils';

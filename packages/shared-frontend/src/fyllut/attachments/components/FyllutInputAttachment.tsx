@@ -4,11 +4,7 @@ import { useLanguage } from '../../../context/language/LanguageContext';
 import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
 import { AttachmentDefinition } from '../../../form-components/component-types';
 import InputAttachment from '../../../form-components/components/attachment/InputAttachment';
-import {
-  InputComponentProps,
-  isRequired,
-  resolveSubmissionPath,
-} from '../../../form-components/inputComponentRegistryUtils';
+import { InputComponentProps, isRequired, resolveSubmissionPath } from '../../../form-components/inputComponentUtils';
 import { useIntegration } from '../../context/integration/IntegrationContext';
 import AttachmentUpload from './AttachmentUpload';
 import OtherAttachmentUpload from './OtherAttachmentUpload';

@@ -1,6 +1,6 @@
 import Activities from '../../../components/activities/Activities';
 import { ActivitiesDefinition } from '../../component-types';
-import { InputComponentProps, resolveReadMore, resolveSubmissionPath } from '../../inputComponentRegistryUtils';
+import { InputComponentProps, resolveReadMore, resolveSubmissionPath } from '../../inputComponentUtils';
 import FormGroup from '../../shared/FormGroup';
 
 const InputActivities = ({ component, submissionPath }: InputComponentProps<ActivitiesDefinition>) => (

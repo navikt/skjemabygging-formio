@@ -1,11 +1,6 @@
 import Address from '../../../components/address/Address';
 import { AddressDefinition } from '../../component-types';
-import {
-  InputComponentProps,
-  isRequired,
-  resolveFieldSize,
-  resolveSubmissionPath,
-} from '../../inputComponentRegistryUtils';
+import { InputComponentProps, isRequired, resolveFieldSize, resolveSubmissionPath } from '../../inputComponentUtils';
 import FormGroup from '../../shared/FormGroup';
 
 const InputAddress = ({ component, submissionPath }: InputComponentProps<AddressDefinition>) => (

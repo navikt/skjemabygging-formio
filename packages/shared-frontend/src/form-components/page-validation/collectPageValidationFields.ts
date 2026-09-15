@@ -2,7 +2,7 @@ import { Form, Submission, SubmissionMethod, submissionUtils } from '@navikt/skj
 import { getResolvedSubmissionPath } from '../../context/form-definition/formDefinitionUtils';
 import { ValidationField } from '../../context/validation/validationTypes';
 import { ComponentDefinition } from '../component-types';
-import { InputComponentType } from '../inputComponentRegistryUtils';
+import { InputComponentType } from '../inputComponentUtils';
 import { validationFieldsRegistry } from './validationFieldsRegistry';
 import { ValidationFieldsBuilder, ValidationFieldsRegistry } from './validationFieldsTypes';
 

@@ -1,7 +1,7 @@
 import { Component, Form, Submission, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
 import { ValidationField } from '../../context/validation/validationTypes';
 import { ComponentDefinition, ComponentDefinitionByType } from '../component-types';
-import { InputComponentType } from '../inputComponentRegistryUtils';
+import { InputComponentType } from '../inputComponentUtils';
 
 /**
  * Everything a component needs to answer "which fields would I validate right now". It mirrors what

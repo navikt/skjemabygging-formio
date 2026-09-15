@@ -9,7 +9,7 @@ import {
   resolveFieldSize,
   resolveReadMore,
   resolveSubmissionPath,
-} from '../../inputComponentRegistryUtils';
+} from '../../inputComponentUtils';
 import { usePageComponents } from '../../PageComponentsContext';
 import FormGroup from '../../shared/FormGroup';
 

@@ -10,7 +10,7 @@ import {
   resolveReadMore,
   resolveSelectType,
   resolveSubmissionPath,
-} from '../../inputComponentRegistryUtils';
+} from '../../inputComponentUtils';
 import FormGroup from '../../shared/FormGroup';
 
 const isComponentValue = (value: unknown): value is ComponentValue =>

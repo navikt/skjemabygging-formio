@@ -8,7 +8,7 @@ import {
   resolveFieldSize,
   resolveReadMore,
   resolveSubmissionPath,
-} from '../../inputComponentRegistryUtils';
+} from '../../inputComponentUtils';
 import FormGroup from '../../shared/FormGroup';
 
 const InputMonthPicker = ({ component, submissionPath }: InputComponentProps<MonthPickerDefinition>) => {

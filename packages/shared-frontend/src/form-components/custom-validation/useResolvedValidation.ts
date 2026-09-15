@@ -2,7 +2,7 @@ import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo } from 'react';
 import { FieldValidationProp } from '../../components/types';
 import { useSubmissionState } from '../../context/state/SubmissionStateContext';
-import { resolveValidation } from '../inputComponentRegistryUtils';
+import { resolveValidation } from '../inputComponentUtils';
 import { usePageComponents } from '../PageComponentsContext';
 import { resolveCustomValidationRules } from './customValidationRules';
 

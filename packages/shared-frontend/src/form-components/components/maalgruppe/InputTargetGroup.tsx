@@ -3,7 +3,7 @@ import { useEffect, useMemo } from 'react';
 import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
 import { useStateField } from '../../../context/state/useStateField';
 import { TargetGroupDefinition } from '../../component-types';
-import { InputComponentProps, resolveSubmissionPath } from '../../inputComponentRegistryUtils';
+import { InputComponentProps, resolveSubmissionPath } from '../../inputComponentUtils';
 
 type TargetGroupMapValue = { priority: number; code: string };
 
