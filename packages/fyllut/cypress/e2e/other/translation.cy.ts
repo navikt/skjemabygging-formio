@@ -37,17 +37,17 @@ describe('Translations', () => {
     it('change to english and back to norwegian', () => {
       cy.findByRole('heading', { name: 'Veiledning' }).should('exist');
       cy.findByRole('button', { name: 'Norsk bokmål' }).click();
-      cy.findByRole('link', { name: 'English' }).click();
+      cy.findByRole('menuitemradio', { name: 'English' }).click();
       cy.findByRole('heading', { name: 'Guidance' }).should('exist');
       cy.findByRole('button', { name: 'English' }).click();
-      cy.findByRole('link', { name: 'Norsk bokmål' }).click();
+      cy.findByRole('menuitemradio', { name: 'Norsk bokmål' }).click();
       cy.findByRole('heading', { name: 'Veiledning' }).should('exist');
     });
 
     it('retains selected language on navigation', () => {
       cy.findByRole('heading', { name: 'Veiledning' }).should('exist');
       cy.findByRole('button', { name: 'Norsk bokmål' }).click();
-      cy.findByRole('link', { name: 'English' }).click();
+      cy.findByRole('menuitemradio', { name: 'English' }).click();
       cy.findByRole('heading', { name: 'Guidance' }).should('exist');
       cy.clickNextStep();
 
@@ -87,12 +87,12 @@ describe('Translations', () => {
 
       cy.findByRole('link', { name: 'Dine opplysninger' }).click();
       cy.findByRole('button', { name: 'Norsk bokmål' }).click();
-      cy.findByRole('link', { name: 'English' }).click();
+      cy.findByRole('menuitemradio', { name: 'English' }).click();
       cy.findByRole('heading', { name: 'Your information' }).should('exist');
 
       cy.findByRole('link', { name: 'Attachments' }).click();
       cy.findByRole('button', { name: 'English' }).click();
-      cy.findByRole('link', { name: 'Norsk bokmål' }).click();
+      cy.findByRole('menuitemradio', { name: 'Norsk bokmål' }).click();
       cy.findByRole('heading', { name: 'Vedlegg' }).should('exist');
 
       cy.findByRole('link', { name: 'Dine opplysninger' }).click();
@@ -107,7 +107,7 @@ describe('Translations', () => {
 
     it('Check that translateHTMLTemplate override work', () => {
       cy.findByRole('button', { name: 'Norsk bokmål' }).click();
-      cy.findByRole('link', { name: 'English' }).click();
+      cy.findByRole('menuitemradio', { name: 'English' }).click();
       cy.clickNextStep();
 
       // This example will fail without the override in translateHTMLTemplate
