@@ -14,6 +14,11 @@ const report: RequestHandler = async (req, res, next) => {
     res.attachment(`${reportId}.${report.fileEnding}`);
     await reportService.generate(reportId, res);
   } catch (err) {
+    // A pipeline failure destroys the response. Never append an error document to a partial download.
+    if (res.headersSent || res.destroyed) {
+      if (!res.destroyed) res.destroy();
+      return;
+    }
     next(new ApiError('Kunne ikke generere rapport', true, err as Error));
   }
 };

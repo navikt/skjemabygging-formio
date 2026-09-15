@@ -5,11 +5,12 @@ import {
   FormPropertiesType,
   PublishedTranslations,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import { parse } from 'csv-parse/sync';
 import MemoryStream from 'memorystream';
 import nock from 'nock';
 import config from '../config';
 import ReportService from './ReportService';
-import { formPublicationsService, formsService } from './index';
+import { formPublicationsService, formsService, recipientService, staticPdfService } from './index';
 
 const { formsApi } = config;
 
@@ -17,7 +18,7 @@ describe('ReportService', () => {
   let reportService: ReportService;
 
   beforeEach(() => {
-    reportService = new ReportService(formsService, formPublicationsService);
+    reportService = new ReportService({ formsService, formPublicationsService, recipientService, staticPdfService });
   });
 
   afterEach(() => {
@@ -47,11 +48,12 @@ describe('ReportService', () => {
   });
 
   describe('Reports', () => {
-    const CSV_HEADER_LINE = 'skjemanummer;skjematittel;språk\n';
+    const CSV_HEADER_LINE = 'skjemanummer;skjematittel;språk;skjematittel (nb);skjematittel (nn);skjematittel (en)\n';
 
     const createWritableStream = () => new MemoryStream(undefined, { readable: false });
 
     const setupNock = (publishedForms: Partial<Form>[]) => {
+      nock(formsApi.url).get('/v1/recipients').reply(200, []);
       nock(formsApi.url)
         .get(/\/v1\/forms\?.*$/)
         .times(1)
@@ -61,6 +63,8 @@ describe('ReportService', () => {
         .times(1)
         .reply(200, publishedForms);
       for (const form of publishedForms) {
+        nock(formsApi.url).get(`/v1/form-publications/${form.path}`).reply(200, form);
+        nock(formsApi.url).get(`/v1/forms/${form.path}/static-pdfs`).reply(200, []);
         nock(formsApi.url).get(`/v1/forms/${form.path}`).reply(200, form);
         const publishedTranslations: PublishedTranslations = {
           publishedAt: form.publishedAt ?? '2025-01-28T10:00:10.325Z',
@@ -80,17 +84,15 @@ describe('ReportService', () => {
       }
     };
 
-    function parseReport(content: string) {
-      const allLines = content.split('\n').filter((line) => !!line);
-      const forms = allLines.slice(1).map((formLine) => formLine.split(';'));
-      const headers = allLines[0].split(';');
+    const parseReport = (content: string) => {
+      const [headers, ...forms] = parse(content, { delimiter: ';' }) as string[][];
       return {
         headers,
         forms,
         numberOfForms: forms.length,
         getHeaderIndex: (overskrift: string) => headers.indexOf(overskrift),
       };
-    }
+    };
 
     describe('generateFormsPublishedLanguage', () => {
       describe('number of signatures', () => {
@@ -303,7 +305,10 @@ describe('ReportService', () => {
         const writableStream = createWritableStream();
         await reportService.generate('forms-published-languages', writableStream);
         expect(writableStream.toString()).toEqual(
-          CSV_HEADER_LINE + 'TEST1;Testskjema1;nb,en,nn\nTEST2;Testskjema2;nb,en\nTEST3;Testskjema3;nb\n',
+          CSV_HEADER_LINE +
+            'TEST1;Testskjema1;nb,en,nn;Testskjema1;Testskjema1;Testskjema1\n' +
+            'TEST2;Testskjema2;nb,en;Testskjema2;;Testskjema2\n' +
+            'TEST3;Testskjema3;nb;Testskjema3;;\n',
         );
       });
 
@@ -564,7 +569,9 @@ describe('ReportService', () => {
 
         const writableStream = createWritableStream();
         await reportService.generate('forms-published-languages', writableStream);
-        expect(writableStream.toString()).toEqual(CSV_HEADER_LINE + 'TEST1;Testskjema1;en,nn\n');
+        expect(writableStream.toString()).toEqual(
+          CSV_HEADER_LINE + 'TEST1;Testskjema1;en,nn;;Testskjema1;Testskjema1\n',
+        );
       });
 
       it('fails if unknown report', async () => {
