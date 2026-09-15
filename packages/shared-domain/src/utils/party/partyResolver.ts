@@ -59,10 +59,7 @@ const resolveParty = (form: Form, submission: Submission): Party | undefined => 
   }
 
   if (submittedSender?.organization) {
-    const sender = {
-      name: submittedSender.organization.name,
-      organizationNumber: submittedSender.organization.number,
-    };
+    const sender = submittedSender.organization;
 
     return user ? { onBehalfOf: 'other-person', sender, user } : { onBehalfOf: 'multiple-people', sender };
   }

@@ -79,7 +79,7 @@ describe('mapPartyToApplication', () => {
       name: 'organization, identified user',
       party: {
         onBehalfOf: 'other-person',
-        sender: { name: 'Organization', organizationNumber: '889640782' },
+        sender: { name: 'Organization', number: '889640782' },
         user: { kind: 'identified-person', nationalIdentityNumber: '12345678911' },
       },
       expected: {
@@ -91,7 +91,7 @@ describe('mapPartyToApplication', () => {
       name: 'organization, unidentified user',
       party: {
         onBehalfOf: 'other-person',
-        sender: { name: 'Organization', organizationNumber: '889640782' },
+        sender: { name: 'Organization', number: '889640782' },
         user: {
           kind: 'unidentified-person',
           firstName: 'User',
@@ -107,7 +107,7 @@ describe('mapPartyToApplication', () => {
       name: 'organization, several people',
       party: {
         onBehalfOf: 'multiple-people',
-        sender: { name: 'Organization', organizationNumber: '889640782' },
+        sender: { name: 'Organization', number: '889640782' },
       },
       expected: {
         avsender: { id: '889640782', idType: 'ORGNR', navn: 'Organization' },

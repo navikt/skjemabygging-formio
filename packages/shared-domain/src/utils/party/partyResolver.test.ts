@@ -134,7 +134,7 @@ describe('resolveParty', () => {
       }),
     ).toEqual({
       onBehalfOf: 'other-person',
-      sender: { name: 'Organization', organizationNumber: '889 640 782' },
+      sender: { name: 'Organization', number: '889 640 782' },
       user: {
         kind: 'unidentified-person',
         firstName: 'User',
@@ -156,7 +156,7 @@ describe('resolveParty', () => {
       }),
     ).toEqual({
       onBehalfOf: 'multiple-people',
-      sender: { name: 'Organization', organizationNumber: '889 640 782' },
+      sender: { name: 'Organization', number: '889 640 782' },
     });
   });
 

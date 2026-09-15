@@ -6,15 +6,13 @@ type ApplicationPartyData = Pick<SubmitApplicationRequest, 'bruker' | 'avsender'
 type ResponsibleSender = Extract<Party, { onBehalfOf: 'other-person' }>['sender'];
 
 const mapSender = (sender: ResponsibleSender): AvsenderId => ({
-  id: formatUtils.removeAllSpaces(
-    'organizationNumber' in sender ? sender.organizationNumber : sender.nationalIdentityNumber,
-  ),
-  idType: 'organizationNumber' in sender ? 'ORGNR' : 'FNR',
-  navn: 'organizationNumber' in sender ? sender.name : `${sender.firstName} ${sender.surname}`,
+  id: formatUtils.removeAllSpaces('number' in sender ? sender.number : sender.nationalIdentityNumber),
+  idType: 'number' in sender ? 'ORGNR' : 'FNR',
+  navn: 'number' in sender ? sender.name : `${sender.firstName} ${sender.surname}`,
 });
 
 const mapOrganizationSender = (party: Extract<Party, { onBehalfOf: 'multiple-people' }>): AvsenderId => ({
-  id: formatUtils.removeAllSpaces(party.sender.organizationNumber),
+  id: formatUtils.removeAllSpaces(party.sender.number),
   idType: 'ORGNR',
   navn: party.sender.name,
 });

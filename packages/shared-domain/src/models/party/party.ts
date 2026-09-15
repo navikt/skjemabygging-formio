@@ -1,3 +1,5 @@
+import type { SenderOrganization, SenderPerson } from '../submission/sender';
+
 interface PartyAddress {
   co?: string;
   postOfficeBox?: string;
@@ -24,17 +26,6 @@ interface UnidentifiedConcernedPerson {
   address?: PartyAddress;
 }
 
-interface ResponsiblePerson {
-  firstName: string;
-  surname: string;
-  nationalIdentityNumber: string;
-}
-
-interface ResponsibleOrganization {
-  name: string;
-  organizationNumber: string;
-}
-
 type ConcernedPerson = IdentifiedConcernedPerson | UnidentifiedConcernedPerson;
 
 type Party =
@@ -44,20 +35,12 @@ type Party =
     }
   | {
       onBehalfOf: 'other-person';
-      sender: ResponsiblePerson | ResponsibleOrganization;
+      sender: SenderPerson | SenderOrganization;
       user: ConcernedPerson;
     }
   | {
       onBehalfOf: 'multiple-people';
-      sender: ResponsibleOrganization;
+      sender: SenderOrganization;
     };
 
-export type {
-  ConcernedPerson,
-  IdentifiedConcernedPerson,
-  Party,
-  PartyAddress,
-  ResponsibleOrganization,
-  ResponsiblePerson,
-  UnidentifiedConcernedPerson,
-};
+export type { ConcernedPerson, IdentifiedConcernedPerson, Party, PartyAddress, UnidentifiedConcernedPerson };

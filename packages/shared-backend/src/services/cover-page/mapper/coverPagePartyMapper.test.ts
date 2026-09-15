@@ -5,7 +5,7 @@ describe('mapPartyToCoverPage', () => {
   it('maps an identified concerned user', () => {
     const party: Party = {
       onBehalfOf: 'other-person',
-      sender: { name: 'Organization', organizationNumber: '889640782' },
+      sender: { name: 'Organization', number: '889640782' },
       user: { kind: 'identified-person', nationalIdentityNumber: '12345678911' },
     };
 
@@ -44,7 +44,7 @@ describe('mapPartyToCoverPage', () => {
   it('normalizes missing unidentified user fields for the cover-page contract', () => {
     const party: Party = {
       onBehalfOf: 'other-person',
-      sender: { name: 'Organization', organizationNumber: '889640782' },
+      sender: { name: 'Organization', number: '889640782' },
       user: { kind: 'unidentified-person' },
     };
 
@@ -60,7 +60,7 @@ describe('mapPartyToCoverPage', () => {
   it('omits the cover-page user for multiple people', () => {
     const party: Party = {
       onBehalfOf: 'multiple-people',
-      sender: { name: 'Organization', organizationNumber: '889640782' },
+      sender: { name: 'Organization', number: '889640782' },
     };
 
     expect(mapPartyToCoverPage(party)).toEqual({});
