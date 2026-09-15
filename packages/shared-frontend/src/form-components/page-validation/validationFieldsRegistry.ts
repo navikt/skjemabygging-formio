@@ -1,6 +1,5 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import { toAccountNumberValidation } from '../../components/account-number/AccountNumber';
-import { toActivitiesValidationFields } from '../../components/activities/activitiesValidation';
 import { toAddressValidityValidationFields } from '../../components/address-validity/addressValidityValidation';
 import { toAddressValidationFields } from '../../components/address/addressValidation';
 import { toDatePickerValidation, toMonthPickerValidation } from '../../components/date/dateValidation';
@@ -24,6 +23,7 @@ import {
   enrichComponentsWithBaseSubmissionPath,
   toComponentDefinitions,
 } from '../../context/form-definition/formDefinitionUtils';
+import { toActivitiesValidationFields } from '../components/activities/activitiesValidation';
 import { getDataFetcherData } from '../components/data-fetcher/dataFetcherUtils';
 import { toDataFetcherValidationFields } from '../components/data-fetcher/dataFetcherValidation';
 import { getActiveRowComponents, getDataGridRows, getRenderedDataGridRows } from '../components/data-grid/dataGridRows';

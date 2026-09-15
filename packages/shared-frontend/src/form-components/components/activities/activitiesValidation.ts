@@ -1,6 +1,6 @@
 import { SubmissionMethod, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { ValidationField } from '../../context/validation/validationTypes';
-import { toFieldValidation, toValidationFields } from '../shared/fieldValidation';
+import { toFieldValidation, toValidationFields } from '../../../components/shared/fieldValidation';
+import { ValidationField } from '../../../context/validation/validationTypes';
 
 interface ActivitiesValidationInput {
   statePath: string;
