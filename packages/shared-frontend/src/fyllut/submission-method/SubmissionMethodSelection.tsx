@@ -4,6 +4,7 @@ import { Form, SubmissionMethod, submissionTypesUtils, TEXTS } from '@navikt/skj
 import { MouseEvent, useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useLanguage } from '../../context/language/LanguageContext';
+import { updateSearch } from '../../utils/searchParams';
 import { useIntegration } from '../context/integration/IntegrationContext';
 
 enum SelectionState {
@@ -24,16 +25,11 @@ const SubmissionMethodSelection = ({ form }: Props) => {
   const submissionTypes = form.properties.submissionTypes;
 
   const searchWithSub = useCallback(
-    (submissionMethod: SubmissionMethod) => {
-      const searchParams = new URLSearchParams(location.search);
-      searchParams.set('sub', submissionMethod);
-      if (submissionMethod === 'digital') {
-        searchParams.set('forceMellomlagring', 'true');
-      } else {
-        searchParams.delete('forceMellomlagring');
-      }
-      return `?${searchParams.toString()}`;
-    },
+    (submissionMethod: SubmissionMethod) =>
+      updateSearch(location.search, {
+        sub: submissionMethod,
+        forceMellomlagring: submissionMethod === 'digital' ? 'true' : undefined,
+      }),
     [location.search],
   );
 

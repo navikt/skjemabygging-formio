@@ -10,7 +10,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { applyPrefilledValuesToSubmission } from '../../context/form-definition/prefillSubmission';
 import { ApplicationService, Draft } from '../../context/runtime-services/RuntimeServicesContext';
-import { buildDigitalFormSearch } from './digitalDraftUtils';
+import { updateSearch } from '../../utils/searchParams';
 
 type ReadyDigitalDraft = {
   type: 'ready';
@@ -102,13 +102,14 @@ const initializeDigitalDraft = async ({
     return {
       type: 'redirect',
       pathname: `/${form.path}/paabegynt`,
-      search: buildDigitalFormSearch(search, { forceMellomlagring: undefined }),
+      search: updateSearch(search, { sub: 'digital', forceMellomlagring: undefined }),
     };
   }
 
   return {
     type: 'redirect',
-    search: buildDigitalFormSearch(search, {
+    search: updateSearch(search, {
+      sub: 'digital',
       forceMellomlagring: undefined,
       innsendingsId: result.draft.id,
     }),

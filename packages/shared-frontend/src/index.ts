@@ -9,7 +9,6 @@ import { FormDefinitionProvider, useFormDefinition } from './context/form-defini
 import { applyPrefilledValuesToSubmission } from './context/form-definition/prefillSubmission';
 import { LanguageProvider, useLanguage } from './context/language/LanguageContext';
 import { RuntimeServicesProvider, useRuntimeServices } from './context/runtime-services/RuntimeServicesContext';
-import { initializeSubmission } from './context/state/initializeSubmission';
 import { StateStoreProvider } from './context/state/StateContext';
 import { SubmissionStateProvider, useSubmissionState } from './context/state/SubmissionStateContext';
 import { SubmissionMethodProvider, useSubmissionMethod } from './context/submission-method/SubmissionMethodContext';
@@ -20,9 +19,7 @@ import {
   reportUnsupportedCustomValidation,
 } from './form-components';
 import { applyPrefillDataToForm, getFormPrefillKeys, initializeDigitalDraft, RenderForm } from './fyllut';
-import { buildDigitalFormSearch, isSoknadAlreadyExistsResponse } from './fyllut/draft/digitalDraftUtils';
 import { resolveDefaultSubmissionMethod } from './fyllut/submission-method/submissionMethodResolution';
-import SharedFrontendBoundary from './SharedFrontendBoundary';
 import './styles/tokens.css';
 
 const sharedFrontendPackageName = '@navikt/skjemadigitalisering-shared-frontend';
@@ -71,12 +68,10 @@ export type {
   IntegrationHttpHeaders,
   RenderFormProps,
 } from './fyllut';
-export type { SharedFrontendBoundaryProps } from './SharedFrontendBoundary';
 export {
   ApplicationProvider,
   applyPrefillDataToForm,
   applyPrefilledValuesToSubmission,
-  buildDigitalFormSearch,
   CountrySelect,
   CurrencySelect,
   findUnsupportedCustomValidation,
@@ -84,8 +79,6 @@ export {
   FormErrorSummary,
   getFormPrefillKeys,
   initializeDigitalDraft,
-  initializeSubmission,
-  isSoknadAlreadyExistsResponse,
   LanguageProvider,
   NavUnitSelect,
   RenderForm,
@@ -93,7 +86,6 @@ export {
   reportUnsupportedCustomValidation,
   resolveDefaultSubmissionMethod,
   RuntimeServicesProvider,
-  SharedFrontendBoundary,
   sharedFrontendPackageName,
   StateStoreProvider,
   SubmissionMethodProvider,

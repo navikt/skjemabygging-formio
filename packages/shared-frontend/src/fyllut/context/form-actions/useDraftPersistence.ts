@@ -5,7 +5,7 @@ import { useLanguage } from '../../../context/language/LanguageContext';
 import { Draft, useRuntimeServices } from '../../../context/runtime-services/RuntimeServicesContext';
 import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
 import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
-import { buildDigitalFormSearch } from '../../draft/digitalDraftUtils';
+import { updateSearch } from '../../../utils/searchParams';
 import prepareSubmissionForTransport from '../../submission/prepareSubmissionForTransport';
 
 const createSaveDraftError = (cause: unknown, userMessage: string) => ({ cause, userMessage });
@@ -56,7 +56,8 @@ const useDraftPersistence = (form: Form, initialInnsendingsId?: string): DraftPe
         return;
       }
 
-      const nextSearch = buildDigitalFormSearch(search, {
+      const nextSearch = updateSearch(search, {
+        sub: 'digital',
         forceMellomlagring: undefined,
         innsendingsId,
       });
@@ -72,7 +73,7 @@ const useDraftPersistence = (form: Form, initialInnsendingsId?: string): DraftPe
       navigate(
         {
           pathname: `/${form.path}/paabegynt`,
-          search: buildDigitalFormSearch(search, { forceMellomlagring: undefined }),
+          search: updateSearch(search, { sub: 'digital', forceMellomlagring: undefined }),
         },
         { replace: true },
       ),

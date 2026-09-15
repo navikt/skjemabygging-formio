@@ -5,8 +5,8 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useRuntimeServices } from '../../context/runtime-services/RuntimeServicesContext';
+import { updateSearch } from '../../utils/searchParams';
 import { useIntegration } from '../context/integration/IntegrationContext';
-import { buildDigitalFormSearch } from '../draft/digitalDraftUtils';
 import FormHeader from '../layout/FormHeader';
 import { getExitUrl, getMyPageUrl } from '../navigation/navUrls';
 import styles from './ActiveTasksPage.module.css';
@@ -43,7 +43,7 @@ const ActiveTasksPage = ({ form }: Props) => {
     fyllutBaseUrl,
     form.path,
     '',
-    buildDigitalFormSearch(search, { forceMellomlagring: 'true' }),
+    updateSearch(search, { sub: 'digital', forceMellomlagring: 'true' }),
   );
 
   return (
@@ -74,7 +74,7 @@ const ActiveTasksPage = ({ form }: Props) => {
                           fyllutBaseUrl,
                           form.path,
                           '/oppsummering',
-                          buildDigitalFormSearch(search, { innsendingsId: task.id }),
+                          updateSearch(search, { sub: 'digital', innsendingsId: task.id }),
                         )}
                       >
                         {translate(TEXTS.statiske.paabegynt.continueTask)}

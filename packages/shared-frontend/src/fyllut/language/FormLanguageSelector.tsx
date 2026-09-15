@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import LanguageSelector from '../../components/language-selector/LanguageSelector';
 import { useLanguage } from '../../context/language/LanguageContext';
+import { updateSearch } from '../../utils/searchParams';
 import styles from './FormLanguageSelector.module.css';
 
 const languagesInOriginalLanguage: Record<string, string> = {
@@ -44,9 +45,7 @@ const FormLanguageSelector = () => {
         label={languagesInOriginalLanguage[currentLanguage] ?? 'Norsk bokmål'}
         options={options}
         onChange={(language) => {
-          const params = new URLSearchParams(search);
-          params.set('lang', language);
-          navigate({ pathname, search: `?${params.toString()}` }, { state });
+          navigate({ pathname, search: updateSearch(search, { lang: language }) }, { state });
         }}
       />
     </div>
