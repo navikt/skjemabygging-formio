@@ -42,13 +42,7 @@ const focusPageTitleAfterNavigation = (remainingAttempts = 10, isFirstAttempt = 
   }
 };
 
-const FormFlowLayout = ({ form, activeIndex, pageTitle, onStepClick, children }: Props) => (
-  <FormFlowLayoutContent form={form} activeIndex={activeIndex} pageTitle={pageTitle} onStepClick={onStepClick}>
-    {children}
-  </FormFlowLayoutContent>
-);
-
-const FormFlowLayoutContent = ({ form, activeIndex, pageTitle, onStepClick, children }: Props) => {
+const FormFlowLayout = ({ form, activeIndex, pageTitle, onStepClick, children }: Props) => {
   const { pathname, hash, state } = useLocation();
   const previousPathname = useRef<string | undefined>(undefined);
   const locationState = typeof state === 'object' && state ? (state as Record<string, unknown>) : undefined;
