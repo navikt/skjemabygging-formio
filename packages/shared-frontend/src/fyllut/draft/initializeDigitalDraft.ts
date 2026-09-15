@@ -67,25 +67,24 @@ const initializeDigitalDraft = async ({
   const innsendingsId = searchParams.get('innsendingsId') ?? undefined;
 
   if (innsendingsId) {
-    let draft;
     try {
-      draft = await applications.getDraft(innsendingsId);
+      const draft = await applications.getDraft(innsendingsId);
+
+      return {
+        type: 'ready',
+        initialInnsendingsId: innsendingsId,
+        initialLanguage: draft.language,
+        initialSubmission: withDraftMetadata(
+          formSummaryUtils.filterSubmissionDataToSummary(form, draft.submission, { submissionMethod }),
+          draft,
+        ),
+      };
     } catch (error) {
       if (hasErrorCode(error, 'NOT_FOUND')) {
         return { type: 'notFound' };
       }
       throw error;
     }
-
-    return {
-      type: 'ready',
-      initialInnsendingsId: innsendingsId,
-      initialLanguage: draft.language,
-      initialSubmission: withDraftMetadata(
-        formSummaryUtils.filterSubmissionDataToSummary(form, draft.submission, { submissionMethod }),
-        draft,
-      ),
-    };
   }
 
   const language = getDraftBootstrapLanguage(search);

@@ -138,18 +138,20 @@ const useDraftPersistence = (form: Form, initialInnsendingsId?: string): DraftPe
             return;
           }
 
-          let draft: Draft;
-          try {
-            draft = await applications.updateDraft({
-              id: innsendingsIdRef.current,
-              formPath: form.path,
-              submission: transportSubmission,
-              language: currentLanguage,
-              submissionMethod,
-            });
-          } catch (error) {
-            throw createSaveDraftError(error, TEXTS.statiske.mellomlagringError.update.message);
-          }
+          const innsendingsId = innsendingsIdRef.current;
+          const draft = await (async () => {
+            try {
+              return await applications.updateDraft({
+                id: innsendingsId,
+                formPath: form.path,
+                submission: transportSubmission,
+                language: currentLanguage,
+                submissionMethod,
+              });
+            } catch (error) {
+              throw createSaveDraftError(error, TEXTS.statiske.mellomlagringError.update.message);
+            }
+          })();
           syncSubmissionState(transportSubmission, draft);
         }
       : undefined;
