@@ -30,7 +30,6 @@ import SummaryHtmlElement from './components/html-element/SummaryHtmlElement';
 import SummaryIban from './components/iban/SummaryIban';
 import SummaryIdentity from './components/identity/SummaryIdentity';
 import SummaryIntroPage from './components/intro-page/SummaryIntroPage';
-import SummaryMaalgruppe from './components/maalgruppe/SummaryMaalgruppe';
 import SummaryMonthPicker from './components/month-picker/SummaryMonthPicker';
 import SummaryNationalIdentityNumber from './components/national-identity-number/SummaryNationalIdentityNumber';
 import SummaryNumber from './components/number/SummaryNumber';
@@ -44,6 +43,7 @@ import SummaryNavSelect from './components/select/SummaryNavSelect';
 import SummarySelect from './components/select/SummarySelect';
 import SummarySender from './components/sender/SummarySender';
 import SummarySurname from './components/surname/SummarySurname';
+import SummaryTargetGroup from './components/target-group/SummaryTargetGroup';
 import SummaryTextArea from './components/text-area/SummaryTextArea';
 import SummaryTextField from './components/text-field/SummaryTextField';
 import SummaryYear from './components/year/SummaryYear';
@@ -131,7 +131,7 @@ const RenderSummaryForm = ({
     activities: SummaryActivities,
     dataFetcher: SummaryDataFetcher,
     drivinglist: SummaryDrivingList,
-    maalgruppe: SummaryMaalgruppe,
+    maalgruppe: SummaryTargetGroup,
   } satisfies FormComponentRegistry;
 
   const resolvedRendererConfig = {

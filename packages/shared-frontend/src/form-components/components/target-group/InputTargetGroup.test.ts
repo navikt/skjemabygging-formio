@@ -1,9 +1,9 @@
-import { SendInnMaalgruppe } from '@navikt/skjemadigitalisering-shared-domain';
+import { SendInnMaalgruppe as SendInnTargetGroup } from '@navikt/skjemadigitalisering-shared-domain';
 import { describe, expect, it } from 'vitest';
-import { calculateTargetGroupValue, findSelectedTargetGroup } from './InputTargetGroup';
+import { calculateTargetGroupValue, findSelectedTargetGroup } from './targetGroupUtils';
 
 describe('InputTargetGroup helpers', () => {
-  const prefilled: SendInnMaalgruppe = {
+  const prefilled: SendInnTargetGroup = {
     maalgruppetype: 'NEDSARBEVN',
     maalgruppenavn: 'Person med nedsatt arbeidsevne pga. sykdom',
     gyldighetsperiode: { fom: '2024-01-01', tom: '2025-01-01' },
