@@ -1,4 +1,5 @@
 import { ActionMenu, Button } from '@navikt/ds-react';
+import { useState } from 'react';
 
 interface LanguageOption {
   value: string;
@@ -15,19 +16,28 @@ interface LanguageSelectorProps {
 }
 
 const LanguageSelector = ({ ariaLabel, currentLanguage, label, options, onChange }: LanguageSelectorProps) => {
+  const [open, setOpen] = useState(false);
+
   if (options.length < 2) {
     return null;
   }
 
   return (
-    <ActionMenu>
+    <ActionMenu open={open} onOpenChange={setOpen}>
       <ActionMenu.Trigger>
         <Button type="button" variant="tertiary" size="small">
           {label}
         </Button>
       </ActionMenu.Trigger>
       <ActionMenu.Content align="end">
-        <ActionMenu.RadioGroup aria-label={ariaLabel} value={currentLanguage} onValueChange={onChange}>
+        <ActionMenu.RadioGroup
+          aria-label={ariaLabel}
+          value={currentLanguage}
+          onValueChange={(language) => {
+            setOpen(false);
+            onChange(language);
+          }}
+        >
           {options.map((option) => (
             <ActionMenu.RadioItem key={option.value} value={option.value} lang={option.language}>
               {option.label}
