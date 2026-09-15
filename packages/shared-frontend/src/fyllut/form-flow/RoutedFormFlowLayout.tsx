@@ -3,7 +3,6 @@ import { Outlet, useLocation, useNavigate } from 'react-router';
 import { useFormDefinition } from '../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useValidation } from '../../context/validation/ValidationContext';
-import { withoutSubmissionNavigationState } from '../../utils/navigationState';
 import { INTRO_KEY, SUMMARY_KEY } from './constants';
 import FormFlowLayout from './FormFlowLayout';
 
@@ -28,11 +27,7 @@ const RoutedFormFlowLayout = ({ form }: { form: Form }) => {
 
   const onStepClick = (key: string) => {
     hideSummary();
-    const {
-      redirect: _inheritedRedirect,
-      stepperOpen: _stepperOpen,
-      ...inheritedState
-    } = withoutSubmissionNavigationState(state);
+    const { redirect: _inheritedRedirect, stepperOpen: _stepperOpen, ...inheritedState } = state ?? {};
     navigate(
       {
         pathname: key === INTRO_KEY ? `/${form.path}` : `/${form.path}/${key}`,

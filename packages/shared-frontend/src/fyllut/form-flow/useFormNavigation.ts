@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useValidation } from '../../context/validation/ValidationContext';
-import { withoutSubmissionNavigationState } from '../../utils/navigationState';
 import { SUMMARY_KEY } from './constants';
 
 interface FormNavigationState {
@@ -20,7 +19,7 @@ const useFormNavigation = (from: StepKind) => {
 
   const buildState = useCallback(
     (extra?: FormNavigationState): FormNavigationState => {
-      const { redirect: _inheritedRedirect, ...inheritedState } = withoutSubmissionNavigationState(state);
+      const { redirect: _inheritedRedirect, ...inheritedState } = state ?? {};
 
       return {
         ...inheritedState,

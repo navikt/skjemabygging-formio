@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useLanguage } from '../../context/language/LanguageContext';
-import { withoutSubmissionNavigationState } from '../../utils/navigationState';
 import { useIntegration } from '../context/integration/IntegrationContext';
 
 const languagesInOriginalLanguage: Record<string, string> = {
@@ -44,9 +43,7 @@ const FormLanguageSelector = () => {
   if (options.length === 0) {
     return null;
   }
-
   const label = languagesInOriginalLanguage[currentLanguage] ?? 'Norsk bokmål';
-  const navigationState = withoutSubmissionNavigationState(state);
 
   return (
     <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem', position: 'relative' }}>
@@ -81,7 +78,7 @@ const FormLanguageSelector = () => {
                       pathname,
                       search: new URL(option.href, window.location.origin).search,
                     },
-                    { state: navigationState },
+                    { state },
                   );
                 }}
               >

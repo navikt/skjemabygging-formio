@@ -3,7 +3,6 @@ import { TEXTS, submissionUtils as formComponentUtils } from '@navikt/skjemadigi
 import { useLocation, useNavigate } from 'react-router';
 import ValidationExclamationIcon from '../../../components/icons/ValidationExclamationIcon';
 import { useStepperState } from '../../../context/stepper/StepperContext';
-import { withoutSubmissionNavigationState } from '../../../utils/navigationState';
 import { PanelDefinition } from '../../component-types';
 import RenderComponent from '../../RenderComponent';
 import { FormComponentProps } from '../../types';
@@ -16,7 +15,6 @@ const SummaryPanel = (props: FormComponentProps<PanelDefinition>) => {
   const navigate = useNavigate();
   const { isOpen: isStepperOpen } = useStepperState();
   const childComponents = components ?? [];
-  const navigationState = withoutSubmissionNavigationState(state);
 
   const panelValidation = panelValidationList?.find((panel) => panel.key === key);
 
@@ -47,7 +45,7 @@ const SummaryPanel = (props: FormComponentProps<PanelDefinition>) => {
           href={search ? `../${key}${search}` : `../${key}`}
           onClick={(event) => {
             event.preventDefault();
-            navigate({ pathname: `../${key}`, search }, { state: navigationState });
+            navigate({ pathname: `../${key}`, search }, { state });
           }}
           aria-label={legacyAttachmentPanelMode && !isStepperOpen ? translate(title) : undefined}
         >

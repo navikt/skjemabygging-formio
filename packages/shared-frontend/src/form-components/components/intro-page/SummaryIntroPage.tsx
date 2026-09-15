@@ -2,7 +2,6 @@ import { FormSummary } from '@navikt/ds-react';
 import { Form, Submission, TEXTS, Tkey, TranslateFunction } from '@navikt/skjemadigitalisering-shared-domain';
 import { useLocation, useNavigate } from 'react-router';
 import ValidationExclamationIcon from '../../../components/icons/ValidationExclamationIcon';
-import { withoutSubmissionNavigationState } from '../../../utils/navigationState';
 import styles from './SummaryIntroPage.module.css';
 
 interface Props {
@@ -20,7 +19,6 @@ const SummaryIntroPage = (props: Props) => {
   const { submission, form, translate } = props;
   const { search, state } = useLocation();
   const navigate = useNavigate();
-  const navigationState = withoutSubmissionNavigationState(state);
 
   if (!form.introPage?.enabled) {
     return null;
@@ -50,7 +48,7 @@ const SummaryIntroPage = (props: Props) => {
           href={search ? `../${search}` : '../'}
           onClick={(event) => {
             event.preventDefault();
-            navigate({ pathname: '../', search }, { state: navigationState });
+            navigate({ pathname: '../', search }, { state });
           }}
         >
           {translate(TEXTS.grensesnitt.summaryPage.edit)}

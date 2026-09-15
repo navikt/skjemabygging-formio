@@ -11,7 +11,6 @@ import { useLanguage } from '../../context/language/LanguageContext';
 import { useRuntimeServices } from '../../context/runtime-services/RuntimeServicesContext';
 import { useSubmissionState } from '../../context/state/SubmissionStateContext';
 import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
-import { withoutSubmissionNavigationState } from '../../utils/navigationState';
 import { useIntegration } from '../context/integration/IntegrationContext';
 import { SUMMARY_KEY } from '../form-flow/constants';
 import { FormButtonRow, FormPrevButton } from '../layout/FormButtonRow';
@@ -57,7 +56,6 @@ const PaperSubmissionPage = ({ documentType }: Props) => {
   );
   const showNoSubmissionContent =
     documentType === 'application' && (!submissionMethod || submissionMethod === 'papernocoverpage');
-  const navigationState = withoutSubmissionNavigationState(state);
 
   useEffect(() => {
     if (requiresNavUnit && !navUnitsLoading && !navUnitFetchError && filteredNavUnits?.length === 0) {
@@ -202,7 +200,7 @@ const PaperSubmissionPage = ({ documentType }: Props) => {
         previousButton={
           <FormPrevButton
             label={translate(TEXTS.grensesnitt.navigation.previous)}
-            onClick={() => navigate({ pathname: `../${SUMMARY_KEY}`, search }, { state: navigationState })}
+            onClick={() => navigate({ pathname: `../${SUMMARY_KEY}`, search }, { state })}
           />
         }
       />
