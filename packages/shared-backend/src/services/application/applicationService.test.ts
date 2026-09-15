@@ -2,7 +2,12 @@ import { ResponseError, TEXTS } from '@navikt/skjemadigitalisering-shared-domain
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { logger } from '../../shared/logger/logger';
 import { createApplicationService } from './applicationService';
-import type { SubmitApplicationRequest, SubmitApplicationResponse } from './applicationTypes';
+import type {
+  SubmitApplicationRequest,
+  SubmitApplicationResponse,
+  SubsequentSubmissionReceipt,
+  SubsequentSubmissionTask,
+} from './applicationTypes';
 
 describe('createApplicationService', () => {
   const accessToken = 'tokenx-access-token';
@@ -306,6 +311,30 @@ describe('createApplicationService', () => {
     expect(stopTimer).toHaveBeenNthCalledWith(2, { error: 'true' });
   });
 
+  it('uses the digital attachment resource for subsequent submissions', async () => {
+    vi.spyOn(global, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ id: fileId, name: 'test.txt', size: 4 }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    );
+    const service = createApplicationService({ baseUrl });
+
+    await service.uploadAttachment({
+      accessToken,
+      attachmentId,
+      fileBlob: new Blob(['test']),
+      fileName: 'test.txt',
+      innsendingsId,
+      type: 'digital',
+    });
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      `${baseUrl}/v1/application-digital/${innsendingsId}/attachments/${attachmentId}`,
+      expect.objectContaining({ method: 'POST' }),
+    );
+  });
+
   it('normalizes upload attachment too-many-pages errors in shared-backend', async () => {
     vi.spyOn(global, 'fetch').mockResolvedValue(
       new Response(JSON.stringify({ errorCode: 'illegalAction.fileWithTooManyPages' }), {
@@ -504,5 +533,102 @@ describe('createApplicationService', () => {
     ).rejects.toMatchObject({
       errorCode: 'NOT_FOUND',
     });
+  });
+
+  it('gets an existing subsequent submission task through the digital application resource', async () => {
+    const task: SubsequentSubmissionTask = {
+      innsendingsId,
+      revision: 'revision-1',
+      formNumber: 'NAV 12.34-56',
+      title: 'Additional documentation',
+      tema: 'BIL',
+      language: 'nb',
+      otherUploadAvailable: true,
+      attachments: [],
+    };
+    vi.spyOn(global, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify(task), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    );
+    const service = createApplicationService({ baseUrl });
+
+    await expect(
+      service.getSubsequentSubmissionTask({ accessToken, correlationId, innsendingsId, type: 'digital' }),
+    ).resolves.toEqual(task);
+    expect(global.fetch).toHaveBeenCalledWith(
+      `${baseUrl}/v1/application-digital/${innsendingsId}`,
+      expect.objectContaining({
+        method: 'GET',
+        headers: expect.objectContaining({
+          Authorization: `Bearer ${accessToken}`,
+          Accept: 'application/json',
+          'x-correlation-id': correlationId,
+          'x-innsendingsid': innsendingsId,
+        }),
+      }),
+    );
+  });
+
+  it('supports no-login subsequent submission tasks', async () => {
+    vi.spyOn(global, 'fetch').mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          innsendingsId,
+          revision: 'revision-1',
+          formNumber: 'NAV 12.34-56',
+          title: 'Additional documentation',
+          tema: 'BIL',
+          language: 'nb',
+          otherUploadAvailable: true,
+          attachments: [],
+        }),
+        {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        },
+      ),
+    );
+    const service = createApplicationService({ baseUrl });
+
+    await service.getSubsequentSubmissionTask({ accessToken, innsendingsId, type: 'nologin' });
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      `${baseUrl}/v1/application-nologin/${innsendingsId}`,
+      expect.objectContaining({ method: 'GET' }),
+    );
+  });
+
+  it('submits an existing subsequent submission task through the digital application resource', async () => {
+    const receipt: SubsequentSubmissionReceipt = {
+      innsendingsId,
+      submittedAt: '2026-09-10T10:00:00Z',
+      title: 'Additional documentation',
+      submittedNow: [{ attachmentId, title: 'Documentation' }],
+      submittedEarlier: [],
+      outstanding: [],
+    };
+    const body = {
+      revision: 'revision-1',
+      mainDocument: 'main-document',
+      mainDocumentAlt: 'main-document-alt',
+      attachments: [],
+    };
+    vi.spyOn(global, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify(receipt), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    );
+    const service = createApplicationService({ baseUrl });
+
+    await expect(
+      service.submitApplication({ accessToken, correlationId, innsendingsId, body, type: 'digital' }),
+    ).resolves.toEqual(receipt);
+    expect(global.fetch).toHaveBeenCalledWith(
+      `${baseUrl}/v1/application-digital/${innsendingsId}`,
+      expect.objectContaining({ method: 'POST', body: JSON.stringify(body) }),
+    );
   });
 });
