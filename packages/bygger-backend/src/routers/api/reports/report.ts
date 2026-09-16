@@ -10,7 +10,7 @@ const report: RequestHandler = async (req, res, next) => {
     throw new Error(`Report not implemented: ${reportId}`);
   }
   try {
-    res.contentType(report.contentType);
+    res.contentType(`${report.contentType}; charset=utf-8`);
     res.attachment(`${reportId}.${report.fileEnding}`);
     await reportService.generate(reportId, res);
   } catch (err) {

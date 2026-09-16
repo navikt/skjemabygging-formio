@@ -10,6 +10,29 @@ describe('CSV pipeline', () => {
     vi.restoreAllMocks();
   });
 
+  it('writes UTF-8 BOM and preserves Norwegian characters for spreadsheet applications', async () => {
+    const chunks: Buffer[] = [];
+    const destination = new Writable({
+      write(chunk, _encoding, callback) {
+        chunks.push(Buffer.from(chunk));
+        callback();
+      },
+    });
+    await writeCsvReport(
+      'utf8-test',
+      {
+        columns: { value: 'verdi' },
+        rows: async function* () {
+          yield { value: 'Ærlig øvelse på Ås' };
+        },
+      },
+      destination,
+    );
+    const csv = Buffer.concat(chunks);
+    expect(csv.subarray(0, 3)).toEqual(Buffer.from([0xef, 0xbb, 0xbf]));
+    expect(parse(csv, { bom: true, delimiter: ';', columns: true })).toEqual([{ verdi: 'Ærlig øvelse på Ås' }]);
+  });
+
   it('respects a blocked slow sink and waits for its final callback', async () => {
     const firstWrite = deferred();
     const finalized = deferred();
@@ -57,7 +80,7 @@ describe('CSV pipeline', () => {
     expect(completed).toBe(false);
     finish();
     await completion;
-    const rows = parse(chunks.join(''), { delimiter: ';', columns: true }) as { value: string }[];
+    const rows = parse(chunks.join(''), { bom: true, delimiter: ';', columns: true }) as { value: string }[];
     expect(rows).toHaveLength(rowCount);
     expect(rows[199].value).toBe(`199;"${'x'.repeat(8192)}"\nend`);
     expect(destination.writableFinished).toBe(true);

@@ -48,7 +48,8 @@ describe('ReportService', () => {
   });
 
   describe('Reports', () => {
-    const CSV_HEADER_LINE = 'skjemanummer;skjematittel;språk;skjematittel (nb);skjematittel (nn);skjematittel (en)\n';
+    const CSV_HEADER_LINE =
+      '\uFEFFskjemanummer;skjematittel;språk;skjematittel (nb);skjematittel (nn);skjematittel (en)\n';
 
     const createWritableStream = () => new MemoryStream(undefined, { readable: false });
 
@@ -85,7 +86,7 @@ describe('ReportService', () => {
     };
 
     const parseReport = (content: string) => {
-      const [headers, ...forms] = parse(content, { delimiter: ';' }) as string[][];
+      const [headers, ...forms] = parse(content, { bom: true, delimiter: ';' }) as string[][];
       return {
         headers,
         forms,

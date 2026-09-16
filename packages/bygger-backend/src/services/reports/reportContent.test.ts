@@ -56,8 +56,8 @@ const generate = async (id = 'all-forms-summary') => {
   const destination = new MemoryStream(undefined, { readable: false });
   await createReportService().generate(id, destination);
   return {
-    records: parse(destination.toString(), { delimiter: ';', columns: true }) as Record<string, string>[],
-    rows: parse(destination.toString(), { delimiter: ';' }) as string[][],
+    records: parse(destination.toString(), { bom: true, delimiter: ';', columns: true }) as Record<string, string>[],
+    rows: parse(destination.toString(), { bom: true, delimiter: ';' }) as string[][],
   };
 };
 

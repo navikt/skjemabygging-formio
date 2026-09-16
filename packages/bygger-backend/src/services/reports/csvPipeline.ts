@@ -43,6 +43,7 @@ const writeCsvReport = async <Row extends object>(reportId: string, report: CsvR
     await pipeline(
       Readable.from(rows(), { objectMode: true, highWaterMark: 1 }),
       stringify({
+        bom: true,
         header: true,
         delimiter: ';',
         columns: Object.entries(report.columns).map(([key, header]) => ({ key, header: String(header) })),

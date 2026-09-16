@@ -35,7 +35,7 @@ describe('Report download route', () => {
     });
     await Promise.resolve();
     expect(complete).toBe(false);
-    expect(res.contentType).toHaveBeenCalledWith('text/csv');
+    expect(res.contentType).toHaveBeenCalledWith('text/csv; charset=utf-8');
     expect(res.attachment).toHaveBeenCalledWith('all-forms-summary.csv');
     expect(reportService.generate).toHaveBeenCalledWith('all-forms-summary', res);
     generated.resolve();
