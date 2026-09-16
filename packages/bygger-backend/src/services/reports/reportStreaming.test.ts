@@ -86,6 +86,7 @@ describe('Report streaming orchestration', () => {
     const started = deferred();
     const translations = deferred<PublishedTranslations>();
     dependencies.formPublicationsService.getAll.mockResolvedValue([formFor('one'), formFor('two')]);
+    dependencies.formPublicationsService.get.mockImplementation(async (path) => formFor(path));
     dependencies.formPublicationsService.getTranslations.mockImplementation(() => {
       started.resolve();
       return translations.promise;

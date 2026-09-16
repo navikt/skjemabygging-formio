@@ -48,7 +48,7 @@ describe('ReportService', () => {
   });
 
   describe('Reports', () => {
-    const CSV_HEADER_LINE = 'skjemanummer;skjematittel;språk\n';
+    const CSV_HEADER_LINE = 'skjemanummer;skjematittel;språk;skjematittel (nb);skjematittel (nn);skjematittel (en)\n';
 
     const createWritableStream = () => new MemoryStream(undefined, { readable: false });
 
@@ -63,6 +63,7 @@ describe('ReportService', () => {
         .times(1)
         .reply(200, publishedForms);
       for (const form of publishedForms) {
+        nock(formsApi.url).get(`/v1/form-publications/${form.path}`).reply(200, form);
         nock(formsApi.url).get(`/v1/forms/${form.path}/static-pdfs`).reply(200, []);
         nock(formsApi.url).get(`/v1/forms/${form.path}`).reply(200, form);
         const publishedTranslations: PublishedTranslations = {
@@ -304,7 +305,10 @@ describe('ReportService', () => {
         const writableStream = createWritableStream();
         await reportService.generate('forms-published-languages', writableStream);
         expect(writableStream.toString()).toEqual(
-          CSV_HEADER_LINE + 'TEST1;Testskjema1;nb,en,nn\nTEST2;Testskjema2;nb,en\nTEST3;Testskjema3;nb\n',
+          CSV_HEADER_LINE +
+            'TEST1;Testskjema1;nb,en,nn;Testskjema1;Testskjema1;Testskjema1\n' +
+            'TEST2;Testskjema2;nb,en;Testskjema2;;Testskjema2\n' +
+            'TEST3;Testskjema3;nb;Testskjema3;;\n',
         );
       });
 
@@ -565,7 +569,9 @@ describe('ReportService', () => {
 
         const writableStream = createWritableStream();
         await reportService.generate('forms-published-languages', writableStream);
-        expect(writableStream.toString()).toEqual(CSV_HEADER_LINE + 'TEST1;Testskjema1;en,nn\n');
+        expect(writableStream.toString()).toEqual(
+          CSV_HEADER_LINE + 'TEST1;Testskjema1;en,nn;;Testskjema1;Testskjema1\n',
+        );
       });
 
       it('fails if unknown report', async () => {

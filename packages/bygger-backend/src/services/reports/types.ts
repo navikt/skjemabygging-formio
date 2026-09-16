@@ -6,7 +6,7 @@ import RecipientService from '../RecipientService';
 
 type ReportDependencies = {
   formsService: Pick<FormsService, 'getAll' | 'get'>;
-  formPublicationsService: Pick<FormPublicationsService, 'getAll' | 'getTranslations'>;
+  formPublicationsService: Pick<FormPublicationsService, 'getAll' | 'get' | 'getTranslations'>;
   recipientService: Pick<RecipientService, 'getAll'>;
   staticPdfService: Pick<StaticPdfService, 'getAll'>;
 };

@@ -1,4 +1,10 @@
-import { DeclarationType, Form, FormPropertiesType, Recipient } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  DeclarationType,
+  Form,
+  FormPropertiesType,
+  PublishedTranslations,
+  Recipient,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { parse } from 'csv-parse/sync';
 import MemoryStream from 'memorystream';
 import nock from 'nock';
@@ -266,6 +272,98 @@ describe('Report CSV content and upstream contracts', () => {
     expect(records).toEqual([]);
     expect(rows).toHaveLength(1);
     expect(rows[0].slice(0, 19)).toEqual(legacySummaryHeaders);
+    expect(api.isDone()).toBe(true);
+  });
+
+  it('uses the actual published title translation key and leaves unpublished languages blank', async () => {
+    const title = 'Application; "original"\nTitle';
+    const forms = [
+      createForm('translated', {}, { title }),
+      createForm('fallback'),
+      createForm('excluded', { isTestForm: true }),
+    ];
+    const api = nock(config.formsApi.url).get('/v1/form-publications').once().reply(200, forms);
+    for (const form of forms.filter((form) => !form.properties.isTestForm)) {
+      api.get(`/v1/form-publications/${form.path}`).once().reply(200, form);
+    }
+    const translations: PublishedTranslations = {
+      publishedAt: '2025-01-01',
+      publishedBy: 'publisher',
+      translations: { nb: { [title]: 'Bokmål tittel' }, en: { [title]: 'English; "title"\nsecond line' } },
+    };
+    api
+      .get('/v1/form-publications/translated/translations')
+      .query({ languageCodes: 'nb,nn,en' })
+      .once()
+      .reply(200, translations);
+    api
+      .get('/v1/form-publications/fallback/translations')
+      .query({ languageCodes: 'nb,nn,en' })
+      .once()
+      .reply(200, {
+        ...translations,
+        translations: { nb: {}, nn: { 'Example fallback': 'Nynorsk tittel' }, en: {} },
+      });
+    const { records, rows } = await generate('forms-published-languages');
+    expect(rows[0]).toEqual([
+      'skjemanummer',
+      'skjematittel',
+      'språk',
+      'skjematittel (nb)',
+      'skjematittel (nn)',
+      'skjematittel (en)',
+    ]);
+    expect(records).toEqual([
+      {
+        skjemanummer: 'translated',
+        skjematittel: title,
+        språk: 'nb,en',
+        'skjematittel (nb)': 'Bokmål tittel',
+        'skjematittel (nn)': '',
+        'skjematittel (en)': 'English; "title"\nsecond line',
+      },
+      {
+        skjemanummer: 'fallback',
+        skjematittel: 'Example fallback',
+        språk: 'nb,nn,en',
+        'skjematittel (nb)': 'Example fallback',
+        'skjematittel (nn)': 'Nynorsk tittel',
+        'skjematittel (en)': 'Example fallback',
+      },
+    ]);
+    expect(api.isDone()).toBe(true);
+  });
+
+  it('propagates published translation lookup failures', async () => {
+    nock(config.formsApi.url)
+      .get('/v1/form-publications')
+      .reply(200, [createForm('example')])
+      .get('/v1/form-publications/example')
+      .reply(200, createForm('example'))
+      .get('/v1/form-publications/example/translations')
+      .query(true)
+      .reply(503);
+    await expect(generate('forms-published-languages')).rejects.toThrow();
+  });
+
+  it('uses the published title rather than a renamed pending draft for language titles', async () => {
+    const api = nock(config.formsApi.url)
+      .get('/v1/form-publications')
+      .reply(200, [createForm('pending', {}, { title: 'Draft title', status: 'pending' })])
+      .get('/v1/form-publications/pending')
+      .reply(200, createForm('pending', {}, { title: 'Published title', status: 'published' }))
+      .get('/v1/form-publications/pending/translations')
+      .query({ languageCodes: 'nb,nn,en' })
+      .reply(200, {
+        translations: { nb: {}, en: { 'Published title': 'English published title', 'Draft title': 'Wrong title' } },
+      });
+    const { records } = await generate('forms-published-languages');
+    expect(records[0]).toMatchObject({
+      skjematittel: 'Draft title',
+      'skjematittel (nb)': 'Published title',
+      'skjematittel (nn)': '',
+      'skjematittel (en)': 'English published title',
+    });
     expect(api.isDone()).toBe(true);
   });
 
