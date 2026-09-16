@@ -5,6 +5,7 @@ import {
   FormPropertiesType,
   PublishedTranslations,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import { parse } from 'csv-parse/sync';
 import MemoryStream from 'memorystream';
 import nock from 'nock';
 import config from '../config';
@@ -17,7 +18,7 @@ describe('ReportService', () => {
   let reportService: ReportService;
 
   beforeEach(() => {
-    reportService = new ReportService(formsService, formPublicationsService);
+    reportService = new ReportService({ formsService, formPublicationsService });
   });
 
   afterEach(() => {
@@ -80,17 +81,15 @@ describe('ReportService', () => {
       }
     };
 
-    function parseReport(content: string) {
-      const allLines = content.split('\n').filter((line) => !!line);
-      const forms = allLines.slice(1).map((formLine) => formLine.split(';'));
-      const headers = allLines[0].split(';');
+    const parseReport = (content: string) => {
+      const [headers, ...forms] = parse(content, { delimiter: ';' }) as string[][];
       return {
         headers,
         forms,
         numberOfForms: forms.length,
         getHeaderIndex: (overskrift: string) => headers.indexOf(overskrift),
       };
-    }
+    };
 
     describe('generateFormsPublishedLanguage', () => {
       describe('number of signatures', () => {
