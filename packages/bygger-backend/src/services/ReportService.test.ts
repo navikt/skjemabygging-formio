@@ -1,10 +1,4 @@
-import {
-  Component,
-  ComponentProperties,
-  Form,
-  FormPropertiesType,
-  PublishedTranslations,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, ComponentProperties, Form, FormPropertiesType } from '@navikt/skjemadigitalisering-shared-domain';
 import { parse } from 'csv-parse/sync';
 import MemoryStream from 'memorystream';
 import nock from 'nock';
@@ -47,10 +41,14 @@ describe('ReportService', () => {
     });
   });
 
-  describe('Reports', () => {
-    const CSV_HEADER_LINE =
-      '\uFEFFskjemanummer;skjematittel;språk;skjematittel (nb);skjematittel (nn);skjematittel (en)\n';
+  it('rejects an unknown report ID', async () => {
+    const destination = new MemoryStream(undefined, { readable: false });
+    await expect(reportService.generate('unknown-report-id', destination)).rejects.toThrow(
+      'Report not implemented: unknown-report-id',
+    );
+  });
 
+  describe('all-forms-summary', () => {
     const createWritableStream = () => new MemoryStream(undefined, { readable: false });
 
     const setupNock = (publishedForms: Partial<Form>[]) => {
@@ -59,29 +57,9 @@ describe('ReportService', () => {
         .get(/\/v1\/forms\?.*$/)
         .times(1)
         .reply(200, publishedForms);
-      nock(formsApi.url)
-        .get(/\/v1\/form-publications$/)
-        .times(1)
-        .reply(200, publishedForms);
       for (const form of publishedForms) {
-        nock(formsApi.url).get(`/v1/form-publications/${form.path}`).reply(200, form);
         nock(formsApi.url).get(`/v1/forms/${form.path}/static-pdfs`).reply(200, []);
         nock(formsApi.url).get(`/v1/forms/${form.path}`).reply(200, form);
-        const publishedTranslations: PublishedTranslations = {
-          publishedAt: form.publishedAt ?? '2025-01-28T10:00:10.325Z',
-          publishedBy: 'TEST',
-          translations:
-            form.publishedLanguages?.reduce((acc, cur) => {
-              return {
-                ...acc,
-                [cur]: {},
-              };
-            }, {}) || {},
-        };
-        nock(formsApi.url)
-          .get(/\/v1\/form-publications\/(.+)\/translations\?.*/)
-          .times(1)
-          .reply(200, publishedTranslations);
       }
     };
 
@@ -95,7 +73,7 @@ describe('ReportService', () => {
       };
     };
 
-    describe('generateFormsPublishedLanguage', () => {
+    describe('legacy columns', () => {
       describe('number of signatures', () => {
         const HEADER_SIGNATURES = 'signaturfelt';
 
@@ -257,62 +235,6 @@ describe('ReportService', () => {
           expect(formFields[report.getHeaderIndex(HEADER_UNPUBLISHED_CHANGES)]).toBe('');
         });
       });
-    });
-
-    describe('generateAllFormsSummary', () => {
-      it('includes published forms with its respective languages', async () => {
-        const publishedForms = [
-          {
-            title: 'Testskjema1',
-            components: [],
-            skjemanummer: 'TEST1',
-            path: 'test1',
-            publishedAt: '2022-07-28T10:00:10.325Z',
-            publishedLanguages: ['nb', 'en', 'nn'],
-            status: 'published',
-            properties: {
-              skjemanummer: 'TEST1',
-              submissionTypes: [],
-            } as unknown as FormPropertiesType,
-          } as Form,
-          {
-            title: 'Testskjema2',
-            components: [],
-            skjemanummer: 'TEST2',
-            path: 'test2',
-            publishedAt: '2022-07-28T10:00:10.325Z',
-            publishedLanguages: ['nb', 'en'],
-            status: 'published',
-            properties: {
-              skjemanummer: 'TEST2',
-              submissionTypes: [],
-            } as unknown as FormPropertiesType,
-          } as Form,
-          {
-            title: 'Testskjema3',
-            components: [],
-            skjemanummer: 'TEST3',
-            path: 'test3',
-            publishedAt: '2022-07-28T10:00:10.325Z',
-            publishedLanguages: ['nb'],
-            status: 'published',
-            properties: {
-              submissionTypes: [],
-            } as unknown as FormPropertiesType,
-          } as Form,
-        ];
-        setupNock(publishedForms);
-
-        const writableStream = createWritableStream();
-        await reportService.generate('forms-published-languages', writableStream);
-        expect(writableStream.toString()).toEqual(
-          CSV_HEADER_LINE +
-            'TEST1;Testskjema1;nb,en,nn;Testskjema1;Testskjema1;Testskjema1\n' +
-            'TEST2;Testskjema2;nb,en;Testskjema2;;Testskjema2\n' +
-            'TEST3;Testskjema3;nb;Testskjema3;;\n',
-        );
-      });
-
       it('has correct attachment fields', async () => {
         const HEADER_HAS_ATTACHMENTS = 'har vedlegg';
         const HEADER_NUMBER_OF_ATTACHMENTS = 'antall vedlegg';
@@ -539,129 +461,6 @@ describe('ReportService', () => {
         expect(formFields3[report.getHeaderIndex(HEADER_ETTERSENDING_PAPER)]).toBe(
           `${ettersendingBaseUrl}/test3?sub=paper`,
         );
-      });
-
-      it('does not include testform', async () => {
-        const publishedForms = [
-          {
-            title: 'Testskjema1',
-            components: [],
-            skjemanummer: 'TEST1',
-            path: 'test1',
-            status: 'published',
-            publishedLanguages: ['en', 'nn'],
-            publishedAt: '2022-07-28T10:00:10.325Z',
-            properties: {} as FormPropertiesType,
-          } as Form,
-          {
-            title: 'Testskjema2',
-            components: [],
-            skjemanummer: 'TEST2',
-            path: 'test2',
-            status: 'published',
-            publishedLanguages: ['en'],
-            publishedAt: '2022-07-28T10:00:10.325Z',
-            properties: {
-              isTestForm: true, // <- testform
-            } as FormPropertiesType,
-          } as Form,
-        ];
-        setupNock(publishedForms);
-
-        const writableStream = createWritableStream();
-        await reportService.generate('forms-published-languages', writableStream);
-        expect(writableStream.toString()).toEqual(
-          CSV_HEADER_LINE + 'TEST1;Testskjema1;en,nn;;Testskjema1;Testskjema1\n',
-        );
-      });
-
-      it('fails if unknown report', async () => {
-        let errorCatched = false;
-        const writableStream = createWritableStream();
-        try {
-          await reportService.generate('unknown-report-id', writableStream);
-        } catch (_err) {
-          errorCatched = true;
-        }
-        expect(errorCatched).toBe(true);
-      });
-    });
-
-    describe('generateAllFormsAndAttachments', () => {
-      it('has correct fields', async () => {
-        const HEADER_FORM_NUMBER = 'skjemanummer';
-        const HEADER_FORM_TITLE = 'skjematittel';
-        const HEADER_ATTACHMENT_TITLE = 'vedleggstittel';
-        const HEADER_ATTACHMENT_CODE = 'vedleggskode';
-        const HEADER_LABEL = 'label';
-
-        const publishedForms = [
-          {
-            title: 'Testskjema1',
-            skjemanummer: 'TEST1',
-            path: 'test1',
-            status: 'published',
-            components: [
-              {
-                type: 'panel',
-                isAttachmentPanel: true,
-                title: 'Vedlegg',
-                components: [
-                  {
-                    label: 'Annen dokumentasjon',
-                    type: 'attachment',
-                    properties: {
-                      vedleggstittel: 'Annet',
-                      vedleggskode: 'N6',
-                    } as ComponentProperties,
-                  },
-                  {
-                    label: 'Uttalelse fra fagpersonell',
-                    type: 'attachment',
-                    properties: {
-                      vedleggstittel: 'Uttalelse fra fagpersonell',
-                      vedleggskode: 'L8',
-                    } as ComponentProperties,
-                  },
-                ] as Component[],
-              },
-            ] as Component[],
-            properties: {
-              skjemanummer: 'TEST1',
-            } as FormPropertiesType,
-          } as Form,
-          {
-            title: 'Testskjema2',
-            skjemanummer: 'TEST2',
-            path: 'test2',
-            status: 'published',
-            components: [],
-            properties: {
-              skjemanummer: 'TEST2',
-            } as FormPropertiesType,
-          } as Form,
-        ];
-        setupNock(publishedForms);
-
-        const writableStream = createWritableStream();
-        await reportService.generate('all-forms-and-attachments', writableStream);
-        const report = parseReport(writableStream.toString());
-        expect(report.numberOfForms).toBe(2);
-
-        const formFields1 = report.forms[0];
-        const formFields2 = report.forms[1];
-
-        expect(formFields1[report.getHeaderIndex(HEADER_FORM_NUMBER)]).toBe('TEST1');
-        expect(formFields1[report.getHeaderIndex(HEADER_FORM_TITLE)]).toBe('Testskjema1');
-        expect(formFields1[report.getHeaderIndex(HEADER_ATTACHMENT_TITLE)]).toBe('Annet');
-        expect(formFields1[report.getHeaderIndex(HEADER_ATTACHMENT_CODE)]).toBe('N6');
-        expect(formFields1[report.getHeaderIndex(HEADER_LABEL)]).toBe('Annen dokumentasjon');
-
-        expect(formFields2[report.getHeaderIndex(HEADER_FORM_NUMBER)]).toBe('TEST1');
-        expect(formFields2[report.getHeaderIndex(HEADER_FORM_TITLE)]).toBe('Testskjema1');
-        expect(formFields2[report.getHeaderIndex(HEADER_ATTACHMENT_TITLE)]).toBe('Uttalelse fra fagpersonell');
-        expect(formFields2[report.getHeaderIndex(HEADER_ATTACHMENT_CODE)]).toBe('L8');
-        expect(formFields2[report.getHeaderIndex(HEADER_LABEL)]).toBe('Uttalelse fra fagpersonell');
       });
     });
   });
