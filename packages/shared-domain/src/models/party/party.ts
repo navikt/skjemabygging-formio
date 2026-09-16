@@ -28,19 +28,35 @@ interface UnidentifiedConcernedPerson {
 
 type ConcernedPerson = IdentifiedConcernedPerson | UnidentifiedConcernedPerson;
 
+interface LegacySender {
+  firstName: string;
+  surname: string;
+}
+
+type ConcernedUser = ConcernedPerson | SenderOrganization;
+
 type Party =
   | {
       onBehalfOf: 'self';
-      user: ConcernedPerson;
+      user: ConcernedUser;
     }
   | {
       onBehalfOf: 'other-person';
-      sender: SenderPerson | SenderOrganization;
+      sender: SenderPerson | SenderOrganization | LegacySender;
       user: ConcernedPerson;
     }
   | {
       onBehalfOf: 'multiple-people';
       sender: SenderOrganization;
+      navUnit?: string;
     };
 
-export type { ConcernedPerson, IdentifiedConcernedPerson, Party, PartyAddress, UnidentifiedConcernedPerson };
+export type {
+  ConcernedPerson,
+  ConcernedUser,
+  IdentifiedConcernedPerson,
+  LegacySender,
+  Party,
+  PartyAddress,
+  UnidentifiedConcernedPerson,
+};
