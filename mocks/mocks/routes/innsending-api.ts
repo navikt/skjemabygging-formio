@@ -408,16 +408,15 @@ export default [
     ],
   },
   {
-    id: 'delete-soknad',
-    url: '/send-inn/fyllUt/v1/soknad/:innsendingsId',
+    id: 'delete-digital-application',
+    url: '/send-inn/v1/application-digital/:innsendingsId',
     method: 'DELETE',
     variants: [
       {
         id: 'success',
-        type: 'json',
+        type: 'status',
         options: {
-          status: 200,
-          body: {},
+          status: 204,
         },
       },
       {
@@ -561,6 +560,20 @@ export default [
         options: {
           status: 500,
           body: { message: 'Feil ved nedlasting av fil', errorCode: 'fileDownloadError' },
+        },
+      },
+    ],
+  },
+  {
+    id: 'delete-nologin-application',
+    url: '/send-inn/v1/application-nologin/:innsendingsId',
+    method: 'DELETE',
+    variants: [
+      {
+        id: 'success',
+        type: 'status',
+        options: {
+          status: 204,
         },
       },
     ],

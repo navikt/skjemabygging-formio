@@ -117,15 +117,6 @@ describe('sendInnContext', () => {
       });
     });
 
-    describe('deleteMellomlagring', () => {
-      it('sends a DELETE request to /api/send-inn/soknad', async () => {
-        await screen.findByTestId('innsendings-id');
-        await userEvent.click(screen.getByRole('button', { name: 'Slett mellomlagring' }));
-        expect(mockHttp.delete).toHaveBeenCalledTimes(1);
-        expect(mockHttp.delete).toHaveBeenCalledWith(`http://test.example.no/api/send-inn/soknad/${innsendingsId}`);
-      });
-    });
-
     describe('submitSoknad', () => {
       it('sends a PUT request to /api/send-inn/utfyltsoknad', async () => {
         await screen.findByTestId('innsendings-id');
