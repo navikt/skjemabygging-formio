@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { ValidationRules } from '../../validation/validators';
 import { useFieldValidation } from '../validation/useFieldValidation';
-import { useValidation } from '../validation/ValidationContext';
+import { useOptionalValidationActions } from '../validation/ValidationContext';
 import { useOptionalValidationScope } from '../validation/ValidationScopeContext';
 import { useFieldStateValue, useOptionalFieldStateStore } from './StateContext';
 
@@ -33,7 +33,7 @@ interface UseStateFieldArgs {
 const useStateField = ({ statePath, validation }: UseStateFieldArgs) => {
   const store = useOptionalFieldStateStore();
   const stateValue = useFieldStateValue(statePath);
-  const { handleFieldChange, updateFieldValue } = useValidation();
+  const { handleFieldChange, updateFieldValue } = useOptionalValidationActions();
   const scope = useOptionalValidationScope();
   const hasValueOverride = !!validation && 'value' in validation;
   const validationValue = hasValueOverride ? validation.value : stateValue;

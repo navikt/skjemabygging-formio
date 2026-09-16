@@ -1,5 +1,16 @@
 import { TranslateFunction } from '@navikt/skjemadigitalisering-shared-domain';
-import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from 'react';
 import { validateValue } from '../../validation/validators';
 import { useApplication } from '../application/ApplicationContext';
 import { useLanguage } from '../language/LanguageContext';
@@ -113,6 +124,40 @@ interface ValidationContextType {
   getAttachmentExternalError: (attachmentId: string, field: AttachmentField) => string | undefined;
 }
 
+type ValidationActions = Pick<
+  ValidationContextType,
+  | 'registerField'
+  | 'unregisterField'
+  | 'updateFieldValue'
+  | 'resetPageFields'
+  | 'validatePage'
+  | 'validatePages'
+  | 'handleFieldChange'
+  | 'hideSummary'
+  | 'syncPageValidationState'
+  | 'setAttachmentExternalError'
+>;
+
+interface ValidationStore {
+  subscribe: (listener: () => void) => () => void;
+  getVersion: () => number;
+  getValue: () => ValidationContextType;
+}
+
+const noValidationActions: ValidationActions = {
+  registerField: () => undefined,
+  unregisterField: () => undefined,
+  updateFieldValue: () => undefined,
+  resetPageFields: () => undefined,
+  validatePage: () => true,
+  validatePages: () => [],
+  handleFieldChange: () => undefined,
+  hideSummary: () => undefined,
+  syncPageValidationState: () => undefined,
+  setAttachmentExternalError: () => undefined,
+};
+const noValidationSubscription = () => () => undefined;
+
 /**
  * Rebuilds the fields of a page from the current state. Injected by the surface that owns the form
  * definition (fyllut), so generic validation never inspects one itself. Returning `undefined` falls
@@ -126,7 +171,7 @@ interface Props {
   resolvePageFields?: PageFieldsResolver;
 }
 
-const ValidationContext = createContext<ValidationContextType>({} as ValidationContextType);
+const ValidationContext = createContext<ValidationStore | undefined>(undefined);
 
 /**
  * Holds validation state for a form: the fields validated per page, the resulting errors and the
@@ -445,10 +490,116 @@ const ValidationProvider = ({ children, initialPagesWithErrors, resolvePageField
     ],
   );
 
-  return <ValidationContext.Provider value={value}>{children}</ValidationContext.Provider>;
+  const valueRef = useRef(value);
+  const publishedValueRef = useRef(value);
+  const listenersRef = useRef(new Set<() => void>());
+  const versionRef = useRef(0);
+  const store = useMemo<ValidationStore>(
+    () => ({
+      subscribe: (listener) => {
+        listenersRef.current.add(listener);
+        return () => {
+          listenersRef.current.delete(listener);
+        };
+      },
+      getVersion: () => versionRef.current,
+      getValue: () => valueRef.current,
+    }),
+    [],
+  );
+
+  useLayoutEffect(() => {
+    valueRef.current = value;
+    if (publishedValueRef.current === value) {
+      return;
+    }
+    publishedValueRef.current = value;
+    versionRef.current += 1;
+    listenersRef.current.forEach((listener) => listener());
+  }, [value]);
+
+  return <ValidationContext.Provider value={store}>{children}</ValidationContext.Provider>;
 };
 
-const useValidation = () => useContext(ValidationContext);
+const useValidationStore = (): ValidationStore => {
+  const store = useContext(ValidationContext);
+  if (!store) {
+    throw new Error('Validation context is required to use validation.');
+  }
+  return store;
+};
 
-export { attachmentValidationPath, useValidation, ValidationProvider };
-export type { AttachmentField, FieldError, PageFieldsResolver, ValidationContextType, ValidationField };
+const useValidation = (): ValidationContextType => {
+  const store = useValidationStore();
+  useSyncExternalStore(store.subscribe, store.getVersion, store.getVersion);
+  return store.getValue();
+};
+
+const createValidationActions = (store: ValidationStore): ValidationActions => ({
+  registerField: (...args) => store.getValue().registerField(...args),
+  unregisterField: (...args) => store.getValue().unregisterField(...args),
+  updateFieldValue: (...args) => store.getValue().updateFieldValue(...args),
+  resetPageFields: (...args) => store.getValue().resetPageFields(...args),
+  validatePage: (...args) => store.getValue().validatePage(...args),
+  validatePages: (...args) => store.getValue().validatePages(...args),
+  handleFieldChange: (...args) => store.getValue().handleFieldChange(...args),
+  hideSummary: (...args) => store.getValue().hideSummary(...args),
+  syncPageValidationState: (...args) => store.getValue().syncPageValidationState(...args),
+  setAttachmentExternalError: (...args) => store.getValue().setAttachmentExternalError(...args),
+});
+
+const useValidationActions = (): ValidationActions => {
+  const store = useValidationStore();
+  return useMemo(() => createValidationActions(store), [store]);
+};
+
+const useOptionalValidationActions = (): ValidationActions => {
+  const store = useContext(ValidationContext);
+  return useMemo(() => (store ? createValidationActions(store) : noValidationActions), [store]);
+};
+
+const useValidationFieldError = (submissionPath: string, pageKey?: string): string | undefined => {
+  const store = useContext(ValidationContext);
+  const getSnapshot = useCallback(
+    () => (store && pageKey !== undefined ? store.getValue().getError(submissionPath, pageKey) : undefined),
+    [pageKey, store, submissionPath],
+  );
+
+  return useSyncExternalStore(store?.subscribe ?? noValidationSubscription, getSnapshot, getSnapshot);
+};
+
+const useValidationPagesWithErrors = (): Set<string> => {
+  const store = useValidationStore();
+  const getSnapshot = useCallback(() => store.getValue().pagesWithErrors, [store]);
+
+  return useSyncExternalStore(store.subscribe, getSnapshot, getSnapshot);
+};
+
+const useValidationAttachmentExternalError = (attachmentId: string, field: AttachmentField): string | undefined => {
+  const store = useValidationStore();
+  const getSnapshot = useCallback(
+    () => store.getValue().getAttachmentExternalError(attachmentId, field),
+    [attachmentId, field, store],
+  );
+
+  return useSyncExternalStore(store.subscribe, getSnapshot, getSnapshot);
+};
+
+export {
+  attachmentValidationPath,
+  useOptionalValidationActions,
+  useValidation,
+  useValidationActions,
+  useValidationAttachmentExternalError,
+  useValidationFieldError,
+  useValidationPagesWithErrors,
+  ValidationProvider,
+};
+export type {
+  AttachmentField,
+  FieldError,
+  PageFieldsResolver,
+  ValidationActions,
+  ValidationContextType,
+  ValidationField,
+};

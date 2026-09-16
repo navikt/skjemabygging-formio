@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { ValidationRules } from '../../validation/validators';
-import { useValidation } from './ValidationContext';
+import { useOptionalValidationActions, useValidationFieldError } from './ValidationContext';
 import { useOptionalValidationScope } from './ValidationScopeContext';
 
 interface UseFieldValidationArgs {
@@ -24,10 +24,11 @@ interface UseFieldValidationArgs {
  * this hook directly.
  */
 const useFieldValidation = ({ statePath, field, value, rules }: UseFieldValidationArgs) => {
-  const { getError, registerField, unregisterField, updateFieldValue } = useValidation();
   const scope = useOptionalValidationScope();
   const pageKey = scope?.pageKey;
   const scopeActive = scope?.active;
+  const { registerField, unregisterField, updateFieldValue } = useOptionalValidationActions();
+  const error = useValidationFieldError(statePath, pageKey);
   // Components build their rules inline, so a stable serialization - not object identity - decides
   // when the rules actually changed.
   const rulesKey = rules ? JSON.stringify(rules) : undefined;
@@ -62,7 +63,7 @@ const useFieldValidation = ({ statePath, field, value, rules }: UseFieldValidati
     }
   }, [pageKey, registeredRules, statePath, updateFieldValue, value]);
 
-  return { error: pageKey !== undefined ? getError(statePath, pageKey) : undefined };
+  return { error };
 };
 
 export { useFieldValidation };

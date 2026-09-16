@@ -2,7 +2,7 @@ import { Form, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 import { useFormDefinition } from '../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../context/language/LanguageContext';
-import { useValidation } from '../../context/validation/ValidationContext';
+import { useValidationActions, useValidationPagesWithErrors } from '../../context/validation/ValidationContext';
 import { INTRO_KEY, SUMMARY_KEY } from './constants';
 import FormFlowLayout from './FormFlowLayout';
 
@@ -11,7 +11,8 @@ const RoutedFormFlowLayout = ({ form }: { form: Form }) => {
   const { panels } = useFormDefinition();
   const { pathname, search, state } = useLocation();
   const navigate = useNavigate();
-  const { pagesWithErrors, hideSummary } = useValidation();
+  const { hideSummary } = useValidationActions();
+  const pagesWithErrors = useValidationPagesWithErrors();
   const routeKey = pathname.slice(`/${form.path}`.length).replace(/^\//, '');
   const panelIndex = panels.findIndex((panel) => panel.key === routeKey);
 

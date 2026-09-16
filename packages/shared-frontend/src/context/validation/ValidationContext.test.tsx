@@ -7,7 +7,7 @@ import { ApplicationProvider } from '../application/ApplicationContext';
 import { LanguageProvider } from '../language/LanguageContext';
 import { SubmissionStateProvider } from '../state/SubmissionStateContext';
 import { useStateField } from '../state/useStateField';
-import { attachmentValidationPath, useValidation, ValidationProvider } from './ValidationContext';
+import { attachmentValidationPath, useValidation, useValidationActions, ValidationProvider } from './ValidationContext';
 import ValidationRegistration from './ValidationRegistration';
 import { ValidationScopeProvider } from './ValidationScopeContext';
 
@@ -22,10 +22,12 @@ interface FieldProps {
   statePath: string;
   label: string;
   rules: ValidationRules;
+  onRender?: () => void;
 }
 
-const Field = ({ statePath, label, rules }: FieldProps) => {
+const Field = ({ statePath, label, rules, onRender }: FieldProps) => {
   const { stateValue, error, setStateValue } = useStateField({ statePath, validation: { field: label, rules } });
+  onRender?.();
 
   return (
     <>
@@ -153,6 +155,48 @@ describe('ValidationContext', () => {
     type(container, 'firstName', 'Ada');
     click(container, 'Next');
     expect(textOf(container, 'error-firstName')).toBe('');
+  });
+
+  it('does not rerender a field when another field error changes', () => {
+    let firstNameRenders = 0;
+    let lastNameRenders = 0;
+
+    const Harness = () => {
+      const { validatePage } = useValidationActions();
+
+      return (
+        <>
+          <button type="button" onClick={() => validatePage('page1')}>
+            Validate
+          </button>
+          <ValidationScopeProvider pageKey="page1">
+            <Field
+              statePath="firstName"
+              label="First name"
+              rules={{ required: true }}
+              onRender={() => firstNameRenders++}
+            />
+            <Field
+              statePath="lastName"
+              label="Last name"
+              rules={{ required: true }}
+              onRender={() => lastNameRenders++}
+            />
+          </ValidationScopeProvider>
+        </>
+      );
+    };
+
+    renderApp(root, <Harness />);
+    click(container, 'Validate');
+    const lastNameRendersAfterValidation = lastNameRenders;
+
+    type(container, 'firstName', 'Ada');
+
+    expect(textOf(container, 'error-firstName')).toBe('');
+    expect(textOf(container, 'error-lastName')).toBe('Du må fylle ut: Last name');
+    expect(firstNameRenders).toBeGreaterThan(lastNameRendersAfterValidation);
+    expect(lastNameRenders).toBe(lastNameRendersAfterValidation);
   });
 
   it('recomputes cached errors in the new language', () => {

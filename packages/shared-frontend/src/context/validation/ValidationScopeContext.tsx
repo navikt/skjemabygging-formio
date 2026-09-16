@@ -1,5 +1,5 @@
 import { createContext, MutableRefObject, ReactNode, useContext, useLayoutEffect, useMemo, useRef } from 'react';
-import { useValidation } from './ValidationContext';
+import { useValidationActions } from './ValidationContext';
 
 /**
  * The current validation unit (a wizard page in fyllut). Field components read it from context
@@ -24,7 +24,7 @@ interface Props {
 }
 
 const ValidationScopeProvider = ({ pageKey, children }: Props) => {
-  const { resetPageFields } = useValidation();
+  const { resetPageFields } = useValidationActions();
   const active = useRef(true);
   const scope = useMemo(() => ({ pageKey, active }), [pageKey]);
 

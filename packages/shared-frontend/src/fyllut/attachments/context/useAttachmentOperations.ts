@@ -12,7 +12,7 @@ import { useLanguage } from '../../../context/language/LanguageContext';
 import { AttachmentApplication, useRuntimeServices } from '../../../context/runtime-services/RuntimeServicesContext';
 import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
 import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
-import { useValidation } from '../../../context/validation/ValidationContext';
+import { useValidationActions } from '../../../context/validation/ValidationContext';
 import { downloadBlob } from '../../../utils/blob';
 import { useNologinToken } from '../../context/nologin-token/NologinTokenContext';
 import { createAttachmentSubmissionActions } from './attachmentSubmission';
@@ -33,7 +33,7 @@ const useAttachmentOperations = (): AttachmentUploadContextType => {
   const { submissionMethod } = useSubmissionMethod();
   const { translate } = useLanguage();
   const { submission, setSubmission } = useSubmissionState();
-  const { setAttachmentExternalError } = useValidation();
+  const { setAttachmentExternalError } = useValidationActions();
   const { getNologinToken, handleSessionExpired } = useNologinToken();
   const { search } = useLocation();
   const [uploadsInProgress, setUploadsInProgress] = useState<Record<string, Record<string, FileObject>>>({});

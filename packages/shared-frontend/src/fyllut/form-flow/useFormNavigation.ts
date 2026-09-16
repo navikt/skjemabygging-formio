@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router';
-import { useValidation } from '../../context/validation/ValidationContext';
+import { useValidationActions, useValidationPagesWithErrors } from '../../context/validation/ValidationContext';
 import { SUMMARY_KEY } from './constants';
 
 interface FormNavigationState {
@@ -14,7 +14,8 @@ type StepKind = 'intro' | 'panel' | 'summary';
 const useFormNavigation = (from: StepKind) => {
   const navigate = useNavigate();
   const { search, state } = useLocation();
-  const { pagesWithErrors, hideSummary } = useValidation();
+  const { hideSummary } = useValidationActions();
+  const pagesWithErrors = useValidationPagesWithErrors();
   const prefix = from === 'intro' ? '' : '../';
 
   const buildState = useCallback(

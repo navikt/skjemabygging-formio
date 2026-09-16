@@ -2,7 +2,7 @@ import { Panel } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useMemo } from 'react';
 import { useFormDefinition } from '../../context/form-definition/FormDefinitionContext';
 import { toComponentDefinitions } from '../../context/form-definition/formDefinitionUtils';
-import { useValidation } from '../../context/validation/ValidationContext';
+import { useValidationActions } from '../../context/validation/ValidationContext';
 import { ComponentDefinition } from '../../form-components/component-types';
 
 interface FormPageController {
@@ -19,7 +19,7 @@ interface FormPageController {
 
 const useFormPageController = (requestedPanelKey?: string): FormPageController => {
   const { panels } = useFormDefinition();
-  const { validatePage, hideSummary } = useValidation();
+  const { validatePage, hideSummary } = useValidationActions();
   const requestedIndex = requestedPanelKey ? panels.findIndex((panel) => panel.key === requestedPanelKey) : -1;
   const currentIndex = requestedIndex >= 0 ? requestedIndex : 0;
 

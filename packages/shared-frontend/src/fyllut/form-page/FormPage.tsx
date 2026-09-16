@@ -4,7 +4,7 @@ import { useLocation, useParams } from 'react-router';
 import FormErrorSummary from '../../components/error-summary/FormErrorSummary';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
-import { useValidation } from '../../context/validation/ValidationContext';
+import { useValidationActions } from '../../context/validation/ValidationContext';
 import RenderInputForm from '../../form-components/RenderInputForm';
 import { inputComponentRegistry } from '../../form-components/inputComponentRegistry';
 import FyllutInputAttachment from '../attachments/components/FyllutInputAttachment';
@@ -27,7 +27,7 @@ const FormPage = () => {
   const { panelSlug } = useParams<{ panelSlug?: string }>();
   const { hash, state } = useLocation();
   const { saveDraft, canSaveDraft } = useFormActions();
-  const { syncPageValidationState, validatePages } = useValidation();
+  const { syncPageValidationState, validatePages } = useValidationActions();
   const { currentPanel, components, isFirst, isLast, goToNext, panels, currentIndex } =
     useFormPageController(panelSlug);
   const { goToIntro, goToPanel, goToSummary, goToError } = useFormNavigation('panel');

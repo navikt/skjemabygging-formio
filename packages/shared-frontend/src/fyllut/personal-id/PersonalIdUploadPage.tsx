@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router';
 import { useFormDefinition } from '../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
-import { useValidation } from '../../context/validation/ValidationContext';
+import { useValidationAttachmentExternalError } from '../../context/validation/ValidationContext';
 import AttachmentOptionSelect from '../attachments/components/AttachmentOptionSelect';
 import FileUploader from '../attachments/components/FileUploader';
 import { useAttachmentUpload } from '../attachments/context/AttachmentUploadContext';
@@ -31,10 +31,9 @@ const PersonalIdUploadPage = () => {
   const { search } = useLocation();
   const navigate = useNavigate();
   const { addError, changeAttachmentValue, submissionAttachments } = useAttachmentUpload();
-  const { getAttachmentExternalError } = useValidation();
   const { logEvent } = useIntegration();
   const attachment = submissionAttachments.find((item) => item.attachmentId === PERSONAL_ID_ATTACHMENT_ID);
-  const attachmentValueError = getAttachmentExternalError(PERSONAL_ID_ATTACHMENT_ID, 'value');
+  const attachmentValueError = useValidationAttachmentExternalError(PERSONAL_ID_ATTACHMENT_ID, 'value');
 
   const changeAttachment = (value: SubmissionAttachmentValue | undefined) => {
     const title = identityDocumentOptions.find((option) => option.value === value?.key)?.label;

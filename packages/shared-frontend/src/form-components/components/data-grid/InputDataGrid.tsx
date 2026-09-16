@@ -11,7 +11,7 @@ import {
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
 import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
-import { useValidation } from '../../../context/validation/ValidationContext';
+import { useValidationActions } from '../../../context/validation/ValidationContext';
 import { useValidationScope } from '../../../context/validation/ValidationScopeContext';
 import { DataGridDefinition } from '../../component-types';
 import { InputComponentRegistry } from '../../inputComponentRegistry';
@@ -36,7 +36,7 @@ const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => 
   const { submission, updateSubmission } = useSubmissionState();
   const { form } = useFormDefinition();
   const { submissionMethod } = useSubmissionMethod();
-  const { handleFieldChange } = useValidation();
+  const { handleFieldChange } = useValidationActions();
   const { pageKey } = useValidationScope();
   const { components, label, description, hideLabel, addAnother, removeAnother, disableAddingRemovingRows, rowTitle } =
     component;
