@@ -32,13 +32,13 @@ const useAttachmentOperations = (): AttachmentUploadContextType => {
   const { attachments, sessions } = useRuntimeServices();
   const { submissionMethod } = useSubmissionMethod();
   const { translate } = useLanguage();
-  const { submission, setSubmission } = useSubmissionState();
+  const { getLatestSubmission, setSubmission } = useSubmissionState();
   const { setAttachmentExternalError } = useValidationActions();
   const { getNologinToken, handleSessionExpired } = useNologinToken();
   const { search } = useLocation();
   const [uploadsInProgress, setUploadsInProgress] = useState<Record<string, Record<string, FileObject>>>({});
   const innsendingsId = new URLSearchParams(search).get('innsendingsId') ?? undefined;
-  const submissionActions = createAttachmentSubmissionActions(submission, setSubmission);
+  const submissionActions = createAttachmentSubmissionActions(getLatestSubmission, setSubmission);
   const uploadProgressActions = createUploadProgressActions(setUploadsInProgress);
 
   const addError = (attachmentId: string, message: string, type: AttachmentErrorType, pageKey?: string) => {
@@ -164,7 +164,7 @@ const useAttachmentOperations = (): AttachmentUploadContextType => {
 
   const handleDeleteAllFiles = async () => {
     try {
-      submission?.attachments?.forEach((attachment) => removeError(attachment.attachmentId));
+      getLatestSubmission()?.attachments?.forEach((attachment) => removeError(attachment.attachmentId));
       const token = await getNologinToken();
       await attachments.deleteAllFiles(getAttachmentApplication(submissionMethod, innsendingsId, token));
       setSubmission(
@@ -206,7 +206,6 @@ const useAttachmentOperations = (): AttachmentUploadContextType => {
     handleDownloadFile,
     handleUploadFile,
     removeError,
-    submissionAttachments: submission?.attachments ?? [],
     uploadsInProgress,
   };
 };

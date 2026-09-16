@@ -6,7 +6,7 @@ import { validateTotalFilesSize } from './attachmentValidation';
 import { MAX_TOTAL_SIZE_ATTACHMENT_FILES_BYTES } from './fileUploadConfig';
 
 const createAttachmentSubmissionActions = (
-  submission: Submission | undefined,
+  getSubmission: () => Submission | undefined,
   setSubmission: Dispatch<SetStateAction<Submission | undefined>>,
 ) => {
   const getAttachments = (current: Submission | undefined, submissionPath?: string) =>
@@ -86,7 +86,9 @@ const createAttachmentSubmissionActions = (
   };
 
   const validateTotalAttachmentSize = (attachmentId: string, file: FileObject, submissionPath?: string) => {
-    const attachment = getAttachments(submission, submissionPath).find((entry) => entry.attachmentId === attachmentId);
+    const attachment = getAttachments(getSubmission(), submissionPath).find(
+      (entry) => entry.attachmentId === attachmentId,
+    );
     return validateTotalFilesSize(MAX_TOTAL_SIZE_ATTACHMENT_FILES_BYTES, [...(attachment?.files ?? []), file.file]);
   };
 

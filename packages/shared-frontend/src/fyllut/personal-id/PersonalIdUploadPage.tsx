@@ -3,6 +3,7 @@ import { ComponentValue, SubmissionAttachmentValue, TEXTS } from '@navikt/skjema
 import { useLocation, useNavigate } from 'react-router';
 import { useFormDefinitionForm } from '../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../context/language/LanguageContext';
+import { useSubmissionState } from '../../context/state/SubmissionStateContext';
 import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
 import { useValidationAttachmentExternalError } from '../../context/validation/ValidationContext';
 import AttachmentOptionSelect from '../attachments/components/AttachmentOptionSelect';
@@ -30,9 +31,10 @@ const PersonalIdUploadPage = () => {
   const { submissionMethod } = useSubmissionMethod();
   const { search } = useLocation();
   const navigate = useNavigate();
-  const { addError, changeAttachmentValue, submissionAttachments } = useAttachmentUpload();
+  const { submission } = useSubmissionState();
+  const { addError, changeAttachmentValue } = useAttachmentUpload();
   const { logEvent } = useIntegration();
-  const attachment = submissionAttachments.find((item) => item.attachmentId === PERSONAL_ID_ATTACHMENT_ID);
+  const attachment = submission?.attachments?.find((item) => item.attachmentId === PERSONAL_ID_ATTACHMENT_ID);
   const attachmentValueError = useValidationAttachmentExternalError(PERSONAL_ID_ATTACHMENT_ID, 'value');
 
   const changeAttachment = (value: SubmissionAttachmentValue | undefined) => {

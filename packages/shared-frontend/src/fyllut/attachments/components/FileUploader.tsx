@@ -16,7 +16,7 @@ import { attachmentValidationPath } from '../../../context/validation/attachment
 import ValidationRegistration from '../../../context/validation/ValidationRegistration';
 import { UnvalidatedFields } from '../../../context/validation/ValidationScopeContext';
 import { attachmentFilesRules, requiresUploadedFiles } from '../attachmentUploadValidation';
-import { useAttachmentUpload } from '../context/AttachmentUploadContext';
+import { useAttachmentUpload, useAttachmentUploadsInProgress } from '../context/AttachmentUploadContext';
 import { fileUploadErrorParams } from '../context/fileUploadConfig';
 import FilesPreview from './FilesPreview';
 import UploadButton from './UploadButton';
@@ -60,15 +60,12 @@ const FileUploader = ({
   const { submissionMethod } = useSubmissionMethod();
   const { translate } = useLanguage();
   const { submission } = useSubmissionState();
-  const {
-    changeAttachmentValue,
-    handleDeleteFile,
-    handleDownloadFile,
-    submissionAttachments: legacyAttachments,
-    uploadsInProgress,
-  } = useAttachmentUpload();
-  const submissionAttachments = submissionPath ? getAttachmentsAtPath(submission, submissionPath) : legacyAttachments;
+  const { changeAttachmentValue, handleDeleteFile, handleDownloadFile } = useAttachmentUpload();
   const { attachmentId } = initialAttachment;
+  const uploadsInProgress = useAttachmentUploadsInProgress(attachmentId);
+  const submissionAttachments = submissionPath
+    ? getAttachmentsAtPath(submission, submissionPath)
+    : (submission?.attachments ?? []);
   const { getAttachmentError, getAttachmentExternalError } = useAttachmentValidation(submissionAttachments);
   const attachment = submissionAttachments.find((currentAttachment) => currentAttachment.attachmentId === attachmentId);
 
@@ -79,7 +76,7 @@ const FileUploader = ({
   const uploadedFiles = attachment?.files ?? noFiles;
   const initialUpload = uploadedFiles.length === 0;
   const showButton = multiple || initialUpload;
-  const inProgress = Object.values(uploadsInProgress[attachmentId] ?? {});
+  const inProgress = Object.values(uploadsInProgress);
   const fileItems = [...uploadedFiles, ...inProgress];
 
   const attachmentTitleErrorMessage =

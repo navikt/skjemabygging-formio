@@ -53,8 +53,10 @@ const UploadButton = ({
 }: Props) => {
   const { translate } = useLanguage();
   const { submission } = useSubmissionState();
-  const { handleUploadFile, addError, submissionAttachments: legacyAttachments } = useAttachmentUpload();
-  const submissionAttachments = submissionPath ? getAttachmentsAtPath(submission, submissionPath) : legacyAttachments;
+  const { handleUploadFile, addError } = useAttachmentUpload();
+  const submissionAttachments = submissionPath
+    ? getAttachmentsAtPath(submission, submissionPath)
+    : (submission?.attachments ?? []);
   const scope = useOptionalValidationScope();
   const { getAttachmentError, getAttachmentExternalError } = useAttachmentValidation(submissionAttachments);
   const [loading, setLoading] = useState(false);

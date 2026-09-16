@@ -35,7 +35,8 @@ interface AttachmentUploadContextType {
     multiple?: boolean,
   ) => void;
   uploadsInProgress: Record<string, Record<string, FileObject>>;
-  submissionAttachments: SubmissionAttachment[];
 }
 
-export type { AttachmentActionStatus, AttachmentErrorType, AttachmentUploadContextType };
+type AttachmentUploadActions = Omit<AttachmentUploadContextType, 'uploadsInProgress'>;
+
+export type { AttachmentActionStatus, AttachmentErrorType, AttachmentUploadActions, AttachmentUploadContextType };
