@@ -5,8 +5,8 @@ The builder owns report formatting; forms-api remains the source of form data.
 The four download links are available on `/rapporter`.
 
 Files use semicolon-separated UTF-8 with a byte-order mark (BOM) for Excel.
-Programmatic CSV consumers must handle the BOM (for example, `bom: true` with
-`csv-parse`) so it does not become part of the first column name.
+Programmatic CSV consumers must handle the BOM so it does not become part of
+the first column name.
 
 ## Stage 1
 
