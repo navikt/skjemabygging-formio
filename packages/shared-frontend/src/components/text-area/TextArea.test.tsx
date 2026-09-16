@@ -30,6 +30,7 @@ describe('TextArea', () => {
         <StateStoreProvider
           store={{
             getValue: () => undefined,
+            subscribe: () => () => undefined,
             setValue: (_statePath, value) => {
               submissionValue = value;
               return { data: { description: value } };

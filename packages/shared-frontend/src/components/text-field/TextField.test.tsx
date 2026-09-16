@@ -9,6 +9,7 @@ const createStore = (
   setValues: (updater: (prev: Record<string, unknown>) => Record<string, unknown>) => void,
 ) => ({
   getValue: (statePath: string) => values[statePath],
+  subscribe: () => () => undefined,
   setValue: (statePath: string, value: unknown) => {
     let nextValues = values;
     setValues((previousValues) => {
@@ -80,6 +81,7 @@ describe('TextField', () => {
         <StateStoreProvider
           store={{
             getValue: () => undefined,
+            subscribe: () => () => undefined,
             setValue: () => ({ data: {} }),
           }}
         >

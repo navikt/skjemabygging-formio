@@ -41,24 +41,32 @@ const SubmissionStateContext = createContext<SubmissionStateContextType>({} as S
 const SubmissionStateProvider = ({ children, initialSubmission }: Props) => {
   const [submission, setSubmissionState] = useState<Submission | undefined>(initialSubmission ?? { data: {} });
   const submissionRef = useRef<Submission | undefined>(initialSubmission ?? { data: {} });
+  const fieldStateListenersRef = useRef(new Set<() => void>());
 
-  const setSubmission = useCallback<Dispatch<SetStateAction<Submission | undefined>>>((nextSubmission) => {
-    setSubmissionState((previousSubmission) => {
+  const notifyFieldStateListeners = useCallback(() => {
+    fieldStateListenersRef.current.forEach((listener) => listener());
+  }, []);
+
+  const setSubmission = useCallback<Dispatch<SetStateAction<Submission | undefined>>>(
+    (nextSubmission) => {
+      const previousSubmission = submissionRef.current;
       const resolvedSubmission =
         typeof nextSubmission === 'function' ? nextSubmission(previousSubmission) : nextSubmission;
       submissionRef.current = resolvedSubmission;
-      return resolvedSubmission;
-    });
-  }, []);
+      setSubmissionState(resolvedSubmission);
+      if (!Object.is(previousSubmission, resolvedSubmission)) {
+        notifyFieldStateListeners();
+      }
+    },
+    [notifyFieldStateListeners],
+  );
 
   const getLatestSubmission = useCallback(() => submissionRef.current, []);
 
   const updateSubmission = useCallback(
     (submissionPath: string, value: unknown) => {
       setSubmission((prev) => {
-        const nextSubmission = createUpdatedSubmission(prev, submissionPath, value);
-        submissionRef.current = nextSubmission;
-        return nextSubmission;
+        return createUpdatedSubmission(prev, submissionPath, value);
       });
     },
     [setSubmission],
@@ -86,15 +94,20 @@ const SubmissionStateProvider = ({ children, initialSubmission }: Props) => {
   // returns the next submission snapshot so scope-aware validation can revalidate synchronously.
   const store = useMemo(
     () => ({
-      getValue: (statePath: string) => submissionUtils.getSubmissionValue(statePath, submission),
+      getValue: (statePath: string) => submissionUtils.getSubmissionValue(statePath, submissionRef.current),
+      subscribe: (listener: () => void) => {
+        fieldStateListenersRef.current.add(listener);
+        return () => {
+          fieldStateListenersRef.current.delete(listener);
+        };
+      },
       setValue: (statePath: string, fieldValue: unknown): Submission => {
         const nextSubmission = createUpdatedSubmission(submissionRef.current, statePath, fieldValue);
-        submissionRef.current = nextSubmission;
         setSubmission(nextSubmission);
         return nextSubmission;
       },
     }),
-    [submission, setSubmission],
+    [setSubmission],
   );
 
   return (

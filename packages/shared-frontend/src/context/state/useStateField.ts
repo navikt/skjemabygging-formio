@@ -3,7 +3,7 @@ import { ValidationRules } from '../../validation/validators';
 import { useFieldValidation } from '../validation/useFieldValidation';
 import { useValidation } from '../validation/ValidationContext';
 import { useOptionalValidationScope } from '../validation/ValidationScopeContext';
-import { useOptionalFieldStateStore } from './StateContext';
+import { useFieldStateValue, useOptionalFieldStateStore } from './StateContext';
 
 interface FieldValidation {
   /** Field name used in validation messages (a label or a translation key). */
@@ -32,9 +32,9 @@ interface UseStateFieldArgs {
  */
 const useStateField = ({ statePath, validation }: UseStateFieldArgs) => {
   const store = useOptionalFieldStateStore();
+  const stateValue = useFieldStateValue(statePath);
   const { handleFieldChange, updateFieldValue } = useValidation();
   const scope = useOptionalValidationScope();
-  const stateValue = store?.getValue(statePath);
   const hasValueOverride = !!validation && 'value' in validation;
   const validationValue = hasValueOverride ? validation.value : stateValue;
   const { error } = useFieldValidation({

@@ -2,7 +2,7 @@ import { Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { act, useState } from 'react';
 import { createRoot, Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { useOptionalFieldStateStore } from './StateContext';
+import { useFieldStateValue, useOptionalFieldStateStore } from './StateContext';
 import { SubmissionStateProvider, useSubmissionState } from './SubmissionStateContext';
 
 const SnapshotHarness = () => {
@@ -36,6 +36,30 @@ const SnapshotHarness = () => {
       </button>
       <span data-testid="latest-submission">{latestSubmission}</span>
     </>
+  );
+};
+
+const FieldObserver = ({ statePath, onRender }: { statePath: string; onRender: () => void }) => {
+  const value = useFieldStateValue(statePath);
+  onRender();
+  return <span data-testid={statePath}>{String(value ?? '')}</span>;
+};
+
+const FieldUpdateButton = ({ statePath, value }: { statePath: string; value: unknown }) => {
+  const store = useOptionalFieldStateStore();
+  return (
+    <button type="button" onClick={() => store?.setValue(statePath, value)}>
+      Update field
+    </button>
+  );
+};
+
+const SubmissionUpdateButton = () => {
+  const { setSubmission } = useSubmissionState();
+  return (
+    <button type="button" onClick={() => setSubmission({ data: { firstName: 'Grace', lastName: 'Lovelace' } })}>
+      Replace submission
+    </button>
   );
 };
 
@@ -93,5 +117,51 @@ describe('SubmissionStateContext', () => {
 
     expect(container.querySelector('[data-testid="latest-submission"]')?.textContent).toBe('cleared');
     expect(container.querySelector('[data-testid="submission"]')?.textContent).toBe('{}');
+  });
+
+  it('rerenders only fields whose selected value changed', () => {
+    let firstNameRenders = 0;
+    let lastNameRenders = 0;
+
+    act(() => {
+      root.render(
+        <SubmissionStateProvider initialSubmission={{ data: { firstName: 'Ada', lastName: 'Lovelace' } }}>
+          <FieldUpdateButton statePath="firstName" value="Grace" />
+          <FieldObserver statePath="firstName" onRender={() => firstNameRenders++} />
+          <FieldObserver statePath="lastName" onRender={() => lastNameRenders++} />
+        </SubmissionStateProvider>,
+      );
+    });
+
+    act(() => {
+      (container.querySelector('button') as HTMLButtonElement).click();
+    });
+
+    expect(container.querySelector('[data-testid="firstName"]')?.textContent).toBe('Grace');
+    expect(firstNameRenders).toBe(2);
+    expect(lastNameRenders).toBe(1);
+  });
+
+  it('selects changed field values from full submission replacements', () => {
+    let firstNameRenders = 0;
+    let lastNameRenders = 0;
+
+    act(() => {
+      root.render(
+        <SubmissionStateProvider initialSubmission={{ data: { firstName: 'Ada', lastName: 'Lovelace' } }}>
+          <SubmissionUpdateButton />
+          <FieldObserver statePath="firstName" onRender={() => firstNameRenders++} />
+          <FieldObserver statePath="lastName" onRender={() => lastNameRenders++} />
+        </SubmissionStateProvider>,
+      );
+    });
+
+    act(() => {
+      (container.querySelector('button') as HTMLButtonElement).click();
+    });
+
+    expect(container.querySelector('[data-testid="firstName"]')?.textContent).toBe('Grace');
+    expect(firstNameRenders).toBe(2);
+    expect(lastNameRenders).toBe(1);
   });
 });
