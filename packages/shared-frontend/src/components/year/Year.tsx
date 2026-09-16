@@ -1,13 +1,11 @@
-import { FieldValidationInput, toFieldValidation } from '../shared/fieldValidation';
 import InternalTextField, { InternalTextFieldProps } from '../text-field/InternalTextField';
 import { FieldValidationProp } from '../types';
+import { toYearValidation } from './yearValidation';
 
 type YearValidation = Pick<FieldValidationProp, 'minYear' | 'maxYear' | 'notEqual'>;
 interface YearProps extends Omit<InternalTextFieldProps, 'formatKey' | 'validation'> {
   validation?: YearValidation;
 }
-
-const toYearValidation = (input: FieldValidationInput) => toFieldValidation(input, { year: true });
 
 const Year = ({ validation, required = true, ...props }: YearProps) => (
   <InternalTextField
@@ -19,5 +17,4 @@ const Year = ({ validation, required = true, ...props }: YearProps) => (
 );
 
 export default Year;
-export { toYearValidation };
 export type { YearProps, YearValidation };

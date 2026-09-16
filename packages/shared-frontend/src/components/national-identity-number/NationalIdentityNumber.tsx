@@ -1,6 +1,6 @@
-import { FieldValidationInput, toFieldValidation } from '../shared/fieldValidation';
 import InternalTextField, { InternalTextFieldProps } from '../text-field/InternalTextField';
 import { FieldValidationProp } from '../types';
+import { toNationalIdentityNumberValidation } from './nationalIdentityNumberValidation';
 
 type NationalIdentityNumberValidation = Pick<FieldValidationProp, 'minLength' | 'maxLength' | 'pattern' | 'notEqual'>;
 interface NationalIdentityNumberProps extends Omit<
@@ -10,9 +10,6 @@ interface NationalIdentityNumberProps extends Omit<
   rawFormat?: boolean;
   validation?: NationalIdentityNumberValidation;
 }
-
-const toNationalIdentityNumberValidation = (input: FieldValidationInput) =>
-  toFieldValidation(input, { nationalIdentityNumber: true });
 
 const NationalIdentityNumber = ({
   rawFormat = false,
@@ -30,5 +27,4 @@ const NationalIdentityNumber = ({
 );
 
 export default NationalIdentityNumber;
-export { toNationalIdentityNumberValidation };
 export type { NationalIdentityNumberProps, NationalIdentityNumberValidation };

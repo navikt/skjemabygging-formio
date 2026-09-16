@@ -1,14 +1,14 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
-import { toAccountNumberValidation } from '../../components/account-number/AccountNumber';
+import { toAccountNumberValidation } from '../../components/account-number/accountNumberValidation';
 import { toAddressValidityValidationFields } from '../../components/address-validity/addressValidityValidation';
 import { toAddressValidationFields } from '../../components/address/addressValidation';
 import { toDatePickerValidation, toMonthPickerValidation } from '../../components/date/dateValidation';
-import { toEmailValidation } from '../../components/email/Email';
-import { toIbanValidation } from '../../components/iban/Iban';
+import { toEmailValidation } from '../../components/email/emailValidation';
+import { toIbanValidation } from '../../components/iban/ibanValidation';
 import { toIdentityValidationFields } from '../../components/identity/identityValidation';
-import { toNationalIdentityNumberValidation } from '../../components/national-identity-number/NationalIdentityNumber';
-import { toNumberFieldValidation } from '../../components/number-field/NumberField';
-import { toOrganizationNumberValidation } from '../../components/organization-number/OrganizationNumber';
+import { toNationalIdentityNumberValidation } from '../../components/national-identity-number/nationalIdentityNumberValidation';
+import { toNumberFieldValidation } from '../../components/number-field/numberFieldValidation';
+import { toOrganizationNumberValidation } from '../../components/organization-number/organizationNumberValidation';
 import { toPhoneNumberValidationFields } from '../../components/phone-number/phoneNumberValidation';
 import { toSenderValidationFields } from '../../components/sender/senderValidation';
 import {
@@ -18,7 +18,7 @@ import {
   toValidationFields,
 } from '../../components/shared/fieldValidation';
 import { toCoverPageTextFieldValidation, toTextFieldValidation } from '../../components/text-field/textFieldValidation';
-import { toYearValidation } from '../../components/year/Year';
+import { toYearValidation } from '../../components/year/yearValidation';
 import {
   enrichComponentsWithBaseSubmissionPath,
   toComponentDefinitions,

@@ -1,6 +1,6 @@
-import { FieldValidationInput, toFieldValidation } from '../shared/fieldValidation';
 import InternalTextField, { InternalTextFieldProps } from '../text-field/InternalTextField';
 import { FieldValidationProp } from '../types';
+import { toAccountNumberValidation } from './accountNumberValidation';
 
 type AccountNumberValidation = Pick<FieldValidationProp, 'minLength' | 'maxLength' | 'pattern' | 'notEqual'>;
 interface AccountNumberProps extends Omit<
@@ -9,8 +9,6 @@ interface AccountNumberProps extends Omit<
 > {
   validation?: AccountNumberValidation;
 }
-
-const toAccountNumberValidation = (input: FieldValidationInput) => toFieldValidation(input, { accountNumber: true });
 
 const AccountNumber = ({ validation, required = true, ...props }: AccountNumberProps) => (
   <InternalTextField
@@ -23,5 +21,4 @@ const AccountNumber = ({ validation, required = true, ...props }: AccountNumberP
 );
 
 export default AccountNumber;
-export { toAccountNumberValidation };
 export type { AccountNumberProps, AccountNumberValidation };

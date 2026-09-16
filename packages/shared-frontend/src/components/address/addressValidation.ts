@@ -1,6 +1,6 @@
 import { CustomLabels, SubmissionAddress, SubmissionMethod, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { ValidationField } from '../../context/validation/validationTypes';
-import { toPostalCodeValidation } from '../postal-code/PostalCode';
+import { toPostalCodeValidation } from '../postal-code/postalCodeValidation';
 import { toFieldValidation, toValidationFields } from '../shared/fieldValidation';
 import { AddressConfig, getPrefilledAddress, resolveAddressType, shouldShowAddressTypeChoice } from './addressUtils';
 

@@ -1,21 +1,18 @@
 import { formatUtils, numberUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { toSubmissionFormat } from '../../formatting/inputFormat';
-import { FieldValidationInput, toFieldValidation } from '../shared/fieldValidation';
 import InternalTextField, { InternalTextFieldProps } from '../text-field/InternalTextField';
 import { FieldValidationProp } from '../types';
+import { NumberType, toNumberFieldValidation } from './numberFieldValidation';
 
 type NumberFieldValidation = Pick<FieldValidationProp, 'min' | 'max' | 'notEqual'>;
 interface NumberFieldProps extends Omit<
   InternalTextFieldProps,
   'formatKey' | 'toDisplayValue' | 'toStateValue' | 'validation'
 > {
-  numberType: 'integer' | 'decimal';
+  numberType: NumberType;
   calculatedValue?: boolean;
   validation?: NumberFieldValidation;
 }
-
-const toNumberFieldValidation = (input: FieldValidationInput, numberType: NumberFieldProps['numberType']) =>
-  toFieldValidation(input, { numberType });
 
 const NumberField = ({
   numberType,
@@ -67,5 +64,4 @@ const NumberField = ({
 };
 
 export default NumberField;
-export { toNumberFieldValidation };
 export type { NumberFieldProps, NumberFieldValidation };

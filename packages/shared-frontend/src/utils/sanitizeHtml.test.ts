@@ -1,3 +1,5 @@
+// @vitest-environment jsdom
+
 import { sanitizeHtml } from './sanitizeHtml';
 
 describe('sanitizeHtml', () => {
