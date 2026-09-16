@@ -39,7 +39,9 @@ const FyllutFormFlow = ({
   const [receiptPdf, setReceiptPdf] = useState<Blob>();
   const hydratedInitialSubmission = applyDefaultValuesToSubmission(
     form,
-    applyPrefilledValuesToSubmission(form, hydrateLegacyAttachments(form, initialSubmission), currentLanguage),
+    applyPrefilledValuesToSubmission(form, hydrateLegacyAttachments(form, initialSubmission), currentLanguage, {
+      submissionMethod: requestedSubmissionMethod ?? resolveDefaultSubmissionMethod(form.properties.submissionTypes),
+    }),
   );
   const defaultSubmissionMethod = resolveDefaultSubmissionMethod(form.properties.submissionTypes);
   const submissionMethodFromUrl = new URLSearchParams(search).has('sub') ? requestedSubmissionMethod : undefined;

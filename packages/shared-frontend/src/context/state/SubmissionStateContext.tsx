@@ -36,6 +36,21 @@ const createUpdatedSubmission = (
   data: setDeepValue(submission?.data ?? {}, parseSubmissionPath(submissionPath), value),
 });
 
+const clearSubmissionPathsFromSubmission = (
+  submission: Submission | undefined,
+  submissionPaths: string[],
+): Submission | undefined => {
+  if (submissionPaths.length === 0 || !submission?.data) {
+    return submission;
+  }
+
+  const data = submissionPaths.reduce(
+    (currentData, path) => removeDeepValue(currentData, parseSubmissionPath(path)),
+    submission.data,
+  );
+  return data === submission.data ? submission : { ...submission, data };
+};
+
 const SubmissionStateContext = createContext<SubmissionStateContextType>({} as SubmissionStateContextType);
 
 const SubmissionStateProvider = ({ children, initialSubmission }: Props) => {
@@ -74,13 +89,7 @@ const SubmissionStateProvider = ({ children, initialSubmission }: Props) => {
 
   const clearSubmissionPaths = useCallback(
     (submissionPaths: string[]) => {
-      if (submissionPaths.length === 0) return;
-      setSubmission((prev) => {
-        if (!prev?.data) return prev;
-        const data = submissionPaths.reduce((acc, path) => removeDeepValue(acc, parseSubmissionPath(path)), prev.data);
-        if (data === prev.data) return prev;
-        return { ...prev, data };
-      });
+      setSubmission((prev) => clearSubmissionPathsFromSubmission(prev, submissionPaths));
     },
     [setSubmission],
   );
@@ -119,5 +128,5 @@ const SubmissionStateProvider = ({ children, initialSubmission }: Props) => {
 
 const useSubmissionState = () => useContext(SubmissionStateContext);
 
-export { createUpdatedSubmission, SubmissionStateProvider, useSubmissionState };
+export { clearSubmissionPathsFromSubmission, createUpdatedSubmission, SubmissionStateProvider, useSubmissionState };
 export type { SubmissionStateContextType };

@@ -63,6 +63,52 @@ describe('initializeDigitalDraft', () => {
     });
   });
 
+  it('clears an inactive prefilled value when loading a draft', async () => {
+    const applications = createApplicationService();
+    const formWithConditionalPrefill: Form = {
+      ...form,
+      components: [
+        {
+          key: 'panel',
+          title: 'Panel',
+          type: 'panel',
+          navId: 'panel',
+          components: [
+            { key: 'showExtra', label: 'Show extra', type: 'navCheckbox', input: true, navId: 'showExtra' },
+            {
+              key: 'extra',
+              label: 'Extra',
+              type: 'textfield',
+              input: true,
+              navId: 'extra',
+              prefillValue: 'Prefilled value',
+              customConditional: 'show = data.showExtra === true;',
+            },
+          ],
+        },
+      ],
+    } as Form;
+    vi.mocked(applications.getDraft).mockResolvedValue({
+      id: 'draft-123',
+      language: 'nb',
+      submission: { data: { showExtra: false, extra: 'Prefilled value' } },
+      modifiedAt: '2026-08-27T10:00:00Z',
+      deleteAt: '2026-09-24T10:00:00Z',
+    });
+
+    await expect(
+      initializeDigitalDraft({
+        applications,
+        form: formWithConditionalPrefill,
+        search: '?sub=digital&innsendingsId=draft-123',
+        submissionMethod: 'digital',
+      }),
+    ).resolves.toMatchObject({
+      type: 'ready',
+      initialSubmission: { data: {} },
+    });
+  });
+
   it('keeps every populated data grid row when an earlier row was saved empty', async () => {
     const applications = createApplicationService();
     const formWithDataGrid: Form = {

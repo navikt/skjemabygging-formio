@@ -69,15 +69,18 @@ const initializeDigitalDraft = async ({
   if (innsendingsId) {
     try {
       const draft = await applications.getDraft(innsendingsId);
+      const submission = applyPrefilledValuesToSubmission(
+        form,
+        formSummaryUtils.filterSubmissionDataToSummary(form, draft.submission, { submissionMethod }),
+        draft.language,
+        { submissionMethod },
+      );
 
       return {
         type: 'ready',
         initialInnsendingsId: innsendingsId,
         initialLanguage: draft.language,
-        initialSubmission: withDraftMetadata(
-          formSummaryUtils.filterSubmissionDataToSummary(form, draft.submission, { submissionMethod }),
-          draft,
-        ),
+        initialSubmission: withDraftMetadata(submission, draft),
       };
     } catch (error) {
       if (hasErrorCode(error, 'NOT_FOUND')) {
@@ -88,7 +91,7 @@ const initializeDigitalDraft = async ({
   }
 
   const language = getDraftBootstrapLanguage(search);
-  const submission = applyPrefilledValuesToSubmission(form, undefined, language) ?? { data: {} };
+  const submission = applyPrefilledValuesToSubmission(form, undefined, language, { submissionMethod }) ?? { data: {} };
   const result = await applications.createDraft({
     formPath: form.path,
     submission,

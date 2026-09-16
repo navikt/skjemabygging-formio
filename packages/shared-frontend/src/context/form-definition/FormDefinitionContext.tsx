@@ -22,8 +22,7 @@ import {
   getActivePanels,
   toComponentDefinitions,
 } from './formDefinitionUtils';
-import { collectHiddenSubmissionPaths } from './hiddenSubmissionPaths';
-import { applyPrefilledValuesToSubmission } from './prefillSubmission';
+import { reconcilePrefilledSubmission } from './prefillSubmission';
 
 interface FormDefinitionContextType {
   form: Form;
@@ -92,7 +91,7 @@ const stabilizeValue = (
 const FormDefinitionProvider = ({ children, form }: Props) => {
   const { currentLanguage } = useLanguage();
   const { submissionMethod } = useSubmissionMethod();
-  const { submission, setSubmission, clearSubmissionPaths } = useSubmissionState();
+  const { submission, setSubmission } = useSubmissionState();
   const formWithBaseSubmissionPath = useMemo(() => enrichFormWithBaseSubmissionPath(form), [form]);
 
   const panels = useMemo(
@@ -114,8 +113,13 @@ const FormDefinitionProvider = ({ children, form }: Props) => {
   );
 
   useLayoutEffect(() => {
-    setSubmission((prev) => applyPrefilledValuesToSubmission(formWithBaseSubmissionPath, prev, currentLanguage));
-  }, [currentLanguage, formWithBaseSubmissionPath, setSubmission]);
+    setSubmission((prev) =>
+      reconcilePrefilledSubmission(formWithBaseSubmissionPath, prev, currentLanguage, {
+        prefillMode: 'missing',
+        submissionMethod,
+      }),
+    );
+  }, [currentLanguage, formWithBaseSubmissionPath, setSubmission, submission, submissionMethod]);
 
   useEffect(() => {
     setSubmission((prev) =>
@@ -128,16 +132,6 @@ const FormDefinitionProvider = ({ children, form }: Props) => {
   }, [activeComponents, dataGridRowScopes, setSubmission]);
 
   useEffect(() => {
-    const hiddenPathsToClear = collectHiddenSubmissionPaths({
-      form: formWithBaseSubmissionPath,
-      activeComponents,
-      submission,
-      submissionMethod,
-    });
-    if (hiddenPathsToClear.length > 0) {
-      clearSubmissionPaths(hiddenPathsToClear);
-    }
-
     const attachmentIds = new Set(
       flattenComponentsWithBaseSubmissionPath(formWithBaseSubmissionPath.components)
         .filter((component) => component.type === 'attachment')
@@ -169,7 +163,7 @@ const FormDefinitionProvider = ({ children, form }: Props) => {
         ? current
         : { ...current, attachments: visibleAttachments };
     });
-  }, [activeComponents, clearSubmissionPaths, formWithBaseSubmissionPath, setSubmission, submission, submissionMethod]);
+  }, [activeComponents, formWithBaseSubmissionPath, setSubmission, submission, submissionMethod]);
 
   const value = useMemo(
     () => ({ form: formWithBaseSubmissionPath, activeComponents, panels }),
