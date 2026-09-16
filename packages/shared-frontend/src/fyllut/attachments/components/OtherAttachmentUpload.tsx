@@ -14,7 +14,7 @@ import {
   getAttachmentsAtPath,
   setAttachmentsAtPath,
 } from '../../../context/attachment/attachmentData';
-import { useFormDefinition } from '../../../context/form-definition/FormDefinitionContext';
+import { useFormDefinitionForm } from '../../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
 import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
@@ -74,7 +74,7 @@ const OtherAttachmentUploadField = ({
   const { submission, setSubmission } = useSubmissionState();
   const { handleDeleteAttachment } = useAttachmentUpload();
   const submissionAttachments = getAttachmentsAtPath(submission, submissionPath);
-  const { form } = useFormDefinition();
+  const form = useFormDefinitionForm();
   const defaultAttachmentValues: Pick<SubmissionAttachment, 'navId' | 'type'> = {
     navId: attachmentNavId,
     type: 'other',

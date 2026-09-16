@@ -2,7 +2,7 @@ import { Box, Button, Heading } from '@navikt/ds-react';
 import { submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import TranslatedDescription from '../../../components/shared/TranslatedDescription';
-import { useFormDefinition } from '../../../context/form-definition/FormDefinitionContext';
+import { useFormDefinitionForm } from '../../../context/form-definition/FormDefinitionContext';
 import {
   enrichComponentsWithBaseSubmissionPath,
   getResolvedSubmissionPath,
@@ -34,7 +34,7 @@ interface InputDataGridProps {
 const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => {
   const { translate } = useLanguage();
   const { submission, updateSubmission } = useSubmissionState();
-  const { form } = useFormDefinition();
+  const form = useFormDefinitionForm();
   const { submissionMethod } = useSubmissionMethod();
   const { handleFieldChange } = useValidationActions();
   const { pageKey } = useValidationScope();

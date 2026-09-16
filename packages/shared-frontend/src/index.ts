@@ -5,7 +5,13 @@ import ValidationExclamationIcon from './components/icons/ValidationExclamationI
 import NavUnitSelect from './components/nav-unit-select/NavUnitSelect';
 import { useNavUnits } from './components/nav-unit-select/useNavUnits';
 import { ApplicationProvider, useApplication } from './context/application/ApplicationContext';
-import { FormDefinitionProvider, useFormDefinition } from './context/form-definition/FormDefinitionContext';
+import {
+  FormDefinitionProvider,
+  useFormDefinition,
+  useFormDefinitionComponents,
+  useFormDefinitionForm,
+  useFormDefinitionPanels,
+} from './context/form-definition/FormDefinitionContext';
 import { applyPrefilledValuesToSubmission } from './context/form-definition/prefillSubmission';
 import { LanguageProvider, useLanguage } from './context/language/LanguageContext';
 import { RuntimeServicesProvider, useRuntimeServices } from './context/runtime-services/RuntimeServicesContext';
@@ -92,6 +98,9 @@ export {
   SubmissionStateProvider,
   useApplication,
   useFormDefinition,
+  useFormDefinitionComponents,
+  useFormDefinitionForm,
+  useFormDefinitionPanels,
   useLanguage,
   useNavUnits,
   useRuntimeServices,

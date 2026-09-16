@@ -1,6 +1,6 @@
 import { Box, FormProgress } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useFormDefinition } from '../../context/form-definition/FormDefinitionContext';
+import { useFormDefinitionPanels } from '../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../context/language/LanguageContext';
 
 interface Step {
@@ -26,7 +26,7 @@ const FormStepper = ({
   onOpenChange,
 }: Props) => {
   const { translate } = useLanguage();
-  const { panels } = useFormDefinition();
+  const panels = useFormDefinitionPanels();
 
   const steps: Step[] = [
     ...leadingSteps,

@@ -1,7 +1,7 @@
 import { BodyShort, Label, VStack } from '@navikt/ds-react';
 import { ComponentValue, SubmissionAttachmentValue, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useLocation, useNavigate } from 'react-router';
-import { useFormDefinition } from '../../context/form-definition/FormDefinitionContext';
+import { useFormDefinitionForm } from '../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
 import { useValidationAttachmentExternalError } from '../../context/validation/ValidationContext';
@@ -25,7 +25,7 @@ const identityDocumentOptions: ComponentValue[] = [
 ];
 
 const PersonalIdUploadPage = () => {
-  const { form } = useFormDefinition();
+  const form = useFormDefinitionForm();
   const { translate } = useLanguage();
   const { submissionMethod } = useSubmissionMethod();
   const { search } = useLocation();

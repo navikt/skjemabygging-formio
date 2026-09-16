@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useFormDefinition } from '../../context/form-definition/FormDefinitionContext';
+import { useFormDefinitionForm } from '../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useSubmissionState } from '../../context/state/SubmissionStateContext';
 import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
@@ -17,7 +17,7 @@ interface Props {
 const IntroPage = ({ onStart }: Props) => {
   const { translate } = useLanguage();
   const { submissionMethod } = useSubmissionMethod();
-  const { form } = useFormDefinition();
+  const form = useFormDefinitionForm();
   const { saveDraft, canSaveDraft, status } = useFormActions();
   const { submission, setSubmission } = useSubmissionState();
   const [selfDeclarationError, setSelfDeclarationError] = useState<string | undefined>();

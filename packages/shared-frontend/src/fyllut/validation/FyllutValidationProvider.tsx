@@ -1,6 +1,6 @@
 import { Form, Panel, Submission, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
 import { ReactNode, useCallback, useRef } from 'react';
-import { useFormDefinition } from '../../context/form-definition/FormDefinitionContext';
+import { useFormDefinitionForm } from '../../context/form-definition/FormDefinitionContext';
 import { getActivePanels, toComponentDefinitions } from '../../context/form-definition/formDefinitionUtils';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useSubmissionState } from '../../context/state/SubmissionStateContext';
@@ -36,7 +36,7 @@ interface PageFieldsCache {
  * just entered.
  */
 const FyllutValidationProvider = ({ children, initialPagesWithErrors }: Props) => {
-  const { form } = useFormDefinition();
+  const form = useFormDefinitionForm();
   const { getLatestSubmission } = useSubmissionState();
   const { submissionMethod } = useSubmissionMethod();
   const { currentLanguage } = useLanguage();

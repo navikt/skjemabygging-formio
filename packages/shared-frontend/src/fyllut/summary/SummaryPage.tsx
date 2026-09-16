@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import Alert from '../../components/alert/Alert';
 import FormErrorSummary from '../../components/error-summary/FormErrorSummary';
 import { useApplication } from '../../context/application/ApplicationContext';
-import { useFormDefinition } from '../../context/form-definition/FormDefinitionContext';
+import { useFormDefinitionForm, useFormDefinitionPanels } from '../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useSubmissionState } from '../../context/state/SubmissionStateContext';
 import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
@@ -24,7 +24,8 @@ const SummaryPage = () => {
   const { logger, environment } = useApplication();
   const { submissionMethod } = useSubmissionMethod();
   const { translate, currentLanguage } = useLanguage();
-  const { form, panels } = useFormDefinition();
+  const form = useFormDefinitionForm();
+  const panels = useFormDefinitionPanels();
   const { submission } = useSubmissionState();
   const { getErrorsForPages, validatePages } = useValidation();
   const { submit, status, canSubmit, canSaveDraft } = useFormActions();

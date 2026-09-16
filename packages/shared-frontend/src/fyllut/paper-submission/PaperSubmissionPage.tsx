@@ -6,7 +6,7 @@ import Alert from '../../components/alert/Alert';
 import NavUnitSelect from '../../components/nav-unit-select/NavUnitSelect';
 import { useNavUnits } from '../../components/nav-unit-select/useNavUnits';
 import { useApplication } from '../../context/application/ApplicationContext';
-import { useFormDefinition } from '../../context/form-definition/FormDefinitionContext';
+import { useFormDefinitionForm } from '../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useRuntimeServices } from '../../context/runtime-services/RuntimeServicesContext';
 import { useSubmissionState } from '../../context/state/SubmissionStateContext';
@@ -28,7 +28,7 @@ const PaperSubmissionPage = ({ documentType }: Props) => {
   const { fyllutBaseUrl, logEvent } = useIntegration();
   const { logger } = useApplication();
   const { submissionMethod } = useSubmissionMethod();
-  const { form } = useFormDefinition();
+  const form = useFormDefinitionForm();
   const { submission } = useSubmissionState();
   const { search, state } = useLocation();
   const navigate = useNavigate();
