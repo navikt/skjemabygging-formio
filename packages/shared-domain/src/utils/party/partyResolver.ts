@@ -63,7 +63,7 @@ const getCoverPageOrganization = (form: Form, submission: Submission) => {
     .find((current) => current.type === 'orgNr' && current.coverPageUser);
   const number = component ? submission.data[component.key] : undefined;
 
-  return typeof number === 'string' && number ? { number, name: '' } : undefined;
+  return (typeof number === 'string' || typeof number === 'number') && number ? { number: `${number}`, name: '' } : undefined;
 };
 
 /**

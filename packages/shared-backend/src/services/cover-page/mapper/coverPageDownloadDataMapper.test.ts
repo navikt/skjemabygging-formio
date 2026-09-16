@@ -110,7 +110,7 @@ describe('coverPageDownloadDataMapper', () => {
       } as unknown as Form,
       {
         data: {
-          organizationNumber: '889 640 782',
+          organizationNumber: 889640782,
         },
       } as Submission,
       'nb-NO',
