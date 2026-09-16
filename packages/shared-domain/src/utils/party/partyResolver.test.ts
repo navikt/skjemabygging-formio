@@ -144,7 +144,7 @@ describe('resolveParty', () => {
     });
   });
 
-  it('resolves an organization acting for multiple people without requiring a NAV unit', () => {
+  it('resolves an organization acting on its own behalf without a NAV unit', () => {
     expect(
       resolve({
         sender: {
@@ -155,8 +155,31 @@ describe('resolveParty', () => {
         },
       }),
     ).toEqual({
+      onBehalfOf: 'self',
+      user: { name: 'Organization', number: '889 640 782' },
+    });
+  });
+
+  it('resolves an organization acting for multiple people when the journey provides a NAV unit', () => {
+    expect(
+      resolveParty(
+        form,
+        {
+          data: {
+            sender: {
+              organization: {
+                name: 'Organization',
+                number: '889 640 782',
+              },
+            },
+          },
+        },
+        { navUnit: '9999' },
+      ),
+    ).toEqual({
       onBehalfOf: 'multiple-people',
       sender: { name: 'Organization', number: '889 640 782' },
+      navUnit: '9999',
     });
   });
 
@@ -164,20 +187,11 @@ describe('resolveParty', () => {
     expect(resolve({})).toBeUndefined();
   });
 
-  it.each([
-    ['with Sender', [{ type: 'sender', key: 'sender', input: true }]],
-    ['with canonical user information', [{ type: 'container', key: 'yourInformation', yourInformation: true }]],
-  ])('leaves a legacy flat personal-information form %s to legacy mapping', (_, additionalComponents) => {
-    const legacyForm = {
-      components: [...additionalComponents, ...legacyFlatUserComponents],
-    } as Form;
-
+  it('resolves a flat identified user with a modern sender', () => {
+    const legacyForm = { components: [{ type: 'sender', key: 'sender', input: true }, ...legacyFlatUserComponents] } as Form;
     expect(
       resolveParty(legacyForm, {
         data: {
-          yourInformation: {
-            identitet: { identitetsnummer: '111 111 111 11' },
-          },
           fodselsnummerDNummerSoker: '222 222 222 22',
           sender: {
             organization: {
@@ -187,6 +201,59 @@ describe('resolveParty', () => {
           },
         },
       }),
-    ).toBeUndefined();
+    ).toEqual({
+      onBehalfOf: 'other-person',
+      sender: { name: 'Organization', number: '889 640 782' },
+      user: { kind: 'identified-person', nationalIdentityNumber: '222 222 222 22' },
+    });
+  });
+
+  it('resolves a flat unidentified user', () => {
+    const legacyForm = { components: legacyFlatUserComponents } as Form;
+
+    expect(
+      resolveParty(legacyForm, {
+        data: {
+          fornavnSoker: 'Legacy',
+          etternavnSoker: 'User',
+          gateadresseSoker: 'Testveien 1',
+        },
+      }),
+    ).toEqual({
+      onBehalfOf: 'self',
+      user: {
+        kind: 'unidentified-person',
+        firstName: 'Legacy',
+        surname: 'User',
+        address: {
+          streetAddress: 'Testveien 1',
+          country: { value: '', label: '' },
+        },
+      },
+    });
+  });
+
+  it('resolves a declared legacy sender', () => {
+    const legacyForm = {
+      components: [
+        { type: 'fnrfield', key: 'fodselsnummerDNummerSoker', label: 'Identity number' },
+        { type: 'textfield', key: 'fornavnAvsender', label: 'First name' },
+        { type: 'textfield', key: 'etternavnAvsender', label: 'Surname' },
+      ],
+    } as Form;
+
+    expect(
+      resolveParty(legacyForm, {
+        data: {
+          fodselsnummerDNummerSoker: '123 456 789 11',
+          fornavnAvsender: 'Legacy',
+          etternavnAvsender: 'Sender',
+        },
+      }),
+    ).toEqual({
+      onBehalfOf: 'other-person',
+      sender: { firstName: 'Legacy', surname: 'Sender' },
+      user: { kind: 'identified-person', nationalIdentityNumber: '123 456 789 11' },
+    });
   });
 });
