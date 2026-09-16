@@ -10,7 +10,7 @@ import MemoryStream from 'memorystream';
 import nock from 'nock';
 import config from '../config';
 import ReportService from './ReportService';
-import { formPublicationsService, formsService } from './index';
+import { formPublicationsService, formsService, recipientService, staticPdfService } from './index';
 
 const { formsApi } = config;
 
@@ -18,7 +18,7 @@ describe('ReportService', () => {
   let reportService: ReportService;
 
   beforeEach(() => {
-    reportService = new ReportService({ formsService, formPublicationsService });
+    reportService = new ReportService({ formsService, formPublicationsService, recipientService, staticPdfService });
   });
 
   afterEach(() => {
@@ -53,6 +53,7 @@ describe('ReportService', () => {
     const createWritableStream = () => new MemoryStream(undefined, { readable: false });
 
     const setupNock = (publishedForms: Partial<Form>[]) => {
+      nock(formsApi.url).get('/v1/recipients').reply(200, []);
       nock(formsApi.url)
         .get(/\/v1\/forms\?.*$/)
         .times(1)
@@ -62,6 +63,7 @@ describe('ReportService', () => {
         .times(1)
         .reply(200, publishedForms);
       for (const form of publishedForms) {
+        nock(formsApi.url).get(`/v1/forms/${form.path}/static-pdfs`).reply(200, []);
         nock(formsApi.url).get(`/v1/forms/${form.path}`).reply(200, form);
         const publishedTranslations: PublishedTranslations = {
           publishedAt: form.publishedAt ?? '2025-01-28T10:00:10.325Z',

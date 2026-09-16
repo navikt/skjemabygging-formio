@@ -34,10 +34,19 @@ const ReportsPage = () => {
         {errorMessage && <Alert variant="error">{errorMessage}</Alert>}
         {userData?.isAdmin ? (
           <div>
+            <p id="first-publication-notice">
+              Kolonnen «første publiseringsdato» i «Alle skjema med nøkkelinformasjon» er foreløpig tom. Datoen avventer
+              støtte i forms-api og er ikke det samme som sist publisert.
+            </p>
             <ul>
               {reports?.map((report) => (
                 <li key={report.id}>
-                  <a href={`${reportUrlPrefix}/api/reports/${report.id}`} target="_blank" rel="noreferrer">
+                  <a
+                    href={`${reportUrlPrefix}/api/reports/${report.id}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-describedby={report.id === 'all-forms-summary' ? 'first-publication-notice' : undefined}
+                  >
                     {report.title}
                   </a>
                 </li>

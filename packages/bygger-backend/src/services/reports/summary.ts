@@ -1,4 +1,12 @@
-import { Form, navFormUtils, SubmissionType, submissionTypesUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  DeclarationType,
+  Form,
+  navFormUtils,
+  Recipient,
+  ResponseError,
+  SubmissionType,
+  submissionTypesUtils,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import config from '../../config';
 import { awaitReportCall, CsvReport } from './csvPipeline';
 import { notTestForm, ReportDependencies, yesNo } from './types';
@@ -23,9 +31,39 @@ type SummaryRow = {
   paperSubmissionUrl: string;
   subsequentSubmissionUrl: string;
   paperSubsequentSubmissionUrl: string;
+  declarationType: string;
+  customDeclarationText: string;
+  subsequentSubmissionDeadline?: string;
+  recipientAddress: string;
+  requiresPaperUnit: string;
+  hasGeneralInstructions: string;
+  introPageEnabled: string;
+  noLoginSubmissionUrl: string;
+  hasUploadedPdfs: string;
+  staticPdfEnabled: string;
+  firstPublishedAt: '';
 };
 
-const summaryReport = ({ formsService }: ReportDependencies): CsvReport<SummaryRow> => ({
+const declarationLabels: Record<DeclarationType, string> = {
+  [DeclarationType.none]: 'Ingen',
+  [DeclarationType.default]: 'Standard',
+  [DeclarationType.custom]: 'Tilpasset',
+};
+
+const recipientAddress = (recipientId: string | undefined, recipients: Map<string | undefined, Recipient>) => {
+  if (!recipientId) return 'Standard';
+  const recipient = recipients.get(recipientId);
+  if (!recipient) {
+    throw new ResponseError('INTERNAL_SERVER_ERROR', 'Report recipient lookup failed');
+  }
+  return `${recipient.name}, ${recipient.poBoxAddress}, ${recipient.postalCode} ${recipient.postalName}`;
+};
+
+const summaryReport = ({
+  formsService,
+  recipientService,
+  staticPdfService,
+}: ReportDependencies): CsvReport<SummaryRow> => ({
   columns: {
     formNumber: 'skjemanummer',
     formTitle: 'skjematittel',
@@ -46,6 +84,17 @@ const summaryReport = ({ formsService }: ReportDependencies): CsvReport<SummaryR
     paperSubmissionUrl: 'innsendingsurl (papir)',
     subsequentSubmissionUrl: 'ettersendingsurl',
     paperSubsequentSubmissionUrl: 'ettersendingsurl (papir)',
+    declarationType: 'erklæringstype',
+    customDeclarationText: 'tilpasset erklæringstekst',
+    subsequentSubmissionDeadline: 'ettersendelsesfrist',
+    recipientAddress: 'mottaksadresse',
+    requiresPaperUnit: 'må velge enhet (papir)',
+    hasGeneralInstructions: 'generelle instruksjoner',
+    introPageEnabled: 'introside aktivert',
+    noLoginSubmissionUrl: 'innsendingsurl (nologin)',
+    hasUploadedPdfs: 'har opplastede PDF-er',
+    staticPdfEnabled: 'STATIC_PDF aktivert',
+    firstPublishedAt: 'første publiseringsdato',
   },
   rows: async function* (signal) {
     signal.throwIfAborted();
@@ -58,14 +107,23 @@ const summaryReport = ({ formsService }: ReportDependencies): CsvReport<SummaryR
       >('title,path,properties,status,changedAt,changedBy,publishedAt,publishedBy'),
     );
     signal.throwIfAborted();
+    const recipients = new Map(
+      (await awaitReportCall(signal, () => recipientService.getAll())).map((recipient) => [
+        recipient.recipientId,
+        recipient,
+      ]),
+    );
+    signal.throwIfAborted();
     for (const compact of forms.filter(notTestForm)) {
       signal.throwIfAborted();
       const form = await awaitReportCall(signal, () => formsService.get(compact.path));
       signal.throwIfAborted();
+      const pdfs = await awaitReportCall(signal, () => staticPdfService.getAll({ formPath: compact.path }));
+      signal.throwIfAborted();
       const attachments = navFormUtils.getAttachmentProperties(form);
       const hasAttachments = navFormUtils.hasAttachment(form);
       const { title, path, properties, status, changedAt, changedBy, publishedAt, publishedBy } = compact;
-      const { submissionTypes, subsequentSubmissionTypes } = properties;
+      const { submissionTypes, subsequentSubmissionTypes, declarationType } = properties;
       const submissionUrl =
         config.naisClusterName === 'prod-gcp'
           ? `https://www.nav.no/fyllut/${form.path}`
@@ -102,6 +160,20 @@ const summaryReport = ({ formsService }: ReportDependencies): CsvReport<SummaryR
           submissionTypesUtils.isPaperSubmission(subsequentSubmissionTypes) && hasAttachments
             ? `${subsequentSubmissionUrl}?sub=paper`
             : '',
+        declarationType: declarationLabels[declarationType ?? DeclarationType.none],
+        customDeclarationText: declarationType === DeclarationType.custom ? (properties.declarationText ?? '') : '',
+        subsequentSubmissionDeadline: properties.ettersendelsesfrist,
+        recipientAddress: recipientAddress(properties.mottaksadresseId, recipients),
+        requiresPaperUnit: yesNo(properties.enhetMaVelgesVedPapirInnsending),
+        hasGeneralInstructions: yesNo(properties.descriptionOfSignatures?.trim()),
+        introPageEnabled: yesNo(form.introPage?.enabled),
+        noLoginSubmissionUrl: submissionTypesUtils.isDigitalNoLoginSubmission(submissionTypes)
+          ? `${submissionUrl}?sub=digitalnologin`
+          : '',
+        hasUploadedPdfs: yesNo(pdfs.length),
+        staticPdfEnabled: yesNo(submissionTypesUtils.isStaticPdf(submissionTypes)),
+        // Stage 1 has no authoritative first-publication contract. Never substitute the latest publication date.
+        firstPublishedAt: '',
       };
     }
   },
