@@ -93,15 +93,6 @@ const mapLegacyFlatAddress = (submission: LegacyFlatPersonalInfoSubmission): Par
   };
 };
 
-const hasLegacyFlatPersonalInfoComponents = (form: Form): boolean =>
-  navFormUtils
-    .flattenComponents(form.components)
-    .some((component) =>
-      legacyFlatPersonalInfoComponentKeys.includes(
-        component.key as (typeof legacyFlatPersonalInfoComponentKeys)[number],
-      ),
-    );
-
 const hasComponent = (form: Form, key: string): boolean =>
   navFormUtils.flattenComponents(form.components).some((component) => component.key === key);
 
@@ -129,7 +120,6 @@ const getConcernedPerson = (form: Form, submission: SubmissionData): ConcernedPe
 const legacyFlatPersonalInfoUtils = {
   getConcernedPerson,
   hasComponent,
-  hasComponents: hasLegacyFlatPersonalInfoComponents,
   mapAddress: mapLegacyFlatAddress,
 };
 
