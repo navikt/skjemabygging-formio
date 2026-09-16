@@ -14,8 +14,7 @@ interface HiddenSubmissionPathArgs {
 }
 
 /**
- * Submission paths that must be cleared because their component is hidden and does not opt out with
- * `clearOnHide: false`.
+ * Submission paths that must be cleared because their component is hidden.
  *
  * Data grid children are handled per row: their conditionals are evaluated against the row, and the
  * cleared path is the indexed row path (`key[index].child`), so hiding a field in one row never
@@ -32,7 +31,7 @@ const collectHiddenSubmissionPaths = ({
   );
 
   const hiddenPaths = collectInputSubmissionPaths(toComponentDefinitions(form.components))
-    .filter(({ component, submissionPath }) => component.clearOnHide !== false && !visiblePaths.has(submissionPath))
+    .filter(({ submissionPath }) => !visiblePaths.has(submissionPath))
     .map(({ submissionPath }) => submissionPath);
 
   const hiddenRowPaths = collectDataGridRowScopes({
@@ -46,9 +45,7 @@ const collectHiddenSubmissionPaths = ({
     );
 
     return collectInputSubmissionPaths(scope.components)
-      .filter(
-        ({ component, submissionPath }) => component.clearOnHide !== false && !visibleRowPaths.has(submissionPath),
-      )
+      .filter(({ submissionPath }) => !visibleRowPaths.has(submissionPath))
       .map(({ submissionPath }) => submissionPath);
   });
 

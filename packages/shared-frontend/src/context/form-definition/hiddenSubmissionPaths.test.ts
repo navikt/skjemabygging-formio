@@ -37,15 +37,6 @@ const dataGrid = {
       navId: 'parkering',
       customConditional: 'show = row.harParkering === true;',
     },
-    {
-      key: 'beholdes',
-      label: 'Beholdes',
-      type: 'textfield',
-      input: true,
-      navId: 'beholdes',
-      clearOnHide: false,
-      customConditional: 'show = row.harParkering === true;',
-    },
   ],
 } as unknown as ComponentDefinition;
 
@@ -72,13 +63,6 @@ describe('collectHiddenSubmissionPaths', () => {
     };
 
     expect(collect(form, submission)).toEqual(['kjoreliste[1].parkeringsutgift']);
-  });
-
-  it('does not clear row fields with clearOnHide: false', () => {
-    const form = createForm([dataGrid]);
-    const submission = { data: { kjoreliste: [{ harParkering: false, beholdes: 'beholdt' }] } };
-
-    expect(collect(form, submission)).toEqual(['kjoreliste[0].parkeringsutgift']);
   });
 
   it('ignores rows that are not objects', () => {
@@ -126,7 +110,6 @@ describe('collectHiddenSubmissionPaths', () => {
         label: 'Erfaring med servicehund',
         type: 'navSkjemagruppe',
         input: false,
-        clearOnHide: true,
         navId: 'serviceDogExperience',
         conditional: {
           show: true,
@@ -139,7 +122,6 @@ describe('collectHiddenSubmissionPaths', () => {
             label: 'Når hadde du servicehund?',
             type: 'textarea',
             input: true,
-            clearOnHide: true,
             navId: 'whenServiceDog',
           },
         ],

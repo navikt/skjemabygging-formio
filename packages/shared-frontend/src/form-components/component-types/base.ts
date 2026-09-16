@@ -27,7 +27,6 @@ type BaseComponentDefinition = Pick<
   | 'input'
   | 'baseSubmissionPath'
   | 'hidden'
-  | 'clearOnHide'
   | 'conditional'
   | 'customConditional'
   | 'validate'

@@ -74,9 +74,9 @@ display format.
 ## Conditional fields
 
 - Validate a field only while it is active.
-- Preserve or clear hidden values according to `clearOnHide`.
-- When a field becomes visible again, its value and validation state must
-  reflect that setting.
+- Always clear a hidden field's value from the submission.
+- When a field becomes visible again, its validation state must reflect its
+  current value.
 - Cover hide, reveal, save/resume, summary, and submission behavior when these
   rules change.
 
