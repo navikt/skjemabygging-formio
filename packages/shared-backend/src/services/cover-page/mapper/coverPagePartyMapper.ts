@@ -13,6 +13,10 @@ const mapPartyToCoverPage = (party: Party): CoverPagePartyData => {
     return {};
   }
 
+  if ('number' in party.user) {
+    return {};
+  }
+
   if (party.user.kind === 'identified-person') {
     return {
       user: {

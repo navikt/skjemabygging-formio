@@ -1,8 +1,6 @@
 import {
   ApplicationPartyData,
   Attachment,
-  AvsenderId,
-  BrukerDto,
   mapPartyToApplication,
   OpplastingsStatus,
   SubmitApplicationRequest,
@@ -11,14 +9,11 @@ import {
   AttachmentSettingValues,
   Component,
   Form,
-  formatUtils,
   I18nTranslationMap,
   navFormUtils,
   resolveParty,
-  senderUtils,
   Submission,
   TranslationLang,
-  yourInformationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { base64EncodeByteArray } from '../../../utils/base64';
 import { objectToByteArray } from './sendInn';
@@ -81,15 +76,7 @@ const assembleSubmitApplicationRequest = (
 
 const extractApplicationParty = (form: Form, submission: Submission): ApplicationPartyData => {
   const party = resolveParty(form, submission);
-  return party ? mapPartyToApplication(party) : extractLegacyApplicationParty(form, submission);
-};
-
-const extractLegacyApplicationParty = (form: Form, submission: Submission): ApplicationPartyData => {
-  const bruker = extractBruker(form, submission);
-  const avsender =
-    extractAvsender(form, submission) ?? (bruker ? undefined : extractAvsenderFromYourInformation(form, submission));
-
-  return { bruker: bruker?.id, avsender };
+  return party ? mapPartyToApplication(party) : {};
 };
 
 const validateAttachment = (attachment: Attachment, validationId: string): Attachment => {
@@ -103,55 +90,6 @@ const validateAttachment = (attachment: Attachment, validationId: string): Attac
     throw new Error(`Attachment is missing title - ${validationId}`);
   }
   return attachment;
-};
-
-const removeSpaces = (value?: string): string | undefined => (value ? formatUtils.removeAllSpaces(value) : value);
-
-const extractBruker = (form: Form, submission: Submission): BrukerDto | undefined => {
-  const identityNumber = yourInformationUtils.getIdentityNumber(form, submission);
-  if (identityNumber) {
-    return { id: removeSpaces(identityNumber)!, idType: 'FNR' };
-  }
-  return undefined;
-};
-
-const extractAvsender = (form: Form, submission: Submission): AvsenderId | undefined => {
-  const sender = senderUtils.getSender(form, submission.data);
-  if (sender) {
-    if (sender.person) {
-      return {
-        idType: 'FNR',
-        id: removeSpaces(sender.person?.nationalIdentityNumber),
-        navn: `${sender.person?.firstName} ${sender.person?.surname}`,
-      };
-    } else if (sender.organization) {
-      return {
-        idType: 'ORGNR',
-        id: removeSpaces(sender.organization?.number),
-        navn: sender.organization?.name,
-      };
-    }
-  }
-
-  // TODO: Fjern kode når de få skjemaene som har denne er fjernet.
-  const avsenderFornavn = submission.data.fornavnAvsender;
-  const avsenderEtternavn = submission.data.etternavnAvsender;
-  if (avsenderFornavn && avsenderEtternavn) {
-    return { navn: `${avsenderFornavn} ${avsenderEtternavn}` };
-  }
-  return undefined;
-};
-
-const extractAvsenderFromYourInformation = (form: Form, submission: Submission): AvsenderId | undefined => {
-  const yourInformation = yourInformationUtils.getYourInformation(form, submission.data);
-  if (yourInformation?.fornavn && yourInformation?.etternavn) {
-    const navn = `${yourInformation.fornavn} ${yourInformation.etternavn}`;
-    if (yourInformation.identitet?.identitetsnummer) {
-      return { id: removeSpaces(yourInformation.identitet.identitetsnummer), idType: 'FNR', navn };
-    }
-    return { navn };
-  }
-  return undefined;
 };
 
 function mapToStatus(value?: keyof AttachmentSettingValues): OpplastingsStatus {

@@ -1,15 +1,29 @@
-import { formatUtils, Party } from '@navikt/skjemadigitalisering-shared-domain';
+import { ConcernedPerson, formatUtils, Party } from '@navikt/skjemadigitalisering-shared-domain';
 import { AvsenderId, SubmitApplicationRequest } from './applicationTypes';
 
 type ApplicationPartyData = Pick<SubmitApplicationRequest, 'bruker' | 'avsender'>;
 
 type ResponsibleSender = Extract<Party, { onBehalfOf: 'other-person' }>['sender'];
 
-const mapSender = (sender: ResponsibleSender): AvsenderId => ({
-  id: formatUtils.removeAllSpaces('number' in sender ? sender.number : sender.nationalIdentityNumber),
-  idType: 'number' in sender ? 'ORGNR' : 'FNR',
-  navn: 'number' in sender ? sender.name : `${sender.firstName} ${sender.surname}`,
-});
+const mapSender = (sender: ResponsibleSender): AvsenderId => {
+  if ('number' in sender) {
+    return {
+      id: formatUtils.removeAllSpaces(sender.number),
+      idType: 'ORGNR',
+      navn: sender.name,
+    };
+  }
+
+  if ('nationalIdentityNumber' in sender) {
+    return {
+      id: formatUtils.removeAllSpaces(sender.nationalIdentityNumber),
+      idType: 'FNR',
+      navn: `${sender.firstName} ${sender.surname}`,
+    };
+  }
+
+  return { navn: `${sender.firstName} ${sender.surname}` };
+};
 
 const mapOrganizationSender = (party: Extract<Party, { onBehalfOf: 'multiple-people' }>): AvsenderId => ({
   id: formatUtils.removeAllSpaces(party.sender.number),
@@ -17,17 +31,25 @@ const mapOrganizationSender = (party: Extract<Party, { onBehalfOf: 'multiple-peo
   navn: party.sender.name,
 });
 
-const mapUser = (
-  party: Extract<Party, { onBehalfOf: 'self' | 'other-person' }>,
-): Pick<ApplicationPartyData, 'bruker'> =>
-  party.user.kind === 'identified-person'
-    ? { bruker: formatUtils.removeAllSpaces(party.user.nationalIdentityNumber) }
+const mapUser = (user: ConcernedPerson): Pick<ApplicationPartyData, 'bruker'> =>
+  user.kind === 'identified-person'
+    ? { bruker: formatUtils.removeAllSpaces(user.nationalIdentityNumber) }
     : {};
 
 const mapPartyToApplication = (party: Party): ApplicationPartyData => {
   if (party.onBehalfOf === 'self') {
+    if ('number' in party.user) {
+      return {
+        avsender: {
+          id: formatUtils.removeAllSpaces(party.user.number),
+          idType: 'ORGNR',
+          navn: party.user.name,
+        },
+      };
+    }
+
     if (party.user.kind === 'identified-person') {
-      return mapUser(party);
+      return mapUser(party.user);
     }
 
     return party.user.firstName && party.user.surname
@@ -41,7 +63,7 @@ const mapPartyToApplication = (party: Party): ApplicationPartyData => {
 
   if (party.onBehalfOf === 'other-person') {
     return {
-      ...mapUser(party),
+      ...mapUser(party.user),
       avsender: mapSender(party.sender),
     };
   }

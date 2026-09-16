@@ -113,6 +113,28 @@ describe('mapPartyToApplication', () => {
         avsender: { id: '889640782', idType: 'ORGNR', navn: 'Organization' },
       },
     },
+    {
+      name: 'organization, own behalf',
+      party: {
+        onBehalfOf: 'self',
+        user: { name: 'Organization', number: '889640782' },
+      },
+      expected: {
+        avsender: { id: '889640782', idType: 'ORGNR', navn: 'Organization' },
+      },
+    },
+    {
+      name: 'legacy sender',
+      party: {
+        onBehalfOf: 'other-person',
+        sender: { firstName: 'Legacy', surname: 'Sender' },
+        user: { kind: 'identified-person', nationalIdentityNumber: '12345678911' },
+      },
+      expected: {
+        bruker: '12345678911',
+        avsender: { navn: 'Legacy Sender' },
+      },
+    },
   ] satisfies { name: string; party: Party; expected: ReturnType<typeof mapPartyToApplication> }[])(
     'maps $name',
     ({ party, expected }) => {

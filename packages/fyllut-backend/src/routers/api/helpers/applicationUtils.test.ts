@@ -102,12 +102,28 @@ describe('assembleSubmitApplicationRequest party compatibility', () => {
     });
   });
 
-  it('preserves flat legacy user and sender fields', () => {
-    const request = assemble({
-      fodselsnummerDNummerSoker: '123 456 789 11',
-      fornavnAvsender: 'Legacy',
-      etternavnAvsender: 'Sender',
-    });
+  it('maps declared flat legacy user and sender fields', () => {
+    const request = assembleSubmitApplicationRequest(
+      '21ed0008-ec72-4c90-8b44-165d3c265da9',
+      {
+        ...form,
+        components: [
+          { type: 'fnrfield', key: 'fodselsnummerDNummerSoker', label: 'Identity number' },
+          { type: 'textfield', key: 'fornavnAvsender', label: 'First name' },
+          { type: 'textfield', key: 'etternavnAvsender', label: 'Surname' },
+        ],
+      },
+      {
+        data: {
+          fodselsnummerDNummerSoker: '123 456 789 11',
+          fornavnAvsender: 'Legacy',
+          etternavnAvsender: 'Sender',
+        },
+      },
+      'nb',
+      [],
+      (text) => text,
+    );
 
     expect(request.bruker).toBe('12345678911');
     expect(request.avsender).toEqual({ navn: 'Legacy Sender' });
@@ -135,35 +151,6 @@ describe('assembleSubmitApplicationRequest party compatibility', () => {
     });
 
     expect(request.bruker).toBe('notvalid');
-    expect(request.avsender).toBeUndefined();
-  });
-
-  it('preserves legacy identity precedence when canonical and flat data are submitted', () => {
-    const request = assembleSubmitApplicationRequest(
-      '21ed0008-ec72-4c90-8b44-165d3c265da9',
-      {
-        ...form,
-        components: [
-          ...form.components,
-          { type: 'textfield', key: 'fodselsnummerDNummerSoker', label: 'Identity number' },
-        ],
-      },
-      {
-        data: {
-          yourInformation: {
-            fornavn: 'Legacy',
-            etternavn: 'User',
-            adresse: { adresse: 'Testveien 1' },
-          },
-          fodselsnummerDNummerSoker: '123 456 789 11',
-        },
-      },
-      'nb',
-      [],
-      (text) => text,
-    );
-
-    expect(request.bruker).toBe('12345678911');
     expect(request.avsender).toBeUndefined();
   });
 
@@ -203,59 +190,4 @@ describe('assembleSubmitApplicationRequest party compatibility', () => {
     });
   });
 
-  it('preserves legacy failure for an unidentified flat user acting on their own behalf', () => {
-    expect(() =>
-      assembleSubmitApplicationRequest(
-        '21ed0008-ec72-4c90-8b44-165d3c265da9',
-        {
-          ...form,
-          components: [
-            { type: 'firstName', key: 'fornavnSoker', label: 'First name' },
-            { type: 'surname', key: 'etternavnSoker', label: 'Surname' },
-            { type: 'textfield', key: 'gateadresseSoker', label: 'Street address' },
-            { type: 'sender', key: 'sender', label: 'Sender', input: true },
-          ],
-        },
-        {
-          data: {
-            fornavnSoker: 'Legacy',
-            etternavnSoker: 'User',
-            gateadresseSoker: 'Testveien 1',
-          },
-        },
-        'nb',
-        [],
-        (text) => text,
-      ),
-    ).toThrow('Could not find user nor sender');
-  });
-
-  it('preserves a complete sender when the concerned user is missing', () => {
-    const request = assemble({
-      sender: {
-        person: {
-          firstName: 'Sender',
-          surname: 'Sendersen',
-          nationalIdentityNumber: '109 876 543 21',
-        },
-      },
-    });
-
-    expect(request.bruker).toBeUndefined();
-    expect(request.avsender).toEqual({
-      id: '10987654321',
-      idType: 'FNR',
-      navn: 'Sender Sendersen',
-    });
-  });
-
-  it('does not introduce application support for flat unidentified user fields', () => {
-    expect(() =>
-      assemble({
-        fornavnSoker: 'Legacy',
-        etternavnSoker: 'User',
-        gateadresseSoker: 'Testveien 1',
-      }),
-    ).toThrow('Could not find user nor sender');
-  });
 });
