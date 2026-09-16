@@ -57,12 +57,24 @@ describe('mapPartyToCoverPage', () => {
     });
   });
 
-  it('omits the cover-page user for multiple people', () => {
+  it('maps an organization acting on its own behalf', () => {
+    const party: Party = {
+      onBehalfOf: 'self',
+      user: { name: 'Organization', number: '889 640 782' },
+    };
+
+    expect(mapPartyToCoverPage(party)).toEqual({
+      user: { organizationNumber: '889640782' },
+    });
+  });
+
+  it('maps multiple people to their NAV unit', () => {
     const party: Party = {
       onBehalfOf: 'multiple-people',
       sender: { name: 'Organization', number: '889640782' },
+      navUnit: '9999',
     };
 
-    expect(mapPartyToCoverPage(party)).toEqual({});
+    expect(mapPartyToCoverPage(party)).toEqual({ navUnit: '9999' });
   });
 });

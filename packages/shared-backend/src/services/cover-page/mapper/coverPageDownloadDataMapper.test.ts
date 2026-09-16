@@ -159,7 +159,14 @@ describe('coverPageDownloadDataMapper', () => {
     const actual = coverPageDownloadDataMapper.createDownloadDataFromSubmission(
       {
         ...formWithAttachments,
-        components: [],
+        components: [
+          { type: 'firstName', key: 'fornavnSoker', label: 'First name' },
+          { type: 'surname', key: 'etternavnSoker', label: 'Surname' },
+          { type: 'textfield', key: 'gateadresseSoker', label: 'Street address' },
+          { type: 'textfield', key: 'postnrSoker', label: 'Postal code' },
+          { type: 'textfield', key: 'poststedSoker', label: 'Postal name' },
+          { type: 'container', key: 'norskVegadresse', label: 'Norwegian address' },
+        ] as Component[],
       },
       {
         data: {

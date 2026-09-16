@@ -11,6 +11,7 @@ import {
 import { senderUtils } from '../submission/senderUtils';
 import { yourInformationUtils } from '../submission/yourInformationUtils';
 import { legacyFlatPersonalInfoUtils } from './legacyFlatPersonalInfoUtils';
+import { navFormUtils } from '../form';
 
 interface PartyResolutionOptions {
   navUnit?: string;
@@ -56,6 +57,15 @@ const getLegacySender = (form: Form, submission: Submission): LegacySender | und
     : undefined;
 };
 
+const getCoverPageOrganization = (form: Form, submission: Submission) => {
+  const component = navFormUtils
+    .flattenComponents(form.components)
+    .find((current) => current.type === 'orgNr' && current.coverPageUser);
+  const number = component ? submission.data[component.key] : undefined;
+
+  return typeof number === 'string' && number ? { number, name: '' } : undefined;
+};
+
 /**
  * Resolves who is responsible for a submission and who it concerns.
  * Returns undefined when the submitted user values are incomplete.
@@ -72,6 +82,7 @@ const resolveParty = (form: Form, submission: Submission, options: PartyResoluti
         ? flatUser
         : canonicalUser ?? flatUser;
   const legacySender = getLegacySender(form, submission);
+  const coverPageOrganization = getCoverPageOrganization(form, submission);
 
   if (submittedSender?.person) {
     return user ? { onBehalfOf: 'other-person', sender: submittedSender.person, user } : undefined;
@@ -93,7 +104,11 @@ const resolveParty = (form: Form, submission: Submission, options: PartyResoluti
     return user ? { onBehalfOf: 'other-person', sender: legacySender, user } : undefined;
   }
 
-  return user ? { onBehalfOf: 'self', user } : undefined;
+  if (user) {
+    return { onBehalfOf: 'self', user };
+  }
+
+  return coverPageOrganization ? { onBehalfOf: 'self', user: coverPageOrganization } : undefined;
 };
 
 export { resolveParty };

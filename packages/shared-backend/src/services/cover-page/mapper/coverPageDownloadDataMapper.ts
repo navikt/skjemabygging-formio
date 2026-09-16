@@ -1,4 +1,3 @@
-import type { LegacyFlatPersonalInfoSubmission } from '@navikt/skjemadigitalisering-shared-domain';
 import {
   CoverPageDownloadType,
   Form,
@@ -7,93 +6,13 @@ import {
   ResponseError,
   Submission,
   SubmissionAttachmentValue,
-  SubmissionData,
   SubmissionMethod,
   SubmissionType,
   TranslationLang,
-  formatUtils,
-  legacyFlatPersonalInfoUtils,
   navFormUtils,
-  yourInformationUtils,
+  resolveParty,
 } from '@navikt/skjemadigitalisering-shared-domain';
-
-type CoverPageUser = CoverPageDownloadType['user'];
-type OrganizationNumberUser = Extract<CoverPageUser, { organizationNumber: string }>;
-
-const getOrganizationNumberUser = (form: Form, submission: SubmissionData): OrganizationNumberUser | undefined => {
-  const organizationNumberComponent = navFormUtils
-    .flattenComponents(form.components)
-    .find((component) => component.type === 'orgNr' && component.coverPageUser && submission[component.key]);
-
-  if (!organizationNumberComponent) {
-    return undefined;
-  }
-
-  const organizationNumber = submission[organizationNumberComponent.key];
-  if (!organizationNumber) {
-    return undefined;
-  }
-
-  const organizationNumberValue = formatUtils.removeAllSpaces(`${organizationNumber}`);
-  if (!organizationNumberValue) {
-    return undefined;
-  }
-
-  return {
-    organizationNumber: organizationNumberValue,
-  };
-};
-
-const getSubmissionUserData = (form: Form, submission: SubmissionData): CoverPageUser => {
-  // This remains the fyllut compatibility mapper until #2186 and #2187 are complete and historical identity
-  // formatting can be normalized without changing existing cover-page requests.
-  const yourInformation = yourInformationUtils.getYourInformation(form, submission);
-
-  if (!yourInformation) {
-    const organizationNumberUser = getOrganizationNumberUser(form, submission);
-    if (organizationNumberUser) {
-      return organizationNumberUser;
-    }
-
-    const legacySubmission = submission as LegacyFlatPersonalInfoSubmission;
-    if (legacySubmission.fodselsnummerDNummerSoker) {
-      return {
-        nationalIdentityNumber: legacySubmission.fodselsnummerDNummerSoker,
-      };
-    }
-
-    return {
-      firstName: legacySubmission.fornavnSoker ?? '',
-      surname: legacySubmission.etternavnSoker ?? '',
-      address: legacyFlatPersonalInfoUtils.mapAddress(legacySubmission),
-    };
-  }
-
-  if (yourInformation.identitet?.identitetsnummer) {
-    return {
-      nationalIdentityNumber: yourInformation.identitet.identitetsnummer,
-    };
-  }
-
-  if (yourInformation.adresse) {
-    return {
-      firstName: yourInformation.fornavn ?? '',
-      surname: yourInformation.etternavn ?? '',
-      address: {
-        co: yourInformation.adresse.co,
-        postOfficeBox: yourInformation.adresse.postboks,
-        streetAddress: yourInformation.adresse.adresse,
-        building: yourInformation.adresse.bygning,
-        postalCode: yourInformation.adresse.postnummer,
-        postalName: yourInformation.adresse.bySted,
-        region: yourInformation.adresse.region,
-        country: yourInformation.adresse.land,
-      },
-    };
-  }
-
-  throw new ResponseError('BAD_REQUEST', 'User needs to submit either identification number or address');
-};
+import { mapPartyToCoverPage } from './coverPagePartyMapper';
 
 const getAttachments = (submission: Submission, form: Form) => {
   return navFormUtils
@@ -180,6 +99,13 @@ const createDownloadDataFromSubmission = (
   translate?: (text: string, textReplacements?: I18nTranslationReplacements) => string,
   submissionMethod: SubmissionMethod = 'paper',
 ): CoverPageDownloadType => {
+  const party = resolveParty(form, submission, { navUnit: unitNumber });
+  if (!party) {
+    throw new ResponseError('BAD_REQUEST', 'Could not resolve party for cover page');
+  }
+
+  const partyData = mapPartyToCoverPage(party);
+
   return {
     type: 'SKJEMA',
     submissionType: asSubmissionType(submissionMethod),
@@ -189,8 +115,8 @@ const createDownloadDataFromSubmission = (
       skjemanummer: form.properties.skjemanummer,
       properties: form.properties,
     },
-    user: getSubmissionUserData(form, submission.data),
-    recipient: getRecipient(form.properties.mottaksadresseId, recipient, unitNumber),
+    user: partyData.user ?? { firstName: '', surname: '', address: {} },
+    recipient: getRecipient(form.properties.mottaksadresseId, recipient, partyData.navUnit ?? unitNumber),
     attachments: getAttachmentLabels(form, submission, translate),
   };
 };
