@@ -1,5 +1,5 @@
 import { SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
-import { createContext, ReactNode, useContext } from 'react';
+import { createContext, ReactNode, useContext, useMemo } from 'react';
 
 interface SubmissionMethodContextValue {
   submissionMethod?: SubmissionMethod;
@@ -11,9 +11,10 @@ interface Props extends SubmissionMethodContextValue {
 
 const SubmissionMethodContext = createContext<SubmissionMethodContextValue>({});
 
-const SubmissionMethodProvider = ({ children, submissionMethod }: Props) => (
-  <SubmissionMethodContext.Provider value={{ submissionMethod }}>{children}</SubmissionMethodContext.Provider>
-);
+const SubmissionMethodProvider = ({ children, submissionMethod }: Props) => {
+  const value = useMemo(() => ({ submissionMethod }), [submissionMethod]);
+  return <SubmissionMethodContext.Provider value={value}>{children}</SubmissionMethodContext.Provider>;
+};
 
 const useSubmissionMethod = () => useContext(SubmissionMethodContext);
 

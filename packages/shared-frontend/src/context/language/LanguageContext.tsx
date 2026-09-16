@@ -31,16 +31,16 @@ const LanguageProvider = ({ children, translations, currentLanguage, availableLa
     () => formsApiTranslationUtils.createTranslate(translations, currentLanguage),
     [currentLanguage, translations],
   );
+  const value = useMemo(
+    () => ({ translate, currentLanguage, availableLanguages }),
+    [availableLanguages, currentLanguage, translate],
+  );
 
   useEffect(() => {
     document.documentElement.lang = currentLanguage;
   }, [currentLanguage]);
 
-  return (
-    <LanguageContext.Provider value={{ translate, currentLanguage, availableLanguages }}>
-      {children}
-    </LanguageContext.Provider>
-  );
+  return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
 };
 
 const useLanguage = () => useContext(LanguageContext);

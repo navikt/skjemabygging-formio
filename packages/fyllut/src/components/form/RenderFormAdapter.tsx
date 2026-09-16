@@ -7,7 +7,7 @@ import {
   RenderFormProps,
   RuntimeServices,
 } from '@navikt/skjemadigitalisering-shared-frontend';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { getAvailableLanguages, resolveActiveLanguage } from './newRendererLanguageUtils';
 import resolveSubmissionMethod from './resolveSubmissionMethod';
@@ -27,7 +27,7 @@ const RenderFormAdapter = ({ form, initialLanguage, services, translations, ...p
 
   const { pathname, search } = useLocation();
   const navigate = useNavigate();
-  const availableLanguages = getAvailableLanguages(form, translations);
+  const availableLanguages = useMemo(() => getAvailableLanguages(form, translations), [form, translations]);
   const hasLanguageParam = new URLSearchParams(search).has('lang');
   const seedLanguage = initialLanguage && availableLanguages.includes(initialLanguage) ? initialLanguage : undefined;
   const currentLanguage = resolveActiveLanguage(search, availableLanguages, initialLanguage);
@@ -47,11 +47,18 @@ const RenderFormAdapter = ({ form, initialLanguage, services, translations, ...p
     navigate({ pathname, search: `?${nextParams.toString()}` }, { replace: true });
   }, [hasLanguageParam, navigate, pathname, search, seedLanguage]);
 
-  const integration: IntegrationContextValue = {
-    fyllutBaseUrl,
-    isLoggedIn: appConfig.config?.isLoggedIn,
-    logEvent: appConfig.logEvent,
-  };
+  const integration = useMemo<IntegrationContextValue>(
+    () => ({
+      fyllutBaseUrl,
+      isLoggedIn: appConfig.config?.isLoggedIn,
+      logEvent: appConfig.logEvent,
+    }),
+    [appConfig.config?.isLoggedIn, appConfig.logEvent, fyllutBaseUrl],
+  );
+  const language = useMemo(
+    () => ({ availableLanguages, currentLanguage, translations }),
+    [availableLanguages, currentLanguage, translations],
+  );
   const environment = appConfig.config?.NAIS_CLUSTER_NAME === 'prod-gcp' ? 'production' : 'development';
 
   return (
@@ -61,7 +68,7 @@ const RenderFormAdapter = ({ form, initialLanguage, services, translations, ...p
         form={form}
         submissionMethod={submissionMethod}
         integration={integration}
-        language={{ availableLanguages, currentLanguage, translations }}
+        language={language}
         services={services}
       />
     </ApplicationProvider>

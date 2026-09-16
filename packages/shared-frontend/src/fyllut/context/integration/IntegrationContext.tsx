@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext } from 'react';
+import { createContext, ReactNode, useContext, useMemo } from 'react';
 
 interface IntegrationHttpHeaders {
   NologinToken?: string;
@@ -64,9 +64,17 @@ interface Props {
 
 const IntegrationContext = createContext<IntegrationContextValue | undefined>(undefined);
 
-const IntegrationProvider = ({ children, value }: Props) => (
-  <IntegrationContext.Provider value={value}>{children}</IntegrationContext.Provider>
-);
+const IntegrationProvider = ({ children, value }: Props) => {
+  const stableValue = useMemo(
+    () => ({
+      fyllutBaseUrl: value.fyllutBaseUrl,
+      isLoggedIn: value.isLoggedIn,
+      logEvent: value.logEvent,
+    }),
+    [value.fyllutBaseUrl, value.isLoggedIn, value.logEvent],
+  );
+  return <IntegrationContext.Provider value={stableValue}>{children}</IntegrationContext.Provider>;
+};
 
 const useIntegration = () => {
   const context = useContext(IntegrationContext);

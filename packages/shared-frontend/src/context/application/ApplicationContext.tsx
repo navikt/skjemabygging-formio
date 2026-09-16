@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext } from 'react';
+import { createContext, ReactNode, useContext, useMemo } from 'react';
 
 type ApplicationEnvironment = 'production' | 'development' | 'test';
 
@@ -21,9 +21,10 @@ const ApplicationContext = createContext<ApplicationContextValue>({
   environment: 'production',
 });
 
-const ApplicationProvider = ({ children, environment, logger }: Props) => (
-  <ApplicationContext.Provider value={{ environment, logger }}>{children}</ApplicationContext.Provider>
-);
+const ApplicationProvider = ({ children, environment, logger }: Props) => {
+  const value = useMemo(() => ({ environment, logger }), [environment, logger]);
+  return <ApplicationContext.Provider value={value}>{children}</ApplicationContext.Provider>;
+};
 
 const useApplication = () => useContext(ApplicationContext);
 
