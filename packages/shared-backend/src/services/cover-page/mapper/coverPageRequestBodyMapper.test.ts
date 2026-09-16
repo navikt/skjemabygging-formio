@@ -121,6 +121,32 @@ describe('coverPageRequestBodyMapper', () => {
     });
   });
 
+  it.each([
+    ['NFD-Ma\u030Al', 'SON 20-11.25 NFD-Mål'],
+    ['NFD-MA\u030AL', 'SON 20-11.25 NFD-MÅL'],
+  ])('normalizes decomposed characters in the form title', (title, expectedTitle) => {
+    const actual = coverPageRequestBodyMapper.createRequestBodyFromDownloadData({
+      ...defaultData,
+      form: {
+        ...defaultData.form,
+        skjemanummer: 'SON 20-11.25',
+        title,
+      },
+    });
+
+    expect(actual.overskriftstittel).toBe(expectedTitle);
+    expect(actual.arkivtittel).toBe(expectedTitle);
+    expect(actual.dokumentlisteFoersteside).toEqual([expectedTitle, 'Vedlegg 1']);
+  });
+
+  it('normalizes a translated form title', () => {
+    const actual = coverPageRequestBodyMapper.createRequestBodyFromDownloadData(defaultData, 'nn', () => 'Ma\u030Al');
+
+    expect(actual.overskriftstittel).toBe('NAV 12.34-56 Mål');
+    expect(actual.arkivtittel).toBe('NAV 12.34-56 Mål');
+    expect(actual.dokumentlisteFoersteside).toEqual(['NAV 12.34-56 Mål', 'Vedlegg 1']);
+  });
+
   it('throws on invalid user values', () => {
     expect(() =>
       coverPageRequestBodyMapper.createRequestBodyFromDownloadData({
