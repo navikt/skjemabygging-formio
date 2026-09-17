@@ -5,36 +5,37 @@ import {
   isSenderPerson,
   Party,
   PartySender,
+  SenderOrganization,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { AvsenderId, SubmitApplicationRequest } from './applicationTypes';
 
 type ApplicationPartyData = Pick<SubmitApplicationRequest, 'bruker' | 'avsender'>;
 
+const getFullName = (firstName: string, surname: string): string => `${firstName} ${surname}`;
+
+const mapOrganization = (organization: SenderOrganization): AvsenderId => ({
+  id: formatUtils.removeAllSpaces(organization.number),
+  idType: 'ORGNR',
+  navn: organization.name,
+});
+
 const mapSender = (sender: PartySender): AvsenderId => {
   if (isSenderOrganization(sender)) {
-    return {
-      id: formatUtils.removeAllSpaces(sender.number),
-      idType: 'ORGNR',
-      navn: sender.name,
-    };
+    return mapOrganization(sender);
   }
+
+  const mappedSender = { navn: getFullName(sender.firstName, sender.surname) };
 
   if (isSenderPerson(sender)) {
     return {
+      ...mappedSender,
       id: formatUtils.removeAllSpaces(sender.nationalIdentityNumber),
       idType: 'FNR',
-      navn: `${sender.firstName} ${sender.surname}`,
     };
   }
 
-  return { navn: `${sender.firstName} ${sender.surname}` };
+  return mappedSender;
 };
-
-const mapOrganizationSender = (party: Extract<Party, { onBehalfOf: 'multiple-people' }>): AvsenderId => ({
-  id: formatUtils.removeAllSpaces(party.sender.number),
-  idType: 'ORGNR',
-  navn: party.sender.name,
-});
 
 const mapUser = (user: ConcernedPerson): Pick<ApplicationPartyData, 'bruker'> =>
   user.kind === 'identified-person' ? { bruker: formatUtils.removeAllSpaces(user.nationalIdentityNumber) } : {};
@@ -43,11 +44,7 @@ const mapPartyToApplication = (party: Party): ApplicationPartyData => {
   if (party.onBehalfOf === 'self') {
     if (isSenderOrganization(party.user)) {
       return {
-        avsender: {
-          id: formatUtils.removeAllSpaces(party.user.number),
-          idType: 'ORGNR',
-          navn: party.user.name,
-        },
+        avsender: mapOrganization(party.user),
       };
     }
 
@@ -58,7 +55,7 @@ const mapPartyToApplication = (party: Party): ApplicationPartyData => {
     return party.user.firstName && party.user.surname
       ? {
           avsender: {
-            navn: `${party.user.firstName} ${party.user.surname}`,
+            navn: getFullName(party.user.firstName, party.user.surname),
           },
         }
       : {};
@@ -72,7 +69,7 @@ const mapPartyToApplication = (party: Party): ApplicationPartyData => {
   }
 
   return {
-    avsender: mapOrganizationSender(party),
+    avsender: mapOrganization(party.sender),
   };
 };
 
