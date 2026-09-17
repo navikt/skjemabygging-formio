@@ -39,6 +39,8 @@ export type {
 } from './metrics';
 export { createNavUnitService } from './nav-unit';
 export type { NavUnitService } from './nav-unit';
+export { createNologinTokenService } from './nologin';
+export type { CreateNologinTokenServiceProps, NologinTokenService } from './nologin';
 export { createPrefillService } from './prefill';
 export type { PrefillService } from './prefill';
 export { createRecipientService } from './recipient';
