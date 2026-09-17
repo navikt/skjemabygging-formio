@@ -4,6 +4,8 @@ import {
   LegacySender,
   Party,
   PartyAddress,
+  PartySender,
+  SenderOrganization,
   Submission,
   SubmissionAddress,
   SubmissionYourInformation,
@@ -72,43 +74,50 @@ const selectConcernedPerson = (
   return canonicalUser ?? flatUser;
 };
 
+const resolveConcernedPerson = (form: Form, submission: Submission): ConcernedPerson | undefined => {
+  const canonicalUser = toConcernedUser(yourInformationUtils.getYourInformation(form, submission.data));
+  const flatUser = legacyFlatPersonalInfoUtils.getConcernedPerson(form, submission.data);
+
+  return selectConcernedPerson(canonicalUser, flatUser);
+};
+
+const resolveOtherPersonParty = (sender: PartySender, user?: ConcernedPerson): Party | undefined =>
+  user ? { onBehalfOf: 'other-person', sender, user } : undefined;
+
+const resolveOrganizationParty = (sender: SenderOrganization, user?: ConcernedPerson, navUnit?: string): Party => {
+  if (user) {
+    return { onBehalfOf: 'other-person', sender, user };
+  }
+
+  if (navUnit) {
+    return { onBehalfOf: 'multiple-people', sender, navUnit };
+  }
+
+  return { onBehalfOf: 'self', user: sender };
+};
+
 /**
  * Resolves who is responsible for a submission and who it concerns.
  * Returns undefined when the submitted user values are incomplete.
  */
 const resolveParty = (form: Form, submission: Submission, options: PartyResolutionOptions = {}): Party | undefined => {
+  const user = resolveConcernedPerson(form, submission);
   const submittedSender = senderUtils.getSender(form, submission.data);
-  const submittedUser = yourInformationUtils.getYourInformation(form, submission.data);
-  const canonicalUser = toConcernedUser(submittedUser);
-  const flatUser = legacyFlatPersonalInfoUtils.getConcernedPerson(form, submission.data);
-  const user = selectConcernedPerson(canonicalUser, flatUser);
 
   if (submittedSender?.person) {
-    return user ? { onBehalfOf: 'other-person', sender: submittedSender.person, user } : undefined;
+    return resolveOtherPersonParty(submittedSender.person, user);
   }
 
   if (submittedSender?.organization) {
-    const sender = submittedSender.organization;
-
-    if (user) {
-      return { onBehalfOf: 'other-person', sender, user };
-    }
-
-    return options.navUnit
-      ? { onBehalfOf: 'multiple-people', sender, navUnit: options.navUnit }
-      : { onBehalfOf: 'self', user: sender };
-  }
-
-  if (!user) {
-    return undefined;
+    return resolveOrganizationParty(submittedSender.organization, user, options.navUnit);
   }
 
   const legacySender = getLegacySender(form, submission);
   if (legacySender) {
-    return { onBehalfOf: 'other-person', sender: legacySender, user };
+    return resolveOtherPersonParty(legacySender, user);
   }
 
-  return { onBehalfOf: 'self', user };
+  return user ? { onBehalfOf: 'self', user } : undefined;
 };
 
 export { resolveParty };
