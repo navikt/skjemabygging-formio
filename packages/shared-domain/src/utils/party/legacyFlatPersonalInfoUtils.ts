@@ -102,9 +102,7 @@ const getConcernedPerson = (form: Form, submission: SubmissionData): ConcernedPe
 
   const hasPersonalInformation = legacyFlatPersonalInfoComponentKeys
     .filter((key) => key !== 'fodselsnummerDNummerSoker')
-    .some(
-      (key) => navFormUtils.hasComponent(form, key) && (legacySubmission as Record<string, unknown>)[key] !== undefined,
-    );
+    .some((key) => navFormUtils.hasComponent(form, key) && legacySubmission[key] !== undefined);
 
   return hasPersonalInformation
     ? {
