@@ -22,22 +22,9 @@ class CaptchaError extends Error {
   }
 }
 
-interface CaptchaChallenge {
-  nonce: string;
-  difficulty: number;
-  expiresAt: number;
-  signature: string;
-}
-
-interface CaptchaSolution extends CaptchaChallenge {
-  solution: string;
-}
-
 export {
   CAPTCHA_FAILURE_REASON,
   CAPTCHA_FAILURE_REASON_TEXT,
   CaptchaError,
-  type CaptchaChallenge,
   type CaptchaFailureReason,
-  type CaptchaSolution,
 };
