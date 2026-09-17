@@ -1,5 +1,5 @@
 import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useStateField } from '../../context/state/useStateField';
+import { useFieldBinding } from '../../context/state/useFieldBinding';
 import DatePicker from '../date/DatePicker';
 import FormElementBox from '../shared/FormElementBox';
 import { BaseFieldProps } from '../types';
@@ -8,7 +8,7 @@ import { AddressValidityValue } from './addressValidityValidation';
 type AddressValidityProps = Pick<BaseFieldProps, 'statePath' | 'required' | 'readOnly' | 'readMore' | 'fieldSize'>;
 
 const AddressValidity = ({ statePath, required, readOnly, readMore, fieldSize }: AddressValidityProps) => {
-  const { stateValue } = useStateField({ statePath });
+  const { stateValue } = useFieldBinding({ statePath });
   const address = (stateValue ?? {}) as AddressValidityValue;
   const minDate = dateUtils.addDays(-365);
   const maxDate = dateUtils.addDays(365);

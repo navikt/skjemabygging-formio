@@ -19,7 +19,7 @@ interface UseFieldValidationArgs {
  * Registration is a React concern: a field is validated exactly while it is rendered inside a
  * validation scope, which is what makes conditional fields, data grid rows and composite components
  * validate the same values the user actually sees. This is the low-level hook behind the two ways
- * of registering: `useStateField` for the input that renders a state-bound value, and
+ * of registering: `useFieldBinding` for the input that renders a state-bound value, and
  * `ValidationRegistration` for the few paths that have no such input. Components use those, never
  * this hook directly.
  */

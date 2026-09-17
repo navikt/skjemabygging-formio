@@ -97,7 +97,7 @@ interface ValidationContextType {
   summaryFocusRequest: number;
   /**
    * Register (or replace) the validated field at `statePath`. Called by the input that renders the
-   * value (`useStateField`) or, for a path with no input of its own, by `ValidationRegistration` -
+   * value (`useFieldBinding`) or, for a path with no input of its own, by `ValidationRegistration` -
    * never from generic form-definition code.
    */
   registerField: (pageKey: string, field: ValidationField) => void;

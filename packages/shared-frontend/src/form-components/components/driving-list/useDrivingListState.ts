@@ -10,7 +10,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useApplication } from '../../../context/application/ApplicationContext';
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { useRuntimeServices } from '../../../context/runtime-services/RuntimeServicesContext';
-import { useStateField } from '../../../context/state/useStateField';
+import { useFieldBinding } from '../../../context/state/useFieldBinding';
 import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
 import {
   allPaperFieldsForPeriodsAreSet,
@@ -44,7 +44,7 @@ const useDrivingListState = (statePath: string): DrivingListState => {
   const { formData } = useRuntimeServices();
   const { submissionMethod } = useSubmissionMethod();
   const { currentLanguage } = useLanguage();
-  const { stateValue, setStateValue } = useStateField({ statePath });
+  const { stateValue, setStateValue } = useFieldBinding({ statePath });
   const [status, setStatus] = useState<DrivingListStatus>('loading');
   const [activities, setActivities] = useState<SendInnAktivitet[]>([]);
   const value = useMemo(

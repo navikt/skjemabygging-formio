@@ -91,17 +91,20 @@ automatically:
 - Fyllut provides it from `SubmissionStateContext` (maps `statePath` to the
   submission). Other surfaces (e.g. a future static-pdf state) supply their own
   `FieldStateStore` the same way.
-- `useStateField({ statePath })` (`context/state/useStateField.ts`) is the
+- `useFieldBinding({ statePath })` (`context/state/useFieldBinding.ts`) is the
   generic binding. It returns `{ stateValue, error, setStateValue }` and reads
   **all** dependencies optionally — state store, validation, and validation
   scope — so a component never crashes when a context is missing. With none
   present the field is inert (value `undefined`, no error, no-op setter).
+- Controlled inputs pass `controlled: true` and their owner-provided validation
+  value. They keep validation registration and errors but do not subscribe to
+  the unused state-store value.
 - Missing contexts are a **supported** mode, not an error: never `console`/log a
   warning when a store/validation/scope is absent. The `language` context also
   falls back to an identity `translate` (returns the original text unchanged, no
   warning) so labels/descriptions render standalone. Graceful, silent
   degradation everywhere.
-- `useStateField({ statePath })` is the single binding used by every reusable
+- `useFieldBinding({ statePath })` is the single binding used by every reusable
   component. Text-like fields inline their onChange/onBlur formatting on top of
   it (raw value while typing, reformat on blur via `toInputFormat`).
 
@@ -113,7 +116,7 @@ component** (`components/<kebab>/<name>Validation.ts`, e.g. `textFieldValidation
 through it, so a rule is never written twice:
 
 - **The visible input registers exactly one field** for its state path, through
-  `useStateField`. There is one owner per concrete path: a composite never
+  `useFieldBinding`. There is one owner per concrete path: a composite never
   registers on behalf of the inputs it renders, it only passes the label, the
   `required` flag and any contextual rules down to them (`PhoneNumber` hands the
   selected calling code to its number field, the driving list hands each day to
@@ -253,7 +256,7 @@ by `formatKey`; cover it with vitest for idempotency on partial/invalid input.
    legitimate caller-supplied constraints; do not reuse a broad validation
    type, and keep `required` separate. Then add input-specific props on top
    (narrow `label` to required where needed);
-   bind with `useStateField`; use `FormElementBox` and the translated helper UI
+   bind with `useFieldBinding`; use `FormElementBox` and the translated helper UI
    from `src/components/shared/`, plus the reusable `ReadMore` wrapper from
    `src/components/read-more/`, and `inputId(statePath)` (from `src/utils/`) for
    the field id.
@@ -269,7 +272,7 @@ by `formatKey`; cover it with vitest for idempotency on partial/invalid input.
    rules → `TEXTS.*` message key), then write the component's pure builder in
    `components/<kebab>/<name>Validation.ts`: merge its intrinsic rules with the
    caller's through `toFieldValidation` (`components/shared/fieldValidation.ts`)
-   and pass the result to `useStateField`. A composite's builder describes the
+   and pass the result to `useFieldBinding`. A composite's builder describes the
    fields **its inputs** register, with `toValidationFields` (see `Identity`,
    `Address`, `PhoneNumber`, the driving list), and the composite itself renders
    those inputs with the same labels and rules. Finally add the component's entry

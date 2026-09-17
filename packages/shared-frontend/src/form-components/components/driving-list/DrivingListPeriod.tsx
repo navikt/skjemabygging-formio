@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import Alert from '../../../components/alert/Alert';
 import CheckboxGroup from '../../../components/checkbox-group/CheckboxGroup';
 import { useLanguage } from '../../../context/language/LanguageContext';
-import { useStateField } from '../../../context/state/useStateField';
+import { useFieldBinding } from '../../../context/state/useFieldBinding';
 import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
 import DrivingListParkingExpense from './DrivingListParkingExpense';
 import {
@@ -41,7 +41,7 @@ const DrivingListPeriod = ({
 }: DrivingListPeriodProps) => {
   const { translate, currentLanguage } = useLanguage();
   const { submissionMethod } = useSubmissionMethod();
-  const { stateValue, setStateValue } = useStateField({ statePath });
+  const { stateValue, setStateValue } = useFieldBinding({ statePath });
   const value = (stateValue as DrivingListValue | undefined) ?? {};
   const dates = value.dates ?? [];
   const periodDates = useMemo(() => dateUtils.getDatesInRange(periodFrom, periodTo), [periodFrom, periodTo]);

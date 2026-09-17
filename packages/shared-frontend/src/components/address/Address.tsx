@@ -7,7 +7,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo } from 'react';
 import { useLanguage } from '../../context/language/LanguageContext';
-import { useStateField } from '../../context/state/useStateField';
+import { useFieldBinding } from '../../context/state/useFieldBinding';
 import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
 import CountrySelect from '../country-select/CountrySelect';
 import PostalCode from '../postal-code/PostalCode';
@@ -46,7 +46,7 @@ const Address = ({
 }: AddressProps) => {
   const { submissionMethod } = useSubmissionMethod();
   const { currentLanguage } = useLanguage();
-  const { stateValue, setStateValue } = useStateField({ statePath });
+  const { stateValue, setStateValue } = useFieldBinding({ statePath });
   const prefilledAddress = useMemo(
     () => getPrefilledAddress({ addressPriority, prefillValue }, currentLanguage),
     [addressPriority, currentLanguage, prefillValue],

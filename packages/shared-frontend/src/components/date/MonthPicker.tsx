@@ -2,7 +2,7 @@ import { MonthPicker as AkselMonthPicker, useMonthpicker } from '@navikt/ds-reac
 import { dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { ChangeEvent } from 'react';
 import { useLanguage } from '../../context/language/LanguageContext';
-import { useStateField } from '../../context/state/useStateField';
+import { useFieldBinding } from '../../context/state/useFieldBinding';
 import { inputId } from '../../utils/inputId';
 import ReadMore from '../read-more/ReadMore';
 import FormElementBox from '../shared/FormElementBox';
@@ -33,7 +33,7 @@ const MonthPicker = ({
   validation,
 }: MonthPickerProps) => {
   const { currentLanguage } = useLanguage();
-  const { stateValue, error, setStateValue } = useStateField({
+  const { stateValue, error, setStateValue } = useFieldBinding({
     statePath,
     validation: toMonthPickerValidation({ statePath, label, required, validation, minYear, maxYear }),
   });

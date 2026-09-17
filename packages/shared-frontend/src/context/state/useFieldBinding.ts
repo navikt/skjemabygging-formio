@@ -13,8 +13,10 @@ interface FieldValidation {
   value?: unknown;
 }
 
-interface UseStateFieldArgs {
+interface UseFieldBindingArgs {
   statePath: string;
+  /** Skip subscribing to the state store when the input value is controlled by its owner. */
+  controlled?: boolean;
   /**
    * The single field this input registers. Omit it only when the component renders no input of its
    * own for `statePath` (a composite reading the answer it distributes to the inputs below).
@@ -30,9 +32,9 @@ interface UseStateFieldArgs {
  * With none of them present the field is inert (value undefined, no error, no-op setter), which lets
  * the same component be driven purely by props (see the controlled overrides on the components).
  */
-const useStateField = ({ statePath, validation }: UseStateFieldArgs) => {
+const useFieldBinding = ({ statePath, controlled = false, validation }: UseFieldBindingArgs) => {
   const store = useOptionalFieldStateStore();
-  const stateValue = useFieldStateValue(statePath);
+  const stateValue = useFieldStateValue(statePath, !controlled);
   const { handleFieldChange, updateFieldValue } = useOptionalValidationActions();
   const scope = useOptionalValidationScope();
   const hasValueOverride = !!validation && 'value' in validation;
@@ -66,5 +68,5 @@ const useStateField = ({ statePath, validation }: UseStateFieldArgs) => {
   };
 };
 
-export { useStateField };
-export type { FieldValidation, UseStateFieldArgs };
+export { useFieldBinding };
+export type { FieldValidation, UseFieldBindingArgs };

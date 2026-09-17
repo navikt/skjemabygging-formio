@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import CheckboxGroup from '../../../components/checkbox-group/CheckboxGroup';
-import { useStateField } from '../../../context/state/useStateField';
+import { useFieldBinding } from '../../../context/state/useFieldBinding';
 import { SelectBoxesDefinition } from '../../component-types';
 import { useResolvedValidation } from '../../custom-validation/useResolvedValidation';
 import {
@@ -21,7 +21,7 @@ const InputSelectBoxes = ({ component, submissionPath }: InputComponentProps<Sel
   const statePath = resolveSubmissionPath(component, submissionPath);
   const values = getValues(component);
   const validation = useResolvedValidation(component);
-  const { stateValue, setStateValue } = useStateField({ statePath });
+  const { stateValue, setStateValue } = useFieldBinding({ statePath });
   const defaultValue = isSelectBoxesValue(component.defaultValue) ? component.defaultValue : undefined;
 
   useEffect(() => {

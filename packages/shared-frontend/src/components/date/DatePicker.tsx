@@ -2,7 +2,7 @@ import { DatePicker as AkselDatePicker, useDatepicker } from '@navikt/ds-react';
 import { dateUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { ChangeEvent, useEffect } from 'react';
 import { useLanguage } from '../../context/language/LanguageContext';
-import { useStateField } from '../../context/state/useStateField';
+import { useFieldBinding } from '../../context/state/useFieldBinding';
 import { inputId } from '../../utils/inputId';
 import ReadMore from '../read-more/ReadMore';
 import FormElementBox from '../shared/FormElementBox';
@@ -33,7 +33,7 @@ const DatePicker = ({
   validation,
 }: DatePickerProps) => {
   const { currentLanguage } = useLanguage();
-  const { stateValue, error, setStateValue } = useStateField({
+  const { stateValue, error, setStateValue } = useFieldBinding({
     statePath,
     validation: toDatePickerValidation({ statePath, label, required, validation, fromDate, toDate }),
   });

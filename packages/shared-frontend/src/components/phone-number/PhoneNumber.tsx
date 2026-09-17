@@ -3,7 +3,7 @@ import { ComponentValue, TEXTS } from '@navikt/skjemadigitalisering-shared-domai
 import { useCallback, useEffect } from 'react';
 import { useApplication } from '../../context/application/ApplicationContext';
 import { useRuntimeServices } from '../../context/runtime-services/RuntimeServicesContext';
-import { useStateField } from '../../context/state/useStateField';
+import { useFieldBinding } from '../../context/state/useFieldBinding';
 import Alert from '../alert/Alert';
 import Select from '../select/Select';
 import { useRemoteOptions } from '../select/useRemoteOptions';
@@ -36,7 +36,7 @@ const PhoneNumber = ({
 }: PhoneNumberProps) => {
   const { logger } = useApplication();
   const { formData } = useRuntimeServices();
-  const { stateValue, setStateValue } = useStateField({ statePath });
+  const { stateValue, setStateValue } = useFieldBinding({ statePath });
   const phoneNumberValue =
     typeof stateValue === 'object' && stateValue !== null ? (stateValue as PhoneNumberValue) : undefined;
   const selectedAreaCode = phoneNumberValue?.areaCode;

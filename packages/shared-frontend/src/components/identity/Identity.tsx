@@ -1,6 +1,6 @@
 import { CustomLabels, dateUtils, SubmissionIdentity, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect } from 'react';
-import { useStateField } from '../../context/state/useStateField';
+import { useFieldBinding } from '../../context/state/useFieldBinding';
 import DatePicker from '../date/DatePicker';
 import NationalIdentityNumber from '../national-identity-number/NationalIdentityNumber';
 import RadioGroup from '../radio-group/RadioGroup';
@@ -13,7 +13,7 @@ interface IdentityProps extends Pick<BaseFieldProps, 'statePath' | 'required' | 
 }
 
 const Identity = ({ statePath, required = true, readOnly, customLabels, prefillValue }: IdentityProps) => {
-  const { stateValue, setStateValue } = useStateField({ statePath });
+  const { stateValue, setStateValue } = useFieldBinding({ statePath });
   const identity = stateValue as SubmissionIdentity | undefined;
   const isPrefilled = showsPrefilledIdentityNumber(identity);
 

@@ -13,7 +13,7 @@ interface ValidationRegistrationProps {
 /**
  * Declares a validated field for a path that has no state-bound input of its own.
  *
- * Almost every field is registered by the input that renders it (`useStateField`), which is what
+ * Almost every field is registered by the input that renders it (`useFieldBinding`), which is what
  * keeps one owner per state path. A few paths have no such input: the attachment choice and the
  * uploaded files live outside the submission state, and the days of a driving list are picked in
  * several period accordions at once. Their owner declares them with this component instead, using

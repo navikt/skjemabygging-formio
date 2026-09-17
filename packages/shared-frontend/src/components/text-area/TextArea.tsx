@@ -1,6 +1,6 @@
 import { Textarea } from '@navikt/ds-react';
 import { ChangeEvent, FocusEvent, useEffect, useRef, useState } from 'react';
-import { useStateField } from '../../context/state/useStateField';
+import { useFieldBinding } from '../../context/state/useFieldBinding';
 import { toInputFormat, toSubmissionFormat } from '../../formatting/inputFormat';
 import { inputId } from '../../utils/inputId';
 import ReadMore from '../read-more/ReadMore';
@@ -32,12 +32,15 @@ const TextArea = ({
   marginBottom,
   validation,
 }: TextAreaProps) => {
-  const { stateValue, error, setStateValue } = useStateField({
+  const controlled = controlledOnChange !== undefined;
+  const fieldValidation = toFieldValidation({ statePath, label, required, validation });
+  const { stateValue, error, setStateValue } = useFieldBinding({
     statePath,
-    validation: toFieldValidation({ statePath, label, required, validation }),
+    controlled,
+    validation: controlled ? { ...fieldValidation, value: controlledValue } : fieldValidation,
   });
   const isFocusedRef = useRef(false);
-  const sourceValue = controlledOnChange ? controlledValue : stateValue;
+  const sourceValue = controlled ? controlledValue : stateValue;
   const syncedDisplayValue = toInputFormat(sourceValue);
   const [displayValue, setDisplayValue] = useState(syncedDisplayValue);
 

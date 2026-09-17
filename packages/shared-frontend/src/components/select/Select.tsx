@@ -9,7 +9,7 @@ import {
 import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, type ChangeEvent, type ReactNode, type Ref } from 'react';
 import { useLanguage } from '../../context/language/LanguageContext';
-import { useStateField } from '../../context/state/useStateField';
+import { useFieldBinding } from '../../context/state/useFieldBinding';
 import { inputId } from '../../utils/inputId';
 import ReadMore from '../read-more/ReadMore';
 import { toChoiceFieldValidation } from '../shared/fieldValidation';
@@ -65,10 +65,12 @@ const Select = ({
     values,
     onlyAvailableOptions,
   );
-  const { stateValue, error, setStateValue } = useStateField({
+  const controlled = value !== undefined;
+  const { stateValue, error, setStateValue } = useFieldBinding({
     statePath,
+    controlled,
     // A controlled select validates the value its owner passes, which is the one it renders.
-    validation: value !== undefined ? { ...fieldValidation, value } : fieldValidation,
+    validation: controlled ? { ...fieldValidation, value } : fieldValidation,
   });
   const current = value ?? getCurrentValue(stateValue, valueType);
   const currentError = controlledError ?? error;

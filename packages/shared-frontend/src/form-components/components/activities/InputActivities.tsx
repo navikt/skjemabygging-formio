@@ -12,7 +12,7 @@ import ReadMore from '../../../components/read-more/ReadMore';
 import { useApplication } from '../../../context/application/ApplicationContext';
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { useRuntimeServices } from '../../../context/runtime-services/RuntimeServicesContext';
-import { useStateField } from '../../../context/state/useStateField';
+import { useFieldBinding } from '../../../context/state/useFieldBinding';
 import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
 import { ActivitiesDefinition } from '../../component-types';
 import { InputComponentProps, resolveReadMore, resolveSubmissionPath } from '../../inputComponentUtils';
@@ -30,7 +30,7 @@ const InputActivities = ({ component, submissionPath }: InputComponentProps<Acti
   const readMore = resolveReadMore(component);
   const [status, setStatus] = useState<ActivitiesStatus>('loading');
   const [activities, setActivities] = useState<SendInnAktivitet[]>([]);
-  const { stateValue, error, setStateValue } = useStateField({ statePath });
+  const { stateValue, error, setStateValue } = useFieldBinding({ statePath });
 
   const activitySelections = useMemo(() => mapActivities(activities, currentLanguage), [activities, currentLanguage]);
   const currentValue = stateValue as SubmissionActivity | undefined;

@@ -2,7 +2,7 @@ import { RadioGroup as AkselRadioGroup, Radio } from '@navikt/ds-react';
 import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
 import { Fragment, useEffect } from 'react';
 import { useLanguage } from '../../context/language/LanguageContext';
-import { useStateField } from '../../context/state/useStateField';
+import { useFieldBinding } from '../../context/state/useFieldBinding';
 import { inputId } from '../../utils/inputId';
 import ReadMore from '../read-more/ReadMore';
 import { toChoiceFieldValidation } from '../shared/fieldValidation';
@@ -49,10 +49,12 @@ const RadioGroup = ({
     values,
     onlyAvailableOptions,
   );
-  const { stateValue, error, setStateValue } = useStateField({
+  const controlled = value !== undefined;
+  const { stateValue, error, setStateValue } = useFieldBinding({
     statePath,
+    controlled,
     // A controlled group validates the value its owner passes, which is the one it renders.
-    validation: value !== undefined ? { ...fieldValidation, value } : fieldValidation,
+    validation: controlled ? { ...fieldValidation, value } : fieldValidation,
   });
   const current = value ?? (typeof stateValue === 'string' ? stateValue : '');
   const currentError = controlledError ?? error;

@@ -1,6 +1,6 @@
 import { TextField as AkselTextField } from '@navikt/ds-react';
 import { ChangeEvent, FocusEvent, HTMLAttributes, ReactNode, useCallback, useEffect, useRef, useState } from 'react';
-import { useStateField } from '../../context/state/useStateField';
+import { useFieldBinding } from '../../context/state/useFieldBinding';
 import { toInputFormat, toSubmissionFormat } from '../../formatting/inputFormat';
 import { inputId } from '../../utils/inputId';
 import ReadMore from '../read-more/ReadMore';
@@ -68,9 +68,12 @@ const InternalTextField = ({
   marginBottom,
   validation,
 }: InternalTextFieldProps) => {
-  const { stateValue, error, setStateValue } = useStateField({
+  const controlled = controlledOnChange !== undefined;
+  const fieldValidation = toFieldValidation({ statePath, label, required, validation });
+  const { stateValue, error, setStateValue } = useFieldBinding({
     statePath,
-    validation: toFieldValidation({ statePath, label, required, validation }),
+    controlled,
+    validation: controlled ? { ...fieldValidation, value: controlledValue } : fieldValidation,
   });
   const isFocusedRef = useRef(false);
   const formatDisplayValue = useCallback(
@@ -79,13 +82,13 @@ const InternalTextField = ({
   );
   const [displayValue, setDisplayValue] = useState(() =>
     formatDisplayValue(
-      controlledOnChange
+      controlled
         ? controlledValue
         : (stateValue ?? (typeof prefillValue === 'string' && prefillValue.trim() !== '' ? prefillValue : undefined)),
     ),
   );
   const syncedDisplayValue = formatDisplayValue(
-    controlledOnChange
+    controlled
       ? controlledValue
       : (stateValue ?? (typeof prefillValue === 'string' && prefillValue.trim() !== '' ? prefillValue : undefined)),
   );

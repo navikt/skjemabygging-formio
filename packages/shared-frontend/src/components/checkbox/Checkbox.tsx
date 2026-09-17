@@ -1,6 +1,6 @@
 import { Checkbox as AkselCheckbox, ErrorMessage } from '@navikt/ds-react';
 import { useEffect } from 'react';
-import { useStateField } from '../../context/state/useStateField';
+import { useFieldBinding } from '../../context/state/useFieldBinding';
 import { inputId } from '../../utils/inputId';
 import ReadMore from '../read-more/ReadMore';
 import { toFieldValidation } from '../shared/fieldValidation';
@@ -33,7 +33,7 @@ const Checkbox = ({
   showInlineError = true,
   validation,
 }: CheckboxProps) => {
-  const { stateValue, error, setStateValue } = useStateField({
+  const { stateValue, error, setStateValue } = useFieldBinding({
     statePath,
     validation: toFieldValidation({ statePath, label, required, validation }),
   });

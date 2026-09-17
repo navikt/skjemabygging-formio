@@ -1,4 +1,4 @@
-import { FieldValidation } from '../../context/state/useStateField';
+import { FieldValidation } from '../../context/state/useFieldBinding';
 import { ValidationField } from '../../context/validation/validationTypes';
 import { FieldValidationProp } from '../types';
 
@@ -40,7 +40,7 @@ const toChoiceFieldValidation = (
 
 /**
  * The generic registration for one state path. The rendered component registers it through
- * `useStateField`, and the headless page rebuild produces the same entry from the same builder, so
+ * `useFieldBinding`, and the headless page rebuild produces the same entry from the same builder, so
  * a rule is only ever written once.
  */
 const toValidationFields = (statePath: string, value: unknown, validation: FieldValidation): ValidationField[] => [

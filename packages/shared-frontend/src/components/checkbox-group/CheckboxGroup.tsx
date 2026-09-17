@@ -2,7 +2,7 @@ import { CheckboxGroup as AkselCheckboxGroup, Checkbox } from '@navikt/ds-react'
 import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
 import { ReactNode } from 'react';
 import { useLanguage } from '../../context/language/LanguageContext';
-import { useStateField } from '../../context/state/useStateField';
+import { useFieldBinding } from '../../context/state/useFieldBinding';
 import { inputId } from '../../utils/inputId';
 import ReadMore from '../read-more/ReadMore';
 import { toFieldValidation } from '../shared/fieldValidation';
@@ -41,10 +41,12 @@ const CheckboxGroup = ({
 }: CheckboxGroupProps) => {
   const { translate } = useLanguage();
   const fieldValidation = toFieldValidation({ statePath, label: legend, required, validation });
-  const { stateValue, error, setStateValue } = useStateField({
+  const controlled = value !== undefined;
+  const { stateValue, error, setStateValue } = useFieldBinding({
     statePath,
+    controlled,
     // A controlled group validates the value its owner passes, which is the one it renders.
-    validation: value !== undefined ? { ...fieldValidation, value } : fieldValidation,
+    validation: controlled ? { ...fieldValidation, value } : fieldValidation,
   });
   const current = value ?? (Array.isArray(stateValue) ? stateValue : []);
   const currentError = controlledError ?? error;

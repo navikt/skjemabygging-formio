@@ -5,7 +5,7 @@ import { useApplication } from '../../../context/application/ApplicationContext'
 import { useRuntimeServices } from '../../../context/runtime-services/RuntimeServicesContext';
 import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
 import { parseSubmissionPath, setDeepValue } from '../../../context/state/stateHelpers';
-import { useStateField } from '../../../context/state/useStateField';
+import { useFieldBinding } from '../../../context/state/useFieldBinding';
 import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
 import { DataFetcherDefinition } from '../../component-types';
 import { InputComponentProps, resolveReadMore, resolveSubmissionPath } from '../../inputComponentUtils';
@@ -21,7 +21,7 @@ const InputDataFetcher = ({ component, submissionPath }: InputComponentProps<Dat
   const { submissionMethod } = useSubmissionMethod();
   const { submission, setSubmission } = useSubmissionState();
   const statePath = resolveSubmissionPath(component, submissionPath);
-  const { stateValue, setStateValue } = useStateField({ statePath });
+  const { stateValue, setStateValue } = useFieldBinding({ statePath });
   const dataFetcherData = getDataFetcherData(statePath, submission);
   const values = dataFetcherData?.data ?? [];
   const readMore = resolveReadMore(component);

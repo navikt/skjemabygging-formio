@@ -6,7 +6,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo } from 'react';
 import { useLanguage } from '../../context/language/LanguageContext';
-import { useStateField } from '../../context/state/useStateField';
+import { useFieldBinding } from '../../context/state/useFieldBinding';
 import Alert from '../alert/Alert';
 import CheckboxGroup from '../checkbox-group/CheckboxGroup';
 import RadioGroup from '../radio-group/RadioGroup';
@@ -41,7 +41,7 @@ const Attachment = ({
 }: AttachmentProps) => {
   const { translate } = useLanguage();
   // The choice control below owns the registration for `statePath`; this only reads and writes it.
-  const { stateValue, setStateValue } = useStateField({ statePath });
+  const { stateValue, setStateValue } = useFieldBinding({ statePath });
   const currentValue = (stateValue ?? {}) as AttachmentStateValue;
   const selectedValue = currentValue?.key;
   const selectedOption = useMemo(

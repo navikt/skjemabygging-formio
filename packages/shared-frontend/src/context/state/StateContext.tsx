@@ -35,10 +35,16 @@ const StateStoreProvider = ({ store, children }: Props) => (
 // used fully controlled via props). Returns undefined when there is no provider.
 const useOptionalFieldStateStore = (): FieldStateStore | undefined => useContext(StateContext);
 
-const useFieldStateValue = (statePath: string): unknown => {
+const useFieldStateValue = (statePath: string, enabled = true): unknown => {
   const store = useOptionalFieldStateStore();
-  const subscribe = useCallback((listener: () => void) => store?.subscribe(listener) ?? (() => undefined), [store]);
-  const getSnapshot = useCallback(() => store?.getValue(statePath), [statePath, store]);
+  const subscribe = useCallback(
+    (listener: () => void) => (enabled ? store?.subscribe(listener) : undefined) ?? (() => undefined),
+    [enabled, store],
+  );
+  const getSnapshot = useCallback(
+    () => (enabled ? store?.getValue(statePath) : undefined),
+    [enabled, statePath, store],
+  );
 
   return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
 };
