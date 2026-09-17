@@ -2,6 +2,7 @@ import {
   CoverPageDownloadType,
   Form,
   formatUtils,
+  isSenderOrganization,
   navFormUtils,
   Party,
   ResponseError,
@@ -44,7 +45,7 @@ const mapPartyToCoverPage = (party: Party): CoverPagePartyData => {
     return { navUnit: party.navUnit };
   }
 
-  if ('number' in party.user) {
+  if (isSenderOrganization(party.user)) {
     return {
       user: {
         organizationNumber: formatUtils.removeAllSpaces(party.user.number),

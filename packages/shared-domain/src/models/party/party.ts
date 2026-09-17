@@ -34,6 +34,7 @@ interface LegacySender {
 }
 
 type ConcernedUser = ConcernedPerson | SenderOrganization;
+type PartySender = SenderPerson | SenderOrganization | LegacySender;
 
 type Party =
   | {
@@ -42,7 +43,7 @@ type Party =
     }
   | {
       onBehalfOf: 'other-person';
-      sender: SenderPerson | SenderOrganization | LegacySender;
+      sender: PartySender;
       user: ConcernedPerson;
     }
   | {
@@ -51,6 +52,12 @@ type Party =
       navUnit?: string;
     };
 
+const isSenderOrganization = (partyMember: ConcernedUser | PartySender): partyMember is SenderOrganization =>
+  'number' in partyMember;
+
+const isSenderPerson = (sender: PartySender): sender is SenderPerson => 'nationalIdentityNumber' in sender;
+
+export { isSenderOrganization, isSenderPerson };
 export type {
   ConcernedPerson,
   ConcernedUser,
@@ -58,5 +65,6 @@ export type {
   LegacySender,
   Party,
   PartyAddress,
+  PartySender,
   UnidentifiedConcernedPerson,
 };

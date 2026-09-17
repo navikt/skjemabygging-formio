@@ -1,12 +1,17 @@
-import { ConcernedPerson, formatUtils, Party } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  ConcernedPerson,
+  formatUtils,
+  isSenderOrganization,
+  isSenderPerson,
+  Party,
+  PartySender,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { AvsenderId, SubmitApplicationRequest } from './applicationTypes';
 
 type ApplicationPartyData = Pick<SubmitApplicationRequest, 'bruker' | 'avsender'>;
 
-type ResponsibleSender = Extract<Party, { onBehalfOf: 'other-person' }>['sender'];
-
-const mapSender = (sender: ResponsibleSender): AvsenderId => {
-  if ('number' in sender) {
+const mapSender = (sender: PartySender): AvsenderId => {
+  if (isSenderOrganization(sender)) {
     return {
       id: formatUtils.removeAllSpaces(sender.number),
       idType: 'ORGNR',
@@ -14,7 +19,7 @@ const mapSender = (sender: ResponsibleSender): AvsenderId => {
     };
   }
 
-  if ('nationalIdentityNumber' in sender) {
+  if (isSenderPerson(sender)) {
     return {
       id: formatUtils.removeAllSpaces(sender.nationalIdentityNumber),
       idType: 'FNR',
@@ -32,13 +37,11 @@ const mapOrganizationSender = (party: Extract<Party, { onBehalfOf: 'multiple-peo
 });
 
 const mapUser = (user: ConcernedPerson): Pick<ApplicationPartyData, 'bruker'> =>
-  user.kind === 'identified-person'
-    ? { bruker: formatUtils.removeAllSpaces(user.nationalIdentityNumber) }
-    : {};
+  user.kind === 'identified-person' ? { bruker: formatUtils.removeAllSpaces(user.nationalIdentityNumber) } : {};
 
 const mapPartyToApplication = (party: Party): ApplicationPartyData => {
   if (party.onBehalfOf === 'self') {
-    if ('number' in party.user) {
+    if (isSenderOrganization(party.user)) {
       return {
         avsender: {
           id: formatUtils.removeAllSpaces(party.user.number),
