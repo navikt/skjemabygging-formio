@@ -12,7 +12,7 @@ import {
   navFormUtils,
   resolveParty,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { mapPartyToCoverPage } from './coverPagePartyMapper';
+import { getCoverPageOrganizationUser, mapPartyToCoverPage } from './coverPagePartyMapper';
 
 const getAttachments = (submission: Submission, form: Form) => {
   return navFormUtils
@@ -100,11 +100,13 @@ const createDownloadDataFromSubmission = (
   submissionMethod: SubmissionMethod = 'paper',
 ): CoverPageDownloadType => {
   const party = resolveParty(form, submission, { navUnit: unitNumber });
-  if (!party) {
+  const coverPageOrganizationUser = getCoverPageOrganizationUser(form, submission.data);
+
+  if (!party && !coverPageOrganizationUser) {
     throw new ResponseError('BAD_REQUEST', 'Could not resolve party for cover page');
   }
 
-  const partyData = mapPartyToCoverPage(party);
+  const partyData = party ? mapPartyToCoverPage(party) : {};
 
   return {
     type: 'SKJEMA',
@@ -115,7 +117,7 @@ const createDownloadDataFromSubmission = (
       skjemanummer: form.properties.skjemanummer,
       properties: form.properties,
     },
-    user: partyData.user ?? { firstName: '', surname: '', address: {} },
+    user: partyData.user ?? coverPageOrganizationUser ?? { firstName: '', surname: '', address: {} },
     recipient: getRecipient(form.properties.mottaksadresseId, recipient, partyData.navUnit ?? unitNumber),
     attachments: getAttachmentLabels(form, submission, translate),
   };

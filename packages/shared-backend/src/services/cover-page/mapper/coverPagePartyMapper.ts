@@ -1,8 +1,32 @@
-import { CoverPageDownloadType, formatUtils, Party, ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  CoverPageDownloadType,
+  Form,
+  formatUtils,
+  navFormUtils,
+  Party,
+  ResponseError,
+  SubmissionData,
+} from '@navikt/skjemadigitalisering-shared-domain';
 
 type CoverPagePartyData = {
   user?: CoverPageDownloadType['user'];
   navUnit?: string;
+};
+
+type OrganizationNumberUser = Extract<CoverPageDownloadType['user'], { organizationNumber: string }>;
+
+const getCoverPageOrganizationUser = (form: Form, submission: SubmissionData): OrganizationNumberUser | undefined => {
+  const component = navFormUtils
+    .flattenComponents(form.components)
+    .find((current) => current.type === 'orgNr' && current.coverPageUser);
+  const submittedNumber = component ? submission[component.key] : undefined;
+
+  if (typeof submittedNumber !== 'string' && typeof submittedNumber !== 'number') {
+    return undefined;
+  }
+
+  const organizationNumber = formatUtils.removeAllSpaces(`${submittedNumber}`);
+  return organizationNumber ? { organizationNumber } : undefined;
 };
 
 const mapPartyToCoverPage = (party: Party): CoverPagePartyData => {
@@ -39,5 +63,5 @@ const mapPartyToCoverPage = (party: Party): CoverPagePartyData => {
   };
 };
 
-export { mapPartyToCoverPage };
+export { getCoverPageOrganizationUser, mapPartyToCoverPage };
 export type { CoverPagePartyData };

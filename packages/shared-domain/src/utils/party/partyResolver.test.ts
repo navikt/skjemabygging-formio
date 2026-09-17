@@ -187,8 +187,24 @@ describe('resolveParty', () => {
     expect(resolve({})).toBeUndefined();
   });
 
+  it('does not resolve a cover-page-specific organization field', () => {
+    const coverPageForm = {
+      components: [
+        {
+          type: 'orgNr',
+          key: 'organizationNumber',
+          coverPageUser: true,
+        },
+      ] as Component[],
+    } as Form;
+
+    expect(resolveParty(coverPageForm, { data: { organizationNumber: '889 640 782' } })).toBeUndefined();
+  });
+
   it('resolves a flat identified user with a modern sender', () => {
-    const legacyForm = { components: [{ type: 'sender', key: 'sender', input: true }, ...legacyFlatUserComponents] } as Form;
+    const legacyForm = {
+      components: [{ type: 'sender', key: 'sender', input: true }, ...legacyFlatUserComponents],
+    } as Form;
     expect(
       resolveParty(legacyForm, {
         data: {
