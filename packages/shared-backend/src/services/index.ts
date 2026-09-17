@@ -18,6 +18,8 @@ export { createApplicationActivitiesService } from './application-activities';
 export type { ApplicationActivitiesService } from './application-activities';
 export { createApplicationPdfService } from './application-pdf';
 export type { ApplicationPdfService } from './application-pdf';
+export { CAPTCHA_FAILURE_REASON, createCaptchaService } from './captcha';
+export type { CaptchaFailureReason, CaptchaService, CreateCaptchaServiceProps } from './captcha';
 export { createCommonCodesService } from './common-codes';
 export type { CommonCodesService } from './common-codes';
 export { coverPageMapper, createCoverPageService } from './cover-page';

@@ -3,6 +3,7 @@ import {
   createApplicationActivitiesService,
   createApplicationPdfService,
   createApplicationService,
+  createCaptchaService,
   createCommonCodesService,
   createCoverPageService,
   createFormService,
@@ -117,6 +118,7 @@ const translationService = createTranslationService({
 const translationsService = new TranslationsService(config);
 
 const nologinTokenService = NologinTokenService(config);
+const captchaService = createCaptchaService(config.captcha);
 
 export {
   activeTaskService,
@@ -124,6 +126,7 @@ export {
   applicationPdfService,
   applicationService,
   appMetrics,
+  captchaService,
   commonCodesService,
   coverPageService,
   formService,
