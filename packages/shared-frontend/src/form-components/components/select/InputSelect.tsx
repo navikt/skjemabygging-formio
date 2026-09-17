@@ -1,4 +1,3 @@
-import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
 import Select from '../../../components/select/Select';
 import { SelectDefinition } from '../../component-types';
 import { useResolvedValidation } from '../../custom-validation/useResolvedValidation';
@@ -13,9 +12,6 @@ import {
 } from '../../inputComponentUtils';
 import FormGroup from '../../shared/FormGroup';
 
-const isComponentValue = (value: unknown): value is ComponentValue =>
-  typeof value === 'object' && value !== null && 'value' in value && 'label' in value;
-
 const InputSelect = ({ component, submissionPath }: InputComponentProps<SelectDefinition>) => {
   const validation = useResolvedValidation(component);
   return (
@@ -26,11 +22,6 @@ const InputSelect = ({ component, submissionPath }: InputComponentProps<SelectDe
         description={component.description}
         values={getValues(component)}
         fieldSize={resolveFieldSize(component)}
-        defaultValue={
-          typeof component.defaultValue === 'string' || isComponentValue(component.defaultValue)
-            ? component.defaultValue
-            : undefined
-        }
         valueType="option"
         required={isRequired(component)}
         readOnly={component.readOnly}

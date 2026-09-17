@@ -8,7 +8,7 @@ import {
   SubmissionMethod,
   TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { applyPrefilledValuesToSubmission } from '../../context/form-definition/prefillSubmission';
+import { applyInitialValuesToSubmission } from '../../context/form-definition/initialSubmissionValues';
 import { ApplicationService, Draft } from '../../context/runtime-services/RuntimeServicesContext';
 import { updateSearch } from '../../utils/searchParams';
 
@@ -69,7 +69,7 @@ const initializeDigitalDraft = async ({
   if (innsendingsId) {
     try {
       const draft = await applications.getDraft(innsendingsId);
-      const submission = applyPrefilledValuesToSubmission(
+      const submission = applyInitialValuesToSubmission(
         form,
         formSummaryUtils.filterSubmissionDataToSummary(form, draft.submission, { submissionMethod }),
         draft.language,
@@ -91,7 +91,7 @@ const initializeDigitalDraft = async ({
   }
 
   const language = getDraftBootstrapLanguage(search);
-  const submission = applyPrefilledValuesToSubmission(form, undefined, language, { submissionMethod }) ?? { data: {} };
+  const submission = applyInitialValuesToSubmission(form, undefined, language, { submissionMethod }) ?? { data: {} };
   const result = await applications.createDraft({
     formPath: form.path,
     submission,

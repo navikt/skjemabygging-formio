@@ -1,6 +1,6 @@
 import { RadioGroup as AkselRadioGroup, Radio } from '@navikt/ds-react';
 import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
-import { Fragment, useEffect } from 'react';
+import { Fragment } from 'react';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useFieldBinding } from '../../context/state/useFieldBinding';
 import { inputId } from '../../utils/inputId';
@@ -14,7 +14,6 @@ import { BaseFieldProps, ChoiceValidation } from '../types';
 interface RadioGroupProps extends Omit<BaseFieldProps, 'label'> {
   legend: string;
   values: ComponentValue[];
-  defaultValue?: string;
   value?: string;
   onChange?: (value: string) => void;
   error?: string;
@@ -28,7 +27,6 @@ const RadioGroup = ({
   statePath,
   legend,
   values,
-  defaultValue,
   description,
   required = true,
   readOnly,
@@ -58,14 +56,6 @@ const RadioGroup = ({
   });
   const current = value ?? (typeof stateValue === 'string' ? stateValue : '');
   const currentError = controlledError ?? error;
-
-  useEffect(() => {
-    if (value !== undefined || typeof stateValue === 'string' || !defaultValue) {
-      return;
-    }
-
-    setStateValue(defaultValue);
-  }, [defaultValue, setStateValue, stateValue, value]);
 
   return (
     <FormElementBox fieldSize={fieldSize} marginBottom={marginBottom}>

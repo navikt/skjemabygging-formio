@@ -1,4 +1,4 @@
-import { parseSubmissionPath, removeDeepValue, setDeepValue } from './stateHelpers';
+import { isSameSubmissionValue, parseSubmissionPath, removeDeepValue, setDeepValue } from './stateHelpers';
 
 describe('stateHelpers', () => {
   it('sets nested values inside datagrid rows', () => {
@@ -22,5 +22,17 @@ describe('stateHelpers', () => {
         },
       },
     });
+  });
+
+  it.each([
+    ['equal primitives', 'value', 'value', true],
+    ['different primitives', 'value', 'other', false],
+    ['equal nested objects', { person: { name: 'Ada' } }, { person: { name: 'Ada' } }, true],
+    ['different key counts', { name: 'Ada' }, { name: 'Ada', age: 36 }, false],
+    ['equal arrays', [{ value: 1 }, 2], [{ value: 1 }, 2], true],
+    ['different arrays', [1, 2], [2, 1], false],
+    ['null and object', null, {}, false],
+  ])('compares submission values: %s', (_caseName, source, target, expected) => {
+    expect(isSameSubmissionValue(source, target)).toBe(expected);
   });
 });

@@ -11,7 +11,6 @@ import { BaseFieldProps, ChoiceValidation } from '../types';
 
 interface CheckboxProps extends BaseFieldProps {
   label: string;
-  defaultValue?: boolean;
   checked?: boolean;
   onChange?: (checked: boolean) => void;
   showInlineError?: boolean;
@@ -21,7 +20,6 @@ interface CheckboxProps extends BaseFieldProps {
 const Checkbox = ({
   statePath,
   label,
-  defaultValue,
   description,
   required = true,
   readOnly,
@@ -44,15 +42,10 @@ const Checkbox = ({
       return;
     }
 
-    if (defaultValue !== undefined) {
-      setStateValue(defaultValue);
-      return;
-    }
-
     if (readOnly) {
       setStateValue(false);
     }
-  }, [checked, defaultValue, readOnly, setStateValue, stateValue]);
+  }, [checked, readOnly, setStateValue, stateValue]);
 
   return (
     <FormElementBox fieldSize={fieldSize} marginBottom={marginBottom}>

@@ -22,7 +22,7 @@ import {
   getActivePanels,
   toComponentDefinitions,
 } from './formDefinitionUtils';
-import { reconcilePrefilledSubmission } from './prefillSubmission';
+import { applyInitialValuesToSubmission } from './initialSubmissionValues';
 
 interface FormDefinitionContextType {
   form: Form;
@@ -114,7 +114,7 @@ const FormDefinitionProvider = ({ children, form }: Props) => {
 
   useLayoutEffect(() => {
     setSubmission((prev) =>
-      reconcilePrefilledSubmission(formWithBaseSubmissionPath, prev, currentLanguage, {
+      applyInitialValuesToSubmission(formWithBaseSubmissionPath, prev, currentLanguage, {
         prefillMode: 'missing',
         submissionMethod,
       }),

@@ -6,7 +6,9 @@ import {
   collectDataGridRowScopes,
   collectInputSubmissionPaths,
 } from '../../form-components/components/data-grid/dataGridRows';
+import { resolveDefaultSubmissionValue } from '../../form-components/defaultSubmissionValue';
 import { clearSubmissionPathsFromSubmission, createUpdatedSubmission } from '../state/SubmissionStateContext';
+import { isSameSubmissionValue } from '../state/stateHelpers';
 import {
   enrichFormWithBaseSubmissionPath,
   flattenComponentsWithBaseSubmissionPath,
@@ -17,7 +19,7 @@ import { collectHiddenSubmissionPaths } from './hiddenSubmissionPaths';
 
 type PrefillMode = 'missing' | 'overwrite';
 
-interface ApplyPrefilledValuesOptions {
+interface ApplyInitialValuesOptions {
   prefillMode?: PrefillMode;
   submissionMethod?: SubmissionMethod;
 }
@@ -47,7 +49,7 @@ const getComponentPrefillValue = (component: ComponentDefinition, currentLanguag
   return undefined;
 };
 
-const collectActivePrefillComponents = (
+const collectActiveComponentsWithInitialValues = (
   form: Form,
   submission: Submission | undefined,
   submissionMethod: SubmissionMethod | undefined,
@@ -58,14 +60,22 @@ const collectActivePrefillComponents = (
     submission,
     form,
     submissionMethod,
+    includeImplicitRows: true,
+  });
+
+  const componentsWithInitialValues = [
+    ...collectInputSubmissionPaths(activeComponents),
+    ...dataGridRowScopes.flatMap((scope) => collectInputSubmissionPaths(scope.activeComponents)),
+  ].flatMap(({ component, submissionPath }) => {
+    const defaultValue = resolveDefaultSubmissionValue(component);
+    return component.prefillValue !== undefined || defaultValue !== undefined
+      ? [{ component, submissionPath, defaultValue }]
+      : [];
   });
 
   return {
     activeComponents,
-    prefilledComponents: [
-      ...collectInputSubmissionPaths(activeComponents),
-      ...dataGridRowScopes.flatMap((scope) => collectInputSubmissionPaths(scope.activeComponents)),
-    ].filter(({ component }) => component.prefillValue !== undefined),
+    componentsWithInitialValues,
   };
 };
 
@@ -89,14 +99,14 @@ const clearInactiveSubmissionValues = (
  * Performs one reconciliation pass. In the mounted flow, updating the submission causes the form
  * definition provider to calculate active components and invoke this again when necessary.
  */
-const reconcilePrefilledSubmission = (
+const reconcileSubmissionValues = (
   form: Form,
   submission: Submission | undefined,
   currentLanguage: string,
-  { prefillMode = 'overwrite', submissionMethod }: ApplyPrefilledValuesOptions = {},
+  { prefillMode = 'overwrite', submissionMethod }: ApplyInitialValuesOptions = {},
 ): Submission | undefined => {
   const formWithBaseSubmissionPath = enrichFormWithBaseSubmissionPath(form);
-  const { activeComponents, prefilledComponents } = collectActivePrefillComponents(
+  const { activeComponents, componentsWithInitialValues } = collectActiveComponentsWithInitialValues(
     formWithBaseSubmissionPath,
     submission,
     submissionMethod,
@@ -108,39 +118,45 @@ const reconcilePrefilledSubmission = (
     submissionMethod,
   );
 
-  return prefilledComponents.reduce((currentSubmission, { component, submissionPath }) => {
+  return componentsWithInitialValues.reduce((currentSubmission, { component, submissionPath, defaultValue }) => {
     const prefillValue = getComponentPrefillValue(component, currentLanguage);
-    if (
-      prefillValue === undefined ||
-      (prefillMode === 'missing' && submissionUtils.getSubmissionValue(submissionPath, currentSubmission) !== undefined)
-    ) {
+    const currentValue = submissionUtils.getSubmissionValue(submissionPath, currentSubmission);
+
+    if (prefillValue !== undefined && (prefillMode === 'overwrite' || currentValue === undefined)) {
+      return isSameSubmissionValue(currentValue, prefillValue)
+        ? currentSubmission
+        : createUpdatedSubmission(currentSubmission, submissionPath, prefillValue);
+    }
+
+    if (defaultValue === undefined || currentValue !== undefined) {
       return currentSubmission;
     }
 
-    return createUpdatedSubmission(currentSubmission, submissionPath, prefillValue);
+    return createUpdatedSubmission(currentSubmission, submissionPath, defaultValue);
   }, withoutInactiveValues);
 };
 
 /**
- * Settles prefills before a draft or initial form state exists. A mounted form uses
- * {@link reconcilePrefilledSubmission}; this wrapper is only needed before React can trigger
- * follow-up reconciliation passes.
+ * Settles prefills and defaults to a stable state before the submission is published. The mounted
+ * form also uses this function so cyclic conditionals cannot trigger alternating state updates.
  */
-const applyPrefilledValuesToSubmission = (
+const applyInitialValuesToSubmission = (
   form: Form,
   submission: Submission | undefined,
   currentLanguage: string,
-  options: ApplyPrefilledValuesOptions = {},
+  options: ApplyInitialValuesOptions = {},
 ): Submission | undefined => {
   const formWithBaseSubmissionPath = enrichFormWithBaseSubmissionPath(form);
   const maximumPasses =
     flattenComponentsWithBaseSubmissionPath(formWithBaseSubmissionPath.components).filter(
-      (component) => component.input && component.prefillValue !== undefined,
+      (component) =>
+        component.input &&
+        (component.prefillValue !== undefined || resolveDefaultSubmissionValue(component) !== undefined),
     ).length + 1;
   let currentSubmission = submission;
 
   for (let pass = 0; pass < maximumPasses; pass += 1) {
-    const nextSubmission = reconcilePrefilledSubmission(
+    const nextSubmission = reconcileSubmissionValues(
       formWithBaseSubmissionPath,
       currentSubmission,
       currentLanguage,
@@ -152,18 +168,19 @@ const applyPrefilledValuesToSubmission = (
     currentSubmission = nextSubmission;
   }
 
-  const { activeComponents } = collectActivePrefillComponents(
+  const { activeComponents } = collectActiveComponentsWithInitialValues(
     formWithBaseSubmissionPath,
     currentSubmission,
     options.submissionMethod,
   );
-  return clearInactiveSubmissionValues(
+  const settledSubmission = clearInactiveSubmissionValues(
     formWithBaseSubmissionPath,
     activeComponents,
     currentSubmission,
     options.submissionMethod,
   );
+  return isSameSubmissionValue(settledSubmission, submission) ? submission : settledSubmission;
 };
 
-export { applyPrefilledValuesToSubmission, reconcilePrefilledSubmission };
-export type { ApplyPrefilledValuesOptions, PrefillMode };
+export { applyInitialValuesToSubmission };
+export type { ApplyInitialValuesOptions, PrefillMode };

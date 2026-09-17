@@ -1,10 +1,9 @@
 import { Form, Submission, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useLocation } from 'react-router';
 import { hydrateLegacyAttachments } from '../../context/attachment/attachmentData';
-import { applyDefaultValuesToSubmission } from '../../context/form-definition/defaultValues';
 import { FormDefinitionProvider } from '../../context/form-definition/FormDefinitionContext';
-import { applyPrefilledValuesToSubmission } from '../../context/form-definition/prefillSubmission';
+import { applyInitialValuesToSubmission } from '../../context/form-definition/initialSubmissionValues';
 import { SubmissionStateProvider } from '../../context/state/SubmissionStateContext';
 import { SubmissionMethodProvider } from '../../context/submission-method/SubmissionMethodContext';
 import { AttachmentUploadProvider } from '../attachments/context/AttachmentUploadContext';
@@ -37,11 +36,12 @@ const FyllutFormFlow = ({
 }: Props) => {
   const { search } = useLocation();
   const [receiptPdf, setReceiptPdf] = useState<Blob>();
-  const hydratedInitialSubmission = applyDefaultValuesToSubmission(
-    form,
-    applyPrefilledValuesToSubmission(form, hydrateLegacyAttachments(form, initialSubmission), currentLanguage, {
-      submissionMethod: requestedSubmissionMethod ?? resolveDefaultSubmissionMethod(form.properties.submissionTypes),
-    }),
+  const hydratedInitialSubmission = useMemo(
+    () =>
+      applyInitialValuesToSubmission(form, hydrateLegacyAttachments(form, initialSubmission), currentLanguage, {
+        submissionMethod: requestedSubmissionMethod ?? resolveDefaultSubmissionMethod(form.properties.submissionTypes),
+      }),
+    [currentLanguage, form, initialSubmission, requestedSubmissionMethod],
   );
   const defaultSubmissionMethod = resolveDefaultSubmissionMethod(form.properties.submissionTypes);
   const submissionMethodFromUrl = new URLSearchParams(search).has('sub') ? requestedSubmissionMethod : undefined;

@@ -22,6 +22,34 @@ const parseSubmissionPath = (path: string): SubmissionPathPart[] => {
 const isObjectLike = (value: unknown): value is SubmissionData =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
+const isSameSubmissionValue = (source: unknown, target: unknown): boolean => {
+  if (Object.is(source, target)) {
+    return true;
+  }
+  if (typeof source !== 'object' || typeof target !== 'object' || source === null || target === null) {
+    return false;
+  }
+  if (Array.isArray(source) || Array.isArray(target)) {
+    return (
+      Array.isArray(source) &&
+      Array.isArray(target) &&
+      source.length === target.length &&
+      source.every((item, index) => isSameSubmissionValue(item, target[index]))
+    );
+  }
+
+  const sourceRecord = source as Record<string, unknown>;
+  const targetRecord = target as Record<string, unknown>;
+  const sourceKeys = Object.keys(sourceRecord);
+
+  return (
+    sourceKeys.length === Object.keys(targetRecord).length &&
+    sourceKeys.every(
+      (key) => Object.hasOwn(targetRecord, key) && isSameSubmissionValue(sourceRecord[key], targetRecord[key]),
+    )
+  );
+};
+
 const setDeepValue = (
   target: SubmissionData | unknown[],
   path: SubmissionPathPart[],
@@ -84,4 +112,4 @@ const removeDeepValue = (target: SubmissionData | unknown[], path: SubmissionPat
   };
 };
 
-export { parseSubmissionPath, removeDeepValue, setDeepValue };
+export { isSameSubmissionValue, parseSubmissionPath, removeDeepValue, setDeepValue };

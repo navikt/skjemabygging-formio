@@ -7,7 +7,7 @@ import {
   RadioGroup,
 } from '@navikt/ds-react';
 import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect, type ChangeEvent, type ReactNode, type Ref } from 'react';
+import { type ChangeEvent, type ReactNode, type Ref } from 'react';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useFieldBinding } from '../../context/state/useFieldBinding';
 import { inputId } from '../../utils/inputId';
@@ -26,7 +26,6 @@ interface SelectProps extends BaseFieldProps {
   selectText?: string;
   selectType?: SelectType;
   valueType?: SelectValueType;
-  defaultValue?: string | ComponentValue;
   presentation?: 'select' | 'radio' | 'checkbox';
   value?: string;
   onChange?: (value: string) => void;
@@ -50,7 +49,6 @@ const Select = ({
   marginBottom,
   selectType = 'auto',
   valueType = 'value',
-  defaultValue,
   presentation = 'select',
   value,
   onChange,
@@ -82,29 +80,12 @@ const Select = ({
   const selectedOptions =
     valueType === 'option'
       ? current
-        ? [((stateValue as ComponentValue | undefined) ?? selectedOption)!]
+        ? [(selectedOption ?? (stateValue as ComponentValue | undefined))!]
         : []
       : selectedOption
         ? [selectedOption]
         : [];
   const renderedSelectType = resolveRenderedSelectType(selectType, options.length);
-
-  useEffect(() => {
-    if (value !== undefined || stateValue !== undefined || !defaultValue) {
-      return;
-    }
-
-    const defaultValueKey =
-      typeof defaultValue === 'string'
-        ? defaultValue
-        : typeof defaultValue === 'object'
-          ? defaultValue.value
-          : undefined;
-    const defaultOption = options.find((option) => option.value === defaultValueKey);
-    if (defaultOption) {
-      setStateValue(getStateValue(defaultOption.value, valueType, options));
-    }
-  }, [defaultValue, options, setStateValue, stateValue, value, valueType]);
 
   const setValue = (nextValue: string) => {
     if (onChange) {

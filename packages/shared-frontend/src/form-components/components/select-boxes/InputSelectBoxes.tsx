@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import CheckboxGroup from '../../../components/checkbox-group/CheckboxGroup';
 import { useFieldBinding } from '../../../context/state/useFieldBinding';
 import { SelectBoxesDefinition } from '../../component-types';
@@ -14,23 +13,11 @@ import {
 import FormGroup from '../../shared/FormGroup';
 import { getSelectedValuesAsList, getSelectedValuesMap } from '../../shared/selectedValuesUtils';
 
-const isSelectBoxesValue = (value: unknown): value is Record<string, boolean> =>
-  typeof value === 'object' && value !== null && !Array.isArray(value);
-
 const InputSelectBoxes = ({ component, submissionPath }: InputComponentProps<SelectBoxesDefinition>) => {
   const statePath = resolveSubmissionPath(component, submissionPath);
   const values = getValues(component);
   const validation = useResolvedValidation(component);
   const { stateValue, setStateValue } = useFieldBinding({ statePath });
-  const defaultValue = isSelectBoxesValue(component.defaultValue) ? component.defaultValue : undefined;
-
-  useEffect(() => {
-    if (stateValue !== undefined || defaultValue === undefined) {
-      return;
-    }
-
-    setStateValue(defaultValue);
-  }, [defaultValue, setStateValue, stateValue]);
 
   return (
     <FormGroup>
@@ -39,7 +26,7 @@ const InputSelectBoxes = ({ component, submissionPath }: InputComponentProps<Sel
         legend={component.label}
         description={component.description}
         values={values}
-        value={getSelectedValuesAsList((stateValue as Record<string, boolean> | undefined) ?? defaultValue)}
+        value={getSelectedValuesAsList(stateValue as Record<string, boolean> | undefined)}
         onChange={(selectedValues) => setStateValue(getSelectedValuesMap(values, selectedValues))}
         required={isRequired(component)}
         fieldSize={resolveFieldSize(component)}

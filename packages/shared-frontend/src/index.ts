@@ -12,7 +12,7 @@ import {
   useFormDefinitionForm,
   useFormDefinitionPanels,
 } from './context/form-definition/FormDefinitionContext';
-import { applyPrefilledValuesToSubmission } from './context/form-definition/prefillSubmission';
+import { applyInitialValuesToSubmission } from './context/form-definition/initialSubmissionValues';
 import { LanguageProvider, useLanguage } from './context/language/LanguageContext';
 import { RuntimeServicesProvider, useRuntimeServices } from './context/runtime-services/RuntimeServicesContext';
 import { StateStoreProvider } from './context/state/StateContext';
@@ -76,8 +76,8 @@ export type {
 } from './fyllut';
 export {
   ApplicationProvider,
+  applyInitialValuesToSubmission,
   applyPrefillDataToForm,
-  applyPrefilledValuesToSubmission,
   CountrySelect,
   CurrencySelect,
   findUnsupportedCustomValidation,

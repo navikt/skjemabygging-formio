@@ -1,4 +1,3 @@
-import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
 import Select from '../../../components/select/Select';
 import { NavSelectDefinition } from '../../component-types';
 import { useResolvedValidation } from '../../custom-validation/useResolvedValidation';
@@ -13,9 +12,6 @@ import {
 } from '../../inputComponentUtils';
 import FormGroup from '../../shared/FormGroup';
 
-const isComponentValue = (value: unknown): value is ComponentValue =>
-  typeof value === 'object' && value !== null && 'value' in value && 'label' in value;
-
 const InputNavSelect = ({ component, submissionPath }: InputComponentProps<NavSelectDefinition>) => {
   const validation = useResolvedValidation(component);
   return (
@@ -26,11 +22,6 @@ const InputNavSelect = ({ component, submissionPath }: InputComponentProps<NavSe
         description={component.description}
         values={getValues(component)}
         fieldSize={resolveFieldSize(component)}
-        defaultValue={
-          typeof component.defaultValue === 'string' || isComponentValue(component.defaultValue)
-            ? component.defaultValue
-            : undefined
-        }
         valueType="option"
         required={isRequired(component)}
         readOnly={component.readOnly}

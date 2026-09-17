@@ -211,6 +211,10 @@ import {
 } from '../data/forms-api/general/generalCustomCompsForm';
 import { generalDatagridForm, generalDatagridTranslations } from '../data/forms-api/general/generalDatagridForm';
 import {
+  initialSubmissionValuesForm,
+  initialSubmissionValuesTranslations,
+} from '../data/forms-api/initial-submission-values/initialSubmissionValuesForm';
+import {
   introPageDigitalNoLoginDeadlineForm,
   introPageDigitalNoLoginDeadlineTranslations,
 } from '../data/forms-api/intro-page/introPageDigitalNoLoginDeadlineForm';
@@ -431,6 +435,7 @@ const allForms = [
   { form: errorSummaryForm(), translations: errorSummaryTranslations() },
   { form: focusHandlingForm(), translations: focusHandlingTranslations() },
   { form: formNavigationCypress101Form(), translations: formNavigationCypress101Translations() },
+  { form: initialSubmissionValuesForm(), translations: initialSubmissionValuesTranslations() },
   { form: formNavigationDigitalForm(), translations: formNavigationDigitalTranslations() },
   { form: formNavigationDigitalNoAttachmentsForm(), translations: formNavigationDigitalNoAttachmentsTranslations() },
   { form: formNavigationDigitalNoLoginForm(), translations: formNavigationDigitalNoLoginTranslations() },

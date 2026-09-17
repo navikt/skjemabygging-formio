@@ -31,6 +31,7 @@ interface DataGridScopeArgs {
   submission?: Submission;
   form: Form;
   submissionMethod?: SubmissionMethod;
+  includeImplicitRows?: boolean;
 }
 
 const getRenderedDataGridRows = (rows: object[], initEmpty?: boolean) => (rows.length > 0 || initEmpty ? rows : [{}]);
@@ -110,19 +111,23 @@ const getDataGridRows = (component: ComponentDefinition, submission?: Submission
 /**
  * Collects one scope per stored data grid row, for every data grid within the given components.
  * Rows that are not objects (for instance null placeholders from an earlier draft) are skipped,
- * since they hold no values to calculate or clear.
+ * since they hold no values to calculate or clear. Initial-value reconciliation can opt into the
+ * implicit first row rendered by an empty data grid.
  */
 const collectDataGridRowScopes = ({
   components,
   submission,
   form,
   submissionMethod,
+  includeImplicitRows = false,
 }: DataGridScopeArgs): DataGridRowScope[] =>
   components.flatMap((component) => {
     if (component.type === 'datagrid') {
       const submissionPath = getResolvedSubmissionPath(component);
+      const rows = getDataGridRows(component, submission);
+      const scopedRows = includeImplicitRows ? getRenderedDataGridRows(rows, component.initEmpty) : rows;
 
-      return getDataGridRows(component, submission).flatMap((row, index) => {
+      return scopedRows.flatMap((row, index) => {
         if (!isObjectRecord(row)) {
           return [];
         }
@@ -134,7 +139,13 @@ const collectDataGridRowScopes = ({
 
         return [
           { dataGridComponent: component, index, row, components: rowComponents, activeComponents },
-          ...collectDataGridRowScopes({ components: activeComponents, submission, form, submissionMethod }),
+          ...collectDataGridRowScopes({
+            components: activeComponents,
+            submission,
+            form,
+            submissionMethod,
+            includeImplicitRows,
+          }),
         ];
       });
     }
@@ -144,6 +155,7 @@ const collectDataGridRowScopes = ({
       submission,
       form,
       submissionMethod,
+      includeImplicitRows,
     });
   });
 
