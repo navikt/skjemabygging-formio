@@ -30,11 +30,11 @@
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
-    "@types/node": "^24.6.2",
+    "@types/node": "^26.5.1",
     "@types/supertest": "^7.2.0",
     "@types/swagger-ui-express": "^4.1.8",
     "nock": "^14.0.16",
     "supertest": "^7.2.2",
-    "vite-plugin-node": "^7.0.0"
+    "vite-plugin-node": "^8.0.0"
   }
 }
