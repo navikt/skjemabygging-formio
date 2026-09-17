@@ -8,6 +8,7 @@ import {
   SubmissionAddress,
   SubmissionYourInformation,
 } from '../../models';
+import { navFormUtils } from '../form';
 import { senderUtils } from '../submission/senderUtils';
 import { yourInformationUtils } from '../submission/yourInformationUtils';
 import { legacyFlatPersonalInfoUtils } from './legacyFlatPersonalInfoUtils';
@@ -50,10 +51,25 @@ const getLegacySender = (form: Form, submission: Submission): LegacySender | und
 
   return firstName &&
     surname &&
-    legacyFlatPersonalInfoUtils.hasComponent(form, 'fornavnAvsender') &&
-    legacyFlatPersonalInfoUtils.hasComponent(form, 'etternavnAvsender')
+    navFormUtils.hasComponent(form, 'fornavnAvsender') &&
+    navFormUtils.hasComponent(form, 'etternavnAvsender')
     ? { firstName, surname }
     : undefined;
+};
+
+const selectConcernedPerson = (
+  canonicalUser?: ConcernedPerson,
+  flatUser?: ConcernedPerson,
+): ConcernedPerson | undefined => {
+  if (canonicalUser?.kind === 'identified-person') {
+    return canonicalUser;
+  }
+
+  if (flatUser?.kind === 'identified-person') {
+    return flatUser;
+  }
+
+  return canonicalUser ?? flatUser;
 };
 
 /**
@@ -65,13 +81,7 @@ const resolveParty = (form: Form, submission: Submission, options: PartyResoluti
   const submittedUser = yourInformationUtils.getYourInformation(form, submission.data);
   const canonicalUser = toConcernedUser(submittedUser);
   const flatUser = legacyFlatPersonalInfoUtils.getConcernedPerson(form, submission.data);
-  const user =
-    canonicalUser?.kind === 'identified-person'
-      ? canonicalUser
-      : flatUser?.kind === 'identified-person'
-        ? flatUser
-        : (canonicalUser ?? flatUser);
-  const legacySender = getLegacySender(form, submission);
+  const user = selectConcernedPerson(canonicalUser, flatUser);
 
   if (submittedSender?.person) {
     return user ? { onBehalfOf: 'other-person', sender: submittedSender.person, user } : undefined;
@@ -89,15 +99,16 @@ const resolveParty = (form: Form, submission: Submission, options: PartyResoluti
       : { onBehalfOf: 'self', user: sender };
   }
 
+  if (!user) {
+    return undefined;
+  }
+
+  const legacySender = getLegacySender(form, submission);
   if (legacySender) {
-    return user ? { onBehalfOf: 'other-person', sender: legacySender, user } : undefined;
+    return { onBehalfOf: 'other-person', sender: legacySender, user };
   }
 
-  if (user) {
-    return { onBehalfOf: 'self', user };
-  }
-
-  return undefined;
+  return { onBehalfOf: 'self', user };
 };
 
 export { resolveParty };

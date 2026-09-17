@@ -93,19 +93,18 @@ const mapLegacyFlatAddress = (submission: LegacyFlatPersonalInfoSubmission): Par
   };
 };
 
-const hasComponent = (form: Form, key: string): boolean =>
-  navFormUtils.flattenComponents(form.components).some((component) => component.key === key);
-
 const getConcernedPerson = (form: Form, submission: SubmissionData): ConcernedPerson | undefined => {
   const legacySubmission = submission as LegacyFlatPersonalInfoSubmission;
 
-  if (hasComponent(form, 'fodselsnummerDNummerSoker') && legacySubmission.fodselsnummerDNummerSoker) {
+  if (navFormUtils.hasComponent(form, 'fodselsnummerDNummerSoker') && legacySubmission.fodselsnummerDNummerSoker) {
     return { kind: 'identified-person', nationalIdentityNumber: legacySubmission.fodselsnummerDNummerSoker };
   }
 
   const hasPersonalInformation = legacyFlatPersonalInfoComponentKeys
     .filter((key) => key !== 'fodselsnummerDNummerSoker')
-    .some((key) => hasComponent(form, key) && (legacySubmission as Record<string, unknown>)[key] !== undefined);
+    .some(
+      (key) => navFormUtils.hasComponent(form, key) && (legacySubmission as Record<string, unknown>)[key] !== undefined,
+    );
 
   return hasPersonalInformation
     ? {
@@ -119,7 +118,6 @@ const getConcernedPerson = (form: Form, submission: SubmissionData): ConcernedPe
 
 const legacyFlatPersonalInfoUtils = {
   getConcernedPerson,
-  hasComponent,
   mapAddress: mapLegacyFlatAddress,
 };
 
