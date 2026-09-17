@@ -102,6 +102,12 @@ describe('coverPageDownloadDataMapper', () => {
         components: [
           {
             type: 'orgNr',
+            key: 'emptyOrganizationNumber',
+            label: 'Empty organization number',
+            coverPageUser: true,
+          },
+          {
+            type: 'orgNr',
             key: 'organizationNumber',
             label: 'Organization number',
             coverPageUser: true,

@@ -16,17 +16,27 @@ type CoverPagePartyData = {
 type OrganizationNumberUser = Extract<CoverPageDownloadType['user'], { organizationNumber: string }>;
 
 const getCoverPageOrganizationUser = (form: Form, submission: SubmissionData): OrganizationNumberUser | undefined => {
-  const component = navFormUtils
+  const organizationNumberComponent = navFormUtils
     .flattenComponents(form.components)
-    .find((current) => current.type === 'orgNr' && current.coverPageUser);
-  const submittedNumber = component ? submission[component.key] : undefined;
+    .find((component) => component.type === 'orgNr' && component.coverPageUser && submission[component.key]);
 
-  if (typeof submittedNumber !== 'string' && typeof submittedNumber !== 'number') {
+  if (!organizationNumberComponent) {
     return undefined;
   }
 
-  const organizationNumber = formatUtils.removeAllSpaces(`${submittedNumber}`);
-  return organizationNumber ? { organizationNumber } : undefined;
+  const organizationNumber = submission[organizationNumberComponent.key];
+  if (!organizationNumber) {
+    return undefined;
+  }
+
+  const organizationNumberValue = formatUtils.removeAllSpaces(`${organizationNumber}`);
+  if (!organizationNumberValue) {
+    return undefined;
+  }
+
+  return {
+    organizationNumber: organizationNumberValue,
+  };
 };
 
 const mapPartyToCoverPage = (party: Party): CoverPagePartyData => {
