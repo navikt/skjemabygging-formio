@@ -3,6 +3,7 @@ import { ComponentDefinition } from '../../form-components/component-types';
 import { collectInputSubmissionPaths, DataGridRowScope } from '../../form-components/components/data-grid/dataGridRows';
 import { evaluateCalculatedValue } from '../../utils/expressionEvaluation';
 import { createUpdatedSubmission } from '../state/SubmissionStateContext';
+import { isSameSubmissionValue } from '../state/stateHelpers';
 
 interface CalculationTarget {
   component: ComponentDefinition;
@@ -13,6 +14,7 @@ interface CalculationArgs {
   submission: Submission | undefined;
   formComponents: ComponentDefinition[];
   dataGridRowScopes: DataGridRowScope[];
+  onNonConvergence?: (targets: CalculationTarget[]) => void;
 }
 
 const isNumericComponent = (component: ComponentDefinition) =>
@@ -71,18 +73,19 @@ const collectNumericTargets = ({
   dataGridRowScopes,
 }: Omit<CalculationArgs, 'submission'>): CalculationTarget[] => [
   ...collectTargets(formComponents, isNumericComponent),
-  ...dataGridRowScopes.flatMap((scope) => collectTargets(scope.components, isNumericComponent)),
+  ...dataGridRowScopes.flatMap((scope) => collectTargets(scope.activeComponents, isNumericComponent)),
 ];
 
 /**
- * Applies every calculated value to the submission. Data grid children are evaluated once per
- * stored row with their indexed submission path, which also gives the expression the correct `row`
+ * Applies calculated values until they settle. Data grid children are evaluated once per stored
+ * row with their indexed submission path, which also gives the expression the correct `row`
  * context.
  */
 const applyCalculatedValues = ({
   submission,
   formComponents,
   dataGridRowScopes,
+  onNonConvergence,
 }: CalculationArgs): Submission | undefined => {
   const calculationTargets = collectCalculationTargets({ formComponents, dataGridRowScopes });
   if (calculationTargets.length === 0) {
@@ -92,31 +95,46 @@ const applyCalculatedValues = ({
   const numericTargets = collectNumericTargets({ formComponents, dataGridRowScopes });
   const initialSubmission = submission ?? { data: {} };
   let nextSubmission = initialSubmission;
+  let evaluationSubmission = numericTargets.reduce((currentSubmission, numericTarget) => {
+    const rawValue = submissionUtils.getSubmissionValue(numericTarget.submissionPath, currentSubmission);
+    const evaluationValue = toEvaluationNumber(numericTarget.component, rawValue);
 
-  calculationTargets.forEach(({ component, submissionPath }) => {
-    const evaluationSubmission = numericTargets.reduce((acc, numericTarget) => {
-      const rawValue = submissionUtils.getSubmissionValue(numericTarget.submissionPath, acc);
-      const evaluationValue = toEvaluationNumber(numericTarget.component, rawValue);
+    return Object.is(rawValue, evaluationValue)
+      ? currentSubmission
+      : createUpdatedSubmission(currentSubmission, numericTarget.submissionPath, evaluationValue);
+  }, initialSubmission);
+  const maximumPasses = calculationTargets.length + 1;
 
-      return rawValue === evaluationValue
-        ? acc
-        : createUpdatedSubmission(acc, numericTarget.submissionPath, evaluationValue);
-    }, nextSubmission);
+  for (let pass = 0; pass < maximumPasses; pass += 1) {
+    let changed = false;
 
-    const calculatedValue = evaluateCalculatedValue({
-      component,
-      submission: evaluationSubmission,
-      submissionPath,
+    calculationTargets.forEach(({ component, submissionPath }) => {
+      const calculatedValue = evaluateCalculatedValue({
+        component,
+        submission: evaluationSubmission,
+        submissionPath,
+      });
+      const normalizedCalculatedValue = calculatedValue === '' ? undefined : calculatedValue;
+      const currentValue = submissionUtils.getSubmissionValue(submissionPath, nextSubmission);
+
+      if (!isSameSubmissionValue(currentValue, normalizedCalculatedValue)) {
+        nextSubmission = createUpdatedSubmission(nextSubmission, submissionPath, normalizedCalculatedValue);
+        evaluationSubmission = createUpdatedSubmission(
+          evaluationSubmission,
+          submissionPath,
+          toEvaluationNumber(component, normalizedCalculatedValue),
+        );
+        changed = true;
+      }
     });
-    const normalizedCalculatedValue = calculatedValue === '' ? undefined : calculatedValue;
-    const currentValue = submissionUtils.getSubmissionValue(submissionPath, nextSubmission);
 
-    if (currentValue !== normalizedCalculatedValue) {
-      nextSubmission = createUpdatedSubmission(nextSubmission, submissionPath, normalizedCalculatedValue);
+    if (!changed) {
+      return nextSubmission === initialSubmission ? submission : nextSubmission;
     }
-  });
+  }
 
-  return nextSubmission === initialSubmission ? submission : nextSubmission;
+  onNonConvergence?.(calculationTargets);
+  return submission;
 };
 
 export {

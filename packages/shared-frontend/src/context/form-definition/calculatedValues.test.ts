@@ -1,5 +1,5 @@
 import { Form, Submission } from '@navikt/skjemadigitalisering-shared-domain';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { ComponentDefinition } from '../../form-components/component-types';
 import { collectDataGridRowScopes } from '../../form-components/components/data-grid/dataGridRows';
 import { applyCalculatedValues, collectCalculationTargets } from './calculatedValues';
@@ -280,6 +280,113 @@ function getFieldValue(fieldValue) {
       arbeidsgiveravgift: 158.202,
       sumBruttoLonnsutgifter: 1280,
     });
+  });
+
+  it('settles when a production calculation returns NaN for an incomplete numeric value', () => {
+    const form = createForm([], [
+      {
+        key: 'amount',
+        label: 'Amount',
+        type: 'currency',
+        input: true,
+        navId: 'amount',
+      },
+      {
+        key: 'total',
+        label: 'Total',
+        type: 'currency',
+        input: true,
+        navId: 'total',
+        calculateValue: 'value = parseFloat(data.amount || 0);',
+      },
+    ] as ComponentDefinition[]);
+    const calculatedSubmission = calculate(form, { data: { amount: '-' } });
+
+    expect(calculatedSubmission?.data.total).toBeNaN();
+    expect(calculate(form, calculatedSubmission!)).toBe(calculatedSubmission);
+  });
+
+  it('settles reverse-ordered calculation dependencies in one invocation', () => {
+    const form = createForm([], [
+      {
+        key: 'total',
+        label: 'Total',
+        type: 'number',
+        input: true,
+        navId: 'total',
+        calculateValue: 'value = (parseFloat(data.doubleAmount) || 0) + 1;',
+      },
+      {
+        key: 'doubleAmount',
+        label: 'Double amount',
+        type: 'number',
+        input: true,
+        navId: 'double',
+        calculateValue: 'value = (parseFloat(data.amount) || 0) * 2;',
+      },
+      {
+        key: 'amount',
+        label: 'Amount',
+        type: 'number',
+        input: true,
+        navId: 'amount',
+      },
+    ] as ComponentDefinition[]);
+
+    expect(calculate(form, { data: { amount: 3 } })?.data).toMatchObject({
+      amount: 3,
+      doubleAmount: 6,
+      total: 7,
+    });
+  });
+
+  it('does not commit calculations that fail to converge', () => {
+    const form = createForm([], [
+      {
+        key: 'first',
+        label: 'First',
+        type: 'number',
+        input: true,
+        navId: 'first',
+        calculateValue: 'value = (parseFloat(data.second) || 0) + 1;',
+      },
+      {
+        key: 'second',
+        label: 'Second',
+        type: 'number',
+        input: true,
+        navId: 'second',
+        calculateValue: 'value = (parseFloat(data.first) || 0) + 1;',
+      },
+    ] as ComponentDefinition[]);
+    const submission = { data: {} };
+    const onNonConvergence = vi.fn();
+    const result = applyCalculatedValues({
+      submission,
+      formComponents: toComponentDefinitions(form.components),
+      dataGridRowScopes: [],
+      onNonConvergence,
+    });
+
+    expect(result).toBe(submission);
+    expect(onNonConvergence).toHaveBeenCalledOnce();
+    expect(onNonConvergence.mock.calls[0][0].map(({ component }) => component.key)).toEqual(['first', 'second']);
+  });
+
+  it('treats structurally equal calculated values as settled', () => {
+    const form = createForm([], [
+      {
+        key: 'calculatedOptions',
+        label: 'Calculated options',
+        type: 'selectboxes',
+        input: true,
+        navId: 'options',
+        calculateValue: 'value = { first: true, second: false };',
+      },
+    ] as ComponentDefinition[]);
+    const submission = { data: { calculatedOptions: { first: true, second: false } } };
+
+    expect(calculate(form, submission)).toBe(submission);
   });
 
   it('returns the same submission when nothing changes', () => {

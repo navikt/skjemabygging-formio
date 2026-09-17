@@ -12,10 +12,11 @@ import {
 } from 'react';
 import { ComponentDefinition } from '../../form-components/component-types';
 import { collectDataGridRowScopes } from '../../form-components/components/data-grid/dataGridRows';
+import { useApplication } from '../application/ApplicationContext';
 import { useLanguage } from '../language/LanguageContext';
 import { useSubmissionState } from '../state/SubmissionStateContext';
 import { useSubmissionMethod } from '../submission-method/SubmissionMethodContext';
-import { applyCalculatedValues } from './calculatedValues';
+import { applyCalculatedValues, CalculationTarget, isCalculatedComponent } from './calculatedValues';
 import {
   enrichFormWithBaseSubmissionPath,
   flattenComponentsWithBaseSubmissionPath,
@@ -89,10 +90,16 @@ const stabilizeValue = (
 };
 
 const FormDefinitionProvider = ({ children, form }: Props) => {
+  const { logger } = useApplication();
   const { currentLanguage } = useLanguage();
   const { submissionMethod } = useSubmissionMethod();
   const { submission, setSubmission } = useSubmissionState();
+  const reportedCalculationCyclesRef = useRef(new Set<string>());
   const formWithBaseSubmissionPath = useMemo(() => enrichFormWithBaseSubmissionPath(form), [form]);
+  const hasCalculatedComponents = useMemo(
+    () => flattenComponentsWithBaseSubmissionPath(formWithBaseSubmissionPath.components).some(isCalculatedComponent),
+    [formWithBaseSubmissionPath],
+  );
 
   const panels = useMemo(
     () => getActivePanels(formWithBaseSubmissionPath, submission, { submissionMethod }),
@@ -101,15 +108,33 @@ const FormDefinitionProvider = ({ children, form }: Props) => {
 
   const activeComponents = useMemo(() => toComponentDefinitions(panels), [panels]);
 
-  const dataGridRowScopes = useMemo(
-    () =>
-      collectDataGridRowScopes({
-        components: activeComponents,
-        submission,
-        form: formWithBaseSubmissionPath,
-        submissionMethod,
-      }),
-    [activeComponents, formWithBaseSubmissionPath, submission, submissionMethod],
+  const dataGridRowScopes = useMemo(() => {
+    if (!hasCalculatedComponents) {
+      return [];
+    }
+
+    return collectDataGridRowScopes({
+      components: activeComponents,
+      submission,
+      form: formWithBaseSubmissionPath,
+      submissionMethod,
+    });
+  }, [activeComponents, formWithBaseSubmissionPath, hasCalculatedComponents, submission, submissionMethod]);
+  const reportCalculationCycle = useCallback(
+    (targets: CalculationTarget[]) => {
+      const componentKeys = [...new Set(targets.map(({ component }) => component.key).filter(Boolean))].sort();
+      const reportKey = `${form.path}\0${componentKeys.join('\0')}`;
+      if (reportedCalculationCyclesRef.current.has(reportKey)) {
+        return;
+      }
+
+      reportedCalculationCyclesRef.current.add(reportKey);
+      logger?.error?.('Calculated values did not converge', {
+        componentKeys,
+        formPath: form.path,
+      });
+    },
+    [form.path, logger],
   );
 
   useLayoutEffect(() => {
@@ -122,14 +147,41 @@ const FormDefinitionProvider = ({ children, form }: Props) => {
   }, [currentLanguage, formWithBaseSubmissionPath, setSubmission, submission, submissionMethod]);
 
   useEffect(() => {
-    setSubmission((prev) =>
-      applyCalculatedValues({
+    if (!hasCalculatedComponents) {
+      return;
+    }
+
+    setSubmission((prev) => {
+      const usesRenderedSubmission = prev === submission;
+      const latestActiveComponents = usesRenderedSubmission
+        ? activeComponents
+        : toComponentDefinitions(getActivePanels(formWithBaseSubmissionPath, prev, { submissionMethod }));
+      const latestDataGridRowScopes = usesRenderedSubmission
+        ? dataGridRowScopes
+        : collectDataGridRowScopes({
+            components: latestActiveComponents,
+            submission: prev,
+            form: formWithBaseSubmissionPath,
+            submissionMethod,
+          });
+
+      return applyCalculatedValues({
         submission: prev,
-        formComponents: activeComponents,
-        dataGridRowScopes,
-      }),
-    );
-  }, [activeComponents, dataGridRowScopes, setSubmission]);
+        formComponents: latestActiveComponents,
+        dataGridRowScopes: latestDataGridRowScopes,
+        onNonConvergence: reportCalculationCycle,
+      });
+    });
+  }, [
+    activeComponents,
+    dataGridRowScopes,
+    formWithBaseSubmissionPath,
+    hasCalculatedComponents,
+    reportCalculationCycle,
+    setSubmission,
+    submission,
+    submissionMethod,
+  ]);
 
   useEffect(() => {
     const attachmentIds = new Set(
