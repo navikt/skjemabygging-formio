@@ -19,7 +19,7 @@ interface FormPageController {
 
 const useFormPageController = (requestedPanelKey?: string): FormPageController => {
   const panels = useFormDefinitionPanels();
-  const { validatePage, hideSummary } = useValidationActions();
+  const { validatePage, hideErrorSummary } = useValidationActions();
   const requestedIndex = requestedPanelKey ? panels.findIndex((panel) => panel.key === requestedPanelKey) : -1;
   const currentIndex = requestedIndex >= 0 ? requestedIndex : 0;
 
@@ -32,16 +32,16 @@ const useFormPageController = (requestedPanelKey?: string): FormPageController =
   }, [currentPanel, validatePage]);
 
   const goToPrevious = useCallback(() => {
-    hideSummary();
-  }, [hideSummary]);
+    hideErrorSummary();
+  }, [hideErrorSummary]);
 
   const goTo = useCallback(
     (panelKey: string) => {
       if (panels.some((panel) => panel.key === panelKey)) {
-        hideSummary();
+        hideErrorSummary();
       }
     },
-    [panels, hideSummary],
+    [panels, hideErrorSummary],
   );
 
   return {

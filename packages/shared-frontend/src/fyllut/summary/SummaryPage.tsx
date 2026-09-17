@@ -8,7 +8,7 @@ import { useFormDefinitionForm, useFormDefinitionPanels } from '../../context/fo
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useSubmissionState } from '../../context/state/SubmissionStateContext';
 import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
-import { useValidation } from '../../context/validation/ValidationContext';
+import { useValidationActions, useValidationErrorsForPages } from '../../context/validation/ValidationContext';
 import RenderSummaryForm from '../../form-components/RenderSummaryForm';
 import { inputId } from '../../utils/inputId';
 import { useAttachmentUpload } from '../attachments/context/AttachmentUploadContext';
@@ -27,7 +27,7 @@ const SummaryPage = () => {
   const form = useFormDefinitionForm();
   const panels = useFormDefinitionPanels();
   const { submission } = useSubmissionState();
-  const { getErrorsForPages, validatePages } = useValidation();
+  const { validatePages } = useValidationActions();
   const { submit, status, canSubmit, canSaveDraft } = useFormActions();
   const { handleDownloadFile } = useAttachmentUpload();
   const { goToPanel, goToError } = useFormNavigation('summary');
@@ -35,7 +35,7 @@ const SummaryPage = () => {
     (!submissionMethod || submissionMethod === 'papernocoverpage') &&
     submissionTypesUtils.isPaperNoCoverPageSubmission(form.properties.submissionTypes);
   const validationPageKeys = useMemo(() => panels.map((panel) => panel.key), [panels]);
-  const validationErrors = getErrorsForPages(validationPageKeys);
+  const validationErrors = useValidationErrorsForPages(validationPageKeys);
   const panelValidationList = useMemo<PanelValidation[]>(
     () =>
       validationPageKeys.map((pageKey) => ({

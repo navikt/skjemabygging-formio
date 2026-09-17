@@ -35,7 +35,7 @@ interface UseFieldBindingArgs {
 const useFieldBinding = ({ statePath, controlled = false, validation }: UseFieldBindingArgs) => {
   const store = useOptionalFieldStateStore();
   const stateValue = useFieldStateValue(statePath, !controlled);
-  const { handleFieldChange, updateFieldValue } = useOptionalValidationActions();
+  const { schedulePageValidation, updateFieldValue } = useOptionalValidationActions();
   const scope = useOptionalValidationScope();
   const hasValueOverride = !!validation && 'value' in validation;
   const validationValue = hasValueOverride ? validation.value : stateValue;
@@ -49,16 +49,17 @@ const useFieldBinding = ({ statePath, controlled = false, validation }: UseField
   const setStateValue = useCallback(
     (value: unknown): void => {
       store?.setValue(statePath, value);
+      if (scope && !hasValueOverride) {
+        // Keep the registered value in sync before validation, so clicking next right after a
+        // change validates the value the user just entered.
+        updateFieldValue(scope.pageKey, statePath, value);
+      }
       if (scope) {
-        if (!hasValueOverride) {
-          // Keep the registered value in sync before revalidating, so clicking next right after a
-          // change validates the value the user just entered.
-          updateFieldValue(scope.pageKey, statePath, value);
-        }
-        handleFieldChange(scope.pageKey);
+        // Some bindings distribute their value to child inputs and do not register this path.
+        schedulePageValidation(scope.pageKey);
       }
     },
-    [handleFieldChange, hasValueOverride, scope, statePath, store, updateFieldValue],
+    [hasValueOverride, schedulePageValidation, scope, statePath, store, updateFieldValue],
   );
 
   return {

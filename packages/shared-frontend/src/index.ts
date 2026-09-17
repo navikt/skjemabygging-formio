@@ -18,7 +18,7 @@ import { RuntimeServicesProvider, useRuntimeServices } from './context/runtime-s
 import { StateStoreProvider } from './context/state/StateContext';
 import { SubmissionStateProvider, useSubmissionState } from './context/state/SubmissionStateContext';
 import { SubmissionMethodProvider, useSubmissionMethod } from './context/submission-method/SubmissionMethodContext';
-import { useValidation, ValidationProvider } from './context/validation/ValidationContext';
+import { ValidationProvider } from './context/validation/ValidationContext';
 import {
   findUnsupportedCustomValidation,
   RenderSummaryForm,
@@ -106,7 +106,6 @@ export {
   useRuntimeServices,
   useSubmissionMethod,
   useSubmissionState,
-  useValidation,
   ValidationExclamationIcon,
   ValidationProvider,
 };

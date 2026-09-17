@@ -11,7 +11,7 @@ const RoutedFormFlowLayout = ({ form }: { form: Form }) => {
   const panels = useFormDefinitionPanels();
   const { pathname, search, state } = useLocation();
   const navigate = useNavigate();
-  const { hideSummary } = useValidationActions();
+  const { hideErrorSummary } = useValidationActions();
   const pagesWithErrors = useValidationPagesWithErrors();
   const routeKey = pathname.slice(`/${form.path}`.length).replace(/^\//, '');
   const panelIndex = panels.findIndex((panel) => panel.key === routeKey);
@@ -27,7 +27,7 @@ const RoutedFormFlowLayout = ({ form }: { form: Form }) => {
         : translate(panels[panelIndex]?.title ?? '');
 
   const onStepClick = (key: string) => {
-    hideSummary();
+    hideErrorSummary();
     const { redirect: _inheritedRedirect, stepperOpen: _stepperOpen, ...inheritedState } = state ?? {};
     navigate(
       {

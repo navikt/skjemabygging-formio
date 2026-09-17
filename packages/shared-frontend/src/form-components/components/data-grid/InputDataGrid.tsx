@@ -36,7 +36,7 @@ const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => 
   const { submission, updateSubmission } = useSubmissionState();
   const form = useFormDefinitionForm();
   const { submissionMethod } = useSubmissionMethod();
-  const { handleFieldChange } = useValidationActions();
+  const { schedulePageValidation } = useValidationActions();
   const { pageKey } = useValidationScope();
   const { components, label, description, hideLabel, addAnother, removeAnother, disableAddingRemovingRows, rowTitle } =
     component;
@@ -52,7 +52,7 @@ const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => 
 
   const updateRows = (nextRows: object[]) => {
     updateSubmission(submissionPath, nextRows);
-    handleFieldChange(pageKey);
+    schedulePageValidation(pageKey);
   };
 
   const addRow = () => {

@@ -14,7 +14,7 @@ type StepKind = 'intro' | 'panel' | 'summary';
 const useFormNavigation = (from: StepKind) => {
   const navigate = useNavigate();
   const { search, state } = useLocation();
-  const { hideSummary } = useValidationActions();
+  const { hideErrorSummary } = useValidationActions();
   const pagesWithErrors = useValidationPagesWithErrors();
   const prefix = from === 'intro' ? '' : '../';
 
@@ -32,38 +32,38 @@ const useFormNavigation = (from: StepKind) => {
   );
 
   const goToIntro = useCallback(() => {
-    hideSummary();
+    hideErrorSummary();
     navigate({ pathname: from === 'intro' ? '.' : '..', search }, { state: buildState() });
-  }, [buildState, from, hideSummary, navigate, search]);
+  }, [buildState, from, hideErrorSummary, navigate, search]);
 
   const goToPanel = useCallback(
     (panelKey?: string, extra?: FormNavigationState) => {
       if (!panelKey) {
         return;
       }
-      hideSummary();
+      hideErrorSummary();
       navigate(
         { pathname: `${prefix}${panelKey}`, search },
         { state: buildState(extra), replace: extra?.redirect === true },
       );
     },
-    [buildState, hideSummary, navigate, prefix, search],
+    [buildState, hideErrorSummary, navigate, prefix, search],
   );
 
   const goToSummary = useCallback(
     (extra?: FormNavigationState) => {
-      hideSummary();
+      hideErrorSummary();
       navigate({ pathname: `${prefix}${SUMMARY_KEY}`, search }, { state: buildState(extra) });
     },
-    [buildState, hideSummary, navigate, prefix, search],
+    [buildState, hideErrorSummary, navigate, prefix, search],
   );
 
   const goToError = useCallback(
     (pageKey: string, id: string) => {
-      hideSummary();
+      hideErrorSummary();
       navigate({ pathname: `${prefix}${pageKey}`, search, hash: `#${id}` }, { state: buildState({ focusId: id }) });
     },
-    [buildState, hideSummary, navigate, prefix, search],
+    [buildState, hideErrorSummary, navigate, prefix, search],
   );
 
   return { goToIntro, goToPanel, goToSummary, goToError };

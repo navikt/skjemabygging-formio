@@ -27,7 +27,7 @@ const FormPage = () => {
   const { panelSlug } = useParams<{ panelSlug?: string }>();
   const { hash, state } = useLocation();
   const { saveDraft, canSaveDraft } = useFormActions();
-  const { syncPageValidationState, validatePages } = useValidationActions();
+  const { schedulePageValidation, validatePages } = useValidationActions();
   const { currentPanel, components, isFirst, isLast, goToNext, panels, currentIndex } =
     useFormPageController(panelSlug);
   const { goToIntro, goToPanel, goToSummary, goToError } = useFormNavigation('panel');
@@ -51,9 +51,9 @@ const FormPage = () => {
 
   useEffect(() => {
     if (currentPanel) {
-      syncPageValidationState(currentPanel.key);
+      schedulePageValidation(currentPanel.key);
     }
-  }, [components, currentPanel, syncPageValidationState]);
+  }, [components, currentPanel, schedulePageValidation]);
 
   useEffect(() => {
     const locationStateFocusId = typeof state === 'object' && state && 'focusId' in state ? state.focusId : undefined;

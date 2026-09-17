@@ -2,7 +2,14 @@ import { ErrorSummary } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { MouseEvent, useEffect, useRef } from 'react';
 import { useLanguage } from '../../context/language/LanguageContext';
-import { FieldError, useValidation } from '../../context/validation/ValidationContext';
+import {
+  FieldError,
+  useErrorSummaryFocusRequest,
+  useIsErrorSummaryVisibleForAllPages,
+  useIsErrorSummaryVisibleForPage,
+  useValidationErrorsForPage,
+  useValidationErrorsForPages,
+} from '../../context/validation/ValidationContext';
 import { inputId } from '../../utils/inputId';
 
 interface Props {
@@ -11,27 +18,24 @@ interface Props {
   onNavigateToField?: (error: FieldError, id: string) => void;
 }
 
+const noPageKeys: string[] = [];
+
 const FormErrorSummary = ({ pageKey, pageKeys, onNavigateToField }: Props) => {
-  const {
-    getErrorsForPage,
-    getErrorsForPages,
-    shouldShowSummaryForPage,
-    shouldShowSummaryForSummaryPage,
-    summaryFocusRequest,
-  } = useValidation();
   const { translate } = useLanguage();
   const ref = useRef<HTMLDivElement>(null);
-  const errors = pageKeys ? getErrorsForPages(pageKeys) : pageKey ? getErrorsForPage(pageKey) : [];
-
-  const visible = pageKeys
-    ? shouldShowSummaryForSummaryPage() && errors.length > 0
-    : !!pageKey && shouldShowSummaryForPage(pageKey) && errors.length > 0;
+  const pageErrors = useValidationErrorsForPage(pageKeys ? undefined : pageKey);
+  const allPageErrors = useValidationErrorsForPages(pageKeys ?? noPageKeys);
+  const pageSummaryVisible = useIsErrorSummaryVisibleForPage(pageKey);
+  const allPagesSummaryVisible = useIsErrorSummaryVisibleForAllPages();
+  const errorSummaryFocusRequest = useErrorSummaryFocusRequest();
+  const errors = pageKeys ? allPageErrors : pageErrors;
+  const visible = (pageKeys ? allPagesSummaryVisible : pageSummaryVisible) && errors.length > 0;
 
   useEffect(() => {
     if (visible) {
       ref.current?.focus();
     }
-  }, [summaryFocusRequest, visible]);
+  }, [errorSummaryFocusRequest, visible]);
 
   if (!visible) {
     return null;

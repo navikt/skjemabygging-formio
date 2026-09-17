@@ -1,20 +1,12 @@
 import { TranslateFunction } from '@navikt/skjemadigitalisering-shared-domain';
-import {
-  createContext,
-  ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-  useSyncExternalStore,
-} from 'react';
+import { ReactNode, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { validateValue } from '../../validation/validators';
 import { useApplication } from '../application/ApplicationContext';
 import { useLanguage } from '../language/LanguageContext';
 import { attachmentValidationPath } from './attachmentValidationPath';
+import { ErrorSummaryScope, PageFieldsResolver, ValidationContextValue } from './validationContextTypes';
+import { PageViolationsByKey, replacePageSet, setPageViolations, togglePageInSet } from './validationState';
+import { ValidationContext, ValidationStore } from './validationStore';
 import {
   AttachmentField,
   ExternalAttachmentError,
@@ -22,9 +14,6 @@ import {
   FieldViolation,
   ValidationField,
 } from './validationTypes';
-
-type SummaryScope = { type: 'page'; pageKey: string } | { type: 'summary' } | undefined;
-type PageViolationsByKey = Record<string, FieldViolation[]>;
 
 const toFieldError = (translate: TranslateFunction, fieldViolation: FieldViolation): FieldError => {
   const { violation, message, ...error } = fieldViolation;
@@ -39,139 +28,38 @@ const toFieldError = (translate: TranslateFunction, fieldViolation: FieldViolati
   };
 };
 
-const togglePageInSet = (pages: Set<string>, pageKey: string, shouldContain: boolean): Set<string> => {
-  if (pages.has(pageKey) === shouldContain) {
-    return pages;
-  }
-  const next = new Set(pages);
-  if (shouldContain) {
-    next.add(pageKey);
-  } else {
-    next.delete(pageKey);
-  }
-  return next;
-};
-
-const replacePageSet = (pages: Set<string>, nextPages: Set<string>): Set<string> => {
-  if (pages.size === nextPages.size && [...nextPages].every((pageKey) => pages.has(pageKey))) {
-    return pages;
-  }
-  return nextPages;
-};
-
-const areViolationsEqual = (violations: FieldViolation[] | undefined, nextViolations: FieldViolation[]): boolean =>
-  (violations ?? []).length === nextViolations.length &&
-  nextViolations.every((nextViolation, index) => {
-    const violation = violations?.[index];
-    return (
-      violation?.pageKey === nextViolation.pageKey &&
-      violation.submissionPath === nextViolation.submissionPath &&
-      violation.field === nextViolation.field &&
-      violation.message === nextViolation.message &&
-      violation.violation?.textKey === nextViolation.violation?.textKey &&
-      JSON.stringify(violation.violation?.params) === JSON.stringify(nextViolation.violation?.params)
-    );
-  });
-
-const setPageViolations = (
-  violationsByPage: PageViolationsByKey,
-  pageKey: string,
-  violations: FieldViolation[],
-): PageViolationsByKey => {
-  if (violations.length === 0) {
-    if (!(pageKey in violationsByPage)) {
-      return violationsByPage;
-    }
-    const { [pageKey]: _removedPageViolations, ...remainingViolations } = violationsByPage;
-    return remainingViolations;
-  }
-  if (areViolationsEqual(violationsByPage[pageKey], violations)) {
-    return violationsByPage;
-  }
-  return { ...violationsByPage, [pageKey]: violations };
-};
-
-interface ValidationContextType {
-  pagesWithErrors: Set<string>;
-  summaryVisible: boolean;
-  summaryFocusRequest: number;
-  /**
-   * Register (or replace) the validated field at `statePath`. Called by the input that renders the
-   * value (`useFieldBinding`) or, for a path with no input of its own, by `ValidationRegistration` -
-   * never from generic form-definition code.
-   */
-  registerField: (pageKey: string, field: ValidationField) => void;
-  unregisterField: (pageKey: string, statePath: string) => void;
-  updateFieldValue: (pageKey: string, statePath: string, value: unknown) => void;
-  resetPageFields: (pageKey: string) => void;
-  validatePage: (pageKey: string) => boolean;
-  validatePages: (pageKeys: string[]) => string[];
-  getError: (submissionPath: string, pageKey: string) => string | undefined;
-  getErrorsForPage: (pageKey: string) => FieldError[];
-  getErrorsForPages: (pageKeys: string[]) => FieldError[];
-  handleFieldChange: (pageKey: string) => void;
-  hasErrorState: (pageKey: string) => boolean;
-  hideSummary: () => void;
-  shouldShowSummaryForPage: (pageKey: string) => boolean;
-  shouldShowSummaryForSummaryPage: () => boolean;
-  syncPageValidationState: (pageKey: string) => void;
-  setAttachmentExternalError: (
-    attachmentId: string,
-    field: AttachmentField,
-    message?: string,
-    pageKey?: string,
-  ) => void;
-  getAttachmentExternalError: (attachmentId: string, field: AttachmentField) => string | undefined;
-}
-
-type ValidationActions = Pick<
-  ValidationContextType,
-  | 'registerField'
-  | 'unregisterField'
-  | 'updateFieldValue'
-  | 'resetPageFields'
-  | 'validatePage'
-  | 'validatePages'
-  | 'handleFieldChange'
-  | 'hideSummary'
-  | 'syncPageValidationState'
-  | 'setAttachmentExternalError'
->;
-
-interface ValidationStore {
-  subscribe: (listener: () => void) => () => void;
-  getVersion: () => number;
-  getValue: () => ValidationContextType;
-}
-
-const noValidationActions: ValidationActions = {
-  registerField: () => undefined,
-  unregisterField: () => undefined,
-  updateFieldValue: () => undefined,
-  resetPageFields: () => undefined,
-  validatePage: () => true,
-  validatePages: () => [],
-  handleFieldChange: () => undefined,
-  hideSummary: () => undefined,
-  syncPageValidationState: () => undefined,
-  setAttachmentExternalError: () => undefined,
-};
-const noValidationSubscription = () => () => undefined;
-
 /**
  * Rebuilds the fields of a page from the current state. Injected by the surface that owns the form
  * definition (fyllut), so generic validation never inspects one itself. Returning `undefined` falls
  * back to the fields the rendered components registered.
  */
-type PageFieldsResolver = (pageKey: string) => ValidationField[] | undefined;
-
 interface Props {
   children: ReactNode;
   initialPagesWithErrors?: string[];
   resolvePageFields?: PageFieldsResolver;
 }
 
-const ValidationContext = createContext<ValidationStore | undefined>(undefined);
+interface CachedPageValidation {
+  fieldSource?: object;
+  registeredFieldsRevision: number;
+  externalAttachmentErrors: Record<string, ExternalAttachmentError>;
+  currentLanguage: string;
+  allowTestTypes: boolean;
+  translate: TranslateFunction;
+  violations: FieldViolation[];
+  errors: FieldError[];
+}
+
+interface CachedPageErrors {
+  violations?: FieldViolation[];
+  translate: TranslateFunction;
+  errors: FieldError[];
+}
+
+interface CachedCombinedErrors {
+  pageErrors: FieldError[][];
+  errors: FieldError[];
+}
 
 /**
  * Holds validation state for a form: the fields validated per page, the resulting errors and the
@@ -192,11 +80,15 @@ const ValidationProvider = ({ children, initialPagesWithErrors, resolvePageField
   const { environment } = useApplication();
   const allowTestTypes = environment !== 'production';
   const fieldsByPageRef = useRef(new Map<string, Map<string, ValidationField>>());
+  const registeredFieldsRevisionRef = useRef(new Map<string, number>());
+  const pageValidationCacheRef = useRef(new Map<string, CachedPageValidation>());
+  const storedErrorsCacheRef = useRef(new Map<string, CachedPageErrors>());
+  const combinedErrorsCacheRef = useRef(new Map<string, CachedCombinedErrors>());
   const [pagesWithErrors, setPagesWithErrors] = useState<Set<string>>(() => new Set(initialPagesWithErrors ?? []));
   const pagesWithErrorsRef = useRef(pagesWithErrors);
   const [violationsByPage, setViolationsByPage] = useState<PageViolationsByKey>({});
-  const [summaryScope, setSummaryScope] = useState<SummaryScope>(undefined);
-  const [summaryFocusRequest, setSummaryFocusRequest] = useState(0);
+  const [errorSummaryScope, setErrorSummaryScope] = useState<ErrorSummaryScope>(undefined);
+  const [errorSummaryFocusRequest, setErrorSummaryFocusRequest] = useState(0);
   const [externalAttachmentErrors, setExternalAttachmentErrors] = useState<Record<string, ExternalAttachmentError>>({});
   // Pages whose registrations or values changed during the current commit. They are refreshed from
   // an effect that runs after the field effects, so a page is never evaluated half-registered.
@@ -206,18 +98,31 @@ const ValidationProvider = ({ children, initialPagesWithErrors, resolvePageField
   // could show an error that a change on another page has already resolved.
   const derivesFieldsFromState = resolvePageFields !== undefined;
 
-  // The resolver must stay identity-stable across value changes - it reads the current state itself
-  // rather than closing over it - or it would churn the context identity (see the
-  // no-re-render-loops invariant).
-  const getPageFields = useCallback(
-    (pageKey: string): ValidationField[] =>
-      resolvePageFields?.(pageKey) ?? [...(fieldsByPageRef.current.get(pageKey)?.values() ?? [])],
-    [resolvePageFields],
-  );
+  const touchRegisteredFields = useCallback((pageKey: string) => {
+    registeredFieldsRevisionRef.current.set(pageKey, (registeredFieldsRevisionRef.current.get(pageKey) ?? 0) + 1);
+  }, []);
 
-  const computeViolations = useCallback(
-    (pageKey: string): FieldViolation[] => {
-      const fieldViolations = getPageFields(pageKey).flatMap(({ statePath, value, field, rules }) => {
+  const computePageValidation = useCallback(
+    (pageKey: string): CachedPageValidation => {
+      const resolvedFields = resolvePageFields?.(pageKey);
+      const registeredFields = fieldsByPageRef.current.get(pageKey);
+      const fields = resolvedFields ?? [...(registeredFields?.values() ?? [])];
+      const fieldSource = resolvedFields ?? registeredFields;
+      const registeredFieldsRevision = resolvedFields ? 0 : (registeredFieldsRevisionRef.current.get(pageKey) ?? 0);
+      const cached = pageValidationCacheRef.current.get(pageKey);
+      if (
+        cached &&
+        cached.fieldSource === fieldSource &&
+        cached.registeredFieldsRevision === registeredFieldsRevision &&
+        cached.externalAttachmentErrors === externalAttachmentErrors &&
+        cached.currentLanguage === currentLanguage &&
+        cached.allowTestTypes === allowTestTypes &&
+        cached.translate === translate
+      ) {
+        return cached;
+      }
+
+      const fieldViolations = fields.flatMap(({ statePath, value, field, rules }) => {
         const violation = validateValue(value, field, rules, currentLanguage, { allowTestTypes });
         return violation ? [{ pageKey, submissionPath: statePath, field, violation }] : [];
       });
@@ -229,15 +134,21 @@ const ValidationProvider = ({ children, initialPagesWithErrors, resolvePageField
           field: '',
           message,
         }));
-      return [...fieldViolations, ...attachmentViolations];
+      const violations = [...fieldViolations, ...attachmentViolations];
+      const result = {
+        fieldSource,
+        registeredFieldsRevision,
+        externalAttachmentErrors,
+        currentLanguage,
+        allowTestTypes,
+        translate,
+        violations,
+        errors: violations.map((violation) => toFieldError(translate, violation)),
+      };
+      pageValidationCacheRef.current.set(pageKey, result);
+      return result;
     },
-    [allowTestTypes, currentLanguage, externalAttachmentErrors, getPageFields],
-  );
-
-  const computeErrors = useCallback(
-    (pageKey: string): FieldError[] =>
-      computeViolations(pageKey).map((violation) => toFieldError(translate, violation)),
-    [computeViolations, translate],
+    [allowTestTypes, currentLanguage, externalAttachmentErrors, resolvePageFields, translate],
   );
 
   const setPageState = useCallback((pageKey: string, violations: FieldViolation[]) => {
@@ -251,42 +162,53 @@ const ValidationProvider = ({ children, initialPagesWithErrors, resolvePageField
 
   const updatePageValidationState = useCallback(
     (pageKey: string) => {
-      const violations = computeViolations(pageKey);
+      const { violations } = computePageValidation(pageKey);
       setPageState(pageKey, violations);
-      setSummaryScope((previous) =>
+      setErrorSummaryScope((previous) =>
         previous?.type === 'page' && previous.pageKey === pageKey && violations.length === 0 ? undefined : previous,
       );
     },
-    [computeViolations, setPageState],
+    [computePageValidation, setPageState],
   );
 
   // Only pages that already show errors need refreshing: a page without error state has nothing
   // rendered to keep in sync and is evaluated from scratch when it is validated.
-  const markPageDirty = useCallback((pageKey: string) => {
-    if (!pagesWithErrorsRef.current.has(pageKey)) {
+  const queuePageValidation = useCallback((pageKey: string) => {
+    if (dirtyPagesRef.current.has(pageKey)) {
       return;
     }
     dirtyPagesRef.current.add(pageKey);
     setDirtyVersion((previous) => previous + 1);
   }, []);
 
+  const schedulePageValidation = useCallback(
+    (pageKey: string) => {
+      if (pagesWithErrorsRef.current.has(pageKey)) {
+        queuePageValidation(pageKey);
+      }
+    },
+    [queuePageValidation],
+  );
+
   const registerField = useCallback(
     (pageKey: string, field: ValidationField) => {
       const pageFields = fieldsByPageRef.current.get(pageKey) ?? new Map<string, ValidationField>();
       pageFields.set(field.statePath, field);
       fieldsByPageRef.current.set(pageKey, pageFields);
-      markPageDirty(pageKey);
+      touchRegisteredFields(pageKey);
+      schedulePageValidation(pageKey);
     },
-    [markPageDirty],
+    [schedulePageValidation, touchRegisteredFields],
   );
 
   const unregisterField = useCallback(
     (pageKey: string, statePath: string) => {
       if (fieldsByPageRef.current.get(pageKey)?.delete(statePath)) {
-        markPageDirty(pageKey);
+        touchRegisteredFields(pageKey);
+        schedulePageValidation(pageKey);
       }
     },
-    [markPageDirty],
+    [schedulePageValidation, touchRegisteredFields],
   );
 
   const updateFieldValue = useCallback(
@@ -294,15 +216,20 @@ const ValidationProvider = ({ children, initialPagesWithErrors, resolvePageField
       const field = fieldsByPageRef.current.get(pageKey)?.get(statePath);
       if (field && !Object.is(field.value, value)) {
         field.value = value;
-        markPageDirty(pageKey);
+        touchRegisteredFields(pageKey);
+        schedulePageValidation(pageKey);
       }
     },
-    [markPageDirty],
+    [schedulePageValidation, touchRegisteredFields],
   );
 
-  const resetPageFields = useCallback((pageKey: string) => {
-    fieldsByPageRef.current.set(pageKey, new Map());
-  }, []);
+  const resetPageFields = useCallback(
+    (pageKey: string) => {
+      fieldsByPageRef.current.set(pageKey, new Map());
+      touchRegisteredFields(pageKey);
+    },
+    [touchRegisteredFields],
+  );
 
   useEffect(() => {
     if (dirtyPagesRef.current.size === 0) {
@@ -315,15 +242,15 @@ const ValidationProvider = ({ children, initialPagesWithErrors, resolvePageField
 
   const validatePage = useCallback(
     (pageKey: string) => {
-      const violations = computeViolations(pageKey);
+      const { violations } = computePageValidation(pageKey);
       setPageState(pageKey, violations);
-      setSummaryScope(violations.length > 0 ? { type: 'page', pageKey } : undefined);
+      setErrorSummaryScope(violations.length > 0 ? { type: 'page', pageKey } : undefined);
       if (violations.length > 0) {
-        setSummaryFocusRequest((previous) => previous + 1);
+        setErrorSummaryFocusRequest((previous) => previous + 1);
       }
       return violations.length === 0;
     },
-    [computeViolations, setPageState],
+    [computePageValidation, setPageState],
   );
 
   const validatePages = useCallback(
@@ -331,7 +258,7 @@ const ValidationProvider = ({ children, initialPagesWithErrors, resolvePageField
       const failedPages = new Set<string>();
       const violationsByPageKey = new Map<string, FieldViolation[]>();
       pageKeys.forEach((pageKey) => {
-        const violations = computeViolations(pageKey);
+        const { violations } = computePageValidation(pageKey);
         violationsByPageKey.set(pageKey, violations);
         if (violations.length > 0) {
           failedPages.add(pageKey);
@@ -348,36 +275,56 @@ const ValidationProvider = ({ children, initialPagesWithErrors, resolvePageField
           previous,
         ),
       );
-      setSummaryScope(failedPages.size > 0 ? { type: 'summary' } : undefined);
+      setErrorSummaryScope(failedPages.size > 0 ? { type: 'all-pages' } : undefined);
       if (failedPages.size > 0) {
-        setSummaryFocusRequest((previous) => previous + 1);
+        setErrorSummaryFocusRequest((previous) => previous + 1);
       }
       return [...failedPages];
     },
-    [computeViolations],
+    [computePageValidation],
   );
 
   // Messages are worded here rather than when they are stored, so they always follow the language
   // the user is reading the form in.
-  const errorsByPage = useMemo(
-    () =>
-      Object.fromEntries(
-        Object.entries(violationsByPage).map(([pageKey, violations]) => [
-          pageKey,
-          violations.map((violation) => toFieldError(translate, violation)),
-        ]),
-      ),
+  const getStoredErrors = useCallback(
+    (pageKey: string): FieldError[] => {
+      const violations = violationsByPage[pageKey];
+      const cached = storedErrorsCacheRef.current.get(pageKey);
+      if (cached?.violations === violations && cached.translate === translate) {
+        return cached.errors;
+      }
+      const errors = (violations ?? []).map((violation) => toFieldError(translate, violation));
+      storedErrorsCacheRef.current.set(pageKey, { violations, translate, errors });
+      return errors;
+    },
     [translate, violationsByPage],
   );
 
   const errorsFor = useCallback(
     (pageKey: string) =>
-      derivesFieldsFromState ? computeErrors(pageKey) : (errorsByPage[pageKey] ?? computeErrors(pageKey)),
-    [computeErrors, derivesFieldsFromState, errorsByPage],
+      derivesFieldsFromState
+        ? computePageValidation(pageKey).errors
+        : violationsByPage[pageKey]
+          ? getStoredErrors(pageKey)
+          : computePageValidation(pageKey).errors,
+    [computePageValidation, derivesFieldsFromState, getStoredErrors, violationsByPage],
   );
   const getErrorsForPage = useCallback((pageKey: string) => errorsFor(pageKey), [errorsFor]);
   const getErrorsForPages = useCallback(
-    (pageKeys: string[]) => pageKeys.flatMap((pageKey) => errorsFor(pageKey)),
+    (pageKeys: string[]) => {
+      const pageErrors = pageKeys.map((pageKey) => errorsFor(pageKey));
+      const cacheKey = JSON.stringify(pageKeys);
+      const cached = combinedErrorsCacheRef.current.get(cacheKey);
+      if (
+        cached?.pageErrors.length === pageErrors.length &&
+        pageErrors.every((errors, index) => cached.pageErrors[index] === errors)
+      ) {
+        return cached.errors;
+      }
+      const errors = pageErrors.flat();
+      combinedErrorsCacheRef.current.set(cacheKey, { pageErrors, errors });
+      return errors;
+    },
     [errorsFor],
   );
   const getError = useCallback(
@@ -387,22 +334,16 @@ const ValidationProvider = ({ children, initialPagesWithErrors, resolvePageField
         : undefined,
     [errorsFor, pagesWithErrors],
   );
-  const handleFieldChange = useCallback(
-    (pageKey: string) => {
-      if (pagesWithErrorsRef.current.has(pageKey)) {
-        updatePageValidationState(pageKey);
-      }
-    },
-    [updatePageValidationState],
-  );
-  const syncPageValidationState = handleFieldChange;
   const hasErrorState = useCallback((pageKey: string) => pagesWithErrors.has(pageKey), [pagesWithErrors]);
-  const hideSummary = useCallback(() => setSummaryScope(undefined), []);
-  const shouldShowSummaryForPage = useCallback(
-    (pageKey: string) => summaryScope?.type === 'page' && summaryScope.pageKey === pageKey,
-    [summaryScope],
+  const hideErrorSummary = useCallback(() => setErrorSummaryScope(undefined), []);
+  const isErrorSummaryVisibleForPage = useCallback(
+    (pageKey: string) => errorSummaryScope?.type === 'page' && errorSummaryScope.pageKey === pageKey,
+    [errorSummaryScope],
   );
-  const shouldShowSummaryForSummaryPage = useCallback(() => summaryScope?.type === 'summary', [summaryScope]);
+  const isErrorSummaryVisibleForAllPages = useCallback(
+    () => errorSummaryScope?.type === 'all-pages',
+    [errorSummaryScope],
+  );
 
   const setAttachmentExternalError = useCallback(
     (attachmentId: string, field: AttachmentField, message?: string, pageKey?: string) => {
@@ -429,13 +370,19 @@ const ValidationProvider = ({ children, initialPagesWithErrors, resolvePageField
           : { ...previous, [key]: nextError };
       });
       if (inferredPageKey) {
-        markPageDirty(inferredPageKey);
+        schedulePageValidation(inferredPageKey);
       }
       if (message && inferredPageKey) {
-        setSummaryScope({ type: 'page', pageKey: inferredPageKey });
+        setPagesWithErrors((previous) => {
+          const next = togglePageInSet(previous, inferredPageKey, true);
+          pagesWithErrorsRef.current = next;
+          return next;
+        });
+        queuePageValidation(inferredPageKey);
+        setErrorSummaryScope({ type: 'page', pageKey: inferredPageKey });
       }
     },
-    [externalAttachmentErrors, markPageDirty],
+    [externalAttachmentErrors, queuePageValidation, schedulePageValidation],
   );
   const getAttachmentExternalError = useCallback(
     (attachmentId: string, field: AttachmentField) =>
@@ -443,11 +390,10 @@ const ValidationProvider = ({ children, initialPagesWithErrors, resolvePageField
     [externalAttachmentErrors],
   );
 
-  const value = useMemo(
+  const value = useMemo<ValidationContextValue>(
     () => ({
       pagesWithErrors,
-      summaryVisible: summaryScope !== undefined,
-      summaryFocusRequest,
+      errorSummaryFocusRequest,
       registerField,
       unregisterField,
       updateFieldValue,
@@ -457,12 +403,11 @@ const ValidationProvider = ({ children, initialPagesWithErrors, resolvePageField
       getError,
       getErrorsForPage,
       getErrorsForPages,
-      handleFieldChange,
       hasErrorState,
-      hideSummary,
-      shouldShowSummaryForPage,
-      shouldShowSummaryForSummaryPage,
-      syncPageValidationState,
+      hideErrorSummary,
+      isErrorSummaryVisibleForPage,
+      isErrorSummaryVisibleForAllPages,
+      schedulePageValidation,
       setAttachmentExternalError,
       getAttachmentExternalError,
     }),
@@ -471,18 +416,16 @@ const ValidationProvider = ({ children, initialPagesWithErrors, resolvePageField
       getError,
       getErrorsForPage,
       getErrorsForPages,
-      handleFieldChange,
       hasErrorState,
-      hideSummary,
+      hideErrorSummary,
+      isErrorSummaryVisibleForAllPages,
+      isErrorSummaryVisibleForPage,
       pagesWithErrors,
       registerField,
       resetPageFields,
+      schedulePageValidation,
       setAttachmentExternalError,
-      shouldShowSummaryForPage,
-      shouldShowSummaryForSummaryPage,
-      summaryFocusRequest,
-      summaryScope,
-      syncPageValidationState,
+      errorSummaryFocusRequest,
       unregisterField,
       updateFieldValue,
       validatePage,
@@ -521,85 +464,24 @@ const ValidationProvider = ({ children, initialPagesWithErrors, resolvePageField
   return <ValidationContext.Provider value={store}>{children}</ValidationContext.Provider>;
 };
 
-const useValidationStore = (): ValidationStore => {
-  const store = useContext(ValidationContext);
-  if (!store) {
-    throw new Error('Validation context is required to use validation.');
-  }
-  return store;
-};
-
-const useValidation = (): ValidationContextType => {
-  const store = useValidationStore();
-  useSyncExternalStore(store.subscribe, store.getVersion, store.getVersion);
-  return store.getValue();
-};
-
-const createValidationActions = (store: ValidationStore): ValidationActions => ({
-  registerField: (...args) => store.getValue().registerField(...args),
-  unregisterField: (...args) => store.getValue().unregisterField(...args),
-  updateFieldValue: (...args) => store.getValue().updateFieldValue(...args),
-  resetPageFields: (...args) => store.getValue().resetPageFields(...args),
-  validatePage: (...args) => store.getValue().validatePage(...args),
-  validatePages: (...args) => store.getValue().validatePages(...args),
-  handleFieldChange: (...args) => store.getValue().handleFieldChange(...args),
-  hideSummary: (...args) => store.getValue().hideSummary(...args),
-  syncPageValidationState: (...args) => store.getValue().syncPageValidationState(...args),
-  setAttachmentExternalError: (...args) => store.getValue().setAttachmentExternalError(...args),
-});
-
-const useValidationActions = (): ValidationActions => {
-  const store = useValidationStore();
-  return useMemo(() => createValidationActions(store), [store]);
-};
-
-const useOptionalValidationActions = (): ValidationActions => {
-  const store = useContext(ValidationContext);
-  return useMemo(() => (store ? createValidationActions(store) : noValidationActions), [store]);
-};
-
-const useValidationFieldError = (submissionPath: string, pageKey?: string): string | undefined => {
-  const store = useContext(ValidationContext);
-  const getSnapshot = useCallback(
-    () => (store && pageKey !== undefined ? store.getValue().getError(submissionPath, pageKey) : undefined),
-    [pageKey, store, submissionPath],
-  );
-
-  return useSyncExternalStore(store?.subscribe ?? noValidationSubscription, getSnapshot, getSnapshot);
-};
-
-const useValidationPagesWithErrors = (): Set<string> => {
-  const store = useValidationStore();
-  const getSnapshot = useCallback(() => store.getValue().pagesWithErrors, [store]);
-
-  return useSyncExternalStore(store.subscribe, getSnapshot, getSnapshot);
-};
-
-const useValidationAttachmentExternalError = (attachmentId: string, field: AttachmentField): string | undefined => {
-  const store = useValidationStore();
-  const getSnapshot = useCallback(
-    () => store.getValue().getAttachmentExternalError(attachmentId, field),
-    [attachmentId, field, store],
-  );
-
-  return useSyncExternalStore(store.subscribe, getSnapshot, getSnapshot);
-};
-
-export {
-  attachmentValidationPath,
-  useOptionalValidationActions,
-  useValidation,
-  useValidationActions,
-  useValidationAttachmentExternalError,
-  useValidationFieldError,
-  useValidationPagesWithErrors,
-  ValidationProvider,
-};
 export type {
-  AttachmentField,
-  FieldError,
   PageFieldsResolver,
   ValidationActions,
   ValidationContextType,
-  ValidationField,
-};
+  ValidationContextValue,
+} from './validationContextTypes';
+export {
+  useErrorSummaryFocusRequest,
+  useIsErrorSummaryVisibleForAllPages,
+  useIsErrorSummaryVisibleForPage,
+  useOptionalValidationActions,
+  useValidationActions,
+  useValidationAttachmentExternalError,
+  useValidationErrorAccess,
+  useValidationErrorsForPage,
+  useValidationErrorsForPages,
+  useValidationFieldError,
+  useValidationPagesWithErrors,
+} from './validationHooks';
+export type { AttachmentField, FieldError, ValidationField } from './validationTypes';
+export { attachmentValidationPath, ValidationProvider };
