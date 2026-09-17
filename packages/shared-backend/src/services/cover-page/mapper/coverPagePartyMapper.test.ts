@@ -41,20 +41,16 @@ describe('mapPartyToCoverPage', () => {
     });
   });
 
-  it('normalizes missing unidentified user fields for the cover-page contract', () => {
+  it('rejects an unidentified user without an address', () => {
     const party: Party = {
       onBehalfOf: 'other-person',
       sender: { name: 'Organization', number: '889640782' },
       user: { kind: 'unidentified-person' },
     };
 
-    expect(mapPartyToCoverPage(party)).toEqual({
-      user: {
-        firstName: '',
-        surname: '',
-        address: {},
-      },
-    });
+    expect(() => mapPartyToCoverPage(party)).toThrow(
+      'User needs to submit either identification number or address',
+    );
   });
 
   it('maps an organization acting on its own behalf', () => {

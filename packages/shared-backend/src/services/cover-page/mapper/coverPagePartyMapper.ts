@@ -50,7 +50,7 @@ const mapPartyToCoverPage = (party: Party): CoverPagePartyData => {
     };
   }
 
-  if (!party.user.address && (party.user.firstName || party.user.surname)) {
+  if (!party.user.address) {
     throw new ResponseError('BAD_REQUEST', 'User needs to submit either identification number or address');
   }
 

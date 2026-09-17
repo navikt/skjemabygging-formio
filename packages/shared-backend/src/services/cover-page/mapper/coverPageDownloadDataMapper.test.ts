@@ -248,6 +248,16 @@ describe('coverPageDownloadDataMapper', () => {
     ).toThrow('User needs to submit either identification number or address');
   });
 
+  it('rejects empty canonical user information', () => {
+    expect(() =>
+      coverPageDownloadDataMapper.createDownloadDataFromSubmission(formWithAttachments, {
+        data: {
+          yourInformation: {},
+        },
+      } as Submission),
+    ).toThrow('User needs to submit either identification number or address');
+  });
+
   it('forwards an identity value without stricter validation or normalization', () => {
     const actual = coverPageDownloadDataMapper.createDownloadDataFromSubmission(formWithAttachments, {
       data: {
