@@ -1,11 +1,10 @@
 import { RequestHandler } from 'express';
-import { appMetrics, nologinTokenService } from '../../../services';
-import { createChallenge, verifySolution } from './challengeService';
+import { appMetrics, captchaService, nologinTokenService } from '../../../services';
 import { CAPTCHA_FAILURE_REASON, CaptchaError } from './types';
 
 const getChallenge: RequestHandler = async (_req, res, next) => {
   try {
-    res.json(createChallenge());
+    res.json(captchaService.createChallenge());
   } catch (err) {
     next(err);
   }
@@ -20,7 +19,7 @@ const post: RequestHandler = async (req, res, next) => {
       return next(new CaptchaError(CAPTCHA_FAILURE_REASON.HONEYPOT_FILLED));
     }
 
-    const result = verifySolution(req.body);
+    const result = captchaService.verifySolution(req.body);
     if (!result.valid) {
       return next(new CaptchaError(result.reason));
     }
