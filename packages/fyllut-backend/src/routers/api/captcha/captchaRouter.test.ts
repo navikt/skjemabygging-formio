@@ -164,6 +164,19 @@ describe('Captcha Handler Tests', () => {
         .expect(400);
     });
 
+    it('fails if only the legacy answer is provided', async () => {
+      await request(app)
+        .post('/fyllut/api/captcha')
+        .set('Origin', 'https://www.nav.no')
+        .send({ firstName: '', data_33: 'ja' })
+        .expect('Content-Type', /json/)
+        .expect(400)
+        .expect((res) => {
+          expect(res.body.errorCode).toBe('BAD_REQUEST');
+          expect(res.body.userMessage).toBe(TEXTS.statiske.uploadFile.uploadFileError);
+        });
+    });
+
     it('fails if firstName is present', async () => {
       await request(app)
         .post('/fyllut/api/captcha')
@@ -203,50 +216,4 @@ describe('Captcha Handler Tests', () => {
     });
   });
 
-  // TODO: remove after already-loaded frontends using data_33 have aged out.
-  describe('Legacy flow', () => {
-    const validCaptchaData = { firstName: '', data_33: 'ja' };
-
-    it('returns 200 with access_token if valid data is provided', async () => {
-      await request(app)
-        .post('/fyllut/api/captcha')
-        .set('Origin', 'https://www.nav.no')
-        .send(validCaptchaData)
-        .expect('Content-Type', /json/)
-        .expect(200)
-        .expect((res) => {
-          expect(res.body.access_token).toBeDefined();
-        });
-    });
-
-    it('fails if challenge answer is incorrect', async () => {
-      await request(app)
-        .post('/fyllut/api/captcha')
-        .set('Origin', 'https://www.nav.no')
-        .send({ ...validCaptchaData, data_33: 'Test' })
-        .expect('Content-Type', /json/)
-        .expect(400);
-    });
-
-    it('does not use the legacy answer to bypass an invalid proof of work solution', async () => {
-      config.captcha.powDifficulty = 8;
-      const challenge = (await request(app).get('/fyllut/api/captcha/challenge').expect(200)).body;
-
-      await request(app)
-        .post('/fyllut/api/captcha')
-        .set('Origin', 'https://www.nav.no')
-        .send({ ...validCaptchaData, ...challenge, solution: findInvalidSolution(challenge) })
-        .expect('Content-Type', /json/)
-        .expect(400);
-    });
-
-    it('fails if firstName is present', async () => {
-      await request(app)
-        .post('/fyllut/api/captcha')
-        .set('Origin', 'https://www.nav.no')
-        .send({ ...validCaptchaData, firstName: 'Roar' })
-        .expect('Content-Type', /json/)
-        .expect(400);
-    });
-  });
 });
