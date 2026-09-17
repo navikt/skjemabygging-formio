@@ -3,10 +3,6 @@ import { appMetrics, nologinTokenService } from '../../../services';
 import { createChallenge, verifySolution } from './challengeService';
 import { CAPTCHA_FAILURE_REASON, CaptchaError } from './types';
 
-const isLegacyRequest = ({ data_33, nonce, difficulty, expiresAt, signature, solution }: Record<string, unknown>) =>
-  data_33 === 'ja' &&
-  [nonce, difficulty, expiresAt, signature, solution].every((challengeProperty) => challengeProperty === undefined);
-
 const getChallenge: RequestHandler = async (_req, res, next) => {
   try {
     res.json(createChallenge());
@@ -24,12 +20,9 @@ const post: RequestHandler = async (req, res, next) => {
       return next(new CaptchaError(CAPTCHA_FAILURE_REASON.HONEYPOT_FILLED));
     }
 
-    // TODO: remove the legacy data_33 path after already-loaded frontends have aged out.
-    if (!isLegacyRequest(req.body)) {
-      const result = verifySolution(req.body);
-      if (!result.valid) {
-        return next(new CaptchaError(result.reason));
-      }
+    const result = verifySolution(req.body);
+    if (!result.valid) {
+      return next(new CaptchaError(result.reason));
     }
 
     const token = nologinTokenService.generateToken();
