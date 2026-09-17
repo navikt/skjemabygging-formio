@@ -1,4 +1,8 @@
-import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  CaptchaChallenge,
+  SolvedCaptchaChallenge,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import crypto from 'crypto';
 import { Express } from 'express';
 import request from 'supertest';
@@ -6,7 +10,7 @@ import { createApp } from '../../../app';
 import { config } from '../../../config/config';
 import { logger } from '../../../logger';
 import { appMetrics } from '../../../services';
-import { CAPTCHA_FAILURE_REASON, CaptchaChallenge, CaptchaSolution } from './types';
+import { CAPTCHA_FAILURE_REASON } from './types';
 
 const solutionIsValid = (challenge: CaptchaChallenge, solution: string): boolean => {
   const digest = crypto.createHash('sha256').update(`${challenge.nonce}:${solution}`).digest();
@@ -23,7 +27,7 @@ const solutionIsValid = (challenge: CaptchaChallenge, solution: string): boolean
   return bits >= challenge.difficulty;
 };
 
-const solveChallenge = (challenge: CaptchaChallenge): CaptchaSolution => {
+const solveChallenge = (challenge: CaptchaChallenge): SolvedCaptchaChallenge => {
   for (let i = 0; i < 10_000_000; i++) {
     const solution = i.toString(36);
     if (solutionIsValid(challenge, solution)) {

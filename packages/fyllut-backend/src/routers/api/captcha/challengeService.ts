@@ -1,6 +1,7 @@
+import type { CaptchaChallenge, SolvedCaptchaChallenge } from '@navikt/skjemadigitalisering-shared-domain';
 import crypto from 'crypto';
 import { config } from '../../../config/config';
-import { CAPTCHA_FAILURE_REASON, CaptchaChallenge, CaptchaFailureReason, CaptchaSolution } from './types';
+import { CAPTCHA_FAILURE_REASON, CaptchaFailureReason } from './types';
 
 const MAX_SOLUTION_LENGTH = 64;
 
@@ -50,7 +51,7 @@ const solutionIsValid = (nonce: string, difficulty: number, solution: string): b
   return countLeadingZeroBits(digest) >= difficulty;
 };
 
-const isCaptchaSolution = (body: any): body is CaptchaSolution =>
+const isCaptchaSolution = (body: any): body is SolvedCaptchaChallenge =>
   typeof body?.nonce === 'string' &&
   typeof body?.signature === 'string' &&
   typeof body?.solution === 'string' &&
