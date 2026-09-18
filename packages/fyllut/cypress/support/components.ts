@@ -3,7 +3,11 @@
  */
 
 Cypress.Commands.add('withinComponent', (label, fn) => {
-  return cy.findByLabelText(label).closest('[data-form-component]').within(fn);
+  return cy.findByLabelText(label).closest('[data-form-component], .form-group').within(fn);
+});
+
+Cypress.Commands.add('getComponent', (key) => {
+  return cy.get(`[data-component-key="${key}"], .formio-component-${key}`);
 });
 
 Cypress.Commands.add('withinSummaryGroup', (heading, fn) => {

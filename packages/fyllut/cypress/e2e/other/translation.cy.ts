@@ -111,7 +111,7 @@ describe('Translations', () => {
       cy.clickNextStep();
 
       // This example will fail without the override in translateHTMLTemplate
-      cy.get('[data-component-key="alertstripe"]').contains('Example correct translation').should('exist');
+      cy.getComponent('alertstripe').contains('Example correct translation').should('exist');
     });
   });
 
