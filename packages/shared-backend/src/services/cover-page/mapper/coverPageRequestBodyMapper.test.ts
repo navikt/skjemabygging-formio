@@ -157,4 +157,21 @@ describe('coverPageRequestBodyMapper', () => {
       }),
     ).toThrowError('Invalid value for cover page');
   });
+
+  it('rejects invalid unknown-user information without exposing the input value', () => {
+    expect(() =>
+      coverPageRequestBodyMapper.createRequestBodyFromDownloadData({
+        ...defaultData,
+        user: {
+          firstName: 'Test\\',
+          surname: 'Testesen',
+          address: {
+            streetAddress: 'Testveien 1',
+            postalCode: '0101',
+            postalName: 'Oslo',
+          },
+        },
+      }),
+    ).toThrowError('Invalid value for cover page');
+  });
 });
