@@ -11,7 +11,7 @@ const report: RequestHandler = async (req, res, next) => {
   }
   try {
     res.contentType(`${report.contentType}; charset=utf-8`);
-    res.attachment(`${reportId}.${report.fileEnding}`);
+    res.attachment(`${reportId}.${report.fileExtension}`);
     await reportService.generate(reportId, res);
   } catch (err) {
     // A pipeline failure destroys the response. Never append an error document to a partial download.

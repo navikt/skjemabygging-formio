@@ -43,8 +43,6 @@ const ReportsPage = () => {
                 <li key={report.id}>
                   <a
                     href={`${reportUrlPrefix}/api/reports/${report.id}`}
-                    target="_blank"
-                    rel="noreferrer"
                     aria-describedby={report.id === 'all-forms-summary' ? 'first-publication-notice' : undefined}
                   >
                     {report.title}

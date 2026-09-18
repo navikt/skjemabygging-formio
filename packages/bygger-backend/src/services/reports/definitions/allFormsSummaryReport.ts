@@ -7,9 +7,9 @@ import {
   SubmissionType,
   submissionTypesUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import config from '../../config';
-import { awaitReportCall, CsvReport } from './csvPipeline';
-import { notTestForm, ReportDependencies, yesNo } from './types';
+import config from '../../../config';
+import { awaitReportCall, CsvReport } from '../csvPipeline';
+import { notTestForm, ReportDependencies, yesNo } from '../types';
 
 type SummaryRow = {
   formNumber: string;
@@ -59,7 +59,7 @@ const recipientAddress = (recipientId: string | undefined, recipients: Map<strin
   return `${recipient.name}, ${recipient.poBoxAddress}, ${recipient.postalCode} ${recipient.postalName}`;
 };
 
-const summaryReport = ({
+const allFormsSummaryReport = ({
   formsService,
   recipientService,
   staticPdfService,
@@ -179,4 +179,4 @@ const summaryReport = ({
   },
 });
 
-export { summaryReport };
+export { allFormsSummaryReport };

@@ -1,6 +1,6 @@
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
-import { awaitReportCall, CsvReport } from './csvPipeline';
-import { notTestForm, ReportDependencies } from './types';
+import { awaitReportCall, CsvReport } from '../csvPipeline';
+import { notTestForm, ReportDependencies } from '../types';
 
 type UnpublishedRow = {
   formNumber: string;
@@ -9,7 +9,7 @@ type UnpublishedRow = {
   unpublishedBy?: string;
 };
 
-const unpublishedReport = ({ formsService }: ReportDependencies): CsvReport<UnpublishedRow> => ({
+const unpublishedFormsReport = ({ formsService }: ReportDependencies): CsvReport<UnpublishedRow> => ({
   columns: {
     formNumber: 'skjemanummer',
     formTitle: 'skjematittel',
@@ -36,4 +36,4 @@ const unpublishedReport = ({ formsService }: ReportDependencies): CsvReport<Unpu
   },
 });
 
-export { unpublishedReport };
+export { unpublishedFormsReport };

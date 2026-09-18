@@ -15,7 +15,7 @@ describe('Report download route', () => {
       id: 'all-forms-summary',
       title: 'Summary',
       contentType: 'text/csv',
-      fileEnding: 'csv',
+      fileExtension: 'csv',
     });
   });
 

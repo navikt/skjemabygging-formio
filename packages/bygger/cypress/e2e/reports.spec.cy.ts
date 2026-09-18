@@ -4,13 +4,13 @@ describe('Reports', () => {
       id: 'all-forms-summary',
       title: 'Alle skjema med nøkkelinformasjon',
       contentType: 'text/csv',
-      fileEnding: 'csv',
+      fileExtension: 'csv',
     },
     {
       id: 'forms-published-languages',
       title: 'Publiserte språk per skjema',
       contentType: 'text/csv',
-      fileEnding: 'csv',
+      fileExtension: 'csv',
     },
   ];
 
@@ -28,6 +28,7 @@ describe('Reports', () => {
     cy.findByRole('link', { name: reports[0].title })
       .should('have.attr', 'href')
       .and('match', /\/api\/reports\/all-forms-summary$/);
+    cy.findByRole('link', { name: reports[0].title }).should('not.have.attr', 'target');
     cy.findByRole('link', { name: reports[0].title }).should(
       'have.attr',
       'aria-describedby',

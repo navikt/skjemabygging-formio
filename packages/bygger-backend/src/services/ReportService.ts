@@ -1,36 +1,36 @@
 import { ReportDefinition } from '@navikt/skjemadigitalisering-shared-domain';
 import { Writable } from 'node:stream';
-import { attachmentsReport } from './reports/attachments';
 import { writeCsvReport } from './reports/csvPipeline';
-import { publishedLanguagesReport } from './reports/publishedLanguages';
-import { summaryReport } from './reports/summary';
+import { allFormsSummaryReport } from './reports/definitions/allFormsSummaryReport';
+import { attachmentsReport } from './reports/definitions/attachmentsReport';
+import { publishedLanguagesReport } from './reports/definitions/publishedLanguagesReport';
+import { unpublishedFormsReport } from './reports/definitions/unpublishedFormsReport';
 import { ReportDependencies } from './reports/types';
-import { unpublishedReport } from './reports/unpublished';
 
-const ReportMap: Record<string, ReportDefinition> = {
+const ReportRegistry: Record<string, ReportDefinition> = {
   FORMS_PUBLISHED_LANGUAGES: {
     id: 'forms-published-languages',
     title: 'Publiserte språk per skjema',
     contentType: 'text/csv',
-    fileEnding: 'csv',
+    fileExtension: 'csv',
   },
   ALL_FORMS_SUMMARY: {
     id: 'all-forms-summary',
     title: 'Alle skjema med nøkkelinformasjon',
     contentType: 'text/csv',
-    fileEnding: 'csv',
+    fileExtension: 'csv',
   },
   UNPUBLISHED_FORMS: {
     id: 'unpublished-forms',
     title: 'Avpubliserte skjema',
     contentType: 'text/csv',
-    fileEnding: 'csv',
+    fileExtension: 'csv',
   },
   ALL_FORMS_AND_ATTACHMENTS: {
     id: 'all-forms-and-attachments',
     title: 'Alle skjema med vedlegg',
     contentType: 'text/csv',
-    fileEnding: 'csv',
+    fileExtension: 'csv',
   },
 };
 
@@ -39,23 +39,23 @@ class ReportService {
 
   async generate(reportId: string, writableStream: Writable) {
     switch (reportId) {
-      case ReportMap.FORMS_PUBLISHED_LANGUAGES.id:
+      case ReportRegistry.FORMS_PUBLISHED_LANGUAGES.id:
         return writeCsvReport(reportId, publishedLanguagesReport(this.dependencies), writableStream);
-      case ReportMap.ALL_FORMS_SUMMARY.id:
-        return writeCsvReport(reportId, summaryReport(this.dependencies), writableStream);
-      case ReportMap.UNPUBLISHED_FORMS.id:
-        return writeCsvReport(reportId, unpublishedReport(this.dependencies), writableStream);
-      case ReportMap.ALL_FORMS_AND_ATTACHMENTS.id:
+      case ReportRegistry.ALL_FORMS_SUMMARY.id:
+        return writeCsvReport(reportId, allFormsSummaryReport(this.dependencies), writableStream);
+      case ReportRegistry.UNPUBLISHED_FORMS.id:
+        return writeCsvReport(reportId, unpublishedFormsReport(this.dependencies), writableStream);
+      case ReportRegistry.ALL_FORMS_AND_ATTACHMENTS.id:
         return writeCsvReport(reportId, attachmentsReport(this.dependencies), writableStream);
       default:
         throw new Error(`Report not implemented: ${reportId}`);
     }
   }
 
-  getReportDefinition = (reportId: string) => Object.values(ReportMap).find((report) => report.id === reportId);
+  getReportDefinition = (reportId: string) => Object.values(ReportRegistry).find((report) => report.id === reportId);
 
   getAllReports(): ReportDefinition[] {
-    return Object.values(ReportMap).map((report) => ({ ...report }));
+    return Object.values(ReportRegistry).map((report) => ({ ...report }));
   }
 }
 

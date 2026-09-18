@@ -1,6 +1,6 @@
 import { Form, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import { awaitReportCall, CsvReport } from './csvPipeline';
-import { notTestForm, ReportDependencies } from './types';
+import { awaitReportCall, CsvReport } from '../csvPipeline';
+import { notTestForm, ReportDependencies } from '../types';
 
 type AttachmentRow = {
   formNumber: string;

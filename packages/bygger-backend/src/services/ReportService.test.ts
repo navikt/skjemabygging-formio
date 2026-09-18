@@ -31,6 +31,7 @@ describe('ReportService', () => {
     expect(report).toBeDefined();
     expect(report?.title).toBe('Publiserte språk per skjema');
     expect(report?.contentType).toBe('text/csv');
+    expect(report?.fileExtension).toBe('csv');
   });
 
   describe('getReportDefinition', () => {
