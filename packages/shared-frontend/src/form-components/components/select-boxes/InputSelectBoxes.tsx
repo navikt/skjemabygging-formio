@@ -10,7 +10,6 @@ import {
   resolveReadMore,
   resolveSubmissionPath,
 } from '../../inputComponentUtils';
-import FormGroup from '../../shared/FormGroup';
 import { getSelectedValuesAsList, getSelectedValuesMap } from '../../shared/selectedValuesUtils';
 
 const InputSelectBoxes = ({ component, submissionPath }: InputComponentProps<SelectBoxesDefinition>) => {
@@ -20,20 +19,18 @@ const InputSelectBoxes = ({ component, submissionPath }: InputComponentProps<Sel
   const { stateValue, setStateValue } = useFieldBinding({ statePath });
 
   return (
-    <FormGroup>
-      <CheckboxGroup
-        statePath={statePath}
-        legend={component.label}
-        description={component.description}
-        values={values}
-        value={getSelectedValuesAsList(stateValue as Record<string, boolean> | undefined)}
-        onChange={(selectedValues) => setStateValue(getSelectedValuesMap(values, selectedValues))}
-        required={isRequired(component)}
-        fieldSize={resolveFieldSize(component)}
-        readMore={resolveReadMore(component)}
-        validation={validation}
-      />
-    </FormGroup>
+    <CheckboxGroup
+      statePath={statePath}
+      legend={component.label}
+      description={component.description}
+      values={values}
+      value={getSelectedValuesAsList(stateValue as Record<string, boolean> | undefined)}
+      onChange={(selectedValues) => setStateValue(getSelectedValuesMap(values, selectedValues))}
+      required={isRequired(component)}
+      fieldSize={resolveFieldSize(component)}
+      readMore={resolveReadMore(component)}
+      validation={validation}
+    />
   );
 };
 

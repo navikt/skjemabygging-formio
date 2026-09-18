@@ -8,24 +8,21 @@ import {
   resolveReadMore,
   resolveSubmissionPath,
 } from '../../inputComponentUtils';
-import FormGroup from '../../shared/FormGroup';
 
 const InputCheckbox = ({ component, submissionPath }: InputComponentProps<CheckboxDefinition>) => {
   const validation = useResolvedValidation(component);
   return (
-    <FormGroup>
-      <Checkbox
-        statePath={resolveSubmissionPath(component, submissionPath)}
-        label={component.label}
-        description={component.description}
-        required={isRequired(component)}
-        fieldSize={resolveFieldSize(component)}
-        readOnly={component.readOnly}
-        readMore={resolveReadMore(component)}
-        showInlineError
-        validation={validation}
-      />
-    </FormGroup>
+    <Checkbox
+      statePath={resolveSubmissionPath(component, submissionPath)}
+      label={component.label}
+      description={component.description}
+      required={isRequired(component)}
+      fieldSize={resolveFieldSize(component)}
+      readOnly={component.readOnly}
+      readMore={resolveReadMore(component)}
+      showInlineError
+      validation={validation}
+    />
   );
 };
 

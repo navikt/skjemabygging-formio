@@ -9,7 +9,6 @@ import {
   resolveReadMore,
   resolveSubmissionPath,
 } from '../../inputComponentUtils';
-import FormGroup from '../../shared/FormGroup';
 
 const InputNationalIdentityNumber = ({
   component,
@@ -17,18 +16,16 @@ const InputNationalIdentityNumber = ({
 }: InputComponentProps<NationalIdentityNumberDefinition>) => {
   const validation = useResolvedValidation(component);
   return (
-    <FormGroup>
-      <NationalIdentityNumber
-        statePath={resolveSubmissionPath(component, submissionPath)}
-        label={component.label ?? TEXTS.statiske.identity.identityNumber}
-        description={component.description}
-        required={isRequired(component)}
-        fieldSize={resolveFieldSize(component)}
-        readOnly={component.readOnly}
-        readMore={resolveReadMore(component)}
-        validation={validation}
-      />
-    </FormGroup>
+    <NationalIdentityNumber
+      statePath={resolveSubmissionPath(component, submissionPath)}
+      label={component.label ?? TEXTS.statiske.identity.identityNumber}
+      description={component.description}
+      required={isRequired(component)}
+      fieldSize={resolveFieldSize(component)}
+      readOnly={component.readOnly}
+      readMore={resolveReadMore(component)}
+      validation={validation}
+    />
   );
 };
 

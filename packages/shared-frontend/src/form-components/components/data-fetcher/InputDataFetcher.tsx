@@ -9,7 +9,6 @@ import { useFieldBinding } from '../../../context/state/useFieldBinding';
 import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
 import { DataFetcherDefinition } from '../../component-types';
 import { InputComponentProps, resolveReadMore, resolveSubmissionPath } from '../../inputComponentUtils';
-import FormGroup from '../../shared/FormGroup';
 import { getSelectedValuesAsList, getSelectedValuesMap } from '../../shared/selectedValuesUtils';
 import { getDataFetcherData } from './dataFetcherUtils';
 
@@ -115,18 +114,16 @@ const InputDataFetcher = ({ component, submissionPath }: InputComponentProps<Dat
   }
 
   return (
-    <FormGroup>
-      <CheckboxGroup
-        statePath={statePath}
-        legend={component.label ?? 'Datahenter'}
-        description={component.description}
-        values={values}
-        value={getSelectedValuesAsList(stateValue as Record<string, boolean> | undefined)}
-        onChange={(selectedValues) => setStateValue(getSelectedValuesMap(values, selectedValues))}
-        readMore={readMore}
-        required={component.validate?.required ?? false}
-      />
-    </FormGroup>
+    <CheckboxGroup
+      statePath={statePath}
+      legend={component.label ?? 'Datahenter'}
+      description={component.description}
+      values={values}
+      value={getSelectedValuesAsList(stateValue as Record<string, boolean> | undefined)}
+      onChange={(selectedValues) => setStateValue(getSelectedValuesMap(values, selectedValues))}
+      readMore={readMore}
+      required={component.validate?.required ?? false}
+    />
   );
 };
 

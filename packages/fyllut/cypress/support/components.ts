@@ -3,7 +3,7 @@
  */
 
 Cypress.Commands.add('withinComponent', (label, fn) => {
-  return cy.findByLabelText(label).closest('.form-group').within(fn);
+  return cy.findByLabelText(label).closest('[data-form-component]').within(fn);
 });
 
 Cypress.Commands.add('withinSummaryGroup', (heading, fn) => {

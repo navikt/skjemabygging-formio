@@ -8,28 +8,25 @@ import {
   resolveReadMore,
   resolveSubmissionPath,
 } from '../../inputComponentUtils';
-import FormGroup from '../../shared/FormGroup';
 
 const InputTextField = ({ component, submissionPath }: InputComponentProps<TextFieldDefinition>) => {
   const validation = useResolvedValidation(component);
 
   return (
-    <FormGroup>
-      <TextField
-        statePath={resolveSubmissionPath(component, submissionPath)}
-        label={component.label}
-        description={component.description}
-        required={isRequired(component)}
-        fieldSize={resolveFieldSize(component)}
-        readOnly={component.readOnly}
-        autoComplete={component.autocomplete}
-        inputMode={component.inputType}
-        spellCheck={component.spellCheck}
-        prefillValue={typeof component.prefillValue === 'string' ? component.prefillValue : undefined}
-        readMore={resolveReadMore(component)}
-        validation={validation}
-      />
-    </FormGroup>
+    <TextField
+      statePath={resolveSubmissionPath(component, submissionPath)}
+      label={component.label}
+      description={component.description}
+      required={isRequired(component)}
+      fieldSize={resolveFieldSize(component)}
+      readOnly={component.readOnly}
+      autoComplete={component.autocomplete}
+      inputMode={component.inputType}
+      spellCheck={component.spellCheck}
+      prefillValue={typeof component.prefillValue === 'string' ? component.prefillValue : undefined}
+      readMore={resolveReadMore(component)}
+      validation={validation}
+    />
   );
 };
 

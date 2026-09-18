@@ -10,7 +10,6 @@ import {
   resolveReadMore,
   resolveSubmissionPath,
 } from '../../inputComponentUtils';
-import FormGroup from '../../shared/FormGroup';
 
 const InputSurname = ({ component, submissionPath }: InputComponentProps<SurnameDefinition>) => {
   const validation = useResolvedValidation(component);
@@ -22,22 +21,20 @@ const InputSurname = ({ component, submissionPath }: InputComponentProps<Surname
     validation,
   });
   return (
-    <FormGroup>
-      <TextField
-        statePath={statePath}
-        label={component.label}
-        description={component.description}
-        required={isRequired(component)}
-        fieldSize={resolveFieldSize(component)}
-        autoComplete={component.autocomplete}
-        inputMode={component.inputType}
-        spellCheck={component.spellCheck}
-        prefillValue={typeof component.prefillValue === 'string' ? component.prefillValue : undefined}
-        readOnly={component.readOnly}
-        readMore={resolveReadMore(component)}
-        validation={fieldValidation.rules as TextFieldValidation}
-      />
-    </FormGroup>
+    <TextField
+      statePath={statePath}
+      label={component.label}
+      description={component.description}
+      required={isRequired(component)}
+      fieldSize={resolveFieldSize(component)}
+      autoComplete={component.autocomplete}
+      inputMode={component.inputType}
+      spellCheck={component.spellCheck}
+      prefillValue={typeof component.prefillValue === 'string' ? component.prefillValue : undefined}
+      readOnly={component.readOnly}
+      readMore={resolveReadMore(component)}
+      validation={fieldValidation.rules as TextFieldValidation}
+    />
   );
 };
 

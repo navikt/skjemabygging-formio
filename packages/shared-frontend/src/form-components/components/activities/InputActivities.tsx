@@ -16,7 +16,6 @@ import { useFieldBinding } from '../../../context/state/useFieldBinding';
 import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
 import { ActivitiesDefinition } from '../../component-types';
 import { InputComponentProps, resolveReadMore, resolveSubmissionPath } from '../../inputComponentUtils';
-import FormGroup from '../../shared/FormGroup';
 import { getSelectedActivityId, mapActivities } from './activitiesUtils';
 
 type ActivitiesStatus = 'loading' | 'ready' | 'error';
@@ -120,7 +119,7 @@ const InputActivities = ({ component, submissionPath }: InputComponentProps<Acti
   };
 
   return (
-    <FormGroup>
+    <>
       {activitySelections.length > 0 ? (
         <RadioGroup
           statePath={statePath}
@@ -146,7 +145,7 @@ const InputActivities = ({ component, submissionPath }: InputComponentProps<Acti
       )}
       {status === 'error' && <Alert variant="info">{translate(TEXTS.statiske.activities.errorContinue)}</Alert>}
       {readMore && <ReadMore {...readMore} />}
-    </FormGroup>
+    </>
   );
 };
 

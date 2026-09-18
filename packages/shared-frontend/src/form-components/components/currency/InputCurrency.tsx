@@ -8,28 +8,25 @@ import {
   resolveReadMore,
   resolveSubmissionPath,
 } from '../../inputComponentUtils';
-import FormGroup from '../../shared/FormGroup';
 
 const InputCurrency = ({ component, submissionPath }: InputComponentProps<CurrencyDefinition>) => {
   const validation = useResolvedValidation(component);
   return (
-    <FormGroup>
-      <NumberField
-        statePath={resolveSubmissionPath(component, submissionPath)}
-        label={component.label}
-        description={component.description}
-        required={isRequired(component)}
-        fieldSize={resolveFieldSize(component)}
-        autoComplete={component.autocomplete}
-        inputMode={component.inputType}
-        spellCheck={component.spellCheck}
-        readOnly={component.readOnly}
-        readMore={resolveReadMore(component)}
-        numberType={component.inputType === 'numeric' ? 'integer' : 'decimal'}
-        calculatedValue={!!component.calculateValue}
-        validation={validation}
-      />
-    </FormGroup>
+    <NumberField
+      statePath={resolveSubmissionPath(component, submissionPath)}
+      label={component.label}
+      description={component.description}
+      required={isRequired(component)}
+      fieldSize={resolveFieldSize(component)}
+      autoComplete={component.autocomplete}
+      inputMode={component.inputType}
+      spellCheck={component.spellCheck}
+      readOnly={component.readOnly}
+      readMore={resolveReadMore(component)}
+      numberType={component.inputType === 'numeric' ? 'integer' : 'decimal'}
+      calculatedValue={!!component.calculateValue}
+      validation={validation}
+    />
   );
 };
 

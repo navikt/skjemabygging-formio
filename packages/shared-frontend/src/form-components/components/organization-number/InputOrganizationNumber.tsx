@@ -8,24 +8,21 @@ import {
   resolveReadMore,
   resolveSubmissionPath,
 } from '../../inputComponentUtils';
-import FormGroup from '../../shared/FormGroup';
 
 const InputOrganizationNumber = ({ component, submissionPath }: InputComponentProps<OrganizationNumberDefinition>) => {
   const validation = useResolvedValidation(component);
 
   return (
-    <FormGroup>
-      <OrganizationNumber
-        statePath={resolveSubmissionPath(component, submissionPath)}
-        label={component.label}
-        description={component.description}
-        required={isRequired(component)}
-        fieldSize={resolveFieldSize(component)}
-        autoComplete={component.autocomplete}
-        readMore={resolveReadMore(component)}
-        validation={validation}
-      />
-    </FormGroup>
+    <OrganizationNumber
+      statePath={resolveSubmissionPath(component, submissionPath)}
+      label={component.label}
+      description={component.description}
+      required={isRequired(component)}
+      fieldSize={resolveFieldSize(component)}
+      autoComplete={component.autocomplete}
+      readMore={resolveReadMore(component)}
+      validation={validation}
+    />
   );
 };
 

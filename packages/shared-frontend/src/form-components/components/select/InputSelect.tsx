@@ -10,27 +10,24 @@ import {
   resolveSelectType,
   resolveSubmissionPath,
 } from '../../inputComponentUtils';
-import FormGroup from '../../shared/FormGroup';
 
 const InputSelect = ({ component, submissionPath }: InputComponentProps<SelectDefinition>) => {
   const validation = useResolvedValidation(component);
   return (
-    <FormGroup>
-      <Select
-        statePath={resolveSubmissionPath(component, submissionPath)}
-        label={component.label}
-        description={component.description}
-        values={getValues(component)}
-        fieldSize={resolveFieldSize(component)}
-        valueType="option"
-        required={isRequired(component)}
-        readOnly={component.readOnly}
-        readMore={resolveReadMore(component)}
-        selectType={resolveSelectType(component)}
-        onlyAvailableOptions={component.validate?.onlyAvailableItems}
-        validation={validation}
-      />
-    </FormGroup>
+    <Select
+      statePath={resolveSubmissionPath(component, submissionPath)}
+      label={component.label}
+      description={component.description}
+      values={getValues(component)}
+      fieldSize={resolveFieldSize(component)}
+      valueType="option"
+      required={isRequired(component)}
+      readOnly={component.readOnly}
+      readMore={resolveReadMore(component)}
+      selectType={resolveSelectType(component)}
+      onlyAvailableOptions={component.validate?.onlyAvailableItems}
+      validation={validation}
+    />
   );
 };
 

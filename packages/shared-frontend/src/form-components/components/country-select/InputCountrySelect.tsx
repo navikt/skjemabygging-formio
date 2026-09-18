@@ -8,24 +8,21 @@ import {
   resolveReadMore,
   resolveSubmissionPath,
 } from '../../inputComponentUtils';
-import FormGroup from '../../shared/FormGroup';
 
 const InputCountrySelect = ({ component, submissionPath }: InputComponentProps<CountrySelectDefinition>) => {
   const validation = useResolvedValidation(component);
   return (
-    <FormGroup>
-      <CountrySelect
-        statePath={resolveSubmissionPath(component, submissionPath)}
-        label={component.label}
-        description={component.description}
-        ignoreOptions={component.ignoreNorway ? ['NO'] : undefined}
-        required={isRequired(component)}
-        fieldSize={resolveFieldSize(component)}
-        readOnly={component.readOnly}
-        readMore={resolveReadMore(component)}
-        validation={validation}
-      />
-    </FormGroup>
+    <CountrySelect
+      statePath={resolveSubmissionPath(component, submissionPath)}
+      label={component.label}
+      description={component.description}
+      ignoreOptions={component.ignoreNorway ? ['NO'] : undefined}
+      required={isRequired(component)}
+      fieldSize={resolveFieldSize(component)}
+      readOnly={component.readOnly}
+      readMore={resolveReadMore(component)}
+      validation={validation}
+    />
   );
 };
 

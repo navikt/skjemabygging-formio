@@ -2,7 +2,6 @@ import Fieldset from '../../../components/fieldset/Fieldset';
 import { FormGroupDefinition } from '../../component-types';
 import { InputComponentRegistry } from '../../inputComponentRegistry';
 import RenderInputForm from '../../RenderInputForm';
-import FormGroup from '../../shared/FormGroup';
 import styles from './InputFormGroup.module.css';
 
 interface InputFormGroupProps {
@@ -27,16 +26,14 @@ const InputFormGroup = ({ component, componentRegistry }: InputFormGroupProps) =
     .join(' ');
 
   return (
-    <FormGroup>
-      <Fieldset
-        legend={legend ?? label ?? key}
-        description={description}
-        hideLegend={hideLabel}
-        contentClassName={contentClassName}
-      >
-        <RenderInputForm components={components} componentRegistry={componentRegistry} />
-      </Fieldset>
-    </FormGroup>
+    <Fieldset
+      legend={legend ?? label ?? key}
+      description={description}
+      hideLegend={hideLabel}
+      contentClassName={contentClassName}
+    >
+      <RenderInputForm components={components} componentRegistry={componentRegistry} />
+    </Fieldset>
   );
 };
 

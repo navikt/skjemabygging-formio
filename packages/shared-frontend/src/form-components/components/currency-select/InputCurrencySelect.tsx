@@ -8,22 +8,19 @@ import {
   resolveReadMore,
   resolveSubmissionPath,
 } from '../../inputComponentUtils';
-import FormGroup from '../../shared/FormGroup';
 
 const InputCurrencySelect = ({ component, submissionPath }: InputComponentProps<CurrencySelectDefinition>) => {
   const validation = useResolvedValidation(component);
   return (
-    <FormGroup>
-      <CurrencySelect
-        statePath={resolveSubmissionPath(component, submissionPath)}
-        label={component.label}
-        description={component.description}
-        required={isRequired(component)}
-        fieldSize={resolveFieldSize(component)}
-        readMore={resolveReadMore(component)}
-        validation={validation}
-      />
-    </FormGroup>
+    <CurrencySelect
+      statePath={resolveSubmissionPath(component, submissionPath)}
+      label={component.label}
+      description={component.description}
+      required={isRequired(component)}
+      fieldSize={resolveFieldSize(component)}
+      readMore={resolveReadMore(component)}
+      validation={validation}
+    />
   );
 };
 

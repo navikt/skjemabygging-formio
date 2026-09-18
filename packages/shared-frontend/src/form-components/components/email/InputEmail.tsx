@@ -8,25 +8,22 @@ import {
   resolveReadMore,
   resolveSubmissionPath,
 } from '../../inputComponentUtils';
-import FormGroup from '../../shared/FormGroup';
 
 const InputEmail = ({ component, submissionPath }: InputComponentProps<EmailDefinition>) => {
   const validation = useResolvedValidation(component);
   return (
-    <FormGroup>
-      <Email
-        statePath={resolveSubmissionPath(component, submissionPath)}
-        label={component.label}
-        description={component.description}
-        required={isRequired(component)}
-        fieldSize={resolveFieldSize(component)}
-        autoComplete={component.autocomplete}
-        inputMode={component.inputType}
-        spellCheck={component.spellCheck}
-        readMore={resolveReadMore(component)}
-        validation={validation}
-      />
-    </FormGroup>
+    <Email
+      statePath={resolveSubmissionPath(component, submissionPath)}
+      label={component.label}
+      description={component.description}
+      required={isRequired(component)}
+      fieldSize={resolveFieldSize(component)}
+      autoComplete={component.autocomplete}
+      inputMode={component.inputType}
+      spellCheck={component.spellCheck}
+      readMore={resolveReadMore(component)}
+      validation={validation}
+    />
   );
 };
 

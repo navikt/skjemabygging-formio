@@ -4,7 +4,6 @@ import TranslatedDescription from '../../../components/shared/TranslatedDescript
 import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
 import { DrivingListDefinition } from '../../component-types';
 import { InputComponentProps, resolveReadMore, resolveSubmissionPath } from '../../inputComponentUtils';
-import FormGroup from '../../shared/FormGroup';
 import DigitalDrivingList from './DigitalDrivingList';
 import PaperDrivingList from './PaperDrivingList';
 import { useDrivingListState } from './useDrivingListState';
@@ -20,7 +19,7 @@ const InputDrivingList = ({ component, submissionPath }: InputComponentProps<Dri
   }
 
   return (
-    <FormGroup>
+    <>
       {component.description && (
         <Box marginBlock="space-0 space-16">
           <TranslatedDescription translationKey={component.description} />
@@ -32,7 +31,7 @@ const InputDrivingList = ({ component, submissionPath }: InputComponentProps<Dri
         <PaperDrivingList statePath={statePath} {...drivingListState} />
       )}
       {readMore && <ReadMore {...readMore} />}
-    </FormGroup>
+    </>
   );
 };
 

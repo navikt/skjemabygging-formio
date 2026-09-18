@@ -16,7 +16,6 @@ import { useValidationScope } from '../../../context/validation/ValidationScopeC
 import { DataGridDefinition } from '../../component-types';
 import { InputComponentRegistry } from '../../inputComponentRegistry';
 import RenderInputForm from '../../RenderInputForm';
-import FormGroup from '../../shared/FormGroup';
 import {
   addDataGridRowId,
   getActiveRowComponents,
@@ -109,25 +108,23 @@ const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => 
   );
 
   return (
-    <FormGroup>
-      <Box marginBlock="space-0 space-40" data-cy="input-datagrid">
-        {label || description ? (
-          <fieldset className={styles.fieldset}>
-            {!hideLabel && label && (
-              <legend className="aksel-fieldset__legend-formio-template">{translate(label)}</legend>
-            )}
-            {description && (
-              <div className={`description ${styles.description}`}>
-                <TranslatedDescription translationKey={description} />
-              </div>
-            )}
-            <div className={`aksel-fieldset__content ${styles.content}`}>{content}</div>
-          </fieldset>
-        ) : (
-          content
-        )}
-      </Box>
-    </FormGroup>
+    <Box marginBlock="space-0 space-40" data-cy="input-datagrid">
+      {label || description ? (
+        <fieldset className={styles.fieldset}>
+          {!hideLabel && label && (
+            <legend className="aksel-fieldset__legend-formio-template">{translate(label)}</legend>
+          )}
+          {description && (
+            <div className={`description ${styles.description}`}>
+              <TranslatedDescription translationKey={description} />
+            </div>
+          )}
+          <div className={`aksel-fieldset__content ${styles.content}`}>{content}</div>
+        </fieldset>
+      ) : (
+        content
+      )}
+    </Box>
   );
 };
 

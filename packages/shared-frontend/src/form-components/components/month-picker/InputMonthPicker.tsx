@@ -9,25 +9,22 @@ import {
   resolveReadMore,
   resolveSubmissionPath,
 } from '../../inputComponentUtils';
-import FormGroup from '../../shared/FormGroup';
 
 const InputMonthPicker = ({ component, submissionPath }: InputComponentProps<MonthPickerDefinition>) => {
   const validation = useResolvedValidation(component);
   return (
-    <FormGroup>
-      <MonthPicker
-        statePath={resolveSubmissionPath(component, submissionPath)}
-        label={component.label}
-        description={component.description}
-        required={isRequired(component)}
-        fieldSize={resolveFieldSize(component)}
-        readOnly={component.readOnly}
-        minYear={getMonthPickerMinYear(component)}
-        maxYear={getMonthPickerMaxYear(component)}
-        readMore={resolveReadMore(component)}
-        validation={validation}
-      />
-    </FormGroup>
+    <MonthPicker
+      statePath={resolveSubmissionPath(component, submissionPath)}
+      label={component.label}
+      description={component.description}
+      required={isRequired(component)}
+      fieldSize={resolveFieldSize(component)}
+      readOnly={component.readOnly}
+      minYear={getMonthPickerMinYear(component)}
+      maxYear={getMonthPickerMaxYear(component)}
+      readMore={resolveReadMore(component)}
+      validation={validation}
+    />
   );
 };
 

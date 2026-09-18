@@ -6,7 +6,6 @@ import { useLanguage } from '../../../context/language/LanguageContext';
 import { RowDefinition } from '../../component-types';
 import { InputComponentRegistry } from '../../inputComponentRegistry';
 import RenderInputForm from '../../RenderInputForm';
-import FormGroup from '../../shared/FormGroup';
 import styles from './InputRow.module.css';
 
 interface InputRowProps {
@@ -37,31 +36,29 @@ const InputRow = ({ component, componentRegistry }: InputRowProps) => {
   }
 
   return (
-    <FormGroup>
-      <Box marginBlock="space-0 space-40">
-        {!hideLabel && label && (
-          <Label as="div" className={styles.label}>
-            {translate(label)}
-          </Label>
-        )}
-        {description && (
-          <div className={styles.description}>
-            <TranslatedDescription translationKey={description} />
-          </div>
-        )}
-        <div className={styles.fields}>
-          {components.map((childComponent) => (
-            <div
-              key={childComponent.navId ?? childComponent.key}
-              className={styles.field}
-              style={getChildStyle(childComponent)}
-            >
-              <RenderInputForm components={[childComponent]} componentRegistry={componentRegistry} />
-            </div>
-          ))}
+    <Box marginBlock="space-0 space-40">
+      {!hideLabel && label && (
+        <Label as="div" className={styles.label}>
+          {translate(label)}
+        </Label>
+      )}
+      {description && (
+        <div className={styles.description}>
+          <TranslatedDescription translationKey={description} />
         </div>
-      </Box>
-    </FormGroup>
+      )}
+      <div className={styles.fields}>
+        {components.map((childComponent) => (
+          <div
+            key={childComponent.navId ?? childComponent.key}
+            className={styles.field}
+            style={getChildStyle(childComponent)}
+          >
+            <RenderInputForm components={[childComponent]} componentRegistry={componentRegistry} />
+          </div>
+        ))}
+      </div>
+    </Box>
   );
 };
 

@@ -48,15 +48,12 @@ const RenderInputComponent = ({ component, submissionPath, componentRegistry = i
     return null;
   }
 
-  const formioClasses = [`formio-component-${component.key}`, `formio-component-${component.type}`]
-    .filter(Boolean)
-    .join(' ');
   const input = (
     <RegistryComponent component={component} submissionPath={submissionPath} componentRegistry={componentRegistry} />
   );
 
   return (
-    <div className={formioClasses}>
+    <div data-form-component="" data-component-key={component.key}>
       {/* A value the form calculates is not something the user can fix, so it is not validated. */}
       {component.calculateValue ? <UnvalidatedFields>{input}</UnvalidatedFields> : input}
     </div>

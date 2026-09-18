@@ -9,25 +9,22 @@ import {
   resolveReadMore,
   resolveSubmissionPath,
 } from '../../inputComponentUtils';
-import FormGroup from '../../shared/FormGroup';
 
 const InputRadio = ({ component, submissionPath }: InputComponentProps<RadioPanelDefinition>) => {
   const validation = useResolvedValidation(component);
   return (
-    <FormGroup>
-      <RadioGroup
-        statePath={resolveSubmissionPath(component, submissionPath)}
-        legend={component.label}
-        description={component.description}
-        values={getValues(component)}
-        required={isRequired(component)}
-        fieldSize={resolveFieldSize(component)}
-        readOnly={component.readOnly}
-        readMore={resolveReadMore(component)}
-        onlyAvailableOptions={component.validate?.onlyAvailableItems}
-        validation={validation}
-      />
-    </FormGroup>
+    <RadioGroup
+      statePath={resolveSubmissionPath(component, submissionPath)}
+      legend={component.label}
+      description={component.description}
+      values={getValues(component)}
+      required={isRequired(component)}
+      fieldSize={resolveFieldSize(component)}
+      readOnly={component.readOnly}
+      readMore={resolveReadMore(component)}
+      onlyAvailableOptions={component.validate?.onlyAvailableItems}
+      validation={validation}
+    />
   );
 };
 
