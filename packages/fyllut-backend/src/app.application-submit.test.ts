@@ -149,7 +149,7 @@ const createMockFormData = (revision: number) => ({
   path: 'nav123456',
   revision,
   properties: { skjemanummer: 'NAV 12.34-56', tema: 'BIL' },
-  components: [],
+  components: [{ type: 'fnrfield', key: 'fodselsnummerDNummerSoker', label: 'Identity number' }],
 });
 
 const createApplicationData = () => ({
