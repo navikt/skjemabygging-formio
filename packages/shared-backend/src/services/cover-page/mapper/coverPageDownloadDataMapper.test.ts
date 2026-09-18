@@ -89,6 +89,18 @@ describe('coverPageDownloadDataMapper', () => {
     });
   });
 
+  it('uses an empty cover-page user when the submission has no party data', () => {
+    const actual = coverPageDownloadDataMapper.createDownloadDataFromSubmission(formWithAttachments, {
+      data: {},
+    });
+
+    expect(actual.user).toEqual({
+      firstName: '',
+      surname: '',
+      address: {},
+    });
+  });
+
   it('uses organization number fallback and nav unit recipient', () => {
     const actual = coverPageDownloadDataMapper.createDownloadDataFromSubmission(
       {

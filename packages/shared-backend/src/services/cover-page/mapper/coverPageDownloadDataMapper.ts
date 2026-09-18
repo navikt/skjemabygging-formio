@@ -3,7 +3,6 @@ import {
   Form,
   I18nTranslationReplacements,
   Recipient,
-  ResponseError,
   Submission,
   SubmissionAttachmentValue,
   SubmissionMethod,
@@ -101,11 +100,6 @@ const createDownloadDataFromSubmission = (
 ): CoverPageDownloadType => {
   const party = resolveParty(form, submission, { navUnit: unitNumber });
   const coverPageOrganizationUser = getCoverPageOrganizationUser(form, submission.data);
-
-  if (!party && !coverPageOrganizationUser) {
-    throw new ResponseError('BAD_REQUEST', 'Could not resolve party for cover page');
-  }
-
   const partyData = party ? mapPartyToCoverPage(party) : {};
 
   return {
