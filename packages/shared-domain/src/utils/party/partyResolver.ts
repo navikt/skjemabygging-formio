@@ -10,7 +10,6 @@ import {
   SubmissionAddress,
   SubmissionYourInformation,
 } from '../../models';
-import { navFormUtils } from '../form';
 import { senderUtils } from '../submission/senderUtils';
 import { yourInformationUtils } from '../submission/yourInformationUtils';
 import { legacyFlatPersonalInfoUtils } from './legacyFlatPersonalInfoUtils';
@@ -48,15 +47,10 @@ const toConcernedUser = (yourInformation?: SubmissionYourInformation): Concerned
     : undefined;
 };
 
-const getLegacySender = (form: Form, submission: Submission): LegacySender | undefined => {
+const getLegacySender = (submission: Submission): LegacySender | undefined => {
   const { fornavnAvsender: firstName, etternavnAvsender: surname } = submission.data;
 
-  return firstName &&
-    surname &&
-    navFormUtils.hasComponent(form, 'fornavnAvsender') &&
-    navFormUtils.hasComponent(form, 'etternavnAvsender')
-    ? { firstName, surname }
-    : undefined;
+  return firstName && surname ? { firstName, surname } : undefined;
 };
 
 const selectConcernedPerson = (
@@ -76,7 +70,7 @@ const selectConcernedPerson = (
 
 const resolveConcernedPerson = (form: Form, submission: Submission): ConcernedPerson | undefined => {
   const canonicalUser = toConcernedUser(yourInformationUtils.getYourInformation(form, submission.data));
-  const flatUser = legacyFlatPersonalInfoUtils.getConcernedPerson(form, submission.data);
+  const flatUser = legacyFlatPersonalInfoUtils.getConcernedUser(submission.data);
 
   return selectConcernedPerson(canonicalUser, flatUser);
 };
@@ -112,7 +106,7 @@ const resolveParty = (form: Form, submission: Submission, options: PartyResoluti
     return resolveOrganizationParty(submittedSender.organization, user, options.navUnit);
   }
 
-  const legacySender = getLegacySender(form, submission);
+  const legacySender = getLegacySender(submission);
   if (legacySender) {
     return resolveOtherPersonParty(legacySender, user);
   }

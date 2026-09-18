@@ -36,9 +36,6 @@ export function flattenComponents<ComponentLike extends { components?: Component
   }, []);
 }
 
-const hasComponent = (form: NavFormType | Form, key: string): boolean =>
-  flattenComponents(form.components).some((component) => component.key === key);
-
 const deepSortByKeys = (obj?: object) => {
   if (!obj) return obj;
   return Object.fromEntries(
@@ -411,7 +408,6 @@ const navFormUtils = {
   findDependentComponents,
   findDependeeComponents,
   flattenComponents,
-  hasComponent,
   isSubmissionMethodAllowed,
   isVedleggspanel,
   removeVedleggspanel,

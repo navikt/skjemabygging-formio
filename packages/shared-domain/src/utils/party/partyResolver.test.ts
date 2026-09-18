@@ -10,15 +10,6 @@ const form = {
 
 const resolve = (data: Submission['data']) => resolveParty(form, { data });
 
-const legacyFlatUserComponents: Component[] = [
-  { type: 'fnrfield', key: 'fodselsnummerDNummerSoker', label: 'Identity number' },
-  { type: 'firstName', key: 'fornavnSoker', label: 'First name' },
-  { type: 'surname', key: 'etternavnSoker', label: 'Surname' },
-  { type: 'textfield', key: 'gateadresseSoker', label: 'Street address' },
-  { type: 'textfield', key: 'postnrSoker', label: 'Postal code' },
-  { type: 'textfield', key: 'poststedSoker', label: 'Postal name' },
-];
-
 describe('resolveParty', () => {
   it('returns undefined when the form does not locate user information', () => {
     expect(resolveParty({ components: [] } as unknown as Form, { data: {} })).toBeUndefined();
@@ -203,7 +194,7 @@ describe('resolveParty', () => {
 
   it('resolves a flat identified user with a modern sender', () => {
     const legacyForm = {
-      components: [{ type: 'sender', key: 'sender', input: true }, ...legacyFlatUserComponents],
+      components: [{ type: 'sender', key: 'sender', input: true }],
     } as Form;
     expect(
       resolveParty(legacyForm, {
@@ -225,7 +216,7 @@ describe('resolveParty', () => {
   });
 
   it('resolves a flat unidentified user', () => {
-    const legacyForm = { components: legacyFlatUserComponents } as Form;
+    const legacyForm = { components: [] } as unknown as Form;
 
     expect(
       resolveParty(legacyForm, {
@@ -249,14 +240,8 @@ describe('resolveParty', () => {
     });
   });
 
-  it('resolves a declared legacy sender', () => {
-    const legacyForm = {
-      components: [
-        { type: 'fnrfield', key: 'fodselsnummerDNummerSoker', label: 'Identity number' },
-        { type: 'textfield', key: 'fornavnAvsender', label: 'First name' },
-        { type: 'textfield', key: 'etternavnAvsender', label: 'Surname' },
-      ],
-    } as Form;
+  it('resolves a legacy sender without component declarations', () => {
+    const legacyForm = { components: [] } as unknown as Form;
 
     expect(
       resolveParty(legacyForm, {

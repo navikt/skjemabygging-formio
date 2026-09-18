@@ -1,5 +1,4 @@
-import { ConcernedPerson, Form, PartyAddress, SubmissionData } from '../../models';
-import { navFormUtils } from '../form';
+import { ConcernedPerson, PartyAddress, SubmissionData } from '../../models';
 
 type LegacyFlatPersonalInfoSubmission = {
   fornavnSoker?: string;
@@ -93,16 +92,16 @@ const mapLegacyFlatAddress = (submission: LegacyFlatPersonalInfoSubmission): Par
   };
 };
 
-const getConcernedPerson = (form: Form, submission: SubmissionData): ConcernedPerson | undefined => {
+const getConcernedUser = (submission: SubmissionData): ConcernedPerson | undefined => {
   const legacySubmission = submission as LegacyFlatPersonalInfoSubmission;
 
-  if (navFormUtils.hasComponent(form, 'fodselsnummerDNummerSoker') && legacySubmission.fodselsnummerDNummerSoker) {
+  if (legacySubmission.fodselsnummerDNummerSoker) {
     return { kind: 'identified-person', nationalIdentityNumber: legacySubmission.fodselsnummerDNummerSoker };
   }
 
   const hasPersonalInformation = legacyFlatPersonalInfoComponentKeys
     .filter((key) => key !== 'fodselsnummerDNummerSoker')
-    .some((key) => navFormUtils.hasComponent(form, key) && legacySubmission[key] !== undefined);
+    .some((key) => legacySubmission[key] !== undefined);
 
   return hasPersonalInformation
     ? {
@@ -115,7 +114,7 @@ const getConcernedPerson = (form: Form, submission: SubmissionData): ConcernedPe
 };
 
 const legacyFlatPersonalInfoUtils = {
-  getConcernedPerson,
+  getConcernedUser,
   mapAddress: mapLegacyFlatAddress,
 };
 
