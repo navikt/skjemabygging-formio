@@ -117,10 +117,20 @@ describe('mapPartyToApplication', () => {
       name: 'organization, own behalf',
       party: {
         onBehalfOf: 'self',
-        user: { name: 'Organization', number: '889640782' },
+        sender: { name: 'Organization', number: '889640782' },
       },
       expected: {
         avsender: { id: '889640782', idType: 'ORGNR', navn: 'Organization' },
+      },
+    },
+    {
+      name: 'person sender, own behalf',
+      party: {
+        onBehalfOf: 'self',
+        sender: { firstName: 'Sender', surname: 'Sendersen', nationalIdentityNumber: '10987654321' },
+      },
+      expected: {
+        avsender: { id: '10987654321', idType: 'FNR', navn: 'Sender Sendersen' },
       },
     },
     {

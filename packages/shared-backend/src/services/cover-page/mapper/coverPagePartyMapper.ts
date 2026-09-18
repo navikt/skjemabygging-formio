@@ -45,10 +45,18 @@ const mapPartyToCoverPage = (party: Party): CoverPagePartyData => {
     return { navUnit: party.navUnit };
   }
 
-  if (isSenderOrganization(party.user)) {
+  if (party.onBehalfOf === 'self' && 'sender' in party) {
+    if (isSenderOrganization(party.sender)) {
+      return {
+        user: {
+          organizationNumber: formatUtils.removeAllSpaces(party.sender.number),
+        },
+      };
+    }
+
     return {
       user: {
-        organizationNumber: formatUtils.removeAllSpaces(party.user.number),
+        nationalIdentityNumber: party.sender.nationalIdentityNumber,
       },
     };
   }
@@ -69,7 +77,7 @@ const mapPartyToCoverPage = (party: Party): CoverPagePartyData => {
     user: {
       firstName: party.user.firstName ?? '',
       surname: party.user.surname ?? '',
-      address: party.user.address ?? {},
+      address: party.user.address,
     },
   };
 };

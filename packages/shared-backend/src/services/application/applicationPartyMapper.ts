@@ -42,9 +42,9 @@ const mapUser = (user: ConcernedPerson): Pick<ApplicationPartyData, 'bruker'> =>
 
 const mapPartyToApplication = (party: Party): ApplicationPartyData => {
   if (party.onBehalfOf === 'self') {
-    if (isSenderOrganization(party.user)) {
+    if ('sender' in party) {
       return {
-        avsender: mapOrganization(party.user),
+        avsender: mapSender(party.sender),
       };
     }
 

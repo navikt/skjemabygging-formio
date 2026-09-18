@@ -56,11 +56,22 @@ describe('mapPartyToCoverPage', () => {
   it('maps an organization acting on its own behalf', () => {
     const party: Party = {
       onBehalfOf: 'self',
-      user: { name: 'Organization', number: '889 640 782' },
+      sender: { name: 'Organization', number: '889 640 782' },
     };
 
     expect(mapPartyToCoverPage(party)).toEqual({
       user: { organizationNumber: '889640782' },
+    });
+  });
+
+  it('maps a person sender acting on their own behalf', () => {
+    const party: Party = {
+      onBehalfOf: 'self',
+      sender: { firstName: 'Sender', surname: 'Sendersen', nationalIdentityNumber: '10987654321' },
+    };
+
+    expect(mapPartyToCoverPage(party)).toEqual({
+      user: { nationalIdentityNumber: '10987654321' },
     });
   });
 

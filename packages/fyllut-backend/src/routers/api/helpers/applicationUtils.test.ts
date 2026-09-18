@@ -102,6 +102,37 @@ describe('assembleSubmitApplicationRequest party compatibility', () => {
     });
   });
 
+  it('maps a person sender without a separate concerned user', () => {
+    const request = assembleSubmitApplicationRequest(
+      '21ed0008-ec72-4c90-8b44-165d3c265da9',
+      {
+        ...form,
+        components: [{ type: 'sender', key: 'mottakerPerson', label: 'Sender', input: true }],
+      },
+      {
+        data: {
+          mottakerPerson: {
+            person: {
+              firstName: 'Sender',
+              surname: 'Sendersen',
+              nationalIdentityNumber: '109 876 543 21',
+            },
+          },
+        },
+      },
+      'nb',
+      [],
+      (text) => text,
+    );
+
+    expect(request.bruker).toBeUndefined();
+    expect(request.avsender).toEqual({
+      id: '10987654321',
+      idType: 'FNR',
+      navn: 'Sender Sendersen',
+    });
+  });
+
   it('maps declared flat legacy user and sender fields', () => {
     const request = assembleSubmitApplicationRequest(
       '21ed0008-ec72-4c90-8b44-165d3c265da9',

@@ -108,6 +108,27 @@ describe('resolveParty', () => {
     });
   });
 
+  it('resolves a person sender acting on their own behalf', () => {
+    expect(
+      resolve({
+        sender: {
+          person: {
+            firstName: 'Sender',
+            surname: 'Sendersen',
+            nationalIdentityNumber: '109 876 543 21',
+          },
+        },
+      }),
+    ).toEqual({
+      onBehalfOf: 'self',
+      sender: {
+        firstName: 'Sender',
+        surname: 'Sendersen',
+        nationalIdentityNumber: '109 876 543 21',
+      },
+    });
+  });
+
   it('resolves an organization acting for an unidentified person', () => {
     expect(
       resolve({
@@ -147,7 +168,7 @@ describe('resolveParty', () => {
       }),
     ).toEqual({
       onBehalfOf: 'self',
-      user: { name: 'Organization', number: '889 640 782' },
+      sender: { name: 'Organization', number: '889 640 782' },
     });
   });
 
@@ -256,5 +277,16 @@ describe('resolveParty', () => {
       sender: { firstName: 'Legacy', surname: 'Sender' },
       user: { kind: 'identified-person', nationalIdentityNumber: '123 456 789 11' },
     });
+  });
+
+  it('does not resolve a legacy sender without a concerned user', () => {
+    expect(
+      resolveParty({ components: [] } as unknown as Form, {
+        data: {
+          fornavnAvsender: 'Legacy',
+          etternavnAvsender: 'Sender',
+        },
+      }),
+    ).toBeUndefined();
   });
 });

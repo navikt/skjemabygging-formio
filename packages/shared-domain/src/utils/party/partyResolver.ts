@@ -1,11 +1,12 @@
 import {
   ConcernedPerson,
   Form,
+  isSenderPerson,
   LegacySender,
   Party,
   PartyAddress,
-  PartySender,
   SenderOrganization,
+  SenderPerson,
   Submission,
   SubmissionAddress,
   SubmissionYourInformation,
@@ -32,7 +33,7 @@ const toPartyAddress = (address?: SubmissionAddress): PartyAddress | undefined =
       }
     : undefined;
 
-const toConcernedUser = (yourInformation?: SubmissionYourInformation): ConcernedPerson | undefined => {
+const toConcernedPerson = (yourInformation?: SubmissionYourInformation): ConcernedPerson | undefined => {
   if (yourInformation?.identitet?.identitetsnummer) {
     return { kind: 'identified-person', nationalIdentityNumber: yourInformation.identitet.identitetsnummer };
   }
@@ -69,14 +70,23 @@ const selectConcernedPerson = (
 };
 
 const resolveConcernedPerson = (form: Form, submission: Submission): ConcernedPerson | undefined => {
-  const canonicalUser = toConcernedUser(yourInformationUtils.getYourInformation(form, submission.data));
+  const canonicalUser = toConcernedPerson(yourInformationUtils.getYourInformation(form, submission.data));
   const flatUser = legacyFlatPersonalInfoUtils.getConcernedUser(submission.data);
 
   return selectConcernedPerson(canonicalUser, flatUser);
 };
 
-const resolveOtherPersonParty = (sender: PartySender, user?: ConcernedPerson): Party | undefined =>
-  user ? { onBehalfOf: 'other-person', sender, user } : undefined;
+const resolvePersonSenderParty = (sender: SenderPerson | LegacySender, user?: ConcernedPerson): Party | undefined => {
+  if (user) {
+    return { onBehalfOf: 'other-person', sender, user };
+  }
+
+  if (isSenderPerson(sender)) {
+    return { onBehalfOf: 'self', sender };
+  }
+
+  return undefined;
+};
 
 const resolveOrganizationParty = (sender: SenderOrganization, user?: ConcernedPerson, navUnit?: string): Party => {
   if (user) {
@@ -87,7 +97,7 @@ const resolveOrganizationParty = (sender: SenderOrganization, user?: ConcernedPe
     return { onBehalfOf: 'multiple-people', sender, navUnit };
   }
 
-  return { onBehalfOf: 'self', user: sender };
+  return { onBehalfOf: 'self', sender };
 };
 
 /**
@@ -99,7 +109,7 @@ const resolveParty = (form: Form, submission: Submission, options: PartyResoluti
   const submittedSender = senderUtils.getSender(form, submission.data);
 
   if (submittedSender?.person) {
-    return resolveOtherPersonParty(submittedSender.person, user);
+    return resolvePersonSenderParty(submittedSender.person, user);
   }
 
   if (submittedSender?.organization) {
@@ -108,7 +118,7 @@ const resolveParty = (form: Form, submission: Submission, options: PartyResoluti
 
   const legacySender = getLegacySender(submission);
   if (legacySender) {
-    return resolveOtherPersonParty(legacySender, user);
+    return resolvePersonSenderParty(legacySender, user);
   }
 
   return user ? { onBehalfOf: 'self', user } : undefined;
