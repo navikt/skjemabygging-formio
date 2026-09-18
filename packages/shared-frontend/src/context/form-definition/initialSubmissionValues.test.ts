@@ -70,6 +70,28 @@ describe('applyInitialValuesToSubmission', () => {
     });
   });
 
+  it('adds a prefill that activates the component through its own value', () => {
+    const form = createForm([
+      {
+        key: 'hasIdentityNumber',
+        type: 'radiopanel',
+        input: true,
+      },
+      {
+        key: 'identityNumber',
+        type: 'textfield',
+        input: true,
+        prefillValue: '08842748500',
+        customConditional:
+          'show = data.hasIdentityNumber === "yes" || (data.identityNumber && !data.hasIdentityNumber);',
+      },
+    ]);
+
+    expect(applyInitialValuesToSubmission(form, undefined, 'nb')).toEqual({
+      data: { identityNumber: '08842748500' },
+    });
+  });
+
   it('adds prefills from active pages without rendering them', () => {
     const form = createForm([{ key: 'firstName', type: 'textfield', input: true, prefillValue: 'Ada' }]);
 

@@ -1,7 +1,7 @@
 describe('Initial submission values', () => {
   beforeEach(() => {
     cy.defaultIntercepts();
-    cy.visit('/fyllut/initial-submission-values/defaults?sub=paper');
+    cy.visit('/fyllut/initialsubmissionvalues/defaults?sub=paper');
     cy.defaultWaits();
   });
 

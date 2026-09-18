@@ -3,7 +3,8 @@ import form from '../../../form-builder/form/form';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
 
 const initialSubmissionValuesForm = () => {
-  const formNumber = 'initial-submission-values';
+  const formNumber = 'INITIALSUBMISSIONVALUES';
+  const formPath = 'initialsubmissionvalues';
   const options = [
     { label: 'First option', value: 'first' },
     { label: 'Second option', value: 'second' },
@@ -12,7 +13,7 @@ const initialSubmissionValuesForm = () => {
   return form({
     title: 'Initial submission values test form',
     formNumber,
-    path: formNumber,
+    path: formPath,
     components: [
       panel({
         title: 'Defaults',

@@ -64,7 +64,7 @@ const collectActiveComponentsWithInitialValues = (
   });
 
   const componentsWithInitialValues = [
-    ...collectInputSubmissionPaths(activeComponents),
+    ...collectInputSubmissionPaths(toComponentDefinitions(form.components)),
     ...dataGridRowScopes.flatMap((scope) => collectInputSubmissionPaths(scope.activeComponents)),
   ].flatMap(({ component, submissionPath }) => {
     const defaultValue = resolveDefaultSubmissionValue(component);
@@ -106,34 +106,40 @@ const reconcileSubmissionValues = (
   { prefillMode = 'overwrite', submissionMethod }: ApplyInitialValuesOptions = {},
 ): Submission | undefined => {
   const formWithBaseSubmissionPath = enrichFormWithBaseSubmissionPath(form);
-  const { activeComponents, componentsWithInitialValues } = collectActiveComponentsWithInitialValues(
+  const { componentsWithInitialValues } = collectActiveComponentsWithInitialValues(
     formWithBaseSubmissionPath,
     submission,
     submissionMethod,
   );
-  const withoutInactiveValues = clearInactiveSubmissionValues(
-    formWithBaseSubmissionPath,
-    activeComponents,
+  const withInitialValues = componentsWithInitialValues.reduce(
+    (currentSubmission, { component, submissionPath, defaultValue }) => {
+      const prefillValue = getComponentPrefillValue(component, currentLanguage);
+      const currentValue = submissionUtils.getSubmissionValue(submissionPath, currentSubmission);
+
+      if (prefillValue !== undefined && (prefillMode === 'overwrite' || currentValue === undefined)) {
+        return isSameSubmissionValue(currentValue, prefillValue)
+          ? currentSubmission
+          : createUpdatedSubmission(currentSubmission, submissionPath, prefillValue);
+      }
+
+      if (defaultValue === undefined || currentValue !== undefined) {
+        return currentSubmission;
+      }
+
+      return createUpdatedSubmission(currentSubmission, submissionPath, defaultValue);
+    },
     submission,
-    submissionMethod,
+  );
+  const activeComponentsWithInitialValues = toComponentDefinitions(
+    getActivePanels(formWithBaseSubmissionPath, withInitialValues, { submissionMethod }),
   );
 
-  return componentsWithInitialValues.reduce((currentSubmission, { component, submissionPath, defaultValue }) => {
-    const prefillValue = getComponentPrefillValue(component, currentLanguage);
-    const currentValue = submissionUtils.getSubmissionValue(submissionPath, currentSubmission);
-
-    if (prefillValue !== undefined && (prefillMode === 'overwrite' || currentValue === undefined)) {
-      return isSameSubmissionValue(currentValue, prefillValue)
-        ? currentSubmission
-        : createUpdatedSubmission(currentSubmission, submissionPath, prefillValue);
-    }
-
-    if (defaultValue === undefined || currentValue !== undefined) {
-      return currentSubmission;
-    }
-
-    return createUpdatedSubmission(currentSubmission, submissionPath, defaultValue);
-  }, withoutInactiveValues);
+  return clearInactiveSubmissionValues(
+    formWithBaseSubmissionPath,
+    activeComponentsWithInitialValues,
+    withInitialValues,
+    submissionMethod,
+  );
 };
 
 /**
