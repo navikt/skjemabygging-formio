@@ -5,7 +5,6 @@ import { hydrateLegacyAttachments } from '../../context/attachment/attachmentDat
 import { FormDefinitionProvider } from '../../context/form-definition/FormDefinitionContext';
 import { applyInitialValuesToSubmission } from '../../context/form-definition/initialSubmissionValues';
 import { SubmissionStateProvider } from '../../context/state/SubmissionStateContext';
-import { SubmissionMethodProvider } from '../../context/submission-method/SubmissionMethodContext';
 import { AttachmentUploadProvider } from '../attachments/context/AttachmentUploadContext';
 import FyllutFormActionsProvider from '../context/form-actions/FyllutFormActionsProvider';
 import { NologinTokenProvider } from '../context/nologin-token/NologinTokenContext';
@@ -49,35 +48,33 @@ const FyllutFormFlow = ({
   const shouldRenderFormFlow = submissionMethod !== undefined || (form.properties.submissionTypes?.length ?? 0) === 0;
 
   return (
-    <SubmissionMethodProvider submissionMethod={submissionMethod}>
-      <NologinTokenProvider form={form}>
-        <SubmissionStateProvider initialSubmission={hydratedInitialSubmission}>
-          <FormDefinitionProvider form={form}>
-            <FyllutValidationProvider initialPagesWithErrors={initialPagesWithErrors}>
-              <FyllutFormActionsProvider
-                form={form}
-                initialInnsendingsId={initialInnsendingsId}
-                setReceiptPdf={setReceiptPdf}
-              >
-                <AttachmentUploadProvider>
-                  <FormLayout>
-                    <FormLanguageSelector />
-                    {shouldRenderFormFlow ? (
-                      <FormRouter form={form} receiptPdf={receiptPdf} />
-                    ) : (
-                      <>
-                        <FormHeader form={form} />
-                        <SubmissionMethodSelection form={form} />
-                      </>
-                    )}
-                  </FormLayout>
-                </AttachmentUploadProvider>
-              </FyllutFormActionsProvider>
-            </FyllutValidationProvider>
-          </FormDefinitionProvider>
-        </SubmissionStateProvider>
-      </NologinTokenProvider>
-    </SubmissionMethodProvider>
+    <SubmissionStateProvider initialSubmission={hydratedInitialSubmission}>
+      <FormDefinitionProvider form={form} submissionMethod={submissionMethod}>
+        <NologinTokenProvider form={form}>
+          <FyllutValidationProvider initialPagesWithErrors={initialPagesWithErrors}>
+            <FyllutFormActionsProvider
+              form={form}
+              initialInnsendingsId={initialInnsendingsId}
+              setReceiptPdf={setReceiptPdf}
+            >
+              <AttachmentUploadProvider>
+                <FormLayout>
+                  <FormLanguageSelector />
+                  {shouldRenderFormFlow ? (
+                    <FormRouter form={form} receiptPdf={receiptPdf} />
+                  ) : (
+                    <>
+                      <FormHeader form={form} />
+                      <SubmissionMethodSelection form={form} />
+                    </>
+                  )}
+                </FormLayout>
+              </AttachmentUploadProvider>
+            </FyllutFormActionsProvider>
+          </FyllutValidationProvider>
+        </NologinTokenProvider>
+      </FormDefinitionProvider>
+    </SubmissionStateProvider>
   );
 };
 

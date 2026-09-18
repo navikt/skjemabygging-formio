@@ -1,4 +1,4 @@
-import { Component, Form, getNavId, Panel } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, Form, getNavId, Panel, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
 import {
   createContext,
   ReactNode,
@@ -15,7 +15,6 @@ import { collectDataGridRowScopes } from '../../form-components/components/data-
 import { useApplication } from '../application/ApplicationContext';
 import { useLanguage } from '../language/LanguageContext';
 import { useSubmissionState } from '../state/SubmissionStateContext';
-import { useSubmissionMethod } from '../submission-method/SubmissionMethodContext';
 import { applyCalculatedValues, CalculationTarget, isCalculatedComponent } from './calculatedValues';
 import {
   enrichFormWithBaseSubmissionPath,
@@ -29,11 +28,13 @@ interface FormDefinitionContextType {
   form: Form;
   activeComponents: ComponentDefinition[];
   panels: Panel[];
+  submissionMethod?: SubmissionMethod;
 }
 
 interface Props {
   children: ReactNode;
   form: Form;
+  submissionMethod?: SubmissionMethod;
 }
 
 interface FormDefinitionStore {
@@ -75,7 +76,7 @@ const stabilizeValue = (
   previous: FormDefinitionContextType,
   next: FormDefinitionContextType,
 ): FormDefinitionContextType => {
-  if (previous.form !== next.form) {
+  if (previous.form !== next.form || previous.submissionMethod !== next.submissionMethod) {
     return next;
   }
 
@@ -89,10 +90,9 @@ const stabilizeValue = (
       };
 };
 
-const FormDefinitionProvider = ({ children, form }: Props) => {
+const FormDefinitionProvider = ({ children, form, submissionMethod }: Props) => {
   const { logger } = useApplication();
   const { currentLanguage } = useLanguage();
-  const { submissionMethod } = useSubmissionMethod();
   const { submission, setSubmission } = useSubmissionState();
   const reportedCalculationCyclesRef = useRef(new Set<string>());
   const formWithBaseSubmissionPath = useMemo(() => enrichFormWithBaseSubmissionPath(form), [form]);
@@ -217,9 +217,9 @@ const FormDefinitionProvider = ({ children, form }: Props) => {
     });
   }, [activeComponents, formWithBaseSubmissionPath, setSubmission, submission, submissionMethod]);
 
-  const value = useMemo(
-    () => ({ form: formWithBaseSubmissionPath, activeComponents, panels }),
-    [formWithBaseSubmissionPath, activeComponents, panels],
+  const value = useMemo<FormDefinitionContextType>(
+    () => ({ form: formWithBaseSubmissionPath, activeComponents, panels, submissionMethod }),
+    [formWithBaseSubmissionPath, activeComponents, panels, submissionMethod],
   );
 
   const valueRef = useRef(value);
@@ -279,6 +279,8 @@ const useFormDefinitionValue = <Key extends keyof FormDefinitionContextType>(
 const useFormDefinitionForm = (): Form => useFormDefinitionValue('form');
 const useFormDefinitionPanels = (): Panel[] => useFormDefinitionValue('panels');
 const useFormDefinitionComponents = (): ComponentDefinition[] => useFormDefinitionValue('activeComponents');
+const useFormDefinitionSubmissionMethod = (): SubmissionMethod | undefined =>
+  useFormDefinitionValue('submissionMethod');
 
 export {
   FormDefinitionProvider,
@@ -286,5 +288,6 @@ export {
   useFormDefinitionComponents,
   useFormDefinitionForm,
   useFormDefinitionPanels,
+  useFormDefinitionSubmissionMethod,
 };
 export type { FormDefinitionContextType };

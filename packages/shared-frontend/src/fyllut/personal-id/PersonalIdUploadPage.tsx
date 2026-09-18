@@ -1,10 +1,12 @@
 import { BodyShort, Label, VStack } from '@navikt/ds-react';
 import { ComponentValue, SubmissionAttachmentValue, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useLocation, useNavigate } from 'react-router';
-import { useFormDefinitionForm } from '../../context/form-definition/FormDefinitionContext';
+import {
+  useFormDefinitionForm,
+  useFormDefinitionSubmissionMethod,
+} from '../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useSubmissionState } from '../../context/state/SubmissionStateContext';
-import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
 import { useValidationAttachmentExternalError } from '../../context/validation/ValidationContext';
 import AttachmentOptionSelect from '../attachments/components/AttachmentOptionSelect';
 import FileUploader from '../attachments/components/FileUploader';
@@ -28,7 +30,7 @@ const identityDocumentOptions: ComponentValue[] = [
 const PersonalIdUploadPage = () => {
   const form = useFormDefinitionForm();
   const { translate } = useLanguage();
-  const { submissionMethod } = useSubmissionMethod();
+  const submissionMethod = useFormDefinitionSubmissionMethod();
   const { search } = useLocation();
   const navigate = useNavigate();
   const { submission } = useSubmissionState();

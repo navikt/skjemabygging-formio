@@ -2,7 +2,10 @@ import { Box, Button, Heading } from '@navikt/ds-react';
 import { submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import TranslatedDescription from '../../../components/shared/TranslatedDescription';
-import { useFormDefinitionForm } from '../../../context/form-definition/FormDefinitionContext';
+import {
+  useFormDefinitionForm,
+  useFormDefinitionSubmissionMethod,
+} from '../../../context/form-definition/FormDefinitionContext';
 import {
   enrichComponentsWithBaseSubmissionPath,
   getResolvedSubmissionPath,
@@ -10,7 +13,6 @@ import {
 } from '../../../context/form-definition/formDefinitionUtils';
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
-import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
 import { useValidationActions } from '../../../context/validation/ValidationContext';
 import { useValidationScope } from '../../../context/validation/ValidationScopeContext';
 import { DataGridDefinition } from '../../component-types';
@@ -34,7 +36,7 @@ const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => 
   const { translate } = useLanguage();
   const { submission, updateSubmission } = useSubmissionState();
   const form = useFormDefinitionForm();
-  const { submissionMethod } = useSubmissionMethod();
+  const submissionMethod = useFormDefinitionSubmissionMethod();
   const { schedulePageValidation } = useValidationActions();
   const { pageKey } = useValidationScope();
   const { components, label, description, hideLabel, addAnother, removeAnother, disableAddingRemovingRows, rowTitle } =

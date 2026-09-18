@@ -6,11 +6,13 @@ import Alert from '../../components/alert/Alert';
 import NavUnitSelect from '../../components/nav-unit-select/NavUnitSelect';
 import { useNavUnits } from '../../components/nav-unit-select/useNavUnits';
 import { useApplication } from '../../context/application/ApplicationContext';
-import { useFormDefinitionForm } from '../../context/form-definition/FormDefinitionContext';
+import {
+  useFormDefinitionForm,
+  useFormDefinitionSubmissionMethod,
+} from '../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useRuntimeServices } from '../../context/runtime-services/RuntimeServicesContext';
 import { useSubmissionState } from '../../context/state/SubmissionStateContext';
-import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
 import { useIntegration } from '../context/integration/IntegrationContext';
 import { SUMMARY_KEY } from '../form-flow/constants';
 import { FormButtonRow, FormPrevButton } from '../layout/FormButtonRow';
@@ -27,7 +29,7 @@ const PaperSubmissionPage = ({ documentType }: Props) => {
   const { submissions } = useRuntimeServices();
   const { fyllutBaseUrl, logEvent } = useIntegration();
   const { logger } = useApplication();
-  const { submissionMethod } = useSubmissionMethod();
+  const submissionMethod = useFormDefinitionSubmissionMethod();
   const form = useFormDefinitionForm();
   const { submission } = useSubmissionState();
   const { search, state } = useLocation();

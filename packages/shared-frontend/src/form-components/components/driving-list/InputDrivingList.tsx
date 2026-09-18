@@ -1,7 +1,7 @@
 import { Box } from '@navikt/ds-react';
 import ReadMore from '../../../components/read-more/ReadMore';
 import TranslatedDescription from '../../../components/shared/TranslatedDescription';
-import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
+import { useFormDefinitionSubmissionMethod } from '../../../context/form-definition/FormDefinitionContext';
 import { DrivingListDefinition } from '../../component-types';
 import { InputComponentProps, resolveReadMore, resolveSubmissionPath } from '../../inputComponentUtils';
 import DigitalDrivingList from './DigitalDrivingList';
@@ -9,7 +9,7 @@ import PaperDrivingList from './PaperDrivingList';
 import { useDrivingListState } from './useDrivingListState';
 
 const InputDrivingList = ({ component, submissionPath }: InputComponentProps<DrivingListDefinition>) => {
-  const { submissionMethod } = useSubmissionMethod();
+  const submissionMethod = useFormDefinitionSubmissionMethod();
   const statePath = resolveSubmissionPath(component, submissionPath);
   const drivingListState = useDrivingListState(statePath);
   const readMore = resolveReadMore(component);

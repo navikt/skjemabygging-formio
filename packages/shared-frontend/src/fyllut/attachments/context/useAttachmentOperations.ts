@@ -8,10 +8,10 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import { useLocation } from 'react-router';
+import { useFormDefinitionSubmissionMethod } from '../../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { AttachmentApplication, useRuntimeServices } from '../../../context/runtime-services/RuntimeServicesContext';
 import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
-import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
 import { useValidationActions } from '../../../context/validation/ValidationContext';
 import { downloadBlob } from '../../../utils/blob';
 import { useNologinToken } from '../../context/nologin-token/NologinTokenContext';
@@ -30,7 +30,7 @@ const getAttachmentApplication = (
 
 const useAttachmentOperations = (): AttachmentUploadContextType => {
   const { attachments, sessions } = useRuntimeServices();
-  const { submissionMethod } = useSubmissionMethod();
+  const submissionMethod = useFormDefinitionSubmissionMethod();
   const { translate } = useLanguage();
   const { getLatestSubmission, setSubmission } = useSubmissionState();
   const { setAttachmentExternalError } = useValidationActions();

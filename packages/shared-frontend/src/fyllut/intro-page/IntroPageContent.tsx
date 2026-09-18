@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
-import { useFormDefinitionForm } from '../../context/form-definition/FormDefinitionContext';
+import {
+  useFormDefinitionForm,
+  useFormDefinitionSubmissionMethod,
+} from '../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useSubmissionState } from '../../context/state/SubmissionStateContext';
-import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
 import { useFormActions } from '../context/form-actions/FormActionsContext';
 import { useNologinToken } from '../context/nologin-token/NologinTokenContext';
 import FormActionError from '../layout/FormActionError';
@@ -16,7 +18,7 @@ interface Props {
 
 const IntroPage = ({ onStart }: Props) => {
   const { translate } = useLanguage();
-  const { submissionMethod } = useSubmissionMethod();
+  const submissionMethod = useFormDefinitionSubmissionMethod();
   const form = useFormDefinitionForm();
   const { saveDraft, canSaveDraft, status } = useFormActions();
   const { submission, setSubmission } = useSubmissionState();

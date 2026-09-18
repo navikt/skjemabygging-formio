@@ -3,9 +3,9 @@ import { TEXTS, VedtakBetalingsplan, dateUtils } from '@navikt/skjemadigitaliser
 import { useMemo } from 'react';
 import Alert from '../../../components/alert/Alert';
 import CheckboxGroup from '../../../components/checkbox-group/CheckboxGroup';
+import { useFormDefinitionSubmissionMethod } from '../../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { useFieldBinding } from '../../../context/state/useFieldBinding';
-import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
 import DrivingListParkingExpense from './DrivingListParkingExpense';
 import {
   getParkingFieldPath,
@@ -40,7 +40,7 @@ const DrivingListPeriod = ({
   betalingsplan,
 }: DrivingListPeriodProps) => {
   const { translate, currentLanguage } = useLanguage();
-  const { submissionMethod } = useSubmissionMethod();
+  const submissionMethod = useFormDefinitionSubmissionMethod();
   const { stateValue, setStateValue } = useFieldBinding({ statePath });
   const value = (stateValue as DrivingListValue | undefined) ?? {};
   const dates = value.dates ?? [];

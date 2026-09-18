@@ -4,8 +4,8 @@ import { dateUtils, Form, ReceiptSummary, stringUtils, TEXTS } from '@navikt/skj
 import { useEffect, useMemo } from 'react';
 import { useNavigationType } from 'react-router';
 import Alert from '../../components/alert/Alert';
+import { useFormDefinitionSubmissionMethod } from '../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../context/language/LanguageContext';
-import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
 import { useFormActions } from '../context/form-actions/FormActionsContext';
 import { useIntegration } from '../context/integration/IntegrationContext';
 import FormHeader from '../layout/FormHeader';
@@ -19,7 +19,7 @@ interface Props {
 
 const ReceiptPage = ({ form, receipt, pdf }: Props) => {
   const { logEvent } = useIntegration();
-  const { submissionMethod } = useSubmissionMethod();
+  const submissionMethod = useFormDefinitionSubmissionMethod();
   const { currentLanguage, translate } = useLanguage();
   const { status } = useFormActions();
   const navigationType = useNavigationType();

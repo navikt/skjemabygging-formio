@@ -9,9 +9,9 @@ import {
 import { MutableRefObject, ReactNode } from 'react';
 import TextField from '../../../components/text-field/TextField';
 import { getAttachmentsAtPath } from '../../../context/attachment/attachmentData';
+import { useFormDefinitionSubmissionMethod } from '../../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
-import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
 import { attachmentValidationPath } from '../../../context/validation/attachmentValidationPath';
 import ValidationRegistration from '../../../context/validation/ValidationRegistration';
 import { UnvalidatedFields } from '../../../context/validation/ValidationScopeContext';
@@ -57,7 +57,7 @@ const FileUploader = ({
   maxFileSizeInBytes,
   onUpload,
 }: Props) => {
-  const { submissionMethod } = useSubmissionMethod();
+  const submissionMethod = useFormDefinitionSubmissionMethod();
   const { translate } = useLanguage();
   const { submission } = useSubmissionState();
   const { changeAttachmentValue, handleDeleteFile, handleDownloadFile } = useAttachmentUpload();

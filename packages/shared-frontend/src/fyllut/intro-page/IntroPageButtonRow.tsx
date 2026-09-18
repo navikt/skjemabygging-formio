@@ -1,7 +1,7 @@
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useLocation, useNavigate } from 'react-router';
+import { useFormDefinitionSubmissionMethod } from '../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../context/language/LanguageContext';
-import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
 import { useFormActions } from '../context/form-actions/FormActionsContext';
 import { FormButtonRow, FormNextButton, FormPrevButton } from '../layout/FormButtonRow';
 import CancelAndDeleteButton from '../navigation/CancelAndDeleteButton';
@@ -14,7 +14,7 @@ interface Props {
 
 const IntroPageButtonRow = ({ onStart, loading }: Props) => {
   const { translate } = useLanguage();
-  const { submissionMethod } = useSubmissionMethod();
+  const submissionMethod = useFormDefinitionSubmissionMethod();
   const { canSaveDraft } = useFormActions();
   const { search } = useLocation();
   const navigate = useNavigate();

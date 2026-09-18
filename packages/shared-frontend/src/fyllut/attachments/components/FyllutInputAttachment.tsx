@@ -1,7 +1,9 @@
 import { attachmentUtils, getNavId, SubmissionAttachment } from '@navikt/skjemadigitalisering-shared-domain';
-import { useFormDefinitionForm } from '../../../context/form-definition/FormDefinitionContext';
+import {
+  useFormDefinitionForm,
+  useFormDefinitionSubmissionMethod,
+} from '../../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../../context/language/LanguageContext';
-import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
 import { AttachmentDefinition } from '../../../form-components/component-types';
 import InputAttachment from '../../../form-components/components/attachment/InputAttachment';
 import { InputComponentProps, isRequired, resolveSubmissionPath } from '../../../form-components/inputComponentUtils';
@@ -10,7 +12,7 @@ import AttachmentUpload from './AttachmentUpload';
 import OtherAttachmentUpload from './OtherAttachmentUpload';
 
 const FyllutInputAttachment = ({ component, submissionPath }: InputComponentProps<AttachmentDefinition>) => {
-  const { submissionMethod } = useSubmissionMethod();
+  const submissionMethod = useFormDefinitionSubmissionMethod();
   const { logEvent } = useIntegration();
   const form = useFormDefinitionForm();
   const { translate } = useLanguage();

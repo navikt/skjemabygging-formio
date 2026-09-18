@@ -4,10 +4,13 @@ import { useMemo } from 'react';
 import Alert from '../../components/alert/Alert';
 import FormErrorSummary from '../../components/error-summary/FormErrorSummary';
 import { useApplication } from '../../context/application/ApplicationContext';
-import { useFormDefinitionForm, useFormDefinitionPanels } from '../../context/form-definition/FormDefinitionContext';
+import {
+  useFormDefinitionForm,
+  useFormDefinitionPanels,
+  useFormDefinitionSubmissionMethod,
+} from '../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useSubmissionState } from '../../context/state/SubmissionStateContext';
-import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
 import { useValidationActions, useValidationErrorsForPages } from '../../context/validation/ValidationContext';
 import RenderSummaryForm from '../../form-components/RenderSummaryForm';
 import { inputId } from '../../utils/inputId';
@@ -22,7 +25,7 @@ import SaveButton from '../navigation/SaveButton';
 
 const SummaryPage = () => {
   const { logger, environment } = useApplication();
-  const { submissionMethod } = useSubmissionMethod();
+  const submissionMethod = useFormDefinitionSubmissionMethod();
   const { translate, currentLanguage } = useLanguage();
   const form = useFormDefinitionForm();
   const panels = useFormDefinitionPanels();

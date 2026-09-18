@@ -6,9 +6,9 @@ import {
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo } from 'react';
+import { useFormDefinitionSubmissionMethod } from '../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useFieldBinding } from '../../context/state/useFieldBinding';
-import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
 import CountrySelect from '../country-select/CountrySelect';
 import PostalCode from '../postal-code/PostalCode';
 import RadioGroup from '../radio-group/RadioGroup';
@@ -44,7 +44,7 @@ const Address = ({
   readOnly,
   fieldSize,
 }: AddressProps) => {
-  const { submissionMethod } = useSubmissionMethod();
+  const submissionMethod = useFormDefinitionSubmissionMethod();
   const { currentLanguage } = useLanguage();
   const { stateValue, setStateValue } = useFieldBinding({ statePath });
   const prefilledAddress = useMemo(

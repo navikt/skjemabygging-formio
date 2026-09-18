@@ -8,10 +8,10 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useApplication } from '../../../context/application/ApplicationContext';
+import { useFormDefinitionSubmissionMethod } from '../../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { useRuntimeServices } from '../../../context/runtime-services/RuntimeServicesContext';
 import { useFieldBinding } from '../../../context/state/useFieldBinding';
-import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
 import {
   allPaperFieldsForPeriodsAreSet,
   findSelectedVedtak,
@@ -42,7 +42,7 @@ interface DrivingListState {
 const useDrivingListState = (statePath: string): DrivingListState => {
   const { logger } = useApplication();
   const { formData } = useRuntimeServices();
-  const { submissionMethod } = useSubmissionMethod();
+  const submissionMethod = useFormDefinitionSubmissionMethod();
   const { currentLanguage } = useLanguage();
   const { stateValue, setStateValue } = useFieldBinding({ statePath });
   const [status, setStatus] = useState<DrivingListStatus>('loading');

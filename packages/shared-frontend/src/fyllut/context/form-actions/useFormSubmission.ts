@@ -2,9 +2,9 @@ import { Form, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-dom
 import { useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useApplication } from '../../../context/application/ApplicationContext';
+import { useFormDefinitionSubmissionMethod } from '../../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { useRuntimeServices } from '../../../context/runtime-services/RuntimeServicesContext';
-import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
 import { b64toBlob } from '../../../utils/blob';
 import { RECEIPT_KEY } from '../../form-flow/constants';
 import prepareSubmissionForTransport from '../../submission/prepareSubmissionForTransport';
@@ -20,7 +20,7 @@ const useFormSubmission = (
 ) => {
   const { submissions, sessions } = useRuntimeServices();
   const { logger } = useApplication();
-  const { submissionMethod } = useSubmissionMethod();
+  const submissionMethod = useFormDefinitionSubmissionMethod();
   const { currentLanguage, translate } = useLanguage();
   const { logEvent } = useIntegration();
   const { getNologinToken, clearNologinToken, handleSessionExpired } = useNologinToken();

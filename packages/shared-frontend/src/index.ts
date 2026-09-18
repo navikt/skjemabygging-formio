@@ -11,13 +11,13 @@ import {
   useFormDefinitionComponents,
   useFormDefinitionForm,
   useFormDefinitionPanels,
+  useFormDefinitionSubmissionMethod,
 } from './context/form-definition/FormDefinitionContext';
 import { applyInitialValuesToSubmission } from './context/form-definition/initialSubmissionValues';
 import { LanguageProvider, useLanguage } from './context/language/LanguageContext';
 import { RuntimeServicesProvider, useRuntimeServices } from './context/runtime-services/RuntimeServicesContext';
 import { StateStoreProvider } from './context/state/StateContext';
 import { SubmissionStateProvider, useSubmissionState } from './context/state/SubmissionStateContext';
-import { SubmissionMethodProvider, useSubmissionMethod } from './context/submission-method/SubmissionMethodContext';
 import { ValidationProvider } from './context/validation/ValidationContext';
 import {
   findUnsupportedCustomValidation,
@@ -94,17 +94,16 @@ export {
   RuntimeServicesProvider,
   sharedFrontendPackageName,
   StateStoreProvider,
-  SubmissionMethodProvider,
   SubmissionStateProvider,
   useApplication,
   useFormDefinition,
   useFormDefinitionComponents,
   useFormDefinitionForm,
   useFormDefinitionPanels,
+  useFormDefinitionSubmissionMethod,
   useLanguage,
   useNavUnits,
   useRuntimeServices,
-  useSubmissionMethod,
   useSubmissionState,
   ValidationExclamationIcon,
   ValidationProvider,

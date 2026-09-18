@@ -2,8 +2,8 @@ import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useApplication } from '../../../context/application/ApplicationContext';
+import { useFormDefinitionSubmissionMethod } from '../../../context/form-definition/FormDefinitionContext';
 import { useRuntimeServices } from '../../../context/runtime-services/RuntimeServicesContext';
-import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
 import { useIntegration } from '../integration/IntegrationContext';
 import styles from './NologinTokenContext.module.css';
 
@@ -44,7 +44,7 @@ const NologinTokenProvider = ({ children, form }: Props) => {
   const { logger } = useApplication();
   const { sessions } = useRuntimeServices();
   const { logEvent } = useIntegration();
-  const { submissionMethod } = useSubmissionMethod();
+  const submissionMethod = useFormDefinitionSubmissionMethod();
   const navigate = useNavigate();
   const [nologinToken, setNologinToken] = useState<string>();
   const [honeypot, setHoneypot] = useState('');

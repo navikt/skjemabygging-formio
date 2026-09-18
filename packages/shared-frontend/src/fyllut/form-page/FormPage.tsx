@@ -2,8 +2,8 @@ import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useRef } from 'react';
 import { useLocation, useParams } from 'react-router';
 import FormErrorSummary from '../../components/error-summary/FormErrorSummary';
+import { useFormDefinitionSubmissionMethod } from '../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../context/language/LanguageContext';
-import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
 import { useValidationActions } from '../../context/validation/ValidationContext';
 import RenderInputForm from '../../form-components/RenderInputForm';
 import { inputComponentRegistry } from '../../form-components/inputComponentRegistry';
@@ -23,7 +23,7 @@ const fyllutInputComponentRegistry = {
 
 const FormPage = () => {
   const { translate } = useLanguage();
-  const { submissionMethod } = useSubmissionMethod();
+  const submissionMethod = useFormDefinitionSubmissionMethod();
   const { panelSlug } = useParams<{ panelSlug?: string }>();
   const { hash, state } = useLocation();
   const { saveDraft, canSaveDraft } = useFormActions();

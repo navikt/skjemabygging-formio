@@ -3,10 +3,10 @@ import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import { useLocation } from 'react-router';
 import { useApplication } from '../../context/application/ApplicationContext';
+import { useFormDefinitionSubmissionMethod } from '../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useRuntimeServices } from '../../context/runtime-services/RuntimeServicesContext';
 import { useSubmissionState } from '../../context/state/SubmissionStateContext';
-import { useSubmissionMethod } from '../../context/submission-method/SubmissionMethodContext';
 import { useAttachmentUpload } from '../attachments/context/AttachmentUploadContext';
 import ConfirmationModal from './ConfirmationModal';
 import { getExitUrl } from './navUrls';
@@ -18,7 +18,7 @@ interface Props {
 const CancelAndDeleteButton = ({ exitOnly = false }: Props) => {
   const { applications } = useRuntimeServices();
   const { logger } = useApplication();
-  const { submissionMethod } = useSubmissionMethod();
+  const submissionMethod = useFormDefinitionSubmissionMethod();
   const { translate } = useLanguage();
   const { search } = useLocation();
   const { setSubmission } = useSubmissionState();

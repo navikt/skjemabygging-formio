@@ -1,10 +1,10 @@
 import { dateUtils, Form, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router';
+import { useFormDefinitionSubmissionMethod } from '../../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { Draft, useRuntimeServices } from '../../../context/runtime-services/RuntimeServicesContext';
 import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
-import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
 import { updateSearch } from '../../../utils/searchParams';
 import prepareSubmissionForTransport from '../../submission/prepareSubmissionForTransport';
 
@@ -17,7 +17,7 @@ interface DraftPersistence {
 
 const useDraftPersistence = (form: Form, initialInnsendingsId?: string): DraftPersistence => {
   const { applications } = useRuntimeServices();
-  const { submissionMethod } = useSubmissionMethod();
+  const submissionMethod = useFormDefinitionSubmissionMethod();
   const { currentLanguage } = useLanguage();
   const { search } = useLocation();
   const navigate = useNavigate();

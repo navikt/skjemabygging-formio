@@ -10,10 +10,12 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { MutableRefObject, ReactNode } from 'react';
 import { createAttachmentId, getAttachmentsAtPath } from '../../../context/attachment/attachmentData';
-import { useFormDefinitionForm } from '../../../context/form-definition/FormDefinitionContext';
+import {
+  useFormDefinitionForm,
+  useFormDefinitionSubmissionMethod,
+} from '../../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
-import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
 import { attachmentValidationPath } from '../../../context/validation/attachmentValidationPath';
 import ValidationRegistration from '../../../context/validation/ValidationRegistration';
 import { attachmentValueRules } from '../attachmentUploadValidation';
@@ -64,7 +66,7 @@ const AttachmentUploadField = ({
   refs,
   onUpload,
 }: AttachmentUploadFieldProps) => {
-  const { submissionMethod } = useSubmissionMethod();
+  const submissionMethod = useFormDefinitionSubmissionMethod();
   const { translate } = useLanguage();
   const { handleDeleteAllFilesForAttachment } = useAttachmentUpload();
   const form = useFormDefinitionForm();

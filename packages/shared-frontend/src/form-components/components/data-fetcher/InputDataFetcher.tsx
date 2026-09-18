@@ -2,11 +2,11 @@ import { DataFetcherComponent, DataFetcherData, Submission, TEXTS } from '@navik
 import { useCallback, useEffect, useMemo } from 'react';
 import CheckboxGroup from '../../../components/checkbox-group/CheckboxGroup';
 import { useApplication } from '../../../context/application/ApplicationContext';
+import { useFormDefinitionSubmissionMethod } from '../../../context/form-definition/FormDefinitionContext';
 import { useRuntimeServices } from '../../../context/runtime-services/RuntimeServicesContext';
 import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
 import { parseSubmissionPath, setDeepValue } from '../../../context/state/stateHelpers';
 import { useFieldBinding } from '../../../context/state/useFieldBinding';
-import { useSubmissionMethod } from '../../../context/submission-method/SubmissionMethodContext';
 import { DataFetcherDefinition } from '../../component-types';
 import { InputComponentProps, resolveReadMore, resolveSubmissionPath } from '../../inputComponentUtils';
 import { getSelectedValuesAsList, getSelectedValuesMap } from '../../shared/selectedValuesUtils';
@@ -17,7 +17,7 @@ const InputDataFetcher = ({ component, submissionPath }: InputComponentProps<Dat
   const dataFetcherComponent = component as DataFetcherComponent;
   const { logger } = useApplication();
   const { formData } = useRuntimeServices();
-  const { submissionMethod } = useSubmissionMethod();
+  const submissionMethod = useFormDefinitionSubmissionMethod();
   const { submission, setSubmission } = useSubmissionState();
   const statePath = resolveSubmissionPath(component, submissionPath);
   const { stateValue, setStateValue } = useFieldBinding({ statePath });
