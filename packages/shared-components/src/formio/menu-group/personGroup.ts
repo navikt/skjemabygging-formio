@@ -40,10 +40,10 @@ const personGroup = {
     citizenship: citizenshipBuilder(),
     senderPerson: senderBuilder({
       customLabels: {
-        nationalIdentityNumber: 'Representantens fødselsnummer eller d-nummer',
-        firstName: 'Representantens fornavn',
-        surname: 'Representantens etternavn',
-        organizationNumber: 'Organisasjonsnummeret til den virksomheten / underenheten du representerer',
+        nationalIdentityNumber: 'Fødselsnummer eller d-nummer',
+        firstName: 'Fornavn',
+        surname: 'Etternavn',
+        organizationNumber: 'Organisasjonsnummeret til virksomheten / underenheten du representerer',
         organizationName: 'Virksomhetens navn',
       },
       label: 'Avsender person',
