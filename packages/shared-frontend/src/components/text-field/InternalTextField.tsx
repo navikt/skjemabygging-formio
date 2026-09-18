@@ -25,7 +25,6 @@ interface InternalTextFieldProps extends BaseFieldProps {
   type?: SupportedTextFieldType;
   spellCheck?: boolean;
   formatKey?: string;
-  prefillValue?: string;
   toDisplayValue?: (value: unknown) => string;
   toStateValue?: (value: string) => unknown;
   value?: string;
@@ -56,7 +55,6 @@ const InternalTextField = ({
   type,
   spellCheck,
   formatKey,
-  prefillValue,
   toDisplayValue,
   toStateValue,
   value: controlledValue,
@@ -80,18 +78,8 @@ const InternalTextField = ({
     (value: unknown) => (toDisplayValue ? toDisplayValue(value) : toInputFormat(value, formatKey)),
     [formatKey, toDisplayValue],
   );
-  const [displayValue, setDisplayValue] = useState(() =>
-    formatDisplayValue(
-      controlled
-        ? controlledValue
-        : (stateValue ?? (typeof prefillValue === 'string' && prefillValue.trim() !== '' ? prefillValue : undefined)),
-    ),
-  );
-  const syncedDisplayValue = formatDisplayValue(
-    controlled
-      ? controlledValue
-      : (stateValue ?? (typeof prefillValue === 'string' && prefillValue.trim() !== '' ? prefillValue : undefined)),
-  );
+  const [displayValue, setDisplayValue] = useState(() => formatDisplayValue(controlled ? controlledValue : stateValue));
+  const syncedDisplayValue = formatDisplayValue(controlled ? controlledValue : stateValue);
   const resolvedAutoComplete = resolveAutoComplete(autoComplete);
 
   const updateValue = useCallback(

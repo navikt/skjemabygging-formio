@@ -1,5 +1,4 @@
 import { CustomLabels, dateUtils, SubmissionIdentity, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect } from 'react';
 import { useFieldBinding } from '../../context/state/useFieldBinding';
 import DatePicker from '../date/DatePicker';
 import NationalIdentityNumber from '../national-identity-number/NationalIdentityNumber';
@@ -9,27 +8,12 @@ import { showsPrefilledIdentityNumber } from './identityValidation';
 
 interface IdentityProps extends Pick<BaseFieldProps, 'statePath' | 'required' | 'readOnly'> {
   customLabels?: CustomLabels;
-  prefillValue?: string;
 }
 
-const Identity = ({ statePath, required = true, readOnly, customLabels, prefillValue }: IdentityProps) => {
-  const { stateValue, setStateValue } = useFieldBinding({ statePath });
+const Identity = ({ statePath, required = true, readOnly, customLabels }: IdentityProps) => {
+  const { stateValue } = useFieldBinding({ statePath });
   const identity = stateValue as SubmissionIdentity | undefined;
   const isPrefilled = showsPrefilledIdentityNumber(identity);
-
-  useEffect(() => {
-    if (
-      identity?.harDuFodselsnummer ||
-      identity?.identitetsnummer ||
-      identity?.fodselsdato ||
-      typeof prefillValue !== 'string' ||
-      prefillValue.trim() === ''
-    ) {
-      return;
-    }
-
-    setStateValue({ identitetsnummer: prefillValue });
-  }, [identity, prefillValue, setStateValue]);
 
   if (readOnly) {
     return (

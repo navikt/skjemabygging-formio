@@ -1,4 +1,5 @@
-import Sender, { SenderPrefillValue } from '../../../components/sender/Sender';
+import Sender from '../../../components/sender/Sender';
+import { getPrefilledSender, SenderPrefillValue } from '../../../components/sender/senderValidation';
 import { SenderDefinition } from '../../component-types';
 import {
   InputComponentProps,
@@ -19,12 +20,11 @@ const InputSender = ({ component, submissionPath }: InputComponentProps<SenderDe
       statePath={resolveSubmissionPath(component, submissionPath)}
       required={isRequired(component)}
       fieldSize={resolveFieldSize(component)}
-      readOnly={component.readOnly}
+      readOnly={component.readOnly || getPrefilledSender(component.senderRole ?? 'person', prefillValue) !== undefined}
       readMore={resolveReadMore(component)}
       senderRole={component.senderRole}
       customLabels={component.customLabels}
       descriptions={component.descriptions}
-      prefillValue={prefillValue}
     />
   );
 };

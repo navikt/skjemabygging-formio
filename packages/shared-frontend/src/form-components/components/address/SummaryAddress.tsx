@@ -1,21 +1,12 @@
 import { FormSummary } from '@navikt/ds-react';
 import { addressToString, submissionUtils as formComponentUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import { getPrefilledAddress } from '../../../components/address/addressUtils';
 import { AddressDefinition } from '../../component-types';
 import { FormComponentProps } from '../../types';
 
 const SummaryAddress = (props: FormComponentProps<AddressDefinition>) => {
-  const { component, submissionPath, submission, translate, currentLanguage } = props;
+  const { component, submissionPath, submission, translate } = props;
   const { label } = component;
-  const value =
-    formComponentUtils.getSubmissionValue(submissionPath, submission) ??
-    getPrefilledAddress(
-      {
-        addressPriority: component.addressPriority,
-        prefillValue: component.prefillValue,
-      },
-      currentLanguage,
-    );
+  const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
 
   if (value === undefined) {
     return null;

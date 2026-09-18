@@ -2,17 +2,15 @@ import { CustomLabels, SubmissionAddress, SubmissionMethod, TEXTS } from '@navik
 import { ValidationField } from '../../context/validation/validationTypes';
 import { toPostalCodeValidation } from '../postal-code/postalCodeValidation';
 import { toFieldValidation, toValidationFields } from '../shared/fieldValidation';
-import { AddressConfig, getPrefilledAddress, resolveAddressType, shouldShowAddressTypeChoice } from './addressUtils';
+import { AddressConfig, resolveAddressType, shouldShowAddressTypeChoice } from './addressUtils';
 
-interface AddressValidationInput extends AddressConfig {
+interface AddressValidationInput extends Pick<AddressConfig, 'addressType' | 'addressTypeWizard' | 'prefillKey'> {
   statePath: string;
   required?: boolean;
   readOnly?: boolean;
   customLabels?: CustomLabels;
-  /** The address stored in state, before the prefilled address is applied. */
   value?: SubmissionAddress;
   submissionMethod?: SubmissionMethod;
-  currentLanguage: string;
 }
 
 interface AddressPartInput {
@@ -45,28 +43,20 @@ const toAddressPart = ({
  */
 const toAddressValidationFields = ({
   statePath,
-  addressPriority,
   addressType,
   addressTypeWizard,
   prefillKey,
-  prefillValue,
   customLabels,
   required = false,
   readOnly,
   value,
   submissionMethod,
-  currentLanguage,
 }: AddressValidationInput): ValidationField[] => {
-  const prefilledAddress = getPrefilledAddress({ addressPriority, prefillValue }, currentLanguage);
-  const address = value ?? prefilledAddress;
-  const effectiveReadOnly = readOnly || prefilledAddress !== undefined;
+  const address = value;
+  const effectiveReadOnly = readOnly;
   const showAddressChoice = shouldShowAddressTypeChoice({ prefillKey, addressTypeWizard }, submissionMethod);
   const resolvedAddressType = resolveAddressType({ addressType, prefillKey }, address, submissionMethod);
   const isRendered = (partValue: unknown) => !effectiveReadOnly || !!partValue;
-
-  if (prefilledAddress && value === undefined) {
-    return [];
-  }
 
   const choiceFields: ValidationField[] = showAddressChoice
     ? [

@@ -1,7 +1,5 @@
-import { CustomLabels, SubmissionSender, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect, useMemo } from 'react';
+import { CustomLabels, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useFormDefinitionSubmissionMethod } from '../../context/form-definition/FormDefinitionContext';
-import { useFieldBinding } from '../../context/state/useFieldBinding';
 import Alert from '../alert/Alert';
 import NationalIdentityNumber from '../national-identity-number/NationalIdentityNumber';
 import OrganizationNumber from '../organization-number/OrganizationNumber';
@@ -9,18 +7,12 @@ import ReadMore from '../read-more/ReadMore';
 import FormElementBox from '../shared/FormElementBox';
 import TextField from '../text-field/TextField';
 import { BaseFieldProps } from '../types';
-import {
-  getPrefilledSender,
-  ORGANIZATION_NAME_LABEL,
-  ORGANIZATION_NUMBER_LABEL,
-  SenderPrefillValue,
-} from './senderValidation';
+import { ORGANIZATION_NAME_LABEL, ORGANIZATION_NUMBER_LABEL } from './senderValidation';
 
 interface SenderProps extends Pick<BaseFieldProps, 'statePath' | 'required' | 'readOnly' | 'readMore' | 'fieldSize'> {
   senderRole?: 'person' | 'organization';
   customLabels?: CustomLabels;
   descriptions?: Record<string, string>;
-  prefillValue?: SenderPrefillValue;
 }
 
 const Sender = ({
@@ -32,26 +24,9 @@ const Sender = ({
   senderRole = 'person',
   customLabels,
   descriptions,
-  prefillValue,
 }: SenderProps) => {
   const submissionMethod = useFormDefinitionSubmissionMethod();
-  const { stateValue, setStateValue } = useFieldBinding({ statePath });
-  const prefilledSender = useMemo<SubmissionSender | undefined>(
-    () => getPrefilledSender(senderRole, prefillValue),
-    [prefillValue, senderRole],
-  );
-
-  useEffect(() => {
-    if (prefilledSender && stateValue === undefined) {
-      setStateValue(prefilledSender);
-    }
-  }, [prefilledSender, setStateValue, stateValue]);
-
-  if (prefilledSender && stateValue === undefined) {
-    return null;
-  }
-
-  const effectiveReadOnly = readOnly || prefilledSender !== undefined;
+  const effectiveReadOnly = readOnly;
   const showApplicationInsight = submissionMethod === 'digital' || submissionMethod === 'digitalnologin';
 
   return (
@@ -107,4 +82,4 @@ const Sender = ({
 };
 
 export default Sender;
-export type { SenderPrefillValue, SenderProps };
+export type { SenderProps };

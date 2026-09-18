@@ -30,7 +30,6 @@ const InputSurname = ({ component, submissionPath }: InputComponentProps<Surname
       autoComplete={component.autocomplete}
       inputMode={component.inputType}
       spellCheck={component.spellCheck}
-      prefillValue={typeof component.prefillValue === 'string' ? component.prefillValue : undefined}
       readOnly={component.readOnly}
       readMore={resolveReadMore(component)}
       validation={fieldValidation.rules as TextFieldValidation}

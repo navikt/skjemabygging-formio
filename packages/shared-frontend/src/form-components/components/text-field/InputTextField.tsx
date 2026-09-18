@@ -23,7 +23,6 @@ const InputTextField = ({ component, submissionPath }: InputComponentProps<TextF
       autoComplete={component.autocomplete}
       inputMode={component.inputType}
       spellCheck={component.spellCheck}
-      prefillValue={typeof component.prefillValue === 'string' ? component.prefillValue : undefined}
       readMore={resolveReadMore(component)}
       validation={validation}
     />

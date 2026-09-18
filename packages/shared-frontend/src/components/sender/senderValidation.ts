@@ -16,9 +16,7 @@ interface SenderValidationInput {
   required?: boolean;
   senderRole?: 'person' | 'organization';
   customLabels?: CustomLabels;
-  /** The sender stored in state, before the prefilled sender is applied. */
   value?: SubmissionSender;
-  prefillValue?: SenderPrefillValue;
 }
 
 /** The prefilled sender a person role derives from the applicant, or undefined when there is none. */
@@ -50,15 +48,8 @@ const toSenderValidationFields = ({
   senderRole = 'person',
   customLabels,
   value,
-  prefillValue,
 }: SenderValidationInput): ValidationField[] => {
-  const prefilledSender = getPrefilledSender(senderRole, prefillValue);
-
-  if (prefilledSender && value === undefined) {
-    return [];
-  }
-
-  const sender = value ?? prefilledSender;
+  const sender = value;
 
   if (senderRole === 'organization') {
     const numberPath = `${statePath}.organization.number`;

@@ -5,9 +5,7 @@ import {
   SubmissionAddress,
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect, useMemo } from 'react';
 import { useFormDefinitionSubmissionMethod } from '../../context/form-definition/FormDefinitionContext';
-import { useLanguage } from '../../context/language/LanguageContext';
 import { useFieldBinding } from '../../context/state/useFieldBinding';
 import CountrySelect from '../country-select/CountrySelect';
 import PostalCode from '../postal-code/PostalCode';
@@ -15,45 +13,29 @@ import RadioGroup from '../radio-group/RadioGroup';
 import FormElementBox from '../shared/FormElementBox';
 import TextField from '../text-field/TextField';
 import { BaseFieldProps } from '../types';
-import {
-  AddressPriority,
-  AddressTypeWizard,
-  getPrefilledAddress,
-  resolveAddressType,
-  shouldShowAddressTypeChoice,
-} from './addressUtils';
+import { AddressTypeWizard, resolveAddressType, shouldShowAddressTypeChoice } from './addressUtils';
 
 interface AddressProps extends Pick<BaseFieldProps, 'statePath' | 'required' | 'readOnly' | 'fieldSize'> {
-  addressPriority?: AddressPriority;
   addressType?: AddressType;
   addressTypeWizard?: AddressTypeWizard;
   prefillKey?: PrefillKey | PrefillKey[];
-  prefillValue?: string | object;
   customLabels?: CustomLabels;
 }
 
 const Address = ({
   statePath,
-  addressPriority,
   addressType,
   addressTypeWizard,
   prefillKey,
-  prefillValue,
   customLabels,
   required = false,
   readOnly,
   fieldSize,
 }: AddressProps) => {
   const submissionMethod = useFormDefinitionSubmissionMethod();
-  const { currentLanguage } = useLanguage();
-  const { stateValue, setStateValue } = useFieldBinding({ statePath });
-  const prefilledAddress = useMemo(
-    () => getPrefilledAddress({ addressPriority, prefillValue }, currentLanguage),
-    [addressPriority, currentLanguage, prefillValue],
-  );
-  const address = ((stateValue as SubmissionAddress | undefined) ?? prefilledAddress) as SubmissionAddress | undefined;
-  const hasPrefilledAddress = prefilledAddress !== undefined;
-  const effectiveReadOnly = readOnly || hasPrefilledAddress;
+  const { stateValue } = useFieldBinding({ statePath });
+  const address = stateValue as SubmissionAddress | undefined;
+  const effectiveReadOnly = readOnly;
   const showAddressChoice = shouldShowAddressTypeChoice({ prefillKey, addressTypeWizard }, submissionMethod);
   const resolvedAddressType = resolveAddressType({ addressType, prefillKey }, address, submissionMethod);
   const coReadMore = !effectiveReadOnly
@@ -62,16 +44,6 @@ const Address = ({
         text: TEXTS.statiske.address.co.readMore.content,
       }
     : undefined;
-
-  useEffect(() => {
-    if (prefilledAddress && stateValue === undefined) {
-      setStateValue(prefilledAddress);
-    }
-  }, [prefilledAddress, setStateValue, stateValue]);
-
-  if (prefilledAddress && stateValue === undefined) {
-    return null;
-  }
 
   return (
     <FormElementBox fieldSize={fieldSize} marginBottom="space-0">

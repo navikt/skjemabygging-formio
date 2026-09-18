@@ -1,6 +1,7 @@
 import { Component } from '@navikt/skjemadigitalisering-shared-domain';
 import { toAccountNumberValidation } from '../../components/account-number/accountNumberValidation';
 import { toAddressValidityValidationFields } from '../../components/address-validity/addressValidityValidation';
+import { getPrefilledAddress } from '../../components/address/addressUtils';
 import { toAddressValidationFields } from '../../components/address/addressValidation';
 import { toDatePickerValidation, toMonthPickerValidation } from '../../components/date/dateValidation';
 import { toEmailValidation } from '../../components/email/emailValidation';
@@ -211,17 +212,14 @@ const validationFieldsRegistry: ValidationFieldsRegistry = {
   navAddress: ({ component, submissionPath, value, submissionMethod, currentLanguage }) =>
     toAddressValidationFields({
       statePath: submissionPath,
-      addressPriority: component.addressPriority,
       addressType: component.addressType,
       addressTypeWizard: component.addressTypeWizard,
       prefillKey: component.prefillKey,
-      prefillValue: component.prefillValue,
       customLabels: component.customLabels,
       required: isRequired(component),
-      readOnly: component.readOnly,
+      readOnly: component.readOnly || getPrefilledAddress(component, currentLanguage) !== undefined,
       value: value as Parameters<typeof toAddressValidationFields>[0]['value'],
       submissionMethod,
-      currentLanguage,
     }),
 
   addressValidity: ({ component, submissionPath, value }) =>
@@ -238,10 +236,6 @@ const validationFieldsRegistry: ValidationFieldsRegistry = {
       senderRole: component.senderRole,
       customLabels: component.customLabels,
       value: value as Parameters<typeof toSenderValidationFields>[0]['value'],
-      prefillValue:
-        typeof component.prefillValue === 'object' && component.prefillValue !== null
-          ? (component.prefillValue as Parameters<typeof toSenderValidationFields>[0]['prefillValue'])
-          : undefined,
     }),
 
   activities: ({ component, submissionPath, value, submissionMethod }) =>
