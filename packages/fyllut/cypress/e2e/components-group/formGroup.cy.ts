@@ -10,25 +10,27 @@ describe('FormGroup', () => {
     });
 
     it('should render legend and children', () => {
-      cy.getComponent('skjemagruppe1')
+      cy.get('[data-component-key="skjemagruppe1"]')
         .find('.aksel-fieldset__legend-formio-template')
         .should('contain.text', 'Skjemagruppe');
       cy.findByRole('textbox', { name: 'Tekstfelt i gruppe' }).should('exist');
     });
 
     it('should show description', () => {
-      cy.getComponent('skjemagruppe2').within(() => {
+      cy.get('[data-component-key="skjemagruppe2"]').within(() => {
         cy.get('.description').should('contain.text', 'Dette er en beskrivelse av gruppen');
         cy.findByRole('textbox', { name: 'Tekstfelt i gruppe med beskrivelse' }).should('exist');
       });
     });
 
     it('should apply background color class when backgroundColor is true', () => {
-      cy.getComponent('skjemagruppe1').find('.aksel-fieldset__content--background-color').should('exist');
+      cy.get('[data-component-key="skjemagruppe1"]').find('.aksel-fieldset__content--background-color').should('exist');
     });
 
     it('should not apply background color class when backgroundColor is false', () => {
-      cy.getComponent('skjemagruppe3').find('.aksel-fieldset__content--background-color').should('not.exist');
+      cy.get('[data-component-key="skjemagruppe3"]')
+        .find('.aksel-fieldset__content--background-color')
+        .should('not.exist');
     });
 
     it('child components should be interactable', () => {
@@ -44,13 +46,13 @@ describe('FormGroup', () => {
     });
 
     it('should translate legend', () => {
-      cy.getComponent('skjemagruppe1')
+      cy.get('[data-component-key="skjemagruppe1"]')
         .find('.aksel-fieldset__legend-formio-template')
         .should('contain.text', 'Skjemagruppe (en)');
     });
 
     it('should translate description', () => {
-      cy.getComponent('skjemagruppe2')
+      cy.get('[data-component-key="skjemagruppe2"]')
         .find('.description')
         .should('contain.text', 'Dette er en beskrivelse av gruppen (en)');
     });

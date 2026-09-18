@@ -24,11 +24,11 @@ describe('Alert', () => {
   });
 
   it('should display html content - h1 and a link to nav.no', () => {
-    cy.getComponent('alertstripehtml').find('h1').should('have.text', 'Tittel');
-    cy.getComponent('alertstripehtml').find('a').should('have.attr', 'href', 'https://www.nav.no/');
+    cy.get('[data-component-key="alertstripehtml"]').find('h1').should('have.text', 'Tittel');
+    cy.get('[data-component-key="alertstripehtml"]').find('a').should('have.attr', 'href', 'https://www.nav.no/');
   });
 
   it('should display alert with norwegian alerttype (suksess instead of success)', () => {
-    cy.getComponent('alertstripenorwegian').find('.aksel-alert--success').contains('Norwegian alertType');
+    cy.get('[data-component-key="alertstripenorwegian"]').find('.aksel-alert--success').contains('Norwegian alertType');
   });
 });

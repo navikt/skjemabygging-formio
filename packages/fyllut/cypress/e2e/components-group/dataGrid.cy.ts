@@ -10,40 +10,40 @@ describe('DataGrid', () => {
     });
 
     it('should render label as legend', () => {
-      cy.getComponent('datagrid1')
+      cy.get('[data-component-key="datagrid1"]')
         .find('fieldset > .aksel-fieldset__legend-formio-template')
         .first()
         .should('contain.text', 'Repeterende data');
     });
 
     it('should render description', () => {
-      cy.getComponent('datagrid1').find('.description').should('contain.text', 'Beskrivelse av tabellen');
+      cy.get('[data-component-key="datagrid1"]').find('.description').should('contain.text', 'Beskrivelse av tabellen');
     });
 
     it('should render rowTitle per row', () => {
-      cy.getComponent('datagrid1')
+      cy.get('[data-component-key="datagrid1"]')
         .find('.aksel-fieldset__content .aksel-fieldset__legend-formio-template')
         .should('contain.text', 'Rad');
     });
 
     it('should show custom addAnother button text', () => {
-      cy.getComponent('datagrid1')
+      cy.get('[data-component-key="datagrid1"]')
         .findByRole('button', { name: /Legg til rad/i })
         .should('exist');
     });
 
     it('should show default addAnother button text when not customized', () => {
-      cy.getComponent('datagrid2')
+      cy.get('[data-component-key="datagrid2"]')
         .findByRole('button', { name: /Legg til/i })
         .should('exist');
     });
 
     it('should show custom removeAnother text after adding a row', () => {
-      cy.getComponent('datagrid1')
+      cy.get('[data-component-key="datagrid1"]')
         .findByRole('button', { name: /Legg til rad/i })
         .click();
       cy.findAllByRole('textbox', { name: 'Navn' }).should('have.length', 2);
-      cy.getComponent('datagrid1').contains('button', 'Fjern rad').should('exist');
+      cy.get('[data-component-key="datagrid1"]').contains('button', 'Fjern rad').should('exist');
     });
 
     it('child textfield should be interactable', () => {
@@ -59,24 +59,26 @@ describe('DataGrid', () => {
     });
 
     it('should translate label', () => {
-      cy.getComponent('datagrid1')
+      cy.get('[data-component-key="datagrid1"]')
         .find('fieldset > .aksel-fieldset__legend-formio-template')
         .first()
         .should('contain.text', 'Repeterende data (en)');
     });
 
     it('should translate description', () => {
-      cy.getComponent('datagrid1').find('.description').should('contain.text', 'Beskrivelse av tabellen (en)');
+      cy.get('[data-component-key="datagrid1"]')
+        .find('.description')
+        .should('contain.text', 'Beskrivelse av tabellen (en)');
     });
 
     it('should translate rowTitle', () => {
-      cy.getComponent('datagrid1')
+      cy.get('[data-component-key="datagrid1"]')
         .find('.aksel-fieldset__content .aksel-fieldset__legend-formio-template')
         .should('contain.text', 'Rad (en)');
     });
 
     it('should translate addAnother button text', () => {
-      cy.getComponent('datagrid1')
+      cy.get('[data-component-key="datagrid1"]')
         .findByRole('button', { name: /Legg til rad \(en\)/i })
         .should('exist');
     });

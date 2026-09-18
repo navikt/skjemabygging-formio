@@ -88,8 +88,6 @@ declare global {
        */
       withinComponent(label: string | RegExp, fn: () => void): Chainable<JQuery<HTMLElement>>;
 
-      getComponent(key: string): Chainable<JQuery<HTMLElement>>;
-
       withinSummaryGroup(heading: string | RegExp, fn: () => void): Chainable<JQuery<HTMLElement>>;
 
       assertCombobox(optionLabel: string | RegExp): Chainable<JQuery<HTMLElement>>;

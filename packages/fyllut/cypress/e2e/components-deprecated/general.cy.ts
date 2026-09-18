@@ -156,9 +156,9 @@ describe('React components', () => {
 
         cy.findByRole('textbox', { name: 'Fornavn' }).should('have.value', 'Storm');
         // TODO: Not the nicest way to check values from react-select. But not worth the time to debug since it will be replaced by Aksel select.
-        cy.getComponent('landvelger').contains('Norge');
-        cy.getComponent('valutavelger').contains('Australsk dollar (AUD)');
-        cy.getComponent('velgInstrument').contains('Gitar');
+        cy.get('[data-component-key="landvelger"]').contains('Norge');
+        cy.get('[data-component-key="valutavelger"]').contains('Australsk dollar (AUD)');
+        cy.get('[data-component-key="velgInstrument"]').contains('Gitar');
         cy.findByRole('textbox', { name: 'Gyldig fra dato' }).should('have.value', '01.01.2023');
         cy.findByLabelText('Velg frukt')
           .should('exist')
