@@ -2,7 +2,14 @@ import { Writable } from 'node:stream';
 import { setTimeout as delay } from 'node:timers/promises';
 import { logger } from '../../logging/logger';
 import { CsvReport, writeCsvReport } from './csvPipeline';
-import { deferred } from './testHelpers';
+
+const deferred = <T = void>() => {
+  let resolve!: (value: T | PromiseLike<T>) => void;
+  const promise = new Promise<T>((complete) => {
+    resolve = complete;
+  });
+  return { promise, resolve };
+};
 
 describe('CSV pipeline', () => {
   afterEach(() => {

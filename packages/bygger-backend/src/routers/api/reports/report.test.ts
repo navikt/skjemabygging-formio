@@ -1,9 +1,16 @@
 import { Request, Response } from 'express';
 import { mock } from 'vitest-mock-extended';
 import { reportService } from '../../../services';
-import { deferred } from '../../../services/reports/testHelpers';
 import { ApiError } from '../helpers/errors';
 import report from './report';
+
+const deferred = <T = void>() => {
+  let resolve!: (value: T | PromiseLike<T>) => void;
+  const promise = new Promise<T>((complete) => {
+    resolve = complete;
+  });
+  return { promise, resolve };
+};
 
 vi.mock('../../../services', () => ({
   reportService: { getReportDefinition: vi.fn(), generate: vi.fn() },

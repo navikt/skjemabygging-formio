@@ -3,8 +3,15 @@ import { Writable } from 'node:stream';
 import { setTimeout as delay } from 'node:timers/promises';
 import { mockDeep } from 'vitest-mock-extended';
 import ReportService from '../ReportService';
-import { deferred } from './testHelpers';
 import { ReportDependencies } from './types';
+
+const deferred = <T = void>() => {
+  let resolve!: (value: T | PromiseLike<T>) => void;
+  const promise = new Promise<T>((complete) => {
+    resolve = complete;
+  });
+  return { promise, resolve };
+};
 
 const formFor = (path: string): Form => ({
   path,
