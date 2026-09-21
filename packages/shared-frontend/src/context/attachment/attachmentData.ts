@@ -55,6 +55,7 @@ const hydrateLegacyAttachments = (form: Form, submission: Submission | undefined
 
   let hydratedSubmission = submission;
   const hydratedNavIds = new Set<string>();
+  const consumedAttachmentIds = new Set<string>();
 
   const hydrateComponents = (components = form.components, parentSubmissionPath = '') => {
     components.forEach((component) => {
@@ -64,23 +65,26 @@ const hydrateLegacyAttachments = (form: Form, submission: Submission | undefined
           : submissionUtils.getComponentSubmissionPath(component, parentSubmissionPath);
 
       if (component.type === 'attachment') {
-        const navId = getNavId(component);
+        const navId = getNavId(component) ?? component.key;
         if (!submissionPath || !navId || hydratedNavIds.has(navId)) {
           return;
         }
-        if (getAttachmentsAtPath(hydratedSubmission, submissionPath).length > 0) {
+        const currentAttachments = getAttachmentsAtPath(hydratedSubmission, submissionPath);
+        const legacyAttachments = submission.attachments?.filter((attachment) => attachment.navId === navId) ?? [];
+        if (currentAttachments.length > 0) {
+          const currentAttachmentIds = new Set(currentAttachments.map((attachment) => attachment.attachmentId));
+          legacyAttachments
+            .filter((attachment) => currentAttachmentIds.has(attachment.attachmentId))
+            .forEach((attachment) => consumedAttachmentIds.add(attachment.attachmentId));
           hydratedNavIds.add(navId);
           return;
         }
 
-        const legacyAttachments = submission.attachments?.filter((attachment) => attachment.navId === navId) ?? [];
-        if (legacyAttachments.length > 0) {
-          hydratedSubmission = setAttachmentsAtPath(
-            hydratedSubmission,
-            submissionPath,
-            legacyAttachments,
-            component.attachmentType === 'other' || component.otherDocumentation === true,
-          );
+        const multiple = component.attachmentType === 'other' || component.otherDocumentation === true;
+        const attachmentsToHydrate = multiple ? legacyAttachments : legacyAttachments.slice(0, 1);
+        if (attachmentsToHydrate.length > 0) {
+          hydratedSubmission = setAttachmentsAtPath(hydratedSubmission, submissionPath, attachmentsToHydrate, multiple);
+          attachmentsToHydrate.forEach((attachment) => consumedAttachmentIds.add(attachment.attachmentId));
           hydratedNavIds.add(navId);
         }
         return;
@@ -107,7 +111,10 @@ const hydrateLegacyAttachments = (form: Form, submission: Submission | undefined
 
   return {
     ...hydratedSubmission,
-    attachments: hydratedSubmission.attachments?.filter((attachment) => attachment.type === PERSONAL_ID_ATTACHMENT_ID),
+    attachments: hydratedSubmission.attachments?.filter(
+      (attachment) =>
+        attachment.type === PERSONAL_ID_ATTACHMENT_ID || !consumedAttachmentIds.has(attachment.attachmentId),
+    ),
   };
 };
 

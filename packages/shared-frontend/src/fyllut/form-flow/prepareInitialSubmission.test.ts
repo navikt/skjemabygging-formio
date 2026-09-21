@@ -1,5 +1,6 @@
 import { Form, SubmissionAttachment } from '@navikt/skjemadigitalisering-shared-domain';
 import { describe, expect, it } from 'vitest';
+import prepareSubmissionForTransport from '../submission/prepareSubmissionForTransport';
 import { prepareInitialSubmission } from './prepareInitialSubmission';
 
 const createForm = (components: Form['components']): Form =>
@@ -91,6 +92,49 @@ describe('prepareInitialSubmission', () => {
         documentation: attachment,
         details: 'Keep me',
       },
+      attachments: [],
+    });
+  });
+
+  it('preserves uploaded files when a legacy draft is migrated and saved', () => {
+    const attachment: SubmissionAttachment = {
+      attachmentId: 'documentation',
+      navId: 'documentation-nav-id',
+      type: 'default',
+      value: 'leggerVedNaa',
+      files: [
+        {
+          attachmentId: 'documentation',
+          fileId: 'file-123',
+          fileName: 'documentation.pdf',
+          innsendingId: 'draft-123',
+          size: 1234,
+        },
+      ],
+    };
+    const form = createForm([
+      {
+        key: 'documentation',
+        label: 'Documentation',
+        type: 'attachment',
+        input: true,
+        navId: 'documentation-nav-id',
+      },
+    ]);
+
+    const prepared = prepareInitialSubmission(
+      form,
+      {
+        data: {},
+        attachments: [attachment],
+        fyllutState: { mellomlagring: { isActive: true } },
+      },
+      'nb',
+      'digital',
+    );
+
+    expect(prepareSubmissionForTransport(prepared!)).toEqual({
+      data: { documentation: attachment },
       attachments: [],
     });
   });

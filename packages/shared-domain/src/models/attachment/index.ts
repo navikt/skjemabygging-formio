@@ -40,7 +40,8 @@ interface SubmissionAttachmentValue {
   additionalDocumentation?: string;
 }
 
-// new interface for storing attachments in submission outside of data
+// Structured attachment value stored in submission data. Personal ID and legacy form attachments
+// may also be present in the top-level submission attachments array.
 interface SubmissionAttachment {
   attachmentId: string;
   navId: string;

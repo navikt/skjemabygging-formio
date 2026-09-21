@@ -144,4 +144,45 @@ describe('attachmentData', () => {
       attachments: [personalId],
     });
   });
+
+  it('retains legacy attachments that do not match the current form', () => {
+    const unmatchedAttachment: SubmissionAttachment = {
+      ...attachment,
+      attachmentId: 'removed-documentation',
+      navId: 'removed-documentation',
+      files: [
+        {
+          fileId: 'file-123',
+          attachmentId: 'removed-documentation',
+          innsendingId: 'draft-123',
+          fileName: 'documentation.pdf',
+          size: 1234,
+        },
+      ],
+    };
+    const form = {
+      components: [{ key: 'name', label: 'Name', type: 'textfield' }],
+    } as Form;
+
+    expect(hydrateLegacyAttachments(form, { data: {}, attachments: [unmatchedAttachment] })).toEqual({
+      data: {},
+      attachments: [unmatchedAttachment],
+    });
+  });
+
+  it('hydrates attachments by component key when navId and id are absent', () => {
+    const keyAttachment: SubmissionAttachment = {
+      ...attachment,
+      attachmentId: 'documentation',
+      navId: 'documentation',
+    };
+    const form = {
+      components: [{ key: 'documentation', label: 'Documentation', type: 'attachment' }],
+    } as Form;
+
+    expect(hydrateLegacyAttachments(form, { data: {}, attachments: [keyAttachment] })).toEqual({
+      data: { documentation: keyAttachment },
+      attachments: [],
+    });
+  });
 });
