@@ -7,6 +7,7 @@ import {
   UploadedFile,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { ReactNode } from 'react';
+import FileList from '../../../components/file-upload/FileList';
 import TextField from '../../../components/text-field/TextField';
 import { getAttachmentsAtPath } from '../../../context/attachment/attachmentData';
 import { useFormDefinitionSubmissionMethod } from '../../../context/form-definition/FormDefinitionContext';
@@ -16,9 +17,12 @@ import ValidationRegistration from '../../../context/validation/ValidationRegist
 import { UnvalidatedFields } from '../../../context/validation/ValidationScopeContext';
 import { attachmentFieldPath } from '../attachmentFieldPath';
 import { attachmentFilesRules, requiresUploadedFiles } from '../attachmentUploadValidation';
-import { useAttachmentUpload, useAttachmentUploadsInProgress } from '../context/AttachmentUploadContext';
+import {
+  getFileValidationError,
+  useAttachmentUpload,
+  useAttachmentUploadsInProgress,
+} from '../context/AttachmentUploadContext';
 import { fileUploadErrorParams } from '../context/fileUploadConfig';
-import FilesPreview from './FilesPreview';
 import UploadButton from './UploadButton';
 import useAttachmentValidation from './useAttachmentValidation';
 
@@ -113,13 +117,14 @@ const FileUploader = ({
         />
       )}
       {(!showButton || fileItems.length > 0) && (
-        <FilesPreview
+        <FileList
           label={!showButton ? label : undefined}
           uploaded={uploadedFiles}
           inProgress={inProgress}
-          onDeleteFileItem={handleDeleteFileItem}
-          onDownloadFileItem={enableAttachmentDownload(submissionMethod) ? handleDownloadFileItem : undefined}
-          translationParams={fileUploadErrorParams}
+          uploadingText={translate(TEXTS.statiske.uploadFile.uploading)}
+          getFileError={(file) => translate(getFileValidationError(file), fileUploadErrorParams)}
+          onDeleteFile={handleDeleteFileItem}
+          onDownloadFile={enableAttachmentDownload(submissionMethod) ? handleDownloadFileItem : undefined}
         />
       )}
       {showButton && (

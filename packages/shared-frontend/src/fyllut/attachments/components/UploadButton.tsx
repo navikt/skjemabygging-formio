@@ -1,8 +1,8 @@
-import { UploadIcon } from '@navikt/aksel-icons';
-import { Button, FileObject, FileUpload, VStack } from '@navikt/ds-react';
+import { FileObject, VStack } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { ReactNode, useState } from 'react';
 import Alert from '../../../components/alert/Alert';
+import FileUploadButton from '../../../components/file-upload/FileUploadButton';
 import { getAttachmentsAtPath } from '../../../context/attachment/attachmentData';
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
@@ -70,35 +70,27 @@ const UploadButton = ({
 
   return (
     <VStack gap="space-8">
-      {allowUpload ? (
-        <FileUpload.Trigger onSelect={onSelect} accept={accept} maxSizeInBytes={maxFileSizeInBytes} multiple={false}>
-          <Button
-            id={inputId(statePath)}
-            variant={variant}
-            loading={loading}
-            icon={<UploadIcon aria-hidden fontSize="1.5rem" />}
-          >
-            {label}
-          </Button>
-        </FileUpload.Trigger>
-      ) : (
-        <Button
-          id={inputId(statePath)}
-          variant={variant}
-          icon={<UploadIcon aria-hidden fontSize="1.5rem" />}
-          onClick={() =>
-            addError(
-              attachmentId,
-              translate('required', { field: translate(TEXTS.statiske.attachment.attachmentTitle) }),
-              'TITLE',
-              scope?.pageKey,
-              submissionPath,
-            )
-          }
-        >
-          {label}
-        </Button>
-      )}
+      <FileUploadButton
+        id={inputId(statePath)}
+        label={label}
+        loading={loading}
+        variant={variant}
+        accept={accept}
+        maxSizeInBytes={maxFileSizeInBytes}
+        onSelect={onSelect}
+        onBlockedClick={
+          allowUpload
+            ? undefined
+            : () =>
+                addError(
+                  attachmentId,
+                  translate('required', { field: translate(TEXTS.statiske.attachment.attachmentTitle) }),
+                  'TITLE',
+                  scope?.pageKey,
+                  submissionPath,
+                )
+        }
+      />
       {uploadErrorMessage && (
         <Alert variant="error" inline>
           {translate(uploadErrorMessage, translationParams)}

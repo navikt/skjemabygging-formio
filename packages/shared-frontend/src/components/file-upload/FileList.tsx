@@ -1,51 +1,50 @@
 import { FileItem, FileObject, FileUpload, Label, VStack } from '@navikt/ds-react';
-import { TEXTS, UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
-import { useLanguage } from '../../../context/language/LanguageContext';
-import { getFileValidationError } from '../context/AttachmentUploadContext';
+import { UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
 
 interface Props {
   label?: string;
   uploaded?: UploadedFile[];
   inProgress?: FileObject[];
-  onDeleteFileItem: (fileId: string, file: FileItem) => void;
-  onDownloadFileItem?: (fileId: string, fileName: string) => void;
-  translationParams?: Record<string, string>;
+  uploadingText: string;
+  getFileError: (file: FileObject) => string | undefined;
+  onDeleteFile: (fileId: string, file: FileItem) => void;
+  onDownloadFile?: (fileId: string, fileName: string) => void;
 }
 
-const FilesPreview = ({
+const FileList = ({
   label,
   uploaded = [],
   inProgress = [],
-  onDeleteFileItem,
-  onDownloadFileItem,
-  translationParams,
+  uploadingText,
+  getFileError,
+  onDeleteFile,
+  onDownloadFile,
 }: Props) => {
-  const { translate } = useLanguage();
   const fileItems = [...uploaded, ...inProgress];
 
   return (
     <VStack gap="space-8">
       {label && <Label>{label}</Label>}
       {fileItems.length > 0 && (
-        <FileUpload translations={{ item: { uploading: translate(TEXTS.statiske.uploadFile.uploading) } }}>
+        <FileUpload translations={{ item: { uploading: uploadingText } }}>
           <VStack gap="space-8" as="ul">
             {uploaded.map(({ fileId, fileName, size }) => (
               <FileUpload.Item
                 as="li"
                 key={fileId}
                 file={{ name: fileName, size }}
-                href={onDownloadFileItem ? '#' : undefined}
+                href={onDownloadFile ? '#' : undefined}
                 onFileClick={
-                  onDownloadFileItem
+                  onDownloadFile
                     ? (event) => {
                         event.preventDefault();
-                        onDownloadFileItem(fileId, fileName);
+                        onDownloadFile(fileId, fileName);
                       }
                     : undefined
                 }
                 button={{
                   action: 'delete',
-                  onClick: () => onDeleteFileItem(fileId, { name: fileName, size }),
+                  onClick: () => onDeleteFile(fileId, { name: fileName, size }),
                 }}
               />
             ))}
@@ -56,7 +55,7 @@ const FilesPreview = ({
                 file={file.file}
                 onFileClick={(event) => event.preventDefault()}
                 status={file.error ? 'idle' : 'uploading'}
-                error={translate(getFileValidationError(file), translationParams)}
+                error={getFileError(file)}
               />
             ))}
           </VStack>
@@ -66,4 +65,5 @@ const FilesPreview = ({
   );
 };
 
-export default FilesPreview;
+export default FileList;
+export type { Props as FileListProps };
