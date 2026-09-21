@@ -9,7 +9,8 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { forwardRef, ReactNode, useEffect } from 'react';
 import Alert from '../../../components/alert/Alert';
-import Select from '../../../components/select/Select';
+import CheckboxGroup from '../../../components/checkbox-group/CheckboxGroup';
+import RadioGroup from '../../../components/radio-group/RadioGroup';
 import TextArea from '../../../components/text-area/TextArea';
 import { attachmentValidationPath } from '../../../context/validation/attachmentValidationPath';
 import { UnvalidatedFields } from '../../../context/validation/ValidationScopeContext';
@@ -99,18 +100,31 @@ const AttachmentOptionSelect = forwardRef<HTMLFieldSetElement, Props>(
               <Label>{title}</Label>
               <BodyShort>{description}</BodyShort>
             </div>
-          ) : (
-            <Select
+          ) : values.length === 1 ? (
+            <CheckboxGroup
               statePath={attachmentValidationPath(attachmentId, 'value')}
-              label={typeof title === 'string' ? title : ''}
+              legend={typeof title === 'string' ? title : ''}
+              required={required}
+              description={typeof description === 'string' ? description : undefined}
+              values={values}
+              value={selectedValueKey === values[0]?.value ? [selectedValueKey] : []}
+              error={error}
+              onChange={(selectedValues) => handleAttachmentChange(selectedValues[0] ?? '')}
+              inputRef={ref}
+              translateValues={false}
+            />
+          ) : (
+            <RadioGroup
+              statePath={attachmentValidationPath(attachmentId, 'value')}
+              legend={typeof title === 'string' ? title : ''}
               required={required}
               description={typeof description === 'string' ? description : undefined}
               values={values}
               value={selectedValueKey ?? ''}
               error={error}
               onChange={handleAttachmentChange}
-              presentation={values.length === 1 ? 'checkbox' : 'radio'}
               inputRef={ref}
+              translateValues={false}
             />
           )}
           {additionalDocumentation?.enabled && (

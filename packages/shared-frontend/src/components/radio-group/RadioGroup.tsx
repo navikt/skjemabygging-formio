@@ -1,6 +1,6 @@
 import { RadioGroup as AkselRadioGroup, Radio } from '@navikt/ds-react';
 import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
-import { Fragment } from 'react';
+import { Fragment, type ReactNode, type Ref } from 'react';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useFieldBinding } from '../../context/state/useFieldBinding';
 import { inputId } from '../../utils/inputId';
@@ -16,7 +16,8 @@ interface RadioGroupProps extends Omit<BaseFieldProps, 'label'> {
   values: ComponentValue[];
   value?: string;
   onChange?: (value: string) => void;
-  error?: string;
+  error?: ReactNode;
+  inputRef?: Ref<HTMLFieldSetElement>;
   showOptionalText?: boolean;
   translateValues?: boolean;
   onlyAvailableOptions?: boolean;
@@ -36,6 +37,7 @@ const RadioGroup = ({
   value,
   onChange,
   error: controlledError,
+  inputRef,
   showOptionalText = true,
   translateValues = true,
   onlyAvailableOptions,
@@ -75,6 +77,7 @@ const RadioGroup = ({
         onChange={(nextValue: string) => (onChange ? onChange(nextValue) : setStateValue(nextValue))}
         error={currentError}
         readOnly={readOnly}
+        ref={inputRef}
       >
         {values.map(({ value: optionValue, label, description: optionDescription }) => {
           const translatedLabel = translateValues ? translate(label) : label;

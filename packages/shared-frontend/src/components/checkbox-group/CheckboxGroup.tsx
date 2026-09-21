@@ -1,6 +1,6 @@
 import { CheckboxGroup as AkselCheckboxGroup, Checkbox } from '@navikt/ds-react';
 import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
-import { ReactNode } from 'react';
+import { type ReactNode, type Ref } from 'react';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useFieldBinding } from '../../context/state/useFieldBinding';
 import { inputId } from '../../utils/inputId';
@@ -16,7 +16,8 @@ interface CheckboxGroupProps extends Omit<BaseFieldProps, 'label'> {
   values: ComponentValue[];
   value?: string[];
   onChange?: (value: string[]) => unknown;
-  error?: string;
+  error?: ReactNode;
+  inputRef?: Ref<HTMLFieldSetElement>;
   children?: ReactNode;
   translateValues?: boolean;
   validation?: ChoiceValidation;
@@ -35,6 +36,7 @@ const CheckboxGroup = ({
   value,
   onChange,
   error: controlledError,
+  inputRef,
   children,
   translateValues = true,
   validation,
@@ -62,6 +64,7 @@ const CheckboxGroup = ({
         onChange={(nextValue: string[]) => (onChange ? onChange(nextValue) : setStateValue(nextValue))}
         error={currentError}
         readOnly={readOnly}
+        ref={inputRef}
       >
         {values.map(({ value, label, description }) => (
           <Checkbox key={value} value={value} description={description ? translate(description) : undefined}>

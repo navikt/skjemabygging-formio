@@ -1,13 +1,6 @@
-import {
-  Select as AkselSelect,
-  Checkbox,
-  CheckboxGroup,
-  UNSAFE_Combobox as Combobox,
-  Radio,
-  RadioGroup,
-} from '@navikt/ds-react';
+import { Select as AkselSelect, UNSAFE_Combobox as Combobox } from '@navikt/ds-react';
 import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
-import { type ChangeEvent, type ReactNode, type Ref } from 'react';
+import { type ChangeEvent, type ReactNode } from 'react';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useFieldBinding } from '../../context/state/useFieldBinding';
 import { inputId } from '../../utils/inputId';
@@ -26,11 +19,9 @@ interface SelectProps extends BaseFieldProps {
   selectText?: string;
   selectType?: SelectType;
   valueType?: SelectValueType;
-  presentation?: 'select' | 'radio' | 'checkbox';
   value?: string;
   onChange?: (value: string) => void;
   error?: ReactNode;
-  inputRef?: Ref<HTMLFieldSetElement>;
   onlyAvailableOptions?: boolean;
   validation?: ChoiceValidation;
 }
@@ -49,11 +40,9 @@ const Select = ({
   marginBottom,
   selectType = 'auto',
   valueType = 'value',
-  presentation = 'select',
   value,
   onChange,
   error: controlledError,
-  inputRef,
   onlyAvailableOptions,
   validation,
 }: SelectProps) => {
@@ -109,52 +98,7 @@ const Select = ({
 
   return (
     <FormElementBox fieldSize={fieldSize} marginBottom={marginBottom}>
-      {presentation === 'checkbox' && options.length === 1 ? (
-        <CheckboxGroup
-          id={inputId(statePath)}
-          legend={
-            <TranslatedLabel
-              required={required}
-              readOnly={readOnly}
-              showOptionalText={!hideLabel}
-              translationKey={label}
-            />
-          }
-          description={<TranslatedDescription translationKey={description} />}
-          value={current === options[0]?.value ? [current] : []}
-          onChange={(selectedValues) => setValue(selectedValues[0] ?? '')}
-          error={currentError}
-          readOnly={readOnly}
-          ref={inputRef}
-        >
-          <Checkbox value={options[0]?.value ?? ''}>{options[0]?.label}</Checkbox>
-        </CheckboxGroup>
-      ) : presentation === 'radio' ? (
-        <RadioGroup
-          id={inputId(statePath)}
-          tabIndex={-1}
-          legend={
-            <TranslatedLabel
-              required={required}
-              readOnly={readOnly}
-              showOptionalText={!hideLabel}
-              translationKey={label}
-            />
-          }
-          description={<TranslatedDescription translationKey={description} />}
-          value={current}
-          onChange={setValue}
-          error={currentError}
-          readOnly={readOnly}
-          ref={inputRef}
-        >
-          {options.map((option) => (
-            <Radio key={option.value} value={option.value}>
-              {option.label}
-            </Radio>
-          ))}
-        </RadioGroup>
-      ) : renderedSelectType === 'select' ? (
+      {renderedSelectType === 'select' ? (
         <AkselSelect
           id={inputId(statePath)}
           label={
