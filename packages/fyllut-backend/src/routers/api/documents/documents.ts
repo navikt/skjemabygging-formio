@@ -1,16 +1,15 @@
+import { coverPageMapper, renderApplicationPdf, requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import {
-  coverPageMapper,
-  renderApplicationPdf,
-  requestUtil,
-  translationUtil,
-} from '@navikt/skjemadigitalisering-shared-backend';
-import { SubmissionMethod, TranslateFunction } from '@navikt/skjemadigitalisering-shared-domain';
+  formsApiTranslationUtils,
+  SubmissionMethod,
+  TranslateFunction,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { RequestHandler } from 'express';
 import { config } from '../../../config/config';
 import { logger } from '../../../logger';
 import {
-  appMetrics,
   applicationPdfService,
+  appMetrics,
   coverPageService,
   formService,
   mergeFileService,
@@ -75,7 +74,7 @@ const coverPageAndApplication: RequestHandler = async (req, res, next) => {
     });
     const submissionParsed = JSON.parse(submission);
     const translations = await translationService.getTranslations({ formPath, languageCodes: [language] });
-    const translate = translationUtil.createTranslate(translations, language);
+    const translate = formsApiTranslationUtils.createTranslate(translations, language);
     const frontPageGeneratorToken = requestUtil.getAzureAccessToken(req);
     const pdfGeneratorToken = requestUtil.getPdfAccessToken(req);
     const mergePdfToken = requestUtil.getMergePdfToken(req);

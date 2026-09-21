@@ -1,6 +1,7 @@
-import { renderApplicationPdf, requestUtil, translationUtil } from '@navikt/skjemadigitalisering-shared-backend';
+import { renderApplicationPdf, requestUtil } from '@navikt/skjemadigitalisering-shared-backend';
 import {
   FormsApiTranslationMap,
+  formsApiTranslationUtils,
   Submission,
   SubmissionMethod,
   TranslationLang,
@@ -54,7 +55,7 @@ export const generatePdfAndSubmit = async (
   });
   const applicationPdf = requireBase64Decode(applicationPdfBase64, 'Failed to decode generated application PDF');
 
-  const translate = translationUtil.createTranslate(translations, language);
+  const translate = formsApiTranslationUtils.createTranslate(translations, language);
   const submitRequest = assembleSubmitApplicationRequest(
     innsendingsId,
     form,

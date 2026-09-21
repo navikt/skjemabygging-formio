@@ -1,21 +1,5 @@
-import {
-  FormsApiTranslation,
-  FormsApiTranslationMap,
-  I18nTranslationReplacements,
-  TranslateFunction,
-} from '../../models';
-import { dateUtils } from '../date';
+import { FormsApiTranslationMap, I18nTranslationReplacements, TranslateFunction } from '../../models';
 import { localizationUtils } from './localizationUtils';
-
-const findMostRecentlyChanged = (data: FormsApiTranslation[] | undefined): FormsApiTranslation | undefined => {
-  if (!data || data.length === 0) return undefined;
-  return data.reduce((prev, curr) => {
-    if (!prev?.changedAt || (curr.changedAt && dateUtils.isAfter(curr.changedAt, prev.changedAt))) {
-      return curr;
-    }
-    return prev;
-  });
-};
 
 const translate = (
   translations: FormsApiTranslationMap,
@@ -49,5 +33,5 @@ const createTranslate = (translations: FormsApiTranslationMap, currentLanguage: 
   return (textOrKey, params) => translate(translations, currentLanguage, textOrKey, params);
 };
 
-const formsApiTranslationUtils = { createTranslate, findMostRecentlyChanged, translate };
+const formsApiTranslationUtils = { createTranslate, translate };
 export { formsApiTranslationUtils };

@@ -1,13 +1,13 @@
 import {
   Form,
   FormsApiTranslationMap,
+  formsApiTranslationUtils,
   navFormUtils,
   PdfFormData,
   Submission,
   SubmissionMethod,
   TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import translationUtil from '../util/translation/translationUtil';
 import renderPdfForm from './RenderPdfForm';
 import { withResolvedSubmissionAttachments } from './resolveSubmissionAttachments';
 import { PdfRendererAppConfig } from './types';
@@ -29,7 +29,7 @@ const renderApplicationPdf = ({
   submissionMethod,
   appConfig,
 }: RenderApplicationPdfProps): PdfFormData | undefined => {
-  const translate = translationUtil.createTranslate(translations, language);
+  const translate = formsApiTranslationUtils.createTranslate(translations, language);
 
   const normalizedSubmission = withResolvedSubmissionAttachments(form, submission);
   const activeComponents = navFormUtils.getAllActivePanelsFromForm(form, normalizedSubmission);
