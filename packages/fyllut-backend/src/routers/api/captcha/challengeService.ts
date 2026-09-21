@@ -11,43 +11,21 @@ const MAX_SOLUTION_LENGTH = 64;
  */
 const POW_SEPARATOR = ':';
 
-/**
- * Normalizes the client address so the same client produces the same binding for both the
- * challenge request and the solution request. IPv4 addresses may be reported in IPv4-mapped
- * IPv6 form (::ffff:127.0.0.1) depending on how the socket was established.
- */
-const normalizeClientAddress = (clientAddress?: string): string =>
-  (clientAddress ?? '')
-    .trim()
-    .toLowerCase()
-    .replace(/^::ffff:/, '');
-
-/**
- * The client address is an input to the signature only, never part of the challenge sent to the
- * client, so no address is put on the wire or in a log. Binding makes a solved challenge usable
- * only from the address that requested it, so solutions cannot be produced centrally and spread
- * across a proxy pool to bypass the per-address rate limiter.
- *
- * NB! This relies on `req.ip` being the actual client address. See the `trust proxy` setting.
- */
-const sign = (nonce: string, difficulty: number, expiresAt: number, clientAddress?: string): string =>
+const sign = (nonce: string, difficulty: number, expiresAt: number): string =>
   crypto
     .createHmac('sha256', config.captcha.hmacSecret)
-    .update(`${nonce}.${difficulty}.${expiresAt}.${normalizeClientAddress(clientAddress)}`)
+    .update(`${nonce}.${difficulty}.${expiresAt}`)
     .digest('hex');
 
-const createChallenge = (clientAddress?: string): CaptchaChallenge => {
+const createChallenge = (): CaptchaChallenge => {
   const nonce = crypto.randomBytes(16).toString('hex');
   const difficulty = config.captcha.powDifficulty;
   const expiresAt = Date.now() + config.captcha.challengeTtlSeconds * 1000;
-  return { nonce, difficulty, expiresAt, signature: sign(nonce, difficulty, expiresAt, clientAddress) };
+  return { nonce, difficulty, expiresAt, signature: sign(nonce, difficulty, expiresAt) };
 };
 
-const signatureIsValid = (
-  { nonce, difficulty, expiresAt, signature }: CaptchaChallenge,
-  clientAddress?: string,
-): boolean => {
-  const expected = Buffer.from(sign(nonce, difficulty, expiresAt, clientAddress), 'utf-8');
+const signatureIsValid = ({ nonce, difficulty, expiresAt, signature }: CaptchaChallenge): boolean => {
+  const expected = Buffer.from(sign(nonce, difficulty, expiresAt), 'utf-8');
   const actual = Buffer.from(signature, 'utf-8');
   return expected.length === actual.length && crypto.timingSafeEqual(expected, actual);
 };
@@ -84,17 +62,13 @@ const isCaptchaSolution = (body: any): body is CaptchaSolution =>
 /**
  * Stateless verification of a challenge response. There is no replay store, since fyllut-backend runs
  * on multiple pods without shared memory. Replay is instead constrained by the short challenge ttl,
- * the rate limiter, the client address bound into the signature and the cost of solving the proof of work.
+ * the rate limiter and the cost of solving the proof of work.
  */
-const verifySolution = (
-  body: any,
-  clientAddress?: string,
-): { valid: true } | { valid: false; reason: CaptchaFailureReason } => {
+const verifySolution = (body: any): { valid: true } | { valid: false; reason: CaptchaFailureReason } => {
   if (!isCaptchaSolution(body)) {
     return { valid: false, reason: CAPTCHA_FAILURE_REASON.INVALID_CHALLENGE_FIELDS };
   }
-  if (!signatureIsValid(body, clientAddress)) {
-    // Also covers a challenge solved for a different client address
+  if (!signatureIsValid(body)) {
     return { valid: false, reason: CAPTCHA_FAILURE_REASON.INVALID_CHALLENGE_SIGNATURE };
   }
   if (body.expiresAt < Date.now()) {

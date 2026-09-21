@@ -356,7 +356,7 @@ describe('Attachments page', () => {
     });
 
     it('should remove all attachments when delete all button is clicked', () => {
-      cy.intercept('POST', '/fyllut/api/send-inn/nologin-application/attachments/eiajfi8').as(
+      cy.intercept('DELETE', '/fyllut/api/send-inn/nologin-application/attachments/eiajfi8').as(
         'deleteAllFilesByAttachmentId',
       );
       getMainAttachment().within(() => {
@@ -366,7 +366,7 @@ describe('Attachments page', () => {
         cy.findAllByText('test.txt').should('have.length', 2);
         cy.findByRole('button', { name: TEXTS.statiske.attachment.deleteAllFiles }).click();
       });
-      cy.wait('@deleteAllFilesByAttachmentId');
+      cy.wait('@deleteAllFilesByAttachmentId').its('response.statusCode').should('eq', 204);
     });
 
     it('should remove all attachments on cancel', () => {
@@ -378,7 +378,7 @@ describe('Attachments page', () => {
       cy.findByText('test.txt').should('exist');
       cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.cancelAndDelete }).click();
       cy.findByRole('button', { name: TEXTS.grensesnitt.confirmDiscardPrompt.confirm }).click();
-      cy.wait('@deleteAllFiles');
+      cy.wait('@deleteAllFiles').its('response.statusCode').should('eq', 204);
     });
   });
 });

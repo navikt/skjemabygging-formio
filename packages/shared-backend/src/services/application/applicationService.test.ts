@@ -46,9 +46,8 @@ describe('createApplicationService', () => {
         }),
       )
       .mockResolvedValueOnce(
-        new Response(JSON.stringify({ status: 'OK' }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
+        new Response(null, {
+          status: 204,
         }),
       );
     const service = createApplicationService({ baseUrl });
@@ -79,10 +78,13 @@ describe('createApplicationService', () => {
       }),
     ).resolves.toEqual({ updated: true });
     await expect(
-      service.deleteApplication<{ status: string }>({ accessToken, correlationId, innsendingsId }),
-    ).resolves.toEqual({
-      status: 'OK',
-    });
+      service.deleteApplication({
+        accessToken,
+        correlationId,
+        innsendingsId,
+        type: 'digital',
+      }),
+    ).resolves.toBeUndefined();
 
     expect(fetchSpy).toHaveBeenNthCalledWith(
       1,
@@ -124,11 +126,11 @@ describe('createApplicationService', () => {
     );
     expect(fetchSpy).toHaveBeenNthCalledWith(
       4,
-      `${baseUrl}${draftPath}/${innsendingsId}`,
+      `${baseUrl}/v1/application-digital/${innsendingsId}`,
       expect.objectContaining({
         method: 'DELETE',
         headers: expect.objectContaining({
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: expect.stringContaining(accessToken),
           'x-correlation-id': correlationId,
           'x-innsendingsid': innsendingsId,
         }),

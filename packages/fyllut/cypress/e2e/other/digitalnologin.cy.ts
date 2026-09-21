@@ -175,7 +175,7 @@ describe('Digital no login', () => {
         cy.findByText('test.txt').should('exist');
         cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.cancelAndDelete }).click();
         cy.findByRole('button', { name: TEXTS.grensesnitt.confirmDiscardPrompt.confirm }).click();
-        cy.wait('@deleteAllFiles');
+        cy.wait('@deleteAllFiles').its('response.statusCode').should('eq', 204);
       });
     });
   });

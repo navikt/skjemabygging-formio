@@ -1,5 +1,5 @@
 import { correlator, ForstesideRequestBody } from '@navikt/skjemadigitalisering-shared-backend';
-import { CoverPageType } from '@navikt/skjemadigitalisering-shared-domain';
+import { CoverPageType, ResponseError, validatorUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { NextFunction, Request, Response } from 'express';
 import fetch, { BodyInit, HeadersInit } from 'node-fetch';
 import { config } from '../../config/config';
@@ -47,6 +47,10 @@ const resolveSource = (type?: CoverPageType) => {
 };
 
 const validateForstesideRequest = async (forsteside: ForstesideRequestBody) => {
+  if (forsteside.ukjentBrukerPersoninfo && !validatorUtils.isValidCoverPageValue(forsteside.ukjentBrukerPersoninfo)) {
+    throw new ResponseError('BAD_REQUEST', 'Unknown user information contains invalid characters.');
+  }
+
   if (!forsteside.adresse && !forsteside.netsPostboks) {
     forsteside.netsPostboks = '1400';
   }

@@ -7,9 +7,9 @@ const isLegacyRequest = ({ data_33, nonce, difficulty, expiresAt, signature, sol
   data_33 === 'ja' &&
   [nonce, difficulty, expiresAt, signature, solution].every((challengeProperty) => challengeProperty === undefined);
 
-const getChallenge: RequestHandler = async (req, res, next) => {
+const getChallenge: RequestHandler = async (_req, res, next) => {
   try {
-    res.json(createChallenge(req.ip));
+    res.json(createChallenge());
   } catch (err) {
     next(err);
   }
@@ -26,7 +26,7 @@ const post: RequestHandler = async (req, res, next) => {
 
     // TODO: remove the legacy data_33 path after already-loaded frontends have aged out.
     if (!isLegacyRequest(req.body)) {
-      const result = verifySolution(req.body, req.ip);
+      const result = verifySolution(req.body);
       if (!result.valid) {
         return next(new CaptchaError(result.reason));
       }
