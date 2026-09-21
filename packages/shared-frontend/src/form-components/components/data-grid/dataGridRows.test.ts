@@ -274,6 +274,40 @@ describe('dataGridRows', () => {
     ).toEqual(['showField', 'field']);
   });
 
+  it('provides the complete submission to row-based custom conditionals', () => {
+    const datagrid: ComponentDefinition = {
+      key: 'repeterende',
+      label: 'Repeterende',
+      type: 'datagrid',
+      navId: 'grid',
+      components: [
+        {
+          key: 'field',
+          label: 'Field',
+          type: 'textfield',
+          navId: 'field',
+          customConditional: 'show = submission.data.rootFlag === true && row.showField === true;',
+        },
+      ],
+    };
+    const form = createForm([datagrid]);
+    const rowComponents = toComponentDefinitions(
+      enrichComponentsWithBaseSubmissionPath(datagrid.components ?? [], 'repeterende[0]'),
+    );
+    const submission = { data: { rootFlag: true, repeterende: [{ showField: true }] } };
+
+    expect(
+      getActiveRowComponents(
+        rowComponents,
+        submission.data.repeterende[0],
+        submission.data,
+        form,
+        undefined,
+        submission,
+      ).map((component) => component.key),
+    ).toEqual(['field']);
+  });
+
   it('filters nested custom conditionals against the nearest container row data', () => {
     const datagrid: ComponentDefinition = {
       key: 'kjaeledyr',

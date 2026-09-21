@@ -1,7 +1,6 @@
 import {
   dateUtils,
   Form,
-  formSummaryUtils,
   hasErrorCode,
   localizationUtils,
   Submission,
@@ -69,18 +68,12 @@ const initializeDigitalDraft = async ({
   if (innsendingsId) {
     try {
       const draft = await applications.getDraft(innsendingsId);
-      const submission = applyInitialValuesToSubmission(
-        form,
-        formSummaryUtils.filterSubmissionDataToSummary(form, draft.submission, { submissionMethod }),
-        draft.language,
-        { submissionMethod },
-      );
 
       return {
         type: 'ready',
         initialInnsendingsId: innsendingsId,
         initialLanguage: draft.language,
-        initialSubmission: withDraftMetadata(submission, draft),
+        initialSubmission: withDraftMetadata(draft.submission, draft),
       };
     } catch (error) {
       if (hasErrorCode(error, 'NOT_FOUND')) {

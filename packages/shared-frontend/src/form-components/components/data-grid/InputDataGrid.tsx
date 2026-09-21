@@ -79,6 +79,7 @@ const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => 
             submission?.data,
             form,
             submissionMethod,
+            submission,
           );
 
           return (

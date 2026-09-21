@@ -1,4 +1,4 @@
-import { Form, formSummaryUtils, SubmissionAttachment } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, SubmissionAttachment } from '@navikt/skjemadigitalisering-shared-domain';
 import { describe, expect, it } from 'vitest';
 import {
   createAttachmentId,
@@ -139,13 +139,7 @@ describe('attachmentData', () => {
         },
       ],
     } as Form;
-    const filteredSubmission = formSummaryUtils.filterSubmissionDataToSummary(
-      form,
-      { data: {}, attachments: [uploadedAttachment, personalId] },
-      { submissionMethod: 'digital' },
-    );
-
-    expect(hydrateLegacyAttachments(form, filteredSubmission)).toEqual({
+    expect(hydrateLegacyAttachments(form, { data: {}, attachments: [uploadedAttachment, personalId] })).toEqual({
       data: { documentation: uploadedAttachment },
       attachments: [personalId],
     });

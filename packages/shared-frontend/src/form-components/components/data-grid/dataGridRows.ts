@@ -85,9 +85,10 @@ const getActiveRowComponents = (
   data: SubmissionData | undefined,
   form: Form,
   submissionMethod?: SubmissionMethod,
+  submission?: Submission,
 ): ComponentDefinition[] =>
   components
-    .filter((component) => checkCondition(component, row, data, form, undefined, undefined, { submissionMethod }))
+    .filter((component) => checkCondition(component, row, data, form, undefined, submission, { submissionMethod }))
     .map((component) =>
       component.components?.length
         ? {
@@ -98,6 +99,7 @@ const getActiveRowComponents = (
               data,
               form,
               submissionMethod,
+              submission,
             ),
           }
         : component,
@@ -135,7 +137,14 @@ const collectDataGridRowScopes = ({
         const rowComponents = toComponentDefinitions(
           enrichComponentsWithBaseSubmissionPath(component.components ?? [], `${submissionPath}[${index}]`),
         );
-        const activeComponents = getActiveRowComponents(rowComponents, row, submission?.data, form, submissionMethod);
+        const activeComponents = getActiveRowComponents(
+          rowComponents,
+          row,
+          submission?.data,
+          form,
+          submissionMethod,
+          submission,
+        );
 
         return [
           { dataGridComponent: component, index, row, components: rowComponents, activeComponents },

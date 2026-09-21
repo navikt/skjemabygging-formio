@@ -63,7 +63,7 @@ describe('initializeDigitalDraft', () => {
     });
   });
 
-  it('clears an inactive prefilled value when loading a draft', async () => {
+  it('defers conditional value reconciliation until form-flow preparation', async () => {
     const applications = createApplicationService();
     const formWithConditionalPrefill: Form = {
       ...form,
@@ -105,11 +105,11 @@ describe('initializeDigitalDraft', () => {
       }),
     ).resolves.toMatchObject({
       type: 'ready',
-      initialSubmission: { data: {} },
+      initialSubmission: { data: { showExtra: false, extra: 'Prefilled value' } },
     });
   });
 
-  it('keeps every populated data grid row when an earlier row was saved empty', async () => {
+  it('preserves data-grid rows for normalization during form-flow preparation', async () => {
     const applications = createApplicationService();
     const formWithDataGrid: Form = {
       ...form,
@@ -150,7 +150,7 @@ describe('initializeDigitalDraft', () => {
 
     expect(result).toMatchObject({
       type: 'ready',
-      initialSubmission: { data: { kjoreliste: [{}, { dato: '01.01.2026' }] } },
+      initialSubmission: { data: { kjoreliste: [null, { dato: '01.01.2026' }] } },
     });
   });
 

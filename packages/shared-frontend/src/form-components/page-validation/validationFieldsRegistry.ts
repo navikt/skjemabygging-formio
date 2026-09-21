@@ -266,6 +266,7 @@ const validationFieldsRegistry: ValidationFieldsRegistry = {
               submission?.data,
               form,
               submissionMethod,
+              submission,
             ),
           ),
         )

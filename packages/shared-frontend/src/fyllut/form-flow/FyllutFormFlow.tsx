@@ -1,9 +1,7 @@
 import { Form, Submission, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
 import { useMemo, useState } from 'react';
 import { useLocation } from 'react-router';
-import { hydrateLegacyAttachments } from '../../context/attachment/attachmentData';
 import { FormDefinitionProvider } from '../../context/form-definition/FormDefinitionContext';
-import { applyInitialValuesToSubmission } from '../../context/form-definition/initialSubmissionValues';
 import { SubmissionStateProvider } from '../../context/state/SubmissionStateContext';
 import { AttachmentUploadProvider } from '../attachments/context/AttachmentUploadContext';
 import FyllutFormActionsProvider from '../context/form-actions/FyllutFormActionsProvider';
@@ -15,6 +13,7 @@ import { resolveDefaultSubmissionMethod } from '../submission-method/submissionM
 import SubmissionMethodSelection from '../submission-method/SubmissionMethodSelection';
 import FyllutValidationProvider from '../validation/FyllutValidationProvider';
 import FormRouter from './FormRouter';
+import { prepareInitialSubmission } from './prepareInitialSubmission';
 
 interface Props {
   form: Form;
@@ -37,9 +36,12 @@ const FyllutFormFlow = ({
   const [receiptPdf, setReceiptPdf] = useState<Blob>();
   const hydratedInitialSubmission = useMemo(
     () =>
-      applyInitialValuesToSubmission(form, hydrateLegacyAttachments(form, initialSubmission), currentLanguage, {
-        submissionMethod: requestedSubmissionMethod ?? resolveDefaultSubmissionMethod(form.properties.submissionTypes),
-      }),
+      prepareInitialSubmission(
+        form,
+        initialSubmission,
+        currentLanguage,
+        requestedSubmissionMethod ?? resolveDefaultSubmissionMethod(form.properties.submissionTypes),
+      ),
     [currentLanguage, form, initialSubmission, requestedSubmissionMethod],
   );
   const defaultSubmissionMethod = resolveDefaultSubmissionMethod(form.properties.submissionTypes);
