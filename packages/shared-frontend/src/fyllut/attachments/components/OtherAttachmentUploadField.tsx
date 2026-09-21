@@ -87,7 +87,7 @@ const OtherAttachmentUploadField = ({
         navId: attachmentNavId,
         type: 'other',
       },
-      {},
+      { value: submissionAttachment?.value },
       submissionPath,
       true,
     );
