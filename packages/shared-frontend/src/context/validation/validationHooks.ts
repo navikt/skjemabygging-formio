@@ -1,8 +1,7 @@
 import { useCallback, useMemo, useSyncExternalStore } from 'react';
-import { attachmentValidationPath } from './attachmentValidationPath';
 import { ValidationActions, ValidationContextValue } from './validationContextTypes';
 import { useOptionalValidationStore, useValidationStore, ValidationStore } from './validationStore';
-import { AttachmentField, FieldError } from './validationTypes';
+import { FieldError } from './validationTypes';
 
 const noValidationActions: ValidationActions = {
   registerField: () => undefined,
@@ -13,7 +12,7 @@ const noValidationActions: ValidationActions = {
   validatePages: () => [],
   hideErrorSummary: () => undefined,
   schedulePageValidation: () => undefined,
-  setAttachmentExternalError: () => undefined,
+  setExternalError: () => undefined,
 };
 const noValidationSubscription = () => () => undefined;
 const noErrors: FieldError[] = [];
@@ -27,7 +26,7 @@ const createValidationActions = (store: ValidationStore): ValidationActions => (
   validatePages: (...args) => store.getValue().validatePages(...args),
   hideErrorSummary: (...args) => store.getValue().hideErrorSummary(...args),
   schedulePageValidation: (...args) => store.getValue().schedulePageValidation(...args),
-  setAttachmentExternalError: (...args) => store.getValue().setAttachmentExternalError(...args),
+  setExternalError: (...args) => store.getValue().setExternalError(...args),
 });
 
 const useValidationErrorAccess = () => {
@@ -35,8 +34,8 @@ const useValidationErrorAccess = () => {
   useSyncExternalStore(store.subscribe, store.getVersion, store.getVersion);
   return {
     getError: (...args: Parameters<ValidationContextValue['getError']>) => store.getValue().getError(...args),
-    getAttachmentExternalError: (...args: Parameters<ValidationContextValue['getAttachmentExternalError']>) =>
-      store.getValue().getAttachmentExternalError(...args),
+    getExternalError: (...args: Parameters<ValidationContextValue['getExternalError']>) =>
+      store.getValue().getExternalError(...args),
   };
 };
 
@@ -108,27 +107,23 @@ const useErrorSummaryFocusRequest = (): number => {
   return useSyncExternalStore(store.subscribe, getSnapshot, getSnapshot);
 };
 
-const useValidationAttachmentExternalError = (attachmentId: string, field: AttachmentField): string | undefined => {
+const useValidationExternalError = (submissionPath: string): string | undefined => {
   const store = useValidationStore();
-  const getSnapshot = useCallback(
-    () => store.getValue().getAttachmentExternalError(attachmentId, field),
-    [attachmentId, field, store],
-  );
+  const getSnapshot = useCallback(() => store.getValue().getExternalError(submissionPath), [store, submissionPath]);
 
   return useSyncExternalStore(store.subscribe, getSnapshot, getSnapshot);
 };
 
 export {
-  attachmentValidationPath,
   useErrorSummaryFocusRequest,
   useIsErrorSummaryVisibleForAllPages,
   useIsErrorSummaryVisibleForPage,
   useOptionalValidationActions,
   useValidationActions,
-  useValidationAttachmentExternalError,
   useValidationErrorAccess,
   useValidationErrorsForPage,
   useValidationErrorsForPages,
+  useValidationExternalError,
   useValidationFieldError,
   useValidationPagesWithErrors,
 };

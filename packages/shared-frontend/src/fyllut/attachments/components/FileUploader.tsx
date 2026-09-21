@@ -6,15 +6,15 @@ import {
   TEXTS,
   UploadedFile,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { MutableRefObject, ReactNode } from 'react';
+import { ReactNode } from 'react';
 import TextField from '../../../components/text-field/TextField';
 import { getAttachmentsAtPath } from '../../../context/attachment/attachmentData';
 import { useFormDefinitionSubmissionMethod } from '../../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
-import { attachmentValidationPath } from '../../../context/validation/attachmentValidationPath';
 import ValidationRegistration from '../../../context/validation/ValidationRegistration';
 import { UnvalidatedFields } from '../../../context/validation/ValidationScopeContext';
+import { attachmentFieldPath } from '../attachmentFieldPath';
 import { attachmentFilesRules, requiresUploadedFiles } from '../attachmentUploadValidation';
 import { useAttachmentUpload, useAttachmentUploadsInProgress } from '../context/AttachmentUploadContext';
 import { fileUploadErrorParams } from '../context/fileUploadConfig';
@@ -34,7 +34,6 @@ interface Props {
   showDeleteAttachmentButton?: boolean;
   onDeleteAttachment?: (attachmentId: string) => Promise<void>;
   multiple?: boolean;
-  refs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | HTMLButtonElement | null>>;
   readMore?: ReactNode;
   accept?: string;
   maxFileSizeInBytes?: number;
@@ -51,7 +50,6 @@ const FileUploader = ({
   showDeleteAttachmentButton,
   onDeleteAttachment,
   multiple,
-  refs,
   readMore,
   accept,
   maxFileSizeInBytes,
@@ -66,7 +64,7 @@ const FileUploader = ({
   const submissionAttachments = submissionPath
     ? getAttachmentsAtPath(submission, submissionPath)
     : (submission?.attachments ?? []);
-  const { getAttachmentError, getAttachmentExternalError } = useAttachmentValidation(submissionAttachments);
+  const { getAttachmentError } = useAttachmentValidation(submissionPath, submissionAttachments);
   const attachment = submissionAttachments.find((currentAttachment) => currentAttachment.attachmentId === attachmentId);
 
   const label = requireAttachmentTitle
@@ -79,8 +77,7 @@ const FileUploader = ({
   const inProgress = Object.values(uploadsInProgress);
   const fileItems = [...uploadedFiles, ...inProgress];
 
-  const attachmentTitleErrorMessage =
-    getAttachmentError(attachmentId, 'title') ?? getAttachmentExternalError(attachmentId, 'title');
+  const attachmentTitleErrorMessage = getAttachmentError(attachmentId, 'title');
   const handleTitleChange = (title: string) => {
     changeAttachmentValue(
       initialAttachment,
@@ -101,7 +98,7 @@ const FileUploader = ({
   };
 
   const handleDownloadFileItem = (fileId: string, fileName: string) => {
-    return handleDownloadFile(attachmentId, fileId, fileName);
+    return handleDownloadFile(attachmentId, fileId, fileName, submissionPath);
   };
 
   return (
@@ -110,7 +107,7 @@ const FileUploader = ({
       {requiresUploadedFiles(attachment) && (
         <ValidationRegistration
           label={attachmentLabel ?? label}
-          statePath={attachmentValidationPath(attachmentId, 'files')}
+          statePath={attachmentFieldPath(submissionPath, attachmentId, 'files')}
           value={attachment?.files ?? []}
           rules={attachmentFilesRules}
         />
@@ -132,7 +129,7 @@ const FileUploader = ({
             // it shows comes from the upload itself.
             <UnvalidatedFields>
               <TextField
-                statePath={attachmentValidationPath(attachmentId, 'title')}
+                statePath={attachmentFieldPath(submissionPath, attachmentId, 'title')}
                 label={translate(TEXTS.statiske.attachment.attachmentTitle)}
                 maxLength={50}
                 value={attachment?.title ?? ''}
@@ -144,12 +141,11 @@ const FileUploader = ({
           <HStack gap="space-16">
             <UploadButton
               attachmentId={attachmentId}
-              statePath={attachmentValidationPath(attachmentId, 'files')}
+              statePath={attachmentFieldPath(submissionPath, attachmentId, 'files')}
               submissionPath={submissionPath}
               multipleAttachments={multipleAttachments}
               variant={initialUpload ? 'primary' : 'secondary'}
               allowUpload={!requireAttachmentTitle || !!attachment?.title?.trim()}
-              refs={refs}
               translationParams={fileUploadErrorParams}
               accept={accept}
               readMore={readMore}

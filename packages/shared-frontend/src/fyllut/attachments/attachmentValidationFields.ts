@@ -32,7 +32,12 @@ const attachmentUploadValidationFields: ValidationFieldsBuilder<AttachmentDefini
   const [baseAttachment] = attachments;
 
   const fileFields: ValidationField[] = attachments.flatMap((attachment) =>
-    toAttachmentFilesValidationFields({ attachmentId: attachment.attachmentId, label, attachment }),
+    toAttachmentFilesValidationFields({
+      submissionPath,
+      attachmentId: attachment.attachmentId,
+      label,
+      attachment,
+    }),
   );
 
   return [
@@ -40,6 +45,7 @@ const attachmentUploadValidationFields: ValidationFieldsBuilder<AttachmentDefini
     // controls do; the files are registered per stored attachment, since "other" documentation can
     // hold several.
     ...toAttachmentValueValidationFields({
+      submissionPath,
       attachmentId: baseAttachmentId,
       label,
       required,

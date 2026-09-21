@@ -8,7 +8,7 @@ import {
   SubmissionAttachmentValue,
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { MutableRefObject, ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { createAttachmentId, getAttachmentsAtPath } from '../../../context/attachment/attachmentData';
 import {
   useFormDefinitionForm,
@@ -16,24 +16,14 @@ import {
 } from '../../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
-import { attachmentValidationPath } from '../../../context/validation/attachmentValidationPath';
 import ValidationRegistration from '../../../context/validation/ValidationRegistration';
+import { attachmentFieldPath } from '../attachmentFieldPath';
 import { attachmentValueRules } from '../attachmentUploadValidation';
 import { useAttachmentUpload } from '../context/AttachmentUploadContext';
 import AttachmentOptionSelect from './AttachmentOptionSelect';
 import FileUploader from './FileUploader';
 import FileUploadReadMore from './FileUploadReadMore';
 import useAttachmentValidation from './useAttachmentValidation';
-
-const setAttachmentRef = (
-  refs: AttachmentUploadFieldProps['refs'] | AttachmentUploadProps['refs'],
-  key: string,
-  value: HTMLInputElement | HTMLFieldSetElement | HTMLButtonElement | null,
-) => {
-  if (refs?.current) {
-    Reflect.set(refs.current, key, value);
-  }
-};
 
 interface AttachmentUploadFieldProps {
   label: string;
@@ -47,7 +37,6 @@ interface AttachmentUploadFieldProps {
   submissionAttachment?: SubmissionAttachment;
   onValueChange: (value?: Partial<SubmissionAttachmentValue>) => void;
   error?: string;
-  refs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | HTMLButtonElement | null>>;
   onUpload?: (attachment: SubmissionAttachment) => void;
 }
 
@@ -63,7 +52,6 @@ const AttachmentUploadField = ({
   submissionAttachment,
   onValueChange,
   error,
-  refs,
   onUpload,
 }: AttachmentUploadFieldProps) => {
   const submissionMethod = useFormDefinitionSubmissionMethod();
@@ -104,7 +92,7 @@ const AttachmentUploadField = ({
           translate={translate}
           deadline={form.properties?.ettersendelsesfrist}
           submissionMethod={submissionMethod}
-          ref={(ref) => setAttachmentRef(refs, `${attachmentNavId}-VALUE`, ref)}
+          submissionPath={submissionPath}
         />
       )}
       {uploadSelected && (
@@ -135,7 +123,6 @@ const AttachmentUploadField = ({
               type,
             }}
             submissionPath={submissionPath}
-            refs={refs}
             multiple
             readMore={<FileUploadReadMore />}
             onUpload={onUpload}
@@ -154,7 +141,6 @@ interface AttachmentUploadProps {
   submissionPath: string;
   description?: ReactNode;
   type?: AttachmentType;
-  refs?: MutableRefObject<Record<string, HTMLInputElement | HTMLFieldSetElement | HTMLButtonElement | null>>;
   onUpload?: (attachment: SubmissionAttachment) => void;
 }
 
@@ -166,13 +152,12 @@ const AttachmentUpload = ({
   submissionPath,
   description,
   type = 'default',
-  refs,
   onUpload,
 }: AttachmentUploadProps) => {
   const { submission } = useSubmissionState();
   const { changeAttachmentValue } = useAttachmentUpload();
   const submissionAttachments = getAttachmentsAtPath(submission, submissionPath);
-  const { getAttachmentError } = useAttachmentValidation(submissionAttachments);
+  const { getAttachmentError } = useAttachmentValidation(submissionPath, submissionAttachments);
 
   const submissionAttachment = submissionAttachments.find((attachment) => attachment.navId === attachmentNavId);
   const attachmentId = createAttachmentId(attachmentNavId, submissionPath);
@@ -188,10 +173,9 @@ const AttachmentUpload = ({
 
   return (
     <>
-      {/* The choice is not bound to the submission by state path, so the attachment declares it. */}
       <ValidationRegistration
         label={label}
-        statePath={attachmentValidationPath(attachmentId, 'value')}
+        statePath={attachmentFieldPath(submissionPath, attachmentId, 'value')}
         value={submissionAttachment?.value}
         rules={attachmentValueRules(required)}
       />
@@ -207,7 +191,6 @@ const AttachmentUpload = ({
         submissionAttachment={submissionAttachment}
         onValueChange={handleValueChange}
         error={attachmentError}
-        refs={refs}
         onUpload={onUpload}
       />
     </>

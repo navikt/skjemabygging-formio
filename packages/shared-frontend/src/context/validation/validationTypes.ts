@@ -1,7 +1,5 @@
 import { RuleViolation, ValidationRules } from '../../validation/validators';
 
-type AttachmentField = 'value' | 'files' | 'title';
-
 /** A validated field, as registered by the component that renders it. */
 interface ValidationField {
   statePath: string;
@@ -30,6 +28,6 @@ interface FieldError {
   message: string;
 }
 
-type ExternalAttachmentError = { attachmentId: string; field: AttachmentField; message: string; pageKey?: string };
+type ExternalFieldError = { submissionPath: string; message: string; pageKey?: string };
 
-export type { AttachmentField, ExternalAttachmentError, FieldError, FieldViolation, ValidationField };
+export type { ExternalFieldError, FieldError, FieldViolation, ValidationField };

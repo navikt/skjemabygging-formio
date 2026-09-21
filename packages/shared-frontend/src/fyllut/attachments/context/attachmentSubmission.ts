@@ -1,44 +1,50 @@
 import { FileObject } from '@navikt/ds-react';
 import { Submission, SubmissionAttachment, UploadedFile } from '@navikt/skjemadigitalisering-shared-domain';
 import type { Dispatch, SetStateAction } from 'react';
-import { getAttachmentsAtPath, setAttachmentsAtPath } from '../../../context/attachment/attachmentData';
+import { getAttachmentsAtPath } from '../../../context/attachment/attachmentData';
 import { validateTotalFilesSize } from './attachmentValidation';
 import { MAX_TOTAL_SIZE_ATTACHMENT_FILES_BYTES } from './fileUploadConfig';
 
 const createAttachmentSubmissionActions = (
   getSubmission: () => Submission | undefined,
   setSubmission: Dispatch<SetStateAction<Submission | undefined>>,
+  updateSubmission: (submissionPath: string, value: unknown) => void,
 ) => {
   const getAttachments = (current: Submission | undefined, submissionPath?: string) =>
     submissionPath ? getAttachmentsAtPath(current, submissionPath) : (current?.attachments ?? []);
 
-  const setAttachments = (
-    current: Submission | undefined,
-    attachments: SubmissionAttachment[],
+  const updateAttachments = (
+    update: (attachments: SubmissionAttachment[]) => SubmissionAttachment[],
     submissionPath?: string,
     multiple = false,
-  ): Submission =>
-    submissionPath
-      ? setAttachmentsAtPath(current, submissionPath, attachments, multiple)
-      : ({ ...(current ?? { data: {} }), attachments } as Submission);
+  ) => {
+    if (submissionPath) {
+      const attachments = update(getAttachments(getSubmission(), submissionPath));
+      updateSubmission(submissionPath, multiple ? attachments : attachments[0]);
+      return;
+    }
+
+    setSubmission((current) => ({
+      ...(current ?? { data: {} }),
+      attachments: update(current?.attachments ?? []),
+    }));
+  };
 
   const addFileToSubmission = (file: UploadedFile, submissionPath?: string, multiple = false) => {
-    setSubmission((current) => {
-      const attachments = getAttachments(current, submissionPath);
-      const attachment = attachments.find((entry) => entry.attachmentId === file.attachmentId);
-      if (!attachment) {
-        throw new Error(`${file.attachmentId} not found`);
-      }
+    updateAttachments(
+      (attachments) => {
+        const attachment = attachments.find((entry) => entry.attachmentId === file.attachmentId);
+        if (!attachment) {
+          throw new Error(`${file.attachmentId} not found`);
+        }
 
-      return setAttachments(
-        current,
-        attachments.map((entry) =>
+        return attachments.map((entry) =>
           entry.attachmentId === file.attachmentId ? { ...entry, files: [...(entry.files ?? []), file] } : entry,
-        ),
-        submissionPath,
-        multiple,
-      );
-    });
+        );
+      },
+      submissionPath,
+      multiple,
+    );
   };
 
   const removeFileFromSubmission = (
@@ -47,41 +53,34 @@ const createAttachmentSubmissionActions = (
     submissionPath?: string,
     multiple = false,
   ) => {
-    setSubmission((current) =>
-      setAttachments(
-        current,
-        getAttachments(current, submissionPath).map((attachment) =>
+    updateAttachments(
+      (attachments) =>
+        attachments.map((attachment) =>
           attachment.attachmentId === attachmentId
             ? { ...attachment, files: (attachment.files ?? []).filter((file) => file.fileId !== fileId) }
             : attachment,
         ),
-        submissionPath,
-        multiple,
-      ),
+      submissionPath,
+      multiple,
     );
   };
 
   const removeFilesFromSubmission = (attachmentId: string, submissionPath?: string, multiple = false) => {
-    setSubmission((current) =>
-      setAttachments(
-        current,
-        getAttachments(current, submissionPath).map((attachment) =>
+    updateAttachments(
+      (attachments) =>
+        attachments.map((attachment) =>
           attachment.attachmentId === attachmentId ? { ...attachment, files: [] } : attachment,
         ),
-        submissionPath,
-        multiple,
-      ),
+      submissionPath,
+      multiple,
     );
   };
 
   const removeAttachmentFromSubmission = (attachmentId: string, submissionPath?: string, multiple = false) => {
-    setSubmission((current) =>
-      setAttachments(
-        current,
-        getAttachments(current, submissionPath).filter((attachment) => attachment.attachmentId !== attachmentId),
-        submissionPath,
-        multiple,
-      ),
+    updateAttachments(
+      (attachments) => attachments.filter((attachment) => attachment.attachmentId !== attachmentId),
+      submissionPath,
+      multiple,
     );
   };
 
@@ -98,21 +97,14 @@ const createAttachmentSubmissionActions = (
     submissionPath?: string,
     multiple = false,
   ) => {
-    setSubmission((current) => {
-      const attachments = getAttachments(current, submissionPath);
-      const currentAttachment = attachments.find((entry) => entry.attachmentId === attachment.attachmentId);
-      if (!currentAttachment) {
-        return setAttachments(
-          current,
-          [...attachments, { ...attachment, ...values, files: [] }],
-          submissionPath,
-          multiple,
-        );
-      }
+    updateAttachments(
+      (attachments) => {
+        const currentAttachment = attachments.find((entry) => entry.attachmentId === attachment.attachmentId);
+        if (!currentAttachment) {
+          return [...attachments, { ...attachment, ...values, files: [] }];
+        }
 
-      return setAttachments(
-        current,
-        attachments.map((entry) =>
+        return attachments.map((entry) =>
           entry.attachmentId === attachment.attachmentId
             ? {
                 ...entry,
@@ -121,11 +113,11 @@ const createAttachmentSubmissionActions = (
                 additionalDocumentation: values?.additionalDocumentation,
               }
             : entry,
-        ),
-        submissionPath,
-        multiple,
-      );
-    });
+        );
+      },
+      submissionPath,
+      multiple,
+    );
   };
 
   return {

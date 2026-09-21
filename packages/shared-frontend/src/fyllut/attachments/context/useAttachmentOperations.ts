@@ -8,6 +8,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import { useLocation } from 'react-router';
+import { getAttachmentsAtPath } from '../../../context/attachment/attachmentData';
 import { useFormDefinitionSubmissionMethod } from '../../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { AttachmentApplication, useRuntimeServices } from '../../../context/runtime-services/RuntimeServicesContext';
@@ -15,6 +16,7 @@ import { useSubmissionState } from '../../../context/state/SubmissionStateContex
 import { useValidationActions } from '../../../context/validation/ValidationContext';
 import { downloadBlob } from '../../../utils/blob';
 import { useNologinToken } from '../../context/nologin-token/NologinTokenContext';
+import { attachmentFieldPath } from '../attachmentFieldPath';
 import { createAttachmentSubmissionActions } from './attachmentSubmission';
 import { AttachmentErrorType, AttachmentUploadContextType } from './attachmentUploadTypes';
 import { normalizeAttachmentDownloadBlob, normalizeAttachmentDownloadFileName } from './attachmentUploadUtils';
@@ -32,24 +34,30 @@ const useAttachmentOperations = (): AttachmentUploadContextType => {
   const { attachments, sessions } = useRuntimeServices();
   const submissionMethod = useFormDefinitionSubmissionMethod();
   const { translate } = useLanguage();
-  const { getLatestSubmission, setSubmission } = useSubmissionState();
-  const { setAttachmentExternalError } = useValidationActions();
+  const { getLatestSubmission, setSubmission, updateSubmission } = useSubmissionState();
+  const { setExternalError } = useValidationActions();
   const { getNologinToken, handleSessionExpired } = useNologinToken();
   const { search } = useLocation();
   const [uploadsInProgress, setUploadsInProgress] = useState<Record<string, Record<string, FileObject>>>({});
   const innsendingsId = new URLSearchParams(search).get('innsendingsId') ?? undefined;
-  const submissionActions = createAttachmentSubmissionActions(getLatestSubmission, setSubmission);
+  const submissionActions = createAttachmentSubmissionActions(getLatestSubmission, setSubmission, updateSubmission);
   const uploadProgressActions = createUploadProgressActions(setUploadsInProgress);
 
-  const addError = (attachmentId: string, message: string, type: AttachmentErrorType, pageKey?: string) => {
+  const addError = (
+    attachmentId: string,
+    message: string,
+    type: AttachmentErrorType,
+    pageKey?: string,
+    submissionPath?: string,
+  ) => {
     const field = type === 'VALUE' ? 'value' : type === 'TITLE' ? 'title' : 'files';
-    setAttachmentExternalError(attachmentId, field, translate(message), pageKey);
+    setExternalError(attachmentFieldPath(submissionPath, attachmentId, field), translate(message), pageKey);
   };
 
-  const removeError = (attachmentId: string) => {
-    setAttachmentExternalError(attachmentId, 'value');
-    setAttachmentExternalError(attachmentId, 'files');
-    setAttachmentExternalError(attachmentId, 'title');
+  const removeError = (attachmentId: string, submissionPath?: string) => {
+    setExternalError(attachmentFieldPath(submissionPath, attachmentId, 'value'));
+    setExternalError(attachmentFieldPath(submissionPath, attachmentId, 'files'));
+    setExternalError(attachmentFieldPath(submissionPath, attachmentId, 'title'));
   };
 
   const handleUploadFile = async (
@@ -57,10 +65,11 @@ const useAttachmentOperations = (): AttachmentUploadContextType => {
     file: FileObject,
     submissionPath?: string,
     multiple = false,
+    pageKey?: string,
   ) => {
     try {
       uploadProgressActions.addFileInProgress(attachmentId, file);
-      removeError(attachmentId);
+      removeError(attachmentId, submissionPath);
 
       if (validateFileUpload(file)) {
         return { status: 'invalid' as const };
@@ -69,7 +78,7 @@ const useAttachmentOperations = (): AttachmentUploadContextType => {
       const invalidAttachmentSize = submissionActions.validateTotalAttachmentSize(attachmentId, file, submissionPath);
       if (invalidAttachmentSize) {
         uploadProgressActions.removeFileInProgress(attachmentId, uploadProgressActions.fileIdentifier(file));
-        addError(attachmentId, invalidAttachmentSize, 'FILE');
+        addError(attachmentId, invalidAttachmentSize, 'FILE', pageKey, submissionPath);
         return { status: 'invalid' as const };
       }
 
@@ -109,16 +118,17 @@ const useAttachmentOperations = (): AttachmentUploadContextType => {
     errorMessage: string,
     request: (application: AttachmentApplication) => Promise<void>,
     shouldRethrow = false,
+    submissionPath?: string,
   ) => {
     try {
-      removeError(attachmentId);
+      removeError(attachmentId, submissionPath);
       const token = await getNologinToken();
       await request(getAttachmentApplication(submissionMethod, innsendingsId, token));
     } catch (error) {
       if (sessions.isAuthenticationError(error)) {
         handleSessionExpired();
       } else {
-        addError(attachmentId, translate(errorMessage), 'FILE');
+        addError(attachmentId, translate(errorMessage), 'FILE', undefined, submissionPath);
       }
 
       if (shouldRethrow) {
@@ -134,25 +144,52 @@ const useAttachmentOperations = (): AttachmentUploadContextType => {
     submissionPath?: string,
     multiple = false,
   ) =>
-    handleAttachmentRequest(attachmentId, TEXTS.statiske.uploadFile.deleteFileError, async (application) => {
-      await attachments.deleteFile({ application, attachmentId, fileId });
-      submissionActions.removeFileFromSubmission(attachmentId, fileId, submissionPath, multiple);
-    });
+    handleAttachmentRequest(
+      attachmentId,
+      TEXTS.statiske.uploadFile.deleteFileError,
+      async (application) => {
+        await attachments.deleteFile({ application, attachmentId, fileId });
+        submissionActions.removeFileFromSubmission(attachmentId, fileId, submissionPath, multiple);
+      },
+      false,
+      submissionPath,
+    );
 
-  const handleDownloadFile = async (attachmentId: string, fileId: string, fileName: string) =>
-    handleAttachmentRequest(attachmentId, TEXTS.statiske.uploadFile.downloadFileError, async (application) => {
-      const downloadedFile = await attachments.downloadFile({ application, attachmentId, fileId });
-      downloadBlob(normalizeAttachmentDownloadBlob(downloadedFile), normalizeAttachmentDownloadFileName(fileName));
-    });
+  const handleDownloadFile = async (attachmentId: string, fileId: string, fileName: string, submissionPath?: string) =>
+    handleAttachmentRequest(
+      attachmentId,
+      TEXTS.statiske.uploadFile.downloadFileError,
+      async (application) => {
+        const downloadedFile = await attachments.downloadFile({ application, attachmentId, fileId });
+        downloadBlob(normalizeAttachmentDownloadBlob(downloadedFile), normalizeAttachmentDownloadFileName(fileName));
+      },
+      false,
+      submissionPath,
+    );
 
   const handleDeleteAllFilesForAttachment = async (attachmentId: string, submissionPath?: string, multiple = false) =>
-    handleAttachmentRequest(attachmentId, TEXTS.statiske.uploadFile.deleteAttachmentError, async (application) => {
-      await attachments.deleteAllFilesForAttachment({ application, attachmentId });
-      submissionActions.removeFilesFromSubmission(attachmentId, submissionPath, multiple);
-    });
-
-  const handleDeleteAttachment = async (attachmentId: string, submissionPath?: string, multiple = false) =>
     handleAttachmentRequest(
+      attachmentId,
+      TEXTS.statiske.uploadFile.deleteAttachmentError,
+      async (application) => {
+        await attachments.deleteAllFilesForAttachment({ application, attachmentId });
+        submissionActions.removeFilesFromSubmission(attachmentId, submissionPath, multiple);
+      },
+      false,
+      submissionPath,
+    );
+
+  const handleDeleteAttachment = async (attachmentId: string, submissionPath?: string, multiple = false) => {
+    const currentAttachment = (
+      submissionPath ? getAttachmentsAtPath(getLatestSubmission(), submissionPath) : getLatestSubmission()?.attachments
+    )?.find((attachment) => attachment.attachmentId === attachmentId);
+    if (!currentAttachment?.files?.length) {
+      removeError(attachmentId, submissionPath);
+      submissionActions.removeAttachmentFromSubmission(attachmentId, submissionPath, multiple);
+      return;
+    }
+
+    await handleAttachmentRequest(
       attachmentId,
       TEXTS.statiske.uploadFile.deleteAttachmentError,
       async (application) => {
@@ -160,7 +197,9 @@ const useAttachmentOperations = (): AttachmentUploadContextType => {
         submissionActions.removeAttachmentFromSubmission(attachmentId, submissionPath, multiple);
       },
       true,
+      submissionPath,
     );
+  };
 
   const handleDeleteAllFiles = async () => {
     try {
@@ -191,7 +230,7 @@ const useAttachmentOperations = (): AttachmentUploadContextType => {
     multiple = false,
   ) => {
     if (values?.value) {
-      removeError(attachment.attachmentId);
+      removeError(attachment.attachmentId, submissionPath);
     }
     submissionActions.changeAttachmentValue(attachment, values, submissionPath, multiple);
   };

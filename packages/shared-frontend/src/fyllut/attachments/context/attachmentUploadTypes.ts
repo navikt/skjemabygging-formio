@@ -10,8 +10,14 @@ interface AttachmentUploadContextType {
     file: FileObject,
     submissionPath?: string,
     multiple?: boolean,
+    pageKey?: string,
   ) => Promise<{ status: AttachmentActionStatus }>;
-  handleDownloadFile: (attachmentId: string, fileId: string, fileName: string) => Promise<void>;
+  handleDownloadFile: (
+    attachmentId: string,
+    fileId: string,
+    fileName: string,
+    submissionPath?: string,
+  ) => Promise<void>;
   handleDeleteFile: (
     attachmentId: string,
     fileId: string,
@@ -26,8 +32,14 @@ interface AttachmentUploadContextType {
   ) => Promise<void>;
   handleDeleteAttachment: (attachmentId: string, submissionPath?: string, multiple?: boolean) => Promise<void>;
   handleDeleteAllFiles: () => Promise<void>;
-  addError: (attachmentId: string, error: string, type: AttachmentErrorType, pageKey?: string) => void;
-  removeError: (attachmentId: string) => void;
+  addError: (
+    attachmentId: string,
+    error: string,
+    type: AttachmentErrorType,
+    pageKey?: string,
+    submissionPath?: string,
+  ) => void;
+  removeError: (attachmentId: string, submissionPath?: string) => void;
   changeAttachmentValue: (
     attachment: SubmissionAttachment,
     values?: Pick<SubmissionAttachment, 'value' | 'title' | 'additionalDocumentation'>,

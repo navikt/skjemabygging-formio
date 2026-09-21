@@ -10,7 +10,12 @@ import {
 import { ApplicationEnvironment, ApplicationLogger } from '../context/application/ApplicationContext';
 import { ComponentDefinitionByType } from './component-types';
 
-type HandleAttachmentDownloadFile = (attachmentId: string, fileId: string, fileName: string) => Promise<void>;
+type HandleAttachmentDownloadFile = (
+  attachmentId: string,
+  fileId: string,
+  fileName: string,
+  submissionPath?: string,
+) => Promise<void>;
 
 /**
  * Component `type` literals handled by the summary registry: every

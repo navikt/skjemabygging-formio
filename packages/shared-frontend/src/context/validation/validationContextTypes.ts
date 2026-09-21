@@ -1,4 +1,4 @@
-import { AttachmentField, FieldError, ValidationField } from './validationTypes';
+import { FieldError, ValidationField } from './validationTypes';
 
 type ErrorSummaryScope = { type: 'page'; pageKey: string } | { type: 'all-pages' } | undefined;
 type PageFieldsResolver = (pageKey: string) => ValidationField[] | undefined;
@@ -20,13 +20,8 @@ interface ValidationContextValue {
   isErrorSummaryVisibleForPage: (pageKey: string) => boolean;
   isErrorSummaryVisibleForAllPages: () => boolean;
   schedulePageValidation: (pageKey: string) => void;
-  setAttachmentExternalError: (
-    attachmentId: string,
-    field: AttachmentField,
-    message?: string,
-    pageKey?: string,
-  ) => void;
-  getAttachmentExternalError: (attachmentId: string, field: AttachmentField) => string | undefined;
+  setExternalError: (submissionPath: string, message?: string, pageKey?: string) => void;
+  getExternalError: (submissionPath: string) => string | undefined;
 }
 
 type ValidationActions = Pick<
@@ -39,7 +34,7 @@ type ValidationActions = Pick<
   | 'validatePages'
   | 'hideErrorSummary'
   | 'schedulePageValidation'
-  | 'setAttachmentExternalError'
+  | 'setExternalError'
 >;
 
 export type {

@@ -7,7 +7,8 @@ import {
 } from '../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useSubmissionState } from '../../context/state/SubmissionStateContext';
-import { useValidationAttachmentExternalError } from '../../context/validation/ValidationContext';
+import { useValidationExternalError } from '../../context/validation/ValidationContext';
+import { attachmentFieldPath } from '../attachments/attachmentFieldPath';
 import AttachmentOptionSelect from '../attachments/components/AttachmentOptionSelect';
 import FileUploader from '../attachments/components/FileUploader';
 import { useAttachmentUpload } from '../attachments/context/AttachmentUploadContext';
@@ -37,7 +38,9 @@ const PersonalIdUploadPage = () => {
   const { addError, changeAttachmentValue } = useAttachmentUpload();
   const { logEvent } = useIntegration();
   const attachment = submission?.attachments?.find((item) => item.attachmentId === PERSONAL_ID_ATTACHMENT_ID);
-  const attachmentValueError = useValidationAttachmentExternalError(PERSONAL_ID_ATTACHMENT_ID, 'value');
+  const attachmentValueError = useValidationExternalError(
+    attachmentFieldPath(undefined, PERSONAL_ID_ATTACHMENT_ID, 'value'),
+  );
 
   const changeAttachment = (value: SubmissionAttachmentValue | undefined) => {
     const title = identityDocumentOptions.find((option) => option.value === value?.key)?.label;

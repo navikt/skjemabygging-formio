@@ -1,10 +1,11 @@
 import { SubmissionAttachment } from '@navikt/skjemadigitalisering-shared-domain';
 import { toFieldValidation, toValidationFields } from '../../components/shared/fieldValidation';
-import { attachmentValidationPath } from '../../context/validation/attachmentValidationPath';
 import { ValidationField } from '../../context/validation/validationTypes';
 import { ValidationRules } from '../../validation/validators';
+import { attachmentFieldPath } from './attachmentFieldPath';
 
 interface AttachmentUploadValidationInput {
+  submissionPath: string;
   attachmentId: string;
   label: string;
   required?: boolean;
@@ -19,17 +20,18 @@ const requiresUploadedFiles = (attachment?: SubmissionAttachment) => attachment?
 const attachmentFilesRules: ValidationRules = { requiredFiles: true };
 
 /**
- * Upload controls are not bound to the submission by state path, so the attachment is validated on
- * the shared attachment validation path instead. The rendered controls declare these fields with
+ * Upload controls validate the attachment value at its submission path and use stable child paths
+ * for fields such as files. The rendered controls declare these fields with
  * `ValidationRegistration`, and the headless page rebuild derives them here from the same rules.
  */
 const toAttachmentValueValidationFields = ({
+  submissionPath,
   attachmentId,
   label,
   required,
   attachment,
 }: AttachmentUploadValidationInput): ValidationField[] => {
-  const statePath = attachmentValidationPath(attachmentId, 'value');
+  const statePath = attachmentFieldPath(submissionPath, attachmentId, 'value');
 
   return toValidationFields(
     statePath,
@@ -39,11 +41,12 @@ const toAttachmentValueValidationFields = ({
 };
 
 const toAttachmentFilesValidationFields = ({
+  submissionPath,
   attachmentId,
   label,
   attachment,
 }: AttachmentUploadValidationInput): ValidationField[] => {
-  const statePath = attachmentValidationPath(attachmentId, 'files');
+  const statePath = attachmentFieldPath(submissionPath, attachmentId, 'files');
 
   return requiresUploadedFiles(attachment)
     ? toValidationFields(

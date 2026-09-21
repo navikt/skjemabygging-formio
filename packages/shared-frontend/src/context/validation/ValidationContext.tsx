@@ -3,17 +3,10 @@ import { ReactNode, useCallback, useEffect, useLayoutEffect, useMemo, useRef, us
 import { validateValue } from '../../validation/validators';
 import { useApplication } from '../application/ApplicationContext';
 import { useLanguage } from '../language/LanguageContext';
-import { attachmentValidationPath } from './attachmentValidationPath';
 import { ErrorSummaryScope, PageFieldsResolver, ValidationContextValue } from './validationContextTypes';
 import { PageViolationsByKey, replacePageSet, setPageViolations, togglePageInSet } from './validationState';
 import { ValidationContext, ValidationStore } from './validationStore';
-import {
-  AttachmentField,
-  ExternalAttachmentError,
-  FieldError,
-  FieldViolation,
-  ValidationField,
-} from './validationTypes';
+import { ExternalFieldError, FieldError, FieldViolation, ValidationField } from './validationTypes';
 
 const toFieldError = (translate: TranslateFunction, fieldViolation: FieldViolation): FieldError => {
   const { violation, message, ...error } = fieldViolation;
@@ -27,6 +20,9 @@ const toFieldError = (translate: TranslateFunction, fieldViolation: FieldViolati
       : (message ?? ''),
   };
 };
+
+const isSameOrChildPath = (statePath: string, fieldPath: string) =>
+  fieldPath === statePath || fieldPath.startsWith(`${statePath}.`);
 
 /**
  * Rebuilds the fields of a page from the current state. Injected by the surface that owns the form
@@ -42,7 +38,7 @@ interface Props {
 interface CachedPageValidation {
   fieldSource?: object;
   registeredFieldsRevision: number;
-  externalAttachmentErrors: Record<string, ExternalAttachmentError>;
+  externalErrors: Record<string, ExternalFieldError>;
   currentLanguage: string;
   allowTestTypes: boolean;
   translate: TranslateFunction;
@@ -89,7 +85,7 @@ const ValidationProvider = ({ children, initialPagesWithErrors, resolvePageField
   const [violationsByPage, setViolationsByPage] = useState<PageViolationsByKey>({});
   const [errorSummaryScope, setErrorSummaryScope] = useState<ErrorSummaryScope>(undefined);
   const [errorSummaryFocusRequest, setErrorSummaryFocusRequest] = useState(0);
-  const [externalAttachmentErrors, setExternalAttachmentErrors] = useState<Record<string, ExternalAttachmentError>>({});
+  const [externalErrors, setExternalErrors] = useState<Record<string, ExternalFieldError>>({});
   // Pages whose registrations or values changed during the current commit. They are refreshed from
   // an effect that runs after the field effects, so a page is never evaluated half-registered.
   const dirtyPagesRef = useRef(new Set<string>());
@@ -114,7 +110,7 @@ const ValidationProvider = ({ children, initialPagesWithErrors, resolvePageField
         cached &&
         cached.fieldSource === fieldSource &&
         cached.registeredFieldsRevision === registeredFieldsRevision &&
-        cached.externalAttachmentErrors === externalAttachmentErrors &&
+        cached.externalErrors === externalErrors &&
         cached.currentLanguage === currentLanguage &&
         cached.allowTestTypes === allowTestTypes &&
         cached.translate === translate
@@ -126,19 +122,22 @@ const ValidationProvider = ({ children, initialPagesWithErrors, resolvePageField
         const violation = validateValue(value, field, rules, currentLanguage, { allowTestTypes });
         return violation ? [{ pageKey, submissionPath: statePath, field, violation }] : [];
       });
-      const attachmentViolations = Object.values(externalAttachmentErrors)
-        .filter((error) => error.pageKey === pageKey)
-        .map(({ attachmentId, field, message }) => ({
-          pageKey,
-          submissionPath: attachmentValidationPath(attachmentId, field),
-          field: '',
-          message,
-        }));
-      const violations = [...fieldViolations, ...attachmentViolations];
+      const activeExternalErrors = Object.values(externalErrors).filter((error) =>
+        fields.some(({ statePath }) => isSameOrChildPath(statePath, error.submissionPath)),
+      );
+      const externalPaths = new Set(activeExternalErrors.map(({ submissionPath }) => submissionPath));
+      const activeFieldViolations = fieldViolations.filter(({ submissionPath }) => !externalPaths.has(submissionPath));
+      const externalViolations = activeExternalErrors.map(({ submissionPath, message }) => ({
+        pageKey,
+        submissionPath,
+        field: '',
+        message,
+      }));
+      const violations = [...activeFieldViolations, ...externalViolations];
       const result = {
         fieldSource,
         registeredFieldsRevision,
-        externalAttachmentErrors,
+        externalErrors,
         currentLanguage,
         allowTestTypes,
         translate,
@@ -148,7 +147,7 @@ const ValidationProvider = ({ children, initialPagesWithErrors, resolvePageField
       pageValidationCacheRef.current.set(pageKey, result);
       return result;
     },
-    [allowTestTypes, currentLanguage, externalAttachmentErrors, resolvePageFields, translate],
+    [allowTestTypes, currentLanguage, externalErrors, resolvePageFields, translate],
   );
 
   const setPageState = useCallback((pageKey: string, violations: FieldViolation[]) => {
@@ -345,29 +344,27 @@ const ValidationProvider = ({ children, initialPagesWithErrors, resolvePageField
     [errorSummaryScope],
   );
 
-  const setAttachmentExternalError = useCallback(
-    (attachmentId: string, field: AttachmentField, message?: string, pageKey?: string) => {
-      const key = attachmentValidationPath(attachmentId, field);
-      const attachmentPathPrefix = `attachments.${attachmentId}.`;
+  const setExternalError = useCallback(
+    (submissionPath: string, message?: string, pageKey?: string) => {
       const inferredPageKey =
         pageKey ??
-        externalAttachmentErrors[key]?.pageKey ??
+        externalErrors[submissionPath]?.pageKey ??
         [...fieldsByPageRef.current.entries()].find(([, fields]) =>
-          [...fields.keys()].some((statePath) => statePath.startsWith(attachmentPathPrefix)),
+          [...fields.keys()].some((statePath) => isSameOrChildPath(statePath, submissionPath)),
         )?.[0];
-      setExternalAttachmentErrors((previous) => {
+      setExternalErrors((previous) => {
         if (!message) {
-          if (!(key in previous)) {
+          if (!(submissionPath in previous)) {
             return previous;
           }
-          const { [key]: _removedError, ...remainingErrors } = previous;
+          const { [submissionPath]: _removedError, ...remainingErrors } = previous;
           return remainingErrors;
         }
-        const nextError = { attachmentId, field, message, pageKey: inferredPageKey };
-        const currentError = previous[key];
+        const nextError = { submissionPath, message, pageKey: inferredPageKey };
+        const currentError = previous[submissionPath];
         return currentError?.message === message && currentError.pageKey === inferredPageKey
           ? previous
-          : { ...previous, [key]: nextError };
+          : { ...previous, [submissionPath]: nextError };
       });
       if (inferredPageKey) {
         schedulePageValidation(inferredPageKey);
@@ -382,12 +379,11 @@ const ValidationProvider = ({ children, initialPagesWithErrors, resolvePageField
         setErrorSummaryScope({ type: 'page', pageKey: inferredPageKey });
       }
     },
-    [externalAttachmentErrors, queuePageValidation, schedulePageValidation],
+    [externalErrors, queuePageValidation, schedulePageValidation],
   );
-  const getAttachmentExternalError = useCallback(
-    (attachmentId: string, field: AttachmentField) =>
-      externalAttachmentErrors[attachmentValidationPath(attachmentId, field)]?.message,
-    [externalAttachmentErrors],
+  const getExternalError = useCallback(
+    (submissionPath: string) => externalErrors[submissionPath]?.message,
+    [externalErrors],
   );
 
   const value = useMemo<ValidationContextValue>(
@@ -408,11 +404,11 @@ const ValidationProvider = ({ children, initialPagesWithErrors, resolvePageField
       isErrorSummaryVisibleForPage,
       isErrorSummaryVisibleForAllPages,
       schedulePageValidation,
-      setAttachmentExternalError,
-      getAttachmentExternalError,
+      setExternalError,
+      getExternalError,
     }),
     [
-      getAttachmentExternalError,
+      getExternalError,
       getError,
       getErrorsForPage,
       getErrorsForPages,
@@ -424,7 +420,7 @@ const ValidationProvider = ({ children, initialPagesWithErrors, resolvePageField
       registerField,
       resetPageFields,
       schedulePageValidation,
-      setAttachmentExternalError,
+      setExternalError,
       errorSummaryFocusRequest,
       unregisterField,
       updateFieldValue,
@@ -476,12 +472,12 @@ export {
   useIsErrorSummaryVisibleForPage,
   useOptionalValidationActions,
   useValidationActions,
-  useValidationAttachmentExternalError,
   useValidationErrorAccess,
   useValidationErrorsForPage,
   useValidationErrorsForPages,
+  useValidationExternalError,
   useValidationFieldError,
   useValidationPagesWithErrors,
 } from './validationHooks';
-export type { AttachmentField, FieldError, ValidationField } from './validationTypes';
-export { attachmentValidationPath, ValidationProvider };
+export type { FieldError, ValidationField } from './validationTypes';
+export { ValidationProvider };

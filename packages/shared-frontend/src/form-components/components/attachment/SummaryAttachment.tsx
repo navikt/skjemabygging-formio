@@ -50,7 +50,12 @@ const SummaryAttachment = (props: FormComponentProps<AttachmentDefinition>) => {
                       canDownloadAttachment
                         ? (event) => {
                             event.preventDefault();
-                            void handleDownloadFile(attachment.attachmentId, file.fileId, file.fileName);
+                            void handleDownloadFile(
+                              attachment.attachmentId,
+                              file.fileId,
+                              file.fileName,
+                              dataAttachments.length > 0 ? submissionPath : undefined,
+                            );
                           }
                         : undefined
                     }

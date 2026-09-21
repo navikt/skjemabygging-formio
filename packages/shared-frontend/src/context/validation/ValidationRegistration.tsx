@@ -15,9 +15,10 @@ interface ValidationRegistrationProps {
  *
  * Almost every field is registered by the input that renders it (`useFieldBinding`), which is what
  * keeps one owner per state path. A few paths have no such input: the attachment choice and the
- * uploaded files live outside the submission state, and the days of a driving list are picked in
- * several period accordions at once. Their owner declares them with this component instead, using
- * the same registration model, and the controls below only render the resulting error.
+ * uploaded files are represented by an attachment object rather than their own bound input, and
+ * the days of a driving list are picked in several period accordions at once. Their owner declares
+ * them with this component instead, using the same registration model, and the controls below only
+ * render the resulting error.
  *
  * It deliberately accepts nothing but a visible label, a path, a value and rules, so it can never
  * become a second way of configuring a field.

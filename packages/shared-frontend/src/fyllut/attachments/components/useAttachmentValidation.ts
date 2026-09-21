@@ -1,14 +1,11 @@
 import { SubmissionAttachment } from '@navikt/skjemadigitalisering-shared-domain';
 import { useCallback, useEffect } from 'react';
-import {
-  attachmentValidationPath,
-  useValidationActions,
-  useValidationErrorAccess,
-} from '../../../context/validation/ValidationContext';
+import { useValidationActions, useValidationErrorAccess } from '../../../context/validation/ValidationContext';
 import { useOptionalValidationScope } from '../../../context/validation/ValidationScopeContext';
+import { AttachmentField, attachmentFieldPath } from '../attachmentFieldPath';
 
-const useAttachmentValidation = (submissionAttachments: SubmissionAttachment[]) => {
-  const { getError, getAttachmentExternalError } = useValidationErrorAccess();
+const useAttachmentValidation = (submissionPath: string | undefined, submissionAttachments: SubmissionAttachment[]) => {
+  const { getError, getExternalError } = useValidationErrorAccess();
   const { schedulePageValidation } = useValidationActions();
   const scope = useOptionalValidationScope();
 
@@ -19,12 +16,14 @@ const useAttachmentValidation = (submissionAttachments: SubmissionAttachment[]) 
   }, [schedulePageValidation, scope, submissionAttachments]);
 
   const getAttachmentError = useCallback(
-    (attachmentId: string, field: 'value' | 'files' | 'title') =>
-      scope ? getError(attachmentValidationPath(attachmentId, field), scope.pageKey) : undefined,
-    [getError, scope],
+    (attachmentId: string, field: AttachmentField) => {
+      const statePath = attachmentFieldPath(submissionPath, attachmentId, field);
+      return (scope ? getError(statePath, scope.pageKey) : undefined) ?? getExternalError(statePath);
+    },
+    [getError, getExternalError, scope, submissionPath],
   );
 
-  return { getAttachmentError, getAttachmentExternalError };
+  return { getAttachmentError };
 };
 
 export default useAttachmentValidation;
