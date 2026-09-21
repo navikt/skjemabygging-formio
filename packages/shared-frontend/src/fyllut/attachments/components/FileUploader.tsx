@@ -13,8 +13,9 @@ import { getAttachmentsAtPath } from '../../../context/attachment/attachmentData
 import { useFormDefinitionSubmissionMethod } from '../../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
+import { useValidationExternalError, useValidationFieldError } from '../../../context/validation/ValidationContext';
 import ValidationRegistration from '../../../context/validation/ValidationRegistration';
-import { UnvalidatedFields } from '../../../context/validation/ValidationScopeContext';
+import { UnvalidatedFields, useOptionalValidationScope } from '../../../context/validation/ValidationScopeContext';
 import { attachmentFieldPath } from '../attachmentFieldPath';
 import { attachmentFilesRules, requiresUploadedFiles } from '../attachmentUploadValidation';
 import {
@@ -24,7 +25,6 @@ import {
 } from '../context/AttachmentUploadContext';
 import { fileUploadErrorParams } from '../context/fileUploadConfig';
 import UploadButton from './UploadButton';
-import useAttachmentValidation from './useAttachmentValidation';
 
 const noFiles: UploadedFile[] = [];
 
@@ -68,8 +68,8 @@ const FileUploader = ({
   const submissionAttachments = submissionPath
     ? getAttachmentsAtPath(submission, submissionPath)
     : (submission?.attachments ?? []);
-  const { getAttachmentError } = useAttachmentValidation(submissionPath, submissionAttachments);
   const attachment = submissionAttachments.find((currentAttachment) => currentAttachment.attachmentId === attachmentId);
+  const pageKey = useOptionalValidationScope()?.pageKey;
 
   const label = requireAttachmentTitle
     ? translate(attachment?.title)
@@ -81,7 +81,10 @@ const FileUploader = ({
   const inProgress = Object.values(uploadsInProgress);
   const fileItems = [...uploadedFiles, ...inProgress];
 
-  const attachmentTitleErrorMessage = getAttachmentError(attachmentId, 'title');
+  const attachmentTitlePath = attachmentFieldPath(submissionPath, attachmentId, 'title');
+  const titleValidationError = useValidationFieldError(attachmentTitlePath, pageKey);
+  const titleExternalError = useValidationExternalError(attachmentTitlePath);
+  const attachmentTitleErrorMessage = titleValidationError ?? titleExternalError;
   const handleTitleChange = (title: string) => {
     changeAttachmentValue(
       initialAttachment,
@@ -134,7 +137,7 @@ const FileUploader = ({
             // it shows comes from the upload itself.
             <UnvalidatedFields>
               <TextField
-                statePath={attachmentFieldPath(submissionPath, attachmentId, 'title')}
+                statePath={attachmentTitlePath}
                 label={translate(TEXTS.statiske.attachment.attachmentTitle)}
                 maxLength={50}
                 value={attachment?.title ?? ''}

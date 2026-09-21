@@ -55,6 +55,12 @@ const Attachment = ({
   const singleOption = values.length === 1 ? values[0] : undefined;
   const checkedValues = singleOption && selectedValue === singleOption.value ? [singleOption.value] : [];
   const shouldShowDeadline = !!(selectedValue && attachmentValues?.[selectedValue]?.showDeadline && deadlineDays);
+  const withAdditionalDocumentation = (key: string, enabled: boolean): SubmissionAttachmentValue => ({
+    key: key as SubmissionAttachmentValue['key'],
+    ...(enabled && currentValue.additionalDocumentation
+      ? { additionalDocumentation: currentValue.additionalDocumentation }
+      : {}),
+  });
 
   return (
     <FormElementBox fieldSize={fieldSize} marginBottom={marginBottom}>
@@ -68,12 +74,7 @@ const Attachment = ({
           onChange={(nextValue) =>
             setStateValue(
               nextValue.includes(singleOption.value)
-                ? {
-                    key: singleOption.value,
-                    ...(additionalDocumentation?.label && currentValue.additionalDocumentation
-                      ? { additionalDocumentation: currentValue.additionalDocumentation }
-                      : {}),
-                  }
+                ? withAdditionalDocumentation(singleOption.value, !!additionalDocumentation?.label)
                 : undefined,
             )
           }
@@ -91,13 +92,9 @@ const Attachment = ({
           values={values}
           value={selectedValue ?? ''}
           onChange={(nextValue) =>
-            setStateValue({
-              key: nextValue,
-              ...(attachmentValues?.[nextValue]?.additionalDocumentation?.enabled &&
-              currentValue.additionalDocumentation
-                ? { additionalDocumentation: currentValue.additionalDocumentation }
-                : {}),
-            })
+            setStateValue(
+              withAdditionalDocumentation(nextValue, !!attachmentValues?.[nextValue]?.additionalDocumentation?.enabled),
+            )
           }
           required={required}
           readOnly={readOnly}

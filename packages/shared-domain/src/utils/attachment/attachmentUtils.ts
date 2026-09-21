@@ -69,6 +69,27 @@ const getAttachmentLabel = (key: keyof AttachmentSettingValues, submissionMethod
 const isSubmissionAttachment = (value: unknown): value is SubmissionAttachment =>
   typeof value === 'object' && value !== null && 'attachmentId' in value && typeof value.attachmentId === 'string';
 
+const getAttachmentValue = (value: unknown): string | undefined => {
+  if (typeof value === 'string') {
+    return value;
+  }
+  if (!value || typeof value !== 'object') {
+    return undefined;
+  }
+  if ('key' in value && typeof value.key === 'string') {
+    return value.key;
+  }
+  return 'value' in value && typeof value.value === 'string' ? value.value : undefined;
+};
+
+const getAdditionalDocumentation = (value: unknown): string | undefined =>
+  value &&
+  typeof value === 'object' &&
+  'additionalDocumentation' in value &&
+  typeof value.additionalDocumentation === 'string'
+    ? value.additionalDocumentation
+    : undefined;
+
 const toSubmissionAttachments = (value: unknown, component: Component): SubmissionAttachment[] => {
   if (Array.isArray(value)) {
     return value.filter(isSubmissionAttachment);
@@ -77,26 +98,13 @@ const toSubmissionAttachments = (value: unknown, component: Component): Submissi
     return [value];
   }
 
-  const attachmentValue =
-    typeof value === 'string'
-      ? value
-      : value && typeof value === 'object' && 'key' in value && typeof value.key === 'string'
-        ? value.key
-        : value && typeof value === 'object' && 'value' in value && typeof value.value === 'string'
-          ? value.value
-          : undefined;
+  const attachmentValue = getAttachmentValue(value);
   const navId = navFormUtils.getNavId(component) ?? component.key;
   if (!attachmentValue || !navId || !isKnownAttachmentSettingKey(attachmentValue)) {
     return [];
   }
 
-  const additionalDocumentation =
-    value &&
-    typeof value === 'object' &&
-    'additionalDocumentation' in value &&
-    typeof value.additionalDocumentation === 'string'
-      ? value.additionalDocumentation
-      : undefined;
+  const additionalDocumentation = getAdditionalDocumentation(value);
 
   return [
     {

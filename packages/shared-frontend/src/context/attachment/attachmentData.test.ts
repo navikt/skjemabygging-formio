@@ -24,9 +24,11 @@ describe('attachmentData', () => {
   });
 
   it('stores and reads attachments at nested paths', () => {
-    const submission = setAttachmentsAtPath({ data: {} }, 'container.rows[0].documentation', [attachment], false);
+    const initialSubmission = { data: { untouched: 'value' } };
+    const submission = setAttachmentsAtPath(initialSubmission, 'container.rows[0].documentation', [attachment], false);
 
     expect(getAttachmentsAtPath(submission, 'container.rows[0].documentation')).toEqual([attachment]);
+    expect(initialSubmission).toEqual({ data: { untouched: 'value' } });
   });
 
   it('hydrates legacy form attachments and retains personal ID separately', () => {

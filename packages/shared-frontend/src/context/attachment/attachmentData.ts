@@ -21,10 +21,8 @@ const isSubmissionAttachment = (value: unknown): value is SubmissionAttachment =
 
 const getAttachmentsAtPath = (submission: Submission | undefined, submissionPath: string): SubmissionAttachment[] => {
   const value = submissionUtils.getSubmissionValue(submissionPath, submission);
-  if (Array.isArray(value)) {
-    return value.filter(isSubmissionAttachment);
-  }
-  return isSubmissionAttachment(value) ? [value] : [];
+  const values = Array.isArray(value) ? value : [value];
+  return values.filter(isSubmissionAttachment);
 };
 
 const setAttachmentsAtPath = (

@@ -3,14 +3,12 @@ import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { ReactNode, useState } from 'react';
 import Alert from '../../../components/alert/Alert';
 import FileUploadButton from '../../../components/file-upload/FileUploadButton';
-import { getAttachmentsAtPath } from '../../../context/attachment/attachmentData';
 import { useLanguage } from '../../../context/language/LanguageContext';
-import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
+import { useValidationExternalError, useValidationFieldError } from '../../../context/validation/ValidationContext';
 import { useOptionalValidationScope } from '../../../context/validation/ValidationScopeContext';
 import { inputId } from '../../../utils/inputId';
 import { useAttachmentUpload } from '../context/AttachmentUploadContext';
 import { FILE_ACCEPT, MAX_SIZE_ATTACHMENT_FILE_BYTES } from '../context/fileUploadConfig';
-import useAttachmentValidation from './useAttachmentValidation';
 
 interface Props {
   attachmentId: string;
@@ -40,15 +38,12 @@ const UploadButton = ({
   onSuccess,
 }: Props) => {
   const { translate } = useLanguage();
-  const { submission } = useSubmissionState();
   const { handleUploadFile, addError } = useAttachmentUpload();
-  const submissionAttachments = submissionPath
-    ? getAttachmentsAtPath(submission, submissionPath)
-    : (submission?.attachments ?? []);
   const scope = useOptionalValidationScope();
-  const { getAttachmentError } = useAttachmentValidation(submissionPath, submissionAttachments);
   const [loading, setLoading] = useState(false);
-  const uploadErrorMessage = getAttachmentError(attachmentId, 'files');
+  const validationError = useValidationFieldError(statePath, scope?.pageKey);
+  const externalError = useValidationExternalError(statePath);
+  const uploadErrorMessage = validationError ?? externalError;
 
   const onSelect = async (files: FileObject[]) => {
     setLoading(true);

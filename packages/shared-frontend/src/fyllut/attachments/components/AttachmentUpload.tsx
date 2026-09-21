@@ -8,12 +8,13 @@ import {
 import { ReactNode } from 'react';
 import { createAttachmentId, getAttachmentsAtPath } from '../../../context/attachment/attachmentData';
 import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
+import { useValidationExternalError, useValidationFieldError } from '../../../context/validation/ValidationContext';
 import ValidationRegistration from '../../../context/validation/ValidationRegistration';
+import { useOptionalValidationScope } from '../../../context/validation/ValidationScopeContext';
 import { attachmentFieldPath } from '../attachmentFieldPath';
 import { attachmentValueRules } from '../attachmentUploadValidation';
 import { useAttachmentUpload } from '../context/AttachmentUploadContext';
 import AttachmentUploadField from './AttachmentUploadField';
-import useAttachmentValidation from './useAttachmentValidation';
 
 interface AttachmentUploadProps {
   label: string;
@@ -39,11 +40,13 @@ const AttachmentUpload = ({
   const { submission } = useSubmissionState();
   const { changeAttachmentValue } = useAttachmentUpload();
   const submissionAttachments = getAttachmentsAtPath(submission, submissionPath);
-  const { getAttachmentError } = useAttachmentValidation(submissionPath, submissionAttachments);
-
   const submissionAttachment = submissionAttachments.find((attachment) => attachment.navId === attachmentNavId);
   const attachmentId = createAttachmentId(attachmentNavId, submissionPath);
-  const attachmentError = getAttachmentError(attachmentId, 'value');
+  const attachmentValuePath = attachmentFieldPath(submissionPath, attachmentId, 'value');
+  const pageKey = useOptionalValidationScope()?.pageKey;
+  const validationError = useValidationFieldError(attachmentValuePath, pageKey);
+  const externalError = useValidationExternalError(attachmentValuePath);
+  const attachmentError = validationError ?? externalError;
 
   const handleValueChange = (value: Partial<SubmissionAttachmentValue> | undefined) => {
     changeAttachmentValue(
@@ -57,7 +60,7 @@ const AttachmentUpload = ({
     <>
       <ValidationRegistration
         label={label}
-        statePath={attachmentFieldPath(submissionPath, attachmentId, 'value')}
+        statePath={attachmentValuePath}
         value={submissionAttachment?.value}
         rules={attachmentValueRules(required)}
       />

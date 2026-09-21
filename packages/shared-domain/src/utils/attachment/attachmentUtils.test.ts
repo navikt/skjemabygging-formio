@@ -3,6 +3,31 @@ import { TEXTS } from '../../texts';
 import { attachmentUtils } from './attachmentUtils';
 
 describe('attachmentUtils', () => {
+  describe('toSubmissionAttachments', () => {
+    const component = {
+      key: 'documentation',
+      navId: 'documentation-nav-id',
+      type: 'attachment',
+    } as Component;
+
+    it.each([
+      ['leggerVedNaa', undefined],
+      [{ key: 'ettersender', additionalDocumentation: 'Sent next week' }, 'Sent next week'],
+      [{ value: 'harIkke' }, undefined],
+    ])('normalizes legacy choice value %#', (value, additionalDocumentation) => {
+      expect(attachmentUtils.toSubmissionAttachments(value, component)).toEqual([
+        {
+          attachmentId: 'documentation-nav-id',
+          navId: 'documentation-nav-id',
+          type: 'default',
+          value: typeof value === 'string' ? value : 'key' in value ? value.key : value.value,
+          ...(additionalDocumentation ? { additionalDocumentation } : {}),
+          files: [],
+        },
+      ]);
+    });
+  });
+
   describe('resolveAttachmentLabelKey', () => {
     it('uses digital label keys for digital submission method', () => {
       expect(attachmentUtils.resolveAttachmentLabelKey('leggerVedNaa', 'digital')).toBe('uploadNow');
