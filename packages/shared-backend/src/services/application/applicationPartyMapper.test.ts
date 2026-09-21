@@ -32,7 +32,7 @@ describe('mapPartyToApplication', () => {
           kind: 'unidentified-person',
         },
       },
-      expected: {},
+      expected: undefined,
     },
     {
       name: 'another person, identified user with spaced identifiers',

@@ -28,11 +28,13 @@ const assembleSubmitApplicationRequest = (
 ): SubmitApplicationRequest => {
   const activeAttachments: Component[] =
     navFormUtils.getActiveAttachmentPanelFromForm(form, submission)?.components ?? [];
-  const { bruker, avsender } = extractApplicationParty(form, submission);
+  const applicationParty = extractApplicationParty(form, submission);
 
-  if (!bruker && !avsender) {
+  if (!applicationParty) {
     throw new Error(`${innsendingsId}: Could not find user nor sender from nologin submission (formPath=${form.path})`);
   }
+
+  const { bruker, avsender } = applicationParty;
 
   return {
     ...(bruker && { bruker }),
@@ -74,9 +76,9 @@ const assembleSubmitApplicationRequest = (
   };
 };
 
-const extractApplicationParty = (form: Form, submission: Submission): ApplicationPartyData => {
+const extractApplicationParty = (form: Form, submission: Submission): ApplicationPartyData | undefined => {
   const party = resolveParty(form, submission);
-  return party ? mapPartyToApplication(party) : {};
+  return party ? mapPartyToApplication(party) : undefined;
 };
 
 const validateAttachment = (attachment: Attachment, validationId: string): Attachment => {

@@ -37,10 +37,10 @@ const mapSender = (sender: PartySender): AvsenderId => {
   return mappedSender;
 };
 
-const mapUser = (user: ConcernedPerson): Pick<ApplicationPartyData, 'bruker'> =>
-  user.kind === 'identified-person' ? { bruker: formatUtils.removeAllSpaces(user.nationalIdentityNumber) } : {};
+const mapUser = (user: ConcernedPerson): Pick<ApplicationPartyData, 'bruker'> | undefined =>
+  user.kind === 'identified-person' ? { bruker: formatUtils.removeAllSpaces(user.nationalIdentityNumber) } : undefined;
 
-const mapPartyToApplication = (party: Party): ApplicationPartyData => {
+const mapPartyToApplication = (party: Party): ApplicationPartyData | undefined => {
   if (party.onBehalfOf === 'self') {
     if ('sender' in party) {
       return {
@@ -58,12 +58,12 @@ const mapPartyToApplication = (party: Party): ApplicationPartyData => {
             navn: getFullName(party.user.firstName, party.user.surname),
           },
         }
-      : {};
+      : undefined;
   }
 
   if (party.onBehalfOf === 'other-person') {
     return {
-      ...mapUser(party.user),
+      ...(mapUser(party.user) ?? {}),
       avsender: mapSender(party.sender),
     };
   }
