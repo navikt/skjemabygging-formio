@@ -1,56 +1,14 @@
 import type { CaptchaChallenge, SolvedCaptchaChallenge } from '@navikt/skjemadigitalisering-shared-domain';
 import crypto from 'crypto';
-
-const CAPTCHA_FAILURE_REASON = {
-  INVALID_CHALLENGE_FIELDS: 'invalid_challenge_fields',
-  INVALID_CHALLENGE_SIGNATURE: 'invalid_challenge_signature',
-  CHALLENGE_EXPIRED: 'challenge_expired',
-  INVALID_PROOF_OF_WORK: 'invalid_proof_of_work',
-} as const;
-
-type CaptchaFailureReason = (typeof CAPTCHA_FAILURE_REASON)[keyof typeof CAPTCHA_FAILURE_REASON];
-
-interface CreateCaptchaServiceProps {
-  hmacSecret: string;
-  powDifficulty: number;
-  challengeTtlSeconds: number;
-}
-
-type CaptchaService = {
-  createChallenge: () => CaptchaChallenge;
-  verifySolution: (
-    body: unknown,
-  ) => { valid: true } | { valid: false; reason: CaptchaFailureReason };
-};
+import {
+  CAPTCHA_FAILURE_REASON,
+  type CaptchaFailureReason,
+  type CaptchaService,
+  type CreateCaptchaServiceProps,
+} from './types';
+import { solutionIsValid } from './utils';
 
 const MAX_SOLUTION_LENGTH = 64;
-
-/**
- * Canonical proof of work format: SHA-256(nonce + ":" + solution) must have at
- * least `difficulty` leading zero bits. The same format is implemented in the
- * frontend web worker (shared-components: src/api/captcha/powWorker.ts).
- */
-const POW_SEPARATOR = ':';
-
-const countLeadingZeroBits = (digest: Buffer): number => {
-  let bits = 0;
-  for (let i = 0; i < digest.length; i++) {
-    const byte = digest[i];
-    if (byte === 0) {
-      bits += 8;
-    } else {
-      // Math.clz32 counts leading zeros in a 32 bit integer, subtract the 24 padding bits
-      bits += Math.clz32(byte) - 24;
-      break;
-    }
-  }
-  return bits;
-};
-
-const solutionIsValid = (nonce: string, difficulty: number, solution: string): boolean => {
-  const digest = crypto.createHash('sha256').update(`${nonce}${POW_SEPARATOR}${solution}`).digest();
-  return countLeadingZeroBits(digest) >= difficulty;
-};
 
 /**
  * Stateless verification of a challenge response. There is no replay store, since consumers can run
@@ -94,9 +52,7 @@ const createCaptchaService = ({
     );
   };
 
-  const verifySolution = (
-    body: unknown,
-  ): { valid: true } | { valid: false; reason: CaptchaFailureReason } => {
+  const verifySolution = (body: unknown): { valid: true } | { valid: false; reason: CaptchaFailureReason } => {
     if (!isCaptchaSolution(body)) {
       return { valid: false, reason: CAPTCHA_FAILURE_REASON.INVALID_CHALLENGE_FIELDS };
     }
@@ -115,5 +71,5 @@ const createCaptchaService = ({
   return { createChallenge, verifySolution };
 };
 
+export type { CaptchaFailureReason, CaptchaService, CreateCaptchaServiceProps } from './types';
 export { CAPTCHA_FAILURE_REASON, createCaptchaService };
-export type { CaptchaFailureReason, CaptchaService, CreateCaptchaServiceProps };
