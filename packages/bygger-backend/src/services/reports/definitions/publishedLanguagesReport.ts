@@ -1,6 +1,6 @@
 import { translationUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { awaitReportCall, CsvReport } from '../csvPipeline';
-import { notTestForm, ReportDependencies } from '../types';
+import { isNotTestForm, ReportDependencies } from '../types';
 
 type PublishedLanguagesRow = {
   formNumber: string;
@@ -25,7 +25,7 @@ const publishedLanguagesReport = ({
   rows: async function* (signal) {
     signal.throwIfAborted();
     const forms = await awaitReportCall(signal, () => formPublicationsService.getAll());
-    for (const form of forms.filter(notTestForm)) {
+    for (const form of forms.filter(isNotTestForm)) {
       signal.throwIfAborted();
       const publishedForm = await awaitReportCall(signal, () => formPublicationsService.get(form.path));
       const { translations } = await awaitReportCall(signal, () =>

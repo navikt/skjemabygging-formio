@@ -11,8 +11,8 @@ type ReportDependencies = {
   staticPdfService: Pick<StaticPdfService, 'getAll'>;
 };
 
-const notTestForm = (form: Partial<Form>) => !form.properties?.isTestForm;
+const isNotTestForm = (form: Partial<Form>) => !form.properties?.isTestForm;
 const yesNo = (value: unknown) => (value ? 'ja' : 'nei');
 
-export { notTestForm, yesNo };
+export { isNotTestForm, yesNo };
 export type { ReportDependencies };

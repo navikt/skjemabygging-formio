@@ -1,6 +1,6 @@
 import { Form, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { awaitReportCall, CsvReport } from '../csvPipeline';
-import { notTestForm, ReportDependencies } from '../types';
+import { isNotTestForm, ReportDependencies } from '../types';
 
 type AttachmentRow = {
   formNumber: string;
@@ -25,7 +25,7 @@ const attachmentsReport = ({ formsService }: ReportDependencies): CsvReport<Atta
         'path,title,skjemanummer,properties',
       ),
     );
-    for (const compact of forms.filter(notTestForm)) {
+    for (const compact of forms.filter(isNotTestForm)) {
       signal.throwIfAborted();
       const form = await awaitReportCall(signal, () => formsService.get(compact.path));
       signal.throwIfAborted();

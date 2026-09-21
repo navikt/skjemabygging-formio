@@ -1,6 +1,6 @@
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { awaitReportCall, CsvReport } from '../csvPipeline';
-import { notTestForm, ReportDependencies } from '../types';
+import { isNotTestForm, ReportDependencies } from '../types';
 
 type UnpublishedRow = {
   formNumber: string;
@@ -24,7 +24,7 @@ const unpublishedFormsReport = ({ formsService }: ReportDependencies): CsvReport
       >('skjemanummer,title,status,publishedAt,publishedBy,properties'),
     );
     signal.throwIfAborted();
-    for (const form of forms.filter((form) => notTestForm(form) && form.status === 'unpublished')) {
+    for (const form of forms.filter((form) => isNotTestForm(form) && form.status === 'unpublished')) {
       signal.throwIfAborted();
       yield {
         formNumber: form.skjemanummer,

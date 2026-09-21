@@ -9,7 +9,7 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import config from '../../../config';
 import { awaitReportCall, CsvReport } from '../csvPipeline';
-import { notTestForm, ReportDependencies, yesNo } from '../types';
+import { isNotTestForm, ReportDependencies, yesNo } from '../types';
 
 type SummaryRow = {
   formNumber: string;
@@ -114,7 +114,7 @@ const allFormsSummaryReport = ({
       ]),
     );
     signal.throwIfAborted();
-    for (const compact of forms.filter(notTestForm)) {
+    for (const compact of forms.filter(isNotTestForm)) {
       signal.throwIfAborted();
       const form = await awaitReportCall(signal, () => formsService.get(compact.path));
       signal.throwIfAborted();
