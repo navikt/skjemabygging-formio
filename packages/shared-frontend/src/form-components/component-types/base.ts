@@ -1,74 +1,61 @@
-import { Component } from '@navikt/skjemadigitalisering-shared-domain';
+import type {
+  Component,
+  ComponentConditional,
+  ComponentValidate,
+  InputMode,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import type { ComponentDefinition } from './index';
 
 /**
- * Cross-cutting fields shared by (essentially) every form component, independent
- * of `type`. Derived from the legacy `Component` interface via `Pick` so the
- * field types stay in sync with shared-domain and every definition variant is
- * structurally assignable to `Component`.
+ * Cross-cutting fields shared by form components, independent of `type`.
  *
- * The set intentionally covers the fields that shared-frontend reads
- * *generically* - i.e. off a component whose concrete type is not (yet) known:
- * the tree-walkers (validation, conditional eval, prefill, calculated/default
- * values) and the shared input/date utilities. Fields that only a single
- * component's renderer reads live on that component's own `*Definition` variant
- * instead, which is where the per-type strictness pays off.
+ * Keep this deliberately small: fields that belong only to a family of
+ * components are expressed through the capability types below and composed by
+ * the relevant concrete definitions.
+ *
+ * This is the transition shape while form definitions enter shared-frontend
+ * from the legacy shared-domain `Component` model. The next phase moves this
+ * complete discriminated model to shared-domain so shared-backend, the builder,
+ * and shared-frontend all consume the same contract. That removes the legacy
+ * compatibility intersection on `components` and the ingestion conversion.
  *
  * `type` is intentionally excluded: each variant declares its own `type`
  * literal, which is the discriminant of the `ComponentDefinition` union.
  */
-type BaseComponentDefinition = Pick<
-  Component,
-  | 'id'
-  | 'navId'
-  | 'key'
-  | 'label'
-  | 'description'
-  | 'input'
-  | 'baseSubmissionPath'
-  | 'hidden'
-  | 'conditional'
-  | 'customConditional'
-  | 'validate'
-  | 'properties'
-  | 'calculateValue'
-  | 'allowCalculateOverride'
-  | 'values'
-  | 'data'
-  | 'dataSrc'
-  | 'valueProperty'
-  | 'labelProperty'
-  | 'defaultValue'
-  | 'prefillKey'
-  | 'prefillValue'
-  | 'customLabels'
-  | 'inputType'
-  | 'fieldSize'
-  | 'readOnly'
-  | 'selectType'
-  | 'autocomplete'
-  | 'spellCheck'
-  | 'hideLabel'
-  | 'additionalDescriptionLabel'
-  | 'additionalDescriptionText'
-  | 'content'
-  | 'tree'
-  | 'attachmentType'
-  | 'otherDocumentation'
-  | 'protectedApiKey'
-  | 'beforeDateInputKey'
-  | 'earliestAllowedDate'
-  | 'latestAllowedDate'
-  | 'mayBeEqual'
-  | 'specificEarliestAllowedDate'
-  | 'specificLatestAllowedDate'
-> & {
-  /**
-   * Child components. Narrowed from the legacy `Component[]` to
-   * `ComponentDefinition[]` so the definition tree is self-referential and
-   * recursing into children keeps full per-type typing.
-   */
-  components?: ComponentDefinition[];
-};
+interface BaseComponentDefinition {
+  id?: string;
+  navId?: string;
+  key: string;
+  label: string;
+  description?: string;
+  input?: boolean;
+  baseSubmissionPath?: string;
+  hidden?: boolean;
+  conditional?: ComponentConditional;
+  customConditional?: string;
+  validate?: ComponentValidate;
+  calculateValue?: string;
+  prefillValue?: string | object;
+  fieldSize?: string;
+  readOnly?: boolean;
+  hideLabel?: boolean;
+  additionalDescriptionLabel?: string;
+  additionalDescriptionText?: string;
 
-export type { BaseComponentDefinition };
+  /**
+   * A self-referential definition tree lets walkers retain the per-type
+   * discriminant while recursing.
+   */
+  components?: ComponentDefinition[] & Component[];
+}
+
+interface InputModeDefinition {
+  inputType?: InputMode;
+}
+
+interface TextInputDefinition extends InputModeDefinition {
+  autocomplete?: string;
+  spellCheck?: boolean;
+}
+
+export type { BaseComponentDefinition, InputModeDefinition, TextInputDefinition };

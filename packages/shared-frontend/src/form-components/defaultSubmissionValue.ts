@@ -2,6 +2,8 @@ import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
 import { ComponentDefinition } from './component-types';
 import { getValues } from './inputComponentUtils';
 
+type ConfiguredOptionComponent = Extract<ComponentDefinition, { type: 'select' | 'navSelect' }>;
+
 const isComponentValue = (value: unknown): value is ComponentValue =>
   typeof value === 'object' &&
   value !== null &&
@@ -16,7 +18,7 @@ const isSelectedValuesMap = (value: unknown): value is Record<string, boolean> =
   !Array.isArray(value) &&
   Object.values(value).every((selected) => typeof selected === 'boolean');
 
-const resolveConfiguredOptionDefault = (component: ComponentDefinition): ComponentValue | undefined => {
+const resolveConfiguredOptionDefault = (component: ConfiguredOptionComponent): ComponentValue | undefined => {
   const defaultValue =
     typeof component.defaultValue === 'string'
       ? component.defaultValue

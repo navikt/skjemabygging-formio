@@ -33,7 +33,7 @@ const toEvaluationNumber = (component: ComponentDefinition, value: unknown) => {
   }
 
   const normalizedValue =
-    component.inputType === 'numeric' || component.type === 'year'
+    ('inputType' in component && component.inputType === 'numeric') || component.type === 'year'
       ? value.replace(/\s/g, '')
       : value.replace(/\s/g, '').replace(',', '.');
 
@@ -42,7 +42,7 @@ const toEvaluationNumber = (component: ComponentDefinition, value: unknown) => {
   }
 
   const isValidNumber =
-    component.inputType === 'numeric' || component.type === 'year'
+    ('inputType' in component && component.inputType === 'numeric') || component.type === 'year'
       ? numberUtils.isValidInteger(normalizedValue)
       : numberUtils.isValidDecimal(normalizedValue);
 

@@ -37,7 +37,7 @@ const isObjectRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
 const shouldScopeChildRow = (component: ComponentDefinition) =>
-  Boolean(component.key && (component.tree || component.input));
+  Boolean(component.key && (('tree' in component && component.tree) || component.input));
 
 const getChildRow = (component: ComponentDefinition, row: object | undefined) => {
   if (!shouldScopeChildRow(component) || !isObjectRecord(row)) {

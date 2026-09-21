@@ -9,13 +9,19 @@ import {
   flattenComponentsWithBaseSubmissionPath,
   getResolvedSubmissionPath,
 } from '../context/form-definition/formDefinitionUtils';
-import { ComponentDefinition } from './component-types';
+import { ComponentDefinition, DateOffsetDefinition, DatePickerRangeDefinition } from './component-types';
 
 const normalizeArrayIndexes = (submissionPath: string) => submissionPath.replace(/\[\d+]/g, '');
 
 const getCurrentRowPrefix = (submissionPath: string) => submissionPath.match(/^(.*\[\d+])(?:\.|$)/)?.[1];
 
-const getBeforeDateInputSubmissionPath = (component: Component, pageComponents: ComponentDefinition[]) => {
+type DatePickerDefinitionInput = Component & DatePickerRangeDefinition;
+type MonthPickerDefinitionInput = Component & DateOffsetDefinition;
+
+const getBeforeDateInputSubmissionPath = (
+  component: DatePickerDefinitionInput,
+  pageComponents: ComponentDefinition[],
+) => {
   if (!component.beforeDateInputKey) {
     return undefined;
   }
@@ -44,7 +50,7 @@ const getBeforeDateInputSubmissionPath = (component: Component, pageComponents: 
 };
 
 const getDatePickerFromDate = (
-  component: Component,
+  component: DatePickerDefinitionInput,
   pageComponents: ComponentDefinition[],
   submission?: Submission,
 ) => {
@@ -70,7 +76,7 @@ const getDatePickerFromDate = (
   return component.specificEarliestAllowedDate;
 };
 
-const getDatePickerToDate = (component: Component) => {
+const getDatePickerToDate = (component: DatePickerDefinitionInput) => {
   if (component.latestAllowedDate !== undefined && numberUtils.isValidInteger(String(component.latestAllowedDate))) {
     return dateUtils.addDays(Number(component.latestAllowedDate));
   }
@@ -78,7 +84,7 @@ const getDatePickerToDate = (component: Component) => {
   return component.specificLatestAllowedDate;
 };
 
-const getMonthPickerMinYear = (component: ComponentDefinition) => {
+const getMonthPickerMinYear = (component: MonthPickerDefinitionInput) => {
   const minYear = component.validate?.minYear;
   if (minYear && String(minYear).length === 4 && numberUtils.isValidInteger(String(minYear))) {
     return minYear;
@@ -95,7 +101,7 @@ const getMonthPickerMinYear = (component: ComponentDefinition) => {
   return undefined;
 };
 
-const getMonthPickerMaxYear = (component: ComponentDefinition) => {
+const getMonthPickerMaxYear = (component: MonthPickerDefinitionInput) => {
   const maxYear = component.validate?.maxYear;
   if (maxYear && String(maxYear).length === 4 && numberUtils.isValidInteger(String(maxYear))) {
     return maxYear;
