@@ -1,8 +1,8 @@
 import { Form, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { describe, expect, it, vi } from 'vitest';
 import { ComponentDefinition } from '../../form-components/component-types';
-import { collectDataGridRowScopes } from '../../form-components/components/data-grid/dataGridRows';
 import { applyCalculatedValues, collectCalculationTargets } from './calculatedValues';
+import { collectDataGridRowScopes } from './dataGridRows';
 import { enrichFormWithBaseSubmissionPath, getActivePanels, toComponentDefinitions } from './formDefinitionUtils';
 
 // Shaped like the data grid "transportmiddelTur" in the production form nav100716, where a currency

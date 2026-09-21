@@ -1,20 +1,18 @@
 import { Form } from '@navikt/skjemadigitalisering-shared-domain';
 import { describe, expect, it } from 'vitest';
 import {
+  collectDataGridRowScopes,
+  collectInputSubmissionPathsInCurrentScope,
+  getActiveRowComponents,
+  getRenderedDataGridRows,
+} from '../../../context/form-definition/dataGridRows';
+import {
   enrichComponentsWithBaseSubmissionPath,
   enrichFormWithBaseSubmissionPath,
   toComponentDefinitions,
 } from '../../../context/form-definition/formDefinitionUtils';
 import { ComponentDefinition } from '../../component-types';
-import {
-  addDataGridRowId,
-  collectDataGridRowScopes,
-  collectInputSubmissionPaths,
-  getActiveRowComponents,
-  getRenderedDataGridRows,
-  removeDataGridRowId,
-  syncDataGridRowIds,
-} from './dataGridRows';
+import { addDataGridRowId, removeDataGridRowId, syncDataGridRowIds } from './dataGridRows';
 
 const createForm = (components: ComponentDefinition[]): Form =>
   enrichFormWithBaseSubmissionPath({
@@ -87,16 +85,15 @@ describe('dataGridRows', () => {
     const scopes = collectDataGridRowScopes({ components: toComponentDefinitions(form.components), submission, form });
 
     expect(scopes).toHaveLength(2);
-    expect(collectInputSubmissionPaths(scopes[0].components).map(({ submissionPath }) => submissionPath)).toEqual([
-      'kjoreliste[0].harParkering',
-      'kjoreliste[0].parkeringsutgift',
-    ]);
-    expect(collectInputSubmissionPaths(scopes[0].activeComponents).map(({ submissionPath }) => submissionPath)).toEqual(
-      ['kjoreliste[0].harParkering', 'kjoreliste[0].parkeringsutgift'],
-    );
-    expect(collectInputSubmissionPaths(scopes[1].activeComponents).map(({ submissionPath }) => submissionPath)).toEqual(
-      ['kjoreliste[1].harParkering'],
-    );
+    expect(
+      collectInputSubmissionPathsInCurrentScope(scopes[0].components).map(({ submissionPath }) => submissionPath),
+    ).toEqual(['kjoreliste[0].harParkering', 'kjoreliste[0].parkeringsutgift']);
+    expect(
+      collectInputSubmissionPathsInCurrentScope(scopes[0].activeComponents).map(({ submissionPath }) => submissionPath),
+    ).toEqual(['kjoreliste[0].harParkering', 'kjoreliste[0].parkeringsutgift']);
+    expect(
+      collectInputSubmissionPathsInCurrentScope(scopes[1].activeComponents).map(({ submissionPath }) => submissionPath),
+    ).toEqual(['kjoreliste[1].harParkering']);
   });
 
   it('keeps the data grid itself, but not its children, in the shared submission paths', () => {
@@ -112,8 +109,69 @@ describe('dataGridRows', () => {
     const form = createForm([datagrid]);
 
     expect(
-      collectInputSubmissionPaths(toComponentDefinitions(form.components)).map(({ submissionPath }) => submissionPath),
+      collectInputSubmissionPathsInCurrentScope(toComponentDefinitions(form.components)).map(
+        ({ submissionPath }) => submissionPath,
+      ),
     ).toEqual(['kjoreliste']);
+  });
+
+  it('evaluates nested data grid children in their own row scope', () => {
+    const datagrid: ComponentDefinition = {
+      key: 'outer',
+      label: 'Outer',
+      type: 'datagrid',
+      input: true,
+      tree: true,
+      navId: 'outer',
+      components: [
+        {
+          key: 'inner',
+          label: 'Inner',
+          type: 'datagrid',
+          input: true,
+          tree: true,
+          navId: 'inner',
+          components: [
+            { key: 'enabled', label: 'Enabled', type: 'navCheckbox', input: true, navId: 'enabled' },
+            {
+              key: 'details',
+              label: 'Details',
+              type: 'textfield',
+              input: true,
+              navId: 'details',
+              customConditional: 'show = row.enabled === true;',
+            },
+          ],
+        },
+      ],
+    };
+    const form = createForm([datagrid]);
+    const submission = {
+      data: {
+        outer: [
+          {
+            inner: [
+              { enabled: true, details: 'first' },
+              { enabled: false, details: 'second' },
+            ],
+          },
+        ],
+      },
+    } as never;
+
+    const scopes = collectDataGridRowScopes({ components: toComponentDefinitions(form.components), submission, form });
+
+    expect(scopes).toHaveLength(3);
+    expect(scopes[0].activeComponents[0]?.components?.map((component) => component.key)).toEqual([
+      'enabled',
+      'details',
+    ]);
+    expect(
+      collectInputSubmissionPathsInCurrentScope(scopes[1].activeComponents).map(({ submissionPath }) => submissionPath),
+    ).toEqual(['outer[0].inner[0].enabled', 'outer[0].inner[0].details']);
+    expect(
+      collectInputSubmissionPathsInCurrentScope(scopes[2].activeComponents).map(({ submissionPath }) => submissionPath),
+    ).toEqual(['outer[0].inner[1].enabled']);
   });
 
   it('filters simple conditionals against row data', () => {

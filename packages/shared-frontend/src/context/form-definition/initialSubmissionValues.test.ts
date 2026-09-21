@@ -292,6 +292,25 @@ describe('applyInitialValuesToSubmission', () => {
     ).toEqual({ data: { grid: [{ enabled: true, count: '0' }, { enabled: false }] } });
   });
 
+  it('clears statically hidden values from resumed data grid rows', () => {
+    const form = createForm([
+      {
+        key: 'grid',
+        type: 'datagrid',
+        input: true,
+        tree: true,
+        components: [
+          { key: 'visible', type: 'textfield', input: true },
+          { key: 'hidden', type: 'textfield', input: true, hidden: true },
+        ],
+      },
+    ]);
+
+    expect(
+      applyInitialValuesToSubmission(form, { data: { grid: [{ visible: 'shown', hidden: 'stale' }] } }, 'nb'),
+    ).toEqual({ data: { grid: [{ visible: 'shown' }] } });
+  });
+
   it('applies defaults to the implicit first data grid row', () => {
     const form = createForm([
       {

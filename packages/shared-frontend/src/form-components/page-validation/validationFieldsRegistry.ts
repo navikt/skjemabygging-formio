@@ -21,13 +21,17 @@ import {
 import { toCoverPageTextFieldValidation, toTextFieldValidation } from '../../components/text-field/textFieldValidation';
 import { toYearValidation } from '../../components/year/yearValidation';
 import {
+  getActiveRowComponents,
+  getDataGridRows,
+  getRenderedDataGridRows,
+} from '../../context/form-definition/dataGridRows';
+import {
   enrichComponentsWithBaseSubmissionPath,
   toComponentDefinitions,
 } from '../../context/form-definition/formDefinitionUtils';
 import { toActivitiesValidationFields } from '../components/activities/activitiesValidation';
 import { getDataFetcherData } from '../components/data-fetcher/dataFetcherUtils';
 import { toDataFetcherValidationFields } from '../components/data-fetcher/dataFetcherValidation';
-import { getActiveRowComponents, getDataGridRows, getRenderedDataGridRows } from '../components/data-grid/dataGridRows';
 import { toDrivingListValidationFields } from '../components/driving-list/drivingListValidation';
 import { resolveCustomValidationRules } from '../custom-validation/customValidationRules';
 import {

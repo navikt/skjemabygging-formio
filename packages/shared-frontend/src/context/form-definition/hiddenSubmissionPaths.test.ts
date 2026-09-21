@@ -1,7 +1,8 @@
 import { Form, Submission } from '@navikt/skjemadigitalisering-shared-domain';
 import { describe, expect, it } from 'vitest';
 import { ComponentDefinition } from '../../form-components/component-types';
-import { enrichFormWithBaseSubmissionPath } from './formDefinitionUtils';
+import { getActivePanels } from './activeComponents';
+import { enrichFormWithBaseSubmissionPath, toComponentDefinitions } from './formDefinitionUtils';
 import { collectHiddenSubmissionPaths } from './hiddenSubmissionPaths';
 
 const createForm = (components: ComponentDefinition[]): Form =>
@@ -41,7 +42,7 @@ const dataGrid = {
 } as unknown as ComponentDefinition;
 
 const collect = (form: Form, submission: Submission) => {
-  const activeComponents = form.components as ComponentDefinition[];
+  const activeComponents = toComponentDefinitions(getActivePanels(form, submission));
 
   return collectHiddenSubmissionPaths({
     form,
@@ -77,6 +78,47 @@ describe('collectHiddenSubmissionPaths', () => {
     const submission = { data: { kjoreliste: [{ harParkering: false }] } };
 
     expect(collect(form, submission)).not.toContain('kjoreliste.parkeringsutgift');
+  });
+
+  it('clears statically hidden data grid fields per row', () => {
+    const form = createForm([
+      {
+        ...dataGrid,
+        components: [
+          { key: 'visible', label: 'Visible', type: 'textfield', input: true, navId: 'visible' },
+          { key: 'hidden', label: 'Hidden', type: 'textfield', input: true, navId: 'hidden', hidden: true },
+        ],
+      },
+    ] as ComponentDefinition[]);
+    const submission = { data: { kjoreliste: [{ visible: 'shown', hidden: 'stale' }] } };
+
+    expect(collect(form, submission)).toEqual(['kjoreliste[0].hidden']);
+  });
+
+  it('keeps visible paths from duplicate data grids with the same submission path', () => {
+    const form = createForm([
+      {
+        key: 'grid',
+        label: 'First grid',
+        type: 'datagrid',
+        input: true,
+        tree: true,
+        navId: 'firstGrid',
+        components: [{ key: 'first', label: 'First', type: 'textfield', input: true, navId: 'first' }],
+      },
+      {
+        key: 'grid',
+        label: 'Second grid',
+        type: 'datagrid',
+        input: true,
+        tree: true,
+        navId: 'secondGrid',
+        components: [{ key: 'second', label: 'Second', type: 'textfield', input: true, navId: 'second' }],
+      },
+    ] as ComponentDefinition[]);
+    const submission = { data: { grid: [{ first: 'first value', second: 'second value' }] } };
+
+    expect(collect(form, submission)).toEqual([]);
   });
 
   it('clears hidden fields outside data grids', () => {

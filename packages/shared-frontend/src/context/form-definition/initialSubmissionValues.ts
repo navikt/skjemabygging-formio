@@ -2,13 +2,10 @@ import { Form, Submission, SubmissionMethod, submissionUtils } from '@navikt/skj
 import { getPrefilledAddress } from '../../components/address/addressUtils';
 import { getPrefilledSender } from '../../components/sender/senderValidation';
 import { ComponentDefinition } from '../../form-components/component-types';
-import {
-  collectDataGridRowScopes,
-  collectInputSubmissionPaths,
-} from '../../form-components/components/data-grid/dataGridRows';
 import { resolveDefaultSubmissionValue } from '../../form-components/defaultSubmissionValue';
 import { clearSubmissionPathsFromSubmission, createUpdatedSubmission } from '../state/SubmissionStateContext';
 import { isSameSubmissionValue } from '../state/stateHelpers';
+import { collectDataGridRowScopes, collectInputSubmissionPathsInCurrentScope } from './dataGridRows';
 import {
   enrichFormWithBaseSubmissionPath,
   flattenComponentsWithBaseSubmissionPath,
@@ -64,8 +61,8 @@ const collectActiveComponentsWithInitialValues = (
   });
 
   const componentsWithInitialValues = [
-    ...collectInputSubmissionPaths(toComponentDefinitions(form.components)),
-    ...dataGridRowScopes.flatMap((scope) => collectInputSubmissionPaths(scope.activeComponents)),
+    ...collectInputSubmissionPathsInCurrentScope(toComponentDefinitions(form.components)),
+    ...dataGridRowScopes.flatMap((scope) => collectInputSubmissionPathsInCurrentScope(scope.activeComponents)),
   ].flatMap(({ component, submissionPath }) => {
     const defaultValue = resolveDefaultSubmissionValue(component);
     return component.prefillValue !== undefined || defaultValue !== undefined

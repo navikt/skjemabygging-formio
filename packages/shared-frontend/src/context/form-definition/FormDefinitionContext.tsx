@@ -11,11 +11,11 @@ import {
   useSyncExternalStore,
 } from 'react';
 import { ComponentDefinition } from '../../form-components/component-types';
-import { collectDataGridRowScopes } from '../../form-components/components/data-grid/dataGridRows';
 import { useApplication } from '../application/ApplicationContext';
 import { useLanguage } from '../language/LanguageContext';
 import { useSubmissionState } from '../state/SubmissionStateContext';
 import { applyCalculatedValues, CalculationTarget, isCalculatedComponent } from './calculatedValues';
+import { collectDataGridRowScopes } from './dataGridRows';
 import {
   enrichFormWithBaseSubmissionPath,
   flattenComponentsWithBaseSubmissionPath,

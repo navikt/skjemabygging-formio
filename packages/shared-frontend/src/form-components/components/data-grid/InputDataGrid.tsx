@@ -2,6 +2,7 @@ import { Box, Button, Heading } from '@navikt/ds-react';
 import { submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import TranslatedDescription from '../../../components/shared/TranslatedDescription';
+import { getActiveRowComponents, getRenderedDataGridRows } from '../../../context/form-definition/dataGridRows';
 import {
   useFormDefinitionForm,
   useFormDefinitionSubmissionMethod,
@@ -18,13 +19,7 @@ import { useValidationScope } from '../../../context/validation/ValidationScopeC
 import { DataGridDefinition } from '../../component-types';
 import { InputComponentRegistry } from '../../inputComponentRegistry';
 import RenderInputForm from '../../RenderInputForm';
-import {
-  addDataGridRowId,
-  getActiveRowComponents,
-  getRenderedDataGridRows,
-  removeDataGridRowId,
-  syncDataGridRowIds,
-} from './dataGridRows';
+import { addDataGridRowId, removeDataGridRowId, syncDataGridRowIds } from './dataGridRows';
 import styles from './InputDataGrid.module.css';
 
 interface InputDataGridProps {

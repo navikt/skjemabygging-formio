@@ -1,9 +1,9 @@
 import { numberUtils, Submission, submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { ComponentDefinition } from '../../form-components/component-types';
-import { collectInputSubmissionPaths, DataGridRowScope } from '../../form-components/components/data-grid/dataGridRows';
 import { evaluateCalculatedValue } from '../../utils/expressionEvaluation';
 import { createUpdatedSubmission } from '../state/SubmissionStateContext';
 import { isSameSubmissionValue } from '../state/stateHelpers';
+import { collectInputSubmissionPathsInCurrentScope, DataGridRowScope } from './dataGridRows';
 
 interface CalculationTarget {
   component: ComponentDefinition;
@@ -52,7 +52,8 @@ const toEvaluationNumber = (component: ComponentDefinition, value: unknown) => {
 const collectTargets = (
   components: ComponentDefinition[],
   predicate: (component: ComponentDefinition) => boolean,
-): CalculationTarget[] => collectInputSubmissionPaths(components).filter(({ component }) => predicate(component));
+): CalculationTarget[] =>
+  collectInputSubmissionPathsInCurrentScope(components).filter(({ component }) => predicate(component));
 
 /**
  * Calculated components, expanded per data grid row so every row is calculated with its own indexed
