@@ -242,15 +242,6 @@ Cypress.Commands.add('configMocksServer', () => {
   return cy;
 });
 
-Cypress.Commands.add('mocksUseRouteVariantOrFail', (id: string) => {
-  const port = Number(Cypress.env('MOCKS_ADMIN_PORT') ?? 3310);
-  return cy.request({
-    method: 'POST',
-    url: `http://127.0.0.1:${port}/api/mock/custom-route-variants`,
-    body: { id },
-  });
-});
-
 Cypress.Commands.add('skipIfNoIncludeDistTests', function () {
   if (!Cypress.env('INCLUDE_DIST_TESTS')) {
     cy.log('Set INCLUDE_DIST_TESTS to true to run this test');
