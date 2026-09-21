@@ -95,7 +95,29 @@ describe('prepareInitialSubmission', () => {
     });
   });
 
-  it('clears known inactive values without pruning unrelated persisted data', () => {
+  it('preserves current attachment data when the definition omits input', () => {
+    const attachment: SubmissionAttachment = {
+      attachmentId: 'documentation',
+      navId: 'documentation-nav-id',
+      type: 'default',
+      value: 'leggerVedNaa',
+      files: [],
+    };
+    const form = createForm([
+      {
+        key: 'documentation',
+        label: 'Documentation',
+        type: 'attachment',
+        navId: 'documentation-nav-id',
+      },
+    ]);
+
+    expect(prepareInitialSubmission(form, { data: { documentation: attachment } }, 'nb', 'digital')).toEqual({
+      data: { documentation: attachment },
+    });
+  });
+
+  it('removes persisted values without matching form components', () => {
     const form = createForm([
       { key: 'showDetails', label: 'Show details', type: 'navCheckbox', input: true },
       {
@@ -115,7 +137,51 @@ describe('prepareInitialSubmission', () => {
         'digital',
       ),
     ).toEqual({
-      data: { showDetails: false, legacyValue: 'Keep me' },
+      data: { showDetails: false },
+    });
+  });
+
+  it('removes unknown values from containers and data-grid rows', () => {
+    const form = createForm([
+      {
+        key: 'person',
+        label: 'Person',
+        type: 'container',
+        input: true,
+        tree: true,
+        components: [{ key: 'name', label: 'Name', type: 'textfield', input: true }],
+      },
+      {
+        key: 'rows',
+        label: 'Rows',
+        type: 'datagrid',
+        input: true,
+        tree: true,
+        components: [{ key: 'value', label: 'Value', type: 'textfield', input: true }],
+      },
+    ]);
+
+    expect(
+      prepareInitialSubmission(
+        form,
+        {
+          data: {
+            person: { name: 'Kari', removed: 'Remove me' },
+            rows: [
+              { value: 'First', removed: 'Remove me' },
+              { value: 'Second', removed: 'Remove me' },
+            ],
+            removedGrid: [{ value: 'Remove me' }],
+          },
+        },
+        'nb',
+        'digital',
+      ),
+    ).toEqual({
+      data: {
+        person: { name: 'Kari' },
+        rows: [{ value: 'First' }, { value: 'Second' }],
+      },
     });
   });
 });

@@ -8,42 +8,48 @@ import {
   toComponentDefinitions,
 } from './formDefinitionUtils';
 
-const isObjectRecord = (value: unknown): value is Record<string, unknown> =>
-  typeof value === 'object' && value !== null && !Array.isArray(value);
-
-const normalizeDataGridRows = (form: Form, submission: Submission | undefined): Submission | undefined => {
+const normalizeSubmissionData = (form: Form, submission: Submission | undefined): Submission | undefined => {
   if (!submission?.data) {
     return submission;
   }
 
   const enrichedForm = enrichFormWithBaseSubmissionPath(form);
-  let normalizedSubmission = submission;
+  let normalizedSubmission: Submission = { ...submission, data: {} };
 
   const normalizeComponents = (components: ComponentDefinition[]) => {
     components.forEach((component) => {
-      if (component.type !== 'datagrid') {
-        normalizeComponents(toComponentDefinitions(component.components ?? []));
-        return;
-      }
-
       const submissionPath = getResolvedSubmissionPath(component);
-      const value = submissionUtils.getSubmissionValue(submissionPath, normalizedSubmission);
-      if (!Array.isArray(value)) {
+
+      if (component.type === 'datagrid') {
+        const value = submissionUtils.getSubmissionValue(submissionPath, submission);
+        if (!Array.isArray(value)) {
+          return;
+        }
+
+        normalizedSubmission = createUpdatedSubmission(
+          normalizedSubmission,
+          submissionPath,
+          value.map(() => ({})),
+        );
+
+        value.forEach((_, index) => {
+          normalizeComponents(
+            toComponentDefinitions(
+              enrichComponentsWithBaseSubmissionPath(component.components ?? [], `${submissionPath}[${index}]`),
+            ),
+          );
+        });
         return;
       }
 
-      const normalizedRows = value.map((row) => (isObjectRecord(row) ? row : {}));
-      if (normalizedRows.some((row, index) => row !== value[index])) {
-        normalizedSubmission = createUpdatedSubmission(normalizedSubmission, submissionPath, normalizedRows);
+      if ((component.input || component.type === 'attachment') && component.type !== 'container') {
+        const value = submissionUtils.getSubmissionValue(submissionPath, submission);
+        if (value !== undefined) {
+          normalizedSubmission = createUpdatedSubmission(normalizedSubmission, submissionPath, value);
+        }
       }
 
-      normalizedRows.forEach((_, index) => {
-        normalizeComponents(
-          toComponentDefinitions(
-            enrichComponentsWithBaseSubmissionPath(component.components ?? [], `${submissionPath}[${index}]`),
-          ),
-        );
-      });
+      normalizeComponents(toComponentDefinitions(component.components ?? []));
     });
   };
 
@@ -51,4 +57,4 @@ const normalizeDataGridRows = (form: Form, submission: Submission | undefined): 
   return normalizedSubmission;
 };
 
-export { normalizeDataGridRows };
+export { normalizeSubmissionData };
