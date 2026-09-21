@@ -14,6 +14,10 @@ const isStructuredAttachmentValue = (value: unknown): boolean =>
 const createAttachmentId = (navId: string, submissionPath: string): string =>
   submissionPath.includes('[') ? `${navId}-${submissionPath.replace(/[^a-zA-Z0-9_-]+/g, '-')}` : navId;
 
+const belongsToAttachmentId = (attachmentId: string, baseAttachmentId: string): boolean =>
+  attachmentId === baseAttachmentId ||
+  (attachmentId.startsWith(`${baseAttachmentId}-`) && /^\d+$/.test(attachmentId.slice(baseAttachmentId.length + 1)));
+
 const PdfAttachment = (props: PdfComponentProps): PdfData[] | null => {
   const { component, submissionPath, submission, translate, submissionMethod } = props;
   const attachmentUploadEnabled = attachmentUtils.enableAttachmentUpload(submissionMethod);
@@ -26,10 +30,9 @@ const PdfAttachment = (props: PdfComponentProps): PdfData[] | null => {
   const pathValue = submissionUtils.getSubmissionValue(resolvedSubmissionPath, submission);
   const dataAttachments = attachmentUtils.toSubmissionAttachments(pathValue, component);
   const resolvedAttachments = (submission?.attachments ?? []).filter((attachment) => attachment.navId === navId);
+  const rowAttachmentId = createAttachmentId(navId, resolvedSubmissionPath);
   const rowAttachments = resolvedSubmissionPath.includes('[')
-    ? resolvedAttachments.filter(
-        (attachment) => attachment.attachmentId === createAttachmentId(navId, resolvedSubmissionPath),
-      )
+    ? resolvedAttachments.filter((attachment) => belongsToAttachmentId(attachment.attachmentId, rowAttachmentId))
     : [];
 
   // Legacy Formio datagrid attachments use the bare navId instead of a row-specific attachmentId.

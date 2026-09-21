@@ -360,6 +360,55 @@ describe('PdfAttachment', () => {
     ]);
   });
 
+  it('should resolve all matching other attachments for a datagrid row', () => {
+    const testComponent = attachmentOther;
+    const navId = testComponent.navId!;
+    const attachments: SubmissionAttachment[] = [
+      {
+        attachmentId: `${navId}-rows-0-documentation`,
+        navId,
+        type: 'other',
+        value: 'leggerVedNaa',
+        title: 'First row attachment',
+        files: [],
+      },
+      {
+        attachmentId: `${navId}-rows-0-documentation-1`,
+        navId,
+        type: 'other',
+        value: 'leggerVedNaa',
+        title: 'Second row attachment',
+        files: [],
+      },
+      {
+        attachmentId: `${navId}-rows-1-documentation`,
+        navId,
+        type: 'other',
+        value: 'leggerVedNaa',
+        title: 'Other row attachment',
+        files: [],
+      },
+    ];
+    const props = {
+      ...createProps(testComponent, {
+        data: { rows: [{ documentation: 'leggerVedNaa' }, { documentation: 'leggerVedNaa' }] },
+        attachments,
+      }),
+      submissionPath: 'rows[0].documentation',
+    };
+
+    expect(PdfAttachment(props)).toEqual([
+      {
+        label: 'Annen dokumentasjon - First row attachment',
+        verdi: TEXTS.statiske.attachment.uploadNow,
+      },
+      {
+        label: 'Annen dokumentasjon - Second row attachment',
+        verdi: TEXTS.statiske.attachment.uploadNow,
+      },
+    ]);
+  });
+
   it('should resolve a legacy datagrid attachment with a bare navId', () => {
     const testComponent = attachment;
     const navId = testComponent.navId!;
