@@ -8,7 +8,6 @@ import {
   type CheckConditionOptions,
   type SubmissionData,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { isVisibleComponent } from './componentVisibility';
 
 const conditionallyTraversedTypes = new Set(['container', 'panel', 'fieldset', 'navSkjemagruppe']);
 
@@ -34,10 +33,7 @@ const resolveActiveComponents = (
   const data = submission.data ?? {};
 
   return components.reduce<Component[]>((activeComponents, component) => {
-    if (
-      !isVisibleComponent(component) ||
-      (evaluateConditionals && !checkCondition(component, row, data, form, undefined, submission, options))
-    ) {
+    if (evaluateConditionals && !checkCondition(component, row, data, form, undefined, submission, options)) {
       return activeComponents;
     }
 

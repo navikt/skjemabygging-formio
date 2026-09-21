@@ -332,6 +332,40 @@ describe('dataGridRows', () => {
     ).toEqual(['showField', 'field']);
   });
 
+  it('keeps static hidden fields in the row scope while applying their authored condition', () => {
+    const datagrid: ComponentDefinition = {
+      key: 'repeterende',
+      label: 'Repeterende',
+      type: 'datagrid',
+      navId: 'grid',
+      components: [
+        { key: 'visible', label: 'Visible', type: 'textfield', navId: 'visible' },
+        { key: 'staticHidden', label: 'Static hidden', type: 'textfield', navId: 'staticHidden', hidden: true },
+        {
+          key: 'inactiveHidden',
+          label: 'Inactive hidden',
+          type: 'textfield',
+          navId: 'inactiveHidden',
+          hidden: true,
+          customConditional: 'show = row.showInactive === true;',
+        },
+      ],
+    };
+    const form = createForm([datagrid]);
+    const rowComponents = toComponentDefinitions(
+      enrichComponentsWithBaseSubmissionPath(datagrid.components ?? [], 'repeterende[0]'),
+    );
+
+    expect(
+      getActiveRowComponents(
+        rowComponents,
+        { showInactive: false },
+        { repeterende: [{ showInactive: false }] },
+        form,
+      ).map((component) => component.key),
+    ).toEqual(['visible', 'staticHidden']);
+  });
+
   it('provides the complete submission to row-based custom conditionals', () => {
     const datagrid: ComponentDefinition = {
       key: 'repeterende',

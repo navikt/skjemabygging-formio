@@ -160,19 +160,4 @@ describe('activeComponents', () => {
 
     expect(getActivePanels(form)[0].components?.map((component) => component.navId)).toEqual(['visible-answer']);
   });
-
-  it('excludes statically hidden fields while retaining the hidden target-group calculator', () => {
-    const form = createForm([
-      {
-        key: 'panel',
-        type: 'panel',
-        components: [
-          { key: 'hiddenAnswer', type: 'textfield', input: true, hidden: true },
-          { key: 'targetGroup', type: 'maalgruppe', input: true, hidden: true },
-        ],
-      },
-    ] as Component[]);
-
-    expect(getActivePanels(form)[0].components?.map((component) => component.key)).toEqual(['targetGroup']);
-  });
 });

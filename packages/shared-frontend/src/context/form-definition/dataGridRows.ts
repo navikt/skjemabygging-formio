@@ -7,7 +7,6 @@ import {
   submissionUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { ComponentDefinition } from '../../form-components/component-types';
-import { isVisibleComponent } from './componentVisibility';
 import {
   enrichComponentsWithBaseSubmissionPath,
   getResolvedSubmissionPath,
@@ -63,11 +62,7 @@ const getActiveRowComponents = (
   submission?: Submission,
 ): ComponentDefinition[] =>
   components
-    .filter(
-      (component) =>
-        isVisibleComponent(component) &&
-        checkCondition(component, row, data, form, undefined, submission, { submissionMethod }),
-    )
+    .filter((component) => checkCondition(component, row, data, form, undefined, submission, { submissionMethod }))
     .map((component) => {
       if (component.type === 'datagrid' || !component.components?.length) {
         return component;

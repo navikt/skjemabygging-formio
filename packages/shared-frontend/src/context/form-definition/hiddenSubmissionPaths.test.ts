@@ -80,7 +80,7 @@ describe('collectHiddenSubmissionPaths', () => {
     expect(collect(form, submission)).not.toContain('kjoreliste.parkeringsutgift');
   });
 
-  it('clears statically hidden data grid fields per row', () => {
+  it('keeps statically hidden data grid fields in their row scope', () => {
     const form = createForm([
       {
         ...dataGrid,
@@ -92,7 +92,7 @@ describe('collectHiddenSubmissionPaths', () => {
     ] as ComponentDefinition[]);
     const submission = { data: { kjoreliste: [{ visible: 'shown', hidden: 'stale' }] } };
 
-    expect(collect(form, submission)).toEqual(['kjoreliste[0].hidden']);
+    expect(collect(form, submission)).toEqual([]);
   });
 
   it('keeps visible paths from duplicate data grids with the same submission path', () => {

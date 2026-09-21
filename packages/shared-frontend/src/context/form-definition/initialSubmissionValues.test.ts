@@ -292,7 +292,7 @@ describe('applyInitialValuesToSubmission', () => {
     ).toEqual({ data: { grid: [{ enabled: true, count: '0' }, { enabled: false }] } });
   });
 
-  it('clears statically hidden values from resumed data grid rows', () => {
+  it('keeps statically hidden values from resumed data grid rows', () => {
     const form = createForm([
       {
         key: 'grid',
@@ -308,7 +308,7 @@ describe('applyInitialValuesToSubmission', () => {
 
     expect(
       applyInitialValuesToSubmission(form, { data: { grid: [{ visible: 'shown', hidden: 'stale' }] } }, 'nb'),
-    ).toEqual({ data: { grid: [{ visible: 'shown' }] } });
+    ).toEqual({ data: { grid: [{ visible: 'shown', hidden: 'stale' }] } });
   });
 
   it('applies defaults to the implicit first data grid row', () => {
