@@ -1,12 +1,8 @@
-import { Box, Button, Heading } from '@navikt/ds-react';
+import { Box } from '@navikt/ds-react';
 import { submissionUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import TranslatedDescription from '../../../components/shared/TranslatedDescription';
-import { getActiveRowComponents, getRenderedDataGridRows } from '../../../context/form-definition/dataGridRows';
-import {
-  useFormDefinitionForm,
-  useFormDefinitionSubmissionMethod,
-} from '../../../context/form-definition/FormDefinitionContext';
+import { getRenderedDataGridRows } from '../../../context/form-definition/dataGridRows';
 import {
   enrichComponentsWithBaseSubmissionPath,
   getResolvedSubmissionPath,
@@ -18,9 +14,9 @@ import { useValidationActions } from '../../../context/validation/ValidationCont
 import { useValidationScope } from '../../../context/validation/ValidationScopeContext';
 import { DataGridDefinition } from '../../component-types';
 import { InputComponentRegistry } from '../../inputComponentRegistry';
-import RenderInputForm from '../../RenderInputForm';
 import { addDataGridRowId, removeDataGridRowId, syncDataGridRowIds } from './dataGridRows';
 import styles from './InputDataGrid.module.css';
+import InputDataGridRows from './InputDataGridRows';
 
 interface InputDataGridProps {
   component: DataGridDefinition;
@@ -30,8 +26,6 @@ interface InputDataGridProps {
 const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => {
   const { translate } = useLanguage();
   const { submission, updateSubmission } = useSubmissionState();
-  const form = useFormDefinitionForm();
-  const submissionMethod = useFormDefinitionSubmissionMethod();
   const { schedulePageValidation } = useValidationActions();
   const { pageKey } = useValidationScope();
   const { components, label, description, hideLabel, addAnother, removeAnother, disableAddingRemovingRows, rowTitle } =
@@ -65,44 +59,18 @@ const InputDataGrid = ({ component, componentRegistry }: InputDataGridProps) => 
   }
 
   const content = (
-    <>
-      <div className={styles.rows}>
-        {renderedRows.map((row, index) => {
-          const rowComponents = getActiveRowComponents(
-            rowComponentTemplates[index] ?? [],
-            row,
-            submission?.data,
-            form,
-            submissionMethod,
-            submission,
-          );
-
-          return (
-            <div key={synchronizedRowIds[index]} className={styles.row}>
-              <div className={styles.rowHeader}>
-                <Heading level="3" size="small" className="aksel-fieldset__legend-formio-template">
-                  {translate(rowTitle || label || component.key)} {index + 1}
-                </Heading>
-                {!disableAddingRemovingRows && (
-                  <Button type="button" variant="secondary" size="small" onClick={() => removeRow(index)}>
-                    {translate(removeAnother || 'Fjern')}
-                  </Button>
-                )}
-              </div>
-              <RenderInputForm components={rowComponents} componentRegistry={componentRegistry} />
-            </div>
-          );
-        })}
-      </div>
-
-      {!disableAddingRemovingRows && (
-        <Box marginBlock="space-16 space-0">
-          <Button type="button" variant="secondary" onClick={addRow}>
-            {translate(addAnother || 'Legg til')}
-          </Button>
-        </Box>
-      )}
-    </>
+    <InputDataGridRows
+      addLabel={addAnother}
+      componentRegistry={componentRegistry}
+      onAdd={addRow}
+      onRemove={removeRow}
+      removable={!disableAddingRemovingRows}
+      removeLabel={removeAnother}
+      rowComponents={rowComponentTemplates}
+      rowIds={synchronizedRowIds}
+      rowLabel={rowTitle || label || component.key}
+      rows={renderedRows}
+    />
   );
 
   return (
