@@ -60,10 +60,13 @@ const assembleSubmitApplicationRequest = (
       submissionAttachments
         ?.filter(
           (attachment) =>
-            attachment.type === 'personal-id' || activeAttachments.some((c) => c.navId == attachment.navId),
+            attachment.type === 'personal-id' ||
+            activeAttachments.some((component) => navFormUtils.getNavId(component) === attachment.navId),
         )
         .map((attachment) => {
-          const component = activeAttachments.find((c) => c.navId === attachment.navId);
+          const component = activeAttachments.find(
+            (activeAttachment) => navFormUtils.getNavId(activeAttachment) === attachment.navId,
+          );
           return validateAttachment(
             {
               attachmentCode: attachment.type === 'personal-id' ? 'K2' : (component?.properties?.vedleggskode ?? ''),
@@ -74,7 +77,7 @@ const assembleSubmitApplicationRequest = (
               description: component?.description ? translate(component?.description) : null,
               formNumberPath: component?.properties?.vedleggskjema,
             },
-            component?.navId ?? attachment.type,
+            (component ? navFormUtils.getNavId(component) : undefined) ?? attachment.type,
           );
         }) ?? [],
     otherUploadAvailable: activeAttachments.some((a) => a.attachmentType === 'other'),

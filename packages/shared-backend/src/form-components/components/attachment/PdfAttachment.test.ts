@@ -134,10 +134,23 @@ describe('PdfAttachment', () => {
     ]);
   });
 
-  it('should return null if navId is missing', () => {
-    const incompleteComponent = { ...attachment, navId: undefined };
-    const props = createProps(incompleteComponent, { attachments: [] });
-    expect(() => PdfAttachment(props)).toThrow('PdfAttachment: navId is required on digital attachment');
+  it('should use component id when navId is missing', () => {
+    const legacyComponent = { ...attachment, id: 'legacy-id', navId: undefined };
+    const legacyAttachment = {
+      attachmentId: 'legacy-id',
+      navId: 'legacy-id',
+      type: 'default',
+      value: 'leggerVedNaa',
+      files: [],
+    } satisfies SubmissionAttachment;
+    const props = createProps(legacyComponent, { attachments: [legacyAttachment] });
+
+    expect(PdfAttachment(props)).toEqual([
+      {
+        label: 'Uttalelse fra lege',
+        verdi: TEXTS.statiske.attachment.uploadNow,
+      },
+    ]);
   });
 
   it('should return null if no attachments match navId', () => {
@@ -276,6 +289,99 @@ describe('PdfAttachment', () => {
       {
         label: 'Uttalelse fra lege',
         verdi: TEXTS.statiske.attachment.uploadLater,
+      },
+    ]);
+  });
+
+  it('should preserve legacy attachment details when data contains a primitive value', () => {
+    const testComponent = attachment;
+    const navId = testComponent.navId!;
+    const legacyAttachment: SubmissionAttachment = {
+      attachmentId: navId,
+      navId,
+      type: 'default',
+      value: 'levertTidligere',
+      additionalDocumentation: 'Sent last year',
+      files: [],
+    };
+    const props = {
+      ...createProps(testComponent, {
+        data: { [testComponent.key]: 'ettersender' },
+        attachments: [legacyAttachment],
+      }),
+      submissionPath: testComponent.key,
+    };
+
+    expect(PdfAttachment(props)).toEqual([
+      {
+        label: 'Uttalelse fra lege',
+        verdi: TEXTS.statiske.attachment.levertTidligere,
+      },
+      {
+        label: 'Når ble dette vedlegget levert?',
+        verdiliste: [{ label: 'Sent last year' }],
+        visningsVariant: 'PUNKTLISTE',
+      },
+    ]);
+  });
+
+  it('should resolve only the matching legacy attachment for a datagrid row', () => {
+    const testComponent = attachment;
+    const navId = testComponent.navId!;
+    const attachments: SubmissionAttachment[] = [
+      {
+        attachmentId: `${navId}-rows-0-documentation`,
+        navId,
+        type: 'default',
+        value: 'leggerVedNaa',
+        files: [],
+      },
+      {
+        attachmentId: `${navId}-rows-1-documentation`,
+        navId,
+        type: 'default',
+        value: 'ettersender',
+        files: [],
+      },
+    ];
+    const props = {
+      ...createProps(testComponent, {
+        data: { rows: [{ documentation: 'leggerVedNaa' }, { documentation: 'ettersender' }] },
+        attachments,
+      }),
+      submissionPath: 'rows[1].documentation',
+    };
+
+    expect(PdfAttachment(props)).toEqual([
+      {
+        label: 'Uttalelse fra lege',
+        verdi: TEXTS.statiske.attachment.uploadLater,
+      },
+    ]);
+  });
+
+  it('should resolve a legacy datagrid attachment with a bare navId', () => {
+    const testComponent = attachment;
+    const navId = testComponent.navId!;
+    const legacyAttachment: SubmissionAttachment = {
+      attachmentId: navId,
+      navId,
+      type: 'default',
+      value: 'leggerVedNaa',
+      files: [],
+    };
+    const props = {
+      ...createProps(testComponent, {
+        data: { rows: [{}] },
+        attachments: [legacyAttachment],
+      }),
+      submissionPath: 'rows[0].documentation',
+    };
+
+    expect(PdfAttachment(props)).toEqual([
+      {
+        label: 'Uttalelse fra lege',
+        verdi: TEXTS.statiske.attachment.uploadNow,
       },
     ]);
   });

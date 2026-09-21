@@ -6,10 +6,11 @@ const createAttachment = (
   attachmentId: string,
   navId: string,
   value: SubmissionAttachment['value'],
+  type: SubmissionAttachment['type'] = 'default',
 ): SubmissionAttachment => ({
   attachmentId,
   navId,
-  type: 'default',
+  type,
   value,
   files: [],
 });
@@ -81,5 +82,62 @@ describe('resolveSubmissionAttachments', () => {
         attachments: [replacedLegacyAttachment, fallbackLegacyAttachment],
       }),
     ).toEqual([dataAttachment, fallbackLegacyAttachment]);
+  });
+
+  it('preserves a matching legacy attachment instead of a primitive data value', () => {
+    const legacyAttachment: SubmissionAttachment = {
+      ...createAttachment('nested-nav-id', 'nested-nav-id', 'leggerVedNaa'),
+      title: 'Legacy title',
+      additionalDocumentation: 'Legacy details',
+      files: [
+        {
+          fileId: 'file-1',
+          attachmentId: 'nested-nav-id',
+          innsendingId: 'submission-1',
+          fileName: 'attachment.pdf',
+          size: 123,
+        },
+      ],
+    };
+
+    expect(
+      resolveSubmissionAttachments(form, {
+        data: { container: { nestedAttachment: 'ettersender' } },
+        attachments: [legacyAttachment],
+      }),
+    ).toEqual([legacyAttachment]);
+  });
+
+  it('preserves all matching legacy other attachments', () => {
+    const firstAttachment = createAttachment('nested-nav-id', 'nested-nav-id', 'leggerVedNaa', 'other');
+    const secondAttachment = createAttachment('nested-nav-id-1', 'nested-nav-id', 'leggerVedNaa', 'other');
+
+    expect(
+      resolveSubmissionAttachments(form, {
+        data: { container: { nestedAttachment: 'leggerVedNaa' } },
+        attachments: [firstAttachment, secondAttachment],
+      }),
+    ).toEqual([firstAttachment, secondAttachment]);
+  });
+
+  it('synthesizes an attachment when primitive data has no legacy match', () => {
+    expect(
+      resolveSubmissionAttachments(form, {
+        data: { container: { nestedAttachment: 'ettersender' } },
+      }),
+    ).toEqual([createAttachment('nested-nav-id', 'nested-nav-id', 'ettersender')]);
+  });
+
+  it('uses structured datagrid attachments instead of legacy attachments with the same navId', () => {
+    const firstRowAttachment = createAttachment('row-1', 'row-nav-id', 'ettersender');
+    const secondRowAttachment = createAttachment('row-2', 'row-nav-id', 'leggerVedNaa');
+    const legacyAttachment = createAttachment('row-old', 'row-nav-id', 'levertTidligere');
+
+    expect(
+      resolveSubmissionAttachments(form, {
+        data: { rows: [{ rowAttachment: firstRowAttachment }, { rowAttachment: secondRowAttachment }] },
+        attachments: [legacyAttachment],
+      }),
+    ).toEqual([firstRowAttachment, secondRowAttachment]);
   });
 });

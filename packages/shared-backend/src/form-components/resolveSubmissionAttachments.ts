@@ -7,11 +7,22 @@ import {
   submissionUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 
-const collectAttachmentsFromData = (
+interface CollectedDataAttachments {
+  attachments: SubmissionAttachment[];
+  source: 'structured' | 'choice-only';
+}
+
+const isSubmissionAttachment = (value: unknown): value is SubmissionAttachment =>
+  typeof value === 'object' && value !== null && 'attachmentId' in value && typeof value.attachmentId === 'string';
+
+const isStructuredAttachmentValue = (value: unknown): boolean =>
+  isSubmissionAttachment(value) || (Array.isArray(value) && value.some(isSubmissionAttachment));
+
+const collectDataAttachments = (
   components: Component[],
   submission: Submission,
   parentSubmissionPath = '',
-): SubmissionAttachment[] =>
+): CollectedDataAttachments[] =>
   components.flatMap((component) => {
     const submissionPath =
       component.type === 'attachment'
@@ -19,10 +30,10 @@ const collectAttachmentsFromData = (
         : submissionUtils.getComponentSubmissionPath(component, parentSubmissionPath);
 
     if (component.type === 'attachment') {
-      return attachmentUtils.toSubmissionAttachments(
-        submissionUtils.getSubmissionValue(submissionPath, submission),
-        component,
-      );
+      const value = submissionUtils.getSubmissionValue(submissionPath, submission);
+      const attachments = attachmentUtils.toSubmissionAttachments(value, component);
+      const source = isStructuredAttachmentValue(value) ? 'structured' : 'choice-only';
+      return attachments.length > 0 ? [{ attachments, source }] : [];
     }
 
     if (!component.components?.length) {
@@ -33,24 +44,46 @@ const collectAttachmentsFromData = (
       const rows = submissionUtils.getSubmissionValue(submissionPath, submission);
       return Array.isArray(rows)
         ? rows.flatMap((_, index) =>
-            collectAttachmentsFromData(component.components ?? [], submission, `${submissionPath}[${index}]`),
+            collectDataAttachments(component.components ?? [], submission, `${submissionPath}[${index}]`),
           )
         : [];
     }
 
-    return collectAttachmentsFromData(component.components, submission, submissionPath);
+    return collectDataAttachments(component.components, submission, submissionPath);
   });
 
+const collectAttachmentsFromData = (
+  components: Component[],
+  submission: Submission,
+  parentSubmissionPath = '',
+): SubmissionAttachment[] =>
+  collectDataAttachments(components, submission, parentSubmissionPath).flatMap(({ attachments }) => attachments);
+
 const resolveSubmissionAttachments = (form: Form, submission: Submission): SubmissionAttachment[] => {
-  const dataAttachments = collectAttachmentsFromData(form.components, submission);
-  const dataAttachmentNavIds = new Set(dataAttachments.map((attachment) => attachment.navId));
-  const legacyAttachments = submission.attachments ?? [];
+  const dataAttachments = collectDataAttachments(form.components, submission);
+  const topLevelAttachments = submission.attachments ?? [];
+  const topLevelAttachmentNavIds = new Set(topLevelAttachments.map((attachment) => attachment.navId));
+  const structuredAttachmentNavIds = new Set(
+    dataAttachments
+      .filter(({ source }) => source === 'structured')
+      .flatMap(({ attachments }) => attachments.map((attachment) => attachment.navId)),
+  );
+  const structuredAttachments = dataAttachments
+    .filter(({ source }) => source === 'structured')
+    .flatMap(({ attachments }) => attachments);
+
+  const choiceOnlyAttachmentsWithoutTopLevelMatch = dataAttachments
+    .filter(({ source }) => source === 'choice-only')
+    .flatMap(({ attachments }) => attachments.filter((attachment) => !topLevelAttachmentNavIds.has(attachment.navId)));
 
   return [
-    ...legacyAttachments.filter((attachment) => attachment.type === 'personal-id'),
-    ...dataAttachments,
-    ...legacyAttachments.filter(
-      (attachment) => attachment.type !== 'personal-id' && !dataAttachmentNavIds.has(attachment.navId),
+    ...topLevelAttachments.filter((attachment) => attachment.type === 'personal-id'),
+    ...structuredAttachments,
+    ...choiceOnlyAttachmentsWithoutTopLevelMatch,
+    // Compatibility for drafts created while complete attachments were stored at the top level.
+    // Remove non-personal-ID fallback after those drafts can no longer be resumed or submitted.
+    ...topLevelAttachments.filter(
+      (attachment) => attachment.type !== 'personal-id' && !structuredAttachmentNavIds.has(attachment.navId),
     ),
   ];
 };

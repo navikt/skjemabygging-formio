@@ -7,22 +7,39 @@ import {
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { PdfComponentProps } from '../../types';
 
+const isStructuredAttachmentValue = (value: unknown): boolean =>
+  (typeof value === 'object' && value !== null && 'attachmentId' in value) ||
+  (Array.isArray(value) && value.some((item) => typeof item === 'object' && item !== null && 'attachmentId' in item));
+
+const createAttachmentId = (navId: string, submissionPath: string): string =>
+  submissionPath.includes('[') ? `${navId}-${submissionPath.replace(/[^a-zA-Z0-9_-]+/g, '-')}` : navId;
+
 const PdfAttachment = (props: PdfComponentProps): PdfData[] | null => {
   const { component, submissionPath, submission, translate, submissionMethod } = props;
   const attachmentUploadEnabled = attachmentUtils.enableAttachmentUpload(submissionMethod);
-  if (attachmentUploadEnabled && !component.navId) {
+  const navId = navFormUtils.getNavId(component) ?? component.key;
+  if (attachmentUploadEnabled && !navId) {
     throw new ResponseError('INTERNAL_SERVER_ERROR', 'PdfAttachment: navId is required on digital attachment');
   }
 
-  const pathValue =
-    submissionUtils.getSubmissionValue(submissionPath, submission) ??
-    (component.key ? submissionUtils.getSubmissionValue(component.key, submission) : undefined);
+  const resolvedSubmissionPath = submissionPath || component.key;
+  const pathValue = submissionUtils.getSubmissionValue(resolvedSubmissionPath, submission);
   const dataAttachments = attachmentUtils.toSubmissionAttachments(pathValue, component);
-  const navId = navFormUtils.getNavId(component) ?? component.key;
-  const attachments =
-    dataAttachments.length > 0
-      ? dataAttachments
-      : (submission?.attachments ?? []).filter((attachment) => attachment.navId === navId);
+  const resolvedAttachments = (submission?.attachments ?? []).filter((attachment) => attachment.navId === navId);
+  const rowAttachments = resolvedSubmissionPath.includes('[')
+    ? resolvedAttachments.filter(
+        (attachment) => attachment.attachmentId === createAttachmentId(navId, resolvedSubmissionPath),
+      )
+    : [];
+
+  // Legacy Formio datagrid attachments use the bare navId instead of a row-specific attachmentId.
+  // Remove this fallback together with legacy primitive attachment support in resolveSubmissionAttachments.
+  const attachmentsFromTopLevelStorage = rowAttachments.length > 0 ? rowAttachments : resolvedAttachments;
+  const attachments = isStructuredAttachmentValue(pathValue)
+    ? dataAttachments
+    : attachmentsFromTopLevelStorage.length > 0
+      ? attachmentsFromTopLevelStorage
+      : dataAttachments;
 
   if (attachmentUploadEnabled && (component.attachmentType === 'other' || component.otherDocumentation)) {
     const attachmentsWithValue = attachments.filter((attachment) => attachment.value);
