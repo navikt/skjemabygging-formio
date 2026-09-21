@@ -1,4 +1,4 @@
-import { attachment, panel, radio, textField } from '../../form-builder/components';
+import { alert, attachment, panel, radio, textField } from '../../form-builder/components';
 import yourInformation from '../../form-builder/components/cutomized/yourInformation';
 import form from '../../form-builder/form/form';
 import { getMockTranslationsFromForm } from '../../form-builder/shared/utils';
@@ -36,8 +36,12 @@ const attachmentsForm = () => {
       }),
       panel({
         title: 'Vedlegg',
-        isAttachmentPanel: true,
         components: [
+          alert({
+            content: '<p>Kontroller at vedleggene er riktige før du fortsetter.</p>',
+            alerttype: 'info',
+            textDisplay: 'form',
+          }),
           textField({
             key: 'attachmentComment',
             label: 'Kommentar til vedlegg',
