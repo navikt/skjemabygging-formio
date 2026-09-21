@@ -18,36 +18,29 @@ describe('Reports', () => {
     cy.defaultIntercepts();
   });
 
-  it('explains the unavailable date without removing the report download links', () => {
+  it('renders report download links in the current tab', () => {
     cy.intercept('GET', '/api/reports', reports).as('getReports');
     cy.visit('/rapporter');
     cy.wait('@getReports');
 
     cy.findByRole('heading', { name: 'Rapporter' }).should('be.visible');
-    cy.findByText(/Kolonnen «første publiseringsdato».*er foreløpig tom/).should('be.visible');
     cy.findByRole('link', { name: reports[0].title })
       .should('have.attr', 'href')
       .and('match', /\/api\/reports\/all-forms-summary$/);
     cy.findByRole('link', { name: reports[0].title }).should('not.have.attr', 'target');
-    cy.findByRole('link', { name: reports[0].title }).should(
-      'have.attr',
-      'aria-describedby',
-      'first-publication-notice',
-    );
     cy.findByRole('link', { name: reports[1].title }).should('be.visible');
     cy.findByRole('textbox').should('not.exist');
   });
 
-  it('keeps the date explanation visible when fetching the report list fails', () => {
+  it('shows an error when fetching the report list fails', () => {
     cy.intercept('GET', '/api/reports', { statusCode: 500, body: {} }).as('getReports');
     cy.visit('/rapporter');
     cy.wait('@getReports');
 
     cy.findByText('Henting av rapportoversikt feilet').should('be.visible');
-    cy.findByText(/Datoen avventer støtte i forms-api/).should('be.visible');
   });
 
-  it('does not expose download links or the date notice to non-admin users', () => {
+  it('does not expose download links to non-admin users', () => {
     cy.fixture('config.json').then((config) => {
       cy.intercept('GET', '/api/config', {
         ...config,
@@ -58,6 +51,5 @@ describe('Reports', () => {
 
     cy.findByText('Du er ikke autorisert til å ta ut rapporter').should('be.visible');
     cy.findByRole('link', { name: reports[0].title }).should('not.exist');
-    cy.findByText(/Datoen avventer støtte i forms-api/).should('not.exist');
   });
 });
