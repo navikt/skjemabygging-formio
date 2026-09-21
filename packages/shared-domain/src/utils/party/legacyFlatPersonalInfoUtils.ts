@@ -50,6 +50,22 @@ const legacyFlatPersonalInfoComponentKeys = [
   'fodselsnummerDNummerSoker',
 ] as const;
 
+const hasSubmittedValue = (value: unknown): boolean => {
+  if (typeof value === 'string') {
+    return value.trim().length > 0;
+  }
+
+  if (Array.isArray(value)) {
+    return value.some(hasSubmittedValue);
+  }
+
+  if (value && typeof value === 'object') {
+    return Object.values(value).some(hasSubmittedValue);
+  }
+
+  return value !== undefined && value !== null;
+};
+
 const mapLegacyFlatAddress = (submission: LegacyFlatPersonalInfoSubmission): PartyAddress => {
   const {
     coSoker,
@@ -94,14 +110,15 @@ const mapLegacyFlatAddress = (submission: LegacyFlatPersonalInfoSubmission): Par
 
 const getConcernedUser = (submission: SubmissionData): ConcernedPerson | undefined => {
   const legacySubmission = submission as LegacyFlatPersonalInfoSubmission;
+  const nationalIdentityNumber = legacySubmission.fodselsnummerDNummerSoker;
 
-  if (legacySubmission.fodselsnummerDNummerSoker) {
-    return { kind: 'identified-person', nationalIdentityNumber: legacySubmission.fodselsnummerDNummerSoker };
+  if (nationalIdentityNumber?.trim()) {
+    return { kind: 'identified-person', nationalIdentityNumber };
   }
 
   const hasPersonalInformation = legacyFlatPersonalInfoComponentKeys
     .filter((key) => key !== 'fodselsnummerDNummerSoker')
-    .some((key) => legacySubmission[key] !== undefined);
+    .some((key) => hasSubmittedValue(legacySubmission[key]));
 
   return hasPersonalInformation
     ? {

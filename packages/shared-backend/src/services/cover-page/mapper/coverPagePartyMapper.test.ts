@@ -6,11 +6,11 @@ describe('mapPartyToCoverPage', () => {
     const party: Party = {
       onBehalfOf: 'other-person',
       sender: { name: 'Organization', number: '889640782' },
-      user: { kind: 'identified-person', nationalIdentityNumber: '12345678911' },
+      user: { kind: 'identified-person', nationalIdentityNumber: '123 456 789 11' },
     };
 
     expect(mapPartyToCoverPage(party)).toEqual({
-      user: { nationalIdentityNumber: '12345678911' },
+      user: { nationalIdentityNumber: '123 456 789 11' },
     });
   });
 
@@ -48,9 +48,7 @@ describe('mapPartyToCoverPage', () => {
       user: { kind: 'unidentified-person' },
     };
 
-    expect(() => mapPartyToCoverPage(party)).toThrow(
-      'User needs to submit either identification number or address',
-    );
+    expect(() => mapPartyToCoverPage(party)).toThrow('User needs to submit either identification number or address');
   });
 
   it('maps an organization acting on its own behalf', () => {
@@ -67,11 +65,11 @@ describe('mapPartyToCoverPage', () => {
   it('maps a person sender acting on their own behalf', () => {
     const party: Party = {
       onBehalfOf: 'self',
-      sender: { firstName: 'Sender', surname: 'Sendersen', nationalIdentityNumber: '10987654321' },
+      sender: { firstName: 'Sender', surname: 'Sendersen', nationalIdentityNumber: '109 876 543 21' },
     };
 
     expect(mapPartyToCoverPage(party)).toEqual({
-      user: { nationalIdentityNumber: '10987654321' },
+      user: { nationalIdentityNumber: '109 876 543 21' },
     });
   });
 

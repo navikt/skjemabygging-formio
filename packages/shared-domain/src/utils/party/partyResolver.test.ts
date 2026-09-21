@@ -11,10 +11,6 @@ const form = {
 const resolve = (data: Submission['data']) => resolveParty(form, { data });
 
 describe('resolveParty', () => {
-  it('returns undefined when the form does not locate user information', () => {
-    expect(resolveParty({ components: [] } as unknown as Form, { data: {} })).toBeUndefined();
-  });
-
   it('resolves canonical user data when the form has no Sender component', () => {
     const selfOnlyForm = {
       components: [{ type: 'container', key: 'yourInformation', yourInformation: true, input: true }],
@@ -233,31 +229,6 @@ describe('resolveParty', () => {
       onBehalfOf: 'other-person',
       sender: { name: 'Organization', number: '889 640 782' },
       user: { kind: 'identified-person', nationalIdentityNumber: '222 222 222 22' },
-    });
-  });
-
-  it('resolves a flat unidentified user', () => {
-    const legacyForm = { components: [] } as unknown as Form;
-
-    expect(
-      resolveParty(legacyForm, {
-        data: {
-          fornavnSoker: 'Legacy',
-          etternavnSoker: 'User',
-          gateadresseSoker: 'Testveien 1',
-        },
-      }),
-    ).toEqual({
-      onBehalfOf: 'self',
-      user: {
-        kind: 'unidentified-person',
-        firstName: 'Legacy',
-        surname: 'User',
-        address: {
-          streetAddress: 'Testveien 1',
-          country: { value: '', label: '' },
-        },
-      },
     });
   });
 

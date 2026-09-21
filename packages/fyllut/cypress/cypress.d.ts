@@ -79,6 +79,11 @@ declare global {
       configMocksServer(): Chainable<JQuery<HTMLElement>>;
 
       /**
+       * Selects a Mocks Server route variant and fails if the administration API rejects the request.
+       */
+      mocksUseRouteVariantOrFail(id: string): Chainable<Response<unknown>>;
+
+      /**
        * Run test only on build code. This is allways true on GitHub, but if you want to run locally you can chanage INCLUDE_DIST_TESTS to true.
        */
       skipIfNoIncludeDistTests(): Chainable<void>;

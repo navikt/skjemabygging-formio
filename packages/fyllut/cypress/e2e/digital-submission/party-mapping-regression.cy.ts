@@ -1,3 +1,5 @@
+import { expect } from 'chai';
+
 describe('Party mapping regression', () => {
   const startNoLoginSubmission = (formPath: string) => {
     cy.visit(`/fyllut/${formPath}/legitimasjon?sub=digitalnologin`);
@@ -12,6 +14,15 @@ describe('Party mapping regression', () => {
     cy.clickIntroPageConfirmation();
     cy.clickNextStep();
     cy.findByRole('heading', { name: 'Dine opplysninger' }).should('exist');
+  };
+
+  const submitApplication = () => {
+    cy.intercept('POST', '/fyllut/api/send-inn/nologin-application').as('submitApplication');
+    cy.clickSendNav();
+    cy.wait('@submitApplication').then(({ response }) => {
+      expect(response?.statusCode, JSON.stringify(response?.body)).to.equal(200);
+    });
+    cy.findByRole('heading', { name: /Kvittering/ }).should('exist');
   };
 
   before(() => {
@@ -43,11 +54,9 @@ describe('Party mapping regression', () => {
     cy.findByRole('textbox', { name: 'Representantens etternavn' }).type('Sender');
     cy.clickNextStep();
 
-    cy.mocksUseRouteVariant('post-nologin-soknad:success-tc23a');
-    cy.mocksUseRouteVariant('post-familie-pdf:success');
-    cy.clickSendNav();
-
-    cy.findByRole('heading', { name: /Kvittering/ }).should('exist');
+    cy.mocksUseRouteVariantOrFail('post-nologin-soknad:success-tc23a');
+    cy.mocksUseRouteVariantOrFail('post-familie-pdf:success');
+    submitApplication();
   });
 
   it('submits an organization sender and an unidentified concerned user', () => {
@@ -75,10 +84,8 @@ describe('Party mapping regression', () => {
     cy.findByRole('textbox', { name: 'Virksomhetens navn' }).type('Test organization');
     cy.clickNextStep();
 
-    cy.mocksUseRouteVariant('post-nologin-soknad:success-tc23b');
-    cy.mocksUseRouteVariant('post-familie-pdf:success');
-    cy.clickSendNav();
-
-    cy.findByRole('heading', { name: /Kvittering/ }).should('exist');
+    cy.mocksUseRouteVariantOrFail('post-nologin-soknad:success-tc23b');
+    cy.mocksUseRouteVariantOrFail('post-familie-pdf:success');
+    submitApplication();
   });
 });
