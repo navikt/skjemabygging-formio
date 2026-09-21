@@ -1,28 +1,18 @@
-import { Component, Form, getNavId, Panel, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, Form, Panel, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
 import {
   createContext,
   ReactNode,
   useCallback,
   useContext,
-  useEffect,
   useLayoutEffect,
   useMemo,
   useRef,
   useSyncExternalStore,
 } from 'react';
 import { ComponentDefinition } from '../../form-components/component-types';
-import { useApplication } from '../application/ApplicationContext';
-import { useLanguage } from '../language/LanguageContext';
 import { useSubmissionState } from '../state/SubmissionStateContext';
-import { applyCalculatedValues, CalculationTarget, isCalculatedComponent } from './calculatedValues';
-import { collectDataGridRowScopes } from './dataGridRows';
-import {
-  enrichFormWithBaseSubmissionPath,
-  flattenComponentsWithBaseSubmissionPath,
-  getActivePanels,
-  toComponentDefinitions,
-} from './formDefinitionUtils';
-import { applyInitialValuesToSubmission } from './initialSubmissionValues';
+import { enrichFormWithBaseSubmissionPath, getActivePanels, toComponentDefinitions } from './formDefinitionUtils';
+import { useFormDefinitionSubmissionSynchronization } from './useFormDefinitionSubmissionSynchronization';
 
 interface FormDefinitionContextType {
   form: Form;
@@ -91,131 +81,19 @@ const stabilizeValue = (
 };
 
 const FormDefinitionProvider = ({ children, form, submissionMethod }: Props) => {
-  const { logger } = useApplication();
-  const { currentLanguage } = useLanguage();
-  const { submission, setSubmission } = useSubmissionState();
-  const reportedCalculationCyclesRef = useRef(new Set<string>());
+  const { submission } = useSubmissionState();
   const formWithBaseSubmissionPath = useMemo(() => enrichFormWithBaseSubmissionPath(form), [form]);
-  const hasCalculatedComponents = useMemo(
-    () => flattenComponentsWithBaseSubmissionPath(formWithBaseSubmissionPath.components).some(isCalculatedComponent),
-    [formWithBaseSubmissionPath],
-  );
-
   const panels = useMemo(
     () => getActivePanels(formWithBaseSubmissionPath, submission, { submissionMethod }),
     [formWithBaseSubmissionPath, submission, submissionMethod],
   );
+  const activeComponents = toComponentDefinitions(panels);
 
-  const activeComponents = useMemo(() => toComponentDefinitions(panels), [panels]);
-
-  const dataGridRowScopes = useMemo(() => {
-    if (!hasCalculatedComponents) {
-      return [];
-    }
-
-    return collectDataGridRowScopes({
-      components: activeComponents,
-      submission,
-      form: formWithBaseSubmissionPath,
-      submissionMethod,
-    });
-  }, [activeComponents, formWithBaseSubmissionPath, hasCalculatedComponents, submission, submissionMethod]);
-  const reportCalculationCycle = useCallback(
-    (targets: CalculationTarget[]) => {
-      const componentKeys = [...new Set(targets.map(({ component }) => component.key).filter(Boolean))].sort();
-      const reportKey = `${form.path}\0${componentKeys.join('\0')}`;
-      if (reportedCalculationCyclesRef.current.has(reportKey)) {
-        return;
-      }
-
-      reportedCalculationCyclesRef.current.add(reportKey);
-      logger?.error?.('Calculated values did not converge', {
-        componentKeys,
-        formPath: form.path,
-      });
-    },
-    [form.path, logger],
-  );
-
-  useLayoutEffect(() => {
-    setSubmission((prev) =>
-      applyInitialValuesToSubmission(formWithBaseSubmissionPath, prev, currentLanguage, {
-        prefillMode: 'missing',
-        submissionMethod,
-      }),
-    );
-  }, [currentLanguage, formWithBaseSubmissionPath, setSubmission, submission, submissionMethod]);
-
-  useEffect(() => {
-    if (!hasCalculatedComponents) {
-      return;
-    }
-
-    setSubmission((prev) => {
-      const usesRenderedSubmission = prev === submission;
-      const latestActiveComponents = usesRenderedSubmission
-        ? activeComponents
-        : toComponentDefinitions(getActivePanels(formWithBaseSubmissionPath, prev, { submissionMethod }));
-      const latestDataGridRowScopes = usesRenderedSubmission
-        ? dataGridRowScopes
-        : collectDataGridRowScopes({
-            components: latestActiveComponents,
-            submission: prev,
-            form: formWithBaseSubmissionPath,
-            submissionMethod,
-          });
-
-      return applyCalculatedValues({
-        submission: prev,
-        formComponents: latestActiveComponents,
-        dataGridRowScopes: latestDataGridRowScopes,
-        onNonConvergence: reportCalculationCycle,
-      });
-    });
-  }, [
+  useFormDefinitionSubmissionSynchronization({
     activeComponents,
-    dataGridRowScopes,
-    formWithBaseSubmissionPath,
-    hasCalculatedComponents,
-    reportCalculationCycle,
-    setSubmission,
-    submission,
+    form: formWithBaseSubmissionPath,
     submissionMethod,
-  ]);
-
-  useEffect(() => {
-    const attachmentIds = new Set(
-      flattenComponentsWithBaseSubmissionPath(formWithBaseSubmissionPath.components)
-        .filter((component) => component.type === 'attachment')
-        .map((component) => getNavId(component))
-        .filter((attachmentId): attachmentId is string => !!attachmentId),
-    );
-    setSubmission((current) => {
-      const attachments = current?.attachments;
-      if (!attachments) {
-        return current;
-      }
-
-      const visibleAttachments = attachments
-        .filter((attachment) => attachment.attachmentId === 'personal-id' || attachmentIds.has(attachment.navId))
-        .filter(
-          (attachment) =>
-            attachment.value !== undefined ||
-            !!attachment.title?.trim() ||
-            !!attachment.additionalDocumentation?.trim() ||
-            (attachment.files?.length ?? 0) > 0,
-        )
-        .filter(
-          (attachment, index, list) =>
-            index === list.findIndex((candidate) => candidate.attachmentId === attachment.attachmentId),
-        );
-
-      return visibleAttachments.length === attachments.length &&
-        visibleAttachments.every((attachment, index) => attachment === attachments[index])
-        ? current
-        : { ...current, attachments: visibleAttachments };
-    });
-  }, [activeComponents, formWithBaseSubmissionPath, setSubmission, submission, submissionMethod]);
+  });
 
   const value = useMemo<FormDefinitionContextType>(
     () => ({ form: formWithBaseSubmissionPath, activeComponents, panels, submissionMethod }),
