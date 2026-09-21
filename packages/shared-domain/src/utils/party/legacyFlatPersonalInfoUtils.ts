@@ -34,38 +34,6 @@ type LegacyFlatPersonalInfoSubmission = {
   fodselsnummerDNummerSoker?: string;
 };
 
-const legacyFlatPersonalInfoComponentKeys = [
-  'fornavnSoker',
-  'etternavnSoker',
-  'coSoker',
-  'postnummerSoker',
-  'postnrSoker',
-  'utenlandskPostkodeSoker',
-  'poststedSoker',
-  'landSoker',
-  'gateadresseSoker',
-  'norskVegadresse',
-  'norskPostboksadresse',
-  'utenlandskAdresse',
-  'fodselsnummerDNummerSoker',
-] as const;
-
-const hasSubmittedValue = (value: unknown): boolean => {
-  if (typeof value === 'string') {
-    return value.trim().length > 0;
-  }
-
-  if (Array.isArray(value)) {
-    return value.some(hasSubmittedValue);
-  }
-
-  if (value && typeof value === 'object') {
-    return Object.values(value).some(hasSubmittedValue);
-  }
-
-  return value !== undefined && value !== null;
-};
-
 const mapLegacyFlatAddress = (submission: LegacyFlatPersonalInfoSubmission): PartyAddress => {
   const {
     coSoker,
@@ -116,9 +84,9 @@ const getConcernedUser = (submission: SubmissionData): ConcernedPerson | undefin
     return { kind: 'identified-person', nationalIdentityNumber };
   }
 
-  const hasPersonalInformation = legacyFlatPersonalInfoComponentKeys
-    .filter((key) => key !== 'fodselsnummerDNummerSoker')
-    .some((key) => hasSubmittedValue(legacySubmission[key]));
+  const hasPersonalInformation = Boolean(
+    legacySubmission.fornavnSoker?.trim() || legacySubmission.etternavnSoker?.trim(),
+  );
 
   return hasPersonalInformation
     ? {

@@ -27,6 +27,16 @@ describe('legacyFlatPersonalInfoUtils', () => {
       ).toBeUndefined();
     });
 
+    it('returns undefined when legacy address data has no name', () => {
+      expect(
+        legacyFlatPersonalInfoUtils.getConcernedUser({
+          gateadresseSoker: 'Testveien 1',
+          postnummerSoker: '0101',
+          poststedSoker: 'Oslo',
+        }),
+      ).toBeUndefined();
+    });
+
     it('resolves an unidentified user from flat fields', () => {
       expect(
         legacyFlatPersonalInfoUtils.getConcernedUser({
