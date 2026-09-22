@@ -1,29 +1,39 @@
-import {
-  AttachmentOption,
-  AttachmentSettingValues,
-  SubmissionAttachmentValue,
-  TEXTS,
-} from '@navikt/skjemadigitalisering-shared-domain';
-import { useMemo } from 'react';
+import { PlusIcon } from '@navikt/aksel-icons';
+import { BodyShort, Button, Label, VStack } from '@navikt/ds-react';
+import { AttachmentType, SubmissionAttachment, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { useEffect, useRef } from 'react';
+import { useAttachmentUpload } from '../../context/attachment/AttachmentUploadContext';
+import { createAttachmentId } from '../../context/attachment/attachmentData';
+import { readAttachments } from '../../context/attachment/attachmentSubmission';
+import { getLargestAttachmentIdCounter } from '../../context/attachment/attachmentUploadUtils';
 import { useLanguage } from '../../context/language/LanguageContext';
+import { useOptionalFieldStateStore } from '../../context/state/StateContext';
 import { useFieldBinding } from '../../context/state/useFieldBinding';
+import { useValidationExternalError, useValidationFieldError } from '../../context/validation/ValidationContext';
+import ValidationRegistration from '../../context/validation/ValidationRegistration';
+import { useOptionalValidationScope } from '../../context/validation/ValidationScopeContext';
+import { inputId } from '../../utils/inputId';
 import Alert from '../alert/Alert';
-import CheckboxGroup from '../checkbox-group/CheckboxGroup';
-import RadioGroup from '../radio-group/RadioGroup';
+import FileUploadReadMore from '../file-upload/FileUploadReadMore';
 import ReadMore from '../read-more/ReadMore';
 import FormElementBox from '../shared/FormElementBox';
-import TextField from '../text-field/TextField';
 import { BaseFieldProps, ChoiceValidation } from '../types';
+import AttachmentItem from './AttachmentItem';
+import AttachmentOptionSelect from './AttachmentOptionSelect';
+import { attachmentFieldPath } from './attachmentFieldPath';
+import { AttachmentChoice, AttachmentChoiceOption, getImplicitAttachmentValue } from './attachmentOptions';
+import { toAttachmentValueValidationFields } from './attachmentValidation';
 
 interface AttachmentProps extends BaseFieldProps {
   label: string;
-  values: AttachmentOption[];
-  attachmentValues?: AttachmentSettingValues;
+  values: AttachmentChoiceOption[];
+  attachmentNavId: string;
+  type?: AttachmentType;
+  uploadEnabled?: boolean;
+  downloadEnabled?: boolean;
   deadlineDays?: string;
   validation?: ChoiceValidation;
 }
-
-type AttachmentStateValue = SubmissionAttachmentValue & { showDeadline?: boolean };
 
 const Attachment = ({
   statePath,
@@ -35,94 +45,192 @@ const Attachment = ({
   marginBottom,
   readMore,
   values,
-  attachmentValues,
+  attachmentNavId,
+  type = 'default',
+  uploadEnabled = false,
+  downloadEnabled = false,
   deadlineDays,
   validation,
 }: AttachmentProps) => {
   const { translate } = useLanguage();
-  // The choice control below owns the registration for `statePath`; this only reads and writes it.
   const { stateValue, setStateValue } = useFieldBinding({ statePath });
-  const currentValue = (stateValue ?? {}) as AttachmentStateValue;
-  const selectedValue = currentValue?.key;
-  const selectedOption = useMemo(
-    () => values.find((option) => option.value === selectedValue),
-    [selectedValue, values],
+  const store = useOptionalFieldStateStore();
+  const { handleDeleteAttachment, handleDeleteAllFilesForAttachment, removeError } = useAttachmentUpload();
+  const attachments = readAttachments(stateValue);
+  const multiple = type === 'other';
+  const baseId = attachments[0]?.attachmentId ?? createAttachmentId(attachmentNavId, statePath);
+  const attachment = attachments[0];
+  const attachmentId = attachment?.attachmentId ?? baseId;
+  const implicitValue = getImplicitAttachmentValue(values, uploadEnabled);
+  const value = attachment?.value ?? implicitValue;
+  const uploadSelected = uploadEnabled && !!values.find((option) => option.value === value)?.upload;
+  const counter = useRef(getLargestAttachmentIdCounter(attachments));
+  const choicePath = attachmentFieldPath(statePath, attachmentId, 'value');
+  const scope = useOptionalValidationScope();
+  const pageKey = scope?.pageKey;
+  const previousIds = useRef<string[]>([]);
+  useEffect(() => {
+    const currentIds = attachments.map((item) => item.attachmentId);
+    previousIds.current.filter((id) => !currentIds.includes(id)).forEach((id) => removeError(id, statePath));
+    previousIds.current = currentIds;
+  }, [attachments, removeError, statePath]);
+  useEffect(
+    () => () => {
+      if (scope?.active.current) previousIds.current.forEach((id) => removeError(id, statePath));
+    },
+    [removeError, scope, statePath],
   );
-  const selectedAttachmentSetting = selectedValue ? attachmentValues?.[selectedValue] : undefined;
-  const additionalDocumentation = selectedAttachmentSetting?.additionalDocumentation?.enabled
-    ? selectedAttachmentSetting.additionalDocumentation
-    : selectedOption?.additionalDocumentation;
-  const singleOption = values.length === 1 ? values[0] : undefined;
-  const checkedValues = singleOption && selectedValue === singleOption.value ? [singleOption.value] : [];
-  const shouldShowDeadline = !!(selectedValue && attachmentValues?.[selectedValue]?.showDeadline && deadlineDays);
-  const withAdditionalDocumentation = (key: string, enabled: boolean): SubmissionAttachmentValue => ({
-    key: key as SubmissionAttachmentValue['key'],
-    ...(enabled && currentValue.additionalDocumentation
-      ? { additionalDocumentation: currentValue.additionalDocumentation }
-      : {}),
+  const validationError = useValidationFieldError(choicePath, pageKey);
+  const externalError = useValidationExternalError(choicePath);
+  const fields = toAttachmentValueValidationFields({
+    submissionPath: statePath,
+    attachmentId,
+    label,
+    required,
+    attachment: attachment ?? {
+      attachmentId,
+      navId: attachmentNavId,
+      type,
+      value,
+    },
+    validation,
   });
+  const update = (transform: (current: SubmissionAttachment[]) => SubmissionAttachment[]) => {
+    const next = transform(readAttachments(store?.getValue(statePath)));
+    setStateValue(multiple ? next : next[0]);
+  };
+  const handleValueChange = (next?: AttachmentChoice) => {
+    removeError(attachmentId, statePath);
+    if (!next?.value) {
+      setStateValue(undefined);
+      return;
+    }
+    update((current) =>
+      (current.length
+        ? current
+        : [
+            {
+              attachmentId: statePath.includes('[') ? `${attachmentId}-${crypto.randomUUID()}` : attachmentId,
+              navId: attachmentNavId,
+              type,
+            },
+          ]
+      ).map((item) => ({
+        ...item,
+        value: next?.value,
+        additionalDocumentation: next?.additionalDocumentation,
+        ...(!uploadEnabled ? { files: [] } : {}),
+      })),
+    );
+  };
+  const uploadedFiles = attachments.flatMap((item) => item.files ?? []);
+  const documents = attachments.length ? attachments : [{ attachmentId, navId: attachmentNavId, type, value }];
+  const deleteDocument = async (id: string) => {
+    try {
+      await handleDeleteAttachment(id, statePath, multiple);
+    } catch {
+      /* Reported by the provider. */
+    }
+  };
 
   return (
     <FormElementBox fieldSize={fieldSize} marginBottom={marginBottom}>
-      {singleOption ? (
-        <CheckboxGroup
-          statePath={statePath}
-          legend={label}
-          description={description}
-          values={[singleOption]}
-          value={checkedValues}
-          onChange={(nextValue) =>
-            setStateValue(
-              nextValue.includes(singleOption.value)
-                ? withAdditionalDocumentation(singleOption.value, !!additionalDocumentation?.label)
-                : undefined,
-            )
-          }
-          required={required}
-          readOnly={readOnly}
-          marginBottom="space-0"
-          translateValues={false}
-          validation={validation}
+      {fields.map((field) => (
+        <ValidationRegistration
+          key={field.statePath}
+          label={field.field}
+          statePath={field.statePath}
+          value={field.value}
+          rules={field.rules}
         />
-      ) : (
-        <RadioGroup
-          statePath={statePath}
-          legend={label}
-          description={description}
-          values={values}
-          value={selectedValue ?? ''}
-          onChange={(nextValue) =>
-            setStateValue(
-              withAdditionalDocumentation(nextValue, !!attachmentValues?.[nextValue]?.additionalDocumentation?.enabled),
-            )
-          }
-          required={required}
-          readOnly={readOnly}
-          marginBottom="space-0"
-          translateValues={false}
-          validation={validation}
-        />
-      )}
-
-      {additionalDocumentation?.label && (
-        <TextField
-          statePath={`${statePath}.additionalDocumentation`}
-          label={additionalDocumentation.label}
-          description={additionalDocumentation.description}
-          required={false}
-          showOptionalText={false}
-          readOnly={readOnly}
-          marginBottom="space-16"
-        />
-      )}
-
-      {shouldShowDeadline && (
-        <Alert variant="warning" inline marginBottom="space-0">
-          {translate(TEXTS.statiske.attachment.deadline, { deadline: deadlineDays })}
-        </Alert>
-      )}
-
-      {readMore && <ReadMore {...readMore} />}
+      ))}
+      <VStack gap="space-24" data-cy={uploadEnabled ? 'attachment-upload' : undefined}>
+        {uploadEnabled && uploadedFiles.length > 0 ? (
+          <div id={inputId(choicePath)} tabIndex={-1}>
+            <Label>{translate(label)}</Label>
+            {description && <BodyShort>{translate(description)}</BodyShort>}
+            {(validationError ?? externalError) && (
+              <Alert variant="error" inline>
+                {validationError ?? externalError}
+              </Alert>
+            )}
+          </div>
+        ) : (
+          <AttachmentOptionSelect
+            title={translate(label)}
+            required={required}
+            description={translate(description)}
+            error={validationError ?? externalError}
+            value={attachment}
+            values={values}
+            attachmentId={attachmentId}
+            onChange={handleValueChange}
+            translate={translate}
+            deadline={deadlineDays}
+            uploadEnabled={uploadEnabled}
+            submissionPath={statePath}
+            readOnly={readOnly}
+          />
+        )}
+        {uploadSelected && (
+          <VStack gap="space-8">
+            {uploadedFiles.length > 0 && (
+              <div>
+                <Label>{translate(TEXTS.statiske.attachment.filesUploadedNotSent)}</Label>
+                {!multiple && uploadedFiles.length > 1 && !readOnly && (
+                  <Button variant="tertiary" onClick={() => handleDeleteAllFilesForAttachment(attachmentId, statePath)}>
+                    {translate(TEXTS.statiske.attachment.deleteAllFiles)}
+                  </Button>
+                )}
+              </div>
+            )}
+            <VStack gap="space-32">
+              {documents.map((item) => (
+                <AttachmentItem
+                  uploadSelected={uploadSelected}
+                  key={item.attachmentId}
+                  initialAttachment={item}
+                  attachmentLabel={label}
+                  submissionPath={statePath}
+                  multipleAttachments={multiple}
+                  multiple={!multiple}
+                  requireAttachmentTitle={multiple}
+                  attachmentValue={value}
+                  showDeleteAttachmentButton={multiple && documents.length > 1}
+                  onDeleteAttachment={multiple ? deleteDocument : undefined}
+                  readMore={<FileUploadReadMore />}
+                  readOnly={readOnly}
+                  downloadEnabled={downloadEnabled}
+                />
+              ))}
+              {multiple && !readOnly && documents.every((item) => !!item.files?.length) && (
+                <Button
+                  variant="tertiary"
+                  icon={<PlusIcon aria-hidden fontSize="1.5rem" />}
+                  onClick={() => {
+                    update((current) => {
+                      counter.current = Math.max(counter.current, getLargestAttachmentIdCounter(current)) + 1;
+                      return [
+                        ...current,
+                        {
+                          attachmentId: `${baseId}-${counter.current}`,
+                          navId: attachmentNavId,
+                          type,
+                          value: current[0]?.value ?? value,
+                          files: [],
+                        },
+                      ];
+                    });
+                  }}
+                >
+                  {translate(TEXTS.statiske.attachment.addNewAttachment)}
+                </Button>
+              )}
+            </VStack>
+          </VStack>
+        )}
+        {readMore && <ReadMore {...readMore} />}
+      </VStack>
     </FormElementBox>
   );
 };

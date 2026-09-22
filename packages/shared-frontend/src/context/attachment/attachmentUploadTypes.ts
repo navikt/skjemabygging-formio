@@ -1,5 +1,16 @@
 import { FileItem, FileObject } from '@navikt/ds-react';
 import { SubmissionAttachment } from '@navikt/skjemadigitalisering-shared-domain';
+import { AttachmentApplication, AttachmentService } from '../runtime-services/RuntimeServices';
+
+interface AttachmentHost {
+  service: AttachmentService;
+  getApplication: () => Promise<AttachmentApplication>;
+  isAuthenticationError: (error: unknown) => boolean;
+  handleSessionExpired: () => void;
+  getAllAttachments: () => SubmissionAttachment[];
+  clearFiles: () => void;
+  onUpload?: (attachment: SubmissionAttachment) => void;
+}
 
 type AttachmentErrorType = 'FILE' | 'VALUE' | 'TITLE';
 type AttachmentActionStatus = 'ok' | 'error' | 'auth-error' | 'invalid' | 'unknown';
@@ -51,4 +62,10 @@ interface AttachmentUploadContextType {
 
 type AttachmentUploadActions = Omit<AttachmentUploadContextType, 'uploadsInProgress'>;
 
-export type { AttachmentActionStatus, AttachmentErrorType, AttachmentUploadActions, AttachmentUploadContextType };
+export type {
+  AttachmentActionStatus,
+  AttachmentErrorType,
+  AttachmentHost,
+  AttachmentUploadActions,
+  AttachmentUploadContextType,
+};

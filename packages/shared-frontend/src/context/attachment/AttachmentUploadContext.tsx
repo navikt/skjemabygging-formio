@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useLayoutEffect, useMemo, useRef, useSyncExternalStore } from 'react';
-import { AttachmentUploadActions, AttachmentUploadContextType } from './attachmentUploadTypes';
+import { AttachmentHost, AttachmentUploadActions, AttachmentUploadContextType } from './attachmentUploadTypes';
 import { getFileValidationError } from './attachmentValidation';
 import { UploadsInProgress } from './uploadProgress';
 import { useAttachmentOperations } from './useAttachmentOperations';
@@ -23,8 +23,8 @@ interface AttachmentUploadStore {
 
 const AttachmentUploadContext = createContext<AttachmentUploadStore | undefined>(undefined);
 
-const AttachmentUploadProvider = ({ children }: { children: React.ReactNode }) => {
-  const value = useAttachmentOperations();
+const AttachmentUploadProvider = ({ children, host }: { children: React.ReactNode; host: AttachmentHost }) => {
+  const value = useAttachmentOperations(host);
   const valueRef = useRef(value);
   const listenersRef = useRef(new Set<() => void>());
   const store = useMemo<AttachmentUploadStore>(

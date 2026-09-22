@@ -3,7 +3,6 @@ import { useMemo, useState } from 'react';
 import { useLocation } from 'react-router';
 import { FormDefinitionProvider } from '../../context/form-definition/FormDefinitionContext';
 import { SubmissionStateProvider } from '../../context/state/SubmissionStateContext';
-import { AttachmentUploadProvider } from '../attachments/context/AttachmentUploadContext';
 import FyllutFormActionsProvider from '../context/form-actions/FyllutFormActionsProvider';
 import { NologinTokenProvider } from '../context/nologin-token/NologinTokenContext';
 import FormLanguageSelector from '../language/FormLanguageSelector';
@@ -13,6 +12,7 @@ import { resolveDefaultSubmissionMethod } from '../submission-method/submissionM
 import SubmissionMethodSelection from '../submission-method/SubmissionMethodSelection';
 import FyllutValidationProvider from '../validation/FyllutValidationProvider';
 import FormRouter from './FormRouter';
+import FyllutAttachmentProvider from './FyllutAttachmentProvider';
 import { prepareInitialSubmission } from './prepareInitialSubmission';
 
 interface Props {
@@ -59,7 +59,7 @@ const FyllutFormFlow = ({
               initialInnsendingsId={initialInnsendingsId}
               setReceiptPdf={setReceiptPdf}
             >
-              <AttachmentUploadProvider>
+              <FyllutAttachmentProvider>
                 <FormLayout>
                   <FormLanguageSelector />
                   {shouldRenderFormFlow ? (
@@ -71,7 +71,7 @@ const FyllutFormFlow = ({
                     </>
                   )}
                 </FormLayout>
-              </AttachmentUploadProvider>
+              </FyllutAttachmentProvider>
             </FyllutFormActionsProvider>
           </FyllutValidationProvider>
         </NologinTokenProvider>

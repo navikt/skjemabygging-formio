@@ -3,7 +3,7 @@ import { attachmentFieldPath } from './attachmentFieldPath';
 
 describe('attachmentFieldPath', () => {
   it('uses the component submission path for its choice', () => {
-    expect(attachmentFieldPath('person.documentation', 'documentation', 'value')).toBe('person.documentation');
+    expect(attachmentFieldPath('person.documentation', 'documentation', 'value')).toBe('person.documentation.value');
   });
 
   it('keeps repeated attachment fields stable by attachment ID', () => {

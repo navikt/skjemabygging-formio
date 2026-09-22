@@ -7,7 +7,7 @@ interface Props {
   inProgress?: FileObject[];
   uploadingText: string;
   getFileError: (file: FileObject) => string | undefined;
-  onDeleteFile: (fileId: string, file: FileItem) => void;
+  onDeleteFile?: (fileId: string, file: FileItem) => void;
   onDownloadFile?: (fileId: string, fileName: string) => void;
 }
 
@@ -42,10 +42,14 @@ const FileList = ({
                       }
                     : undefined
                 }
-                button={{
-                  action: 'delete',
-                  onClick: () => onDeleteFile(fileId, { name: fileName, size }),
-                }}
+                button={
+                  onDeleteFile
+                    ? {
+                        action: 'delete',
+                        onClick: () => onDeleteFile(fileId, { name: fileName, size }),
+                      }
+                    : undefined
+                }
               />
             ))}
             {inProgress.map((file) => (

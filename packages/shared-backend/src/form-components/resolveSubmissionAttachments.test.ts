@@ -44,6 +44,16 @@ const form = {
 } as Form;
 
 describe('resolveSubmissionAttachments', () => {
+  it('does not duplicate a legacy attachment ID already present in canonical data', () => {
+    const canonical = createAttachment('same-id', 'nested-nav-id', 'ettersender');
+    const legacy = { ...canonical, value: 'leggerVedNaa' as const };
+    expect(
+      resolveSubmissionAttachments(form, {
+        data: { container: { nestedAttachment: canonical } },
+        attachments: [legacy],
+      }),
+    ).toEqual([canonical]);
+  });
   it('collects nested attachment values and keeps personal ID', () => {
     const nestedAttachment = createAttachment('nested-1', 'nested-nav-id', 'leggerVedNaa');
     const firstRowAttachment = createAttachment('row-1', 'row-nav-id', 'ettersender');
@@ -71,17 +81,28 @@ describe('resolveSubmissionAttachments', () => {
     ]);
   });
 
-  it('uses legacy attachments only when data has no value for the component', () => {
-    const dataAttachment = createAttachment('nested-new', 'nested-nav-id', 'leggerVedNaa');
-    const replacedLegacyAttachment = createAttachment('nested-old', 'nested-nav-id', 'ettersender');
+  it('does not submit hidden legacy files when the canonical answer says no attachments', () => {
+    const dataAttachment = createAttachment('nested-new', 'nested-nav-id', 'nei');
+    const replacedLegacyAttachment: SubmissionAttachment = {
+      ...createAttachment('nested-old', 'nested-nav-id', 'leggerVedNaa'),
+      files: [
+        {
+          fileId: 'hidden-file',
+          attachmentId: 'nested-old',
+          innsendingId: 'submission-1',
+          fileName: 'legacy.pdf',
+          size: 123,
+        },
+      ],
+    };
     const fallbackLegacyAttachment = createAttachment('row-old', 'row-nav-id', 'ettersender');
+    const submission: Submission = {
+      data: { container: { nestedAttachment: dataAttachment } },
+      attachments: [replacedLegacyAttachment, fallbackLegacyAttachment],
+    };
 
-    expect(
-      resolveSubmissionAttachments(form, {
-        data: { container: { nestedAttachment: dataAttachment } },
-        attachments: [replacedLegacyAttachment, fallbackLegacyAttachment],
-      }),
-    ).toEqual([dataAttachment, fallbackLegacyAttachment]);
+    expect(resolveSubmissionAttachments(form, submission)).toEqual([dataAttachment, fallbackLegacyAttachment]);
+    expect(submission.attachments).toEqual([replacedLegacyAttachment, fallbackLegacyAttachment]);
   });
 
   it('preserves a matching legacy attachment instead of a primitive data value', () => {
@@ -128,7 +149,7 @@ describe('resolveSubmissionAttachments', () => {
     ).toEqual([createAttachment('nested-nav-id', 'nested-nav-id', 'ettersender')]);
   });
 
-  it('uses structured datagrid attachments instead of legacy attachments with the same navId', () => {
+  it('does not submit legacy datagrid attachments hidden by canonical row answers', () => {
     const firstRowAttachment = createAttachment('row-1', 'row-nav-id', 'ettersender');
     const secondRowAttachment = createAttachment('row-2', 'row-nav-id', 'leggerVedNaa');
     const legacyAttachment = createAttachment('row-old', 'row-nav-id', 'levertTidligere');

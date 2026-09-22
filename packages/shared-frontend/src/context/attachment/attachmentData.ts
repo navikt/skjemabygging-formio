@@ -1,13 +1,4 @@
-import {
-  Form,
-  getNavId,
-  Submission,
-  SubmissionAttachment,
-  submissionUtils,
-} from '@navikt/skjemadigitalisering-shared-domain';
-import { parseSubmissionPath, setDeepValue } from '../state/stateHelpers';
-
-const PERSONAL_ID_ATTACHMENT_ID = 'personal-id';
+import { SubmissionAttachment } from '@navikt/skjemadigitalisering-shared-domain';
 
 const isSubmissionAttachment = (value: unknown): value is SubmissionAttachment =>
   typeof value === 'object' &&
@@ -19,108 +10,44 @@ const isSubmissionAttachment = (value: unknown): value is SubmissionAttachment =
   'type' in value &&
   typeof value.type === 'string';
 
-const getAttachmentsAtPath = (submission: Submission | undefined, submissionPath: string): SubmissionAttachment[] => {
-  const value = submissionUtils.getSubmissionValue(submissionPath, submission);
-  const values = Array.isArray(value) ? value : [value];
-  return values.filter(isSubmissionAttachment);
+const createAttachmentId = (navId: string, statePath: string) =>
+  statePath.includes('[') ? `${navId}-${statePath.replace(/[^a-zA-Z0-9_-]+/g, '-')}` : navId;
+
+const collectStoredAttachments = (value: unknown): SubmissionAttachment[] => {
+  if (isSubmissionAttachment(value)) return [value];
+  if (Array.isArray(value)) return value.flatMap(collectStoredAttachments);
+  if (value && typeof value === 'object') return Object.values(value).flatMap(collectStoredAttachments);
+  return [];
 };
 
-const setAttachmentsAtPath = (
-  submission: Submission | undefined,
-  submissionPath: string,
-  attachments: SubmissionAttachment[],
-  multiple: boolean,
-): Submission => ({
-  ...(submission ?? { data: {} }),
-  data: setDeepValue(
-    submission?.data ?? {},
-    parseSubmissionPath(submissionPath),
-    multiple ? attachments : attachments[0],
-  ),
-});
-
-const createAttachmentId = (navId: string, submissionPath: string) => {
-  if (!submissionPath.includes('[')) {
-    return navId;
-  }
-  return `${navId}-${submissionPath.replace(/[^a-zA-Z0-9_-]+/g, '-')}`;
+const allocateAttachmentIds = <T extends SubmissionAttachment | SubmissionAttachment[]>(
+  value: T,
+  existing: SubmissionAttachment[],
+): T => {
+  const usedIds = new Set(existing.map((attachment) => attachment.attachmentId));
+  const allocate = (attachment: SubmissionAttachment): SubmissionAttachment => {
+    let id = attachment.attachmentId;
+    let suffix = 0;
+    while (usedIds.has(id)) id = `${attachment.attachmentId}-${++suffix}`;
+    usedIds.add(id);
+    return id === attachment.attachmentId ? attachment : { ...attachment, attachmentId: id };
+  };
+  return (Array.isArray(value) ? value.map(allocate) : allocate(value)) as T;
 };
 
-const hydrateLegacyAttachments = (form: Form, submission: Submission | undefined): Submission | undefined => {
-  if (!submission?.attachments?.some((attachment) => attachment.type !== PERSONAL_ID_ATTACHMENT_ID)) {
-    return submission;
+const clearAttachmentFiles = <T>(value: T): T => {
+  if (isSubmissionAttachment(value)) return { ...value, files: [] };
+  if (Array.isArray(value)) return value.map(clearAttachmentFiles) as T;
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(Object.entries(value).map(([key, entry]) => [key, clearAttachmentFiles(entry)])) as T;
   }
-
-  let hydratedSubmission = submission;
-  const hydratedNavIds = new Set<string>();
-  const consumedAttachmentIds = new Set<string>();
-
-  const hydrateComponents = (components = form.components, parentSubmissionPath = '') => {
-    components.forEach((component) => {
-      const submissionPath =
-        component.type === 'attachment'
-          ? [parentSubmissionPath, component.key].filter(Boolean).join('.')
-          : submissionUtils.getComponentSubmissionPath(component, parentSubmissionPath);
-
-      if (component.type === 'attachment') {
-        const navId = getNavId(component) ?? component.key;
-        if (!submissionPath || !navId || hydratedNavIds.has(navId)) {
-          return;
-        }
-        const currentAttachments = getAttachmentsAtPath(hydratedSubmission, submissionPath);
-        const legacyAttachments = submission.attachments?.filter((attachment) => attachment.navId === navId) ?? [];
-        if (currentAttachments.length > 0) {
-          const currentAttachmentIds = new Set(currentAttachments.map((attachment) => attachment.attachmentId));
-          legacyAttachments
-            .filter((attachment) => currentAttachmentIds.has(attachment.attachmentId))
-            .forEach((attachment) => consumedAttachmentIds.add(attachment.attachmentId));
-          hydratedNavIds.add(navId);
-          return;
-        }
-
-        const multiple = component.attachmentType === 'other' || component.otherDocumentation === true;
-        const attachmentsToHydrate = multiple ? legacyAttachments : legacyAttachments.slice(0, 1);
-        if (attachmentsToHydrate.length > 0) {
-          hydratedSubmission = setAttachmentsAtPath(hydratedSubmission, submissionPath, attachmentsToHydrate, multiple);
-          attachmentsToHydrate.forEach((attachment) => consumedAttachmentIds.add(attachment.attachmentId));
-          hydratedNavIds.add(navId);
-        }
-        return;
-      }
-
-      if (!component.components?.length) {
-        return;
-      }
-
-      if (component.type === 'datagrid') {
-        const rows = submissionUtils.getSubmissionValue(submissionPath, hydratedSubmission);
-        const rowCount = Array.isArray(rows) && rows.length > 0 ? rows.length : 1;
-        for (let index = 0; index < rowCount; index += 1) {
-          hydrateComponents(component.components, `${submissionPath}[${index}]`);
-        }
-        return;
-      }
-
-      hydrateComponents(component.components, submissionPath);
-    });
-  };
-
-  hydrateComponents();
-
-  return {
-    ...hydratedSubmission,
-    attachments: hydratedSubmission.attachments?.filter(
-      (attachment) =>
-        attachment.type === PERSONAL_ID_ATTACHMENT_ID || !consumedAttachmentIds.has(attachment.attachmentId),
-    ),
-  };
+  return value;
 };
 
 export {
+  allocateAttachmentIds,
+  clearAttachmentFiles,
+  collectStoredAttachments,
   createAttachmentId,
-  getAttachmentsAtPath,
-  hydrateLegacyAttachments,
   isSubmissionAttachment,
-  PERSONAL_ID_ATTACHMENT_ID,
-  setAttachmentsAtPath,
 };

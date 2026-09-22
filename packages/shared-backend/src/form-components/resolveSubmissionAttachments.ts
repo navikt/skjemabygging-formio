@@ -63,14 +63,10 @@ const resolveSubmissionAttachments = (form: Form, submission: Submission): Submi
   const dataAttachments = collectDataAttachments(form.components, submission);
   const topLevelAttachments = submission.attachments ?? [];
   const topLevelAttachmentNavIds = new Set(topLevelAttachments.map((attachment) => attachment.navId));
-  const structuredAttachmentNavIds = new Set(
-    dataAttachments
-      .filter(({ source }) => source === 'structured')
-      .flatMap(({ attachments }) => attachments.map((attachment) => attachment.navId)),
-  );
   const structuredAttachments = dataAttachments
     .filter(({ source }) => source === 'structured')
     .flatMap(({ attachments }) => attachments);
+  const structuredAttachmentNavIds = new Set(structuredAttachments.map((attachment) => attachment.navId));
 
   const choiceOnlyAttachmentsWithoutTopLevelMatch = dataAttachments
     .filter(({ source }) => source === 'choice-only')
@@ -81,6 +77,7 @@ const resolveSubmissionAttachments = (form: Form, submission: Submission): Submi
     ...structuredAttachments,
     ...choiceOnlyAttachmentsWithoutTopLevelMatch,
     // Compatibility for drafts created while complete attachments were stored at the top level.
+    // A canonical answer takes precedence over legacy files not shown by the editor or summary.
     // Remove non-personal-ID fallback after those drafts can no longer be resumed or submitted.
     ...topLevelAttachments.filter(
       (attachment) => attachment.type !== 'personal-id' && !structuredAttachmentNavIds.has(attachment.navId),

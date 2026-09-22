@@ -27,13 +27,13 @@ const isKnownAttachmentSettingKey = (key: string): key is (typeof attachmentSett
 
 const getEnabledAttachmentKeys = (
   attachmentValues: AttachmentSettingValues | ComponentValue[] | undefined,
-): (typeof attachmentSettingKeys)[number][] => {
+): string[] => {
   if (!attachmentValues) {
     return [];
   }
 
   if (Array.isArray(attachmentValues)) {
-    return attachmentValues.map((option) => option.value).filter((value) => isKnownAttachmentSettingKey(value));
+    return attachmentValues.map((option) => option.value);
   }
 
   return attachmentSettingKeys.filter((key) => attachmentValues[key]?.enabled);
@@ -63,8 +63,10 @@ const resolveAttachmentLabelKey = (
   return key;
 };
 
-const getAttachmentLabel = (key: keyof AttachmentSettingValues, submissionMethod?: SubmissionMethod) =>
-  TEXTS.statiske.attachment[resolveAttachmentLabelKey(key, submissionMethod)];
+const getAttachmentLabel = (key: string, submissionMethod?: SubmissionMethod, values?: ComponentValue[]) =>
+  isKnownAttachmentSettingKey(key)
+    ? TEXTS.statiske.attachment[resolveAttachmentLabelKey(key, submissionMethod)]
+    : (values?.find((option) => option.value === key)?.label ?? key);
 
 const isSubmissionAttachment = (value: unknown): value is SubmissionAttachment =>
   typeof value === 'object' && value !== null && 'attachmentId' in value && typeof value.attachmentId === 'string';
@@ -100,7 +102,7 @@ const toSubmissionAttachments = (value: unknown, component: Component): Submissi
 
   const attachmentValue = getAttachmentValue(value);
   const navId = navFormUtils.getNavId(component) ?? component.key;
-  if (!attachmentValue || !navId || !isKnownAttachmentSettingKey(attachmentValue)) {
+  if (!attachmentValue || !navId) {
     return [];
   }
 
@@ -177,19 +179,21 @@ const mapToAttachmentSummary = ({
   submissionMethod,
 }: {
   translate: TFunction;
-  value: SubmissionAttachmentValue;
+  value: SubmissionAttachmentValue | SubmissionAttachment | SubmissionAttachment[] | string;
   component: Component;
   form: NavFormType;
   submissionMethod?: SubmissionMethod;
 }): AttachmentValue => {
-  const additionalDocumentationLabel = component.attachmentValues?.[value.key]?.additionalDocumentation?.label;
-  const shouldShowDeadline =
-    !!component.attachmentValues?.[value.key]?.showDeadline && form.properties?.ettersendelsesfrist;
+  const answer = Array.isArray(value) ? value[0] : value;
+  const key = getAttachmentValue(answer) ?? '';
+  const additionalDocumentation = getAdditionalDocumentation(answer);
+  const additionalDocumentationLabel = component.attachmentValues?.[key]?.additionalDocumentation?.label;
+  const shouldShowDeadline = !!component.attachmentValues?.[key]?.showDeadline && form.properties?.ettersendelsesfrist;
 
   return {
-    description: translate(getAttachmentLabel(value.key, submissionMethod)),
+    description: translate(getAttachmentLabel(key, submissionMethod, component.values)),
     ...(additionalDocumentationLabel && { additionalDocumentationLabel: translate(additionalDocumentationLabel) }),
-    ...(value.additionalDocumentation && { additionalDocumentation: translate(value.additionalDocumentation) }),
+    ...(additionalDocumentation && { additionalDocumentation: translate(additionalDocumentation) }),
     ...(shouldShowDeadline && {
       deadlineWarning: translate(TEXTS.statiske.attachment.deadline, {
         deadline: form.properties?.ettersendelsesfrist,

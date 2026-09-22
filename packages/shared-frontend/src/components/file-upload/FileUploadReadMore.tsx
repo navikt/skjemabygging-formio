@@ -1,6 +1,6 @@
 import { BodyShort, HStack, ReadMore } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useLanguage } from '../../../context/language/LanguageContext';
+import { useLanguage } from '../../context/language/LanguageContext';
 
 interface Props {
   maxTotalAttachmentSizeText?: string;

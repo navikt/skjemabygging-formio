@@ -3,6 +3,7 @@ import { getPrefilledAddress } from '../../components/address/addressUtils';
 import { getPrefilledSender } from '../../components/sender/senderValidation';
 import { ComponentDefinition } from '../../form-components/component-types';
 import { resolveDefaultSubmissionValue } from '../../form-components/defaultSubmissionValue';
+import { allocateAttachmentIds, collectStoredAttachments, isSubmissionAttachment } from '../attachment/attachmentData';
 import { clearSubmissionPathsFromSubmission, createUpdatedSubmission } from '../state/SubmissionStateContext';
 import { isSameSubmissionValue } from '../state/stateHelpers';
 import { collectDataGridRowScopes, collectInputSubmissionPathsInCurrentScope } from './dataGridRows';
@@ -64,7 +65,7 @@ const collectActiveComponentsWithInitialValues = (
     ...collectInputSubmissionPathsInCurrentScope(toComponentDefinitions(form.components)),
     ...dataGridRowScopes.flatMap((scope) => collectInputSubmissionPathsInCurrentScope(scope.activeComponents)),
   ].flatMap(({ component, submissionPath }) => {
-    const defaultValue = resolveDefaultSubmissionValue(component);
+    const defaultValue = resolveDefaultSubmissionValue(component, submissionPath, submissionMethod);
     return component.prefillValue !== undefined || defaultValue !== undefined
       ? [{ component, submissionPath, defaultValue }]
       : [];
@@ -123,7 +124,13 @@ const reconcileSubmissionValues = (
         return currentSubmission;
       }
 
-      return createUpdatedSubmission(currentSubmission, submissionPath, defaultValue);
+      const initialValue =
+        component.type === 'attachment' &&
+        (isSubmissionAttachment(defaultValue) ||
+          (Array.isArray(defaultValue) && defaultValue.every(isSubmissionAttachment)))
+          ? allocateAttachmentIds(defaultValue, collectStoredAttachments(currentSubmission))
+          : defaultValue;
+      return createUpdatedSubmission(currentSubmission, submissionPath, initialValue);
     },
     submission,
   );

@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import Alert from '../../components/alert/Alert';
 import FormErrorSummary from '../../components/error-summary/FormErrorSummary';
 import { useApplication } from '../../context/application/ApplicationContext';
+import { useAttachmentUpload } from '../../context/attachment/AttachmentUploadContext';
 import {
   useFormDefinitionForm,
   useFormDefinitionPanels,
@@ -14,7 +15,6 @@ import { useSubmissionState } from '../../context/state/SubmissionStateContext';
 import { useValidationActions, useValidationErrorsForPages } from '../../context/validation/ValidationContext';
 import RenderSummaryForm from '../../form-components/RenderSummaryForm';
 import { inputId } from '../../utils/inputId';
-import { useAttachmentUpload } from '../attachments/context/AttachmentUploadContext';
 import { useFormActions } from '../context/form-actions/FormActionsContext';
 import { APPLICATION_DOWNLOAD_KEY, PAPER_SUBMISSION_KEY } from '../form-flow/constants';
 import { useFormNavigation } from '../form-flow/useFormNavigation';

@@ -57,6 +57,24 @@ const createRequiredTextfield = (key: string, label: string): Component => ({
 });
 
 describe('generateSchema', () => {
+  it('keeps arbitrary legacy attachment choices valid in canonical and choice-only shapes', () => {
+    const component: Component = {
+      key: 'documentation',
+      type: 'attachment',
+      label: 'Documentation',
+      navId: 'doc',
+      otherDocumentation: true,
+      values: [{ value: 'neiJegHarIngenEkstraDokumentasjonJegVilLeggeVed', label: 'No extra documentation' }],
+    };
+    const schema = getFormDataSchema(generateSchema(createForm([component], false, ['PAPER', 'DIGITAL']))).properties
+      .documentation as JsonSchemaObject;
+    const branches = schema.anyOf as JsonSchemaObject[];
+    const expectedChoice = { type: 'string', title: 'Documentation' };
+    expect((branches[0].items as JsonSchemaObject).properties.value).toEqual(expectedChoice);
+    expect(branches[1].properties.value).toEqual(expectedChoice);
+    expect(branches[2].properties.key).toEqual(expectedChoice);
+    expect(branches[3]).toEqual(expectedChoice);
+  });
   it('creates a minimal schema for an empty form', () => {
     expect(generateSchema(createForm())).toEqual({
       $id: 'https://skjemabygging.nav.no/forms/test-form/spec',

@@ -29,7 +29,7 @@ frontend work.
   structure clarifies the mapping. Co-locate adapters by component type and
   keep their registries aligned.
 - Keep `packages/shared-frontend/src/fyllut` for fyllut-specific orchestration,
-  routing, submission, wizard behavior, attachments, and host integration. Keep
+  routing, submission, wizard behavior, and host integration. Keep
   this flow hostable by both fyllut and bygger.
 - Dependencies may point from `fyllut` to generic `components`, never the
   reverse. Keep application-specific behavior in `packages/fyllut` or

@@ -1,5 +1,9 @@
-import { Form, Panel, Submission, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, Panel, Submission, SubmissionMethod, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { ReactNode, useCallback, useRef } from 'react';
+import {
+  toAttachmentFilesValidationFields,
+  toAttachmentValueValidationFields,
+} from '../../components/attachment/attachmentValidation';
 import {
   useFormDefinitionForm,
   useFormDefinitionSubmissionMethod,
@@ -10,7 +14,6 @@ import { useSubmissionState } from '../../context/state/SubmissionStateContext';
 import { ValidationProvider } from '../../context/validation/ValidationContext';
 import { ValidationField } from '../../context/validation/validationTypes';
 import { collectPageValidationFields } from '../../form-components/page-validation/collectPageValidationFields';
-import { fyllutValidationFieldsRegistry } from '../attachments/attachmentValidationFields';
 
 interface Props {
   children: ReactNode;
@@ -47,6 +50,11 @@ const FyllutValidationProvider = ({ children, initialPagesWithErrors }: Props) =
   const resolvePageFields = useCallback(
     (pageKey: string): ValidationField[] => {
       const submission = getLatestSubmission();
+      if (pageKey === 'personal-id') {
+        const attachment = submission?.attachments?.find((item) => item.attachmentId === 'personal-id');
+        const input = { attachmentId: 'personal-id', label: TEXTS.statiske.uploadId.label, required: true, attachment };
+        return [...toAttachmentValueValidationFields(input), ...toAttachmentFilesValidationFields(input)];
+      }
       const cache = cacheRef.current;
       // The summary page asks for every page on each render, so the rebuild is memoized until
       // something it depends on changes.
@@ -72,7 +80,6 @@ const FyllutValidationProvider = ({ children, initialPagesWithErrors }: Props) =
             submission,
             submissionMethod,
             currentLanguage,
-            validationRegistry: fyllutValidationFieldsRegistry,
           })
         : [];
 

@@ -21,6 +21,62 @@ const createProps = (
 });
 
 describe('PdfAttachment', () => {
+  it.each(['paper', 'digital', 'digitalnologin'] as const)(
+    'keeps the configured legacy other-document label in %s PDFs',
+    (method) => {
+      const option = attachmentOtherOld.values![2];
+      const canonical: SubmissionAttachment = {
+        attachmentId: attachmentOtherOld.navId!,
+        navId: attachmentOtherOld.navId!,
+        type: 'other',
+        value: option.value,
+        files: [],
+      };
+      for (const answer of [option.value, { key: option.value }, [canonical]]) {
+        expect(
+          PdfAttachment(
+            createProps(
+              attachmentOtherOld,
+              {
+                data: { [attachmentOtherOld.key]: answer },
+              },
+              method,
+            ),
+          ),
+        ).toEqual([{ label: attachmentOtherOld.label, verdi: option.label }]);
+      }
+    },
+  );
+  it.each([false, true])(
+    'renders canonical paper answers without digital document titles (collection: %s)',
+    (multiple) => {
+      const component = { ...attachment, attachmentType: multiple ? ('other' as const) : ('default' as const) };
+      const answer: SubmissionAttachment = {
+        attachmentId: component.navId!,
+        navId: component.navId!,
+        type: multiple ? 'other' : 'default',
+        value: 'ettersender',
+        title: 'Digital document title',
+        files: [],
+      };
+      expect(
+        PdfAttachment(
+          createProps(
+            component,
+            {
+              data: { [component.key]: multiple ? [answer] : answer },
+            },
+            'paper',
+          ),
+        ),
+      ).toEqual([
+        {
+          label: component.label,
+          verdi: TEXTS.statiske.attachment.ettersender,
+        },
+      ]);
+    },
+  );
   it('should include comment when additional documentation is present', () => {
     const testComponent = attachment;
     const navId = testComponent.navId!;

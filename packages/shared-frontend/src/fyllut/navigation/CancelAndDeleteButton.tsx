@@ -3,11 +3,11 @@ import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useState } from 'react';
 import { useLocation } from 'react-router';
 import { useApplication } from '../../context/application/ApplicationContext';
+import { useAttachmentUpload } from '../../context/attachment/AttachmentUploadContext';
 import { useFormDefinitionSubmissionMethod } from '../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../context/language/LanguageContext';
 import { useRuntimeServices } from '../../context/runtime-services/RuntimeServicesContext';
 import { useSubmissionState } from '../../context/state/SubmissionStateContext';
-import { useAttachmentUpload } from '../attachments/context/AttachmentUploadContext';
 import ConfirmationModal from './ConfirmationModal';
 import { getExitUrl } from './navUrls';
 

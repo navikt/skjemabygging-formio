@@ -7,7 +7,6 @@ import {
   SubmitApplicationRequest,
 } from '@navikt/skjemadigitalisering-shared-backend';
 import {
-  AttachmentSettingValues,
   Component,
   Form,
   formatUtils,
@@ -146,7 +145,7 @@ const extractAvsenderFromYourInformation = (form: Form, submission: Submission):
   return undefined;
 };
 
-function mapToStatus(value?: keyof AttachmentSettingValues): OpplastingsStatus {
+function mapToStatus(value?: string): OpplastingsStatus {
   if (!value) {
     return 'IkkeValgt';
   }

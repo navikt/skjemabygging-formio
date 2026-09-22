@@ -12,6 +12,66 @@ const createForm = (components: Form['components']): Form =>
   }) as Form;
 
 describe('prepareInitialSubmission', () => {
+  it.each(['paper', 'digital'] as const)(
+    'normalizes old other-document choices before conditions and autosave (%s)',
+    (method) => {
+      const form = createForm([
+        { key: 'documentation', label: 'Documentation', type: 'attachment', attachmentType: 'other', input: true },
+        {
+          key: 'details',
+          label: 'Details',
+          type: 'textfield',
+          input: true,
+          customConditional: 'show = data.documentation && data.documentation.key === "ettersender";',
+        },
+      ]);
+      const prepared = prepareInitialSubmission(
+        form,
+        {
+          data: { documentation: { key: 'ettersender', additionalDocumentation: 'Explanation' }, details: 'Keep me' },
+        },
+        'nb',
+        method,
+      );
+      expect(prepared?.data).toEqual({
+        documentation: [
+          {
+            attachmentId: 'documentation',
+            navId: 'documentation',
+            type: 'other',
+            value: 'ettersender',
+            additionalDocumentation: 'Explanation',
+            files: [],
+          },
+        ],
+        details: 'Keep me',
+      });
+      expect(prepareSubmissionForTransport(prepared!).data).toMatchObject({
+        documentation: [{ attachmentId: 'documentation', value: 'ettersender', type: 'other' }],
+        details: 'Keep me',
+      });
+    },
+  );
+
+  it('initializes an unvisited sole digital upload choice canonically', () => {
+    const form = createForm([
+      {
+        key: 'documentation',
+        label: 'Documentation',
+        type: 'attachment',
+        input: true,
+        attachmentValues: { leggerVedNaa: { enabled: true } },
+      },
+    ]);
+    expect(prepareInitialSubmission(form, { data: {} }, 'nb', 'digital')?.data.documentation).toEqual({
+      attachmentId: 'documentation',
+      navId: 'documentation',
+      type: 'default',
+      value: 'leggerVedNaa',
+      files: [],
+    });
+    expect(prepareInitialSubmission(form, { data: {} }, 'nb', 'paper')?.data.documentation).toBeUndefined();
+  });
   it('normalizes data-grid rows while preserving their indices', () => {
     const form = createForm([
       {

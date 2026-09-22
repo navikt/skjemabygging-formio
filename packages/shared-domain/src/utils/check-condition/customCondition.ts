@@ -1,4 +1,5 @@
 import { Component, Form, Submission } from '../../models';
+import { withAttachmentChoices } from './attachmentChoices';
 import { createConditionInstance, getEffectiveRowContext } from './conditionInstance';
 import { lodashShim } from './lodashShim';
 import {
@@ -32,13 +33,13 @@ const createCheckCustomConditional = (Utils: ConditionUtils, evaluate: EvaluateF
     }
 
     const evaluateArgs = {
-      row: effectiveRow,
-      data,
+      row: withAttachmentChoices(effectiveRow),
+      data: withAttachmentChoices(data),
       form,
       component,
       instance: effectiveInstance,
       utils: Utils,
-      ...(submission && { submission }),
+      ...(submission && { submission: withAttachmentChoices(submission) }),
       _: lodashShim,
     };
 

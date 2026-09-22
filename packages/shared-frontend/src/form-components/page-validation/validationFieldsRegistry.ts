@@ -13,7 +13,6 @@ import { toOrganizationNumberValidation } from '../../components/organization-nu
 import { toPhoneNumberValidationFields } from '../../components/phone-number/phoneNumberValidation';
 import { toSenderValidationFields } from '../../components/sender/senderValidation';
 import {
-  FieldValidationInput,
   toChoiceFieldValidation,
   toFieldValidation,
   toValidationFields,
@@ -30,34 +29,20 @@ import {
   toComponentDefinitions,
 } from '../../context/form-definition/formDefinitionUtils';
 import { toActivitiesValidationFields } from '../components/activities/activitiesValidation';
+import { attachmentUploadValidationFields } from '../components/attachment/attachmentValidationFields';
 import { getDataFetcherData } from '../components/data-fetcher/dataFetcherUtils';
 import { toDataFetcherValidationFields } from '../components/data-fetcher/dataFetcherValidation';
 import { toDrivingListValidationFields } from '../components/driving-list/drivingListValidation';
-import { resolveCustomValidationRules } from '../custom-validation/customValidationRules';
 import {
   getDatePickerFromDate,
   getDatePickerToDate,
   getMonthPickerMaxYear,
   getMonthPickerMinYear,
 } from '../dateDefinitionUtils';
-import { getValues, isRequired, resolveValidation } from '../inputComponentUtils';
+import { getValues, isRequired } from '../inputComponentUtils';
 import { toSelectedValuesList } from '../shared/selectedValuesUtils';
-import { ValidationFieldsBuilder, ValidationFieldsContext, ValidationFieldsRegistry } from './validationFieldsTypes';
-
-/**
- * The label and authored constraints an input adapter passes to its reusable component, including
- * the value rules a recognized legacy `validate.custom` was replaced by. The rendered adapters
- * build the same object through `useResolvedValidation`, from the same two functions.
- */
-const toFieldValidationInput = (context: ValidationFieldsContext): FieldValidationInput => ({
-  statePath: context.submissionPath,
-  label: context.component.label,
-  required: isRequired(context.component),
-  validation: {
-    ...resolveValidation(context.component),
-    ...resolveCustomValidationRules(context.component, context),
-  },
-});
+import { ValidationFieldsBuilder, ValidationFieldsRegistry } from './validationFieldsTypes';
+import { toFieldValidationInput } from './validationFieldUtils';
 
 const noValidationFields: ValidationFieldsBuilder = () => [];
 
@@ -162,7 +147,7 @@ const validationFieldsRegistry: ValidationFieldsRegistry = {
   selectboxes: selectBoxesValidationFields,
   landvelger: plainValidationFields,
   valutavelger: plainValidationFields,
-  attachment: plainValidationFields,
+  attachment: attachmentUploadValidationFields,
 
   select: choiceValidationFields,
   navSelect: choiceValidationFields,

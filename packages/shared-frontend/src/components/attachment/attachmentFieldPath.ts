@@ -4,7 +4,7 @@ const attachmentFieldPath = (submissionPath: string | undefined, attachmentId: s
   if (!submissionPath) {
     return `attachments.${attachmentId}.${field}`;
   }
-  return field === 'value' ? submissionPath : `${submissionPath}.${attachmentId}.${field}`;
+  return field === 'value' ? `${submissionPath}.value` : `${submissionPath}.${attachmentId}.${field}`;
 };
 
 export { attachmentFieldPath };

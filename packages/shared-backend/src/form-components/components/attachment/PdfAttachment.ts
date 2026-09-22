@@ -54,7 +54,7 @@ const PdfAttachment = (props: PdfComponentProps): PdfData[] | null => {
       label: `${translate(component.label || 'Ukjent vedlegg')}${
         attachment.value === 'leggerVedNaa' ? ` - ${translate(attachment.title || 'Ukjent vedlegg')}` : ''
       }`,
-      verdi: translate(attachmentUtils.getAttachmentLabel(attachment.value!, submissionMethod)),
+      verdi: translate(attachmentUtils.getAttachmentLabel(attachment.value!, submissionMethod, component.values)),
     }));
   }
 
@@ -68,7 +68,7 @@ const PdfAttachment = (props: PdfComponentProps): PdfData[] | null => {
   return [
     {
       label: translate(component.label || 'Ukjent vedlegg'),
-      verdi: translate(attachmentUtils.getAttachmentLabel(attachment.value, submissionMethod)),
+      verdi: translate(attachmentUtils.getAttachmentLabel(attachment.value, submissionMethod, component.values)),
     },
     ...(additionalDocumentation?.enabled
       ? [

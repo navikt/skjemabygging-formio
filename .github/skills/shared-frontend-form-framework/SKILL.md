@@ -32,7 +32,7 @@ and bygger, while the editable form flow is explicitly owned by fyllut. It has n
   fyllut flow and the legacy summary renderer.
 - `fyllut/` — the editable form application. `RenderForm.tsx` is its public
   entry point; feature folders own routing/form-flow, intro, form pages,
-  summary, paper submission, receipt, attachments, and fyllut-only contexts.
+  summary, paper submission, receipt, attachment host integration, and fyllut-only contexts.
 - `validation/` — pure `validators`: a concrete value + `ValidationRules` in, a
   message key + params out. No form definitions, no form scripts. Which fields a
   page validates comes from the components that own them: every visible input

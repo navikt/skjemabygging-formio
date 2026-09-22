@@ -43,6 +43,22 @@ const createSubmission = (attachment: SubmissionAttachment): Submission => ({
 });
 
 describe('assembleSubmitApplicationRequest', () => {
+  it('preserves the existing external status fallback for arbitrary legacy attachment choices', () => {
+    const legacyAttachment: SubmissionAttachment = {
+      attachmentId: 'legacy-attachment-id',
+      navId: 'legacy-attachment-id',
+      type: 'default',
+      value: 'neiJegHarIngenEkstraDokumentasjonJegVilLeggeVed',
+      files: [],
+    };
+    const submission = createSubmission(legacyAttachment);
+    submission.data.documentation = legacyAttachment;
+    submission.attachments = [];
+    expect(
+      assembleSubmitApplicationRequest('submission-1', form, submission, 'nb', [1], (text) => text).attachments[0]
+        .uploadStatus,
+    ).toBe('IkkeValgt');
+  });
   it('preserves legacy attachment files, title and value when data contains a primitive value', () => {
     const legacyAttachment: SubmissionAttachment = {
       attachmentId: 'legacy-attachment-id',

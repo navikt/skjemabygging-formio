@@ -1,14 +1,14 @@
 import { FileObject, VStack } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { ReactNode, useState } from 'react';
-import Alert from '../../../components/alert/Alert';
-import FileUploadButton from '../../../components/file-upload/FileUploadButton';
-import { useLanguage } from '../../../context/language/LanguageContext';
-import { useValidationExternalError, useValidationFieldError } from '../../../context/validation/ValidationContext';
-import { useOptionalValidationScope } from '../../../context/validation/ValidationScopeContext';
-import { inputId } from '../../../utils/inputId';
-import { useAttachmentUpload } from '../context/AttachmentUploadContext';
-import { FILE_ACCEPT, MAX_SIZE_ATTACHMENT_FILE_BYTES } from '../context/fileUploadConfig';
+import { useAttachmentUpload } from '../../context/attachment/AttachmentUploadContext';
+import { FILE_ACCEPT, MAX_SIZE_ATTACHMENT_FILE_BYTES } from '../../context/attachment/fileUploadConfig';
+import { useLanguage } from '../../context/language/LanguageContext';
+import { useValidationExternalError, useValidationFieldError } from '../../context/validation/ValidationContext';
+import { useOptionalValidationScope } from '../../context/validation/ValidationScopeContext';
+import { inputId } from '../../utils/inputId';
+import Alert from '../alert/Alert';
+import FileUploadButton from './FileUploadButton';
 
 interface Props {
   attachmentId: string;

@@ -220,7 +220,13 @@ describe('applyInitialValuesToSubmission', () => {
       country: { label: 'Norge', value: 'NO' },
       select: { label: 'Two', value: 'two' },
       options: { first: true, second: false },
-      documentation: { key: 'leggerVedNaa' },
+      documentation: {
+        attachmentId: 'documentation',
+        navId: 'documentation',
+        type: 'default',
+        value: 'leggerVedNaa',
+        files: [],
+      },
     });
   });
 

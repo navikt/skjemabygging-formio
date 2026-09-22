@@ -1,8 +1,106 @@
-import { Component, NavFormType } from '../../models';
+import { TFunction } from 'i18next';
+import { Component, NavFormType, SubmissionAttachment } from '../../models';
 import { TEXTS } from '../../texts';
 import { attachmentUtils } from './attachmentUtils';
 
 describe('attachmentUtils', () => {
+  describe('arbitrary legacy choices', () => {
+    const value = 'neiJegHarIngenEkstraDokumentasjonJegVilLeggeVed';
+    const label = 'Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved.';
+    const component = {
+      key: 'documentation',
+      navId: 'doc',
+      type: 'attachment',
+      otherDocumentation: true,
+      values: [
+        { value: 'leggerVedNaa', label: 'Configured upload label' },
+        { value, label },
+      ],
+    } as Component;
+    it.each([value, { key: value, additionalDocumentation: 'Keep this explanation' }])(
+      'normalizes legacy choice %# without erasing it',
+      (answer) => {
+        expect(attachmentUtils.toSubmissionAttachments(answer, component)).toMatchObject([
+          {
+            attachmentId: 'doc',
+            navId: 'doc',
+            type: 'other',
+            value,
+            files: [],
+            ...(typeof answer === 'object' ? { additionalDocumentation: 'Keep this explanation' } : {}),
+          },
+        ]);
+      },
+    );
+    it.each(['paper', 'digital', 'digitalnologin'] as const)(
+      'retains configured labels in %s summaries',
+      (submissionMethod) => {
+        const canonical = attachmentUtils.toSubmissionAttachments(
+          { key: value, additionalDocumentation: 'Explanation' },
+          component,
+        );
+        expect(attachmentUtils.getAttachmentLabel(value, submissionMethod, component.values)).toBe(label);
+        expect(
+          attachmentUtils.mapToAttachmentSummary({
+            value: canonical,
+            component,
+            submissionMethod,
+            form: { properties: {} } as NavFormType,
+            translate: ((text: string) => text) as TFunction,
+          }),
+        ).toEqual({ description: label, additionalDocumentation: 'Explanation' });
+        expect(attachmentUtils.getImplicitValueKey(component.values, submissionMethod)).toBeUndefined();
+      },
+    );
+    it('preserves modern label translation instead of replacing it with configured legacy text', () => {
+      expect(attachmentUtils.getAttachmentLabel('leggerVedNaa', 'digital', component.values)).toBe(
+        TEXTS.statiske.attachment.uploadNow,
+      );
+      expect(attachmentUtils.getAttachmentLabel('leggerVedNaa', 'paper', component.values)).toBe(
+        TEXTS.statiske.attachment.leggerVedNaa,
+      );
+    });
+  });
+  describe.each(['paper', 'digital'] as const)('summary compatibility (%s)', (submissionMethod) => {
+    const canonical: SubmissionAttachment = {
+      attachmentId: 'doc',
+      navId: 'doc',
+      type: 'other',
+      value: 'ettersender',
+      additionalDocumentation: 'Explanation',
+      files: [],
+    };
+    it.each([canonical, [canonical], { key: 'ettersender' as const, additionalDocumentation: 'Explanation' }])(
+      'maps canonical and legacy answers to the existing summary contract %#',
+      (value) => {
+        expect(
+          attachmentUtils.mapToAttachmentSummary({
+            value,
+            submissionMethod,
+            translate: ((text: string) => text) as TFunction,
+            form: { properties: { ettersendelsesfrist: '14' } } as NavFormType,
+            component: {
+              attachmentValues: {
+                ettersender: {
+                  enabled: true,
+                  showDeadline: true,
+                  additionalDocumentation: { enabled: true, label: 'Why?', description: '' },
+                },
+              },
+            } as Component,
+          }),
+        ).toEqual({
+          description:
+            submissionMethod === 'paper'
+              ? TEXTS.statiske.attachment.ettersender
+              : TEXTS.statiske.attachment.uploadLater,
+          additionalDocumentation: 'Explanation',
+          additionalDocumentationLabel: 'Why?',
+          deadlineWarning: TEXTS.statiske.attachment.deadline,
+        });
+      },
+    );
+  });
   describe('toSubmissionAttachments', () => {
     const component = {
       key: 'documentation',

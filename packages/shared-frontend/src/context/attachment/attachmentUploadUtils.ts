@@ -1,12 +1,9 @@
-import type { AttachmentSettingValues, SubmissionAttachment } from '@navikt/skjemadigitalisering-shared-domain';
+import type { SubmissionAttachment } from '@navikt/skjemadigitalisering-shared-domain';
 
 const PDF_FILE_EXTENSION = '.pdf';
 const PDF_MIME_TYPE = 'application/pdf';
 const OCTET_STREAM_MIME_TYPE = 'application/octet-stream';
 const DEFAULT_DOWNLOAD_FILE_NAME = 'attachment';
-
-const filterAttachmentsByNavId = (submissionAttachments: SubmissionAttachment[], attachmentNavId: string) =>
-  submissionAttachments.filter((attachment) => attachment.navId === attachmentNavId);
 
 const getLargestAttachmentIdCounter = (attachments: SubmissionAttachment[]): number =>
   Math.max(
@@ -16,16 +13,6 @@ const getLargestAttachmentIdCounter = (attachments: SubmissionAttachment[]): num
       return suffix ? Number.parseInt(suffix, 10) : 0;
     }),
   );
-
-const getDefaultOtherAttachment = (
-  attachmentNavId: string,
-  value?: keyof AttachmentSettingValues,
-): SubmissionAttachment => ({
-  attachmentId: attachmentNavId,
-  navId: attachmentNavId,
-  type: 'other',
-  ...(value ? { value } : {}),
-});
 
 const normalizeAttachmentDownloadFileName = (fileName: string): string => {
   const trimmedFileName = fileName.trim();
@@ -56,10 +43,4 @@ const normalizeAttachmentDownloadBlob = (blob: Blob): Blob => {
   return blob;
 };
 
-export {
-  filterAttachmentsByNavId,
-  getDefaultOtherAttachment,
-  getLargestAttachmentIdCounter,
-  normalizeAttachmentDownloadBlob,
-  normalizeAttachmentDownloadFileName,
-};
+export { getLargestAttachmentIdCounter, normalizeAttachmentDownloadBlob, normalizeAttachmentDownloadFileName };

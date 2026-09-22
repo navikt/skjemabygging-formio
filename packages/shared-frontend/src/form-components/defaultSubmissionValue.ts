@@ -1,5 +1,6 @@
-import { ComponentValue } from '@navikt/skjemadigitalisering-shared-domain';
+import { attachmentUtils, ComponentValue, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
 import { ComponentDefinition } from './component-types';
+import { normalizeAttachmentValue } from './components/attachment/attachmentValue';
 import { getValues } from './inputComponentUtils';
 
 type ConfiguredOptionComponent = Extract<ComponentDefinition, { type: 'select' | 'navSelect' }>;
@@ -29,7 +30,11 @@ const resolveConfiguredOptionDefault = (component: ConfiguredOptionComponent): C
   return defaultValue ? getValues(component).find(({ value }) => value === defaultValue) : undefined;
 };
 
-const resolveDefaultSubmissionValue = (component: ComponentDefinition): unknown => {
+const resolveDefaultSubmissionValue = (
+  component: ComponentDefinition,
+  statePath = component.key,
+  submissionMethod?: SubmissionMethod,
+): unknown => {
   switch (component.type) {
     case 'number':
     case 'currency':
@@ -47,18 +52,12 @@ const resolveDefaultSubmissionValue = (component: ComponentDefinition): unknown 
     case 'selectboxes':
       return isSelectedValuesMap(component.defaultValue) ? component.defaultValue : undefined;
     case 'attachment':
-      if (typeof component.defaultValue === 'string' && component.defaultValue) {
-        return { key: component.defaultValue };
-      }
-      if (
-        typeof component.defaultValue === 'object' &&
-        component.defaultValue !== null &&
-        'key' in component.defaultValue &&
-        typeof component.defaultValue.key === 'string'
-      ) {
-        return component.defaultValue;
-      }
-      return undefined;
+      return normalizeAttachmentValue(
+        component,
+        statePath,
+        component.defaultValue ||
+          attachmentUtils.getImplicitValueKey(component.attachmentValues ?? component.values, submissionMethod),
+      );
     default:
       return undefined;
   }
