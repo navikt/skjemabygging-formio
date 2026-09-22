@@ -99,6 +99,46 @@ describe('ReportService', () => {
     }
 
     describe('generateFormsPublishedLanguage', () => {
+      describe('nologin submission URL', () => {
+        it('reports the URL only for forms that support nologin submission', async () => {
+          const publishedForms = [
+            {
+              title: 'Nologin form',
+              components: [],
+              skjemanummer: 'TEST1',
+              path: 'nologin-form',
+              properties: {
+                skjemanummer: 'TEST1',
+                submissionTypes: ['DIGITAL_NO_LOGIN'],
+                subsequentSubmissionTypes: [],
+              } as unknown as FormPropertiesType,
+            },
+            {
+              title: 'Digital form',
+              components: [],
+              skjemanummer: 'TEST2',
+              path: 'digital-form',
+              properties: {
+                skjemanummer: 'TEST2',
+                submissionTypes: ['DIGITAL'],
+                subsequentSubmissionTypes: [],
+              } as unknown as FormPropertiesType,
+            },
+          ];
+          setupNock(publishedForms);
+
+          const writableStream = createWritableStream();
+          await reportService.generate('all-forms-summary', writableStream);
+          const report = parseReport(writableStream.toString());
+          const noLoginUrlIndex = report.getHeaderIndex('innsendingsurl (nologin)');
+
+          expect(report.forms[0][noLoginUrlIndex]).toBe(
+            'https://fyllut-preprod.intern.dev.nav.no/fyllut/nologin-form?sub=digitalnologin',
+          );
+          expect(report.forms[1][noLoginUrlIndex]).toBe('');
+        });
+      });
+
       describe('intro page', () => {
         it('reports whether the intro page is enabled', async () => {
           const publishedForms = [
