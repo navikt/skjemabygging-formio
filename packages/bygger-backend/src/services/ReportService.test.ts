@@ -54,7 +54,11 @@ describe('ReportService', () => {
 
     const createWritableStream = () => new MemoryStream(undefined, { readable: false });
 
-    const setupNock = (publishedForms: Partial<Form>[], recipients: Recipient[] = []) => {
+    const setupNock = (
+      publishedForms: Partial<Form>[],
+      recipients: Recipient[] = [],
+      formsWithUploadedPdfs: string[] = [],
+    ) => {
       nock(formsApi.url).get('/v1/recipients').reply(200, recipients);
       nock(formsApi.url)
         .get(/\/v1\/forms\?.*$/)
@@ -66,7 +70,14 @@ describe('ReportService', () => {
         .reply(200, publishedForms);
       for (const form of publishedForms) {
         nock(formsApi.url).get(`/v1/form-publications/${form.path}`).reply(200, form);
-        nock(formsApi.url).get(`/v1/forms/${form.path}/static-pdfs`).reply(200, []);
+        nock(formsApi.url)
+          .get(`/v1/forms/${form.path}/static-pdfs`)
+          .reply(
+            200,
+            formsWithUploadedPdfs.includes(form.path ?? '')
+              ? [{ id: 1, languageCode: 'nb', fileName: 'example.pdf' }]
+              : [],
+          );
         nock(formsApi.url).get(`/v1/forms/${form.path}`).reply(200, form);
         const publishedTranslations: PublishedTranslations = {
           publishedAt: form.publishedAt ?? '2025-01-28T10:00:10.325Z',
@@ -99,6 +110,45 @@ describe('ReportService', () => {
     }
 
     describe('generateFormsPublishedLanguage', () => {
+      describe('PDF forms', () => {
+        it('reports uploaded PDFs separately from the STATIC_PDF submission type', async () => {
+          const createForm = (path: string, submissionTypes: FormPropertiesType['submissionTypes'] = []): Form => ({
+            title: path,
+            components: [],
+            skjemanummer: path,
+            path,
+            properties: {
+              skjemanummer: path,
+              submissionTypes,
+              subsequentSubmissionTypes: [],
+            } as unknown as FormPropertiesType,
+          });
+          const publishedForms = [
+            createForm('uploaded-only'),
+            createForm('enabled-only', ['STATIC_PDF']),
+            createForm('both', ['STATIC_PDF']),
+            createForm('neither'),
+          ];
+          setupNock(publishedForms, [], ['uploaded-only', 'both']);
+
+          const writableStream = createWritableStream();
+          await reportService.generate('all-forms-summary', writableStream);
+          const report = parseReport(writableStream.toString());
+          const pathIndex = report.getHeaderIndex('path');
+          const uploadedPdfIndex = report.getHeaderIndex('har opplastede PDF-er');
+          const staticPdfEnabledIndex = report.getHeaderIndex('STATIC_PDF aktivert');
+
+          expect(
+            report.forms.map((row) => [row[pathIndex], row[uploadedPdfIndex], row[staticPdfEnabledIndex]]),
+          ).toEqual([
+            ['uploaded-only', 'ja', 'nei'],
+            ['enabled-only', 'nei', 'ja'],
+            ['both', 'ja', 'ja'],
+            ['neither', 'nei', 'nei'],
+          ]);
+        });
+      });
+
       describe('nologin submission URL', () => {
         it('reports the URL only for forms that support nologin submission', async () => {
           const publishedForms = [
