@@ -4,6 +4,7 @@ import {
   Form,
   FormPropertiesType,
   PublishedTranslations,
+  Recipient,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import MemoryStream from 'memorystream';
 import nock from 'nock';
@@ -53,8 +54,8 @@ describe('ReportService', () => {
 
     const createWritableStream = () => new MemoryStream(undefined, { readable: false });
 
-    const setupNock = (publishedForms: Partial<Form>[]) => {
-      nock(formsApi.url).get('/v1/recipients').reply(200, []);
+    const setupNock = (publishedForms: Partial<Form>[], recipients: Recipient[] = []) => {
+      nock(formsApi.url).get('/v1/recipients').reply(200, recipients);
       nock(formsApi.url)
         .get(/\/v1\/forms\?.*$/)
         .times(1)
@@ -98,6 +99,53 @@ describe('ReportService', () => {
     }
 
     describe('generateFormsPublishedLanguage', () => {
+      describe('recipient address', () => {
+        it('reports standard and selected recipient addresses', async () => {
+          const publishedForms = [
+            {
+              title: 'Standard recipient',
+              components: [],
+              skjemanummer: 'TEST1',
+              path: 'standard-recipient',
+              properties: {
+                skjemanummer: 'TEST1',
+                submissionTypes: [],
+                subsequentSubmissionTypes: [],
+              } as unknown as FormPropertiesType,
+            },
+            {
+              title: 'Selected recipient',
+              components: [],
+              skjemanummer: 'TEST2',
+              path: 'selected-recipient',
+              properties: {
+                skjemanummer: 'TEST2',
+                mottaksadresseId: 'recipient',
+                submissionTypes: [],
+                subsequentSubmissionTypes: [],
+              } as unknown as FormPropertiesType,
+            },
+          ];
+          setupNock(publishedForms, [
+            {
+              recipientId: 'recipient',
+              name: 'Example office',
+              poBoxAddress: 'Postboks 123',
+              postalCode: '0123',
+              postalName: 'Oslo',
+            },
+          ]);
+
+          const writableStream = createWritableStream();
+          await reportService.generate('all-forms-summary', writableStream);
+          const report = parseReport(writableStream.toString());
+          const recipientAddressIndex = report.getHeaderIndex('mottaksadresse');
+
+          expect(report.forms[0][recipientAddressIndex]).toBe('Standard');
+          expect(report.forms[1][recipientAddressIndex]).toBe('Example office, Postboks 123, 0123 Oslo');
+        });
+      });
+
       describe('number of signatures', () => {
         const HEADER_SIGNATURES = 'signaturfelt';
 
