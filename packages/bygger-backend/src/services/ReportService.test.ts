@@ -453,6 +453,50 @@ describe('ReportService', () => {
         );
       });
 
+      it('uses the published title when reporting translated titles', async () => {
+        const draft = {
+          title: 'Draft title',
+          components: [],
+          skjemanummer: 'TEST1',
+          path: 'test1',
+          status: 'pending',
+          properties: {
+            skjemanummer: 'TEST1',
+            submissionTypes: [],
+            subsequentSubmissionTypes: [],
+          } as unknown as FormPropertiesType,
+        };
+        const published = {
+          ...draft,
+          title: 'Published title',
+          status: 'published',
+        };
+        const translations: PublishedTranslations = {
+          publishedAt: '2025-01-28T10:00:10.325Z',
+          publishedBy: 'TEST',
+          translations: {
+            nb: {},
+            en: { 'Published title': 'English title' },
+          },
+        };
+        const api = nock(formsApi.url)
+          .get('/v1/form-publications')
+          .reply(200, [draft])
+          .get('/v1/form-publications/test1')
+          .reply(200, published)
+          .get('/v1/form-publications/test1/translations')
+          .query({ languageCodes: 'nb,nn,en' })
+          .reply(200, translations);
+
+        const writableStream = createWritableStream();
+        await reportService.generate('forms-published-languages', writableStream);
+
+        expect(writableStream.toString()).toEqual(
+          CSV_HEADER_LINE + 'TEST1;Draft title;nb,en;Published title;;English title\n',
+        );
+        expect(api.isDone()).toBe(true);
+      });
+
       it('has correct attachment fields', async () => {
         const HEADER_HAS_ATTACHMENTS = 'har vedlegg';
         const HEADER_NUMBER_OF_ATTACHMENTS = 'antall vedlegg';
