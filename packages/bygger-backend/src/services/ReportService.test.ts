@@ -99,6 +99,56 @@ describe('ReportService', () => {
     }
 
     describe('generateFormsPublishedLanguage', () => {
+      describe('intro page', () => {
+        it('reports whether the intro page is enabled', async () => {
+          const publishedForms = [
+            {
+              title: 'Enabled intro page',
+              components: [],
+              skjemanummer: 'TEST1',
+              path: 'enabled-intro-page',
+              introPage: {
+                enabled: true,
+                introduction: '',
+                selfDeclaration: '',
+                sections: { prerequisites: {} },
+              },
+              properties: {
+                skjemanummer: 'TEST1',
+                submissionTypes: [],
+                subsequentSubmissionTypes: [],
+              } as unknown as FormPropertiesType,
+            },
+            {
+              title: 'Disabled intro page',
+              components: [],
+              skjemanummer: 'TEST2',
+              path: 'disabled-intro-page',
+              introPage: {
+                enabled: false,
+                introduction: '',
+                selfDeclaration: '',
+                sections: { prerequisites: {} },
+              },
+              properties: {
+                skjemanummer: 'TEST2',
+                submissionTypes: [],
+                subsequentSubmissionTypes: [],
+              } as unknown as FormPropertiesType,
+            },
+          ];
+          setupNock(publishedForms);
+
+          const writableStream = createWritableStream();
+          await reportService.generate('all-forms-summary', writableStream);
+          const report = parseReport(writableStream.toString());
+          const introPageEnabledIndex = report.getHeaderIndex('introside aktivert');
+
+          expect(report.forms[0][introPageEnabledIndex]).toBe('ja');
+          expect(report.forms[1][introPageEnabledIndex]).toBe('nei');
+        });
+      });
+
       describe('recipient address', () => {
         it('reports standard and selected recipient addresses', async () => {
           const publishedForms = [
