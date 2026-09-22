@@ -24,7 +24,6 @@ const submitApplicationTestCases: SubmitApplicationTestCase[] = [
     formRevision: 37,
     route: '/fyllut/api/send-inn/digital-application/65ed0008-ec72-4c90-8b44-165d3c265da0',
     sendInnPath: '/v1/application-digital/65ed0008-ec72-4c90-8b44-165d3c265da0',
-    grantUserDigitalAccess: true,
     setupTokens: async () => {
       const tokenSetup = await setupTokenMocks();
       return {
@@ -61,9 +60,9 @@ describe('Fyllut backend :: submit application', () => {
 
   it.each(submitApplicationTestCases)(
     'creates and submits the $name application request with formRevision in mainDocumentAlt',
-    async ({ innsendingsId, formRevision, route, sendInnPath, grantUserDigitalAccess, setupTokens }) => {
+    async ({ innsendingsId, formRevision, route, sendInnPath, setupTokens }) => {
       const applicationData = createApplicationData();
-      const mockFormData = createMockFormData(formRevision, grantUserDigitalAccess);
+      const mockFormData = createMockFormData(formRevision);
       const submitResponse = createSubmitResponse(innsendingsId, mockFormData.title);
       const tokenSetup = await setupTokens(innsendingsId);
 
@@ -94,7 +93,6 @@ describe('Fyllut backend :: submit application', () => {
 
       expect(capturedRequestBody).toBeDefined();
       expectSubmitRequest(capturedRequestBody!);
-      expect(Object.hasOwn(capturedRequestBody!, 'grantUserDigitalAccess')).toBe(grantUserDigitalAccess === true);
       expect(decodeMainDocumentAlt(capturedRequestBody!.mainDocumentAlt)).toEqual({
         language: 'nb',
         formRevision,
@@ -145,16 +143,12 @@ describe('Fyllut backend :: submit application', () => {
   });
 });
 
-const createMockFormData = (revision: number, grantUserDigitalAccess?: boolean) => ({
+const createMockFormData = (revision: number) => ({
   skjemanummer: 'NAV 12.34-56',
   title: 'Application title',
   path: 'nav123456',
   revision,
-  properties: {
-    skjemanummer: 'NAV 12.34-56',
-    tema: 'BIL',
-    ...(grantUserDigitalAccess !== undefined && { grantUserDigitalAccess }),
-  },
+  properties: { skjemanummer: 'NAV 12.34-56', tema: 'BIL' },
   components: [],
 });
 
@@ -185,7 +179,6 @@ type SubmitApplicationTestCase = {
   formRevision: number;
   route: string;
   sendInnPath: string;
-  grantUserDigitalAccess?: boolean;
   setupTokens: (innsendingsId: string) => Promise<TokenSetupResult>;
 };
 
