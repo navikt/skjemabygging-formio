@@ -112,6 +112,7 @@ const PersonalIdUploadContent = () => {
                 }}
                 multiple={false}
                 attachmentLabel={TEXTS.statiske.uploadId.label}
+                requiredFilesMessage={TEXTS.statiske.uploadId.missingUploadError}
                 downloadEnabled={submissionMethod === 'digital'}
                 readMore={<PersonalIdUploadReadMore />}
               />

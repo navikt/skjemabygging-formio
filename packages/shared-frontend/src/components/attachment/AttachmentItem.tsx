@@ -40,6 +40,7 @@ interface Props {
   downloadEnabled?: boolean;
   readOnly?: boolean;
   uploadSelected?: boolean;
+  requiredFilesMessage?: string;
 }
 
 const AttachmentItem = ({
@@ -59,6 +60,7 @@ const AttachmentItem = ({
   downloadEnabled,
   readOnly,
   uploadSelected,
+  requiredFilesMessage,
 }: Props) => {
   const { translate } = useLanguage();
   const { stateValue } = useFieldBinding({ statePath: submissionPath ?? standaloneAttachmentsPath });
@@ -93,6 +95,7 @@ const AttachmentItem = ({
     label: attachmentLabel ?? label,
     attachment,
     uploadSelected,
+    requiredFilesMessage,
   });
   const handleTitleChange = (title: string) => {
     changeAttachmentValue(

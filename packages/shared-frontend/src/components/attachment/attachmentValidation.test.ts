@@ -1,4 +1,10 @@
-import { Form, Submission, SubmissionAttachment, SubmissionMethod } from '@navikt/skjemadigitalisering-shared-domain';
+import {
+  Form,
+  Submission,
+  SubmissionAttachment,
+  SubmissionMethod,
+  TEXTS,
+} from '@navikt/skjemadigitalisering-shared-domain';
 import { describe, expect, it } from 'vitest';
 import { AttachmentDefinition } from '../../form-components/component-types';
 import { collectPageValidationFields } from '../../form-components/page-validation/collectPageValidationFields';
@@ -161,8 +167,12 @@ describe('attachment validation', () => {
       attachmentId: 'personal-id',
       label: 'ID',
       attachment: { ...attachment, type: 'personal-id', value: 'norwegianPassport' },
+      requiredFilesMessage: TEXTS.statiske.uploadId.missingUploadError,
     });
     expect(fields[0].statePath).toBe('attachments.personal-id.files');
-    expect(validateValue(fields[0].value, fields[0].field, fields[0].rules, 'nb')).toBeDefined();
+    expect(validateValue(fields[0].value, fields[0].field, fields[0].rules, 'nb')).toEqual({
+      textKey: TEXTS.statiske.uploadId.missingUploadError,
+      params: { field: 'ID' },
+    });
   });
 });

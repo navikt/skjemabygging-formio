@@ -13,6 +13,7 @@ interface AttachmentUploadValidationInput {
   attachment?: SubmissionAttachment;
   validation?: ChoiceValidation;
   uploadSelected?: boolean;
+  requiredFilesMessage?: string;
 }
 
 const attachmentValueRules = (required = false): ValidationRules => ({ required });
@@ -51,6 +52,7 @@ const toAttachmentFilesValidationFields = ({
   label,
   attachment,
   uploadSelected = requiresUploadedFiles(attachment),
+  requiredFilesMessage,
 }: AttachmentUploadValidationInput): ValidationField[] => {
   const statePath = attachmentFieldPath(submissionPath, attachmentId, 'files');
 
@@ -59,7 +61,14 @@ const toAttachmentFilesValidationFields = ({
         ...toValidationFields(
           statePath,
           attachment?.files ?? [],
-          toFieldValidation({ statePath, label, validation: attachmentFilesRules }),
+          toFieldValidation({
+            statePath,
+            label,
+            validation: {
+              ...attachmentFilesRules,
+              ...(requiredFilesMessage ? { requiredFilesMessage } : {}),
+            },
+          }),
         ),
         ...(attachment?.type === 'other' && !attachment.files?.length
           ? toValidationFields(

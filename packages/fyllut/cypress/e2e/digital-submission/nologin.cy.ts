@@ -255,7 +255,7 @@ describe('Digital submission without user login', () => {
       cy.wait('@uploadId');
       cy.findByText(TEXTS.statiske.nologin.temporarilyUnavailable).shouldBeVisible();
       cy.clickNextStep();
-      cy.findByText(TEXTS.statiske.uploadId.missingUploadError).shouldBeVisible();
+      cy.findByRole('link', { name: TEXTS.statiske.uploadId.missingUploadError }).shouldBeVisible();
     });
 
     it('shows service unavailable error when submission fails due to service unavailability', () => {
@@ -452,8 +452,9 @@ describe('Digital submission without user login', () => {
         cy.clickNextStep();
         cy.get('[data-cy=error-summary]').should('exist');
         cy.get('[data-cy=error-summary]').within(() => {
-          cy.findAllByRole('link').should('have.length', 1);
+          cy.findAllByRole('link').should('have.length', 2);
           cy.findByRole('link', { name: 'Du må laste opp fil: Annen dokumentasjon' }).should('exist');
+          cy.findByRole('link', { name: 'Du må fylle ut: Gi vedlegget et beskrivende navn' }).should('exist');
         });
         cy.findByRole('link', { name: 'Oppsummering' }).click();
         cy.findByRole('heading', { level: 3, name: 'Vedlegg' })

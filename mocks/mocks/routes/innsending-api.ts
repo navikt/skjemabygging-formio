@@ -25,6 +25,7 @@ import mellomlagringValidExtraValues from '../data/innsending-api/mellomlagring/
 import mellomlagringNestedValuesForeignBusiness from '../data/innsending-api/mellomlagring/mellomlagring-nested-values-foreign-business.json';
 import mellomlagringNestedValuesNorwegianBusiness from '../data/innsending-api/mellomlagring/mellomlagring-nested-values-norwegian-business.json';
 import nav083591soknadComplete from '../data/innsending-api/mellomlagring/nav083591/complete.json';
+import nav083501IncompleteDraft from '../data/innsending-api/mellomlagring/nav083591/incomplete';
 import responseWithInnsendingsId from '../data/innsending-api/mellomlagring/responseWithInnsendingsId.json';
 import stdigital from '../data/innsending-api/mellomlagring/stdigital.json';
 import mellomlagringMonthPicker from '../data/innsending-api/month-picker/mellomlagring-month-picker.json';
@@ -375,6 +376,14 @@ export default [
         options: {
           status: 200,
           body: convertToInnsendingApiResponse(nav083591soknadComplete),
+        },
+      },
+      {
+        id: 'nav083501-incomplete-v1',
+        type: 'json',
+        options: {
+          status: 200,
+          body: convertToInnsendingApiResponse(nav083501IncompleteDraft),
         },
       },
       {

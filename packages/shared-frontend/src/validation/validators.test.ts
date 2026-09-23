@@ -263,6 +263,15 @@ describe('validateValue', () => {
     expect(validateValue([{ id: '1' }], 'Dokumentasjon', { requiredFiles: true })).toBeUndefined();
   });
 
+  it('uses contextual wording without changing required-file validation', () => {
+    const rules = { requiredFiles: true, requiredFilesMessage: TEXTS.statiske.uploadId.missingUploadError };
+    expect(validateValue([], 'ID', rules)).toEqual({
+      textKey: TEXTS.statiske.uploadId.missingUploadError,
+      params: { field: 'ID' },
+    });
+    expect(validateValue([{ fileId: 'id-file' }], 'ID', rules)).toBeUndefined();
+  });
+
   describe('a value the field must differ from', () => {
     const message = 'Underenhet kan ikke være det samme som organisasjonsnummer.';
 

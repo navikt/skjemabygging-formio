@@ -74,6 +74,7 @@ interface ValidationRules {
   notEqual?: NotEqualRule;
   /** At least one uploaded file is required (attachment upload controls). */
   requiredFiles?: boolean;
+  requiredFilesMessage?: string;
 }
 
 interface RuleViolation {
@@ -144,7 +145,7 @@ const validateValue = (
     }
   }
   if (rules.requiredFiles && (!Array.isArray(value) || value.length === 0)) {
-    return { textKey: TEXTS.validering.fileMissing, params: { field } };
+    return { textKey: rules.requiredFilesMessage ?? TEXTS.validering.fileMissing, params: { field } };
   }
   if (rules.required && (value === false || validatorUtils.isEmpty(value))) {
     return { textKey: TEXTS.validering.required, params: { field } };

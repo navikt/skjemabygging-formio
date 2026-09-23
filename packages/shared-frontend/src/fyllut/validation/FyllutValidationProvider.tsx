@@ -69,7 +69,13 @@ const FyllutValidationProvider = ({ children, initialPagesWithErrors }: Props) =
       let fields: ValidationField[];
       if (pageKey === 'personal-id') {
         const attachment = submission?.attachments?.find((item) => item.attachmentId === 'personal-id');
-        const input = { attachmentId: 'personal-id', label: TEXTS.statiske.uploadId.label, required: true, attachment };
+        const input = {
+          attachmentId: 'personal-id',
+          label: TEXTS.statiske.uploadId.label,
+          required: true,
+          attachment,
+          requiredFilesMessage: TEXTS.statiske.uploadId.missingUploadError,
+        };
         fields = [...toAttachmentValueValidationFields(input), ...toAttachmentFilesValidationFields(input)];
       } else {
         const panels: Panel[] = getActivePanels(form, submission, { submissionMethod });

@@ -720,11 +720,7 @@ describe('Mellomlagring v2', () => {
 
         it('blocks submission and focuses the missing required answer in an incomplete draft', () => {
           failOnSubmitApplicationAttempt();
-          cy.intercept('GET', `/fyllut/api/send-inn/soknad/${completeSubmissionId}`, (req) => {
-            req.continue((res) => {
-              res.body.hoveddokumentVariant.document.data.data.fornavnSoker = '';
-            });
-          }).as('getMellomlagring');
+          cy.mocksUseRouteVariant('get-soknad:nav083501-incomplete-v1');
           visitSummary();
 
           expectSummaryPage();
