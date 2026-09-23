@@ -1,5 +1,4 @@
 import {
-  appMetrics,
   coverPageService,
   formService,
   mergeFileService,
@@ -21,11 +20,6 @@ vi.mock('@navikt/skjemadigitalisering-shared-backend', () => ({
 }));
 
 vi.mock('../../../services', () => ({
-  appMetrics: {
-    paperSubmissionsCounter: {
-      inc: vi.fn(),
-    },
-  },
   coverPageService: {
     downloadCoverPage: vi.fn(),
   },
@@ -275,9 +269,6 @@ describe('[endpoint] staticPdf', () => {
         }),
       }),
     );
-    expect(appMetrics.paperSubmissionsCounter.inc).toHaveBeenCalledWith({
-      source: 'ettersending',
-    });
     expect(next).not.toHaveBeenCalled();
   });
 
@@ -341,9 +332,6 @@ describe('[endpoint] staticPdf', () => {
 
     expect(mergeFileService.mergeFiles).not.toHaveBeenCalled();
     expect(res.json).toHaveBeenCalledWith({ pdfBase64: 'cover-page-pdf' });
-    expect(appMetrics.paperSubmissionsCounter.inc).toHaveBeenCalledWith({
-      source: 'ettersending',
-    });
     expect(next).not.toHaveBeenCalled();
   });
 
