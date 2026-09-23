@@ -19,24 +19,32 @@ the current branch.
 
 1. Read [analysis-workflow.md](references/analysis-workflow.md).
 2. Fetch the supplied pull request or issue, its linked issues or specification,
-   and the relevant branch diff.
+   and the committed pull request diff. Do not use an uncommitted or local-only
+   diff as the source for a plan.
 3. Invoke `frontend-development`, `backend-development`, or both before detailed
    analysis when their areas are affected. Follow any specialist routing those
    skills require.
-4. Identify observable behavior, regression risk, integrations, environments,
+4. Establish intended behavior independently from the implementation. Build the
+   behavior matrix required by
+   [analysis-workflow.md](references/analysis-workflow.md). Never treat the code
+   diff as proof of intent.
+5. Resolve contradictions and undocumented decisions before writing
+   verification cases. When no issue or approved specification exists, ask the
+   user to confirm the inferred intent.
+6. Identify observable behavior, regression risk, integrations, environments,
    failure paths, and evidence that proves each expected result.
-5. Record the exact head commit under test and add a preflight check against the
+7. Record the exact head commit under test and add a preflight check against the
    target environment's config endpoint. Do not add deployment steps; deployment
    is the developer's responsibility.
-6. Read [form-selection.md](references/form-selection.md). Reuse a production
+8. Read [form-selection.md](references/form-selection.md). Reuse a production
    form when it covers the behavior. Otherwise create and validate a minimal
    form definition.
-7. Write test cases using [test-plan-model.md](references/test-plan-model.md).
-8. Decide whether the change needs collaborative artifacts. Base this on risk,
-   case count, affected systems and environments, and expected number of
-   testers. Explain the decision.
-9. For a small change, return a concise plan in the CLI.
-10. For a significant change, or when requested, generate the canonical plan
+9. Write test cases using [test-plan-model.md](references/test-plan-model.md).
+10. Decide whether the change needs collaborative artifacts. Base this on risk,
+    case count, affected systems and environments, and expected number of
+    testers. Explain the decision.
+11. For a small change, return a concise plan in the CLI.
+12. For a significant change, or when requested, generate the canonical plan
     JSON and run:
 
     ```bash
@@ -45,12 +53,12 @@ the current branch.
       --out <artifact-directory>
     ```
 
-11. Read [collaborative-output.md](references/collaborative-output.md). Review
+13. Read [collaborative-output.md](references/collaborative-output.md). Review
     every generated artifact for internal or sensitive content. Ask separately
     whether each artifact should be redacted, omitted, or published.
-12. Ask before importing each generated form. Follow
+14. Ask before importing each generated form. Follow
     [forms-api-import.md](references/forms-api-import.md).
-13. Ask before publishing the HTML artifact. Publication must use
+15. Ask before publishing the HTML artifact. Publication must use
     `publish-pages.mjs`; never switch the caller's current worktree to
     `gh-pages`.
 
@@ -59,12 +67,22 @@ the current branch.
 Every test case must include:
 
 - stable case ID and group
+- verification or exploratory mode
+- links to the behaviors it covers
 - purpose and priority
 - prerequisites and safe synthetic test data
 - numbered actions with an expected result for each meaningful step
 - evidence to retain
 - cleanup when the case changes shared state
 - the production or generated form used
+
+Expected results in verification cases must come from confirmed intent, an
+established contract, or unchanged baseline behavior. Never copy an outcome
+from the implementation and present it as correct.
+
+Use an exploratory case when behavior remains unresolved but observing it will
+help the decision. State what to record without claiming one result is correct.
+Do not use exploratory cases to avoid asking a blocking intent question.
 
 Start every plan with a prominent preflight check that compares the deployed
 revision with the exact commit under test. Stop testing on a mismatch.

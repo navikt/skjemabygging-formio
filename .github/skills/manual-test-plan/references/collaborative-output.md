@@ -5,8 +5,9 @@ Slack text and then let it drift from the plan.
 
 ## HTML and GitHub Pages
 
-The standalone page contains setup, forms, risks, test data, expandable cases,
-and stable case anchors. It is read-only and public when published.
+The standalone page contains the behavior analysis, setup, forms, risks, test
+data, expandable cases, and stable case anchors. It is read-only and public when
+published.
 
 Use a path such as:
 
@@ -35,6 +36,8 @@ instructions. Do not change repository Pages settings automatically.
 - Case ID
 - Group
 - Title
+- Mode
+- Behaviors
 - Priority
 - Status
 - Testers

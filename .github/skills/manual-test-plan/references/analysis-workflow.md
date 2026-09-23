@@ -2,20 +2,65 @@
 
 ## Inputs
 
-Require one pull request or issue URL or number. If the caller supplies an issue,
-find its implementation pull request or ask for it when no implementation can
-be identified. If the caller supplies a pull request, read:
+Require one pull request or issue URL or number. Do not accept a local branch,
+working-tree diff, patch file, or commit range as the only input.
+
+If the caller supplies an issue, find and inspect its implementation pull
+request. Ask for the pull request when no implementation can be identified. Do
+not produce an implementation test plan from the issue alone.
+
+If the caller supplies a pull request, read:
 
 - title, body, labels, review discussion, base and head refs
 - linked issues and specifications
 - committed diff against the PR base
-- relevant uncommitted changes in the current worktree
+- changed and existing automated tests
+- commit history when it explains why the current diff changed
 
-Do not assume the PR description is complete. Use it to understand intent and
-the diff to establish actual behavior.
+Do not assume any single source is complete or current. The issue, PR body,
+review comments, commit messages, tests, and implementation can disagree.
 
 Resolve the exact head commit to test. Plans are not valid with only a branch
 name because the branch can move after the plan is written.
+
+## Establish intent before expected results
+
+This is the core rule: derive expected results from confirmed intent, not from
+the implementation diff.
+
+Use sources for distinct purposes:
+
+- Issues, approved specifications, acceptance criteria, and explicit product
+  decisions are evidence of intent.
+- The base revision establishes previous behavior.
+- The pull request head establishes implemented behavior.
+- Existing tests and external contracts establish behavior the system already
+  promises, but a new or changed test does not prove new product intent.
+- Review comments and commit messages can explain a decision. They are
+  historical evidence, not authority by themselves.
+
+Check the timestamp and context of review comments and commits. Determine
+whether later commits, replies, resolved or outdated threads, edited
+descriptions, or newer decisions supersede them. Never resurrect an abandoned
+suggestion merely because it remains in the history.
+
+When sources conflict, do not silently choose one. Record the conflict and ask
+the user or named decision owner which behavior is intended. When a pull request
+has no linked issue or approved specification, summarize the inferred intent
+and require user confirmation before drafting verification cases.
+
+## Build a behavior matrix
+
+Create this matrix before selecting test cases:
+
+| Behavior            | Before        | Intended after                 | Implemented after | Evidence          | Confidence           | Status                                      |
+| ------------------- | ------------- | ------------------------------ | ----------------- | ----------------- | -------------------- | ------------------------------------------- |
+| Observable behavior | Base behavior | Confirmed intent or unresolved | Head behavior     | Source references | High, medium, or low | Aligned, suspected defect, or open question |
+
+Use `suspected defect` when implemented behavior conflicts with confirmed
+intent. A verification case may assert that confirmed intent and expose the
+defect. Use `open question` when intent is missing or contradictory; do not turn
+it into a verification case with an invented expected result.
 
 ## Trace behavior
 
@@ -35,6 +80,12 @@ For each changed behavior:
 Use `fyllut-deploy-topology` when deployment or version identity matters. Use
 `form-definition-loading` when the change depends on form metadata or component
 fields.
+
+Trace changed shared functions, types, configuration, and integration contracts
+to their callers and consumers. Add regression candidates for unchanged flows
+that use the affected path. Prioritize cases where the same code handles
+different form types, submission modes, identities, environments, or failure
+conditions.
 
 ## Environment preflight
 
@@ -66,6 +117,11 @@ Prefer a compact risk-based set:
 Do not multiply cases only to cover equivalent input values. Parameterize a case
 or use one scenario-driven form when the execution and expected result are the
 same.
+
+Verification cases assert confirmed intent, an established contract, or
+unchanged baseline behavior. Exploratory cases may record unresolved behavior
+when observation is useful, but they must say that no outcome is yet accepted
+as correct and link to the open question.
 
 ## Significance
 

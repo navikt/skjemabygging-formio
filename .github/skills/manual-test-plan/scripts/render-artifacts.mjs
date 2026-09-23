@@ -88,9 +88,23 @@ asNonEmptyString(plan.summary, 'summary');
 if (!plan.source || typeof plan.source !== 'object') {
   fail('source is required');
 }
-asNonEmptyString(plan.source.repository, 'source.repository');
-asNonEmptyString(plan.source.type, 'source.type');
-asHttpUrl(plan.source.url, 'source.url');
+const sourceRepository = asNonEmptyString(plan.source.repository, 'source.repository');
+if (!/^[^/\s]+\/[^/\s]+$/.test(sourceRepository)) {
+  fail('source.repository must use owner/repository format');
+}
+if (plan.source.type !== 'pull-request') {
+  fail('source.type must be pull-request');
+}
+if (!Number.isInteger(plan.source.number) || plan.source.number <= 0) {
+  fail('source.number must be a positive pull request number');
+}
+const sourceUrl = new URL(asHttpUrl(plan.source.url, 'source.url'));
+if (
+  sourceUrl.hostname !== 'github.com' ||
+  sourceUrl.pathname.replace(/\/$/, '') !== `/${sourceRepository}/pull/${plan.source.number}`
+) {
+  fail('source.url must match source.repository and source.number');
+}
 asNonEmptyString(plan.source.ref, 'source.ref');
 const expectedCommit = asNonEmptyString(plan.source.commitSha, 'source.commitSha');
 if (!/^[0-9a-f]{40}$/i.test(expectedCommit)) {
@@ -113,6 +127,41 @@ if (!Array.isArray(plan.setup) || !Array.isArray(plan.forms) || !Array.isArray(p
 }
 
 asStringArray(plan.risks ?? [], 'risks');
+
+if (!Array.isArray(plan.behaviorAnalysis) || plan.behaviorAnalysis.length === 0) {
+  fail('behaviorAnalysis must contain at least one behavior');
+}
+const behaviors = new Map();
+for (const [index, behavior] of plan.behaviorAnalysis.entries()) {
+  const prefix = `behaviorAnalysis[${index}]`;
+  const id = asNonEmptyString(behavior.id, `${prefix}.id`);
+  if (!/^B-\d+$/.test(id)) {
+    fail(`${prefix}.id must match B-<number>`);
+  }
+  if (behaviors.has(id)) {
+    fail(`duplicate behavior id: ${id}`);
+  }
+  for (const field of ['behavior', 'before', 'intended', 'implemented']) {
+    asNonEmptyString(behavior[field], `${prefix}.${field}`);
+  }
+  const evidence = asStringArray(behavior.evidence, `${prefix}.evidence`);
+  if (evidence.length === 0) {
+    fail(`${prefix}.evidence must contain at least one source`);
+  }
+  if (!['high', 'medium', 'low'].includes(behavior.confidence)) {
+    fail(`${prefix}.confidence must be high, medium, or low`);
+  }
+  if (!['aligned', 'suspected-defect', 'open-question'].includes(behavior.status)) {
+    fail(`${prefix}.status must be aligned, suspected-defect, or open-question`);
+  }
+  if (behavior.status === 'open-question' && behavior.confidence === 'high') {
+    fail(`${prefix} open questions cannot have high confidence`);
+  }
+  if (behavior.status !== 'open-question' && behavior.confidence !== 'high') {
+    fail(`${prefix} aligned and suspected-defect behaviors require high confidence`);
+  }
+  behaviors.set(id, behavior);
+}
 
 const formIds = new Set();
 for (const [index, form] of plan.forms.entries()) {
@@ -143,6 +192,29 @@ for (const [index, testCase] of plan.testCases.entries()) {
   asNonEmptyString(testCase.group, `${prefix}.group`);
   asNonEmptyString(testCase.title, `${prefix}.title`);
   asNonEmptyString(testCase.purpose, `${prefix}.purpose`);
+  if (!['verification', 'exploratory'].includes(testCase.mode)) {
+    fail(`${prefix}.mode must be verification or exploratory`);
+  }
+  if (!Array.isArray(testCase.behaviorIds) || testCase.behaviorIds.length === 0) {
+    fail(`${prefix}.behaviorIds must contain at least one behavior id`);
+  }
+  const linkedBehaviors = testCase.behaviorIds.map((behaviorId) => {
+    asNonEmptyString(behaviorId, `${prefix}.behaviorIds`);
+    const behavior = behaviors.get(behaviorId);
+    if (!behavior) {
+      fail(`${prefix}.behaviorIds references unknown behavior ${behaviorId}`);
+    }
+    return behavior;
+  });
+  if (
+    testCase.mode === 'verification' &&
+    linkedBehaviors.some((behavior) => behavior.status === 'open-question' || behavior.confidence !== 'high')
+  ) {
+    fail(`${prefix} verification cases require high-confidence behaviors without open questions`);
+  }
+  if (testCase.mode === 'exploratory' && linkedBehaviors.some((behavior) => behavior.status !== 'open-question')) {
+    fail(`${prefix} exploratory cases may reference only open-question behaviors`);
+  }
   if (!['P0', 'P1', 'P2', 'P3'].includes(testCase.priority)) {
     fail(`${prefix}.priority must be P0, P1, P2, or P3`);
   }
@@ -210,6 +282,32 @@ const formsHtml = plan.forms.length
     </table>`
   : '<p>No special form setup.</p>';
 
+const behaviorStatusLabels = {
+  aligned: 'Aligned',
+  'suspected-defect': 'Suspected defect',
+  'open-question': 'Open question',
+};
+const behaviorsHtml = `<ol class="behavior-list">
+  ${plan.behaviorAnalysis
+    .map(
+      (behavior) =>
+        `<li>
+          <article class="behavior-card" id="${behavior.id.toLowerCase()}">
+            <h3><code>${escapeHtml(behavior.id)}</code>: ${escapeHtml(behavior.behavior)}</h3>
+            <dl class="behavior-fields">
+              <div class="behavior-field"><dt>Before</dt><dd>${escapeHtml(behavior.before)}</dd></div>
+              <div class="behavior-field"><dt>Intended after</dt><dd>${escapeHtml(behavior.intended)}</dd></div>
+              <div class="behavior-field"><dt>Implemented after</dt><dd>${escapeHtml(behavior.implemented)}</dd></div>
+              <div class="behavior-field behavior-field--wide"><dt>Evidence</dt><dd>${list(behavior.evidence)}</dd></div>
+              <div class="behavior-field"><dt>Status</dt><dd>${escapeHtml(behaviorStatusLabels[behavior.status])}</dd></div>
+              <div class="behavior-field"><dt>Confidence</dt><dd>${escapeHtml(behavior.confidence)}</dd></div>
+            </dl>
+          </article>
+        </li>`,
+    )
+    .join('')}
+</ol>`;
+
 const casesHtml = plan.testCases
   .map((testCase) => {
     const form = plan.forms.find((candidate) => candidate.id === testCase.formId);
@@ -219,8 +317,12 @@ const casesHtml = plan.testCases
         <div class="badges">
           <span class="badge">${escapeHtml(testCase.priority)}</span>
           <span class="badge">${escapeHtml(testCase.group)}</span>
+          <span class="badge">${escapeHtml(testCase.mode)}</span>
         </div>
         <p>${escapeHtml(testCase.purpose)}</p>
+        <p><strong>Behaviors:</strong> ${testCase.behaviorIds
+          .map((id) => `<a href="#${id.toLowerCase()}"><code>${escapeHtml(id)}</code></a>`)
+          .join(', ')}</p>
         ${form ? `<p><strong>Form:</strong> ${escapeHtml(form.title)} (<code>${escapeHtml(form.path)}</code>)</p>` : ''}
         <h3>Prerequisites</h3>
         ${list(testCase.prerequisites)}
@@ -270,6 +372,9 @@ const body = `<h1>${escapeHtml(plan.title)}</h1>
   </section>
   <h2>Risks</h2>
   ${list(plan.risks ?? [])}
+  <h2>Behavior analysis</h2>
+  <p>Expected results come from confirmed intent, established contracts, or unchanged baseline behavior.</p>
+  ${behaviorsHtml}
   <h2>Setup</h2>
   ${setupHtml || '<p>No additional setup.</p>'}
   <h2>Forms</h2>
@@ -284,11 +389,25 @@ const html = htmlTemplate
   .replace('{{BODY}}', body)
   .replace('{{GENERATED_AT}}', escapeHtml(generatedAt));
 
-const csvHeader = ['Case ID', 'Group', 'Title', 'Priority', 'Status', 'Testers', 'Result', 'Instruction URL', 'Notes'];
+const csvHeader = [
+  'Case ID',
+  'Group',
+  'Title',
+  'Mode',
+  'Behaviors',
+  'Priority',
+  'Status',
+  'Testers',
+  'Result',
+  'Instruction URL',
+  'Notes',
+];
 const csvRows = plan.testCases.map((testCase) => [
   testCase.id,
   testCase.group,
   testCase.title,
+  testCase.mode,
+  testCase.behaviorIds.join(', '),
   testCase.priority,
   'Not started',
   '',
@@ -302,6 +421,8 @@ const slackCases = plan.testCases
   .map(
     (testCase) => `- [ ] *${testCase.id}: ${testCase.title}* (${testCase.priority})
   Group: ${testCase.group}
+  Mode: ${testCase.mode}
+  Behaviors: ${testCase.behaviorIds.join(', ')}
   Testers:
   Status: Not started
   Instructions: ${caseUrl(testCase.id)}

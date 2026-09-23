@@ -93,6 +93,44 @@
                 background: var(--accent-soft);
                 font-size: 0.875rem;
             }
+            .behavior-list {
+                display: grid;
+                gap: 1rem;
+                margin: 1rem 0;
+                padding: 0;
+                list-style: none;
+            }
+            .behavior-card {
+                padding: 1rem;
+                border: 1px solid var(--border);
+                border-radius: 0.5rem;
+                background: var(--surface);
+            }
+            .behavior-card h3 {
+                margin-top: 0;
+            }
+            .behavior-fields {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+                gap: 1rem;
+                margin: 0;
+            }
+            .behavior-field {
+                min-width: 0;
+            }
+            .behavior-field--wide {
+                grid-column: 1 / -1;
+            }
+            .behavior-field dt {
+                font-weight: 700;
+            }
+            .behavior-field dd {
+                margin: 0.25rem 0 0;
+                overflow-wrap: anywhere;
+            }
+            .behavior-field ul {
+                margin-bottom: 0;
+            }
             details {
                 margin: 1rem 0;
                 overflow: hidden;
