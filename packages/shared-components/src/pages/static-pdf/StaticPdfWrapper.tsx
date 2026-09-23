@@ -1,29 +1,27 @@
 import { submissionTypesUtils } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
 import { useAppConfig } from '../../context/config/configContext';
 import { useForm } from '../../context/form/FormContext';
 import InputValidationProvider from '../../context/validator/InputValidationContext';
-import { StaticPdfProvider } from './StaticPdfContext';
+import { StaticPdfProvider, useStaticPdf } from './StaticPdfContext';
 import StaticPdfDownloadPage from './StaticPdfDownloadPage';
 import StaticPdfInputPage from './StaticPdfInputPage';
 import StaticPdfNavigation from './components/StaticPdfNavigation';
 import FormErrorSummary from './components/shared/form/FormErrorSummary';
-import { getFilteredStaticPdfAttachments } from './staticPdfAttachmentFilter';
 
 type StaticPdfPage = 'input' | 'download';
 
-const StaticPdfPage = () => {
-  const [page, setPage] = useState<StaticPdfPage>('input');
+interface StaticPdfPageContentProps {
+  page: StaticPdfPage;
+  setPage: (page: StaticPdfPage) => void;
+}
+
+const StaticPdfPageContent = ({ page, setPage }: StaticPdfPageContentProps) => {
   const { form } = useForm();
   const { logger } = useAppConfig();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const isEttersending = searchParams.get('type') === 'ettersending';
-  const filteredAttachments = useMemo(
-    () => getFilteredStaticPdfAttachments(form.components, searchParams.get('filter')),
-    [form.components, searchParams],
-  );
+  const { filteredAttachments, isEttersending } = useStaticPdf();
 
   useEffect(() => {
     if (form && !submissionTypesUtils.isStaticPdf(form.properties?.submissionTypes)) {
@@ -38,11 +36,24 @@ const StaticPdfPage = () => {
   }, [filteredAttachments.length, form, isEttersending, navigate, logger]);
 
   return (
+    <>
+      <FormErrorSummary />
+      {page === 'input' ? <StaticPdfInputPage /> : page === 'download' ? <StaticPdfDownloadPage /> : null}
+      <StaticPdfNavigation page={page} setPage={setPage} />
+    </>
+  );
+};
+
+const StaticPdfPage = () => {
+  const [page, setPage] = useState<StaticPdfPage>('input');
+  const { form } = useForm();
+  const [searchParams] = useSearchParams();
+  const isEttersending = searchParams.get('type') === 'ettersending';
+
+  return (
     <InputValidationProvider>
       <StaticPdfProvider formPath={form.path} isEttersending={isEttersending}>
-        <FormErrorSummary />
-        {page === 'input' ? <StaticPdfInputPage /> : page === 'download' ? <StaticPdfDownloadPage /> : null}
-        <StaticPdfNavigation page={page} setPage={setPage} />
+        <StaticPdfPageContent page={page} setPage={setPage} />
       </StaticPdfProvider>
     </InputValidationProvider>
   );

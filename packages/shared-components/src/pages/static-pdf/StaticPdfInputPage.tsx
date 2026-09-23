@@ -1,7 +1,6 @@
 import { Heading } from '@navikt/ds-react';
 import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useEffect, useMemo } from 'react';
-import { useSearchParams } from 'react-router';
+import { useEffect } from 'react';
 import { useForm } from '../../context/form/FormContext';
 import { useLanguages } from '../../context/languages';
 import FormCountrySelect from './components/shared/address/FormCountrySelect';
@@ -15,20 +14,13 @@ import FormNationalIdentityNumber from './components/shared/identity/FormNationa
 import FormSurname from './components/shared/identity/FormSurname';
 import SelectAttachmentList from './components/shared/SelectAttachmentList';
 import StaticPdfIdentityType from './components/shared/StaticPdfIdentityType';
-import { getFilteredStaticPdfAttachments } from './staticPdfAttachmentFilter';
 import { useStaticPdf } from './StaticPdfContext';
 
 const StaticPdfInputPage = () => {
   const { form, setSubmission, submission } = useForm();
   const { enhetMaVelgesVedPapirInnsending } = form.properties;
   const { currentLanguage, translate } = useLanguages();
-  const { isEttersending } = useStaticPdf();
-  const [searchParams] = useSearchParams();
-  const filterValue = searchParams.get('filter');
-  const filteredAttachments = useMemo(
-    () => getFilteredStaticPdfAttachments(form.components, filterValue),
-    [filterValue, form.components],
-  );
+  const { filteredAttachments, isEttersending } = useStaticPdf();
 
   useEffect(() => {
     if (!submission) {
