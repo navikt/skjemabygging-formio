@@ -13,7 +13,7 @@ const translate = (
 
   const language = localizationUtils.getLanguageCodeAsIso639_1(currentLanguage);
   const translation = translations[textOrKey];
-  const translatedText = translation?.[language] ?? translation?.nb ?? textOrKey;
+  const translatedText = translation?.[language] || translation?.nb || textOrKey;
 
   if (!params) {
     return translatedText;

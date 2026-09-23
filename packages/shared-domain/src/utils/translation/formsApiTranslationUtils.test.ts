@@ -31,4 +31,30 @@ describe('FormsApiTranslation', () => {
       );
     });
   });
+
+  describe('createTranslate', () => {
+    it.each(['nn-NO', 'en'])('falls back to bokmaal when the %s translation is empty', (language) => {
+      const translate = formsApiTranslationUtils.createTranslate({ answer: { nb: 'Ja', nn: '', en: '' } }, language);
+
+      expect(translate('answer')).toBe('Ja');
+    });
+
+    it.each(['nb', 'en'])(
+      'falls back to the original key when the %s and bokmaal translations are empty',
+      (language) => {
+        const translate = formsApiTranslationUtils.createTranslate({ documentTitle: { nb: '', en: '' } }, language);
+
+        expect(translate('documentTitle')).toBe('documentTitle');
+      },
+    );
+
+    it('interpolates fallback text and falls back for translated replacement values', () => {
+      const translate = formsApiTranslationUtils.createTranslate(
+        { summary: { nb: 'Answer: {{answer}}', en: '' }, answer: { nb: 'Ja', en: '' } },
+        'en',
+      );
+
+      expect(translate('summary', { answer: 'answer' })).toBe('Answer: Ja');
+    });
+  });
 });
