@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="robots" content="noindex, nofollow" />
+        <title>{{TITLE}}</title>
+        <style>
+            :root {
+                color-scheme: light dark;
+                --background: #f7f7f7;
+                --surface: #ffffff;
+                --text: #23262a;
+                --muted: #5f6670;
+                --border: #d7d9db;
+                --accent: #0056b4;
+                --accent-soft: #e6f0ff;
+                --danger: #a32a17;
+                --preflight: #ff9100;
+            }
+            @media (prefers-color-scheme: dark) {
+                :root {
+                    --background: #17191c;
+                    --surface: #24272b;
+                    --text: #f3f3f3;
+                    --muted: #c5c8cc;
+                    --border: #4b5057;
+                    --accent: #82b5ff;
+                    --accent-soft: #253b58;
+                    --danger: #ff9b8a;
+                    --preflight: #ffb74d;
+                }
+            }
+            * {
+                box-sizing: border-box;
+            }
+            body {
+                margin: 0;
+                background: var(--background);
+                color: var(--text);
+                font:
+                    1rem/1.55 system-ui,
+                    sans-serif;
+            }
+            main {
+                max-width: 72rem;
+                margin: 0 auto;
+                padding: 2rem 1rem 5rem;
+            }
+            h1,
+            h2,
+            h3 {
+                line-height: 1.2;
+            }
+            h1 {
+                margin-bottom: 0.4rem;
+            }
+            a {
+                color: var(--accent);
+            }
+            .meta,
+            .card,
+            details {
+                border: 1px solid var(--border);
+                border-radius: 0.5rem;
+                background: var(--surface);
+            }
+            .meta,
+            .card {
+                padding: 1rem;
+                margin: 1rem 0;
+            }
+            .muted {
+                color: var(--muted);
+            }
+            .warning {
+                border-left: 0.35rem solid var(--danger);
+            }
+            .preflight {
+                border: 0.2rem solid var(--preflight);
+            }
+            .preflight h2 {
+                margin-top: 0;
+            }
+            .badges {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.4rem;
+            }
+            .badge {
+                padding: 0.15rem 0.5rem;
+                border-radius: 1rem;
+                background: var(--accent-soft);
+                font-size: 0.875rem;
+            }
+            details {
+                margin: 1rem 0;
+                overflow: hidden;
+            }
+            summary {
+                cursor: pointer;
+                padding: 1rem;
+                font-weight: 700;
+            }
+            details > div {
+                border-top: 1px solid var(--border);
+                padding: 0 1rem 1rem;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            th,
+            td {
+                border: 1px solid var(--border);
+                padding: 0.6rem;
+                text-align: left;
+                vertical-align: top;
+            }
+            code {
+                overflow-wrap: anywhere;
+            }
+            .step {
+                margin-bottom: 1rem;
+            }
+            .expected {
+                margin-top: 0.3rem;
+                padding-left: 0.8rem;
+                border-left: 0.25rem solid var(--accent);
+            }
+            @media print {
+                details {
+                    break-inside: avoid;
+                }
+                details > div {
+                    display: block;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <main>
+            {{BODY}}
+            <p class="muted">Generated {{GENERATED_AT}} from the canonical manual test plan.</p>
+        </main>
+    </body>
+</html>
