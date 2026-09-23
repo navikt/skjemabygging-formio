@@ -1,34 +1,60 @@
 <!doctype html>
-<html lang="en">
+<html lang="no">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="robots" content="noindex, nofollow" />
         <title>{{TITLE}}</title>
+        <script>
+            (() => {
+                try {
+                    const theme = localStorage.getItem('manual-test-plan-theme');
+                    if (theme === 'light' || theme === 'dark') {
+                        document.documentElement.dataset.theme = theme;
+                    }
+                } catch {}
+            })();
+        </script>
         <style>
             :root {
-                color-scheme: light dark;
-                --background: #f7f7f7;
-                --surface: #ffffff;
-                --text: #23262a;
-                --muted: #5f6670;
-                --border: #d7d9db;
-                --accent: #0056b4;
-                --accent-soft: #e6f0ff;
-                --danger: #a32a17;
-                --preflight: #ff9100;
+                color-scheme: light;
+                --page-bg-default: #ffffff;
+                --page-bg-raised: #ffffff;
+                --page-bg-soft: #f5f6f7;
+                --page-text: #202733;
+                --page-text-subtle: #49515e;
+                --page-link: #002459;
+                --page-border: #6f7785;
+                --page-border-subtle: #cfd3d8;
+                --page-focus: #202733;
+                --page-warning-soft: #fff5e4;
+            }
+            :root[data-theme='dark'] {
+                color-scheme: dark;
+                --page-bg-default: #0e151f;
+                --page-bg-raised: #1c232f;
+                --page-bg-soft: #161d28;
+                --page-text: #dfe1e5;
+                --page-text-subtle: #a5acb6;
+                --page-link: #a9cbfa;
+                --page-border: #777f8d;
+                --page-border-subtle: #2e3641;
+                --page-focus: #dfe1e5;
+                --page-warning-soft: #371100;
             }
             @media (prefers-color-scheme: dark) {
-                :root {
-                    --background: #17191c;
-                    --surface: #24272b;
-                    --text: #f3f3f3;
-                    --muted: #c5c8cc;
-                    --border: #4b5057;
-                    --accent: #82b5ff;
-                    --accent-soft: #253b58;
-                    --danger: #ff9b8a;
-                    --preflight: #ffb74d;
+                :root:not([data-theme]) {
+                    color-scheme: dark;
+                    --page-bg-default: #0e151f;
+                    --page-bg-raised: #1c232f;
+                    --page-bg-soft: #161d28;
+                    --page-text: #dfe1e5;
+                    --page-text-subtle: #a5acb6;
+                    --page-link: #a9cbfa;
+                    --page-border: #777f8d;
+                    --page-border-subtle: #2e3641;
+                    --page-focus: #dfe1e5;
+                    --page-warning-soft: #371100;
                 }
             }
             * {
@@ -36,8 +62,8 @@
             }
             body {
                 margin: 0;
-                background: var(--background);
-                color: var(--text);
+                background: var(--page-bg-default);
+                color: var(--page-text);
                 font:
                     1rem/1.55 system-ui,
                     sans-serif;
@@ -46,6 +72,11 @@
                 max-width: 72rem;
                 margin: 0 auto;
                 padding: 2rem 1rem 5rem;
+            }
+            main > p,
+            main > section,
+            main > details {
+                max-width: 75ch;
             }
             h1,
             h2,
@@ -56,14 +87,14 @@
                 margin-bottom: 0.4rem;
             }
             a {
-                color: var(--accent);
+                color: var(--page-link);
             }
             .meta,
             .card,
             details {
-                border: 1px solid var(--border);
+                border: 1px solid var(--page-border-subtle);
                 border-radius: 0.5rem;
-                background: var(--surface);
+                background: var(--page-bg-raised);
             }
             .meta,
             .card {
@@ -71,13 +102,11 @@
                 margin: 1rem 0;
             }
             .muted {
-                color: var(--muted);
-            }
-            .warning {
-                border-left: 0.35rem solid var(--danger);
+                color: var(--page-text-subtle);
             }
             .preflight {
-                border: 0.2rem solid var(--preflight);
+                border: 0.15rem solid var(--page-border);
+                background: var(--page-warning-soft);
             }
             .preflight h2 {
                 margin-top: 0;
@@ -90,7 +119,7 @@
             .badge {
                 padding: 0.15rem 0.5rem;
                 border-radius: 1rem;
-                background: var(--accent-soft);
+                background: var(--page-bg-soft);
                 font-size: 0.875rem;
             }
             .behavior-list {
@@ -101,13 +130,10 @@
                 list-style: none;
             }
             .behavior-card {
-                padding: 1rem;
-                border: 1px solid var(--border);
-                border-radius: 0.5rem;
-                background: var(--surface);
+                margin: 0;
             }
-            .behavior-card h3 {
-                margin-top: 0;
+            .behavior-card > div {
+                padding-top: 0;
             }
             .behavior-fields {
                 display: grid;
@@ -141,16 +167,39 @@
                 font-weight: 700;
             }
             details > div {
-                border-top: 1px solid var(--border);
+                border-top: 1px solid var(--page-border-subtle);
                 padding: 0 1rem 1rem;
+            }
+            summary h2 {
+                display: inline;
+                font-size: 1.25rem;
+            }
+            .page-tools {
+                display: flex;
+                justify-content: flex-end;
+            }
+            button {
+                border: 1px solid var(--page-border);
+                border-radius: 0.25rem;
+                padding: 0.5rem 0.75rem;
+                background: var(--page-bg-raised);
+                color: var(--page-text);
+                font: inherit;
+                cursor: pointer;
+            }
+            button:hover {
+                background: var(--page-bg-soft);
             }
             table {
                 width: 100%;
                 border-collapse: collapse;
             }
+            .table-scroll {
+                overflow-x: auto;
+            }
             th,
             td {
-                border: 1px solid var(--border);
+                border: 1px solid var(--page-border-subtle);
                 padding: 0.6rem;
                 text-align: left;
                 vertical-align: top;
@@ -164,7 +213,12 @@
             .expected {
                 margin-top: 0.3rem;
                 padding-left: 0.8rem;
-                border-left: 0.25rem solid var(--accent);
+                border-left: 0.25rem solid var(--page-link);
+            }
+            [id]:focus,
+            .table-scroll:focus {
+                outline: 3px solid var(--page-focus);
+                outline-offset: 4px;
             }
             @media print {
                 details {
@@ -179,7 +233,68 @@
     <body>
         <main>
             {{BODY}}
-            <p class="muted">Generated {{GENERATED_AT}} from the canonical manual test plan.</p>
+            <p class="muted">Generert {{GENERATED_AT}} fra den manuelle testplanen.</p>
         </main>
+        <script>
+            (() => {
+                const root = document.documentElement;
+                const toggle = document.getElementById('theme-toggle');
+                const state = document.getElementById('theme-state');
+                const media = matchMedia('(prefers-color-scheme: dark)');
+
+                const currentTheme = () => root.dataset.theme || (media.matches ? 'dark' : 'light');
+                const updateToggle = () => {
+                    const isDark = currentTheme() === 'dark';
+                    toggle.setAttribute('aria-pressed', String(isDark));
+                    state.textContent = isDark ? 'på' : 'av';
+                };
+
+                toggle.addEventListener('click', () => {
+                    const theme = currentTheme() === 'dark' ? 'light' : 'dark';
+                    root.dataset.theme = theme;
+                    try {
+                        localStorage.setItem('manual-test-plan-theme', theme);
+                    } catch {}
+                    updateToggle();
+                });
+
+                media.addEventListener('change', () => {
+                    if (!root.dataset.theme) {
+                        updateToggle();
+                    }
+                });
+
+                const revealHashTarget = () => {
+                    if (!location.hash) return;
+
+                    let id;
+                    try {
+                        id = decodeURIComponent(location.hash.slice(1));
+                    } catch {
+                        return;
+                    }
+
+                    const target = document.getElementById(id);
+                    if (!target) return;
+
+                    for (
+                        let parent = target.closest('details');
+                        parent;
+                        parent = parent.parentElement?.closest('details')
+                    ) {
+                        parent.open = true;
+                    }
+
+                    requestAnimationFrame(() => {
+                        target.focus({ preventScroll: true });
+                        target.scrollIntoView({ block: 'start' });
+                    });
+                };
+
+                updateToggle();
+                revealHashTarget();
+                addEventListener('hashchange', revealHashTarget);
+            })();
+        </script>
     </body>
 </html>

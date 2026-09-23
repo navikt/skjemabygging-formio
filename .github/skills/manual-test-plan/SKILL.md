@@ -4,9 +4,8 @@ description: >-
     Analyze an issue and its implementation pull request, or a pull request when
     no issue exists, and create a manual test plan for skjemabygging-formio,
     including suitable production or generated forms, environment revision
-    verification, collaborative artifacts, Forms API import, and optional GitHub
-    Pages publication. Use only when the user explicitly invokes
-    /manual-test-plan.
+    verification, a GitHub issue, and optional GitHub Pages and Slack Canvas
+    artifacts. Use only when the user explicitly invokes /manual-test-plan.
 disable-model-invocation: true
 ---
 
@@ -39,16 +38,16 @@ current branch.
 7. Record the exact head commit under test and add a preflight check against the
    target environment's config endpoint. Do not add deployment steps; deployment
    is the developer's responsibility.
-8. Read [form-selection.md](references/form-selection.md). Reuse a production
-   form when it covers the behavior. Otherwise create and validate a minimal
-   form definition.
-9. Write test cases using [test-plan-model.md](references/test-plan-model.md).
-10. Decide whether the change needs collaborative artifacts. Base this on risk,
-    case count, affected systems and environments, and expected number of
-    testers. Explain the decision.
-11. For a small change, return a concise plan in the CLI.
-12. For a significant change, or when requested, generate the canonical plan
-    JSON and run:
+8. Use `ask_user` to ask: "Skal ikke-utviklere samarbeide om testingen?" Use
+   the choices "Ja" and "Nei". Do not infer the answer from case count or risk.
+9. Read [form-selection.md](references/form-selection.md). Check Forms API in
+   preprod before choosing forms. Reuse a suitable form when one exists.
+   Otherwise design and validate the smallest useful generated form set.
+   Prefer one clear selector-driven form for related cases. Tell the caller
+   which forms will be created or updated and wait for confirmation.
+10. Write the plan in Norwegian using terms from FyllUt, Bygger, the form, and
+    the issue. Follow [test-plan-model.md](references/test-plan-model.md).
+11. Generate the canonical plan JSON and run:
 
     ```bash
     node .github/skills/manual-test-plan/scripts/render-artifacts.mjs \
@@ -56,13 +55,16 @@ current branch.
       --out <artifact-directory>
     ```
 
-13. Read [collaborative-output.md](references/collaborative-output.md). Review
-    every generated artifact for internal or sensitive content. Ask separately
-    whether each artifact should be redacted, omitted, or published.
-14. Ask before importing each generated form. Follow
+12. Read [collaborative-output.md](references/collaborative-output.md). When
+    non-developers will collaborate, generate a GitHub Pages document and a
+    separate Slack Canvas file for the caller to paste into Slack. Otherwise
+    generate one GitHub issue document that combines instructions and tracking.
+13. Review every generated artifact for internal or sensitive content. Ask
+    separately whether each artifact should be redacted, omitted, or published.
+14. Ask before importing or updating each generated form. Follow
     [forms-api-import.md](references/forms-api-import.md).
-15. Ask before publishing the HTML artifact. Publication must use
-    `publish-pages.mjs`; never switch the caller's current worktree to
+15. Ask before publishing the HTML artifact or creating the GitHub issue. Use
+    the provided scripts. Never publish the Canvas file or form definitions to
     `gh-pages`.
 
 ## Output requirements
@@ -73,7 +75,7 @@ Every test case must include:
 - verification or exploratory mode
 - links to the behaviors it covers
 - purpose and priority
-- prerequisites and safe synthetic test data
+- prerequisites and any required test-user attributes
 - numbered actions with an expected result for each meaningful step
 - evidence to retain
 - cleanup when the case changes shared state
@@ -89,11 +91,16 @@ Do not use exploratory cases to avoid asking a blocking intent question.
 
 Start every plan with a prominent preflight check that compares the deployed
 revision with the exact commit under test. Stop testing on a mismatch.
+Present this as a reminder, not a completion checkbox. The tester must repeat it
+whenever testing resumes because another deployment may have replaced the
+expected revision.
 
 Keep the revision check in a preflight section before setup and test execution.
 Setup includes production-form imports, generated-form imports, accounts,
-feature flags, and test data. Do not include instructions for deploying the
-application to preprod, preprod-alt, or another environment.
+feature flags, and test data. Assume the tester can log in with an arbitrary
+test user. Include test-user setup only when a case requires specific
+attributes. Do not include instructions for deploying the application to
+preprod, preprod-alt, or another environment.
 
 Do not treat a successful page load, HTTP status, or receipt as proof when the
 changed behavior is an outbound payload or generated document. State how the
@@ -110,6 +117,9 @@ already available; never ask testers to log form answers or personal data.
   publish unchanged.
 - `preprod` and `preprod-alt` share the same Forms API instance. Form creates,
   imports, updates, and deletions affect both.
-- Do not import a form or push `gh-pages` without explicit confirmation.
+- Do not import a form, create an issue, or push `gh-pages` without explicit
+  confirmation.
+- Never put full generated form definitions on GitHub Pages or in a GitHub
+  issue. Keep them in the session artifact directory.
 - Keep generated plans in the session artifact directory unless the caller
   explicitly requests repository files.

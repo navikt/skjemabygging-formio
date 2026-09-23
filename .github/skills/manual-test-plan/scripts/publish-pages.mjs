@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
 import { execFileSync, spawnSync } from 'node:child_process';
-import { cpSync, existsSync, lstatSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { basename, dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -30,11 +31,12 @@ if (process.argv.includes('--help') || process.argv.includes('-h')) {
   process.stdout.write(`Usage:
   node publish-pages.mjs --artifacts <directory> --destination <relative-path>
   node publish-pages.mjs --artifacts <directory> --destination <relative-path> \\
-    --apply --confirm <operation> [--include <file>] [--bootstrap]
+    --apply --confirm <operation> [--bootstrap]
 
-Dry-run is the default. Only index.html is published unless --include is
-provided more than once. --bootstrap creates gh-pages when it does not exist;
-it does not enable Pages in repository settings.
+Dry-run is the default. Only index.html is published. Slack Canvas, form
+definitions, and other artifacts remain outside GitHub Pages. --bootstrap
+creates gh-pages when it does not exist; it does not enable Pages in repository
+settings.
 `);
   process.exit(0);
 }
@@ -59,8 +61,10 @@ if (!/^manual-tests\/[a-z0-9][a-z0-9/-]*$/.test(destination)) {
   fail('destination must start with manual-tests/ and contain lowercase letters, numbers, slashes, or hyphens');
 }
 
-const includeArguments = getArguments('--include');
-const includedFiles = includeArguments.length ? includeArguments : ['index.html'];
+if (getArgument('--include')) {
+  fail('--include is not supported; only index.html may be published');
+}
+const includedFiles = ['index.html'];
 for (const includedFile of includedFiles) {
   if (
     !includedFile ||
@@ -82,6 +86,13 @@ for (const includedFile of includedFiles) {
 const git = (...args) =>
   execFileSync('git', args, {
     cwd: repositoryRoot,
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'pipe'],
+  }).trim();
+
+const gitInWorktree = (cwd, ...args) =>
+  execFileSync('git', ['-c', 'core.hooksPath=/dev/null', ...args], {
+    cwd,
     encoding: 'utf8',
     stdio: ['ignore', 'pipe', 'pipe'],
   }).trim();
@@ -126,7 +137,9 @@ const pages = (() => {
 
 const shouldApply = process.argv.includes('--apply');
 const shouldBootstrap = process.argv.includes('--bootstrap');
-const operation = branchExists ? `PUBLISH:${destination}` : `BOOTSTRAP:${destination}`;
+const pageContent = readFileSync(resolve(artifactDirectory, 'index.html'));
+const pageDigest = createHash('sha256').update(pageContent).digest('hex').slice(0, 12);
+const operation = branchExists ? `PUBLISH:${destination}:${pageDigest}` : `BOOTSTRAP:${destination}:${pageDigest}`;
 
 process.stdout.write(`Repository: ${repository}\n`);
 process.stdout.write(`Branch: gh-pages (${branchExists ? 'exists' : 'missing'})\n`);
@@ -189,21 +202,15 @@ try {
   rmSync(destinationDirectory, { recursive: true, force: true });
   mkdirSync(destinationDirectory, { recursive: true });
 
-  for (const includedFile of includedFiles) {
-    const source = resolve(artifactDirectory, includedFile);
-    const target = resolve(destinationDirectory, includedFile);
-    mkdirSync(dirname(target), { recursive: true });
-    cpSync(source, target, { recursive: true, dereference: false });
-  }
+  const pageTarget = resolve(destinationDirectory, 'index.html');
+  mkdirSync(dirname(pageTarget), { recursive: true });
+  writeFileSync(pageTarget, pageContent);
 
   if (!branchExists) {
     writeFileSync(join(worktreeDirectory, '.nojekyll'), '');
   }
 
-  execFileSync('git', ['add', '--', destination, ...(branchExists ? [] : ['.nojekyll'])], {
-    cwd: worktreeDirectory,
-    stdio: 'ignore',
-  });
+  gitInWorktree(worktreeDirectory, 'add', '--', destination, ...(branchExists ? [] : ['.nojekyll']));
 
   const diffResult = spawnSync('git', ['diff', '--cached', '--quiet'], {
     cwd: worktreeDirectory,
@@ -214,9 +221,11 @@ try {
     process.stdout.write('No publication changes were detected.\n');
   } else if (diffResult.status === 1) {
     execFileSync('git', ['status', '--short'], { cwd: worktreeDirectory, stdio: 'inherit' });
-    execFileSync(
+    const commitResult = spawnSync(
       'git',
       [
+        '-c',
+        'core.hooksPath=/dev/null',
         'commit',
         '-m',
         `docs(manual-test): publish ${basename(destination)}`,
@@ -225,6 +234,9 @@ try {
       ],
       { cwd: worktreeDirectory, stdio: 'inherit' },
     );
+    if (commitResult.status !== 0) {
+      throw new Error('could not commit GitHub Pages artifacts');
+    }
     const askPassPath = join(temporaryRoot, 'git-askpass.sh');
     writeFileSync(
       askPassPath,

@@ -1,7 +1,17 @@
 #!/usr/bin/env node
 
 import { createHash } from 'node:crypto';
-import { copyFileSync, existsSync, lstatSync, mkdirSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
+import {
+  copyFileSync,
+  existsSync,
+  lstatSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  realpathSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -22,7 +32,8 @@ if (process.argv.includes('--help') || process.argv.includes('-h')) {
   process.stdout.write(`Usage:
   node render-artifacts.mjs --plan <plan.json> --out <directory> [--page-url <url>]
 
-Generates index.html, test-cases.csv, slack-canvas.md, README.txt, and manifest.json.
+Generates either index.html and slack-canvas.md, or github-issue.md, plus
+manifest.json and any generated form files.
 `);
   process.exit(0);
 }
@@ -74,8 +85,8 @@ const plan = (() => {
   }
 })();
 
-if (plan.schemaVersion !== 1) {
-  fail('schemaVersion must be 1');
+if (plan.schemaVersion !== 2) {
+  fail('schemaVersion must be 2');
 }
 
 asNonEmptyString(plan.slug, 'slug');
@@ -84,6 +95,9 @@ if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(plan.slug)) {
 }
 asNonEmptyString(plan.title, 'title');
 asNonEmptyString(plan.summary, 'summary');
+if (!plan.collaboration || typeof plan.collaboration.withNonDevelopers !== 'boolean') {
+  fail('collaboration.withNonDevelopers must be a boolean');
+}
 
 if (!plan.source || typeof plan.source !== 'object') {
   fail('source is required');
@@ -105,6 +119,18 @@ if (
 ) {
   fail('source.url must match source.repository and source.number');
 }
+if (plan.source.issue !== undefined) {
+  const issueUrl = new URL(asHttpUrl(plan.source.issue?.url, 'source.issue.url'));
+  if (
+    !plan.source.issue ||
+    !Number.isInteger(plan.source.issue.number) ||
+    plan.source.issue.number <= 0 ||
+    issueUrl.hostname !== 'github.com' ||
+    issueUrl.pathname.replace(/\/$/, '') !== `/${sourceRepository}/issues/${plan.source.issue.number}`
+  ) {
+    fail('source.issue must identify an issue in source.repository');
+  }
+}
 asNonEmptyString(plan.source.ref, 'source.ref');
 const expectedCommit = asNonEmptyString(plan.source.commitSha, 'source.commitSha');
 if (!/^[0-9a-f]{40}$/i.test(expectedCommit)) {
@@ -115,7 +141,8 @@ if (!plan.environment || typeof plan.environment !== 'object') {
   fail('environment is required');
 }
 asNonEmptyString(plan.environment.name, 'environment.name');
-asHttpUrl(plan.environment.baseUrl, 'environment.baseUrl');
+const internBaseUrl = asHttpUrl(plan.environment.internBaseUrl, 'environment.internBaseUrl').replace(/\/$/, '');
+const ansattBaseUrl = asHttpUrl(plan.environment.ansattBaseUrl, 'environment.ansattBaseUrl').replace(/\/$/, '');
 if (!plan.environment.revisionCheck || typeof plan.environment.revisionCheck !== 'object') {
   fail('environment.revisionCheck is required');
 }
@@ -221,7 +248,7 @@ for (const [index, testCase] of plan.testCases.entries()) {
   if (testCase.formId && !formIds.has(testCase.formId)) {
     fail(`${prefix}.formId references unknown form ${testCase.formId}`);
   }
-  for (const field of ['prerequisites', 'testData', 'evidence', 'cleanup']) {
+  for (const field of ['prerequisites', 'testUsers', 'evidence', 'cleanup']) {
     asStringArray(testCase[field] ?? [], `${prefix}.${field}`);
   }
   if (!Array.isArray(testCase.steps) || testCase.steps.length === 0) {
@@ -241,18 +268,15 @@ const escapeHtml = (value) =>
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#39;');
 
-const escapeCsv = (value) => {
-  const text = String(value ?? '');
-  return /[",\n\r]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
-};
-
 const list = (values) =>
-  values.length ? `<ul>${values.map((value) => `<li>${escapeHtml(value)}</li>`).join('')}</ul>` : '<p>None.</p>';
+  values.length ? `<ul>${values.map((value) => `<li>${escapeHtml(value)}</li>`).join('')}</ul>` : '<p>Ingen.</p>';
 
 if (configuredPageUrl) {
   asHttpUrl(configuredPageUrl, '--page-url');
 }
-const pageUrl = configuredPageUrl?.replace(/\/$/, '') || 'index.html';
+const [sourceOwner, sourceRepositoryName] = sourceRepository.split('/');
+const defaultPageUrl = `https://${sourceOwner}.github.io/${sourceRepositoryName}/manual-tests/${plan.slug}`;
+const pageUrl = configuredPageUrl?.replace(/\/$/, '') || defaultPageUrl;
 const caseUrl = (id) => `${pageUrl}${pageUrl.endsWith('.html') ? '' : '/'}#${id.toLowerCase()}`;
 
 const sourceNumber = plan.source.number ? ` #${escapeHtml(plan.source.number)}` : '';
@@ -260,49 +284,60 @@ const setupHtml = plan.setup
   .map((item) => {
     asNonEmptyString(item.title, 'setup.title');
     asStringArray(item.steps, `setup.${item.title}.steps`);
-    return `<section class="card">
+    return `<section class="setup-card">
       <h3>${escapeHtml(item.title)}</h3>
       ${list(item.steps)}
-      ${item.expected ? `<p><strong>Expected:</strong> ${escapeHtml(item.expected)}</p>` : ''}
+      ${item.expected ? `<p><strong>Forventet:</strong> ${escapeHtml(item.expected)}</p>` : ''}
     </section>`;
   })
   .join('');
 
 const formsHtml = plan.forms.length
-  ? `<table>
-      <thead><tr><th>Kind</th><th>Form</th><th>Path</th><th>Notes</th></tr></thead>
+  ? `<div class="table-scroll" tabindex="0" role="region" aria-label="Skjema som brukes">
+    <table>
+      <thead><tr><th>Type</th><th>Skjema</th><th>Skjemasti</th><th>Merknad</th></tr></thead>
       <tbody>${plan.forms
         .map(
           (form) =>
-            `<tr><td>${escapeHtml(form.kind)}</td><td>${escapeHtml(form.title)}</td><td><code>${escapeHtml(
-              form.path,
-            )}</code></td><td>${escapeHtml(form.notes ?? '')}</td></tr>`,
+            `<tr><td>${escapeHtml(form.kind === 'production' ? 'Produksjonsskjema' : 'Testskjema')}</td><td>${escapeHtml(
+              form.title,
+            )}</td><td><code>${escapeHtml(form.path)}</code></td><td>${escapeHtml(form.notes ?? '')}</td></tr>`,
         )
         .join('')}</tbody>
-    </table>`
-  : '<p>No special form setup.</p>';
+    </table>
+  </div>`
+  : '<p>Ingen egne skjema må klargjøres.</p>';
 
 const behaviorStatusLabels = {
-  aligned: 'Aligned',
-  'suspected-defect': 'Suspected defect',
-  'open-question': 'Open question',
+  aligned: 'Som forventet',
+  'suspected-defect': 'Mulig feil',
+  'open-question': 'Må undersøkes',
+};
+const behaviorConfidenceLabels = {
+  high: 'Høy',
+  medium: 'Middels',
+  low: 'Lav',
 };
 const behaviorsHtml = `<ol class="behavior-list">
   ${plan.behaviorAnalysis
     .map(
       (behavior) =>
         `<li>
-          <article class="behavior-card" id="${behavior.id.toLowerCase()}">
-            <h3><code>${escapeHtml(behavior.id)}</code>: ${escapeHtml(behavior.behavior)}</h3>
-            <dl class="behavior-fields">
-              <div class="behavior-field"><dt>Before</dt><dd>${escapeHtml(behavior.before)}</dd></div>
-              <div class="behavior-field"><dt>Intended after</dt><dd>${escapeHtml(behavior.intended)}</dd></div>
-              <div class="behavior-field"><dt>Implemented after</dt><dd>${escapeHtml(behavior.implemented)}</dd></div>
-              <div class="behavior-field behavior-field--wide"><dt>Evidence</dt><dd>${list(behavior.evidence)}</dd></div>
-              <div class="behavior-field"><dt>Status</dt><dd>${escapeHtml(behaviorStatusLabels[behavior.status])}</dd></div>
-              <div class="behavior-field"><dt>Confidence</dt><dd>${escapeHtml(behavior.confidence)}</dd></div>
-            </dl>
-          </article>
+          <details class="behavior-card" id="${behavior.id.toLowerCase()}" tabindex="-1">
+            <summary><code>${escapeHtml(behavior.id)}</code>: ${escapeHtml(behavior.behavior)}</summary>
+            <div>
+              <dl class="behavior-fields">
+                <div class="behavior-field"><dt>Før</dt><dd>${escapeHtml(behavior.before)}</dd></div>
+                <div class="behavior-field"><dt>Ønsket oppførsel</dt><dd>${escapeHtml(behavior.intended)}</dd></div>
+                <div class="behavior-field"><dt>Oppførsel i endringen</dt><dd>${escapeHtml(behavior.implemented)}</dd></div>
+                <div class="behavior-field behavior-field--wide"><dt>Grunnlag</dt><dd>${list(behavior.evidence)}</dd></div>
+                <div class="behavior-field"><dt>Status</dt><dd>${escapeHtml(behaviorStatusLabels[behavior.status])}</dd></div>
+                <div class="behavior-field"><dt>Sikkerhet i vurderingen</dt><dd>${escapeHtml(
+                  behaviorConfidenceLabels[behavior.confidence],
+                )}</dd></div>
+              </dl>
+            </div>
+          </details>
         </li>`,
     )
     .join('')}
@@ -311,76 +346,112 @@ const behaviorsHtml = `<ol class="behavior-list">
 const casesHtml = plan.testCases
   .map((testCase) => {
     const form = plan.forms.find((candidate) => candidate.id === testCase.formId);
-    return `<details id="${testCase.id.toLowerCase()}" open>
+    const testUsers = testCase.testUsers ?? [];
+    const priorityLabels = {
+      P0: 'P0 - må testes',
+      P1: 'P1 - bør testes',
+      P2: 'P2 - test hvis det er tid',
+      P3: 'P3 - valgfri kontroll',
+    };
+    const formLinks = form
+      ? `<p><strong>Åpne skjemaet:</strong>
+          <a href="${escapeHtml(`${internBaseUrl}/${encodeURIComponent(form.path)}`)}">intern-ingress</a>
+          eller
+          <a href="${escapeHtml(`${ansattBaseUrl}/${encodeURIComponent(form.path)}`)}">ansatt-ingress</a>
+        </p>`
+      : '';
+    const testUserHtml = testUsers.length ? `<h3>Testbruker</h3>${list(testUsers)}` : '';
+    return `<details id="${testCase.id.toLowerCase()}" tabindex="-1" open>
       <summary>${escapeHtml(testCase.id)}: ${escapeHtml(testCase.title)}</summary>
       <div>
         <div class="badges">
-          <span class="badge">${escapeHtml(testCase.priority)}</span>
+          <span class="badge">${escapeHtml(priorityLabels[testCase.priority])}</span>
           <span class="badge">${escapeHtml(testCase.group)}</span>
-          <span class="badge">${escapeHtml(testCase.mode)}</span>
         </div>
         <p>${escapeHtml(testCase.purpose)}</p>
-        <p><strong>Behaviors:</strong> ${testCase.behaviorIds
+        <p class="muted"><strong>Bakgrunn for testen:</strong> ${testCase.behaviorIds
           .map((id) => `<a href="#${id.toLowerCase()}"><code>${escapeHtml(id)}</code></a>`)
           .join(', ')}</p>
-        ${form ? `<p><strong>Form:</strong> ${escapeHtml(form.title)} (<code>${escapeHtml(form.path)}</code>)</p>` : ''}
-        <h3>Prerequisites</h3>
+        ${form ? `<p><strong>Skjema:</strong> ${escapeHtml(form.title)}</p>${formLinks}` : ''}
+        <h3>Før du starter</h3>
         ${list(testCase.prerequisites)}
-        <h3>Test data</h3>
-        ${list(testCase.testData)}
-        <h3>Steps</h3>
+        ${testUserHtml}
+        <h3>Steg</h3>
         <ol>${testCase.steps
           .map(
             (step) =>
-              `<li class="step">${escapeHtml(step.action)}<div class="expected"><strong>Expected:</strong> ${escapeHtml(
+              `<li class="step">${escapeHtml(step.action)}<div class="expected"><strong>Forventet:</strong> ${escapeHtml(
                 step.expected,
               )}</div></li>`,
           )
           .join('')}</ol>
-        <h3>Evidence</h3>
+        <h3>Dokumentasjon</h3>
         ${list(testCase.evidence)}
-        <h3>Cleanup</h3>
-        ${list(testCase.cleanup)}
+        ${testCase.cleanup.length ? `<h3>Rydd opp</h3>${list(testCase.cleanup)}` : ''}
       </div>
     </details>`;
   })
   .join('');
 
-const body = `<h1>${escapeHtml(plan.title)}</h1>
+const setupSection = `<details class="secondary-section" id="oppsett">
+    <summary><h2>Oppsett før testing - åpne hvis dette ikke allerede er gjort</h2></summary>
+    <div>
+      ${setupHtml || '<p>Ingen ekstra oppsett.</p>'}
+      <h3>Skjema som brukes</h3>
+      ${formsHtml}
+    </div>
+  </details>`;
+
+const behaviorSection = `<details class="secondary-section" id="oppforselsanalyse">
+    <summary><h2>Bakgrunn for testene</h2></summary>
+    <div>
+      <h3>Risiko</h3>
+      ${list(plan.risks ?? [])}
+      <p>Forventede resultater bygger på avklart behov, etablerte avtaler eller uendret oppførsel.</p>
+      ${behaviorsHtml}
+    </div>
+  </details>`;
+
+const technicalSection = `<details class="secondary-section" id="teknisk-informasjon">
+    <summary><h2>Teknisk informasjon</h2></summary>
+    <div class="meta">
+      <p><strong>Pull request:</strong> <a href="${escapeHtml(plan.source.url)}">${escapeHtml(
+        plan.source.repository,
+      )}${sourceNumber}</a></p>
+      ${
+        plan.source.issue
+          ? `<p><strong>Sak:</strong> <a href="${escapeHtml(plan.source.issue.url)}">#${escapeHtml(
+              plan.source.issue.number,
+            )}</a></p>`
+          : ''
+      }
+      <p><strong>Miljø:</strong> ${escapeHtml(plan.environment.name)}</p>
+      <p><strong>Gren:</strong> <code>${escapeHtml(plan.source.ref)}</code></p>
+      <p><strong>Commit:</strong> <code>${escapeHtml(expectedCommit)}</code></p>
+    </div>
+  </details>`;
+
+const body = `<div class="page-tools">
+    <button id="theme-toggle" type="button" aria-pressed="false">
+      Mørkt tema: <span id="theme-state">av</span>
+    </button>
+  </div>
+  <h1>${escapeHtml(plan.title)}</h1>
   <p>${escapeHtml(plan.summary)}</p>
-  <section class="meta">
-    <p><strong>Source:</strong> <a href="${escapeHtml(plan.source.url)}">${escapeHtml(
-      plan.source.repository,
-    )}${sourceNumber}</a></p>
-    <p><strong>Environment:</strong> <a href="${escapeHtml(plan.environment.baseUrl)}">${escapeHtml(
-      plan.environment.name,
-    )}</a></p>
-    <p><strong>Branch:</strong> <code>${escapeHtml(plan.source.ref)}</code></p>
-    <p><strong>Commit:</strong> <code>${escapeHtml(expectedCommit)}</code></p>
-  </section>
   <section class="card preflight">
-    <h2>Verify the deployed revision before testing</h2>
+    <h2>Kontroller versjonen hver gang du starter testingen</h2>
     <ol>
-      <li>Open <a href="${escapeHtml(revisionEndpoint)}"><code>${escapeHtml(revisionEndpoint)}</code></a>.</li>
-      <li>Find <code>${escapeHtml(revisionField)}</code>.</li>
-      <li>Confirm its value is <code>${escapeHtml(expectedCommit)}</code>.</li>
+      <li>Åpne <a href="${escapeHtml(revisionEndpoint)}">miljøinformasjonen</a>.</li>
+      <li>Finn <code>${escapeHtml(revisionField)}</code>.</li>
+      <li>Kontroller at verdien er <code>${escapeHtml(expectedCommit)}</code>.</li>
     </ol>
-    <p><strong>Stop if it differs.</strong> Ask the developer to deploy the expected revision, then repeat this check.</p>
+    <p><strong>Stopp hvis verdien er annerledes.</strong> Be utvikleren legge ut riktig versjon, og kontroller på nytt.</p>
   </section>
-  <section class="card warning">
-    <strong>Use synthetic test data.</strong> This page is public when published through GitHub Pages.
-  </section>
-  <h2>Risks</h2>
-  ${list(plan.risks ?? [])}
-  <h2>Behavior analysis</h2>
-  <p>Expected results come from confirmed intent, established contracts, or unchanged baseline behavior.</p>
-  ${behaviorsHtml}
-  <h2>Setup</h2>
-  ${setupHtml || '<p>No additional setup.</p>'}
-  <h2>Forms</h2>
-  ${formsHtml}
-  <h2>Test cases</h2>
-  ${casesHtml}`;
+  ${setupSection}
+  <h2>Testoppgaver</h2>
+  ${casesHtml}
+  ${behaviorSection}
+  ${technicalSection}`;
 
 const generatedAt = new Date().toISOString();
 const htmlTemplate = readFileSync(join(skillDirectory, 'templates', 'plan-page.html'), 'utf8');
@@ -389,45 +460,20 @@ const html = htmlTemplate
   .replace('{{BODY}}', body)
   .replace('{{GENERATED_AT}}', escapeHtml(generatedAt));
 
-const csvHeader = [
-  'Case ID',
-  'Group',
-  'Title',
-  'Mode',
-  'Behaviors',
-  'Priority',
-  'Status',
-  'Testers',
-  'Result',
-  'Instruction URL',
-  'Notes',
-];
-const csvRows = plan.testCases.map((testCase) => [
-  testCase.id,
-  testCase.group,
-  testCase.title,
-  testCase.mode,
-  testCase.behaviorIds.join(', '),
-  testCase.priority,
-  'Not started',
-  '',
-  '',
-  caseUrl(testCase.id),
-  testCase.purpose,
-]);
-const csv = [csvHeader, ...csvRows].map((row) => row.map(escapeCsv).join(',')).join('\n');
-
 const slackCases = plan.testCases
-  .map(
-    (testCase) => `- [ ] *${testCase.id}: ${testCase.title}* (${testCase.priority})
-  Group: ${testCase.group}
-  Mode: ${testCase.mode}
-  Behaviors: ${testCase.behaviorIds.join(', ')}
-  Testers:
-  Status: Not started
-  Instructions: ${caseUrl(testCase.id)}
-  Result/notes:`,
-  )
+  .map((testCase) => {
+    const form = plan.forms.find((candidate) => candidate.id === testCase.formId);
+    const links = form
+      ? `  Skjema: ${internBaseUrl}/${encodeURIComponent(form.path)} eller ${ansattBaseUrl}/${encodeURIComponent(
+          form.path,
+        )}\n`
+      : '';
+    return `- [ ] *${testCase.id}: ${testCase.title}* (${testCase.priority})
+  Område: ${testCase.group}
+  Tester:
+  Instruksjoner: ${caseUrl(testCase.id)}
+${links}  Resultat og merknader:`;
+  })
   .join('\n\n');
 const slackTemplate = readFileSync(join(skillDirectory, 'templates', 'slack-canvas.md'), 'utf8');
 const slack = slackTemplate
@@ -439,33 +485,124 @@ const slack = slackTemplate
   .replace('{{EXPECTED_COMMIT}}', expectedCommit)
   .replace('{{CASES}}', slackCases);
 
-const readme = `Manual test plan artifacts
+const issueBehaviors = plan.behaviorAnalysis
+  .map(
+    (behavior) => `<details id="${behavior.id.toLowerCase()}">
+<summary><code>${behavior.id}</code>: ${behavior.behavior}</summary>
 
-Source: ${plan.source.url}
-Generated: ${generatedAt}
+- **Før:** ${behavior.before}
+- **Ønsket oppførsel:** ${behavior.intended}
+- **Oppførsel i endringen:** ${behavior.implemented}
+- **Status:** ${behaviorStatusLabels[behavior.status]}
+- **Sikkerhet i vurderingen:** ${behaviorConfidenceLabels[behavior.confidence]}
+- **Grunnlag:** ${behavior.evidence.join('; ')}
 
-Files:
-- index.html: detailed read-only plan
-- test-cases.csv: import into Microsoft Lists
-- slack-canvas.md: paste into Slack Canvas
-- manifest.json: hashes for publication review
+</details>`,
+  )
+  .join('\n\n');
 
-Microsoft Lists:
-1. Create a new list from test-cases.csv.
-2. Map Priority, Status, and Result to Choice columns if useful.
-3. Replace Testers with a Person or Group column and allow multiple selections.
-4. Keep Instruction URL as a hyperlink column.
+const issueSetup = plan.setup
+  .map(
+    (item) => `### ${item.title}
 
-Review every artifact for public or sensitive information before sharing it.
+${item.steps.map((step) => `1. ${step}`).join('\n')}
+
+**Forventet:** ${item.expected ?? 'Oppsettet er klart.'}`,
+  )
+  .join('\n\n');
+
+const issueForms = plan.forms.length
+  ? plan.forms
+      .map(
+        (form) =>
+          `- **${form.title}:** [intern-ingress](${internBaseUrl}/${encodeURIComponent(
+            form.path,
+          )}) eller [ansatt-ingress](${ansattBaseUrl}/${encodeURIComponent(form.path)})`,
+      )
+      .join('\n')
+  : 'Ingen egne skjema må klargjøres.';
+
+const issueCases = plan.testCases
+  .map((testCase) => {
+    const form = plan.forms.find((candidate) => candidate.id === testCase.formId);
+    const testUsers = testCase.testUsers ?? [];
+    const formText = form
+      ? `**Skjema:** [intern-ingress](${internBaseUrl}/${encodeURIComponent(
+          form.path,
+        )}) eller [ansatt-ingress](${ansattBaseUrl}/${encodeURIComponent(form.path)})`
+      : '';
+    const testUserText = testUsers.length
+      ? `  **Testbruker:**\n${testUsers.map((value) => `    - ${value}`).join('\n')}\n`
+      : '';
+    return `- [ ] **${testCase.id}: ${testCase.title}** (${testCase.priority})
+
+  ${testCase.purpose}
+
+  ${formText}
+  **Tester:** _Ikke tildelt_
+  **Før du starter:** ${testCase.prerequisites.join('; ') || 'Ingen ekstra forutsetninger.'}
+${testUserText}
+  **Steg:**
+${testCase.steps.map((step, index) => `  ${index + 1}. ${step.action}\n     - Forventet: ${step.expected}`).join('\n')}
+
+  **Dokumentasjon:** ${testCase.evidence.join('; ') || 'Noter resultatet.'}
+  **Resultat og merknader:**`;
+  })
+  .join('\n\n');
+
+const issue = `# ${plan.title}
+
+${plan.summary}
+
+## Kontroller versjonen hver gang du starter testingen
+
+1. Åpne [miljøinformasjonen](${revisionEndpoint}).
+2. Finn \`${revisionField}\`.
+3. Kontroller at verdien er \`${expectedCommit}\`.
+
+**Stopp hvis verdien er annerledes.** Be utvikleren legge ut riktig versjon, og kontroller på nytt.
+
+## Testoppgaver
+
+${issueCases}
+
+<details>
+<summary>Oppsett og skjema</summary>
+
+${issueSetup || 'Ingen ekstra oppsett.'}
+
+### Skjema som brukes
+
+${issueForms}
+
+</details>
+
+<details>
+<summary>Bakgrunn og oppførselsanalyse</summary>
+
+### Risiko
+
+${plan.risks.map((risk) => `- ${risk}`).join('\n') || 'Ingen særskilt risiko registrert.'}
+
+${issueBehaviors}
+
+</details>
+
+---
+
+Pull request: ${plan.source.url}
+${plan.source.issue ? `Sak: ${plan.source.issue.url}` : ''}
 `;
 
-const artifactFiles = new Map([
-  ['index.html', html],
-  ['test-cases.csv', `${csv}\n`],
-  ['slack-canvas.md', slack],
-  ['README.txt', readme],
-]);
-const reservedArtifactPaths = new Set([...artifactFiles.keys(), 'manifest.json'].map((path) => path.toLowerCase()));
+const artifactFiles = plan.collaboration.withNonDevelopers
+  ? new Map([
+      ['index.html', html],
+      ['slack-canvas.md', slack],
+    ])
+  : new Map([['github-issue.md', issue]]);
+const reservedArtifactPaths = new Set(
+  ['index.html', 'slack-canvas.md', 'github-issue.md', 'manifest.json'].map((path) => path.toLowerCase()),
+);
 const generatedArtifacts = [];
 const generatedArtifactPaths = new Set();
 
@@ -506,6 +643,61 @@ for (const form of plan.forms.filter((entry) => entry.kind === 'generated' && en
 
 mkdirSync(outputDirectory, { recursive: true });
 
+const desiredArtifactPaths = new Set([
+  ...artifactFiles.keys(),
+  ...generatedArtifacts.map(({ artifact }) => artifact),
+  'manifest.json',
+]);
+const previousManifestPath = join(outputDirectory, 'manifest.json');
+if (readdirSync(outputDirectory).length > 0 && !existsSync(previousManifestPath)) {
+  fail('output directory is not empty and has no artifact manifest');
+}
+if (existsSync(previousManifestPath) && lstatSync(previousManifestPath).isFile()) {
+  try {
+    const previousManifest = JSON.parse(readFileSync(previousManifestPath, 'utf8'));
+    if (
+      !previousManifest ||
+      ![1, 2].includes(previousManifest.schemaVersion) ||
+      !Array.isArray(previousManifest.files) ||
+      previousManifest.files.length === 0
+    ) {
+      throw new Error('manifest must contain a supported schemaVersion and a non-empty files array');
+    }
+    const previousPaths = new Set();
+    for (const entry of previousManifest.files) {
+      if (
+        !entry ||
+        typeof entry.path !== 'string' ||
+        !entry.path ||
+        typeof entry.sha256 !== 'string' ||
+        !/^[0-9a-f]{64}$/.test(entry.sha256) ||
+        isAbsolute(entry.path) ||
+        entry.path.split(/[\\/]/).some((part) => !part || part === '.' || part === '..') ||
+        previousPaths.has(entry.path)
+      ) {
+        throw new Error('manifest contains an invalid file entry');
+      }
+      previousPaths.add(entry.path);
+      if (desiredArtifactPaths.has(entry.path)) {
+        continue;
+      }
+      const previousArtifact = resolve(outputDirectory, entry.path);
+      const relativePath = relative(outputDirectory, previousArtifact);
+      if (relativePath && !relativePath.startsWith('..') && !isAbsolute(relativePath)) {
+        rmSync(previousArtifact, { force: true });
+      }
+    }
+  } catch (error) {
+    fail(`could not read the previous artifact manifest: ${error.message}`);
+  }
+}
+
+for (const staleArtifact of ['index.html', 'slack-canvas.md', 'github-issue.md', 'test-cases.csv', 'README.txt']) {
+  if (!artifactFiles.has(staleArtifact)) {
+    rmSync(join(outputDirectory, staleArtifact), { force: true });
+  }
+}
+
 for (const [name, content] of artifactFiles) {
   writeFileSync(join(outputDirectory, name), content);
 }
@@ -535,7 +727,7 @@ for (const { artifact } of generatedArtifacts) {
 
 writeFileSync(
   join(outputDirectory, 'manifest.json'),
-  `${JSON.stringify({ schemaVersion: 1, slug: plan.slug, generatedAt, files: manifestEntries }, null, 2)}\n`,
+  `${JSON.stringify({ schemaVersion: 2, slug: plan.slug, generatedAt, files: manifestEntries }, null, 2)}\n`,
 );
 
 process.stdout.write(

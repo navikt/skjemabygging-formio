@@ -2,12 +2,16 @@
 
 {{SUMMARY}}
 
-Detailed instructions: {{PAGE_URL}}
+Detaljerte instruksjoner: {{PAGE_URL}}
 
-## Before testing
+## Kontroller versjonen hver gang du starter testingen
 
-- [ ] Open {{REVISION_ENDPOINT}}.
-- [ ] Confirm `{{REVISION_FIELD}}` is `{{EXPECTED_COMMIT}}`.
-- [ ] Stop and contact the developer if it differs.
+Åpne {{REVISION_ENDPOINT}} og kontroller at `{{REVISION_FIELD}}` er
+`{{EXPECTED_COMMIT}}`.
+
+Stopp hvis verdien er annerledes. Be utvikleren legge ut riktig versjon, og
+kontroller på nytt.
+
+## Testoppgaver
 
 {{CASES}}

@@ -85,6 +85,9 @@ For each changed behavior:
 5. Define concrete evidence. Examples include PDF content, a response payload,
    an integration request visible through an approved tool, UI state, or a
    persisted draft after reload.
+6. Read the affected form labels, application text, and Norwegian translations.
+   Reuse those terms in tester-facing instructions instead of exposing internal
+   type, function, or field names.
 
 Use `fyllut-deploy-topology` when deployment or version identity matters. Use
 `form-definition-loading` when the change depends on form metadata or component
@@ -132,16 +135,16 @@ unchanged baseline behavior. Exploratory cases may record unresolved behavior
 when observation is useful, but they must say that no outcome is yet accepted
 as correct and link to the open question.
 
-## Significance
+Write tester-facing behavior at a functional level. Include a technical detail
+only when the tester needs it to perform the action, recognize the result, or
+collect useful evidence.
 
-Generate collaborative artifacts when the plan would benefit from shared
-ownership or durable execution records. Signals include:
+## Collaboration
 
-- high operational, privacy, submission, PDF, or integration risk
-- several independent case groups
-- more than one environment or external system
-- several expected testers
-- setup that changes shared state
-- results that require coordination or retained evidence
+Do not infer the output from change size or risk. Ask whether non-developers
+will collaborate:
 
-State why collaborative artifacts are or are not warranted.
+- With non-developers, produce a GitHub Pages document for instructions and a
+  separate Slack Canvas file for coordination.
+- Without non-developers, produce one GitHub issue document that contains both
+  instructions and test tracking.

@@ -5,8 +5,25 @@
 Prefer a production form when it already contains the relevant components,
 conditions, submission methods, and legacy or modern data shape.
 
-Inspect published definitions in `navikt/skjemautfylling-formio` or production
-Forms API metadata. Record:
+First inspect published definitions in `navikt/skjemautfylling-formio` or
+production Forms API metadata. Then check whether each candidate already exists
+in preprod Forms API and inspect its current revision. A preprod form can differ
+from the production snapshot.
+
+Use the helper without exposing the token or full form definition:
+
+```bash
+node .github/skills/manual-test-plan/scripts/inspect-preprod-forms.mjs \
+  --query '<title-or-form-number>'
+
+node .github/skills/manual-test-plan/scripts/inspect-preprod-forms.mjs \
+  --path '<form-path>'
+```
+
+If it returns `401`, follow the token refresh and retry procedure in
+[forms-api-import.md](forms-api-import.md).
+
+Record:
 
 - form number, path, and title
 - why the form covers the case
@@ -20,8 +37,8 @@ the same Forms API instance.
 
 ## Generated forms
 
-Generate a form only when no suitable production form exists or a small
-synthetic form makes the changed behavior substantially easier to isolate.
+Generate a form only when no suitable form already exists in preprod or a small
+test form makes the changed behavior substantially easier to isolate.
 
 - Build it from helpers in `mocks/mocks/form-builder`.
 - Keep fields and pages to the minimum needed.
@@ -29,9 +46,19 @@ synthetic form makes the changed behavior substantially easier to isolate.
 - Enable only required submission methods.
 - Set `clearOnHide` on scenario-controlled pages.
 - Prefer one selector-driven form when related scenarios share a domain and the
-  conditional form remains easy to understand.
+  conditional form remains valid, organized, and easy to understand.
 - Use separate forms when conditions would change component semantics, leave
   stale data, make validation unreliable, or obscure the expected mapping.
+
+When a small TypeScript generator imports the repository form-builder helpers,
+run it with the repository's current TypeScript compatibility options:
+
+```bash
+pnpm exec ts-node \
+  --transpile-only \
+  --compiler-options '{"ignoreDeprecations":"6.0"}' \
+  <generator.ts>
+```
 
 Validate:
 
@@ -41,3 +68,12 @@ Validate:
 4. Hidden scenario data clears.
 5. Shared-domain resolution or mapper behavior produces the intended result.
 6. The form can be fetched after import before testing FyllUt.
+
+Before import, tell the caller:
+
+- which existing forms will be used unchanged
+- which production forms will be imported or refreshed
+- which test forms will be created or updated
+- which test cases each form covers
+
+Wait for confirmation before changing Forms API.

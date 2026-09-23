@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import { createHash } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
@@ -64,6 +65,26 @@ if (!form.properties || typeof form.properties !== 'object' || Array.isArray(for
 const normalizeFormNumber = (value) => value.toLowerCase().replaceAll(/[^a-z0-9]/g, '');
 const normalizedFormNumber = normalizeFormNumber(formNumber);
 
+const parseEnvFile = (path) => {
+  if (!existsSync(path)) {
+    return {};
+  }
+  return Object.fromEntries(
+    readFileSync(path, 'utf8')
+      .split(/\r?\n/)
+      .filter((line) => line.trim() && !line.trimStart().startsWith('#') && line.includes('='))
+      .map((line) => {
+        const separator = line.indexOf('=');
+        return [line.slice(0, separator).trim(), line.slice(separator + 1).trim()];
+      }),
+  );
+};
+
+const token = process.env.FORMS_API_ACCESS_TOKEN || parseEnvFile(envFile).FORMS_API_ACCESS_TOKEN;
+if (!token) {
+  fail(`FORMS_API_ACCESS_TOKEN is not set; run 'pnpm get-tokens forms-api' or set it in ${envFile}`);
+}
+
 const getResponseBody = async (response) => {
   const text = await response.text();
   if (!text) {
@@ -77,8 +98,17 @@ const getResponseBody = async (response) => {
 };
 
 const request = async (url, options = {}) => {
-  const response = await fetch(url, options);
+  const response = await fetch(url, {
+    ...options,
+    headers: {
+      Authorization: `Bearer ${token}`,
+      ...options.headers,
+    },
+  });
   const body = await getResponseBody(response);
+  if (response.status === 401) {
+    fail("Forms API returned 401. Refresh the token with 'pnpm get-tokens forms-api', then retry.");
+  }
   if (!response.ok) {
     const detail = typeof body === 'string' ? body : JSON.stringify(body);
     fail(`${options.method ?? 'GET'} ${url} returned ${response.status}: ${detail.slice(0, 2000)}`);
@@ -109,7 +139,17 @@ const existing = matches[0];
 if (existing && (!Number.isInteger(existing.revision) || existing.revision < 1)) {
   fail(`existing form ${existing.path ?? formNumber} has an invalid revision`);
 }
-const operation = existing ? `UPDATE:${existing.path}:${existing.revision}` : `CREATE:${normalizedFormNumber}`;
+const commonBody = {
+  title: form.title,
+  components: form.components,
+  properties: form.properties,
+  ...(form.introPage !== undefined ? { introPage: form.introPage } : {}),
+};
+const requestBody = existing ? commonBody : { skjemanummer: formNumber, ...commonBody };
+const payloadDigest = createHash('sha256').update(JSON.stringify(requestBody)).digest('hex').slice(0, 12);
+const operation = existing
+  ? `UPDATE:${existing.path}:${existing.revision}:${payloadDigest}`
+  : `CREATE:${normalizedFormNumber}:${payloadDigest}`;
 
 process.stdout.write(`Forms API: ${baseUrl}\n`);
 process.stdout.write(`Form number: ${formNumber}\n`);
@@ -133,33 +173,6 @@ if (suppliedConfirmation !== operation) {
   fail(`confirmation does not match current operation; expected '${operation}'`);
 }
 
-const parseEnvFile = (path) => {
-  if (!existsSync(path)) {
-    return {};
-  }
-  return Object.fromEntries(
-    readFileSync(path, 'utf8')
-      .split(/\r?\n/)
-      .filter((line) => line.trim() && !line.trimStart().startsWith('#') && line.includes('='))
-      .map((line) => {
-        const separator = line.indexOf('=');
-        return [line.slice(0, separator).trim(), line.slice(separator + 1).trim()];
-      }),
-  );
-};
-
-const token = process.env.FORMS_API_ACCESS_TOKEN || parseEnvFile(envFile).FORMS_API_ACCESS_TOKEN;
-if (!token) {
-  fail(`FORMS_API_ACCESS_TOKEN is not set; run 'pnpm get-tokens forms-api' or set it in ${envFile}`);
-}
-
-const commonBody = {
-  title: form.title,
-  components: form.components,
-  properties: form.properties,
-  ...(form.introPage !== undefined ? { introPage: form.introPage } : {}),
-};
-
 const result = existing
   ? await request(`${baseUrl}/v1/forms/${encodeURIComponent(existing.path)}`, {
       method: 'PUT',
@@ -176,10 +189,7 @@ const result = existing
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        skjemanummer: formNumber,
-        ...commonBody,
-      }),
+      body: JSON.stringify(requestBody),
     });
 
 process.stdout.write(
