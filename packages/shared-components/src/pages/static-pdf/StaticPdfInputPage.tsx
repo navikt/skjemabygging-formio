@@ -1,4 +1,5 @@
-import { navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
+import { Heading } from '@navikt/ds-react';
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import { useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router';
 import { useForm } from '../../context/form/FormContext';
@@ -14,20 +15,20 @@ import FormNationalIdentityNumber from './components/shared/identity/FormNationa
 import FormSurname from './components/shared/identity/FormSurname';
 import SelectAttachmentList from './components/shared/SelectAttachmentList';
 import StaticPdfIdentityType from './components/shared/StaticPdfIdentityType';
-import { filterStaticPdfAttachments, normalizeStaticPdfAttachmentCodeFilter } from './staticPdfAttachmentFilter';
+import { getFilteredStaticPdfAttachments } from './staticPdfAttachmentFilter';
+import { useStaticPdf } from './StaticPdfContext';
 
 const StaticPdfInputPage = () => {
   const { form, setSubmission, submission } = useForm();
   const { enhetMaVelgesVedPapirInnsending } = form.properties;
-  const { currentLanguage } = useLanguages();
+  const { currentLanguage, translate } = useLanguages();
+  const { isEttersending } = useStaticPdf();
   const [searchParams] = useSearchParams();
   const filterValue = searchParams.get('filter');
-  const filteredAttachments = useMemo(() => {
-    const attachments = navFormUtils
-      .flattenComponents(form.components)
-      .filter((component) => component.type === 'attachment');
-    return filterStaticPdfAttachments(attachments, normalizeStaticPdfAttachmentCodeFilter(filterValue));
-  }, [filterValue, form.components]);
+  const filteredAttachments = useMemo(
+    () => getFilteredStaticPdfAttachments(form.components, filterValue),
+    [filterValue, form.components],
+  );
 
   useEffect(() => {
     if (!submission) {
@@ -45,6 +46,11 @@ const StaticPdfInputPage = () => {
 
   return (
     <>
+      {isEttersending && (
+        <Heading size="medium" level="2" spacing>
+          {translate(TEXTS.statiske.staticPdf.ettersendingTitle)}
+        </Heading>
+      )}
       <FormBox bottom="space-32">
         {enhetMaVelgesVedPapirInnsending ? (
           <FormNavUnitSelect submissionPath="coverPage.recipient.navUnit" />
@@ -82,7 +88,11 @@ const StaticPdfInputPage = () => {
         )}
       </FormBox>
 
-      <SelectAttachmentList attachments={filteredAttachments} submissionPath="coverPage.attachments" />
+      <SelectAttachmentList
+        attachments={filteredAttachments}
+        required={isEttersending}
+        submissionPath="coverPage.attachments"
+      />
     </>
   );
 };

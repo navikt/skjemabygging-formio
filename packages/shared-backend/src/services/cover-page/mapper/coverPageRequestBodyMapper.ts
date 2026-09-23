@@ -44,6 +44,7 @@ const createRequestBody = ({
   type = 'SKJEMA',
   formNumber,
   formTitle,
+  archiveTitle = formTitle,
   languageCode,
   tema = '',
   vedleggsliste = [],
@@ -54,6 +55,7 @@ const createRequestBody = ({
   type?: ForstesideRequestBody['foerstesidetype'];
   formNumber: string;
   formTitle: string;
+  archiveTitle?: string;
   languageCode: string;
   tema?: string;
   vedleggsliste?: string[];
@@ -65,7 +67,7 @@ const createRequestBody = ({
   navSkjemaId: formNumber,
   spraakkode: parseLanguage(languageCode),
   overskriftstittel: formTitle,
-  arkivtittel: formTitle,
+  arkivtittel: archiveTitle,
   tema,
   vedleggsliste,
   dokumentlisteFoersteside,
@@ -156,16 +158,21 @@ const createRequestBodyFromDownloadData = (
     throw new ResponseError('BAD_REQUEST', 'Missing required form values for cover page.');
   }
 
-  const formTitle = getTitle(translate ? translate(form.title) : form.title, form.skjemanummer);
+  const translatedFormTitle = translate ? translate(form.title) : form.title;
+  const formTitle = getTitle(translatedFormTitle, form.skjemanummer);
+  const isEttersending = type === 'ETTERSENDELSE';
 
   return createRequestBody({
     type,
     formNumber: formNumber ?? form.skjemanummer,
     formTitle,
+    archiveTitle: isEttersending
+      ? stringUtils.normalizeUnicode(`Ettersending til ${form.skjemanummer} ${translatedFormTitle}`)
+      : undefined,
     languageCode,
     tema: properties?.tema,
     vedleggsliste: attachments,
-    dokumentlisteFoersteside: [formTitle, ...attachments],
+    dokumentlisteFoersteside: isEttersending ? attachments : [formTitle, ...attachments],
     userData: getDownloadUserData(user),
     recipientData: getDownloadRecipientData(recipient),
   });

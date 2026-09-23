@@ -50,7 +50,9 @@ describe('Static PDF', () => {
   it('should be possible to download pdf with name and address', () => {
     visitStaticPdfPage();
 
-    cy.findByRole('radio', { name: /Person som ikke har fødselsnummer eller d-nummer/ }).click();
+    cy.findByRole('radio', {
+      name: /Person som ikke har fødselsnummer eller d-nummer/,
+    }).click();
 
     cy.findByRole('textbox', { name: /Fornavn/ }).type('Ola');
     cy.findByRole('textbox', { name: /Etternavn/ }).type('Nordmann');
@@ -147,5 +149,35 @@ describe('Static PDF', () => {
       expect(interception.response.statusCode).to.eq(200);
       expect(interception.response.body?.pdfBase64, 'PDF base64 exists').to.be.a('string');
     });
+  });
+
+  it('supports ettersending after selecting an attachment', () => {
+    cy.mocksUseRouteVariant('foersteside:success-tc08c-static-pdf-ettersending');
+    visitStaticPdfPage('?type=ettersending');
+
+    cy.findByRole('heading', {
+      name: 'Ettersend dokumentasjon',
+      level: 2,
+    }).should('be.visible');
+    cy.findByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).type('22015614475');
+    cy.findByRole('link', { name: /Fortsett/ }).click();
+    cy.findByText('Du må fylle ut: Vedlegg').should('be.visible');
+
+    cy.findByRole('checkbox', { name: /Vedlegg 1/ }).click();
+    cy.findByRole('link', { name: /Fortsett/ }).click();
+    cy.findByRole('button', { name: /Last ned skjema/ }).click();
+
+    cy.wait('@download').then((interception) => {
+      expect(interception.request.body?.type).to.eq('ETTERSENDELSE');
+      expect(interception.response.statusCode).to.eq(200);
+      expect(interception.response.body?.pdfBase64, 'PDF base64 exists').to.be.a('string');
+    });
+    cy.findByText(/Fyll ut skjema. Husk å signere til slutt./).should('not.exist');
+  });
+
+  it('returns 404 for ettersending when no attachment is selectable', () => {
+    visitStaticPdfPage('?type=ettersending&filter=ZZ');
+
+    cy.url().should('include', '/404');
   });
 });

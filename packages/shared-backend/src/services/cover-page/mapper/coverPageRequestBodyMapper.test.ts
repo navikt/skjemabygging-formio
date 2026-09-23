@@ -41,6 +41,20 @@ describe('coverPageRequestBodyMapper', () => {
     });
   });
 
+  it('creates an ettersending archive title and attachment-only document list', () => {
+    const actual = coverPageRequestBodyMapper.createRequestBodyFromDownloadData({
+      ...defaultData,
+      type: 'ETTERSENDELSE',
+      attachments: ['Attachment one', 'Attachment two'],
+    });
+
+    expect(actual).toMatchObject({
+      foerstesidetype: 'ETTERSENDELSE',
+      arkivtittel: 'Ettersending til NAV 12.34-56 Testskjema',
+      dokumentlisteFoersteside: ['Attachment one', 'Attachment two'],
+    });
+  });
+
   it('uses translated title, custom form number and recipient address', () => {
     const actual = coverPageRequestBodyMapper.createRequestBodyFromDownloadData(
       {

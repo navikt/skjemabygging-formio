@@ -4,6 +4,7 @@ import useFormsApiStaticPdf from '../../api/static-pdf/useFormsApiStaticPdf';
 
 interface StaticPdfContextType {
   formPath: string;
+  isEttersending: boolean;
   loadingFiles: boolean;
   files: StaticPdf[];
   getFile: (languageCode: string) => StaticPdf | undefined;
@@ -16,11 +17,12 @@ interface StaticPdfContextType {
 interface Props {
   children: React.ReactNode;
   formPath: string;
+  isEttersending?: boolean;
 }
 
 const StaticPdfContext = createContext<StaticPdfContextType>({} as StaticPdfContextType);
 
-export const StaticPdfProvider = ({ children, formPath }: Props) => {
+export const StaticPdfProvider = ({ children, formPath, isEttersending = false }: Props) => {
   const [files, setFiles] = useState<StaticPdf[]>([]);
   const [loadingFiles, setLoadingFiles] = useState<boolean>(false);
   const { getAll, uploadPdf, deletePdf, downloadPdf, downloadCoverPageAndPdf } = useFormsApiStaticPdf();
@@ -69,9 +71,13 @@ export const StaticPdfProvider = ({ children, formPath }: Props) => {
 
   const downloadCoverPageAndFile = useCallback(
     async (coverPage: CoverPageDownloadType) => {
-      return await downloadCoverPageAndPdf(formPath, { ...coverPage, submissionType: 'STATIC_PDF' });
+      return await downloadCoverPageAndPdf(formPath, {
+        ...coverPage,
+        submissionType: 'STATIC_PDF',
+        ...(isEttersending ? { type: 'ETTERSENDELSE' } : {}),
+      });
     },
-    [formPath, downloadCoverPageAndPdf],
+    [formPath, isEttersending, downloadCoverPageAndPdf],
   );
 
   const deleteFile = useCallback(
@@ -92,6 +98,7 @@ export const StaticPdfProvider = ({ children, formPath }: Props) => {
     <StaticPdfContext.Provider
       value={{
         formPath,
+        isEttersending,
         loadingFiles,
         files,
         getFile,

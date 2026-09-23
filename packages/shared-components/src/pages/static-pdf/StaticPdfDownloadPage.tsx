@@ -16,7 +16,7 @@ interface DownloadState {
 const StaticPdfDownloadPage = () => {
   const { translate } = useLanguages();
   const { submission, form } = useForm();
-  const { downloadCoverPageAndFile } = useStaticPdf();
+  const { downloadCoverPageAndFile, isEttersending } = useStaticPdf();
   const [status, setStatus] = useState<DownloadState | undefined>();
 
   const coverPageData = submission?.data.coverPage as unknown as CoverPageDownloadType;
@@ -31,7 +31,9 @@ const StaticPdfDownloadPage = () => {
 
   const handleSuccess = () => {
     setStatus({
-      message: translate(TEXTS.statiske.prepareLetterPage.downloadSuccess, { fileName }),
+      message: translate(TEXTS.statiske.prepareLetterPage.downloadSuccess, {
+        fileName,
+      }),
       variant: 'info',
     });
   };
@@ -59,7 +61,7 @@ const StaticPdfDownloadPage = () => {
       </Heading>
       <FormBox bottom="space-32">
         <List as="ol">
-          <List.Item>{translate(TEXTS.statiske.staticPdf.instructions.step1)}</List.Item>
+          {!isEttersending && <List.Item>{translate(TEXTS.statiske.staticPdf.instructions.step1)}</List.Item>}
           <List.Item>{translate(TEXTS.statiske.staticPdf.instructions.step2)}</List.Item>
           {coverPageData?.attachments && coverPageData?.attachments.length > 1 && (
             <List.Item>{translate(TEXTS.statiske.staticPdf.instructions.step3)}</List.Item>
