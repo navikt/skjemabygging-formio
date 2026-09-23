@@ -16,6 +16,23 @@ const attachment: SubmissionAttachment = {
 };
 
 describe('attachmentData', () => {
+  it.each(['leggerVedNaa', '', undefined])('preserves legacy record choice %s over primitive data', (value) => {
+    const form = {
+      components: [{ key: 'documentation', navId: attachment.navId, type: 'attachment' }],
+    } as Form;
+    const legacy = { ...attachment, value };
+    const canonical = { ...attachment, attachmentId: 'canonical', value: 'ettersender' };
+    for (const answer of ['ettersender', { key: 'ettersender' }]) {
+      expect(hydrateLegacyAttachments(form, { data: { documentation: answer }, attachments: [legacy] })).toEqual({
+        data: { documentation: legacy },
+        attachments: [],
+      });
+    }
+    expect(
+      hydrateLegacyAttachments(form, { data: { documentation: canonical }, attachments: [legacy] })?.data.documentation,
+    ).toEqual(canonical);
+  });
+
   it('uses the navId unless the attachment is inside a repeated row', () => {
     expect(createAttachmentId('documentation-nav-id', 'container.documentation')).toBe('documentation-nav-id');
     expect(createAttachmentId('documentation-nav-id', 'rows[0].documentation')).toBe(

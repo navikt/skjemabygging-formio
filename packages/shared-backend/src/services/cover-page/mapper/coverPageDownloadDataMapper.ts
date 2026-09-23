@@ -5,16 +5,15 @@ import {
   Recipient,
   ResponseError,
   Submission,
-  SubmissionAttachmentValue,
   SubmissionData,
   SubmissionMethod,
   SubmissionType,
   TranslationLang,
+  attachmentUtils,
   formatUtils,
   navFormUtils,
   yourInformationUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
-import { resolveSubmissionAttachments } from '../../../form-components/resolveSubmissionAttachments';
 
 type CoverPageUser = CoverPageDownloadType['user'];
 type OrganizationNumberUser = Extract<CoverPageUser, { organizationNumber: string }>;
@@ -167,33 +166,14 @@ const getSubmissionUserData = (form: Form, submission: SubmissionData): CoverPag
   throw new ResponseError('BAD_REQUEST', 'User needs to submit either identification number or address');
 };
 
-const getAttachments = (submission: Submission, form: Form) => {
-  const submissionAttachments = resolveSubmissionAttachments(form, submission);
-  return navFormUtils
-    .flattenComponents(form.components)
-    .filter((component) => component.properties && !!component.properties.vedleggskode)
-    .filter((component) => {
-      const submissionAttachment = submissionAttachments.find(
-        (attachment) => navFormUtils.getNavId(component) === attachment.navId,
-      )?.value;
-      const legacyValue = submission.data[component.key];
-
-      return (
-        submissionAttachment === 'leggerVedNaa' ||
-        legacyValue === 'leggerVedNaa' ||
-        (legacyValue as SubmissionAttachmentValue)?.key === 'leggerVedNaa'
-      );
-    });
-};
-
 const getAttachmentLabels = (
   form: Form,
   submission: Submission,
   translate?: (text: string, textReplacements?: I18nTranslationReplacements) => string,
 ): string[] => {
-  return getAttachments(submission, form).map((component) =>
-    translate ? translate(component.label) : component.label,
-  );
+  return attachmentUtils
+    .getAttachmentsForCoverPage(submission, form)
+    .map((component) => (translate ? translate(component.label) : component.label));
 };
 
 const getRecipient = (

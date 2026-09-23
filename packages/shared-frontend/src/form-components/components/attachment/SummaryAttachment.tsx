@@ -2,9 +2,7 @@ import { FileUpload, FormSummary, Label, VStack } from '@navikt/ds-react';
 import {
   attachmentUtils,
   enableAttachmentDownload,
-  getNavId,
   SubmissionAttachment,
-  submissionUtils,
   TEXTS,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import Alert from '../../../components/alert/Alert';
@@ -17,12 +15,7 @@ const SummaryAttachment = (props: FormComponentProps<AttachmentDefinition>) => {
   const { submissionMethod } = rendererConfig;
   const attachmentUploadEnabled = attachmentUtils.enableAttachmentUpload(submissionMethod);
   const canDownloadAttachment = enableAttachmentDownload(submissionMethod) && !!handleDownloadFile;
-  const pathValue = submissionUtils.getSubmissionValue(submissionPath, submission);
-  const dataAttachments = attachmentUtils.toSubmissionAttachments(pathValue, component);
-  const navId = getNavId(component) ?? component.key;
-  const attachments = (dataAttachments.length > 0 ? dataAttachments : (submission?.attachments ?? [])).filter(
-    (attachment) => attachment.navId === navId,
-  );
+  const { attachments, source } = attachmentUtils.resolveAttachmentsAtPath(component, submissionPath, submission);
 
   const showDeadline = (attachment: SubmissionAttachment) =>
     attachment.value && !!component.attachmentValues?.[attachment.value]?.showDeadline;
@@ -54,7 +47,7 @@ const SummaryAttachment = (props: FormComponentProps<AttachmentDefinition>) => {
                               attachment.attachmentId,
                               file.fileId,
                               file.fileName,
-                              dataAttachments.length > 0 ? submissionPath : undefined,
+                              source === 'data' ? submissionPath : undefined,
                             );
                           }
                         : undefined

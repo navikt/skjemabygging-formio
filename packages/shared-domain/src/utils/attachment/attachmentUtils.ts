@@ -13,7 +13,14 @@ import {
 } from '../../models';
 import { TEXTS } from '../../texts';
 import { navFormUtils } from '../form';
-import { submissionUtils } from '../submission/submissionUtils';
+import {
+  collectAttachmentsFromData,
+  getAdditionalDocumentation,
+  getAttachmentValue,
+  resolveAttachmentsAtPath,
+  resolveSubmissionAttachments,
+  toSubmissionAttachments,
+} from './attachmentResolution';
 
 const enableAttachmentUpload = (submissionMethod?: string) =>
   submissionMethod === 'digital' || submissionMethod === 'digitalnologin';
@@ -67,58 +74,6 @@ const getAttachmentLabel = (key: string, submissionMethod?: SubmissionMethod, va
   isKnownAttachmentSettingKey(key)
     ? TEXTS.statiske.attachment[resolveAttachmentLabelKey(key, submissionMethod)]
     : (values?.find((option) => option.value === key)?.label ?? key);
-
-const isSubmissionAttachment = (value: unknown): value is SubmissionAttachment =>
-  typeof value === 'object' && value !== null && 'attachmentId' in value && typeof value.attachmentId === 'string';
-
-const getAttachmentValue = (value: unknown): string | undefined => {
-  if (typeof value === 'string') {
-    return value;
-  }
-  if (!value || typeof value !== 'object') {
-    return undefined;
-  }
-  if ('key' in value && typeof value.key === 'string') {
-    return value.key;
-  }
-  return 'value' in value && typeof value.value === 'string' ? value.value : undefined;
-};
-
-const getAdditionalDocumentation = (value: unknown): string | undefined =>
-  value &&
-  typeof value === 'object' &&
-  'additionalDocumentation' in value &&
-  typeof value.additionalDocumentation === 'string'
-    ? value.additionalDocumentation
-    : undefined;
-
-const toSubmissionAttachments = (value: unknown, component: Component): SubmissionAttachment[] => {
-  if (Array.isArray(value)) {
-    return value.filter(isSubmissionAttachment);
-  }
-  if (isSubmissionAttachment(value)) {
-    return [value];
-  }
-
-  const attachmentValue = getAttachmentValue(value);
-  const navId = navFormUtils.getNavId(component) ?? component.key;
-  if (!attachmentValue || !navId) {
-    return [];
-  }
-
-  const additionalDocumentation = getAdditionalDocumentation(value);
-
-  return [
-    {
-      attachmentId: navId,
-      navId,
-      type: component.attachmentType || (component.otherDocumentation ? 'other' : 'default'),
-      value: attachmentValue,
-      ...(additionalDocumentation ? { additionalDocumentation } : {}),
-      files: [],
-    },
-  ];
-};
 
 const isSingleUploadOnlyOption = (
   attachmentValues: AttachmentSettingValues | ComponentValue[] | undefined,
@@ -202,47 +157,8 @@ const mapToAttachmentSummary = ({
   };
 };
 
-/**
- * Collects attachment answers stored in submission data, regardless of where the attachment
- * component sits in the form: directly in submission data, nested inside containers, or inside
- * data grid rows.
- */
-const collectAttachmentsFromSubmissionData = (
-  components: Component[],
-  submission: Submission,
-  parentSubmissionPath = '',
-): SubmissionAttachment[] =>
-  components.flatMap((component) => {
-    const submissionPath =
-      component.type === 'attachment'
-        ? [parentSubmissionPath, component.key].filter(Boolean).join('.')
-        : submissionUtils.getComponentSubmissionPath(component, parentSubmissionPath);
-
-    if (component.type === 'attachment') {
-      return toSubmissionAttachments(submissionUtils.getSubmissionValue(submissionPath, submission), component);
-    }
-
-    if (!component.components?.length) {
-      return [];
-    }
-
-    if (component.type === 'datagrid') {
-      const rows = submissionUtils.getSubmissionValue(submissionPath, submission);
-      return Array.isArray(rows)
-        ? rows.flatMap((_row, index) =>
-            collectAttachmentsFromSubmissionData(component.components ?? [], submission, `${submissionPath}[${index}]`),
-          )
-        : [];
-    }
-
-    return collectAttachmentsFromSubmissionData(component.components, submission, submissionPath);
-  });
-
-const getAttachmentsForCoverPage = (submission: Submission, form: NavFormType): Component[] => {
-  const attachments = [
-    ...(submission.attachments ?? []),
-    ...collectAttachmentsFromSubmissionData(form.components as Component[], submission),
-  ];
+const getAttachmentsForCoverPage = (submission: Submission, form: Pick<NavFormType, 'components'>): Component[] => {
+  const attachments = resolveSubmissionAttachments(form, submission);
 
   return navFormUtils
     .flattenComponents(form.components)
@@ -255,6 +171,7 @@ const getAttachmentsForCoverPage = (submission: Submission, form: NavFormType): 
 };
 
 const attachmentUtils = {
+  collectAttachmentsFromData,
   enableAttachmentDownload,
   enableAttachmentUpload,
   getAttachmentsForCoverPage,
@@ -264,6 +181,8 @@ const attachmentUtils = {
   mapToAttachmentSummary,
   mapKeysToOptions,
   resolveAttachmentLabelKey,
+  resolveAttachmentsAtPath,
+  resolveSubmissionAttachments,
   toSubmissionAttachments,
 };
 

@@ -48,6 +48,52 @@ const render = (components: Component[], submission: Submission, submissionMetho
 const answer = (value: string) => ({ label: 'Documentation', verdi: value });
 
 describe('renderApplicationPdf attachment row scope', () => {
+  it('keeps an unmatched primitive row answer when another row has authoritative legacy storage', () => {
+    expect(
+      render(
+        [createGrid('rows', [documentComponent])],
+        {
+          data: { rows: [{ document: 'leggerVedNaa' }, { document: 'leggerVedNaa' }, {}] },
+          attachments: [createAttachment('document-nav-id-rows-0-document', 'ettersender')],
+        },
+        'paper',
+      ),
+    ).toEqual({
+      label: 'Panel',
+      verdiliste: [
+        { label: 'rows 1', verdiliste: [answer(TEXTS.statiske.attachment.ettersender)] },
+        { label: 'rows 2', verdiliste: [answer(TEXTS.statiske.attachment.leggerVedNaa)] },
+        { label: 'rows 3', verdiliste: [] },
+      ],
+    });
+  });
+
+  it('does not let obsolete legacy storage hide a primitive row beside a canonical row', () => {
+    expect(
+      render(
+        [createGrid('rows', [documentComponent])],
+        {
+          data: {
+            rows: [
+              { document: createAttachment('canonical-document', 'ettersender') },
+              { document: { key: 'leggerVedNaa' } },
+              {},
+            ],
+          },
+          attachments: [createAttachment('document-nav-id-rows-1-document', 'harIkke')],
+        },
+        'paper',
+      ),
+    ).toEqual({
+      label: 'Panel',
+      verdiliste: [
+        { label: 'rows 1', verdiliste: [answer(TEXTS.statiske.attachment.ettersender)] },
+        { label: 'rows 2', verdiliste: [answer(TEXTS.statiske.attachment.leggerVedNaa)] },
+        { label: 'rows 3', verdiliste: [] },
+      ],
+    });
+  });
+
   it('keeps legacy paper choices in their own rows after attachment normalization', () => {
     expect(
       render([createGrid('rows', [documentComponent])], {

@@ -161,4 +161,14 @@ describe('resolveSubmissionAttachments', () => {
       }),
     ).toEqual([firstRowAttachment, secondRowAttachment]);
   });
+
+  it('preserves primitive row metadata when a different row has a top-level record', () => {
+    const legacyAttachment = createAttachment('row-nav-id-rows-0-rowAttachment', 'row-nav-id', 'ettersender');
+    expect(
+      resolveSubmissionAttachments(form, {
+        data: { rows: [{ rowAttachment: 'leggerVedNaa' }, { rowAttachment: 'leggerVedNaa' }, {}] },
+        attachments: [legacyAttachment],
+      }),
+    ).toEqual([createAttachment('row-nav-id', 'row-nav-id', 'leggerVedNaa'), legacyAttachment]);
+  });
 });

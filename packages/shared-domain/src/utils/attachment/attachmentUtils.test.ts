@@ -400,6 +400,51 @@ describe('attachmentUtils', () => {
         properties: { vedleggskode: 'N6', vedleggstittel: key },
       }) as unknown as Component;
 
+    it.each([
+      ['leggerVedNaa', 'ettersender', false],
+      ['ettersender', 'leggerVedNaa', true],
+      ['leggerVedNaa', '', false],
+      ['leggerVedNaa', undefined, false],
+    ])('prefers legacy top-level choice %s -> %s', (dataValue, value, included) => {
+      const component = createAttachmentComponent('documentation', 'doc');
+      const form = createForm([component]);
+      for (const answer of [dataValue, { key: dataValue }]) {
+        expect(
+          attachmentUtils.getAttachmentsForCoverPage(
+            {
+              data: { documentation: answer },
+              attachments: [{ attachmentId: 'doc', navId: 'doc', type: 'default', value, files: [] }],
+            },
+            form,
+          ),
+        ).toEqual(included ? [component] : []);
+      }
+    });
+
+    it.each(['ettersender', '', undefined])('does not resurrect legacy uploads for canonical choice %s', (value) => {
+      const component = createAttachmentComponent('documentation', 'doc');
+      const canonical: SubmissionAttachment = {
+        attachmentId: 'canonical',
+        navId: 'doc',
+        type: 'default',
+        value,
+        files: [],
+      };
+      for (const answer of [canonical, [canonical]]) {
+        expect(
+          attachmentUtils.getAttachmentsForCoverPage(
+            {
+              data: { documentation: answer },
+              attachments: [
+                { attachmentId: 'legacy', navId: 'doc', type: 'default', value: 'leggerVedNaa', files: [] },
+              ],
+            },
+            createForm([component]),
+          ),
+        ).toEqual([]);
+      }
+    });
+
     it('finds attachment answers stored directly in submission data', () => {
       const form = createForm([
         {

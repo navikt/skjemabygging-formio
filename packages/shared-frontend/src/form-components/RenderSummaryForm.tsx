@@ -5,6 +5,7 @@ import {
   PanelValidation,
   Submission,
   TranslateFunction,
+  attachmentUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import RenderComponent from './RenderComponent';
 import SummaryAccordion from './components/accordion/SummaryAccordion';
@@ -87,6 +88,11 @@ const RenderSummaryForm = ({
     return null;
   }
 
+  const resolvedSubmission = {
+    ...submission,
+    attachments: attachmentUtils.resolveSubmissionAttachments(form, submission),
+  };
+
   const componentRegistry = {
     accordion: SummaryAccordion,
     alertstripe: SummaryAlert,
@@ -152,7 +158,7 @@ const RenderSummaryForm = ({
           component={component}
           submissionPath=""
           componentRegistry={componentRegistry}
-          submission={submission}
+          submission={resolvedSubmission}
           translate={translate}
           currentLanguage={currentLanguage}
           formProperties={form.properties}
@@ -166,7 +172,7 @@ const RenderSummaryForm = ({
           component={activeAttachmentUploadsPanel}
           submissionPath=""
           componentRegistry={componentRegistry}
-          submission={submission}
+          submission={resolvedSubmission}
           translate={translate}
           currentLanguage={currentLanguage}
           formProperties={form.properties}

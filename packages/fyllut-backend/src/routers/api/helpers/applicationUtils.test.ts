@@ -43,6 +43,99 @@ const createSubmission = (attachment: SubmissionAttachment): Submission => ({
 });
 
 describe('assembleSubmitApplicationRequest', () => {
+  it.each([
+    ['leggerVedNaa', 'ettersender', 'SendSenere'],
+    ['ettersender', 'leggerVedNaa', 'LastetOpp'],
+    ['leggerVedNaa', '', 'IkkeValgt'],
+    ['leggerVedNaa', undefined, 'IkkeValgt'],
+  ])('uses the authoritative legacy choice %s -> %s in outgoing metadata', (dataValue, value, uploadStatus) => {
+    const legacy: SubmissionAttachment = {
+      attachmentId: 'legacy-attachment-id',
+      navId: 'legacy-attachment-id',
+      type: 'default',
+      value,
+      files: [],
+    };
+    for (const answer of [dataValue, { key: dataValue }]) {
+      const submission = createSubmission(legacy);
+      submission.data.documentation = answer;
+      const request = assembleSubmitApplicationRequest('submission-1', form, submission, 'nb', [1], (text) => text);
+      expect(request.attachments).toEqual([
+        {
+          attachmentCode: 'V1',
+          label: 'Documentation',
+          title: 'Documentation title',
+          uploadStatus,
+          fileIds: [],
+          description: null,
+          formNumberPath: undefined,
+        },
+      ]);
+    }
+  });
+
+  it.each([
+    ['nei', 'SendesIkke'],
+    ['', 'IkkeValgt'],
+    [undefined, 'IkkeValgt'],
+  ])('does not send obsolete legacy files for canonical choice %s', (value, uploadStatus) => {
+    const canonical: SubmissionAttachment = {
+      attachmentId: 'canonical',
+      navId: 'legacy-attachment-id',
+      type: 'default',
+      value,
+      files: [],
+    };
+    const legacy: SubmissionAttachment = {
+      ...canonical,
+      attachmentId: 'legacy-attachment-id',
+      value: 'leggerVedNaa',
+      files: [
+        {
+          attachmentId: 'legacy-attachment-id',
+          innsendingId: 'submission-1',
+          fileId: 'obsolete-file',
+          fileName: 'obsolete.pdf',
+          size: 123,
+        },
+      ],
+    };
+    const submission = createSubmission(legacy);
+    submission.data.documentation = canonical;
+    const request = assembleSubmitApplicationRequest('submission-1', form, submission, 'nb', [1], (text) => text);
+    expect(request.attachments).toHaveLength(1);
+    expect(request.attachments[0]).toMatchObject({ uploadStatus, fileIds: [] });
+  });
+
+  it('retains a second row choice when only the first row has an authoritative legacy record', () => {
+    const rowForm = {
+      ...form,
+      components: [
+        {
+          ...form.components[0],
+          components: [{ key: 'rows', type: 'datagrid', input: true, components: [attachmentComponent] }],
+        },
+      ],
+    } as Form;
+    const legacy: SubmissionAttachment = {
+      attachmentId: 'legacy-attachment-id-rows-0-documentation',
+      navId: 'legacy-attachment-id',
+      type: 'default',
+      value: 'ettersender',
+      files: [],
+    };
+    const submission: Submission = {
+      data: {
+        fornavnAvsender: 'Ola',
+        etternavnAvsender: 'Nordmann',
+        rows: [{ documentation: 'leggerVedNaa' }, { documentation: 'leggerVedNaa' }, {}],
+      },
+      attachments: [legacy],
+    };
+    const request = assembleSubmitApplicationRequest('submission-1', rowForm, submission, 'nb', [1], (text) => text);
+    expect(request.attachments.map(({ uploadStatus }) => uploadStatus)).toEqual(['LastetOpp', 'SendSenere']);
+  });
+
   it('preserves the existing external status fallback for arbitrary legacy attachment choices', () => {
     const legacyAttachment: SubmissionAttachment = {
       attachmentId: 'legacy-attachment-id',

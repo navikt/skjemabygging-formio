@@ -21,6 +21,40 @@ const createProps = (
 });
 
 describe('PdfAttachment', () => {
+  it.each([
+    ['leggerVedNaa', 'ettersender'],
+    ['ettersender', 'leggerVedNaa'],
+    ['leggerVedNaa', ''],
+    ['leggerVedNaa', undefined],
+  ])('uses the authoritative legacy choice %s -> %s', (dataValue, value) => {
+    const legacy: SubmissionAttachment = {
+      attachmentId: attachment.navId!,
+      navId: attachment.navId!,
+      type: 'default',
+      value,
+      files: [],
+    };
+    for (const answer of [dataValue, { key: dataValue }]) {
+      expect(
+        PdfAttachment(createProps(attachment, { data: { [attachment.key]: answer }, attachments: [legacy] }, 'paper')),
+      ).toEqual(value ? [{ label: attachment.label, verdi: TEXTS.statiske.attachment[value] }] : null);
+    }
+  });
+
+  it.each(['ettersender', '', undefined])('does not revive legacy uploads for canonical choice %s', (value) => {
+    const canonical: SubmissionAttachment = {
+      attachmentId: 'canonical',
+      navId: attachment.navId!,
+      type: 'default',
+      value,
+      files: [],
+    };
+    const legacy = { ...canonical, attachmentId: 'legacy', value: 'leggerVedNaa' };
+    expect(
+      PdfAttachment(createProps(attachment, { data: { [attachment.key]: canonical }, attachments: [legacy] }, 'paper')),
+    ).toEqual(value ? [{ label: attachment.label, verdi: TEXTS.statiske.attachment.ettersender }] : null);
+  });
+
   it.each(['paper', 'digital', 'digitalnologin'] as const)(
     'keeps the configured legacy other-document label in %s PDFs',
     (method) => {
