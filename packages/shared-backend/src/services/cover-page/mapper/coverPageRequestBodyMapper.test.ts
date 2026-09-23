@@ -50,8 +50,33 @@ describe('coverPageRequestBodyMapper', () => {
 
     expect(actual).toMatchObject({
       foerstesidetype: 'ETTERSENDELSE',
+      overskriftstittel: 'Ettersending til NAV 12.34-56 Testskjema',
       arkivtittel: 'Ettersending til NAV 12.34-56 Testskjema',
       dokumentlisteFoersteside: ['Attachment one', 'Attachment two'],
+    });
+  });
+
+  it('uses a localized ettersending cover page title', () => {
+    const translate = vi.fn((text) =>
+      text === 'Testskjema'
+        ? 'Translated form title'
+        : 'Additional documentation for NAV 12.34-56 Translated form title',
+    );
+
+    const actual = coverPageRequestBodyMapper.createRequestBodyFromDownloadData(
+      {
+        ...defaultData,
+        type: 'ETTERSENDELSE',
+      },
+      'en',
+      translate,
+    );
+
+    expect(actual.overskriftstittel).toBe('Additional documentation for NAV 12.34-56 Translated form title');
+    expect(actual.arkivtittel).toBe('Ettersending til NAV 12.34-56 Translated form title');
+    expect(translate).toHaveBeenCalledWith('Ettersending til {{formNumber}} {{title}}', {
+      formNumber: 'NAV 12.34-56',
+      title: 'Testskjema',
     });
   });
 

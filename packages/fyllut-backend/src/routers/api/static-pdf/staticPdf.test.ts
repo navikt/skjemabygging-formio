@@ -307,7 +307,7 @@ describe('[endpoint] staticPdf', () => {
     expect(coverPageService.downloadCoverPage).not.toHaveBeenCalled();
   });
 
-  it('fails ettersending when an attachment PDF download fails', async () => {
+  it('ignores missing attachment PDFs for ettersending', async () => {
     vi.mocked(formService.getForm).mockResolvedValue({
       skjemanummer: 'NAV 12.34-56',
       path: 'nav123456',
@@ -339,8 +339,12 @@ describe('[endpoint] staticPdf', () => {
 
     await staticPdf.downloadPdf(req, res, next);
 
-    expect(next).toHaveBeenCalledWith(expect.objectContaining({ message: 'Attachment unavailable' }));
-    expect(res.json).not.toHaveBeenCalled();
+    expect(mergeFileService.mergeFiles).not.toHaveBeenCalled();
+    expect(res.json).toHaveBeenCalledWith({ pdfBase64: 'cover-page-pdf' });
+    expect(appMetrics.paperSubmissionsCounter.inc).toHaveBeenCalledWith({
+      source: 'ettersending',
+    });
+    expect(next).not.toHaveBeenCalled();
   });
 
   it('returns the cover page without merging when ettersending attachments have no static PDF form', async () => {

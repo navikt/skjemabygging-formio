@@ -3,6 +3,7 @@ import {
   I18nTranslationReplacements,
   ResponseError,
   stringUtils,
+  TEXTS,
   validatorUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { ForstesideRequestBody } from '../coverPageRequestTypes';
@@ -161,11 +162,21 @@ const createRequestBodyFromDownloadData = (
   const translatedFormTitle = translate ? translate(form.title) : form.title;
   const formTitle = getTitle(translatedFormTitle, form.skjemanummer);
   const isEttersending = type === 'ETTERSENDELSE';
+  const coverPageTitle = isEttersending
+    ? stringUtils.normalizeUnicode(
+        translate
+          ? translate(TEXTS.statiske.staticPdf.ettersendingCoverPageTitle, {
+              formNumber: form.skjemanummer,
+              title: form.title,
+            })
+          : `Ettersending til ${formTitle}`,
+      )
+    : formTitle;
 
   return createRequestBody({
     type,
     formNumber: formNumber ?? form.skjemanummer,
-    formTitle,
+    formTitle: coverPageTitle,
     archiveTitle: isEttersending
       ? stringUtils.normalizeUnicode(`Ettersending til ${form.skjemanummer} ${translatedFormTitle}`)
       : undefined,

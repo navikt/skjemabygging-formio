@@ -98,24 +98,15 @@ const staticPdf = {
 
       for (const component of attachmentComponents) {
         if (component.properties?.vedleggskjema) {
-          if (isEttersending) {
+          try {
             const attachmentStaticPdf = await staticPdfService.downloadPdf({
               formPath: component.properties.vedleggskjema,
               languageCode,
             });
             attachmentStaticPdfs.push(attachmentStaticPdf);
             logger.debug(`Add attachments ${component.properties.vedleggskjema} for static pdf ${formPath}.`);
-          } else {
-            try {
-              const attachmentStaticPdf = await staticPdfService.downloadPdf({
-                formPath: component.properties?.vedleggskjema,
-                languageCode,
-              });
-              attachmentStaticPdfs.push(attachmentStaticPdf);
-              logger.debug(`Add attachments ${component.properties?.vedleggskjema} for static pdf ${formPath}.`);
-            } catch (error) {
-              logger.warn(`Failed to add attachments for ${formPath} static pdf.`, error);
-            }
+          } catch (error) {
+            logger.warn(`Failed to add attachments for ${formPath} static pdf.`, error);
           }
         }
       }
