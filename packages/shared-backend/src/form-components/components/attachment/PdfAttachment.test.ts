@@ -465,7 +465,7 @@ describe('PdfAttachment', () => {
     ]);
   });
 
-  it('should resolve a legacy datagrid attachment with a bare navId', () => {
+  it('should not assign an unscoped legacy attachment to an unanswered datagrid row', () => {
     const testComponent = attachment;
     const navId = testComponent.navId!;
     const legacyAttachment: SubmissionAttachment = {
@@ -483,11 +483,6 @@ describe('PdfAttachment', () => {
       submissionPath: 'rows[0].documentation',
     };
 
-    expect(PdfAttachment(props)).toEqual([
-      {
-        label: 'Uttalelse fra lege',
-        verdi: TEXTS.statiske.attachment.uploadNow,
-      },
-    ]);
+    expect(PdfAttachment(props)).toBeNull();
   });
 });

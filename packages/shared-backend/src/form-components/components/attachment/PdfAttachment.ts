@@ -31,13 +31,10 @@ const PdfAttachment = (props: PdfComponentProps): PdfData[] | null => {
   const dataAttachments = attachmentUtils.toSubmissionAttachments(pathValue, component);
   const resolvedAttachments = (submission?.attachments ?? []).filter((attachment) => attachment.navId === navId);
   const rowAttachmentId = createAttachmentId(navId, resolvedSubmissionPath);
-  const rowAttachments = resolvedSubmissionPath.includes('[')
+  // A shared navId cannot identify a datagrid row. Without a scoped ID, use only that row's data.
+  const attachmentsFromTopLevelStorage = resolvedSubmissionPath.includes('[')
     ? resolvedAttachments.filter((attachment) => belongsToAttachmentId(attachment.attachmentId, rowAttachmentId))
-    : [];
-
-  // Legacy Formio datagrid attachments use the bare navId instead of a row-specific attachmentId.
-  // Remove this fallback together with legacy primitive attachment support in resolveSubmissionAttachments.
-  const attachmentsFromTopLevelStorage = rowAttachments.length > 0 ? rowAttachments : resolvedAttachments;
+    : resolvedAttachments;
   const attachments = isStructuredAttachmentValue(pathValue)
     ? dataAttachments
     : attachmentsFromTopLevelStorage.length > 0
