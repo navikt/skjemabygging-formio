@@ -51,10 +51,7 @@ const staticPdf = {
         select: ['skjemanummer', 'title', 'components', 'properties'],
       });
 
-      const translate = await translationService.createTranslate({
-        formPath,
-        languageCode,
-      });
+      const translate = await translationService.createTranslate({ formPath, languageCode });
       const selectedAttachmentKeys = Array.isArray(coverPageData.attachments) ? coverPageData.attachments : [];
 
       const attachmentComponents = navFormUtils

@@ -50,9 +50,7 @@ describe('Static PDF', () => {
   it('should be possible to download pdf with name and address', () => {
     visitStaticPdfPage();
 
-    cy.findByRole('radio', {
-      name: /Person som ikke har fødselsnummer eller d-nummer/,
-    }).click();
+    cy.findByRole('radio', { name: /Person som ikke har fødselsnummer eller d-nummer/ }).click();
 
     cy.findByRole('textbox', { name: /Fornavn/ }).type('Ola');
     cy.findByRole('textbox', { name: /Etternavn/ }).type('Nordmann');

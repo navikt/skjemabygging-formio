@@ -31,9 +31,7 @@ const StaticPdfDownloadPage = () => {
 
   const handleSuccess = () => {
     setStatus({
-      message: translate(TEXTS.statiske.prepareLetterPage.downloadSuccess, {
-        fileName,
-      }),
+      message: translate(TEXTS.statiske.prepareLetterPage.downloadSuccess, { fileName }),
       variant: 'info',
     });
   };
