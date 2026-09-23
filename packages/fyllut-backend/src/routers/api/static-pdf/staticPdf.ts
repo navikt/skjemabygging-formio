@@ -42,10 +42,6 @@ const staticPdf = {
 
     try {
       const isEttersending = coverPageData.type === 'ETTERSENDELSE';
-      const { type: _, ...coverPageDataWithoutType } = coverPageData;
-      const validatedCoverPageData: CoverPageDownloadType = isEttersending
-        ? { ...coverPageDataWithoutType, type: 'ETTERSENDELSE' }
-        : coverPageDataWithoutType;
       const form = await formService.getForm({
         formPath,
         select: ['skjemanummer', 'title', 'components', 'properties'],
@@ -79,7 +75,8 @@ const staticPdf = {
         languageCode,
         accessToken: coverPageToken,
         data: {
-          ...validatedCoverPageData,
+          ...coverPageData,
+          type: isEttersending ? 'ETTERSENDELSE' : undefined,
           attachments: attachmentLabels,
           form,
         },
