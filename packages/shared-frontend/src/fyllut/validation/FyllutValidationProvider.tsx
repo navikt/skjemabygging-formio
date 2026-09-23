@@ -50,11 +50,6 @@ const FyllutValidationProvider = ({ children, initialPagesWithErrors }: Props) =
   const resolvePageFields = useCallback(
     (pageKey: string): ValidationField[] => {
       const submission = getLatestSubmission();
-      if (pageKey === 'personal-id') {
-        const attachment = submission?.attachments?.find((item) => item.attachmentId === 'personal-id');
-        const input = { attachmentId: 'personal-id', label: TEXTS.statiske.uploadId.label, required: true, attachment };
-        return [...toAttachmentValueValidationFields(input), ...toAttachmentFilesValidationFields(input)];
-      }
       const cache = cacheRef.current;
       // The summary page asks for every page on each render, so the rebuild is memoized until
       // something it depends on changes.
@@ -71,17 +66,24 @@ const FyllutValidationProvider = ({ children, initialPagesWithErrors }: Props) =
         return cachedFields;
       }
 
-      const panels: Panel[] = getActivePanels(form, submission, { submissionMethod });
-      const panel = panels.find((currentPanel) => currentPanel.key === pageKey);
-      const fields = panel
-        ? collectPageValidationFields({
-            components: toComponentDefinitions(panel.components ?? []),
-            form,
-            submission,
-            submissionMethod,
-            currentLanguage,
-          })
-        : [];
+      let fields: ValidationField[];
+      if (pageKey === 'personal-id') {
+        const attachment = submission?.attachments?.find((item) => item.attachmentId === 'personal-id');
+        const input = { attachmentId: 'personal-id', label: TEXTS.statiske.uploadId.label, required: true, attachment };
+        fields = [...toAttachmentValueValidationFields(input), ...toAttachmentFilesValidationFields(input)];
+      } else {
+        const panels: Panel[] = getActivePanels(form, submission, { submissionMethod });
+        const panel = panels.find((currentPanel) => currentPanel.key === pageKey);
+        fields = panel
+          ? collectPageValidationFields({
+              components: toComponentDefinitions(panel.components ?? []),
+              form,
+              submission,
+              submissionMethod,
+              currentLanguage,
+            })
+          : [];
+      }
 
       fieldsByPage.set(pageKey, fields);
       return fields;

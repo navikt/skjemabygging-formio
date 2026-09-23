@@ -698,21 +698,41 @@ describe('Mellomlagring v2', () => {
         });
       });
 
-      it('shows validation when the saved nav083501 draft is incomplete under the migrated mock', () => {
-        cy.mocksUseRouteVariant('get-soknad:nav083501-complete-v1');
-        cy.intercept('GET', `/fyllut/api/send-inn/soknad/${completeSubmissionId}`).as('getMellomlagring');
+      describe('When resuming the legacy nav083501 draft', () => {
+        beforeEach(() => {
+          cy.mocksUseRouteVariant('get-soknad:nav083501-complete-v1');
+          cy.intercept('GET', `/fyllut/api/send-inn/soknad/${completeSubmissionId}`).as('getMellomlagring');
+        });
 
-        cy.visitRouteAndWait(
-          `/fyllut/nav083501/oppsummering?sub=digital&innsendingsId=${completeSubmissionId}&lang=nb-NO`,
-          ['@getMellomlagring'],
-        );
+        const visitSummary = () =>
+          cy.visitRouteAndWait(
+            `/fyllut/nav083501/oppsummering?sub=digital&innsendingsId=${completeSubmissionId}&lang=nb-NO`,
+            ['@getMellomlagring'],
+          );
 
-        cy.contains(TEXTS.statiske.summaryPage.validationMessage).should('exist');
-        expectSummaryPage();
-        cy.findAllByRole('button', { name: /Fortsett utfylling|Continue filling in/ })
-          .should('have.length.at.least', 1)
-          .first()
-          .should('be.visible');
+        it('shows the complete draft without a validation warning', () => {
+          visitSummary();
+
+          expectSummaryPage();
+          cy.contains(TEXTS.statiske.summaryPage.validationMessage).should('not.exist');
+          cy.findAllByRole('button', { name: /Fortsett utfylling|Continue filling in/ }).should('not.exist');
+        });
+
+        it('blocks submission and focuses the missing required answer in an incomplete draft', () => {
+          failOnSubmitApplicationAttempt();
+          cy.intercept('GET', `/fyllut/api/send-inn/soknad/${completeSubmissionId}`, (req) => {
+            req.continue((res) => {
+              res.body.hoveddokumentVariant.document.data.data.fornavnSoker = '';
+            });
+          }).as('getMellomlagring');
+          visitSummary();
+
+          expectSummaryPage();
+          cy.contains(TEXTS.statiske.summaryPage.validationMessage).should('be.visible');
+          expectSummaryValidationToBlockSubmission();
+          cy.clickEditAnswers();
+          cy.findByRole('textbox', { name: 'Fornavn' }).should('be.visible').and('have.focus');
+        });
       });
     });
   });
