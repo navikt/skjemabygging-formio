@@ -517,6 +517,7 @@ describe('generateSchema', () => {
 
   it('keeps paper, legacy and uploaded attachment values compatible inside attachment panels', () => {
     const component: Component = {
+      validate: { required: true },
       attachmentType: 'default',
       attachmentValues: {
         ettersender: { enabled: true },
@@ -543,6 +544,8 @@ describe('generateSchema', () => {
 
     const attachmentDataSchema = getFormDataSchema(schema).properties?.medicalCertificate as JsonSchemaObject;
 
+    expect(getFormDataSchema(schema).required).toBeUndefined();
+    expect(getSubmissionPayloadSchema(schema).properties.attachments?.items).toEqual(attachmentDataSchema.anyOf?.[0]);
     expect(attachmentDataSchema.anyOf).toEqual([
       expect.objectContaining({
         additionalProperties: false,
@@ -570,6 +573,75 @@ describe('generateSchema', () => {
       },
     ]);
   });
+
+  it.each(['DIGITAL', 'DIGITAL_NO_LOGIN'] as const)(
+    'keeps nested upload-panel attachment data optional for %s without weakening ordinary required fields',
+    (submissionType) => {
+      const requiredAttachment: Component = {
+        type: 'attachment',
+        key: 'documentation',
+        navId: 'documentation-navid',
+        label: 'Documentation',
+        attachmentValues: { leggerVedNaa: { enabled: true }, ettersender: { enabled: true } },
+        validate: { required: true },
+      };
+      const schema = generateSchema(
+        createForm(
+          [
+            {
+              type: 'panel',
+              key: 'uploads',
+              label: 'Uploads',
+              isAttachmentPanel: true,
+              components: [
+                {
+                  type: 'fieldset',
+                  key: 'group',
+                  label: 'Group',
+                  components: [
+                    requiredAttachment,
+                    createRequiredTextfield('explanation', 'Explanation'),
+                    {
+                      type: 'container',
+                      key: 'details',
+                      label: 'Details',
+                      components: [{ ...requiredAttachment, navId: 'container-documentation' }],
+                    },
+                    {
+                      type: 'datagrid',
+                      key: 'rows',
+                      label: 'Rows',
+                      components: [{ ...requiredAttachment, navId: 'row-documentation' }],
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'panel',
+              key: 'ordinary',
+              label: 'Ordinary fields',
+              components: [{ ...requiredAttachment, key: 'ordinaryDocumentation', navId: 'ordinary-documentation' }],
+            },
+          ],
+          false,
+          [submissionType],
+        ),
+      );
+      const dataSchema = getFormDataSchema(schema);
+      const detailsSchema = dataSchema.properties.details as JsonSchemaObject;
+      const rowSchema = dataSchema.properties.rows.items as JsonSchemaObject;
+
+      expect(dataSchema.required).toEqual(['explanation', 'ordinaryDocumentation']);
+      expect(detailsSchema.required).toBeUndefined();
+      expect(rowSchema.required).toBeUndefined();
+      expect(detailsSchema.properties.documentation).toHaveProperty('anyOf');
+      expect(rowSchema.properties.documentation).toHaveProperty('anyOf');
+      expect(getSubmissionPayloadSchema(schema).required).toEqual(
+        submissionType === 'DIGITAL_NO_LOGIN' ? ['data', 'attachments'] : ['data'],
+      );
+    },
+  );
 
   it('preserves attachment schemas inside containers and data grid rows', () => {
     const schema = generateSchema(

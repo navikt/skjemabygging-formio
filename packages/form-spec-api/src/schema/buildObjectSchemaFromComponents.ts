@@ -1,4 +1,4 @@
-import { Component, getNavId } from '@navikt/skjemadigitalisering-shared-domain';
+import { Component, getNavId, navFormUtils } from '@navikt/skjemadigitalisering-shared-domain';
 import { inferValueSchema } from './inferValueSchema';
 import {
   createsArrayScope,
@@ -152,6 +152,7 @@ const buildObjectSchemaFromComponentsInternal = (
   components: Component[] = [],
   context: SchemaGenerationContext,
   ancestorHasConditionalLogic = false,
+  ancestorIsAttachmentPanel = false,
 ): SchemaBuildResult => {
   const properties: JsonSchemaObject['properties'] = {};
   const required = new Set<string>();
@@ -159,12 +160,14 @@ const buildObjectSchemaFromComponentsInternal = (
 
   for (const component of components) {
     const descendantHasConditionalLogic = ancestorHasConditionalLogic || hasConditionalLogic(component);
+    const isInAttachmentPanel = ancestorIsAttachmentPanel || navFormUtils.isVedleggspanel(component);
 
     if (component.type === 'attachment') {
       attachmentItemSchemas.push(buildAttachmentItemSchema(component, context));
       if (component.key) {
         properties[component.key] = buildAttachmentDataSchema(component, context);
-        if (component.validate?.required && !descendantHasConditionalLogic) {
+        // Legacy upload panels store their answers only in submission.attachments.
+        if (component.validate?.required && !descendantHasConditionalLogic && !isInAttachmentPanel) {
           required.add(component.key);
         }
       }
@@ -176,6 +179,7 @@ const buildObjectSchemaFromComponentsInternal = (
         getNestedComponents(component),
         context,
         descendantHasConditionalLogic,
+        isInAttachmentPanel,
       );
       Object.assign(properties, nestedResult.schema.properties);
       nestedResult.schema.required?.forEach((key) => required.add(key));
@@ -192,6 +196,7 @@ const buildObjectSchemaFromComponentsInternal = (
         getNestedComponents(component),
         context,
         descendantHasConditionalLogic,
+        isInAttachmentPanel,
       );
       properties[component.key] = {
         title: component.label,
@@ -203,6 +208,7 @@ const buildObjectSchemaFromComponentsInternal = (
         getNestedComponents(component),
         context,
         descendantHasConditionalLogic,
+        isInAttachmentPanel,
       );
       properties[component.key] = {
         type: 'array',
