@@ -153,13 +153,11 @@ describe('Static PDF', () => {
     cy.mocksUseRouteVariant('foersteside:success-tc08c-static-pdf-ettersending');
     visitStaticPdfPage('?type=ettersending');
 
-    cy.findByRole('heading', {
-      name: 'Ettersend dokumentasjon',
-      level: 2,
-    }).should('be.visible');
+    cy.findByRole('heading', { name: 'Ettersend dokumentasjon', level: 2 }).should('be.visible');
     cy.findByRole('textbox', { name: /Fødselsnummer eller d-nummer/ }).type('22015614475');
     cy.findByRole('link', { name: /Fortsett/ }).click();
-    cy.findByText('Du må fylle ut: Vedlegg').should('be.visible');
+    cy.findByRole('link', { name: 'Du må fylle ut: Vedlegg' }).should('exist');
+    cy.findAllByText('Du må fylle ut: Vedlegg').should('have.length', 2);
 
     cy.findByRole('checkbox', { name: /Vedlegg 1/ }).click();
     cy.findByRole('link', { name: /Fortsett/ }).click();
