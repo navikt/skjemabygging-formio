@@ -1,5 +1,4 @@
 import {
-  dateUtils,
   Form,
   hasErrorCode,
   localizationUtils,
@@ -8,8 +7,9 @@ import {
   TranslationLang,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import { applyInitialValuesToSubmission } from '../../context/form-definition/initialSubmissionValues';
-import { ApplicationService, Draft } from '../../context/runtime-services/RuntimeServicesContext';
+import { ApplicationService } from '../../context/runtime-services/RuntimeServicesContext';
 import { updateSearch } from '../../utils/searchParams';
+import { withDraftMetadata } from './withDraftMetadata';
 
 type ReadyDigitalDraft = {
   type: 'ready';
@@ -31,25 +31,6 @@ interface Props {
 const getDraftBootstrapLanguage = (search: string): TranslationLang => {
   const language = new URLSearchParams(search).get('lang');
   return language ? localizationUtils.getLanguageCodeAsIso639_1(language) : 'nb';
-};
-
-const withDraftMetadata = (submission: Submission | undefined, draft: Draft): Submission | undefined => {
-  if (!submission) {
-    return submission;
-  }
-
-  return {
-    ...submission,
-    fyllutState: {
-      ...submission.fyllutState,
-      mellomlagring: {
-        ...submission.fyllutState?.mellomlagring,
-        isActive: true,
-        savedDate: dateUtils.toLocaleDateAndTime(draft.modifiedAt),
-        deletionDate: dateUtils.toLocaleDate(draft.deleteAt),
-      },
-    },
-  };
 };
 
 const initializeDigitalDraft = async ({

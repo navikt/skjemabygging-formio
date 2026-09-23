@@ -213,6 +213,35 @@ describe('initializeDigitalDraft', () => {
     ).resolves.toEqual({ type: 'notFound' });
   });
 
+  it.each([
+    new ResponseError('SERVICE_UNAVAILABLE', 'Draft service unavailable'),
+    new ResponseError('UNAUTHORIZED', 'Authentication required'),
+    new TypeError('Failed to fetch'),
+  ])('propagates draft loading failures other than NOT_FOUND: %s', async (error) => {
+    const applications = createApplicationService();
+    vi.mocked(applications.getDraft).mockRejectedValue(error);
+
+    await expect(
+      initializeDigitalDraft({
+        applications,
+        form,
+        search: '?sub=digital&innsendingsId=draft-123',
+        submissionMethod: 'digital',
+      }),
+    ).rejects.toBe(error);
+    expect(applications.createDraft).not.toHaveBeenCalled();
+  });
+
+  it('does not interpret a draft creation NOT_FOUND as a missing saved draft', async () => {
+    const applications = createApplicationService();
+    const error = new ResponseError('NOT_FOUND', 'Draft creation endpoint unavailable');
+    vi.mocked(applications.createDraft).mockRejectedValue(error);
+
+    await expect(
+      initializeDigitalDraft({ applications, form, search: '?sub=digital', submissionMethod: 'digital' }),
+    ).rejects.toBe(error);
+  });
+
   it('creates a draft and redirects to its canonical URL', async () => {
     const applications = createApplicationService();
     vi.mocked(applications.createDraft).mockResolvedValue({

@@ -1,12 +1,14 @@
-import { dateUtils, Form, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
-import { useCallback, useRef } from 'react';
+import { Form, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { useCallback, useLayoutEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useFormDefinitionSubmissionMethod } from '../../../context/form-definition/FormDefinitionContext';
 import { useLanguage } from '../../../context/language/LanguageContext';
 import { Draft, useRuntimeServices } from '../../../context/runtime-services/RuntimeServicesContext';
 import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
 import { updateSearch } from '../../../utils/searchParams';
+import { withDraftMetadata } from '../../draft/withDraftMetadata';
 import prepareSubmissionForTransport from '../../submission/prepareSubmissionForTransport';
+import { createDraftPersistence } from './draftPersistence';
 
 const createSaveDraftError = (cause: unknown, userMessage: string) => ({ cause, userMessage });
 
@@ -20,35 +22,27 @@ const useDraftPersistence = (form: Form, initialInnsendingsId?: string): DraftPe
   const submissionMethod = useFormDefinitionSubmissionMethod();
   const { currentLanguage } = useLanguage();
   const { search } = useLocation();
+  const searchRef = useRef(search);
   const navigate = useNavigate();
-  const { setSubmission } = useSubmissionState();
+  const { setSubmission, getLatestSubmission } = useSubmissionState();
   const forceMellomlagring = new URLSearchParams(search).get('forceMellomlagring') === 'true';
-  const innsendingsIdRef = useRef<string | undefined>(
-    new URLSearchParams(search).get('innsendingsId') ?? initialInnsendingsId,
+  const persist = useRef(
+    createDraftPersistence(new URLSearchParams(search).get('innsendingsId') ?? initialInnsendingsId),
   );
+  const mounted = useRef(true);
 
-  const syncSubmissionState = useCallback(
-    (submission: Submission, draft?: Draft) => {
-      if (!draft) {
-        return;
-      }
+  useLayoutEffect(() => {
+    searchRef.current = search;
+  }, [search]);
 
-      const persistedSubmission = draft.submission ?? submission;
-      setSubmission({
-        ...persistedSubmission,
-        fyllutState: {
-          ...persistedSubmission.fyllutState,
-          mellomlagring: {
-            ...persistedSubmission.fyllutState?.mellomlagring,
-            isActive: true,
-            savedDate: dateUtils.toLocaleDateAndTime(draft.modifiedAt),
-            deletionDate: dateUtils.toLocaleDate(draft.deleteAt),
-          },
-        },
-      });
-    },
-    [setSubmission],
-  );
+  useLayoutEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
+
+  const isActive = useCallback(() => mounted.current && !!getLatestSubmission(), [getLatestSubmission]);
 
   const syncInnsendingsIdToUrl = useCallback(
     (innsendingsId: string | undefined) => {
@@ -56,16 +50,17 @@ const useDraftPersistence = (form: Form, initialInnsendingsId?: string): DraftPe
         return;
       }
 
-      const nextSearch = updateSearch(search, {
+      const currentSearch = searchRef.current;
+      const nextSearch = updateSearch(currentSearch, {
         sub: 'digital',
         forceMellomlagring: undefined,
         innsendingsId,
       });
-      if (nextSearch !== search) {
+      if (nextSearch !== currentSearch) {
         navigate({ search: nextSearch }, { replace: true });
       }
     },
-    [navigate, search],
+    [navigate],
   );
 
   const goToActiveTasks = useCallback(
@@ -73,11 +68,23 @@ const useDraftPersistence = (form: Form, initialInnsendingsId?: string): DraftPe
       navigate(
         {
           pathname: `/${form.path}/paabegynt`,
-          search: updateSearch(search, { sub: 'digital', forceMellomlagring: undefined }),
+          search: updateSearch(searchRef.current, { sub: 'digital', forceMellomlagring: undefined }),
         },
         { replace: true },
       ),
-    [form.path, navigate, search],
+    [form.path, navigate],
+  );
+
+  const syncDraft = useCallback(
+    (draft: Draft, created: boolean) => {
+      // Only server-owned timestamps are reconciled. Neither the request snapshot
+      // nor the echoed response owns answers, attachments or renderer state.
+      setSubmission((current) => withDraftMetadata(current, draft));
+      if (created) {
+        syncInnsendingsIdToUrl(draft.id);
+      }
+    },
+    [setSubmission, syncInnsendingsIdToUrl],
   );
 
   const createDraft = useCallback(
@@ -101,58 +108,39 @@ const useDraftPersistence = (form: Form, initialInnsendingsId?: string): DraftPe
   );
 
   const ensureInnsendingsId = useCallback(
-    async (submission: Submission) => {
-      if (innsendingsIdRef.current) {
-        return innsendingsIdRef.current;
-      }
-
-      const transportSubmission = prepareSubmissionForTransport(submission);
-      const result = await createDraft(transportSubmission);
-      if (result.status === 'alreadyExists') {
-        goToActiveTasks();
-        return undefined;
-      }
-
-      innsendingsIdRef.current = result.draft.id;
-      syncInnsendingsIdToUrl(result.draft.id);
-      syncSubmissionState(transportSubmission, result.draft);
-      return innsendingsIdRef.current;
-    },
-    [createDraft, goToActiveTasks, syncInnsendingsIdToUrl, syncSubmissionState],
+    (submission: Submission) =>
+      persist.current(prepareSubmissionForTransport(submission), {
+        create: createDraft,
+        sync: syncDraft,
+        alreadyExists: goToActiveTasks,
+        isActive,
+      }),
+    [createDraft, goToActiveTasks, isActive, syncDraft],
   );
 
   const saveDraft =
     submissionMethod === 'digital'
       ? async (submission: Submission) => {
-          const transportSubmission = prepareSubmissionForTransport(submission);
-          if (!innsendingsIdRef.current) {
-            const result = await createDraft(transportSubmission, TEXTS.statiske.mellomlagringError.create.message);
-            if (result.status === 'alreadyExists') {
-              goToActiveTasks();
-              return;
-            }
-
-            innsendingsIdRef.current = result.draft.id;
-            syncInnsendingsIdToUrl(result.draft.id);
-            syncSubmissionState(transportSubmission, result.draft);
-            return;
-          }
-
-          const innsendingsId = innsendingsIdRef.current;
-          const draft = await (async () => {
-            try {
-              return await applications.updateDraft({
-                id: innsendingsId,
-                formPath: form.path,
-                submission: transportSubmission,
-                language: currentLanguage,
-                submissionMethod,
-              });
-            } catch (error) {
-              throw createSaveDraftError(error, TEXTS.statiske.mellomlagringError.update.message);
-            }
-          })();
-          syncSubmissionState(transportSubmission, draft);
+          await persist.current(prepareSubmissionForTransport(submission), {
+            create: (transportSubmission) =>
+              createDraft(transportSubmission, TEXTS.statiske.mellomlagringError.create.message),
+            update: async (id, transportSubmission) => {
+              try {
+                return await applications.updateDraft({
+                  id,
+                  formPath: form.path,
+                  submission: transportSubmission,
+                  language: currentLanguage,
+                  submissionMethod,
+                });
+              } catch (error) {
+                throw createSaveDraftError(error, TEXTS.statiske.mellomlagringError.update.message);
+              }
+            },
+            sync: syncDraft,
+            alreadyExists: goToActiveTasks,
+            isActive,
+          });
         }
       : undefined;
 

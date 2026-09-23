@@ -1,5 +1,5 @@
 import { formUtils } from '@navikt/skjemadigitalisering-shared-components';
-import { Form, FormsApiTranslationMap, SubmissionData } from '@navikt/skjemadigitalisering-shared-domain';
+import { Form, FormsApiTranslationMap, hasErrorCode, SubmissionData } from '@navikt/skjemadigitalisering-shared-domain';
 import { IntegrationHttp } from '@navikt/skjemadigitalisering-shared-frontend';
 
 interface RenderFormBootstrap {
@@ -21,13 +21,28 @@ const formSelect = 'title,skjemanummer,path,revision,introPage,components,proper
 
 const createRenderFormBootstrapService = ({ http, backendBaseUrl }: Props): RenderFormBootstrapService => ({
   load: async (formPath) => {
-    const [form, translations] = await Promise.all([
-      http.get<Form>(`${backendBaseUrl}/api/forms/${formPath}?select=${formSelect}`),
-      http.get<FormsApiTranslationMap>(`${backendBaseUrl}/api/forms/${formPath}/translations`),
-    ]);
+    const form = await http
+      .get<Form>(`${backendBaseUrl}/api/forms/${formPath}?select=${formSelect}`)
+      .then((form) => {
+        if (!form) {
+          throw new Error('Form response is missing.');
+        }
+        return form;
+      })
+      .catch((error: unknown) => {
+        if (hasErrorCode(error, 'NOT_FOUND')) {
+          return undefined;
+        }
+        throw error;
+      });
 
-    if (!form || !translations) {
+    if (!form) {
       return undefined;
+    }
+
+    const translations = await http.get<FormsApiTranslationMap>(`${backendBaseUrl}/api/forms/${formPath}/translations`);
+    if (!translations) {
+      throw new Error('Form translations response is missing.');
     }
 
     return {

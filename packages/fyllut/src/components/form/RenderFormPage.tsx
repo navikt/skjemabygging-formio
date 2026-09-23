@@ -6,6 +6,7 @@ import { useLocation, useNavigate, useParams } from 'react-router';
 import createIntegrationHttp from '../../adapter-services/createIntegrationHttp';
 import createRenderFormBootstrapService from '../../adapter-services/createRenderFormBootstrapService';
 import createRuntimeServices from '../../adapter-services/createRuntimeServices';
+import { InternalServerErrorPage } from '../errors/InternalServerErrorPage';
 import { NotFoundPage } from '../errors/NotFoundPage';
 import SubmissionMethodNotAllowed from '../SubmissionMethodNotAllowed';
 import FormPageSkeleton from './FormPageSkeleton';
@@ -35,7 +36,7 @@ const RenderFormPage = () => {
     () => createRenderFormBootstrapService({ http: createIntegrationHttp(http!), backendBaseUrl }),
     [backendBaseUrl, http],
   );
-  const { initializedForm, unsupportedCustomValidation, isLoading } = useInitializeRenderForm({
+  const { initializedForm, unsupportedCustomValidation, isLoading, hasInitializationError } = useInitializeRenderForm({
     formPath,
     routePath,
     search,
@@ -44,6 +45,7 @@ const RenderFormPage = () => {
     applications: services.applications,
     navigate,
     loadKey,
+    logger: appConfig.logger,
   });
 
   useFormDocumentMetadata(initializedForm?.form);
@@ -67,6 +69,10 @@ const RenderFormPage = () => {
 
   if (isLoading) {
     return <FormPageSkeleton />;
+  }
+
+  if (hasInitializationError) {
+    return <InternalServerErrorPage />;
   }
 
   if (unsupportedCustomValidation?.length) {
