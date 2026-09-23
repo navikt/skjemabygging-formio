@@ -84,13 +84,6 @@ const staticPdf = {
         formNumber: isEttersending ? form.skjemanummer : form.skjemanummer.replace(/^(\S+)/, '$1p'),
       });
 
-      const staticPdf = isEttersending
-        ? undefined
-        : await staticPdfService.downloadPdf({
-            formPath,
-            languageCode,
-          });
-
       const attachmentStaticPdfs: string[] = [];
 
       for (const component of attachmentComponents) {
@@ -108,19 +101,27 @@ const staticPdf = {
         }
       }
 
-      const pdf =
-        isEttersending && attachmentStaticPdfs.length === 0
-          ? coverPagePdf
-          : await mergeFileService.mergeFiles({
-              accessToken: mergePdfToken,
-              body: {
-                title: form.title,
-                language: languageCode,
-                files: isEttersending
-                  ? [coverPagePdf, ...attachmentStaticPdfs]
-                  : [coverPagePdf, staticPdf!, ...attachmentStaticPdfs],
-              },
-            });
+      const pdfFiles = [coverPagePdf];
+      if (!isEttersending) {
+        const staticPdf = await staticPdfService.downloadPdf({
+          formPath,
+          languageCode,
+        });
+        pdfFiles.push(staticPdf);
+      }
+      pdfFiles.push(...attachmentStaticPdfs);
+
+      let pdf = coverPagePdf;
+      if (pdfFiles.length > 1) {
+        pdf = await mergeFileService.mergeFiles({
+          accessToken: mergePdfToken,
+          body: {
+            title: form.title,
+            language: languageCode,
+            files: pdfFiles,
+          },
+        });
+      }
 
       res.json({ pdfBase64: pdf });
       if (isEttersending) {
