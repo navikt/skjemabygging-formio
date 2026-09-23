@@ -2,14 +2,23 @@
 
 ## Inputs
 
-Require one pull request or issue URL or number. Do not accept a local branch,
-working-tree diff, patch file, or commit range as the only input.
+Ask for the issue URL or number first:
 
-If the caller supplies an issue, find and inspect its implementation pull
+> Provide the issue for the change. If no issue exists, provide the pull request
+> instead.
+
+When the caller supplies an issue, find and inspect its implementation pull
 request. Ask for the pull request when no implementation can be identified. Do
 not produce an implementation test plan from the issue alone.
 
-If the caller supplies a pull request, read:
+Accept a pull request as the starting input only when the caller says that no
+issue exists. If a supplied pull request links an issue, use that issue as the
+primary intent source.
+
+Do not accept a local branch, working-tree diff, patch file, or commit range as
+the only input.
+
+For the implementation pull request, read:
 
 - title, body, labels, review discussion, base and head refs
 - linked issues and specifications

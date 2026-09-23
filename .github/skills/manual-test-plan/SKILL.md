@@ -1,26 +1,29 @@
 ---
 name: manual-test-plan
 description: >-
-    Analyze a supplied pull request or issue and create a manual test plan for
-    skjemabygging-formio, including suitable production or generated forms,
-    environment revision verification, collaborative artifacts, Forms API
-    import, and optional GitHub Pages publication. Use only when the user
-    explicitly invokes /manual-test-plan.
+    Analyze an issue and its implementation pull request, or a pull request when
+    no issue exists, and create a manual test plan for skjemabygging-formio,
+    including suitable production or generated forms, environment revision
+    verification, collaborative artifacts, Forms API import, and optional GitHub
+    Pages publication. Use only when the user explicitly invokes
+    /manual-test-plan.
 disable-model-invocation: true
 ---
 
 # Manual test plan
 
-Create an executable manual test plan for a change in this repository. The
-caller must supply a pull request or issue. Do not infer the target solely from
-the current branch.
+Create an executable manual test plan for a change in this repository. Ask the
+caller for the issue URL or number when an issue exists. Ask for the pull request
+only when the change has no issue. Do not infer the target solely from the
+current branch.
 
 ## Required workflow
 
 1. Read [analysis-workflow.md](references/analysis-workflow.md).
-2. Fetch the supplied pull request or issue, its linked issues or specification,
-   and the committed pull request diff. Do not use an uncommitted or local-only
-   diff as the source for a plan.
+2. Fetch the supplied issue, its linked specification, and its implementation
+   pull request. When the caller confirms that no issue exists, fetch the
+   supplied pull request. Analyze the committed pull request diff in both cases.
+   Do not use an uncommitted or local-only diff as the source for a plan.
 3. Invoke `frontend-development`, `backend-development`, or both before detailed
    analysis when their areas are affected. Follow any specialist routing those
    skills require.
