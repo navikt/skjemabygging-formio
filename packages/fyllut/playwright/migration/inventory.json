@@ -943,7 +943,7 @@
           "sourceHash": "0d19c3c17779ac156dfc7a399045d75d202f9e3cc0dbd0ad5f318cdde2c734dd",
           "modifiers": [],
           "buildOnly": false,
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "coverageChecklist": [
             "Paper validation: 12345678901 produces two exact invalid-number errors; error link focuses account; 01234567892 clears error."
@@ -961,7 +961,7 @@
           "sourceHash": "a2d9844297b3152115fae06a9acf5fb4f27ac19d319271788233cb2084c0dd64",
           "modifiers": [],
           "buildOnly": false,
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "coverageChecklist": [
             "Paper journey: confirm intro, navigate Visning and Validering, enter 01234567892 in both accounts on each step.",
@@ -3085,7 +3085,7 @@
           "sourceHash": "d050597985ec40aa448a8527e8a940ce38e0e9219329dbc02a2ad19919ff1d12",
           "modifiers": [],
           "buildOnly": false,
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "coverageChecklist": [
             "Earliest boundary: 05.01.2025 produces two Datoen kan ikke være tidligere enn 10.01.2025 errors; 10.01.2025 and resubmit clear them."
@@ -10180,7 +10180,7 @@
           "sourceHash": "851208b6d327b4db87c9ae33793c8d8aab75fa2b5a946f03655b40ca574d4155",
           "modifiers": [],
           "buildOnly": false,
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "coverageChecklist": [
             "Navigate digital form through Dine opplysninger and Diverse with Radiovalg 1 to Vedlegg.",
@@ -13372,7 +13372,7 @@
           "sourceHash": "7eab390f9c40500a02c6e0e37e5f65ad27febffced1c4a7f05f35514433e2577",
           "modifiers": [],
           "buildOnly": false,
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "coverageChecklist": [
             "Intro /fyllut/cypressaxe: wait until Axe testing i Cypress exists, inject axe, run full-page checkA11y without narrowed rules."
@@ -13406,7 +13406,7 @@
           "sourceHash": "dd7339294b6bf7333004137e35ead89e2bddde4396e01f2fc4c2d5012bb9b23c",
           "modifiers": [],
           "buildOnly": false,
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "coverageChecklist": [
             "Fresh form session: show all steps, navigate Penger og konto, assert heading and run full-page axe check."
@@ -15810,7 +15810,7 @@
           "sourceHash": "4ccacc796ed913361102da30a026caec897b693bf61260340160b53c2020fee2",
           "modifiers": [],
           "buildOnly": false,
-          "status": "planned",
+          "status": "implemented",
           "coverageReview": "pending",
           "coverageChecklist": [
             "Static PDF: national ID 22015614475, Vedlegg 1 selected; continue and download.",

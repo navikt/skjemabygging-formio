@@ -21,6 +21,7 @@ describe('Static PDF', () => {
     cy.wait('@getStaticPdf');
   });
 
+  // Playwright: F086-T001 | packages/fyllut/playwright/e2e/pdf/static-pdf.spec.ts | Static PDF > should be possible to download pdf with social security number
   it('should be possible to download pdf with social security number', () => {
     visitStaticPdfPage();
 

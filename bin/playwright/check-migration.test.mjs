@@ -16,7 +16,8 @@ for (const file of inventory.files) {
 }
 const sources = new Map();
 const read = (path) => {
-  if (!sources.has(path)) sources.set(path, execFileSync('git', ['show', `HEAD:${path}`], { encoding: 'utf8' }));
+  if (!sources.has(path))
+    sources.set(path, execFileSync('git', ['show', `${inventory.revision}:${path}`], { encoding: 'utf8' }));
   return sources.get(path);
 };
 const bank = inventory.files.find((file) => file.id === 'F004');
@@ -93,6 +94,11 @@ test('current 86-file register passes with 787 planned tests and 38 reviewed pil
     38,
   );
   assert.equal(inventory.files.find((file) => file.id === 'F063').tests.at(-1).id, 'F063-T026');
+});
+
+test('seven pilot pointers match the current working tree', () => {
+  const entries = checkMigration(currentInventory);
+  assert.equal(entries.length, 7);
 });
 
 test('source or inventory tampering fails closed', () => {
