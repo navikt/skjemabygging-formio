@@ -93,6 +93,12 @@ Use `fyllut-deploy-topology` when deployment or version identity matters. Use
 `form-definition-loading` when the change depends on form metadata or component
 fields.
 
+Read [integration-evidence.md](integration-evidence.md) for every outbound
+integration. Require a concrete approved evidence method for each one. If none
+is documented, ask the caller to choose or provide the method and inspection
+owner before writing verification cases. Do not replace a missing method with
+vague instructions such as "check locally" or "verify in logs".
+
 Trace changed shared functions, types, configuration, and integration contracts
 to their callers and consumers. Add regression candidates for unchanged flows
 that use the affected path. Prioritize cases where the same code handles

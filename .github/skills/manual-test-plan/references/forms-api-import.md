@@ -84,3 +84,31 @@ node .github/skills/manual-test-plan/scripts/import-form.mjs \
 The script uses `POST /v1/forms` for a new form and revision-aware
 `PUT /v1/forms/{path}` for an existing form. A stale revision fails instead of
 overwriting newer work.
+
+## Cleanup
+
+Use cleanup only for generated forms that the plan explicitly marks for
+deletion. Production forms imported into preprod need a separately agreed
+restore procedure; never delete them as cleanup.
+
+Dry run:
+
+```bash
+node .github/skills/manual-test-plan/scripts/cleanup-form.mjs \
+  --path <form-path>
+```
+
+The helper refuses to delete a form unless `properties.isTestForm` is exactly
+`true`. It binds the path, revision, title, form number, and test-form marker to
+the confirmation. After confirmation it uses a revision-aware `DELETE` and
+checks that Forms API returns `404` for the deleted path.
+
+Apply only after showing the caller the dry-run output and receiving the exact
+confirmation:
+
+```bash
+node .github/skills/manual-test-plan/scripts/cleanup-form.mjs \
+  --path <form-path> \
+  --apply \
+  --confirm '<operation>'
+```

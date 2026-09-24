@@ -1,12 +1,12 @@
 # Canonical test plan model
 
-Use schema version `2`. Store the canonical JSON in the session artifact
+Use schema version `3`. Store the canonical JSON in the session artifact
 directory. The renderer validates required fields before producing other
 formats.
 
 ```json
 {
-    "schemaVersion": 2,
+    "schemaVersion": 3,
     "slug": "pr-2210-party-resolution",
     "title": "Manuell testplan: avsender og bruker",
     "summary": "Kontroller at avsender og bruker blir behandlet uavhengig av hverandre.",
@@ -47,11 +47,39 @@ formats.
             "status": "aligned"
         }
     ],
-    "setup": [
+    "integrations": [
         {
+            "id": "INT-01",
+            "system": "innsending-api",
+            "behaviorIds": ["B-01"],
+            "evidence": {
+                "audience": "internal",
+                "method": "Sammenlign request body i mockserveren",
+                "owner": "Utvikler",
+                "instructions": [
+                    "Bruk en nummerert route variant i mocks/mocks/routes/innsending-api.ts.",
+                    "Kjør Cypress-testen som velger varianten."
+                ],
+                "expected": "compareBodyMiddleware godkjenner request body mot forventet fixture.",
+                "repositoryReferences": [
+                    ".github/skills/request-body-verification/SKILL.md",
+                    "mocks/mocks/routes/innsending-api.ts"
+                ]
+            }
+        }
+    ],
+    "setupActions": [
+        {
+            "id": "SETUP-01",
+            "audience": "internal",
+            "kind": "forms-api-import",
             "title": "Gjør testskjemaet tilgjengelig",
-            "steps": ["Importer testskjemaet etter at den som bestilte testplanen har godkjent det."],
-            "expected": "Skjemaet er tilgjengelig i preprod og preprod-alt."
+            "formId": "party-form",
+            "steps": ["Kjør import-form.mjs som dry-run og bruk bekreftelsen fra den som bestilte testplanen."],
+            "expected": "Skjemaet er tilgjengelig i preprod og preprod-alt.",
+            "verification": ["Hent skjemaet fra Forms API og kontroller skjemasti og revisjon."],
+            "sharedStateWarning": "preprod og preprod-alt bruker samme Forms API.",
+            "cleanup": ["Slett testskjemaet med cleanup-form.mjs etter testingen."]
         }
     ],
     "forms": [
@@ -71,6 +99,7 @@ formats.
             "title": "Send inn på vegne av en annen person",
             "mode": "verification",
             "behaviorIds": ["B-01"],
+            "integrationIds": ["INT-01"],
             "priority": "P0",
             "purpose": "Kontroller at personen søknaden gjelder vises som bruker, og at innsenderen vises som avsender.",
             "formId": "party-form",
@@ -114,8 +143,24 @@ formats.
   defects require high confidence because their intended result is confirmed.
   Open questions use medium or low confidence.
 - Behavior status is `aligned`, `suspected-defect`, or `open-question`.
+- `integrations` contains every outbound integration affected by the change.
+  Integration IDs must be unique and match `INT-<number>`. Each integration
+  references covered behaviors and has one concrete evidence method with an
+  audience, owner, instructions, expected result, and repository references.
+- Every integration must be linked from at least one test case. If no approved
+  evidence method exists, resolve that question before creating verification
+  cases.
+- `setupActions` contains structured setup. IDs match `SETUP-<number>`.
+  `audience` is `public` or `internal`; `kind` is `forms-api-import`,
+  `form-verification`, `test-user`, `feature-toggle`, `shared-state`, or
+  `other`. Every action has steps, an expected result, verification, and
+  cleanup.
+- A `forms-api-import` setup action must reference a form and include a
+  shared-state warning and cleanup. Cleanup may state an approved restore or
+  retention decision instead of deletion.
 - Case IDs must be unique and match `TC-<number>`.
 - Every case must reference one or more entries in `behaviorAnalysis`.
+- `integrationIds` references the outbound integrations exercised by the case.
 - Case mode is `verification` or `exploratory`.
 - A verification case may reference `aligned` or `suspected-defect` behaviors
   with high confidence. Its expected results must come from confirmed intent,
@@ -131,7 +176,7 @@ formats.
   a user with specific attributes, and describe those attributes as part of the
   case setup.
 - Each step has one action and one observable expected result.
-- `setup` must not contain application deployment instructions.
+- `setupActions` must not contain application deployment instructions.
 - Do not include secrets or real personal data.
 - Write all tester-facing fields in Norwegian and use terminology from the
   application, forms, issue, and approved specification.

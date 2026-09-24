@@ -85,8 +85,8 @@ const plan = (() => {
   }
 })();
 
-if (plan.schemaVersion !== 2) {
-  fail('schemaVersion must be 2');
+if (plan.schemaVersion !== 3) {
+  fail('schemaVersion must be 3');
 }
 
 asNonEmptyString(plan.slug, 'slug');
@@ -149,8 +149,13 @@ if (!plan.environment.revisionCheck || typeof plan.environment.revisionCheck !==
 const revisionEndpoint = asHttpUrl(plan.environment.revisionCheck.endpoint, 'environment.revisionCheck.endpoint');
 const revisionField = asNonEmptyString(plan.environment.revisionCheck.field, 'environment.revisionCheck.field');
 
-if (!Array.isArray(plan.setup) || !Array.isArray(plan.forms) || !Array.isArray(plan.testCases)) {
-  fail('setup, forms, and testCases must be arrays');
+if (
+  !Array.isArray(plan.integrations) ||
+  !Array.isArray(plan.setupActions) ||
+  !Array.isArray(plan.forms) ||
+  !Array.isArray(plan.testCases)
+) {
+  fail('integrations, setupActions, forms, and testCases must be arrays');
 }
 
 asStringArray(plan.risks ?? [], 'risks');
@@ -205,7 +210,89 @@ for (const [index, form] of plan.forms.entries()) {
   asNonEmptyString(form.title, `${prefix}.title`);
 }
 
+const integrations = new Map();
+for (const [index, integration] of plan.integrations.entries()) {
+  const prefix = `integrations[${index}]`;
+  const id = asNonEmptyString(integration.id, `${prefix}.id`);
+  if (!/^INT-\d+$/.test(id)) {
+    fail(`${prefix}.id must match INT-<number>`);
+  }
+  if (integrations.has(id)) {
+    fail(`duplicate integration id: ${id}`);
+  }
+  asNonEmptyString(integration.system, `${prefix}.system`);
+  if (!Array.isArray(integration.behaviorIds) || integration.behaviorIds.length === 0) {
+    fail(`${prefix}.behaviorIds must contain at least one behavior id`);
+  }
+  for (const behaviorId of integration.behaviorIds) {
+    if (!behaviors.has(behaviorId)) {
+      fail(`${prefix}.behaviorIds references unknown behavior ${behaviorId}`);
+    }
+  }
+  if (!integration.evidence || typeof integration.evidence !== 'object') {
+    fail(`${prefix}.evidence is required`);
+  }
+  if (!['public', 'internal'].includes(integration.evidence.audience)) {
+    fail(`${prefix}.evidence.audience must be public or internal`);
+  }
+  for (const field of ['method', 'owner', 'expected']) {
+    asNonEmptyString(integration.evidence[field], `${prefix}.evidence.${field}`);
+  }
+  const instructions = asStringArray(integration.evidence.instructions, `${prefix}.evidence.instructions`);
+  if (instructions.length === 0) {
+    fail(`${prefix}.evidence.instructions must contain at least one step`);
+  }
+  asStringArray(integration.evidence.repositoryReferences, `${prefix}.evidence.repositoryReferences`);
+  integrations.set(id, integration);
+}
+
+const setupIds = new Set();
+for (const [index, action] of plan.setupActions.entries()) {
+  const prefix = `setupActions[${index}]`;
+  const id = asNonEmptyString(action.id, `${prefix}.id`);
+  if (!/^SETUP-\d+$/.test(id)) {
+    fail(`${prefix}.id must match SETUP-<number>`);
+  }
+  if (setupIds.has(id)) {
+    fail(`duplicate setup action id: ${id}`);
+  }
+  setupIds.add(id);
+  if (!['public', 'internal'].includes(action.audience)) {
+    fail(`${prefix}.audience must be public or internal`);
+  }
+  if (
+    !['forms-api-import', 'form-verification', 'test-user', 'feature-toggle', 'shared-state', 'other'].includes(
+      action.kind,
+    )
+  ) {
+    fail(`${prefix}.kind is invalid`);
+  }
+  asNonEmptyString(action.title, `${prefix}.title`);
+  asNonEmptyString(action.expected, `${prefix}.expected`);
+  const steps = asStringArray(action.steps, `${prefix}.steps`);
+  const verification = asStringArray(action.verification, `${prefix}.verification`);
+  const cleanup = asStringArray(action.cleanup, `${prefix}.cleanup`);
+  if (steps.length === 0 || verification.length === 0) {
+    fail(`${prefix}.steps and verification must not be empty`);
+  }
+  if (action.formId && !formIds.has(action.formId)) {
+    fail(`${prefix}.formId references unknown form ${action.formId}`);
+  }
+  if (action.kind === 'forms-api-import') {
+    if (!action.formId) {
+      fail(`${prefix}.formId is required for Forms API imports`);
+    }
+    asNonEmptyString(action.sharedStateWarning, `${prefix}.sharedStateWarning`);
+    if (cleanup.length === 0) {
+      fail(`${prefix}.cleanup must describe deletion, restoration, or retention`);
+    }
+  } else if (action.sharedStateWarning !== undefined) {
+    asNonEmptyString(action.sharedStateWarning, `${prefix}.sharedStateWarning`);
+  }
+}
+
 const caseIds = new Set();
+const referencedIntegrationIds = new Set();
 for (const [index, testCase] of plan.testCases.entries()) {
   const prefix = `testCases[${index}]`;
   const id = asNonEmptyString(testCase.id, `${prefix}.id`);
@@ -248,6 +335,13 @@ for (const [index, testCase] of plan.testCases.entries()) {
   if (testCase.formId && !formIds.has(testCase.formId)) {
     fail(`${prefix}.formId references unknown form ${testCase.formId}`);
   }
+  const integrationIds = asStringArray(testCase.integrationIds ?? [], `${prefix}.integrationIds`);
+  for (const integrationId of integrationIds) {
+    if (!integrations.has(integrationId)) {
+      fail(`${prefix}.integrationIds references unknown integration ${integrationId}`);
+    }
+    referencedIntegrationIds.add(integrationId);
+  }
   for (const field of ['prerequisites', 'testUsers', 'evidence', 'cleanup']) {
     asStringArray(testCase[field] ?? [], `${prefix}.${field}`);
   }
@@ -257,6 +351,11 @@ for (const [index, testCase] of plan.testCases.entries()) {
   for (const [stepIndex, step] of testCase.steps.entries()) {
     asNonEmptyString(step.action, `${prefix}.steps[${stepIndex}].action`);
     asNonEmptyString(step.expected, `${prefix}.steps[${stepIndex}].expected`);
+  }
+}
+for (const integrationId of integrations.keys()) {
+  if (!referencedIntegrationIds.has(integrationId)) {
+    fail(`integration ${integrationId} is not referenced by a test case`);
   }
 }
 
@@ -280,14 +379,18 @@ const pageUrl = configuredPageUrl?.replace(/\/$/, '') || defaultPageUrl;
 const caseUrl = (id) => `${pageUrl}${pageUrl.endsWith('.html') ? '' : '/'}#${id.toLowerCase()}`;
 
 const sourceNumber = plan.source.number ? ` #${escapeHtml(plan.source.number)}` : '';
-const setupHtml = plan.setup
+const publicSetupActions = plan.setupActions.filter((action) => action.audience === 'public');
+const internalSetupActions = plan.setupActions.filter((action) => action.audience === 'internal');
+const setupHtml = publicSetupActions
   .map((item) => {
-    asNonEmptyString(item.title, 'setup.title');
-    asStringArray(item.steps, `setup.${item.title}.steps`);
     return `<section class="setup-card">
       <h3>${escapeHtml(item.title)}</h3>
       ${list(item.steps)}
-      ${item.expected ? `<p><strong>Forventet:</strong> ${escapeHtml(item.expected)}</p>` : ''}
+      <p><strong>Forventet:</strong> ${escapeHtml(item.expected)}</p>
+      <h4>Kontroller</h4>
+      ${list(item.verification)}
+      ${item.sharedStateWarning ? `<p><strong>Delt tilstand:</strong> ${escapeHtml(item.sharedStateWarning)}</p>` : ''}
+      ${item.cleanup.length ? `<h4>Rydd opp</h4>${list(item.cleanup)}` : ''}
     </section>`;
   })
   .join('');
@@ -318,6 +421,13 @@ const behaviorConfidenceLabels = {
   medium: 'Middels',
   low: 'Lav',
 };
+const renderIntegrationEvidenceHtml = (integration) => `<section class="integration-evidence">
+  <h3>${escapeHtml(integration.system)}</h3>
+  <p><strong>Metode:</strong> ${escapeHtml(integration.evidence.method)}</p>
+  <p><strong>Ansvarlig:</strong> ${escapeHtml(integration.evidence.owner)}</p>
+  ${list(integration.evidence.instructions)}
+  <p><strong>Forventet:</strong> ${escapeHtml(integration.evidence.expected)}</p>
+</section>`;
 const behaviorsHtml = `<ol class="behavior-list">
   ${plan.behaviorAnalysis
     .map(
@@ -347,6 +457,11 @@ const casesHtml = plan.testCases
   .map((testCase) => {
     const form = plan.forms.find((candidate) => candidate.id === testCase.formId);
     const testUsers = testCase.testUsers ?? [];
+    const publicIntegrationEvidence = (testCase.integrationIds ?? [])
+      .map((id) => integrations.get(id))
+      .filter((integration) => integration.evidence.audience === 'public')
+      .map(renderIntegrationEvidenceHtml)
+      .join('');
     const priorityLabels = {
       P0: 'P0 - må testes',
       P1: 'P1 - bør testes',
@@ -387,6 +502,7 @@ const casesHtml = plan.testCases
           .join('')}</ol>
         <h3>Dokumentasjon</h3>
         ${list(testCase.evidence)}
+        ${publicIntegrationEvidence ? `<h3>Kontroll av integrasjoner</h3>${publicIntegrationEvidence}` : ''}
         ${testCase.cleanup.length ? `<h3>Rydd opp</h3>${list(testCase.cleanup)}` : ''}
       </div>
     </details>`;
@@ -501,15 +617,18 @@ const issueBehaviors = plan.behaviorAnalysis
   )
   .join('\n\n');
 
-const issueSetup = plan.setup
-  .map(
-    (item) => `### ${item.title}
+const renderSetupMarkdown = (item) => `### ${item.id}: ${item.title}
 
 ${item.steps.map((step) => `1. ${step}`).join('\n')}
 
-**Forventet:** ${item.expected ?? 'Oppsettet er klart.'}`,
-  )
-  .join('\n\n');
+**Forventet:** ${item.expected}
+
+**Kontroller:**
+${item.verification.map((step) => `- ${step}`).join('\n')}
+${item.sharedStateWarning ? `\n**Delt tilstand:** ${item.sharedStateWarning}\n` : ''}
+${item.cleanup.length ? `**Rydd opp:**\n${item.cleanup.map((step) => `- ${step}`).join('\n')}` : ''}`;
+
+const issueSetup = publicSetupActions.map((item) => renderSetupMarkdown(item)).join('\n\n');
 
 const issueForms = plan.forms.length
   ? plan.forms
@@ -526,6 +645,17 @@ const issueCases = plan.testCases
   .map((testCase) => {
     const form = plan.forms.find((candidate) => candidate.id === testCase.formId);
     const testUsers = testCase.testUsers ?? [];
+    const publicIntegrationEvidence = (testCase.integrationIds ?? [])
+      .map((id) => integrations.get(id))
+      .filter((integration) => integration.evidence.audience === 'public')
+      .map(
+        (integration) => `  **Kontroll av ${integration.system}:**
+  - Metode: ${integration.evidence.method}
+  - Ansvarlig: ${integration.evidence.owner}
+${integration.evidence.instructions.map((step) => `  - ${step}`).join('\n')}
+  - Forventet: ${integration.evidence.expected}`,
+      )
+      .join('\n');
     const formText = form
       ? `**Skjema:** [intern-ingress](${internBaseUrl}/${encodeURIComponent(
           form.path,
@@ -546,6 +676,7 @@ ${testUserText}
 ${testCase.steps.map((step, index) => `  ${index + 1}. ${step.action}\n     - Forventet: ${step.expected}`).join('\n')}
 
   **Dokumentasjon:** ${testCase.evidence.join('; ') || 'Noter resultatet.'}
+${publicIntegrationEvidence ? `${publicIntegrationEvidence}\n` : ''}
   **Resultat og merknader:**`;
   })
   .join('\n\n');
@@ -594,14 +725,52 @@ Pull request: ${plan.source.url}
 ${plan.source.issue ? `Sak: ${plan.source.issue.url}` : ''}
 `;
 
+const internalIntegrationEvidence = plan.integrations
+  .filter((integration) => integration.evidence.audience === 'internal')
+  .map(
+    (integration) => `## ${integration.id}: ${integration.system}
+
+**Metode:** ${integration.evidence.method}
+
+**Ansvarlig:** ${integration.evidence.owner}
+
+${integration.evidence.instructions.map((step) => `1. ${step}`).join('\n')}
+
+**Forventet:** ${integration.evidence.expected}
+
+${
+  integration.evidence.repositoryReferences.length
+    ? `**Referanser:**\n${integration.evidence.repositoryReferences.map((reference) => `- \`${reference}\``).join('\n')}`
+    : ''
+}`,
+  )
+  .join('\n\n');
+const internalSetup = internalSetupActions.map(renderSetupMarkdown).join('\n\n');
+const internalInstructions =
+  internalSetup || internalIntegrationEvidence
+    ? `# Interne instruksjoner for ${plan.title}
+
+Denne filen skal ikke publiseres på GitHub Pages eller i en offentlig GitHub-sak.
+
+${internalSetup ? `## Internt oppsett\n\n${internalSetup}` : ''}
+
+${internalIntegrationEvidence ? `## Integrasjonsbevis\n\n${internalIntegrationEvidence}` : ''}
+`
+    : undefined;
+
 const artifactFiles = plan.collaboration.withNonDevelopers
   ? new Map([
       ['index.html', html],
       ['slack-canvas.md', slack],
     ])
   : new Map([['github-issue.md', issue]]);
+if (internalInstructions) {
+  artifactFiles.set('internal-instructions.md', internalInstructions);
+}
 const reservedArtifactPaths = new Set(
-  ['index.html', 'slack-canvas.md', 'github-issue.md', 'manifest.json'].map((path) => path.toLowerCase()),
+  ['index.html', 'slack-canvas.md', 'github-issue.md', 'internal-instructions.md', 'manifest.json'].map((path) =>
+    path.toLowerCase(),
+  ),
 );
 const generatedArtifacts = [];
 const generatedArtifactPaths = new Set();
@@ -657,7 +826,7 @@ if (existsSync(previousManifestPath) && lstatSync(previousManifestPath).isFile()
     const previousManifest = JSON.parse(readFileSync(previousManifestPath, 'utf8'));
     if (
       !previousManifest ||
-      ![1, 2].includes(previousManifest.schemaVersion) ||
+      ![1, 2, 3].includes(previousManifest.schemaVersion) ||
       !Array.isArray(previousManifest.files) ||
       previousManifest.files.length === 0
     ) {
@@ -727,7 +896,7 @@ for (const { artifact } of generatedArtifacts) {
 
 writeFileSync(
   join(outputDirectory, 'manifest.json'),
-  `${JSON.stringify({ schemaVersion: 2, slug: plan.slug, generatedAt, files: manifestEntries }, null, 2)}\n`,
+  `${JSON.stringify({ schemaVersion: 3, slug: plan.slug, generatedAt, files: manifestEntries }, null, 2)}\n`,
 );
 
 process.stdout.write(

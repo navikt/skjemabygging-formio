@@ -35,6 +35,9 @@ current branch.
    user to confirm the inferred intent.
 6. Identify observable behavior, regression risk, integrations, environments,
    failure paths, and evidence that proves each expected result.
+   Read [integration-evidence.md](references/integration-evidence.md). Do not
+   generate verification cases for an outbound integration until its concrete
+   approved evidence method is known.
 7. Record the exact head commit under test and add a preflight check against the
    target environment's config endpoint. Do not add deployment steps; deployment
    is the developer's responsibility.
@@ -61,6 +64,9 @@ current branch.
     generate one GitHub issue document that combines instructions and tracking.
 13. Review every generated artifact for internal or sensitive content. Ask
     separately whether each artifact should be redacted, omitted, or published.
+    Public HTML and GitHub issues must contain only setup and evidence marked
+    `public`. Keep `internal` instructions in the local internal-instructions
+    artifact; do not replace omitted details with vague public text.
 14. Ask before importing or updating each generated form. Follow
     [forms-api-import.md](references/forms-api-import.md).
 15. Ask before publishing the HTML artifact or creating the GitHub issue. Use
