@@ -278,9 +278,17 @@ test.each([false, true])('renders distinct submission verification options (coll
     assert.equal(run.result.status, 0, run.result.stderr);
     const publicOutput = run.read(collaboration ? 'index.html' : 'github-issue.md');
     const canvas = collaboration ? run.read('slack-canvas.md') : '';
-    for (const text of ['Teamlogger i GCP', 'Journalpost i Joark', 'Ingen innsyn', 'Kontrollen står åpen']) {
+    for (const text of ['Teamlogger i GCP', 'Journalpost i Joark']) {
       assert.match(publicOutput, new RegExp(text));
       if (collaboration) assert.match(canvas, new RegExp(text));
+    }
+    for (const text of ['Ingen innsyn', 'Kontrollen står åpen']) {
+      if (collaboration) {
+        assert.match(publicOutput, new RegExp(text));
+        assert.match(canvas, new RegExp(text));
+      } else {
+        assert.doesNotMatch(publicOutput, new RegExp(text));
+      }
     }
     assert.match(publicOutput, /console\.cloud\.google\.com\/logs\?project=team-soknad-dev/);
     assert.match(collaboration ? canvas : publicOutput, /query=%28test%29/);
@@ -303,13 +311,36 @@ test('rejects an empty submission verification option list', () => {
   }
 });
 
-test('requires all three public evidence paths for innsending-api', () => {
-  const plan = makePlan(false);
+test('requires handoff only when non-developers collaborate', () => {
+  const plan = makePlan(true);
   plan.integrations[0].system = 'innsending-api';
   const run = render(plan);
   try {
     assert.equal(run.result.status, 1);
-    assert.match(run.result.stderr, /public team-logs, joark, and handoff options/);
+    assert.match(run.result.stderr, /plus handoff for collaboration/);
+  } finally {
+    run.cleanup();
+  }
+});
+
+test('accepts team logs and Joark without handoff for a non-collaborative issue', () => {
+  const plan = makePlan(false);
+  plan.integrations[0].system = 'innsending-api';
+  plan.integrations[0].evidence = {
+    options: ['team-logs', 'joark'].map((id) => ({
+      id,
+      audience: 'public',
+      method: id === 'team-logs' ? 'Teamlogger i GCP' : 'Journalpost i Joark',
+      owner: 'Utvikler',
+      instructions: ['Finn riktig innsending'],
+      expected: 'Rollene stemmer',
+    })),
+  };
+  const run = render(plan);
+  try {
+    assert.equal(run.result.status, 0, run.result.stderr);
+    assert.match(run.read('github-issue.md'), /Teamlogger i GCP/);
+    assert.match(run.read('github-issue.md'), /Journalpost i Joark/);
   } finally {
     run.cleanup();
   }

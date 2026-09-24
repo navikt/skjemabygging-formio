@@ -13,10 +13,12 @@ an outbound payload.
 
 Local mock verification can support a separate automated request-body check,
 but it never verifies what a manual preprod submission sent. For a submission
-case, offer three paths in `integrations[].evidence.options`. Give each option
-its own owner, ordered actions, and observable expected result. Ask who can
-perform the follow-up; do not assume the current tester has log or Joark
-access.
+case, offer team logs and Joark in `integrations[].evidence.options`. When
+non-developers collaborate, also show the no-access handoff path in HTML and
+Canvas. Omit handoff from a non-collaborative GitHub issue. Give each option
+its own owner, ordered actions, and observable expected result. This is a
+choice about who tests the case, not a prerequisite that the caller can use
+every method.
 
 ### Team logs in GCP
 

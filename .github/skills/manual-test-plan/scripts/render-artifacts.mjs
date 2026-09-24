@@ -272,11 +272,13 @@ for (const [index, integration] of plan.integrations.entries()) {
   if (
     integration.system === 'innsending-api' &&
     (!options ||
-      ['team-logs', 'joark', 'handoff'].some(
+      (plan.collaboration.withNonDevelopers ? ['team-logs', 'joark', 'handoff'] : ['team-logs', 'joark']).some(
         (optionId) => !options.some((option) => option.id === optionId && option.audience === 'public'),
       ))
   ) {
-    fail(`${prefix}.evidence.options must include public team-logs, joark, and handoff options`);
+    fail(
+      `${prefix}.evidence.options must include public team-logs and joark options${plan.collaboration.withNonDevelopers ? ', plus handoff for collaboration' : ''}`,
+    );
   }
   integrations.set(id, integration);
 }
@@ -437,6 +439,10 @@ const shellBlock = (command) => {
 const list = (values) =>
   values.length ? `<ul>${values.map((value) => `<li>${escapeHtml(value)}</li>`).join('')}</ul>` : '<p>Ingen.</p>';
 const integrationOptions = (integration) => integration.evidence.options ?? [integration.evidence];
+const publicIntegrationOptions = (integration) =>
+  integrationOptions(integration).filter(
+    (option) => option.audience === 'public' && (plan.collaboration.withNonDevelopers || option.id !== 'handoff'),
+  );
 const evidenceUrl = (url) => asHttpUrl(url, 'evidence.url').replaceAll('(', '%28').replaceAll(')', '%29');
 const scopeHtml = plan.scope
   ? `<section class="card">
@@ -545,9 +551,7 @@ const casesHtml = plan.testCases
     const publicIntegrationEvidence = (testCase.integrationIds ?? [])
       .map((id) => integrations.get(id))
       .flatMap((integration) =>
-        integrationOptions(integration)
-          .filter((option) => option.audience === 'public')
-          .map((option) => renderIntegrationEvidenceHtml(integration, option)),
+        publicIntegrationOptions(integration).map((option) => renderIntegrationEvidenceHtml(integration, option)),
       )
       .join('');
     const priorityLabels = {
@@ -679,15 +683,13 @@ const slackCases = plan.testCases
     const publicIntegrationEvidence = testCase.integrationIds
       .map((id) => integrations.get(id))
       .flatMap((integration) =>
-        integrationOptions(integration)
-          .filter((option) => option.audience === 'public')
-          .map(
-            (option) => `  Kontroll av ${escapeMarkdown(integration.system)}: ${escapeMarkdown(option.method)}
+        publicIntegrationOptions(integration).map(
+          (option) => `  Kontroll av ${escapeMarkdown(integration.system)}: ${escapeMarkdown(option.method)}
   Hvem: ${escapeMarkdown(option.owner)}
 ${option.url ? `  Lenke: ${evidenceUrl(option.url)}\n` : ''}
 ${option.instructions.map((step, index) => `  ${index + 1}. ${escapeMarkdown(step)}`).join('\n')}
   Forventet: ${escapeMarkdown(option.expected)}`,
-          ),
+        ),
       )
       .join('\n');
     const links = form
@@ -788,10 +790,8 @@ const issueCases = plan.testCases
     const publicIntegrationEvidence = (testCase.integrationIds ?? [])
       .map((id) => integrations.get(id))
       .flatMap((integration) =>
-        integrationOptions(integration)
-          .filter((option) => option.audience === 'public')
-          .map(
-            (option) => `**Kontroll av ${escapeMarkdown(integration.system)}: ${escapeMarkdown(option.method)}**
+        publicIntegrationOptions(integration).map(
+          (option) => `**Kontroll av ${escapeMarkdown(integration.system)}: ${escapeMarkdown(option.method)}**
 
 **Hvem:** ${escapeMarkdown(option.owner)}
 
@@ -799,7 +799,7 @@ ${option.url ? `[Åpne ${escapeMarkdown(option.method)}](${evidenceUrl(option.ur
 ${option.instructions.map((step, index) => `${index + 1}. ${escapeMarkdown(step)}`).join('\n')}
 
 **Forventet:** ${escapeMarkdown(option.expected)}`,
-          ),
+        ),
       )
       .join('\n\n');
     const formText = form

@@ -49,8 +49,10 @@ issue. Do not infer the target solely from the current branch.
    generate verification cases for an outbound integration until its concrete
    approved evidence method is known. Treat claims about downstream identity
    and upload sessions as integration claims, not UI receipt checks. For
-   submissions, show the team-log, Joark, and no-access handoff options
-   separately. Do not mark a handoff or a success log as payload verification.
+   submissions, show the team-log and Joark options separately. Add a
+   no-access handoff option when non-developers collaborate; omit it from a
+   non-collaborative GitHub issue. Do not mark a handoff or a success log as
+   payload verification.
 7. Record the exact head commit and establish a revision check for the target
    application using [analysis-workflow.md](references/analysis-workflow.md).
 8. Use `ask_user` to ask: "Will non-developers collaborate on the testing?"
@@ -64,8 +66,10 @@ issue. Do not infer the target solely from the current branch.
    follow the proxy and token troubleshooting in
    [forms-api-import.md](references/forms-api-import.md). Do not treat a failed
    lookup as proof that a form is absent.
-   Reconstruct each case's route through the selected form, submission method,
-   and conditional choices before writing its steps. For digital submission
+   Fix the PR head, preprod form revision, submission method, and branch
+   choices for each case. Then follow
+   [preprod-browser-probe.md](references/preprod-browser-probe.md) to walk
+   that route in FyllUt before writing numbered steps. For digital submission
    without login, also read
    [digital-no-login-journey.md](references/digital-no-login-journey.md).
 10. Write tester-facing HTML, Slack Canvas, and GitHub issue content in
@@ -89,11 +93,13 @@ issue. Do not infer the target solely from the current branch.
     produce the output for the caller's collaboration choice.
 13. Review public artifacts for sensitive content and redact or omit it before
     asking once whether to publish the HTML or create the issue. For every case,
-    compare rendered steps with its checked route, including required actions
-    and intermediate pages. A verification case needs a checked route; if the
-    route cannot be checked, state what remains unknown and write an exploratory
-    case without invented transitions. Reject conditional wording for mandatory
-    actions and unsupported downstream claims. Show the caller the entire
+    compare every rendered HTML and Canvas step with that case's sanitized
+    browser trace, including required actions and intermediate pages. A
+    verification case needs a checked route; if the browser walkthrough
+    cannot be completed, record the attempted probe, concrete blocker, and
+    unobserved transitions before writing an exploratory case. Reject
+    conditional wording for mandatory actions and unsupported downstream
+    claims. Show the caller the entire
     rendered GitHub issue body before requesting approval. Keep `internal`
     setup and evidence only in the local internal-instructions file; never
     substitute vague placeholders in public output.

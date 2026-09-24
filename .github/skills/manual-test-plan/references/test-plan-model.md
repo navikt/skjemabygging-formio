@@ -137,8 +137,8 @@ formats.
             "journeyCheck": {
                 "status": "unverified",
                 "route": "Send digitalt uten å logge inn, bruker og avsender som to ulike personer",
-                "note": "Den importerte skjemarevisjonen og sidene etter introduksjonen er ikke gjennomgått.",
-                "evidence": []
+                "note": "Lesemodus stoppet ved påkrevd legitimasjonsopplasting. Sidene etter opplastingen er ikke sett.",
+                "evidence": ["Eksempel: lokal sporfil fra nettleserproben for denne ruten og skjemarevisjonen."]
             },
             "prerequisites": ["Ha to godkjente syntetiske identiteter og en syntetisk legitimasjonsfil tilgjengelig."],
             "testUsers": ["Bruker og avsender må være to ulike syntetiske personer."],
@@ -210,8 +210,10 @@ formats.
   lowercase `id`, `audience` (`public` or `internal`), `method`, `owner`,
   `instructions` (ordered steps), and `expected` (the specific observable
   result). `repositoryReferences` and a URL are optional. For a submission,
-  provide separate `team-logs`, `joark`, and `handoff` options as described
-  in [integration-evidence.md](integration-evidence.md). The `handoff` option
+  provide separate `team-logs` and `joark` options as described in
+  [integration-evidence.md](integration-evidence.md). For collaboration with
+  non-developers, also provide `handoff`. The renderer omits handoff from a
+  non-collaborative GitHub issue even if it is present in the plan. A handoff
   must say the downstream check is pending, not passed.
 - Every integration must be linked from at least one test case. If no approved
   evidence method exists, resolve that question before creating verification
@@ -245,8 +247,10 @@ formats.
 - Every case needs `journeyCheck` with `status` (`verified` or `unverified`),
   a Norwegian `route` naming the submission method and branch choices, and a
   Norwegian `note` describing what was seen or remains unchecked. Add
-  `evidence` naming the exact form revision and walkthrough or test that
-  confirms the route; it must be nonempty for a verified route. For generated
+  `evidence` naming the exact preprod form revision, PR head, and local
+  browser-trace path for that case; it must be nonempty for a verified route.
+  If probing stops early, record the attempted probe, blocker, and unobserved
+  transitions in the note and evidence. For generated
   forms, check the exact JSON before import and the imported revision before
   publication. Two cases using one form may have different route statuses.
   Metadata, schema checks, and HTTP 200 do not verify a route.

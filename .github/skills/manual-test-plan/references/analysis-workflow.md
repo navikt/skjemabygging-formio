@@ -105,22 +105,33 @@ For each changed behavior:
    type, function, or field names.
 
 Reconstruct the full ordered route for each case, not once per form. Fix the
-form revision, submission method, identity or authentication path, and
-conditional choices. Walk the route in the renderer used by the target
-application. Record what the tester sees at each transition, including
-required uploads, introduction, relevant form pages, summary, submission,
-and receipt where applicable. Check the form definition and actual labels;
-another form or a different branch of the same form does not prove this route.
+PR head commit, preprod form revision, submission method, identity or
+authentication path, and conditional choices before probing. For FyllUt
+in preprod, follow [preprod-browser-probe.md](preprod-browser-probe.md).
+Walk the target renderer in a browser before writing exact numbered steps.
+Record an ordered, sanitized trace for each branch: URL, visible heading,
+relevant labels and choices, required upload or confirmation, action taken,
+and next page. Do not record filled-in identities, tokens, or document
+contents. Check the form definition too, but neither Forms API metadata nor
+a similar Cypress test proves the browser route of this case.
 If the form is generated, walk its exact JSON locally before import and check
 the imported preprod revision again before publication. Compare every rendered
 step and expected result with that route. Never say "if prompted" for a
 required action or skip an intervening page.
 
-Record the route and how it was checked in each case's `journeyCheck`. A case
+Record the form revision and browser trace in each case's `journeyCheck`.
+Before falling back to exploratory, attempt the walkthrough and document the
+concrete blocker. Inspect a redirect's `Location` and follow normal browser
+navigation: a 302 is not an access barrier, and a 200 does not prove the
+complete journey. Distinguish navigation from upload, PDF generation, and
+submission; get approval before performing these actions in preprod. A case
 with an unverified route must be exploratory. Name the transitions still
-unknown instead of guessing them or writing an expected result that assumes
-they work. Once the route has been checked, update the case and its steps
-before treating it as verification.
+unknown instead of guessing them.
+
+Use the trace to establish which steps testers must take, not to define
+their expected outcomes. Derive expected results from the issue or approved
+specification, including when observed behavior disagrees with intended
+behavior.
 
 For each step, name the page, field, document, or status the tester should
 actually see. A receipt expected result must not claim that another system
