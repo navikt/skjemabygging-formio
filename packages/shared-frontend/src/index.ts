@@ -16,6 +16,7 @@ import {
 import { applyInitialValuesToSubmission } from './context/form-definition/initialSubmissionValues';
 import { LanguageProvider, useLanguage } from './context/language/LanguageContext';
 import { RuntimeServicesProvider, useRuntimeServices } from './context/runtime-services/RuntimeServicesContext';
+import { solvePow } from './context/runtime-services/powWorker';
 import { StateStoreProvider } from './context/state/StateContext';
 import { SubmissionStateProvider, useSubmissionState } from './context/state/SubmissionStateContext';
 import { ValidationProvider } from './context/validation/ValidationContext';
@@ -93,6 +94,7 @@ export {
   resolveDefaultSubmissionMethod,
   RuntimeServicesProvider,
   sharedFrontendPackageName,
+  solvePow,
   StateStoreProvider,
   SubmissionStateProvider,
   useApplication,

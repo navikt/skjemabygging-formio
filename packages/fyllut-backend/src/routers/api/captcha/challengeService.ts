@@ -7,7 +7,7 @@ const MAX_SOLUTION_LENGTH = 64;
 /**
  * Canonical proof of work format: SHA-256(nonce + ":" + solution) must have at
  * least `difficulty` leading zero bits. The same format is implemented in the
- * frontend web worker (shared-components: src/api/captcha/powWorker.ts).
+ * frontend web worker (shared-frontend: src/context/runtime-services/powWorker.ts).
  */
 const POW_SEPARATOR = ':';
 

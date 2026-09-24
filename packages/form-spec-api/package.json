@@ -18,8 +18,8 @@
     "test:coverage": "vitest --run --coverage"
   },
   "dependencies": {
-    "@navikt/skjemadigitalisering-shared-backend": "1.0.0",
-    "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
+    "@navikt/skjemadigitalisering-shared-backend": "workspace:*",
+    "@navikt/skjemadigitalisering-shared-domain": "workspace:*",
     "cors": "^2.8.6",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",

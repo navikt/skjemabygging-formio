@@ -18,7 +18,11 @@ describe('fyllut runtime services', () => {
     const http: IntegrationHttp = {
       get: async <T>(url: string, headers?: IntegrationHttpHeaders) => {
         requests.push({ method: 'GET', url, headers });
-        return downloadedFile as T;
+        return (
+          url.endsWith('/captcha/challenge')
+            ? { nonce: 'nonce', difficulty: 0, expiresAt: 123456789, signature: 'signature' }
+            : downloadedFile
+        ) as T;
       },
       post: async <T>(url: string, body: object, headers?: IntegrationHttpHeaders) => {
         requests.push({ method: 'POST', url, body, headers });
@@ -72,6 +76,7 @@ describe('fyllut runtime services', () => {
     });
 
     expect(requests.map(({ method, url, headers }) => ({ method, url, headers }))).toEqual([
+      { method: 'GET', url: '/fyllut/api/captcha/challenge', headers: undefined },
       { method: 'POST', url: '/fyllut/api/captcha', headers: undefined },
       {
         method: 'POST_FILE',
@@ -109,7 +114,14 @@ describe('fyllut runtime services', () => {
         headers: { Accept: 'application/pdf' },
       },
     ]);
-    expect(requests[0]?.body).toEqual({ firstName: '', data_33: 'ja' });
-    expect(requests[1]?.body).toBeInstanceOf(FormData);
+    expect(requests[1]?.body).toEqual({
+      firstName: '',
+      nonce: 'nonce',
+      difficulty: 0,
+      expiresAt: 123456789,
+      signature: 'signature',
+      solution: '0',
+    });
+    expect(requests[2]?.body).toBeInstanceOf(FormData);
   });
 });

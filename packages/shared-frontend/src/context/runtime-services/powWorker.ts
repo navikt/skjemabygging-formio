@@ -1,5 +1,5 @@
 /**
- * Solves the proof of work challenge issued by fyllut-backend.
+ * Solves the proof-of-work challenge issued by fyllut-backend.
  *
  * Canonical format: find a `solution` such that SHA-256(nonce + ":" + solution)
  * has at least `difficulty` leading zero bits. The same format is implemented in

@@ -1,5 +1,5 @@
+import { solvePow } from '@navikt/skjemadigitalisering-shared-frontend';
 import baseHttp from '../util/http/http';
-import { solvePow } from './powWorker';
 
 interface CaptchaResponse {
   success: boolean;
