@@ -163,6 +163,10 @@ Se [GitHub docs](https://docs.github.com/en/authentication/keeping-your-account-
 
 Velg `repo` under `scopes`, og _authorize_ dette token for organisasjon `navikt` etter opprettelsen (_Configure SSO_).
 
+### Clearing preprod forms
+
+Admins can open `/form-clear` in Bygger outside `prod-gcp`. Preview the keep-set, confirm the deletion, and wait for the forms-api job to finish before running publish-repo cleanup. Starting a job sends the displayed preview plan to forms-api. On `409`, Bygger checks for an active job and monitors it if present; if there is no active job, the admin must preview again because the plan changed. Preprod and preprod-alt share one forms-api database; clearing either affects both. Cleanup compares form files on the configured `PUBLISH_REPO_BASE` branch against all remaining forms in forms-api, including soft-deleted forms, and removes only orphaned form and translation files. Cleanup can be retried without restarting the database job. It does not republish forms. Use `/bulk-publisering` separately when needed. Deploy forms-api's form-clear endpoints before this Bygger change.
+
 ### 🚩 Feature toggles
 
 Vi forsøker å unngå bruk av feature toggles, men det er mulighet for i både fyllut og bygger å legge inn feature toggles

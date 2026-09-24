@@ -1,5 +1,8 @@
+import { useAppConfig } from '@navikt/skjemadigitalisering-shared-components';
 import { Navigate, Route, Routes } from 'react-router';
+import { useAuth } from './context/auth-context';
 import GlobalTranslationsProvider from './context/translations/GlobalTranslationsContext';
+import FormClearPage from './form-clear/FormClearPage';
 import { FormsRouter } from './Forms';
 import ImportFormsPage from './import/ImportFormsPage';
 import BulkPublishPage from './migration/BulkPublishPage';
@@ -9,6 +12,8 @@ import ReportsPage from './reports/ReportsPage';
 import GlobalTranslationsPage from './translations/global/GlobalTranslationsPage';
 
 function AuthenticatedApp() {
+  const { config } = useAppConfig();
+  const { userData } = useAuth();
   return (
     <>
       <Routes>
@@ -26,6 +31,7 @@ function AuthenticatedApp() {
         <Route path="/mottakere" element={<RecipientsPage />} />
         <Route path="/migrering/*" element={<MigrationRouter />} />
         <Route path="/bulk-publisering" element={<BulkPublishPage />} />
+        {userData?.isAdmin && config && !config.isProdGcp && <Route path="/form-clear" element={<FormClearPage />} />}
         <Route path="/rapporter" element={<ReportsPage />} />
         <Route path="/" element={<Navigate to="/forms" replace />} />
       </Routes>
