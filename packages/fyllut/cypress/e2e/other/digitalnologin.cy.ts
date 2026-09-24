@@ -98,11 +98,15 @@ describe('Digital no login', () => {
     it('shows validation errors if no personal ID has been uploaded', () => {
       cy.findByRole('heading', { name: TEXTS.statiske.uploadId.title }).should('exist');
       cy.clickNextStep();
-      cy.findByText(`Du må fylle ut: ${TEXTS.statiske.uploadId.label}`).should('exist');
+      cy.findByRole('group', { name: TEXTS.statiske.uploadId.label }).within(() => {
+        cy.findByText(`Du må fylle ut: ${TEXTS.statiske.uploadId.label}`).should('be.visible');
+      });
+      cy.findByRole('link', { name: `Du må fylle ut: ${TEXTS.statiske.uploadId.label}` }).should('be.visible');
       cy.findByLabelText(TEXTS.statiske.uploadId.norwegianPassport).click();
-      cy.findByText(`Du må fylle ut: ${TEXTS.statiske.uploadId.title}`).should('not.exist');
+      cy.findByRole('link', { name: `Du må fylle ut: ${TEXTS.statiske.uploadId.label}` }).should('not.exist');
       cy.clickNextStep();
-      cy.findByText(TEXTS.statiske.uploadId.missingUploadError).should('exist');
+      cy.findByRole('link', { name: TEXTS.statiske.uploadId.missingUploadError }).click();
+      cy.findByRole('button', { name: TEXTS.statiske.uploadId.selectFileButton }).should('have.focus');
     });
 
     it('lets you upload a file when selecting a type of personal ID', () => {

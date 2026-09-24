@@ -20,15 +20,15 @@ describe('Alert', () => {
   });
 
   it('should not show any labels', () => {
-    cy.get('.formio-form').should('not.have.descendants', 'label');
+    cy.get('.aksel-theme').should('not.have.descendants', 'label');
   });
 
   it('should display html content - h1 and a link to nav.no', () => {
-    cy.get('.formio-component-alertstripehtml').find('h1').should('have.text', 'Tittel');
-    cy.get('.formio-component-alertstripehtml').find('a').should('have.attr', 'href', 'https://www.nav.no/');
+    cy.get('[data-component-key="alertstripehtml"]').find('h1').should('have.text', 'Tittel');
+    cy.get('[data-component-key="alertstripehtml"]').find('a').should('have.attr', 'href', 'https://www.nav.no/');
   });
 
   it('should display alert with norwegian alerttype (suksess instead of success)', () => {
-    cy.get('.formio-component-alertstripenorwegian').find('.aksel-alert--success').contains('Norwegian alertType');
+    cy.get('[data-component-key="alertstripenorwegian"]').find('.aksel-alert--success').contains('Norwegian alertType');
   });
 });

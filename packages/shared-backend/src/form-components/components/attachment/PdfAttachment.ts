@@ -1,34 +1,55 @@
-import {
-  attachmentUtils,
-  submissionUtils as formComponentUtils,
-  PdfData,
-} from '@navikt/skjemadigitalisering-shared-domain';
+import { attachmentUtils, navFormUtils, PdfData, ResponseError } from '@navikt/skjemadigitalisering-shared-domain';
 import { PdfComponentProps } from '../../types';
 
 const PdfAttachment = (props: PdfComponentProps): PdfData[] | null => {
   const { component, submissionPath, submission, translate, submissionMethod } = props;
-  const { label, attachmentValues } = component;
-  const value = formComponentUtils.getSubmissionValue(submissionPath, submission);
+  const attachmentUploadEnabled = attachmentUtils.enableAttachmentUpload(submissionMethod);
+  const navId = navFormUtils.getNavId(component) ?? component.key;
+  if (attachmentUploadEnabled && !navId) {
+    throw new ResponseError('INTERNAL_SERVER_ERROR', 'PdfAttachment: navId is required on digital attachment');
+  }
 
-  if (value === undefined || !value.key) {
+  const { attachments } = attachmentUtils.resolveAttachmentsAtPath(
+    component,
+    submissionPath || component.key,
+    submission,
+  );
+
+  if (attachmentUploadEnabled && (component.attachmentType === 'other' || component.otherDocumentation)) {
+    const attachmentsWithValue = attachments.filter((attachment) => attachment.value);
+    if (attachmentsWithValue.length === 0) {
+      return null;
+    }
+
+    return attachmentsWithValue.map((attachment) => ({
+      label: `${translate(component.label || 'Ukjent vedlegg')}${
+        attachment.value === 'leggerVedNaa' ? ` - ${translate(attachment.title || 'Ukjent vedlegg')}` : ''
+      }`,
+      verdi: translate(attachmentUtils.getAttachmentLabel(attachment.value!, submissionMethod, component.values)),
+    }));
+  }
+
+  const [attachment] = attachments;
+  if (!attachment?.value) {
     return null;
   }
 
-  const valueConfig = attachmentValues?.[value.key];
-  const comment = valueConfig?.additionalDocumentation?.enabled
-    ? {
-        label: translate(valueConfig.additionalDocumentation.label),
-        verdiliste: [{ label: value.additionalDocumentation || '' }],
-        visningsVariant: 'PUNKTLISTE',
-      }
-    : null;
+  const additionalDocumentation = component.attachmentValues?.[attachment.value]?.additionalDocumentation;
 
   return [
     {
-      label: translate(label),
-      verdi: translate(attachmentUtils.getAttachmentLabel(value.key, submissionMethod)),
+      label: translate(component.label || 'Ukjent vedlegg'),
+      verdi: translate(attachmentUtils.getAttachmentLabel(attachment.value, submissionMethod, component.values)),
     },
-    ...(comment ? [comment] : []),
+    ...(additionalDocumentation?.enabled
+      ? [
+          {
+            label: translate(additionalDocumentation.label),
+            verdiliste: [{ label: attachment.additionalDocumentation || '' }],
+            visningsVariant: 'PUNKTLISTE',
+          } satisfies PdfData,
+        ]
+      : []),
   ];
 };
 

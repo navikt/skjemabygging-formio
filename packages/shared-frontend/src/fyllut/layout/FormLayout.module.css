@@ -1,0 +1,11 @@
+.container {
+  margin: 0 auto;
+  max-width: 640px;
+  padding: var(--ax-space-16) 0 0 0;
+}
+
+@media screen and (max-width: 640px) {
+  .container {
+    padding: var(--ax-space-12) var(--ax-space-16);
+  }
+}

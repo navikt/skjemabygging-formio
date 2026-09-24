@@ -21,7 +21,6 @@ const stringComponentTypes = new Set([
   'monthPicker',
   'navDatepicker',
   'orgNr',
-  'password',
   'select',
   'navSelect',
   'surname',

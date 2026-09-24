@@ -4,9 +4,10 @@ import {
   submissionUtils as formComponentUtils,
   getDrivingListItems,
 } from '@navikt/skjemadigitalisering-shared-domain';
+import { DrivingListDefinition } from '../../component-types';
 import { FormComponentProps } from '../../types';
 
-const SummaryDrivingList = (props: FormComponentProps) => {
+const SummaryDrivingList = (props: FormComponentProps<DrivingListDefinition>) => {
   const { component, submissionPath, submission, translate, currentLanguage } = props;
   const { label } = component;
 

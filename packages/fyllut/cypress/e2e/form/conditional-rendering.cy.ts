@@ -107,7 +107,7 @@ describe('Conditional rendering', () => {
 
       it("navigates back to the added panel on clicking 'rediger' after changing language", () => {
         cy.findByRole('button', { name: 'Norsk bokmål' }).click();
-        cy.findByRole('link', { name: 'English' }).click();
+        cy.findByRole('menuitemradio', { name: 'English' }).click();
         cy.clickEditAnswer('Lamb ribs');
         cy.url().should('include', '/pinnekjott');
         cy.url().should('include', 'lang=en');
@@ -286,19 +286,19 @@ describe('Conditional rendering', () => {
 
     describe('component with custom conditional outside container', () => {
       beforeEach(() => {
-        cy.get('.formio-component-alertstripe').should('not.exist');
+        cy.get('[data-component-key="alertstripeForHoyAlder"]').should('not.exist');
       });
 
       it('is rendered when condition is true', () => {
         cy.findByRole('textbox', { name: 'Alder' }).should('exist').type('20');
-        cy.get('.formio-component-alertstripe')
+        cy.get('[data-component-key="alertstripeForHoyAlder"]')
           .should('exist')
           .should('contain.text', 'Et dyr som er eldre enn 20 år kan ikke forsikres');
       });
 
       it('is not rendered when condition is false', () => {
         cy.findByRole('textbox', { name: 'Alder' }).should('exist').type('19');
-        cy.get('.formio-component-alertstripe').should('not.exist');
+        cy.get('[data-component-key="alertstripeForHoyAlder"]').should('not.exist');
       });
     });
   });

@@ -211,6 +211,10 @@ import {
 } from '../data/forms-api/general/generalCustomCompsForm';
 import { generalDatagridForm, generalDatagridTranslations } from '../data/forms-api/general/generalDatagridForm';
 import {
+  initialSubmissionValuesForm,
+  initialSubmissionValuesTranslations,
+} from '../data/forms-api/initial-submission-values/initialSubmissionValuesForm';
+import {
   introPageDigitalNoLoginDeadlineForm,
   introPageDigitalNoLoginDeadlineTranslations,
 } from '../data/forms-api/intro-page/introPageDigitalNoLoginDeadlineForm';
@@ -249,6 +253,11 @@ import {
   nationalIdentityNumberCypress101Form,
   nationalIdentityNumberCypress101Translations,
 } from '../data/forms-api/national-identity-number/nationalIdentityNumberCypress101Form';
+import {
+  navUnitSelectionForm,
+  navUnitSelectionTranslations,
+} from '../data/forms-api/nav-unit-selection/navUnitSelectionForm';
+import { newRenderForm, newRenderTranslations } from '../data/forms-api/new-render/newRenderForm';
 import { nologinSubmissionForm, nologinSubmissionTranslations } from '../data/forms-api/nologin/nologinSubmissionForm';
 import { nologinForm, nologinTranslations } from '../data/forms-api/nologinForm';
 import { numberDeprecatedForm, numberDeprecatedTranslations } from '../data/forms-api/number/numberDeprecatedForm';
@@ -426,6 +435,7 @@ const allForms = [
   { form: errorSummaryForm(), translations: errorSummaryTranslations() },
   { form: focusHandlingForm(), translations: focusHandlingTranslations() },
   { form: formNavigationCypress101Form(), translations: formNavigationCypress101Translations() },
+  { form: initialSubmissionValuesForm(), translations: initialSubmissionValuesTranslations() },
   { form: formNavigationDigitalForm(), translations: formNavigationDigitalTranslations() },
   { form: formNavigationDigitalNoAttachmentsForm(), translations: formNavigationDigitalNoAttachmentsTranslations() },
   { form: formNavigationDigitalNoLoginForm(), translations: formNavigationDigitalNoLoginTranslations() },
@@ -437,6 +447,7 @@ const allForms = [
   { form: introPageDigitalNoLoginDeadlineForm(), translations: introPageDigitalNoLoginDeadlineTranslations() },
   { form: introPagePaperForm(), translations: introPagePaperTranslations() },
   { form: largeForm(), translations: undefined },
+  { form: newRenderForm(), translations: newRenderTranslations() },
   { form: mellomlagringNestedValuesForm(), translations: mellomlagringNestedValuesTranslations() },
   {
     form: mellomlagring2IntroPageDraftForm(),
@@ -484,6 +495,7 @@ const allForms = [
     form: submissionTypesPaperDigitalNoLoginForm(),
     translations: submissionTypesPaperDigitalNoLoginTranslations(),
   },
+  { form: navUnitSelectionForm(), translations: navUnitSelectionTranslations() },
   { form: submissionTypesPaperForm(), translations: submissionTypesPaperTranslations() },
   { form: submissionTypesPaperNoLoginForm(), translations: submissionTypesPaperNoLoginTranslations() },
   { form: summaryPageAttachmentDownloadForm(), translations: summaryPageAttachmentDownloadTranslations() },
@@ -594,3 +606,5 @@ export default [
     ],
   },
 ];
+
+export { findTestdata };

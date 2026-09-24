@@ -1,0 +1,33 @@
+.fieldset {
+  border: 0;
+  margin: 0;
+  min-inline-size: 0;
+  padding: 0;
+}
+
+.content {
+  margin-top: var(--ax-space-16);
+}
+
+.description {
+  margin-top: var(--ax-space-8);
+}
+
+.rows {
+  display: grid;
+  gap: var(--ax-space-16);
+}
+
+.row {
+  border: 1px solid var(--ax-border-neutral-subtle);
+  border-radius: var(--ax-radius-12);
+  padding: var(--ax-space-16);
+}
+
+.rowHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--ax-space-16);
+  margin-bottom: var(--ax-space-16);
+}

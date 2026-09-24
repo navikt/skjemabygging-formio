@@ -2,6 +2,20 @@ import type { Submission } from '../../../models';
 import { checkCondition, createComponent, createConditionInstance, createForm, createSubmission } from './testUtils';
 
 describe('checkCondition custom conditionals', () => {
+  it('preserves legacy custom conditions for arbitrary canonical attachment choices', () => {
+    const value = 'neiJegHarIngenEkstraDokumentasjonJegVilLeggeVed';
+    const component = createComponent({ customConditional: `show = data.documentation.key === "${value}"` });
+    const answer = { attachmentId: 'doc', navId: 'doc', type: 'other', value, additionalDocumentation: 'Explanation' };
+    expect(checkCondition(component, undefined, { documentation: [answer] })).toBe(true);
+    expect(answer).not.toHaveProperty('key');
+  });
+  it.each([false, true])('keeps legacy attachment key access for canonical answers (collection: %s)', (multiple) => {
+    const component = createComponent({ customConditional: 'show = data.documentation.key === "ettersender"' });
+    const attachment = { attachmentId: 'doc', navId: 'doc', type: 'other', value: 'ettersender' };
+    const value = multiple ? [attachment] : attachment;
+    expect(checkCondition(component, undefined, { documentation: value })).toBe(true);
+    expect(value).not.toHaveProperty('key');
+  });
   it('supports custom conditionals using utils and submission outside Formio runtime', () => {
     const component = createComponent({
       key: 'ageGate',

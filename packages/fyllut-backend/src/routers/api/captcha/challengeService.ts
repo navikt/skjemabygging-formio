@@ -7,15 +7,12 @@ const MAX_SOLUTION_LENGTH = 64;
 /**
  * Canonical proof of work format: SHA-256(nonce + ":" + solution) must have at
  * least `difficulty` leading zero bits. The same format is implemented in the
- * frontend web worker (shared-components: src/api/captcha/powWorker.ts).
+ * frontend web worker (shared-frontend: src/context/runtime-services/powWorker.ts).
  */
 const POW_SEPARATOR = ':';
 
 const sign = (nonce: string, difficulty: number, expiresAt: number): string =>
-  crypto
-    .createHmac('sha256', config.captcha.hmacSecret)
-    .update(`${nonce}.${difficulty}.${expiresAt}`)
-    .digest('hex');
+  crypto.createHmac('sha256', config.captcha.hmacSecret).update(`${nonce}.${difficulty}.${expiresAt}`).digest('hex');
 
 const createChallenge = (): CaptchaChallenge => {
   const nonce = crypto.randomBytes(16).toString('hex');

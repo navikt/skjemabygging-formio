@@ -1,11 +1,11 @@
 import {
   Component,
   Form,
-  FormComponentType,
   Panel,
   PanelValidation,
   Submission,
   TranslateFunction,
+  attachmentUtils,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import RenderComponent from './RenderComponent';
 import SummaryAccordion from './components/accordion/SummaryAccordion';
@@ -14,7 +14,6 @@ import SummaryActivities from './components/activities/SummaryActivities';
 import SummaryAddressValidity from './components/address-validity/SummaryAddressValidity';
 import SummaryAddress from './components/address/SummaryAddress';
 import SummaryAlert from './components/alert/SummaryAlert';
-import SummaryAttachmentUpload from './components/attachment-uploads/SummaryAttachmentUpload';
 import SummaryAttachment from './components/attachment/SummaryAttachment';
 import SummaryCheckbox from './components/checkbox/SummaryCheckbox';
 import SummaryContainer from './components/container/SummaryContainer';
@@ -31,15 +30,12 @@ import SummaryFormGroup from './components/form-group/SummaryFormGroup';
 import SummaryHtmlElement from './components/html-element/SummaryHtmlElement';
 import SummaryIban from './components/iban/SummaryIban';
 import SummaryIdentity from './components/identity/SummaryIdentity';
-import SummaryImage from './components/image/SummaryImage';
 import SummaryIntroPage from './components/intro-page/SummaryIntroPage';
-import SummaryMaalgruppe from './components/maalgruppe/SummaryMaalgruppe';
 import SummaryMonthPicker from './components/month-picker/SummaryMonthPicker';
 import SummaryNationalIdentityNumber from './components/national-identity-number/SummaryNationalIdentityNumber';
 import SummaryNumber from './components/number/SummaryNumber';
 import SummaryOrganizationNumber from './components/organization-number/SummaryOrganizationNumber';
 import SummaryPanel from './components/panel/SummaryPanel';
-import SummaryPassword from './components/password/SummaryPassword';
 import SummaryPhoneNumber from './components/phone-number/SummaryPhoneNumber';
 import SummaryRadio from './components/radio/SummaryRadio';
 import SummaryRow from './components/row/SummaryRow';
@@ -48,12 +44,18 @@ import SummaryNavSelect from './components/select/SummaryNavSelect';
 import SummarySelect from './components/select/SummarySelect';
 import SummarySender from './components/sender/SummarySender';
 import SummarySurname from './components/surname/SummarySurname';
+import SummaryTargetGroup from './components/target-group/SummaryTargetGroup';
 import SummaryTextArea from './components/text-area/SummaryTextArea';
 import SummaryTextField from './components/text-field/SummaryTextField';
 import SummaryYear from './components/year/SummaryYear';
-import { FormComponentRegistry, HandleAttachmentDownloadFile, SummaryRendererAppConfig } from './types';
+import {
+  FormComponentRegistry,
+  HandleAttachmentDownloadFile,
+  SummaryRendererAppConfig,
+  SummaryRendererConfig,
+} from './types';
 
-interface Props {
+interface CommonProps {
   activeComponents: Component[];
   activeAttachmentUploadsPanel?: Panel;
   submission?: Submission;
@@ -61,9 +63,14 @@ interface Props {
   currentLanguage: string;
   translate: TranslateFunction;
   panelValidationList?: PanelValidation[];
-  appConfig: SummaryRendererAppConfig;
   handleDownloadFile?: HandleAttachmentDownloadFile;
 }
+
+type Props = CommonProps &
+  (
+    | { rendererConfig: SummaryRendererConfig; appConfig?: never }
+    | { appConfig: SummaryRendererAppConfig; rendererConfig?: never }
+  );
 
 const RenderSummaryForm = ({
   activeComponents,
@@ -73,6 +80,7 @@ const RenderSummaryForm = ({
   currentLanguage,
   translate,
   panelValidationList,
+  rendererConfig,
   appConfig,
   handleDownloadFile,
 }: Props) => {
@@ -80,23 +88,24 @@ const RenderSummaryForm = ({
     return null;
   }
 
+  const resolvedSubmission = {
+    ...submission,
+    attachments: attachmentUtils.resolveSubmissionAttachments(form, submission),
+  };
+
   const componentRegistry = {
-    /* Standard */
     accordion: SummaryAccordion,
     alertstripe: SummaryAlert,
     navCheckbox: SummaryCheckbox,
     htmlelement: SummaryHtmlElement,
-    image: SummaryImage,
     number: SummaryNumber,
     radiopanel: SummaryRadio,
     select: SummarySelect,
     navSelect: SummaryNavSelect,
     selectboxes: SummarySelectBoxes,
     textarea: SummaryTextArea,
-    formioTextArea: SummaryTextArea,
     textfield: SummaryTextField,
 
-    /* Customized */
     bankAccount: SummaryAccountNumber,
     navAddress: SummaryAddress,
     addressValidity: SummaryAddressValidity,
@@ -110,17 +119,14 @@ const RenderSummaryForm = ({
     identity: SummaryIdentity,
     fnrfield: SummaryNationalIdentityNumber,
     orgNr: SummaryOrganizationNumber,
-    password: SummaryPassword,
     phoneNumber: SummaryPhoneNumber,
     sender: SummarySender,
     surname: SummarySurname,
 
-    /* Date */
     navDatepicker: SummaryDatePicker,
     monthPicker: SummaryMonthPicker,
     year: SummaryYear,
 
-    /* Group */
     container: SummaryContainer,
     datagrid: SummaryDataGrid,
     navSkjemagruppe: SummaryFormGroup,
@@ -128,17 +134,19 @@ const RenderSummaryForm = ({
     panel: SummaryPanel,
     row: SummaryRow,
 
-    /* System */
     activities: SummaryActivities,
     dataFetcher: SummaryDataFetcher,
     drivinglist: SummaryDrivingList,
-    maalgruppe: SummaryMaalgruppe,
-  } satisfies Record<FormComponentType, FormComponentRegistry[string]>;
+    maalgruppe: SummaryTargetGroup,
+  } satisfies FormComponentRegistry;
 
-  const attachmentUploadsComponentRegistry = {
-    ...componentRegistry,
-    attachment: SummaryAttachmentUpload,
-    radiopanel: SummaryAttachmentUpload,
+  const resolvedRendererConfig = {
+    ...(rendererConfig ?? {
+      submissionMethod: appConfig.submissionMethod,
+      logger: appConfig.logger,
+      environment: appConfig.config?.NAIS_CLUSTER_NAME === 'prod-gcp' ? 'production' : 'development',
+    }),
+    formPath: form.path,
   };
 
   return (
@@ -150,12 +158,12 @@ const RenderSummaryForm = ({
           component={component}
           submissionPath=""
           componentRegistry={componentRegistry}
-          submission={submission}
+          submission={resolvedSubmission}
           translate={translate}
           currentLanguage={currentLanguage}
           formProperties={form.properties}
           panelValidationList={panelValidationList}
-          appConfig={appConfig}
+          rendererConfig={resolvedRendererConfig}
           handleDownloadFile={handleDownloadFile}
         />
       ))}
@@ -163,14 +171,15 @@ const RenderSummaryForm = ({
         <RenderComponent
           component={activeAttachmentUploadsPanel}
           submissionPath=""
-          componentRegistry={attachmentUploadsComponentRegistry}
-          submission={submission}
+          componentRegistry={componentRegistry}
+          submission={resolvedSubmission}
           translate={translate}
           currentLanguage={currentLanguage}
           formProperties={form.properties}
           panelValidationList={panelValidationList}
-          appConfig={appConfig}
+          rendererConfig={resolvedRendererConfig}
           handleDownloadFile={handleDownloadFile}
+          legacyAttachmentPanelMode
         />
       )}
     </>

@@ -24,10 +24,10 @@ describe('Attachment', () => {
           cy.findByLabelText('Norsk pass').check(),
         );
         cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
-        cy.findByRole('link', { name: 'Neste steg' }).click();
+        cy.findByRole('button', { name: 'Neste steg' }).click();
         cy.url().then((currentUrl) => {
           if (currentUrl.includes('/legitimasjon')) {
-            cy.findByRole('link', { name: 'Neste steg' }).click();
+            cy.findByRole('button', { name: 'Neste steg' }).click();
           }
         });
         cy.url().should('not.include', '/legitimasjon');

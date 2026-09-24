@@ -61,6 +61,7 @@ describe('Intro page', () => {
       cy.visit(`/fyllut/${onlypapernocoverpageFormPath}`);
       cy.defaultWaits();
       cy.findByRole('heading', { name: TEXTS.grensesnitt.introPage.title }).shouldBeVisible();
+      cy.contains('Etter utfylling må du laste ned det ferdig utfylte skjemaet som en pdf-fil.').should('exist');
       cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendDigitalLoggedIn }).should('not.exist');
       cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.sendOnPaper }).should('not.exist');
     });

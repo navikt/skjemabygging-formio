@@ -1,4 +1,6 @@
 const common = {
+  add: 'Legg til',
+  remove: 'Fjern',
   yes: 'Ja',
   no: 'Nei',
   optional: 'valgfritt',

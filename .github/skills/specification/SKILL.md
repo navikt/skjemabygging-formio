@@ -1,9 +1,9 @@
 ---
 name: specification
 description: >-
-  Create a functional or technical specification for fyllut or bygger using
-  the shared Fyllut-Sendinn workflow and this repository's frontend and backend
-  guidance. Use only when the user explicitly invokes /specification.
+    Create a functional or technical specification for fyllut or bygger using
+    the shared Fyllut-Sendinn workflow and this repository's frontend and backend
+    guidance. Use only when the user explicitly invokes /specification.
 disable-model-invocation: true
 ---
 
@@ -35,11 +35,11 @@ trade-offs in the specification.
 After the specification is approved and before its handoff, check whether the
 work established a reusable rule for any of these skills:
 
-| Learning | Target |
-| --- | --- |
-| Specification discovery, writing, approval, prototype, or handoff method | `fyllut-sendinn-specification` in `navikt/fyllut-sendinn-local-dev-env` |
-| Frontend architecture, interaction, accessibility, or testing | `frontend-development` in this repository |
-| Backend architecture, boundaries, errors, security, observability, or testing | `backend-development` in this repository |
+| Learning                                                                      | Target                                                                  |
+| ----------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| Specification discovery, writing, approval, prototype, or handoff method      | `fyllut-sendinn-specification` in `navikt/fyllut-sendinn-local-dev-env` |
+| Frontend architecture, interaction, accessibility, or testing                 | `frontend-development` in this repository                               |
+| Backend architecture, boundaries, errors, security, observability, or testing | `backend-development` in this repository                                |
 
 A candidate must be approved, cross-cutting, stable, and supported by
 repository evidence or a validated prototype. Do not propose feature-specific,

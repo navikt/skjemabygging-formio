@@ -57,6 +57,24 @@ const createRequiredTextfield = (key: string, label: string): Component => ({
 });
 
 describe('generateSchema', () => {
+  it('keeps arbitrary legacy attachment choices valid in canonical and choice-only shapes', () => {
+    const component: Component = {
+      key: 'documentation',
+      type: 'attachment',
+      label: 'Documentation',
+      navId: 'doc',
+      otherDocumentation: true,
+      values: [{ value: 'neiJegHarIngenEkstraDokumentasjonJegVilLeggeVed', label: 'No extra documentation' }],
+    };
+    const schema = getFormDataSchema(generateSchema(createForm([component], false, ['PAPER', 'DIGITAL']))).properties
+      .documentation as JsonSchemaObject;
+    const branches = schema.anyOf as JsonSchemaObject[];
+    const expectedChoice = { type: 'string', title: 'Documentation' };
+    expect((branches[0].items as JsonSchemaObject).properties.value).toEqual(expectedChoice);
+    expect(branches[1].properties.value).toEqual(expectedChoice);
+    expect(branches[2].properties.key).toEqual(expectedChoice);
+    expect(branches[3]).toEqual(expectedChoice);
+  });
   it('creates a minimal schema for an empty form', () => {
     expect(generateSchema(createForm())).toEqual({
       $id: 'https://skjemabygging.nav.no/forms/test-form/spec',
@@ -268,9 +286,16 @@ describe('generateSchema', () => {
     expect(formDataSchema.properties?.samtykke).toEqual({ title: 'Samtykke', type: 'boolean' });
   });
 
-  it('maps attachment values to enum entries when enabled', () => {
+  it('maps attachments outside attachment panels to all supported data shapes', () => {
     const schema = generateSchema(
       createForm([
+        {
+          content: 'Upload relevant documentation',
+          input: false,
+          key: 'attachmentAlert',
+          label: 'Attachment alert',
+          type: 'alertstripe',
+        },
         {
           attachmentValues: {
             ettersender: { enabled: true },
@@ -281,14 +306,48 @@ describe('generateSchema', () => {
           key: 'vedlegg',
           label: 'Vedlegg',
           type: 'attachment',
+          validate: { required: true },
         },
       ]),
     );
 
+    expect(getFormDataSchema(schema).properties).not.toHaveProperty('attachmentAlert');
+    expect(getFormDataSchema(schema).required).toEqual(['vedlegg']);
     expect(getFormDataSchema(schema).properties?.vedlegg).toEqual({
-      enum: ['ettersender', 'leggerVedNaa'],
+      anyOf: [
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            navId: { enum: ['vedlegg'], type: 'string' },
+            value: {
+              enum: ['ettersender', 'leggerVedNaa'],
+              title: 'Vedlegg',
+              type: 'string',
+            },
+          }),
+          required: ['attachmentId', 'navId', 'type'],
+          type: 'object',
+        }),
+        {
+          additionalProperties: false,
+          properties: {
+            additionalDocumentation: { type: 'string' },
+            key: {
+              enum: ['ettersender', 'leggerVedNaa'],
+              title: 'Vedlegg',
+              type: 'string',
+            },
+          },
+          required: ['key'],
+          title: 'Vedlegg',
+          type: 'object',
+        },
+        {
+          enum: ['ettersender', 'leggerVedNaa'],
+          title: 'Vedlegg',
+          type: 'string',
+        },
+      ],
       title: 'Vedlegg',
-      type: 'string',
     });
   });
 
@@ -342,9 +401,7 @@ describe('generateSchema', () => {
     });
   });
 
-  it('collects attachment panel attachments into top-level attachments and warns for ignored components', () => {
-    const warnSpy = vi.spyOn(logger, 'warn').mockImplementation(() => logger);
-
+  it('collects attachments and maps ordinary fields inside attachment panels', () => {
     const schema = generateSchema(
       createForm([
         {
@@ -407,11 +464,23 @@ describe('generateSchema', () => {
       title: 'First name',
       type: 'string',
     });
+    expect(getFormDataSchema(schema).properties?.ignoredField).toEqual({
+      title: 'Ignored field',
+      type: 'string',
+    });
+    expect(getFormDataSchema(schema).properties?.medicalCertificate).toMatchObject({
+      title: 'Medical certificate',
+      anyOf: expect.any(Array),
+    });
+    expect(getFormDataSchema(schema).properties?.otherDocumentation).toMatchObject({
+      title: 'Other documentation',
+      anyOf: expect.any(Array),
+    });
     expect(getSubmissionPayloadSchema(schema).properties?.attachments).toMatchObject({
       type: 'array',
       title: 'Attachments',
       items: {
-        oneOf: [
+        anyOf: [
           {
             title: 'Medical certificate',
             type: 'object',
@@ -444,29 +513,260 @@ describe('generateSchema', () => {
       },
     });
     expect(getFormDataSchema(schema).properties).not.toHaveProperty('attachmentsPanel');
-    expect(warnSpy).toHaveBeenCalledWith(
-      'Ignoring non-attachment component inside attachment panel during schema generation',
-      {
-        attachmentPanelKey: 'attachmentsPanel',
-        componentKey: 'attachmentWrapper',
-        componentType: 'navSkjemagruppe',
-        formPath: 'test-form',
-        revision: undefined,
+  });
+
+  it('keeps paper, legacy and uploaded attachment values compatible inside attachment panels', () => {
+    const component: Component = {
+      validate: { required: true },
+      attachmentType: 'default',
+      attachmentValues: {
+        ettersender: { enabled: true },
+        leggerVedNaa: { enabled: true },
       },
-    );
-    expect(warnSpy).toHaveBeenCalledWith(
-      'Ignoring non-attachment component inside attachment panel during schema generation',
-      {
-        attachmentPanelKey: 'attachmentsPanel',
-        componentKey: 'ignoredField',
-        componentType: 'textfield',
-        formPath: 'test-form',
-        revision: undefined,
-      },
+      input: true,
+      key: 'medicalCertificate',
+      label: 'Medical certificate',
+      navId: 'medical-certificate-navid',
+      type: 'attachment',
+    };
+    const schema = generateSchema(
+      createForm([
+        {
+          components: [component],
+          input: false,
+          isAttachmentPanel: true,
+          key: 'attachmentsPanel',
+          label: 'Attachments panel',
+          type: 'panel',
+        },
+      ]),
     );
 
-    warnSpy.mockRestore();
+    const attachmentDataSchema = getFormDataSchema(schema).properties?.medicalCertificate as JsonSchemaObject;
+
+    expect(getFormDataSchema(schema).required).toBeUndefined();
+    expect(getSubmissionPayloadSchema(schema).properties.attachments?.items).toEqual(attachmentDataSchema.anyOf?.[0]);
+    expect(attachmentDataSchema.anyOf).toEqual([
+      expect.objectContaining({
+        additionalProperties: false,
+        required: ['attachmentId', 'navId', 'type'],
+        type: 'object',
+      }),
+      {
+        additionalProperties: false,
+        properties: {
+          additionalDocumentation: { type: 'string' },
+          key: {
+            enum: ['ettersender', 'leggerVedNaa'],
+            title: 'Medical certificate',
+            type: 'string',
+          },
+        },
+        required: ['key'],
+        title: 'Medical certificate',
+        type: 'object',
+      },
+      {
+        enum: ['ettersender', 'leggerVedNaa'],
+        title: 'Medical certificate',
+        type: 'string',
+      },
+    ]);
   });
+
+  it.each(['DIGITAL', 'DIGITAL_NO_LOGIN'] as const)(
+    'keeps nested upload-panel attachment data optional for %s without weakening ordinary required fields',
+    (submissionType) => {
+      const requiredAttachment: Component = {
+        type: 'attachment',
+        key: 'documentation',
+        navId: 'documentation-navid',
+        label: 'Documentation',
+        attachmentValues: { leggerVedNaa: { enabled: true }, ettersender: { enabled: true } },
+        validate: { required: true },
+      };
+      const schema = generateSchema(
+        createForm(
+          [
+            {
+              type: 'panel',
+              key: 'uploads',
+              label: 'Uploads',
+              isAttachmentPanel: true,
+              components: [
+                {
+                  type: 'fieldset',
+                  key: 'group',
+                  label: 'Group',
+                  components: [
+                    requiredAttachment,
+                    createRequiredTextfield('explanation', 'Explanation'),
+                    {
+                      type: 'container',
+                      key: 'details',
+                      label: 'Details',
+                      components: [{ ...requiredAttachment, navId: 'container-documentation' }],
+                    },
+                    {
+                      type: 'datagrid',
+                      key: 'rows',
+                      label: 'Rows',
+                      components: [{ ...requiredAttachment, navId: 'row-documentation' }],
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'panel',
+              key: 'ordinary',
+              label: 'Ordinary fields',
+              components: [{ ...requiredAttachment, key: 'ordinaryDocumentation', navId: 'ordinary-documentation' }],
+            },
+          ],
+          false,
+          [submissionType],
+        ),
+      );
+      const dataSchema = getFormDataSchema(schema);
+      const detailsSchema = dataSchema.properties.details as JsonSchemaObject;
+      const rowSchema = dataSchema.properties.rows.items as JsonSchemaObject;
+
+      expect(dataSchema.required).toEqual(['explanation', 'ordinaryDocumentation']);
+      expect(detailsSchema.required).toBeUndefined();
+      expect(rowSchema.required).toBeUndefined();
+      expect(detailsSchema.properties.documentation).toHaveProperty('anyOf');
+      expect(rowSchema.properties.documentation).toHaveProperty('anyOf');
+      expect(getSubmissionPayloadSchema(schema).required).toEqual(
+        submissionType === 'DIGITAL_NO_LOGIN' ? ['data', 'attachments'] : ['data'],
+      );
+    },
+  );
+
+  it('preserves attachment schemas inside containers and data grid rows', () => {
+    const schema = generateSchema(
+      createForm([
+        {
+          input: true,
+          key: 'details',
+          label: 'Details',
+          tree: true,
+          type: 'container',
+          components: [
+            {
+              attachmentType: 'default',
+              attachmentValues: { ettersender: { enabled: true } },
+              input: true,
+              key: 'documentation',
+              label: 'Documentation',
+              type: 'attachment',
+            },
+          ],
+        },
+        {
+          input: true,
+          key: 'rows',
+          label: 'Rows',
+          tree: true,
+          type: 'datagrid',
+          components: [
+            {
+              attachmentType: 'other',
+              attachmentValues: { leggerVedNaa: { enabled: true }, nei: { enabled: true } },
+              input: true,
+              key: 'otherDocumentation',
+              label: 'Other documentation',
+              type: 'attachment',
+            },
+          ],
+        },
+      ]),
+    );
+
+    const detailsSchema = getFormDataSchema(schema).properties.details as JsonSchemaObject;
+    const rowsSchema = getFormDataSchema(schema).properties.rows;
+    const rowSchema = rowsSchema.items as JsonSchemaObject;
+    const otherAttachmentSchema = rowSchema.properties.otherDocumentation;
+
+    expect(detailsSchema.properties.documentation).toMatchObject({
+      title: 'Documentation',
+      anyOf: expect.any(Array),
+    });
+    expect(otherAttachmentSchema).toMatchObject({
+      title: 'Other documentation',
+      anyOf: [
+        { type: 'array', items: expect.objectContaining({ type: 'object' }) },
+        expect.objectContaining({ type: 'object' }),
+        expect.objectContaining({ type: 'object' }),
+        expect.objectContaining({ type: 'string' }),
+      ],
+    });
+  });
+
+  it('keeps form data named attachments separate from submission-level attachments', () => {
+    const schema = generateSchema(
+      createForm([
+        {
+          input: true,
+          key: 'attachments',
+          label: 'Attachment answer',
+          type: 'attachment',
+          id: 'attachment-component-id',
+          attachmentValues: { ettersender: { enabled: true } },
+        },
+      ]),
+    );
+
+    expect(getFormDataSchema(schema).properties.attachments).toMatchObject({
+      title: 'Attachment answer',
+      anyOf: expect.any(Array),
+    });
+    expect(getSubmissionPayloadSchema(schema).properties.attachments).toMatchObject({
+      type: 'array',
+      items: {
+        properties: {
+          navId: { enum: ['attachment-component-id'], type: 'string' },
+        },
+      },
+    });
+  });
+
+  it.each([
+    { submissionTypes: ['PAPER'] as SubmissionType[], attachmentsRequired: false },
+    { submissionTypes: ['DIGITAL'] as SubmissionType[], attachmentsRequired: false },
+    { submissionTypes: ['DIGITAL_NO_LOGIN'] as SubmissionType[], attachmentsRequired: true },
+  ])(
+    'keeps top-level attachments optional unless required by the submission contract',
+    ({ submissionTypes, attachmentsRequired }) => {
+      const schema = generateSchema(
+        createForm(
+          [
+            {
+              components: [
+                {
+                  attachmentType: 'default',
+                  input: true,
+                  key: 'documentation',
+                  label: 'Documentation',
+                  navId: 'documentation-navid',
+                  type: 'attachment',
+                },
+              ],
+              input: false,
+              isAttachmentPanel: true,
+              key: 'attachmentsPanel',
+              label: 'Attachments panel',
+              type: 'panel',
+            },
+          ],
+          false,
+          submissionTypes,
+        ),
+      );
+
+      expect(getSubmissionPayloadSchema(schema).required?.includes('attachments')).toBe(attachmentsRequired);
+    },
+  );
 
   it('does not mark conditional fields as required', () => {
     const schema = generateSchema(

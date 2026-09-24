@@ -1,0 +1,42 @@
+import { dateUtils, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { useFieldBinding } from '../../context/state/useFieldBinding';
+import DatePicker from '../date/DatePicker';
+import FormElementBox from '../shared/FormElementBox';
+import { BaseFieldProps } from '../types';
+import { AddressValidityValue } from './addressValidityValidation';
+
+type AddressValidityProps = Pick<BaseFieldProps, 'statePath' | 'required' | 'readOnly' | 'readMore' | 'fieldSize'>;
+
+const AddressValidity = ({ statePath, required, readOnly, readMore, fieldSize }: AddressValidityProps) => {
+  const { stateValue } = useFieldBinding({ statePath });
+  const address = (stateValue ?? {}) as AddressValidityValue;
+  const minDate = dateUtils.addDays(-365);
+  const maxDate = dateUtils.addDays(365);
+
+  return (
+    <FormElementBox fieldSize={fieldSize} marginBottom="space-0">
+      <DatePicker
+        statePath={`${statePath}.gyldigFraOgMed`}
+        label={TEXTS.statiske.address.validFrom}
+        description={TEXTS.statiske.address.validFromDescription}
+        required={required}
+        readOnly={readOnly}
+        fromDate={minDate}
+        toDate={maxDate}
+      />
+      <DatePicker
+        statePath={`${statePath}.gyldigTilOgMed`}
+        label={TEXTS.statiske.address.validTo}
+        description={TEXTS.statiske.address.validToDescription}
+        required={false}
+        readOnly={readOnly}
+        fromDate={address.gyldigFraOgMed || minDate}
+        toDate={maxDate}
+        readMore={readMore}
+      />
+    </FormElementBox>
+  );
+};
+
+export default AddressValidity;
+export type { AddressValidityProps };

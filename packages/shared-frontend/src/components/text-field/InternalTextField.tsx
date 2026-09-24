@@ -1,0 +1,157 @@
+import { TextField as AkselTextField } from '@navikt/ds-react';
+import { ChangeEvent, FocusEvent, HTMLAttributes, ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import { useFieldBinding } from '../../context/state/useFieldBinding';
+import { toInputFormat, toSubmissionFormat } from '../../formatting/inputFormat';
+import { inputId } from '../../utils/inputId';
+import ReadMore from '../read-more/ReadMore';
+import { toFieldValidation } from '../shared/fieldValidation';
+import FormElementBox from '../shared/FormElementBox';
+import TranslatedDescription from '../shared/TranslatedDescription';
+import TranslatedLabel from '../shared/TranslatedLabel';
+import { BaseFieldProps, FieldValidationProp } from '../types';
+
+type SupportedTextFieldType = 'text' | 'tel';
+
+/**
+ * Internal composition seam for semantic text fields that supply resolved intrinsic rules.
+ * Consumers must use TextField or a dedicated semantic field instead.
+ */
+interface InternalTextFieldProps extends BaseFieldProps {
+  label: string;
+  hideLabel?: boolean;
+  showOptionalText?: boolean;
+  autoComplete?: string | boolean;
+  inputMode?: HTMLAttributes<HTMLInputElement>['inputMode'];
+  type?: SupportedTextFieldType;
+  spellCheck?: boolean;
+  formatKey?: string;
+  toDisplayValue?: (value: unknown) => string;
+  toStateValue?: (value: string) => unknown;
+  value?: string;
+  onChange?: (value: string) => void;
+  error?: ReactNode;
+  maxLength?: number;
+  validation?: FieldValidationProp;
+}
+
+const resolveAutoComplete = (autoComplete?: string | boolean) => {
+  if (autoComplete === false || autoComplete === undefined || autoComplete === '') {
+    return 'off';
+  }
+
+  return autoComplete === true ? 'on' : autoComplete;
+};
+
+const InternalTextField = ({
+  statePath,
+  label,
+  hideLabel,
+  showOptionalText = true,
+  description,
+  required = true,
+  readOnly,
+  autoComplete,
+  inputMode,
+  type,
+  spellCheck,
+  formatKey,
+  toDisplayValue,
+  toStateValue,
+  value: controlledValue,
+  onChange: controlledOnChange,
+  error: controlledError,
+  maxLength,
+  readMore,
+  fieldSize,
+  marginBottom,
+  validation,
+}: InternalTextFieldProps) => {
+  const controlled = controlledOnChange !== undefined;
+  const fieldValidation = toFieldValidation({ statePath, label, required, validation });
+  const { stateValue, error, setStateValue } = useFieldBinding({
+    statePath,
+    controlled,
+    validation: controlled ? { ...fieldValidation, value: controlledValue } : fieldValidation,
+  });
+  const isFocusedRef = useRef(false);
+  const formatDisplayValue = useCallback(
+    (value: unknown) => (toDisplayValue ? toDisplayValue(value) : toInputFormat(value, formatKey)),
+    [formatKey, toDisplayValue],
+  );
+  const [displayValue, setDisplayValue] = useState(() => formatDisplayValue(controlled ? controlledValue : stateValue));
+  const syncedDisplayValue = formatDisplayValue(controlled ? controlledValue : stateValue);
+  const resolvedAutoComplete = resolveAutoComplete(autoComplete);
+
+  const updateValue = useCallback(
+    (value: string) => {
+      const nextStateValue = toStateValue ? toStateValue(value) : toSubmissionFormat(value, formatKey);
+      setDisplayValue((previousValue) => (previousValue === value ? previousValue : value));
+      if (controlledOnChange) {
+        controlledOnChange(value);
+      } else if (!Object.is(stateValue, nextStateValue)) {
+        setStateValue(nextStateValue);
+      }
+    },
+    [controlledOnChange, formatKey, setStateValue, stateValue, toStateValue],
+  );
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    updateValue(event.target.value);
+  };
+
+  const handleBlur = (event: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    isFocusedRef.current = false;
+    const rawValue = event.currentTarget.value;
+    const formatted = formatDisplayValue(rawValue);
+    setDisplayValue(formatted);
+    const nextStateValue = toStateValue ? toStateValue(rawValue) : toSubmissionFormat(rawValue, formatKey);
+    if (controlledOnChange) {
+      controlledOnChange(formatted);
+    } else if (!Object.is(stateValue, nextStateValue)) {
+      setStateValue(nextStateValue);
+    }
+  };
+
+  useEffect(() => {
+    if (readOnly || isFocusedRef.current) {
+      return;
+    }
+
+    setDisplayValue((previousValue) => (previousValue === syncedDisplayValue ? previousValue : syncedDisplayValue));
+  }, [readOnly, syncedDisplayValue]);
+
+  return (
+    <FormElementBox fieldSize={fieldSize} marginBottom={marginBottom}>
+      <AkselTextField
+        id={inputId(statePath)}
+        label={
+          <TranslatedLabel
+            required={required}
+            readOnly={readOnly}
+            showOptionalText={!hideLabel && showOptionalText}
+            translationKey={label}
+          />
+        }
+        description={<TranslatedDescription translationKey={description} />}
+        hideLabel={hideLabel}
+        value={readOnly ? formatDisplayValue(stateValue) : displayValue}
+        onFocus={() => {
+          isFocusedRef.current = true;
+        }}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        error={controlledError ?? error}
+        readOnly={readOnly}
+        autoComplete={resolvedAutoComplete}
+        inputMode={inputMode}
+        type={type}
+        spellCheck={spellCheck}
+        maxLength={maxLength}
+      />
+      {readMore && <ReadMore {...readMore} />}
+    </FormElementBox>
+  );
+};
+
+export default InternalTextField;
+export type { InternalTextFieldProps, SupportedTextFieldType };

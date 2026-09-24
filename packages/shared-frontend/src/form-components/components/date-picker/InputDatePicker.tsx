@@ -1,0 +1,37 @@
+import DatePicker from '../../../components/date/DatePicker';
+import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
+import { DatePickerDefinition } from '../../component-types';
+import { useResolvedValidation } from '../../custom-validation/useResolvedValidation';
+import { getDatePickerFromDate, getDatePickerToDate } from '../../dateDefinitionUtils';
+import {
+  InputComponentProps,
+  isRequired,
+  resolveFieldSize,
+  resolveReadMore,
+  resolveSubmissionPath,
+} from '../../inputComponentUtils';
+import { usePageComponents } from '../../PageComponentsContext';
+
+const InputDatePicker = ({ component, submissionPath }: InputComponentProps<DatePickerDefinition>) => {
+  const { submission } = useSubmissionState();
+  const pageComponents = usePageComponents();
+  const statePath = resolveSubmissionPath(component, submissionPath);
+  const validation = useResolvedValidation(component);
+
+  return (
+    <DatePicker
+      statePath={statePath}
+      label={component.label}
+      description={component.description}
+      required={isRequired(component)}
+      fieldSize={resolveFieldSize(component)}
+      readOnly={component.readOnly}
+      fromDate={getDatePickerFromDate(component, pageComponents, submission)}
+      toDate={getDatePickerToDate(component)}
+      readMore={resolveReadMore(component)}
+      validation={validation}
+    />
+  );
+};
+
+export default InputDatePicker;

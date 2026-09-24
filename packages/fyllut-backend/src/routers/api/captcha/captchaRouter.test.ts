@@ -43,10 +43,7 @@ const findInvalidSolution = (challenge: CaptchaChallenge): string => {
 };
 
 const signChallenge = ({ nonce, difficulty, expiresAt }: Omit<CaptchaChallenge, 'signature'>): string =>
-  crypto
-    .createHmac('sha256', config.captcha.hmacSecret)
-    .update(`${nonce}.${difficulty}.${expiresAt}`)
-    .digest('hex');
+  crypto.createHmac('sha256', config.captcha.hmacSecret).update(`${nonce}.${difficulty}.${expiresAt}`).digest('hex');
 
 describe('Captcha Handler Tests', () => {
   let app: Express;

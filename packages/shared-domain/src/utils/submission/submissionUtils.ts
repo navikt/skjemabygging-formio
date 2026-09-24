@@ -26,8 +26,9 @@ const getSubmissionValue = (submissionPath: string, submission?: Submission): an
         return submissionData[key] as SubmissionData;
       } else {
         const arrayKey = keyToArray(key);
-        if (arrayKey && submissionData[arrayKey.key][arrayKey.index]) {
-          return findValue(keys, submissionData[arrayKey.key][arrayKey.index] as SubmissionData);
+        const arrayValue = arrayKey ? submissionData[arrayKey.key] : undefined;
+        if (arrayKey && Array.isArray(arrayValue) && arrayValue[arrayKey.index]) {
+          return findValue(keys, arrayValue[arrayKey.index] as SubmissionData);
         }
       }
     } else {

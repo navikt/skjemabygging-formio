@@ -33,7 +33,7 @@ describe('Cover page', () => {
     cy.clickShowAllSteps();
     cy.findByRole('link', { name: /Oppsummering|Summary/ }).click();
     cy.findByRole('heading', { name: /Oppsummering|Summary/ }).shouldBeVisible();
-    cy.findByRole('link', { name: 'Instruksjoner for innsending' }).click();
+    cy.findByRole('button', { name: 'Instruksjoner for innsending' }).click();
     cy.findByRole('button', { name: /Last ned skjema|Download form/ }).click();
     cy.wait('@downloadPdf');
 
@@ -57,7 +57,7 @@ describe('Cover page', () => {
       });
     }).as('downloadPdf');
 
-    cy.findByRole('link', { name: 'Instruksjoner for innsending' }).click();
+    cy.findByRole('button', { name: 'Instruksjoner for innsending' }).click();
     cy.findByRole('button', { name: /Last ned skjema|Download form/ }).click();
     cy.wait('@downloadPdf');
 

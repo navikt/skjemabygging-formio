@@ -9,6 +9,16 @@ import {
 } from './testUtils';
 
 describe('checkCondition simple conditionals', () => {
+  it.each(['documentation', 'documentation.key', 'documentation.value'])(
+    'reads canonical attachment choices at %s without changing their persisted shape',
+    (when) => {
+      const component = createComponent({ conditional: { when, eq: 'leggerVedNaa', show: true } });
+      const attachment = { attachmentId: 'doc', navId: 'doc', type: 'default', value: 'leggerVedNaa' };
+      expect(checkCondition(component, undefined, { documentation: attachment })).toBe(true);
+      expect(checkCondition(component, undefined, { documentation: [attachment] })).toBe(true);
+      expect(attachment).not.toHaveProperty('key');
+    },
+  );
   it('evaluates legacy simple conditionals locally without Formio runtime', () => {
     const controllingQuestion = createComponent({
       key: 'hasDetails',

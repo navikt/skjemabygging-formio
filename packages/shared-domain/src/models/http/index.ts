@@ -74,6 +74,27 @@ const getStatusFromErrorCode = (errorCode: ErrorCode): number => {
   }
 };
 
+const getResponseErrorData = (error: unknown): Pick<ErrorResponse, 'errorCode' | 'message'> | undefined => {
+  if (
+    typeof error !== 'object' ||
+    error === null ||
+    !('errorCode' in error) ||
+    typeof error.errorCode !== 'string' ||
+    !('message' in error) ||
+    typeof error.message !== 'string'
+  ) {
+    return undefined;
+  }
+
+  return {
+    errorCode: error.errorCode as ErrorCode,
+    message: error.message,
+  };
+};
+
+const hasErrorCode = (error: unknown, errorCode: ErrorCode): boolean =>
+  getResponseErrorData(error)?.errorCode === errorCode;
+
 class ResponseError extends Error {
   public readonly errorCode: ErrorCode;
   public readonly userMessage: string | undefined;
@@ -102,5 +123,12 @@ class HttpResponseError extends ResponseError {
   }
 }
 
-export { HttpResponseError, ResponseError, getErrorCodeFromStatus, getStatusFromErrorCode };
+export {
+  HttpResponseError,
+  ResponseError,
+  getErrorCodeFromStatus,
+  getResponseErrorData,
+  getStatusFromErrorCode,
+  hasErrorCode,
+};
 export type { ErrorCode, ErrorResponse };

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-nocheck
 import { navFormUtils } from './navFormUtils';
 import formWithContainer from './testdata/nav-form/conditional-container';
@@ -681,6 +682,261 @@ describe('navFormUtils', () => {
           })
           .map((panel) => panel.key),
       ).toEqual(['panel1', 'panel2']);
+    });
+
+    it('evaluates dataFetcher-based attachment conditionals from metadata and selected values', () => {
+      const form = {
+        components: [
+          {
+            id: 'panel-1',
+            key: 'panel1',
+            title: 'Panel 1',
+            type: 'panel',
+            components: [],
+          },
+          {
+            id: 'attachment-panel',
+            key: 'vedlegg',
+            title: 'Vedlegg',
+            type: 'panel',
+            isAttachmentPanel: true,
+            components: [
+              {
+                id: 'attachment-1',
+                key: 'uttalelseFraLege',
+                label: 'Uttalelse fra lege',
+                type: 'attachment',
+                input: true,
+                customConditional:
+                  "show = utils.dataFetcher('aktivitetsvelger', submission).selected({type: 'HELSE'});",
+              },
+              {
+                id: 'attachment-2',
+                key: 'annenDokumentasjon',
+                label: 'Annen dokumentasjon',
+                type: 'attachment',
+                input: true,
+              },
+            ],
+          },
+        ],
+      };
+
+      expect(
+        navFormUtils
+          .getActiveAttachmentPanelFromForm(form, {
+            data: {
+              aktivitetsvelger: {
+                a2: true,
+              },
+            },
+            metadata: {
+              dataFetcher: {
+                aktivitetsvelger: {
+                  data: [
+                    { value: 'a1', label: 'Utdanning', type: 'UTDANNING' },
+                    { value: 'a2', label: 'Helsefremmende tiltak', type: 'HELSE' },
+                  ],
+                },
+              },
+            },
+          })
+          ?.components?.map((component) => component.key),
+      ).toEqual(['uttalelseFraLege', 'annenDokumentasjon']);
+
+      expect(
+        navFormUtils
+          .getActiveAttachmentPanelFromForm(form, {
+            data: {
+              aktivitetsvelger: {
+                a1: true,
+              },
+            },
+            metadata: {
+              dataFetcher: {
+                aktivitetsvelger: {
+                  data: [
+                    { value: 'a1', label: 'Utdanning', type: 'UTDANNING' },
+                    { value: 'a2', label: 'Helsefremmende tiltak', type: 'HELSE' },
+                  ],
+                },
+              },
+            },
+          })
+          ?.components?.map((component) => component.key),
+      ).toEqual(['annenDokumentasjon']);
+    });
+  });
+
+  describe('getAllActivePanelsFromForm', () => {
+    it('keeps attachment panels in authored order while the legacy helper excludes them', () => {
+      const form = {
+        components: [
+          {
+            key: 'beforeAttachments',
+            type: 'panel',
+            components: [],
+          },
+          {
+            key: 'attachments',
+            type: 'panel',
+            isAttachmentPanel: true,
+            components: [
+              {
+                key: 'attachment',
+                type: 'attachment',
+                input: true,
+              },
+            ],
+          },
+          {
+            key: 'afterAttachments',
+            type: 'panel',
+            components: [],
+          },
+        ],
+      };
+
+      expect(navFormUtils.getAllActivePanelsFromForm(form, { data: {} }).map((panel) => panel.key)).toEqual([
+        'beforeAttachments',
+        'attachments',
+        'afterAttachments',
+      ]);
+      expect(navFormUtils.getActivePanelsFromForm(form, { data: {} }).map((panel) => panel.key)).toEqual([
+        'beforeAttachments',
+        'afterAttachments',
+      ]);
+    });
+
+    it('filters inactive attachment panels and their inactive child components', () => {
+      const form = {
+        components: [
+          {
+            key: 'beforeAttachments',
+            type: 'panel',
+            components: [],
+          },
+          {
+            key: 'attachments',
+            type: 'panel',
+            isAttachmentPanel: true,
+            conditional: { show: true, when: 'showAttachments', eq: true },
+            components: [
+              {
+                key: 'visibleAttachment',
+                type: 'attachment',
+                input: true,
+              },
+              {
+                key: 'hiddenAttachment',
+                type: 'attachment',
+                input: true,
+                conditional: { show: true, when: 'showSecondAttachment', eq: true },
+              },
+            ],
+          },
+          {
+            key: 'afterAttachments',
+            type: 'panel',
+            components: [],
+          },
+        ],
+      };
+
+      expect(navFormUtils.getAllActivePanelsFromForm(form, { data: {} }).map((panel) => panel.key)).toEqual([
+        'beforeAttachments',
+        'afterAttachments',
+      ]);
+
+      const [beforeAttachments, attachments, afterAttachments] = navFormUtils.getAllActivePanelsFromForm(form, {
+        data: { showAttachments: true },
+      });
+      expect([beforeAttachments?.key, attachments?.key, afterAttachments?.key]).toEqual([
+        'beforeAttachments',
+        'attachments',
+        'afterAttachments',
+      ]);
+      expect(attachments?.components?.map((component) => component.key)).toEqual(['visibleAttachment']);
+    });
+  });
+
+  describe('submission method in conditional evaluation', () => {
+    // Shaped like the production form nav100727, which shows/hides components with
+    // customConditional expressions calling instance.isSubmissionDigital().
+    const createSubmissionMethodForm = () => ({
+      title: 'Søknad om stønad til pass av barn',
+      type: 'form',
+      properties: {
+        skjemanummer: 'NAV 10-07.27',
+        submissionTypes: ['PAPER', 'DIGITAL'],
+      },
+      components: [
+        {
+          key: 'soknadenGjelder',
+          title: 'Søknaden gjelder',
+          type: 'panel',
+          navId: 'panel1',
+          components: [
+            {
+              key: 'jegSokerPaVegneAvMegSelv',
+              label: 'Jeg søker på vegne av meg selv',
+              type: 'navCheckbox',
+              input: true,
+              navId: 'eb6r9bo',
+              customConditional: 'show = instance.isSubmissionDigital();',
+            },
+            {
+              key: 'hvemFyllerUtSoknaden',
+              label: 'Hvem fyller ut søknaden?',
+              type: 'radiopanel',
+              input: true,
+              navId: 'e6if8f6',
+              customConditional: 'show = !instance.isSubmissionDigital();',
+            },
+          ],
+        },
+        {
+          key: 'digitalPanel',
+          title: 'Kun digital',
+          type: 'panel',
+          navId: 'panel2',
+          customConditional: 'show = instance.isSubmissionDigital();',
+          components: [],
+        },
+      ],
+    });
+
+    it('evaluates instance.isSubmissionDigital() as true for digital submissions', () => {
+      const form = createSubmissionMethodForm();
+      const submission = { data: {} };
+
+      const [panel] = navFormUtils.getActiveComponentsFromForm(form, submission, { submissionMethod: 'digital' });
+      expect(panel.components.map((component) => component.key)).toEqual(['jegSokerPaVegneAvMegSelv']);
+      expect(
+        navFormUtils
+          .getAllActivePanelsFromForm(form, submission, { submissionMethod: 'digital' })
+          .map((activePanel) => activePanel.key),
+      ).toEqual(['soknadenGjelder', 'digitalPanel']);
+    });
+
+    it('evaluates instance.isSubmissionDigital() as false for paper submissions', () => {
+      const form = createSubmissionMethodForm();
+      const submission = { data: {} };
+
+      const [panel] = navFormUtils.getActiveComponentsFromForm(form, submission, { submissionMethod: 'paper' });
+      expect(panel.components.map((component) => component.key)).toEqual(['hvemFyllerUtSoknaden']);
+      expect(
+        navFormUtils
+          .getAllActivePanelsFromForm(form, submission, { submissionMethod: 'paper' })
+          .map((activePanel) => activePanel.key),
+      ).toEqual(['soknadenGjelder']);
+    });
+
+    it('falls back to paper behavior when no submission method is given', () => {
+      const form = createSubmissionMethodForm();
+
+      const [panel] = navFormUtils.getActiveComponentsFromForm(form, { data: {} });
+      expect(panel.components.map((component) => component.key)).toEqual(['hvemFyllerUtSoknaden']);
     });
   });
 

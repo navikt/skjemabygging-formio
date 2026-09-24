@@ -1,5 +1,6 @@
 import { panel, textField } from '../../../form-builder/components';
 import form from '../../../form-builder/form/form';
+import formIntroPage from '../../../form-builder/form/formIntroPage';
 import formProperties from '../../../form-builder/form/formProperties';
 import { getMockTranslationsFromForm } from '../../../form-builder/shared/utils';
 
@@ -20,6 +21,7 @@ const onlypapernocoverpageForm = () => {
       formNumber,
       submissionTypes: ['PAPER_NO_COVER_PAGE'],
     }),
+    introPage: formIntroPage({ enabled: false }),
   });
 };
 

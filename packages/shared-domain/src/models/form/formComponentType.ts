@@ -23,7 +23,6 @@ const FORM_COMPONENT_TYPES = [
   'navSelect',
   'selectboxes',
   'textarea',
-  'formioTextArea',
   'textfield',
 
   // Customized
@@ -40,7 +39,6 @@ const FORM_COMPONENT_TYPES = [
   'identity',
   'fnrfield',
   'orgNr',
-  'password',
   'phoneNumber',
   'sender',
   'surname',

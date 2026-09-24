@@ -28,6 +28,14 @@ const selectForm = () => {
             values: options,
             description: '<p>Dette er en beskrivelse</p>',
           }),
+          navSelect({
+            key: 'readOnlyOption',
+            label: 'Låst alternativ',
+            values: options,
+            defaultValue: 'alt1',
+            readOnly: true,
+            selectType: 'select',
+          }),
         ],
       }),
       panel({

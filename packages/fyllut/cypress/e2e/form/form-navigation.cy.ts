@@ -21,14 +21,14 @@ function fillPaperNoCoverPageToSummary(fieldName: string | RegExp = 'Tekstfelt',
 
 function assertNoCoverPageSubmissionFlow(formPath: string, fieldName?: string | RegExp, value?: string) {
   fillPaperNoCoverPageToSummary(fieldName, value);
-  cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions }).click();
+  cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.instructions }).click();
   cy.url().should('include', `/${formPath}/ingen-innsending`);
   cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).should('exist');
 }
 
 function assertPaperSubmissionFlow(formPath: string, fieldName?: string | RegExp, value?: string) {
   fillPaperNoCoverPageToSummary(fieldName, value);
-  cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions }).click();
+  cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.instructions }).click();
   cy.url().should('include', `/${formPath}/send-i-posten`);
   cy.findByRole('button', { name: TEXTS.grensesnitt.downloadApplication }).should('exist');
 }
@@ -73,21 +73,21 @@ describe('Form navigation', () => {
     it('Normal flow', () => {
       cy.findByRole('heading', { level: 2, name: 'Introduksjon' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationpaper?sub=paper');
-      cy.findByRole('link', { name: 'Neste steg' }).click();
+      cy.findByRole('button', { name: 'Neste steg' }).click();
 
       cy.findByRole('heading', { level: 2, name: 'Dine opplysninger' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationpaper/dineOpplysninger?sub=paper');
       cy.findByRole('textbox', { name: 'Tekstfelt' }).type('Test');
-      cy.findByRole('link', { name: 'Neste steg' }).click();
+      cy.findByRole('button', { name: 'Neste steg' }).click();
 
       cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationpaper/vedlegg?sub=paper');
       selectPaperAttachments();
-      cy.findByRole('link', { name: 'Neste steg' }).click();
+      cy.findByRole('button', { name: 'Neste steg' }).click();
 
       cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationpaper/oppsummering?sub=paper');
-      cy.findByRole('link', { name: 'Instruksjoner for innsending' }).click();
+      cy.findByRole('button', { name: 'Instruksjoner for innsending' }).click();
 
       cy.findByRole('heading', { level: 2, name: 'Skjemaet er ikke sendt ennå' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationpaper/send-i-posten?sub=paper');
@@ -103,27 +103,27 @@ describe('Form navigation', () => {
 
       cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationpaper/oppsummering?sub=paper');
-      cy.contains('Du må fullføre utfyllingen før du kan fortsette').should('not.exist');
-      cy.findByRole('link', { name: 'Instruksjoner for innsending' }).click();
-      cy.contains('Du må fullføre utfyllingen før du kan fortsette').should('exist');
-      cy.findByRole('link', { name: 'Forrige steg' }).should('not.exist');
-      cy.findAllByRole('link', { name: 'Fortsett utfylling' }).eq(1).click();
+      cy.get('[data-cy=error-summary]').should('not.exist');
+      cy.findByRole('button', { name: 'Instruksjoner for innsending' }).click();
+      cy.get('[data-cy=error-summary]').should('exist');
+      cy.findByRole('button', { name: 'Forrige steg' }).should('not.exist');
+      cy.findAllByRole('button', { name: 'Fortsett utfylling' }).eq(1).click();
 
       cy.findByRole('heading', { level: 2, name: 'Dine opplysninger' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationpaper/dineOpplysninger?sub=paper');
       cy.findByRole('textbox', { name: 'Tekstfelt' }).type('Test');
-      cy.findByRole('link', { name: 'Neste steg' }).click();
+      cy.findByRole('button', { name: 'Neste steg' }).click();
 
       cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationpaper/vedlegg?sub=paper');
       selectPaperAttachments();
-      cy.findByRole('link', { name: 'Neste steg' }).click();
+      cy.findByRole('button', { name: 'Neste steg' }).click();
 
       cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationpaper/oppsummering?sub=paper');
-      cy.findByRole('link', { name: 'Fortsett utfylling' }).should('not.exist');
-      cy.contains('Du må fullføre utfyllingen før du kan fortsette').should('not.exist');
-      cy.findByRole('link', { name: 'Instruksjoner for innsending' }).click();
+      cy.findByRole('button', { name: 'Fortsett utfylling' }).should('not.exist');
+      cy.get('[data-cy=error-summary]').should('not.exist');
+      cy.findByRole('button', { name: 'Instruksjoner for innsending' }).click();
 
       cy.findByRole('heading', { level: 2, name: 'Skjemaet er ikke sendt ennå' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationpaper/send-i-posten?sub=paper');
@@ -134,41 +134,41 @@ describe('Form navigation', () => {
     it('Back buttons', () => {
       cy.findByRole('heading', { level: 2, name: 'Introduksjon' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationpaper?sub=paper');
-      cy.findByRole('link', { name: 'Neste steg' }).click();
+      cy.findByRole('button', { name: 'Neste steg' }).click();
 
       cy.findByRole('heading', { level: 2, name: 'Dine opplysninger' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationpaper/dineOpplysninger?sub=paper');
       cy.findByRole('textbox', { name: 'Tekstfelt' }).type('Test');
-      cy.findByRole('link', { name: 'Neste steg' }).click();
+      cy.findByRole('button', { name: 'Neste steg' }).click();
 
       cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationpaper/vedlegg?sub=paper');
       selectPaperAttachments();
-      cy.findByRole('link', { name: 'Neste steg' }).click();
+      cy.findByRole('button', { name: 'Neste steg' }).click();
 
       cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationpaper/oppsummering?sub=paper');
-      cy.findByRole('link', { name: 'Instruksjoner for innsending' }).click();
+      cy.findByRole('button', { name: 'Instruksjoner for innsending' }).click();
 
       cy.findByRole('heading', { level: 2, name: 'Skjemaet er ikke sendt ennå' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationpaper/send-i-posten?sub=paper');
-      cy.findByRole('link', { name: 'Forrige steg' }).click();
+      cy.findByRole('button', { name: 'Forrige steg' }).click();
 
       cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationpaper/oppsummering?sub=paper');
-      cy.findByRole('link', { name: 'Forrige steg' }).click();
+      cy.findByRole('button', { name: 'Forrige steg' }).click();
 
       cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationpaper/vedlegg?sub=paper');
-      cy.findByRole('link', { name: 'Forrige steg' }).click();
+      cy.findByRole('button', { name: 'Forrige steg' }).click();
 
       cy.findByRole('heading', { level: 2, name: 'Dine opplysninger' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationpaper/dineOpplysninger?sub=paper');
-      cy.findByRole('link', { name: 'Forrige steg' }).click();
+      cy.findByRole('button', { name: 'Forrige steg' }).click();
 
       cy.findByRole('heading', { level: 2, name: 'Introduksjon' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationpaper?sub=paper');
-      cy.findByRole('link', { name: 'Forrige steg' }).should('not.exist');
+      cy.findByRole('button', { name: 'Forrige steg' }).should('not.exist');
     });
 
     it('Cancel and delete buttons', () => {
@@ -181,27 +181,27 @@ describe('Form navigation', () => {
       cy.wait('@getForm');
       cy.wait('@getTranslations');
       cy.findByRole('heading', { level: 2, name: 'Introduksjon' }).should('exist');
-      cy.findByRole('link', { name: 'Neste steg' }).click();
+      cy.findByRole('button', { name: 'Neste steg' }).click();
 
       cy.findByRole('heading', { level: 2, name: 'Dine opplysninger' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationpaper/dineOpplysninger?sub=paper');
       cy.findByRole('textbox', { name: 'Tekstfelt' }).type('Test');
       cy.findByRole('button', { name: 'Avbryt og slett' }).click();
       cy.findByRole('button', { name: 'Nei, fortsett utfylling' }).click();
-      cy.findByRole('link', { name: 'Neste steg' }).click();
+      cy.findByRole('button', { name: 'Neste steg' }).click();
 
       cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationpaper/vedlegg?sub=paper');
       selectPaperAttachments();
       cy.findByRole('button', { name: 'Avbryt og slett' }).click();
       cy.findByRole('button', { name: 'Nei, fortsett utfylling' }).click();
-      cy.findByRole('link', { name: 'Neste steg' }).click();
+      cy.findByRole('button', { name: 'Neste steg' }).click();
 
       cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationpaper/oppsummering?sub=paper');
       cy.findByRole('button', { name: 'Avbryt og slett' }).click();
       cy.findByRole('button', { name: 'Nei, fortsett utfylling' }).click();
-      cy.findByRole('link', { name: 'Instruksjoner for innsending' }).click();
+      cy.findByRole('button', { name: 'Instruksjoner for innsending' }).click();
       cy.findByRole('heading', { name: 'Du har ikke fylt ut all nødvendig informasjon' }).should('not.exist');
 
       cy.findByRole('heading', { level: 2, name: 'Skjemaet er ikke sendt ennå' }).should('exist');
@@ -237,20 +237,20 @@ describe('Form navigation', () => {
         cy.findByRole('heading', { level: 2, name: 'Introduksjon' }).should('exist');
         cy.url().should('include', '/fyllut/formnavigationdigital?sub=digital');
         cy.url().should('include', 'innsendingsId=');
-        cy.findByRole('link', { name: 'Lagre og fortsett' }).click();
+        cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
         cy.wait('@updateMellomlagring');
 
         cy.findByRole('heading', { level: 2, name: 'Dine opplysninger' }).should('exist');
         cy.url().should('include', '/fyllut/formnavigationdigital/dineOpplysninger?sub=digital');
         cy.url().should('include', 'innsendingsId=');
         cy.findByRole('textbox', { name: 'Tekstfelt' }).type('Test');
-        cy.findByRole('link', { name: 'Lagre og fortsett' }).click();
+        cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
         cy.wait('@updateMellomlagring');
 
         cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
         cy.url().should('include', '/fyllut/formnavigationdigital/vedlegg?sub=digital');
         cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
-        cy.findByRole('link', { name: 'Lagre og fortsett' }).click();
+        cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
         cy.wait('@updateMellomlagring');
 
         cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
@@ -269,28 +269,28 @@ describe('Form navigation', () => {
 
         cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
         cy.url().should('include', '/fyllut/formnavigationdigital/oppsummering?sub=digital');
-        cy.contains('Du må fullføre utfyllingen før du kan fortsette').should('not.exist');
+        cy.get('[data-cy=error-summary]').should('not.exist');
         cy.clickSendNav();
-        cy.contains('Du må fullføre utfyllingen før du kan fortsette').should('exist');
-        cy.findByRole('link', { name: 'Forrige steg' }).should('not.exist');
-        cy.findAllByRole('link', { name: 'Fortsett utfylling' }).eq(1).click();
+        cy.get('[data-cy=error-summary]').should('exist');
+        cy.findByRole('button', { name: 'Forrige steg' }).should('not.exist');
+        cy.findAllByRole('button', { name: 'Fortsett utfylling' }).eq(1).click();
 
         cy.findByRole('heading', { level: 2, name: 'Dine opplysninger' }).should('exist');
         cy.url().should('include', '/fyllut/formnavigationdigital/dineOpplysninger?sub=digital');
         cy.findByRole('textbox', { name: 'Tekstfelt' }).type('Test');
-        cy.findByRole('link', { name: 'Lagre og fortsett' }).click();
+        cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
         cy.wait('@updateMellomlagring');
 
         cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
         cy.url().should('include', '/fyllut/formnavigationdigital/vedlegg?sub=digital');
         cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
-        cy.findByRole('link', { name: 'Lagre og fortsett' }).click();
+        cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
         cy.wait('@updateMellomlagring');
 
         cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
         cy.url().should('include', '/fyllut/formnavigationdigital/oppsummering?sub=digital');
-        cy.findByRole('link', { name: 'Fortsett utfylling' }).should('not.exist');
-        cy.contains('Du må fullføre utfyllingen før du kan fortsette').should('not.exist');
+        cy.findByRole('button', { name: 'Fortsett utfylling' }).should('not.exist');
+        cy.get('[data-cy=error-summary]').should('not.exist');
 
         cy.clickSendNav();
         cy.wait('@submitApplication');
@@ -300,36 +300,36 @@ describe('Form navigation', () => {
       it('Back buttons', () => {
         cy.findByRole('heading', { level: 2, name: 'Introduksjon' }).should('exist');
         cy.url().should('include', '/fyllut/formnavigationdigital?sub=digital');
-        cy.findByRole('link', { name: 'Lagre og fortsett' }).click();
+        cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
         cy.wait('@updateMellomlagring');
 
         cy.findByRole('heading', { level: 2, name: 'Dine opplysninger' }).should('exist');
         cy.url().should('include', '/fyllut/formnavigationdigital/dineOpplysninger?sub=digital');
         cy.findByRole('textbox', { name: 'Tekstfelt' }).type('Test');
-        cy.findByRole('link', { name: 'Lagre og fortsett' }).click();
+        cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
         cy.wait('@updateMellomlagring');
 
         cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
         cy.url().should('include', '/fyllut/formnavigationdigital/vedlegg?sub=digital');
         cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
-        cy.findByRole('link', { name: 'Lagre og fortsett' }).click();
+        cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
         cy.wait('@updateMellomlagring');
 
         cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
         cy.url().should('include', '/fyllut/formnavigationdigital/oppsummering?sub=digital');
-        cy.findByRole('link', { name: 'Forrige steg' }).click();
+        cy.findByRole('button', { name: 'Forrige steg' }).click();
 
         cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
         cy.url().should('include', '/fyllut/formnavigationdigital/vedlegg?sub=digital');
-        cy.findByRole('link', { name: 'Forrige steg' }).click();
+        cy.findByRole('button', { name: 'Forrige steg' }).click();
 
         cy.findByRole('heading', { level: 2, name: 'Dine opplysninger' }).should('exist');
         cy.url().should('include', '/fyllut/formnavigationdigital/dineOpplysninger?sub=digital');
-        cy.findByRole('link', { name: 'Forrige steg' }).click();
+        cy.findByRole('button', { name: 'Forrige steg' }).click();
 
         cy.findByRole('heading', { level: 2, name: 'Introduksjon' }).should('exist');
         cy.url().should('include', '/fyllut/formnavigationdigital?sub=digital');
-        cy.findByRole('link', { name: 'Forrige steg' }).should('not.exist');
+        cy.findByRole('button', { name: 'Forrige steg' }).should('not.exist');
       });
 
       it('Cancel and delete buttons', () => {
@@ -337,7 +337,7 @@ describe('Form navigation', () => {
         cy.url().should('include', '/fyllut/formnavigationdigital?sub=digital');
         cy.findByRole('button', { name: 'Avbryt og slett' }).click();
         cy.findByRole('button', { name: 'Nei, fortsett utfylling' }).click();
-        cy.findByRole('link', { name: 'Lagre og fortsett' }).click();
+        cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
         cy.wait('@updateMellomlagring');
 
         cy.findByRole('heading', { level: 2, name: 'Dine opplysninger' }).should('exist');
@@ -345,7 +345,7 @@ describe('Form navigation', () => {
         cy.findByRole('textbox', { name: 'Tekstfelt' }).type('Test');
         cy.findByRole('button', { name: 'Avbryt og slett' }).click();
         cy.findByRole('button', { name: 'Nei, fortsett utfylling' }).click();
-        cy.findByRole('link', { name: 'Lagre og fortsett' }).click();
+        cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
         cy.wait('@updateMellomlagring');
 
         cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
@@ -353,7 +353,7 @@ describe('Form navigation', () => {
         cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
           cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
         });
-        cy.findByRole('link', { name: 'Lagre og fortsett' }).click();
+        cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
 
         cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
         cy.url().should('include', '/fyllut/formnavigationdigital/oppsummering?sub=digital');
@@ -385,7 +385,7 @@ describe('Form navigation', () => {
         cy.findByRole('heading', { level: 2, name: 'Introduksjon' }).should('exist');
         cy.url().should('include', '/fyllut/formnavigationdigitalnoattachments?sub=digital');
         cy.url().should('include', 'innsendingsId=');
-        cy.findByRole('link', { name: 'Lagre og fortsett' }).click();
+        cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
         cy.wait('@updateMellomlagring');
 
         cy.findByRole('heading', { level: 2, name: 'Dine opplysninger' }).should('exist');
@@ -394,7 +394,7 @@ describe('Form navigation', () => {
           '/fyllut/formnavigationdigitalnoattachments/dineOpplysninger?sub=digital&innsendingsId=',
         );
         cy.findByRole('textbox', { name: 'Tekstfelt' }).type('Test');
-        cy.findByRole('link', { name: 'Lagre og fortsett' }).click();
+        cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
         cy.wait('@updateMellomlagring');
 
         cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
@@ -425,7 +425,7 @@ describe('Form navigation', () => {
         );
         cy.findByRole('button', { name: 'Lagre utkast og fortsett senere' }).click();
         cy.findByRole('button', { name: 'Nei, fortsett utfylling' }).click();
-        cy.findByRole('link', { name: 'Lagre og fortsett' }).click();
+        cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
         cy.wait('@updateMellomlagring');
 
         cy.findByRole('heading', { level: 2, name: 'Dine opplysninger' }).should('exist');
@@ -435,14 +435,14 @@ describe('Form navigation', () => {
         );
         cy.findByRole('button', { name: 'Lagre utkast og fortsett senere' }).click();
         cy.findByRole('button', { name: 'Nei, fortsett utfylling' }).click();
-        cy.findByRole('link', { name: 'Lagre og fortsett' }).click();
+        cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
         cy.wait('@updateMellomlagring');
 
         cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
         cy.findByRole('group', { name: /Annen dokumentasjon/ }).within(() => {
           cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
         });
-        cy.findByRole('link', { name: 'Lagre og fortsett' }).click();
+        cy.findByRole('button', { name: 'Lagre og fortsett' }).click();
         cy.wait('@updateMellomlagring');
 
         cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
@@ -473,8 +473,8 @@ describe('Form navigation', () => {
         cy.findByRole('link', { name: 'Vedlegg' }).click();
 
         cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
-        cy.findByRole('link', { name: 'Lagre og fortsett' }).should('exist');
-        cy.findByRole('link', { name: 'Forrige steg' }).should('exist');
+        cy.findByRole('button', { name: 'Lagre og fortsett' }).should('exist');
+        cy.findByRole('button', { name: 'Forrige steg' }).should('exist');
       });
 
       it('Normal flow', () => {
@@ -517,6 +517,7 @@ describe('Form navigation', () => {
 
   describe('Type: Digital, no login', () => {
     beforeEach(() => {
+      cy.intercept('POST', '/fyllut/api/captcha').as('createNoLoginToken');
       cy.intercept('POST', '/fyllut/api/send-inn/nologin-application').as('nologinSubmit');
       cy.visit('/fyllut/formnavigationdigitalnologin/legitimasjon?sub=digitalnologin');
       cy.defaultWaits();
@@ -528,29 +529,32 @@ describe('Form navigation', () => {
       );
       cy.intercept('POST', '/fyllut/api/send-inn/nologin-application/attachments/personal-id').as('uploadIdFile');
       cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
+      cy.wait('@createNoLoginToken');
       cy.wait('@uploadIdFile');
-      cy.findByRole('link', { name: 'Neste steg' }).click();
+      cy.get('@createNoLoginToken.all').should('have.length', 1);
+      cy.findByRole('button', { name: 'Neste steg' }).click();
     });
 
     it('Normal flow', () => {
       cy.findByRole('heading', { level: 2, name: 'Introduksjon' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationdigitalnologin?sub=digitalnologin');
-      cy.findByRole('link', { name: 'Neste steg' }).click();
+      cy.findByRole('button', { name: 'Neste steg' }).click();
 
       cy.findByRole('heading', { level: 2, name: 'Dine opplysninger' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationdigitalnologin/dineOpplysninger?sub=digitalnologin');
       cy.findByRole('textbox', { name: 'Tekstfelt' }).type('Test');
-      cy.findByRole('link', { name: 'Neste steg' }).click();
+      cy.findByRole('button', { name: 'Neste steg' }).click();
 
       cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationdigitalnologin/vedlegg?sub=digitalnologin');
       cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
-      cy.findByRole('link', { name: 'Neste steg' }).click();
+      cy.findByRole('button', { name: 'Neste steg' }).click();
 
       cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationdigitalnologin/oppsummering?sub=digitalnologin');
-      cy.findByRole('link', { name: 'Send til Nav' }).click();
+      cy.findByRole('button', { name: 'Send til Nav' }).click();
       cy.wait('@nologinSubmit');
+      cy.get('@createNoLoginToken.all').should('have.length', 1);
     });
 
     it('Invalid data on summary page', () => {
@@ -561,65 +565,65 @@ describe('Form navigation', () => {
 
       cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationdigitalnologin/oppsummering?sub=digitalnologin');
-      cy.contains('Du må fullføre utfyllingen før du kan fortsette').should('not.exist');
-      cy.findByRole('link', { name: 'Send til Nav' }).click();
-      cy.contains('Du må fullføre utfyllingen før du kan fortsette').should('exist');
-      cy.findByRole('link', { name: 'Forrige steg' }).should('not.exist');
-      cy.findAllByRole('link', { name: 'Fortsett utfylling' }).eq(1).click();
+      cy.get('[data-cy=error-summary]').should('not.exist');
+      cy.findByRole('button', { name: 'Send til Nav' }).click();
+      cy.get('[data-cy=error-summary]').should('exist');
+      cy.findByRole('button', { name: 'Forrige steg' }).should('not.exist');
+      cy.findAllByRole('button', { name: 'Fortsett utfylling' }).eq(1).click();
 
       cy.findByRole('heading', { level: 2, name: 'Dine opplysninger' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationdigitalnologin/dineOpplysninger?sub=digitalnologin');
       cy.findByRole('textbox', { name: 'Tekstfelt' }).type('Test');
-      cy.findByRole('link', { name: 'Neste steg' }).click();
+      cy.findByRole('button', { name: 'Neste steg' }).click();
 
       cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationdigitalnologin/vedlegg?sub=digitalnologin');
       cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
-      cy.findByRole('link', { name: 'Neste steg' }).click();
+      cy.findByRole('button', { name: 'Neste steg' }).click();
 
       cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationdigitalnologin/oppsummering?sub=digitalnologin');
-      cy.findByRole('link', { name: 'Fortsett utfylling' }).should('not.exist');
-      cy.contains('Du må fullføre utfyllingen før du kan fortsette').should('not.exist');
-      cy.findByRole('link', { name: 'Send til Nav' }).click();
+      cy.findByRole('button', { name: 'Fortsett utfylling' }).should('not.exist');
+      cy.get('[data-cy=error-summary]').should('not.exist');
+      cy.findByRole('button', { name: 'Send til Nav' }).click();
       cy.wait('@nologinSubmit');
     });
 
     it('Back buttons', () => {
       cy.findByRole('heading', { level: 2, name: 'Introduksjon' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationdigitalnologin?sub=digitalnologin');
-      cy.findByRole('link', { name: 'Neste steg' }).click();
+      cy.findByRole('button', { name: 'Neste steg' }).click();
 
       cy.findByRole('heading', { level: 2, name: 'Dine opplysninger' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationdigitalnologin/dineOpplysninger?sub=digitalnologin');
       cy.findByRole('textbox', { name: 'Tekstfelt' }).type('Test');
-      cy.findByRole('link', { name: 'Neste steg' }).click();
+      cy.findByRole('button', { name: 'Neste steg' }).click();
 
       cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationdigitalnologin/vedlegg?sub=digitalnologin');
       cy.findByLabelText(TEXTS.statiske.attachment.nei).click();
-      cy.findByRole('link', { name: 'Neste steg' }).click();
+      cy.findByRole('button', { name: 'Neste steg' }).click();
 
       cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationdigitalnologin/oppsummering?sub=digitalnologin');
-      cy.findByRole('link', { name: 'Forrige steg' }).click();
+      cy.findByRole('button', { name: 'Forrige steg' }).click();
 
       cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationdigitalnologin/vedlegg?sub=digitalnologin');
-      cy.findByRole('link', { name: 'Forrige steg' }).click();
+      cy.findByRole('button', { name: 'Forrige steg' }).click();
 
       cy.findByRole('heading', { level: 2, name: 'Dine opplysninger' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationdigitalnologin/dineOpplysninger?sub=digitalnologin');
-      cy.findByRole('link', { name: 'Forrige steg' }).click();
+      cy.findByRole('button', { name: 'Forrige steg' }).click();
 
       cy.findByRole('heading', { level: 2, name: 'Introduksjon' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationdigitalnologin?sub=digitalnologin');
-      cy.findByRole('link', { name: 'Forrige steg' }).should('not.exist');
-      cy.findByRole('link', { name: 'Opplasting av ID' }).click();
+      cy.findByRole('button', { name: 'Forrige steg' }).should('not.exist');
+      cy.findByRole('button', { name: 'Opplasting av ID' }).click();
 
       cy.findByRole('heading', { level: 2, name: 'Legitimasjon' }).should('exist');
       cy.url().should('include', '/fyllut/formnavigationdigitalnologin/legitimasjon?sub=digitalnologin');
-      cy.findByRole('link', { name: 'Forrige steg' }).should('not.exist');
+      cy.findByRole('button', { name: 'Forrige steg' }).should('not.exist');
     });
   });
 
@@ -634,12 +638,12 @@ describe('Form navigation', () => {
       it('Normal legacy flow', () => {
         cy.findByRole('heading', { level: 2, name: 'Introduksjon' }).should('exist');
         cy.url().should('include', '/fyllut/formnavigationnone');
-        cy.findByRole('link', { name: 'Neste steg' }).click();
+        cy.findByRole('button', { name: 'Neste steg' }).click();
 
         cy.findByRole('heading', { level: 2, name: 'Dine opplysninger' }).should('exist');
         cy.url().should('include', '/fyllut/formnavigationnone/dineOpplysninger');
         cy.findByRole('textbox', { name: 'Tekstfelt' }).type('Test');
-        cy.findByRole('link', { name: 'Neste steg' }).click();
+        cy.findByRole('button', { name: 'Neste steg' }).click();
 
         cy.findByRole('heading', { level: 2, name: 'Vedlegg' }).should('exist');
         cy.url().should('include', '/fyllut/formnavigationnone/vedlegg');
@@ -649,18 +653,18 @@ describe('Form navigation', () => {
         cy.findByLabelText('Annen dokumentasjon').within(() => {
           cy.findByLabelText('Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved').check();
         });
-        cy.findByRole('link', { name: 'Neste steg' }).click();
+        cy.findByRole('button', { name: 'Neste steg' }).click();
 
         cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
         cy.url().should('include', '/fyllut/formnavigationnone/oppsummering');
-        cy.findByRole('link', { name: 'Instruksjoner for innsending' }).click();
+        cy.findByRole('button', { name: 'Instruksjoner for innsending' }).click();
 
         cy.findByRole('heading', { level: 1, name: 'Submission Type: None' }).should('exist');
         cy.url().should('include', '/fyllut/formnavigationnone/ingen-innsending');
         cy.findByRole('button', { name: 'Last ned skjema' }).click();
         cy.wait('@downloadPdf');
 
-        cy.findByRole('link', { name: 'Forrige steg' }).should('exist');
+        cy.findByRole('button', { name: 'Forrige steg' }).should('exist');
       });
     });
 

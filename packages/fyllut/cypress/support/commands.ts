@@ -12,6 +12,16 @@ import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
 import '@testing-library/cypress/add-commands';
 import { CyHttpMessages } from 'cypress/types/net-stubbing';
 
+const clearPersistedRouterUserState = (win: Cypress.AUTWindow) => {
+  const historyState = win.history.state;
+  if (!historyState || typeof historyState !== 'object' || !('usr' in historyState)) {
+    return;
+  }
+
+  const { usr: _routerUserState, ...nextHistoryState } = historyState as Record<string, unknown>;
+  win.history.replaceState(nextHistoryState, '', win.location.href);
+};
+
 // -- This is a parent command --
 // Cypress.Commands.add('login', (email, password) => { ... })
 //
@@ -26,6 +36,18 @@ import { CyHttpMessages } from 'cypress/types/net-stubbing';
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+Cypress.Commands.overwrite('visit', (originalFn, url, options: Partial<Cypress.VisitOptions> = {}) => {
+  const { onBeforeLoad, ...restOptions } = options;
+
+  return originalFn(url, {
+    ...restOptions,
+    onBeforeLoad: (win) => {
+      clearPersistedRouterUserState(win);
+      onBeforeLoad?.(win);
+    },
+  });
+});
 
 // Based on https://github.com/cypress-io/cypress/issues/7306#issuecomment-636009167
 Cypress.Commands.add('findByRoleWhenAttached', (role, options, wait: number = 100) => {
@@ -51,20 +73,42 @@ Cypress.Commands.add('findByRoleWhenAttached', (role, options, wait: number = 10
   return findAttached();
 });
 
+const findNavigationActionWhenAttached = (name: string | RegExp, wait: number = 100) => {
+  const timeout = 10000;
+  const start = Date.now();
+
+  const findAttached = (): Cypress.Chainable<JQuery<HTMLElement>> =>
+    cy.contains('button, a', name, { timeout }).then(($element) =>
+      Cypress.Promise.delay(wait).then(() => {
+        if (Cypress.dom.isAttached($element)) {
+          return $element;
+        }
+
+        if (Date.now() - start > timeout) {
+          throw new Error('Navigation action was not attached to the DOM before timeout');
+        }
+
+        return findAttached();
+      }),
+    );
+
+  return findAttached();
+};
+
 Cypress.Commands.add('shouldBeVisible', { prevSubject: true }, (subject) => {
   return cy.wrap(subject).should('be.visible').should('not.have.class', 'aksel-sr-only');
 });
 
 Cypress.Commands.add('clickNextStep', () => {
-  return cy.findByRoleWhenAttached('link', { name: /Neste steg|Next step/ }, 1000).click();
+  return findNavigationActionWhenAttached(/^(Neste steg|Next step)$/, 1000).click();
 });
 
 Cypress.Commands.add('clickPreviousStep', () => {
-  return cy.findByRoleWhenAttached('link', { name: /Forrige steg|Previous step/ }, 1000).click();
+  return findNavigationActionWhenAttached(/^(Forrige steg|Previous step)$/, 1000).click();
 });
 
 Cypress.Commands.add('clickSaveAndContinue', () => {
-  return cy.findByRoleWhenAttached('link', { name: /Lagre og fortsett|Save and continue/ }, 1000).click();
+  return findNavigationActionWhenAttached(/^(Lagre og fortsett|Save and continue)$/, 1000).click();
 });
 
 Cypress.Commands.add('clickStart', () => {
@@ -86,7 +130,12 @@ Cypress.Commands.add('clickIntroPageConfirmation', () => {
 });
 
 Cypress.Commands.add('clickShowAllSteps', () => {
-  return cy.findByRoleWhenAttached('button', { name: /Vis alle steg|Show all steps/ }, 1000).click();
+  cy.findByRoleWhenAttached('button', { name: /Vis alle steg|Show all steps/ }, 1000).click();
+
+  return cy
+    .get('.aksel-form-progress__collapsible')
+    .should('have.attr', 'data-state', 'open')
+    .and('have.css', 'opacity', '1');
 });
 
 Cypress.Commands.add('clickSendDigital', () => {
@@ -108,9 +157,7 @@ Cypress.Commands.add('clickEditAnswer', (title, linkText) => {
 });
 
 Cypress.Commands.add('clickEditAnswers', (linkText) => {
-  cy.findAllByRole('link', { name: linkText ?? /Fortsett utfylling|Continue filling in/ })
-    .first()
-    .click();
+  findNavigationActionWhenAttached(linkText ?? /^(Fortsett utfylling|Continue filling in)$/).click();
 });
 
 Cypress.Commands.add('visitRouteAndWait', (route: string, waitAliases?: string[]) => {
@@ -128,12 +175,12 @@ Cypress.Commands.add('visitRouteAndWait', (route: string, waitAliases?: string[]
 
 Cypress.Commands.add('clickSendNav', () => {
   // This render first after validation is done, so we need to wait for it.
-  cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.sendToNav, timeout: 10000 }).click();
+  return findNavigationActionWhenAttached(TEXTS.grensesnitt.navigation.sendToNav).click();
 });
 
 Cypress.Commands.add('clickDownloadInstructions', () => {
   // This render first after validation is done, so we need to wait for it.
-  cy.findByRole('link', { name: TEXTS.grensesnitt.navigation.instructions, timeout: 10000 }).click();
+  return findNavigationActionWhenAttached(TEXTS.grensesnitt.navigation.instructions).click();
 });
 
 Cypress.Commands.add('clickDownloadApplication', () => {
@@ -181,11 +228,19 @@ const interceptExternalNavRedirects = () => {
 Cypress.Commands.add('defaultIntercepts', () => {
   interceptExternalNavRedirects();
   cy.intercept('POST', '/fyllut/api/log*', { body: 'ok' }).as('logger');
-  cy.intercept('GET', '/fyllut/api/config*').as('getConfig');
-  cy.intercept('GET', '/fyllut/api/global-translations/*').as('getGlobalTranslations');
+  cy.intercept('GET', '/fyllut/api/config*', (req) => {
+    req.headers['accept-encoding'] = 'identity';
+    delete req.headers['if-none-match'];
+    delete req.headers['if-modified-since'];
+    req.continue((res) => {
+      if (typeof res.body === 'object' && res.body !== null) {
+        res.body.newRenderForms = ['*'];
+      }
+    });
+  }).as('getConfig');
   cy.intercept('GET', '/fyllut/api/common-codes/currencies*').as('getCurrencies');
   cy.intercept('GET', '/fyllut/api/common-codes/area-codes').as('getAreaCodes');
-  cy.intercept('GET', '/fyllut/api/translations/*').as('getTranslations');
+  cy.intercept('GET', /\/fyllut\/api\/(?:translations\/[^/]+|forms\/[^/]+\/translations)$/).as('getTranslations');
   cy.intercept('GET', '/fyllut/api/forms/*').as('getForm');
   return cy;
 });

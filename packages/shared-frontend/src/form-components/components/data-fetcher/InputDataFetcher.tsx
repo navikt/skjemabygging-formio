@@ -1,0 +1,130 @@
+import { DataFetcherComponent, DataFetcherData, Submission, TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+import { useCallback, useEffect, useMemo } from 'react';
+import CheckboxGroup from '../../../components/checkbox-group/CheckboxGroup';
+import { useApplication } from '../../../context/application/ApplicationContext';
+import { useFormDefinitionSubmissionMethod } from '../../../context/form-definition/FormDefinitionContext';
+import { useRuntimeServices } from '../../../context/runtime-services/RuntimeServicesContext';
+import { useSubmissionState } from '../../../context/state/SubmissionStateContext';
+import { parseSubmissionPath, setDeepValue } from '../../../context/state/stateHelpers';
+import { useFieldBinding } from '../../../context/state/useFieldBinding';
+import { DataFetcherDefinition } from '../../component-types';
+import { InputComponentProps, resolveReadMore, resolveSubmissionPath } from '../../inputComponentUtils';
+import { getSelectedValuesAsList, getSelectedValuesMap } from '../../shared/selectedValuesUtils';
+import { getDataFetcherData } from './dataFetcherUtils';
+
+const InputDataFetcher = ({ component, submissionPath }: InputComponentProps<DataFetcherDefinition>) => {
+  type SubmissionMetadata = NonNullable<Submission['metadata']>;
+  const dataFetcherComponent = component as DataFetcherComponent;
+  const { logger } = useApplication();
+  const { formData } = useRuntimeServices();
+  const submissionMethod = useFormDefinitionSubmissionMethod();
+  const { submission, setSubmission } = useSubmissionState();
+  const statePath = resolveSubmissionPath(component, submissionPath);
+  const { stateValue, setStateValue } = useFieldBinding({ statePath });
+  const dataFetcherData = getDataFetcherData(statePath, submission);
+  const values = dataFetcherData?.data ?? [];
+  const readMore = resolveReadMore(component);
+  const otherOption = useMemo(
+    () => ({
+      label: TEXTS.statiske.dataFetcher.other,
+      value: TEXTS.statiske.dataFetcher.other.toLowerCase(),
+    }),
+    [],
+  );
+
+  const updateMetadata = useCallback(
+    (metadata: DataFetcherData) => {
+      setSubmission((prev): Submission => {
+        const previousMetadata = prev?.metadata as SubmissionMetadata | undefined;
+
+        return {
+          ...(prev ?? { data: {} }),
+          metadata: {
+            ...(previousMetadata ?? ({} as SubmissionMetadata)),
+            dataFetcher: setDeepValue(
+              previousMetadata?.dataFetcher ?? {},
+              parseSubmissionPath(statePath),
+              metadata,
+            ) as SubmissionMetadata['dataFetcher'],
+          } as SubmissionMetadata,
+        };
+      });
+    },
+    [setSubmission, statePath],
+  );
+
+  useEffect(() => {
+    if (submissionMethod !== 'digital') {
+      if (!dataFetcherData?.fetchDisabled) {
+        updateMetadata({ fetchDisabled: true });
+      }
+      return;
+    }
+
+    if (dataFetcherData) {
+      return;
+    }
+
+    let cancelled = false;
+
+    void formData
+      .getRegisterData({
+        sourceId: dataFetcherComponent.dataFetcherSourceId || 'activities',
+        queryParams: dataFetcherComponent.queryParams,
+      })
+      .then((result) => {
+        if (cancelled) {
+          return;
+        }
+
+        updateMetadata({
+          data: [...result, ...(dataFetcherComponent.showOther && result.length > 0 ? [otherOption] : [])],
+        });
+      })
+      .catch((fetchError) => {
+        if (cancelled) {
+          return;
+        }
+
+        logger?.error?.('Failed to load register data', {
+          statePath,
+          error: fetchError instanceof Error ? fetchError.message : String(fetchError),
+        });
+        updateMetadata({ fetchError: true });
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    dataFetcherComponent.dataFetcherSourceId,
+    dataFetcherComponent.queryParams,
+    dataFetcherComponent.showOther,
+    dataFetcherData,
+    formData,
+    logger,
+    otherOption,
+    statePath,
+    submissionMethod,
+    updateMetadata,
+  ]);
+
+  if (submissionMethod !== 'digital' || values.length === 0) {
+    return null;
+  }
+
+  return (
+    <CheckboxGroup
+      statePath={statePath}
+      legend={component.label ?? 'Datahenter'}
+      description={component.description}
+      values={values}
+      value={getSelectedValuesAsList(stateValue as Record<string, boolean> | undefined)}
+      onChange={(selectedValues) => setStateValue(getSelectedValuesMap(values, selectedValues))}
+      readMore={readMore}
+      required={component.validate?.required ?? false}
+    />
+  );
+};
+
+export default InputDataFetcher;

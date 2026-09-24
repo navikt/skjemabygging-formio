@@ -1,0 +1,43 @@
+.content {
+  max-inline-size: 38rem;
+  margin-block-end: var(--ax-space-48);
+}
+
+.section {
+  margin-block-end: var(--ax-space-32);
+}
+
+.heading {
+  margin-block-end: var(--ax-space-8);
+}
+
+.description {
+  margin-block-end: var(--ax-space-20);
+}
+
+.cards {
+  display: grid;
+  gap: var(--ax-space-12);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.card {
+  min-block-size: 4.75rem;
+}
+
+.startNew {
+  background-color: var(--ax-bg-raised);
+  border: 1px dashed var(--ax-border-neutral-strong);
+}
+
+.icon {
+  color: var(--ax-text-brand-blue);
+}
+
+.separator {
+  border: 0;
+  border-block-start: 1px solid var(--ax-border-neutral-subtle);
+  margin-block: var(--ax-space-28);
+}

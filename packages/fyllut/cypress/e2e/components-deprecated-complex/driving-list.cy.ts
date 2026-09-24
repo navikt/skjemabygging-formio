@@ -321,12 +321,8 @@ describe('DrivingList', () => {
       cy.visit(`/fyllut/testdrivinglist/oppsummering?sub=digital&innsendingsId=a66e8932-ce2a-41c1-932b-716fc487813b`);
       cy.defaultWaits();
       cy.wait('@getMellomlagring');
-
-      cy.get('.aksel-alert').should('exist');
-
-      cy.findAllByRole('link', { name: 'Fortsett utfylling' }).should('have.length', 2);
-      cy.findByRole('link', { name: 'Send til Nav' }).click();
-      cy.contains(TEXTS.grensesnitt.navigation.summaryPageError).should('exist');
+      cy.clickSendNav();
+      cy.get('[data-cy=error-summary]').should('exist');
     });
   });
 });

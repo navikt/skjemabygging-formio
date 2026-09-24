@@ -35,6 +35,7 @@ export type RecipientRole = 'person' | 'organization';
 export interface Component {
   id?: string;
   navId?: string;
+  baseSubmissionPath?: string;
   key: string;
   label: string;
   customLabels?: CustomLabels;
@@ -68,6 +69,7 @@ export interface Component {
   title?: string;
   html?: string;
   legend?: string;
+  backgroundColor?: boolean;
   additionalDescriptionLabel?: string;
   additionalDescriptionText?: string;
   contentForPdf?: string;
@@ -75,6 +77,7 @@ export interface Component {
   buttonText?: string;
   addAnother?: string;
   removeAnother?: string;
+  rowTitle?: string;
   input?: boolean;
   readOnly?: boolean;
   weight?: number;
@@ -86,6 +89,7 @@ export interface Component {
   autocomplete?: string;
   spellCheck?: boolean;
   rows?: number;
+  selectType?: 'auto' | 'select' | 'combobox';
   editor?: string;
   wysiwyg?: object | boolean;
   as?: string;
@@ -128,6 +132,7 @@ export interface Component {
   path?: string;
   protected?: boolean;
   disableAddingRemovingRows?: boolean;
+  initEmpty?: boolean;
   addressPriority?: 'bostedsadresse' | 'oppholdsadresse' | 'kontaktadresse';
   addressType?: AddressType;
   addressTypeWizard?: 'predefined' | 'user';
@@ -169,8 +174,10 @@ export interface Panel extends Component {
 
 export interface ComponentValidate {
   custom?: string;
+  customMessage?: string;
   json?: string;
   required?: boolean;
+  onlyAvailableItems?: boolean;
   pattern?: string;
   patternMessage?: string;
   min?: number;
@@ -179,7 +186,7 @@ export interface ComponentValidate {
   maxLength?: number;
   minYear?: number;
   maxYear?: number;
-  digitsOnly?: number;
+  digitsOnly?: boolean;
 }
 
 export interface ComponentConditional {

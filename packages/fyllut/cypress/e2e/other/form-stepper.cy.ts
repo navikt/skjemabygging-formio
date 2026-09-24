@@ -1,3 +1,5 @@
+import { TEXTS } from '@navikt/skjemadigitalisering-shared-domain';
+
 describe('Form stepper', () => {
   before(() => {
     cy.configMocksServer();
@@ -11,6 +13,24 @@ describe('Form stepper', () => {
 
   after(() => {
     cy.mocksRestoreRouteVariants();
+  });
+
+  describe('Navigation between steps', () => {
+    it('should return to the intro page when the Introduksjon step is clicked', () => {
+      cy.visit('/fyllut/intropagepaper?sub=paper');
+      cy.defaultWaits();
+
+      cy.clickIntroPageConfirmation();
+      cy.clickStart();
+      cy.findByRole('heading', { name: 'Dine opplysninger' }).shouldBeVisible();
+      cy.url().should('include', '/fyllut/intropagepaper/');
+
+      cy.clickShowAllSteps();
+      cy.findByRole('link', { name: TEXTS.grensesnitt.introPage.title }).click();
+
+      cy.findByRole('heading', { name: TEXTS.grensesnitt.introPage.title }).shouldBeVisible();
+      cy.url().should('match', /\/fyllut\/intropagepaper(\?|$)/);
+    });
   });
 
   describe('Conditional rendering of steps', () => {

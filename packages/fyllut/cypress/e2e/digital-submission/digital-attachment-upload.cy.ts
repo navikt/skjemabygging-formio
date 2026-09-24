@@ -61,6 +61,25 @@ describe('Digital submission with attachments uploaded in Fyllut', () => {
             cy.findByRole('link', { name: message }).should('exist');
           });
         });
+
+      cy.findByRole('link', { name: 'Du må laste opp fil: Vedlegg 1' }).click();
+      cy.findAttachment(/Vedlegg 1/).within(() => {
+        cy.findByRole('button', { name: TEXTS.statiske.uploadFile.selectFile }).should('have.focus');
+      });
+    });
+
+    it('renders attachments together with regular components without attachment-panel metadata', () => {
+      cy.findByText('Kontroller at vedleggene er riktige før du fortsetter.').should('be.visible');
+      cy.findByRole('textbox', { name: /Kommentar til vedlegg/ }).type('Relevant kommentar');
+      cy.clickShowAllSteps();
+      cy.findByRole('link', { name: 'Oppsummering' }).click();
+
+      cy.findByRole('heading', { level: 3, name: 'Vedlegg' })
+        .closest('[data-cy=form-summary-panel]')
+        .within(() => {
+          cy.findByText('Kommentar til vedlegg').should('exist');
+          cy.findByText('Relevant kommentar').should('exist');
+        });
     });
 
     describe('uploading files', () => {

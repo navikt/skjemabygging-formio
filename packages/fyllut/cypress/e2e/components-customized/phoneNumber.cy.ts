@@ -14,14 +14,20 @@ describe('PhoneNumber', () => {
     });
 
     it('should be visible and interactable', () => {
-      cy.contains('label', 'Telefonnummer').closest('.form-group').find('input[type="tel"]').should('exist');
-      cy.contains('label', 'Telefonnummer').closest('.form-group').find('input[type="tel"]').shouldBeVisible();
-      cy.contains('label', 'Telefonnummer').closest('.form-group').find('input[type="tel"]').should('be.enabled');
+      cy.contains('label', 'Telefonnummer').closest('[data-form-component]').find('input[type="tel"]').should('exist');
+      cy.contains('label', 'Telefonnummer')
+        .closest('[data-form-component]')
+        .find('input[type="tel"]')
+        .shouldBeVisible();
+      cy.contains('label', 'Telefonnummer')
+        .closest('[data-form-component]')
+        .find('input[type="tel"]')
+        .should('be.enabled');
     });
 
     it('should show area code selector', () => {
       cy.contains('label', 'Telefonnummer med landkode')
-        .closest('.form-group')
+        .closest('[data-form-component]')
         .within(() => {
           cy.findByRole('combobox', { name: 'Landskode' }).should('exist');
           cy.findByRole('combobox', { name: 'Landskode' }).shouldBeVisible();
@@ -40,7 +46,7 @@ describe('PhoneNumber', () => {
       cy.clickNextStep();
       cy.findAllByErrorMessageRequired(label).should('have.length', 2);
       cy.clickErrorMessageRequired(label);
-      cy.contains('label', label).closest('.form-group').find('input[type="tel"]').should('have.focus');
+      cy.contains('label', label).closest('[data-form-component]').find('input[type="tel"]').should('have.focus');
       cy.focused().type('12345678');
       cy.findAllByErrorMessageRequired(label).should('have.length', 0);
     });
@@ -48,18 +54,18 @@ describe('PhoneNumber', () => {
     it('should not be required', () => {
       const label = 'Telefonnummer ikke påkrevd';
       cy.clickNextStep();
-      cy.contains('label', label).closest('.form-group').find('input[type="tel"]').should('exist');
+      cy.contains('label', label).closest('[data-form-component]').find('input[type="tel"]').should('exist');
       cy.findAllByErrorMessageRequired(label).should('have.length', 0);
     });
 
     it('should validate phone number length when area code is selected', () => {
       const label = 'Telefonnummer landkode påkrevd';
       const errorMessage = `${label} må ha 8 siffer`;
-      cy.contains('label', label).closest('.form-group').find('input[type="tel"]').type('1234');
+      cy.contains('label', label).closest('[data-form-component]').find('input[type="tel"]').type('1234');
       cy.clickNextStep();
       cy.findAllByText(errorMessage).should('have.length', 2);
       cy.findByRole('link', { name: errorMessage }).click();
-      cy.contains('label', label).closest('.form-group').find('input[type="tel"]').should('have.focus');
+      cy.contains('label', label).closest('[data-form-component]').find('input[type="tel"]').should('have.focus');
       cy.focused().clear();
       cy.focused().type('12345678');
       cy.findAllByText(errorMessage).should('have.length', 0);
@@ -77,21 +83,24 @@ describe('PhoneNumber', () => {
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: 'Visning' }).should('exist');
-      cy.contains('label', 'Telefonnummer').closest('.form-group').find('input[type="tel"]').type('12345678');
+      cy.contains('label', 'Telefonnummer').closest('[data-form-component]').find('input[type="tel"]').type('12345678');
       cy.contains('label', 'Telefonnummer med landkode')
-        .closest('.form-group')
+        .closest('[data-form-component]')
         .find('input[type="tel"]')
         .type('12345678');
       cy.clickNextStep();
 
       cy.findByRole('heading', { name: 'Validering' }).should('exist');
-      cy.contains('label', 'Telefonnummer påkrevd').closest('.form-group').find('input[type="tel"]').type('11223344');
+      cy.contains('label', 'Telefonnummer påkrevd')
+        .closest('[data-form-component]')
+        .find('input[type="tel"]')
+        .type('11223344');
       cy.contains('label', 'Telefonnummer ikke påkrevd')
-        .closest('.form-group')
+        .closest('[data-form-component]')
         .find('input[type="tel"]')
         .type('55667788');
       cy.contains('label', 'Telefonnummer landkode påkrevd')
-        .closest('.form-group')
+        .closest('[data-form-component]')
         .find('input[type="tel"]')
         .type('12345678');
       cy.clickNextStep();

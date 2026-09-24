@@ -9,10 +9,14 @@ import {
   Submission,
   SubmissionMethod,
 } from '../../models';
+import type { CheckConditionOptions } from '../formio';
 import { checkCondition, navFormioUtils } from '../formio';
 import { stringUtils } from '../string';
 import { submissionTypesUtils } from '../submission';
 import { formSummaryUtils } from '../summary';
+import { flattenComponents, getNavId } from './componentUtil';
+
+export { flattenComponents, getNavId };
 
 export const toFormPath = (text: string) => stringUtils.camelCase(text).toLowerCase();
 
@@ -23,18 +27,6 @@ export const formMatcherPredicate = (pathFromUrl: string) => (form: NavFormType)
     toFormPath(form.properties.skjemanummer) === pathFromUrl
   );
 };
-
-export function flattenComponents<ComponentLike extends { components?: ComponentLike[] }>(
-  components: ComponentLike[],
-): ComponentLike[] {
-  return components.reduce((flattenedComponents: ComponentLike[], currentComponent: ComponentLike) => {
-    return [
-      ...flattenedComponents,
-      currentComponent,
-      ...(currentComponent.components ? flattenComponents(currentComponent.components) : []),
-    ];
-  }, []);
-}
 
 const deepSortByKeys = (obj?: object) => {
   if (!obj) return obj;
@@ -112,8 +104,6 @@ const findComponent = (isMatch: ComponentMatcherFunction, components: Component[
   }
   return undefined;
 };
-
-const getNavId = (component: Component): string | undefined => component.navId ?? component.id;
 
 const findById = (id: string, components: Component[]): Component | undefined =>
   findComponent((c) => c.id === id, components);
@@ -325,8 +315,12 @@ const getActivePanelsFromForm = (form: Form, submission?: Submission): Panel[] =
     .filter((panel) => !isVedleggspanel(panel));
 };
 
-const getActiveComponentsFromForm = (form: Form, submission?: Submission): Component[] => {
-  const conditionals = formSummaryUtils.mapAndEvaluateConditionals(form, submission ?? { data: {} });
+const getActiveComponentsFromForm = (
+  form: Form,
+  submission?: Submission,
+  options?: CheckConditionOptions,
+): Component[] => {
+  const conditionals = formSummaryUtils.mapAndEvaluateConditionals(form, submission ?? { data: {} }, options);
 
   const panels = form.components.filter((component) => component.type === 'panel' && !isVedleggspanel(component));
 
@@ -335,6 +329,15 @@ const getActiveComponentsFromForm = (form: Form, submission?: Submission): Compo
   }
 
   return getActiveComponents(panels, conditionals);
+};
+
+// Includes every active top-level panel in authored order. Unlike the legacy helpers above,
+// attachment panels are not treated as a separate navigation/rendering concern.
+const getAllActivePanelsFromForm = (form: Form, submission?: Submission, options?: CheckConditionOptions): Panel[] => {
+  const conditionals = formSummaryUtils.mapAndEvaluateConditionals(form, submission ?? { data: {} }, options);
+  const panels = form.components.filter((component): component is Panel => component.type === 'panel');
+
+  return getActiveComponents(panels, conditionals) as Panel[];
 };
 
 const getActiveComponents = (components: Component[], conditionals?: any): Component[] => {
@@ -418,6 +421,7 @@ const navFormUtils = {
   enrichComponentsWithNavIds,
   getActivePanelsFromForm,
   getActiveComponentsFromForm,
+  getAllActivePanelsFromForm,
   getActiveAttachmentPanelFromForm,
   getAttachmentPanel,
   hasAttachment,

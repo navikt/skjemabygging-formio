@@ -20,10 +20,10 @@
       ]
     },
     {
-      "label": "Standard felter",
+      "label": "Standard fields",
       "verdiliste": [
         {
-          "label": "<p>Alert suksess</p>",
+          "label": "<p>Alert success</p>",
           "visningsVariant": "HTML"
         },
         {
@@ -31,7 +31,7 @@
           "visningsVariant": "HTML"
         },
         {
-          "label": "<p>HTML Blokk</p>",
+          "label": "<p>HTML Block</p>",
           "visningsVariant": "HTML"
         }
       ]

@@ -1,4 +1,5 @@
 import { Component, Form } from '../../models';
+import { withAttachmentChoices } from './attachmentChoices';
 import { ConditionComponent, ConditionData, ConditionInput, ConditionObject, ConditionRow } from './types';
 
 const isNil = (value: ConditionInput | ConditionRow | ConditionData | undefined) => value == null;
@@ -45,7 +46,7 @@ const getByPath = (obj: ConditionInput | ConditionRow | ConditionData, path: str
     return undefined;
   };
 
-  return traverse(obj, 0);
+  return traverse(withAttachmentChoices(obj), 0);
 };
 
 const normalizeConditionalValue = (value: ConditionInput | undefined) => {
