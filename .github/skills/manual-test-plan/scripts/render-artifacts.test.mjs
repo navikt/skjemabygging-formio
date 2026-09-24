@@ -37,7 +37,7 @@ const makePlan = (withNonDevelopers) => ({
         owner: 'developer',
         instructions: ['INTERNALSTEP'],
         expected: 'INTERNALRESULT',
-        repositoryReferences: [],
+        repositoryReferences: ['mocks/mocks/routes/innsending-api.ts'],
       },
     },
   ],
@@ -49,8 +49,20 @@ const makePlan = (withNonDevelopers) => ({
       title: 'INTERNALSETUP',
       steps: ['INTERNALACTION'],
       verification: ['Verify internally'],
-      cleanup: [],
+      sharedStateWarning: 'INTERNALSHAREDSTATE',
+      cleanup: ['INTERNALCLEANUP'],
       expected: 'Internal expected',
+    },
+    {
+      id: 'SETUP-02',
+      audience: 'public',
+      kind: 'other',
+      title: 'Åpne skjemaet',
+      steps: ['Åpne testsiden'],
+      verification: ['Kontroller skjemaet'],
+      sharedStateWarning: 'Delt testdata',
+      cleanup: ['Fjern testdata'],
+      expected: 'Skjemaet vises',
     },
   ],
   forms: [],
@@ -103,10 +115,24 @@ test.each([false, true])(
     try {
       assert.equal(run.result.status, 0, run.result.stderr);
       const publicOutput = run.read(collaboration ? 'index.html' : 'github-issue.md');
-      for (const text of ['INTERNALSETUP', 'INTERNALMETHOD', 'INTERNALSTEP']) {
+      const internalOutput = run.read('internal-instructions.md');
+      for (const text of [
+        'INTERNALSETUP',
+        'INTERNALMETHOD',
+        'INTERNALSTEP',
+        'INTERNALSHAREDSTATE',
+        'INTERNALCLEANUP',
+      ]) {
         assert.doesNotMatch(publicOutput, new RegExp(text));
-        assert.match(run.read('internal-instructions.md'), new RegExp(text));
+        assert.match(internalOutput, new RegExp(text));
       }
+      assert.match(internalOutput, /^# Internal instructions for PR #123/m);
+      assert.match(internalOutput, /## Internal setup/);
+      assert.match(internalOutput, /## Integration evidence/);
+      for (const label of ['Expected', 'Verify', 'Shared state', 'Cleanup', 'Method', 'Owner', 'References']) {
+        assert.match(internalOutput, new RegExp(`\\*\\*${label}:\\*\\*`));
+      }
+      assert.doesNotMatch(internalOutput, /Forventet|Kontroller:|Delt tilstand|Rydd opp|Metode|Ansvarlig|Referanser/);
       assert.match(publicOutput, /Test \$&/);
       assert.match(run.read('manifest.json'), /"schemaVersion": 3/);
       if (collaboration) {
@@ -119,6 +145,9 @@ test.each([false, true])(
         assert.match(publicOutput, /&lt;details\\>/);
         assert.match(publicOutput, /Perform \\\*action\\\*/);
         assert.match(publicOutput, /Ingen særskilt risiko registrert/);
+        assert.match(publicOutput, /\*\*Forventet:\*\* Skjemaet vises/);
+        assert.match(publicOutput, /\*\*Delt tilstand:\*\* Delt testdata/);
+        assert.match(publicOutput, /\*\*Rydd opp:\*\*/);
       }
     } finally {
       run.cleanup();

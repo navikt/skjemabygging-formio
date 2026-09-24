@@ -54,13 +54,13 @@ formats.
             "behaviorIds": ["B-01"],
             "evidence": {
                 "audience": "internal",
-                "method": "Sammenlign request body i mockserveren",
-                "owner": "Utvikler",
+                "method": "Compare the request body in the mock server",
+                "owner": "Developer",
                 "instructions": [
-                    "Bruk en nummerert route variant i mocks/mocks/routes/innsending-api.ts.",
-                    "Kjør Cypress-testen som velger varianten."
+                    "Use a numbered route variant in mocks/mocks/routes/innsending-api.ts.",
+                    "Run the Cypress test that selects the variant."
                 ],
-                "expected": "compareBodyMiddleware godkjenner request body mot forventet fixture.",
+                "expected": "compareBodyMiddleware accepts the request body against the expected fixture.",
                 "repositoryReferences": [
                     ".github/skills/request-body-verification/SKILL.md",
                     "mocks/mocks/routes/innsending-api.ts"
@@ -73,13 +73,13 @@ formats.
             "id": "SETUP-01",
             "audience": "internal",
             "kind": "forms-api-import",
-            "title": "Gjør testskjemaet tilgjengelig",
+            "title": "Make the test form available",
             "formId": "party-form",
-            "steps": ["Kjør import-form.mjs som dry-run og bruk bekreftelsen fra den som bestilte testplanen."],
-            "expected": "Skjemaet er tilgjengelig i preprod og preprod-alt.",
-            "verification": ["Hent skjemaet fra Forms API og kontroller skjemasti og revisjon."],
-            "sharedStateWarning": "preprod og preprod-alt bruker samme Forms API.",
-            "cleanup": ["Slett testskjemaet med cleanup-form.mjs etter testingen."]
+            "steps": ["Dry-run bin/forms-api/import-form.mjs and obtain approval before applying it."],
+            "expected": "The form is available in preprod and preprod-alt.",
+            "verification": ["Fetch the form from Forms API and check its path and revision."],
+            "sharedStateWarning": "preprod and preprod-alt share the same Forms API.",
+            "cleanup": ["Delete the generated form with bin/forms-api/cleanup-form.mjs after testing."]
         }
     ],
     "forms": [
@@ -184,5 +184,8 @@ formats.
 - Each step has one action and one observable expected result.
 - `setupActions` must not contain application deployment instructions.
 - Do not include secrets or real personal data.
-- Write all tester-facing fields in Norwegian and use terminology from the
-  application, forms, issue, and approved specification.
+- Write fields rendered in public HTML, Slack Canvas, or GitHub issues in
+  Norwegian, with terminology from the application, forms, issue, and approved
+  specification. Write `internal` setup and evidence fields in English. The
+  canonical JSON contains both audiences, so shared fields used by the public
+  outputs remain in Norwegian.

@@ -625,16 +625,23 @@ const issueBehaviors = plan.behaviorAnalysis
   )
   .join('\n\n');
 
-const renderSetupMarkdown = (item) => `### ${item.id}: ${escapeMarkdown(item.title)}
+const setupLabels = {
+  public: { expected: 'Forventet', verification: 'Kontroller', sharedState: 'Delt tilstand', cleanup: 'Rydd opp' },
+  internal: { expected: 'Expected', verification: 'Verify', sharedState: 'Shared state', cleanup: 'Cleanup' },
+};
+const renderSetupMarkdown = (item) => {
+  const labels = setupLabels[item.audience];
+  return `### ${item.id}: ${escapeMarkdown(item.title)}
 
 ${item.steps.map((step) => `1. ${escapeMarkdown(step)}`).join('\n')}
 
-**Forventet:** ${escapeMarkdown(item.expected)}
+**${labels.expected}:** ${escapeMarkdown(item.expected)}
 
-**Kontroller:**
+**${labels.verification}:**
 ${item.verification.map((step) => `- ${escapeMarkdown(step)}`).join('\n')}
-${item.sharedStateWarning ? `\n**Delt tilstand:** ${escapeMarkdown(item.sharedStateWarning)}\n` : ''}
-${item.cleanup.length ? `**Rydd opp:**\n${item.cleanup.map((step) => `- ${escapeMarkdown(step)}`).join('\n')}` : ''}`;
+${item.sharedStateWarning ? `\n**${labels.sharedState}:** ${escapeMarkdown(item.sharedStateWarning)}\n` : ''}
+${item.cleanup.length ? `**${labels.cleanup}:**\n${item.cleanup.map((step) => `- ${escapeMarkdown(step)}`).join('\n')}` : ''}`;
+};
 
 const issueSetup = publicSetupActions.map((item) => renderSetupMarkdown(item)).join('\n\n');
 
@@ -739,17 +746,17 @@ const internalIntegrationEvidence = plan.integrations
   .map(
     (integration) => `## ${integration.id}: ${escapeMarkdown(integration.system)}
 
-**Metode:** ${escapeMarkdown(integration.evidence.method)}
+**Method:** ${escapeMarkdown(integration.evidence.method)}
 
-**Ansvarlig:** ${escapeMarkdown(integration.evidence.owner)}
+**Owner:** ${escapeMarkdown(integration.evidence.owner)}
 
 ${integration.evidence.instructions.map((step) => `1. ${escapeMarkdown(step)}`).join('\n')}
 
-**Forventet:** ${escapeMarkdown(integration.evidence.expected)}
+**Expected:** ${escapeMarkdown(integration.evidence.expected)}
 
 ${
   integration.evidence.repositoryReferences.length
-    ? `**Referanser:**\n${integration.evidence.repositoryReferences.map((reference) => `- ${escapeMarkdown(reference)}`).join('\n')}`
+    ? `**References:**\n${integration.evidence.repositoryReferences.map((reference) => `- ${escapeMarkdown(reference)}`).join('\n')}`
     : ''
 }`,
   )
@@ -757,13 +764,13 @@ ${
 const internalSetup = internalSetupActions.map(renderSetupMarkdown).join('\n\n');
 const internalInstructions =
   internalSetup || internalIntegrationEvidence
-    ? `# Interne instruksjoner for ${escapeMarkdown(plan.title)}
+    ? `# Internal instructions for PR #${plan.source.number}
 
-Denne filen skal ikke publiseres på GitHub Pages eller i en offentlig GitHub-sak.
+Do not publish this file to GitHub Pages or in a public GitHub issue.
 
-${internalSetup ? `## Internt oppsett\n\n${internalSetup}` : ''}
+${internalSetup ? `## Internal setup\n\n${internalSetup}` : ''}
 
-${internalIntegrationEvidence ? `## Integrasjonsbevis\n\n${internalIntegrationEvidence}` : ''}
+${internalIntegrationEvidence ? `## Integration evidence\n\n${internalIntegrationEvidence}` : ''}
 `
     : undefined;
 

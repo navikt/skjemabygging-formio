@@ -38,15 +38,18 @@ current branch.
    approved evidence method is known.
 7. Record the exact head commit and establish a revision check for the target
    application using [analysis-workflow.md](references/analysis-workflow.md).
-8. Use `ask_user` to ask: "Skal ikke-utviklere samarbeide om testingen?" Use
-   the choices "Ja" and "Nei". Do not infer the answer from case count or risk.
+8. Use `ask_user` to ask: "Will non-developers collaborate on the testing?"
+   Use the choices "Yes" and "No". Do not infer the answer from case count or risk.
 9. Read [form-selection.md](references/form-selection.md). Check Forms API in
    preprod before choosing forms. Reuse a suitable form when one exists.
    Otherwise design and validate the smallest useful generated form set.
    Prefer one clear selector-driven form for related cases. Tell the caller
    which forms will be created or updated and wait for confirmation.
-10. Write the plan in Norwegian using terms from FyllUt, Bygger, the form, and
-    the issue. Follow [test-plan-model.md](references/test-plan-model.md).
+10. Write tester-facing HTML, Slack Canvas, and GitHub issue content in
+    Norwegian, using terms from FyllUt, Bygger, the form, and the issue. Ask
+    technical users questions in English. Keep local technical instructions
+    and documentation in English. Follow
+    [test-plan-model.md](references/test-plan-model.md).
 11. Generate the canonical plan JSON and run:
 
     ```bash
