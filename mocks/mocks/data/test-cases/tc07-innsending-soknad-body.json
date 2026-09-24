@@ -40,5 +40,6 @@
       "description": "<p>Har du noen annen dokumentasjon du ønsker å legge ved?</p>"
     }
   ],
-  "otherUploadAvailable": true
+  "otherUploadAvailable": true,
+  "grantUserDigitalAccess": true
 }

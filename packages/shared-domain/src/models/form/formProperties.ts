@@ -40,6 +40,7 @@ export interface FormPropertiesType {
   uxSignalsId?: string;
   uxSignalsSubmissionTypes?: SubmissionType[];
   hideUserTypes?: boolean;
+  grantUserDigitalAccess?: boolean;
   mellomlagringDurationDays?: string;
 }
 
