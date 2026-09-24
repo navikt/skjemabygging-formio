@@ -5,16 +5,21 @@ description: >-
     no issue exists, and create a manual test plan for skjemabygging-formio,
     including suitable production or generated forms, environment revision
     verification, a GitHub issue, and optional GitHub Pages and Slack Canvas
-    artifacts. Use only when the user explicitly invokes /manual-test-plan.
+    artifacts. Accept an issue number after /manual-test-plan. Use only when
+    the user explicitly invokes /manual-test-plan.
 disable-model-invocation: true
 ---
 
 # Manual test plan
 
-Create an executable manual test plan for a change in this repository. Ask the
-caller for the issue URL or number when an issue exists. Ask for the pull request
-only when the change has no issue. Do not infer the target solely from the
-current branch.
+Create an executable manual test plan for a change in this repository. The
+caller can start with `/manual-test-plan 123` to plan testing for issue #123 in
+`navikt/skjemabygging-formio`. Treat a bare number supplied with the skill as
+an issue number, never a pull request number. Also accept an issue URL. Fetch
+the issue without asking for it again. If no target was supplied, ask for the
+issue URL or number when an issue exists. Ask for the pull request only when
+the caller confirms that the change has no issue. Do not infer the target
+solely from the current branch.
 
 ## Required workflow
 
