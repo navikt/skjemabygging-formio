@@ -38,3 +38,12 @@ requests for these systems. When a test needs preprod evidence, ask the caller
 for an approved method and owner before generating that verification case.
 Record approved methods here after the team confirms them, and use the exact
 method in the canonical plan.
+
+Before citing a numbered fixture as evidence, compare its form, sender and
+subject roles, submission mode, selected route variant, and relevant values
+with the planned case. Confirm that the Cypress test actually exercises that
+fixture and that the mock middleware compares the claimed fields. A fixture
+for a form without a person-sender cannot prove a case using one. If no
+exact scenario match exists, add matching local verification first or state
+that the request body remains unverified; do not cite a nearby fixture as
+proof. Do not call a local fixture evidence of what preprod sent.

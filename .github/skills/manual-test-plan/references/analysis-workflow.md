@@ -67,6 +67,12 @@ the user or named decision owner which behavior is intended. When a pull request
 has no linked issue or approved specification, summarize the inferred intent
 and require user confirmation before drafting verification cases.
 
+Compare each issue criterion with the committed PR head. Record what this PR
+actually implements and what remains for later work in `scope.included` and
+`scope.excluded`. Do not present later work as covered by this deployment.
+When the PR description and committed behavior differ, flag the discrepancy
+and ask for a decision before labeling the behavior aligned.
+
 ## Build a behavior matrix
 
 Create this matrix before selecting test cases:
@@ -101,6 +107,11 @@ For each changed behavior:
 Use `fyllut-deploy-topology` when deployment or version identity matters. Use
 `form-definition-loading` when the change depends on form metadata or component
 fields.
+
+If an expected result mentions the identity used by `innsending-api`, the
+upload session, or another downstream system, verify the request through an
+approved integration method. A receipt proves only the receipt and observable
+UI state, not the downstream request body.
 
 Read [integration-evidence.md](integration-evidence.md) for every outbound
 integration. Require a concrete approved evidence method for each one. If none

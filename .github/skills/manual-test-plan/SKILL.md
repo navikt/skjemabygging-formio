@@ -39,12 +39,16 @@ issue. Do not infer the target solely from the current branch.
    [analysis-workflow.md](references/analysis-workflow.md).
 5. Resolve contradictions and undocumented decisions before writing
    verification cases. When no issue or approved specification exists, ask the
-   user to confirm the inferred intent.
+   user to confirm the inferred intent. State which issue criteria the PR
+   implements and which remain outside this plan. If the PR description and
+   committed code disagree, ask for a decision rather than declaring them
+   aligned.
 6. Identify observable behavior, regression risk, integrations, environments,
    failure paths, and evidence that proves each expected result.
    Read [integration-evidence.md](references/integration-evidence.md). Do not
    generate verification cases for an outbound integration until its concrete
-   approved evidence method is known.
+   approved evidence method is known. Treat claims about downstream identity
+   and upload sessions as integration claims, not UI receipt checks.
 7. Record the exact head commit and establish a revision check for the target
    application using [analysis-workflow.md](references/analysis-workflow.md).
 8. Use `ask_user` to ask: "Will non-developers collaborate on the testing?"
@@ -78,7 +82,9 @@ issue. Do not infer the target solely from the current branch.
 12. Read [collaborative-output.md](references/collaborative-output.md) and
     produce the output for the caller's collaboration choice.
 13. Review public artifacts for sensitive content and redact or omit it before
-    asking once whether to publish the HTML or create the issue. Keep
+    asking once whether to publish the HTML or create the issue. Show the
+    caller the entire rendered GitHub issue body before requesting approval.
+    Keep
     `internal` setup and evidence only in the local internal-instructions file;
     never substitute vague placeholders in public output.
 14. For approved form changes, follow
@@ -87,6 +93,10 @@ issue. Do not infer the target solely from the current branch.
 15. Use the scripts to publish the page or create the issue after the one
     publication confirmation. Require maintainer approval before enabling
     public Pages. Never publish Canvas or form definitions to `gh-pages`.
+16. Check the rendered outputs against the case requirements, not only the
+    plan JSON. Give the caller local links to every generated file. Share a
+    Pages or issue URL only after it resolves to the published artifact; never
+    call an unpublished page or link ready for testers.
 
 ## Output requirements
 
