@@ -4,6 +4,7 @@ const attachmentsPageDigitalNoLoginAttachmentPanelForm = () =>
   createDigitalNoLoginAttachmentPanelForm({
     title: 'Digital no login with attachment panel',
     path: 'attachmentspagedigitalnologinattachmentpanel',
+    useYourInformationComponent: true,
   });
 
 const attachmentsPageDigitalNoLoginAttachmentPanelTranslations = () => undefined;

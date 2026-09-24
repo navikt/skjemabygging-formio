@@ -1,3 +1,6 @@
+import { useEffect } from 'react';
+import { createSolvedChallenge } from '../../api/captcha/captcha';
+import { useAppConfig } from '../../context/config/configContext';
 import { useSendInn } from '../../context/sendInn/sendInnContext';
 import makeStyles from '../../util/styles/jss/jss';
 
@@ -17,7 +20,19 @@ const useStyles = makeStyles({
 
 const Captcha = () => {
   const { setCaptchaValue } = useSendInn();
+  const { http, logger } = useAppConfig();
   const styles = useStyles();
+
+  useEffect(() => {
+    // Solve the proof of work challenge up front, so it is ready when the user submits.
+    // If it has expired by then, a new challenge is fetched and solved on submit.
+    const pendingChallenge = createSolvedChallenge(http).catch((error) => {
+      logger?.info('Failed to solve captcha challenge', { error: error.message });
+      return undefined;
+    });
+    setCaptchaValue((value) => ({ ...value, pendingChallenge }));
+  }, [http, logger, setCaptchaValue]);
+
   return (
     <input
       type="text"
@@ -28,7 +43,7 @@ const Captcha = () => {
       autoComplete="off"
       required
       className={styles.firstNameInput}
-      onChange={(value) => setCaptchaValue({ firstName: value.target.value })}
+      onChange={(event) => setCaptchaValue((value) => ({ ...value, firstName: event.target.value }))}
       aria-hidden
     />
   );

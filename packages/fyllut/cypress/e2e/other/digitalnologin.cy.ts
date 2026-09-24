@@ -179,7 +179,7 @@ describe('Digital no login', () => {
         cy.findByText('test.txt').should('exist');
         cy.findByRole('button', { name: TEXTS.grensesnitt.navigation.cancelAndDelete }).click();
         cy.findByRole('button', { name: TEXTS.grensesnitt.confirmDiscardPrompt.confirm }).click();
-        cy.wait('@deleteAllFiles');
+        cy.wait('@deleteAllFiles').its('response.statusCode').should('eq', 204);
       });
     });
   });
@@ -187,10 +187,6 @@ describe('Digital no login', () => {
   describe('Captcha', () => {
     beforeEach(() => {
       cy.defaultIntercepts();
-      cy.intercept({
-        method: 'POST',
-        url: '/fyllut/api/send-inn/nologin-application/attachments/personal-id',
-      }).as('uploadPersonalId');
       cy.intercept({
         method: 'POST',
         url: '/fyllut/api/captcha',
@@ -219,9 +215,6 @@ describe('Digital no login', () => {
       cy.uploadFile('id-billy-bruker.jpg', { verifyUpload: true });
       cy.findByRole('button', { name: 'Slett filen' }).click();
       cy.uploadFile('small-file.txt', { verifyUpload: true });
-      // expect two invocations of @uploadPersonalId, but only one of @captchaRequest
-      cy.wait(['@uploadPersonalId', '@uploadPersonalId']);
-      cy.get('@uploadPersonalId.all').should('have.length', 2);
       cy.get('@captchaRequest.all').should('have.length', 1);
     });
   });

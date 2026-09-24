@@ -1,5 +1,6 @@
 import { Counter, Histogram, Registry, collectDefaultMetrics } from 'prom-client';
 import { logger } from '../logger';
+import { CAPTCHA_FAILURE_REASON } from '../routers/api/captcha/types';
 
 class AppMetrics {
   private readonly _register: Registry;
@@ -39,9 +40,10 @@ class AppMetrics {
     this._nologinCaptchaFailuresCounter = new Counter({
       name: 'fyllut_nologin_captcha_failures_total',
       help: 'Number of nologin captcha requests which failed',
-      labelNames: [],
+      labelNames: ['reason'],
       registers: [this._register],
     });
+    Object.values(CAPTCHA_FAILURE_REASON).forEach((reason) => this._nologinCaptchaFailuresCounter.inc({ reason }, 0));
 
     this._innsendingApiUploadFileSize = new Histogram({
       name: 'fyllut_innsending_api_upload_file_size_bytes',

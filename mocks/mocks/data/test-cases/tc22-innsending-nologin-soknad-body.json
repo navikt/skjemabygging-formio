@@ -1,0 +1,45 @@
+{
+  "innsendingsId": "<IGNORED>",
+  "bruker": "08842748500",
+  "formNumber": "DIGITAL-NOLOGIN-ATTACHMENT-PANEL",
+  "title": "Digital no login with attachment panel",
+  "tema": "HJE",
+  "language": "nb",
+  "mainDocument": "<IGNORED>",
+  "mainDocumentAlt": "<IGNORED>",
+  "attachments": [
+    {
+      "attachmentCode": "K2",
+      "label": "Norsk pass",
+      "title": "Norsk pass",
+      "uploadStatus": "LastetOpp",
+      "fileIds": ["<IGNORED>"],
+      "description": null
+    },
+    {
+      "attachmentCode": "V3",
+      "label": "Vedlegg med ett valg",
+      "title": "Vedlegg med ett valg",
+      "uploadStatus": "LastetOpp",
+      "fileIds": ["<IGNORED>"],
+      "description": null
+    },
+    {
+      "attachmentCode": "r7",
+      "label": "Informasjon om din næringsinntekt fra Norge eller utlandet",
+      "title": "En vedleggstittel",
+      "uploadStatus": "SendSenere",
+      "fileIds": [],
+      "description": null
+    },
+    {
+      "attachmentCode": "N6",
+      "label": "Vedleggstittel 1",
+      "title": "Annet",
+      "uploadStatus": "LastetOpp",
+      "fileIds": ["<IGNORED>"],
+      "description": "Har du noen annen dokumentasjon du ønsker å legge ved?"
+    }
+  ],
+  "otherUploadAvailable": true
+}

@@ -15,9 +15,6 @@ const isFormPath = (value: string) => /^\w*$/.test(value);
 export const setupDevServer = (expressApp: Express, fyllutRouter: Router, config: FyllutBackendConfig) => {
   logger.info('Server setup dev');
 
-  // Trust proxy IP headers, to ensure we get the actaual req.ip for the client
-  expressApp.set('trust proxy', true);
-
   expressApp.all('*path', (req: Request, res: Response, next: NextFunction) => {
     res.setHeader('X-Robots-Tag', 'noindex');
     next();

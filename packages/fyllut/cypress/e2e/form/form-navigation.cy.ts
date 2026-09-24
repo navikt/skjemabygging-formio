@@ -357,11 +357,11 @@ describe('Form navigation', () => {
 
         cy.findByRole('heading', { level: 2, name: 'Oppsummering' }).should('exist');
         cy.url().should('include', '/fyllut/formnavigationdigital/oppsummering?sub=digital');
-        cy.intercept('DELETE', '/fyllut/api/send-inn/soknad/*').as('deleteMellomlagring');
+        cy.intercept('DELETE', '/fyllut/api/send-inn/digital-application/*').as('deleteMellomlagring');
 
         cy.findByRole('button', { name: 'Avbryt og slett' }).click();
         cy.findByRole('button', { name: 'Ja, avbryt og slett utkast' }).click();
-        cy.wait('@deleteMellomlagring');
+        cy.wait('@deleteMellomlagring').its('response.statusCode').should('eq', 204);
 
         cy.verifyNavRedirect();
 

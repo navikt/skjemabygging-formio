@@ -74,6 +74,35 @@ describe('fileUtil', () => {
       await expect(blob.text()).resolves.toBe('temporary file');
     });
 
+    it('accepts a temp file when the OS temp directory is accessed through a symbolic link', async () => {
+      const realTempDirectory = createTempDirectory(os.tmpdir(), 'file-util-test-');
+      const linkedTempDirectory = `${realTempDirectory}-link`;
+      fs.symlinkSync(realTempDirectory, linkedTempDirectory, 'dir');
+      createdPaths.push(linkedTempDirectory);
+      const filePath = path.join(linkedTempDirectory, 'upload.txt');
+      fs.writeFileSync(filePath, 'temporary file');
+
+      vi.resetModules();
+      vi.doMock('node:os', async () => ({
+        ...(await vi.importActual<typeof import('node:os')>('node:os')),
+        tmpdir: () => linkedTempDirectory,
+      }));
+
+      try {
+        const { default: fileUtilWithLinkedTempDirectory } = await import('./fileUtil');
+        const blob = await fileUtilWithLinkedTempDirectory.createBlobFromUploadedFile({
+          path: filePath,
+          mimetype: 'text/plain',
+          buffer: Buffer.alloc(0),
+        });
+
+        await expect(blob.text()).resolves.toBe('temporary file');
+      } finally {
+        vi.doUnmock('node:os');
+        vi.resetModules();
+      }
+    });
+
     it('creates a blob from the in-memory file buffer when no temp file path exists', async () => {
       const blob = await fileUtil.createBlobFromUploadedFile({
         mimetype: 'text/plain',

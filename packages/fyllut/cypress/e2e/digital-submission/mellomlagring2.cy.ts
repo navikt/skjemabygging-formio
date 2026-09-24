@@ -191,7 +191,9 @@ describe('Mellomlagring v2', () => {
       cy.intercept('GET', `/fyllut/api/send-inn/soknad/${updateErrorInnsendingsId}`).as(
         'getMellomlagringForInnsendingWithUpdateError',
       );
-      cy.intercept('DELETE', `/fyllut/api/send-inn/soknad/${validInnsendingsId}`).as('deleteMellomlagring');
+      cy.intercept('DELETE', `/fyllut/api/send-inn/digital-application/${validInnsendingsId}`).as(
+        'deleteMellomlagring',
+      );
     });
 
     it('creates and updates mellomlagring', () => {
@@ -275,7 +277,7 @@ describe('Mellomlagring v2', () => {
     });
 
     it('shows an error when deleting mellomlagring fails', () => {
-      cy.mocksUseRouteVariant('delete-soknad:failure');
+      cy.mocksUseRouteVariant('delete-digital-application:failure');
       cy.visitRouteAndWait(
         `/fyllut/mellomlagring2mellomlagring/gave?sub=digital&innsendingsId=${validInnsendingsId}&lang=nb-NO`,
         ['@getMellomlagringValid'],
@@ -485,7 +487,7 @@ describe('Mellomlagring v2', () => {
         });
 
         it('shows an error when deleting mellomlagring from summary fails', () => {
-          cy.mocksUseRouteVariant('delete-soknad:failure');
+          cy.mocksUseRouteVariant('delete-digital-application:failure');
           cy.visitRouteAndWait(
             `/fyllut/mellomlagring2mellomlagring/oppsummering?sub=digital&innsendingsId=${validInnsendingsId}&lang=nb-NO`,
             ['@getMellomlagringValid'],
