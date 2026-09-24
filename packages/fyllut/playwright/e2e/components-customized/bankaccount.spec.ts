@@ -65,8 +65,8 @@ test.describe('BankAccount', () => {
           ['Validering', ['Kontonummer påkrevd', 'Kontonummer ikke påkrevd']],
         ] as const) {
           const group = page
-            .getByRole('heading', { level: 3, name: heading })
-            .locator('xpath=ancestor::*[contains(@class,"aksel-form-summary")][1]');
+            .locator('.aksel-form-summary')
+            .filter({ has: page.getByRole('heading', { level: 3, name: heading, exact: true }) });
           for (const [index, label] of labels.entries()) {
             await expect(group.locator('dt').nth(index)).toContainText(label);
             await expect(group.locator('dd').nth(index)).toContainText('0123 45 67892');
