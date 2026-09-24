@@ -48,13 +48,13 @@
     "@types/luxon": "^3.7.2",
     "@types/memorystream": "^0.3.4",
     "@types/multer": "^2.2.0",
-    "@types/node": "^24.6.2",
+    "@types/node": "^26.5.1",
     "@types/node-fetch": "^2.6.13",
     "@types/node-jose": "^1.1.13",
     "jsonwebtoken": "^9.0.3",
     "memorystream": "^0.3.1",
     "nock": "^14.0.16",
-    "vite-plugin-node": "^7.0.0",
-    "vitest-mock-extended": "^3.1.0"
+    "vite-plugin-node": "^8.0.0",
+    "vitest-mock-extended": "^5.1.1"
   }
 }
