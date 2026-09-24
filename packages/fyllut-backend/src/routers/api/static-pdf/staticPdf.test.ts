@@ -209,7 +209,7 @@ describe('[endpoint] staticPdf', () => {
     expect(next).not.toHaveBeenCalled();
   });
 
-  it('downloads only selected attachment PDFs for ettersending', async () => {
+  it('downloads only selected attachment PDFs while retaining unknown cover-page keys for ettersending', async () => {
     vi.mocked(formService.getForm).mockResolvedValue({
       skjemanummer: 'NAV 12.34-56',
       path: 'nav123456',
@@ -240,7 +240,7 @@ describe('[endpoint] staticPdf', () => {
         AzureAccessToken: 'azure-access-token',
         MergePdfToken: 'merge-pdf-token',
       },
-      body: { type: 'ETTERSENDELSE', attachments: ['attachmentOne'] },
+      body: { type: 'ETTERSENDELSE', attachments: ['attachmentOne', 'unknownAttachment'] },
     });
     req.params = { formPath: 'nav123456', languageCode: 'nb' };
     const res = mockResponse();
@@ -253,7 +253,7 @@ describe('[endpoint] staticPdf', () => {
         formNumber: 'NAV 12.34-56',
         data: expect.objectContaining({
           type: 'ETTERSENDELSE',
-          attachments: ['Attachment one'],
+          attachments: ['Attachment one', 'unknownAttachment'],
         }),
       }),
     );

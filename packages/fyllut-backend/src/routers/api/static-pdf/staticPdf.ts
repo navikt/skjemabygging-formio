@@ -56,12 +56,7 @@ const staticPdf = {
         throw new ResponseError('BAD_REQUEST', 'At least one valid attachment must be selected for ettersending');
       }
 
-      const resolvedAttachmentKeys = isEttersending
-        ? selectedAttachmentKeys.filter((attachmentKey) =>
-            attachmentComponents.some((component) => component.key === attachmentKey),
-          )
-        : selectedAttachmentKeys;
-      const attachmentLabels = resolvedAttachmentKeys.map((attachmentKey) => {
+      const attachmentLabels = selectedAttachmentKeys.map((attachmentKey) => {
         const attachmentComponent = attachmentComponents.find((component) => component.key === attachmentKey);
         if (!attachmentComponent?.label) {
           return attachmentKey;
