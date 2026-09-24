@@ -93,11 +93,10 @@ identity or party mapping, and submission settings. Schema validity and
 an import dry run do not establish behavior. Record the route per case
 in `testCases[].journeyCheck`, so branches of one form can have different
 statuses. A matching Cypress flow can support shared navigation, but
-cannot prove that a different form's panels appear in preprod. For
-unresolved runtime-dependent transitions, use the focused
-[preprod-browser-probe.md](preprod-browser-probe.md) when feasible.
-An HTTP 200 on the form URL or Forms API metadata does not prove a
-complete journey.
+cannot prove that a different form's panels appear in preprod. Turn an
+unresolved runtime-dependent transition into a concrete observation
+task for the tester, not a requirement to run Cypress in cplt. An HTTP
+200 on the form URL or Forms API metadata does not prove a complete journey.
 
 For `DIGITAL_NO_LOGIN`, use
 [digital-no-login-journey.md](digital-no-login-journey.md) to map the

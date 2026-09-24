@@ -36,12 +36,16 @@ should confirm the entry page and branch in preprod. Label that distinction
 in the plan.
 
 If a transition depends on runtime behavior the sources do not establish,
-use the focused read-only
-[preprod browser probe](preprod-browser-probe.md) for that gap when feasible.
-An approved upload, PDF generation, or submission may still need the tester.
-If the gap cannot be resolved, name the missing transition and why it is
-unknown; make that part exploratory. Keep any independently supported cases
-as verification cases rather than downgrading the entire plan.
+name the missing transition and why it is unknown. Give the tester a
+concrete exploratory observation task: where to start, which approved
+choices to make, what page or control to look for, and what to record.
+Do not predict an unseen page or turn a question into a pass criterion.
+Keep independently supported cases as verification cases rather than
+downgrading the entire plan. A manual browser observation by someone
+with access can resolve the gap; record the ordered pages, choices,
+actions, and next page without entered identities or document contents.
+Do not require cplt to run Cypress. Obtain approval before an ID upload,
+PDF generation, or external submission in preprod.
 
 The map tells the tester **what to do**. Derive **what should happen** from
 the issue, approved specification, established contract, or unchanged

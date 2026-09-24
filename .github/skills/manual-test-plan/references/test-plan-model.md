@@ -137,8 +137,8 @@ formats.
             "journeyCheck": {
                 "status": "unverified",
                 "route": "Send digitalt uten å logge inn, bruker og avsender som to ulike personer",
-                "note": "Lesemodus stoppet ved påkrevd legitimasjonsopplasting. Sidene etter opplastingen er ikke sett.",
-                "evidence": ["Eksempel: lokal sporfil fra nettleserproben for denne ruten og skjemarevisjonen."]
+                "note": "Kildene viser ikke rekkefølgen på dette skjemaets paneler etter introduksjonen. Testeren skal notere sidene som vises.",
+                "evidence": ["Eksempel: ingen matchende kilde for panelrekkefølgen i denne skjemarevisjonen."]
             },
             "prerequisites": ["Ha to godkjente syntetiske identiteter og en syntetisk legitimasjonsfil tilgjengelig."],
             "testUsers": ["Bruker og avsender må være to ulike syntetiske personer."],
@@ -255,8 +255,8 @@ formats.
   a Norwegian `route` naming the submission method and branch choices, and a
   Norwegian `note` describing what was mapped, seen, or remains unknown.
   `evidence` must name the PR head, exact preprod form revision, and
-  file/line sources for each mapped transition or the local browser
-  trace path for an observed route. It must be nonempty for `verified`
+  file/line sources for each mapped transition or the recorded manual
+  browser observation for an observed route. It must be nonempty for `verified`
   and `source-mapped`. For generated
   forms, check the exact JSON before import and the imported revision before
   publication. Two cases using one form may have different route statuses.

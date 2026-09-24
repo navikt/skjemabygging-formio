@@ -70,8 +70,8 @@ issue. Do not infer the target solely from the current branch.
    choices for each case. Follow
    [route-source-mapping.md](references/route-source-mapping.md) to derive
    steps from matching Cypress flows, renderer behavior, and the exact form.
-   Probe preprod only for transitions the sources cannot establish. For
-   digital submission without login, also read
+   Make unresolved transitions explicit observation steps for the tester;
+   do not require Cypress to run in cplt. For digital submission without login, also read
    [digital-no-login-journey.md](references/digital-no-login-journey.md).
 10. Write tester-facing HTML, Slack Canvas, and GitHub issue content in
     Norwegian, using terms from FyllUt, Bygger, the form, and the issue. Ask
@@ -95,14 +95,12 @@ issue. Do not infer the target solely from the current branch.
 13. Review public artifacts for sensitive content and redact or omit it before
     asking once whether to publish the HTML or create the issue. For every case,
     compare every rendered HTML, Canvas, or issue step with that case's
-    source map or sanitized browser trace, including required actions and
-    intermediate pages. Label source-mapped routes as untested in preprod.
-    If a transition lacks supporting evidence, attempt a focused browser probe when feasible
-    and record any blocker and unobserved transition. Keep independently
-    supported cases as verification cases; make unresolved behavior
-    exploratory. Reject
-    conditional wording for mandatory actions and unsupported downstream
-    claims. Show the caller the entire
+    source map or a recorded manual browser observation, including required
+    actions and intermediate pages. Label source-mapped routes as untested in
+    preprod. If a transition lacks support, give the tester an exact
+    observation task and mark that part exploratory. Keep independently
+    supported cases as verification cases. Reject conditional wording for
+    mandatory actions and unsupported downstream claims. Show the caller the entire
     rendered GitHub issue body before requesting approval. Keep `internal`
     setup and evidence only in the local internal-instructions file; never
     substitute vague placeholders in public output.

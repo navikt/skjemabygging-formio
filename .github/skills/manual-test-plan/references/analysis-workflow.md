@@ -117,14 +117,16 @@ prompted" for a required action or skip an intervening page.
 
 Mark a complete source-based route `source-mapped` in that case's
 `journeyCheck`. It has not been exercised in preprod. If sources leave a
-transition unknown, use the focused
-[preprod-browser-probe.md](preprod-browser-probe.md) when feasible and
-record its ordered, sanitized trace. Ask for approval before uploading
-files, generating PDFs, or submitting in preprod. If the gap remains,
-name it and write an exploratory case for that part instead of inventing
-steps; keep independently supported cases as verification cases.
+transition unknown, describe the specific page or action for the tester
+to inspect and what to record. Mark that part exploratory rather than
+inventing steps; keep independently supported cases as verification
+cases. Do not require cplt to run Cypress. If someone with browser
+access checks the route manually, record the ordered pages, actions and
+result without filled-in identities, tokens or document contents. Ask
+for approval before uploading files, generating PDFs, or submitting in
+preprod.
 
-Use source maps and browser traces to establish what testers must do.
+Use source maps and recorded browser observations to establish what testers must do.
 Derive expected results from the issue, approved specification, or
 established baseline contract, including when observed behavior differs
 from confirmed intent.
