@@ -24,10 +24,12 @@ solely from the current branch.
 ## Required workflow
 
 1. Read [analysis-workflow.md](references/analysis-workflow.md).
-2. Fetch the supplied issue, its linked specification, and its implementation
-   pull request. When the caller confirms that no issue exists, fetch the
-   supplied pull request. Analyze the committed pull request diff in both cases.
-   Do not use an uncommitted or local-only diff as the source for a plan.
+2. Fetch the supplied issue and its linked specification. Find its
+   implementation pull request using the open-first search in
+   [analysis-workflow.md](references/analysis-workflow.md). When the caller
+   confirms that no issue exists, fetch the supplied pull request. Analyze
+   the committed pull request diff in both cases. Do not use an uncommitted
+   or local-only diff as the source for a plan.
 3. Invoke `frontend-development`, `backend-development`, or both before detailed
    analysis when their areas are affected. Follow any specialist routing those
    skills require.

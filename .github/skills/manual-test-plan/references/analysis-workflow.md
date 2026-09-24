@@ -7,9 +7,13 @@ Ask for the issue URL or number first:
 > Provide the issue for the change. If no issue exists, provide the pull request
 > instead.
 
-When the caller supplies an issue, find and inspect its implementation pull
-request. Ask for the pull request when no implementation can be identified. Do
-not produce an implementation test plan from the issue alone.
+When the caller supplies an issue, check linked pull requests and search for
+related **open** pull requests first. Confirm which one implements the issue;
+a mention alone does not establish that link. Search merged pull requests
+only if no matching open implementation pull request exists. If several
+plausible pull requests remain, ask the caller which one to test. Ask for
+the pull request when no implementation can be identified. Do not produce
+an implementation test plan from the issue alone.
 
 Accept a pull request as the starting input only when the caller says that no
 issue exists. If a supplied pull request links an issue, use that issue as the
