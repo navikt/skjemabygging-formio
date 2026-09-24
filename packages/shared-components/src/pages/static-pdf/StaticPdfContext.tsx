@@ -1,8 +1,6 @@
 import { Component, CoverPageDownloadType, StaticPdf } from '@navikt/skjemadigitalisering-shared-domain';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useSearchParams } from 'react-router';
 import useFormsApiStaticPdf from '../../api/static-pdf/useFormsApiStaticPdf';
-import { useForm } from '../../context/form/FormContext';
 import { getFilteredStaticPdfAttachments } from './staticPdfAttachmentFilter';
 
 interface StaticPdfContextType {
@@ -19,23 +17,28 @@ interface StaticPdfContextType {
 }
 
 interface Props {
+  attachmentFilter?: string | null;
   children: React.ReactNode;
+  components?: Component[];
   formPath: string;
   isEttersending?: boolean;
 }
 
 const StaticPdfContext = createContext<StaticPdfContextType>({} as StaticPdfContextType);
 
-export const StaticPdfProvider = ({ children, formPath, isEttersending = false }: Props) => {
-  const { form } = useForm();
-  const [searchParams] = useSearchParams();
-  const filterValue = searchParams.get('filter');
+export const StaticPdfProvider = ({
+  attachmentFilter,
+  children,
+  components = [],
+  formPath,
+  isEttersending = false,
+}: Props) => {
   const [files, setFiles] = useState<StaticPdf[]>([]);
   const [loadingFiles, setLoadingFiles] = useState<boolean>(false);
   const { getAll, uploadPdf, deletePdf, downloadPdf, downloadCoverPageAndPdf } = useFormsApiStaticPdf();
   const filteredAttachments = useMemo(
-    () => getFilteredStaticPdfAttachments(form.components, filterValue),
-    [filterValue, form.components],
+    () => getFilteredStaticPdfAttachments(components, attachmentFilter),
+    [attachmentFilter, components],
   );
 
   const removeFile = useCallback((languageCode: string) => {

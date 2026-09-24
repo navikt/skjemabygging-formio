@@ -11,11 +11,17 @@ const StaticPdfPage = () => {
   const [page, setPage] = useState<StaticPdfPage>('input');
   const { form } = useForm();
   const [searchParams] = useSearchParams();
+  const attachmentFilter = searchParams.get('filter');
   const isEttersending = searchParams.get('type') === 'ettersending';
 
   return (
     <InputValidationProvider>
-      <StaticPdfProvider formPath={form.path} isEttersending={isEttersending}>
+      <StaticPdfProvider
+        attachmentFilter={attachmentFilter}
+        components={form.components}
+        formPath={form.path}
+        isEttersending={isEttersending}
+      >
         <StaticPdfPageContent page={page} setPage={setPage} />
       </StaticPdfProvider>
     </InputValidationProvider>
