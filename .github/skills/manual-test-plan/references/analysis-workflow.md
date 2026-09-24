@@ -104,6 +104,20 @@ For each changed behavior:
    Reuse those terms in tester-facing instructions instead of exposing internal
    type, function, or field names.
 
+Reconstruct the full ordered journey for each selected form before drafting
+actions: submission choice, required authentication or ID upload, introduction,
+each relevant form page, summary, submission, and receipt. Check which pages
+the specific form enables. Name intermediate pages and mandatory actions;
+never say "if prompted" for a required upload or jump directly from upload
+to the first form panel when an introduction intervenes. Compare every
+rendered step and expected result with that route before publishing.
+
+For each step, name the page, field, document, or status the tester should
+actually see. A receipt expected result must not claim that another system
+received the right identities. For log or Joark checks, name the specific
+roles and values to compare; if the tester can only hand off details, say
+the downstream result remains pending.
+
 Use `fyllut-deploy-topology` when deployment or version identity matters. Use
 `form-definition-loading` when the change depends on form metadata or component
 fields.

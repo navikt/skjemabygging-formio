@@ -76,11 +76,11 @@ confirmation. Do not replace that preview with a summary or only a file path.
 ## Publication review
 
 Review the public output for internal-only details, private URLs, security
-findings, personal data, or sensitive test data. Redact or omit unsafe content
-before asking once whether to publish the page or create the issue. The Slack
-Canvas file stays with the caller; generated form definitions and the canonical
-plan stay local. Never include a full form definition in public HTML or an
-issue.
+findings, real personal data, or secrets. Redact or omit unsafe content before
+asking once whether to publish the page or create the issue. The Slack Canvas
+file stays with the caller; generated form definitions and the canonical plan
+stay local. Never include a full form definition in public HTML or an issue.
+Approved synthetic identity numbers can be shared in team-controlled notes.
 
 Review the rendered HTML, Canvas, or issue for every case's group, behavior
 links, form link, actions, expected results, evidence, and after-testing

@@ -9,9 +9,12 @@ formats.
     "schemaVersion": 3,
     "slug": "pr-2210-party-resolution",
     "title": "Manuell testplan: avsender og bruker",
-    "summary": "Kontroller at avsender og bruker blir behandlet uavhengig av hverandre.",
+    "summary": "Kontroller at oppsummeringen skiller mellom avsender og bruker.",
     "scope": {
-        "included": ["FyllUt skiller mellom avsender og bruker ved innsending."],
+        "included": [
+            "FyllUt viser avsender og bruker som ulike personer i oppsummeringen.",
+            "Hvilke personer mottakeren registrerer, kontrolleres i teamloggene eller Joark når en med tilgang følger opp innsendingen."
+        ],
         "excluded": ["Endringer i Sendinn er ikke del av denne pull requesten."]
     },
     "collaboration": {
@@ -42,10 +45,10 @@ formats.
     "behaviorAnalysis": [
         {
             "id": "B-01",
-            "behavior": "Avsender og bruker blir behandlet som to ulike personer.",
-            "before": "Ved innsending på vegne av andre kan avsender bli registrert som bruker.",
-            "intended": "Den som sender inn skal være avsender, mens personen søknaden gjelder skal være bruker.",
-            "implemented": "Løsningen finner avsender og bruker uavhengig av hverandre.",
+            "behavior": "Oppsummeringen viser avsender og bruker som ulike personer.",
+            "before": "Avsender og bruker kan fremstå som samme person i oppsummeringen.",
+            "intended": "Den som sender inn vises som avsender, mens personen søknaden gjelder vises som bruker.",
+            "implemented": "Oppsummeringen viser avsender og bruker hver for seg.",
             "evidence": ["Issue #2201 acceptance criterion 2", "packages/shared-domain/src/party/resolver.ts"],
             "confidence": "high",
             "status": "aligned"
@@ -57,17 +60,41 @@ formats.
             "system": "innsending-api",
             "behaviorIds": ["B-01"],
             "evidence": {
-                "audience": "internal",
-                "method": "Compare the request body in the mock server",
-                "owner": "Developer",
-                "instructions": [
-                    "Use a numbered route variant in mocks/mocks/routes/innsending-api.ts.",
-                    "Run the Cypress test that selects the variant."
-                ],
-                "expected": "compareBodyMiddleware accepts the request body against the expected fixture.",
-                "repositoryReferences": [
-                    ".github/skills/request-body-verification/SKILL.md",
-                    "mocks/mocks/routes/innsending-api.ts"
+                "options": [
+                    {
+                        "id": "team-logs",
+                        "audience": "public",
+                        "method": "Teamlogger i GCP",
+                        "owner": "Utvikler med tilgang til team-soknad-dev",
+                        "url": "https://console.cloud.google.com/logs?project=team-soknad-dev",
+                        "instructions": [
+                            "Velg tidsrom rundt testtidspunktet og finn samme innsending i loggene fra innsending-api og soknadsarkiverer. Søk på innsendings-ID hvis den er kjent, ellers skjemanummer og tidspunkt.",
+                            "Noter hva hver tjeneste viser. Hvis loggene viser begge identitetene for samme innsending, sammenlign bruker med Dine opplysninger og avsender med Avsender. Hvis loggene bare viser status, bruk Joark eller be om etterkontroll."
+                        ],
+                        "expected": "Når begge feltene er synlige, er bruker og avsender de to ulike syntetiske personene som ble brukt. Status alene bekrefter ikke dette."
+                    },
+                    {
+                        "id": "joark",
+                        "audience": "public",
+                        "method": "Journalpost i Joark",
+                        "owner": "Tester med Joark-tilgang",
+                        "instructions": [
+                            "Finn journalposten som samsvarer med skjemanummer, testtidspunkt og eventuell innsendingsreferanse.",
+                            "Kontroller hvem søknaden gjelder og hvem som sendte inn, hvis begge rollene finnes i journalposten."
+                        ],
+                        "expected": "Bruker stemmer med Dine opplysninger, avsender med Avsender, og de er ulike personer. Hvis en rolle mangler, er kontrollen ikke fullført."
+                    },
+                    {
+                        "id": "handoff",
+                        "audience": "public",
+                        "method": "Ingen tilgang til teamlogger eller Joark",
+                        "owner": "Tester uten innsyn",
+                        "instructions": [
+                            "Noter miljø, testtid med tidssone, skjemanummer og skjemasti, innsendingsmåte, begge syntetiske identiteter med hver sin rolle, og det som vises på kvitteringen.",
+                            "Del opplysningene med teamet og avtal hvem som følger opp i teamloggene eller Joark."
+                        ],
+                        "expected": "Teamet har grunnlag for å finne innsendingen. Identitetskontrollen er ikke fullført før en person med tilgang har sjekket den."
+                    }
                 ]
             }
         }
@@ -97,7 +124,7 @@ formats.
                 "note": "Skjemaets oppsummering og innsending må prøves i preprod før resultatet kan godkjennes."
             },
             "artifact": "forms/party-resolution.json",
-            "notes": "Samme skjema brukes i preprod og preprod-alt."
+            "notes": "Eksempelskjemaet har Dine opplysninger og Avsender, uten Veiledning. Bekreft dette i den importerte versjonen."
         }
     ],
     "testCases": [
@@ -109,21 +136,40 @@ formats.
             "behaviorIds": ["B-01"],
             "integrationIds": ["INT-01"],
             "priority": "P0",
-            "purpose": "Kontroller at personen søknaden gjelder vises som bruker, og at innsenderen vises som avsender.",
+            "purpose": "Kontroller at oppsummeringen viser personen søknaden gjelder som bruker og innsenderen som avsender.",
             "formId": "party-form",
-            "prerequisites": ["Testskjemaet er tilgjengelig i miljøet."],
-            "testUsers": [],
+            "prerequisites": ["Ha to godkjente syntetiske identiteter og en syntetisk legitimasjonsfil tilgjengelig."],
+            "testUsers": ["Bruker og avsender må være to ulike syntetiske personer."],
             "steps": [
                 {
-                    "action": "Fyll ut skjemaet på vegne av en annen person.",
-                    "expected": "Oppsummeringen viser riktig bruker og avsender."
+                    "action": "Velg «Send digitalt uten å logge inn».",
+                    "expected": "Siden «Legitimasjon» vises."
+                },
+                {
+                    "action": "Velg legitimasjonstype, last opp den syntetiske legitimasjonsfilen og gå videre.",
+                    "expected": "Opplastingen er bekreftet, og introduksjonssiden vises."
+                },
+                {
+                    "action": "Bekreft erklæringen på introduksjonssiden og gå videre.",
+                    "expected": "Siden «Dine opplysninger» vises for dette eksempelskjemaet."
+                },
+                {
+                    "action": "Fyll ut «Dine opplysninger» med personen søknaden gjelder og gå videre.",
+                    "expected": "Siden «Avsender» vises."
+                },
+                {
+                    "action": "Fyll ut «Avsender» med en annen person og gå til oppsummeringen.",
+                    "expected": "Oppsummeringen viser brukeren og avsenderen som to ulike personer."
                 },
                 {
                     "action": "Send inn søknaden.",
-                    "expected": "Kvitteringen vises."
+                    "expected": "Kvitteringen viser at søknaden er mottatt og oppgir mottaksdato."
                 }
             ],
-            "evidence": ["Noter innsendings-ID og resultat uten personopplysninger."],
+            "evidence": [
+                "Noter testtid med tidssone, skjemanummer, innsendingsmåte og resultat.",
+                "Noter innsendings-ID hvis den vises. Del hvilke godkjente syntetiske identiteter som var bruker og avsender med teamet ved behov for etterkontroll."
+            ],
             "cleanup": []
         }
     ]
@@ -157,8 +203,14 @@ formats.
 - Behavior status is `aligned`, `suspected-defect`, or `open-question`.
 - `integrations` contains every outbound integration affected by the change.
   Integration IDs must be unique and match `INT-<number>`. Each integration
-  references covered behaviors and has one concrete evidence method with an
-  audience, owner, instructions, expected result, and repository references.
+  references covered behaviors and has concrete evidence instructions.
+  Use `evidence.options` for alternative methods. Each option has a unique
+  lowercase `id`, `audience` (`public` or `internal`), `method`, `owner`,
+  `instructions` (ordered steps), and `expected` (the specific observable
+  result). `repositoryReferences` and a URL are optional. For a submission,
+  provide separate `team-logs`, `joark`, and `handoff` options as described
+  in [integration-evidence.md](integration-evidence.md). The `handoff` option
+  must say the downstream check is pending, not passed.
 - Every integration must be linked from at least one test case. If no approved
   evidence method exists, resolve that question before creating verification
   cases.
@@ -200,7 +252,9 @@ formats.
   or `evidence`. The renderer uses a copyable code block in the issue and
   Canvas. Put deletion of local files or state in `cleanup`, not `evidence`.
 - `setupActions` must not contain application deployment instructions.
-- Do not include secrets or real personal data.
+- Do not include secrets or real personal data. The team may share approved
+  synthetic identity numbers in its test notes to identify a submission;
+  public artifacts contain instructions, not filled-in identity numbers.
 - Write fields rendered in public HTML, Slack Canvas, or GitHub issues in
   Norwegian, with terminology from the application, forms, issue, and approved
   specification. Write `internal` setup and evidence fields in English. The

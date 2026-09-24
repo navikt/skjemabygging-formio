@@ -224,6 +224,92 @@ test('Canvas includes public integration checks without a Pages link', () => {
   }
 });
 
+test.each([false, true])('renders distinct submission verification options (collaboration: %s)', (collaboration) => {
+  const plan = makePlan(collaboration);
+  plan.integrations[0].system = 'innsending-api';
+  plan.integrations[0].evidence = {
+    options: [
+      {
+        id: 'team-logs',
+        audience: 'public',
+        method: 'Teamlogger i GCP',
+        owner: 'Utvikler med loggtilgang',
+        url: 'https://console.cloud.google.com/logs?project=team-soknad-dev&query=(test)',
+        instructions: [
+          'Finn innsendingen ved tidspunkt og skjemanummer',
+          'Sammenlign avsender og bruker hvis feltene vises',
+        ],
+        expected: 'Riktig avsender og bruker; ellers må saken kontrolleres i Joark',
+      },
+      {
+        id: 'joark',
+        audience: 'public',
+        method: 'Journalpost i Joark',
+        owner: 'Tester med Joark-tilgang',
+        instructions: ['Finn journalposten for riktig innsending'],
+        expected: 'Riktig avsender og bruker er registrert',
+      },
+      {
+        id: 'handoff',
+        audience: 'public',
+        method: 'Ingen innsyn',
+        owner: 'Tester uten tilgang',
+        instructions: ['Noter tidspunkt, skjemanummer og identiteter i teamets notat'],
+        expected: 'Kontrollen står åpen til en med tilgang har undersøkt innsendingen',
+      },
+      {
+        id: 'private-procedure',
+        audience: 'internal',
+        method: 'INTERNALMETHOD',
+        owner: 'developer',
+        instructions: ['INTERNALSTEP'],
+        expected: 'INTERNALRESULT',
+        repositoryReferences: ['docs/procedure.md'],
+      },
+    ],
+  };
+  const run = render(plan);
+  try {
+    assert.equal(run.result.status, 0, run.result.stderr);
+    const publicOutput = run.read(collaboration ? 'index.html' : 'github-issue.md');
+    const canvas = collaboration ? run.read('slack-canvas.md') : '';
+    for (const text of ['Teamlogger i GCP', 'Journalpost i Joark', 'Ingen innsyn', 'Kontrollen står åpen']) {
+      assert.match(publicOutput, new RegExp(text));
+      if (collaboration) assert.match(canvas, new RegExp(text));
+    }
+    assert.match(publicOutput, /console\.cloud\.google\.com\/logs\?project=team-soknad-dev/);
+    assert.match(collaboration ? canvas : publicOutput, /query=%28test%29/);
+    assert.doesNotMatch(publicOutput, /INTERNALMETHOD|INTERNALSTEP/);
+    assert.match(run.read('internal-instructions.md'), /INTERNALMETHOD/);
+  } finally {
+    run.cleanup();
+  }
+});
+
+test('rejects an empty submission verification option list', () => {
+  const plan = makePlan(false);
+  plan.integrations[0].evidence = { options: [] };
+  const run = render(plan);
+  try {
+    assert.equal(run.result.status, 1);
+    assert.match(run.result.stderr, /integrations\[0\]\.evidence\.options must contain at least one option/);
+  } finally {
+    run.cleanup();
+  }
+});
+
+test('requires all three public evidence paths for innsending-api', () => {
+  const plan = makePlan(false);
+  plan.integrations[0].system = 'innsending-api';
+  const run = render(plan);
+  try {
+    assert.equal(run.result.status, 1);
+    assert.match(run.result.stderr, /public team-logs, joark, and handoff options/);
+  } finally {
+    run.cleanup();
+  }
+});
+
 test.each(['generated', 'production'])('rejects %s forms without an explicit journey check', (kind) => {
   const plan = makePlan(false);
   plan.forms[0].kind = kind;

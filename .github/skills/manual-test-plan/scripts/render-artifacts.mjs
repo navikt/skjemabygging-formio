@@ -243,17 +243,45 @@ for (const [index, integration] of plan.integrations.entries()) {
   if (!integration.evidence || typeof integration.evidence !== 'object') {
     fail(`${prefix}.evidence is required`);
   }
-  if (!['public', 'internal'].includes(integration.evidence.audience)) {
-    fail(`${prefix}.evidence.audience must be public or internal`);
+  const options = integration.evidence.options;
+  if (options !== undefined && (!Array.isArray(options) || options.length === 0)) {
+    fail(`${prefix}.evidence.options must contain at least one option`);
   }
-  for (const field of ['method', 'owner', 'expected']) {
-    asNonEmptyString(integration.evidence[field], `${prefix}.evidence.${field}`);
+  const evidenceOptions = options ?? [integration.evidence];
+  const optionIds = new Set();
+  for (const [optionIndex, option] of evidenceOptions.entries()) {
+    const optionPrefix = options ? `${prefix}.evidence.options[${optionIndex}]` : `${prefix}.evidence`;
+    if (options) {
+      const optionId = asNonEmptyString(option.id, `${optionPrefix}.id`);
+      if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(optionId) || optionIds.has(optionId)) {
+        fail(`${optionPrefix}.id must be unique and use lowercase letters, numbers, and hyphens`);
+      }
+      optionIds.add(optionId);
+    }
+    if (!['public', 'internal'].includes(option.audience)) {
+      fail(`${optionPrefix}.audience must be public or internal`);
+    }
+    for (const field of ['method', 'owner', 'expected']) {
+      asNonEmptyString(option[field], `${optionPrefix}.${field}`);
+    }
+    if (option.url !== undefined) {
+      asHttpUrl(option.url, `${optionPrefix}.url`);
+    }
+    const instructions = asStringArray(option.instructions, `${optionPrefix}.instructions`);
+    if (instructions.length === 0) {
+      fail(`${optionPrefix}.instructions must contain at least one step`);
+    }
+    asStringArray(option.repositoryReferences ?? [], `${optionPrefix}.repositoryReferences`);
   }
-  const instructions = asStringArray(integration.evidence.instructions, `${prefix}.evidence.instructions`);
-  if (instructions.length === 0) {
-    fail(`${prefix}.evidence.instructions must contain at least one step`);
+  if (
+    integration.system === 'innsending-api' &&
+    (!options ||
+      ['team-logs', 'joark', 'handoff'].some(
+        (optionId) => !options.some((option) => option.id === optionId && option.audience === 'public'),
+      ))
+  ) {
+    fail(`${prefix}.evidence.options must include public team-logs, joark, and handoff options`);
   }
-  asStringArray(integration.evidence.repositoryReferences, `${prefix}.evidence.repositoryReferences`);
   integrations.set(id, integration);
 }
 
@@ -395,6 +423,8 @@ const shellBlock = (command) => {
 
 const list = (values) =>
   values.length ? `<ul>${values.map((value) => `<li>${escapeHtml(value)}</li>`).join('')}</ul>` : '<p>Ingen.</p>';
+const integrationOptions = (integration) => integration.evidence.options ?? [integration.evidence];
+const evidenceUrl = (url) => asHttpUrl(url, 'evidence.url').replaceAll('(', '%28').replaceAll(')', '%29');
 const scopeHtml = plan.scope
   ? `<section class="card">
       <h2>Hva testplanen dekker</h2>
@@ -463,12 +493,12 @@ const behaviorConfidenceLabels = {
   medium: 'Middels',
   low: 'Lav',
 };
-const renderIntegrationEvidenceHtml = (integration) => `<section class="integration-evidence">
-  <h3>${escapeHtml(integration.system)}</h3>
-  <p><strong>Metode:</strong> ${escapeHtml(integration.evidence.method)}</p>
-  <p><strong>Ansvarlig:</strong> ${escapeHtml(integration.evidence.owner)}</p>
-  ${list(integration.evidence.instructions)}
-  <p><strong>Forventet:</strong> ${escapeHtml(integration.evidence.expected)}</p>
+const renderIntegrationEvidenceHtml = (integration, option) => `<section class="integration-evidence">
+  <h3>${escapeHtml(integration.system)}: ${escapeHtml(option.method)}</h3>
+  <p><strong>Hvem:</strong> ${escapeHtml(option.owner)}</p>
+  ${option.url ? `<p><a href="${escapeHtml(option.url)}">Åpne ${escapeHtml(option.method)}</a></p>` : ''}
+  <ol>${option.instructions.map((step) => `<li>${escapeHtml(step)}</li>`).join('')}</ol>
+  <p><strong>Forventet:</strong> ${escapeHtml(option.expected)}</p>
 </section>`;
 const behaviorsHtml = `<ol class="behavior-list">
   ${plan.behaviorAnalysis
@@ -501,8 +531,11 @@ const casesHtml = plan.testCases
     const testUsers = testCase.testUsers ?? [];
     const publicIntegrationEvidence = (testCase.integrationIds ?? [])
       .map((id) => integrations.get(id))
-      .filter((integration) => integration.evidence.audience === 'public')
-      .map(renderIntegrationEvidenceHtml)
+      .flatMap((integration) =>
+        integrationOptions(integration)
+          .filter((option) => option.audience === 'public')
+          .map((option) => renderIntegrationEvidenceHtml(integration, option)),
+      )
       .join('');
     const priorityLabels = {
       P0: 'P0 - må testes',
@@ -632,13 +665,16 @@ const slackCases = plan.testCases
     const form = plan.forms.find((candidate) => candidate.id === testCase.formId);
     const publicIntegrationEvidence = testCase.integrationIds
       .map((id) => integrations.get(id))
-      .filter((integration) => integration.evidence.audience === 'public')
-      .map(
-        (integration) => `  Kontroll av ${escapeMarkdown(integration.system)}:
-  Metode: ${escapeMarkdown(integration.evidence.method)}
-  Ansvarlig: ${escapeMarkdown(integration.evidence.owner)}
-${integration.evidence.instructions.map((step, index) => `  ${index + 1}. ${escapeMarkdown(step)}`).join('\n')}
-  Forventet: ${escapeMarkdown(integration.evidence.expected)}`,
+      .flatMap((integration) =>
+        integrationOptions(integration)
+          .filter((option) => option.audience === 'public')
+          .map(
+            (option) => `  Kontroll av ${escapeMarkdown(integration.system)}: ${escapeMarkdown(option.method)}
+  Hvem: ${escapeMarkdown(option.owner)}
+${option.url ? `  Lenke: ${evidenceUrl(option.url)}\n` : ''}
+${option.instructions.map((step, index) => `  ${index + 1}. ${escapeMarkdown(step)}`).join('\n')}
+  Forventet: ${escapeMarkdown(option.expected)}`,
+          ),
       )
       .join('\n');
     const links = form
@@ -738,15 +774,21 @@ const issueCases = plan.testCases
     const testUsers = testCase.testUsers ?? [];
     const publicIntegrationEvidence = (testCase.integrationIds ?? [])
       .map((id) => integrations.get(id))
-      .filter((integration) => integration.evidence.audience === 'public')
-      .map(
-        (integration) => `**Kontroll av ${escapeMarkdown(integration.system)}:**
-- Metode: ${escapeMarkdown(integration.evidence.method)}
-- Ansvarlig: ${escapeMarkdown(integration.evidence.owner)}
-${integration.evidence.instructions.map((step) => `- ${escapeMarkdown(step)}`).join('\n')}
-- Forventet: ${escapeMarkdown(integration.evidence.expected)}`,
+      .flatMap((integration) =>
+        integrationOptions(integration)
+          .filter((option) => option.audience === 'public')
+          .map(
+            (option) => `**Kontroll av ${escapeMarkdown(integration.system)}: ${escapeMarkdown(option.method)}**
+
+**Hvem:** ${escapeMarkdown(option.owner)}
+
+${option.url ? `[Åpne ${escapeMarkdown(option.method)}](${evidenceUrl(option.url)})\n\n` : ''}
+${option.instructions.map((step, index) => `${index + 1}. ${escapeMarkdown(step)}`).join('\n')}
+
+**Forventet:** ${escapeMarkdown(option.expected)}`,
+          ),
       )
-      .join('\n');
+      .join('\n\n');
     const formText = form
       ? `**Skjema:** [intern-ingress](${internBaseUrl}/${encodeURIComponent(
           form.path,
@@ -823,23 +865,27 @@ ${plan.source.issue ? `Sak: ${plan.source.issue.url}` : ''}
 `;
 
 const internalIntegrationEvidence = plan.integrations
-  .filter((integration) => integration.evidence.audience === 'internal')
-  .map(
-    (integration) => `## ${integration.id}: ${escapeMarkdown(integration.system)}
+  .flatMap((integration) =>
+    integrationOptions(integration)
+      .filter((option) => option.audience === 'internal')
+      .map(
+        (option) => `## ${integration.id}: ${escapeMarkdown(integration.system)}
 
-**Method:** ${escapeMarkdown(integration.evidence.method)}
+**Method:** ${escapeMarkdown(option.method)}
 
-**Owner:** ${escapeMarkdown(integration.evidence.owner)}
+**Owner:** ${escapeMarkdown(option.owner)}
 
-${integration.evidence.instructions.map((step) => `1. ${escapeMarkdown(step)}`).join('\n')}
+${option.url ? `**URL:** ${evidenceUrl(option.url)}\n\n` : ''}
+${option.instructions.map((step, index) => `${index + 1}. ${escapeMarkdown(step)}`).join('\n')}
 
-**Expected:** ${escapeMarkdown(integration.evidence.expected)}
+**Expected:** ${escapeMarkdown(option.expected)}
 
 ${
-  integration.evidence.repositoryReferences.length
-    ? `**References:**\n${integration.evidence.repositoryReferences.map((reference) => `- ${escapeMarkdown(reference)}`).join('\n')}`
+  option.repositoryReferences?.length
+    ? `**References:**\n${option.repositoryReferences.map((reference) => `- ${escapeMarkdown(reference)}`).join('\n')}`
     : ''
 }`,
+      ),
   )
   .join('\n\n');
 const internalSetup = internalSetupActions.map((item) => renderSetupMarkdown(item)).join('\n\n');

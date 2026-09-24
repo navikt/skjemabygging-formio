@@ -93,6 +93,11 @@ renderer marks every case using that form as unverified. Do not claim that a
 `200` from the form URL or Forms API metadata proves that upload or submission
 can be completed.
 
+For `DIGITAL_NO_LOGIN`, use
+[digital-no-login-journey.md](digital-no-login-journey.md) to check the
+required ID upload and introduction before the form pages. Record the
+specific form's intervening pages; do not infer them from submission type.
+
 Before import, tell the caller:
 
 - which existing forms will be used unchanged

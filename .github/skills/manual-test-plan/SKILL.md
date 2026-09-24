@@ -48,7 +48,9 @@ issue. Do not infer the target solely from the current branch.
    Read [integration-evidence.md](references/integration-evidence.md). Do not
    generate verification cases for an outbound integration until its concrete
    approved evidence method is known. Treat claims about downstream identity
-   and upload sessions as integration claims, not UI receipt checks.
+   and upload sessions as integration claims, not UI receipt checks. For
+   submissions, show the team-log, Joark, and no-access handoff options
+   separately. Do not mark a handoff or a success log as payload verification.
 7. Record the exact head commit and establish a revision check for the target
    application using [analysis-workflow.md](references/analysis-workflow.md).
 8. Use `ask_user` to ask: "Will non-developers collaborate on the testing?"
@@ -62,6 +64,9 @@ issue. Do not infer the target solely from the current branch.
    follow the proxy and token troubleshooting in
    [forms-api-import.md](references/forms-api-import.md). Do not treat a failed
    lookup as proof that a form is absent.
+   For digital submission without login, read
+   [digital-no-login-journey.md](references/digital-no-login-journey.md) and
+   verify the actual form's pages before writing its test steps.
 10. Write tester-facing HTML, Slack Canvas, and GitHub issue content in
     Norwegian, using terms from FyllUt, Bygger, the form, and the issue. Ask
     technical users questions in English. Keep local technical instructions
@@ -82,21 +87,22 @@ issue. Do not infer the target solely from the current branch.
 12. Read [collaborative-output.md](references/collaborative-output.md) and
     produce the output for the caller's collaboration choice.
 13. Review public artifacts for sensitive content and redact or omit it before
-    asking once whether to publish the HTML or create the issue. Show the
-    caller the entire rendered GitHub issue body before requesting approval.
-    Keep
-    `internal` setup and evidence only in the local internal-instructions file;
-    never substitute vague placeholders in public output.
+    asking once whether to publish the HTML or create the issue. Check the
+    rendered steps against the observed form journey, including required
+    uploads and intermediate pages. Reject conditional wording for mandatory
+    actions and unsupported downstream claims. Show the caller the entire
+    rendered GitHub issue body before requesting approval. Keep `internal`
+    setup and evidence only in the local internal-instructions file; never
+    substitute vague placeholders in public output.
 14. For approved form changes, follow
     [forms-api-import.md](references/forms-api-import.md) and use each script's
     operation-bound confirmation. Do not ask again about the full form list.
 15. Use the scripts to publish the page or create the issue after the one
     publication confirmation. Require maintainer approval before enabling
     public Pages. Never publish Canvas or form definitions to `gh-pages`.
-16. Check the rendered outputs against the case requirements, not only the
-    plan JSON. Give the caller local links to every generated file. Share a
-    Pages or issue URL only after it resolves to the published artifact; never
-    call an unpublished page or link ready for testers.
+16. Give the caller local links to every generated file. Share a Pages or
+    issue URL only after it resolves to the published artifact; never call
+    an unpublished page or link ready for testers.
 
 ## Output requirements
 
@@ -120,8 +126,11 @@ for outbound payloads.
 ## Safety
 
 - Use synthetic identities and organizations approved for testing.
-- Never put access tokens, cookies, secrets, personal data, private source
-  content, or security-sensitive details in generated artifacts.
+- The team may share approved synthetic identity numbers to correlate test
+  submissions. Do not publish filled-in identities on public GitHub Pages
+  or in a public issue.
+- Never put access tokens, cookies, secrets, real personal data, private
+  source content, or security-sensitive details in generated artifacts.
 - This repository is public. Pages would be public if enabled. Follow the
   review and maintainer-approval gate in
   [collaborative-output.md](references/collaborative-output.md).
