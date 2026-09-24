@@ -347,17 +347,17 @@ for (const [index, testCase] of plan.testCases.entries()) {
     fail(`${prefix}.mode must be verification or exploratory`);
   }
   const journeyCheck = testCase.journeyCheck;
-  if (!journeyCheck || !['verified', 'unverified'].includes(journeyCheck.status)) {
-    fail(`${prefix}.journeyCheck.status must be verified or unverified`);
+  if (!journeyCheck || !['verified', 'source-mapped', 'unverified'].includes(journeyCheck.status)) {
+    fail(`${prefix}.journeyCheck.status must be verified, source-mapped, or unverified`);
   }
   asNonEmptyString(journeyCheck.route, `${prefix}.journeyCheck.route`);
   asNonEmptyString(journeyCheck.note, `${prefix}.journeyCheck.note`);
   const journeyEvidence = asStringArray(journeyCheck.evidence ?? [], `${prefix}.journeyCheck.evidence`);
-  if (journeyCheck.status === 'verified' && journeyEvidence.length === 0) {
-    fail(`${prefix}.journeyCheck.evidence must identify how the route was checked`);
+  if (journeyCheck.status !== 'unverified' && journeyEvidence.length === 0) {
+    fail(`${prefix}.journeyCheck.evidence must identify the route sources`);
   }
-  if (testCase.mode === 'verification' && journeyCheck.status !== 'verified') {
-    fail(`${prefix} verification cases require a verified journey for this route`);
+  if (testCase.mode === 'verification' && journeyCheck.status === 'unverified') {
+    fail(`${prefix} verification cases require a source-mapped or browser-observed journey for this route`);
   }
   if (!Array.isArray(testCase.behaviorIds) || testCase.behaviorIds.length === 0) {
     fail(`${prefix}.behaviorIds must contain at least one behavior id`);
@@ -378,10 +378,10 @@ for (const [index, testCase] of plan.testCases.entries()) {
   }
   if (
     testCase.mode === 'exploratory' &&
-    journeyCheck.status === 'verified' &&
+    journeyCheck.status !== 'unverified' &&
     linkedBehaviors.some((behavior) => behavior.status !== 'open-question')
   ) {
-    fail(`${prefix} exploratory cases with verified journeys may reference only open-question behaviors`);
+    fail(`${prefix} exploratory cases with mapped journeys may reference only open-question behaviors`);
   }
   if (!['P0', 'P1', 'P2', 'P3'].includes(testCase.priority)) {
     fail(`${prefix}.priority must be P0, P1, P2, or P3`);
@@ -443,6 +443,12 @@ const publicIntegrationOptions = (integration) =>
   integrationOptions(integration).filter(
     (option) => option.audience === 'public' && (plan.collaboration.withNonDevelopers || option.id !== 'handoff'),
   );
+const caseModeLabel = (testCase) => (testCase.mode === 'verification' ? 'Verifikasjon' : 'Utforskende');
+const journeyStatusLabels = {
+  verified: 'Prøvd i nettleser',
+  'source-mapped': 'Kartlagt fra kilder, ikke prøvd i preprod',
+  unverified: 'Testløpet er ikke kartlagt',
+};
 const evidenceUrl = (url) => asHttpUrl(url, 'evidence.url').replaceAll('(', '%28').replaceAll(')', '%29');
 const scopeHtml = plan.scope
   ? `<section class="card">
@@ -574,13 +580,14 @@ const casesHtml = plan.testCases
         <div class="badges">
           <span class="badge">${escapeHtml(priorityLabels[testCase.priority])}</span>
           <span class="badge">${escapeHtml(testCase.group)}</span>
+          <span class="badge">${caseModeLabel(testCase)}</span>
         </div>
         <p>${escapeHtml(testCase.purpose)}</p>
         <p class="muted"><strong>Bakgrunn for testen:</strong> ${testCase.behaviorIds
           .map((id) => `<a href="#${id.toLowerCase()}"><code>${escapeHtml(id)}</code></a>`)
           .join(', ')}</p>
         ${form ? `<p><strong>Skjema:</strong> ${escapeHtml(form.title)}</p>${formLinks}` : ''}
-        <p><strong>Testløp:</strong> ${escapeHtml(testCase.journeyCheck.route)}. ${escapeHtml(testCase.journeyCheck.status === 'verified' ? 'Løpet er kontrollert' : 'Løpet er ikke kontrollert')}: ${escapeHtml(testCase.journeyCheck.note)}</p>
+        <p><strong>Testløp:</strong> ${escapeHtml(testCase.journeyCheck.route)}. ${escapeHtml(journeyStatusLabels[testCase.journeyCheck.status])}: ${escapeHtml(testCase.journeyCheck.note)}</p>
         <h3>Før du starter</h3>
         ${list(testCase.prerequisites)}
         ${testUserHtml}
@@ -699,10 +706,11 @@ ${option.instructions.map((step, index) => `  ${index + 1}. ${escapeMarkdown(ste
       : '';
     return `- [ ] *${testCase.id}: ${escapeMarkdown(testCase.title)}* (${testCase.priority})
   Område: ${escapeMarkdown(testCase.group)}
+  Type: ${caseModeLabel(testCase)}
   Formål: ${escapeMarkdown(testCase.purpose)}
   Tester:
 ${links}  Før du starter: ${testCase.prerequisites.map(escapeMarkdown).join('; ') || 'Ingen ekstra forutsetninger.'}
-  Testløp: ${escapeMarkdown(testCase.journeyCheck.route)}. Løpet er ${testCase.journeyCheck.status === 'verified' ? 'kontrollert' : 'ikke kontrollert'}: ${escapeMarkdown(testCase.journeyCheck.note)}
+  Testløp: ${escapeMarkdown(testCase.journeyCheck.route)}. ${journeyStatusLabels[testCase.journeyCheck.status]}: ${escapeMarkdown(testCase.journeyCheck.note)}
 ${testCase.testUsers.length ? `  Testbruker: ${testCase.testUsers.map(escapeMarkdown).join('; ')}\n` : ''}  Steg:
 ${testCase.steps.map((step, index) => `  ${index + 1}. ${escapeMarkdown(step.action)}${step.command ? `\n${shellBlock(step.command)}` : ''}\n     Forventet: ${escapeMarkdown(step.expected)}`).join('\n')}
   Dokumentasjon: ${testCase.evidence.map(escapeMarkdown).join('; ') || 'Noter resultatet.'}
@@ -813,11 +821,12 @@ ${option.instructions.map((step, index) => `${index + 1}. ${escapeMarkdown(step)
     return `### ${testCase.id}: ${escapeMarkdown(testCase.title)} (${testCase.priority})
 
 **Område:** ${escapeMarkdown(testCase.group)}
+**Type:** ${caseModeLabel(testCase)}
 **Bakgrunn for testen:** ${testCase.behaviorIds.map((id) => `[${id}](#${id.toLowerCase()})`).join(', ')}
 ${escapeMarkdown(testCase.purpose)}
 
 ${formText}
-**Testløp:** ${escapeMarkdown(testCase.journeyCheck.route)}. Løpet er ${testCase.journeyCheck.status === 'verified' ? 'kontrollert' : 'ikke kontrollert'}: ${escapeMarkdown(testCase.journeyCheck.note)}
+**Testløp:** ${escapeMarkdown(testCase.journeyCheck.route)}. ${journeyStatusLabels[testCase.journeyCheck.status]}: ${escapeMarkdown(testCase.journeyCheck.note)}
 **Før du starter:** ${testCase.prerequisites.map(escapeMarkdown).join('; ') || 'Ingen ekstra forutsetninger.'}
 ${testUserText}
 **Steg:**

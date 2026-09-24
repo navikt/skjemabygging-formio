@@ -1,8 +1,9 @@
 # Browser walkthrough in preprod
 
-Use this for FyllUt cases after fixing the PR head, the exact preprod form
-revision, submission method, and conditional branch. A Forms API response
-describes the form, not the route the browser takes through it. The committed
+Use this when [source mapping](route-source-mapping.md) leaves a
+runtime-dependent transition unknown or a deployed browser check is
+needed. First fix the PR head, exact preprod form revision, submission
+method, and conditional branch. The committed
 Cypress probe opens a named form only on the FyllUt preprod ingresses.
 It records headings, labels, choices, and navigation without reading input
 values, cookies, document contents, or tokens. It blocks browser requests
@@ -58,11 +59,12 @@ normal browser navigation. For example,
 access error, and a 200 on the destination does not establish the rest of
 the journey. On failure, record the final URL, visible page, error, and
 requested action as the concrete blocker.
-If Cypress cannot launch, record that error as the blocker. An HTTP-only
-check cannot replace the browser walkthrough.
+If Cypress cannot launch, record that error as the blocker for this
+probe. An HTTP-only check is not browser observation; a complete route
+can still be source-mapped with matching tests, code, and form revision.
 
-For each case, compare the trace with every numbered step in the rendered
-HTML and Canvas, including uploads and intervening pages. Keep the PR commit,
+For each probed case, compare the trace with the relevant numbered steps
+in the rendered HTML and Canvas. Keep the PR commit,
 form revision, submission method, branch, trace path, and any unobserved
 transitions in `journeyCheck.evidence` and `journeyCheck.note`. Derive
 **expected results** from the issue or approved specification. A browser

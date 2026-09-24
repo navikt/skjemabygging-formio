@@ -278,6 +278,8 @@ test.each([false, true])('renders distinct submission verification options (coll
     assert.equal(run.result.status, 0, run.result.stderr);
     const publicOutput = run.read(collaboration ? 'index.html' : 'github-issue.md');
     const canvas = collaboration ? run.read('slack-canvas.md') : '';
+    assert.match(publicOutput, /Verifikasjon/);
+    if (collaboration) assert.match(canvas, /Verifikasjon/);
     for (const text of ['Teamlogger i GCP', 'Journalpost i Joark']) {
       assert.match(publicOutput, new RegExp(text));
       if (collaboration) assert.match(canvas, new RegExp(text));
@@ -311,7 +313,7 @@ test('rejects an empty submission verification option list', () => {
   }
 });
 
-test('requires handoff only when non-developers collaborate', () => {
+test('requires handoff for collaborative submission checks', () => {
   const plan = makePlan(true);
   plan.integrations[0].system = 'innsending-api';
   const run = render(plan);
@@ -356,19 +358,40 @@ test('rejects a verification case whose route has not been checked', () => {
   const run = render(plan);
   try {
     assert.equal(run.result.status, 1);
-    assert.match(run.result.stderr, /verification cases require a verified journey/);
+    assert.match(run.result.stderr, /verification cases require a source-mapped or browser-observed journey/);
   } finally {
     run.cleanup();
   }
 });
 
-test('rejects a verified route without walkthrough evidence', () => {
+test.each(['verified', 'source-mapped'])('rejects a %s route without evidence', (status) => {
   const plan = makePlan(false);
+  plan.testCases[0].journeyCheck.status = status;
   delete plan.testCases[0].journeyCheck.evidence;
   const run = render(plan);
   try {
     assert.equal(run.result.status, 1);
-    assert.match(run.result.stderr, /journeyCheck\.evidence must identify how the route was checked/);
+    assert.match(run.result.stderr, /journeyCheck\.evidence must identify the route sources/);
+  } finally {
+    run.cleanup();
+  }
+});
+
+test.each([false, true])('renders source-mapped verification cases (collaboration: %s)', (collaboration) => {
+  const plan = makePlan(collaboration);
+  plan.testCases[0].journeyCheck = {
+    status: 'source-mapped',
+    route: 'Papirinnsending, person som avsender',
+    note: 'Kontroller sidene ved oppstart i preprod',
+    evidence: ['PR head form revision 1: panels', 'paper.cy.ts: submission and summary'],
+  };
+  const run = render(plan);
+  try {
+    assert.equal(run.result.status, 0, run.result.stderr);
+    const publicOutput = run.read(collaboration ? 'index.html' : 'github-issue.md');
+    assert.match(publicOutput, /Kartlagt fra kilder, ikke prøvd i preprod/);
+    assert.match(publicOutput, /Verifikasjon/);
+    if (collaboration) assert.match(run.read('slack-canvas.md'), /Kartlagt fra kilder, ikke prøvd i preprod/);
   } finally {
     run.cleanup();
   }
@@ -409,8 +432,8 @@ test('tracks separate routes through the same form independently', () => {
   try {
     assert.equal(run.result.status, 0, run.result.stderr);
     const issue = run.read('github-issue.md');
-    assert.match(issue, /TC-01:[\s\S]*?Løpet er kontrollert: Testløpet er gjennomgått[\s\S]*?TC-02:/);
-    assert.match(issue, /TC-02:[\s\S]*?Løpet er ikke kontrollert: Denne grenen er ikke gjennomgått/);
+    assert.match(issue, /TC-01:[\s\S]*?Prøvd i nettleser: Testløpet er gjennomgått[\s\S]*?TC-02:/);
+    assert.match(issue, /TC-02:[\s\S]*?Testløpet er ikke kartlagt: Denne grenen er ikke gjennomgått/);
   } finally {
     run.cleanup();
   }

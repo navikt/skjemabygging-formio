@@ -233,27 +233,42 @@ formats.
   `cleanup`, may be omitted when empty. The renderer treats them as empty lists.
 - Case mode is `verification` or `exploratory`.
 - A verification case may reference `aligned` or `suspected-defect` behaviors
-  with high confidence, and its route must be checked. Its expected results
+  with high confidence, and its route must be source-mapped or observed
+  in a browser. Its expected results
   must come from confirmed intent, an established contract, or unchanged
   baseline behavior. A suspected defect will usually make the case fail.
 - An exploratory case records observations for an open question or an
-  unchecked route. It must not assert transitions that have not been seen.
-  Once the route has been checked, update its expected results before
+  unmapped transition. It must not assert transitions unsupported by
+  sources or observation. Once the route is mapped or observed, update
+  its expected results before
   changing the case to verification.
 - Priorities are `P0`, `P1`, `P2`, or `P3`.
 - `formId` must reference an entry in `forms`.
 - A generated form intended for script import or deletion must use the
   `MANUALTEST-` form-number prefix in its JSON artifact.
-- Every case needs `journeyCheck` with `status` (`verified` or `unverified`),
+- Every case needs `journeyCheck` with `status` (`verified`, `source-mapped`,
+  or `unverified`). `verified` means this exact route was observed in a
+  browser; `source-mapped` means its steps are grounded in the matching
+  Cypress flows, implementation and exact form revision but have not
+  been exercised in preprod. Neither is a claim that downstream payload
+  values were checked. Add
   a Norwegian `route` naming the submission method and branch choices, and a
-  Norwegian `note` describing what was seen or remains unchecked. Add
-  `evidence` naming the exact preprod form revision, PR head, and local
-  browser-trace path for that case; it must be nonempty for a verified route.
-  If probing stops early, record the attempted probe, blocker, and unobserved
-  transitions in the note and evidence. For generated
+  Norwegian `note` describing what was mapped, seen, or remains unknown.
+  `evidence` must name the PR head, exact preprod form revision, and
+  file/line sources for each mapped transition or the local browser
+  trace path for an observed route. It must be nonempty for `verified`
+  and `source-mapped`. For generated
   forms, check the exact JSON before import and the imported revision before
   publication. Two cases using one form may have different route statuses.
-  Metadata, schema checks, and HTTP 200 do not verify a route.
+  Metadata, schema checks, a similar form's Cypress test, and HTTP 200
+  alone do not map or verify a route. Compare all rendered HTML and
+  Canvas steps with that case's source map or trace.
+- The exploratory case above illustrates an unresolved route. Do not use it
+  as the default for a case with complete source coverage. A source-mapped
+  verification case instead uses `"mode": "verification"` and
+  `"journeyCheck": {"status": "source-mapped", ...}` with the actual form
+  revision and matching source locations in `evidence`. Its first step
+  checks that the entry page and branch match the mapped route in preprod.
 - Use arrays of short strings for prerequisites, test users, evidence, and
   cleanup.
 - Omit generic test-user instructions. Use `testUsers` only for cases that need

@@ -1,24 +1,20 @@
 # Digital submission without login
 
-Before writing test steps, inspect the form definition at the PR head, the
-imported preprod form, and the relevant FyllUt journey. Follow
-[preprod-browser-probe.md](preprod-browser-probe.md) to observe the actual
-browser route for each case. The entry URL can redirect to `/legitimasjon`;
-follow the redirect and record its destination. A 302 is not proof of an
-access barrier, and a 200 does not prove the rest of the route. If the
-read-only probe stops at ID upload, record that blocker and the unseen
-introduction and form pages. Do not infer their sequence from this reference
-or another Cypress spec. Request approval before uploading an approved
-synthetic ID in preprod. Mark the case's `journeyCheck` as `unverified` until
-its required transitions have been observed.
+Before writing steps, inspect the preprod form revision and map its
+submission settings against the no-login Cypress flows and implementation
+at the committed PR head. Follow
+[route-source-mapping.md](route-source-mapping.md). The entry URL can
+redirect to `/legitimasjon`; follow or inspect the `Location`. A 302 is
+not proof of an access barrier, and a 200 does not prove the rest of
+the route. A source-mapped route is still untested in preprod.
 
-Existing mock-based tests take the tester through `Legitimasjon`, ID upload,
-and the introduction after selecting `Send digitalt uten å logge inn`.
-These tests identify what to check in the browser; they do not prove that
-this form's preprod route works. When the browser confirms an upload is
-required, do not say "upload if prompted." If the form enables a
-self-declaration, check its actual text and placement before naming the
-next page. See
+Existing mock-based tests show `Legitimasjon`, ID upload, and the
+introduction after `Send digitalt uten å logge inn`. Use them for the
+shared flow only after checking that the case uses the matching method
+and settings. They do not prove this form's preprod behavior. If ID
+upload is required by that flow, write it as a required step, not
+"upload if prompted." Check the form and implementation for the actual
+self-declaration and later page sequence. See
 `packages/fyllut/cypress/e2e/other/digitalnologin.cy.ts:90-121`,
 `packages/fyllut/cypress/e2e/digital-submission/nologin.cy.ts:17-36`, and
 `packages/shared-components/src/pages/intro/IntroPageButtonRow.tsx:27-38`.
@@ -26,10 +22,13 @@ next page. See
 The first panel is defined by the form, not by the submission method.
 For example, `nologin.cy.ts:31-36` goes through `Veiledning` before
 `Dine opplysninger`, while `digitalnologin.cy.ts:119-121` starts at
-`Dine opplysninger`. Inspect whether the specific preprod form has
-`Veiledning`, `Dine opplysninger`, `Avsender`, or other pages. Name each
-transition only after observing it on that branch. Keep the chosen
-identities distinct when checking the summary.
+`Dine opplysninger`. Inspect the specific form revision and conditionals
+before naming `Veiledning`, `Dine opplysninger`, `Avsender`, or other
+pages. Do not copy one test's panel order to another form. If the
+sources cannot establish the sequence, use a focused
+[browser probe](preprod-browser-probe.md) or mark that transition
+unverified. Request approval before uploading a synthetic ID in preprod.
+Keep the chosen identities distinct when checking the summary.
 
 Do not treat a receipt as evidence of the identities sent downstream.
 For a preprod payload claim, follow

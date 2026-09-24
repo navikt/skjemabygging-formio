@@ -106,32 +106,28 @@ For each changed behavior:
 
 Reconstruct the full ordered route for each case, not once per form. Fix the
 PR head commit, preprod form revision, submission method, identity or
-authentication path, and conditional choices before probing. For FyllUt
-in preprod, follow [preprod-browser-probe.md](preprod-browser-probe.md).
-Walk the target renderer in a browser before writing exact numbered steps.
-Record an ordered, sanitized trace for each branch: URL, visible heading,
-relevant labels and choices, required upload or confirmation, action taken,
-and next page. Do not record filled-in identities, tokens, or document
-contents. Check the form definition too, but neither Forms API metadata nor
-a similar Cypress test proves the browser route of this case.
-If the form is generated, walk its exact JSON locally before import and check
-the imported preprod revision again before publication. Compare every rendered
-step and expected result with that route. Never say "if prompted" for a
-required action or skip an intervening page.
+authentication path, and conditional choices. Follow
+[route-source-mapping.md](route-source-mapping.md) for matching Cypress
+flows, renderer code, and form-specific panels. Map before-form, form, and
+after-form steps separately, with a source for every transition. An
+analogous test does not prove that a different form has the same pages.
+If the form is generated, inspect its exact JSON locally before import and
+recheck the imported preprod revision before publication. Never say "if
+prompted" for a required action or skip an intervening page.
 
-Record the form revision and browser trace in each case's `journeyCheck`.
-Before falling back to exploratory, attempt the walkthrough and document the
-concrete blocker. Inspect a redirect's `Location` and follow normal browser
-navigation: a 302 is not an access barrier, and a 200 does not prove the
-complete journey. Distinguish navigation from upload, PDF generation, and
-submission; get approval before performing these actions in preprod. A case
-with an unverified route must be exploratory. Name the transitions still
-unknown instead of guessing them.
+Mark a complete source-based route `source-mapped` in that case's
+`journeyCheck`. It has not been exercised in preprod. If sources leave a
+transition unknown, use the focused
+[preprod-browser-probe.md](preprod-browser-probe.md) when feasible and
+record its ordered, sanitized trace. Ask for approval before uploading
+files, generating PDFs, or submitting in preprod. If the gap remains,
+name it and write an exploratory case for that part instead of inventing
+steps; keep independently supported cases as verification cases.
 
-Use the trace to establish which steps testers must take, not to define
-their expected outcomes. Derive expected results from the issue or approved
-specification, including when observed behavior disagrees with intended
-behavior.
+Use source maps and browser traces to establish what testers must do.
+Derive expected results from the issue, approved specification, or
+established baseline contract, including when observed behavior differs
+from confirmed intent.
 
 For each step, name the page, field, document, or status the tester should
 actually see. A receipt expected result must not claim that another system

@@ -83,25 +83,27 @@ Validate:
 5. Shared-domain resolution or mapper behavior produces the intended result.
 6. The form can be fetched after import before testing FyllUt.
 
-Before declaring any route suitable, exercise its scenario choices in the
-renderer used by the target application. For generated forms, do this with
-the exact JSON before import, then confirm the imported revision in preprod
-before publication. In FyllUt preprod, use the browser walkthrough in
-[preprod-browser-probe.md](preprod-browser-probe.md) for each case and
-conditional branch. A normal redirect is part of the route, not a reason to
-stop. Check conditional visibility, required fields, the relevant identity
-or party mapping, and the intended submission journey.
-Schema validity and an import dry run do not establish behavior. Record the
-result per case in `testCases[].journeyCheck`, so two branches of one form can
-have different statuses. If a route cannot be exercised, explain what is
-unknown and use an exploratory case only after attempting a browser probe
-and naming the actual blocker. Do not claim that a `200` from the form URL,
-Forms API metadata, or another Cypress spec proves the route can be completed.
+Map each case's scenario choices against the exact form revision and
+conditional rules using
+[route-source-mapping.md](route-source-mapping.md). For generated forms,
+check the exact JSON and exercise its branches in the local renderer
+before import, then confirm the imported revision in preprod before
+publication. Check conditional visibility, required fields, relevant
+identity or party mapping, and submission settings. Schema validity and
+an import dry run do not establish behavior. Record the route per case
+in `testCases[].journeyCheck`, so branches of one form can have different
+statuses. A matching Cypress flow can support shared navigation, but
+cannot prove that a different form's panels appear in preprod. For
+unresolved runtime-dependent transitions, use the focused
+[preprod-browser-probe.md](preprod-browser-probe.md) when feasible.
+An HTTP 200 on the form URL or Forms API metadata does not prove a
+complete journey.
 
 For `DIGITAL_NO_LOGIN`, use
-[digital-no-login-journey.md](digital-no-login-journey.md) to check the
-required ID upload and introduction before the form pages. Record the
-specific form's intervening pages; do not infer them from submission type.
+[digital-no-login-journey.md](digital-no-login-journey.md) to map the
+shared ID upload and introduction against the form's settings. Record
+intervening pages from this form's conditional definition, not another
+form's panel order.
 
 Before import, tell the caller:
 
