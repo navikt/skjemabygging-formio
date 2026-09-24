@@ -240,7 +240,7 @@ describe('[endpoint] staticPdf', () => {
         AzureAccessToken: 'azure-access-token',
         MergePdfToken: 'merge-pdf-token',
       },
-      body: { isSubsequentSubmission: true, attachments: ['attachmentOne', 'unknownAttachment'] },
+      body: { type: 'ETTERSENDELSE', attachments: ['attachmentOne', 'unknownAttachment'] },
     });
     req.params = { formPath: 'nav123456', languageCode: 'nb' };
     const res = mockResponse();
@@ -252,7 +252,7 @@ describe('[endpoint] staticPdf', () => {
       expect.objectContaining({
         formNumber: 'NAV 12.34-56',
         data: expect.objectContaining({
-          isSubsequentSubmission: true,
+          type: 'ETTERSENDELSE',
           attachments: ['Attachment one', 'unknownAttachment'],
         }),
       }),
@@ -286,7 +286,7 @@ describe('[endpoint] staticPdf', () => {
       },
     });
     const req = mockRequest({
-      body: { isSubsequentSubmission: true, attachments: [] },
+      body: { type: 'ETTERSENDELSE', attachments: [] },
     });
     req.params = { formPath: 'nav123456', languageCode: 'nb' };
     const res = mockResponse();
@@ -322,7 +322,7 @@ describe('[endpoint] staticPdf', () => {
     vi.mocked(coverPageService.downloadCoverPage).mockResolvedValue('cover-page-pdf');
     vi.mocked(staticPdfService.downloadPdf).mockRejectedValue(new Error('Attachment unavailable'));
     const req = mockRequest({
-      body: { isSubsequentSubmission: true, attachments: ['attachmentOne'] },
+      body: { type: 'ETTERSENDELSE', attachments: ['attachmentOne'] },
     });
     req.params = { formPath: 'nav123456', languageCode: 'nb' };
     const res = mockResponse();
@@ -358,7 +358,7 @@ describe('[endpoint] staticPdf', () => {
     vi.mocked(translationService.createTranslate).mockResolvedValue((text) => text?.toString() ?? '');
     vi.mocked(coverPageService.downloadCoverPage).mockResolvedValue('cover-page-pdf');
     const req = mockRequest({
-      body: { isSubsequentSubmission: true, attachments: ['attachmentOne'] },
+      body: { type: 'ETTERSENDELSE', attachments: ['attachmentOne'] },
     });
     req.params = { formPath: 'nav123456', languageCode: 'nb' };
     const res = mockResponse();

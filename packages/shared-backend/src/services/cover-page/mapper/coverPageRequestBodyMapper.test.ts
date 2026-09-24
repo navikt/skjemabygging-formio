@@ -44,7 +44,7 @@ describe('coverPageRequestBodyMapper', () => {
   it('creates an ettersending archive title and attachment-only document list', () => {
     const actual = coverPageRequestBodyMapper.createRequestBodyFromDownloadData({
       ...defaultData,
-      isSubsequentSubmission: true,
+      type: 'ETTERSENDELSE',
       attachments: ['Attachment one', 'Attachment two'],
     });
 
@@ -54,6 +54,16 @@ describe('coverPageRequestBodyMapper', () => {
       arkivtittel: 'Ettersending til NAV 12.34-56 Testskjema',
       dokumentlisteFoersteside: ['Attachment one', 'Attachment two'],
     });
+  });
+
+  it('preserves the loose-post cover page type', () => {
+    const actual = coverPageRequestBodyMapper.createRequestBodyFromDownloadData({
+      ...defaultData,
+      type: 'LOESPOST',
+    });
+
+    expect(actual.foerstesidetype).toBe('LOESPOST');
+    expect(actual.dokumentlisteFoersteside).toEqual(['NAV 12.34-56 Testskjema', 'Vedlegg 1']);
   });
 
   it('uses a localized ettersending cover page title', () => {
@@ -66,7 +76,7 @@ describe('coverPageRequestBodyMapper', () => {
     const actual = coverPageRequestBodyMapper.createRequestBodyFromDownloadData(
       {
         ...defaultData,
-        isSubsequentSubmission: true,
+        type: 'ETTERSENDELSE',
       },
       'en',
       translate,

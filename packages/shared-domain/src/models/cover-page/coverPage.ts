@@ -62,7 +62,7 @@ interface RecipientAddressType {
 type RecipientType = RecipientNavUnitType | RecipientAddressType;
 
 interface CoverPageDownloadType {
-  isSubsequentSubmission?: boolean;
+  type?: CoverPageType;
   submissionType: SubmissionType;
   languageCode: TranslationLang;
   form: Pick<Form, 'title' | 'skjemanummer' | 'properties'>;

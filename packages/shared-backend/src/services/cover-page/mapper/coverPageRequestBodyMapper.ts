@@ -152,7 +152,7 @@ const createRequestBodyFromDownloadData = (
   translate?: (text: string, textReplacements?: I18nTranslationReplacements) => string,
   formNumber?: string,
 ): ForstesideRequestBody => {
-  const { isSubsequentSubmission = false, form, user, recipient, attachments } = data;
+  const { type = 'SKJEMA', form, user, recipient, attachments } = data;
   const { properties } = form;
 
   if (!form.skjemanummer || !form.title) {
@@ -161,6 +161,7 @@ const createRequestBodyFromDownloadData = (
 
   const translatedFormTitle = translate ? translate(form.title) : form.title;
   const formTitle = getTitle(translatedFormTitle, form.skjemanummer);
+  const isSubsequentSubmission = type === 'ETTERSENDELSE';
   const coverPageTitle = isSubsequentSubmission
     ? stringUtils.normalizeUnicode(
         translate
@@ -173,7 +174,7 @@ const createRequestBodyFromDownloadData = (
     : formTitle;
 
   return createRequestBody({
-    type: isSubsequentSubmission ? 'ETTERSENDELSE' : 'SKJEMA',
+    type,
     formNumber: formNumber ?? form.skjemanummer,
     formTitle: coverPageTitle,
     archiveTitle: isSubsequentSubmission

@@ -88,7 +88,7 @@ export const StaticPdfProvider = ({
       return await downloadCoverPageAndPdf(formPath, {
         ...coverPage,
         submissionType: 'STATIC_PDF',
-        isSubsequentSubmission,
+        ...(isSubsequentSubmission ? { type: 'ETTERSENDELSE' } : {}),
       });
     },
     [formPath, isSubsequentSubmission, downloadCoverPageAndPdf],

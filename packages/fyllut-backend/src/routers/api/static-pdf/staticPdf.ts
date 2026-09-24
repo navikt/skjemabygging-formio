@@ -40,7 +40,7 @@ const staticPdf = {
     }
 
     try {
-      const isSubsequentSubmission = coverPageData.isSubsequentSubmission === true;
+      const isSubsequentSubmission = coverPageData.type === 'ETTERSENDELSE';
       const form = await formService.getForm({
         formPath,
         select: ['skjemanummer', 'title', 'components', 'properties'],
@@ -70,7 +70,7 @@ const staticPdf = {
         accessToken: coverPageToken,
         data: {
           ...coverPageData,
-          isSubsequentSubmission,
+          type: isSubsequentSubmission ? 'ETTERSENDELSE' : undefined,
           attachments: attachmentLabels,
           form,
         },
