@@ -1,58 +1,64 @@
 #!/usr/bin/env node
 
 import { createHash } from 'node:crypto';
-import { existsSync, readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
-
-const baseUrl = 'https://forms-api.intern.dev.nav.no';
-const defaultEnvFile = 'packages/bygger-backend/.env';
-
-const fail = (message) => {
-  process.stderr.write(`Error: ${message}\n`);
-  process.exit(1);
-};
-
-const getArgument = (name) => {
-  const index = process.argv.indexOf(name);
-  return index === -1 ? undefined : process.argv[index + 1];
-};
+import { existsSync, lstatSync, readFileSync, realpathSync } from 'node:fs';
+import { dirname, isAbsolute, relative, resolve } from 'node:path';
+import { baseUrl, fail, getArgument, getToken } from './forms-api-common.mjs';
 
 if (process.argv.includes('--help') || process.argv.includes('-h')) {
   process.stdout.write(`Usage:
-  node cleanup-form.mjs --path <form-path> [--env-file <path>]
-  node cleanup-form.mjs --path <form-path> --apply --confirm <operation>
+  node cleanup-form.mjs --plan <plan.json> --form-id <id> [--env-file <path>]
+  node cleanup-form.mjs --plan <plan.json> --form-id <id> --apply --confirm <operation>
 
-Dry-run is the default. Only forms with properties.isTestForm set to true can
-be deleted. The current revision and form metadata are bound to confirmation.
+Dry-run is the default. Only a generated form listed in the plan can be
+deleted. The current revision and form contents are bound to confirmation.
 `);
   process.exit(0);
 }
 
-const formPath = getArgument('--path')?.trim();
-if (!formPath || !/^[a-z0-9][a-z0-9-]*$/.test(formPath)) {
-  fail('--path must contain lowercase letters, numbers, or hyphens');
+const planArgument = getArgument('--plan');
+const formId = getArgument('--form-id');
+if (!planArgument || !formId) {
+  fail('--plan and --form-id are required');
+}
+const planPath = resolve(planArgument);
+const planDirectory = dirname(planPath);
+const plan = JSON.parse(readFileSync(planPath, 'utf8'));
+if (plan.schemaVersion !== 3 || !Array.isArray(plan.forms)) {
+  fail('plan must use schema version 3 and contain forms');
+}
+const plannedForm = plan.forms.find((candidate) => candidate.id === formId);
+if (!plannedForm || plannedForm.kind !== 'generated' || typeof plannedForm.artifact !== 'string') {
+  fail(`${formId} must identify a generated form with an artifact in the plan`);
+}
+const formPath = plannedForm.path;
+if (typeof formPath !== 'string' || !/^[a-z0-9][a-z0-9-]*$/.test(formPath)) {
+  fail('planned form path must contain lowercase letters, numbers, or hyphens');
+}
+const artifactPath = resolve(planDirectory, plannedForm.artifact);
+const artifactRelative = relative(realpathSync(planDirectory), artifactPath);
+if (
+  isAbsolute(plannedForm.artifact) ||
+  !artifactRelative ||
+  artifactRelative === '..' ||
+  artifactRelative.startsWith('../') ||
+  !existsSync(artifactPath) ||
+  lstatSync(artifactPath).isSymbolicLink() ||
+  !lstatSync(artifactPath).isFile() ||
+  relative(realpathSync(planDirectory), realpathSync(artifactPath)).startsWith('..')
+) {
+  fail('generated form artifact must be a regular file inside the plan directory');
+}
+const artifact = JSON.parse(readFileSync(artifactPath, 'utf8'));
+if (
+  typeof artifact.skjemanummer !== 'string' ||
+  !artifact.skjemanummer.trim() ||
+  artifact.title !== plannedForm.title
+) {
+  fail('generated form artifact does not match the planned form identity');
 }
 
-const parseEnvFile = (path) => {
-  if (!existsSync(path)) {
-    return {};
-  }
-  return Object.fromEntries(
-    readFileSync(path, 'utf8')
-      .split(/\r?\n/)
-      .filter((line) => line.trim() && !line.trimStart().startsWith('#') && line.includes('='))
-      .map((line) => {
-        const separator = line.indexOf('=');
-        return [line.slice(0, separator).trim(), line.slice(separator + 1).trim()];
-      }),
-  );
-};
-
-const envFile = resolve(getArgument('--env-file') ?? defaultEnvFile);
-const token = process.env.FORMS_API_ACCESS_TOKEN || parseEnvFile(envFile).FORMS_API_ACCESS_TOKEN;
-if (!token) {
-  fail(`FORMS_API_ACCESS_TOKEN is not set; run 'pnpm get-tokens forms-api' or set it in ${envFile}`);
-}
+const token = getToken();
 
 const headers = {
   Authorization: `Bearer ${token}`,
@@ -70,9 +76,6 @@ if (!formResponse.ok) {
 }
 
 const form = await formResponse.json();
-if (form.properties?.isTestForm !== true) {
-  fail(`refusing to delete ${formPath}: properties.isTestForm is not true`);
-}
 if (form.path !== formPath) {
   fail(`Forms API returned path ${form.path ?? '(missing)'} instead of ${formPath}`);
 }
@@ -81,6 +84,9 @@ if (typeof form.skjemanummer !== 'string' || !form.skjemanummer.trim()) {
 }
 if (typeof form.title !== 'string' || !form.title.trim()) {
   fail(`form ${formPath} has an invalid title`);
+}
+if (form.skjemanummer !== artifact.skjemanummer || form.title !== plannedForm.title) {
+  fail(`refusing to delete ${formPath}: the current form does not match the planned generated form`);
 }
 if (!Number.isInteger(form.revision) || form.revision < 1) {
   fail(`form ${formPath} has an invalid revision`);
@@ -91,7 +97,7 @@ const formIdentity = {
   skjemanummer: form.skjemanummer,
   title: form.title,
   revision: form.revision,
-  isTestForm: form.properties.isTestForm,
+  contentDigest: createHash('sha256').update(JSON.stringify(form)).digest('hex'),
 };
 const digest = createHash('sha256').update(JSON.stringify(formIdentity)).digest('hex').slice(0, 12);
 const operation = `DELETE:${formPath}:${form.revision}:${digest}`;
@@ -134,4 +140,4 @@ if (verificationResponse.status !== 404) {
   fail(`cleanup could not be verified: GET form ${formPath} returned ${verificationResponse.status}`);
 }
 
-process.stdout.write(`Deleted and verified test form ${formPath}.\n`);
+process.stdout.write(`Deleted and verified generated form ${formPath}.\n`);

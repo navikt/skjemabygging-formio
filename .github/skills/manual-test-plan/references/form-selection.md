@@ -42,7 +42,8 @@ test form makes the changed behavior substantially easier to isolate.
 
 - Build it from helpers in `mocks/mocks/form-builder`.
 - Keep fields and pages to the minimum needed.
-- Use a unique test form number and set `properties.isTestForm` to `true`.
+- Use a unique form number. Do not set `properties.isTestForm`: that flag has
+  special behavior in Bygger and may make the test unlike a production form.
 - Enable only required submission methods.
 - Set `clearOnHide` on scenario-controlled pages.
 - Prefer one selector-driven form when related scenarios share a domain and the

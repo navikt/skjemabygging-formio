@@ -2,7 +2,7 @@
 
 import { execFileSync, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { basename, dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -138,6 +138,42 @@ const pages = (() => {
 const shouldApply = process.argv.includes('--apply');
 const shouldBootstrap = process.argv.includes('--bootstrap');
 const pageContent = readFileSync(resolve(artifactDirectory, 'index.html'));
+const manifest = (() => {
+  try {
+    return JSON.parse(readFileSync(resolve(artifactDirectory, 'manifest.json'), 'utf8'));
+  } catch (error) {
+    fail(`could not read artifact manifest: ${error.message}`);
+  }
+})();
+if (manifest.schemaVersion !== 3 || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(manifest.slug)) {
+  fail('artifact manifest must contain a schema v3 slug');
+}
+if (destination !== `manual-tests/${manifest.slug}`) {
+  fail(`destination must be manual-tests/${manifest.slug} to match the rendered Slack links`);
+}
+const expectedPageUrl = `${(pages?.html_url || `https://${owner}.github.io/${repositoryName}/`).replace(/\/$/, '')}/${destination}`;
+if (manifest.pageUrl?.replace(/\/$/, '') !== expectedPageUrl) {
+  fail(`artifact page URL must match ${expectedPageUrl}; rerender with --page-url ${expectedPageUrl}`);
+}
+if (
+  !Array.isArray(manifest.files) ||
+  manifest.files.find((entry) => entry.path === 'index.html')?.sha256 !==
+    createHash('sha256').update(pageContent).digest('hex')
+) {
+  fail('index.html does not match the artifact manifest');
+}
+const slackPath = resolve(artifactDirectory, 'slack-canvas.md');
+const slackEntry = manifest.files.find((entry) => entry.path === 'slack-canvas.md');
+if (!slackEntry || !existsSync(slackPath) || lstatSync(slackPath).isSymbolicLink()) {
+  fail('rendered Slack Canvas is required to verify the page links');
+}
+const slackContent = readFileSync(slackPath, 'utf8');
+if (
+  slackEntry.sha256 !== createHash('sha256').update(slackContent).digest('hex') ||
+  !slackContent.includes(`Detaljerte instruksjoner: ${manifest.pageUrl}`)
+) {
+  fail('Slack Canvas links do not match the rendered page URL and manifest');
+}
 const pageDigest = createHash('sha256').update(pageContent).digest('hex').slice(0, 12);
 const operation = branchExists ? `PUBLISH:${destination}:${pageDigest}` : `BOOTSTRAP:${destination}:${pageDigest}`;
 
@@ -199,18 +235,26 @@ try {
   if (!destinationDirectory.startsWith(`${worktreeDirectory}${sep}`)) {
     throw new Error('resolved destination escapes the temporary worktree');
   }
-  rmSync(destinationDirectory, { recursive: true, force: true });
+  let directory = worktreeDirectory;
+  for (const segment of destination.split('/')) {
+    directory = join(directory, segment);
+    if (existsSync(directory) && lstatSync(directory).isSymbolicLink()) {
+      throw new Error(`destination contains a symbolic link: ${directory}`);
+    }
+  }
   mkdirSync(destinationDirectory, { recursive: true });
 
   const pageTarget = resolve(destinationDirectory, 'index.html');
-  mkdirSync(dirname(pageTarget), { recursive: true });
+  if (existsSync(pageTarget) && lstatSync(pageTarget).isSymbolicLink()) {
+    throw new Error('destination index.html cannot be a symbolic link');
+  }
   writeFileSync(pageTarget, pageContent);
 
   if (!branchExists) {
     writeFileSync(join(worktreeDirectory, '.nojekyll'), '');
   }
 
-  gitInWorktree(worktreeDirectory, 'add', '--', destination, ...(branchExists ? [] : ['.nojekyll']));
+  gitInWorktree(worktreeDirectory, 'add', '--', `${destination}/index.html`, ...(branchExists ? [] : ['.nojekyll']));
 
   const diffResult = spawnSync('git', ['diff', '--cached', '--quiet'], {
     cwd: worktreeDirectory,

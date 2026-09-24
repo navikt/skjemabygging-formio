@@ -161,6 +161,8 @@ formats.
 - Case IDs must be unique and match `TC-<number>`.
 - Every case must reference one or more entries in `behaviorAnalysis`.
 - `integrationIds` references the outbound integrations exercised by the case.
+- `risks`, and the case fields `prerequisites`, `testUsers`, `evidence`, and
+  `cleanup`, may be omitted when empty. The renderer treats them as empty lists.
 - Case mode is `verification` or `exploratory`.
 - A verification case may reference `aligned` or `suspected-defect` behaviors
   with high confidence. Its expected results must come from confirmed intent,

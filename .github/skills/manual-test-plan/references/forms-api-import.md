@@ -32,8 +32,9 @@ node .github/skills/manual-test-plan/scripts/import-form.mjs \
   --form <form.json>
 ```
 
-The command reports whether it will create or update, the Forms API path, and
-the current revision. It does not modify Forms API.
+The command reports a new form's path. If the form number already exists, it
+stops instead of overwriting shared preprod data. Inspect the existing form
+before deciding whether to reuse it or explicitly replace it.
 
 If a Forms API fetch, create, or update returns `401`, tell the caller that the
 Forms API token has expired and must be refreshed. Run:
@@ -81,9 +82,14 @@ node .github/skills/manual-test-plan/scripts/import-form.mjs \
   --confirm '<operation>'
 ```
 
-The script uses `POST /v1/forms` for a new form and revision-aware
-`PUT /v1/forms/{path}` for an existing form. A stale revision fails instead of
-overwriting newer work.
+The script uses `POST /v1/forms` for a new form. To replace an existing form,
+first agree on the exact existing form, its contents, and a restore or retention
+plan with the caller. Preserve a backup outside the public artifacts. Then run
+the dry run with `--replace-existing` and confirm its operation separately.
+The helper binds the current form contents, revision, and replacement payload
+to the confirmation before using revision-aware `PUT /v1/forms/{path}`. It
+does not rely on `properties.isTestForm` to decide whether a form is safe to
+replace.
 
 ## Cleanup
 
@@ -95,20 +101,22 @@ Dry run:
 
 ```bash
 node .github/skills/manual-test-plan/scripts/cleanup-form.mjs \
-  --path <form-path>
+  --plan <plan.json> --form-id <generated-form-id>
 ```
 
-The helper refuses to delete a form unless `properties.isTestForm` is exactly
-`true`. It binds the path, revision, title, form number, and test-form marker to
-the confirmation. After confirmation it uses a revision-aware `DELETE` and
-checks that Forms API returns `404` for the deleted path.
+The helper requires an entry of kind `generated` and its local form artifact in
+the plan. It compares the form number and title to the current form and binds
+the path, revision, and full current definition digest to the confirmation. It
+does not use `properties.isTestForm`. Review the dry run carefully: a plan is
+not proof that a form was created by this skill. After confirmation the helper
+uses a revision-aware `DELETE` and checks that Forms API returns `404`.
 
 Apply only after showing the caller the dry-run output and receiving the exact
 confirmation:
 
 ```bash
 node .github/skills/manual-test-plan/scripts/cleanup-form.mjs \
-  --path <form-path> \
+  --plan <plan.json> --form-id <generated-form-id> \
   --apply \
   --confirm '<operation>'
 ```

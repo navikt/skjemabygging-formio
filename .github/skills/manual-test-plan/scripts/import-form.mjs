@@ -1,29 +1,18 @@
 #!/usr/bin/env node
 
 import { createHash } from 'node:crypto';
-import { existsSync, readFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-
-const baseUrl = 'https://forms-api.intern.dev.nav.no';
-const defaultEnvFile = 'packages/bygger-backend/.env';
-
-const fail = (message) => {
-  process.stderr.write(`Error: ${message}\n`);
-  process.exit(1);
-};
-
-const getArgument = (name) => {
-  const index = process.argv.indexOf(name);
-  return index === -1 ? undefined : process.argv[index + 1];
-};
+import { baseUrl, fail, getArgument, getToken } from './forms-api-common.mjs';
 
 if (process.argv.includes('--help') || process.argv.includes('-h')) {
   process.stdout.write(`Usage:
   node import-form.mjs --form <form.json> [--env-file <path>]
   node import-form.mjs --form <form.json> --apply --confirm <operation>
+  node import-form.mjs --form <form.json> --replace-existing [--apply --confirm <operation>]
 
-Dry-run is the default. The token is read from FORMS_API_ACCESS_TOKEN or the
-configured environment file and is never accepted as a command-line argument.
+Dry-run is the default. Replacing an existing form requires --replace-existing
+and a confirmation bound to the existing form and the new payload.
 `);
   process.exit(0);
 }
@@ -34,8 +23,8 @@ if (!formArgument) {
 }
 
 const formPath = resolve(formArgument);
-const envFile = resolve(getArgument('--env-file') ?? defaultEnvFile);
 const shouldApply = process.argv.includes('--apply');
+const shouldReplaceExisting = process.argv.includes('--replace-existing');
 const suppliedConfirmation = getArgument('--confirm');
 
 const form = (() => {
@@ -65,25 +54,7 @@ if (!form.properties || typeof form.properties !== 'object' || Array.isArray(for
 const normalizeFormNumber = (value) => value.toLowerCase().replaceAll(/[^a-z0-9]/g, '');
 const normalizedFormNumber = normalizeFormNumber(formNumber);
 
-const parseEnvFile = (path) => {
-  if (!existsSync(path)) {
-    return {};
-  }
-  return Object.fromEntries(
-    readFileSync(path, 'utf8')
-      .split(/\r?\n/)
-      .filter((line) => line.trim() && !line.trimStart().startsWith('#') && line.includes('='))
-      .map((line) => {
-        const separator = line.indexOf('=');
-        return [line.slice(0, separator).trim(), line.slice(separator + 1).trim()];
-      }),
-  );
-};
-
-const token = process.env.FORMS_API_ACCESS_TOKEN || parseEnvFile(envFile).FORMS_API_ACCESS_TOKEN;
-if (!token) {
-  fail(`FORMS_API_ACCESS_TOKEN is not set; run 'pnpm get-tokens forms-api' or set it in ${envFile}`);
-}
+const token = getToken();
 
 const getResponseBody = async (response) => {
   const text = await response.text();
@@ -110,8 +81,7 @@ const request = async (url, options = {}) => {
     fail("Forms API returned 401. Refresh the token with 'pnpm get-tokens forms-api', then retry.");
   }
   if (!response.ok) {
-    const detail = typeof body === 'string' ? body : JSON.stringify(body);
-    fail(`${options.method ?? 'GET'} ${url} returned ${response.status}: ${detail.slice(0, 2000)}`);
+    fail(`${options.method ?? 'GET'} ${url} returned ${response.status}`);
   }
   return body;
 };
@@ -139,6 +109,20 @@ const existing = matches[0];
 if (existing && (!Number.isInteger(existing.revision) || existing.revision < 1)) {
   fail(`existing form ${existing.path ?? formNumber} has an invalid revision`);
 }
+if (existing && !shouldReplaceExisting) {
+  fail(
+    `form ${existing.path} already exists; reuse it or obtain explicit approval to replace it and rerun with --replace-existing`,
+  );
+}
+const currentForm = existing ? await request(`${baseUrl}/v1/forms/${encodeURIComponent(existing.path)}`) : undefined;
+if (
+  currentForm &&
+  (currentForm.path !== existing.path ||
+    currentForm.revision !== existing.revision ||
+    normalizeFormNumber(currentForm.skjemanummer ?? '') !== normalizedFormNumber)
+) {
+  fail('existing form identity or revision changed between lookup and inspection; retry the dry run');
+}
 const commonBody = {
   title: form.title,
   components: form.components,
@@ -147,8 +131,10 @@ const commonBody = {
 };
 const requestBody = existing ? commonBody : { skjemanummer: formNumber, ...commonBody };
 const payloadDigest = createHash('sha256').update(JSON.stringify(requestBody)).digest('hex').slice(0, 12);
+const existingDigest =
+  currentForm && createHash('sha256').update(JSON.stringify(currentForm)).digest('hex').slice(0, 12);
 const operation = existing
-  ? `UPDATE:${existing.path}:${existing.revision}:${payloadDigest}`
+  ? `UPDATE:${existing.path}:${existing.revision}:${existingDigest}:${payloadDigest}`
   : `CREATE:${normalizedFormNumber}:${payloadDigest}`;
 
 process.stdout.write(`Forms API: ${baseUrl}\n`);

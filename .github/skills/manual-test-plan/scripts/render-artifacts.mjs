@@ -158,7 +158,7 @@ if (
   fail('integrations, setupActions, forms, and testCases must be arrays');
 }
 
-asStringArray(plan.risks ?? [], 'risks');
+plan.risks = asStringArray(plan.risks ?? [], 'risks');
 
 if (!Array.isArray(plan.behaviorAnalysis) || plan.behaviorAnalysis.length === 0) {
   fail('behaviorAnalysis must contain at least one behavior');
@@ -343,7 +343,7 @@ for (const [index, testCase] of plan.testCases.entries()) {
     referencedIntegrationIds.add(integrationId);
   }
   for (const field of ['prerequisites', 'testUsers', 'evidence', 'cleanup']) {
-    asStringArray(testCase[field] ?? [], `${prefix}.${field}`);
+    testCase[field] = asStringArray(testCase[field] ?? [], `${prefix}.${field}`);
   }
   if (!Array.isArray(testCase.steps) || testCase.steps.length === 0) {
     fail(`${prefix}.steps must contain at least one step`);
@@ -366,6 +366,14 @@ const escapeHtml = (value) =>
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#39;');
+const escapeMarkdown = (value) =>
+  String(value)
+    .replaceAll(/\s*\n\s*/g, ' ')
+    .replaceAll(/\\/g, '\\\\')
+    .replaceAll(/([`*_{}()#+.!|>~-])/g, '\\$1')
+    .replaceAll('[', '\\[')
+    .replaceAll(']', '\\]')
+    .replaceAll('<', '&lt;');
 
 const list = (values) =>
   values.length ? `<ul>${values.map((value) => `<li>${escapeHtml(value)}</li>`).join('')}</ul>` : '<p>Ingen.</p>';
@@ -572,9 +580,9 @@ const body = `<div class="page-tools">
 const generatedAt = new Date().toISOString();
 const htmlTemplate = readFileSync(join(skillDirectory, 'templates', 'plan-page.html'), 'utf8');
 const html = htmlTemplate
-  .replace('{{TITLE}}', escapeHtml(plan.title))
-  .replace('{{BODY}}', body)
-  .replace('{{GENERATED_AT}}', escapeHtml(generatedAt));
+  .replace('{{TITLE}}', () => escapeHtml(plan.title))
+  .replace('{{BODY}}', () => body)
+  .replace('{{GENERATED_AT}}', () => escapeHtml(generatedAt));
 
 const slackCases = plan.testCases
   .map((testCase) => {
@@ -584,8 +592,8 @@ const slackCases = plan.testCases
           form.path,
         )}\n`
       : '';
-    return `- [ ] *${testCase.id}: ${testCase.title}* (${testCase.priority})
-  Område: ${testCase.group}
+    return `- [ ] *${testCase.id}: ${escapeMarkdown(testCase.title)}* (${testCase.priority})
+  Område: ${escapeMarkdown(testCase.group)}
   Tester:
   Instruksjoner: ${caseUrl(testCase.id)}
 ${links}  Resultat og merknader:`;
@@ -593,40 +601,40 @@ ${links}  Resultat og merknader:`;
   .join('\n\n');
 const slackTemplate = readFileSync(join(skillDirectory, 'templates', 'slack-canvas.md'), 'utf8');
 const slack = slackTemplate
-  .replace('{{TITLE}}', plan.title)
-  .replace('{{SUMMARY}}', plan.summary)
-  .replace('{{PAGE_URL}}', pageUrl)
-  .replace('{{REVISION_ENDPOINT}}', revisionEndpoint)
-  .replace('{{REVISION_FIELD}}', revisionField)
-  .replace('{{EXPECTED_COMMIT}}', expectedCommit)
-  .replace('{{CASES}}', slackCases);
+  .replace('{{TITLE}}', () => escapeMarkdown(plan.title))
+  .replace('{{SUMMARY}}', () => escapeMarkdown(plan.summary))
+  .replace('{{PAGE_URL}}', () => pageUrl)
+  .replace('{{REVISION_ENDPOINT}}', () => revisionEndpoint)
+  .replace('{{REVISION_FIELD}}', () => escapeMarkdown(revisionField))
+  .replace('{{EXPECTED_COMMIT}}', () => expectedCommit)
+  .replace('{{CASES}}', () => slackCases);
 
 const issueBehaviors = plan.behaviorAnalysis
   .map(
     (behavior) => `<details id="${behavior.id.toLowerCase()}">
-<summary><code>${behavior.id}</code>: ${behavior.behavior}</summary>
+<summary><code>${behavior.id}</code>: ${escapeHtml(behavior.behavior)}</summary>
 
-- **Før:** ${behavior.before}
-- **Ønsket oppførsel:** ${behavior.intended}
-- **Oppførsel i endringen:** ${behavior.implemented}
+- **Før:** ${escapeMarkdown(behavior.before)}
+- **Ønsket oppførsel:** ${escapeMarkdown(behavior.intended)}
+- **Oppførsel i endringen:** ${escapeMarkdown(behavior.implemented)}
 - **Status:** ${behaviorStatusLabels[behavior.status]}
 - **Sikkerhet i vurderingen:** ${behaviorConfidenceLabels[behavior.confidence]}
-- **Grunnlag:** ${behavior.evidence.join('; ')}
+- **Grunnlag:** ${behavior.evidence.map(escapeMarkdown).join('; ')}
 
 </details>`,
   )
   .join('\n\n');
 
-const renderSetupMarkdown = (item) => `### ${item.id}: ${item.title}
+const renderSetupMarkdown = (item) => `### ${item.id}: ${escapeMarkdown(item.title)}
 
-${item.steps.map((step) => `1. ${step}`).join('\n')}
+${item.steps.map((step) => `1. ${escapeMarkdown(step)}`).join('\n')}
 
-**Forventet:** ${item.expected}
+**Forventet:** ${escapeMarkdown(item.expected)}
 
 **Kontroller:**
-${item.verification.map((step) => `- ${step}`).join('\n')}
-${item.sharedStateWarning ? `\n**Delt tilstand:** ${item.sharedStateWarning}\n` : ''}
-${item.cleanup.length ? `**Rydd opp:**\n${item.cleanup.map((step) => `- ${step}`).join('\n')}` : ''}`;
+${item.verification.map((step) => `- ${escapeMarkdown(step)}`).join('\n')}
+${item.sharedStateWarning ? `\n**Delt tilstand:** ${escapeMarkdown(item.sharedStateWarning)}\n` : ''}
+${item.cleanup.length ? `**Rydd opp:**\n${item.cleanup.map((step) => `- ${escapeMarkdown(step)}`).join('\n')}` : ''}`;
 
 const issueSetup = publicSetupActions.map((item) => renderSetupMarkdown(item)).join('\n\n');
 
@@ -634,7 +642,7 @@ const issueForms = plan.forms.length
   ? plan.forms
       .map(
         (form) =>
-          `- **${form.title}:** [intern-ingress](${internBaseUrl}/${encodeURIComponent(
+          `- **${escapeMarkdown(form.title)}:** [intern-ingress](${internBaseUrl}/${encodeURIComponent(
             form.path,
           )}) eller [ansatt-ingress](${ansattBaseUrl}/${encodeURIComponent(form.path)})`,
       )
@@ -649,11 +657,11 @@ const issueCases = plan.testCases
       .map((id) => integrations.get(id))
       .filter((integration) => integration.evidence.audience === 'public')
       .map(
-        (integration) => `  **Kontroll av ${integration.system}:**
-  - Metode: ${integration.evidence.method}
-  - Ansvarlig: ${integration.evidence.owner}
-${integration.evidence.instructions.map((step) => `  - ${step}`).join('\n')}
-  - Forventet: ${integration.evidence.expected}`,
+        (integration) => `  **Kontroll av ${escapeMarkdown(integration.system)}:**
+  - Metode: ${escapeMarkdown(integration.evidence.method)}
+  - Ansvarlig: ${escapeMarkdown(integration.evidence.owner)}
+${integration.evidence.instructions.map((step) => `  - ${escapeMarkdown(step)}`).join('\n')}
+  - Forventet: ${escapeMarkdown(integration.evidence.expected)}`,
       )
       .join('\n');
     const formText = form
@@ -662,33 +670,34 @@ ${integration.evidence.instructions.map((step) => `  - ${step}`).join('\n')}
         )}) eller [ansatt-ingress](${ansattBaseUrl}/${encodeURIComponent(form.path)})`
       : '';
     const testUserText = testUsers.length
-      ? `  **Testbruker:**\n${testUsers.map((value) => `    - ${value}`).join('\n')}\n`
+      ? `  **Testbruker:**\n${testUsers.map((value) => `    - ${escapeMarkdown(value)}`).join('\n')}\n`
       : '';
-    return `- [ ] **${testCase.id}: ${testCase.title}** (${testCase.priority})
+    return `- [ ] **${testCase.id}: ${escapeMarkdown(testCase.title)}** (${testCase.priority})
 
-  ${testCase.purpose}
+  ${escapeMarkdown(testCase.purpose)}
 
   ${formText}
   **Tester:** _Ikke tildelt_
-  **Før du starter:** ${testCase.prerequisites.join('; ') || 'Ingen ekstra forutsetninger.'}
+  **Før du starter:** ${testCase.prerequisites.map(escapeMarkdown).join('; ') || 'Ingen ekstra forutsetninger.'}
 ${testUserText}
   **Steg:**
-${testCase.steps.map((step, index) => `  ${index + 1}. ${step.action}\n     - Forventet: ${step.expected}`).join('\n')}
+${testCase.steps.map((step, index) => `  ${index + 1}. ${escapeMarkdown(step.action)}\n     - Forventet: ${escapeMarkdown(step.expected)}`).join('\n')}
 
-  **Dokumentasjon:** ${testCase.evidence.join('; ') || 'Noter resultatet.'}
+  **Dokumentasjon:** ${testCase.evidence.map(escapeMarkdown).join('; ') || 'Noter resultatet.'}
 ${publicIntegrationEvidence ? `${publicIntegrationEvidence}\n` : ''}
+${testCase.cleanup.length ? `  **Rydd opp:** ${testCase.cleanup.map(escapeMarkdown).join('; ')}\n` : ''}
   **Resultat og merknader:**`;
   })
   .join('\n\n');
 
-const issue = `# ${plan.title}
+const issue = `# ${escapeMarkdown(plan.title)}
 
-${plan.summary}
+${escapeMarkdown(plan.summary)}
 
 ## Kontroller versjonen hver gang du starter testingen
 
 1. Åpne [miljøinformasjonen](${revisionEndpoint}).
-2. Finn \`${revisionField}\`.
+2. Finn \`${escapeMarkdown(revisionField)}\`.
 3. Kontroller at verdien er \`${expectedCommit}\`.
 
 **Stopp hvis verdien er annerledes.** Be utvikleren legge ut riktig versjon, og kontroller på nytt.
@@ -713,7 +722,7 @@ ${issueForms}
 
 ### Risiko
 
-${plan.risks.map((risk) => `- ${risk}`).join('\n') || 'Ingen særskilt risiko registrert.'}
+${plan.risks.map((risk) => `- ${escapeMarkdown(risk)}`).join('\n') || 'Ingen særskilt risiko registrert.'}
 
 ${issueBehaviors}
 
@@ -728,19 +737,19 @@ ${plan.source.issue ? `Sak: ${plan.source.issue.url}` : ''}
 const internalIntegrationEvidence = plan.integrations
   .filter((integration) => integration.evidence.audience === 'internal')
   .map(
-    (integration) => `## ${integration.id}: ${integration.system}
+    (integration) => `## ${integration.id}: ${escapeMarkdown(integration.system)}
 
-**Metode:** ${integration.evidence.method}
+**Metode:** ${escapeMarkdown(integration.evidence.method)}
 
-**Ansvarlig:** ${integration.evidence.owner}
+**Ansvarlig:** ${escapeMarkdown(integration.evidence.owner)}
 
-${integration.evidence.instructions.map((step) => `1. ${step}`).join('\n')}
+${integration.evidence.instructions.map((step) => `1. ${escapeMarkdown(step)}`).join('\n')}
 
-**Forventet:** ${integration.evidence.expected}
+**Forventet:** ${escapeMarkdown(integration.evidence.expected)}
 
 ${
   integration.evidence.repositoryReferences.length
-    ? `**Referanser:**\n${integration.evidence.repositoryReferences.map((reference) => `- \`${reference}\``).join('\n')}`
+    ? `**Referanser:**\n${integration.evidence.repositoryReferences.map((reference) => `- ${escapeMarkdown(reference)}`).join('\n')}`
     : ''
 }`,
   )
@@ -748,7 +757,7 @@ ${
 const internalSetup = internalSetupActions.map(renderSetupMarkdown).join('\n\n');
 const internalInstructions =
   internalSetup || internalIntegrationEvidence
-    ? `# Interne instruksjoner for ${plan.title}
+    ? `# Interne instruksjoner for ${escapeMarkdown(plan.title)}
 
 Denne filen skal ikke publiseres på GitHub Pages eller i en offentlig GitHub-sak.
 
@@ -896,7 +905,7 @@ for (const { artifact } of generatedArtifacts) {
 
 writeFileSync(
   join(outputDirectory, 'manifest.json'),
-  `${JSON.stringify({ schemaVersion: 3, slug: plan.slug, generatedAt, files: manifestEntries }, null, 2)}\n`,
+  `${JSON.stringify({ schemaVersion: 3, slug: plan.slug, pageUrl: plan.collaboration.withNonDevelopers ? pageUrl : undefined, generatedAt, files: manifestEntries }, null, 2)}\n`,
 );
 
 process.stdout.write(

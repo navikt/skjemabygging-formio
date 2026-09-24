@@ -58,6 +58,10 @@ current branch.
       --out <artifact-directory>
     ```
 
+    When generating HTML and Slack Canvas, supply `--page-url` if the Pages
+    URL differs from the default `https://<owner>.github.io/<repo>/manual-tests/<slug>`.
+    Publication checks that this URL matches the chosen destination.
+
 12. Read [collaborative-output.md](references/collaborative-output.md). When
     non-developers will collaborate, generate a GitHub Pages document and a
     separate Slack Canvas file for the caller to paste into Slack. Otherwise

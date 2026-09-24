@@ -19,10 +19,11 @@ The Norwegian page is written for non-technical testers. It presents functional
 behavior, form links, and test cases first. Behavior analysis and setup are
 collapsed by default. A behavior link opens the relevant collapsed section.
 
-Use a path such as:
+The destination must match the plan slug. For a plan with slug
+`pr-2210-party-resolution`, use:
 
 ```text
-manual-tests/pr-2210/
+manual-tests/pr-2210-party-resolution/
 ```
 
 Dry-run publication first:
@@ -30,12 +31,14 @@ Dry-run publication first:
 ```bash
 node .github/skills/manual-test-plan/scripts/publish-pages.mjs \
   --artifacts <artifact-directory> \
-  --destination manual-tests/pr-2210
+  --destination manual-tests/pr-2210-party-resolution
 ```
 
 Ask before applying and use the exact confirmation printed by the dry run.
-Publishing runs in a temporary Git worktree and preserves other plans.
-Only `index.html` may be published.
+Render with `--page-url` set to the exact Pages URL printed by the publisher's
+dry run if it differs from the default URL. Rerun the publication dry run after
+rerendering. The publisher checks the URL against the manifest and only
+replaces `index.html` at the destination; nested plans and other files remain.
 
 If Pages or `gh-pages` is not configured, follow the script's bootstrap
 instructions. Do not change repository Pages settings automatically.

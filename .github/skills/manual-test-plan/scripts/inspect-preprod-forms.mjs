@@ -1,20 +1,6 @@
 #!/usr/bin/env node
 
-import { existsSync, readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
-
-const baseUrl = 'https://forms-api.intern.dev.nav.no';
-const defaultEnvFile = 'packages/bygger-backend/.env';
-
-const fail = (message) => {
-  process.stderr.write(`Error: ${message}\n`);
-  process.exit(1);
-};
-
-const getArgument = (name) => {
-  const index = process.argv.indexOf(name);
-  return index === -1 ? undefined : process.argv[index + 1];
-};
+import { baseUrl, fail, getArgument, getToken } from './forms-api-common.mjs';
 
 if (process.argv.includes('--help') || process.argv.includes('-h')) {
   process.stdout.write(`Usage:
@@ -33,26 +19,7 @@ if ((!query && !formPath) || (query && formPath)) {
   fail('provide exactly one of --query or --path');
 }
 
-const parseEnvFile = (path) => {
-  if (!existsSync(path)) {
-    return {};
-  }
-  return Object.fromEntries(
-    readFileSync(path, 'utf8')
-      .split(/\r?\n/)
-      .filter((line) => line.trim() && !line.trimStart().startsWith('#') && line.includes('='))
-      .map((line) => {
-        const separator = line.indexOf('=');
-        return [line.slice(0, separator).trim(), line.slice(separator + 1).trim()];
-      }),
-  );
-};
-
-const envFile = resolve(getArgument('--env-file') ?? defaultEnvFile);
-const token = process.env.FORMS_API_ACCESS_TOKEN || parseEnvFile(envFile).FORMS_API_ACCESS_TOKEN;
-if (!token) {
-  fail(`FORMS_API_ACCESS_TOKEN is not set; run 'pnpm get-tokens forms-api' or set it in ${envFile}`);
-}
+const token = getToken();
 
 const request = async (url) => {
   const response = await fetch(url, {

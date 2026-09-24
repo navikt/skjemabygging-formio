@@ -10,14 +10,34 @@ const script = resolve(import.meta.dirname, 'cleanup-form.mjs');
 const createHarness = (scenario) => {
   const directory = mkdtempSync(join(tmpdir(), 'cleanup-form-test-'));
   const mockFile = join(directory, 'mock-fetch.mjs');
+  const planPath = join(directory, 'plan.json');
+  writeFileSync(
+    planPath,
+    JSON.stringify({
+      schemaVersion: 3,
+      forms: [
+        {
+          id: 'sample',
+          kind: scenario === 'production-form' ? 'production' : 'generated',
+          path: 'manualtest001',
+          title: 'Manual test',
+          artifact: 'form.json',
+        },
+      ],
+    }),
+  );
+  writeFileSync(
+    join(directory, 'form.json'),
+    JSON.stringify({ skjemanummer: 'MANUAL-TEST-001', title: 'Manual test' }),
+  );
   writeFileSync(
     mockFile,
     `const form = {
   path: 'manualtest001',
   skjemanummer: 'MANUAL-TEST-001',
-  title: 'Manual test',
+  title: process.env.FETCH_SCENARIO === 'different-form' ? 'Different form' : 'Manual test',
   revision: 4,
-  properties: { isTestForm: process.env.TEST_FORM === 'true' },
+  properties: {},
 };
 let requestNumber = 0;
 globalThis.fetch = async (_url, options = {}) => {
@@ -43,12 +63,14 @@ globalThis.fetch = async (_url, options = {}) => {
     FORMS_API_ACCESS_TOKEN: 'test-token',
     NODE_OPTIONS: `--import=${mockFile}`,
     FETCH_SCENARIO: scenario,
-    TEST_FORM: scenario === 'test-form' ? 'true' : 'false',
   };
   return {
     directory,
     run: (...args) =>
-      spawnSync(process.execPath, [script, '--path', 'manualtest001', ...args], { env, encoding: 'utf8' }),
+      spawnSync(process.execPath, [script, '--plan', planPath, '--form-id', 'sample', ...args], {
+        env,
+        encoding: 'utf8',
+      }),
   };
 };
 
@@ -64,12 +86,23 @@ test('dry run binds a generated test form to a confirmation', () => {
   }
 });
 
-test('refuses to delete a form without the test marker', () => {
+test('refuses to delete a production form even if it appears in the plan', () => {
   const harness = createHarness('production-form');
   try {
     const result = harness.run();
     assert.equal(result.status, 1);
-    assert.match(result.stderr, /properties\.isTestForm is not true/);
+    assert.match(result.stderr, /must identify a generated form/);
+  } finally {
+    rmSync(harness.directory, { recursive: true });
+  }
+});
+
+test('refuses to delete a form whose identity no longer matches the plan', () => {
+  const harness = createHarness('different-form');
+  try {
+    const result = harness.run();
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /does not match the planned generated form/);
   } finally {
     rmSync(harness.directory, { recursive: true });
   }
@@ -95,7 +128,7 @@ test('deletes with the current revision and verifies the form is gone', () => {
 
     const result = harness.run('--apply', '--confirm', operation);
     assert.equal(result.status, 0);
-    assert.match(result.stdout, /Deleted and verified test form manualtest001/);
+    assert.match(result.stdout, /Deleted and verified generated form manualtest001/);
   } finally {
     rmSync(harness.directory, { recursive: true });
   }
