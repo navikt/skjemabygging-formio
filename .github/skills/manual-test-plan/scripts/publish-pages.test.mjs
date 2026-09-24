@@ -26,7 +26,7 @@ const createHarness = (pageUrl = 'https://navikt.github.io/skjemabygging-formio/
   );
   const content = '<html>Test $&</html>';
   writeFileSync(join(artifactDirectory, 'index.html'), content);
-  const slack = `Detaljerte instruksjoner: ${pageUrl}`;
+  const slack = '## Testoppgaver\n- [ ] Gjennomfør testen';
   writeFileSync(join(artifactDirectory, 'slack-canvas.md'), slack);
   writeFileSync(
     join(artifactDirectory, 'manifest.json'),
@@ -67,12 +67,24 @@ test('publisher derives the destination from the rendered slug', () => {
   }
 });
 
-test('publisher rejects a page URL that would make Slack links point elsewhere', () => {
+test('publisher rejects a page URL that differs from the manifest destination', () => {
   const harness = createHarness('https://navikt.github.io/skjemabygging-formio/manual-tests/pr-123');
   try {
     const result = harness.run();
     assert.equal(result.status, 1);
     assert.match(result.stderr, /artifact page URL must match/);
+  } finally {
+    rmSync(harness.directory, { recursive: true });
+  }
+});
+
+test('publisher rejects a Canvas changed after rendering', () => {
+  const harness = createHarness();
+  try {
+    writeFileSync(join(harness.directory, 'artifacts', 'slack-canvas.md'), 'A changed plan');
+    const result = harness.run();
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /Slack Canvas does not match the artifact manifest/);
   } finally {
     rmSync(harness.directory, { recursive: true });
   }

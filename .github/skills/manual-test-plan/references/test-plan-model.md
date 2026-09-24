@@ -10,6 +10,10 @@ formats.
     "slug": "pr-2210-party-resolution",
     "title": "Manuell testplan: avsender og bruker",
     "summary": "Kontroller at avsender og bruker blir behandlet uavhengig av hverandre.",
+    "scope": {
+        "included": ["FyllUt skiller mellom avsender og bruker ved innsending."],
+        "excluded": ["Endringer i Sendinn er ikke del av denne pull requesten."]
+    },
     "collaboration": {
         "withNonDevelopers": true
     },
@@ -88,6 +92,10 @@ formats.
             "kind": "generated",
             "path": "testpartyresolution001",
             "title": "Manuell test - avsender og bruker",
+            "journeyCheck": {
+                "status": "unverified",
+                "note": "Skjemaets oppsummering og innsending må prøves i preprod før resultatet kan godkjennes."
+            },
             "artifact": "forms/party-resolution.json",
             "notes": "Samme skjema brukes i preprod og preprod-alt."
         }
@@ -112,7 +120,7 @@ formats.
                 },
                 {
                     "action": "Send inn søknaden.",
-                    "expected": "Kvitteringen vises, og søknaden er registrert på riktig bruker."
+                    "expected": "Kvitteringen vises."
                 }
             ],
             "evidence": ["Noter innsendings-ID og resultat uten personopplysninger."],
@@ -127,6 +135,8 @@ formats.
 - `slug` must contain lowercase letters, numbers, and hyphens only.
 - `collaboration.withNonDevelopers` records the caller's answer. `true` produces
   HTML and Slack Canvas. `false` produces a GitHub issue document.
+- Use `scope.included` and `scope.excluded` to separate implemented PR behavior
+  from criteria that remain for later work. The renderer shows both to testers.
 - `source.commitSha` must be the exact 40-character commit under test.
 - `source.type` must be `pull-request`. `source.number` and `source.url` must
   identify the implementation pull request, even when the skill started from an
@@ -176,12 +186,19 @@ formats.
 - `formId` must reference an entry in `forms`.
 - A generated form intended for script import or deletion must use the
   `MANUALTEST-` form-number prefix in its JSON artifact.
+- Every form needs `journeyCheck` with `status` (`verified` or `unverified`)
+  and a Norwegian `note` describing the observed behavior or what remains
+  unchecked. The renderer shows the status and note for every case using
+  that form; do not mark a journey verified based on metadata or an HTTP 200.
 - Use arrays of short strings for prerequisites, test users, evidence, and
   cleanup.
 - Omit generic test-user instructions. Use `testUsers` only for cases that need
   a user with specific attributes, and describe those attributes as part of the
   case setup.
 - Each step has one action and one observable expected result.
+- Put a shell command in the optional `steps[].command` field, not in prose
+  or `evidence`. The renderer uses a copyable code block in the issue and
+  Canvas. Put deletion of local files or state in `cleanup`, not `evidence`.
 - `setupActions` must not contain application deployment instructions.
 - Do not include secrets or real personal data.
 - Write fields rendered in public HTML, Slack Canvas, or GitHub issues in

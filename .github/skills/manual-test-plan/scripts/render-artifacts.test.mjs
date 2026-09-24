@@ -11,6 +11,7 @@ const makePlan = (withNonDevelopers) => ({
   slug: 'pr-123-test',
   title: 'Test $& <details>',
   summary: "Summary $' and *markdown*",
+  scope: { included: ['FyllUt-skjemaet'], excluded: ['Sendinn skal testes senere'] },
   collaboration: { withNonDevelopers },
   source: {
     repository: 'navikt/skjemabygging-formio',
@@ -65,7 +66,15 @@ const makePlan = (withNonDevelopers) => ({
       expected: 'Skjemaet vises',
     },
   ],
-  forms: [],
+  forms: [
+    {
+      id: 'test-form',
+      kind: 'production',
+      title: 'Testskjema',
+      path: 'testskjema',
+      journeyCheck: { status: 'unverified', note: 'Oppsummering er ikke prøvd' },
+    },
+  ],
   behaviorAnalysis: [
     {
       id: 'B-01',
@@ -88,7 +97,16 @@ const makePlan = (withNonDevelopers) => ({
       integrationIds: ['INT-01'],
       priority: 'P0',
       purpose: 'Check $&',
-      steps: [{ action: 'Perform *action*', expected: 'Result' }],
+      formId: 'test-form',
+      steps: [
+        {
+          action: 'Perform *action*',
+          command: "curl 'https://example.invalid' | jq '.result'",
+          expected: 'Result',
+        },
+      ],
+      evidence: ['Noter resultatet'],
+      cleanup: ['Slett challenge.json'],
     },
   ],
 });
@@ -134,20 +152,36 @@ test.each([false, true])(
       }
       assert.doesNotMatch(internalOutput, /Forventet|Kontroller:|Delt tilstand|Rydd opp|Metode|Ansvarlig|Referanser/);
       assert.match(publicOutput, /Test \$&/);
+      assert.match(publicOutput, /Sendinn skal testes senere/);
+      assert.match(publicOutput, /Oppsummering er ikke prøvd/);
+      assert.match(publicOutput, /Slett challenge(?:\\)?\.json/);
       assert.match(run.read('manifest.json'), /"schemaVersion": 3/);
       if (collaboration) {
         const slack = run.read('slack-canvas.md');
         assert.doesNotMatch(slack, /INTERNALMETHOD|INTERNALSETUP/);
-        assert.match(slack, /pr-123-test\/#tc-01/);
+        assert.doesNotMatch(slack, /github\.io|Detaljerte instruksjoner:/);
+        assert.match(slack, /Før du starter:|Steg:/);
+        assert.match(slack, /- \[ \] TC\\-01: Slett challenge\\\.json/);
+        assert.match(slack, /- \[ \] Åpne skjemaet: Fjern testdata/);
         assert.match(slack, /Summary \$' and/);
         assert.match(publicOutput, /Summary \$&#39; and/);
+        assert.match(publicOutput, /class="cleanup-checklist"/);
+        assert.match(publicOutput, /<input type="checkbox" \/>TC-01: Slett challenge\.json/);
+        assert.match(publicOutput, /<input type="checkbox" \/>Åpne skjemaet: Fjern testdata/);
       } else {
         assert.match(publicOutput, /&lt;details\\>/);
         assert.match(publicOutput, /Perform \\\*action\\\*/);
+        assert.doesNotMatch(publicOutput, /Resultat og merknader:|Ikke tildelt/);
         assert.match(publicOutput, /Ingen særskilt risiko registrert/);
         assert.match(publicOutput, /\*\*Forventet:\*\* Skjemaet vises/);
         assert.match(publicOutput, /\*\*Delt tilstand:\*\* Delt testdata/);
-        assert.match(publicOutput, /\*\*Rydd opp:\*\*/);
+        assert.match(publicOutput, /\*\*Område:\*\* Test/);
+        assert.match(publicOutput, /\[B-01\]\(#b-01\)/);
+        assert.match(publicOutput, /### B-01/);
+        assert.match(publicOutput, /~~~sh\ncurl 'https:\/\/example\.invalid' \| jq '\.result'\n~~~/);
+        assert.match(publicOutput, /- \[ \] TC\\-01: Slett challenge\\\.json/);
+        assert.match(publicOutput, /- \[ \] Åpne skjemaet: Fjern testdata/);
+        assert.doesNotMatch(publicOutput.match(/\*\*Dokumentasjon:\*\*.*/)?.[0] ?? '', /challenge/);
       }
     } finally {
       run.cleanup();
@@ -163,6 +197,41 @@ test('rejects obsolete artifact manifests instead of attempting legacy cleanup',
     const rerun = run.rerun();
     assert.equal(rerun.status, 1);
     assert.match(rerun.stderr, /supported schemaVersion/);
+  } finally {
+    run.cleanup();
+  }
+});
+
+test('Canvas includes public integration checks without a Pages link', () => {
+  const plan = makePlan(true);
+  plan.integrations[0].evidence = {
+    audience: 'public',
+    method: 'Se kvitteringen',
+    owner: 'Tester',
+    instructions: ['Kontroller verdien'],
+    expected: 'Verdien er riktig',
+    repositoryReferences: [],
+  };
+  const run = render(plan);
+  try {
+    assert.equal(run.result.status, 0, run.result.stderr);
+    const canvas = run.read('slack-canvas.md');
+    assert.match(canvas, /Kontroll av internal service/);
+    assert.match(canvas, /Kontroller verdien/);
+    assert.doesNotMatch(canvas, /github\.io/);
+  } finally {
+    run.cleanup();
+  }
+});
+
+test.each(['generated', 'production'])('rejects %s forms without an explicit journey check', (kind) => {
+  const plan = makePlan(false);
+  plan.forms[0].kind = kind;
+  delete plan.forms[0].journeyCheck;
+  const run = render(plan);
+  try {
+    assert.equal(run.result.status, 1);
+    assert.match(run.result.stderr, /forms\[0\]\.journeyCheck\.status/);
   } finally {
     run.cleanup();
   }

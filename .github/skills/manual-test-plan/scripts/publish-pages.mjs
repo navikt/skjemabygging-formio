@@ -158,14 +158,11 @@ if (
 const slackPath = resolve(artifactDirectory, 'slack-canvas.md');
 const slackEntry = manifest.files.find((entry) => entry.path === 'slack-canvas.md');
 if (!slackEntry || !existsSync(slackPath) || lstatSync(slackPath).isSymbolicLink()) {
-  fail('rendered Slack Canvas is required to verify the page links');
+  fail('rendered Slack Canvas is required to verify artifact integrity');
 }
 const slackContent = readFileSync(slackPath, 'utf8');
-if (
-  slackEntry.sha256 !== createHash('sha256').update(slackContent).digest('hex') ||
-  !slackContent.includes(`Detaljerte instruksjoner: ${manifest.pageUrl}`)
-) {
-  fail('Slack Canvas links do not match the rendered page URL and manifest');
+if (slackEntry.sha256 !== createHash('sha256').update(slackContent).digest('hex')) {
+  fail('Slack Canvas does not match the artifact manifest');
 }
 const pageDigest = createHash('sha256').update(pageContent).digest('hex').slice(0, 12);
 const operation = branchExists ? `PUBLISH:${destination}:${pageDigest}` : `BOOTSTRAP:${destination}:${pageDigest}`;

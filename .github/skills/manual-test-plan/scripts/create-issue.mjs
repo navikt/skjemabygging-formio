@@ -70,6 +70,7 @@ process.stdout.write(`Body: ${bodyPath}\n`);
 process.stdout.write(`Operation: ${operation}\n`);
 
 if (!process.argv.includes('--apply')) {
+  process.stdout.write(`\n--- Proposed issue body ---\n${body}\n--- End proposed issue body ---\n`);
   process.stdout.write(`Dry run only. To apply, rerun with --apply --confirm '${operation}'.\n`);
   process.exit(0);
 }

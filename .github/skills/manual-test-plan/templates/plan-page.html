@@ -111,6 +111,26 @@
             .preflight h2 {
                 margin-top: 0;
             }
+            .cleanup-checklist {
+                list-style: none;
+                padding: 0;
+            }
+            .cleanup-checklist label {
+                display: flex;
+                align-items: flex-start;
+                gap: 0.5rem;
+                min-height: 2.75rem;
+                padding: 0.5rem 0.25rem;
+                cursor: pointer;
+            }
+            .cleanup-checklist input[type='checkbox'] {
+                flex: none;
+                margin: 0.3rem 0 0;
+            }
+            .cleanup-checklist input[type='checkbox']:focus-visible {
+                outline: 3px solid var(--page-focus);
+                outline-offset: 3px;
+            }
             .badges {
                 display: flex;
                 flex-wrap: wrap;

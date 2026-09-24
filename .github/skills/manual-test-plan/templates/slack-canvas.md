@@ -2,7 +2,7 @@
 
 {{SUMMARY}}
 
-Detaljerte instruksjoner: {{PAGE_URL}}
+{{SCOPE}}
 
 ## Kontroller versjonen hver gang du starter testingen
 
@@ -12,6 +12,14 @@ Detaljerte instruksjoner: {{PAGE_URL}}
 Stopp hvis verdien er annerledes. Be utvikleren legge ut riktig versjon, og
 kontroller på nytt.
 
+## Oppsett før testing
+
+{{SETUP}}
+
 ## Testoppgaver
 
 {{CASES}}
+
+## Rydd opp etter testing
+
+{{CLEANUP}}

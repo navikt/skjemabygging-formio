@@ -95,6 +95,13 @@ if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(plan.slug)) {
 }
 asNonEmptyString(plan.title, 'title');
 asNonEmptyString(plan.summary, 'summary');
+if (plan.scope !== undefined) {
+  if (!plan.scope || typeof plan.scope !== 'object') {
+    fail('scope must contain included and excluded lists');
+  }
+  asStringArray(plan.scope.included, 'scope.included');
+  asStringArray(plan.scope.excluded, 'scope.excluded');
+}
 if (!plan.collaboration || typeof plan.collaboration.withNonDevelopers !== 'boolean') {
   fail('collaboration.withNonDevelopers must be a boolean');
 }
@@ -208,6 +215,10 @@ for (const [index, form] of plan.forms.entries()) {
   }
   asNonEmptyString(form.path, `${prefix}.path`);
   asNonEmptyString(form.title, `${prefix}.title`);
+  if (!form.journeyCheck || !['verified', 'unverified'].includes(form.journeyCheck.status)) {
+    fail(`${prefix}.journeyCheck.status must be verified or unverified`);
+  }
+  asNonEmptyString(form.journeyCheck.note, `${prefix}.journeyCheck.note`);
 }
 
 const integrations = new Map();
@@ -351,6 +362,9 @@ for (const [index, testCase] of plan.testCases.entries()) {
   for (const [stepIndex, step] of testCase.steps.entries()) {
     asNonEmptyString(step.action, `${prefix}.steps[${stepIndex}].action`);
     asNonEmptyString(step.expected, `${prefix}.steps[${stepIndex}].expected`);
+    if (step.command !== undefined) {
+      asNonEmptyString(step.command, `${prefix}.steps[${stepIndex}].command`);
+    }
   }
 }
 for (const integrationId of integrations.keys()) {
@@ -374,9 +388,27 @@ const escapeMarkdown = (value) =>
     .replaceAll('[', '\\[')
     .replaceAll(']', '\\]')
     .replaceAll('<', '&lt;');
+const shellBlock = (command) => {
+  const fence = '~'.repeat(Math.max(3, ...[...command.matchAll(/~+/g)].map(([run]) => run.length + 1)));
+  return `${fence}sh\n${command}\n${fence}`;
+};
 
 const list = (values) =>
   values.length ? `<ul>${values.map((value) => `<li>${escapeHtml(value)}</li>`).join('')}</ul>` : '<p>Ingen.</p>';
+const scopeHtml = plan.scope
+  ? `<section class="card">
+      <h2>Hva testplanen dekker</h2>
+      ${plan.scope.included.length ? `<h3>Dette testes</h3>${list(plan.scope.included)}` : ''}
+      ${plan.scope.excluded.length ? `<h3>Ikke dekket av denne endringen</h3>${list(plan.scope.excluded)}` : ''}
+    </section>`
+  : '';
+const scopeMarkdown = plan.scope
+  ? `## Hva testplanen dekker
+
+${plan.scope.included.length ? `**Dette testes:**\n${plan.scope.included.map((item) => `- ${escapeMarkdown(item)}`).join('\n')}` : ''}
+
+${plan.scope.excluded.length ? `**Ikke dekket av denne endringen:**\n${plan.scope.excluded.map((item) => `- ${escapeMarkdown(item)}`).join('\n')}` : ''}`
+  : '';
 
 if (configuredPageUrl) {
   asHttpUrl(configuredPageUrl, '--page-url');
@@ -384,11 +416,14 @@ if (configuredPageUrl) {
 const [sourceOwner, sourceRepositoryName] = sourceRepository.split('/');
 const defaultPageUrl = `https://${sourceOwner}.github.io/${sourceRepositoryName}/manual-tests/${plan.slug}`;
 const pageUrl = configuredPageUrl?.replace(/\/$/, '') || defaultPageUrl;
-const caseUrl = (id) => `${pageUrl}${pageUrl.endsWith('.html') ? '' : '/'}#${id.toLowerCase()}`;
 
 const sourceNumber = plan.source.number ? ` #${escapeHtml(plan.source.number)}` : '';
 const publicSetupActions = plan.setupActions.filter((action) => action.audience === 'public');
 const internalSetupActions = plan.setupActions.filter((action) => action.audience === 'internal');
+const publicCleanup = [
+  ...publicSetupActions.flatMap((action) => action.cleanup.map((step) => `${action.title}: ${step}`)),
+  ...plan.testCases.flatMap((testCase) => testCase.cleanup.map((step) => `${testCase.id}: ${step}`)),
+];
 const setupHtml = publicSetupActions
   .map((item) => {
     return `<section class="setup-card">
@@ -398,7 +433,6 @@ const setupHtml = publicSetupActions
       <h4>Kontroller</h4>
       ${list(item.verification)}
       ${item.sharedStateWarning ? `<p><strong>Delt tilstand:</strong> ${escapeHtml(item.sharedStateWarning)}</p>` : ''}
-      ${item.cleanup.length ? `<h4>Rydd opp</h4>${list(item.cleanup)}` : ''}
     </section>`;
   })
   .join('');
@@ -496,6 +530,7 @@ const casesHtml = plan.testCases
           .map((id) => `<a href="#${id.toLowerCase()}"><code>${escapeHtml(id)}</code></a>`)
           .join(', ')}</p>
         ${form ? `<p><strong>Skjema:</strong> ${escapeHtml(form.title)}</p>${formLinks}` : ''}
+        ${form ? `<p><strong>${form.journeyCheck.status === 'verified' ? 'Skjemaflyten er kontrollert' : 'Skjemaflyten er ikke kontrollert'}:</strong> ${escapeHtml(form.journeyCheck.note)}</p>` : ''}
         <h3>Før du starter</h3>
         ${list(testCase.prerequisites)}
         ${testUserHtml}
@@ -503,7 +538,7 @@ const casesHtml = plan.testCases
         <ol>${testCase.steps
           .map(
             (step) =>
-              `<li class="step">${escapeHtml(step.action)}<div class="expected"><strong>Forventet:</strong> ${escapeHtml(
+              `<li class="step">${escapeHtml(step.action)}${step.command ? `<pre><code>${escapeHtml(step.command)}</code></pre>` : ''}<div class="expected"><strong>Forventet:</strong> ${escapeHtml(
                 step.expected,
               )}</div></li>`,
           )
@@ -511,7 +546,6 @@ const casesHtml = plan.testCases
         <h3>Dokumentasjon</h3>
         ${list(testCase.evidence)}
         ${publicIntegrationEvidence ? `<h3>Kontroll av integrasjoner</h3>${publicIntegrationEvidence}` : ''}
-        ${testCase.cleanup.length ? `<h3>Rydd opp</h3>${list(testCase.cleanup)}` : ''}
       </div>
     </details>`;
   })
@@ -562,6 +596,7 @@ const body = `<div class="page-tools">
   </div>
   <h1>${escapeHtml(plan.title)}</h1>
   <p>${escapeHtml(plan.summary)}</p>
+  ${scopeHtml}
   <section class="card preflight">
     <h2>Kontroller versjonen hver gang du starter testingen</h2>
     <ol>
@@ -574,6 +609,14 @@ const body = `<div class="page-tools">
   ${setupSection}
   <h2>Testoppgaver</h2>
   ${casesHtml}
+  <section class="card" aria-labelledby="cleanup-heading">
+    <h2 id="cleanup-heading">Rydd opp etter testing</h2>
+    ${
+      publicCleanup.length
+        ? `<ul class="cleanup-checklist">${publicCleanup.map((step) => `<li><label><input type="checkbox" />${escapeHtml(step)}</label></li>`).join('')}</ul>`
+        : '<p>Ingen opprydding nødvendig.</p>'
+    }
+  </section>
   ${behaviorSection}
   ${technicalSection}`;
 
@@ -587,6 +630,17 @@ const html = htmlTemplate
 const slackCases = plan.testCases
   .map((testCase) => {
     const form = plan.forms.find((candidate) => candidate.id === testCase.formId);
+    const publicIntegrationEvidence = testCase.integrationIds
+      .map((id) => integrations.get(id))
+      .filter((integration) => integration.evidence.audience === 'public')
+      .map(
+        (integration) => `  Kontroll av ${escapeMarkdown(integration.system)}:
+  Metode: ${escapeMarkdown(integration.evidence.method)}
+  Ansvarlig: ${escapeMarkdown(integration.evidence.owner)}
+${integration.evidence.instructions.map((step, index) => `  ${index + 1}. ${escapeMarkdown(step)}`).join('\n')}
+  Forventet: ${escapeMarkdown(integration.evidence.expected)}`,
+      )
+      .join('\n');
     const links = form
       ? `  Skjema: ${internBaseUrl}/${encodeURIComponent(form.path)} eller ${ansattBaseUrl}/${encodeURIComponent(
           form.path,
@@ -594,25 +648,47 @@ const slackCases = plan.testCases
       : '';
     return `- [ ] *${testCase.id}: ${escapeMarkdown(testCase.title)}* (${testCase.priority})
   Område: ${escapeMarkdown(testCase.group)}
+  Formål: ${escapeMarkdown(testCase.purpose)}
   Tester:
-  Instruksjoner: ${caseUrl(testCase.id)}
-${links}  Resultat og merknader:`;
+${links}  Før du starter: ${testCase.prerequisites.map(escapeMarkdown).join('; ') || 'Ingen ekstra forutsetninger.'}
+${form ? `  Skjemaflyten er ${form.journeyCheck.status === 'verified' ? 'kontrollert' : 'ikke kontrollert'}: ${escapeMarkdown(form.journeyCheck.note)}\n` : ''}
+${testCase.testUsers.length ? `  Testbruker: ${testCase.testUsers.map(escapeMarkdown).join('; ')}\n` : ''}  Steg:
+${testCase.steps.map((step, index) => `  ${index + 1}. ${escapeMarkdown(step.action)}${step.command ? `\n${shellBlock(step.command)}` : ''}\n     Forventet: ${escapeMarkdown(step.expected)}`).join('\n')}
+  Dokumentasjon: ${testCase.evidence.map(escapeMarkdown).join('; ') || 'Noter resultatet.'}
+${publicIntegrationEvidence ? `${publicIntegrationEvidence}\n` : ''}
+Resultat og merknader:`;
   })
+  .join('\n\n');
+const slackSetup = publicSetupActions
+  .map(
+    (item) => `*${escapeMarkdown(item.title)}*
+${item.steps.map((step, index) => `${index + 1}. ${escapeMarkdown(step)}`).join('\n')}
+Forventet: ${escapeMarkdown(item.expected)}
+Kontroller: ${item.verification.map(escapeMarkdown).join('; ')}
+${item.sharedStateWarning ? `Delt tilstand: ${escapeMarkdown(item.sharedStateWarning)}` : ''}`,
+  )
   .join('\n\n');
 const slackTemplate = readFileSync(join(skillDirectory, 'templates', 'slack-canvas.md'), 'utf8');
 const slack = slackTemplate
   .replace('{{TITLE}}', () => escapeMarkdown(plan.title))
   .replace('{{SUMMARY}}', () => escapeMarkdown(plan.summary))
-  .replace('{{PAGE_URL}}', () => pageUrl)
+  .replace('{{SCOPE}}', () => scopeMarkdown)
+  .replace('{{SETUP}}', () => slackSetup || 'Ingen ekstra oppsett.')
   .replace('{{REVISION_ENDPOINT}}', () => revisionEndpoint)
   .replace('{{REVISION_FIELD}}', () => escapeMarkdown(revisionField))
   .replace('{{EXPECTED_COMMIT}}', () => expectedCommit)
-  .replace('{{CASES}}', () => slackCases);
+  .replace('{{CASES}}', () => slackCases)
+  .replace(
+    '{{CLEANUP}}',
+    () => publicCleanup.map((step) => `- [ ] ${escapeMarkdown(step)}`).join('\n') || 'Ingen opprydding nødvendig.',
+  );
 
 const issueBehaviors = plan.behaviorAnalysis
   .map(
-    (behavior) => `<details id="${behavior.id.toLowerCase()}">
+    (behavior) => `<details>
 <summary><code>${behavior.id}</code>: ${escapeHtml(behavior.behavior)}</summary>
+
+### ${behavior.id}
 
 - **Før:** ${escapeMarkdown(behavior.before)}
 - **Ønsket oppførsel:** ${escapeMarkdown(behavior.intended)}
@@ -629,7 +705,7 @@ const setupLabels = {
   public: { expected: 'Forventet', verification: 'Kontroller', sharedState: 'Delt tilstand', cleanup: 'Rydd opp' },
   internal: { expected: 'Expected', verification: 'Verify', sharedState: 'Shared state', cleanup: 'Cleanup' },
 };
-const renderSetupMarkdown = (item) => {
+const renderSetupMarkdown = (item, includeCleanup = true) => {
   const labels = setupLabels[item.audience];
   return `### ${item.id}: ${escapeMarkdown(item.title)}
 
@@ -640,10 +716,10 @@ ${item.steps.map((step) => `1. ${escapeMarkdown(step)}`).join('\n')}
 **${labels.verification}:**
 ${item.verification.map((step) => `- ${escapeMarkdown(step)}`).join('\n')}
 ${item.sharedStateWarning ? `\n**${labels.sharedState}:** ${escapeMarkdown(item.sharedStateWarning)}\n` : ''}
-${item.cleanup.length ? `**${labels.cleanup}:**\n${item.cleanup.map((step) => `- ${escapeMarkdown(step)}`).join('\n')}` : ''}`;
+${includeCleanup && item.cleanup.length ? `**${labels.cleanup}:**\n${item.cleanup.map((step) => `- ${escapeMarkdown(step)}`).join('\n')}` : ''}`;
 };
 
-const issueSetup = publicSetupActions.map((item) => renderSetupMarkdown(item)).join('\n\n');
+const issueSetup = publicSetupActions.map((item) => renderSetupMarkdown(item, false)).join('\n\n');
 
 const issueForms = plan.forms.length
   ? plan.forms
@@ -664,11 +740,11 @@ const issueCases = plan.testCases
       .map((id) => integrations.get(id))
       .filter((integration) => integration.evidence.audience === 'public')
       .map(
-        (integration) => `  **Kontroll av ${escapeMarkdown(integration.system)}:**
-  - Metode: ${escapeMarkdown(integration.evidence.method)}
-  - Ansvarlig: ${escapeMarkdown(integration.evidence.owner)}
-${integration.evidence.instructions.map((step) => `  - ${escapeMarkdown(step)}`).join('\n')}
-  - Forventet: ${escapeMarkdown(integration.evidence.expected)}`,
+        (integration) => `**Kontroll av ${escapeMarkdown(integration.system)}:**
+- Metode: ${escapeMarkdown(integration.evidence.method)}
+- Ansvarlig: ${escapeMarkdown(integration.evidence.owner)}
+${integration.evidence.instructions.map((step) => `- ${escapeMarkdown(step)}`).join('\n')}
+- Forventet: ${escapeMarkdown(integration.evidence.expected)}`,
       )
       .join('\n');
     const formText = form
@@ -677,29 +753,30 @@ ${integration.evidence.instructions.map((step) => `  - ${escapeMarkdown(step)}`)
         )}) eller [ansatt-ingress](${ansattBaseUrl}/${encodeURIComponent(form.path)})`
       : '';
     const testUserText = testUsers.length
-      ? `  **Testbruker:**\n${testUsers.map((value) => `    - ${escapeMarkdown(value)}`).join('\n')}\n`
+      ? `**Testbruker:**\n${testUsers.map((value) => `- ${escapeMarkdown(value)}`).join('\n')}\n`
       : '';
-    return `- [ ] **${testCase.id}: ${escapeMarkdown(testCase.title)}** (${testCase.priority})
+    return `### ${testCase.id}: ${escapeMarkdown(testCase.title)} (${testCase.priority})
 
-  ${escapeMarkdown(testCase.purpose)}
+**Område:** ${escapeMarkdown(testCase.group)}
+**Bakgrunn for testen:** ${testCase.behaviorIds.map((id) => `[${id}](#${id.toLowerCase()})`).join(', ')}
+${escapeMarkdown(testCase.purpose)}
 
-  ${formText}
-  **Tester:** _Ikke tildelt_
-  **Før du starter:** ${testCase.prerequisites.map(escapeMarkdown).join('; ') || 'Ingen ekstra forutsetninger.'}
+${formText}
+${form ? `**Skjemaflyten er ${form.journeyCheck.status === 'verified' ? 'kontrollert' : 'ikke kontrollert'}:** ${escapeMarkdown(form.journeyCheck.note)}\n` : ''}**Før du starter:** ${testCase.prerequisites.map(escapeMarkdown).join('; ') || 'Ingen ekstra forutsetninger.'}
 ${testUserText}
-  **Steg:**
-${testCase.steps.map((step, index) => `  ${index + 1}. ${escapeMarkdown(step.action)}\n     - Forventet: ${escapeMarkdown(step.expected)}`).join('\n')}
+**Steg:**
+${testCase.steps.map((step, index) => `${index + 1}. ${escapeMarkdown(step.action)}\n\n${step.command ? `${shellBlock(step.command)}\n\n` : ''}**Forventet:** ${escapeMarkdown(step.expected)}`).join('\n\n')}
 
-  **Dokumentasjon:** ${testCase.evidence.map(escapeMarkdown).join('; ') || 'Noter resultatet.'}
-${publicIntegrationEvidence ? `${publicIntegrationEvidence}\n` : ''}
-${testCase.cleanup.length ? `  **Rydd opp:** ${testCase.cleanup.map(escapeMarkdown).join('; ')}\n` : ''}
-  **Resultat og merknader:**`;
+**Dokumentasjon:** ${testCase.evidence.map(escapeMarkdown).join('; ') || 'Noter resultatet.'}
+${publicIntegrationEvidence ? `\n${publicIntegrationEvidence}` : ''}`;
   })
   .join('\n\n');
 
 const issue = `# ${escapeMarkdown(plan.title)}
 
 ${escapeMarkdown(plan.summary)}
+
+${scopeMarkdown}
 
 ## Kontroller versjonen hver gang du starter testingen
 
@@ -712,6 +789,10 @@ ${escapeMarkdown(plan.summary)}
 ## Testoppgaver
 
 ${issueCases}
+
+## Rydd opp etter testing
+
+${publicCleanup.length ? publicCleanup.map((step) => `- [ ] ${escapeMarkdown(step)}`).join('\n') : 'Ingen opprydding nødvendig.'}
 
 <details>
 <summary>Oppsett og skjema</summary>
@@ -761,7 +842,7 @@ ${
 }`,
   )
   .join('\n\n');
-const internalSetup = internalSetupActions.map(renderSetupMarkdown).join('\n\n');
+const internalSetup = internalSetupActions.map((item) => renderSetupMarkdown(item)).join('\n\n');
 const internalInstructions =
   internalSetup || internalIntegrationEvidence
     ? `# Internal instructions for PR #${plan.source.number}

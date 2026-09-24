@@ -49,17 +49,20 @@ confirming that its results have been retained elsewhere. Never delete
 
 ## Slack Canvas
 
-`slack-canvas.md` is Norwegian and paste-ready. The repeated environment check
-is plain text, not a checkbox. Test cases use checkboxes for tracking and link
-to the detailed HTML anchor. Testers add their names or mentions and record
-results in the Canvas.
+`slack-canvas.md` is Norwegian and paste-ready even when GitHub Pages is
+unavailable or publication is declined. It includes setup, case steps,
+expected results, form links, and cleanup without linking to an unpublished
+page. The repeated environment check is plain text, not a checkbox. Test
+cases use checkboxes for tracking. Testers add their names or mentions and
+record results in the Canvas.
 
 ## GitHub issue
 
-`github-issue.md` combines the functional instructions from the page with
-test-case ownership and checkboxes from the Canvas. Keep behavior analysis and
-setup in collapsed `<details>` sections. Create it in the source repository
-after showing the caller the title and body and receiving confirmation:
+`github-issue.md` contains complete functional instructions and a cleanup
+checklist, but no unassigned owner or result fields to fill in. Keep behavior
+analysis and setup in collapsed `<details>` sections. Show the caller the
+entire rendered title and body before asking to create it in the source
+repository:
 
 ```bash
 node .github/skills/manual-test-plan/scripts/create-issue.mjs \
@@ -67,7 +70,8 @@ node .github/skills/manual-test-plan/scripts/create-issue.mjs \
   --body <artifact-directory>/github-issue.md
 ```
 
-Run the dry run first, then use the exact confirmation it prints.
+Run the dry run first. It prints the full issue body and the exact operation
+confirmation. Do not replace that preview with a summary or only a file path.
 
 ## Publication review
 
@@ -77,3 +81,10 @@ before asking once whether to publish the page or create the issue. The Slack
 Canvas file stays with the caller; generated form definitions and the canonical
 plan stay local. Never include a full form definition in public HTML or an
 issue.
+
+Review the rendered HTML, Canvas, or issue for every case's group, behavior
+links, form link, actions, expected results, evidence, and after-testing
+cleanup. The page and issue show a cleanup checklist after the cases. Do not
+mark a page URL as ready until the published page responds. At the end, provide
+absolute local file links to the generated artifacts, including the Canvas
+or issue text and the canonical plan. Do not link to an unpublished page.
