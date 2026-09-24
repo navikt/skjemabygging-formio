@@ -104,13 +104,23 @@ For each changed behavior:
    Reuse those terms in tester-facing instructions instead of exposing internal
    type, function, or field names.
 
-Reconstruct the full ordered journey for each selected form before drafting
-actions: submission choice, required authentication or ID upload, introduction,
-each relevant form page, summary, submission, and receipt. Check which pages
-the specific form enables. Name intermediate pages and mandatory actions;
-never say "if prompted" for a required upload or jump directly from upload
-to the first form panel when an introduction intervenes. Compare every
-rendered step and expected result with that route before publishing.
+Reconstruct the full ordered route for each case, not once per form. Fix the
+form revision, submission method, identity or authentication path, and
+conditional choices. Walk the route in the renderer used by the target
+application. Record what the tester sees at each transition, including
+required uploads, introduction, relevant form pages, summary, submission,
+and receipt where applicable. Check the form definition and actual labels;
+another form or a different branch of the same form does not prove this route.
+If the form is generated, walk its exact JSON locally before import and check
+the imported preprod revision again before publication. Compare every rendered
+step and expected result with that route. Never say "if prompted" for a
+required action or skip an intervening page.
+
+Record the route and how it was checked in each case's `journeyCheck`. A case
+with an unverified route must be exploratory. Name the transitions still
+unknown instead of guessing them or writing an expected result that assumes
+they work. Once the route has been checked, update the case and its steps
+before treating it as verification.
 
 For each step, name the page, field, document, or status the tester should
 actually see. A receipt expected result must not claim that another system

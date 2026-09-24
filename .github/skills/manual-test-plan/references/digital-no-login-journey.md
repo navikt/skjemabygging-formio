@@ -3,8 +3,8 @@
 Before writing test steps, inspect the form definition at the PR head, the
 imported preprod form, and the relevant FyllUt journey. An enabled submission
 method or a successful form URL response does not prove which pages appear.
-Walk the exact form when possible. If you cannot, mark its `journeyCheck` as
-`unverified` and do not assert unobserved transitions.
+Walk the exact route for each case. If you cannot, mark that case's
+`journeyCheck` as `unverified` and do not assert unobserved transitions.
 
 For the standard digital-without-login flow, FyllUt takes the tester through
 `Legitimasjon` after they choose `Send digitalt uten å logge inn`. They must

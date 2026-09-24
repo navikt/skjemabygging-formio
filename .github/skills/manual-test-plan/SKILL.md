@@ -64,9 +64,10 @@ issue. Do not infer the target solely from the current branch.
    follow the proxy and token troubleshooting in
    [forms-api-import.md](references/forms-api-import.md). Do not treat a failed
    lookup as proof that a form is absent.
-   For digital submission without login, read
-   [digital-no-login-journey.md](references/digital-no-login-journey.md) and
-   verify the actual form's pages before writing its test steps.
+   Reconstruct each case's route through the selected form, submission method,
+   and conditional choices before writing its steps. For digital submission
+   without login, also read
+   [digital-no-login-journey.md](references/digital-no-login-journey.md).
 10. Write tester-facing HTML, Slack Canvas, and GitHub issue content in
     Norwegian, using terms from FyllUt, Bygger, the form, and the issue. Ask
     technical users questions in English. Keep local technical instructions
@@ -87,16 +88,20 @@ issue. Do not infer the target solely from the current branch.
 12. Read [collaborative-output.md](references/collaborative-output.md) and
     produce the output for the caller's collaboration choice.
 13. Review public artifacts for sensitive content and redact or omit it before
-    asking once whether to publish the HTML or create the issue. Check the
-    rendered steps against the observed form journey, including required
-    uploads and intermediate pages. Reject conditional wording for mandatory
+    asking once whether to publish the HTML or create the issue. For every case,
+    compare rendered steps with its checked route, including required actions
+    and intermediate pages. A verification case needs a checked route; if the
+    route cannot be checked, state what remains unknown and write an exploratory
+    case without invented transitions. Reject conditional wording for mandatory
     actions and unsupported downstream claims. Show the caller the entire
     rendered GitHub issue body before requesting approval. Keep `internal`
     setup and evidence only in the local internal-instructions file; never
     substitute vague placeholders in public output.
 14. For approved form changes, follow
     [forms-api-import.md](references/forms-api-import.md) and use each script's
-    operation-bound confirmation. Do not ask again about the full form list.
+    operation-bound confirmation. Recheck each affected route against the
+    imported form revision and update the plan and rendered artifacts if the
+    observed pages differ. Do not ask again about the full form list.
 15. Use the scripts to publish the page or create the issue after the one
     publication confirmation. Require maintainer approval before enabling
     public Pages. Never publish Canvas or form definitions to `gh-pages`.

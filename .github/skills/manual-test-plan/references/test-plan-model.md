@@ -1,12 +1,12 @@
 # Canonical test plan model
 
-Use schema version `3`. Store the canonical JSON in the session artifact
+Use schema version `4`. Store the canonical JSON in the session artifact
 directory. The renderer validates required fields before producing other
 formats.
 
 ```json
 {
-    "schemaVersion": 3,
+    "schemaVersion": 4,
     "slug": "pr-2210-party-resolution",
     "title": "Manuell testplan: avsender og bruker",
     "summary": "Kontroller at oppsummeringen skiller mellom avsender og bruker.",
@@ -119,12 +119,8 @@ formats.
             "kind": "generated",
             "path": "testpartyresolution001",
             "title": "Manuell test - avsender og bruker",
-            "journeyCheck": {
-                "status": "unverified",
-                "note": "Skjemaets oppsummering og innsending må prøves i preprod før resultatet kan godkjennes."
-            },
             "artifact": "forms/party-resolution.json",
-            "notes": "Eksempelskjemaet har Dine opplysninger og Avsender, uten Veiledning. Bekreft dette i den importerte versjonen."
+            "notes": "Bekreft sidene og rekkefølgen i den importerte versjonen."
         }
     ],
     "testCases": [
@@ -132,38 +128,44 @@ formats.
             "id": "TC-01",
             "group": "Digital innsending",
             "title": "Send inn på vegne av en annen person",
-            "mode": "verification",
+            "mode": "exploratory",
             "behaviorIds": ["B-01"],
             "integrationIds": ["INT-01"],
             "priority": "P0",
-            "purpose": "Kontroller at oppsummeringen viser personen søknaden gjelder som bruker og innsenderen som avsender.",
+            "purpose": "Undersøk hvordan oppsummeringen viser personen søknaden gjelder og innsenderen.",
             "formId": "party-form",
+            "journeyCheck": {
+                "status": "unverified",
+                "route": "Send digitalt uten å logge inn, bruker og avsender som to ulike personer",
+                "note": "Den importerte skjemarevisjonen og sidene etter introduksjonen er ikke gjennomgått.",
+                "evidence": []
+            },
             "prerequisites": ["Ha to godkjente syntetiske identiteter og en syntetisk legitimasjonsfil tilgjengelig."],
             "testUsers": ["Bruker og avsender må være to ulike syntetiske personer."],
             "steps": [
                 {
                     "action": "Velg «Send digitalt uten å logge inn».",
-                    "expected": "Siden «Legitimasjon» vises."
+                    "expected": "Noter om «Legitimasjon» vises."
                 },
                 {
                     "action": "Velg legitimasjonstype, last opp den syntetiske legitimasjonsfilen og gå videre.",
-                    "expected": "Opplastingen er bekreftet, og introduksjonssiden vises."
+                    "expected": "Noter bekreftelsen på opplastingen og hvilken side som vises videre."
                 },
                 {
                     "action": "Bekreft erklæringen på introduksjonssiden og gå videre.",
-                    "expected": "Siden «Dine opplysninger» vises for dette eksempelskjemaet."
+                    "expected": "Noter hvilke sider som vises før første utfyllingsside."
                 },
                 {
-                    "action": "Fyll ut «Dine opplysninger» med personen søknaden gjelder og gå videre.",
-                    "expected": "Siden «Avsender» vises."
+                    "action": "Finn siden for personen søknaden gjelder, fyll den ut og gå videre.",
+                    "expected": "Noter sidens navn og hvilken side som vises etterpå."
                 },
                 {
-                    "action": "Fyll ut «Avsender» med en annen person og gå til oppsummeringen.",
-                    "expected": "Oppsummeringen viser brukeren og avsenderen som to ulike personer."
+                    "action": "Finn siden for avsender, fyll inn den andre personen og gå til oppsummeringen.",
+                    "expected": "Noter hvordan begge personene vises i oppsummeringen."
                 },
                 {
                     "action": "Send inn søknaden.",
-                    "expected": "Kvitteringen viser at søknaden er mottatt og oppgir mottaksdato."
+                    "expected": "Noter hva som vises etter innsending, inkludert eventuell kvittering og mottaksdato."
                 }
             ],
             "evidence": [
@@ -229,19 +231,25 @@ formats.
   `cleanup`, may be omitted when empty. The renderer treats them as empty lists.
 - Case mode is `verification` or `exploratory`.
 - A verification case may reference `aligned` or `suspected-defect` behaviors
-  with high confidence. Its expected results must come from confirmed intent,
-  an established contract, or unchanged baseline behavior. A suspected defect
-  will usually make the case fail, which is useful evidence.
-- An exploratory case may reference only open questions. It records observations
-  for unresolved behavior and must not claim that one outcome is correct.
+  with high confidence, and its route must be checked. Its expected results
+  must come from confirmed intent, an established contract, or unchanged
+  baseline behavior. A suspected defect will usually make the case fail.
+- An exploratory case records observations for an open question or an
+  unchecked route. It must not assert transitions that have not been seen.
+  Once the route has been checked, update its expected results before
+  changing the case to verification.
 - Priorities are `P0`, `P1`, `P2`, or `P3`.
 - `formId` must reference an entry in `forms`.
 - A generated form intended for script import or deletion must use the
   `MANUALTEST-` form-number prefix in its JSON artifact.
-- Every form needs `journeyCheck` with `status` (`verified` or `unverified`)
-  and a Norwegian `note` describing the observed behavior or what remains
-  unchecked. The renderer shows the status and note for every case using
-  that form; do not mark a journey verified based on metadata or an HTTP 200.
+- Every case needs `journeyCheck` with `status` (`verified` or `unverified`),
+  a Norwegian `route` naming the submission method and branch choices, and a
+  Norwegian `note` describing what was seen or remains unchecked. Add
+  `evidence` naming the exact form revision and walkthrough or test that
+  confirms the route; it must be nonempty for a verified route. For generated
+  forms, check the exact JSON before import and the imported revision before
+  publication. Two cases using one form may have different route statuses.
+  Metadata, schema checks, and HTTP 200 do not verify a route.
 - Use arrays of short strings for prerequisites, test users, evidence, and
   cleanup.
 - Omit generic test-user instructions. Use `testUsers` only for cases that need

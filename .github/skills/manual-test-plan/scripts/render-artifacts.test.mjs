@@ -7,7 +7,7 @@ import { test } from 'vitest';
 
 const script = resolve(import.meta.dirname, 'render-artifacts.mjs');
 const makePlan = (withNonDevelopers) => ({
-  schemaVersion: 3,
+  schemaVersion: 4,
   slug: 'pr-123-test',
   title: 'Test $& <details>',
   summary: "Summary $' and *markdown*",
@@ -72,7 +72,6 @@ const makePlan = (withNonDevelopers) => ({
       kind: 'production',
       title: 'Testskjema',
       path: 'testskjema',
-      journeyCheck: { status: 'unverified', note: 'Oppsummering er ikke prøvd' },
     },
   ],
   behaviorAnalysis: [
@@ -98,6 +97,12 @@ const makePlan = (withNonDevelopers) => ({
       priority: 'P0',
       purpose: 'Check $&',
       formId: 'test-form',
+      journeyCheck: {
+        status: 'verified',
+        route: 'Digital innsending med testbruker',
+        note: 'Testløpet er gjennomgått',
+        evidence: ['Skjemarevisjon 1, gjennomgått i FyllUt'],
+      },
       steps: [
         {
           action: 'Perform *action*',
@@ -153,7 +158,7 @@ test.each([false, true])(
       assert.doesNotMatch(internalOutput, /Forventet|Kontroller:|Delt tilstand|Rydd opp|Metode|Ansvarlig|Referanser/);
       assert.match(publicOutput, /Test \$&/);
       assert.match(publicOutput, /Sendinn skal testes senere/);
-      assert.match(publicOutput, /Oppsummering er ikke prøvd/);
+      assert.match(publicOutput, /Testløpet er gjennomgått/);
       assert.match(publicOutput, /Slett challenge(?:\\)?\.json/);
       assert.match(run.read('manifest.json'), /"schemaVersion": 3/);
       if (collaboration) {
@@ -310,14 +315,83 @@ test('requires all three public evidence paths for innsending-api', () => {
   }
 });
 
-test.each(['generated', 'production'])('rejects %s forms without an explicit journey check', (kind) => {
+test('rejects a verification case whose route has not been checked', () => {
   const plan = makePlan(false);
-  plan.forms[0].kind = kind;
-  delete plan.forms[0].journeyCheck;
+  plan.testCases[0].journeyCheck = {
+    status: 'unverified',
+    route: 'Digital innsending med testbruker',
+    note: 'Siden etter introduksjonen er ukjent',
+  };
   const run = render(plan);
   try {
     assert.equal(run.result.status, 1);
-    assert.match(run.result.stderr, /forms\[0\]\.journeyCheck\.status/);
+    assert.match(run.result.stderr, /verification cases require a verified journey/);
+  } finally {
+    run.cleanup();
+  }
+});
+
+test('rejects a verified route without walkthrough evidence', () => {
+  const plan = makePlan(false);
+  delete plan.testCases[0].journeyCheck.evidence;
+  const run = render(plan);
+  try {
+    assert.equal(run.result.status, 1);
+    assert.match(run.result.stderr, /journeyCheck\.evidence must identify how the route was checked/);
+  } finally {
+    run.cleanup();
+  }
+});
+
+test.each([false, true])('shows the unchecked route on exploratory cases (collaboration: %s)', (collaboration) => {
+  const plan = makePlan(collaboration);
+  plan.testCases[0].mode = 'exploratory';
+  plan.testCases[0].journeyCheck = {
+    status: 'unverified',
+    route: 'Papirinnsending, valg B',
+    note: 'Siden etter valget er ikke gjennomgått',
+  };
+  const run = render(plan);
+  try {
+    assert.equal(run.result.status, 0, run.result.stderr);
+    const publicOutput = run.read(collaboration ? 'index.html' : 'github-issue.md');
+    assert.match(publicOutput, /Papirinnsending, valg B/);
+    assert.match(publicOutput, /Siden etter valget er ikke gjennomgått/);
+    if (collaboration) assert.match(run.read('slack-canvas.md'), /Papirinnsending, valg B/);
+  } finally {
+    run.cleanup();
+  }
+});
+
+test('tracks separate routes through the same form independently', () => {
+  const plan = makePlan(false);
+  const alternate = structuredClone(plan.testCases[0]);
+  alternate.id = 'TC-02';
+  alternate.mode = 'exploratory';
+  alternate.journeyCheck = {
+    status: 'unverified',
+    route: 'Papirinnsending, valg B',
+    note: 'Denne grenen er ikke gjennomgått',
+  };
+  plan.testCases.push(alternate);
+  const run = render(plan);
+  try {
+    assert.equal(run.result.status, 0, run.result.stderr);
+    const issue = run.read('github-issue.md');
+    assert.match(issue, /TC-01:[\s\S]*?Løpet er kontrollert: Testløpet er gjennomgått[\s\S]*?TC-02:/);
+    assert.match(issue, /TC-02:[\s\S]*?Løpet er ikke kontrollert: Denne grenen er ikke gjennomgått/);
+  } finally {
+    run.cleanup();
+  }
+});
+
+test('rejects a case with no route check', () => {
+  const plan = makePlan(false);
+  delete plan.testCases[0].journeyCheck;
+  const run = render(plan);
+  try {
+    assert.equal(run.result.status, 1);
+    assert.match(run.result.stderr, /testCases\[0\]\.journeyCheck\.status/);
   } finally {
     run.cleanup();
   }

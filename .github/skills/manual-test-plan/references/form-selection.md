@@ -83,15 +83,16 @@ Validate:
 5. Shared-domain resolution or mapper behavior produces the intended result.
 6. The form can be fetched after import before testing FyllUt.
 
-Before declaring any form suitable, exercise its scenario branches in the
-renderer used by FyllUt. For generated forms, do this before import. Check
-conditional visibility, required fields, the relevant identity or party
-mapping, and the intended submission journey. Schema validity and an import
-dry run do not establish behavior. If the journey cannot be exercised, set
-`journeyCheck.status` to `unverified` with a clear tester-facing reason; the
-renderer marks every case using that form as unverified. Do not claim that a
-`200` from the form URL or Forms API metadata proves that upload or submission
-can be completed.
+Before declaring any route suitable, exercise its scenario choices in the
+renderer used by the target application. For generated forms, do this with
+the exact JSON before import, then confirm the imported revision in preprod
+before publication. Check conditional visibility, required fields, the
+relevant identity or party mapping, and the intended submission journey.
+Schema validity and an import dry run do not establish behavior. Record the
+result per case in `testCases[].journeyCheck`, so two branches of one form can
+have different statuses. If a route cannot be exercised, explain what is
+unknown and use an exploratory case. Do not claim that a `200` from the form
+URL or Forms API metadata proves that upload or submission can be completed.
 
 For `DIGITAL_NO_LOGIN`, use
 [digital-no-login-journey.md](digital-no-login-journey.md) to check the
