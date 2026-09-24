@@ -3,7 +3,7 @@
 import { createHash } from 'node:crypto';
 import { existsSync, lstatSync, readFileSync, realpathSync } from 'node:fs';
 import { dirname, isAbsolute, relative, resolve } from 'node:path';
-import { baseUrl, fail, getArgument, getToken } from './forms-api-common.mjs';
+import { baseUrl, fail, getArgument, getToken, isGeneratedFormNumber } from './forms-api-common.mjs';
 
 if (process.argv.includes('--help') || process.argv.includes('-h')) {
   process.stdout.write(`Usage:
@@ -52,10 +52,10 @@ if (
 const artifact = JSON.parse(readFileSync(artifactPath, 'utf8'));
 if (
   typeof artifact.skjemanummer !== 'string' ||
-  !artifact.skjemanummer.trim() ||
+  !isGeneratedFormNumber(artifact.skjemanummer) ||
   artifact.title !== plannedForm.title
 ) {
-  fail('generated form artifact does not match the planned form identity');
+  fail('generated form artifact must have the reserved MANUALTEST- number and match the plan');
 }
 
 const token = getToken();
@@ -81,6 +81,9 @@ if (form.path !== formPath) {
 }
 if (typeof form.skjemanummer !== 'string' || !form.skjemanummer.trim()) {
   fail(`form ${formPath} has an invalid form number`);
+}
+if (!isGeneratedFormNumber(form.skjemanummer)) {
+  fail(`refusing to delete ${formPath}: form number does not use the reserved MANUALTEST- prefix`);
 }
 if (typeof form.title !== 'string' || !form.title.trim()) {
   fail(`form ${formPath} has an invalid title`);

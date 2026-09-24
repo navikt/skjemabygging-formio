@@ -12,7 +12,8 @@ const makeHarness = (scenario) => {
   writeFileSync(
     formPath,
     JSON.stringify({
-      skjemanummer: 'MANUAL-TEST-001',
+      skjemanummer:
+        scenario === 'unreserved' ? 'NAV-001' : scenario === 'too-long' ? 'MANUALTEST-ABCDEFGHIJ' : 'MANUALTEST-001',
       title: 'Manual test',
       properties: {},
       components: [],
@@ -24,7 +25,7 @@ const makeHarness = (scenario) => {
     `globalThis.fetch = async (url, options = {}) => {
   if (url.includes('?')) {
     return Response.json(process.env.FETCH_SCENARIO === 'new' ? [] : [{
-      skjemanummer: 'MANUAL-TEST-001',
+      skjemanummer: 'MANUALTEST-001',
       path: 'manualtest001',
       revision: 4,
       title: 'Existing form',
@@ -42,7 +43,7 @@ const makeHarness = (scenario) => {
   }
   return Response.json({
     path: 'manualtest001',
-    skjemanummer: 'MANUAL-TEST-001',
+    skjemanummer: 'MANUALTEST-001',
     revision: 4,
     title: 'Existing form',
     components: [{ type: 'textfield' }],
@@ -72,6 +73,28 @@ test('does not overwrite a form with the same number by default', () => {
     assert.equal(result.status, 1);
     assert.match(result.stderr, /already exists/);
     assert.doesNotMatch(result.stdout, /Operation: UPDATE/);
+  } finally {
+    rmSync(harness.directory, { recursive: true });
+  }
+});
+
+test('refuses to import a form outside the reserved manual-test namespace', () => {
+  const harness = makeHarness('unreserved');
+  try {
+    const result = harness.run();
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /reserved MANUALTEST- prefix/);
+  } finally {
+    rmSync(harness.directory, { recursive: true });
+  }
+});
+
+test('refuses a form number that Bygger cannot validate', () => {
+  const harness = makeHarness('too-long');
+  try {
+    const result = harness.run();
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /at most 20 characters/);
   } finally {
     rmSync(harness.directory, { recursive: true });
   }

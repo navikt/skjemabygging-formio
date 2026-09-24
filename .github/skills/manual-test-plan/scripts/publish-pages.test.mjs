@@ -42,26 +42,26 @@ const createHarness = (pageUrl = 'https://navikt.github.io/skjemabygging-formio/
   );
   return {
     directory,
-    run: (destination) =>
-      spawnSync(process.execPath, [script, '--artifacts', artifactDirectory, '--destination', destination], {
+    run: (...args) =>
+      spawnSync(process.execPath, [script, '--artifacts', artifactDirectory, ...args], {
         env: { ...process.env, PATH: `${binDirectory}${delimiter}${process.env.PATH}` },
         encoding: 'utf8',
       }),
   };
 };
 
-test('publisher accepts only the rendered page destination', () => {
+test('publisher derives the destination from the rendered slug', () => {
   const harness = createHarness();
   try {
-    const valid = harness.run('manual-tests/pr-123-test');
+    const valid = harness.run();
     assert.equal(valid.status, 0, valid.stderr);
     assert.match(
       valid.stdout,
       /Page URL: https:\/\/navikt.github.io\/skjemabygging-formio\/manual-tests\/pr-123-test\//,
     );
-    const wrongDestination = harness.run('manual-tests/pr-123');
+    const wrongDestination = harness.run('--destination', 'manual-tests/pr-123');
     assert.equal(wrongDestination.status, 1);
-    assert.match(wrongDestination.stderr, /destination must be manual-tests\/pr-123-test/);
+    assert.match(wrongDestination.stderr, /--destination is not supported/);
   } finally {
     rmSync(harness.directory, { recursive: true });
   }
@@ -70,7 +70,7 @@ test('publisher accepts only the rendered page destination', () => {
 test('publisher rejects a page URL that would make Slack links point elsewhere', () => {
   const harness = createHarness('https://navikt.github.io/skjemabygging-formio/manual-tests/pr-123');
   try {
-    const result = harness.run('manual-tests/pr-123-test');
+    const result = harness.run();
     assert.equal(result.status, 1);
     assert.match(result.stderr, /artifact page URL must match/);
   } finally {

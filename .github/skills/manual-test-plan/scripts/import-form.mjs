@@ -3,7 +3,7 @@
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { baseUrl, fail, getArgument, getToken } from './forms-api-common.mjs';
+import { baseUrl, fail, getArgument, getToken, isGeneratedFormNumber } from './forms-api-common.mjs';
 
 if (process.argv.includes('--help') || process.argv.includes('-h')) {
   process.stdout.write(`Usage:
@@ -43,6 +43,9 @@ const requireString = (value, name) => {
 };
 
 const formNumber = requireString(form.skjemanummer, 'skjemanummer');
+if (!isGeneratedFormNumber(formNumber)) {
+  fail('skjemanummer must use the reserved MANUALTEST- prefix and contain at most 20 characters');
+}
 requireString(form.title, 'title');
 if (!Array.isArray(form.components)) {
   fail('components must be an array');

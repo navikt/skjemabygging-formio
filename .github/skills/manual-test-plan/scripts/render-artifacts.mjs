@@ -835,7 +835,7 @@ if (existsSync(previousManifestPath) && lstatSync(previousManifestPath).isFile()
     const previousManifest = JSON.parse(readFileSync(previousManifestPath, 'utf8'));
     if (
       !previousManifest ||
-      ![1, 2, 3].includes(previousManifest.schemaVersion) ||
+      previousManifest.schemaVersion !== 3 ||
       !Array.isArray(previousManifest.files) ||
       previousManifest.files.length === 0
     ) {
@@ -867,12 +867,6 @@ if (existsSync(previousManifestPath) && lstatSync(previousManifestPath).isFile()
     }
   } catch (error) {
     fail(`could not read the previous artifact manifest: ${error.message}`);
-  }
-}
-
-for (const staleArtifact of ['index.html', 'slack-canvas.md', 'github-issue.md', 'test-cases.csv', 'README.txt']) {
-  if (!artifactFiles.has(staleArtifact)) {
-    rmSync(join(outputDirectory, staleArtifact), { force: true });
   }
 }
 

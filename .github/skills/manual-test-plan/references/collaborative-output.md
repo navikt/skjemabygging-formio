@@ -5,13 +5,9 @@ issue text, or Slack text and then let it drift from the plan.
 
 ## Choose the output
 
-Ask whether non-developers will collaborate on testing.
-
-- If yes, generate the GitHub Pages HTML and Slack Canvas file. The caller owns
-  the Canvas file and pastes it into Slack. Never publish it to `gh-pages`.
-- If no, generate one GitHub issue document that combines detailed instructions
-  with test-case checkboxes. Create the issue only after confirmation. Do not
-  generate a Canvas or GitHub Pages document.
+With non-developer collaborators, produce the GitHub Pages HTML and a separate
+Slack Canvas file that the caller pastes into Slack. Without them, produce one
+GitHub issue document. The Canvas file never goes to `gh-pages`.
 
 ## HTML and GitHub Pages
 
@@ -19,8 +15,8 @@ The Norwegian page is written for non-technical testers. It presents functional
 behavior, form links, and test cases first. Behavior analysis and setup are
 collapsed by default. A behavior link opens the relevant collapsed section.
 
-The destination must match the plan slug. For a plan with slug
-`pr-2210-party-resolution`, use:
+The destination comes from the manifest slug. A plan with slug
+`pr-2210-party-resolution` goes to:
 
 ```text
 manual-tests/pr-2210-party-resolution/
@@ -30,18 +26,26 @@ Dry-run publication first:
 
 ```bash
 node .github/skills/manual-test-plan/scripts/publish-pages.mjs \
-  --artifacts <artifact-directory> \
-  --destination manual-tests/pr-2210-party-resolution
+  --artifacts <artifact-directory>
 ```
 
 Ask before applying and use the exact confirmation printed by the dry run.
-Render with `--page-url` set to the exact Pages URL printed by the publisher's
-dry run if it differs from the default URL. Rerun the publication dry run after
-rerendering. The publisher checks the URL against the manifest and only
+The default GitHub Pages URL needs no extra render step. If the repository uses
+a custom Pages URL, the publisher reports the expected URL; rerender once with
+`--page-url <expected-url>` and rerun its dry run. The publisher checks the
+URL against the manifest and only
 replaces `index.html` at the destination; nested plans and other files remain.
 
-If Pages or `gh-pages` is not configured, follow the script's bootstrap
-instructions. Do not change repository Pages settings automatically.
+Before enabling Pages or creating `gh-pages`, obtain approval from the repository
+maintainers to host public manual test plans. Pages is not currently enabled
+for this repository. If approved, follow the script's bootstrap instructions;
+the script does not change Pages settings. If approval is not granted, do not
+publish the page or share its link.
+
+Record an owner and cleanup date for each published plan. Once testing ends,
+the owner must request removal of that plan's directory from `gh-pages` after
+confirming that its results have been retained elsewhere. Never delete
+`manual-tests/` or another plan's directory as part of cleanup.
 
 ## Slack Canvas
 
@@ -67,14 +71,9 @@ Run the dry run first, then use the exact confirmation it prints.
 
 ## Publication review
 
-Review each artifact independently. Ask whether to redact, omit, or publish:
-
-- `index.html`
-- `slack-canvas.md`
-- `github-issue.md`
-- each generated form definition
-- the canonical plan JSON, if considered for publication
-
-The default is not to publish an artifact containing internal-only details,
-private URLs, security findings, personal data, or sensitive test data.
-Never include a complete form definition in the HTML or issue.
+Review the public output for internal-only details, private URLs, security
+findings, personal data, or sensitive test data. Redact or omit unsafe content
+before asking once whether to publish the page or create the issue. The Slack
+Canvas file stays with the caller; generated form definitions and the canonical
+plan stay local. Never include a full form definition in public HTML or an
+issue.

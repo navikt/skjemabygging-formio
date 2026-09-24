@@ -136,7 +136,9 @@ formats.
 - `environment.internBaseUrl` and `environment.ansattBaseUrl` must identify both
   FyllUt ingresses. The renderer appends the form path.
 - `environment.revisionCheck` must identify the config endpoint and response
-  field that expose the deployed application revision.
+  field that expose the deployed application revision. For Bygger changes,
+  resolve the missing revision method as described in
+  [analysis-workflow.md](analysis-workflow.md) before generating a plan.
 - `behaviorAnalysis` must contain the behavior matrix used to derive the test
   plan. Behavior IDs must be unique and match `B-<number>`.
 - Behavior confidence is `high`, `medium`, or `low`. Aligned and suspected
@@ -172,6 +174,8 @@ formats.
   for unresolved behavior and must not claim that one outcome is correct.
 - Priorities are `P0`, `P1`, `P2`, or `P3`.
 - `formId` must reference an entry in `forms`.
+- A generated form intended for script import or deletion must use the
+  `MANUALTEST-` form-number prefix in its JSON artifact.
 - Use arrays of short strings for prerequisites, test users, evidence, and
   cleanup.
 - Omit generic test-user instructions. Use `testUsers` only for cases that need

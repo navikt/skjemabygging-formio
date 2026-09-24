@@ -26,15 +26,12 @@ const createHarness = (scenario) => {
       ],
     }),
   );
-  writeFileSync(
-    join(directory, 'form.json'),
-    JSON.stringify({ skjemanummer: 'MANUAL-TEST-001', title: 'Manual test' }),
-  );
+  writeFileSync(join(directory, 'form.json'), JSON.stringify({ skjemanummer: 'MANUALTEST-001', title: 'Manual test' }));
   writeFileSync(
     mockFile,
     `const form = {
   path: 'manualtest001',
-  skjemanummer: 'MANUAL-TEST-001',
+  skjemanummer: process.env.FETCH_SCENARIO === 'unreserved' ? 'NAV-001' : 'MANUALTEST-001',
   title: process.env.FETCH_SCENARIO === 'different-form' ? 'Different form' : 'Manual test',
   revision: 4,
   properties: {},
@@ -103,6 +100,17 @@ test('refuses to delete a form whose identity no longer matches the plan', () =>
     const result = harness.run();
     assert.equal(result.status, 1);
     assert.match(result.stderr, /does not match the planned generated form/);
+  } finally {
+    rmSync(harness.directory, { recursive: true });
+  }
+});
+
+test('refuses to delete a form outside the reserved manual-test namespace', () => {
+  const harness = createHarness('unreserved');
+  try {
+    const result = harness.run();
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /reserved MANUALTEST- prefix/);
   } finally {
     rmSync(harness.directory, { recursive: true });
   }

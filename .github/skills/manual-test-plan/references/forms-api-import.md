@@ -21,6 +21,8 @@ dev-gcp:fyllut-sendinn:forms-api
 ```
 
 The user needs the `SkjemabyggingPreprod` group.
+The scripts resolve the default env file from the repository root, even when
+the command runs from another directory. `--env-file` overrides it.
 
 ## Dry run
 
@@ -35,6 +37,9 @@ node .github/skills/manual-test-plan/scripts/import-form.mjs \
 The command reports a new form's path. If the form number already exists, it
 stops instead of overwriting shared preprod data. Inspect the existing form
 before deciding whether to reuse it or explicitly replace it.
+Only generated forms with numbers matching `MANUALTEST-<suffix>` can use this
+helper. Import production forms through Bygger as described in
+[form-selection.md](form-selection.md).
 
 If a Forms API fetch, create, or update returns `401`, tell the caller that the
 Forms API token has expired and must be refreshed. Run:
@@ -105,11 +110,12 @@ node .github/skills/manual-test-plan/scripts/cleanup-form.mjs \
 ```
 
 The helper requires an entry of kind `generated` and its local form artifact in
-the plan. It compares the form number and title to the current form and binds
-the path, revision, and full current definition digest to the confirmation. It
-does not use `properties.isTestForm`. Review the dry run carefully: a plan is
-not proof that a form was created by this skill. After confirmation the helper
-uses a revision-aware `DELETE` and checks that Forms API returns `404`.
+the plan. It also requires the `MANUALTEST-` prefix on both the artifact and the
+current Forms API form. It compares the number and title to the current form and
+binds the path, revision, and full current definition digest to confirmation.
+The prefix is a safeguard, not proof of ownership; review the dry run before
+deletion. The helper uses a revision-aware `DELETE` and checks for a subsequent
+`404`.
 
 Apply only after showing the caller the dry-run output and receiving the exact
 confirmation:

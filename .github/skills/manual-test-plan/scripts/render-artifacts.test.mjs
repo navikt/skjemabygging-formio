@@ -90,6 +90,8 @@ const render = (plan) => {
   return {
     result,
     read: (name) => readFileSync(join(out, name), 'utf8'),
+    rerun: () => spawnSync(process.execPath, [script, '--plan', planPath, '--out', out], { encoding: 'utf8' }),
+    write: (name, content) => writeFileSync(join(out, name), content),
     cleanup: () => rmSync(directory, { recursive: true }),
   };
 };
@@ -123,3 +125,16 @@ test.each([false, true])(
     }
   },
 );
+
+test('rejects obsolete artifact manifests instead of attempting legacy cleanup', () => {
+  const run = render(makePlan(false));
+  try {
+    assert.equal(run.result.status, 0, run.result.stderr);
+    run.write('manifest.json', JSON.stringify({ schemaVersion: 2, files: [] }));
+    const rerun = run.rerun();
+    assert.equal(rerun.status, 1);
+    assert.match(rerun.stderr, /supported schemaVersion/);
+  } finally {
+    run.cleanup();
+  }
+});

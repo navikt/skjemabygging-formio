@@ -29,36 +29,28 @@ const getArgument = (name) => getArguments(name)[0];
 
 if (process.argv.includes('--help') || process.argv.includes('-h')) {
   process.stdout.write(`Usage:
-  node publish-pages.mjs --artifacts <directory> --destination <relative-path>
-  node publish-pages.mjs --artifacts <directory> --destination <relative-path> \\
-    --apply --confirm <operation> [--bootstrap]
+  node publish-pages.mjs --artifacts <directory>
+  node publish-pages.mjs --artifacts <directory> --apply --confirm <operation> [--bootstrap]
 
 Dry-run is the default. Only index.html is published. Slack Canvas, form
-definitions, and other artifacts remain outside GitHub Pages. --bootstrap
-creates gh-pages when it does not exist; it does not enable Pages in repository
-settings.
+definitions, and other artifacts remain outside GitHub Pages. The destination
+comes from the manifest slug. --bootstrap creates gh-pages when it does not
+exist; it does not enable Pages in repository settings.
 `);
   process.exit(0);
 }
 
 const artifactArgument = getArgument('--artifacts');
-const destinationArgument = getArgument('--destination');
-if (!artifactArgument || !destinationArgument) {
-  fail('--artifacts and --destination are required');
+if (!artifactArgument) {
+  fail('--artifacts is required');
+}
+if (process.argv.includes('--destination')) {
+  fail('--destination is not supported; the destination comes from the artifact manifest');
 }
 
 const artifactDirectory = resolve(artifactArgument);
 if (!existsSync(artifactDirectory) || !lstatSync(artifactDirectory).isDirectory()) {
   fail(`artifact directory does not exist: ${artifactDirectory}`);
-}
-
-const normalizeDestination = (value) => value.replaceAll('\\', '/').replace(/^\/+|\/+$/g, '');
-const destination = normalizeDestination(destinationArgument);
-if (!destination || destination.split('/').some((part) => part === '.' || part === '..' || !part)) {
-  fail('destination must be a non-empty relative path without dot segments');
-}
-if (!/^manual-tests\/[a-z0-9][a-z0-9/-]*$/.test(destination)) {
-  fail('destination must start with manual-tests/ and contain lowercase letters, numbers, slashes, or hyphens');
 }
 
 if (getArgument('--include')) {
@@ -130,8 +122,11 @@ const branchExists = (() => {
 const pages = (() => {
   try {
     return JSON.parse(gh('api', `repos/${repository}/pages`));
-  } catch {
-    return undefined;
+  } catch (error) {
+    if (error.status === 1 && error.stderr?.toString().includes('HTTP 404')) {
+      return undefined;
+    }
+    fail(`could not inspect Pages settings: ${error.stderr?.toString().trim() || error.message}`);
   }
 })();
 
@@ -148,9 +143,7 @@ const manifest = (() => {
 if (manifest.schemaVersion !== 3 || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(manifest.slug)) {
   fail('artifact manifest must contain a schema v3 slug');
 }
-if (destination !== `manual-tests/${manifest.slug}`) {
-  fail(`destination must be manual-tests/${manifest.slug} to match the rendered Slack links`);
-}
+const destination = `manual-tests/${manifest.slug}`;
 const expectedPageUrl = `${(pages?.html_url || `https://${owner}.github.io/${repositoryName}/`).replace(/\/$/, '')}/${destination}`;
 if (manifest.pageUrl?.replace(/\/$/, '') !== expectedPageUrl) {
   fail(`artifact page URL must match ${expectedPageUrl}; rerender with --page-url ${expectedPageUrl}`);

@@ -26,10 +26,8 @@ current branch.
 3. Invoke `frontend-development`, `backend-development`, or both before detailed
    analysis when their areas are affected. Follow any specialist routing those
    skills require.
-4. Establish intended behavior independently from the implementation. Build the
-   behavior matrix required by
-   [analysis-workflow.md](references/analysis-workflow.md). Never treat the code
-   diff as proof of intent.
+4. Build the intent and behavior matrix in
+   [analysis-workflow.md](references/analysis-workflow.md).
 5. Resolve contradictions and undocumented decisions before writing
    verification cases. When no issue or approved specification exists, ask the
    user to confirm the inferred intent.
@@ -38,9 +36,8 @@ current branch.
    Read [integration-evidence.md](references/integration-evidence.md). Do not
    generate verification cases for an outbound integration until its concrete
    approved evidence method is known.
-7. Record the exact head commit under test and add a preflight check against the
-   target environment's config endpoint. Do not add deployment steps; deployment
-   is the developer's responsibility.
+7. Record the exact head commit and establish a revision check for the target
+   application using [analysis-workflow.md](references/analysis-workflow.md).
 8. Use `ask_user` to ask: "Skal ikke-utviklere samarbeide om testingen?" Use
    the choices "Ja" and "Nei". Do not infer the answer from case count or risk.
 9. Read [form-selection.md](references/form-selection.md). Check Forms API in
@@ -60,22 +57,20 @@ current branch.
 
     When generating HTML and Slack Canvas, supply `--page-url` if the Pages
     URL differs from the default `https://<owner>.github.io/<repo>/manual-tests/<slug>`.
-    Publication checks that this URL matches the chosen destination.
+    Publication checks the URL against the Pages site and manifest slug.
 
-12. Read [collaborative-output.md](references/collaborative-output.md). When
-    non-developers will collaborate, generate a GitHub Pages document and a
-    separate Slack Canvas file for the caller to paste into Slack. Otherwise
-    generate one GitHub issue document that combines instructions and tracking.
-13. Review every generated artifact for internal or sensitive content. Ask
-    separately whether each artifact should be redacted, omitted, or published.
-    Public HTML and GitHub issues must contain only setup and evidence marked
-    `public`. Keep `internal` instructions in the local internal-instructions
-    artifact; do not replace omitted details with vague public text.
-14. Ask before importing or updating each generated form. Follow
-    [forms-api-import.md](references/forms-api-import.md).
-15. Ask before publishing the HTML artifact or creating the GitHub issue. Use
-    the provided scripts. Never publish the Canvas file or form definitions to
-    `gh-pages`.
+12. Read [collaborative-output.md](references/collaborative-output.md) and
+    produce the output for the caller's collaboration choice.
+13. Review public artifacts for sensitive content and redact or omit it before
+    asking once whether to publish the HTML or create the issue. Keep
+    `internal` setup and evidence only in the local internal-instructions file;
+    never substitute vague placeholders in public output.
+14. For approved form changes, follow
+    [forms-api-import.md](references/forms-api-import.md) and use each script's
+    operation-bound confirmation. Do not ask again about the full form list.
+15. Use the scripts to publish the page or create the issue after the one
+    publication confirmation. Require maintainer approval before enabling
+    public Pages. Never publish Canvas or form definitions to `gh-pages`.
 
 ## Output requirements
 
@@ -91,40 +86,19 @@ Every test case must include:
 - cleanup when the case changes shared state
 - the production or generated form used
 
-Expected results in verification cases must come from confirmed intent, an
-established contract, or unchanged baseline behavior. Never copy an outcome
-from the implementation and present it as correct.
-
-Use an exploratory case when behavior remains unresolved but observing it will
-help the decision. State what to record without claiming one result is correct.
-Do not use exploratory cases to avoid asking a blocking intent question.
-
-Start every plan with a prominent preflight check that compares the deployed
-revision with the exact commit under test. Stop testing on a mismatch.
-Present this as a reminder, not a completion checkbox. The tester must repeat it
-whenever testing resumes because another deployment may have replaced the
-expected revision.
-
-Keep the revision check in a preflight section before setup and test execution.
-Setup includes production-form imports, generated-form imports, accounts,
-feature flags, and test data. Assume the tester can log in with an arbitrary
-test user. Include test-user setup only when a case requires specific
-attributes. Do not include instructions for deploying the application to
-preprod, preprod-alt, or another environment.
-
-Do not treat a successful page load, HTTP status, or receipt as proof when the
-changed behavior is an outbound payload or generated document. State how the
-tester can observe the actual mapped value. Use logs only when they are safe and
-already available; never ask testers to log form answers or personal data.
+Use [analysis-workflow.md](references/analysis-workflow.md) for expected
+results, exploratory cases, regression coverage, and the repeated environment
+preflight. Use [integration-evidence.md](references/integration-evidence.md)
+for outbound payloads.
 
 ## Safety
 
 - Use synthetic identities and organizations approved for testing.
 - Never put access tokens, cookies, secrets, personal data, private source
   content, or security-sensitive details in generated artifacts.
-- This repository and its GitHub Pages site are public.
-- Before publication, ask about each artifact independently: redact, omit, or
-  publish unchanged.
+- This repository is public. Pages would be public if enabled. Follow the
+  review and maintainer-approval gate in
+  [collaborative-output.md](references/collaborative-output.md).
 - `preprod` and `preprod-alt` share the same Forms API instance. Form creates,
   imports, updates, and deletions affect both.
 - Do not import a form, create an issue, or push `gh-pages` without explicit
@@ -133,3 +107,7 @@ already available; never ask testers to log form answers or personal data.
   issue. Keep them in the session artifact directory.
 - Keep generated plans in the session artifact directory unless the caller
   explicitly requests repository files.
+
+Run skill script tests locally with
+`pnpm exec vitest run .github/skills/manual-test-plan/scripts/*.test.mjs`.
+They are intentionally not included in CI.

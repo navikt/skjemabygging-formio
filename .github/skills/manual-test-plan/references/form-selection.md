@@ -42,8 +42,11 @@ test form makes the changed behavior substantially easier to isolate.
 
 - Build it from helpers in `mocks/mocks/form-builder`.
 - Keep fields and pages to the minimum needed.
-- Use a unique form number. Do not set `properties.isTestForm`: that flag has
-  special behavior in Bygger and may make the test unlike a production form.
+- Use a unique form number starting with `MANUALTEST-`, followed by uppercase
+  letters, numbers, or hyphens, up to 20 characters total. Bygger limits form
+  numbers to 20 characters. Import and cleanup reject other numbers. This makes
+  leftover manual test forms identifiable without changing Bygger's behavior
+  with `properties.isTestForm`.
 - Enable only required submission methods.
 - Set `clearOnHide` on scenario-controlled pages.
 - Prefer one selector-driven form when related scenarios share a domain and the

@@ -119,8 +119,13 @@ Give the tester one short preflight check instead:
 
 For FyllUt in preprod and preprod-alt, use `/fyllut/api/config` and compare
 `gitVersion`. In these environments it identifies the monorepo application
-commit. Use repository evidence to choose the endpoint and field for another
-application.
+commit. Bygger's `/api/config` does not expose a revision field
+(`packages/bygger-backend/src/routers/api/config.ts`). Its backend reads
+`GIT_SHA`, but that value is not available from the config response. For
+Bygger-specific testing, ask the developer for an approved, observable method
+to identify the deployed application commit. Do not use FyllUt's version as
+evidence of a Bygger deployment or generate a Bygger plan without a reliable
+preflight method.
 
 ## Coverage
 
@@ -145,12 +150,4 @@ Write tester-facing behavior at a functional level. Include a technical detail
 only when the tester needs it to perform the action, recognize the result, or
 collect useful evidence.
 
-## Collaboration
-
-Do not infer the output from change size or risk. Ask whether non-developers
-will collaborate:
-
-- With non-developers, produce a GitHub Pages document for instructions and a
-  separate Slack Canvas file for coordination.
-- Without non-developers, produce one GitHub issue document that contains both
-  instructions and test tracking.
+For collaboration output, follow [collaborative-output.md](collaborative-output.md).

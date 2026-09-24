@@ -1,8 +1,13 @@
 import { existsSync, readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const baseUrl = 'https://forms-api.intern.dev.nav.no';
-const defaultEnvFile = 'packages/bygger-backend/.env';
+const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../../../..');
+const defaultEnvFile = resolve(repositoryRoot, 'packages/bygger-backend/.env');
+const generatedFormNumberPattern = /^MANUALTEST-[A-Z0-9]+(?:-[A-Z0-9]+)*$/;
+const isGeneratedFormNumber = (value) =>
+  typeof value === 'string' && value.length <= 20 && generatedFormNumberPattern.test(value);
 
 const fail = (message) => {
   process.stderr.write(`Error: ${message}\n`);
@@ -34,4 +39,4 @@ const getToken = () => {
   fail(`FORMS_API_ACCESS_TOKEN is not set; run 'pnpm get-tokens forms-api' or set it in ${envFile}`);
 };
 
-export { baseUrl, fail, getArgument, getToken };
+export { baseUrl, fail, getArgument, getToken, isGeneratedFormNumber };
