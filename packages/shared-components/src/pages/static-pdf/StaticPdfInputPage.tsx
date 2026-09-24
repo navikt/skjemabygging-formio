@@ -20,7 +20,7 @@ const StaticPdfInputPage = () => {
   const { form, setSubmission, submission } = useForm();
   const { enhetMaVelgesVedPapirInnsending } = form.properties;
   const { currentLanguage, translate } = useLanguages();
-  const { filteredAttachments, isEttersending } = useStaticPdf();
+  const { filteredAttachments, isSubsequentSubmission } = useStaticPdf();
 
   useEffect(() => {
     if (!submission) {
@@ -38,7 +38,7 @@ const StaticPdfInputPage = () => {
 
   return (
     <>
-      {isEttersending && (
+      {isSubsequentSubmission && (
         <Heading size="medium" level="2" spacing>
           {translate(TEXTS.statiske.staticPdf.ettersendingTitle)}
         </Heading>
@@ -82,7 +82,7 @@ const StaticPdfInputPage = () => {
 
       <SelectAttachmentList
         attachments={filteredAttachments}
-        required={isEttersending}
+        required={isSubsequentSubmission}
         submissionPath="coverPage.attachments"
       />
     </>

@@ -19,19 +19,19 @@ const StaticPdfPageContent = ({ page, setPage }: Props) => {
   const { form } = useForm();
   const { logger } = useAppConfig();
   const navigate = useNavigate();
-  const { filteredAttachments, isEttersending } = useStaticPdf();
+  const { filteredAttachments, isSubsequentSubmission } = useStaticPdf();
 
   useEffect(() => {
     if (form && !submissionTypesUtils.isStaticPdf(form.properties?.submissionTypes)) {
       logger?.info(`Tried to access static pdf for form ${form?.path}, but it is not enabled for this form`);
       navigate('/404');
-    } else if (isEttersending && filteredAttachments.length === 0) {
+    } else if (isSubsequentSubmission && filteredAttachments.length === 0) {
       logger?.info(
         `Tried to access static pdf ettersending for form ${form.path}, but it has no selectable attachments`,
       );
       navigate('/404');
     }
-  }, [filteredAttachments.length, form, isEttersending, navigate, logger]);
+  }, [filteredAttachments.length, form, isSubsequentSubmission, navigate, logger]);
 
   return (
     <>

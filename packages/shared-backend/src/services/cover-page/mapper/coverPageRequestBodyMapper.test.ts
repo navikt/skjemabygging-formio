@@ -44,7 +44,7 @@ describe('coverPageRequestBodyMapper', () => {
   it('creates an ettersending archive title and attachment-only document list', () => {
     const actual = coverPageRequestBodyMapper.createRequestBodyFromDownloadData({
       ...defaultData,
-      type: 'ETTERSENDELSE',
+      isSubsequentSubmission: true,
       attachments: ['Attachment one', 'Attachment two'],
     });
 
@@ -66,7 +66,7 @@ describe('coverPageRequestBodyMapper', () => {
     const actual = coverPageRequestBodyMapper.createRequestBodyFromDownloadData(
       {
         ...defaultData,
-        type: 'ETTERSENDELSE',
+        isSubsequentSubmission: true,
       },
       'en',
       translate,

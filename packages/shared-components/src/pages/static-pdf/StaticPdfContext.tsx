@@ -6,7 +6,7 @@ import { getFilteredStaticPdfAttachments } from './staticPdfAttachmentFilter';
 interface StaticPdfContextType {
   formPath: string;
   filteredAttachments: Component[];
-  isEttersending: boolean;
+  isSubsequentSubmission: boolean;
   loadingFiles: boolean;
   files: StaticPdf[];
   getFile: (languageCode: string) => StaticPdf | undefined;
@@ -21,7 +21,7 @@ interface Props {
   children: React.ReactNode;
   components?: Component[];
   formPath: string;
-  isEttersending?: boolean;
+  isSubsequentSubmission?: boolean;
 }
 
 const StaticPdfContext = createContext<StaticPdfContextType>({} as StaticPdfContextType);
@@ -31,7 +31,7 @@ export const StaticPdfProvider = ({
   children,
   components = [],
   formPath,
-  isEttersending = false,
+  isSubsequentSubmission = false,
 }: Props) => {
   const [files, setFiles] = useState<StaticPdf[]>([]);
   const [loadingFiles, setLoadingFiles] = useState<boolean>(false);
@@ -88,10 +88,10 @@ export const StaticPdfProvider = ({
       return await downloadCoverPageAndPdf(formPath, {
         ...coverPage,
         submissionType: 'STATIC_PDF',
-        ...(isEttersending ? { type: 'ETTERSENDELSE' } : {}),
+        isSubsequentSubmission,
       });
     },
-    [formPath, isEttersending, downloadCoverPageAndPdf],
+    [formPath, isSubsequentSubmission, downloadCoverPageAndPdf],
   );
 
   const deleteFile = useCallback(
@@ -113,7 +113,7 @@ export const StaticPdfProvider = ({
       value={{
         formPath,
         filteredAttachments,
-        isEttersending,
+        isSubsequentSubmission,
         loadingFiles,
         files,
         getFile,

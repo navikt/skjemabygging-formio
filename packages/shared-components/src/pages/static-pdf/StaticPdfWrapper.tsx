@@ -12,7 +12,7 @@ const StaticPdfPage = () => {
   const { form } = useForm();
   const [searchParams] = useSearchParams();
   const attachmentFilter = searchParams.get('filter');
-  const isEttersending = searchParams.get('type') === 'ettersending';
+  const isSubsequentSubmission = searchParams.get('type') === 'ettersending';
 
   return (
     <InputValidationProvider>
@@ -20,7 +20,7 @@ const StaticPdfPage = () => {
         attachmentFilter={attachmentFilter}
         components={form.components}
         formPath={form.path}
-        isEttersending={isEttersending}
+        isSubsequentSubmission={isSubsequentSubmission}
       >
         <StaticPdfPageContent page={page} setPage={setPage} />
       </StaticPdfProvider>

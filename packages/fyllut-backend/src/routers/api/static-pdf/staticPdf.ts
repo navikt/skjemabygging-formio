@@ -40,7 +40,7 @@ const staticPdf = {
     }
 
     try {
-      const isEttersending = coverPageData.type === 'ETTERSENDELSE';
+      const isSubsequentSubmission = coverPageData.isSubsequentSubmission === true;
       const form = await formService.getForm({
         formPath,
         select: ['skjemanummer', 'title', 'components', 'properties'],
@@ -52,7 +52,7 @@ const staticPdf = {
       const attachmentComponents = navFormUtils
         .flattenComponents(form.components)
         .filter((component) => component.type === 'attachment' && selectedAttachmentKeys.includes(component.key));
-      if (isEttersending && attachmentComponents.length === 0) {
+      if (isSubsequentSubmission && attachmentComponents.length === 0) {
         throw new ResponseError('BAD_REQUEST', 'At least one valid attachment must be selected for ettersending');
       }
 
@@ -70,12 +70,12 @@ const staticPdf = {
         accessToken: coverPageToken,
         data: {
           ...coverPageData,
-          type: isEttersending ? 'ETTERSENDELSE' : undefined,
+          isSubsequentSubmission,
           attachments: attachmentLabels,
           form,
         },
         translate,
-        formNumber: isEttersending ? form.skjemanummer : form.skjemanummer.replace(/^(\S+)/, '$1p'),
+        formNumber: isSubsequentSubmission ? form.skjemanummer : form.skjemanummer.replace(/^(\S+)/, '$1p'),
       });
 
       const attachmentStaticPdfs: string[] = [];
@@ -96,7 +96,7 @@ const staticPdf = {
       }
 
       const pdfFiles = [coverPagePdf];
-      if (!isEttersending) {
+      if (!isSubsequentSubmission) {
         const staticPdf = await staticPdfService.downloadPdf({
           formPath,
           languageCode,

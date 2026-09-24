@@ -152,7 +152,7 @@ const createRequestBodyFromDownloadData = (
   translate?: (text: string, textReplacements?: I18nTranslationReplacements) => string,
   formNumber?: string,
 ): ForstesideRequestBody => {
-  const { type = 'SKJEMA', form, user, recipient, attachments } = data;
+  const { isSubsequentSubmission = false, form, user, recipient, attachments } = data;
   const { properties } = form;
 
   if (!form.skjemanummer || !form.title) {
@@ -161,8 +161,7 @@ const createRequestBodyFromDownloadData = (
 
   const translatedFormTitle = translate ? translate(form.title) : form.title;
   const formTitle = getTitle(translatedFormTitle, form.skjemanummer);
-  const isEttersending = type === 'ETTERSENDELSE';
-  const coverPageTitle = isEttersending
+  const coverPageTitle = isSubsequentSubmission
     ? stringUtils.normalizeUnicode(
         translate
           ? translate(TEXTS.statiske.staticPdf.ettersendingCoverPageTitle, {
@@ -174,16 +173,16 @@ const createRequestBodyFromDownloadData = (
     : formTitle;
 
   return createRequestBody({
-    type,
+    type: isSubsequentSubmission ? 'ETTERSENDELSE' : 'SKJEMA',
     formNumber: formNumber ?? form.skjemanummer,
     formTitle: coverPageTitle,
-    archiveTitle: isEttersending
+    archiveTitle: isSubsequentSubmission
       ? stringUtils.normalizeUnicode(`Ettersending til ${form.skjemanummer} ${translatedFormTitle}`)
       : undefined,
     languageCode,
     tema: properties?.tema,
     vedleggsliste: attachments,
-    dokumentlisteFoersteside: isEttersending ? attachments : [formTitle, ...attachments],
+    dokumentlisteFoersteside: isSubsequentSubmission ? attachments : [formTitle, ...attachments],
     userData: getDownloadUserData(user),
     recipientData: getDownloadRecipientData(recipient),
   });
