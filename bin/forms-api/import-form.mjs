@@ -3,7 +3,8 @@
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { baseUrl, fail, getArgument, getToken, isGeneratedFormNumber } from './forms-api-common.mjs';
+import { createFormsApiClient } from './client.mjs';
+import { baseUrl, fail, getArgument, getToken, isGeneratedFormNumber } from './common.mjs';
 
 if (process.argv.includes('--help') || process.argv.includes('-h')) {
   process.stdout.write(`Usage:
@@ -57,40 +58,10 @@ if (!form.properties || typeof form.properties !== 'object' || Array.isArray(for
 const normalizeFormNumber = (value) => value.toLowerCase().replaceAll(/[^a-z0-9]/g, '');
 const normalizedFormNumber = normalizeFormNumber(formNumber);
 
-const token = getToken();
+const { request } = createFormsApiClient(getToken());
 
-const getResponseBody = async (response) => {
-  const text = await response.text();
-  if (!text) {
-    return undefined;
-  }
-  try {
-    return JSON.parse(text);
-  } catch {
-    return text;
-  }
-};
-
-const request = async (url, options = {}) => {
-  const response = await fetch(url, {
-    ...options,
-    headers: {
-      Authorization: `Bearer ${token}`,
-      ...options.headers,
-    },
-  });
-  const body = await getResponseBody(response);
-  if (response.status === 401) {
-    fail("Forms API returned 401. Refresh the token with 'pnpm get-tokens forms-api', then retry.");
-  }
-  if (!response.ok) {
-    fail(`${options.method ?? 'GET'} ${url} returned ${response.status}`);
-  }
-  return body;
-};
-
-const forms = await request(
-  `${baseUrl}/v1/forms?${new URLSearchParams({
+const { body: forms } = await request(
+  `/v1/forms?${new URLSearchParams({
     select: 'path,skjemanummer,revision,status,lock,title',
   })}`,
 );
@@ -117,7 +88,10 @@ if (existing && !shouldReplaceExisting) {
     `form ${existing.path} already exists; reuse it or obtain explicit approval to replace it and rerun with --replace-existing`,
   );
 }
-const currentForm = existing ? await request(`${baseUrl}/v1/forms/${encodeURIComponent(existing.path)}`) : undefined;
+const currentForm = existing ? (await request(`/v1/forms/${encodeURIComponent(existing.path)}`)).body : undefined;
+if (existing && (!currentForm || typeof currentForm !== 'object' || Array.isArray(currentForm))) {
+  fail('Forms API returned an invalid existing form; retry the dry run');
+}
 if (
   currentForm &&
   (currentForm.path !== existing.path ||
@@ -162,24 +136,25 @@ if (suppliedConfirmation !== operation) {
   fail(`confirmation does not match current operation; expected '${operation}'`);
 }
 
-const result = existing
-  ? await request(`${baseUrl}/v1/forms/${encodeURIComponent(existing.path)}`, {
+const { body: result } = existing
+  ? await request(`/v1/forms/${encodeURIComponent(existing.path)}`, {
       method: 'PUT',
       headers: {
-        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
         'Formsapi-Entity-Revision': String(existing.revision),
       },
       body: JSON.stringify(commonBody),
     })
-  : await request(`${baseUrl}/v1/forms`, {
+  : await request('/v1/forms', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(requestBody),
     });
+if (!result || typeof result !== 'object' || Array.isArray(result)) {
+  fail('Forms API returned no form details after the write; inspect Forms API before retrying.');
+}
 
 process.stdout.write(
   `${JSON.stringify(

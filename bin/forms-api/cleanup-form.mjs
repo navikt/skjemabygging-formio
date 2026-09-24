@@ -3,7 +3,8 @@
 import { createHash } from 'node:crypto';
 import { existsSync, lstatSync, readFileSync, realpathSync } from 'node:fs';
 import { dirname, isAbsolute, relative, resolve } from 'node:path';
-import { baseUrl, fail, getArgument, getToken, isGeneratedFormNumber } from './forms-api-common.mjs';
+import { createFormsApiClient } from './client.mjs';
+import { baseUrl, fail, getArgument, getToken, isGeneratedFormNumber } from './common.mjs';
 
 if (process.argv.includes('--help') || process.argv.includes('-h')) {
   process.stdout.write(`Usage:
@@ -58,24 +59,17 @@ if (
   fail('generated form artifact must have the reserved MANUALTEST- number and match the plan');
 }
 
-const token = getToken();
-
-const headers = {
-  Authorization: `Bearer ${token}`,
-};
-
-const formResponse = await fetch(`${baseUrl}/v1/forms/${encodeURIComponent(formPath)}`, { headers });
-if (formResponse.status === 401) {
-  fail("Forms API returned 401. Refresh the token with 'pnpm get-tokens forms-api', then retry.");
-}
+const { request } = createFormsApiClient(getToken());
+const formResource = `/v1/forms/${encodeURIComponent(formPath)}`;
+const formResponse = await request(formResource, {}, { allowedStatuses: [404] });
 if (formResponse.status === 404) {
   fail(`form ${formPath} does not exist`);
 }
-if (!formResponse.ok) {
-  fail(`GET form ${formPath} returned ${formResponse.status}`);
-}
 
-const form = await formResponse.json();
+const form = formResponse.body;
+if (!form || typeof form !== 'object' || Array.isArray(form)) {
+  fail(`Forms API returned an invalid form for ${formPath}`);
+}
 if (form.path !== formPath) {
   fail(`Forms API returned path ${form.path ?? '(missing)'} instead of ${formPath}`);
 }
@@ -121,24 +115,29 @@ if (getArgument('--confirm') !== operation) {
   fail(`confirmation does not match current operation; expected '${operation}'`);
 }
 
-const deleteResponse = await fetch(`${baseUrl}/v1/forms/${encodeURIComponent(formPath)}`, {
-  method: 'DELETE',
-  headers: {
-    ...headers,
-    'Formsapi-Entity-Revision': String(form.revision),
+await request(
+  formResource,
+  {
+    method: 'DELETE',
+    headers: {
+      'Formsapi-Entity-Revision': String(form.revision),
+    },
   },
-});
-if (deleteResponse.status === 401) {
-  fail("Forms API returned 401. Refresh the token with 'pnpm get-tokens forms-api', then restart with a dry run.");
-}
-if (!deleteResponse.ok) {
-  fail(`DELETE form ${formPath} returned ${deleteResponse.status}`);
-}
+  {
+    unauthorizedMessage:
+      "Forms API returned 401. Refresh the token with 'pnpm get-tokens forms-api', then restart with a dry run.",
+  },
+);
 
-const verificationResponse = await fetch(`${baseUrl}/v1/forms/${encodeURIComponent(formPath)}`, { headers });
-if (verificationResponse.status === 401) {
-  fail('Forms API returned 401 while verifying deletion. Refresh the token, then check the form path again.');
-}
+const verificationResponse = await request(
+  formResource,
+  {},
+  {
+    allowedStatuses: [404],
+    unauthorizedMessage:
+      'Forms API returned 401 while verifying deletion. Refresh the token, then check the form path again.',
+  },
+);
 if (verificationResponse.status !== 404) {
   fail(`cleanup could not be verified: GET form ${formPath} returned ${verificationResponse.status}`);
 }

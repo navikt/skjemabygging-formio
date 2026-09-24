@@ -30,7 +30,7 @@ Always inspect the operation first. The script checks whether the form already
 exists in the shared preprod Forms API:
 
 ```bash
-node .github/skills/manual-test-plan/scripts/import-form.mjs \
+node bin/forms-api/import-form.mjs \
   --form <form.json>
 ```
 
@@ -81,7 +81,7 @@ Ask for explicit confirmation. Then copy the exact confirmation value printed
 by the dry run:
 
 ```bash
-node .github/skills/manual-test-plan/scripts/import-form.mjs \
+node bin/forms-api/import-form.mjs \
   --form <form.json> \
   --apply \
   --confirm '<operation>'
@@ -105,7 +105,7 @@ restore procedure; never delete them as cleanup.
 Dry run:
 
 ```bash
-node .github/skills/manual-test-plan/scripts/cleanup-form.mjs \
+node bin/forms-api/cleanup-form.mjs \
   --plan <plan.json> --form-id <generated-form-id>
 ```
 
@@ -121,7 +121,7 @@ Apply only after showing the caller the dry-run output and receiving the exact
 confirmation:
 
 ```bash
-node .github/skills/manual-test-plan/scripts/cleanup-form.mjs \
+node bin/forms-api/cleanup-form.mjs \
   --plan <plan.json> --form-id <generated-form-id> \
   --apply \
   --confirm '<operation>'

@@ -3,7 +3,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const baseUrl = 'https://forms-api.intern.dev.nav.no';
-const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../../../..');
+const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const defaultEnvFile = resolve(repositoryRoot, 'packages/bygger-backend/.env');
 const generatedFormNumberPattern = /^MANUALTEST-[A-Z0-9]+(?:-[A-Z0-9]+)*$/;
 const isGeneratedFormNumber = (value) =>

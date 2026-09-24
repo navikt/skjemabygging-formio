@@ -13,10 +13,10 @@ from the production snapshot.
 Use the helper without exposing the token or full form definition:
 
 ```bash
-node .github/skills/manual-test-plan/scripts/inspect-preprod-forms.mjs \
+node bin/forms-api/inspect-preprod-forms.mjs \
   --query '<title-or-form-number>'
 
-node .github/skills/manual-test-plan/scripts/inspect-preprod-forms.mjs \
+node bin/forms-api/inspect-preprod-forms.mjs \
   --path '<form-path>'
 ```
 

@@ -42,6 +42,12 @@ globalThis.fetch = async (_url, options = {}) => {
   if (process.env.FETCH_SCENARIO === 'unauthorized') {
     return new Response('', { status: 401 });
   }
+  if (process.env.FETCH_SCENARIO === 'verification-unauthorized' && requestNumber === 3) {
+    return new Response('', { status: 401 });
+  }
+  if (process.env.FETCH_SCENARIO === 'empty-form' && requestNumber === 1) {
+    return new Response(null, { status: 204 });
+  }
   if (requestNumber === 1) {
     return Response.json(form);
   }
@@ -105,6 +111,17 @@ test('refuses to delete a form whose identity no longer matches the plan', () =>
   }
 });
 
+test('refuses to delete when Forms API returns no form definition', () => {
+  const harness = createHarness('empty-form');
+  try {
+    const result = harness.run();
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /invalid form/);
+  } finally {
+    rmSync(harness.directory, { recursive: true });
+  }
+});
+
 test('refuses to delete a form outside the reserved manual-test namespace', () => {
   const harness = createHarness('unreserved');
   try {
@@ -148,6 +165,20 @@ test('explains how to recover from an unauthorized response', () => {
     const result = harness.run();
     assert.equal(result.status, 1);
     assert.match(result.stderr, /pnpm get-tokens forms-api/);
+  } finally {
+    rmSync(harness.directory, { recursive: true });
+  }
+});
+
+test('does not tell the caller to repeat deletion when verification needs a new token', () => {
+  const harness = createHarness('verification-unauthorized');
+  try {
+    const operation = harness.run().stdout.match(/Operation: (DELETE:[^\n]+)/)?.[1];
+    assert.ok(operation);
+    const result = harness.run('--apply', '--confirm', operation);
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /while verifying deletion/);
+    assert.match(result.stderr, /check the form path again/);
   } finally {
     rmSync(harness.directory, { recursive: true });
   }

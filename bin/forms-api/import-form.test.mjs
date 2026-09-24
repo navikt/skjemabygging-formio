@@ -24,7 +24,7 @@ const makeHarness = (scenario) => {
     mockFile,
     `globalThis.fetch = async (url, options = {}) => {
   if (url.includes('?')) {
-    return Response.json(process.env.FETCH_SCENARIO === 'new' ? [] : [{
+    return Response.json(['new', 'empty-write'].includes(process.env.FETCH_SCENARIO) ? [] : [{
       skjemanummer: 'MANUALTEST-001',
       path: 'manualtest001',
       revision: 4,
@@ -39,7 +39,13 @@ const makeHarness = (scenario) => {
     return Response.json({ path: 'manualtest001', revision: 5 });
   }
   if (options.method === 'POST') {
+    if (process.env.FETCH_SCENARIO === 'empty-write') {
+      return new Response(null, { status: 204 });
+    }
     return Response.json({ path: 'manualtest001', revision: 1 });
+  }
+  if (process.env.FETCH_SCENARIO === 'empty-existing') {
+    return new Response(null, { status: 204 });
   }
   return Response.json({
     path: 'manualtest001',
@@ -116,6 +122,18 @@ test('requires explicit replacement and binds it to the existing contents', () =
   }
 });
 
+test('does not replace an existing form when the full definition is missing', () => {
+  const harness = makeHarness('empty-existing');
+  try {
+    const result = harness.run('--replace-existing');
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /invalid existing form/);
+    assert.doesNotMatch(result.stdout, /Operation: UPDATE/);
+  } finally {
+    rmSync(harness.directory, { recursive: true });
+  }
+});
+
 test('can create a form without marking it as a test form', () => {
   const harness = makeHarness('new');
   try {
@@ -124,6 +142,20 @@ test('can create a form without marking it as a test form', () => {
     assert.ok(operation);
     const applied = harness.run('--apply', '--confirm', operation);
     assert.equal(applied.status, 0, applied.stderr);
+  } finally {
+    rmSync(harness.directory, { recursive: true });
+  }
+});
+
+test('reports a write with no response details rather than treating it as a confirmed import', () => {
+  const harness = makeHarness('empty-write');
+  try {
+    const dryRun = harness.run();
+    const operation = dryRun.stdout.match(/Operation: (CREATE:[^\n]+)/)?.[1];
+    assert.ok(operation);
+    const result = harness.run('--apply', '--confirm', operation);
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /inspect Forms API before retrying/);
   } finally {
     rmSync(harness.directory, { recursive: true });
   }

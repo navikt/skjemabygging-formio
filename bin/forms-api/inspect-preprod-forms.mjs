@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-import { baseUrl, fail, getArgument, getToken } from './forms-api-common.mjs';
+import { createFormsApiClient } from './client.mjs';
+import { fail, getArgument, getToken } from './common.mjs';
 
 if (process.argv.includes('--help') || process.argv.includes('-h')) {
   process.stdout.write(`Usage:
@@ -19,26 +20,11 @@ if ((!query && !formPath) || (query && formPath)) {
   fail('provide exactly one of --query or --path');
 }
 
-const token = getToken();
-
-const request = async (url) => {
-  const response = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  if (response.status === 401) {
-    fail("Forms API returned 401. Refresh the token with 'pnpm get-tokens forms-api', then retry.");
-  }
-  if (!response.ok) {
-    fail(`GET ${url} returned ${response.status}`);
-  }
-  return response.json();
-};
+const { request } = createFormsApiClient(getToken());
 
 if (query) {
-  const forms = await request(
-    `${baseUrl}/v1/forms?${new URLSearchParams({
+  const { body: forms } = await request(
+    `/v1/forms?${new URLSearchParams({
       select: 'path,skjemanummer,revision,status,title',
     })}`,
   );
@@ -55,7 +41,10 @@ if (query) {
     .map(({ path, skjemanummer, revision, status, title }) => ({ path, skjemanummer, revision, status, title }));
   process.stdout.write(`${JSON.stringify(matches, null, 2)}\n`);
 } else {
-  const form = await request(`${baseUrl}/v1/forms/${encodeURIComponent(formPath)}`);
+  const { body: form } = await request(`/v1/forms/${encodeURIComponent(formPath)}`);
+  if (!form || typeof form !== 'object' || Array.isArray(form)) {
+    fail(`Forms API returned an invalid form for ${formPath}`);
+  }
   const componentTypes = new Map();
   const visit = (value) => {
     if (Array.isArray(value)) {
