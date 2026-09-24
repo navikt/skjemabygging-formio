@@ -41,6 +41,55 @@ describe('coverPageRequestBodyMapper', () => {
     });
   });
 
+  it('creates an ettersending archive title and attachment-only document list', () => {
+    const actual = coverPageRequestBodyMapper.createRequestBodyFromDownloadData({
+      ...defaultData,
+      type: 'ETTERSENDELSE',
+      attachments: ['Attachment one', 'Attachment two'],
+    });
+
+    expect(actual).toMatchObject({
+      foerstesidetype: 'ETTERSENDELSE',
+      overskriftstittel: 'Ettersending til NAV 12.34-56 Testskjema',
+      arkivtittel: 'Ettersending til NAV 12.34-56 Testskjema',
+      dokumentlisteFoersteside: ['Attachment one', 'Attachment two'],
+    });
+  });
+
+  it('preserves the loose-post cover page type', () => {
+    const actual = coverPageRequestBodyMapper.createRequestBodyFromDownloadData({
+      ...defaultData,
+      type: 'LOESPOST',
+    });
+
+    expect(actual.foerstesidetype).toBe('LOESPOST');
+    expect(actual.dokumentlisteFoersteside).toEqual(['NAV 12.34-56 Testskjema', 'Vedlegg 1']);
+  });
+
+  it('uses a localized ettersending cover page title', () => {
+    const translate = vi.fn((text) =>
+      text === 'Testskjema'
+        ? 'Translated form title'
+        : 'Additional documentation for NAV 12.34-56 Translated form title',
+    );
+
+    const actual = coverPageRequestBodyMapper.createRequestBodyFromDownloadData(
+      {
+        ...defaultData,
+        type: 'ETTERSENDELSE',
+      },
+      'en',
+      translate,
+    );
+
+    expect(actual.overskriftstittel).toBe('Additional documentation for NAV 12.34-56 Translated form title');
+    expect(actual.arkivtittel).toBe('Ettersending til NAV 12.34-56 Translated form title');
+    expect(translate).toHaveBeenCalledWith('Ettersending til {{formNumber}} {{title}}', {
+      formNumber: 'NAV 12.34-56',
+      title: 'Testskjema',
+    });
+  });
+
   it('uses translated title, custom form number and recipient address', () => {
     const actual = coverPageRequestBodyMapper.createRequestBodyFromDownloadData(
       {
