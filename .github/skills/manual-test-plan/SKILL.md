@@ -12,14 +12,15 @@ disable-model-invocation: true
 
 # Manual test plan
 
-Create an executable manual test plan for a change in this repository. The
-caller can start with `/manual-test-plan 123` to plan testing for issue #123 in
-`navikt/skjemabygging-formio`. Treat a bare number supplied with the skill as
-an issue number, never a pull request number. Also accept an issue URL. Fetch
-the issue without asking for it again. If no target was supplied, ask for the
-issue URL or number when an issue exists. Ask for the pull request only when
-the caller confirms that the change has no issue. Do not infer the target
-solely from the current branch.
+Create an executable manual test plan for a change in this repository. Read
+the invocation's `ARGUMENTS` before asking for a target. For example,
+`/manual-test-plan 2179` supplies `2179` as the target issue in
+`navikt/skjemabygging-formio`; fetch it without asking for the number again.
+Treat a bare number in `ARGUMENTS` as an issue number, never a pull request
+number. Also accept an issue URL. Only if `ARGUMENTS` and the caller's message
+contain no target, ask for the issue URL or number when an issue exists. Ask
+for the pull request only when the caller confirms that the change has no
+issue. Do not infer the target solely from the current branch.
 
 ## Required workflow
 
@@ -29,7 +30,8 @@ solely from the current branch.
    [analysis-workflow.md](references/analysis-workflow.md). When the caller
    confirms that no issue exists, fetch the supplied pull request. Analyze
    the committed pull request diff in both cases. Do not use an uncommitted
-   or local-only diff as the source for a plan.
+   or local-only diff as the source for a plan. Read affected files at the
+   committed PR head even if they are missing from the local checkout.
 3. Invoke `frontend-development`, `backend-development`, or both before detailed
    analysis when their areas are affected. Follow any specialist routing those
    skills require.
@@ -51,7 +53,11 @@ solely from the current branch.
    preprod before choosing forms. Reuse a suitable form when one exists.
    Otherwise design and validate the smallest useful generated form set.
    Prefer one clear selector-driven form for related cases. Tell the caller
-   which forms will be created or updated and wait for confirmation.
+   which forms will be created or updated and wait for confirmation. On any
+   failure to access Forms API, including while checking existing forms,
+   follow the proxy and token troubleshooting in
+   [forms-api-import.md](references/forms-api-import.md). Do not treat a failed
+   lookup as proof that a form is absent.
 10. Write tester-facing HTML, Slack Canvas, and GitHub issue content in
     Norwegian, using terms from FyllUt, Bygger, the form, and the issue. Ask
     technical users questions in English. Keep local technical instructions

@@ -2,25 +2,30 @@
 
 ## Inputs
 
-Ask for the issue URL or number first:
+First read the skill invocation's `ARGUMENTS` and any target in the caller's
+message. Ask for the issue URL or number only if neither contains a target:
 
 > Provide the issue for the change. If no issue exists, provide the pull request
 > instead.
 
-When the caller supplies an issue, check linked pull requests and search for
-related **open** pull requests first. Confirm which one implements the issue;
-a mention alone does not establish that link. Search merged pull requests
-only if no matching open implementation pull request exists. If several
-plausible pull requests remain, ask the caller which one to test. Ask for
-the pull request when no implementation can be identified. Do not produce
-an implementation test plan from the issue alone.
+When the caller supplies an issue, inspect its linked pull requests and search
+the repository's **open** pull requests for the issue number, URL, and related
+terms before searching merged pull requests. Check the PR body and diff to
+confirm that it implements the issue; a mention alone does not establish that
+link. Search merged pull requests only if no matching open implementation PR
+exists. If several plausible PRs remain, ask the caller which one to test.
+Ask for the PR when no implementation can be identified. Do not produce an
+implementation test plan from the issue alone.
 
 Accept a pull request as the starting input only when the caller says that no
 issue exists. If a supplied pull request links an issue, use that issue as the
 primary intent source.
 
 Do not accept a local branch, working-tree diff, patch file, or commit range as
-the only input.
+the only input. Read the committed PR diff and any affected file content at
+its head commit through GitHub. The local checkout may be on another branch
+and may not contain the changed files; do not substitute its contents for the
+PR head.
 
 For the implementation pull request, read:
 

@@ -41,39 +41,55 @@ Only generated forms with numbers matching `MANUALTEST-<suffix>` can use this
 helper. Import production forms through Bygger as described in
 [form-selection.md](form-selection.md).
 
-If a Forms API fetch, create, or update returns `401`, tell the caller that the
-Forms API token has expired and must be refreshed. Run:
+If an attempt to access Forms API fails, including inspection of existing
+forms, identify where the failure occurred before asking for a token update.
+A `Proxy response (403) !== 200 when HTTP Tunneling` error comes from the
+proxy, not Forms API. Follow the proxy retry below first. An HTTP `401` from
+Forms API indicates an authentication failure.
+
+If Forms API still cannot be accessed after proxy troubleshooting, or the
+failure is not proxy-generated, tell the caller what failed. Use `ask_user`
+to ask them to update the Forms API token, even when the cause is not known.
+Do not claim the token expired unless Forms API returned `401`. Direct the
+caller to run:
 
 ```bash
 pnpm get-tokens forms-api
 ```
 
-Wait for the caller to complete the login flow, then retry the failed operation
-once. Never ask the caller to paste the token into chat, and do not inspect,
-decode, or print it.
+Wait for the caller to confirm that the token is updated, then retry the failed
+read or dry run once. Never ask the caller to paste the token into chat, and
+do not inspect, decode, or print it. Do not treat a failed inspection as
+evidence that the form is missing.
 
-After refresh, always rerun the dry run. The operation may have changed while
-the token was stale. Use the new confirmation value and ask for renewed
-confirmation if the operation changed. If the retry also returns `401`, stop and
-ask the caller to verify the `SkjemabyggingPreprod` group and Forms API audience.
-Do not start another refresh loop.
+For an apply failure, rerun the dry run before retrying the write. The operation
+may have changed since the first attempt. Use the new confirmation value and
+ask for renewed confirmation if the operation changed. If access still fails,
+stop and report the error rather than starting another token refresh loop. For
+a persistent `401` or authorization `403` from Forms API, ask the caller to
+verify the `SkjemabyggingPreprod` group and Forms API audience.
 
 The helper must not start the token workflow itself because it requires browser
-login and an interactive token paste. The skill runs it as a separate step. Be
+login and an interactive token paste. The caller runs it as a separate step. Be
 aware that an exported `FORMS_API_ACCESS_TOKEN` takes precedence over the value
 written to `packages/bygger-backend/.env`.
 
 ## Proxy HTTP 403
 
-If Forms API fails with a proxy-generated HTTP `403`, retry the same read-only
-or confirmed command once without the shell proxy variables:
+If the error comes from HTTP tunneling through the proxy, retry the same
+read-only command once without the proxy environment variables. For a
+failed write, rerun the dry run without the proxy first, then require the
+current operation's confirmation before retrying the write:
 
 ```bash
-env -u HTTP_PROXY -u HTTPS_PROXY -u ALL_PROXY <same-command>
+env -u HTTP_PROXY -u HTTPS_PROXY -u ALL_PROXY \
+  -u http_proxy -u https_proxy -u all_proxy \
+  -u NODE_USE_ENV_PROXY <same-command>
 ```
 
-Do not change repository proxy configuration. If the direct retry also fails,
-stop and report the response instead of bypassing more network controls.
+Do not change repository proxy configuration. If the direct retry fails,
+prompt for a token update as described above, then retry once. If access
+still fails, report the error instead of bypassing more network controls.
 
 ## Apply
 

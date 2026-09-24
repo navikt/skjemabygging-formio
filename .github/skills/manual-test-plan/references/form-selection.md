@@ -20,8 +20,10 @@ node bin/forms-api/inspect-preprod-forms.mjs \
   --path '<form-path>'
 ```
 
-If it returns `401`, follow the token refresh and retry procedure in
-[forms-api-import.md](forms-api-import.md).
+If either inspection fails to access Forms API, follow the proxy and token
+troubleshooting in
+[forms-api-import.md](forms-api-import.md). Do not choose a replacement form
+based on a failed lookup.
 
 Record:
 
@@ -54,15 +56,23 @@ test form makes the changed behavior substantially easier to isolate.
 - Use separate forms when conditions would change component semantics, leave
   stale data, make validation unreliable, or obscure the expected mapping.
 
-When a small TypeScript generator imports the repository form-builder helpers,
-run it with the repository's current TypeScript compatibility options:
+The `ts-node` executable belongs to the `mocks` package, not the repository
+root. Run a small TypeScript generator with that package's installed runner
+and TypeScript configuration, from the repository root:
 
 ```bash
-pnpm exec ts-node \
+pnpm --dir mocks exec ts-node \
+  --project tsconfig.json \
   --transpile-only \
   --compiler-options '{"ignoreDeprecations":"6.0"}' \
-  <generator.ts>
+  mocks/<generator.ts>
 ```
+
+Put the temporary generator in `mocks/mocks/`. Its path in the command is
+relative to `mocks/`, since `--dir mocks` changes the working directory.
+Keep generated JSON in the session artifact directory and remove the
+generator after use. Do not use `pnpm dlx` or download another runner for
+this task.
 
 Validate:
 
