@@ -24,6 +24,8 @@ export { coverPageMapper, createCoverPageService } from './cover-page';
 export type { CoverPageService, ForstesideRequestBody } from './cover-page';
 export { createFormService } from './form';
 export type { FormService } from './form';
+export { createFormClearService } from './form-clear';
+export type { FormClearService } from './form-clear';
 export { createMergeFileService } from './merge-file';
 export type { MergeFileService } from './merge-file';
 export type {

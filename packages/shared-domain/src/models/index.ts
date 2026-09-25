@@ -9,6 +9,7 @@ export * from './errors';
 export * from './field-size';
 export * from './file';
 export * from './form';
+export * from './form-clear';
 export * from './forms-api-form';
 export * from './http';
 export * from './logging';
