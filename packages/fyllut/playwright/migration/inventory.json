@@ -4640,8 +4640,13 @@
           "sourceHash": "6f360eef76cdf58df67c899be8aa435b87091051252cbe3ec25c99bc67226b4b",
           "modifiers": [],
           "buildOnly": false,
-          "status": "planned",
-          "coverageReview": "pending"
+          "status": "implemented",
+          "coverageReview": "pending",
+          "coverageChecklist": [
+            "Select get-register-data-activities:success-empty before loading the digital form and confirm the variant is active.",
+            "Verify the browser receives HTTP 200 with an empty activities array from the FyllUt backend; no activity picker is rendered and the empty-data warning is visible."
+          ],
+          "playwrightReview": "pending"
         },
         {
           "id": "F029-T003",

@@ -96,9 +96,9 @@ test('current 86-file register passes with 787 planned tests and 38 reviewed pil
   assert.equal(inventory.files.find((file) => file.id === 'F063').tests.at(-1).id, 'F063-T026');
 });
 
-test('seven pilot pointers match the current working tree', () => {
+test('eight pilot pointers match the current working tree', () => {
   const entries = checkMigration(currentInventory);
-  assert.equal(entries.length, 7);
+  assert.equal(entries.length, 8);
 });
 
 test('source or inventory tampering fails closed', () => {
