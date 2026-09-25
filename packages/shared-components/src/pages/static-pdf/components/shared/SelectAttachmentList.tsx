@@ -3,10 +3,11 @@ import FormCheckboxes from './form/FormCheckboxes';
 
 interface Props {
   attachments: Component[];
+  required: boolean;
   submissionPath: string;
 }
 
-const SelectAttachmentList = ({ submissionPath, attachments }: Props) => {
+const SelectAttachmentList = ({ submissionPath, attachments, required }: Props) => {
   if (attachments.length === 0) {
     return null;
   }
@@ -16,7 +17,7 @@ const SelectAttachmentList = ({ submissionPath, attachments }: Props) => {
       legend={TEXTS.statiske.attachment.title}
       description={TEXTS.statiske.attachment.selectAttachments}
       submissionPath={submissionPath}
-      validators={{ required: false }}
+      validators={{ required }}
       values={attachments?.map(({ key, label }) => {
         return {
           value: key,
