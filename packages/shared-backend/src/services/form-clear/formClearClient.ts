@@ -7,10 +7,10 @@ import {
 import http from '../../shared/http/http';
 
 const createFormClearClient = (baseUrl: string) => {
-  const jobsUrl = `${baseUrl}/api/form-clear/jobs`;
+  const jobsUrl = `${baseUrl}/api/database-cleanup/jobs`;
   return {
     preview: (options: FormClearOptions, accessToken: string) =>
-      http.post<FormClearPreview>(`${baseUrl}/api/form-clear/preview`, options, { accessToken }),
+      http.post<FormClearPreview>(`${baseUrl}/api/database-cleanup/preview`, options, { accessToken }),
     start: (request: FormClearStart, accessToken: string) =>
       http.post<{ jobId: string }>(jobsUrl, request, { accessToken }),
     getActiveJob: (accessToken: string) => http.get<FormClearJob>(`${jobsUrl}/active`, { accessToken }),

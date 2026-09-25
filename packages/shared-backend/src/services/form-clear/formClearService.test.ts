@@ -23,7 +23,7 @@ describe('form clear service', () => {
     await expect(service.start(startRequest, 'token')).resolves.toEqual({ jobId: 'job-1' });
     expect(fetchMock).toHaveBeenNthCalledWith(
       1,
-      'https://forms-api.test/api/form-clear/preview',
+      'https://forms-api.test/api/database-cleanup/preview',
       expect.objectContaining({
         method: 'POST',
         body: JSON.stringify(options),
@@ -32,7 +32,7 @@ describe('form clear service', () => {
     );
     expect(fetchMock).toHaveBeenNthCalledWith(
       2,
-      'https://forms-api.test/api/form-clear/jobs',
+      'https://forms-api.test/api/database-cleanup/jobs',
       expect.objectContaining({
         method: 'POST',
         body: JSON.stringify(startRequest),
@@ -61,8 +61,16 @@ describe('form clear service', () => {
     await expect(service.getActiveJob('token')).resolves.toMatchObject({ jobId: 'job-2', status: 'running' });
     await expect(service.getExistingPaths('token')).resolves.toEqual(['nested/example', 'soft-deleted/kept']);
     expect(fetch).toHaveBeenNthCalledWith(
+      1,
+      'https://forms-api.test/api/database-cleanup/jobs/job-1',
+      expect.objectContaining({
+        method: 'GET',
+        headers: expect.objectContaining({ Authorization: expect.stringMatching(/^Bearer /) }),
+      }),
+    );
+    expect(fetch).toHaveBeenNthCalledWith(
       2,
-      'https://forms-api.test/api/form-clear/jobs/active',
+      'https://forms-api.test/api/database-cleanup/jobs/active',
       expect.objectContaining({ method: 'GET', headers: expect.objectContaining({ Authorization: 'Bearer token' }) }),
     );
     expect(fetch).toHaveBeenNthCalledWith(
