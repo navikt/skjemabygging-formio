@@ -31,6 +31,7 @@ type SummaryRow = {
   paperSubmissionUrl: string;
   subsequentSubmissionUrl: string;
   paperSubsequentSubmissionUrl: string;
+  staticPdfSubsequentSubmissionUrl: string;
   declarationType: string;
   customDeclarationText: string;
   subsequentSubmissionDeadline?: string;
@@ -84,6 +85,7 @@ const allFormsSummaryReport = ({
     paperSubmissionUrl: 'innsendingsurl (papir)',
     subsequentSubmissionUrl: 'ettersendingsurl',
     paperSubsequentSubmissionUrl: 'ettersendingsurl (papir)',
+    staticPdfSubsequentSubmissionUrl: 'ettersendingsurl (static PDF)',
     declarationType: 'erklæringstype',
     customDeclarationText: 'tilpasset erklæringstekst',
     subsequentSubmissionDeadline: 'ettersendelsesfrist',
@@ -123,7 +125,12 @@ const allFormsSummaryReport = ({
       const attachments = navFormUtils.getAttachmentProperties(form);
       const hasAttachments = navFormUtils.hasAttachment(form);
       const { title, path, properties, status, changedAt, changedBy, publishedAt, publishedBy } = compact;
-      const { submissionTypes, subsequentSubmissionTypes, declarationType } = properties;
+      const { submissionTypes = [], subsequentSubmissionTypes = [], declarationType } = properties;
+      const hasStaticPdfSubsequentSubmission = submissionTypesUtils.isStaticPdf(submissionTypes) && hasAttachments;
+      const reportSubsequentSubmissionTypes =
+        hasStaticPdfSubsequentSubmission && !subsequentSubmissionTypes.includes('STATIC_PDF')
+          ? [...subsequentSubmissionTypes, 'STATIC_PDF' as const]
+          : subsequentSubmissionTypes;
       const submissionUrl =
         config.naisClusterName === 'prod-gcp'
           ? `https://www.nav.no/fyllut/${form.path}`
@@ -143,7 +150,7 @@ const allFormsSummaryReport = ({
         changedAt,
         changedBy,
         submissionTypes,
-        subsequentSubmissionTypes,
+        subsequentSubmissionTypes: reportSubsequentSubmissionTypes,
         signatureCount: properties.signatures?.length || 1,
         path,
         hasAttachments: yesNo(hasAttachments),
@@ -160,6 +167,9 @@ const allFormsSummaryReport = ({
           submissionTypesUtils.isPaperSubmission(subsequentSubmissionTypes) && hasAttachments
             ? `${subsequentSubmissionUrl}?sub=paper`
             : '',
+        staticPdfSubsequentSubmissionUrl: hasStaticPdfSubsequentSubmission
+          ? `${submissionUrl}/pdf?type=ettersending`
+          : '',
         declarationType: declarationLabels[declarationType ?? DeclarationType.none],
         customDeclarationText: declarationType === DeclarationType.custom ? (properties.declarationText ?? '') : '',
         subsequentSubmissionDeadline: properties.ettersendelsesfrist,

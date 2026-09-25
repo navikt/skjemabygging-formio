@@ -137,6 +137,7 @@ describe('ReportService', () => {
           const pathIndex = report.getHeaderIndex('path');
           const uploadedPdfIndex = report.getHeaderIndex('har opplastede PDF-er');
           const staticPdfEnabledIndex = report.getHeaderIndex('STATIC_PDF aktivert');
+          const staticPdfSubsequentSubmissionUrlIndex = report.getHeaderIndex('ettersendingsurl (static PDF)');
 
           expect(
             report.forms.map((row) => [row[pathIndex], row[uploadedPdfIndex], row[staticPdfEnabledIndex]]),
@@ -146,6 +147,7 @@ describe('ReportService', () => {
             ['both', 'ja', 'ja'],
             ['neither', 'nei', 'nei'],
           ]);
+          expect(report.forms[1][staticPdfSubsequentSubmissionUrlIndex]).toBe('');
         });
       });
 
@@ -645,6 +647,8 @@ describe('ReportService', () => {
         const HEADER_INNSENDING_PAPER = 'innsendingsurl (papir)';
         const HEADER_ETTERSENDING = 'ettersendingsurl';
         const HEADER_ETTERSENDING_PAPER = 'ettersendingsurl (papir)';
+        const HEADER_ETTERSENDING_STATIC_PDF = 'ettersendingsurl (static PDF)';
+        const HEADER_ETTERSENDING_TYPES = 'subsequentSubmissionTypes';
 
         const publishedForms = [
           {
@@ -680,7 +684,7 @@ describe('ReportService', () => {
               tema: 'HJE',
               published: '2022-07-28T10:00:10.325Z',
               publishedLanguages: ['en', 'nn-NO'],
-              submissionTypes: ['DIGITAL', 'PAPER'],
+              submissionTypes: ['DIGITAL', 'PAPER', 'STATIC_PDF'],
               subsequentSubmissionTypes: ['DIGITAL', 'PAPER'],
             },
           } as Form,
@@ -759,12 +763,19 @@ describe('ReportService', () => {
         expect(formFields1[report.getHeaderIndex(HEADER_ETTERSENDING_PAPER)]).toBe(
           `${ettersendingBaseUrl}/test1?sub=paper`,
         );
+        expect(formFields1[report.getHeaderIndex(HEADER_ETTERSENDING_STATIC_PDF)]).toBe(
+          `${fyllutBaseUrl}/test1/pdf?type=ettersending`,
+        );
+        expect(formFields1[report.getHeaderIndex(HEADER_ETTERSENDING_TYPES)]).toBe(
+          '"[""DIGITAL"",""PAPER"",""STATIC_PDF""]"',
+        );
 
         // innsending: INGEN, ettersending: KUN_PAPIR, 0 attachments
         expect(formFields2[report.getHeaderIndex(HEADER_INNSENDING)]).toBe(`${fyllutBaseUrl}/test2`);
         expect(formFields2[report.getHeaderIndex(HEADER_INNSENDING_PAPER)]).toBe(`${fyllutBaseUrl}/test2`);
         expect(formFields2[report.getHeaderIndex(HEADER_ETTERSENDING)]).toBe(``); // no attachments
         expect(formFields2[report.getHeaderIndex(HEADER_ETTERSENDING_PAPER)]).toBe(``);
+        expect(formFields2[report.getHeaderIndex(HEADER_ETTERSENDING_STATIC_PDF)]).toBe('');
 
         // innsending: KUN_PAPIR, ettersending: KUN_PAPIR, 1 attachments
         expect(formFields3[report.getHeaderIndex(HEADER_INNSENDING)]).toBe(`${fyllutBaseUrl}/test3`);
@@ -773,6 +784,7 @@ describe('ReportService', () => {
         expect(formFields3[report.getHeaderIndex(HEADER_ETTERSENDING_PAPER)]).toBe(
           `${ettersendingBaseUrl}/test3?sub=paper`,
         );
+        expect(formFields3[report.getHeaderIndex(HEADER_ETTERSENDING_STATIC_PDF)]).toBe('');
       });
 
       it('does not include testform', async () => {
