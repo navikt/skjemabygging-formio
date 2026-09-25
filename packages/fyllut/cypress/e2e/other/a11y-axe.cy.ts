@@ -12,6 +12,7 @@ const checkA11yWhenStable = () => {
 
 describe('Axe: Accessibility testing', () => {
   describe('Test on the intro page', () => {
+    // Playwright: F073-T001 | packages/fyllut/playwright/e2e/other/a11y-axe.spec.ts | Axe: Accessibility testing > Test on the intro page > Static intro page
     it('Static intro page', () => {
       cy.defaultIntercepts();
       cy.visit('/fyllut/cypressaxe');
@@ -36,6 +37,7 @@ describe('Axe: Accessibility testing', () => {
       checkA11yWhenStable();
     });
 
+    // Playwright: F073-T003 | packages/fyllut/playwright/e2e/other/a11y-axe.spec.ts | Axe: Accessibility testing > Simple test for all tabs in one run > Penger og konto
     it('Penger og konto', () => {
       cy.clickShowAllSteps();
       cy.findByRole('link', { name: 'Penger og konto' }).click();

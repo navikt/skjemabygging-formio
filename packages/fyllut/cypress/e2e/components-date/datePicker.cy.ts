@@ -66,6 +66,7 @@ describe('DatePicker', () => {
       cy.findAllByErrorMessageRequired(label).should('have.length', 0);
     });
 
+    // Playwright: F017-T007 | packages/fyllut/playwright/e2e/components-date/datePicker.spec.ts | DatePicker > Validation > should validate specificEarliestAllowedDate
     it('should validate specificEarliestAllowedDate', () => {
       const label = 'Dato fra og med 10.01.2025';
       const errorMessage = 'Datoen kan ikke være tidligere enn 10.01.2025';

@@ -33,6 +33,7 @@
     "start:bygger:mocks": "node bin/start.mjs bygger",
     "start:fyllut": "concurrently --kill-others-on-fail \"pnpm --filter @navikt/fyllut-backend run start\" \"pnpm --filter @navikt/fyllut-frontend run start\"",
     "start:fyllut:mocks": "node bin/start.mjs fyllut",
+    "playwright:fyllut": "node bin/playwright/run-fyllut.mjs",
     "start:form-spec-api": "pnpm --filter @navikt/form-spec-api start",
     "preview:bygger": "pnpm --filter @navikt/bygger-backend run preview",
     "preview:fyllut": "pnpm --filter @navikt/fyllut-backend run preview",

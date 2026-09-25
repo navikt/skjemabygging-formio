@@ -51,6 +51,7 @@ describe('BankAccount', () => {
       cy.findAllByErrorMessageRequired(label).should('have.length', 0);
     });
 
+    // Playwright: F004-T005 | packages/fyllut/playwright/e2e/components-customized/bankaccount.spec.ts | BankAccount > Validation > should validate invalid account number
     it('should validate invalid account number', () => {
       const label = 'Kontonummer ikke påkrevd';
       const errorMessage = 'Dette er ikke et gyldig kontonummer. Sjekk at du har tastet riktig.';
@@ -71,6 +72,7 @@ describe('BankAccount', () => {
       cy.defaultWaits();
     });
 
+    // Playwright: F004-T006 | packages/fyllut/playwright/e2e/components-customized/bankaccount.spec.ts | BankAccount > Form > should test filling out a full form
     it('should test filling out a full form', () => {
       cy.clickIntroPageConfirmation();
       cy.clickNextStep();
