@@ -4,12 +4,13 @@ import {
   Form,
   FormPropertiesType,
   PublishedTranslations,
+  Recipient,
 } from '@navikt/skjemadigitalisering-shared-domain';
 import MemoryStream from 'memorystream';
 import nock from 'nock';
 import config from '../config';
 import ReportService from './ReportService';
-import { formPublicationsService, formsService } from './index';
+import { formPublicationsService, formsService, recipientService, staticPdfService } from './index';
 
 const { formsApi } = config;
 
@@ -17,7 +18,7 @@ describe('ReportService', () => {
   let reportService: ReportService;
 
   beforeEach(() => {
-    reportService = new ReportService(formsService, formPublicationsService);
+    reportService = new ReportService({ formsService, formPublicationsService, recipientService, staticPdfService });
   });
 
   afterEach(() => {
@@ -31,6 +32,7 @@ describe('ReportService', () => {
     expect(report).toBeDefined();
     expect(report?.title).toBe('Publiserte språk per skjema');
     expect(report?.contentType).toBe('text/csv');
+    expect(report?.fileExtension).toBe('csv');
   });
 
   describe('getReportDefinition', () => {
@@ -47,11 +49,17 @@ describe('ReportService', () => {
   });
 
   describe('Reports', () => {
-    const CSV_HEADER_LINE = 'skjemanummer;skjematittel;språk\n';
+    const CSV_HEADER_LINE =
+      '\uFEFFskjemanummer;skjematittel;språk;skjematittel (nb);skjematittel (nn);skjematittel (en)\n';
 
     const createWritableStream = () => new MemoryStream(undefined, { readable: false });
 
-    const setupNock = (publishedForms: Partial<Form>[]) => {
+    const setupNock = (
+      publishedForms: Partial<Form>[],
+      recipients: Recipient[] = [],
+      formsWithUploadedPdfs: string[] = [],
+    ) => {
+      nock(formsApi.url).get('/v1/recipients').reply(200, recipients);
       nock(formsApi.url)
         .get(/\/v1\/forms\?.*$/)
         .times(1)
@@ -61,6 +69,15 @@ describe('ReportService', () => {
         .times(1)
         .reply(200, publishedForms);
       for (const form of publishedForms) {
+        nock(formsApi.url).get(`/v1/form-publications/${form.path}`).reply(200, form);
+        nock(formsApi.url)
+          .get(`/v1/forms/${form.path}/static-pdfs`)
+          .reply(
+            200,
+            formsWithUploadedPdfs.includes(form.path ?? '')
+              ? [{ id: 1, languageCode: 'nb', fileName: 'example.pdf' }]
+              : [],
+          );
         nock(formsApi.url).get(`/v1/forms/${form.path}`).reply(200, form);
         const publishedTranslations: PublishedTranslations = {
           publishedAt: form.publishedAt ?? '2025-01-28T10:00:10.325Z',
@@ -83,7 +100,7 @@ describe('ReportService', () => {
     function parseReport(content: string) {
       const allLines = content.split('\n').filter((line) => !!line);
       const forms = allLines.slice(1).map((formLine) => formLine.split(';'));
-      const headers = allLines[0].split(';');
+      const headers = allLines[0].replace(/^\uFEFF/, '').split(';');
       return {
         headers,
         forms,
@@ -93,6 +110,184 @@ describe('ReportService', () => {
     }
 
     describe('generateFormsPublishedLanguage', () => {
+      describe('PDF forms', () => {
+        it('reports uploaded PDFs separately from the STATIC_PDF submission type', async () => {
+          const createForm = (path: string, submissionTypes: FormPropertiesType['submissionTypes'] = []): Form => ({
+            title: path,
+            components: [],
+            skjemanummer: path,
+            path,
+            properties: {
+              skjemanummer: path,
+              submissionTypes,
+              subsequentSubmissionTypes: [],
+            } as unknown as FormPropertiesType,
+          });
+          const publishedForms = [
+            createForm('uploaded-only'),
+            createForm('enabled-only', ['STATIC_PDF']),
+            createForm('both', ['STATIC_PDF']),
+            createForm('neither'),
+          ];
+          setupNock(publishedForms, [], ['uploaded-only', 'both']);
+
+          const writableStream = createWritableStream();
+          await reportService.generate('all-forms-summary', writableStream);
+          const report = parseReport(writableStream.toString());
+          const pathIndex = report.getHeaderIndex('path');
+          const uploadedPdfIndex = report.getHeaderIndex('har opplastede PDF-er');
+          const staticPdfEnabledIndex = report.getHeaderIndex('STATIC_PDF aktivert');
+          const staticPdfSubsequentSubmissionUrlIndex = report.getHeaderIndex('ettersendingsurl (static PDF)');
+
+          expect(
+            report.forms.map((row) => [row[pathIndex], row[uploadedPdfIndex], row[staticPdfEnabledIndex]]),
+          ).toEqual([
+            ['uploaded-only', 'ja', 'nei'],
+            ['enabled-only', 'nei', 'ja'],
+            ['both', 'ja', 'ja'],
+            ['neither', 'nei', 'nei'],
+          ]);
+          expect(report.forms[1][staticPdfSubsequentSubmissionUrlIndex]).toBe('');
+        });
+      });
+
+      describe('nologin submission URL', () => {
+        it('reports the URL only for forms that support nologin submission', async () => {
+          const publishedForms = [
+            {
+              title: 'Nologin form',
+              components: [],
+              skjemanummer: 'TEST1',
+              path: 'nologin-form',
+              properties: {
+                skjemanummer: 'TEST1',
+                submissionTypes: ['DIGITAL_NO_LOGIN'],
+                subsequentSubmissionTypes: [],
+              } as unknown as FormPropertiesType,
+            },
+            {
+              title: 'Digital form',
+              components: [],
+              skjemanummer: 'TEST2',
+              path: 'digital-form',
+              properties: {
+                skjemanummer: 'TEST2',
+                submissionTypes: ['DIGITAL'],
+                subsequentSubmissionTypes: [],
+              } as unknown as FormPropertiesType,
+            },
+          ];
+          setupNock(publishedForms);
+
+          const writableStream = createWritableStream();
+          await reportService.generate('all-forms-summary', writableStream);
+          const report = parseReport(writableStream.toString());
+          const noLoginUrlIndex = report.getHeaderIndex('innsendingsurl (nologin)');
+
+          expect(report.forms[0][noLoginUrlIndex]).toBe(
+            'https://fyllut-preprod.intern.dev.nav.no/fyllut/nologin-form?sub=digitalnologin',
+          );
+          expect(report.forms[1][noLoginUrlIndex]).toBe('');
+        });
+      });
+
+      describe('intro page', () => {
+        it('reports whether the intro page is enabled', async () => {
+          const publishedForms = [
+            {
+              title: 'Enabled intro page',
+              components: [],
+              skjemanummer: 'TEST1',
+              path: 'enabled-intro-page',
+              introPage: {
+                enabled: true,
+                introduction: '',
+                selfDeclaration: '',
+                sections: { prerequisites: {} },
+              },
+              properties: {
+                skjemanummer: 'TEST1',
+                submissionTypes: [],
+                subsequentSubmissionTypes: [],
+              } as unknown as FormPropertiesType,
+            },
+            {
+              title: 'Disabled intro page',
+              components: [],
+              skjemanummer: 'TEST2',
+              path: 'disabled-intro-page',
+              introPage: {
+                enabled: false,
+                introduction: '',
+                selfDeclaration: '',
+                sections: { prerequisites: {} },
+              },
+              properties: {
+                skjemanummer: 'TEST2',
+                submissionTypes: [],
+                subsequentSubmissionTypes: [],
+              } as unknown as FormPropertiesType,
+            },
+          ];
+          setupNock(publishedForms);
+
+          const writableStream = createWritableStream();
+          await reportService.generate('all-forms-summary', writableStream);
+          const report = parseReport(writableStream.toString());
+          const introPageEnabledIndex = report.getHeaderIndex('introside aktivert');
+
+          expect(report.forms[0][introPageEnabledIndex]).toBe('ja');
+          expect(report.forms[1][introPageEnabledIndex]).toBe('nei');
+        });
+      });
+
+      describe('recipient address', () => {
+        it('reports standard and selected recipient addresses', async () => {
+          const publishedForms = [
+            {
+              title: 'Standard recipient',
+              components: [],
+              skjemanummer: 'TEST1',
+              path: 'standard-recipient',
+              properties: {
+                skjemanummer: 'TEST1',
+                submissionTypes: [],
+                subsequentSubmissionTypes: [],
+              } as unknown as FormPropertiesType,
+            },
+            {
+              title: 'Selected recipient',
+              components: [],
+              skjemanummer: 'TEST2',
+              path: 'selected-recipient',
+              properties: {
+                skjemanummer: 'TEST2',
+                mottaksadresseId: 'recipient',
+                submissionTypes: [],
+                subsequentSubmissionTypes: [],
+              } as unknown as FormPropertiesType,
+            },
+          ];
+          setupNock(publishedForms, [
+            {
+              recipientId: 'recipient',
+              name: 'Example office',
+              poBoxAddress: 'Postboks 123',
+              postalCode: '0123',
+              postalName: 'Oslo',
+            },
+          ]);
+
+          const writableStream = createWritableStream();
+          await reportService.generate('all-forms-summary', writableStream);
+          const report = parseReport(writableStream.toString());
+          const recipientAddressIndex = report.getHeaderIndex('mottaksadresse');
+
+          expect(report.forms[0][recipientAddressIndex]).toBe('Standard');
+          expect(report.forms[1][recipientAddressIndex]).toBe('Example office, Postboks 123, 0123 Oslo');
+        });
+      });
+
       describe('number of signatures', () => {
         const HEADER_SIGNATURES = 'signaturfelt';
 
@@ -303,8 +498,55 @@ describe('ReportService', () => {
         const writableStream = createWritableStream();
         await reportService.generate('forms-published-languages', writableStream);
         expect(writableStream.toString()).toEqual(
-          CSV_HEADER_LINE + 'TEST1;Testskjema1;nb,en,nn\nTEST2;Testskjema2;nb,en\nTEST3;Testskjema3;nb\n',
+          CSV_HEADER_LINE +
+            'TEST1;Testskjema1;nb,en,nn;Testskjema1;Testskjema1;Testskjema1\n' +
+            'TEST2;Testskjema2;nb,en;Testskjema2;;Testskjema2\n' +
+            'TEST3;Testskjema3;nb;Testskjema3;;\n',
         );
+      });
+
+      it('uses the published title when reporting translated titles', async () => {
+        const draft = {
+          title: 'Draft title',
+          components: [],
+          skjemanummer: 'TEST1',
+          path: 'test1',
+          status: 'pending',
+          properties: {
+            skjemanummer: 'TEST1',
+            submissionTypes: [],
+            subsequentSubmissionTypes: [],
+          } as unknown as FormPropertiesType,
+        };
+        const published = {
+          ...draft,
+          title: 'Published title',
+          status: 'published',
+        };
+        const translations: PublishedTranslations = {
+          publishedAt: '2025-01-28T10:00:10.325Z',
+          publishedBy: 'TEST',
+          translations: {
+            nb: {},
+            en: { 'Published title': 'English title' },
+          },
+        };
+        const api = nock(formsApi.url)
+          .get('/v1/form-publications')
+          .reply(200, [draft])
+          .get('/v1/form-publications/test1')
+          .reply(200, published)
+          .get('/v1/form-publications/test1/translations')
+          .query({ languageCodes: 'nb,nn,en' })
+          .reply(200, translations);
+
+        const writableStream = createWritableStream();
+        await reportService.generate('forms-published-languages', writableStream);
+
+        expect(writableStream.toString()).toEqual(
+          CSV_HEADER_LINE + 'TEST1;Draft title;nb,en;Published title;;English title\n',
+        );
+        expect(api.isDone()).toBe(true);
       });
 
       it('has correct attachment fields', async () => {
@@ -405,6 +647,8 @@ describe('ReportService', () => {
         const HEADER_INNSENDING_PAPER = 'innsendingsurl (papir)';
         const HEADER_ETTERSENDING = 'ettersendingsurl';
         const HEADER_ETTERSENDING_PAPER = 'ettersendingsurl (papir)';
+        const HEADER_ETTERSENDING_STATIC_PDF = 'ettersendingsurl (static PDF)';
+        const HEADER_ETTERSENDING_TYPES = 'subsequentSubmissionTypes';
 
         const publishedForms = [
           {
@@ -440,7 +684,7 @@ describe('ReportService', () => {
               tema: 'HJE',
               published: '2022-07-28T10:00:10.325Z',
               publishedLanguages: ['en', 'nn-NO'],
-              submissionTypes: ['DIGITAL', 'PAPER'],
+              submissionTypes: ['DIGITAL', 'PAPER', 'STATIC_PDF'],
               subsequentSubmissionTypes: ['DIGITAL', 'PAPER'],
             },
           } as Form,
@@ -519,12 +763,19 @@ describe('ReportService', () => {
         expect(formFields1[report.getHeaderIndex(HEADER_ETTERSENDING_PAPER)]).toBe(
           `${ettersendingBaseUrl}/test1?sub=paper`,
         );
+        expect(formFields1[report.getHeaderIndex(HEADER_ETTERSENDING_STATIC_PDF)]).toBe(
+          `${fyllutBaseUrl}/test1/pdf?type=ettersending`,
+        );
+        expect(formFields1[report.getHeaderIndex(HEADER_ETTERSENDING_TYPES)]).toBe(
+          '"[""DIGITAL"",""PAPER"",""STATIC_PDF""]"',
+        );
 
         // innsending: INGEN, ettersending: KUN_PAPIR, 0 attachments
         expect(formFields2[report.getHeaderIndex(HEADER_INNSENDING)]).toBe(`${fyllutBaseUrl}/test2`);
         expect(formFields2[report.getHeaderIndex(HEADER_INNSENDING_PAPER)]).toBe(`${fyllutBaseUrl}/test2`);
         expect(formFields2[report.getHeaderIndex(HEADER_ETTERSENDING)]).toBe(``); // no attachments
         expect(formFields2[report.getHeaderIndex(HEADER_ETTERSENDING_PAPER)]).toBe(``);
+        expect(formFields2[report.getHeaderIndex(HEADER_ETTERSENDING_STATIC_PDF)]).toBe('');
 
         // innsending: KUN_PAPIR, ettersending: KUN_PAPIR, 1 attachments
         expect(formFields3[report.getHeaderIndex(HEADER_INNSENDING)]).toBe(`${fyllutBaseUrl}/test3`);
@@ -533,6 +784,7 @@ describe('ReportService', () => {
         expect(formFields3[report.getHeaderIndex(HEADER_ETTERSENDING_PAPER)]).toBe(
           `${ettersendingBaseUrl}/test3?sub=paper`,
         );
+        expect(formFields3[report.getHeaderIndex(HEADER_ETTERSENDING_STATIC_PDF)]).toBe('');
       });
 
       it('does not include testform', async () => {
@@ -564,7 +816,9 @@ describe('ReportService', () => {
 
         const writableStream = createWritableStream();
         await reportService.generate('forms-published-languages', writableStream);
-        expect(writableStream.toString()).toEqual(CSV_HEADER_LINE + 'TEST1;Testskjema1;en,nn\n');
+        expect(writableStream.toString()).toEqual(
+          CSV_HEADER_LINE + 'TEST1;Testskjema1;en,nn;;Testskjema1;Testskjema1\n',
+        );
       });
 
       it('fails if unknown report', async () => {

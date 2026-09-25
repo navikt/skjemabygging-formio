@@ -37,9 +37,7 @@ const ReportsPage = () => {
             <ul>
               {reports?.map((report) => (
                 <li key={report.id}>
-                  <a href={`${reportUrlPrefix}/api/reports/${report.id}`} target="_blank" rel="noreferrer">
-                    {report.title}
-                  </a>
+                  <a href={`${reportUrlPrefix}/api/reports/${report.id}`}>{report.title}</a>
                 </li>
               ))}
             </ul>
