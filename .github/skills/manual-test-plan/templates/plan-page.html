@@ -241,8 +241,12 @@
                 outline-offset: 4px;
             }
             @media print {
+                .page-tools,
+                .cleanup-checklist input {
+                    display: none;
+                }
                 details {
-                    break-inside: avoid;
+                    break-inside: auto;
                 }
                 details > div {
                     display: block;
@@ -257,6 +261,12 @@
         </main>
         <script>
             (() => {
+                if (new URLSearchParams(location.search).has('print')) {
+                    document.querySelectorAll('details').forEach((item) => {
+                        item.removeAttribute('name');
+                        item.open = true;
+                    });
+                }
                 const root = document.documentElement;
                 const toggle = document.getElementById('theme-toggle');
                 const state = document.getElementById('theme-state');

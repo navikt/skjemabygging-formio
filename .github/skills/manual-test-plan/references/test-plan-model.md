@@ -15,7 +15,13 @@ formats.
             "FyllUt viser avsender og bruker som ulike personer i oppsummeringen.",
             "Hvilke personer mottakeren registrerer, kontrolleres i teamloggene eller Joark når en med tilgang følger opp innsendingen."
         ],
-        "excluded": ["Endringer i Sendinn er ikke del av denne pull requesten."]
+        "excluded": ["Endringer i Sendinn er ikke del av denne pull requesten."],
+        "notCoveredByTests": [
+            {
+                "area": "Feil ved utilgjengelig innsending-api",
+                "reason": "Kan ikke fremprovoseres pålitelig i delt preprod; dekkes av automatiserte feiltester."
+            }
+        ]
     },
     "collaboration": {
         "withNonDevelopers": true
@@ -65,8 +71,8 @@ formats.
                         "id": "team-logs",
                         "audience": "public",
                         "method": "Teamlogger i GCP",
-                        "owner": "Utvikler med tilgang til team-soknad-dev",
-                        "url": "https://console.cloud.google.com/logs?project=team-soknad-dev",
+                        "owner": "Utvikler med tilgang til team-soknad-dev-ee5e",
+                        "url": "https://console.cloud.google.com/logs/query?project=team-soknad-dev-ee5e",
                         "instructions": [
                             "Velg tidsrom rundt testtidspunktet og finn samme innsending i loggene fra innsending-api og soknadsarkiverer. Søk på innsendings-ID hvis den er kjent, ellers skjemanummer og tidspunkt.",
                             "Noter hva hver tjeneste viser. Hvis loggene viser begge identitetene for samme innsending, sammenlign bruker med Dine opplysninger og avsender med Avsender. Hvis loggene bare viser status, bruk Joark eller be om etterkontroll."
@@ -87,7 +93,7 @@ formats.
                     {
                         "id": "handoff",
                         "audience": "public",
-                        "method": "Ingen tilgang til teamlogger eller Joark",
+                        "method": "Overlevering",
                         "owner": "Tester uten innsyn",
                         "instructions": [
                             "Noter miljø, testtid med tidssone, skjemanummer og skjemasti, innsendingsmåte, begge syntetiske identiteter med hver sin rolle, og det som vises på kvitteringen.",
@@ -140,15 +146,14 @@ formats.
                 "note": "Kildene viser ikke rekkefølgen på dette skjemaets paneler etter introduksjonen. Testeren skal notere sidene som vises.",
                 "evidence": ["Eksempel: ingen matchende kilde for panelrekkefølgen i denne skjemarevisjonen."]
             },
-            "prerequisites": ["Ha to godkjente syntetiske identiteter og en syntetisk legitimasjonsfil tilgjengelig."],
-            "testUsers": ["Bruker og avsender må være to ulike syntetiske personer."],
+            "prerequisites": ["Ha legitimasjonsfil og to ulike testidentiteter klare."],
             "steps": [
                 {
                     "action": "Velg «Send digitalt uten å logge inn».",
                     "expected": "Noter om «Legitimasjon» vises."
                 },
                 {
-                    "action": "Velg legitimasjonstype, last opp den syntetiske legitimasjonsfilen og gå videre.",
+                    "action": "Velg legitimasjonstype, last opp legitimasjonsfilen og gå videre.",
                     "expected": "Noter bekreftelsen på opplastingen og hvilken side som vises videre."
                 },
                 {
@@ -182,9 +187,12 @@ formats.
 
 - `slug` must contain lowercase letters, numbers, and hyphens only.
 - `collaboration.withNonDevelopers` records the caller's answer. `true` produces
-  HTML and Slack Canvas. `false` produces a GitHub issue document.
+  a local PDF and HTML rendering source. `false` produces a GitHub issue document.
 - Use `scope.included` and `scope.excluded` to separate implemented PR behavior
   from criteria that remain for later work. The renderer shows both to testers.
+- `scope.notCoveredByTests` lists in-scope behavior or edge cases without a
+  manual case, each with a concrete `area` and `reason`. Use an empty array
+  when nothing is omitted. Do not use `scope.excluded` for test coverage gaps.
 - `source.commitSha` must be the exact 40-character commit under test.
 - `source.type` must be `pull-request`. `source.number` and `source.url` must
   identify the implementation pull request, even when the skill started from an
@@ -237,10 +245,11 @@ formats.
   in a browser. Its expected results
   must come from confirmed intent, an established contract, or unchanged
   baseline behavior. A suspected defect will usually make the case fail.
-- An exploratory case records observations for an open question or an
-  unmapped transition. It must not assert transitions unsupported by
-  sources or observation. Once the route is mapped or observed, update
-  its expected results before
+- An exploratory case can investigate a confirmed behavior, an open question,
+  or an unmapped transition. It still needs precise steps and must not assert
+  unsupported transitions. Describe what the tester should observe and record;
+  trust the tester's judgment rather than inventing a pass criterion. Once the
+  route and intended outcome are confirmed, update the expected results before
   changing the case to verification.
 - Priorities are `P0`, `P1`, `P2`, or `P3`.
 - `formId` must reference an entry in `forms`.
@@ -259,13 +268,12 @@ formats.
   browser observation for an observed route. It must be nonempty for `verified`
   and `source-mapped`. For generated
   forms, check the exact JSON before import and the imported revision before
-  publication. Two cases using one form may have different route statuses.
+  sharing. Two cases using one form may have different route statuses.
   Metadata, schema checks, a similar form's Cypress test, and HTTP 200
-  alone do not map or verify a route. Compare all rendered HTML and
-  Canvas steps with that case's source map or trace.
-- The exploratory case above illustrates an unresolved route. Do not use it
-  as the default for a case with complete source coverage. A source-mapped
-  verification case instead uses `"mode": "verification"` and
+  alone do not map or verify a route. Compare all rendered PDF or
+  issue steps with that case's source map or trace.
+- The exploratory case above illustrates an unresolved route. A source-mapped
+  verification case uses `"mode": "verification"` and
   `"journeyCheck": {"status": "source-mapped", ...}` with the actual form
   revision and matching source locations in `evidence`. Its first step
   checks that the entry page and branch match the mapped route in preprod.
@@ -274,15 +282,20 @@ formats.
 - Omit generic test-user instructions. Use `testUsers` only for cases that need
   a user with specific attributes, and describe those attributes as part of the
   case setup.
-- Each step has one action and one observable expected result.
+- Each step has one action. Give it an observable expected result only when
+  the case tests that result.
+- Keep all actions needed to follow the journey, but include `expected` only
+  where the case tests an outcome. A verification case needs at least one.
+  Navigation alone does not need a separate assessment. Keep sentences short.
+  The PDF gives the synthetic-data reminder once; do not repeat it in each case.
 - Put a shell command in the optional `steps[].command` field, not in prose
-  or `evidence`. The renderer uses a copyable code block in the issue and
-  Canvas. Put deletion of local files or state in `cleanup`, not `evidence`.
+  or `evidence`. The renderer uses a code block in the PDF or issue.
+  Put deletion of local files or state in `cleanup`, not `evidence`.
 - `setupActions` must not contain application deployment instructions.
 - Do not include secrets or real personal data. The team may share approved
   synthetic identity numbers in its test notes to identify a submission;
   public artifacts contain instructions, not filled-in identity numbers.
-- Write fields rendered in public HTML, Slack Canvas, or GitHub issues in
+- Write fields rendered in PDFs or GitHub issues in
   Norwegian, with terminology from the application, forms, issue, and approved
   specification. Write `internal` setup and evidence fields in English. The
   canonical JSON contains both audiences, so shared fields used by the public

@@ -27,7 +27,7 @@ before naming `Veiledning`, `Dine opplysninger`, `Avsender`, or other
 pages. Do not copy one test's panel order to another form. If the
 sources cannot establish the sequence, tell the tester which page to
 inspect after upload, what to record, and mark that transition exploratory.
-Request approval before uploading a synthetic ID in preprod.
+Use a synthetic ID when uploading in preprod.
 Keep the chosen identities distinct when checking the summary.
 
 Do not treat a receipt as evidence of the identities sent downstream.

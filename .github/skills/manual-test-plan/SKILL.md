@@ -4,8 +4,8 @@ description: >-
     Analyze an issue and its implementation pull request, or a pull request when
     no issue exists, and create a manual test plan for skjemabygging-formio,
     including suitable production or generated forms, environment revision
-    verification, a GitHub issue, and optional GitHub Pages and Slack Canvas
-    artifacts. Accept an issue number after /manual-test-plan. Use only when
+    verification, a GitHub issue for developer-only testing, or a PDF for
+    testing with non-developers. Accept an issue number after /manual-test-plan. Use only when
     the user explicitly invokes /manual-test-plan.
 disable-model-invocation: true
 ---
@@ -73,7 +73,7 @@ issue. Do not infer the target solely from the current branch.
    Make unresolved transitions explicit observation steps for the tester;
    do not require Cypress to run in cplt. For digital submission without login, also read
    [digital-no-login-journey.md](references/digital-no-login-journey.md).
-10. Write tester-facing HTML, Slack Canvas, and GitHub issue content in
+10. Write tester-facing PDF and GitHub issue content in
     Norwegian, using terms from FyllUt, Bygger, the form, and the issue. Ask
     technical users questions in English. Keep local technical instructions
     and documentation in English. Follow
@@ -86,35 +86,43 @@ issue. Do not infer the target solely from the current branch.
       --out <artifact-directory>
     ```
 
-    When generating HTML and Slack Canvas, supply `--page-url` if the Pages
-    URL differs from the default `https://<owner>.github.io/<repo>/manual-tests/<slug>`.
-    Publication checks the URL against the Pages site and manifest slug.
+    For collaboration, the renderer uses Chrome or Chromium to print the
+    complete plan to `test-plan.pdf`. Set `CHROME_PATH` if needed. Keep the
+    HTML source and canonical JSON local; share only the reviewed PDF
+    alongside the Trello task.
 
 12. Read [collaborative-output.md](references/collaborative-output.md) and
     produce the output for the caller's collaboration choice.
-13. Review public artifacts for sensitive content and redact or omit it before
-    asking once whether to publish the HTML or create the issue. For every case,
-    compare every rendered HTML, Canvas, or issue step with that case's
+13. Review the PDF or issue for sensitive content and redact or omit it before
+    asking once whether to share the PDF or create the issue.
+    For every case, compare every rendered PDF or issue step with that case's
     source map or a recorded manual browser observation, including required
     actions and intermediate pages. Label source-mapped routes as untested in
     preprod. If a transition lacks support, give the tester an exact
     observation task and mark that part exploratory. Keep independently
     supported cases as verification cases. Reject conditional wording for
-    mandatory actions and unsupported downstream claims. Show the caller the entire
-    rendered GitHub issue body before requesting approval. Keep `internal`
+    mandatory actions and unsupported downstream claims. On the GitHub
+    issue path, show the caller the entire rendered issue body before
+    requesting approval. On the collaborative path, review every page of the
+    PDF and confirm that all steps and coverage gaps are legible. Keep `internal`
     setup and evidence only in the local internal-instructions file; never
     substitute vague placeholders in public output.
+    Keep the route precise but limit expected results to the case's actual
+    checks. Write short tester-facing sentences. The PDF gives the
+    synthetic-data reminder once; do not repeat it in each case.
 14. For approved form changes, follow
     [forms-api-import.md](references/forms-api-import.md) and use each script's
     operation-bound confirmation. Recheck the form revision, conditional
     choices, and mapped steps after import; update the plan and rendered
     artifacts if they differ. Do not ask again about the full form list.
-15. Use the scripts to publish the page or create the issue after the one
-    publication confirmation. Require maintainer approval before enabling
-    public Pages. Never publish Canvas or form definitions to `gh-pages`.
-16. Give the caller local links to every generated file. Share a Pages or
-    issue URL only after it resolves to the published artifact; never call
-    an unpublished page or link ready for testers.
+15. Create the issue only after explicit confirmation. With non-developers,
+    give the caller the reviewed local PDF to share alongside a Trello task for
+    ownership and progress tracking; do not create a GitHub issue or publish
+    anything to GitHub Pages. Confirm before uploading or attaching a PDF
+    to a Trello task. Do not claim the PDF is available to testers until it
+    has been shared through an approved channel.
+16. Give the caller local links to generated files. Share an issue URL only
+    after the issue has been created.
 
 ## Output requirements
 
@@ -125,10 +133,13 @@ Every test case must include:
 - links to the behaviors it covers
 - purpose and priority
 - prerequisites and any required test-user attributes
-- numbered actions with an expected result for each meaningful step
+- precise numbered actions; expected results for the outcomes being checked
 - evidence to retain
 - cleanup when the case changes shared state
 - the production or generated form used
+
+The plan must also include a short coverage section naming what the cases do
+not test and why, separate from functionality outside the pull request.
 
 Use [analysis-workflow.md](references/analysis-workflow.md) for expected
 results, exploratory cases, regression coverage, and the repeated environment
@@ -139,19 +150,17 @@ for outbound payloads.
 
 - Use synthetic identities and organizations approved for testing.
 - The team may share approved synthetic identity numbers to correlate test
-  submissions. Do not publish filled-in identities on public GitHub Pages
-  or in a public issue.
+  submissions. Do not put filled-in identities in a PDF or public issue.
 - Never put access tokens, cookies, secrets, real personal data, private
   source content, or security-sensitive details in generated artifacts.
-- This repository is public. Pages would be public if enabled. Follow the
-  review and maintainer-approval gate in
+- This repository is public. Follow the review gate in
   [collaborative-output.md](references/collaborative-output.md).
 - `preprod` and `preprod-alt` share the same Forms API instance. Form creates,
   imports, updates, and deletions affect both.
-- Do not import a form, create an issue, or push `gh-pages` without explicit
+- Do not import a form, create an issue, or upload a PDF without explicit
   confirmation.
-- Never put full generated form definitions on GitHub Pages or in a GitHub
-  issue. Keep them in the session artifact directory.
+- Never put full generated form definitions in a PDF or GitHub issue.
+  Keep them in the session artifact directory.
 - Keep generated plans in the session artifact directory unless the caller
   explicitly requests repository files.
 

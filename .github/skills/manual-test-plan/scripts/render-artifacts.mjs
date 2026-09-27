@@ -1,19 +1,22 @@
 #!/usr/bin/env node
 
+import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import {
   copyFileSync,
   existsSync,
   lstatSync,
   mkdirSync,
+  mkdtempSync,
   readdirSync,
   readFileSync,
   realpathSync,
   rmSync,
   writeFileSync,
 } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const scriptDirectory = dirname(fileURLToPath(import.meta.url));
 const skillDirectory = resolve(scriptDirectory, '..');
@@ -30,17 +33,20 @@ const getArgument = (name) => {
 
 if (process.argv.includes('--help') || process.argv.includes('-h')) {
   process.stdout.write(`Usage:
-  node render-artifacts.mjs --plan <plan.json> --out <directory> [--page-url <url>]
+  node render-artifacts.mjs --plan <plan.json> --out <directory>
 
-Generates either index.html and slack-canvas.md, or github-issue.md, plus
-manifest.json and any generated form files.
+Generates either a local PDF and its HTML source, or github-issue.md, plus
+manifest.json and any generated form files. Set CHROME_PATH if Chrome or
+Chromium is not on PATH or in the standard macOS location.
 `);
   process.exit(0);
 }
 
 const planArgument = getArgument('--plan');
 const outputArgument = getArgument('--out');
-const configuredPageUrl = getArgument('--page-url');
+if (process.argv.includes('--page-url')) {
+  fail('--page-url is no longer supported; collaborative plans are local PDFs');
+}
 
 if (!planArgument || !outputArgument) {
   fail('--plan and --out are required');
@@ -95,12 +101,19 @@ if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(plan.slug)) {
 }
 asNonEmptyString(plan.title, 'title');
 asNonEmptyString(plan.summary, 'summary');
-if (plan.scope !== undefined) {
-  if (!plan.scope || typeof plan.scope !== 'object') {
-    fail('scope must contain included and excluded lists');
-  }
+if (!plan.scope || typeof plan.scope !== 'object') {
+  fail('scope must contain included, excluded, and notCoveredByTests lists');
+}
+{
   asStringArray(plan.scope.included, 'scope.included');
   asStringArray(plan.scope.excluded, 'scope.excluded');
+  if (!Array.isArray(plan.scope.notCoveredByTests)) {
+    fail('scope.notCoveredByTests must be an array');
+  }
+  for (const [index, gap] of plan.scope.notCoveredByTests.entries()) {
+    asNonEmptyString(gap.area, `scope.notCoveredByTests[${index}].area`);
+    asNonEmptyString(gap.reason, `scope.notCoveredByTests[${index}].reason`);
+  }
 }
 if (!plan.collaboration || typeof plan.collaboration.withNonDevelopers !== 'boolean') {
   fail('collaboration.withNonDevelopers must be a boolean');
@@ -376,13 +389,6 @@ for (const [index, testCase] of plan.testCases.entries()) {
   ) {
     fail(`${prefix} verification cases require high-confidence behaviors without open questions`);
   }
-  if (
-    testCase.mode === 'exploratory' &&
-    journeyCheck.status !== 'unverified' &&
-    linkedBehaviors.some((behavior) => behavior.status !== 'open-question')
-  ) {
-    fail(`${prefix} exploratory cases with mapped journeys may reference only open-question behaviors`);
-  }
   if (!['P0', 'P1', 'P2', 'P3'].includes(testCase.priority)) {
     fail(`${prefix}.priority must be P0, P1, P2, or P3`);
   }
@@ -404,10 +410,15 @@ for (const [index, testCase] of plan.testCases.entries()) {
   }
   for (const [stepIndex, step] of testCase.steps.entries()) {
     asNonEmptyString(step.action, `${prefix}.steps[${stepIndex}].action`);
-    asNonEmptyString(step.expected, `${prefix}.steps[${stepIndex}].expected`);
+    if (step.expected !== undefined) {
+      asNonEmptyString(step.expected, `${prefix}.steps[${stepIndex}].expected`);
+    }
     if (step.command !== undefined) {
       asNonEmptyString(step.command, `${prefix}.steps[${stepIndex}].command`);
     }
+  }
+  if (testCase.mode === 'verification' && !testCase.steps.some((step) => step.expected?.trim())) {
+    fail(`${prefix} verification cases require at least one expected result`);
   }
 }
 for (const integrationId of integrations.keys()) {
@@ -450,27 +461,23 @@ const journeyStatusLabels = {
   unverified: 'Testløpet er ikke kartlagt',
 };
 const evidenceUrl = (url) => asHttpUrl(url, 'evidence.url').replaceAll('(', '%28').replaceAll(')', '%29');
-const scopeHtml = plan.scope
-  ? `<section class="card">
-      <h2>Hva testplanen dekker</h2>
+const coverageGapsHtml = plan.scope.notCoveredByTests.length
+  ? `<ul>${plan.scope.notCoveredByTests.map((gap) => `<li>${escapeHtml(gap.area)}: ${escapeHtml(gap.reason)}</li>`).join('')}</ul>`
+  : '<p>Ingen kjente hull i testtilfellene.</p>';
+const scopeHtml = `<section class="card">
+      <h2>Dekning</h2>
       ${plan.scope.included.length ? `<h3>Dette testes</h3>${list(plan.scope.included)}` : ''}
-      ${plan.scope.excluded.length ? `<h3>Ikke dekket av denne endringen</h3>${list(plan.scope.excluded)}` : ''}
-    </section>`
-  : '';
-const scopeMarkdown = plan.scope
-  ? `## Hva testplanen dekker
+      <h3>Ikke dekket av testtilfellene</h3>${coverageGapsHtml}
+      ${plan.scope.excluded.length ? `<h3>Utenfor denne endringen</h3>${list(plan.scope.excluded)}` : ''}
+    </section>`;
+const scopeMarkdown = `## Dekning
 
 ${plan.scope.included.length ? `**Dette testes:**\n${plan.scope.included.map((item) => `- ${escapeMarkdown(item)}`).join('\n')}` : ''}
 
-${plan.scope.excluded.length ? `**Ikke dekket av denne endringen:**\n${plan.scope.excluded.map((item) => `- ${escapeMarkdown(item)}`).join('\n')}` : ''}`
-  : '';
+**Ikke dekket av testtilfellene:**
+${plan.scope.notCoveredByTests.length ? plan.scope.notCoveredByTests.map((gap) => `- ${escapeMarkdown(gap.area)}: ${escapeMarkdown(gap.reason)}`).join('\n') : 'Ingen kjente hull i testtilfellene.'}
 
-if (configuredPageUrl) {
-  asHttpUrl(configuredPageUrl, '--page-url');
-}
-const [sourceOwner, sourceRepositoryName] = sourceRepository.split('/');
-const defaultPageUrl = `https://${sourceOwner}.github.io/${sourceRepositoryName}/manual-tests/${plan.slug}`;
-const pageUrl = configuredPageUrl?.replace(/\/$/, '') || defaultPageUrl;
+${plan.scope.excluded.length ? `**Utenfor denne endringen:**\n${plan.scope.excluded.map((item) => `- ${escapeMarkdown(item)}`).join('\n')}` : ''}`;
 
 const sourceNumber = plan.source.number ? ` #${escapeHtml(plan.source.number)}` : '';
 const publicSetupActions = plan.setupActions.filter((action) => action.audience === 'public');
@@ -518,13 +525,22 @@ const behaviorConfidenceLabels = {
   medium: 'Middels',
   low: 'Lav',
 };
-const renderIntegrationEvidenceHtml = (integration, option) => `<section class="integration-evidence">
-  <h3>${escapeHtml(integration.system)}: ${escapeHtml(option.method)}</h3>
+const verificationOptionTitle = (option) =>
+  ({ 'team-logs': 'Teamlogger i GCP', joark: 'Journalpost i Joark', handoff: 'Overlevering' })[option.id] ??
+  option.method;
+const renderIntegrationEvidenceHtml = (
+  option,
+  groupName,
+  open,
+) => `<details name="${groupName}" class="integration-evidence"${open ? ' open' : ''}>
+  <summary>${escapeHtml(verificationOptionTitle(option))}</summary>
+  <div>
   <p><strong>Hvem:</strong> ${escapeHtml(option.owner)}</p>
-  ${option.url ? `<p><a href="${escapeHtml(option.url)}">Åpne ${escapeHtml(option.method)}</a></p>` : ''}
+  ${option.url ? `<p><a href="${escapeHtml(option.url)}">Åpne ${escapeHtml(verificationOptionTitle(option))}</a></p>` : ''}
   <ol>${option.instructions.map((step) => `<li>${escapeHtml(step)}</li>`).join('')}</ol>
   <p><strong>Forventet:</strong> ${escapeHtml(option.expected)}</p>
-</section>`;
+  </div>
+</details>`;
 const behaviorsHtml = `<ol class="behavior-list">
   ${plan.behaviorAnalysis
     .map(
@@ -555,10 +571,15 @@ const casesHtml = plan.testCases
     const form = plan.forms.find((candidate) => candidate.id === testCase.formId);
     const testUsers = testCase.testUsers ?? [];
     const publicIntegrationEvidence = (testCase.integrationIds ?? [])
-      .map((id) => integrations.get(id))
-      .flatMap((integration) =>
-        publicIntegrationOptions(integration).map((option) => renderIntegrationEvidenceHtml(integration, option)),
-      )
+      .map((id) => {
+        const options = publicIntegrationOptions(integrations.get(id));
+        if (!options.length) return '';
+        const groupName = `verification-${testCase.id}-${id}`;
+        return `<section class="verification-group">
+          <h3>${options.length > 1 ? 'Velg kontrollmåte' : 'Kontroller resultatet'}</h3>
+          ${options.map((option) => renderIntegrationEvidenceHtml(option, groupName, options.length === 1)).join('')}
+        </section>`;
+      })
       .join('');
     const priorityLabels = {
       P0: 'P0 - må testes',
@@ -581,28 +602,29 @@ const casesHtml = plan.testCases
           <span class="badge">${escapeHtml(priorityLabels[testCase.priority])}</span>
           <span class="badge">${escapeHtml(testCase.group)}</span>
           <span class="badge">${caseModeLabel(testCase)}</span>
+          ${testCase.journeyCheck.status === 'verified' ? '' : `<span class="badge">${escapeHtml(journeyStatusLabels[testCase.journeyCheck.status])}</span>`}
         </div>
         <p>${escapeHtml(testCase.purpose)}</p>
-        <p class="muted"><strong>Bakgrunn for testen:</strong> ${testCase.behaviorIds
-          .map((id) => `<a href="#${id.toLowerCase()}"><code>${escapeHtml(id)}</code></a>`)
-          .join(', ')}</p>
         ${form ? `<p><strong>Skjema:</strong> ${escapeHtml(form.title)}</p>${formLinks}` : ''}
-        <p><strong>Testløp:</strong> ${escapeHtml(testCase.journeyCheck.route)}. ${escapeHtml(journeyStatusLabels[testCase.journeyCheck.status])}: ${escapeHtml(testCase.journeyCheck.note)}</p>
-        <h3>Før du starter</h3>
-        ${list(testCase.prerequisites)}
+        <p><strong>Testløp:</strong> ${escapeHtml(testCase.journeyCheck.route)}</p>
+        <details class="secondary-section">
+          <summary>Om testløpet</summary>
+          <div><p>${escapeHtml(journeyStatusLabels[testCase.journeyCheck.status])}: ${escapeHtml(testCase.journeyCheck.note)}</p>
+          <p>Bakgrunn: ${testCase.behaviorIds
+            .map((id) => `<a href="#${id.toLowerCase()}"><code>${escapeHtml(id)}</code></a>`)
+            .join(', ')}</p></div>
+        </details>
+        ${testCase.prerequisites.length ? `<h3>Før du starter</h3>${list(testCase.prerequisites)}` : ''}
         ${testUserHtml}
         <h3>Steg</h3>
         <ol>${testCase.steps
           .map(
             (step) =>
-              `<li class="step">${escapeHtml(step.action)}${step.command ? `<pre><code>${escapeHtml(step.command)}</code></pre>` : ''}<div class="expected"><strong>Forventet:</strong> ${escapeHtml(
-                step.expected,
-              )}</div></li>`,
+              `<li class="step">${escapeHtml(step.action)}${step.command ? `<pre><code>${escapeHtml(step.command)}</code></pre>` : ''}${step.expected ? `<div class="expected"><strong>Forventet:</strong> ${escapeHtml(step.expected)}</div>` : ''}</li>`,
           )
           .join('')}</ol>
-        <h3>Dokumentasjon</h3>
-        ${list(testCase.evidence)}
-        ${publicIntegrationEvidence ? `<h3>Kontroll av integrasjoner</h3>${publicIntegrationEvidence}` : ''}
+        ${testCase.evidence.length ? `<h3>Noter</h3>${list(testCase.evidence)}` : ''}
+        ${publicIntegrationEvidence}
       </div>
     </details>`;
   })
@@ -653,15 +675,11 @@ const body = `<div class="page-tools">
   </div>
   <h1>${escapeHtml(plan.title)}</h1>
   <p>${escapeHtml(plan.summary)}</p>
+  <p>Bruk bare syntetiske personopplysninger og filer.</p>
   ${scopeHtml}
   <section class="card preflight">
-    <h2>Kontroller versjonen hver gang du starter testingen</h2>
-    <ol>
-      <li>Åpne <a href="${escapeHtml(revisionEndpoint)}">miljøinformasjonen</a>.</li>
-      <li>Finn <code>${escapeHtml(revisionField)}</code>.</li>
-      <li>Kontroller at verdien er <code>${escapeHtml(expectedCommit)}</code>.</li>
-    </ol>
-    <p><strong>Stopp hvis verdien er annerledes.</strong> Be utvikleren legge ut riktig versjon, og kontroller på nytt.</p>
+    <h2>Sjekk versjonen før du tester</h2>
+    <p>Åpne <a href="${escapeHtml(revisionEndpoint)}">miljøinformasjonen</a>. Sjekk at <code>${escapeHtml(revisionField)}</code> er <code>${escapeHtml(expectedCommit)}</code>. Hvis ikke, be utvikleren legge ut riktig versjon.</p>
   </section>
   ${setupSection}
   <h2>Testoppgaver</h2>
@@ -683,64 +701,6 @@ const html = htmlTemplate
   .replace('{{TITLE}}', () => escapeHtml(plan.title))
   .replace('{{BODY}}', () => body)
   .replace('{{GENERATED_AT}}', () => escapeHtml(generatedAt));
-
-const slackCases = plan.testCases
-  .map((testCase) => {
-    const form = plan.forms.find((candidate) => candidate.id === testCase.formId);
-    const publicIntegrationEvidence = testCase.integrationIds
-      .map((id) => integrations.get(id))
-      .flatMap((integration) =>
-        publicIntegrationOptions(integration).map(
-          (option) => `  Kontroll av ${escapeMarkdown(integration.system)}: ${escapeMarkdown(option.method)}
-  Hvem: ${escapeMarkdown(option.owner)}
-${option.url ? `  Lenke: ${evidenceUrl(option.url)}\n` : ''}
-${option.instructions.map((step, index) => `  ${index + 1}. ${escapeMarkdown(step)}`).join('\n')}
-  Forventet: ${escapeMarkdown(option.expected)}`,
-        ),
-      )
-      .join('\n');
-    const links = form
-      ? `  Skjema: ${internBaseUrl}/${encodeURIComponent(form.path)} eller ${ansattBaseUrl}/${encodeURIComponent(
-          form.path,
-        )}\n`
-      : '';
-    return `- [ ] *${testCase.id}: ${escapeMarkdown(testCase.title)}* (${testCase.priority})
-  Område: ${escapeMarkdown(testCase.group)}
-  Type: ${caseModeLabel(testCase)}
-  Formål: ${escapeMarkdown(testCase.purpose)}
-  Tester:
-${links}  Før du starter: ${testCase.prerequisites.map(escapeMarkdown).join('; ') || 'Ingen ekstra forutsetninger.'}
-  Testløp: ${escapeMarkdown(testCase.journeyCheck.route)}. ${journeyStatusLabels[testCase.journeyCheck.status]}: ${escapeMarkdown(testCase.journeyCheck.note)}
-${testCase.testUsers.length ? `  Testbruker: ${testCase.testUsers.map(escapeMarkdown).join('; ')}\n` : ''}  Steg:
-${testCase.steps.map((step, index) => `  ${index + 1}. ${escapeMarkdown(step.action)}${step.command ? `\n${shellBlock(step.command)}` : ''}\n     Forventet: ${escapeMarkdown(step.expected)}`).join('\n')}
-  Dokumentasjon: ${testCase.evidence.map(escapeMarkdown).join('; ') || 'Noter resultatet.'}
-${publicIntegrationEvidence ? `${publicIntegrationEvidence}\n` : ''}
-Resultat og merknader:`;
-  })
-  .join('\n\n');
-const slackSetup = publicSetupActions
-  .map(
-    (item) => `*${escapeMarkdown(item.title)}*
-${item.steps.map((step, index) => `${index + 1}. ${escapeMarkdown(step)}`).join('\n')}
-Forventet: ${escapeMarkdown(item.expected)}
-Kontroller: ${item.verification.map(escapeMarkdown).join('; ')}
-${item.sharedStateWarning ? `Delt tilstand: ${escapeMarkdown(item.sharedStateWarning)}` : ''}`,
-  )
-  .join('\n\n');
-const slackTemplate = readFileSync(join(skillDirectory, 'templates', 'slack-canvas.md'), 'utf8');
-const slack = slackTemplate
-  .replace('{{TITLE}}', () => escapeMarkdown(plan.title))
-  .replace('{{SUMMARY}}', () => escapeMarkdown(plan.summary))
-  .replace('{{SCOPE}}', () => scopeMarkdown)
-  .replace('{{SETUP}}', () => slackSetup || 'Ingen ekstra oppsett.')
-  .replace('{{REVISION_ENDPOINT}}', () => revisionEndpoint)
-  .replace('{{REVISION_FIELD}}', () => escapeMarkdown(revisionField))
-  .replace('{{EXPECTED_COMMIT}}', () => expectedCommit)
-  .replace('{{CASES}}', () => slackCases)
-  .replace(
-    '{{CLEANUP}}',
-    () => publicCleanup.map((step) => `- [ ] ${escapeMarkdown(step)}`).join('\n') || 'Ingen opprydding nødvendig.',
-  );
 
 const issueBehaviors = plan.behaviorAnalysis
   .map(
@@ -799,7 +759,7 @@ const issueCases = plan.testCases
       .map((id) => integrations.get(id))
       .flatMap((integration) =>
         publicIntegrationOptions(integration).map(
-          (option) => `**Kontroll av ${escapeMarkdown(integration.system)}: ${escapeMarkdown(option.method)}**
+          (option) => `**${escapeMarkdown(verificationOptionTitle(option))}**
 
 **Hvem:** ${escapeMarkdown(option.owner)}
 
@@ -830,7 +790,7 @@ ${formText}
 **Før du starter:** ${testCase.prerequisites.map(escapeMarkdown).join('; ') || 'Ingen ekstra forutsetninger.'}
 ${testUserText}
 **Steg:**
-${testCase.steps.map((step, index) => `${index + 1}. ${escapeMarkdown(step.action)}\n\n${step.command ? `${shellBlock(step.command)}\n\n` : ''}**Forventet:** ${escapeMarkdown(step.expected)}`).join('\n\n')}
+${testCase.steps.map((step, index) => `${index + 1}. ${escapeMarkdown(step.action)}${step.command ? `\n\n${shellBlock(step.command)}` : ''}${step.expected ? `\n\n**Forventet:** ${escapeMarkdown(step.expected)}` : ''}`).join('\n\n')}
 
 **Dokumentasjon:** ${testCase.evidence.map(escapeMarkdown).join('; ') || 'Noter resultatet.'}
 ${publicIntegrationEvidence ? `\n${publicIntegrationEvidence}` : ''}`;
@@ -840,6 +800,8 @@ ${publicIntegrationEvidence ? `\n${publicIntegrationEvidence}` : ''}`;
 const issue = `# ${escapeMarkdown(plan.title)}
 
 ${escapeMarkdown(plan.summary)}
+
+Bruk bare syntetiske personopplysninger og filer.
 
 ${scopeMarkdown}
 
@@ -916,7 +878,7 @@ const internalInstructions =
   internalSetup || internalIntegrationEvidence
     ? `# Internal instructions for PR #${plan.source.number}
 
-Do not publish this file to GitHub Pages or in a public GitHub issue.
+Do not attach this file to Trello or publish it in a GitHub issue.
 
 ${internalSetup ? `## Internal setup\n\n${internalSetup}` : ''}
 
@@ -924,17 +886,70 @@ ${internalIntegrationEvidence ? `## Integration evidence\n\n${internalIntegratio
 `
     : undefined;
 
-const artifactFiles = plan.collaboration.withNonDevelopers
-  ? new Map([
+const renderPdf = () => {
+  const directory = mkdtempSync(join(tmpdir(), 'manual-test-plan-pdf-'));
+  try {
+    const htmlPath = join(directory, 'index.html');
+    const pdfPath = join(directory, 'test-plan.pdf');
+    writeFileSync(htmlPath, html);
+    const browsers = process.env.CHROME_PATH
+      ? [process.env.CHROME_PATH]
+      : [
+          '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+          '/Applications/Chromium.app/Contents/MacOS/Chromium',
+          'google-chrome',
+          'chromium',
+          'chromium-browser',
+        ];
+    for (const browser of browsers) {
+      const result = spawnSync(
+        browser,
+        [
+          '--headless',
+          '--disable-gpu',
+          '--no-pdf-header-footer',
+          `--user-data-dir=${join(directory, 'chrome-profile')}`,
+          `--print-to-pdf=${pdfPath}`,
+          `${pathToFileURL(htmlPath).href}?print=1`,
+        ],
+        { encoding: 'utf8', timeout: 60000 },
+      );
+      if (result.error?.code === 'ENOENT' && !process.env.CHROME_PATH) continue;
+      if (result.error || result.status !== 0 || !existsSync(pdfPath)) {
+        throw new Error(
+          `PDF rendering failed with ${browser}: ${result.error?.message ?? result.stderr?.trim() ?? `exit ${result.status}`}`,
+        );
+      }
+      const pdf = readFileSync(pdfPath);
+      if (pdf.length < 100 || pdf.subarray(0, 5).toString() !== '%PDF-') {
+        throw new Error(`PDF rendering with ${browser} did not produce a valid PDF`);
+      }
+      return pdf;
+    }
+    throw new Error('PDF rendering requires Chrome or Chromium; set CHROME_PATH to the browser executable');
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+};
+
+let artifactFiles;
+if (plan.collaboration.withNonDevelopers) {
+  try {
+    artifactFiles = new Map([
       ['index.html', html],
-      ['slack-canvas.md', slack],
-    ])
-  : new Map([['github-issue.md', issue]]);
+      ['test-plan.pdf', renderPdf()],
+    ]);
+  } catch (error) {
+    fail(error.message);
+  }
+} else {
+  artifactFiles = new Map([['github-issue.md', issue]]);
+}
 if (internalInstructions) {
   artifactFiles.set('internal-instructions.md', internalInstructions);
 }
 const reservedArtifactPaths = new Set(
-  ['index.html', 'slack-canvas.md', 'github-issue.md', 'internal-instructions.md', 'manifest.json'].map((path) =>
+  ['index.html', 'test-plan.pdf', 'github-issue.md', 'internal-instructions.md', 'manifest.json'].map((path) =>
     path.toLowerCase(),
   ),
 );
@@ -1056,7 +1071,7 @@ for (const { artifact } of generatedArtifacts) {
 
 writeFileSync(
   join(outputDirectory, 'manifest.json'),
-  `${JSON.stringify({ schemaVersion: 3, slug: plan.slug, pageUrl: plan.collaboration.withNonDevelopers ? pageUrl : undefined, generatedAt, files: manifestEntries }, null, 2)}\n`,
+  `${JSON.stringify({ schemaVersion: 3, slug: plan.slug, generatedAt, files: manifestEntries }, null, 2)}\n`,
 );
 
 process.stdout.write(

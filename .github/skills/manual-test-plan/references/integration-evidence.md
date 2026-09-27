@@ -14,16 +14,18 @@ an outbound payload.
 Local mock verification can support a separate automated request-body check,
 but it never verifies what a manual preprod submission sent. For a submission
 case, offer team logs and Joark in `integrations[].evidence.options`. When
-non-developers collaborate, also show the no-access handoff path in HTML and
-Canvas. Omit handoff from a non-collaborative GitHub issue. Give each option
-its own owner, ordered actions, and observable expected result. This is a
+non-developers collaborate, also show the no-access handoff path in the PDF.
+Omit handoff from a non-collaborative GitHub issue.
+Use the short titles "Teamlogger i GCP", "Journalpost i Joark", and
+"Overlevering" for the three choices. Give each option its own owner,
+ordered actions, and observable expected result. This is a
 choice about who tests the case, not a prerequisite that the caller can use
 every method.
 
 ### Team logs in GCP
 
 A developer can open
-<https://console.cloud.google.com/logs?project=team-soknad-dev>. Choose a
+<https://console.cloud.google.com/logs/query?project=team-soknad-dev-ee5e>. Choose a
 short time range around the recorded test time and check the logs from both
 `innsending-api` and `soknadsarkiverer`. If the submission ID is known, use
 `SEARCH("INNSENDINGS_UUID")` in Logs Explorer with the actual ID substituted.
@@ -40,7 +42,7 @@ this repo's FyllUt logs only identify the submission, form number, request
 path, and outcome
 (`packages/shared-backend/src/services/application/applicationClient.ts:341-367`,
 `packages/fyllut-backend/src/routers/api/send-inn/application/common.ts:38-43`).
-FyllUt itself is not deployed in the team's `team-soknad-dev` project.
+FyllUt itself is not deployed in the team's `team-soknad-dev-ee5e` project.
 
 ### Joark
 

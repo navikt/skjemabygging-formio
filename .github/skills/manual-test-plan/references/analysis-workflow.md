@@ -112,7 +112,7 @@ flows, renderer code, and form-specific panels. Map before-form, form, and
 after-form steps separately, with a source for every transition. An
 analogous test does not prove that a different form has the same pages.
 If the form is generated, inspect its exact JSON locally before import and
-recheck the imported preprod revision before publication. Never say "if
+recheck the imported preprod revision before sharing the plan. Never say "if
 prompted" for a required action or skip an intervening page.
 
 Mark a complete source-based route `source-mapped` in that case's
@@ -122,9 +122,9 @@ to inspect and what to record. Mark that part exploratory rather than
 inventing steps; keep independently supported cases as verification
 cases. Do not require cplt to run Cypress. If someone with browser
 access checks the route manually, record the ordered pages, actions and
-result without filled-in identities, tokens or document contents. Ask
-for approval before uploading files, generating PDFs, or submitting in
-preprod.
+result without filled-in identities, tokens or document contents. Use
+synthetic data for uploads, PDFs and submissions in preprod. Testing
+these actions does not need an extra approval step.
 
 Use source maps and recorded browser observations to establish what testers must do.
 Derive expected results from the issue, approved specification, or
@@ -132,7 +132,13 @@ established baseline contract, including when observed behavior differs
 from confirmed intent.
 
 For each step, name the page, field, document, or status the tester should
-actually see. A receipt expected result must not claim that another system
+actually see. Keep the route complete, but assess only outcomes relevant
+to the case. Navigation steps may have no expected result when the next
+action already names the page. Do not repeat the synthetic-data reminder
+in each case; the plan states it once at the top. Use short, natural
+sentences. Remove repeated setup and explanatory text that does not help
+the tester act or decide whether the behavior passed. A receipt expected
+result must not claim that another system
 received the right identities. For log or Joark checks, name the specific
 roles and values to compare; if the tester can only hand off details, say
 the downstream result remains pending.
@@ -190,14 +196,23 @@ Prefer a compact risk-based set:
 - expected failures and recovery
 - a regression case for unchanged common behavior
 
+Inspect edge cases for each changed behavior: empty and invalid input,
+conditional branches, boundaries, interrupted or failed integrations, and
+retries where relevant. Include cases when they expose a distinct risk.
+Otherwise record the gap and a concrete reason in `scope.notCoveredByTests`.
+Keep this separate from `scope.excluded`, which lists work outside the PR.
+Always render a short coverage section, even when there are no known gaps.
+
 Do not multiply cases only to cover equivalent input values. Parameterize a case
 or use one scenario-driven form when the execution and expected result are the
 same.
 
 Verification cases assert confirmed intent, an established contract, or
-unchanged baseline behavior. Exploratory cases may record unresolved behavior
-when observation is useful, but they must say that no outcome is yet accepted
-as correct and link to the open question.
+unchanged baseline behavior. Exploratory cases are fine when observation is
+useful. Give precise actions, branch choices, and what to record; let testers
+assess what they see rather than prescribing every judgment. Do not label an
+unconfirmed outcome as accepted or invent a route. Link unresolved intent to
+the open question.
 
 Write tester-facing behavior at a functional level. Include a technical detail
 only when the tester needs it to perform the action, recognize the result, or

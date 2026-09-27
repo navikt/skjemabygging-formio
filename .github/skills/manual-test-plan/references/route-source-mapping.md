@@ -44,8 +44,8 @@ Keep independently supported cases as verification cases rather than
 downgrading the entire plan. A manual browser observation by someone
 with access can resolve the gap; record the ordered pages, choices,
 actions, and next page without entered identities or document contents.
-Do not require cplt to run Cypress. Obtain approval before an ID upload,
-PDF generation, or external submission in preprod.
+Do not require cplt to run Cypress. Use synthetic data for an
+ID upload, PDF generation, or external submission in preprod.
 
 The map tells the tester **what to do**. Derive **what should happen** from
 the issue, approved specification, established contract, or unchanged
@@ -53,3 +53,6 @@ baseline behavior. When implemented behavior differs from confirmed intent,
 keep the intended result and report the discrepancy. Neither an observed
 page nor a Cypress assertion on new behavior establishes product intent.
 Keep outbound payload evidence separate from UI and receipt evidence.
+Keep all necessary navigation actions in order, but add an expected result
+only where the case tests an outcome. Avoid checks that merely restate the
+next navigation step.
