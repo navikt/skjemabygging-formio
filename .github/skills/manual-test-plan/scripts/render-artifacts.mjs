@@ -1,22 +1,19 @@
 #!/usr/bin/env node
 
-import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import {
   copyFileSync,
   existsSync,
   lstatSync,
   mkdirSync,
-  mkdtempSync,
   readdirSync,
   readFileSync,
   realpathSync,
   rmSync,
   writeFileSync,
 } from 'node:fs';
-import { tmpdir } from 'node:os';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
-import { fileURLToPath, pathToFileURL } from 'node:url';
+import { fileURLToPath } from 'node:url';
 
 const scriptDirectory = dirname(fileURLToPath(import.meta.url));
 const skillDirectory = resolve(scriptDirectory, '..');
@@ -35,9 +32,8 @@ if (process.argv.includes('--help') || process.argv.includes('-h')) {
   process.stdout.write(`Usage:
   node render-artifacts.mjs --plan <plan.json> --out <directory>
 
-Generates either a local PDF and its HTML source, or github-issue.md, plus
-manifest.json and any generated form files. Set CHROME_PATH if Chrome or
-Chromium is not on PATH or in the standard macOS location.
+Generates either local index.html for manual printing, or github-issue.md,
+plus manifest.json and any generated form files. No PDF is generated.
 `);
   process.exit(0);
 }
@@ -45,7 +41,7 @@ Chromium is not on PATH or in the standard macOS location.
 const planArgument = getArgument('--plan');
 const outputArgument = getArgument('--out');
 if (process.argv.includes('--page-url')) {
-  fail('--page-url is no longer supported; collaborative plans are local PDFs');
+  fail('--page-url is not supported; collaborative plans are local HTML');
 }
 
 if (!planArgument || !outputArgument) {
@@ -886,65 +882,9 @@ ${internalIntegrationEvidence ? `## Integration evidence\n\n${internalIntegratio
 `
     : undefined;
 
-const renderPdf = () => {
-  const directory = mkdtempSync(join(tmpdir(), 'manual-test-plan-pdf-'));
-  try {
-    const htmlPath = join(directory, 'index.html');
-    const pdfPath = join(directory, 'test-plan.pdf');
-    writeFileSync(htmlPath, html);
-    const browsers = process.env.CHROME_PATH
-      ? [process.env.CHROME_PATH]
-      : [
-          '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
-          '/Applications/Chromium.app/Contents/MacOS/Chromium',
-          'google-chrome',
-          'chromium',
-          'chromium-browser',
-        ];
-    for (const browser of browsers) {
-      const result = spawnSync(
-        browser,
-        [
-          '--headless',
-          '--disable-gpu',
-          '--no-pdf-header-footer',
-          `--user-data-dir=${join(directory, 'chrome-profile')}`,
-          `--print-to-pdf=${pdfPath}`,
-          `${pathToFileURL(htmlPath).href}?print=1`,
-        ],
-        { encoding: 'utf8', timeout: 60000 },
-      );
-      if (result.error?.code === 'ENOENT' && !process.env.CHROME_PATH) continue;
-      if (result.error || result.status !== 0 || !existsSync(pdfPath)) {
-        throw new Error(
-          `PDF rendering failed with ${browser}: ${result.error?.message ?? result.stderr?.trim() ?? `exit ${result.status}`}`,
-        );
-      }
-      const pdf = readFileSync(pdfPath);
-      if (pdf.length < 100 || pdf.subarray(0, 5).toString() !== '%PDF-') {
-        throw new Error(`PDF rendering with ${browser} did not produce a valid PDF`);
-      }
-      return pdf;
-    }
-    throw new Error('PDF rendering requires Chrome or Chromium; set CHROME_PATH to the browser executable');
-  } finally {
-    rmSync(directory, { recursive: true, force: true });
-  }
-};
-
-let artifactFiles;
-if (plan.collaboration.withNonDevelopers) {
-  try {
-    artifactFiles = new Map([
-      ['index.html', html],
-      ['test-plan.pdf', renderPdf()],
-    ]);
-  } catch (error) {
-    fail(error.message);
-  }
-} else {
-  artifactFiles = new Map([['github-issue.md', issue]]);
-}
+const artifactFiles = plan.collaboration.withNonDevelopers
+  ? new Map([['index.html', html]])
+  : new Map([['github-issue.md', issue]]);
 if (internalInstructions) {
   artifactFiles.set('internal-instructions.md', internalInstructions);
 }
@@ -1013,6 +953,14 @@ if (existsSync(previousManifestPath) && lstatSync(previousManifestPath).isFile()
     ) {
       throw new Error('manifest must contain a supported schemaVersion and a non-empty files array');
     }
+    if (
+      previousManifest.files.some((entry) => entry?.path === 'test-plan.pdf') &&
+      existsSync(join(outputDirectory, 'test-plan.pdf'))
+    ) {
+      throw new Error(
+        'previous PDF is tracked by the old renderer; move it outside the output directory before rerendering',
+      );
+    }
     const previousPaths = new Set();
     for (const entry of previousManifest.files) {
       if (
@@ -1074,6 +1022,14 @@ writeFileSync(
   `${JSON.stringify({ schemaVersion: 3, slug: plan.slug, generatedAt, files: manifestEntries }, null, 2)}\n`,
 );
 
+if (plan.collaboration.withNonDevelopers) {
+  process.stdout.write(
+    `No PDF generated. Open ${join(outputDirectory, 'index.html')}?print=1 in a browser and print to PDF.\n`,
+  );
+  if (existsSync(join(outputDirectory, 'test-plan.pdf'))) {
+    process.stdout.write('An unmanaged test-plan.pdf exists; rerendering did not update it. Reprint and review it.\n');
+  }
+}
 process.stdout.write(
   `Generated ${artifactFiles.size + 1 + generatedArtifacts.length} artifacts in ${outputDirectory}\n`,
 );

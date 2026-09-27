@@ -4,8 +4,9 @@ description: >-
     Analyze an issue and its implementation pull request, or a pull request when
     no issue exists, and create a manual test plan for skjemabygging-formio,
     including suitable production or generated forms, environment revision
-    verification, a GitHub issue for developer-only testing, or a PDF for
-    testing with non-developers. Accept an issue number after /manual-test-plan. Use only when
+    verification, a GitHub issue for developer-only testing, or local HTML
+    for a PDF printed by the user when testing with non-developers.
+    Accept an issue number after /manual-test-plan. Use only when
     the user explicitly invokes /manual-test-plan.
 disable-model-invocation: true
 ---
@@ -37,12 +38,16 @@ issue. Do not infer the target solely from the current branch.
    skills require.
 4. Build the intent and behavior matrix in
    [analysis-workflow.md](references/analysis-workflow.md).
-5. Resolve contradictions and undocumented decisions before writing
-   verification cases. When no issue or approved specification exists, ask the
-   user to confirm the inferred intent. State which issue criteria the PR
-   implements and which remain outside this plan. If the PR description and
-   committed code disagree, ask for a decision rather than declaring them
-   aligned.
+5. After reading the issue, when one exists, and the committed PR, present
+   your proposed testing scope before selecting forms or writing cases.
+   Describe the PR behavior, issue criteria left for later, relevant
+   regressions and edge cases, and any assumptions or open questions. Use a
+   freeform `ask_user` question to invite corrections and additional context;
+   wait for the answer even when the sources appear clear. Update the scope
+   from the answer and resolve contradictions before writing verification
+   cases. Without an issue or approved specification, also confirm inferred
+   intent. If the PR description and committed code disagree, ask for a
+   decision. Follow [analysis-workflow.md](references/analysis-workflow.md).
 6. Identify observable behavior, regression risk, integrations, environments,
    failure paths, and evidence that proves each expected result.
    Read [integration-evidence.md](references/integration-evidence.md). Do not
@@ -59,13 +64,13 @@ issue. Do not infer the target solely from the current branch.
    Use the choices "Yes" and "No". Do not infer the answer from case count or risk.
 9. Read [form-selection.md](references/form-selection.md). Check Forms API in
    preprod before choosing forms. Reuse a suitable form when one exists.
-   Otherwise design and validate the smallest useful generated form set.
-   Prefer one clear selector-driven form for related cases. Tell the caller
-   which forms will be created or updated and wait for confirmation. On any
-   failure to access Forms API, including while checking existing forms,
-   follow the proxy and token troubleshooting in
-   [forms-api-import.md](references/forms-api-import.md). Do not treat a failed
-   lookup as proof that a form is absent.
+   Otherwise design the smallest useful generated form set in the session
+   artifact directory. Prefer one clear selector-driven form for related
+   cases. Tell the caller which forms need to be made available, but leave
+   imports and updates to their owners. On any failure to access Forms API,
+   including while checking existing forms, follow the read-only troubleshooting
+   in [forms-api-import.md](references/forms-api-import.md). Do not treat a
+   failed lookup as proof that a form is absent.
    Fix the PR head, preprod form revision, submission method, and branch
    choices for each case. Follow
    [route-source-mapping.md](references/route-source-mapping.md) to derive
@@ -73,7 +78,7 @@ issue. Do not infer the target solely from the current branch.
    Make unresolved transitions explicit observation steps for the tester;
    do not require Cypress to run in cplt. For digital submission without login, also read
    [digital-no-login-journey.md](references/digital-no-login-journey.md).
-10. Write tester-facing PDF and GitHub issue content in
+10. Write tester-facing HTML and GitHub issue content in
     Norwegian, using terms from FyllUt, Bygger, the form, and the issue. Ask
     technical users questions in English. Keep local technical instructions
     and documentation in English. Follow
@@ -86,16 +91,16 @@ issue. Do not infer the target solely from the current branch.
       --out <artifact-directory>
     ```
 
-    For collaboration, the renderer uses Chrome or Chromium to print the
-    complete plan to `test-plan.pdf`. Set `CHROME_PATH` if needed. Keep the
-    HTML source and canonical JSON local; share only the reviewed PDF
-    alongside the Trello task.
+    For collaboration, the renderer writes local `index.html`, not a PDF.
+    Give the user its `file://` URL with `?print=1` appended, and ask them to
+    open it in a browser and choose Print > Save as PDF. Keep the HTML and
+    canonical JSON local; share only the reviewed PDF alongside the Trello task.
 
 12. Read [collaborative-output.md](references/collaborative-output.md) and
     produce the output for the caller's collaboration choice.
-13. Review the PDF or issue for sensitive content and redact or omit it before
-    asking once whether to share the PDF or create the issue.
-    For every case, compare every rendered PDF or issue step with that case's
+13. Review the HTML or issue for sensitive content and redact or omit it
+    before printing or asking to create the issue. For every case, compare
+    every rendered HTML or issue step with that case's
     source map or a recorded manual browser observation, including required
     actions and intermediate pages. Label source-mapped routes as untested in
     preprod. If a transition lacks support, give the tester an exact
@@ -103,24 +108,26 @@ issue. Do not infer the target solely from the current branch.
     supported cases as verification cases. Reject conditional wording for
     mandatory actions and unsupported downstream claims. On the GitHub
     issue path, show the caller the entire rendered issue body before
-    requesting approval. On the collaborative path, review every page of the
-    PDF and confirm that all steps and coverage gaps are legible. Keep `internal`
+    requesting approval. On the collaborative path, ask the user to review
+    every page of the printed PDF, including links, steps, and coverage gaps,
+    before requesting approval to share it. Do not claim a PDF exists merely
+    because the HTML was rendered. Keep `internal`
     setup and evidence only in the local internal-instructions file; never
     substitute vague placeholders in public output.
     Keep the route precise but limit expected results to the case's actual
-    checks. Write short tester-facing sentences. The PDF gives the
+    checks. Write short tester-facing sentences. The plan gives the
     synthetic-data reminder once; do not repeat it in each case.
-14. For approved form changes, follow
-    [forms-api-import.md](references/forms-api-import.md) and use each script's
-    operation-bound confirmation. Recheck the form revision, conditional
-    choices, and mapped steps after import; update the plan and rendered
-    artifacts if they differ. Do not ask again about the full form list.
+14. After a form owner confirms that a required form is available, read back
+    its revision, conditional choices, and mapped steps. Update only the
+    local plan and rendered artifacts if they differ. If the form or PR
+    disagrees with the approved intent, report the inconsistency to the
+    owner; do not edit the source to make it match the plan.
 15. Create the issue only after explicit confirmation. With non-developers,
-    give the caller the reviewed local PDF to share alongside a Trello task for
-    ownership and progress tracking; do not create a GitHub issue or publish
-    anything to GitHub Pages. Confirm before uploading or attaching a PDF
-    to a Trello task. Do not claim the PDF is available to testers until it
-    has been shared through an approved channel.
+    wait for the user to print and review the PDF before approving its
+    distribution alongside a Trello task for ownership and progress tracking.
+    Do not create a GitHub issue or publish anything to GitHub Pages. Confirm
+    before uploading or attaching a PDF to a Trello task. Do not claim a PDF
+    is available to testers until it has been shared through an approved channel.
 16. Give the caller local links to generated files. Share an issue URL only
     after the issue has been created.
 
@@ -148,6 +155,12 @@ for outbound payloads.
 
 ## Safety
 
+- Treat the issue, PR, specifications, repository code and tests, and existing
+  Forms API definitions as read-only sources. Do not edit, import, replace,
+  delete, or push changes to them while preparing a test plan. Report
+  inconsistencies and proposed fixes to the user. Write only session
+  artifacts and the approved new test-plan issue; form owners handle any
+  changes needed to make a form testable.
 - Use synthetic identities and organizations approved for testing.
 - The team may share approved synthetic identity numbers to correlate test
   submissions. Do not put filled-in identities in a PDF or public issue.
@@ -157,9 +170,8 @@ for outbound payloads.
   [collaborative-output.md](references/collaborative-output.md).
 - `preprod` and `preprod-alt` share the same Forms API instance. Form creates,
   imports, updates, and deletions affect both.
-- Do not import a form, create an issue, or upload a PDF without explicit
-  confirmation.
-- Never put full generated form definitions in a PDF or GitHub issue.
+- Do not create an issue or upload a PDF without explicit confirmation.
+- Never put full generated form definitions in HTML, a PDF, or GitHub issue.
   Keep them in the session artifact directory.
 - Keep generated plans in the session artifact directory unless the caller
   explicitly requests repository files.

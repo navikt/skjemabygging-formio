@@ -112,11 +112,13 @@ formats.
             "kind": "forms-api-import",
             "title": "Make the test form available",
             "formId": "party-form",
-            "steps": ["Dry-run bin/forms-api/import-form.mjs and obtain approval before applying it."],
+            "steps": [
+                "Ask the form owner to make the generated form available in preprod; do not import it as part of this skill."
+            ],
             "expected": "The form is available in preprod and preprod-alt.",
             "verification": ["Fetch the form from Forms API and check its path and revision."],
             "sharedStateWarning": "preprod and preprod-alt share the same Forms API.",
-            "cleanup": ["Delete the generated form with bin/forms-api/cleanup-form.mjs after testing."]
+            "cleanup": ["Ask the form owner to remove the generated form after testing."]
         }
     ],
     "forms": [
@@ -187,7 +189,7 @@ formats.
 
 - `slug` must contain lowercase letters, numbers, and hyphens only.
 - `collaboration.withNonDevelopers` records the caller's answer. `true` produces
-  a local PDF and HTML rendering source. `false` produces a GitHub issue document.
+  local HTML for manual PDF printing. `false` produces a GitHub issue document.
 - Use `scope.included` and `scope.excluded` to separate implemented PR behavior
   from criteria that remain for later work. The renderer shows both to testers.
 - `scope.notCoveredByTests` lists in-scope behavior or edge cases without a
@@ -232,8 +234,9 @@ formats.
   `other`. Every action has steps, an expected result, verification, and
   cleanup.
 - A `forms-api-import` setup action must reference a form and include a
-  shared-state warning and cleanup. Cleanup may state an approved restore or
-  retention decision instead of deletion.
+  shared-state warning and cleanup. These steps are a handoff to the form
+  owner, not actions for the skill to perform. Cleanup may state an approved
+  restore or retention decision instead of deletion.
 - Case IDs must be unique and match `TC-<number>`.
 - Every case must reference one or more entries in `behaviorAnalysis`.
 - `integrationIds` references the outbound integrations exercised by the case.
@@ -253,7 +256,7 @@ formats.
   changing the case to verification.
 - Priorities are `P0`, `P1`, `P2`, or `P3`.
 - `formId` must reference an entry in `forms`.
-- A generated form intended for script import or deletion must use the
+- A generated form intended for import or deletion by its owner must use the
   `MANUALTEST-` form-number prefix in its JSON artifact.
 - Every case needs `journeyCheck` with `status` (`verified`, `source-mapped`,
   or `unverified`). `verified` means this exact route was observed in a
@@ -270,7 +273,7 @@ formats.
   forms, check the exact JSON before import and the imported revision before
   sharing. Two cases using one form may have different route statuses.
   Metadata, schema checks, a similar form's Cypress test, and HTTP 200
-  alone do not map or verify a route. Compare all rendered PDF or
+  alone do not map or verify a route. Compare all rendered HTML or
   issue steps with that case's source map or trace.
 - The exploratory case above illustrates an unresolved route. A source-mapped
   verification case uses `"mode": "verification"` and
@@ -287,15 +290,15 @@ formats.
 - Keep all actions needed to follow the journey, but include `expected` only
   where the case tests an outcome. A verification case needs at least one.
   Navigation alone does not need a separate assessment. Keep sentences short.
-  The PDF gives the synthetic-data reminder once; do not repeat it in each case.
+  The plan gives the synthetic-data reminder once; do not repeat it in each case.
 - Put a shell command in the optional `steps[].command` field, not in prose
-  or `evidence`. The renderer uses a code block in the PDF or issue.
+  or `evidence`. The renderer uses a code block in the HTML or issue.
   Put deletion of local files or state in `cleanup`, not `evidence`.
 - `setupActions` must not contain application deployment instructions.
 - Do not include secrets or real personal data. The team may share approved
   synthetic identity numbers in its test notes to identify a submission;
   public artifacts contain instructions, not filled-in identity numbers.
-- Write fields rendered in PDFs or GitHub issues in
+- Write fields rendered in HTML or GitHub issues in
   Norwegian, with terminology from the application, forms, issue, and approved
   specification. Write `internal` setup and evidence fields in English. The
   canonical JSON contains both audiences, so shared fields used by the public

@@ -63,15 +63,26 @@ descriptions, or newer decisions supersede them. Never resurrect an abandoned
 suggestion merely because it remains in the history.
 
 When sources conflict, do not silently choose one. Record the conflict and ask
-the user or named decision owner which behavior is intended. When a pull request
-has no linked issue or approved specification, summarize the inferred intent
-and require user confirmation before drafting verification cases.
+the user or named decision owner which behavior is intended.
 
 Compare each issue criterion with the committed PR head. Record what this PR
 actually implements and what remains for later work in `scope.included` and
 `scope.excluded`. Do not present later work as covered by this deployment.
 When the PR description and committed behavior differ, flag the discrepancy
 and ask for a decision before labeling the behavior aligned.
+
+Before choosing forms or drafting test cases, share a short, provisional
+testing scope with the user. Identify the PR behavior to test, issue criteria
+outside this PR, directly affected regression paths, relevant edge cases,
+and assumptions or unresolved questions. Distinguish what the sources say
+from what you inferred. Present this scope in a freeform `ask_user` question
+asking what the user would correct or add. Wait for their answer even if the
+issue and PR seem complete. Incorporate their context into the scope and
+behavior matrix. If it conflicts with the issue or committed PR, clarify
+the intended behavior rather than silently replacing either source. If the
+user has nothing to add, continue with the proposed scope. For a PR without
+an issue or approved specification, explicitly confirm inferred intent before
+writing verification cases.
 
 ## Build a behavior matrix
 
@@ -111,9 +122,11 @@ authentication path, and conditional choices. Follow
 flows, renderer code, and form-specific panels. Map before-form, form, and
 after-form steps separately, with a source for every transition. An
 analogous test does not prove that a different form has the same pages.
-If the form is generated, inspect its exact JSON locally before import and
-recheck the imported preprod revision before sharing the plan. Never say "if
-prompted" for a required action or skip an intervening page.
+If the form is generated, inspect its exact JSON in the session artifact
+directory. Have a form owner import it, then read back the preprod revision
+before sharing the plan. If the imported form differs, report the discrepancy
+rather than editing it. Never say "if prompted" for a required action or
+skip an intervening page.
 
 Mark a complete source-based route `source-mapped` in that case's
 `journeyCheck`. It has not been exercised in preprod. If sources leave a

@@ -33,22 +33,24 @@ Record:
 - supported submission methods
 - whether preprod must import or refresh the form
 
-Production imports overwrite the shared preprod draft. Warn the caller and ask
-before importing through Bygger. Remember that `preprod` and `preprod-alt` use
-the same Forms API instance.
+Production imports overwrite the shared preprod draft. If a form is missing
+or differs from the required revision, tell the caller what a form owner
+needs to import or refresh; do not import or edit it. Remember that `preprod`
+and `preprod-alt` use the same Forms API instance.
 
 ## Generated forms
 
 Generate a form only when no suitable form already exists in preprod or a small
 test form makes the changed behavior substantially easier to isolate.
 
-- Build it from helpers in `mocks/mocks/form-builder`.
+- Use the existing helpers in `mocks/mocks/form-builder` as read-only
+  references. Keep the generated definition and any temporary generator in
+  the session artifact directory, not the repository.
 - Keep fields and pages to the minimum needed.
 - Use a unique form number starting with `MANUALTEST-`, followed by uppercase
   letters, numbers, or hyphens, up to 20 characters total. Bygger limits form
-  numbers to 20 characters. Import and cleanup reject other numbers. This makes
-  leftover manual test forms identifiable without changing Bygger's behavior
-  with `properties.isTestForm`.
+  numbers to 20 characters. Give the generated definition to a form owner to
+  import. Do not run import or cleanup yourself.
 - Enable only required submission methods.
 - Set `clearOnHide` on scenario-controlled pages.
 - Prefer one selector-driven form when related scenarios share a domain and the
@@ -57,22 +59,23 @@ test form makes the changed behavior substantially easier to isolate.
   stale data, make validation unreliable, or obscure the expected mapping.
 
 The `ts-node` executable belongs to the `mocks` package, not the repository
-root. Run a small TypeScript generator with that package's installed runner
-and TypeScript configuration, from the repository root:
+root. Keep any generator in the session artifact directory, outside the
+repository. Run it with the package's installed runner and TypeScript
+configuration:
 
 ```bash
 pnpm --dir mocks exec ts-node \
   --project tsconfig.json \
   --transpile-only \
   --compiler-options '{"ignoreDeprecations":"6.0"}' \
-  mocks/<generator.ts>
+  <absolute-session-artifact-directory>/<generator.ts>
 ```
 
-Put the temporary generator in `mocks/mocks/`. Its path in the command is
-relative to `mocks/`, since `--dir mocks` changes the working directory.
-Keep generated JSON in the session artifact directory and remove the
-generator after use. Do not use `pnpm dlx` or download another runner for
-this task.
+Use absolute paths for imports of `mocks/mocks/form-builder` from outside
+the repository. If the runner cannot resolve the helpers from the session
+directory, hand off the generator as an artifact instead of editing the
+repository to make it work. Do not use `pnpm dlx` or download another runner
+for this task.
 
 Validate:
 
@@ -81,16 +84,16 @@ Validate:
 3. Conditional pages expose the intended components.
 4. Hidden scenario data clears.
 5. Shared-domain resolution or mapper behavior produces the intended result.
-6. The form can be fetched after import before testing FyllUt.
+6. After a form owner imports it, the form can be fetched before testing FyllUt.
 
 Map each case's scenario choices against the exact form revision and
 conditional rules using
 [route-source-mapping.md](route-source-mapping.md). For generated forms,
 check the exact JSON and exercise its branches in the local renderer
-before import, then confirm the imported revision in preprod before
-publication. Check conditional visibility, required fields, relevant
-identity or party mapping, and submission settings. Schema validity and
-an import dry run do not establish behavior. Record the route per case
+before handing it to a form owner. Confirm the imported revision in preprod
+before sharing the plan. Check conditional visibility, required fields,
+relevant identity or party mapping, and submission settings. Schema validity
+alone does not establish behavior. Record the route per case
 in `testCases[].journeyCheck`, so branches of one form can have different
 statuses. A matching Cypress flow can support shared navigation, but
 cannot prove that a different form's panels appear in preprod. Turn an
@@ -104,11 +107,12 @@ shared ID upload and introduction against the form's settings. Record
 intervening pages from this form's conditional definition, not another
 form's panel order.
 
-Before import, tell the caller:
+Before a form owner imports anything, tell the caller:
 
 - which existing forms will be used unchanged
 - which production forms will be imported or refreshed
 - which test forms will be created or updated
 - which test cases each form covers
 
-Wait for confirmation before changing Forms API.
+Do not change Forms API. Wait for the form owner to make the required form
+available and read it back before claiming that its route is verified.
